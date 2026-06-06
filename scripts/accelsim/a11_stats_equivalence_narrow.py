@@ -67,7 +67,7 @@ for item in [x for x in workload_spec.split(",") if x.strip()]:
     paper, workload = item.split(":", 1)
     paper = paper.strip()
     workload = workload.strip()
-    exact = [r for r in smoke_rows if r.get("paper") == paper and r.get("normalized_workload") == workload and r.get("status") == "PASS"]
+    exact = [r for r in smoke_rows if r.get("paper") == paper and (r.get("normalized_workload") or r.get("normalized_name")) == workload and r.get("status") == "PASS"]
     if exact:
         selected.append(exact[0])
         continue
@@ -76,7 +76,7 @@ for item in [x for x in workload_spec.split(",") if x.strip()]:
         replacement = [r for r in smoke_rows if r.get("status") == "PASS"]
     if replacement:
         selected.append(replacement[0])
-        fallbacks.append(f"{paper}:{workload} -> {replacement[0].get('paper')}:{replacement[0].get('normalized_workload')}")
+        fallbacks.append(f"{paper}:{workload} -> {replacement[0].get('paper')}:{replacement[0].get('normalized_workload') or replacement[0].get('normalized_name')}")
     else:
         status = "BLOCKED_NO_ALIGNED_SMOKE"
         blocker = "no passing A10D aligned smoke rows available"
@@ -91,7 +91,7 @@ if status == "PASS":
                 "row_id": f"N{len(normalized_rows)+1:06d}",
                 "paper": run.get("paper", ""),
                 "workload": run.get("prior_name", ""),
-                "normalized_workload": run.get("normalized_workload", ""),
+                "normalized_workload": run.get("normalized_workload") or run.get("normalized_name", ""),
                 "source": "A10D_aligned_smoke_log",
                 "run_id": run.get("run_id", ""),
                 "log_path": log_path,
@@ -105,18 +105,6 @@ with NORMALIZED.open("w", newline="") as f:
     writer.writerows(normalized_rows)
 
 accel_keys = {r["normalized_stat_key"]: r for r in normalized_rows if r["stats_mode"] == "last"}
-interesting_prior = []
-seen_prior = set()
-for row in prior_rows:
-    norm = normalize_key(row.get("normalized_field_name") or row.get("field_name"))
-    if not norm or norm in seen_prior:
-        continue
-    if any(token in norm for token in ["gpgpu", "gpu_tot", "ipc", "l2", "cache", "cycle", "instruction", "icount", "simulation"]):
-        interesting_prior.append(row)
-        seen_prior.add(norm)
-    if len(interesting_prior) >= 80:
-        break
-
 preferred = [
     "gpgpu_n_tot_w_icount",
     "gpu_tot_sim_cycle",
@@ -126,6 +114,23 @@ preferred = [
     "l2_total_cache_accesses",
     "l2_total_cache_misses",
 ]
+
+interesting_prior = []
+seen_prior = set()
+for row in prior_rows:
+    norm = normalize_key(row.get("normalized_field_name") or row.get("field_name"))
+    if norm in preferred and norm not in seen_prior:
+        interesting_prior.append(row)
+        seen_prior.add(norm)
+for row in prior_rows:
+    norm = normalize_key(row.get("normalized_field_name") or row.get("field_name"))
+    if not norm or norm in seen_prior:
+        continue
+    if any(token in norm for token in ["gpgpu", "gpu_tot", "ipc", "l2", "cache", "cycle", "instruction", "icount", "simulation"]):
+        interesting_prior.append(row)
+        seen_prior.add(norm)
+    if len(interesting_prior) >= 80:
+        break
 
 matrix_rows: list[dict[str, str]] = []
 for prior in interesting_prior:
@@ -213,7 +218,7 @@ REPORT.write_text(f"""# A11 Stats Equivalence Narrow
 ## Selected Workloads
 
 ```
-{os.linesep.join(f"{r.get('paper')} {r.get('normalized_workload')} {r.get('log_path')}" for r in selected)}
+{os.linesep.join(f"{r.get('paper')} {r.get('normalized_workload') or r.get('normalized_name')} {r.get('log_path')}" for r in selected)}
 ```
 
 ## Parser Modes

@@ -26,11 +26,18 @@ exec > >(tee "$log_path") 2>&1
 echo "A15 trace GPU gap plan"
 echo "Start: $start_iso"
 
-nvidia_smi_out="$(nvidia-smi 2>&1 || true)"
-dev_nvidia_out="$(ls -l /dev/nvidia* 2>&1 || true)"
+if command -v nvidia-smi >/dev/null 2>&1; then
+  nvidia_smi_out="$(nvidia-smi 2>&1)"
+  nvidia_smi_rc=$?
+else
+  nvidia_smi_out="nvidia-smi: command not found"
+  nvidia_smi_rc=127
+fi
+dev_nvidia_out="$(ls -l /dev/nvidia* 2>&1)"
+dev_nvidia_rc=$?
 nvcc_out="$(nvcc --version 2>&1 || true)"
 gpu_visible="no"
-if printf '%s\n%s\n' "$nvidia_smi_out" "$dev_nvidia_out" | grep -qi 'NVIDIA'; then
+if [ "$nvidia_smi_rc" -eq 0 ] || [ "$dev_nvidia_rc" -eq 0 ]; then
   gpu_visible="yes"
 fi
 tracer_status="BLOCKED_NO_GPU_FOR_TRACER"
