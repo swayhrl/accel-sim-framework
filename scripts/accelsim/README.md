@@ -69,4 +69,32 @@ ACCELSIM_MAX_JOBS=1
 bash scripts/accelsim/a5_collect_results.sh
 ```
 
+## A6B-A9 Pipeline
+
+Audit version strings:
+
+```bash
+bash scripts/accelsim/a6b_version_string_audit.sh
+```
+
+Clean baseline rerun:
+
+```bash
+bash scripts/accelsim/a7a_clean_baseline_hardened.sh
+```
+
+N-app smoke:
+
+```bash
+ACCELSIM_A7B_DRY_RUN=1 bash scripts/accelsim/a7b_n_app_smoke.sh
+bash scripts/accelsim/a7b_n_app_smoke.sh
+```
+
+Small baseline and workflow alignment:
+
+```bash
+bash scripts/accelsim/a8_small_benchmark_baseline.sh
+bash scripts/accelsim/a9_mascar_medic_alignment.sh
+```
+
 Local logs, reports, runs, traces, and review packs stay under ignored local paths.

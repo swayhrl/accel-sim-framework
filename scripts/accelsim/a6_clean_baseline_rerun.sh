@@ -14,7 +14,7 @@ main_log=".local_logs/A6_clean_baseline_rerun_${ts}.log"
 build_log=".local_logs/A6_build_${ts}.log"
 report_path=".local_reports/A6_clean_baseline_summary_${ts}.md"
 review_pack="review_packs/A6_CLEAN_BASELINE_RERUN_review_pack_${ts}.tar.gz"
-dirty_scan_path=".local_reports/A6_dirty_marker_scan_${ts}.log"
+dirty_scan_path=".local_reports/A6_version_string_classification_${ts}.log"
 build_string_excerpt_path=".local_reports/A6_build_string_excerpts_${ts}.log"
 
 status="PASS"
@@ -35,6 +35,7 @@ a4_report=""
 a2_stats=""
 a4_stats=""
 dirty_marker_found="not_checked"
+version_string_status="not_checked"
 baseline_found="not_checked"
 git_status_start=""
 git_status_end=""
@@ -200,9 +201,10 @@ $(python3 --version 2>&1)
 
 ## Build string validation
 
-- Dirty or modified marker found: $dirty_marker_found
+- Version string status: $version_string_status
+- Dirty or nonzero modified marker found: $dirty_marker_found
 - Baseline commit found in logs or stats: $baseline_found
-- Dirty marker scan: \`$dirty_scan_path\`
+- Version string classification: \`$dirty_scan_path\`
 - Build string excerpts: \`$build_string_excerpt_path\`
 
 ### Excerpts
@@ -211,7 +213,7 @@ $(python3 --version 2>&1)
 $(sed -n '1,120p' "$build_string_excerpt_path" 2>/dev/null)
 \`\`\`
 
-### Dirty marker grep
+### Version string classification
 
 \`\`\`
 $(sed -n '1,120p' "$dirty_scan_path" 2>/dev/null)
@@ -222,7 +224,7 @@ $(sed -n '1,120p' "$dirty_scan_path" 2>/dev/null)
 - This is a minimal smoke rerun, not a full Rodinia benchmark campaign.
 - A3/NVBit tracer is intentionally not validated by A6.
 - A6 does not download traces; it reuses an existing trace root.
-- Current version makefiles always include the token \`_modified_\` in build-string format, even for a zero diff count. This script reports that honestly.
+- Current version makefiles always include the token \`_modified_\` in build-string format. A numeric value of 0, 0.0, or 0.00 is classified as clean diff zero only when git status at start and end are clean.
 
 ## Review pack
 
@@ -270,7 +272,7 @@ finish() {
   git status --short
 
   case "$status" in
-    PASS|PASS_NO_DIRTY_MARKER_COMMIT_NOT_FOUND|PARTIAL_BUILD_BINARY_EXISTS|BLOCKED_NO_TRACE) exit 0 ;;
+    PASS|PASS_CLEAN_DIFF_ZERO|PASS_NO_DIRTY_MARKER|PASS_NO_DIRTY_MARKER_COMMIT_NOT_FOUND|PARTIAL_BUILD_BINARY_EXISTS|BLOCKED_NO_TRACE) exit 0 ;;
     *) exit 1 ;;
   esac
 }
@@ -422,26 +424,92 @@ for f in "$main_log" "$build_log" "$a2_report" "$a4_report" "$a2_stats" "$a4_sta
   [ -n "$f" ] && [ -f "$f" ] && scan_files+=("$f")
 done
 
-{
-  echo "Files scanned:"
-  printf '%s\n' "${scan_files[@]}"
-  echo
-  echo "Marker matches:"
-  if ! grep -RinE '(_modified|modified|dirty)' "${scan_files[@]}" 2>/dev/null; then
-    echo "NO_MATCHES"
-  fi
-} > "$dirty_scan_path"
+python3 - "$dirty_scan_path" "${scan_files[@]}" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+out_path = Path(sys.argv[1])
+files = [Path(p) for p in sys.argv[2:]]
+build_re = re.compile(r"(?:accelsim-commit|gpgpu-sim_git-commit)[^\s,`'\"]*")
+modified_re = re.compile(r"_modified_([^_\s,`'\"]+)")
+
+strings = []
+contexts = []
+for path in files:
+    try:
+        lines = path.read_text(errors="replace").splitlines()
+    except OSError:
+        continue
+    for lineno, line in enumerate(lines, 1):
+        for match in build_re.finditer(line):
+            s = match.group(0)
+            strings.append(s)
+            contexts.append((str(path), lineno, s))
+
+classification = "PASS_NO_DIRTY_MARKER"
+dirty_marker_found = "NO"
+notes = []
+for s in strings:
+    lowered = s.lower()
+    if "dirty" in lowered:
+        classification = "FAILED_DIRTY_BUILD_STRING"
+        dirty_marker_found = "YES"
+        notes.append(f"DIRTY token in {s}")
+        continue
+    m = modified_re.search(s)
+    if not m:
+        continue
+    raw = m.group(1)
+    try:
+        value = float(raw)
+    except ValueError:
+        if classification != "FAILED_DIRTY_BUILD_STRING":
+            classification = "NEEDS_REVIEW_VERSION_STRING"
+        dirty_marker_found = "NEEDS_REVIEW"
+        notes.append(f"Unparseable modified value {raw!r} in {s}")
+        continue
+    if value == 0:
+        if classification == "PASS_NO_DIRTY_MARKER":
+            classification = "PASS_CLEAN_DIFF_ZERO"
+        notes.append(f"CLEAN diff-zero marker {raw} in {s}")
+    else:
+        classification = "FAILED_DIRTY_BUILD_STRING"
+        dirty_marker_found = "YES"
+        notes.append(f"Nonzero modified value {raw} in {s}")
+
+with out_path.open("w") as f:
+    print("Files scanned:", file=f)
+    for p in files:
+        print(p, file=f)
+    print("", file=f)
+    print("Build strings:", file=f)
+    if contexts:
+        for path, lineno, s in contexts:
+            print(f"{path}:{lineno}:{s}", file=f)
+    else:
+        print("NO_BUILD_STRINGS_FOUND", file=f)
+    print("", file=f)
+    print("Classification notes:", file=f)
+    if notes:
+        for note in notes:
+            print(note, file=f)
+    else:
+        print("No dirty or modified build string markers found.", file=f)
+    print("", file=f)
+    print(f"CLASSIFICATION={classification}", file=f)
+    print(f"DIRTY_MARKER_FOUND={dirty_marker_found}", file=f)
+PY
 
 {
   echo "Build string excerpts:"
   grep -RinE '(Accel-Sim-build|GPGPU-Sim-build|accelsim-commit|gpgpu-sim_git-commit)' "${scan_files[@]}" 2>/dev/null || true
 } > "$build_string_excerpt_path"
 
-if grep -qvE '^(Files scanned:|Marker matches:|NO_MATCHES|$)' "$dirty_scan_path"; then
-  dirty_marker_found="YES"
-else
-  dirty_marker_found="NO"
-fi
+version_string_status="$(sed -n 's/^CLASSIFICATION=//p' "$dirty_scan_path" | tail -1)"
+dirty_marker_found="$(sed -n 's/^DIRTY_MARKER_FOUND=//p' "$dirty_scan_path" | tail -1)"
+[ -n "$version_string_status" ] || version_string_status="NEEDS_REVIEW_VERSION_STRING"
+[ -n "$dirty_marker_found" ] || dirty_marker_found="NEEDS_REVIEW"
 
 if grep -Riq "$baseline_short" "${scan_files[@]}" 2>/dev/null || grep -Riq "${baseline_commit:0:7}" "${scan_files[@]}" 2>/dev/null; then
   baseline_found="YES"
@@ -450,9 +518,18 @@ else
 fi
 
 if [ "$status" = "PASS" ] || [ "$status" = "PARTIAL_BUILD_BINARY_EXISTS" ]; then
-  if [ "$dirty_marker_found" = "YES" ]; then
+  if [ "$version_string_status" = "FAILED_DIRTY_BUILD_STRING" ]; then
     status="FAILED_DIRTY_BUILD_STRING"
-    blocker="A6 logs/stats still contain dirty/modified marker in build string context"
+    blocker="A6 logs/stats contain dirty or nonzero modified marker in build string context"
+  elif [ "$version_string_status" = "NEEDS_REVIEW_VERSION_STRING" ]; then
+    status="NEEDS_REVIEW_VERSION_STRING"
+    blocker="A6 build string classifier could not parse one or more suspicious markers"
+  elif [ "$version_string_status" = "PASS_CLEAN_DIFF_ZERO" ]; then
+    status="PASS_CLEAN_DIFF_ZERO"
+    blocker="none"
+  elif [ "$version_string_status" = "PASS_NO_DIRTY_MARKER" ]; then
+    status="PASS_NO_DIRTY_MARKER"
+    blocker="none"
   elif [ "$baseline_found" != "YES" ]; then
     status="PASS_NO_DIRTY_MARKER_COMMIT_NOT_FOUND"
     blocker="no dirty marker found, but baseline short commit was not found in logs/stats"

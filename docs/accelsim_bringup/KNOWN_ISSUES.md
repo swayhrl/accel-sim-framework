@@ -9,6 +9,7 @@
 - Local procman jobs remained in `WAITING_TO_RUN` during A2. A2/A4 therefore use direct smoke mode: `run_simulations.py -n`, one generated `justrun.sh`, then `get_stats.py -r`.
 - `accel-sim.out --help` returns nonzero with an unknown option message, but prints the Accel-Sim/GPGPU-Sim banner. This is recorded as a usable binary smoke, not a help-interface pass.
 - The Make build warns that OpenCL support is not enabled. The SASS trace-driven smoke path did not require OpenCL.
+- Accel-Sim/GPGPU-Sim build strings include `_modified_0.0` even from a clean tree because the makefiles always include a modified-count field. Treat it as clean diff zero only when git status at build start and end is clean.
 
 ## Future Risks
 

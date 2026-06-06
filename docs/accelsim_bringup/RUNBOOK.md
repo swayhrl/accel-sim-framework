@@ -69,6 +69,21 @@ bash scripts/accelsim/a5_collect_results.sh
 
 Stats CSV files are written to `.local_reports/*_stats.csv`.
 
+## A6B-A9 Baseline Pipeline
+
+```bash
+bash scripts/accelsim/a6b_version_string_audit.sh
+bash scripts/accelsim/a7a_clean_baseline_hardened.sh
+ACCELSIM_A7B_DRY_RUN=1 bash scripts/accelsim/a7b_n_app_smoke.sh
+bash scripts/accelsim/a7b_n_app_smoke.sh
+ACCELSIM_A8_DRY_RUN=1 bash scripts/accelsim/a8_small_benchmark_baseline.sh
+bash scripts/accelsim/a8_small_benchmark_baseline.sh
+ACCELSIM_A9_DRY_RUN=1 bash scripts/accelsim/a9_mascar_medic_alignment.sh
+bash scripts/accelsim/a9_mascar_medic_alignment.sh
+```
+
+For rebuild or baseline-quality runs, commit tracked changes first and confirm `git status --short` is empty before starting.
+
 ## 7. Local Outputs
 
 - Reports: `.local_reports/`
