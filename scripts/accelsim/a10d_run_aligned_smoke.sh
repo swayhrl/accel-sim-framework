@@ -129,6 +129,14 @@ if [ "$status" = "PASS" ]; then
   while IFS=, read -r run_id paper prior_workload_id prior_name normalized_name kernelslist_path config mapping_id evidence_strength; do
     [ "$run_id" = "run_id" ] && continue
     kernelslist_path="$(printf '%s' "$kernelslist_path" | tr -d '\r\n')"
+    case "$kernelslist_path" in
+      /*) ;;
+      *) kernelslist_path="$repo_root/$kernelslist_path" ;;
+    esac
+    if [ -f "$kernelslist_path" ]; then
+      kernelslist_dir="$(cd "$(dirname "$kernelslist_path")" && pwd)"
+      kernelslist_path="$kernelslist_dir/$(basename "$kernelslist_path")"
+    fi
     selected_count=$((selected_count + 1))
     safe_name="$(printf '%s' "$normalized_name" | sed 's/[^A-Za-z0-9_.-]/_/g')"
     app_run_dir="$run_root/${run_id}_${safe_name}"
