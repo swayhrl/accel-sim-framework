@@ -385,7 +385,11 @@ echo "kernelslist.g count: $trace_kernel_count"
 
 echo
 echo "+ ACCELSIM_TRACE_ROOT=$trace_root ACCELSIM_RUN_NAME=$run_name_a2 bash scripts/accelsim/a2_pretrace_smoke.sh"
-if ACCELSIM_TRACE_ROOT="$trace_root" ACCELSIM_RUN_NAME="$run_name_a2" ACCELSIM_A2_LAUNCH_MODE=direct bash scripts/accelsim/a2_pretrace_smoke.sh; then
+if env -u ACCELSIM_CONFIG \
+  ACCELSIM_TRACE_ROOT="$trace_root" \
+  ACCELSIM_RUN_NAME="$run_name_a2" \
+  ACCELSIM_A2_LAUNCH_MODE=direct \
+  bash scripts/accelsim/a2_pretrace_smoke.sh; then
   a2_result="PASS"
 else
   a2_result="FAILED"
@@ -398,16 +402,20 @@ a2_stats="$(extract_stats_from_report "$a2_report")"
 if [ "$status" = "PASS" ] || [ "$status" = "PARTIAL_BUILD_BINARY_EXISTS" ]; then
   echo
   echo "+ ACCELSIM_TRACE_ROOT=$trace_root ACCELSIM_RUN_NAME=$run_name_a4 bash scripts/accelsim/a4_run_smoke_suite.sh"
-  if ACCELSIM_TRACE_ROOT="$trace_root" ACCELSIM_RUN_NAME="$run_name_a4" ACCELSIM_A4_LAUNCH_MODE=direct bash scripts/accelsim/a4_run_smoke_suite.sh; then
+  if env -u ACCELSIM_CONFIG \
+    ACCELSIM_TRACE_ROOT="$trace_root" \
+    ACCELSIM_RUN_NAME="$run_name_a4" \
+    ACCELSIM_A4_LAUNCH_MODE=direct \
+    bash scripts/accelsim/a4_run_smoke_suite.sh; then
     a4_result="PASS"
   else
     a4_result="FAILED"
     status="FAILED_A4_SMOKE"
     blocker="A4 style clean smoke failed"
   fi
+  a4_report="$(latest_matching_file '.local_reports/A4_smoke_suite_*.md')"
+  a4_stats="$(extract_stats_from_report "$a4_report")"
 fi
-a4_report="$(latest_matching_file '.local_reports/A4_smoke_suite_*.md')"
-a4_stats="$(extract_stats_from_report "$a4_report")"
 
 scan_files=()
 for f in "$main_log" "$build_log" "$a2_report" "$a4_report" "$a2_stats" "$a4_stats"; do
