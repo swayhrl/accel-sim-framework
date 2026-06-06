@@ -159,3 +159,13 @@ A14 PASS requires:
 - local report exists
 - stable PAPER_REPRODUCTION_READY.md exists
 - conclusion clearly states whether paper-reproduction infrastructure is ready
+
+## Implemented Local Workflow
+
+Use:
+
+```bash
+bash scripts/accelsim/a14_reproduction_readiness_closeout.sh
+```
+
+The closeout consumes A11, A12, and A13 outputs and emits the mini result table and readiness checklist.

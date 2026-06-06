@@ -119,3 +119,24 @@ bash scripts/accelsim/a10_run_all.sh
 ```
 
 The coordinator requires a clean git tree before it starts.
+
+## A11-A15 Paper Reproduction Pipeline
+
+A11-A15 prepares the bounded paper-reproduction infrastructure without implementing paper mechanisms:
+
+```bash
+python3 scripts/accelsim/a11_stats_equivalence_narrow.py
+python3 scripts/accelsim/a12_workload_config_lockdown.py
+ACCELSIM_A13_DRY_RUN=1 python3 scripts/accelsim/a13_experiment_matrix_runner.py
+python3 scripts/accelsim/a13_experiment_matrix_runner.py
+bash scripts/accelsim/a14_reproduction_readiness_closeout.sh
+bash scripts/accelsim/a15_trace_gpu_gap_plan.sh
+```
+
+Coordinator:
+
+```bash
+bash scripts/accelsim/a11_a15_run_all.sh
+```
+
+A13 defaults to the smoke set and baseline variant only. A15 records GPU/tracer gaps and does not fail only because no GPU is visible.

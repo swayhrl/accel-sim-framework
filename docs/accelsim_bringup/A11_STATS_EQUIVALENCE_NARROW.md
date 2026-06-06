@@ -223,3 +223,13 @@ A11 PASS requires:
 - report exists
 - Mascar/hotspot and MeDiC/srad are handled, or replacements are documented
 - no broad benchmark run is launched
+
+## Implemented Local Workflow
+
+Use:
+
+```bash
+python3 scripts/accelsim/a11_stats_equivalence_narrow.py
+```
+
+The script consumes the newest A10 stats inventory, A10 trace mapping, and A10D aligned smoke CSV. It emits normalized long-form stats plus a conservative field-level equivalence matrix.

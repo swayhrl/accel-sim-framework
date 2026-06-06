@@ -105,6 +105,27 @@ bash scripts/accelsim/a10_run_all.sh
 
 A10 is read-only with respect to prior repos under `/workspace/repos`. It writes inventories, mappings, smoke stats, and review packs only under ignored local output paths.
 
+## A11-A15 Paper Reproduction Pipeline
+
+Run A11-A15 from a clean committed tree:
+
+```bash
+python3 scripts/accelsim/a11_stats_equivalence_narrow.py
+python3 scripts/accelsim/a12_workload_config_lockdown.py
+ACCELSIM_A13_DRY_RUN=1 python3 scripts/accelsim/a13_experiment_matrix_runner.py
+python3 scripts/accelsim/a13_experiment_matrix_runner.py
+bash scripts/accelsim/a14_reproduction_readiness_closeout.sh
+bash scripts/accelsim/a15_trace_gpu_gap_plan.sh
+```
+
+Or use:
+
+```bash
+bash scripts/accelsim/a11_a15_run_all.sh
+```
+
+A13 defaults to `ACCELSIM_A13_INCLUDE_SET=smoke`, `ACCELSIM_A13_VARIANTS=baseline`, and `ACCELSIM_A13_MAX_RUNS=4`. A15 does not generate traces unless a GPU is visible and `ACCELSIM_A15_ALLOW_TRACE_GENERATION=1`.
+
 ## 7. Local Outputs
 
 - Reports: `.local_reports/`

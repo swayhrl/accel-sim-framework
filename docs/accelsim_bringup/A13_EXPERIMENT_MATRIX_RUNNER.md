@@ -207,3 +207,17 @@ A13 PASS requires:
 - results CSV exists
 - summary exists
 - no full benchmark campaign is launched
+
+## Implemented Local Workflow
+
+Dry-run first:
+
+```bash
+ACCELSIM_A13_DRY_RUN=1 python3 scripts/accelsim/a13_experiment_matrix_runner.py
+```
+
+Then bounded baseline:
+
+```bash
+python3 scripts/accelsim/a13_experiment_matrix_runner.py
+```

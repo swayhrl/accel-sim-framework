@@ -181,3 +181,13 @@ A12 PASS requires:
 - rows are unique workload/config/run-level, not raw evidence-row-level
 - P0 smoke set is defined
 - future A13 can consume the lockfile directly
+
+## Implemented Local Workflow
+
+Use:
+
+```bash
+python3 scripts/accelsim/a12_workload_config_lockdown.py
+```
+
+The output lockfile is the direct input for A13.

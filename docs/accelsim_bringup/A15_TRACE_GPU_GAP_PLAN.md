@@ -233,3 +233,13 @@ A15 PASS requires:
 - final git status is clean
 
 A15 can be PASS_WITH_NO_GPU if no GPU is visible but the gap plan is complete.
+
+## Implemented Local Workflow
+
+Use:
+
+```bash
+bash scripts/accelsim/a15_trace_gpu_gap_plan.sh
+```
+
+Trace generation remains disabled unless `ACCELSIM_A15_ALLOW_TRACE_GENERATION=1` and a GPU is visible.
