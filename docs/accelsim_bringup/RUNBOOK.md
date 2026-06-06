@@ -1,0 +1,89 @@
+# Accel-Sim Bringup Runbook
+
+## 1. Environment
+
+```bash
+source scripts/accelsim/accelsim_env.sh
+bash scripts/accelsim/a0_env_check.sh
+```
+
+## 2. Build
+
+```bash
+bash scripts/accelsim/a1_build_smoke.sh
+```
+
+Verify `gpu-simulator/bin/release/accel-sim.out` exists and is executable.
+
+## 3. Pre-Trace Smoke
+
+```bash
+bash scripts/accelsim/a2_pretrace_smoke.sh
+```
+
+To force a trace root:
+
+```bash
+ACCELSIM_TRACE_ROOT=/path/to/trace/root bash scripts/accelsim/a2_pretrace_smoke.sh
+```
+
+## 4. Tracer Smoke
+
+Run only on a GPU-enabled machine:
+
+```bash
+bash scripts/accelsim/a3_trace_rodinia_smoke.sh
+```
+
+`BLOCKED_NO_GPU` means the tracer path was not tested.
+
+## 5. Benchmark Smoke Suite
+
+Dry-run:
+
+```bash
+ACCELSIM_DRY_RUN=1 bash scripts/accelsim/a4_run_smoke_suite.sh
+```
+
+Real smoke:
+
+```bash
+bash scripts/accelsim/a4_run_smoke_suite.sh
+```
+
+Useful overrides:
+
+```bash
+ACCELSIM_BENCH_LIST=rodinia_2.0-ft
+ACCELSIM_CONFIG_LIST=QV100-SASS
+ACCELSIM_TRACE_ROOT=/path/to/trace/root
+ACCELSIM_RUN_NAME=my_run
+ACCELSIM_MAX_JOBS=1
+```
+
+## 6. Stats And Review Pack
+
+```bash
+bash scripts/accelsim/a5_collect_results.sh
+```
+
+Stats CSV files are written to `.local_reports/*_stats.csv`.
+
+## 7. Local Outputs
+
+- Reports: `.local_reports/`
+- Logs: `.local_logs/`
+- Runs: `.local_runs/`
+- Pre-traces: `.local_traces/`
+- Generated hardware traces: `hw_run/`
+- Review packs: `review_packs/`
+
+## 8. Cleanup
+
+```bash
+rm -rf .local_reports .local_logs .local_runs .local_traces hw_run review_packs sim_run_*
+```
+
+## 9. Do Not Commit
+
+Do not commit logs, traces, run directories, build outputs, `hw_run`, `review_packs`, or downloaded `gpu-app-collection` contents.
