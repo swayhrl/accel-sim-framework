@@ -9,6 +9,8 @@ import sys
 import time
 from pathlib import Path
 
+sys.dont_write_bytecode = True
+
 from accelsim_stats_parser import clean_field, normalize_key, parse_selected_stats
 
 REPO_ROOT = Path(__file__).resolve().parents[2]

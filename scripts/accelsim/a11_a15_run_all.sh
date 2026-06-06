@@ -19,10 +19,10 @@ if [ -n "$(git status --short)" ]; then
   exit 1
 fi
 
-python3 scripts/accelsim/a11_stats_equivalence_narrow.py
-python3 scripts/accelsim/a12_workload_config_lockdown.py
-ACCELSIM_A13_DRY_RUN=1 python3 scripts/accelsim/a13_experiment_matrix_runner.py
-python3 scripts/accelsim/a13_experiment_matrix_runner.py
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/accelsim/a11_stats_equivalence_narrow.py
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/accelsim/a12_workload_config_lockdown.py
+PYTHONDONTWRITEBYTECODE=1 ACCELSIM_A13_DRY_RUN=1 python3 scripts/accelsim/a13_experiment_matrix_runner.py
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/accelsim/a13_experiment_matrix_runner.py
 bash scripts/accelsim/a14_reproduction_readiness_closeout.sh
 bash scripts/accelsim/a15_trace_gpu_gap_plan.sh
 
