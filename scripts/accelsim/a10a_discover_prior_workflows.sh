@@ -228,7 +228,9 @@ summary_tmp.write_text("\n".join([
 ]))
 PY
 
-artifact_rows="$(awk 'END{print NR>0 ? NR-1 : 0}' "$inventory_path" 2>/dev/null || echo 0)"
+artifact_line_count="$(wc -l < "$inventory_path" 2>/dev/null || printf '1')"
+artifact_rows=$((artifact_line_count - 1))
+[ "$artifact_rows" -lt 0 ] && artifact_rows=0
 review_packs="$(awk -F, 'NR>1 && $4=="review_pack"{c++} END{print c+0}' "$inventory_path" 2>/dev/null || echo 0)"
 paper_rows="$(sed -n 's/^paper_rows=//p' "$report_path.tmp" 2>/dev/null | head -1)"
 candidate_repos="$(sed -n 's/^candidate_repos=//p' "$report_path.tmp" 2>/dev/null | head -1)"

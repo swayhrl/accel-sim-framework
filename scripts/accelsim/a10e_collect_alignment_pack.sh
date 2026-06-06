@@ -34,11 +34,17 @@ status_a10b="$(sed -n 's/^- Status: //p' "$a10b_report" 2>/dev/null | head -1)"
 status_a10c="$(sed -n 's/^- Status: //p' "$a10c_summary" 2>/dev/null | head -1)"
 status_a10d="$(sed -n 's/^- Status: //p' "$a10d_report" 2>/dev/null | head -1)"
 
-artifact_count="$(awk 'END{print NR>0 ? NR-1 : 0}' "$a10a_inventory" 2>/dev/null || echo 0)"
-workload_count="$(awk 'END{print NR>0 ? NR-1 : 0}' "$a10b_workloads" 2>/dev/null || echo 0)"
+artifact_line_count="$(wc -l < "$a10a_inventory" 2>/dev/null || printf '1')"
+artifact_count=$((artifact_line_count - 1))
+[ "$artifact_count" -lt 0 ] && artifact_count=0
+workload_line_count="$(wc -l < "$a10b_workloads" 2>/dev/null || printf '1')"
+workload_count=$((workload_line_count - 1))
+[ "$workload_count" -lt 0 ] && workload_count=0
 high_workload_count="$(awk -F, 'NR>1 && $12=="high"{c++} END{print c+0}' "$a10b_workloads" 2>/dev/null || echo 0)"
 mapped_count="$(awk -F, 'NR>1 && $14=="TRACE_AVAILABLE"{c++} END{print c+0}' "$a10c_mapping" 2>/dev/null || echo 0)"
-run_count="$(awk 'END{print NR>0 ? NR-1 : 0}' "$a10d_stats" 2>/dev/null || echo 0)"
+run_line_count="$(wc -l < "$a10d_stats" 2>/dev/null || printf '1')"
+run_count=$((run_line_count - 1))
+[ "$run_count" -lt 0 ] && run_count=0
 
 status="PASS"
 if [ "${status_a10a:-}" = "BLOCKED_NO_PRIOR_ARTIFACTS" ] || [ "$artifact_count" -eq 0 ]; then
