@@ -432,7 +432,7 @@ from pathlib import Path
 out_path = Path(sys.argv[1])
 files = [Path(p) for p in sys.argv[2:]]
 build_re = re.compile(r"(?:accelsim-commit|gpgpu-sim_git-commit)[^\s,`'\"]*")
-modified_re = re.compile(r"_modified_([^_\s,`'\"]+)")
+modified_re = re.compile(r"_modified_([0-9]+(?:\.[0-9]+)?)")
 
 strings = []
 contexts = []
@@ -459,6 +459,11 @@ for s in strings:
         continue
     m = modified_re.search(s)
     if not m:
+        if "_modified_" in s:
+            if classification != "FAILED_DIRTY_BUILD_STRING":
+                classification = "NEEDS_REVIEW_VERSION_STRING"
+            dirty_marker_found = "NEEDS_REVIEW"
+            notes.append(f"Unparseable modified marker in {s}")
         continue
     raw = m.group(1)
     try:

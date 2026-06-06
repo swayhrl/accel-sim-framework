@@ -41,15 +41,17 @@ samples = [
     ("accelsim-commit-abc_modified_1.0", "DIRTY"),
     ("gpgpu-sim_git-commit-abc_modified_2", "DIRTY"),
     ("accelsim-commit-abc_dirty", "DIRTY"),
+    ("gpgpu-sim_git-commit-abc_modified_0.0)", "CLEAN"),
+    ("accelsim-commit-abc_modified_nonzero", "DIRTY"),
 ]
-modified_re = re.compile(r"_modified_([^_\s,`'\"]+)")
+modified_re = re.compile(r"_modified_([0-9]+(?:\.[0-9]+)?)")
 
 def classify(s):
     if "dirty" in s.lower():
         return "DIRTY"
     m = modified_re.search(s)
     if not m:
-        return "CLEAN"
+        return "DIRTY" if "_modified_" in s else "CLEAN"
     try:
         return "CLEAN" if float(m.group(1)) == 0 else "DIRTY"
     except ValueError:
