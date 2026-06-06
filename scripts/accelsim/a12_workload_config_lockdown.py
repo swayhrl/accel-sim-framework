@@ -142,6 +142,21 @@ for entry in groups.values():
 rows.sort(key=lambda r: ({"P0": 0, "P1": 1, "P2": 2, "P3": 3}[r["priority"]], r["paper"], r["normalized_workload"], r["kernelslist_path"]))
 for idx, row in enumerate(rows, 1):
     row["lock_id"] = f"L{idx:05d}"
+    row["include_smoke"] = "no"
+    row["include_pilot"] = "no"
+
+seen_smoke: set[tuple[str, str]] = set()
+seen_pilot: set[tuple[str, str]] = set()
+pilot_count = 0
+for row in rows:
+    key = (row["paper"], row["normalized_workload"])
+    if row["priority"] == "P0" and key not in seen_smoke:
+        row["include_smoke"] = "yes"
+        seen_smoke.add(key)
+    if row["runnable"] == "yes" and row["priority"] in {"P0", "P1"} and key not in seen_pilot and pilot_count < 5:
+        row["include_pilot"] = "yes"
+        seen_pilot.add(key)
+        pilot_count += 1
 
 with LOCK.open("w", newline="") as f:
     fields = ["lock_id","paper","workload","normalized_workload","suite","prior_config_hint","prior_args_hint","prior_run_mode_hint","evidence_strength","evidence_count","evidence_sources","accel_trace_id","accel_app_name","kernelslist_path","trace_root","accel_config_name","gpgpusim_config_path","accelsim_trace_config_path","mapping_status","match_type","runnable","stats_readiness","config_equivalence","include_smoke","include_pilot","include_paper_candidate","priority","notes"]

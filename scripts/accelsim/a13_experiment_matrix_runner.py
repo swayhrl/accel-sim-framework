@@ -55,6 +55,23 @@ def abs_path(path: str) -> Path:
     return p if p.is_absolute() else REPO_ROOT / p
 
 
+def accelsim_env() -> dict[str, str]:
+    env = os.environ.copy()
+    try:
+        raw = subprocess.check_output(
+            ["bash", "-lc", f"cd {REPO_ROOT} && source scripts/accelsim/accelsim_env.sh >/dev/null && env -0"],
+            stderr=subprocess.DEVNULL,
+        )
+        for item in raw.split(b"\0"):
+            if not item or b"=" not in item:
+                continue
+            key, value = item.split(b"=", 1)
+            env[key.decode()] = value.decode(errors="replace")
+    except Exception:
+        pass
+    return env
+
+
 def parse_result(row: dict[str, str], status: str, exit_code: int | str, timed_out: str, log_path: Path, notes: str) -> dict[str, str]:
     return {
         "run_id": row["run_id"],
@@ -123,6 +140,7 @@ with MATRIX.open("w", newline="") as f:
 
 results: list[dict[str, str]] = []
 sim_bin = REPO_ROOT / "gpu-simulator/bin/release/accel-sim.out"
+run_env = accelsim_env()
 status = "PASS"
 blocker = "none"
 if not matrix_rows:
@@ -161,7 +179,7 @@ elif status == "PASS":
         combined.write_text(abs_path(row["gpgpusim_config_path"]).read_text(errors="replace").replace("\r", "") + "\n#SASS\n#SASS-Driven Accel-Sim\n\n" + abs_path(row["accelsim_trace_config_path"]).read_text(errors="replace").replace("\r", ""))
         cmd = ["timeout", str(TIMEOUT), str(sim_bin), "-config", "./gpgpusim.config", "-trace", "./traces/kernelslist.g"]
         with log_path.open("w") as logf:
-            proc = subprocess.run(cmd, cwd=run_dir, stdout=logf, stderr=subprocess.STDOUT)
+            proc = subprocess.run(cmd, cwd=run_dir, stdout=logf, stderr=subprocess.STDOUT, env=run_env)
         rc = proc.returncode
         timed_out = "yes" if rc == 124 else "no"
         text = log_path.read_text(errors="replace") if log_path.exists() else ""
