@@ -84,6 +84,27 @@ bash scripts/accelsim/a9_mascar_medic_alignment.sh
 
 For rebuild or baseline-quality runs, commit tracked changes first and confirm `git status --short` is empty before starting.
 
+## A10 Real Workload Alignment
+
+Run A10 only from a clean committed tree:
+
+```bash
+bash scripts/accelsim/a10a_discover_prior_workflows.sh
+python3 scripts/accelsim/a10b_extract_prior_inventory.py
+python3 scripts/accelsim/a10c_build_trace_mapping.py
+ACCELSIM_A10D_DRY_RUN=1 bash scripts/accelsim/a10d_run_aligned_smoke.sh
+bash scripts/accelsim/a10d_run_aligned_smoke.sh
+bash scripts/accelsim/a10e_collect_alignment_pack.sh
+```
+
+Or use:
+
+```bash
+bash scripts/accelsim/a10_run_all.sh
+```
+
+A10 is read-only with respect to prior repos under `/workspace/repos`. It writes inventories, mappings, smoke stats, and review packs only under ignored local output paths.
+
 ## 7. Local Outputs
 
 - Reports: `.local_reports/`

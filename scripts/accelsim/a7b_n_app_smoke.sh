@@ -138,6 +138,7 @@ if [ "$status" = "PASS" ]; then
   echo "app_index,app_name,status,exit_code,timeout_sec,kernelslist,log_path,gpgpu_simulation_time,gpgpu_simulation_rate_inst_sec,gpgpu_simulation_rate_cycle_sec,gpgpu_n_tot_w_icount,exit_detected" > "$stats_path"
   while IFS=, read -r app_index app_name kernelslist; do
     [ "$app_index" = "app_index" ] && continue
+    kernelslist="$(printf '%s' "$kernelslist" | tr -d '\r\n')"
     selected_count="$((selected_count + 1))"
     safe_app="$(printf '%s' "$app_name" | sed 's/[^A-Za-z0-9_.-]/_/g')"
     app_run_dir="$run_root/${app_index}_${safe_app}"

@@ -16,3 +16,4 @@
 - NVBit version, CUDA toolkit, and driver compatibility may block A3 on GPU machines.
 - Full Rodinia suite simulation can be much longer than the direct smoke used here.
 - Trace-root layout must match Accel-Sim's expected `<bench>/<args>/traces/kernelslist.g` structure.
+- A10 workload equivalence is name/evidence based. It does not prove Mascar or MeDiC paper-level configuration or metric equivalence.

@@ -98,3 +98,24 @@ bash scripts/accelsim/a9_mascar_medic_alignment.sh
 ```
 
 Local logs, reports, runs, traces, and review packs stay under ignored local paths.
+
+## A10 Real Workload Alignment
+
+A10 reads prior Mascar/MeDiC GPGPU-Sim artifacts under `/workspace/repos`, extracts real workload/stat evidence, maps the intersection to available Accel-Sim traces, and runs a bounded aligned smoke.
+
+```bash
+bash scripts/accelsim/a10a_discover_prior_workflows.sh
+python3 scripts/accelsim/a10b_extract_prior_inventory.py
+python3 scripts/accelsim/a10c_build_trace_mapping.py
+ACCELSIM_A10D_DRY_RUN=1 bash scripts/accelsim/a10d_run_aligned_smoke.sh
+bash scripts/accelsim/a10d_run_aligned_smoke.sh
+bash scripts/accelsim/a10e_collect_alignment_pack.sh
+```
+
+Coordinator:
+
+```bash
+bash scripts/accelsim/a10_run_all.sh
+```
+
+The coordinator requires a clean git tree before it starts.
