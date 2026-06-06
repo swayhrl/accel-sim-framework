@@ -40,8 +40,26 @@ artifact_count=$((artifact_line_count - 1))
 workload_line_count="$(wc -l < "$a10b_workloads" 2>/dev/null || printf '1')"
 workload_count=$((workload_line_count - 1))
 [ "$workload_count" -lt 0 ] && workload_count=0
-high_workload_count="$(awk -F, 'NR>1 && $12=="high"{c++} END{print c+0}' "$a10b_workloads" 2>/dev/null || echo 0)"
-mapped_count="$(awk -F, 'NR>1 && $14=="TRACE_AVAILABLE"{c++} END{print c+0}' "$a10c_mapping" 2>/dev/null || echo 0)"
+high_workload_count="$(python3 - "$a10b_workloads" <<'PY'
+import csv
+import sys
+try:
+    with open(sys.argv[1], newline="") as f:
+        print(sum(1 for r in csv.DictReader(f) if r.get("evidence_strength") == "high"))
+except Exception:
+    print(0)
+PY
+)"
+mapped_count="$(python3 - "$a10c_mapping" <<'PY'
+import csv
+import sys
+try:
+    with open(sys.argv[1], newline="") as f:
+        print(sum(1 for r in csv.DictReader(f) if r.get("mapping_status") == "TRACE_AVAILABLE"))
+except Exception:
+    print(0)
+PY
+)"
 run_line_count="$(wc -l < "$a10d_stats" 2>/dev/null || printf '1')"
 run_count=$((run_line_count - 1))
 [ "$run_count" -lt 0 ] && run_count=0
