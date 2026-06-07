@@ -126,6 +126,20 @@ bash scripts/accelsim/a11_a15_run_all.sh
 
 A13 defaults to `ACCELSIM_A13_INCLUDE_SET=smoke`, `ACCELSIM_A13_VARIANTS=baseline`, and `ACCELSIM_A13_MAX_RUNS=4`. A15 does not generate traces unless a GPU is visible and `ACCELSIM_A15_ALLOW_TRACE_GENERATION=1`.
 
+## A16 LATPC Paper Variant Slot
+
+A16 validates LATPC paper-specific baseline-vs-no-op variant infrastructure:
+
+```bash
+python3 scripts/accelsim/a16_latpc_paper_profile.py
+python3 scripts/accelsim/a16_latpc_variant_slot.py
+python3 scripts/accelsim/run_a16_latpc_variant_matrix.py
+python3 scripts/accelsim/a16_latpc_validate_noop.py
+python3 scripts/accelsim/a16_latpc_closeout.py
+```
+
+A16 is no-op infrastructure only. It does not implement LATPC, does not claim speedup reproduction, and does not run the full 24-workload campaign.
+
 ## 7. Local Outputs
 
 - Reports: `.local_reports/`

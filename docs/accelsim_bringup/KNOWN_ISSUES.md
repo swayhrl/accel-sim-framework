@@ -19,3 +19,4 @@
 - A10 workload equivalence is name/evidence based. It does not prove Mascar or MeDiC paper-level configuration or metric equivalence.
 - A11-A15 makes the reproduction pipeline ready for baseline and variant plumbing, but it still does not implement Mascar or MeDiC mechanisms.
 - A11 per-kernel stat parsing is best effort unless logs expose robust kernel boundaries.
+- A16 LATPC no-op slot validates paper-specific infrastructure only. LATPC mechanisms, RTX 2060-like VM model fidelity, and paper speedups remain future work.

@@ -140,3 +140,17 @@ bash scripts/accelsim/a11_a15_run_all.sh
 ```
 
 A13 defaults to the smoke set and baseline variant only. A15 records GPU/tracer gaps and does not fail only because no GPU is visible.
+
+## A16 LATPC No-op Variant Slot
+
+A16 validates a paper-specific baseline-vs-variant path for LATPC without implementing LATPC:
+
+```bash
+python3 scripts/accelsim/a16_latpc_paper_profile.py
+python3 scripts/accelsim/a16_latpc_variant_slot.py
+python3 scripts/accelsim/run_a16_latpc_variant_matrix.py
+python3 scripts/accelsim/a16_latpc_validate_noop.py
+python3 scripts/accelsim/a16_latpc_closeout.py
+```
+
+`latpc_noop` must use the same simulator binary, trace, config, and simulator arguments as `baseline`.
