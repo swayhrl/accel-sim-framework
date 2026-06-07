@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 sys.dont_write_bytecode = True
-from a24_latpc_lib import LOG_DIR, REPORT_DIR, REPO_ROOT, behavior_fields, compare_behavior, ensure_dirs, parse_stats, rel, run_logged, run_nw_variant, stage_report, ts
+from a24_latpc_lib import LOG_DIR, REPORT_DIR, REPO_ROOT, behavior_fields, compare_behavior, ensure_dirs, parse_stats, rel, run_logged, run_nw_variant, source_env, stage_report, ts
 
 
 def main() -> int:
@@ -21,7 +21,7 @@ def main() -> int:
     derived_csv = REPORT_DIR / f"A24B_latpc_detector_ready_derived_stats_{stamp}.csv"
     sample_csv = REPORT_DIR / f"A24B_latpc_shadow_vm_samples_{stamp}.csv"
     build_log = LOG_DIR / f"A24B_{stamp}_build.log"
-    build = run_logged(["make", "-C", "./gpu-simulator/"], build_log, cwd=REPO_ROOT)
+    build = run_logged(["make", "-C", "./gpu-simulator/"], build_log, cwd=REPO_ROOT, env=source_env({"ACCELSIM_ROUND": "A24B"}))
     status = "PASS" if build["return_code"] == "0" else "FAIL_BUILD"
     blocker = "none" if status == "PASS" else "build failed"
     stage_report(impl_report, "A24B Detector-Ready Stats Implementation", status, start_iso, start, [build["command"]], [rel(impl_report), rel(build_log)], "Built simulator with detector-ready shadow VM source; raw stats expected in shadow runs.", blocker, ["No detector/LATC/LATP/timing implemented.", "PWC remains deferred."])

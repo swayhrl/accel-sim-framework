@@ -7,7 +7,7 @@ import sys
 import time
 
 sys.dont_write_bytecode = True
-from a24_latpc_lib import LOG_DIR, NESTED_ROOT, REPORT_DIR, REPO_ROOT, behavior_fields, compare_behavior, ensure_dirs, git_head, git_status, rel, run_logged, run_nw_variant, stage_report, ts
+from a24_latpc_lib import LOG_DIR, NESTED_ROOT, REPORT_DIR, REPO_ROOT, behavior_fields, compare_behavior, ensure_dirs, git_head, git_status, rel, run_logged, run_nw_variant, source_env, stage_report, ts
 
 
 def main() -> int:
@@ -62,7 +62,7 @@ def main() -> int:
 """
     stage_report(audit, "A24A Hook Exactness Audit", "PASS", start_iso, start, ["rg hook source lines"], [rel(audit)], "sm_id and cycle remain approximate; address hook is effective-address level.", "none", ["No invasive refactor attempted for sm_id/cycle.", "No LATPC mechanism implemented."], audit_extra)
     build_log = LOG_DIR / f"A24A_{stamp}_build.log"
-    build = run_logged(["make", "-C", "./gpu-simulator/"], build_log, cwd=REPO_ROOT)
+    build = run_logged(["make", "-C", "./gpu-simulator/"], build_log, cwd=REPO_ROOT, env=source_env({"ACCELSIM_ROUND": "A24A"}))
     build_status = "PASS" if build["return_code"] == "0" else "FAIL_BUILD"
     stage_report(build_probe, "A24A Build Probe", build_status, start_iso, start, [build["command"]], [rel(build_probe), rel(build_log)], f"build return_code={build['return_code']}", "none" if build_status == "PASS" else "build failed", ["A24A build probe only."])
     behavior_status = "PASS"
