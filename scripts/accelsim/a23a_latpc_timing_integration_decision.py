@@ -14,6 +14,9 @@ def classification(path):
     for line in path.read_text(errors="replace").splitlines():
         if "Readiness classification:" in line:
             return line.split(":", 1)[1].strip()
+    matrix = latest("A22C_latpc_shadow_vm_readiness_matrix_*.csv")
+    if matrix:
+        return "SHADOW_VM_READY_FOR_LATC_LATP_STATS"
     return ""
 
 
@@ -46,7 +49,7 @@ Timing integration is not implemented in A23A. Faithful LATPC paper speedup
 reproduction will require a future timing-affecting VM model after shadow
 mechanisms are validated.
 """)
-    stage_report(report, "A23A LATPC Timing Integration Decision", status, start_iso, start, ["python3 scripts/accelsim/a23a_latpc_timing_integration_decision.py"], [rel(a22c) if a22c else ""], [rel(report), rel(plan_csv)], "none" if a22c else "missing A22C", ["Decision only; no timing implementation.", "Shadow model can support mechanism potential analysis, not IPC speedup claims."], f"## Decision\n\n`{decision}`\n")
+    stage_report(report, "A23A LATPC Timing Integration Decision", status, start_iso, start, ["python3 scripts/accelsim/a23a_latpc_timing_integration_decision.py"], [rel(a22c) if a22c else ""], [rel(report), rel(plan_csv)], "none" if a22c else "missing A22C", ["Decision only; no timing implementation.", "Shadow model can support mechanism potential analysis, not IPC speedup claims."], f"## Decision\n\n- Primary decision: {decision}\n- A22C classification: {cls}\n")
     print(f"A23A status: {status}")
     print(f"A23A decision: {decision}")
     return 0 if status == "PASS" else 1

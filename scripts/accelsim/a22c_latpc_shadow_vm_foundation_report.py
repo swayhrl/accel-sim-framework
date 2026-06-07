@@ -76,7 +76,21 @@ stride, and same-L4 locality streams.
 It must not inject real prefetches, compress real MSHRs, batch real PTWs, or
 claim IPC speedup reproduction.
 """)
-    stage_report(report, "A22C LATPC Shadow VM Foundation Report", status, start_iso, start, ["python3 scripts/accelsim/a22c_latpc_shadow_vm_foundation_report.py"], [rel(a22a) if a22a else "", rel(a22b) if a22b else ""], [rel(report), rel(matrix_csv)], "none" if not status.startswith("FAIL") else "foundation not ready", ["Classification is for shadow substrate only.", "PWC remains deferred."])
+    extra = f"""## Readiness Classification
+
+Readiness classification: {classification}
+
+## What A24 Can Safely Do
+
+A24 can implement Regularity Detector analysis over shadow VPN/page-divergence,
+stride, and same-L4 locality streams.
+
+## What A24 Must Not Do
+
+It must not inject real prefetches, compress real MSHRs, batch real PTWs, or
+claim IPC speedup reproduction.
+"""
+    stage_report(report, "A22C LATPC Shadow VM Foundation Report", status, start_iso, start, ["python3 scripts/accelsim/a22c_latpc_shadow_vm_foundation_report.py"], [rel(a22a) if a22a else "", rel(a22b) if a22b else ""], [rel(report), rel(matrix_csv)], "none" if not status.startswith("FAIL") else "foundation not ready", ["Classification is for shadow substrate only.", "PWC remains deferred."], extra)
     print(f"A22C status: {status}")
     print(f"A22C readiness classification: {classification}")
     return 0 if not status.startswith("FAIL") else 1

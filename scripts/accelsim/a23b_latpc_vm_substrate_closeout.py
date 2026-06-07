@@ -134,7 +134,33 @@ def main() -> int:
         for p in pack_inputs:
             if p.exists() and p.is_file():
                 tar.add(p, arcname=rel(p))
-    stage_report(summary, "A23B LATPC VM Substrate Closeout", final_status, start_iso, start, ["python3 scripts/accelsim/a23b_latpc_vm_substrate_closeout.py", f"tar czf {rel(pack)} ..."], [rel(a22a) if a22a else "", rel(a22b) if a22b else "", rel(a22c) if a22c else "", rel(a23a) if a23a else ""], [rel(summary), rel(checklist_csv), rel(status_txt), rel(diffstat_txt), rel(patch_diff), rel(pack)], "none", ["A23B captures pre-commit git state; final commits are done explicitly after the stage.", "Review pack is not committed."], f"## Readiness\n\n- A22C: `{classification}`\n- A23A: `{decision}`\n")
+    extra = f"""## Final Summary
+
+- Selected workload: `{clean(selected.get('selected_workload')) or 'nw'}`
+- Implementation mode: `SHADOW_VM_IMPLEMENTATION_ALLOWED`
+- Behavior validation: `{status_line(a22a)}`
+- A22C readiness classification: `{classification}`
+- A23A timing decision: `{decision}`
+
+## Modified Source Files
+
+{chr(10).join('- `' + p + '`' for p in modified_source)}
+
+## Key Shadow VM Stats
+
+{key_lines}
+
+## Required Limitation Statements
+
+- A20-A23 did not implement Regularity Detector as a functional prefetch generator.
+- A20-A23 did not implement LATC compressed real TLB MSHR behavior.
+- A20-A23 did not implement LATP real PTW batching or prefetching.
+- A20-A23 did not reproduce LATPC speedup.
+- The substrate is shadow stats unless explicitly documented otherwise.
+- Any timing integration must be a future round.
+- Shadow VM stats can support mechanism analysis but not faithful IPC speedup claims.
+"""
+    stage_report(summary, "A23B LATPC VM Substrate Closeout", final_status, start_iso, start, ["python3 scripts/accelsim/a23b_latpc_vm_substrate_closeout.py", f"tar czf {rel(pack)} ..."], [rel(a22a) if a22a else "", rel(a22b) if a22b else "", rel(a22c) if a22c else "", rel(a23a) if a23a else ""], [rel(summary), rel(checklist_csv), rel(status_txt), rel(diffstat_txt), rel(patch_diff), rel(pack)], "none", ["A23B captures pre-commit git state; final commits are done explicitly after the stage.", "Review pack is not committed."], extra)
     print(f"A23B status: {final_status}")
     print(f"A23B review pack: {rel(pack)}")
     return 0
