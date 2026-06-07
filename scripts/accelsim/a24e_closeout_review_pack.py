@@ -54,33 +54,33 @@ def main() -> int:
         "gpu-simulator/gpgpu-sim/src/abstract_hardware_model.cc",
         "gpu-simulator/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc",
     ]
-    summary.write_text(f"""# A24 LATPC Shadow VM Hardening Final Summary
+    final_detail = f"""## Final Detail
 
-## Final Status
+### Final Status
 
 {status}
 
-## Top-Level Commit
+### Top-Level Commit
 
 {git_head(REPO_ROOT)}
 
-## Nested Simulator Commit
+### Nested Simulator Commit
 
 {git_head(NESTED_ROOT)}
 
-## Source Files Changed
+### Source Files Changed
 
 {chr(10).join('- ' + p for p in source_changed)}
 
-## Scripts Changed
+### Scripts Changed
 
 {chr(10).join('- ' + rel(p) for p in scripts_changed)}
 
-## Review Pack Path
+### Review Pack Path
 
 `{rel(pack)}`
 
-## Hook Exactness Summary
+### Hook Exactness Summary
 
 - address: WARP_EFFECTIVE_ADDRESS_APPROX (`latpc_hook_address_mode=1`)
 - sm_id: approximate zero (`latpc_hook_sm_id_mode=0`)
@@ -89,31 +89,31 @@ def main() -> int:
 - approximate fields: sm_id, cycle, virtual translation semantics
 - deferred fields: full VM translation path, exact SM id, exact simulator cycle
 
-## Detector-Ready Stats Summary
+### Detector-Ready Stats Summary
 
 Derived stats CSV: `{rel(derived_csv) if derived_csv else 'missing'}`
 
-## Sample Dump Summary
+### Sample Dump Summary
 
 Sample manifest: `{rel(sample) if sample else 'missing'}`
 
-## Trace Availability Summary
+### Trace Availability Summary
 
 Trace availability CSV: `{rel(trace_csv) if trace_csv else 'missing'}`
 
-## Behavior Equivalence Summary
+### Behavior Equivalence Summary
 
 {behavior_summary}
 
-## Sensitivity Sanity Summary
+### Sensitivity Sanity Summary
 
 `{rel(latest('A24D_sensitivity_sanity_*.csv')) if latest('A24D_sensitivity_sanity_*.csv') else 'missing'}`
 
-## A25 Readiness
+### A25 Readiness
 
 Proceed to A25 Regularity Detector over shadow VM only after reviewing this pack.
 
-## Things Not Implemented
+### Things Not Implemented
 
 - A24 does not implement LATPC Regularity Detector.
 - A24 does not implement LATC.
@@ -121,7 +121,8 @@ Proceed to A25 Regularity Detector over shadow VM only after reviewing this pack
 - A24 does not integrate timing behavior.
 - A24 does not reproduce IPC speedup.
 - A24 output is detector-ready shadow analysis substrate, not faithful LATPC reproduction.
-""")
+"""
+    summary.write_text("# A24 LATPC Shadow VM Hardening Final Summary\n\n" + final_detail)
     pack_inputs = [summary, source_copy, nested_patch, top_patch, nested_log]
     for pattern in ["A24A_*", "A24B_*", "A24C_*", "A24D_*", "A24E_*"]:
         pack_inputs.extend(sorted(REPORT_DIR.glob(pattern)))
@@ -171,7 +172,7 @@ hook_audit={rel(audit) if audit else 'missing'}
     verify_status = "PASS" if all(checks.values()) and status == "PASS" else "FAIL_PACK_INCOMPLETE"
     verification.write_text("# A24E Review Pack Verification\n\n" + "\n".join(f"- {k}: {'PASS' if v else 'FAIL'}" for k, v in checks.items()) + f"\n\n- Status: {verify_status}\n- Review pack: `{rel(pack)}`\n")
     write_csv(checklist, [{"item": k, "status": "PASS" if v else "FAIL", "evidence": rel(pack)} for k, v in checks.items()], ["item", "status", "evidence"])
-    stage_report(summary, "A24E LATPC Closeout Review Pack And Handoff", verify_status, start_iso, start, ["python3 scripts/accelsim/a24e_closeout_review_pack.py", f"tar -tzf {rel(pack)}"], [rel(summary), rel(pack), rel(contents), rel(verification), rel(checklist)], f"review_pack={rel(pack)} status={verify_status}", "none" if verify_status == "PASS" else "review pack missing required content", ["Review pack is not committed.", "A24 remains shadow substrate hardening only."])
+    stage_report(summary, "A24E LATPC Closeout Review Pack And Handoff", verify_status, start_iso, start, ["python3 scripts/accelsim/a24e_closeout_review_pack.py", f"tar -tzf {rel(pack)}"], [rel(summary), rel(pack), rel(contents), rel(verification), rel(checklist)], f"review_pack={rel(pack)} status={verify_status}", "none" if verify_status == "PASS" else "review pack missing required content", ["Review pack is not committed.", "A24 remains shadow substrate hardening only."], extra=final_detail)
     print(f"A24E status: {verify_status}")
     print(f"A24E review pack: {rel(pack)}")
     return 0 if verify_status == "PASS" else 1
