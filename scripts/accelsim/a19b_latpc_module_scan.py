@@ -22,7 +22,7 @@ PATTERNS = [
     ("ptw_page_walk", re.compile(r"PTW|ptw|page_walk|page walk|pagewalker|page table walker")),
     ("pwc", re.compile(r"\bPWC\b|pwc|page walk cache")),
     ("queue", re.compile(r"queue|enqueue|dequeue|fifo_pipeline")),
-    ("stats_print", re.compile(r"print_stats|gpu_print_stat|shader_core_stats::print|fprintf\\(|printf\\(")),
+    ("stats_print", re.compile(r"print_stats|gpu_print_stat|shader_core_stats::print|fprintf\(|printf\(")),
     ("mem_fetch", re.compile(r"mem_fetch|new_addr_type|addrdec|partition_address")),
 ]
 
@@ -53,7 +53,7 @@ def safe_hook(module: str, conf: str, line: str) -> str:
 
 
 def symbol_name(line: str) -> str:
-    match = re.search(r"([A-Za-z_][A-Za-z0-9_:~<>]*)\s*\\(", line)
+    match = re.search(r"([A-Za-z_][A-Za-z0-9_:~<>]*)\s*\(", line)
     if match:
         return match.group(1)
     for token in ["m_num_tlb_hits", "m_num_tlb_accesses", "gpgpu_n_intrawarp_mshr_merge", "memreqaddr", "MSHR_RC_FAIL"]:
