@@ -59,3 +59,17 @@ record.  A failing assertion invalidates the run.
 This is an experiment model, so cycle counts are not expected to equal the
 baseline.  Functional atomic effects are still applied by
 `memory_sub_partition::pop()` and are intentionally not reimplemented here.
+
+## Executed validation record (2026-08-10)
+
+All runs used the pinned QV100-SASS generated configuration and external
+Rodinia 2.0-ft pretraces.  They were executed through
+`run_decoupled_l2_smoke.sh` after rebuilding the external core worktree.
+
+| Case | Backend/config | Result |
+|---|---|---|
+| Native preservation | LUD, `baseline` | clean exit; final total `136216` cycles, matching the pinned baseline |
+| Empty pipeline | LUD, `fixed` | clean exit; nonzero accesses, zero OTF and WBQ writebacks |
+| Core decoupling | LUD, `decoupled` | clean exit; nonzero AAD merge, OTF, writes, and bank stalls |
+| Dirty eviction | LUD, `decoupled` with one L2 line | clean exit; nonzero `wb`, final `wbq=0` |
+| Development workload | Hotspot, `decoupled` | clean exit; nonzero AAD merge, OTF, and bank usage |
