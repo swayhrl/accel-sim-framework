@@ -105,8 +105,11 @@ scripts/run_decoupled_l2_pretrace_cases.sh \
 
 Use `scripts/fetch_decoupled_l2_pretraces.sh --suite cudasdk` followed by
 `run_decoupled_l2_pretrace_cases.sh --suite cudasdk ...` for the CUDA SDK
-matrix.  It contains `histogram` and `mergeSort` smoke cases, a `transpose`
-development case, and a full `scan` extended case.
+matrix.  It includes every public CUDA SDK trace/parameter combination in the
+archive: two smoke cases, four development cases, and seven extended cases.
+The Ubench matrix likewise includes every public L2/DRAM/atomic trace; L1,
+shared-memory, and compute-only Ubench traces are intentionally excluded
+because they cannot exercise an L2 backend.
 
 The pretrace runner automatically appends the QV100 `trace.config` only when
 it uses its default base configuration.  With `--config FILE`, pass
