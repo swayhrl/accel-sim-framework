@@ -121,6 +121,16 @@ both final cycle counts.  It deliberately does not put the two timings in a
 common geometric mean: microbenchmarks are mechanism tests, not application
 evaluation results.
 
+`experiments/decoupled_l2_rodinia20_cases.csv` registers the ten locally
+cached Rodinia 2.0-ft application traces.  Run the complete paired matrix with:
+
+```bash
+scripts/run_decoupled_l2_pretrace_cases.sh \
+  --manifest experiments/decoupled_l2_rodinia20_cases.csv \
+  --suite rodinia20 --tier all \
+  --trace-root /path/to/rodinia_2.0-ft/11.0
+```
+
 The default `smoke` tier contains the short atomic-latency trace.  Serial
 L2/DRAM latency tests require explicit `--tier dev`; bandwidth and
 high-contention traces require `--tier extended`.  Their individual trace

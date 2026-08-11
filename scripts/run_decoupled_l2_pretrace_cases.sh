@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_decoupled_l2_pretrace_cases.sh --trace-root DIR
-       [--suite ubench|cudasdk|all] [--tier smoke|dev|extended|all]
+       [--manifest FILE] [--suite NAME|all] [--tier smoke|dev|extended|all]
        [--case NAME|all]
        [--config FILE] [--trace-config FILE] [--run-root DIR] [--reuse]
 
@@ -22,6 +22,7 @@ trace_root=""
 suite="all"
 tier="smoke"
 case_filter="all"
+manifest=""
 config=""
 trace_config=""
 config_given=0
@@ -31,6 +32,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace-root) trace_root="$2"; shift 2 ;;
     --suite) suite="$2"; shift 2 ;;
+    --manifest) manifest="$2"; shift 2 ;;
     --tier) tier="$2"; shift 2 ;;
     --case) case_filter="$2"; shift 2 ;;
     --config) config="$2"; config_given=1; shift 2 ;;
@@ -43,9 +45,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -d "$trace_root" ]] || { echo "error: --trace-root must name a directory" >&2; exit 2; }
-case "$suite" in ubench|cudasdk|all) ;; *)
-  echo "error: unsupported suite $suite" >&2; exit 2 ;;
-esac
+[[ -z "$manifest" || -f "$manifest" ]] || {
+  echo "error: --manifest must name an existing file" >&2; exit 2;
+}
 case "$tier" in smoke|dev|extended|all) ;; *)
   echo "error: unsupported tier $tier" >&2; exit 2 ;;
 esac
@@ -71,7 +73,9 @@ fi
 mkdir -p "$run_root"
 run_root="$(cd "$run_root" && pwd)"
 
-manifest="$repo_root/experiments/decoupled_l2_v100_pretrace_cases.csv"
+if [[ -z "$manifest" ]]; then
+  manifest="$repo_root/experiments/decoupled_l2_v100_pretrace_cases.csv"
+fi
 summary="$run_root/summary.csv"
 printf 'suite,tier,case,backend,cycles,run_dir\n' > "$summary"
 
