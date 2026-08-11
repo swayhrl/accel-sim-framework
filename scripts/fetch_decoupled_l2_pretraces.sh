@@ -3,7 +3,8 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: scripts/fetch_decoupled_l2_pretraces.sh [--suite ubench|cudasdk|all]
+Usage: scripts/fetch_decoupled_l2_pretraces.sh
+       [--suite ubench|cudasdk|rodinia31|all] [--archive-only]
        [--dest DIR] [--min-free-gib N]
 
 Downloads public Tesla-V100 SASS trace archives, verifies their gzip/tar
@@ -20,9 +21,11 @@ EOF
 suite="all"
 dest=""
 min_free_gib=100
+archive_only=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --suite) suite="$2"; shift 2 ;;
+    --archive-only) archive_only=1; shift ;;
     --dest) dest="$2"; shift 2 ;;
     --min-free-gib) min_free_gib="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
@@ -32,7 +35,7 @@ done
 [[ "$min_free_gib" =~ ^[0-9]+$ ]] || {
   echo "error: --min-free-gib must be a nonnegative integer" >&2; exit 2;
 }
-case "$suite" in ubench|cudasdk|all) ;; *)
+case "$suite" in ubench|cudasdk|rodinia31|all) ;; *)
   echo "error: unsupported suite $suite" >&2; exit 2 ;;
 esac
 
@@ -94,6 +97,9 @@ fetch_one() {
     curl --fail --location --continue-at - --output "$archive" "$url"
   fi
   tar -tzf "$archive" >/dev/null
+  if [[ "$archive_only" -eq 1 ]]; then
+    return
+  fi
   # GNU tar's verbose layout is mode owner/group size date path.  Summing the
   # size column is deliberately conservative when --skip-old-files will omit
   # already-extracted members.
@@ -109,4 +115,8 @@ if [[ "$suite" == all || "$suite" == ubench ]]; then
 fi
 if [[ "$suite" == all || "$suite" == cudasdk ]]; then
   fetch_one cudasdk
+fi
+if [[ "$suite" == rodinia31 ]]; then
+  # The official public archive has retained this historical misspelling.
+  fetch_one rodina-3.1
 fi

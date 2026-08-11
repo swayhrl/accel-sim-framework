@@ -135,6 +135,13 @@ an archive's uncompressed members before extraction.  It refuses an extraction
 whose worst-case storage would cross that floor; pass `--min-free-gib N` only
 when a different explicit reserve is appropriate.
 
+The official V100 Rodinia 3.1 archive is large (about 14 GiB compressed and
+about 302 GiB when fully expanded), so it is intentionally not part of
+`--suite all`.  Fetch only its checked archive with
+`--suite rodinia31 --archive-only`, then selectively extract named workloads
+after checking their member sizes; never expand the entire archive as part of
+this experiment tree.
+
 ## Executed public-pretrace record (2026-08-12)
 
 All cases used the QV100 SASS base configuration plus its matching
