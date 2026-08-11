@@ -162,6 +162,12 @@ scripts/fetch_decoupled_l2_pretraces.sh --suite polybench --archive-only --min-f
 scripts/fetch_decoupled_l2_pretraces.sh --suite cutlass --archive-only --min-free-gib 80
 ```
 
+Or fetch the three archives sequentially with one explicit 80 GiB reserve:
+
+```bash
+scripts/fetch_decoupled_l2_large_archives.sh --min-free-gib 80
+```
+
 Their archive sizes are approximately 9.3, 17.9, and 82.5 GiB respectively;
 their fully extracted sizes are far larger.  The fetcher checks the remote FTP
 `Content-Length` before every transfer, so the selected reserve applies to the
