@@ -1,0 +1,17 @@
+suite,tier,case,trace_rel,expected_decoupled_regex
+# Official V100 ubench archive.  The atomic latency trace is short enough for
+# per-change paired runs.  Serial latency and bandwidth traces remain explicit
+# dev/extended cases because they take materially longer in timing simulation.
+ubench,dev,l2_lat,ubench/9.1/l2_lat/NO_ARGS/traces,access=[1-9].*hit=[1-9]
+ubench,dev,mem_lat,ubench/9.1/mem_lat/NO_ARGS/traces,access=[1-9].*otf=[1-9]
+ubench,smoke,atomic_add_lat,ubench/9.1/atomic_add_lat/NO_ARGS/traces,atomic=[1-9]
+ubench,extended,l2_bw_32f,ubench/9.1/l2_bw_32f/NO_ARGS/traces,access=[1-9].*otf=[1-9]
+ubench,extended,mem_bw,ubench/9.1/mem_bw/NO_ARGS/traces,access=[1-9].*otf=[1-9]
+ubench,extended,atomic_add_bw,ubench/9.1/atomic_add_bw/NO_ARGS/traces,atomic=[1-9]
+ubench,extended,atomic_add_bw_conflict,ubench/9.1/atomic_add_bw_conflict/NO_ARGS/traces,atomic=[1-9]
+# CUDA SDK traces cover representative multi-kernel data movement.  Their tiers
+# follow the measured uncompressed trace volume, not the source application.
+cudasdk,smoke,histogram,cudasdk/9.1/histogram/NO_ARGS/traces,access=[1-9].*otf=[1-9]
+cudasdk,smoke,mergeSort,cudasdk/9.1/mergeSort/NO_ARGS/traces,access=[1-9].*otf=[1-9]
+cudasdk,dev,transpose,cudasdk/9.1/transpose/dimX512_dimY512/traces,access=[1-9].*otf=[1-9]
+cudasdk,extended,scan,cudasdk/9.1/scan/NO_ARGS/traces,access=[1-9].*otf=[1-9]
