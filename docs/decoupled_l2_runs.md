@@ -211,6 +211,25 @@ for these traces.  The L2 input is already paced per memory sub-partition, so
 the result is expected to be workload-dependent; it is still useful evidence
 that the minimum accepted configuration makes forward progress.
 
+## Executed Rodinia 2.0-ft matrix (2026-08-12)
+
+All ten locally cached application traces completed as baseline/decoupled
+pairs through `decoupled_l2_rodinia20_cases.csv`; all twenty exits and OTF
+counter gates passed.
+
+| Workload | Baseline cycles | Decoupled cycles |
+| --- | ---: | ---: |
+| backprop | 15,333 | 15,051 |
+| bfs | 121,943 | 119,141 |
+| heartwall | 9,033 | 8,856 |
+| hotspot | 54,673 | 54,316 |
+| lud | 136,216 | 136,311 |
+| nn | 30,799 | 30,675 |
+| nw | 138,220 | 136,576 |
+| pathfinder | 31,416 | 31,133 |
+| srad_v2 | 29,814 | 29,836 |
+| streamcluster | 1,148,542 | 1,151,264 |
+
 ## Executed validation record (2026-08-10)
 
 All runs used the pinned QV100-SASS generated configuration and external
