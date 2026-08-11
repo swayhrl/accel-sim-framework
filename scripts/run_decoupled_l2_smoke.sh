@@ -4,7 +4,8 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_decoupled_l2_smoke.sh --trace KERNELSLIST --config CONFIG
-       [--trace-config FILE] [--backend baseline|fixed|decoupled]
+       [--trace-config FILE] [--config-extra FILE]
+       [--backend baseline|fixed|decoupled]
        [--run-dir DIR] [--build]
 
 CONFIG is a generated gpgpusim.config.  Its sibling .xml and .icnt files are
@@ -15,12 +16,17 @@ rejects an accidental GPGPU-Sim checkout.
 TRACE-CONFIG is optional.  Supply it only when CONFIG is an unexpanded base
 GPGPU-Sim configuration; generated SASS configurations already contain the
 matching Accel-Sim trace configuration.
+
+CONFIG-EXTRA is optional experiment-only configuration text appended after the
+base and trace configurations.  It is useful for small resource or capacity
+stress cases without changing a pinned base configuration.
 EOF
 }
 
 trace=""
 config=""
 trace_config=""
+config_extra=""
 backend="decoupled"
 run_dir=""
 build=0
@@ -29,6 +35,7 @@ while [[ $# -gt 0 ]]; do
     --trace) trace="$2"; shift 2 ;;
     --config) config="$2"; shift 2 ;;
     --trace-config) trace_config="$2"; shift 2 ;;
+    --config-extra) config_extra="$2"; shift 2 ;;
     --backend) backend="$2"; shift 2 ;;
     --run-dir) run_dir="$2"; shift 2 ;;
     --build) build=1; shift ;;
@@ -41,6 +48,9 @@ done
 [[ -f "$config" ]] || { echo "error: --config must name gpgpusim.config" >&2; exit 2; }
 [[ -z "$trace_config" || -f "$trace_config" ]] || {
   echo "error: --trace-config must name an existing file" >&2; exit 2;
+}
+[[ -z "$config_extra" || -f "$config_extra" ]] || {
+  echo "error: --config-extra must name an existing file" >&2; exit 2;
 }
 case "$backend" in baseline|fixed|decoupled) ;; *)
   echo "error: unsupported backend $backend" >&2; exit 2 ;; esac
@@ -66,6 +76,10 @@ done
 if [[ -n "$trace_config" ]]; then
   printf '\n# Accel-Sim trace parameters\n' >> "$run_dir/gpgpusim.config"
   cat "$trace_config" >> "$run_dir/gpgpusim.config"
+fi
+if [[ -n "$config_extra" ]]; then
+  printf '\n# Decoupled-L2 experiment overrides\n' >> "$run_dir/gpgpusim.config"
+  cat "$config_extra" >> "$run_dir/gpgpusim.config"
 fi
 printf '\n-gpgpu_l2_backend %s\n' "$backend" >> "$run_dir/gpgpusim.config"
 ln -sfn "$(cd "$(dirname "$trace")" && pwd)" "$run_dir/traces"
