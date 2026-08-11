@@ -10,9 +10,10 @@ Downloads public Tesla-V100 SASS trace archives, verifies their gzip/tar
 structure, and extracts them below DIR.  Archives and extracted traces are
 kept under ignored hw_run/ storage; neither is source-controlled.
 
-The script reserves MIN-FREE-GIB (default: 100) before extraction.  It sums
-the archive's uncompressed members first, so a requested extraction cannot
-take the filesystem below that reserve.
+The script reserves MIN-FREE-GIB (default: 100) before download and
+extraction.  It reads the archive content length before downloading and sums
+the uncompressed members before extraction, so either action cannot take the
+filesystem below that reserve.
 EOF
 }
 
@@ -61,14 +62,30 @@ require_free_kib() {
   fi
 }
 
+remote_size_kib() {
+  local url="$1"
+  local bytes
+  bytes="$(curl --fail --silent --show-error --location --head "$url" | \
+    awk 'BEGIN { IGNORECASE = 1 } /^content-length:/ { value = $2; gsub("\\r", "", value) } END { if (value ~ /^[0-9]+$/) print value }')"
+  [[ -n "$bytes" ]] || {
+    echo "error: unable to determine Content-Length for $url" >&2
+    exit 1
+  }
+  printf '%s\n' "$(((bytes + 1023) / 1024))"
+}
+
 base_url="https://engineering.purdue.edu/tgrogers/accel-sim/traces/tesla-v100/latest"
 
 fetch_one() {
   local name="$1"
   local archive="$dest/$name.tgz"
   local url="$base_url/$name.tgz"
+  local archive_kib
 
-  require_free_kib "$min_free_kib" "download of $name"
+  archive_kib="$(remote_size_kib "$url")"
+  # This reserves the full archive even when --continue can reuse a partial
+  # download, which keeps the check simple and safely conservative.
+  require_free_kib "$((min_free_kib + archive_kib))" "download of $name"
   if command -v aria2c >/dev/null 2>&1; then
     aria2c --continue=true --file-allocation=none \
       --max-connection-per-server=8 --split=8 \
