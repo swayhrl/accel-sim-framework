@@ -4,7 +4,8 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/fetch_decoupled_l2_pretraces.sh
-       [--suite ubench|cudasdk|rodinia31|all] [--archive-only]
+       [--suite ubench|cudasdk|rodinia31|parboil|polybench|cutlass|all]
+       [--archive-only]
        [--dest DIR] [--min-free-gib N]
 
 Downloads public Tesla-V100 SASS trace archives, verifies their gzip/tar
@@ -35,7 +36,7 @@ done
 [[ "$min_free_gib" =~ ^[0-9]+$ ]] || {
   echo "error: --min-free-gib must be a nonnegative integer" >&2; exit 2;
 }
-case "$suite" in ubench|cudasdk|rodinia31|all) ;; *)
+case "$suite" in ubench|cudasdk|rodinia31|parboil|polybench|cutlass|all) ;; *)
   echo "error: unsupported suite $suite" >&2; exit 2 ;;
 esac
 
@@ -77,12 +78,17 @@ remote_size_kib() {
   printf '%s\n' "$(((bytes + 1023) / 1024))"
 }
 
-base_url="https://engineering.purdue.edu/tgrogers/accel-sim/traces/tesla-v100/latest"
+v100_base_url="https://engineering.purdue.edu/tgrogers/accel-sim/traces/tesla-v100/latest"
+# The older public collection holds Parboil, PolyBench, and CUTLASS.  The
+# newer HTTPS mirror advertises their aggregate sizes but does not expose the
+# archive files themselves.
+legacy_v100_base_url="ftp://ftp.ecn.purdue.edu/tgrogers/accel-sim/traces/tesla-v100/1.1.0.latest"
 
 fetch_one() {
   local name="$1"
+  local source_base="$2"
   local archive="$dest/$name.tgz"
-  local url="$base_url/$name.tgz"
+  local url="$source_base/$name.tgz"
   local archive_kib
 
   archive_kib="$(remote_size_kib "$url")"
@@ -111,12 +117,15 @@ fetch_one() {
 }
 
 if [[ "$suite" == all || "$suite" == ubench ]]; then
-  fetch_one ubench
+  fetch_one ubench "$v100_base_url"
 fi
 if [[ "$suite" == all || "$suite" == cudasdk ]]; then
-  fetch_one cudasdk
+  fetch_one cudasdk "$v100_base_url"
 fi
 if [[ "$suite" == rodinia31 ]]; then
   # The official public archive has retained this historical misspelling.
-  fetch_one rodina-3.1
+  fetch_one rodina-3.1 "$v100_base_url"
+fi
+if [[ "$suite" == parboil || "$suite" == polybench || "$suite" == cutlass ]]; then
+  fetch_one "$suite" "$legacy_v100_base_url"
 fi

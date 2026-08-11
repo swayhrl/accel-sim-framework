@@ -152,6 +152,21 @@ about 302 GiB when fully expanded), so it is intentionally not part of
 after checking their member sizes; never expand the entire archive as part of
 this experiment tree.
 
+Parboil, PolyBench, and CUTLASS archives are hosted by the official legacy
+Accel-Sim FTP collection rather than the newer HTTPS mirror.  Use the same
+archive-only flow:
+
+```bash
+scripts/fetch_decoupled_l2_pretraces.sh --suite parboil --archive-only --min-free-gib 80
+scripts/fetch_decoupled_l2_pretraces.sh --suite polybench --archive-only --min-free-gib 80
+scripts/fetch_decoupled_l2_pretraces.sh --suite cutlass --archive-only --min-free-gib 80
+```
+
+Their archive sizes are approximately 9.3, 17.9, and 82.5 GiB respectively;
+their fully extracted sizes are far larger.  The fetcher checks the remote FTP
+`Content-Length` before every transfer, so the selected reserve applies to the
+archive itself as well as later extraction.
+
 ## Executed public-pretrace record (2026-08-12)
 
 All cases used the QV100 SASS base configuration plus its matching
