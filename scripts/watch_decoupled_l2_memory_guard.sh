@@ -38,9 +38,11 @@ oom_kill_count() {
     /sys/fs/cgroup/memory.events
 }
 largest_running_pid() {
-  local pid rss best_pid="" best_rss=-1
+  local pid rss state best_pid="" best_rss=-1
   for pid in "${candidates[@]}"; do
     [[ -r "/proc/$pid/status" ]] || continue
+    state="$(awk '/^State:/ {print $2; exit}' "/proc/$pid/status")"
+    [[ "$state" != T && "$state" != t ]] || continue
     rss="$(awk '/^VmRSS:/ {print $2; exit}' "/proc/$pid/status")"
     rss="${rss:-0}"
     if (( rss > best_rss )); then best_rss="$rss"; best_pid="$pid"; fi
