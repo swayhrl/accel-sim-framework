@@ -228,6 +228,9 @@ decoupled sides concurrently as well. Set these from actual cgroup CPU/memory
 capacity, not host-visible `nproc` alone.
 The planner's compatible `sizes.csv` can substitute for `cases.txt` if a plan
 was generated before `cases.txt` was added.
+When launching immediately from that exact plan against the unchanged archive,
+add `--trusted-size-plan` to avoid a redundant full gzip member listing; the
+normal default revalidates the archive independently.
 
 ## Executed public-pretrace record (2026-08-12)
 

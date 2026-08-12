@@ -6,7 +6,8 @@ usage() {
 Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAME
        --case-list CASES.txt [--config FILE] [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
-       [--jobs N] [--pair-parallel] [--discard-failed-extract]
+       [--jobs N] [--pair-parallel] [--trusted-size-plan]
+       [--discard-failed-extract]
 
 Extract all selected traces in one archive pass, then run independent workload
 pairs concurrently. --jobs limits concurrent workload pairs (default 1).
@@ -16,12 +17,18 @@ the cases.txt written by plan_decoupled_l2_archive_cases.sh; its compatible
 sizes.csv may also be used directly.
 The exact selected trace size is checked before extraction. A failed batch
 retains its trace payload and failures.csv by default.
+
+--trusted-size-plan accepts the selected cases.csv/sizes.csv as the exact
+member-size result from a just-completed planner run and skips the otherwise
+redundant second full archive listing. It does not weaken the extraction's
+path checks; use it only with the unchanged archive that the planner scanned.
 EOF
 }
 
 archive=""; suite=""; case_list=""; config=""; trace_config=""; config_given=0
 run_root=""; scratch_root=""; min_free_gib=80; keep_failed_extract=1; reuse=0
 jobs=1; pair_parallel=0
+trusted_size_plan=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -34,6 +41,7 @@ while [[ $# -gt 0 ]]; do
     --min-free-gib) min_free_gib="$2"; shift 2 ;;
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
+    --trusted-size-plan) trusted_size_plan=1; shift ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -83,24 +91,39 @@ min_free_kib=$((min_free_gib * 1024 * 1024))
 # A single verbose member list provides both the exact capacity gate and proof
 # that every selected item is a complete workload trace directory.
 selected_sizes="$run_root/${suite}_selected_sizes.csv"
-tar_read --list --verbose --file "$archive" | awk -v selected="$selected" '
-  BEGIN { while ((getline x < selected) > 0) want[x] = 1; close(selected) }
-  $6 ~ /\/traces\// {
-    path = $6; sub(/^\.\//, "", path); split(path, part, "/traces/")
-    work = part[1]
-    if (want[work]) {
-      bytes[work] += $3
-      if (path ~ /\/traces\/kernelslist\.g$/) kernels[work] = 1
-    }
-  }
-  END {
-    for (work in want) {
-      if (!kernels[work]) { printf "missing kernelslist.g: %s\n", work > "/dev/stderr"; bad = 1 }
-      else printf "%s,%d\n", work, bytes[work]
+if [[ "$trusted_size_plan" -eq 1 ]]; then
+  awk -F, -v selected="$selected" '
+    BEGIN { while ((getline x < selected) > 0) want[x] = 1; close(selected) }
+    $1 != "case" && want[$1] { bytes[$1] = $2; found[$1] = 1 }
+    END {
+      for (work in want) {
+        if (!found[work] || bytes[work] !~ /^[0-9]+$/) {
+          printf "missing exact byte count in trusted plan: %s\\n", work > "/dev/stderr"; bad = 1
+        } else printf "%s,%s\\n", work, bytes[work]
+      }
     }
     exit bad
-  }
-' | sort > "$selected_sizes"
+  ' "$case_list" | sort > "$selected_sizes"
+else
+  tar_read --list --verbose --file "$archive" | awk -v selected="$selected" '
+    BEGIN { while ((getline x < selected) > 0) want[x] = 1; close(selected) }
+    $6 ~ /\/traces\// {
+      path = $6; sub(/^\.\//, "", path); split(path, part, "/traces/")
+      work = part[1]
+      if (want[work]) {
+        bytes[work] += $3
+        if (path ~ /\/traces\/kernelslist\.g$/) kernels[work] = 1
+      }
+    }
+    END {
+      for (work in want) {
+        if (!kernels[work]) { printf "missing kernelslist.g: %s\n", work > "/dev/stderr"; bad = 1 }
+        else printf "%s,%d\n", work, bytes[work]
+      }
+      exit bad
+    }
+  ' | sort > "$selected_sizes"
+fi
 trace_kib="$(awk -F, '{ bytes += $2 } END { print int((bytes + 1023) / 1024) }' "$selected_sizes")"
 [[ "$trace_kib" =~ ^[0-9]+$ && "$trace_kib" -gt 0 ]] || { echo "error: cannot size selected traces" >&2; exit 1; }
 available="$(available_kib)"
