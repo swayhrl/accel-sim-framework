@@ -87,6 +87,11 @@ fi
 if [[ -z "$scratch_root" ]]; then scratch_root="$repo_root/hw_run/decoupled-l2-extract"; fi
 mkdir -p "$run_root" "$scratch_root"
 run_root="$(cd "$run_root" && pwd)"; scratch_root="$(cd "$scratch_root" && pwd)"
+if [[ -z "$staged_traces" && -d "$scratch_root/$suite.stage/.decoupled_l2_stage_complete" ]]; then
+  # The persistent default is intentionally discovered at execution time so a
+  # capacity-waiting plan can reuse preparation that finishes in parallel.
+  staged_traces="$scratch_root/$suite.stage"
+fi
 if [[ -n "$staged_traces" ]]; then
   mkdir -p "$staged_traces"
   staged_traces="$(cd "$staged_traces" && pwd)"
