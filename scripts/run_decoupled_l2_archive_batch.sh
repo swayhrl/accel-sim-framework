@@ -9,6 +9,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
        [--max-memory-percent N] [--pair-memory-reserve-gib N]
+       [--max-live-pairs N]
        [--discard-failed-extract]
 
 Extract all selected traces in one archive pass, then run independent workload
@@ -27,12 +28,12 @@ member-size result from a just-completed planner run and skips the otherwise
 redundant second full archive listing. It does not weaken the extraction's
 path checks; use it only with the unchanged archive that the planner scanned.
 
-MAX-MEMORY-PERCENT (default 95) is an admission ceiling.  Each new workload
-pair also reserves PAIR-MEMORY-RESERVE-GIB (default 160) against that ceiling,
-so several pairs cannot all pass a low initial-memory check and later cause a
-cgroup OOM as their trace state grows.  The gate never interrupts a pair
-already in flight. Disk-space reserve is separately controlled by
-MIN-FREE-GIB.
+MAX-MEMORY-PERCENT (default 95) is an admission ceiling. Each new workload
+pair also reserves PAIR-MEMORY-RESERVE-GIB (default 160) against that ceiling.
+MAX-LIVE-PAIRS (default 1) limits concurrent pairs independently, so a new
+batch cannot fan out while each newly started simulator is still building its
+trace state. These gates never interrupt a pair already in flight. Disk-space
+reserve is separately controlled by MIN-FREE-GIB.
 EOF
 }
 
@@ -43,6 +44,7 @@ jobs=1; pair_parallel=0
 trusted_size_plan=0
 max_memory_percent=95
 pair_memory_reserve_gib=160
+max_live_pairs=1
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -59,6 +61,7 @@ while [[ $# -gt 0 ]]; do
     --trusted-size-plan) trusted_size_plan=1; shift ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
     --pair-memory-reserve-gib) pair_memory_reserve_gib="$2"; shift 2 ;;
+    --max-live-pairs) max_live_pairs="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -75,6 +78,9 @@ done
 }
 [[ "$pair_memory_reserve_gib" =~ ^[0-9]+$ && "$pair_memory_reserve_gib" -gt 0 ]] || {
   echo "error: --pair-memory-reserve-gib must be positive" >&2; exit 2;
+}
+[[ "$max_live_pairs" =~ ^[0-9]+$ && "$max_live_pairs" -gt 0 ]] || {
+  echo "error: --max-live-pairs must be positive" >&2; exit 2;
 }
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || { echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2; }
 
@@ -288,7 +294,7 @@ case_count=0; active=0; failed=0
 oom_kill_start="$(cgroup_oom_kill_count)"
 while IFS= read -r case_path; do
   case_count=$((case_count + 1))
-  while (( active >= jobs )); do
+  while (( active >= jobs || active >= max_live_pairs )); do
     if ! wait -n; then failed=1; fi
     active=$((active - 1))
   done
