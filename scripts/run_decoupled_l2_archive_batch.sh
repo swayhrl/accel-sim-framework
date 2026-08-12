@@ -11,6 +11,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
        [--max-memory-percent N] [--pair-memory-reserve-gib N]
        [--host-memory-reserve-gib N] [--max-live-pairs N]
+       [--global-pair-lock PATH]
        [--discard-failed-extract]
 
 Extract all selected traces in one archive pass, then run independent workload
@@ -38,6 +39,11 @@ MAX-LIVE-PAIRS (default 1) limits concurrent pairs independently, so a new
 batch cannot fan out while each newly started simulator is still building its
 trace state. These gates never interrupt a pair already in flight. Disk-space
 reserve is separately controlled by MIN-FREE-GIB.
+
+GLOBAL-PAIR-LOCK (default /tmp/decoupled-l2-archive-pair.lock) serializes
+admission across independent archive batches. The lock stays held for one
+whole baseline/decoupled pair, so two batches cannot both admit work using the
+same transient MemAvailable observation.
 EOF
 }
 
@@ -51,6 +57,7 @@ max_memory_percent=95
 pair_memory_reserve_gib=160
 host_memory_reserve_gib=20
 max_live_pairs=1
+global_pair_lock="${TMPDIR:-/tmp}/decoupled-l2-archive-pair.lock"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -69,6 +76,7 @@ while [[ $# -gt 0 ]]; do
     --pair-memory-reserve-gib) pair_memory_reserve_gib="$2"; shift 2 ;;
     --host-memory-reserve-gib) host_memory_reserve_gib="$2"; shift 2 ;;
     --max-live-pairs) max_live_pairs="$2"; shift 2 ;;
+    --global-pair-lock) global_pair_lock="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
     --build) build=1; shift ;;
@@ -92,6 +100,9 @@ done
 }
 [[ "$max_live_pairs" =~ ^[0-9]+$ && "$max_live_pairs" -gt 0 ]] || {
   echo "error: --max-live-pairs must be positive" >&2; exit 2;
+}
+command -v flock >/dev/null 2>&1 || {
+  echo "error: flock is required for global pair admission" >&2; exit 2;
 }
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || { echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2; }
 
@@ -334,6 +345,29 @@ run_case() {
   fi
 }
 
+wait_for_pair_memory() {
+  while ! pair_memory_admit; do
+    if (( $(cgroup_oom_kill_count) > oom_kill_start )); then
+      printf 'error: cgroup OOM kill detected during batch; retain logs and do not start further cases\n' >&2
+      return 1
+    fi
+    printf 'WAIT_MEMORY used_gib=%s host_available_gib=%s pair_reserve_gib=%s host_reserve_gib=%s limit_percent=%s\n' \
+      "$(( $(cgroup_memory_bytes) / 1024 / 1024 / 1024 ))" \
+      "$(( $(host_memory_available_bytes) / 1024 / 1024 / 1024 ))" \
+      "$pair_memory_reserve_gib" "$host_memory_reserve_gib" \
+      "$max_memory_percent" >&2
+    sleep 30
+  done
+}
+
+run_case_exclusive() {
+  local case_path="$1" lock_fd
+  exec {lock_fd}>"$global_pair_lock"
+  flock "$lock_fd"
+  wait_for_pair_memory || return
+  run_case "$case_path"
+}
+
 case_count=0; active=0; failed=0
 oom_kill_start="$(cgroup_oom_kill_count)"
 while IFS= read -r case_path; do
@@ -347,20 +381,7 @@ while IFS= read -r case_path; do
     failed=1
     break
   fi
-  while ! pair_memory_admit; do
-    if (( $(cgroup_oom_kill_count) > oom_kill_start )); then
-      printf 'error: cgroup OOM kill detected during batch; retain logs and do not start further cases\n' >&2
-      failed=1
-      break 2
-    fi
-    printf 'WAIT_MEMORY used_gib=%s host_available_gib=%s pair_reserve_gib=%s host_reserve_gib=%s limit_percent=%s active_pairs=%s\n' \
-      "$(( $(cgroup_memory_bytes) / 1024 / 1024 / 1024 ))" \
-      "$(( $(host_memory_available_bytes) / 1024 / 1024 / 1024 ))" \
-      "$pair_memory_reserve_gib" "$host_memory_reserve_gib" \
-      "$max_memory_percent" "$active" >&2
-    sleep 30
-  done
-  run_case "$case_path" &
+  run_case_exclusive "$case_path" &
   active=$((active + 1))
 done < "$selected"
 while (( active > 0 )); do
