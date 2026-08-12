@@ -9,7 +9,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
        [--max-memory-percent N] [--pair-memory-reserve-gib N]
-       [--max-live-pairs N]
+       [--host-memory-reserve-gib N] [--max-live-pairs N]
        [--discard-failed-extract]
 
 Extract all selected traces in one archive pass, then run independent workload
@@ -30,6 +30,9 @@ path checks; use it only with the unchanged archive that the planner scanned.
 
 MAX-MEMORY-PERCENT (default 95) is an admission ceiling. Each new workload
 pair also reserves PAIR-MEMORY-RESERVE-GIB (default 160) against that ceiling.
+The same pair reservation must fit in the host's MemAvailable after retaining
+HOST-MEMORY-RESERVE-GIB (default 20), preventing a busy unrelated workload
+from invalidating a cgroup-only admission decision.
 MAX-LIVE-PAIRS (default 1) limits concurrent pairs independently, so a new
 batch cannot fan out while each newly started simulator is still building its
 trace state. These gates never interrupt a pair already in flight. Disk-space
@@ -44,6 +47,7 @@ jobs=1; pair_parallel=0
 trusted_size_plan=0
 max_memory_percent=95
 pair_memory_reserve_gib=160
+host_memory_reserve_gib=20
 max_live_pairs=1
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -61,6 +65,7 @@ while [[ $# -gt 0 ]]; do
     --trusted-size-plan) trusted_size_plan=1; shift ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
     --pair-memory-reserve-gib) pair_memory_reserve_gib="$2"; shift 2 ;;
+    --host-memory-reserve-gib) host_memory_reserve_gib="$2"; shift 2 ;;
     --max-live-pairs) max_live_pairs="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
@@ -78,6 +83,9 @@ done
 }
 [[ "$pair_memory_reserve_gib" =~ ^[0-9]+$ && "$pair_memory_reserve_gib" -gt 0 ]] || {
   echo "error: --pair-memory-reserve-gib must be positive" >&2; exit 2;
+}
+[[ "$host_memory_reserve_gib" =~ ^[0-9]+$ ]] || {
+  echo "error: --host-memory-reserve-gib must be non-negative" >&2; exit 2;
 }
 [[ "$max_live_pairs" =~ ^[0-9]+$ && "$max_live_pairs" -gt 0 ]] || {
   echo "error: --max-live-pairs must be positive" >&2; exit 2;
@@ -134,14 +142,21 @@ cgroup_oom_kill_count() {
   awk '$1 == "oom_kill" { print $2; found = 1 } END { if (!found) print 0 }' \
     /sys/fs/cgroup/memory.events
 }
+host_memory_available_bytes() {
+  awk '/^MemAvailable:/ { print $2 * 1024; found = 1 } END { if (!found) print 0 }' /proc/meminfo
+}
 pair_memory_admit() {
-  local used limit ceiling reserve
+  local used limit ceiling reserve host_available host_reserve
   used="$(cgroup_memory_bytes)"
   limit="$(cgroup_memory_limit_bytes)"
   reserve=$((pair_memory_reserve_gib * 1024 * 1024 * 1024))
-  (( limit == 0 )) && return 0
-  ceiling=$((limit * max_memory_percent / 100))
-  (( used + reserve <= ceiling ))
+  host_available="$(host_memory_available_bytes)"
+  host_reserve=$((host_memory_reserve_gib * 1024 * 1024 * 1024))
+  if (( limit != 0 )); then
+    ceiling=$((limit * max_memory_percent / 100))
+    (( used + reserve <= ceiling )) || return 1
+  fi
+  (( host_available >= reserve + host_reserve ))
 }
 min_free_kib=$((min_free_gib * 1024 * 1024))
 
@@ -309,9 +324,11 @@ while IFS= read -r case_path; do
       failed=1
       break 2
     fi
-    printf 'WAIT_MEMORY used_gib=%s reserve_gib=%s limit_percent=%s active_pairs=%s\n' \
+    printf 'WAIT_MEMORY used_gib=%s host_available_gib=%s pair_reserve_gib=%s host_reserve_gib=%s limit_percent=%s active_pairs=%s\n' \
       "$(( $(cgroup_memory_bytes) / 1024 / 1024 / 1024 ))" \
-      "$pair_memory_reserve_gib" "$max_memory_percent" "$active" >&2
+      "$(( $(host_memory_available_bytes) / 1024 / 1024 / 1024 ))" \
+      "$pair_memory_reserve_gib" "$host_memory_reserve_gib" \
+      "$max_memory_percent" "$active" >&2
     sleep 30
   done
   run_case "$case_path" &
