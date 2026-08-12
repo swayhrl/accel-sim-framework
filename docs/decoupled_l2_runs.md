@@ -198,6 +198,20 @@ be reclaimed; successful cases always remove their temporary trace payload.
 `--reuse` reuses only a backend run with the normal simulator-exit marker, so
 it is suitable for retrying only the failed side of a baseline/decoupled pair.
 
+Before running an archived suite concurrently, generate an exact capacity plan
+from its tar members.  This scans the compressed archive once and writes both
+per-workload `sizes.csv` and a greedy capacity-safe `schedule.csv`:
+
+```bash
+scripts/plan_decoupled_l2_archive_cases.sh \
+  --archive hw_run/decoupled-l2-pretraces/parboil.tgz \
+  --min-free-gib 80 --max-parallel 2
+```
+
+The planner subtracts the requested free-space reserve plus a 16 GiB run/log
+allowance before packing workloads into waves.  It rejects an individual trace
+set that cannot fit, instead of relying on best-effort cleanup.
+
 ## Executed public-pretrace record (2026-08-12)
 
 All cases used the QV100 SASS base configuration plus its matching
