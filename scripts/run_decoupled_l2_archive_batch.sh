@@ -101,8 +101,8 @@ if [[ "$trusted_size_plan" -eq 1 ]]; then
           printf "missing exact byte count in trusted plan: %s\\n", work > "/dev/stderr"; bad = 1
         } else printf "%s,%s\\n", work, bytes[work]
       }
+      exit bad
     }
-    exit bad
   ' "$case_list" | sort > "$selected_sizes"
 else
   tar_read --list --verbose --file "$archive" | awk -v selected="$selected" '
