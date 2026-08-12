@@ -8,7 +8,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
        [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
-       [--max-memory-percent N]
+       [--max-memory-percent N] [--pair-memory-reserve-gib N]
        [--discard-failed-extract]
 
 Extract all selected traces in one archive pass, then run independent workload
@@ -27,10 +27,12 @@ member-size result from a just-completed planner run and skips the otherwise
 redundant second full archive listing. It does not weaken the extraction's
 path checks; use it only with the unchanged archive that the planner scanned.
 
-MAX-MEMORY-PERCENT (default 95) is an admission throttle only: it pauses new
-workload pairs when cgroup memory reaches that percentage of its limit, but
-never interrupts a pair already in flight. Disk-space reserve is separately
-controlled by MIN-FREE-GIB.
+MAX-MEMORY-PERCENT (default 95) is an admission ceiling.  Each new workload
+pair also reserves PAIR-MEMORY-RESERVE-GIB (default 64) against that ceiling,
+so several pairs cannot all pass a low initial-memory check and later cause a
+cgroup OOM as their trace state grows.  The gate never interrupts a pair
+already in flight. Disk-space reserve is separately controlled by
+MIN-FREE-GIB.
 EOF
 }
 
@@ -40,6 +42,7 @@ staged_traces=""
 jobs=1; pair_parallel=0
 trusted_size_plan=0
 max_memory_percent=95
+pair_memory_reserve_gib=64
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -55,6 +58,7 @@ while [[ $# -gt 0 ]]; do
     --pair-parallel) pair_parallel=1; shift ;;
     --trusted-size-plan) trusted_size_plan=1; shift ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
+    --pair-memory-reserve-gib) pair_memory_reserve_gib="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -68,6 +72,9 @@ done
 [[ "$jobs" =~ ^[0-9]+$ && "$jobs" -gt 0 ]] || { echo "error: --jobs must be positive" >&2; exit 2; }
 [[ "$max_memory_percent" =~ ^[0-9]+$ && "$max_memory_percent" -gt 0 && "$max_memory_percent" -le 100 ]] || {
   echo "error: --max-memory-percent must be in 1..100" >&2; exit 2;
+}
+[[ "$pair_memory_reserve_gib" =~ ^[0-9]+$ && "$pair_memory_reserve_gib" -gt 0 ]] || {
+  echo "error: --pair-memory-reserve-gib must be positive" >&2; exit 2;
 }
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || { echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2; }
 
@@ -111,12 +118,24 @@ tar_read() {
   else tar --gzip "$@"; fi
 }
 available_kib() { df -Pk "$scratch_root" | awk 'NR == 2 { print $4 }'; }
-cgroup_memory_percent() {
-  local used limit
-  used="$(cat /sys/fs/cgroup/memory.current)"
+cgroup_memory_bytes() { cat /sys/fs/cgroup/memory.current; }
+cgroup_memory_limit_bytes() {
+  local limit
   limit="$(cat /sys/fs/cgroup/memory.max)"
-  [[ "$limit" =~ ^[0-9]+$ && "$limit" -gt 0 ]] || { printf '0\n'; return; }
-  printf '%d\n' "$((used * 100 / limit))"
+  [[ "$limit" =~ ^[0-9]+$ && "$limit" -gt 0 ]] && printf '%s\n' "$limit" || printf '0\n'
+}
+cgroup_oom_kill_count() {
+  awk '$1 == "oom_kill" { print $2; found = 1 } END { if (!found) print 0 }' \
+    /sys/fs/cgroup/memory.events
+}
+pair_memory_admit() {
+  local used limit ceiling reserve
+  used="$(cgroup_memory_bytes)"
+  limit="$(cgroup_memory_limit_bytes)"
+  reserve=$((pair_memory_reserve_gib * 1024 * 1024 * 1024))
+  (( limit == 0 )) && return 0
+  ceiling=$((limit * max_memory_percent / 100))
+  (( used + reserve <= ceiling ))
 }
 min_free_kib=$((min_free_gib * 1024 * 1024))
 
@@ -266,15 +285,27 @@ run_case() {
 }
 
 case_count=0; active=0; failed=0
+oom_kill_start="$(cgroup_oom_kill_count)"
 while IFS= read -r case_path; do
   case_count=$((case_count + 1))
   while (( active >= jobs )); do
     if ! wait -n; then failed=1; fi
     active=$((active - 1))
   done
-  while (( $(cgroup_memory_percent) >= max_memory_percent )); do
-    printf 'WAIT_MEMORY percent=%s limit=%s active_pairs=%s\n' \
-      "$(cgroup_memory_percent)" "$max_memory_percent" "$active" >&2
+  if (( $(cgroup_oom_kill_count) > oom_kill_start )); then
+    printf 'error: cgroup OOM kill detected during batch; retain logs and do not start further cases\n' >&2
+    failed=1
+    break
+  fi
+  while ! pair_memory_admit; do
+    if (( $(cgroup_oom_kill_count) > oom_kill_start )); then
+      printf 'error: cgroup OOM kill detected during batch; retain logs and do not start further cases\n' >&2
+      failed=1
+      break 2
+    fi
+    printf 'WAIT_MEMORY used_gib=%s reserve_gib=%s limit_percent=%s active_pairs=%s\n' \
+      "$(( $(cgroup_memory_bytes) / 1024 / 1024 / 1024 ))" \
+      "$pair_memory_reserve_gib" "$max_memory_percent" "$active" >&2
     sleep 30
   done
   run_case "$case_path" &
