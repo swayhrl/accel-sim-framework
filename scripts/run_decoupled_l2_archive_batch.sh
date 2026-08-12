@@ -135,7 +135,7 @@ if (( available < min_free_kib + trace_kib )); then
 fi
 
 patterns="$run_root/${suite}_trace_patterns.txt"
-awk '{ printf "./%s/traces/*\\n", $0 }' "$selected" > "$patterns"
+awk '{ printf "./%s/traces/*\n", $0 }' "$selected" > "$patterns"
 summary="$run_root/summary.csv"; failures="$run_root/failures.csv"
 printf 'suite,case,backend,cycles,run_dir\n' > "$summary"
 printf 'time,suite,case,backend,stage,run_dir,trace_dir,smoke_out\n' > "$failures"
