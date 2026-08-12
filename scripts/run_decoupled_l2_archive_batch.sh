@@ -97,6 +97,13 @@ done
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ "$build" -eq 1 ]]; then
+  # Keep --build self-contained like run_decoupled_l2_smoke.sh.  The batch
+  # normally defers environment setup to each child run, but make needs the
+  # selected external GPGPU-Sim root in this parent process.
+  set +u
+  # shellcheck disable=SC1090
+  source "$repo_root/scripts/setup_decoupled_l2_env.sh" release
+  set -u
   make -C "$repo_root/gpu-simulator" -j"$(nproc)"
 fi
 sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
