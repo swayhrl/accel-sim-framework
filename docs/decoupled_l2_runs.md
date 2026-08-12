@@ -190,6 +190,12 @@ development; omitting it deliberately covers every `kernelslist.g` in the
 archive.  The ignored run root retains paired outputs and `summary.csv`; the
 ignored extraction root contains no surviving trace payload after a case.
 
+Failure handling is intentionally different: the runner writes `failures.csv`
+and preserves the current `smoke.out` plus the one extracted trace directory,
+so an abort can be replayed without rescanning or re-extracting a large
+archive.  Use `--discard-failed-extract` only when that diagnostic payload must
+be reclaimed; successful cases always remove their temporary trace payload.
+
 ## Executed public-pretrace record (2026-08-12)
 
 All cases used the QV100 SASS base configuration plus its matching

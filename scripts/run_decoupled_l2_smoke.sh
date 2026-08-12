@@ -91,10 +91,14 @@ sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
 [[ -x "$sim_bin" ]] || {
   echo "error: missing $sim_bin (rerun with --build)" >&2; exit 2; }
 
-(
+if ! (
   cd "$run_dir"
   "$sim_bin" -config ./gpgpusim.config -trace ./traces/kernelslist.g > smoke.out 2>&1
-)
+); then
+  echo "error: simulator failed; preserved $run_dir/smoke.out" >&2
+  tail -50 "$run_dir/smoke.out" >&2 || true
+  exit 1
+fi
 grep -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$run_dir/smoke.out"
 if [[ "$backend" != baseline ]]; then
   grep -q 'decoupled_l2\[' "$run_dir/smoke.out"

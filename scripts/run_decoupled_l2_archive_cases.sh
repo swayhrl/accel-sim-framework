@@ -7,17 +7,21 @@ Usage: scripts/run_decoupled_l2_archive_cases.sh --archive SUITE.tgz --suite NAM
        [--case NAME|all] [--case-path RELATIVE_PATH] [--config FILE]
        [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N]
+       [--discard-failed-extract]
 
 Discovers every kernelslist.g in one compressed Accel-Sim trace archive, then
 tests each workload sequentially with baseline and decoupled L2 backends. Only
 the current workload's traces are extracted under SCRATCH-ROOT and removed
-after its two runs. MIN-FREE-GIB (default 80) is preserved before every
-extraction and after cleanup.
+after a successful pair. On failure, the output log, a failure manifest, and
+the current extracted trace set are preserved for diagnosis; use
+--discard-failed-extract to reclaim that trace set instead. MIN-FREE-GIB
+(default 80) is preserved before every extraction and after normal cleanup.
 EOF
 }
 
 archive=""; suite=""; case_filter="all"; case_path_filter=""; config=""; trace_config=""
 config_given=0; run_root=""; scratch_root=""; min_free_gib=80
+keep_failed_extract=1
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -29,6 +33,7 @@ while [[ $# -gt 0 ]]; do
     --run-root) run_root="$2"; shift 2 ;;
     --scratch-root) scratch_root="$2"; shift 2 ;;
     --min-free-gib) min_free_gib="$2"; shift 2 ;;
+    --discard-failed-extract) keep_failed_extract=0; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -99,13 +104,37 @@ fi
 
 summary="$run_root/summary.csv"
 printf 'suite,case,backend,cycles,run_dir\n' > "$summary"
+failures="$run_root/failures.csv"
+printf 'time,suite,case,backend,stage,run_dir,trace_dir,smoke_out\n' > "$failures"
 case_count=0
 case_dir=""
+current_case=""
+current_backend=""
+current_stage="setup"
+current_run_dir=""
 cleanup_case() {
   [[ -n "$case_dir" && "$case_dir" == "$scratch_root"/* ]] && rm -rf "$case_dir"
 }
-trap cleanup_case EXIT
+finish() {
+  local status="$?"
+  if (( status != 0 )); then
+    printf '%s,%s,%s,%s,%s,%s,%s,%s\n' "$(date --iso-8601=seconds)" \
+      "$suite" "$current_case" "$current_backend" "$current_stage" \
+      "$current_run_dir" "$case_dir" "$current_run_dir/smoke.out" >> "$failures"
+    if (( keep_failed_extract )) && [[ -n "$case_dir" && "$case_dir" == "$scratch_root"/* ]]; then
+      printf 'FAIL preserved traces=%s log=%s manifest=%s\n' "$case_dir" \
+        "$current_run_dir/smoke.out" "$failures" >&2
+      case_dir=""
+    else
+      cleanup_case
+    fi
+  else
+    cleanup_case
+  fi
+}
+trap finish EXIT
 while IFS= read -r case_path; do
+  current_case="$case_path"
   case_name="${case_path##*/}"
   [[ "$case_filter" == all || "$case_filter" == "$case_name" ]] || continue
   case_count=$((case_count + 1))
@@ -115,16 +144,23 @@ while IFS= read -r case_path; do
   require_free_kib "$((min_free_kib + trace_kib))" "extraction of $case_path"
 
   case_dir="$(mktemp -d "$scratch_root/${suite}.XXXXXX")"
+  current_stage="extract"
   tar_read --extract --wildcards --file "$archive" --directory "$case_dir" \
     "./$case_path/traces/*"
   trace="$case_dir/$case_path/traces/kernelslist.g"
   [[ -f "$trace" ]] || { echo "error: extraction lost $case_path" >&2; exit 1; }
 
   for backend in baseline decoupled; do
+    current_backend="$backend"
+    current_stage="simulate"
     case_run_dir="$run_root/$suite/$case_path/$backend"
+    current_run_dir="$case_run_dir"
     smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
     if [[ -n "$trace_config" ]]; then smoke_args+=(--trace-config "$trace_config"); fi
-    "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"
+    if ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
+      echo "error: $suite/$case_path backend=$backend failed; see $failures" >&2
+      exit 1
+    fi
     if [[ "$backend" == decoupled ]]; then
       rg -q 'decoupled_l2\[.*access=[1-9]' "$case_run_dir/smoke.out" || {
         echo "error: $case_path did not exercise decoupled L2" >&2; exit 1;
@@ -136,6 +172,7 @@ while IFS= read -r case_path; do
   done
   cleanup_case
   case_dir=""
+  current_stage="cleanup"
   require_free_kib "$min_free_kib" "post-run cleanup of $case_path"
 done < "$case_list"
 
