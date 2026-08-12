@@ -210,7 +210,18 @@ scripts/plan_decoupled_l2_archive_cases.sh \
 
 The planner subtracts the requested free-space reserve plus a 16 GiB run/log
 allowance before packing workloads into waves.  It rejects an individual trace
-set that cannot fit, instead of relying on best-effort cleanup.
+set that cannot fit, instead of relying on best-effort cleanup.  When a planned
+set fits in one staging batch, use its `cases.txt` with the batch runner so the
+gzip archive is scanned and extracted only once:
+
+```bash
+scripts/run_decoupled_l2_archive_batch.sh \
+  --archive hw_run/decoupled-l2-pretraces/parboil.tgz --suite parboil \
+  --case-list hw_run/decoupled-l2-plans/parboil/cases.txt
+```
+
+The batch runner repeats the exact member-size gate, runs pairs sequentially,
+and retains the whole current staging batch plus `failures.csv` on failure.
 
 ## Executed public-pretrace record (2026-08-12)
 

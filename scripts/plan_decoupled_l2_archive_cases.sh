@@ -8,7 +8,7 @@ Usage: scripts/plan_decoupled_l2_archive_cases.sh --archive SUITE.tgz
        [--output-dir DIR]
 
 Scans a compressed trace archive once, calculates the exact uncompressed byte
-count of every workload's traces/ directory, and writes sizes.csv plus a
+count of every workload's traces/ directory, and writes cases.txt, sizes.csv, plus a
 capacity-safe first-fit-decreasing schedule.csv.  Every wave preserves
 MIN-FREE-GIB (default 80) and RUN-OVERHEAD-GIB (default 16) of non-trace
 space. MAX-PARALLEL (default 1) is an additional per-wave concurrency cap.
@@ -59,6 +59,7 @@ tar_read() {
 }
 
 raw="$output_dir/members.raw"
+cases="$output_dir/cases.txt"
 sizes="$output_dir/sizes.csv"
 schedule="$output_dir/schedule.csv"
 tar_read --list --verbose --file "$archive" | awk '
@@ -75,6 +76,8 @@ tar_read --list --verbose --file "$archive" | awk '
   }
 ' > "$raw"
 [[ -s "$raw" ]] || { echo "error: archive has no workload kernelslist.g" >&2; exit 1; }
+
+sort -t, -k2,2nr "$raw" | cut -d, -f1 > "$cases"
 
 printf 'case,trace_bytes,trace_gib\n' > "$sizes"
 sort -t, -k2,2nr "$raw" | while IFS=, read -r case_path bytes; do
@@ -114,4 +117,4 @@ done < <(sort -t, -k2,2nr "$raw")
 printf 'PLAN workloads=%d waves=%d budget_gib=%d reserve_gib=%d max_parallel=%d\n' \
   "$(wc -l < "$raw")" "$wave_total" "$((budget_kib / 1024 / 1024))" \
   "$((reserve_kib / 1024 / 1024))" "$max_parallel"
-printf 'sizes=%s schedule=%s\n' "$sizes" "$schedule"
+printf 'cases=%s sizes=%s schedule=%s\n' "$cases" "$sizes" "$schedule"
