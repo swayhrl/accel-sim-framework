@@ -161,7 +161,9 @@ trap finish EXIT
 
 batch_dir="$(mktemp -d "$scratch_root/${suite}.batch.XXXXXX")"
 current_stage="extract"
-tar_read --extract --wildcards --files-from="$patterns" --file "$archive" --directory "$batch_dir"
+# GNU tar's --directory is positional: it must precede --files-from so the
+# names read from that file are extracted below the staging directory.
+tar_read --extract --wildcards --directory "$batch_dir" --files-from="$patterns" --file "$archive"
 
 run_backend() {
   local case_path="$1" backend="$2" trace="$3" case_run_dir cycles
