@@ -28,7 +28,7 @@ redundant second full archive listing. It does not weaken the extraction's
 path checks; use it only with the unchanged archive that the planner scanned.
 
 MAX-MEMORY-PERCENT (default 95) is an admission ceiling.  Each new workload
-pair also reserves PAIR-MEMORY-RESERVE-GIB (default 128) against that ceiling,
+pair also reserves PAIR-MEMORY-RESERVE-GIB (default 160) against that ceiling,
 so several pairs cannot all pass a low initial-memory check and later cause a
 cgroup OOM as their trace state grows.  The gate never interrupts a pair
 already in flight. Disk-space reserve is separately controlled by
@@ -42,7 +42,7 @@ staged_traces=""
 jobs=1; pair_parallel=0
 trusted_size_plan=0
 max_memory_percent=95
-pair_memory_reserve_gib=128
+pair_memory_reserve_gib=160
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
