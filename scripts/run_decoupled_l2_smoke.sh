@@ -91,9 +91,24 @@ sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
 [[ -x "$sim_bin" ]] || {
   echo "error: missing $sim_bin (rerun with --build)" >&2; exit 2; }
 
+# Pin the executable used by this run.  Archive experiments can take hours and
+# a rebuild replaces the shared release binary in place; a run-local copy
+# keeps the result reproducible and lets provenance identify the exact image.
+sim_run_bin="$run_dir/accel-sim.out"
+cp "$sim_bin" "$sim_run_bin"
+{
+  printf 'sim_bin_source=%s\n' "$sim_bin"
+  printf 'sim_bin_run=%s\n' "$sim_run_bin"
+  printf 'sim_bin_sha256=%s\n' "$(sha256sum "$sim_run_bin" | awk '{print $1}')"
+  printf 'sim_bin_stat=%s\n' "$(stat -c 'size=%s mtime=%y' "$sim_run_bin")"
+  printf 'config_sha256=%s\n' "$(sha256sum "$run_dir/gpgpusim.config" | awk '{print $1}')"
+  printf 'trace_kernelslist_sha256=%s\n' "$(sha256sum "$trace" | awk '{print $1}')"
+  printf 'backend=%s\n' "$backend"
+} > "$run_dir/simulator_provenance.txt"
+
 if ! (
   cd "$run_dir"
-  "$sim_bin" -config ./gpgpusim.config -trace ./traces/kernelslist.g > smoke.out 2>&1
+  ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g > smoke.out 2>&1
 ); then
   echo "error: simulator failed; preserved $run_dir/smoke.out" >&2
   tail -50 "$run_dir/smoke.out" >&2 || true
