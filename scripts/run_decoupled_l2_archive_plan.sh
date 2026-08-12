@@ -6,6 +6,7 @@ usage() {
 Usage: scripts/run_decoupled_l2_archive_plan.sh --archive SUITE.tgz --suite NAME
        [--plan-dir DIR] [--run-root DIR] [--min-free-gib N]
        [--max-parallel N] [--jobs N] [--pair-parallel]
+       [--max-memory-percent N]
        [--wait-for-plan-pid PID]
 
 Create (or wait for) an exact tar-member capacity plan, then run each planned
@@ -21,6 +22,7 @@ EOF
 
 archive=""; suite=""; plan_dir=""; run_root=""; min_free_gib=80
 max_parallel=16; jobs=16; pair_parallel=0; wait_for_plan_pid=""
+max_memory_percent=95
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -31,6 +33,7 @@ while [[ $# -gt 0 ]]; do
     --max-parallel) max_parallel="$2"; shift 2 ;;
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
+    --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
     --wait-for-plan-pid) wait_for_plan_pid="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -39,7 +42,7 @@ done
 
 [[ -f "$archive" ]] || { echo "error: --archive must be readable" >&2; exit 2; }
 [[ -n "$suite" ]] || { echo "error: --suite is required" >&2; exit 2; }
-for value in "$min_free_gib" "$max_parallel" "$jobs"; do
+for value in "$min_free_gib" "$max_parallel" "$jobs" "$max_memory_percent"; do
   [[ "$value" =~ ^[0-9]+$ && "$value" -gt 0 ]] || {
     echo "error: numeric limits must be positive" >&2; exit 2;
   }
@@ -111,7 +114,8 @@ for ((wave = 1; wave <= wave_count; ++wave)); do
   done
   batch_args=(--archive "$archive" --suite "$suite" --case-list "$wave_sizes"
               --trusted-size-plan --min-free-gib "$min_free_gib"
-              --jobs "$jobs" --run-root "$wave_dir")
+              --jobs "$jobs" --max-memory-percent "$max_memory_percent"
+              --run-root "$wave_dir")
   [[ "$pair_parallel" -eq 1 ]] && batch_args+=(--pair-parallel)
   "$repo_root/scripts/run_decoupled_l2_archive_batch.sh" "${batch_args[@]}" \
     > "$wave_dir/pipeline.out" 2>&1

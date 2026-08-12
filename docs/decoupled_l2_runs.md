@@ -226,6 +226,9 @@ current staging batch plus `failures.csv` on failure. `--jobs` uses independent
 workload pairs concurrently; `--pair-parallel` runs their baseline and
 decoupled sides concurrently as well. Set these from actual cgroup CPU/memory
 capacity, not host-visible `nproc` alone.
+`--max-memory-percent` defaults to 95 and only throttles admission of a new
+pair; it does not terminate existing simulator processes. The 80 GiB reserve
+is exclusively disk space.
 The planner's compatible `sizes.csv` can substitute for `cases.txt` if a plan
 was generated before `cases.txt` was added.
 When launching immediately from that exact plan against the unchanged archive,

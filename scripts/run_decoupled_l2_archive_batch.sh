@@ -7,6 +7,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        --case-list CASES.txt [--config FILE] [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
+       [--max-memory-percent N]
        [--discard-failed-extract]
 
 Extract all selected traces in one archive pass, then run independent workload
@@ -22,6 +23,11 @@ retains its trace payload and failures.csv by default.
 member-size result from a just-completed planner run and skips the otherwise
 redundant second full archive listing. It does not weaken the extraction's
 path checks; use it only with the unchanged archive that the planner scanned.
+
+MAX-MEMORY-PERCENT (default 95) is an admission throttle only: it pauses new
+workload pairs when cgroup memory reaches that percentage of its limit, but
+never interrupts a pair already in flight. Disk-space reserve is separately
+controlled by MIN-FREE-GIB.
 EOF
 }
 
@@ -29,6 +35,7 @@ archive=""; suite=""; case_list=""; config=""; trace_config=""; config_given=0
 run_root=""; scratch_root=""; min_free_gib=80; keep_failed_extract=1; reuse=0
 jobs=1; pair_parallel=0
 trusted_size_plan=0
+max_memory_percent=95
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -42,6 +49,7 @@ while [[ $# -gt 0 ]]; do
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
     --trusted-size-plan) trusted_size_plan=1; shift ;;
+    --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -53,6 +61,9 @@ done
 [[ -n "$suite" && -f "$case_list" ]] || { echo "error: --suite and --case-list are required" >&2; exit 2; }
 [[ "$min_free_gib" =~ ^[0-9]+$ ]] || { echo "error: invalid --min-free-gib" >&2; exit 2; }
 [[ "$jobs" =~ ^[0-9]+$ && "$jobs" -gt 0 ]] || { echo "error: --jobs must be positive" >&2; exit 2; }
+[[ "$max_memory_percent" =~ ^[0-9]+$ && "$max_memory_percent" -gt 0 && "$max_memory_percent" -le 100 ]] || {
+  echo "error: --max-memory-percent must be in 1..100" >&2; exit 2;
+}
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || { echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2; }
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -86,6 +97,13 @@ tar_read() {
   else tar --gzip "$@"; fi
 }
 available_kib() { df -Pk "$scratch_root" | awk 'NR == 2 { print $4 }'; }
+cgroup_memory_percent() {
+  local used limit
+  used="$(cat /sys/fs/cgroup/memory.current)"
+  limit="$(cat /sys/fs/cgroup/memory.max)"
+  [[ "$limit" =~ ^[0-9]+$ && "$limit" -gt 0 ]] || { printf '0\n'; return; }
+  printf '%d\n' "$((used * 100 / limit))"
+}
 min_free_kib=$((min_free_gib * 1024 * 1024))
 
 # A single verbose member list provides both the exact capacity gate and proof
@@ -208,6 +226,11 @@ while IFS= read -r case_path; do
   while (( active >= jobs )); do
     if ! wait -n; then failed=1; fi
     active=$((active - 1))
+  done
+  while (( $(cgroup_memory_percent) >= max_memory_percent )); do
+    printf 'WAIT_MEMORY percent=%s limit=%s active_pairs=%s\n' \
+      "$(cgroup_memory_percent)" "$max_memory_percent" "$active" >&2
+    sleep 30
   done
   run_case "$case_path" &
   active=$((active + 1))
