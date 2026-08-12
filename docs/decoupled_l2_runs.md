@@ -222,6 +222,8 @@ scripts/run_decoupled_l2_archive_batch.sh \
 
 The batch runner repeats the exact member-size gate, runs pairs sequentially,
 and retains the whole current staging batch plus `failures.csv` on failure.
+The planner's compatible `sizes.csv` can substitute for `cases.txt` if a plan
+was generated before `cases.txt` was added.
 
 ## Executed public-pretrace record (2026-08-12)
 

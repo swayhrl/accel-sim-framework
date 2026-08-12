@@ -10,7 +10,8 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
 
 Extract all selected traces in one archive pass, then run each baseline and
 decoupled pair sequentially. CASES.txt contains one relative workload path per
-line, such as the cases.txt written by plan_decoupled_l2_archive_cases.sh.
+line, such as the cases.txt written by plan_decoupled_l2_archive_cases.sh;
+its compatible sizes.csv may also be used directly.
 The exact selected trace size is checked before extraction. A failed batch
 retains its trace payload and failures.csv by default.
 EOF
@@ -58,7 +59,7 @@ mkdir -p "$run_root" "$scratch_root"
 run_root="$(cd "$run_root" && pwd)"; scratch_root="$(cd "$scratch_root" && pwd)"
 
 selected="$run_root/${suite}_selected_cases.txt"
-awk 'NF { sub(/^\.\//, "", $0); print }' "$case_list" | sort -u > "$selected"
+awk -F, 'NF && $1 != "case" { sub(/^\.\//, "", $1); print $1 }' "$case_list" | sort -u > "$selected"
 [[ -s "$selected" ]] || { echo "error: case list has no paths" >&2; exit 2; }
 while IFS= read -r case_path; do
   [[ "$case_path" != /* && "$case_path" != *".."* ]] || {
