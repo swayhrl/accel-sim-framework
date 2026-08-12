@@ -246,6 +246,19 @@ If an exact planner is already running, pass its PID with
 `--wait-for-plan-pid PID`; the pipeline waits for its plan files instead of
 starting another full gzip scan.
 
+For long runs, attach the persistent monitor. It records a detailed snapshot
+on state changes and at the chosen interval, including elapsed time, disk and
+cgroup memory use, backend-run counts, watched pipeline states, and archive
+sizes:
+
+```bash
+scripts/monitor_decoupled_l2_archive_progress.sh \
+  --output-dir hw_run/decoupled-l2-monitor \
+  --interval-sec 1200 --watch-pid "$PIPELINE_PID" \
+  --status-file hw_run/decoupled-l2-archive-plan/polybench/pipeline.status \
+  --run-root hw_run/decoupled-l2-archive-plan/polybench
+```
+
 ## Executed public-pretrace record (2026-08-12)
 
 All cases used the QV100 SASS base configuration plus its matching
