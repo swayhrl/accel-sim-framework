@@ -4,7 +4,8 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/watch_decoupled_l2_memory_guard.sh (--pid PID [--pid PID ...] | --auto)
-       [--interval-sec N] [--max-memory-percent N] [--log FILE]
+       [--interval-sec N] [--max-memory-percent N]
+       [--memory-limit-cooldown-sec N] [--log FILE]
 
 Watch cgroup memory.events for a new OOM kill. Optionally, stop before an OOM
 when host memory consumption reaches MAX-MEMORY-PERCENT of MemTotal. On either
@@ -14,6 +15,10 @@ PID`; it deliberately does not claim to reclaim its already allocated memory.
 This is a last-resort growth brake for live archive runs, not an admission
 controller.
 
+MEMORY-LIMIT-COOLDOWN-SEC (default 30) is the minimum time before a sustained
+threshold breach can stop another simulator. This matters because SIGSTOP
+preserves state but does not immediately return RSS to the host.
+
 --auto discovers the current Accel-Sim release executable on every OOM event.
 Use it for a long archive campaign whose workload PIDs change between waves.
 EOF
@@ -21,6 +26,7 @@ EOF
 
 interval_sec=5
 max_memory_percent=100
+memory_limit_cooldown_sec=30
 log=""
 auto=0
 declare -a candidates=()
@@ -30,6 +36,7 @@ while [[ $# -gt 0 ]]; do
     --auto) auto=1; shift ;;
     --interval-sec) interval_sec="$2"; shift 2 ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
+    --memory-limit-cooldown-sec) memory_limit_cooldown_sec="$2"; shift 2 ;;
     --log) log="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -44,6 +51,9 @@ done
 [[ "$max_memory_percent" =~ ^[0-9]+$ && "$max_memory_percent" -gt 0 &&
    "$max_memory_percent" -le 100 ]] || {
   echo "error: --max-memory-percent must be in 1..100" >&2; exit 2;
+}
+[[ "$memory_limit_cooldown_sec" =~ ^[0-9]+$ ]] || {
+  echo "error: --memory-limit-cooldown-sec must be non-negative" >&2; exit 2;
 }
 if [[ -z "$log" ]]; then log="memory_guard.$(date +%Y%m%d_%H%M%S).log"; fi
 mkdir -p "$(dirname "$log")"
@@ -88,21 +98,21 @@ largest_running_pid() {
 }
 
 last_oom="$(oom_kill_count)"
-memory_limit_tripped=0
+last_memory_limit_epoch=0
 if (( auto )); then candidate_label="auto"; else candidate_label="${candidates[*]}"; fi
 printf '%s START oom_kill=%s candidates=%s\n' "$(date --iso-8601=seconds)" \
   "$last_oom" "$candidate_label" >> "$log"
 while :; do
   sleep "$interval_sec"
   now_oom="$(oom_kill_count)"
+  now_epoch="$(date +%s)"
   used_percent="$(host_memory_used_percent)"
   reason=""
   if (( now_oom > last_oom )); then reason="OOM"; fi
-  if (( used_percent < max_memory_percent )); then
-    memory_limit_tripped=0
-  elif (( ! memory_limit_tripped )); then
+  if (( used_percent >= max_memory_percent &&
+        now_epoch - last_memory_limit_epoch >= memory_limit_cooldown_sec )); then
     reason="${reason:+${reason}_}MEMORY_LIMIT"
-    memory_limit_tripped=1
+    last_memory_limit_epoch="$now_epoch"
   fi
   [[ -n "$reason" ]] || continue
   selection="$(largest_running_pid || true)"
