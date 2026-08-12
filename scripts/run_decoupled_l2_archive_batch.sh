@@ -6,12 +6,15 @@ usage() {
 Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAME
        --case-list CASES.txt [--config FILE] [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
+       [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
        [--max-memory-percent N]
        [--discard-failed-extract]
 
 Extract all selected traces in one archive pass, then run independent workload
-pairs concurrently. --jobs limits concurrent workload pairs (default 1).
+pairs concurrently. --staged-traces names a persistent stage prepared by
+prepare_decoupled_l2_archive_stage.sh; completed cases are reused there and
+only missing cases are extracted. --jobs limits concurrent workload pairs (default 1).
 --pair-parallel additionally runs each pair's baseline and decoupled backends
 concurrently. CASES.txt contains one relative workload path per line, such as
 the cases.txt written by plan_decoupled_l2_archive_cases.sh; its compatible
@@ -33,6 +36,7 @@ EOF
 
 archive=""; suite=""; case_list=""; config=""; trace_config=""; config_given=0
 run_root=""; scratch_root=""; min_free_gib=80; keep_failed_extract=1; reuse=0
+staged_traces=""
 jobs=1; pair_parallel=0
 trusted_size_plan=0
 max_memory_percent=95
@@ -45,6 +49,7 @@ while [[ $# -gt 0 ]]; do
     --trace-config) trace_config="$2"; shift 2 ;;
     --run-root) run_root="$2"; shift 2 ;;
     --scratch-root) scratch_root="$2"; shift 2 ;;
+    --staged-traces) staged_traces="$2"; shift 2 ;;
     --min-free-gib) min_free_gib="$2"; shift 2 ;;
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
@@ -82,6 +87,10 @@ fi
 if [[ -z "$scratch_root" ]]; then scratch_root="$repo_root/hw_run/decoupled-l2-extract"; fi
 mkdir -p "$run_root" "$scratch_root"
 run_root="$(cd "$run_root" && pwd)"; scratch_root="$(cd "$scratch_root" && pwd)"
+if [[ -n "$staged_traces" ]]; then
+  mkdir -p "$staged_traces"
+  staged_traces="$(cd "$staged_traces" && pwd)"
+fi
 
 selected="$run_root/${suite}_selected_cases.txt"
 awk -F, 'NF && $1 != "case" { sub(/^\.\//, "", $1); print $1 }' "$case_list" | sort -u > "$selected"
@@ -144,21 +153,35 @@ else
 fi
 trace_kib="$(awk -F, '{ bytes += $2 } END { print int((bytes + 1023) / 1024) }' "$selected_sizes")"
 [[ "$trace_kib" =~ ^[0-9]+$ && "$trace_kib" -gt 0 ]] || { echo "error: cannot size selected traces" >&2; exit 1; }
+missing="$run_root/${suite}_missing_cases.txt"
+: > "$missing"
+while IFS=, read -r case_path case_bytes; do
+  [[ -n "$case_path" ]] || continue
+  marker="${staged_traces:-/nonexistent}/.decoupled_l2_stage_complete/${case_path//\//__}"
+  if [[ -z "$staged_traces" || ! -f "$marker" ||
+        ! -f "$staged_traces/$case_path/traces/kernelslist.g" ]]; then
+    printf '%s\n' "$case_path" >> "$missing"
+  fi
+done < "$selected_sizes"
+missing_kib="$(awk -F, -v missing="$missing" '
+  BEGIN { while ((getline x < missing) > 0) want[x] = 1; close(missing) }
+  want[$1] { bytes += $2 } END { print int((bytes + 1023) / 1024) }
+' "$selected_sizes")"
 available="$(available_kib)"
-if (( available < min_free_kib + trace_kib )); then
-  printf 'error: batch needs %d GiB traces plus %d GiB reserve; only %d GiB free\n' \
-    "$(((trace_kib + 1024 * 1024 - 1) / 1024 / 1024))" "$min_free_gib" \
+if (( available < min_free_kib + missing_kib )); then
+  printf 'error: batch needs %d GiB additional traces plus %d GiB reserve; only %d GiB free\n' \
+    "$(((missing_kib + 1024 * 1024 - 1) / 1024 / 1024))" "$min_free_gib" \
     "$((available / 1024 / 1024))" >&2
   exit 1
 fi
 
 patterns="$run_root/${suite}_trace_patterns.txt"
-awk '{ printf "./%s/traces/*\n", $0 }' "$selected" > "$patterns"
+awk '{ printf "./%s/traces/*\n", $0 }' "$missing" > "$patterns"
 summary="$run_root/summary.csv"; failures="$run_root/failures.csv"
 printf 'suite,case,backend,cycles,run_dir\n' > "$summary"
 printf 'time,suite,case,backend,stage,run_dir,trace_dir,smoke_out\n' > "$failures"
-batch_dir=""; current_case=""; current_backend=""; current_stage="setup"; current_run_dir=""
-cleanup_batch() { [[ -n "$batch_dir" && "$batch_dir" == "$scratch_root"/* ]] && rm -rf "$batch_dir"; }
+batch_dir=""; owns_batch=1; current_case=""; current_backend=""; current_stage="setup"; current_run_dir=""
+cleanup_batch() { [[ "$owns_batch" -eq 1 && -n "$batch_dir" && "$batch_dir" == "$scratch_root"/* ]] && rm -rf "$batch_dir"; }
 finish() {
   status="$?"
   if (( status != 0 )); then
@@ -177,11 +200,28 @@ finish() {
 }
 trap finish EXIT
 
-batch_dir="$(mktemp -d "$scratch_root/${suite}.batch.XXXXXX")"
+if [[ -n "$staged_traces" ]]; then
+  batch_dir="$staged_traces"
+  owns_batch=0
+else
+  batch_dir="$(mktemp -d "$scratch_root/${suite}.batch.XXXXXX")"
+fi
 current_stage="extract"
 # GNU tar's --directory is positional: it must precede --files-from so the
 # names read from that file are extracted below the staging directory.
-tar_read --extract --wildcards --directory "$batch_dir" --files-from="$patterns" --file "$archive"
+if [[ -s "$missing" ]]; then
+  tar_read --extract --wildcards --directory "$batch_dir" --files-from="$patterns" --file "$archive"
+  if [[ "$owns_batch" -eq 0 ]]; then
+    marker_dir="$batch_dir/.decoupled_l2_stage_complete"
+    mkdir -p "$marker_dir"
+    while IFS= read -r case_path; do
+      [[ -f "$batch_dir/$case_path/traces/kernelslist.g" ]] || {
+        echo "error: staged extraction lost $case_path" >&2; exit 1;
+      }
+      : > "$marker_dir/${case_path//\//__}"
+    done < "$missing"
+  fi
+fi
 
 run_backend() {
   local case_path="$1" backend="$2" trace="$3" case_run_dir cycles

@@ -6,7 +6,7 @@ usage() {
 Usage: scripts/run_decoupled_l2_archive_plan.sh --archive SUITE.tgz --suite NAME
        [--plan-dir DIR] [--run-root DIR] [--min-free-gib N]
        [--max-parallel N] [--jobs N] [--pair-parallel]
-       [--max-memory-percent N]
+       [--max-memory-percent N] [--staged-traces DIR]
        [--wait-for-plan-pid PID]
 
 Create (or wait for) an exact tar-member capacity plan, then run each planned
@@ -23,6 +23,7 @@ EOF
 archive=""; suite=""; plan_dir=""; run_root=""; min_free_gib=80
 max_parallel=16; jobs=16; pair_parallel=0; wait_for_plan_pid=""
 max_memory_percent=95
+staged_traces=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -34,6 +35,7 @@ while [[ $# -gt 0 ]]; do
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
+    --staged-traces) staged_traces="$2"; shift 2 ;;
     --wait-for-plan-pid) wait_for_plan_pid="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -56,6 +58,7 @@ if [[ -z "$plan_dir" ]]; then plan_dir="$repo_root/hw_run/decoupled-l2-plans/$su
 if [[ -z "$run_root" ]]; then run_root="$repo_root/hw_run/decoupled-l2-archive-plan/$suite"; fi
 mkdir -p "$plan_dir" "$run_root"
 plan_dir="$(cd "$plan_dir" && pwd)"; run_root="$(cd "$run_root" && pwd)"
+if [[ -n "$staged_traces" ]]; then mkdir -p "$staged_traces"; staged_traces="$(cd "$staged_traces" && pwd)"; fi
 status="$run_root/pipeline.status"
 status_log="$run_root/pipeline.log"
 set_status() {
@@ -108,7 +111,15 @@ for ((wave = 1; wave <= wave_count; ++wave)); do
   # A plan may have been made before another suite claimed temporary staging
   # space. Wait rather than fail the whole plan or violate the free-space
   # reserve; a successful earlier wave always releases its own staging tree.
-  while (( $(available_kib) < min_free_kib + wave_kib )); do
+  staged_kib=0
+  if [[ -n "$staged_traces" ]]; then
+    staged_kib="$(awk -F, -v stage="$staged_traces" '
+      NR > 1 { name = $1; gsub("/", "__", name); marker = stage "/.decoupled_l2_stage_complete/" name; cmd = "test -f \"" marker "\""; if (system(cmd) == 0) bytes += $2 }
+      END { print int((bytes + 1023) / 1024) }
+    ' "$wave_sizes")"
+  fi
+  need_kib=$((wave_kib - staged_kib))
+  while (( $(available_kib) < min_free_kib + need_kib )); do
     set_status WAIT_CAPACITY "$wave"
     sleep 30
   done
@@ -117,6 +128,7 @@ for ((wave = 1; wave <= wave_count; ++wave)); do
               --jobs "$jobs" --max-memory-percent "$max_memory_percent"
               --run-root "$wave_dir")
   [[ "$pair_parallel" -eq 1 ]] && batch_args+=(--pair-parallel)
+  [[ -n "$staged_traces" ]] && batch_args+=(--staged-traces "$staged_traces")
   "$repo_root/scripts/run_decoupled_l2_archive_batch.sh" "${batch_args[@]}" \
     > "$wave_dir/pipeline.out" 2>&1
   awk -F, -v wave="$wave" 'NR > 1 { print $1 "," wave "," $2 "," $3 "," $4 "," $5 }' \
