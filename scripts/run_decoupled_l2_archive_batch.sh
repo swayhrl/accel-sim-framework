@@ -233,7 +233,7 @@ run_backend() {
   case_run_dir="$run_root/$suite/$case_path/$backend"
   smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
   [[ -n "$trace_config" ]] && smoke_args+=(--trace-config "$trace_config")
-  if [[ "$reuse" -eq 1 && -f "$case_run_dir/smoke.out" ]] && rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out"; then
+  if [[ ( "$reuse" -eq 1 || "$owns_batch" -eq 0 ) && -f "$case_run_dir/smoke.out" ]] && rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out"; then
     printf 'REUSE backend=%s run_dir=%s\n' "$backend" "$case_run_dir"
   elif ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
     printf '%s,%s,%s,simulate,%s,%s,%s\n' "$(date --iso-8601=seconds)" \
