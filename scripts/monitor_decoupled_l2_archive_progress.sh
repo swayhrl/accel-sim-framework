@@ -14,7 +14,10 @@ EOF
 }
 
 output_dir=""; interval_sec=1200
-declare -a watch_pids status_files run_roots archives
+watch_pids=()
+status_files=()
+run_roots=()
+archives=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --output-dir) output_dir="$2"; shift 2 ;;
@@ -32,7 +35,7 @@ done
 [[ "$interval_sec" =~ ^[0-9]+$ && "$interval_sec" -gt 0 ]] || {
   echo "error: --interval-sec must be positive" >&2; exit 2;
 }
-for pid in "${watch_pids[@]:-}"; do
+for pid in "${watch_pids[@]}"; do
   [[ "$pid" =~ ^[0-9]+$ ]] || { echo "error: invalid --watch-pid $pid" >&2; exit 2; }
 done
 mkdir -p "$output_dir"
@@ -44,15 +47,15 @@ printf 'time,reason,elapsed_sec,free_gib,cgroup_mem_gib,completed_runs,failed_ru
 
 read_signature() {
   {
-    for pid in "${watch_pids[@]:-}"; do
+    for pid in "${watch_pids[@]}"; do
       if kill -0 "$pid" 2>/dev/null; then printf 'pid:%s:running\n' "$pid"
       else printf 'pid:%s:exited\n' "$pid"; fi
     done
-    for file in "${status_files[@]:-}"; do
+    for file in "${status_files[@]}"; do
       printf 'status:%s:' "$file"
       [[ -f "$file" ]] && sha256sum "$file" | awk '{print $1}' || printf 'missing'
     done
-    for root in "${run_roots[@]:-}"; do
+    for root in "${run_roots[@]}"; do
       [[ -d "$root" ]] || continue
       # Summary/failure changes are discrete completion events. Do not include
       # smoke.out: its frequent progress writes would turn monitoring into a
@@ -70,7 +73,7 @@ snapshot() {
   free_gib="$((free_kib / 1024 / 1024))"
   mem_bytes="$(cat /sys/fs/cgroup/memory.current 2>/dev/null || printf 0)"
   mem_gib="$((mem_bytes / 1024 / 1024 / 1024))"
-  for root in "${run_roots[@]:-}"; do
+  for root in "${run_roots[@]}"; do
     [[ -d "$root" ]] || continue
     while IFS= read -r summary; do
       completed=$((completed + $(awk 'END { print (NR ? NR - 1 : 0) }' "$summary")))
@@ -84,17 +87,17 @@ snapshot() {
       "$now" "$reason" "$elapsed" "$free_gib" "$mem_gib"
     printf 'completed_backend_runs=%s\nfailed_backend_runs=%s\n' "$completed" "$failed"
     printf '\n[watched_pids]\n'
-    for pid in "${watch_pids[@]:-}"; do
+    for pid in "${watch_pids[@]}"; do
       if kill -0 "$pid" 2>/dev/null; then ps -o pid,stat,etime,%cpu,%mem,cmd -p "$pid" | tail -1
       else printf 'pid=%s exited\n' "$pid"; fi
     done
     printf '\n[status_files]\n'
-    for file in "${status_files[@]:-}"; do
+    for file in "${status_files[@]}"; do
       printf 'file=%s\n' "$file"
       [[ -f "$file" ]] && sed -n '1,32p' "$file" || printf 'missing\n'
     done
     printf '\n[archives]\n'
-    for archive in "${archives[@]:-}"; do
+    for archive in "${archives[@]}"; do
       [[ -f "$archive" ]] && stat -c '%n bytes=%s mtime=%y' "$archive" || printf 'missing %s\n' "$archive"
     done
   } > "$latest"
