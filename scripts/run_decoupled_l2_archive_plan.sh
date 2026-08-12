@@ -44,6 +44,12 @@ done
 
 [[ -f "$archive" ]] || { echo "error: --archive must be readable" >&2; exit 2; }
 [[ -n "$suite" ]] || { echo "error: --suite is required" >&2; exit 2; }
+[[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || {
+  echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2;
+}
+[[ -d "$DECOUPLED_L2_GPGPUSIM_ROOT" ]] || {
+  echo "error: missing GPGPU-Sim root $DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2;
+}
 for value in "$min_free_gib" "$max_parallel" "$jobs" "$max_memory_percent"; do
   [[ "$value" =~ ^[0-9]+$ && "$value" -gt 0 ]] || {
     echo "error: numeric limits must be positive" >&2; exit 2;
@@ -61,15 +67,23 @@ plan_dir="$(cd "$plan_dir" && pwd)"; run_root="$(cd "$run_root" && pwd)"
 if [[ -n "$staged_traces" ]]; then mkdir -p "$staged_traces"; staged_traces="$(cd "$staged_traces" && pwd)"; fi
 status="$run_root/pipeline.status"
 status_log="$run_root/pipeline.log"
+failure="$run_root/pipeline.failure"
 set_status() {
   printf 'time=%s\nstage=%s\nwave=%s\n' "$(date --iso-8601=seconds)" "$1" "${2:-0}" > "$status"
   printf '%s stage=%s wave=%s\n' "$(date --iso-8601=seconds)" "$1" "${2:-0}" >> "$status_log"
 }
 fail() {
-  set_status FAILED "${1:-0}"
-  exit 1
+  local failed_wave="${1:-0}" command="${2:-unknown}" exit_status="${3:-1}"
+  trap - ERR
+  {
+    printf 'time=%s\n' "$(date --iso-8601=seconds)"
+    printf 'stage=FAILED\nwave=%s\nstatus=%s\ncommand=%q\n' \
+      "$failed_wave" "$exit_status" "$command"
+  } > "$failure"
+  set_status FAILED "$failed_wave"
+  exit "$exit_status"
 }
-trap 'fail "${wave:-0}"' ERR
+trap 'exit_status=$?; fail "${wave:-0}" "$BASH_COMMAND" "$exit_status"' ERR
 
 if [[ -n "$wait_for_plan_pid" ]]; then
   set_status WAIT_PLAN 0
