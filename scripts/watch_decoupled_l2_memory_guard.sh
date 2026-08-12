@@ -4,13 +4,15 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/watch_decoupled_l2_memory_guard.sh (--pid PID [--pid PID ...] | --auto)
-       [--interval-sec N] [--log FILE]
+       [--interval-sec N] [--max-memory-percent N] [--log FILE]
 
-Watch cgroup memory.events for a new OOM kill. On each new event, send SIGSTOP
-to the largest-resident listed simulator still running and record it in LOG.
-SIGSTOP preserves simulator state for a later `kill -CONT PID`; it deliberately
-does not claim to reclaim its already allocated memory. This is a last-resort
-growth brake for live archive runs, not an admission controller.
+Watch cgroup memory.events for a new OOM kill. Optionally, stop before an OOM
+when host memory consumption reaches MAX-MEMORY-PERCENT of MemTotal. On either
+event, send SIGSTOP to the largest-resident listed simulator still running and
+record it in LOG. SIGSTOP preserves simulator state for a later `kill -CONT
+PID`; it deliberately does not claim to reclaim its already allocated memory.
+This is a last-resort growth brake for live archive runs, not an admission
+controller.
 
 --auto discovers the current Accel-Sim release executable on every OOM event.
 Use it for a long archive campaign whose workload PIDs change between waves.
@@ -18,6 +20,7 @@ EOF
 }
 
 interval_sec=5
+max_memory_percent=100
 log=""
 auto=0
 declare -a candidates=()
@@ -26,6 +29,7 @@ while [[ $# -gt 0 ]]; do
     --pid) candidates+=("$2"); shift 2 ;;
     --auto) auto=1; shift ;;
     --interval-sec) interval_sec="$2"; shift 2 ;;
+    --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
     --log) log="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -37,12 +41,26 @@ done
 [[ "$interval_sec" =~ ^[0-9]+$ && "$interval_sec" -gt 0 ]] || {
   echo "error: --interval-sec must be positive" >&2; exit 2;
 }
+[[ "$max_memory_percent" =~ ^[0-9]+$ && "$max_memory_percent" -gt 0 &&
+   "$max_memory_percent" -le 100 ]] || {
+  echo "error: --max-memory-percent must be in 1..100" >&2; exit 2;
+}
 if [[ -z "$log" ]]; then log="memory_guard.$(date +%Y%m%d_%H%M%S).log"; fi
 mkdir -p "$(dirname "$log")"
 
 oom_kill_count() {
   awk '$1 == "oom_kill" { print $2; found = 1 } END { if (!found) print 0 }' \
     /sys/fs/cgroup/memory.events
+}
+host_memory_used_percent() {
+  awk '
+    /^MemTotal:/ { total = $2 }
+    /^MemAvailable:/ { available = $2 }
+    END {
+      if (total > 0 && available >= 0) print int((total - available) * 100 / total)
+      else print 0
+    }
+  ' /proc/meminfo
 }
 largest_running_pid() {
   local pid rss state target best_pid="" best_rss=-1
@@ -70,22 +88,33 @@ largest_running_pid() {
 }
 
 last_oom="$(oom_kill_count)"
+memory_limit_tripped=0
 if (( auto )); then candidate_label="auto"; else candidate_label="${candidates[*]}"; fi
 printf '%s START oom_kill=%s candidates=%s\n' "$(date --iso-8601=seconds)" \
   "$last_oom" "$candidate_label" >> "$log"
 while :; do
   sleep "$interval_sec"
   now_oom="$(oom_kill_count)"
-  (( now_oom > last_oom )) || continue
+  used_percent="$(host_memory_used_percent)"
+  reason=""
+  if (( now_oom > last_oom )); then reason="OOM"; fi
+  if (( used_percent < max_memory_percent )); then
+    memory_limit_tripped=0
+  elif (( ! memory_limit_tripped )); then
+    reason="${reason:+${reason}_}MEMORY_LIMIT"
+    memory_limit_tripped=1
+  fi
+  [[ -n "$reason" ]] || continue
   selection="$(largest_running_pid || true)"
   if [[ -z "$selection" ]]; then
-    printf '%s OOM oom_kill=%s action=none reason=no_live_candidate\n' \
-      "$(date --iso-8601=seconds)" "$now_oom" >> "$log"
+    printf '%s %s oom_kill=%s used_percent=%s action=none reason=no_live_candidate\n' \
+      "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" >> "$log"
   else
     read -r pid rss <<< "$selection"
     kill -STOP "$pid"
-    printf '%s OOM oom_kill=%s action=SIGSTOP pid=%s rss_kib=%s resume="kill -CONT %s"\n' \
-      "$(date --iso-8601=seconds)" "$now_oom" "$pid" "$rss" "$pid" >> "$log"
+    printf '%s %s oom_kill=%s used_percent=%s action=SIGSTOP pid=%s rss_kib=%s resume="kill -CONT %s"\n' \
+      "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" \
+      "$pid" "$rss" "$pid" >> "$log"
   fi
   last_oom="$now_oom"
 done
