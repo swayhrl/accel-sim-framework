@@ -56,6 +56,10 @@ esac
 }
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
+[[ -x "$sim_bin" ]] || { echo "error: missing simulator binary $sim_bin" >&2; exit 2; }
+sim_bin_sha256="$(sha256sum "$sim_bin" | awk '{print $1}')"
+gpgpusim_source_commit="$(git -C "$DECOUPLED_L2_GPGPUSIM_ROOT" rev-parse HEAD)"
 if [[ -z "$config" ]]; then
   config="$DECOUPLED_L2_GPGPUSIM_ROOT/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
 fi
@@ -79,6 +83,18 @@ fi
 summary="$run_root/summary.csv"
 printf 'suite,tier,case,backend,cycles,run_dir\n' > "$summary"
 
+run_is_reusable() {
+  local case_run_dir="$1" provenance recorded_sha recorded_commit
+  [[ -f "$case_run_dir/smoke.out" ]] || return 1
+  rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out" || return 1
+  provenance="$case_run_dir/simulator_provenance.txt"
+  [[ -f "$provenance" ]] || return 1
+  recorded_sha="$(sed -n 's/^sim_bin_sha256=//p' "$provenance" | tail -1)"
+  recorded_commit="$(sed -n 's/^gpgpusim_source_commit=//p' "$provenance" | tail -1)"
+  [[ "$recorded_sha" == "$sim_bin_sha256" &&
+     "$recorded_commit" == "$gpgpusim_source_commit" ]]
+}
+
 case_count=0
 while IFS=, read -r case_suite case_tier case_name trace_rel expected_regex; do
   [[ -z "$case_suite" || "${case_suite:0:1}" == "#" || "$case_suite" == "suite" ]] && continue
@@ -98,8 +114,7 @@ while IFS=, read -r case_suite case_tier case_name trace_rel expected_regex; do
     if [[ -n "$trace_config" ]]; then
       smoke_args+=(--trace-config "$trace_config")
     fi
-    if [[ "$reuse" -eq 1 && -f "$case_run_dir/smoke.out" ]] && \
-       rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out"; then
+    if [[ "$reuse" -eq 1 ]] && run_is_reusable "$case_run_dir"; then
       printf 'REUSE backend=%s run_dir=%s\n' "$backend" "$case_run_dir"
     else
       "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"
