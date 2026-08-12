@@ -40,9 +40,21 @@ reserve_kib=$((min_free_gib * 1024 * 1024))
   echo "error: selected stage exceeds disk reserve" >&2; exit 1;
 }
 # Legacy archives are inconsistent: some preserve a leading "./" and some
-# start directly at the suite directory.  Keep both spellings so the stage
-# result is determined by the selected case, not that packaging detail.
-awk '{ printf "%s/traces/*\n./%s/traces/*\n", $0, $0 }' "$selected" > "$patterns"
+# start directly at the suite directory.  Select the archive's spelling once;
+# passing both to tar would extract the matching one but still fail on the
+# unmatched pattern and leave an unmarked partial stage.
+set +o pipefail
+if command -v pigz >/dev/null 2>&1; then
+  first_member="$(tar --use-compress-program=pigz --list --file "$archive" | head -1)"
+else
+  first_member="$(tar --gzip --list --file "$archive" | head -1)"
+fi
+set -o pipefail
+case "$first_member" in
+  ./*) member_prefix="./" ;;
+  *) member_prefix="" ;;
+esac
+awk -v prefix="$member_prefix" '{ printf "%s%s/traces/*\n", prefix, $0 }' "$selected" > "$patterns"
 if command -v pigz >/dev/null 2>&1; then
   tar --use-compress-program=pigz --extract --wildcards --directory "$stage_dir" --files-from="$patterns" --file "$archive"
 else
