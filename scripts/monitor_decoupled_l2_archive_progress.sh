@@ -65,10 +65,10 @@ snapshot() {
   for root in "${run_roots[@]:-}"; do
     [[ -d "$root" ]] || continue
     while IFS= read -r summary; do
-      completed=$((completed + $(awk 'END { print NR > 0 ? NR - 1 : 0 }' "$summary")))
+      completed=$((completed + $(awk 'END { print (NR ? NR - 1 : 0) }' "$summary")))
     done < <(find "$root" -type f -name summary.csv -print 2>/dev/null)
     while IFS= read -r failures; do
-      failed=$((failed + $(awk 'END { print NR > 0 ? NR - 1 : 0 }' "$failures")))
+      failed=$((failed + $(awk 'END { print (NR ? NR - 1 : 0) }' "$failures")))
     done < <(find "$root" -type f -name failures.csv -print 2>/dev/null)
   done
   {
