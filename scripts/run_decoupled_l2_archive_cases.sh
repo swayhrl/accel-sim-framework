@@ -57,6 +57,13 @@ scratch_root="$(cd "$scratch_root" && pwd)"
 min_free_kib=$((min_free_gib * 1024 * 1024))
 
 available_kib() { df -Pk "$scratch_root" | awk 'NR == 2 { print $4 }'; }
+tar_read() {
+  if command -v pigz >/dev/null 2>&1; then
+    tar --use-compress-program=pigz "$@"
+  else
+    tar --gzip "$@"
+  fi
+}
 require_free_kib() {
   local required_kib="$1" action="$2" available
   available="$(available_kib)"
@@ -71,7 +78,7 @@ require_free_kib() {
 # Each path is a workload argument set, not merely an application name. The
 # archive is listed once; extraction below is scoped to one selected trace set.
 case_list="$run_root/${suite}_cases.txt"
-tar -tzf "$archive" | awk '
+tar_read --list --file "$archive" | awk '
   /\/traces\/kernelslist\.g$/ {
     sub(/^\.\//, "", $0)
     sub(/\/traces\/kernelslist\.g$/, "", $0)
@@ -92,13 +99,13 @@ while IFS= read -r case_path; do
   case_name="${case_path##*/}"
   [[ "$case_filter" == all || "$case_filter" == "$case_name" ]] || continue
   case_count=$((case_count + 1))
-  trace_kib="$(tar --list --verbose --gzip --wildcards --file "$archive" \
+  trace_kib="$(tar_read --list --verbose --wildcards --file "$archive" \
     "./$case_path/traces/*" | awk '{ bytes += $3 } END { print int((bytes + 1023) / 1024) }')"
   [[ "$trace_kib" =~ ^[0-9]+$ ]] || { echo "error: cannot size $case_path" >&2; exit 1; }
   require_free_kib "$((min_free_kib + trace_kib))" "extraction of $case_path"
 
   case_dir="$(mktemp -d "$scratch_root/${suite}.XXXXXX")"
-  tar --extract --gzip --wildcards --file "$archive" --directory "$case_dir" \
+  tar_read --extract --wildcards --file "$archive" --directory "$case_dir" \
     "./$case_path/traces/*"
   trace="$case_dir/$case_path/traces/kernelslist.g"
   [[ -f "$trace" ]] || { echo "error: extraction lost $case_path" >&2; exit 1; }

@@ -78,6 +78,14 @@ remote_size_kib() {
   printf '%s\n' "$(((bytes + 1023) / 1024))"
 }
 
+tar_read() {
+  if command -v pigz >/dev/null 2>&1; then
+    tar --use-compress-program=pigz "$@"
+  else
+    tar --gzip "$@"
+  fi
+}
+
 v100_base_url="https://engineering.purdue.edu/tgrogers/accel-sim/traces/tesla-v100/latest"
 # The older public collection holds Parboil, PolyBench, and CUTLASS.  The
 # newer HTTPS mirror advertises their aggregate sizes but does not expose the
@@ -102,7 +110,7 @@ fetch_one() {
   else
     curl --fail --location --continue-at - --output "$archive" "$url"
   fi
-  tar -tzf "$archive" >/dev/null
+  tar_read --list --file "$archive" >/dev/null
   if [[ "$archive_only" -eq 1 ]]; then
     return
   fi
@@ -110,9 +118,9 @@ fetch_one() {
   # size column is deliberately conservative when --skip-old-files will omit
   # already-extracted members.
   local extract_kib
-  extract_kib="$(tar -tvzf "$archive" | awk '{ bytes += $3 } END { print int((bytes + 1023) / 1024) }')"
+  extract_kib="$(tar_read --list --verbose --file "$archive" | awk '{ bytes += $3 } END { print int((bytes + 1023) / 1024) }')"
   require_free_kib "$((min_free_kib + extract_kib))" "extraction of $name"
-  tar --extract --gzip --skip-old-files --file "$archive" --directory "$dest"
+  tar_read --extract --skip-old-files --file "$archive" --directory "$dest"
   require_free_kib "$min_free_kib" "post-extraction reserve for $name"
 }
 
