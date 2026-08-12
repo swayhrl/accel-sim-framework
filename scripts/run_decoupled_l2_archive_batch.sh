@@ -6,12 +6,14 @@ usage() {
 Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAME
        --case-list CASES.txt [--config FILE] [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
-       [--discard-failed-extract]
+       [--jobs N] [--pair-parallel] [--discard-failed-extract]
 
-Extract all selected traces in one archive pass, then run each baseline and
-decoupled pair sequentially. CASES.txt contains one relative workload path per
-line, such as the cases.txt written by plan_decoupled_l2_archive_cases.sh;
-its compatible sizes.csv may also be used directly.
+Extract all selected traces in one archive pass, then run independent workload
+pairs concurrently. --jobs limits concurrent workload pairs (default 1).
+--pair-parallel additionally runs each pair's baseline and decoupled backends
+concurrently. CASES.txt contains one relative workload path per line, such as
+the cases.txt written by plan_decoupled_l2_archive_cases.sh; its compatible
+sizes.csv may also be used directly.
 The exact selected trace size is checked before extraction. A failed batch
 retains its trace payload and failures.csv by default.
 EOF
@@ -19,6 +21,7 @@ EOF
 
 archive=""; suite=""; case_list=""; config=""; trace_config=""; config_given=0
 run_root=""; scratch_root=""; min_free_gib=80; keep_failed_extract=1; reuse=0
+jobs=1; pair_parallel=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -29,6 +32,8 @@ while [[ $# -gt 0 ]]; do
     --run-root) run_root="$2"; shift 2 ;;
     --scratch-root) scratch_root="$2"; shift 2 ;;
     --min-free-gib) min_free_gib="$2"; shift 2 ;;
+    --jobs) jobs="$2"; shift 2 ;;
+    --pair-parallel) pair_parallel=1; shift ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -39,6 +44,7 @@ done
 [[ -f "$archive" ]] || { echo "error: --archive must be a readable .tgz" >&2; exit 2; }
 [[ -n "$suite" && -f "$case_list" ]] || { echo "error: --suite and --case-list are required" >&2; exit 2; }
 [[ "$min_free_gib" =~ ^[0-9]+$ ]] || { echo "error: invalid --min-free-gib" >&2; exit 2; }
+[[ "$jobs" =~ ^[0-9]+$ && "$jobs" -gt 0 ]] || { echo "error: --jobs must be positive" >&2; exit 2; }
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || { echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2; }
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -134,31 +140,58 @@ batch_dir="$(mktemp -d "$scratch_root/${suite}.batch.XXXXXX")"
 current_stage="extract"
 tar_read --extract --wildcards --files-from="$patterns" --file "$archive" --directory "$batch_dir"
 
-case_count=0
+run_backend() {
+  local case_path="$1" backend="$2" trace="$3" case_run_dir cycles
+  case_run_dir="$run_root/$suite/$case_path/$backend"
+  smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
+  [[ -n "$trace_config" ]] && smoke_args+=(--trace-config "$trace_config")
+  if [[ "$reuse" -eq 1 && -f "$case_run_dir/smoke.out" ]] && rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out"; then
+    printf 'REUSE backend=%s run_dir=%s\n' "$backend" "$case_run_dir"
+  elif ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
+    printf '%s,%s,%s,simulate,%s,%s,%s\n' "$(date --iso-8601=seconds)" \
+      "$suite" "$case_path" "$case_run_dir" "$batch_dir" "$case_run_dir/smoke.out" >> "$failures"
+    return 1
+  fi
+  if [[ "$backend" == decoupled ]] && ! rg -q 'decoupled_l2\[.*access=[1-9]' "$case_run_dir/smoke.out"; then
+    printf '%s,%s,%s,counter_gate,%s,%s,%s\n' "$(date --iso-8601=seconds)" \
+      "$suite" "$case_path" "$case_run_dir" "$batch_dir" "$case_run_dir/smoke.out" >> "$failures"
+    return 1
+  fi
+  cycles="$(sed -n 's/.*gpu_tot_sim_cycle = \([0-9][0-9]*\).*/\1/p' "$case_run_dir/smoke.out" | tail -1)"
+  [[ -n "$cycles" ]] || return 1
+  printf '%s,%s,%s,%s,%s\n' "$suite" "$case_path" "$backend" "$cycles" "$case_run_dir" >> "$summary"
+}
+
+run_case() {
+  local case_path="$1" trace baseline_status decoupled_status
+  trace="$batch_dir/$case_path/traces/kernelslist.g"
+  [[ -f "$trace" ]] || { echo "error: extraction lost $case_path" >&2; return 1; }
+  if [[ "$pair_parallel" -eq 1 ]]; then
+    run_backend "$case_path" baseline "$trace" & baseline_pid="$!"
+    run_backend "$case_path" decoupled "$trace" & decoupled_pid="$!"
+    if wait "$baseline_pid"; then baseline_status=0; else baseline_status=1; fi
+    if wait "$decoupled_pid"; then decoupled_status=0; else decoupled_status=1; fi
+    (( baseline_status == 0 && decoupled_status == 0 ))
+  else
+    run_backend "$case_path" baseline "$trace" && run_backend "$case_path" decoupled "$trace"
+  fi
+}
+
+case_count=0; active=0; failed=0
 while IFS= read -r case_path; do
-  current_case="$case_path"; trace="$batch_dir/$case_path/traces/kernelslist.g"
-  [[ -f "$trace" ]] || { echo "error: extraction lost $case_path" >&2; exit 1; }
   case_count=$((case_count + 1))
-  for backend in baseline decoupled; do
-    current_backend="$backend"; current_stage="simulate"
-    case_run_dir="$run_root/$suite/$case_path/$backend"; current_run_dir="$case_run_dir"
-    smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
-    [[ -n "$trace_config" ]] && smoke_args+=(--trace-config "$trace_config")
-    if [[ "$reuse" -eq 1 && -f "$case_run_dir/smoke.out" ]] && rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out"; then
-      printf 'REUSE backend=%s run_dir=%s\n' "$backend" "$case_run_dir"
-    elif ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
-      echo "error: $suite/$case_path backend=$backend failed; see $failures" >&2; exit 1
-    fi
-    if [[ "$backend" == decoupled ]]; then
-      rg -q 'decoupled_l2\[.*access=[1-9]' "$case_run_dir/smoke.out" || {
-        echo "error: $case_path did not exercise decoupled L2" >&2; exit 1;
-      }
-    fi
-    cycles="$(sed -n 's/.*gpu_tot_sim_cycle = \([0-9][0-9]*\).*/\1/p' "$case_run_dir/smoke.out" | tail -1)"
-    [[ -n "$cycles" ]] || { echo "error: no final cycle count for $case_run_dir" >&2; exit 1; }
-    printf '%s,%s,%s,%s,%s\n' "$suite" "$case_path" "$backend" "$cycles" "$case_run_dir" >> "$summary"
+  while (( active >= jobs )); do
+    if ! wait -n; then failed=1; fi
+    active=$((active - 1))
   done
+  run_case "$case_path" &
+  active=$((active + 1))
 done < "$selected"
+while (( active > 0 )); do
+  if ! wait -n; then failed=1; fi
+  active=$((active - 1))
+done
+(( failed == 0 )) || { echo "error: one or more workload pairs failed; see $failures" >&2; exit 1; }
 
 current_stage="cleanup"
 (( $(available_kib) >= min_free_kib )) || { echo "error: post-run reserve violated" >&2; exit 1; }

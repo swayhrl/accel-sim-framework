@@ -217,11 +217,15 @@ gzip archive is scanned and extracted only once:
 ```bash
 scripts/run_decoupled_l2_archive_batch.sh \
   --archive hw_run/decoupled-l2-pretraces/parboil.tgz --suite parboil \
-  --case-list hw_run/decoupled-l2-plans/parboil/cases.txt
+  --case-list hw_run/decoupled-l2-plans/parboil/cases.txt \
+  --jobs 9 --pair-parallel
 ```
 
-The batch runner repeats the exact member-size gate, runs pairs sequentially,
-and retains the whole current staging batch plus `failures.csv` on failure.
+The batch runner repeats the exact member-size gate and retains the whole
+current staging batch plus `failures.csv` on failure. `--jobs` uses independent
+workload pairs concurrently; `--pair-parallel` runs their baseline and
+decoupled sides concurrently as well. Set these from actual cgroup CPU/memory
+capacity, not host-visible `nproc` alone.
 The planner's compatible `sizes.csv` can substitute for `cases.txt` if a plan
 was generated before `cases.txt` was added.
 
