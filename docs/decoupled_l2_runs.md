@@ -232,6 +232,20 @@ When launching immediately from that exact plan against the unchanged archive,
 add `--trusted-size-plan` to avoid a redundant full gzip member listing; the
 normal default revalidates the archive independently.
 
+For unattended full-suite execution, use the plan pipeline. It writes a
+durable `pipeline.status`, `pipeline.log`, per-wave output, summary, and
+failure manifests, then advances each capacity-safe wave automatically:
+
+```bash
+scripts/run_decoupled_l2_archive_plan.sh \
+  --archive hw_run/decoupled-l2-pretraces/polybench.tgz --suite polybench \
+  --min-free-gib 80 --max-parallel 16 --jobs 16 --pair-parallel
+```
+
+If an exact planner is already running, pass its PID with
+`--wait-for-plan-pid PID`; the pipeline waits for its plan files instead of
+starting another full gzip scan.
+
 ## Executed public-pretrace record (2026-08-12)
 
 All cases used the QV100 SASS base configuration plus its matching
