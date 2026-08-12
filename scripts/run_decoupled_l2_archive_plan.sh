@@ -83,6 +83,8 @@ printf 'suite,wave,case,backend,cycles,run_dir\n' > "$run_root/summary.csv"
 printf 'wave,manifest,summary,failures\n' > "$run_root/waves.csv"
 wave_count="$(awk -F, 'NR > 1 && $1 > max { max = $1 } END { print max + 0 }' "$plan_dir/schedule.csv")"
 (( wave_count > 0 )) || { echo "error: plan has no waves" >&2; exit 1; }
+min_free_kib=$((min_free_gib * 1024 * 1024))
+available_kib() { df -Pk "$run_root" | awk 'NR == 2 { print $4 }'; }
 
 for ((wave = 1; wave <= wave_count; ++wave)); do
   set_status RUN "$wave"
@@ -96,6 +98,17 @@ for ((wave = 1; wave <= wave_count; ++wave)); do
   [[ "$(wc -l < "$wave_sizes")" -gt 1 ]] || {
     echo "error: wave $wave has no workload" >&2; exit 1;
   }
+  wave_kib="$(awk -F, 'NR > 1 { bytes += $2 } END { print int((bytes + 1023) / 1024) }' "$wave_sizes")"
+  [[ "$wave_kib" =~ ^[0-9]+$ && "$wave_kib" -gt 0 ]] || {
+    echo "error: cannot size wave $wave" >&2; exit 1;
+  }
+  # A plan may have been made before another suite claimed temporary staging
+  # space. Wait rather than fail the whole plan or violate the free-space
+  # reserve; a successful earlier wave always releases its own staging tree.
+  while (( $(available_kib) < min_free_kib + wave_kib )); do
+    set_status WAIT_CAPACITY "$wave"
+    sleep 30
+  done
   batch_args=(--archive "$archive" --suite "$suite" --case-list "$wave_sizes"
               --trusted-size-plan --min-free-gib "$min_free_gib"
               --jobs "$jobs" --run-root "$wave_dir")

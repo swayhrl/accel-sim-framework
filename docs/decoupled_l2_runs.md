@@ -246,6 +246,11 @@ If an exact planner is already running, pass its PID with
 `--wait-for-plan-pid PID`; the pipeline waits for its plan files instead of
 starting another full gzip scan.
 
+Before every wave the pipeline rechecks the actual filesystem free space. If
+another suite temporarily owns staging capacity, it records `WAIT_CAPACITY`
+and waits; it never starts an extraction that would cross the configured
+reserve.
+
 For long runs, attach the persistent monitor. It records a detailed snapshot
 on state changes and at the chosen interval, including elapsed time, disk and
 cgroup memory use, backend-run counts, watched pipeline states, and archive
