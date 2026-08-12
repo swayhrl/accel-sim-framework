@@ -201,8 +201,12 @@ and preserves the current `smoke.out` plus the one extracted trace directory,
 so an abort can be replayed without rescanning or re-extracting a large
 archive.  Use `--discard-failed-extract` only when that diagnostic payload must
 be reclaimed; successful cases always remove their temporary trace payload.
-`--reuse` reuses only a backend run with the normal simulator-exit marker, so
-it is suitable for retrying only the failed side of a baseline/decoupled pair.
+`--reuse` reuses only a backend run with the normal simulator-exit marker and
+a `simulator_provenance.txt` matching the current release binary and selected
+GPGPU-Sim commit.  Older runs without that manifest are deliberately replayed,
+so a source/binary update cannot silently mix results.  The batch runner also
+accepts `--build` to rebuild once before it snapshots that binary for its
+entire batch.
 
 Before running an archived suite concurrently, generate an exact capacity plan
 from its tar members.  This scans the compressed archive once and writes both

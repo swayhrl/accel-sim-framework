@@ -6,6 +6,7 @@ usage() {
 Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAME
        --case-list CASES.txt [--config FILE] [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
+       [--build]
        [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
        [--max-memory-percent N] [--pair-memory-reserve-gib N]
@@ -42,6 +43,7 @@ EOF
 
 archive=""; suite=""; case_list=""; config=""; trace_config=""; config_given=0
 run_root=""; scratch_root=""; min_free_gib=80; keep_failed_extract=1; reuse=0
+build=0
 staged_traces=""
 jobs=1; pair_parallel=0
 trusted_size_plan=0
@@ -69,6 +71,7 @@ while [[ $# -gt 0 ]]; do
     --max-live-pairs) max_live_pairs="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
     --reuse) reuse=1; shift ;;
+    --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -93,6 +96,13 @@ done
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || { echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2; }
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ "$build" -eq 1 ]]; then
+  make -C "$repo_root/gpu-simulator" -j"$(nproc)"
+fi
+sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
+[[ -x "$sim_bin" ]] || { echo "error: missing simulator binary $sim_bin" >&2; exit 2; }
+sim_bin_sha256="$(sha256sum "$sim_bin" | awk '{print $1}')"
+gpgpusim_source_commit="$(git -C "$DECOUPLED_L2_GPGPUSIM_ROOT" rev-parse HEAD)"
 if [[ -z "$config" ]]; then
   config="$DECOUPLED_L2_GPGPUSIM_ROOT/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
 fi
@@ -273,7 +283,7 @@ run_backend() {
   case_run_dir="$run_root/$suite/$case_path/$backend"
   smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
   [[ -n "$trace_config" ]] && smoke_args+=(--trace-config "$trace_config")
-  if [[ ( "$reuse" -eq 1 || "$owns_batch" -eq 0 ) && -f "$case_run_dir/smoke.out" ]] && rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out"; then
+  if [[ ( "$reuse" -eq 1 || "$owns_batch" -eq 0 ) ]] && run_is_reusable "$case_run_dir"; then
     printf 'REUSE backend=%s run_dir=%s\n' "$backend" "$case_run_dir"
   elif ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
     printf '%s,%s,%s,simulate,%s,%s,%s\n' "$(date --iso-8601=seconds)" \
@@ -288,6 +298,18 @@ run_backend() {
   cycles="$(sed -n 's/.*gpu_tot_sim_cycle = \([0-9][0-9]*\).*/\1/p' "$case_run_dir/smoke.out" | tail -1)"
   [[ -n "$cycles" ]] || return 1
   printf '%s,%s,%s,%s,%s\n' "$suite" "$case_path" "$backend" "$cycles" "$case_run_dir" >> "$summary"
+}
+
+run_is_reusable() {
+  local case_run_dir="$1" provenance recorded_sha recorded_commit
+  [[ -f "$case_run_dir/smoke.out" ]] || return 1
+  rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out" || return 1
+  provenance="$case_run_dir/simulator_provenance.txt"
+  [[ -f "$provenance" ]] || return 1
+  recorded_sha="$(sed -n 's/^sim_bin_sha256=//p' "$provenance" | tail -1)"
+  recorded_commit="$(sed -n 's/^gpgpusim_source_commit=//p' "$provenance" | tail -1)"
+  [[ "$recorded_sha" == "$sim_bin_sha256" &&
+     "$recorded_commit" == "$gpgpusim_source_commit" ]]
 }
 
 run_case() {
