@@ -39,7 +39,10 @@ reserve_kib=$((min_free_gib * 1024 * 1024))
 (( avail_kib >= reserve_kib + size_kib )) || {
   echo "error: selected stage exceeds disk reserve" >&2; exit 1;
 }
-awk '{ printf "./%s/traces/*\n", $0 }' "$selected" > "$patterns"
+# Legacy archives are inconsistent: some preserve a leading "./" and some
+# start directly at the suite directory.  Keep both spellings so the stage
+# result is determined by the selected case, not that packaging detail.
+awk '{ printf "%s/traces/*\n./%s/traces/*\n", $0, $0 }' "$selected" > "$patterns"
 if command -v pigz >/dev/null 2>&1; then
   tar --use-compress-program=pigz --extract --wildcards --directory "$stage_dir" --files-from="$patterns" --file "$archive"
 else
