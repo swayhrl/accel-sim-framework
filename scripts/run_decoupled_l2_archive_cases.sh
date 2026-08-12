@@ -7,7 +7,7 @@ Usage: scripts/run_decoupled_l2_archive_cases.sh --archive SUITE.tgz --suite NAM
        [--case NAME|all] [--case-path RELATIVE_PATH] [--config FILE]
        [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N]
-       [--discard-failed-extract]
+       [--discard-failed-extract] [--reuse]
 
 Discovers every kernelslist.g in one compressed Accel-Sim trace archive, then
 tests each workload sequentially with baseline and decoupled L2 backends. Only
@@ -22,6 +22,7 @@ EOF
 archive=""; suite=""; case_filter="all"; case_path_filter=""; config=""; trace_config=""
 config_given=0; run_root=""; scratch_root=""; min_free_gib=80
 keep_failed_extract=1
+reuse=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -34,6 +35,7 @@ while [[ $# -gt 0 ]]; do
     --scratch-root) scratch_root="$2"; shift 2 ;;
     --min-free-gib) min_free_gib="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
+    --reuse) reuse=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -157,9 +159,14 @@ while IFS= read -r case_path; do
     current_run_dir="$case_run_dir"
     smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
     if [[ -n "$trace_config" ]]; then smoke_args+=(--trace-config "$trace_config"); fi
-    if ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
-      echo "error: $suite/$case_path backend=$backend failed; see $failures" >&2
-      exit 1
+    if [[ "$reuse" -eq 1 && -f "$case_run_dir/smoke.out" ]] && \
+       rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out"; then
+      printf 'REUSE backend=%s run_dir=%s\n' "$backend" "$case_run_dir"
+    else
+      if ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
+        echo "error: $suite/$case_path backend=$backend failed; see $failures" >&2
+        exit 1
+      fi
     fi
     if [[ "$backend" == decoupled ]]; then
       rg -q 'decoupled_l2\[.*access=[1-9]' "$case_run_dir/smoke.out" || {

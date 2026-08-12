@@ -195,6 +195,8 @@ and preserves the current `smoke.out` plus the one extracted trace directory,
 so an abort can be replayed without rescanning or re-extracting a large
 archive.  Use `--discard-failed-extract` only when that diagnostic payload must
 be reclaimed; successful cases always remove their temporary trace payload.
+`--reuse` reuses only a backend run with the normal simulator-exit marker, so
+it is suitable for retrying only the failed side of a baseline/decoupled pair.
 
 ## Executed public-pretrace record (2026-08-12)
 
