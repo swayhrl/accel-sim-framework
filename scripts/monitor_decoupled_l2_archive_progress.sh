@@ -52,6 +52,14 @@ read_signature() {
       printf 'status:%s:' "$file"
       [[ -f "$file" ]] && sha256sum "$file" | awk '{print $1}' || printf 'missing'
     done
+    for root in "${run_roots[@]:-}"; do
+      [[ -d "$root" ]] || continue
+      # Summary/failure changes are discrete completion events. Do not include
+      # smoke.out: its frequent progress writes would turn monitoring into a
+      # 30-second polling log instead of meaningful archive-status snapshots.
+      find "$root" -type f \( -name summary.csv -o -name failures.csv \) \
+        -printf 'result:%p:%s:%T@\n' 2>/dev/null | sort
+    done
   } | sha256sum | awk '{print $1}'
 }
 
