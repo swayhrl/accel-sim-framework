@@ -4,7 +4,8 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_decoupled_l2_archive_cases.sh --archive SUITE.tgz --suite NAME
-       [--case NAME|all] [--config FILE] [--trace-config FILE]
+       [--case NAME|all] [--case-path RELATIVE_PATH] [--config FILE]
+       [--trace-config FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N]
 
 Discovers every kernelslist.g in one compressed Accel-Sim trace archive, then
@@ -15,13 +16,14 @@ extraction and after cleanup.
 EOF
 }
 
-archive=""; suite=""; case_filter="all"; config=""; trace_config=""
+archive=""; suite=""; case_filter="all"; case_path_filter=""; config=""; trace_config=""
 config_given=0; run_root=""; scratch_root=""; min_free_gib=80
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
     --suite) suite="$2"; shift 2 ;;
     --case) case_filter="$2"; shift 2 ;;
+    --case-path) case_path_filter="$2"; shift 2 ;;
     --config) config="$2"; config_given=1; shift 2 ;;
     --trace-config) trace_config="$2"; shift 2 ;;
     --run-root) run_root="$2"; shift 2 ;;
@@ -76,15 +78,23 @@ require_free_kib() {
 }
 
 # Each path is a workload argument set, not merely an application name. The
-# archive is listed once; extraction below is scoped to one selected trace set.
+# normal path lists the archive once; --case-path avoids that scan for a known
+# development case. Extraction below is always scoped to one trace set.
 case_list="$run_root/${suite}_cases.txt"
-tar_read --list --file "$archive" | awk '
-  /\/traces\/kernelslist\.g$/ {
-    sub(/^\.\//, "", $0)
-    sub(/\/traces\/kernelslist\.g$/, "", $0)
-    print
+if [[ -n "$case_path_filter" ]]; then
+  [[ "$case_path_filter" != /* && "$case_path_filter" != *".."* ]] || {
+    echo "error: --case-path must be a relative archive path" >&2; exit 2;
   }
-' > "$case_list"
+  printf '%s\n' "${case_path_filter#./}" > "$case_list"
+else
+  tar_read --list --file "$archive" | awk '
+    /\/traces\/kernelslist\.g$/ {
+      sub(/^\.\//, "", $0)
+      sub(/\/traces\/kernelslist\.g$/, "", $0)
+      print
+    }
+  ' > "$case_list"
+fi
 [[ -s "$case_list" ]] || { echo "error: no kernelslist.g in $archive" >&2; exit 1; }
 
 summary="$run_root/summary.csv"
