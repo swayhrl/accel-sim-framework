@@ -173,6 +173,23 @@ their fully extracted sizes are far larger.  The fetcher checks the remote FTP
 `Content-Length` before every transfer, so the selected reserve applies to the
 archive itself as well as later extraction.
 
+Do not use the normal fetcher's full extraction mode for these three suites.
+Instead run every workload through the archive runner, which lists the archive
+once, extracts only one `traces/` directory at a time, runs baseline and
+decoupled backends, then deletes only that generated temporary directory:
+
+```bash
+scripts/run_decoupled_l2_archive_cases.sh \
+  --archive hw_run/decoupled-l2-pretraces/parboil.tgz \
+  --suite parboil --min-free-gib 80
+```
+
+Use the same command with `polybench.tgz`/`polybench` and
+`cutlass.tgz`/`cutlass`.  `--case NAME` selects one argument-set directory for
+development; omitting it deliberately covers every `kernelslist.g` in the
+archive.  The ignored run root retains paired outputs and `summary.csv`; the
+ignored extraction root contains no surviving trace payload after a case.
+
 ## Executed public-pretrace record (2026-08-12)
 
 All cases used the QV100 SASS base configuration plus its matching
