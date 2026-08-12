@@ -69,8 +69,12 @@ void accel_sim_framework::simulation_loop() {
 
     unsigned finished_kernel_uid = simulate();
     // cleanup finished kernel
-    if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||
-        !m_gpgpu_sim->active()) {
+    // A command list may finish immediately after the last kernel's cleanup.
+    // In that state there is no trace_kernel_info_t left to finalize or print;
+    // calling cleanup() would only trip its non-empty-kernel contract.
+    if (!kernels_info.empty() &&
+        (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||
+         !m_gpgpu_sim->active())) {
       cleanup(finished_kernel_uid);
     }
 
