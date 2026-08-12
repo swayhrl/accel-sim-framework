@@ -98,8 +98,8 @@ if [[ "$trusted_size_plan" -eq 1 ]]; then
     END {
       for (work in want) {
         if (!found[work] || bytes[work] !~ /^[0-9]+$/) {
-          printf "missing exact byte count in trusted plan: %s\\n", work > "/dev/stderr"; bad = 1
-        } else printf "%s,%s\\n", work, bytes[work]
+          printf "missing exact byte count in trusted plan: %s\n", work > "/dev/stderr"; bad = 1
+        } else printf "%s,%s\n", work, bytes[work]
       }
       exit bad
     }
