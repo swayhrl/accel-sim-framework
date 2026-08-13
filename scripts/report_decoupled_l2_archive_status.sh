@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Summarize archived Decoupled-L2 workload evidence without changing a run.
+# A workload is PASS only when one baseline/decoupled pair both reached the
+# simulator terminal marker; a directory or a single surviving backend is not
+# sufficient evidence.
+set -euo pipefail
+
+root="${1:-$(pwd)}"
+marker='GPGPU-Sim: \*\*\* exit detected \*\*\*'
+
+terminal() {
+    [[ -f "$1" ]] && rg -q "$marker" "$1"
+}
+
+pair_passed() {
+    local name="$1" base run candidate
+    while IFS= read -r -d '' base; do
+        terminal "$base" || continue
+        run="${base%/baseline/smoke.out}"
+        for candidate in "$run"/decoupled*/smoke.out; do
+            terminal "$candidate" && return 0
+        done
+    done < <(find "$root/hw_run" -type f -path "*${name}*/baseline/smoke.out" -print0)
+    return 1
+}
+
+running() {
+    local name="$1" proc cwd
+    for proc in /proc/[0-9]*; do
+        [[ -r "$proc/comm" && "$(<"$proc/comm")" == accel-sim.out ]] || continue
+        cwd="$(readlink "$proc/cwd" 2>/dev/null || true)"
+        [[ "$cwd" == *"$name"* ]] && return 0
+    done
+    return 1
+}
+
+report_cases() {
+    local suite="$1" cases="$2" path name alt_name state passed=0 active=0 pending=0
+    while IFS= read -r path; do
+        [[ -n "$path" && "$path" != \#* ]] || continue
+        name="$(awk -F/ '{print $3}' <<<"$path")"
+        # mri-gridding's retained retry predates the archive namespace and
+        # therefore uses mri-gridding rather than parboil-mri-gridding.
+        alt_name="${name#parboil-}"
+        if pair_passed "$name" || pair_passed "$alt_name"; then
+            state=PASS; ((passed += 1))
+        elif running "$name" || running "$alt_name"; then
+            state=ACTIVE; ((active += 1))
+        else
+            state=PENDING; ((pending += 1))
+        fi
+        printf '%s,%s,%s\n' "$suite" "$state" "$name"
+    done < "$cases"
+    printf '%s summary: pass=%d active=%d pending=%d\n' \
+        "$suite" "$passed" "$active" "$pending" >&2
+}
+
+poly_cases="$root/hw_run/decoupled-l2-plans/polybench/cases.txt"
+parboil_cases="$root/hw_run/decoupled-l2-archive-batch/parboil_all/parboil_selected_cases.txt"
+
+printf 'suite,state,workload\n'
+report_cases polybench "$poly_cases"
+report_cases parboil "$parboil_cases"
+
+cutlass_cases="$root/hw_run/decoupled-l2-plans/cutlass/cases.txt"
+cutlass_total="$(awk 'NF && $1 !~ /^#/' "$cutlass_cases" | wc -l)"
+cutlass_root="$root/hw_run/decoupled-l2-trace-fraction/cutlass-all-1of40-trim-v1"
+if [[ -f "$cutlass_root/.trace_fraction_cases_complete" ]]; then
+    printf 'cutlass,TRACE_READY,%s planned cases\n' "$cutlass_total"
+else
+    printf 'cutlass,TRACE_PREPARING,%s planned cases\n' "$cutlass_total"
+fi
