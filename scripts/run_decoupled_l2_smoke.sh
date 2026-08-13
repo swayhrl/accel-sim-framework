@@ -78,7 +78,10 @@ if ! mkdir "$run_lock" 2>/dev/null; then
   echo "error: run directory is already active: $run_dir" >&2
   exit 2
 fi
-trap 'rmdir "$run_lock"' EXIT
+cleanup_run_lock() {
+  rmdir "$run_lock"
+}
+trap cleanup_run_lock EXIT
 
 cp "$config" "$run_dir/gpgpusim.config"
 config_dir="$(cd "$(dirname "$config")" && pwd)"
