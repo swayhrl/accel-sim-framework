@@ -93,5 +93,6 @@ while IFS= read -r kernel; do
   }
 done < <(rg -o 'kernel-[0-9]+\.traceg' "$output_dir/traces/kernelslist.g" | sort -u)
 
+: > "$output_dir/.trace_fraction_complete"
 printf 'PASS fraction=1/%s kernels=%s output=%s manifest=%s\n' "$fraction" \
   "${#inputs[@]}" "$output_dir/traces" "$manifest"
