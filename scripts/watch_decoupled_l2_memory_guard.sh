@@ -99,8 +99,12 @@ host_memory_used_percent() {
   ' /proc/meminfo
 }
 is_accel_sim_pid() {
-  local cwd
-  [[ -r "/proc/$1/comm" ]] && [[ "$(<"/proc/$1/comm")" == accel-sim.out ]] || return 1
+  local cwd comm
+  # A process may exit after globbing /proc but before this read.  Treat that
+  # normal race as a non-candidate instead of leaking a shell diagnostic into
+  # the monitor log.
+  { IFS= read -r comm < "/proc/$1/comm"; } 2>/dev/null || return 1
+  [[ "$comm" == accel-sim.out ]] || return 1
   cwd="$(readlink "/proc/$1/cwd" 2>/dev/null || true)"
   [[ "$cwd" == "$experiment_root"/* ]]
 }
