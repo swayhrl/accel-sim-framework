@@ -9,7 +9,8 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--build]
        [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
-       [--max-simulator-rss-gb N] [--max-live-pairs N]
+       [--max-simulator-rss-gb N] [--pair-rss-reserve-gb N]
+       [--max-live-pairs N]
        [--global-pair-lock PATH]
        [--discard-failed-extract]
 
@@ -35,6 +36,13 @@ ceiling.  Before starting a new pair, the runner sums RSS only for
 Other users and host page cache are deliberately excluded.  A pair that is
 already running is never stopped when it grows past this ceiling; its growth
 only delays later admissions until it completes or fails.
+
+PAIR-RSS-RESERVE-GB (default 80) is the measured-or-conservative peak RSS
+budget for one newly admitted baseline/decoupled pair.  Admission requires
+current experiment RSS plus this reserve to fit below MAX-SIMULATOR-RSS-GB.
+It prevents several pairs from being launched while their initial RSS is low
+and then growing past the ceiling together.  Select a smaller reserve only
+after a representative completed pair establishes its peak RSS.
 MAX-LIVE-PAIRS (default 1) limits concurrent pairs independently, so a new
 batch cannot fan out while each newly started simulator is still building its
 trace state. These gates never interrupt a pair already in flight. Disk-space
@@ -54,6 +62,7 @@ staged_traces=""
 jobs=1; pair_parallel=0
 trusted_size_plan=0
 max_simulator_rss_gb=120
+pair_rss_reserve_gb=80
 max_live_pairs=1
 global_pair_lock="${TMPDIR:-/tmp}/decoupled-l2-archive-pair.lock"
 while [[ $# -gt 0 ]]; do
@@ -71,6 +80,7 @@ while [[ $# -gt 0 ]]; do
     --pair-parallel) pair_parallel=1; shift ;;
     --trusted-size-plan) trusted_size_plan=1; shift ;;
     --max-simulator-rss-gb) max_simulator_rss_gb="$2"; shift 2 ;;
+    --pair-rss-reserve-gb) pair_rss_reserve_gb="$2"; shift 2 ;;
     --max-live-pairs) max_live_pairs="$2"; shift 2 ;;
     --global-pair-lock) global_pair_lock="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
@@ -87,6 +97,12 @@ done
 [[ "$jobs" =~ ^[0-9]+$ && "$jobs" -gt 0 ]] || { echo "error: --jobs must be positive" >&2; exit 2; }
 [[ "$max_simulator_rss_gb" =~ ^[0-9]+$ && "$max_simulator_rss_gb" -gt 0 ]] || {
   echo "error: --max-simulator-rss-gb must be positive" >&2; exit 2;
+}
+[[ "$pair_rss_reserve_gb" =~ ^[0-9]+$ && "$pair_rss_reserve_gb" -gt 0 ]] || {
+  echo "error: --pair-rss-reserve-gb must be positive" >&2; exit 2;
+}
+(( pair_rss_reserve_gb < max_simulator_rss_gb )) || {
+  echo "error: --pair-rss-reserve-gb must be below --max-simulator-rss-gb" >&2; exit 2;
 }
 [[ "$max_live_pairs" =~ ^[0-9]+$ && "$max_live_pairs" -gt 0 ]] || {
   echo "error: --max-live-pairs must be positive" >&2; exit 2;
@@ -167,10 +183,11 @@ experiment_simulator_rss_kib() {
   printf '%s\n' "$total"
 }
 pair_memory_admit() {
-  local simulator_rss_kib ceiling_kib
+  local simulator_rss_kib ceiling_kib reserve_kib
   simulator_rss_kib="$(experiment_simulator_rss_kib)"
   ceiling_kib=$((max_simulator_rss_gb * 1000 * 1000 * 1000 / 1024))
-  (( simulator_rss_kib < ceiling_kib ))
+  reserve_kib=$((pair_rss_reserve_gb * 1000 * 1000 * 1000 / 1024))
+  (( simulator_rss_kib + reserve_kib <= ceiling_kib ))
 }
 min_free_kib=$((min_free_gib * 1024 * 1024))
 
@@ -337,8 +354,9 @@ wait_for_pair_memory() {
       printf 'error: cgroup OOM kill detected during batch; retain logs and do not start further cases\n' >&2
       return 1
     fi
-    printf 'WAIT_SIMULATOR_RSS simulator_rss_gb=%s ceiling_gb=%s\n' \
+    printf 'WAIT_SIMULATOR_RSS simulator_rss_gb=%s pair_reserve_gb=%s ceiling_gb=%s\n' \
       "$(awk -v kib="$(experiment_simulator_rss_kib)" 'BEGIN { printf "%.3f", kib * 1024 / 1000 / 1000 / 1000 }')" \
+      "$pair_rss_reserve_gb" \
       "$max_simulator_rss_gb" >&2
     sleep 30
   done
