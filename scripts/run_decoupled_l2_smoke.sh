@@ -68,6 +68,18 @@ else
   run_dir="$(cd "$run_dir" && pwd)"
 fi
 
+# A run directory is the unit of reproducibility: it owns the copied binary,
+# generated config, and output log.  Concurrent invocations using the same
+# directory would otherwise race while replacing accel-sim.out and can yield a
+# misleading Text file busy failure.  Backend pairs use separate directories,
+# so this excludes only an accidental duplicate launch.
+run_lock="$run_dir/.decoupled_l2_smoke_lock"
+if ! mkdir "$run_lock" 2>/dev/null; then
+  echo "error: run directory is already active: $run_dir" >&2
+  exit 2
+fi
+trap 'rmdir "$run_lock"' EXIT
+
 cp "$config" "$run_dir/gpgpusim.config"
 config_dir="$(cd "$(dirname "$config")" && pwd)"
 for asset in "$config_dir"/*.xml "$config_dir"/*.icnt; do
