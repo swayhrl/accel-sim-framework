@@ -5,6 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/watch_decoupled_l2_memory_guard.sh (--pid PID [--pid PID ...] | --auto)
        [--interval-sec N] [--max-memory-percent N]
+       [--max-simulator-rss-gib N]
        [--memory-limit-cooldown-sec N] [--action stop|terminate-pair] [--log FILE]
 
 Watch cgroup memory.events for a new OOM kill. Optionally, stop before an OOM
@@ -14,6 +15,12 @@ record it in LOG. SIGSTOP preserves simulator state for a later `kill -CONT
 PID`; it deliberately does not claim to reclaim its already allocated memory.
 This is a last-resort growth brake for live archive runs, not an admission
 controller.
+
+`--max-simulator-rss-gib` limits only the aggregate RSS of Accel-Sim
+executables whose cwd is below this experiment's `hw_run/` directory.  It is
+the appropriate capacity limit on a shared host: unrelated users, page cache,
+and IDE processes cannot cause an experiment workload to be terminated.
+`--max-memory-percent` remains a legacy host-wide emergency guard.
 
 With `--action terminate-pair`, terminate both backends of the selected
 workload instead.  This is for a hard memory ceiling: stopping a process keeps
@@ -32,6 +39,7 @@ EOF
 
 interval_sec=5
 max_memory_percent=100
+max_simulator_rss_gib=0
 memory_limit_cooldown_sec=30
 action=stop
 log=""
@@ -43,6 +51,7 @@ while [[ $# -gt 0 ]]; do
     --auto) auto=1; shift ;;
     --interval-sec) interval_sec="$2"; shift 2 ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
+    --max-simulator-rss-gib) max_simulator_rss_gib="$2"; shift 2 ;;
     --memory-limit-cooldown-sec) memory_limit_cooldown_sec="$2"; shift 2 ;;
     --action) action="$2"; shift 2 ;;
     --log) log="$2"; shift 2 ;;
@@ -60,6 +69,9 @@ done
    "$max_memory_percent" -le 100 ]] || {
   echo "error: --max-memory-percent must be in 1..100" >&2; exit 2;
 }
+[[ "$max_simulator_rss_gib" =~ ^[0-9]+$ ]] || {
+  echo "error: --max-simulator-rss-gib must be a non-negative integer" >&2; exit 2;
+}
 [[ "$memory_limit_cooldown_sec" =~ ^[0-9]+$ ]] || {
   echo "error: --memory-limit-cooldown-sec must be non-negative" >&2; exit 2;
 }
@@ -68,6 +80,8 @@ done
 }
 if [[ -z "$log" ]]; then log="memory_guard.$(date +%Y%m%d_%H%M%S).log"; fi
 mkdir -p "$(dirname "$log")"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+experiment_root="$repo_root/hw_run"
 
 oom_kill_count() {
   awk '$1 == "oom_kill" { print $2; found = 1 } END { if (!found) print 0 }' \
@@ -84,7 +98,29 @@ host_memory_used_percent() {
   ' /proc/meminfo
 }
 is_accel_sim_pid() {
+  local cwd
   [[ -r "/proc/$1/comm" ]] && [[ "$(<"/proc/$1/comm")" == accel-sim.out ]]
+  cwd="$(readlink "/proc/$1/cwd" 2>/dev/null || true)"
+  [[ "$cwd" == "$experiment_root"/* ]]
+}
+
+simulator_rss_kib() {
+  local pid rss total=0
+  if (( auto )); then
+    for pid_path in /proc/[0-9]*; do
+      pid="${pid_path##*/}"
+      is_accel_sim_pid "$pid" || continue
+      rss="$(awk '/^VmRSS:/ {print $2; exit}' "/proc/$pid/status" 2>/dev/null || true)"
+      total=$(( total + ${rss:-0} ))
+    done
+  else
+    for pid in "${candidates[@]}"; do
+      [[ -r "/proc/$pid/status" ]] || continue
+      rss="$(awk '/^VmRSS:/ {print $2; exit}' "/proc/$pid/status")"
+      total=$(( total + ${rss:-0} ))
+    done
+  fi
+  printf '%s\n' "$total"
 }
 largest_running_pid() {
   local pid rss state best_pid="" best_rss=-1
@@ -177,11 +213,18 @@ while :; do
   now_oom="$(oom_kill_count)"
   now_epoch="$(date +%s)"
   used_percent="$(host_memory_used_percent)"
+  simulator_rss="$(simulator_rss_kib)"
   reason=""
   if (( now_oom > last_oom )); then reason="OOM"; fi
   if (( used_percent >= max_memory_percent &&
         now_epoch - last_memory_limit_epoch >= memory_limit_cooldown_sec )); then
     reason="${reason:+${reason}_}MEMORY_LIMIT"
+    last_memory_limit_epoch="$now_epoch"
+  fi
+  if (( max_simulator_rss_gib > 0 &&
+        simulator_rss >= max_simulator_rss_gib * 1024 * 1024 &&
+        now_epoch - last_memory_limit_epoch >= memory_limit_cooldown_sec )); then
+    reason="${reason:+${reason}_}SIMULATOR_RSS_LIMIT"
     last_memory_limit_epoch="$now_epoch"
   fi
   [[ -n "$reason" ]] || continue
@@ -191,15 +234,15 @@ while :; do
     selection="$(largest_running_pid || true)"
   fi
   if [[ -z "$selection" ]]; then
-    printf '%s %s oom_kill=%s used_percent=%s action=none reason=no_live_candidate\n' \
-      "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" >> "$log"
+      printf '%s %s oom_kill=%s used_percent=%s simulator_rss_kib=%s action=none reason=no_live_candidate\n' \
+      "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" "$simulator_rss" >> "$log"
   else
     read -r pid rss <<< "$selection"
     if [[ "$action" == terminate-pair ]]; then
       pair_pids="$(terminate_workload_pair "$pid" || true)"
-      printf '%s %s oom_kill=%s used_percent=%s action=SIGTERM_PAIR selected_pid=%s rss_kib=%s pids="%s"\n' \
+      printf '%s %s oom_kill=%s used_percent=%s simulator_rss_kib=%s action=SIGTERM_PAIR selected_pid=%s rss_kib=%s pids="%s"\n' \
         "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" \
-        "$pid" "$rss" "$pair_pids" >> "$log"
+        "$simulator_rss" "$pid" "$rss" "$pair_pids" >> "$log"
     else
       kill -STOP "$pid"
       printf '%s %s oom_kill=%s used_percent=%s action=SIGSTOP pid=%s rss_kib=%s resume="kill -CONT %s"\n' \
