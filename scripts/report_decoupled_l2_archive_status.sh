@@ -24,18 +24,26 @@ pair_passed() {
     return 1
 }
 
-running() {
-    local name="$1" proc cwd
+running_state() {
+    local name="$1" proc cwd baseline=0 decoupled=0
     for proc in /proc/[0-9]*; do
         [[ -r "$proc/comm" && "$(<"$proc/comm")" == accel-sim.out ]] || continue
         cwd="$(readlink "$proc/cwd" 2>/dev/null || true)"
-        [[ "$cwd" == *"$name"* ]] && return 0
+        [[ "$cwd" == *"$name"* ]] || continue
+        [[ "$cwd" == */baseline ]] && baseline=1
+        [[ "$cwd" == */decoupled* ]] && decoupled=1
     done
-    return 1
+    if (( baseline && decoupled )); then
+        printf 'ACTIVE_PAIR'
+    elif (( baseline || decoupled )); then
+        printf 'ACTIVE_PARTIAL'
+    else
+        printf 'PENDING'
+    fi
 }
 
 report_cases() {
-    local suite="$1" cases="$2" path name alt_name state passed=0 active=0 pending=0
+    local suite="$1" cases="$2" path name alt_name state passed=0 pairs=0 partial=0 pending=0
     while IFS= read -r path; do
         [[ -n "$path" && "$path" != \#* ]] || continue
         name="$(awk -F/ '{print $3}' <<<"$path")"
@@ -47,15 +55,21 @@ report_cases() {
         [[ "$name" == parboil-mri-gridding ]] && alt_name=mri-gridding
         if pair_passed "$name" || { [[ -n "$alt_name" ]] && pair_passed "$alt_name"; }; then
             state=PASS; ((passed += 1))
-        elif running "$name" || { [[ -n "$alt_name" ]] && running "$alt_name"; }; then
-            state=ACTIVE; ((active += 1))
         else
-            state=PENDING; ((pending += 1))
+            state="$(running_state "$name")"
+            if [[ "$state" == PENDING && -n "$alt_name" ]]; then
+                state="$(running_state "$alt_name")"
+            fi
+            case "$state" in
+                ACTIVE_PAIR) ((pairs += 1)) ;;
+                ACTIVE_PARTIAL) ((partial += 1)) ;;
+                PENDING) ((pending += 1)) ;;
+            esac
         fi
         printf '%s,%s,%s\n' "$suite" "$state" "$name"
     done < "$cases"
-    printf '%s summary: pass=%d active=%d pending=%d\n' \
-        "$suite" "$passed" "$active" "$pending" >&2
+    printf '%s summary: pass=%d active_pair=%d active_partial=%d pending=%d\n' \
+        "$suite" "$passed" "$pairs" "$partial" "$pending" >&2
 }
 
 poly_cases="$root/hw_run/decoupled-l2-plans/polybench/cases.txt"
