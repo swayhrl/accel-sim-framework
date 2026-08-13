@@ -7,13 +7,14 @@ set -euo pipefail
 : "${TRACE_FRACTION_OUTPUT_DIR:?}"
 : "${TRACE_FRACTION_FRACTION:?}"
 : "${TAR_FILENAME:?}"
+trim_cta_insts="${TRACE_FRACTION_TRIM_CTA_INSTS:-0}"
 
 kernel="$(basename "$TAR_FILENAME")"
 output="$TRACE_FRACTION_OUTPUT_DIR/traces/$kernel"
 tmp="$output.tmp.$$"
 meta="$TRACE_FRACTION_OUTPUT_DIR/.${kernel}.meta"
 
-awk -v fraction="$TRACE_FRACTION_FRACTION" -v meta="$meta" '
+awk -v fraction="$TRACE_FRACTION_FRACTION" -v trim_cta_insts="$trim_cta_insts" -v meta="$meta" '
   /^-grid dim = \(/ {
     if (seen_grid++) {
       print "error: multiple grid lines" > "/dev/stderr"
@@ -31,6 +32,25 @@ awk -v fraction="$TRACE_FRACTION_FRACTION" -v meta="$meta" '
     print "-grid dim = (" selected_ctas ",1,1)"
     next
   }
+  /^insts = / && trim_cta_insts {
+    if (!match($0, /^insts = ([0-9]+)/, inst)) {
+      print "error: malformed inst count" > "/dev/stderr"
+      exit 2
+    }
+    source_insts = inst[1]
+    # CTA selection is rounded up to retain every kernel.  Trim each retained
+    # warp by the compensating ratio so the dynamic instruction budget remains
+    # approximately 1/fraction even when a kernel has fewer CTAs than that.
+    kept_insts = int((source_insts * source_ctas + fraction * selected_ctas - 1) / (fraction * selected_ctas))
+    if (source_insts > 0 && kept_insts < 1) kept_insts = 1
+    print "insts = " kept_insts
+    skipped_insts = source_insts - kept_insts
+    next
+  }
+  skipped_insts > 0 {
+    skipped_insts--
+    next
+  }
   { print }
   $0 == "#END_TB" {
     completed_ctas++
@@ -45,7 +65,7 @@ awk -v fraction="$TRACE_FRACTION_FRACTION" -v meta="$meta" '
       printf "error: requested %d CTAs but found %d\n", selected_ctas, completed_ctas > "/dev/stderr"
       exit 2
     }
-    printf "%s\t(%s,%s,%s)\t%s\n", FILENAME, grid_x, grid_y, grid_z, selected_ctas > meta
+    printf "%s\t(%s,%s,%s)\t%s\t%s\n", FILENAME, grid_x, grid_y, grid_z, selected_ctas, trim_cta_insts > meta
   }
 ' > "$tmp"
 mv "$tmp" "$output"
