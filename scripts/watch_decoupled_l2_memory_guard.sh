@@ -83,15 +83,16 @@ host_memory_used_percent() {
     }
   ' /proc/meminfo
 }
+is_accel_sim_pid() {
+  [[ -r "/proc/$1/comm" ]] && [[ "$(<"/proc/$1/comm")" == accel-sim.out ]]
+}
 largest_running_pid() {
-  local pid rss state target best_pid="" best_rss=-1
+  local pid rss state best_pid="" best_rss=-1
   local -a current_candidates=()
   if (( auto )); then
     for pid in /proc/[0-9]*; do
       pid="${pid##*/}"
-      target="$(readlink "/proc/$pid/exe" 2>/dev/null || true)"
-      [[ "$target" == */gpu-simulator/bin/release/accel-sim.out ||
-         "$target" == */gpu-simulator/bin/release/accel-sim.out\ \(deleted\) ]] || continue
+      is_accel_sim_pid "$pid" || continue
       current_candidates+=("$pid")
     done
   else
@@ -113,15 +114,13 @@ largest_running_pid() {
 # can otherwise sacrifice a smaller pair when one member happens to have a
 # larger RSS than either member of the real largest pair.
 largest_running_pair() {
-  local pid rss state target cwd pair_dir best_pid="" best_rss=-1
+  local pid rss state cwd pair_dir best_pid="" best_rss=-1
   local -a current_candidates=()
   local -A pair_rss=() pair_pid=()
   if (( auto )); then
     for pid_path in /proc/[0-9]*; do
       pid="${pid_path##*/}"
-      target="$(readlink "/proc/$pid/exe" 2>/dev/null || true)"
-      [[ "$target" == */gpu-simulator/bin/release/accel-sim.out ||
-         "$target" == */gpu-simulator/bin/release/accel-sim.out\ \(deleted\) ]] || continue
+      is_accel_sim_pid "$pid" || continue
       current_candidates+=("$pid")
     done
   else
@@ -153,16 +152,14 @@ simulator_cwd() {
 }
 
 terminate_workload_pair() {
-  local selected_pid="$1" selected_cwd pair_dir pid target cwd
+  local selected_pid="$1" selected_cwd pair_dir pid cwd
   selected_cwd="$(simulator_cwd "$selected_pid")"
   pair_dir="$(dirname "$selected_cwd")"
   [[ -n "$selected_cwd" && "$pair_dir" != . ]] || return 1
 
   for pid_path in /proc/[0-9]*; do
     pid="${pid_path##*/}"
-    target="$(readlink "/proc/$pid/exe" 2>/dev/null || true)"
-    [[ "$target" == */gpu-simulator/bin/release/accel-sim.out ||
-       "$target" == */gpu-simulator/bin/release/accel-sim.out\ \(deleted\) ]] || continue
+    is_accel_sim_pid "$pid" || continue
     cwd="$(simulator_cwd "$pid")"
     [[ "$(dirname "$cwd")" == "$pair_dir" ]] || continue
     kill -TERM "$pid" 2>/dev/null || true
