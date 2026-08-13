@@ -66,9 +66,20 @@ member_filter="$repo_root/scripts/filter_decoupled_l2_archive_trace_member.sh"
 mkdir -p "$output_dir/traces"
 output_dir="$(cd "$output_dir" && pwd)"
 
+# The archive can be tens of GiB and target members may be late in its stream.
+# Use a bounded parallel decompressor for both passes when available; callers
+# may tune the CPU share without changing trace content.
+tar_read() {
+  if command -v pigz >/dev/null 2>&1; then
+    tar --use-compress-program="pigz -p ${DECOUPLED_L2_PIGZ_JOBS:-8}" "$@"
+  else
+    tar --gzip "$@"
+  fi
+}
+
 # A full member read is deliberate: it avoids a broken tar/SIGPIPE pipeline
 # after the selected final CTA while leaving no full source trace on disk.
-tar --extract --to-stdout --file "$archive" "$trace_member" \
+tar_read --extract --to-stdout --file "$archive" "$trace_member" \
   > "$output_dir/traces/kernelslist.g"
 
 mapfile -t kernels < <(
@@ -87,7 +98,7 @@ done > "$members_file"
 TRACE_FRACTION_OUTPUT_DIR="$output_dir" \
 TRACE_FRACTION_FRACTION="$fraction" \
 TRACE_FRACTION_TRIM_CTA_INSTS="$trim_cta_insts" \
-tar --extract --to-command="$member_filter" --files-from="$members_file" --file "$archive"
+tar_read --extract --to-command="$member_filter" --files-from="$members_file" --file "$archive"
 
 manifest="$output_dir/trace_fraction_manifest.csv"
 printf 'kernel,source_grid,selected_ctas,fraction,trim_cta_insts,output_bytes\n' > "$manifest"
