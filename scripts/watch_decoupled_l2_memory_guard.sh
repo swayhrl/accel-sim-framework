@@ -99,7 +99,7 @@ host_memory_used_percent() {
 }
 is_accel_sim_pid() {
   local cwd
-  [[ -r "/proc/$1/comm" ]] && [[ "$(<"/proc/$1/comm")" == accel-sim.out ]]
+  [[ -r "/proc/$1/comm" ]] && [[ "$(<"/proc/$1/comm")" == accel-sim.out ]] || return 1
   cwd="$(readlink "/proc/$1/cwd" 2>/dev/null || true)"
   [[ "$cwd" == "$experiment_root"/* ]]
 }
