@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/make_decoupled_l2_trace_fraction_archive_cases.sh \
        --archive SUITE.tgz --case-list CASES.txt --output-dir DIR --fraction N
-       [--trim-cta-insts]
+       [--trim-cta-insts] [--min-free-gib N]
 
 Create 1/N functional-smoke trace views for several workload directories in
 two archive passes: first their kernelslist.g files, then all referenced kernel
@@ -13,10 +13,13 @@ traces.  This avoids a full compressed-archive scan for every case and does
 not materialize the original trace payload.  Each output case receives a
 .trace_fraction_complete marker and manifest; the output root receives
 .trace_fraction_cases_complete only after every selected case is verified.
+Writing stops before a kernel if the filesystem would have less than the
+requested free-space reserve (20 GiB by default).
 EOF
 }
 
 archive=""; case_list=""; output_dir=""; fraction=""; trim_cta_insts=0
+min_free_gib=20
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -24,6 +27,7 @@ while [[ $# -gt 0 ]]; do
     --output-dir) output_dir="$2"; shift 2 ;;
     --fraction) fraction="$2"; shift 2 ;;
     --trim-cta-insts) trim_cta_insts=1; shift ;;
+    --min-free-gib) min_free_gib="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -32,6 +36,9 @@ done
 [[ -f "$archive" && -f "$case_list" ]] || { echo 'error: missing archive or case list' >&2; exit 2; }
 [[ "$fraction" =~ ^[0-9]+$ && "$fraction" -ge 2 ]] || {
   echo 'error: --fraction must be at least two' >&2; exit 2;
+}
+[[ "$min_free_gib" =~ ^[0-9]+$ ]] || {
+  echo 'error: --min-free-gib must be a non-negative integer' >&2; exit 2;
 }
 [[ ! -e "$output_dir" ]] || { echo "error: output already exists: $output_dir" >&2; exit 2; }
 
@@ -72,6 +79,7 @@ done < "$selected"
 TRACE_FRACTION_CASE_OUTPUT_DIR="$output_dir" \
 TRACE_FRACTION_FRACTION="$fraction" \
 TRACE_FRACTION_TRIM_CTA_INSTS="$trim_cta_insts" \
+TRACE_FRACTION_MIN_FREE_KIB="$((min_free_gib * 1024 * 1024))" \
 tar --extract --to-command="$case_filter" --files-from="$members" --file "$archive"
 
 while IFS= read -r case_path; do
@@ -96,5 +104,5 @@ while IFS= read -r case_path; do
 done < "$selected"
 
 : > "$output_dir/.trace_fraction_cases_complete"
-printf 'PASS archive=%s cases=%s fraction=1/%s trim_cta_insts=%s output=%s\n' \
-  "$archive" "$(wc -l < "$selected")" "$fraction" "$trim_cta_insts" "$output_dir"
+printf 'PASS archive=%s cases=%s fraction=1/%s trim_cta_insts=%s min_free_gib=%s output=%s\n' \
+  "$archive" "$(wc -l < "$selected")" "$fraction" "$trim_cta_insts" "$min_free_gib" "$output_dir"
