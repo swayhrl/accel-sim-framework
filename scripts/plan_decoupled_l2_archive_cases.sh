@@ -5,17 +5,22 @@ usage() {
   cat <<'EOF'
 Usage: scripts/plan_decoupled_l2_archive_cases.sh --archive SUITE.tgz
        [--min-free-gib N] [--run-overhead-gib N] [--max-parallel N]
-       [--output-dir DIR]
+       [--output-dir DIR] [--force-rescan]
 
 Scans a compressed trace archive once, calculates the exact uncompressed byte
 count of every workload's traces/ directory, and writes cases.txt, sizes.csv, plus a
 capacity-safe first-fit-decreasing schedule.csv.  Every wave preserves
 MIN-FREE-GIB (default 80) and RUN-OVERHEAD-GIB (default 16) of non-trace
 space. MAX-PARALLEL (default 1) is an additional per-wave concurrency cap.
+
+The member scan is cached in OUTPUT-DIR.  A later invocation reuses it when
+the local archive device, inode, size, and mtime match archive_identity.csv;
+the original SHA-256 is retained there for provenance.  --force-rescan is for
+an archive deliberately replaced in place or an explicit integrity refresh.
 EOF
 }
 
-archive=""; min_free_gib=80; run_overhead_gib=16; max_parallel=1; output_dir=""
+archive=""; min_free_gib=80; run_overhead_gib=16; max_parallel=1; output_dir=""; force_rescan=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -23,6 +28,7 @@ while [[ $# -gt 0 ]]; do
     --run-overhead-gib) run_overhead_gib="$2"; shift 2 ;;
     --max-parallel) max_parallel="$2"; shift 2 ;;
     --output-dir) output_dir="$2"; shift 2 ;;
+    --force-rescan) force_rescan=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -62,7 +68,15 @@ raw="$output_dir/members.raw"
 cases="$output_dir/cases.txt"
 sizes="$output_dir/sizes.csv"
 schedule="$output_dir/schedule.csv"
-tar_read --list --verbose --file "$archive" | awk '
+identity="$output_dir/archive_identity.csv"
+archive_device_inode_size_mtime="$(stat -c '%d,%i,%s,%Y' "$archive")"
+cache_reused=0
+if [[ "$force_rescan" -eq 0 && -s "$raw" && -s "$identity" ]] &&
+   [[ "$(sed -n 's/^device,inode,size,mtime_epoch,sha256=//p' "$identity")" == "$archive_device_inode_size_mtime,"* ]]; then
+  cache_reused=1
+else
+  raw_tmp="$(mktemp "$output_dir/.members.raw.XXXXXX")"
+  tar_read --list --verbose --file "$archive" | awk '
   $6 ~ /\/traces\// {
     path = $6
     sub(/^\.\//, "", path)
@@ -74,7 +88,14 @@ tar_read --list --verbose --file "$archive" | awk '
   END {
     for (work in selected) printf "%s,%d\n", work, bytes[work]
   }
-' > "$raw"
+' > "$raw_tmp"
+  [[ -s "$raw_tmp" ]] || { rm -f "$raw_tmp"; echo "error: archive has no workload kernelslist.g" >&2; exit 1; }
+  sha256="$(sha256sum "$archive" | awk '{print $1}')"
+  identity_tmp="$(mktemp "$output_dir/.archive_identity.XXXXXX")"
+  printf 'device,inode,size,mtime_epoch,sha256=%s,%s\n' "$archive_device_inode_size_mtime" "$sha256" > "$identity_tmp"
+  mv "$raw_tmp" "$raw"
+  mv "$identity_tmp" "$identity"
+fi
 [[ -s "$raw" ]] || { echo "error: archive has no workload kernelslist.g" >&2; exit 1; }
 
 sort -t, -k2,2nr "$raw" | cut -d, -f1 > "$cases"
@@ -114,7 +135,7 @@ while IFS=, read -r case_path bytes; do
     'BEGIN { printf "%d,%s,%d,%.3f,%.3f\n", wave, case_path, bytes, bytes / 1024 / 1024 / 1024, wave_kib / 1024 / 1024 }' >> "$schedule"
 done < <(sort -t, -k2,2nr "$raw")
 
-printf 'PLAN workloads=%d waves=%d budget_gib=%d reserve_gib=%d max_parallel=%d\n' \
+printf 'PLAN workloads=%d waves=%d budget_gib=%d reserve_gib=%d max_parallel=%d cache_reused=%d\n' \
   "$(wc -l < "$raw")" "$wave_total" "$((budget_kib / 1024 / 1024))" \
-  "$((reserve_kib / 1024 / 1024))" "$max_parallel"
-printf 'cases=%s sizes=%s schedule=%s\n' "$cases" "$sizes" "$schedule"
+  "$((reserve_kib / 1024 / 1024))" "$max_parallel" "$cache_reused"
+printf 'cases=%s sizes=%s schedule=%s identity=%s\n' "$cases" "$sizes" "$schedule" "$identity"
