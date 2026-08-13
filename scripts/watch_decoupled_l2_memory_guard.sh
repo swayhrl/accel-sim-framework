@@ -108,6 +108,46 @@ largest_running_pid() {
   [[ -n "$best_pid" ]] && printf '%s %s\n' "$best_pid" "$best_rss"
 }
 
+# For a hard ceiling, selection must reflect the memory that terminating an
+# entire backend pair actually returns.  Choosing the single largest process
+# can otherwise sacrifice a smaller pair when one member happens to have a
+# larger RSS than either member of the real largest pair.
+largest_running_pair() {
+  local pid rss state target cwd pair_dir best_pid="" best_rss=-1
+  local -a current_candidates=()
+  local -A pair_rss=() pair_pid=()
+  if (( auto )); then
+    for pid_path in /proc/[0-9]*; do
+      pid="${pid_path##*/}"
+      target="$(readlink "/proc/$pid/exe" 2>/dev/null || true)"
+      [[ "$target" == */gpu-simulator/bin/release/accel-sim.out ||
+         "$target" == */gpu-simulator/bin/release/accel-sim.out\ \(deleted\) ]] || continue
+      current_candidates+=("$pid")
+    done
+  else
+    current_candidates=("${candidates[@]}")
+  fi
+  for pid in "${current_candidates[@]}"; do
+    [[ -r "/proc/$pid/status" ]] || continue
+    state="$(awk '/^State:/ {print $2; exit}' "/proc/$pid/status")"
+    [[ "$state" != T && "$state" != t ]] || continue
+    cwd="$(simulator_cwd "$pid")"
+    pair_dir="$(dirname "$cwd")"
+    [[ -n "$cwd" && "$pair_dir" != . ]] || continue
+    rss="$(awk '/^VmRSS:/ {print $2; exit}' "/proc/$pid/status")"
+    rss="${rss:-0}"
+    pair_rss["$pair_dir"]=$(( ${pair_rss[$pair_dir]:-0} + rss ))
+    pair_pid["$pair_dir"]="$pid"
+  done
+  for pair_dir in "${!pair_rss[@]}"; do
+    if (( pair_rss[$pair_dir] > best_rss )); then
+      best_rss=${pair_rss[$pair_dir]}
+      best_pid=${pair_pid[$pair_dir]}
+    fi
+  done
+  [[ -n "$best_pid" ]] && printf '%s %s\n' "$best_pid" "$best_rss"
+}
+
 simulator_cwd() {
   readlink "/proc/$1/cwd" 2>/dev/null || true
 }
@@ -148,7 +188,11 @@ while :; do
     last_memory_limit_epoch="$now_epoch"
   fi
   [[ -n "$reason" ]] || continue
-  selection="$(largest_running_pid || true)"
+  if [[ "$action" == terminate-pair ]]; then
+    selection="$(largest_running_pair || true)"
+  else
+    selection="$(largest_running_pid || true)"
+  fi
   if [[ -z "$selection" ]]; then
     printf '%s %s oom_kill=%s used_percent=%s action=none reason=no_live_candidate\n' \
       "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" >> "$log"
