@@ -40,11 +40,14 @@ report_cases() {
         [[ -n "$path" && "$path" != \#* ]] || continue
         name="$(awk -F/ '{print $3}' <<<"$path")"
         # mri-gridding's retained retry predates the archive namespace and
-        # therefore uses mri-gridding rather than parboil-mri-gridding.
-        alt_name="${name#parboil-}"
-        if pair_passed "$name" || pair_passed "$alt_name"; then
+        # therefore uses mri-gridding rather than parboil-mri-gridding.  Keep
+        # this narrowly scoped: a general prefix drop could match an unrelated
+        # workload with the same short name.
+        alt_name=""
+        [[ "$name" == parboil-mri-gridding ]] && alt_name=mri-gridding
+        if pair_passed "$name" || { [[ -n "$alt_name" ]] && pair_passed "$alt_name"; }; then
             state=PASS; ((passed += 1))
-        elif running "$name" || running "$alt_name"; then
+        elif running "$name" || { [[ -n "$alt_name" ]] && running "$alt_name"; }; then
             state=ACTIVE; ((active += 1))
         else
             state=PENDING; ((pending += 1))
