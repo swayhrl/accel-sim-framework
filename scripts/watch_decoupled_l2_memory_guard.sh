@@ -6,21 +6,22 @@ usage() {
 Usage: scripts/watch_decoupled_l2_memory_guard.sh (--pid PID [--pid PID ...] | --auto)
        [--interval-sec N] [--max-memory-percent N]
        [--max-simulator-rss-gib N]
-       [--memory-limit-cooldown-sec N] [--action stop|terminate-pair] [--log FILE]
+       [--memory-limit-cooldown-sec N] [--action log|stop|terminate-pair] [--log FILE]
 
 Watch cgroup memory.events for a new OOM kill. Optionally, stop before an OOM
-when host memory consumption reaches MAX-MEMORY-PERCENT of MemTotal. On either
-event, send SIGSTOP to the largest-resident listed simulator still running and
-record it in LOG. SIGSTOP preserves simulator state for a later `kill -CONT
-PID`; it deliberately does not claim to reclaim its already allocated memory.
-This is a last-resort growth brake for live archive runs, not an admission
-controller.
+when host memory consumption reaches MAX-MEMORY-PERCENT of MemTotal. A
+threshold event can also be logged without changing any workload. SIGSTOP
+preserves simulator state for a later `kill -CONT PID`; it deliberately does
+not claim to reclaim its already allocated memory. This is a last-resort
+growth brake for live archive runs, not an admission controller.
 
 `--max-simulator-rss-gib` limits only the aggregate RSS of Accel-Sim
 executables whose cwd is below this experiment's `hw_run/` directory.  It is
 the appropriate capacity limit on a shared host: unrelated users, page cache,
 and IDE processes cannot cause an experiment workload to be terminated.
-`--max-memory-percent` remains a legacy host-wide emergency guard.
+`--max-memory-percent` remains a legacy host-wide emergency guard. Use
+`--action log` with an experiment RSS limit to monitor an in-flight pair
+without ever changing it.
 
 With `--action terminate-pair`, terminate both backends of the selected
 workload instead.  This is for a hard memory ceiling: stopping a process keeps
@@ -75,8 +76,8 @@ done
 [[ "$memory_limit_cooldown_sec" =~ ^[0-9]+$ ]] || {
   echo "error: --memory-limit-cooldown-sec must be non-negative" >&2; exit 2;
 }
-[[ "$action" == stop || "$action" == terminate-pair ]] || {
-  echo "error: --action must be stop or terminate-pair" >&2; exit 2;
+[[ "$action" == log || "$action" == stop || "$action" == terminate-pair ]] || {
+  echo "error: --action must be log, stop, or terminate-pair" >&2; exit 2;
 }
 if [[ -z "$log" ]]; then log="memory_guard.$(date +%Y%m%d_%H%M%S).log"; fi
 mkdir -p "$(dirname "$log")"
@@ -228,12 +229,18 @@ while :; do
     last_memory_limit_epoch="$now_epoch"
   fi
   [[ -n "$reason" ]] || continue
-  if [[ "$action" == terminate-pair ]]; then
+  if [[ "$action" == log ]]; then
+    selection=""
+  elif [[ "$action" == terminate-pair ]]; then
     selection="$(largest_running_pair || true)"
   else
     selection="$(largest_running_pid || true)"
   fi
-  if [[ -z "$selection" ]]; then
+  if [[ "$action" == log ]]; then
+      printf '%s %s oom_kill=%s used_percent=%s simulator_rss_kib=%s action=LOG\n' \
+      "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" \
+      "$simulator_rss" >> "$log"
+  elif [[ -z "$selection" ]]; then
       printf '%s %s oom_kill=%s used_percent=%s simulator_rss_kib=%s action=none reason=no_live_candidate\n' \
       "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" "$simulator_rss" >> "$log"
   else

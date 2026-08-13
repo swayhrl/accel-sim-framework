@@ -9,8 +9,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--build]
        [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
-       [--max-memory-percent N] [--pair-memory-reserve-gib N]
-       [--host-memory-reserve-gib N] [--max-live-pairs N]
+       [--max-simulator-rss-gib N] [--max-live-pairs N]
        [--global-pair-lock PATH]
        [--discard-failed-extract]
 
@@ -30,11 +29,12 @@ member-size result from a just-completed planner run and skips the otherwise
 redundant second full archive listing. It does not weaken the extraction's
 path checks; use it only with the unchanged archive that the planner scanned.
 
-MAX-MEMORY-PERCENT (default 95) is an admission ceiling. Each new workload
-pair also reserves PAIR-MEMORY-RESERVE-GIB (default 160) against that ceiling.
-The same pair reservation must fit in the host's MemAvailable after retaining
-HOST-MEMORY-RESERVE-GIB (default 20), preventing a busy unrelated workload
-from invalidating a cgroup-only admission decision.
+MAX-SIMULATOR-RSS-GIB (default 120) is a non-preemptive experiment admission
+ceiling.  Before starting a new pair, the runner sums RSS only for
+`accel-sim.out` processes whose cwd is under this worktree's `hw_run/` tree.
+Other users and host page cache are deliberately excluded.  A pair that is
+already running is never stopped when it grows past this ceiling; its growth
+only delays later admissions until it completes or fails.
 MAX-LIVE-PAIRS (default 1) limits concurrent pairs independently, so a new
 batch cannot fan out while each newly started simulator is still building its
 trace state. These gates never interrupt a pair already in flight. Disk-space
@@ -53,9 +53,7 @@ build=0
 staged_traces=""
 jobs=1; pair_parallel=0
 trusted_size_plan=0
-max_memory_percent=95
-pair_memory_reserve_gib=160
-host_memory_reserve_gib=20
+max_simulator_rss_gib=120
 max_live_pairs=1
 global_pair_lock="${TMPDIR:-/tmp}/decoupled-l2-archive-pair.lock"
 while [[ $# -gt 0 ]]; do
@@ -72,9 +70,7 @@ while [[ $# -gt 0 ]]; do
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
     --trusted-size-plan) trusted_size_plan=1; shift ;;
-    --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
-    --pair-memory-reserve-gib) pair_memory_reserve_gib="$2"; shift 2 ;;
-    --host-memory-reserve-gib) host_memory_reserve_gib="$2"; shift 2 ;;
+    --max-simulator-rss-gib) max_simulator_rss_gib="$2"; shift 2 ;;
     --max-live-pairs) max_live_pairs="$2"; shift 2 ;;
     --global-pair-lock) global_pair_lock="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
@@ -89,14 +85,8 @@ done
 [[ -n "$suite" && -f "$case_list" ]] || { echo "error: --suite and --case-list are required" >&2; exit 2; }
 [[ "$min_free_gib" =~ ^[0-9]+$ ]] || { echo "error: invalid --min-free-gib" >&2; exit 2; }
 [[ "$jobs" =~ ^[0-9]+$ && "$jobs" -gt 0 ]] || { echo "error: --jobs must be positive" >&2; exit 2; }
-[[ "$max_memory_percent" =~ ^[0-9]+$ && "$max_memory_percent" -gt 0 && "$max_memory_percent" -le 100 ]] || {
-  echo "error: --max-memory-percent must be in 1..100" >&2; exit 2;
-}
-[[ "$pair_memory_reserve_gib" =~ ^[0-9]+$ && "$pair_memory_reserve_gib" -gt 0 ]] || {
-  echo "error: --pair-memory-reserve-gib must be positive" >&2; exit 2;
-}
-[[ "$host_memory_reserve_gib" =~ ^[0-9]+$ ]] || {
-  echo "error: --host-memory-reserve-gib must be non-negative" >&2; exit 2;
+[[ "$max_simulator_rss_gib" =~ ^[0-9]+$ && "$max_simulator_rss_gib" -gt 0 ]] || {
+  echo "error: --max-simulator-rss-gib must be positive" >&2; exit 2;
 }
 [[ "$max_live_pairs" =~ ^[0-9]+$ && "$max_live_pairs" -gt 0 ]] || {
   echo "error: --max-live-pairs must be positive" >&2; exit 2;
@@ -160,31 +150,27 @@ tar_read() {
   else tar --gzip "$@"; fi
 }
 available_kib() { df -Pk "$scratch_root" | awk 'NR == 2 { print $4 }'; }
-cgroup_memory_bytes() { cat /sys/fs/cgroup/memory.current; }
-cgroup_memory_limit_bytes() {
-  local limit
-  limit="$(cat /sys/fs/cgroup/memory.max)"
-  [[ "$limit" =~ ^[0-9]+$ && "$limit" -gt 0 ]] && printf '%s\n' "$limit" || printf '0\n'
-}
 cgroup_oom_kill_count() {
   awk '$1 == "oom_kill" { print $2; found = 1 } END { if (!found) print 0 }' \
     /sys/fs/cgroup/memory.events
 }
-host_memory_available_bytes() {
-  awk '/^MemAvailable:/ { print $2 * 1024; found = 1 } END { if (!found) print 0 }' /proc/meminfo
+experiment_simulator_rss_kib() {
+  local pid cwd rss total=0
+  for proc_dir in /proc/[0-9]*; do
+    pid="${proc_dir##*/}"
+    [[ -r "$proc_dir/comm" && "$(<"$proc_dir/comm")" == accel-sim.out ]] || continue
+    cwd="$(readlink "$proc_dir/cwd" 2>/dev/null || true)"
+    [[ "$cwd" == "$repo_root/hw_run/"* ]] || continue
+    rss="$(awk '/^VmRSS:/ {print $2; exit}' "$proc_dir/status" 2>/dev/null || true)"
+    total=$(( total + ${rss:-0} ))
+  done
+  printf '%s\n' "$total"
 }
 pair_memory_admit() {
-  local used limit ceiling reserve host_available host_reserve
-  used="$(cgroup_memory_bytes)"
-  limit="$(cgroup_memory_limit_bytes)"
-  reserve=$((pair_memory_reserve_gib * 1024 * 1024 * 1024))
-  host_available="$(host_memory_available_bytes)"
-  host_reserve=$((host_memory_reserve_gib * 1024 * 1024 * 1024))
-  if (( limit != 0 )); then
-    ceiling=$((limit * max_memory_percent / 100))
-    (( used + reserve <= ceiling )) || return 1
-  fi
-  (( host_available >= reserve + host_reserve ))
+  local simulator_rss_kib ceiling_kib
+  simulator_rss_kib="$(experiment_simulator_rss_kib)"
+  ceiling_kib=$((max_simulator_rss_gib * 1024 * 1024))
+  (( simulator_rss_kib < ceiling_kib ))
 }
 min_free_kib=$((min_free_gib * 1024 * 1024))
 
@@ -351,11 +337,9 @@ wait_for_pair_memory() {
       printf 'error: cgroup OOM kill detected during batch; retain logs and do not start further cases\n' >&2
       return 1
     fi
-    printf 'WAIT_MEMORY used_gib=%s host_available_gib=%s pair_reserve_gib=%s host_reserve_gib=%s limit_percent=%s\n' \
-      "$(( $(cgroup_memory_bytes) / 1024 / 1024 / 1024 ))" \
-      "$(( $(host_memory_available_bytes) / 1024 / 1024 / 1024 ))" \
-      "$pair_memory_reserve_gib" "$host_memory_reserve_gib" \
-      "$max_memory_percent" >&2
+    printf 'WAIT_SIMULATOR_RSS simulator_rss_gib=%s ceiling_gib=%s\n' \
+      "$(( $(experiment_simulator_rss_kib) / 1024 / 1024 ))" \
+      "$max_simulator_rss_gib" >&2
     sleep 30
   done
 }
