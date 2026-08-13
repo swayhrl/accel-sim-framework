@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/watch_decoupled_l2_memory_guard.sh (--pid PID [--pid PID ...] | --auto)
        [--interval-sec N] [--max-memory-percent N]
-       [--memory-limit-cooldown-sec N] [--log FILE]
+       [--memory-limit-cooldown-sec N] [--action stop|terminate-pair] [--log FILE]
 
 Watch cgroup memory.events for a new OOM kill. Optionally, stop before an OOM
 when host memory consumption reaches MAX-MEMORY-PERCENT of MemTotal. On either
@@ -14,6 +14,12 @@ record it in LOG. SIGSTOP preserves simulator state for a later `kill -CONT
 PID`; it deliberately does not claim to reclaim its already allocated memory.
 This is a last-resort growth brake for live archive runs, not an admission
 controller.
+
+With `--action terminate-pair`, terminate both backends of the selected
+workload instead.  This is for a hard memory ceiling: stopping a process keeps
+its RSS resident, while terminating the pair releases it and preserves both
+run directories for diagnosis and replay.  The default `stop` retains the
+historical behaviour.
 
 MEMORY-LIMIT-COOLDOWN-SEC (default 30) is the minimum time before a sustained
 threshold breach can stop another simulator. This matters because SIGSTOP
@@ -27,6 +33,7 @@ EOF
 interval_sec=5
 max_memory_percent=100
 memory_limit_cooldown_sec=30
+action=stop
 log=""
 auto=0
 declare -a candidates=()
@@ -37,6 +44,7 @@ while [[ $# -gt 0 ]]; do
     --interval-sec) interval_sec="$2"; shift 2 ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
     --memory-limit-cooldown-sec) memory_limit_cooldown_sec="$2"; shift 2 ;;
+    --action) action="$2"; shift 2 ;;
     --log) log="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -54,6 +62,9 @@ done
 }
 [[ "$memory_limit_cooldown_sec" =~ ^[0-9]+$ ]] || {
   echo "error: --memory-limit-cooldown-sec must be non-negative" >&2; exit 2;
+}
+[[ "$action" == stop || "$action" == terminate-pair ]] || {
+  echo "error: --action must be stop or terminate-pair" >&2; exit 2;
 }
 if [[ -z "$log" ]]; then log="memory_guard.$(date +%Y%m%d_%H%M%S).log"; fi
 mkdir -p "$(dirname "$log")"
@@ -97,6 +108,28 @@ largest_running_pid() {
   [[ -n "$best_pid" ]] && printf '%s %s\n' "$best_pid" "$best_rss"
 }
 
+simulator_cwd() {
+  readlink "/proc/$1/cwd" 2>/dev/null || true
+}
+
+terminate_workload_pair() {
+  local selected_pid="$1" selected_cwd pair_dir pid target cwd
+  selected_cwd="$(simulator_cwd "$selected_pid")"
+  pair_dir="$(dirname "$selected_cwd")"
+  [[ -n "$selected_cwd" && "$pair_dir" != . ]] || return 1
+
+  for pid_path in /proc/[0-9]*; do
+    pid="${pid_path##*/}"
+    target="$(readlink "/proc/$pid/exe" 2>/dev/null || true)"
+    [[ "$target" == */gpu-simulator/bin/release/accel-sim.out ||
+       "$target" == */gpu-simulator/bin/release/accel-sim.out\ \(deleted\) ]] || continue
+    cwd="$(simulator_cwd "$pid")"
+    [[ "$(dirname "$cwd")" == "$pair_dir" ]] || continue
+    kill -TERM "$pid" 2>/dev/null || true
+    printf '%s ' "$pid"
+  done
+}
+
 last_oom="$(oom_kill_count)"
 last_memory_limit_epoch=0
 if (( auto )); then candidate_label="auto"; else candidate_label="${candidates[*]}"; fi
@@ -121,10 +154,17 @@ while :; do
       "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" >> "$log"
   else
     read -r pid rss <<< "$selection"
-    kill -STOP "$pid"
-    printf '%s %s oom_kill=%s used_percent=%s action=SIGSTOP pid=%s rss_kib=%s resume="kill -CONT %s"\n' \
-      "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" \
-      "$pid" "$rss" "$pid" >> "$log"
+    if [[ "$action" == terminate-pair ]]; then
+      pair_pids="$(terminate_workload_pair "$pid" || true)"
+      printf '%s %s oom_kill=%s used_percent=%s action=SIGTERM_PAIR selected_pid=%s rss_kib=%s pids="%s"\n' \
+        "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" \
+        "$pid" "$rss" "$pair_pids" >> "$log"
+    else
+      kill -STOP "$pid"
+      printf '%s %s oom_kill=%s used_percent=%s action=SIGSTOP pid=%s rss_kib=%s resume="kill -CONT %s"\n' \
+        "$(date --iso-8601=seconds)" "$reason" "$now_oom" "$used_percent" \
+        "$pid" "$rss" "$pid" >> "$log"
+    fi
   fi
   last_oom="$now_oom"
 done
