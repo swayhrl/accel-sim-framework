@@ -12,9 +12,11 @@ the source workload on disk.  Every kernel named by kernelslist.g is retained;
 each output kernel keeps complete CTA records through ceil(grid_ctas / N)
 #END_TB boundaries and advertises the matching one-dimensional grid.
 
-The archive is read once per selected member.  This trades archive I/O for a
-bounded working-set and is intended for on-demand large-suite smoke runs such
-as CUTLASS, not performance experiments.
+The archive is read twice: once for kernelslist.g and once to stream every
+selected kernel through GNU tar's --to-command hook.  This keeps the working
+set bounded without multiplying compressed-archive reads by kernel count.  It
+is intended for on-demand large-suite smoke runs such as CUTLASS, not
+performance experiments.
 EOF
 }
 
@@ -49,6 +51,9 @@ done
 
 archive="$(cd "$(dirname "$archive")" && pwd)/$(basename "$archive")"
 trace_prefix="${trace_member%/kernelslist.g}"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+member_filter="$repo_root/scripts/filter_decoupled_l2_archive_trace_member.sh"
+[[ -x "$member_filter" ]] || { echo "error: missing $member_filter" >&2; exit 2; }
 mkdir -p "$output_dir/traces"
 output_dir="$(cd "$output_dir" && pwd)"
 
@@ -65,49 +70,30 @@ mapfile -t kernels < <(
   exit 1
 }
 
+members_file="$output_dir/.archive_members"
+for kernel in "${kernels[@]}"; do
+  printf '%s/%s\n' "$trace_prefix" "$kernel"
+done > "$members_file"
+
+TRACE_FRACTION_OUTPUT_DIR="$output_dir" \
+TRACE_FRACTION_FRACTION="$fraction" \
+tar --extract --to-command="$member_filter" --files-from="$members_file" --file "$archive"
+
 manifest="$output_dir/trace_fraction_manifest.csv"
 printf 'kernel,source_grid,selected_ctas,fraction,output_bytes\n' > "$manifest"
-
 for kernel in "${kernels[@]}"; do
-  member="$trace_prefix/$kernel"
-  # Consume the member fully so pipefail reports archive corruption instead of
-  # a benign early-reader SIGPIPE.
-  grid="$(tar --extract --to-stdout --file "$archive" "$member" | awk '
-    !seen && /^-grid dim = / { print; seen = 1 }
-  ')"
-  if [[ ! "$grid" =~ \(([0-9]+),([0-9]+),([0-9]+)\) ]]; then
-    echo "error: cannot parse grid in archive member $member" >&2
+  meta="$output_dir/.${kernel}.meta"
+  [[ -f "$output_dir/traces/$kernel" && -s "$meta" ]] || {
+    echo "error: archive did not provide $kernel" >&2
     exit 1
-  fi
-  grid_x="${BASH_REMATCH[1]}"
-  grid_y="${BASH_REMATCH[2]}"
-  grid_z="${BASH_REMATCH[3]}"
-  source_ctas=$((grid_x * grid_y * grid_z))
-  selected_ctas=$(((source_ctas + fraction - 1) / fraction))
-  output="$output_dir/traces/$kernel"
-  tmp="$output.tmp"
-
-  tar --extract --to-stdout --file "$archive" "$member" | \
-    awk -v selected_ctas="$selected_ctas" '
-      /^-grid dim = \(/ {
-        if (!finished) print "-grid dim = (" selected_ctas ",1,1)"
-        next
-      }
-      !finished { print }
-      $0 == "#END_TB" {
-        completed_ctas++
-        if (completed_ctas == selected_ctas) finished = 1
-      }
-      END {
-        if (completed_ctas < selected_ctas) {
-          printf "error: requested %d CTAs but found %d\\n", selected_ctas, completed_ctas > "/dev/stderr"
-          exit 2
-        }
-      }
-    ' > "$tmp"
-  mv "$tmp" "$output"
-  printf '%s,"(%s,%s,%s)",%s,%s,%s\n' "$kernel" "$grid_x" "$grid_y" "$grid_z" \
-    "$selected_ctas" "$fraction" "$(stat -c %s "$output")" >> "$manifest"
+  }
+  IFS=$'\t' read -r recorded_kernel source_grid selected_ctas < "$meta"
+  [[ "$recorded_kernel" == "-" || "$recorded_kernel" == "$kernel" ]] || {
+    echo "error: mismatched archive member metadata for $kernel" >&2
+    exit 1
+  }
+  printf '%s,"%s",%s,%s,%s\n' "$kernel" "$source_grid" "$selected_ctas" "$fraction" \
+    "$(stat -c %s "$output_dir/traces/$kernel")" >> "$manifest"
 done
 
 while IFS= read -r kernel; do
