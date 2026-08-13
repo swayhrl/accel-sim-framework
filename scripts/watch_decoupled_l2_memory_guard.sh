@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/watch_decoupled_l2_memory_guard.sh (--pid PID [--pid PID ...] | --auto)
        [--interval-sec N] [--max-memory-percent N]
-       [--max-simulator-rss-gib N]
+       [--max-simulator-rss-gb N]
        [--memory-limit-cooldown-sec N] [--action log|stop|terminate-pair] [--log FILE]
 
 Watch cgroup memory.events for a new OOM kill. Optionally, stop before an OOM
@@ -15,7 +15,7 @@ preserves simulator state for a later `kill -CONT PID`; it deliberately does
 not claim to reclaim its already allocated memory. This is a last-resort
 growth brake for live archive runs, not an admission controller.
 
-`--max-simulator-rss-gib` limits only the aggregate RSS of Accel-Sim
+`--max-simulator-rss-gb` limits only the aggregate RSS of Accel-Sim
 executables whose cwd is below this experiment's `hw_run/` directory.  It is
 the appropriate capacity limit on a shared host: unrelated users, page cache,
 and IDE processes cannot cause an experiment workload to be terminated.
@@ -40,7 +40,7 @@ EOF
 
 interval_sec=5
 max_memory_percent=100
-max_simulator_rss_gib=0
+max_simulator_rss_gb=0
 memory_limit_cooldown_sec=30
 action=stop
 log=""
@@ -52,7 +52,7 @@ while [[ $# -gt 0 ]]; do
     --auto) auto=1; shift ;;
     --interval-sec) interval_sec="$2"; shift 2 ;;
     --max-memory-percent) max_memory_percent="$2"; shift 2 ;;
-    --max-simulator-rss-gib) max_simulator_rss_gib="$2"; shift 2 ;;
+    --max-simulator-rss-gb) max_simulator_rss_gb="$2"; shift 2 ;;
     --memory-limit-cooldown-sec) memory_limit_cooldown_sec="$2"; shift 2 ;;
     --action) action="$2"; shift 2 ;;
     --log) log="$2"; shift 2 ;;
@@ -70,8 +70,8 @@ done
    "$max_memory_percent" -le 100 ]] || {
   echo "error: --max-memory-percent must be in 1..100" >&2; exit 2;
 }
-[[ "$max_simulator_rss_gib" =~ ^[0-9]+$ ]] || {
-  echo "error: --max-simulator-rss-gib must be a non-negative integer" >&2; exit 2;
+[[ "$max_simulator_rss_gb" =~ ^[0-9]+$ ]] || {
+  echo "error: --max-simulator-rss-gb must be a non-negative integer" >&2; exit 2;
 }
 [[ "$memory_limit_cooldown_sec" =~ ^[0-9]+$ ]] || {
   echo "error: --memory-limit-cooldown-sec must be non-negative" >&2; exit 2;
@@ -222,8 +222,8 @@ while :; do
     reason="${reason:+${reason}_}MEMORY_LIMIT"
     last_memory_limit_epoch="$now_epoch"
   fi
-  if (( max_simulator_rss_gib > 0 &&
-        simulator_rss >= max_simulator_rss_gib * 1024 * 1024 &&
+  if (( max_simulator_rss_gb > 0 &&
+        simulator_rss >= max_simulator_rss_gb * 1000 * 1000 * 1000 / 1024 &&
         now_epoch - last_memory_limit_epoch >= memory_limit_cooldown_sec )); then
     reason="${reason:+${reason}_}SIMULATOR_RSS_LIMIT"
     last_memory_limit_epoch="$now_epoch"

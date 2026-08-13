@@ -6,7 +6,7 @@ usage() {
 Usage: scripts/run_decoupled_l2_archive_plan.sh --archive SUITE.tgz --suite NAME
        [--plan-dir DIR] [--run-root DIR] [--min-free-gib N]
        [--max-parallel N] [--jobs N] [--pair-parallel]
-       [--max-simulator-rss-gib N] [--staged-traces DIR]
+       [--max-simulator-rss-gb N] [--staged-traces DIR]
        [--wait-for-plan-pid PID]
 
 Create (or wait for) an exact tar-member capacity plan, then run each planned
@@ -22,7 +22,7 @@ EOF
 
 archive=""; suite=""; plan_dir=""; run_root=""; min_free_gib=80
 max_parallel=16; jobs=16; pair_parallel=0; wait_for_plan_pid=""
-max_simulator_rss_gib=120
+max_simulator_rss_gb=120
 staged_traces=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
     --max-parallel) max_parallel="$2"; shift 2 ;;
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
-    --max-simulator-rss-gib) max_simulator_rss_gib="$2"; shift 2 ;;
+    --max-simulator-rss-gb) max_simulator_rss_gb="$2"; shift 2 ;;
     --staged-traces) staged_traces="$2"; shift 2 ;;
     --wait-for-plan-pid) wait_for_plan_pid="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
@@ -50,7 +50,7 @@ done
 [[ -d "$DECOUPLED_L2_GPGPUSIM_ROOT" ]] || {
   echo "error: missing GPGPU-Sim root $DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2;
 }
-for value in "$min_free_gib" "$max_parallel" "$jobs" "$max_simulator_rss_gib"; do
+for value in "$min_free_gib" "$max_parallel" "$jobs" "$max_simulator_rss_gb"; do
   [[ "$value" =~ ^[0-9]+$ && "$value" -gt 0 ]] || {
     echo "error: numeric limits must be positive" >&2; exit 2;
   }
@@ -139,7 +139,7 @@ for ((wave = 1; wave <= wave_count; ++wave)); do
   done
   batch_args=(--archive "$archive" --suite "$suite" --case-list "$wave_sizes"
               --trusted-size-plan --min-free-gib "$min_free_gib"
-              --jobs "$jobs" --max-simulator-rss-gib "$max_simulator_rss_gib"
+              --jobs "$jobs" --max-simulator-rss-gb "$max_simulator_rss_gb"
               --run-root "$wave_dir")
   [[ "$pair_parallel" -eq 1 ]] && batch_args+=(--pair-parallel)
   [[ -n "$staged_traces" ]] && batch_args+=(--staged-traces "$staged_traces")

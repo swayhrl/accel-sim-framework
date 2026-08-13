@@ -9,7 +9,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--build]
        [--staged-traces DIR]
        [--jobs N] [--pair-parallel] [--trusted-size-plan]
-       [--max-simulator-rss-gib N] [--max-live-pairs N]
+       [--max-simulator-rss-gb N] [--max-live-pairs N]
        [--global-pair-lock PATH]
        [--discard-failed-extract]
 
@@ -29,7 +29,7 @@ member-size result from a just-completed planner run and skips the otherwise
 redundant second full archive listing. It does not weaken the extraction's
 path checks; use it only with the unchanged archive that the planner scanned.
 
-MAX-SIMULATOR-RSS-GIB (default 120) is a non-preemptive experiment admission
+MAX-SIMULATOR-RSS-GB (default 120) is a non-preemptive experiment admission
 ceiling.  Before starting a new pair, the runner sums RSS only for
 `accel-sim.out` processes whose cwd is under this worktree's `hw_run/` tree.
 Other users and host page cache are deliberately excluded.  A pair that is
@@ -53,7 +53,7 @@ build=0
 staged_traces=""
 jobs=1; pair_parallel=0
 trusted_size_plan=0
-max_simulator_rss_gib=120
+max_simulator_rss_gb=120
 max_live_pairs=1
 global_pair_lock="${TMPDIR:-/tmp}/decoupled-l2-archive-pair.lock"
 while [[ $# -gt 0 ]]; do
@@ -70,7 +70,7 @@ while [[ $# -gt 0 ]]; do
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
     --trusted-size-plan) trusted_size_plan=1; shift ;;
-    --max-simulator-rss-gib) max_simulator_rss_gib="$2"; shift 2 ;;
+    --max-simulator-rss-gb) max_simulator_rss_gb="$2"; shift 2 ;;
     --max-live-pairs) max_live_pairs="$2"; shift 2 ;;
     --global-pair-lock) global_pair_lock="$2"; shift 2 ;;
     --discard-failed-extract) keep_failed_extract=0; shift ;;
@@ -85,8 +85,8 @@ done
 [[ -n "$suite" && -f "$case_list" ]] || { echo "error: --suite and --case-list are required" >&2; exit 2; }
 [[ "$min_free_gib" =~ ^[0-9]+$ ]] || { echo "error: invalid --min-free-gib" >&2; exit 2; }
 [[ "$jobs" =~ ^[0-9]+$ && "$jobs" -gt 0 ]] || { echo "error: --jobs must be positive" >&2; exit 2; }
-[[ "$max_simulator_rss_gib" =~ ^[0-9]+$ && "$max_simulator_rss_gib" -gt 0 ]] || {
-  echo "error: --max-simulator-rss-gib must be positive" >&2; exit 2;
+[[ "$max_simulator_rss_gb" =~ ^[0-9]+$ && "$max_simulator_rss_gb" -gt 0 ]] || {
+  echo "error: --max-simulator-rss-gb must be positive" >&2; exit 2;
 }
 [[ "$max_live_pairs" =~ ^[0-9]+$ && "$max_live_pairs" -gt 0 ]] || {
   echo "error: --max-live-pairs must be positive" >&2; exit 2;
@@ -169,7 +169,7 @@ experiment_simulator_rss_kib() {
 pair_memory_admit() {
   local simulator_rss_kib ceiling_kib
   simulator_rss_kib="$(experiment_simulator_rss_kib)"
-  ceiling_kib=$((max_simulator_rss_gib * 1024 * 1024))
+  ceiling_kib=$((max_simulator_rss_gb * 1000 * 1000 * 1000 / 1024))
   (( simulator_rss_kib < ceiling_kib ))
 }
 min_free_kib=$((min_free_gib * 1024 * 1024))
@@ -337,9 +337,9 @@ wait_for_pair_memory() {
       printf 'error: cgroup OOM kill detected during batch; retain logs and do not start further cases\n' >&2
       return 1
     fi
-    printf 'WAIT_SIMULATOR_RSS simulator_rss_gib=%s ceiling_gib=%s\n' \
-      "$(( $(experiment_simulator_rss_kib) / 1024 / 1024 ))" \
-      "$max_simulator_rss_gib" >&2
+    printf 'WAIT_SIMULATOR_RSS simulator_rss_gb=%s ceiling_gb=%s\n' \
+      "$(awk -v kib="$(experiment_simulator_rss_kib)" 'BEGIN { printf "%.3f", kib * 1024 / 1000 / 1000 / 1000 }')" \
+      "$max_simulator_rss_gb" >&2
     sleep 30
   done
 }
