@@ -48,6 +48,9 @@ struct inst_memadd_info_t {
 struct inst_trace_t {
   inst_trace_t();
   inst_trace_t(const inst_trace_t &b);
+  inst_trace_t &operator=(const inst_trace_t &b);
+  inst_trace_t(inst_trace_t &&b) noexcept;
+  inst_trace_t &operator=(inst_trace_t &&b) noexcept;
 
   unsigned line_num;
   unsigned m_pc;

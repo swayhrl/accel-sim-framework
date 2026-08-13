@@ -32,20 +32,85 @@ void split(const std::string &str, std::vector<std::string> &cont,
   }
 }
 
-inst_trace_t::inst_trace_t() {
-  memadd_info = NULL;
-  imm = 0;
+inst_trace_t::inst_trace_t()
+    : line_num(0),
+      m_pc(0),
+      mask(0),
+      reg_dsts_num(0),
+      reg_srcs_num(0),
+      imm(0),
+      memadd_info(NULL) {
+  for (unsigned i = 0; i < MAX_DST; ++i) reg_dest[i] = 0;
+  for (unsigned i = 0; i < MAX_SRC; ++i) reg_src[i] = 0;
 }
 
 inst_trace_t::~inst_trace_t() {
   if (memadd_info != NULL) delete memadd_info;
 }
 
-inst_trace_t::inst_trace_t(const inst_trace_t &b) {
-  if (memadd_info != NULL) {
-    memadd_info = new inst_memadd_info_t();
-    memadd_info = b.memadd_info;
-  }
+inst_trace_t::inst_trace_t(const inst_trace_t &b)
+    : line_num(b.line_num),
+      m_pc(b.m_pc),
+      mask(b.mask),
+      reg_dsts_num(b.reg_dsts_num),
+      opcode(b.opcode),
+      reg_srcs_num(b.reg_srcs_num),
+      imm(b.imm),
+      memadd_info(b.memadd_info ? new inst_memadd_info_t(*b.memadd_info)
+                                : NULL) {
+  for (unsigned i = 0; i < MAX_DST; ++i) reg_dest[i] = b.reg_dest[i];
+  for (unsigned i = 0; i < MAX_SRC; ++i) reg_src[i] = b.reg_src[i];
+}
+
+inst_trace_t &inst_trace_t::operator=(const inst_trace_t &b) {
+  if (this == &b) return *this;
+
+  inst_memadd_info_t *new_memadd_info =
+      b.memadd_info ? new inst_memadd_info_t(*b.memadd_info) : NULL;
+  line_num = b.line_num;
+  m_pc = b.m_pc;
+  mask = b.mask;
+  reg_dsts_num = b.reg_dsts_num;
+  for (unsigned i = 0; i < MAX_DST; ++i) reg_dest[i] = b.reg_dest[i];
+  opcode = b.opcode;
+  reg_srcs_num = b.reg_srcs_num;
+  for (unsigned i = 0; i < MAX_SRC; ++i) reg_src[i] = b.reg_src[i];
+  imm = b.imm;
+  delete memadd_info;
+  memadd_info = new_memadd_info;
+  return *this;
+}
+
+inst_trace_t::inst_trace_t(inst_trace_t &&b) noexcept
+    : line_num(b.line_num),
+      m_pc(b.m_pc),
+      mask(b.mask),
+      reg_dsts_num(b.reg_dsts_num),
+      opcode(std::move(b.opcode)),
+      reg_srcs_num(b.reg_srcs_num),
+      imm(b.imm),
+      memadd_info(b.memadd_info) {
+  for (unsigned i = 0; i < MAX_DST; ++i) reg_dest[i] = b.reg_dest[i];
+  for (unsigned i = 0; i < MAX_SRC; ++i) reg_src[i] = b.reg_src[i];
+  b.memadd_info = NULL;
+}
+
+inst_trace_t &inst_trace_t::operator=(inst_trace_t &&b) noexcept {
+  if (this == &b) return *this;
+
+  line_num = b.line_num;
+  m_pc = b.m_pc;
+  mask = b.mask;
+  reg_dsts_num = b.reg_dsts_num;
+  for (unsigned i = 0; i < MAX_DST; ++i) reg_dest[i] = b.reg_dest[i];
+  opcode = std::move(b.opcode);
+  reg_srcs_num = b.reg_srcs_num;
+  for (unsigned i = 0; i < MAX_SRC; ++i) reg_src[i] = b.reg_src[i];
+  imm = b.imm;
+  delete memadd_info;
+  memadd_info = b.memadd_info;
+  b.memadd_info = NULL;
+  return *this;
 }
 
 bool inst_trace_t::check_opcode_contain(const std::vector<std::string> &opcode,

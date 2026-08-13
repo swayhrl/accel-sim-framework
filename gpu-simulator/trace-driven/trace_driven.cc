@@ -71,8 +71,16 @@ const trace_warp_inst_t *trace_shd_warp_t::get_next_trace_inst() {
 }
 
 void trace_shd_warp_t::clear() {
+  // Normal CTAs reuse a modest vector allocation.  A pathological trace CTA
+  // can contain millions of instructions, however; retaining that capacity
+  // pins its peak heap footprint long after the CTA has drained.
+  constexpr size_t kTraceWarpReuseLimit = 1u << 16;
   trace_pc = 0;
-  warp_traces.clear();
+  if (warp_traces.capacity() > kTraceWarpReuseLimit) {
+    std::vector<inst_trace_t>().swap(warp_traces);
+  } else {
+    warp_traces.clear();
+  }
 }
 
 // functional_done
