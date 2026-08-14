@@ -3,10 +3,10 @@ suite,tier,case,capture_source,capture_selector,trace_rel,expected_decoupled_reg
 # trace_rel is assigned by the capture step, then these rows are converted to
 # the normal five-column pretrace manifest consumed by
 # scripts/run_decoupled_l2_pretrace_cases.sh.
-deepbench_nvidia,dev,normal_gemm,DeepBench/code/nvidia,gemm_bench train half 2048 128 2048 0 0,PENDING,access=[1-9].*otf=[1-9],trace_needed
-deepbench_nvidia,dev,tensor_gemm,DeepBench/code/nvidia,gemm_bench-tencore train half 2048 128 2048 0 0,PENDING,access=[1-9].*otf=[1-9],trace_needed
-deepbench_nvidia,extended,tensor_conv,DeepBench/code/nvidia,conv_bench-tencore inference half 700 161 1 1 32 20 5 0 0 2 2,PENDING,access=[1-9].*otf=[1-9],trace_needed
-deepbench_nvidia,extended,tensor_rnn,DeepBench/code/nvidia,rnn_bench-tencore inference half 512 1 25 lstm,PENDING,access=[1-9].*otf=[1-9],trace_needed
+deepbench_nvidia,dev,normal_gemm,DeepBench/code/nvidia,gemm_bench train half 2048 128 2048 0 0,PENDING,access=[1-9].*otf=[1-9],public_archive_available
+deepbench_nvidia,dev,tensor_gemm,DeepBench/code/nvidia,gemm_bench-tencore train half 2048 128 2048 0 0,PENDING,access=[1-9].*otf=[1-9],public_archive_available
+deepbench_nvidia,extended,tensor_conv,DeepBench/code/nvidia,conv_bench-tencore inference half 700 161 1 1 32 20 5 0 0 2 2,PENDING,access=[1-9].*otf=[1-9],public_archive_available
+deepbench_nvidia,extended,tensor_rnn,DeepBench/code/nvidia,rnn_bench-tencore inference half 512 1 25 lstm,PENDING,access=[1-9].*otf=[1-9],public_archive_available
 cuda_tensorcore,dev,cudaTensorCoreGemm,NVIDIA_CUDA-11.0_Samples/cudaTensorCoreGemm,cudaTensorCoreGemm,PENDING,access=[1-9].*otf=[1-9],trace_needed
 shoc,dev,spmv,shoc-master/src/cuda/level1/spmv,Spmv,PENDING,access=[1-9].*otf=[1-9],trace_needed
 shoc,dev,stencil2d,shoc-master/src/cuda/level1/stencil2d,Stencil2D,PENDING,access=[1-9].*otf=[1-9],trace_needed
