@@ -51,3 +51,19 @@ DeepBench but no separate CUDA Tensor-Core GEMM or SHOC archive.  Therefore
 the queue does not guess a trace name or start an invalid replay.  Once
 enough disk is explicitly released for DeepBench, archive staging must still
 select and record the exact member paths before paired replay.
+
+## AccelWattch artifact intake
+
+Zenodo record 5398781 provides a separate AccelWattch artifact containing a
+cudaTensorCoreGemm validation SASS trace.  Its direct content endpoint is:
+
+```text
+https://zenodo.org/api/records/5398781/files/accelwattch-artifact-appendix.tar/content
+```
+
+The 2026-08-14 record metadata specifies `39660062720` bytes and MD5
+`c66259f73a622228bbcf02a4ef4f9b6a`.  The local resumable download is kept at
+`hw_run/decoupled-l2-pretraces/accelwattch-artifact-appendix.tar`; do not
+extract it until this exact size and digest have passed.  Member selection
+will be recorded before staging any trace, so the archive cannot be confused
+with a completed cudaTensorCoreGemm replay.
