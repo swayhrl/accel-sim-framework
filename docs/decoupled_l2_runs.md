@@ -70,6 +70,21 @@ Debug assertions check token ownership, one AAD chain per line, one token per
 AAD chain, and the correspondence between an issued lower read and its OTF
 record.  A failing assertion invalidates the run.
 
+## AAD progress invariant
+
+Lower reads and writebacks receive bank arbitration before new tag work.  This
+is a progress rule, not a throughput preference: an AAD-full tag queue may
+otherwise keep retrying stalled tags on every bank and prevent every lower read
+from issuing, leaving `aad` full and `fill` at zero forever.  The diagnostic
+signature is a saturated AAD together with very high `bank_stall` and no
+in-flight fill.  The source fix is GPGPU-Sim commit `eba378a0`.
+
+The preserved Rodinia 3.1 kmeans-28k failure has that signature; the clean
+decoupled-only replay in
+`hw_run/decoupled-l2-functional/rodinia-first-batch/` with suffix
+`lower-read-priority-rerun1` completed with `decoupled_rc=0` on 2026-08-14.
+The original failing directory is retained for comparison.
+
 ## Minimum validation matrix
 
 1. Run `baseline` on a trace and compare its final cycle count with the pinned
