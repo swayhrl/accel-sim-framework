@@ -5,20 +5,60 @@
 # sufficient evidence.
 set -euo pipefail
 
-root="${1:-$(pwd)}"
+root=""
+required_source_commit=""
+while (($#)); do
+    case "$1" in
+        --source-commit)
+            (($# >= 2)) || { echo "error: --source-commit needs a commit" >&2; exit 2; }
+            required_source_commit="$2"
+            shift 2
+            ;;
+        -h|--help)
+            cat <<'EOF'
+Usage: report_decoupled_l2_archive_status.sh [--source-commit COMMIT] [ROOT]
+
+Without --source-commit, a pair passes when both smoke outputs reached the
+normal simulator exit marker.  With --source-commit, both outputs must also
+record that exact gpgpusim_source_commit in simulator_provenance.txt.
+EOF
+            exit 0
+            ;;
+        -* )
+            echo "error: unknown option $1" >&2
+            exit 2
+            ;;
+        *)
+            [[ -z "$root" ]] || { echo "error: multiple roots" >&2; exit 2; }
+            root="$1"
+            shift
+            ;;
+    esac
+done
+root="${root:-$(pwd)}"
 marker='GPGPU-Sim: \*\*\* exit detected \*\*\*'
 
 terminal() {
     [[ -f "$1" ]] && rg -q "$marker" "$1"
 }
 
+provenance_matches() {
+    local smoke_out="$1" provenance recorded_commit
+    [[ -z "$required_source_commit" ]] && return 0
+    provenance="${smoke_out%/smoke.out}/simulator_provenance.txt"
+    [[ -f "$provenance" ]] || return 1
+    recorded_commit="$(sed -n 's/^gpgpusim_source_commit=//p' "$provenance" | tail -1)"
+    [[ "$recorded_commit" == "$required_source_commit" ]]
+}
+
 pair_passed() {
     local name="$1" base run candidate
     while IFS= read -r -d '' base; do
         terminal "$base" || continue
+        provenance_matches "$base" || continue
         run="${base%/baseline/smoke.out}"
         for candidate in "$run"/decoupled*/smoke.out; do
-            terminal "$candidate" && return 0
+            terminal "$candidate" && provenance_matches "$candidate" && return 0
         done
     done < <(find "$root/hw_run" -type f -path "*${name}*/baseline/smoke.out" -print0)
     return 1
