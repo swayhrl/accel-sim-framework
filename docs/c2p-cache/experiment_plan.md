@@ -38,6 +38,12 @@ first the configuration geometry, partition/set mapping, input/trace size,
 and remote-hit eligibility.  Do not tune incidental pipeline timing merely to
 force a matching cycle count.
 
+The primary C2P configuration leaves no idle gap between per-SM Snapshot
+column rebuilds. The paper describes continuously rebuilding one selected
+column and then moving to the next; `100000` idle cycles per column would make
+a 64-SM snapshot effectively insertion-only over typical traces and is not a
+valid substitute for that background path.
+
 The default trace configuration is the pinned Accel-Sim QV100 configuration.
 Paper-table runs append `configs/c2p-cache/paper-table.config` and pass
 `--strip-mem-addr-mapping` to the runner. The manuscript's L1 table
