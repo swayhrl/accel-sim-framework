@@ -53,6 +53,16 @@ invent a remote hit: the observed query/update cost is 182 cycles (0.10%).
 The oracle invariant and one-remote-hit/one-avoided-L2-request invariant both
 passed.
 
+The similarly small NN trace is also zero-opportunity (0 remote hits), but
+its finite-query modes finish in 7,850 cycles versus the 7,892-cycle baseline.
+That is not reported as a C2P benefit: delaying no-candidate misses in the
+finite C2P query queue changes their lower-memory injection pattern and can
+smooth congestion.  An A/B implementation which accepted a query only when
+the baseline lower port was free made the effect larger (7,795 cycles), so it
+was rejected.  This is a calibration finding: use an input known to be the
+paper's R0S1 class before comparing the reported R0S1 overhead, and retain
+the queue's finite buffering as part of the modeled mechanism.
+
 ## Workload availability and staging cost
 
 The paper lists 24 workloads. Six Rodinia, four Parboil, and six PolyBench
