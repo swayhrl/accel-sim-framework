@@ -13,11 +13,13 @@ point when the following mechanism-level relationships are simultaneously
 true and of a comparable order of magnitude to the paper's reported trends:
 
 - `oracle` leaves the baseline timing unchanged; it measures opportunity only.
-- `ideal` converts eligible redundant L2 accesses into remote hits and avoids
-  the same number of L2 requests.
-- finite C2P retains a substantial, but no larger than ideal, fraction of
-  those remote hits; its candidate count and snapshot false-positive counters
-  explain the difference.
+- `ideal` is an exact-discovery reference: every completed remote hit avoids
+  exactly one L2 request.  It is an opportunity reference, not a strict
+  performance upper bound, because it can create more peer-port pressure than
+  a pruned C2P candidate set.
+- finite C2P retains a substantial fraction of those remote hits; its
+  candidate count and snapshot false-positive counters explain the difference
+  from exact discovery.
 - R1S1-like inputs show a measurable benefit, while R0S1-like inputs expose
   only bounded query/update overhead rather than a fabricated benefit.
 
@@ -45,5 +47,6 @@ Record for each mode:
 The existing trace inventory is grouped by the paper's reuse taxonomy where
 provenance permits it.  The first core dataset is the locally retained
 Rodinia/Parboil/PolyBench trace set; R1S1 is prioritized because C2P predicts
-benefit there, while R0S1 establishes query overhead.  Pannotia and ISPASS,
-ATA/CCD/RING comparisons, and PPA remain deferred by scope.
+benefit while R0S1 establishes query overhead.  ATA/CCD/RING are run after a
+core bundle completes; Pannotia and ISPASS remain unavailable without
+compatible replay traces, and PPA remains outside this functional study.
