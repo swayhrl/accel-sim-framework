@@ -5,6 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_cache_cases.sh --trace KERNELSLIST --config CONFIG --out-dir DIR
        [--modes baseline,oracle,ideal,c2p] [--config-extra FILE]
+       [--strip-mem-addr-mapping]
 
 Run the same trace through the four C2P comparison points.  C2P_GPGPUSIM_ROOT
 must name the matching hrl/c2p-cache-v0 worktree. CONFIG may be a generated
@@ -19,6 +20,7 @@ config=""
 out_dir=""
 modes="baseline,oracle,ideal,c2p"
 config_extras=()
+strip_mem_addr_mapping=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace) trace="$2"; shift 2 ;;
@@ -26,6 +28,7 @@ while [[ $# -gt 0 ]]; do
     --out-dir) out_dir="$2"; shift 2 ;;
     --modes) modes="$2"; shift 2 ;;
     --config-extra) config_extras+=("$2"); shift 2 ;;
+    --strip-mem-addr-mapping) strip_mem_addr_mapping=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -61,7 +64,13 @@ for mode in ${modes//,/ }; do
   mkdir -p "$run_dir"
   # A generated config can include the prior decoupled-L2 selector; C2P is
   # intentionally based on clean upstream GPGPU-Sim and must not parse it.
-  sed '/^-gpgpu_l2_backend[[:space:]]/d' "$config" > "$run_dir/gpgpusim.config"
+  if (( strip_mem_addr_mapping )); then
+    sed -e '/^-gpgpu_l2_backend[[:space:]]/d' \
+        -e '/^-gpgpu_mem_addr_mapping[[:space:]]/d' \
+        "$config" > "$run_dir/gpgpusim.config"
+  else
+    sed '/^-gpgpu_l2_backend[[:space:]]/d' "$config" > "$run_dir/gpgpusim.config"
+  fi
   for asset in "$config_dir"/*.xml "$config_dir"/*.icnt; do
     [[ -f "$asset" ]] && cp "$asset" "$run_dir/"
   done

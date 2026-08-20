@@ -18,9 +18,19 @@ The runner sources the selected GPGPU-Sim environment in each mode's process.
 This is intentional: the executable and `libcudart.so` must come from the
 same C2P worktree, not from the host CUDA installation.
 
-`--config-extra` is repeatable. For example, append `trace.config` first and
-then `configs/c2p-cache/paper-64sm-l1-16sets.config` for the paper-shaped L1
-capacity point.
+`--config-extra` is repeatable. For the paper-table point, append `trace.config`
+first, then `configs/c2p-cache/paper-table.config`, and pass
+`--strip-mem-addr-mapping`. The overlay fixes 64 SMs as eight clusters of
+eight, GTO scheduling, 1.41GHz core/ICNT/L2 clocks, a fixed 64KiB
+16-set/32-way/128B L1 with 20-cycle latency, and 20 memory partitions with two
+sub-partitions each. Removing the inherited QV100 explicit address map is
+necessary because it only supports a power-of-two partition count. The QV100
+IPOLY partition hash likewise cannot represent 20 channels; the overlay uses
+Accel-Sim's deterministic consecutive map, since the manuscript does not
+specify an address hash. Its 128-set L2 likewise uses linear rather than
+IPOLY set indexing because the simulator implements the latter only through
+64 sets; capacity, associativity, line size, and the configured latency remain
+the paper-table values.
 
 After a directory of completed case bundles exists, produce the review table
 and machine-readable data with:
