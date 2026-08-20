@@ -53,6 +53,12 @@ invent a remote hit: the observed query/update cost is 182 cycles (0.10%).
 The oracle invariant and one-remote-hit/one-avoided-L2-request invariant both
 passed.
 
+The selected Hotspot-512 trace is not yet a paper-table result. Its baseline
+run (with C2P disabled) terminated in GPGPU-Sim's deadlock detector near
+`gpu_tot_sim_cycle = 4,294,267,296`; no comparison mode was run.  The value is
+near a 32-bit wrap boundary, so this is tracked as a simulator/configuration
+or trace-scale investigation rather than attributed to the C2P mechanism.
+
 The similarly small NN trace is also zero-opportunity (0 remote hits), but
 its finite-query modes finish in 7,850 cycles versus the 7,892-cycle baseline.
 That is not reported as a C2P benefit: delaying no-candidate misses in the
