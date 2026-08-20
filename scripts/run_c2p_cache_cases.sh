@@ -87,7 +87,29 @@ for mode in ${modes//,/ }; do
     ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g > run.out 2>&1
   )
   grep -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$run_dir/run.out"
-  grep -E 'gpu_tot_sim_cycle =|c2p_(l1_misses|oracle_peer_hits|remote_hits|candidate_total)' \
-      "$run_dir/run.out" > "$run_dir/summary.txt" || true
+  awk '
+    /^gpu_tot_sim_cycle = / { cycle=$3 }
+    /^gpu_sim_insn = / { insn=$3 }
+    /^c2p_l1_misses = / { misses=$3 }
+    /^c2p_oracle_peer_hits = / { oracle=$3 }
+    /^c2p_candidate_total = / { candidates=$3 }
+    /^c2p_candidate_queries = / { candidate_queries=$3 }
+    /^c2p_remote_hits = / { remote_hits=$3 }
+    /^c2p_l2_requests_avoided = / { l2_avoided=$3 }
+    /^c2p_peer_probes = / { probes=$3 }
+    /^c2p_queries_queue_bypass = / { queue_bypass=$3 }
+    END {
+      printf "gpu_tot_sim_cycle = %s\\n", cycle
+      printf "gpu_sim_insn = %s\\n", insn
+      printf "c2p_l1_misses = %s\\n", misses
+      printf "c2p_oracle_peer_hits = %s\\n", oracle
+      printf "c2p_candidate_total = %s\\n", candidates
+      printf "c2p_candidate_queries = %s\\n", candidate_queries
+      printf "c2p_peer_probes = %s\\n", probes
+      printf "c2p_remote_hits = %s\\n", remote_hits
+      printf "c2p_l2_requests_avoided = %s\\n", l2_avoided
+      printf "c2p_queries_queue_bypass = %s\\n", queue_bypass
+    }
+  ' "$run_dir/run.out" > "$run_dir/summary.txt"
   printf 'PASS mode=%s run_dir=%s\n' "$mode" "$run_dir"
 done
