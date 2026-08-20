@@ -4,10 +4,11 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_cache_cases.sh --trace KERNELSLIST --config CONFIG --out-dir DIR
-       [--modes baseline,oracle,ideal,c2p] [--config-extra FILE]
+       [--modes baseline,oracle,ideal,c2p,ata,ccd,ring] [--config-extra FILE]
        [--strip-mem-addr-mapping]
 
-Run the same trace through the four C2P comparison points.  C2P_GPGPUSIM_ROOT
+Run the same trace through selected C2P and prior-mechanism comparison points.
+C2P_GPGPUSIM_ROOT
 must name the matching hrl/c2p-cache-v0 worktree. CONFIG may be a generated
 Accel-Sim config; legacy -gpgpu_l2_backend lines are removed because C2P uses
 the clean upstream L2 baseline. For the stock QV100 base configuration pass
@@ -58,8 +59,10 @@ out_dir="$(cd "$out_dir" && pwd)"
 config_dir="$(cd "$(dirname "$config")" && pwd)"
 trace_dir="$(cd "$(dirname "$trace")" && pwd)"
 for mode in ${modes//,/ }; do
-  case "$mode" in baseline|oracle|ideal|c2p) ;; *)
-    echo "error: invalid mode $mode" >&2; exit 2 ;; esac
+  case "$mode" in
+    baseline|oracle|ideal|c2p|ata|ccd|ring) ;;
+    *) echo "error: invalid mode $mode" >&2; exit 2 ;;
+  esac
   run_dir="$out_dir/$mode"
   mkdir -p "$run_dir"
   # A generated config can include the prior decoupled-L2 selector; C2P is
@@ -81,7 +84,7 @@ for mode in ${modes//,/ }; do
   case "$mode" in
     baseline)
       printf '\n-c2p_cache_enable 0\n-c2p_cache_oracle_only 0\n' >> "$run_dir/gpgpusim.config" ;;
-    *)
+    oracle|ideal|c2p|ata|ccd|ring)
       cat "$repo_root/configs/c2p-cache/$mode.config" >> "$run_dir/gpgpusim.config" ;;
   esac
   ln -sfn "$trace_dir" "$run_dir/traces"
@@ -117,6 +120,7 @@ for mode in ${modes//,/ }; do
     /^c2p_remote_hits = / { remote_hits=$3 }
     /^c2p_l2_requests_avoided = / { l2_avoided=$3 }
     /^c2p_peer_probes = / { probes=$3 }
+    /^c2p_peer_l1_accesses = / { peer_l1_accesses=$3 }
     /^c2p_queries_queue_bypass = / { queue_bypass=$3 }
     /^c2p_updates_queue_bypass = / { update_queue_bypass=$3 }
     /^c2p_fallback_no_candidate = / { no_candidate=$3 }
@@ -138,6 +142,7 @@ for mode in ${modes//,/ }; do
       printf "c2p_candidate_total = %s\n", candidates
       printf "c2p_candidate_queries = %s\n", candidate_queries
       printf "c2p_peer_probes = %s\n", probes
+      printf "c2p_peer_l1_accesses = %s\n", peer_l1_accesses
       printf "c2p_remote_hits = %s\n", remote_hits
       printf "c2p_l2_requests_avoided = %s\n", l2_avoided
       printf "c2p_queries_queue_bypass = %s\n", queue_bypass

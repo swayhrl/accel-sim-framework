@@ -1,6 +1,6 @@
 # C2P experiment execution
 
-Run every reported case as a four-mode bundle. The runner creates one
+Run every core case as a four-mode bundle. The runner creates one
 self-contained directory per mode: copied simulator binary, resolved config,
 trace symlink, SHA-256 provenance, full `run.out`, and a compact
 `summary.txt`.
@@ -48,3 +48,14 @@ baseline cycles, and each remote hit avoids exactly one L2 request. The
 summary also carries Snapshot TP/TN/FP/FN, update-queue bypasses, rebuild
 transport volume, and the separate fallback reasons so performance changes
 remain attributable.
+
+For a completed core case, add the paper-latency comparison models with:
+
+```bash
+scripts/run_c2p_cache_cases.sh ... --modes ata,ccd,ring
+```
+
+They are deliberately separate from `--strict`: baseline/oracle/ideal/C2P
+remain the correctness and opportunity bundle, while ATA/CCD/RING are
+mechanism-shaped comparison models documented in the matching GPGPU-Sim
+`docs/c2p-cache/model_contract.md`.
