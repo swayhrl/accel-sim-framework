@@ -43,8 +43,11 @@ column and discards queued updates for it. Before the fix, stale bits from
 earlier kernels inflated LUD candidates to about nine/query; after it, the
 full retained run measures 27,969 candidates across 94,771 candidate queries.
 
-The current result bundles additionally report miss-time Snapshot TP/TN/FP/FN
+The current result bundles additionally report query-time Snapshot TP/TN/FP/FN
 and separate no-candidate, candidate-exhaustion, probe-timeout, and queue
-fallbacks. This matters for interpreting the mixed cases: DWT2D has 6,234 TP,
-21,220 TN, only 60 FP, and no FN among accepted C2P queries; Hotspot has 6,726
-TP but 20,969 FP, which explains its substantially larger candidate pressure.
+fallbacks.  The C2P model now compares Snapshot candidates against an exact
+peer probe at the later metadata-query instant; this keeps ordinary peer
+fills/evictions between miss acceptance and query completion out of the
+metadata-accuracy counter.  Earlier archived TP/TN/FP/FN totals used the
+accept-time oracle and are retained only as historical diagnostics, not as
+cross-run accuracy data.
