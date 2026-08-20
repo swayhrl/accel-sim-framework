@@ -37,6 +37,22 @@ The smoke establishes that the table configuration can run; it is not a
 paper-level performance data point because its DWT2D input trace has not been
 shown to match the authors' input and trace generation.
 
+A four-mode Gaussian (`_s_16`) R0 control also completed under the same
+paper-table configuration:
+
+| Mode | Cycles | L1 misses | Peer opportunities | Remote hits |
+| --- | ---: | ---: | ---: | ---: |
+| baseline | 173,970 | n/a | n/a | n/a |
+| oracle | 173,970 | 513 | 0 | 0 |
+| ideal | 174,152 | 513 | 0 | 0 |
+| C2P | 174,152 | 513 | 0 | 0 |
+
+This is deliberately a no-benefit control, not an attempted paper match.  It
+shows that when the trace has no redundant peer line, finite C2P does not
+invent a remote hit: the observed query/update cost is 182 cycles (0.10%).
+The oracle invariant and one-remote-hit/one-avoided-L2-request invariant both
+passed.
+
 ## Workload availability and staging cost
 
 The paper lists 24 workloads. Six Rodinia, four Parboil, and six PolyBench

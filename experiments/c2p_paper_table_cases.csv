@@ -1,0 +1,28 @@
+suite,case,tier,trace_source,trace_rel,trace_gib,status,note
+# This manifest is the scheduling inventory for the 24 C2P paper workloads.
+# trace_rel is relative to the named source root; it deliberately records
+# provenance instead of copying multi-GiB traces into the Git worktree.
+ispass,BFS,pending,AccelWattch Volta archive,,,indexing,Must be ISPASS BFS; Rodinia BFS is not a substitute.
+ispass,LIB,pending,AccelWattch Volta archive,,,indexing,Need compatible pre-generated trace and input provenance.
+ispass,LPS,pending,AccelWattch Volta archive,,,indexing,Need compatible pre-generated trace and input provenance.
+ispass,RAY,pending,AccelWattch Volta archive,,,indexing,Need compatible pre-generated trace and input provenance.
+rodinia,b+tree,core,Rodinia 3.1 retained traces,b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces,0.720,ready,Selected retained input.
+rodinia,dwt2d,core,Rodinia 3.1 retained traces,dwt2d-rodinia-3.1/__data_192_bmp__d_192x192__f__5__l_3/traces,0.016,ready,Paper-table smoke already completed; input match still unknown.
+rodinia,gaussian,core,Rodinia 3.1 retained traces,gaussian-rodinia-3.1/_s_16/traces,0.0003,complete,No peer opportunity; C2P overhead measured under paper-table configuration.
+rodinia,hotspot1,core,Rodinia 3.1 retained traces,hotspot-rodinia-3.1/512_2_2___data_temp_512___data_power_512_output_out/traces,0.231,ready,Selected retained input.
+rodinia,lud,core,Rodinia 3.1 retained traces,lud-rodinia-3.1/_s_256__v/traces,0.164,ready,Selected retained input.
+rodinia,nn,core,Rodinia 3.1 retained traces,nn-rodinia-3.1/__data_filelist_4__r_5__lat_30__lng_90/traces,0.002,ready,Small R0S1 candidate.
+parboil,cutcp,core,Parboil retained staging,parboil-cutcp/_i___data_small_input_watbox_sl40_pqr__o_lattice_dat/traces,11.000,ready,Selected small input; high staging and runtime cost.
+parboil,mri,core,Parboil retained staging,parboil-mri-q/_i___data_small_input_32_32_32_dataset_bin__o_32_32_32_dataset_out/traces,1.700,provisional,Paper does not identify mri-q versus mri-gridding.
+parboil,sgemm,core,Parboil retained staging,parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces,2.100,ready,Selected retained input.
+parboil,stencil,core,Parboil retained staging,parboil-stencil/_i___data_small_input_128x128x32_bin__o_128x128x32_out____128_128_32_100/traces,3.500,ready,Selected retained input.
+polybench,2DConvolution,core,polybench.tgz,polybench/11.0/polybench-2DConvolution/NO_ARGS,0.783,stage,Extract one member at a time before run.
+polybench,3mm,core,polybench.tgz,polybench/11.0/polybench-3mm/NO_ARGS,2.718,stage,Extract one member at a time before run.
+polybench,atax,core,polybench.tgz,polybench/11.0/polybench-atax/NO_ARGS,0.222,stage,Extract one member at a time before run.
+polybench,bicg,core,polybench.tgz,polybench/11.0/polybench-bicg/NO_ARGS,0.222,stage,Extract one member at a time before run.
+polybench,gemm,core,polybench.tgz,polybench/11.0/polybench-gemm/NO_ARGS,1.034,stage,Extract one member at a time before run.
+polybench,gesummv,core,polybench.tgz,polybench/11.0/polybench-gesummv/NO_ARGS,0.295,stage,Extract one member at a time before run.
+pannotia,color_max,pending,none,,,missing,Needs a compatible public trace release or NVBit trace generation.
+pannotia,fw_block,pending,none,,,missing,Needs a compatible public trace release or NVBit trace generation.
+pannotia,mis,pending,none,,,missing,Needs a compatible public trace release or NVBit trace generation.
+pannotia,pagerank,pending,none,,,missing,Needs a compatible public trace release or NVBit trace generation.
