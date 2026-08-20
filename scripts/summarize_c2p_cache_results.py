@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and tabulate a directory of C2P four-mode result bundles."""
+"""Validate and tabulate C2P core and optional comparator result bundles."""
 
 import argparse
 import csv
@@ -11,6 +11,7 @@ FIELDS = (
     "c2p_oracle_peer_hits", "c2p_queries_accepted",
     "c2p_queries_queue_bypass", "c2p_updates_queue_bypass",
     "c2p_candidate_total", "c2p_candidate_queries", "c2p_peer_probes",
+    "c2p_peer_l1_accesses",
     "c2p_remote_hits", "c2p_l2_requests_avoided",
     "c2p_fallback_no_candidate", "c2p_fallback_candidates_exhausted",
     "c2p_fallback_probe_timeout", "c2p_snapshot_false_positive",
@@ -18,7 +19,8 @@ FIELDS = (
     "c2p_snapshot_true_negative", "c2p_snapshot_updates",
     "c2p_snapshot_rebuilds", "c2p_snapshot_rebuild_transport_tags",
 )
-MODES = ("baseline", "oracle", "ideal", "c2p")
+CORE_MODES = ("baseline", "oracle", "ideal", "c2p")
+COMPARATOR_MODES = ("ata", "ccd", "ring")
 
 
 def read_summary(path):
@@ -48,23 +50,40 @@ def main():
     cases = sorted(path for path in args.root.iterdir() if path.is_dir())
     for case in cases:
         results = {}
-        for mode in MODES:
+        for mode in CORE_MODES:
             summary = case / mode / "summary.txt"
             if not summary.is_file():
                 failures.append(f"{case.name}: missing {mode}/summary.txt")
                 continue
             results[mode] = read_summary(summary)
-        if len(results) != len(MODES):
+        if len(results) != len(CORE_MODES):
             continue
+        comparator_present = [
+            mode for mode in COMPARATOR_MODES
+            if (case / mode / "summary.txt").is_file()
+        ]
+        if comparator_present:
+            for mode in COMPARATOR_MODES:
+                summary = case / mode / "summary.txt"
+                if not summary.is_file():
+                    failures.append(
+                        f"{case.name}: incomplete comparator bundle, missing "
+                        f"{mode}/summary.txt")
+                    continue
+                results[mode] = read_summary(summary)
         baseline = results["baseline"]
         oracle = results["oracle"]
         if baseline["gpu_tot_sim_cycle"] != oracle["gpu_tot_sim_cycle"]:
             failures.append(f"{case.name}: oracle changed baseline cycles")
-        for mode in ("ideal", "c2p"):
+        for mode in ("ideal", "c2p", *COMPARATOR_MODES):
+            if mode not in results:
+                continue
             result = results[mode]
             if result["c2p_remote_hits"] != result["c2p_l2_requests_avoided"]:
                 failures.append(f"{case.name}/{mode}: remote hits != L2 avoided")
-        for mode in MODES:
+        for mode in (*CORE_MODES, *COMPARATOR_MODES):
+            if mode not in results:
+                continue
             result = results[mode]
             row = {"case": case.name, "mode": mode}
             row.update({field: result.get(field, 0) for field in FIELDS})
