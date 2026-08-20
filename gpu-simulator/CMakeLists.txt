@@ -62,7 +62,10 @@ set(ACCELSIM_BUILD accelsim-commit-${GIT_COMMIT}_modified_${GIT_FILES_CHANGED_A}
 
 file(WRITE ${CMAKE_BINARY_DIR}/accelsim_version.h "const char *g_accelsim_version=\"${ACCELSIM_BUILD}\";")
 
-add_subdirectory($ENV{GPGPUSIM_ROOT})
+# GPGPUSIM_ROOT is commonly a sibling or a separate worktree.  Supplying an
+# explicit binary directory keeps this frontend usable with an independent
+# experimental simulator tree (for example C2P) as well as an in-tree clone.
+add_subdirectory($ENV{GPGPUSIM_ROOT} ${CMAKE_BINARY_DIR}/gpgpu-sim)
 add_subdirectory(trace-driven)
 add_subdirectory(trace-parser)
 add_subdirectory(extern/pybind11)
