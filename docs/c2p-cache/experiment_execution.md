@@ -18,6 +18,10 @@ The runner sources the selected GPGPU-Sim environment in each mode's process.
 This is intentional: the executable and `libcudart.so` must come from the
 same C2P worktree, not from the host CUDA installation.
 
+`--config-extra` is repeatable. For example, append `trace.config` first and
+then `configs/c2p-cache/paper-64sm-l1-16sets.config` for the paper-shaped L1
+capacity point.
+
 After a directory of completed case bundles exists, produce the review table
 and machine-readable data with:
 

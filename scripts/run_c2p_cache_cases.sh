@@ -18,14 +18,14 @@ trace=""
 config=""
 out_dir=""
 modes="baseline,oracle,ideal,c2p"
-config_extra=""
+config_extras=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace) trace="$2"; shift 2 ;;
     --config) config="$2"; shift 2 ;;
     --out-dir) out_dir="$2"; shift 2 ;;
     --modes) modes="$2"; shift 2 ;;
-    --config-extra) config_extra="$2"; shift 2 ;;
+    --config-extra) config_extras+=("$2"); shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -34,9 +34,11 @@ done
 [[ -f "$trace" ]] || { echo "error: --trace must name kernelslist.g" >&2; exit 2; }
 [[ -f "$config" ]] || { echo "error: --config must name a config" >&2; exit 2; }
 [[ -n "$out_dir" ]] || { echo "error: --out-dir is required" >&2; exit 2; }
-[[ -z "$config_extra" || -f "$config_extra" ]] || {
-  echo "error: --config-extra must exist" >&2; exit 2;
-}
+for config_extra in "${config_extras[@]}"; do
+  [[ -f "$config_extra" ]] || {
+    echo "error: --config-extra must exist: $config_extra" >&2; exit 2;
+  }
+done
 [[ -n "${C2P_GPGPUSIM_ROOT:-}" ]] || {
   echo "error: set C2P_GPGPUSIM_ROOT to the C2P GPGPU-Sim worktree" >&2; exit 2;
 }
@@ -63,10 +65,10 @@ for mode in ${modes//,/ }; do
   for asset in "$config_dir"/*.xml "$config_dir"/*.icnt; do
     [[ -f "$asset" ]] && cp "$asset" "$run_dir/"
   done
-  if [[ -n "$config_extra" ]]; then
+  for config_extra in "${config_extras[@]}"; do
     printf '\n# Experiment-specific base overrides\n' >> "$run_dir/gpgpusim.config"
     cat "$config_extra" >> "$run_dir/gpgpusim.config"
-  fi
+  done
   case "$mode" in
     baseline)
       printf '\n-c2p_cache_enable 0\n-c2p_cache_oracle_only 0\n' >> "$run_dir/gpgpusim.config" ;;
