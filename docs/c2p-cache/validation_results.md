@@ -6,13 +6,41 @@ behavior and directional trends; they are not a claim to reproduce the
 manuscript's absolute IPC because its traces, exact hashes, topology, and
 several queue/refresh parameters are unavailable.
 
+## Current formal bundle
+
+The current mechanism revision uses continuous per-column Snapshot rebuilds,
+matching the paper's background operation. The completed Btree bundle is the
+first full seven-mode result with this revision.
+
+| Mode | Cycles | Speedup vs baseline | Remote hits | C2P-specific observation |
+|---|---:|---:|---:|---|
+| baseline | 252,592 | 0.00% | 0 | reference |
+| oracle | 252,592 | 0.00% | 0 | 699,085 accept-time peer opportunities; timing invariant passes |
+| ideal | 229,027 | 9.33% | 205,707 | exact peer discovery reference |
+| C2P | 237,809 | 5.85% | 154,748 | 6.07 bitmap candidates/query; actual-probe hit P90/P95/P99 = 2/3/6 |
+| ATA-like | 243,092 | 3.76% | 75,407 | 9,809,152 aggregate tag/data accesses |
+| CCD-like | 252,861 | -0.11% | 0 | no effective predicted sharing |
+| RING-like | 262,862 | -4.07% | 33,691 | serialized ring path loses to baseline |
+
+This establishes the key Btree ordering `ideal > C2P > ATA > baseline ≈ CCD
+> RING`, the same qualitative mechanism trend sought from the paper. It is
+not a numerical match claim: the retained Btree input and simplified far-L1
+network are not the authors' experimental setup.
+
+## Earlier diagnostics
+
+The rows below predate the continuous-refresh revision unless explicitly
+rerun. They remain useful for directed model debugging, but are not included
+in the formal cross-workload comparison until reproduced with the current
+revision.
+
 | Trace and purpose | Baseline cycles | Ideal cycles | C2P cycles | C2P remote hits / L1 misses | Candidates/query | Result |
 |---|---:|---:|---:|---:|---:|---|
 | Rodinia BFS, full retained trace, broad-sharing stress | 122,048 | 120,321 | 121,106 | 974 / 14,474 | 0.82 | Exact sharing is stronger (1.42%); Snapshot filtering retains 6.7% of misses as real remote hits and still exposes target-port timeout/fallback behavior. |
-| Rodinia DWT2D, full retained trace | 72,232 | 71,883 | 71,725 | 4,877 / 28,908 | 0.34 | R1S1-style positive case: 16.9% of all L1 misses are completed remotely and C2P improves cycles by 0.70%. |
+| Rodinia DWT2D, full retained trace | 72,232 | 71,883 | 71,725 | 4,877 / 28,908 | 0.34 | Pre-continuous-refresh diagnostic; rerun pending before cross-workload use. |
 | DWT2D, legacy 64-SM overlay | 71,844 | 71,448 | 71,431 | 4,890 / 28,908 | 0.33 | Superseded configuration record; do not compare this row with the paper. It left adaptive L1 resizing enabled and set L1 latency to 4 cycles. |
-| Rodinia NN, full retained trace | 6,259 | 6,297 | 6,297 | 0 / 10,691 | 0.00 | No-sharing control: C2P's query-only cost is 0.61%; it does not inject remote probes. |
-| Rodinia Gaussian-16, full retained trace | 170,928 | 171,108 | 171,108 | 0 / 513 | 0.00 | Second no-sharing control: no Snapshot candidate or peer probe is produced; the 0.11% cost is strictly miss-path query overhead. |
+| Rodinia NN, full retained trace | 6,259 | 6,297 | 6,297 | 0 / 10,691 | 0.00 | Pre-continuous-refresh no-sharing diagnostic; rerun pending. |
+| Rodinia Gaussian-16, full retained trace | 170,928 | 171,108 | 171,108 | 0 / 513 | 0.00 | Pre-continuous-refresh no-sharing diagnostic; rerun pending. |
 | Rodinia Hotspot-512, full retained trace | 21,573 | 21,790 | 21,456 | 3,511 / 173,193 | 1.05 | Mixed case: 24.9% of accepted queries are false positives and 89,114 misses bypass the finite query queue, yet the 2.0% realized remote-hit rate gives a 0.54% cycle improvement. |
 | Rodinia LUD, full retained trace | 457,133 | 457,270 | 457,931 | 819 / 130,432 | 0.30 | Full multi-kernel R1S1-style linear-algebra check. Snapshot pruning reduces ideal's 1,083 hits but bounds its overhead to 0.17%. |
 

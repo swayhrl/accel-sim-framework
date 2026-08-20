@@ -24,7 +24,45 @@ hash. Accel-Sim's QV100 IPOLY implementation cannot express 20 partitions or
 partition mapping and linear L2 set indexing. These are explicit simulator
 adaptations, not claims about the authors' unpublished implementation.
 
-A full DWT2D four-mode smoke completed with this configuration:
+## Formal Btree six-mode bundle (2026-08-21)
+
+The retained Rodinia 3.1 Btree trace is the first workload run through the
+complete `baseline`/`oracle`/`ideal`/`C2P`/`ATA`/`CCD`/`RING` bundle after the
+Snapshot refresh correction. Each mode has a copied executable, resolved
+configuration, hashes, simulator log, and summary under the ignored
+`hw_run/c2p-paper-table-results/btree_formal_r1` directory. The strict
+summarizer verified that oracle leaves baseline timing unchanged and that every
+remote hit avoids exactly one L2 request.
+
+| Mode | Cycles | Change vs baseline | Remote hits | Main interpretation |
+| --- | ---: | ---: | ---: | --- |
+| baseline | 252,592 | — | 0 | reference timing |
+| oracle | 252,592 | 0.00% | 0 | 699,085 exact peer opportunities from 1,685,582 L1 misses |
+| ideal | 229,027 | -9.33% | 205,707 | exact candidate discovery reference |
+| C2P | 237,809 | -5.85% | 154,748 | finite Snapshot filtering retains 75.2% of ideal remote hits |
+| ATA-like | 243,092 | -3.76% | 75,407 | four aggregate-tag requests/cluster/cycle still has high tag-access traffic |
+| CCD-like | 252,861 | +0.11% | 0 | the weak predictor finds no useful sharing on this trace |
+| RING-like | 262,862 | +4.07% | 33,691 | serialized chip-wide discovery dominates its limited hits |
+
+C2P’s direct Figure-14-style actual-probe distribution (excluding
+zero-probe no-candidate fallbacks) is P90/P95/P99 = 2/3/6 probes for completed
+remote hits and 4/5/10 for fallbacks after one or more probes. The hit P90 is
+consistent with the paper’s low-candidate trend; the miss distribution is
+higher than the paper’s group average, so it is recorded as a Btree-specific
+model/input difference rather than tuned away. This trace is not asserted to
+be the authors’ input, and the simplified far-L1 network remains an explicit
+limitation.
+
+An initial comparator launch failed before simulation because the paper overlay
+was accidentally passed as a complete configuration and therefore lacked the
+QV100 base cache definitions. It produced no `summary.txt`; the completed
+bundle above was rerun with the same full QV100 base, trace overlay, and paper
+overlay used by its core four modes. Only the completed bundle is used here.
+
+## Earlier diagnostic runs
+
+A full DWT2D four-mode smoke completed with this configuration before the
+continuous-refresh correction:
 
 | Mode | Cycles | Relevant check |
 | --- | ---: | --- |
@@ -35,7 +73,9 @@ A full DWT2D four-mode smoke completed with this configuration:
 
 The smoke establishes that the table configuration can run; it is not a
 paper-level performance data point because its DWT2D input trace has not been
-shown to match the authors' input and trace generation.
+shown to match the authors' input and trace generation. It is retained only as
+a pre-correction diagnostic and will be rerun before any cross-workload
+conclusion.
 
 A four-mode Gaussian (`_s_16`) R0 control also completed under the same
 paper-table configuration:
@@ -122,8 +162,8 @@ the only remote publication points for this work:
 
 | Component | Pinned branch and commit | Remote branch |
 | --- | --- | --- |
-| Accel-Sim configuration, runner, and experiment records | `hrl/c2p-cache-exp-v0` at `e7e4615` | `swayhrl/accel-sim-framework:hrl/c2p-cache-exp-v0` |
-| GPGPU-Sim C2P mechanism | `hrl/c2p-cache-v0` at `03a09f9a` | `swayhrl/gpgpu-sim:hrl/c2p-cache-v0` |
+| Accel-Sim configuration, runner, and experiment records | `hrl/c2p-cache-exp-v0` at `98dbb0c` | `swayhrl/accel-sim-framework:hrl/c2p-cache-exp-v0` |
+| GPGPU-Sim C2P mechanism | `hrl/c2p-cache-v0` at `340bc933` | `swayhrl/gpgpu-sim:hrl/c2p-cache-v0` |
 
 Large trace files and four-mode run directories stay under ignored `hw_run/`.
 Each completed bundle nonetheless contains a copied binary, resolved config,
