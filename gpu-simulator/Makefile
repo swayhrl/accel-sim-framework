@@ -44,7 +44,11 @@ endif
 
 CXXFLAGS+=-I./trace-driven -I./trace-parser -I$(GPGPUSIM_ROOT)/libcuda -I$(GPGPUSIM_ROOT)/src -I$(CUDA_INSTALL_PATH)/include -I$(BUILD_DIR)
 
-LIBS+=-L$(GPGPUSIM_ROOT)/lib/$(GPGPUSIM_CONFIG)/ -lcudart -lm -lz -lGL -pthread $(BUILD_DIR)/*.o 
+# Keep simulator objects before libcudart.  The executable references C++ RTTI
+# and cache-model symbols from the GPGPU-Sim shared object; placing -lcudart
+# first lets --as-needed discard that dependency and produces a binary which
+# links but fails at startup with unresolved typeinfo symbols.
+LIBS+=$(BUILD_DIR)/*.o -L$(GPGPUSIM_ROOT)/lib/$(GPGPUSIM_CONFIG)/ -lcudart -lm -lz -lGL -pthread
 
 all: $(BIN_DIR)/accel-sim.out
 

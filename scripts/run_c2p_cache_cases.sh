@@ -7,9 +7,10 @@ Usage: scripts/run_c2p_cache_cases.sh --trace KERNELSLIST --config CONFIG --out-
        [--modes baseline,oracle,ideal,c2p] [--config-extra FILE]
 
 Run the same trace through the four C2P comparison points.  C2P_GPGPUSIM_ROOT
-must name the matching hrl/c2p-cache-v0 worktree.  CONFIG may be a generated
+must name the matching hrl/c2p-cache-v0 worktree. CONFIG may be a generated
 Accel-Sim config; legacy -gpgpu_l2_backend lines are removed because C2P uses
-the clean upstream L2 baseline.
+the clean upstream L2 baseline. For the stock QV100 base configuration pass
+SM7_QV100/trace.config through --config-extra.
 EOF
 }
 
@@ -83,6 +84,13 @@ for mode in ${modes//,/ }; do
     printf 'sim_sha256=%s\n' "$(sha256sum "$run_dir/accel-sim.out" | awk '{print $1}')"
   } > "$run_dir/provenance.txt"
   (
+    # accel-sim.out dynamically links the selected GPGPU-Sim libcudart.  Do
+    # not accidentally run against the host CUDA runtime, which may have the
+    # same SONAME but lacks this branch's cache-model C++ symbols.
+    export GPGPUSIM_ROOT="$C2P_GPGPUSIM_ROOT"
+    set +u
+    source "$C2P_GPGPUSIM_ROOT/setup_environment" >/dev/null
+    set -u
     cd "$run_dir"
     ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g > run.out 2>&1
   )
@@ -92,23 +100,47 @@ for mode in ${modes//,/ }; do
     /^gpu_sim_insn = / { insn=$3 }
     /^c2p_l1_misses = / { misses=$3 }
     /^c2p_oracle_peer_hits = / { oracle=$3 }
+    /^c2p_queries_accepted = / { accepted=$3 }
     /^c2p_candidate_total = / { candidates=$3 }
     /^c2p_candidate_queries = / { candidate_queries=$3 }
     /^c2p_remote_hits = / { remote_hits=$3 }
     /^c2p_l2_requests_avoided = / { l2_avoided=$3 }
     /^c2p_peer_probes = / { probes=$3 }
     /^c2p_queries_queue_bypass = / { queue_bypass=$3 }
+    /^c2p_updates_queue_bypass = / { update_queue_bypass=$3 }
+    /^c2p_fallback_no_candidate = / { no_candidate=$3 }
+    /^c2p_fallback_candidates_exhausted = / { candidates_exhausted=$3 }
+    /^c2p_fallback_probe_timeout = / { probe_timeout=$3 }
+    /^c2p_snapshot_false_positive = / { false_positive=$3 }
+    /^c2p_snapshot_false_negative = / { false_negative=$3 }
+    /^c2p_snapshot_true_positive = / { true_positive=$3 }
+    /^c2p_snapshot_true_negative = / { true_negative=$3 }
+    /^c2p_snapshot_updates = / { updates=$3 }
+    /^c2p_snapshot_rebuilds = / { rebuilds=$3 }
+    /^c2p_snapshot_rebuild_transport_tags = / { rebuild_tags=$3 }
     END {
       printf "gpu_tot_sim_cycle = %s\n", cycle
       printf "gpu_sim_insn = %s\n", insn
       printf "c2p_l1_misses = %s\n", misses
       printf "c2p_oracle_peer_hits = %s\n", oracle
+      printf "c2p_queries_accepted = %s\n", accepted
       printf "c2p_candidate_total = %s\n", candidates
       printf "c2p_candidate_queries = %s\n", candidate_queries
       printf "c2p_peer_probes = %s\n", probes
       printf "c2p_remote_hits = %s\n", remote_hits
       printf "c2p_l2_requests_avoided = %s\n", l2_avoided
       printf "c2p_queries_queue_bypass = %s\n", queue_bypass
+      printf "c2p_updates_queue_bypass = %s\n", update_queue_bypass
+      printf "c2p_fallback_no_candidate = %s\n", no_candidate
+      printf "c2p_fallback_candidates_exhausted = %s\n", candidates_exhausted
+      printf "c2p_fallback_probe_timeout = %s\n", probe_timeout
+      printf "c2p_snapshot_false_positive = %s\n", false_positive
+      printf "c2p_snapshot_false_negative = %s\n", false_negative
+      printf "c2p_snapshot_true_positive = %s\n", true_positive
+      printf "c2p_snapshot_true_negative = %s\n", true_negative
+      printf "c2p_snapshot_updates = %s\n", updates
+      printf "c2p_snapshot_rebuilds = %s\n", rebuilds
+      printf "c2p_snapshot_rebuild_transport_tags = %s\n", rebuild_tags
     }
   ' "$run_dir/run.out" > "$run_dir/summary.txt"
   printf 'PASS mode=%s run_dir=%s\n' "$mode" "$run_dir"
