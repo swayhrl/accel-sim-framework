@@ -59,6 +59,15 @@ QV100 base cache definitions. It produced no `summary.txt`; the completed
 bundle above was rerun with the same full QV100 base, trace overlay, and paper
 overlay used by its core four modes. Only the completed bundle is used here.
 
+The same strict campaign now also contains DWT2D, LUD, Gaussian-16, NN, and
+the retained Parboil MRI-Q variant. DWT2D is a second positive C2P point
+(-1.81%, 4,381 remote hits); LUD has only a near-neutral -0.01% change despite
+1,628 remote hits. Gaussian-16 and MRI-Q are zero-opportunity controls with
+C2P costs of +0.10% and +0.27%, respectively. NN has zero remote hits but a
+-0.53% schedule-sensitive change, so it is retained only as a diagnostic and
+is not counted as a C2P benefit. MRI-Q's paper `mri` variant is unspecified,
+therefore this result is not used as a direct paper-table row.
+
 ## Earlier diagnostic runs
 
 A full DWT2D four-mode smoke completed with this configuration before the

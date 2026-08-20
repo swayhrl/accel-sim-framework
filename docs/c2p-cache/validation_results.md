@@ -27,6 +27,28 @@ This establishes the key Btree ordering `ideal > C2P > ATA > baseline ≈ CCD
 not a numerical match claim: the retained Btree input and simplified far-L1
 network are not the authors' experimental setup.
 
+## Current cross-workload campaign
+
+All rows below are complete seven-mode bundles from the same continuous-refresh
+revision and passed the strict oracle/remote-ownership checks. `mri-q` is the
+retained Parboil MRI-Q variant; the paper labels the workload only as `mri`,
+so it is intentionally kept separate from any future MRI-gridding result.
+
+| Case | Baseline cycles | C2P change | C2P remote hits | Interpretation |
+|---|---:|---:|---:|---|
+| Btree | 252,592 | -5.85% | 154,748 | strong R1 sharing; C2P is ahead of ATA and RING |
+| DWT2D | 76,093 | -1.81% | 4,381 | positive R1 case; C2P's pruned peer traffic can outperform exact discovery |
+| LUD | 484,010 | -0.01% | 1,628 | peer opportunity does not necessarily translate to a visible speedup |
+| Gaussian-16 | 173,970 | +0.10% | 0 | clean zero-opportunity R0 control |
+| NN | 7,892 | -0.53% | 0 | zero-opportunity diagnostic; query timing changes lower-memory phasing, not a claimed benefit |
+| Parboil MRI-Q | 367,150 | +0.27% | 0 | provisional `mri` R0 point; C2P is below ATA (+0.41%) and CCD (+0.45%) overhead |
+
+For MRI-Q, RING costs +0.31%, only slightly above C2P despite the paper's
+much larger R0S1 group-average RING penalty. The current RING comparator has
+the specified hop/tag timings and injection serialization, but not a complete
+far-L1 network/queue topology; this is an explicit remaining source of
+quantitative mismatch, not a parameter to tune against one workload.
+
 ## Earlier diagnostics
 
 The rows below predate the continuous-refresh revision unless explicitly
