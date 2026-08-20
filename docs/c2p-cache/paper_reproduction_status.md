@@ -88,6 +88,26 @@ tracing parameters are fixed. Generating either missing suite with NVBit
 requires access to a compatible NVIDIA GPU; without one, the practical route
 is to find a public trace release and validate its provenance.
 
+### Trace-discovery record (2026-08-20)
+
+Two public sources were checked specifically for replay-compatible artifacts:
+
+- Accel-Sim's [published trace index](ftp://ftp.ecn.purdue.edu/tgrogers/accel-sim/traces/1.1.0.trace.summary.txt)
+  contains only Cutlass, DeepBench, Parboil, PolyBench, Rodinia 2.0/3.1, and
+  Ubench suites.  It publishes neither ISPASS nor Pannotia traces.
+- The canonical [ISPASS 2009 benchmark repository](https://github.com/gpgpu-sim/ispass2009-benchmarks)
+  supplies CUDA source for BFS, LIB, LPS, and RAY, but no NVBit/Accel-Sim
+  `kernelslist.g` trace release.  It is therefore a future trace-generation
+  input, not a runnable trace source.
+
+For the other missing suite, [Pannotia CUDA CTE](https://github.com/lashhw/pannotia-cte)
+is a source-level candidate, and gem5 publishes a HIP port plus input datasets.
+Neither is compatible with Accel-Sim replay without compiling a CUDA variant
+and collecting a new NVBit trace.  No compatible public trace package was
+found in this discovery round.  This negative result is intentional: the
+experiment must not substitute algorithm names or non-NVBit traces for the
+paper workloads.
+
 ## Recorded repository checkpoints
 
 The C2P model and the paper-table experiment harness are intentionally kept
