@@ -23,6 +23,16 @@ true and of a comparable order of magnitude to the paper's reported trends:
 - R1S1-like inputs show a measurable benefit, while R0S1-like inputs expose
   only bounded query/update overhead rather than a fabricated benefit.
 
+The paper-level comparison targets are therefore recorded explicitly rather
+than inferred after a workload finishes: it reports C2P R1S1 speedup of about
+23.5% on average (up to 49.7%), and R0S1 changes of about -2.0% for C2P,
+-31.7% for ATA, -19.3% for RING, and +0.4% for CCD.  Local retained traces
+are not claimed to be the authors' inputs, so exact equality is not an
+acceptance condition.  The required evidence is a consistent direction,
+relative ordering, and explainable magnitude.  A material mismatch triggers
+an investigation of trace/input class, L1/L2 geometry, partition/set mapping,
+cluster scope, and remote-hit timing before any cycle-level tuning.
+
 Consequently, when a result differs materially from the paper, investigate
 first the configuration geometry, partition/set mapping, input/trace size,
 and remote-hit eligibility.  Do not tune incidental pipeline timing merely to
