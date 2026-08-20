@@ -134,6 +134,16 @@ for mode in ${modes//,/ }; do
     /^c2p_snapshot_query_false_negative = / { query_false_negative=$3 }
     /^c2p_snapshot_query_true_positive = / { query_true_positive=$3 }
     /^c2p_snapshot_query_true_negative = / { query_true_negative=$3 }
+    /^c2p_peer_access_hit_samples = / { peer_hit_samples=$3 }
+    /^c2p_peer_access_hit_p90 = / { peer_hit_p90=$3 }
+    /^c2p_peer_access_hit_p95 = / { peer_hit_p95=$3 }
+    /^c2p_peer_access_hit_p99 = / { peer_hit_p99=$3 }
+    /^c2p_peer_access_hit_max = / { peer_hit_max=$3 }
+    /^c2p_peer_access_miss_samples = / { peer_miss_samples=$3 }
+    /^c2p_peer_access_miss_p90 = / { peer_miss_p90=$3 }
+    /^c2p_peer_access_miss_p95 = / { peer_miss_p95=$3 }
+    /^c2p_peer_access_miss_p99 = / { peer_miss_p99=$3 }
+    /^c2p_peer_access_miss_max = / { peer_miss_max=$3 }
     /^c2p_snapshot_updates = / { updates=$3 }
     /^c2p_snapshot_rebuilds = / { rebuilds=$3 }
     /^c2p_snapshot_rebuild_transport_tags = / { rebuild_tags=$3 }
@@ -162,6 +172,16 @@ for mode in ${modes//,/ }; do
       printf "c2p_snapshot_query_false_negative = %s\n", query_false_negative
       printf "c2p_snapshot_query_true_positive = %s\n", query_true_positive
       printf "c2p_snapshot_query_true_negative = %s\n", query_true_negative
+      printf "c2p_peer_access_hit_samples = %s\n", peer_hit_samples
+      printf "c2p_peer_access_hit_p90 = %s\n", peer_hit_p90
+      printf "c2p_peer_access_hit_p95 = %s\n", peer_hit_p95
+      printf "c2p_peer_access_hit_p99 = %s\n", peer_hit_p99
+      printf "c2p_peer_access_hit_max = %s\n", peer_hit_max
+      printf "c2p_peer_access_miss_samples = %s\n", peer_miss_samples
+      printf "c2p_peer_access_miss_p90 = %s\n", peer_miss_p90
+      printf "c2p_peer_access_miss_p95 = %s\n", peer_miss_p95
+      printf "c2p_peer_access_miss_p99 = %s\n", peer_miss_p99
+      printf "c2p_peer_access_miss_max = %s\n", peer_miss_max
       printf "c2p_snapshot_updates = %s\n", updates
       printf "c2p_snapshot_rebuilds = %s\n", rebuilds
       printf "c2p_snapshot_rebuild_transport_tags = %s\n", rebuild_tags

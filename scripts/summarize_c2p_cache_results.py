@@ -20,6 +20,11 @@ FIELDS = (
     "c2p_snapshot_query_false_negative", "c2p_snapshot_query_true_positive",
     "c2p_snapshot_query_true_negative", "c2p_snapshot_updates",
     "c2p_snapshot_rebuilds", "c2p_snapshot_rebuild_transport_tags",
+    "c2p_peer_access_hit_samples", "c2p_peer_access_hit_p90",
+    "c2p_peer_access_hit_p95", "c2p_peer_access_hit_p99",
+    "c2p_peer_access_hit_max", "c2p_peer_access_miss_samples",
+    "c2p_peer_access_miss_p90", "c2p_peer_access_miss_p95",
+    "c2p_peer_access_miss_p99", "c2p_peer_access_miss_max",
 )
 CORE_MODES = ("baseline", "oracle", "ideal", "c2p")
 COMPARATOR_MODES = ("ata", "ccd", "ring")

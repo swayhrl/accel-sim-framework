@@ -59,6 +59,9 @@ Record for each mode:
 - `c2p_remote_hits / c2p_l1_misses` (realized remote hit rate);
 - `c2p_candidate_total / c2p_candidate_queries`;
 - C2P false-positive/false-negative and fallback counters.
+- peer-L1 access-count P90/P95/P99/max split by completed remote-hit and
+  fallback requests. This is the direct local counterpart of the paper's
+  Figure 14; average candidate bitmap width alone is not a substitute.
 
 The existing trace inventory is grouped by the paper's reuse taxonomy where
 provenance permits it.  The first core dataset is the locally retained
