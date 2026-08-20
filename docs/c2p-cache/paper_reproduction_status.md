@@ -79,9 +79,27 @@ experiment's Rodinia BFS is **not** a substitute for the paper's ISPASS BFS.
 | Pannotia | color_max, fw_block, mis, pagerank | no local trace tree | trace generation or a compatible public trace release is required |
 
 The retained artifact containing ISPASS source is 36.9GiB and contains a
-14.4GiB compressed Volta trace collection, but individual traces for the four
-paper cases have not yet been indexed or validated. Pannotia source is small
-to obtain, but trace volume cannot be stated credibly until exact graph/input
-sizes and tracing parameters are fixed. Generating either missing suite with
-NVBit requires access to a compatible NVIDIA GPU; without one, the practical
-route is to find a public trace release and validate its provenance.
+14.4GiB compressed Volta trace collection.  Its complete member list was
+stream-indexed without extracting trace payloads (6,722 members); it contains
+Rodinia BFS but none of ISPASS BFS/LIB/LPS/RAY.  It therefore cannot supply
+any of the four paper ISPASS points. Pannotia source is small to obtain, but
+trace volume cannot be stated credibly until exact graph/input sizes and
+tracing parameters are fixed. Generating either missing suite with NVBit
+requires access to a compatible NVIDIA GPU; without one, the practical route
+is to find a public trace release and validate its provenance.
+
+## Recorded repository checkpoints
+
+The C2P model and the paper-table experiment harness are intentionally kept
+in two repositories.  Both named branches were pushed on 2026-08-20 and are
+the only remote publication points for this work:
+
+| Component | Pinned branch and commit | Remote branch |
+| --- | --- | --- |
+| Accel-Sim configuration, runner, and experiment records | `hrl/c2p-cache-exp-v0` at `e7e4615` | `swayhrl/accel-sim-framework:hrl/c2p-cache-exp-v0` |
+| GPGPU-Sim C2P mechanism | `hrl/c2p-cache-v0` at `03a09f9a` | `swayhrl/gpgpu-sim:hrl/c2p-cache-v0` |
+
+Large trace files and four-mode run directories stay under ignored `hw_run/`.
+Each completed bundle nonetheless contains a copied binary, resolved config,
+trace/config hashes, full simulator log, and compact summary, as specified in
+`experiment_execution.md`.
