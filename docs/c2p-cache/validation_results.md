@@ -43,11 +43,10 @@ column and discards queued updates for it. Before the fix, stale bits from
 earlier kernels inflated LUD candidates to about nine/query; after it, the
 full retained run measures 27,969 candidates across 94,771 candidate queries.
 
-The current result bundles additionally report query-time Snapshot TP/TN/FP/FN
+The primary result bundles report the paper's miss-time Snapshot TP/TN/FP/FN
 and separate no-candidate, candidate-exhaustion, probe-timeout, and queue
-fallbacks.  The C2P model now compares Snapshot candidates against an exact
-peer probe at the later metadata-query instant; this keeps ordinary peer
-fills/evictions between miss acceptance and query completion out of the
-metadata-accuracy counter.  Earlier archived TP/TN/FP/FN totals used the
-accept-time oracle and are retained only as historical diagnostics, not as
-cross-run accuracy data.
+fallbacks. They additionally report `snapshot_query_*` counters, which
+classify the same candidate bitmap against exact peer residency when the
+metadata query completes. This second truth table exposes fills/evictions
+while a miss waits in C2P without changing the paper-comparable miss-time
+classification.

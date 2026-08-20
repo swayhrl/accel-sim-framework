@@ -130,6 +130,10 @@ for mode in ${modes//,/ }; do
     /^c2p_snapshot_false_negative = / { false_negative=$3 }
     /^c2p_snapshot_true_positive = / { true_positive=$3 }
     /^c2p_snapshot_true_negative = / { true_negative=$3 }
+    /^c2p_snapshot_query_false_positive = / { query_false_positive=$3 }
+    /^c2p_snapshot_query_false_negative = / { query_false_negative=$3 }
+    /^c2p_snapshot_query_true_positive = / { query_true_positive=$3 }
+    /^c2p_snapshot_query_true_negative = / { query_true_negative=$3 }
     /^c2p_snapshot_updates = / { updates=$3 }
     /^c2p_snapshot_rebuilds = / { rebuilds=$3 }
     /^c2p_snapshot_rebuild_transport_tags = / { rebuild_tags=$3 }
@@ -154,6 +158,10 @@ for mode in ${modes//,/ }; do
       printf "c2p_snapshot_false_negative = %s\n", false_negative
       printf "c2p_snapshot_true_positive = %s\n", true_positive
       printf "c2p_snapshot_true_negative = %s\n", true_negative
+      printf "c2p_snapshot_query_false_positive = %s\n", query_false_positive
+      printf "c2p_snapshot_query_false_negative = %s\n", query_false_negative
+      printf "c2p_snapshot_query_true_positive = %s\n", query_true_positive
+      printf "c2p_snapshot_query_true_negative = %s\n", query_true_negative
       printf "c2p_snapshot_updates = %s\n", updates
       printf "c2p_snapshot_rebuilds = %s\n", rebuilds
       printf "c2p_snapshot_rebuild_transport_tags = %s\n", rebuild_tags

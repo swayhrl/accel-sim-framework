@@ -16,7 +16,9 @@ FIELDS = (
     "c2p_fallback_no_candidate", "c2p_fallback_candidates_exhausted",
     "c2p_fallback_probe_timeout", "c2p_snapshot_false_positive",
     "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",
-    "c2p_snapshot_true_negative", "c2p_snapshot_updates",
+    "c2p_snapshot_true_negative", "c2p_snapshot_query_false_positive",
+    "c2p_snapshot_query_false_negative", "c2p_snapshot_query_true_positive",
+    "c2p_snapshot_query_true_negative", "c2p_snapshot_updates",
     "c2p_snapshot_rebuilds", "c2p_snapshot_rebuild_transport_tags",
 )
 CORE_MODES = ("baseline", "oracle", "ideal", "c2p")
