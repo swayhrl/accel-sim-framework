@@ -104,6 +104,16 @@ the four CCD classification counters, all zero in a C2P-mode replay. This is
 the behavioral regression proof for using the parameterized default in the
 separate CCD/Figure-13 campaigns.
 
+The same isolated refactored binary was also replayed in canonical Btree
+**baseline** mode.  Its 234,962 cycles, 227,116,937 instructions, 1,420,865
+total L2 accesses, and 1,310,865 global-read L2 accesses exactly match v7.
+Across the complete self-contained summary, the only differences were again
+the four newly added CCD classification fields, each zero.  Thus the two
+provenance families used while resuming the long v7 campaign (`5ad465ec` and
+the default-equivalent `5efa3d56`) have direct baseline and C2P evidence; the
+analyzer still requires identical resolved configuration hashes for each mode
+and records the exact source/binary hashes per run.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
