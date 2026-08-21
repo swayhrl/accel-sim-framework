@@ -93,6 +93,17 @@ remote-hit/L2-avoidance strict gates pass.
 Earlier bundles below remain diagnostic history. They are not mixed into v7
 aggregates or used to claim agreement with the paper.
 
+### Default-BF refactor equivalence check
+
+The later Figure-13 support parameterized the formerly fixed 5,120-row
+Snapshot Matrix without changing its default `m5120-k4` mapping. An isolated
+replay of the canonical Btree C2P input against the refactored backend and
+rebuilt frontend completed in 229,052 cycles, exactly equal to the v7 C2P
+summary. Every pre-existing summary field was equal; the only new fields were
+the four CCD classification counters, all zero in a C2P-mode replay. This is
+the behavioral regression proof for using the parameterized default in the
+separate CCD/Figure-13 campaigns.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
