@@ -130,3 +130,9 @@ and requester self-exclusion.
 The command runs the same sequence twice: once through the reference storage
 and once through a test-only synchronous 1R1W macro model, verifying that the
 macro boundary preserves the two-cycle Snapshot response contract.
+
+The banked-front-end test enables `C2P_SIM_ASSERTS`. Those assertions require
+every accepted return packet to name an in-flight engine/copy and reject a
+duplicate owner in one copy/cycle. This is the protocol invariant that permits
+the two-cut response fabric to use source backpressure for transient route
+conflicts rather than retaining a packet at every route hop.

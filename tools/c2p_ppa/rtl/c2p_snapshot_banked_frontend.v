@@ -177,4 +177,8 @@ module c2p_snapshot_banked_frontend #(
             end
         end
     end
+
+`ifdef C2P_SIM_ASSERTS
+`include "sim_asserts/c2p_snapshot_banked_frontend_sim_asserts.vh"
+`endif
 endmodule

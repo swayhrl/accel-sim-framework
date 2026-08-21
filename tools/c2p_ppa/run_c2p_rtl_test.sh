@@ -37,7 +37,7 @@ rg -q '^PASS tb_c2p_snapshot_bank_copy_arbiter_static$' "$out_dir/sim_bank_copy_
 vvp "$out_dir/tb_c2p_snapshot_response_fabric.vvp" | tee "$out_dir/sim_response_fabric.log"
 rg -q '^PASS tb_c2p_snapshot_response_fabric$' "$out_dir/sim_response_fabric.log"
 
-"$iverilog_bin" -g2012 -s tb_c2p_snapshot_banked_frontend \
+"$iverilog_bin" -g2012 -I "$script_dir" -DC2P_SIM_ASSERTS -s tb_c2p_snapshot_banked_frontend \
     -o "$out_dir/tb_c2p_snapshot_banked_frontend.vvp" \
     "$script_dir/rtl/c2p_bf_engine.v" \
     "$script_dir/rtl/c2p_bf_engine_array.v" \
