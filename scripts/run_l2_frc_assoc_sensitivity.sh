@@ -60,11 +60,11 @@ for variant in baseline1-pressure frc128-pressure baseline2-pressure; do
   [[ -n "$trace_config" ]] && args+=(--trace-config "$trace_config")
   "$repo_root/scripts/run_latebind_l2_smoke.sh" "${args[@]}"
   log="$run_root/$variant/smoke.out"
-  cycles="$(awk '/^gpu_tot_sim_cycle =/{print $3; exit}' "$log")"
-  instructions="$(awk '/^gpu_tot_sim_insn =/{print $3; exit}' "$log")"
-  accesses="$(awk '/^L2_total_cache_accesses =/{print $3; exit}' "$log")"
-  misses="$(awk '/^L2_total_cache_misses =/{print $3; exit}' "$log")"
-  fails="$(awk '/^L2_total_cache_reservation_fails =/{print $3; exit}' "$log")"
+  cycles="$(awk '/^gpu_tot_sim_cycle =/{value=$3} END{print value}' "$log")"
+  instructions="$(awk '/^gpu_tot_sim_insn =/{value=$3} END{print value}' "$log")"
+  accesses="$(awk '/^L2_total_cache_accesses =/{value=$3} END{print value}' "$log")"
+  misses="$(awk '/^L2_total_cache_misses =/{value=$3} END{print value}' "$log")"
+  fails="$(awk '/^L2_total_cache_reservation_fails =/{value=$3} END{print value}' "$log")"
   opc="$(awk -v insn="$instructions" -v cycles="$cycles" 'BEGIN { printf "%.6f", insn / cycles }')"
   mpko="$(awk -v misses="$misses" -v insn="$instructions" 'BEGIN { printf "%.6f", 1000 * misses / insn }')"
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \

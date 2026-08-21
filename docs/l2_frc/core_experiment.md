@@ -63,6 +63,9 @@ preserve the paper's relative metric definitions within one QV100 experiment;
 they are not numerically comparable with the paper's HD7770 OPC/MPKO because
 the architecture, trace accounting and cache geometry differ.  Average L2
 miss delay excluding DRAM time still needs a dedicated QV100 accounting point.
+For a multi-kernel trace, the runner takes the final cumulative occurrence of
+each simulator statistic; intermediate per-kernel reports are not experiment
+totals.
 
 ## Causal replacement-pressure gate
 
