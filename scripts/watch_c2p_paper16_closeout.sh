@@ -61,8 +61,17 @@ has_summary() {
 }
 
 missing=()
+failed=()
+deadlocked_without_summary() {
+  local root="$1" case_name="$2" mode="$3"
+  local run_dir="$root/$case_name/$mode"
+  [[ ! -f "$run_dir/summary.txt" && -f "$run_dir/run.out" ]] || return 1
+  rg -q 'GPGPU-Sim uArch: ERROR \*\* deadlock detected' "$run_dir/run.out"
+}
+
 collect_missing() {
   missing=()
+  failed=()
   local case_name mode point
   while IFS=$'\t' read -r case_name _; do
     [[ -z "$case_name" || "$case_name" == case || "$case_name" == \#* ]] && continue
@@ -70,8 +79,14 @@ collect_missing() {
       if [[ "$mode" == ccd ]]; then
         has_summary "$case_name" "$mode" "$ccd_root" "${ccd_supplemental[@]}" ||
           missing+=("main:$case_name/$mode")
+        deadlocked_without_summary "$ccd_root" "$case_name" "$mode" &&
+          failed+=("main:$case_name/$mode")
       elif ! has_summary "$case_name" "$mode" "$main_root" "${main_supplemental[@]}"; then
         missing+=("main:$case_name/$mode")
+        for root in "$main_root" "${main_supplemental[@]}"; do
+          deadlocked_without_summary "$root" "$case_name" "$mode" &&
+            failed+=("main:$case_name/$mode")
+        done
       fi
     done
     has_summary "$case_name" baseline "$fast_root" "${fast_supplemental[@]}" ||
@@ -88,6 +103,11 @@ collect_missing() {
 
 while :; do
   collect_missing
+  if (( ${#failed[@]} != 0 )); then
+    printf '%s detected terminal failed input(s): %s\n' \
+      "$(date -Is)" "${failed[*]}" >&2
+    exit 1
+  fi
   if (( ${#missing[@]} == 0 )); then
     if ! mkdir "$lock_dir" 2>/dev/null; then
       printf 'closeout lock exists: %s\n' "$lock_dir"
