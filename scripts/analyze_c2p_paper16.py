@@ -22,7 +22,9 @@ COUNTERS = (
     "c2p_fallback_no_candidate", "c2p_fallback_candidates_exhausted",
     "c2p_fallback_probe_timeout", "c2p_snapshot_false_positive",
     "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",
-    "c2p_snapshot_true_negative", "c2p_peer_access_hit_samples",
+    "c2p_snapshot_true_negative", "c2p_ccd_false_positive",
+    "c2p_ccd_false_negative", "c2p_ccd_true_positive",
+    "c2p_ccd_true_negative", "c2p_peer_access_hit_samples",
     "c2p_peer_access_miss_samples", "c2p_peer_access_hit_p90",
     "c2p_peer_access_hit_p95", "c2p_peer_access_hit_p99",
     "c2p_peer_access_miss_p90", "c2p_peer_access_miss_p95",
@@ -92,6 +94,15 @@ def ratio(numerator, denominator):
     return numerator / denominator
 
 
+def classification_rates(data, prefix):
+    fp = value(data, prefix + "false_positive")
+    fn = value(data, prefix + "false_negative")
+    tp = value(data, prefix + "true_positive")
+    tn = value(data, prefix + "true_negative")
+    total = sum(v for v in (fp, fn, tp, tn) if v != "")
+    return (ratio(tp, total), ratio(fn, total), ratio(fp, total), ratio(tn, total))
+
+
 def write_csv(path, rows, columns):
     with path.open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=columns)
@@ -145,11 +156,10 @@ def main():
             group = "R{}S{}".format(
                 "1" if redundancy >= args.redundancy_threshold else "0",
                 "1" if sensitivity >= args.sensitivity_threshold else "0")
-        fp = value(results["c2p"], "c2p_snapshot_false_positive")
-        fn = value(results["c2p"], "c2p_snapshot_false_negative")
-        tp = value(results["c2p"], "c2p_snapshot_true_positive")
-        tn = value(results["c2p"], "c2p_snapshot_true_negative")
-        total_classified = sum(v for v in (fp, fn, tp, tn) if v != "")
+        c2p_tp, c2p_fn, c2p_fp, c2p_tn = classification_rates(
+            results["c2p"], "c2p_snapshot_")
+        ccd_tp, ccd_fn, ccd_fp, ccd_tn = classification_rates(
+            results["ccd"], "c2p_ccd_")
         case_rows.append({
             **item,
             "group": group,
@@ -157,10 +167,14 @@ def main():
             "l2_sensitivity": sensitivity,
             "baseline_cycles": baseline_cycles,
             "l2_50_cycles": value(fast, "gpu_tot_sim_cycle"),
-            "snapshot_tp_rate": ratio(tp, total_classified),
-            "snapshot_fn_rate": ratio(fn, total_classified),
-            "snapshot_fp_rate": ratio(fp, total_classified),
-            "snapshot_tn_rate": ratio(tn, total_classified),
+            "snapshot_tp_rate": c2p_tp,
+            "snapshot_fn_rate": c2p_fn,
+            "snapshot_fp_rate": c2p_fp,
+            "snapshot_tn_rate": c2p_tn,
+            "ccd_tp_rate": ccd_tp,
+            "ccd_fn_rate": ccd_fn,
+            "ccd_fp_rate": ccd_fp,
+            "ccd_tn_rate": ccd_tn,
         })
         for mode, data in results.items():
             if data is None:
@@ -191,7 +205,8 @@ def main():
                     "trace_relative_to_hw_run", "group", "oracle_redundancy",
                     "l2_sensitivity", "baseline_cycles", "l2_50_cycles",
                     "snapshot_tp_rate", "snapshot_fn_rate", "snapshot_fp_rate",
-                    "snapshot_tn_rate"]
+                    "snapshot_tn_rate", "ccd_tp_rate", "ccd_fn_rate",
+                    "ccd_fp_rate", "ccd_tn_rate"]
     mode_columns = ["case", "suite", "abbr", "input_label", "group", "mode",
                     *COUNTERS, "ipc_normalized", "l2_access_normalized",
                     "l2_global_read_normalized", "remote_hit_rate",

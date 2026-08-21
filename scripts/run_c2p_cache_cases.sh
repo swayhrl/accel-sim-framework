@@ -160,6 +160,10 @@ for mode in ${modes//,/ }; do
     /^c2p_snapshot_query_false_negative = / { query_false_negative=$3 }
     /^c2p_snapshot_query_true_positive = / { query_true_positive=$3 }
     /^c2p_snapshot_query_true_negative = / { query_true_negative=$3 }
+    /^c2p_ccd_false_positive = / { ccd_false_positive=$3 }
+    /^c2p_ccd_false_negative = / { ccd_false_negative=$3 }
+    /^c2p_ccd_true_positive = / { ccd_true_positive=$3 }
+    /^c2p_ccd_true_negative = / { ccd_true_negative=$3 }
     /^c2p_peer_access_hit_samples = / { peer_hit_samples=$3 }
     /^c2p_peer_access_hit_p90 = / { peer_hit_p90=$3 }
     /^c2p_peer_access_hit_p95 = / { peer_hit_p95=$3 }
@@ -200,6 +204,10 @@ for mode in ${modes//,/ }; do
       printf "c2p_snapshot_query_false_negative = %s\n", query_false_negative
       printf "c2p_snapshot_query_true_positive = %s\n", query_true_positive
       printf "c2p_snapshot_query_true_negative = %s\n", query_true_negative
+      printf "c2p_ccd_false_positive = %s\n", ccd_false_positive
+      printf "c2p_ccd_false_negative = %s\n", ccd_false_negative
+      printf "c2p_ccd_true_positive = %s\n", ccd_true_positive
+      printf "c2p_ccd_true_negative = %s\n", ccd_true_negative
       printf "c2p_peer_access_hit_samples = %s\n", peer_hit_samples
       printf "c2p_peer_access_hit_p90 = %s\n", peer_hit_p90
       printf "c2p_peer_access_hit_p95 = %s\n", peer_hit_p95

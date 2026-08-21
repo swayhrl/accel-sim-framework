@@ -20,6 +20,8 @@ FIELDS = (
     "c2p_snapshot_true_negative", "c2p_snapshot_query_false_positive",
     "c2p_snapshot_query_false_negative", "c2p_snapshot_query_true_positive",
     "c2p_snapshot_query_true_negative", "c2p_snapshot_updates",
+    "c2p_ccd_false_positive", "c2p_ccd_false_negative",
+    "c2p_ccd_true_positive", "c2p_ccd_true_negative",
     "c2p_snapshot_rebuilds", "c2p_snapshot_rebuild_transport_tags",
     "c2p_peer_access_hit_samples", "c2p_peer_access_hit_p90",
     "c2p_peer_access_hit_p95", "c2p_peer_access_hit_p99",
