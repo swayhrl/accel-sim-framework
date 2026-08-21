@@ -111,7 +111,9 @@ def grouped_cases(rows, metric, groups=GROUPS):
 
 
 def strip_bars(rows, metric, ylabel, filename, out, formats, groups=GROUPS,
-               lower=0.0, upper=None, figsize=(7.15, 1.52)):
+               lower=0.0, upper=None, figsize=(7.15, 1.52),
+               legend_ncol=2, legend_fontsize=8, legend_handlelength=1.2,
+               legend_columnspacing=0.8, legend_handletextpad=0.35):
     data = grouped_cases(rows, metric, groups)
     fig, axis = plt.subplots(figsize=figsize)
     x, width, positions, labels, boundaries = 0.0, 0.19, [], [], []
@@ -141,8 +143,11 @@ def strip_bars(rows, metric, ylabel, filename, out, formats, groups=GROUPS,
     axis.set_ylabel(ylabel)
     axis.grid(axis="y", color="#b0b0b0", linewidth=0.35, alpha=0.45)
     handles, legend_labels = axis.get_legend_handles_labels()
-    axis.legend(handles, legend_labels, ncol=2, loc="upper left", frameon=False,
-                fontsize=8, handlelength=1.2, columnspacing=0.8, handletextpad=0.35)
+    axis.legend(handles, legend_labels, ncol=legend_ncol, loc="upper left",
+                frameon=False, fontsize=legend_fontsize,
+                handlelength=legend_handlelength,
+                columnspacing=legend_columnspacing,
+                handletextpad=legend_handletextpad)
     save(fig, out, filename, formats)
 
 
@@ -332,7 +337,9 @@ def main():
                output, formats, lower=0.0, upper=1.65)
     strip_bars(modes, "l2_access_normalized", "Norm. L2 access", "fig11_l2_access",
                output, formats, groups=("R1S0", "R1S1"), lower=0.0, upper=1.25,
-               figsize=(3.55, 1.48))
+               figsize=(3.55, 1.48), legend_ncol=4, legend_fontsize=5.5,
+               legend_handlelength=0.95, legend_columnspacing=0.28,
+               legend_handletextpad=0.2)
     filtering_accuracy(cases, output, formats)
     fp_bins = args.analysis_dir / "fp_sweep_binned.csv"
     if fp_bins.is_file():
