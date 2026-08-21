@@ -34,6 +34,8 @@ L2_TOTAL = re.compile(r"^\s*L2_total_cache_accesses = (\d+)$")
 L2_GLOBAL_READ = re.compile(
     r"^\s*L2_cache_stats_breakdown\[GLOBAL_ACC_R\]\[TOTAL_ACCESS\] = (\d+)$")
 HIST = re.compile(r"^c2p_peer_access_(hit|miss)_count_(\d+) = (\d+)$")
+PROVENANCE_KEYS = ("gpgpusim_commit", "accelsim_commit", "config_sha256",
+                   "trace_sha256", "sim_sha256", "cudart_sha256")
 
 
 def read_manifest(path):
@@ -69,6 +71,18 @@ def read_summary(run_dir):
                 values["l2_total_cache_accesses"] = int(total.group(1))
             if global_read:
                 values["l2_global_read_accesses"] = int(global_read.group(1))
+    return values
+
+
+def read_provenance(run_dir):
+    path = run_dir / "provenance.txt"
+    if not path.is_file():
+        return None
+    values = {}
+    for line in path.read_text().splitlines():
+        if "=" in line:
+            key, value = line.split("=", 1)
+            values[key] = value
     return values
 
 
@@ -132,12 +146,33 @@ def main():
     mode_rows = []
     case_rows = []
     hist_rows = []
+    provenance_rows = []
     missing = []
     invariant_failures = []
+
+    def record_provenance(case, mode, source, run_dir, data):
+        if data is None:
+            return None
+        provenance = read_provenance(run_dir)
+        if provenance is None:
+            missing.append(f"{case}/{mode}: missing {source} provenance")
+            return None
+        provenance_rows.append({"case": case, "mode": mode, "source": source,
+                                "run_dir": str(run_dir),
+                                **{key: provenance.get(key, "")
+                                   for key in PROVENANCE_KEYS}})
+        if any(not provenance.get(key) for key in PROVENANCE_KEYS):
+            invariant_failures.append(
+                f"{case}/{mode}: incomplete {source} provenance")
+        return provenance
+
     for item in manifest:
         case = item["case"]
         run_root = args.results_root / case
         results = {mode: read_summary(run_root / mode) for mode in MODES}
+        primary_provenance = {
+            mode: record_provenance(case, mode, "primary", run_root / mode, data)
+            for mode, data in results.items()}
         absent = [mode for mode, data in results.items() if data is None]
         if absent:
             missing.append(f"{case}: missing {', '.join(absent)}")
@@ -145,10 +180,17 @@ def main():
         oracle = results["oracle"]
         fast = (read_summary(args.l2_fast_root / case / "baseline")
                 if args.l2_fast_root else None)
+        record_provenance(case, "baseline", "l2_50",
+                          args.l2_fast_root / case / "baseline", fast) \
+            if args.l2_fast_root else None
         if args.l2_fast_root and fast is None:
             missing.append(f"{case}: missing 50-cycle baseline")
         ccd_metrics = (read_summary(args.ccd_metrics_root / case / "ccd")
                        if args.ccd_metrics_root else results["ccd"])
+        ccd_provenance = (record_provenance(case, "ccd", "ccd_metrics",
+                                            args.ccd_metrics_root / case / "ccd",
+                                            ccd_metrics)
+                          if args.ccd_metrics_root else primary_provenance["ccd"])
         if args.ccd_metrics_root and ccd_metrics is None:
             missing.append(f"{case}: missing CCD metric replay")
         elif args.ccd_metrics_root and any(
@@ -156,6 +198,12 @@ def main():
                 for suffix in ("false_positive", "false_negative",
                                "true_positive", "true_negative")):
             missing.append(f"{case}: CCD metric replay lacks classification counters")
+        if (args.ccd_metrics_root and primary_provenance["ccd"] is not None and
+                ccd_provenance is not None and
+                primary_provenance["ccd"].get("config_sha256") !=
+                ccd_provenance.get("config_sha256")):
+            invariant_failures.append(
+                f"{case}: CCD metric config differs from primary CCD config")
 
         # These are mechanism invariants, not performance expectations.  The
         # oracle path must remain observational, and an admitted peer return
@@ -244,6 +292,20 @@ def main():
     write_csv(args.out_dir / "paper16_modes.csv", mode_rows, mode_columns)
     write_csv(args.out_dir / "paper16_probe_histogram.csv", hist_rows,
               ["case", "group", "mode", "outcome", "peer_probes", "count"])
+    provenance_columns = ["case", "mode", "source", "run_dir", *PROVENANCE_KEYS]
+    write_csv(args.out_dir / "paper16_provenance.csv", provenance_rows,
+              provenance_columns)
+    # Every mode is a fixed experiment point.  A mode-specific configuration
+    # hash must therefore be constant across the workload manifest; this
+    # catches accidental overlay/order changes while permitting an explicitly
+    # proven-equivalent simulator binary family during a long campaign.
+    for source in ("primary", "l2_50", "ccd_metrics"):
+        for mode in MODES:
+            hashes = {row["config_sha256"] for row in provenance_rows
+                      if row["source"] == source and row["mode"] == mode}
+            if len(hashes) > 1:
+                invariant_failures.append(
+                    f"{source}/{mode}: inconsistent resolved configuration hashes")
     report = ["# C2P paper16 analysis status", "",
               "## Classification thresholds", "",
               f"- R1: oracle redundancy >= {args.redundancy_threshold:.2f}",
@@ -259,6 +321,14 @@ def main():
         report.extend(f"- {entry}" for entry in invariant_failures)
     elif not missing:
         report.extend(["", "All oracle and remote-hit/L2-avoidance invariants passed."])
+    if provenance_rows:
+        report.extend(["", "## Provenance audit", "",
+                       "- `paper16_provenance.csv` records each completed run's "
+                       "source commit, resolved-config hash, trace hash, simulator "
+                       "hash, and runtime hash.",
+                       "- The analyzer requires one resolved configuration hash per "
+                       "source/mode and requires every CCD metric replay to use the "
+                       "same resolved configuration as its primary CCD run."])
     (args.out_dir / "paper16_status.md").write_text("\n".join(report) + "\n")
     if args.strict and (missing or invariant_failures):
         raise SystemExit("; ".join(missing + invariant_failures))
