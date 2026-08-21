@@ -92,9 +92,32 @@ def write_csv(path, rows, fields):
         writer.writerows(rows)
 
 
+def read_complete_point(run_dir, declared):
+    """Return a usable point or the reason this directory cannot supply it."""
+    shape = read_snapshot_shape(run_dir)
+    if shape != declared:
+        return None, f"resolved m/k {shape} != {declared}"
+    provenance = read_provenance(run_dir)
+    if provenance is None:
+        return None, "missing sweep provenance"
+    data = read_summary(run_dir / "summary.txt")
+    needed = ("gpu_tot_sim_cycle", "c2p_snapshot_false_positive",
+              "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",
+              "c2p_snapshot_true_negative")
+    if any(key not in data for key in needed):
+        return None, "missing C2P summary"
+    classified = sum(data[key] for key in needed[1:])
+    if not classified:
+        return None, "zero classified misses"
+    return (shape, provenance, data, classified), None
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sweep-root", required=True, type=Path)
+    parser.add_argument("--supplemental-sweep-root", action="append", type=Path,
+                        default=[],
+                        help="fallback roots for independently parallelized points")
     parser.add_argument("--paper16-analysis", required=True, type=Path,
                         help="completed analyze_c2p_paper16.py output")
     parser.add_argument("--out-dir", required=True, type=Path)
@@ -115,41 +138,38 @@ def main():
     # Requiring it to be byte-identical would reject one unchanged binary
     # family for source-control bookkeeping rather than a simulation change.
     binary_families = set()
-    point_dirs = sorted(path for path in args.sweep_root.iterdir()
-                        if path.is_dir() and re.fullmatch(r"m\d+-k\d+", path.name))
-    if not point_dirs:
+    sweep_roots = [args.sweep_root, *args.supplemental_sweep_root]
+    point_names = sorted({path.name for root in sweep_roots if root.is_dir()
+                          for path in root.iterdir()
+                          if path.is_dir() and re.fullmatch(r"m\d+-k\d+", path.name)})
+    if not point_names:
         raise SystemExit("no m<rows>-k<encodings> sweep directories found")
-    for point_dir in point_dirs:
+    for point_name in point_names:
         declared = tuple(int(value) for value in re.fullmatch(
-            r"m(\d+)-k(\d+)", point_dir.name).groups())
+            r"m(\d+)-k(\d+)", point_name).groups())
         for case, base in sorted(classification.items()):
-            run_dir = point_dir / case / "c2p"
-            shape = read_snapshot_shape(run_dir)
-            if shape != declared:
-                missing.append(f"{point_dir.name}/{case}: resolved m/k {shape} != {declared}")
+            selected = None
+            reason = "missing C2P summary"
+            for root in sweep_roots:
+                run_dir = root / point_name / case / "c2p"
+                point, candidate_reason = read_complete_point(run_dir, declared)
+                if point is not None:
+                    selected = (run_dir, *point)
+                    break
+                if root == args.sweep_root:
+                    reason = candidate_reason
+            if selected is None:
+                missing.append(f"{point_name}/{case}: {reason}")
                 continue
-            provenance = read_provenance(run_dir)
-            if provenance is None:
-                missing.append(f"{point_dir.name}/{case}: missing sweep provenance")
-                continue
-            data = read_summary(run_dir / "summary.txt")
-            needed = ("gpu_tot_sim_cycle", "c2p_snapshot_false_positive",
-                      "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",
-                      "c2p_snapshot_true_negative")
-            if any(key not in data for key in needed):
-                missing.append(f"{point_dir.name}/{case}: missing C2P summary")
-                continue
-            classified = sum(data[key] for key in needed[1:])
-            if not classified:
-                missing.append(f"{point_dir.name}/{case}: zero classified misses")
-                continue
+            run_dir, shape, provenance, data, classified = selected
             ratio = data["c2p_snapshot_false_positive"] / classified
             binary_family = tuple(provenance[key] for key in
                                   ("gpgpusim_commit", "sim_sha256"))
             binary_families.add(binary_family)
             points.append({
-                "point": point_dir.name,
+                "point": point_name,
                 "case": case,
+                "source_run": str(run_dir),
                 "group": base["group"],
                 "snapshot_rows": shape[0],
                 "hash_count": shape[1],
@@ -173,7 +193,7 @@ def main():
                                "ipc_median": quantile(values, .50),
                                "ipc_p75": quantile(values, .75)})
     write_csv(args.out_dir / "fp_sweep_points.csv", points,
-              ["point", "case", "group", "snapshot_rows", "hash_count",
+              ["point", "case", "source_run", "group", "snapshot_rows", "hash_count",
                "gpgpusim_commit", "accelsim_commit", "sim_sha256",
                "fp_ratio", "fp_bin", "ipc_normalized"])
     write_csv(args.out_dir / "fp_sweep_binned.csv", binned,

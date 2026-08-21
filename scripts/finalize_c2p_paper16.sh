@@ -8,6 +8,7 @@ Usage: scripts/finalize_c2p_paper16.sh \
   --results-root DIR --l2-fast-root DIR --ccd-metrics-root DIR \
   --sweep-root DIR --analysis-dir DIR --figures-dir DIR --report FILE \
   [--queue-sensitivity-root DIR] \
+  [--supplemental-sweep-root DIR] \
   [--supplemental-results-root DIR] \
   [--supplemental-l2-fast-root DIR] \
   [--supplemental-ccd-metrics-root DIR] [--python PYTHON]
@@ -28,7 +29,7 @@ python_bin="${PYTHON:-python3}"
 results_root=""; l2_fast_root=""; ccd_metrics_root=""; sweep_root=""
 analysis_dir=""; figures_dir=""; report=""
 queue_sensitivity_root=""
-supplemental_results=(); supplemental_l2=(); supplemental_ccd=()
+supplemental_results=(); supplemental_l2=(); supplemental_ccd=(); supplemental_sweep=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -43,6 +44,7 @@ while [[ $# -gt 0 ]]; do
     --supplemental-results-root) supplemental_results+=("$2"); shift 2 ;;
     --supplemental-l2-fast-root) supplemental_l2+=("$2"); shift 2 ;;
     --supplemental-ccd-metrics-root) supplemental_ccd+=("$2"); shift 2 ;;
+    --supplemental-sweep-root) supplemental_sweep+=("$2"); shift 2 ;;
     --python) python_bin="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -65,9 +67,10 @@ for root in "${supplemental_l2[@]}"; do analysis_args+=(--supplemental-l2-fast-r
 for root in "${supplemental_ccd[@]}"; do analysis_args+=(--supplemental-ccd-metrics-root "$root"); done
 
 "$python_bin" "$repo_root/scripts/analyze_c2p_paper16.py" "${analysis_args[@]}"
-"$python_bin" "$repo_root/scripts/analyze_c2p_fp_sweep.py" \
-  --sweep-root "$sweep_root" --paper16-analysis "$analysis_dir" \
-  --out-dir "$analysis_dir" --strict
+fp_args=(--sweep-root "$sweep_root" --paper16-analysis "$analysis_dir"
+         --out-dir "$analysis_dir" --strict)
+for root in "${supplemental_sweep[@]}"; do fp_args+=(--supplemental-sweep-root "$root"); done
+"$python_bin" "$repo_root/scripts/analyze_c2p_fp_sweep.py" "${fp_args[@]}"
 report_args=(--analysis-dir "$analysis_dir" --figures-dir "$figures_dir" --report "$report")
 if [[ -n "$queue_sensitivity_root" ]]; then
   [[ -d "$queue_sensitivity_root" ]] || {
