@@ -78,3 +78,23 @@ The equal architectural metrics and cycles are expected: all L2-side traffic
 that reaches this trace's FRC-enabled model is write traffic, and therefore
 uses the explicit baseline fallback.  This is a semantic regression result,
 not evidence for or against FRC performance on read-conflict workloads.
+
+## Core-workload check after sector ownership correction
+
+The former whole-line prefetch experiment is superseded: a 128-byte L2 line
+crosses QV100 memory-subpartition ownership boundaries and its internal reads
+can target another DRAM channel.  Core workload conclusions use only the
+partition-local 32-byte sector implementation from core commit `86e26798`.
+
+| Complete trace | Control cycles | FRC32 cycles | Key observation |
+|---|---:|---:|---|
+| CUDA SDK `fastWalshTransform` `_logK_11__logD_19` | 172,297 | 172,297 | FRC is active: 467,526 allocations/swaps, but all L2 reservation failures are zero. |
+| CUDA SDK `BlackScholes` `NO_ARGS` | 9,032 | 9,032 | FRC is active: 21,190 allocations, but all L2 reservation failures are zero. |
+
+Consequently this port has passed a high-concurrency correctness gate but has
+not reproduced the paper's performance gain.  The missing causal condition is
+not FRC entry capacity: the conventional QV100 baseline has no L2 transient
+replacement contention for these traces, while the FRC model intentionally
+shares its MSHR/miss-queue limits.  A stronger paper-performance model needs a
+separate approved FRC transaction-store contract rather than treating these
+zero-delta runs as a negative claim about the paper.

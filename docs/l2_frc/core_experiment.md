@@ -53,3 +53,25 @@ L2 accesses/misses, FRC allocations/lower reads/swaps and FRC fallbacks.  The
 paper additionally reports OPC, MPKO and L2 miss delay excluding DRAM time;
 the current port does not claim those metrics until their precise QV100
 definitions and accounting points are implemented.
+
+## First complete workload result and limit
+
+The complete CUDA SDK `fastWalshTransform` trace
+`_logK_11__logD_19` was run with `baseline24` and `frc32-paper` after the
+partition-local-sector correction.  Both complete at 180,944,896 instructions
+and 172,297 cycles.  `frc32-paper` is active (467,526 allocations, lower
+reads and swaps; 1,301,946 set-full fallbacks), but every conventional L2 bank
+reports zero reservation failures.  The same negative control holds for the
+complete `BlackScholes` trace: baseline and FRC32 both take 9,032 cycles;
+FRC32 has 21,190 allocations while L2 reservation failures remain zero.
+
+This is a valid result for the present model, but it is **not** a reproduction
+of the paper's performance claim.  The paper accelerates serial replacement
+of transient LLC victims.  QV100's baseline trace model distributes requests
+over 64 sector-L2 subpartitions and already has no L2 reservation-failure
+pressure for these workloads.  Furthermore, the current FRC deliberately
+retains the baseline MSHR and miss-queue credits, so it does not create a
+second transaction queue.  A paper-style performance experiment requires a
+new, explicitly approved model contract for FRC-owned miss/request state (and
+possibly a memory-partition-level FRC for whole-line ownership); it must not
+be inferred from this mechanism port.
