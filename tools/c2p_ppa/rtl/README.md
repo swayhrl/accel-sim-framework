@@ -50,6 +50,22 @@ arbitration, target-L1 FIFO ownership, continuous Snapshot rebuild traffic,
 and the physical macro adapter are separate scaling work; they must not be
 silently claimed by the single-lane PPA result.
 
+`c2p_snapshot_banked_frontend.v` supplies the first two scaling blocks as a
+separately verifiable physical-array interface. Its default is 128 two-cycle
+BF engines followed by four independent 64-bank arbiters. The arbiter exposes
+256 bank-command ports (64 banks x four copies). A four-bit sent mask at each
+engine records individual tag-mask/Bloom-row grants, so one bank conflict does
+not hold the other three physical copies hostage and no row can be issued
+twice. `bank_req_owner` is the response-router contract: it reassembles the
+four replies before candidate evaluation. The selectors are hierarchically
+bounded to 16-engine local priority plus an eight-way group priority, avoiding
+the former 128-entry global all-copy matching cone.
+
+The functional `c2p_cache_rtl` top remains intentionally single-lane until
+its target-L1 queue/response machinery consumes that port array and its
+owner-tagged response joiner. No throughput claim for the 128-engine front
+end is made by the single-lane directed test.
+
 Candidate ordering is intentionally pipelined in this baseline.  A selection
 walks one 8-SM cluster at a time: one clock chooses the next ordered cluster
 and the next applies a small priority encoder inside it.  The walk order is
@@ -62,12 +78,20 @@ lower-memory fallback semantics.
 ## Snapshot storage boundary
 
 `c2p_snapshot_store.v` is the explicit boundary between the C2P matrix and
-SRAM.  Its default functional branch has four independent logical arrays so
-directed RTL tests exercise real candidate filtering.  With
+SRAM. Its default functional branch has four independent logical arrays so
+directed RTL tests exercise real candidate filtering. With
 `USE_SRAM_MACRO=1`, the same matrix protocol instantiates four
 `c2p_snapshot_sram_1r1w` wrappers instead.  The technology integration owns
 that wrapper and supplies its Verilog/Liberty/LEF/GDS views.  The matrix clears
 one row per cycle after reset, avoiding a giant resettable-flop implementation.
+
+The ASAP7 adapter is necessarily a 1RW implementation: a set-bit update is
+read, captured in a dedicated register cycle, then written back ORed with its
+mask. The capture is a real timing boundary; it removes a macro-Q to a
+different macro-D path. It costs one extra update cycle, but Snapshot updates
+are rebuild/background traffic and never alter query correctness. Query
+admission is ordered behind accepted updates, so a later query cannot observe
+the state before an earlier update merely because its BF engine is faster.
 
 The final physical design maps the logical 40 KiB matrix to four physical read
 replicas, as in the simulator and CACTI proxy.  That adapter requires a
@@ -90,7 +114,10 @@ C2P_IVERILOG_BIN=/path/to/iverilog tools/c2p_ppa/run_c2p_rtl_test.sh
 ```
 
 It first checks `c2p_bf_engine` row-for-row against its mathematical mapping
-and covers output backpressure. It then checks candidate insertion,
+and covers output backpressure. It also checks independent 64-bank/four-copy
+arbitration, including single-copy conflicts and owner-tagged partial issue,
+then checks that the composed multi-engine frontend drains each four-row
+transaction without duplication. It then checks candidate insertion,
 nearest-first probe ordering, a probe miss followed by another candidate,
 peer-hit completion, true no-candidate fallback, exhausted-candidate fallback,
 and requester self-exclusion.

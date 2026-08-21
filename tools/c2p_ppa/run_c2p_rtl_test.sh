@@ -13,6 +13,25 @@ mkdir -p "$out_dir"
 vvp "$out_dir/tb_c2p_bf_engine.vvp" | tee "$out_dir/sim_bf_engine.log"
 rg -q '^PASS tb_c2p_bf_engine$' "$out_dir/sim_bf_engine.log"
 
+"$iverilog_bin" -g2012 -s tb_c2p_snapshot_bank_arbiter \
+    -o "$out_dir/tb_c2p_snapshot_bank_arbiter.vvp" \
+    "$script_dir/rtl/c2p_snapshot_bank_copy_arbiter.v" \
+    "$script_dir/rtl/c2p_snapshot_bank_arbiter.v" \
+    "$script_dir/tb/tb_c2p_snapshot_bank_arbiter.v"
+vvp "$out_dir/tb_c2p_snapshot_bank_arbiter.vvp" | tee "$out_dir/sim_bank_arbiter.log"
+rg -q '^PASS tb_c2p_snapshot_bank_arbiter$' "$out_dir/sim_bank_arbiter.log"
+
+"$iverilog_bin" -g2012 -s tb_c2p_snapshot_banked_frontend \
+    -o "$out_dir/tb_c2p_snapshot_banked_frontend.vvp" \
+    "$script_dir/rtl/c2p_bf_engine.v" \
+    "$script_dir/rtl/c2p_bf_engine_array.v" \
+    "$script_dir/rtl/c2p_snapshot_bank_copy_arbiter.v" \
+    "$script_dir/rtl/c2p_snapshot_bank_arbiter.v" \
+    "$script_dir/rtl/c2p_snapshot_banked_frontend.v" \
+    "$script_dir/tb/tb_c2p_snapshot_banked_frontend.v"
+vvp "$out_dir/tb_c2p_snapshot_banked_frontend.vvp" | tee "$out_dir/sim_banked_frontend.log"
+rg -q '^PASS tb_c2p_snapshot_banked_frontend$' "$out_dir/sim_banked_frontend.log"
+
 "$iverilog_bin" -g2012 -s tb_c2p_cache_rtl -o "$out_dir/tb_c2p_cache_rtl.vvp" \
     "$script_dir/rtl/c2p_snapshot_store.v" \
     "$script_dir/rtl/c2p_bf_engine.v" \

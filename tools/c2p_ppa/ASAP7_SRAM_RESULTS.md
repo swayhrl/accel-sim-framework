@@ -20,9 +20,11 @@ revision `9f5af0939e8dd3cc1a9693a50b23441691dd7d25` and its
 | Macro area | 20 x 2,359.86048 = 47,197.2096 um2 | CACTI scaled: 0.0804 mm2 |
 
 Five 1RW macros compose a logical 5,120x64 replica. The public macro lacks
-masked write, so a Snapshot bit-set is a two-cycle read-modify-write; query
-reads issue to all four replicas in parallel. This is functionally correct
-and explicitly backpressures the update interface. It is lower throughput
+masked write, so a Snapshot bit-set is a read/capture/write transaction; query
+reads issue to all four replicas in parallel. The capture register removes the
+macro-Q-to-macro-D path, and query admission is ordered behind accepted
+updates. This is functionally correct and explicitly backpressures the update
+interface. It is lower throughput
 than the paper's 64-bank, four-copy high-concurrency organization, which
 provisions 256 row reads/cycle and 128 BF engines.
 
@@ -62,16 +64,25 @@ every candidate still receives an exact remote-L1 probe. It intentionally does
 not reproduce the simulator's splitmix false-positive distribution, so any
 candidate-rate comparison must use the matching hardware hash in the model.
 
-The reproducible 1ns macro-aware CTS run after this change is
-`results/openroad_c2p_asap7_sram_bf_2cycle_nonlinear_cts_1ns`. Its WNS is -947.9597ps;
-the reported worst path is no longer in a BF engine. It is the 1RW adapter's
-read-modify-write path from `g_bank_3__copy3/dataout[17]` through two small
-logic cones to `g_bank_0__copy3/wd[17]`. The two BF engines map to 145.63962
-and 88.60266 um2 respectively, and total non-SRAM standard-cell logic is
-1,276.97472 um2. This confirms removal of the hash-to-`banksel` critical
-cone, but it is not a 1ns-clean total design: the public single-port macro
-decomposition and its cross-macro RMW wiring need a multiport/masked-write
-Snapshot macro or a different bank-local update microarchitecture.
+The current reproducible 1ns macro-aware CTS run is
+`results/openroad_c2p_asap7_sram_cluster_capture_ordered_cts_1ns`. Its WNS is
+**-512.0120ps**. The reported worst path is no longer in a BF engine nor
+directly from a macro output: it starts at the registered RMW capture data and
+ends at a selected macro `wd` input. This confirms removal of the
+hash-to-`banksel` and macro-Q-to-macro-D critical cones, but it is not a
+1ns-clean total design: the public single-port five-macro decomposition still
+places a wide, high-fanout RMW write net on the timing boundary. A
+multiport/masked-write Snapshot macro or a bank-local update microarchitecture
+is required for a closing macro-aware implementation.
+
+The scalable control front end is separately synthesized as
+`results/openroad_c2p_banked_frontend_synth_v3`: it instantiates 128 two-cycle
+BF engines and four 64-bank arbiters. Its mapped ASAP7 standard-cell area is
+**55,894.1067 um2 (0.055894 mm2)**, before the response joiner, target-L1
+queues, physical Snapshot macros and physical-only cells. The 16-engine local
+plus eight-way group selection prevents the old 128-entry all-copy matcher
+from becoming one serial global arbitration cone. This is a synthesis-area
+result, not a route/timing signoff result.
 
 ## Detailed-route gate
 
@@ -100,8 +111,10 @@ lane and uses a different open macro library. CACTI scaling and an ASAP7
 macro abstract are also not a common area methodology.
 
 The valid comparison is therefore: geometry and four-copy capacity match
-exactly; the implementation does not yet match the paper's 128-engine
-parallelism or complete non-SRAM control scope. The next RTL step is a
-128-engine dispatcher plus 64-bank/four-copy address arbitration (the
-single-engine pipeline is now the verified building block), followed by a
-routeable macro view for the final physical run.
+exactly; the implementation now has the paper-shaped 128-engine/64-bank
+request front end, but still lacks its target-L1 request queues and
+owner-tagged response joiner in the single-lane cache top. The open macro view
+also remains unrouteable, so it cannot produce a signoff total. The next
+physical step is a routeable macro view plus a bank-local/masked update path;
+the next functional scaling step is connecting the existing bank-request
+contract to target-L1 queues and reply joining.
