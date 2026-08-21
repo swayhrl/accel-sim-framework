@@ -55,6 +55,12 @@ def read_manifest(path):
         return list(csv.DictReader(rows, delimiter="\t"))
 
 
+def read_paper_groups(path):
+    with path.open(newline="") as stream:
+        rows = (line for line in stream if not line.startswith("#"))
+        return {row["case"]: row for row in csv.DictReader(rows, delimiter="\t")}
+
+
 def read_summary(run_dir):
     summary = run_dir / "summary.txt"
     if not summary.is_file():
@@ -170,6 +176,10 @@ def main():
     parser.add_argument("--manifest", type=Path,
                         default=Path(__file__).resolve().parents[1] /
                         "configs/c2p-cache/paper16_workloads.tsv")
+    parser.add_argument("--paper-groups", type=Path,
+                        default=Path(__file__).resolve().parents[1] /
+                        "configs/c2p-cache/paper16_paper_groups.tsv",
+                        help="Figure-10 paper grouping reference; never used for local classification")
     parser.add_argument("--l2-fast-root", type=Path,
                         help="baseline-only root with 50-cycle L2 runs")
     parser.add_argument("--ccd-metrics-root", type=Path,
@@ -181,6 +191,7 @@ def main():
     args = parser.parse_args()
 
     manifest = read_manifest(args.manifest)
+    paper_groups = read_paper_groups(args.paper_groups)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     mode_rows = []
     case_rows = []
@@ -208,6 +219,9 @@ def main():
 
     for item in manifest:
         case = item["case"]
+        paper_group = paper_groups.get(case)
+        if paper_group is None:
+            missing.append(f"{case}: missing Figure-10 paper-group reference")
         run_root = args.results_root / case
         results = {mode: read_summary(run_root / mode) for mode in MODES}
         primary_provenance = {
@@ -297,6 +311,9 @@ def main():
         case_rows.append({
             **item,
             "group": group,
+            "paper_group": "" if paper_group is None else paper_group["paper_group"],
+            "paper_label": "" if paper_group is None else paper_group["paper_label"],
+            "paper_group_note": "" if paper_group is None else paper_group["note"],
             "oracle_redundancy": redundancy,
             "l2_sensitivity": sensitivity,
             "ideal_opportunity_retained": ideal_opportunity_retained,
@@ -340,7 +357,8 @@ def main():
                                       "count": count})
 
     case_columns = ["case", "suite", "abbr", "input_label",
-                    "trace_relative_to_hw_run", "group", "oracle_redundancy",
+                    "trace_relative_to_hw_run", "paper_group", "paper_label",
+                    "paper_group_note", "group", "oracle_redundancy",
                     "l2_sensitivity", "ideal_opportunity_retained",
                     "c2p_opportunity_retained", "ideal_probe_timeout_rate",
                     "c2p_probe_timeout_rate", "baseline_cycles", "l2_50_cycles",

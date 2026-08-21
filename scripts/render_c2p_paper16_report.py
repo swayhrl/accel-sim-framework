@@ -106,6 +106,17 @@ def main():
         names = [row["abbr"] for row in cases if row["group"] == group]
         lines.append(f"| {group} | {', '.join(names) if names else '—'} |")
 
+    lines.extend(["", "## Paper group reference versus local reclassification", "",
+                  "The Figure-10 group is retained as a paper reference only. "
+                  "The local group always comes from this campaign's independent "
+                  "oracle-redundancy and 50-cycle-L2 measurements; a mismatch is "
+                  "trace/input evidence, not a relabeling of the paper.", "",
+                  "| Case | Paper label | Paper group | Local group |", "|---|---|---|---|"])
+    for row in cases:
+        lines.append("| {} | {} | {} | {} |".format(
+            row["case"], row.get("paper_label", "—") or "—",
+            row.get("paper_group", "—") or "—", row["group"]))
+
     lines.extend(["", "## Figure-10-style normalized IPC aggregate", "",
                   "Arithmetic mean across locally complete seven-mode cases in each group; "
                   "not a replacement for the paper's original workload-weighted set.", "",

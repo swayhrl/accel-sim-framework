@@ -115,3 +115,9 @@ benefit while R0S1 establishes query overhead.  The unavailable ISPASS and
 Pannotia eight workloads are recorded as explicit missing evidence, never
 replaced by merely similarly named traces.  PPA and the broader Figure 16--21
 parameter study remain outside this functional study.
+
+`configs/c2p-cache/paper16_paper_groups.tsv` separately preserves the Figure
+10 paper group for every locally replayed workload.  It is a reporting
+reference only: the analyzer always derives the local R0/R1 and S0/S1 group
+from the canonical oracle and 50-cycle replay, then reports any difference
+rather than relabeling a local trace to match the paper.
