@@ -48,8 +48,8 @@ the future C2P RTL top before reporting a hardware area number.
 This final layer is a real standard-cell implementation, not a Yosys-only
 area count.  It maps the control fixture to the open ASAP7 RVT/TT library,
 runs floorplanning, IO placement, global and detailed placement, CTS, global
-routing, detailed routing, and writes DEF/ODB plus timing, congestion, and
-DRC reports.  It deliberately excludes a power grid, filler/tap insertion,
+routing, detailed routing, and writes DEF/ODB plus timing, area, and DRC
+reports.  It deliberately excludes a power grid, filler/tap insertion,
 extraction calibration, Snapshot SRAM macros, and payload FIFOs.  The DRC
 report is retained rather than hidden: this is a transparent physical proxy,
 not a sign-off result.
