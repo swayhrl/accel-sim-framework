@@ -22,17 +22,19 @@ a useful negative control, not evidence of FRC speedup.
 ## Variants and fairness
 
 Each L2 subpartition starts at 32 sets x 24 ways x 128 bytes (`baseline24`).
-The entry sensitivity points are FRC 4, 8, 16, 32, and 64 entries in paper
-timing mode.  FRC payload is not free capacity:
+The QV100 address mapping routes a 32-byte sector, rather than an entire
+128-byte L2 line, to one subpartition.  The entry sensitivity points are FRC
+4, 8, 16, 32, and 64 partition-local sectors in paper timing mode.  FRC
+payload is not free capacity:
 
 | Comparison | Equal payload capacity |
 |---|---|
-| `frc32-paper` | `baseline25` |
-| `frc64-paper` | `baseline26` |
+| `frc128-paper` | `baseline25` |
+| `frc256-paper` | `baseline26` |
 
-The FRC variants retain the 24-way L2 and add respectively 32 or 64 FRC
-lines, exactly one or two 32-set L2 ways.  `baseline25` and `baseline26`
-instead add that storage to conventional L2.  Metadata/ports remain an
+The FRC variants retain the 24-way L2.  128 or 256 FRC sectors contribute
+exactly one or two 32-set L2 ways of payload, while `baseline25` and
+`baseline26` add that storage to conventional L2.  Metadata/ports remain an
 explicit implementation cost, as specified in the Phase-3 contract.
 
 Run one complete trace with:

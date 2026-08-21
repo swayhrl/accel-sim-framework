@@ -52,10 +52,10 @@ run_case() {
 }
 
 run_case merge merge frc1-directed.config
-grep -Eq 'frc_l2 .*allocations=1 .*sector_attaches=[1-9]' \
+grep -Eq 'frc_l2 .*allocations=1 lower_reads=1' \
   "$run_root/merge/smoke.out"
 
-run_case set_full set_full frc1-directed.config
+run_case set_full set_full frc1-set-full.config
 grep -Eq 'frc_l2 .*set_full_fallbacks=[1-9]' \
   "$run_root/set_full/smoke.out"
 

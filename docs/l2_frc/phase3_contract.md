@@ -12,9 +12,11 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
 
 ## Mechanism contract
 
-- There is one FRC per L2 subpartition.  Entries are line-sized and set
-  associative; their address is the L2 line address, not the 32-byte MSHR
-  sector address.
+- There is one FRC per L2 subpartition.  The QV100 address map assigns a
+  32-byte sector to one subpartition, so an FRC entry is that partition-local
+  allocation unit and is set associative by sector address.  A full 128-byte
+  L2 line spans multiple subpartitions and cannot be fetched or owned by one
+  slice without a cross-subpartition FRC fabric.
 - The normal L2 tag lookup and the FRC lookup are concurrent logical checks.
   A true miss may allocate a free FRC entry and issue the lower read without
   reserving an L2 victim.  A full FRC set falls back to conventional L2 miss
@@ -27,10 +29,9 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
 - Victim choice happens at fill/swap time.  A clean victim releases the FRC
   entry immediately.  A dirty victim stays in the entry until the lower
   writeback handshake transfers its ownership.
-- FRC does not add or remove MSHRs.  MSHR keys remain 32-byte sectors.  An
-  FRC entry tracks the full-line pending/valid masks and its dirty victim's
-  sector mask; an upper request for a prefetched sector attaches the normal
-  per-sector MSHR before the line swaps.
+- FRC does not add or remove MSHRs.  MSHR keys and FRC ownership both remain
+  32-byte sectors.  A later request for a fetching sector merges into its
+  normal MSHR before that sector swaps into L2.
 - FRC currently owns only read-miss scheduling.  Stores (including partial
   sector stores) and atomics explicitly use the unmodified baseline path,
   which remains authoritative for byte masks and atomic order.  Their
@@ -54,10 +55,11 @@ print the selected mode; neither mode claims a physical equal-area design.
 
 The default QV100 L2 is 64 subpartitions, each with 32 sets x 24 ways x
 128-byte lines.  FRC capacity is reported separately as payload capacity and
-transient metadata.  `frc32` and `frc64` therefore require matched baseline
-comparisons with respectively one and two additional L2 ways before any
-equal-capacity conclusion is drawn.  FRC's finite state/tag/mask metadata and
-all extra port assumptions are reported, not hidden in payload capacity.
+transient metadata.  A 32-byte FRC entry is one quarter of a conventional L2
+way's per-set payload: `frc128` and `frc256` require matched baseline
+comparisons with respectively one and two additional L2 ways.  FRC's finite
+state/tag/mask metadata and all extra port assumptions are reported, not
+hidden in payload capacity.
 
 ## Required invariants
 
@@ -75,10 +77,9 @@ an uncongested run; ownership is nevertheless held until the acceptance edge.
 `flush_calls` is diagnostic only: Accel-Sim may invoke end-of-kernel flushing
 repeatedly while draining, so it is not a count of distinct cache lines.
 
-The directed suite covers full-line early fetch, a sector attachment while a
-line is fetching, set-full fallback, clean swap, dirty swap and the lower-WB
-ownership handshake, partial-write baseline fallback, atomic baseline
-equivalence, and end-of-kernel flush.  The simulator's ordinary queue model
-does not inject an artificial lower-port stall; `wb_wait_cycles` keeps that
-future stress point observable rather than claiming a blocked-WB result that
-the trace did not create.
+The directed suite covers fetching-sector ownership, set-full fallback, clean
+swap, dirty swap and the lower-WB ownership handshake, partial-write baseline
+fallback, atomic baseline equivalence, and end-of-kernel flush.  The
+simulator's ordinary queue model does not inject an artificial lower-port
+stall; `wb_wait_cycles` keeps that future stress point observable rather than
+claiming a blocked-WB result that the trace did not create.

@@ -7,9 +7,9 @@ Usage: scripts/run_l2_frc_core_sweep.sh --trace KERNELSLIST --config CONFIG
        [--trace-config FILE] [--run-root DIR]
 
 Runs the Phase-3 paper-mode FRC sensitivity points (4/8/16/32/64 entries)
-and the capacity-fair controls for 32- and 64-entry FRCs.  The baseline has
-24 ways per L2 subpartition; frc32 and frc64 respectively add the payload of
-one and two such ways, so they are compared with baseline25 and baseline26.
+and the capacity-fair 128/256-sector points.  The baseline has 24 ways per
+L2 subpartition; frc128 and frc256 respectively add the payload of one and
+two such ways, so they are compared with baseline25 and baseline26.
 EOF
 }
 
@@ -55,7 +55,7 @@ sum_frc_field() {
 printf 'variant\tcycles\tinstructions\tl2_accesses\tl2_misses\tfrc_allocations\tfrc_lower_reads\tfrc_swaps\tfrc_set_full_fallbacks\tfrc_write_fallbacks\tfrc_atomic_fallbacks\n' \
   > "$run_root/summary.tsv"
 
-variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper baseline25 frc64-paper baseline26)
+variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26)
 for variant in "${variants[@]}"; do
   args=(--trace "$trace" --config "$config" --config-extra "$repo_root/configs/l2_frc/$variant.config" --run-dir "$run_root/$variant")
   [[ -n "$trace_config" ]] && args+=(--trace-config "$trace_config")

@@ -8,7 +8,7 @@
   preserves dirty victim payload when a baseline read miss creates a lower
   writeback.
 - FRC implementation commits are intentionally narrow: entry/configuration,
-  delayed swap and full-line fetch, statistics/timing, explicit write/atomic
+  delayed swap and partition-local sector fetch, statistics/timing, explicit write/atomic
   fallback, same-line ownership blocking, and primary-sector swap gating.
 
 ## Reproducible checks
@@ -25,8 +25,8 @@ scripts/run_l2_frc_sweep.sh --trace <kernelslist.g> --config <gpgpusim.config> -
 ```
 
 The directed suite uses a 1-set/1-way L2 only to make replacement deterministic.
-It checks: full-line early fetch with a second-sector attachment; FRC-set-full
-fallback; a same-line write stalled during `FETCHING`; dirty victim ownership
+It checks: one partition-local fetching sector; FRC-set-full fallback; a same-sector
+write stalled during `FETCHING`; dirty victim ownership
 through lower writeback acceptance; partial-write fallback; and flush without
 live FRC state.  It is not an equal-capacity performance configuration.
 
@@ -35,8 +35,8 @@ live FRC state.  It is not an equal-capacity performance configuration.
 | Gate | Result |
 |---|---|
 | FRC disabled equivalence | Same small-trace architectural metrics as the corrected control: 5,526 cycles, 256 instructions, 4 L2 accesses/misses. |
-| Full-line read smoke | One allocation sends four lower sector reads and completes a clean swap. |
-| Sector attach | Directed two-warp case reports `sector_attaches=1`. |
+| Sector read smoke | One allocation sends one lower sector read and completes a clean swap. |
+| Sector ownership | Directed two-warp case emits one FRC allocation and one lower read. |
 | FRC-set-full fallback | Directed one-entry case reports `set_full_fallbacks=1`. |
 | Same-line write ownership | Directed case reports `write_conflict_stalls=144`, then one baseline write fallback after swap. |
 | Dirty victim path | Directed case reports `dirty_swaps=1`, `wb_lower_accepted=1`, and terminal `fetching=fetched=evicting=0`. |
@@ -56,10 +56,11 @@ mechanism sanity point, not a performance claim:
 | frc32-conservative | 6,065 | 513 / 513 | 257 | 1,028 | 514 |
 
 The +5-cycle result is expected for this trace: it exercises FRC allocation
-but not the paper's reservation-conflict opportunity, while the model fetches
-each 128-byte line as four 32-byte lower reads.  Any research comparison must
-use the matched-capacity rule in `phase3_contract.md`; `frc32`/`frc64` are not
-free storage.
+but not the paper's reservation-conflict opportunity.  The historical result
+used an invalid whole-line fetch path and is retained only as a superseded
+development record; current experiments use one partition-local sector read.
+Any research comparison must use the matched-capacity rule in
+`phase3_contract.md`; `frc128`/`frc256` are not free storage.
 
 ## Real trace development check
 
