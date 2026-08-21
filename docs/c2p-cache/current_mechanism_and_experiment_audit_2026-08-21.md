@@ -33,7 +33,11 @@
 | Ring | chip-wide serialized discovery；2-cycle hop、7-cycle tag。 | 串行注入与 hop 延迟均显式建模；其性能不能简单由 remote-hit 数量解释。 |
 
 关键配置在 `configs/c2p-cache/c2p.config`，mode overlay 在
-`configs/c2p-cache/{oracle,ideal,ata,ccd,ring}.config`。
+`configs/c2p-cache/{oracle,ideal,ata,ccd,ring}.config`。runner 对每一个
+non-baseline mode 先加载完整 `c2p.config`，再仅覆盖 mode 差异；ATA/CCD/Ring
+的 Table-1 latency/throughput 也在各 overlay 显式写出。这避免比较点依赖
+C++ constructor 默认值；分析器将历史 run 的隐式默认规范化为同一 effective
+configuration，仍保留 raw config hash 供逐字节追溯。
 
 ### 与论文机制逐项对照
 

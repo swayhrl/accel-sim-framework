@@ -44,9 +44,26 @@ PROVENANCE_KEYS = ("gpgpusim_commit", "accelsim_commit", "config_sha256",
 # hash for provenance, but compare an effective configuration below: omitted
 # and explicitly-default forms are the same experiment point.
 EFFECTIVE_CONFIG_DEFAULTS = {
+    "-c2p_cache_bf_engines": "128",
+    "-c2p_cache_bf_latency": "2",
     "-c2p_cache_snapshot_bf_rows_per_bank": "64",
     "-c2p_cache_bf_hashes": "3",
+    "-c2p_cache_snapshot_latency": "2",
+    "-c2p_cache_remote_tag_latency": "7",
+    "-c2p_cache_remote_return_latency": "2",
+    "-c2p_cache_query_queue_size": "256",
+    "-c2p_cache_update_queue_size": "1024",
+    "-c2p_cache_update_transport_bytes_per_cycle": "128",
+    "-c2p_cache_snapshot_rebuild_interval": "0",
+    "-c2p_cache_probe_timeout": "32",
     "-c2p_cache_target_probe_queue_size": "32",
+    "-c2p_cache_snapshot_copies": "4",
+    "-c2p_cache_ata_cluster_issue_width": "4",
+    "-c2p_cache_ata_tag_latency": "7",
+    "-c2p_cache_ccd_predictor_latency": "1",
+    "-c2p_cache_ccd_broadcast_latency": "3",
+    "-c2p_cache_ring_hop_latency": "2",
+    "-c2p_cache_peer_line_latency": "14",
 }
 
 # These are parser defaults, not experiment defaults.  Materializing just the

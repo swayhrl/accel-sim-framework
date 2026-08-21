@@ -121,7 +121,13 @@ for mode in ${modes//,/ }; do
     baseline)
       printf '\n-c2p_cache_enable 0\n-c2p_cache_oracle_only 0\n' >> "$run_dir/gpgpusim.config" ;;
     oracle|ideal|c2p|ata|ccd|ring)
-      cat "$repo_root/configs/c2p-cache/$mode.config" >> "$run_dir/gpgpusim.config" ;;
+      # Every sharing comparison starts from the same explicitly pinned C2P
+      # timing/queue baseline.  Mode files then change only the intended
+      # mechanism selector.  Do not let ideal/ATA/CCD/RING silently inherit a
+      # future C++ constructor default that C2P itself spells out here.
+      cat "$repo_root/configs/c2p-cache/c2p.config" >> "$run_dir/gpgpusim.config"
+      [[ "$mode" == c2p ]] || \
+        cat "$repo_root/configs/c2p-cache/$mode.config" >> "$run_dir/gpgpusim.config" ;;
   esac
   for config_extra in "${mode_config_extras[@]}"; do
     printf '\n# Mode-specific experiment overrides\n' >> "$run_dir/gpgpusim.config"
