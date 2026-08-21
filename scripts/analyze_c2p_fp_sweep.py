@@ -56,6 +56,19 @@ def read_snapshot_shape(run_dir):
     return 64 * (16 + values["bf_rows_per_bank"]), 1 + values["bf_hashes"]
 
 
+def read_provenance(run_dir):
+    path = run_dir / "provenance.txt"
+    if not path.is_file():
+        return None
+    values = {}
+    for line in path.read_text().splitlines():
+        if "=" in line:
+            key, value = line.split("=", 1)
+            values[key] = value
+    required = ("gpgpusim_commit", "accelsim_commit", "sim_sha256")
+    return values if all(values.get(key) for key in required) else None
+
+
 def quantile(values, fraction):
     values = sorted(values)
     if not values:
@@ -95,6 +108,7 @@ def main():
         if row["group"] != "unknown" and row["baseline_cycles"]
     }
     points, missing = [], []
+    builds = set()
     point_dirs = sorted(path for path in args.sweep_root.iterdir()
                         if path.is_dir() and re.fullmatch(r"m\d+-k\d+", path.name))
     if not point_dirs:
@@ -108,6 +122,10 @@ def main():
             if shape != declared:
                 missing.append(f"{point_dir.name}/{case}: resolved m/k {shape} != {declared}")
                 continue
+            provenance = read_provenance(run_dir)
+            if provenance is None:
+                missing.append(f"{point_dir.name}/{case}: missing sweep provenance")
+                continue
             data = read_summary(run_dir / "summary.txt")
             needed = ("gpu_tot_sim_cycle", "c2p_snapshot_false_positive",
                       "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",
@@ -120,12 +138,18 @@ def main():
                 missing.append(f"{point_dir.name}/{case}: zero classified misses")
                 continue
             ratio = data["c2p_snapshot_false_positive"] / classified
+            build = tuple(provenance[key] for key in
+                          ("gpgpusim_commit", "accelsim_commit", "sim_sha256"))
+            builds.add(build)
             points.append({
                 "point": point_dir.name,
                 "case": case,
                 "group": base["group"],
                 "snapshot_rows": shape[0],
                 "hash_count": shape[1],
+                "gpgpusim_commit": build[0],
+                "accelsim_commit": build[1],
+                "sim_sha256": build[2],
                 "fp_ratio": ratio,
                 "fp_bin": fp_bin(ratio),
                 "ipc_normalized": int(base["baseline_cycles"]) /
@@ -144,16 +168,20 @@ def main():
                                "ipc_p75": quantile(values, .75)})
     write_csv(args.out_dir / "fp_sweep_points.csv", points,
               ["point", "case", "group", "snapshot_rows", "hash_count",
+               "gpgpusim_commit", "accelsim_commit", "sim_sha256",
                "fp_ratio", "fp_bin", "ipc_normalized"])
     write_csv(args.out_dir / "fp_sweep_binned.csv", binned,
               ["group", "fp_bin", "samples", "ipc_p25", "ipc_median", "ipc_p75"])
     report = ["# C2P Figure-13 FP sweep status", ""]
+    if len(builds) > 1:
+        missing.append("sweep results use more than one GPGPU-Sim/Accel-Sim binary family")
     if missing:
         report.extend(["## Missing evidence", ""])
         report.extend(f"- {item}" for item in missing)
     else:
         report.append("All canonical classified cases have every m/k point, and each "
-                      "resolved configuration matches its directory label.")
+                      "resolved configuration and binary provenance matches the common "
+                      "sweep family.")
     (args.out_dir / "fp_sweep_status.md").write_text("\n".join(report) + "\n")
     if args.strict and missing:
         raise SystemExit("; ".join(missing))
