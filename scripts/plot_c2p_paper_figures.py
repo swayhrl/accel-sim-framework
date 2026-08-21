@@ -83,7 +83,7 @@ Published formats: %s.
 | `fig11_l2_access` | Fig. 11 | `paper16_modes.csv: l2_access_normalized` | Compact R1S0/R1S1 four-bar strip using the same mechanism colors, order, hatch, and group separators. |
 | `fig12_filtering_accuracy` | Fig. 12 | `paper16_cases.csv: ccd_*_rate`, `snapshot_*_rate` | Full-width stacked CCD/C2P pair per case; eight-entry TP/FN/FP/TN legend; blue-gray CCD and salmon C2P families with the manuscript's hatch distinction. |
 | `fig13_ipc_vs_fp_ratio` | Fig. 13 | `fp_sweep_binned.csv` | Compact four-group FP-ratio strip; median IPC line and P25--P75 band; manuscript group colors, markers and line styles.  Only measured, populated bins are drawn. |
-| `fig14_peer_probe_distribution` | Fig. 14 | `paper16_modes.csv: c2p_peer_access_{hit,miss}_{p90,p95,p99,max}` | Two compact `(a) Hit` / `(b) Miss` panels; P90/P95/P99/MAX x-axis; four manuscript group line/marker styles and 8-access dashed reference. |
+| `fig14_peer_probe_distribution` | Fig. 14 | `paper16_modes.csv: c2p_peer_access_{hit,miss}_{p90,p95,p99,max}` | Two compact `(a) Hit` / `(b) Miss` panels; P90/P95/P99/MAX x-axis; four manuscript group line/marker styles, shared 8-access-referenced scale, and no cropping of a measured local MAX. |
 
 The local traces are not the authors' unpublished trace inputs; visual
 matching does not imply numerical identity.  The strict analyzer and final
@@ -219,6 +219,17 @@ def filtering_accuracy(cases, out, formats):
 def peer_percentiles(rows, out, formats):
     fig, axes = plt.subplots(1, 2, figsize=(3.55, 1.48), sharey=True)
     metric_names = ("P90", "P95", "P99", "MAX")
+    peer_fields = ["c2p_peer_access_{}_{}".format(outcome, suffix)
+                   for outcome in ("hit", "miss")
+                   for suffix in ("p90", "p95", "p99", "max")]
+    observed = [number(row, field) for row in rows for field in peer_fields]
+    observed = [item for item in observed if item is not None]
+    # The paper's traces fit its shared 0--24 scale.  Preserve that exact
+    # scale when local data does too, but never crop a measured MAX merely to
+    # make a different trace set look visually identical.  Both panels still
+    # share one eight-access-referenced scale.
+    y_upper = max(24, int(np.ceil((max(observed, default=0) + 4) / 8.0)) * 8)
+    y_ticks = tuple(range(0, y_upper + 1, 8))
     for axis, outcome in zip(axes, ("hit", "miss")):
         for group in GROUPS:
             data = [row for row in rows if row["group"] == group and row["mode"] == "c2p"]
@@ -237,10 +248,10 @@ def peer_percentiles(rows, out, formats):
         axis.axhline(8.0, color="#666666", linestyle=(0, (4, 3)), linewidth=0.7)
         axis.set_xticks(range(4))
         axis.set_xticklabels(metric_names)
-        # Figure 14 is a common 0--24 access-count scale with the eight-peer
-        # reference, rather than an autoscaled diagnostic view per panel.
-        axis.set_ylim(0, 24)
-        axis.set_yticks((0, 8, 16, 24))
+        # Figure 14 uses one common access-count scale and an eight-peer
+        # reference, rather than separate autoscaling per panel.
+        axis.set_ylim(0, y_upper)
+        axis.set_yticks(y_ticks)
         # The manuscript puts the panel marker at the upper-left and the
         # Hit/Miss label at the upper-right *inside* each small panel.
         axis.text(0.02, 0.97, "({})".format("a" if outcome == "hit" else "b"),

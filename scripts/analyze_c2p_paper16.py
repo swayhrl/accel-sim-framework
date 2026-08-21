@@ -28,8 +28,9 @@ COUNTERS = (
     "c2p_ccd_true_negative", "c2p_peer_access_hit_samples",
     "c2p_peer_access_miss_samples", "c2p_peer_access_hit_p90",
     "c2p_peer_access_hit_p95", "c2p_peer_access_hit_p99",
+    "c2p_peer_access_hit_max",
     "c2p_peer_access_miss_p90", "c2p_peer_access_miss_p95",
-    "c2p_peer_access_miss_p99",
+    "c2p_peer_access_miss_p99", "c2p_peer_access_miss_max",
 )
 L2_TOTAL = re.compile(r"^\s*L2_total_cache_accesses = (\d+)$")
 L2_GLOBAL_READ = re.compile(
