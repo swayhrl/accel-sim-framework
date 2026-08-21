@@ -44,12 +44,13 @@ Snapshot rebuild traffic, and the physical macro adapter are separate
 scaling work; they must not be silently claimed by the single-lane PPA result.
 
 Candidate ordering is intentionally pipelined in this baseline.  A selection
-walks one 8-SM cluster per clock and applies a small priority encoder inside
-that cluster; the walk order is still nearest cluster first and then lowest
-SID.  This replaces the earlier single-cycle 64-way divide/distance/priority
-cone, which is not a plausible physical timing point.  It changes control
-latency by at most eight clocks per candidate selection, but not the candidate
-set, exact-probe authority, or lower-memory fallback semantics.
+walks one 8-SM cluster at a time: one clock chooses the next ordered cluster
+and the next applies a small priority encoder inside it.  The walk order is
+still nearest cluster first and then lowest SID.  This replaces the earlier
+single-cycle 64-way divide/distance/priority cone, which is not a plausible
+physical timing point.  It changes control latency by at most sixteen clocks
+per candidate selection, but not the candidate set, exact-probe authority, or
+lower-memory fallback semantics.
 
 ## Snapshot storage boundary
 

@@ -55,21 +55,23 @@ module c2p_query_engine #(
     localparam integer CLUSTER_SHIFT = $clog2(CLUSTER_SIZE);
     localparam integer TIMEOUT_W =
         (PROBE_TIMEOUT <= 1) ? 1 : $clog2(PROBE_TIMEOUT + 1);
-    localparam [2:0] S_IDLE = 3'd0, S_QUERY = 3'd1,
-                     S_WAIT_SNAPSHOT = 3'd2, S_PICK = 3'd3,
-                     S_PROBE = 3'd4, S_WAIT_PROBE = 3'd5,
-                     S_PEER_HIT = 3'd6, S_LOWER = 3'd7;
+    localparam [3:0] S_IDLE = 4'd0, S_QUERY = 4'd1,
+                     S_WAIT_SNAPSHOT = 4'd2, S_PICK_CLUSTER = 4'd3,
+                     S_PICK_LANE = 4'd4, S_PROBE = 4'd5,
+                     S_WAIT_PROBE = 4'd6, S_PEER_HIT = 4'd7,
+                     S_LOWER = 4'd8;
 
     reg [SID_W-1:0] fifo_sid [0:REQUEST_FIFO_DEPTH-1];
     reg [TAG_W-1:0] fifo_tag [0:REQUEST_FIFO_DEPTH-1];
     reg [FIFO_AW-1:0] fifo_head;
     reg [FIFO_AW-1:0] fifo_tail;
     reg [COUNT_W-1:0] fifo_count;
-    reg [2:0] state;
+    reg [3:0] state;
     reg [SID_W-1:0] active_sid;
     reg [TAG_W-1:0] active_tag;
     reg [NUM_SMS-1:0] candidate_mask;
     reg [SID_W-1:0] selected_sid;
+    reg [CLUSTER_W-1:0] selected_cluster;
     reg [CLUSTER_RANK_W-1:0] cluster_rank;
     reg had_candidate;
     reg no_candidate;
@@ -78,7 +80,7 @@ module c2p_query_engine #(
     integer clusters_seen;
     integer lane_i;
     reg [CLUSTER_W-1:0] active_cluster;
-    reg [CLUSTER_W-1:0] scan_cluster;
+    reg [CLUSTER_W-1:0] ranked_cluster;
     reg scan_found;
     reg [SID_W-1:0] scan_sid;
 
@@ -90,22 +92,24 @@ module c2p_query_engine #(
     // functionally correct but put division, distance comparison, and a
     // 64-way priority encoder on the request-to-probe timing path.  This
     // walker preserves C++'s ordering (nearer cluster, then lower SID) while
-    // limiting the per-cycle datapath to one CLUSTER_SIZE-wide encoder.
+    // limiting the per-cycle datapath to one CLUSTER_SIZE-wide encoder.  The
+    // cluster-order calculation and lane encoder have separate registers;
+    // their mux trees therefore cannot become one request-to-probe cone.
     always @* begin
         active_cluster = active_sid >> CLUSTER_SHIFT;
-        scan_cluster = active_cluster;
+        ranked_cluster = active_cluster;
         clusters_seen = 1;
         for (cluster_delta = 1;
              cluster_delta < NUM_CLUSTERS;
              cluster_delta = cluster_delta + 1) begin
             if (active_cluster >= cluster_delta) begin
                 if (cluster_rank == clusters_seen[CLUSTER_RANK_W-1:0])
-                    scan_cluster = active_cluster - cluster_delta;
+                    ranked_cluster = active_cluster - cluster_delta;
                 clusters_seen = clusters_seen + 1;
             end
             if ((active_cluster + cluster_delta) < NUM_CLUSTERS) begin
                 if (cluster_rank == clusters_seen[CLUSTER_RANK_W-1:0])
-                    scan_cluster = active_cluster + cluster_delta;
+                    ranked_cluster = active_cluster + cluster_delta;
                 clusters_seen = clusters_seen + 1;
             end
         end
@@ -114,9 +118,9 @@ module c2p_query_engine #(
         scan_sid = {SID_W{1'b0}};
         for (lane_i = 0; lane_i < CLUSTER_SIZE; lane_i = lane_i + 1) begin
             if (!scan_found &&
-                candidate_mask[scan_cluster * CLUSTER_SIZE + lane_i]) begin
+                candidate_mask[selected_cluster * CLUSTER_SIZE + lane_i]) begin
                 scan_found = 1'b1;
-                scan_sid = scan_cluster * CLUSTER_SIZE + lane_i;
+                scan_sid = selected_cluster * CLUSTER_SIZE + lane_i;
             end
         end
     end
@@ -145,6 +149,7 @@ module c2p_query_engine #(
             active_tag <= {TAG_W{1'b0}};
             candidate_mask <= {NUM_SMS{1'b0}};
             selected_sid <= {SID_W{1'b0}};
+            selected_cluster <= {CLUSTER_W{1'b0}};
             cluster_rank <= {CLUSTER_RANK_W{1'b0}};
             had_candidate <= 1'b0;
             no_candidate <= 1'b0;
@@ -185,10 +190,14 @@ module c2p_query_engine #(
                             |(snapshot_rsp_candidates &
                               ~({{(NUM_SMS-1){1'b0}}, 1'b1} << active_sid));
                         cluster_rank <= {CLUSTER_RANK_W{1'b0}};
-                        state <= S_PICK;
+                        state <= S_PICK_CLUSTER;
                     end
                 end
-                S_PICK: begin
+                S_PICK_CLUSTER: begin
+                    selected_cluster <= ranked_cluster;
+                    state <= S_PICK_LANE;
+                end
+                S_PICK_LANE: begin
                     if (scan_found) begin
                         selected_sid <= scan_sid;
                         candidate_mask[scan_sid] <= 1'b0;
@@ -198,6 +207,7 @@ module c2p_query_engine #(
                         state <= S_LOWER;
                     end else begin
                         cluster_rank <= cluster_rank + 1'b1;
+                        state <= S_PICK_CLUSTER;
                     end
                 end
                 S_PROBE: begin
@@ -212,7 +222,7 @@ module c2p_query_engine #(
                             state <= S_PEER_HIT;
                         else begin
                             cluster_rank <= {CLUSTER_RANK_W{1'b0}};
-                            state <= S_PICK;
+                            state <= S_PICK_CLUSTER;
                         end
                     end else if (probe_age == PROBE_TIMEOUT - 1) begin
                         no_candidate <= 1'b0;
