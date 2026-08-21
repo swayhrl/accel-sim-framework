@@ -18,9 +18,12 @@ import numpy as np
 GROUPS = ("R0S0", "R1S0", "R0S1", "R1S1")
 MODES = ("ata", "ccd", "ring", "c2p")
 STYLE = {
-    "ata": ("ATA", "#9ecae1", ""),
+    # Figure 10/11 use direction-specific hatching in addition to the pastel
+    # fills: ATA '/', RING '\\', and C2P-Cache cross-hatched.  Do not reduce
+    # this to colour alone; the paper uses the texture vocabulary in print.
+    "ata": ("ATA", "#9ecae1", "///"),
     "ccd": ("CCD", "#9aa8b0", ""),
-    "ring": ("RING", "#f5c7b8", ""),
+    "ring": ("RING", "#f5c7b8", "\\\\"),
     "c2p": ("C2P-Cache", "#e89b88", "xx"),
 }
 GROUP_STYLE = {
@@ -70,8 +73,9 @@ def write_style_audit(root, formats):
 
 All figures use the manuscript's compact Times-style typography, closed axes,
 black bar outlines, dashed workload-group separators, and the same stable
-mechanism vocabulary: ATA light blue, CCD blue-gray, RING pale salmon, and
-C2P-Cache salmon with cross-hatching.  Published formats: %s.
+mechanism vocabulary: ATA light blue with forward hatching, CCD blue-gray,
+RING pale salmon with back hatching, and C2P-Cache salmon with cross-hatching.
+Published formats: %s.
 
 | Local artifact | Paper counterpart | Data source | Required visual convention |
 |---|---|---|---|
@@ -233,15 +237,23 @@ def peer_percentiles(rows, out, formats):
         axis.axhline(8.0, color="#666666", linestyle=(0, (4, 3)), linewidth=0.7)
         axis.set_xticks(range(4))
         axis.set_xticklabels(metric_names)
-        axis.set_title("({}) {}".format("a" if outcome == "hit" else "b",
-                                         "Hit" if outcome == "hit" else "Miss"),
-                       loc="left", fontsize=10)
+        # Figure 14 is a common 0--24 access-count scale with the eight-peer
+        # reference, rather than an autoscaled diagnostic view per panel.
+        axis.set_ylim(0, 24)
+        axis.set_yticks((0, 8, 16, 24))
+        # The manuscript puts the panel marker at the upper-left and the
+        # Hit/Miss label at the upper-right *inside* each small panel.
+        axis.text(0.02, 0.97, "({})".format("a" if outcome == "hit" else "b"),
+                  transform=axis.transAxes, ha="left", va="top", fontsize=9)
+        axis.text(0.98, 0.97, "Hit" if outcome == "hit" else "Miss",
+                  transform=axis.transAxes, ha="right", va="top", fontsize=9)
         axis.grid(axis="y", color="#b0b0b0", linewidth=0.35, alpha=0.45)
     axes[0].set_ylabel("Access Count")
     handles, labels = axes[0].get_legend_handles_labels()
     if handles:
         axes[0].legend(handles, labels, ncol=2, frameon=False, fontsize=7.5,
-                       loc="upper left", handlelength=1.4, columnspacing=0.8)
+                       loc="upper left", bbox_to_anchor=(0.02, 0.89),
+                       handlelength=1.4, columnspacing=0.8)
     save(fig, out, "fig14_peer_probe_distribution", formats)
 
 
