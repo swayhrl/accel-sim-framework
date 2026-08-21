@@ -134,6 +134,13 @@ checks the final generated configuration: the directory label `mX-kY` must
 equal the resolved logical Snapshot rows and total hash count before a point
 is admitted.
 
+The repaired Btree runs now completed at all four points.  The repaired
+default `m5120-k4` replay is a second default-preservation check: every
+pre-existing v7 C2P summary field is bit-for-bit equal, and the only four new
+fields are zero-valued CCD counters.  Thus the dynamic-bank correction changes
+only non-default bank mapping/arbitration as intended; it cannot perturb the
+main default-C2P performance data.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
