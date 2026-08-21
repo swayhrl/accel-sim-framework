@@ -36,11 +36,14 @@ main_supplemental=(
 )
 fast_root="$repo_root/hw_run/c2p-paper16-l2-50-v7-20260821"
 fast_supplemental=("$repo_root/hw_run/c2p-paper16-l2-50-v7-parallel-v2-20260821")
-# CCD's counter training was corrected after the initial campaign.  A fresh,
-# exclusive root prevents the strict closeout from silently accepting any
-# pre-fix CCD mode or metric replay.
-ccd_root="$repo_root/hw_run/c2p-paper16-ccd-refresh-v2-20260821"
-ccd_supplemental=()
+# CCD's counter training was corrected after the initial campaign.  Stencil
+# then exposed a detector false positive and is replayed by the corrected
+# detector binary in a separate root.  Both roots are fresh-training CCD
+# evidence: prefer the corrected Stencil result, while allowing the earlier
+# root to supply cases it already completed successfully.  Pre-training-fix
+# CCD data is never in either list.
+ccd_root="$repo_root/hw_run/c2p-ccd-stencil-progressfix-v1-20260821"
+ccd_supplemental=("$repo_root/hw_run/c2p-paper16-ccd-refresh-v2-20260821")
 sweep_root="$repo_root/hw_run/c2p-paper16-fp-sweep-v1-20260821"
 sweep_supplemental=("$repo_root/hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821")
 queue_root="$repo_root/hw_run/c2p-btree-query-sensitivity-v1-20260821"
@@ -123,7 +126,9 @@ while :; do
         --l2-fast-root "$fast_root" \
         --supplemental-l2-fast-root "${fast_supplemental[0]}" \
         --ccd-metrics-root "$ccd_root" \
+        --supplemental-ccd-metrics-root "${ccd_supplemental[0]}" \
         --ccd-mode-root "$ccd_root" \
+        --ccd-mode-root "${ccd_supplemental[0]}" \
         --sweep-root "$sweep_root" \
         --supplemental-sweep-root "${sweep_supplemental[0]}" \
         --queue-sensitivity-root "$queue_root" \

@@ -10,7 +10,7 @@ Usage: scripts/finalize_c2p_paper16.sh \
   [--queue-sensitivity-root DIR] \
   [--supplemental-sweep-root DIR] \
   [--supplemental-results-root DIR] \
-  [--ccd-mode-root DIR] \
+  [--ccd-mode-root DIR]... \
   [--supplemental-l2-fast-root DIR] \
   [--supplemental-ccd-metrics-root DIR] [--python PYTHON]
 
@@ -31,7 +31,7 @@ python_bin="${PYTHON:-python3}"
 results_root=""; l2_fast_root=""; ccd_metrics_root=""; sweep_root=""
 analysis_dir=""; figures_dir=""; report=""
 queue_sensitivity_root=""
-ccd_mode_root=""
+ccd_mode_roots=()
 supplemental_results=(); supplemental_l2=(); supplemental_ccd=(); supplemental_sweep=()
 
 while [[ $# -gt 0 ]]; do
@@ -44,7 +44,7 @@ while [[ $# -gt 0 ]]; do
     --figures-dir) figures_dir="$2"; shift 2 ;;
     --report) report="$2"; shift 2 ;;
     --queue-sensitivity-root) queue_sensitivity_root="$2"; shift 2 ;;
-    --ccd-mode-root) ccd_mode_root="$2"; shift 2 ;;
+    --ccd-mode-root) ccd_mode_roots+=("$2"); shift 2 ;;
     --supplemental-results-root) supplemental_results+=("$2"); shift 2 ;;
     --supplemental-l2-fast-root) supplemental_l2+=("$2"); shift 2 ;;
     --supplemental-ccd-metrics-root) supplemental_ccd+=("$2"); shift 2 ;;
@@ -63,13 +63,21 @@ done
 [[ -n "$analysis_dir" && -n "$figures_dir" && -n "$report" ]] || {
   echo "error: --analysis-dir, --figures-dir, and --report are required" >&2; exit 2;
 }
-if [[ -n "$ccd_mode_root" && ! -d "$ccd_mode_root" ]]; then
-  echo "error: --ccd-mode-root must exist" >&2; exit 2;
-fi
+for root in "${ccd_mode_roots[@]}"; do
+  [[ -d "$root" ]] || {
+    echo "error: every --ccd-mode-root must exist" >&2; exit 2;
+  }
+done
 
 analysis_args=(--results-root "$results_root" --l2-fast-root "$l2_fast_root"
                --ccd-metrics-root "$ccd_metrics_root" --out-dir "$analysis_dir" --strict)
-[[ -n "$ccd_mode_root" ]] && analysis_args+=(--mode-override-root "ccd=$ccd_mode_root")
+for root in "${ccd_mode_roots[@]}"; do
+  # A corrected CCD replay may cover only the formerly failing case.  Keep
+  # its result first, then use earlier fresh CCD replays solely for cases
+  # that it does not contain.  analyze_c2p_paper16.py records the concrete
+  # run directory and provenance for each case.
+  analysis_args+=(--mode-override-root "ccd=$root")
+done
 for root in "${supplemental_results[@]}"; do analysis_args+=(--supplemental-results-root "$root"); done
 for root in "${supplemental_l2[@]}"; do analysis_args+=(--supplemental-l2-fast-root "$root"); done
 for root in "${supplemental_ccd[@]}"; do analysis_args+=(--supplemental-ccd-metrics-root "$root"); done
