@@ -38,3 +38,19 @@ NN.  Interpret the result with probe counts, Snapshot classifications, L2
 accesses, and IPC together.  A recovery only in the bypass control supports a
 target-port contention explanation; no recovery requires further examination
 of candidate quality, return/fill pressure, or transaction timing.
+
+## Completed v1 evidence
+
+`hw_run/c2p-target-port-diagnostic-v1-20260821/target_port_bypass.md` is the
+strict, raw-`run.out` result.  It passed configuration and
+`remote_hits == l2_requests_avoided` checks for all three cases.
+
+| Case | Normal cycles | Bypass cycles | Bypass IPC / normal | Interpretation |
+| --- | ---: | ---: | ---: | --- |
+| SGEMM | 435,411 | 430,619 | 1.0111x | Target contention is the dominant part of the C2P/baseline gap, but bypass remains 0.19% slower than the 429,816-cycle baseline. |
+| Btree | 229,052 | 225,845 | 1.0142x | Contention suppresses remote hits and L2 avoidance, while the existing finite path is already faster than baseline. |
+| NN | 7,224 | 7,224 | 1.0000x | Expected negative control: no candidate or remote reuse exists to benefit. |
+
+This control is an explanatory upper bound only.  It is intentionally excluded
+from paper Figure 10--14 aggregates and must not be presented as an additional
+architectural proposal.
