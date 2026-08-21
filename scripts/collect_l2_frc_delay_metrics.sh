@@ -6,9 +6,9 @@ usage() {
 Usage: scripts/collect_l2_frc_delay_metrics.sh --run-root DIR --variants CSV
 
 Collect final cumulative observation-only L2 lower-read delay statistics.
-The reported management delay excludes the interval from lower request issue to
-lower response return: pre-memory is L2 acceptance -> lower issue and
-post-memory is lower return -> upper reply.
+The decomposition is pre-memory (L2 acceptance -> lower issue), lower-memory
+(lower issue -> lower return), and post-memory (lower return -> upper reply).
+Management delay is pre-memory + post-memory.
 EOF
 }
 
@@ -44,7 +44,7 @@ global_field() {
 }
 
 summary="$run_root/delay.tsv"
-printf 'variant\tcycles\tlower_reads\tavg_pre_mem_cycles\tavg_post_mem_cycles\tavg_management_cycles\n' > "$summary"
+printf 'variant\tcycles\tlower_reads\tavg_pre_mem_cycles\tavg_lower_mem_cycles\tavg_post_mem_cycles\tavg_management_cycles\n' > "$summary"
 for variant in "${variants[@]}"; do
   log="$run_root/$variant/smoke.out"
   [[ -f "$log" ]] || { echo "error: missing log for $variant: $log" >&2; exit 1; }
@@ -55,18 +55,21 @@ for variant in "${variants[@]}"; do
   cycles="$(awk '/^gpu_tot_sim_cycle =/{value=$3} END{if (value == "") exit 1; print value}' "$log")"
   count="$(global_field "$log" lower_read_delay_count)"
   pre="$(global_field "$log" lower_read_pre_mem_cycles)"
+  lower_mem="$(global_field "$log" lower_read_mem_cycles)"
   post="$(global_field "$log" lower_read_post_mem_cycles)"
   if [[ "$count" == 0 ]]; then
     avg_pre=0
+    avg_lower_mem=0
     avg_post=0
     avg_management=0
   else
     avg_pre="$(awk -v total="$pre" -v n="$count" 'BEGIN { printf "%.6f", total / n }')"
+    avg_lower_mem="$(awk -v total="$lower_mem" -v n="$count" 'BEGIN { printf "%.6f", total / n }')"
     avg_post="$(awk -v total="$post" -v n="$count" 'BEGIN { printf "%.6f", total / n }')"
     avg_management="$(awk -v pre="$pre" -v post="$post" -v n="$count" 'BEGIN { printf "%.6f", (pre + post) / n }')"
   fi
-  printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
-    "$variant" "$cycles" "$count" "$avg_pre" "$avg_post" "$avg_management" >> "$summary"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$variant" "$cycles" "$count" "$avg_pre" "$avg_lower_mem" "$avg_post" "$avg_management" >> "$summary"
 done
 
 printf 'PASS frc_delay_metrics run_root=%s\n' "$run_root"

@@ -69,11 +69,12 @@ preserve the paper's relative metric definitions within one QV100 experiment;
 they are not numerically comparable with the paper's HD7770 OPC/MPKO because
 the architecture, trace accounting and cache geometry differ.  The optional
 `-gpgpu_l2_latebind_stats 1` observation point measures each *unique primary*
-lower read: `pre-memory = L2 acceptance -> lower issue`, and
-`post-memory = lower return -> upper reply`.  Their sum is the L2 miss
-management delay excluding the actual lower-memory interval.  Merged waiters
-do not add another sample; an FRC sector fetch is charged back to the primary
-request that allocated it.  Use an `*-observe.config` and
+lower read: `pre-memory = L2 acceptance -> lower issue`,
+`lower-memory = lower issue -> lower return`, and
+`post-memory = lower return -> upper reply`.  Pre plus post is the L2 miss
+management delay excluding the measured lower-memory interval.  Merged
+waiters do not add another sample; an FRC sector fetch is charged back to the
+primary request that allocated it.  Use an `*-observe.config` and
 `scripts/collect_l2_frc_delay_metrics.sh` to collect it.  For a multi-kernel
 trace, the runner takes the final cumulative occurrence of each simulator
 statistic; intermediate per-kernel reports are not experiment totals.
