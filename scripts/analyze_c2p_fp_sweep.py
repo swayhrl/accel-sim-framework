@@ -108,7 +108,13 @@ def main():
         if row["group"] != "unknown" and row["baseline_cycles"]
     }
     points, missing = [], []
-    builds = set()
+    # A C2P sweep's executable identity is the linked GPGPU-Sim revision plus
+    # the copied Accel-Sim frontend binary.  The Accel-Sim source revision is
+    # still emitted per point, but may legitimately differ when only runner,
+    # report, or plotting files were committed during a long replay campaign.
+    # Requiring it to be byte-identical would reject one unchanged binary
+    # family for source-control bookkeeping rather than a simulation change.
+    binary_families = set()
     point_dirs = sorted(path for path in args.sweep_root.iterdir()
                         if path.is_dir() and re.fullmatch(r"m\d+-k\d+", path.name))
     if not point_dirs:
@@ -138,18 +144,18 @@ def main():
                 missing.append(f"{point_dir.name}/{case}: zero classified misses")
                 continue
             ratio = data["c2p_snapshot_false_positive"] / classified
-            build = tuple(provenance[key] for key in
-                          ("gpgpusim_commit", "accelsim_commit", "sim_sha256"))
-            builds.add(build)
+            binary_family = tuple(provenance[key] for key in
+                                  ("gpgpusim_commit", "sim_sha256"))
+            binary_families.add(binary_family)
             points.append({
                 "point": point_dir.name,
                 "case": case,
                 "group": base["group"],
                 "snapshot_rows": shape[0],
                 "hash_count": shape[1],
-                "gpgpusim_commit": build[0],
-                "accelsim_commit": build[1],
-                "sim_sha256": build[2],
+                "gpgpusim_commit": provenance["gpgpusim_commit"],
+                "accelsim_commit": provenance["accelsim_commit"],
+                "sim_sha256": provenance["sim_sha256"],
                 "fp_ratio": ratio,
                 "fp_bin": fp_bin(ratio),
                 "ipc_normalized": int(base["baseline_cycles"]) /
@@ -173,15 +179,15 @@ def main():
     write_csv(args.out_dir / "fp_sweep_binned.csv", binned,
               ["group", "fp_bin", "samples", "ipc_p25", "ipc_median", "ipc_p75"])
     report = ["# C2P Figure-13 FP sweep status", ""]
-    if len(builds) > 1:
-        missing.append("sweep results use more than one GPGPU-Sim/Accel-Sim binary family")
+    if len(binary_families) > 1:
+        missing.append("sweep results use more than one GPGPU-Sim/frontend binary family")
     if missing:
         report.extend(["## Missing evidence", ""])
         report.extend(f"- {item}" for item in missing)
     else:
         report.append("All canonical classified cases have every m/k point, and each "
-                      "resolved configuration and binary provenance matches the common "
-                      "sweep family.")
+                      "resolved configuration and executable provenance matches the "
+                      "common sweep family.")
     (args.out_dir / "fp_sweep_status.md").write_text("\n".join(report) + "\n")
     if args.strict and missing:
         raise SystemExit("; ".join(missing))
