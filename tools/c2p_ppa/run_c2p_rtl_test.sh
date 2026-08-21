@@ -22,6 +22,14 @@ rg -q '^PASS tb_c2p_bf_engine$' "$out_dir/sim_bf_engine.log"
 vvp "$out_dir/tb_c2p_snapshot_bank_arbiter.vvp" | tee "$out_dir/sim_bank_arbiter.log"
 rg -q '^PASS tb_c2p_snapshot_bank_arbiter$' "$out_dir/sim_bank_arbiter.log"
 
+"$iverilog_bin" -g2012 -s tb_c2p_snapshot_bank_copy_arbiter_static \
+    -o "$out_dir/tb_c2p_snapshot_bank_copy_arbiter_static.vvp" \
+    "$script_dir/rtl/c2p_snapshot_prio_tree.v" \
+    "$script_dir/rtl/c2p_snapshot_bank_copy_arbiter.v" \
+    "$script_dir/tb/tb_c2p_snapshot_bank_copy_arbiter_static.v"
+vvp "$out_dir/tb_c2p_snapshot_bank_copy_arbiter_static.vvp" | tee "$out_dir/sim_bank_copy_arbiter_static.log"
+rg -q '^PASS tb_c2p_snapshot_bank_copy_arbiter_static$' "$out_dir/sim_bank_copy_arbiter_static.log"
+
 "$iverilog_bin" -g2012 -s tb_c2p_snapshot_response_fabric \
     -o "$out_dir/tb_c2p_snapshot_response_fabric.vvp" \
     "$script_dir/rtl/c2p_snapshot_response_fabric.v" \
