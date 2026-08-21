@@ -6,7 +6,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_paper16.sh --trace-root HW_RUN_ROOT --out-root RESULT_ROOT
        [--case CASE[,CASE...]] [--modes MODES] [--config-extra FILE]
-       [--mode-config-extra FILE] [--build]
+       [--mode-config-extra FILE] [--skip-complete] [--build]
 
 The canonical case list is configs/c2p-cache/paper16_workloads.tsv.  Each
 entry names a complete replay trace for its selected input; no 1/N trace
@@ -25,6 +25,7 @@ modes="baseline,oracle,ideal,c2p,ata,ccd,ring"
 build=0
 config_extras=()
 mode_config_extras=()
+skip_complete=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace-root) trace_root="$2"; shift 2 ;;
@@ -33,6 +34,7 @@ while [[ $# -gt 0 ]]; do
     --modes) modes="$2"; shift 2 ;;
     --config-extra) config_extras+=("$2"); shift 2 ;;
     --mode-config-extra) mode_config_extras+=("$2"); shift 2 ;;
+    --skip-complete) skip_complete=1; shift ;;
     --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -75,6 +77,7 @@ for config_extra in "${mode_config_extras[@]}"; do
   runner+=(--mode-config-extra "$config_extra")
 done
 (( build )) && runner+=(--build)
+(( skip_complete )) && runner+=(--skip-complete)
 
 mkdir -p "$out_root"
 while IFS=$'\t' read -r case suite abbr input_label trace_rel; do

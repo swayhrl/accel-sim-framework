@@ -6,7 +6,7 @@ usage() {
 Usage: scripts/run_c2p_cache_cases.sh --trace KERNELSLIST --config CONFIG --out-dir DIR
        [--modes baseline,oracle,ideal,c2p,ata,ccd,ring] [--config-extra FILE]
        [--mode-config-extra FILE]
-       [--strip-mem-addr-mapping] [--build]
+       [--strip-mem-addr-mapping] [--skip-complete] [--build]
 
 Run the same trace through selected C2P and prior-mechanism comparison points.
 C2P_GPGPUSIM_ROOT
@@ -25,6 +25,7 @@ config_extras=()
 mode_config_extras=()
 strip_mem_addr_mapping=0
 build=0
+skip_complete=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace) trace="$2"; shift 2 ;;
@@ -34,6 +35,7 @@ while [[ $# -gt 0 ]]; do
     --config-extra) config_extras+=("$2"); shift 2 ;;
     --mode-config-extra) mode_config_extras+=("$2"); shift 2 ;;
     --strip-mem-addr-mapping) strip_mem_addr_mapping=1; shift ;;
+    --skip-complete) skip_complete=1; shift ;;
     --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -93,6 +95,11 @@ for mode in ${modes//,/ }; do
     *) echo "error: invalid mode $mode" >&2; exit 2 ;;
   esac
   run_dir="$out_dir/$mode"
+  if (( skip_complete )) && [[ -f "$run_dir/summary.txt" && -f "$run_dir/run.out" ]] && \
+      grep -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$run_dir/run.out"; then
+    printf 'SKIP completed mode=%s run_dir=%s\n' "$mode" "$run_dir"
+    continue
+  fi
   mkdir -p "$run_dir"
   # A generated config can include the prior decoupled-L2 selector; C2P is
   # intentionally based on clean upstream GPGPU-Sim and must not parse it.
