@@ -46,6 +46,14 @@ done
 [[ -n "${C2P_GPGPUSIM_ROOT:-}" ]] || {
   echo "error: set C2P_GPGPUSIM_ROOT to the matching C2P GPGPU-Sim worktree" >&2; exit 2;
 }
+base_config="$repo_root/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
+# Normal Accel-Sim installations expose this path through the vendored
+# GPGPU-Sim link.  A detached/reproducible worktree may intentionally omit
+# that large link, in which case the selected runtime is authoritative.
+if [[ ! -f "$base_config" ]]; then
+  base_config="$C2P_GPGPUSIM_ROOT/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
+fi
+[[ -f "$base_config" ]] || { echo "error: missing QV100 base config" >&2; exit 2; }
 
 case_selected() {
   [[ -z "$cases" ]] && return 0
@@ -56,7 +64,7 @@ case_selected() {
 }
 
 runner=("$repo_root/scripts/run_c2p_cache_cases.sh"
-  --config "$repo_root/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
+  --config "$base_config"
   --config-extra "$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
   --config-extra "$repo_root/configs/c2p-cache/paper-table.config"
   --strip-mem-addr-mapping --modes "$modes")
