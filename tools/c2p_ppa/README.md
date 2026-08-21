@@ -96,6 +96,11 @@ repaired by ordinary standard-cell optimization.
 `C2P_PPA_DETAIL_PAD_SITES` controls standard-cell padding before detail
 placement (default `1`).  Keeping one site around the dense control logic is
 part of the route recipe, not a cosmetic area adjustment.
+`C2P_PPA_REPAIR_MAX_WIRE_LENGTH` is the pre/post-global-route buffering
+heuristic in microns (default `10` for the small control lane).  The ASAP7
+SRAM runner overrides it to `0`, selecting regular slew/cap repair: applying
+the short-control heuristic to hundreds of microns of macro channels would
+artificially insert a buffer on every macro net.
 `C2P_PPA_POST_GRT_REPAIR=0` disables the default global-route parasitic
 repair/re-route pass.  Leave it enabled for any retained physical result: it
 is the normal incremental OpenROAD sequence after global routing, rather than

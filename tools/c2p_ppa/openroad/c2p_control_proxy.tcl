@@ -36,6 +36,8 @@ set repair_util [expr {[info exists ::env(C2P_PPA_REPAIR_UTILIZATION)] ?
                        $::env(C2P_PPA_REPAIR_UTILIZATION) : 70}]
 set detail_pad [expr {[info exists ::env(C2P_PPA_DETAIL_PAD_SITES)] ?
                       $::env(C2P_PPA_DETAIL_PAD_SITES) : 1}]
+set repair_max_wire_length [expr {[info exists ::env(C2P_PPA_REPAIR_MAX_WIRE_LENGTH)] ?
+                                  $::env(C2P_PPA_REPAIR_MAX_WIRE_LENGTH) : 10}]
 set post_grt_repair [expr {[info exists ::env(C2P_PPA_POST_GRT_REPAIR)] ?
                            $::env(C2P_PPA_POST_GRT_REPAIR) : 1}]
 
@@ -92,11 +94,15 @@ set_global_routing_layer_adjustment M2-M7 0.25
 global_placement -density 0.60
 set_placement_padding -global -left $detail_pad -right $detail_pad
 detailed_placement
-# The C2P lane has a few legitimate high-fanout control enables (FIFO push,
-# candidate retirement, and reset).  Buffer/resize them from placement RC
-# before timing or CTS; otherwise the proxy exaggerates their wire delay by
-# several nanoseconds and is not useful as an RTL feedback loop.
-repair_design -max_wire_length 10
+# The control-only lane benefits from a short-wire repair before CTS.  A
+# macro-aware top has real hundred-micron SRAM channels, where that heuristic
+# would create a buffer on every long macro connection; zero selects ordinary
+# slew/capacitance repair without a forced wire-length target.
+if {$repair_max_wire_length > 0} {
+    repair_design -max_wire_length $repair_max_wire_length
+} else {
+    repair_design
+}
 detailed_placement
 check_placement
 estimate_parasitics -placement
@@ -134,7 +140,11 @@ pin_access
 if {$post_grt_repair} {
     set_propagated_clock [get_clocks core_clk]
     estimate_parasitics -global_routing
-    repair_design -max_wire_length 10
+    if {$repair_max_wire_length > 0} {
+        repair_design -max_wire_length $repair_max_wire_length
+    } else {
+        repair_design
+    }
     detailed_placement
     global_route -start_incremental
     global_route -end_incremental \
