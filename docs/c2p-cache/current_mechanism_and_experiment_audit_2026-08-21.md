@@ -30,7 +30,7 @@
 | Ideal | exact peer candidate discovery，保留 peer data-port/probe/return 时序。 | 用于隔离 Snapshot 候选质量，不被定义为 IPC 的数学上界：它可能发出更多 peer probe，反而比有限 C2P 产生更大争用。 |
 | ATA | logical eight-SM group 内 exact aggregate tag，7-cycle tag、14-cycle line、每 cluster 每 cycle 4 次 issue。 | group size 由 `c2p_cache_comparator_cluster_size=8` 显式控制。 |
 | CCD | per logical group 的 weak-taken two-bit counter；predict taken 后向八个 peer broadcast，再以 exact tag 选数据。 | 同时输出 CCD TP/FN/FP/TN，避免仅用 IPC 推断 predictor 品质。 |
-| Ring | chip-wide serialized discovery；2-cycle hop、7-cycle tag、有限 discovery FIFO。 | `eff44679` 后 FIFO 满会 backpressure L1 miss head，绝不暗中下送 L2；pre-fix Ring 数据仅保留作诊断。 |
+| Ring | chip-wide serialized discovery；2-cycle hop、7-cycle tag、有限 discovery FIFO。 | `eff44679` 后 FIFO 满会 backpressure L1 miss head，绝不暗中下送 L2；pre-fix Ring 数据仅保留作诊断。tag snapshot 在 accept-time 取得、data-array probe 在实际访问时复核；论文未公开 shadow-tag update/coherence 协议，因此 stale-candidate continuation 是明确的 comparator 近似，而非声称 bit-exact 复刻。 |
 
 关键配置在 `configs/c2p-cache/c2p.config`，mode overlay 在
 `configs/c2p-cache/{oracle,ideal,ata,ccd,ring}.config`。runner 对每一个
