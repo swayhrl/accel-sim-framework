@@ -37,6 +37,12 @@ exactly one or two 32-set L2 ways of payload, while `baseline25` and
 `baseline26` add that storage to conventional L2.  Metadata/ports remain an
 explicit implementation cost, as specified in the Phase-3 contract.
 
+The core sweep also includes `baseline48-paper_capacity` and
+`baseline96-paper_capacity`: these retain the paper's 2x and 4x conventional
+L2-capacity ratios (the paper's 128KB-to-256KB and 128KB-to-512KB controls).
+They are intentionally reported separately from `baseline25/26`, because
+they are much larger than the exact FRC payload matches.
+
 The complementary low-associativity sensitivity uses `baseline1-pressure`,
 `frc128-pressure`, and `baseline2-pressure`.  Here FRC128 contributes exactly
 one 32-set x 128-byte conventional L2 way per sector-L2 slice, so the latter

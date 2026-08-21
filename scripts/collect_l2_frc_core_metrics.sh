@@ -24,7 +24,7 @@ done
 [[ -d "$run_root" ]] || { usage >&2; exit 2; }
 run_root="$(cd "$run_root" && pwd)"
 
-default_variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26)
+default_variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26 baseline48-paper_capacity baseline96-paper_capacity)
 if [[ -n "$variants_csv" ]]; then
   IFS=',' read -r -a variants <<< "$variants_csv"
 else

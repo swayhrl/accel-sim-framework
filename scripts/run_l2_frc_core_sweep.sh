@@ -6,10 +6,12 @@ usage() {
 Usage: scripts/run_l2_frc_core_sweep.sh --trace KERNELSLIST --config CONFIG
        [--trace-config FILE] [--run-root DIR] [--variants CSV]
 
-Runs the Phase-3 paper-mode FRC sensitivity points (4/8/16/32/64 entries)
-and the capacity-fair 128/256-sector points.  The baseline has 24 ways per
-L2 subpartition; frc128 and frc256 respectively add the payload of one and
-two such ways, so they are compared with baseline25 and baseline26.
+Runs the Phase-3 paper-mode FRC sensitivity points (4/8/16/32/64 entries),
+the capacity-fair 128/256-sector points, and the paper-relative 2x/4x
+conventional capacity controls.  The baseline has 24 ways per L2
+subpartition; frc128 and frc256 respectively add the payload of one and two
+such ways, so they are compared with baseline25 and baseline26.  Baseline48
+and baseline96 preserve the paper's 2x/4x capacity ratios instead.
 EOF
 }
 
@@ -40,7 +42,7 @@ else
   run_root="$(cd "$run_root" && pwd)"
 fi
 
-default_variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26)
+default_variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26 baseline48-paper_capacity baseline96-paper_capacity)
 if [[ -n "$variants_csv" ]]; then
   IFS=',' read -r -a variants <<< "$variants_csv"
 else
