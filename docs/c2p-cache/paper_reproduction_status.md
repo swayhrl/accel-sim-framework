@@ -173,6 +173,15 @@ report identifies target contention/timeout as a genuine model-and-input
 sensitivity, rather than mislabeling it as Snapshot false-negative error or
 tuning it away.
 
+This behavior follows the manuscript's Section 4.5.2, which specifies that
+remote probes access the candidate L1's normal tag and data arrays, may contend
+with that SM's local accesses, and must abort remaining probes for baseline-L2
+fallback rather than wait indefinitely. The Figure-14 discussion also calls
+out rare workload-level extremes of up to 63 peer checks. Therefore the local
+Btree `MAX=63` is retained in the paper-style plot with a shared expanded
+scale; forcing the manuscript's compact 0--24 visual range would hide a
+measured behavior that the manuscript itself treats as a valid tail event.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
