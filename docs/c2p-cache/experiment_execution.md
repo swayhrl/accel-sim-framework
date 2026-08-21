@@ -136,3 +136,9 @@ missing case/mode and its exact directory is recorded in
   --supplemental-ccd-metrics-root hw_run/c2p-paper16-ccd-metrics-parallel \
   --out-dir hw_run/c2p-paper16-analysis --strict
 ```
+
+For a completed campaign, use `finalize_c2p_paper16.sh` with the same three
+canonical roots and any supplemental roots.  It runs the strict evidence,
+Figure-13, Figure-10--14, and report stages in dependency order; it stops at
+the first missing evidence or invariant failure and never publishes a partial
+figure set as final evidence.
