@@ -157,9 +157,9 @@ request/waiter store, delayed-swap receipt and fair lower-request
 arbitration), the unmodified SM7 QV100 configuration and complete CUDA SDK
 traces.  Rows that quote the full four-way observation decomposition use
 `f974574c`; its later changes only add accounting and mechanism-observation
-points.  A complete cross-core preservation check confirms that this branch
-with FRC disabled matches the corrected conventional control `5721256a`
-exactly before any FRC-on result is interpreted.
+points.  A complete current-source cross-core preservation check confirms that
+`97eb1e83` with FRC disabled matches the corrected conventional control
+`5721256a` exactly before any FRC-on result is interpreted.
 
 | Trace | Compared variants | Cycles | Observation |
 |---|---|---:|---|
