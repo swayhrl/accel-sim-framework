@@ -70,6 +70,29 @@ fired after about 500,000 cycles in the current kernel. The diagnostic now
 prints the counters separately; the two speculative timestamp-widening
 commits were explicitly reverted (`c100f127`, `2a0b2204`).
 
+## Canonical paper16 v7 campaign (in progress, 2026-08-21)
+
+The final directional-reproduction dataset is the explicit 16-entry manifest
+`configs/c2p-cache/paper16_workloads.tsv`, replayed into
+`hw_run/c2p-paper16-v7-20260821` with all seven
+`baseline`/`oracle`/`ideal`/`c2p`/`ata`/`ccd`/`ring` modes. A separate
+`hw_run/c2p-paper16-l2-50-v7-20260821` root runs the same selected inputs at
+50-cycle L2 latency for R0/R1 and S0/S1 classification. Gaussian is `_s_256`
+(838 MiB trace tree) and Hotspot1 is the 1024-sized trace (994 MiB); neither
+historical Gaussian-16 nor Hotspot-512 numbers below are final evidence.
+
+The selected complete trace-tree sizes are: Btree 773 MiB, DWT2D 404 MiB,
+Gaussian 838 MiB, Hotspot1 994 MiB, LUD 1.5 GiB, NN 2 MiB, CUTCP 11 GiB,
+MRI-Q 1.7 GiB, SGEMM 2.1 GiB, Stencil 3.5 GiB, 2DConvolution 803 MiB,
+3mm 2.8 GiB, ATAX/BICG 228 MiB each, GEMM 1.1 GiB, and GESUMMV 302 MiB.
+Each output mode retains resolved configuration, trace/config/binary hashes,
+backend and frontend commits, full log, and summary. Final analysis accepts
+only this v7 root after seven-mode, L2-50, oracle-timing, and
+remote-hit/L2-avoidance strict gates pass.
+
+Earlier bundles below remain diagnostic history. They are not mixed into v7
+aggregates or used to claim agreement with the paper.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
@@ -173,7 +196,7 @@ experiment's Rodinia BFS is **not** a substitute for the paper's ISPASS BFS.
 
 | Paper suite | Paper workloads | Local status | Trace staging size |
 | --- | ---: | --- | --- |
-| Rodinia 3.1 | b+tree, dwt2d, gaussian, hotspot1, lud, nn | available as retained full traces | selected inputs range from 356KiB to 773MiB; larger alternatives reach 1.5GiB |
+| Rodinia 3.1 | b+tree, dwt2d, gaussian, hotspot1, lud, nn | available as retained full traces | canonical v7 selections range from 2MiB (NN) to 1.5GiB (LUD) |
 | Parboil | cutcp, mri, sgemm, stencil | available in `parboil.tgz`/retained staging; exact `mri` variant must be declared | selected members are about 11GiB, 1.7GiB, 2.1GiB, and 3.5GiB |
 | PolyBench | 2DConvolution, 3mm, atax, bicg, gemm, gesummv | available in `polybench.tgz` | 0.783 + 2.718 + 0.222 + 0.222 + 1.034 + 0.295 = 5.274GiB total |
 | ISPASS | BFS, LIB, LPS, RAY | source exists in the retained AccelWattch artifact, but no matching pre-generated trace tree is staged | trace generation or a compatible public trace release is required |
