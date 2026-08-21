@@ -9,7 +9,7 @@ Accel-Sim can represent them:
 | Paper field | Reproduction setting | Status |
 | --- | --- | --- |
 | Simulator | Accel-Sim | matched |
-| GPU | 64 SM, 1.41GHz | 8 clusters x 8 SM; 1.41GHz core/ICNT/L2 |
+| GPU | 64 SM, 1.41GHz | 64 simulator endpoints x 1 SM; 1.41GHz core/ICNT/L2 |
 | Scheduling | GTO, four schedulers/SM | matched |
 | L1 | 64KiB, 32-way, 128B, 20 cycles | 16 sets x 32 ways x 128B, fixed at 20 cycles |
 | L2 | 128 sets, 16-way, 128B, 200 cycles | one Accel-Sim L2 slice per sub-partition, 200-cycle ROP path |
@@ -23,6 +23,21 @@ hash. Accel-Sim's QV100 IPOLY implementation cannot express 20 partitions or
 128 L2 sets, so the paper-table overlay uses deterministic consecutive
 partition mapping and linear L2 set indexing. These are explicit simulator
 adaptations, not claims about the authors' unpublished implementation.
+
+### SM endpoint correction (2026-08-21)
+
+The manuscript describes eight clusters of eight SMs.  In this trace-driven
+Accel-Sim model, representing that layout literally as eight
+`simt_core_cluster` instances creates an artificial reply/ROP deadlock: the
+same Stencil baseline stops with pending stores even after its shared cluster
+ejection FIFO is scaled by eight.  A control that preserves all 64 SMs and 20
+memory partitions while using 64 one-SM simulator endpoints proceeds through
+the same point and into later kernels.  The paper overlay therefore uses
+`64 x 1` endpoints.  C2P still searches all 64 peer L1s and retains its
+paper-specified C2P transport latencies; only GPGPU-Sim's unrelated cluster
+aggregation is avoided.  This is a required functional-model adaptation and
+is recorded with the failed 8x8 diagnostic, rather than being presented as a
+literal topology match.
 
 ### L1 forward-progress correction (2026-08-21)
 

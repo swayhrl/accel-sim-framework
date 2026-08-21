@@ -101,12 +101,16 @@ MSHR/fill path and is never issued to the baseline L2 port.  This is the
 model's redundant-L2-reduction measure.
 
 The current paper-table baseline is `configs/c2p-cache/paper-table.config`.
-It uses a fixed 64KiB 16-set/32-way/128B L1 at 20 cycles, 64 SMs arranged as
-eight clusters of eight, GTO scheduling, 20 memory partitions, and a 128-set
-16-way L2 slice at 200 cycles. The original manuscript's L1 entry also says
-four sets, which is incompatible with its stated 64KiB capacity and 32-way
-associativity; this repository deliberately uses the capacity-preserving
-interpretation. The legacy DWT row above predates this correction.
+It uses a fixed 64KiB 16-set/32-way/128B L1 at 20 cycles, 64 one-SM
+GPGPU-Sim endpoints, GTO scheduling, 20 memory partitions, and a 128-set
+16-way L2 slice at 200 cycles. The paper's eight-by-eight cluster description
+cannot be represented literally in this trace-driven model without an
+artificial shared-reply/ROP deadlock; the 64 endpoints preserve the number of
+SMs and all C2P peer identities while avoiding that simulator aggregation
+artifact. The original manuscript's L1 entry also says four sets, which is
+incompatible with its stated 64KiB capacity and 32-way associativity; this
+repository deliberately uses the capacity-preserving interpretation. The
+legacy DWT row above predates this correction.
 
 The LUD run also caught and closed a lifecycle bug during validation: the
 simulator flushes L1s between kernels, so C2P now clears that L1's Snapshot
