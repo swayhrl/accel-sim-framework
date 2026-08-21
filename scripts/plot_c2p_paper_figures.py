@@ -55,8 +55,36 @@ def setup():
 def save(fig, root, stem, formats):
     fig.tight_layout(pad=0.55)
     for extension in formats:
-        fig.savefig(root / (stem + "." + extension), bbox_inches="tight")
+        fig.savefig(root / (stem + "." + extension), bbox_inches="tight", dpi=300)
     plt.close(fig)
+
+
+def write_style_audit(root, formats):
+    """Record how every published plot maps to its paper counterpart.
+
+    The plot pixels alone do not prove that a similar-looking chart used the
+    intended data.  Keep this next to the vector/raster artifacts so review
+    can check both the presentation convention and the input CSV field.
+    """
+    root.joinpath("figure_style_audit.md").write_text("""# C2P paper-figure style and data audit
+
+All figures use the manuscript's compact Times-style typography, closed axes,
+black bar outlines, dashed workload-group separators, and the same stable
+mechanism vocabulary: ATA light blue, CCD blue-gray, RING pale salmon, and
+C2P-Cache salmon with cross-hatching.  Published formats: %s.
+
+| Local artifact | Paper counterpart | Data source | Required visual convention |
+|---|---|---|---|
+| `fig10_normalized_ipc` | Fig. 10 | `paper16_modes.csv: ipc_normalized` | Full-width grouped four-bar strip; ATA/CCD/RING/C2P order; C2P cross-hatch; R0S0/R1S0/R0S1/R1S1 separators and in-strip labels. |
+| `fig11_l2_access` | Fig. 11 | `paper16_modes.csv: l2_access_normalized` | Compact R1S0/R1S1 four-bar strip using the same mechanism colors, order, hatch, and group separators. |
+| `fig12_filtering_accuracy` | Fig. 12 | `paper16_cases.csv: ccd_*_rate`, `snapshot_*_rate` | Full-width stacked CCD/C2P pair per case; eight-entry TP/FN/FP/TN legend; blue-gray CCD and salmon C2P families with the manuscript's hatch distinction. |
+| `fig13_ipc_vs_fp_ratio` | Fig. 13 | `fp_sweep_binned.csv` | Compact four-group FP-ratio strip; median IPC line and P25--P75 band; manuscript group colors, markers and line styles.  Only measured, populated bins are drawn. |
+| `fig14_peer_probe_distribution` | Fig. 14 | `paper16_modes.csv: c2p_peer_access_{hit,miss}_{p90,p95,p99,max}` | Two compact `(a) Hit` / `(b) Miss` panels; P90/P95/P99/MAX x-axis; four manuscript group line/marker styles and 8-access dashed reference. |
+
+The local traces are not the authors' unpublished trace inputs; visual
+matching does not imply numerical identity.  The strict analyzer and final
+report provide the corresponding mechanism/provenance audit.
+""" % ", ".join(formats))
 
 
 def grouped_cases(rows, metric, groups=GROUPS):
@@ -78,10 +106,10 @@ def grouped_cases(rows, metric, groups=GROUPS):
     return result
 
 
-def strip_bars(rows, metric, ylabel, title, filename, out, formats, groups=GROUPS,
-               lower=0.0, upper=None):
+def strip_bars(rows, metric, ylabel, filename, out, formats, groups=GROUPS,
+               lower=0.0, upper=None, figsize=(7.15, 1.52)):
     data = grouped_cases(rows, metric, groups)
-    fig, axis = plt.subplots(figsize=(12.2, 2.55))
+    fig, axis = plt.subplots(figsize=figsize)
     x, width, positions, labels, boundaries = 0.0, 0.19, [], [], []
     for group, group_labels, cases in data:
         start = x
@@ -107,7 +135,6 @@ def strip_bars(rows, metric, ylabel, title, filename, out, formats, groups=GROUP
     axis.set_xticks(positions)
     axis.set_xticklabels(labels, fontsize=8)
     axis.set_ylabel(ylabel)
-    axis.set_title(title, fontsize=10, pad=5)
     axis.grid(axis="y", color="#b0b0b0", linewidth=0.35, alpha=0.45)
     handles, legend_labels = axis.get_legend_handles_labels()
     axis.legend(handles, legend_labels, ncol=2, loc="upper left", frameon=False,
@@ -116,7 +143,7 @@ def strip_bars(rows, metric, ylabel, title, filename, out, formats, groups=GROUP
 
 
 def filtering_accuracy(cases, out, formats):
-    fig, axis = plt.subplots(figsize=(12.2, 2.7))
+    fig, axis = plt.subplots(figsize=(7.15, 1.68))
     # Fig. 12's original legend distinguishes CCD and C2P classes rather
     # than only TP/FN/FP/TN.  Keep that eight-entry vocabulary: blue/gray for
     # CCD, salmon/peach for C2P, and hatching on the positive/filter-error
@@ -171,7 +198,7 @@ def filtering_accuracy(cases, out, formats):
 
 
 def peer_percentiles(rows, out, formats):
-    fig, axes = plt.subplots(1, 2, figsize=(7.5, 2.65), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(3.55, 1.48), sharey=True)
     metric_names = ("P90", "P95", "P99", "MAX")
     for axis, outcome in zip(axes, ("hit", "miss")):
         for group in GROUPS:
@@ -200,14 +227,13 @@ def peer_percentiles(rows, out, formats):
     if handles:
         axes[0].legend(handles, labels, ncol=2, frameon=False, fontsize=7.5,
                        loc="upper left", handlelength=1.4, columnspacing=0.8)
-    fig.suptitle("Peer-L1 access-count distribution", y=1.03, fontsize=10)
     save(fig, out, "fig14_peer_probe_distribution", formats)
 
 
 def fp_impact(rows, out, formats):
     # Paper Fig. 13: each workload group has its own FP-ratio interval strip;
     # the line is median IPC and the band encloses the middle 50% of points.
-    fig, axis = plt.subplots(figsize=(7.5, 2.65))
+    fig, axis = plt.subplots(figsize=(3.55, 1.48))
     x, boundaries, tick_positions, tick_labels = 0.0, [], [], []
     for group in GROUPS:
         group_rows = sorted((row for row in rows if row["group"] == group),
@@ -255,20 +281,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis-dir", required=True, type=Path)
     parser.add_argument("--out-dir", type=Path)
-    parser.add_argument("--formats", default="pdf,png")
+    parser.add_argument("--formats", default="pdf,svg,png")
     args = parser.parse_args()
     output = args.out_dir or args.analysis_dir / "figures"
     output.mkdir(parents=True, exist_ok=True)
     formats = tuple(item.strip() for item in args.formats.split(",") if item.strip())
     setup()
+    write_style_audit(output, formats)
     modes = read_csv(args.analysis_dir / "paper16_modes.csv")
     cases = read_csv(args.analysis_dir / "paper16_cases.csv")
-    strip_bars(modes, "ipc_normalized", "Normalized IPC",
-               "Normalized IPC across workload groups", "fig10_normalized_ipc",
+    strip_bars(modes, "ipc_normalized", "Normalized IPC", "fig10_normalized_ipc",
                output, formats, lower=0.0, upper=1.65)
-    strip_bars(modes, "l2_access_normalized", "Norm. L2 access",
-               "Normalized L2 accesses for R1S0 and R1S1", "fig11_l2_access",
-               output, formats, groups=("R1S0", "R1S1"), lower=0.0, upper=1.25)
+    strip_bars(modes, "l2_access_normalized", "Norm. L2 access", "fig11_l2_access",
+               output, formats, groups=("R1S0", "R1S1"), lower=0.0, upper=1.25,
+               figsize=(3.55, 1.48))
     filtering_accuracy(cases, output, formats)
     fp_bins = args.analysis_dir / "fp_sweep_binned.csv"
     if fp_bins.is_file():
