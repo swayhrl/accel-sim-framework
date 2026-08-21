@@ -105,6 +105,31 @@ the timestamp accounting point.
 | `convolutionSeparable/__size_3072` | mechanism `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 418,556 / 390,216; 414,644 / 423,482 | FRC32 is 6.77% faster than its no-extra-payload baseline, but that is not a fair capacity comparison.  The exact-payload FRC128 point is 2.13% slower than baseline25 despite moving 2,281,345 reads into the FRC store and cutting conventional `mshr_new` from 2,390,218 to 110,355.  Its management delay is also slightly higher (2.017787 vs 2.006770 cycles) and it has 32,309 more L2 misses. |
 | `transpose/dimX512_dimY512` | `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 201,054 / 201,054; 201,054 / 201,054 | FRC is active (374,568 allocations, lower reads and swaps; 411,864 set-full fallbacks), but the control again has zero L2 reservation failures.  The exact-payload pair also has 32,768 unique lower reads and 2-cycle non-DRAM management delay in both variants. |
 
+The complete convolution entry sweep provides the required FRC-capacity
+fingerprint.  `FRC-served share` below is the completed FRC allocation share
+of all reported L2 misses; every listed allocation produces one lower read and
+one completed swap.  It rises monotonically with entry count while set-full
+fallback falls, whereas performance is non-monotonic as expected when the
+additional early fetches alter lower-memory contention.
+
+| Variant | Cycles | Relative to baseline24 | FRC-served share | Set-full fallback |
+|---|---:|---:|---:|---:|
+| `frc4-paper` | 426,441 | -1.88% | 5.60% | 2,161,711 |
+| `frc8-paper` | 427,066 | -2.03% | 12.21% | 1,843,478 |
+| `frc16-paper` | 406,197 | +2.95% | 20.78% | 1,430,682 |
+| `frc32-paper` | 390,216 | +6.77% | 32.49% | 863,972 |
+| `frc64-paper` | 410,158 | +2.01% | 41.67% | 411,963 |
+| `frc128-paper` | 423,482 | -1.18% | 47.71% | 113,571 |
+| `frc256-paper` | 420,691 | -0.51% | 49.67% | 12,060 |
+
+The exact payload controls are `baseline25=414,644` versus
+`frc128=423,482` (FRC 2.13% slower) and `baseline26=389,237` versus
+`frc256=420,691` (FRC 8.08% slower).  `baseline48=462,798` and
+`baseline96=394,780` are retained as the paper-ratio controls, not as payload
+matches.  Thus the FRC capacity/served-share trend is reproduced, but this
+QV100 configuration does not reproduce the paper's capacity-fair performance
+advantage.
+
 The low-associativity BlackScholes sensitivity makes the causal condition
 observable with real trace traffic: `baseline1` completes in 12,396 cycles
 with 186,478 reservation failures; `frc128` completes in 9,658 cycles with
@@ -119,9 +144,9 @@ The independent transaction store is therefore exercised, but the completed
 capacity-fair controls do **not** reproduce a FRC speedup: FWT and transpose
 tie, while convolution favors equal-payload conventional capacity.  The
 deterministic replacement-pressure gate above proves the causal mechanism
-under such pressure; it must not be generalized to these workloads.  The
-convolution entry sweep and complete `scan` pairs remain in progress.  QV100
-also differs materially from the paper (64 sector-L2 slices and CUDA traces
+under such pressure; it must not be generalized to these workloads.  Complete
+`scan` pairs remain in progress.  QV100 also differs materially from the paper
+(64 sector-L2 slices and CUDA traces
 rather than two 16-way AMD banks and OpenCL SDK 2.5), so this remains a causal
 reproduction under a stated configuration, not an absolute match to paper
 OPC.
