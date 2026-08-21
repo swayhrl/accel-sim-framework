@@ -45,10 +45,10 @@ With the pinned OpenROAD build `fd4b90e86cfdb5059c9e6dbeeba3202cc3cb5e48`,
 the synth check instantiates exactly twenty SRAM masters. Macro-aware
 floorplanning places all twenty macros in fixed five-by-four coordinates,
 connects their VDD/VSS pins through the ASAP7 PDN, and creates a
-89,583.807 um2 core. At an exploratory 8ns constraint, the post-CTS path has
-+922.6864ps slack. This deliberately relaxed point establishes that the views
-can participate in placement/PDN/CTS; it is not the paper's 1.41GHz model
-point.
+89,583.807 um2 core. The reproducible 2ns post-CTS run
+`results/openroad_c2p_asap7_sram_cluster_capture_cts_2ns` has **+472.7640ps**
+WNS and retains its post-CTS DEF/ODB. This establishes a macro-aware
+placement/PDN/CTS point at 500MHz; it is not the paper's 1.41GHz model point.
 
 The historical unpipelined implementation had a 1ns pre-CTS WNS of
 -5,994.1846ps, on full-width `fold_hash` arithmetic through Snapshot address
@@ -74,6 +74,15 @@ hash-to-`banksel` and macro-Q-to-macro-D critical cones, but it is not a
 places a wide, high-fanout RMW write net on the timing boundary. A
 multiport/masked-write Snapshot macro or a bank-local update microarchitecture
 is required for a closing macro-aware implementation.
+
+One additional RMW experiment was evaluated and rejected rather than retained:
+old data and mask were captured beside each selected physical macro to avoid
+the five-way `wd` broadcast. All directed RTL tests passed, but the 1ns CTS
+WNS was **-512.1448ps**, statistically the same as the retained
+**-512.0120ps** and with more state. The candidate did not move the physical
+boundary, so it was reverted. This rules out a superficial fanout rewrite as
+the explanation; the public 1RW/no-mask macro interface itself remains the
+actionable limit.
 
 The scalable control front end is separately synthesized as
 `results/openroad_c2p_banked_frontend_two_cut_fabric_synth`. It
