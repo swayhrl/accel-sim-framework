@@ -97,7 +97,7 @@ hw_run/c2p-paper16-ccd-metrics-parallel-v2-20260821
 hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821
 ```
 
-当前覆盖审计结论：有效主矩阵为 94/112，fresh CCD 为 11/16，L2-50
+当前覆盖审计结论：有效主矩阵为 89/112，fresh CCD 为 11/16，L2-50
 baseline 为 15/16。完整七 mode + L2-50 + fresh CCD evidence 已完成的
 workload 是：Btree、DWT2D、Gaussian、Hotspot1、LUD、NN、CUTCP、MRI-Q、
 SGEMM、2DConvolution、GEMM。其余五项仍有缺项；其中 Stencil 的 fresh CCD
