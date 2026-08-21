@@ -147,7 +147,7 @@ parameterized implementation，绝不使用旧 binary 的结果。
 以下是必须在最终 16-workload aggregate 里复核的项目；它们不是被掩盖的例外：
 
 1. **SGEMM：L2 降 19.54% 但 C2P IPC -1.29%。** 它的独立 L2 sensitivity 为 `429816/396350 = 1.084`，故本地是 R1S0（低于 1.10 的 S1 门槛），本就不应套用论文 R1S1 的 23.5% 平均收益。更重要的是机制计数给出了可审计的 slowdown 原因链：2,194,621 个 C2P query 中 741,827 个（33.8%）target-timeout fallback，平均 4.054 candidates/query，Snapshot FP 为 14.8%，1,694,593 次 peer L1 probe 最终只完成 271,719 次 remote hit；其 fallback probe P95/P99 分别为 4/10 个 peer。相对地，ideal 为 423,904 cycle、348,129 remote hit、888,305 probe，说明 Snapshot 候选/port contention 使 C2P 多发大量 probe 且丢失远端返回。这是**量化的模型行为解释**，不是以 L2-access 数字掩盖 slowdown；最终仍须检查其余 R1S0/R1S1 workload 是否同样出现，若普遍存在再审查 timeout/FIFO 模型而不是对 SGEMM 单点调参。
-2. **CCD 在目前完成点中 remote hit 为零。** 代码使用 weak-taken counter（初始弱不取），只有预测 taken 才广播并学习。这个保守模型可能在短/phase-varying trace 上持续不训练；最终报告必须用 CCD TP/FN/FP/TN 判断这是 comparator 定义造成的负控制，还是与论文 CCD 参数不匹配，不能把“零 hit”包装成 comparator 已复现。
+2. **旧 CCD 训练语义错误，已隔离并重放。** 旧模型只在预测 taken 的 broadcast 后更新 counter；第一次 no-share 将 weak-taken counter 降到 not-taken 后，之后的 false negative 永远不能恢复训练。这不是可接受的 CCD 负控制。GPGPU-Sim `f5eff2cd` 改为每个请求按 exact tag-time in-cluster outcome 训练 two-bit counter；独立 DWT2D 验证得到 22,062 TP、16,339 remote hit，而旧点为零。所有旧 CCD 结果已从 closeout 排除，fresh root `c2p-paper16-ccd-refresh-v2-20260821` 的 16 项重放是最终唯一可接受证据。
 3. **Ring 的 Btree IPC 高于 C2P，而 DWT2D/LUD/SGEMM 显著变慢。** 该 workload 依赖性可由 serialized issue、nearest hit hop、减少的 probe 数共同导致；仍须检查 Ring 的 L2 access、hop/probe 分布和网络时序。不能在 aggregate 前声称已匹配论文 Ring 开销。
 4. **本地 R/S 分类与论文图的 workload 分组不同。** 例如 Gaussian 本地是 R0S0 而论文参考标签为 R1S0；这是 trace input/规模、mapping 和模型适配的直接信号。最终图会同时保留 paper reference group 和 local measured group，绝不强行 relabel。
 5. **未完成任务没有结果资格。** 当前运行中的 CUTCP、Stencil、PolyBench 等可能改变任何 group aggregate 和均值；在 strict gate 通过前，不能给出“与论文一致/不一致”的结论。
@@ -164,6 +164,7 @@ parameterized implementation，绝不使用旧 binary 的结果。
 | default m5120 preservation | 参数化 refactor 改坏主实验 | `check_c2p_default_equivalence.py` 已对七个已配对 workload 的完整公共 summary 字段逐项 bit-exact；新增 CCD fields 为零。 |
 | TP/FN/FP/TN 双时间点 | 把等待中的 L1 fill/evict 误称 Bloom 精度错误 | 同时记录 accept-time paper classification 与 query-time diagnosis。 |
 | Figure-14 histogram | 只报均值而掩盖长 probe tail | 完整 hit/fallback count + P90/P95/P99/MAX 均保留。 |
+| CCD all-outcome training | counter 在首次 not-taken 后永久失活 | `f5eff2cd` 后 fresh 16-item CCD root 独占 closeout；DWT2D 非零 TP/hit 定向验证通过。 |
 
 ## 8. 最终关账的唯一入口
 
@@ -177,8 +178,8 @@ scripts/finalize_c2p_paper16.sh \
   --supplemental-results-root hw_run/c2p-paper16-v7-parallel-v3-20260821 \
   --l2-fast-root hw_run/c2p-paper16-l2-50-v7-20260821 \
   --supplemental-l2-fast-root hw_run/c2p-paper16-l2-50-v7-parallel-v2-20260821 \
-  --ccd-metrics-root hw_run/c2p-paper16-ccd-metrics-v1-20260821 \
-  --supplemental-ccd-metrics-root hw_run/c2p-paper16-ccd-metrics-parallel-v2-20260821 \
+  --ccd-metrics-root hw_run/c2p-paper16-ccd-refresh-v2-20260821 \
+  --ccd-mode-root hw_run/c2p-paper16-ccd-refresh-v2-20260821 \
   --sweep-root hw_run/c2p-paper16-fp-sweep-v1-20260821 \
   --supplemental-sweep-root hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821 \
   --queue-sensitivity-root hw_run/c2p-btree-query-sensitivity-v1-20260821 \
@@ -195,7 +196,7 @@ timing 改变、remote/L2 不一致、缺 CCD counter 或 m/k shape 不匹配都
 
 `scripts/watch_c2p_paper16_closeout.sh --interval 120` 是本轮长 replay 的
 无侵入守护入口：它只轮询 `summary.txt` 是否完整，绝不启动/停止模拟；所有
-16x7、16 个 L2-50、16 个 CCD、16x4 个 m/k 都已落盘后才调用上述唯一 strict
+16x7（其中 CCD 必须来自 fresh root）、16 个 L2-50、16x4 个 m/k 都已落盘后才调用上述唯一 strict
 入口一次。strict failure 会保留日志并退出，不会通过重复运行掩盖配置或机制错误。
 
 ## 9. 缺失论文 workload 的记录
