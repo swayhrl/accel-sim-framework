@@ -81,9 +81,11 @@ for asset in "$config_dir"/*.xml "$config_dir"/*.icnt; do
   [[ -f "$asset" ]] && cp "$asset" "$reference_dir/"
 done
 if [[ -n "$trace_config" ]]; then
+  printf '\n# Accel-Sim trace parameters\n' >> "$reference_dir/gpgpusim.config"
   cat "$trace_config" >> "$reference_dir/gpgpusim.config"
 fi
 if [[ -n "$reference_config_extra" ]]; then
+  printf '\n# FRC baseline-preservation reference overrides\n' >> "$reference_dir/gpgpusim.config"
   cat "$reference_config_extra" >> "$reference_dir/gpgpusim.config"
 fi
 ln -sfn "$(cd "$(dirname "$trace")" && pwd)" "$reference_dir/traces"
