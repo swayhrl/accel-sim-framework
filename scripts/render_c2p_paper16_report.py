@@ -67,8 +67,14 @@ def main():
     args = parser.parse_args()
     rows = read_csv(args.analysis_dir / "paper16_modes.csv")
     cases = read_csv(args.analysis_dir / "paper16_cases.csv")
-    ipc = aggregate(rows, "ipc_normalized")
-    l2 = aggregate(rows, "l2_access_normalized")
+    modes_by_case = defaultdict(set)
+    for row in rows:
+        modes_by_case[row["case"]].add(row["mode"])
+    complete_cases = {case for case, modes in modes_by_case.items()
+                      if set(MODES) <= modes}
+    complete_rows = [row for row in rows if row["case"] in complete_cases]
+    ipc = aggregate(complete_rows, "ipc_normalized")
+    l2 = aggregate(complete_rows, "l2_access_normalized")
 
     lines = ["# C2P-Cache paper16 directional reproduction", "",
              "## Scope and acceptance", "",
@@ -83,7 +89,7 @@ def main():
         lines.append(f"| {group} | {', '.join(names) if names else '—'} |")
 
     lines.extend(["", "## Figure-10-style normalized IPC aggregate", "",
-                  "Arithmetic mean across completed local cases in each group; "
+                  "Arithmetic mean across locally complete seven-mode cases in each group; "
                   "not a replacement for the paper's original workload-weighted set.", "",
                   "| Group | ATA | CCD | RING | C2P-Cache |", "|---|---:|---:|---:|---:|"])
     for group in GROUPS:
