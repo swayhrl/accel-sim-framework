@@ -80,6 +80,23 @@ hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821
 
 各 run 目录保留 copied binary、resolved config、trace/config/simulator/runtime hash、full `run.out` 和 `summary.txt`。`scripts/analyze_c2p_paper16.py` 也检查 mode contract、effective config、provenance、oracle timing 和 remote-hit/L2-avoidance 不变量。
 
+### 二进制版本与默认点等价性
+
+长批次在代码演进期间使用了多个、均已记录在 `provenance.txt` 的
+GPGPU-Sim binary revision。这里不能仅因 commit 不同就混合结论，也不能
+为形式统一而盲目重跑已经可证明等价的默认点：`5ad465ec -> 04962526`
+的功能改动是 Figure-13 非默认 m/k 的参数化、bank-index 修正和 CCD
+分类计数；默认 `m5120-k4`（5,120 rows、4 encodings）保持原布局与路径。
+
+`scripts/check_c2p_default_equivalence.py` 将主实验的默认 C2P run 和由
+`04962526` 产生的 `fp-sweep/m5120-k4` 逐字段比对。2026-08-21 的实时
+检查已覆盖 Btree、DWT2D、Gaussian、Hotspot1、LUD、NN、SGEMM：每一项的
+cycle、L2 access、candidate、remote-hit、fallback 和 Snapshot 分类计数均
+bit-exact（新加、且为零的 CCD counter 除外）。因此这七个已完成的默认
+C2P 点可以作为同一机制版本的证据；尚未配对的九项仍须等待当前 binary
+结果落盘。Figure 13 的非默认 m/k 点则**只**接受 `04962526` 或之后的
+parameterized implementation，绝不使用旧 binary 的结果。
+
 ## 5. 已完成点的实测行为（仅局部证据）
 
 下表来自当前 v7 主根；IPC 为 `baseline_cycles/mode_cycles`，大于 1 更快。它用于发现方向和异常，**不是 16-workload aggregate**。
@@ -123,7 +140,7 @@ hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821
 | 每 mode resolved-config contract | 模式 flag 互相污染、ATA/CCD group size 退化 | 已完成 run 通过；最终 strict。 |
 | primary/supplement provenance | 并行补跑混入不同 binary/config | effective config、binary family、source path 被记录。 |
 | m/k resolved shape | 目录名与真实 Bloom rows/hash 不一致 | 通过后才进入 Figure 13；曾实际发现并修复 bank-index bug。 |
-| default m5120 preservation | 参数化 refactor 改坏主实验 | Btree、LUD、SGEMM 的 default C2P 保留字段 bit-exact；新增 CCD fields 为零。 |
+| default m5120 preservation | 参数化 refactor 改坏主实验 | `check_c2p_default_equivalence.py` 已对七个已配对 workload 的完整公共 summary 字段逐项 bit-exact；新增 CCD fields 为零。 |
 | TP/FN/FP/TN 双时间点 | 把等待中的 L1 fill/evict 误称 Bloom 精度错误 | 同时记录 accept-time paper classification 与 query-time diagnosis。 |
 | Figure-14 histogram | 只报均值而掩盖长 probe tail | 完整 hit/fallback count + P90/P95/P99/MAX 均保留。 |
 
@@ -150,7 +167,10 @@ scripts/finalize_c2p_paper16.sh \
   --python /scratch/root/oss-eda/oss-cad-suite/py3bin/python3
 ```
 
-该入口会依次执行七 mode/L2-50/CCD strict analysis、m/k strict analysis、queue strict diagnosis、Figure 10--14 strict plotting 和最终 Markdown report。任一缺 run、配置不一致、oracle timing 改变、remote/L2 不一致、缺 CCD counter 或 m/k shape 不匹配都会失败；失败就不能产生最终“论文复现完成”的声明。
+该入口会依次执行七 mode/L2-50/CCD strict analysis、default `m5120-k4`
+跨 binary 等价检查、m/k strict analysis、queue strict diagnosis、Figure 10--14
+strict plotting 和最终 Markdown report。任一缺 run、配置不一致、默认点不等价、oracle
+timing 改变、remote/L2 不一致、缺 CCD counter 或 m/k shape 不匹配都会失败；失败就不能产生最终“论文复现完成”的声明。
 
 ## 9. 缺失论文 workload 的记录
 

@@ -15,9 +15,10 @@ Usage: scripts/finalize_c2p_paper16.sh \
 
 Run the strict paper16 evidence pipeline in dependency order:
   1. seven-mode / L2=50 / CCD analysis and mode-contract audit;
-  2. complete Figure-13 m/k analysis;
-  3. strict Figure 10--14 rendering;
-  4. optional strict finite-queue diagnosis and final directional report.
+  2. default m5120 C2P equivalence across replay binary revisions;
+  3. complete Figure-13 m/k analysis;
+  4. strict Figure 10--14 rendering;
+  5. optional strict finite-queue diagnosis and final directional report.
 
 Every result root is an input.  Supplemental roots only fill missing modes;
 the canonical root remains authoritative whenever it has a completed run.
@@ -67,6 +68,16 @@ for root in "${supplemental_l2[@]}"; do analysis_args+=(--supplemental-l2-fast-r
 for root in "${supplemental_ccd[@]}"; do analysis_args+=(--supplemental-ccd-metrics-root "$root"); done
 
 "$python_bin" "$repo_root/scripts/analyze_c2p_paper16.py" "${analysis_args[@]}"
+equivalence_args=(--primary-root "$results_root" --reference-root "$sweep_root"
+                  --out "$analysis_dir/default_c2p_equivalence.csv" --strict)
+for root in "${supplemental_results[@]}"; do
+  equivalence_args+=(--supplemental-primary-root "$root")
+done
+for root in "${supplemental_sweep[@]}"; do
+  equivalence_args+=(--supplemental-reference-root "$root")
+done
+"$python_bin" "$repo_root/scripts/check_c2p_default_equivalence.py" \
+  "${equivalence_args[@]}"
 fp_args=(--sweep-root "$sweep_root" --paper16-analysis "$analysis_dir"
          --out-dir "$analysis_dir" --strict)
 for root in "${supplemental_sweep[@]}"; do fp_args+=(--supplemental-sweep-root "$root"); done
