@@ -11,6 +11,7 @@ Usage: scripts/finalize_c2p_paper16.sh \
   [--supplemental-sweep-root DIR] \
   [--supplemental-results-root DIR] \
   [--ccd-mode-root DIR]... \
+  [--ring-mode-root DIR]... \
   [--supplemental-l2-fast-root DIR] \
   [--supplemental-ccd-metrics-root DIR] [--python PYTHON]
 
@@ -32,6 +33,7 @@ results_root=""; l2_fast_root=""; ccd_metrics_root=""; sweep_root=""
 analysis_dir=""; figures_dir=""; report=""
 queue_sensitivity_root=""
 ccd_mode_roots=()
+ring_mode_roots=()
 supplemental_results=(); supplemental_l2=(); supplemental_ccd=(); supplemental_sweep=()
 
 while [[ $# -gt 0 ]]; do
@@ -45,6 +47,7 @@ while [[ $# -gt 0 ]]; do
     --report) report="$2"; shift 2 ;;
     --queue-sensitivity-root) queue_sensitivity_root="$2"; shift 2 ;;
     --ccd-mode-root) ccd_mode_roots+=("$2"); shift 2 ;;
+    --ring-mode-root) ring_mode_roots+=("$2"); shift 2 ;;
     --supplemental-results-root) supplemental_results+=("$2"); shift 2 ;;
     --supplemental-l2-fast-root) supplemental_l2+=("$2"); shift 2 ;;
     --supplemental-ccd-metrics-root) supplemental_ccd+=("$2"); shift 2 ;;
@@ -68,6 +71,11 @@ for root in "${ccd_mode_roots[@]}"; do
     echo "error: every --ccd-mode-root must exist" >&2; exit 2;
   }
 done
+for root in "${ring_mode_roots[@]}"; do
+  [[ -d "$root" ]] || {
+    echo "error: every --ring-mode-root must exist" >&2; exit 2;
+  }
+done
 
 analysis_args=(--results-root "$results_root" --l2-fast-root "$l2_fast_root"
                --ccd-metrics-root "$ccd_metrics_root" --out-dir "$analysis_dir" --strict)
@@ -77,6 +85,13 @@ for root in "${ccd_mode_roots[@]}"; do
   # that it does not contain.  analyze_c2p_paper16.py records the concrete
   # run directory and provenance for each case.
   analysis_args+=(--mode-override-root "ccd=$root")
+done
+for root in "${ring_mode_roots[@]}"; do
+  # RING uses an isolated replay root after a queue-full event was corrected
+  # from an implicit lower-L2 bypass to real finite-queue backpressure.
+  # Supplying an override makes every final RING point come from that model,
+  # never from an older mixed-semantics campaign root.
+  analysis_args+=(--mode-override-root "ring=$root")
 done
 for root in "${supplemental_results[@]}"; do analysis_args+=(--supplemental-results-root "$root"); done
 for root in "${supplemental_l2[@]}"; do analysis_args+=(--supplemental-l2-fast-root "$root"); done

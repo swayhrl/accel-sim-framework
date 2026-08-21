@@ -44,6 +44,10 @@ fast_supplemental=("$repo_root/hw_run/c2p-paper16-l2-50-v7-parallel-v2-20260821"
 # CCD data is never in either list.
 ccd_root="$repo_root/hw_run/c2p-ccd-stencil-progressfix-v1-20260821"
 ccd_supplemental=("$repo_root/hw_run/c2p-paper16-ccd-refresh-v2-20260821")
+# Older RING campaign runs sent a miss directly to L2 when the serialized
+# discovery FIFO was full.  A correct RING keeps that miss at the L1 head
+# until the FIFO drains.  Do not mix the old measurements into final figures.
+ring_root="$repo_root/hw_run/c2p-ring-backpressure-v1-20260821"
 sweep_root="$repo_root/hw_run/c2p-paper16-fp-sweep-v1-20260821"
 sweep_supplemental=("$repo_root/hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821")
 queue_root="$repo_root/hw_run/c2p-btree-query-sensitivity-v1-20260821"
@@ -83,6 +87,11 @@ collect_missing() {
         has_summary "$case_name" "$mode" "$ccd_root" "${ccd_supplemental[@]}" ||
           missing+=("main:$case_name/$mode")
         deadlocked_without_summary "$ccd_root" "$case_name" "$mode" &&
+          failed+=("main:$case_name/$mode")
+      elif [[ "$mode" == ring ]]; then
+        has_summary "$case_name" "$mode" "$ring_root" ||
+          missing+=("main:$case_name/$mode")
+        deadlocked_without_summary "$ring_root" "$case_name" "$mode" &&
           failed+=("main:$case_name/$mode")
       elif ! has_summary "$case_name" "$mode" "$main_root" "${main_supplemental[@]}"; then
         missing+=("main:$case_name/$mode")
@@ -140,6 +149,7 @@ while :; do
         --supplemental-ccd-metrics-root "${ccd_supplemental[0]}" \
         --ccd-mode-root "$ccd_root" \
         --ccd-mode-root "${ccd_supplemental[0]}" \
+        --ring-mode-root "$ring_root" \
         --sweep-root "$sweep_root" \
         --supplemental-sweep-root "${sweep_supplemental[0]}" \
         --queue-sensitivity-root "$queue_root" \

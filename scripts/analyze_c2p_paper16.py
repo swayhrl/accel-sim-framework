@@ -452,6 +452,16 @@ def main():
                 invariant_failures.append(
                     f"{case}/{mode}: remote hits ({remote_hits}) != "
                     f"L2 requests avoided ({l2_avoided})")
+            # RING is a serialized traversal comparator.  Its finite
+            # discovery queue must backpressure the L1 miss head, rather than
+            # silently falling through to lower L2 as C2P may do under its
+            # explicitly modelled query pressure.  A non-zero bypass value
+            # therefore identifies a pre-backpressure or mixed-semantics run
+            # that is ineligible for the final comparator figures.
+            if mode == "ring" and value(data, "c2p_queries_queue_bypass") not in ("", "0"):
+                invariant_failures.append(
+                    f"{case}/ring: queue bypass "
+                    f"({value(data, 'c2p_queries_queue_bypass')}) is not allowed")
 
         baseline_l2 = value(baseline, "l2_total_cache_accesses")
         redundancy = ratio(value(oracle, "c2p_oracle_peer_hits"),
