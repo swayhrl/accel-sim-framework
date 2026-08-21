@@ -4,6 +4,7 @@
 import argparse
 import csv
 import math
+import re
 from pathlib import Path
 
 
@@ -66,8 +67,11 @@ def main():
         if row["group"] != "unknown" and row["baseline_cycles"]
     }
     points, missing = [], []
-    for point_dir in sorted(path for path in args.sweep_root.iterdir()
-                            if path.is_dir()):
+    point_dirs = sorted(path for path in args.sweep_root.iterdir()
+                        if path.is_dir() and re.fullmatch(r"m\d+-k\d+", path.name))
+    if not point_dirs:
+        raise SystemExit("no m<rows>-k<encodings> sweep directories found")
+    for point_dir in point_dirs:
         for case, base in sorted(classification.items()):
             data = read_summary(point_dir / case / "c2p" / "summary.txt")
             needed = ("gpu_tot_sim_cycle", "c2p_snapshot_false_positive",
