@@ -69,6 +69,7 @@ if [[ -n "$config_extra" ]]; then
   cat "$config_extra" >> "$run_dir/gpgpusim.config"
 fi
 ln -sfn "$(cd "$(dirname "$trace")" && pwd)" "$run_dir/traces"
+trace_name="$(basename "$trace")"
 
 if [[ "$build" -eq 1 ]]; then
   nice -n 10 make -C "$repo_root/gpu-simulator" -j2
@@ -86,7 +87,7 @@ cp "$sim_bin" "$run_dir/accel-sim.out"
 
 if ! (
   cd "$run_dir"
-  ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g > smoke.out 2>&1
+  ./accel-sim.out -config ./gpgpusim.config -trace "./traces/$trace_name" > smoke.out 2>&1
 ); then
   echo "error: simulator failed; preserved $run_dir/smoke.out" >&2
   tail -50 "$run_dir/smoke.out" >&2 || true
