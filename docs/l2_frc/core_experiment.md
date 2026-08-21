@@ -78,6 +78,10 @@ primary request that allocated it.  Use an `*-observe.config` and
 `scripts/collect_l2_frc_delay_metrics.sh` to collect it.  For a multi-kernel
 trace, the runner takes the final cumulative occurrence of each simulator
 statistic; intermediate per-kernel reports are not experiment totals.
+`lower_read_inflight_peak` is the maximum number of lower reads that were
+accepted by a single L2 subpartition's memory port and had not yet returned.
+It is a pure observer counter, so it is suitable for proving MLP without
+changing admission or arbitration.
 
 The collector also reports `first-offer = first L2 offer -> lower issue`.
 Unlike acceptance-based pre-memory, it retains time spent retrying a request
@@ -106,6 +110,12 @@ the 133-cycle application-level difference is explained by the conventional
 accepted-miss path, not a faster lower memory.  The baseline's 136 reservation
 failures remain a useful pressure fingerprint, but they are not silently
 attributed to the two completed primary-read samples.
+
+`scripts/check_l2_frc_mlp_pressure.sh` makes the concurrent-read property
+explicit.  Under the same one-set/one-way geometry, the conventional control
+has `lower_read_inflight_peak=1`, while FRC4 has a peak of 2 and drains with no
+live FRC entry.  This is a directed MLP gate, not an extrapolation from total
+lower-read count.
 
 ## Completed full-trace results with the independent transaction store
 
