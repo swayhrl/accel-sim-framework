@@ -148,30 +148,37 @@ zero-valued CCD counters.  Together with the Btree and LUD comparisons, this
 checks default preservation across three independent workload families rather
 than inferring it solely from the directed Btree replay.
 
-### Target-probe headroom diagnostic
+### Finite-queue headroom diagnostic
 
 The partial v7 aggregate showed that Btree's realized remote-hit count was
 well below its accept-time oracle opportunity count. To distinguish Snapshot
 filtering from finite target-side arbitration, the diagnostic-only
-`btree_target_probe_headroom.config` changed **only** the target-probe FIFO
-from 32 to 256 entries and the escape timeout from 32 to 4,096 cycles. It kept
-the default Snapshot geometry, engines, remote tag/return timing, and baseline
-hierarchy unchanged. This result is deliberately outside the canonical v7
-aggregate.
+The first `btree_target_probe_headroom.config` changed **only** the target-probe
+FIFO from 32 to 256 entries and the escape timeout from 32 to 4,096 cycles.
+The later queue audit also independently raised the requester query FIFO, then
+raised both requester and target headroom together. All four runs keep the
+default Snapshot geometry, engines, remote tag/return timing, and baseline
+hierarchy unchanged. They are deliberately outside the canonical v7 aggregate.
 
 | Btree C2P run | Cycles | Remote hits | Probe-timeout fallbacks | Query-queue bypasses |
 | --- | ---: | ---: | ---: | ---: |
 | canonical v7 (32 entries / 32 cycles) | 229,052 | 161,628 | 438,570 | 132,808 |
-| headroom diagnostic (256 entries / 4,096 cycles) | 233,788 | 211,944 | 69 | 759,549 |
+| requester FIFO 1,024 (target still 32 / 32) | 228,607 | 166,150 | 525,949 | 0 |
+| requester FIFO 4,096 (target still 32 / 32) | 228,607 | 166,150 | 525,949 | 0 |
+| target-only headroom (256 / 4,096; requester 256) | 233,788 | 211,944 | 69 | 759,549 |
+| full headroom (requester 4,096; target 256 / 4,096) | 338,488 | 576,589 | 1,024 | 0 |
 
-More target-side headroom removes nearly all timeout fallback and raises
-remote hits by 31.1%, but it makes the application 2.1% slower and causes a
-5.7x increase in query-queue bypasses. Thus unlimited target waiting is not a
-valid performance fix: it retains requests long enough to congest the finite
-query path. The canonical finite escape is therefore retained while the final
-report identifies target contention/timeout as a genuine model-and-input
-sensitivity, rather than mislabeling it as Snapshot false-negative error or
-tuning it away.
+Requester headroom alone removes its 132,808 bypasses, raises remote hits only
+2.8%, and improves cycles only 0.19%; it is not the dominant discrepancy.
+Target-only headroom removes nearly all timeout fallback and raises remote hits
+31.1%, but makes the application 2.1% slower and causes a 5.7x increase in
+query-queue bypasses. Full headroom removes requester bypass too and raises
+remote hits 3.57x, yet makes the application 47.8% slower: queued remote
+probes hold the original transaction far longer than baseline L2 service.
+Thus unlimited target waiting is not a valid performance fix. The canonical
+finite escape is retained while the final report identifies target
+contention/timeout as a genuine model-and-input sensitivity, rather than
+mislabeling it as Snapshot false-negative error or tuning it away.
 
 This behavior follows the manuscript's Section 4.5.2, which specifies that
 remote probes access the candidate L1's normal tag and data arrays, may contend
