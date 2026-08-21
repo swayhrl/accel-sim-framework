@@ -142,6 +142,11 @@ while :; do
   fi
   printf '%s waiting for %u summaries; first: %s\n' \
     "$(date -Is)" "${#missing[@]}" "${missing[0]}"
-  (( once )) && exit 1
+  # With ``set -e``, an ``&&`` list ending in a false arithmetic test would
+  # terminate this long-lived watcher after its first normal poll.  Keep the
+  # one-shot failure explicit so the default watcher reaches its next poll.
+  if (( once )); then
+    exit 1
+  fi
   sleep "$interval"
 done
