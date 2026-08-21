@@ -64,7 +64,7 @@ done
 
 mkdir -p "$out_root"
 while IFS=$'\t' read -r case suite abbr input_label trace_rel; do
-  [[ -z "$case" || "$case" == \#* ]] && continue
+  [[ -z "$case" || "$case" == "case" || "$case" == \#* ]] && continue
   case_selected "$case" || continue
   trace="$trace_root/$trace_rel/kernelslist.g"
   [[ -f "$trace" ]] || { echo "error: $case trace missing: $trace" >&2; exit 2; }

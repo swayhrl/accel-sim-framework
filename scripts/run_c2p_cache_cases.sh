@@ -134,8 +134,8 @@ for mode in ${modes//,/ }; do
   awk '
     /^gpu_tot_sim_cycle = / { cycle=$3 }
     /^gpu_sim_insn = / { insn=$3 }
-    /^L2_total_cache_accesses = / { l2_total_accesses=$3 }
-    /^L2_cache_stats_breakdown\[GLOBAL_ACC_R\]\[TOTAL_ACCESS\] = / {
+    /^[[:space:]]*L2_total_cache_accesses = / { l2_total_accesses=$3 }
+    /^[[:space:]]*L2_cache_stats_breakdown\[GLOBAL_ACC_R\]\[TOTAL_ACCESS\] = / {
       l2_global_read_accesses=$3
     }
     /^c2p_l1_misses = / { misses=$3 }
