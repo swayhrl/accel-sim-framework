@@ -73,7 +73,7 @@ and render the paper-style figures with:
   --out-dir hw_run/c2p-paper16-analysis --strict
 /usr/bin/python3 scripts/plot_c2p_paper_figures.py \
   --analysis-dir hw_run/c2p-paper16-analysis \
-  --out-dir hw_run/c2p-paper16-figures
+  --out-dir hw_run/c2p-paper16-figures --strict
 ```
 
 The analyzer rejects missing modes or L2-50 points under `--strict`; it emits
@@ -96,10 +96,11 @@ scripts/run_c2p_fp_sweep.sh \
   --out-dir hw_run/c2p-paper16-analysis --strict
 ```
 
-Re-run `plot_c2p_paper_figures.py` after the sweep analysis; it detects the
-resulting `fp_sweep_binned.csv` and adds the Figure-13-style median/percentile
-plot.  The default `m5120-k4` point is verified to map identically to the
-fixed 5,120-row implementation it replaced.
+Re-run `plot_c2p_paper_figures.py --strict` after the sweep analysis; it
+requires complete primary analysis, CCD TP/FN/FP/TN evidence, Figure-14
+percentile/MAX counters, and a populated audited Figure-13 sweep before it
+publishes a paper-style figure set. The default `m5120-k4` point is verified
+to map identically to the fixed 5,120-row implementation it replaced.
 
 If the primary seven-mode campaign predates the CCD filtering counters, do
 not rerun its other six modes. Build the instrumented simulator in an isolated

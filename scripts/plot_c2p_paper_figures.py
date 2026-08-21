@@ -273,6 +273,45 @@ def peer_percentiles(rows, out, formats):
     save(fig, out, "fig14_peer_probe_distribution", formats)
 
 
+def strict_preflight(analysis_dir, modes, cases, fp_bins):
+    """Reject incomplete analysis before publishing paper-style artifacts."""
+    errors = []
+    status = analysis_dir / "paper16_status.md"
+    if not status.is_file():
+        errors.append("missing paper16_status.md from analyze_c2p_paper16.py")
+    else:
+        text = status.read_text(errors="replace")
+        if "## Missing evidence" in text or "## Mechanism invariant failures" in text:
+            errors.append("paper16 analysis has missing evidence or invariant failures")
+
+    c2p_rows = [row for row in modes if row["mode"] == "c2p"]
+    peer_fields = ["c2p_peer_access_{}_{}".format(outcome, suffix)
+                   for outcome in ("hit", "miss")
+                   for suffix in ("samples", "p90", "p95", "p99", "max")]
+    for row in c2p_rows:
+        absent = [field for field in peer_fields if number(row, field) is None]
+        if absent:
+            errors.append("{}/c2p lacks Figure-14 fields: {}".format(
+                row["case"], ", ".join(absent)))
+    if not c2p_rows:
+        errors.append("no C2P rows for Figure 14")
+
+    if not fp_bins.is_file() or not read_csv(fp_bins):
+        errors.append("missing populated fp_sweep_binned.csv for Figure 13")
+    fp_status = analysis_dir / "fp_sweep_status.md"
+    if not fp_status.is_file() or "## Missing evidence" in fp_status.read_text(errors="replace"):
+        errors.append("Figure-13 sweep is incomplete or lacks its status audit")
+
+    for row in cases:
+        for prefix in ("ccd", "snapshot"):
+            if number(row, prefix + "_tp_rate") is None:
+                errors.append("{} lacks {} TP/FN/FP/TN data for Figure 12".format(
+                    row["case"], prefix))
+                break
+    if errors:
+        raise SystemExit("; ".join(errors))
+
+
 def fp_impact(rows, out, formats):
     # Paper Fig. 13: each workload group has its own FP-ratio interval strip;
     # the line is median IPC and the band encloses the middle 50% of points.
@@ -325,14 +364,19 @@ def main():
     parser.add_argument("--analysis-dir", required=True, type=Path)
     parser.add_argument("--out-dir", type=Path)
     parser.add_argument("--formats", default="pdf,svg,png")
+    parser.add_argument("--strict", action="store_true",
+                        help="require complete audited Figure 10--14 inputs")
     args = parser.parse_args()
     output = args.out_dir or args.analysis_dir / "figures"
     output.mkdir(parents=True, exist_ok=True)
     formats = tuple(item.strip() for item in args.formats.split(",") if item.strip())
     setup()
-    write_style_audit(output, formats)
     modes = read_csv(args.analysis_dir / "paper16_modes.csv")
     cases = read_csv(args.analysis_dir / "paper16_cases.csv")
+    fp_bins = args.analysis_dir / "fp_sweep_binned.csv"
+    if args.strict:
+        strict_preflight(args.analysis_dir, modes, cases, fp_bins)
+    write_style_audit(output, formats)
     strip_bars(modes, "ipc_normalized", "Normalized IPC", "fig10_normalized_ipc",
                output, formats, lower=0.0, upper=1.65)
     strip_bars(modes, "l2_access_normalized", "Norm. L2 access", "fig11_l2_access",
@@ -341,7 +385,6 @@ def main():
                legend_handlelength=0.95, legend_columnspacing=0.28,
                legend_handletextpad=0.2)
     filtering_accuracy(cases, output, formats)
-    fp_bins = args.analysis_dir / "fp_sweep_binned.csv"
     if fp_bins.is_file():
         fp_impact(read_csv(fp_bins), output, formats)
     peer_percentiles(modes, output, formats)
