@@ -131,6 +131,7 @@ def main():
     case_rows = []
     hist_rows = []
     missing = []
+    invariant_failures = []
     for item in manifest:
         case = item["case"]
         run_root = args.results_root / case
@@ -145,7 +146,24 @@ def main():
         if args.l2_fast_root and fast is None:
             missing.append(f"{case}: missing 50-cycle baseline")
 
+        # These are mechanism invariants, not performance expectations.  The
+        # oracle path must remain observational, and an admitted peer return
+        # must replace exactly one lower-L2 request in every sharing scheme.
         baseline_cycles = value(baseline, "gpu_tot_sim_cycle")
+        oracle_cycles = value(oracle, "gpu_tot_sim_cycle")
+        if baseline_cycles != "" and oracle_cycles != "" and \
+                baseline_cycles != oracle_cycles:
+            invariant_failures.append(
+                f"{case}: oracle changed baseline cycles "
+                f"({baseline_cycles} -> {oracle_cycles})")
+        for mode, data in results.items():
+            remote_hits = value(data, "c2p_remote_hits")
+            l2_avoided = value(data, "c2p_l2_requests_avoided")
+            if remote_hits != "" and l2_avoided != "" and remote_hits != l2_avoided:
+                invariant_failures.append(
+                    f"{case}/{mode}: remote hits ({remote_hits}) != "
+                    f"L2 requests avoided ({l2_avoided})")
+
         baseline_l2 = value(baseline, "l2_total_cache_accesses")
         redundancy = ratio(value(oracle, "c2p_oracle_peer_hits"),
                            value(oracle, "c2p_l1_misses"))
@@ -225,9 +243,14 @@ def main():
         report.extend(f"- {entry}" for entry in missing)
     else:
         report.extend(["All canonical cases contain seven comparison modes and a 50-cycle baseline."])
+    if invariant_failures:
+        report.extend(["", "## Mechanism invariant failures", ""])
+        report.extend(f"- {entry}" for entry in invariant_failures)
+    elif not missing:
+        report.extend(["", "All oracle and remote-hit/L2-avoidance invariants passed."])
     (args.out_dir / "paper16_status.md").write_text("\n".join(report) + "\n")
-    if args.strict and missing:
-        raise SystemExit("; ".join(missing))
+    if args.strict and (missing or invariant_failures):
+        raise SystemExit("; ".join(missing + invariant_failures))
 
 
 if __name__ == "__main__":
