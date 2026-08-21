@@ -123,3 +123,7 @@ Summarize a retained result directory without manually transcribing reports:
 tools/c2p_ppa/summarize_openroad_result.py \
   tools/c2p_ppa/results/openroad_c2p_query_engine
 ```
+
+[`RESULTS.md`](RESULTS.md) records a successfully routed and OpenRCX-extracted
+control-lane run, including its exact scope and the command used to recreate
+it.

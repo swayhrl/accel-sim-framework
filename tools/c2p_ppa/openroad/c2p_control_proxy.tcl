@@ -141,7 +141,8 @@ filler_placement {FILLERxp5_ASAP7_75t_R FILLER_ASAP7_75t_R}
 # extracted SPEF for this design.  Use the versioned ORFS OpenRCX patterns
 # instead; this is the same technology extraction input used by the ASAP7
 # reference flow.
-extract_parasitics -ext_model_file $rcx_rules
+set_extraction_rules_file $rcx_rules
+extract_parasitics
 write_def "$out_dir/$design_name.def"
 write_db "$out_dir/$design_name.odb"
 tee -file "$out_dir/post_route_area.rpt" { report_design_area }

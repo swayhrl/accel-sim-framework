@@ -26,6 +26,7 @@ def main() -> None:
     log = root / "openroad.log"
     post_cts = root / "post_cts_timing.rpt"
     post_route = root / "post_route_timing.rpt"
+    post_route_area = root / "post_route_area.rpt"
     drc = root / "drc.rpt"
 
     version = last_match(log, r"^(OpenROAD .+)$") or "not recorded"
@@ -33,7 +34,7 @@ def main() -> None:
     post_route_slack = last_match(
         post_route, r"^\s*(-?\d+(?:\.\d+)?)\s+slack \("
     )
-    area = last_match(post_route, r"^Design area\s+(\d+(?:\.\d+)?)")
+    area = last_match(post_route_area, r"^Design area\s+(\d+(?:\.\d+)?)")
     if area is None:
         area = last_match(root / "pre_cts_area.rpt", r"^Design area\s+(\d+(?:\.\d+)?)")
     drc_count = 0
@@ -44,7 +45,7 @@ def main() -> None:
     print(f"openroad: {version}")
     print(f"post_cts_slack_ps: {pre_cts_slack or 'not available'}")
     print(f"post_route_slack_ps: {post_route_slack or 'not available'}")
-    print(f"stdcell_area_um2: {area or 'not available'}")
+    print(f"post_route_design_area_um2: {area or 'not available'}")
     print(f"drc_entries: {drc_count if drc.exists() else 'not available'}")
 
 
