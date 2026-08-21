@@ -36,12 +36,19 @@ sum_frc_field() {
   local field="$2"
   awk -v field="$field" '
     /^frc_l2 / {
+      cache = ""
+      value = ""
       for (i = 1; i <= NF; ++i) {
         split($i, pair, "=")
-        if (pair[1] == field) sum += pair[2]
+        if (pair[1] == "cache") cache = pair[2]
+        if (pair[1] == field) value = pair[2]
       }
+      if (cache != "" && value != "") last[cache] = value
     }
-    END { print sum + 0 }
+    END {
+      for (cache in last) sum += last[cache]
+      print sum + 0
+    }
   ' "$log"
 }
 
