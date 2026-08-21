@@ -53,8 +53,14 @@ def main():
     rows, missing, failures = [], [], []
     if "gpu_tot_sim_cycle" not in default:
         missing.append("default run lacks a summary")
-    for point in sorted(path for path in args.sensitivity_root.iterdir()
-                        if path.is_dir()):
+    # The analysis directory may live under the sensitivity root.  A point is
+    # defined by its run directory, not merely by being a sibling directory;
+    # otherwise the audit would manufacture a false missing point for itself.
+    point_dirs = sorted(path for path in args.sensitivity_root.iterdir()
+                        if (path / "btree" / "c2p").is_dir())
+    if not point_dirs:
+        missing.append("no Btree sensitivity point directories found")
+    for point in point_dirs:
         run_dir = point / "btree" / "c2p"
         summary_path = run_dir / "summary.txt"
         if not summary_path.is_file():
