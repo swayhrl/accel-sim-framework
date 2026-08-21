@@ -148,6 +148,31 @@ zero-valued CCD counters.  Together with the Btree and LUD comparisons, this
 checks default preservation across three independent workload families rather
 than inferring it solely from the directed Btree replay.
 
+### Target-probe headroom diagnostic
+
+The partial v7 aggregate showed that Btree's realized remote-hit count was
+well below its accept-time oracle opportunity count. To distinguish Snapshot
+filtering from finite target-side arbitration, the diagnostic-only
+`btree_target_probe_headroom.config` changed **only** the target-probe FIFO
+from 32 to 256 entries and the escape timeout from 32 to 4,096 cycles. It kept
+the default Snapshot geometry, engines, remote tag/return timing, and baseline
+hierarchy unchanged. This result is deliberately outside the canonical v7
+aggregate.
+
+| Btree C2P run | Cycles | Remote hits | Probe-timeout fallbacks | Query-queue bypasses |
+| --- | ---: | ---: | ---: | ---: |
+| canonical v7 (32 entries / 32 cycles) | 229,052 | 161,628 | 438,570 | 132,808 |
+| headroom diagnostic (256 entries / 4,096 cycles) | 233,788 | 211,944 | 69 | 759,549 |
+
+More target-side headroom removes nearly all timeout fallback and raises
+remote hits by 31.1%, but it makes the application 2.1% slower and causes a
+5.7x increase in query-queue bypasses. Thus unlimited target waiting is not a
+valid performance fix: it retains requests long enough to congest the finite
+query path. The canonical finite escape is therefore retained while the final
+report identifies target contention/timeout as a genuine model-and-input
+sensitivity, rather than mislabeling it as Snapshot false-negative error or
+tuning it away.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
