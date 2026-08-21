@@ -83,7 +83,7 @@ positive/negative、queue contention 和 stale column 只改变是否/何时 fal
 ```text
 hw_run/c2p-paper16-v7-20260821
 hw_run/c2p-paper16-l2-50-v7-20260821
-hw_run/c2p-paper16-ccd-metrics-v1-20260821
+hw_run/c2p-paper16-ccd-refresh-v2-20260821
 hw_run/c2p-paper16-fp-sweep-v1-20260821
 ```
 
@@ -93,9 +93,13 @@ hw_run/c2p-paper16-fp-sweep-v1-20260821
 hw_run/c2p-paper16-v7-parallel-v2-20260821
 hw_run/c2p-paper16-v7-parallel-v3-20260821
 hw_run/c2p-paper16-l2-50-v7-parallel-v2-20260821
-hw_run/c2p-paper16-ccd-metrics-parallel-v2-20260821
 hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821
 ```
+
+`hw_run/c2p-ccd-stencil-progressfix-v1-20260821` 是当前运行中的、只含
+Stencil 的 CCD detector-correction replay。成功后它将作为 CCD 的首选根，
+`ccd-refresh-v2` 仅补充其余已成功的 fresh-training case；closeout 会逐 case
+记录实际目录和 provenance，绝不回退到 pre-training-fix CCD 根。
 
 当前覆盖审计结论：有效主矩阵为 89/112，fresh CCD 为 11/16，L2-50
 baseline 为 15/16。完整七 mode + L2-50 + fresh CCD evidence 已完成的
@@ -169,7 +173,7 @@ SGEMM 的最终解释。
 以下是必须在最终 16-workload aggregate 里复核的项目；它们不是被掩盖的例外：
 
 1. **SGEMM：L2 降 19.54% 但 C2P IPC -1.29%。** 它的独立 L2 sensitivity 为 `429816/396350 = 1.084`，故本地是 R1S0（低于 1.10 的 S1 门槛），本就不应套用论文 R1S1 的 23.5% 平均收益。更重要的是机制计数给出了可审计的 slowdown 原因链：2,194,621 个 C2P query 中 741,827 个（33.8%）target-timeout fallback，平均 4.054 candidates/query，Snapshot FP 为 14.8%，1,694,593 次 peer L1 probe 最终只完成 271,719 次 remote hit；其 fallback probe P95/P99 分别为 4/10 个 peer。相对地，ideal 为 423,904 cycle、348,129 remote hit、888,305 probe，说明 Snapshot 候选/port contention 使 C2P 多发大量 probe 且丢失远端返回。same-binary target-port 反事实把 canonical C2P 从 435,411 降至 430,619 cycles（1.0111x IPC），并把 remote hit 从 271,719 提到 809,656、L2 access 从 2,078,305 降到 1,529,820；normal 同时有 4,330,844 target-port-busy cycle 和 36,721,234 FIFO-wait cycle。因此 port/FIFO 竞争解释了 `4,792 / (435,411 - 429,816) = 85.6%` 的 C2P 相对 baseline 周期损失，但 bypass 后仍比 429,816-cycle baseline 慢 803 cycles（0.19%）。这既是**量化的模型行为解释**，也排除了“只要移除端口竞争就完全恢复”的过度结论；最终仍须检查其余 R1S0/R1S1 workload 是否同样出现，若普遍存在再审查 timeout/FIFO 模型而不是对 SGEMM 单点调参。
-2. **旧 CCD 训练语义错误，已隔离并重放。** 旧模型只在预测 taken 的 broadcast 后更新 counter；第一次 no-share 将 weak-taken counter 降到 not-taken 后，之后的 false negative 永远不能恢复训练。这不是可接受的 CCD 负控制。GPGPU-Sim `f5eff2cd` 改为每个请求按 exact tag-time in-cluster outcome 训练 two-bit counter；独立 DWT2D 验证得到 22,062 TP、16,339 remote hit，而旧点为零。fresh SGEMM 也得到 571,725 TP、120,639 remote hit（旧点为零），证明修复恢复了真实共享发现；但它为 437,485 cycles，高于 429,816-cycle baseline，且有 475,911 FP、228,883 FN。这是 coarse CCD predictor 的可测性能代价，不应被误写成 C2P 机制失效或再以参数调平。所有旧 CCD 结果已从 closeout 排除，fresh root `c2p-paper16-ccd-refresh-v2-20260821` 的 16 项重放是最终唯一可接受证据。
+2. **旧 CCD 训练语义错误，已隔离并重放。** 旧模型只在预测 taken 的 broadcast 后更新 counter；第一次 no-share 将 weak-taken counter 降到 not-taken 后，之后的 false negative 永远不能恢复训练。这不是可接受的 CCD 负控制。GPGPU-Sim `f5eff2cd` 改为每个请求按 exact tag-time in-cluster outcome 训练 two-bit counter；独立 DWT2D 验证得到 22,062 TP、16,339 remote hit，而旧点为零。fresh SGEMM 也得到 571,725 TP、120,639 remote hit（旧点为零），证明修复恢复了真实共享发现；但它为 437,485 cycles，高于 429,816-cycle baseline，且有 475,911 FP、228,883 FN。这是 coarse CCD predictor 的可测性能代价，不应被误写成 C2P 机制失效或再以参数调平。所有旧 CCD 结果已从 closeout 排除。`c2p-paper16-ccd-refresh-v2-20260821` 已提供 11 项 fresh-training 证据；当前 corrected Stencil replay 成功后会以首选 root 覆盖其失败的 Stencil 点。其余缺项仍必须由同一 fresh-training 语义的 replay 补齐，不能用旧 CCD 回填。
 3. **fresh CCD Stencil 暴露了尚未解决的 forward-progress failure。** 修正
    training 后的 Stencil CCD 已完成前 86 个 kernel；在 kernel 87 的约
    49,977 cycles 后，以 core 27 的最后 writeback 和 memory partition 11 busy
@@ -226,7 +230,9 @@ scripts/finalize_c2p_paper16.sh \
   --supplemental-results-root hw_run/c2p-paper16-v7-parallel-v3-20260821 \
   --l2-fast-root hw_run/c2p-paper16-l2-50-v7-20260821 \
   --supplemental-l2-fast-root hw_run/c2p-paper16-l2-50-v7-parallel-v2-20260821 \
-  --ccd-metrics-root hw_run/c2p-paper16-ccd-refresh-v2-20260821 \
+  --ccd-metrics-root hw_run/c2p-ccd-stencil-progressfix-v1-20260821 \
+  --supplemental-ccd-metrics-root hw_run/c2p-paper16-ccd-refresh-v2-20260821 \
+  --ccd-mode-root hw_run/c2p-ccd-stencil-progressfix-v1-20260821 \
   --ccd-mode-root hw_run/c2p-paper16-ccd-refresh-v2-20260821 \
   --sweep-root hw_run/c2p-paper16-fp-sweep-v1-20260821 \
   --supplemental-sweep-root hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821 \
