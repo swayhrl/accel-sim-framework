@@ -102,9 +102,14 @@ percentile/MAX counters, and a populated audited Figure-13 sweep before it
 publishes a paper-style figure set. The default `m5120-k4` point is verified
 to map identically to the fixed 5,120-row implementation it replaced.
 
-If the primary seven-mode campaign predates the CCD filtering counters, do
-not rerun its other six modes. Build the instrumented simulator in an isolated
-worktree and collect only the additional CCD evidence:
+If the primary campaign merely predates the CCD *statistics*, do not rerun
+its other six modes: collect a same-config CCD-only replay for Fig. 12.
+
+If the CCD predictor semantics themselves change, however, its old cycle/L2
+point is no longer valid Figure-10/11 evidence.  Rebuild in an isolated
+worktree and rerun the CCD mode into a fresh, exclusive root for every case;
+use that root both for the primary CCD override and for its Fig. 12 counters.
+The analyzer intentionally forbids falling back to the pre-fix CCD result.
 
 ```bash
 scripts/run_c2p_ccd_metrics.sh \
@@ -114,8 +119,11 @@ scripts/run_c2p_ccd_metrics.sh \
   --ccd-metrics-root hw_run/c2p-paper16-ccd-metrics --strict
 ```
 
-The original v7 CCD cycle/L2 values remain the Figure-10/11 source; the
-separate root provides only same-config, provenance-captured Fig.12 counters.
+For a statistics-only replay, the original CCD cycle/L2 values remain the
+Figure-10/11 source and the separate root supplies only provenance-captured
+Fig. 12 counters.  For a predictor-semantics correction, use the new root for
+both through `--mode-override-root ccd=NEW_CCD_ROOT` and
+`--ccd-metrics-root NEW_CCD_ROOT`.
 
 ### Parallel replay roots
 
@@ -132,8 +140,8 @@ missing case/mode and its exact directory is recorded in
   --supplemental-results-root hw_run/c2p-paper16-v7-parallel \
   --l2-fast-root hw_run/c2p-paper16-l2-50 \
   --supplemental-l2-fast-root hw_run/c2p-paper16-l2-50-parallel \
-  --ccd-metrics-root hw_run/c2p-paper16-ccd-metrics \
-  --supplemental-ccd-metrics-root hw_run/c2p-paper16-ccd-metrics-parallel \
+  --ccd-metrics-root hw_run/c2p-paper16-ccd-refresh \
+  --mode-override-root ccd=hw_run/c2p-paper16-ccd-refresh \
   --out-dir hw_run/c2p-paper16-analysis --strict
 ```
 
