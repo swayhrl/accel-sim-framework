@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+"""Render an auditable C2P-Cache paper16 comparison report from CSV evidence."""
+
+import argparse
+import csv
+from collections import defaultdict
+from pathlib import Path
+
+
+GROUPS = ("R0S0", "R1S0", "R0S1", "R1S1")
+MODES = ("ata", "ccd", "ring", "c2p")
+MODE_LABEL = {"ata": "ATA", "ccd": "CCD", "ring": "RING", "c2p": "C2P-Cache"}
+PAPER_TARGETS = {
+    "R1S1": "C2P IPC +23.5% average (up to +49.7%)",
+    "R0S1": "C2P about -2.0%; ATA -31.7%; RING -19.3%; CCD +0.4%",
+    "R1S0/R1S1": "C2P normalized L2 access 53.4% / 69.8%",
+}
+MISSING_TRACES = (
+    "ISPASS: BFS, LIB, LPS, RAY",
+    "Pannotia: color_max, fw_block, mis, pagerank",
+)
+
+
+def read_csv(path):
+    with path.open(newline="") as stream:
+        return list(csv.DictReader(stream))
+
+
+def number(row, field):
+    try:
+        return float(row[field])
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def mean(values):
+    return None if not values else sum(values) / len(values)
+
+
+def aggregate(rows, field):
+    result = {}
+    for group in GROUPS:
+        for mode in MODES:
+            values = [number(row, field) for row in rows
+                      if row["group"] == group and row["mode"] == mode]
+            values = [value for value in values if value is not None]
+            result[group, mode] = (len(values), mean(values))
+    return result
+
+
+def format_value(value):
+    return "—" if value is None else f"{value:.3f}"
+
+
+def trend(result, condition, statement):
+    value = result[1]
+    if value is None:
+        return f"- insufficient local points: {statement}"
+    return f"- {'consistent' if condition(value) else 'different'}: {statement} (observed {value:.3f})"
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--analysis-dir", required=True, type=Path)
+    parser.add_argument("--report", required=True, type=Path)
+    parser.add_argument("--figures-dir", type=Path)
+    args = parser.parse_args()
+    rows = read_csv(args.analysis_dir / "paper16_modes.csv")
+    cases = read_csv(args.analysis_dir / "paper16_cases.csv")
+    ipc = aggregate(rows, "ipc_normalized")
+    l2 = aggregate(rows, "l2_access_normalized")
+
+    lines = ["# C2P-Cache paper16 directional reproduction", "",
+             "## Scope and acceptance", "",
+             "This report evaluates the canonical local 16 complete replay traces; "
+             "it is not a claim of cycle-identical reproduction of unpublished "
+             "author traces or address hashes.  All numbers below are derived "
+             "from `paper16_cases.csv` and `paper16_modes.csv`.", "",
+             "## Local workload classification", "",
+             "| Group | Cases |", "|---|---|"]
+    for group in GROUPS:
+        names = [row["abbr"] for row in cases if row["group"] == group]
+        lines.append(f"| {group} | {', '.join(names) if names else '—'} |")
+
+    lines.extend(["", "## Figure-10-style normalized IPC aggregate", "",
+                  "Arithmetic mean across completed local cases in each group; "
+                  "not a replacement for the paper's original workload-weighted set.", "",
+                  "| Group | ATA | CCD | RING | C2P-Cache |", "|---|---:|---:|---:|---:|"])
+    for group in GROUPS:
+        lines.append("| {} | {} | {} | {} | {} |".format(
+            group, *(format_value(ipc[group, mode][1]) for mode in MODES)))
+
+    lines.extend(["", "## Figure-11-style normalized L2 access aggregate", "",
+                  "| Group | ATA | CCD | RING | C2P-Cache |", "|---|---:|---:|---:|---:|"])
+    for group in GROUPS:
+        lines.append("| {} | {} | {} | {} | {} |".format(
+            group, *(format_value(l2[group, mode][1]) for mode in MODES)))
+
+    lines.extend(["", "## Paper target versus local directional evidence", ""])
+    for group, target in PAPER_TARGETS.items():
+        lines.append(f"- paper target ({group}): {target}.")
+    lines.extend(["",
+                  trend(ipc["R1S1", "c2p"], lambda value: value > 1.0,
+                        "R1S1 C2P has positive IPC direction"),
+                  trend(ipc["R0S1", "c2p"], lambda value: 0.95 <= value <= 1.05,
+                        "R0S1 C2P remains near neutral"),
+                  trend(ipc["R0S1", "ata"], lambda value: value < 1.0,
+                        "R0S1 ATA exposes sharing overhead"),
+                  trend(ipc["R0S1", "ring"], lambda value: value < 1.0,
+                        "R0S1 RING exposes sharing overhead"),
+                  trend(l2["R1S1", "c2p"], lambda value: value < 1.0,
+                        "R1S1 C2P reduces L2 accesses"),
+                  trend(l2["R1S0", "c2p"], lambda value: value < 1.0,
+                        "R1S0 C2P reduces L2 accesses")])
+
+    lines.extend(["", "## Mechanism and provenance gates", "",
+                  "- `analyze_c2p_paper16.py --strict` requires every seven-mode "
+                  "bundle and every 50-cycle baseline, oracle timing invariance, "
+                  "and one avoided L2 request per remote hit.",
+                  "- Figure 12 uses independent CCD and C2P tag-time TP/FN/FP/TN "
+                  "classification.  Figure 13 is a distinct measured m/k sweep, "
+                  "not an interpolation of the default point.",
+                  "- Figure 14 is built from the dynamic peer-access histograms, "
+                  "split into completed remote-hit and miss/fallback paths."])
+    if args.figures_dir:
+        figures = ("fig10_normalized_ipc.pdf", "fig11_l2_access.pdf",
+                   "fig12_filtering_accuracy.pdf", "fig13_ipc_vs_fp_ratio.pdf",
+                   "fig14_peer_probe_distribution.pdf")
+        lines.extend(["", "## Rendered artifacts", ""])
+        for figure in figures:
+            lines.append(f"- {'present' if (args.figures_dir / figure).is_file() else 'missing'}: {figure}")
+
+    lines.extend(["", "## Explicitly unavailable paper traces", ""])
+    lines.extend(f"- {entry}" for entry in MISSING_TRACES)
+    lines.extend(["", "These eight workloads have no compatible locally staged or public "
+                  "NVBit/Accel-Sim replay traces. They are recorded as missing rather "
+                  "than substituted with similarly named workloads."])
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text("\n".join(lines) + "\n")
+
+
+if __name__ == "__main__":
+    main()
