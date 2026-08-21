@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_l2_frc_core_sweep.sh --trace KERNELSLIST --config CONFIG
-       [--trace-config FILE] [--run-root DIR]
+       [--trace-config FILE] [--run-root DIR] [--variants CSV]
 
 Runs the Phase-3 paper-mode FRC sensitivity points (4/8/16/32/64 entries)
 and the capacity-fair 128/256-sector points.  The baseline has 24 ways per
@@ -17,12 +17,14 @@ trace=""
 config=""
 trace_config=""
 run_root=""
+variants_csv=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace) trace="$2"; shift 2 ;;
     --config) config="$2"; shift 2 ;;
     --trace-config) trace_config="$2"; shift 2 ;;
     --run-root) run_root="$2"; shift 2 ;;
+    --variants) variants_csv="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -55,7 +57,18 @@ sum_frc_field() {
 printf 'variant\tcycles\tinstructions\tscalar_opc\tl2_accesses\tl2_misses\tl2_mpko\tfrc_allocations\tfrc_lower_reads\tfrc_swaps\tfrc_set_full_fallbacks\tfrc_write_fallbacks\tfrc_atomic_fallbacks\n' \
   > "$run_root/summary.tsv"
 
-variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26)
+default_variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26)
+if [[ -n "$variants_csv" ]]; then
+  IFS=',' read -r -a variants <<< "$variants_csv"
+else
+  variants=("${default_variants[@]}")
+fi
+for variant in "${variants[@]}"; do
+  [[ -f "$repo_root/configs/l2_frc/$variant.config" ]] || {
+    echo "error: unknown FRC variant $variant" >&2
+    exit 2
+  }
+done
 for variant in "${variants[@]}"; do
   args=(--trace "$trace" --config "$config" --config-extra "$repo_root/configs/l2_frc/$variant.config" --run-dir "$run_root/$variant")
   [[ -n "$trace_config" ]] && args+=(--trace-config "$trace_config")
