@@ -117,33 +117,38 @@ def strip_bars(rows, metric, ylabel, title, filename, out, formats, groups=GROUP
 
 def filtering_accuracy(cases, out, formats):
     fig, axis = plt.subplots(figsize=(12.2, 2.7))
-    # Fig. 12 compares the two filters per workload.  Use the same category
-    # order as the paper, while a plain gray CCD bar and cross-hatched C2P
-    # bar retain the stable mechanism visual vocabulary of Fig. 10.
-    fields = (("tp_rate", "TP", "#78b7a5", ""),
-              ("fn_rate", "FN", "#e7c27d", ""),
-              ("fp_rate", "FP", "#e89b88", "\\\\"),
-              ("tn_rate", "TN", "#d9d9d9", ""))
-    systems = (("CCD", "ccd", "#9aa8b0", ""),
-               ("C2P-Cache", "snapshot", "#e89b88", "xx"))
+    # Fig. 12's original legend distinguishes CCD and C2P classes rather
+    # than only TP/FN/FP/TN.  Keep that eight-entry vocabulary: blue/gray for
+    # CCD, salmon/peach for C2P, and hatching on the positive/filter-error
+    # pieces so the rendered plot also remains legible in grayscale.
+    systems = (
+        ("CCD", "ccd", (("tp_rate", "CCD TP", "#6fa8c5", "///"),
+                        ("fn_rate", "CCD FN", "#b9cbd5", ""),
+                        ("fp_rate", "CCD FP", "#92a6b0", "\\\\"),
+                        ("tn_rate", "CCD TN", "#edf1f3", ""))),
+        ("C2P-Cache", "snapshot", (("tp_rate", "C2P-Cache TP", "#e89b88", "xx"),
+                                      ("fn_rate", "C2P-Cache FN", "#f4c5b6", ""),
+                                      ("fp_rate", "C2P-Cache FP", "#d9897e", "\\\\"),
+                                      ("tn_rate", "C2P-Cache TN", "#fae9e3", ""))),
+    )
     x, positions, labels, boundaries = 0.0, [], [], []
     for group in GROUPS:
         data = [row for row in cases if row["group"] == group and
                 all(number(row, prefix + "_tp_rate") is not None
-                    for _, prefix, _, _ in systems)]
+                    for _, prefix, _ in systems)]
         start = x
         for row in data:
             positions.append(x)
             labels.append(row["abbr"])
-            for system_index, (system_name, prefix, _, system_hatch) in enumerate(systems):
+            for system_index, (system_name, prefix, fields) in enumerate(systems):
                 bottom = 0.0
                 bar_x = x + (-0.19 if system_index == 0 else 0.19)
                 for suffix, name, color, hatch in fields:
                     amount = number(row, prefix + "_" + suffix) or 0.0
                     axis.bar(bar_x, amount, bottom=bottom, width=0.36, color=color,
-                             hatch=(system_hatch if system_index else hatch),
+                             hatch=hatch,
                              edgecolor="black", linewidth=0.35,
-                             label=name if len(positions) == 1 and system_index == 0 else None)
+                             label=name if len(positions) == 1 else None)
                     bottom += amount
                 axis.text(bar_x, -0.055, "CCD" if system_index == 0 else "C2P",
                           ha="center", va="top", fontsize=5.8, clip_on=False)
@@ -160,8 +165,8 @@ def filtering_accuracy(cases, out, formats):
     axis.set_xticks(positions)
     axis.set_xticklabels(labels, fontsize=8)
     axis.set_ylabel("System Ratio")
-    axis.legend(ncol=4, loc="upper center", bbox_to_anchor=(0.5, 1.14),
-                frameon=False, fontsize=8, handlelength=1.2, columnspacing=0.7)
+    axis.legend(ncol=4, loc="upper center", bbox_to_anchor=(0.5, 1.22),
+                frameon=False, fontsize=7.2, handlelength=1.2, columnspacing=0.55)
     save(fig, out, "fig12_filtering_accuracy", formats)
 
 
