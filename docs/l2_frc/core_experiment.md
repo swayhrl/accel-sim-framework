@@ -91,6 +91,14 @@ used as a substitute for the other.  Existing observation logs produced
 before this counter report `NA` for this column rather than silently treating
 it as zero.
 
+The observer is independently gated before its numbers are used: with FRC
+disabled, the current core runs the complete multi-kernel
+`fastWalshTransform/_logK_11__logD_19` trace once with observation disabled and
+once with it enabled.  The checked architectural, L2/MSHR, DRAM and writeback
+metric streams match exactly (172,297 cycles in both runs), while the enabled
+run records 131,072 lower reads.  Thus the instrumentation is exercised but
+does not change the simulated result.
+
 ## Causal replacement-pressure gate
 
 `scripts/check_l2_frc_replacement_pressure.sh` is deliberately not a paper
