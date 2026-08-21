@@ -107,7 +107,9 @@ GPGPU-Sim endpoints, GTO scheduling, 20 memory partitions, and a 128-set
 cannot be represented literally in this trace-driven model without an
 artificial shared-reply/ROP deadlock; the 64 endpoints preserve the number of
 SMs and all C2P peer identities while avoiding that simulator aggregation
-artifact. The original manuscript's L1 entry also says four sets, which is
+artifact. ATA/CCD retain their own explicit eight-SM logical group size, so
+their comparator scope does not collapse with the one-SM simulator endpoints.
+The original manuscript's L1 entry also says four sets, which is
 incompatible with its stated 64KiB capacity and 32-way associativity; this
 repository deliberately uses the capacity-preserving interpretation. The
 legacy DWT row above predates this correction.
