@@ -19,18 +19,27 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
   A true miss may allocate a free FRC entry and issue the lower read without
   reserving an L2 victim.  A full FRC set falls back to conventional L2 miss
   handling.
-- An FRC entry is `FREE`, `FETCHING`, `FETCHED`, or `EVICTING`.  Only
-  `FETCHED` can satisfy an access.  `EVICTING` retains a dirty L2 victim until
-  its writeback is accepted by the lower interface and is never a hit.
+- An FRC entry is `FREE`, `FETCHING`, `FETCHED`, or `EVICTING`.  `FETCHED` is
+  only the internal completed-before-swap state: the model swaps it into L2
+  immediately, so later hits use L2 rather than a second data source.
+  `EVICTING` retains a dirty L2 victim until its writeback is accepted by the
+  lower interface and is never a hit.
 - Victim choice happens at fill/swap time.  A clean victim releases the FRC
   entry immediately.  A dirty victim stays in the entry until the lower
   writeback handshake transfers its ownership.
-- FRC does not add or remove MSHRs.  MSHR keys remain 32-byte sectors, so a
-  line entry carries independent valid, pending and dirty sector masks.
-- Baseline sector-write and atomic semantics remain authoritative.  A request
-  is accepted into FRC only after all finite credits needed for its chosen
-  path are known available.  Unsupported combinations temporarily use the
-  baseline path until their explicit FRC rule lands.
+- FRC does not add or remove MSHRs.  MSHR keys remain 32-byte sectors.  An
+  FRC entry tracks the full-line pending/valid masks and its dirty victim's
+  sector mask; an upper request for a prefetched sector attaches the normal
+  per-sector MSHR before the line swaps.
+- FRC currently owns only read-miss scheduling.  Stores (including partial
+  sector stores) and atomics explicitly use the unmodified baseline path,
+  which remains authoritative for byte masks and atomic order.  Their
+  per-subpartition fallback counters are printed and checked by the directed
+  suite; this is a deliberate semantic boundary, not an unmodelled path.  A
+  same-line store or atomic stalls while an entry is `FETCHING`, preventing a
+  baseline allocation from creating a second owner before swap.
+  A read is accepted into FRC only after all finite credits needed for its
+  chosen path are known available.
 
 ## Timing modes
 
@@ -60,6 +69,16 @@ all extra port assumptions are reported, not hidden in payload capacity.
   lower writeback request.
 - No FRC entry is released before its dirty writeback lower handshake.
 
-The directed suite must cover early fetch, FRC hit while an L2 set is fully
-reserved, set-full fallback, clean swap, dirty swap with a blocked lower
-writeback queue, sector merge, partial write, atomic, and flush/invalidate.
+`wb_wait_cycles` measures the interval from inserting that FRC-owned
+writeback into the L2 miss queue to its lower acceptance.  It may be zero in
+an uncongested run; ownership is nevertheless held until the acceptance edge.
+`flush_calls` is diagnostic only: Accel-Sim may invoke end-of-kernel flushing
+repeatedly while draining, so it is not a count of distinct cache lines.
+
+The directed suite covers full-line early fetch, a sector attachment while a
+line is fetching, set-full fallback, clean swap, dirty swap and the lower-WB
+ownership handshake, partial-write baseline fallback, atomic baseline
+equivalence, and end-of-kernel flush.  The simulator's ordinary queue model
+does not inject an artificial lower-port stall; `wb_wait_cycles` keeps that
+future stress point observable rather than claiming a blocked-WB result that
+the trace did not create.
