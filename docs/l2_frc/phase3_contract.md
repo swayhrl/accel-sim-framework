@@ -36,8 +36,9 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
 
 `paper` is the default.  It makes the FRC lookup and a completed clean swap
 logically overlap the L2 lookup and does not charge an additional L2 data
-port.  `conservative` charges explicit lookup and swap cycles and routes
-FRC-to-L2 placement through the ordinary fill/data-port gate.  Results always
+port.  `conservative` charges `lookup_latency` on allocation and
+`swap_latency` on swap through the ordinary fill-side management port; this
+serializes later fills for the requested number of cycles.  Results always
 print the selected mode; neither mode claims a physical equal-area design.
 
 ## Capacity and comparison rules
