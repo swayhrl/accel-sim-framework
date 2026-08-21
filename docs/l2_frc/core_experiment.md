@@ -79,6 +79,14 @@ primary request that allocated it.  Use an `*-observe.config` and
 trace, the runner takes the final cumulative occurrence of each simulator
 statistic; intermediate per-kernel reports are not experiment totals.
 
+The collector also reports `first-offer = first L2 offer -> lower issue`.
+Unlike acceptance-based pre-memory, it retains time spent retrying a request
+after a `RESERVATION_FAIL`.  It distinguishes retry delay from an accepted
+miss waiting in the ordinary miss/replacement path; neither metric should be
+used as a substitute for the other.  Existing observation logs produced
+before this counter report `NA` for this column rather than silently treating
+it as zero.
+
 ## Causal replacement-pressure gate
 
 `scripts/check_l2_frc_replacement_pressure.sh` is deliberately not a paper
@@ -89,6 +97,15 @@ the control reports 136 L2 reservation failures and takes 5,470 cycles;
 FRC4 accepts two independent FRC allocations and completes in 5,337 cycles
 (2.43% faster).  This is a correctness/performance gate only, not a general
 workload result or a capacity-fair comparison.
+
+The observation-enabled rerun identifies the source of this directed benefit:
+both primary lower reads have `first-offer -> lower issue = 1` cycle, while
+the baseline has `accept -> lower issue = 69` cycles/read and FRC4 has 1.
+The lower-memory averages are 136.0 and 137.5 cycles/read, respectively, so
+the 133-cycle application-level difference is explained by the conventional
+accepted-miss path, not a faster lower memory.  The baseline's 136 reservation
+failures remain a useful pressure fingerprint, but they are not silently
+attributed to the two completed primary-read samples.
 
 ## Completed full-trace results with the independent transaction store
 
