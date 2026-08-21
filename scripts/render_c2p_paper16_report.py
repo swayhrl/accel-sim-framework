@@ -111,11 +111,14 @@ def main():
                   "The local group always comes from this campaign's independent "
                   "oracle-redundancy and 50-cycle-L2 measurements; a mismatch is "
                   "trace/input evidence, not a relabeling of the paper.", "",
-                  "| Case | Paper label | Paper group | Local group |", "|---|---|---|---|"])
+                  "| Case | Paper label | Paper group | Local group | Local redundancy | Local L2 sensitivity |",
+                  "|---|---|---|---|---:|---:|"])
     for row in cases:
-        lines.append("| {} | {} | {} | {} |".format(
+        lines.append("| {} | {} | {} | {} | {} | {} |".format(
             row["case"], row.get("paper_label", "—") or "—",
-            row.get("paper_group", "—") or "—", row["group"]))
+            row.get("paper_group", "—") or "—", row["group"],
+            format_value(number(row, "oracle_redundancy")),
+            format_value(number(row, "l2_sensitivity"))))
 
     lines.extend(["", "## Figure-10-style normalized IPC aggregate", "",
                   "Arithmetic mean across locally complete seven-mode cases in each group; "
