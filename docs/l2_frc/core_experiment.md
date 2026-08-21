@@ -125,6 +125,9 @@ same dirty-victim trace must drain in both FRC-off and FRC1 modes.  It checks
 the conventional and FRC writeback counts, sector count and 32-byte payload
 count are identical; FRC must additionally report two completed fetches/two
 swaps, one dirty swap, one accepted writeback and no live entry at exit.
+Pass `--atomic-trace <kernelslist.g>` to add a current-format atomic burst to
+the same constrained pair; selected architectural metrics must then match
+exactly and FRC's atomic fallback count must be nonzero.
 
 This is deliberately a valid constrained point, not an artificial stall
 model.  Shallower attempted FIFO combinations deadlocked in the unmodified
