@@ -116,3 +116,23 @@ scripts/run_c2p_ccd_metrics.sh \
 
 The original v7 CCD cycle/L2 values remain the Figure-10/11 source; the
 separate root provides only same-config, provenance-captured Fig.12 counters.
+
+### Parallel replay roots
+
+Long full-trace replays may run in parallel, but never let two runners write a
+case/mode directory in the same root.  Give each parallel batch a distinct
+result root, then supply it as a supplemental root at analysis time.  The
+canonical root is always selected first; a supplemental root fills only a
+missing case/mode and its exact directory is recorded in
+`paper16_provenance.csv`.
+
+```bash
+/usr/bin/python3 scripts/analyze_c2p_paper16.py \
+  --results-root hw_run/c2p-paper16-v7 \
+  --supplemental-results-root hw_run/c2p-paper16-v7-parallel \
+  --l2-fast-root hw_run/c2p-paper16-l2-50 \
+  --supplemental-l2-fast-root hw_run/c2p-paper16-l2-50-parallel \
+  --ccd-metrics-root hw_run/c2p-paper16-ccd-metrics \
+  --supplemental-ccd-metrics-root hw_run/c2p-paper16-ccd-metrics-parallel \
+  --out-dir hw_run/c2p-paper16-analysis --strict
+```

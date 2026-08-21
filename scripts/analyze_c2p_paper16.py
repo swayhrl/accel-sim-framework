@@ -39,13 +39,14 @@ HIST = re.compile(r"^c2p_peer_access_(hit|miss)_count_(\d+) = (\d+)$")
 PROVENANCE_KEYS = ("gpgpusim_commit", "accelsim_commit", "config_sha256",
                    "trace_sha256", "sim_sha256", "cudart_sha256")
 
-# These two options were introduced as explicit spelling of the existing
-# default while the v7 campaign was already running.  Keep the raw run-file
+# These options were introduced as explicit spelling of existing defaults
+# while the v7 campaign was already running. Keep the raw run-file
 # hash for provenance, but compare an effective configuration below: omitted
 # and explicitly-default forms are the same experiment point.
 EFFECTIVE_CONFIG_DEFAULTS = {
     "-c2p_cache_snapshot_bf_rows_per_bank": "64",
     "-c2p_cache_bf_hashes": "3",
+    "-c2p_cache_target_probe_queue_size": "32",
 }
 
 
@@ -89,6 +90,22 @@ def read_summary(run_dir):
             if global_read:
                 values["l2_global_read_accesses"] = int(global_read.group(1))
     return values
+
+
+def locate_run(roots, case, mode):
+    """Return the canonical-first completed run directory and its summary.
+
+    Long full-trace replays may be safely parallelized only into separate
+    result roots.  The canonical root remains authoritative whenever it has a
+    completed mode; a supplemental root fills only a missing mode and is
+    recorded verbatim in provenance.
+    """
+    for root in roots:
+        run_dir = root / case / mode
+        data = read_summary(run_dir)
+        if data is not None:
+            return run_dir, data
+    return roots[0] / case / mode, None
 
 
 def read_provenance(run_dir):
@@ -172,6 +189,8 @@ def write_csv(path, rows, columns):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results-root", required=True, type=Path)
+    parser.add_argument("--supplemental-results-root", action="append", type=Path,
+                        default=[], help="canonical-fallback roots from parallel replays")
     parser.add_argument("--out-dir", required=True, type=Path)
     parser.add_argument("--manifest", type=Path,
                         default=Path(__file__).resolve().parents[1] /
@@ -182,8 +201,12 @@ def main():
                         help="Figure-10 paper grouping reference; never used for local classification")
     parser.add_argument("--l2-fast-root", type=Path,
                         help="baseline-only root with 50-cycle L2 runs")
+    parser.add_argument("--supplemental-l2-fast-root", action="append", type=Path,
+                        default=[], help="50-cycle fallback roots from parallel replays")
     parser.add_argument("--ccd-metrics-root", type=Path,
                         help="CCD-only replays carrying TP/FN/FP/TN counters")
+    parser.add_argument("--supplemental-ccd-metrics-root", action="append", type=Path,
+                        default=[], help="CCD-counter fallback roots from parallel replays")
     parser.add_argument("--redundancy-threshold", type=float, default=0.30)
     parser.add_argument("--sensitivity-threshold", type=float, default=1.10)
     parser.add_argument("--strict", action="store_true",
@@ -192,6 +215,11 @@ def main():
 
     manifest = read_manifest(args.manifest)
     paper_groups = read_paper_groups(args.paper_groups)
+    primary_roots = [args.results_root, *args.supplemental_results_root]
+    fast_roots = ([args.l2_fast_root, *args.supplemental_l2_fast_root]
+                  if args.l2_fast_root else [])
+    ccd_roots = ([args.ccd_metrics_root, *args.supplemental_ccd_metrics_root]
+                 if args.ccd_metrics_root else [])
     args.out_dir.mkdir(parents=True, exist_ok=True)
     mode_rows = []
     case_rows = []
@@ -222,40 +250,37 @@ def main():
         paper_group = paper_groups.get(case)
         if paper_group is None:
             missing.append(f"{case}: missing Figure-10 paper-group reference")
-        run_root = args.results_root / case
-        results = {mode: read_summary(run_root / mode) for mode in MODES}
+        primary_runs = {mode: locate_run(primary_roots, case, mode) for mode in MODES}
+        results = {mode: primary_runs[mode][1] for mode in MODES}
         primary_provenance = {
-            mode: record_provenance(case, mode, "primary", run_root / mode, data)
+            mode: record_provenance(case, mode, "primary", primary_runs[mode][0], data)
             for mode, data in results.items()}
         absent = [mode for mode, data in results.items() if data is None]
         if absent:
             missing.append(f"{case}: missing {', '.join(absent)}")
         baseline = results["baseline"]
         oracle = results["oracle"]
-        fast = (read_summary(args.l2_fast_root / case / "baseline")
-                if args.l2_fast_root else None)
-        record_provenance(case, "baseline", "l2_50",
-                          args.l2_fast_root / case / "baseline", fast) \
-            if args.l2_fast_root else None
-        if args.l2_fast_root and fast is None:
+        fast_dir, fast = (locate_run(fast_roots, case, "baseline")
+                          if fast_roots else (None, None))
+        record_provenance(case, "baseline", "l2_50", fast_dir, fast) \
+            if fast_roots else None
+        if fast_roots and fast is None:
             missing.append(f"{case}: missing 50-cycle baseline")
-        ccd_metrics = (read_summary(args.ccd_metrics_root / case / "ccd")
-                       if args.ccd_metrics_root else results["ccd"])
+        ccd_dir, ccd_metrics = (locate_run(ccd_roots, case, "ccd")
+                                if ccd_roots else (primary_runs["ccd"][0], results["ccd"]))
         ccd_provenance = (record_provenance(case, "ccd", "ccd_metrics",
-                                            args.ccd_metrics_root / case / "ccd",
-                                            ccd_metrics)
-                          if args.ccd_metrics_root else primary_provenance["ccd"])
-        if args.ccd_metrics_root and ccd_metrics is None:
+                                            ccd_dir, ccd_metrics)
+                          if ccd_roots else primary_provenance["ccd"])
+        if ccd_roots and ccd_metrics is None:
             missing.append(f"{case}: missing CCD metric replay")
-        elif args.ccd_metrics_root and any(
+        elif ccd_roots and any(
                 value(ccd_metrics, "c2p_ccd_" + suffix) == ""
                 for suffix in ("false_positive", "false_negative",
                                "true_positive", "true_negative")):
             missing.append(f"{case}: CCD metric replay lacks classification counters")
-        if (args.ccd_metrics_root and primary_provenance["ccd"] is not None and
-                ccd_provenance is not None and
-                primary_provenance["ccd"].get("effective_config_sha256") !=
-                ccd_provenance.get("effective_config_sha256")):
+        if (ccd_roots and results["ccd"] is not None and ccd_metrics is not None and
+                effective_config_sha256(primary_runs["ccd"][0]) !=
+                effective_config_sha256(ccd_dir)):
             invariant_failures.append(
                 f"{case}: CCD metric config differs from primary CCD config")
 
@@ -350,7 +375,7 @@ def main():
                 value(data, "c2p_candidate_total"),
                 value(data, "c2p_candidate_queries"))
             mode_rows.append(row)
-            for outcome, histogram in read_histogram(run_root / mode).items():
+            for outcome, histogram in read_histogram(primary_runs[mode][0]).items():
                 for probes, count in histogram.items():
                     hist_rows.append({"case": case, "group": group, "mode": mode,
                                       "outcome": outcome, "peer_probes": probes,
