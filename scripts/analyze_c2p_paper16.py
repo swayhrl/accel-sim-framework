@@ -119,6 +119,8 @@ def main():
                         "configs/c2p-cache/paper16_workloads.tsv")
     parser.add_argument("--l2-fast-root", type=Path,
                         help="baseline-only root with 50-cycle L2 runs")
+    parser.add_argument("--ccd-metrics-root", type=Path,
+                        help="CCD-only replays carrying TP/FN/FP/TN counters")
     parser.add_argument("--redundancy-threshold", type=float, default=0.30)
     parser.add_argument("--sensitivity-threshold", type=float, default=1.10)
     parser.add_argument("--strict", action="store_true",
@@ -145,6 +147,15 @@ def main():
                 if args.l2_fast_root else None)
         if args.l2_fast_root and fast is None:
             missing.append(f"{case}: missing 50-cycle baseline")
+        ccd_metrics = (read_summary(args.ccd_metrics_root / case / "ccd")
+                       if args.ccd_metrics_root else results["ccd"])
+        if args.ccd_metrics_root and ccd_metrics is None:
+            missing.append(f"{case}: missing CCD metric replay")
+        elif args.ccd_metrics_root and any(
+                value(ccd_metrics, "c2p_ccd_" + suffix) == ""
+                for suffix in ("false_positive", "false_negative",
+                               "true_positive", "true_negative")):
+            missing.append(f"{case}: CCD metric replay lacks classification counters")
 
         # These are mechanism invariants, not performance expectations.  The
         # oracle path must remain observational, and an admitted peer return
@@ -177,7 +188,7 @@ def main():
         c2p_tp, c2p_fn, c2p_fp, c2p_tn = classification_rates(
             results["c2p"], "c2p_snapshot_")
         ccd_tp, ccd_fn, ccd_fp, ccd_tn = classification_rates(
-            results["ccd"], "c2p_ccd_")
+            ccd_metrics, "c2p_ccd_")
         case_rows.append({
             **item,
             "group": group,

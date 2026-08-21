@@ -100,3 +100,18 @@ Re-run `plot_c2p_paper_figures.py` after the sweep analysis; it detects the
 resulting `fp_sweep_binned.csv` and adds the Figure-13-style median/percentile
 plot.  The default `m5120-k4` point is verified to map identically to the
 fixed 5,120-row implementation it replaced.
+
+If the primary seven-mode campaign predates the CCD filtering counters, do
+not rerun its other six modes. Build the instrumented simulator in an isolated
+worktree and collect only the additional CCD evidence:
+
+```bash
+scripts/run_c2p_ccd_metrics.sh \
+  --trace-root /path/to/hw_run \
+  --out-root hw_run/c2p-paper16-ccd-metrics
+/usr/bin/python3 scripts/analyze_c2p_paper16.py ... \
+  --ccd-metrics-root hw_run/c2p-paper16-ccd-metrics --strict
+```
+
+The original v7 CCD cycle/L2 values remain the Figure-10/11 source; the
+separate root provides only same-config, provenance-captured Fig.12 counters.
