@@ -36,8 +36,11 @@ main_supplemental=(
 )
 fast_root="$repo_root/hw_run/c2p-paper16-l2-50-v7-20260821"
 fast_supplemental=("$repo_root/hw_run/c2p-paper16-l2-50-v7-parallel-v2-20260821")
-ccd_root="$repo_root/hw_run/c2p-paper16-ccd-metrics-v1-20260821"
-ccd_supplemental=("$repo_root/hw_run/c2p-paper16-ccd-metrics-parallel-v2-20260821")
+# CCD's counter training was corrected after the initial campaign.  A fresh,
+# exclusive root prevents the strict closeout from silently accepting any
+# pre-fix CCD mode or metric replay.
+ccd_root="$repo_root/hw_run/c2p-paper16-ccd-refresh-v2-20260821"
+ccd_supplemental=()
 sweep_root="$repo_root/hw_run/c2p-paper16-fp-sweep-v1-20260821"
 sweep_supplemental=("$repo_root/hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821")
 queue_root="$repo_root/hw_run/c2p-btree-query-sensitivity-v1-20260821"
@@ -64,8 +67,12 @@ collect_missing() {
   while IFS=$'\t' read -r case_name _; do
     [[ -z "$case_name" || "$case_name" == case || "$case_name" == \#* ]] && continue
     for mode in baseline oracle ideal c2p ata ccd ring; do
-      has_summary "$case_name" "$mode" "$main_root" "${main_supplemental[@]}" ||
+      if [[ "$mode" == ccd ]]; then
+        has_summary "$case_name" "$mode" "$ccd_root" "${ccd_supplemental[@]}" ||
+          missing+=("main:$case_name/$mode")
+      elif ! has_summary "$case_name" "$mode" "$main_root" "${main_supplemental[@]}"; then
         missing+=("main:$case_name/$mode")
+      fi
     done
     has_summary "$case_name" baseline "$fast_root" "${fast_supplemental[@]}" ||
       missing+=("l2-50:$case_name/baseline")
@@ -96,7 +103,7 @@ while :; do
         --l2-fast-root "$fast_root" \
         --supplemental-l2-fast-root "${fast_supplemental[0]}" \
         --ccd-metrics-root "$ccd_root" \
-        --supplemental-ccd-metrics-root "${ccd_supplemental[0]}" \
+        --ccd-mode-root "$ccd_root" \
         --sweep-root "$sweep_root" \
         --supplemental-sweep-root "${sweep_supplemental[0]}" \
         --queue-sensitivity-root "$queue_root" \

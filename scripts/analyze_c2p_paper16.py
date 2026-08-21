@@ -182,7 +182,7 @@ def read_summary(run_dir):
     return values
 
 
-def locate_run(roots, case, mode):
+def locate_run(roots, case, mode, mode_override_roots=None):
     """Return the canonical-first completed run directory and its summary.
 
     Long full-trace replays may be safely parallelized only into separate
@@ -190,12 +190,17 @@ def locate_run(roots, case, mode):
     completed mode; a supplemental root fills only a missing mode and is
     recorded verbatim in provenance.
     """
-    for root in roots:
+    # An override is intentionally exclusive: a corrected mode must not fall
+    # back to an older result merely because its fresh replay is incomplete.
+    search_roots = (mode_override_roots[mode]
+                    if mode_override_roots and mode in mode_override_roots
+                    else roots)
+    for root in search_roots:
         run_dir = root / case / mode
         data = read_summary(run_dir)
         if data is not None:
             return run_dir, data
-    return roots[0] / case / mode, None
+    return search_roots[0] / case / mode, None
 
 
 def read_provenance(run_dir):
@@ -313,6 +318,9 @@ def main():
     parser.add_argument("--results-root", required=True, type=Path)
     parser.add_argument("--supplemental-results-root", action="append", type=Path,
                         default=[], help="canonical-fallback roots from parallel replays")
+    parser.add_argument("--mode-override-root", action="append", default=[],
+                        metavar="MODE=DIR",
+                        help="use only DIR for one corrected mode; repeatable")
     parser.add_argument("--out-dir", required=True, type=Path)
     parser.add_argument("--manifest", type=Path,
                         default=Path(__file__).resolve().parents[1] /
@@ -338,6 +346,15 @@ def main():
     manifest = read_manifest(args.manifest)
     paper_groups = read_paper_groups(args.paper_groups)
     primary_roots = [args.results_root, *args.supplemental_results_root]
+    mode_override_roots = {}
+    for item in args.mode_override_root:
+        mode, separator, path = item.partition("=")
+        if not separator or mode not in MODES or not path:
+            parser.error("--mode-override-root must be MODE=DIR for a known mode")
+        root = Path(path)
+        if not root.is_dir():
+            parser.error(f"mode override root does not exist: {root}")
+        mode_override_roots.setdefault(mode, []).append(root)
     fast_roots = ([args.l2_fast_root, *args.supplemental_l2_fast_root]
                   if args.l2_fast_root else [])
     ccd_roots = ([args.ccd_metrics_root, *args.supplemental_ccd_metrics_root]
@@ -372,7 +389,9 @@ def main():
         paper_group = paper_groups.get(case)
         if paper_group is None:
             missing.append(f"{case}: missing Figure-10 paper-group reference")
-        primary_runs = {mode: locate_run(primary_roots, case, mode) for mode in MODES}
+        primary_runs = {
+            mode: locate_run(primary_roots, case, mode, mode_override_roots)
+            for mode in MODES}
         results = {mode: primary_runs[mode][1] for mode in MODES}
         primary_provenance = {
             mode: record_provenance(case, mode, "primary", primary_runs[mode][0], data)
