@@ -26,6 +26,10 @@ module c2p_bf_engine #(
     output wire [ROW_W-1:0]     out_row1,
     output wire [ROW_W-1:0]     out_row2,
     output wire [ROW_W-1:0]     out_row3,
+    output wire [5:0]           out_bank0,
+    output wire [5:0]           out_bank1,
+    output wire [5:0]           out_bank2,
+    output wire [5:0]           out_bank3,
     output wire [AUX_W-1:0]     out_aux
 );
 
@@ -97,6 +101,7 @@ module c2p_bf_engine #(
         end
     endfunction
 
+    wire [9:0] tag_index = reverse_low10(tag_r[1]);
     wire [11:0] bf_index1 = h1_r[1] + h2_r[1];
     wire [11:0] bf_index2 = (h1_r[1] << 1) + h2_r[1];
     wire [11:0] bf_index3 = h1_r[1] + (h1_r[1] << 1) + h2_r[1];
@@ -104,6 +109,12 @@ module c2p_bf_engine #(
     assign out_row1 = bf_row(bf_index1);
     assign out_row2 = bf_row(bf_index2);
     assign out_row3 = bf_row(bf_index3);
+    // Export bank IDs with the rows so a scalable Snapshot front end never
+    // has to re-divide a physical row address by the 80-row bank stride.
+    assign out_bank0 = tag_index[9:4];
+    assign out_bank1 = bf_index1[11:6];
+    assign out_bank2 = bf_index2[11:6];
+    assign out_bank3 = bf_index3[11:6];
 
     always @(posedge clk) begin
         if (reset) begin

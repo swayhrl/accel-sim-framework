@@ -46,6 +46,10 @@ module c2p_snapshot_matrix #(
     reg               query_waiting;
     reg               clearing;
     reg [ROW_W-1:0]   clear_row;
+    // A query accepted after an update must observe that update.  The two BF
+    // engines may otherwise let a query overtake a still-pipelined update at
+    // a 1RW store boundary. Two engine stages bound this counter to two.
+    reg [1:0]         update_inflight;
 
     wire [NUM_SMS-1:0] update_mask = {{(NUM_SMS-1){1'b0}}, 1'b1} << update_sid;
     wire store_clear_valid = clearing;
@@ -56,10 +60,15 @@ module c2p_snapshot_matrix #(
     wire update_bf_in_ready;
     wire update_bf_out_valid;
     wire update_bf_out_ready = store_update_ready;
+    wire store_update_fire = update_bf_out_valid && store_update_ready;
     wire [ROW_W-1:0] update_row0;
     wire [ROW_W-1:0] update_row1;
     wire [ROW_W-1:0] update_row2;
     wire [ROW_W-1:0] update_row3;
+    wire [5:0] update_bank0_unused;
+    wire [5:0] update_bank1_unused;
+    wire [5:0] update_bank2_unused;
+    wire [5:0] update_bank3_unused;
     wire [NUM_SMS-1:0] update_bf_mask;
     wire query_bf_in_valid = query_valid && query_ready;
     wire query_bf_in_ready;
@@ -69,6 +78,10 @@ module c2p_snapshot_matrix #(
     wire [ROW_W-1:0] query_row1;
     wire [ROW_W-1:0] query_row2;
     wire [ROW_W-1:0] query_row3;
+    wire [5:0] query_bank0_unused;
+    wire [5:0] query_bank1_unused;
+    wire [5:0] query_bank2_unused;
+    wire [5:0] query_bank3_unused;
     wire query_bf_aux_unused;
     wire store_query_valid = query_bf_out_valid;
     wire store_query_rsp_valid;
@@ -79,9 +92,9 @@ module c2p_snapshot_matrix #(
     wire [NUM_SMS-1:0] store_query_rsp_data2;
     wire [NUM_SMS-1:0] store_query_rsp_data3;
 
-    // The two engines are independent because a normal Snapshot store has a
-    // read port and a write port.  A 1RW macro implementation may still
-    // arbitrate their completed requests at the store boundary.
+    // Address generation is independent, but query admission is ordered
+    // behind accepted updates so both the reference 1R1W and the ASAP7 1RW
+    // back ends observe a single externally visible update/query order.
     c2p_bf_engine #(
         .TAG_W(TAG_W), .ROW_W(ROW_W), .NUM_BANKS(NUM_BANKS),
         .BF_ROWS_PER_BANK(BF_ROWS_PER_BANK),
@@ -93,6 +106,8 @@ module c2p_snapshot_matrix #(
         .out_valid(update_bf_out_valid), .out_ready(update_bf_out_ready),
         .out_row0(update_row0), .out_row1(update_row1),
         .out_row2(update_row2), .out_row3(update_row3),
+        .out_bank0(update_bank0_unused), .out_bank1(update_bank1_unused),
+        .out_bank2(update_bank2_unused), .out_bank3(update_bank3_unused),
         .out_aux(update_bf_mask)
     );
 
@@ -107,6 +122,8 @@ module c2p_snapshot_matrix #(
         .out_valid(query_bf_out_valid), .out_ready(query_bf_out_ready),
         .out_row0(query_row0), .out_row1(query_row1),
         .out_row2(query_row2), .out_row3(query_row3),
+        .out_bank0(query_bank0_unused), .out_bank1(query_bank1_unused),
+        .out_bank2(query_bank2_unused), .out_bank3(query_bank3_unused),
         .out_aux(query_bf_aux_unused)
     );
 
@@ -162,7 +179,8 @@ module c2p_snapshot_matrix #(
     endgenerate
 
     assign update_ready = !clearing && update_bf_in_ready;
-    assign query_ready = !clearing && !query_waiting &&
+    assign query_ready = !clearing && !query_waiting && !update_valid &&
+                         (update_inflight == 0) &&
                          (!query_rsp_valid || query_rsp_ready) &&
                          query_bf_in_ready;
 
@@ -173,6 +191,7 @@ module c2p_snapshot_matrix #(
             query_rsp_candidates <= {NUM_SMS{1'b0}};
             clearing <= 1'b1;
             clear_row <= {ROW_W{1'b0}};
+            update_inflight <= 2'b0;
         end else begin
             // A row-at-a-time reset maps to a real masked-write SRAM clear;
             // it avoids inferring thousands of resettable flip-flops for the
@@ -186,6 +205,12 @@ module c2p_snapshot_matrix #(
             end
             if (query_rsp_valid && query_rsp_ready)
                 query_rsp_valid <= 1'b0;
+
+            case ({update_bf_in_valid, store_update_fire})
+                2'b10: update_inflight <= update_inflight + 1'b1;
+                2'b01: update_inflight <= update_inflight - 1'b1;
+                default: update_inflight <= update_inflight;
+            endcase
 
             if (query_bf_in_valid)
                 query_waiting <= 1'b1;

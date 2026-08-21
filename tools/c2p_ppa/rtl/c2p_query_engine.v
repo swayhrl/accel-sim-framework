@@ -69,7 +69,10 @@ module c2p_query_engine #(
     reg [3:0] state;
     reg [SID_W-1:0] active_sid;
     reg [TAG_W-1:0] active_tag;
-    reg [NUM_SMS-1:0] candidate_mask;
+    // Keep each cluster as its own small candidate vector. This avoids a
+    // 64-bit variable-index clear every time a probe is issued; selection and
+    // retirement now touch one CLUSTER_SIZE-wide bank only.
+    reg [CLUSTER_SIZE-1:0] candidate_cluster [0:NUM_CLUSTERS-1];
     reg [SID_W-1:0] selected_sid;
     reg [CLUSTER_W-1:0] selected_cluster;
     reg [CLUSTER_RANK_W-1:0] cluster_rank;
@@ -78,11 +81,14 @@ module c2p_query_engine #(
     reg [TIMEOUT_W-1:0] probe_age;
     integer cluster_delta;
     integer clusters_seen;
+    integer cluster_i;
     integer lane_i;
     reg [CLUSTER_W-1:0] active_cluster;
     reg [CLUSTER_W-1:0] ranked_cluster;
     reg scan_found;
     reg [SID_W-1:0] scan_sid;
+    reg [CLUSTER_SHIFT-1:0] scan_lane;
+    reg [CLUSTER_SIZE-1:0] selected_candidates;
 
     wire pop_fifo = (state == S_IDLE) && (fifo_count != 0);
     wire push_fifo = miss_valid && miss_ready;
@@ -114,13 +120,16 @@ module c2p_query_engine #(
             end
         end
 
+        selected_candidates = candidate_cluster[selected_cluster];
         scan_found = 1'b0;
         scan_sid = {SID_W{1'b0}};
+        scan_lane = {CLUSTER_SHIFT{1'b0}};
         for (lane_i = 0; lane_i < CLUSTER_SIZE; lane_i = lane_i + 1) begin
             if (!scan_found &&
-                candidate_mask[selected_cluster * CLUSTER_SIZE + lane_i]) begin
+                selected_candidates[lane_i]) begin
                 scan_found = 1'b1;
                 scan_sid = selected_cluster * CLUSTER_SIZE + lane_i;
+                scan_lane = lane_i[CLUSTER_SHIFT-1:0];
             end
         end
     end
@@ -147,7 +156,9 @@ module c2p_query_engine #(
             state <= S_IDLE;
             active_sid <= {SID_W{1'b0}};
             active_tag <= {TAG_W{1'b0}};
-            candidate_mask <= {NUM_SMS{1'b0}};
+            for (cluster_i = 0; cluster_i < NUM_CLUSTERS;
+                 cluster_i = cluster_i + 1)
+                candidate_cluster[cluster_i] <= {CLUSTER_SIZE{1'b0}};
             selected_sid <= {SID_W{1'b0}};
             selected_cluster <= {CLUSTER_W{1'b0}};
             cluster_rank <= {CLUSTER_RANK_W{1'b0}};
@@ -184,8 +195,18 @@ module c2p_query_engine #(
                 end
                 S_WAIT_SNAPSHOT: begin
                     if (snapshot_rsp_valid) begin
-                        candidate_mask <= snapshot_rsp_candidates;
-                        candidate_mask[active_sid] <= 1'b0;
+                        for (cluster_i = 0; cluster_i < NUM_CLUSTERS;
+                             cluster_i = cluster_i + 1)
+                            candidate_cluster[cluster_i] <=
+                                snapshot_rsp_candidates[cluster_i * CLUSTER_SIZE +:
+                                                        CLUSTER_SIZE];
+                        // The requester cannot probe itself. This override is
+                        // intentionally local to its cluster bank.
+                        candidate_cluster[active_sid >> CLUSTER_SHIFT] <=
+                            snapshot_rsp_candidates[(active_sid >> CLUSTER_SHIFT) *
+                                                    CLUSTER_SIZE +: CLUSTER_SIZE] &
+                            ~({{(CLUSTER_SIZE-1){1'b0}}, 1'b1} <<
+                              active_sid[CLUSTER_SHIFT-1:0]);
                         had_candidate <=
                             |(snapshot_rsp_candidates &
                               ~({{(NUM_SMS-1){1'b0}}, 1'b1} << active_sid));
@@ -200,7 +221,7 @@ module c2p_query_engine #(
                 S_PICK_LANE: begin
                     if (scan_found) begin
                         selected_sid <= scan_sid;
-                        candidate_mask[scan_sid] <= 1'b0;
+                        candidate_cluster[selected_cluster][scan_lane] <= 1'b0;
                         state <= S_PROBE;
                     end else if (cluster_rank == NUM_CLUSTERS - 1) begin
                         no_candidate <= !had_candidate;

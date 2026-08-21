@@ -1,12 +1,12 @@
 // C2P Snapshot storage adapter for the open ASAP7 SRAM macro set.
 //
 // Each srambank_256x4x64_6t122 instance is 1024x64, synchronous, single
-// port, and has no bit write-enable.  Five instances make one 5120x64 C2P
+// port, and has no bit write-enable. Five instances make one 5120x64 C2P
 // replica; four replicas provide the tag-mask plus three Bloom rows needed by
-// one query.  A bit-set update is therefore a two-cycle read-modify-write,
-// while a query reads all four replicas in parallel.  The adapter deliberately
-// backpressures update/query admission during that RMW transaction rather than
-// pretending this 1RW macro is a masked 1R1W memory.
+// one query. A bit-set update is therefore a read/capture/write transaction,
+// while a query reads all four replicas in parallel. The capture stage is
+// intentional: it breaks the macro-Q to another macro-D timing path that a
+// physical five-bank decomposition would otherwise create.
 module c2p_snapshot_store_asap7 #(
     parameter integer NUM_SMS = 64,
     parameter integer TOTAL_ROWS = 5120,
@@ -44,17 +44,22 @@ module c2p_snapshot_store_asap7 #(
     localparam integer BANK_ROWS = 1024;
     localparam integer BANKS_PER_COPY = TOTAL_ROWS / BANK_ROWS;
     localparam integer BANK_W = $clog2(BANKS_PER_COPY);
-    localparam integer S_IDLE = 0;
-    localparam integer S_UPDATE_WRITE = 1;
-    localparam integer S_QUERY_WAIT = 2;
-    localparam integer S_QUERY_HOLD = 3;
+    localparam [2:0] S_IDLE = 3'd0;
+    localparam [2:0] S_UPDATE_CAPTURE = 3'd1;
+    localparam [2:0] S_UPDATE_WRITE = 3'd2;
+    localparam [2:0] S_QUERY_WAIT = 3'd3;
+    localparam [2:0] S_QUERY_HOLD = 3'd4;
 
-    reg [1:0] state;
+    reg [2:0] state;
     reg [ROW_W-1:0] update_row0_r;
     reg [ROW_W-1:0] update_row1_r;
     reg [ROW_W-1:0] update_row2_r;
     reg [ROW_W-1:0] update_row3_r;
     reg [NUM_SMS-1:0] update_mask_r;
+    reg [NUM_SMS-1:0] update_old0_r;
+    reg [NUM_SMS-1:0] update_old1_r;
+    reg [NUM_SMS-1:0] update_old2_r;
+    reg [NUM_SMS-1:0] update_old3_r;
     reg [BANK_W-1:0] query_bank0_r;
     reg [BANK_W-1:0] query_bank1_r;
     reg [BANK_W-1:0] query_bank2_r;
@@ -122,7 +127,7 @@ module c2p_snapshot_store_asap7 #(
                 .clk(clk), .ADDRESS(clear_sel ? clear_row[9:0] :
                                     update_write0 ? update_row0_r[9:0] :
                                     write_fire ? write_row0[9:0] : query_row0[9:0]),
-                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old0 | update_mask_r),
+                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old0_r | update_mask_r),
                 .banksel(clear_sel | query_sel0 | update_read0 | update_write0),
                 .read(query_sel0 | update_read0), .write(clear_sel | update_write0),
                 .dataout(copy0_data[bank*NUM_SMS +: NUM_SMS]));
@@ -130,7 +135,7 @@ module c2p_snapshot_store_asap7 #(
                 .clk(clk), .ADDRESS(clear_sel ? clear_row[9:0] :
                                     update_write1 ? update_row1_r[9:0] :
                                     write_fire ? write_row1[9:0] : query_row1[9:0]),
-                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old1 | update_mask_r),
+                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old1_r | update_mask_r),
                 .banksel(clear_sel | query_sel1 | update_read1 | update_write1),
                 .read(query_sel1 | update_read1), .write(clear_sel | update_write1),
                 .dataout(copy1_data[bank*NUM_SMS +: NUM_SMS]));
@@ -138,7 +143,7 @@ module c2p_snapshot_store_asap7 #(
                 .clk(clk), .ADDRESS(clear_sel ? clear_row[9:0] :
                                     update_write2 ? update_row2_r[9:0] :
                                     write_fire ? write_row2[9:0] : query_row2[9:0]),
-                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old2 | update_mask_r),
+                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old2_r | update_mask_r),
                 .banksel(clear_sel | query_sel2 | update_read2 | update_write2),
                 .read(query_sel2 | update_read2), .write(clear_sel | update_write2),
                 .dataout(copy2_data[bank*NUM_SMS +: NUM_SMS]));
@@ -146,7 +151,7 @@ module c2p_snapshot_store_asap7 #(
                 .clk(clk), .ADDRESS(clear_sel ? clear_row[9:0] :
                                     update_write3 ? update_row3_r[9:0] :
                                     write_fire ? write_row3[9:0] : query_row3[9:0]),
-                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old3 | update_mask_r),
+                .wd(clear_sel ? {NUM_SMS{1'b0}} : update_old3_r | update_mask_r),
                 .banksel(clear_sel | query_sel3 | update_read3 | update_write3),
                 .read(query_sel3 | update_read3), .write(clear_sel | update_write3),
                 .dataout(copy3_data[bank*NUM_SMS +: NUM_SMS]));
@@ -166,6 +171,10 @@ module c2p_snapshot_store_asap7 #(
             update_row2_r <= {ROW_W{1'b0}};
             update_row3_r <= {ROW_W{1'b0}};
             update_mask_r <= {NUM_SMS{1'b0}};
+            update_old0_r <= {NUM_SMS{1'b0}};
+            update_old1_r <= {NUM_SMS{1'b0}};
+            update_old2_r <= {NUM_SMS{1'b0}};
+            update_old3_r <= {NUM_SMS{1'b0}};
             query_bank0_r <= {BANK_W{1'b0}};
             query_bank1_r <= {BANK_W{1'b0}};
             query_bank2_r <= {BANK_W{1'b0}};
@@ -180,6 +189,16 @@ module c2p_snapshot_store_asap7 #(
                 update_row2_r <= write_row2;
                 update_row3_r <= write_row3;
                 update_mask_r <= write_mask;
+                state <= S_UPDATE_CAPTURE;
+            end else if (state == S_UPDATE_CAPTURE) begin
+                // Capture the selected macro read data before the write
+                // cycle. This is a real elastic timing boundary, not merely
+                // a functional delay: write data no longer crosses directly
+                // from one macro output to another macro input in one cycle.
+                update_old0_r <= update_old0;
+                update_old1_r <= update_old1;
+                update_old2_r <= update_old2;
+                update_old3_r <= update_old3;
                 state <= S_UPDATE_WRITE;
             end else if (query_fire) begin
                 query_bank0_r <= query_bank0;
