@@ -82,13 +82,19 @@ module c2p_snapshot_store #(
                 .wr_addr(clear_valid ? clear_row : write_row3),
                 .wr_data(macro_wdata), .wr_mask(macro_wmask));
 
+            // The macro read data is registered by the SRAM on the accepted
+            // query edge.  Keep it combinational at this wrapper boundary so
+            // query_rsp_valid and the four rows become visible together in
+            // the following cycle, preserving the matrix's two-cycle API.
+            always @* begin
+                query_rsp_data0 = macro_read0;
+                query_rsp_data1 = macro_read1;
+                query_rsp_data2 = macro_read2;
+                query_rsp_data3 = macro_read3;
+            end
             always @(posedge clk) begin
                 if (reset) begin
                     query_rsp_valid <= 1'b0;
-                    query_rsp_data0 <= {NUM_SMS{1'b0}};
-                    query_rsp_data1 <= {NUM_SMS{1'b0}};
-                    query_rsp_data2 <= {NUM_SMS{1'b0}};
-                    query_rsp_data3 <= {NUM_SMS{1'b0}};
                 end else begin
                     if (query_rsp_valid && query_rsp_ready)
                         query_rsp_valid <= 1'b0;

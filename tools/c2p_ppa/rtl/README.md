@@ -85,3 +85,6 @@ C2P_IVERILOG_BIN=/path/to/iverilog tools/c2p_ppa/run_c2p_rtl_test.sh
 It checks candidate insertion, nearest-first probe ordering, a probe miss
 followed by another candidate, peer-hit completion, true no-candidate
 fallback, exhausted-candidate fallback, and requester self-exclusion.
+The command runs the same sequence twice: once through the reference storage
+and once through a test-only synchronous 1R1W macro model, verifying that the
+macro boundary preserves the two-cycle Snapshot response contract.

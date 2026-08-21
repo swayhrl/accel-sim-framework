@@ -1,6 +1,36 @@
 `timescale 1ns/1ps
 
-module tb_c2p_cache_rtl;
+// Test-only model for the technology-owned 1R1W macro contract.  It is not
+// linked into synthesis/PPA; the macro's real views are supplied externally.
+module c2p_snapshot_sram_1r1w #(
+    parameter integer ADDR_W = 13,
+    parameter integer DATA_W = 64
+) (
+    input wire clk,
+    input wire rd_en,
+    input wire [ADDR_W-1:0] rd_addr,
+    output reg [DATA_W-1:0] rd_data,
+    input wire wr_en,
+    input wire [ADDR_W-1:0] wr_addr,
+    input wire [DATA_W-1:0] wr_data,
+    input wire [DATA_W-1:0] wr_mask
+);
+    reg [DATA_W-1:0] mem [0:(1 << ADDR_W)-1];
+    integer bit_i;
+    always @(posedge clk) begin
+        if (rd_en)
+            rd_data <= mem[rd_addr];
+        if (wr_en) begin
+            for (bit_i = 0; bit_i < DATA_W; bit_i = bit_i + 1)
+                if (wr_mask[bit_i])
+                    mem[wr_addr][bit_i] <= wr_data[bit_i];
+        end
+    end
+endmodule
+
+module tb_c2p_cache_rtl #(
+    parameter integer USE_SRAM_MACRO = 0
+);
     reg clk = 1'b0;
     reg reset = 1'b1;
     reg update_valid = 1'b0;
@@ -26,7 +56,9 @@ module tb_c2p_cache_rtl;
 
     always #5 clk = ~clk;
 
-    c2p_cache_rtl dut (
+    c2p_cache_rtl #(
+        .USE_SRAM_MACRO(USE_SRAM_MACRO)
+    ) dut (
         .clk(clk), .reset(reset),
         .update_valid(update_valid), .update_ready(update_ready),
         .update_sid(update_sid), .update_tag(update_tag),
