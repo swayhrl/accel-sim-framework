@@ -39,3 +39,10 @@ For each directed trace, `stats=off` is compared with frozen baseline by:
 
 An oracle mode is never allowed in this gate.  The gate protects baseline
 instrumentation, not the counterfactual behavior of an oracle.
+
+The reproducible entry point is:
+
+```bash
+scripts/check_latebind_l2_phase1.sh --trace KERNELSLIST --config CONFIG \
+  --trace-config TRACE_CONFIG
+```
