@@ -129,12 +129,16 @@ def main():
                   "- Figure 14 is built from the dynamic peer-access histograms, "
                   "split into completed remote-hit and miss/fallback paths."])
     if args.figures_dir:
-        figures = ("fig10_normalized_ipc.pdf", "fig11_l2_access.pdf",
-                   "fig12_filtering_accuracy.pdf", "fig13_ipc_vs_fp_ratio.pdf",
-                   "fig14_peer_probe_distribution.pdf")
+        figures = ("fig10_normalized_ipc", "fig11_l2_access",
+                   "fig12_filtering_accuracy", "fig13_ipc_vs_fp_ratio",
+                   "fig14_peer_probe_distribution")
         lines.extend(["", "## Rendered artifacts", ""])
         for figure in figures:
-            lines.append(f"- {'present' if (args.figures_dir / figure).is_file() else 'missing'}: {figure}")
+            rendered = [extension for extension in ("pdf", "svg", "png")
+                        if (args.figures_dir / (figure + "." + extension)).is_file()]
+            lines.append(f"- {figure}: {', '.join(rendered) if rendered else 'missing'}")
+        style_audit = args.figures_dir / "figure_style_audit.md"
+        lines.append(f"- figure-style audit: {'present' if style_audit.is_file() else 'missing'}")
 
     lines.extend(["", "## Explicitly unavailable paper traces", ""])
     lines.extend(f"- {entry}" for entry in MISSING_TRACES)
