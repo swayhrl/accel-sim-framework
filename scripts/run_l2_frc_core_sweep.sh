@@ -40,23 +40,6 @@ else
   run_root="$(cd "$run_root" && pwd)"
 fi
 
-sum_frc_field() {
-  local log="$1"
-  local field="$2"
-  awk -v field="$field" '
-    /^frc_l2 / {
-      for (i = 1; i <= NF; ++i) {
-        split($i, pair, "=")
-        if (pair[1] == field) sum += pair[2]
-      }
-    }
-    END { print sum + 0 }
-  ' "$log"
-}
-
-printf 'variant\tcycles\tinstructions\tscalar_opc\tl2_accesses\tl2_misses\tl2_mpko\tfrc_allocations\tfrc_lower_reads\tfrc_swaps\tfrc_set_full_fallbacks\tfrc_write_fallbacks\tfrc_atomic_fallbacks\n' \
-  > "$run_root/summary.tsv"
-
 default_variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26)
 if [[ -n "$variants_csv" ]]; then
   IFS=',' read -r -a variants <<< "$variants_csv"
@@ -73,24 +56,8 @@ for variant in "${variants[@]}"; do
   args=(--trace "$trace" --config "$config" --config-extra "$repo_root/configs/l2_frc/$variant.config" --run-dir "$run_root/$variant")
   [[ -n "$trace_config" ]] && args+=(--trace-config "$trace_config")
   "$repo_root/scripts/run_latebind_l2_smoke.sh" "${args[@]}"
-  log="$run_root/$variant/smoke.out"
-  cycles="$(awk '/^gpu_tot_sim_cycle =/{value=$3} END{print value}' "$log")"
-  instructions="$(awk '/^gpu_tot_sim_insn =/{value=$3} END{print value}' "$log")"
-  accesses="$(awk '/^L2_total_cache_accesses =/{value=$3} END{print value}' "$log")"
-  misses="$(awk '/^L2_total_cache_misses =/{value=$3} END{print value}' "$log")"
-  opc="$(awk -v insn="$instructions" -v cycles="$cycles" 'BEGIN { printf "%.6f", insn / cycles }')"
-  mpko="$(awk -v misses="$misses" -v insn="$instructions" 'BEGIN { printf "%.6f", 1000 * misses / insn }')"
-  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-    "$variant" "$cycles" "$instructions" "$opc" "$accesses" "$misses" \
-    "$mpko" \
-    "$(sum_frc_field "$log" allocations)" \
-    "$(sum_frc_field "$log" lower_reads)" \
-    "$(sum_frc_field "$log" swaps)" \
-    "$(sum_frc_field "$log" set_full_fallbacks)" \
-    "$(sum_frc_field "$log" write_fallbacks)" \
-    "$(sum_frc_field "$log" atomic_fallbacks)" \
-    >> "$run_root/summary.tsv"
 done
 
+variant_list="$(IFS=,; echo "${variants[*]}")"
+"$repo_root/scripts/collect_l2_frc_core_metrics.sh" --run-root "$run_root" --variants "$variant_list"
 printf 'PASS frc_core_sweep run_root=%s\n' "$run_root"
-column -ts $'\t' "$run_root/summary.tsv" 2>/dev/null || cat "$run_root/summary.tsv"
