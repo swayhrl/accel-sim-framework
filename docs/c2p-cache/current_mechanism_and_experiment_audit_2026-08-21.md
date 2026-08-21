@@ -187,6 +187,24 @@ remote hits 和等量 avoided L2 requests，以及完整 CCD 计数（TP 1,476,9
 `0e276164`。这证明旧 Stencil 退出是 detector 假阳性，而非已知的 C2P/CCD
 forward-progress failure；该结果现在作为 Stencil 的 fresh CCD evidence。
 
+### RING backpressure 的定向验证
+
+`eff44679` 以三态 miss action 将 Ring queue-full 从 lower-L2 escape 改为
+L1 miss-head backpressure。压力 smoke 使用 NN、相同 paper-table config、
+`query_queue_size=1`，在
+`hw_run/c2p-ring-stall-smoke-v1-20260821` 完成 1,438,336 cycles：10,691
+L1 miss 全部恰好接受一次、`c2p_queries_queue_bypass=0`，并且零 remote hit
+与零 avoided L2 request 相等；`run.out` 不含 `ERROR`/`DEADLOCK`。这直接
+验证满 FIFO 会 drain，而非将请求偷送 L2 或重复统计。
+
+相同 binary 的 NN baseline/C2P 回归位于
+`hw_run/c2p-miss-action-regression-v1-20260821`。它与 canonical v7 的
+cycle、L2 access、L1 miss、accepted query、queue bypass、remote hit 和
+avoided L2 公共计数逐字段一致，表明新的 `MISS_STALL` 不改变 non-Ring
+路径。默认深度的 16-case post-fix Ring replay 使用独立
+`hw_run/c2p-ring-backpressure-v1-20260821` 根；closeout 只接受该根，并对
+每个 Ring 点强制 `queue_bypass == 0`。
+
 ## 6. 当前不能解释为“正确”的红灯
 
 以下是必须在最终 16-workload aggregate 里复核的项目；它们不是被掩盖的例外：
@@ -227,6 +245,7 @@ scripts/finalize_c2p_paper16.sh \
   --supplemental-ccd-metrics-root hw_run/c2p-paper16-ccd-refresh-v2-20260821 \
   --ccd-mode-root hw_run/c2p-ccd-stencil-progressfix-v1-20260821 \
   --ccd-mode-root hw_run/c2p-paper16-ccd-refresh-v2-20260821 \
+  --ring-mode-root hw_run/c2p-ring-backpressure-v1-20260821 \
   --sweep-root hw_run/c2p-paper16-fp-sweep-v1-20260821 \
   --supplemental-sweep-root hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821 \
   --queue-sensitivity-root hw_run/c2p-btree-query-sensitivity-v1-20260821 \
