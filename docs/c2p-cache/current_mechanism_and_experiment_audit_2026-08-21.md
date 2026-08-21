@@ -30,7 +30,7 @@
 | Ideal | exact peer candidate discovery，保留 peer data-port/probe/return 时序。 | 用于隔离 Snapshot 候选质量，不被定义为 IPC 的数学上界：它可能发出更多 peer probe，反而比有限 C2P 产生更大争用。 |
 | ATA | logical eight-SM group 内 exact aggregate tag，7-cycle tag、14-cycle line、每 cluster 每 cycle 4 次 issue。 | group size 由 `c2p_cache_comparator_cluster_size=8` 显式控制。 |
 | CCD | per logical group 的 weak-taken two-bit counter；predict taken 后向八个 peer broadcast，再以 exact tag 选数据。 | 同时输出 CCD TP/FN/FP/TN，避免仅用 IPC 推断 predictor 品质。 |
-| Ring | chip-wide serialized discovery；2-cycle hop、7-cycle tag。 | 串行注入与 hop 延迟均显式建模；其性能不能简单由 remote-hit 数量解释。 |
+| Ring | chip-wide serialized discovery；2-cycle hop、7-cycle tag、有限 discovery FIFO。 | `eff44679` 后 FIFO 满会 backpressure L1 miss head，绝不暗中下送 L2；pre-fix Ring 数据仅保留作诊断。 |
 
 关键配置在 `configs/c2p-cache/c2p.config`，mode overlay 在
 `configs/c2p-cache/{oracle,ideal,ata,ccd,ring}.config`。runner 对每一个
@@ -101,11 +101,16 @@ Stencil 的 CCD detector-correction replay。它是 CCD 的首选根，
 `ccd-refresh-v2` 仅补充其余已成功的 fresh-training case；closeout 会逐 case
 记录实际目录和 provenance，绝不回退到 pre-training-fix CCD 根。
 
-当前覆盖审计结论：有效主矩阵为 102/112，fresh CCD 为 13/16，L2-50
+当前覆盖审计结论：先前主矩阵为 102/112，fresh CCD 为 13/16，L2-50
 baseline 为 16/16。完整七 mode + L2-50 + fresh CCD evidence 已完成的
 workload 是：Btree、DWT2D、Gaussian、Hotspot1、LUD、NN、CUTCP、MRI-Q、
 SGEMM、Stencil、2DConvolution、GEMM。3mm、ATAX、BICG 和 GESUMMV 仍有
-缺项；因此**尚不能参与 group aggregate 或最终图**。
+缺项；因此**尚不能参与 group aggregate 或最终图**。此外，该 `102/112`
+快照中的 Ring 点产生于 queue-full 直接下送 L2 的旧语义，不能作为最终
+comparator evidence。`eff44679` 已将其改为有限 FIFO 的 L1 前端
+backpressure；所有 16 个最终 Ring 点必须从独立
+`c2p-ring-backpressure-v1-20260821` 根重放，严格 closeout 已强制该根，
+不会以旧点回填。
 
 各 run 目录保留 copied binary、resolved config、trace/config/simulator/runtime hash、full `run.out` 和 `summary.txt`。`scripts/analyze_c2p_paper16.py` 也检查 mode contract、effective config、provenance、oracle timing 和 remote-hit/L2-avoidance 不变量。
 
@@ -128,11 +133,12 @@ parameterized implementation，绝不使用旧 binary 的结果。
 
 ## 5. 已完成点的实测行为（仅局部证据）
 
-下表的 C2P/ATA/Ring 来自当前 v7 effective root，CCD 列只取修正 training
+下表的 C2P/ATA 来自当前 v7 effective root，CCD 列只取修正 training
 后的 fresh root；IPC 为 `baseline_cycles/mode_cycles`，大于 1 更快。它用于
-发现方向和异常，**不是 16-workload aggregate**。
+发现方向和异常，**不是 16-workload aggregate**。Ring IPC 全部是
+`eff44679` 之前的诊断数据，明确不进入任何最终 Figure 10--14 聚合。
 
-| workload | C2P IPC | C2P L2 access / base | C2P remote hit | ATA IPC | CCD IPC | Ring IPC | 初步解释 |
+| workload | C2P IPC | C2P L2 access / base | C2P remote hit | ATA IPC | CCD IPC | pre-fix Ring IPC | 初步解释 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | Btree | 1.0258 | 0.8862 | 161,628 | 0.9868 | 1.0018 | 1.0335 | 唯一已完成的 local R1S1；有限 C2P 有正收益。 |
 | DWT2D | 1.0347 | 0.9717 | 46,330 | 0.9860 | 1.0074 | 0.9189 | C2P 正收益；Ring 代价明显。 |
@@ -187,7 +193,7 @@ forward-progress failure；该结果现在作为 Stencil 的 fresh CCD evidence�
 
 1. **SGEMM：L2 降 19.54% 但 C2P IPC -1.29%。** 它的独立 L2 sensitivity 为 `429816/396350 = 1.084`，故本地是 R1S0（低于 1.10 的 S1 门槛），本就不应套用论文 R1S1 的 23.5% 平均收益。更重要的是机制计数给出了可审计的 slowdown 原因链：2,194,621 个 C2P query 中 741,827 个（33.8%）target-timeout fallback，平均 4.054 candidates/query，Snapshot FP 为 14.8%，1,694,593 次 peer L1 probe 最终只完成 271,719 次 remote hit；其 fallback probe P95/P99 分别为 4/10 个 peer。相对地，ideal 为 423,904 cycle、348,129 remote hit、888,305 probe，说明 Snapshot 候选/port contention 使 C2P 多发大量 probe 且丢失远端返回。same-binary target-port 反事实把 canonical C2P 从 435,411 降至 430,619 cycles（1.0111x IPC），并把 remote hit 从 271,719 提到 809,656、L2 access 从 2,078,305 降到 1,529,820；normal 同时有 4,330,844 target-port-busy cycle 和 36,721,234 FIFO-wait cycle。因此 port/FIFO 竞争解释了 `4,792 / (435,411 - 429,816) = 85.6%` 的 C2P 相对 baseline 周期损失，但 bypass 后仍比 429,816-cycle baseline 慢 803 cycles（0.19%）。这既是**量化的模型行为解释**，也排除了“只要移除端口竞争就完全恢复”的过度结论；最终仍须检查其余 R1S0/R1S1 workload 是否同样出现，若普遍存在再审查 timeout/FIFO 模型而不是对 SGEMM 单点调参。
 2. **旧 CCD 训练语义错误，已隔离并重放。** 旧模型只在预测 taken 的 broadcast 后更新 counter；第一次 no-share 将 weak-taken counter 降到 not-taken 后，之后的 false negative 永远不能恢复训练。这不是可接受的 CCD 负控制。GPGPU-Sim `f5eff2cd` 改为每个请求按 exact tag-time in-cluster outcome 训练 two-bit counter；独立 DWT2D 验证得到 22,062 TP、16,339 remote hit，而旧点为零。fresh SGEMM 也得到 571,725 TP、120,639 remote hit（旧点为零），证明修复恢复了真实共享发现；但它为 437,485 cycles，高于 429,816-cycle baseline，且有 475,911 FP、228,883 FN。这是 coarse CCD predictor 的可测性能代价，不应被误写成 C2P 机制失效或再以参数调平。所有旧 CCD 结果已从 closeout 排除。`c2p-paper16-ccd-refresh-v2-20260821` 与 corrected Stencil root 当前共同提供 13 项 fresh-training 证据；其余 3 项仍必须由同一 fresh-training 语义的 replay 补齐，不能用旧 CCD 回填。
-3. **Ring 的 Btree IPC 高于 C2P，而 DWT2D/LUD/SGEMM 显著变慢。** 该 workload 依赖性可由 serialized issue、nearest hit hop、减少的 probe 数共同导致；仍须检查 Ring 的 L2 access、hop/probe 分布和网络时序。不能在 aggregate 前声称已匹配论文 Ring 开销。
+3. **旧 Ring 比较器的 queue-full 语义错误，已隔离。** 旧模型在 serialized discovery FIFO 满时计入 `c2p_queries_queue_bypass` 并直接发往 lower L2；例如 Btree 只有 106,031 个 accepted query，却有 1,202,846 个 bypass。这会掩盖论文 Ring 的 traversal/congestion bottleneck，因此旧的 Btree IPC 高于 C2P 不能解释为论文趋势。GPGPU-Sim `eff44679` 改为保留 L1 miss head，直至 FIFO drain，并在计数前停顿以避免同一 miss 每周期重复计数。严格分析器要求最终 Ring `c2p_queries_queue_bypass == 0`，且 closeout 只接受 post-fix 独立 root；16 点重放和 hop/probe 分布检查仍待完成。
 4. **本地 R/S 分类与论文图的 workload 分组不同。** 例如 Gaussian 本地是 R0S0 而论文参考标签为 R1S0；这是 trace input/规模、mapping 和模型适配的直接信号。最终图会同时保留 paper reference group 和 local measured group，绝不强行 relabel。
 5. **未完成任务没有结果资格。** 当前运行中的 3mm、ATAX/BICG、GESUMMV 等可能改变任何 group aggregate 和均值；在 strict gate 通过前，不能给出“与论文一致/不一致”的结论。
 
