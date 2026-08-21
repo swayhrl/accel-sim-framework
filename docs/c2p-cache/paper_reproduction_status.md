@@ -114,6 +114,26 @@ the default-equivalent `5efa3d56`) have direct baseline and C2P evidence; the
 analyzer still requires identical resolved configuration hashes for each mode
 and records the exact source/binary hashes per run.
 
+### Figure-13 parameterized-bank correction
+
+The first non-default Figure-13 launches exposed a real model bug.  The
+parameterized Snapshot Matrix correctly changed its physical row count, but
+the request-side bank arbiter still computed `row / 80`, the original default
+rows-per-bank value.  This silently modeled the wrong bank contention for
+`m2048-k2` and `m3072-k3`; `m9216-k5` could index a bank beyond the 64-bank
+arbiter and segfault.  Those launches were terminated before producing any
+`summary.txt`, and are explicitly excluded from all analysis.
+
+GPGPU-Sim commit `04962526` derives the bank from
+`16 + snapshot_bf_rows_per_bank` and asserts the 64-bank bound.  A rebuilt
+Accel-Sim front end then completed a Btree `m9216-k5` directed replay with a
+normal exit marker, 179,144 remote hits exactly matching avoided L2 requests,
+and complete Snapshot TP/FN/FP/TN counters.  All four m/k points were
+restarted from the rebuilt binary afterward.  The Figure-13 analyzer also
+checks the final generated configuration: the directory label `mX-kY` must
+equal the resolved logical Snapshot rows and total hash count before a point
+is admitted.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
