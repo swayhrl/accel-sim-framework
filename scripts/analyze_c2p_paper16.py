@@ -89,7 +89,7 @@ def value(data, key):
 
 
 def ratio(numerator, denominator):
-    if not denominator:
+    if numerator == "" or denominator == "" or not denominator:
         return ""
     return numerator / denominator
 
