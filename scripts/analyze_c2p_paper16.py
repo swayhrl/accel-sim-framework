@@ -9,6 +9,7 @@ status report so partial campaigns cannot silently become a paper aggregate.
 
 import argparse
 import csv
+import hashlib
 import re
 from pathlib import Path
 
@@ -36,6 +37,15 @@ L2_GLOBAL_READ = re.compile(
 HIST = re.compile(r"^c2p_peer_access_(hit|miss)_count_(\d+) = (\d+)$")
 PROVENANCE_KEYS = ("gpgpusim_commit", "accelsim_commit", "config_sha256",
                    "trace_sha256", "sim_sha256", "cudart_sha256")
+
+# These two options were introduced as explicit spelling of the existing
+# default while the v7 campaign was already running.  Keep the raw run-file
+# hash for provenance, but compare an effective configuration below: omitted
+# and explicitly-default forms are the same experiment point.
+EFFECTIVE_CONFIG_DEFAULTS = {
+    "-c2p_cache_snapshot_bf_rows_per_bank": "64",
+    "-c2p_cache_bf_hashes": "3",
+}
 
 
 def read_manifest(path):
@@ -84,6 +94,34 @@ def read_provenance(run_dir):
             key, value = line.split("=", 1)
             values[key] = value
     return values
+
+
+def effective_config_sha256(run_dir):
+    """Hash the last-value semantics of a copied GPGPU-Sim configuration.
+
+    The raw ``config_sha256`` remains in provenance and detects an exact file
+    change.  This canonical hash removes comments/blank lines, keeps the last
+    assignment of every option, and materializes only documented C2P defaults.
+    It therefore catches a real overlay or option-order change without falsely
+    splitting long-running campaigns that changed from implicit to explicit
+    default spelling.
+    """
+    path = run_dir / "gpgpusim.config"
+    if not path.is_file():
+        return ""
+    values = {}
+    for raw_line in path.read_text(errors="replace").splitlines():
+        tokens = raw_line.split("#", 1)[0].split()
+        if not tokens or not tokens[0].startswith("-"):
+            continue
+        if len(tokens) < 2:
+            return ""
+        values[tokens[0]] = " ".join(tokens[1:])
+    for option, default in EFFECTIVE_CONFIG_DEFAULTS.items():
+        values.setdefault(option, default)
+    canonical = "".join(f"{option} {values[option]}\n"
+                        for option in sorted(values))
+    return hashlib.sha256(canonical.encode()).hexdigest()
 
 
 def read_histogram(run_dir):
@@ -159,6 +197,7 @@ def main():
             return None
         provenance_rows.append({"case": case, "mode": mode, "source": source,
                                 "run_dir": str(run_dir),
+                                "effective_config_sha256": effective_config_sha256(run_dir),
                                 **{key: provenance.get(key, "")
                                    for key in PROVENANCE_KEYS}})
         if any(not provenance.get(key) for key in PROVENANCE_KEYS):
@@ -200,8 +239,8 @@ def main():
             missing.append(f"{case}: CCD metric replay lacks classification counters")
         if (args.ccd_metrics_root and primary_provenance["ccd"] is not None and
                 ccd_provenance is not None and
-                primary_provenance["ccd"].get("config_sha256") !=
-                ccd_provenance.get("config_sha256")):
+                primary_provenance["ccd"].get("effective_config_sha256") !=
+                ccd_provenance.get("effective_config_sha256")):
             invariant_failures.append(
                 f"{case}: CCD metric config differs from primary CCD config")
 
@@ -292,20 +331,20 @@ def main():
     write_csv(args.out_dir / "paper16_modes.csv", mode_rows, mode_columns)
     write_csv(args.out_dir / "paper16_probe_histogram.csv", hist_rows,
               ["case", "group", "mode", "outcome", "peer_probes", "count"])
-    provenance_columns = ["case", "mode", "source", "run_dir", *PROVENANCE_KEYS]
+    provenance_columns = ["case", "mode", "source", "run_dir",
+                          "effective_config_sha256", *PROVENANCE_KEYS]
     write_csv(args.out_dir / "paper16_provenance.csv", provenance_rows,
               provenance_columns)
-    # Every mode is a fixed experiment point.  A mode-specific configuration
-    # hash must therefore be constant across the workload manifest; this
-    # catches accidental overlay/order changes while permitting an explicitly
-    # proven-equivalent simulator binary family during a long campaign.
+    # Every mode is a fixed experiment point.  Its *effective* configuration
+    # must be constant across the manifest; raw file hashes remain beside it
+    # for byte-for-byte provenance.
     for source in ("primary", "l2_50", "ccd_metrics"):
         for mode in MODES:
-            hashes = {row["config_sha256"] for row in provenance_rows
+            hashes = {row["effective_config_sha256"] for row in provenance_rows
                       if row["source"] == source and row["mode"] == mode}
             if len(hashes) > 1:
                 invariant_failures.append(
-                    f"{source}/{mode}: inconsistent resolved configuration hashes")
+                    f"{source}/{mode}: inconsistent effective configuration hashes")
     report = ["# C2P paper16 analysis status", "",
               "## Classification thresholds", "",
               f"- R1: oracle redundancy >= {args.redundancy_threshold:.2f}",
@@ -324,11 +363,11 @@ def main():
     if provenance_rows:
         report.extend(["", "## Provenance audit", "",
                        "- `paper16_provenance.csv` records each completed run's "
-                       "source commit, resolved-config hash, trace hash, simulator "
-                       "hash, and runtime hash.",
-                       "- The analyzer requires one resolved configuration hash per "
+                       "source commit, raw and effective configuration hashes, trace hash, "
+                       "simulator hash, and runtime hash.",
+                       "- The analyzer requires one effective configuration hash per "
                        "source/mode and requires every CCD metric replay to use the "
-                       "same resolved configuration as its primary CCD run."])
+                       "same effective configuration as its primary CCD run."])
     (args.out_dir / "paper16_status.md").write_text("\n".join(report) + "\n")
     if args.strict and (missing or invariant_failures):
         raise SystemExit("; ".join(missing + invariant_failures))
