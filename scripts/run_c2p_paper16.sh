@@ -6,13 +6,17 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_paper16.sh --trace-root HW_RUN_ROOT --out-root RESULT_ROOT
        [--case CASE[,CASE...]] [--modes MODES] [--config-extra FILE]
-       [--mode-config-extra FILE] [--skip-complete] [--build]
+       [--mode-config-extra FILE] [--skip-complete] [--build] [--jobs N]
 
 The canonical case list is configs/c2p-cache/paper16_workloads.tsv.  Each
 entry names a complete replay trace for its selected input; no 1/N trace
 fraction is used by this runner.  The standard paper-table overlay is always
 applied.  Pass paper-table-l2-50.config through --config-extra to create the
 50-cycle L2 classification point in a separate result root.
+
+`--jobs` runs independent workload cases concurrently and writes one
+`CASE.driver.log` per case.  It defaults to one.  Build once before using
+parallel jobs: `--build` and `--jobs > 1` are intentionally incompatible.
 EOF
 }
 
@@ -26,6 +30,7 @@ build=0
 config_extras=()
 mode_config_extras=()
 skip_complete=0
+jobs=1
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace-root) trace_root="$2"; shift 2 ;;
@@ -36,6 +41,7 @@ while [[ $# -gt 0 ]]; do
     --mode-config-extra) mode_config_extras+=("$2"); shift 2 ;;
     --skip-complete) skip_complete=1; shift ;;
     --build) build=1; shift ;;
+    --jobs) jobs="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -45,6 +51,12 @@ done
   echo "error: --trace-root must name the staged hw_run directory" >&2; exit 2;
 }
 [[ -n "$out_root" ]] || { echo "error: --out-root is required" >&2; exit 2; }
+[[ "$jobs" =~ ^[1-9][0-9]*$ ]] || {
+  echo "error: --jobs must be a positive integer" >&2; exit 2;
+}
+(( !build || jobs == 1 )) || {
+  echo "error: run --build once before using --jobs > 1" >&2; exit 2;
+}
 [[ -n "${C2P_GPGPUSIM_ROOT:-}" ]] || {
   echo "error: set C2P_GPGPUSIM_ROOT to the matching C2P GPGPU-Sim worktree" >&2; exit 2;
 }
@@ -80,11 +92,32 @@ done
 (( skip_complete )) && runner+=(--skip-complete)
 
 mkdir -p "$out_root"
+active_jobs=0
+status=0
+run_case() {
+  local case="$1" suite="$2" input_label="$3" trace="$4"
+  printf 'RUN case=%s suite=%s input=%s\n' "$case" "$suite" "$input_label"
+  "${runner[@]}" --trace "$trace" --out-dir "$out_root/$case"
+}
 while IFS=$'\t' read -r case suite abbr input_label trace_rel; do
   [[ -z "$case" || "$case" == "case" || "$case" == \#* ]] && continue
   case_selected "$case" || continue
   trace="$trace_root/$trace_rel/kernelslist.g"
   [[ -f "$trace" ]] || { echo "error: $case trace missing: $trace" >&2; exit 2; }
-  printf 'RUN case=%s suite=%s input=%s\n' "$case" "$suite" "$input_label"
-  "${runner[@]}" --trace "$trace" --out-dir "$out_root/$case"
+  if (( jobs == 1 )); then
+    run_case "$case" "$suite" "$input_label" "$trace"
+  else
+    run_case "$case" "$suite" "$input_label" "$trace" \
+      >"$out_root/$case.driver.log" 2>&1 &
+    active_jobs=$((active_jobs + 1))
+    if (( active_jobs >= jobs )); then
+      if ! wait -n; then status=1; fi
+      active_jobs=$((active_jobs - 1))
+    fi
+  fi
 done < "$manifest"
+while (( active_jobs > 0 )); do
+  if ! wait -n; then status=1; fi
+  active_jobs=$((active_jobs - 1))
+done
+exit "$status"
