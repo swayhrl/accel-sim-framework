@@ -67,11 +67,16 @@ For every variant report total cycles, scalar thread instructions,
 allocations/lower reads/swaps and fallbacks.  `scalar_opc` and `l2_mpko`
 preserve the paper's relative metric definitions within one QV100 experiment;
 they are not numerically comparable with the paper's HD7770 OPC/MPKO because
-the architecture, trace accounting and cache geometry differ.  Average L2
-miss delay excluding DRAM time still needs a dedicated QV100 accounting point.
-For a multi-kernel trace, the runner takes the final cumulative occurrence of
-each simulator statistic; intermediate per-kernel reports are not experiment
-totals.
+the architecture, trace accounting and cache geometry differ.  The optional
+`-gpgpu_l2_latebind_stats 1` observation point measures each *unique primary*
+lower read: `pre-memory = L2 acceptance -> lower issue`, and
+`post-memory = lower return -> upper reply`.  Their sum is the L2 miss
+management delay excluding the actual lower-memory interval.  Merged waiters
+do not add another sample; an FRC sector fetch is charged back to the primary
+request that allocated it.  Use an `*-observe.config` and
+`scripts/collect_l2_frc_delay_metrics.sh` to collect it.  For a multi-kernel
+trace, the runner takes the final cumulative occurrence of each simulator
+statistic; intermediate per-kernel reports are not experiment totals.
 
 ## Causal replacement-pressure gate
 
@@ -94,6 +99,7 @@ QV100 configuration and complete CUDA SDK traces.
 |---|---|---:|---|
 | `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper` | 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures. |
 | `BlackScholes/NO_ARGS` | all 12 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  Exact-payload (`baseline25/26`) and paper-ratio (`baseline48/96`) conventional controls are also 9,032 cycles. |
+| `BlackScholes/NO_ARGS`, observation | `baseline24`, `frc32-paper` | 9,032 / 9,032 | Both complete 37,500 unique lower reads at 1-cycle pre-memory + 1-cycle post-memory = 2-cycle management delay.  FRC changes neither the delay nor total cycles at this no-pressure point. |
 | `transpose/dimX512_dimY512` | `baseline24`, `frc32-paper` | 201,054 / 201,054 | FRC is active (374,568 allocations, lower reads and swaps; 411,864 set-full fallbacks), but the control again has zero L2 reservation failures. |
 
 The low-associativity BlackScholes sensitivity makes the causal condition
