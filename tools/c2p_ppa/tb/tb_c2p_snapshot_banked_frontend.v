@@ -82,6 +82,15 @@ module tb_c2p_snapshot_banked_frontend;
         check_replica_count();
         if (count0 != 1)
             $fatal(1, "identical tags should grant one lane, got %0d", count0);
+        // The joined result must remain stable until its consumer accepts it;
+        // otherwise owner 0 could be reused while a four-copy response is
+        // still visible.
+        out_ready = 4'b0000;
+        while (!out_valid[0]) @(negedge clk);
+        repeat (2) @(negedge clk);
+        if (!out_valid[0])
+            $fatal(1, "response joiner dropped a backpressured result");
+        out_ready = 4'b1111;
 
         // Let the remaining held engines drain, then inject four independent
         // tags. Their rows may use different banks in each copy, so completion
