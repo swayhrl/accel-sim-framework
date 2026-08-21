@@ -76,27 +76,30 @@ multiport/masked-write Snapshot macro or a bank-local update microarchitecture
 is required for a closing macro-aware implementation.
 
 The scalable control front end is separately synthesized as
-`results/openroad_c2p_banked_frontend_static_tree_fabric_synth_v2`. It
+`results/openroad_c2p_banked_frontend_two_cut_fabric_synth`. It
 instantiates 128 two-cycle BF engines, four 64-bank request arbiters, four
-registered owner-routed response fabrics, and the four-copy response joiner.
+two-cut owner-routed response fabrics, and the four-copy response joiner.
 The default 128-engine arbiter is a static 8-by-16 priority tree (the generic
 arbiter remains only for small directed tests), so its elaborated selection
 cone has neither a behavioral first-one encoder nor a variable-indexed grant
-write. The mapped ASAP7 standard-cell area is **236,070.1017 um2
-(0.236070 mm2)**, before target-L1 queues, physical Snapshot macros and
-physical-only cells. This result completes in Yosys (156.69s, 819.86MB peak)
+write. The mapped ASAP7 standard-cell area is **156,008.4057 um2
+(0.156008 mm2)**, before target-L1 queues, physical Snapshot macros and
+physical-only cells. This result completes in Yosys (141.63s, 806.54MB peak)
 and is therefore a reproducible mapping result, not a route/timing signoff.
 
 This number is deliberately reported as a design finding rather than a
-success metric: four seven-stage fabrics contain 1,792 two-input elastic
-switches, each retaining two 71-bit packets. They account for about
-0.160mm2; the joiner adds 0.016161mm2 and the request-side hierarchy and BF
-engines make up the remaining mapped area. The fabric replaces the previously
-unmappable flat response crossbar, but it is too register-heavy to compare to
-the paper's 0.0682mm2 logic estimate. A future closing implementation needs
-bank-local response reservation with a lower-storage return network (or a
-technology-specific interconnect/memory macro); this RTL makes that remaining
-cost explicit instead of hiding it in unsynthesizable routing logic.
+success metric: four seven-layer route networks use only two elastic packet
+cuts each, rather than buffering both 71-bit paths at every hop. They account
+for about 0.0799mm2; the joiner adds 0.016161mm2 and the request-side
+hierarchy and BF engines make up the remaining mapped area. This halves the
+previous fully registered return-network area and reduces the total front-end
+mapping by 33.9%; it also replaces the
+previously unmappable flat response crossbar. It is still above the paper's
+0.0682mm2 logic estimate before target queues and physical-only cells. A
+future closing implementation needs bank-local response reservation with a
+lower-storage return network (or a technology-specific interconnect/memory
+macro); this RTL makes that remaining cost explicit instead of hiding it in
+unsynthesizable routing logic.
 
 An OpenROAD CTS-proxy attempt also records the integration boundary precisely.
 At the ordinary 25% proxy utilization, `PPL-0024` rejects the top because its

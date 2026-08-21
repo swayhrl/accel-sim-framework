@@ -57,8 +57,9 @@ copies). A four-bit sent mask at each engine records individual tag-mask/Bloom-r
 grants, so one bank conflict does not hold the other three physical copies hostage
 and no row can be issued twice. The paper geometry selects a static 8-by-16
 priority tree; the generic implementation remains only to support small directed
-tests. Each copy's replies traverse a seven-stage registered self-routing fabric
-before `c2p_snapshot_response_joiner.v` reassembles the four results. This avoids
+tests. Each copy's replies traverse seven combinational self-routing layers with
+two elastic packet cuts before `c2p_snapshot_response_joiner.v` reassembles the
+four results. This avoids
 a flat 64-bank-to-128-engine data crossbar; an owner ID is never reused while an
 earlier response remains in flight. The static selector gives fixed low-engine
 priority with bounded 16-way leaf and 8-way root depth.
