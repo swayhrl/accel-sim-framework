@@ -53,6 +53,10 @@ PROVENANCE_KEYS = ("gpgpusim_commit", "accelsim_commit", "config_sha256",
 # hash for provenance, but compare an effective configuration below: omitted
 # and explicitly-default forms are the same experiment point.
 EFFECTIVE_CONFIG_DEFAULTS = {
+    # Scheme 0 is the parser default used by the original C2P runs.  Later
+    # campaign configs spell it out so that ATA/CCD/RING overlays are easier
+    # to inspect; both forms denote the same baseline C2P experiment.
+    "-c2p_cache_scheme": "0",
     "-c2p_cache_bf_engines": "128",
     "-c2p_cache_bf_latency": "2",
     "-c2p_cache_snapshot_bf_rows_per_bank": "64",
