@@ -78,15 +78,17 @@ FRC4 accepts two independent FRC allocations and completes in 5,337 cycles
 (2.43% faster).  This is a correctness/performance gate only, not a general
 workload result or a capacity-fair comparison.
 
-## Complete workload results with the independent transaction store
+## Completed full-trace results with the independent transaction store
 
-All values below use core commit `a3901230` (FRC-local request/waiter store),
-the unmodified SM7 QV100 configuration and complete CUDA SDK traces.
+All values below use core commit `ab3b4cdf` (FRC-local request/waiter store,
+delayed-swap receipt and fair lower-request arbitration), the unmodified SM7
+QV100 configuration and complete CUDA SDK traces.
 
 | Trace | Compared variants | Cycles | Observation |
 |---|---|---:|---|
 | `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper` | 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures. |
 | `BlackScholes/NO_ARGS` | all 10 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  `baseline25`/`baseline26` and their capacity-matched FRC points are also 9,032 cycles. |
+| `transpose/dimX512_dimY512` | `baseline24`, `frc32-paper` | 201,054 / 201,054 | FRC is active (374,568 allocations, lower reads and swaps; 411,864 set-full fallbacks), but the control again has zero L2 reservation failures. |
 
 The low-associativity BlackScholes sensitivity makes the causal condition
 observable with real trace traffic: `baseline1` completes in 12,396 cycles
@@ -99,11 +101,13 @@ comparison, not evidence that this configuration matches the paper's claim
 that FRC usually outperforms capacity expansion.
 
 The independent transaction store is therefore exercised and the capacity
-matrix is complete, but these two complete QV100 workloads do **not**
+matrix is complete, but these three complete QV100 workloads do **not**
 reproduce a speedup: their conventional controls have no transient L2
 replacement pressure to remove.  The deterministic replacement-pressure gate
 above proves the causal mechanism under such pressure; it must not be
-generalized to these workloads.  QV100 also differs materially from the paper
-(64 sector-L2 slices and CUDA traces rather than two 16-way AMD banks and
-OpenCL SDK 2.5), so this remains a causal reproduction under a stated
-configuration, not an absolute match to paper OPC.
+generalized to these workloads.  Complete `scan` and `convolutionSeparable`
+replays are deliberately left out of this table until both variants finish.
+QV100 also differs materially from the paper (64 sector-L2 slices and CUDA
+traces rather than two 16-way AMD banks and OpenCL SDK 2.5), so this remains a
+causal reproduction under a stated configuration, not an absolute match to
+paper OPC.

@@ -85,13 +85,16 @@ not evidence for or against FRC performance on read-conflict workloads.
 The former whole-line prefetch experiment is superseded: a 128-byte L2 line
 crosses QV100 memory-subpartition ownership boundaries and its internal reads
 can target another DRAM channel.  Core workload conclusions use the
-partition-local 32-byte sector implementation and core commit `a3901230`,
-which supplies the independent FRC request/waiter store.
+partition-local 32-byte sector implementation and core commit `ab3b4cdf`,
+which includes the independent FRC request/waiter store, permits FRC data
+receipt before a delayed swap, and fairly arbitrates FRC and ordinary lower
+requests.
 
 | Complete trace | Control cycles | FRC32 cycles | Key observation |
 |---|---:|---:|---|
 | CUDA SDK `fastWalshTransform` `_logK_11__logD_19` | 172,297 | 172,297 | FRC is active: 467,526 allocations/swaps, but all L2 reservation failures are zero. |
 | CUDA SDK `BlackScholes` `NO_ARGS` | 9,032 | 9,032 | All FRC4–256 and capacity-matched baseline25/26 points are 9,032 cycles; `frc256` eliminates set-full fallback. |
+| CUDA SDK `transpose` `dimX512_dimY512` | 201,054 | 201,054 | FRC is active: 374,568 allocations/swaps, but all L2 reservation failures are zero. |
 | CUDA SDK `BlackScholes` `NO_ARGS`, 1-way stress | 12,396 | 9,658 (`frc128`) | `baseline1` reports 186,478 reservation failures; FRC eliminates almost all (668) and is 22.1% faster.  Capacity-matched `baseline2` is 9,441 cycles. |
 
 Consequently this port has passed a high-concurrency correctness gate but has
