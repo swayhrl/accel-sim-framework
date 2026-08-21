@@ -62,6 +62,10 @@ def format_value(value):
     return "—" if value is None else f"{value:.3f}"
 
 
+def safe_ratio(numerator, denominator):
+    return None if numerator is None or denominator in (None, 0) else numerator / denominator
+
+
 def trend(result, condition, statement):
     value = result[1]
     if value is None:
@@ -99,6 +103,36 @@ def main():
     equivalence_rows = read_csv(equivalence_path) if equivalence_path.is_file() else []
     equivalent_cases = [row["case"] for row in equivalence_rows
                         if row.get("equal") == "yes"]
+    c2p_outliers = []
+    for row in complete_rows:
+        if row["mode"] != "c2p":
+            continue
+        ipc_value = number(row, "ipc_normalized")
+        l2_value = number(row, "l2_access_normalized")
+        # A lower L2-access count alone is not a performance proof.  Make the
+        # most important counter-direction explicit: a slowdown despite a
+        # material L2 reduction must remain an investigation item, along with
+        # the queue/probe quantities that could explain it.
+        if ipc_value is not None and l2_value is not None and \
+                ipc_value < 0.995 and l2_value < 0.99:
+            accepted = number(row, "c2p_queries_accepted")
+            c2p_outliers.append({
+                "case": row["case"], "group": row["group"],
+                "ipc": ipc_value, "l2": l2_value,
+                "candidates": safe_ratio(number(row, "c2p_candidate_total"),
+                                         number(row, "c2p_candidate_queries")),
+                "queue_bypass": safe_ratio(number(row, "c2p_queries_queue_bypass"),
+                                            accepted),
+                "probe_timeout": safe_ratio(number(row, "c2p_fallback_probe_timeout"),
+                                            accepted),
+                "fp": safe_ratio(number(row, "c2p_snapshot_false_positive"),
+                                 sum(value for value in (
+                                     number(row, "c2p_snapshot_false_positive"),
+                                     number(row, "c2p_snapshot_false_negative"),
+                                     number(row, "c2p_snapshot_true_positive"),
+                                     number(row, "c2p_snapshot_true_negative"))
+                                     if value is not None)),
+            })
 
     lines = ["# C2P-Cache paper16 directional reproduction", "",
              "## Scope and acceptance", "",
@@ -172,6 +206,25 @@ def main():
                         "R1S1 C2P reduces L2 accesses"),
                   trend(l2["R1S0", "c2p"], lambda value: value < 1.0,
                         "R1S0 C2P reduces L2 accesses")])
+
+    lines.extend(["", "## Counter-direction outliers requiring explanation", "",
+                  "Rows below are not silently averaged away: they reduce L2 access "
+                  "but slow down. The displayed C2P queue, candidate, false-positive, "
+                  "and target-timeout rates are evidence for diagnosis, not automatic "
+                  "proof of a single root cause.", "",
+                  "| Case | Local group | C2P IPC | C2P L2 access | Candidates/query | Query bypass rate | Target-timeout rate | Snapshot FP rate |",
+                  "|---|---|---:|---:|---:|---:|---:|---:|"])
+    if c2p_outliers:
+        for item in c2p_outliers:
+            lines.append("| {case} | {group} | {ipc:.3f} | {l2:.3f} | {candidates} | "
+                         "{queue_bypass} | {probe_timeout} | {fp} |".format(
+                             **{**item,
+                                "candidates": format_value(item["candidates"]),
+                                "queue_bypass": format_value(item["queue_bypass"]),
+                                "probe_timeout": format_value(item["probe_timeout"]),
+                                "fp": format_value(item["fp"])}))
+    else:
+        lines.append("| — | — | — | — | — | — | — | — |")
 
     lines.extend(["", "## Mechanism and provenance gates", "",
                   "- `analyze_c2p_paper16.py --strict` requires every seven-mode "

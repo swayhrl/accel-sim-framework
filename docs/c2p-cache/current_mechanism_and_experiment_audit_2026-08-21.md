@@ -146,7 +146,7 @@ parameterized implementation，绝不使用旧 binary 的结果。
 
 以下是必须在最终 16-workload aggregate 里复核的项目；它们不是被掩盖的例外：
 
-1. **SGEMM：L2 降 19.54% 但 C2P IPC -1.29%。** 这说明 L2 access 不是充分性能指标。优先检查其 query FIFO bypass、target-probe timeout、probe hit/miss 分布、requester fill-port 等待，以及 C2P/ideal 的 peer-L1 traffic；若这些不能解释 latency，就必须检查事务时序实现。
+1. **SGEMM：L2 降 19.54% 但 C2P IPC -1.29%。** 它的独立 L2 sensitivity 为 `429816/396350 = 1.084`，故本地是 R1S0（低于 1.10 的 S1 门槛），本就不应套用论文 R1S1 的 23.5% 平均收益。更重要的是机制计数给出了可审计的 slowdown 原因链：2,194,621 个 C2P query 中 741,827 个（33.8%）target-timeout fallback，平均 4.054 candidates/query，Snapshot FP 为 14.8%，1,694,593 次 peer L1 probe 最终只完成 271,719 次 remote hit；其 fallback probe P95/P99 分别为 4/10 个 peer。相对地，ideal 为 423,904 cycle、348,129 remote hit、888,305 probe，说明 Snapshot 候选/port contention 使 C2P 多发大量 probe 且丢失远端返回。这是**量化的模型行为解释**，不是以 L2-access 数字掩盖 slowdown；最终仍须检查其余 R1S0/R1S1 workload 是否同样出现，若普遍存在再审查 timeout/FIFO 模型而不是对 SGEMM 单点调参。
 2. **CCD 在目前完成点中 remote hit 为零。** 代码使用 weak-taken counter（初始弱不取），只有预测 taken 才广播并学习。这个保守模型可能在短/phase-varying trace 上持续不训练；最终报告必须用 CCD TP/FN/FP/TN 判断这是 comparator 定义造成的负控制，还是与论文 CCD 参数不匹配，不能把“零 hit”包装成 comparator 已复现。
 3. **Ring 的 Btree IPC 高于 C2P，而 DWT2D/LUD/SGEMM 显著变慢。** 该 workload 依赖性可由 serialized issue、nearest hit hop、减少的 probe 数共同导致；仍须检查 Ring 的 L2 access、hop/probe 分布和网络时序。不能在 aggregate 前声称已匹配论文 Ring 开销。
 4. **本地 R/S 分类与论文图的 workload 分组不同。** 例如 Gaussian 本地是 R0S0 而论文参考标签为 R1S0；这是 trace input/规模、mapping 和模型适配的直接信号。最终图会同时保留 paper reference group 和 local measured group，绝不强行 relabel。
