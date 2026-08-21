@@ -172,6 +172,10 @@ for mode in ${modes//,/ }; do
     /^c2p_l2_requests_avoided = / { l2_avoided=$3 }
     /^c2p_peer_probes = / { probes=$3 }
     /^c2p_peer_l1_accesses = / { peer_l1_accesses=$3 }
+    /^c2p_target_probe_port_busy_cycles = / { target_port_busy_cycles=$3 }
+    /^c2p_target_probe_queue_wait_cycles = / { target_queue_wait_cycles=$3 }
+    /^c2p_target_probe_queue_full_cycles = / { target_queue_full_cycles=$3 }
+    /^c2p_requester_fill_wait_cycles = / { requester_fill_wait_cycles=$3 }
     /^c2p_queries_queue_bypass = / { queue_bypass=$3 }
     /^c2p_updates_queue_bypass = / { update_queue_bypass=$3 }
     /^c2p_fallback_no_candidate = / { no_candidate=$3 }
@@ -214,6 +218,10 @@ for mode in ${modes//,/ }; do
       printf "c2p_candidate_queries = %s\n", candidate_queries
       printf "c2p_peer_probes = %s\n", probes
       printf "c2p_peer_l1_accesses = %s\n", peer_l1_accesses
+      printf "c2p_target_probe_port_busy_cycles = %s\n", target_port_busy_cycles
+      printf "c2p_target_probe_queue_wait_cycles = %s\n", target_queue_wait_cycles
+      printf "c2p_target_probe_queue_full_cycles = %s\n", target_queue_full_cycles
+      printf "c2p_requester_fill_wait_cycles = %s\n", requester_fill_wait_cycles
       printf "c2p_remote_hits = %s\n", remote_hits
       printf "c2p_l2_requests_avoided = %s\n", l2_avoided
       printf "c2p_queries_queue_bypass = %s\n", queue_bypass
