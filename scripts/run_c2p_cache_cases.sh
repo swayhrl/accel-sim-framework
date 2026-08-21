@@ -134,6 +134,10 @@ for mode in ${modes//,/ }; do
   awk '
     /^gpu_tot_sim_cycle = / { cycle=$3 }
     /^gpu_sim_insn = / { insn=$3 }
+    /^L2_total_cache_accesses = / { l2_total_accesses=$3 }
+    /^L2_cache_stats_breakdown\[GLOBAL_ACC_R\]\[TOTAL_ACCESS\] = / {
+      l2_global_read_accesses=$3
+    }
     /^c2p_l1_misses = / { misses=$3 }
     /^c2p_oracle_peer_hits = / { oracle=$3 }
     /^c2p_queries_accepted = / { accepted=$3 }
@@ -172,6 +176,8 @@ for mode in ${modes//,/ }; do
     END {
       printf "gpu_tot_sim_cycle = %s\n", cycle
       printf "gpu_sim_insn = %s\n", insn
+      printf "l2_total_cache_accesses = %s\n", l2_total_accesses
+      printf "l2_global_read_accesses = %s\n", l2_global_read_accesses
       printf "c2p_l1_misses = %s\n", misses
       printf "c2p_oracle_peer_hits = %s\n", oracle
       printf "c2p_queries_accepted = %s\n", accepted

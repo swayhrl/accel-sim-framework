@@ -7,7 +7,8 @@ from pathlib import Path
 
 
 FIELDS = (
-    "gpu_tot_sim_cycle", "gpu_sim_insn", "c2p_l1_misses",
+    "gpu_tot_sim_cycle", "gpu_sim_insn", "l2_total_cache_accesses",
+    "l2_global_read_accesses", "c2p_l1_misses",
     "c2p_oracle_peer_hits", "c2p_queries_accepted",
     "c2p_queries_queue_bypass", "c2p_updates_queue_bypass",
     "c2p_candidate_total", "c2p_candidate_queries", "c2p_peer_probes",
