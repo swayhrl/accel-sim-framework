@@ -37,6 +37,7 @@ live FRC state.  It is not an equal-capacity performance configuration.
 | FRC disabled equivalence | Same small-trace architectural metrics as the corrected control: 5,526 cycles, 256 instructions, 4 L2 accesses/misses. |
 | Sector read smoke | One allocation sends one lower sector read and completes a clean swap. |
 | Sector ownership | Directed two-warp case emits one FRC allocation and one lower read. |
+| Early fetch / fill-time victim | A resident hit is observed while B fetches in FRC; touching the initial LRU then changes the sampled fill-time victim. |
 | FRC-set-full fallback | Directed one-entry case reports `set_full_fallbacks=1`. |
 | Same-line write ownership | Directed case reports `write_conflict_stalls=144`, then one baseline write fallback after swap. |
 | Dirty victim path | Directed case reports `dirty_swaps=1`, `wb_lower_accepted=1`, and terminal `fetching=fetched=evicting=0`. |

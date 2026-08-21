@@ -1,0 +1,28 @@
+-kernel name = frc_fill_time_observe
+-kernel id = 3
+-grid dim = (1,1,1)
+-block dim = (64,1,1)
+-shmem = 0
+-nregs = 8
+-binary version = 70
+-cuda stream id = 0
+-shmem base_addr = 0x0000000000000000
+-local mem base_addr = 0x0000000000000000
+-nvbit version = 1.4
+-accelsim tracer version = 3
+
+#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [adrrescompress?] [mem_addresses]
+
+#BEGIN_TB
+
+thread block = 0,0,0
+
+warp = 0
+insts = 2
+0000 ffffffff 1 R1 LDG.E.SYS 0 4 1 0x0000000000100000 0
+0010 ffffffff 0 EXIT 0 0
+
+warp = 1
+insts = 2
+0000 ffffffff 1 R1 LDG.E.SYS 0 4 1 0x000000000000c000 0
+0010 ffffffff 0 EXIT 0 0

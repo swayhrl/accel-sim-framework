@@ -7,8 +7,9 @@ Usage: scripts/check_l2_frc_directed.sh --config CONFIG [--trace-config FILE]
        [--run-root DIR]
 
 Runs the Phase-3 FRC directed tests: sector attachment while a complete line
-is fetched, FRC-set-full fallback, dirty victim writeback ownership, explicit
-partial-write fallback, and end-of-kernel flush.  Set
+is fetched, early fetch with fill-time victim selection, FRC-set-full
+fallback, dirty victim writeback ownership, explicit partial-write fallback,
+and end-of-kernel flush.  Set
 LATEBIND_L2_GPGPUSIM_ROOT to the selected FRC core worktree first.
 EOF
 }
@@ -52,10 +53,14 @@ run_case() {
 }
 
 run_case merge merge frc1-directed.config
-grep -Eq 'frc_l2 .*allocations=1 lower_reads=1' \
+grep -Eq 'frc_l2 .*allocations=1 .*lower_reads=1' \
   "$run_root/merge/smoke.out"
 grep -Eq 'frc_l2 .*merges=[1-9].*waiter_peak=[2-9]' \
   "$run_root/merge/smoke.out"
+
+run_case fill_time_victim fill_time_victim frc2-fill-time.config
+grep -Eq 'frc_l2 .*early_fetches=[1-9].*resident_hits_while_fetching=[1-9].*fill_time_selections=[1-9].*fill_time_candidate_changes=[1-9]' \
+  "$run_root/fill_time_victim/smoke.out"
 
 run_case set_full set_full frc1-set-full.config
 grep -Eq 'frc_l2 .*set_full_fallbacks=[1-9]' \
@@ -76,6 +81,6 @@ grep -Eq 'frc_l2 .*flush_calls=[1-9].*fetching=0 fetched=0 evicting=0' \
   "$run_root/flush/smoke.out"
 
 printf 'PASS frc_directed run_root=%s\n' "$run_root"
-grep 'frc_l2' "$run_root/merge/smoke.out" "$run_root/set_full/smoke.out" \
+grep 'frc_l2' "$run_root/merge/smoke.out" "$run_root/fill_time_victim/smoke.out" "$run_root/set_full/smoke.out" \
   "$run_root/write_conflict/smoke.out" "$run_root/dirty_swap/smoke.out" \
   "$run_root/flush/smoke.out"
