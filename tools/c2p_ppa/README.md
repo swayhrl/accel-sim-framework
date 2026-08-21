@@ -55,7 +55,7 @@ area count.  It maps the control fixture to the open ASAP7 RVT/TT library,
 runs floorplanning, IO placement, global and detailed placement, CTS, global
 routing, detailed routing, and writes DEF/ODB plus timing, area, and DRC
 reports.  The standard-cell recipe includes tap/endcap insertion, an ASAP7
-PDN grid, filler insertion, and post-route LEF-RC parasitic extraction.  It
+PDN grid, filler insertion, and post-route OpenRCX parasitic extraction.  It
 still excludes extraction-rule calibration, Snapshot SRAM macros, and payload
 FIFOs.  The DRC report is retained rather than hidden: this is a transparent
 physical proxy, not a sign-off result.
@@ -96,6 +96,10 @@ repaired by ordinary standard-cell optimization.
 `C2P_PPA_DETAIL_PAD_SITES` controls standard-cell padding before detail
 placement (default `1`).  Keeping one site around the dense control logic is
 part of the route recipe, not a cosmetic area adjustment.
+`C2P_PPA_POST_GRT_REPAIR=0` disables the default global-route parasitic
+repair/re-route pass.  Leave it enabled for any retained physical result: it
+is the normal incremental OpenROAD sequence after global routing, rather than
+a timing-only shortcut.
 The driver combines the five split ASAP7 RVT/TT Liberty groups before mapping;
 using only the simple-logic group is invalid because the mapper also needs
 inverter/buffer and sequential cells.  The library time unit is one picosecond,

@@ -39,6 +39,7 @@ for path in \
     "$platform_dir/setRC.tcl" \
     "$platform_dir/openRoad/tapcell.tcl" \
     "$platform_dir/openRoad/pdn/grid_strategy-M1-M2-M5-M6.tcl" \
+    "$platform_dir/rcx_patterns.rules" \
     "$lib_dir/asap7sc7p5t_SIMPLE_RVT_TT_nldm_211120.lib.gz" \
     "$lib_dir/asap7sc7p5t_INVBUF_RVT_TT_nldm_220122.lib.gz" \
     "$lib_dir/asap7sc7p5t_AO_RVT_TT_nldm_211120.lib.gz" \
@@ -100,6 +101,7 @@ export C2P_ASAP7_MAKE_TRACKS="$platform_dir/openRoad/make_tracks.tcl"
 export C2P_ASAP7_SET_RC="$platform_dir/setRC.tcl"
 export C2P_ASAP7_TAP_TCL="$platform_dir/openRoad/tapcell.tcl"
 export C2P_ASAP7_PDN_TCL="$platform_dir/openRoad/pdn/grid_strategy-M1-M2-M5-M6.tcl"
+export C2P_ASAP7_RCX_RULES="$platform_dir/rcx_patterns.rules"
 
 "$openroad_bin" -no_init -exit "$script_dir/openroad/c2p_control_proxy.tcl" \
     | tee "$result_dir/openroad.log"

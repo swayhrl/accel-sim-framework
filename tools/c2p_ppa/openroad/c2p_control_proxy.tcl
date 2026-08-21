@@ -21,6 +21,7 @@ set make_tracks [require_env C2P_ASAP7_MAKE_TRACKS]
 set set_rc [require_env C2P_ASAP7_SET_RC]
 set tap_tcl [require_env C2P_ASAP7_TAP_TCL]
 set pdn_tcl [require_env C2P_ASAP7_PDN_TCL]
+set rcx_rules [require_env C2P_ASAP7_RCX_RULES]
 set utilization [expr {[info exists ::env(C2P_PPA_UTILIZATION)] ?
                        $::env(C2P_PPA_UTILIZATION) : 25}]
 set clock_period [expr {[info exists ::env(C2P_PPA_CLK_PS)] ?
@@ -35,6 +36,8 @@ set repair_util [expr {[info exists ::env(C2P_PPA_REPAIR_UTILIZATION)] ?
                        $::env(C2P_PPA_REPAIR_UTILIZATION) : 70}]
 set detail_pad [expr {[info exists ::env(C2P_PPA_DETAIL_PAD_SITES)] ?
                       $::env(C2P_PPA_DETAIL_PAD_SITES) : 1}]
+set post_grt_repair [expr {[info exists ::env(C2P_PPA_POST_GRT_REPAIR)] ?
+                           $::env(C2P_PPA_POST_GRT_REPAIR) : 1}]
 
 file mkdir $out_dir
 read_lef $tech_lef
@@ -100,16 +103,45 @@ if {$stop_after_cts} {
     exit
 }
 
-global_route -congestion_report_file "$out_dir/congestion.rpt"
+global_route -congestion_iterations 30 \
+    -congestion_report_file "$out_dir/congestion.rpt"
 # Match the ORFS route sequence: construct legal access points before
 # TritonRoute.  Skipping this step lets detailed route invent access geometry
 # and produces avoidable M1/M2 shorts even at very low utilization.
 pin_access
+# Placement-RC repair only fixes the deliberately short inner loop.  The
+# physical flow also needs the normal ORFS global-route repair/re-route pass:
+# its estimates include real detours and it re-routes exactly the nets changed
+# by buffering/resizing.  Keep it enabled by default so a retained DRC result
+# is from the same implementation sequence used by an ordinary OpenROAD flow.
+if {$post_grt_repair} {
+    set_propagated_clock [get_clocks core_clk]
+    estimate_parasitics -global_routing
+    repair_design -max_wire_length 10
+    detailed_placement
+    global_route -start_incremental
+    global_route -end_incremental \
+        -congestion_report_file "$out_dir/congestion_post_repair_design.rpt"
+
+    estimate_parasitics -global_routing
+    if {$repair_setup} {
+        repair_timing -setup -max_utilization $repair_util
+        detailed_placement
+        global_route -start_incremental
+        global_route -end_incremental \
+            -congestion_report_file "$out_dir/congestion_post_repair_timing.rpt"
+        estimate_parasitics -global_routing
+    }
+}
 # The finite iteration count makes the fixture's runtime deterministic.  The
 # resulting DRC report is always retained; this proxy is not a sign-off layout.
 detailed_route -droute_end_iter $droute_end_iter -output_drc "$out_dir/drc.rpt"
 filler_placement {FILLERxp5_ASAP7_75t_R FILLER_ASAP7_75t_R}
-extract_parasitics -lef_rc
+# LEF-RC lacks ASAP7's synthetic Pad layer, so it cannot produce a legal
+# extracted SPEF for this design.  Use the versioned ORFS OpenRCX patterns
+# instead; this is the same technology extraction input used by the ASAP7
+# reference flow.
+extract_parasitics -ext_model_file $rcx_rules
 write_def "$out_dir/$design_name.def"
 write_db "$out_dir/$design_name.odb"
 tee -file "$out_dir/post_route_area.rpt" { report_design_area }
