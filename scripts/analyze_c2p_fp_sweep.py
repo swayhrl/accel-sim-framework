@@ -28,6 +28,34 @@ def read_summary(path):
     return values
 
 
+def read_snapshot_shape(run_dir):
+    """Return the final resolved (logical rows, total hashes) pair.
+
+    The runner intentionally appends an m/k overlay after the base C2P config,
+    so each option appears twice in the generated file.  The final occurrence
+    is the hardware point actually parsed by Accel-Sim.
+    """
+    path = run_dir / "gpgpusim.config"
+    if not path.is_file():
+        return None
+    values = {}
+    prefixes = {
+        "-c2p_cache_snapshot_bf_rows_per_bank": "bf_rows_per_bank",
+        "-c2p_cache_bf_hashes": "bf_hashes",
+    }
+    for line in path.read_text().splitlines():
+        fields = line.split()
+        if len(fields) >= 2 and fields[0] in prefixes:
+            try:
+                values[prefixes[fields[0]]] = int(fields[1])
+            except ValueError:
+                return None
+    if set(values) != set(prefixes.values()):
+        return None
+    # 64 banks each contain 16 tag-mask rows plus the configured BF rows.
+    return 64 * (16 + values["bf_rows_per_bank"]), 1 + values["bf_hashes"]
+
+
 def quantile(values, fraction):
     values = sorted(values)
     if not values:
@@ -72,8 +100,15 @@ def main():
     if not point_dirs:
         raise SystemExit("no m<rows>-k<encodings> sweep directories found")
     for point_dir in point_dirs:
+        declared = tuple(int(value) for value in re.fullmatch(
+            r"m(\d+)-k(\d+)", point_dir.name).groups())
         for case, base in sorted(classification.items()):
-            data = read_summary(point_dir / case / "c2p" / "summary.txt")
+            run_dir = point_dir / case / "c2p"
+            shape = read_snapshot_shape(run_dir)
+            if shape != declared:
+                missing.append(f"{point_dir.name}/{case}: resolved m/k {shape} != {declared}")
+                continue
+            data = read_summary(run_dir / "summary.txt")
             needed = ("gpu_tot_sim_cycle", "c2p_snapshot_false_positive",
                       "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",
                       "c2p_snapshot_true_negative")
@@ -89,6 +124,8 @@ def main():
                 "point": point_dir.name,
                 "case": case,
                 "group": base["group"],
+                "snapshot_rows": shape[0],
+                "hash_count": shape[1],
                 "fp_ratio": ratio,
                 "fp_bin": fp_bin(ratio),
                 "ipc_normalized": int(base["baseline_cycles"]) /
@@ -106,7 +143,8 @@ def main():
                                "ipc_median": quantile(values, .50),
                                "ipc_p75": quantile(values, .75)})
     write_csv(args.out_dir / "fp_sweep_points.csv", points,
-              ["point", "case", "group", "fp_ratio", "fp_bin", "ipc_normalized"])
+              ["point", "case", "group", "snapshot_rows", "hash_count",
+               "fp_ratio", "fp_bin", "ipc_normalized"])
     write_csv(args.out_dir / "fp_sweep_binned.csv", binned,
               ["group", "fp_bin", "samples", "ipc_p25", "ipc_median", "ipc_p75"])
     report = ["# C2P Figure-13 FP sweep status", ""]
@@ -114,7 +152,8 @@ def main():
         report.extend(["## Missing evidence", ""])
         report.extend(f"- {item}" for item in missing)
     else:
-        report.append("All canonical classified cases have every m/k point.")
+        report.append("All canonical classified cases have every m/k point, and each "
+                      "resolved configuration matches its directory label.")
     (args.out_dir / "fp_sweep_status.md").write_text("\n".join(report) + "\n")
     if args.strict and missing:
         raise SystemExit("; ".join(missing))
