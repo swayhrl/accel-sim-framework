@@ -65,22 +65,22 @@ FRC4 accepts two independent FRC allocations and completes in 5,337 cycles
 (2.43% faster).  This is a correctness/performance gate only, not a general
 workload result or a capacity-fair comparison.
 
-## First complete workload result and limit
+## Complete workload results with the independent transaction store
 
-The complete CUDA SDK `fastWalshTransform` trace
-`_logK_11__logD_19` was run with `baseline24` and `frc32-paper` after the
-partition-local-sector correction.  Both complete at 180,944,896 instructions
-and 172,297 cycles.  `frc32-paper` is active (467,526 allocations, lower
-reads and swaps; 1,301,946 set-full fallbacks), but every conventional L2 bank
-reports zero reservation failures.  The same negative control holds for the
-complete `BlackScholes` trace: baseline and FRC32 both take 9,032 cycles;
-FRC32 has 21,190 allocations while L2 reservation failures remain zero.
+All values below use core commit `a3901230` (FRC-local request/waiter store),
+the unmodified SM7 QV100 configuration and complete CUDA SDK traces.
 
-These negative-control measurements predate the independent FRC transaction
-store and are retained only as a baseline record.  The paper-style model now
-uses the finite FRC-owned request/waiter store defined in the Phase-3
-contract, so all performance figures must be regenerated with its new core
-commit.  QV100 still differs materially from the paper (64 sector-L2 slices
-and CUDA traces rather than two 16-way AMD banks and OpenCL SDK 2.5), so any
-new speedup remains a causal reproduction under this stated configuration,
-not an absolute match to paper OPC.
+| Trace | Compared variants | Cycles | Observation |
+|---|---|---:|---|
+| `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper` | 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures. |
+| `BlackScholes/NO_ARGS` | all 10 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  `baseline25`/`baseline26` and their capacity-matched FRC points are also 9,032 cycles. |
+
+The independent transaction store is therefore exercised and the capacity
+matrix is complete, but these two complete QV100 workloads do **not**
+reproduce a speedup: their conventional controls have no transient L2
+replacement pressure to remove.  The deterministic replacement-pressure gate
+above proves the causal mechanism under such pressure; it must not be
+generalized to these workloads.  QV100 also differs materially from the paper
+(64 sector-L2 slices and CUDA traces rather than two 16-way AMD banks and
+OpenCL SDK 2.5), so this remains a causal reproduction under a stated
+configuration, not an absolute match to paper OPC.
