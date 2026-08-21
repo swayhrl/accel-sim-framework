@@ -140,6 +140,17 @@ parameterized implementation，绝不使用旧 binary 的结果。
 
 这符合论文“target L1 正常 tag/data array 竞争 + 有界 abort/fallback”的机制要求。因此默认有限队列被保留，不能为了获得更大 remote-hit 数而采用无限等待。该诊断由 `scripts/analyze_c2p_queue_sensitivity.py --strict` 检查。
 
+**Btree target-port 反事实已量化。** canonical 与 `target-port-bypass`
+使用同一 candidate 路径；后者只移除 C2P probe 对目标 L1 data port/FIFO 的竞争。
+完整 Btree 总计从 229,052 降至 225,845 cycles（IPC 1.0142x），L2 access
+从 1,259,116 降至 856,113，remote hit 从 161,628 增至 563,066。normal
+run 同时观测到 3,737,042 target-port busy cycles 和 22,914,338 FIFO-wait
+cycles。因此 target 竞争确实会压低已实现 remote hit，但在 Btree 上只解释
+1.42% 的总性能差；不能据此把任何 SGEMM slowdown 都归因于该单一因素。
+NN 的 normal/bypass 均为 7,224 cycles、零 candidate/remote hit，是预期
+负控制。SGEMM 的同一对照仍在运行，完成前不得把这项 Btree 证据外推为
+SGEMM 的最终解释。
+
 **Ideal 不必逐 workload 支配 finite C2P IPC。** Ideal 使用 exact candidates，可能检查更多目标；C2P 会 pruning 掉一部分候选。因此在相同真实 target-port 争用模型下，C2P 可能以更少的 remote hit 获得更短临界路径。比较它们时应同时看 `remote_hits`、`peer_l1_accesses`、timeout 与 Figure-14 peer-access 分布，而非把 ideal 误作无代价上界。
 
 ## 6. 当前不能解释为“正确”的红灯
