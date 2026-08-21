@@ -164,7 +164,7 @@ def filtering_accuracy(cases, out, formats):
     # than only TP/FN/FP/TN.  Keep that eight-entry vocabulary: blue/gray for
     # CCD, salmon/peach for C2P, and hatching on the positive/filter-error
     # pieces so the rendered plot also remains legible in grayscale.
-    x, positions, labels, boundaries = 0.0, [], [], []
+    x, positions, boundaries = 0.0, [], []
     for group in GROUPS:
         data = [row for row in cases if row["group"] == group and
                 all(number(row, prefix + "_tp_rate") is not None
@@ -172,7 +172,6 @@ def filtering_accuracy(cases, out, formats):
         start = x
         for row in data:
             positions.append(x)
-            labels.append(row["abbr"])
             for system_index, (system_name, prefix, fields) in enumerate(systems):
                 bottom = 0.0
                 bar_x = x + (-0.19 if system_index == 0 else 0.19)
@@ -183,8 +182,6 @@ def filtering_accuracy(cases, out, formats):
                              edgecolor="black", linewidth=0.35,
                              label=name if len(positions) == 1 else None)
                     bottom += amount
-                axis.text(bar_x, -0.055, "CCD" if system_index == 0 else "C2P",
-                          ha="center", va="top", fontsize=5.8, clip_on=False)
             x += 1.0
         if data:
             axis.text((start + x - 1.0) / 2.0, -0.145, group, ha="center",
@@ -195,11 +192,22 @@ def filtering_accuracy(cases, out, formats):
         axis.axvline(boundary, color="#666666", linestyle=(0, (4, 4)), linewidth=0.75)
     axis.set_ylim(0, 1.08)
     axis.set_xlim(-0.55, max(0.55, x - 0.55))
-    axis.set_xticks(positions)
-    axis.set_xticklabels(labels, fontsize=8)
+    # Fig. 12 shows workload groups, not an extra CCD/C2P label below every
+    # stacked pair.  The per-case identity stays in the CSV/provenance audit.
+    axis.set_xticks([])
+    axis.tick_params(axis="x", bottom=False, labelbottom=False)
     axis.set_ylabel("System Ratio")
-    axis.legend(ncol=4, loc="upper center", bbox_to_anchor=(0.5, 1.22),
-                frameon=False, fontsize=7.2, handlelength=1.2, columnspacing=0.55)
+    handles, legend_labels = axis.get_legend_handles_labels()
+    # Matplotlib fills a multi-column legend down columns.  Interleave the
+    # source order so it renders the paper's first CCD TP/FN/FP/TN row and
+    # second C2P TP/FN/FP/TN row.
+    if len(handles) == 8:
+        order = (0, 4, 1, 5, 2, 6, 3, 7)
+        handles = [handles[index] for index in order]
+        legend_labels = [legend_labels[index] for index in order]
+    axis.legend(handles, legend_labels, ncol=4, loc="upper left",
+                frameon=False, fontsize=6.7, handlelength=1.15,
+                columnspacing=0.48, handletextpad=0.28)
     save(fig, out, "fig12_filtering_accuracy", formats)
     return True
 
