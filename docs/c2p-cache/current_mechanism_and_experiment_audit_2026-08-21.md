@@ -125,17 +125,23 @@ parameterized implementation，绝不使用旧 binary 的结果。
 
 ## 5. 已完成点的实测行为（仅局部证据）
 
-下表来自当前 v7 主根；IPC 为 `baseline_cycles/mode_cycles`，大于 1 更快。它用于发现方向和异常，**不是 16-workload aggregate**。
+下表的 C2P/ATA/Ring 来自当前 v7 effective root，CCD 列只取修正 training
+后的 fresh root；IPC 为 `baseline_cycles/mode_cycles`，大于 1 更快。它用于
+发现方向和异常，**不是 16-workload aggregate**。
 
 | workload | C2P IPC | C2P L2 access / base | C2P remote hit | ATA IPC | CCD IPC | Ring IPC | 初步解释 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| Btree | 1.0258 | 0.8862 | 161,628 | 0.9868 | 0.9967 | 1.0335 | 有强冗余；有限 C2P 少于 ideal 的 remote hit，但较低 probe 压力可使 IPC 更好。 |
-| DWT2D | 1.0347 | 0.9717 | 46,330 | 0.9860 | 0.9962 | 0.9189 | C2P 正收益；Ring 代价明显。 |
-| Gaussian s=256 | 0.9998 | 0.9965 | 15,355 | 0.9987 | 0.9999 | 0.9281 | 机会较低且 L2 不敏感，接近中性是合理预期。 |
-| Hotspot1 | 1.0189 | 0.9086 | 80,181 | 1.0009 | 0.9987 | 1.0011 | 明显 L2 reduction，C2P 正收益。 |
-| LUD | 1.0038 | 0.9362 | 87,882 | 1.0019 | 0.9996 | 0.9483 | 机会存在但延迟敏感性低，收益小。 |
-| NN | 0.9975 | 1.0000 | 0 | 0.9997 | 1.0001 | 0.9935 | 负控制；没有凭空 remote hit，有限查询只有很小开销。 |
-| SGEMM | 0.9871 | 0.8046 | 271,719 | 1.0005 | 0.9965 | 0.7420 | L2 access 大幅减少但 IPC 下降，是当前最重要的待解释 workload。 |
+| Btree | 1.0258 | 0.8862 | 161,628 | 0.9868 | 1.0018 | 1.0335 | 唯一已完成的 local R1S1；有限 C2P 有正收益。 |
+| DWT2D | 1.0347 | 0.9717 | 46,330 | 0.9860 | 1.0074 | 0.9189 | C2P 正收益；Ring 代价明显。 |
+| Gaussian s=256 | 0.9998 | 0.9965 | 15,355 | 0.9987 | 0.9999 | 0.9281 | 机会较低且 L2 不敏感，接近中性。 |
+| Hotspot1 | 1.0189 | 0.9087 | 80,181 | 1.0009 | 1.0021 | 1.0011 | 明显 L2 reduction，C2P 正收益。 |
+| LUD | 1.0038 | 0.9362 | 87,882 | 1.0019 | 1.0012 | 0.9483 | 机会存在但延迟敏感性低，收益小。 |
+| NN | 0.9975 | 1.0000 | 0 | 0.9997 | 1.0001 | 0.9935 | 负控制；没有凭空 remote hit。 |
+| CUTCP | 1.0014 | 0.4880 | 925,335 | — | 0.9968 | — | L2 reduction 很大但 local S0，尚不能从 IPC 推出收益。 |
+| MRI-Q | 0.9996 | 1.0000 | 0 | — | 0.9989 | — | 第二个无共享负控制。 |
+| SGEMM | 0.9872 | 0.8046 | 271,719 | 1.0005 | 0.9825 | 0.7420 | L2 access 大幅减少但 IPC 下降，已有端口反事实解释。 |
+| 2DConvolution | 0.9510 | 0.9077 | 556,059 | — | 0.9952 | — | 高 reuse 但 C2P slowdown；须与 target/FIFO、S0 和候选分布共同审查。 |
+| GEMM | 1.0222 | 0.9385 | 1,066,854 | — | 1.0046 | — | 有正 C2P 趋势，但 local S0，不能计入 R1S1 主结论。 |
 
 所有上述 completed mode 的 `oracle_cycles == baseline_cycles`，且每个 nonzero `remote_hits == l2_requests_avoided`。因此它们至少证明：机会测量没有改写 baseline timing，remote return 确实替代一次 lower request，而非双重完成。
 
