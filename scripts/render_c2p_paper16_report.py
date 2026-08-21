@@ -48,6 +48,16 @@ def aggregate(rows, field):
     return result
 
 
+def aggregate_cases(rows, complete_cases, field):
+    result = {}
+    for group in GROUPS:
+        values = [number(row, field) for row in rows
+                  if row["case"] in complete_cases and row["group"] == group]
+        values = [value for value in values if value is not None]
+        result[group] = (len(values), mean(values))
+    return result
+
+
 def format_value(value):
     return "—" if value is None else f"{value:.3f}"
 
@@ -75,6 +85,14 @@ def main():
     complete_rows = [row for row in rows if row["case"] in complete_cases]
     ipc = aggregate(complete_rows, "ipc_normalized")
     l2 = aggregate(complete_rows, "l2_access_normalized")
+    ideal_recovery = aggregate_cases(cases, complete_cases,
+                                     "ideal_opportunity_retained")
+    c2p_recovery = aggregate_cases(cases, complete_cases,
+                                   "c2p_opportunity_retained")
+    ideal_timeout = aggregate_cases(cases, complete_cases,
+                                    "ideal_probe_timeout_rate")
+    c2p_timeout = aggregate_cases(cases, complete_cases,
+                                  "c2p_probe_timeout_rate")
 
     lines = ["# C2P-Cache paper16 directional reproduction", "",
              "## Scope and acceptance", "",
@@ -101,6 +119,22 @@ def main():
     for group in GROUPS:
         lines.append("| {} | {} | {} | {} | {} |".format(
             group, *(format_value(l2[group, mode][1]) for mode in MODES)))
+
+    lines.extend(["", "## Remote-opportunity retention diagnostic", "",
+                  "The oracle measures a peer opportunity when a miss is accepted. "
+                  "The two retention columns show how much survives later exact "
+                  "probing; timeout is the fraction of accepted peer requests that "
+                  "fall back because a target-L1 probe remained blocked. This is a "
+                  "diagnostic for model/queue contention, not a paper performance "
+                  "metric.", "",
+                  "| Group | Exact ideal retains oracle opportunity | C2P retains oracle opportunity | Ideal target-timeout rate | C2P target-timeout rate |",
+                  "|---|---:|---:|---:|---:|"])
+    for group in GROUPS:
+        lines.append("| {} | {} | {} | {} | {} |".format(
+            group, format_value(ideal_recovery[group][1]),
+            format_value(c2p_recovery[group][1]),
+            format_value(ideal_timeout[group][1]),
+            format_value(c2p_timeout[group][1])))
 
     lines.extend(["", "## Paper target versus local directional evidence", ""])
     for group, target in PAPER_TARGETS.items():

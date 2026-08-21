@@ -267,6 +267,23 @@ def main():
                            value(oracle, "c2p_l1_misses"))
         sensitivity = ratio(baseline_cycles,
                             value(fast, "gpu_tot_sim_cycle"))
+        # Oracle records opportunity at miss acceptance.  Exact/finite peer
+        # paths can subsequently lose it to target-L1 contention, a full
+        # candidate scan, or a query-queue bypass.  Keep those stages visible
+        # so a small realized L2 reduction is not misdiagnosed as a Bloom
+        # filtering error.
+        ideal_opportunity_retained = ratio(
+            value(results["ideal"], "c2p_remote_hits"),
+            value(oracle, "c2p_oracle_peer_hits"))
+        c2p_opportunity_retained = ratio(
+            value(results["c2p"], "c2p_remote_hits"),
+            value(oracle, "c2p_oracle_peer_hits"))
+        ideal_probe_timeout_rate = ratio(
+            value(results["ideal"], "c2p_fallback_probe_timeout"),
+            value(results["ideal"], "c2p_queries_accepted"))
+        c2p_probe_timeout_rate = ratio(
+            value(results["c2p"], "c2p_fallback_probe_timeout"),
+            value(results["c2p"], "c2p_queries_accepted"))
         group = "unknown"
         if redundancy != "" and sensitivity != "":
             group = "R{}S{}".format(
@@ -281,6 +298,10 @@ def main():
             "group": group,
             "oracle_redundancy": redundancy,
             "l2_sensitivity": sensitivity,
+            "ideal_opportunity_retained": ideal_opportunity_retained,
+            "c2p_opportunity_retained": c2p_opportunity_retained,
+            "ideal_probe_timeout_rate": ideal_probe_timeout_rate,
+            "c2p_probe_timeout_rate": c2p_probe_timeout_rate,
             "baseline_cycles": baseline_cycles,
             "l2_50_cycles": value(fast, "gpu_tot_sim_cycle"),
             "snapshot_tp_rate": c2p_tp,
@@ -319,7 +340,9 @@ def main():
 
     case_columns = ["case", "suite", "abbr", "input_label",
                     "trace_relative_to_hw_run", "group", "oracle_redundancy",
-                    "l2_sensitivity", "baseline_cycles", "l2_50_cycles",
+                    "l2_sensitivity", "ideal_opportunity_retained",
+                    "c2p_opportunity_retained", "ideal_probe_timeout_rate",
+                    "c2p_probe_timeout_rate", "baseline_cycles", "l2_50_cycles",
                     "snapshot_tp_rate", "snapshot_fn_rate", "snapshot_fp_rate",
                     "snapshot_tn_rate", "ccd_tp_rate", "ccd_fn_rate",
                     "ccd_fp_rate", "ccd_tn_rate"]
