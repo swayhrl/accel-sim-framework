@@ -24,6 +24,28 @@ hash. Accel-Sim's QV100 IPOLY implementation cannot express 20 partitions or
 partition mapping and linear L2 set indexing. These are explicit simulator
 adaptations, not claims about the authors' unpublished implementation.
 
+### L1 forward-progress correction (2026-08-21)
+
+The capacity-preserving `16 sets x 32 ways` interpretation exposed a
+pre-existing GPGPU-Sim forward-progress bug on Parboil SGEMM. The inherited
+`-gpgpu_l1_cache_write_ratio 25` policy preferred clean victims globally. At
+the failing point, sets 8, 9, and 11 each contained 32 dirty lines while the
+cache-wide dirty ratio was below 25%; a miss mapping to set 11 therefore
+received `RESERVATION_FAIL` forever even though a dirty victim was available.
+
+`796f2609` keeps the global clean-first rule normally, but evicts that set's
+LRU/FIFO dirty line when it is the only way to make progress. The corrected
+configuration completes SGEMM in 475,720 cycles, exactly matching an
+isolation run that restored the inherited `4 sets x 64 ways` organization
+while retaining the paper's 64-SM/20-partition topology. This is a
+forward-progress fix, not a geometry substitution.
+
+The earlier apparent `2^32`-cycle failure was a deadlock formatting bug: it
+printed unsigned `gpu_tot_sim_cycle - gpu_sim_cycle`. The detector had actually
+fired after about 500,000 cycles in the current kernel. The diagnostic now
+prints the counters separately; the two speculative timestamp-widening
+commits were explicitly reverted (`c100f127`, `2a0b2204`).
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
@@ -102,11 +124,11 @@ invent a remote hit: the observed query/update cost is 182 cycles (0.10%).
 The oracle invariant and one-remote-hit/one-avoided-L2-request invariant both
 passed.
 
-The selected Hotspot-512 trace is not yet a paper-table result. Its baseline
-run (with C2P disabled) terminated in GPGPU-Sim's deadlock detector near
-`gpu_tot_sim_cycle = 4,294,267,296`; no comparison mode was run.  The value is
-near a 32-bit wrap boundary, so this is tracked as a simulator/configuration
-or trace-scale investigation rather than attributed to the C2P mechanism.
+The selected Hotspot-512 trace is not yet a refreshed paper-table result. Its
+old baseline log reported a misleading value near `2^32` because of the
+deadlock formatting bug described above; it is not evidence of a timestamp
+wrap. It will be rerun with the forward-progress correction before any
+comparison mode is accepted.
 
 The similarly small NN trace is also zero-opportunity (0 remote hits), but
 its finite-query modes finish in 7,850 cycles versus the 7,892-cycle baseline.
@@ -172,7 +194,7 @@ the only remote publication points for this work:
 | Component | Pinned branch and commit | Remote branch |
 | --- | --- | --- |
 | Accel-Sim configuration, runner, and experiment records | `hrl/c2p-cache-exp-v0` at `98dbb0c` | `swayhrl/accel-sim-framework:hrl/c2p-cache-exp-v0` |
-| GPGPU-Sim C2P mechanism | `hrl/c2p-cache-v0` at `340bc933` | `swayhrl/gpgpu-sim:hrl/c2p-cache-v0` |
+| GPGPU-Sim C2P mechanism | `hrl/c2p-cache-v0` at `2a0b2204` | `swayhrl/gpgpu-sim:hrl/c2p-cache-v0` |
 
 Large trace files and four-mode run directories stay under ignored `hw_run/`.
 Each completed bundle nonetheless contains a copied binary, resolved config,

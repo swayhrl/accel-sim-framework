@@ -74,6 +74,27 @@ accept-time observation point. The ideal and C2P modes can differ from either
 number because target-port contention, late peer fills, and candidate pruning
 determine whether a request is actually redirected.
 
+## Refreshed paper-table SGEMM bundle
+
+This complete seven-mode bundle uses the capacity-preserving paper L1
+(`16 sets x 32 ways x 128B`) after the L1 dirty-victim forward-progress fix.
+It is retained under `hw_run/c2p-paper-table-campaign-20260821/sgemm_final`.
+
+| Mode | Cycles | Change vs baseline | Remote hits | Interpretation |
+|---|---:|---:|---:|---|
+| baseline | 475,720 | — | 0 | corrected reference |
+| oracle | 475,720 | 0.00% | 0 | 1,047,766 exact peer opportunities; timing invariant holds |
+| ideal | 473,005 | -0.57% | 374,150 | exact peer discovery reference |
+| C2P | 487,143 | +2.40% | 262,396 | 286,576 miss-time false positives; finite-query overhead dominates on this input |
+| ATA-like | 489,509 | +2.90% | 45,627 | aggregate-tag traffic with little realized sharing |
+| CCD-like | 478,973 | +0.68% | 0 | predictor cost with no redirected requests |
+| RING-like | 590,539 | +24.14% | 95,204 | serialized discovery penalty |
+
+This is a calibration result, not a paper-level numerical-match claim: SGEMM
+currently exposes a C2P false-positive/peer-probe cost that exceeds its
+remote-hit benefit. It must be compared with the paper's R1 inputs and the
+simplified far-L1 topology before any parameter change is justified.
+
 For every completed remote hit, `c2p_l2_requests_avoided` equals
 `c2p_remote_hits`: the original request is completed through its existing L1
 MSHR/fill path and is never issued to the baseline L2 port.  This is the
