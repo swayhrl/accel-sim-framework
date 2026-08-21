@@ -179,6 +179,14 @@ SGEMM 的最终解释。
    port；该差异是首要排查对象。它是诊断假设，不是已证明根因。修复必须保持
    C2P 结果不变、保留 CCD 的有限 data-port contention，并以 fresh Stencil
    CCD 成功完成及完整事务不变量为验收条件。
+
+   为避免基于猜测改模型，已启动一次使用 `b3c46f87` 的完整 Stencil CCD
+   重放；该版本只会在 simulator 已宣布 deadlock 后打印 C2P 事务状态，因而
+   不改变正常 cycle/accounting。单独只重放 kernel 87 能正常完成，表明故障
+   依赖前序 kernel 累积的 cache/transaction 状态。另已准备
+   `54ea11cc`--`a6b436d2` 的第二层 deadlock dump（core pipeline、L1 miss
+   queue/MSHR/tag 状态和每 memory partition），只在第一层结果不足以定位时
+   用于后续复验。该诊断重放及其输出均不能作为性能数据或填补 CCD 矩阵。
 4. **Ring 的 Btree IPC 高于 C2P，而 DWT2D/LUD/SGEMM 显著变慢。** 该 workload 依赖性可由 serialized issue、nearest hit hop、减少的 probe 数共同导致；仍须检查 Ring 的 L2 access、hop/probe 分布和网络时序。不能在 aggregate 前声称已匹配论文 Ring 开销。
 5. **本地 R/S 分类与论文图的 workload 分组不同。** 例如 Gaussian 本地是 R0S0 而论文参考标签为 R1S0；这是 trace input/规模、mapping 和模型适配的直接信号。最终图会同时保留 paper reference group 和 local measured group，绝不强行 relabel。
 6. **未完成任务没有结果资格。** 当前运行中的 3mm、ATAX/BICG、GESUMMV 等可能改变任何 group aggregate 和均值；在 strict gate 通过前，不能给出“与论文一致/不一致”的结论。
