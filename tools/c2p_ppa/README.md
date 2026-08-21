@@ -89,6 +89,9 @@ routing.  It is the fast physical timing loop, not a final PPA result.
 disabled by default so baseline reports remain directly comparable; enable it
 only when evaluating whether a remaining violation is architectural or can be
 repaired by ordinary standard-cell optimization.
+`C2P_PPA_DETAIL_PAD_SITES` controls standard-cell padding before detail
+placement (default `1`).  Keeping one site around the dense control logic is
+part of the route recipe, not a cosmetic area adjustment.
 The driver combines the five split ASAP7 RVT/TT Liberty groups before mapping;
 using only the simple-logic group is invalid because the mapper also needs
 inverter/buffer and sequential cells.  The library time unit is one picosecond,

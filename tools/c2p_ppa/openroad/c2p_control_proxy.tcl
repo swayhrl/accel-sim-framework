@@ -31,6 +31,8 @@ set stop_after_cts [expr {[info exists ::env(C2P_PPA_STOP_AFTER_CTS)] ?
                           $::env(C2P_PPA_STOP_AFTER_CTS) : 0}]
 set repair_setup [expr {[info exists ::env(C2P_PPA_REPAIR_SETUP)] ?
                         $::env(C2P_PPA_REPAIR_SETUP) : 0}]
+set detail_pad [expr {[info exists ::env(C2P_PPA_DETAIL_PAD_SITES)] ?
+                      $::env(C2P_PPA_DETAIL_PAD_SITES) : 1}]
 
 file mkdir $out_dir
 read_lef $tech_lef
@@ -66,6 +68,7 @@ set_routing_layers -signal M2-M7 -clock M4-M7
 set_global_routing_layer_adjustment M2-M7 0.25
 
 global_placement -density 0.60
+set_placement_padding -global -left $detail_pad -right $detail_pad
 detailed_placement
 # The C2P lane has a few legitimate high-fanout control enables (FIFO push,
 # candidate retirement, and reset).  Buffer/resize them from placement RC
@@ -96,6 +99,10 @@ if {$stop_after_cts} {
 }
 
 global_route -congestion_report_file "$out_dir/congestion.rpt"
+# Match the ORFS route sequence: construct legal access points before
+# TritonRoute.  Skipping this step lets detailed route invent access geometry
+# and produces avoidable M1/M2 shorts even at very low utilization.
+pin_access
 # The finite iteration count makes the fixture's runtime deterministic.  The
 # resulting DRC report is always retained; this proxy is not a sign-off layout.
 detailed_route -droute_end_iter $droute_end_iter -output_drc "$out_dir/drc.rpt"
