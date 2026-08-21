@@ -193,6 +193,11 @@ scripts/finalize_c2p_paper16.sh \
 strict plotting 和最终 Markdown report。任一缺 run、配置不一致、默认点不等价、oracle
 timing 改变、remote/L2 不一致、缺 CCD counter 或 m/k shape 不匹配都会失败；失败就不能产生最终“论文复现完成”的声明。
 
+`scripts/watch_c2p_paper16_closeout.sh --interval 120` 是本轮长 replay 的
+无侵入守护入口：它只轮询 `summary.txt` 是否完整，绝不启动/停止模拟；所有
+16x7、16 个 L2-50、16 个 CCD、16x4 个 m/k 都已落盘后才调用上述唯一 strict
+入口一次。strict failure 会保留日志并退出，不会通过重复运行掩盖配置或机制错误。
+
 ## 9. 缺失论文 workload 的记录
 
 以下论文点尚无可验证的兼容 trace，明确保留为缺失而非用相似 workload 代替：
