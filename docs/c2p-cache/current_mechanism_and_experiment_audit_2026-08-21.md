@@ -35,6 +35,23 @@
 关键配置在 `configs/c2p-cache/c2p.config`，mode overlay 在
 `configs/c2p-cache/{oracle,ideal,ata,ccd,ring}.config`。
 
+### 与论文机制逐项对照
+
+下表按论文 §4.4--4.6 与 §3.2 的语义审查当前代码，不以 IPC 结果倒推
+“实现正确”。
+
+| 论文要求 | 代码中的证据 | 结论 / 仍保留的模型边界 |
+| --- | --- | --- |
+| 每个 Snapshot column 从一个 L1 的 valid tags 周期性重建，先 clear 后 OR；L2 fill 走同一 update path。 | `begin_next_rebuild()`、`issue_update()`、`on_l1_fill()`。 | 符合；replace/evict 通过随后 rebuild 修正，而非在 L1 hit path 维护可删 BF。 |
+| miss-side query 比 background update 有更高 BF-engine 优先级。 | `cycle()` 先 `issue_query_encodes()`，再将余下 engine 交给 `issue_update()`。 | 符合；query/update queue overflow 均有独立 counter。 |
+| 默认 Snapshot 为 64 bank、每 bank 四 physical copy；一个 miss 激活 tag-mask + 三 BF encoding。 | 64 bank `m_snapshot`、`m_bank_copy_used[bank][copy]`、默认 64 BF + 16 tag-mask rows 与四个 `query_rows()`。 | 符合；m/k 非默认点已用 parameterized bank index，旧 fixed-80-row 结果被拒绝。 |
+| Result bitmap 产生 chip-wide candidate，按物理距离串行 confirmation；candidate L1 正常 tag/data array 可以同本地访问竞争。 | `ordered_candidates()` 的 logical-cluster distance 排序；`c2p_reserve_probe_port()` 和 target FIFO。 | 语义符合；真实 NoC 几何被 64x1 endpoint + explicit latency 近似，SID 在同 logical distance 内的顺序不是作者未公开的物理路由。 |
+| busy remote confirmation 不无限等待，abort remaining candidates，走原 L2/fill path。 | `probe_timeout`、`WAIT_FALLBACK`、`c2p_send_lower()`；remote hit 走 `c2p_fill()`。 | 符合 fallback/ownership；32-cycle timeout 和每-target 32-entry FIFO 是公开论文未指定的**显式模型参数**，其影响由 queue sensitivity 单独报告。 |
+| CCD 为每 cluster 2-bit counter，预测 taken 才 broadcast；ATA 是 cluster aggregate tag；Ring incremental/serialized traversal。 | `m_ccd_counters`、ATA issue width/tag latency、`m_ring_next_issue_cycle`。 | 符合三种代表性设计的核心差异；ATA/Ring 的完整物理 NoC 与 aggregate-array microarchitecture 仍是 cycle-model abstraction。 |
+
+因此：当前 C2P path 的 correctness 不依赖 Snapshot 精确性；false
+positive/negative、queue contention 和 stale column 只改变是否/何时 fallback，不能产生错误数据。最终性能差异必须先在这些已记录的近似项、local trace 行为和 L1/L2 geometry 中解释，不能把未公开细节伪装成已复刻硬件。
+
 ## 3. 论文配置与明确的模拟器适配
 
 `configs/c2p-cache/paper-table.config` 是唯一的主表配置。已固定：64 SM、1.41GHz、GTO/4 scheduler、64KiB 32-way 128B L1（20 cycle）、20 memory partition、128-set/16-way 128B L2（200-cycle ROP path）。
