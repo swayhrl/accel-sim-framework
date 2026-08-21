@@ -123,6 +123,21 @@ That top has the real Snapshot request/response ports but intentionally does
 not infer the 40 KiB Snapshot array as flip-flops.  Its result is the control
 lane PPA; combine it only with a matching four-replica SRAM macro result.
 
+To map the complete 128-engine/four-copy banked request and response front
+end, run:
+
+```bash
+tools/c2p_ppa/run_openroad_c2p_banked_frontend.sh
+```
+
+This front end intentionally exposes 66,050 internal array pins. Its runner
+therefore defaults to 8% utilization so OpenROAD can place those pins on the
+proxy perimeter. That sparse proxy establishes standard-cell implementation
+feasibility only; it is not the area of an L2 chip top, where bank-local
+queues absorb the array ports. Use `C2P_PPA_STOP_AFTER_SYNTH=1` for the fast,
+deterministic mapping loop and retain the generated `yosys.log` with every
+area comparison.
+
 When the technology supplies those macro views, use
 `run_openroad_c2p_cache_rtl.sh` instead.  It turns on the RTL macro boundary,
 requires the macro Verilog/LEF/Liberty plus a placement/PDN setup Tcl, and

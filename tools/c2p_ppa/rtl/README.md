@@ -50,18 +50,18 @@ arbitration, target-L1 FIFO ownership, continuous Snapshot rebuild traffic,
 and the physical macro adapter are separate scaling work; they must not be
 silently claimed by the single-lane PPA result.
 
-`c2p_snapshot_banked_frontend.v` supplies the first two scaling blocks as a
-separately verifiable physical-array interface. Its default is 128 two-cycle
-BF engines followed by four independent 64-bank arbiters. The arbiter exposes
-256 bank-command ports (64 banks x four copies). A four-bit sent mask at each
-engine records individual tag-mask/Bloom-row grants, so one bank conflict does
-not hold the other three physical copies hostage and no row can be issued
-twice. Each copy's replies traverse a seven-stage registered self-routing
-fabric before `c2p_snapshot_response_joiner.v` reassembles the four results.
-This avoids a flat 64-bank-to-128-engine data crossbar; an owner ID is never
-reused while an earlier response remains in flight. The selectors are hierarchically
-bounded to 16-engine local priority plus an eight-way group priority, avoiding
-the former 128-entry global all-copy matching cone.
+`c2p_snapshot_banked_frontend.v` supplies a separately verifiable physical-array
+interface. Its default is 128 two-cycle BF engines followed by four independent
+64-bank arbiters. The arbiter exposes 256 bank-command ports (64 banks x four
+copies). A four-bit sent mask at each engine records individual tag-mask/Bloom-row
+grants, so one bank conflict does not hold the other three physical copies hostage
+and no row can be issued twice. The paper geometry selects a static 8-by-16
+priority tree; the generic implementation remains only to support small directed
+tests. Each copy's replies traverse a seven-stage registered self-routing fabric
+before `c2p_snapshot_response_joiner.v` reassembles the four results. This avoids
+a flat 64-bank-to-128-engine data crossbar; an owner ID is never reused while an
+earlier response remains in flight. The static selector gives fixed low-engine
+priority with bounded 16-way leaf and 8-way root depth.
 
 The functional `c2p_cache_rtl` top remains intentionally single-lane until
 its target-L1 queue machinery consumes this complete request/response port
@@ -117,8 +117,10 @@ C2P_IVERILOG_BIN=/path/to/iverilog tools/c2p_ppa/run_c2p_rtl_test.sh
 
 It first checks `c2p_bf_engine` row-for-row against its mathematical mapping
 and covers output backpressure. It also checks independent 64-bank/four-copy
-arbitration, including single-copy conflicts and owner-tagged partial issue,
-then checks the response fabric's contention handling and that the composed
+arbitration, including single-copy conflicts and owner-tagged partial issue.
+A separate default-geometry test checks the static 128-engine priority tree,
+including cross-group fixed priority and bank-local backpressure. It then checks
+the response fabric's contention handling and that the composed
 multi-engine frontend joins all four responses, does not reuse an engine
 early, and drains each transaction without duplication. It then checks candidate insertion,
 nearest-first probe ordering, a probe miss followed by another candidate,

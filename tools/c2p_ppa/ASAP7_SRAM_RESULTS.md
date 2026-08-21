@@ -75,14 +75,40 @@ places a wide, high-fanout RMW write net on the timing boundary. A
 multiport/masked-write Snapshot macro or a bank-local update microarchitecture
 is required for a closing macro-aware implementation.
 
-The command-side scalable control front end is separately synthesized as
-`results/openroad_c2p_banked_frontend_synth_v3`: it instantiates 128 two-cycle
-BF engines and four 64-bank arbiters. Its mapped ASAP7 standard-cell area is
-**55,894.1067 um2 (0.055894 mm2)**, before the response joiner, target-L1
-queues, physical Snapshot macros and physical-only cells. The 16-engine local
-plus eight-way group selection prevents the old 128-entry all-copy matcher
-from becoming one serial global arbitration cone. This is a synthesis-area
-result, not a route/timing signoff result.
+The scalable control front end is separately synthesized as
+`results/openroad_c2p_banked_frontend_static_tree_fabric_synth_v2`. It
+instantiates 128 two-cycle BF engines, four 64-bank request arbiters, four
+registered owner-routed response fabrics, and the four-copy response joiner.
+The default 128-engine arbiter is a static 8-by-16 priority tree (the generic
+arbiter remains only for small directed tests), so its elaborated selection
+cone has neither a behavioral first-one encoder nor a variable-indexed grant
+write. The mapped ASAP7 standard-cell area is **236,070.1017 um2
+(0.236070 mm2)**, before target-L1 queues, physical Snapshot macros and
+physical-only cells. This result completes in Yosys (156.69s, 819.86MB peak)
+and is therefore a reproducible mapping result, not a route/timing signoff.
+
+This number is deliberately reported as a design finding rather than a
+success metric: four seven-stage fabrics contain 1,792 two-input elastic
+switches, each retaining two 71-bit packets. They account for about
+0.160mm2; the joiner adds 0.016161mm2 and the request-side hierarchy and BF
+engines make up the remaining mapped area. The fabric replaces the previously
+unmappable flat response crossbar, but it is too register-heavy to compare to
+the paper's 0.0682mm2 logic estimate. A future closing implementation needs
+bank-local response reservation with a lower-storage return network (or a
+technology-specific interconnect/memory macro); this RTL makes that remaining
+cost explicit instead of hiding it in unsynthesizable routing logic.
+
+An OpenROAD CTS-proxy attempt also records the integration boundary precisely.
+At the ordinary 25% proxy utilization, `PPL-0024` rejects the top because its
+66,050 exposed internal pins exceed the 40,592 perimeter sites. At the
+runner's 8% utilization, OpenROAD accepts all 66,050 pins (71,680 sites),
+builds a 1,721.811um square core, inserts the standard-cell PDN/taps and
+starts global placement. That sparse raw-interface run was intentionally
+stopped during Nesterov placement: it has 2.46M physical instances and treats
+bank-array wires as die-crossing IO, so its route/timing would measure an
+unphysical wrapper rather than C2P. This is not a failed C2P netlist or a
+claimed CTS result. The next P&R top must instantiate the Snapshot banks and
+target-L1 queues internally, absorbing these signals before the chip boundary.
 
 ## Detailed-route gate
 
