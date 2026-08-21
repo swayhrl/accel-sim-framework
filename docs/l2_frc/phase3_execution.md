@@ -18,6 +18,9 @@ configuration, run:
 
 ```bash
 scripts/check_l2_frc_disabled.sh --trace <kernelslist.g> --config <gpgpusim.config> --trace-config <trace.config>
+scripts/check_l2_frc_baseline_preservation.sh --trace <kernelslist.g> --config <gpgpusim.config> \
+  --reference-sim-bin <corrected-control-accel-sim.out> \
+  --reference-runtime-dir <corrected-control-gpgpusim-runtime-dir>
 scripts/check_l2_frc_smoke.sh --trace <kernelslist.g> --config <gpgpusim.config> --trace-config <trace.config>
 scripts/check_l2_frc_directed.sh --config <gpgpusim.config> --trace-config <trace.config>
 scripts/check_l2_frc_atomic_fallback.sh --trace <atomic-kernelslist.g> --config <gpgpusim.config> --trace-config <trace.config>
@@ -34,7 +37,7 @@ live FRC state.  It is not an equal-capacity performance configuration.
 
 | Gate | Result |
 |---|---|
-| FRC disabled equivalence | Same small-trace architectural metrics as the corrected control: 5,526 cycles, 256 instructions, 4 L2 accesses/misses. |
+| FRC disabled baseline preservation | Cross-core complete `convolutionSeparable/__size_3072` check: current FRC-off (`f974574c`) and corrected conventional control (`5721256a`) match exactly at 414,644 cycles, 714,547,200 instructions, 2,390,218 DRAM reads, 2,234,786 DRAM writes, 5,217,790 L2 accesses, 4,749,514 L2 misses, zero L2 reservation failures, and every checked core/L2 breakdown counter.  The script also passes on the small directed trace. |
 | Sector read smoke | One allocation sends one lower sector read and completes a clean swap. |
 | Sector ownership | Directed two-warp case emits one FRC allocation and one lower read. |
 | Early fetch / fill-time victim | A resident hit is observed while B fetches in FRC; touching the initial LRU then changes the sampled fill-time victim. |

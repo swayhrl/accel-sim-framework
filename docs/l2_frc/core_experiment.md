@@ -112,15 +112,18 @@ attributed to the two completed primary-read samples.
 All values below use the core behavior from `ab3b4cdf` (FRC-local
 request/waiter store, delayed-swap receipt and fair lower-request
 arbitration), the unmodified SM7 QV100 configuration and complete CUDA SDK
-traces.  Rows that quote observation metrics use `aa3f5b07`, which adds only
-the timestamp accounting point.
+traces.  Rows that quote the full four-way observation decomposition use
+`f974574c`; its later changes only add accounting and mechanism-observation
+points.  A complete cross-core preservation check confirms that this branch
+with FRC disabled matches the corrected conventional control `5721256a`
+exactly before any FRC-on result is interpreted.
 
 | Trace | Compared variants | Cycles | Observation |
 |---|---|---:|---|
 | `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 172,297 / 172,297; 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures.  The exact-payload pair also has 131,072 unique lower reads and 2-cycle non-DRAM management delay in both variants. |
 | `BlackScholes/NO_ARGS` | all 12 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  Exact-payload (`baseline25/26`) and paper-ratio (`baseline48/96`) conventional controls are also 9,032 cycles. |
 | `BlackScholes/NO_ARGS`, observation | `baseline24`, `frc32-paper` | 9,032 / 9,032 | Both complete 37,500 unique lower reads at 1-cycle pre-memory + 1-cycle post-memory = 2-cycle management delay.  FRC changes neither the delay nor total cycles at this no-pressure point. |
-| `convolutionSeparable/__size_3072` | mechanism `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 418,556 / 390,216; 414,644 / 423,482 | FRC32 is 6.77% faster than its no-extra-payload baseline, but that is not a fair capacity comparison.  The exact-payload FRC128 point is 2.13% slower than baseline25 despite moving 2,281,345 reads into the FRC store and cutting conventional `mshr_new` from 2,390,218 to 110,355.  Its management delay is also slightly higher (2.017787 vs 2.006770 cycles) and it has 32,309 more L2 misses. |
+| `convolutionSeparable/__size_3072` | mechanism `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 418,556 / 390,216; 414,644 / 423,482 | FRC32 is 6.77% faster than its no-extra-payload baseline, but that is not a fair capacity comparison.  The exact-payload FRC128 point is 2.13% slower than baseline25 despite moving 2,281,345 reads into the FRC store and cutting conventional `mshr_new` from 2,390,218 to 110,355.  It has 32,309 more L2 misses and 7,303 more writebacks.  Its management delay is only slightly higher (2.017787 vs 2.006770 cycles), while lower-memory delay is lower (328.261139 vs 329.195837 cycles/read), so the slowdown is not attributed to a slower lower memory. |
 | `transpose/dimX512_dimY512` | `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 201,054 / 201,054; 201,054 / 201,054 | FRC is active (374,568 allocations, lower reads and swaps; 411,864 set-full fallbacks), but the control again has zero L2 reservation failures.  The exact-payload pair also has 32,768 unique lower reads and 2-cycle non-DRAM management delay in both variants. |
 
 The complete convolution entry sweep provides the required FRC-capacity
