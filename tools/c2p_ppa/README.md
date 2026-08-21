@@ -112,3 +112,10 @@ tools/c2p_ppa/run_openroad_c2p_query_engine.sh
 That top has the real Snapshot request/response ports but intentionally does
 not infer the 40 KiB Snapshot array as flip-flops.  Its result is the control
 lane PPA; combine it only with a matching four-replica SRAM macro result.
+
+Summarize a retained result directory without manually transcribing reports:
+
+```bash
+tools/c2p_ppa/summarize_openroad_result.py \
+  tools/c2p_ppa/results/openroad_c2p_query_engine
+```
