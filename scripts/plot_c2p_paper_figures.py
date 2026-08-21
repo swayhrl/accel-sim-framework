@@ -143,11 +143,6 @@ def strip_bars(rows, metric, ylabel, filename, out, formats, groups=GROUPS,
 
 
 def filtering_accuracy(cases, out, formats):
-    fig, axis = plt.subplots(figsize=(7.15, 1.68))
-    # Fig. 12's original legend distinguishes CCD and C2P classes rather
-    # than only TP/FN/FP/TN.  Keep that eight-entry vocabulary: blue/gray for
-    # CCD, salmon/peach for C2P, and hatching on the positive/filter-error
-    # pieces so the rendered plot also remains legible in grayscale.
     systems = (
         ("CCD", "ccd", (("tp_rate", "CCD TP", "#6fa8c5", "///"),
                         ("fn_rate", "CCD FN", "#b9cbd5", ""),
@@ -158,6 +153,17 @@ def filtering_accuracy(cases, out, formats):
                                       ("fp_rate", "C2P-Cache FP", "#d9897e", "\\\\"),
                                       ("tn_rate", "C2P-Cache TN", "#fae9e3", ""))),
     )
+    # A blank Figure 12 is not evidence.  In-progress analyses lack the
+    # dedicated CCD replay by design, so defer this artifact until real
+    # TP/FN/FP/TN data exists.
+    if not any(all(number(row, prefix + "_tp_rate") is not None
+                   for _, prefix, _ in systems) for row in cases):
+        return False
+    fig, axis = plt.subplots(figsize=(7.15, 1.68))
+    # Fig. 12's original legend distinguishes CCD and C2P classes rather
+    # than only TP/FN/FP/TN.  Keep that eight-entry vocabulary: blue/gray for
+    # CCD, salmon/peach for C2P, and hatching on the positive/filter-error
+    # pieces so the rendered plot also remains legible in grayscale.
     x, positions, labels, boundaries = 0.0, [], [], []
     for group in GROUPS:
         data = [row for row in cases if row["group"] == group and
@@ -195,6 +201,7 @@ def filtering_accuracy(cases, out, formats):
     axis.legend(ncol=4, loc="upper center", bbox_to_anchor=(0.5, 1.22),
                 frameon=False, fontsize=7.2, handlelength=1.2, columnspacing=0.55)
     save(fig, out, "fig12_filtering_accuracy", formats)
+    return True
 
 
 def peer_percentiles(rows, out, formats):
