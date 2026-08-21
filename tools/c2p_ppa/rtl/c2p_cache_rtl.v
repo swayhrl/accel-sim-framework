@@ -10,7 +10,8 @@ module c2p_cache_rtl #(
     parameter integer TAG_MASK_ROWS_PER_BANK = 16,
     parameter integer CLUSTER_SIZE = 8,
     parameter integer QUERY_FIFO_DEPTH = 8,
-    parameter integer PROBE_TIMEOUT = 32
+    parameter integer PROBE_TIMEOUT = 32,
+    parameter integer USE_SRAM_MACRO = 0
 ) (
     input  wire                 clk,
     input  wire                 reset,
@@ -49,7 +50,8 @@ module c2p_cache_rtl #(
     c2p_snapshot_matrix #(
         .NUM_SMS(NUM_SMS), .SID_W(SID_W), .TAG_W(TAG_W),
         .NUM_BANKS(NUM_BANKS), .BF_ROWS_PER_BANK(BF_ROWS_PER_BANK),
-        .TAG_MASK_ROWS_PER_BANK(TAG_MASK_ROWS_PER_BANK)
+        .TAG_MASK_ROWS_PER_BANK(TAG_MASK_ROWS_PER_BANK),
+        .USE_SRAM_MACRO(USE_SRAM_MACRO)
     ) snapshot_matrix (
         .clk(clk), .reset(reset),
         .update_valid(update_valid), .update_ready(update_ready),

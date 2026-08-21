@@ -54,11 +54,17 @@ lower-memory fallback semantics.
 
 ## Snapshot storage boundary
 
-The functional matrix is a logical behavioral array so directed RTL tests can
-exercise real candidate filtering.  It clears one row per cycle after reset,
-avoiding a giant resettable-flop implementation.  The final physical design
-will map the logical 40 KiB matrix to four physical read replicas, as in the
-simulator and CACTI proxy.  That adapter requires a concrete macro with:
+`c2p_snapshot_store.v` is the explicit boundary between the C2P matrix and
+SRAM.  Its default functional branch has four independent logical arrays so
+directed RTL tests exercise real candidate filtering.  With
+`USE_SRAM_MACRO=1`, the same matrix protocol instantiates four
+`c2p_snapshot_sram_1r1w` wrappers instead.  The technology integration owns
+that wrapper and supplies its Verilog/Liberty/LEF/GDS views.  The matrix clears
+one row per cycle after reset, avoiding a giant resettable-flop implementation.
+
+The final physical design maps the logical 40 KiB matrix to four physical read
+replicas, as in the simulator and CACTI proxy.  That adapter requires a
+concrete macro with:
 
 - 5,120 rows x 64 data bits per replica;
 - one read and one masked write port, or an explicitly scheduled equivalent;

@@ -7,6 +7,7 @@ out_dir=${1:-"$script_dir/results/rtl_test"}
 mkdir -p "$out_dir"
 
 "$iverilog_bin" -g2012 -s tb_c2p_cache_rtl -o "$out_dir/tb_c2p_cache_rtl.vvp" \
+    "$script_dir/rtl/c2p_snapshot_store.v" \
     "$script_dir/rtl/c2p_snapshot_matrix.v" \
     "$script_dir/rtl/c2p_query_engine.v" \
     "$script_dir/rtl/c2p_cache_rtl.v" \
