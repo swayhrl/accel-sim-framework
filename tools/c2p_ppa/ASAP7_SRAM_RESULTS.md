@@ -48,12 +48,30 @@ connects their VDD/VSS pins through the ASAP7 PDN, and creates a
 can participate in placement/PDN/CTS; it is not the paper's 1.41GHz model
 point.
 
-At 1ns, the pre-CTS WNS is -5,994.1846ps. The failing path is the current
-single-lane RTL's full-width `fold_hash` arithmetic through Snapshot address
-decode into macro `banksel`. The paper instead assumes an optimized 2-cycle
-BF engine and 2-cycle Snapshot lookup. A faithful high-frequency RTL must
-pipeline or replace this reference hash implementation; relaxing the clock
-does not solve that architectural gap.
+The historical unpipelined implementation had a 1ns pre-CTS WNS of
+-5,994.1846ps, on full-width `fold_hash` arithmetic through Snapshot address
+decode into macro `banksel`. The current RTL replaces that reference-only hash
+with two explicit, elastic, two-cycle `c2p_bf_engine` instances (one each for
+updates and queries). Their folded 12-bit hardware hash has no full-width
+multiplier and is checked row-for-row against its defined mapping. Therefore
+a registered BF result—not raw request data—drives each Snapshot address.
+
+The paper assumes a two-cycle BF engine and a two-cycle Snapshot lookup. The
+new engine matches that latency budget and preserves C2P correctness because
+every candidate still receives an exact remote-L1 probe. It intentionally does
+not reproduce the simulator's splitmix false-positive distribution, so any
+candidate-rate comparison must use the matching hardware hash in the model.
+
+The reproducible 1ns macro-aware CTS run after this change is
+`results/openroad_c2p_asap7_sram_bf_2cycle_nonlinear_cts_1ns`. Its WNS is -947.9597ps;
+the reported worst path is no longer in a BF engine. It is the 1RW adapter's
+read-modify-write path from `g_bank_3__copy3/dataout[17]` through two small
+logic cones to `g_bank_0__copy3/wd[17]`. The two BF engines map to 145.63962
+and 88.60266 um2 respectively, and total non-SRAM standard-cell logic is
+1,276.97472 um2. This confirms removal of the hash-to-`banksel` critical
+cone, but it is not a 1ns-clean total design: the public single-port macro
+decomposition and its cross-macro RMW wiring need a multiport/masked-write
+Snapshot macro or a different bank-local update microarchitecture.
 
 ## Detailed-route gate
 
@@ -75,14 +93,15 @@ The paper's Table 3 reports a CACTI 32nm SRAM estimate scaled to 7nm of
 0.0804 mm2, 0.0682 mm2 of non-SRAM logic (667,980 cells), OpenROAD placement
 of 0.0691/0.0837 mm2, and 0.149 mm2 total. This integration's raw macro cell
 area is 0.047197 mm2 and its mapped **single-lane** standard-cell logic is
-0.004649 mm2 before physical-only cells. Those numbers must not be added or
+0.001277 mm2 before physical-only cells. Those numbers must not be added or
 compared as total overhead: the paper includes 128 BF engines and
 high-concurrency queues/arbitration, while this RTL instantiates one query
 lane and uses a different open macro library. CACTI scaling and an ASAP7
 macro abstract are also not a common area methodology.
 
 The valid comparison is therefore: geometry and four-copy capacity match
-exactly; the implementation does not yet match the paper's parallelism,
-two-cycle optimized hash timing, or complete non-SRAM control scope. The next
-RTL step is a pipelined 128-engine/banked address-generation and arbitration
-implementation, followed by a routeable macro view for the final physical run.
+exactly; the implementation does not yet match the paper's 128-engine
+parallelism or complete non-SRAM control scope. The next RTL step is a
+128-engine dispatcher plus 64-bank/four-copy address arbitration (the
+single-engine pipeline is now the verified building block), followed by a
+routeable macro view for the final physical run.

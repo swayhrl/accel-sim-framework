@@ -17,15 +17,20 @@ they do in the C2P simulation contract's read-side scope.
 | Bloom rows per bank | 64 | 64 |
 | tag-mask rows per bank | 16 | 16 |
 | rows queried per line | 4 | 4 |
-| Snapshot response latency | 2 cycles | 2 cycles |
+| Snapshot storage response latency | 2 cycles | 2 cycles |
+| hardware BF-engine latency | 2 cycles | 2 cycles |
 | logical Snapshot capacity | 5,120 x 64 b = 40 KiB | same |
 | candidate ordering | cluster distance, then SID | same |
 | remote-probe timeout | 32 cycles | 32 cycles |
 
-`c2p_snapshot_matrix.v` uses the simulator's reverse-low-10-bit tag-mask
-mapping and the same bit-exact folded hash function/salts.  An update only
-sets Snapshot bits.  Thus stale metadata may add an exact probe but can never
-return data without that probe; the peer response is authoritative.
+`c2p_snapshot_matrix.v` preserves the simulator's reverse-low-10-bit tag-mask
+mapping. Its Bloom rows come from `c2p_bf_engine.v`, a two-cycle elastic,
+hardware-oriented folded hash that accepts one request per cycle when the
+storage endpoint is ready. The hash intentionally differs from the simulator's
+full splitmix reference, so it changes only the Bloom false-positive
+distribution—not C2P correctness: every candidate is still checked by an
+exact remote-L1 probe. An update only sets Snapshot bits, so stale metadata
+may add a probe but cannot return data without that probe.
 
 ## Interfaces and ownership
 
@@ -37,11 +42,13 @@ outstanding per instantiated query lane.  There is no valid-to-ready
 combinational cycle across the module boundary.
 
 The current top intentionally contains **one query lane** and an eight-entry
-admission FIFO.  It is a functional, synthesizable baseline for the C2P
-mechanism, not yet the simulator's 128-engine / 256-transaction throughput
-configuration.  Multi-lane issue, target-L1 FIFO ownership, continuous
-Snapshot rebuild traffic, and the physical macro adapter are separate
-scaling work; they must not be silently claimed by the single-lane PPA result.
+admission FIFO. The Snapshot front end has independent pipelined query and
+update BF engines, but this is still a functional, synthesizable baseline—not
+the simulator's 128-engine / 256-transaction throughput configuration.
+Multi-lane issue, a 128-way BF-engine dispatcher, 64-bank/four-copy request
+arbitration, target-L1 FIFO ownership, continuous Snapshot rebuild traffic,
+and the physical macro adapter are separate scaling work; they must not be
+silently claimed by the single-lane PPA result.
 
 Candidate ordering is intentionally pipelined in this baseline.  A selection
 walks one 8-SM cluster at a time: one clock chooses the next ordered cluster
@@ -82,9 +89,11 @@ Run the directed test with:
 C2P_IVERILOG_BIN=/path/to/iverilog tools/c2p_ppa/run_c2p_rtl_test.sh
 ```
 
-It checks candidate insertion, nearest-first probe ordering, a probe miss
-followed by another candidate, peer-hit completion, true no-candidate
-fallback, exhausted-candidate fallback, and requester self-exclusion.
+It first checks `c2p_bf_engine` row-for-row against its mathematical mapping
+and covers output backpressure. It then checks candidate insertion,
+nearest-first probe ordering, a probe miss followed by another candidate,
+peer-hit completion, true no-candidate fallback, exhausted-candidate fallback,
+and requester self-exclusion.
 The command runs the same sequence twice: once through the reference storage
 and once through a test-only synchronous 1R1W macro model, verifying that the
 macro boundary preserves the two-cycle Snapshot response contract.

@@ -7,8 +7,15 @@ asap7_sram_root=${C2P_ASAP7_SRAM_ROOT:-"$script_dir/third_party/asap7_sram_0p0"}
 out_dir=${1:-"$script_dir/results/rtl_test"}
 mkdir -p "$out_dir"
 
+"$iverilog_bin" -g2012 -s tb_c2p_bf_engine -o "$out_dir/tb_c2p_bf_engine.vvp" \
+    "$script_dir/rtl/c2p_bf_engine.v" \
+    "$script_dir/tb/tb_c2p_bf_engine.v"
+vvp "$out_dir/tb_c2p_bf_engine.vvp" | tee "$out_dir/sim_bf_engine.log"
+rg -q '^PASS tb_c2p_bf_engine$' "$out_dir/sim_bf_engine.log"
+
 "$iverilog_bin" -g2012 -s tb_c2p_cache_rtl -o "$out_dir/tb_c2p_cache_rtl.vvp" \
     "$script_dir/rtl/c2p_snapshot_store.v" \
+    "$script_dir/rtl/c2p_bf_engine.v" \
     "$script_dir/rtl/c2p_snapshot_matrix.v" \
     "$script_dir/rtl/c2p_query_engine.v" \
     "$script_dir/rtl/c2p_cache_rtl.v" \
@@ -19,6 +26,7 @@ rg -q '^PASS tb_c2p_cache_rtl$' "$out_dir/sim.log"
     -P tb_c2p_cache_rtl.USE_SRAM_MACRO=1 \
     -o "$out_dir/tb_c2p_cache_rtl_macro.vvp" \
     "$script_dir/rtl/c2p_snapshot_store.v" \
+    "$script_dir/rtl/c2p_bf_engine.v" \
     "$script_dir/rtl/c2p_snapshot_matrix.v" \
     "$script_dir/rtl/c2p_query_engine.v" \
     "$script_dir/rtl/c2p_cache_rtl.v" \
@@ -33,6 +41,7 @@ fi
     -o "$out_dir/tb_c2p_cache_rtl_asap7.vvp" \
     "$script_dir/rtl/c2p_snapshot_store.v" \
     "$script_dir/rtl/c2p_snapshot_store_asap7.v" \
+    "$script_dir/rtl/c2p_bf_engine.v" \
     "$script_dir/rtl/c2p_snapshot_matrix.v" \
     "$script_dir/rtl/c2p_query_engine.v" \
     "$script_dir/rtl/c2p_cache_rtl.v" \

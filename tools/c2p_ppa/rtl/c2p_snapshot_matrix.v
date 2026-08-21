@@ -8,7 +8,9 @@
 //
 // Storage is delegated to c2p_snapshot_store.  Its default is a functional
 // four-copy reference array; USE_SRAM_MACRO selects four explicit masked-write
-// macro wrappers without changing the matrix protocol.
+// macro wrappers without changing the matrix protocol. Query and update
+// address generation both pass through an explicit elastic BF engine, so no
+// request-side hash cone feeds the SRAM address path.
 module c2p_snapshot_matrix #(
     parameter integer NUM_SMS = 64,
     parameter integer SID_W = 6,
@@ -45,71 +47,30 @@ module c2p_snapshot_matrix #(
     reg               clearing;
     reg [ROW_W-1:0]   clear_row;
 
-    function [31:0] fold_hash;
-        input [63:0] value;
-        input [31:0] salt;
-        reg [63:0] x;
-        begin
-            x = value ^ ({32'b0, salt} * 64'h9e3779b97f4a7c15);
-            x = x ^ (x >> 30);
-            x = x * 64'hbf58476d1ce4e5b9;
-            x = x ^ (x >> 27);
-            x = x * 64'h94d049bb133111eb;
-            x = x ^ (x >> 31);
-            fold_hash = x[31:0] ^ x[63:32];
-        end
-    endfunction
-
-    function [9:0] reverse_low10;
-        input [TAG_W-1:0] tag;
-        integer bit_i;
-        begin
-            for (bit_i = 0; bit_i < 10; bit_i = bit_i + 1)
-                reverse_low10[9-bit_i] = tag[bit_i];
-        end
-    endfunction
-
-    function [ROW_W-1:0] query_row;
-        input [TAG_W-1:0] tag;
-        input integer row_sel;
-        reg [9:0] reversed;
-        reg [31:0] h1;
-        reg [31:0] h2;
-        integer index;
-        integer bank;
-        integer offset;
-        begin
-            reversed = reverse_low10(tag);
-            if (row_sel == 0) begin
-                bank = (reversed / TAG_MASK_ROWS_PER_BANK) % NUM_BANKS;
-                offset = BF_ROWS_PER_BANK +
-                         (reversed % TAG_MASK_ROWS_PER_BANK);
-            end else begin
-                h1 = fold_hash(tag, 32'h243f6a88);
-                h2 = fold_hash(tag, 32'h85a308d3);
-                index = (row_sel * h1 + h2) & (TOTAL_BF_ROWS - 1);
-                bank = index / BF_ROWS_PER_BANK;
-                offset = index % BF_ROWS_PER_BANK;
-            end
-            query_row = bank * (BF_ROWS_PER_BANK + TAG_MASK_ROWS_PER_BANK) +
-                        offset;
-        end
-    endfunction
-
-    wire [ROW_W-1:0] update_row0 = query_row(update_tag, 0);
-    wire [ROW_W-1:0] update_row1 = query_row(update_tag, 1);
-    wire [ROW_W-1:0] update_row2 = query_row(update_tag, 2);
-    wire [ROW_W-1:0] update_row3 = query_row(update_tag, 3);
-    wire [ROW_W-1:0] query_row0 = query_row(query_tag, 0);
-    wire [ROW_W-1:0] query_row1 = query_row(query_tag, 1);
-    wire [ROW_W-1:0] query_row2 = query_row(query_tag, 2);
-    wire [ROW_W-1:0] query_row3 = query_row(query_tag, 3);
     wire [NUM_SMS-1:0] update_mask = {{(NUM_SMS-1){1'b0}}, 1'b1} << update_sid;
     wire store_clear_valid = clearing;
     wire store_clear_ready;
     wire store_update_ready;
     wire store_query_ready;
-    wire store_query_valid = query_valid && query_ready;
+    wire update_bf_in_valid = update_valid && update_ready;
+    wire update_bf_in_ready;
+    wire update_bf_out_valid;
+    wire update_bf_out_ready = store_update_ready;
+    wire [ROW_W-1:0] update_row0;
+    wire [ROW_W-1:0] update_row1;
+    wire [ROW_W-1:0] update_row2;
+    wire [ROW_W-1:0] update_row3;
+    wire [NUM_SMS-1:0] update_bf_mask;
+    wire query_bf_in_valid = query_valid && query_ready;
+    wire query_bf_in_ready;
+    wire query_bf_out_valid;
+    wire query_bf_out_ready = store_query_ready;
+    wire [ROW_W-1:0] query_row0;
+    wire [ROW_W-1:0] query_row1;
+    wire [ROW_W-1:0] query_row2;
+    wire [ROW_W-1:0] query_row3;
+    wire query_bf_aux_unused;
+    wire store_query_valid = query_bf_out_valid;
     wire store_query_rsp_valid;
     wire store_query_rsp_ready = query_waiting &&
                                  (!query_rsp_valid || query_rsp_ready);
@@ -117,6 +78,37 @@ module c2p_snapshot_matrix #(
     wire [NUM_SMS-1:0] store_query_rsp_data1;
     wire [NUM_SMS-1:0] store_query_rsp_data2;
     wire [NUM_SMS-1:0] store_query_rsp_data3;
+
+    // The two engines are independent because a normal Snapshot store has a
+    // read port and a write port.  A 1RW macro implementation may still
+    // arbitrate their completed requests at the store boundary.
+    c2p_bf_engine #(
+        .TAG_W(TAG_W), .ROW_W(ROW_W), .NUM_BANKS(NUM_BANKS),
+        .BF_ROWS_PER_BANK(BF_ROWS_PER_BANK),
+        .TAG_MASK_ROWS_PER_BANK(TAG_MASK_ROWS_PER_BANK), .AUX_W(NUM_SMS)
+    ) update_bf_engine (
+        .clk(clk), .reset(reset),
+        .in_valid(update_bf_in_valid), .in_ready(update_bf_in_ready),
+        .in_tag(update_tag), .in_aux(update_mask),
+        .out_valid(update_bf_out_valid), .out_ready(update_bf_out_ready),
+        .out_row0(update_row0), .out_row1(update_row1),
+        .out_row2(update_row2), .out_row3(update_row3),
+        .out_aux(update_bf_mask)
+    );
+
+    c2p_bf_engine #(
+        .TAG_W(TAG_W), .ROW_W(ROW_W), .NUM_BANKS(NUM_BANKS),
+        .BF_ROWS_PER_BANK(BF_ROWS_PER_BANK),
+        .TAG_MASK_ROWS_PER_BANK(TAG_MASK_ROWS_PER_BANK), .AUX_W(1)
+    ) query_bf_engine (
+        .clk(clk), .reset(reset),
+        .in_valid(query_bf_in_valid), .in_ready(query_bf_in_ready),
+        .in_tag(query_tag), .in_aux(1'b0),
+        .out_valid(query_bf_out_valid), .out_ready(query_bf_out_ready),
+        .out_row0(query_row0), .out_row1(query_row1),
+        .out_row2(query_row2), .out_row3(query_row3),
+        .out_aux(query_bf_aux_unused)
+    );
 
     // The store keeps each of the four encoded rows in an independent read
     // replica.  Both branches use the same clear/update/query handshakes.
@@ -128,11 +120,11 @@ module c2p_snapshot_matrix #(
                 .clk(clk), .reset(reset),
                 .clear_valid(store_clear_valid), .clear_ready(store_clear_ready),
                 .clear_row(clear_row),
-                .write_valid(update_valid && update_ready),
+                .write_valid(update_bf_out_valid),
                 .write_ready(store_update_ready),
                 .write_row0(update_row0), .write_row1(update_row1),
                 .write_row2(update_row2), .write_row3(update_row3),
-                .write_mask(update_mask),
+                .write_mask(update_bf_mask),
                 .query_valid(store_query_valid), .query_ready(store_query_ready),
                 .query_row0(query_row0), .query_row1(query_row1),
                 .query_row2(query_row2), .query_row3(query_row3),
@@ -151,11 +143,11 @@ module c2p_snapshot_matrix #(
                 .clk(clk), .reset(reset),
                 .clear_valid(store_clear_valid), .clear_ready(store_clear_ready),
                 .clear_row(clear_row),
-                .write_valid(update_valid && update_ready),
+                .write_valid(update_bf_out_valid),
                 .write_ready(store_update_ready),
                 .write_row0(update_row0), .write_row1(update_row1),
                 .write_row2(update_row2), .write_row3(update_row3),
-                .write_mask(update_mask),
+                .write_mask(update_bf_mask),
                 .query_valid(store_query_valid), .query_ready(store_query_ready),
                 .query_row0(query_row0), .query_row1(query_row1),
                 .query_row2(query_row2), .query_row3(query_row3),
@@ -169,10 +161,10 @@ module c2p_snapshot_matrix #(
         end
     endgenerate
 
-    assign update_ready = !clearing && store_update_ready;
+    assign update_ready = !clearing && update_bf_in_ready;
     assign query_ready = !clearing && !query_waiting &&
                          (!query_rsp_valid || query_rsp_ready) &&
-                         store_query_ready;
+                         query_bf_in_ready;
 
     always @(posedge clk) begin
         if (reset) begin
@@ -195,12 +187,13 @@ module c2p_snapshot_matrix #(
             if (query_rsp_valid && query_rsp_ready)
                 query_rsp_valid <= 1'b0;
 
-            if (store_query_valid)
+            if (query_bf_in_valid)
                 query_waiting <= 1'b1;
 
             if (store_query_rsp_valid && store_query_rsp_ready) begin
-                // A store read is one cycle and this response register is the
-                // second.  This preserves the C2P two-cycle Snapshot contract.
+                // The store response register is the second Snapshot-storage
+                // cycle.  The preceding BF-engine latency is explicit and is
+                // outside this storage contract.
                 query_rsp_candidates <= store_query_rsp_data0 &
                                         store_query_rsp_data1 &
                                         store_query_rsp_data2 &

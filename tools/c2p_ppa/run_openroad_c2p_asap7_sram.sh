@@ -10,7 +10,7 @@ fi
 
 export C2P_PPA_TOP=c2p_cache_rtl
 export C2P_PPA_TOP_PARAMS='-set USE_ASAP7_SRAM 1'
-export C2P_PPA_RTL_FILES="$script_dir/rtl/c2p_snapshot_store.v $script_dir/rtl/c2p_snapshot_store_asap7.v $script_dir/rtl/c2p_snapshot_matrix.v $script_dir/rtl/c2p_query_engine.v $script_dir/rtl/c2p_cache_rtl.v $script_dir/rtl/srambank_256x4x64_6t122_blackbox.v"
+export C2P_PPA_RTL_FILES="$script_dir/rtl/c2p_snapshot_store.v $script_dir/rtl/c2p_snapshot_store_asap7.v $script_dir/rtl/c2p_bf_engine.v $script_dir/rtl/c2p_snapshot_matrix.v $script_dir/rtl/c2p_query_engine.v $script_dir/rtl/c2p_cache_rtl.v $script_dir/rtl/srambank_256x4x64_6t122_blackbox.v"
 export C2P_PPA_EXTRA_LEF="$asap7_sram_root/generated/LEF/srambank_256x4x64_6t122.lef"
 export C2P_PPA_EXTRA_LIBERTY="$asap7_sram_root/generated/LIB/srambank_256x4x64_6t122.lib"
 export C2P_PPA_FLOORPLAN_TCL="$script_dir/openroad/c2p_asap7_snapshot_floorplan.tcl"
