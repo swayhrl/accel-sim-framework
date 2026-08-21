@@ -7,6 +7,7 @@ usage() {
 Usage: scripts/finalize_c2p_paper16.sh \
   --results-root DIR --l2-fast-root DIR --ccd-metrics-root DIR \
   --sweep-root DIR --analysis-dir DIR --figures-dir DIR --report FILE \
+  [--queue-sensitivity-root DIR] \
   [--supplemental-results-root DIR] \
   [--supplemental-l2-fast-root DIR] \
   [--supplemental-ccd-metrics-root DIR] [--python PYTHON]
@@ -15,7 +16,7 @@ Run the strict paper16 evidence pipeline in dependency order:
   1. seven-mode / L2=50 / CCD analysis and mode-contract audit;
   2. complete Figure-13 m/k analysis;
   3. strict Figure 10--14 rendering;
-  4. final directional-reproduction report.
+  4. optional strict finite-queue diagnosis and final directional report.
 
 Every result root is an input.  Supplemental roots only fill missing modes;
 the canonical root remains authoritative whenever it has a completed run.
@@ -26,6 +27,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 python_bin="${PYTHON:-python3}"
 results_root=""; l2_fast_root=""; ccd_metrics_root=""; sweep_root=""
 analysis_dir=""; figures_dir=""; report=""
+queue_sensitivity_root=""
 supplemental_results=(); supplemental_l2=(); supplemental_ccd=()
 
 while [[ $# -gt 0 ]]; do
@@ -37,6 +39,7 @@ while [[ $# -gt 0 ]]; do
     --analysis-dir) analysis_dir="$2"; shift 2 ;;
     --figures-dir) figures_dir="$2"; shift 2 ;;
     --report) report="$2"; shift 2 ;;
+    --queue-sensitivity-root) queue_sensitivity_root="$2"; shift 2 ;;
     --supplemental-results-root) supplemental_results+=("$2"); shift 2 ;;
     --supplemental-l2-fast-root) supplemental_l2+=("$2"); shift 2 ;;
     --supplemental-ccd-metrics-root) supplemental_ccd+=("$2"); shift 2 ;;
@@ -65,10 +68,21 @@ for root in "${supplemental_ccd[@]}"; do analysis_args+=(--supplemental-ccd-metr
 "$python_bin" "$repo_root/scripts/analyze_c2p_fp_sweep.py" \
   --sweep-root "$sweep_root" --paper16-analysis "$analysis_dir" \
   --out-dir "$analysis_dir" --strict
+report_args=(--analysis-dir "$analysis_dir" --figures-dir "$figures_dir" --report "$report")
+if [[ -n "$queue_sensitivity_root" ]]; then
+  [[ -d "$queue_sensitivity_root" ]] || {
+    echo "error: --queue-sensitivity-root must exist" >&2; exit 2;
+  }
+  queue_analysis="$analysis_dir/queue-sensitivity"
+  "$python_bin" "$repo_root/scripts/analyze_c2p_queue_sensitivity.py" \
+    --default-run "$results_root/btree/c2p" \
+    --sensitivity-root "$queue_sensitivity_root" \
+    --out-dir "$queue_analysis" --strict
+  report_args+=(--queue-sensitivity-csv "$queue_analysis/queue_sensitivity.csv")
+fi
 "$python_bin" "$repo_root/scripts/plot_c2p_paper_figures.py" \
   --analysis-dir "$analysis_dir" --out-dir "$figures_dir" --strict
-"$python_bin" "$repo_root/scripts/render_c2p_paper16_report.py" \
-  --analysis-dir "$analysis_dir" --figures-dir "$figures_dir" --report "$report"
+"$python_bin" "$repo_root/scripts/render_c2p_paper16_report.py" "${report_args[@]}"
 
 printf 'PASS strict C2P paper16 closeout: analysis=%s figures=%s report=%s\n' \
   "$analysis_dir" "$figures_dir" "$report"

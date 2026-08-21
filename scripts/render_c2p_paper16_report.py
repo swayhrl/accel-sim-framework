@@ -74,6 +74,8 @@ def main():
     parser.add_argument("--analysis-dir", required=True, type=Path)
     parser.add_argument("--report", required=True, type=Path)
     parser.add_argument("--figures-dir", type=Path)
+    parser.add_argument("--queue-sensitivity-csv", type=Path,
+                        help="optional finite-queue diagnostic from analyze_c2p_queue_sensitivity.py")
     args = parser.parse_args()
     rows = read_csv(args.analysis_dir / "paper16_modes.csv")
     cases = read_csv(args.analysis_dir / "paper16_cases.csv")
@@ -187,6 +189,23 @@ def main():
             lines.append(f"- {figure}: {', '.join(rendered) if rendered else 'missing'}")
         style_audit = args.figures_dir / "figure_style_audit.md"
         lines.append(f"- figure-style audit: {'present' if style_audit.is_file() else 'missing'}")
+
+    if args.queue_sensitivity_csv:
+        queue_rows = read_csv(args.queue_sensitivity_csv)
+        lines.extend(["", "## Finite-queue sensitivity diagnostic", "",
+                      "This is a separate Btree model diagnostic, not a Figure-10 "
+                      "data point. It quantifies whether requester/target queue "
+                      "headroom explains an observed C2P opportunity gap.", "",
+                      "| Point | Requester FIFO | Target FIFO | Timeout | Cycle / default | Remote hits / default | Requester bypass | Target timeout |",
+                      "|---|---:|---:|---:|---:|---:|---:|---:|"])
+        for row in queue_rows:
+            lines.append("| {} | {} | {} | {} | {} | {} | {} | {} |".format(
+                row["point"], row["query_queue_size"],
+                row["target_probe_queue_size"], row["probe_timeout"],
+                format_value(number(row, "cycle_ratio_to_default")),
+                format_value(number(row, "remote_hit_ratio_to_default")),
+                row["c2p_queries_queue_bypass"],
+                row["c2p_fallback_probe_timeout"]))
 
     lines.extend(["", "## Explicitly unavailable paper traces", ""])
     lines.extend(f"- {entry}" for entry in MISSING_TRACES)

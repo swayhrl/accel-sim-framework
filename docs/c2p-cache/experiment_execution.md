@@ -141,4 +141,6 @@ For a completed campaign, use `finalize_c2p_paper16.sh` with the same three
 canonical roots and any supplemental roots.  It runs the strict evidence,
 Figure-13, Figure-10--14, and report stages in dependency order; it stops at
 the first missing evidence or invariant failure and never publishes a partial
-figure set as final evidence.
+figure set as final evidence.  Pass `--queue-sensitivity-root` when the
+separate finite-queue diagnosis is complete to include that strict diagnostic
+in the final report.
