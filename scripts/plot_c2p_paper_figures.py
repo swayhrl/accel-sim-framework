@@ -302,6 +302,17 @@ def strict_preflight(analysis_dir, modes, cases, fp_bins):
     if not fp_status.is_file() or "## Missing evidence" in fp_status.read_text(errors="replace"):
         errors.append("Figure-13 sweep is incomplete or lacks its status audit")
 
+    equivalence = analysis_dir / "default_c2p_equivalence.csv"
+    if not equivalence.is_file():
+        errors.append("missing default C2P binary-equivalence audit")
+    else:
+        equivalence_rows = read_csv(equivalence)
+        expected_cases = {row["case"] for row in cases}
+        covered_cases = {row["case"] for row in equivalence_rows
+                         if row.get("equal") == "yes"}
+        if expected_cases != covered_cases:
+            errors.append("default C2P binary-equivalence audit is incomplete or mismatched")
+
     for row in cases:
         for prefix in ("ccd", "snapshot"):
             if number(row, prefix + "_tp_rate") is None:

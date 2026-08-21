@@ -95,6 +95,10 @@ def main():
                                     "ideal_probe_timeout_rate")
     c2p_timeout = aggregate_cases(cases, complete_cases,
                                   "c2p_probe_timeout_rate")
+    equivalence_path = args.analysis_dir / "default_c2p_equivalence.csv"
+    equivalence_rows = read_csv(equivalence_path) if equivalence_path.is_file() else []
+    equivalent_cases = [row["case"] for row in equivalence_rows
+                        if row.get("equal") == "yes"]
 
     lines = ["# C2P-Cache paper16 directional reproduction", "",
              "## Scope and acceptance", "",
@@ -178,6 +182,16 @@ def main():
                   "not an interpolation of the default point.",
                   "- Figure 14 is built from the dynamic peer-access histograms, "
                   "split into completed remote-hit and miss/fallback paths."])
+    lines.extend(["", "## Default C2P binary-equivalence audit", "",
+                  "The parameterized Snapshot Matrix must preserve the default "
+                  "5,120-row/four-encoding C2P point before pre-parameterization "
+                  "replays can enter this aggregate. The strict closeout requires a "
+                  "paired, field-by-field equivalence result for every local case.",
+                  "",
+                  "- audit rows: {}; equivalent cases: {}.".format(
+                      len(equivalence_rows), len(equivalent_cases)),
+                  "- audit artifact: {}.".format(
+                      "present" if equivalence_path.is_file() else "missing")])
     if args.figures_dir:
         figures = ("fig10_normalized_ipc", "fig11_l2_access",
                    "fig12_filtering_accuracy", "fig13_ipc_vs_fp_ratio",
