@@ -1,8 +1,11 @@
 # C2P core experiment plan
 
 The primary point is a credible directional reproduction, not an absolute
-comparison to the paper.  Run each selected trace with `baseline`, `oracle`,
-`ideal`, and `c2p` from `scripts/run_c2p_cache_cases.sh`.
+comparison to the paper.  The canonical campaign is the 16 complete local
+traces listed in `configs/c2p-cache/paper16_workloads.tsv`; run each with
+`baseline`, `oracle`, `ideal`, `c2p`, `ata`, `ccd`, and `ring` through
+`scripts/run_c2p_paper16.sh`.  A second baseline-only replay at 50-cycle L2
+latency supplies the independent S0/S1 classification input.
 
 ## Reproduction criterion
 
@@ -59,14 +62,17 @@ Record for each mode:
 - `c2p_remote_hits / c2p_l1_misses` (realized remote hit rate);
 - `c2p_candidate_total / c2p_candidate_queries`;
 - C2P false-positive/false-negative and fallback counters.
+- CCD and C2P miss-time TP/FN/FP/TN, each measured against its own exact
+  tag-time candidate snapshot; this is the local counterpart of Figure 12.
 - peer-L1 access-count P90/P95/P99/max split by completed remote-hit and
   fallback requests that actually consulted at least one peer L1. This is the
   direct local counterpart of the paper's Figure 14; average candidate bitmap
   width alone is not a substitute.
 
-The existing trace inventory is grouped by the paper's reuse taxonomy where
-provenance permits it.  The first core dataset is the locally retained
+The existing trace inventory is grouped by the paper's reuse taxonomy after
+the 50-cycle replay completes.  The local core dataset is the retained
 Rodinia/Parboil/PolyBench trace set; R1S1 is prioritized because C2P predicts
-benefit while R0S1 establishes query overhead.  ATA/CCD/RING are run after a
-core bundle completes; Pannotia and ISPASS remain unavailable without
-compatible replay traces, and PPA remains outside this functional study.
+benefit while R0S1 establishes query overhead.  The unavailable ISPASS and
+Pannotia eight workloads are recorded as explicit missing evidence, never
+replaced by merely similarly named traces.  PPA and the broader Figure 16--21
+parameter study remain outside this functional study.

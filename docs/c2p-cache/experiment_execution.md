@@ -1,6 +1,6 @@
 # C2P experiment execution
 
-Run every core case as a four-mode bundle. The runner creates one
+Run every core case as a seven-mode bundle. The runner creates one
 self-contained directory per mode: copied simulator binary, resolved config,
 trace symlink, SHA-256 provenance, full `run.out`, and a compact
 `summary.txt`.
@@ -51,13 +51,33 @@ summary also carries Snapshot TP/TN/FP/FN, update-queue bypasses, rebuild
 transport volume, and the separate fallback reasons so performance changes
 remain attributable.
 
-For a completed core case, add the paper-latency comparison models with:
+For the canonical paper-oriented campaign, use the manifest wrapper.  It
+requires a concrete trace root and always appends the QV100 trace overlay,
+the paper-table overlay, and the deterministic 20-partition mapping fix:
 
 ```bash
-scripts/run_c2p_cache_cases.sh ... --modes ata,ccd,ring
+scripts/run_c2p_paper16.sh \
+  --trace-root /path/to/hw_run \
+  --out-root hw_run/c2p-paper16 \
+  --case btree,dwt2d,gaussian,hotspot1,lud,nn,cutcp,mri-q,sgemm,stencil,2DConvolution,3mm,atax,bicg,gemm,gesummv
 ```
 
-They are deliberately separate from `--strict`: baseline/oracle/ideal/C2P
-remain the correctness and opportunity bundle, while ATA/CCD/RING are
-mechanism-shaped comparison models documented in the matching GPGPU-Sim
-`docs/c2p-cache/model_contract.md`.
+Run a second invocation with `--modes baseline` and
+`--config-extra configs/c2p-cache/paper-table-l2-50.config`.  Then aggregate
+and render the paper-style figures with:
+
+```bash
+/usr/bin/python3 scripts/analyze_c2p_paper16.py \
+  --results-root hw_run/c2p-paper16 \
+  --l2-fast-root hw_run/c2p-paper16-l2-50 \
+  --out-dir hw_run/c2p-paper16-analysis --strict
+/usr/bin/python3 scripts/plot_c2p_paper_figures.py \
+  --analysis-dir hw_run/c2p-paper16-analysis \
+  --out-dir hw_run/c2p-paper16-figures
+```
+
+The analyzer rejects missing modes or L2-50 points under `--strict`; it emits
+machine-readable IPC/L2-access/classification tables, and the plotter emits
+the Figure 10--14-style IPC, L2-access, filter-accuracy, and peer-access
+figures.  ATA/CCD/RING remain mechanism-shaped comparison models documented
+in the matching GPGPU-Sim `docs/c2p-cache/model_contract.md`.
