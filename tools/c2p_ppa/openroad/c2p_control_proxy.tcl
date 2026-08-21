@@ -43,6 +43,12 @@ file mkdir $out_dir
 read_lef $tech_lef
 read_lef $cell_lef
 read_liberty $liberty
+if {[info exists ::env(C2P_PPA_EXTRA_LEF)] && $::env(C2P_PPA_EXTRA_LEF) ne ""} {
+    read_lef $::env(C2P_PPA_EXTRA_LEF)
+}
+if {[info exists ::env(C2P_PPA_EXTRA_LIBERTY)] && $::env(C2P_PPA_EXTRA_LIBERTY) ne ""} {
+    read_liberty $::env(C2P_PPA_EXTRA_LIBERTY)
+}
 read_verilog $mapped_netlist
 link_design $design_name
 
@@ -54,6 +60,13 @@ initialize_floorplan -site asap7sc7p5t -utilization $utilization -aspect_ratio 1
     -core_space 2
 source $make_tracks
 source $set_rc
+# A total-C2P run supplies the SRAM macro LEF/Liberty above and a
+# technology-specific placement/PDN fragment through this hook.  The fragment
+# owns concrete macro coordinates, halo, power-pin hookup, and any keepouts;
+# this generic lane flow intentionally cannot invent those process facts.
+if {[info exists ::env(C2P_PPA_MACRO_SETUP_TCL)] && $::env(C2P_PPA_MACRO_SETUP_TCL) ne ""} {
+    source $::env(C2P_PPA_MACRO_SETUP_TCL)
+}
 # Use the same ASAP7 standard-cell integration conventions as ORFS.  This
 # flow has no hard SRAM macro yet, but the halo and grid setup are retained so
 # the physical recipe carries forward when the Snapshot macro is supplied.

@@ -9,6 +9,9 @@ rtl_files=${C2P_PPA_RTL_FILES:-"$script_dir/rtl/c2p_control_proxy.v"}
 orfs_root=${C2P_ORFS_ROOT:?set C2P_ORFS_ROOT to an OpenROAD-flow-scripts checkout}
 stop_after_synth=${C2P_PPA_STOP_AFTER_SYNTH:-0}
 abc_delay=${C2P_PPA_ABC_DELAY_PS:-}
+top_params=${C2P_PPA_TOP_PARAMS:-}
+extra_lef=${C2P_PPA_EXTRA_LEF:-}
+extra_liberty=${C2P_PPA_EXTRA_LIBERTY:-}
 yosys_bin=${C2P_YOSYS_BIN:-yosys}
 platform_dir="$orfs_root/flow/platforms/asap7"
 lib_dir="$platform_dir/lib/NLDM"
@@ -47,6 +50,12 @@ for path in \
     "$lib_dir/asap7sc7p5t_SEQ_RVT_TT_nldm_220123.lib"; do
     require_file "$path"
 done
+if [[ -n "$extra_lef" ]]; then
+    require_file "$extra_lef"
+fi
+if [[ -n "$extra_liberty" ]]; then
+    require_file "$extra_liberty"
+fi
 if [[ "$stop_after_synth" == 0 ]]; then
     require_file "$openroad_bin"
 fi
@@ -65,6 +74,7 @@ python3 "$script_dir/make_asap7_lib_bundle.py" "$merged_lib" \
 
 "$yosys_bin" -ql "$result_dir/yosys.log" -p "
     read_verilog $rtl_files
+    ${top_params:+chparam $top_params $top}
     hierarchy -check -top $top
     proc; opt; memory; opt; techmap; opt
     dfflibmap -liberty $merged_lib
@@ -102,6 +112,8 @@ export C2P_ASAP7_SET_RC="$platform_dir/setRC.tcl"
 export C2P_ASAP7_TAP_TCL="$platform_dir/openRoad/tapcell.tcl"
 export C2P_ASAP7_PDN_TCL="$platform_dir/openRoad/pdn/grid_strategy-M1-M2-M5-M6.tcl"
 export C2P_ASAP7_RCX_RULES="$platform_dir/rcx_patterns.rules"
+export C2P_PPA_EXTRA_LEF="$extra_lef"
+export C2P_PPA_EXTRA_LIBERTY="$extra_liberty"
 
 "$openroad_bin" -no_init -exit "$script_dir/openroad/c2p_control_proxy.tcl" \
     | tee "$result_dir/openroad.log"

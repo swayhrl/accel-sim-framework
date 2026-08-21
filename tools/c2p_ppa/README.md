@@ -117,6 +117,12 @@ That top has the real Snapshot request/response ports but intentionally does
 not infer the 40 KiB Snapshot array as flip-flops.  Its result is the control
 lane PPA; combine it only with a matching four-replica SRAM macro result.
 
+When the technology supplies those macro views, use
+`run_openroad_c2p_cache_rtl.sh` instead.  It turns on the RTL macro boundary,
+requires the macro Verilog/LEF/Liberty plus a placement/PDN setup Tcl, and
+then uses the same versioned synthesis and OpenROAD recipe.  It intentionally
+fails rather than guessing macro placement or power pins.
+
 Summarize a retained result directory without manually transcribing reports:
 
 ```bash

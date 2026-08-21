@@ -1,0 +1,20 @@
+# Template sourced by c2p_control_proxy.tcl after floorplan/track/RC setup.
+#
+# Copy this file outside the repository, replace every placeholder using the
+# foundry macro LEF/Liberty data, then set C2P_PPA_MACRO_SETUP_TCL to that
+# copy.  It deliberately contains no guessed coordinates, pin names, or PDN
+# rules: those would make a physical result look reproducible while being
+# physically false.
+#
+# Expected macro instances in c2p_snapshot_store are copy0..copy3.  Give each
+# a legal location/orientation using the implementation's instance names, for
+# example:
+#   place_instance <hierarchical-copy0-instance> <x_um> <y_um> R0
+# and repeat for all four replicas.  Then add their halo/blockages and connect
+# the macro VDD/VSS pins to the top-level PDN according to the macro datasheet.
+#
+# This fragment runs before tapcell/PDN generation, so fixed macros and their
+# keepouts are visible to both.  The top-level runner also requires:
+#   C2P_PPA_EXTRA_LEF=/path/to/snapshot.lef
+#   C2P_PPA_EXTRA_LIBERTY=/path/to/snapshot.lib
+# and c2p_snapshot_sram_1r1w's implementation Verilog in C2P_PPA_RTL_FILES.

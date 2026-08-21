@@ -32,6 +32,17 @@ two-cycle query response contract.  If a macro lacks bit write-enable, its
 read-modify-write sequencer must backpressure `update_ready`; it must never
 drop an L1-fill update silently.
 
+## Versioned OpenROAD handoff
+
+The reusable OpenROAD driver is
+`tools/c2p_ppa/run_openroad_c2p_cache_rtl.sh`.  It refuses to run without the
+macro Verilog, LEF, Liberty, and a placement/PDN setup Tcl.  The latter is
+intentionally technology-owned: its four replica coordinates, macro halos,
+power-pin names, and power-grid connections cannot safely be guessed by a
+generic script.  Start from
+[`c2p_snapshot_macro_setup.tcl.example`](c2p_snapshot_macro_setup.tcl.example)
+and set the four required environment variables documented by the runner.
+
 ## PPA reporting rule
 
 Until this manifest is populated with a technology-matched macro, report the
