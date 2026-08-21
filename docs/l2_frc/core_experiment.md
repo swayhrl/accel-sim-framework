@@ -131,6 +131,12 @@ model.  Shallower attempted FIFO combinations deadlocked in the unmodified
 FRC-off control, so they cannot diagnose the FRC mechanism and are excluded
 from the gate.
 
+The current-format `atomic_add_lat` trace was also run at this same constrained
+point.  Control and FRC1 match exactly on cycles (204,138), instructions, L2
+accesses/misses and DRAM reads/writes; the FRC run records 1,024 atomic
+fallbacks.  The trace also contains ordinary L2 traffic, including one FRC
+dirty swap, so the check covers atomic fallback coexisting with FRC activity.
+
 ## Completed full-trace results with the independent transaction store
 
 All values below use the core behavior from `ab3b4cdf` (FRC-local
