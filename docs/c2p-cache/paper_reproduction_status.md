@@ -43,7 +43,10 @@ ATA and CCD are intentionally different: their paper comparators operate on
 eight-SM logical peer groups.  `c2p_cache_comparator_cluster_size=8` makes
 that grouping explicit and independent of `gpgpu_n_cores_per_cluster`; this
 prevents the 64x1 endpoint adaptation from accidentally reducing ATA tag
-lookups or CCD broadcasts to a single L1.
+lookups or CCD broadcasts to a single L1.  The same explicit logical grouping
+also defines C2P/ideal candidate locality ordering.  This avoids silently
+changing a paper eight-by-eight topology into a 64-cluster topology merely
+because the simulator endpoints are decomposed for forward progress.
 
 ### L1 forward-progress correction (2026-08-21)
 

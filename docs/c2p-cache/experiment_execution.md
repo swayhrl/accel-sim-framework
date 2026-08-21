@@ -20,8 +20,10 @@ same C2P worktree, not from the host CUDA installation.
 
 `--config-extra` is repeatable. For the paper-table point, append `trace.config`
 first, then `configs/c2p-cache/paper-table.config`, and pass
-`--strip-mem-addr-mapping`. The overlay fixes 64 SMs as eight clusters of
-eight, GTO scheduling, 1.41GHz core/ICNT/L2 clocks, a fixed 64KiB
+`--strip-mem-addr-mapping`. The overlay fixes 64 SMs as 64 independent
+simulator endpoints, while preserving the paper's eight logical groups of
+eight SMs for comparator scope and C2P candidate locality. It also fixes GTO
+scheduling, 1.41GHz core/ICNT/L2 clocks, a fixed 64KiB
 16-set/32-way/128B L1 with 20-cycle latency, and 20 memory partitions with two
 sub-partitions each. Removing the inherited QV100 explicit address map is
 necessary because it only supports a power-of-two partition count. The QV100
