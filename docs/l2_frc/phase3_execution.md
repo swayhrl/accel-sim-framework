@@ -51,6 +51,14 @@ live FRC state.  It is not an equal-capacity performance configuration.
 | Replacement-pressure gate | One-way L2 control has 136 reservation failures, one lower read in flight and takes 5,470 cycles; FRC4 accepts two local reads, reaches two in flight and finishes in 5,337 cycles. |
 | Conservative timing | `management_cycles` is nonzero when configured; paper mode reports zero added management cycles. |
 
+The final current-core audit reran both `check_l2_frc_directed.sh` and
+`check_l2_frc_forward_progress.sh --atomic-trace ...` against core
+`97eb1e83`.  Both passed.  In addition to the table values, the current
+atomic pair has an exact selected-metric diff, `atomic_fallbacks=1,024`, one
+dirty swap/writeback acceptance, and no fetching, fetched or evicting entry
+at exit.  The dirty-path control/FRC writeback payload remains one 32-byte
+sector in both runs.
+
 ## Small pressure sweep
 
 The pressure trace intentionally has no all-reserved victim benefit.  It is a
