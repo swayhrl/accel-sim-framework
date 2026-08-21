@@ -1,8 +1,8 @@
-# C2P control-slice physical implementation using OpenROAD and ASAP7.
+# C2P standard-cell physical implementation using OpenROAD and ASAP7.
 #
-# This is a reproducibility fixture, not a sign-off flow: it has no power grid,
-# filler/tap insertion, extraction-rule calibration, or C2P payload SRAM macro.
-# Those omissions are intentional and are recorded by the driver README.
+# This is a reproducibility fixture, not sign-off: extraction uses LEF RC and a
+# C2P payload SRAM macro still needs technology-specific views.  The flow does
+# include the standard-cell PDN, tap/endcap, filler, and tie-cell steps.
 
 proc require_env {name} {
     if {![info exists ::env($name)] || $::env($name) eq ""} {
@@ -12,33 +12,66 @@ proc require_env {name} {
 }
 
 set out_dir [require_env C2P_PPA_RESULT_DIR]
+set design_name [require_env C2P_PPA_TOP]
 set tech_lef [require_env C2P_ASAP7_TECH_LEF]
 set cell_lef [require_env C2P_ASAP7_CELL_LEF]
 set liberty [require_env C2P_ASAP7_MERGED_LIB]
 set mapped_netlist [require_env C2P_PPA_MAPPED_NETLIST]
 set make_tracks [require_env C2P_ASAP7_MAKE_TRACKS]
 set set_rc [require_env C2P_ASAP7_SET_RC]
+set tap_tcl [require_env C2P_ASAP7_TAP_TCL]
+set pdn_tcl [require_env C2P_ASAP7_PDN_TCL]
+set utilization [expr {[info exists ::env(C2P_PPA_UTILIZATION)] ?
+                       $::env(C2P_PPA_UTILIZATION) : 25}]
+set clock_period [expr {[info exists ::env(C2P_PPA_CLK_PS)] ?
+                        $::env(C2P_PPA_CLK_PS) : 1000.0}]
+set droute_end_iter [expr {[info exists ::env(C2P_PPA_DROUTE_END_ITER)] ?
+                           $::env(C2P_PPA_DROUTE_END_ITER) : 64}]
+set stop_after_cts [expr {[info exists ::env(C2P_PPA_STOP_AFTER_CTS)] ?
+                          $::env(C2P_PPA_STOP_AFTER_CTS) : 0}]
+set repair_setup [expr {[info exists ::env(C2P_PPA_REPAIR_SETUP)] ?
+                        $::env(C2P_PPA_REPAIR_SETUP) : 0}]
 
 file mkdir $out_dir
 read_lef $tech_lef
 read_lef $cell_lef
 read_liberty $liberty
 read_verilog $mapped_netlist
-link_design c2p_control_proxy
+link_design $design_name
 
 # ASAP7 Liberty time_unit is 1 ps, so 1000.0 is an explicit 1 ns constraint.
-create_clock -name core_clk -period 1000.0 [get_ports clk]
+create_clock -name core_clk -period $clock_period [get_ports clk]
 set_thread_count 8
 
-initialize_floorplan -site asap7sc7p5t -utilization 45 -aspect_ratio 1.0 \
+initialize_floorplan -site asap7sc7p5t -utilization $utilization -aspect_ratio 1.0 \
     -core_space 2
 source $make_tracks
 source $set_rc
+# Use the same ASAP7 standard-cell integration conventions as ORFS.  This
+# flow has no hard SRAM macro yet, but the halo and grid setup are retained so
+# the physical recipe carries forward when the Snapshot macro is supplied.
+set ::env(TAP_CELL_NAME) TAPCELL_ASAP7_75t_R
+set ::env(MACRO_ROWS_HALO_X) 2
+set ::env(MACRO_ROWS_HALO_Y) 2
+source $tap_tcl
+source $pdn_tcl
+# OpenROAD represents Verilog literals as the supply-typed zero_/one_ nets.
+# Convert them to regular signal nets driven by the technology tie cells before
+# TritonRoute sees them; their VDD/VSS pins remain connected by the PDN rules.
+insert_tiecells TIELOx1_ASAP7_75t_R/L -prefix C2P_TIELO_
+insert_tiecells TIEHIx1_ASAP7_75t_R/H -prefix C2P_TIEHI_
+pdngen
 place_pins -hor_layers M4 -ver_layers M5
 set_routing_layers -signal M2-M7 -clock M4-M7
 set_global_routing_layer_adjustment M2-M7 0.25
 
 global_placement -density 0.60
+detailed_placement
+# The C2P lane has a few legitimate high-fanout control enables (FIFO push,
+# candidate retirement, and reset).  Buffer/resize them from placement RC
+# before timing or CTS; otherwise the proxy exaggerates their wire delay by
+# several nanoseconds and is not useful as an RTL feedback loop.
+repair_design -max_wire_length 10
 detailed_placement
 check_placement
 estimate_parasitics -placement
@@ -49,13 +82,26 @@ clock_tree_synthesis -buf_list {BUFx2_ASAP7_75t_R} \
     -root_buf BUFx2_ASAP7_75t_R
 set_propagated_clock [get_clocks core_clk]
 estimate_parasitics -placement
+if {$repair_setup} {
+    repair_timing -setup -max_utilization 70
+    detailed_placement
+    estimate_parasitics -placement
+}
 tee -file "$out_dir/post_cts_timing.rpt" { report_checks -path_delay max -digits 4 }
+
+if {$stop_after_cts} {
+    write_def "$out_dir/$design_name.post_cts.def"
+    write_db "$out_dir/$design_name.post_cts.odb"
+    exit
+}
 
 global_route -congestion_report_file "$out_dir/congestion.rpt"
 # The finite iteration count makes the fixture's runtime deterministic.  The
 # resulting DRC report is always retained; this proxy is not a sign-off layout.
-detailed_route -droute_end_iter 64 -output_drc "$out_dir/drc.rpt"
-write_def "$out_dir/c2p_control_proxy.def"
-write_db "$out_dir/c2p_control_proxy.odb"
+detailed_route -droute_end_iter $droute_end_iter -output_drc "$out_dir/drc.rpt"
+filler_placement {FILLERxp5_ASAP7_75t_R FILLER_ASAP7_75t_R}
+extract_parasitics -lef_rc
+write_def "$out_dir/$design_name.def"
+write_db "$out_dir/$design_name.odb"
 tee -file "$out_dir/post_route_area.rpt" { report_design_area }
 tee -file "$out_dir/post_route_timing.rpt" { report_checks -path_delay max -digits 4 }

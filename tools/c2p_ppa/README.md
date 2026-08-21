@@ -54,10 +54,11 @@ This final layer is a real standard-cell implementation, not a Yosys-only
 area count.  It maps the control fixture to the open ASAP7 RVT/TT library,
 runs floorplanning, IO placement, global and detailed placement, CTS, global
 routing, detailed routing, and writes DEF/ODB plus timing, area, and DRC
-reports.  It deliberately excludes a power grid, filler/tap insertion,
-extraction calibration, Snapshot SRAM macros, and payload FIFOs.  The DRC
-report is retained rather than hidden: this is a transparent physical proxy,
-not a sign-off result.
+reports.  The standard-cell recipe includes tap/endcap insertion, an ASAP7
+PDN grid, filler insertion, and post-route LEF-RC parasitic extraction.  It
+still excludes extraction-rule calibration, Snapshot SRAM macros, and payload
+FIFOs.  The DRC report is retained rather than hidden: this is a transparent
+physical proxy, not a sign-off result.
 
 The flow uses an OpenROAD-flow-scripts checkout as the source of a consistent
 ASAP7 technology LEF, cell LEF, Liberty and routing setup.  With an OpenROAD
@@ -71,7 +72,36 @@ tools/c2p_ppa/run_openroad_control_proxy.sh
 ```
 
 `C2P_PPA_RESULT_DIR=/some/ignored/path` overrides the default result location.
+`C2P_PPA_CLK_PS` sets the clock period in ps (default `1000.0`, i.e. 1 ns).
+`C2P_PPA_UTILIZATION` overrides the default 25% core utilization.  The default
+leaves physical whitespace for PDN, taps, filler, clocking, and macro halos;
+it is intentionally not the control-only cell utilization reported by Yosys.
+`C2P_PPA_DROUTE_END_ITER` overrides the default finite 64 detailed-route
+iterations for exploratory runs; retain the resulting DRC report either way.
+`C2P_PPA_STOP_AFTER_SYNTH=1` stops immediately after the deterministic ASAP7
+mapping and writes the mapped netlist plus `yosys.log`.  It is the intended
+fast inner loop for RTL timing/area changes; it does not require an OpenROAD
+binary and must not be reported as a physical result.
+`C2P_PPA_STOP_AFTER_CTS=1` retains floorplanning, PDN/tap/tie integration,
+placement, and CTS, then writes the post-CTS DEF/ODB and timing report without
+routing.  It is the fast physical timing loop, not a final PPA result.
+`C2P_PPA_REPAIR_SETUP=1` enables OpenROAD setup repair after CTS.  It is
+disabled by default so baseline reports remain directly comparable; enable it
+only when evaluating whether a remaining violation is architectural or can be
+repaired by ordinary standard-cell optimization.
 The driver combines the five split ASAP7 RVT/TT Liberty groups before mapping;
 using only the simple-logic group is invalid because the mapper also needs
 inverter/buffer and sequential cells.  The library time unit is one picosecond,
 so the Tcl fixture's `1000.0` clock period is explicitly one nanosecond.
+
+To implement the actual single-lane C2P request-control RTL rather than the
+small historical control fixture, keep the same three environment variables
+and run:
+
+```bash
+tools/c2p_ppa/run_openroad_c2p_query_engine.sh
+```
+
+That top has the real Snapshot request/response ports but intentionally does
+not infer the 40 KiB Snapshot array as flip-flops.  Its result is the control
+lane PPA; combine it only with a matching four-replica SRAM macro result.
