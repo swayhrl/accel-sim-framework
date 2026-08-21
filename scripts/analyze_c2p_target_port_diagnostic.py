@@ -78,17 +78,25 @@ def main():
         if normal is None or bypass is None:
             failures.append(f"{case}: missing normal or bypass run")
             continue
+        complete = True
         for label, values in (("normal", normal), ("bypass", bypass)):
             absent = [field for field in REQUIRED if field not in values]
             if absent:
                 failures.append(f"{case}/{label}: missing counters {', '.join(absent)}")
+                complete = False
             if values.get("c2p_remote_hits") != values.get("c2p_l2_requests_avoided"):
                 failures.append(f"{case}/{label}: remote hit != avoided L2")
+                complete = False
         if normal_options.get("-c2p_cache_diagnostic_target_port_bypass", "0") != "0":
             failures.append(f"{case}/normal: target-port bypass is unexpectedly enabled")
+            complete = False
         if bypass_options.get("-c2p_cache_diagnostic_target_port_bypass") != "1":
             failures.append(f"{case}/bypass: target-port bypass is not enabled")
-        rows.append((case, normal_dir, normal, bypass_dir, bypass))
+            complete = False
+        # Missing instrumentation is a failed diagnostic input, not a reason
+        # to dereference an absent counter while producing a misleading table.
+        if complete:
+            rows.append((case, normal_dir, normal, bypass_dir, bypass))
 
     lines = ["# C2P target-port contention diagnostic", "",
              "This is a counterfactual diagnostic, not a paper-figure point. "
