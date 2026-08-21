@@ -55,11 +55,14 @@ scripts/run_l2_frc_core_sweep.sh --trace <kernelslist.g> \
 
 ## Required reporting
 
-For every variant report total cycles, instructions, instructions/cycle,
-L2 accesses/misses, FRC allocations/lower reads/swaps and FRC fallbacks.  The
-paper additionally reports OPC, MPKO and L2 miss delay excluding DRAM time;
-the current port does not claim those metrics until their precise QV100
-definitions and accounting points are implemented.
+For every variant report total cycles, scalar thread instructions,
+`scalar_opc = instructions / cycles`, L2 accesses/misses and
+`l2_mpko = 1000 * L2 misses / scalar thread instructions`, plus FRC
+allocations/lower reads/swaps and fallbacks.  `scalar_opc` and `l2_mpko`
+preserve the paper's relative metric definitions within one QV100 experiment;
+they are not numerically comparable with the paper's HD7770 OPC/MPKO because
+the architecture, trace accounting and cache geometry differ.  Average L2
+miss delay excluding DRAM time still needs a dedicated QV100 accounting point.
 
 ## Causal replacement-pressure gate
 

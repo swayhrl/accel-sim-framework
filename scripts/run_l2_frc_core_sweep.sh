@@ -52,7 +52,7 @@ sum_frc_field() {
   ' "$log"
 }
 
-printf 'variant\tcycles\tinstructions\tl2_accesses\tl2_misses\tfrc_allocations\tfrc_lower_reads\tfrc_swaps\tfrc_set_full_fallbacks\tfrc_write_fallbacks\tfrc_atomic_fallbacks\n' \
+printf 'variant\tcycles\tinstructions\tscalar_opc\tl2_accesses\tl2_misses\tl2_mpko\tfrc_allocations\tfrc_lower_reads\tfrc_swaps\tfrc_set_full_fallbacks\tfrc_write_fallbacks\tfrc_atomic_fallbacks\n' \
   > "$run_root/summary.tsv"
 
 variants=(baseline24 frc4-paper frc8-paper frc16-paper frc32-paper frc64-paper frc128-paper baseline25 frc256-paper baseline26)
@@ -65,8 +65,11 @@ for variant in "${variants[@]}"; do
   instructions="$(awk '/^gpu_tot_sim_insn =/{print $3; exit}' "$log")"
   accesses="$(awk '/^L2_total_cache_accesses =/{print $3; exit}' "$log")"
   misses="$(awk '/^L2_total_cache_misses =/{print $3; exit}' "$log")"
-  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-    "$variant" "$cycles" "$instructions" "$accesses" "$misses" \
+  opc="$(awk -v insn="$instructions" -v cycles="$cycles" 'BEGIN { printf "%.6f", insn / cycles }')"
+  mpko="$(awk -v misses="$misses" -v insn="$instructions" 'BEGIN { printf "%.6f", 1000 * misses / insn }')"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$variant" "$cycles" "$instructions" "$opc" "$accesses" "$misses" \
+    "$mpko" \
     "$(sum_frc_field "$log" allocations)" \
     "$(sum_frc_field "$log" lower_reads)" \
     "$(sum_frc_field "$log" swaps)" \

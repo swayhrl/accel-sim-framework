@@ -51,7 +51,7 @@ sum_frc_field() {
   ' "$log"
 }
 
-printf 'variant\tcycles\tinstructions\tl2_accesses\tl2_misses\tl2_reservation_fails\tfrc_allocations\tfrc_set_full_fallbacks\n' \
+printf 'variant\tcycles\tinstructions\tscalar_opc\tl2_accesses\tl2_misses\tl2_mpko\tl2_reservation_fails\tfrc_allocations\tfrc_set_full_fallbacks\n' \
   > "$run_root/summary.tsv"
 for variant in baseline1-pressure frc128-pressure baseline2-pressure; do
   args=(--trace "$trace" --config "$config" \
@@ -65,8 +65,11 @@ for variant in baseline1-pressure frc128-pressure baseline2-pressure; do
   accesses="$(awk '/^L2_total_cache_accesses =/{print $3; exit}' "$log")"
   misses="$(awk '/^L2_total_cache_misses =/{print $3; exit}' "$log")"
   fails="$(awk '/^L2_total_cache_reservation_fails =/{print $3; exit}' "$log")"
-  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-    "$variant" "$cycles" "$instructions" "$accesses" "$misses" "$fails" \
+  opc="$(awk -v insn="$instructions" -v cycles="$cycles" 'BEGIN { printf "%.6f", insn / cycles }')"
+  mpko="$(awk -v misses="$misses" -v insn="$instructions" 'BEGIN { printf "%.6f", 1000 * misses / insn }')"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$variant" "$cycles" "$instructions" "$opc" "$accesses" "$misses" \
+    "$mpko" "$fails" \
     "$(sum_frc_field "$log" allocations)" \
     "$(sum_frc_field "$log" set_full_fallbacks)" \
     >> "$run_root/summary.tsv"
