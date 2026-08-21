@@ -97,10 +97,10 @@ QV100 configuration and complete CUDA SDK traces.
 
 | Trace | Compared variants | Cycles | Observation |
 |---|---|---:|---|
-| `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper` | 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures. |
+| `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 172,297 / 172,297; 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures.  The exact-payload pair also has 131,072 unique lower reads and 2-cycle non-DRAM management delay in both variants. |
 | `BlackScholes/NO_ARGS` | all 12 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  Exact-payload (`baseline25/26`) and paper-ratio (`baseline48/96`) conventional controls are also 9,032 cycles. |
 | `BlackScholes/NO_ARGS`, observation | `baseline24`, `frc32-paper` | 9,032 / 9,032 | Both complete 37,500 unique lower reads at 1-cycle pre-memory + 1-cycle post-memory = 2-cycle management delay.  FRC changes neither the delay nor total cycles at this no-pressure point. |
-| `transpose/dimX512_dimY512` | `baseline24`, `frc32-paper` | 201,054 / 201,054 | FRC is active (374,568 allocations, lower reads and swaps; 411,864 set-full fallbacks), but the control again has zero L2 reservation failures. |
+| `transpose/dimX512_dimY512` | `baseline24`, `frc32-paper`; exact-payload `baseline25`, `frc128-paper` | 201,054 / 201,054; 201,054 / 201,054 | FRC is active (374,568 allocations, lower reads and swaps; 411,864 set-full fallbacks), but the control again has zero L2 reservation failures.  The exact-payload pair also has 32,768 unique lower reads and 2-cycle non-DRAM management delay in both variants. |
 
 The low-associativity BlackScholes sensitivity makes the causal condition
 observable with real trace traffic: `baseline1` completes in 12,396 cycles
