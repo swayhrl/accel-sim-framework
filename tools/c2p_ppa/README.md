@@ -4,6 +4,11 @@ These flows establish reproducible tool paths for the C2P experiment model.
 They are deliberately split so that a proxy result is never confused with a
 complete RTL implementation.
 
+The read-side functional RTL baseline now lives in [`rtl/`](rtl/README.md).
+Its directed test is `run_c2p_rtl_test.sh`; the OpenROAD flow remains a
+control-slice proxy until a technology-matched Snapshot SRAM macro is
+integrated.
+
 ## AccelWattch system-power smoke
 
 `configs/c2p-cache/power-smoke.config` enables stock Volta SASS-SIM
