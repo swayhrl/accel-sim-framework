@@ -5,9 +5,10 @@ They are deliberately split so that a proxy result is never confused with a
 complete RTL implementation.
 
 The read-side functional RTL baseline now lives in [`rtl/`](rtl/README.md).
-Its directed test is `run_c2p_rtl_test.sh`; the OpenROAD flow remains a
-control-slice proxy until a technology-matched Snapshot SRAM macro is
-integrated.
+Its directed test is `run_c2p_rtl_test.sh`. The control-only OpenROAD result
+remains separate from the macro-aware ASAP7 experiment: the latter has real
+open macro area/LEF/Liberty views, but its public LEF currently fails detailed
+router pin access and is therefore not a DRC-clean total-C2P result.
 
 ## AccelWattch system-power smoke
 
@@ -127,6 +128,24 @@ When the technology supplies those macro views, use
 requires the macro Verilog/LEF/Liberty plus a placement/PDN setup Tcl, and
 then uses the same versioned synthesis and OpenROAD recipe.  It intentionally
 fails rather than guessing macro placement or power pins.
+
+## Open ASAP7 Snapshot macro integration
+
+`run_openroad_c2p_asap7_sram.sh` fetches the pinned open
+`srambank_256x4x64_6t122` view set and implements the exact 160 KiB physical
+Snapshot capacity as twenty 1024x64 macros: five banks for each of four
+replicas. It has passed reference-array, generic-1R1W-stub, and actual
+ASAP7-behavioural-macro directed tests; its synth and post-CTS outputs also
+prove that all twenty macros are instantiated, placed, connected to PDN, and
+timed through Liberty.
+
+The public macro LEF has 402 `DRT-0418` pin-access failures in the current
+OpenROAD/ASAP7 routing stack. The runner treats that as a hard failure after
+a full route, rather than retaining an unroutable layout. It is still useful
+for the documented macro-area and pre-route/CTS timing experiment, but not
+for a DRC-clean physical result. See
+[`ASAP7_SRAM_RESULTS.md`](ASAP7_SRAM_RESULTS.md) for the reproducible result
+and a scope-correct comparison with the C2P-Cache paper.
 
 Summarize a retained result directory without manually transcribing reports:
 

@@ -45,8 +45,16 @@ and set the four required environment variables documented by the runner.
 
 ## PPA reporting rule
 
-Until this manifest is populated with a technology-matched macro, report the
+The pinned open ASAP7 experiment now supplies a real 1024x64 macro view and
+maps twenty instances to the exact 160 KiB physical Snapshot capacity. It is
+not yet a sign-off-compatible replacement for this manifest: the upstream LEF
+has macro pins outside TritonRoute's routing grid and its LEF/Liberty pin sets
+disagree on `sdel[4:0]`. It may be used for functional tests, macro count,
+area, placement/PDN and pre-route/CTS STA only. The macro runner rejects any
+full route carrying `DRT-0418` pin-access warnings.
+
+Until a routeable, technology-matched macro view replaces it, report the
 OpenROAD query-engine result as **control only** and the CACTI result as a
-separate four-replica SRAM estimate.  Do not add the CACTI area to an ASAP7
+separate four-replica SRAM estimate. Do not add the CACTI area to an ASAP7
 standard-cell area and call it a sign-off total: their technology assumptions
 and corner definitions differ.
