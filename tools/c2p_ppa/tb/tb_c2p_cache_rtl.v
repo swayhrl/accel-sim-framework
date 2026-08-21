@@ -29,7 +29,8 @@ module c2p_snapshot_sram_1r1w #(
 endmodule
 
 module tb_c2p_cache_rtl #(
-    parameter integer USE_SRAM_MACRO = 0
+    parameter integer USE_SRAM_MACRO = 0,
+    parameter integer USE_ASAP7_SRAM = 0
 );
     reg clk = 1'b0;
     reg reset = 1'b1;
@@ -57,7 +58,8 @@ module tb_c2p_cache_rtl #(
     always #5 clk = ~clk;
 
     c2p_cache_rtl #(
-        .USE_SRAM_MACRO(USE_SRAM_MACRO)
+        .USE_SRAM_MACRO(USE_SRAM_MACRO),
+        .USE_ASAP7_SRAM(USE_ASAP7_SRAM)
     ) dut (
         .clk(clk), .reset(reset),
         .update_valid(update_valid), .update_ready(update_ready),

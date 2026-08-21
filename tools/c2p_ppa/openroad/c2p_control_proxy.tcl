@@ -56,8 +56,12 @@ link_design $design_name
 create_clock -name core_clk -period $clock_period [get_ports clk]
 set_thread_count 8
 
-initialize_floorplan -site asap7sc7p5t -utilization $utilization -aspect_ratio 1.0 \
-    -core_space 2
+if {[info exists ::env(C2P_PPA_FLOORPLAN_TCL)] && $::env(C2P_PPA_FLOORPLAN_TCL) ne ""} {
+    source $::env(C2P_PPA_FLOORPLAN_TCL)
+} else {
+    initialize_floorplan -site asap7sc7p5t -utilization $utilization -aspect_ratio 1.0 \
+        -core_space 2
+}
 source $make_tracks
 source $set_rc
 # A total-C2P run supplies the SRAM macro LEF/Liberty above and a

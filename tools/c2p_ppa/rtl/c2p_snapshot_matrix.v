@@ -18,7 +18,8 @@ module c2p_snapshot_matrix #(
     parameter integer TAG_MASK_ROWS_PER_BANK = 16,
     parameter integer BF_HASHES = 3,
     parameter integer READ_LATENCY = 2,
-    parameter integer USE_SRAM_MACRO = 0
+    parameter integer USE_SRAM_MACRO = 0,
+    parameter integer USE_ASAP7_SRAM = 0
 ) (
     input  wire                 clk,
     input  wire                 reset,
@@ -119,28 +120,54 @@ module c2p_snapshot_matrix #(
 
     // The store keeps each of the four encoded rows in an independent read
     // replica.  Both branches use the same clear/update/query handshakes.
-    c2p_snapshot_store #(
-        .NUM_SMS(NUM_SMS), .TOTAL_ROWS(TOTAL_ROWS), .ROW_W(ROW_W),
-        .USE_SRAM_MACRO(USE_SRAM_MACRO)
-    ) store (
-        .clk(clk), .reset(reset),
-        .clear_valid(store_clear_valid), .clear_ready(store_clear_ready),
-        .clear_row(clear_row),
-        .write_valid(update_valid && update_ready),
-        .write_ready(store_update_ready),
-        .write_row0(update_row0), .write_row1(update_row1),
-        .write_row2(update_row2), .write_row3(update_row3),
-        .write_mask(update_mask),
-        .query_valid(store_query_valid), .query_ready(store_query_ready),
-        .query_row0(query_row0), .query_row1(query_row1),
-        .query_row2(query_row2), .query_row3(query_row3),
-        .query_rsp_valid(store_query_rsp_valid),
-        .query_rsp_ready(store_query_rsp_ready),
-        .query_rsp_data0(store_query_rsp_data0),
-        .query_rsp_data1(store_query_rsp_data1),
-        .query_rsp_data2(store_query_rsp_data2),
-        .query_rsp_data3(store_query_rsp_data3)
-    );
+    generate
+        if (USE_ASAP7_SRAM) begin : g_asap7_sram
+            c2p_snapshot_store_asap7 #(
+                .NUM_SMS(NUM_SMS), .TOTAL_ROWS(TOTAL_ROWS), .ROW_W(ROW_W)
+            ) store (
+                .clk(clk), .reset(reset),
+                .clear_valid(store_clear_valid), .clear_ready(store_clear_ready),
+                .clear_row(clear_row),
+                .write_valid(update_valid && update_ready),
+                .write_ready(store_update_ready),
+                .write_row0(update_row0), .write_row1(update_row1),
+                .write_row2(update_row2), .write_row3(update_row3),
+                .write_mask(update_mask),
+                .query_valid(store_query_valid), .query_ready(store_query_ready),
+                .query_row0(query_row0), .query_row1(query_row1),
+                .query_row2(query_row2), .query_row3(query_row3),
+                .query_rsp_valid(store_query_rsp_valid),
+                .query_rsp_ready(store_query_rsp_ready),
+                .query_rsp_data0(store_query_rsp_data0),
+                .query_rsp_data1(store_query_rsp_data1),
+                .query_rsp_data2(store_query_rsp_data2),
+                .query_rsp_data3(store_query_rsp_data3)
+            );
+        end else begin : g_default_store
+            c2p_snapshot_store #(
+                .NUM_SMS(NUM_SMS), .TOTAL_ROWS(TOTAL_ROWS), .ROW_W(ROW_W),
+                .USE_SRAM_MACRO(USE_SRAM_MACRO)
+            ) store (
+                .clk(clk), .reset(reset),
+                .clear_valid(store_clear_valid), .clear_ready(store_clear_ready),
+                .clear_row(clear_row),
+                .write_valid(update_valid && update_ready),
+                .write_ready(store_update_ready),
+                .write_row0(update_row0), .write_row1(update_row1),
+                .write_row2(update_row2), .write_row3(update_row3),
+                .write_mask(update_mask),
+                .query_valid(store_query_valid), .query_ready(store_query_ready),
+                .query_row0(query_row0), .query_row1(query_row1),
+                .query_row2(query_row2), .query_row3(query_row3),
+                .query_rsp_valid(store_query_rsp_valid),
+                .query_rsp_ready(store_query_rsp_ready),
+                .query_rsp_data0(store_query_rsp_data0),
+                .query_rsp_data1(store_query_rsp_data1),
+                .query_rsp_data2(store_query_rsp_data2),
+                .query_rsp_data3(store_query_rsp_data3)
+            );
+        end
+    endgenerate
 
     assign update_ready = !clearing && store_update_ready;
     assign query_ready = !clearing && !query_waiting &&
@@ -193,5 +220,7 @@ module c2p_snapshot_matrix #(
             $error("This RTL matches the C2P default of three Bloom hashes");
         if (READ_LATENCY != 2)
             $error("C2P macro adapter currently implements a two-cycle read");
+        if (USE_ASAP7_SRAM && USE_SRAM_MACRO)
+            $error("select either the generic or ASAP7 Snapshot macro adapter");
     end
 endmodule
