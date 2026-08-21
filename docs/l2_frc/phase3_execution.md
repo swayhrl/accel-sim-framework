@@ -42,10 +42,10 @@ live FRC state.  It is not an equal-capacity performance configuration.
 | Sector ownership | Directed two-warp case emits one FRC allocation and one lower read. |
 | Early fetch / fill-time victim | A resident hit is observed while B fetches in FRC; touching the initial LRU then changes the sampled fill-time victim. |
 | FRC-set-full fallback | Directed one-entry case reports `set_full_fallbacks=1`. |
-| Same-line write ownership | Directed case reports `write_conflict_stalls=144`, then one baseline write fallback after swap. |
+| Same-line write ownership | The current directed rerun reports `write_conflict_stalls=136`, then one baseline write fallback after swap. |
 | Dirty victim path | Directed case reports `dirty_swaps=1`, `wb_lower_accepted=1`, and terminal `fetching=fetched=evicting=0`. |
-| Atomic semantics | Atomic workload has identical control/FRC architectural metrics (204,016 cycles); nonzero `atomic_fallbacks` confirms the explicit baseline path. |
-| Replacement-pressure gate | One-way L2 control has 136 reservation failures and takes 5,470 cycles; FRC4 accepts two local reads and finishes in 5,337 cycles. |
+| Atomic semantics | The constrained `atomic_add_lat` rerun has identical control/FRC architectural metrics (204,138 cycles); `atomic_fallbacks=1,024` confirms the explicit baseline path. |
+| Replacement-pressure gate | One-way L2 control has 136 reservation failures, one lower read in flight and takes 5,470 cycles; FRC4 accepts two local reads, reaches two in flight and finishes in 5,337 cycles. |
 | Conservative timing | `management_cycles` is nonzero when configured; paper mode reports zero added management cycles. |
 
 ## Small pressure sweep
