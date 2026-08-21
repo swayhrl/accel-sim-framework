@@ -141,6 +141,13 @@ fields are zero-valued CCD counters.  Thus the dynamic-bank correction changes
 only non-default bank mapping/arbitration as intended; it cannot perturb the
 main default-C2P performance data.
 
+The same `m5120-k4` byte-for-byte comparison has also completed for the
+substantially different Parboil SGEMM trace.  Every pre-existing primary-C2P
+summary field again matches the v7 run; the only additions are the same four
+zero-valued CCD counters.  Together with the Btree and LUD comparisons, this
+checks default preservation across three independent workload families rather
+than inferring it solely from the directed Btree replay.
+
 ## Formal Btree six-mode bundle (2026-08-21)
 
 The retained Rodinia 3.1 Btree trace is the first workload run through the
