@@ -48,6 +48,7 @@ fi
   --config-extra "$repo_root/configs/l2_frc/frc32-paper.config"
 
 grep -Eq 'frc_l2 .*allocations=[1-9]' "$run_root/frc/smoke.out"
+grep -Eq 'frc_l2 .*allocations=1 lower_reads=4' "$run_root/frc/smoke.out"
 grep -Eq 'frc_l2 .*fetching=0 fetched=0 evicting=0' "$run_root/frc/smoke.out"
 printf 'PASS frc_smoke run_root=%s\n' "$run_root"
 grep 'frc_l2' "$run_root/frc/smoke.out"
