@@ -37,6 +37,13 @@ exactly one or two 32-set L2 ways of payload, while `baseline25` and
 `baseline26` add that storage to conventional L2.  Metadata/ports remain an
 explicit implementation cost, as specified in the Phase-3 contract.
 
+The complementary low-associativity sensitivity uses `baseline1-pressure`,
+`frc128-pressure`, and `baseline2-pressure`.  Here FRC128 contributes exactly
+one 32-set x 128-byte conventional L2 way per sector-L2 slice, so the latter
+is the payload-capacity match.  This is an intentional transient-replacement
+stress point, not a claim that one way represents QV100 or the paper's
+16-way HD7770 bank.
+
 Run one complete trace with:
 
 ```bash
@@ -74,6 +81,16 @@ the unmodified SM7 QV100 configuration and complete CUDA SDK traces.
 |---|---|---:|---|
 | `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper` | 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures. |
 | `BlackScholes/NO_ARGS` | all 10 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  `baseline25`/`baseline26` and their capacity-matched FRC points are also 9,032 cycles. |
+
+The low-associativity BlackScholes sensitivity makes the causal condition
+observable with real trace traffic: `baseline1` completes in 12,396 cycles
+with 186,478 reservation failures; `frc128` completes in 9,658 cycles with
+668 failures (22.1% faster than `baseline1`); the equal-payload `baseline2`
+completes in 9,441 cycles with 3,658 failures.  Thus FRC fixes the transient
+replacement bottleneck, but in this QV100 port it is still 2.3% behind an
+equal-payload conventional second way.  The result is a truthful mechanism
+comparison, not evidence that this configuration matches the paper's claim
+that FRC usually outperforms capacity expansion.
 
 The independent transaction store is therefore exercised and the capacity
 matrix is complete, but these two complete QV100 workloads do **not**

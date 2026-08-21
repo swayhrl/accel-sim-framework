@@ -92,6 +92,7 @@ which supplies the independent FRC request/waiter store.
 |---|---:|---:|---|
 | CUDA SDK `fastWalshTransform` `_logK_11__logD_19` | 172,297 | 172,297 | FRC is active: 467,526 allocations/swaps, but all L2 reservation failures are zero. |
 | CUDA SDK `BlackScholes` `NO_ARGS` | 9,032 | 9,032 | All FRC4–256 and capacity-matched baseline25/26 points are 9,032 cycles; `frc256` eliminates set-full fallback. |
+| CUDA SDK `BlackScholes` `NO_ARGS`, 1-way stress | 12,396 | 9,658 (`frc128`) | `baseline1` reports 186,478 reservation failures; FRC eliminates almost all (668) and is 22.1% faster.  Capacity-matched `baseline2` is 9,441 cycles. |
 
 Consequently this port has passed a high-concurrency correctness gate but has
 not reproduced the paper's performance gain.  The missing causal condition is

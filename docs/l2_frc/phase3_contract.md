@@ -22,8 +22,12 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
   reserving an L2 victim.  A full FRC set falls back to conventional L2 miss
   handling.
 - An FRC entry is `FREE`, `FETCHING`, `FETCHED`, or `EVICTING`.  `FETCHED` is
-  only the internal completed-before-swap state: the model swaps it into L2
-  immediately, so later hits use L2 rather than a second data source.
+  the internal completed-before-swap state.  A returned lower response is
+  first accepted into that FRC entry even when a conventional transient line
+  currently prevents its L2 swap; this prevents an FRC response at the head
+  of the DRAM-to-L2 FIFO from blocking the conventional fill that can release
+  the victim.  `FETCHED` is never a second hit source: accesses wait until the
+  sector has swapped into L2.
   `EVICTING` retains a dirty L2 victim until its writeback is accepted by the
   lower interface and is never a hit.
 - Victim choice happens at fill/swap time.  A clean victim releases the FRC
@@ -35,8 +39,11 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
   internal request and the completed upper responses use FRC-local queues,
   not baseline MSHRs or baseline miss-queue slots.  A request for a fetching
   sector merges into that entry's waiter list.  Baseline and FRC traffic
-  share the physical lower port and the L2 fill/replacement resources; FRC
-  requests have paper-mode priority while its finite queue is nonempty.
+  share the physical lower port and the L2 fill/replacement resources.  When
+  both request queues are nonempty, the lower arbiter alternates grants;
+  otherwise the nonempty queue proceeds immediately.  This preserves FRC's
+  prompt fetch while preventing an FRC burst from starving the conventional
+  fill that may unblock a delayed swap.
 - FRC currently owns only read-miss scheduling.  Stores (including partial
   sector stores) and atomics explicitly use the unmodified baseline path,
   which remains authoritative for byte masks and atomic order.  Their
