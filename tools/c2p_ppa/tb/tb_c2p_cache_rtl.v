@@ -132,6 +132,16 @@ module tb_c2p_cache_rtl;
         expect_probe(6'd6, 1'b0);
         expect_lower(64'hface, 1'b0);
 
+        // Equidistant clusters retain the C++ tie break: lower SID first.
+        // The timing-oriented RTL walker may spend extra cycles scanning, but
+        // it must not change this externally visible probe order.
+        push_update(6'd5, 64'hbeef);
+        push_update(6'd35, 64'hbeef);
+        push_miss(6'd20, 64'hbeef);
+        expect_probe(6'd5, 1'b0);
+        expect_probe(6'd35, 1'b1);
+        expect_peer_hit(6'd35, 64'hbeef);
+
         // The requester is always removed from its own candidate bitmap.
         push_update(6'd4, 64'hfeed);
         push_miss(6'd4, 64'hfeed);

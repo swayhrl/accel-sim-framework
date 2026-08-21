@@ -48,6 +48,11 @@ module c2p_query_engine #(
 
     localparam integer FIFO_AW = $clog2(REQUEST_FIFO_DEPTH);
     localparam integer COUNT_W = $clog2(REQUEST_FIFO_DEPTH + 1);
+    localparam integer NUM_CLUSTERS = NUM_SMS / CLUSTER_SIZE;
+    localparam integer CLUSTER_W =
+        (NUM_CLUSTERS <= 1) ? 1 : $clog2(NUM_CLUSTERS);
+    localparam integer CLUSTER_RANK_W = CLUSTER_W;
+    localparam integer CLUSTER_SHIFT = $clog2(CLUSTER_SIZE);
     localparam integer TIMEOUT_W =
         (PROBE_TIMEOUT <= 1) ? 1 : $clog2(PROBE_TIMEOUT + 1);
     localparam [2:0] S_IDLE = 3'd0, S_QUERY = 3'd1,
@@ -65,48 +70,53 @@ module c2p_query_engine #(
     reg [TAG_W-1:0] active_tag;
     reg [NUM_SMS-1:0] candidate_mask;
     reg [SID_W-1:0] selected_sid;
+    reg [CLUSTER_RANK_W-1:0] cluster_rank;
     reg had_candidate;
     reg no_candidate;
     reg [TIMEOUT_W-1:0] probe_age;
-    integer sid_i;
-    integer best_distance;
-    integer this_distance;
-    reg candidate_found;
-    reg [SID_W-1:0] candidate_sid;
+    integer cluster_delta;
+    integer clusters_seen;
+    integer lane_i;
+    reg [CLUSTER_W-1:0] active_cluster;
+    reg [CLUSTER_W-1:0] scan_cluster;
+    reg scan_found;
+    reg [SID_W-1:0] scan_sid;
 
     wire pop_fifo = (state == S_IDLE) && (fifo_count != 0);
     wire push_fifo = miss_valid && miss_ready;
     assign miss_ready = (fifo_count < REQUEST_FIFO_DEPTH) || pop_fifo;
 
-    function integer cluster_distance;
-        input integer from_sid;
-        input integer to_sid;
-        integer from_cluster;
-        integer to_cluster;
-        begin
-            from_cluster = from_sid / CLUSTER_SIZE;
-            to_cluster = to_sid / CLUSTER_SIZE;
-            if (from_cluster == to_cluster)
-                cluster_distance = 0;
-            else if (from_cluster > to_cluster)
-                cluster_distance = 1 + from_cluster - to_cluster;
-            else
-                cluster_distance = 1 + to_cluster - from_cluster;
-        end
-    endfunction
-
+    // Search one cluster per cycle.  The old all-64-SM min-distance cone was
+    // functionally correct but put division, distance comparison, and a
+    // 64-way priority encoder on the request-to-probe timing path.  This
+    // walker preserves C++'s ordering (nearer cluster, then lower SID) while
+    // limiting the per-cycle datapath to one CLUSTER_SIZE-wide encoder.
     always @* begin
-        candidate_found = 1'b0;
-        candidate_sid = {SID_W{1'b0}};
-        best_distance = NUM_SMS;
-        for (sid_i = 0; sid_i < NUM_SMS; sid_i = sid_i + 1) begin
-            this_distance = cluster_distance(active_sid, sid_i);
-            if (candidate_mask[sid_i] &&
-                (!candidate_found || this_distance < best_distance ||
-                 (this_distance == best_distance && sid_i < candidate_sid))) begin
-                candidate_found = 1'b1;
-                candidate_sid = sid_i[SID_W-1:0];
-                best_distance = this_distance;
+        active_cluster = active_sid >> CLUSTER_SHIFT;
+        scan_cluster = active_cluster;
+        clusters_seen = 1;
+        for (cluster_delta = 1;
+             cluster_delta < NUM_CLUSTERS;
+             cluster_delta = cluster_delta + 1) begin
+            if (active_cluster >= cluster_delta) begin
+                if (cluster_rank == clusters_seen[CLUSTER_RANK_W-1:0])
+                    scan_cluster = active_cluster - cluster_delta;
+                clusters_seen = clusters_seen + 1;
+            end
+            if ((active_cluster + cluster_delta) < NUM_CLUSTERS) begin
+                if (cluster_rank == clusters_seen[CLUSTER_RANK_W-1:0])
+                    scan_cluster = active_cluster + cluster_delta;
+                clusters_seen = clusters_seen + 1;
+            end
+        end
+
+        scan_found = 1'b0;
+        scan_sid = {SID_W{1'b0}};
+        for (lane_i = 0; lane_i < CLUSTER_SIZE; lane_i = lane_i + 1) begin
+            if (!scan_found &&
+                candidate_mask[scan_cluster * CLUSTER_SIZE + lane_i]) begin
+                scan_found = 1'b1;
+                scan_sid = scan_cluster * CLUSTER_SIZE + lane_i;
             end
         end
     end
@@ -135,6 +145,7 @@ module c2p_query_engine #(
             active_tag <= {TAG_W{1'b0}};
             candidate_mask <= {NUM_SMS{1'b0}};
             selected_sid <= {SID_W{1'b0}};
+            cluster_rank <= {CLUSTER_RANK_W{1'b0}};
             had_candidate <= 1'b0;
             no_candidate <= 1'b0;
             probe_age <= {TIMEOUT_W{1'b0}};
@@ -173,17 +184,20 @@ module c2p_query_engine #(
                         had_candidate <=
                             |(snapshot_rsp_candidates &
                               ~({{(NUM_SMS-1){1'b0}}, 1'b1} << active_sid));
+                        cluster_rank <= {CLUSTER_RANK_W{1'b0}};
                         state <= S_PICK;
                     end
                 end
                 S_PICK: begin
-                    if (candidate_found) begin
-                        selected_sid <= candidate_sid;
-                        candidate_mask[candidate_sid] <= 1'b0;
+                    if (scan_found) begin
+                        selected_sid <= scan_sid;
+                        candidate_mask[scan_sid] <= 1'b0;
                         state <= S_PROBE;
-                    end else begin
+                    end else if (cluster_rank == NUM_CLUSTERS - 1) begin
                         no_candidate <= !had_candidate;
                         state <= S_LOWER;
+                    end else begin
+                        cluster_rank <= cluster_rank + 1'b1;
                     end
                 end
                 S_PROBE: begin
@@ -196,8 +210,10 @@ module c2p_query_engine #(
                     if (probe_rsp_valid) begin
                         if (probe_rsp_hit)
                             state <= S_PEER_HIT;
-                        else
+                        else begin
+                            cluster_rank <= {CLUSTER_RANK_W{1'b0}};
                             state <= S_PICK;
+                        end
                     end else if (probe_age == PROBE_TIMEOUT - 1) begin
                         no_candidate <= 1'b0;
                         state <= S_LOWER;
@@ -226,5 +242,8 @@ module c2p_query_engine #(
             $error("C2P request FIFO depth must be a power of two >= 2");
         if (CLUSTER_SIZE == 0 || PROBE_TIMEOUT == 0)
             $error("C2P cluster size and probe timeout must be nonzero");
+        if ((NUM_SMS % CLUSTER_SIZE) != 0 ||
+            (CLUSTER_SIZE & (CLUSTER_SIZE - 1)) != 0)
+            $error("C2P requires a power-of-two cluster size that divides NUM_SMS");
     end
 endmodule
