@@ -187,6 +187,15 @@ SGEMM 的最终解释。
    `54ea11cc`--`a6b436d2` 的第二层 deadlock dump（core pipeline、L1 miss
    queue/MSHR/tag 状态和每 memory partition），只在第一层结果不足以定位时
    用于后续复验。该诊断重放及其输出均不能作为性能数据或填补 CCD 矩阵。
+
+   随后的源码审查发现旧日志的“23 cycles ago writeback”与旧 detector 的
+   `gpu_sim_insn == last_gpu_sim_insn` 判定相冲突：inactive-mask 的已提交
+   指令会更新时间戳、却不增加 active-lane instruction count。因此将已有的
+   通用修复 `0e276164` 纳入，改为以最后 writeback timestamp 的 50,000-cycle
+   无进展窗口判定 deadlock。这不改变 C2P/CCD 事务或时序；NN CCD 定向 replay
+   与修复前在 cycle、L2 access、remote/avoided 和 CCD TP/FN/FP/TN 均
+   bit-exact。已以该二进制启动完整 Stencil CCD 重放；只有它完成且保留全部
+   不变量时，才可把该 detector 假阳性解释视为已修复。
 4. **Ring 的 Btree IPC 高于 C2P，而 DWT2D/LUD/SGEMM 显著变慢。** 该 workload 依赖性可由 serialized issue、nearest hit hop、减少的 probe 数共同导致；仍须检查 Ring 的 L2 access、hop/probe 分布和网络时序。不能在 aggregate 前声称已匹配论文 Ring 开销。
 5. **本地 R/S 分类与论文图的 workload 分组不同。** 例如 Gaussian 本地是 R0S0 而论文参考标签为 R1S0；这是 trace input/规模、mapping 和模型适配的直接信号。最终图会同时保留 paper reference group 和 local measured group，绝不强行 relabel。
 6. **未完成任务没有结果资格。** 当前运行中的 3mm、ATAX/BICG、GESUMMV 等可能改变任何 group aggregate 和均值；在 strict gate 通过前，不能给出“与论文一致/不一致”的结论。
