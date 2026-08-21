@@ -13,11 +13,21 @@ module tb_c2p_snapshot_banked_frontend;
     wire [255:0] bank_req_valid;
     wire [4*64*2-1:0] bank_req_owner;
     wire [4*64*ROW_W-1:0] bank_req_row;
+    reg [255:0] bank_rsp_valid = 0;
+    reg [4*64*2-1:0] bank_rsp_owner = 0;
+    reg [4*64*64-1:0] bank_rsp_data = 0;
+    wire [ENGINES-1:0] out_valid;
+    reg [ENGINES-1:0] out_ready = {ENGINES{1'b1}};
+    wire [ENGINES*64-1:0] out_data0;
+    wire [ENGINES*64-1:0] out_data1;
+    wire [ENGINES*64-1:0] out_data2;
+    wire [ENGINES*64-1:0] out_data3;
     wire [ENGINES-1:0] out_aux;
     integer copy_i;
     integer bank_i;
     integer count0;
     integer count_i;
+    reg [ENGINES-1:0] completed = 0;
 
     always #5 clk = ~clk;
 
@@ -25,8 +35,24 @@ module tb_c2p_snapshot_banked_frontend;
         .clk(clk), .reset(reset), .in_valid(in_valid), .in_ready(in_ready),
         .in_tag(in_tag), .in_aux(in_aux),
         .bank_req_valid(bank_req_valid), .bank_req_owner(bank_req_owner),
-        .bank_req_row(bank_req_row), .out_aux(out_aux)
+        .bank_req_row(bank_req_row),
+        .bank_rsp_valid(bank_rsp_valid), .bank_rsp_owner(bank_rsp_owner),
+        .bank_rsp_data(bank_rsp_data),
+        .out_valid(out_valid), .out_ready(out_ready),
+        .out_data0(out_data0), .out_data1(out_data1),
+        .out_data2(out_data2), .out_data3(out_data3), .out_aux(out_aux)
     );
+
+    // A synchronous physical bank returns the command owner and row data in
+    // the following cycle. The response order can differ by copy; the DUT
+    // must join all four before completing an engine.
+    always @(posedge clk) begin
+        bank_rsp_valid <= bank_req_valid;
+        bank_rsp_owner <= bank_req_owner;
+        for (bank_i = 0; bank_i < 4*64; bank_i = bank_i + 1)
+            bank_rsp_data[bank_i*64 +: 64] <= {56'b0, bank_i[7:0]};
+        completed <= completed | out_valid;
+    end
 
     task check_replica_count;
         begin
@@ -60,7 +86,7 @@ module tb_c2p_snapshot_banked_frontend;
         // Let the remaining held engines drain, then inject four independent
         // tags. Their rows may use different banks in each copy, so completion
         // is tracked per row rather than requiring equal per-copy counts.
-        repeat (6) @(negedge clk);
+        repeat (12) @(negedge clk);
         while (in_ready != 4'b1111) @(negedge clk);
         in_tag[0*TAG_W +: TAG_W] = 64'h0000000000000000;
         in_tag[1*TAG_W +: TAG_W] = 64'h1111111111111111;
@@ -72,9 +98,11 @@ module tb_c2p_snapshot_banked_frontend;
         while (!(|bank_req_valid)) @(negedge clk);
         if (!(|bank_req_valid))
             $fatal(1, "independent tags made no Snapshot progress");
-        repeat (20) @(negedge clk);
+        repeat (40) @(negedge clk);
         if (in_ready != 4'b1111)
             $fatal(1, "per-copy request bookkeeping did not drain: %b", in_ready);
+        if (completed != 4'b1111)
+            $fatal(1, "owner-tagged response joiner missed completions: %b", completed);
         $display("PASS tb_c2p_snapshot_banked_frontend");
         $finish;
     end

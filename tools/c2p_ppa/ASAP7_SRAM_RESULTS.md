@@ -75,7 +75,7 @@ places a wide, high-fanout RMW write net on the timing boundary. A
 multiport/masked-write Snapshot macro or a bank-local update microarchitecture
 is required for a closing macro-aware implementation.
 
-The scalable control front end is separately synthesized as
+The command-side scalable control front end is separately synthesized as
 `results/openroad_c2p_banked_frontend_synth_v3`: it instantiates 128 two-cycle
 BF engines and four 64-bank arbiters. Its mapped ASAP7 standard-cell area is
 **55,894.1067 um2 (0.055894 mm2)**, before the response joiner, target-L1
@@ -112,9 +112,9 @@ macro abstract are also not a common area methodology.
 
 The valid comparison is therefore: geometry and four-copy capacity match
 exactly; the implementation now has the paper-shaped 128-engine/64-bank
-request front end, but still lacks its target-L1 request queues and
-owner-tagged response joiner in the single-lane cache top. The open macro view
+request front end and owner-tagged four-copy response joiner, but still lacks
+its target-L1 request queues in the single-lane cache top. The open macro view
 also remains unrouteable, so it cannot produce a signoff total. The next
 physical step is a routeable macro view plus a bank-local/masked update path;
-the next functional scaling step is connecting the existing bank-request
-contract to target-L1 queues and reply joining.
+the next functional scaling step is connecting the existing completed
+request/response contract to target-L1 queues.

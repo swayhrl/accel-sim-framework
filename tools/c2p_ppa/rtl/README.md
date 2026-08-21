@@ -56,15 +56,16 @@ BF engines followed by four independent 64-bank arbiters. The arbiter exposes
 256 bank-command ports (64 banks x four copies). A four-bit sent mask at each
 engine records individual tag-mask/Bloom-row grants, so one bank conflict does
 not hold the other three physical copies hostage and no row can be issued
-twice. `bank_req_owner` is the response-router contract: it reassembles the
-four replies before candidate evaluation. The selectors are hierarchically
+twice. `c2p_snapshot_response_joiner.v` reassembles the four owner-tagged
+replies before releasing that BF engine, so an owner ID is never reused while
+an earlier response remains in flight. The selectors are hierarchically
 bounded to 16-engine local priority plus an eight-way group priority, avoiding
 the former 128-entry global all-copy matching cone.
 
 The functional `c2p_cache_rtl` top remains intentionally single-lane until
-its target-L1 queue/response machinery consumes that port array and its
-owner-tagged response joiner. No throughput claim for the 128-engine front
-end is made by the single-lane directed test.
+its target-L1 queue machinery consumes this complete request/response port
+array. No throughput claim for the 128-engine front end is made by the
+single-lane directed test.
 
 Candidate ordering is intentionally pipelined in this baseline.  A selection
 walks one 8-SM cluster at a time: one clock chooses the next ordered cluster
@@ -116,8 +117,9 @@ C2P_IVERILOG_BIN=/path/to/iverilog tools/c2p_ppa/run_c2p_rtl_test.sh
 It first checks `c2p_bf_engine` row-for-row against its mathematical mapping
 and covers output backpressure. It also checks independent 64-bank/four-copy
 arbitration, including single-copy conflicts and owner-tagged partial issue,
-then checks that the composed multi-engine frontend drains each four-row
-transaction without duplication. It then checks candidate insertion,
+then checks that the composed multi-engine frontend joins all four responses,
+does not reuse an engine early, and drains each transaction without
+duplication. It then checks candidate insertion,
 nearest-first probe ordering, a probe miss followed by another candidate,
 peer-hit completion, true no-candidate fallback, exhausted-candidate fallback,
 and requester self-exclusion.

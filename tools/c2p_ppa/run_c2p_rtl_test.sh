@@ -27,6 +27,7 @@ rg -q '^PASS tb_c2p_snapshot_bank_arbiter$' "$out_dir/sim_bank_arbiter.log"
     "$script_dir/rtl/c2p_bf_engine_array.v" \
     "$script_dir/rtl/c2p_snapshot_bank_copy_arbiter.v" \
     "$script_dir/rtl/c2p_snapshot_bank_arbiter.v" \
+    "$script_dir/rtl/c2p_snapshot_response_joiner.v" \
     "$script_dir/rtl/c2p_snapshot_banked_frontend.v" \
     "$script_dir/tb/tb_c2p_snapshot_banked_frontend.v"
 vvp "$out_dir/tb_c2p_snapshot_banked_frontend.vvp" | tee "$out_dir/sim_banked_frontend.log"

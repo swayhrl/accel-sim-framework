@@ -4,8 +4,9 @@
 // arbiter. Its bank request outputs are the direct contract for a physical
 // Snapshot macro array: one row command per copy/bank in each cycle. Each
 // engine tracks which of its four rows have issued, so copy-bank conflicts do
-// not require a global all-or-nothing matching network. The response path
-// joins the four owner-tagged replies before candidate evaluation.
+// not require a global all-or-nothing matching network. The response joiner
+// retains four owner-tagged replies and releases an engine only after its
+// completed Snapshot result has been consumed.
 //
 // It is intentionally separate from the functional single-lane cache top
 // until the target-L1 request queues and macro-array response router use this
@@ -28,6 +29,16 @@ module c2p_snapshot_banked_frontend #(
     output wire [4*NUM_BANKS-1:0]       bank_req_valid,
     output wire [4*NUM_BANKS*ENGINE_W-1:0] bank_req_owner,
     output wire [4*NUM_BANKS*ROW_W-1:0] bank_req_row,
+    input  wire [4*NUM_BANKS-1:0]       bank_rsp_valid,
+    input  wire [4*NUM_BANKS*ENGINE_W-1:0] bank_rsp_owner,
+    input  wire [4*NUM_BANKS*64-1:0]    bank_rsp_data,
+
+    output wire [ENGINES-1:0]           out_valid,
+    input  wire [ENGINES-1:0]           out_ready,
+    output wire [ENGINES*64-1:0]        out_data0,
+    output wire [ENGINES*64-1:0]        out_data1,
+    output wire [ENGINES*64-1:0]        out_data2,
+    output wire [ENGINES*64-1:0]        out_data3,
     output wire [ENGINES*AUX_W-1:0]     out_aux
 );
 
@@ -50,7 +61,6 @@ module c2p_snapshot_banked_frontend #(
     wire [ENGINES-1:0] engine_need1;
     wire [ENGINES-1:0] engine_need2;
     wire [ENGINES-1:0] engine_need3;
-    wire [ENGINES-1:0] engine_done;
     integer engine_i;
 
     generate
@@ -60,10 +70,7 @@ module c2p_snapshot_banked_frontend #(
             assign engine_need1[sent_g] = engine_valid[sent_g] && !engine_sent[sent_g][1];
             assign engine_need2[sent_g] = engine_valid[sent_g] && !engine_sent[sent_g][2];
             assign engine_need3[sent_g] = engine_valid[sent_g] && !engine_sent[sent_g][3];
-            assign engine_done[sent_g] = &({engine_grant3[sent_g], engine_grant2[sent_g],
-                                            engine_grant1[sent_g], engine_grant0[sent_g]} |
-                                           engine_sent[sent_g]);
-            assign engine_ready[sent_g] = engine_done[sent_g];
+            assign engine_ready[sent_g] = out_valid[sent_g] && out_ready[sent_g];
         end
     endgenerate
 
@@ -96,13 +103,24 @@ module c2p_snapshot_banked_frontend #(
         .lane_grant2(engine_grant2), .lane_grant3(engine_grant3)
     );
 
+    c2p_snapshot_response_joiner #(
+        .ENGINES(ENGINES), .NUM_BANKS(NUM_BANKS), .DATA_W(64),
+        .ENGINE_W(ENGINE_W)
+    ) responses (
+        .clk(clk), .reset(reset),
+        .bank_rsp_valid(bank_rsp_valid), .bank_rsp_owner(bank_rsp_owner),
+        .bank_rsp_data(bank_rsp_data), .out_valid(out_valid), .out_ready(out_ready),
+        .out_data0(out_data0), .out_data1(out_data1),
+        .out_data2(out_data2), .out_data3(out_data3)
+    );
+
     always @(posedge clk) begin
         if (reset) begin
             for (engine_i = 0; engine_i < ENGINES; engine_i = engine_i + 1)
                 engine_sent[engine_i] <= 4'b0;
         end else begin
             for (engine_i = 0; engine_i < ENGINES; engine_i = engine_i + 1) begin
-                if (!engine_valid[engine_i] || engine_done[engine_i])
+                if (!engine_valid[engine_i] || engine_ready[engine_i])
                     engine_sent[engine_i] <= 4'b0;
                 else
                     engine_sent[engine_i] <= engine_sent[engine_i] |
