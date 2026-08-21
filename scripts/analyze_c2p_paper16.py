@@ -49,6 +49,62 @@ EFFECTIVE_CONFIG_DEFAULTS = {
     "-c2p_cache_target_probe_queue_size": "32",
 }
 
+# These are parser defaults, not experiment defaults.  Materializing just the
+# mode-selection options lets the audit treat an older run that relied on a
+# documented parser default as equivalent to a newer run that spells it out.
+MODE_OPTION_DEFAULTS = {
+    "-c2p_cache_enable": "0",
+    "-c2p_cache_oracle_only": "0",
+    "-c2p_cache_ideal_peer": "0",
+    "-c2p_cache_collect_oracle": "1",
+    "-c2p_cache_scheme": "0",
+}
+
+MODE_CONTRACT = {
+    "baseline": {
+        "-c2p_cache_enable": "0",
+        "-c2p_cache_oracle_only": "0",
+        "-c2p_cache_ideal_peer": "0",
+        "-c2p_cache_scheme": "0",
+    },
+    "oracle": {
+        "-c2p_cache_enable": "0",
+        "-c2p_cache_oracle_only": "1",
+        "-c2p_cache_ideal_peer": "0",
+        "-c2p_cache_collect_oracle": "1",
+        "-c2p_cache_scheme": "0",
+    },
+    "ideal": {
+        "-c2p_cache_enable": "1",
+        "-c2p_cache_oracle_only": "0",
+        "-c2p_cache_ideal_peer": "1",
+        "-c2p_cache_collect_oracle": "1",
+        "-c2p_cache_scheme": "0",
+    },
+    "c2p": {
+        "-c2p_cache_enable": "1",
+        "-c2p_cache_oracle_only": "0",
+        "-c2p_cache_ideal_peer": "0",
+        "-c2p_cache_collect_oracle": "1",
+        "-c2p_cache_scheme": "0",
+    },
+    "ata": {
+        "-c2p_cache_enable": "1",
+        "-c2p_cache_oracle_only": "0",
+        "-c2p_cache_scheme": "1",
+    },
+    "ccd": {
+        "-c2p_cache_enable": "1",
+        "-c2p_cache_oracle_only": "0",
+        "-c2p_cache_scheme": "2",
+    },
+    "ring": {
+        "-c2p_cache_enable": "1",
+        "-c2p_cache_oracle_only": "0",
+        "-c2p_cache_scheme": "3",
+    },
+}
+
 
 def read_manifest(path):
     with path.open(newline="") as stream:
@@ -146,6 +202,38 @@ def effective_config_sha256(run_dir):
     canonical = "".join(f"{option} {values[option]}\n"
                         for option in sorted(values))
     return hashlib.sha256(canonical.encode()).hexdigest()
+
+
+def read_effective_options(run_dir):
+    """Return last-value config options, including documented parser defaults."""
+    path = run_dir / "gpgpusim.config"
+    if not path.is_file():
+        return None
+    options = dict(MODE_OPTION_DEFAULTS)
+    for raw in path.read_text().splitlines():
+        fields = raw.split()
+        if len(fields) >= 2 and fields[0].startswith("-"):
+            options[fields[0]] = fields[1]
+    return options
+
+
+def validate_mode_contract(case, mode, run_dir, invariant_failures):
+    options = read_effective_options(run_dir)
+    if options is None:
+        invariant_failures.append(f"{case}/{mode}: missing resolved config")
+        return
+    for option, expected in MODE_CONTRACT[mode].items():
+        actual = options.get(option)
+        if actual != expected:
+            invariant_failures.append(
+                f"{case}/{mode}: {option}={actual}, expected {expected}")
+    # The paper point fixes logical comparator scope independently from the
+    # 64 one-SM simulation endpoints.  A missing or altered scope would make
+    # ATA/CCD and C2P candidate locality incomparable.
+    if options.get("-c2p_cache_comparator_cluster_size") != "8":
+        invariant_failures.append(
+            f"{case}/{mode}: comparator_cluster_size="
+            f"{options.get('-c2p_cache_comparator_cluster_size')}, expected 8")
 
 
 def read_histogram(run_dir):
@@ -255,6 +343,10 @@ def main():
         primary_provenance = {
             mode: record_provenance(case, mode, "primary", primary_runs[mode][0], data)
             for mode, data in results.items()}
+        for mode, data in results.items():
+            if data is not None:
+                validate_mode_contract(case, mode, primary_runs[mode][0],
+                                       invariant_failures)
         absent = [mode for mode, data in results.items() if data is None]
         if absent:
             missing.append(f"{case}: missing {', '.join(absent)}")
@@ -271,6 +363,8 @@ def main():
         ccd_provenance = (record_provenance(case, "ccd", "ccd_metrics",
                                             ccd_dir, ccd_metrics)
                           if ccd_roots else primary_provenance["ccd"])
+        if ccd_roots and ccd_metrics is not None:
+            validate_mode_contract(case, "ccd", ccd_dir, invariant_failures)
         if ccd_roots and ccd_metrics is None:
             missing.append(f"{case}: missing CCD metric replay")
         elif ccd_roots and any(
@@ -434,7 +528,10 @@ def main():
                        "simulator hash, and runtime hash.",
                        "- The analyzer requires one effective configuration hash per "
                        "source/mode and requires every CCD metric replay to use the "
-                       "same effective configuration as its primary CCD run."])
+                       "same effective configuration as its primary CCD run.",
+                       "- Every completed resolved config is checked against the "
+                       "baseline/oracle/ideal/C2P/ATA/CCD/RING mode contract and the "
+                       "paper's eight-SM logical comparator scope."])
     (args.out_dir / "paper16_status.md").write_text("\n".join(report) + "\n")
     if args.strict and (missing or invariant_failures):
         raise SystemExit("; ".join(missing + invariant_failures))
