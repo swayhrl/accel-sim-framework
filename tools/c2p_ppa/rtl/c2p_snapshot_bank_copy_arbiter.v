@@ -9,7 +9,7 @@
 // A 16-engine local selector followed by an 8-way group selector keeps the
 // priority depth bounded for the paper's 128-engine configuration.  Priority
 // is fixed low index; fairness rotation belongs at the request-queue layer.
-module c2p_snapshot_bank_copy_arbiter #(
+module c2p_snapshot_bank_copy_arbiter_generic #(
     parameter integer ENGINES = 128,
     parameter integer NUM_BANKS = 64,
     parameter integer ROW_W = 13,
@@ -106,4 +106,33 @@ module c2p_snapshot_bank_copy_arbiter #(
             (ENGINES % GROUP_SIZE) != 0)
             $error("C2P bank arbiter expects 64 banks and integral groups of at most 16 engines");
     end
+endmodule
+
+// The default paper geometry uses the static two-level tree. Retain the
+// generic implementation solely for small directed-test parameterizations.
+module c2p_snapshot_bank_copy_arbiter #(
+    parameter integer ENGINES = 128,
+    parameter integer NUM_BANKS = 64,
+    parameter integer ROW_W = 13,
+    parameter integer GROUP_SIZE = (ENGINES < 16) ? ENGINES : 16,
+    parameter integer ENGINE_W = (ENGINES <= 1) ? 1 : $clog2(ENGINES),
+    parameter integer GROUPS = ENGINES / GROUP_SIZE
+) (
+    input wire [ENGINES-1:0] lane_valid, input wire [ENGINES-1:0] lane_need,
+    input wire [ENGINES*ROW_W-1:0] lane_row, input wire [ENGINES*6-1:0] lane_bank,
+    input wire [NUM_BANKS-1:0] bank_ready, output wire [NUM_BANKS-1:0] bank_req_valid,
+    output wire [NUM_BANKS*ENGINE_W-1:0] bank_req_owner,
+    output wire [NUM_BANKS*ROW_W-1:0] bank_req_row, output wire [ENGINES-1:0] lane_grant
+);
+generate
+if (ENGINES == 128 && NUM_BANKS == 64 && ENGINE_W == 7) begin : g_static
+  c2p_snapshot_bank_copy_arbiter_static128 #(.ROW_W(ROW_W)) impl(
+    .lane_valid(lane_valid),.lane_need(lane_need),.lane_row(lane_row),.lane_bank(lane_bank),.bank_ready(bank_ready),
+    .bank_req_valid(bank_req_valid),.bank_req_owner(bank_req_owner),.bank_req_row(bank_req_row),.lane_grant(lane_grant));
+end else begin : g_generic
+  c2p_snapshot_bank_copy_arbiter_generic #(.ENGINES(ENGINES),.NUM_BANKS(NUM_BANKS),.ROW_W(ROW_W),.GROUP_SIZE(GROUP_SIZE),.ENGINE_W(ENGINE_W),.GROUPS(GROUPS)) impl(
+    .lane_valid(lane_valid),.lane_need(lane_need),.lane_row(lane_row),.lane_bank(lane_bank),.bank_ready(bank_ready),
+    .bank_req_valid(bank_req_valid),.bank_req_owner(bank_req_owner),.bank_req_row(bank_req_row),.lane_grant(lane_grant));
+end
+endgenerate
 endmodule
