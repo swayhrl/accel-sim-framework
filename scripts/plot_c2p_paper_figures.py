@@ -199,6 +199,53 @@ def peer_percentiles(rows, out, formats):
     save(fig, out, "fig14_peer_probe_distribution", formats)
 
 
+def fp_impact(rows, out, formats):
+    # Paper Fig. 13: each workload group has its own FP-ratio interval strip;
+    # the line is median IPC and the band encloses the middle 50% of points.
+    fig, axis = plt.subplots(figsize=(7.5, 2.65))
+    x, boundaries, tick_positions, tick_labels = 0.0, [], [], []
+    for group in GROUPS:
+        group_rows = sorted((row for row in rows if row["group"] == group),
+                            key=lambda row: number(row, "fp_bin"))
+        if not group_rows:
+            x += 1.2
+            continue
+        start = x
+        values_x = []
+        medians, lower, upper = [], [], []
+        for row in group_rows:
+            values_x.append(x)
+            tick_positions.append(x)
+            tick_labels.append("{:.2g}".format(number(row, "fp_bin")))
+            medians.append(number(row, "ipc_median"))
+            lower.append(number(row, "ipc_p25"))
+            upper.append(number(row, "ipc_p75"))
+            x += 1.0
+        color, marker, linestyle = GROUP_STYLE[group]
+        axis.fill_between(values_x, lower, upper, color=color, alpha=0.25,
+                          linewidth=0)
+        axis.plot(values_x, medians, color=color, marker=marker, markersize=4.2,
+                  markeredgecolor="black", markeredgewidth=0.35,
+                  linestyle=linestyle, linewidth=1.35)
+        axis.text((start + x - 1.0) / 2.0, 1.47, group, ha="center", va="top",
+                  fontsize=8.5, fontweight="bold")
+        boundaries.append(x - 0.5)
+        x += 0.45
+    for boundary in boundaries[:-1]:
+        axis.axvline(boundary, color="#666666", linestyle=(0, (4, 4)), linewidth=0.75)
+    # Include only bins actually populated by the sweep; Figure 13 must not
+    # manufacture evenly spaced points for unavailable FP intervals.
+    axis.set_xticks(tick_positions)
+    axis.set_xticklabels(tick_labels, fontsize=8)
+    axis.set_ylim(0.80, 1.50)
+    axis.set_xlim(-0.4, max(0.6, x - 0.45))
+    axis.set_ylabel("Normalized IPC")
+    axis.set_xlabel("FP ratio")
+    axis.axhline(1.0, color="#666666", linewidth=0.65)
+    axis.grid(axis="y", color="#b0b0b0", linewidth=0.35, alpha=0.45)
+    save(fig, out, "fig13_ipc_vs_fp_ratio", formats)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis-dir", required=True, type=Path)
@@ -218,6 +265,9 @@ def main():
                "Normalized L2 accesses for R1S0 and R1S1", "fig11_l2_access",
                output, formats, groups=("R1S0", "R1S1"), lower=0.0, upper=1.25)
     filtering_accuracy(cases, output, formats)
+    fp_bins = args.analysis_dir / "fp_sweep_binned.csv"
+    if fp_bins.is_file():
+        fp_impact(read_csv(fp_bins), output, formats)
     peer_percentiles(modes, output, formats)
 
 

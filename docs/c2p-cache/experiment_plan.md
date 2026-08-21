@@ -64,6 +64,10 @@ Record for each mode:
 - C2P false-positive/false-negative and fallback counters.
 - CCD and C2P miss-time TP/FN/FP/TN, each measured against its own exact
   tag-time candidate snapshot; this is the local counterpart of Figure 12.
+- Figure 13 is a distinct C2P-only sweep: vary Snapshot BF rows per bank and
+  BF-hash count, bin the *measured* system FP ratio, and plot median IPC with
+  its 25th--75th percentile band.  A single default C2P point is not Figure
+  13 evidence.
 - peer-L1 access-count P90/P95/P99/max split by completed remote-hit and
   fallback requests that actually consulted at least one peer L1. This is the
   direct local counterpart of the paper's Figure 14; average candidate bitmap

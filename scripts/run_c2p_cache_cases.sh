@@ -5,6 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_cache_cases.sh --trace KERNELSLIST --config CONFIG --out-dir DIR
        [--modes baseline,oracle,ideal,c2p,ata,ccd,ring] [--config-extra FILE]
+       [--mode-config-extra FILE]
        [--strip-mem-addr-mapping] [--build]
 
 Run the same trace through selected C2P and prior-mechanism comparison points.
@@ -21,6 +22,7 @@ config=""
 out_dir=""
 modes="baseline,oracle,ideal,c2p"
 config_extras=()
+mode_config_extras=()
 strip_mem_addr_mapping=0
 build=0
 while [[ $# -gt 0 ]]; do
@@ -30,6 +32,7 @@ while [[ $# -gt 0 ]]; do
     --out-dir) out_dir="$2"; shift 2 ;;
     --modes) modes="$2"; shift 2 ;;
     --config-extra) config_extras+=("$2"); shift 2 ;;
+    --mode-config-extra) mode_config_extras+=("$2"); shift 2 ;;
     --strip-mem-addr-mapping) strip_mem_addr_mapping=1; shift ;;
     --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -43,6 +46,11 @@ done
 for config_extra in "${config_extras[@]}"; do
   [[ -f "$config_extra" ]] || {
     echo "error: --config-extra must exist: $config_extra" >&2; exit 2;
+  }
+done
+for config_extra in "${mode_config_extras[@]}"; do
+  [[ -f "$config_extra" ]] || {
+    echo "error: --mode-config-extra must exist: $config_extra" >&2; exit 2;
   }
 done
 [[ -n "${C2P_GPGPUSIM_ROOT:-}" ]] || {
@@ -108,6 +116,10 @@ for mode in ${modes//,/ }; do
     oracle|ideal|c2p|ata|ccd|ring)
       cat "$repo_root/configs/c2p-cache/$mode.config" >> "$run_dir/gpgpusim.config" ;;
   esac
+  for config_extra in "${mode_config_extras[@]}"; do
+    printf '\n# Mode-specific experiment overrides\n' >> "$run_dir/gpgpusim.config"
+    cat "$config_extra" >> "$run_dir/gpgpusim.config"
+  done
   ln -sfn "$trace_dir" "$run_dir/traces"
   cp "$sim_bin" "$run_dir/accel-sim.out"
   {

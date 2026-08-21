@@ -81,3 +81,22 @@ machine-readable IPC/L2-access/classification tables, and the plotter emits
 the Figure 10--14-style IPC, L2-access, filter-accuracy, and peer-access
 figures.  ATA/CCD/RING remain mechanism-shaped comparison models documented
 in the matching GPGPU-Sim `docs/c2p-cache/model_contract.md`.
+
+Figure 13 uses a separate C2P-only parameter campaign.  `--mode-config-extra`
+is intentionally appended after `c2p.config`, so its rows/hash overrides are
+not silently overwritten by the paper-default configuration:
+
+```bash
+scripts/run_c2p_fp_sweep.sh \
+  --trace-root /path/to/hw_run \
+  --out-root hw_run/c2p-paper16-fp-sweep
+/usr/bin/python3 scripts/analyze_c2p_fp_sweep.py \
+  --sweep-root hw_run/c2p-paper16-fp-sweep \
+  --paper16-analysis hw_run/c2p-paper16-analysis \
+  --out-dir hw_run/c2p-paper16-analysis --strict
+```
+
+Re-run `plot_c2p_paper_figures.py` after the sweep analysis; it detects the
+resulting `fp_sweep_binned.csv` and adds the Figure-13-style median/percentile
+plot.  The default `m5120-k4` point is verified to map identically to the
+fixed 5,120-row implementation it replaced.
