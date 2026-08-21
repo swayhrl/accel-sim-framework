@@ -93,7 +93,7 @@ QV100 configuration and complete CUDA SDK traces.
 | Trace | Compared variants | Cycles | Observation |
 |---|---|---:|---|
 | `fastWalshTransform/_logK_11__logD_19` | `baseline24`, `frc32-paper` | 172,297 / 172,297 | FRC is active (467,526 allocations, lower reads and swaps; 1,301,946 set-full fallbacks), but the conventional control has zero L2 reservation failures. |
-| `BlackScholes/NO_ARGS` | all 10 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  `baseline25`/`baseline26` and their capacity-matched FRC points are also 9,032 cycles. |
+| `BlackScholes/NO_ARGS` | all 12 matrix points | 9,032 each | Every FRC point is active; FRC allocations rise from 3,554 (`frc4`) to 37,500 (`frc256`), and set-full fallbacks fall from 33,946 to zero.  Exact-payload (`baseline25/26`) and paper-ratio (`baseline48/96`) conventional controls are also 9,032 cycles. |
 | `transpose/dimX512_dimY512` | `baseline24`, `frc32-paper` | 201,054 / 201,054 | FRC is active (374,568 allocations, lower reads and swaps; 411,864 set-full fallbacks), but the control again has zero L2 reservation failures. |
 
 The low-associativity BlackScholes sensitivity makes the causal condition
