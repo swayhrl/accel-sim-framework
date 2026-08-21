@@ -50,6 +50,15 @@ common=(--trace "$repo_root/tests/l2_frc/dirty_swap/kernelslist.g" --config "$co
   --config-extra "$repo_root/configs/l2_frc/frc1-constrained.config" \
   --run-dir "$run_root/frc1"
 
+mlp_common=(--trace "$repo_root/tests/l2_frc/replacement_pressure/kernelslist.g" --config "$config")
+[[ -n "$trace_config" ]] && mlp_common+=(--trace-config "$trace_config")
+"$repo_root/scripts/run_latebind_l2_smoke.sh" "${mlp_common[@]}" \
+  --config-extra "$repo_root/configs/l2_frc/baseline-constrained.config" \
+  --run-dir "$run_root/mlp_control"
+"$repo_root/scripts/run_latebind_l2_smoke.sh" "${mlp_common[@]}" \
+  --config-extra "$repo_root/configs/l2_frc/frc4-constrained.config" \
+  --run-dir "$run_root/mlp_frc4"
+
 field() {
   local log="$1"
   local key="$2"
@@ -85,6 +94,15 @@ for key in wb_enqueued wb_lower_accepted wb_bytes wb_sectors; do
 done
 grep -Eq 'frc_l2 .*allocations=2 .*lower_reads=2 .*swaps=2 .*dirty_swaps=1 .*wb_lower_accepted=1 .*fetching=0 fetched=0 evicting=0' \
   "$frc_log"
+
+mlp_control_log="$run_root/mlp_control/smoke.out"
+mlp_frc_log="$run_root/mlp_frc4/smoke.out"
+[[ "$(field "$mlp_control_log" lower_read_inflight_peak)" -eq 1 ]]
+[[ "$(field "$mlp_frc_log" lower_read_inflight_peak)" -ge 2 ]]
+[[ "$(frc_field_sum "$mlp_frc_log" allocations)" -ge 2 ]]
+[[ "$(frc_field_sum "$mlp_frc_log" fetching)" -eq 0 ]]
+[[ "$(frc_field_sum "$mlp_frc_log" fetched)" -eq 0 ]]
+[[ "$(frc_field_sum "$mlp_frc_log" evicting)" -eq 0 ]]
 
 if [[ -n "$atomic_trace" ]]; then
   atomic_common=(--trace "$atomic_trace" --config "$config")

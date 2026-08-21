@@ -125,7 +125,9 @@ same dirty-victim trace must drain in both FRC-off and FRC1 modes.  It checks
 the conventional and FRC writeback counts, sector count and 32-byte payload
 count are identical; FRC must additionally report two completed fetches/two
 swaps, one dirty swap, one accepted writeback and no live entry at exit.
-Pass `--atomic-trace <kernelslist.g>` to add a current-format atomic burst to
+The same gate also runs the two-read same-set burst with FRC4: the control
+must peak at one lower read in flight while FRC4 reaches at least two and
+drains every entry.  Pass `--atomic-trace <kernelslist.g>` to add a current-format atomic burst to
 the same constrained pair; selected architectural metrics must then match
 exactly and FRC's atomic fallback count must be nonzero.
 
