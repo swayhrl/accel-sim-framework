@@ -1,10 +1,12 @@
 `timescale 1ns/1ps
 
 module tb_c2p_snapshot_banked_frontend;
-    localparam integer ENGINES = 64;
+    // Use the paper geometry so this end-to-end test elaborates the static
+    // 128-engine bank-priority tree, not the generic small-test fallback.
+    localparam integer ENGINES = 128;
     localparam integer TAG_W = 64;
     localparam integer ROW_W = 13;
-    localparam integer ENGINE_W = 6;
+    localparam integer ENGINE_W = 7;
     reg clk = 1'b0;
     reg reset = 1'b1;
     reg [ENGINES-1:0] in_valid = 0;
