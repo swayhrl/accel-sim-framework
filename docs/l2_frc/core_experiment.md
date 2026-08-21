@@ -117,6 +117,20 @@ has `lower_read_inflight_peak=1`, while FRC4 has a peak of 2 and drains with no
 live FRC entry.  This is a directed MLP gate, not an extrapolation from total
 lower-read count.
 
+## Constrained forward-progress gate
+
+`scripts/check_l2_frc_forward_progress.sh` uses a one-way L2, one MSHR and
+four-entry partition FIFOs (`i2$:L2->DRAM:DRAM->L2:L2->i2 = 4:4:4:4`).  The
+same dirty-victim trace must drain in both FRC-off and FRC1 modes.  It checks
+the conventional and FRC writeback counts, sector count and 32-byte payload
+count are identical; FRC must additionally report two completed fetches/two
+swaps, one dirty swap, one accepted writeback and no live entry at exit.
+
+This is deliberately a valid constrained point, not an artificial stall
+model.  Shallower attempted FIFO combinations deadlocked in the unmodified
+FRC-off control, so they cannot diagnose the FRC mechanism and are excluded
+from the gate.
+
 ## Completed full-trace results with the independent transaction store
 
 All values below use the core behavior from `ab3b4cdf` (FRC-local
