@@ -112,8 +112,8 @@ macro abstract are also not a common area methodology.
 
 The valid comparison is therefore: geometry and four-copy capacity match
 exactly; the implementation now has the paper-shaped 128-engine/64-bank
-request front end and owner-tagged four-copy response joiner, but still lacks
-its target-L1 request queues in the single-lane cache top. The open macro view
+request front end, registered packet return fabric, and owner-tagged four-copy
+response joiner, but still lacks its target-L1 request queues in the single-lane cache top. The open macro view
 also remains unrouteable, so it cannot produce a signoff total. The next
 physical step is a routeable macro view plus a bank-local/masked update path;
 the next functional scaling step is connecting the existing completed

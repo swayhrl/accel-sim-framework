@@ -25,6 +25,7 @@ module c2p_snapshot_bank_arbiter #(
     input  wire [ENGINES*6-1:0]             lane_bank1,
     input  wire [ENGINES*6-1:0]             lane_bank2,
     input  wire [ENGINES*6-1:0]             lane_bank3,
+    input  wire [4*NUM_BANKS-1:0]           bank_ready,
 
     output wire [4*NUM_BANKS-1:0]           bank_req_valid,
     output wire [4*NUM_BANKS*ENGINE_W-1:0]  bank_req_owner,
@@ -40,7 +41,7 @@ module c2p_snapshot_bank_arbiter #(
         .ENGINE_W(ENGINE_W)
     ) copy0 (
         .lane_valid(lane_valid), .lane_need(lane_need0), .lane_row(lane_row0),
-        .lane_bank(lane_bank0),
+        .lane_bank(lane_bank0), .bank_ready(bank_ready[0*NUM_BANKS +: NUM_BANKS]),
         .bank_req_valid(bank_req_valid[0*NUM_BANKS +: NUM_BANKS]),
         .bank_req_owner(bank_req_owner[0*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
         .bank_req_row(bank_req_row[0*NUM_BANKS*ROW_W +: NUM_BANKS*ROW_W]),
@@ -51,7 +52,7 @@ module c2p_snapshot_bank_arbiter #(
         .ENGINE_W(ENGINE_W)
     ) copy1 (
         .lane_valid(lane_valid), .lane_need(lane_need1), .lane_row(lane_row1),
-        .lane_bank(lane_bank1),
+        .lane_bank(lane_bank1), .bank_ready(bank_ready[1*NUM_BANKS +: NUM_BANKS]),
         .bank_req_valid(bank_req_valid[1*NUM_BANKS +: NUM_BANKS]),
         .bank_req_owner(bank_req_owner[1*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
         .bank_req_row(bank_req_row[1*NUM_BANKS*ROW_W +: NUM_BANKS*ROW_W]),
@@ -62,7 +63,7 @@ module c2p_snapshot_bank_arbiter #(
         .ENGINE_W(ENGINE_W)
     ) copy2 (
         .lane_valid(lane_valid), .lane_need(lane_need2), .lane_row(lane_row2),
-        .lane_bank(lane_bank2),
+        .lane_bank(lane_bank2), .bank_ready(bank_ready[2*NUM_BANKS +: NUM_BANKS]),
         .bank_req_valid(bank_req_valid[2*NUM_BANKS +: NUM_BANKS]),
         .bank_req_owner(bank_req_owner[2*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
         .bank_req_row(bank_req_row[2*NUM_BANKS*ROW_W +: NUM_BANKS*ROW_W]),
@@ -73,7 +74,7 @@ module c2p_snapshot_bank_arbiter #(
         .ENGINE_W(ENGINE_W)
     ) copy3 (
         .lane_valid(lane_valid), .lane_need(lane_need3), .lane_row(lane_row3),
-        .lane_bank(lane_bank3),
+        .lane_bank(lane_bank3), .bank_ready(bank_ready[3*NUM_BANKS +: NUM_BANKS]),
         .bank_req_valid(bank_req_valid[3*NUM_BANKS +: NUM_BANKS]),
         .bank_req_owner(bank_req_owner[3*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
         .bank_req_row(bank_req_row[3*NUM_BANKS*ROW_W +: NUM_BANKS*ROW_W]),

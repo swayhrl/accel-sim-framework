@@ -21,6 +21,7 @@ module c2p_snapshot_bank_copy_arbiter #(
     input  wire [ENGINES-1:0]               lane_need,
     input  wire [ENGINES*ROW_W-1:0]         lane_row,
     input  wire [ENGINES*6-1:0]             lane_bank,
+    input  wire [NUM_BANKS-1:0]             bank_ready,
 
     output reg  [NUM_BANKS-1:0]             bank_req_valid,
     output reg  [NUM_BANKS*ENGINE_W-1:0]    bank_req_owner,
@@ -81,7 +82,7 @@ module c2p_snapshot_bank_copy_arbiter #(
                         selected_row_r = group_row[select_group_i*ROW_W +: ROW_W];
                     end
                 end
-                bank_req_valid[bank_g] = selected_r;
+                bank_req_valid[bank_g] = selected_r && bank_ready[bank_g];
                 bank_req_owner[bank_g*ENGINE_W +: ENGINE_W] = selected_owner_r;
                 bank_req_row[bank_g*ROW_W +: ROW_W] = selected_row_r;
             end

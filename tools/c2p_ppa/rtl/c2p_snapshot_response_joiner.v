@@ -1,28 +1,33 @@
-// Owner-tagged four-copy Snapshot response joiner.
+// Four-copy Snapshot response joiner after per-copy packet routing.
 //
-// Each physical copy may return an engine's row in a different cycle. This
-// module retains the four independently timed responses and exposes exactly
-// one completed Snapshot result per engine. The frontend keeps the BF-engine
-// slot occupied until that result is consumed, so an ENGINE_W owner is never
-// reused while a prior transaction can still return.
+// Each copy fabric presents at most one reply for an engine in a cycle. This
+// leaves one small data register and valid bit per copy/engine; the expensive
+// 64-bank-to-128-engine routing lives in registered self-routing fabrics.
 module c2p_snapshot_response_joiner #(
     parameter integer ENGINES = 128,
-    parameter integer NUM_BANKS = 64,
-    parameter integer DATA_W = 64,
-    parameter integer ENGINE_W = (ENGINES <= 1) ? 1 : $clog2(ENGINES)
+    parameter integer DATA_W = 64
 ) (
-    input  wire                                  clk,
-    input  wire                                  reset,
-    input  wire [4*NUM_BANKS-1:0]                bank_rsp_valid,
-    input  wire [4*NUM_BANKS*ENGINE_W-1:0]       bank_rsp_owner,
-    input  wire [4*NUM_BANKS*DATA_W-1:0]         bank_rsp_data,
+    input  wire [ENGINES-1:0]              copy0_valid,
+    output wire [ENGINES-1:0]              copy0_ready,
+    input  wire [ENGINES*DATA_W-1:0]       copy0_data,
+    input  wire [ENGINES-1:0]              copy1_valid,
+    output wire [ENGINES-1:0]              copy1_ready,
+    input  wire [ENGINES*DATA_W-1:0]       copy1_data,
+    input  wire [ENGINES-1:0]              copy2_valid,
+    output wire [ENGINES-1:0]              copy2_ready,
+    input  wire [ENGINES*DATA_W-1:0]       copy2_data,
+    input  wire [ENGINES-1:0]              copy3_valid,
+    output wire [ENGINES-1:0]              copy3_ready,
+    input  wire [ENGINES*DATA_W-1:0]       copy3_data,
 
-    output reg  [ENGINES-1:0]                    out_valid,
-    input  wire [ENGINES-1:0]                    out_ready,
-    output wire [ENGINES*DATA_W-1:0]             out_data0,
-    output wire [ENGINES*DATA_W-1:0]             out_data1,
-    output wire [ENGINES*DATA_W-1:0]             out_data2,
-    output wire [ENGINES*DATA_W-1:0]             out_data3
+    input  wire                            clk,
+    input  wire                            reset,
+    output reg  [ENGINES-1:0]              out_valid,
+    input  wire [ENGINES-1:0]              out_ready,
+    output wire [ENGINES*DATA_W-1:0]       out_data0,
+    output wire [ENGINES*DATA_W-1:0]       out_data1,
+    output wire [ENGINES*DATA_W-1:0]       out_data2,
+    output wire [ENGINES*DATA_W-1:0]       out_data3
 );
 
     reg [ENGINES-1:0] got0;
@@ -34,11 +39,14 @@ module c2p_snapshot_response_joiner #(
     reg [DATA_W-1:0] data2_r [0:ENGINES-1];
     reg [DATA_W-1:0] data3_r [0:ENGINES-1];
     integer engine_i;
-    integer bank_i;
 
     generate
         genvar engine_g;
         for (engine_g = 0; engine_g < ENGINES; engine_g = engine_g + 1) begin : g_out
+            assign copy0_ready[engine_g] = !got0[engine_g] && !out_valid[engine_g];
+            assign copy1_ready[engine_g] = !got1[engine_g] && !out_valid[engine_g];
+            assign copy2_ready[engine_g] = !got2[engine_g] && !out_valid[engine_g];
+            assign copy3_ready[engine_g] = !got3[engine_g] && !out_valid[engine_g];
             assign out_data0[engine_g*DATA_W +: DATA_W] = data0_r[engine_g];
             assign out_data1[engine_g*DATA_W +: DATA_W] = data1_r[engine_g];
             assign out_data2[engine_g*DATA_W +: DATA_W] = data2_r[engine_g];
@@ -71,28 +79,21 @@ module c2p_snapshot_response_joiner #(
                              got2[engine_i] && got3[engine_i]) begin
                     out_valid[engine_i] <= 1'b1;
                 end
-            end
-
-            for (bank_i = 0; bank_i < NUM_BANKS; bank_i = bank_i + 1) begin
-                if (bank_rsp_valid[bank_i]) begin
-                    got0[bank_rsp_owner[bank_i*ENGINE_W +: ENGINE_W]] <= 1'b1;
-                    data0_r[bank_rsp_owner[bank_i*ENGINE_W +: ENGINE_W]] <=
-                        bank_rsp_data[bank_i*DATA_W +: DATA_W];
+                if (copy0_valid[engine_i] && copy0_ready[engine_i]) begin
+                    got0[engine_i] <= 1'b1;
+                    data0_r[engine_i] <= copy0_data[engine_i*DATA_W +: DATA_W];
                 end
-                if (bank_rsp_valid[NUM_BANKS + bank_i]) begin
-                    got1[bank_rsp_owner[(NUM_BANKS + bank_i)*ENGINE_W +: ENGINE_W]] <= 1'b1;
-                    data1_r[bank_rsp_owner[(NUM_BANKS + bank_i)*ENGINE_W +: ENGINE_W]] <=
-                        bank_rsp_data[(NUM_BANKS + bank_i)*DATA_W +: DATA_W];
+                if (copy1_valid[engine_i] && copy1_ready[engine_i]) begin
+                    got1[engine_i] <= 1'b1;
+                    data1_r[engine_i] <= copy1_data[engine_i*DATA_W +: DATA_W];
                 end
-                if (bank_rsp_valid[2*NUM_BANKS + bank_i]) begin
-                    got2[bank_rsp_owner[(2*NUM_BANKS + bank_i)*ENGINE_W +: ENGINE_W]] <= 1'b1;
-                    data2_r[bank_rsp_owner[(2*NUM_BANKS + bank_i)*ENGINE_W +: ENGINE_W]] <=
-                        bank_rsp_data[(2*NUM_BANKS + bank_i)*DATA_W +: DATA_W];
+                if (copy2_valid[engine_i] && copy2_ready[engine_i]) begin
+                    got2[engine_i] <= 1'b1;
+                    data2_r[engine_i] <= copy2_data[engine_i*DATA_W +: DATA_W];
                 end
-                if (bank_rsp_valid[3*NUM_BANKS + bank_i]) begin
-                    got3[bank_rsp_owner[(3*NUM_BANKS + bank_i)*ENGINE_W +: ENGINE_W]] <= 1'b1;
-                    data3_r[bank_rsp_owner[(3*NUM_BANKS + bank_i)*ENGINE_W +: ENGINE_W]] <=
-                        bank_rsp_data[(3*NUM_BANKS + bank_i)*DATA_W +: DATA_W];
+                if (copy3_valid[engine_i] && copy3_ready[engine_i]) begin
+                    got3[engine_i] <= 1'b1;
+                    data3_r[engine_i] <= copy3_data[engine_i*DATA_W +: DATA_W];
                 end
             end
         end

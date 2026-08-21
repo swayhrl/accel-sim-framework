@@ -4,9 +4,10 @@
 // arbiter. Its bank request outputs are the direct contract for a physical
 // Snapshot macro array: one row command per copy/bank in each cycle. Each
 // engine tracks which of its four rows have issued, so copy-bank conflicts do
-// not require a global all-or-nothing matching network. The response joiner
-// retains four owner-tagged replies and releases an engine only after its
-// completed Snapshot result has been consumed.
+// not require a global all-or-nothing matching network. Each copy returns
+// owner-tagged data through a registered self-routing packet fabric; the
+// response joiner releases an engine only after its completed Snapshot result
+// has been consumed.
 //
 // It is intentionally separate from the functional single-lane cache top
 // until the target-L1 request queues and macro-array response router use this
@@ -27,9 +28,11 @@ module c2p_snapshot_banked_frontend #(
     input  wire [ENGINES*AUX_W-1:0]     in_aux,
 
     output wire [4*NUM_BANKS-1:0]       bank_req_valid,
+    input  wire [4*NUM_BANKS-1:0]       bank_req_ready,
     output wire [4*NUM_BANKS*ENGINE_W-1:0] bank_req_owner,
     output wire [4*NUM_BANKS*ROW_W-1:0] bank_req_row,
     input  wire [4*NUM_BANKS-1:0]       bank_rsp_valid,
+    output wire [4*NUM_BANKS-1:0]       bank_rsp_ready,
     input  wire [4*NUM_BANKS*ENGINE_W-1:0] bank_rsp_owner,
     input  wire [4*NUM_BANKS*64-1:0]    bank_rsp_data,
 
@@ -56,6 +59,18 @@ module c2p_snapshot_banked_frontend #(
     wire [ENGINES-1:0] engine_grant1;
     wire [ENGINES-1:0] engine_grant2;
     wire [ENGINES-1:0] engine_grant3;
+    wire [ENGINES-1:0] copy0_valid;
+    wire [ENGINES-1:0] copy1_valid;
+    wire [ENGINES-1:0] copy2_valid;
+    wire [ENGINES-1:0] copy3_valid;
+    wire [ENGINES-1:0] copy0_ready;
+    wire [ENGINES-1:0] copy1_ready;
+    wire [ENGINES-1:0] copy2_ready;
+    wire [ENGINES-1:0] copy3_ready;
+    wire [ENGINES*64-1:0] copy0_data;
+    wire [ENGINES*64-1:0] copy1_data;
+    wire [ENGINES*64-1:0] copy2_data;
+    wire [ENGINES*64-1:0] copy3_data;
     reg [3:0] engine_sent [0:ENGINES-1];
     wire [ENGINES-1:0] engine_need0;
     wire [ENGINES-1:0] engine_need1;
@@ -97,19 +112,52 @@ module c2p_snapshot_banked_frontend #(
         .lane_row2(engine_row2), .lane_row3(engine_row3),
         .lane_bank0(engine_bank0), .lane_bank1(engine_bank1),
         .lane_bank2(engine_bank2), .lane_bank3(engine_bank3),
+        .bank_ready(bank_req_ready),
         .bank_req_valid(bank_req_valid), .bank_req_owner(bank_req_owner),
         .bank_req_row(bank_req_row),
         .lane_grant0(engine_grant0), .lane_grant1(engine_grant1),
         .lane_grant2(engine_grant2), .lane_grant3(engine_grant3)
     );
 
-    c2p_snapshot_response_joiner #(
-        .ENGINES(ENGINES), .NUM_BANKS(NUM_BANKS), .DATA_W(64),
-        .ENGINE_W(ENGINE_W)
-    ) responses (
+    c2p_snapshot_response_fabric #(.ENGINES(ENGINES), .NUM_BANKS(NUM_BANKS)) copy0_rsp (
         .clk(clk), .reset(reset),
-        .bank_rsp_valid(bank_rsp_valid), .bank_rsp_owner(bank_rsp_owner),
-        .bank_rsp_data(bank_rsp_data), .out_valid(out_valid), .out_ready(out_ready),
+        .bank_rsp_valid(bank_rsp_valid[0*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_ready(bank_rsp_ready[0*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_owner(bank_rsp_owner[0*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
+        .bank_rsp_data(bank_rsp_data[0*NUM_BANKS*64 +: NUM_BANKS*64]),
+        .out_valid(copy0_valid), .out_ready(copy0_ready), .out_data(copy0_data)
+    );
+    c2p_snapshot_response_fabric #(.ENGINES(ENGINES), .NUM_BANKS(NUM_BANKS)) copy1_rsp (
+        .clk(clk), .reset(reset),
+        .bank_rsp_valid(bank_rsp_valid[1*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_ready(bank_rsp_ready[1*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_owner(bank_rsp_owner[1*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
+        .bank_rsp_data(bank_rsp_data[1*NUM_BANKS*64 +: NUM_BANKS*64]),
+        .out_valid(copy1_valid), .out_ready(copy1_ready), .out_data(copy1_data)
+    );
+    c2p_snapshot_response_fabric #(.ENGINES(ENGINES), .NUM_BANKS(NUM_BANKS)) copy2_rsp (
+        .clk(clk), .reset(reset),
+        .bank_rsp_valid(bank_rsp_valid[2*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_ready(bank_rsp_ready[2*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_owner(bank_rsp_owner[2*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
+        .bank_rsp_data(bank_rsp_data[2*NUM_BANKS*64 +: NUM_BANKS*64]),
+        .out_valid(copy2_valid), .out_ready(copy2_ready), .out_data(copy2_data)
+    );
+    c2p_snapshot_response_fabric #(.ENGINES(ENGINES), .NUM_BANKS(NUM_BANKS)) copy3_rsp (
+        .clk(clk), .reset(reset),
+        .bank_rsp_valid(bank_rsp_valid[3*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_ready(bank_rsp_ready[3*NUM_BANKS +: NUM_BANKS]),
+        .bank_rsp_owner(bank_rsp_owner[3*NUM_BANKS*ENGINE_W +: NUM_BANKS*ENGINE_W]),
+        .bank_rsp_data(bank_rsp_data[3*NUM_BANKS*64 +: NUM_BANKS*64]),
+        .out_valid(copy3_valid), .out_ready(copy3_ready), .out_data(copy3_data)
+    );
+
+    c2p_snapshot_response_joiner #(.ENGINES(ENGINES), .DATA_W(64)) responses (
+        .copy0_valid(copy0_valid), .copy0_ready(copy0_ready), .copy0_data(copy0_data),
+        .copy1_valid(copy1_valid), .copy1_ready(copy1_ready), .copy1_data(copy1_data),
+        .copy2_valid(copy2_valid), .copy2_ready(copy2_ready), .copy2_data(copy2_data),
+        .copy3_valid(copy3_valid), .copy3_ready(copy3_ready), .copy3_data(copy3_data),
+        .clk(clk), .reset(reset), .out_valid(out_valid), .out_ready(out_ready),
         .out_data0(out_data0), .out_data1(out_data1),
         .out_data2(out_data2), .out_data3(out_data3)
     );

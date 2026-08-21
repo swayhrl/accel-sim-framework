@@ -17,6 +17,7 @@ module tb_c2p_snapshot_bank_arbiter;
     reg [ENGINES*6-1:0] lane_bank1;
     reg [ENGINES*6-1:0] lane_bank2;
     reg [ENGINES*6-1:0] lane_bank3;
+    reg [255:0] bank_ready;
     wire [255:0] bank_req_valid;
     wire [4*64*ENGINE_W-1:0] bank_req_owner;
     wire [4*64*ROW_W-1:0] bank_req_row;
@@ -33,6 +34,7 @@ module tb_c2p_snapshot_bank_arbiter;
         .lane_row2(lane_row2), .lane_row3(lane_row3),
         .lane_bank0(lane_bank0), .lane_bank1(lane_bank1),
         .lane_bank2(lane_bank2), .lane_bank3(lane_bank3),
+        .bank_ready(bank_ready),
         .bank_req_valid(bank_req_valid), .bank_req_owner(bank_req_owner),
         .bank_req_row(bank_req_row),
         .lane_grant0(lane_grant0), .lane_grant1(lane_grant1),
@@ -76,6 +78,7 @@ module tb_c2p_snapshot_bank_arbiter;
         lane_bank1 = 0;
         lane_bank2 = 0;
         lane_bank3 = 0;
+        bank_ready = {256{1'b1}};
 
         // Lanes 2 and 3 conflict in exactly one physical copy. Independent
         // bank queues must make useful partial request progress, tagging every
