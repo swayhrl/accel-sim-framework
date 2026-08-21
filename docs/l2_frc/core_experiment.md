@@ -54,6 +54,17 @@ paper additionally reports OPC, MPKO and L2 miss delay excluding DRAM time;
 the current port does not claim those metrics until their precise QV100
 definitions and accounting points are implemented.
 
+## Causal replacement-pressure gate
+
+`scripts/check_l2_frc_replacement_pressure.sh` is deliberately not a paper
+workload.  It is a deterministic two-read trace with a one-way L2: both reads
+map to one L2 slice/set, while `frc4-pressure` gives that slice four
+partition-local FRC sectors.  It proves the mechanism's causal distinction:
+the control reports 136 L2 reservation failures and takes 5,470 cycles;
+FRC4 accepts two independent FRC allocations and completes in 5,337 cycles
+(2.43% faster).  This is a correctness/performance gate only, not a general
+workload result or a capacity-fair comparison.
+
 ## First complete workload result and limit
 
 The complete CUDA SDK `fastWalshTransform` trace

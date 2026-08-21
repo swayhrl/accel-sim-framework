@@ -41,6 +41,7 @@ live FRC state.  It is not an equal-capacity performance configuration.
 | Same-line write ownership | Directed case reports `write_conflict_stalls=144`, then one baseline write fallback after swap. |
 | Dirty victim path | Directed case reports `dirty_swaps=1`, `wb_lower_accepted=1`, and terminal `fetching=fetched=evicting=0`. |
 | Atomic semantics | Atomic workload has identical control/FRC architectural metrics (204,016 cycles); nonzero `atomic_fallbacks` confirms the explicit baseline path. |
+| Replacement-pressure gate | One-way L2 control has 136 reservation failures and takes 5,470 cycles; FRC4 accepts two local reads and finishes in 5,337 cycles. |
 | Conservative timing | `management_cycles` is nonzero when configured; paper mode reports zero added management cycles. |
 
 ## Small pressure sweep
