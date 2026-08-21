@@ -104,6 +104,17 @@ collect_missing() {
   done < "$manifest"
 }
 
+# A fresh CCD summary serves both the seven-mode matrix and the CCD-metric
+# gate.  Keep both gates in ``missing`` so either cannot be bypassed, but
+# report the physical-file count separately to avoid implying that the same
+# replay must produce two summaries.
+unique_missing_summary_count() {
+  printf '%s\n' "${missing[@]}" |
+    sed -E 's/^(main|ccd):([^/]+)\/ccd$/ccd:\2\/ccd/' |
+    sort -u |
+    wc -l
+}
+
 while :; do
   collect_missing
   if (( ${#failed[@]} != 0 )); then
@@ -140,8 +151,9 @@ while :; do
     printf 'strict closeout passed: %s\n' "$report" | tee -a "$log"
     exit 0
   fi
-  printf '%s waiting for %u summaries; first: %s\n' \
-    "$(date -Is)" "${#missing[@]}" "${missing[0]}"
+  unique_missing=$(unique_missing_summary_count)
+  printf '%s waiting for %u required gates (%u unique summaries); first: %s\n' \
+    "$(date -Is)" "${#missing[@]}" "$unique_missing" "${missing[0]}"
   # With ``set -e``, an ``&&`` list ending in a false arithmetic test would
   # terminate this long-lived watcher after its first normal poll.  Keep the
   # one-shot failure explicit so the default watcher reaches its next poll.
