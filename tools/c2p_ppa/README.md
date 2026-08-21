@@ -73,6 +73,9 @@ tools/c2p_ppa/run_openroad_control_proxy.sh
 
 `C2P_PPA_RESULT_DIR=/some/ignored/path` overrides the default result location.
 `C2P_PPA_CLK_PS` sets the clock period in ps (default `1000.0`, i.e. 1 ns).
+`C2P_PPA_ABC_DELAY_PS` optionally gives Yosys ABC a ps delay target during
+technology mapping; use the same value as the intended clock only for a
+timing-driven mapping experiment, and retain the baseline mapping separately.
 `C2P_PPA_UTILIZATION` overrides the default 25% core utilization.  The default
 leaves physical whitespace for PDN, taps, filler, clocking, and macro halos;
 it is intentionally not the control-only cell utilization reported by Yosys.
@@ -89,6 +92,7 @@ routing.  It is the fast physical timing loop, not a final PPA result.
 disabled by default so baseline reports remain directly comparable; enable it
 only when evaluating whether a remaining violation is architectural or can be
 repaired by ordinary standard-cell optimization.
+`C2P_PPA_REPAIR_UTILIZATION` caps that repair's local density (default `70`).
 `C2P_PPA_DETAIL_PAD_SITES` controls standard-cell padding before detail
 placement (default `1`).  Keeping one site around the dense control logic is
 part of the route recipe, not a cosmetic area adjustment.

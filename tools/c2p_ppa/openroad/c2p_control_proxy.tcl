@@ -31,6 +31,8 @@ set stop_after_cts [expr {[info exists ::env(C2P_PPA_STOP_AFTER_CTS)] ?
                           $::env(C2P_PPA_STOP_AFTER_CTS) : 0}]
 set repair_setup [expr {[info exists ::env(C2P_PPA_REPAIR_SETUP)] ?
                         $::env(C2P_PPA_REPAIR_SETUP) : 0}]
+set repair_util [expr {[info exists ::env(C2P_PPA_REPAIR_UTILIZATION)] ?
+                       $::env(C2P_PPA_REPAIR_UTILIZATION) : 70}]
 set detail_pad [expr {[info exists ::env(C2P_PPA_DETAIL_PAD_SITES)] ?
                       $::env(C2P_PPA_DETAIL_PAD_SITES) : 1}]
 
@@ -86,7 +88,7 @@ clock_tree_synthesis -buf_list {BUFx2_ASAP7_75t_R} \
 set_propagated_clock [get_clocks core_clk]
 estimate_parasitics -placement
 if {$repair_setup} {
-    repair_timing -setup -max_utilization 70
+    repair_timing -setup -max_utilization $repair_util
     detailed_placement
     estimate_parasitics -placement
 }

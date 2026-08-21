@@ -8,12 +8,17 @@ top=${C2P_PPA_TOP:-c2p_control_proxy}
 rtl_files=${C2P_PPA_RTL_FILES:-"$script_dir/rtl/c2p_control_proxy.v"}
 orfs_root=${C2P_ORFS_ROOT:?set C2P_ORFS_ROOT to an OpenROAD-flow-scripts checkout}
 stop_after_synth=${C2P_PPA_STOP_AFTER_SYNTH:-0}
+abc_delay=${C2P_PPA_ABC_DELAY_PS:-}
 yosys_bin=${C2P_YOSYS_BIN:-yosys}
 platform_dir="$orfs_root/flow/platforms/asap7"
 lib_dir="$platform_dir/lib/NLDM"
 
 if [[ "$stop_after_synth" != 0 && "$stop_after_synth" != 1 ]]; then
     echo 'C2P_PPA_STOP_AFTER_SYNTH must be 0 or 1' >&2
+    exit 2
+fi
+if [[ -n "$abc_delay" && ! "$abc_delay" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+    echo 'C2P_PPA_ABC_DELAY_PS must be a positive number of ps' >&2
     exit 2
 fi
 if [[ "$stop_after_synth" == 0 ]]; then
@@ -62,7 +67,7 @@ python3 "$script_dir/make_asap7_lib_bundle.py" "$merged_lib" \
     hierarchy -check -top $top
     proc; opt; memory; opt; techmap; opt
     dfflibmap -liberty $merged_lib
-    abc -liberty $merged_lib
+    abc -liberty $merged_lib ${abc_delay:+-D $abc_delay}
     clean
     # The loop iterator is elaboration-only but OpenROAD's Verilog reader does
     # not accept Yosys' preserved signed declaration for it.
