@@ -98,13 +98,8 @@ module c2p_snapshot_store #(
                 end else begin
                     if (query_rsp_valid && query_rsp_ready)
                         query_rsp_valid <= 1'b0;
-                    if (query_valid && query_ready) begin
+                    if (query_valid && query_ready)
                         query_rsp_valid <= 1'b1;
-                        query_rsp_data0 <= macro_read0;
-                        query_rsp_data1 <= macro_read1;
-                        query_rsp_data2 <= macro_read2;
-                        query_rsp_data3 <= macro_read3;
-                    end
                 end
             end
         end else begin : g_reference
