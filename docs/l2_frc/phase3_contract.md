@@ -29,9 +29,14 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
 - Victim choice happens at fill/swap time.  A clean victim releases the FRC
   entry immediately.  A dirty victim stays in the entry until the lower
   writeback handshake transfers its ownership.
-- FRC does not add or remove MSHRs.  MSHR keys and FRC ownership both remain
-  32-byte sectors.  A later request for a fetching sector merges into its
-  normal MSHR before that sector swaps into L2.
+- FRC owns a separate, finite transaction store: each fetching entry holds
+  one internal lower sector request and up to the baseline configured
+  `mshr_max_merge` upper waiters (four in the QV100 configuration).  The
+  internal request and the completed upper responses use FRC-local queues,
+  not baseline MSHRs or baseline miss-queue slots.  A request for a fetching
+  sector merges into that entry's waiter list.  Baseline and FRC traffic
+  share the physical lower port and the L2 fill/replacement resources; FRC
+  requests have paper-mode priority while its finite queue is nonempty.
 - FRC currently owns only read-miss scheduling.  Stores (including partial
   sector stores) and atomics explicitly use the unmodified baseline path,
   which remains authoritative for byte masks and atomic order.  Their
@@ -39,8 +44,8 @@ FRC comparison uses `-gpgpu_l2_frc_enable 0` from this branch as its control.
   suite; this is a deliberate semantic boundary, not an unmodelled path.  A
   same-line store or atomic stalls while an entry is `FETCHING`, preventing a
   baseline allocation from creating a second owner before swap.
-  A read is accepted into FRC only after all finite credits needed for its
-  chosen path are known available.
+  A read is accepted into FRC only after it has acquired a free FRC entry;
+  the entry itself bounds its internal request and upper-waiter state.
 
 ## Timing modes
 
@@ -70,9 +75,13 @@ hidden in payload capacity.
 - A dirty victim is in exactly one of: L2, an `EVICTING` FRC entry, or a
   lower writeback request.
 - No FRC entry is released before its dirty writeback lower handshake.
+- Every fetching entry has exactly one internal lower read and one nonempty,
+  bounded upper-waiter list.  Its internal request is never returned to the
+  upper interconnect; only those original waiters may appear on the FRC
+  response queue.
 
 `wb_wait_cycles` measures the interval from inserting that FRC-owned
-writeback into the L2 miss queue to its lower acceptance.  It may be zero in
+writeback into the FRC request queue to its lower acceptance.  It may be zero in
 an uncongested run; ownership is nevertheless held until the acceptance edge.
 `flush_calls` is diagnostic only: Accel-Sim may invoke end-of-kernel flushing
 repeatedly while draining, so it is not a count of distinct cache lines.

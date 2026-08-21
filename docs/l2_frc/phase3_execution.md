@@ -79,7 +79,7 @@ that reaches this trace's FRC-enabled model is write traffic, and therefore
 uses the explicit baseline fallback.  This is a semantic regression result,
 not evidence for or against FRC performance on read-conflict workloads.
 
-## Core-workload check after sector ownership correction
+## Superseded core-workload check after sector ownership correction
 
 The former whole-line prefetch experiment is superseded: a 128-byte L2 line
 crosses QV100 memory-subpartition ownership boundaries and its internal reads
@@ -94,7 +94,7 @@ partition-local 32-byte sector implementation from core commit `86e26798`.
 Consequently this port has passed a high-concurrency correctness gate but has
 not reproduced the paper's performance gain.  The missing causal condition is
 not FRC entry capacity: the conventional QV100 baseline has no L2 transient
-replacement contention for these traces, while the FRC model intentionally
-shares its MSHR/miss-queue limits.  A stronger paper-performance model needs a
-separate approved FRC transaction-store contract rather than treating these
-zero-delta runs as a negative claim about the paper.
+replacement contention for these traces, while that earlier FRC model still
+shared its MSHR/miss-queue limits.  The independent FRC transaction-store
+revision supersedes these numbers; its results must be reported separately
+rather than treating this historical record as a paper-speedup result.

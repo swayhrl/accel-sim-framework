@@ -65,13 +65,11 @@ reports zero reservation failures.  The same negative control holds for the
 complete `BlackScholes` trace: baseline and FRC32 both take 9,032 cycles;
 FRC32 has 21,190 allocations while L2 reservation failures remain zero.
 
-This is a valid result for the present model, but it is **not** a reproduction
-of the paper's performance claim.  The paper accelerates serial replacement
-of transient LLC victims.  QV100's baseline trace model distributes requests
-over 64 sector-L2 subpartitions and already has no L2 reservation-failure
-pressure for these workloads.  Furthermore, the current FRC deliberately
-retains the baseline MSHR and miss-queue credits, so it does not create a
-second transaction queue.  A paper-style performance experiment requires a
-new, explicitly approved model contract for FRC-owned miss/request state (and
-possibly a memory-partition-level FRC for whole-line ownership); it must not
-be inferred from this mechanism port.
+These negative-control measurements predate the independent FRC transaction
+store and are retained only as a baseline record.  The paper-style model now
+uses the finite FRC-owned request/waiter store defined in the Phase-3
+contract, so all performance figures must be regenerated with its new core
+commit.  QV100 still differs materially from the paper (64 sector-L2 slices
+and CUDA traces rather than two 16-way AMD banks and OpenCL SDK 2.5), so any
+new speedup remains a causal reproduction under this stated configuration,
+not an absolute match to paper OPC.
