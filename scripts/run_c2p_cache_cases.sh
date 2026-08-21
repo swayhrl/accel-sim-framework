@@ -171,6 +171,8 @@ for mode in ${modes//,/ }; do
     /^c2p_remote_hits = / { remote_hits=$3 }
     /^c2p_l2_requests_avoided = / { l2_avoided=$3 }
     /^c2p_peer_probes = / { probes=$3 }
+    /^c2p_peer_probe_hits = / { probe_hits=$3 }
+    /^c2p_peer_probe_misses = / { probe_misses=$3 }
     /^c2p_peer_l1_accesses = / { peer_l1_accesses=$3 }
     /^c2p_target_probe_port_busy_cycles = / { target_port_busy_cycles=$3 }
     /^c2p_target_probe_queue_wait_cycles = / { target_queue_wait_cycles=$3 }
@@ -181,6 +183,7 @@ for mode in ${modes//,/ }; do
     /^c2p_fallback_no_candidate = / { no_candidate=$3 }
     /^c2p_fallback_candidates_exhausted = / { candidates_exhausted=$3 }
     /^c2p_fallback_probe_timeout = / { probe_timeout=$3 }
+    /^c2p_fallback_queue = / { fallback_queue=$3 }
     /^c2p_snapshot_false_positive = / { false_positive=$3 }
     /^c2p_snapshot_false_negative = / { false_negative=$3 }
     /^c2p_snapshot_true_positive = / { true_positive=$3 }
@@ -217,6 +220,8 @@ for mode in ${modes//,/ }; do
       printf "c2p_candidate_total = %s\n", candidates
       printf "c2p_candidate_queries = %s\n", candidate_queries
       printf "c2p_peer_probes = %s\n", probes
+      printf "c2p_peer_probe_hits = %s\n", probe_hits
+      printf "c2p_peer_probe_misses = %s\n", probe_misses
       printf "c2p_peer_l1_accesses = %s\n", peer_l1_accesses
       printf "c2p_target_probe_port_busy_cycles = %s\n", target_port_busy_cycles
       printf "c2p_target_probe_queue_wait_cycles = %s\n", target_queue_wait_cycles
@@ -229,6 +234,7 @@ for mode in ${modes//,/ }; do
       printf "c2p_fallback_no_candidate = %s\n", no_candidate
       printf "c2p_fallback_candidates_exhausted = %s\n", candidates_exhausted
       printf "c2p_fallback_probe_timeout = %s\n", probe_timeout
+      printf "c2p_fallback_queue = %s\n", fallback_queue
       printf "c2p_snapshot_false_positive = %s\n", false_positive
       printf "c2p_snapshot_false_negative = %s\n", false_negative
       printf "c2p_snapshot_true_positive = %s\n", true_positive

@@ -3,6 +3,7 @@
 
 import argparse
 import csv
+import re
 from pathlib import Path
 
 
@@ -12,6 +13,7 @@ FIELDS = (
     "c2p_oracle_peer_hits", "c2p_queries_accepted",
     "c2p_queries_queue_bypass", "c2p_updates_queue_bypass",
     "c2p_candidate_total", "c2p_candidate_queries", "c2p_peer_probes",
+    "c2p_peer_probe_hits", "c2p_peer_probe_misses",
     "c2p_peer_l1_accesses",
     "c2p_target_probe_port_busy_cycles",
     "c2p_target_probe_queue_wait_cycles",
@@ -19,7 +21,8 @@ FIELDS = (
     "c2p_requester_fill_wait_cycles",
     "c2p_remote_hits", "c2p_l2_requests_avoided",
     "c2p_fallback_no_candidate", "c2p_fallback_candidates_exhausted",
-    "c2p_fallback_probe_timeout", "c2p_snapshot_false_positive",
+    "c2p_fallback_probe_timeout", "c2p_fallback_queue",
+    "c2p_snapshot_false_positive",
     "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",
     "c2p_snapshot_true_negative", "c2p_snapshot_query_false_positive",
     "c2p_snapshot_query_false_negative", "c2p_snapshot_query_true_positive",
@@ -35,6 +38,7 @@ FIELDS = (
 )
 CORE_MODES = ("baseline", "oracle", "ideal", "c2p")
 COMPARATOR_MODES = ("ata", "ccd", "ring")
+C2P_STAT = re.compile(r"^\s*(c2p_[A-Za-z0-9_]+) = (\d+)$")
 
 
 def read_summary(path):
@@ -43,6 +47,14 @@ def read_summary(path):
         if " = " in line:
             key, value = line.split(" = ", 1)
             data[key] = int(value)
+    # Older compact summaries omitted several diagnostic counters.  Preserve
+    # their final simulator values when the colocated raw output is available.
+    run_out = path.parent / "run.out"
+    if run_out.is_file():
+        for line in run_out.read_text(errors="replace").splitlines():
+            match = C2P_STAT.match(line)
+            if match:
+                data[match.group(1)] = int(match.group(2))
     return data
 
 

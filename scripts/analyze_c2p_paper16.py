@@ -43,6 +43,7 @@ COUNTERS = (
 L2_TOTAL = re.compile(r"^\s*L2_total_cache_accesses = (\d+)$")
 L2_GLOBAL_READ = re.compile(
     r"^\s*L2_cache_stats_breakdown\[GLOBAL_ACC_R\]\[TOTAL_ACCESS\] = (\d+)$")
+C2P_STAT = re.compile(r"^\s*(c2p_[A-Za-z0-9_]+) = (\d+)$")
 HIST = re.compile(r"^c2p_peer_access_(hit|miss)_count_(\d+) = (\d+)$")
 PROVENANCE_KEYS = ("gpgpusim_commit", "accelsim_commit", "config_sha256",
                    "trace_sha256", "sim_sha256", "cudart_sha256")
@@ -171,6 +172,13 @@ def read_summary(run_dir):
                 values["l2_total_cache_accesses"] = int(total.group(1))
             if global_read:
                 values["l2_global_read_accesses"] = int(global_read.group(1))
+            # Early paper16 runners intentionally kept summary.txt small and
+            # omitted several C2P diagnostics.  The simulator's final stats
+            # block is authoritative, so recover every C2P counter from it
+            # rather than treating an omitted summary field as a measured 0.
+            c2p_stat = C2P_STAT.match(line)
+            if c2p_stat:
+                values[c2p_stat.group(1)] = int(c2p_stat.group(2))
     return values
 
 
