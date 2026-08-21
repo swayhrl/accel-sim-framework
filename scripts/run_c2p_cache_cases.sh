@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_cache_cases.sh --trace KERNELSLIST --config CONFIG --out-dir DIR
        [--modes baseline,oracle,ideal,c2p,ata,ccd,ring] [--config-extra FILE]
-       [--strip-mem-addr-mapping]
+       [--strip-mem-addr-mapping] [--build]
 
 Run the same trace through selected C2P and prior-mechanism comparison points.
 C2P_GPGPUSIM_ROOT
@@ -22,6 +22,7 @@ out_dir=""
 modes="baseline,oracle,ideal,c2p"
 config_extras=()
 strip_mem_addr_mapping=0
+build=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --trace) trace="$2"; shift 2 ;;
@@ -30,6 +31,7 @@ while [[ $# -gt 0 ]]; do
     --modes) modes="$2"; shift 2 ;;
     --config-extra) config_extras+=("$2"); shift 2 ;;
     --strip-mem-addr-mapping) strip_mem_addr_mapping=1; shift ;;
+    --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -52,7 +54,26 @@ done
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
+if (( build )); then
+  # The front end includes public GPGPU-Sim configuration headers.  Build it
+  # against the selected worktree before copying the per-run simulator image;
+  # loading a newer libcudart into an older front end can otherwise corrupt
+  # configuration parsing before a trace starts.
+  (
+    export GPGPUSIM_ROOT="$C2P_GPGPUSIM_ROOT"
+    set +u
+    source "$C2P_GPGPUSIM_ROOT/setup_environment" >/dev/null
+    export GPGPUSIM_SETUP_ENVIRONMENT_WAS_RUN=1
+    source "$repo_root/gpu-simulator/setup_environment.sh" >/dev/null
+    set -u
+    make -C "$repo_root/gpu-simulator" -j1
+  )
+fi
 [[ -x "$sim_bin" ]] || { echo "error: build $sim_bin first" >&2; exit 2; }
+cudart_path="$(find "$C2P_GPGPUSIM_ROOT/lib" -type f -name libcudart.so -print -quit)"
+[[ -n "$cudart_path" ]] || {
+  echo "error: build libcudart.so in $C2P_GPGPUSIM_ROOT first" >&2; exit 2;
+}
 mkdir -p "$out_dir"
 out_dir="$(cd "$out_dir" && pwd)"
 
@@ -96,6 +117,7 @@ for mode in ${modes//,/ }; do
     printf 'config_sha256=%s\n' "$(sha256sum "$run_dir/gpgpusim.config" | awk '{print $1}')"
     printf 'trace_sha256=%s\n' "$(sha256sum "$trace" | awk '{print $1}')"
     printf 'sim_sha256=%s\n' "$(sha256sum "$run_dir/accel-sim.out" | awk '{print $1}')"
+    printf 'cudart_sha256=%s\n' "$(sha256sum "$cudart_path" | awk '{print $1}')"
   } > "$run_dir/provenance.txt"
   (
     # accel-sim.out dynamically links the selected GPGPU-Sim libcudart.  Do
