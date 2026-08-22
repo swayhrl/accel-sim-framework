@@ -58,3 +58,25 @@ Only after this matrix identifies the dominant component will a separately
 named C2P+ overlay be evaluated.  The first candidate is a bounded failed
 candidate-probe budget; it must preserve one lower send or one remote fill per
 transaction and `remote_hits == l2_requests_avoided`.
+
+## First measurements and decision
+
+| Case | Candidates/query | Hit ordinal | Target FIFO cycles/accepted | Probe cycles/accepted | Target wait timeout | Decision |
+|---|---:|---:|---:|---:|---:|---|
+| NN | 0.000 | — | 0.000 | 0.000 | 0 | negative control; all work falls back without a peer |
+| Btree | 5.975 | 1.302 | 19.304 | 3.852 | 438,568 | target-side queue wait is the first C2P+ target |
+| ISPASS BFS | 8.952 | 2.752 | 21.510 | 6.635 | 129,772 | high candidate pressure also manifests primarily as target FIFO timeout |
+| ISPASS LPS | 0.926 | 1.301 | 7.705 | 4.307 | 13,723 | useful negative contrast: little candidate over-inclusion, but protocol wait remains |
+
+The fallback ordinal is only 0.862/0.880 in Btree/BFS when averaged over all
+fallbacks, including no-candidate requests.  The direct evidence therefore
+does **not** justify treating a long serial false-candidate chain as the first
+fix.  The bounded candidate-budget option remains an isolated experiment, but
+it is not launched ahead of the more directly supported target-resource test.
+
+`c2p-separate-target-tag-port.config` is that test.  It supplies one
+pipelined remote-tag start per target per cycle, retains the existing seven
+cycle remote-tag latency, and never reserves the target L1 data port.  It is a
+C2P+ architectural counterfactual, not an assertion that the paper used this
+exact port organization.  It is intentionally stricter than the existing
+unlimited diagnostic target-port bypass.
