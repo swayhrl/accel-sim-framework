@@ -27,12 +27,15 @@ done
 [[ "$jobs" =~ ^[1-9][0-9]*$ ]] || { echo "error: positive --jobs required" >&2; exit 2; }
 [[ -n "${C2P_GPGPUSIM_ROOT:-}" ]] || { echo "error: set C2P_GPGPUSIM_ROOT" >&2; exit 2; }
 
-base_config="$repo_root/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
+base_config="$C2P_GPGPUSIM_ROOT/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
 trace_config="$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
 paper_config="$repo_root/configs/c2p-cache/paper-table.config"
 observe_config="$repo_root/configs/c2p-cache/c2p-addr-topology-observe.config"
 trace_root="/workspace/worktrees/accel-sim-decoupled-l2/hw_run"
-v100_stage="$repo_root/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage"
+# These traces were staged once in the main C2P experiment worktree.  Keep
+# them immutable and share them read-only instead of duplicating large files
+# into this isolated observation checkout.
+v100_stage="/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage"
 
 declare -a cases=(
   "bfs|$v100_stage/c2p-ispass-bfs/c2p-ispass-bfs/traces/kernelslist.g"
