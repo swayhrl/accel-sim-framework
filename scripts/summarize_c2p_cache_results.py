@@ -32,6 +32,7 @@ FIELDS = (
     "c2p_peer_lost_before_query", "c2p_peer_gained_before_query",
     "c2p_remote_hits", "c2p_l2_requests_avoided",
     "c2p_fallback_no_candidate", "c2p_fallback_candidates_exhausted",
+    "c2p_fallback_candidate_budget",
     "c2p_fallback_probe_timeout", "c2p_fallback_queue",
     "c2p_snapshot_false_positive",
     "c2p_snapshot_false_negative", "c2p_snapshot_true_positive",

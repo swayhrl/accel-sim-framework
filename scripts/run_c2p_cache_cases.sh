@@ -198,6 +198,7 @@ for mode in ${modes//,/ }; do
     /^c2p_updates_queue_bypass = / { update_queue_bypass=$3 }
     /^c2p_fallback_no_candidate = / { no_candidate=$3 }
     /^c2p_fallback_candidates_exhausted = / { candidates_exhausted=$3 }
+    /^c2p_fallback_candidate_budget = / { candidate_budget=$3 }
     /^c2p_fallback_probe_timeout = / { probe_timeout=$3 }
     /^c2p_fallback_queue = / { fallback_queue=$3 }
     /^c2p_snapshot_false_positive = / { false_positive=$3 }
@@ -265,6 +266,7 @@ for mode in ${modes//,/ }; do
       printf "c2p_updates_queue_bypass = %s\n", update_queue_bypass
       printf "c2p_fallback_no_candidate = %s\n", no_candidate
       printf "c2p_fallback_candidates_exhausted = %s\n", candidates_exhausted
+      printf "c2p_fallback_candidate_budget = %s\n", candidate_budget
       printf "c2p_fallback_probe_timeout = %s\n", probe_timeout
       printf "c2p_fallback_queue = %s\n", fallback_queue
       printf "c2p_snapshot_false_positive = %s\n", false_positive

@@ -24,6 +24,7 @@ COUNTERS = (
     "c2p_fallback_probe_ordinal_total",
     "c2p_fallback_probe_ordinal_samples",
     "c2p_fallback_no_candidate", "c2p_fallback_candidates_exhausted",
+    "c2p_fallback_candidate_budget",
     "c2p_fallback_probe_timeout", "c2p_fallback_target_wait_timeout",
     "c2p_fallback_target_admission_timeout",
     "c2p_peer_lost_before_query", "c2p_peer_gained_before_query",
