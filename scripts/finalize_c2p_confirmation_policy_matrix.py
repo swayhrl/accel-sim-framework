@@ -64,6 +64,23 @@ def main():
         f"- Accel-Sim commit: `{reference.get('accelsim_commit', '')}`",
         "- Each run directory retains resolved config, executable and `libcudart` "
         "hashes, trace hash, raw output, host profile, and provenance file.", "",
+        "## Completion-gate evidence", "",
+        "| Required gate | Evidence retained with this report |",
+        "|---|---|",
+        "| Matched three-way policy | Every row records the exhaustive control, "
+        "PC-hash package, and AddrTopo package from one copied binary/trace "
+        "triplet. The strict audit checks the only permitted configuration "
+        "differences. |",
+        "| Capacity and policy parity | The resolved PC and AddrTopo configs each "
+        "enable the common candidate-bin, threshold, exploration, and four-probe "
+        "package policy. The backend commit implements their single 64 x 4 x 3-bit "
+        "table selector. |",
+        "| Pilot before sweep | The retained BFS/LPS/B+tree pilot audit passed the "
+        "same normal-exit, provenance, remote-hit, and conservation checks before "
+        "this matrix was started. |",
+        "| Full scope and separated aggregates | CSV has exactly 16 canonical plus "
+        "eight extension qualified rows; the aggregate below keeps 16, 8, and 24 "
+        "views separate. |", "",
         "## Scope", "",
         "- **Canonical (16)** is the primary, paper-comparison aggregate and remains "
         "separate from the V100 extension.",
