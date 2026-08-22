@@ -87,14 +87,25 @@ def trace_provenance(stage_root, case):
             "reason": "; ".join(errors), "data": data}
 
 
-def inspect_run(root, case, mode, expected_l2):
-    run = root / case / mode
-    data = summary(run / "summary.txt")
-    out = run / "run.out"
+def inspect_run(roots, case, mode, expected_l2):
+    """Use the first complete-root summary, with repair roots taking priority."""
+    selected_root = None
+    data = None
+    out = None
+    run = None
+    for root in roots:
+        candidate = root / case / mode
+        candidate_data = summary(candidate / "summary.txt")
+        if candidate_data is not None:
+            selected_root, run, data = root, candidate, candidate_data
+            out = run / "run.out"
+            break
     if data is None:
-        return {"status": "missing", "reason": "summary absent", "data": {}}
+        return {"status": "missing", "reason": "summary absent", "data": {},
+                "source_root": ""}
     if not out.is_file() or "GPGPU-Sim: *** exit detected ***" not in out.read_text(errors="replace"):
-        return {"status": "fail", "reason": "normal exit marker absent", "data": data}
+        return {"status": "fail", "reason": "normal exit marker absent", "data": data,
+                "source_root": str(selected_root)}
     got = options(run / "gpgpusim.config")
     errors = []
     for key, expected in MODE_CONTRACT[mode].items():
@@ -109,7 +120,8 @@ def inspect_run(root, case, mode, expected_l2):
     if mode == "ring" and data.get("c2p_queries_queue_bypass", 0) != 0:
         errors.append("ring query queue bypass is nonzero")
     return {"status": "pass" if not errors else "fail",
-            "reason": "; ".join(errors), "data": data}
+            "reason": "; ".join(errors), "data": data,
+            "source_root": str(selected_root)}
 
 
 def main():
@@ -119,8 +131,10 @@ def main():
                         help="V100 staged trace tree containing per-case provenance.json")
     parser.add_argument("--baseline-root", type=Path, required=True,
                         help="uncapped baseline runs, one baseline per extension case")
-    parser.add_argument("--main-root", type=Path, required=True)
-    parser.add_argument("--l2-50-root", type=Path, required=True)
+    parser.add_argument("--main-root", type=Path, action="append", required=True,
+                        help="main-matrix root; repeat with repair roots first")
+    parser.add_argument("--l2-50-root", type=Path, action="append", required=True,
+                        help="L2=50 matrix root; repeat with repair roots first")
     parser.add_argument("--archive-root", type=Path, required=True)
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--strict", action="store_true")
@@ -141,7 +155,7 @@ def main():
                 f"{item['case']}/trace_provenance: "
                 f"{trace['status']} {trace['reason']}")
         checks = {}
-        uncapped = inspect_run(args.baseline_root, item["case"], "baseline", 200)
+        uncapped = inspect_run([args.baseline_root], item["case"], "baseline", 200)
         if uncapped["status"] != "pass":
             failures.append(
                 f"{item['case']}/uncapped_baseline: "
@@ -150,6 +164,7 @@ def main():
         rows.append({
             "case": item["case"], "suite": item["suite"], "mode": "baseline",
             "archive_sha256_ok": archive_ok, "root": "uncapped_baseline",
+            "source_root": uncapped["source_root"],
             "status": uncapped["status"], "reason": uncapped["reason"],
             "cycles": data.get("gpu_tot_sim_cycle", ""),
             "instructions": data.get("gpu_sim_insn", ""),
@@ -168,6 +183,7 @@ def main():
                 rows.append({
                     "case": item["case"], "suite": item["suite"], "mode": mode,
                     "archive_sha256_ok": archive_ok, "root": label,
+                    "source_root": run["source_root"],
                     "status": run["status"], "reason": run["reason"],
                     "cycles": data.get("gpu_tot_sim_cycle", ""),
                     "instructions": data.get("gpu_sim_insn", ""),
