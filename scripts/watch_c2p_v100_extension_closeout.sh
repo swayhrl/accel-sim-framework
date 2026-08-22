@@ -34,6 +34,7 @@ main_root="$repo_root/hw_run/c2p-v100-main-matrix-v1-20260822"
 fast_root="$repo_root/hw_run/c2p-v100-l2-50-matrix-v1-20260822"
 baseline_root="$repo_root/hw_run/c2p-v100-baseline-full-v1-20260822"
 archive_root="/workspace/worktrees/accel-sim-decoupled-l2/hw_run/tls-c2p-v100-20260822/archives"
+trace_stage_root="$repo_root/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage"
 out_dir="$repo_root/hw_run/c2p-v100-extension-audit-v1-20260822"
 lock_dir="$repo_root/hw_run/.c2p-v100-extension-closeout.lock"
 log="$repo_root/hw_run/c2p-v100-extension-closeout.log"
@@ -67,6 +68,7 @@ while :; do
       printf 'all V100 extension roots found at %s\n' "$(date -Is)"
       python3 "$repo_root/scripts/analyze_c2p_v100_extension.py" \
         --manifest "$manifest" \
+        --trace-stage-root "$trace_stage_root" \
         --baseline-root "$baseline_root" \
         --main-root "$main_root" \
         --l2-50-root "$fast_root" \

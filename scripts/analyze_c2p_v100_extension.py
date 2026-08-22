@@ -4,6 +4,7 @@
 import argparse
 import csv
 import hashlib
+import json
 from pathlib import Path
 
 
@@ -60,6 +61,32 @@ def sha256(path):
     return digest.hexdigest()
 
 
+def trace_provenance(stage_root, case):
+    """Check the immutable V100 capture record kept beside the staged trace."""
+    path = stage_root / case / case / "provenance.json"
+    if not path.is_file():
+        return {"status": "missing", "reason": "trace provenance absent", "data": {}}
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        return {"status": "fail", "reason": f"invalid trace provenance: {exc}", "data": {}}
+    errors = []
+    if data.get("case", {}).get("id") != case:
+        errors.append("case id mismatch")
+    if "Tesla V100" not in data.get("nvidia_smi", ""):
+        errors.append("capture GPU is not Tesla V100")
+    if not data.get("tracer_sha256"):
+        errors.append("tracer hash absent")
+    source = data.get("framework_source_identity", {})
+    if not source.get("source_commit"):
+        errors.append("framework source commit absent")
+    frozen = data.get("frozen_reconstruction", {})
+    if not frozen.get("inputs_lock_sha256"):
+        errors.append("frozen input-lock hash absent")
+    return {"status": "pass" if not errors else "fail",
+            "reason": "; ".join(errors), "data": data}
+
+
 def inspect_run(root, case, mode, expected_l2):
     run = root / case / mode
     data = summary(run / "summary.txt")
@@ -88,6 +115,8 @@ def inspect_run(root, case, mode, expected_l2):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--trace-stage-root", type=Path, required=True,
+                        help="V100 staged trace tree containing per-case provenance.json")
     parser.add_argument("--baseline-root", type=Path, required=True,
                         help="uncapped baseline runs, one baseline per extension case")
     parser.add_argument("--main-root", type=Path, required=True)
@@ -106,6 +135,11 @@ def main():
         archive_ok = archive.is_file() and sha256(archive) == item["archive_sha256"]
         if not archive_ok:
             failures.append(f"{item['case']}: archive hash mismatch or absent")
+        trace = trace_provenance(args.trace_stage_root, item["case"])
+        if trace["status"] != "pass":
+            failures.append(
+                f"{item['case']}/trace_provenance: "
+                f"{trace['status']} {trace['reason']}")
         checks = {}
         uncapped = inspect_run(args.baseline_root, item["case"], "baseline", 200)
         if uncapped["status"] != "pass":
@@ -152,6 +186,11 @@ def main():
             "input_sha256": item["input_sha256"],
             "archive": item["archive"],
             "archive_sha256_ok": archive_ok,
+            "trace_provenance": trace["status"],
+            "capture_gpu": trace["data"].get("nvidia_smi", "").split(",", 1)[0],
+            "trace_framework_commit": trace["data"].get("framework_source_identity", {}).get("source_commit", ""),
+            "tracer_sha256": trace["data"].get("tracer_sha256", ""),
+            "frozen_inputs_lock_sha256": trace["data"].get("frozen_reconstruction", {}).get("inputs_lock_sha256", ""),
             "uncapped_baseline": uncapped["status"],
             "main_passed": sum(run[0]["status"] == "pass" for run in checks.values()),
             "l2_50_passed": sum(run[1]["status"] == "pass" for run in checks.values()),
@@ -169,15 +208,15 @@ def main():
     report = ["# V100 C2P extension audit", "",
               f"- Mode roots checked: {total}; passed: {passed}; incomplete/failed: {total - passed}.",
               "- This report is deliberately separate from the canonical paper16 aggregate.",
-              "- Archive hashes, uncapped baselines, mode contracts, L2 latency, exit markers, remote-hit conservation, and Ring backpressure are checked.",
+              "- V100 trace provenance, input/archive hashes, uncapped baselines, mode contracts, L2 latency, exit markers, remote-hit conservation, and Ring backpressure are checked.",
               ""]
     report += ["## Trace provenance and progress", "",
-               "| case | suite | input | input SHA-256 | archive SHA valid | uncapped baseline | main | L2=50 |",
-               "|---|---|---|---|---:|---:|---:|---:|"]
+               "| case | suite | input | input SHA-256 | V100 trace provenance | archive SHA valid | uncapped baseline | main | L2=50 |",
+               "|---|---|---|---|---:|---:|---:|---:|---:|"]
     for item in provenance:
         report.append(
-            "| {case} | {suite} | `{command/input}` | `{input_sha256}` | {archive_sha256_ok} | "
-            "{uncapped_baseline} | {main_passed}/7 | {l2_50_passed}/7 |".format(**item))
+            "| {case} | {suite} | `{command/input}` | `{input_sha256}` | {trace_provenance} | "
+            "{archive_sha256_ok} | {uncapped_baseline} | {main_passed}/7 | {l2_50_passed}/7 |".format(**item))
     report += ["", "`extension_provenance.csv` carries the same provenance and progress in machine-readable form.", ""]
     if failures:
         report += ["## Pending or failed checks", ""] + [f"- {item}" for item in failures]
