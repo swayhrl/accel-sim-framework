@@ -108,6 +108,89 @@ assumption, not a localized C2P bug.  It should stay out of claims that compare
 absolute RING performance with the paper until its topology, injection width,
 and full-queue policy are independently justified.
 
+## Local R/S mechanism check and diagnosis decisions
+
+The paper's R/S labels are hypotheses about *measured* redundancy and
+L2-latency sensitivity, not immutable benchmark properties.  The canonical
+campaign independently measured both quantities before assigning its local
+groups.  The resulting group means follow the paper's causal prediction even
+though six of sixteen local inputs have a different group from their paper
+reference label:
+
+| Local group | Paper mechanism prediction | Local C2P IPC | Local C2P L2/base | Diagnosis |
+|---|---|---:|---:|---|
+| R0S0 (5) | little opportunity and little value from an earlier miss completion | 1.007 | 0.981 | near-neutral as expected |
+| R1S0 (6) | remote reuse may remove L2 traffic, but low L2 sensitivity limits IPC gain | 1.007 | 0.831 | substantial traffic reduction with near-neutral IPC, as expected |
+| R0S1 (3) | scarce useful reuse cannot amortize added miss-path work | 0.954 | 0.997 | a net protocol cost, in the same direction as the paper's 0.980 |
+| R1S1 (2) | both opportunity and latency sensitivity make sharing valuable | 1.218 | 0.840 | large positive IPC, close to the paper's 1.235 target |
+
+The individual rows are deliberately not required to be monotonic.  For
+example, DWT2D is locally R0S0 but improves by 3.5%, while Btree is R1S1 yet
+improves by only 2.6%; R/S predicts where benefits concentrate, not an
+individual-workload guarantee.  Stencil (R1S1, IPC 1.411) supplies most of the
+local R1S1 group benefit.  The six paper/local group mismatches (Gaussian,
+LUD, SGEMM, 2DConvolution, 3mm, GEMM) are therefore trace/input and
+simulator-adaptation evidence, not a reason to relabel measured local data.
+
+### Two V100 diagnostic exemplars
+
+These values are separate extension evidence and must not enter paper16
+aggregates.  They are useful because they isolate two different C2P costs.
+
+| Case | C2P / Ideal IPC | C2P / Ideal remote hits | Other C2P observation | What it isolates |
+|---|---:|---:|---|---|
+| ISPASS BFS | 1.024 / 1.095 | 87,877 / 226,203 | 8.95 candidates/query, 129,772 timeouts, 11.0M target-FIFO wait cycles | candidate over-inclusion and target-side waiting lose many otherwise useful Ideal opportunities |
+| ISPASS LPS | 0.972 / 0.998 | 62,919 / 64,515 | 0.93 candidates/query, only 13,723 timeouts, but 2.17M target-FIFO wait cycles | filtering retains almost every Ideal hit; the remaining loss is miss-path protocol/target-resource cost, not candidate quality |
+
+BFS and LPS are thus a small, valuable C2P+ validation pair.  NN remains the
+negative control: it has no remote opportunity and must remain bit-for-bit
+baseline-equivalent when C2P is disabled.
+
+### What is, and is not, already localized
+
+**Located and measured.**  SGEMM and 2DConvolution are traffic/performance
+counterexamples: their C2P IPC/L2 ratios are 0.987/0.805 and 0.951/0.908.
+They respectively issue 1.69M/4.39M peer probes and experience 0.742M/1.61M
+timeout fallbacks.  Therefore their slowdown is not an L2 statistic bug: it is
+the cost of holding a miss for candidate probes before a later L2 fallback.
+The target-port-bypass control independently recovers SGEMM from 0.987 to
+0.998 of baseline (but not above baseline), proving target resource contention
+is a material contributor but not the complete explanation.
+
+**Not yet quantitatively split.**  Existing final paper16 summaries do not
+separate every transaction's time in encode, row arbitration, candidate probes,
+target FIFO, target data port, requester fill, and lower-L2 fallback.  The
+9.97M C2P versus 11.55M Ideal remote hits, the C2P FP/FN counters, and timeout
+totals prove an aggregate gap, but cannot assign a percentage of that gap to
+Snapshot staleness, hash collisions, candidate order, target-port sharing, or
+the finite timeout.  Stage A is required before changing a default parameter.
+
+**Bloom-filter implication.**  The high system-level FP count is an
+optimization opportunity, not proof that the paper's chosen 5,120-bit filter
+is wrong.  The paper specifies the logical organization and index formula (one
+reverse low-10-bit tag mask plus three indices derived from `h1` and `h2`), but
+does not publish concrete `h1`/`h2` functions or salts.  The simulator uses two
+fixed deterministic folded hashes, so hash identity is necessarily a model
+sensitivity.  Moreover, the measured Btree m/k sweep shows lower FP is not
+monotonically better: m2048-k2 has FP ratio 0.503 and IPC 1.124, default
+m5120-k4 is 0.245/1.026, and m9216-k5 is 0.053/1.007.  Any better filter must
+be evaluated by the whole trade-off, not FP alone.
+
+**RING disposition.**  No change is warranted in default C2P.  The severe
+RING result is caused by our explicit comparator contract--one global injection
+timeline and head-of-line blocking when its discovery FIFO is full--not by an
+inherited GPGPU-Sim defect.  It is qualitatively consistent with the paper's
+serialized-traversal/congestion argument but quantitatively unvalidated because
+the paper does not specify ring injection width, topology mapping, or full
+queue policy.  Keep the current model as `RING` and, only after observation,
+evaluate any pipelined/fallback alternative as a separately named `RING+`.
+
+**Queue-headroom disposition.**  Btree's 256-entry/4096-cycle headroom point
+raises remote hits by 3.57x but takes 1.48x default cycles.  This is a
+reproducible negative result: replacing a parallel L2 request with a long
+serialized remote wait is not a performance fix.  Do not increase target FIFO
+depth or timeout in the default point merely to raise the remote-hit counter.
+
 ## Recommended C2P+ sequence
 
 All variants below must be separate named modes or config overlays; the
