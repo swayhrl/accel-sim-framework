@@ -324,7 +324,7 @@ for mode in ${modes//,/ }; do
   # small indexed family.  Keep them verbatim rather than teaching this
   # generic runner every future histogram bin; legacy summary consumers simply
   # ignore the additional keys.
-  grep -E '^c2p_(probe_ordinal_|probe_pc_bucket_|continuation_after_fail_)' \
+  grep -E '^c2p_(probe_ordinal_|probe_pc_bucket_|continuation_after_fail_|adaptive_)' \
       "$run_dir/run.out" >> "$run_dir/summary.txt" || true
   printf 'PASS mode=%s run_dir=%s\n' "$mode" "$run_dir"
 done
