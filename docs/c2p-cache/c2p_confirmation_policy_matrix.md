@@ -21,7 +21,7 @@ It therefore does not require an instruction PC at an RTL L2 interface.
 1. The read-only BFS/LPS/Btree address observation must show nontrivial
    feature separation.  Its audit is retained under
    `hw_run/c2p-addr-topology-observe-v1-20260823`.
-2. Matched BFS/LPS/Btree `control`/`pc`/`addr` pilot replays must exit
+2. Matched ISPASS BFS/ISPASS LPS/B+tree `control`/`pc`/`addr` pilot replays must exit
    normally and pass the strict analyzer before the 24-workload sweep starts.
 3. The sweep runs 16 canonical traces and eight V100-generated extension
    traces in separate output tiers.  The canonical 16 are the primary
@@ -46,7 +46,7 @@ It therefore does not require an instruction PC at an RTL L2 interface.
 export C2P_GPGPUSIM_ROOT=/workspace/worktrees/gpgpu-sim-c2p-addr-observe
 scripts/run_c2p_confirmation_policy_matrix.sh \
   --out-root hw_run/c2p-confirmation-policy-v1-20260823 \
-  --case bfs,lps,btree --jobs 1
+  --case c2p-ispass-bfs,c2p-ispass-lps,btree --jobs 1
 ```
 
 After the pilot passes, omit `--case` to run both manifests.  `--jobs` is the
