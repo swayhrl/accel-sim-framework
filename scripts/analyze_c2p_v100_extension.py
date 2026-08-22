@@ -119,6 +119,8 @@ def inspect_run(roots, case, mode, expected_l2):
         errors.append("remote_hits != l2_requests_avoided")
     if mode == "ring" and data.get("c2p_queries_queue_bypass", 0) != 0:
         errors.append("ring query queue bypass is nonzero")
+    if mode == "ring" and data.get("c2p_updates_queue_bypass", 0) != 0:
+        errors.append("ring update queue bypass is nonzero")
     return {"status": "pass" if not errors else "fail",
             "reason": "; ".join(errors), "data": data,
             "source_root": str(selected_root)}
