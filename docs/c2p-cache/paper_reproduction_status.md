@@ -334,6 +334,13 @@ complete uncapped baseline replay and then the seven-mode/L2-50 matrix before
 they can join a 24-workload paper aggregate.  They do, however, remove the
 former hard blocker that no compatible ISPASS/Pannotia traces existed.
 
+`scripts/analyze_c2p_v100_extension.py` is the separate strict audit for
+those matrices.  It checks archive hashes, normal simulator exit, resolved
+mode contract, 200/50-cycle L2 path, remote-hit/L2-avoidance conservation, and
+the corrected RING no-bypass invariant.  It intentionally produces a
+partial-status report until every extension mode is complete rather than
+silently averaging the completed subset.
+
 The retained artifact containing ISPASS source is 36.9GiB and contains a
 14.4GiB compressed Volta trace collection.  Its complete member list was
 stream-indexed without extracting trace payloads (6,722 members); it contains
