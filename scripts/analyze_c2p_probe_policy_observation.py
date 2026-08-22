@@ -61,6 +61,8 @@ def main():
     parser.add_argument("--csv", required=True, type=Path)
     parser.add_argument("--pc-csv", required=True, type=Path)
     parser.add_argument("--markdown", required=True, type=Path)
+    parser.add_argument("--case", action="append", default=[],
+                        help="analyze only this case (repeatable); also require it")
     args = parser.parse_args()
 
     summaries = sorted(args.root.glob("**/c2p/summary.txt"))
@@ -80,6 +82,8 @@ def main():
             continue
         case_dir = path.parent.parent
         case = case_dir.name
+        if args.case and case not in args.case:
+            continue
         rel = case_dir.relative_to(args.root)
         row = {"scope": str(rel.parent) if str(rel.parent) != "." else "root",
                "case": case, "run_dir": str(path.parent)}
@@ -151,6 +155,12 @@ def main():
             row[f"ordinal_{n}_pc_buckets"] = len(pc_points[n])
             row[f"ordinal_{n}_pc_hit_rate_stddev"] = weighted_stddev(pc_points[n])
         rows.append(row)
+
+    if args.case:
+        found = {row["case"] for row in rows}
+        missing_cases = sorted(set(args.case) - found)
+        if missing_cases:
+            failures.append("missing required cases: " + ", ".join(missing_cases))
 
     columns = ["scope", "case", "run_dir", *BASE_FIELDS]
     for n in range(1, MAX_ORDINAL + 1):

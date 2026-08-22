@@ -90,4 +90,6 @@ python3 "$repo_root/scripts/analyze_c2p_probe_policy_observation.py" \
     --root "$out_root" \
     --csv "$out_root/observation_summary.csv" \
     --pc-csv "$out_root/observation_pc_buckets.csv" \
-    --markdown "$out_root/observation_summary.md"
+    --markdown "$out_root/observation_summary.md" \
+    --case 2DConvolution --case lps --case btree --case bfs --case sgemm \
+    --case gaussian --case nn
