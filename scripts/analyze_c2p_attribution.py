@@ -28,6 +28,13 @@ COUNTERS = (
     "c2p_fallback_target_admission_timeout",
     "c2p_peer_lost_before_query", "c2p_peer_gained_before_query",
 )
+OBSERVATION_FIELDS = tuple(field for field in COUNTERS
+                           if field.startswith("c2p_residence_") or
+                           field.startswith("c2p_remote_hit_probe_") or
+                           field.startswith("c2p_fallback_probe_") or
+                           field.startswith("c2p_fallback_target_") or
+                           field.startswith("c2p_peer_lost_") or
+                           field.startswith("c2p_peer_gained_"))
 
 
 def read_summary(path):
@@ -36,7 +43,7 @@ def read_summary(path):
         if " = " not in line:
             continue
         key, value = line.split(" = ", 1)
-        if key in COUNTERS:
+        if key in COUNTERS and value:
             values[key] = int(value)
     return values
 
@@ -58,8 +65,12 @@ def main():
 
     rows = []
     failures = []
+    skipped = []
     for path in summaries:
         values = read_summary(path)
+        if not set(OBSERVATION_FIELDS).issubset(values):
+            skipped.append(f"{path}: pre-attribution binary")
+            continue
         missing = [key for key in COUNTERS if key not in values]
         if missing:
             failures.append(f"{path}: missing {', '.join(missing)}")
@@ -129,6 +140,9 @@ def main():
     else:
         lines.extend(["", "All summarized runs preserve the remote-hit/L2-avoidance "
                       "conservation invariant."])
+    if skipped:
+        lines.extend(["", "## Excluded legacy runs", ""])
+        lines.extend(f"- {item}" for item in skipped)
     args.markdown.write_text("\n".join(lines) + "\n")
     if failures:
         raise SystemExit("; ".join(failures))
