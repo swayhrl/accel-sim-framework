@@ -36,17 +36,16 @@ credited.
 | `c2p-ispass-ray` | primary clean root, all 7 | primary clean root, all 7 | 14 | independently checked point outputs |
 | `c2p-pannotia-fw-block` | primary clean root, all 7 | primary clean root, all 7 | 14 | independently checked point outputs |
 | `c2p-ispass-lib` | repair clean root, all 7 | repair clean root, all 7 | 14 | repair root is authoritative |
-| `c2p-pannotia-mis` | new baseline normal exit; summary held | new baseline normal exit; summary held | 0 | controller remains `SIGSTOP`; old raced outputs excluded |
+| `c2p-pannotia-mis` | baseline complete | baseline complete | 2 | `summary.txt` was extracted from each normal `run.out` with the runner's exact parser; controller remains stopped |
 | `c2p-pannotia-color-max` | not started | not started | 0 | deliberate scheduling hold |
 | `c2p-pannotia-pagerank` | not started | not started | 0 | deliberate scheduling hold |
 
-Thus **70/112** matrix points have audited point outputs.  Two additional
-`mis/baseline` simulations finished normally but are deliberately not counted:
-the stopped `run_c2p_cache_cases.sh` controllers have not reaped the children
-and emitted `summary.txt`.  Their normal exits and final counts are recorded
-in `hw_run/c2p-v100-extension-execution-hold-20260822.md`; allowing either
-controller to run would start `oracle`, so the summaries must be extracted
-explicitly or the controller resumed only with approval.
+Thus **72/112** matrix points have audited point outputs.  The two
+`mis/baseline` simulations finished normally while their controllers were
+stopped.  To preserve them without allowing the next mode to start, their
+`summary.txt` files were generated with the exact AWK parser embedded in
+`run_c2p_cache_cases.sh`; both output files retain the normal-exit marker.
+Their controllers are still stopped and cannot launch `oracle`.
 
 ## Current gates and required closeout
 
