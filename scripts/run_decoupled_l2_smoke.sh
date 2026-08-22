@@ -123,10 +123,27 @@ cp "$sim_bin" "$sim_run_bin"
   printf 'backend=%s\n' "$backend"
 } > "$run_dir/simulator_provenance.txt"
 
-if ! (
+run_start_iso="$(date -Is)"
+run_start_epoch="$(date +%s)"
+set +e
+(
   cd "$run_dir"
-  ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g > smoke.out 2>&1
-); then
+  /usr/bin/time --verbose --output="$run_dir/resource_usage.txt" \
+    ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g \
+    > smoke.out 2>&1
+)
+sim_rc=$?
+set -e
+run_end_iso="$(date -Is)"
+run_end_epoch="$(date +%s)"
+{
+  printf 'start_time=%s\n' "$run_start_iso"
+  printf 'end_time=%s\n' "$run_end_iso"
+  printf 'wall_seconds=%s\n' "$((run_end_epoch - run_start_epoch))"
+  printf 'sim_exit_status=%s\n' "$sim_rc"
+} > "$run_dir/runtime_metrics.txt"
+
+if (( sim_rc != 0 )); then
   echo "error: simulator failed; preserved $run_dir/smoke.out" >&2
   tail -50 "$run_dir/smoke.out" >&2 || true
   exit 1
