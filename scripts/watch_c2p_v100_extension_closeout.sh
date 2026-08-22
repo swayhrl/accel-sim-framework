@@ -48,6 +48,12 @@ out_dir="$repo_root/hw_run/c2p-v100-extension-audit-v1-20260822"
 lock_dir="$repo_root/hw_run/.c2p-v100-extension-closeout.lock"
 log="$repo_root/hw_run/c2p-v100-extension-closeout.log"
 modes=(baseline oracle ideal c2p ata ccd ring)
+repair_cases=(
+  c2p-ispass-lib
+  c2p-pannotia-mis
+  c2p-pannotia-color-max
+  c2p-pannotia-pagerank
+)
 
 missing=()
 collect_missing() {
@@ -58,10 +64,17 @@ collect_missing() {
     [[ -f "$baseline_root/$case_name/baseline/summary.txt" ]] ||
       missing+=("uncapped-baseline:$case_name")
     for mode in "${modes[@]}"; do
-      has_summary "$case_name" "$mode" "${main_roots[@]}" ||
-        missing+=("main:$case_name/$mode")
-      has_summary "$case_name" "$mode" "${fast_roots[@]}" ||
-        missing+=("l2-50:$case_name/$mode")
+      if [[ " ${repair_cases[*]} " == *" $case_name "* ]]; then
+        [[ -f "${main_roots[0]}/$case_name/$mode/summary.txt" ]] ||
+          missing+=("repair-main:$case_name/$mode")
+        [[ -f "${fast_roots[0]}/$case_name/$mode/summary.txt" ]] ||
+          missing+=("repair-l2-50:$case_name/$mode")
+      else
+        has_summary "$case_name" "$mode" "${main_roots[@]}" ||
+          missing+=("main:$case_name/$mode")
+        has_summary "$case_name" "$mode" "${fast_roots[@]}" ||
+          missing+=("l2-50:$case_name/$mode")
+      fi
     done
   done < "$manifest"
 }
