@@ -128,10 +128,13 @@ def main():
               "is a small add-on only after those C2P protocol inputs exist.  Once they do, "
               "AddrTopo is more direct than PC-hash at L2 because line address and requester "
               "identity are naturally available at request admission.", "",
-              "## Exclusions", "",
-              "No partially completed, failed, provenance-mismatched, or invariant-failing "
-              "run is included.  PPA/power and wider parameter sweeps remain outside this "
-              "confirmation-policy task."]
+              "## Failed/excluded workload record", "",
+              "None.  The strict audit found one qualified control/PC/AddrTopo triplet for "
+              "each of the 16 canonical and eight V100-extension manifest entries.  No "
+              "partially completed, failed, provenance-mismatched, or invariant-failing run "
+              "is included in any aggregate.", "",
+              "PPA/power and wider parameter sweeps remain outside this confirmation-policy "
+              "task."]
     args.output.write_text("\n".join(lines) + "\n")
 
 
