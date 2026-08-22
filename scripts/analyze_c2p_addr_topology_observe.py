@@ -16,6 +16,7 @@ KEY_RE = re.compile(
     r"(?:_cluster_(?P<region_cluster>\d+))?|cluster_(?P<cluster>\d+))"
     r"_bin_(?P<bin>\d+)_(?P<field>opportunities|later_peer|within_4|"
     r"lower_ready|target_credit)$")
+RAW_STAT_RE = re.compile(r"^\s*(c2p_addr_obs_[A-Za-z0-9_]+) = (\d+)$")
 
 
 def read_summary(path):
@@ -28,6 +29,16 @@ def read_summary(path):
             values[key] = int(value)
         except ValueError:
             pass
+    # Compact summaries intentionally keep a fixed set of common counters.
+    # Address/topology buckets are sparse and dynamic, so recover their final
+    # simulator values from the colocated raw output instead of requiring a
+    # lossy fixed-field summary change for every new observation experiment.
+    run_out = path.parent / "run.out"
+    if run_out.is_file():
+        for line in run_out.read_text(errors="replace").splitlines():
+            match = RAW_STAT_RE.match(line)
+            if match:
+                values[match.group(1)] = int(match.group(2))
     return values
 
 
