@@ -285,28 +285,57 @@ the queue's finite buffering as part of the modeled mechanism.
 
 ## Workload availability and staging cost
 
-The paper lists 24 workloads. Six Rodinia, four Parboil, and six PolyBench
-names have matching local source traces or retained archive members: 16/24
-workload names are therefore practical to stage now. The current paper
-experiment's Rodinia BFS is **not** a substitute for the paper's ISPASS BFS.
+The canonical v7 campaign remains the original 16-workload compatible set
+until its strict closeout completes.  The previously unavailable eight
+ISPASS/Pannotia workloads were subsequently collected on a V100 with the
+Accel-Sim/NVBit flow, so all 24 paper workload *names* now have a matching
+SASS trace asset.  The current paper experiment's Rodinia BFS is **not** a
+substitute for the paper's ISPASS BFS.
 
 | Paper suite | Paper workloads | Local status | Trace staging size |
 | --- | ---: | --- | --- |
 | Rodinia 3.1 | b+tree, dwt2d, gaussian, hotspot1, lud, nn | available as retained full traces | canonical v7 selections range from 2MiB (NN) to 1.5GiB (LUD) |
 | Parboil | cutcp, mri, sgemm, stencil | available in `parboil.tgz`/retained staging; exact `mri` variant must be declared | selected members are about 11GiB, 1.7GiB, 2.1GiB, and 3.5GiB |
 | PolyBench | 2DConvolution, 3mm, atax, bicg, gemm, gesummv | available in `polybench.tgz` | 0.783 + 2.718 + 0.222 + 0.222 + 1.034 + 0.295 = 5.274GiB total |
-| ISPASS | BFS, LIB, LPS, RAY | source exists in the retained AccelWattch artifact, but no matching pre-generated trace tree is staged | trace generation or a compatible public trace release is required |
-| Pannotia | color_max, fw_block, mis, pagerank | no local trace tree | trace generation or a compatible public trace release is required |
+| ISPASS | BFS, LIB, LPS, RAY | V100-generated NVBit/Accel-Sim archives collected; each passes the current-branch bounded baseline smoke | 14.2 MiB compressed total; exact input parameters are retained with the collection logs |
+| Pannotia | color_max, fw_block, mis, pagerank | V100-generated NVBit/Accel-Sim archives collected; each passes the current-branch bounded baseline smoke | 500 MiB compressed total; exact graph/input provenance must accompany any paper aggregate |
+
+### V100 completion of the eight formerly missing trace assets (2026-08-22)
+
+The archive root
+`/workspace/worktrees/accel-sim-decoupled-l2/hw_run/tls-c2p-v100-20260822/archives`
+contains the eight exact ISPASS/Pannotia application names listed above.  All
+eight archive SHA-256 files validate.  The collection logs record successful
+V100 trace generation and post-processing for every case; this is a newly
+generated compatible SASS trace set, not a substituted Rodinia or synthetic
+trace.
+
+Before expanding any paper aggregate, all eight were replayed on the current
+C2P branch using the QV100 base configuration, `trace.config`, and
+`paper-table.config`, with the explicit bounded-smoke overlay
+`configs/c2p-cache/smoke-50kcycles.config`.  Each trace reached a normal exit
+marker and executed nonzero instructions (0.78M--43.67M), with no simulator
+error, deadlock, or assertion marker.  The auditable output is
+`hw_run/c2p-v100-baseline-compat-smoke-v3-20260822`; every case retains its
+resolved config, frontend/backend provenance, summary, and full log.
+
+This establishes parser/configuration compatibility, **not** a performance
+point: the smoke is intentionally capped at 50,000 simulated cycles (RAY
+finishes naturally at 27,720 cycles).  The exact V100 inputs and full-trace
+runtime remain separate provenance questions.  The eight traces must first
+complete uncapped baseline replay and then the seven-mode/L2-50 matrix before
+they can join a 24-workload paper aggregate.  They do, however, remove the
+former hard blocker that no compatible ISPASS/Pannotia traces existed.
 
 The retained artifact containing ISPASS source is 36.9GiB and contains a
 14.4GiB compressed Volta trace collection.  Its complete member list was
 stream-indexed without extracting trace payloads (6,722 members); it contains
 Rodinia BFS but none of ISPASS BFS/LIB/LPS/RAY.  It therefore cannot supply
-any of the four paper ISPASS points. Pannotia source is small to obtain, but
-trace volume cannot be stated credibly until exact graph/input sizes and
-tracing parameters are fixed. Generating either missing suite with NVBit
-requires access to a compatible NVIDIA GPU; without one, the practical route
-is to find a public trace release and validate its provenance.
+any of the four paper ISPASS points.  This historical archive limitation no
+longer blocks the campaign because the separately recorded V100 collection
+above now supplies the actual four ISPASS traces.  The same applies to the
+four Pannotia points; their exact graph/input parameters remain part of the
+new collection provenance rather than inferred from a public source archive.
 
 ### Trace-discovery record (2026-08-20)
 
