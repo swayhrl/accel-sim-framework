@@ -36,6 +36,9 @@ OBSERVATION_FIELDS = tuple(field for field in COUNTERS
                            field.startswith("c2p_fallback_target_") or
                            field.startswith("c2p_peer_lost_") or
                            field.startswith("c2p_peer_gained_"))
+# Added after the first Stage-A binary.  A zero is semantically exact for a
+# pre-budget run rather than a missing measurement.
+OPTIONAL_COUNTER_DEFAULTS = {"c2p_fallback_candidate_budget": 0}
 
 
 def read_summary(path):
@@ -46,6 +49,8 @@ def read_summary(path):
         key, value = line.split(" = ", 1)
         if key in COUNTERS and value:
             values[key] = int(value)
+    for key, default in OPTIONAL_COUNTER_DEFAULTS.items():
+        values.setdefault(key, default)
     return values
 
 
