@@ -178,6 +178,22 @@ for mode in ${modes//,/ }; do
     /^c2p_target_probe_queue_wait_cycles = / { target_queue_wait_cycles=$3 }
     /^c2p_target_probe_queue_full_cycles = / { target_queue_full_cycles=$3 }
     /^c2p_requester_fill_wait_cycles = / { requester_fill_wait_cycles=$3 }
+    /^c2p_residence_encode_cycles = / { residence_encode_cycles=$3 }
+    /^c2p_residence_rows_cycles = / { residence_rows_cycles=$3 }
+    /^c2p_residence_match_cycles = / { residence_match_cycles=$3 }
+    /^c2p_residence_ready_cycles = / { residence_ready_cycles=$3 }
+    /^c2p_residence_target_probe_cycles = / { residence_target_probe_cycles=$3 }
+    /^c2p_residence_probe_cycles = / { residence_probe_cycles=$3 }
+    /^c2p_residence_return_cycles = / { residence_return_cycles=$3 }
+    /^c2p_residence_fallback_cycles = / { residence_fallback_cycles=$3 }
+    /^c2p_remote_hit_probe_ordinal_total = / { remote_hit_probe_ordinal_total=$3 }
+    /^c2p_remote_hit_probe_ordinal_samples = / { remote_hit_probe_ordinal_samples=$3 }
+    /^c2p_fallback_probe_ordinal_total = / { fallback_probe_ordinal_total=$3 }
+    /^c2p_fallback_probe_ordinal_samples = / { fallback_probe_ordinal_samples=$3 }
+    /^c2p_fallback_target_wait_timeout = / { fallback_target_wait_timeout=$3 }
+    /^c2p_fallback_target_admission_timeout = / { fallback_target_admission_timeout=$3 }
+    /^c2p_peer_lost_before_query = / { peer_lost_before_query=$3 }
+    /^c2p_peer_gained_before_query = / { peer_gained_before_query=$3 }
     /^c2p_queries_queue_bypass = / { queue_bypass=$3 }
     /^c2p_updates_queue_bypass = / { update_queue_bypass=$3 }
     /^c2p_fallback_no_candidate = / { no_candidate=$3 }
@@ -227,6 +243,22 @@ for mode in ${modes//,/ }; do
       printf "c2p_target_probe_queue_wait_cycles = %s\n", target_queue_wait_cycles
       printf "c2p_target_probe_queue_full_cycles = %s\n", target_queue_full_cycles
       printf "c2p_requester_fill_wait_cycles = %s\n", requester_fill_wait_cycles
+      printf "c2p_residence_encode_cycles = %s\n", residence_encode_cycles
+      printf "c2p_residence_rows_cycles = %s\n", residence_rows_cycles
+      printf "c2p_residence_match_cycles = %s\n", residence_match_cycles
+      printf "c2p_residence_ready_cycles = %s\n", residence_ready_cycles
+      printf "c2p_residence_target_probe_cycles = %s\n", residence_target_probe_cycles
+      printf "c2p_residence_probe_cycles = %s\n", residence_probe_cycles
+      printf "c2p_residence_return_cycles = %s\n", residence_return_cycles
+      printf "c2p_residence_fallback_cycles = %s\n", residence_fallback_cycles
+      printf "c2p_remote_hit_probe_ordinal_total = %s\n", remote_hit_probe_ordinal_total
+      printf "c2p_remote_hit_probe_ordinal_samples = %s\n", remote_hit_probe_ordinal_samples
+      printf "c2p_fallback_probe_ordinal_total = %s\n", fallback_probe_ordinal_total
+      printf "c2p_fallback_probe_ordinal_samples = %s\n", fallback_probe_ordinal_samples
+      printf "c2p_fallback_target_wait_timeout = %s\n", fallback_target_wait_timeout
+      printf "c2p_fallback_target_admission_timeout = %s\n", fallback_target_admission_timeout
+      printf "c2p_peer_lost_before_query = %s\n", peer_lost_before_query
+      printf "c2p_peer_gained_before_query = %s\n", peer_gained_before_query
       printf "c2p_remote_hits = %s\n", remote_hits
       printf "c2p_l2_requests_avoided = %s\n", l2_avoided
       printf "c2p_queries_queue_bypass = %s\n", queue_bypass
