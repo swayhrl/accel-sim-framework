@@ -310,6 +310,13 @@ V100 trace generation and post-processing for every case; this is a newly
 generated compatible SASS trace set, not a substituted Rodinia or synthetic
 trace.
 
+`configs/c2p-cache/v100_extension_workloads.tsv` freezes the collection
+command/input label, non-empty input SHA-256, archive SHA-256, and the trace
+path inside each archive.  The source-side input seeds and trace logs remain
+under `tls-c2p-v100-20260822`, while the manifest makes the experimentally
+relevant provenance reviewable from this repository without treating the
+large payload as source code.
+
 Before expanding any paper aggregate, all eight were replayed on the current
 C2P branch using the QV100 base configuration, `trace.config`, and
 `paper-table.config`, with the explicit bounded-smoke overlay
