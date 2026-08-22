@@ -4,6 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_adaptive_pairs.sh [--out-root DIR] [--pair-jobs N]
+       [--control-config FILE] [--adaptive-config FILE]
 
 Run same-binary exhaustive C2P+ controls and adaptive C2P+ pairs for the
 seven-workload diagnostic set.  Build the selected C2P backend and accel-sim
@@ -14,10 +15,14 @@ EOF
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 out_root="$repo_root/hw_run/c2p-adaptive-pairs-v1-20260822"
 pair_jobs=7
+control_config=""
+adaptive_config=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --out-root) out_root="$2"; shift 2 ;;
     --pair-jobs) pair_jobs="$2"; shift 2 ;;
+    --control-config) control_config="$2"; shift 2 ;;
+    --adaptive-config) adaptive_config="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -28,8 +33,8 @@ done
 base_config="$repo_root/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
 trace_config="$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
 paper_config="$repo_root/configs/c2p-cache/paper-table.config"
-control_config="$repo_root/configs/c2p-cache/c2p-adaptive-probe-control.config"
-adaptive_config="$repo_root/configs/c2p-cache/c2p-adaptive-probe-policy.config"
+control_config="${control_config:-$repo_root/configs/c2p-cache/c2p-adaptive-probe-control.config}"
+adaptive_config="${adaptive_config:-$repo_root/configs/c2p-cache/c2p-adaptive-probe-policy.config}"
 trace_root="/workspace/worktrees/accel-sim-decoupled-l2/hw_run"
 v100_stage="$repo_root/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage"
 observe_root="$repo_root/hw_run/c2p-adaptive-observe-v1-20260822"
@@ -45,6 +50,8 @@ declare -a cases=(
 )
 
 mkdir -p "$out_root"
+[[ -f "$control_config" ]] || { echo "missing control config: $control_config" >&2; exit 2; }
+[[ -f "$adaptive_config" ]] || { echo "missing adaptive config: $adaptive_config" >&2; exit 2; }
 run_one() {
   local case_name="$1" trace="$2" variant="$3" mode_config="$4"
   "$repo_root/scripts/run_c2p_cache_cases.sh" --trace "$trace" --config "$base_config" \
@@ -80,4 +87,6 @@ for pid in "${pids[@]}"; do wait "$pid" || status=1; done
 
 python3 "$repo_root/scripts/analyze_c2p_adaptive_pairs.py" --root "$out_root" \
     --observation-root "$observe_root" --csv "$out_root/pair_summary.csv" \
-    --markdown "$out_root/pair_summary.md"
+    --markdown "$out_root/pair_summary.md" \
+    --tail-csv "$out_root/tail_observation.csv" \
+    --tail-markdown "$out_root/tail_observation.md"

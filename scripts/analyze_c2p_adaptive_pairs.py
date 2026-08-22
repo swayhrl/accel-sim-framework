@@ -29,6 +29,15 @@ ADAPT = (
     "c2p_adaptive_exploration_probe_misses",
     "c2p_adaptive_exploration_probe_timeouts",
 )
+OBSERVE = tuple(
+    [f"c2p_adaptive_tail_bin_{candidate_bin}_{field}"
+     for candidate_bin in range(4)
+     for field in ("opportunities", "later_peer", "no_later_peer")] +
+    [f"c2p_adaptive_tail_bin_{candidate_bin}_distance_{distance}"
+     for candidate_bin in range(4) for distance in range(1, 5)] +
+    [f"c2p_adaptive_tail_bin_{candidate_bin}_distance_overflow_5"
+     for candidate_bin in range(4)]
+)
 
 
 def read_summary(path):
@@ -54,9 +63,11 @@ def main():
     parser.add_argument("--observation-root", required=True, type=Path)
     parser.add_argument("--csv", required=True, type=Path)
     parser.add_argument("--markdown", required=True, type=Path)
+    parser.add_argument("--tail-csv", required=True, type=Path)
+    parser.add_argument("--tail-markdown", required=True, type=Path)
     args = parser.parse_args()
 
-    rows, failures = [], []
+    rows, tail_rows, failures = [], [], []
     for case in CASES:
         control_path = args.root / case / "control" / "c2p" / "summary.txt"
         adaptive_path = args.root / case / "adaptive" / "c2p" / "summary.txt"
@@ -65,7 +76,7 @@ def main():
             failures.append(f"{case}: missing control or adaptive summary")
             continue
         control, adaptive = read_summary(control_path), read_summary(adaptive_path)
-        missing = [field for field in (*BASE, *ADAPT)
+        missing = [field for field in (*BASE, *ADAPT, *OBSERVE)
                    if field not in control or field not in adaptive]
         if missing:
             failures.append(f"{case}: missing {', '.join(missing)}")
@@ -107,6 +118,21 @@ def main():
                       adaptive["c2p_adaptive_stop_no_later_peer"])
         if stops != classified:
             failures.append(f"{case}/adaptive: stopped-tail classification failure")
+        for label, values in (("control", control), ("adaptive", adaptive)):
+            for candidate_bin in range(4):
+                prefix = f"c2p_adaptive_tail_bin_{candidate_bin}_"
+                opportunities = values[prefix + "opportunities"]
+                later_peer = values[prefix + "later_peer"]
+                no_later_peer = values[prefix + "no_later_peer"]
+                distance_total = sum(values[prefix + f"distance_{distance}"]
+                                     for distance in range(1, 5)) + \
+                    values[prefix + "distance_overflow_5"]
+                if opportunities != later_peer + no_later_peer:
+                    failures.append(f"{case}/{label}/bin{candidate_bin}: "
+                                    "tail partition failure")
+                if later_peer != distance_total:
+                    failures.append(f"{case}/{label}/bin{candidate_bin}: "
+                                    "distance partition failure")
         if case == "nn":
             if control["gpu_tot_sim_cycle"] != adaptive["gpu_tot_sim_cycle"]:
                 failures.append("nn: adaptive changed no-op cycle count")
@@ -127,6 +153,17 @@ def main():
         row["saved_tail_rate"] = pct(adaptive["c2p_adaptive_stop_no_later_peer"], stops)
         row["lost_peer_rate"] = pct(adaptive["c2p_adaptive_stop_later_peer"], stops)
         rows.append(row)
+        for candidate_bin in range(4):
+            prefix = f"c2p_adaptive_tail_bin_{candidate_bin}_"
+            tail_row = {"case": case, "candidate_bin": candidate_bin,
+                        "range": ("1-2", "3-4", "5-8", "9+")[candidate_bin]}
+            for field in ("opportunities", "later_peer", "no_later_peer"):
+                tail_row[field] = control[prefix + field]
+            for distance in range(1, 5):
+                tail_row[f"distance_{distance}"] = control[prefix + f"distance_{distance}"]
+            tail_row["distance_overflow_5"] = control[prefix + "distance_overflow_5"]
+            tail_row["later_peer_rate"] = pct(tail_row["later_peer"], tail_row["opportunities"])
+            tail_rows.append(tail_row)
 
     columns = ["case"] + [f"{variant}_{field}" for variant in ("control", "adaptive")
                             for field in BASE] + list(ADAPT) + [
@@ -137,6 +174,15 @@ def main():
         writer = csv.DictWriter(stream, fieldnames=columns)
         writer.writeheader()
         writer.writerows(rows)
+
+    tail_columns = ["case", "candidate_bin", "range", "opportunities",
+                    "later_peer", "no_later_peer", "later_peer_rate",
+                    "distance_1", "distance_2", "distance_3", "distance_4",
+                    "distance_overflow_5"]
+    with args.tail_csv.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=tail_columns)
+        writer.writeheader()
+        writer.writerows(tail_rows)
 
     lines = ["# C2P+ adaptive probe-depth paired result", "",
              "Every row compares the same binary, trace, and C2P+ separate-tag "
@@ -159,6 +205,21 @@ def main():
         lines += ["", "All paired controls reproduce the observation-only C2P+ "
                   "point, and all adaptive accounting partitions conserve."]
     args.markdown.write_text("\n".join(lines) + "\n")
+    tail_lines = ["# C2P+ candidate-count tail observation", "",
+                  "Control-only exhaustive observations at every post-miss "
+                  "decision point. `distance` is the first later exact peer; "
+                  "overflow means five or more candidates away.", "",
+                  "| Case | Initial candidates | Opportunities | Later peer | "
+                  "No later peer | Later-peer rate | d1 | d2 | d3 | d4 | d5+ |",
+                  "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for row in tail_rows:
+        tail_lines.append(
+            f"| {row['case']} | {row['range']} | {row['opportunities']} | "
+            f"{row['later_peer']} | {row['no_later_peer']} | "
+            f"{row['later_peer_rate']}% | {row['distance_1']} | "
+            f"{row['distance_2']} | {row['distance_3']} | "
+            f"{row['distance_4']} | {row['distance_overflow_5']} |")
+    args.tail_markdown.write_text("\n".join(tail_lines) + "\n")
     if failures:
         raise SystemExit("; ".join(failures))
 

@@ -123,6 +123,35 @@ scripts/run_c2p_adaptive_pairs.sh
 5. NN is bit-for-bit a no-op: cycles, normal C2P counters, and all adaptive
    activity counters stay unchanged/zero.
 
+## Stage-3 candidate-count observation and policy
+
+The seven-pair result shows that PC hash and ordinal alone over-stop BFS and
+Btree while successfully pruning 2DConvolution and SGEMM tails. Stage 3 adds
+one request-local feature available when Snapshot matching completes: initial
+candidate count, binned as `1--2`, `3--4`, `5--8`, or `9+`.
+
+The control remains exhaustive but observes every post-miss decision point.
+For each count bin it records whether a later exact peer exists and a
+first-later-peer distance histogram (`1`, `2`, `3`, `4`, `5+`). This scan is
+counterfactual and read-only; no result feeds C2P arbitration, fallback, or
+timing. The policy run changes the score index only to
+`PC-hash x ordinal x candidate-count-bin`; it keeps first-probe mandatory,
+the four-probe cap, update rule, and exploration policy unchanged.
+
+Run with:
+
+```bash
+scripts/run_c2p_adaptive_pairs.sh \
+  --out-root hw_run/c2p-adaptive-candidate-bin-v1-20260822 \
+  --control-config configs/c2p-cache/c2p-adaptive-candidate-bin-control.config \
+  --adaptive-config configs/c2p-cache/c2p-adaptive-candidate-bin-policy.config
+```
+
+The run writes `tail_observation.{csv,md}` alongside the normal paired
+summary. The analyzer verifies that, independently for both pair members and
+all four bins, opportunities equal later-peer plus no-later-peer and later
+peers equal the distance histogram total.
+
 ## Decision gates
 
 Only after Stage 1 completes normally and all counters conserve may an
