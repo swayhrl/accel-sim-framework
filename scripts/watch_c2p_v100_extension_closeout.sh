@@ -106,6 +106,7 @@ while :; do
       )
       for root in "${main_roots[@]}"; do audit_args+=(--main-root "$root"); done
       for root in "${fast_roots[@]}"; do audit_args+=(--l2-50-root "$root"); done
+      for case_name in "${repair_cases[@]}"; do audit_args+=(--require-primary-case "$case_name"); done
       python3 "$repo_root/scripts/analyze_c2p_v100_extension.py" "${audit_args[@]}" \
         --strict
     } >>"$log" 2>&1

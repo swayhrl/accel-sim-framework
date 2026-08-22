@@ -137,6 +137,8 @@ def main():
                         help="main-matrix root; repeat with repair roots first")
     parser.add_argument("--l2-50-root", type=Path, action="append", required=True,
                         help="L2=50 matrix root; repeat with repair roots first")
+    parser.add_argument("--require-primary-case", action="append", default=[],
+                        help="case that must use the first main/L2=50 root; do not fall back")
     parser.add_argument("--archive-root", type=Path, required=True)
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--strict", action="store_true")
@@ -175,8 +177,12 @@ def main():
             "l2_avoided": data.get("c2p_l2_requests_avoided", ""),
         })
         for mode in MODES:
-            main_run = inspect_run(args.main_root, item["case"], mode, 200)
-            fast_run = inspect_run(args.l2_50_root, item["case"], mode, 50)
+            # A repair campaign deliberately supersedes raced v1 results.
+            # Never let a partial repair report fall back to those old roots.
+            main_roots = args.main_root[:1] if item["case"] in args.require_primary_case else args.main_root
+            fast_roots = args.l2_50_root[:1] if item["case"] in args.require_primary_case else args.l2_50_root
+            main_run = inspect_run(main_roots, item["case"], mode, 200)
+            fast_run = inspect_run(fast_roots, item["case"], mode, 50)
             checks[mode] = (main_run, fast_run)
             for label, run in (("main", main_run), ("l2_50", fast_run)):
                 if run["status"] != "pass":
