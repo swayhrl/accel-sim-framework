@@ -144,7 +144,14 @@ for mode in ${modes//,/ }; do
     printf 'sim_sha256=%s\n' "$(sha256sum "$run_dir/accel-sim.out" | awk '{print $1}')"
     printf 'cudart_sha256=%s\n' "$(sha256sum "$cudart_path" | awk '{print $1}')"
   } > "$run_dir/provenance.txt"
-  (
+  # Host-side scheduling metadata.  These values are deliberately kept out of
+  # summary.txt: they describe this replay host, not an architectural result.
+  # They make later campaign sizing reproducible without changing the copied
+  # simulator, resolved configuration, or simulator stdout.
+  host_start_epoch="$(date +%s)"
+  host_start_utc="$(date --utc --iso-8601=seconds)"
+  sim_rc=0
+  if (
     # accel-sim.out dynamically links the selected GPGPU-Sim libcudart.  Do
     # not accidentally run against the host CUDA runtime, which may have the
     # same SONAME but lacks this branch's cache-model C++ symbols.
@@ -153,8 +160,23 @@ for mode in ${modes//,/ }; do
     source "$C2P_GPGPUSIM_ROOT/setup_environment" >/dev/null
     set -u
     cd "$run_dir"
-    ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g > run.out 2>&1
-  )
+    /usr/bin/time \
+      -f 'user_cpu_sec=%U\nsys_cpu_sec=%S\ncpu_percent=%P\nmax_rss_kib=%M\nexit_status=%x' \
+      -o host_profile.txt \
+      ./accel-sim.out -config ./gpgpusim.config -trace ./traces/kernelslist.g > run.out 2>&1
+  ); then
+    sim_rc=0
+  else
+    sim_rc=$?
+  fi
+  host_end_epoch="$(date +%s)"
+  host_end_utc="$(date --utc --iso-8601=seconds)"
+  {
+    printf 'wall_start_utc=%s\n' "$host_start_utc"
+    printf 'wall_end_utc=%s\n' "$host_end_utc"
+    printf 'wall_elapsed_sec=%s\n' "$((host_end_epoch - host_start_epoch))"
+  } >> "$run_dir/host_profile.txt"
+  (( sim_rc == 0 )) || exit "$sim_rc"
   grep -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$run_dir/run.out"
   awk '
     /^gpu_tot_sim_cycle = / { cycle=$3 }

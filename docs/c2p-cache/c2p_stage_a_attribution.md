@@ -158,3 +158,43 @@ failed-probe chains rather than by the broader enabled-C2P protocol.
 No C2P+ row is eligible for a canonical paper16 aggregate or figure.  The
 separate-tag port is a new, explicitly named architectural counterfactual; its
 value here is causal diagnosis and a possible follow-on design point.
+
+## C2P+ bounded-candidate policy matrix
+
+The separate-tag port eliminates the first, target-resource bottleneck.  The
+next isolated question is then whether a **global fixed cap** on failed exact
+candidate probes can remove residual work.  `budgetN` means that a request
+falls back to the normal lower path after `N` failed exact remote probes; it
+does not issue N probes in parallel or race a probe against L2.  The qualified
+matrix is kept separately at
+`hw_run/c2p-plus-probe-policy-v1-20260822/`, and every point uses backend
+`b954bae8`, the same trace/base configuration for its workload, and
+`-c2p_cache_separate_target_tag_port 1`.
+
+| Case | C2P+ exhaustive | budget1 | budget2 | budget4 | C2P+ Ideal | Result |
+|---|---:|---:|---:|---:|---:|---|
+| ISPASS LPS cycles | 100,103 | 100,735 | 100,933 | 100,070 | 99,316 | budget4 is closest, but none beats exhaustive; Ideal does beat the 99,393-cycle baseline by 0.08% |
+| 2DConvolution cycles | 691,389 | 673,876 | 676,881 | 682,399 | 672,326 | budget1 removes 2.53% of exhaustive cycles and is only 0.23% above Ideal |
+| Rodinia Btree cycles | 225,882 | 229,229 | 227,761 | 225,084 | 224,879 | budget4 is within 0.09% of Ideal; budget1/2 cut useful remote opportunity too early |
+
+The three points deliberately reject a single static answer:
+
+- **LPS:** exact Ideal drops peer probes from 202,364 to 77,981 and reaches
+  baseline, so approximate-candidate false positives matter.  But the fixed
+  cap loses useful hits faster than it saves work: budget1/2 are slower, and
+  budget4 is only a small improvement.
+- **2DConvolution:** budget1 drops peer probes from 5,785,778 to 3,109,625,
+  while retaining 671,761 remote hits.  It increases L2 accesses (4.66M to
+  5.32M) yet improves cycles, proving that the original residual contains a
+  large unproductive serial-probe component.  Its optimum is a short cap.
+- **Btree:** budget4 retains 555,809 remote hits versus 562,391 exhaustive and
+  is effectively Ideal (224,879 cycles); budget2 and budget1 miss more useful
+  remote hits and regress.  Its optimum is a longer cap.
+
+All twelve rows preserve `remote_hits == l2_requests_avoided`; every target
+tag-port busy counter is zero.  Thus the effects above are not accounting
+errors or a reappearance of the shared target-port bottleneck.  The design
+implication is specific: do not make a fixed global candidate budget the C2P+
+default.  The next mechanism should use per-request evidence (candidate
+quality, distance/order, or miss criticality) to select the confirmation
+depth; a later experiment can compare that policy against these three anchors.
