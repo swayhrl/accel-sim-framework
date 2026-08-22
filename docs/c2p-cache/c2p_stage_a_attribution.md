@@ -80,3 +80,31 @@ cycle remote-tag latency, and never reserves the target L1 data port.  It is a
 C2P+ architectural counterfactual, not an assertion that the paper used this
 exact port organization.  It is intentionally stricter than the existing
 unlimited diagnostic target-port bypass.
+
+## C2P+ separate-tag-port result
+
+Every C2P+ point below uses backend `b954bae8`.  Its paired `control` run uses
+the same binary and resolved configuration but leaves the new switch at zero.
+The controls exactly reproduce the default C2P cycle, remote-hit, timeout, and
+L2-access values.  Thus the deltas below are attributable to the named
+counterfactual, not to the Stage-A instrumentation.
+
+| Case | Baseline cycles | Default/control C2P cycles | Separate-tag C2P cycles | C2P+ effect | Default / C2P+ remote hits | Default / C2P+ timeout |
+|---|---:|---:|---:|---:|---:|---:|
+| Btree | 234,962 | 229,052 | 225,882 | −1.384% vs default C2P; −3.864% vs baseline | 161,628 / 562,391 | 438,570 / 814 |
+| ISPASS LPS | 99,393 | 102,272 | 100,103 | −2.121% vs default C2P; still 0.714% slower than baseline | 62,919 / 73,931 | 13,723 / 0 |
+
+Btree is the positive validation: target-side contention was genuinely
+blocking useful remote hits (3.48x more hits and 31.5% fewer L2 accesses than
+default C2P), and the more disciplined one-per-cycle tag pipe improves IPC
+without using the unlimited diagnostic bypass.  LPS is the necessary limit:
+the same port change removes its timeouts and improves cycles, but does not
+quite recover its baseline IPC.  Its remaining cost is therefore attributable
+to the broader enabled-C2P miss path (Snapshot/query/probe/return work), not
+solely to the shared target data port.
+
+This is a credible C2P+ research point, but not a replacement for the canonical
+paper C2P configuration: the paper does not specify the target tag/data-port
+relationship.  Next targeted evidence should cover SGEMM and 2DConvolution,
+whose existing traffic/IPC contradiction motivated this diagnosis, before any
+aggregate C2P+ claim.
