@@ -124,6 +124,37 @@ unique_missing_summary_count() {
     wc -l
 }
 
+# A prior strict audit can fail after claiming the lock (for example, when a
+# corrected campaign supersedes an old result root).  An empty lock from that
+# legacy protocol must not suppress the later corrected closeout.  New locks
+# receive an owner file before analysis starts: those are deliberately kept
+# after a failure so it is diagnosed rather than retried blindly.
+claim_closeout_lock() {
+  if mkdir "$lock_dir" 2>/dev/null; then
+    printf 'pid=%s started=%s\n' "$$" "$(date -Is)" > "$lock_dir/owner"
+    return 0
+  fi
+  if [[ -f "$report" ]]; then
+    printf 'strict report already exists: %s\n' "$report"
+    return 1
+  fi
+  if [[ -f "$lock_dir/owner" ]]; then
+    printf 'closeout lock has owner; inspect prior/in-progress audit: %s\n' \
+      "$lock_dir/owner" >&2
+    return 2
+  fi
+  if find "$lock_dir" -mindepth 1 -maxdepth 1 -print -quit | grep -q .; then
+    printf 'closeout lock has unknown contents; refusing to remove: %s\n' \
+      "$lock_dir" >&2
+    return 2
+  fi
+  # Only an empty, owner-less legacy lock reaches this point.
+  rmdir "$lock_dir"
+  mkdir "$lock_dir"
+  printf 'pid=%s started=%s\n' "$$" "$(date -Is)" > "$lock_dir/owner"
+  printf 'reclaimed empty legacy closeout lock: %s\n' "$lock_dir"
+}
+
 while :; do
   collect_missing
   if (( ${#failed[@]} != 0 )); then
@@ -132,9 +163,14 @@ while :; do
     exit 1
   fi
   if (( ${#missing[@]} == 0 )); then
-    if ! mkdir "$lock_dir" 2>/dev/null; then
-      printf 'closeout lock exists: %s\n' "$lock_dir"
-      exit 0
+    if claim_closeout_lock; then
+      :
+    else
+      lock_status=$?
+      if (( lock_status == 1 )); then
+        exit 0
+      fi
+      exit "$lock_status"
     fi
     {
       printf 'all required summaries found at %s\n' "$(date -Is)"
