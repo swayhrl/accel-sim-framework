@@ -98,6 +98,7 @@ def main():
     args.out_dir.mkdir(parents=True, exist_ok=True)
     rows = []
     failures = []
+    provenance = []
     for item in manifest_rows(args.manifest):
         archive = args.archive_root / item["archive"]
         archive_ok = archive.is_file() and sha256(archive) == item["archive_sha256"]
@@ -126,11 +127,24 @@ def main():
         oracle_main = checks["oracle"][0]["data"]
         if baseline_main and oracle_main and baseline_main.get("gpu_tot_sim_cycle") != oracle_main.get("gpu_tot_sim_cycle"):
             failures.append(f"{item['case']}: main oracle cycles differ from baseline")
+        provenance.append({
+            "case": item["case"],
+            "suite": item["suite"],
+            "command/input": item["command/input"],
+            "input_sha256": item["input_sha256"],
+            "archive": item["archive"],
+            "archive_sha256_ok": archive_ok,
+            "main_passed": sum(run[0]["status"] == "pass" for run in checks.values()),
+            "l2_50_passed": sum(run[1]["status"] == "pass" for run in checks.values()),
+        })
 
     columns = tuple(rows[0]) if rows else ()
     with (args.out_dir / "extension_modes.csv").open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=columns)
         writer.writeheader(); writer.writerows(rows)
+    with (args.out_dir / "extension_provenance.csv").open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=tuple(provenance[0]))
+        writer.writeheader(); writer.writerows(provenance)
     total = len(rows)
     passed = sum(row["status"] == "pass" for row in rows)
     report = ["# V100 C2P extension audit", "",
@@ -138,6 +152,14 @@ def main():
               "- This report is deliberately separate from the canonical paper16 aggregate.",
               "- Archive hashes, mode contracts, L2 latency, exit markers, remote-hit conservation, and Ring backpressure are checked.",
               ""]
+    report += ["## Trace provenance and progress", "",
+               "| case | suite | input | input SHA-256 | archive SHA valid | main | L2=50 |",
+               "|---|---|---|---|---:|---:|---:|"]
+    for item in provenance:
+        report.append(
+            "| {case} | {suite} | `{command/input}` | `{input_sha256}` | {archive_sha256_ok} | "
+            "{main_passed}/7 | {l2_50_passed}/7 |".format(**item))
+    report += ["", "`extension_provenance.csv` carries the same provenance and progress in machine-readable form.", ""]
     if failures:
         report += ["## Pending or failed checks", ""] + [f"- {item}" for item in failures]
     else:
