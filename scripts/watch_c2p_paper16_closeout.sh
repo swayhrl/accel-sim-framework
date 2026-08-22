@@ -109,8 +109,14 @@ collect_missing() {
     has_summary "$case_name" ccd "$ccd_root" "${ccd_supplemental[@]}" ||
       missing+=("ccd:$case_name/ccd")
     for point in m2048-k2 m3072-k3 m5120-k4 m9216-k5; do
-      has_summary "$case_name" c2p "$sweep_root/$point" \
-        "${sweep_supplemental[@]/%/$point}" ||
+      # Expand each supplemental sweep root explicitly.  Bash's array pattern
+      # replacement does not safely append a per-iteration path component here;
+      # it caused the watcher to overlook the completed v1/<m-k> summaries.
+      point_sweep_roots=("$sweep_root/$point")
+      for root in "${sweep_supplemental[@]}"; do
+        point_sweep_roots+=("$root/$point")
+      done
+      has_summary "$case_name" c2p "${point_sweep_roots[@]}" ||
         missing+=("$point:$case_name/c2p")
     done
   done < "$manifest"
