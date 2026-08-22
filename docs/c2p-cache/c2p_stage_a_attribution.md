@@ -105,6 +105,56 @@ solely to the shared target data port.
 
 This is a credible C2P+ research point, but not a replacement for the canonical
 paper C2P configuration: the paper does not specify the target tag/data-port
-relationship.  Next targeted evidence should cover SGEMM and 2DConvolution,
-whose existing traffic/IPC contradiction motivated this diagnosis, before any
-aggregate C2P+ claim.
+relationship.
+
+## Six-point C2P+ cross-check
+
+The final diagnostic root is
+`hw_run/c2p-plus-tag-port-v1-20260822/outliers/`.  All rows use backend
+`b954bae8`; each control/C2P+ pair has the same copied binary, trace, and base
+configuration.  The only resolved-config difference is
+`-c2p_cache_separate_target_tag_port 1`.  Every completed row exited normally
+and preserves `remote_hits == l2_requests_avoided`.
+
+| Case | Control C2P cycles | C2P+ cycles | C2P+ cycle effect | Control / C2P+ L2 accesses | Control / C2P+ remote hits | Control / C2P+ target-wait timeout |
+|---|---:|---:|---:|---:|---:|---:|
+| Btree | 229,052 | 225,882 | -1.384% | 1,259,116 / 862,168 | 161,628 / 562,391 | 438,570 / 814 |
+| ISPASS BFS | 186,246 | 177,598 | -4.643% | 987,449 / 868,733 | 87,877 / 203,447 | 129,772 / 4,493 |
+| ISPASS LPS | 102,272 | 100,103 | -2.121% | — | 62,919 / 73,931 | 13,723 / 0 |
+| SGEMM | 435,411 | 429,701 | -1.311% | 2,078,305 / 1,549,370 | 271,719 / 815,770 | 741,827 / 1,302 |
+| 2DConvolution | 700,017 | 691,389 | -1.233% | 5,438,832 / 4,663,488 | 556,059 / 1,330,486 | 1,610,893 / 124 |
+| NN | 7,224 | 7,224 | 0.000% | 16,037 / 16,037 | 0 / 0 | 0 / 0 |
+
+NN is the strict no-op control: its two `summary.txt` files are byte-identical,
+despite the named switch in the C2P+ configuration.  It verifies that a trace
+without peer opportunity cannot exercise the extra target-tag path.
+
+The high-candidate BFS result independently validates the Btree diagnosis:
+C2P+ removes 96.5% of target-wait timeouts, more than doubles remote hits, and
+improves cycles by 4.64%.  This is not a SGEMM/2D-specific artifact.
+
+The two original traffic/IPC outliers separate cleanly:
+
+- **SGEMM:** default C2P was 1.302% slower than its 429,816-cycle baseline
+  despite 19.5% fewer L2 accesses.  C2P+ reaches 429,701 cycles (0.027% faster
+  than that baseline), while removing 99.8% of target-wait timeouts.  Under
+  this counterfactual, shared target-port contention explains essentially all
+  of the observed IPC loss.
+- **2DConvolution:** default C2P was 5.147% slower than its 665,750-cycle
+  baseline.  C2P+ removes 99.99% of target-wait timeouts and improves the
+  default point by 1.233%, but remains 3.851% slower than baseline.  Thus the
+  target resource explains about 25.2% of this particular performance gap;
+  the residual is genuine enabled-C2P cost.  C2P+ sends 31.7% more exact peer
+  probes and has 106.4% more candidate-exhaustion fallbacks, consistent with
+  Snapshot/query/probe/return work becoming visible once the target-port wait
+  is removed.
+
+LPS is the complementary low-candidate limit: it gains from the port but still
+does not recover baseline IPC.  Consequently a candidate-probe budget sweep is
+not the next default action.  It is warranted only if a later experiment shows
+that the residual after target-port decoupling is dominated by long serial
+failed-probe chains rather than by the broader enabled-C2P protocol.
+
+No C2P+ row is eligible for a canonical paper16 aggregate or figure.  The
+separate-tag port is a new, explicitly named architectural counterfactual; its
+value here is causal diagnosis and a possible follow-on design point.
