@@ -198,3 +198,9 @@ implication is specific: do not make a fixed global candidate budget the C2P+
 default.  The next mechanism should use per-request evidence (candidate
 quality, distance/order, or miss criticality) to select the confirmation
 depth; a later experiment can compare that policy against these three anchors.
+
+The approved next stage is documented in
+[`c2p_adaptive_probe_policy.md`](c2p_adaptive_probe_policy.md).  It first
+records ordinal, offline PC-hash, and one-bit resource observations under the
+unchanged exhaustive C2P+ path.  It does not yet select or evaluate an
+adaptive policy.
