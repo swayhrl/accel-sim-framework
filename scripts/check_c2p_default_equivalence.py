@@ -20,11 +20,24 @@ from pathlib import Path
 
 DEFAULT_ROWS = 5120
 DEFAULT_HASHES = 4
-IGNORED_NEW_ZERO_COUNTERS = {
+# These fields were added as observability-only C2P diagnostics after a
+# subset of the long paper16 replays had already started.  They do not change
+# the default m5120-k4 execution: all architectural counters (cycles, L2
+# accesses, probes, hits, and avoided requests) remain compared bit-for-bit.
+# If both binaries report one of these fields it is still compared exactly;
+# only an absent old-binary field is ignored.
+IGNORED_ABSENT_DIAGNOSTIC_COUNTERS = {
     "c2p_ccd_false_positive",
     "c2p_ccd_false_negative",
     "c2p_ccd_true_positive",
     "c2p_ccd_true_negative",
+    "c2p_peer_probe_hits",
+    "c2p_peer_probe_misses",
+    "c2p_target_probe_port_busy_cycles",
+    "c2p_target_probe_queue_wait_cycles",
+    "c2p_target_probe_queue_full_cycles",
+    "c2p_requester_fill_wait_cycles",
+    "c2p_fallback_queue",
 }
 
 
@@ -121,9 +134,9 @@ def main():
         case_mismatches = []
         for key in compared:
             left, right = primary.get(key), reference.get(key)
-            if left is None and key in IGNORED_NEW_ZERO_COUNTERS and right == 0:
+            if left is None and key in IGNORED_ABSENT_DIAGNOSTIC_COUNTERS:
                 continue
-            if right is None and key in IGNORED_NEW_ZERO_COUNTERS and left == 0:
+            if right is None and key in IGNORED_ABSENT_DIAGNOSTIC_COUNTERS:
                 continue
             if left != right:
                 case_mismatches.append(f"{key}: {left} != {right}")

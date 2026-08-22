@@ -458,10 +458,18 @@ def main():
             # explicitly modelled query pressure.  A non-zero bypass value
             # therefore identifies a pre-backpressure or mixed-semantics run
             # that is ineligible for the final comparator figures.
-            if mode == "ring" and value(data, "c2p_queries_queue_bypass") not in ("", "0"):
+            # ``read_summary`` stores counters as integers.  Accept a missing
+            # legacy field or the architectural zero, and reject only an
+            # actual lower-L2 escape.  Check both finite RING queues: an
+            # update-queue escape would also mix old semantics into Fig.10--14.
+            if mode == "ring" and value(data, "c2p_queries_queue_bypass") not in ("", 0):
                 invariant_failures.append(
                     f"{case}/ring: queue bypass "
                     f"({value(data, 'c2p_queries_queue_bypass')}) is not allowed")
+            if mode == "ring" and value(data, "c2p_updates_queue_bypass") not in ("", 0):
+                invariant_failures.append(
+                    f"{case}/ring: update queue bypass "
+                    f"({value(data, 'c2p_updates_queue_bypass')}) is not allowed")
 
         baseline_l2 = value(baseline, "l2_total_cache_accesses")
         redundancy = ratio(value(oracle, "c2p_oracle_peer_hits"),

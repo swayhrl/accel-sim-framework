@@ -48,8 +48,11 @@ ccd_supplemental=("$repo_root/hw_run/c2p-paper16-ccd-refresh-v2-20260821")
 # discovery FIFO was full.  A correct RING keeps that miss at the L1 head
 # until the FIFO drains.  Do not mix the old measurements into final figures.
 ring_root="$repo_root/hw_run/c2p-ring-backpressure-v1-20260821"
-sweep_root="$repo_root/hw_run/c2p-paper16-fp-sweep-v1-20260821"
-sweep_supplemental=("$repo_root/hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821")
+# The parallel v2 replay is the complete 4x16 sweep produced by the final
+# parameterized binary.  The older root has two stale cutcp points from a
+# prior binary family, so retain it only as an auditable fallback.
+sweep_root="$repo_root/hw_run/c2p-paper16-fp-sweep-parallel-v2-20260821"
+sweep_supplemental=("$repo_root/hw_run/c2p-paper16-fp-sweep-v1-20260821")
 queue_root="$repo_root/hw_run/c2p-btree-query-sensitivity-v1-20260821"
 analysis_dir="$repo_root/hw_run/c2p-paper16-analysis-final-v7-20260821"
 figures_dir="$repo_root/hw_run/c2p-paper16-figures-final-v7-20260821"

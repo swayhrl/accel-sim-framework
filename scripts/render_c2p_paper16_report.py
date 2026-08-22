@@ -15,10 +15,6 @@ PAPER_TARGETS = {
     "R0S1": "C2P about -2.0%; ATA -31.7%; RING -19.3%; CCD +0.4%",
     "R1S0/R1S1": "C2P normalized L2 access 53.4% / 69.8%",
 }
-MISSING_TRACES = (
-    "ISPASS: BFS, LIB, LPS, RAY",
-    "Pannotia: color_max, fw_block, mis, pagerank",
-)
 
 
 def read_csv(path):
@@ -274,11 +270,14 @@ def main():
                 row["c2p_queries_queue_bypass"],
                 row["c2p_fallback_probe_timeout"]))
 
-    lines.extend(["", "## Explicitly unavailable paper traces", ""])
-    lines.extend(f"- {entry}" for entry in MISSING_TRACES)
-    lines.extend(["", "These eight workloads have no compatible locally staged or public "
-                  "NVBit/Accel-Sim replay traces. They are recorded as missing rather "
-                  "than substituted with similarly named workloads."])
+    lines.extend(["", "## Separate V100 extension set", "",
+                  "The ISPASS (BFS, LIB, LPS, RAY) and Pannotia "
+                  "(color_max, fw_block, mis, pagerank) traces are now available as "
+                  "a V100-generated extension set. They are deliberately excluded "
+                  "from this canonical 16-workload aggregate: their trace capture, "
+                  "inputs, hashes, compatibility, uncapped baseline, seven-mode, and "
+                  "L2=50 evidence are audited independently by the V100 extension "
+                  "closeout."])
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text("\n".join(lines) + "\n")
 
