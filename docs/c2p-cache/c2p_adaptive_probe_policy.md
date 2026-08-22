@@ -95,7 +95,7 @@ policy from an inherently unhelpful candidate tail:
 
 | Counter family | Diagnosis it enables |
 |---|---|
-| `c2p_adaptive_{first,predictor,exploration}_probe_{hits,misses}` | Value of compulsory first probes, learned probes, and exploration separately |
+| `c2p_adaptive_{first,predictor,exploration}_probe_{hits,misses,timeouts}` | Value of compulsory first probes, learned probes, and exploration separately; target-FIFO timeouts are a third issued-probe outcome rather than silently lost accounting |
 | `c2p_adaptive_continue_{predictor,exploration}` | How much depth is policy-selected versus forced for learning |
 | `c2p_adaptive_stop_{predictor,hard_cap}` | Whether the policy stops early or simply reaches the architectural cap |
 | `c2p_adaptive_stop_{later_peer,no_later_peer}` | At an adaptive stop, whether a remaining exact candidate could have produced a remote hit (lost opportunity) or would only have been a false-positive tail (saved work) |

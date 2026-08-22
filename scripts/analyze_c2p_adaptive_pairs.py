@@ -21,10 +21,13 @@ ADAPT = (
     "c2p_adaptive_stop_remaining_candidates",
     "c2p_adaptive_stop_next_peer_distance_total",
     "c2p_adaptive_first_probe_hits", "c2p_adaptive_first_probe_misses",
+    "c2p_adaptive_first_probe_timeouts",
     "c2p_adaptive_predictor_probe_hits",
     "c2p_adaptive_predictor_probe_misses",
+    "c2p_adaptive_predictor_probe_timeouts",
     "c2p_adaptive_exploration_probe_hits",
     "c2p_adaptive_exploration_probe_misses",
+    "c2p_adaptive_exploration_probe_timeouts",
 )
 
 
@@ -83,10 +86,13 @@ def main():
 
         issued = (adaptive["c2p_adaptive_first_probe_hits"] +
                   adaptive["c2p_adaptive_first_probe_misses"] +
+                  adaptive["c2p_adaptive_first_probe_timeouts"] +
                   adaptive["c2p_adaptive_predictor_probe_hits"] +
                   adaptive["c2p_adaptive_predictor_probe_misses"] +
+                  adaptive["c2p_adaptive_predictor_probe_timeouts"] +
                   adaptive["c2p_adaptive_exploration_probe_hits"] +
-                  adaptive["c2p_adaptive_exploration_probe_misses"])
+                  adaptive["c2p_adaptive_exploration_probe_misses"] +
+                  adaptive["c2p_adaptive_exploration_probe_timeouts"])
         if issued != adaptive["c2p_peer_probes"]:
             failures.append(f"{case}/adaptive: issue-reason probes {issued} != "
                             f"peer probes {adaptive['c2p_peer_probes']}")
