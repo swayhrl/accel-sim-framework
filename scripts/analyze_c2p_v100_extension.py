@@ -113,6 +113,10 @@ def inspect_run(roots, case, mode, expected_l2):
             errors.append(f"{key}={got.get(key, '<absent>')} expected {expected}")
     if got.get("-gpgpu_l2_rop_latency") != str(expected_l2):
         errors.append("L2 ROP latency mismatch")
+    if data.get("gpu_tot_sim_cycle", 0) <= 0:
+        errors.append("nonpositive simulated cycle count")
+    if data.get("gpu_sim_insn", 0) <= 0:
+        errors.append("nonpositive simulated instruction count")
     remote = data.get("c2p_remote_hits", 0)
     avoided = data.get("c2p_l2_requests_avoided", 0)
     if mode not in ("baseline", "oracle") and remote != avoided:
@@ -216,10 +220,11 @@ def main():
                     "remote_hits": data.get("c2p_remote_hits", ""),
                     "l2_avoided": data.get("c2p_l2_requests_avoided", ""),
                 })
-        baseline_main = checks["baseline"][0]["data"]
-        oracle_main = checks["oracle"][0]["data"]
-        if baseline_main and oracle_main and baseline_main.get("gpu_tot_sim_cycle") != oracle_main.get("gpu_tot_sim_cycle"):
-            failures.append(f"{item['case']}: main oracle cycles differ from baseline")
+        for label, index in (("main", 0), ("l2_50", 1)):
+            baseline = checks["baseline"][index]["data"]
+            oracle = checks["oracle"][index]["data"]
+            if baseline and oracle and baseline.get("gpu_tot_sim_cycle") != oracle.get("gpu_tot_sim_cycle"):
+                failures.append(f"{item['case']}: {label} oracle cycles differ from baseline")
         provenance.append({
             "case": item["case"],
             "suite": item["suite"],
@@ -250,7 +255,7 @@ def main():
               f"- Mode roots checked: {total}; passed: {passed}; incomplete/failed: {total - passed}.",
               ("- This report is deliberately separate from the canonical paper16 aggregate; "
                f"the {len(paper16_case_ids)} paper16 rows contain no V100 extension case."),
-              "- V100 trace provenance, input/archive hashes, uncapped baselines, mode contracts, L2 latency, exit markers, remote-hit conservation, and Ring backpressure are checked.",
+              "- V100 trace provenance, input/archive hashes, uncapped baselines, mode contracts, nonzero execution, L2 latency, exit markers, oracle equivalence, remote-hit conservation, and Ring backpressure are checked.",
               ""]
     report += ["## Trace provenance and progress", "",
                "| case | suite | input | input SHA-256 | V100 trace provenance | archive SHA valid | uncapped baseline | main | L2=50 |",
