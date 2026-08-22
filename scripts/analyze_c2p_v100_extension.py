@@ -88,6 +88,8 @@ def inspect_run(root, case, mode, expected_l2):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--baseline-root", type=Path, required=True,
+                        help="uncapped baseline runs, one baseline per extension case")
     parser.add_argument("--main-root", type=Path, required=True)
     parser.add_argument("--l2-50-root", type=Path, required=True)
     parser.add_argument("--archive-root", type=Path, required=True)
@@ -105,6 +107,22 @@ def main():
         if not archive_ok:
             failures.append(f"{item['case']}: archive hash mismatch or absent")
         checks = {}
+        uncapped = inspect_run(args.baseline_root, item["case"], "baseline", 200)
+        if uncapped["status"] != "pass":
+            failures.append(
+                f"{item['case']}/uncapped_baseline: "
+                f"{uncapped['status']} {uncapped['reason']}")
+        data = uncapped["data"]
+        rows.append({
+            "case": item["case"], "suite": item["suite"], "mode": "baseline",
+            "archive_sha256_ok": archive_ok, "root": "uncapped_baseline",
+            "status": uncapped["status"], "reason": uncapped["reason"],
+            "cycles": data.get("gpu_tot_sim_cycle", ""),
+            "instructions": data.get("gpu_sim_insn", ""),
+            "l2_accesses": data.get("l2_total_cache_accesses", ""),
+            "remote_hits": data.get("c2p_remote_hits", ""),
+            "l2_avoided": data.get("c2p_l2_requests_avoided", ""),
+        })
         for mode in MODES:
             main_run = inspect_run(args.main_root, item["case"], mode, 200)
             fast_run = inspect_run(args.l2_50_root, item["case"], mode, 50)
@@ -134,6 +152,7 @@ def main():
             "input_sha256": item["input_sha256"],
             "archive": item["archive"],
             "archive_sha256_ok": archive_ok,
+            "uncapped_baseline": uncapped["status"],
             "main_passed": sum(run[0]["status"] == "pass" for run in checks.values()),
             "l2_50_passed": sum(run[1]["status"] == "pass" for run in checks.values()),
         })
@@ -150,15 +169,15 @@ def main():
     report = ["# V100 C2P extension audit", "",
               f"- Mode roots checked: {total}; passed: {passed}; incomplete/failed: {total - passed}.",
               "- This report is deliberately separate from the canonical paper16 aggregate.",
-              "- Archive hashes, mode contracts, L2 latency, exit markers, remote-hit conservation, and Ring backpressure are checked.",
+              "- Archive hashes, uncapped baselines, mode contracts, L2 latency, exit markers, remote-hit conservation, and Ring backpressure are checked.",
               ""]
     report += ["## Trace provenance and progress", "",
-               "| case | suite | input | input SHA-256 | archive SHA valid | main | L2=50 |",
-               "|---|---|---|---|---:|---:|---:|"]
+               "| case | suite | input | input SHA-256 | archive SHA valid | uncapped baseline | main | L2=50 |",
+               "|---|---|---|---|---:|---:|---:|---:|"]
     for item in provenance:
         report.append(
             "| {case} | {suite} | `{command/input}` | `{input_sha256}` | {archive_sha256_ok} | "
-            "{main_passed}/7 | {l2_50_passed}/7 |".format(**item))
+            "{uncapped_baseline} | {main_passed}/7 | {l2_50_passed}/7 |".format(**item))
     report += ["", "`extension_provenance.csv` carries the same provenance and progress in machine-readable form.", ""]
     if failures:
         report += ["## Pending or failed checks", ""] + [f"- {item}" for item in failures]

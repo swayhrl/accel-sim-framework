@@ -32,6 +32,7 @@ done
 manifest="$repo_root/configs/c2p-cache/v100_extension_workloads.tsv"
 main_root="$repo_root/hw_run/c2p-v100-main-matrix-v1-20260822"
 fast_root="$repo_root/hw_run/c2p-v100-l2-50-matrix-v1-20260822"
+baseline_root="$repo_root/hw_run/c2p-v100-baseline-full-v1-20260822"
 archive_root="/workspace/worktrees/accel-sim-decoupled-l2/hw_run/tls-c2p-v100-20260822/archives"
 out_dir="$repo_root/hw_run/c2p-v100-extension-audit-v1-20260822"
 lock_dir="$repo_root/hw_run/.c2p-v100-extension-closeout.lock"
@@ -44,6 +45,8 @@ collect_missing() {
   local case_name _ mode
   while IFS=$'\t' read -r case_name _; do
     [[ -z "$case_name" || "$case_name" == case || "$case_name" == \#* ]] && continue
+    [[ -f "$baseline_root/$case_name/baseline/summary.txt" ]] ||
+      missing+=("uncapped-baseline:$case_name")
     for mode in "${modes[@]}"; do
       [[ -f "$main_root/$case_name/$mode/summary.txt" ]] ||
         missing+=("main:$case_name/$mode")
@@ -64,6 +67,7 @@ while :; do
       printf 'all V100 extension roots found at %s\n' "$(date -Is)"
       python3 "$repo_root/scripts/analyze_c2p_v100_extension.py" \
         --manifest "$manifest" \
+        --baseline-root "$baseline_root" \
         --main-root "$main_root" \
         --l2-50-root "$fast_root" \
         --archive-root "$archive_root" \
