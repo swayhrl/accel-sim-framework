@@ -15,6 +15,7 @@ COUNTERS = (
     "gpu_tot_sim_cycle", "gpu_sim_insn", "c2p_queries_accepted",
     "c2p_candidate_total", "c2p_candidate_queries", "c2p_peer_probes",
     "c2p_remote_hits", "c2p_l2_requests_avoided",
+    "c2p_target_tag_port_busy_cycles",
     "c2p_residence_encode_cycles", "c2p_residence_rows_cycles",
     "c2p_residence_match_cycles", "c2p_residence_ready_cycles",
     "c2p_residence_target_probe_cycles", "c2p_residence_probe_cycles",
@@ -38,7 +39,10 @@ OBSERVATION_FIELDS = tuple(field for field in COUNTERS
                            field.startswith("c2p_peer_gained_"))
 # Added after the first Stage-A binary.  A zero is semantically exact for a
 # pre-budget run rather than a missing measurement.
-OPTIONAL_COUNTER_DEFAULTS = {"c2p_fallback_candidate_budget": 0}
+OPTIONAL_COUNTER_DEFAULTS = {
+    "c2p_fallback_candidate_budget": 0,
+    "c2p_target_tag_port_busy_cycles": 0,
+}
 
 
 def read_summary(path):

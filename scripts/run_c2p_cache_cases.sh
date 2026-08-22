@@ -175,6 +175,7 @@ for mode in ${modes//,/ }; do
     /^c2p_peer_probe_misses = / { probe_misses=$3 }
     /^c2p_peer_l1_accesses = / { peer_l1_accesses=$3 }
     /^c2p_target_probe_port_busy_cycles = / { target_port_busy_cycles=$3 }
+    /^c2p_target_tag_port_busy_cycles = / { target_tag_port_busy_cycles=$3 }
     /^c2p_target_probe_queue_wait_cycles = / { target_queue_wait_cycles=$3 }
     /^c2p_target_probe_queue_full_cycles = / { target_queue_full_cycles=$3 }
     /^c2p_requester_fill_wait_cycles = / { requester_fill_wait_cycles=$3 }
@@ -241,6 +242,7 @@ for mode in ${modes//,/ }; do
       printf "c2p_peer_probe_misses = %s\n", probe_misses
       printf "c2p_peer_l1_accesses = %s\n", peer_l1_accesses
       printf "c2p_target_probe_port_busy_cycles = %s\n", target_port_busy_cycles
+      printf "c2p_target_tag_port_busy_cycles = %s\n", target_tag_port_busy_cycles
       printf "c2p_target_probe_queue_wait_cycles = %s\n", target_queue_wait_cycles
       printf "c2p_target_probe_queue_full_cycles = %s\n", target_queue_full_cycles
       printf "c2p_requester_fill_wait_cycles = %s\n", requester_fill_wait_cycles

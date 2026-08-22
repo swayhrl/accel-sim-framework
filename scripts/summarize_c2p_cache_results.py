@@ -16,6 +16,7 @@ FIELDS = (
     "c2p_peer_probe_hits", "c2p_peer_probe_misses",
     "c2p_peer_l1_accesses",
     "c2p_target_probe_port_busy_cycles",
+    "c2p_target_tag_port_busy_cycles",
     "c2p_target_probe_queue_wait_cycles",
     "c2p_target_probe_queue_full_cycles",
     "c2p_requester_fill_wait_cycles",
