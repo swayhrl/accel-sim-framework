@@ -140,15 +140,32 @@ def main():
     parser.add_argument("--require-primary-case", action="append", default=[],
                         help="case that must use the first main/L2=50 root; do not fall back")
     parser.add_argument("--archive-root", type=Path, required=True)
+    parser.add_argument("--paper16-cases", type=Path, required=True,
+                        help="canonical paper16 case CSV; must exclude this extension")
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args()
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
+    if not args.paper16_cases.is_file():
+        raise SystemExit(f"canonical paper16 case CSV absent: {args.paper16_cases}")
+    with args.paper16_cases.open(newline="") as stream:
+        paper16_rows = list(csv.DictReader(stream))
+    if not paper16_rows or "case" not in paper16_rows[0]:
+        raise SystemExit(f"canonical paper16 case CSV has no case column: {args.paper16_cases}")
+    paper16_case_ids = {row["case"] for row in paper16_rows}
+    if len(paper16_rows) != 16 or len(paper16_case_ids) != 16:
+        raise SystemExit(
+            "canonical paper16 aggregate must contain exactly 16 unique cases; "
+            f"got rows={len(paper16_rows)} unique={len(paper16_case_ids)}")
+
     rows = []
     failures = []
     provenance = []
     for item in manifest_rows(args.manifest):
+        if item["case"] in paper16_case_ids:
+            failures.append(
+                f"{item['case']}: V100 extension case leaked into canonical paper16 aggregate")
         archive = args.archive_root / item["archive"]
         archive_ok = archive.is_file() and sha256(archive) == item["archive_sha256"]
         if not archive_ok:
@@ -231,7 +248,8 @@ def main():
     passed = sum(row["status"] == "pass" for row in rows)
     report = ["# V100 C2P extension audit", "",
               f"- Mode roots checked: {total}; passed: {passed}; incomplete/failed: {total - passed}.",
-              "- This report is deliberately separate from the canonical paper16 aggregate.",
+              ("- This report is deliberately separate from the canonical paper16 aggregate; "
+               f"the {len(paper16_case_ids)} paper16 rows contain no V100 extension case."),
               "- V100 trace provenance, input/archive hashes, uncapped baselines, mode contracts, L2 latency, exit markers, remote-hit conservation, and Ring backpressure are checked.",
               ""]
     report += ["## Trace provenance and progress", "",

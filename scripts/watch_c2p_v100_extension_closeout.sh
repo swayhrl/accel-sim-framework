@@ -44,6 +44,7 @@ fast_roots=(
 baseline_root="$repo_root/hw_run/c2p-v100-baseline-full-v1-20260822"
 archive_root="/workspace/worktrees/accel-sim-decoupled-l2/hw_run/tls-c2p-v100-20260822/archives"
 trace_stage_root="$repo_root/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage"
+paper16_cases="$repo_root/hw_run/c2p-paper16-analysis-final-v7-20260821/paper16_cases.csv"
 out_dir="$repo_root/hw_run/c2p-v100-extension-audit-v1-20260822"
 lock_dir="$repo_root/hw_run/.c2p-v100-extension-closeout.lock"
 log="$repo_root/hw_run/c2p-v100-extension-closeout.log"
@@ -102,6 +103,7 @@ while :; do
         --trace-stage-root "$trace_stage_root"
         --baseline-root "$baseline_root"
         --archive-root "$archive_root"
+        --paper16-cases "$paper16_cases"
         --out-dir "$out_dir"
       )
       for root in "${main_roots[@]}"; do audit_args+=(--main-root "$root"); done
