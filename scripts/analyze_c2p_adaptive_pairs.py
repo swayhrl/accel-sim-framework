@@ -29,6 +29,14 @@ ADAPT = (
     "c2p_adaptive_exploration_probe_misses",
     "c2p_adaptive_exploration_probe_timeouts",
 )
+PACKAGE = (
+    "c2p_adaptive_package_opportunities",
+    "c2p_adaptive_package_start_predictor",
+    "c2p_adaptive_package_start_exploration",
+    "c2p_adaptive_package_stop_predictor",
+    "c2p_adaptive_package_hit", "c2p_adaptive_package_no_hit",
+    "c2p_adaptive_package_timeout",
+)
 OBSERVE = tuple(
     [f"c2p_adaptive_tail_bin_{candidate_bin}_{field}"
      for candidate_bin in range(4)
@@ -118,6 +126,23 @@ def main():
                       adaptive["c2p_adaptive_stop_no_later_peer"])
         if stops != classified:
             failures.append(f"{case}/adaptive: stopped-tail classification failure")
+        package_present = any(field in control or field in adaptive for field in PACKAGE)
+        if package_present:
+            package_missing = [field for field in PACKAGE
+                               if field not in control or field not in adaptive]
+            if package_missing:
+                failures.append(f"{case}: incomplete package counters")
+            else:
+                package_starts = (adaptive["c2p_adaptive_package_start_predictor"] +
+                                  adaptive["c2p_adaptive_package_start_exploration"])
+                package_decisions = package_starts + adaptive["c2p_adaptive_package_stop_predictor"]
+                if package_decisions != adaptive["c2p_adaptive_package_opportunities"]:
+                    failures.append(f"{case}/adaptive: package decision partition failure")
+                package_outcomes = (adaptive["c2p_adaptive_package_hit"] +
+                                    adaptive["c2p_adaptive_package_no_hit"] +
+                                    adaptive["c2p_adaptive_package_timeout"])
+                if package_starts != package_outcomes:
+                    failures.append(f"{case}/adaptive: package outcome partition failure")
         for label, values in (("control", control), ("adaptive", adaptive)):
             for candidate_bin in range(4):
                 prefix = f"c2p_adaptive_tail_bin_{candidate_bin}_"
@@ -143,8 +168,8 @@ def main():
         for field in BASE:
             row[f"control_{field}"] = control[field]
             row[f"adaptive_{field}"] = adaptive[field]
-        for field in ADAPT:
-            row[field] = adaptive[field]
+        for field in (*ADAPT, *PACKAGE):
+            row[field] = adaptive.get(field, 0)
         row["cycle_delta"] = adaptive["gpu_tot_sim_cycle"] - control["gpu_tot_sim_cycle"]
         row["cycle_delta_pct"] = pct(row["cycle_delta"], control["gpu_tot_sim_cycle"])
         row["l2_delta"] = (adaptive["l2_total_cache_accesses"] -
@@ -166,7 +191,7 @@ def main():
             tail_rows.append(tail_row)
 
     columns = ["case"] + [f"{variant}_{field}" for variant in ("control", "adaptive")
-                            for field in BASE] + list(ADAPT) + [
+                            for field in BASE] + list(ADAPT) + list(PACKAGE) + [
         "cycle_delta", "cycle_delta_pct", "l2_delta", "probe_delta",
         "saved_tail_rate", "lost_peer_rate"]
     args.csv.parent.mkdir(parents=True, exist_ok=True)
@@ -189,13 +214,15 @@ def main():
              "configuration; only adaptive confirmation is enabled in the right "
              "hand run.", "",
              "| Case | Cycle delta | L2 delta | Probe delta | Saved-tail stops | "
-             "Lost-peer stops | Predictor / exploration continuation |",
-             "|---|---:|---:|---:|---:|---:|---:|"]
+             "Lost-peer stops | Package starts / hits | Predictor / exploration continuation |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|"]
     for row in rows:
         lines.append(
             f"| {row['case']} | {row['cycle_delta']} ({row['cycle_delta_pct']}%) | "
             f"{row['l2_delta']} | {row['probe_delta']} | "
             f"{row['saved_tail_rate']}% | {row['lost_peer_rate']}% | "
+            f"{row['c2p_adaptive_package_start_predictor'] + row['c2p_adaptive_package_start_exploration']} / "
+            f"{row['c2p_adaptive_package_hit']} | "
             f"{row['c2p_adaptive_continue_predictor']} / "
             f"{row['c2p_adaptive_continue_exploration']} |")
     if failures:

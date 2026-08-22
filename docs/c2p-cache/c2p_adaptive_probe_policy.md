@@ -152,6 +152,33 @@ summary. The analyzer verifies that, independently for both pair members and
 all four bins, opportunities equal later-peer plus no-later-peer and later
 peers equal the distance histogram total.
 
+## Stage-4 bin-aware confirmation package
+
+Stage-3 observation shows that a deep candidate set cannot be evaluated only
+by the probability that its *next* candidate hits. A later peer may have
+modest next-probe probability but high probability within four confirmations.
+Stage 4 keeps the four bins and adds a separate 3-bit
+`PC-hash x candidate-bin` package score for bins `5--8` and `9+`.
+
+After the mandatory first probe misses, a high-bin request either stops or
+starts one bounded package. A selected package issues candidates through
+ordinal four without repeating the per-probe decision. A package hit adds 2,
+a completed no-hit package subtracts 1, and a timeout is counted but does not
+train the score. Candidate bins `1--2` and `3--4` retain the Stage-3
+per-probe policy. The package score is initialized to 4 and shares the same
+bounded exploration policy; it contains no future-peer oracle in its runtime
+decision.
+
+Package diagnostics partition every opportunity into predictor/exploration
+start or stop, and every start into hit/no-hit/timeout. Run with:
+
+```bash
+scripts/run_c2p_adaptive_pairs.sh \
+  --out-root hw_run/c2p-adaptive-package-v1-20260823 \
+  --control-config configs/c2p-cache/c2p-adaptive-package-control.config \
+  --adaptive-config configs/c2p-cache/c2p-adaptive-package-policy.config
+```
+
 ## Decision gates
 
 Only after Stage 1 completes normally and all counters conserve may an

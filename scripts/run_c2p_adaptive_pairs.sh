@@ -4,11 +4,12 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_adaptive_pairs.sh [--out-root DIR] [--pair-jobs N]
-       [--control-config FILE] [--adaptive-config FILE]
+       [--control-config FILE] [--adaptive-config FILE] [--build]
 
 Run same-binary exhaustive C2P+ controls and adaptive C2P+ pairs for the
 seven-workload diagnostic set.  Build the selected C2P backend and accel-sim
-before launching.  C2P_GPGPUSIM_ROOT must name that backend.
+before launching with --build when its public headers changed.
+C2P_GPGPUSIM_ROOT must name that backend.
 EOF
 }
 
@@ -17,12 +18,14 @@ out_root="$repo_root/hw_run/c2p-adaptive-pairs-v1-20260822"
 pair_jobs=7
 control_config=""
 adaptive_config=""
+build=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --out-root) out_root="$2"; shift 2 ;;
     --pair-jobs) pair_jobs="$2"; shift 2 ;;
     --control-config) control_config="$2"; shift 2 ;;
     --adaptive-config) adaptive_config="$2"; shift 2 ;;
+    --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -52,6 +55,20 @@ declare -a cases=(
 mkdir -p "$out_root"
 [[ -f "$control_config" ]] || { echo "missing control config: $control_config" >&2; exit 2; }
 [[ -f "$adaptive_config" ]] || { echo "missing adaptive config: $adaptive_config" >&2; exit 2; }
+if (( build )); then
+  # c2p_cache is a public C++ configuration type.  Rebuild the front end once
+  # here, before the paired children copy their simulator images; otherwise a
+  # stale accel-sim binary can misparse a newer backend's class layout.
+  (
+    export GPGPUSIM_ROOT="$C2P_GPGPUSIM_ROOT"
+    set +u
+    source "$C2P_GPGPUSIM_ROOT/setup_environment" >/dev/null
+    export GPGPUSIM_SETUP_ENVIRONMENT_WAS_RUN=1
+    source "$repo_root/gpu-simulator/setup_environment.sh" >/dev/null
+    set -u
+    make -C "$repo_root/gpu-simulator" -j1
+  )
+fi
 run_one() {
   local case_name="$1" trace="$2" variant="$3" mode_config="$4"
   "$repo_root/scripts/run_c2p_cache_cases.sh" --trace "$trace" --config "$base_config" \
