@@ -134,9 +134,12 @@ def main():
         "enable the common candidate-bin, threshold, exploration, and four-probe "
         "package policy. The backend commit implements their single 64 x 4 x 3-bit "
         "table selector. |",
-        "| Pilot before sweep | The separate clean B+tree/BFS/LPS pilot at "
-        f"`{args.pilot_root}` passed the same normal-exit, provenance, "
-        "remote-hit, and conservation checks before this matrix was started. |",
+        "| Pilot qualification | A pre-dispatch B+tree/BFS/LPS pilot exercised "
+        "the same policy contract.  The final-binary refresh at "
+        f"`{args.pilot_root}` passed normal-exit, provenance, remote-hit, and "
+        "conservation checks; final qualification uses this refreshed evidence. "
+        "The superseded pilot and the reason for replacement are retained in the "
+        "failed/excluded record below. |",
         "| Full scope and separated aggregates | CSV has exactly 16 canonical plus "
         "eight extension qualified rows; the aggregate below keeps 16, 8, and 24 "
         "views separate. |", "",
