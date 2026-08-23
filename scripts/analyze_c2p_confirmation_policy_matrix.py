@@ -145,6 +145,18 @@ def expected_options(variant):
                 "1" if variant == "addr" else "0"}
 
 
+def manifest_cases(path):
+    """Return the ordered workload names from a checked-in matrix manifest."""
+    cases = []
+    for line in path.read_text().splitlines():
+        fields = line.split("\t")
+        if not fields or not fields[0] or fields[0] == "case" or \
+                fields[0].startswith("#"):
+            continue
+        cases.append(fields[0])
+    return cases
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", required=True, type=Path)
@@ -152,13 +164,33 @@ def main():
     parser.add_argument("--markdown", required=True, type=Path)
     args = parser.parse_args()
 
+    repo_root = Path(__file__).resolve().parent.parent
+    expected_cases = {
+        "canonical": manifest_cases(
+            repo_root / "configs/c2p-cache/paper16_workloads.tsv"),
+        "extension": manifest_cases(
+            repo_root / "configs/c2p-cache/v100_extension_workloads.tsv"),
+    }
+
     rows, failures = [], []
     for tier in TIERS:
         tier_root = args.root / tier
         if not tier_root.is_dir():
             failures.append(f"missing tier directory: {tier}")
             continue
-        for case_dir in sorted(path for path in tier_root.iterdir() if path.is_dir()):
+        case_dirs = {path.name: path for path in tier_root.iterdir() if path.is_dir()}
+        actual_cases = set(case_dirs)
+        required_cases = set(expected_cases[tier])
+        missing_cases = sorted(required_cases - actual_cases)
+        extra_cases = sorted(actual_cases - required_cases)
+        if missing_cases:
+            failures.append(f"{tier}: missing manifest cases: {', '.join(missing_cases)}")
+        if extra_cases:
+            failures.append(f"{tier}: unexpected cases: {', '.join(extra_cases)}")
+        for case_name in expected_cases[tier]:
+            case_dir = case_dirs.get(case_name)
+            if case_dir is None:
+                continue
             runs, provenance = {}, {}
             for variant in VARIANTS:
                 run_dir = case_dir / variant / "c2p"
