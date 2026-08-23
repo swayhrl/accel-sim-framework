@@ -187,10 +187,16 @@ def main():
               "AddrTopo is more direct than PC-hash at L2 because line address and requester "
               "identity are naturally available at request admission.", "",
               "## Failed/excluded workload record", "",
-              "None.  The strict audit found one qualified control/PC/AddrTopo triplet for "
-              "each of the 16 canonical and eight V100-extension manifest entries.  No "
-              "partially completed, failed, provenance-mismatched, or invariant-failing run "
-              "is included in any aggregate.", "",
+              "No v2 manifest workload is excluded: the strict audit found one qualified "
+              "control/PC/AddrTopo triplet for each of the 16 canonical and eight "
+              "V100-extension entries. No partially completed, failed, provenance-mismatched, "
+              "or invariant-failing v2 run is included in any aggregate.", "",
+              "The earlier `c2p-confirmation-policy-v1-20260823` campaign is intentionally "
+              "excluded from this result, even where it completed normally. Its low "
+              "candidate-count bins used a PC-hash × ordinal side table in addition to the "
+              "package table, so it is not a capacity-matched PC-versus-AddrTopo comparison. "
+              "It is retained only as counterexample diagnostic evidence in "
+              "`docs/c2p-cache/c2p_confirmation_policy_counterexamples_20260823.md`.", "",
               "PPA/power and wider parameter sweeps remain outside this confirmation-policy "
               "task."]
     args.output.write_text("\n".join(lines) + "\n")
