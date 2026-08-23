@@ -230,6 +230,12 @@ def main():
                 failures.append(f"missing tier directory: {tier}")
             continue
         case_dirs = {path.name: path for path in tier_root.iterdir() if path.is_dir()}
+        # A selected subset is a qualified partial audit of a shared campaign
+        # root.  Other manifest cases may already be running or complete there
+        # and must not turn that scoped audit into an "unexpected case" error.
+        if selected_cases:
+            case_dirs = {name: path for name, path in case_dirs.items()
+                         if name in selected_cases}
         actual_cases = set(case_dirs)
         required_cases = set(expected_cases[tier])
         missing_cases = sorted(required_cases - actual_cases)
