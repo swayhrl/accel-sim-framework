@@ -28,6 +28,17 @@ def provenance(root, row):
     return values
 
 
+def manifest_cases(path):
+    cases = []
+    for line in path.read_text().splitlines():
+        fields = line.split("\t")
+        if not fields or not fields[0] or fields[0] == "case" or \
+                fields[0].startswith("#"):
+            continue
+        cases.append(fields[0])
+    return cases
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", required=True, type=Path)
@@ -40,11 +51,25 @@ def main():
         raise SystemExit("strict matrix audit has not passed")
     with matrix.open() as stream:
         rows = list(csv.DictReader(stream))
-    expected = {"canonical": 16, "extension": 8}
-    for tier, count in expected.items():
-        actual = sum(row["tier"] == tier for row in rows)
-        if actual != count:
-            raise SystemExit(f"{tier}: expected {count} qualified rows, found {actual}")
+    repo_root = Path(__file__).resolve().parent.parent
+    expected = {
+        "canonical": manifest_cases(
+            repo_root / "configs/c2p-cache/paper16_workloads.tsv"),
+        "extension": manifest_cases(
+            repo_root / "configs/c2p-cache/v100_extension_workloads.tsv"),
+    }
+    for tier, cases in expected.items():
+        actual_cases = [row["case"] for row in rows if row["tier"] == tier]
+        if len(actual_cases) != len(cases):
+            raise SystemExit(
+                f"{tier}: expected {len(cases)} qualified rows, found "
+                f"{len(actual_cases)}")
+        if set(actual_cases) != set(cases):
+            missing = sorted(set(cases) - set(actual_cases))
+            unexpected = sorted(set(actual_cases) - set(cases))
+            raise SystemExit(
+                f"{tier}: manifest mismatch; missing={missing}, "
+                f"unexpected={unexpected}")
 
     grouped = defaultdict(list)
     for row in rows:
