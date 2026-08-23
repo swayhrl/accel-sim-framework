@@ -136,11 +136,11 @@ def main():
         "exploration, and four-probe package policy. The backend always allocates "
         "one 64 x 4 x 3-bit table; PC and AddrTopo select its feature hash. Resolved "
         "configs and zero ordinal-overflow counters prove the common cap. |",
-        "| Pilot qualification | A pre-dispatch B+tree/BFS/LPS pilot exercised "
-        "the same policy contract.  The final-binary refresh at "
+        "| Pilot qualification | A pre-dispatch B+tree/BFS/LPS cap-4 pilot exercised "
+        "the same policy contract. The qualified pilot at "
         f"`{args.pilot_root}` passed normal-exit, provenance, remote-hit, and "
-        "conservation checks; final qualification uses this refreshed evidence. "
-        "The superseded pilot and the reason for replacement are retained in the "
+        "conservation/cap checks; final qualification uses this evidence. "
+        "The superseded pilots and reasons for replacement are retained in the "
         "failed/excluded record below. |",
         "| Full scope and separated aggregates | CSV has exactly 16 canonical plus "
         "eight extension qualified rows; the aggregate below keeps 16, 8, and 24 "
@@ -226,12 +226,11 @@ def main():
               "package table, so it is not a capacity-matched PC-versus-AddrTopo comparison. "
               "It is retained only as counterexample diagnostic evidence in "
               "`docs/c2p-cache/c2p_confirmation_policy_counterexamples_20260823.md`.", "",
-              "The historical `c2p-confirmation-policy-v2-pilot-20260823` root is "
-              "also excluded from final qualification.  It used an earlier backend "
-              "binary before the final diagnostic/configuration additions.  The "
-              "current-binary B+tree/BFS/LPS replacement is "
-              "`c2p-confirmation-policy-v2-pilot-refresh-20260823`; its provenance "
-              "and strict audit are recorded in "
+              "Both `c2p-confirmation-policy-v2-pilot-20260823` and "
+              "`c2p-confirmation-policy-v2-pilot-refresh-20260823` are excluded "
+              "from final qualification. The former used an older backend, and both "
+              "used the now-rejected unbounded control configuration. The current "
+              "cap-4 B+tree/BFS/LPS pilot provenance and strict audit are recorded in "
               "`docs/c2p-cache/c2p_confirmation_policy_pilot_refresh_20260823.md`.", "",
               "PPA/power and wider parameter sweeps remain outside this confirmation-policy "
               "task."]
