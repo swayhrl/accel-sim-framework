@@ -113,7 +113,8 @@ def main():
         "matched frontend/backend binary and trace identity inside each triplet, "
         "resolved policy configuration, remote-hit/L2-avoidance conservation, "
         "probe-reason conservation, continuation/package partition conservation, "
-        "and package residual-opportunity conservation.", "",
+        "package residual-opportunity conservation, and no probe beyond the "
+        "common four-failed-probe limit.", "",
         f"- Backend commit: `{build_identity['gpgpusim_commit'][0]}`",
         f"- Simulator executable SHA-256: `{build_identity['sim_sha256'][0]}`",
         f"- `libcudart` SHA-256: `{build_identity['cudart_sha256'][0]}`",
@@ -130,10 +131,11 @@ def main():
         "PC-hash package, and AddrTopo package from one copied binary/trace "
         "triplet. The strict audit checks the only permitted configuration "
         "differences. |",
-        "| Capacity and policy parity | The resolved PC and AddrTopo configs each "
-        "enable the common candidate-bin, threshold, exploration, and four-probe "
-        "package policy. The backend commit implements their single 64 x 4 x 3-bit "
-        "table selector. |",
+        "| Capacity and policy parity | The control exhaustively scans within four "
+        "failed probes; PC and AddrTopo use the common candidate-bin, threshold, "
+        "exploration, and four-probe package policy. The backend always allocates "
+        "one 64 x 4 x 3-bit table; PC and AddrTopo select its feature hash. Resolved "
+        "configs and zero ordinal-overflow counters prove the common cap. |",
         "| Pilot qualification | A pre-dispatch B+tree/BFS/LPS pilot exercised "
         "the same policy contract.  The final-binary refresh at "
         f"`{args.pilot_root}` passed normal-exit, provenance, remote-hit, and "
@@ -188,11 +190,11 @@ def main():
     lines += ["", "## Reproduction", "",
               "```bash", "export C2P_GPGPUSIM_ROOT=/workspace/worktrees/gpgpu-sim-c2p-addr-observe",
               "scripts/run_c2p_confirmation_policy_matrix.sh \\",
-              "  --out-root hw_run/c2p-confirmation-policy-v2-20260823 --jobs 1",
+              "  --out-root hw_run/c2p-confirmation-policy-v3-cap4-20260823 --jobs 1",
               "python3 scripts/finalize_c2p_confirmation_policy_matrix.py \\",
-              "  --root hw_run/c2p-confirmation-policy-v2-20260823 \\",
-              "  --pilot-root hw_run/c2p-confirmation-policy-v2-pilot-20260823 \\",
-              "  --output hw_run/c2p-confirmation-policy-v2-20260823/final_report.md",
+              "  --root hw_run/c2p-confirmation-policy-v3-cap4-20260823 \\",
+              "  --pilot-root hw_run/c2p-confirmation-policy-v3-pilot-cap4-20260823 \\",
+              "  --output hw_run/c2p-confirmation-policy-v3-cap4-20260823/final_report.md",
               "```", "",
               "## RTL feasibility", "",
               "The AddrTopo package feature itself is RTL-feasible: it needs a line-address "
@@ -209,10 +211,15 @@ def main():
               "AddrTopo is more direct than PC-hash at L2 because line address and requester "
               "identity are naturally available at request admission.", "",
               "## Failed/excluded workload record", "",
-              "No v2 manifest workload is excluded: the strict audit found one qualified "
+              "No cap-4 manifest workload is excluded: the strict audit found one qualified "
               "control/PC/AddrTopo triplet for each of the 16 canonical and eight "
               "V100-extension entries. No partially completed, failed, provenance-mismatched, "
               "or invariant-failing v2 run is included in any aggregate.", "",
+              "The archived `c2p-confirmation-policy-v2-20260823-invalid-unbounded-control-"
+              "20260823-115532` matrix is excluded in full. Its control configuration set "
+              "`max_candidate_probes=0`, so it could scan beyond the shared four-probe "
+              "bound. It is retained solely to make the correction auditable; none of its "
+              "rows contribute to this report.", "",
               "The earlier `c2p-confirmation-policy-v1-20260823` campaign is intentionally "
               "excluded from this result, even where it completed normally. Its low "
               "candidate-count bins used a PC-hash × ordinal side table in addition to the "
