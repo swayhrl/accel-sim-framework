@@ -216,6 +216,13 @@ def main():
               "package table, so it is not a capacity-matched PC-versus-AddrTopo comparison. "
               "It is retained only as counterexample diagnostic evidence in "
               "`docs/c2p-cache/c2p_confirmation_policy_counterexamples_20260823.md`.", "",
+              "The historical `c2p-confirmation-policy-v2-pilot-20260823` root is "
+              "also excluded from final qualification.  It used an earlier backend "
+              "binary before the final diagnostic/configuration additions.  The "
+              "current-binary B+tree/BFS/LPS replacement is "
+              "`c2p-confirmation-policy-v2-pilot-refresh-20260823`; its provenance "
+              "and strict audit are recorded in "
+              "`docs/c2p-cache/c2p_confirmation_policy_pilot_refresh_20260823.md`.", "",
               "PPA/power and wider parameter sweeps remain outside this confirmation-policy "
               "task."]
     args.output.write_text("\n".join(lines) + "\n")
