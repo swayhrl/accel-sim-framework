@@ -19,6 +19,7 @@ PACKAGE_FIELDS = (
     "c2p_adaptive_package_opportunities",
     "c2p_adaptive_package_start_predictor",
     "c2p_adaptive_package_start_exploration",
+    "c2p_adaptive_package_start_forced",
     "c2p_adaptive_package_stop_predictor",
     "c2p_adaptive_package_hit", "c2p_adaptive_package_no_hit",
     "c2p_adaptive_package_timeout",
@@ -37,6 +38,9 @@ REASON_FIELDS = (
     "c2p_adaptive_exploration_probe_hits",
     "c2p_adaptive_exploration_probe_misses",
     "c2p_adaptive_exploration_probe_timeouts",
+    "c2p_adaptive_forced_probe_hits",
+    "c2p_adaptive_forced_probe_misses",
+    "c2p_adaptive_forced_probe_timeouts",
 )
 STAT_RE = re.compile(r"^\s*((?:c2p_[A-Za-z0-9_]+)|gpu_tot_sim_cycle|l2_total_cache_accesses) = (\d+)$")
 
@@ -90,6 +94,7 @@ def audit_policy(values, label, failures):
             "c2p_adaptive_continuation_opportunities",
             "c2p_adaptive_continue_predictor",
             "c2p_adaptive_continue_exploration",
+            "c2p_adaptive_continue_forced",
             "c2p_adaptive_stop_predictor", "c2p_adaptive_stop_hard_cap",
             "c2p_adaptive_stop_later_peer", "c2p_adaptive_stop_no_later_peer"),
                    label, failures):
@@ -100,11 +105,13 @@ def audit_policy(values, label, failures):
         failures.append(f"{label}: probe-reason partition != peer probes")
     continuations = (values["c2p_adaptive_continue_predictor"] +
                      values["c2p_adaptive_continue_exploration"] +
+                     values["c2p_adaptive_continue_forced"] +
                      values["c2p_adaptive_stop_predictor"])
     if continuations != values["c2p_adaptive_continuation_opportunities"]:
         failures.append(f"{label}: continuation decision partition failure")
     package_starts = (values["c2p_adaptive_package_start_predictor"] +
-                      values["c2p_adaptive_package_start_exploration"])
+                      values["c2p_adaptive_package_start_exploration"] +
+                      values["c2p_adaptive_package_start_forced"])
     package_decisions = package_starts + values["c2p_adaptive_package_stop_predictor"]
     if package_decisions != values["c2p_adaptive_package_opportunities"]:
         failures.append(f"{label}: package decision partition failure")
@@ -131,6 +138,8 @@ def expected_options(variant):
         "-c2p_cache_separate_target_tag_port": "1",
         "-c2p_cache_max_candidate_probes": "0",
         "-c2p_cache_adaptive_probe_observe_tail": "1",
+        "-c2p_cache_adaptive_probe_initial_score": "4",
+        "-c2p_cache_adaptive_probe_force_full_small_candidates": "0",
     }
     if variant == "control":
         return {**common, "-c2p_cache_adaptive_probe_policy": "0",
