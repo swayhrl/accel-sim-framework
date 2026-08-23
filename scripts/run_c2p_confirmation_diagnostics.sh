@@ -111,11 +111,11 @@ for spec in "${cases[@]}"; do
   ((++active))
   if (( active >= jobs )); then
     wait -n || status=1
-    ((--active))
+    active=$((active - 1))
   fi
 done
-while (( active != 0 )); do
+while (( active )); do
   wait -n || status=1
-  ((--active))
+  active=$((active - 1))
 done
 exit "$status"
