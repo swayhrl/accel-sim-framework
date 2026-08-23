@@ -88,6 +88,16 @@ run_one() {
 
 run_triplet() {
   local tier="$1" case_name="$2" trace="$3" status=0
+  # A campaign may be extended by a second launcher while its original
+  # manifest walk is still live.  Serialize just this workload so both
+  # launchers cannot copy/run the same three policy directories at once.
+  # Once the first triplet exits, --skip-complete below makes the waiter a
+  # cheap no-op instead of a duplicate replay.
+  local lock_root="$out_root/.triplet_locks"
+  local lock_fd
+  mkdir -p "$lock_root"
+  exec {lock_fd}>"$lock_root/$tier.$case_name.lock"
+  flock "$lock_fd"
   [[ -f "$trace" ]] || { echo "missing trace: $trace" >&2; return 2; }
   run_one "$tier" "$case_name" "$trace" control "$control_config" \
       >"$out_root/$tier/$case_name.control.driver.log" 2>&1 &
