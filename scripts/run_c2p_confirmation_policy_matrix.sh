@@ -130,6 +130,7 @@ done
 for pid in "${pids[@]}"; do wait "$pid" || status=1; done
 (( status == 0 )) || exit "$status"
 
-python3 "$repo_root/scripts/analyze_c2p_confirmation_policy_matrix.py" \
-    --root "$out_root" --csv "$out_root/policy_matrix.csv" \
-    --markdown "$out_root/policy_matrix.md"
+analyze_args=(--root "$out_root" --csv "$out_root/policy_matrix.csv"
+              --markdown "$out_root/policy_matrix.md")
+[[ -n "$selected_cases" ]] && analyze_args+=(--case "$selected_cases")
+python3 "$repo_root/scripts/analyze_c2p_confirmation_policy_matrix.py" "${analyze_args[@]}"

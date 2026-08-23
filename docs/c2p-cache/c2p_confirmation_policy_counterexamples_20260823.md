@@ -1,4 +1,10 @@
-# C2P+ confirmation-policy counterexamples
+# C2P+ confirmation-policy counterexamples (pre-clean diagnostic)
+
+> Scope note: these measurements use the superseded v1 hybrid policy. Its
+> low candidate-count bins used an additional PC-hash × ordinal side table, so
+> they are **not** capacity-matched PC-versus-AddrTopo results and are excluded
+> from the clean v2 matrix. They remain valid evidence for where aggressive
+> early stopping loses remote hits and increases fallback pressure.
 
 Status: preliminary diagnosis from the completed `control` / `pc` / `addr`
 triplets in `hw_run/c2p-confirmation-policy-v1-20260823`.  The three still

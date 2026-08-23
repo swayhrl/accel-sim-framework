@@ -43,6 +43,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--pilot-root", required=True, type=Path,
+                        help="qualified three-workload pilot output directory")
     args = parser.parse_args()
 
     audit = args.root / "policy_matrix.md"
@@ -51,6 +53,19 @@ def main():
         raise SystemExit("strict matrix audit has not passed")
     with matrix.open() as stream:
         rows = list(csv.DictReader(stream))
+    pilot_audit = args.pilot_root / "policy_matrix.md"
+    pilot_matrix = args.pilot_root / "policy_matrix.csv"
+    if not pilot_audit.is_file() or not pilot_matrix.is_file() or \
+            "All completed runs satisfy" not in pilot_audit.read_text():
+        raise SystemExit("qualified pilot audit has not passed")
+    with pilot_matrix.open() as stream:
+        pilot_rows = list(csv.DictReader(stream))
+    required_pilot = {("canonical", "btree"),
+                      ("extension", "c2p-ispass-bfs"),
+                      ("extension", "c2p-ispass-lps")}
+    actual_pilot = {(row["tier"], row["case"]) for row in pilot_rows}
+    if actual_pilot != required_pilot:
+        raise SystemExit("pilot matrix does not contain exactly B+tree/BFS/LPS")
     repo_root = Path(__file__).resolve().parent.parent
     expected = {
         "canonical": manifest_cases(
@@ -100,9 +115,9 @@ def main():
         "enable the common candidate-bin, threshold, exploration, and four-probe "
         "package policy. The backend commit implements their single 64 x 4 x 3-bit "
         "table selector. |",
-        "| Pilot before sweep | The retained BFS/LPS/B+tree pilot audit passed the "
-        "same normal-exit, provenance, remote-hit, and conservation checks before "
-        "this matrix was started. |",
+        "| Pilot before sweep | The separate clean B+tree/BFS/LPS pilot at "
+        f"`{args.pilot_root}` passed the same normal-exit, provenance, "
+        "remote-hit, and conservation checks before this matrix was started. |",
         "| Full scope and separated aggregates | CSV has exactly 16 canonical plus "
         "eight extension qualified rows; the aggregate below keeps 16, 8, and 24 "
         "views separate. |", "",
@@ -151,10 +166,11 @@ def main():
     lines += ["", "## Reproduction", "",
               "```bash", "export C2P_GPGPUSIM_ROOT=/workspace/worktrees/gpgpu-sim-c2p-addr-observe",
               "scripts/run_c2p_confirmation_policy_matrix.sh \\",
-              "  --out-root hw_run/c2p-confirmation-policy-v1-20260823 --jobs 1",
+              "  --out-root hw_run/c2p-confirmation-policy-v2-20260823 --jobs 1",
               "python3 scripts/finalize_c2p_confirmation_policy_matrix.py \\",
-              "  --root hw_run/c2p-confirmation-policy-v1-20260823 \\",
-              "  --output hw_run/c2p-confirmation-policy-v1-20260823/final_report.md",
+              "  --root hw_run/c2p-confirmation-policy-v2-20260823 \\",
+              "  --pilot-root hw_run/c2p-confirmation-policy-v2-pilot-20260823 \\",
+              "  --output hw_run/c2p-confirmation-policy-v2-20260823/final_report.md",
               "```", "",
               "## RTL feasibility", "",
               "The AddrTopo package feature itself is RTL-feasible: it needs a line-address "

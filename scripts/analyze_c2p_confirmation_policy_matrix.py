@@ -136,13 +136,27 @@ def expected_options(variant):
         return {**common, "-c2p_cache_adaptive_probe_policy": "0",
                 "-c2p_cache_adaptive_probe_addr_topology_policy": "0"}
     return {**common, "-c2p_cache_adaptive_probe_policy": "1",
-            "-c2p_cache_adaptive_probe_candidate_count_bins": "1",
             "-c2p_cache_adaptive_probe_package_policy": "1",
-            "-c2p_cache_adaptive_probe_package_min_candidate_bin": "2",
             "-c2p_cache_adaptive_probe_score_threshold": "4",
             "-c2p_cache_adaptive_probe_explore_period": "64",
             "-c2p_cache_adaptive_probe_addr_topology_policy":
                 "1" if variant == "addr" else "0"}
+
+
+def check_policy_options(options, expected, label, failures):
+    """Reject stale adaptive knobs as well as wrong required values.
+
+    The matrix is a capacity-matched experiment, not a permissive feature
+    smoke test.  In particular, accepting an old PC-ordinal side table would
+    silently invalidate the AddrTopo comparison even if its required package
+    options were also present.
+    """
+    for key, value in expected.items():
+        if options.get(key) != value:
+            failures.append(f"{label}: {key}={options.get(key)!r}, expected {value}")
+    for key in options:
+        if key.startswith("-c2p_cache_adaptive_probe_") and key not in expected:
+            failures.append(f"{label}: stale or unsupported adaptive option {key}")
 
 
 def manifest_cases(path):
@@ -162,6 +176,8 @@ def main():
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--csv", required=True, type=Path)
     parser.add_argument("--markdown", required=True, type=Path)
+    parser.add_argument("--case", default="",
+                        help="comma-separated manifest subset for a qualified pilot")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
@@ -171,12 +187,23 @@ def main():
         "extension": manifest_cases(
             repo_root / "configs/c2p-cache/v100_extension_workloads.tsv"),
     }
+    selected_cases = {case for case in args.case.split(",") if case}
+    known_cases = set().union(*map(set, expected_cases.values()))
+    unknown_cases = sorted(selected_cases - known_cases)
+    if unknown_cases:
+        parser.error("unknown manifest case(s): " + ", ".join(unknown_cases))
+    if selected_cases:
+        expected_cases = {
+            tier: [case for case in cases if case in selected_cases]
+            for tier, cases in expected_cases.items()
+        }
 
     rows, failures = [], []
     for tier in TIERS:
         tier_root = args.root / tier
         if not tier_root.is_dir():
-            failures.append(f"missing tier directory: {tier}")
+            if expected_cases[tier]:
+                failures.append(f"missing tier directory: {tier}")
             continue
         case_dirs = {path.name: path for path in tier_root.iterdir() if path.is_dir()}
         actual_cases = set(case_dirs)
@@ -203,9 +230,9 @@ def main():
                 runs[variant] = read_values(summary)
                 provenance[variant] = read_key_values(run_dir / "provenance.txt")
                 options = config_options(run_dir / "gpgpusim.config")
-                for key, expected in expected_options(variant).items():
-                    if options.get(key) != expected:
-                        failures.append(f"{tier}/{case_dir.name}/{variant}: {key}={options.get(key)!r}, expected {expected}")
+                check_policy_options(
+                    options, expected_options(variant),
+                    f"{tier}/{case_dir.name}/{variant}", failures)
             if len(runs) != len(VARIANTS):
                 continue
             reference = provenance["control"]
@@ -248,7 +275,10 @@ def main():
         writer.writeheader()
         writer.writerows(rows)
 
+    scope = ("qualified pilot subset: " + ", ".join(sorted(selected_cases))
+             if selected_cases else "full 16 canonical + 8 extension matrix")
     lines = ["# C2P+ PC-hash versus AddrTopo confirmation policy", "",
+             f"Scope: **{scope}**.", "",
              "Every row uses one copied frontend/backend binary and identical trace. "
              "`control` is exhaustive C2P+; `pc` and `addr` each use 64 x 4 "
              "3-bit package entries, identical threshold/exploration/candidate-bin "
