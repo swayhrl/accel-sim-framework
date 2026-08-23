@@ -28,6 +28,35 @@ It therefore does not require an instruction PC at an RTL L2 interface.
    aggregate; the eight extension traces are reported independently.  A
    combined 24-workload aggregate is explicitly an extension view.
 
+## Retained pilot evidence
+
+The pilot used the same copied-binary triplet runner and its narrow analyzer
+completed before any non-pilot workload was admitted.  Its original generated
+artifacts remain at
+`hw_run/c2p-confirmation-policy-v1-20260823/policy_matrix.{csv,md}` until the
+full-sweep finalizer replaces those filenames.  At retention time their SHA256
+hashes were respectively
+`d076047470ef2f4263f48cae099da41f076cc0b1bdb453f82247b03ec8769989` and
+`b208bf5a31863728de19db1b6936dc0cad7181468bc0970ce4fca95672849e25`.
+
+The last summary in each pilot triplet completed at 01:42:53 (`btree`),
+01:46:46 (ISPASS BFS), and 01:48:21 (ISPASS LPS), all on 2026-08-23 UTC+08.
+The first non-pilot
+summary (`dwt2d`) completed at 01:52:49, proving pilot qualification preceded
+the broader sweep.  The narrow audit reported normal exit, copied
+binary/trace provenance, resolved overlay options, remote-hit equals L2
+avoidance, and probe/continuation/package/residual conservation for all nine
+runs.
+
+| Tier | Pilot case | PC cycle delta | Addr cycle delta | PC / Addr remote delta | PC / Addr residual exact peer |
+|---|---|---:|---:|---:|---:|
+| canonical | `btree` | +2,531 | +3,596 | -44,002 / -66,687 | 1,204 / 1,423 |
+| extension | ISPASS `bfs` | +3,334 | +4,108 | -47,176 / -95,437 | 63,661 / 20,398 |
+| extension | ISPASS `lps` | +712 | +508 | -16,974 / -16,876 | 166 / 299 |
+
+The final audit is intentionally stricter: it additionally requires the exact
+16+8 checked-in manifests and writes a fresh full-scope CSV/Markdown report.
+
 ## Required invariants
 
 - Each mode of a triplet has identical frontend/backend binary hashes and
