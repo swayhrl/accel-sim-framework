@@ -184,16 +184,19 @@ def main():
             reference = provenance(run(args.root, "observe", case, "control") / "provenance.txt")
             for variant in ("pc", "addr"):
                 actual = provenance(run(args.root, "observe", case, variant) / "provenance.txt")
-                for key in ("gpgpusim_commit", "accelsim_commit", "trace_sha256",
-                            "sim_sha256", "cudart_sha256"):
+                # The frontend revision records the campaign driver too.  A
+                # driver-only commit may legitimately differ between phases;
+                # binary and trace identity are the reproducibility boundary.
+                for key in ("gpgpusim_commit", "trace_sha256", "sim_sha256",
+                            "cudart_sha256"):
                     if actual.get(key) != reference.get(key):
                         failures.append(f"observe/{case}/{variant}: differs in {key}")
         if args.require_experiments and "pc" in all_runs[case]:
             reference = provenance(run(args.root, "observe", case, "pc") / "provenance.txt")
             for variant in EXPERIMENT:
                 actual = provenance(run(args.root, "experiment", case, variant) / "provenance.txt")
-                for key in ("gpgpusim_commit", "accelsim_commit", "trace_sha256",
-                            "sim_sha256", "cudart_sha256"):
+                for key in ("gpgpusim_commit", "trace_sha256", "sim_sha256",
+                            "cudart_sha256"):
                     if actual.get(key) != reference.get(key):
                         failures.append(f"experiment/{case}/{variant}: differs from pc in {key}")
 
