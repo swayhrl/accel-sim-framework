@@ -90,7 +90,21 @@ def main():
     for row in rows:
         grouped[row["tier"]].append(row)
     all_rows = rows
-    reference = provenance(args.root, rows[0])
+    provenance_rows = [provenance(args.root, row) for row in rows]
+    reference = provenance_rows[0]
+    # The strict analyzer has already rejected a matrix-wide simulator mismatch.
+    # Keep the report explicit about the distinction between the immutable
+    # simulation build and harmless launcher-script revisions used for safe
+    # prelaunch scheduling.
+    build_keys = ("gpgpusim_commit", "sim_sha256", "cudart_sha256")
+    build_identity = {
+        key: sorted({entry.get(key, "") for entry in provenance_rows})
+        for key in build_keys
+    }
+    if any(len(values) != 1 or not values[0] for values in build_identity.values()):
+        raise SystemExit("matrix does not have one global simulation build identity")
+    launcher_commits = sorted({entry.get("accelsim_commit", "")
+                               for entry in provenance_rows})
 
     lines = [
         "# C2P+ confirmation-policy matrix: final audit report", "",
@@ -100,8 +114,13 @@ def main():
         "resolved policy configuration, remote-hit/L2-avoidance conservation, "
         "probe-reason conservation, continuation/package partition conservation, "
         "and package residual-opportunity conservation.", "",
-        f"- Backend commit: `{reference.get('gpgpusim_commit', '')}`",
-        f"- Accel-Sim commit: `{reference.get('accelsim_commit', '')}`",
+        f"- Backend commit: `{build_identity['gpgpusim_commit'][0]}`",
+        f"- Simulator executable SHA-256: `{build_identity['sim_sha256'][0]}`",
+        f"- `libcudart` SHA-256: `{build_identity['cudart_sha256'][0]}`",
+        "- Launcher revisions represented in provenance: " +
+        ", ".join(f"`{commit}`" for commit in launcher_commits) +
+        ".  These only schedule/copy the already-hashed executable; they are "
+        "not treated as a simulation-build difference.",
         "- Each run directory retains resolved config, executable and `libcudart` "
         "hashes, trace hash, raw output, host profile, and provenance file.", "",
         "## Completion-gate evidence", "",

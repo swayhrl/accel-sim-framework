@@ -208,6 +208,16 @@ def main():
         }
 
     rows, failures = [], []
+    # A triplet already checks its three runs against one another.  Preserve a
+    # separate matrix-wide build identity as well: a campaign assembled by
+    # prelaunch workers must not silently combine different simulator binaries.
+    # `accelsim_commit` is deliberately not included here because it may differ
+    # for a launcher-only commit while the copied executable remains identical.
+    global_build = {
+        "gpgpusim_commit": set(),
+        "sim_sha256": set(),
+        "cudart_sha256": set(),
+    }
     for tier in TIERS:
         tier_root = args.root / tier
         if not tier_root.is_dir():
@@ -250,6 +260,12 @@ def main():
                             "sim_sha256", "cudart_sha256"):
                     if provenance[variant].get(key) != reference.get(key):
                         failures.append(f"{tier}/{case_dir.name}: {variant} differs in {key}")
+            for key, values in global_build.items():
+                value = reference.get(key)
+                if not value:
+                    failures.append(f"{tier}/{case_dir.name}: missing {key}")
+                else:
+                    values.add(value)
             control = runs["control"]
             if not require(control, BASE_FIELDS + PACKAGE_FIELDS, f"{tier}/{case_dir.name}/control", failures):
                 continue
@@ -274,6 +290,11 @@ def main():
                 for field in PACKAGE_FIELDS:
                     row[f"{variant}_{field}"] = values[field]
             rows.append(row)
+
+    for key, values in global_build.items():
+        if len(values) > 1:
+            failures.append(
+                f"matrix-wide build mismatch in {key}: {', '.join(sorted(values))}")
 
     args.csv.parent.mkdir(parents=True, exist_ok=True)
     columns = ["tier", "case"] + [f"{variant}_{field}" for variant in VARIANTS
