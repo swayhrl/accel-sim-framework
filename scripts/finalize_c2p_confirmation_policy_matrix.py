@@ -232,6 +232,13 @@ def main():
               "used the now-rejected unbounded control configuration. The current "
               "cap-4 B+tree/BFS/LPS pilot provenance and strict audit are recorded in "
               "`docs/c2p-cache/c2p_confirmation_policy_pilot_refresh_20260823.md`.", "",
+              "During the cap-4 priority dispatch, the first Pagerank triplet was "
+              "interrupted by a superseded launcher process before it emitted any "
+              "`summary.txt` or normal-exit host profile. Its preserved "
+              "`run.out.interrupted_launcher_abort_20260823_1343` files are diagnostic "
+              "only and are excluded. Pagerank is replayed from the same copied binary, "
+              "trace, and policy overlays; only that complete, strict-audited triplet may "
+              "enter this matrix.", "",
               "PPA/power and wider parameter sweeps remain outside this confirmation-policy "
               "task."]
     args.output.write_text("\n".join(lines) + "\n")
