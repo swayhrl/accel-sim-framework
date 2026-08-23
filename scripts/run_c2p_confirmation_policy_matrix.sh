@@ -5,7 +5,7 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_confirmation_policy_matrix.sh --out-root DIR
-       [--trace-root DIR] [--v100-stage DIR] [--case CASE[,CASE...]]
+       [--trace-root DIR] [--v100-stage DIR] [--case CASE[,CASE...]] [--no-analyze]
        [--jobs N] [--build]
 
 Each selected workload runs three C2P+ modes from the same frontend/backend
@@ -20,6 +20,7 @@ out_root=""
 trace_root="/workspace/worktrees/accel-sim-decoupled-l2/hw_run"
 v100_stage="/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage"
 selected_cases=""
+run_analysis=1
 jobs=1
 build=0
 while [[ $# -gt 0 ]]; do
@@ -28,6 +29,7 @@ while [[ $# -gt 0 ]]; do
     --trace-root) trace_root="$2"; shift 2 ;;
     --v100-stage) v100_stage="$2"; shift 2 ;;
     --case) selected_cases="$2"; shift 2 ;;
+    --no-analyze) run_analysis=0; shift ;;
     --jobs) jobs="$2"; shift 2 ;;
     --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -133,7 +135,9 @@ while (( active )); do
 done
 (( status == 0 )) || exit "$status"
 
-analyze_args=(--root "$out_root" --csv "$out_root/policy_matrix.csv"
-              --markdown "$out_root/policy_matrix.md")
-[[ -n "$selected_cases" ]] && analyze_args+=(--case "$selected_cases")
-python3 "$repo_root/scripts/analyze_c2p_confirmation_policy_matrix.py" "${analyze_args[@]}"
+if (( run_analysis )); then
+  analyze_args=(--root "$out_root" --csv "$out_root/policy_matrix.csv"
+                --markdown "$out_root/policy_matrix.md")
+  [[ -n "$selected_cases" ]] && analyze_args+=(--case "$selected_cases")
+  python3 "$repo_root/scripts/analyze_c2p_confirmation_policy_matrix.py" "${analyze_args[@]}"
+fi
