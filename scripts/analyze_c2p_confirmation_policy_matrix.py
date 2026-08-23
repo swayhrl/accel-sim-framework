@@ -136,15 +136,19 @@ def audit_policy(values, label, failures):
 def expected_options(variant):
     common = {
         "-c2p_cache_separate_target_tag_port": "1",
-        "-c2p_cache_max_candidate_probes": "0",
         "-c2p_cache_adaptive_probe_observe_tail": "1",
         "-c2p_cache_adaptive_probe_initial_score": "4",
         "-c2p_cache_adaptive_probe_force_full_small_candidates": "0",
     }
     if variant == "control":
-        return {**common, "-c2p_cache_adaptive_probe_policy": "0",
+        # The control scans every candidate that remains within the shared
+        # four-failed-probe bound. Adaptive policies enforce the identical
+        # bound internally once their confirmation package has started.
+        return {**common, "-c2p_cache_max_candidate_probes": "4",
+                "-c2p_cache_adaptive_probe_policy": "0",
                 "-c2p_cache_adaptive_probe_addr_topology_policy": "0"}
-    return {**common, "-c2p_cache_adaptive_probe_policy": "1",
+    return {**common, "-c2p_cache_max_candidate_probes": "0",
+            "-c2p_cache_adaptive_probe_policy": "1",
             "-c2p_cache_adaptive_probe_package_policy": "1",
             "-c2p_cache_adaptive_probe_score_threshold": "4",
             "-c2p_cache_adaptive_probe_explore_period": "64",
@@ -310,9 +314,10 @@ def main():
     lines = ["# C2P+ PC-hash versus AddrTopo confirmation policy", "",
              f"Scope: **{scope}**.", "",
              "Every row uses one copied frontend/backend binary and identical trace. "
-             "`control` is exhaustive C2P+; `pc` and `addr` each use 64 x 4 "
-             "3-bit package entries, identical threshold/exploration/candidate-bin "
-             "rules, and a four-probe hard cap.", "",
+             "`control` exhaustively scans candidates within the common four-failed-"
+             "probe bound; `pc` and `addr` each use 64 x 4 3-bit package entries, "
+             "identical threshold/exploration/candidate-bin rules, and the same "
+             "four-probe hard cap.", "",
              "| Tier | Case | PC cycle Δ | Addr cycle Δ | PC / Addr L2 Δ | PC / Addr remote Δ | PC / Addr probe Δ | PC / Addr residual peer |",
              "|---|---|---:|---:|---:|---:|---:|---:|"]
     for row in rows:
