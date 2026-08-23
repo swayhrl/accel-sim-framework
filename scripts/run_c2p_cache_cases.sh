@@ -95,12 +95,19 @@ for mode in ${modes//,/ }; do
     *) echo "error: invalid mode $mode" >&2; exit 2 ;;
   esac
   run_dir="$out_dir/$mode"
+  # A campaign may prelaunch a distant workload while the manifest worker is
+  # still draining earlier ones.  Serialize only an identical mode directory:
+  # the later launcher waits, then reuses a normally completed replay instead
+  # of overwriting its config, provenance, or stdout.  Different policies and
+  # workloads remain fully parallel.
+  mkdir -p "$run_dir"
+  exec {run_lock_fd}>"$run_dir/.run.lock"
+  flock "$run_lock_fd"
   if (( skip_complete )) && [[ -f "$run_dir/summary.txt" && -f "$run_dir/run.out" ]] && \
       grep -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$run_dir/run.out"; then
     printf 'SKIP completed mode=%s run_dir=%s\n' "$mode" "$run_dir"
     continue
   fi
-  mkdir -p "$run_dir"
   # A generated config can include the prior decoupled-L2 selector; C2P is
   # intentionally based on clean upstream GPGPU-Sim and must not parse it.
   if (( strip_mem_addr_mapping )); then
