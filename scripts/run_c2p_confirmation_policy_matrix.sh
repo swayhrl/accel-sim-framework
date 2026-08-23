@@ -116,18 +116,21 @@ while IFS=$'\t' read -r case_name _ _ _ _ _ kernelslist_rel; do
 done < "$extension_manifest"
 (( ${#cases[@]} != 0 )) || { echo "error: no selected workloads" >&2; exit 2; }
 
-pids=()
 status=0
+active=0
 for spec in "${cases[@]}"; do
   IFS='|' read -r tier case_name trace <<< "$spec"
   run_triplet "$tier" "$case_name" "$trace" &
-  pids+=("$!")
-  if (( ${#pids[@]} >= jobs )); then
-    wait "${pids[0]}" || status=1
-    pids=("${pids[@]:1}")
+  ((++active))
+  if (( active >= jobs )); then
+    wait -n || status=1
+    ((--active))
   fi
 done
-for pid in "${pids[@]}"; do wait "$pid" || status=1; done
+while (( active != 0 )); do
+  wait -n || status=1
+  ((--active))
+done
 (( status == 0 )) || exit "$status"
 
 analyze_args=(--root "$out_root" --csv "$out_root/policy_matrix.csv"
