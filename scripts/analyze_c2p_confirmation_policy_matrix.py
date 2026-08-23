@@ -13,7 +13,8 @@ TIERS = ("canonical", "extension")
 BASE_FIELDS = (
     "gpu_tot_sim_cycle", "l2_total_cache_accesses", "c2p_remote_hits",
     "c2p_l2_requests_avoided", "c2p_peer_probes", "c2p_peer_probe_hits",
-    "c2p_peer_probe_misses",
+    "c2p_peer_probe_misses", "c2p_probe_ordinal_overflow_hits",
+    "c2p_probe_ordinal_overflow_misses",
 )
 PACKAGE_FIELDS = (
     "c2p_adaptive_package_opportunities",
@@ -275,10 +276,16 @@ def main():
                 continue
             if control["c2p_remote_hits"] != control["c2p_l2_requests_avoided"]:
                 failures.append(f"{tier}/{case_dir.name}/control: remote hits != L2 avoided")
+            if (control["c2p_probe_ordinal_overflow_hits"] or
+                    control["c2p_probe_ordinal_overflow_misses"]):
+                failures.append(f"{tier}/{case_dir.name}/control: probe exceeded four-probe cap")
             if any(control[field] for field in PACKAGE_FIELDS):
                 failures.append(f"{tier}/{case_dir.name}/control: adaptive package counters are nonzero")
             for variant in ("pc", "addr"):
                 audit_policy(runs[variant], f"{tier}/{case_dir.name}/{variant}", failures)
+                if (runs[variant]["c2p_probe_ordinal_overflow_hits"] or
+                        runs[variant]["c2p_probe_ordinal_overflow_misses"]):
+                    failures.append(f"{tier}/{case_dir.name}/{variant}: probe exceeded four-probe cap")
 
             row = {"tier": tier, "case": case_dir.name}
             for variant in VARIANTS:
