@@ -63,12 +63,47 @@ state reporting.  The useful counters are:
 | `aad_merge`, `otf` | same-line requests merged and lower reads issued |
 | `write`, `wb` | dirty writes accepted and eviction writebacks issued |
 | `atomic` | atomic requests completed through GPGPU-Sim's normal callback |
-| `token_stall`, `aad_stall`, `bank_stall` | finite-resource backpressure |
+| `token_stall`, `aad_stall`, `bank_stall` | finite-resource backpressure; `bank_stall` is the sum of the two requeue fields below |
+| `bank_requeue_tag`, `bank_requeue_lower` | tag-side and lower-read-side bank requeues, respectively |
+| `tag_*` / `lower_*` in `decoupled_l2_conflict` | requeue requester and bank owner (`tag`, `lower`, `fill`, or `wbq`) |
+| `req/tag/aad/fill/wbq_avg`, `*_max` | sampled per-slice occupancy average and peak; sum averages across slices for GPU-wide concurrent occupancy |
+| `decoupled_l2_kind` | request kind `attempt/grant/requeue` triples for tag and lower-read work |
+| `decoupled_l2_bank_detail` | per-internal-bank tag/lower-read `attempt/grant/requeue` triples |
 | `banks` | per-bank abstract operation counts |
 
 Debug assertions check token ownership, one AAD chain per line, one token per
 AAD chain, and the correspondence between an issued lower read and its OTF
 record.  A failing assertion invalidates the run.
+
+### Bank observability and controlled sweeps
+
+The default internal mapping remains `mod`:
+
+```text
+bank = cacheline_index % gpgpu_decoupled_l2_banks
+```
+
+`-gpgpu_decoupled_l2_bank_hash xor` is a diagnostic-only alternative that folds
+higher cacheline bits into the selection. It does not change cache capacity,
+line size, or lower-memory configuration. Likewise the `bank_count_{1,2,8}`
+overlays in `experiments/decoupled_l2_overlays/` are controlled throughput
+sweeps, not hardware claims.
+
+Use the paired runner for a fresh rebuilt binary and immutable evidence:
+
+```bash
+scripts/run_decoupled_l2_bank_diagnosis.sh \
+  --run-root hw_run/decoupled-l2-bank-diagnosis/<run-id> \
+  --case bicg /path/to/bicg/traces/kernelslist.g \
+  --case atax /path/to/atax/traces/kernelslist.g
+```
+
+It runs baseline and decoupled sequentially and writes `bank_observability.csv`
+and `.md`. The parser rejects a pair unless both runs exit normally, use the
+same copied executable and trace hash, and differ only in
+`-gpgpu_l2_backend`. Perform any bank-count/hash sweep only after this default
+`mod`, four-bank pair identifies a workload with meaningful conflict or IPC
+change.
 
 ## AAD progress invariant
 
