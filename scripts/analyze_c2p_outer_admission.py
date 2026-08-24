@@ -23,6 +23,11 @@ POLICY_REQUIRED = REQUIRED + (
     "c2p_outer_admission_train_hit",
     "c2p_outer_admission_train_no_hit",
 )
+CONTROL_EQUIVALENCE = (
+    "gpu_tot_sim_cycle", "c2p_candidate_total", "c2p_peer_probes",
+    "c2p_peer_probe_hits", "c2p_peer_probe_misses", "c2p_remote_hits",
+    "c2p_l2_requests_avoided", "L2_total_cache_accesses",
+)
 
 
 def read_values(path: Path):
@@ -62,6 +67,8 @@ def main():
                         help="comma-separated case names")
     parser.add_argument("--csv", required=True, type=Path)
     parser.add_argument("--markdown", required=True, type=Path)
+    parser.add_argument("--require-control-equivalence", action="store_true",
+                        help="reject any base-C2P difference from the control")
     args = parser.parse_args()
 
     rows, failures = [], []
@@ -79,6 +86,14 @@ def main():
 
         if policy["c2p_outer_admission_policy"] != 1:
             failures.append(f"{case}: policy replay did not enable outer admission")
+        if args.require_control_equivalence:
+            for key in CONTROL_EQUIVALENCE:
+                if key not in control or key not in policy:
+                    failures.append(f"{case}: equivalence check missing {key}")
+                elif control[key] != policy[key]:
+                    failures.append(
+                        f"{case}: integration control changed {key}: "
+                        f"{control[key]} != {policy[key]}")
         if policy["c2p_remote_hits"] != policy["c2p_l2_requests_avoided"]:
             failures.append(f"{case}: policy remote-hit/L2-avoidance invariant failed")
 

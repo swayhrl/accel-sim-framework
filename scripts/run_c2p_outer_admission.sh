@@ -6,7 +6,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_outer_admission.sh --out-root DIR
        [--trace-root DIR] [--v100-stage DIR] [--case CASE[,CASE...]] [--jobs N]
-       [--policy-config FILE]
+       [--policy-config FILE] [--require-control-equivalence]
 
 The control keeps all C2P candidates but orders local targets first.  The
 policy uses that same ordering and can bypass an outer-only remaining tail.
@@ -20,6 +20,7 @@ v100_stage="/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-co
 selected_cases=""
 jobs=1
 policy_config=""
+require_control_equivalence=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --out-root) out_root="$2"; shift 2 ;;
@@ -28,6 +29,7 @@ while [[ $# -gt 0 ]]; do
     --case) selected_cases="$2"; shift 2 ;;
     --jobs) jobs="$2"; shift 2 ;;
     --policy-config) policy_config="$2"; shift 2 ;;
+    --require-control-equivalence) require_control_equivalence=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -121,6 +123,8 @@ for spec in "${cases[@]}"; do
   IFS='|' read -r case_name _ <<< "$spec"
   case_list+="${case_list:+,}$case_name"
 done
-python3 "$repo_root/scripts/analyze_c2p_outer_admission.py" --root "$out_root" \
+analyze_args=(--root "$out_root" \
   --case "$case_list" --csv "$out_root/outer_admission.csv" \
-  --markdown "$out_root/outer_admission.md"
+  --markdown "$out_root/outer_admission.md")
+(( require_control_equivalence )) && analyze_args+=(--require-control-equivalence)
+python3 "$repo_root/scripts/analyze_c2p_outer_admission.py" "${analyze_args[@]}"
