@@ -1,0 +1,6 @@
+# Deliberately small, genuine Volta tensor-core replay for the initial CUTLASS
+# C2P smoke.  The instruction trim retains all seven launched kernels, while
+# reducing each kernel's traced instruction stream by 40x.  Do not substitute
+# the similarly named full archive trace when comparing these results.
+case	provider	shape	trace_rel
+wmma_gemm_m2560_n64_k2560	cutlass	m2560-n64-k2560	cutlass/11.0/cutlass_perf_test/__seed_2020___dist_0____m_2560___n_64___k_2560___kernels_wmma_gemm_nn____iterations_5___providers_cutlass/traces
