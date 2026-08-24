@@ -57,9 +57,31 @@ conservation check:
   + 1,202,846 c2p_ring_queue_bypasses
 ```
 
-The corrected Btree evidence is therefore final for this point.  Independent CUTCP
-and Stencil points remain in progress under
-`hw_run/c2p-ring-ccn-fallback-v2-20260824/`.
+The corrected Btree evidence is therefore final for this point.  The independent
+CUTCP and Stencil points below are from the same
+`hw_run/c2p-ring-ccn-fallback-v2-20260824/` campaign.
+
+## Corrected three-workload check
+
+All three corrected runs below use the same binary and 64-KiB primary Table-1
+interpretation as the audited paper-16 baseline/C2P results.  IPC normalization
+is `baseline cycles / RING cycles`.
+
+| Workload | Baseline cycles | CCN fallback RING cycles | RING normalized IPC | C2P normalized IPC | Interpretation |
+|---|---:|---:|---:|---:|---|
+| Btree | 234,962 | 227,340 | 1.034 | 1.026 | A high-reuse tree case that is modestly above baseline. |
+| CUTCP | 4,538,631 | 4,616,155 | 0.983 | 1.001 | R1S0: many remote hits but little L2-latency sensitivity. |
+| Stencil | 4,960,360 | 10,243,063 | 0.484 | 1.411 | The queue correction halves the old strict penalty but does not cure ring congestion. |
+
+Stencil illustrates why the correction is necessary but not sufficient.  It accepts
+4,643,838 requests and sends 5,267,051 more directly to L2, yet produces only
+1,522,796 remote hits.  C2P instead obtains 3,280,804 remote hits with its parallel
+filter/probe path.  The next RING-only mechanism to assess is the cited CCN's
+per-SM request throttler; it must remain a separately configured experiment.
+
+An explicitly labelled Btree capacity sensitivity (`ReqQ=512`) was also completed:
+it slows RING to 252,841 cycles (0.929×).  Increasing the global accepted window
+adds more network wait than useful hits, so it is not promoted to the main point.
 
 ## Next validation
 
