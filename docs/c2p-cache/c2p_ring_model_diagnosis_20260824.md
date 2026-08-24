@@ -40,7 +40,7 @@ trace.  Its source/binary is frozen below its run directory.
 |---|---:|---:|---:|---:|---:|
 | baseline | 234,962 | 1.000 | – | – | – |
 | strict historical RING | 2,577,677 | 0.091 | 1,282,179 | 219,781 | 0 |
-| CCN fallback RING, initial replay | 227,340 | 1.034 | 106,031 | 28,997 | 1,202,846 |
+| CCN fallback RING, accounting-fixed replay | 227,340 | 1.034 | 106,031 | 28,997 | 1,202,846 |
 
 The strict point is dominated by the global 0.5-request/cycle injection limit:
 `1,282,179 × 2` cycles is already essentially the observed runtime.  CCN fallback
@@ -48,10 +48,17 @@ removes this model artifact while retaining every accepted traversal.  The resul
 therefore establishes that the former `0.091×` Btree RING result was not a credible
 representation of the cited comparator.
 
-The initial fallback replay predates the bookkeeping fix that includes queue-fallback
-misses in `c2p_l1_misses` and `c2p_oracle_peer_hits`; its performance result is valid,
-but its denominators are not final.  The corrected Btree run and independent CUTCP
-and Stencil points are in progress under
+The accounting-fixed replay preserves the same cycle count and satisfies the key
+conservation check:
+
+```
+1,308,877 c2p_l1_misses
+  = 106,031 c2p_queries_accepted
+  + 1,202,846 c2p_ring_queue_bypasses
+```
+
+The corrected Btree evidence is therefore final for this point.  Independent CUTCP
+and Stencil points remain in progress under
 `hw_run/c2p-ring-ccn-fallback-v2-20260824/`.
 
 ## Next validation
