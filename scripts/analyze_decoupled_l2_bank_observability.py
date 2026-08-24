@@ -95,6 +95,13 @@ def parse_decoupled(run_dir):
     for resource in ("req", "tag", "aad", "fill", "wbq"):
         row[resource + "_avg_sum"] = sum(float(data[resource + "_avg"])
                                           for data in slices.values())
+        # Each cache slice samples its own queues.  Keep the aggregate sum for
+        # capacity accounting, but report the per-slice mean beside the peak
+        # of one slice; comparing an aggregate mean to a per-slice peak is
+        # otherwise misleading when there are many L2 slices.
+        row[resource + "_avg_per_slice"] = (
+            row[resource + "_avg_sum"] / len(slices)
+        )
         row[resource + "_max_slice"] = max(int(data[resource + "_max"])
                                             for data in slices.values())
     for key in ("bank_requeue_tag", "bank_requeue_lower", "tag_tag", "tag_lower",
@@ -174,11 +181,11 @@ def main():
     with open(args.markdown, "w") as output:
         output.write("# Decoupled-L2 bank observability\n\n")
         output.write("Every pair passed normal-exit, binary-hash, trace-hash, and non-backend configuration gates.\n\n")
-        output.write("| Case | Speedup | req avg/max | AAD avg/max | fill avg/max | tag/lower requeue | tag max share | lower max share |\n")
+        output.write("| Case | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | tag/lower requeue | tag max share | lower max share |\n")
         output.write("|---|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
-            output.write("| {case} | {speedup:.4f}x | {req_avg_sum:.2f}/{req_max_slice} | "
-                         "{aad_avg_sum:.2f}/{aad_max_slice} | {fill_avg_sum:.2f}/{fill_max_slice} | "
+            output.write("| {case} | {speedup:.4f}x | {req_avg_per_slice:.2f}/{req_max_slice} | "
+                         "{aad_avg_per_slice:.2f}/{aad_max_slice} | {fill_avg_per_slice:.2f}/{fill_max_slice} | "
                          "{bank_requeue_tag}/{bank_requeue_lower} | "
                          "{tag_grant_max_share:.2%} | {lower_grant_max_share:.2%} |\n".format(**row))
 
