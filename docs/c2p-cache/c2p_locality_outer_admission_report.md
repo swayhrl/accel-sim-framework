@@ -53,6 +53,12 @@ outer response.
 | c2p-ispass-bfs | 186,246 | 184,842 | 185,956 | 186,852 | Local-first helps 0.75%; d4 loses the benefit. |
 | c2p-ispass-lps | 102,272 | 102,806 | 103,100 | 103,722 | Ordering alone is a small cost for this workload. |
 
+Default-off observer coverage additionally passed for GEMM: among 5,408,421
+candidate queries, local candidates/probes/hits account for 9.82% / 14.11% /
+21.86%, respectively.  Thus GEMM has a measurable local-quality skew, but
+outer peers still supply the majority of potential hits; it was not used to
+tune admission beyond the representative Btree/2D/BFS/LPS matrix.
+
 ## Outer-tail admission
 
 Policy results are relative to the corresponding local-first C2P control.
