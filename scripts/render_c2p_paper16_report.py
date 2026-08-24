@@ -8,8 +8,9 @@ from pathlib import Path
 
 
 GROUPS = ("R0S0", "R1S0", "R0S1", "R1S1")
-MODES = ("ata", "ccd", "ring", "c2p")
-MODE_LABEL = {"ata": "ATA", "ccd": "CCD", "ring": "RING", "c2p": "C2P-Cache"}
+MODES = ("baseline", "ata", "ccd", "ring", "c2p")
+MODE_LABEL = {"baseline": "Baseline", "ata": "ATA", "ccd": "CCD",
+              "ring": "RING", "c2p": "C2P-Cache"}
 PAPER_TARGETS = {
     "R1S1": "C2P IPC +23.5% average (up to +49.7%)",
     "R0S1": "C2P about -2.0%; ATA -31.7%; RING -19.3%; CCD +0.4%",
@@ -159,15 +160,15 @@ def main():
     lines.extend(["", "## Figure-10-style normalized IPC aggregate", "",
                   "Arithmetic mean across locally complete seven-mode cases in each group; "
                   "not a replacement for the paper's original workload-weighted set.", "",
-                  "| Group | ATA | CCD | RING | C2P-Cache |", "|---|---:|---:|---:|---:|"])
+                  "| Group | Baseline | ATA | CCD | RING | C2P-Cache |", "|---|---:|---:|---:|---:|---:|"])
     for group in GROUPS:
-        lines.append("| {} | {} | {} | {} | {} |".format(
+        lines.append("| {} | {} | {} | {} | {} | {} |".format(
             group, *(format_value(ipc[group, mode][1]) for mode in MODES)))
 
     lines.extend(["", "## Figure-11-style normalized L2 access aggregate", "",
-                  "| Group | ATA | CCD | RING | C2P-Cache |", "|---|---:|---:|---:|---:|"])
+                  "| Group | Baseline | ATA | CCD | RING | C2P-Cache |", "|---|---:|---:|---:|---:|---:|"])
     for group in GROUPS:
-        lines.append("| {} | {} | {} | {} | {} |".format(
+        lines.append("| {} | {} | {} | {} | {} | {} |".format(
             group, *(format_value(l2[group, mode][1]) for mode in MODES)))
 
     lines.extend(["", "## Remote-opportunity retention diagnostic", "",
