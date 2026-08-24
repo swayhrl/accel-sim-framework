@@ -50,6 +50,10 @@ def percent(numerator, denominator):
     return "" if denominator == 0 else f"{100.0 * numerator / denominator:.2f}%"
 
 
+def optional(values, key):
+    return values.get(key, "")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", required=True, type=Path,
@@ -87,6 +91,13 @@ def main():
         if continued + bypassed != opportunities:
             failures.append(
                 f"{case}: decision partition {continued} + {bypassed} != {opportunities}")
+        source_keys = ("c2p_outer_admission_initial_outer",
+                       "c2p_outer_admission_after_local")
+        source_present = [key for key in source_keys if key in policy]
+        if source_present and len(source_present) != len(source_keys):
+            failures.append(f"{case}: incomplete outer opportunity source counters")
+        elif source_present and sum(policy[key] for key in source_keys) != opportunities:
+            failures.append(f"{case}: outer opportunity sources do not conserve")
         if trained > continued:
             failures.append(f"{case}: {trained} trained packages exceed {continued} continuations")
 
@@ -105,6 +116,8 @@ def main():
             "control_remote_hits": control["c2p_remote_hits"],
             "policy_remote_hits": policy["c2p_remote_hits"],
             "outer_opportunities": opportunities,
+            "outer_initial": optional(policy, "c2p_outer_admission_initial_outer"),
+            "outer_after_local": optional(policy, "c2p_outer_admission_after_local"),
             "outer_continue_predictor": policy["c2p_outer_admission_continue_predictor"],
             "outer_continue_exploration": policy["c2p_outer_admission_continue_exploration"],
             "outer_bypass_predictor": bypassed,
@@ -130,7 +143,7 @@ def main():
         "to probes or bypassed directly into the ordinary lower path.",
         "",
         "| Case | Canonical cycles | Policy cycles | Cycle delta | Canonical / policy probes | "
-        "Canonical / policy remote hits | Outer opportunities | Bypass share |",
+        "Canonical / policy remote hits | Outer initial / after-local | Bypass share |",
         "|---|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in rows:
@@ -138,7 +151,8 @@ def main():
             f"| {row['case']} | {row['control_cycles']} | {row['policy_cycles']} | "
             f"{row['cycle_delta_pct']} | {row['control_probes']} / {row['policy_probes']} | "
             f"{row['control_remote_hits']} / {row['policy_remote_hits']} | "
-            f"{row['outer_opportunities']} | {row['outer_bypass_share']} |")
+            f"{row['outer_initial']} / {row['outer_after_local']} | "
+            f"{row['outer_bypass_share']} |")
     if failures:
         lines += ["", "## Validation failures", ""]
         lines += [f"- {failure}" for failure in failures]
