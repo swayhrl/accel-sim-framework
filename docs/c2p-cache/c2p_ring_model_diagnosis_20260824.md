@@ -83,6 +83,33 @@ An explicitly labelled Btree capacity sensitivity (`ReqQ=512`) was also complete
 it slows RING to 252,841 cycles (0.929×).  Increasing the global accepted window
 adds more network wait than useful hits, so it is not promoted to the main point.
 
+## CCN-aligned comparator revision
+
+The initial corrected point still used a single chip-global issue timestamp.
+That is not a ring: it prevents independent links from pipelining, while also
+failing to charge later requests for contention on the links they actually
+cross.  The primary RING configuration now reserves every traversed directed
+link for the paper's two-cycle hop time.
+
+The original CCN additionally uses a per-core Request Throttler (RT): each SM
+samples one million committed scalar instructions in a ten-million-instruction
+epoch and, when its observed remote-hit rate is below 5%, sends subsequent
+misses directly to L2 until the next epoch.  The new RING configuration
+implements precisely those parameters.  A throttle bypass is a normal L1 miss
+to L2; its copied tag remains available to other requesters.  Four counters
+make the decision auditable:
+
+- `c2p_ring_throttle_samples`;
+- `c2p_ring_throttle_sample_requests`;
+- `c2p_ring_throttle_sample_hits`;
+- `c2p_ring_throttle_bypasses`.
+
+This corrects the CCN comparator; it is not an optimization applied to C2P.
+The response ring (opposite-direction response queues and their explicit
+capacity) remains outside the present C2P comparator abstraction.  It should
+be modeled only in a separately labelled CCN microarchitecture study, rather
+than approximated by an uncalibrated response constant.
+
 ## Next validation
 
 1. Verify corrected Btree accounting:
@@ -92,6 +119,6 @@ adds more network wait than useful hits, so it is not promoted to the main point
 3. Keep directed-link results as a sensitivity result.  A no-match request occupies
    all links, so a physically stricter model can legitimately be slower; it must not
    be silently substituted for the CCN queue policy.
-4. Add the cited per-SM CCN request throttler only as a separately configured A/B
-   after the queue semantics are validated.  It should not be folded into the
-   present correction.
+4. The CCN-aligned directed-link + RT configuration is being replayed for all
+   sixteen canonical traces and the only R1S1 V100 extension, ISPASS BFS.  Do
+   not combine these results with the historical global-injector points.
