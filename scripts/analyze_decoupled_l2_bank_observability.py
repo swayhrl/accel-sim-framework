@@ -129,12 +129,37 @@ def parse_decoupled(run_dir):
             tag_requeues[bank] += tag_requeue
             lower_requeues[bank] += lower_requeue
     row["internal_banks"] = bank_count
+    tag_attempts = [sum(data["banks"][bank][1] for data in slices.values())
+                    for bank in range(bank_count)]
+    lower_attempts = [sum(data["banks"][bank][4] for data in slices.values())
+                      for bank in range(bank_count)]
     for prefix, values in (("tag_grant", tag_grants), ("lower_grant", lower_grants),
                            ("tag_requeue", tag_requeues),
                            ("lower_requeue", lower_requeues)):
         total = sum(values)
         row[prefix + "_max_share"] = max(values) / total if total else 0.0
         row[prefix + "_min_share"] = min(values) / total if total else 0.0
+    def share(value, values):
+        total = sum(values)
+        return value / total if total else 0.0
+
+    row["_bank_rows"] = []
+    for bank in range(bank_count):
+        row["_bank_rows"].append({
+            "bank": bank,
+            "tag_attempt": tag_attempts[bank],
+            "tag_attempt_share": share(tag_attempts[bank], tag_attempts),
+            "tag_grant": tag_grants[bank],
+            "tag_grant_share": share(tag_grants[bank], tag_grants),
+            "tag_requeue": tag_requeues[bank],
+            "tag_requeue_share": share(tag_requeues[bank], tag_requeues),
+            "lower_attempt": lower_attempts[bank],
+            "lower_attempt_share": share(lower_attempts[bank], lower_attempts),
+            "lower_grant": lower_grants[bank],
+            "lower_grant_share": share(lower_grants[bank], lower_grants),
+            "lower_requeue": lower_requeues[bank],
+            "lower_requeue_share": share(lower_requeues[bank], lower_requeues),
+        })
     return row
 
 
@@ -169,18 +194,41 @@ def main():
     parser.add_argument("--pair", action="append", nargs=3, metavar=("CASE", "BASELINE", "DECOUPLED"),
                         required=True)
     parser.add_argument("--csv", required=True)
+    parser.add_argument("--bank-csv")
     parser.add_argument("--markdown", required=True)
     args = parser.parse_args()
     rows = [validate_pair(name, Path(baseline), Path(decoupled))
             for name, baseline, decoupled in args.pair]
+    bank_rows = []
+    for row in rows:
+        for bank_row in row.pop("_bank_rows"):
+            bank_row.update({
+                "case": row["case"],
+                "bank_hash": row["bank_hash"],
+                "internal_banks": row["internal_banks"],
+            })
+            bank_rows.append(bank_row)
     fields = sorted({key for row in rows for key in row})
     with open(args.csv, "w", newline="") as output:
         writer = csv.DictWriter(output, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
+    bank_csv = Path(args.bank_csv) if args.bank_csv else Path(args.csv).with_name(
+        Path(args.csv).stem + "_by_bank.csv"
+    )
+    bank_fields = ["case", "bank_hash", "internal_banks", "bank", "tag_attempt",
+                   "tag_attempt_share", "tag_grant", "tag_grant_share",
+                   "tag_requeue", "tag_requeue_share", "lower_attempt",
+                   "lower_attempt_share", "lower_grant", "lower_grant_share",
+                   "lower_requeue", "lower_requeue_share"]
+    with open(bank_csv, "w", newline="") as output:
+        writer = csv.DictWriter(output, fieldnames=bank_fields)
+        writer.writeheader()
+        writer.writerows(bank_rows)
     with open(args.markdown, "w") as output:
         output.write("# Decoupled-L2 bank observability\n\n")
         output.write("Every pair passed normal-exit, binary-hash, trace-hash, and non-backend configuration gates.\n\n")
+        output.write("`%s` contains summed per-slice attempts, grants, and requeues for every internal bank.\n\n" % bank_csv.name)
         output.write("| Case | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | tag/lower requeue | tag max share | lower max share |\n")
         output.write("|---|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
