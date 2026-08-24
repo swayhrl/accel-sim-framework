@@ -30,6 +30,13 @@ def provenance(run_dir):
 
 
 def cycles(run_dir):
+    metrics_path = run_dir / "runtime_metrics.txt"
+    if not metrics_path.is_file():
+        fail("missing runtime metrics: %s" % run_dir)
+    metrics = dict(line.split("=", 1) for line in metrics_path.read_text().splitlines()
+                   if "=" in line)
+    if metrics.get("sim_exit_status") != "0":
+        fail("nonzero simulator exit: %s" % run_dir)
     path = run_dir / "smoke.out"
     text = path.read_text(errors="replace")
     if EXIT_MARKER not in text:
@@ -71,7 +78,8 @@ def validate_case(group, suite, case, arms):
             fail("%s/%s mismatches %s" % (suite, case, key))
     # The optimized binary may deliberately differ after a model change, but
     # baseline and default must remain a matched executable pair.
-    for key in ("sim_bin_sha256", "gpgpusim_source_commit"):
+    for key in ("sim_bin_sha256", "gpgpusim_source_commit",
+                "non_backend_config_sha256"):
         if metas["baseline"].get(key) != metas["decoupled"].get(key):
             fail("%s/%s baseline/default mismatch: %s" % (suite, case, key))
     values = {arm: cycles(run_dir) for arm, run_dir in runs.items()}

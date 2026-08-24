@@ -119,6 +119,10 @@ cp "$sim_bin" "$sim_run_bin"
   printf 'sim_bin_stat=%s\n' "$(stat -c 'size=%s mtime=%y' "$sim_run_bin")"
   printf 'gpgpusim_source_commit=%s\n' "$(git -C "$GPGPUSIM_ROOT" rev-parse HEAD)"
   printf 'config_sha256=%s\n' "$(sha256sum "$run_dir/gpgpusim.config" | awk '{print $1}')"
+  # backend is the only intentional B/D configuration difference.  Preserve
+  # a normalized fingerprint so result checkers can reject every other drift.
+  printf 'non_backend_config_sha256=%s\n' \
+    "$(rg -v '^-gpgpu_l2_backend ' "$run_dir/gpgpusim.config" | sha256sum | awk '{print $1}')"
   printf 'trace_kernelslist_sha256=%s\n' "$(sha256sum "$trace" | awk '{print $1}')"
   printf 'backend=%s\n' "$backend"
 } > "$run_dir/simulator_provenance.txt"
