@@ -59,6 +59,13 @@ candidate queries, local candidates/probes/hits account for 9.82% / 14.11% /
 outer peers still supply the majority of potential hits; it was not used to
 tune admission beyond the representative Btree/2D/BFS/LPS matrix.
 
+The completed full-trace PolyBench ATAx observation also passed exact
+default-off equivalence and all locality conservation checks.  Across
+19,079,126 candidate queries, local candidates/probes/hits account for
+15.64% / 15.86% / 26.04%, respectively.  Like GEMM, ATAx has a measurable
+local-hit-quality skew without evidence that unconditional outer bypass would
+be safe.
+
 ## Outer-tail admission
 
 Policy results are relative to the corresponding local-first C2P control.
