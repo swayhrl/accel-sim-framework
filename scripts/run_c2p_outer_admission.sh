@@ -8,7 +8,7 @@ Usage: scripts/run_c2p_outer_admission.sh --out-root DIR
        [--trace-root DIR] [--v100-stage DIR] [--case CASE[,CASE...]] [--jobs N]
 
 The control keeps all C2P candidates but orders local targets first.  The
-policy uses that same ordering and can bypass an outer-only candidate list.
+policy uses that same ordering and can bypass an outer-only remaining tail.
 EOF
 }
 

@@ -23,10 +23,10 @@ candidate is never discarded by the policy.
    both probe and return.  These values are sensitivity points, not a claim
    about a particular Volta physical topology.
 3. **Admission policy only if stages 1--2 support it.**  A candidate list with
-   a local member starts with that local member.  Only an outer-only list, or
-   the remaining outer tail after a local miss, may be sent directly to the
-   ordinary lower path.  Exploration is mandatory because a bypassed request
-   has no online peer-hit label.
+   a local member starts with that local member.  Once all untried candidates
+   are outer, that complete remaining outer tail is either admitted as one
+   package or sent directly to the ordinary lower path.  Exploration is
+   mandatory because a bypassed request has no online peer-hit label.
 
 ## Planned policy contract
 

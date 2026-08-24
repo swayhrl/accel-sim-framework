@@ -126,7 +126,7 @@ def main():
         "# C2P outer-admission result",
         "",
         "Each policy replay retains canonical C2P for requests with a local "
-        "candidate.  Only an outer-only Snapshot candidate list can be admitted "
+        "candidate.  Only an outer-only remaining candidate tail can be admitted "
         "to probes or bypassed directly into the ordinary lower path.",
         "",
         "| Case | Canonical cycles | Policy cycles | Cycle delta | Canonical / policy probes | "
