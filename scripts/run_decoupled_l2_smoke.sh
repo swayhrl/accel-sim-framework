@@ -123,6 +123,8 @@ cp "$sim_bin" "$sim_run_bin"
   # a normalized fingerprint so result checkers can reject every other drift.
   printf 'non_backend_config_sha256=%s\n' \
     "$(rg -v '^-gpgpu_l2_backend ' "$run_dir/gpgpusim.config" | sha256sum | awk '{print $1}')"
+  printf 'config_extra_sha256=%s\n' \
+    "${config_extra:+$(sha256sum "$config_extra" | awk '{print $1}')}"
   printf 'trace_kernelslist_sha256=%s\n' "$(sha256sum "$trace" | awk '{print $1}')"
   printf 'backend=%s\n' "$backend"
 } > "$run_dir/simulator_provenance.txt"
