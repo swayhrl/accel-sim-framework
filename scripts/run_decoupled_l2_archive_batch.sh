@@ -5,6 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAME
        --case-list CASES.txt [--config FILE] [--trace-config FILE]
+       [--optimized-config-extra FILE]
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
        [--build]
        [--staged-traces DIR]
@@ -52,10 +53,15 @@ GLOBAL-PAIR-LOCK (default /tmp/decoupled-l2-archive-pair.lock) serializes
 admission across independent archive batches. The lock stays held for one
 whole baseline/decoupled pair, so two batches cannot both admit work using the
 same transient MemAvailable observation.
+
+OPTIMIZED-CONFIG-EXTRA adds a third, sequential `optimized` arm after the
+baseline and default-decoupled arms. It is appended only to that arm's
+configuration and still uses the decoupled backend.
 EOF
 }
 
 archive=""; suite=""; case_list=""; config=""; trace_config=""; config_given=0
+optimized_config_extra=""
 run_root=""; scratch_root=""; min_free_gib=80; keep_failed_extract=1; reuse=0
 build=0
 staged_traces=""
@@ -72,6 +78,7 @@ while [[ $# -gt 0 ]]; do
     --case-list) case_list="$2"; shift 2 ;;
     --config) config="$2"; config_given=1; shift 2 ;;
     --trace-config) trace_config="$2"; shift 2 ;;
+    --optimized-config-extra) optimized_config_extra="$2"; shift 2 ;;
     --run-root) run_root="$2"; shift 2 ;;
     --scratch-root) scratch_root="$2"; shift 2 ;;
     --staged-traces) staged_traces="$2"; shift 2 ;;
@@ -111,6 +118,9 @@ command -v flock >/dev/null 2>&1 || {
   echo "error: flock is required for global pair admission" >&2; exit 2;
 }
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || { echo "error: set DECOUPLED_L2_GPGPUSIM_ROOT" >&2; exit 2; }
+[[ -z "$optimized_config_extra" || -f "$optimized_config_extra" ]] || {
+  echo "error: --optimized-config-extra must name an existing file" >&2; exit 2;
+}
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ "$build" -eq 1 ]]; then
@@ -254,7 +264,7 @@ fi
 patterns="$run_root/${suite}_trace_patterns.txt"
 awk '{ printf "./%s/traces/*\n", $0 }' "$missing" > "$patterns"
 summary="$run_root/summary.csv"; failures="$run_root/failures.csv"
-printf 'suite,case,backend,cycles,run_dir\n' > "$summary"
+printf 'suite,case,arm,cycles,run_dir\n' > "$summary"
 printf 'time,suite,case,backend,stage,run_dir,trace_dir,smoke_out\n' > "$failures"
 batch_dir=""; owns_batch=1; current_case=""; current_backend=""; current_stage="setup"; current_run_dir=""
 cleanup_batch() { [[ "$owns_batch" -eq 1 && -n "$batch_dir" && "$batch_dir" == "$scratch_root"/* ]] && rm -rf "$batch_dir"; }
@@ -300,12 +310,13 @@ if [[ -s "$missing" ]]; then
 fi
 
 run_backend() {
-  local case_path="$1" backend="$2" trace="$3" case_run_dir cycles
-  case_run_dir="$run_root/$suite/$case_path/$backend"
+  local case_path="$1" label="$2" backend="$3" trace="$4" config_extra="$5" case_run_dir cycles
+  case_run_dir="$run_root/$suite/$case_path/$label"
   smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
   [[ -n "$trace_config" ]] && smoke_args+=(--trace-config "$trace_config")
+  [[ -n "$config_extra" ]] && smoke_args+=(--config-extra "$config_extra")
   if [[ ( "$reuse" -eq 1 || "$owns_batch" -eq 0 ) ]] && run_is_reusable "$case_run_dir"; then
-    printf 'REUSE backend=%s run_dir=%s\n' "$backend" "$case_run_dir"
+    printf 'REUSE arm=%s run_dir=%s\n' "$label" "$case_run_dir"
   elif ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
     printf '%s,%s,%s,simulate,%s,%s,%s\n' "$(date --iso-8601=seconds)" \
       "$suite" "$case_path" "$case_run_dir" "$batch_dir" "$case_run_dir/smoke.out" >> "$failures"
@@ -318,7 +329,7 @@ run_backend() {
   fi
   cycles="$(sed -n 's/.*gpu_tot_sim_cycle = \([0-9][0-9]*\).*/\1/p' "$case_run_dir/smoke.out" | tail -1)"
   [[ -n "$cycles" ]] || return 1
-  printf '%s,%s,%s,%s,%s\n' "$suite" "$case_path" "$backend" "$cycles" "$case_run_dir" >> "$summary"
+  printf '%s,%s,%s,%s,%s\n' "$suite" "$case_path" "$label" "$cycles" "$case_run_dir" >> "$summary"
 }
 
 run_is_reusable() {
@@ -337,14 +348,19 @@ run_case() {
   local case_path="$1" trace baseline_status decoupled_status
   trace="$batch_dir/$case_path/traces/kernelslist.g"
   [[ -f "$trace" ]] || { echo "error: extraction lost $case_path" >&2; return 1; }
-  if [[ "$pair_parallel" -eq 1 ]]; then
-    run_backend "$case_path" baseline "$trace" & baseline_pid="$!"
-    run_backend "$case_path" decoupled "$trace" & decoupled_pid="$!"
+  if [[ -n "$optimized_config_extra" ]]; then
+    run_backend "$case_path" baseline baseline "$trace" "" &&
+      run_backend "$case_path" decoupled decoupled "$trace" "" &&
+      run_backend "$case_path" optimized decoupled "$trace" "$optimized_config_extra"
+  elif [[ "$pair_parallel" -eq 1 ]]; then
+    run_backend "$case_path" baseline baseline "$trace" "" & baseline_pid="$!"
+    run_backend "$case_path" decoupled decoupled "$trace" "" & decoupled_pid="$!"
     if wait "$baseline_pid"; then baseline_status=0; else baseline_status=1; fi
     if wait "$decoupled_pid"; then decoupled_status=0; else decoupled_status=1; fi
     (( baseline_status == 0 && decoupled_status == 0 ))
   else
-    run_backend "$case_path" baseline "$trace" && run_backend "$case_path" decoupled "$trace"
+    run_backend "$case_path" baseline baseline "$trace" "" &&
+      run_backend "$case_path" decoupled decoupled "$trace" ""
   fi
 }
 
