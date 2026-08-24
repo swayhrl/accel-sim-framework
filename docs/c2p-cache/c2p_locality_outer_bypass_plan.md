@@ -49,6 +49,10 @@ Correctness and accounting invariants for a behavioral variant are:
 - the policy does not bypass a no-candidate request, which already uses the
   normal lower path without a C2P probe.
 
+The `outer-admission-always` overlay sets the admission threshold to zero.
+It is an integration control: every eligible outer tail continues, so it must
+match the local-first C2P control in cycle count and all base C2P counters.
+
 The final report records the fixed binary commit, resolved configs, trace
 checksums, host profiles, and per-workload results.  A policy will be rejected
 if locality observation does not show stable outer false-probe pressure or if

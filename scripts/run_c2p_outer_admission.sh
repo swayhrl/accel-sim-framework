@@ -6,6 +6,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_outer_admission.sh --out-root DIR
        [--trace-root DIR] [--v100-stage DIR] [--case CASE[,CASE...]] [--jobs N]
+       [--policy-config FILE]
 
 The control keeps all C2P candidates but orders local targets first.  The
 policy uses that same ordering and can bypass an outer-only remaining tail.
@@ -18,6 +19,7 @@ trace_root="/workspace/worktrees/accel-sim-decoupled-l2/hw_run"
 v100_stage="/workspace/worktrees/accel-sim-c2p-cache/hw_run/c2p-v100-baseline-compat-smoke-v2-20260822/stage"
 selected_cases=""
 jobs=1
+policy_config=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --out-root) out_root="$2"; shift 2 ;;
@@ -25,6 +27,7 @@ while [[ $# -gt 0 ]]; do
     --v100-stage) v100_stage="$2"; shift 2 ;;
     --case) selected_cases="$2"; shift 2 ;;
     --jobs) jobs="$2"; shift 2 ;;
+    --policy-config) policy_config="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -40,7 +43,7 @@ base_config="$C2P_GPGPUSIM_ROOT/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
 trace_config="$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
 paper_config="$repo_root/configs/c2p-cache/paper-table.config"
 order_config="$repo_root/configs/c2p-cache/c2p-locality-order.config"
-policy_config="$repo_root/configs/c2p-cache/c2p-outer-admission.config"
+policy_config="${policy_config:-$repo_root/configs/c2p-cache/c2p-outer-admission.config}"
 canonical_manifest="$repo_root/configs/c2p-cache/paper16_workloads.tsv"
 extension_manifest="$repo_root/configs/c2p-cache/v100_extension_workloads.tsv"
 for path in "$base_config" "$trace_config" "$paper_config" "$order_config" "$policy_config" \
