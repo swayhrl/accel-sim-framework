@@ -207,6 +207,7 @@ for mode in ${modes//,/ }; do
     /^c2p_ring_no_match_traversals = / { ring_no_match_traversals=$3 }
     /^c2p_ring_traversal_hops = / { ring_traversal_hops=$3 }
     /^c2p_ring_network_wait_cycles = / { ring_network_wait_cycles=$3 }
+    /^c2p_ring_queue_bypasses = / { ring_queue_bypasses=$3 }
     /^c2p_target_probe_port_busy_cycles = / { target_port_busy_cycles=$3 }
     /^c2p_target_tag_port_busy_cycles = / { target_tag_port_busy_cycles=$3 }
     /^c2p_target_probe_queue_wait_cycles = / { target_queue_wait_cycles=$3 }
@@ -278,6 +279,7 @@ for mode in ${modes//,/ }; do
       printf "c2p_ring_no_match_traversals = %s\n", ring_no_match_traversals
       printf "c2p_ring_traversal_hops = %s\n", ring_traversal_hops
       printf "c2p_ring_network_wait_cycles = %s\n", ring_network_wait_cycles
+      printf "c2p_ring_queue_bypasses = %s\n", ring_queue_bypasses
       printf "c2p_target_probe_port_busy_cycles = %s\n", target_port_busy_cycles
       printf "c2p_target_tag_port_busy_cycles = %s\n", target_tag_port_busy_cycles
       printf "c2p_target_probe_queue_wait_cycles = %s\n", target_queue_wait_cycles
