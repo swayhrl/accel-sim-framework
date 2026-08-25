@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <title>C2P-Cache overview, paper-style redraw</title>
+  <desc>Original vector redraw inspired by the information flow in C2P-Cache paper Figure 5; not a copy of the published artwork.</desc>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#31424c"/></marker>
+    <marker id="b" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#5379df"/></marker>
+    <style>
+      .title{font:700 34px 'DejaVu Sans',sans-serif;fill:#1c2b34}.sub{font:18px 'DejaVu Sans',sans-serif;fill:#55646d}.lab{font:700 22px 'DejaVu Sans',sans-serif;fill:#1c2b34}.txt{font:17px 'DejaVu Sans',sans-serif;fill:#2e3d46}.small{font:15px 'DejaVu Sans',sans-serif;fill:#56666f}.box{stroke:#31424c;stroke-width:2.2;rx:13}.flow{fill:none;stroke:#31424c;stroke-width:3;marker-end:url(#a)}.match{fill:none;stroke:#5379df;stroke-width:3.5;marker-end:url(#b)}.update{fill:none;stroke:#64cfc6;stroke-width:3;marker-end:url(#b)}.dash{fill:none;stroke:#687780;stroke-width:2.5;stroke-dasharray:9 7;marker-end:url(#a)}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="white"/>
+  <text x="75" y="74" class="title">C2P-Cache matching overview</text>
+  <text x="75" y="108" class="sub">Paper-style redraw of the access, snapshot, and result-matrix information flow.</text>
+
+  <rect x="75" y="215" width="220" height="238" class="box" fill="#eaf3f8"/>
+  <text x="185" y="258" text-anchor="middle" class="lab">Distributed L1 caches</text>
+  <rect x="120" y="297" width="130" height="28" rx="5" fill="#a6c7d9" stroke="#31424c"/><rect x="120" y="337" width="130" height="28" rx="5" fill="#b8d4e2" stroke="#31424c"/><rect x="120" y="377" width="130" height="28" rx="5" fill="#cae0e9" stroke="#31424c"/>
+  <text x="185" y="431" text-anchor="middle" class="small">resident tags + data</text>
+
+  <rect x="375" y="250" width="175" height="170" class="box" fill="#eef4ec"/>
+  <text x="462" y="295" text-anchor="middle" class="lab">BF engines</text>
+  <path d="M416 340 l22 -22 l22 22 l-22 22 z" fill="#b5c9f4" stroke="#5379df"/><path d="M470 340 l22 -22 l22 22 l-22 22 z" fill="#c7e2de" stroke="#64cfc6"/>
+  <text x="462" y="385" text-anchor="middle" class="small">hash / bit-position generation</text>
+
+  <rect x="665" y="190" width="190" height="290" class="box" fill="#f7f4df"/>
+  <text x="760" y="235" text-anchor="middle" class="lab">Access matrix</text>
+  <text x="760" y="265" text-anchor="middle" class="small">sparse miss-side rows</text>
+  <g stroke="#31424c" stroke-width="1.5" fill="#fff"><rect x="710" y="305" width="100" height="100"/><path d="M735 305v100M760 305v100M785 305v100M710 330h100M710 355h100M710 380h100"/></g>
+  <rect x="737" y="332" width="21" height="21" fill="#b7c8fa"/><rect x="787" y="382" width="21" height="21" fill="#b7c8fa"/>
+
+  <rect x="965" y="175" width="190" height="305" class="box" fill="#f8ece5"/>
+  <text x="1060" y="220" text-anchor="middle" class="lab">Snapshot matrix</text>
+  <text x="1060" y="250" text-anchor="middle" class="small">BF snapshots of L1 tags</text>
+  <g stroke="#31424c" stroke-width="1.5" fill="#fff"><rect x="1010" y="288" width="100" height="120"/><path d="M1035 288v120M1060 288v120M1085 288v120M1010 312h100M1010 336h100M1010 360h100M1010 384h100"/></g>
+  <rect x="1062" y="314" width="21" height="21" fill="#f0a28e"/><rect x="1012" y="362" width="21" height="21" fill="#f0a28e"/>
+
+  <circle cx="1235" cy="343" r="36" fill="#fff" stroke="#31424c" stroke-width="2.5"/>
+  <text x="1235" y="352" text-anchor="middle" class="lab">∧</text>
+  <text x="1235" y="401" text-anchor="middle" class="small">bitwise match</text>
+
+  <rect x="1325" y="230" width="195" height="225" class="box" fill="#eeeef7"/>
+  <text x="1422" y="275" text-anchor="middle" class="lab">Result matrix</text>
+  <text x="1422" y="305" text-anchor="middle" class="small">pruned candidate L1s</text>
+  <g stroke="#31424c" stroke-width="1.5" fill="#fff"><rect x="1372" y="335" width="100" height="75"/><path d="M1397 335v75M1422 335v75M1447 335v75M1372 360h100M1372 385h100"/></g>
+  <rect x="1424" y="362" width="21" height="21" fill="#8c61c8"/>
+
+  <path d="M295 335H375" class="match"/><text x="335" y="315" text-anchor="middle" class="small">L1 miss</text>
+  <path d="M550 335H665" class="match"/><text x="607" y="315" text-anchor="middle" class="small">encoded row</text>
+  <path d="M855 343H965" class="match"/><path d="M1155 343H1199" class="match"/><path d="M1271 343H1325" class="match"/>
+  <path d="M1422 455 C1422 560,255 560,255 453" class="dash"/><text x="825" y="586" text-anchor="middle" class="small">probe only candidate peer L1s; otherwise use the baseline shared-L2 path</text>
+  <path d="M215 215 C215 145,1050 145,1050 175" class="update"/><text x="632" y="159" text-anchor="middle" class="small">background L1 update refreshes the snapshot column</text>
+
+  <path d="M75 665 H1520" stroke="#d6dde1" stroke-width="2"/>
+  <text x="75" y="715" class="lab">How to read the diagram</text>
+  <circle cx="96" cy="760" r="7" fill="#5379df"/><text x="116" y="766" class="txt">blue arrows: miss-side candidate generation and Boolean matching</text>
+  <circle cx="96" cy="806" r="7" fill="#64cfc6"/><text x="116" y="812" class="txt">teal arrow: decoupled background snapshot refresh</text>
+  <circle cx="800" cy="760" r="7" fill="#687780"/><text x="820" y="766" class="txt">dashed path: bounded peer probing falls back to the ordinary L2 path</text>
+  <text x="75" y="860" class="small">Original redraw for this repository. It follows the paper's mechanism-level information flow, not its exact published geometry or artwork.</text>
+</svg>
