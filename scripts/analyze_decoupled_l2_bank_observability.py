@@ -103,9 +103,14 @@ def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
             ]
     if not slices:
         fail("%s has no decoupled detail lines" % run_dir)
+    # A passed pair is evidence only if it carries every required causal
+    # signal.  Do not turn a truncated/old log into misleading zeroes.
     required = {"req_avg", "req_max", "tag_avg", "tag_max", "aad_avg", "aad_max",
                 "fill_avg", "fill_max", "wbq_avg", "wbq_max", "bank_requeue_tag",
-                "bank_requeue_lower", "kinds", "banks"}
+                "bank_requeue_lower", "tag_tag", "tag_lower", "tag_fill", "tag_wbq",
+                "lower_tag", "lower_lower", "lower_fill", "lower_wbq", "access",
+                "hit", "miss", "write", "wb", "atomic", "token_stall", "aad_stall",
+                "read_credit_stall", "bank_stall", "kinds", "banks"}
     for name, data in slices.items():
         missing = required - set(data)
         if missing:
