@@ -10,6 +10,8 @@ from pathlib import Path
 
 
 CYCLE_RE = re.compile(r"gpu_tot_sim_cycle =\s*([0-9]+)")
+IPC_RE = re.compile(r"gpu_tot_ipc =\s*([0-9]+(?:\.[0-9]+)?)")
+MAX_RSS_RE = re.compile(r"Maximum resident set size \(kbytes\):\s*(\d+)")
 EXIT_MARKER = "GPGPU-Sim: *** exit detected ***"
 
 
@@ -29,7 +31,7 @@ def provenance(run_dir):
     return result
 
 
-def cycles(run_dir):
+def measurements(run_dir):
     metrics_path = run_dir / "runtime_metrics.txt"
     if not metrics_path.is_file():
         fail("missing runtime metrics: %s" % run_dir)
@@ -37,6 +39,16 @@ def cycles(run_dir):
                    if "=" in line)
     if metrics.get("sim_exit_status") != "0":
         fail("nonzero simulator exit: %s" % run_dir)
+    try:
+        wall_seconds = int(metrics["wall_seconds"])
+    except (KeyError, ValueError) as error:
+        raise RuntimeError("missing wall_seconds: %s" % run_dir) from error
+    resource_path = run_dir / "resource_usage.txt"
+    if not resource_path.is_file():
+        fail("missing resource usage: %s" % run_dir)
+    rss_values = MAX_RSS_RE.findall(resource_path.read_text(errors="replace"))
+    if not rss_values:
+        fail("missing maximum RSS: %s" % run_dir)
     path = run_dir / "smoke.out"
     text = path.read_text(errors="replace")
     if EXIT_MARKER not in text:
@@ -44,7 +56,15 @@ def cycles(run_dir):
     values = CYCLE_RE.findall(text)
     if not values:
         fail("missing cycle count: %s" % run_dir)
-    return int(values[-1])
+    ipcs = IPC_RE.findall(text)
+    if not ipcs:
+        fail("missing IPC: %s" % run_dir)
+    return {
+        "cycles": int(values[-1]),
+        "ipc": float(ipcs[-1]),
+        "wall_seconds": wall_seconds,
+        "max_rss_kib": int(rss_values[-1]),
+    }
 
 
 def read_summary(group, path):
@@ -82,22 +102,23 @@ def validate_case(group, suite, case, arms):
                 "non_backend_config_sha256"):
         if metas["baseline"].get(key) != metas["decoupled"].get(key):
             fail("%s/%s baseline/default mismatch: %s" % (suite, case, key))
-    values = {arm: cycles(run_dir) for arm, run_dir in runs.items()}
-    return {
+    values = {arm: measurements(run_dir) for arm, run_dir in runs.items()}
+    row = {
         "group": group,
         "suite": suite,
         "case": case,
-        "baseline_cycles": values["baseline"],
-        "decoupled_cycles": values["decoupled"],
-        "optimized_cycles": values["optimized"],
-        "default_speedup": values["baseline"] / values["decoupled"],
-        "optimized_speedup": values["baseline"] / values["optimized"],
-        "optimized_vs_default": values["decoupled"] / values["optimized"],
+        "default_speedup": values["baseline"]["cycles"] / values["decoupled"]["cycles"],
+        "optimized_speedup": values["baseline"]["cycles"] / values["optimized"]["cycles"],
+        "optimized_vs_default": values["decoupled"]["cycles"] / values["optimized"]["cycles"],
         "trace_sha256": metas["baseline"]["trace_kernelslist_sha256"],
         "baseline_dir": str(runs["baseline"]),
         "decoupled_dir": str(runs["decoupled"]),
         "optimized_dir": str(runs["optimized"]),
     }
+    for arm, value in values.items():
+        for field, measurement in value.items():
+            row["%s_%s" % (arm, field)] = measurement
+    return row
 
 
 def geometric_mean(values):
@@ -136,13 +157,20 @@ def main():
                      "binary plus trace provenance. Aggregates are kept within groups.\n\n")
         for group, group_rows in grouped.items():
             output.write("## %s\n\n" % group)
-            output.write("| Case | Default speedup | Optimized speedup | Optimized/default |\n")
-            output.write("|---|---:|---:|---:|\n")
+            output.write("| Case | Default speedup | Optimized speedup | Optimized/default | "
+                         "Baseline / Default / Optimized wall time | Baseline / Default / Optimized peak RSS |\n")
+            output.write("|---|---:|---:|---:|---:|---:|\n")
             for row in group_rows:
-                output.write("| %s | %.4fx | %.4fx | %.4fx |\n" %
+                output.write("| %s | %.4fx | %.4fx | %.4fx | %ss / %ss / %ss | "
+                             "%.2f / %.2f / %.2f GiB |\n" %
                              (row["case"], row["default_speedup"],
-                              row["optimized_speedup"], row["optimized_vs_default"]))
-            output.write("| geometric mean | %.4fx | %.4fx | %.4fx |\n\n" % (
+                              row["optimized_speedup"], row["optimized_vs_default"],
+                              row["baseline_wall_seconds"], row["decoupled_wall_seconds"],
+                              row["optimized_wall_seconds"],
+                              row["baseline_max_rss_kib"] / (1024 * 1024),
+                              row["decoupled_max_rss_kib"] / (1024 * 1024),
+                              row["optimized_max_rss_kib"] / (1024 * 1024)))
+            output.write("| geometric mean | %.4fx | %.4fx | %.4fx | — | — |\n\n" % (
                 geometric_mean([row["default_speedup"] for row in group_rows]),
                 geometric_mean([row["optimized_speedup"] for row in group_rows]),
                 geometric_mean([row["optimized_vs_default"] for row in group_rows]),
