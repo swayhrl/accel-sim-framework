@@ -59,7 +59,7 @@ def last_metric(text, name):
     return float(values[-1])
 
 
-def parse_decoupled(run_dir):
+def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
     text = (run_dir / "smoke.out").read_text(errors="replace")
     if "GPGPU-Sim: *** exit detected ***" not in text:
         fail("%s did not exit normally" % run_dir)
@@ -105,6 +105,9 @@ def parse_decoupled(run_dir):
     if len(hashes) != 1:
         fail("%s mixes bank hashes %s" % (run_dir, hashes))
     row["bank_hash"] = hashes.pop()
+    if row["bank_hash"] != expected_bank_hash:
+        fail("%s has bank hash %s, expected %s" %
+             (run_dir, row["bank_hash"], expected_bank_hash))
     for resource in ("req", "tag", "aad", "fill", "wbq"):
         row[resource + "_avg_sum"] = sum(float(data[resource + "_avg"])
                                           for data in slices.values())
@@ -128,6 +131,9 @@ def parse_decoupled(run_dir):
         row[key + "_requeue"] = sum(data["kinds"][key][2] for data in slices.values())
 
     bank_count = len(next(iter(slices.values()))["banks"])
+    if bank_count != expected_internal_banks:
+        fail("%s has %d internal banks, expected %d" %
+             (run_dir, bank_count, expected_internal_banks))
     tag_grants = [0] * bank_count
     lower_grants = [0] * bank_count
     tag_requeues = [0] * bank_count
@@ -176,7 +182,8 @@ def parse_decoupled(run_dir):
     return row
 
 
-def validate_pair(name, baseline, decoupled):
+def validate_pair(name, baseline, decoupled, expected_bank_hash,
+                  expected_internal_banks):
     baseline_text = (baseline / "smoke.out").read_text(errors="replace")
     if "GPGPU-Sim: *** exit detected ***" not in baseline_text:
         fail("%s baseline did not exit normally" % name)
@@ -199,7 +206,8 @@ def validate_pair(name, baseline, decoupled):
     decoupled_cycles = last_metric(dec_text, "gpu_tot_sim_cycle")
     decoupled_instructions = last_metric(dec_text, "gpu_tot_sim_insn")
     decoupled_ipc = last_metric(dec_text, "gpu_tot_ipc")
-    row = parse_decoupled(decoupled)
+    row = parse_decoupled(decoupled, expected_bank_hash,
+                          expected_internal_banks)
     row.update({"case": name, "baseline_cycles": int(baseline_cycles),
                 "decoupled_cycles": int(decoupled_cycles),
                 "baseline_instructions": int(baseline_instructions),
@@ -216,11 +224,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--pair", action="append", nargs=3, metavar=("CASE", "BASELINE", "DECOUPLED"),
                         required=True)
+    parser.add_argument("--expected-bank-hash", default="mod")
+    parser.add_argument("--expected-internal-banks", type=int, default=4)
     parser.add_argument("--csv", required=True)
     parser.add_argument("--bank-csv")
     parser.add_argument("--markdown", required=True)
     args = parser.parse_args()
-    rows = [validate_pair(name, Path(baseline), Path(decoupled))
+    rows = [validate_pair(name, Path(baseline), Path(decoupled),
+                          args.expected_bank_hash, args.expected_internal_banks)
             for name, baseline, decoupled in args.pair]
     bank_rows = []
     for row in rows:
