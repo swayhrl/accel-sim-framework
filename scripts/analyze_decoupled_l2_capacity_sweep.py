@@ -47,15 +47,23 @@ def lower_read_entries(run_dir):
 
 
 def config_without_capacity_override(run_dir):
-    """Hash the config after removing the only permitted capacity variation."""
+    """Hash semantic config after removing the only permitted variation.
+
+    ``run_decoupled_l2_smoke.sh`` adds a heading and preserves comments from
+    an experiment overlay.  Those lines cannot affect the simulator, so they
+    must not make a capacity-only comparison look like a configuration drift.
+    """
     config = Path(run_dir) / "gpgpusim.config"
     kept = []
     for line in config.read_text().splitlines():
-        fields = line.split()
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        fields = stripped.split()
         if fields and fields[0] in ("-gpgpu_l2_backend",
                                     "-gpgpu_decoupled_l2_lower_read_entries"):
             continue
-        kept.append(line)
+        kept.append(stripped)
     return hashlib.sha256(("\n".join(kept) + "\n").encode()).hexdigest()
 
 
@@ -181,20 +189,20 @@ def main():
         writer.writeheader()
         writer.writerows(points)
     with Path(args.markdown).open("w") as output:
-        output.write("# Decoupled-L2 lower-read/fill capacity sensitivity\\n\\n")
+        output.write("# Decoupled-L2 lower-read/fill capacity sensitivity\n\n")
         output.write("Every point compares the default `lower_read_entries=32` "
                      "Decoupled-L2 arm with one capacity-only Decoupled-L2 arm. "
                      "Trace, binary, source-tree identity, and workload must match "
-                     "across all points.\\n\\n")
+                     "across all points.\n\n")
         output.write("| Capacity per slice | Default / capacity IPC | Default / capacity cycles | "
-                     "Speedup | Fill peak | Read-credit stalls | WBQ peak | WBQ stalls |\\n")
-        output.write("|---:|---:|---:|---:|---:|---:|---:|---:|\\n")
+                     "Speedup | Fill peak | Read-credit stalls | WBQ peak | WBQ stalls |\n")
+        output.write("|---:|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in points:
             output.write("| {entries} | {default_ipc:.4f} / {capacity_ipc:.4f} | "
                          "{default_cycles} / {capacity_cycles} | {speedup:.4f}x | "
                          "{default_fill_max} / {capacity_fill_max} | "
                          "{default_read_credit_stall} / {capacity_read_credit_stall} | "
-                         "{default_wbq_max} / {capacity_wbq_max} | {default_wbq} / {capacity_wbq} |\\n".format(
+                         "{default_wbq_max} / {capacity_wbq_max} | {default_wbq} / {capacity_wbq} |\n".format(
                              default_wbq=value_or_na(row["default_wbq_stall"]),
                              capacity_wbq=value_or_na(row["capacity_wbq_stall"]),
                              **row))
