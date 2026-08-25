@@ -105,12 +105,17 @@ def validate_case(group, suite, case, arms, common_overlay_sha,
         values = {metas[arm].get(key) for arm in expected}
         if len(values) != 1 or None in values:
             fail("%s/%s mismatches %s" % (suite, case, key))
-    # The optimized binary may deliberately differ after a model change, but
-    # baseline and default must remain a matched executable pair.
-    for key in ("sim_bin_sha256", "gpgpusim_source_commit",
-                "non_backend_config_sha256"):
-        if metas["baseline"].get(key) != metas["decoupled"].get(key):
-            fail("%s/%s baseline/default mismatch: %s" % (suite, case, key))
+    # A three-arm candidate study changes only the explicitly named optimized
+    # overlay.  Allowing that arm to use another binary or source revision
+    # would make any speed difference non-causal.
+    for key in ("sim_bin_sha256", "gpgpusim_source_commit"):
+        values = {metas[arm].get(key) for arm in expected}
+        if len(values) != 1 or None in values:
+            fail("%s/%s three-arm mismatch: %s" % (suite, case, key))
+    if metas["baseline"].get("non_backend_config_sha256") != \
+       metas["decoupled"].get("non_backend_config_sha256"):
+        fail("%s/%s baseline/default mismatch: non_backend_config_sha256" %
+             (suite, case))
     if common_overlay_sha is not None:
         for arm in ("baseline", "decoupled"):
             if metas[arm].get("config_extra_sha256") != common_overlay_sha:
@@ -185,8 +190,8 @@ def main():
         grouped.setdefault(row["group"], []).append(row)
     with open(args.markdown, "w") as output:
         output.write("# Decoupled-L2 three-arm results\n\n")
-        output.write("Every listed case has normal exits and matched baseline/default "
-                     "binary plus trace provenance. Aggregates are kept within groups. "
+        output.write("Every listed case has normal exits and matched three-arm "
+                     "binary/source/trace provenance. Aggregates are kept within groups. "
                      "When overlays are supplied, their ordered fingerprints are gated too.\n\n")
         for group, group_rows in grouped.items():
             output.write("## %s\n\n" % group)
