@@ -161,6 +161,18 @@ def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
     else:
         for key in wbq_counter_names:
             row[key] = None
+    # Drain-side counters were added with bank-safe WBQ issue.  Preserve the
+    # unavailable distinction for historical logs, just as for full-WBQ
+    # allocation/fill stalls above.
+    wbq_drain_counter_names = ("wbq_drain_bank_stall",
+                               "wbq_drain_memport_stall")
+    if all(all(key in data for key in wbq_drain_counter_names)
+           for data in slices.values()):
+        for key in wbq_drain_counter_names:
+            row[key] = sum(int(data[key]) for data in slices.values())
+    else:
+        for key in wbq_drain_counter_names:
+            row[key] = None
     for key in ("tag_read", "tag_write", "tag_atomic", "lower_read", "lower_write",
                 "lower_atomic"):
         row[key + "_attempt"] = sum(data["kinds"][key][0] for data in slices.values())
@@ -300,19 +312,22 @@ def main():
         output.write("# Decoupled-L2 bank observability\n\n")
         output.write("Every pair passed normal-exit, binary-hash, trace-hash, and non-backend configuration gates.\n\n")
         output.write("`%s` contains summed per-slice attempts, grants, and requeues for every internal bank.\n\n" % bank_csv.name)
-        output.write("| Case | Baseline / Decoupled IPC | Baseline / Decoupled cycles | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | WBQ avg/peak per slice | credit / WBQ(tag+fill) stall | tag/lower requeue | tag max share | lower max share |\n")
-        output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
+        output.write("| Case | Baseline / Decoupled IPC | Baseline / Decoupled cycles | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | WBQ avg/peak per slice | credit / WBQ(tag+fill) stall | WBQ drain bank / memport stall | tag/lower requeue | tag max share | lower max share |\n")
+        output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
             output.write("| {case} | {baseline_ipc:.4f} / {decoupled_ipc:.4f} | "
                          "{baseline_cycles} / {decoupled_cycles} | {speedup:.4f}x | "
                          "{req_avg_per_slice:.2f}/{req_max_slice} | "
                          "{aad_avg_per_slice:.2f}/{aad_max_slice} | {fill_avg_per_slice:.2f}/{fill_max_slice} | "
                          "{wbq_avg_per_slice:.2f}/{wbq_max_slice} | {read_credit_stall} / {wbq_stall_display}({wbq_tag_stall_display}+{wbq_fill_stall_display}) | "
+                         "{wbq_drain_bank_stall_display} / {wbq_drain_memport_stall_display} | "
                          "{bank_requeue_tag}/{bank_requeue_lower} | "
                          "{tag_grant_max_share:.2%} | {lower_grant_max_share:.2%} |\n".format(
                              wbq_stall_display=value_or_na(row["wbq_stall"]),
                              wbq_tag_stall_display=value_or_na(row["wbq_tag_stall"]),
                              wbq_fill_stall_display=value_or_na(row["wbq_fill_stall"]),
+                             wbq_drain_bank_stall_display=value_or_na(row["wbq_drain_bank_stall"]),
+                             wbq_drain_memport_stall_display=value_or_na(row["wbq_drain_memport_stall"]),
                              **row))
         output.write("\n| Case | Requests R / W / atomic | Tag-bank owner: tag / lower / fill / WBQ | Lower-read-bank owner: tag / lower / fill / WBQ | Tag attempts R / W / atomic | Lower attempts R / W / atomic |\n")
         output.write("|---|---:|---:|---:|---:|---:|\n")

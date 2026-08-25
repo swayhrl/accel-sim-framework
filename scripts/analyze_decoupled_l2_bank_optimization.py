@@ -81,6 +81,10 @@ def validate_case(name, default_dir, optimized_dir, common_overlays, overlay,
         "optimized_wbq_tag_stall": optimized["wbq_tag_stall"],
         "default_wbq_fill_stall": default["wbq_fill_stall"],
         "optimized_wbq_fill_stall": optimized["wbq_fill_stall"],
+        "default_wbq_drain_bank_stall": default["wbq_drain_bank_stall"],
+        "optimized_wbq_drain_bank_stall": optimized["wbq_drain_bank_stall"],
+        "default_wbq_drain_memport_stall": default["wbq_drain_memport_stall"],
+        "optimized_wbq_drain_memport_stall": optimized["wbq_drain_memport_stall"],
         "default_dir": str(default_dir),
         "optimized_dir": str(optimized_dir),
     }
@@ -130,8 +134,8 @@ def main():
                      "beyond any common workload overlay.\n\n")
         output.write("| Case | Default / optimized IPC | Default / optimized cycles | "
                      "Speedup | Fill peak | WBQ peak | Read-credit stall | WBQ stall (tag/fill) | "
-                     "Tag requeue change | Lower-read requeue change |\n")
-        output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
+                     "WBQ drain (bank/memport) | Tag requeue change | Lower-read requeue change |\n")
+        output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
             output.write("| {case} | {default_ipc:.4f} / {optimized_ipc:.4f} | "
                          "{default_cycles} / {optimized_cycles} | {speedup:.4f}x | "
@@ -140,6 +144,8 @@ def main():
                          "{default_read_credit_stall} / {optimized_read_credit_stall} | "
                          "{default_wbq_stall_display}({default_wbq_tag_stall_display}/{default_wbq_fill_stall_display}) / "
                          "{optimized_wbq_stall_display}({optimized_wbq_tag_stall_display}/{optimized_wbq_fill_stall_display}) | "
+                         "{default_wbq_drain_bank_stall_display}/{default_wbq_drain_memport_stall_display} / "
+                         "{optimized_wbq_drain_bank_stall_display}/{optimized_wbq_drain_memport_stall_display} | "
                          "{tag_requeue_change:.4f}x | {lower_requeue_change:.4f}x |\n".format(
                              default_wbq_stall_display=value_or_na(row["default_wbq_stall"]),
                              optimized_wbq_stall_display=value_or_na(row["optimized_wbq_stall"]),
@@ -147,6 +153,10 @@ def main():
                              optimized_wbq_tag_stall_display=value_or_na(row["optimized_wbq_tag_stall"]),
                              default_wbq_fill_stall_display=value_or_na(row["default_wbq_fill_stall"]),
                              optimized_wbq_fill_stall_display=value_or_na(row["optimized_wbq_fill_stall"]),
+                             default_wbq_drain_bank_stall_display=value_or_na(row["default_wbq_drain_bank_stall"]),
+                             optimized_wbq_drain_bank_stall_display=value_or_na(row["optimized_wbq_drain_bank_stall"]),
+                             default_wbq_drain_memport_stall_display=value_or_na(row["default_wbq_drain_memport_stall"]),
+                             optimized_wbq_drain_memport_stall_display=value_or_na(row["optimized_wbq_drain_memport_stall"]),
                              **row))
 
 
