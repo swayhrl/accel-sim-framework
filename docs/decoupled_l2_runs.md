@@ -145,13 +145,19 @@ scripts/run_decoupled_l2_bank_diagnosis.sh \
 For a dirty-WBQ candidate, the minimal valid direct-mapped L2 geometry must
 instead be common to all three arms; only the WBQ capacity belongs to the
 optimized arm. (The overlay keeps its historical `one_line_l2.cfg` name, but
-uses 32 sets because the V100 IPOLY mapper rejects a one-set cache.)
+uses 32 sets because the V100 IPOLY mapper rejects a one-set cache.)  If that
+geometry produces writebacks but does not fill the default four-entry WBQ,
+also append `wbq_pressure_lower_fifo_2.cfg` to every arm.  It narrows only the
+L2-to-DRAM FIFO to two entries, preserving the model's one-entry dirty-victim
+reservation and making lower-write backpressure observable.  It is a
+mechanism-pressure configuration, never an application-performance point.
 
 ```bash
 scripts/run_decoupled_l2_bank_diagnosis.sh \
   --run-root hw_run/decoupled-l2-capacity/<run-id>-wbq16 \
   --case dirty_stress /path/to/dirty_stress/kernelslist.g \
   --common-config-extra experiments/decoupled_l2_overlays/one_line_l2.cfg \
+  --common-config-extra experiments/decoupled_l2_overlays/wbq_pressure_lower_fifo_2.cfg \
   --candidate-label 'WBQ capacity' \
   --expected-candidate-internal-banks 4 \
   --optimized-config-extra experiments/decoupled_l2_overlays/wbq_16.cfg
@@ -200,9 +206,11 @@ The original failing directory is retained for comparison.
 2. Run `fixed`; require clean exit and zero `otf`/`wb` counters.
 3. Run `decoupled`; require clean exit and nonzero OTF/AAD counters on a
    memory-bearing trace.
-4. For WBQ coverage, append a one-line L2 config such as
-   `-gpgpu_cache:dl2 S:1:128:1,L:B:m:L:P,A:192:4,32:0,32`; require nonzero
-   `wb` and an empty final `wbq`.
+4. For WBQ coverage, append `one_line_l2.cfg` (the smallest IPOLY-valid,
+   direct-mapped geometry) and require nonzero `wb` and an empty final `wbq`.
+   To test WBQ *capacity*, additionally append
+   `wbq_pressure_lower_fifo_2.cfg` and require the default four-entry peak to
+   approach capacity before interpreting a WBQ=16 comparison.
 5. Use `req_one.cfg` and `aad_one.cfg` with an independent-line workload to
    check minimum-capacity progress and no deadlock.  Whether the public trace
    exposes a nonzero `token_stall` or `aad_stall` additionally depends on its
