@@ -13,6 +13,7 @@ from analyze_decoupled_l2_bank_observability import (
     parse_decoupled,
     read_provenance,
     validate_runtime_exit,
+    value_or_na,
 )
 
 
@@ -133,8 +134,11 @@ def main():
                          "{default_fill_max} / {optimized_fill_max} | "
                          "{default_wbq_max} / {optimized_wbq_max} | "
                          "{default_read_credit_stall} / {optimized_read_credit_stall} | "
-                         "{default_wbq_stall} / {optimized_wbq_stall} | "
-                         "{tag_requeue_change:.4f}x | {lower_requeue_change:.4f}x |\n".format(**row))
+                         "{default_wbq_stall_display} / {optimized_wbq_stall_display} | "
+                         "{tag_requeue_change:.4f}x | {lower_requeue_change:.4f}x |\n".format(
+                             default_wbq_stall_display=value_or_na(row["default_wbq_stall"]),
+                             optimized_wbq_stall_display=value_or_na(row["optimized_wbq_stall"]),
+                             **row))
 
 
 if __name__ == "__main__":

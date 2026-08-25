@@ -60,6 +60,10 @@ def last_metric(text, name):
     return float(values[-1])
 
 
+def value_or_na(value):
+    return "n/a" if value is None else value
+
+
 def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
     text = (run_dir / "smoke.out").read_text(errors="replace")
     if "GPGPU-Sim: *** exit detected ***" not in text:
@@ -130,9 +134,14 @@ def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
     for key in ("bank_requeue_tag", "bank_requeue_lower", "tag_tag", "tag_lower",
                 "tag_fill", "tag_wbq", "lower_tag", "lower_lower", "lower_fill",
                 "lower_wbq", "access", "hit", "miss", "write", "wb", "atomic",
-                "token_stall", "aad_stall", "read_credit_stall", "wbq_stall",
-                "bank_stall"):
+                "token_stall", "aad_stall", "read_credit_stall", "bank_stall"):
         row[key] = sum(int(data.get(key, 0)) for data in slices.values())
+    # `wbq_stall` was added after the first diagnostic binary.  Treat absent
+    # counters as unavailable rather than silently converting old logs to zero.
+    row["wbq_stall"] = (
+        sum(int(data["wbq_stall"]) for data in slices.values())
+        if all("wbq_stall" in data for data in slices.values()) else None
+    )
     for key in ("tag_read", "tag_write", "tag_atomic", "lower_read", "lower_write",
                 "lower_atomic"):
         row[key + "_attempt"] = sum(data["kinds"][key][0] for data in slices.values())
@@ -272,16 +281,17 @@ def main():
         output.write("# Decoupled-L2 bank observability\n\n")
         output.write("Every pair passed normal-exit, binary-hash, trace-hash, and non-backend configuration gates.\n\n")
         output.write("`%s` contains summed per-slice attempts, grants, and requeues for every internal bank.\n\n" % bank_csv.name)
-        output.write("| Case | Baseline / Decoupled IPC | Baseline / Decoupled cycles | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | WBQ avg/peak per slice | read-credit stall | tag/lower requeue | tag max share | lower max share |\n")
+        output.write("| Case | Baseline / Decoupled IPC | Baseline / Decoupled cycles | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | WBQ avg/peak per slice | read-credit / WBQ stall | tag/lower requeue | tag max share | lower max share |\n")
         output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
             output.write("| {case} | {baseline_ipc:.4f} / {decoupled_ipc:.4f} | "
                          "{baseline_cycles} / {decoupled_cycles} | {speedup:.4f}x | "
                          "{req_avg_per_slice:.2f}/{req_max_slice} | "
                          "{aad_avg_per_slice:.2f}/{aad_max_slice} | {fill_avg_per_slice:.2f}/{fill_max_slice} | "
-                         "{wbq_avg_per_slice:.2f}/{wbq_max_slice} | {read_credit_stall} | "
+                         "{wbq_avg_per_slice:.2f}/{wbq_max_slice} | {read_credit_stall} / {wbq_stall_display} | "
                          "{bank_requeue_tag}/{bank_requeue_lower} | "
-                         "{tag_grant_max_share:.2%} | {lower_grant_max_share:.2%} |\n".format(**row))
+                         "{tag_grant_max_share:.2%} | {lower_grant_max_share:.2%} |\n".format(
+                             wbq_stall_display=value_or_na(row["wbq_stall"]), **row))
         output.write("\n| Case | Tag-bank owner: tag / lower / fill / WBQ | Lower-read-bank owner: tag / lower / fill / WBQ | Tag attempts R / W / atomic | Lower attempts R / W / atomic |\n")
         output.write("|---|---:|---:|---:|---:|\n")
         for row in rows:
