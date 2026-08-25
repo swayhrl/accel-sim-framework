@@ -119,5 +119,12 @@ rg -q 'decoupled_l2\[.*atomic=[1-9]' \
   --case gesummv "${primary_trace[gesummv]}" \
   --run-root "$run_root/primary" "${common[@]}"
 
+python3 "$repo_root/scripts/gate_decoupled_l2_selected_bank_candidate.py" \
+  --preflight-csv "$run_root/preflight/optimized_bank_observability.csv" \
+  --primary-csv "$run_root/primary/optimized_bank_observability.csv" \
+  --atomic-default-log "$run_root/preflight/atomic_add_lat/decoupled/smoke.out" \
+  --atomic-optimized-log "$run_root/preflight/atomic_add_lat/optimized/smoke.out" \
+  --json "$run_root/admission.json" --markdown "$run_root/admission.md"
+
 printf 'PASS candidate=%s preflight=%s primary=%s\n' "$candidate" \
   "$run_root/preflight" "$run_root/primary" > "$run_root/gate.status"
