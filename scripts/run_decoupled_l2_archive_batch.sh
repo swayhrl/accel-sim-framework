@@ -137,6 +137,11 @@ sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
 [[ -x "$sim_bin" ]] || { echo "error: missing simulator binary $sim_bin" >&2; exit 2; }
 sim_bin_sha256="$(sha256sum "$sim_bin" | awk '{print $1}')"
 gpgpusim_source_commit="$(git -C "$DECOUPLED_L2_GPGPUSIM_ROOT" rev-parse HEAD)"
+gpgpusim_source_dirty=0
+if ! git -C "$DECOUPLED_L2_GPGPUSIM_ROOT" diff --quiet HEAD --; then
+  gpgpusim_source_dirty=1
+fi
+gpgpusim_source_diff_sha256="$(git -C "$DECOUPLED_L2_GPGPUSIM_ROOT" diff --no-ext-diff --binary HEAD -- | sha256sum | awk '{print $1}')"
 if [[ -z "$config" ]]; then
   config="$DECOUPLED_L2_GPGPUSIM_ROOT/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
 fi
@@ -335,7 +340,7 @@ run_backend() {
 
 run_is_reusable() {
   local case_run_dir="$1" backend="$2" config_extra="$3" trace="$4"
-  local provenance recorded_sha recorded_commit recorded_backend recorded_extra recorded_trace
+  local provenance recorded_sha recorded_commit recorded_dirty recorded_diff recorded_backend recorded_extra recorded_trace
   local expected_extra expected_trace
   [[ -f "$case_run_dir/smoke.out" ]] || return 1
   rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out" || return 1
@@ -343,6 +348,8 @@ run_is_reusable() {
   [[ -f "$provenance" ]] || return 1
   recorded_sha="$(sed -n 's/^sim_bin_sha256=//p' "$provenance" | tail -1)"
   recorded_commit="$(sed -n 's/^gpgpusim_source_commit=//p' "$provenance" | tail -1)"
+  recorded_dirty="$(sed -n 's/^gpgpusim_source_dirty=//p' "$provenance" | tail -1)"
+  recorded_diff="$(sed -n 's/^gpgpusim_source_diff_sha256=//p' "$provenance" | tail -1)"
   recorded_backend="$(sed -n 's/^backend=//p' "$provenance" | tail -1)"
   recorded_extra="$(sed -n 's/^config_extra_sha256=//p' "$provenance" | tail -1)"
   recorded_trace="$(sed -n 's/^trace_kernelslist_sha256=//p' "$provenance" | tail -1)"
@@ -350,6 +357,8 @@ run_is_reusable() {
   expected_trace="$(sha256sum "$trace" | awk '{print $1}')"
   [[ "$recorded_sha" == "$sim_bin_sha256" &&
      "$recorded_commit" == "$gpgpusim_source_commit" &&
+     "$recorded_dirty" == "$gpgpusim_source_dirty" &&
+     "$recorded_diff" == "$gpgpusim_source_diff_sha256" &&
      "$recorded_backend" == "$backend" &&
      "$recorded_extra" == "$expected_extra" &&
      "$recorded_trace" == "$expected_trace" ]]
