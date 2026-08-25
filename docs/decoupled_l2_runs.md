@@ -337,9 +337,9 @@ be reclaimed; successful cases always remove their temporary trace payload.
 a `simulator_provenance.txt` matching the current release binary, selected
 GPGPU-Sim commit, backend, trace hash, and arm-specific config overlay. Older
 runs without that manifest are deliberately replayed, so a source/binary or
-optimized-overlay update cannot silently mix results. The batch runner also
-accepts `--build` to rebuild once before it snapshots that binary for its
-entire batch.
+optimized-overlay update cannot silently mix results. This applies to both
+the pretrace and archive runners. The archive batch runner also accepts
+`--build` to rebuild once before it snapshots that binary for its entire batch.
 
 Before running an archived suite concurrently, generate an exact capacity plan
 from its tar members.  This scans the compressed archive once and writes both
