@@ -315,7 +315,8 @@ run_backend() {
   smoke_args=(--backend "$backend" --trace "$trace" --config "$config" --run-dir "$case_run_dir")
   [[ -n "$trace_config" ]] && smoke_args+=(--trace-config "$trace_config")
   [[ -n "$config_extra" ]] && smoke_args+=(--config-extra "$config_extra")
-  if [[ ( "$reuse" -eq 1 || "$owns_batch" -eq 0 ) ]] && run_is_reusable "$case_run_dir"; then
+  if [[ ( "$reuse" -eq 1 || "$owns_batch" -eq 0 ) ]] &&
+     run_is_reusable "$case_run_dir" "$backend" "$config_extra" "$trace"; then
     printf 'REUSE arm=%s run_dir=%s\n' "$label" "$case_run_dir"
   elif ! "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${smoke_args[@]}"; then
     printf '%s,%s,%s,simulate,%s,%s,%s\n' "$(date --iso-8601=seconds)" \
@@ -333,15 +334,25 @@ run_backend() {
 }
 
 run_is_reusable() {
-  local case_run_dir="$1" provenance recorded_sha recorded_commit
+  local case_run_dir="$1" backend="$2" config_extra="$3" trace="$4"
+  local provenance recorded_sha recorded_commit recorded_backend recorded_extra recorded_trace
+  local expected_extra expected_trace
   [[ -f "$case_run_dir/smoke.out" ]] || return 1
   rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$case_run_dir/smoke.out" || return 1
   provenance="$case_run_dir/simulator_provenance.txt"
   [[ -f "$provenance" ]] || return 1
   recorded_sha="$(sed -n 's/^sim_bin_sha256=//p' "$provenance" | tail -1)"
   recorded_commit="$(sed -n 's/^gpgpusim_source_commit=//p' "$provenance" | tail -1)"
+  recorded_backend="$(sed -n 's/^backend=//p' "$provenance" | tail -1)"
+  recorded_extra="$(sed -n 's/^config_extra_sha256=//p' "$provenance" | tail -1)"
+  recorded_trace="$(sed -n 's/^trace_kernelslist_sha256=//p' "$provenance" | tail -1)"
+  expected_extra="${config_extra:+$(sha256sum "$config_extra" | awk '{print $1}')}"
+  expected_trace="$(sha256sum "$trace" | awk '{print $1}')"
   [[ "$recorded_sha" == "$sim_bin_sha256" &&
-     "$recorded_commit" == "$gpgpusim_source_commit" ]]
+     "$recorded_commit" == "$gpgpusim_source_commit" &&
+     "$recorded_backend" == "$backend" &&
+     "$recorded_extra" == "$expected_extra" &&
+     "$recorded_trace" == "$expected_trace" ]]
 }
 
 run_case() {

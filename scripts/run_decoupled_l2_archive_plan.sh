@@ -8,6 +8,7 @@ Usage: scripts/run_decoupled_l2_archive_plan.sh --archive SUITE.tgz --suite NAME
        [--max-parallel N] [--jobs N] [--pair-parallel]
        [--max-simulator-rss-gb N] [--pair-rss-reserve-gb N]
        [--staged-traces DIR]
+       [--optimized-config-extra FILE]
        [--wait-for-plan-pid PID]
 
 Create (or wait for) an exact tar-member capacity plan, then run each planned
@@ -26,6 +27,7 @@ max_parallel=16; jobs=16; pair_parallel=0; wait_for_plan_pid=""
 max_simulator_rss_gb=120
 pair_rss_reserve_gb=80
 staged_traces=""
+optimized_config_extra=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --archive) archive="$2"; shift 2 ;;
@@ -39,6 +41,7 @@ while [[ $# -gt 0 ]]; do
     --max-simulator-rss-gb) max_simulator_rss_gb="$2"; shift 2 ;;
     --pair-rss-reserve-gb) pair_rss_reserve_gb="$2"; shift 2 ;;
     --staged-traces) staged_traces="$2"; shift 2 ;;
+    --optimized-config-extra) optimized_config_extra="$2"; shift 2 ;;
     --wait-for-plan-pid) wait_for_plan_pid="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -61,6 +64,9 @@ done
 if [[ -n "$wait_for_plan_pid" ]]; then
   [[ "$wait_for_plan_pid" =~ ^[0-9]+$ ]] || { echo "error: invalid planner PID" >&2; exit 2; }
 fi
+[[ -z "$optimized_config_extra" || -f "$optimized_config_extra" ]] || {
+  echo "error: --optimized-config-extra must name an existing file" >&2; exit 2;
+}
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ -z "$plan_dir" ]]; then plan_dir="$repo_root/hw_run/decoupled-l2-plans/$suite"; fi
@@ -147,6 +153,7 @@ for ((wave = 1; wave <= wave_count; ++wave)); do
               --run-root "$wave_dir")
   [[ "$pair_parallel" -eq 1 ]] && batch_args+=(--pair-parallel)
   [[ -n "$staged_traces" ]] && batch_args+=(--staged-traces "$staged_traces")
+  [[ -n "$optimized_config_extra" ]] && batch_args+=(--optimized-config-extra "$optimized_config_extra")
   "$repo_root/scripts/run_decoupled_l2_archive_batch.sh" "${batch_args[@]}" \
     > "$wave_dir/pipeline.out" 2>&1
   awk -F, -v wave="$wave" 'NR > 1 { print $1 "," wave "," $2 "," $3 "," $4 "," $5 }' \

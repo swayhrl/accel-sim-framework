@@ -334,9 +334,10 @@ so an abort can be replayed without rescanning or re-extracting a large
 archive.  Use `--discard-failed-extract` only when that diagnostic payload must
 be reclaimed; successful cases always remove their temporary trace payload.
 `--reuse` reuses only a backend run with the normal simulator-exit marker and
-a `simulator_provenance.txt` matching the current release binary and selected
-GPGPU-Sim commit.  Older runs without that manifest are deliberately replayed,
-so a source/binary update cannot silently mix results.  The batch runner also
+a `simulator_provenance.txt` matching the current release binary, selected
+GPGPU-Sim commit, backend, trace hash, and arm-specific config overlay. Older
+runs without that manifest are deliberately replayed, so a source/binary or
+optimized-overlay update cannot silently mix results. The batch runner also
 accepts `--build` to rebuild once before it snapshots that binary for its
 entire batch.
 
@@ -384,8 +385,14 @@ failure manifests, then advances each capacity-safe wave automatically:
 ```bash
 scripts/run_decoupled_l2_archive_plan.sh \
   --archive hw_run/decoupled-l2-pretraces/polybench.tgz --suite polybench \
-  --min-free-gib 80 --max-parallel 16 --jobs 16 --pair-parallel
+  --min-free-gib 80 --max-parallel 16 --jobs 16 --pair-parallel \
+  --optimized-config-extra experiments/decoupled_l2_overlays/bank_count_8.cfg
 ```
+
+With `--optimized-config-extra`, every archived case records baseline,
+default-decoupled, and optimized-decoupled arms. The optimized arm is run
+after its matched pair, so `--pair-parallel` never makes two decoupled arms
+share a case's trace staging or provenance directory.
 
 If an exact planner is already running, pass its PID with
 `--wait-for-plan-pid PID`; the pipeline waits for its plan files instead of
