@@ -136,6 +136,12 @@ def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
                 "lower_wbq", "access", "hit", "miss", "write", "wb", "atomic",
                 "token_stall", "aad_stall", "read_credit_stall", "bank_stall"):
         row[key] = sum(int(data.get(key, 0)) for data in slices.values())
+    # Atomics are explicitly separate from writes in the Decoupled-L2 timing
+    # model, so the remaining accesses are reads.  Expose the request mix
+    # directly instead of making downstream reports reconstruct it.
+    row["read"] = row["access"] - row["write"] - row["atomic"]
+    if row["read"] < 0:
+        fail("%s has an invalid read/write/atomic request mix" % run_dir)
     # WBQ statistics were added after the first diagnostic binary.  Treat
     # absent counters as unavailable rather than silently converting old logs
     # to zero.  Newer binaries distinguish allocation-side and fill-side
@@ -303,10 +309,11 @@ def main():
                              wbq_tag_stall_display=value_or_na(row["wbq_tag_stall"]),
                              wbq_fill_stall_display=value_or_na(row["wbq_fill_stall"]),
                              **row))
-        output.write("\n| Case | Tag-bank owner: tag / lower / fill / WBQ | Lower-read-bank owner: tag / lower / fill / WBQ | Tag attempts R / W / atomic | Lower attempts R / W / atomic |\n")
-        output.write("|---|---:|---:|---:|---:|\n")
+        output.write("\n| Case | Requests R / W / atomic | Tag-bank owner: tag / lower / fill / WBQ | Lower-read-bank owner: tag / lower / fill / WBQ | Tag attempts R / W / atomic | Lower attempts R / W / atomic |\n")
+        output.write("|---|---:|---:|---:|---:|---:|\n")
         for row in rows:
-            output.write("| {case} | {tag_tag} / {tag_lower} / {tag_fill} / {tag_wbq} | "
+            output.write("| {case} | {read} / {write} / {atomic} | "
+                         "{tag_tag} / {tag_lower} / {tag_fill} / {tag_wbq} | "
                          "{lower_tag} / {lower_lower} / {lower_fill} / {lower_wbq} | "
                          "{tag_read_attempt} / {tag_write_attempt} / {tag_atomic_attempt} | "
                          "{lower_read_attempt} / {lower_write_attempt} / {lower_atomic_attempt} |\n".format(**row))
