@@ -108,10 +108,14 @@ It runs baseline and decoupled sequentially and writes `bank_observability.csv`
 and `.md`. The parser rejects a pair unless both runs exit normally, use the
 same copied executable and trace hash, and differ only in
 `-gpgpu_l2_backend`. With `--optimized-config-extra`, it adds an optimized
-decoupled arm and writes `three_arm_summary.csv`; the default bank report
-remains a strictly matched baseline/default diagnosis. Perform any bank-count
-or hash sweep only after this default `mod`, four-bank pair identifies a
-workload with meaningful conflict or IPC change.
+decoupled arm and writes `three_arm_summary.csv` plus
+`optimized_bank_observability.{csv,md}`. The latter requires normal exits,
+the same binary/source/trace for default and optimized decoupled arms, the
+default four-bank `mod` arm, and the requested overlay fingerprint; it reports
+whether the candidate actually changes tag/lower-read requeues. The default
+bank report remains a strictly matched baseline/default diagnosis. Perform any
+bank-count or hash sweep only after this default `mod`, four-bank pair
+identifies a workload with meaningful conflict or IPC change.
 
 Use `scripts/analyze_decoupled_l2_three_arm.py` to form the final result table:
 

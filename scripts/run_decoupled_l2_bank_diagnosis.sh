@@ -60,6 +60,7 @@ run_root="$(cd "$run_root" && pwd)"
 
 first=1
 analyze_args=()
+optimized_analyze_args=()
 three_arm_summary="$run_root/three_arm_summary.csv"
 if [[ -n "$optimized_config_extra" ]]; then
   printf 'suite,case,arm,cycles,run_dir\n' > "$three_arm_summary"
@@ -86,6 +87,8 @@ for ((index=0; index<${#cases[@]}; index+=2)); do
       printf 'bank_diagnosis,%s,%s,%s,%s\n' "$name" "$arm" "$cycles" \
         "$run_root/$name/$arm" >> "$three_arm_summary"
     done
+    optimized_analyze_args+=(--pair "$name" "$run_root/$name/decoupled" \
+                            "$run_root/$name/optimized")
   fi
   analyze_args+=(--pair "$name" "$run_root/$name/baseline" "$run_root/$name/decoupled")
 done
@@ -95,3 +98,11 @@ python3 "$repo_root/scripts/analyze_decoupled_l2_bank_observability.py" \
   --markdown "$run_root/bank_observability.md"
 printf 'PASS run_root=%s summary=%s\n' "$run_root" "$run_root/bank_observability.md"
 [[ -z "$optimized_config_extra" ]] || printf 'PASS three_arm_summary=%s\n' "$three_arm_summary"
+if [[ -n "$optimized_config_extra" ]]; then
+  python3 "$repo_root/scripts/analyze_decoupled_l2_bank_optimization.py" \
+    "${optimized_analyze_args[@]}" \
+    --optimized-config-extra "$optimized_config_extra" \
+    --csv "$run_root/optimized_bank_observability.csv" \
+    --markdown "$run_root/optimized_bank_observability.md"
+  printf 'PASS optimized_bank_summary=%s\n' "$run_root/optimized_bank_observability.md"
+fi
