@@ -130,7 +130,8 @@ def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
     for key in ("bank_requeue_tag", "bank_requeue_lower", "tag_tag", "tag_lower",
                 "tag_fill", "tag_wbq", "lower_tag", "lower_lower", "lower_fill",
                 "lower_wbq", "access", "hit", "miss", "write", "wb", "atomic",
-                "token_stall", "aad_stall", "read_credit_stall", "bank_stall"):
+                "token_stall", "aad_stall", "read_credit_stall", "wbq_stall",
+                "bank_stall"):
         row[key] = sum(int(data.get(key, 0)) for data in slices.values())
     for key in ("tag_read", "tag_write", "tag_atomic", "lower_read", "lower_write",
                 "lower_atomic"):
