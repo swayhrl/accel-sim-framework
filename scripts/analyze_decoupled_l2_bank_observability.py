@@ -241,6 +241,7 @@ def validate_pair(name, baseline, decoupled, expected_bank_hash,
     bp = read_provenance(baseline)
     dp = read_provenance(decoupled)
     for key in ("sim_bin_sha256", "gpgpusim_source_commit",
+                "gpgpusim_source_dirty", "gpgpusim_source_diff_sha256",
                 "trace_kernelslist_sha256"):
         if bp.get(key) != dp.get(key):
             fail("%s mismatches %s" % (name, key))

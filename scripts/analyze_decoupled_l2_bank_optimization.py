@@ -36,6 +36,7 @@ def validate_case(name, default_dir, optimized_dir, common_overlays, overlay,
         if meta.get("backend") != "decoupled":
             fail("%s %s arm has backend %r" % (name, arm, meta.get("backend")))
     for key in ("sim_bin_sha256", "gpgpusim_source_commit",
+                "gpgpusim_source_dirty", "gpgpusim_source_diff_sha256",
                 "trace_kernelslist_sha256"):
         if default_meta.get(key) != optimized_meta.get(key):
             fail("%s changes %s outside the config-only experiment" % (name, key))

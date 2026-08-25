@@ -116,6 +116,11 @@ sim_bin="$repo_root/gpu-simulator/bin/release/accel-sim.out"
 # keeps the result reproducible and lets provenance identify the exact image.
 sim_run_bin="$run_dir/accel-sim.out"
 cp "$sim_bin" "$sim_run_bin"
+source_dirty=0
+if ! git -C "$GPGPUSIM_ROOT" diff --quiet HEAD --; then
+  source_dirty=1
+fi
+source_diff_sha256="$(git -C "$GPGPUSIM_ROOT" diff --no-ext-diff --binary HEAD -- | sha256sum | awk '{print $1}')"
 {
   printf 'sim_bin_source=%s\n' "$sim_bin"
   printf 'sim_bin_run=%s\n' "$sim_run_bin"
@@ -123,6 +128,8 @@ cp "$sim_bin" "$sim_run_bin"
   printf 'sim_bin_build_id=%s\n' "$(readelf -n "$sim_run_bin" | awk '/Build ID:/ {print $3; exit}')"
   printf 'sim_bin_stat=%s\n' "$(stat -c 'size=%s mtime=%y' "$sim_run_bin")"
   printf 'gpgpusim_source_commit=%s\n' "$(git -C "$GPGPUSIM_ROOT" rev-parse HEAD)"
+  printf 'gpgpusim_source_dirty=%s\n' "$source_dirty"
+  printf 'gpgpusim_source_diff_sha256=%s\n' "$source_diff_sha256"
   printf 'config_sha256=%s\n' "$(sha256sum "$run_dir/gpgpusim.config" | awk '{print $1}')"
   # backend is the only intentional B/D configuration difference.  Preserve
   # a normalized fingerprint so result checkers can reject every other drift.

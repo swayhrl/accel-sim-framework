@@ -112,6 +112,16 @@ def validate_case(group, suite, case, arms, common_overlay_sha,
         values = {metas[arm].get(key) for arm in expected}
         if len(values) != 1 or None in values:
             fail("%s/%s three-arm mismatch: %s" % (suite, case, key))
+    # Newer runs pin both the executable and the source-tree patch identity.
+    # Historical runs lack these fields entirely; never confuse that absence
+    # with a matching dirty tree, but preserve their established gate.
+    source_tree_keys = ("gpgpusim_source_dirty", "gpgpusim_source_diff_sha256")
+    if any(metas[arm].get(key) is not None
+           for arm in expected for key in source_tree_keys):
+        for key in source_tree_keys:
+            values = {metas[arm].get(key) for arm in expected}
+            if len(values) != 1 or None in values:
+                fail("%s/%s three-arm mismatch: %s" % (suite, case, key))
     if metas["baseline"].get("non_backend_config_sha256") != \
        metas["decoupled"].get("non_backend_config_sha256"):
         fail("%s/%s baseline/default mismatch: non_backend_config_sha256" %
