@@ -72,7 +72,7 @@ run_one() {
   local args=(--trace "$trace" --config "$base_config"
       --config-extra "$trace_config" --config-extra "$paper_config"
       --strip-mem-addr-mapping --skip-complete --modes c2p
-      --out-dir "$out_root/$case_name/$variant")
+      --out-dir "$out_root/$phase/$case_name/$variant")
   case "$phase:$variant" in
     canonical:tag7) ;;
     canonical:tag14) args+=(--mode-config-extra "$remote14_config") ;;
@@ -146,5 +146,5 @@ for spec in "${cases[@]}"; do
   case_list+="${case_list:+,}$case_name"
 done
 python3 "$repo_root/scripts/analyze_c2p_remote_tag_sensitivity.py" \
-  --root "$out_root" --phase "$phase" --case "$case_list" \
-  --csv "$out_root/$phase.csv" --markdown "$out_root/$phase.md"
+  --root "$out_root/$phase" --phase "$phase" --case "$case_list" \
+  --csv "$out_root/$phase/$phase.csv" --markdown "$out_root/$phase/$phase.md"
