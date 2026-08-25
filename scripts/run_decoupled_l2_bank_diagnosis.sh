@@ -6,7 +6,8 @@ usage() {
 Usage: scripts/run_decoupled_l2_bank_diagnosis.sh --case NAME KERNELSLIST [--case NAME KERNELSLIST ...]
        --run-root DIR [--config FILE] [--trace-config FILE] [--build]
        [--common-config-extra FILE] [--optimized-config-extra FILE]
-       [--candidate-label TEXT]
+       [--candidate-label TEXT] [--expected-candidate-bank-hash HASH]
+       [--expected-candidate-internal-banks N]
 
 Runs matched baseline/decoupled pairs sequentially, then checks executable,
 trace, and non-backend configuration identity while producing CSV/Markdown
@@ -25,6 +26,8 @@ trace_config=""
 optimized_config_extra=""
 common_config_extra=""
 candidate_label="bank optimization"
+expected_candidate_bank_hash="mod"
+expected_candidate_internal_banks=8
 build=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -35,6 +38,8 @@ while [[ $# -gt 0 ]]; do
     --common-config-extra) common_config_extra="$2"; shift 2 ;;
     --optimized-config-extra) optimized_config_extra="$2"; shift 2 ;;
     --candidate-label) candidate_label="$2"; shift 2 ;;
+    --expected-candidate-bank-hash) expected_candidate_bank_hash="$2"; shift 2 ;;
+    --expected-candidate-internal-banks) expected_candidate_internal_banks="$2"; shift 2 ;;
     --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -50,6 +55,9 @@ done
 }
 [[ -z "$common_config_extra" || -f "$common_config_extra" ]] || {
   echo 'error: --common-config-extra must name an existing file' >&2; exit 2;
+}
+[[ "$expected_candidate_internal_banks" =~ ^[1-9][0-9]*$ ]] || {
+  echo 'error: --expected-candidate-internal-banks must be positive' >&2; exit 2;
 }
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || {
   echo 'error: set DECOUPLED_L2_GPGPUSIM_ROOT' >&2; exit 2;
@@ -116,7 +124,9 @@ printf 'PASS run_root=%s summary=%s\n' "$run_root" "$run_root/bank_observability
 if [[ -n "$optimized_config_extra" ]]; then
   optimization_gate_args=("${optimized_analyze_args[@]}"
                           --optimized-config-extra "$optimized_config_extra"
-                          --candidate-label "$candidate_label")
+                          --candidate-label "$candidate_label"
+                          --expected-bank-hash "$expected_candidate_bank_hash"
+                          --expected-internal-banks "$expected_candidate_internal_banks")
   if [[ -n "$common_config_extra" ]]; then
     optimization_gate_args+=(--common-config-extra "$common_config_extra")
   fi
