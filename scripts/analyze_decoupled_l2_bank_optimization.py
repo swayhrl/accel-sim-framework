@@ -34,7 +34,7 @@ def validate_case(name, default_dir, optimized_dir, overlay, bank_hash, banks):
                 "trace_kernelslist_sha256"):
         if default_meta.get(key) != optimized_meta.get(key):
             fail("%s changes %s outside the config-only experiment" % (name, key))
-    if default_meta.get("config_extra_sha256") not in (None, ""):
+    if default_meta.get("config_extra_sha256") != "":
         fail("%s default arm unexpectedly has a config overlay" % name)
     if optimized_meta.get("config_extra_sha256") != sha256(overlay):
         fail("%s optimized arm does not record the requested overlay" % name)
