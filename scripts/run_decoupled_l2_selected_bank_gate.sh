@@ -32,7 +32,7 @@ repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 selection=""
 primary_root="$repo_root/hw_run/decoupled-l2-bank-diagnosis/20260825-b07c0ad-full"
 run_root=""
-config="$repo_root/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
+config=""
 trace_config="$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
 build=1
 
@@ -52,6 +52,12 @@ done
 [[ -n "$selection" && -n "$run_root" ]] || {
   echo 'error: --selection and --run-root are required' >&2; usage >&2; exit 2;
 }
+[[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || {
+  echo 'error: set DECOUPLED_L2_GPGPUSIM_ROOT' >&2; exit 2;
+}
+if [[ -z "$config" ]]; then
+  config="$DECOUPLED_L2_GPGPUSIM_ROOT/configs/tested-cfgs/SM7_QV100/gpgpusim.config"
+fi
 for path in "$selection" "$config" "$trace_config"; do
   [[ -f "$path" ]] || { echo "error: missing file $path" >&2; exit 2; }
 done
