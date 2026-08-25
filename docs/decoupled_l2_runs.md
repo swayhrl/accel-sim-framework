@@ -48,9 +48,10 @@ scripts/run_decoupled_l2_smoke.sh --backend decoupled \
 Every run also records a fingerprint of this overlay (empty when absent) and
 of the generated configuration with only the backend-selection line removed.
 This proves that a baseline/default pair differs only in its L2 backend while
-still identifying a deliberately different optimized arm.  With multiple
-overlays, provenance records the SHA-256 of their ordered concatenation and
-the source file list.
+still identifying the deliberately different optimized configuration.  A
+three-arm candidate report additionally requires one identical copied binary
+and source revision for every arm. With multiple overlays, provenance records
+the SHA-256 of their ordered concatenation and the source file list.
 
 ## Backend modes
 
@@ -180,9 +181,11 @@ python3 scripts/analyze_decoupled_l2_three_arm.py \
 ```
 
 It rejects an incomplete arm set, abnormal exit, trace mismatch, or any
-baseline/default binary, source-commit, or non-backend configuration mismatch.
-The optimized arm may intentionally use a different model binary. It reports
-geometric means only within the explicitly named groups.
+three-arm binary/source mismatch; baseline/default must also have identical
+non-backend configuration. The optimized arm may differ only through the
+specified candidate overlay. A model change requires a new campaign rather
+than mixing binaries into one three-arm comparison. It reports geometric means
+only within the explicitly named groups.
 
 ## AAD progress invariant
 
@@ -396,7 +399,7 @@ share a case's trace staging or provenance directory.
 
 Pass the same candidate overlay to the final three-arm analyzer. It verifies
 the ordered common-plus-optimized overlay fingerprint in addition to normal
-exit, trace, and baseline/default binary provenance:
+exit, trace, and matched three-arm binary/source provenance:
 
 ```bash
 python3 scripts/analyze_decoupled_l2_three_arm.py \
