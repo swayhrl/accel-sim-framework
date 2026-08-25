@@ -1,0 +1,33 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.65in]{geometry}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\setcounter{table}{1}
+\begin{document}
+\begin{table}[ht]
+\centering
+\caption{Local C2P-Cache workload corpus: 16 complete-compatible traces plus eight later V100-trace extensions.}
+\label{tab:c2p-local-workloads}
+\small
+\begin{tabular}{@{}lll|lll@{}}
+\toprule
+\textbf{Benchmark} & \textbf{Suite} & \textbf{Abbr.} & \textbf{Benchmark} & \textbf{Suite} & \textbf{Abbr.} \\
+\midrule
+BFS & ISPASS & BV & sgemm & Parboil & SG \\
+LIB & ISPASS & LI & stencil & Parboil & ST \\
+LPS & ISPASS & LP & 2DConvolution & PolyBench & 2D \\
+RAY & ISPASS & RA & 3mm & PolyBench & 3M \\
+b+tree & Rodinia 3.1 & B+ & atax & PolyBench & AT \\
+dwt2d & Rodinia 3.1 & DW & bicg & PolyBench & BI \\
+gaussian & Rodinia 3.1 & GA & gemm & PolyBench & GE \\
+hotspot1 & Rodinia 3.1 & HO & gesummv & PolyBench & GS \\
+lud & Rodinia 3.1 & LU & color\_max & Pannotia & CO \\
+nn & Rodinia 3.1 & NN & fw\_block & Pannotia & FW \\
+cutcp & Parboil & CU & mis & Pannotia & MI \\
+mri & Parboil & MR & pagerank & Pannotia & PA \\
+\bottomrule
+\end{tabular}
+\par\medskip
+\footnotesize The table preserves the paper's 24-workload naming/abbreviation scheme while recording the local trace corpus.
+\end{table}
+\end{document}

@@ -1,0 +1,30 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{array}
+\setcounter{table}{2}
+\begin{document}
+\begin{table}[ht]
+\centering
+\caption{Local C2P-Cache hardware-overhead record. Numerical PPA results are intentionally blank: this branch contains no validated CACTI/Yosys/OpenROAD result generated from the local configuration.}
+\label{tab:c2p-local-overhead}
+\small
+\begin{tabular}{@{}p{1.85in}p{3.70in}p{0.95in}@{}}
+\toprule
+\textbf{Component} & \textbf{Basis / local design point} & \textbf{Result} \\
+\midrule
+Snapshot matrix capacity & 5,120 bits $\times$ 64 logical columns & \\
+Physical snapshot storage & 64 banks; 4 copies/bank & \\
+BF/tag-mask engines & 128 engines; 1 tag-mask + 3 BF-hash positions & \\
+Update transport & 128 B/cycle & \\
+Probe and fallback control & Request/response queues; target FIFO depth 32; timeout 32 cycles & \\
+SRAM area & CACTI run not recorded for this configuration & \\
+Synthesized logic & Yosys/OpenROAD run not recorded for this configuration & \\
+Total area / power & No validated local PPA data & \\
+\bottomrule
+\end{tabular}
+\par\medskip
+\footnotesize Blank result cells are deliberate placeholders for a future reproducible PPA flow; no paper-derived values are copied into the local result column.
+\end{table}
+\end{document}

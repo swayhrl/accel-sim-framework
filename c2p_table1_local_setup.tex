@@ -1,0 +1,40 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.65in]{geometry}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\begin{document}
+\begin{table}[ht]
+\centering
+\caption{Local C2P-Cache evaluation setup and default parameters. Values describe the reproducible Accel-Sim configuration, not an assertion of bit-exact equivalence with the paper.}
+\label{tab:c2p-local-setup}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Local value} \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{(a) Baseline GPU configuration}} \\
+GPU configuration & 64 SMs; 1.41 GHz core/L2/interconnect model \\
+Simulated endpoint organization & 64 clusters $\times$ 1 SM; logical C2P peer group: 8 SMs \\
+Warp scheduler & GTO; 4 schedulers/SM \\
+Warp size / thread limit & 32 threads/warp; 2048 threads/SM \\
+Registers & 65,536 registers/SM \\
+Private L1 cache & 64 KiB/SM; 16 sets; 32-way; 128 B line; 20-cycle hit latency \\
+Shared L2 cache & 128 sets; 16-way; 128 B line; 200-cycle baseline path \\
+Memory system & 20 memory partitions; 2 sub-partitions/partition \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textit{(b) Modeled C2P timing and bounded resources (cycles)}} \\
+Bloom-filter engine / snapshot lookup & 2 / 2 \\
+Remote tag lookup / base return & 7 / 2 \\
+Target probe FIFO / abort timeout & 32 entries / 32 cycles \\
+Remote request and response paths & Dedicated far-L1 queues; target L1 tag/data port contention modeled \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textit{(c) Default C2P configuration}} \\
+Bloom-filter size ($m$) & 5,120 bits \\
+Tag-mask / BF-hash region & 1,024 / 4,096 bits \\
+Encoding ($k$) & 1 tag-mask + 3 BF-hash positions \\
+Snapshot organization & 64 banks; 4 copies/bank (1 original + 3 replicas) \\
+BF engines / update transport & 128 engines / 128 B per cycle \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{document}
