@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#24313b"/></marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#2878a8"/></marker>
+    <style>
+      .title{font:700 32px 'DejaVu Sans',sans-serif;fill:#18232b}.subtitle{font:18px 'DejaVu Sans',sans-serif;fill:#52616b}.label{font:700 21px 'DejaVu Sans',sans-serif;fill:#18232b}.text{font:17px 'DejaVu Sans',sans-serif;fill:#26343d}.small{font:15px 'DejaVu Sans',sans-serif;fill:#52616b}.box{stroke:#24313b;stroke-width:2.2;rx:14}.flow{fill:none;stroke:#24313b;stroke-width:3;marker-end:url(#arrow)}.data{fill:none;stroke:#2878a8;stroke-width:3.5;marker-end:url(#arrowBlue)}.dashed{fill:none;stroke:#687780;stroke-width:3;stroke-dasharray:9 7;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="#fff"/>
+  <text x="70" y="74" class="title">C2P locality-aware ordering and outer-tail admission</text>
+  <text x="70" y="108" class="subtitle">Extension mechanism: preserve local opportunities, then learn whether the remaining outer suffix is worth probing.</text>
+
+  <rect x="70" y="245" width="230" height="150" class="box" fill="#eaf3f8"/>
+  <text x="185" y="294" text-anchor="middle" class="label">Requester miss</text>
+  <text x="185" y="326" text-anchor="middle" class="text">line address + sid</text>
+  <text x="185" y="358" text-anchor="middle" class="small">requester group = sid / 4</text>
+
+  <rect x="385" y="220" width="260" height="200" class="box" fill="#f8ece5"/>
+  <text x="515" y="268" text-anchor="middle" class="label">C2P candidate vector</text>
+  <text x="515" y="300" text-anchor="middle" class="text">Snapshot / Bloom lookup</text>
+  <rect x="425" y="334" width="176" height="22" rx="4" fill="#e89b88"/><rect x="425" y="369" width="127" height="22" rx="4" fill="#e89b88" opacity=".7"/>
+
+  <rect x="745" y="160" width="290" height="235" class="box" fill="#e8f2f7"/>
+  <text x="890" y="208" text-anchor="middle" class="label">Local-first partition</text>
+  <text x="890" y="240" text-anchor="middle" class="small">local = same 4-SM logical group</text>
+  <rect x="785" y="276" width="210" height="37" rx="7" fill="#9ecae1" stroke="#24313b" stroke-width="1.5"/>
+  <text x="890" y="301" text-anchor="middle" class="text">local candidates: mandatory probes</text>
+  <rect x="785" y="331" width="210" height="37" rx="7" fill="#f5c7b8" stroke="#24313b" stroke-width="1.5"/>
+  <text x="890" y="356" text-anchor="middle" class="text">remaining outer candidate suffix</text>
+
+  <rect x="1135" y="145" width="355" height="250" class="box" fill="#f7f4df"/>
+  <text x="1312" y="193" text-anchor="middle" class="label">Outer-tail admission table</text>
+  <text x="1312" y="225" text-anchor="middle" class="text">address region × requester group</text>
+  <text x="1312" y="254" text-anchor="middle" class="small">64 entries × 4 candidate bins × 3-bit score</text>
+  <rect x="1190" y="280" width="107" height="62" rx="7" fill="#f1cb62" stroke="#24313b" stroke-width="1.5"/>
+  <rect x="1328" y="280" width="107" height="62" rx="7" fill="#f1cb62" stroke="#24313b" stroke-width="1.5"/>
+  <text x="1243" y="318" text-anchor="middle" class="text">score</text><text x="1381" y="318" text-anchor="middle" class="text">explore</text>
+
+  <rect x="355" y="580" width="275" height="150" class="box" fill="#eef4ec"/>
+  <text x="492" y="630" text-anchor="middle" class="label">Peer L1 probe path</text>
+  <text x="492" y="664" text-anchor="middle" class="text">continue or exploration</text>
+  <text x="492" y="695" text-anchor="middle" class="small">tag lookup = 7 / 14 sensitivity</text>
+
+  <rect x="815" y="580" width="245" height="150" class="box" fill="#edf0f2"/>
+  <text x="937" y="630" text-anchor="middle" class="label">Shared-L2 fallback</text>
+  <text x="937" y="664" text-anchor="middle" class="text">bypass outer suffix</text>
+  <text x="937" y="695" text-anchor="middle" class="small">or no exact remote hit</text>
+
+  <rect x="1215" y="580" width="260" height="150" class="box" fill="#eaf3f8"/>
+  <text x="1345" y="630" text-anchor="middle" class="label">Exact outcome / response</text>
+  <text x="1345" y="664" text-anchor="middle" class="text">remote hit or L2 fill</text>
+  <text x="1345" y="695" text-anchor="middle" class="small">train table once per outer suffix</text>
+
+  <path d="M300 320 H385" class="flow"/>
+  <path d="M645 320 H745" class="flow"/>
+  <path d="M995 349 H1135" class="flow"/>
+  <path d="M890 313 C890 478,492 438,492 580" class="data"/>
+  <text x="651" y="470" class="small" fill="#2878a8">probe local candidates first</text>
+  <path d="M1245 395 C1245 482,492 467,492 580" class="flow"/>
+  <text x="785" y="519" class="small">continue: score ≥ threshold or periodic exploration</text>
+  <path d="M1380 395 C1380 510,937 478,937 580" class="dashed"/>
+  <text x="1027" y="550" class="small">bypass: predicted low-value outer tail</text>
+  <path d="M630 655 H1215" class="data"/>
+  <path d="M1060 655 H1215" class="flow"/>
+  <path d="M1345 580 C1345 467,1312 475,1312 395" class="data"/>
+  <text x="1360" y="476" class="small" fill="#2878a8">hit +2 / no-hit −1</text>
+
+  <path d="M70 790 H1490" stroke="#d6dde1" stroke-width="2"/>
+  <text x="70" y="835" class="small">Measured boundary: Btree retains useful outer hits and is an admission negative; 2D and LPS profit by suppressing low-quality outer tails.</text>
+</svg>
