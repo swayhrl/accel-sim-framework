@@ -77,6 +77,10 @@ def validate_case(name, default_dir, optimized_dir, common_overlays, overlay,
         "optimized_read_credit_stall": optimized["read_credit_stall"],
         "default_wbq_stall": default["wbq_stall"],
         "optimized_wbq_stall": optimized["wbq_stall"],
+        "default_wbq_tag_stall": default["wbq_tag_stall"],
+        "optimized_wbq_tag_stall": optimized["wbq_tag_stall"],
+        "default_wbq_fill_stall": default["wbq_fill_stall"],
+        "optimized_wbq_fill_stall": optimized["wbq_fill_stall"],
         "default_dir": str(default_dir),
         "optimized_dir": str(optimized_dir),
     }
@@ -125,7 +129,7 @@ def main():
                      "a default four-bank mod arm, and only the named candidate overlay "
                      "beyond any common workload overlay.\n\n")
         output.write("| Case | Default / optimized IPC | Default / optimized cycles | "
-                     "Speedup | Fill peak | WBQ peak | Read-credit stall | WBQ stall | "
+                     "Speedup | Fill peak | WBQ peak | Read-credit stall | WBQ stall (tag/fill) | "
                      "Tag requeue change | Lower-read requeue change |\n")
         output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
@@ -134,10 +138,15 @@ def main():
                          "{default_fill_max} / {optimized_fill_max} | "
                          "{default_wbq_max} / {optimized_wbq_max} | "
                          "{default_read_credit_stall} / {optimized_read_credit_stall} | "
-                         "{default_wbq_stall_display} / {optimized_wbq_stall_display} | "
+                         "{default_wbq_stall_display}({default_wbq_tag_stall_display}/{default_wbq_fill_stall_display}) / "
+                         "{optimized_wbq_stall_display}({optimized_wbq_tag_stall_display}/{optimized_wbq_fill_stall_display}) | "
                          "{tag_requeue_change:.4f}x | {lower_requeue_change:.4f}x |\n".format(
                              default_wbq_stall_display=value_or_na(row["default_wbq_stall"]),
                              optimized_wbq_stall_display=value_or_na(row["optimized_wbq_stall"]),
+                             default_wbq_tag_stall_display=value_or_na(row["default_wbq_tag_stall"]),
+                             optimized_wbq_tag_stall_display=value_or_na(row["optimized_wbq_tag_stall"]),
+                             default_wbq_fill_stall_display=value_or_na(row["default_wbq_fill_stall"]),
+                             optimized_wbq_fill_stall_display=value_or_na(row["optimized_wbq_fill_stall"]),
                              **row))
 
 
