@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gate and summarize a config-only Decoupled-L2 bank optimization."""
+"""Gate and summarize one config-only Decoupled-L2 resource candidate."""
 
 import argparse
 import csv
@@ -16,11 +16,15 @@ from analyze_decoupled_l2_bank_observability import (
 )
 
 
-def sha256(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def sha256(paths):
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(Path(path).read_bytes())
+    return digest.hexdigest()
 
 
-def validate_case(name, default_dir, optimized_dir, overlay, bank_hash, banks):
+def validate_case(name, default_dir, optimized_dir, common_overlay, overlay,
+                  bank_hash, banks):
     default_dir = Path(default_dir)
     optimized_dir = Path(optimized_dir)
     validate_runtime_exit(default_dir)
@@ -34,9 +38,13 @@ def validate_case(name, default_dir, optimized_dir, overlay, bank_hash, banks):
                 "trace_kernelslist_sha256"):
         if default_meta.get(key) != optimized_meta.get(key):
             fail("%s changes %s outside the config-only experiment" % (name, key))
-    if default_meta.get("config_extra_sha256") != "":
-        fail("%s default arm unexpectedly has a config overlay" % name)
-    if optimized_meta.get("config_extra_sha256") != sha256(overlay):
+    expected_default_overlay = sha256([common_overlay]) if common_overlay else ""
+    if default_meta.get("config_extra_sha256") != expected_default_overlay:
+        fail("%s default arm does not record the requested common overlay" % name)
+    expected_optimized_overlay = sha256(
+        ([common_overlay] if common_overlay else []) + [overlay]
+    )
+    if optimized_meta.get("config_extra_sha256") != expected_optimized_overlay:
         fail("%s optimized arm does not record the requested overlay" % name)
 
     default = parse_decoupled(default_dir, "mod", 4)
@@ -60,6 +68,10 @@ def validate_case(name, default_dir, optimized_dir, overlay, bank_hash, banks):
         "optimized_tag_max_share": optimized["tag_grant_max_share"],
         "default_lower_max_share": default["lower_grant_max_share"],
         "optimized_lower_max_share": optimized["lower_grant_max_share"],
+        "default_fill_max": default["fill_max_slice"],
+        "optimized_fill_max": optimized["fill_max_slice"],
+        "default_wbq_max": default["wbq_max_slice"],
+        "optimized_wbq_max": optimized["wbq_max_slice"],
         "default_dir": str(default_dir),
         "optimized_dir": str(optimized_dir),
     }
@@ -80,6 +92,8 @@ def main():
     parser.add_argument("--pair", action="append", nargs=3,
                         metavar=("CASE", "DEFAULT", "OPTIMIZED"), required=True)
     parser.add_argument("--optimized-config-extra", required=True)
+    parser.add_argument("--common-config-extra")
+    parser.add_argument("--candidate-label", default="bank optimization")
     parser.add_argument("--expected-bank-hash", default="mod")
     parser.add_argument("--expected-internal-banks", type=int, default=8)
     parser.add_argument("--csv", required=True)
@@ -87,8 +101,11 @@ def main():
     args = parser.parse_args()
     if not Path(args.optimized_config_extra).is_file():
         fail("missing optimized config overlay: %s" % args.optimized_config_extra)
+    if args.common_config_extra and not Path(args.common_config_extra).is_file():
+        fail("missing common config overlay: %s" % args.common_config_extra)
     rows = [validate_case(name, default_dir, optimized_dir,
-                          args.optimized_config_extra, args.expected_bank_hash,
+                          args.common_config_extra, args.optimized_config_extra,
+                          args.expected_bank_hash,
                           args.expected_internal_banks)
             for name, default_dir, optimized_dir in args.pair]
     fields = list(rows[0]) if rows else []
@@ -97,15 +114,18 @@ def main():
         writer.writeheader()
         writer.writerows(rows)
     with Path(args.markdown).open("w") as output:
-        output.write("# Decoupled-L2 bank optimization gate\n\n")
+        output.write("# Decoupled-L2 %s gate\n\n" % args.candidate_label)
         output.write("Each result has normal exits, a matched decoupled binary/source/trace, "
-                     "a default four-bank mod arm, and only the named optimized overlay.\n\n")
+                     "a default four-bank mod arm, and only the named candidate overlay "
+                     "beyond any common workload overlay.\n\n")
         output.write("| Case | Default / optimized IPC | Default / optimized cycles | "
-                     "Speedup | Tag requeue change | Lower-read requeue change |\n")
-        output.write("|---|---:|---:|---:|---:|---:|\n")
+                     "Speedup | Fill peak | WBQ peak | Tag requeue change | Lower-read requeue change |\n")
+        output.write("|---|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
             output.write("| {case} | {default_ipc:.4f} / {optimized_ipc:.4f} | "
                          "{default_cycles} / {optimized_cycles} | {speedup:.4f}x | "
+                         "{default_fill_max} / {optimized_fill_max} | "
+                         "{default_wbq_max} / {optimized_wbq_max} | "
                          "{tag_requeue_change:.4f}x | {lower_requeue_change:.4f}x |\n".format(**row))
 
 

@@ -111,10 +111,14 @@ python3 "$repo_root/scripts/analyze_decoupled_l2_bank_observability.py" \
 printf 'PASS run_root=%s summary=%s\n' "$run_root" "$run_root/bank_observability.md"
 [[ -z "$optimized_config_extra" ]] || printf 'PASS three_arm_summary=%s\n' "$three_arm_summary"
 if [[ -n "$optimized_config_extra" ]]; then
+  optimization_gate_args=("${optimized_analyze_args[@]}"
+                          --optimized-config-extra "$optimized_config_extra")
+  if [[ -n "$common_config_extra" ]]; then
+    optimization_gate_args+=(--common-config-extra "$common_config_extra")
+  fi
+  optimization_gate_args+=(--csv "$run_root/optimized_bank_observability.csv"
+                          --markdown "$run_root/optimized_bank_observability.md")
   python3 "$repo_root/scripts/analyze_decoupled_l2_bank_optimization.py" \
-    "${optimized_analyze_args[@]}" \
-    --optimized-config-extra "$optimized_config_extra" \
-    --csv "$run_root/optimized_bank_observability.csv" \
-    --markdown "$run_root/optimized_bank_observability.md"
+    "${optimization_gate_args[@]}"
   printf 'PASS optimized_bank_summary=%s\n' "$run_root/optimized_bank_observability.md"
 fi
