@@ -177,11 +177,18 @@ def validate_pair(name, baseline, decoupled):
     if bp.get("backend") != "baseline" or dp.get("backend") != "decoupled":
         fail("%s has unexpected backend provenance" % name)
     baseline_cycles = last_metric(baseline_text, "gpu_tot_sim_cycle")
+    baseline_instructions = last_metric(baseline_text, "gpu_tot_sim_insn")
+    baseline_ipc = last_metric(baseline_text, "gpu_tot_ipc")
     dec_text = (decoupled / "smoke.out").read_text(errors="replace")
     decoupled_cycles = last_metric(dec_text, "gpu_tot_sim_cycle")
+    decoupled_instructions = last_metric(dec_text, "gpu_tot_sim_insn")
+    decoupled_ipc = last_metric(dec_text, "gpu_tot_ipc")
     row = parse_decoupled(decoupled)
     row.update({"case": name, "baseline_cycles": int(baseline_cycles),
                 "decoupled_cycles": int(decoupled_cycles),
+                "baseline_instructions": int(baseline_instructions),
+                "decoupled_instructions": int(decoupled_instructions),
+                "baseline_ipc": baseline_ipc, "decoupled_ipc": decoupled_ipc,
                 "speedup": baseline_cycles / decoupled_cycles,
                 "baseline_dir": str(baseline), "decoupled_dir": str(decoupled),
                 "sim_bin_sha256": bp["sim_bin_sha256"],
@@ -229,10 +236,12 @@ def main():
         output.write("# Decoupled-L2 bank observability\n\n")
         output.write("Every pair passed normal-exit, binary-hash, trace-hash, and non-backend configuration gates.\n\n")
         output.write("`%s` contains summed per-slice attempts, grants, and requeues for every internal bank.\n\n" % bank_csv.name)
-        output.write("| Case | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | tag/lower requeue | tag max share | lower max share |\n")
-        output.write("|---|---:|---:|---:|---:|---:|---:|---:|\n")
+        output.write("| Case | Baseline / Decoupled IPC | Baseline / Decoupled cycles | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | tag/lower requeue | tag max share | lower max share |\n")
+        output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
-            output.write("| {case} | {speedup:.4f}x | {req_avg_per_slice:.2f}/{req_max_slice} | "
+            output.write("| {case} | {baseline_ipc:.4f} / {decoupled_ipc:.4f} | "
+                         "{baseline_cycles} / {decoupled_cycles} | {speedup:.4f}x | "
+                         "{req_avg_per_slice:.2f}/{req_max_slice} | "
                          "{aad_avg_per_slice:.2f}/{aad_max_slice} | {fill_avg_per_slice:.2f}/{fill_max_slice} | "
                          "{bank_requeue_tag}/{bank_requeue_lower} | "
                          "{tag_grant_max_share:.2%} | {lower_grant_max_share:.2%} |\n".format(**row))
