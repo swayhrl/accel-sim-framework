@@ -96,6 +96,14 @@ therefore keep local candidates mandatory, make one decision per outer suffix,
 and retain periodic exploration; it must not use global hit rate alone as a
 bypass criterion.
 
+The independent global remote-tag `7 -> 14` sensitivity reaches the same
+non-universal conclusion: it changes every remote lookup while retaining the
+two-cycle return and 200-cycle L2 path. 2DConvolution's admission benefit
+grows from 2.62% to 3.48%, LPS remains positive (1.69% to 1.40%), and BFS loses
+its small 0.38% benefit. See
+[`c2p_global_remote_tag_sensitivity_20260825.md`](c2p_global_remote_tag_sensitivity_20260825.md)
+for the audited canonical/local-first/policy matrices and raw-result paths.
+
 ## Reproduction inputs
 
 Backend branch: `hrl/c2p-addr-observe-v0` at `35631982` or newer.
