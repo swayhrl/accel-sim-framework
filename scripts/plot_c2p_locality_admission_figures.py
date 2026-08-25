@@ -97,7 +97,8 @@ def locality_figure(locality, out):
     ax.set_ylim(0, 0.62)
     ax.set_ylabel("Local share")
     ax.set_xticks(x, [NAMES[c] for c in ordered])
-    ax.axhline(0.25, color="#666666", linestyle="--", linewidth=0.8, label="4-SM uniform share")
+    ax.axhline(4 / 64, color="#666666", linestyle="--", linewidth=0.8,
+               label="4 / 64 uniform share")
     ax.legend(frameon=False, ncol=4, fontsize=8, loc="upper center")
     ax.set_title("4-SM locality quality: local candidates, probes, and hits")
     save(fig, out, "figx_locality_quality")
