@@ -23,7 +23,7 @@ def sha256(paths):
     return digest.hexdigest()
 
 
-def validate_case(name, default_dir, optimized_dir, common_overlay, overlay,
+def validate_case(name, default_dir, optimized_dir, common_overlays, overlay,
                   bank_hash, banks):
     default_dir = Path(default_dir)
     optimized_dir = Path(optimized_dir)
@@ -38,11 +38,11 @@ def validate_case(name, default_dir, optimized_dir, common_overlay, overlay,
                 "trace_kernelslist_sha256"):
         if default_meta.get(key) != optimized_meta.get(key):
             fail("%s changes %s outside the config-only experiment" % (name, key))
-    expected_default_overlay = sha256([common_overlay]) if common_overlay else ""
+    expected_default_overlay = sha256(common_overlays) if common_overlays else ""
     if default_meta.get("config_extra_sha256") != expected_default_overlay:
         fail("%s default arm does not record the requested common overlay" % name)
     expected_optimized_overlay = sha256(
-        ([common_overlay] if common_overlay else []) + [overlay]
+        common_overlays + [overlay]
     )
     if optimized_meta.get("config_extra_sha256") != expected_optimized_overlay:
         fail("%s optimized arm does not record the requested overlay" % name)
@@ -92,7 +92,7 @@ def main():
     parser.add_argument("--pair", action="append", nargs=3,
                         metavar=("CASE", "DEFAULT", "OPTIMIZED"), required=True)
     parser.add_argument("--optimized-config-extra", required=True)
-    parser.add_argument("--common-config-extra")
+    parser.add_argument("--common-config-extra", action="append", default=[])
     parser.add_argument("--candidate-label", default="bank optimization")
     parser.add_argument("--expected-bank-hash", default="mod")
     parser.add_argument("--expected-internal-banks", type=int, default=8)
@@ -101,8 +101,9 @@ def main():
     args = parser.parse_args()
     if not Path(args.optimized_config_extra).is_file():
         fail("missing optimized config overlay: %s" % args.optimized_config_extra)
-    if args.common_config_extra and not Path(args.common_config_extra).is_file():
-        fail("missing common config overlay: %s" % args.common_config_extra)
+    for common_overlay in args.common_config_extra:
+        if not Path(common_overlay).is_file():
+            fail("missing common config overlay: %s" % common_overlay)
     rows = [validate_case(name, default_dir, optimized_dir,
                           args.common_config_extra, args.optimized_config_extra,
                           args.expected_bank_hash,

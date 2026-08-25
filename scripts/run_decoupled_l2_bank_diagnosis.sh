@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_decoupled_l2_bank_diagnosis.sh --case NAME KERNELSLIST [--case NAME KERNELSLIST ...]
        --run-root DIR [--config FILE] [--trace-config FILE] [--build]
-       [--common-config-extra FILE] [--optimized-config-extra FILE]
+       [--common-config-extra FILE ...] [--optimized-config-extra FILE]
        [--candidate-label TEXT] [--expected-candidate-bank-hash HASH]
        [--expected-candidate-internal-banks N]
 
@@ -24,7 +24,7 @@ run_root=""
 config=""
 trace_config=""
 optimized_config_extra=""
-common_config_extra=""
+common_config_extras=()
 candidate_label="bank optimization"
 expected_candidate_bank_hash="mod"
 expected_candidate_internal_banks=8
@@ -35,7 +35,7 @@ while [[ $# -gt 0 ]]; do
     --run-root) run_root="$2"; shift 2 ;;
     --config) config="$2"; shift 2 ;;
     --trace-config) trace_config="$2"; shift 2 ;;
-    --common-config-extra) common_config_extra="$2"; shift 2 ;;
+    --common-config-extra) common_config_extras+=("$2"); shift 2 ;;
     --optimized-config-extra) optimized_config_extra="$2"; shift 2 ;;
     --candidate-label) candidate_label="$2"; shift 2 ;;
     --expected-candidate-bank-hash) expected_candidate_bank_hash="$2"; shift 2 ;;
@@ -53,9 +53,11 @@ done
 [[ -z "$optimized_config_extra" || -f "$optimized_config_extra" ]] || {
   echo 'error: --optimized-config-extra must name an existing file' >&2; exit 2;
 }
-[[ -z "$common_config_extra" || -f "$common_config_extra" ]] || {
-  echo 'error: --common-config-extra must name an existing file' >&2; exit 2;
-}
+for common_config_extra in "${common_config_extras[@]}"; do
+  [[ -f "$common_config_extra" ]] || {
+    echo 'error: --common-config-extra must name an existing file' >&2; exit 2;
+  }
+done
 [[ "$expected_candidate_internal_banks" =~ ^[1-9][0-9]*$ ]] || {
   echo 'error: --expected-candidate-internal-banks must be positive' >&2; exit 2;
 }
@@ -90,7 +92,9 @@ for ((index=0; index<${#cases[@]}; index+=2)); do
   for backend in baseline decoupled; do
     args=(--backend "$backend" --trace "$trace" --config "$config"
           --trace-config "$trace_config" --run-dir "$run_root/$name/$backend")
-    if [[ -n "$common_config_extra" ]]; then args+=(--config-extra "$common_config_extra"); fi
+    for common_config_extra in "${common_config_extras[@]}"; do
+      args+=(--config-extra "$common_config_extra")
+    done
     if [[ "$first" -eq 1 && "$build" -eq 1 ]]; then args+=(--build); fi
     "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${args[@]}"
     first=0
@@ -98,9 +102,9 @@ for ((index=0; index<${#cases[@]}; index+=2)); do
   if [[ -n "$optimized_config_extra" ]]; then
     optimized_args=(--backend decoupled --trace "$trace" --config "$config"
                     --trace-config "$trace_config")
-    if [[ -n "$common_config_extra" ]]; then
+    for common_config_extra in "${common_config_extras[@]}"; do
       optimized_args+=(--config-extra "$common_config_extra")
-    fi
+    done
     optimized_args+=(--config-extra "$optimized_config_extra"
                      --run-dir "$run_root/$name/optimized")
     "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${optimized_args[@]}"
@@ -127,9 +131,9 @@ if [[ -n "$optimized_config_extra" ]]; then
                           --candidate-label "$candidate_label"
                           --expected-bank-hash "$expected_candidate_bank_hash"
                           --expected-internal-banks "$expected_candidate_internal_banks")
-  if [[ -n "$common_config_extra" ]]; then
+  for common_config_extra in "${common_config_extras[@]}"; do
     optimization_gate_args+=(--common-config-extra "$common_config_extra")
-  fi
+  done
   optimization_gate_args+=(--csv "$run_root/optimized_bank_observability.csv"
                           --markdown "$run_root/optimized_bank_observability.md")
   python3 "$repo_root/scripts/analyze_decoupled_l2_bank_optimization.py" \
