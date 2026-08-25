@@ -394,6 +394,18 @@ default-decoupled, and optimized-decoupled arms. The optimized arm is run
 after its matched pair, so `--pair-parallel` never makes two decoupled arms
 share a case's trace staging or provenance directory.
 
+Pass the same candidate overlay to the final three-arm analyzer. It verifies
+the ordered common-plus-optimized overlay fingerprint in addition to normal
+exit, trace, and baseline/default binary provenance:
+
+```bash
+python3 scripts/analyze_decoupled_l2_three_arm.py \
+  --group application hw_run/decoupled-l2-archive-plan/polybench/summary.csv \
+  --optimized-config-extra experiments/decoupled_l2_overlays/bank_count_8.cfg \
+  --csv hw_run/decoupled-l2-results/application.csv \
+  --markdown hw_run/decoupled-l2-results/application.md
+```
+
 If an exact planner is already running, pass its PID with
 `--wait-for-plan-pid PID`; the pipeline waits for its plan files instead of
 starting another full gzip scan.

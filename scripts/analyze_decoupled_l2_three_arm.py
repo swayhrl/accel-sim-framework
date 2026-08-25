@@ -3,6 +3,7 @@
 
 import argparse
 import csv
+import hashlib
 import math
 import re
 import sys
@@ -17,6 +18,13 @@ EXIT_MARKER = "GPGPU-Sim: *** exit detected ***"
 
 def fail(message):
     raise RuntimeError(message)
+
+
+def overlay_sha256(paths):
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(Path(path).read_bytes())
+    return digest.hexdigest()
 
 
 def provenance(run_dir):
@@ -79,7 +87,8 @@ def read_summary(group, path):
     return rows
 
 
-def validate_case(group, suite, case, arms):
+def validate_case(group, suite, case, arms, common_overlay_sha,
+                  optimized_overlay_sha):
     expected = {"baseline", "decoupled", "optimized"}
     if set(arms) != expected:
         fail("%s/%s lacks a complete three-arm result: %s" %
@@ -102,6 +111,15 @@ def validate_case(group, suite, case, arms):
                 "non_backend_config_sha256"):
         if metas["baseline"].get(key) != metas["decoupled"].get(key):
             fail("%s/%s baseline/default mismatch: %s" % (suite, case, key))
+    if common_overlay_sha is not None:
+        for arm in ("baseline", "decoupled"):
+            if metas[arm].get("config_extra_sha256") != common_overlay_sha:
+                fail("%s/%s %s arm has an unexpected common overlay" %
+                     (suite, case, arm))
+    if optimized_overlay_sha is not None:
+        if metas["optimized"].get("config_extra_sha256") != optimized_overlay_sha:
+            fail("%s/%s optimized arm has an unexpected overlay" %
+                 (suite, case))
     values = {arm: measurements(run_dir) for arm, run_dir in runs.items()}
     row = {
         "group": group,
@@ -129,9 +147,22 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--group", action="append", nargs=2,
                         metavar=("NAME", "SUMMARY_CSV"), required=True)
+    parser.add_argument("--common-config-extra", action="append", default=[])
+    parser.add_argument("--optimized-config-extra")
     parser.add_argument("--csv", required=True)
     parser.add_argument("--markdown", required=True)
     args = parser.parse_args()
+    for overlay in args.common_config_extra:
+        if not Path(overlay).is_file():
+            fail("missing common config overlay: %s" % overlay)
+    if args.optimized_config_extra and not Path(args.optimized_config_extra).is_file():
+        fail("missing optimized config overlay: %s" % args.optimized_config_extra)
+    common_overlay_sha = (overlay_sha256(args.common_config_extra)
+                          if args.common_config_extra else None)
+    optimized_overlay_sha = None
+    if args.optimized_config_extra:
+        optimized_overlay_sha = overlay_sha256(
+            args.common_config_extra + [args.optimized_config_extra])
 
     cases = {}
     for group, name in args.group:
@@ -142,7 +173,8 @@ def main():
             if row["arm"] in arms:
                 fail("duplicate %s arm in %s" % (row["arm"], key))
             arms[row["arm"]] = row
-    rows = [validate_case(*key, arms) for key, arms in sorted(cases.items())]
+    rows = [validate_case(*key, arms, common_overlay_sha, optimized_overlay_sha)
+            for key, arms in sorted(cases.items())]
     fields = list(rows[0]) if rows else []
     with open(args.csv, "w", newline="") as output:
         writer = csv.DictWriter(output, fieldnames=fields)
@@ -154,7 +186,8 @@ def main():
     with open(args.markdown, "w") as output:
         output.write("# Decoupled-L2 three-arm results\n\n")
         output.write("Every listed case has normal exits and matched baseline/default "
-                     "binary plus trace provenance. Aggregates are kept within groups.\n\n")
+                     "binary plus trace provenance. Aggregates are kept within groups. "
+                     "When overlays are supplied, their ordered fingerprints are gated too.\n\n")
         for group, group_rows in grouped.items():
             output.write("## %s\n\n" % group)
             output.write("| Case | Default speedup | Optimized speedup | Optimized/default | "
