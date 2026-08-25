@@ -31,6 +31,19 @@ def read_provenance(run_dir):
     return result
 
 
+def validate_runtime_exit(run_dir):
+    path = run_dir / "runtime_metrics.txt"
+    if not path.is_file():
+        fail("missing runtime metrics: %s" % run_dir)
+    metrics = {}
+    for line in path.read_text().splitlines():
+        if "=" in line:
+            key, value = line.split("=", 1)
+            metrics[key] = value
+    if metrics.get("sim_exit_status") != "0":
+        fail("nonzero simulator exit: %s" % run_dir)
+
+
 def normalized_config(run_dir):
     path = run_dir / "gpgpusim.config"
     return "\n".join(
@@ -167,9 +180,12 @@ def validate_pair(name, baseline, decoupled):
     baseline_text = (baseline / "smoke.out").read_text(errors="replace")
     if "GPGPU-Sim: *** exit detected ***" not in baseline_text:
         fail("%s baseline did not exit normally" % name)
+    validate_runtime_exit(baseline)
+    validate_runtime_exit(decoupled)
     bp = read_provenance(baseline)
     dp = read_provenance(decoupled)
-    for key in ("sim_bin_sha256", "trace_kernelslist_sha256"):
+    for key in ("sim_bin_sha256", "gpgpusim_source_commit",
+                "trace_kernelslist_sha256"):
         if bp.get(key) != dp.get(key):
             fail("%s mismatches %s" % (name, key))
     if normalized_config(baseline) != normalized_config(decoupled):
