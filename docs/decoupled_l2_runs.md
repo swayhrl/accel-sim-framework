@@ -137,6 +137,7 @@ For a lower-read candidate, change only the optimized arm:
 scripts/run_decoupled_l2_bank_diagnosis.sh \
   --run-root hw_run/decoupled-l2-capacity/<run-id>-lower64 \
   --case l2_bw_32f /path/to/l2_bw_32f/kernelslist.g \
+  --candidate-label 'lower-read capacity' \
   --optimized-config-extra experiments/decoupled_l2_overlays/lower_read_64.cfg
 ```
 
@@ -148,6 +149,7 @@ scripts/run_decoupled_l2_bank_diagnosis.sh \
   --run-root hw_run/decoupled-l2-capacity/<run-id>-wbq16 \
   --case dirty_stress /path/to/dirty_stress/kernelslist.g \
   --common-config-extra experiments/decoupled_l2_overlays/one_line_l2.cfg \
+  --candidate-label 'WBQ capacity' \
   --optimized-config-extra experiments/decoupled_l2_overlays/wbq_16.cfg
 ```
 

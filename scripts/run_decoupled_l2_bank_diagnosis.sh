@@ -6,6 +6,7 @@ usage() {
 Usage: scripts/run_decoupled_l2_bank_diagnosis.sh --case NAME KERNELSLIST [--case NAME KERNELSLIST ...]
        --run-root DIR [--config FILE] [--trace-config FILE] [--build]
        [--common-config-extra FILE] [--optimized-config-extra FILE]
+       [--candidate-label TEXT]
 
 Runs matched baseline/decoupled pairs sequentially, then checks executable,
 trace, and non-backend configuration identity while producing CSV/Markdown
@@ -23,6 +24,7 @@ config=""
 trace_config=""
 optimized_config_extra=""
 common_config_extra=""
+candidate_label="bank optimization"
 build=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -32,6 +34,7 @@ while [[ $# -gt 0 ]]; do
     --trace-config) trace_config="$2"; shift 2 ;;
     --common-config-extra) common_config_extra="$2"; shift 2 ;;
     --optimized-config-extra) optimized_config_extra="$2"; shift 2 ;;
+    --candidate-label) candidate_label="$2"; shift 2 ;;
     --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -112,7 +115,8 @@ printf 'PASS run_root=%s summary=%s\n' "$run_root" "$run_root/bank_observability
 [[ -z "$optimized_config_extra" ]] || printf 'PASS three_arm_summary=%s\n' "$three_arm_summary"
 if [[ -n "$optimized_config_extra" ]]; then
   optimization_gate_args=("${optimized_analyze_args[@]}"
-                          --optimized-config-extra "$optimized_config_extra")
+                          --optimized-config-extra "$optimized_config_extra"
+                          --candidate-label "$candidate_label")
   if [[ -n "$common_config_extra" ]]; then
     optimization_gate_args+=(--common-config-extra "$common_config_extra")
   fi
