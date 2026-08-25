@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 DETAIL_RE = re.compile(r"decoupled_l2_detail\[(?P<slice>[^]]+)\]: (?P<body>.*)")
+SUMMARY_RE = re.compile(r"decoupled_l2\[(?P<slice>[^]]+)\]: (?P<body>.*)")
 CONFLICT_RE = re.compile(r"decoupled_l2_conflict\[(?P<slice>[^]]+)\]: (?P<body>.*)")
 KIND_RE = re.compile(r"decoupled_l2_kind\[(?P<slice>[^]]+)\]: (?P<body>.*)")
 BANK_RE = re.compile(r"decoupled_l2_bank_detail\[(?P<slice>[^]]+)\]:(?P<body>.*)")
@@ -65,6 +66,12 @@ def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
         fail("%s did not exit normally" % run_dir)
     slices = {}
     for line in text.splitlines():
+        match = SUMMARY_RE.search(line)
+        if match:
+            slices.setdefault(match.group("slice"), {}).update(
+                {key: value for key, value in KV_RE.findall(match.group("body"))}
+            )
+            continue
         match = DETAIL_RE.search(line)
         if match:
             slices.setdefault(match.group("slice"), {}).update(
@@ -122,7 +129,8 @@ def parse_decoupled(run_dir, expected_bank_hash, expected_internal_banks):
                                             for data in slices.values())
     for key in ("bank_requeue_tag", "bank_requeue_lower", "tag_tag", "tag_lower",
                 "tag_fill", "tag_wbq", "lower_tag", "lower_lower", "lower_fill",
-                "lower_wbq"):
+                "lower_wbq", "access", "hit", "miss", "write", "wb", "atomic",
+                "token_stall", "aad_stall", "read_credit_stall", "bank_stall"):
         row[key] = sum(int(data.get(key, 0)) for data in slices.values())
     for key in ("tag_read", "tag_write", "tag_atomic", "lower_read", "lower_write",
                 "lower_atomic"):
@@ -263,15 +271,23 @@ def main():
         output.write("# Decoupled-L2 bank observability\n\n")
         output.write("Every pair passed normal-exit, binary-hash, trace-hash, and non-backend configuration gates.\n\n")
         output.write("`%s` contains summed per-slice attempts, grants, and requeues for every internal bank.\n\n" % bank_csv.name)
-        output.write("| Case | Baseline / Decoupled IPC | Baseline / Decoupled cycles | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | tag/lower requeue | tag max share | lower max share |\n")
-        output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
+        output.write("| Case | Baseline / Decoupled IPC | Baseline / Decoupled cycles | Speedup | req avg/peak per slice | AAD avg/peak per slice | fill avg/peak per slice | WBQ avg/peak per slice | read-credit stall | tag/lower requeue | tag max share | lower max share |\n")
+        output.write("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n")
         for row in rows:
             output.write("| {case} | {baseline_ipc:.4f} / {decoupled_ipc:.4f} | "
                          "{baseline_cycles} / {decoupled_cycles} | {speedup:.4f}x | "
                          "{req_avg_per_slice:.2f}/{req_max_slice} | "
                          "{aad_avg_per_slice:.2f}/{aad_max_slice} | {fill_avg_per_slice:.2f}/{fill_max_slice} | "
+                         "{wbq_avg_per_slice:.2f}/{wbq_max_slice} | {read_credit_stall} | "
                          "{bank_requeue_tag}/{bank_requeue_lower} | "
                          "{tag_grant_max_share:.2%} | {lower_grant_max_share:.2%} |\n".format(**row))
+        output.write("\n| Case | Tag-bank owner: tag / lower / fill / WBQ | Lower-read-bank owner: tag / lower / fill / WBQ | Tag attempts R / W / atomic | Lower attempts R / W / atomic |\n")
+        output.write("|---|---:|---:|---:|---:|\n")
+        for row in rows:
+            output.write("| {case} | {tag_tag} / {tag_lower} / {tag_fill} / {tag_wbq} | "
+                         "{lower_tag} / {lower_lower} / {lower_fill} / {lower_wbq} | "
+                         "{tag_read_attempt} / {tag_write_attempt} / {tag_atomic_attempt} | "
+                         "{lower_read_attempt} / {lower_write_attempt} / {lower_atomic_attempt} |\n".format(**row))
 
 
 if __name__ == "__main__":
