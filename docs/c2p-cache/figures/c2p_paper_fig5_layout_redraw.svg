@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <title>C2P-Cache Figure 5 layout redraw</title>
+  <desc>Independent high-fidelity layout redraw adapted from the mechanism flow in C2P-Cache Figure 5, not a copy of the published artwork.</desc>
+  <defs>
+    <marker id="blue" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#6f8df0"/></marker>
+    <marker id="gray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#74828a"/></marker>
+    <marker id="teal" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#67d2c7"/></marker>
+    <style>
+      .title{font:700 26px Georgia,serif;fill:#121a1f}.label{font:20px Georgia,serif;fill:#121a1f}.small{font:16px Georgia,serif;fill:#27343a}.tiny{font:14px Georgia,serif;fill:#4a5961}.box{fill:#fff;stroke:#202b30;stroke-width:2}.arrow{fill:none;stroke:#6f8df0;stroke-width:2.7;marker-end:url(#blue)}.teal{fill:none;stroke:#67d2c7;stroke-width:2.7;marker-end:url(#teal)}.dash{fill:none;stroke:#74828a;stroke-width:2.2;stroke-dasharray:8 6;marker-end:url(#gray)}.num{font:700 15px Georgia,serif;fill:#fff}.numbg{fill:#17242a}
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="white"/>
+  <text x="55" y="54" class="title">Overview of C2P-Cache</text>
+  <text x="55" y="82" class="tiny">High-fidelity vector redraw of the Figure 5 information layout (adapted, independently drawn).</text>
+
+  <!-- L1 cache stack -->
+  <g transform="translate(82,190)">
+    <rect x="24" y="-28" width="108" height="70" class="box" fill="#edf5f2"/><rect x="16" y="-18" width="108" height="70" class="box" fill="#edf5f2"/><rect x="8" y="-8" width="108" height="70" class="box" fill="#edf5f2"/><rect x="0" y="2" width="108" height="70" class="box" fill="#edf5f2"/>
+    <text x="54" y="46" text-anchor="middle" class="label">L1 Cache</text>
+  </g>
+
+  <!-- BF engines -->
+  <g transform="translate(275,202)">
+    <path d="M0 0 l16 -16 l16 16 l-16 16z" fill="#c4d0fa" stroke="#91a8ec"/><path d="M42 0 l16 -16 l16 16 l-16 16z" fill="#d0ede8" stroke="#8ac8bd"/>
+    <path d="M0 38 l16 -16 l16 16 l-16 16z" fill="#c4d0fa" stroke="#91a8ec"/><path d="M42 38 l16 -16 l16 16 l-16 16z" fill="#d0ede8" stroke="#8ac8bd"/>
+    <text x="30" y="84" text-anchor="middle" class="label">BF Engines</text>
+  </g>
+
+  <!-- Access matrix -->
+  <g transform="translate(450,188)">
+    <rect x="0" y="0" width="68" height="68" class="box"/>
+    <path d="M17 0v68M34 0v68M51 0v68M0 17h68M0 34h68M0 51h68" stroke="#202b30" stroke-width="1.3"/>
+    <rect x="18" y="18" width="15" height="15" fill="#dce3fd"/><rect x="52" y="35" width="15" height="15" fill="#dce3fd"/>
+    <text x="34" y="99" text-anchor="middle" class="label">Access</text><text x="34" y="120" text-anchor="middle" class="label">Matrix</text>
+  </g>
+
+  <!-- Boolean match and snapshot -->
+  <g transform="translate(610,205)">
+    <circle cx="0" cy="18" r="19" fill="white" stroke="#202b30" stroke-width="2"/><text x="0" y="25" text-anchor="middle" class="label">×</text>
+    <rect x="70" y="0" width="68" height="92" class="box"/>
+    <path d="M87 0v92M104 0v92M121 0v92M70 18h68M70 36h68M70 54h68M70 72h68" stroke="#202b30" stroke-width="1.2"/>
+    <rect x="105" y="37" width="15" height="15" fill="#d7f0ea"/><rect x="122" y="73" width="15" height="15" fill="#d7f0ea"/>
+    <text x="104" y="124" text-anchor="middle" class="label">Snapshot</text><text x="104" y="145" text-anchor="middle" class="label">Matrix</text>
+  </g>
+
+  <!-- Result matrix -->
+  <g transform="translate(645,385)">
+    <rect x="0" y="0" width="68" height="68" class="box"/>
+    <path d="M17 0v68M34 0v68M51 0v68M0 17h68M0 34h68M0 51h68" stroke="#202b30" stroke-width="1.3"/>
+    <rect x="35" y="18" width="15" height="15" fill="#8a5cc5"/>
+    <text x="34" y="99" text-anchor="middle" class="label">Result Matrix</text>
+  </g>
+
+  <!-- Update path -->
+  <path d="M130 179 C130 115,705 115,705 205" class="teal"/>
+  <circle cx="195" cy="145" r="12" class="numbg"/><text x="195" y="150" text-anchor="middle" class="num">a</text>
+  <text x="430" y="136" text-anchor="middle" class="tiny">background L1 update refreshes the snapshot</text>
+  <path d="M332 202 H450" class="teal"/>
+  <circle cx="392" cy="180" r="12" class="numbg"/><text x="392" y="185" text-anchor="middle" class="num">b</text>
+
+  <!-- miss path -->
+  <path d="M190 255 H275" class="arrow"/><circle cx="230" cy="278" r="12" class="numbg"/><text x="230" y="283" text-anchor="middle" class="num">1</text>
+  <path d="M335 221 H450" class="arrow"/><circle cx="390" cy="198" r="12" class="numbg"/><text x="390" y="203" text-anchor="middle" class="num">2</text>
+  <path d="M518 222 H591" class="arrow"/><path d="M629 223 H680" class="arrow"/><circle cx="650" cy="260" r="12" class="numbg"/><text x="650" y="265" text-anchor="middle" class="num">3</text>
+  <path d="M610 242 V385" class="dash"/><circle cx="567" cy="310" r="12" class="numbg"/><text x="567" y="315" text-anchor="middle" class="num">4</text>
+  <path d="M645 419 C530 419,190 403,190 275" class="dash"/>
+
+  <!-- annotations -->
+  <text x="80" y="550" class="label">C2P operation</text>
+  <text x="80" y="584" class="small">① Encode the L1 miss into sparse Bloom-filter access positions.</text>
+  <text x="80" y="614" class="small">② Aggregate positions into an Access Matrix row.</text>
+  <text x="80" y="644" class="small">③ Boolean-match Access and Snapshot matrices, then prune candidate L1s.</text>
+  <text x="80" y="674" class="small">④ Probe remaining peers; no exact hit follows the normal shared-L2 path.</text>
+  <text x="80" y="705" class="tiny">This editable redraw preserves the original figure's explanatory order while using independently drawn vectors and typesetting.</text>
+</svg>
