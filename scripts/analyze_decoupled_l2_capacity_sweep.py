@@ -10,6 +10,7 @@ workloads or rebuilt binaries.
 
 import argparse
 import csv
+import hashlib
 import sys
 from pathlib import Path
 
@@ -45,6 +46,19 @@ def lower_read_entries(run_dir):
     return entries
 
 
+def config_without_capacity_override(run_dir):
+    """Hash the config after removing the only permitted capacity variation."""
+    config = Path(run_dir) / "gpgpusim.config"
+    kept = []
+    for line in config.read_text().splitlines():
+        fields = line.split()
+        if fields and fields[0] in ("-gpgpu_l2_backend",
+                                    "-gpgpu_decoupled_l2_lower_read_entries"):
+            continue
+        kept.append(line)
+    return hashlib.sha256(("\n".join(kept) + "\n").encode()).hexdigest()
+
+
 def as_int(row, key):
     try:
         return int(row[key])
@@ -78,6 +92,10 @@ def read_point(expected_entries, csv_path):
     if actual_entries != expected_entries:
         fail("%s requested lower-read=%d but config has %d" %
              (csv_path, expected_entries, actual_entries))
+    default_config = config_without_capacity_override(default_dir)
+    capacity_config = config_without_capacity_override(optimized_dir)
+    if default_config != capacity_config:
+        fail("%s changes configuration beyond lower-read capacity" % csv_path)
 
     default_meta = read_kv(default_dir / "simulator_provenance.txt")
     optimized_meta = read_kv(optimized_dir / "simulator_provenance.txt")
@@ -99,6 +117,7 @@ def read_point(expected_entries, csv_path):
         "gpgpusim_source_commit": default_meta.get("gpgpusim_source_commit"),
         "gpgpusim_source_dirty": default_meta.get("gpgpusim_source_dirty"),
         "gpgpusim_source_diff_sha256": default_meta.get("gpgpusim_source_diff_sha256"),
+        "config_without_capacity_override_sha256": default_config,
         "default_cycles": as_int(row, "default_cycles"),
         "capacity_cycles": as_int(row, "optimized_cycles"),
         "default_ipc": as_float(row, "default_ipc"),
@@ -142,7 +161,8 @@ def main():
         fail("capacity points mix workloads")
     for key in ("trace_kernelslist_sha256", "sim_bin_sha256",
                 "gpgpusim_source_commit", "gpgpusim_source_dirty",
-                "gpgpusim_source_diff_sha256"):
+                "gpgpusim_source_diff_sha256",
+                "config_without_capacity_override_sha256"):
         if len({row[key] for row in points}) != 1:
             fail("capacity points mismatch %s" % key)
 
@@ -153,7 +173,9 @@ def main():
               "capacity_wbq_max", "default_wbq_stall", "capacity_wbq_stall",
               "trace_kernelslist_sha256", "sim_bin_sha256",
               "gpgpusim_source_commit", "gpgpusim_source_dirty",
-              "gpgpusim_source_diff_sha256", "default_dir", "capacity_dir"]
+              "gpgpusim_source_diff_sha256",
+              "config_without_capacity_override_sha256", "default_dir",
+              "capacity_dir"]
     with Path(args.csv).open("w", newline="") as output:
         writer = csv.DictWriter(output, fieldnames=fields)
         writer.writeheader()
