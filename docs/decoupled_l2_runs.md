@@ -142,8 +142,10 @@ scripts/run_decoupled_l2_bank_diagnosis.sh \
   --optimized-config-extra experiments/decoupled_l2_overlays/lower_read_64.cfg
 ```
 
-For a dirty-WBQ candidate, the one-line L2 geometry must instead be common to
-all three arms; only the WBQ capacity belongs to the optimized arm:
+For a dirty-WBQ candidate, the minimal valid direct-mapped L2 geometry must
+instead be common to all three arms; only the WBQ capacity belongs to the
+optimized arm. (The overlay keeps its historical `one_line_l2.cfg` name, but
+uses 32 sets because the V100 IPOLY mapper rejects a one-set cache.)
 
 ```bash
 scripts/run_decoupled_l2_bank_diagnosis.sh \
