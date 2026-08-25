@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: scripts/run_decoupled_l2_smoke.sh --trace KERNELSLIST --config CONFIG
-       [--trace-config FILE] [--config-extra FILE]
+       [--trace-config FILE] [--config-extra FILE ...]
        [--backend baseline|fixed|decoupled]
        [--run-dir DIR] [--build]
 
@@ -18,15 +18,16 @@ GPGPU-Sim configuration; generated SASS configurations already contain the
 matching Accel-Sim trace configuration.
 
 CONFIG-EXTRA is optional experiment-only configuration text appended after the
-base and trace configurations.  It is useful for small resource or capacity
-stress cases without changing a pinned base configuration.
+base and trace configurations.  It may be repeated; files are appended in
+argument order, letting a common workload geometry and a candidate resource
+override remain separately reviewable.
 EOF
 }
 
 trace=""
 config=""
 trace_config=""
-config_extra=""
+config_extras=()
 backend="decoupled"
 run_dir=""
 build=0
@@ -35,7 +36,7 @@ while [[ $# -gt 0 ]]; do
     --trace) trace="$2"; shift 2 ;;
     --config) config="$2"; shift 2 ;;
     --trace-config) trace_config="$2"; shift 2 ;;
-    --config-extra) config_extra="$2"; shift 2 ;;
+    --config-extra) config_extras+=("$2"); shift 2 ;;
     --backend) backend="$2"; shift 2 ;;
     --run-dir) run_dir="$2"; shift 2 ;;
     --build) build=1; shift ;;
@@ -49,9 +50,11 @@ done
 [[ -z "$trace_config" || -f "$trace_config" ]] || {
   echo "error: --trace-config must name an existing file" >&2; exit 2;
 }
-[[ -z "$config_extra" || -f "$config_extra" ]] || {
-  echo "error: --config-extra must name an existing file" >&2; exit 2;
-}
+for config_extra in "${config_extras[@]}"; do
+  [[ -f "$config_extra" ]] || {
+    echo "error: --config-extra must name an existing file" >&2; exit 2;
+  }
+done
 case "$backend" in baseline|fixed|decoupled) ;; *)
   echo "error: unsupported backend $backend" >&2; exit 2 ;; esac
 
@@ -92,9 +95,11 @@ if [[ -n "$trace_config" ]]; then
   printf '\n# Accel-Sim trace parameters\n' >> "$run_dir/gpgpusim.config"
   cat "$trace_config" >> "$run_dir/gpgpusim.config"
 fi
-if [[ -n "$config_extra" ]]; then
+if (( ${#config_extras[@]} > 0 )); then
   printf '\n# Decoupled-L2 experiment overrides\n' >> "$run_dir/gpgpusim.config"
-  cat "$config_extra" >> "$run_dir/gpgpusim.config"
+  for config_extra in "${config_extras[@]}"; do
+    cat "$config_extra" >> "$run_dir/gpgpusim.config"
+  done
 fi
 printf '\n-gpgpu_l2_backend %s\n' "$backend" >> "$run_dir/gpgpusim.config"
 ln -sfn "$(cd "$(dirname "$trace")" && pwd)" "$run_dir/traces"
@@ -123,8 +128,17 @@ cp "$sim_bin" "$sim_run_bin"
   # a normalized fingerprint so result checkers can reject every other drift.
   printf 'non_backend_config_sha256=%s\n' \
     "$(rg -v '^-gpgpu_l2_backend ' "$run_dir/gpgpusim.config" | sha256sum | awk '{print $1}')"
-  printf 'config_extra_sha256=%s\n' \
-    "${config_extra:+$(sha256sum "$config_extra" | awk '{print $1}')}"
+  if (( ${#config_extras[@]} == 0 )); then
+    printf 'config_extra_sha256=\n'
+    printf 'config_extra_files=\n'
+  elif (( ${#config_extras[@]} == 1 )); then
+    printf 'config_extra_sha256=%s\n' "$(sha256sum "${config_extras[0]}" | awk '{print $1}')"
+    printf 'config_extra_files=%s\n' "${config_extras[0]}"
+  else
+    printf 'config_extra_sha256=%s\n' \
+      "$(for config_extra in "${config_extras[@]}"; do cat "$config_extra"; done | sha256sum | awk '{print $1}')"
+    printf 'config_extra_files=%s\n' "$(IFS=,; echo "${config_extras[*]}")"
+  fi
   printf 'trace_kernelslist_sha256=%s\n' "$(sha256sum "$trace" | awk '{print $1}')"
   printf 'backend=%s\n' "$backend"
 } > "$run_dir/simulator_provenance.txt"

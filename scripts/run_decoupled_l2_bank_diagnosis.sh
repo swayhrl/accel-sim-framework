@@ -5,12 +5,14 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_decoupled_l2_bank_diagnosis.sh --case NAME KERNELSLIST [--case NAME KERNELSLIST ...]
        --run-root DIR [--config FILE] [--trace-config FILE] [--build]
-       [--optimized-config-extra FILE]
+       [--common-config-extra FILE] [--optimized-config-extra FILE]
 
 Runs matched baseline/decoupled pairs sequentially, then checks executable,
 trace, and non-backend configuration identity while producing CSV/Markdown
 bank-observability summaries.  With OPTIMIZED-CONFIG-EXTRA, also runs a third
 decoupled arm with that experiment-only override and writes three_arm_summary.csv.
+COMMON-CONFIG-EXTRA is appended to every arm (for example, a dirty-workload
+cache geometry).  OPTIMIZED-CONFIG-EXTRA is appended only to the third arm.
 Use a new run root for every rebuilt binary.
 EOF
 }
@@ -20,6 +22,7 @@ run_root=""
 config=""
 trace_config=""
 optimized_config_extra=""
+common_config_extra=""
 build=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -27,6 +30,7 @@ while [[ $# -gt 0 ]]; do
     --run-root) run_root="$2"; shift 2 ;;
     --config) config="$2"; shift 2 ;;
     --trace-config) trace_config="$2"; shift 2 ;;
+    --common-config-extra) common_config_extra="$2"; shift 2 ;;
     --optimized-config-extra) optimized_config_extra="$2"; shift 2 ;;
     --build) build=1; shift ;;
     -h|--help) usage; exit 0 ;;
@@ -40,6 +44,9 @@ done
 [[ -n "$run_root" ]] || { echo 'error: --run-root is required' >&2; exit 2; }
 [[ -z "$optimized_config_extra" || -f "$optimized_config_extra" ]] || {
   echo 'error: --optimized-config-extra must name an existing file' >&2; exit 2;
+}
+[[ -z "$common_config_extra" || -f "$common_config_extra" ]] || {
+  echo 'error: --common-config-extra must name an existing file' >&2; exit 2;
 }
 [[ -n "${DECOUPLED_L2_GPGPUSIM_ROOT:-}" ]] || {
   echo 'error: set DECOUPLED_L2_GPGPUSIM_ROOT' >&2; exit 2;
@@ -72,15 +79,20 @@ for ((index=0; index<${#cases[@]}; index+=2)); do
   for backend in baseline decoupled; do
     args=(--backend "$backend" --trace "$trace" --config "$config"
           --trace-config "$trace_config" --run-dir "$run_root/$name/$backend")
+    if [[ -n "$common_config_extra" ]]; then args+=(--config-extra "$common_config_extra"); fi
     if [[ "$first" -eq 1 && "$build" -eq 1 ]]; then args+=(--build); fi
     "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${args[@]}"
     first=0
   done
   if [[ -n "$optimized_config_extra" ]]; then
-    "$repo_root/scripts/run_decoupled_l2_smoke.sh" \
-      --backend decoupled --trace "$trace" --config "$config" \
-      --trace-config "$trace_config" --config-extra "$optimized_config_extra" \
-      --run-dir "$run_root/$name/optimized"
+    optimized_args=(--backend decoupled --trace "$trace" --config "$config"
+                    --trace-config "$trace_config")
+    if [[ -n "$common_config_extra" ]]; then
+      optimized_args+=(--config-extra "$common_config_extra")
+    fi
+    optimized_args+=(--config-extra "$optimized_config_extra"
+                     --run-dir "$run_root/$name/optimized")
+    "$repo_root/scripts/run_decoupled_l2_smoke.sh" "${optimized_args[@]}"
     for arm in baseline decoupled optimized; do
       cycles="$(rg 'gpu_tot_sim_cycle =' "$run_root/$name/$arm/smoke.out" | tail -1 | awk '{print $3}')"
       [[ -n "$cycles" ]] || { echo "error: missing cycle count for $name/$arm" >&2; exit 1; }
