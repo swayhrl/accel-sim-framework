@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" modified="2026-08-26T00:00:00.000Z" agent="Codex" version="31.3.1">
+  <diagram id="c2p-global-to-pruned" name="C2P candidate pruning">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="1" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="&lt;b&gt;From global exact lookup to candidate pruning&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#1F2933;" vertex="1" parent="1">
+          <mxGeometry x="170" y="20" width="760" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Filter broadly, then probe exactly only where a peer-L1 hit is plausible" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=10;fontColor=#4D5E6E;" vertex="1" parent="1">
+          <mxGeometry x="180" y="50" width="740" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="global-container" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F7F9FC;strokeColor=#D7E1EA;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="90" width="960" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="global-label" value="&lt;b&gt;All SM private L1 caches&lt;/b&gt;  ·  ideal exact lookup space" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=11;fontColor=#1F2933;" vertex="1" parent="1">
+          <mxGeometry x="90" y="100" width="500" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1-0" value="L1&lt;sub&gt;0&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#DCEAF5;strokeColor=#4D5E6E;fontColor=#1F2933;fontFamily=Arial;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="110" y="130" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1-1" value="L1&lt;sub&gt;1&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#DCEAF5;strokeColor=#4D5E6E;fontColor=#1F2933;fontFamily=Arial;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="230" y="130" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1-2" value="L1&lt;sub&gt;2&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#DCEAF5;strokeColor=#4D5E6E;fontColor=#1F2933;fontFamily=Arial;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="350" y="130" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1-ellipsis" value="…" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=21;fontColor=#4D5E6E;" vertex="1" parent="1">
+          <mxGeometry x="480" y="130" width="70" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1-61" value="L1&lt;sub&gt;61&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#DCEAF5;strokeColor=#4D5E6E;fontColor=#1F2933;fontFamily=Arial;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="580" y="130" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1-62" value="L1&lt;sub&gt;62&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#DCEAF5;strokeColor=#4D5E6E;fontColor=#1F2933;fontFamily=Arial;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="130" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1-63" value="L1&lt;sub&gt;63&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#DCEAF5;strokeColor=#4D5E6E;fontColor=#1F2933;fontFamily=Arial;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="global-note" value="64 potential peer-L1 targets per miss" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=9;fontColor=#4D5E6E;" vertex="1" parent="1">
+          <mxGeometry x="680" y="100" width="320" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="filter" value="&lt;b&gt;Lightweight candidate screening&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#EAF2FB;strokeColor=#0F4D92;strokeWidth=1.5;fontColor=#1F2933;fontFamily=Arial;fontSize=13;align=center;verticalAlign=middle;spacing=7;" vertex="1" parent="1">
+          <mxGeometry x="310" y="240" width="480" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="filter-bits-left" value="" style="rounded=0;fillColor=#42949E;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="340" y="260" width="8" height="30" as="geometry"/></mxCell>
+        <mxCell id="filter-bits-mid" value="" style="rounded=0;fillColor=#8BCF8B;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="350" y="260" width="8" height="30" as="geometry"/></mxCell>
+        <mxCell id="filter-bits-right" value="" style="rounded=0;fillColor=#42949E;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="360" y="260" width="8" height="30" as="geometry"/></mxCell>
+        <mxCell id="filter-note" value="Snapshot / Bloom summary · parallel pruning" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=10;fontColor=#4D5E6E;" vertex="1" parent="1"><mxGeometry x="400" y="270" width="310" height="20" as="geometry"/></mxCell>
+
+        <mxCell id="candidate-container" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F2F8F7;strokeColor=#B8DDD8;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="360" width="500" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="candidate-label" value="&lt;b&gt;Pruned candidate set&lt;/b&gt;  ·  only possible peer-L1 hits" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=11;fontColor=#1F2933;" vertex="1" parent="1">
+          <mxGeometry x="360" y="370" width="380" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="candidate-2" value="L1&lt;sub&gt;2&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#CDE9E4;strokeColor=#42949E;strokeWidth=1.2;fontColor=#1F2933;fontFamily=Arial;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="350" y="400" width="100" height="30" as="geometry"/></mxCell>
+        <mxCell id="candidate-17" value="L1&lt;sub&gt;17&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#CDE9E4;strokeColor=#42949E;strokeWidth=1.2;fontColor=#1F2933;fontFamily=Arial;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="500" y="400" width="100" height="30" as="geometry"/></mxCell>
+        <mxCell id="candidate-41" value="L1&lt;sub&gt;41&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#CDE9E4;strokeColor=#42949E;strokeWidth=1.2;fontColor=#1F2933;fontFamily=Arial;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="650" y="400" width="100" height="30" as="geometry"/></mxCell>
+
+        <mxCell id="exact-probe" value="&lt;b&gt;Exact peer-L1 query&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Tag/data lookup confirms or rejects each candidate&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#EEF3F8;strokeColor=#4D5E6E;strokeWidth=1.3;fontColor=#1F2933;fontFamily=Arial;fontSize=13;align=center;verticalAlign=middle;spacing=7;" vertex="1" parent="1">
+          <mxGeometry x="370" y="480" width="360" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="decision" value="Exact&lt;br&gt;hit?" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4D5E6E;strokeWidth=1.2;fontColor=#1F2933;fontFamily=Arial;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="490" y="570" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="peer-output" value="&lt;b&gt;Peer-L1&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;remote cacheline return&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=9;fillColor=#E2F2E2;strokeColor=#57945B;strokeWidth=1.4;fontColor=#1F2933;fontFamily=Arial;fontSize=13;align=center;verticalAlign=middle;spacing=7;" vertex="1" parent="1">
+          <mxGeometry x="170" y="650" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="l2-output" value="&lt;b&gt;L2&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;normal lower-cache fallback&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=9;fillColor=#EEF0F4;strokeColor=#596675;strokeWidth=1.4;fontColor=#1F2933;fontFamily=Arial;fontSize=13;align=center;verticalAlign=middle;spacing=7;" vertex="1" parent="1">
+          <mxGeometry x="670" y="650" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-global-filter" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;html=1;rounded=0;orthogonalLoop=1;jettySize=auto;strokeColor=#4D5E6E;strokeWidth=1.35;" edge="1" parent="1" source="global-container" target="filter"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-filter-candidates" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;html=1;rounded=0;orthogonalLoop=1;jettySize=auto;strokeColor=#0F4D92;strokeWidth=1.35;" edge="1" parent="1" source="filter" target="candidate-container"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-candidates-exact" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;html=1;rounded=0;orthogonalLoop=1;jettySize=auto;strokeColor=#42949E;strokeWidth=1.35;" edge="1" parent="1" source="candidate-container" target="exact-probe"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-exact-decision" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;html=1;rounded=0;orthogonalLoop=1;jettySize=auto;strokeColor=#4D5E6E;strokeWidth=1.35;" edge="1" parent="1" source="exact-probe" target="decision"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-hit-peer" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;html=1;rounded=0;orthogonalLoop=1;jettySize=auto;strokeColor=#57945B;strokeWidth=1.35;" edge="1" parent="1" source="decision" target="peer-output"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="550" y="642"/><mxPoint x="300" y="642"/></Array></mxGeometry></mxCell>
+        <mxCell id="edge-miss-l2" value="" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;html=1;rounded=0;orthogonalLoop=1;jettySize=auto;strokeColor=#596675;strokeWidth=1.35;" edge="1" parent="1" source="decision" target="l2-output"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="550" y="642"/><mxPoint x="800" y="642"/></Array></mxGeometry></mxCell>
+        <mxCell id="hit-label" value="hit" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=10;fontColor=#3E7442;" vertex="1" parent="1"><mxGeometry x="350" y="630" width="40" height="20" as="geometry"/></mxCell>
+        <mxCell id="miss-label" value="no hit → fallback" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=10;fontColor=#4D5E6E;" vertex="1" parent="1"><mxGeometry x="660" y="630" width="120" height="20" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
