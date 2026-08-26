@@ -1,0 +1,46 @@
+{
+  "schema": "accel-sim-v100-trace-campaign-v1",
+  "campaign": "v100-common-memory-streams",
+  "expected_case_count": 3,
+  "target": {
+    "gpu": "Tesla V100",
+    "compute_capability": "7.0",
+    "nvcc": "11.8",
+    "nvbit": "1.7.6"
+  },
+  "cases": [
+    {
+      "id": "common-shoc-spmv",
+      "suite": "SHOC",
+      "workload": "Spmv",
+      "source": "gpu-app-collection/shoc-master@dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "executable": "${WORK_ROOT}/bin/shoc/Spmv",
+      "argv": ["-s", "1", "-n", "1", "-d", "0"],
+      "input_ids": ["shoc-generated-size-1-pass-1"],
+      "input_status": "frozen",
+      "notes": "Small deterministic SHOC synthetic matrix; selected for a memory-streaming representative capture."
+    },
+    {
+      "id": "common-shoc-triad",
+      "suite": "SHOC",
+      "workload": "Triad",
+      "source": "gpu-app-collection/shoc-master@dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "executable": "${WORK_ROOT}/bin/shoc/Triad",
+      "argv": ["-s", "1", "-n", "1", "-d", "0"],
+      "input_ids": ["shoc-generated-size-1-pass-1"],
+      "input_status": "frozen",
+      "notes": "Small deterministic vector-stream representative."
+    },
+    {
+      "id": "common-cuda-tensorcore-gemm",
+      "suite": "CUDA-Samples",
+      "workload": "cudaTensorCoreGemm",
+      "source": "gpu-app-collection/NVIDIA_CUDA-11.0_Samples@dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "executable": "${WORK_ROOT}/bin/cuda/cudaTensorCoreGemm",
+      "argv": [],
+      "input_ids": ["cuda-sample-default-compile-time-dimensions"],
+      "input_status": "frozen",
+      "notes": "Official CUDA sample default dimensions, compiled specifically for sm_70; CUDA 11.8/V100 validates Volta WMMA execution."
+    }
+  ]
+}

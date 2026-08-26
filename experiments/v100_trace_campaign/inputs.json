@@ -1,0 +1,23 @@
+{
+  "schema": "accel-sim-v100-input-manifest-v1",
+  "purpose": "Candidate inputs until paper authors provide exact commands and datasets. stage_inputs.sh writes inputs.lock.generated.json with resolved SHA256 values.",
+  "sources": [
+    {"name":"gpu-app-collection","url":"https://github.com/accel-sim/gpu-app-collection.git","commit":"dad09cb0487845edc7524ded814c6cde9f0ef6a1","data_command":"./get_data.sh"},
+    {"name":"shoc","url":"https://github.com/vetter/shoc.git","commit":"00b25e2751dde4f1d7c595cadbb7fdb0873257b0"},
+    {"name":"mars","url":"https://cse.hkust.edu.hk/catalac/users/wenbin/mars/Mars.zip","sha256":"unlocked-download; record after retrieval"},
+    {"name":"gem5-pannotia-mirror","url":"https://dist.gem5.org/dist/develop/datasets/pannotia/","purpose":"independent single-file delivery for ecology1 and coAuthorsDBLP; verify hashes in the generated lock"}
+  ],
+  "inputs": [
+    {"id":"mars-ss-512x128","kind":"generated","parameters":["512","128"],"status":"candidate","reason":"Mars SimilarityScore README accepts rowNum colNum; TLS paper omits values."},
+    {"id":"shoc-size-1-pass-1","kind":"generated","parameters":["-s","1","-n","1"],"status":"candidate","reason":"All five SHOC targets support common size/passes options; TLS paper omits values."},
+    {"id":"ispass-graph65536","kind":"file","upstream_rel":"cuda/ispass-2009/ispass-2009-BFS/data/graph65536.txt","campaign_rel":"ispass/graph65536.txt","status":"candidate"},
+    {"id":"ispass-lib-default","kind":"generated","parameters":[],"status":"candidate"},
+    {"id":"ispass-lps-default","kind":"generated","parameters":[],"status":"candidate"},
+    {"id":"ispass-ray-256x256","kind":"generated","parameters":["256","256"],"status":"candidate"},
+    {"id":"pannotia-ecology1","kind":"file","upstream_rel":"pannotia/ecology1.graph","campaign_rel":"pannotia/ecology1.graph","status":"candidate"},
+    {"id":"pannotia-fw-256-16384","kind":"file","upstream_rel":"pannotia/256_16384.gr","campaign_rel":"pannotia/256_16384.gr","status":"candidate","fallback":"scripts/generate_fw_candidate.py","fallback_status":"format-compatible-candidate-not-byte-identical"},
+    {"id":"pannotia-coauthors-dblp","kind":"file","upstream_rel":"pannotia/coAuthorsDBLP.graph","campaign_rel":"pannotia/coAuthorsDBLP.graph","status":"candidate"},
+    {"id":"pannotia-g3-circuit","kind":"file","upstream_rel":"pannotia/G3_circuit.graph","campaign_rel":"pannotia/G3_circuit.graph","status":"alternative-not-staged"},
+    {"id":"pannotia-fw-512-65536","kind":"file","upstream_rel":"pannotia/512_65536.gr","campaign_rel":"pannotia/512_65536.gr","status":"deferred-high-volume"}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "accel-sim-v100-framework-source-v1",
+  "source_worktree": "/workspace/worktrees/accel-sim-tls-cache",
+  "source_commit": "ddc0b15b4b79e07cc0e0e6fb6948c5e61cb2f4e7",
+  "deployment": "AutoDL receives the minimal NVBit tracer framework needed for hardware capture; this identity restores the source-worktree commit that is otherwise absent from that deployment.",
+  "campaign_patches": [
+    "util/tracer_nvbit/tracer_tool/Makefile: CUDA < 12.3 MAXRREGCOUNT comparison fixed for NVBit register-cap enforcement",
+    "util/tracer_nvbit/tracer_tool/traces-processing/post-traces-processing.cpp: wait for source and xz sink children before accepting an output trace",
+    "util/tracer_nvbit/tracer_tool/tracer_tool.cu: emit a mutex-protected global CUDA callback order for multi-context trace processing"
+  ]
+}
