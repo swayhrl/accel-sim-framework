@@ -11,6 +11,7 @@
 
 #include <errno.h>
 #include <signal.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include <filesystem>
@@ -438,11 +439,32 @@ void group_per_block(const char *filepath) {
   close(sink_pipe_fd[0]);
   close(sink_pipe_fd[1]);
 
-  // restore stdin/stdout file descriptor
+  // Restore the parent's streams before waiting: stdout is the final live
+  // writer of sink_pipe_fd[1], so the sink compressor cannot receive EOF until
+  // this dup2 closes it.  Waiting first deadlocks the parent against xz.
   dup2(preserved_stdin_fileno, STDIN_FILENO);
   dup2(preserved_stdout_fileno, STDOUT_FILENO);
   close(preserved_stdin_fileno);
   close(preserved_stdout_fileno);
+
+  // Closing the pipe asks the compressor to finish.  Waiting for it before
+  // returning prevents the final trace in a directory from being observed as
+  // a zero-byte .traceg.xz file.
+  int child_status = 0;
+  pid_t waited = 0;
+  do {
+    waited = waitpid(source_process_pid, &child_status, 0);
+  } while (waited == -1 && errno == EINTR);
+  if (waited == -1) {
+    perror("waitpid trace source");
+  }
+  do {
+    waited = waitpid(sink_process_pid, &child_status, 0);
+  } while (waited == -1 && errno == EINTR);
+  if (waited == -1) {
+    perror("waitpid trace sink");
+  }
+
 }
 
 void group_per_core(const char *filepath) {

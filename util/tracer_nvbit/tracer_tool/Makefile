@@ -13,7 +13,10 @@ PTXAS_VER_ADD_FLAG=12.3
 PTXAS_VER=$(shell $(PTXAS) --version | grep release | cut -f2 -d, | cut -f3 -d' ')
 PTXAS_VER_CHECK=$(shell echo "${PTXAS_VER} >= $(PTXAS_VER_ADD_FLAG)" | bc)
 
-ifeq ($(PTXAS_VER_CHECK), 0)
+# CUDA/PTXAS before 12.3 needs the injection function capped at 24 registers.
+# `bc` emits "0" (without a leading space); the old comparison therefore never
+# matched and NVBit aborted while patching Volta code on CUDA 11.8.
+ifeq ($(PTXAS_VER_CHECK),0)
 MAXRREGCOUNT_FLAG=-maxrregcount=24
 else
 MAXRREGCOUNT_FLAG=

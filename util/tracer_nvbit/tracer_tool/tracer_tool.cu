@@ -14,6 +14,7 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <mutex>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -95,6 +96,46 @@ std::unordered_map<CUcontext, std::string> ctx_stats_location;
 std::unordered_map<CUcontext, int> ctx_kernelid;
 std::unordered_map<CUcontext, FILE *> ctx_resultsFile;
 std::unordered_map<CUcontext, std::string> ctx_current_kernel_name;
+
+// A process may use more than one CUDA context.  Per-context kernel lists are
+// useful evidence, but a trace-driven simulation also needs the host launch
+// order across those contexts.  This log is written at CUDA callback entry,
+// which is the only ordering point available to the tracer without guessing
+// from filenames or context teardown order.
+std::mutex global_launch_order_mutex;
+std::string global_launch_order_location;
+std::string global_stats_location;
+bool global_stats_initialized = false;
+
+static void append_global_launch_command(const char *command) {
+  std::lock_guard<std::mutex> lock(global_launch_order_mutex);
+  FILE *global_file = fopen(global_launch_order_location.c_str(), "a");
+  assert(global_file != NULL);
+  fprintf(global_file, "%s\n", command);
+  fclose(global_file);
+}
+
+static void append_global_stats(const char *trace_name, const char *kernel_name,
+                                unsigned gridDimX, unsigned gridDimY,
+                                unsigned gridDimZ, unsigned blocks,
+                                unsigned blockDimX, unsigned blockDimY,
+                                unsigned blockDimZ, unsigned threads) {
+  std::lock_guard<std::mutex> lock(global_launch_order_mutex);
+  FILE *global_file = fopen(global_stats_location.c_str(),
+                            global_stats_initialized ? "a" : "w");
+  assert(global_file != NULL);
+  if (!global_stats_initialized) {
+    fprintf(global_file,
+            "kernel id, kernel mangled name, grid_dimX, grid_dimY, grid_dimZ, "
+            "#blocks, block_dimX, block_dimY, block_dimZ, #threads, "
+            "total_insts, total_reported_insts\n");
+    global_stats_initialized = true;
+  }
+  fprintf(global_file, "%s, %s, %u, %u, %u, %u, %u, %u, %u, %u, ,\n",
+          trace_name, kernel_name, gridDimX, gridDimY, gridDimZ, blocks,
+          blockDimX, blockDimY, blockDimZ, threads);
+  fclose(global_file);
+}
 
 std::string kernel_ranges = "";
 
@@ -589,6 +630,7 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
   if (!stop_report) {
     fprintf(kernelsFile, buffer);
     fprintf(kernelsFile, "\n");
+    append_global_launch_command(buffer);
   }
   fclose(kernelsFile);
 
@@ -601,6 +643,11 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
           blocks, blockDimX, blockDimY, blockDimZ, threads);
 
   fclose(statsFile);
+  if (!stop_report) {
+    append_global_stats(buffer, nvbit_get_func_name(ctx, func, true), gridDimX,
+                        gridDimY, gridDimZ, blocks, blockDimX, blockDimY,
+                        blockDimZ, threads);
+  }
 
   ctx_kernelid[ctx]++;
   ctx_current_kernel_name[ctx] =
@@ -682,6 +729,9 @@ void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
         return;
       }
     }
+    global_launch_order_location = traces_folder + "/global-kernel-order.txt";
+    global_stats_location = traces_folder + "/global-stats.csv";
+    global_stats_initialized = false;
     kernelsFile = fopen(ctx_kernelslist[ctx].c_str(), "w");
     statsFile = fopen(ctx_stats_location[ctx].c_str(), "w");
     fprintf(statsFile,
@@ -824,6 +874,7 @@ void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
       fprintf(kernelsFile, buffer);
       fprintf(kernelsFile, "\n");
       fclose(kernelsFile);
+      append_global_launch_command(buffer);
     }
   } break;
   // For cuProfiler, we need to set the active region accordingly
