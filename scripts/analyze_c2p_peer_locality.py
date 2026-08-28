@@ -234,9 +234,6 @@ def main():
             for phase, semantic in SNAPSHOTS:
                 snapshots[(phase, semantic)] = audit_snapshot(
                     values, phase, semantic, errors)
-            if (snapshots[("issue", "sector")]["redundant"] !=
-                    values.get("c2p_oracle_peer_hits", 0)):
-                errors.append("issue-sector redundancy differs from oracle peer hits")
 
             sector_transition = 0
             line_transition = 0
@@ -270,6 +267,15 @@ def main():
                 "issue_line_redundant": issue_line["redundant"],
                 "issue_sector_redundant_ratio":
                     issue_sector["redundant"] / issues if issues else 0.0,
+                # This is deliberately informational, not an invariant.  The
+                # legacy oracle counter is sampled in accept_miss() while the
+                # locality issue snapshot is sampled after m_memport->push().
+                # A peer can fill or evict during that queue interval.
+                "oracle_accept_peer_hits": value(
+                    values, "c2p_oracle_peer_hits", errors),
+                "issue_sector_minus_oracle_accept_hits": (
+                    issue_sector["redundant"] - value(
+                        values, "c2p_oracle_peer_hits", errors)),
                 "detect_0_issue_0": value(
                     values, "c2p_peer_locality_sector_detect_0_issue_0", errors),
                 "detect_0_issue_1": value(
@@ -378,7 +384,8 @@ def main():
                "detect_mshr_merge_events", "issue_events",
                "detect_sector_redundant", "issue_sector_redundant",
                "detect_line_redundant", "issue_line_redundant",
-               "issue_sector_redundant_ratio", "detect_0_issue_0",
+               "issue_sector_redundant_ratio", "oracle_accept_peer_hits",
+               "issue_sector_minus_oracle_accept_hits", "detect_0_issue_0",
                "detect_0_issue_1", "detect_1_issue_0", "detect_1_issue_1",
                "wait_cycles_total", "wait_cycles_max", "wait_cycles_mean"],
               diagnostic_rows)

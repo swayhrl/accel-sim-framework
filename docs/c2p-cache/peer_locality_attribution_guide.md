@@ -23,6 +23,13 @@ The wider accepted-L1-miss denominator is reported separately as
 `l1_accepted_records = detect_events + l1_mshr_merge_records`; it must never
 be substituted for this physical lower-request denominator without saying so.
 
+The older `c2p_oracle_peer_hits` statistic is sampled in C2P's
+`accept_miss()` path, before a request can wait in the ordinary L1 miss queue.
+It is therefore intentionally not required to equal `issue_sector_redundant`.
+The emitted `issue_sector_minus_oracle_accept_hits` is a timing diagnostic:
+it measures how much peer availability changed between the legacy oracle
+decision point and physical lower issue, not a locality accounting failure.
+
 The paper defines a redundant access in terms of the requested **cache line**
 residing in a peer L1 (Sec. 3.1) and says a successful probe returns the cache
 line to the requester (Sec. 4.1).  Its Snapshot Matrix is built from valid
@@ -46,6 +53,7 @@ between the two rates quantifies the effect of the sector-cache model.
 | Issue exact-sector rate is low, but issue resident-line rate is much higher | Sector-validity/data availability, not tag residency | Inspect sector cache configuration and whether the paper's L1 model is sectorized. |
 | Many `detect_1_issue_0` events | Peer eviction or invalidation while the lower request waits | Use wait histogram, then check miss-queue/port pressure before changing candidate policy. |
 | Many `detect_0_issue_1` events | A peer arrives during lower-request queueing | This is a timing/scheduling opportunity, not a Bloom-filter error. |
+| `issue_sector_minus_oracle_accept_hits` is nonzero | The legacy accept-time oracle and physical issue sample different moments | Report the signed delta; use the issue-time exact rate for an actionable lower-read opportunity. |
 | Literal 16 KiB changes the rate toward the paper while four-set 64 KiB does not | Capacity is the dominant configuration difference | Treat the stated paper capacity/geometry contradiction explicitly. |
 | Four-set 64 KiB changes the rate toward the paper while literal 16 KiB does not | Set/conflict geometry is dominant | Preserve 64 KiB capacity; study set indexing/replacement. |
 | Neither geometry changes the gap, and the local/outer/distance distributions differ | Trace placement, 64x1 endpoint topology, or scheduler mapping | Run the explicitly recorded topology/scheduler sensitivity before changing C2P. |

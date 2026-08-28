@@ -27,10 +27,13 @@ The implementation uses the common `baseline_cache` hooks immediately after
 `m_miss_queue.push_back()` and immediately after `m_memport->push()`.
 `-c2p_cache_peer_locality_diagnostic` defaults to zero; with that default the
 hooks return before scanning any peer or modifying any C2P statistic.  With
-the overlay enabled, the only reused value is the exact issue-time mask for
-the already-existing oracle decision; paired baseline/oracle controls must
-therefore retain identical cycles and lower traffic before a diagnostic run
-may be accepted.
+the overlay enabled, the locality snapshots are independent read-only scans.
+The pre-existing `c2p_oracle_peer_hits` statistic remains an **accept-time**
+counter from C2P's `accept_miss()` path; it is recorded as an informational
+comparison, never as an issue-time invariant.  A peer may fill or evict before
+the ordinary lower request reaches `m_memport->push()`.  Paired
+baseline/oracle controls must nevertheless retain identical cycles and lower
+traffic before a diagnostic run may be accepted.
 
 ## Peer masks
 
@@ -82,6 +85,11 @@ requester bit must be clear in all masks.  For issue-time records,
 into `detect_records + l1_mshr_merge_records`.  Qualified
 paper16 runs require 64 registered L1s, no missing detect record at issue, and
 no pending detect record at simulator exit.
+
+`c2p_oracle_peer_hits` need not equal issue-time exact-sector redundancy:
+the former is sampled at C2P accept time, while the latter is sampled after
+physical lower issue.  The analyzer emits their signed difference to expose
+this timing effect, but never treats it as a qualification failure.
 
 ## Configuration sensitivity
 
