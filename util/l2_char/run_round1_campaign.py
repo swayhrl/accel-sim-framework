@@ -213,6 +213,8 @@ def parser_result(args: argparse.Namespace, item: Active, audit: dict) -> tuple[
         "--out", str(item.directory), "--workload", row["workload"], "--input", row["input"],
         "--kernel", "all", "--kernel-id", "all", "--config", str(args.base_config),
         "--trace", row["current_trace_path"], "--framework-repo", str(ROOT), "--core-repo", str(args.core),
+        "--framework-commit", audit["framework_commit"], "--core-commit", audit["core_commit"],
+        "--framework-branch", audit["framework_branch"], "--core-branch", audit["core_branch"],
         "--command", " ".join(item.command), "--production", "--window-l2-cycles", "5000",
         "--set-detail", "1", "--emit-windows", "1",
     ]

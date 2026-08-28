@@ -1,0 +1,24 @@
+audit_status,class,input,max_mshr_window_cv,max_set_block_ratio_range,slices_with_gt2_windows,suite,workload
+PASS,reference,NO_ARGS,20.273134932713294,0.0,64,Accel-Sim ubench,mem_lat
+FAIL,primary,"logK=11,logD=19",4.418307783494424,0.0,64,CUDA SDK,fastWalshTransform_11_19
+FAIL,primary,size=13920,0.23801752225635597,0.0,64,CUDA SDK,scalarProd_13920
+FAIL,primary,size=8192,0.31125410217202226,0.0,64,CUDA SDK,scalarProd_8192
+PASS,primary,NO_ARGS,4.123105625617661,0.0,64,CUDA SDK,sortingNetworks
+FAIL,primary,512x512,6.855654600401045,0.0,64,CUDA SDK,transpose
+FAIL,primary,size=4000000,0.4223043375801838,0.0,64,CUDA SDK,vectorAdd_4000000
+FAIL,primary,size=6000000,0.41657649232523003,0.0,64,CUDA SDK,vectorAdd_6000000
+FAIL,secondary,V100 staged,3.44863587030262,0.0,64,ISPASS,ispass_bfs
+FAIL,secondary,V100 staged,0.4500209702699837,0.0,64,ISPASS,ispass_lps
+FAIL,secondary,V100 staged,NA,0.0,64,ISPASS,ispass_ray
+FAIL,secondary,V100 staged,10.397864255300588,0.0,64,Pannotia,fw_block
+FAIL,primary,NY graph,1.454954444728817,0.0,64,Parboil,bfs
+FAIL,primary,32x32x32,7.817597776076841,0.0,64,Parboil,mri-q
+FAIL,primary,default,3.4520170595063706,0.0,64,Parboil,sad
+FAIL,primary,Dubcova3 large,0.7632640432840231,0.0,64,Parboil,spmv
+FAIL,primary,mil+command,0.7589744373217225,0.0,64,Rodinia,btree
+FAIL,primary,fvcorr_097K,1.9011048210748005,0.0,64,Rodinia,cfd_097k
+FAIL,primary,1024x1024,1.3830201880501505,0.0,64,Rodinia,dwt2d
+FAIL,primary,"1024x1024,2iter",0.41933107998456265,0.0,64,Rodinia,hotspot1
+FAIL,primary,matrix-512,14.061223920365334,0.0,64,Rodinia,lud
+FAIL,secondary,"size=1,pass=1",2.2386445231369607,0.0,64,SHOC,fft
+FAIL,secondary,V100 staged,7.343660030835939,0.0,64,SHOC,gemm

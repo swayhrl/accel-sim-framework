@@ -15,6 +15,13 @@ with tempfile.TemporaryDirectory() as temporary:
     assert list(csv.DictReader((output / "window.csv").open()))[0]["window"] == "0"
     assert json.load((output / "manifest.json").open())["schema_version"] == "L2CHARV1"
 
+    ratio_input = output / "ratio.log"
+    ratio_input.write_text(SAMPLE.read_text() +
+                           "L2CHARV1|SLICE_DETAIL|slice=0|block_dataport_eligible=0|block_dataport_ratio=0.0\n")
+    ratio_output = output / "ratio"
+    subprocess.check_call(["python3", str(ROOT / "parse_l2_char.py"), str(ratio_input), "--out", str(ratio_output)])
+    assert list(csv.DictReader((ratio_output / "slice.csv").open()))[0]["block_dataport_ratio"] == "NA"
+
     # Per-kernel simulator statistics may precede the terminal snapshot.
     # Repeating a valid snapshot must not duplicate final CSV windows.
     doubled = output / "two_snapshots.log"

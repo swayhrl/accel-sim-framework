@@ -35,6 +35,22 @@ def parse_record(line):
     return parts[1], fields
 
 
+def normalize_block_ratios(fields):
+    """Represent an undefined blocker ratio as NA in portable CSV output.
+
+    The simulator's low-level record uses a numeric zero for an empty
+    denominator so C++ formatting remains simple.  The analysis schema is
+    stricter: zero eligibility has no ratio, and must not be confused with an
+    observed zero blocking rate.
+    """
+    for key in list(fields):
+        if not key.endswith("_ratio"):
+            continue
+        eligible = key[:-len("_ratio")] + "_eligible"
+        if eligible in fields and fields[eligible] == 0:
+            fields[key] = "NA"
+
+
 def require(row, fields, label):
     missing = [key for key in fields if key not in row]
     if missing:
@@ -105,6 +121,10 @@ def main():
     parser.add_argument("--trace")
     parser.add_argument("--framework-repo", default=".")
     parser.add_argument("--core-repo", default="NA")
+    parser.add_argument("--framework-commit", help="recorded framework source revision (overrides live checkout)")
+    parser.add_argument("--core-commit", help="recorded core source revision (overrides live checkout)")
+    parser.add_argument("--framework-branch", help="recorded framework branch (overrides live checkout)")
+    parser.add_argument("--core-branch", help="recorded core branch (overrides live checkout)")
     parser.add_argument("--command", default="NA")
     parser.add_argument("--production", action="store_true",
                         help="require complete workload and source provenance")
@@ -140,11 +160,14 @@ def main():
                     slices, details, invariants, hists = {}, {}, [], {}
                     window_keys = set()
                 require(fields, REQUIRED_SLICE_FIELDS, "SLICE")
+                normalize_block_ratios(fields)
                 slices[str(fields["slice"])] = fields
             elif kind == "SLICE_DETAIL":
+                normalize_block_ratios(fields)
                 details[str(fields.get("slice", "NA"))] = fields
             elif kind == "WINDOW":
                 require(fields, REQUIRED_WINDOW_FIELDS, "WINDOW")
+                normalize_block_ratios(fields)
                 window_keys.update(fields)
                 window_out.write(json.dumps(fields, sort_keys=True) + "\n")
             elif kind == "INVARIANT":
@@ -162,10 +185,10 @@ def main():
     write_csv(pathlib.Path(args.out) / "slice.csv", list(slices.values()))
     write_window_csv(pathlib.Path(args.out) / "window.csv", window_spool, window_keys)
     window_spool.unlink(missing_ok=True)
-    framework_commit = git_value(args.framework_repo, ["rev-parse", "HEAD"])
-    core_commit = git_value(args.core_repo, ["rev-parse", "HEAD"]) if args.core_repo != "NA" else "NA"
-    framework_branch = git_value(args.framework_repo, ["branch", "--show-current"])
-    core_branch = git_value(args.core_repo, ["branch", "--show-current"]) if args.core_repo != "NA" else "NA"
+    framework_commit = args.framework_commit or git_value(args.framework_repo, ["rev-parse", "HEAD"])
+    core_commit = args.core_commit or (git_value(args.core_repo, ["rev-parse", "HEAD"]) if args.core_repo != "NA" else "NA")
+    framework_branch = args.framework_branch or git_value(args.framework_repo, ["branch", "--show-current"])
+    core_branch = args.core_branch or (git_value(args.core_repo, ["branch", "--show-current"]) if args.core_repo != "NA" else "NA")
     provenance = [args.workload, args.input, args.kernel, args.kernel_id, args.config,
                   args.trace, args.command, framework_commit, core_commit,
                   framework_branch, core_branch, args.window_l2_cycles,
@@ -221,6 +244,16 @@ def main():
             summary[metric + "_global_max"] = max(i for i, n in enumerate(bins) if n > 0)
             summary[metric + "_global_avg"] = total / samples
     write_csv(pathlib.Path(args.out) / "summary.csv", [summary])
+    manifest_path = pathlib.Path(args.out) / "manifest.json"
+    preserved = {}
+    if manifest_path.exists():
+        try:
+            previous = json.loads(manifest_path.read_text())
+            for key in ("campaign_audit", "trace_tree_sha256", "trace_file_count_hashed"):
+                if key in previous:
+                    preserved[key] = previous[key]
+        except (OSError, ValueError):
+            pass
     manifest = {"schema_version": SCHEMA_VERSION, "framework_commit": summary["framework_commit"],
                 "core_commit": summary["core_commit"], "framework_branch": framework_branch,
                 "core_branch": core_branch,
@@ -230,7 +263,8 @@ def main():
                                      "window_l2_cycles": args.window_l2_cycles,
                                      "set_detail": bool(args.set_detail) if args.set_detail is not None else "NA",
                                      "emit_windows": bool(args.emit_windows) if args.emit_windows is not None else "NA"}}
-    with open(pathlib.Path(args.out) / "manifest.json", "w") as out:
+    manifest.update(preserved)
+    with open(manifest_path, "w") as out:
         json.dump(manifest, out, indent=2, sort_keys=True)
 
 
