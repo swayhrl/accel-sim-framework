@@ -15,6 +15,60 @@ C2P 和 TLS 的归档记录，并按**同名同输入**去重。
 “通过来源”只说明该 trace/输入曾成功运行，**不**表示可将不同项目的结果、
 配置或收益混合比较。新结构仍要在当前同 revision baseline/decoupled 下重跑。
 
+## 数量汇总
+
+以“测试集 + workload + 保留输入”为一个条目计数（所以 Rodinia BFS 和 Parboil
+BFS、PolyBench GEMM 和 Parboil/SHOC GEMM 分别计数），排除已知超过五小时的项后
+共有 **52 个**条目。
+
+| 来源数据集 | 条目数 | 完成性说明 |
+|---|---:|---|
+| CUDA SDK | 11 | Decoupled-L2 full 双臂 closeout。 |
+| Accel-Sim V100 ubench | 6 | Decoupled-L2 full 双臂 closeout。 |
+| Rodinia | 9 | TLS 或 C2P full；其中 LUD 另有 Decoupled-L2 native smoke。 |
+| Parboil | 8 | Decoupled-L2 archive full 和/或 C2P full。 |
+| PolyBench | 8 | Decoupled-L2 archive/bank diagnosis full 和/或 C2P full/部分完成。 |
+| TLS V100 archive（Mars/SHOC） | 5 | 仅 bounded 10,000-cycle replay；不具完整性能资格。 |
+| C2P V100 extension（ISPASS/Pannotia） | 5 | C2P 已运行；尚未变为本 L2 runner 的完整 pair。 |
+| **总计** | **52** | |
+
+## 按程序行为分类
+
+以下分类是互斥的、用于挑选 L2 测试，而不是声称应用只有一种访存模式。
+
+| 行为类 | 条目数 | Workload |
+|---|---:|---|
+| 规则 stencil / 邻域计算 | 6 | `convolutionSeparable`、`srad_trim`、`hotspot1`、Parboil `stencil`、`2DConvolution`、`3DConvolution` |
+| 稠密线性代数 / 矩阵与向量计算 | 12 | `scalarProd_8192`、`scalarProd_13920`、`gaussian`、`lud`、Parboil `sgemm`、`atax`、`bicg`、`mvt`、`gesummv`、`3mm`、PolyBench `gemm`、SHOC `gemm` |
+| 不规则图、稀疏、搜索或 traversal | 9 | `cfd_097k`、`btree`、`nn`、Rodinia/Parboil/ISPASS `bfs`、`spmv`、`ss`、ISPASS `ray` |
+| 变换、归约、重排或阶段性访问 | 10 | 两个 `fastWalshTransform`、`scan`、`sortingNetworks`、`transpose`、`dwt2d`、`sad`、`fft`、`sort`、`redc` |
+| 流式或粒子/领域数组计算 | 5 | `BlackScholes`、两个 `vectorAdd`、`mri-q`、`cutcp` |
+| atomic / 热点更新 | 3 | `atomic_add_bw`、`atomic_add_bw_conflict`、`histo` |
+| 显式 L2/DRAM 微基准 | 4 | `l2_bw_32f`、`l2_bw_64f`、`mem_bw`、`mem_lat` |
+| 专项控制 / 动态规划输入 | 3 | ISPASS `lps`、ISPASS `lib`、Pannotia `fw_block` |
+| **总计** | **52** | |
+
+`fw_block` 是 blocked Floyd--Warshall；为保持分类互斥，它归入“专项控制 / 动态规划”
+而不重复计入稠密线性代数类。
+
+## 已知运行时间最长的前十项
+
+按目前可读取记录中的**最长单 arm 墙钟时间**排序；不同项目、模式和宿主负载不同，
+仅用于排程。`ss` 是 kernel-only screen，不能当作完整自然结束性能数据。
+
+| 排名 | Workload / 输入 | 最长已知单 arm 时间 | 备注 |
+|---:|---|---:|---|
+| 1 | CUDA SDK `scan` | 3h59m45s | Decoupled-L2 arm。 |
+| 2 | TLS Mars `ss` | 3h43m41s | 仅 kernel-only screen。 |
+| 3 | `l2_bw_64f` | 2h27m52s | Decoupled-L2 带宽微基准。 |
+| 4 | PolyBench `3mm` | 2h23m53s | Decoupled-L2 archive。 |
+| 5 | Parboil `histo` | 2h11m54s | Decoupled-L2 archive。 |
+| 6 | Parboil `cutcp` | 2h09m04s | Decoupled-L2 archive。 |
+| 7 | `atomic_add_bw_conflict` | 1h32m13s | Decoupled-L2 热点 atomic。 |
+| 8 | `l2_bw_32f` | 1h21m13s | Decoupled-L2 带宽微基准。 |
+| 9 | PolyBench `gemm` | 1h07m05s | TLS baseline/dynamic；另有不同输入的 Parboil/SHOC GEMM。 |
+| 10 | Parboil `stencil` | 1h06m12s | Decoupled-L2 archive。 |
+
 ## CUDA SDK：受控 kernel / 微应用
 
 全部来自 Decoupled-L2 的完整双臂 closeout，均为 `full`。
