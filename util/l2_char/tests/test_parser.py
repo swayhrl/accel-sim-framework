@@ -48,8 +48,22 @@ with tempfile.TemporaryDirectory() as temporary:
     merged = output / "merged"
     subprocess.check_call(["python3", str(ROOT / "parse_l2_char.py"), str(multi), "--out", str(merged)])
     row = list(csv.DictReader((merged / "summary.csv").open()))[0]
-    assert row["mshr_global_max"] == "2"
+    assert row["mshr_global_max"] == "2", row
     assert row["mshr_global_p50"] == "1"
     assert row["mshr_global_p95"] == "2"
     assert float(row["mshr_global_avg"]) == 1.125
     assert row["gpu_tot_sim_cycle"] == "12" and row["gpu_tot_sim_insn"] == "120"
+
+    sparse = output / "sparse.log"
+    sparse.write_text("\n".join([
+        "L2CHARV1|SLICE|slice=0|cycles=4|mshr_avg=0|missq_avg=0|draml2q_avg=0|l2dramq_avg=0",
+        "L2CHARV1|SLICE|slice=1|cycles=4|mshr_avg=0|missq_avg=0|draml2q_avg=0|l2dramq_avg=0",
+        "L2CHARV1|HIST|slice=0|metric=rop|capacity=0|unbounded=1|encoding=sparse|samples=4|bins=0:3,7:1",
+        "L2CHARV1|HIST|slice=1|metric=rop|capacity=0|unbounded=1|encoding=sparse|samples=4|bins=2:4",
+    ]))
+    sparse_output = output / "sparse"
+    subprocess.check_call(["python3", str(ROOT / "parse_l2_char.py"), str(sparse), "--out", str(sparse_output)])
+    row = list(csv.DictReader((sparse_output / "summary.csv").open()))[0]
+    assert row["rop_global_max"] == "7"
+    assert row["rop_global_p50"] == "2" and row["rop_global_p95"] == "7"
+    assert float(row["rop_global_avg"]) == 1.875

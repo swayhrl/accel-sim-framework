@@ -109,6 +109,45 @@ def final_sim_stat(log_path, name):
     return value if value is not None else "NA"
 
 
+def histogram_counts(record):
+    """Return a compact value->count map for either supported HIST encoding."""
+    bins = str(record.get("bins", ""))
+    if record.get("encoding", "dense") == "sparse":
+        result = {}
+        for item in bins.split(","):
+            if not item:
+                continue
+            value, count = item.split(":", 1)
+            result[int(value)] = int(count)
+        return result
+    return {index: int(count) for index, count in enumerate(bins.split(","))
+            if count != ""}
+
+
+def histogram_summary(records):
+    merged = {}
+    for record in records:
+        for value, count in histogram_counts(record).items():
+            merged[value] = merged.get(value, 0) + count
+    samples = sum(merged.values())
+    if not samples:
+        return None
+    total = sum(value * count for value, count in merged.items())
+
+    def percentile(q):
+        rank = (samples * q + 99) // 100
+        seen = 0
+        for value in sorted(merged):
+            seen += merged[value]
+            if seen >= rank:
+                return value
+        raise AssertionError("nonempty histogram has no percentile")
+
+    return {"avg": total / samples, "p50": percentile(50),
+            "p95": percentile(95),
+            "max": max(value for value, count in merged.items() if count > 0)}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("log")
@@ -228,21 +267,20 @@ def main():
     total_bytes = sum(r.get("l2dram_bytes", 0) for r in slices.values())
     summary["wb_request_fraction"] = wb_req / req if req else "NA"
     summary["wb_byte_fraction"] = wb_bytes / total_bytes if total_bytes else "NA"
-    for metric in ("reserved", "mshr", "merge_depth", "missq", "missq_wb"):
-        merged = []
-        for (_, name), hist in hists.items():
-            if name == metric: merged.append([int(x) for x in str(hist["bins"]).split(",")])
-        if merged:
-            bins = [sum(v[i] if i < len(v) else 0 for v in merged) for i in range(max(map(len, merged)))]
-            samples = sum(bins); total = sum(i * n for i, n in enumerate(bins))
-            def p(q):
-                rank = (samples * q + 99) // 100; seen = 0
-                for i, n in enumerate(bins):
-                    seen += n
-                    if seen >= rank: return i
-            summary[metric + "_global_p50"] = p(50); summary[metric + "_global_p95"] = p(95)
-            summary[metric + "_global_max"] = max(i for i, n in enumerate(bins) if n > 0)
-            summary[metric + "_global_avg"] = total / samples
+    for metric in ("reserved", "mshr", "mshr_target", "merge_depth", "missq",
+                   "missq_wb", "icntl2q", "l2dramq", "draml2q", "l2icntq", "rop"):
+        values = histogram_summary([hist for (_, name), hist in hists.items()
+                                    if name == metric])
+        if values:
+            for key, value in values.items():
+                summary[metric + "_global_" + key] = value
+    for field in ("char_data_busy_cycles", "native_data_busy_cycles",
+                  "char_fill_busy_cycles", "native_fill_busy_cycles",
+                  "char_port_samples", "native_port_samples"):
+        values = [row.get(field) for row in slices.values()
+                  if isinstance(row.get(field), (int, float))]
+        if values:
+            summary[field] = sum(values)
     write_csv(pathlib.Path(args.out) / "summary.csv", [summary])
     manifest_path = pathlib.Path(args.out) / "manifest.json"
     preserved = {}

@@ -15,7 +15,9 @@ import statistics
 from collections import defaultdict
 
 EXIT_MARKER = "GPGPU-Sim: *** exit detected ***"
-HIST_METRICS = ("reserved", "mshr", "merge_depth", "missq", "missq_wb")
+HIST_METRICS = ("reserved", "mshr", "mshr_target", "merge_depth", "missq",
+                "missq_wb", "icntl2q", "l2dramq", "draml2q", "l2icntq",
+                "rop")
 REQUEST_BLOCKERS = ("block_set", "block_mshr_new", "block_mshr_merge",
                     "block_missq", "block_dataport", "block_respq", "fill")
 CAUSAL_BLOCKERS = ("rop_input", "mshr_response", "lower_drain", "dram_return")
@@ -50,12 +52,13 @@ def mean(values):
 
 
 def percentile_from_bins(bins, q):
-    samples = sum(bins)
+    samples = sum(bins.values())
     if not samples:
         return None
     rank = (samples * q + 99) // 100
     seen = 0
-    for index, count in enumerate(bins):
+    for index in sorted(bins):
+        count = bins[index]
         seen += count
         if seen >= rank:
             return index
@@ -69,6 +72,21 @@ def parse_fields(line):
             key, value = item.split("=", 1)
             fields[key] = value
     return fields
+
+
+def parse_histogram(fields):
+    """Parse dense or sparse HIST data without allocating up to ROP maximum."""
+    raw = fields.get("bins", "")
+    if fields.get("encoding", "dense") == "sparse":
+        bins = {}
+        for item in raw.split(","):
+            if not item:
+                continue
+            value, count = item.split(":", 1)
+            bins[int(value)] = int(count)
+        return bins
+    return {index: int(count) for index, count in enumerate(raw.split(","))
+            if count != ""}
 
 
 def stream_raw(path):
@@ -107,9 +125,9 @@ def stream_raw(path):
                     hists, invariants = {}, []
                 prior_snapshot = True
             elif kind == "HIST":
-                bins = [int(x) for x in fields.get("bins", "").split(",") if x != ""]
                 hists[(integer(fields.get("slice")), fields.get("metric"))] = {
-                    "bins": bins, "capacity": integer(fields.get("capacity")),
+                    "bins": parse_histogram(fields), "capacity": integer(fields.get("capacity")),
+                    "unbounded": integer(fields.get("unbounded"), 0),
                     "samples": integer(fields.get("samples")),
                 }
             elif kind == "INVARIANT":
@@ -166,15 +184,15 @@ def audit_histograms(summary, slices, raw, errors, warnings):
         if any(record["capacity"] != cap for record in records):
             errors.append(f"hist:{metric}:inconsistent_capacity")
             continue
-        bins = [0] * max(len(record["bins"]) for record in records)
+        bins = defaultdict(int)
         for record in records:
-            if sum(record["bins"]) != record["samples"]:
+            if sum(record["bins"].values()) != record["samples"]:
                 errors.append(f"hist:{metric}:slice_sample_mismatch")
-            for index, count in enumerate(record["bins"]):
+            for index, count in record["bins"].items():
                 bins[index] += count
-        samples = sum(bins)
-        observed_max = max(index for index, count in enumerate(bins) if count > 0)
-        observed_avg = sum(index * count for index, count in enumerate(bins)) / samples
+        samples = sum(bins.values())
+        observed_max = max(index for index, count in bins.items() if count > 0)
+        observed_avg = sum(index * count for index, count in bins.items()) / samples
         observed_p50 = percentile_from_bins(bins, 50)
         observed_p95 = percentile_from_bins(bins, 95)
         summary_values = {"max": integer(summary.get(metric + "_global_max")),
@@ -190,14 +208,13 @@ def audit_histograms(summary, slices, raw, errors, warnings):
         slice_max = max(integer(row.get(metric + "_max"), -1) for row in slices)
         if observed_max != slice_max:
             errors.append(f"hist:{metric}:global_max={observed_max}:slice_max={slice_max}")
-        if not (observed_p50 <= observed_p95 <= observed_max <= cap):
+        bounded = not any(record["unbounded"] for record in records)
+        if not (observed_p50 <= observed_p95 <= observed_max and
+                (not bounded or observed_max <= cap)):
             errors.append(f"hist:{metric}:percentile_or_capacity_order")
         result[metric] = {"samples": samples, "capacity": cap, "max": observed_max,
                           "avg": observed_avg, "p50": observed_p50, "p95": observed_p95}
-    # These resources have per-slice extrema, but v1 emits no HIST records.
-    unsupported = [metric for metric in ("mshr_target", "icntl2q", "l2dramq", "draml2q", "l2icntq", "rop")
-                   if not any(name == metric for (_, name) in raw["hists"])]
-    return result, unsupported
+    return result, []
 
 
 def audit_windows(slices, windows, errors, warnings):
@@ -270,19 +287,25 @@ def causal_sanity(slices, blockers, raw, errors, warnings):
         errors.append("causal:dataport_block_without_busy")
     if blockers["fill"]["blocked"] and not any_positive("fill_busy_ratio"):
         errors.append("causal:fill_block_without_busy")
-    # Cross-check the L2CHAR collector against the simulator's existing
-    # terminal port counters.  A nonzero standard utilization accompanied by
-    # an all-zero collector ratio means the chosen sampling point misses a
-    # real port occupation; no parser can reconstruct those lost cycles.
-    for port, field in (("data", "data_busy_ratio"), ("fill", "fill_busy_ratio")):
-        if raw["port_util"].get(port) and raw["port_util"][port] > 0 and not any_positive(field):
-            errors.append(f"production:{port}_port_busy_sampling_mismatch")
+    # Native cache_stats and L2CHAR use the same pre-replenish snapshot.
+    # These integer equalities are the primary evidence; rounded utilization
+    # is deliberately not used as an invariant.
+    for char, native in (("char_data_busy_cycles", "native_data_busy_cycles"),
+                         ("char_fill_busy_cycles", "native_fill_busy_cycles"),
+                         ("char_port_samples", "native_port_samples")):
+        values = [(integer(row.get(char)), integer(row.get(native))) for row in slices]
+        if any(left is None or right is None for left, right in values):
+            errors.append(f"production:{char}:missing_integer_crosscheck")
+        elif any(left != right for left, right in values):
+            errors.append(f"production:{char}:native_mismatch")
     if blockers["block_mshr_new"]["blocked"] and not any(integer(row.get("mshr_max"), 0) >= integer(row.get("mshr_cap"), 1) for row in slices):
         warnings.append("causal:mshr_new_block_without_sampled_full_mshr")
     if blockers["block_mshr_merge"]["blocked"] and not any(integer(row.get("merge_limit_entries_max"), 0) >= integer(row.get("merge_limit_entries_cap"), 1) for row in slices):
         warnings.append("causal:mshr_merge_block_without_sampled_merge_limit_full")
-    if blockers["block_respq"]["blocked"] and not any(integer(row.get("draml2q_max"), 0) >= integer(row.get("draml2q_cap"), 1) for row in slices):
-        warnings.append("causal:respq_block_without_sampled_draml2q_full")
+    # RESPQ is the immediate L2-to-ICNT response queue.  Event-time blocker
+    # accounting is exact; a cycle sample that misses a full queue only warns.
+    if blockers["block_respq"]["blocked"] and not any(integer(row.get("l2icntq_max"), 0) >= integer(row.get("l2icntq_cap"), 1) for row in slices):
+        warnings.append("causal:respq_block_without_sampled_l2icntq_full")
     if blockers["lower_drain"]["blocked"] and not any(integer(row.get("l2dramq_max"), 0) >= integer(row.get("l2dramq_cap"), 1) for row in slices):
         warnings.append("causal:lower_drain_block_without_sampled_l2dramq_full")
     if blockers["dram_return"]["blocked"] and not any(integer(row.get("draml2q_max"), 0) >= integer(row.get("draml2q_cap"), 1) for row in slices):
@@ -387,7 +410,7 @@ def main():
                  "class": workload_class(run["status"]), "audit_status": status}
         rows.append({**ident, "reason": ";".join(run["errors"] + run["warnings"]),
                      "instructions": summary.get("gpu_tot_sim_insn"), "cycles": summary.get("gpu_tot_sim_cycle"),
-                     "ipc": ratio(number(summary.get("gpu_tot_sim_insn")), number(summary.get("gpu_tot_sim_cycle"))),
+                     "sim_instructions_per_cycle": ratio(number(summary.get("gpu_tot_sim_insn")), number(summary.get("gpu_tot_sim_cycle"))),
                      **run["performance"], "wb_requests": run["wb"]["requests"], "wb_bytes": run["wb"]["bytes"],
                      "slice_records": len(slices), "window_records": len(run["windows"]),
                      "standard_data_port_util": run["raw"]["port_util"].get("data"),
@@ -443,8 +466,7 @@ def main():
               f"- `PASS` rows: {pass_count}; `WARN` rows: {warn_count}; `FAIL` rows: {fail_count}.",
               "- Detailed per-run status and basic performance fields: `ROUND1_EARLY_SANITY_TABLE.tsv`.", "",
               "## Histogram / aggregation", "",
-              "- Streamed final-snapshot HIST records verify exact weighted AVG/P50/P95/MAX and sample conservation for `reserved`, `mshr`, `merge_depth`, `missq`, and `missq_wb`.",
-              "- Exact global HIST validation is not emitted by v1 for `mshr_target`, ICNT→L2, L2→DRAM, DRAM→L2, L2→ICNT, or ROP. They remain explicitly `UNSUPPORTED_NO_PRODUCTION_HIST`; no missing metric was converted to zero.",
+              "- Streamed final-snapshot HIST records verify exact weighted AVG/P50/P95/MAX and sample conservation for `reserved`, `mshr`, `mshr_target`, `merge_depth`, `missq`, `missq_wb`, ICNT→L2, L2→DRAM, DRAM→L2, L2→ICNT, and ROP. Sparse ROP bins are merged exactly without materializing a capacity-sized vector.",
               "",
               "## Blocking / causal semantics", "",
               "- Every emitted blocker was checked per slice for `0 <= blocked <= eligible`, exact ratio/NA semantics, and request≤episode≤blocked for request-level blockers.",
@@ -459,7 +481,7 @@ def main():
         report.append(f"| {key} | {na(value)} |")
     report += ["", "These correlations are diagnostic only; utilization and blocking are intentionally distinct metrics.", "",
                "## Required follow-up / known unsupported observations", ""]
-    report += ["- **Production instrumentation defect**: the existing simulator reports nonzero DataPort and/or FillPort utilization for workloads where L2CHARV1 reports zero across every slice. Inspection shows L2CHAR samples after `baseline_cache::cycle()` has replenished port bandwidth. This loses one-cycle occupations and cannot be repaired from raw logs; fix the collector sampling point before any future campaign wave."]
+    report += ["- Event-time blocker records are production evidence. Cycle-sampled occupancy only supplies supporting context: a sampled queue that did not hit capacity is a warning, not a contradiction of a recorded blocker."]
     if errors:
         report += [f"- **FAIL**: {run['summary'].get('workload', run['directory'])}: {'; '.join(run['errors'])}" for run in errors]
     if unsupported:

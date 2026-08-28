@@ -24,6 +24,12 @@ assert field('block_dataport_eligible') > 0
 assert field('block_dataport_blocked') > 0
 assert field('block_dataport_blocked') <= field('block_dataport_eligible')
 assert field('block_dataport_requests') == field('block_dataport_episodes')
+detail = re.findall(r'^L2CHARV1\|SLICE_DETAIL\|.*$', text, re.M)[-1]
+detail_fields = dict(item.split('=', 1) for item in detail.split('|')[2:])
+for char, native in (('char_data_busy_cycles', 'native_data_busy_cycles'),
+                     ('char_fill_busy_cycles', 'native_fill_busy_cycles'),
+                     ('char_port_samples', 'native_port_samples')):
+    assert detail_fields[char] == detail_fields[native], '%s != %s' % (char, native)
 print('C4 DataPort PASS eligible=%d blocked=%d requests=%d' %
       (field('block_dataport_eligible'), field('block_dataport_blocked'),
        field('block_dataport_requests')))
