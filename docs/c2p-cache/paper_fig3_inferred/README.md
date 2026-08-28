@@ -1,22 +1,24 @@
 # C2P paper Figure 3: inferred per-workload reference points
 
-`paper_fig3_inferred_points.csv` records the best available *graphically
-inferred* per-workload R/S reference for the C2P-Cache paper.  It is preserved
-here so that the peer-locality campaign can compare a later measured point to
-the same reference without silently changing either identity or coordinate.
+`paper_fig3_inferred_points.csv` is the project's fixed per-workload `(R,S)`
+reference transcribed from the C2P-Cache Figure 3 vector and its documented
+Figure-10 mapping.  The peer-locality campaign must compare later measurements
+to this same reference rather than re-infer or relabel points per experiment.
 
 ## Evidence level
 
-This is **not author-provided raw data** and must not be reported as such.
-The publisher's vector Figure 3 exposes 23 marker coordinates but neither its
-underlying CSV nor the mapping from every marker to a workload.  The mapping
-uses Figure 10's within-group drawing order, and is therefore marked
-`conditional`.  The vector has four separable R0S1 markers although Figure 10
-lists five workloads; GS is a deliberately synthetic visualization-only
-locus and is excluded from all numerical aggregates.
+The publisher did not release its raw CSV, so the provenance remains
+``publisher vector + documented Fig.10 mapping`` rather than author-provided
+CSV.  This does **not** make the project reference optional: the named points
+below are the canonical basis for all subsequent numerical comparisons.  The
+only exception is GS: the vector has four separable R0S1 markers although
+Figure 10 lists five workloads, so GS is a deliberate visualization-only
+locus and is excluded from numerical aggregates.
 
 The source vector and reconstruction live at
 `/workspace/worktrees/accel-sim-decoupled-l2/docs/c2p-cache/figures/0826/fig3-paper-inferred16/`.
+The rendered labelled reference is
+`fig3_paper_inferred16_labeled.pdf` in that same directory.
 At import time their SHA-256 digests were:
 
 | artifact | SHA-256 |
