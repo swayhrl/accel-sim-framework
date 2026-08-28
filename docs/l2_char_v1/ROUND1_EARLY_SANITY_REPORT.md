@@ -1,4 +1,6 @@
-# Round-1 Early Sanity Audit
+# Round-1 Early Sanity Audit — PRE_FIX_DIAGNOSTIC
+
+> All results in this report were produced by Core `c71c18a41b9a97eb3e62fce50827faf03b0fdbdc`, before the native pre-replenish DataPort/FillPort snapshot correction. They remain retained raw diagnostic evidence only and must not enter the formal Round-1 heatmap.
 
 **Conclusion: `STOP_AND_FIX`**
 
