@@ -16,12 +16,21 @@ lower request is sampled twice:
 - **detect**: at the common miss-queue insertion point used by every normal
   read-allocation path;
 - **issue**: when the same miss reaches the L1 miss-queue head and C2P's
-  existing lower-path admission point observes it.
+  existing lower path actually calls `m_memport->push()`.
 
 Detect and issue records are keyed by the original `mem_fetch` and must match
 one-to-one for a qualified oracle run.  Locating detect at queue insertion,
 rather than in one L1 access wrapper, is required because a few normal lower
 allocation paths create their `mem_fetch` inside the cache implementation.
+
+The implementation uses the common `baseline_cache` hooks immediately after
+`m_miss_queue.push_back()` and immediately after `m_memport->push()`.
+`-c2p_cache_peer_locality_diagnostic` defaults to zero; with that default the
+hooks return before scanning any peer or modifying any C2P statistic.  With
+the overlay enabled, the only reused value is the exact issue-time mask for
+the already-existing oracle decision; paired baseline/oracle controls must
+therefore retain identical cycles and lower traffic before a diagnostic run
+may be accepted.
 
 ## Peer masks
 
