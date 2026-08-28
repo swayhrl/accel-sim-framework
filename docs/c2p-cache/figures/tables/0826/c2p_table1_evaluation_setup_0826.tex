@@ -1,0 +1,30 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\begin{document}
+
+\begin{table}[ht]
+\centering
+\caption{Evaluation setup and design parameters.}
+\label{tab:c2p-evaluation-setup}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Category} & \textbf{Configuration} \\
+\midrule
+Simulator & Accel-Sim \\
+GPU & 64 SMs; 8 SMs/cluster \\
+Private L1 & 64 KiB/SM; 20 cycles \\
+Shared L2 & 16-way; 200 cycles \\
+Workloads & 16 workloads: Rodinia, Parboil, and PolyBench \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textit{Design parameters}} \\
+Bloom filter & 4,096 bits; 4 hash functions \\
+Snapshot Matrix & $4096 \times 64$ bits \\
+Snapshot banking & 64 banks \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

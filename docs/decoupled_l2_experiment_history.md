@@ -520,5 +520,5 @@ WBQ     -> (若未持有 payload) DataRAM read -> lower write
 | 已停止 8-bank 候选状态 | `hw_run/decoupled-l2-bank-candidate/20260826-8bank-current-model/STOPPED.md` |
 | 已停止候选的部分结果 | `hw_run/decoupled-l2-bank-candidate/20260826-8bank-current-model/partial_three_arm_results.md` |
 | FRC 独立容量 sweep 摘要 | `hw_run/decoupled-l2-closeout-20260822/PERFORMANCE.md`，原始根：`/workspace/worktrees/accel-sim-frc-v1/results/core_sweep_convolution_v2/` |
-| FRC 复现计划 | `docs/FRC复现.md` |
-| LateBind 第四阶段设计 | `docs/L2-S4.md` |
+| FRC 复现计划 | `docs/decoupled-l2/plans/FRC复现.md` |
+| LateBind 第四阶段设计 | `docs/decoupled-l2/plans/L2-S4.md` |

@@ -9,11 +9,14 @@ outputs and are not a publication-asset directory.
 
 | Directory | Contents | Primary source / provenance |
 |---|---|---|
-| `paper-redraw/` | Editable redraws of the reference paper's Fig. 1, 4(a--d), 5, 6, and 9; each current redraw has `.drawio`, `.svg`, `.pdf`, and `.png`. | The editable `.drawio` is authoritative; PDF/SVG/PNG are synchronized exports. |
+| `paper-redraw/` | Editable redraws of the reference paper's Fig. 1, 4(a--d), 5, 6, and 9; each current redraw has `.drawio`, `.svg`, `.pdf`, and `.png`.  `c2p_paper_fig5_layout_simplified.*` is a separate, intentionally simplified Fig. 5 variant and does not replace the paper redraw. | The editable `.drawio` is authoritative; PDF/SVG/PNG are synchronized exports. |
 | `paper-redraw/archive/` | Superseded but retained export variants. | Not for citation or new edits. |
 | `mechanism-schematics/` | Original explanatory diagrams for the local C2P design and its proposed extensions. | Editable `.drawio` source and synchronized PDF/SVG/PNG exports. |
 | `local-results/paper16-local-rs64/` | Local 64KiB-L1 paper16 results: Fig. 3 and Fig. 10--14 in vector and preview formats. | Audited `paper16_cases.csv` / `paper16_modes.csv` from the C2P experiment branch. |
 | `tables/` | Local Table 1--3 LaTeX sources plus compiled PDFs. | `.tex` is authoritative. |
+| `0826/fig3-paper-inferred16/` | Non-evidentiary diagnostic: publisher-vector Fig. 3 with eight inferred extension-suite points removed. | Rebuild script, source-vector export, and explicit inference map; not a formal result or paper figure. |
+| `0826/fig10-paper-rs-rebucket16/` | Non-evidentiary diagnostic: existing local Fig. 10 values rebucketed by the paper's R/S labels. | Rebuild script, SVG-derived local values, paper-vector comparison, and explicit limitations; not a formal result or paper figure. |
+| `0826/fig10-paper-rs-rebucket16-r1s1-mismatch-plus10/` | Non-evidentiary what-if: +10% C2P IPC applied only to paper-R1S1/local-mismatch workloads. | Sensitivity-only reuse of the parent rebucketing script; not new simulation data, a formal result, or a paper figure. |
 
 ## Local-result provenance
 
