@@ -130,6 +130,24 @@
 5. **trace 空间独立预算。** RSS 不等于压缩包、临时解压或输出日志空间；仍保持既定的
    磁盘余量门槛。
 
+## RSS 采集批次的并发策略
+
+首次 RSS 采集是**单 arm baseline** 运行，不是 baseline/Decoupled 成对实验；在当前
+377 GiB 主机、约 170 GiB `MemAvailable` 的实际环境中，可先采用 10 路并发，而非把
+39 个 U 项串行化。运行器
+`scripts/run_decoupled_l2_rss_profile_queue.sh` 在每次派发前检查 `MemAvailable`，本批次
+保留 96 GiB 下限；低于下限时停止派发、等待已有实例结束。这样把未知 RSS 的风险限制为
+profiling 批次，同时显著缩短目录建立时间。
+
+采集结束后不再按固定“10 路”运行，而按已测 peak RSS 的 1.25 倍预留做 bin-packing：
+
+* 小于 1 GiB 的单 arm 与 2--8 GiB 的单 arm 混排，以 CPU 核数而非实例数作为次要上限；
+* 8 GiB 以上或尚未测量的项单独占一个高内存槽位，不和其它未知项同批；
+* 成对性能实验将每个 workload 的预留翻倍，并仍保留至少 25% 的可用内存给系统、trace
+  page cache 和其它项目的长期进程；
+* 每轮结束把 peak RSS、实际 wall time、trace 大小写回 manifest/结果表，下一轮按照
+  “大内存长任务 + 多个小内存短任务”搭配启动，而不是固定按测试集顺序排队。
+
 ## 证据来源
 
 * 本树 D：`hw_run/decoupled-l2-bank-candidate/20260826-8bank-current-model/partial_three_arm_results.md`。
