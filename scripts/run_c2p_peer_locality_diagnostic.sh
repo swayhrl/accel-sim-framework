@@ -16,7 +16,10 @@ only for that oracle mode.  The three stages are:
   fourset64k   the same six workloads with 4x128x128B.
 
 The script writes a per-stage invariant audit after every successful stage.
-Set C2P_GPGPUSIM_ROOT to the matching GPGPU-Sim source worktree.
+For `literal16k`, a Gaussian deadlock is accepted only as the explicitly
+recorded invalid baseline-geometry cell; all other selected cases must pass
+the same audit.  Set C2P_GPGPUSIM_ROOT to the matching GPGPU-Sim source
+worktree.
 EOF
 }
 
@@ -51,7 +54,7 @@ diagnostic="$repo_root/configs/c2p-cache/peer-locality-diagnostic.config"
 six_cases="hotspot1,gaussian,lud,sgemm,3mm,gemm"
 
 run_stage() {
-  local label="$1" cases="$2" overlay="$3"
+  local label="$1" cases="$2" overlay="$3" invalid_case="${4:-}"
   local result_root="$out_root/$label"
   local runner=("$repo_root/scripts/run_c2p_paper16.sh"
     --trace-root "$trace_root" --out-root "$result_root"
@@ -59,12 +62,43 @@ run_stage() {
   [[ -n "$cases" ]] && runner+=(--case "$cases")
   [[ -n "$overlay" ]] && runner+=(--config-extra "$overlay")
   (( skip_complete )) && runner+=(--skip-complete)
-  "${runner[@]}"
+  local run_status=0
+  "${runner[@]}" || run_status=$?
+
+  # The literal 16-KiB Gaussian replay is a documented baseline deadlock:
+  # it reproduces without the observation overlay and without C2P.  Retain
+  # that cell as invalid rather than pretending it passed, while allowing the
+  # other independent geometry cases to receive their normal invariant audit.
+  if (( run_status )); then
+    [[ -n "$invalid_case" ]] || return "$run_status"
+    local invalid_out="$result_root/$invalid_case/oracle/run.out"
+    [[ -f "$invalid_out" ]] &&
+      grep -q 'deadlock detected' "$invalid_out" || {
+        echo "error: $label failed outside its documented $invalid_case deadlock" >&2
+        return "$run_status"
+      }
+  fi
 
   local analyzer=(python3 "$repo_root/scripts/analyze_c2p_peer_locality.py"
     --manifest "$manifest" --root "$label=$result_root"
     --out-dir "$result_root/analysis")
-  [[ -n "$cases" ]] && analyzer+=(--case "$cases")
+  if [[ -n "$invalid_case" ]]; then
+    local audit_cases=()
+    local case
+    IFS=',' read -ra audit_cases <<< "$cases"
+    local retained_cases=()
+    for case in "${audit_cases[@]}"; do
+      [[ "$case" == "$invalid_case" ]] || retained_cases+=("$case")
+    done
+    analyzer+=(--case "$(IFS=,; echo "${retained_cases[*]}")")
+    mkdir -p "$result_root/analysis"
+    {
+      echo 'case,status,reason'
+      echo "$invalid_case,INVALID_BASELINE_DEADLOCK,documented literal-16KiB baseline deadlock"
+    } > "$result_root/analysis/invalid_geometry_cases.csv"
+  elif [[ -n "$cases" ]]; then
+    analyzer+=(--case "$cases")
+  fi
   "${analyzer[@]}"
 }
 
@@ -73,7 +107,7 @@ if [[ "$stage" == current64 || "$stage" == all ]]; then
 fi
 if [[ "$stage" == literal16k || "$stage" == all ]]; then
   run_stage literal16k "$six_cases" \
-    "$repo_root/configs/c2p-cache/paper-table-l1-16k-literal.config"
+    "$repo_root/configs/c2p-cache/paper-table-l1-16k-literal.config" gaussian
 fi
 if [[ "$stage" == fourset64k || "$stage" == all ]]; then
   run_stage fourset64k "$six_cases" \
