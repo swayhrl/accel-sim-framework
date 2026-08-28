@@ -151,6 +151,8 @@ def main():
             "abbr": reference["abbr"],
             "paper_group": reference["paper_group"],
             "paper_fig3_redundancy_ratio": paper_ratio,
+            "paper_fig3_l2_sensitivity":
+                float(reference["paper_fig3_l2_sensitivity"]),
             "paper_marker_source": reference["marker_source"],
             "paper_identity_confidence": reference["identity_confidence"],
             "current64_issue_sector_redundant_ratio":
@@ -180,7 +182,8 @@ def main():
     write_csv(args.out_dir / "geometry_comparison.csv", geometry_fields,
               geometry_rows)
     paper_fields = ["case", "abbr", "paper_group",
-                    "paper_fig3_redundancy_ratio", "paper_marker_source",
+                    "paper_fig3_redundancy_ratio", "paper_fig3_l2_sensitivity",
+                    "paper_marker_source",
                     "paper_identity_confidence",
                     "current64_issue_sector_redundant_ratio",
                     "current64_issue_line_redundant_ratio",
