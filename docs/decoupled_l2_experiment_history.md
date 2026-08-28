@@ -360,7 +360,102 @@ cycles。它受机器负载和 binary 影响，只用于估算后续排程。`A`
 最长为 `syrk` 的约 18–19 小时。多数旧 archive run 未记录可信 peak RSS；不能从一个
 临时 `ps` 值倒推长期内存预算。
 
-### 8.3 长期排程经验
+### 8.3 已有的访存特征资料与证据边界
+
+#### AAD merge 的严格含义
+
+AAD 的 key 是当前 L2 配置下的 cacheline/block address。一个 read 或 atomic miss
+首先创建该 line 的 AAD 条目并发出一条 lower read；在该条目被 fill 删除前，任何后来
+抵达 tag 阶段、且 block address 相同的请求都会加入同一 AAD token 链，并使
+`aad_merge` 加一。
+
+因此 `aad_merge` 表示：**同一 L2 line 的时间重叠请求被合并**。它不表示：
+
+- 运行全过程中地址是否集中或是否反复访问；
+- 两个不同 cacheline 是否映射到同一个内部 bank；
+- 同一个 warp 内的 sector 合并；
+- AAD episode 的最大 fan-in（现有只有总 merge 数，没有每条链长度直方图）。
+
+`aad_merge / otf` 可粗略理解为“每个首次 lower-read 的平均追加者数量”，但仍不是
+最大并发度或命中后 reuse 的完整度量。
+
+#### 五项旧 bank-diagnosis 的直接动态画像
+
+下表从每个 run 的**最终** 64 个 per-slice `decoupled_l2[...]` snapshot 汇总；多
+kernel run 中间的累计 snapshot 不参与总计，以免重复计数。R = `access - write`。
+所有 bank/requeue 列仍只适用于旧 unified abstract-bank 模型。
+
+| Workload | kernel 数 | R / W / atomic | read/atomic miss (=OTF) | AAD merge | merge / OTF | writeback | lower-credit stall | 已测得的直接解释 |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| atax | 2 | 4,850,113 / 4,194,304 / 0 | 1,045,528 | 1,563,110 | 1.495 | 128 | 26,154 | 近读写平衡；miss 等待期间同 line 请求很多 |
+| bicg | 2 | 4,970,675 / 4,195,328 / 0 | 1,046,396 | 1,574,830 | 1.505 | 128 | 19,216 | 近读写平衡；同 line miss overlap 很高 |
+| mvt | 2 | 4,995,739 / 4,194,304 / 0 | 1,045,399 | 1,562,624 | 1.495 | 128 | 25,791 | 近读写平衡；同 line miss overlap 很高 |
+| gesummv | 1 | 9,528,497 / 4,194,816 / 0 | 1,048,984 | 764 | 0.001 | 0 | 98,665 | 明显读主导；几乎没有同 line outstanding merge |
+| syrk | 1 | 150,289,660 / 134,348,800 / 0 | 65,536 | 101,998 | 1.556 | 16,384 | 1,459 | 极高总流量、极低 miss 数、重写回；同 line overlap 存在 |
+
+这里“同 line overlap 很高”只限于 OTF 未返回的时间窗口。例如 atax 的 1.495
+不是“一个地址被访问了 1.495 次”，而是每条 OTF read 平均又合并约 1.5 个后来者。
+
+#### 可从旧多-kernel snapshot 恢复的阶段级特征
+
+`atax`、`bicg`、`mvt` 各有两个 trace kernel；每次 kernel 结束都会输出累计统计，
+因此可用第二个 snapshot 减第一个 snapshot 得到第二个 kernel 的 aggregate。没有
+更细的时间 bin，故以下仅是 kernel 级而非 cycle 级结论。
+
+| Workload | kernel 1：R / W / merge | kernel 2：R / W / merge（由累计差分） | 含义 |
+|---|---:|---:|---|
+| atax | 2,744,257 / 2,097,152 / 418 | 2,105,856 / 2,097,152 / 1,562,692 | 同 line overlap 几乎全部出现在第二个 kernel |
+| bicg | 2,105,344 / 2,097,664 / 1,574,784 | 2,865,331 / 2,097,664 / 46 | 与 atax 相反，overlap 几乎全部出现在第一个 kernel |
+| mvt | 2,889,883 / 2,097,152 / 422 | 2,105,856 / 2,097,152 / 1,562,202 | 与 atax 一样，第二个 kernel 主导 overlap |
+
+算法层面，atax 是 `A*x` 后再做 `A^T*tmp`；bicg 计算 `A*p` 与 `A^T*r`；mvt 做两个
+方向的矩阵-向量更新。它们的两个 kernel 均是规则稠密数组访问，但实际 thread mapping
+决定哪一阶段形成同 line overlap；不能仅凭公式预言上述相反结果。
+
+`gesummv` 和 `syrk` 在现有 trace 中都只显示一个 kernel。对 `syrk`，经典算法是
+对 C 的对称 rank-k update；从算法可预期 A 的读取与 C 的 read-modify-write 在 tile/
+loop 内交织，而不是“先全读、后全写”。但现有的 150.3M read / 134.3M write 只是最终
+累计值，**不能**证明实际 GPU trace 的时间序列。判断其是否存在读 burst、写 burst、
+或读写交替，必须增加 time-bin 的 R/W/atomic/OTF/WBQ 计数。
+
+#### 其余 workload 的访存先验
+
+这些是由算法/benchmark 语义得到的分类，用于选 workload，不能代替 trace 计数：
+
+| 类别 | Workload | 典型访存行为 | 对 L2 机制的意义 |
+|---|---|---|---|
+| 规则邻域 | convolutionSeparable、2D/3DConvolution、stencil | 邻域读、规则输出写、空间局部性强 | line/sector 利用率、跨 warp reuse、fill 吞吐 |
+| 稠密线性代数 | gemm、3mm、syrk、atax、bicg、mvt、gesummv | 连续矩阵流；复用取决于 tile 和 thread mapping | read/write 比、dirty/WBQ、同 line merge |
+| 不规则访问 | bfs、spmv | 邻接表/稀疏索引 gather | slice/hash 偏斜、低 spatial reuse、lower latency |
+| 原子热点 | histo、atomic_add_bw_conflict | 多线程 RMW 到少数 line/地址 | 原子正确性、热点串行化；不是一般缓存收益代表 |
+| 变换/归约 | scan、scalarProd、fastWalshTransform | 阶段性全局数组和中间结果；模式随阶段变化 | burstiness、阶段边界、OTF/AAD |
+| 纯流式 | vectorAdd、mem_bw | 大量顺序读与输出写，复用弱 | lower-bandwidth、write path；不代表复杂应用 |
+| 延迟压力 | mem_lat | 依赖链限制 MLP | lower latency、response path |
+
+#### 下一轮应新增、且与结构无关的 workload profile
+
+在 L2 admission 处记录 R/W/atomic 的固定 cycle-window（例如 1K/10K cycles）计数，
+再记录 line reuse、AAD chain fan-in、active-line lifetime、slice/bank/DRAM 映射和
+admission wait。这能从同一 trace 得到真实的读写相位、burstiness 和空间/时间局部性；
+它应当独立于未来的 TagRAM/DataRAM/lower-port 资源实现。
+
+#### 测试集定位：为什么 atomic conflict 只能作压力项
+
+`atomic_add_bw_conflict` **不是 CUDA SDK case**，它在本项目 manifest 中属于官方
+Accel-Sim V100 `ubench/9.1` archive。它故意将约 99% 的访问压到一个旧 abstract bank，
+是原子热点/序列化的机制压力测试。
+
+CUDA SDK 是 NVIDIA 的示例与演示程序集合：其中有 BlackScholes、scan、卷积等有意义的
+并行 workload，但也有 vectorAdd、sortingNetworks 一类教学或 API 示例。它可以作为
+论文的补充应用集，却不应单独承担“真实 workload 平均收益”的主张。
+
+PolyBench 也不是端到端真实应用集合，而是标准化的计算核；其价值是可控、规则、易解释。
+Parboil/Rodinia 更接近应用导向 benchmark suite；CUTLASS 则是高质量 GEMM/卷积等库核。
+论文中合理的层次是：用 ubench（含 atomic conflict）验证边界和机制，用 CUDA SDK/
+PolyBench 展示受控模式，用 Parboil/Rodinia 等应用类 workload 支撑总体结论，并明确各自
+占比，不能把 microbenchmark 计入 application geometric mean。
+
+### 8.4 长期排程经验
 
 17 个 closeout arm 汇总的宿主运行资源记录：baseline 总 wall time 约 9 h 17 min，
 Decoupled 总 wall time 约 12 h 43 min；中位数约为 10 min 49 s / 17 min 14 s；最长
