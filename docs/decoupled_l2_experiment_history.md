@@ -276,7 +276,7 @@ FRC simulator image 为 `13ec02…`，但它与第 3 节的源码 revision、容
 
 ## 8. workload、trace 与运行资源记录
 
-### 7.1 已验证 workload 覆盖
+### 8.1 已验证 workload 覆盖
 
 - 已完整双臂验证：第 3 节 17 项（CUDA SDK 11 + ubench 6）。
 - 已完成旧 bank 诊断：bicg、atax、mvt、syrk、gesummv。
@@ -286,7 +286,81 @@ FRC simulator image 为 `13ec02…`，但它与第 3 节的源码 revision、容
   但没有与第 3 节 Decoupled closeout 同版本、同容量的三臂配对。LateBind 目前仍是
   机制设计材料，不能把设计文档当作实验结果。
 
-### 7.2 长期排程经验
+### 8.2 Workload catalogue：语义、历史耗时与证据等级
+
+下表的 `B/D` 是一次 baseline / Decoupled 单 arm 的历史宿主耗时；来源为
+`RESOURCE_PLANNING.md` 中 simulator log 的 `gpgpu_simulation_time`，而不是 simulated
+cycles。它受机器负载和 binary 影响，只用于估算后续排程。`A` 表示第 3 节同轮已通过
+性能/provenance 门禁，`B` 表示有正常历史运行但未形成当前 closeout 的可比结论。
+
+#### A. 已验证性能对照：CUDA SDK
+
+| Workload | 程序语义/典型访存 | B / D 历史耗时 | 旧结果 | 对后续 L2 研究的价值 |
+|---|---|---:|---:|---|
+| BlackScholes | 批量期权定价；独立数据并行、少量迭代 | 9 / 10 s | 1.0051x | 极短 smoke，非主要性能点 |
+| convolutionSeparable | 二维图像可分离卷积；行/列邻域读取 | 20m15 / 24m58 | 1.1207x | 有空间局部性；也有独立 FRC sweep |
+| fastWalshTransform_11_19 | Walsh-Hadamard 变换；分阶段蝶形重排 | 3m48 / 3m30 | 1.0066x | 小规模 transform 对照 |
+| fastWalshTransform_7_21 | 同上、较大规模 | 29m27 / 59m16 | 1.2954x | 有效吞吐型应用；D 的宿主开销明显 |
+| scalarProd_13920 | 向量点积/归约 | 10m49 / 17m14 | 1.0140x | streaming + reduction |
+| scalarProd_8192 | 同上、较小规模 | 5m02 / 6m21 | 1.0140x | 快速归约回归 |
+| scan | 前缀和；多级 block scan 与全局中间数组 | 1h46m47 / 3h59m45 | 1.4602x | 强代表性；周期改善大但非常耗时 |
+| sortingNetworks | 固定比较-交换网络排序 | 6 / 7 s | 0.9992x | 极快功能/负例检查 |
+| transpose | 矩阵转置；规则 strided/coalesced 访问 | 3m27 / 3m20 | 1.0004x | 访问映射/局部性对照 |
+| vectorAdd_4000000 | 两输入向量流式读、单输出写 | 3m14 / 5m26 | 1.6142x | 简单高收益微应用；不应单独代表真实程序 |
+| vectorAdd_6000000 | 同上、更大工作集 | 4m25 / 7m29 | 1.6692x | 同上，用于尺寸敏感性 |
+
+#### B. 已验证性能对照：Accel-Sim ubench trace
+
+| Workload | 程序语义/典型访存 | B / D 历史耗时 | 旧结果 | 对后续 L2 研究的价值 |
+|---|---|---:|---:|---|
+| atomic_add_bw | 分散地址 atomic add 吞吐 | 33m10 / 34m36 | 1.0114x | 检验简化 atomic 与原子吞吐 |
+| atomic_add_bw_conflict | 高冲突 atomic add，热点地址 | 1h32m13 / 1h26m03 | 1.0000x | 原子序列化/热点压力；旧 hash 分布很偏斜 |
+| l2_bw_32f | L2 读带宽微基准（32f trace 版本） | 1h11m02 / 1h21m13 | 0.9989x | lower credit、bank 模型的首选敏感性 test |
+| l2_bw_64f | L2 读带宽微基准（64f trace 版本） | 2h25m01 / 2h27m52 | 1.0005x | 更长带宽压力；完整回归较慢 |
+| mem_bw | 内存带宽压力 | 25m17 / 43m15 | 1.9923x | 外存吞吐与 MSHR/lower path 代表项 |
+| mem_lat | 依赖链式内存延迟压力 | 3m01 / 2m36 | 1.2058x | 低成本 latency 回归 |
+
+#### C. 旧共享-bank 诊断的 PolyBench 子集
+
+这些 case 有第 4 节的五项 B/D 周期与 occupancy/requeue 数据；下列是 archive
+阶段的历史耗时范围，因运行轮次不同不用于速度比。
+
+| Workload | 程序语义/典型访存 | 历史单 arm 范围 | 诊断状态 |
+|---|---|---:|---|
+| atax | `A^T(Ax)`；稠密矩阵-向量与两次 streaming pass | 13m14–28m46 | 完整旧 bank diagnosis；1.0% 退化 |
+| bicg | `q=Ap`、`s=A^Tr`；双向稠密矩阵-向量 | 13m13–16m17 | 完整旧 bank diagnosis；近中性 |
+| mvt | 两次矩阵-向量更新 | 12m48–16m57 | 完整旧 bank diagnosis；近中性 |
+| gesummv | 广义矩阵-向量：`y=αAx+βBx` | 16m19–20m18 | 完整旧 bank diagnosis；1.94% 改善 |
+| syrk | 对称 rank-k 更新，重矩阵写回 | 17h22m42–18h51m53 | 完整旧 bank diagnosis；1.81% 退化；最慢项 |
+
+#### D. Archive 中正常结束、但不具当前 closeout 资格的应用
+
+下列是有正常历史运行日志的工作项；它们或使用了不同轮次的源码/配置，或没有完整的
+当前 provenance 门禁，故是 B 级排程与 workload 覆盖资料，**不是**可和第 3 节合并的
+性能结果。
+
+| 测试集 | Workload | 程序语义 | 历史单 arm 范围 |
+|---|---|---|---:|
+| Parboil | bfs | 图上的广度优先搜索；不规则 frontier/邻接表访问 | 8m36–13m33 |
+| Parboil | cutcp | 分子 Coulombic potential；规则格点对粒子累加 | 1h37m18–2h09m04 |
+| Parboil | histo | 图像直方图；原子更新、热点竞争 | 45m14–2h11m54 |
+| Parboil | mri-q | MRI 重建中的 Q 计算；复数数组/规则 streaming | 9m26–15m53 |
+| Parboil | sad | Sum of Absolute Differences，视频块匹配 | 2m12–4m56 |
+| Parboil | sgemm | 稠密单精度矩阵乘 | 12m29–26m06 |
+| Parboil | spmv | 稀疏矩阵-向量乘；不规则索引 | 1m00–2m28 |
+| Parboil | stencil | 三维 stencil；邻域读/规则写 | 43m27–1h06m12 |
+| PolyBench | 2DConvolution | 二维卷积 stencil | 24m00–27m48 |
+| PolyBench | 3DConvolution | 三维卷积 stencil | 25m38–40m18 |
+| PolyBench | 3mm | 三次稠密矩阵乘链 | 1h43m46–2h23m53 |
+| PolyBench | gemm | 稠密矩阵乘 | 27m06–31m11 |
+
+原始 archive 时间、启动目录与已记录的 RSS 信息见
+[`RESOURCE_PLANNING_ARCHIVE.md`](../hw_run/decoupled-l2-closeout-20260822/RESOURCE_PLANNING_ARCHIVE.md)。
+该历史表记录 33 个 baseline 和 33 个 Decoupled 正常结束 run；中位单 arm 约 24 分钟，
+最长为 `syrk` 的约 18–19 小时。多数旧 archive run 未记录可信 peak RSS；不能从一个
+临时 `ps` 值倒推长期内存预算。
+
+### 8.3 长期排程经验
 
 17 个 closeout arm 汇总的宿主运行资源记录：baseline 总 wall time 约 9 h 17 min，
 Decoupled 总 wall time 约 12 h 43 min；中位数约为 10 min 49 s / 17 min 14 s；最长
