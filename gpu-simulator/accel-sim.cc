@@ -45,7 +45,12 @@ void accel_sim_framework::simulation_loop() {
   // while loop till the end of the end kernel execution
   // prints stats
 
-  while (commandlist_index < commandlist.size() || !kernels_info.empty()) {
+  // A finished CTA/kernel can leave no source-side work while lower-memory
+  // traffic (notably no-return L2 writebacks) is still draining.  Keep the
+  // framework clocking that production backend until active() reports that
+  // all credits and queues are clear.
+  while (commandlist_index < commandlist.size() || !kernels_info.empty() ||
+         m_gpgpu_sim->active()) {
     parse_commandlist();
 
     // Launch all kernels within window that are on a stream that isn't already
@@ -69,8 +74,9 @@ void accel_sim_framework::simulation_loop() {
 
     unsigned finished_kernel_uid = simulate();
     // cleanup finished kernel
-    if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||
-        !m_gpgpu_sim->active()) {
+    if (!kernels_info.empty() &&
+        (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||
+         !m_gpgpu_sim->active())) {
       cleanup(finished_kernel_uid);
     }
 
@@ -87,6 +93,12 @@ void accel_sim_framework::simulation_loop() {
       break;
     }
   }
+
+  // cleanup() reports a completed kernel as soon as its CTA work retires.
+  // Emit one final snapshot after the backend drain so closeout checks see
+  // the actual terminal resource and credit state.
+  if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit())
+    m_gpgpu_sim->print_stats(~0ULL);
 }
 
 void accel_sim_framework::parse_commandlist() {
