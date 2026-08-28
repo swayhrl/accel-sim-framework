@@ -1,0 +1,25 @@
+-kernel name = l2_char_wb_pressure
+-kernel id = 1
+-grid dim = (1,1,1)
+-block dim = (32,1,1)
+-shmem = 0
+-nregs = 2
+-binary version = 70
+-cuda stream id = 0
+-shmem base_addr = 0x0000000000000000
+-local mem base_addr = 0x0000000000000000
+-nvbit version = 1.4
+-accelsim tracer version = 3
+
+#traces format = PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width address_mode [mem_addresses]
+
+#BEGIN_TB
+
+thread block = 0,0,0
+
+warp = 0
+insts = 2
+0000 ffffffff 0 STG.E.SYS 2 R0 R1 4 0 0x00007fcc40000000 0x00007fcc48000000 0x00007fcc50000000 0x00007fcc58000000 0x00007fcc60000000 0x00007fcc68000000 0x00007fcc70000000 0x00007fcc78000000 0x00007fcc80000000 0x00007fcc88000000 0x00007fcc90000000 0x00007fcc98000000 0x00007fcca0000000 0x00007fcca8000000 0x00007fccb0000000 0x00007fccb8000000 0x00007fccc0000000 0x00007fccc8000000 0x00007fccd0000000 0x00007fccd8000000 0x00007fcce0000000 0x00007fcce8000000 0x00007fccf0000000 0x00007fccf8000000 0x00007fcd00000000 0x00007fcd08000000 0x00007fcd10000000 0x00007fcd18000000 0x00007fcd20000000 0x00007fcd28000000 0x00007fcd30000000 0x00007fcd38000000
+0010 ffffffff 0 EXIT 0 0
+
+#END_TB
