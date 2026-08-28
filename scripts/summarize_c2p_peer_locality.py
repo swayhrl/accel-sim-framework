@@ -47,6 +47,8 @@ def load_stage(root, stage, expected_cases):
             row[field] = int(row[field])
         row["issue_sector_redundant_ratio"] = float(
             row["issue_sector_redundant_ratio"])
+        row["issue_line_redundant_ratio"] = (
+            float(row["issue_line_redundant"]) / row["issue_events"])
         row["wait_cycles_mean"] = float(row["wait_cycles_mean"])
     return rows
 
@@ -100,6 +102,8 @@ def main():
             total[field] = sum(row[field] for row in rows)
         total["issue_sector_redundant_ratio"] = (
             float(total["issue_sector_redundant"]) / total["issue_events"])
+        total["issue_line_redundant_ratio"] = (
+            float(total["issue_line_redundant"]) / total["issue_events"])
         total["wait_cycles_mean"] = (
             float(total["wait_cycles_total"]) / total["issue_events"])
         totals.append(total)
@@ -114,6 +118,7 @@ def main():
         for stage in ("current64", "fourset64k"):
             current = by_stage_case[(stage, case)]
             row[stage + "_ratio"] = current["issue_sector_redundant_ratio"]
+            row[stage + "_line_ratio"] = current["issue_line_redundant_ratio"]
             row[stage + "_issues"] = current["issue_events"]
         literal = by_stage_case.get(("literal16k", case))
         if literal is None:
@@ -126,6 +131,7 @@ def main():
         else:
             row["literal16k_status"] = "PASS"
             row["literal16k_ratio"] = literal["issue_sector_redundant_ratio"]
+            row["literal16k_line_ratio"] = literal["issue_line_redundant_ratio"]
             row["literal16k_issues"] = literal["issue_events"]
             row["literal16k_minus_current64_pp"] = 100.0 * (
                 row["literal16k_ratio"] - row["current64_ratio"])
@@ -149,19 +155,26 @@ def main():
             "paper_identity_confidence": reference["identity_confidence"],
             "current64_issue_sector_redundant_ratio":
                 row["issue_sector_redundant_ratio"],
+            "current64_issue_line_redundant_ratio":
+                row["issue_line_redundant_ratio"],
             "current64_minus_paper_pp": 100.0 * (
                 row["issue_sector_redundant_ratio"] - paper_ratio),
+            "current64_line_minus_paper_pp": 100.0 * (
+                row["issue_line_redundant_ratio"] - paper_ratio),
         })
 
     stage_fields = ["stage", "workloads"] + list(COUNT_FIELDS) + [
-        "issue_sector_redundant_ratio", "wait_cycles_mean"]
+        "issue_sector_redundant_ratio", "issue_line_redundant_ratio",
+        "wait_cycles_mean"]
     write_csv(args.out_dir / "stage_totals.csv", stage_fields, totals)
     all_fields = ["stage", "label", "case"] + list(COUNT_FIELDS) + [
-        "issue_sector_redundant_ratio", "wait_cycles_mean"]
+        "issue_sector_redundant_ratio", "issue_line_redundant_ratio",
+        "wait_cycles_mean"]
     write_csv(args.out_dir / "all_workloads.csv", all_fields, all_rows)
-    geometry_fields = ["case", "current64_ratio", "current64_issues",
-                       "literal16k_status", "literal16k_ratio", "literal16k_issues",
-                       "fourset64k_ratio", "fourset64k_issues",
+    geometry_fields = ["case", "current64_ratio", "current64_line_ratio",
+                       "current64_issues", "literal16k_status", "literal16k_ratio",
+                       "literal16k_line_ratio", "literal16k_issues",
+                       "fourset64k_ratio", "fourset64k_line_ratio", "fourset64k_issues",
                        "literal16k_minus_current64_pp",
                        "fourset64k_minus_current64_pp"]
     write_csv(args.out_dir / "geometry_comparison.csv", geometry_fields,
@@ -170,7 +183,8 @@ def main():
                     "paper_fig3_redundancy_ratio", "paper_marker_source",
                     "paper_identity_confidence",
                     "current64_issue_sector_redundant_ratio",
-                    "current64_minus_paper_pp"]
+                    "current64_issue_line_redundant_ratio",
+                    "current64_minus_paper_pp", "current64_line_minus_paper_pp"]
     write_csv(args.out_dir / "current64_vs_paper_fig3_inferred.csv",
               paper_fields, paper_rows)
     print("wrote %s" % args.out_dir)
