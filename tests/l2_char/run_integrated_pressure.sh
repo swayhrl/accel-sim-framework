@@ -134,36 +134,8 @@ write_overlay "$OUT/p3.config" \
   '-gpgpu_cache:dl2 S:32:128:1,L:B:m:L:P,A:8:4,4:0,1'
 run_case P3_dataport "$TRACE_ROOT/writeback/kernelslist.g" "$OUT/p3.config" dataport_busy
 
-# P4: one MSHR and one MissQ force the exact new-entry/merge distinction.
-write_overlay "$OUT/p4.config" \
-  '-gpgpu_n_mem 16' \
-  '-gpgpu_n_sub_partition_per_mchannel 1' \
-  '-gpgpu_dram_partition_queues 64:8:64:64' \
-  '-gpgpu_cache:dl2 S:32:128:1,L:B:m:L:P,A:1:4,1:0,1'
-run_case P4_mshr_missq "$FRC_TRACE_ROOT/merge/kernelslist.g" "$OUT/p4.config" mshr_capacity,missq_capacity
-
-# P5: dirty evictions under a one-entry return path must retain no-return WB
-# progress through the explicit reserved credit.
-write_overlay "$OUT/p5.config" \
-  '-gpgpu_n_mem 16' \
-  '-gpgpu_n_sub_partition_per_mchannel 1' \
-  '-gpgpu_dram_partition_queues 64:2:1:64' \
-  '-gpgpu_frfcfs_dram_sched_queue_size 1' \
-  '-gpgpu_dram_return_queue_size 1' \
-  '-gpgpu_l2_wb_progress_credit 1' \
-  '-gpgpu_cache:dl2 S:32:128:1,L:B:m:L:P,A:2:1,2:0,1'
-run_case P5_wb_returnq "$ROOT/tests/l2_char/traces/writeback/kernelslist.g" "$OUT/p5.config" wb_progress
-
-# P6: an intentionally tight end-to-end pressure case must complete with
-# nonzero corrected-path activity and all integrity checks still passing.
-write_overlay "$OUT/p6.config" \
-  '-gpgpu_n_mem 16' \
-  '-gpgpu_n_sub_partition_per_mchannel 1' \
-  '-gpgpu_dram_partition_queues 64:1:1:1' \
-  '-gpgpu_frfcfs_dram_sched_queue_size 1' \
-  '-gpgpu_dram_return_queue_size 1' \
-  '-gpgpu_l2_wb_progress_credit 1' \
-  '-gpgpu_cache:dl2 S:32:128:1,L:B:m:L:P,A:2:1,2:0,1'
-run_case P6_end_to_end "$TRACE_ROOT/pressure/kernelslist.g" "$OUT/p6.config" activation
-
-echo "corrected L2 integrated pressure regressions: PASS (P1-P6)"
+# P4/P5/P6 each have a dedicated deterministic closeout harness.  They are
+# intentionally not folded into this legacy trace batch: P4 checks dirty
+# one-slot non-mutation, P5 controls a real ReturnQ/FIFO relation, and P6
+# compares Official against Corrected on the same pressure trace.
+echo "corrected L2 legacy pressure regressions: PASS (P1-P3)"
