@@ -12,8 +12,10 @@ per-slice percentiles.
 
 For a formal campaign, invoke the parser with `--production`. It rejects
 missing workload/input/kernel/kernel-id, config and trace paths, simulator
-command, or either repository's branch/SHA. Debug mode retains `NA` only for
-intentionally incomplete synthetic records.
+command, terminal simulated cycles/instructions, or either repository's
+branch/SHA. It also requires explicit `--window-l2-cycles`, `--set-detail`,
+and `--emit-windows`, which are written verbatim to `manifest.json`. Debug
+mode retains `NA` only for intentionally incomplete synthetic records.
 
 `SLICE` also carries production set-reservation observations:
 `max_reserved_ways_any_set`, `sets_all_ways_reserved_{avg,max}`, and

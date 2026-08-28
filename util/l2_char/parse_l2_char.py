@@ -57,6 +57,20 @@ def git_value(repo, command):
         return "NA"
 
 
+def final_sim_stat(log_path, name):
+    value = None
+    with open(log_path, encoding="utf-8", errors="replace") as source:
+        for line in source:
+            if line.startswith(name):
+                parts = line.split("=", 1)
+                if len(parts) == 2:
+                    try:
+                        value = int(parts[1].strip())
+                    except ValueError:
+                        pass
+    return value if value is not None else "NA"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("log")
@@ -72,6 +86,9 @@ def main():
     parser.add_argument("--command", default="NA")
     parser.add_argument("--production", action="store_true",
                         help="require complete workload and source provenance")
+    parser.add_argument("--window-l2-cycles", type=int)
+    parser.add_argument("--set-detail", type=int, choices=(0, 1))
+    parser.add_argument("--emit-windows", type=int, choices=(0, 1))
     args = parser.parse_args()
     pathlib.Path(args.out).mkdir(parents=True, exist_ok=True)
 
@@ -123,7 +140,8 @@ def main():
     core_branch = git_value(args.core_repo, ["branch", "--show-current"]) if args.core_repo != "NA" else "NA"
     provenance = [args.workload, args.input, args.kernel, args.kernel_id, args.config,
                   args.trace, args.command, framework_commit, core_commit,
-                  framework_branch, core_branch]
+                  framework_branch, core_branch, args.window_l2_cycles,
+                  args.set_detail, args.emit_windows]
     if args.production and any(v in (None, "", "NA") for v in provenance):
         raise ValueError("production mode requires workload/input/kernel/kernel-id, config, trace, command, and both git repos")
     summary = {"schema_version": SCHEMA_VERSION, "workload": args.workload,
@@ -132,8 +150,13 @@ def main():
                "framework_branch": framework_branch, "core_branch": core_branch,
                "command": args.command, "gpu_config": args.config or "NA", "trace": args.trace or "NA",
                "gpu_config_sha256": sha256(args.config), "trace_sha256": sha256(args.trace),
+               "gpu_tot_sim_cycle": final_sim_stat(args.log, "gpu_tot_sim_cycle"),
+               "gpu_tot_sim_insn": final_sim_stat(args.log, "gpu_tot_sim_insn"),
                "slice_count": len(slices), "invariant_records": len(invariants),
                "invariants_pass": int(all(r.get("status") == "PASS" for r in invariants))}
+    if args.production and (summary["gpu_tot_sim_cycle"] == "NA" or
+                            summary["gpu_tot_sim_insn"] == "NA"):
+        raise ValueError("production mode requires terminal gpu_tot_sim_cycle and gpu_tot_sim_insn")
     for metric in ("reserved_util_avg", "mshr_util_avg", "missq_util_avg", "missq_wb_util_avg",
                    "draml2q_util_avg", "l2dramq_util_avg", "data_busy_ratio", "fill_busy_ratio",
                    "merge_depth_avg", "merge_limit_entries_util_avg", "set_reserved_full_ratio"):
@@ -167,7 +190,7 @@ def main():
                     seen += n
                     if seen >= rank: return i
             summary[metric + "_global_p50"] = p(50); summary[metric + "_global_p95"] = p(95)
-            summary[metric + "_global_max"] = len(bins) - 1
+            summary[metric + "_global_max"] = max(i for i, n in enumerate(bins) if n > 0)
             summary[metric + "_global_avg"] = total / samples
     write_csv(pathlib.Path(args.out) / "summary.csv", [summary])
     manifest = {"schema_version": SCHEMA_VERSION, "framework_commit": summary["framework_commit"],
@@ -175,7 +198,10 @@ def main():
                 "core_branch": core_branch,
                 "gpu_config": args.config or "NA", "gpu_config_sha256": summary["gpu_config_sha256"],
                 "trace": args.trace or "NA", "trace_sha256": summary["trace_sha256"], "command": args.command,
-                "characterization": {"enabled": True, "window_l2_cycles": "from raw records", "set_detail": "from raw records"}}
+                "characterization": {"enabled": True,
+                                     "window_l2_cycles": args.window_l2_cycles,
+                                     "set_detail": bool(args.set_detail) if args.set_detail is not None else "NA",
+                                     "emit_windows": bool(args.emit_windows) if args.emit_windows is not None else "NA"}}
     with open(pathlib.Path(args.out) / "manifest.json", "w") as out:
         json.dump(manifest, out, indent=2, sort_keys=True)
 
