@@ -8,6 +8,7 @@ usage() {
 Usage: scripts/run_decoupled_l2_rss_profile_queue.sh --manifest FILE
        [--run-root DIR] [--config FILE] [--trace-config FILE]
        [--jobs N] [--min-available-gib N] [--poll-sec N]
+       [--reuse-completed]
        [--global-admission-lock PATH]
 
 MANIFEST is tab-separated: logical-name<TAB>/absolute/path/to/kernelslist.g.
@@ -25,6 +26,7 @@ jobs=1
 min_available_gib=96
 poll_sec=60
 global_lock="${TMPDIR:-/tmp}/decoupled-l2-archive-pair.lock"
+reuse_completed=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -35,6 +37,7 @@ while [[ $# -gt 0 ]]; do
     --jobs) jobs="$2"; shift 2 ;;
     --min-available-gib) min_available_gib="$2"; shift 2 ;;
     --poll-sec) poll_sec="$2"; shift 2 ;;
+    --reuse-completed) reuse_completed=1; shift ;;
     --global-admission-lock) global_lock="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument $1" >&2; usage >&2; exit 2 ;;
@@ -68,10 +71,21 @@ fi
 mkdir -p "$run_root"
 run_root="$(cd "$run_root" && pwd)"
 summary="$run_root/summary.tsv"
-printf 'name\tstate\tpeak_rss_kib\trun_dir\ttrace\n' > "$summary"
+if [[ "$reuse_completed" -eq 0 || ! -s "$summary" ]]; then
+  printf 'name\tstate\tpeak_rss_kib\trun_dir\ttrace\n' > "$summary"
+fi
 
 available_kib() { awk '/^MemAvailable:/ { print $2; exit }' /proc/meminfo; }
 min_available_kib=$((min_available_gib * 1024 * 1024))
+
+run_completed() {
+  local run_dir="$1"
+  [[ -f "$run_dir/resource_usage.txt" &&
+     -f "$run_dir/smoke.out" &&
+     -f "$run_dir/runtime_metrics.txt" ]] || return 1
+  [[ "$(sed -n 's/^sim_exit_status=//p' "$run_dir/runtime_metrics.txt" | tail -1)" == 0 ]] || return 1
+  rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$run_dir/smoke.out"
+}
 
 admit_one() {
   local name="$1" trace="$2" lock_fd
@@ -103,6 +117,12 @@ run_one() {
   }
   slug="$(printf '%s' "$name" | tr '/ :,' '____')"
   run_dir="$run_root/$slug/baseline"
+  if [[ "$reuse_completed" -eq 1 ]] && run_completed "$run_dir"; then
+    peak_kib="$(sed -n 's/^\tMaximum resident set size (kbytes): \([0-9][0-9]*\)$/\1/p' \
+      "$run_dir/resource_usage.txt" | tail -1)"
+    printf '%s\tREUSE\t%s\t%s\t%s\n' "$name" "${peak_kib:--}" "$run_dir" "$trace" >> "$summary"
+    return
+  fi
   admit_one "$name" "$trace"
   printf 'START name=%s trace=%s run_dir=%s\n' "$name" "$trace" "$run_dir"
   if "$repo_root/scripts/run_decoupled_l2_smoke.sh" --backend baseline --trace "$trace" \
