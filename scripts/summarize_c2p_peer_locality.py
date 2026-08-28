@@ -27,7 +27,7 @@ COUNT_FIELDS = (
 )
 
 
-def load_stage(root, stage):
+def load_stage(root, stage, expected_cases):
     audit = root / stage / "analysis" / "invariant_report.md"
     summary = root / stage / "analysis" / "diagnostic_summary.csv"
     if not audit.exists() or not summary.exists():
@@ -39,6 +39,9 @@ def load_stage(root, stage):
         rows = list(csv.DictReader(f))
     if not rows:
         raise RuntimeError("%s: empty diagnostic summary" % stage)
+    found_cases = {row["case"] for row in rows}
+    if found_cases != set(expected_cases):
+        raise RuntimeError("%s: audited cases differ from expected cases" % stage)
     for row in rows:
         for field in COUNT_FIELDS:
             row[field] = int(row[field])
@@ -74,10 +77,21 @@ def main():
         default=Path(__file__).resolve().parents[1] / "docs" / "c2p-cache" /
         "paper_fig3_inferred" / "paper_fig3_inferred_points.csv",
         help="conditionally inferred paper Figure 3 reference CSV")
+    parser.add_argument(
+        "--literal16k-invalid-case", choices=("gaussian",),
+        help="retain a documented literal-16KiB deadlock as an explicit invalid geometry cell")
     args = parser.parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
-    stage_rows = {stage: load_stage(args.root, stage) for stage in STAGES}
+    expected_cases = {
+        "current64": tuple(CASE_TO_PAPER_ABBR),
+        "literal16k": tuple(
+            case for case in GEOMETRY_CASES
+            if case != args.literal16k_invalid_case),
+        "fourset64k": GEOMETRY_CASES,
+    }
+    stage_rows = {stage: load_stage(args.root, stage, expected_cases[stage])
+                  for stage in STAGES}
     all_rows = []
     totals = []
     for stage, rows in stage_rows.items():
@@ -97,12 +111,24 @@ def main():
     for case in GEOMETRY_CASES:
         base = by_stage_case[("current64", case)]
         row = {"case": case}
-        for stage in STAGES:
+        for stage in ("current64", "fourset64k"):
             current = by_stage_case[(stage, case)]
             row[stage + "_ratio"] = current["issue_sector_redundant_ratio"]
             row[stage + "_issues"] = current["issue_events"]
-        row["literal16k_minus_current64_pp"] = 100.0 * (
-            row["literal16k_ratio"] - row["current64_ratio"])
+        literal = by_stage_case.get(("literal16k", case))
+        if literal is None:
+            if case != args.literal16k_invalid_case:
+                raise RuntimeError("literal16k: missing unexpected case %s" % case)
+            row["literal16k_status"] = "invalid_baseline_deadlock"
+            row["literal16k_ratio"] = ""
+            row["literal16k_issues"] = ""
+            row["literal16k_minus_current64_pp"] = ""
+        else:
+            row["literal16k_status"] = "PASS"
+            row["literal16k_ratio"] = literal["issue_sector_redundant_ratio"]
+            row["literal16k_issues"] = literal["issue_events"]
+            row["literal16k_minus_current64_pp"] = 100.0 * (
+                row["literal16k_ratio"] - row["current64_ratio"])
         row["fourset64k_minus_current64_pp"] = 100.0 * (
             row["fourset64k_ratio"] - row["current64_ratio"])
         geometry_rows.append(row)
@@ -134,7 +160,7 @@ def main():
         "issue_sector_redundant_ratio", "wait_cycles_mean"]
     write_csv(args.out_dir / "all_workloads.csv", all_fields, all_rows)
     geometry_fields = ["case", "current64_ratio", "current64_issues",
-                       "literal16k_ratio", "literal16k_issues",
+                       "literal16k_status", "literal16k_ratio", "literal16k_issues",
                        "fourset64k_ratio", "fourset64k_issues",
                        "literal16k_minus_current64_pp",
                        "fourset64k_minus_current64_pp"]
