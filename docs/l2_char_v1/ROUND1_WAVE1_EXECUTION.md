@@ -47,3 +47,16 @@ Canonical outputs are under
 parsed CSVs, manifest, parser diagnostics, and `run_status.json`. Once a wave
 is reviewed, the canonical source outputs stay there and a compressed review
 pack is added under `docs/l2_char_v1/review_packs/`.
+
+After a wave drains, generate the evidence table before deciding whether to
+start the next cohort:
+
+```bash
+python3 util/l2_char/summarize_round1_qualification.py \
+  --wave wave1a \
+  --out docs/l2_char_v1/round1_results/wave1a_qualification.tsv
+```
+
+It reports terminal L2 accesses/misses, performance, output shape, resource
+pressure/blocking, RSS, and an explicit `UNREVIEWED_COMPLETE` state. It does
+not apply an arbitrary scientific inclusion threshold.
