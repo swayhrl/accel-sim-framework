@@ -6,7 +6,8 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_paper16.sh --trace-root HW_RUN_ROOT --out-root RESULT_ROOT
        [--case CASE[,CASE...]] [--modes MODES] [--config-extra FILE]
-       [--mode-config-extra FILE] [--skip-complete] [--build] [--jobs N]
+       [--mode-config-extra FILE] [--oracle-config-extra FILE]
+       [--skip-complete] [--build] [--jobs N]
 
 The canonical case list is configs/c2p-cache/paper16_workloads.tsv.  Each
 entry names a complete replay trace for its selected input; no 1/N trace
@@ -29,6 +30,7 @@ modes="baseline,oracle,ideal,c2p,ata,ccd,ring"
 build=0
 config_extras=()
 mode_config_extras=()
+oracle_config_extras=()
 skip_complete=0
 jobs=1
 while [[ $# -gt 0 ]]; do
@@ -39,6 +41,7 @@ while [[ $# -gt 0 ]]; do
     --modes) modes="$2"; shift 2 ;;
     --config-extra) config_extras+=("$2"); shift 2 ;;
     --mode-config-extra) mode_config_extras+=("$2"); shift 2 ;;
+    --oracle-config-extra) oracle_config_extras+=("$2"); shift 2 ;;
     --skip-complete) skip_complete=1; shift ;;
     --build) build=1; shift ;;
     --jobs) jobs="$2"; shift 2 ;;
@@ -87,6 +90,9 @@ for config_extra in "${config_extras[@]}"; do
 done
 for config_extra in "${mode_config_extras[@]}"; do
   runner+=(--mode-config-extra "$config_extra")
+done
+for config_extra in "${oracle_config_extras[@]}"; do
+  runner+=(--oracle-config-extra "$config_extra")
 done
 (( build )) && runner+=(--build)
 (( skip_complete )) && runner+=(--skip-complete)

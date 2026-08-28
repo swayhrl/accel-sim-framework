@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/run_c2p_cache_cases.sh --trace KERNELSLIST --config CONFIG --out-dir DIR
        [--modes baseline,oracle,ideal,c2p,ata,ccd,ring] [--config-extra FILE]
-       [--mode-config-extra FILE]
+       [--mode-config-extra FILE] [--oracle-config-extra FILE]
        [--strip-mem-addr-mapping] [--skip-complete] [--build]
 
 Run the same trace through selected C2P and prior-mechanism comparison points.
@@ -23,6 +23,7 @@ out_dir=""
 modes="baseline,oracle,ideal,c2p"
 config_extras=()
 mode_config_extras=()
+oracle_config_extras=()
 strip_mem_addr_mapping=0
 build=0
 skip_complete=0
@@ -34,6 +35,7 @@ while [[ $# -gt 0 ]]; do
     --modes) modes="$2"; shift 2 ;;
     --config-extra) config_extras+=("$2"); shift 2 ;;
     --mode-config-extra) mode_config_extras+=("$2"); shift 2 ;;
+    --oracle-config-extra) oracle_config_extras+=("$2"); shift 2 ;;
     --strip-mem-addr-mapping) strip_mem_addr_mapping=1; shift ;;
     --skip-complete) skip_complete=1; shift ;;
     --build) build=1; shift ;;
@@ -53,6 +55,11 @@ done
 for config_extra in "${mode_config_extras[@]}"; do
   [[ -f "$config_extra" ]] || {
     echo "error: --mode-config-extra must exist: $config_extra" >&2; exit 2;
+  }
+done
+for config_extra in "${oracle_config_extras[@]}"; do
+  [[ -f "$config_extra" ]] || {
+    echo "error: --oracle-config-extra must exist: $config_extra" >&2; exit 2;
   }
 done
 [[ -n "${C2P_GPGPUSIM_ROOT:-}" ]] || {
@@ -129,6 +136,12 @@ for mode in ${modes//,/ }; do
       [[ "$mode" == c2p ]] || \
         cat "$repo_root/configs/c2p-cache/$mode.config" >> "$run_dir/gpgpusim.config" ;;
   esac
+  if [[ "$mode" == oracle ]]; then
+    for config_extra in "${oracle_config_extras[@]}"; do
+      printf '\n# Oracle-only experiment overrides\n' >> "$run_dir/gpgpusim.config"
+      cat "$config_extra" >> "$run_dir/gpgpusim.config"
+    done
+  fi
   for config_extra in "${mode_config_extras[@]}"; do
     printf '\n# Mode-specific experiment overrides\n' >> "$run_dir/gpgpusim.config"
     cat "$config_extra" >> "$run_dir/gpgpusim.config"
@@ -326,5 +339,9 @@ for mode in ${modes//,/ }; do
   # ignore the additional keys.
   grep -E '^c2p_(probe_ordinal_|probe_pc_bucket_|continuation_after_fail_|adaptive_)' \
       "$run_dir/run.out" >> "$run_dir/summary.txt" || true
+  # Peer-locality diagnostics are emitted only by oracle runs that explicitly
+  # enable their read-only switch.  Preserve the complete family verbatim so
+  # run directories remain self-contained; normal summary consumers ignore it.
+  grep -E '^c2p_peer_locality_' "$run_dir/run.out" >> "$run_dir/summary.txt" || true
   printf 'PASS mode=%s run_dir=%s\n' "$mode" "$run_dir"
 done
