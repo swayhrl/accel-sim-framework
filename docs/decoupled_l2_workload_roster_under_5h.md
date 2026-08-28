@@ -168,6 +168,10 @@ BFS、PolyBench GEMM 和 Parboil/SHOC GEMM 分别计数），排除已知超过�
 的本地完整 pair；首次使用前必须固定 trace/config hash 并跑 baseline/decoupled
 自然结束门禁。
 
+各项可用 peak RSS、数据可信级别和成对实验的内存预留规则见
+[workload memory plan](decoupled_l2_workload_memory_plan.md)。没有历史 RSS 的条目
+明确标为首次单进程 profile 后才能并发，避免以 trace 大小或临时 `ps` 样本猜测内存。
+
 ## 推荐的日常子集
 
 为了避免每次结构改动都跑数十项，优先使用：
