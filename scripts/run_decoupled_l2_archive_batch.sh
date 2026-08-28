@@ -9,7 +9,7 @@ Usage: scripts/run_decoupled_l2_archive_batch.sh --archive SUITE.tgz --suite NAM
        [--run-root DIR] [--scratch-root DIR] [--min-free-gib N] [--reuse]
        [--build]
        [--staged-traces DIR]
-       [--jobs N] [--pair-parallel] [--trusted-size-plan]
+       [--jobs N] [--pair-parallel] [--baseline-only] [--trusted-size-plan]
        [--max-simulator-rss-gb N] [--pair-rss-reserve-gb N]
        [--max-live-pairs N]
        [--global-pair-lock PATH]
@@ -30,6 +30,11 @@ retains its trace payload and failures.csv by default.
 member-size result from a just-completed planner run and skips the otherwise
 redundant second full archive listing. It does not weaken the extraction's
 path checks; use it only with the unchanged archive that the planner scanned.
+
+--baseline-only runs one baseline arm per case.  It is intended for host
+resource profiling and still writes the normal resource_usage.txt and
+runtime_metrics.txt files.  The admission reserve then describes one process,
+not a baseline/decoupled pair.
 
 MAX-SIMULATOR-RSS-GB (default 120) is a non-preemptive experiment admission
 ceiling.  Before starting a new pair, the runner sums RSS only for
@@ -66,6 +71,7 @@ run_root=""; scratch_root=""; min_free_gib=80; keep_failed_extract=1; reuse=0
 build=0
 staged_traces=""
 jobs=1; pair_parallel=0
+baseline_only=0
 trusted_size_plan=0
 max_simulator_rss_gb=120
 pair_rss_reserve_gb=80
@@ -85,6 +91,7 @@ while [[ $# -gt 0 ]]; do
     --min-free-gib) min_free_gib="$2"; shift 2 ;;
     --jobs) jobs="$2"; shift 2 ;;
     --pair-parallel) pair_parallel=1; shift ;;
+    --baseline-only) baseline_only=1; shift ;;
     --trusted-size-plan) trusted_size_plan=1; shift ;;
     --max-simulator-rss-gb) max_simulator_rss_gb="$2"; shift 2 ;;
     --pair-rss-reserve-gb) pair_rss_reserve_gb="$2"; shift 2 ;;
@@ -368,7 +375,9 @@ run_case() {
   local case_path="$1" trace baseline_status decoupled_status
   trace="$batch_dir/$case_path/traces/kernelslist.g"
   [[ -f "$trace" ]] || { echo "error: extraction lost $case_path" >&2; return 1; }
-  if [[ -n "$optimized_config_extra" ]]; then
+  if [[ "$baseline_only" -eq 1 ]]; then
+    run_backend "$case_path" baseline baseline "$trace" ""
+  elif [[ -n "$optimized_config_extra" ]]; then
     run_backend "$case_path" baseline baseline "$trace" "" &&
       run_backend "$case_path" decoupled decoupled "$trace" "" &&
       run_backend "$case_path" optimized decoupled "$trace" "$optimized_config_extra"
