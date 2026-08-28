@@ -12,6 +12,7 @@ import argparse
 import csv
 import hashlib
 import json
+import lzma
 import os
 from pathlib import Path
 import re
@@ -39,7 +40,11 @@ def first_kernel_metadata(trace_dir: Path, kernel_files: list[str]) -> tuple[str
     for name in kernel_files:
         path = trace_dir / name
         try:
-            with path.open("rt", errors="replace") as handle:
+            if path.suffix == ".xz":
+                handle_context = lzma.open(path, "rt", errors="replace")
+            else:
+                handle_context = path.open("rt", errors="replace")
+            with handle_context as handle:
                 for _ in range(16):
                     line = handle.readline()
                     if not line:
@@ -48,7 +53,7 @@ def first_kernel_metadata(trace_dir: Path, kernel_files: list[str]) -> tuple[str
                         names.add(line.split("=", 1)[1].strip())
                     elif line.startswith("-binary version ="):
                         versions.add(line.split("=", 1)[1].strip())
-        except OSError:
+        except (OSError, EOFError, lzma.LZMAError):
             names.add("<missing-trace-file>")
     return ";".join(sorted(names)) or "MISSING", ";".join(sorted(versions)) or "MISSING"
 
@@ -130,7 +135,7 @@ def trace_sha_from_sums(trace_dir: Path, root: Path) -> str:
             except OSError:
                 entries = ""
             matches = re.findall(r"^([0-9a-fA-F]{64})\s+\*?(.+)$", entries, re.M)
-            trace_names = {p.name for p in trace_dir.glob("*.traceg")}
+            trace_names = {p.name for p in trace_dir.glob("*.traceg*")}
             found = [digest.lower() for digest, name in matches if Path(name).name in trace_names]
             if found:
                 return ";".join(sorted(found))
@@ -173,7 +178,8 @@ def same_tree_result(trace_dir: Path) -> str:
 def record(klist: Path, root: Path) -> dict[str, str | int]:
     trace_dir = klist.parent
     lines = klist.read_text(errors="replace").splitlines()
-    kernel_files = [line.strip() for line in lines if line.strip().endswith(".traceg")]
+    kernel_files = [line.strip() for line in lines
+                    if re.search(r"\.traceg(?:\.xz)?$", line.strip())]
     present = [trace_dir / name for name in kernel_files if (trace_dir / name).is_file()]
     kernel_names, binary_versions = first_kernel_metadata(trace_dir, kernel_files)
     provenance_path, provenance = nearest_provenance(trace_dir, root)
@@ -225,7 +231,9 @@ def main() -> None:
             rows.append(record(klist, root))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]) if rows else [])
+        writer = csv.DictWriter(
+            handle, fieldnames=list(rows[0]) if rows else [], lineterminator="\n"
+        )
         if rows:
             writer.writeheader()
             writer.writerows(rows)

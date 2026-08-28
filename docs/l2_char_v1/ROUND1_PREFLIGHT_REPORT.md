@@ -20,11 +20,15 @@ trimmed variants, failures, and provenance gaps.
 
 * **A — pool width:** there are **159 physical trace roots**, representing
   **155 distinct `(suite, application, input, kernelslist SHA256)` assets**,
-  **18,035 kernel-launch trace files**, and 483,226,416,225 bytes (450.04 GiB)
+  **23,810 kernel-launch trace files**, and 484,476,730,041 bytes (451.20 GiB)
   when their listed trace trees are summed.  This is not merely a 10--20 item
   classic-suite pool.  It contains 66 public full pretraces, 47 derived
   1/10-or-1/40 variants, 27 V100/NVBit staged roots, plus historical copies.
   The byte sum is an asset sum, not a deduplicated disk-footprint claim.
+* **Formal workload correction:** the broad physical asset inventory is not the
+  experiment roster.  The authoritative historical candidate pool is exactly
+  **52 workloads**, reconciled separately in
+  [the Wave-1 roster](ROUND1_WAVE1_ROSTER_SUMMARY.md).
 * **B — input scale:** 78 roots contain usable trace-side `stats.csv` totals;
   they account for 5,654,684,409 reported instructions.  81 roots have missing,
   empty, or malformed trace statistics.  Therefore input scale is known for
@@ -67,7 +71,7 @@ under-five-hour filter.  Physical roots break down as follows.
 | Pannotia | 4 | V100 staged C2P assets. |
 | Mars | 1 | V100 staged similarity-search trace. |
 | UNKNOWN | 30 | Local historical/derived paths whose layout does not preserve a suite token; their absolute paths and kernel symbols are in the TSV. |
-| **Total** | **159** | 153 directly runnable, 3 with a referenced file missing, and 3 explicitly incomplete/failed staging copies. |
+| **Total** | **159** | 152 directly runnable, 4 with a referenced file missing, and 3 explicitly incomplete/failed staging copies. |
 
 There is **no directly unpacked DeepBench, ML/DNN, or generic HPC graph suite
 trace root** in this inventory.  Documentation mentioning a public DeepBench
