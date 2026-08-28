@@ -16,3 +16,7 @@ the `STOP_AND_FIX` instrumentation revision.  It contains:
 It does not contain any pre-fix campaign result as formal characterization
 data.  Those results remain available only as `PRE_FIX_DIAGNOSTIC` source
 material.
+
+Archive: `instrumentation_v1_1_port_fix.tar.gz` (6.3 MiB)
+
+SHA256: `d4d5a962973f7efb16442c78ed6dcbd43dcb74a6e1084511ddee37603355e3ba`
