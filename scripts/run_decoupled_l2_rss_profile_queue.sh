@@ -87,6 +87,11 @@ run_completed() {
   rg -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' "$run_dir/smoke.out"
 }
 
+summary_has_name() {
+  local name="$1"
+  awk -F '\t' -v name="$name" 'NR > 1 && $1 == name { found = 1 } END { exit !found }' "$summary"
+}
+
 admit_one() {
   local name="$1" trace="$2" lock_fd
   while :; do
@@ -118,9 +123,11 @@ run_one() {
   slug="$(printf '%s' "$name" | tr '/ :,' '____')"
   run_dir="$run_root/$slug/baseline"
   if [[ "$reuse_completed" -eq 1 ]] && run_completed "$run_dir"; then
-    peak_kib="$(sed -n 's/^\tMaximum resident set size (kbytes): \([0-9][0-9]*\)$/\1/p' \
-      "$run_dir/resource_usage.txt" | tail -1)"
-    printf '%s\tREUSE\t%s\t%s\t%s\n' "$name" "${peak_kib:--}" "$run_dir" "$trace" >> "$summary"
+    if ! summary_has_name "$name"; then
+      peak_kib="$(sed -n 's/^\tMaximum resident set size (kbytes): \([0-9][0-9]*\)$/\1/p' \
+        "$run_dir/resource_usage.txt" | tail -1)"
+      printf '%s\tREUSE\t%s\t%s\t%s\n' "$name" "${peak_kib:--}" "$run_dir" "$trace" >> "$summary"
+    fi
     return
   fi
   admit_one "$name" "$trace"
