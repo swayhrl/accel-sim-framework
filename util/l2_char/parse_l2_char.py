@@ -49,6 +49,28 @@ def write_csv(path, rows):
         writer.writerows(rows)
 
 
+def write_window_csv(path, jsonl_path, keys):
+    """Materialize the final snapshot's windows without retaining them in RAM.
+
+    Long, multi-kernel replays can emit millions of WINDOW records.  The core
+    writes them slice-major/window-major, so retain that production order and
+    check it while converting the final snapshot's JSONL spool to CSV.
+    """
+    fieldnames = sorted(set(keys) | {"schema_version"})
+    previous = None
+    with open(path, "w", newline="") as output, open(jsonl_path) as source:
+        writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="raise")
+        writer.writeheader()
+        for line in source:
+            row = json.loads(line)
+            order = (int(row["slice"]), int(row["window"]))
+            if previous is not None and order < previous:
+                raise ValueError("WINDOW records are not ordered by (slice,window)")
+            previous = order
+            row["schema_version"] = SCHEMA_VERSION
+            writer.writerow(row)
+
+
 def git_value(repo, command):
     try:
         return subprocess.check_output(["git", "-C", repo] + command,
@@ -96,8 +118,11 @@ def main():
     # before the terminal drain snapshot.  A snapshot is emitted slice-major,
     # beginning at slice zero.  Keep only the final complete snapshot so a
     # multi-kernel run cannot silently duplicate temporal windows.
-    snapshots = []
-    slices, details, windows, invariants, hists = {}, {}, [], [], {}
+    slices, details, invariants, hists = {}, {}, [], {}
+    window_keys = set()
+    window_spool = pathlib.Path(args.out) / ".l2char_windows.jsonl"
+    window_spool.unlink(missing_ok=True)
+    window_out = open(window_spool, "w")
     with open(args.log, encoding="utf-8", errors="replace") as source:
         for raw in source:
             parsed = parse_record(raw)
@@ -106,34 +131,37 @@ def main():
             kind, fields = parsed
             if kind == "SLICE":
                 if fields.get("slice") == 0 and slices:
-                    snapshots.append((slices, details, windows, invariants, hists))
-                    slices, details, windows, invariants, hists = {}, {}, [], [], {}
+                    # A terminal snapshot supersedes all prior per-kernel
+                    # snapshots.  Discard its on-disk windows rather than
+                    # accumulating either snapshot in host memory.
+                    window_out.close()
+                    window_spool.unlink(missing_ok=True)
+                    window_out = open(window_spool, "w")
+                    slices, details, invariants, hists = {}, {}, [], {}
+                    window_keys = set()
                 require(fields, REQUIRED_SLICE_FIELDS, "SLICE")
                 slices[str(fields["slice"])] = fields
             elif kind == "SLICE_DETAIL":
                 details[str(fields.get("slice", "NA"))] = fields
             elif kind == "WINDOW":
                 require(fields, REQUIRED_WINDOW_FIELDS, "WINDOW")
-                windows.append(fields)
+                window_keys.update(fields)
+                window_out.write(json.dumps(fields, sort_keys=True) + "\n")
             elif kind == "INVARIANT":
                 invariants.append(fields)
             elif kind == "HIST":
                 hists[(str(fields.get("slice", "NA")), fields.get("metric", "NA"))] = fields
             elif kind != "SUMMARY":
                 raise ValueError("unknown L2CHARV1 record type: %s" % kind)
-    if slices:
-        snapshots.append((slices, details, windows, invariants, hists))
-    if not snapshots:
+    window_out.close()
+    if not slices:
         raise ValueError("no L2CHARV1|SLICE records found")
-    slices, details, windows, invariants, hists = snapshots[-1]
-    windows.sort(key=lambda r: (int(r["slice"]), int(r["window"])))
     for key, row in slices.items():
         row.update(details.get(key, {}))
         row["schema_version"] = SCHEMA_VERSION
     write_csv(pathlib.Path(args.out) / "slice.csv", list(slices.values()))
-    for row in windows:
-        row["schema_version"] = SCHEMA_VERSION
-    write_csv(pathlib.Path(args.out) / "window.csv", windows)
+    write_window_csv(pathlib.Path(args.out) / "window.csv", window_spool, window_keys)
+    window_spool.unlink(missing_ok=True)
     framework_commit = git_value(args.framework_repo, ["rev-parse", "HEAD"])
     core_commit = git_value(args.core_repo, ["rev-parse", "HEAD"]) if args.core_repo != "NA" else "NA"
     framework_branch = git_value(args.framework_repo, ["branch", "--show-current"])
