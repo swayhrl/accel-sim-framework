@@ -211,10 +211,10 @@ def main():
             registered = value(values, "c2p_peer_locality_registered_l1s", errors)
             pending = value(values, "c2p_peer_locality_pending_detect_records", errors)
             detects = value(values, "c2p_peer_locality_detect_records", errors)
-            detect_lower = value(values, "c2p_peer_locality_detect_lower_records",
-                                 errors)
+            accepted = value(values, "c2p_peer_locality_l1_accepted_records",
+                             errors)
             detect_merge = value(values,
-                                 "c2p_peer_locality_detect_mshr_merge_records",
+                                 "c2p_peer_locality_l1_mshr_merge_records",
                                  errors)
             issues = value(values, "c2p_peer_locality_issue_records", errors)
             missing_detect = value(values, "c2p_peer_locality_missing_detect_records",
@@ -225,12 +225,10 @@ def main():
                 errors.append("pending detect records at exit")
             if missing_detect:
                 errors.append("issue records missing detect record")
-            if detects != detect_lower + detect_merge:
-                errors.append("detect records do not split into lower + MSHR merge")
-            if detect_lower != issues:
-                errors.append("new-MSHR detect and issue record counts differ")
-            if issues != values.get("c2p_l1_misses", 0):
-                errors.append("issue records differ from c2p_l1_misses")
+            if accepted != detects + detect_merge:
+                errors.append("accepted L1 misses do not split into lower + MSHR merge")
+            if detects != issues:
+                errors.append("lower-queue detect and issue record counts differ")
 
             snapshots = {}
             for phase, semantic in SNAPSHOTS:
@@ -261,8 +259,9 @@ def main():
             detect_line = snapshots[("detect", "line")]
             diagnostic_rows.append({
                 "label": label, "case": case,
+                "accepted_l1_events": accepted,
                 "detect_events": detects,
-                "detect_lower_events": detect_lower,
+                "detect_lower_events": detects,
                 "detect_mshr_merge_events": detect_merge,
                 "issue_events": issues,
                 "detect_sector_redundant": detect_sector["redundant"],
@@ -375,7 +374,7 @@ def main():
               ["label", "case", "phase", "semantic", "events",
                "redundant_events", "redundant_ratio"], event_rows)
     write_csv(args.out_dir / "diagnostic_summary.csv",
-              ["label", "case", "detect_events", "detect_lower_events",
+              ["label", "case", "accepted_l1_events", "detect_events", "detect_lower_events",
                "detect_mshr_merge_events", "issue_events",
                "detect_sector_redundant", "issue_sector_redundant",
                "detect_line_redundant", "issue_line_redundant",

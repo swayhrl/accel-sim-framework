@@ -8,18 +8,20 @@ completion path may depend on its results.
 
 ## Eligible event
 
-An event is a newly accepted L1 `MISS` for a non-atomic `GLOBAL_ACC_R`
-request.  A tag miss that merges into an already outstanding MSHR is a valid
-**detect** event but does not create a lower request, so it has no later
-**issue** event.  The diagnostic records that split explicitly.  A request
-that creates a new MSHR is sampled twice:
+An accepted L1 `MISS` for a non-atomic `GLOBAL_ACC_R` request is first
+classified as either a new lower request or an MSHR merge.  The latter has no
+lower request and is reported only in the accepted/Merge split.  A physical
+lower request is sampled twice:
 
-- **detect**: immediately after the normal L1 access accepts the new miss;
+- **detect**: at the common miss-queue insertion point used by every normal
+  read-allocation path;
 - **issue**: when the same miss reaches the L1 miss-queue head and C2P's
   existing lower-path admission point observes it.
 
-Only new-MSHR detect and issue records are keyed by the original `mem_fetch`
-and must match one-to-one for a qualified oracle run.
+Detect and issue records are keyed by the original `mem_fetch` and must match
+one-to-one for a qualified oracle run.  Locating detect at queue insertion,
+rather than in one L1 access wrapper, is required because a few normal lower
+allocation paths create their `mem_fetch` inside the cache implementation.
 
 ## Peer masks
 
@@ -67,8 +69,8 @@ local_peer_total + outer_peer_total = sum(k * peer_count[k])
 
 The exact-sector mask must be a subset of the resident-line mask, and the
 requester bit must be clear in all masks.  For issue-time records,
-`detect_lower_records = issue_records = c2p_l1_misses`; all detect records
-split into `detect_lower_records + detect_mshr_merge_records`.  Qualified
+`detect_records = issue_records`; all accepted L1 misses split
+into `detect_records + l1_mshr_merge_records`.  Qualified
 paper16 runs require 64 registered L1s, no missing detect record at issue, and
 no pending detect record at simulator exit.
 

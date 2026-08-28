@@ -13,11 +13,15 @@ rate:
 issue_sector_redundant / issue_events
 ```
 
-`issue_events` is exactly `c2p_l1_misses`: a new-MSHR request that reached the
-ordinary lower-read admission point.  It excludes MSHR merges, matching one
-physical L2 demand per lower request.  `detect_events` is deliberately wider:
-it includes both lower requests and coalesced MSHR misses, and must never be
-used as this rate's denominator without saying so.
+`issue_events` is a new-MSHR request that reached the ordinary lower-read
+admission point.  It excludes MSHR merges, matching one physical L2 demand per
+lower request.  `detect_events` is the same physical request set, sampled at
+its common lower-queue insertion point.  The legacy `c2p_l1_misses` counter is
+not a conservation anchor for this diagnostic: it is maintained by the C2P
+accept path and can include events outside this queue-level observation set.
+The wider accepted-L1-miss denominator is reported separately as
+`l1_accepted_records = detect_events + l1_mshr_merge_records`; it must never
+be substituted for the paper-comparable denominator without saying so.
 
 ## Evidence-to-cause matrix
 
