@@ -182,6 +182,7 @@ def main():
                     if entry["case"] in selected_cases]
     audit_rows = []
     event_rows = []
+    diagnostic_rows = []
     count_rows = []
     locality_rows = []
     distance_rows = []
@@ -253,6 +254,39 @@ def main():
                 errors.append("sector transition matrix does not sum to issues")
             if line_transition != issues:
                 errors.append("line transition matrix does not sum to issues")
+
+            issue_sector = snapshots[("issue", "sector")]
+            issue_line = snapshots[("issue", "line")]
+            detect_sector = snapshots[("detect", "sector")]
+            detect_line = snapshots[("detect", "line")]
+            diagnostic_rows.append({
+                "label": label, "case": case,
+                "detect_events": detects,
+                "detect_lower_events": detect_lower,
+                "detect_mshr_merge_events": detect_merge,
+                "issue_events": issues,
+                "detect_sector_redundant": detect_sector["redundant"],
+                "issue_sector_redundant": issue_sector["redundant"],
+                "detect_line_redundant": detect_line["redundant"],
+                "issue_line_redundant": issue_line["redundant"],
+                "issue_sector_redundant_ratio":
+                    issue_sector["redundant"] / issues if issues else 0.0,
+                "detect_0_issue_0": value(
+                    values, "c2p_peer_locality_sector_detect_0_issue_0", errors),
+                "detect_0_issue_1": value(
+                    values, "c2p_peer_locality_sector_detect_0_issue_1", errors),
+                "detect_1_issue_0": value(
+                    values, "c2p_peer_locality_sector_detect_1_issue_0", errors),
+                "detect_1_issue_1": value(
+                    values, "c2p_peer_locality_sector_detect_1_issue_1", errors),
+                "wait_cycles_total": value(
+                    values, "c2p_peer_locality_wait_cycles_total", errors),
+                "wait_cycles_max": value(
+                    values, "c2p_peer_locality_wait_cycles_max", errors),
+                "wait_cycles_mean": value(
+                    values, "c2p_peer_locality_wait_cycles_total", errors) / issues
+                    if issues else 0.0,
+            })
 
             status = "PASS" if not errors else "FAIL"
             qualified += status == "PASS"
@@ -340,6 +374,15 @@ def main():
     write_csv(args.out_dir / "event_semantics.csv",
               ["label", "case", "phase", "semantic", "events",
                "redundant_events", "redundant_ratio"], event_rows)
+    write_csv(args.out_dir / "diagnostic_summary.csv",
+              ["label", "case", "detect_events", "detect_lower_events",
+               "detect_mshr_merge_events", "issue_events",
+               "detect_sector_redundant", "issue_sector_redundant",
+               "detect_line_redundant", "issue_line_redundant",
+               "issue_sector_redundant_ratio", "detect_0_issue_0",
+               "detect_0_issue_1", "detect_1_issue_0", "detect_1_issue_1",
+               "wait_cycles_total", "wait_cycles_max", "wait_cycles_mean"],
+              diagnostic_rows)
     write_csv(args.out_dir / "peer_count_hist.csv",
               ["label", "case", "phase", "semantic", "peer_count",
                "occurrences"], count_rows)
