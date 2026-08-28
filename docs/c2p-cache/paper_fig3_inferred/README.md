@@ -28,9 +28,16 @@ At import time their SHA-256 digests were:
 
 ## Intended comparison rule
 
-Compare the audit's `issue_sector_redundant_ratio` only with
-`paper_fig3_redundancy_ratio`, never with a C2P performance or filter-hit
-statistic.  Join on `abbr`, retain `identity_confidence`, and separately flag
-the conditional mapping.  A numerical mismatch can establish that the local
-trace/configuration differs from the paper point; it cannot by itself prove a
-model defect.
+Join the audit to `paper_fig3_redundancy_ratio` on `abbr`, retain
+`identity_confidence`, and separately flag the conditional mapping.  Report
+both of the audit's distinct observations:
+
+- `issue_sector_redundant_ratio` is the exact requested-sector opportunity:
+  a peer could service the request immediately in the Accel-Sim sector cache.
+- `issue_line_redundant_ratio` is the resident-cacheline/tag opportunity:
+  it is the closest proxy for the paper's Snapshot-Matrix / cacheline-tag
+  definition, although it may include a peer sector miss in the local model.
+
+Neither is a C2P performance or filter-hit statistic.  A numerical mismatch
+can establish that the local trace/configuration differs from the paper point;
+it cannot by itself prove a model defect.
