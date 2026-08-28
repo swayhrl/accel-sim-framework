@@ -3,7 +3,7 @@
 # is not a Round-1 sweep and intentionally runs only the named validation arms.
 set -euo pipefail
 
-root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.. && pwd)
+root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 core=${GPGPUSIM_ROOT:?source the fixed characterization core environment first}
 out=${1:-"$root/tests/l2_char/results/fixed-natural"}
 sim="$root/gpu-simulator/bin/release/accel-sim.out"
