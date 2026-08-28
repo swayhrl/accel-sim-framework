@@ -11,11 +11,16 @@ Usage: scripts/assemble_c2p_peer_locality_stage.sh --manifest FILE \
 
 All manifest cases not named by --extra-cases come from --base.  The script
 requires a normal simulator exit and provenance for every selected case.  It
-also refuses to combine shards whose GPGPU-Sim commit, Accel-Sim commit,
-compiled simulator hash, or complete configuration hash differ.
+refuses to combine shards whose executable provenance differs: GPGPU-Sim
+commit, compiled simulator hash, CUDART hash, or complete configuration hash.
+The Accel-Sim framework commit is retained per cell as campaign metadata and
+must name an ancestor of the current framework checkout; it is not an
+executable-equivalence key because campaign scripts and documents evolve
+without changing the compiled simulator or resolved configuration.
 EOF
 }
 
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 manifest=""
 base=""
 extra=""
@@ -53,13 +58,13 @@ provenance_value() {
 
 mkdir -p "$out"
 trap 'rm -rf "$out"' ERR
-printf 'case\tsource_root\trun_dir\tgpgpusim_commit\taccelsim_commit\tconfig_sha256\ttrace_sha256\tsim_sha256\n' \
+printf 'case\tsource_root\trun_dir\tgpgpusim_commit\taccelsim_commit\tconfig_sha256\ttrace_sha256\tsim_sha256\tcudart_sha256\n' \
   > "$out/provenance_manifest.tsv"
 
 reference_gpgpu=""
-reference_accel=""
 reference_config=""
 reference_sim=""
+reference_cudart=""
 while IFS=$'\t' read -r case _; do
   [[ -z "$case" || "$case" == case || "$case" == \#* ]] && continue
   source_root="$base"
@@ -78,21 +83,27 @@ while IFS=$'\t' read -r case _; do
   config="$(provenance_value "$provenance" config_sha256)"
   trace="$(provenance_value "$provenance" trace_sha256)"
   sim="$(provenance_value "$provenance" sim_sha256)"
-  [[ -n "$gpgpu" && -n "$accel" && -n "$config" && -n "$trace" && -n "$sim" ]] || {
+  cudart="$(provenance_value "$provenance" cudart_sha256)"
+  [[ -n "$gpgpu" && -n "$accel" && -n "$config" && -n "$trace" && -n "$sim" && -n "$cudart" ]] || {
     echo "error: incomplete provenance for $case" >&2; exit 1;
   }
+  git -C "$repo_root" cat-file -e "${accel}^{commit}" 2>/dev/null &&
+    git -C "$repo_root" merge-base --is-ancestor "$accel" HEAD || {
+      echo "error: $case Accel-Sim metadata commit is not a known campaign ancestor: $accel" >&2
+      exit 1
+    }
   if [[ -z "$reference_gpgpu" ]]; then
-    reference_gpgpu="$gpgpu"; reference_accel="$accel"
-    reference_config="$config"; reference_sim="$sim"
+    reference_gpgpu="$gpgpu"; reference_config="$config"
+    reference_sim="$sim"; reference_cudart="$cudart"
   fi
-  [[ "$gpgpu" == "$reference_gpgpu" && "$accel" == "$reference_accel" &&
-     "$config" == "$reference_config" && "$sim" == "$reference_sim" ]] || {
-    echo "error: shard provenance differs at $case" >&2; exit 1;
+  [[ "$gpgpu" == "$reference_gpgpu" && "$config" == "$reference_config" &&
+     "$sim" == "$reference_sim" && "$cudart" == "$reference_cudart" ]] || {
+    echo "error: executable provenance differs at $case" >&2; exit 1;
   }
   ln -s "$(realpath "$source_root/$case")" "$out/$case"
-  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
     "$case" "$(realpath "$source_root")" "$(realpath "$run_dir")" \
-    "$gpgpu" "$accel" "$config" "$trace" "$sim" >> "$out/provenance_manifest.tsv"
+    "$gpgpu" "$accel" "$config" "$trace" "$sim" "$cudart" >> "$out/provenance_manifest.tsv"
 done < "$manifest"
 
 trap - ERR

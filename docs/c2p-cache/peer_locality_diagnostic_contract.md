@@ -91,6 +91,17 @@ the former is sampled at C2P accept time, while the latter is sampled after
 physical lower issue.  The analyzer emits their signed difference to expose
 this timing effect, but never treats it as a qualification failure.
 
+## Provenance qualification
+
+Every selected replay records the GPGPU-Sim commit, Accel-Sim framework
+commit, resolved configuration hash, trace hash, compiled simulator hash, and
+CUDART hash.  A cross-shard campaign requires identical **executable**
+provenance: GPGPU-Sim commit, resolved configuration, simulator binary, and
+CUDART.  The trace hash is intentionally per-workload.  The framework commit
+is retained for audit and must be an ancestor of the final campaign checkout,
+but it is not required to be identical: documentation and campaign-wrapper
+commits can change without changing the binary or the resolved configuration.
+
 ## Configuration sensitivity
 
 The canonical current point is `16 sets x 32 ways x 128 B = 64 KiB`.  Six
