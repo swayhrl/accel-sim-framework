@@ -4,10 +4,10 @@ This guide defines how to interpret the read-only counters emitted by the
 peer-locality diagnostic.  It intentionally contains no result values; the
 per-run CSVs and their recorded provenance are the evidence source.
 
-## Primary rate
+## Rates and semantic comparison
 
-The paper-comparable local opportunity rate is the issue-time, exact-sector
-rate:
+The architectural, immediately serviceable opportunity rate is the issue-time
+exact-sector rate:
 
 ```text
 issue_sector_redundant / issue_events
@@ -21,7 +21,22 @@ not a conservation anchor for this diagnostic: it is maintained by the C2P
 accept path and can include events outside this queue-level observation set.
 The wider accepted-L1-miss denominator is reported separately as
 `l1_accepted_records = detect_events + l1_mshr_merge_records`; it must never
-be substituted for the paper-comparable denominator without saying so.
+be substituted for this physical lower-request denominator without saying so.
+
+The paper defines a redundant access in terms of the requested **cache line**
+residing in a peer L1 (Sec. 3.1) and says a successful probe returns the cache
+line to the requester (Sec. 4.1).  Its Snapshot Matrix is built from valid
+cache-line tags (Sec. 4.2.2).  In contrast, the local `S:` Accel-Sim L1 is a
+sector cache.  Therefore every report must publish both:
+
+```text
+issue_sector_redundant / issue_events  # actionable without another fill
+issue_line_redundant   / issue_events  # paper tag-residency proxy
+```
+
+The second rate is not claimed to reproduce the paper's unreported simulator
+internals.  It is the semantically closer comparison for Fig. 3; the gap
+between the two rates quantifies the effect of the sector-cache model.
 
 ## Evidence-to-cause matrix
 
