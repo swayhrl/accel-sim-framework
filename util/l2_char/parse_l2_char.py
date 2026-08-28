@@ -7,6 +7,7 @@ import json
 import pathlib
 import subprocess
 import sys
+import math
 
 from schema_v1 import REQUIRED_SLICE_FIELDS, REQUIRED_WINDOW_FIELDS, SCHEMA_VERSION, as_number
 
@@ -69,6 +70,8 @@ def main():
     parser.add_argument("--framework-repo", default=".")
     parser.add_argument("--core-repo", default="NA")
     parser.add_argument("--command", default="NA")
+    parser.add_argument("--production", action="store_true",
+                        help="require complete workload and source provenance")
     args = parser.parse_args()
     pathlib.Path(args.out).mkdir(parents=True, exist_ok=True)
 
@@ -77,7 +80,7 @@ def main():
     # beginning at slice zero.  Keep only the final complete snapshot so a
     # multi-kernel run cannot silently duplicate temporal windows.
     snapshots = []
-    slices, details, windows, invariants = {}, {}, [], []
+    slices, details, windows, invariants, hists = {}, {}, [], [], {}
     with open(args.log, encoding="utf-8", errors="replace") as source:
         for raw in source:
             parsed = parse_record(raw)
@@ -86,8 +89,8 @@ def main():
             kind, fields = parsed
             if kind == "SLICE":
                 if fields.get("slice") == 0 and slices:
-                    snapshots.append((slices, details, windows, invariants))
-                    slices, details, windows, invariants = {}, {}, [], []
+                    snapshots.append((slices, details, windows, invariants, hists))
+                    slices, details, windows, invariants, hists = {}, {}, [], [], {}
                 require(fields, REQUIRED_SLICE_FIELDS, "SLICE")
                 slices[str(fields["slice"])] = fields
             elif kind == "SLICE_DETAIL":
@@ -97,13 +100,15 @@ def main():
                 windows.append(fields)
             elif kind == "INVARIANT":
                 invariants.append(fields)
+            elif kind == "HIST":
+                hists[(str(fields.get("slice", "NA")), fields.get("metric", "NA"))] = fields
             elif kind != "SUMMARY":
                 raise ValueError("unknown L2CHARV1 record type: %s" % kind)
     if slices:
-        snapshots.append((slices, details, windows, invariants))
+        snapshots.append((slices, details, windows, invariants, hists))
     if not snapshots:
         raise ValueError("no L2CHARV1|SLICE records found")
-    slices, details, windows, invariants = snapshots[-1]
+    slices, details, windows, invariants, hists = snapshots[-1]
     windows.sort(key=lambda r: (int(r["slice"]), int(r["window"])))
     for key, row in slices.items():
         row.update(details.get(key, {}))
@@ -112,24 +117,62 @@ def main():
     for row in windows:
         row["schema_version"] = SCHEMA_VERSION
     write_csv(pathlib.Path(args.out) / "window.csv", windows)
+    framework_commit = git_value(args.framework_repo, ["rev-parse", "HEAD"])
+    core_commit = git_value(args.core_repo, ["rev-parse", "HEAD"]) if args.core_repo != "NA" else "NA"
+    framework_branch = git_value(args.framework_repo, ["branch", "--show-current"])
+    core_branch = git_value(args.core_repo, ["branch", "--show-current"]) if args.core_repo != "NA" else "NA"
+    provenance = [args.workload, args.input, args.kernel, args.kernel_id, args.config,
+                  args.trace, args.command, framework_commit, core_commit,
+                  framework_branch, core_branch]
+    if args.production and any(v in (None, "", "NA") for v in provenance):
+        raise ValueError("production mode requires workload/input/kernel/kernel-id, config, trace, command, and both git repos")
     summary = {"schema_version": SCHEMA_VERSION, "workload": args.workload,
                "input": args.input, "kernel": args.kernel, "kernel_id": args.kernel_id,
-               "framework_commit": git_value(args.framework_repo, ["rev-parse", "HEAD"]),
-               "core_commit": git_value(args.core_repo, ["rev-parse", "HEAD"]) if args.core_repo != "NA" else "NA",
+               "framework_commit": framework_commit, "core_commit": core_commit,
+               "framework_branch": framework_branch, "core_branch": core_branch,
+               "command": args.command, "gpu_config": args.config or "NA", "trace": args.trace or "NA",
                "gpu_config_sha256": sha256(args.config), "trace_sha256": sha256(args.trace),
                "slice_count": len(slices), "invariant_records": len(invariants),
                "invariants_pass": int(all(r.get("status") == "PASS" for r in invariants))}
-    for metric in ("reserved_util_avg", "mshr_util_avg", "missq_util_avg", "draml2q_util_avg",
-                   "l2dramq_util_avg", "data_busy_ratio", "fill_busy_ratio"):
+    for metric in ("reserved_util_avg", "mshr_util_avg", "missq_util_avg", "missq_wb_util_avg",
+                   "draml2q_util_avg", "l2dramq_util_avg", "data_busy_ratio", "fill_busy_ratio",
+                   "merge_depth_avg", "merge_limit_entries_util_avg", "set_reserved_full_ratio"):
         values = [r[metric] for r in slices.values() if metric in r and isinstance(r[metric], (int, float))]
         if values:
             mean = sum(values) / len(values)
             summary[metric] = mean
             summary[metric + "_slice_max_over_mean"] = max(values) / mean if mean else "NA"
+            summary[metric + "_slice_cv"] = math.sqrt(sum((v - mean) ** 2 for v in values) / len(values)) / mean if mean else "NA"
+    for metric in ("block_set", "block_mshr_new", "block_mshr_merge", "block_missq", "block_dataport", "block_respq", "fill"):
+        eligible = sum(r.get(metric + "_eligible", 0) for r in slices.values() if isinstance(r.get(metric + "_eligible", 0), (int, float)))
+        blocked = sum(r.get(metric + "_blocked", 0) for r in slices.values() if isinstance(r.get(metric + "_blocked", 0), (int, float)))
+        summary[metric + "_eligible"] = eligible; summary[metric + "_blocked"] = blocked
+        summary[metric + "_blocking_ratio"] = blocked / eligible if eligible else "NA"
+    wb_req = sum(r.get("l2dram_wb_requests", 0) for r in slices.values())
+    req = sum(r.get("l2dram_requests", 0) for r in slices.values())
+    wb_bytes = sum(r.get("l2dram_wb_bytes", 0) for r in slices.values())
+    total_bytes = sum(r.get("l2dram_bytes", 0) for r in slices.values())
+    summary["wb_request_fraction"] = wb_req / req if req else "NA"
+    summary["wb_byte_fraction"] = wb_bytes / total_bytes if total_bytes else "NA"
+    for metric in ("reserved", "mshr", "merge_depth", "missq", "missq_wb"):
+        merged = []
+        for (_, name), hist in hists.items():
+            if name == metric: merged.append([int(x) for x in str(hist["bins"]).split(",")])
+        if merged:
+            bins = [sum(v[i] if i < len(v) else 0 for v in merged) for i in range(max(map(len, merged)))]
+            samples = sum(bins); total = sum(i * n for i, n in enumerate(bins))
+            def p(q):
+                rank = (samples * q + 99) // 100; seen = 0
+                for i, n in enumerate(bins):
+                    seen += n
+                    if seen >= rank: return i
+            summary[metric + "_global_p50"] = p(50); summary[metric + "_global_p95"] = p(95)
+            summary[metric + "_global_max"] = len(bins) - 1
+            summary[metric + "_global_avg"] = total / samples
     write_csv(pathlib.Path(args.out) / "summary.csv", [summary])
     manifest = {"schema_version": SCHEMA_VERSION, "framework_commit": summary["framework_commit"],
-                "core_commit": summary["core_commit"], "framework_branch": git_value(args.framework_repo, ["branch", "--show-current"]),
-                "core_branch": git_value(args.core_repo, ["branch", "--show-current"]) if args.core_repo != "NA" else "NA",
+                "core_commit": summary["core_commit"], "framework_branch": framework_branch,
+                "core_branch": core_branch,
                 "gpu_config": args.config or "NA", "gpu_config_sha256": summary["gpu_config_sha256"],
                 "trace": args.trace or "NA", "trace_sha256": summary["trace_sha256"], "command": args.command,
                 "characterization": {"enabled": True, "window_l2_cycles": "from raw records", "set_detail": "from raw records"}}

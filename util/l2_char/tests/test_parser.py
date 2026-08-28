@@ -23,3 +23,8 @@ with tempfile.TemporaryDirectory() as temporary:
     subprocess.check_call(["python3", str(ROOT / "parse_l2_char.py"), str(doubled), "--out", str(final_only)])
     assert len(list(csv.DictReader((final_only / "slice.csv").open()))) == 1
     assert len(list(csv.DictReader((final_only / "window.csv").open()))) == 1
+
+    rejected = subprocess.run(["python3", str(ROOT / "parse_l2_char.py"), str(SAMPLE),
+                               "--out", str(output / "production"), "--production"],
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    assert rejected.returncode != 0
