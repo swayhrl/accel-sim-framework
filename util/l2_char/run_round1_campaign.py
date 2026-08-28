@@ -185,12 +185,25 @@ def launch(args: argparse.Namespace, row: dict[str, str], prior: dict[str, str] 
     return Active(row, prior, directory, process, log, command, time.time(), time.monotonic(), oom_kill_count())
 
 
-def final_log_stat(log: Path, key: str) -> str | None:
-    value = None
-    for line in log.read_text(encoding="utf-8", errors="replace").splitlines():
-        if line.startswith(key) and "=" in line:
-            value = line.split("=", 1)[1].strip()
-    return value
+def terminal_log_fields(log: Path) -> tuple[bool, str | None, str | None]:
+    """Read a potentially multi-GiB simulator log once, without retaining it.
+
+    A campaign runner must never make its host-memory footprint proportional to
+    a workload's raw log.  Keep only the terminal markers required for status
+    and provenance while streaming through the file.
+    """
+    normal_exit = False
+    cycle = None
+    insn = None
+    with log.open(encoding="utf-8", errors="replace") as source:
+        for line in source:
+            if EXIT_MARKER in line:
+                normal_exit = True
+            if line.startswith("gpu_tot_sim_cycle="):
+                cycle = line.split("=", 1)[1].strip()
+            elif line.startswith("gpu_tot_sim_insn="):
+                insn = line.split("=", 1)[1].strip()
+    return normal_exit, cycle, insn
 
 
 def parser_result(args: argparse.Namespace, item: Active, audit: dict) -> tuple[str, str | None]:
@@ -237,8 +250,7 @@ def finish(args: argparse.Namespace, item: Active, audit: dict, timed_out: bool)
     log = item.directory / "raw.log"
     elapsed = time.monotonic() - item.started_monotonic
     code = item.process.returncode
-    text = log.read_text(encoding="utf-8", errors="replace")
-    normal_exit = EXIT_MARKER in text
+    normal_exit, terminal_cycle, terminal_insn = terminal_log_fields(log)
     oom_after = oom_kill_count()
     if timed_out:
         status, detail = "TIMEOUT_8H", f"exceeded configured timeout of {args.timeout_seconds}s"
@@ -260,8 +272,8 @@ def finish(args: argparse.Namespace, item: Active, audit: dict, timed_out: bool)
         "peak_rss_kib": item.peak_rss_kib, "rss_prior": item.prior,
         "mem_available_kib_at_finish": mem_available_kib(), "oom_kill_before": item.oom_before,
         "oom_kill_after": oom_after, "audit": audit,
-        "terminal_gpu_tot_sim_cycle": final_log_stat(log, "gpu_tot_sim_cycle"),
-        "terminal_gpu_tot_sim_insn": final_log_stat(log, "gpu_tot_sim_insn"),
+        "terminal_gpu_tot_sim_cycle": terminal_cycle,
+        "terminal_gpu_tot_sim_insn": terminal_insn,
     }
     write_json(item.directory / "run_status.json", result)
     return result
