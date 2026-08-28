@@ -21,8 +21,22 @@ requests`), and each case's intended nonzero signature:
 - P2: immediate-response queue corrected-path activation.
 - P3: nonzero data-port busy time under real fill/writeback traffic.
 - P4: one-entry MSHR and MissQ each reach their exact configured capacity.
-- P5: reserved writeback progress-credit use.
-- P6: end-to-end corrected-path activation.
+- P5A: a deterministic production `memory_partition` fixture fills ReturnQ
+  with an actual read response, then proves FIFO-head WB issues while the
+  subsequent FIFO-head read remains blocked.  Run it from the core tree with
+  `tests/l2_char/run_memory_partition_returnq.sh`.
+- P5B: reserved writeback progress-credit use, maximum, return-to-zero, and
+  leak checks under a normal integrated dirty-eviction trace.  Run
+  `tests/l2_char/run_p5_progress_credit.sh` from this framework tree after
+  sourcing the corrected core and framework environments.
+- P6: official `03c1fe44` versus corrected HEAD on one identical pressure
+  trace, checking completed instructions and injected requests match while
+  corrected activation is nonzero.  Run
+  `tests/l2_char/run_p6_official_vs_corrected.sh`; it expects the isolated
+  official framework/core worktrees declared at its top.
+- Hook equivalence: `tests/l2_char/run_hook_off_equivalence.sh` proves that
+  omitting the ReturnQ hold hook and setting it explicitly to zero preserve
+  all normal statistics exactly.
 
 Run, after building the core and frontend:
 
