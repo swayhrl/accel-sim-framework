@@ -22,9 +22,11 @@ COUNT_FIELDS = (
     "accepted_l1_events", "detect_events", "detect_lower_events",
     "detect_mshr_merge_events", "issue_events", "detect_sector_redundant",
     "issue_sector_redundant", "detect_line_redundant", "issue_line_redundant",
+    "oracle_accept_peer_hits", "issue_sector_minus_oracle_accept_hits",
     "detect_0_issue_0", "detect_0_issue_1", "detect_1_issue_0",
     "detect_1_issue_1", "wait_cycles_total",
 )
+MAX_FIELDS = ("wait_cycles_max",)
 
 
 def load_stage(root, stage, expected_cases):
@@ -44,6 +46,8 @@ def load_stage(root, stage, expected_cases):
         raise RuntimeError("%s: audited cases differ from expected cases" % stage)
     for row in rows:
         for field in COUNT_FIELDS:
+            row[field] = int(row[field])
+        for field in MAX_FIELDS:
             row[field] = int(row[field])
         row["issue_sector_redundant_ratio"] = float(
             row["issue_sector_redundant_ratio"])
@@ -100,6 +104,8 @@ def main():
         total = {"stage": stage, "workloads": len(rows)}
         for field in COUNT_FIELDS:
             total[field] = sum(row[field] for row in rows)
+        for field in MAX_FIELDS:
+            total[field] = max(row[field] for row in rows)
         total["issue_sector_redundant_ratio"] = (
             float(total["issue_sector_redundant"]) / total["issue_events"])
         total["issue_line_redundant_ratio"] = (
@@ -165,11 +171,11 @@ def main():
                 row["issue_line_redundant_ratio"] - paper_ratio),
         })
 
-    stage_fields = ["stage", "workloads"] + list(COUNT_FIELDS) + [
+    stage_fields = ["stage", "workloads"] + list(COUNT_FIELDS) + list(MAX_FIELDS) + [
         "issue_sector_redundant_ratio", "issue_line_redundant_ratio",
         "wait_cycles_mean"]
     write_csv(args.out_dir / "stage_totals.csv", stage_fields, totals)
-    all_fields = ["stage", "label", "case"] + list(COUNT_FIELDS) + [
+    all_fields = ["stage", "label", "case"] + list(COUNT_FIELDS) + list(MAX_FIELDS) + [
         "issue_sector_redundant_ratio", "issue_line_redundant_ratio",
         "wait_cycles_mean"]
     write_csv(args.out_dir / "all_workloads.csv", all_fields, all_rows)
