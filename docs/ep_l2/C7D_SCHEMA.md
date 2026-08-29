@@ -16,6 +16,10 @@ synonym by the C7d analyzer.
 | `c7d_descriptor_alloc_eligible`, `c7d_descriptor_pool_full_block` | Exact shared descriptor-pool condition. |
 | `c7d_per_address_cap_eligible`, `c7d_per_address_cap_block` | Exact per-address descriptor-cap condition. |
 
+`c7d_descriptor_chain_depth_avg`, `_p95`, and `_max` are derived directly
+from the live `mshr_table` entry target lists, weighted by active entries at
+each cache-cycle sample. They are not inferred from descriptor occupancy.
+
 ## WAD and payload fields
 
 `c7d_wad_full_events`, `c7d_wad_hazard_events`, and
