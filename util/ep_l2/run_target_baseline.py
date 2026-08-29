@@ -9,11 +9,13 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -90,6 +92,15 @@ def repo_clean(path: Path, generated_out: Path | None = None) -> bool:
 
 def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+
+def compress_valid_raw_log(log: Path) -> Path:
+    """Retain one lossless raw-log artifact without leaving a large duplicate."""
+    compressed = log.with_suffix(log.suffix + ".gz")
+    with log.open("rb") as source, gzip.open(compressed, "wb") as destination:
+        shutil.copyfileobj(source, destination)
+    log.unlink()
+    return compressed
 
 
 def normal_exit(log: Path) -> tuple[bool, str | None, str | None]:
@@ -230,11 +241,16 @@ def main() -> None:
                          if result.returncode == 0 and exited else
                          (False, "simulator did not exit normally"))
         status = "COMPLETE_VALID" if valid else "FAILED"
-        write_json(status_path, {"status": status, "detail": detail, "workload": name, "variant": variant,
+        status_record = {"status": status, "detail": detail, "workload": name, "variant": variant,
                                  "frequency_mhz": 850, "trace": str(trace_path), "exit_code": result.returncode,
                                  "normal_simulator_exit": exited, "terminal_gpu_tot_sim_cycle": cycles,
                                  "terminal_gpu_tot_sim_insn": instructions,
-                                 "wall_seconds": round(time.time() - started, 3), "audit": audit})
+                                 "wall_seconds": round(time.time() - started, 3), "audit": audit}
+        if valid:
+            compressed = compress_valid_raw_log(log)
+            status_record["raw_log_gz"] = str(compressed)
+            status_record["raw_log_gz_sha256"] = digest(compressed)
+        write_json(status_path, status_record)
         print(status, variant, name, "cycles=" + str(cycles), flush=True)
         if not valid:
             raise SystemExit("campaign stopped at failed run: %s/%s: %s" % (variant, name, detail))
