@@ -24,6 +24,7 @@ with tempfile.TemporaryDirectory() as temp:
     assert set(p.name for p in out.iterdir()) == {"target_summary.csv", "target_slice.csv", "target_kernel.csv", "target_window.csv", "target_bank.csv", "manifest.json"}
     summary = next(csv.DictReader((out / "target_summary.csv").open()))
     assert summary["bank_conflicts"] == "2"
+    assert summary["c7d_dram_scheduler_full_block"] == "NOT_EMITTED_BY_EPL2B0V1"
     assert summary["slice_count"] == "1"
     assert summary["terminal_invariant_records"] == "1"
     assert summary["invariants_terminal_clean"] == "1"

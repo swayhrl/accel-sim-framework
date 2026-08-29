@@ -165,8 +165,11 @@ def main():
                    r.get("terminal_clean") == 1 for r in terminal_invariants)),
                "invariants_payload_consistent": int(all(r.get("resident_tag_payload_consistent") == 1 for r in invariants))}
     for field in additive:
-        summary[field] = sum(row.get(field, 0) for row in application
-                             if isinstance(row.get(field, 0), (int, float)))
+        emitted = [row[field] for row in application
+                   if field in row and isinstance(row[field], (int, float))]
+        # A newer parser may read a pre-C7d producer log.  Absence is not a
+        # measured zero and must survive into any downstream analysis.
+        summary[field] = sum(emitted) if emitted else "NOT_EMITTED_BY_EPL2B0V1"
     write_csv(args.out / "target_summary.csv", [summary])
     manifest = {"schema_version": SCHEMA, "framework_commit": args.framework_commit,
                 "core_commit": args.core_commit, "source_log_sha256": sha256(args.source_log),
