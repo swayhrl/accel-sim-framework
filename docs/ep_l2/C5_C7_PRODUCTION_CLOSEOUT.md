@@ -1,6 +1,7 @@
 # EP-L2 C5–C7 Production Closeout
 
-Status: closeout in progress; this document does not authorize workload characterization.
+Status: PASS — production closeout complete; this document does not authorize
+workload characterization.
 
 ## Frozen scope
 
@@ -38,6 +39,7 @@ characterization has not started.
 
 ## Closeout gates
 
-Before this document can be marked PASS: run C3–C7 directed regressions,
-the parser regression, a Release build, instrumentation OFF/ON timing-neutral
-fixture, and package the exact logs and source revisions into a review pack.
+Completed evidence is frozen in `review_packs/C5_C7_PRODUCTION_CLOSEOUT_r1/`:
+C3–C7 directed regressions, parser regression, full Release build,
+instrumentation OFF/ON timing-neutral fixture, source revisions, and a
+compressed copy of the same review pack. No workload has been launched.
