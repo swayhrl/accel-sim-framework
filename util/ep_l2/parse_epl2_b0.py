@@ -104,11 +104,17 @@ def main():
     for row in application + kernels:
         bank_rows.append({key: row.get(key, "NA") for key in
                           ("schema_version", "scope", "slice", "kernel_uid", "samples",
-                           "bank_requests", "bank_grants", "bank_conflicts", "block_bank")})
+                           "bank_requests", "bank_logical_ops", "bank_attempts",
+                           "bank_grants", "bank_retry_attempts",
+                           "bank_true_conflict_ops", "bank_true_conflict_events",
+                           "bank_wait_cycles", "bank_conflicts", "block_bank")})
     write_csv(args.out / "target_bank.csv", bank_rows)
     additive = ("samples", "block_descriptor", "block_wad", "block_payload",
                 "block_bank", "block_l1", "block_lower", "bank_requests",
-                "bank_grants", "bank_conflicts")
+                "bank_logical_ops", "bank_attempts", "bank_grants",
+                "bank_retry_attempts", "bank_true_conflict_ops",
+                "bank_true_conflict_events", "bank_wait_cycles",
+                "bank_conflicts")
     # INVARIANT records are emitted at every kernel statistics boundary as
     # well as at application completion.  The application UID sentinel marks
     # the cumulative stream, but that stream itself has intermediate records;
