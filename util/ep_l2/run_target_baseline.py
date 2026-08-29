@@ -98,11 +98,11 @@ def normal_exit(log: Path) -> tuple[bool, str | None, str | None]:
         for line in source:
             ok |= EXIT_MARKER in line
             match = re.match(r"^gpu_tot_sim_cycle\s*=\s*(\d+)\s*$", line)
-        if match:
-            cycle = match.group(1)
-        match = re.match(r"^gpu_tot_sim_insn\s*=\s*(\d+)\s*$", line)
-        if match:
-            instructions = match.group(1)
+            if match:
+                cycle = match.group(1)
+            match = re.match(r"^gpu_tot_sim_insn\s*=\s*(\d+)\s*$", line)
+            if match:
+                instructions = match.group(1)
     return ok, cycle, instructions
 
 
