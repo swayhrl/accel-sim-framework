@@ -109,9 +109,10 @@ def main() -> None:
                 if sum(integer(row, "bank_logical_ops") for row in records) else "0.000000",
             "bank_wait_cycles": measured_sum(records, "bank_wait_cycles", unavailable), "missq_avg": weighted(records, "missq_avg"),
             "missq_max": maximum(records, "missq_max"), "lowerq_avg": weighted(records, "lowerq_avg"),
-            "lowerq_max": maximum(records, "lowerq_max"), "l2_to_dram_events": unavailable,
-            "dram_to_l2_events": unavailable,
-            "scheduler_block_events": unavailable,
+            "lowerq_max": maximum(records, "lowerq_max"),
+            "l2_to_dram_events": measured_sum(records, "c7d_dram_read_issues", unavailable),
+            "dram_to_l2_events": measured_sum(records, "c7d_dram_return_eligible", unavailable),
+            "scheduler_block_events": measured_sum(records, "c7d_dram_scheduler_full_block", unavailable),
             "dram_bandwidth_util": unavailable,
             "telemetry_note": "C7d exact fields only; coarse block_descriptor/block_wad/block_lower/block_payload are never reinterpreted",
         })
