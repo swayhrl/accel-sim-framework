@@ -20,7 +20,10 @@ import time
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CORE = Path("/workspace/worktrees/gpgpu-sim-ep-l2")
+# A C7d validation run must never borrow the live C6c worktree.  The campaign
+# launcher retains the historical default, but an isolated Core may be pinned
+# explicitly for validation or a future clean campaign.
+CORE = Path(os.environ.get("EP_L2_CORE", "/workspace/worktrees/gpgpu-sim-ep-l2"))
 TRACE_ROOT = Path("/workspace/worktrees/accel-sim-decoupled-l2/hw_run")
 EXIT_MARKER = "GPGPU-Sim: *** exit detected ***"
 
