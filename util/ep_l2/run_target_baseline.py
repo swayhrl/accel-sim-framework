@@ -73,15 +73,18 @@ def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
 
-def normal_exit(log: Path) -> tuple[bool, str | None]:
-    ok, cycle = False, None
+def normal_exit(log: Path) -> tuple[bool, str | None, str | None]:
+    ok, cycle, instructions = False, None, None
     with log.open(encoding="utf-8", errors="replace") as source:
         for line in source:
             ok |= EXIT_MARKER in line
             match = re.match(r"^gpu_tot_sim_cycle\s*=\s*(\d+)\s*$", line)
-            if match:
-                cycle = match.group(1)
-    return ok, cycle
+        if match:
+            cycle = match.group(1)
+        match = re.match(r"^gpu_tot_sim_insn\s*=\s*(\d+)\s*$", line)
+        if match:
+            instructions = match.group(1)
+    return ok, cycle, instructions
 
 
 def parse(directory: Path, log: Path, framework_source: str,
@@ -128,6 +131,8 @@ def main() -> None:
                         help="fail before launch unless Framework is exactly this SHA")
     parser.add_argument("--require-clean", action="store_true",
                         help="fail before launch unless both source worktrees are clean")
+    parser.add_argument("--expected-config-sha",
+                        help="fail before launch unless the four frozen runtime configs match this composite SHA")
     args = parser.parse_args()
     rows = [(name, path, variant, overlay) for name, path in ROSTER for variant, overlay in VARIANTS
             if (not args.only or name == args.only) and (not args.variant or variant == args.variant)]
@@ -150,11 +155,16 @@ def main() -> None:
                          (args.expected_framework_sha, framework_source))
     if args.require_clean and (not repo_clean(ROOT) or not repo_clean(CORE)):
         raise SystemExit("formal runner requires clean Framework and Core worktrees")
+    config_digests = {"base_config_sha256": digest(base), "trace_config_sha256": digest(trace_config),
+                      "legacy_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_legacy_850.config"),
+                      "banked_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_banked_850.config")}
+    config_sha = hashlib.sha256(json.dumps(config_digests, sort_keys=True).encode()).hexdigest()
+    if args.expected_config_sha and config_sha != args.expected_config_sha:
+        raise SystemExit("runtime config SHA mismatch: expected %s, found %s" %
+                         (args.expected_config_sha, config_sha))
     audit = {"schema_version": "EPL2B0V1", "framework_authoritative_source": framework_source,
              "core_authoritative_source": core_source, "frequency_mhz": 850,
-             "base_config_sha256": digest(base), "trace_config_sha256": digest(trace_config),
-             "legacy_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_legacy_850.config"),
-             "banked_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_banked_850.config"),
+             **config_digests, "runtime_config_composite_sha256": config_sha,
              "frozen_roster": [{"workload": n, "trace": str(t)} for n, t in ROSTER]}
     args.out.mkdir(parents=True, exist_ok=True)
     write_json(args.out / "campaign_manifest.json", audit)
@@ -180,7 +190,7 @@ def main() -> None:
         with log.open("w") as output:
             result = subprocess.run(("bash", "-lc", shell, "target-baseline-run", *command), cwd=directory,
                                     stdout=output, stderr=subprocess.STDOUT, env=env)
-        exited, cycles = normal_exit(log)
+        exited, cycles, instructions = normal_exit(log)
         valid, detail = (parse(directory, log, framework_source, core_source)
                          if result.returncode == 0 and exited else
                          (False, "simulator did not exit normally"))
@@ -188,6 +198,7 @@ def main() -> None:
         write_json(status_path, {"status": status, "detail": detail, "workload": name, "variant": variant,
                                  "frequency_mhz": 850, "trace": str(trace_path), "exit_code": result.returncode,
                                  "normal_simulator_exit": exited, "terminal_gpu_tot_sim_cycle": cycles,
+                                 "terminal_gpu_tot_sim_insn": instructions,
                                  "wall_seconds": round(time.time() - started, 3), "audit": audit})
         print(status, variant, name, "cycles=" + str(cycles), flush=True)
         if not valid:
