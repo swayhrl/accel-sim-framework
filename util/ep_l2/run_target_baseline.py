@@ -97,6 +97,13 @@ def parse(directory: Path, log: Path, framework_source: str,
     summary = next(csv.DictReader((directory / "target_summary.csv").open()))
     if summary.get("invariants_terminal_clean") != "1" or summary.get("invariants_payload_consistent") != "1":
         return False, "terminal EPL2B0V1 invariants failed"
+    for artifact in ("target_l1.csv", "target_dram.csv"):
+        path = directory / artifact
+        if not path.is_file():
+            return False, "missing required C7e artifact: " + artifact
+        with path.open(newline="") as source:
+            if not list(csv.DictReader(source)):
+                return False, "empty required C7e artifact: " + artifact
     manifest_path = directory / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["characterization_started"] = True
