@@ -42,6 +42,14 @@ For `scope=kernel`, bank fields are launch-to-completion deltas. For
 `scope=application`, they are application cumulative values. An overlapped
 kernel record is a shared-resource interval delta, not disjoint attribution.
 
+## Temporal records
+
+`scope=window`, `interval=5000_cycle` records are per-slice deltas over a
+bounded 5K-cycle interval. They report average line-MSHR, descriptor, WAD,
+resident-payload, MissQ, and L2-to-DRAM FIFO occupancy plus interval bank
+logical operations, true-conflict operations, and wait cycles. The parser
+writes these records to `target_window.csv`.
+
 ## Availability discipline
 
 `parse_epl2_b0.py` preserves producer fields. `analyze_target_baseline.py`

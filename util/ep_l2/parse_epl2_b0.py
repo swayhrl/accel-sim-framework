@@ -140,7 +140,11 @@ def main():
                 "c7d_wad_hazard_events", "c7d_wad_hazard_wait_cycles",
                 "c7d_payload_service_port_denial",
                 "c7d_payload_capacity_allocation_denial",
-                "c7d_missq_full_block", "c7d_l2_to_dram_full_block")
+                "c7d_missq_full_block", "c7d_l2_to_dram_full_block",
+                "c7d_dram_issue_eligible", "c7d_dram_read_issues",
+                "c7d_dram_write_issues", "c7d_dram_scheduler_full_block",
+                "c7d_dram_returnq_block", "c7d_dram_credit_block",
+                "c7d_dram_return_eligible", "c7d_dram_to_l2_full_block")
     # INVARIANT records are emitted at every kernel statistics boundary as
     # well as at application completion.  The application UID sentinel marks
     # the cumulative stream, but that stream itself has intermediate records;
