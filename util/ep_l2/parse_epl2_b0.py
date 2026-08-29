@@ -63,7 +63,7 @@ def main():
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
-    application, kernels, invariants = [], [], []
+    application, kernels, windows, invariants = [], [], [], []
     for line in args.log.read_text(encoding="utf-8", errors="replace").splitlines():
         parsed = record(line)
         if not parsed:
@@ -82,6 +82,8 @@ def main():
                 application.append(fields)
             elif scope == "kernel":
                 kernels.append(fields)
+            elif scope == "window":
+                windows.append(fields)
             else:
                 raise ValueError("unknown EPL2B0V1 record type/scope: %s/%s" % (kind, scope))
     if not application:
@@ -100,6 +102,7 @@ def main():
     application = [terminal_application[key] for key in sorted(terminal_application)]
     write_csv(args.out / "target_slice.csv", application)
     write_csv(args.out / "target_kernel.csv", kernels)
+    write_csv(args.out / "target_window.csv", windows)
     bank_rows = []
     for row in application + kernels:
         bank_rows.append({key: row.get(key, "NA") for key in
@@ -164,7 +167,7 @@ def main():
     manifest = {"schema_version": SCHEMA, "framework_commit": args.framework_commit,
                 "core_commit": args.core_commit, "source_log_sha256": sha256(args.source_log),
                 "artifacts": ["target_summary.csv", "target_slice.csv", "target_kernel.csv",
-                              "target_bank.csv"], "characterization_started": False}
+                              "target_bank.csv", "target_window.csv"], "characterization_started": False}
     (args.out / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 
 

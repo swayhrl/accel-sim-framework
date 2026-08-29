@@ -21,7 +21,7 @@ with tempfile.TemporaryDirectory() as temp:
     log.write_text(LOG)
     subprocess.check_call(["python3", str(PARSER), str(log), "--out", str(out),
                            "--framework-commit", "framework", "--core-commit", "core"])
-    assert set(p.name for p in out.iterdir()) == {"target_summary.csv", "target_slice.csv", "target_kernel.csv", "target_bank.csv", "manifest.json"}
+    assert set(p.name for p in out.iterdir()) == {"target_summary.csv", "target_slice.csv", "target_kernel.csv", "target_window.csv", "target_bank.csv", "manifest.json"}
     summary = next(csv.DictReader((out / "target_summary.csv").open()))
     assert summary["bank_conflicts"] == "2"
     assert summary["slice_count"] == "1"
