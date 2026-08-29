@@ -2,8 +2,12 @@
 
 ## Scope and provenance
 
-* Framework: `hrl/ep-l2-exp-v0` at `e00cf669ceaa8d4df0974473864cbb26ea0af4aa`.
+* Framework authoritative source revision: `hrl/ep-l2-exp-v0` at
+  `ee29c43d45fb6f46966131d63fe2d1bdbc68d59f`.
 * Core: `hrl/ep-l2-target-baseline-v0` at `9b536573730b2b5a8643a267abd3e1e134da097b`.
+* `AUTHORITATIVE_SOURCE.json` is the formal provenance anchor.  The review
+  pack was refreshed after the evidence-only Framework closeout commit; it
+  does not change the source revision used for target-baseline replays.
 * No target workload characterization was started or included.
 
 ## Evidence
