@@ -141,7 +141,13 @@ def main() -> None:
         raise SystemExit("missing frozen trace assets:\n" + "\n".join(missing))
     base = CORE / "configs/tested-cfgs/SM7_QV100/gpgpusim.config"
     trace_config = ROOT / "gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
-    sim = ROOT / "gpu-simulator/bin/release/accel-sim.out"
+    # The released Framework setup exposes ``bin/release``; an isolated C7e
+    # CMake build keeps the identical binary under ``build/release``.
+    # Prefer the normal release path but accept the explicit isolated-build
+    # path so provenance validation is not coupled to a symlink layout.
+    sim_candidates = (ROOT / "gpu-simulator/bin/release/accel-sim.out",
+                      ROOT / "gpu-simulator/build/release/accel-sim.out")
+    sim = next((candidate for candidate in sim_candidates if candidate.exists()), sim_candidates[0])
     for path in (base, trace_config, sim):
         if not path.exists():
             raise SystemExit("required runtime asset is missing: " + str(path))
