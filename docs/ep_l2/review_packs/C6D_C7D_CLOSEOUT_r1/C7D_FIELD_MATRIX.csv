@@ -1,0 +1,21 @@
+resource,metric,producer_source_path,exact_or_coarse,application_scope,kernel_scope,5K_window_scope,parser_field,analyzer_field,validation_test,notes
+Tag/set,line allocation eligible and all-reserved denial,src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_line_alloc_eligible;c7d_line_alloc_block;c7d_tag_set_all_reserved_block,explicit target fields,C7d schema regression,not inferred from RESERVATION_FAIL
+Tag/set,reserved lines and max reserved ways,set/tag snapshot via src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_reserved_*,explicit target fields,C7d schema regression,sampled cache-cycle state
+Line MSHR,eligibility and full block,src/gpgpu-sim/gpu-cache.cc;src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_line_mshr_*,explicit target fields,C7d exact-blocker regression,separate from descriptor reasons
+Descriptor pool,eligibility and pool-full block,src/gpgpu-sim/gpu-cache.cc;src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_descriptor_*,explicit target fields,C7d exact-blocker regression,shared pool only
+Per-address cap,eligibility and block,src/gpgpu-sim/gpu-cache.cc;src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_per_address_cap_*,explicit target fields,C7d exact-blocker regression,separate cause
+Descriptor chain,avg p95 max histogram,src/gpgpu-sim/gpu-cache.h;src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_descriptor_chain_*,explicit target fields,descriptor snapshot regression,live target lists
+WAD,full hazard wait lifetime occupancy,src/gpgpu-sim/gpu-cache.cc;src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_wad_*,explicit target fields,C7d exact-blocker regression,lifetime ends at real set_done
+Payload,resident valid dirty pending sector bypass state,src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_resident_*;c7d_bypass_*,explicit target fields,C7d schema regression,state-role separated
+Payload,service port vs capacity denial,src/gpgpu-sim/gpu-cache.h;src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_payload_service_port_denial;c7d_payload_capacity_allocation_denial,explicit target fields,C7d exact-blocker regression,not generic payload block
+Bank,logical attempts grants retries true conflicts waits,src/gpgpu-sim/gpu-cache.h;src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,bank_*,explicit target fields,C6d bank regressions,primary rate true-conflict/logical
+Bank,per-bank and operation class,src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_bank0_*..c7d_bank3_*;c7d_bank_*,explicit target fields,C7d schema regression,classes include hit/fill/WB/bypass
+L1,native MSHR merge MissQ bank line allocation,src/gpgpu-sim/gpu-cache.h,exact_native_unavailable_at_launch_scope,no,no,no,NOT_EMITTED_BY_EPL2B0V1,NOT_EMITTED_BY_EPL2B0V1,source audit,do not infer from block_l1
+MissQ,occupancy and local full admission,src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_missq_*,explicit target fields,C7d schema regression,queue scope is L2 subpartition
+L2->DRAM,FIFO occupancy and full admission,src/gpgpu-sim/l2cache.cc,exact,yes,yes,yes,c7d_l2_to_dram_*,explicit target fields,C7d lower regression,separate from scheduler
+DRAM scheduler,issue read write full occupancy,src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_dram_issue_*;c7d_dram_scheduler_*,explicit target fields,C7d lower regression,real dram_cycle observation
+ReturnQ,return eligibility and block,src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_dram_return_*;c7d_dram_returnq_block,explicit target fields,C7d lower regression,separate queue
+DRAM->L2,FIFO/full admission,src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_dram_to_l2_full_block,explicit target fields,C7d lower regression,not block_lower
+ICNT,L2-facing queue occupancy,src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,lowerq_*,explicit target fields,C7d schema regression,relevant queue exposure only
+DRAM traffic/BW,read and write issues,src/gpgpu-sim/l2cache.cc,exact,yes,yes,no,c7d_dram_read_issues;c7d_dram_write_issues,explicit target fields,C7d lower regression,bytes/utilization require analyzer conversion/config
+Temporal windows,5000-cycle resource deltas,src/gpgpu-sim/l2cache.cc,exact,no,no,yes,target_window.csv,target window table,C7d window parser regression,compact retained baseline per slice
