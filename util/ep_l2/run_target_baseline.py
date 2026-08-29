@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import time
@@ -69,8 +70,9 @@ def normal_exit(log: Path) -> tuple[bool, str | None]:
     with log.open(encoding="utf-8", errors="replace") as source:
         for line in source:
             ok |= EXIT_MARKER in line
-            if line.startswith("gpu_tot_sim_cycle="):
-                cycle = line.split("=", 1)[1].strip()
+            match = re.match(r"^gpu_tot_sim_cycle\s*=\s*(\d+)\s*$", line)
+            if match:
+                cycle = match.group(1)
     return ok, cycle
 
 
