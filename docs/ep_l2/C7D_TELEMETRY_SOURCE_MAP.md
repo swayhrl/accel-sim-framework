@@ -10,7 +10,7 @@
 | C6c banks | `ep_l2_payload_store::request()` | C6c logical/attempt/grant/retry/true-conflict/wait counters are preserved; C7d adds per-bank and operation class. |
 | Kernel bank deltas | `memory_sub_partition::begin/end_ep_l2_b0_kernel()` | Bank snapshot at kernel start is subtracted at completion. |
 | MissQ/L2-to-DRAM | `memory_sub_partition` queues and admission inputs | Occupancy is sampled; exact local full admissions have dedicated C7d fields. |
-| L1 | Native cache statistics in shader/cache path | `block_l1` stays coarse; no target-specific eligible/blocking aggregation is claimed. |
+| L1 | Native `cache_stats::m_fail_stats` in `data_cache`/shader path | Exact native classes exist for LINE_ALLOC_FAIL, MISS_QUEUE_FULL, MSHR entry-full, and MSHR merge-full. They are cumulative per cache/stream, however, and are not yet launch-boundary deltas. C7d therefore reports them unavailable until a stable aggregation hook is added; `block_l1` is never used to prove absence of an L1 bottleneck. |
 | DRAM scheduler/return path | `memory_partition_unit::dram_cycle()` and native `dram_t` | C7d records real issue eligibility, read/write issue, scheduler-full, ReturnQ/credit denial, DRAM-to-L2 full, and scheduler occupancy sampled at each eligible issue. `block_lower` is never reinterpreted as scheduler blocking. |
 
 This map is deliberately conservative: unconnected telemetry is reported as
