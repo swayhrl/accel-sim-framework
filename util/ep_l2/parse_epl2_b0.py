@@ -108,6 +108,27 @@ def main():
         if previous is None or row.get("completion_cycle", -1) >= previous.get("completion_cycle", -1):
             terminal_application[slice_id] = row
     application = [terminal_application[key] for key in sorted(terminal_application)]
+    # L1D and channel DRAM application records are cumulative snapshots and
+    # native statistics may print them more than once at shutdown. Retain the
+    # final record for each independent producer; kernel deltas and 5K
+    # windows remain append-only interval records.
+    final_l1_application = {}
+    l1_intervals = []
+    for row in l1:
+        if row.get("scope") == "application":
+            final_l1_application[row.get("kernel_uid", APPLICATION_UID)] = row
+        else:
+            l1_intervals.append(row)
+    l1 = l1_intervals + [final_l1_application[key] for key in sorted(final_l1_application)]
+    final_dram_application = {}
+    dram_intervals = []
+    for row in dram:
+        if row.get("scope") == "application":
+            final_dram_application[row.get("channel")] = row
+        else:
+            dram_intervals.append(row)
+    dram = dram_intervals + [final_dram_application[key] for key in sorted(final_dram_application)]
+
     write_csv(args.out / "target_slice.csv", application)
     write_csv(args.out / "target_kernel.csv", kernels)
     write_csv(args.out / "target_window.csv", windows)
