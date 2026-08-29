@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 
 SCHEMA = "EPL2B0V1"
+L1_SCHEMA = "EPL2L1V1"
+DRAM_SCHEMA = "EPL2DRAMV1"
 APPLICATION_UID = (1 << 64) - 1
 
 
@@ -22,7 +24,7 @@ def value(text):
 
 def record(line):
     parts = line.rstrip().split("|")
-    if len(parts) < 2 or parts[0] != SCHEMA:
+    if len(parts) < 2 or parts[0] not in (SCHEMA, L1_SCHEMA, DRAM_SCHEMA):
         return None
     fields = {}
     kind, start = ("SNAPSHOT", 1) if "=" in parts[1] else (parts[1], 2)
@@ -31,7 +33,7 @@ def record(line):
             raise ValueError("malformed EPL2B0V1 field: " + item)
         key, raw = item.split("=", 1)
         fields[key] = value(raw)
-    return kind, fields
+    return parts[0], kind, fields
 
 
 def write_csv(path, rows):
@@ -63,13 +65,19 @@ def main():
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
-    application, kernels, windows, invariants = [], [], [], []
+    application, kernels, windows, invariants, l1, dram = [], [], [], [], [], []
     for line in args.log.read_text(encoding="utf-8", errors="replace").splitlines():
         parsed = record(line)
         if not parsed:
             continue
-        kind, fields = parsed
-        fields["schema_version"] = SCHEMA
+        schema, kind, fields = parsed
+        fields["schema_version"] = schema
+        if schema == L1_SCHEMA:
+            l1.append(fields)
+            continue
+        if schema == DRAM_SCHEMA:
+            dram.append(fields)
+            continue
         if kind == "INVARIANT":
             invariants.append(fields)
         elif kind == "BANK":
@@ -103,6 +111,8 @@ def main():
     write_csv(args.out / "target_slice.csv", application)
     write_csv(args.out / "target_kernel.csv", kernels)
     write_csv(args.out / "target_window.csv", windows)
+    write_csv(args.out / "target_l1.csv", l1)
+    write_csv(args.out / "target_dram.csv", dram)
     bank_rows = []
     for row in application + kernels:
         bank_rows.append({key: row.get(key, "NA") for key in
@@ -174,7 +184,8 @@ def main():
     manifest = {"schema_version": SCHEMA, "framework_commit": args.framework_commit,
                 "core_commit": args.core_commit, "source_log_sha256": sha256(args.source_log),
                 "artifacts": ["target_summary.csv", "target_slice.csv", "target_kernel.csv",
-                              "target_bank.csv", "target_window.csv"], "characterization_started": False}
+                              "target_bank.csv", "target_window.csv", "target_l1.csv",
+                              "target_dram.csv"], "characterization_started": False}
     (args.out / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 
 

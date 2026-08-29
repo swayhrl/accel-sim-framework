@@ -14,6 +14,8 @@ EPL2B0V1|scope=kernel|interval=kernel_shared_delta|slice=0|kernel_uid=7|start_cy
 EPL2B0V1|INVARIANT|slice=0|kernel_uid=7|line_mshr_used=0|line_mshr_capacity=128|descriptor_used=0|descriptor_free=256|descriptor_capacity=256|wad_live=2|wad_capacity=128|resident_live=1|resident_capacity=1024|bypass_live=0|bypass_capacity=128|bank_pending=0|resident_tag_payload_consistent=1|payload_double_owner=0|terminal_clean=0
 EPL2B0V1|INVARIANT|slice=0|kernel_uid=18446744073709551615|line_mshr_used=0|line_mshr_capacity=128|descriptor_used=0|descriptor_free=256|descriptor_capacity=256|wad_live=2|wad_capacity=128|resident_live=1|resident_capacity=1024|bypass_live=0|bypass_capacity=128|bank_pending=0|resident_tag_payload_consistent=1|payload_double_owner=0|terminal_clean=0
 EPL2B0V1|INVARIANT|slice=0|kernel_uid=18446744073709551615|line_mshr_used=0|line_mshr_capacity=128|descriptor_used=0|descriptor_free=256|descriptor_capacity=256|wad_live=0|wad_capacity=128|resident_live=1|resident_capacity=1024|bypass_live=0|bypass_capacity=128|bank_pending=0|resident_tag_payload_consistent=1|payload_double_owner=0|terminal_clean=1
+EPL2L1V1|scope=application|kernel_uid=18446744073709551615|accesses=8|misses=2|bank_conflicts=1
+EPL2DRAMV1|scope=application|channel=0|successful_read_bytes=32|bandwidth_util=0.5
 """
 
 with tempfile.TemporaryDirectory() as temp:
@@ -21,7 +23,7 @@ with tempfile.TemporaryDirectory() as temp:
     log.write_text(LOG)
     subprocess.check_call(["python3", str(PARSER), str(log), "--out", str(out),
                            "--framework-commit", "framework", "--core-commit", "core"])
-    assert set(p.name for p in out.iterdir()) == {"target_summary.csv", "target_slice.csv", "target_kernel.csv", "target_window.csv", "target_bank.csv", "manifest.json"}
+    assert set(p.name for p in out.iterdir()) == {"target_summary.csv", "target_slice.csv", "target_kernel.csv", "target_window.csv", "target_bank.csv", "target_l1.csv", "target_dram.csv", "manifest.json"}
     summary = next(csv.DictReader((out / "target_summary.csv").open()))
     assert summary["bank_conflicts"] == "2"
     assert summary["c7d_dram_scheduler_full_block"] == "NOT_EMITTED_BY_EPL2B0V1"
@@ -30,5 +32,7 @@ with tempfile.TemporaryDirectory() as temp:
     assert summary["invariants_terminal_clean"] == "1"
     kernel = next(csv.DictReader((out / "target_kernel.csv").open()))
     assert kernel["overlap_detected"] == "1"
+    assert next(csv.DictReader((out / "target_l1.csv").open()))["accesses"] == "8"
+    assert next(csv.DictReader((out / "target_dram.csv").open()))["bandwidth_util"] == "0.5"
     assert json.loads((out / "manifest.json").read_text())["schema_version"] == "EPL2B0V1"
 print("EPL2B0V1 parser regression: PASS")
