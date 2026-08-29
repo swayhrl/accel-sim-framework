@@ -107,6 +107,16 @@ def parse(directory: Path, log: Path, framework_source: str,
         with path.open(newline="") as source:
             if not list(csv.DictReader(source)):
                 return False, "empty required C7e artifact: " + artifact
+    with (directory / "target_l1.csv").open(newline="") as source:
+        if not any(row.get("scope") == "application" for row in csv.DictReader(source)):
+            return False, "missing C7e L1D application record"
+    with (directory / "target_dram.csv").open(newline="") as source:
+        dram_rows = list(csv.DictReader(source))
+    if not any(row.get("scope") == "application" for row in dram_rows):
+        return False, "missing C7e DRAM application record"
+    if not any(row.get("scope") == "window" and row.get("interval") == "5000_cycle"
+               for row in dram_rows):
+        return False, "missing C7e 5K-channel-window record"
     manifest_path = directory / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["characterization_started"] = True
