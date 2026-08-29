@@ -30,6 +30,13 @@ def maximum(rows: list[dict[str, str]], field: str) -> int:
     return max((integer(row, field) for row in rows), default=0)
 
 
+def measured_sum(rows: list[dict[str, str]], field: str, unavailable: str) -> int | str:
+    """Return a sum only when the producer actually emitted this field."""
+    if not any(field in row and row[field] not in ("", "NA") for row in rows):
+        return unavailable
+    return sum(integer(row, field) for row in rows)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "docs/ep_l2/target_baseline_results")
@@ -50,7 +57,7 @@ def main() -> None:
             raise SystemExit("incomplete or invalid Target Baseline run %s/%s: %s" %
                              (variant, name, error))
     fields = [
-        "workload", "variant", "cycles", "speed_vs_legacy", "l1_block_events",
+        "workload", "variant", "cycles", "speed_vs_legacy", "l1_block_coarse_events",
         "tag_set_block_events", "line_mshr_avg", "line_mshr_p95_max", "line_mshr_max",
         "line_mshr_full_events", "descriptor_avg", "descriptor_p95_max", "descriptor_max",
         "descriptor_pool_full_events", "descriptor_per_address_cap_events", "wad_avg",
@@ -73,36 +80,40 @@ def main() -> None:
         rows.append({
             "workload": name, "variant": variant, "cycles": cycle,
             "speed_vs_legacy": "%.6f" % (legacy_cycle / cycle),
-            "l1_block_events": sum(integer(row, "block_l1") for row in records),
-            "tag_set_block_events": unavailable,
+            "l1_block_coarse_events": measured_sum(records, "block_l1", unavailable),
+            "tag_set_block_events": measured_sum(records, "c7d_tag_set_all_reserved_block", unavailable),
             "line_mshr_avg": weighted(records, "line_mshr_avg"),
             "line_mshr_p95_max": maximum(records, "line_mshr_p95"),
             "line_mshr_max": maximum(records, "line_mshr_max"),
-            "line_mshr_full_events": unavailable,
+            "line_mshr_full_events": measured_sum(records, "c7d_line_mshr_full_block", unavailable),
             "descriptor_avg": weighted(records, "descriptor_avg"),
             "descriptor_p95_max": maximum(records, "descriptor_p95"),
             "descriptor_max": maximum(records, "descriptor_max"),
-            "descriptor_pool_full_events": sum(integer(row, "block_descriptor") for row in records),
-            "descriptor_per_address_cap_events": unavailable,
+            "descriptor_pool_full_events": measured_sum(records, "c7d_descriptor_pool_full_block", unavailable),
+            "descriptor_per_address_cap_events": measured_sum(records, "c7d_per_address_cap_block", unavailable),
             "wad_avg": weighted(records, "wad_avg"), "wad_p95_max": maximum(records, "wad_p95"),
-            "wad_max": maximum(records, "wad_max"), "wad_full_events": sum(integer(row, "block_wad") for row in records),
-            "wad_hazard_wait_events": unavailable,
+            "wad_max": maximum(records, "wad_max"), "wad_full_events": measured_sum(records, "c7d_wad_full_events", unavailable),
+            "wad_hazard_wait_events": measured_sum(records, "c7d_wad_hazard_wait_cycles", unavailable),
             "resident_payload_avg": weighted(records, "resident_payload_avg"),
             "resident_payload_p95_max": maximum(records, "resident_payload_p95"),
             "resident_payload_max": maximum(records, "resident_payload_max"),
-            "resident_valid_events": unavailable, "resident_pending_events": unavailable,
+            "resident_valid_events": weighted(records, "c7d_resident_valid_avg") if any("c7d_resident_valid_avg" in r for r in records) else unavailable,
+            "resident_pending_events": weighted(records, "c7d_resident_pending_sector_avg") if any("c7d_resident_pending_sector_avg" in r for r in records) else unavailable,
             "bypass_payload_avg": weighted(records, "bypass_payload_avg"),
-            "payload_alloc_block_events": sum(integer(row, "block_payload") for row in records),
+            "payload_alloc_block_events": measured_sum(records, "c7d_payload_capacity_allocation_denial", unavailable),
             "bank_requests": bank_requests, "bank_grants": sum(integer(row, "bank_grants") for row in records),
-            "bank_conflicts": bank_conflicts,
-            "bank_conflict_rate": "%.6f" % (bank_conflicts / bank_requests) if bank_requests else "0.000000",
-            "bank_wait_cycles": unavailable, "missq_avg": weighted(records, "missq_avg"),
+            "bank_conflicts": measured_sum(records, "bank_true_conflict_ops", unavailable),
+            "bank_conflict_rate": "%.6f" % (
+                sum(integer(row, "bank_true_conflict_ops") for row in records) /
+                sum(integer(row, "bank_logical_ops") for row in records))
+                if sum(integer(row, "bank_logical_ops") for row in records) else "0.000000",
+            "bank_wait_cycles": measured_sum(records, "bank_wait_cycles", unavailable), "missq_avg": weighted(records, "missq_avg"),
             "missq_max": maximum(records, "missq_max"), "lowerq_avg": weighted(records, "lowerq_avg"),
             "lowerq_max": maximum(records, "lowerq_max"), "l2_to_dram_events": unavailable,
             "dram_to_l2_events": unavailable,
-            "scheduler_block_events": sum(integer(row, "block_lower") for row in records),
+            "scheduler_block_events": unavailable,
             "dram_bandwidth_util": unavailable,
-            "telemetry_note": "EPL2B0V1 emitted fields; NOT_EMITTED values are intentionally not inferred",
+            "telemetry_note": "C7d exact fields only; coarse block_descriptor/block_wad/block_lower/block_payload are never reinterpreted",
         })
     table = args.out / "target_baseline_comparison.csv"
     with table.open("w", newline="") as output:

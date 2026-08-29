@@ -107,14 +107,37 @@ def main():
                            "bank_requests", "bank_logical_ops", "bank_attempts",
                            "bank_grants", "bank_retry_attempts",
                            "bank_true_conflict_ops", "bank_true_conflict_events",
-                           "bank_wait_cycles", "bank_conflicts", "block_bank")})
+                           "bank_wait_cycles", "bank_conflicts", "block_bank",
+                           "c7d_bank0_logical_ops", "c7d_bank1_logical_ops",
+                           "c7d_bank2_logical_ops", "c7d_bank3_logical_ops",
+                           "c7d_bank0_grants", "c7d_bank1_grants",
+                           "c7d_bank2_grants", "c7d_bank3_grants",
+                           "c7d_bank0_true_conflict_ops",
+                           "c7d_bank1_true_conflict_ops",
+                           "c7d_bank2_true_conflict_ops",
+                           "c7d_bank3_true_conflict_ops",
+                           "c7d_bank0_wait_cycles", "c7d_bank1_wait_cycles",
+                           "c7d_bank2_wait_cycles", "c7d_bank3_wait_cycles",
+                           "c7d_bank_resident_hit_read", "c7d_bank_resident_write",
+                           "c7d_bank_fill_write", "c7d_bank_wb_readout",
+                           "c7d_bank_bypass_fill", "c7d_bank_bypass_read")})
     write_csv(args.out / "target_bank.csv", bank_rows)
     additive = ("samples", "block_descriptor", "block_wad", "block_payload",
                 "block_bank", "block_l1", "block_lower", "bank_requests",
                 "bank_logical_ops", "bank_attempts", "bank_grants",
                 "bank_retry_attempts", "bank_true_conflict_ops",
                 "bank_true_conflict_events", "bank_wait_cycles",
-                "bank_conflicts")
+                "bank_conflicts", "c7d_line_alloc_eligible",
+                "c7d_line_alloc_block", "c7d_tag_set_all_reserved_block",
+                "c7d_line_mshr_alloc_eligible", "c7d_line_mshr_full_block",
+                "c7d_descriptor_alloc_eligible",
+                "c7d_descriptor_pool_full_block",
+                "c7d_per_address_cap_eligible",
+                "c7d_per_address_cap_block", "c7d_wad_full_events",
+                "c7d_wad_hazard_events", "c7d_wad_hazard_wait_cycles",
+                "c7d_payload_service_port_denial",
+                "c7d_payload_capacity_allocation_denial",
+                "c7d_missq_full_block", "c7d_l2_to_dram_full_block")
     # INVARIANT records are emitted at every kernel statistics boundary as
     # well as at application completion.  The application UID sentinel marks
     # the cumulative stream, but that stream itself has intermediate records;
