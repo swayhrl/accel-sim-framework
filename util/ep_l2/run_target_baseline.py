@@ -64,9 +64,28 @@ def repo_head(path: Path) -> str:
                                    text=True).strip()
 
 
-def repo_clean(path: Path) -> bool:
-    return not subprocess.check_output(("git", "-C", str(path), "status", "--porcelain"),
-                                       text=True).strip()
+def repo_clean(path: Path, generated_out: Path | None = None) -> bool:
+    """Check source cleanliness while permitting this runner's untracked output.
+
+    Formal result roots intentionally live under Framework ``docs/``.  They
+    are generated evidence, not source modifications, and must not prevent a
+    later smoke/prefill invocation from proving its source tree is clean.
+    Any tracked change, or any untracked path outside the explicit result
+    root, still fails closed.
+    """
+    allowed = None
+    if generated_out:
+        try:
+            allowed = str(generated_out.resolve().relative_to(path.resolve()))
+        except ValueError:
+            pass
+    status = subprocess.check_output(("git", "-C", str(path), "status", "--porcelain"), text=True)
+    for line in status.splitlines():
+        state, name = line[:2], line[3:]
+        if state == "??" and allowed and (name == allowed or name.startswith(allowed + "/")):
+            continue
+        return False
+    return True
 
 
 def write_json(path: Path, value: dict) -> None:
@@ -169,7 +188,7 @@ def main() -> None:
     if args.expected_framework_sha and framework_source != args.expected_framework_sha:
         raise SystemExit("Framework SHA mismatch: expected %s, found %s" %
                          (args.expected_framework_sha, framework_source))
-    if args.require_clean and (not repo_clean(ROOT) or not repo_clean(CORE)):
+    if args.require_clean and (not repo_clean(ROOT, args.out) or not repo_clean(CORE)):
         raise SystemExit("formal runner requires clean Framework and Core worktrees")
     config_digests = {"base_config_sha256": digest(base), "trace_config_sha256": digest(trace_config),
                       "legacy_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_legacy_850.config"),
