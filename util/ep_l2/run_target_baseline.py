@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Run the frozen EP-L2 Target Baseline B0 campaign at 850 MHz only.
 
-The runner deliberately contains no Unified/RO/TVD overlays.  It records the
-C5-C7 authoritative simulation source revision rather than silently using a
-later documentation/evidence commit.
+The runner deliberately contains no Unified/RO/TVD overlays.  It captures the
+checked-out Framework and Core commits at launch, so each campaign manifest
+has one authoritative, reproducible source pair.
 """
 from __future__ import annotations
 
@@ -21,8 +21,6 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 CORE = Path("/workspace/worktrees/gpgpu-sim-ep-l2")
 TRACE_ROOT = Path("/workspace/worktrees/accel-sim-decoupled-l2/hw_run")
-FRAMEWORK_SOURCE = "ee29c43d45fb6f46966131d63fe2d1bdbc68d59f"
-CORE_SOURCE = "9b536573730b2b5a8643a267abd3e1e134da097b"
 EXIT_MARKER = "GPGPU-Sim: *** exit detected ***"
 
 
@@ -57,6 +55,11 @@ def digest(path: Path) -> str:
     return h.hexdigest()
 
 
+def repo_head(path: Path) -> str:
+    return subprocess.check_output(("git", "-C", str(path), "rev-parse", "HEAD"),
+                                   text=True).strip()
+
+
 def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
@@ -71,10 +74,11 @@ def normal_exit(log: Path) -> tuple[bool, str | None]:
     return ok, cycle
 
 
-def parse(directory: Path, log: Path) -> tuple[bool, str]:
+def parse(directory: Path, log: Path, framework_source: str,
+          core_source: str) -> tuple[bool, str]:
     result = subprocess.run((sys.executable, str(ROOT / "util/ep_l2/parse_epl2_b0.py"),
                              str(log), "--out", str(directory), "--framework-commit",
-                             FRAMEWORK_SOURCE, "--core-commit", CORE_SOURCE,
+                             framework_source, "--core-commit", core_source,
                              "--source-log", str(log)), text=True, capture_output=True)
     (directory / "parser.stdout").write_text(result.stdout)
     (directory / "parser.stderr").write_text(result.stderr)
@@ -87,15 +91,16 @@ def parse(directory: Path, log: Path) -> tuple[bool, str]:
     manifest = json.loads(manifest_path.read_text())
     manifest["characterization_started"] = True
     manifest["target_baseline"] = {"frequency_mhz": 850, "variants": [v[0] for v in VARIANTS],
-                                   "framework_authoritative_source": FRAMEWORK_SOURCE,
-                                   "core_authoritative_source": CORE_SOURCE}
+                                   "framework_authoritative_source": framework_source,
+                                   "core_authoritative_source": core_source}
     write_json(manifest_path, manifest)
     return True, ""
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--out", type=Path, default=ROOT / "docs/ep_l2/target_baseline_results")
+    parser.add_argument("--out", type=Path,
+                        default=ROOT / "docs/ep_l2/target_baseline_results_c5c")
     parser.add_argument("--only", help="one frozen workload name")
     parser.add_argument("--variant", choices=[v[0] for v in VARIANTS])
     parser.add_argument("--rerun", action="store_true")
@@ -112,8 +117,10 @@ def main() -> None:
     for path in (base, trace_config, sim):
         if not path.exists():
             raise SystemExit("required runtime asset is missing: " + str(path))
-    audit = {"schema_version": "EPL2B0V1", "framework_authoritative_source": FRAMEWORK_SOURCE,
-             "core_authoritative_source": CORE_SOURCE, "frequency_mhz": 850,
+    framework_source = repo_head(ROOT)
+    core_source = repo_head(CORE)
+    audit = {"schema_version": "EPL2B0V1", "framework_authoritative_source": framework_source,
+             "core_authoritative_source": core_source, "frequency_mhz": 850,
              "base_config_sha256": digest(base), "trace_config_sha256": digest(trace_config),
              "frozen_roster": [{"workload": n, "trace": str(t)} for n, t in ROSTER]}
     args.out.mkdir(parents=True, exist_ok=True)
@@ -141,7 +148,8 @@ def main() -> None:
             result = subprocess.run(("bash", "-lc", shell, "target-baseline-run", *command), cwd=directory,
                                     stdout=output, stderr=subprocess.STDOUT, env=env)
         exited, cycles = normal_exit(log)
-        valid, detail = (parse(directory, log) if result.returncode == 0 and exited else
+        valid, detail = (parse(directory, log, framework_source, core_source)
+                         if result.returncode == 0 and exited else
                          (False, "simulator did not exit normally"))
         status = "COMPLETE_VALID" if valid else "FAILED"
         write_json(status_path, {"status": status, "detail": detail, "workload": name, "variant": variant,
