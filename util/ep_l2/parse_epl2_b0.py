@@ -86,8 +86,17 @@ def main():
     if not application:
         raise ValueError("no EPL2B0V1 application cumulative records found")
 
-    # The producer emits one application record per slice. Preserve all of
-    # them, and make one aggregate summary with additive fields summed.
+    # Application records are cumulative and may be printed at an
+    # intermediate kernel-completion statistics boundary. For each slice,
+    # retain only its latest completion snapshot; summing successive
+    # cumulative snapshots would double count a multi-kernel run.
+    terminal_application = {}
+    for row in application:
+        slice_id = row.get("slice")
+        previous = terminal_application.get(slice_id)
+        if previous is None or row.get("completion_cycle", -1) >= previous.get("completion_cycle", -1):
+            terminal_application[slice_id] = row
+    application = [terminal_application[key] for key in sorted(terminal_application)]
     write_csv(args.out / "target_slice.csv", application)
     write_csv(args.out / "target_kernel.csv", kernels)
     bank_rows = []
