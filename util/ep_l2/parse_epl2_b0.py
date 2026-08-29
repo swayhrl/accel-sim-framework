@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 SCHEMA = "EPL2B0V1"
+APPLICATION_UID = (1 << 64) - 1
 
 
 def value(text):
@@ -108,10 +109,18 @@ def main():
     additive = ("samples", "block_descriptor", "block_wad", "block_payload",
                 "block_bank", "block_l1", "block_lower", "bank_requests",
                 "bank_grants", "bank_conflicts")
+    # INVARIANT records are emitted both at kernel boundaries and at the
+    # application terminal boundary.  A live WAD/payload at a kernel boundary
+    # is valid when later kernels in the same application can still consume
+    # it, so only the application-scope sentinel proves terminal cleanliness.
+    terminal_invariants = [row for row in invariants
+                           if row.get("kernel_uid") == APPLICATION_UID]
     summary = {"schema_version": SCHEMA, "slice_count": len(application),
                "kernel_record_count": len(kernels),
                "invariant_records": len(invariants),
-               "invariants_terminal_clean": int(all(r.get("terminal_clean") == 1 for r in invariants)),
+               "terminal_invariant_records": len(terminal_invariants),
+               "invariants_terminal_clean": int(bool(terminal_invariants) and all(
+                   r.get("terminal_clean") == 1 for r in terminal_invariants)),
                "invariants_payload_consistent": int(all(r.get("resident_tag_payload_consistent") == 1 for r in invariants))}
     for field in additive:
         summary[field] = sum(row.get(field, 0) for row in application
