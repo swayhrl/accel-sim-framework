@@ -109,12 +109,18 @@ def main():
     additive = ("samples", "block_descriptor", "block_wad", "block_payload",
                 "block_bank", "block_l1", "block_lower", "bank_requests",
                 "bank_grants", "bank_conflicts")
-    # INVARIANT records are emitted both at kernel boundaries and at the
-    # application terminal boundary.  A live WAD/payload at a kernel boundary
-    # is valid when later kernels in the same application can still consume
-    # it, so only the application-scope sentinel proves terminal cleanliness.
-    terminal_invariants = [row for row in invariants
-                           if row.get("kernel_uid") == APPLICATION_UID]
+    # INVARIANT records are emitted at every kernel statistics boundary as
+    # well as at application completion.  The application UID sentinel marks
+    # the cumulative stream, but that stream itself has intermediate records;
+    # retain its final row for each physical L2 slice, just as above for the
+    # cumulative application snapshots.  A live WAD/payload in an earlier
+    # cumulative record is valid when later kernels can still consume it.
+    terminal_by_slice = {}
+    for row in invariants:
+        if row.get("kernel_uid") == APPLICATION_UID:
+            terminal_by_slice[row.get("slice")] = row
+    terminal_invariants = [terminal_by_slice[key]
+                           for key in sorted(terminal_by_slice)]
     summary = {"schema_version": SCHEMA, "slice_count": len(application),
                "kernel_record_count": len(kernels),
                "invariant_records": len(invariants),
