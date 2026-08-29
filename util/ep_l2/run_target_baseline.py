@@ -64,6 +64,11 @@ def repo_head(path: Path) -> str:
                                    text=True).strip()
 
 
+def repo_clean(path: Path) -> bool:
+    return not subprocess.check_output(("git", "-C", str(path), "status", "--porcelain"),
+                                       text=True).strip()
+
+
 def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
@@ -110,6 +115,12 @@ def main() -> None:
     parser.add_argument("--variant", choices=[v[0] for v in VARIANTS])
     parser.add_argument("--rerun", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--expected-core-sha",
+                        help="fail before launch unless CORE is exactly this SHA")
+    parser.add_argument("--expected-framework-sha",
+                        help="fail before launch unless Framework is exactly this SHA")
+    parser.add_argument("--require-clean", action="store_true",
+                        help="fail before launch unless both source worktrees are clean")
     args = parser.parse_args()
     rows = [(name, path, variant, overlay) for name, path in ROSTER for variant, overlay in VARIANTS
             if (not args.only or name == args.only) and (not args.variant or variant == args.variant)]
@@ -124,9 +135,19 @@ def main() -> None:
             raise SystemExit("required runtime asset is missing: " + str(path))
     framework_source = repo_head(ROOT)
     core_source = repo_head(CORE)
+    if args.expected_core_sha and core_source != args.expected_core_sha:
+        raise SystemExit("Core SHA mismatch: expected %s, found %s" %
+                         (args.expected_core_sha, core_source))
+    if args.expected_framework_sha and framework_source != args.expected_framework_sha:
+        raise SystemExit("Framework SHA mismatch: expected %s, found %s" %
+                         (args.expected_framework_sha, framework_source))
+    if args.require_clean and (not repo_clean(ROOT) or not repo_clean(CORE)):
+        raise SystemExit("formal runner requires clean Framework and Core worktrees")
     audit = {"schema_version": "EPL2B0V1", "framework_authoritative_source": framework_source,
              "core_authoritative_source": core_source, "frequency_mhz": 850,
              "base_config_sha256": digest(base), "trace_config_sha256": digest(trace_config),
+             "legacy_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_legacy_850.config"),
+             "banked_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_banked_850.config"),
              "frozen_roster": [{"workload": n, "trace": str(t)} for n, t in ROSTER]}
     args.out.mkdir(parents=True, exist_ok=True)
     write_json(args.out / "campaign_manifest.json", audit)
