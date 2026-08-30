@@ -127,8 +127,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pack", type=Path,
                         default=ROOT / "docs/ep_l2/review_packs/LINE_MSHR_CAUSALITY_r1")
+    parser.add_argument("--promote-d512", action="store_true",
+                        help="mark exact D512 descendants promoted after the upstream gate passes")
     args = parser.parse_args()
     pack = args.pack
+    d512_maturity = ("PROMOTED_VALID_CALIBRATION" if args.promote_d512
+                     else "SPECULATIVE_PENDING_GATE")
     pack.mkdir(parents=True, exist_ok=True)
     d512_conv = D512 / "B0-Banked__convolutionSeparable/B0-Banked/convolutionSeparable"
     d512_spmv = D512 / "B0-Banked__spmv/B0-Banked/spmv"
@@ -137,14 +141,14 @@ def main() -> None:
     d512_spmv_m256 = RESULTS / "d512_spmv_m256"
     rows = [record("D256_M128", FORMAL, 256, 128, "PROMOTED_VALID_CALIBRATION"),
             record("D256_M256", d256_m256, 256, 256, "PROMOTED_VALID_CALIBRATION"),
-            record("D512_M128", d512_conv, 512, 128, "SPECULATIVE_PENDING_GATE"),
-            record("D512_M256", d512_m256, 512, 256, "SPECULATIVE_PENDING_GATE")]
+            record("D512_M128", d512_conv, 512, 128, d512_maturity),
+            record("D512_M256", d512_m256, 512, 256, d512_maturity)]
     base = rows[0]["cycles"]
     for row in rows:
         row["speedup_vs_d256_m128"] = round(base / row["cycles"], 8)
     write_csv(pack / "CONVOLUTION_2X2.csv", rows)
-    control = [record("D512_M128", d512_spmv, 512, 128, "SPECULATIVE_PENDING_GATE"),
-               record("D512_M256", d512_spmv_m256, 512, 256, "SPECULATIVE_PENDING_GATE")]
+    control = [record("D512_M128", d512_spmv, 512, 128, d512_maturity),
+               record("D512_M256", d512_spmv_m256, 512, 256, d512_maturity)]
     control_base = control[0]["cycles"]
     for row in control:
         row["speedup_vs_d512_m128"] = round(control_base / row["cycles"], 8)
@@ -184,7 +188,12 @@ def main() -> None:
     write_csv(pack / "RAW_LOG_INDEX.tsv", raw)
     (pack / "RUN_STATUS.csv").write_text((pack / "RESOURCE_MOVEMENT.csv").read_text())
     (pack / "SOURCE_ANCHORS.md").write_text("# Source anchors\n\n- Formal D256: Core `ece1a3a77c5628763e0a4605bfd1c639ee6a1495`; Framework `f08d2ce857972fad73c4e1ab7162ba94c6336507`.\n- Lane-B D512 semantic parent: Core `878f80869ce212e779df20b6421e4dc7f987825d`; Framework `aae62b66685f15437cecf0193934f628e6fac6ae`; composite `a7dc3ce28f5e54ca966d08a7e3548a844533a9bee08b63ea4d964cd9ec2c9416`.\n")
-    (pack / "README.md").write_text("# Line-MSHR Causality Probe r1\n\nLine-MSHR256 is a sensitivity headroom point, not a primary-baseline proposal. D512-derived rows remain `SPECULATIVE_PENDING_GATE` on `D512_PREFLIGHT_PASS`.\n")
+    state = ("D512-derived rows are `PROMOTED_VALID_CALIBRATION` after exact-parent verification."
+             if args.promote_d512 else
+             "D512-derived rows remain `SPECULATIVE_PENDING_GATE` on `D512_PREFLIGHT_PASS`.")
+    (pack / "README.md").write_text("# Line-MSHR Causality Probe r1\n\n"
+                                     "Line-MSHR256 is a sensitivity headroom point, not a primary-baseline proposal. "
+                                     + state + "\n")
     for path in sorted(pack.iterdir()):
         if path.is_file() and path.name != "SHA256SUMS":
             pass
