@@ -11,6 +11,5 @@ launched or rerun.
   pairing, missing equivalence evidence, wrong base lineage, and hidden
   effective-config changes.
 - `git diff --check`: PASS (recorded in `validation/git_diff_check.txt`).
-- `validation/pytest.txt` retains the test runner output. The intentionally
-  empty `validation/git_status.txt` is the clean-status capture after the
-  evidence commit.
+- `validation/pytest.txt` retains the test runner output. The clean-status
+  capture is summarized in `validation/git_status.txt`.
