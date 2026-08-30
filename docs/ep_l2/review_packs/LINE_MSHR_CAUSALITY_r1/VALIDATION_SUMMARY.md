@@ -11,6 +11,7 @@
 | E7 convolution 2x2 | PASS locally: all four rows have normal exit, parser success, terminal clean, and payload consistency. |
 | E8 spmv control | PASS locally: 23,560 cycles and all reported counters are unchanged at MSHR256. |
 
-D512/M256 and D512/spmv/M256 remain `SPECULATIVE_PENDING_GATE` with
-promotion dependency `D512_PREFLIGHT_PASS` for the exact frozen Lane-B
-candidate. No result is a primary-baseline promotion.
+The exact frozen Lane-B candidate has now passed `D512_PREFLIGHT_PASS` and was
+promoted 26/26. Exact matching D512/M256 and D512/spmv/M256 rows are therefore
+`PROMOTED_VALID_CALIBRATION` without rerun. No result is a primary-baseline
+promotion.
