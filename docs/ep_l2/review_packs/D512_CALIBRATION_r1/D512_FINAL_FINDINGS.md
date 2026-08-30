@@ -20,8 +20,12 @@
    insufficient.** At D512, L2→DRAM full blocks remain 1,724,003 (vectorAdd),
    288,174 (spmv), 2,455,970 (convolution), 58,792,353 (scan), and 1,077,737
    (FWT_7_21); scheduler-full cycles likewise remain substantial. Native
-   application DRAM utilization changes little, e.g. vectorAdd 0.796→0.790,
-   spmv 0.666→0.663, convolution 0.651→0.647, scan 0.819→0.817.
+   lower-admission byte-rate normalization changes little, e.g. vectorAdd
+   0.796→0.790, spmv 0.666→0.663, convolution 0.651→0.647, scan
+   0.819→0.817. Separately recovered native physical DRAM data-bus weighted
+   means show the same small movements for these completed cases; see
+   `D512_NATIVE_DRAM_BANDWIDTH.csv`. The two quantities are explicitly
+   distinct and no physical per-5K-window bus metric was retained.
 
 4. **No broad new per-address/L1/WAD/payload cause is established.** The
    per-address cap remains 32 and is largely unchanged; spmv's event count

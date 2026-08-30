@@ -21,4 +21,7 @@ Key files:
 - `D512_PREFLIGHT.md` and `D512_PREFLIGHT_GATE.json`: natural D512 preflight.
 - `D512_RUN_STATUS_26OF26.csv`, `D512_PROVENANCE_AUDIT_26OF26.csv`, and
   `D512_PROMOTION_STATUS.json`: complete promoted-mirror audit.
+- `D512_NATIVE_DRAM_BANDWIDTH.csv` and `BANDWIDTH_SEMANTICS.md`: distinct
+  lower-admission and native-physical-bus semantics, with 52 complete
+  32-channel native snapshots (D256 and D512).
 - `D512_FINAL_FINDINGS.md`: conservative research interpretation.
