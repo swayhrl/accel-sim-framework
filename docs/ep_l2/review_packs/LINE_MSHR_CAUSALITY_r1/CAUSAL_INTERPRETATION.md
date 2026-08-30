@@ -1,6 +1,6 @@
 # Causal interpretation
 
-Classification: `MSHR_ADMISSION_THROTTLE_DOWNSTREAM_LIMITED`.
+Local classification pending D512 promotion: `MSHR_ADMISSION_THROTTLE_DOWNSTREAM_LIMITED`.
 
 For convolution under D512, increasing Line-MSHRs from 128 to 256 eliminates
 the exact Line-MSHR-full count (`931,416 -> 0`) but changes cycles only from
@@ -17,4 +17,5 @@ nearly unchanged. Thus MSHR128 is a real admission ceiling exposed after
 descriptor relief, but not the final performance ceiling for this workload.
 
 This sensitivity result does not promote MSHR256 as a baseline and does not
-justify an RO no-MSHR, TVD, or Unified mechanism claim.
+justify an RO no-MSHR, TVD, or Unified mechanism claim. Its classification may
+be promoted without rerun only if Lane B promotes the exact frozen candidate.

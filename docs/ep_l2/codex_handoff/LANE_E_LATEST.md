@@ -1,7 +1,9 @@
 # Lane E — Line-MSHR Causality Probe
 
-Status: `LINE_MSHR_CAUSALITY_PROBE_COMPLETE` locally; D512 descendants remain
-`SPECULATIVE_PENDING_GATE` on `D512_PREFLIGHT_PASS`.
+Status: `LOCAL_EXECUTION_COMPLETE_PENDING_PROMOTION`; D512 descendants remain
+`SPECULATIVE_PENDING_GATE` on `D512_PREFLIGHT_PASS`. Lane E must not be marked
+`LINE_MSHR_CAUSALITY_PROBE_COMPLETE` until that exact Lane-B candidate is
+promoted or superseded.
 
 The Line-MSHR256 audit found no telemetry clipping: the Line-MSHR allocator is
 already capacity-parameterized and its 1025-bin occupancy histogram, p95, delta
