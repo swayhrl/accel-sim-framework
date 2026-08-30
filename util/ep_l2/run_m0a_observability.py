@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run isolated D512 M0a OFF/ON neutrality and ON characterization only."""
+"""Run isolated D512 M0a+M1 static equivalence and neutrality controls."""
 from __future__ import annotations
 
 import argparse
@@ -17,7 +17,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 ROOT = Path(__file__).resolve().parents[2]
-CORE = Path(os.environ.get("EP_L2_CORE", "/workspace/worktrees/gpgpu-sim-ep-l2-m0a"))
+CORE = Path(os.environ.get("EP_L2_CORE", "/workspace/worktrees/gpgpu-sim-ep-l2-m0a-m1-int"))
 TRACE_ROOT = Path("/workspace/worktrees/accel-sim-decoupled-l2/hw_run")
 EXIT = "GPGPU-Sim: *** exit detected ***"
 ROSTER = {
@@ -28,7 +28,33 @@ ROSTER = {
     "cfd_097k": "decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K",
     "sad": "decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin",
 }
-EQUIVALENCE = ("vectorAdd_4M", "convolutionSeparable", "sad")
+EQUIVALENCE = ("vectorAdd_4M", "cfd_097k", "sad")
+MATURE = "SPECULATIVE_PENDING_GATE"
+PROMOTION_DEPENDENCIES = ("M0A_FINAL_PASS", "M1_FINAL_PASS")
+MODES = {
+    "BASE_M1_STATIC": {
+        "overlay": "OFF",
+        "m0a_stats_enabled": False,
+        "ep_l2_features": {
+            "payload_policy": "static",
+            "unified_payload": False,
+            "ro_pending_state": False,
+            "tvd": False,
+            "adaptive_policy": False,
+        },
+    },
+    "M0A_ON_M1_STATIC": {
+        "overlay": "ON",
+        "m0a_stats_enabled": True,
+        "ep_l2_features": {
+            "payload_policy": "static",
+            "unified_payload": False,
+            "ro_pending_state": False,
+            "tvd": False,
+            "adaptive_policy": False,
+        },
+    },
+}
 
 
 def digest(path: Path) -> str:
@@ -78,15 +104,19 @@ def run_one(task: tuple[str, str], out: Path, command: tuple[str, ...], audit: d
         result = subprocess.run(("bash", "-lc", shell, "m0a-run", *command), cwd=directory,
                                 stdout=output, stderr=subprocess.STDOUT, env=env)
     normal, cycles, insn = terminal(log)
+    run_audit = dict(audit)
+    run_audit.update({"experiment_mode": mode, "m0a_stats_enabled": MODES[mode]["m0a_stats_enabled"],
+                      "ep_l2_features": MODES[mode]["ep_l2_features"], "trace": command[-1],
+                      "result_root": str(directory)})
     status = {"workload": workload, "mode": mode, "exit_code": result.returncode,
               "normal_simulator_exit": normal, "terminal_gpu_tot_sim_cycle": cycles,
               "terminal_gpu_tot_sim_insn": insn, "wall_seconds": round(time.time() - started, 3),
-              "audit": audit}
+              "audit": run_audit}
     if result.returncode or not normal:
         status.update({"status": "FAILED", "detail": "simulator did not exit normally"})
         write_json(directory / "run_status.json", status)
         return status
-    if mode != "OFF":
+    if MODES[mode]["m0a_stats_enabled"]:
         parsed = subprocess.run((sys.executable, str(ROOT / "util/ep_l2/parse_epl2_m0a.py"), str(log),
                                  "--out", str(directory), "--framework-commit", audit["framework_sha"],
                                  "--core-commit", audit["core_sha"]), text=True, capture_output=True)
@@ -120,7 +150,7 @@ def run_one(task: tuple[str, str], out: Path, command: tuple[str, ...], audit: d
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--out", type=Path, default=Path("/workspace/results/ep_l2_m0a"))
+    parser.add_argument("--out", type=Path, default=Path("/workspace/results/ep_l2_m0a_m1_int"))
     parser.add_argument("--jobs", type=int, default=3)
     parser.add_argument("--only", choices=tuple(ROSTER))
     args = parser.parse_args()
@@ -128,7 +158,7 @@ def main() -> None:
     trace_cfg = ROOT / "gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
     d512 = ROOT / "tests/ep_l2/b0_banked_d512_850.config"
     overlays = {"OFF": ROOT / "tests/ep_l2/m0a_off.config", "ON": ROOT / "tests/ep_l2/m0a_on.config"}
-    sim = ROOT / "gpu-simulator/build/release/accel-sim.out"
+    sim = ROOT / "gpu-simulator/bin/release/accel-sim.out"
     for path in (base, trace_cfg, d512, *overlays.values(), sim):
         if not path.is_file():
             raise SystemExit("required asset missing: " + str(path))
@@ -138,17 +168,19 @@ def main() -> None:
                          active_config_lines(overlays["ON"]) == ["-gpgpu_ep_l2_m0a_stats 1"])
     if not config_delta_pass:
         raise SystemExit("M0a OFF/ON overlays are not the approved one-bit config delta")
-    audit = {"schema_version": "EPL2M0AV1", "framework_sha": head(ROOT), "core_sha": head(CORE),
+    audit = {"schema_version": "EPL2M0AV1", "semantic_base_id": "EP_L2_D512_CALIBRATED",
+             "maturity": MATURE, "promotion_dependencies": PROMOTION_DEPENDENCIES,
+             "framework_sha": head(ROOT), "core_sha": head(CORE),
              "frequency_mhz": 850, "runtime_config_sha256": hashlib.sha256(
                  json.dumps(config_digests, sort_keys=True).encode()).hexdigest(),
              "config_digests": config_digests, "config_delta_pass": config_delta_pass,
              "config_delta_evidence": "only -gpgpu_ep_l2_m0a_stats: 0 -> 1",
-             "primary_variant": "D512_B0_Banked"}
+             "primary_variant": "D512_B0_Banked", "m1_substrate": "static-compatible"}
     args.out.mkdir(parents=True, exist_ok=True)
     write_json(args.out / "campaign_manifest.json", audit)
     names = (args.only,) if args.only else tuple(ROSTER)
-    tasks = [(name, "ON") for name in names]
-    tasks += [(name, mode) for name in EQUIVALENCE if name in names for mode in ("OFF", "ON")]
+    tasks = [(name, "M0A_ON_M1_STATIC") for name in names]
+    tasks += [(name, mode) for name in EQUIVALENCE if name in names for mode in MODES]
     tasks = list(dict.fromkeys(tasks))
     commands = {}
     for name, mode in tasks:
@@ -156,7 +188,7 @@ def main() -> None:
         if not trace.is_file():
             raise SystemExit("missing frozen trace: " + str(trace))
         commands[(name, mode)] = (str(sim), "-config", str(base), "-config", str(trace_cfg),
-                                  "-config", str(d512), "-config", str(overlays[mode]),
+                                  "-config", str(d512), "-config", str(overlays[MODES[mode]["overlay"]]),
                                   "-trace", str(trace))
     failures = []
     with ThreadPoolExecutor(max_workers=max(1, args.jobs)) as pool:
