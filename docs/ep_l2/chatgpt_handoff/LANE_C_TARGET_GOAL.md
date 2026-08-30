@@ -2,7 +2,7 @@
 
 ## One-line goal
 
-> Starting from the exact C7e D256 B0-Banked baseline, autonomously complete the selected-workload L1 META-HR and BANK-HR causality screen, self-repair all authorized config/instrumentation/tooling issues until Lane C acceptance passes, consume Lane B's exact D512_READY definition when available for the D512 interaction cells, decompose any materially sensitive META-HR result one resource at a time, produce a causal classification pack, update the shared workboard, then STOP before changing the primary L1 baseline or implementing EP-L2 mechanisms.
+> Maximize wall-clock efficiency by continuing D256 L1 causality work, launching per-workload decomposition as soon as triggered, and running D512×L1 interaction cells speculatively from the exact frozen Lane-B candidate before `D512_READY`; keep those descendants provisional until Lane-B promotion gates pass; self-repair within Lane-C scope until `L1_CAUSALITY_SCREEN_COMPLETE`; then STOP before primary-baseline changes or EP-L2 mechanisms.
 
 ## Read order
 
@@ -13,41 +13,86 @@ docs/ep_l2/chatgpt_handoff/CURRENT_STATE.md
 docs/ep_l2/chatgpt_handoff/INTERIM_22OF26_CHATGPT_REVIEW.md
 docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 docs/ep_l2/chatgpt_handoff/PARALLEL_MASTER_PLAN.md
+docs/ep_l2/chatgpt_handoff/SPECULATIVE_PARALLEL_EXECUTION_POLICY.md
 docs/ep_l2/chatgpt_handoff/PARALLEL_NEW_WINDOW_BOOTSTRAP.md
 docs/ep_l2/chatgpt_handoff/LANE_C_L1_CAUSALITY_HANDOFF.md
 docs/ep_l2/chatgpt_handoff/LANE_C_L1_CAUSALITY_ACCEPTANCE_CRITERIA.md
 ```
 
-## Start immediately
+## Execute immediately
 
-Do not wait for Lane A 26/26 or Lane B D512 to finish before starting the D256 cells.
-
-Immediately execute:
+Continue/complete:
 
 ```text
-D256 + L1 META-HR: 7 selected workloads, B0-Banked
-D256 + L1 BANK-HR: 7 selected workloads, B0-Banked
+D256 + L1 META-HR: 7 workloads, B0-Banked
+D256 + L1 BANK-HR: 7 workloads, B0-Banked
 ```
 
-When workboard `D512-PREFLIGHT` becomes DONE/PASS, consume Lane B's exact D512_READY source/config and continue with D512 interaction cells.
+As soon as any META-HR workload triggers material sensitivity, launch its MSHR-only / merge-only / MissQ-only decomposition immediately; do not wait for the full seven-workload screen.
 
-## Target-mode behavior
+## Speculative D512 interaction — start now
 
-If a build, config-delta audit, parser test, counter test, or run fails, repair and continue within the Lane C boundaries.
-
-Allowed autonomous work:
+Use exactly:
 
 ```text
-isolated L1 sensitivity config overlays
-runner/provenance plumbing
-L1 observation-only telemetry fixes when required
+Lane-B Core candidate:
+878f80869ce212e779df20b6421e4dc7f987825d
+
+Lane-B Framework candidate:
+aae62b66685f15437cecf0193934f628e6fac6ae
+```
+
+Create isolated Lane-C descendants and launch:
+
+```text
+D512 + META-HR × 7
+D512 + BANK-HR × 7
+```
+
+without waiting for Lane B's long `scan` equivalence or `D512_READY`.
+
+Every such run records:
+
+```text
+maturity = SPECULATIVE_PENDING_GATE
+promotion_dependencies:
+  - D256_EQ_SCAN_PASS
+  - D512_PREFLIGHT_PASS
+```
+
+Do not recreate D512 locally or modify Lane-B worktrees.
+
+## Promotion / invalidation
+
+If Lane B publishes `D512_READY` for the exact candidate above, promote exact matching completed Lane-C D512 rows without rerun.
+
+If Lane B changes candidate source/config after a source/config/producer/timing failure, invalidate dependent D512×L1 rows and rerun them from the superseding candidate. Continue target mode; wasted speculative compute is acceptable under this policy.
+
+Packaging/parser-only upstream failures may be reprocessed if producer data remain valid.
+
+## Self-repair boundary
+
+Allowed:
+
+```text
+isolated L1 config overlays
+runner/provenance/maturity plumbing
+observation-only L1 telemetry fixes if required
 parser/analyzer/tests/review packaging
-one-at-a-time decomposition for sensitive META-HR cases
+one-at-a-time decomposition
 ```
 
-Hard boundaries are defined in the acceptance file. Never modify Lane A/B active runtime worktrees.
+Not allowed:
 
-## Completion condition
+```text
+L1 capacity/assoc/line/latency changes
+independent D512 implementation
+other L2/DRAM resource changes
+Lane A/B active runtime modification
+functional RO/TVD/Unified
+```
+
+## Completion
 
 Complete only when:
 
@@ -55,11 +100,11 @@ Complete only when:
 L1_CAUSALITY_SCREEN_COMPLETE
 ```
 
-is supported by the acceptance criteria and the workboard/review pack contain exact evidence paths.
+is supported by the acceptance criteria and all required D512 descendants are promoted valid rather than merely computed.
 
-## Required outputs
+## Outputs
 
-Mirror documentation-only outputs to coordination branch:
+Mirror:
 
 ```text
 docs/ep_l2/codex_handoff/LANE_C_LATEST.md
@@ -67,4 +112,4 @@ docs/ep_l2/review_packs/L1_CAUSALITY_CALIBRATION_r1/
 docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 ```
 
-Then STOP. Do not decide D256 vs D512 or change the primary L1 configuration; those belong to convergence/BASELINE-DECISION.
+Then STOP before `BASELINE-DECISION` or functional mechanism work.
