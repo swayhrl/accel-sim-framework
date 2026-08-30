@@ -31,7 +31,8 @@ def whole(value: str | None) -> int:
 def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
     fields = list(dict.fromkeys(field for row in rows for field in row)) if rows else []
     with path.open("w", newline="") as destination:
-        writer = csv.DictWriter(destination, fieldnames=fields, extrasaction="raise")
+        writer = csv.DictWriter(destination, fieldnames=fields, extrasaction="raise",
+                                lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
