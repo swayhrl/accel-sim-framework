@@ -4,224 +4,167 @@ Owner: dedicated Codex Window B.
 
 ## Objective
 
-Determine whether the current 256-entry shared persistent descriptor pool is an unnecessarily tight metadata ceiling and whether 512 entries is a more appropriate calibrated baseline.
+Determine whether the 256-entry shared persistent descriptor pool is an unnecessarily tight metadata ceiling and whether 512 entries is a more appropriate calibrated baseline. Do not tune to force Line MSHR to become the bottleneck; observe where pressure naturally moves.
 
-Do **not** increase descriptor capacity with the goal of forcing Line MSHR to become the bottleneck. Observe where pressure naturally moves.
+## Scheduling mode
+
+Follow:
+
+```text
+docs/ep_l2/chatgpt_handoff/SPECULATIVE_PARALLEL_EXECUTION_POLICY.md
+```
+
+Lane B no longer waits idly for a long validation job when the candidate source/config is already frozen. Validation gates still control **promotion**, not necessarily **launch**.
 
 ## Source identity
 
-Use the exact C7e source/config semantics used by Lane A formal runs as the base. The interim formal manifest declares:
+Formal C7e base:
 
 ```text
 Core      ece1a3a77c5628763e0a4605bfd1c639ee6a1495
 Framework f08d2ce857972fad73c4e1ab7162ba94c6336507
 ```
 
-First verify these exact objects are available locally/remotely. If Lane A has published stable C7e branches, branch from those exact SHAs. Do not recreate equivalent source as a new base commit.
-
-Suggested isolated branches/worktrees:
+Current frozen D512 candidate:
 
 ```text
-Core      hrl/ep-l2-d512-cal-v0
-Framework hrl/ep-l2-d512-cal-v0
+Core      878f80869ce212e779df20b6421e4dc7f987825d
+Framework aae62b66685f15437cecf0193934f628e6fac6ae
 ```
 
-Never touch Lane A runtime worktrees/binaries/results.
+The candidate is a direct descendant/generalization of the formal pair. Use exact immutable SHAs for runs; do not run from a moving branch tip. Never touch Lane A runtime worktrees/binaries/results.
+
+Suggested Lane B worktrees remain:
+
+```text
+/workspace/worktrees/accel-sim-ep-l2-d512/
+/workspace/worktrees/gpgpu-sim-ep-l2-d512/
+```
 
 ## Frozen variables
 
-Only the global persistent descriptor capacity changes:
+Only:
 
 ```text
 Descriptor pool: 256 -> 512
-Line MSHR:        128 unchanged
-Per-address cap:   32 unchanged
-WAD:              128 unchanged
-L2 geometry:      unchanged
-Payload:           unchanged
-Bank arbitration: unchanged
-L1:                unchanged
-Queues/DRAM:       unchanged
-850 MHz:           unchanged
 ```
 
-## B1 — Code/cardinality audit
+changes. Line MSHR=128, per-address cap=32, WAD=128, L1, Tag/L2 geometry, Payload, bank semantics, queues, DRAM and 850MHz remain unchanged.
 
-Audit all descriptor-capacity assumptions, including:
+## Current validation state
+
+Already complete/reported:
 
 ```text
-descriptor allocator/free-ID structure
-descriptor count/invariants
-histogram/vector sizing
-p95/max calculations
-schema/parser/analyzer fields
-directed tests
-review-pack scripts
+D512 cardinality source audit
+D512 telemetry generalization
+boundary tests
+Release build/regression
+D512 config-diff fail-closed test
+D256 equivalence: vectorAdd_4M PASS
+D256 equivalence: spmv PASS
 ```
 
-Search for hard-coded `256`, `257`, descriptor histogram bounds, or assertions whose semantics incorrectly assume the pool cannot exceed 256.
-
-If no source change is necessary, document that D512 is already parameter-safe.
-
-If generalization is necessary, changes must be parameterization/observation only; descriptor lifetime/allocation semantics must remain unchanged.
-
-## B2 — D256 equivalence gate
-
-If any source code changes, prove the generalized source configured at D256 is timing-equivalent to the exact C7e formal source on representative natural workloads.
-
-At minimum use:
+Still running and mandatory before promotion:
 
 ```text
-vectorAdd_4M
-spmv
-one longer descriptor-heavy workload (scan or FWT_7_21 if practical)
+D256 equivalence: scan / B0-Banked
 ```
 
-Require exact equality for:
+Do not interrupt that job.
 
-```text
-gpu cycles
-instructions
-major L1/L2 traffic counts
-successful DRAM transactions/bytes
-terminal invariants
-```
+## Immediate parallel action — authorized now
 
-Telemetry representation may differ only where cardinality support was generalized.
+Do **not** wait for `scan` to finish before using otherwise idle compute.
 
-Do not proceed to D512 if D256 equivalence fails without explanation.
-
-## B3 — D512 preflight
-
-Run D512 with L1 BASE on:
+Using the exact frozen D512 candidate above, immediately launch the D512 calibration campaign as provisional work. Prefer one 13x2 mirror with the following workloads prioritized first because they constitute the natural preflight subset:
 
 ```text
 vectorAdd_4M
 scan
 spmv
 FWT_7_21
-sad  # low-L2-pressure control
+sad or btree
++ at least one Legacy paired control
 ```
 
-Prefer B0-Banked first for fast screening. Add paired Legacy runs where needed to verify static bank-matched baseline behavior and before full mirror launch.
+The same mirror rows may serve as preflight evidence; a duplicate preflight campaign is optional, not required.
 
-Verify:
+All early D512 outputs are:
 
 ```text
-COMPLETE_VALID
-terminal_clean = 1
-payload consistency = 1
-descriptor occupancy can exceed 256 when demanded
-descriptor max/p95/histogram are not clipped at 256
-all required C7e telemetry remains present
-Line MSHR remains 128 and cap remains 32
-no unintended config delta
+SPECULATIVE_PENDING_GATE
+promotion_dependencies:
+  D256_EQ_SCAN_PASS
+  D512_PREFLIGHT_PASS
 ```
 
-Primary comparisons against D256:
+The 26-run may continue while these gates are pending.
+
+## Promotion logic
+
+If `scan` D256 equivalence and D512 preflight both PASS:
+
+```text
+existing exact candidate runs
+SPECULATIVE_PENDING_GATE
+    -> PROMOTED_VALID_CALIBRATION
+```
+
+without simulator rerun.
+
+If `scan` exposes an actual source/timing-equivalence defect, or preflight exposes a D512 source/config/producer defect:
+
+```text
+all affected descendants
+-> INVALIDATED_BY_UPSTREAM_GATE
+```
+
+Keep them for diagnosis, repair the candidate, and rerun only affected descendants.
+
+Parser/packaging-only failures may be reprocessed without simulator rerun when raw producer output remains valid.
+
+## D512 telemetry validation
+
+Before `D512_READY`, explicitly prove occupancy telemetry is not clipped above256. Require a directed telemetry fixture or natural candidate result demonstrating values above256 (e.g. `descriptor_max > 256` and, where natural pressure supports it, `descriptor_p95 > 256`) with correct parser output.
+
+## Analysis
+
+Compare D256 vs D512 using:
 
 ```text
 cycles
-descriptor need/block/max/p95
-Line MSHR avg/p95/max/full
-per-address-cap blocks
+descriptor need/block/avg/p95/max
+Line MSHR need/full/avg/p95/max
+per-address cap
 L1 pressure
 WAD/payload/bank
-L2->DRAM/scheduler/BW
+L2->DRAM/scheduler
+lower_admission_byte_rate_norm
+native DRAM BW from Lane D when available
 5K temporal behavior
 ```
 
-## B4 — D512 mirror campaign
+Use both performance and pressure movement; occupancy alone is not causal.
 
-If B1-B3 pass, launch the speculative mirror:
+## Formal milestone semantics
 
-```text
-13 workloads x {B0-Legacy, B0-Banked} @850 MHz
-Descriptor = 512
-= 26 calibration runs
-```
+`D512_READY` still requires all audit/equivalence/preflight gates in `LANE_B_DESCRIPTOR512_ACCEPTANCE_CRITERIA.md` to PASS.
 
-Label every artifact:
-
-```text
-SPECULATIVE_CALIBRATION_D512
-```
-
-Use a separate result root, e.g.:
-
-```text
-docs/ep_l2/calibration_results/d512_850/
-```
-
-Large raw logs should remain outside Git; index them with paths/SHA256/provenance.
-
-Parallel simulator processes are encouraged when host memory/CPU capacity allows, but use fixed source/config manifests and avoid oversubscription severe enough to cause run failures.
-
-## Interpretation
-
-Classify each workload into one of these evidence patterns:
-
-```text
-A. Descriptor blocks collapse + meaningful speedup + MSHR pressure emerges
-   -> D512 strong baseline candidate; MSHR-centric motivation strengthened.
-
-B. Descriptor blocks collapse + little speedup + lower pressure increases
-   -> D256 throttled demand, but downstream is causal ceiling.
-
-C. Descriptor blocks collapse + little speedup/pressure movement
-   -> D256 creates retry pressure but little performance loss.
-
-D. Descriptor blocks remain material at D512
-   -> further calibration only after hardware-cost review; do not automatically enlarge again.
-```
-
-Do not call occupancy alone causal.
-
-## Acceptance criteria
-
-Lane B reaches `D512_READY` only if:
-
-```text
-[ ] exact C7e base provenance established
-[ ] D512 cardinality audit complete
-[ ] any generalization is timing-neutral at D256
-[ ] D512 preflight COMPLETE_VALID
-[ ] telemetry is not clipped/misparsed above 256
-[ ] config diff proves descriptor capacity is the only architectural delta
-[ ] no functional cache/MSHR/WAD/payload/bank/lower-path semantic change
-```
-
-After `D512_READY`, launch/continue the full D512 mirror automatically.
+`D512_MIRROR_COMPLETE` requires 26/26 locally valid runs **and** promotion of all rows. Finishing computations early does not lower this standard.
 
 ## Deliverables
 
-Push source to lane-specific branches and publish documentation-only review material to the coordination branch:
+Maintain:
 
 ```text
 docs/ep_l2/codex_handoff/LANE_B_LATEST.md
 docs/ep_l2/review_packs/D512_CALIBRATION_r1/
+docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 ```
 
-Include:
+Record exact source/config/trace identity, maturity and promotion dependencies for every provisional result. Publish machine-readable equivalence/config lineage for Lane C/D.
 
-```text
-README.md
-SOURCE_ANCHORS.md
-CONFIG_DIFF.md
-D256_EQUIVALENCE.md
-D512_PREFLIGHT.md
-D512_RUN_STATUS.csv
-D512_COMPARISON.csv
-VALIDATION_SUMMARY.md
-OPEN_ISSUES.md
-RAW_LOG_INDEX.tsv
-SHA256SUMS
-```
+## STOP boundaries
 
-Update workboard rows `D512-AUDIT`, `D512-PREFLIGHT`, and `D512-MIRROR` after each state transition.
-
-## STOP / escalation boundaries
-
-Stop and report if D512 appears to require changing descriptor semantics rather than capacity/representation, or if D256 equivalence cannot be restored without changing architecture behavior.
-
-Do not implement RO no-MSHR, TVD, Unified borrowing, or change L1/DRAM resources in Lane B.
+Do not change descriptor lifetime semantics, Line MSHR, per-address cap, L1, WAD/Payload/bank/lower resources, workloads/traces, or Lane A state. Do not implement RO/TVD/Unified or declare D512 the primary baseline.
