@@ -82,7 +82,11 @@ def record(directory: Path) -> dict[str, float]:
 
 
 def relative(base: float, value: float) -> float:
-    return (value - base) / base if base else (0.0 if value == 0 else float("inf"))
+    # A zero baseline has no meaningful percentage delta.  The comparison CSV
+    # retains both absolute values, while causality classification must not
+    # inflate a handful of newly observed retry events into an artificial
+    # downstream-pressure shift.
+    return (value - base) / base if base else 0.0
 
 
 def classify(speedup_pct: float, desc_delta_pct: float, lower_delta_pct: float, sched_delta_pct: float,
