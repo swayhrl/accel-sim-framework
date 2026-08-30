@@ -17,10 +17,13 @@ docs/ep_l2/project_spec/README.md
 docs/ep_l2/project_spec/RESEARCH_CHARTER.md
 docs/ep_l2/project_spec/ARCHITECTURE_BLUEPRINT.md
 docs/ep_l2/project_spec/EVIDENCE_AND_CLAIM_MODEL.md
+docs/ep_l2/project_spec/WORKLOAD_CHARACTERIZATION_SCHEMA.md
+docs/ep_l2/project_spec/WORKLOAD_ARCHETYPES_PRELIMINARY.md
+docs/ep_l2/project_spec/MECHANISM_IMPLEMENTATION_PLAN.md
 docs/ep_l2/project_spec/EXPERIMENT_ROADMAP.md
 ```
 
-The project specification records the stable research objective, architecture thesis, claim standard, and long-term roadmap. `chatgpt_handoff/` records only the currently authorized executable stage.
+The project specification records the stable research objective, architecture thesis, claim standard, workload classification contract, implementation plan, and long-term roadmap. `chatgpt_handoff/` records only the currently authorized executable stage.
 
 Current key objective:
 
@@ -64,35 +67,39 @@ Lane A is frozen/closed after the reviewed 26/26 formal campaign. Its formal run
 
 ### Lane B — Descriptor 512 calibration
 
-```text
-LANE_B_DESCRIPTOR512_HANDOFF.md
-LANE_B_DESCRIPTOR512_ACCEPTANCE_CRITERIA.md
-LANE_B_TARGET_GOAL.md
-```
+Lane B is complete at `D512_READY + D512_MIRROR_COMPLETE`.
 
 ### Lane C — L1 causality
 
-```text
-LANE_C_L1_CAUSALITY_HANDOFF.md
-LANE_C_L1_CAUSALITY_ACCEPTANCE_CRITERIA.md
-LANE_C_TARGET_GOAL.md
-```
+Lane C is complete at `L1_CAUSALITY_SCREEN_COMPLETE`.
 
-### Lane D — analysis / convergence infrastructure
+### Lane D — final calibration convergence
+
+Current authorized target:
 
 ```text
-LANE_D_ANALYSIS_INFRA_HANDOFF.md
-LANE_D_ANALYSIS_INFRA_ACCEPTANCE_CRITERIA.md
-LANE_D_TARGET_GOAL.md
+FINAL_CALIBRATION_CONVERGENCE_HANDOFF.md
+FINAL_CALIBRATION_CONVERGENCE_ACCEPTANCE_CRITERIA.md
+LANE_D_FINAL_CONVERGENCE_TARGET_GOAL.md
 ```
+
+Lane D must first publish a 13-workload archetype checkpoint, then finish the six-cell calibration convergence and baseline/mechanism-priority recommendation. No new simulator run is authorized in this stage.
 
 ### Lane E — Line-MSHR causality
 
+Lane E is complete at `LINE_MSHR_CAUSALITY_PROBE_COMPLETE` and is supplemental controlled sensitivity evidence.
+
+### Lane F — mechanism implementation preparation
+
+Current authorized parallel source/design audit:
+
 ```text
-LANE_E_LINE_MSHR_CAUSALITY_HANDOFF.md
-LANE_E_LINE_MSHR_CAUSALITY_ACCEPTANCE_CRITERIA.md
-LANE_E_TARGET_GOAL.md
+LANE_F_MECHANISM_PREP_HANDOFF.md
+LANE_F_MECHANISM_PREP_ACCEPTANCE_CRITERIA.md
+LANE_F_TARGET_GOAL.md
 ```
+
+Lane F converts the architecture roadmap into exact M0/M1/M2 source/state-machine modification plans. It may inspect source deeply but must not push a functional mechanism implementation yet.
 
 One Codex window owns one scientific lane, not one simulator process. A lane may launch multiple processes internally only with isolated result directories and frozen source/config identities.
 
@@ -131,11 +138,12 @@ Codex must not modify ChatGPT-owned `project_spec/` or `chatgpt_handoff/` files 
 During parallel execution use dedicated reports to avoid collisions:
 
 ```text
-docs/ep_l2/codex_handoff/LATEST_REPORT.md       # formal/global owner when relevant
+docs/ep_l2/codex_handoff/LATEST_REPORT.md
 docs/ep_l2/codex_handoff/LANE_B_LATEST.md
 docs/ep_l2/codex_handoff/LANE_C_LATEST.md
 docs/ep_l2/codex_handoff/LANE_D_LATEST.md
 docs/ep_l2/codex_handoff/LANE_E_LATEST.md
+docs/ep_l2/codex_handoff/LANE_F_LATEST.md
 ```
 
 Calibration data is never silently promoted to the primary formal baseline. `BASELINE-DECISION` remains a reviewed convergence gate.
