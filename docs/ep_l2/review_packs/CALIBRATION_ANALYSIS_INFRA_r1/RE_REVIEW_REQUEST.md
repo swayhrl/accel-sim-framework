@@ -1,14 +1,14 @@
-# Lane-D V2 re-review request
+# Lane-D final re-review request
 
 Please re-review the Lane-D issues raised in
-`docs/ep_l2/chatgpt_handoff/LANE_D_CHATGPT_REVIEW.md`.
+`docs/ep_l2/chatgpt_handoff/LANE_D_CHATGPT_RE_REVIEW.md`.
 
-The V2 pack repairs: strict stream/window-key validation; explicit
-source-lineage and effective-config contracts for cross-SHA calibration
-pairing; correct lower-admission versus physical DRAM data-bus terminology;
-native application `bwutil/n_cmd` recovery from retained raw logs; exact
-high-average-window-run semantics; scheduler/ReturnQ cycle-fraction metrics;
-traffic-conditioned channel imbalance; and retained validation evidence.
+The V3 pack additionally repairs both mandatory findings: it selects the
+final complete 32-channel native DRAM snapshot and emits an `n_cmd`-weighted
+chip-level mean plus distribution/sum fields; it binds every consumed run's
+actual `runtime_config_composite_sha256` to its contract and requires a PASS
+config-delta evidence gate. It also proves exact 64-slice/32-channel
+time-group alignment and fails closed for missing imbalance denominators.
 
 Scope remains the existing formal interim 22/26 artifacts. No Lane-A job was
 rerun or modified, and no baseline decision or functional opportunity

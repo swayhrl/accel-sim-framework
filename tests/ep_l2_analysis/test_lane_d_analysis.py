@@ -59,7 +59,7 @@ def _record(**overrides):
               "l1_mshr_entry_fail": 0, "l1_missq_full": 0, "l1_bank_latency_conflict": 0,
               "wad_full": 0, "wad_hazard": 0, "bank_conflict_ops": 0, "bank_wait_cycles": 0,
               "l2_to_dram_full": 0, "scheduler_causal_block": 0, "dram_read_bytes": 0,
-              "dram_write_bytes": 0, "lower_admission_byte_rate_norm": 0.0, "native_dram_data_bus_util": 0.0,
+              "dram_write_bytes": 0, "lower_admission_byte_rate_norm": 0.0, "native_dram_data_bus_util_weighted_mean": 0.0,
               "descriptor_longest_high_average_window_run": 0, "scheduler_longest_high_average_window_run": 0,
               "channel_traffic_conditioned_cv_p95": 0.0, "cell": "D256_BASE"}
     record.update(overrides)
@@ -73,11 +73,12 @@ def _record(**overrides):
         effective.update({"l1_mshr_entries": 1024, "l1_merge_cap": 32, "l1_missq_entries": 64})
     if "l1_bank_count" in allowed:
         effective["l1_bank_count"] = 8
-    record["_contract"] = {"semantic_base_id": "base", "base_core_sha": "core", "base_framework_sha": "fw",
+    record["_contract"] = {"schema": "EP_L2_CALIBRATION_CONTRACT_V2", "semantic_base_id": "base", "base_core_sha": "core", "base_framework_sha": "fw",
                            "candidate_core_sha": record["core_sha"], "candidate_framework_sha": record["framework_sha"],
                            "equivalence_gate": {"id": "gate", "status": "PASS", "evidence_path": "evidence"},
                            "allowed_source_delta_class": "NONE", "allowed_config_fields": sorted(allowed),
-                           "effective_config": effective}
+                           "effective_config": effective, "runtime_config_composite_sha256": record["config_hash"],
+                           "config_delta_gate": {"status": "PASS", "evidence_path": "config-evidence"}}
     return record
 
 
@@ -126,6 +127,52 @@ def test_hidden_effective_config_change_is_rejected():
     candidate = _record(cell="D512_BASE", descriptor_capacity=512, config_hash="d512")
     candidate["_contract"]["effective_config"]["line_mshr_entries"] = 256
     assert lane_d.pair_status(base, candidate) == "REJECTED_UNAUTHORIZED_EFFECTIVE_CONFIG_DIFF"
+
+
+def test_native_dram_uses_final_complete_snapshot_and_weighted_aggregate():
+    # First two-channel snapshot is intentionally incomplete; the final one
+    # has unequal command weights, so a last-channel implementation gives .9
+    # while the required aggregate is .82.
+    lines = [
+        "DRAM[0]: header\n", "n_cmd=10 bw_util=0.1\n",
+        "DRAM[0]: header\n", "n_cmd=10 bw_util=0.1\n",
+        "DRAM[1]: header\n", "n_cmd=90 bw_util=0.9\n",
+    ]
+    actual = lane_d.native_dram_data_bus_util_from_lines(lines, 2)
+    assert actual == {"native_dram_snapshot_status": "PASS_FINAL_COMPLETE_CHANNEL_SNAPSHOT",
+                      "native_dram_channels_observed": 2,
+                      "native_dram_data_bus_util_weighted_mean": 0.82,
+                      "native_dram_data_bus_util_p50": 0.1,
+                      "native_dram_data_bus_util_p95": 0.9,
+                      "native_dram_data_bus_util_max": 0.9,
+                      "native_dram_n_cmd_sum": 100}
+
+
+def test_native_dram_fails_closed_without_all_channels():
+    actual = lane_d.native_dram_data_bus_util_from_lines(["DRAM[0]: header\n", "n_cmd=1 bw_util=0.2\n"], 2)
+    assert actual["native_dram_snapshot_status"] == "FAIL_NO_COMPLETE_CHANNEL_SNAPSHOT"
+    assert actual["native_dram_data_bus_util_weighted_mean"] == lane_d.NA
+
+
+def test_runtime_config_contract_binding_rejects_actual_hash_mismatch():
+    contract = _record()["_contract"]
+    assert lane_d.contract_binding_status(contract, "other-hash") == "REJECTED_RUNTIME_CONFIG_HASH_MISMATCH"
+
+
+def test_runtime_config_contract_binding_accepts_expected_hash_and_gate():
+    contract = _record()["_contract"]
+    assert lane_d.contract_binding_status(contract, "base") == "PASS_RUNTIME_CONFIG_BOUND"
+
+
+def test_channel_imbalance_requires_denominator_and_exact_group_alignment():
+    missing_denominator = [{"window_start_cycle": "0", "channel": "0", "bandwidth_util_numerator_bytes": "1"}]
+    assert lane_d.channel_imbalance(missing_denominator, 1)["all_window_cv_max"] == lane_d.NA
+    shifted = [
+        {"window_start_cycle": "0", "channel": "0", "bandwidth_util_numerator_bytes": "1", "bandwidth_util_denominator_bytes": "10"},
+        {"window_start_cycle": "1", "channel": "1", "bandwidth_util_numerator_bytes": "1", "bandwidth_util_denominator_bytes": "10"},
+    ]
+    assert lane_d.validate_time_groups(shifted, "channel", "window_start_cycle", 2) == "FAIL_TIME_GROUP_STREAM_ALIGNMENT"
+    assert lane_d.channel_imbalance(shifted, 2)["all_window_cv_max"] == lane_d.NA
 
 
 def test_duplicate_run_detection(monkeypatch, tmp_path):

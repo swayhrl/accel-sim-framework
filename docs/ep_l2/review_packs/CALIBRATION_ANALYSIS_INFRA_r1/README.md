@@ -5,18 +5,20 @@ Lane-D infrastructure pack, initially populated from the formal interim
 does not contain any opportunity-mechanism result.
 
 Analyzer source: Lane-D branch `hrl/ep-l2-cal-analysis-v0`; this pack records
-the post-review V2 analyzer contract and validation evidence.
+the final-review V3 analyzer contract and validation evidence.
 
 ## Contents
 
 - `TEMPORAL_CARDINALITY_AUDIT.csv`: verified 64-slice L2 and 32-channel DRAM
-  topology and completed-5K-window cardinality.
+  topology, completed-5K-window cardinality, and exact per-time-group stream
+  alignment.
 - `TEMPORAL_DISTRIBUTIONS.csv`, `CHANNEL_IMBALANCE.csv`: distribution,
   cycle-fraction, high-average-run, and traffic-conditioned imbalance
   summaries. `NOT_EMITTED` remains distinct from zero.
-- `NATIVE_DRAM_BANDWIDTH.csv`: final application-level native `bwutil` and
-  `n_cmd` parsed from retained raw logs. This is the physical DRAM data-bus
-  metric; no native physical 5K-window metric was retained.
+- `NATIVE_DRAM_BANDWIDTH.csv`: final complete 32-channel native snapshot
+  parsed from retained raw logs, with `n_cmd`-weighted physical data-bus mean,
+  p50/p95/max, and `n_cmd` sum. An incomplete snapshot fails closed; no native
+  physical 5K-window metric was retained.
 - `CALIBRATION_MATRIX.csv`, `CALIBRATION_DELTAS.csv`: incrementally ingestible
   absolute records and provenance-guarded deltas. The initial delta file is
   header-only because D512/L1 calibration cells are not yet accepted inputs.
@@ -40,11 +42,13 @@ python3 docs/ep_l2/analysis/lane_d_analysis.py \
   --workload sad --workload sgemm --workload btree \
   --workload FWT_7_21 --workload FWT_11_19 \
   --out docs/ep_l2/review_packs/CALIBRATION_ANALYSIS_INFRA_r1
-sha256sum docs/ep_l2/review_packs/CALIBRATION_ANALYSIS_INFRA_r1/* > \
-  docs/ep_l2/review_packs/CALIBRATION_ANALYSIS_INFRA_r1/SHA256SUMS
+find docs/ep_l2/review_packs/CALIBRATION_ANALYSIS_INFRA_r1 -type f ! -name SHA256SUMS -print0 | \
+  sort -z | xargs -0 sha256sum > docs/ep_l2/review_packs/CALIBRATION_ANALYSIS_INFRA_r1/SHA256SUMS
 ```
 
 When a workboard calibration row becomes `DONE`, add a corresponding contract
 for the new cell. The analyzer rejects duplicate/missing stream keys, missing
 baselines, wrong lineage, changed SHA without PASS equivalence evidence, and
-any effective-config difference outside the declared cell contract.
+any effective-config difference outside the declared cell contract. It also
+rejects an actual runtime configuration digest that differs from the contract
+and any incomplete config-delta PASS gate.
