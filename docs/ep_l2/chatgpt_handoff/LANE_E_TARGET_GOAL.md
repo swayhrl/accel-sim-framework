@@ -24,9 +24,10 @@ docs/ep_l2/chatgpt_handoff/PARALLEL_NEW_WINDOW_BOOTSTRAP.md
 docs/ep_l2/chatgpt_handoff/LANE_B_INTERIM_22OF26_CHATGPT_REVIEW.md
 docs/ep_l2/chatgpt_handoff/LANE_E_LINE_MSHR_CAUSALITY_HANDOFF.md
 docs/ep_l2/chatgpt_handoff/LANE_E_LINE_MSHR_CAUSALITY_ACCEPTANCE_CRITERIA.md
+docs/ep_l2/chatgpt_handoff/LANE_E_WORKBOARD_ROWS.md
 ```
 
-Treat the acceptance-criteria file as the mandatory self-gating contract.
+Treat the acceptance-criteria file as the mandatory self-gating contract. Before implementation, install the Lane-E rows from `LANE_E_WORKBOARD_ROWS.md` into the latest shared workboard if they are not already present, preserving all other lanes' fields.
 
 ## Frozen parents
 
