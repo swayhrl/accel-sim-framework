@@ -8,4 +8,6 @@ Source anchors audited: C7e framework `f08d2ce857972fad73c4e1ab7162ba94c6336507`
 
 Key review finding: C7e has a fixed 1024 resident + 128 bypass payload model, but no production source caller allocates the bypass model. M0 must measure a real candidate bypass/pending lifecycle before M2 can assert role complementarity. M1 is specified as a static-equivalent global-ID allocator plus tag-to-payload sidecar. M2 is specified as a same-1152-slot/4-bank shared pool with a pending-demand-aware forward-progress reserve, not a fully unrestricted pool.
 
+Mode-switch addendum incorporated: [EXPERIMENT_MODE_SWITCH_DESIGN.md](../review_packs/MECHANISM_IMPLEMENTATION_PREP_r1/EXPERIMENT_MODE_SWITCH_DESIGN.md) separates later `BASELINE-DECISION` resource configuration from an orthogonal, default-OFF EP-L2 feature vector. It specifies same-SHA/binary OFF controls, fail-closed unsupported combinations, deterministic overlays/result roots, and required run provenance. It does not select D256 or D512.
+
 No functional simulator changes were made, no mechanism experiments were run, and no `*_READY` functional mechanism status is asserted. STOP for ChatGPT review / baseline-decision integration.

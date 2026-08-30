@@ -25,6 +25,7 @@ M1 can safely make payload IDs role-independent while preserving the exact stati
 - [M0_TELEMETRY_DELTA.md](M0_TELEMETRY_DELTA.md) — observation-only producer points and counter contracts.
 - [M1_ELASTIC_SUBSTRATE_DESIGN.md](M1_ELASTIC_SUBSTRATE_DESIGN.md) — static-equivalent refactor.
 - [M2_UNIFIED_PAYLOAD_V1_DESIGN.md](M2_UNIFIED_PAYLOAD_V1_DESIGN.md) — bounded shared-pool design.
+- [EXPERIMENT_MODE_SWITCH_DESIGN.md](EXPERIMENT_MODE_SWITCH_DESIGN.md) — baseline/resource layer, feature-vector switch, provenance, and ablation contract.
 - [M3_RO_PENDING_SOURCE_MAP.md](M3_RO_PENDING_SOURCE_MAP.md) and [M4_TVD_WAD_SOURCE_MAP.md](M4_TVD_WAD_SOURCE_MAP.md) — later dependencies only.
 - [MODIFICATION_SEQUENCE.md](MODIFICATION_SEQUENCE.md), [RISK_AND_INVARIANT_MATRIX.md](RISK_AND_INVARIANT_MATRIX.md), and [CHANGED_FILES_EXPECTED.md](CHANGED_FILES_EXPECTED.md) — implementation gates.
 

@@ -26,6 +26,10 @@ request_result request(payload_handle, bool write, cycle, operation_class);
 
 `-gpgpu_ep_l2_payload_policy=static` (new, default when payload mode enabled) must allocate resident only from `[0,1023]` and bypass only from `[1024,1151]`. Initial `tag_payload_id[i]=i` is permitted only if reserve/rollback/replacement preserve today’s exact mapping; better is to initialize invalid and bind on the first reservation while requiring static mode to choose `i`. Bank mapping remains `payload_id % 4`; Legacy/Banked service mode is unchanged.
 
+### Required mode-switch interface
+
+M1 is the first proof point for the canonical experiment-mode contract. Base resources remain independent existing configuration fields (descriptor capacity, Line MSHR, L1/WAD/lower path, payload geometry/banks, DRAM clock). New **mechanism** fields must be independent booleans, defaulting to zero: `ep_l2_feature_elastic_substrate`, `ep_l2_feature_unified_payload`, `ep_l2_feature_ro_pending_state`, `ep_l2_feature_tvd`, and `ep_l2_feature_adaptive_policy`. `payload_policy=static` describes M1 plumbing; it is not an opaque baseline/mechanism mode. The all-OFF feature vector must preserve the accepted parent baseline even after the shared implementation family exists. See [EXPERIMENT_MODE_SWITCH_DESIGN.md](EXPERIMENT_MODE_SWITCH_DESIGN.md) for proposed parser and runner mapping.
+
 No M1 change may alter tag selection, cache policy, MSHR admission/lifetime, descriptor semantics, WAD, MissQ, lower traffic, or bank grant order. The D512 histogram generalization may be reused only for observation-vector sizing.
 
 ## Exact refactor sites
@@ -46,6 +50,7 @@ No M1 change may alter tag selection, cache policy, MSHR admission/lifetime, des
 - A handle stored in a tag sidecar agrees with the live slot role/owner; no pending fill can be released/reassigned.
 - Release increments generation or otherwise makes every old handle invalid before reuse; no double free.
 - Static mode reports resident/bypass capacity and counts exactly 1024/128 and is cycle/counter identical to accepted baseline on directed tests and representative smoke.
+- Omitted mechanism fields evaluate to OFF; unsupported requested feature combinations terminate with a configuration error, never an implicit fallback.
 - Terminal drain has zero live transaction resources and no arbitration retry.
 
 Rollback boundary: a single M1 commit is revertible because `static` retains old capacities and policy. Do not enable a shared policy in that commit.

@@ -4,6 +4,8 @@
 
 M1 static-equivalence must pass. M0 must produce a semantically defined bypass/pending demand trace and show time-aligned role opportunity. The present implementation has no production bypass allocation, so an M2 claim cannot be based on existing `bypass_free=128` alone.
 
+M2 is enabled only by `ep_l2_feature_unified_payload=1` above the separately selected base-resource configuration. It must reject configuration if `ep_l2_feature_elastic_substrate=0`, if an unavailable bypass consumer is requested, or if any future M3/M4 combination is not explicitly declared composable. Feature OFF uses the M1 static-compatible path in the same source/binary family.
+
 ## Fixed physical model
 
 One 1152-entry, 128-B pool per slice; four 288-entry banks; `bank = payload_id % 4`; one arbitrary operation per bank per cycle; existing Legacy/Banked arbitration ordering; 1024 resident tags. No new data storage, tag ways, L1 or lower-path capacity is part of M2.

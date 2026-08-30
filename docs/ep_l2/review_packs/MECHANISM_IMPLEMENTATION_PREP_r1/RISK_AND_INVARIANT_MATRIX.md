@@ -11,3 +11,6 @@
 | MSHR semantic loss | RO early release | all masks, descriptor lifetime, response enqueue and ordering retained | writes/atomics/order/sector response tests |
 | telemetry overclaim | retry counted as blocked cycle | only exact queue-head admission decision increments cycle metrics; field contracts name denominator | OFF equivalence + unit event/cycle tests |
 | dormant bypass mistaken for opportunity | current source has no bypass caller | mark unknown until candidate consumer defined | reviewer gate before M2 |
+| baseline/mechanism confounded | opaque mode number or branch-specific binary | calibrated resources are a separate config layer; all feature bits OFF is accepted parent baseline | same SHA/binary OFF-vs-parent equivalence |
+| accidental experimental default | omitted/unknown option | all feature bits default zero; parser rejects unsupported combination | config parser unit tests |
+| mode provenance missing/colliding | runner infers mode from filenames or shares results directory | manifest records base ID/config hash/feature vector and root includes mode | pre-launch manifest duplicate audit |
