@@ -20,8 +20,8 @@ lower-interface enqueue point. `wb_packets_terminally_outstanding` is the
 explicit `created - lower_accepted` shadow occupancy at simulation end; it is
 not backfilled as a lower acceptance and its lifetime is excluded from the
 accepted-packet lifetime average. The streaming parser deterministically keeps
-one byte-equivalent terminal record per slice and reports how many duplicate
-terminal prints it ignored; a conflicting repeat fails closed.
+the final cumulative terminal record per slice and reports both byte-equivalent
+duplicates and earlier cumulative records it superseded.
 
 Application `unique_lines`, `unique_lines_reused_at_least_once`, and
 `one_touch_unique_lines` are sums of independent slice/epoch populations. They

@@ -16,8 +16,9 @@ with tempfile.TemporaryDirectory() as d:
     assert r.returncode == 0, r.stderr
     assert json.loads((d / "dup/manifest.json").read_text())["identical_terminal_records_ignored"] == 64
     log.write_text("".join(base.format(slice=i) for i in range(64)) + base.format(slice=0).replace("eligible_demand_references=2", "eligible_demand_references=3"))
-    r = subprocess.run((sys.executable, str(PARSER), str(log), "--out", str(d / "conflict"), "--workload", "fixture", "--framework-commit", "f", "--core-commit", "c"), capture_output=True, text=True)
-    assert r.returncode != 0 and "conflicting application slice" in r.stderr, r.stderr
+    r = subprocess.run((sys.executable, str(PARSER), str(log), "--out", str(d / "cumulative"), "--workload", "fixture", "--framework-commit", "f", "--core-commit", "c"), capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    assert json.loads((d / "cumulative/manifest.json").read_text())["cumulative_terminal_records_superseded"] == 1
 # Keep this implementation guard close to the behavioral fixture: large raw
 # logs must never require whole-file text/byte materialization for parsing or
 # hashing.
