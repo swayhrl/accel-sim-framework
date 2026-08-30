@@ -36,7 +36,10 @@ def main() -> None:
             record = json.loads(path.read_text())
             if record.get("status") != "COMPLETE_VALID" or record.get("maturity") != "SPECULATIVE_PENDING_GATE":
                 raise SystemExit("not promotable: " + str(path))
-            if record.get("candidate_core_commit") != CORE or record.get("candidate_framework_commit") != FRAMEWORK:
+            audit = record.get("audit", {})
+            candidate_core = record.get("candidate_core_commit", audit.get("candidate_core_commit"))
+            candidate_framework = record.get("candidate_framework_commit", audit.get("candidate_framework_commit"))
+            if candidate_core != CORE or candidate_framework != FRAMEWORK:
                 raise SystemExit("candidate mismatch: " + str(path))
             records.append((path, record))
 
