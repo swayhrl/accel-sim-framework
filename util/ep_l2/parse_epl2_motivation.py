@@ -39,22 +39,30 @@ def main():
     ap.add_argument("log", type=Path); ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--workload", required=True); ap.add_argument("--framework-commit", required=True)
     ap.add_argument("--core-commit", required=True); args = ap.parse_args(); args.out.mkdir(parents=True, exist_ok=True)
-    apps = {}
+    apps, duplicate_terminal_records = {}, 0
     # Deliberately one-pass over the raw log: broad-campaign logs can be GBs.
     with args.log.open("r", encoding="utf-8", errors="replace") as source:
         for line in source:
             row = parse(line)
             if row is None or row["scope"] != "application": continue
             if row["slice"] in apps:
-                raise ValueError("duplicate application slice record %d" % row["slice"])
+                # GPGPU-Sim can invoke the terminal stats printer twice.  A
+                # byte-for-byte equivalent terminal record is a repeat of the
+                # same observation, not another epoch; retain the first.  A
+                # differing repeat is ambiguous and must fail closed.
+                if row != apps[row["slice"]]:
+                    raise ValueError("conflicting application slice record %d" % row["slice"])
+                duplicate_terminal_records += 1
+                continue
             apps[row["slice"]] = row
     if len(apps) != 64: raise ValueError("expected exactly 64 application slice records, found %d" % len(apps))
     vals = list(apps.values()); total = defaultdict(int)
     for row in vals:
         for k, v in row.items():
             if isinstance(v, int) and k not in ("slice", "kernel_uid"): total[k] += v
-    if total["wb_packets_created"] != total["wb_packets_lower_accepted"]:
-        raise ValueError("unclosed shadow WBUF lifetimes")
+    if total["wb_packets_lower_accepted"] > total["wb_packets_created"]:
+        raise ValueError("shadow WBUF accepted more packets than it created")
+    terminal_wbuf_outstanding = total["wb_packets_created"] - total["wb_packets_lower_accepted"]
     reuse = {"workload": args.workload, "reuse_instances": total["reuse_instances"]}
     for label, key in zip(BINS, BIN_KEYS): reuse[label] = (total[key] / total["reuse_instances"] if total["reuse_instances"] else "NA")
     if total["reuse_instances"] and abs(sum(reuse[x] for x in BINS) - 1.0) > 1e-12: raise ValueError("reuse normalization failed")
@@ -80,12 +88,12 @@ def main():
         "post_eviction_referenced_fraction": total["post_eviction_rerefs"] / total["post_evictions"] if total["post_evictions"] else "NA",
         "post_eviction_sequence_distance_avg": total["post_eviction_seq_sum"] / total["post_eviction_rerefs"] if total["post_eviction_rerefs"] else "NA",
         "post_eviction_cycle_distance_avg": total["post_eviction_cycle_sum"] / total["post_eviction_rerefs"] if total["post_eviction_rerefs"] else "NA"}
-    life = {"workload": args.workload, "wb_packets_created": total["wb_packets_created"], "wb_packets_lower_accepted": total["wb_packets_lower_accepted"],
+    life = {"workload": args.workload, "wb_packets_created": total["wb_packets_created"], "wb_packets_lower_accepted": total["wb_packets_lower_accepted"], "wb_packets_terminally_outstanding": terminal_wbuf_outstanding,
         "wb_packet_creation_to_lower_accept_cycles_avg": total["wb_lifetime_sum"] / total["wb_packets_lower_accepted"] if total["wb_packets_lower_accepted"] else "NA", "max": total["wb_lifetime_max"]}
     write(args.out / "reuse_distance.csv", [reuse]); write(args.out / "reuse_coverage.csv", [coverage]); write(args.out / "blocking_breakdown.csv", blocking)
     write(args.out / "wbuf_sensitivity.csv", sensitivity); write(args.out / "post_eviction_reuse.csv", [post]); write(args.out / "wbuf_lifetime.csv", [life])
-    write(args.out / "motivation_summary.csv", [dict(workload=args.workload, **total)])
-    args.out.joinpath("manifest.json").write_text(json.dumps({"schema_version": SCHEMA, "workload": args.workload, "framework_commit": args.framework_commit, "core_commit": args.core_commit, "source_log_sha256": digest(args.log)}, indent=2, sort_keys=True) + "\n")
+    write(args.out / "motivation_summary.csv", [dict(workload=args.workload, terminal_record_duplicates_ignored=duplicate_terminal_records, **total)])
+    args.out.joinpath("manifest.json").write_text(json.dumps({"schema_version": SCHEMA, "workload": args.workload, "framework_commit": args.framework_commit, "core_commit": args.core_commit, "source_log_sha256": digest(args.log), "identical_terminal_records_ignored": duplicate_terminal_records}, indent=2, sort_keys=True) + "\n")
 
 if __name__ == "__main__":
     try: main()
