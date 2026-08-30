@@ -2,45 +2,21 @@
 
 Updated: 2026-08-30
 
-This file is the authoritative **current coordination snapshot**. Long-lived research goals, architecture intent, evidence standards, workload classification, implementation roadmap, and headroom policy live in:
+This file is the authoritative **current coordination snapshot**. Long-lived research goals, architecture intent, evidence standards, implementation sequence, experiment-mode contract and headroom policy live under:
 
 ```text
 docs/ep_l2/project_spec/
 ```
 
-Read `project_spec/README.md` before treating a lane-specific target as the overall project objective.
-
-## 1. Long-lived research objective
+## 1. Research objective
 
 > Under comparable L2 storage budget and basic L2 timing, improve the L2's ability to sustain concurrent misses, pending transactions, and payload state while reducing structural blocking caused by static resource/lifetime coupling.
 
-End-to-end speedup is a stronger evidence tier, but a structurally/service-wise better L2 remains meaningful when the removed L2 ceiling exposes a later system bottleneck.
+End-to-end speedup is stronger evidence, but a structurally/service-wise better L2 remains meaningful when the removed L2 ceiling exposes a later system bottleneck.
 
-## 2. Frozen target geometry / formal semantic base
+## 2. Historical formal anchor — frozen
 
-Current formal target geometry remains:
-
-```text
-64 L2 slices
-128 B line, 4 x 32 B sectors
-Resident Tag: 64 sets x 16 ways = 1024 / slice
-Resident payload: 1024 / slice
-Bypass payload: 128 / slice
-B0-Legacy: separate resident/bypass organization
-B0-Banked: 4 x 288 payload banks, bank=payload_id%4, static 1024+128 roles
-Line MSHR: 128 until BASELINE-DECISION
-Per-address descriptor cap: 32
-WAD: 128
-L2->DRAM queue: 128
-FR-FCFS scheduler: 128/channel
-internal DRAM ReturnQ: 192/channel
-DRAM->L2: 64/slice
-850 MHz primary DRAM clock
-L1D: 64 KiB, 4 sets x 128 ways x 128 B, 4 banks, 20 cycles
-L1 MSHR=512, merge cap=8, MissQ=16
-```
-
-Formal C7e source/config:
+C7e D256 formal source/config:
 
 ```text
 Core      ece1a3a77c5628763e0a4605bfd1c639ee6a1495
@@ -48,197 +24,211 @@ Framework f08d2ce857972fad73c4e1ab7162ba94c6336507
 runtime   85562fce759876616806d32791ea3b7d1b13ee68cf20a84e48c63c96f67b8c0d
 ```
 
-No functional Unified borrowing, RO pending/no-MSHR, TVD, or primary 1GHz change is authorized before reviewed convergence and a mechanism-stage handoff.
+Lane A is frozen at 26/26 `COMPLETE_VALID`. Historical D256 data remain immutable calibration provenance.
 
-## 3. Lane A — formal D256 baseline
+## 3. Calibration closeout
 
-Complete and frozen:
-
-```text
-13 workloads x {B0-Legacy, B0-Banked} @850 MHz
-26/26 COMPLETE_VALID
-```
-
-The two duplicate-write 3mm diagnostic paths are quarantined; clean direct replacements are the only formal rows.
-
-Evidence:
+Lane B:
 
 ```text
-docs/ep_l2/review_packs/TARGET_BASELINE_FINAL_26OF26_C7E_REVIEW_READY_r1/
-docs/ep_l2/chatgpt_handoff/LANE_A_FINAL_26OF26_CHATGPT_REVIEW.md
-```
-
-Formal worktrees/results are read-only anchors.
-
-## 4. Lane B — Descriptor 256->512 calibration
-
-Complete:
-
-```text
+D512_READY PASS
+D512_MIRROR_COMPLETE PASS
+26/26 PROMOTED_VALID_CALIBRATION
 Core      878f80869ce212e779df20b6421e4dc7f987825d
 Framework aae62b66685f15437cecf0193934f628e6fac6ae
 runtime   a7dc3ce28f5e54ca966d08a7e3548a844533a9bee08b63ea4d964cd9ec2c9416
-
-D256 backward equivalence PASS
-D512 natural preflight PASS
-D512_READY PASS
-26/26 D512 COMPLETE_VALID
-26/26 PROMOTED_VALID_CALIBRATION
-D512_MIRROR_COMPLETE PASS
 ```
 
-`D512_BASE.json` is published under `docs/ep_l2/calibration/contracts/` with exact source/config/equivalence/config-delta provenance.
-
-Key conclusion: Descriptor256 is a real structural admission ceiling in several workloads. D512 removes it but generally does not improve application cycles, exposing later Line-MSHR/lower-path pressure.
-
-## 5. Lane C — L1 causality
-
-Complete:
+Lane C:
 
 ```text
 L1_CAUSALITY_SCREEN_COMPLETE
+D256/D512 META-HR/BANK-HR promoted
+no broad material L1 response
 ```
 
-All D256/D512 META-HR/BANK-HR cells are complete and promoted. Four `EP_L2_CALIBRATION_CONTRACT_V2` contracts are published.
-
-Broad L1 headroom has small performance sensitivity; the tested data do not justify changing the primary L1 baseline or mandatory one-at-a-time decomposition.
-
-## 6. Lane E — Line-MSHR causal probe
-
-Complete:
+Lane E:
 
 ```text
 LINE_MSHR_CAUSALITY_PROBE_COMPLETE
+convolution D512 MSHR128->256:
+  Line-MSHR-full 931,416 -> 0
+  cycles 292,211 -> 291,108 (~0.38%)
+classification: MSHR_ADMISSION_THROTTLE_DOWNSTREAM_LIMITED
 ```
 
-Controlled convolution result:
+Lane D final convergence is independently reviewed PASS in:
 
 ```text
-D256 M128 = 290,308
-D256 M256 = 290,308
-D512 M128 = 292,211 with 931,416 Line-MSHR-full blocks
-D512 M256 = 291,108 with 0 Line-MSHR-full blocks
+docs/ep_l2/chatgpt_handoff/LANE_D_FINAL_CONVERGENCE_CHATGPT_REVIEW.md
 ```
 
-Removing exact Line-MSHR-full pressure yields only ~0.38% speedup while pressure moves elsewhere. Accepted classification:
+## 4. BASELINE_DECISION — PASS
+
+Accepted calibrated **mechanism-development research baseline**:
 
 ```text
-MSHR_ADMISSION_THROTTLE_DOWNSTREAM_LIMITED
+Descriptor pool        512
+Line MSHR              128
+per-address cap         32
+L1D                    64 KiB/core, 4 sets x 128 ways x 128 B
+L1 banks               4
+L1 latency             20 cycles
+L1 MSHR                512
+L1 merge cap           8
+L1 MissQ               16
+WAD                     128
+payload storage        1152 x 128 B / slice
+payload banks          4 x 288
+bank service           one arbitrary op/bank/cycle
+L2->DRAM queue          128
+FR-FCFS scheduler      128/channel
+ReturnQ                 192/channel
+DRAM                    850 MHz primary
 ```
 
-D512 spmv M128->M256 is unchanged and acts as a negative control. MSHR256 is not a primary-baseline recommendation.
+D512 is selected to remove a bounded-cost descriptor metadata throttle from the research baseline, **not because it is faster and not because it creates an MSHR bottleneck**.
 
-## 7. Lane D — final calibration convergence
-
-Lane-D V3 analysis/provenance infrastructure is independently accepted:
+Decision record:
 
 ```text
-TEMPORAL_ANALYSIS_READY
-CALIBRATION_ANALYZER_READY
-D512_COST_READY
+docs/ep_l2/project_spec/decisions/ADR-005-calibrated-research-baseline.md
 ```
 
-All required promoted B/C/E inputs now exist. Final convergence is **authorized now** under:
+## 5. Final workload characterization
+
+Lane-D final 13-workload evidence is under:
 
 ```text
-docs/ep_l2/chatgpt_handoff/FINAL_CALIBRATION_CONVERGENCE_HANDOFF.md
-docs/ep_l2/chatgpt_handoff/FINAL_CALIBRATION_CONVERGENCE_ACCEPTANCE_CRITERIA.md
-docs/ep_l2/chatgpt_handoff/LANE_D_FINAL_CONVERGENCE_TARGET_GOAL.md
+docs/ep_l2/review_packs/FINAL_CALIBRATION_CONVERGENCE_r1/
+  WORKLOAD_ARCHETYPES.csv
+  WORKLOAD_ARCHETYPES.md
+  MECHANISM_TARGET_MAP.md
 ```
 
-Lane D must first produce an all-13 workload archetype checkpoint, then the six-cell final calibration matrix, baseline-decision evidence, mechanism-priority recommendation, and headroom candidates. No simulator run is authorized in this convergence stage.
-
-## 8. Lane F — mechanism implementation preparation
-
-A new source/design-analysis lane is authorized in parallel with Lane D:
+Representative development set:
 
 ```text
-docs/ep_l2/chatgpt_handoff/LANE_F_MECHANISM_PREP_HANDOFF.md
-docs/ep_l2/chatgpt_handoff/LANE_F_MECHANISM_PREP_ACCEPTANCE_CRITERIA.md
-docs/ep_l2/chatgpt_handoff/LANE_F_TARGET_GOAL.md
+convolutionSeparable  structural bottleneck substitution
+scan                  sustained descriptor/lower/high-BW
+vectorAdd_4M          sustained throughput/high-BW
+spmv                  per-address / near-MSHR
+FWT_7_21              bursty descriptor/WAD/lower
+cfd_097k              true bank-service contention
+dwt2d                 dirty-victim/WAD lifetime candidate
+sad                   low-pressure negative control
 ```
 
-Lane F must map the exact source/state/lifecycle implementation for:
+Unified/RO/TVD opportunity remains `UNKNOWN_NEEDS_TELEMETRY` where the required lifetime/eligibility/role evidence is not yet measured.
+
+## 6. Lane F implementation-prep review
+
+Lane-F source/design preparation is accepted in:
 
 ```text
-M0 mechanism-readiness telemetry/shadow opportunity
-M1 behavior-preserving elastic payload/resource substrate
-M2 Unified Payload Pool v1
-M3 RO pending-state source dependencies
-M4 WAD/TVD source dependencies
+docs/ep_l2/chatgpt_handoff/LANE_F_MECHANISM_PREP_CHATGPT_REVIEW.md
 ```
 
-It may not push a functional mechanism change. The goal is to make the first implementation stage ready to start immediately after baseline-decision review.
-
-## 9. Preliminary workload archetypes
-
-Current evidence-backed preliminary map is in:
+Critical source fact:
 
 ```text
-docs/ep_l2/project_spec/WORKLOAD_ARCHETYPES_PRELIMINARY.md
+1024 resident payload slots
+128 bypass-model slots
+but no production caller allocates the bypass model
 ```
 
-Current high-level groups include:
+Therefore dormant bypass occupancy/slack is not workload evidence.
+
+M1 global-ID/sidecar/static-equivalent substrate is implementation-ready after a dedicated handoff.
+
+M2 Unified Payload is **not** automatically the first functional mechanism. With 1024 resident tags == 1024 resident payload quota, the extra 128 physical slots cannot by themselves add resident cache-line capacity. A real non-resident consumer/lifetime and measured opportunity are required first.
+
+Decision record:
 
 ```text
-scan/vectorAdd: sustained descriptor + lower/scheduler + high-BW
-convolution: controlled Descriptor -> Line-MSHR -> downstream substitution
-spmv: Descriptor -> per-address / near-MSHR + lower path
-FWTs: bursty/phase-local descriptor pressure
-cfd: true payload-bank service contention
-dwt2d: WAD/victim-lifetime candidate
-btree: address-local / weak L1 sensitivity
-gemm/3mm/sad/sgemm: low-L2-pressure/control families
+docs/ep_l2/project_spec/decisions/ADR-006-unified-payload-opportunity-precondition.md
 ```
 
-Lane D must validate/revise this across the full promoted matrix before it becomes final characterization.
+## 7. Current mechanism sequence
+
+Authoritative sequence:
+
+```text
+docs/ep_l2/project_spec/MECHANISM_SEQUENCE_CURRENT.md
+```
+
+Near-term:
+
+```text
+M0a generic observation  ||  M1 behavior-preserving elastic substrate
+                 \              /
+                  -> M0b mechanism-specific opportunity shadows
+                          |
+                          -> choose first functional mechanism from evidence
+                          |
+                          -> compose validated mechanisms
+                          |
+                          -> performance-headroom/full-suite evaluation
+```
+
+M0a must not fabricate bypass traffic. M0b should measure real RO/TVD/non-resident role opportunity.
+
+## 8. Experiment-mode contract
+
+All future functional implementations must follow:
+
+```text
+docs/ep_l2/project_spec/EXPERIMENT_MODE_SWITCH_CONTRACT.md
+```
+
+Base resource configuration is orthogonal to default-OFF mechanism feature bits. Formal comparisons should use the same source/SHA/binary and differ only through explicit audited feature overlays.
+
+## 9. M2-specific guardrails
+
+Before any shared/unified payload functional implementation:
+
+```text
+real non-resident consumer defined
+measured demand/slack overlap
+resident bank class preserved or bank placement separately ablated
+resident + non-resident forward progress proved
+reserve derived from lifecycle safety rather than dormant 128-slot tuning
+```
+
+Capacity-only resident experiments should preserve, where practical:
+
+```text
+payload_id % 4 == tag_index % 4
+```
+
+to avoid confounding capacity elasticity with bank remapping.
 
 ## 10. Performance-headroom policy
 
-No broad new telemetry is required before the first headroom sensitivity screen. Existing C7e/Lane-D V3 telemetry is sufficient for an initial controlled scheduler/L2->DRAM/bandwidth headroom matrix.
-
-If a meaningful L2-mechanism x downstream-headroom interaction appears, prioritize observation-only additions:
+Do not launch headroom merely because calibration shows downstream pressure. First obtain an L2-local functional mechanism effect at H0. Then test mechanism × headroom interaction using single-axis candidates:
 
 ```text
-P1 native per-channel physical DRAM bus utilization per 5K window
-P2 cycle-based L2 admission blocking by exact reason
-P3 selected request/transaction lifetime distributions
-P4 useful per-window L2 admission/completion throughput
+H-SCHED 128->256
+H-L2D   128->256
+H-BW    850MHz->1GHz sensitivity
 ```
 
-See `docs/ep_l2/project_spec/PERFORMANCE_HEADROOM_PLAN.md`.
+See `project_spec/PERFORMANCE_HEADROOM_PLAN.md`.
 
-## 11. Staged implementation roadmap
+## 11. Immediate next stage
 
-See:
+Authorized planning direction:
 
 ```text
-docs/ep_l2/project_spec/MECHANISM_IMPLEMENTATION_PLAN.md
+M0a observation-only structural/service telemetry
++
+M1 static-equivalent elastic/global-ID substrate
 ```
 
-Current intended sequence:
+No functional Unified, RO pending-state, TVD or adaptive policy is authorized until the next implementation handoff and its acceptance criteria are published/reviewed.
 
-```text
-Final calibration convergence
-        -> BASELINE-DECISION
-        -> M0 targeted opportunity/shadow telemetry
-        -> M1 behavior-preserving elastic substrate
-        -> first measured-opportunity functional mechanism
-        -> remaining mechanism families
-        -> integrated EP-L2
-        -> performance headroom / full-suite evaluation
-```
+## 12. Archival follow-ups
 
-The default first functional candidate is Unified Payload Pool v1 because it directly targets static payload-role coupling and the 4x288 physical substrate already exists, **but only if M0 establishes real role-complementarity/residency opportunity**. If M0 does not, implementation priority must follow the evidence rather than force Unified Payload.
+Lane D: add exact final analysis source SHA and explicit `git diff --check` evidence to the convergence pack.
 
-## 12. Shared update protocol
-
-Codex updates execution/progress/evidence in:
-
-```text
-docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
-```
-
-ChatGPT updates review/conclusion/next-action after inspecting pushed evidence.
-
-Lane-specific reports stay under `docs/ep_l2/codex_handoff/LANE_*_LATEST.md`.
+Lane F: mirror `LANE_F_LATEST.md` and `MECHANISM_IMPLEMENTATION_PREP_r1/` from `hrl/ep-l2-mechanism-prep-v0` to the permanent coordination branch before archival.
