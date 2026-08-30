@@ -11,4 +11,3 @@ All runs retain `raw.log.gz`, `run_status.json`, `effective_config.json`,
 
 Each directory contains the seven selected workloads: vectorAdd_4M, scan,
 spmv, convolutionSeparable, btree, sad, and FWT_7_21.
-

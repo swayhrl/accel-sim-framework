@@ -14,4 +14,3 @@ Promotion requires both `D256_EQ_SCAN_PASS` and `D512_PREFLIGHT_PASS`, with
 the exact Core/Framework/config/trace identity in `PROVENANCE.md`. The first
 gate is PASS. Until the second is explicitly published PASS by Lane B, no
 D512 result in this pack is calibration evidence.
-

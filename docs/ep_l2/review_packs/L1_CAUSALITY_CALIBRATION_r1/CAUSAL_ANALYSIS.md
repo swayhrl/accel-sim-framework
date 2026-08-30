@@ -24,4 +24,3 @@ exact Lane-B D512 B0-Banked base, META-HR / BANK-HR speedups are: vectorAdd
 +0.36%. These are provisional only. Full comparisons and 5K temporal
 summaries are in
 `/workspace/results/ep_l2_l1_causality_d512_speculative/analysis_local_complete_pending_base_scan/`.
-

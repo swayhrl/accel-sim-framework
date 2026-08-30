@@ -31,4 +31,3 @@ The C7e D256 base reproduction was exact for vectorAdd_4M, spmv and FWT_7_21.
 Release build, C3--C7 closeout, runner config audits, parser/invariant checks
 and `git diff --check` passed. The analyzer default-D256 regression reproduced
 its prior CSV output byte-for-byte after D512 layout support was added.
-

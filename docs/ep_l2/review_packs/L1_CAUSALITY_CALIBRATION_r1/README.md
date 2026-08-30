@@ -17,4 +17,3 @@ Contents:
 - `CAUSAL_ANALYSIS.md` — D256 and provisional D512 conclusions.
 - `RUN_STATUS.md` — all local completion state and promotion rule.
 - `RAW_LOG_INDEX.md` and `SHA256SUMS` — result-root return path.
-
