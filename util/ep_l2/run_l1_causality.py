@@ -75,6 +75,24 @@ def repo_head(path: Path) -> str:
     return subprocess.check_output(("git", "-C", str(path), "rev-parse", "HEAD"), text=True).strip()
 
 
+def c7e_semantic_base(framework_source: str, core_source: str) -> list[str]:
+    """Fail closed unless the simulator pair is C7e plus Lane-C scaffolding only."""
+    if core_source != EXPECTED_CORE:
+        raise ValueError("Core is not the exact C7e commit: " + core_source)
+    ancestor = subprocess.run(("git", "-C", str(ROOT), "merge-base", "--is-ancestor",
+                               EXPECTED_FRAMEWORK, framework_source), check=False)
+    if ancestor.returncode:
+        raise ValueError("Framework is not derived from the exact C7e commit: " + framework_source)
+    changed = subprocess.check_output(("git", "-C", str(ROOT), "diff", "--name-only",
+                                       EXPECTED_FRAMEWORK, framework_source), text=True).splitlines()
+    allowed = {"util/ep_l2/run_l1_causality.py", "tests/ep_l2/l1_meta_hr.config",
+               "tests/ep_l2/l1_bank_hr.config", "tests/ep_l2/l1_mshr_hr.config",
+               "tests/ep_l2/l1_merge_hr.config", "tests/ep_l2/l1_missq_hr.config"}
+    if not set(changed).issubset(allowed):
+        raise ValueError("Framework changes beyond Lane-C runner/config scaffolding: " + repr(changed))
+    return changed
+
+
 def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
@@ -190,11 +208,15 @@ def main() -> None:
         if not path or not path.is_file():
             raise SystemExit("required runtime config is missing: " + str(path))
     framework_source, core_source = repo_head(ROOT), repo_head(CORE)
-    if framework_source != EXPECTED_FRAMEWORK or core_source != EXPECTED_CORE:
-        raise SystemExit("Lane C must start at exact C7e source pair; got Framework=%s Core=%s" %
-                         (framework_source, core_source))
+    try:
+        lane_c_scaffolding = c7e_semantic_base(framework_source, core_source)
+    except ValueError as error:
+        raise SystemExit(str(error))
     audit = audit_cell(args.cell, base, overlay, sensitivity)
     audit.update({"framework_commit": framework_source, "core_commit": core_source,
+                  "c7e_framework_semantic_base": EXPECTED_FRAMEWORK,
+                  "c7e_core_semantic_base": EXPECTED_CORE,
+                  "lane_c_scaffolding_paths": lane_c_scaffolding,
                   "frequency_mhz": 850, "payload_variant": "B0-Banked"})
     if args.audit_only:
         print(json.dumps(audit, sort_keys=True))
