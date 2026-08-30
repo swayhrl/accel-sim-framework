@@ -83,4 +83,16 @@ assert classify(setfail=True,mshr=True,missq=True)=='SET_ASSOC'
 for cap in (4,8,16):
     cats=[classify(setfail=True,cap=cap), classify(mshr=True,cap=cap), classify(missq=True,cap=cap), classify(dirty=True,active=cap,cap=cap)]
     assert len(cats)==4 and all(cats)
+
+# Demand writes share the frontend admission scope, but only their real path
+# predicates participate: a locally absorbed clean write does not invent MSHR
+# pressure.  Dirty write victims see the same simultaneous C=4/8/16 shadow.
+assert classify() is None                         # clean demand write
+assert classify(setfail=True) == 'SET_ASSOC'       # demand write, reserved set
+assert [classify(dirty=True, active=4, cap=c) for c in (4,8,16)] == ['WB_PATH', None, None]
+assert classify(missq=True, dirty=True, active=16, cap=4) == 'MISSQ_LOWER'
+assert classify(setfail=True, missq=True, dirty=True, active=16, cap=4) == 'SET_ASSOC'
+assert classify(wad=True, setfail=True, missq=True, dirty=True, active=16, cap=4) == 'WB_PATH'
+# The same source-driven ordering remains unchanged for demand reads.
+assert classify(mshr=True, missq=True, dirty=True, active=16, cap=4) == 'MSHR_META'
 print('EPL2MOTV1 directed contract: PASS')
