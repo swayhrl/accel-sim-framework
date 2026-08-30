@@ -79,15 +79,26 @@ def repo_clean(path: Path, generated_out: Path | None = None) -> bool:
     root, still fails closed.
     """
     allowed = None
+    calibration_root = None
     if generated_out:
         try:
             allowed = str(generated_out.resolve().relative_to(path.resolve()))
+            # Lane-B deliberately keeps independent equivalence, preflight,
+            # and mirror roots below one ignored-calibration namespace.  A
+            # completed sibling must not make a later immutable campaign look
+            # like a dirty source checkout, while any source-side untracked
+            # file still fails closed.
+            if allowed.startswith("docs/ep_l2/calibration_results/"):
+                calibration_root = "docs/ep_l2/calibration_results"
         except ValueError:
             pass
     status = subprocess.check_output(("git", "-C", str(path), "status", "--porcelain"), text=True)
     for line in status.splitlines():
         state, name = line[:2], line[3:]
-        if state == "??" and allowed and (name == allowed or name.startswith(allowed + "/")):
+        if state == "??" and ((allowed and (name == allowed or name.startswith(allowed + "/")))
+                               or (calibration_root and
+                                   (name == calibration_root or
+                                    name.startswith(calibration_root + "/")))):
             continue
         return False
     return True
