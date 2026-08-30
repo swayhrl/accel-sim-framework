@@ -27,13 +27,27 @@ def write(path, rows):
     with path.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=keys); w.writeheader(); w.writerows(rows)
 
+def digest(path):
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("log", type=Path); ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--workload", required=True); ap.add_argument("--framework-commit", required=True)
     ap.add_argument("--core-commit", required=True); args = ap.parse_args(); args.out.mkdir(parents=True, exist_ok=True)
-    rows = [r for l in args.log.read_text(errors="replace").splitlines() if (r := parse(l))]
-    apps = {r["slice"]: r for r in rows if r["scope"] == "application"}
+    apps = {}
+    # Deliberately one-pass over the raw log: broad-campaign logs can be GBs.
+    with args.log.open("r", encoding="utf-8", errors="replace") as source:
+        for line in source:
+            row = parse(line)
+            if row is None or row["scope"] != "application": continue
+            if row["slice"] in apps:
+                raise ValueError("duplicate application slice record %d" % row["slice"])
+            apps[row["slice"]] = row
     if len(apps) != 64: raise ValueError("expected exactly 64 application slice records, found %d" % len(apps))
     vals = list(apps.values()); total = defaultdict(int)
     for row in vals:
@@ -60,7 +74,7 @@ def main():
             eligible_miss_admission_cycles=total["eligible_miss_cycles_%d" % c], **dict(zip(cats, counts))))
         sensitivity.append({"workload": args.workload, "wbuf_capacity": c,
             "wbuf_alloc_opportunities": total["wbuf_opportunities_%d" % c],
-            "wbuf_trace_projected_would_block_events": total["wbuf_would_block_%d" % c],
+            "wbuf_trace_projected_would_block_cycles": total["wbuf_would_block_%d" % c],
             "projected_blocked_miss_admission_cycles": denom})
     post = {"workload": args.workload, "real_evictions": total["post_evictions"], "post_eviction_rereferences": total["post_eviction_rerefs"],
         "post_eviction_referenced_fraction": total["post_eviction_rerefs"] / total["post_evictions"] if total["post_evictions"] else "NA",
@@ -71,7 +85,7 @@ def main():
     write(args.out / "reuse_distance.csv", [reuse]); write(args.out / "reuse_coverage.csv", [coverage]); write(args.out / "blocking_breakdown.csv", blocking)
     write(args.out / "wbuf_sensitivity.csv", sensitivity); write(args.out / "post_eviction_reuse.csv", [post]); write(args.out / "wbuf_lifetime.csv", [life])
     write(args.out / "motivation_summary.csv", [dict(workload=args.workload, **total)])
-    args.out.joinpath("manifest.json").write_text(json.dumps({"schema_version": SCHEMA, "workload": args.workload, "framework_commit": args.framework_commit, "core_commit": args.core_commit, "source_log_sha256": hashlib.sha256(args.log.read_bytes()).hexdigest()}, indent=2, sort_keys=True) + "\n")
+    args.out.joinpath("manifest.json").write_text(json.dumps({"schema_version": SCHEMA, "workload": args.workload, "framework_commit": args.framework_commit, "core_commit": args.core_commit, "source_log_sha256": digest(args.log)}, indent=2, sort_keys=True) + "\n")
 
 if __name__ == "__main__":
     try: main()
