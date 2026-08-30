@@ -94,7 +94,9 @@ def repo_clean(path: Path, generated_out: Path | None = None) -> bool:
             pass
     status = subprocess.check_output(("git", "-C", str(path), "status", "--porcelain"), text=True)
     for line in status.splitlines():
-        state, name = line[:2], line[3:]
+        # Porcelain collapses an untracked directory to a trailing-slash
+        # entry, whereas the allowed result root is normalized without one.
+        state, name = line[:2], line[3:].rstrip("/")
         if state == "??" and ((allowed and (name == allowed or name.startswith(allowed + "/")))
                                or (calibration_root and
                                    (name == calibration_root or
