@@ -15,12 +15,13 @@ The heuristic classifications are predominantly `L1_NOT_CAUSAL`; btree's
 trigger. The complete machine-readable comparisons and 5K temporal summaries
 are in `/workspace/results/ep_l2_l1_causality_d256/analysis_final/`.
 
-## D512 local-complete, pending promotion
+## D512 promoted screen
 
 All fourteen D512 descendants are locally `COMPLETE_VALID`. Against the
 exact Lane-B D512 B0-Banked base, META-HR / BANK-HR speedups are: vectorAdd
 +0.60% / +0.46%; scan +0.64% / -0.10%; spmv +0.22% / +0.49%; convolution
 +0.67% / -0.53%; btree +2.17% / +1.91%; sad +0.79% / +0.90%; FWT -0.15% /
-+0.36%. These are provisional only. Full comparisons and 5K temporal
-summaries are in
-`/workspace/results/ep_l2_l1_causality_d512_speculative/analysis_local_complete_pending_base_scan/`.
++0.36%. The exact matching rows have been promoted to
+`PROMOTED_VALID_CALIBRATION`; compact review copies are
+`D512_L1_CAUSALITY_COMPARISON.csv`, `D512_TEMPORAL_SUMMARY.csv`, and
+`D512_CAUSAL_CLASSIFICATION.csv` in this pack.
