@@ -32,7 +32,22 @@ def test_burst_requires_consecutive_windows_per_stream():
         {"slice": "0", "start_cycle": "10000", "descriptor_avg": "0"},
         {"slice": "1", "start_cycle": "0", "descriptor_avg": "240"},
     ]
-    assert lane_d.longest_burst(records, "slice", "start_cycle", "descriptor_avg", 230) == 2
+    assert lane_d.longest_burst(records, "slice", "start_cycle", "descriptor_avg", 230, 5000) == 2
+
+
+def test_burst_gap_breaks_a_run():
+    records = [
+        {"slice": "0", "start_cycle": "0", "descriptor_avg": "240"},
+        {"slice": "0", "start_cycle": "10000", "descriptor_avg": "240"},
+    ]
+    assert lane_d.longest_burst(records, "slice", "start_cycle", "descriptor_avg", 230, 5000) == 1
+
+
+def test_window_key_audit_rejects_duplicate_and_missing_stream_windows():
+    duplicate = [{"slice": "0", "start_cycle": "0"}, {"slice": "0", "start_cycle": "0"}]
+    assert lane_d.validate_window_stream(duplicate, "slice", "start_cycle", 1, 5000, 2) == "FAIL_DUPLICATE_STREAM_WINDOW_KEY"
+    missing = [{"slice": "0", "start_cycle": "0"}, {"slice": "0", "start_cycle": "10000"}]
+    assert lane_d.validate_window_stream(missing, "slice", "start_cycle", 1, 5000, 3) == "FAIL_MISSING_OR_GAPPED_STREAM_WINDOW"
 
 
 def _record(**overrides):
@@ -44,9 +59,25 @@ def _record(**overrides):
               "l1_mshr_entry_fail": 0, "l1_missq_full": 0, "l1_bank_latency_conflict": 0,
               "wad_full": 0, "wad_hazard": 0, "bank_conflict_ops": 0, "bank_wait_cycles": 0,
               "l2_to_dram_full": 0, "scheduler_causal_block": 0, "dram_read_bytes": 0,
-              "dram_write_bytes": 0, "dram_bandwidth_util": 0.0, "descriptor_high_burst_windows": 0,
-              "scheduler_high_burst_windows": 0, "channel_cv_p95": 0.0, "cell": "D256_BASE"}
+              "dram_write_bytes": 0, "lower_admission_byte_rate_norm": 0.0, "native_dram_data_bus_util": 0.0,
+              "descriptor_longest_high_average_window_run": 0, "scheduler_longest_high_average_window_run": 0,
+              "channel_traffic_conditioned_cv_p95": 0.0, "cell": "D256_BASE"}
     record.update(overrides)
+    allowed = lane_d.expected_allowed_config_fields(record["descriptor_capacity"], record["l1_config_class"])
+    effective = {"descriptor_pool_size": 256, "descriptor_per_line_cap": 32, "line_mshr_entries": 128,
+                 "l1_mshr_entries": 512, "l1_merge_cap": 8, "l1_missq_entries": 16, "l1_bank_count": 4,
+                 "frequency_mhz": 850}
+    if "descriptor_pool_size" in allowed:
+        effective["descriptor_pool_size"] = record["descriptor_capacity"]
+    if "l1_mshr_entries" in allowed:
+        effective.update({"l1_mshr_entries": 1024, "l1_merge_cap": 32, "l1_missq_entries": 64})
+    if "l1_bank_count" in allowed:
+        effective["l1_bank_count"] = 8
+    record["_contract"] = {"semantic_base_id": "base", "base_core_sha": "core", "base_framework_sha": "fw",
+                           "candidate_core_sha": record["core_sha"], "candidate_framework_sha": record["framework_sha"],
+                           "equivalence_gate": {"id": "gate", "status": "PASS", "evidence_path": "evidence"},
+                           "allowed_source_delta_class": "NONE", "allowed_config_fields": sorted(allowed),
+                           "effective_config": effective}
     return record
 
 
@@ -70,10 +101,31 @@ def test_provenance_mismatch_and_missing_baseline_are_visible():
     base = _record()
     wrong_trace = _record(cell="D512_BASE", descriptor_capacity=512, config_hash="d512", trace_identity="other")
     assert lane_d.pair_status(base, wrong_trace) == "REJECTED_TRACE_IDENTITY_MISMATCH"
-    same_dim_other_config = _record(cell="OTHER", config_hash="other")
-    assert lane_d.pair_status(base, same_dim_other_config) == "REJECTED_UNDECLARED_CONFIG_MISMATCH"
     only_d512 = _record(cell="D512_BASE", descriptor_capacity=512, config_hash="d512")
     assert lane_d.make_deltas([only_d512])[0]["comparison_status"] == "MISSING_D256_BASELINE"
+
+
+def test_reviewed_equivalent_changed_sha_is_accepted():
+    base = _record()
+    candidate = _record(cell="D512_BASE", descriptor_capacity=512, config_hash="d512", core_sha="new-core", framework_sha="new-fw")
+    candidate["_contract"].update({"candidate_core_sha": "new-core", "candidate_framework_sha": "new-fw", "allowed_source_delta_class": "TELEMETRY_GENERALIZATION_EQUIVALENT"})
+    assert lane_d.pair_status(base, candidate) == "COMPATIBLE_DECLARED_CELL_DELTA"
+
+
+def test_changed_sha_without_equivalence_and_wrong_lineage_are_rejected():
+    base = _record()
+    candidate = _record(cell="D512_BASE", descriptor_capacity=512, config_hash="d512", core_sha="new-core", framework_sha="new-fw")
+    candidate["_contract"].update({"candidate_core_sha": "new-core", "candidate_framework_sha": "new-fw", "equivalence_gate": {"id": "", "status": "PENDING", "evidence_path": ""}})
+    assert lane_d.pair_status(base, candidate) == "REJECTED_CHANGED_SHA_WITHOUT_PASS_EQUIVALENCE"
+    candidate["_contract"].update({"equivalence_gate": {"id": "gate", "status": "PASS", "evidence_path": "evidence"}, "allowed_source_delta_class": "EQUIVALENT", "base_core_sha": "wrong"})
+    assert lane_d.pair_status(base, candidate) == "REJECTED_BASE_LINEAGE_MISMATCH"
+
+
+def test_hidden_effective_config_change_is_rejected():
+    base = _record()
+    candidate = _record(cell="D512_BASE", descriptor_capacity=512, config_hash="d512")
+    candidate["_contract"]["effective_config"]["line_mshr_entries"] = 256
+    assert lane_d.pair_status(base, candidate) == "REJECTED_UNAUTHORIZED_EFFECTIVE_CONFIG_DIFF"
 
 
 def test_duplicate_run_detection(monkeypatch, tmp_path):
