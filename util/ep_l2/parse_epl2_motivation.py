@@ -62,6 +62,8 @@ def main():
     if total["wb_packets_lower_accepted"] > total["wb_packets_created"]:
         raise ValueError("shadow WBUF accepted more packets than it created")
     terminal_wbuf_outstanding = total["wb_packets_created"] - total["wb_packets_lower_accepted"]
+    if terminal_wbuf_outstanding or total["wb_active_at_snapshot"]:
+        raise ValueError("terminal shadow WBUF lifecycle is not closed")
     reuse = {"workload": args.workload, "reuse_instances": total["reuse_instances"]}
     for label, key in zip(BINS, BIN_KEYS): reuse[label] = (total[key] / total["reuse_instances"] if total["reuse_instances"] else "NA")
     if total["reuse_instances"] and abs(sum(reuse[x] for x in BINS) - 1.0) > 1e-12: raise ValueError("reuse normalization failed")

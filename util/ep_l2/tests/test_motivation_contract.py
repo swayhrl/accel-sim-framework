@@ -65,6 +65,17 @@ for k in range(8,16): create(k,30+k)
 assert [len(active)>=c for c in (4,8,16)] == [True,True,True]
 accept(0,60); assert len(active)==15
 
+# Lifecycle identity is the WB packet, not its address.  Concurrent packets
+# and sequential reuse of one line cannot collide; WAD completion is separate
+# from lower-interface WBUF release, and a naturally drained terminal is empty.
+wb_active={}; wad_live=set()
+def wb_create(packet, line): assert packet not in wb_active; wb_active[packet]=line; wad_live.add(line)
+def wb_accept(packet): assert packet in wb_active; del wb_active[packet]
+wb_create('p0', 'A'); wb_create('p1', 'A'); assert len(wb_active)==2
+wb_accept('p0'); assert wb_active == {'p1':'A'} and 'A' in wad_live
+wb_accept('p1'); wb_create('p2', 'A'); wb_accept('p2'); wad_live.remove('A')
+assert not wb_active and not wad_live
+
 def classify(wad=False, setfail=False, mshr=False, missq=False, dirty=False, active=0, cap=8, admitted=True):
     if wad: return 'WB_PATH'
     if setfail: return 'SET_ASSOC'
