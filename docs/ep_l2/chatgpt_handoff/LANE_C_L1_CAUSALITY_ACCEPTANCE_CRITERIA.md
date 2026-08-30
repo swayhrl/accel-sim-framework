@@ -2,24 +2,37 @@
 
 This is the authoritative self-gating contract for Lane C.
 
-Lane C is a **causality/calibration experiment**, not a redesign of L1. Codex may self-repair runner/config/instrumentation/tooling inside the authorized scope until all mandatory gates pass.
+Lane C is a causality/calibration experiment, not an L1 redesign. Execution scheduling also follows:
+
+```text
+docs/ep_l2/chatgpt_handoff/SPECULATIVE_PARALLEL_EXECUTION_POLICY.md
+```
+
+Speculative launch does not weaken any acceptance/promotion criterion below.
 
 ## C0. Source identity and isolation — mandatory
 
 PASS only if:
 
 ```text
-D256 cells derive from the exact C7e formal source/config semantics
-Lane A worktrees/binaries/results remain untouched
+D256 cells derive from exact C7e formal source/config semantics
+Lane A and Lane B active worktrees/binaries/results remain untouched
 Lane C has isolated worktrees/branches/result roots
-all runs record source SHA/config hash/trace/L1 class/descriptor capacity
+all runs record Core/Framework SHA, config hash, trace, L1 class and descriptor capacity
 ```
 
-For D512 interaction cells, consume the exact Lane B `D512_READY` source/config. Lane C must not independently implement its own descriptor-512 semantics.
+For D512 cells, Lane C must consume the exact Lane-B D512 candidate; it may not implement a second D512 definition.
+
+Current speculative Lane-B candidate:
+
+```text
+Core      878f80869ce212e779df20b6421e4dc7f987825d
+Framework aae62b66685f15437cecf0193934f628e6fac6ae
+```
 
 ## C1. Frozen L1 geometry — mandatory
 
-Across all first-stage cells keep:
+Across first-stage cells keep:
 
 ```text
 capacity = 64 KiB
@@ -29,9 +42,9 @@ line = 128 B
 latency = 20 cycles
 ```
 
-Do not change L1 capacity/associativity/line size to obtain headroom.
+No L1 capacity/associativity/line-size/latency change is allowed.
 
-## C2. Authorized cells — mandatory
+## C2. Authorized cells
 
 ### D256 + META-HR
 
@@ -55,90 +68,49 @@ MSHR/merge/MissQ stay baseline
 
 ### D512 interaction cells
 
-Only after Lane B `D512_READY`:
+Use the exact frozen Lane-B candidate plus exactly one Lane-C headroom class:
 
 ```text
 D512 + META-HR
 D512 + BANK-HR
 ```
 
-No other modeled resource may change.
+No other modeled resource changes.
 
-## C3. Base reproduction gate — mandatory
+## C3. Base reproduction — mandatory
 
-Before interpreting headroom results, prove the Lane C baseline configuration reproduces the existing exact C7e D256/B0-Banked result when no headroom delta is applied.
+Before interpreting Lane-C results, prove the Lane-C D256 BASE path reproduces exact C7e B0-Banked behavior on at least vectorAdd_4M, spmv and one longer selected workload. Require exact cycles/instructions/selected L2/DRAM counters/invariants.
 
-Use at least:
+Observation-only instrumentation changes require exact baseline timing neutrality.
 
-```text
-vectorAdd_4M
-spmv
-one longer selected workload
-```
+## C4. Effective-config delta audit — mandatory
 
-Require exact simulated equality for cycles, instructions, selected L2/DRAM counts, and terminal invariants.
+Every cell emits a machine-readable effective-config map and diff.
 
-If Lane C requires source instrumentation changes, compare old exact C7e source vs new instrumentation-enabled source at the same baseline configuration and require timing neutrality.
-
-## C4. Configuration-delta audit — mandatory
-
-For every experiment generate a machine-readable effective-config diff.
-
-PASS only if the diff proves:
+Require exactly:
 
 ```text
-META-HR cell: only MSHR/merge/MissQ differ
-BANK-HR cell: only bank count differs
-D512 interaction: descriptor capacity plus the named L1 headroom class differ
+D256 META-HR: l1_mshr_entries, l1_merge_cap, l1_missq_entries
+D256 BANK-HR: l1_bank_count
+D512 META-HR: descriptor_pool_size + META-HR fields
+D512 BANK-HR: descriptor_pool_size + l1_bank_count
 ```
 
-If changing bank count also changes the simulator's bank-index mapping, document that this is part of the intended bank-throughput headroom experiment; do not describe it as a pure extra-port experiment unless the code actually models it that way.
+No hidden changes are accepted. The contract must bind to the actual run runtime-config hash and be compatible with Lane D's calibration input contract.
 
-## C5. L1 counter/instrumentation correctness — mandatory if code or counters change
+## C5. L1 telemetry correctness — mandatory if code/counters change
 
-Prefer exact existing C7e L1D counters. If new counters/hooks are needed, every field must have a source semantic map:
+Prefer existing C7e L1D counters. Any new/changed field requires a semantic map with event/retry/unique semantics, exact increment point, denominator, scope, reset/delta behavior, directed path test and natural timing-neutral smoke.
 
-```text
-field name
-unique/retry/event semantics
-exact production increment point
-denominator if any
-application/kernel scope
-reset/delta behavior
-```
-
-Directed tests must cover the relevant path, including when practical:
-
-```text
-MSHR entry full
-per-address merge full
-MissQ full
-line allocation fail
-bank/latency queue conflict
-no-failure control
-```
-
-Do not reinterpret retry/stall attempts as unique-request failures.
-
-If instrumentation is observation-only, require exact baseline timing neutrality on natural workloads.
+Never reinterpret retry/stall attempts as unique-request failure probabilities.
 
 ## C6. Build/regression — mandatory
 
-Final Lane C experiment source/config infrastructure must have:
+Require Release build, relevant C7e/L1 regressions, config-delta tests, any counter/parser tests, `git diff --check`, and clean frozen experiment worktrees.
 
-```text
-Release build PASS
-existing relevant C7e/L1 regressions PASS
-new config-delta tests PASS
-new counter tests PASS if counters changed
-parser/analyzer tests PASS if output changed
-git diff --check PASS
-clean frozen experiment worktrees
-```
+## C7. D256 screening — mandatory and independent
 
-## C7. Screening workload completion — mandatory
-
-Initial set:
+Initial workloads:
 
 ```text
 vectorAdd_4M
@@ -150,36 +122,29 @@ sad
 FWT_7_21
 ```
 
-First complete all 7 D256 META-HR and all 7 D256 BANK-HR runs unless a proven common producer defect invalidates the lane.
+Complete all seven D256 META-HR and all seven D256 BANK-HR runs unless a proven common producer defect invalidates the lane.
 
-Each run requires:
+Each run requires local `COMPLETE_VALID`, exact source/config identity, terminal_clean=1, payload consistency, parser success and required telemetry.
+
+### Per-workload early decomposition
+
+Lane C does not need to wait for all seven META-HR runs before launching one-at-a-time follow-up. As soon as one workload has a valid BASE and META-HR result showing the material-response trigger (>~5% or strong downstream-pressure movement), it may launch:
 
 ```text
-COMPLETE_VALID
-normal exit
-exact expected source/config hashes
-terminal_clean = 1
-payload consistency = 1
-parser success
-required L1/L2/lower telemetry present
+MSHR-only
+merge-only
+MissQ-only
 ```
+
+for that workload in parallel with remaining screening runs.
+
+These decomposition runs still require all normal config/provenance checks.
 
 ## C8. Causality analysis — mandatory
 
-For each workload/cell compare against the corresponding BASE cell:
+For each workload/cell compare cycles/speedup, L1 blockers/accesses/misses, L2 descriptor/MSHR pressure, lower traffic, L2->DRAM/scheduler/native-BW where available, and 5K temporal behavior.
 
-```text
-cycles/speedup
-L1 blocker movement
-L1 accesses/misses
-L2 descriptor need/block/occupancy
-Line-MSHR pressure
-L2 request/lower traffic
-L2->DRAM/scheduler/BW
-5K temporal pressure
-```
-
-Classify each result into one of:
+Classify only with performance + downstream movement:
 
 ```text
 L1_NOT_CAUSAL
@@ -189,98 +154,47 @@ BOTTLENECK_MOVES_DOWNSTREAM
 MIXED_OR_INSUFFICIENT
 ```
 
-Use speedup **and downstream movement**, not blocker-count reduction alone.
-
-Screening thresholds may use:
-
-```text
-<2% cycle improvement: weak
-2-5%: moderate
->5%: strong enough to decompose
-```
-
-but these are heuristics, not conclusions by themselves.
-
 ## C9. One-at-a-time decomposition — mandatory for material META-HR responses
 
-Because META-HR changes three resources together, any workload showing meaningful response (normally >5%, or a strong downstream-pressure shift) must be decomposed before `BASELINE-DECISION`.
+For sensitive workloads run MSHR-only, merge-only and MissQ-only at the relevant descriptor base. This remains required before `BASELINE-DECISION`.
 
-Run only for sensitive workloads as needed:
+## C10. D512 interaction — speculative launch now authorized
 
-```text
-MSHR-only: 512 -> 1024
-merge-only: 8 -> 32
-MissQ-only: 16 -> 64
-```
+Lane C no longer has to wait three hours for Lane B to declare `D512_READY` before spending compute.
 
-Keep every other variable at the relevant D256 or D512 base.
+It may start D512 META-HR/BANK-HR now from the exact frozen Lane-B candidate above, in isolated Lane-C worktrees/results.
 
-This is required to avoid claiming "L1 MSHR" when the actual cause was MissQ or merge capacity.
-
-## C10. D512 interaction gate
-
-Lane C may start D512 META/BANK cells only when workboard `D512-PREFLIGHT` is DONE/PASS and Lane B provides exact:
+Until Lane B publishes `D512_READY`, every such run is:
 
 ```text
-source SHA
-config overlay/hash
-D512_READY result path
+maturity = SPECULATIVE_PENDING_GATE
+promotion_dependencies:
+  - D256_EQ_SCAN_PASS
+  - D512_PREFLIGHT_PASS
 ```
 
-Then run the same selected workload set unless Lane B/ChatGPT has narrowed it based on evidence. Do not change the D512 definition locally.
+If Lane B later passes both gates, exact matching Lane-C rows may be promoted without rerun. If Lane B changes candidate source/config after a source/config/producer/timing defect, all dependent Lane-C D512 rows are `INVALIDATED_BY_UPSTREAM_GATE` and must be rerun from the superseding candidate.
 
-## C11. Review pack / return path — mandatory
+A packaging/parser-only Lane-B failure does not automatically require simulator rerun if raw output remains valid.
 
-Create a browsable pack such as:
+## C11. Review pack / return path
+
+Create/update:
 
 ```text
 docs/ep_l2/review_packs/L1_CAUSALITY_CALIBRATION_r1/
-```
-
-Include:
-
-```text
-source/config anchors
-effective-config diffs
-base reproduction/timing-neutrality evidence
-run status table
-D256 META/BANK comparison
-D512 META/BANK interaction when available
-one-at-a-time decomposition for sensitive cases
-causality classification table
-raw-log index
-SHA256SUMS
-open issues
-```
-
-Update:
-
-```text
 docs/ep_l2/codex_handoff/LANE_C_LATEST.md
-PARALLEL_WORKBOARD.md
+docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 ```
 
-## Completion state
+Include source/config anchors, effective-config contracts/diffs, base reproduction, run status + maturity/promotion dependencies, D256 and D512 comparisons, one-at-a-time results, causality classifications, raw-log index, SHA256SUMS and open issues.
 
-Lane C is complete for convergence only when all required D256 cells and all dependency-available D512 interaction/decomposition cells have valid evidence.
+## Completion
 
-Final lane status:
+`L1_CAUSALITY_SCREEN_COMPLETE` requires all mandatory D256 evidence and all required D512/decomposition evidence to be **promoted valid**, not merely computed speculatively.
 
-```text
-L1_CAUSALITY_SCREEN_COMPLETE
-```
-
-Lane C must not independently alter the primary L1 baseline.
+Lane C must not independently change the primary L1 baseline.
 
 ## Hard stops
 
-Stop and request review if completion would require:
-
-```text
-changing L1 capacity/assoc/line/latency outside authorized cells
-changing L2/DRAM resources except consuming Lane B D512
-accepting unexplained base-reproduction/timing mismatch
-changing traces/workloads to improve outcomes
-rewriting L1 event semantics to make counts look smaller/larger
-modifying Lane A or Lane B active runtime worktrees
-```
+Do not change L1 capacity/assoc/line/latency, change other L2/DRAM resources, accept unexplained baseline mismatch, alter workloads/traces, modify Lane A/B active worktrees, or rewrite event semantics to obtain a desired conclusion.
