@@ -15,9 +15,9 @@ def write(path, rows):
 def canonical(rows): return sorted(tuple(sorted(row.items())) for row in rows)
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__); ap.add_argument("--results",required=True,type=Path); ap.add_argument("--out",required=True,type=Path); args=ap.parse_args(); args.out.mkdir(parents=True,exist_ok=True)
+    ap=argparse.ArgumentParser(description=__doc__); ap.add_argument("--results",required=True,type=Path); ap.add_argument("--out",required=True,type=Path); ap.add_argument("--controls",nargs="+",choices=CONTROLS,default=CONTROLS); args=ap.parse_args(); args.out.mkdir(parents=True,exist_ok=True)
     manifest=json.loads((args.results/"campaign_manifest.json").read_text()); timing=[]
-    for name in CONTROLS:
+    for name in args.controls:
         a,b=args.results/OFF/name,args.results/ON/name
         sa,sb=(json.loads((d/"run_status.json").read_text()) for d in (a,b))
         if sa["status"]!="COMPLETE_VALID" or sb["status"]!="COMPLETE_VALID": raise ValueError("invalid control: "+name)
@@ -36,7 +36,7 @@ def main():
         row={"workload":d.name,"maturity":"SPECULATIVE_PENDING_GATE","ro_interpretation":"candidate_transferable_pending_state_lifetime_not_proven_avoidable_mshr_lifetime","tvd_interpretation":"premise_requires_old_handle_live_until_set_done","shared_payload_interpretation":"NO_REAL_CONSUMER_YET","framework_sha":manifest["framework_sha"],"core_sha":manifest["core_sha"],**summary}
         opportunities.append(row)
     write(args.out/"M0B_OPPORTUNITY_SUMMARY.csv",opportunities)
-    (args.out/"ANALYSIS_MANIFEST.json").write_text(json.dumps({"maturity":"SPECULATIVE_PENDING_GATE","controls":CONTROLS,"framework_sha":manifest["framework_sha"],"core_sha":manifest["core_sha"]},indent=2,sort_keys=True)+"\n")
+    (args.out/"ANALYSIS_MANIFEST.json").write_text(json.dumps({"maturity":"SPECULATIVE_PENDING_GATE","controls":args.controls,"framework_sha":manifest["framework_sha"],"core_sha":manifest["core_sha"]},indent=2,sort_keys=True)+"\n")
 if __name__=="__main__":
     try: main()
     except (OSError,ValueError,KeyError) as error: raise SystemExit("M0b analyzer error: %s"%error)
