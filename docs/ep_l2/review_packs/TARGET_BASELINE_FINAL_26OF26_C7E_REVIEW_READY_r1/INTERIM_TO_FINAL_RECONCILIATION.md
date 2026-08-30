@@ -1,0 +1,7 @@
+# 22/26 interim to final reconciliation
+
+The four late clean rows are `gemm` and `3mm`, both variants. Their final paired cycles are identical within each workload (gemm: 556,340; 3mm: 1,661,135), and their Banked true-conflict metrics are zero. They therefore do not add evidence of a residual Banked arbitration penalty after C6d.
+
+They also do not overturn the 22/26 resource picture: both have zero descriptor-pool-full, line-MSHR-full, per-address-cap, WAD-full, payload-capacity, payload-service, tag-way, and lower-queue-full events in the final direct rows. Their descriptor maxima are below 256 (gemm 231; 3mm 248), and line-MSHR maxima remain below 128 (76 each). They do show substantial native L1 MissQ/bank-latency pressure, while their final-complete native DRAM physical-bus utilization is low (gemm 0.007354; 3mm 0.005747 weighted mean). This is descriptive, not a causal attribution.
+
+Accordingly the late rows reinforce—not materially alter—the interim conclusions: observed global descriptor-pool pressure remains workload-specific; 128 line-MSHR full blocking is not observed; cfd_097k remains the measured true-Banked-contention case; and lower/scheduler pressure is concentrated in the high-traffic workloads. The full set also contains workload-specific per-address-cap blocks, WAD full/hazard events, and scan tag-way blocks; the late gemm/3mm rows add none of those signals. Payload-capacity denial remains zero, while the small payload-service denials are retained in the matrix. See the final matrices for row-level evidence.

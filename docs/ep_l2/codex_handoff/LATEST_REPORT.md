@@ -1,20 +1,35 @@
 # Codex → ChatGPT latest report
 
-Stage: Final Target Baseline — 26/26 C7e closeout
+Stage: Final Target Baseline — ChatGPT independent review ready
 
-Status: **TARGET_BASELINE_26RUN_PASS**
+Status: **TARGET_BASELINE_26RUN_REVIEW_READY**
 
-Core SHA: `ece1a3a77c5628763e0a4605bfd1c639ee6a1495`
-Framework SHA: `f08d2ce857972fad73c4e1ab7162ba94c6336507`
+Runtime Core SHA: `ece1a3a77c5628763e0a4605bfd1c639ee6a1495`
 
-Completed: 26 / 26
+Runtime Framework SHA: `f08d2ce857972fad73c4e1ab7162ba94c6336507`
 
-All direct formal paths are `COMPLETE_VALID` with matching frozen provenance.
-The C7e final analyzer completed successfully. The earlier duplicate-write
-3mm evidence is preserved separately as diagnostic-only and excluded from the
-final data set.
+Analysis Framework SHA: `cb83606eb8640382b7c1932d8981b70608d9d130`
 
-Formal campaign recommendation: STOP — do not start 1GHz or Opportunity Study
-until review.
+Accepted formal rows: 26 / 26
 
-Review entry point: [TARGET_BASELINE_FINAL_26OF26_C7E_r1](../review_packs/TARGET_BASELINE_FINAL_26OF26_C7E_r1/README.md)
+Excluded diagnostic rows: 2 (the quarantined duplicate-write 3mm paths)
+
+3mm replacement audit: PASS
+
+A–K self-gate: PASS. The self-gate is evidence for independent review, not an
+acceptance decision.
+
+Main conclusions:
+
+- The frozen formal rows have uniform runtime source/config provenance and
+  complete parsed/invariant evidence.
+- The review supplement reprocesses all 26 direct formal rows with the
+  isolated Lane-D V3 analyzer, including corrected lower-admission, native
+  physical-DRAM, temporal-cardinality, and channel-imbalance semantics.
+- The original final pack remains immutable; diagnostic 3mm paths are indexed
+  but excluded from every formal aggregate.
+
+Formal campaign recommendation: **REQUEST CHATGPT INDEPENDENT REVIEW**. Do not
+start 1GHz, RO, TVD, Unified, or Opportunity Study yet.
+
+Review entry point: [TARGET_BASELINE_FINAL_26OF26_C7E_REVIEW_READY_r1](../review_packs/TARGET_BASELINE_FINAL_26OF26_C7E_REVIEW_READY_r1/README.md)
