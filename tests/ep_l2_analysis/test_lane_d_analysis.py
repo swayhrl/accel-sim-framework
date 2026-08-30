@@ -164,6 +164,15 @@ def test_runtime_config_contract_binding_accepts_expected_hash_and_gate():
     assert lane_d.contract_binding_status(contract, "base") == "PASS_RUNTIME_CONFIG_BOUND"
 
 
+def test_runtime_config_hash_prefers_per_run_status_audit():
+    assert lane_d.runtime_config_hash(
+        {"audit": {"runtime_config_composite_sha256": "run"}},
+        {"audit": {"runtime_config_composite_sha256": "manifest"}},
+        {"runtime_config_composite_sha256": "campaign"},
+    ) == "run"
+    assert lane_d.runtime_config_hash({}, {}, {}) == lane_d.NA
+
+
 def test_channel_imbalance_requires_denominator_and_exact_group_alignment():
     missing_denominator = [{"window_start_cycle": "0", "channel": "0", "bandwidth_util_numerator_bytes": "1"}]
     assert lane_d.channel_imbalance(missing_denominator, 1)["all_window_cv_max"] == lane_d.NA

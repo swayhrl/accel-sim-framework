@@ -347,6 +347,20 @@ def contract_binding_status(contract: dict[str, Any], actual_config_hash: str) -
     return "PASS_RUNTIME_CONFIG_BOUND"
 
 
+def runtime_config_hash(status: dict[str, Any], manifest: dict[str, Any], campaign: dict[str, Any]) -> str:
+    """Return the authoritative runtime-config digest from retained run audit.
+
+    Current promoted calibration runners place the per-run audit in
+    ``run_status.json``; older formal artifacts retain it in the manifest or
+    campaign manifest.  These are ordered evidence sources, never a default.
+    """
+    for source in (status.get("audit", {}), manifest.get("audit", {}), campaign):
+        value = source.get("runtime_config_composite_sha256", NA)
+        if value not in (None, "", NA):
+            return value
+    return NA
+
+
 def expected_allowed_config_fields(descriptor_capacity: int, l1_class: str) -> set[str]:
     allowed = set()
     if descriptor_capacity != 256:
@@ -462,7 +476,7 @@ def artifact_run(cell: Cell, directory: Path) -> dict[str, Any]:
         "dram_write_bytes": dram_total("successful_write_bytes"), "lower_admission_byte_rate_norm": field_weighted(app_dram, "bandwidth_util", "dram_cycles"),
         "terminal_clean": summary0.get("invariants_terminal_clean", NA),
     }
-    config_hash = audit.get("runtime_config_composite_sha256", campaign.get("runtime_config_composite_sha256", NA))
+    config_hash = runtime_config_hash(status, manifest, campaign)
     if config_hash == NA:
         raise ValueError(f"{directory}: no runtime config hash in run or campaign manifest")
     binding = contract_binding_status(contract, config_hash)
