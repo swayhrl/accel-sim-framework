@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Fail-closed M0a neutrality and 5K temporal analyzer."""
+"""Fail-closed integrated M0a+M1 static neutrality and 5K analyzer."""
 import argparse
 import csv
 import json
 from collections import defaultdict
 from pathlib import Path
 
-EQUIVALENCE = ("vectorAdd_4M", "convolutionSeparable", "sad")
+EQUIVALENCE = ("vectorAdd_4M", "cfd_097k", "sad")
+BASE_MODE = "BASE_M1_STATIC"
+M0A_ON_MODE = "M0A_ON_M1_STATIC"
 M0_FIELDS = ("m0_frontend_head_blocked_cycles_tag_way", "m0_frontend_head_blocked_cycles_wad_full",
              "m0_frontend_head_blocked_cycles_wad_hazard", "m0_frontend_head_blocked_cycles_line_mshr",
              "m0_frontend_head_blocked_cycles_descriptor", "m0_frontend_head_blocked_cycles_per_address",
@@ -44,10 +46,13 @@ def main():
     manifest = json.loads((args.results / "campaign_manifest.json").read_text())
     audit = {"runtime_config_composite_sha256": manifest["runtime_config_sha256"],
              "framework_sha": manifest["framework_sha"], "core_sha": manifest["core_sha"],
+             "semantic_base_id": manifest["semantic_base_id"],
+             "maturity": manifest["maturity"],
+             "promotion_dependencies": ";".join(manifest["promotion_dependencies"]),
              "config_delta": "m0a_off.config ↔ m0a_on.config only"}
     timing = []
     for workload in EQUIVALENCE:
-        off, on = args.results / "OFF" / workload, args.results / "ON" / workload
+        off, on = args.results / BASE_MODE / workload, args.results / M0A_ON_MODE / workload
         for path in (off / "run_status.json", on / "run_status.json"):
             if not path.is_file(): raise ValueError("missing equivalence status: " + str(path))
         a, b = json.loads((off / "run_status.json").read_text()), json.loads((on / "run_status.json").read_text())
@@ -57,7 +62,9 @@ def main():
         # invariants, C7e DRAM issues/bytes and every slice's B0 counters.
         equal = (a["terminal_gpu_tot_sim_cycle"] == b["terminal_gpu_tot_sim_cycle"] and
                  a["terminal_gpu_tot_sim_insn"] == b["terminal_gpu_tot_sim_insn"])
-        for artifact in ("target_summary.csv", "target_slice.csv", "target_l1.csv", "target_dram.csv"):
+        for artifact in ("target_summary.csv", "target_slice.csv", "target_kernel.csv",
+                         "target_bank.csv", "target_window.csv", "target_l1.csv",
+                         "target_dram.csv"):
             equal &= canonical(read_csv(off / artifact)) == canonical(read_csv(on / artifact))
         timing.append({"workload": workload, "off_cycles": a["terminal_gpu_tot_sim_cycle"],
                        "on_cycles": b["terminal_gpu_tot_sim_cycle"], "off_instructions": a["terminal_gpu_tot_sim_insn"],
@@ -71,7 +78,7 @@ def main():
     write_csv(args.out / "TIMING_NEUTRALITY.csv", timing)
 
     summary_rows, temporal_rows = [], []
-    for directory in sorted((args.results / "ON").iterdir()):
+    for directory in sorted((args.results / M0A_ON_MODE).iterdir()):
         if not directory.is_dir(): continue
         status = json.loads((directory / "run_status.json").read_text())
         if status["status"] != "COMPLETE_VALID": raise ValueError("invalid ON cell: " + directory.name)
@@ -80,11 +87,9 @@ def main():
         blocked = int(summary["m0_frontend_head_any_blocked_cycles"])
         row = {"workload": directory.name, "blocked_fraction": blocked / observed if observed else 0,
                "observed_cycles": observed, "any_blocked_cycles": blocked,
-               "resident_payload_occupied_avg": int(summary["m0_resident_payload_occupied_sum"]) /
-                                               int(summary["m0_resident_payload_occupied_sum"]) * 0 if int(summary["m0_resident_payload_occupied_sum"]) else 0,
                "useful_frontend_admit": summary["m0_useful_frontend_admit"],
                "useful_response_enqueue": summary["m0_useful_response_enqueue"],
-               "reason_overlap_note": "reason bits are independent and may overlap; do not sum them as a partition",
+               "reason_semantics": "production-visible stage-primary preview reasons; not exhaustive multi-cause; do not sum",
                **audit}
         # Per-slice sums preserve the exact application sampling denominator.
         app = read_csv(directory / "m0a_application.csv")
