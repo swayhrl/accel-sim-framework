@@ -62,8 +62,11 @@ def main():
         timing.append({"workload": workload, "off_cycles": a["terminal_gpu_tot_sim_cycle"],
                        "on_cycles": b["terminal_gpu_tot_sim_cycle"], "off_instructions": a["terminal_gpu_tot_sim_insn"],
                        "on_instructions": b["terminal_gpu_tot_sim_insn"], "all_required_parsed_fields_equal": int(equal),
-                       "config_delta_pass": int(a["audit"]["runtime_config_sha256"] == b["audit"]["runtime_config_sha256"]),
+                       "config_delta_pass": int(bool(a["audit"].get("config_delta_pass")) and
+                                                bool(b["audit"].get("config_delta_pass"))),
                        **audit})
+        if not timing[-1]["config_delta_pass"]:
+            raise ValueError("OFF/ON config-delta contract failed: " + workload)
         if not equal: raise ValueError("OFF/ON timing-neutrality mismatch: " + workload)
     write_csv(args.out / "TIMING_NEUTRALITY.csv", timing)
 

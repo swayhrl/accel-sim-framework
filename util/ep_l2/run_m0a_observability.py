@@ -47,6 +47,11 @@ def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
 
+def active_config_lines(path: Path) -> list[str]:
+    return [line.strip() for line in path.read_text().splitlines()
+            if line.strip() and not line.lstrip().startswith("#")]
+
+
 def terminal(log: Path) -> tuple[bool, str | None, str | None]:
     ok = False
     cycles = insn = None
@@ -129,10 +134,16 @@ def main() -> None:
             raise SystemExit("required asset missing: " + str(path))
     config_digests = {name: digest(path) for name, path in
                       {"base": base, "trace": trace_cfg, "d512": d512, **overlays}.items()}
+    config_delta_pass = (active_config_lines(overlays["OFF"]) == ["-gpgpu_ep_l2_m0a_stats 0"] and
+                         active_config_lines(overlays["ON"]) == ["-gpgpu_ep_l2_m0a_stats 1"])
+    if not config_delta_pass:
+        raise SystemExit("M0a OFF/ON overlays are not the approved one-bit config delta")
     audit = {"schema_version": "EPL2M0AV1", "framework_sha": head(ROOT), "core_sha": head(CORE),
              "frequency_mhz": 850, "runtime_config_sha256": hashlib.sha256(
                  json.dumps(config_digests, sort_keys=True).encode()).hexdigest(),
-             "config_digests": config_digests, "primary_variant": "D512_B0_Banked"}
+             "config_digests": config_digests, "config_delta_pass": config_delta_pass,
+             "config_delta_evidence": "only -gpgpu_ep_l2_m0a_stats: 0 -> 1",
+             "primary_variant": "D512_B0_Banked"}
     args.out.mkdir(parents=True, exist_ok=True)
     write_json(args.out / "campaign_manifest.json", audit)
     names = (args.only,) if args.only else tuple(ROSTER)
