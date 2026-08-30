@@ -15,9 +15,11 @@
 - C7e `bandwidth_util` is renamed to
   `lower_admission_byte_rate_norm`: it credits accepted L2->DRAM request bytes
   and is **not** physical DRAM data-bus utilization. The matrix separately
-  parses final application-level native `bwutil`/`n_cmd` from retained raw
-  logs as `native_dram_data_bus_util`. No physical 5K-window bus metric was
-  retained, so it is explicitly `NOT_EMITTED`.
+  parses the final complete 32-channel native `bwutil`/`n_cmd` snapshot from
+  retained raw logs as `native_dram_data_bus_util_weighted_mean` plus
+  p50/p95/max and `n_cmd` sum. It fails closed on an incomplete snapshot. No
+  physical 5K-window bus metric was retained, so it is explicitly
+  `NOT_EMITTED`.
 - `longest_high_average_window_run` means consecutive 5K window *averages*
   at or above 90% capacity. It cannot establish the absence of a sub-window
   burst or full event.
@@ -30,5 +32,7 @@
   identity. Source SHA changes require a machine-readable lineage contract
   naming the formal base SHA pair and a PASS equivalence-gate evidence path.
   Effective config maps must differ in exactly the fields authorized for the
-  declared D512/META-HR/BANK-HR cell; opaque config hashes alone are not
+  declared D512/META-HR/BANK-HR cell. The actual run's
+  `runtime_config_composite_sha256` must exactly equal the contract value and
+  the contract must carry PASS config-delta evidence; a hash alone is not
   accepted as proof.
