@@ -31,11 +31,31 @@ for d, expect in ((8,0),(9,1),(16,1),(17,2),(32,2),(33,3),(64,3),(65,4),(128,4),
 a,b=Reuse(),Reuse(); a.ref(7); b.ref(7); a.ref(7); assert a.reuse==1 and b.reuse==0
 a.reset(); a.ref(7); assert a.reuse==0 and sum(a.h)==0
 
+# A valid victim is an eviction observation regardless of whether it later
+# creates a dirty writeback packet.  A re-reference consumes exactly one
+# epoch-local opportunity, independently for clean and dirty victims.
+class PostEviction:
+    def __init__(self): self.seq=0; self.evicted={}; self.evictions=0; self.rerefs=0
+    def evict(self, line, dirty):
+        self.evictions += 1; self.evicted[line] = (self.seq, dirty)
+    def ref(self, line):
+        self.seq += 1
+        if line in self.evicted:
+            self.rerefs += 1; del self.evicted[line]
+
+p=PostEviction(); p.ref('clean'); p.evict('clean', False); p.ref('clean')
+p.ref('dirty'); p.evict('dirty', True); p.ref('dirty')
+assert p.evictions == 2 and p.rerefs == 2 and not p.evicted
+
 active={}
 def create(k,t): assert k not in active; active[k]=t
 def accept(k,t): assert k in active and t>=active[k]; del active[k]
 create(1,10); assert len(active)==1
+# The acceptance event is cache-side lower-interface enqueue.  Later DRAM
+# issue or set_done events are deliberately not part of shadow occupancy.
 accept(1,11); assert not active
+def dram_issue_or_set_done(k): assert k not in active
+dram_issue_or_set_done(1)
 for k in range(4): create(k,20+k)
 assert [len(active)>=c for c in (4,8,16)] == [True,False,False]
 create(4,25)

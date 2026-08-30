@@ -9,4 +9,14 @@ with tempfile.TemporaryDirectory() as d:
     r = subprocess.run((sys.executable, str(PARSER), str(log), "--out", str(d / "out"), "--workload", "fixture", "--framework-commit", "f", "--core-commit", "c"), capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
     assert "<=8" in (d / "out/reuse_distance.csv").read_text()
+    # Application accounting is fail-closed: a partial/repeated terminal
+    # record cannot be silently folded into a multi-GB streaming aggregation.
+    log.write_text("".join(base.format(slice=i) for i in range(64)) + base.format(slice=0))
+    r = subprocess.run((sys.executable, str(PARSER), str(log), "--out", str(d / "dup"), "--workload", "fixture", "--framework-commit", "f", "--core-commit", "c"), capture_output=True, text=True)
+    assert r.returncode != 0 and "duplicate application slice" in r.stderr, r.stderr
+# Keep this implementation guard close to the behavioral fixture: large raw
+# logs must never require whole-file text/byte materialization for parsing or
+# hashing.
+source = PARSER.read_text()
+assert ".read_text(" not in source and ".read_bytes(" not in source
 print("EPL2MOTV1 parser regression: PASS")
