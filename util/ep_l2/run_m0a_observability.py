@@ -153,6 +153,8 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=Path("/workspace/results/ep_l2_m0a_m1_int"))
     parser.add_argument("--jobs", type=int, default=3)
     parser.add_argument("--only", choices=tuple(ROSTER))
+    parser.add_argument("--full-roster", action="store_true",
+                        help="opt in to all six M0a workloads; default is the compact three-workload gate")
     args = parser.parse_args()
     base = CORE / "configs/tested-cfgs/SM7_QV100/gpgpusim.config"
     trace_cfg = ROOT / "gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
@@ -178,7 +180,8 @@ def main() -> None:
              "primary_variant": "D512_B0_Banked", "m1_substrate": "static-compatible"}
     args.out.mkdir(parents=True, exist_ok=True)
     write_json(args.out / "campaign_manifest.json", audit)
-    names = (args.only,) if args.only else tuple(ROSTER)
+    names = ((args.only,) if args.only else
+             (tuple(ROSTER) if args.full_roster else EQUIVALENCE))
     tasks = [(name, "M0A_ON_M1_STATIC") for name in names]
     tasks += [(name, mode) for name in EQUIVALENCE if name in names for mode in MODES]
     tasks = list(dict.fromkeys(tasks))
