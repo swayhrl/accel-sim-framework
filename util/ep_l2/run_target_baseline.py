@@ -50,7 +50,10 @@ ROSTER = (
     ("FWT_7_21", trace("decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21")),
     ("FWT_11_19", trace("decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19")),
 )
-VARIANTS = (("B0-Legacy", "b0_legacy_850.config"), ("B0-Banked", "b0_banked_850.config"))
+BASELINE_VARIANTS = (("B0-Legacy", "b0_legacy_850.config"),
+                     ("B0-Banked", "b0_banked_850.config"))
+D512_VARIANTS = (("B0-Legacy", "b0_legacy_d512_850.config"),
+                 ("B0-Banked", "b0_banked_d512_850.config"))
 
 
 def digest(path: Path) -> str:
@@ -117,8 +120,9 @@ def normal_exit(log: Path) -> tuple[bool, str | None, str | None]:
     return ok, cycle, instructions
 
 
-def parse(directory: Path, log: Path, framework_source: str,
-          core_source: str) -> tuple[bool, str]:
+def parse(directory: Path, log: Path, framework_source: str, core_source: str,
+          variants: tuple[tuple[str, str], ...], campaign_class: str,
+          descriptor_pool_size: int) -> tuple[bool, str]:
     result = subprocess.run((sys.executable, str(ROOT / "util/ep_l2/parse_epl2_b0.py"),
                              str(log), "--out", str(directory), "--framework-commit",
                              framework_source, "--core-commit", core_source,
@@ -150,9 +154,11 @@ def parse(directory: Path, log: Path, framework_source: str,
     manifest_path = directory / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["characterization_started"] = True
-    manifest["target_baseline"] = {"frequency_mhz": 850, "variants": [v[0] for v in VARIANTS],
+    manifest["target_baseline"] = {"frequency_mhz": 850, "variants": [v[0] for v in variants],
                                    "framework_authoritative_source": framework_source,
                                    "core_authoritative_source": core_source}
+    manifest["campaign_class"] = campaign_class
+    manifest["descriptor_pool_size"] = descriptor_pool_size
     write_json(manifest_path, manifest)
     return True, ""
 
@@ -162,7 +168,9 @@ def main() -> None:
     parser.add_argument("--out", type=Path,
                         default=ROOT / "docs/ep_l2/target_baseline_results_c5c")
     parser.add_argument("--only", help="one frozen workload name")
-    parser.add_argument("--variant", choices=[v[0] for v in VARIANTS])
+    parser.add_argument("--variant", choices=[v[0] for v in BASELINE_VARIANTS])
+    parser.add_argument("--descriptor-pool-size", type=int, choices=(256, 512), default=256,
+                        help="D512 selects the explicitly labelled speculative overlays")
     parser.add_argument("--rerun", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--expected-core-sha",
@@ -174,7 +182,12 @@ def main() -> None:
     parser.add_argument("--expected-config-sha",
                         help="fail before launch unless the four frozen runtime configs match this composite SHA")
     args = parser.parse_args()
-    rows = [(name, path, variant, overlay) for name, path in ROSTER for variant, overlay in VARIANTS
+    variants = D512_VARIANTS if args.descriptor_pool_size == 512 else BASELINE_VARIANTS
+    campaign_class = ("SPECULATIVE_CALIBRATION_D512" if args.descriptor_pool_size == 512
+                      else "TARGET_BASELINE_D256")
+    if args.variant and args.variant not in [v[0] for v in variants]:
+        raise SystemExit("variant is unavailable for selected descriptor capacity")
+    rows = [(name, path, variant, overlay) for name, path in ROSTER for variant, overlay in variants
             if (not args.only or name == args.only) and (not args.variant or variant == args.variant)]
     missing = [str(path) for _, path, _, _ in rows if not path.is_file()]
     if missing:
@@ -202,13 +215,15 @@ def main() -> None:
     if args.require_clean and (not repo_clean(ROOT, args.out) or not repo_clean(CORE)):
         raise SystemExit("formal runner requires clean Framework and Core worktrees")
     config_digests = {"base_config_sha256": digest(base), "trace_config_sha256": digest(trace_config),
-                      "legacy_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_legacy_850.config"),
-                      "banked_overlay_sha256": digest(ROOT / "tests/ep_l2/b0_banked_850.config")}
+                      "legacy_overlay_sha256": digest(ROOT / "tests/ep_l2" / variants[0][1]),
+                      "banked_overlay_sha256": digest(ROOT / "tests/ep_l2" / variants[1][1])}
     config_sha = hashlib.sha256(json.dumps(config_digests, sort_keys=True).encode()).hexdigest()
     if args.expected_config_sha and config_sha != args.expected_config_sha:
         raise SystemExit("runtime config SHA mismatch: expected %s, found %s" %
                          (args.expected_config_sha, config_sha))
-    audit = {"schema_version": "EPL2B0V1", "framework_authoritative_source": framework_source,
+    audit = {"schema_version": "EPL2B0V1", "campaign_class": campaign_class,
+             "descriptor_pool_size": args.descriptor_pool_size,
+             "framework_authoritative_source": framework_source,
              "core_authoritative_source": core_source, "frequency_mhz": 850,
              **config_digests, "runtime_config_composite_sha256": config_sha,
              "frozen_roster": [{"workload": n, "trace": str(t)} for n, t in ROSTER]}
@@ -237,7 +252,8 @@ def main() -> None:
             result = subprocess.run(("bash", "-lc", shell, "target-baseline-run", *command), cwd=directory,
                                     stdout=output, stderr=subprocess.STDOUT, env=env)
         exited, cycles, instructions = normal_exit(log)
-        valid, detail = (parse(directory, log, framework_source, core_source)
+        valid, detail = (parse(directory, log, framework_source, core_source,
+                               variants, campaign_class, args.descriptor_pool_size)
                          if result.returncode == 0 and exited else
                          (False, "simulator did not exit normally"))
         status = "COMPLETE_VALID" if valid else "FAILED"
