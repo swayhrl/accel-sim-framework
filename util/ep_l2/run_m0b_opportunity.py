@@ -60,7 +60,7 @@ def run(task,out,cmd,audit):
  with log.open("rb") as src,gzip.open(packed,"wb") as dst: shutil.copyfileobj(src,dst)
  log.unlink(); status.update(status="COMPLETE_VALID",raw_log_gz=str(packed),raw_log_gz_sha256=digest(packed)); write(directory/"run_status.json",status); return status
 def main():
- ap=argparse.ArgumentParser(description=__doc__); ap.add_argument("--out",type=Path,default=Path("/workspace/results/ep_l2_m0b")); ap.add_argument("--jobs",type=int,default=3); ap.add_argument("--only",choices=tuple(ROSTER)); args=ap.parse_args()
+ ap=argparse.ArgumentParser(description=__doc__); ap.add_argument("--out",type=Path,default=Path("/workspace/results/ep_l2_m0b")); ap.add_argument("--jobs",type=int,default=3); ap.add_argument("--only",choices=tuple(ROSTER)); ap.add_argument("--skip-complete",action="store_true",help="retain already validated isolated cells"); args=ap.parse_args()
  base=CORE/"configs/tested-cfgs/SM7_QV100/gpgpusim.config"; trace_cfg=ROOT/"gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"; d512=ROOT/"tests/ep_l2/b0_banked_d512_850.config"; overlays={"OFF":ROOT/"tests/ep_l2/m0b_off.config","ON":ROOT/"tests/ep_l2/m0b_on.config"}; sim=ROOT/"gpu-simulator/bin/release/accel-sim.out"
  for p in (base,trace_cfg,d512,*overlays.values(),sim):
   if not p.is_file(): raise SystemExit("required asset missing: "+str(p))
@@ -72,6 +72,8 @@ def main():
   trace=TRACE/ROSTER[n]/"traces/kernelslist.g"
   if not trace.is_file(): raise SystemExit("missing frozen trace: "+str(trace))
   commands[n,m]=(str(sim),"-config",str(base),"-config",str(trace_cfg),"-config",str(d512),"-config",str(overlays[MODES[m]]),"-trace",str(trace))
+ if args.skip_complete:
+  tasks=[task for task in tasks if not ((args.out/task[1]/task[0]/"run_status.json").is_file() and json.loads((args.out/task[1]/task[0]/"run_status.json").read_text()).get("status")=="COMPLETE_VALID")]
  failed=[]
  with ThreadPoolExecutor(max_workers=max(1,args.jobs)) as pool:
   futures=[pool.submit(run,t,args.out,commands[t],audit) for t in tasks]
