@@ -2,7 +2,15 @@
 
 更新时间：2026-08-30
 
-状态：已按 ChatGPT Lane-D 再复审意见完成 V3 自修复并仅重处理既有数据；当前输入范围仍严格限定为正式 22/26 中已完成的 11 个工作负载对。未中断、修改或读取后写回 Lane A/B/C 的运行目录或结果根。
+状态：`FINAL_CALIBRATION_CONVERGENCE_REVIEW_READY`。已完成只读的最终校准收敛与 13-workload archetype checkpoint；未启动模拟、重建或修改 B/C/E 结果根。
+
+## Final convergence r1
+
+- 消费的主矩阵只有已提升且 V2-contract-bound 的六个 cell：D256/D512 BASE 各 26 行，四个 Lane-C L1 敏感性 cell 各 7 行，共 80 行；Lane-E Line-MSHR 2×2 保持为补充受控敏感性，未混入主维度。
+- 修复并测试了一个 provenance 入口兼容性 bug：已提升 D512 运行把运行时配置哈希放在 `run_status.audit`；分析器现优先使用此权威逐运行审计字段，仍严格与 contract 精确匹配。18 项测试通过。
+- 建议（非默认变更、待 ChatGPT 决策）为 D512 / L1 BASE / MSHR128：D512 消除有界成本的 descriptor256 结构性节流；小的周期响应和 Lane-E 0.38% Line-MSHR 敏感性表明下游替代，不是“选择 D512 以制造 MSHR bottleneck”。
+- Unified/RO/TVD 的决定性机会条件均标为 `UNKNOWN_NEEDS_TELEMETRY`；M0 observation-only 与 M1 behavior-preserving substrate 是推荐的下一阶段，而非功能实现授权。
+- 审查包：`docs/ep_l2/review_packs/FINAL_CALIBRATION_CONVERGENCE_r1/`，含 13-row 分类、合同路径、最终矩阵、时间/原生带宽摘要、Lane-E supplement、基线与机制建议、SHA256SUMS。
 
 ## 已完成
 

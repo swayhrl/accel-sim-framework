@@ -1,0 +1,11 @@
+# Mechanism target map — checkpoint
+
+| Family | Current evidence | Best target / control | Missing observation before implementation | First L2-local metric | Service / end-to-end metric | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| Unified payload borrowing | Fixed-role capacity denials and phase-aligned resident/bypass slack are not measured. Bank layout/conflict evidence exists but is service, not capacity, evidence. | `cfd_097k` service control; `scan`, `FWT_7_21`, `dwt2d` observation candidates; `sad` control | Simultaneous role occupancy/slack, shadow shared-pool successes, prevented eviction/denial | Role-specific allocation denial/blocked cycles | Useful admission/completion; cycles under unchanged 4-bank model | `UNKNOWN_NEEDS_TELEMETRY` |
+| RO pending-tag / no-traditional-MSHR | Exact D512 convolution MSHR-full is real; MSHR256 removes it with only 0.38% cycle response. spmv is exact-full negative control. | `convolutionSeparable`; `spmv` control | Certified RO eligibility, avoidable Line-MSHR lifetime, alternate pending-tag/descriptor pressure | Traditional MSHR lifetime and admission-blocked cycles | Useful admitted concurrency; lower-path movement; cycles | `SECONDARY_TARGET` |
+| WAD-backed TVD | WAD-active cases (`dwt2d`, `FWT_7_21`, `scan`) exist; no measured dirty-victim payload lifetime or storage-neutral temporary-data opportunity. | `dwt2d`; `FWT_7_21`/`scan` controls | Dirty-victim count and selection-to-writeback-completion lifetime, WAD overlap, payload reuse opportunity | Victim-related blocked cycles / resident lifetime | Useful residency/admission; cycles | `UNKNOWN_NEEDS_TELEMETRY` |
+| Cross-resource elasticity | Descriptor256 is a structural throttle; D512 removes it and exposes Line-MSHR/lower-path pressure. This is evidence for staged decoupling, not for an adaptive policy. | `convolutionSeparable`, `scan`, `vectorAdd_4M`, `spmv`; `sad` control | Cycle-based reason attribution and resource-lifetime/throughput telemetry | Descriptor/Line-MSHR/per-address blocked cycles and pressure duration | Useful throughput and downstream-pressure movement; cycles | `STRONG_TARGET_FOR_M0_M1` |
+
+No row above authorizes a functional Unified, RO, or TVD mechanism. The next
+allowed engineering question is observation-only M0 opportunity telemetry.
