@@ -8,139 +8,142 @@ Permanent coordination branch:
 hrl/ep-l2-exp-v0
 ```
 
-## Lane A — current formal target mode
+## Canonical long-lived project specification
 
-The existing Codex target-mode window owns Lane A only. Read:
+Before interpreting any lane-specific task as the overall project goal, read:
 
 ```text
-CURRENT_STATE.md
-C7E_DISCUSSION_REFERENCE.md
-C7E_IMPLEMENTATION_HANDOFF.md
-C7E_ACCEPTANCE_CRITERIA.md
-FINAL_26RUN_HANDOFF.md
-FINAL_26RUN_ACCEPTANCE_CRITERIA.md
-CODEX_TARGET_GOAL.md
-CODEX_NEXT_STAGE.md
-INTERIM_22OF26_CHATGPT_REVIEW.md
+docs/ep_l2/project_spec/README.md
+docs/ep_l2/project_spec/RESEARCH_CHARTER.md
+docs/ep_l2/project_spec/ARCHITECTURE_BLUEPRINT.md
+docs/ep_l2/project_spec/EVIDENCE_AND_CLAIM_MODEL.md
+docs/ep_l2/project_spec/WORKLOAD_CHARACTERIZATION_SCHEMA.md
+docs/ep_l2/project_spec/WORKLOAD_ARCHETYPES_PRELIMINARY.md
+docs/ep_l2/project_spec/MECHANISM_IMPLEMENTATION_PLAN.md
+docs/ep_l2/project_spec/EXPERIMENT_ROADMAP.md
 ```
 
-Do not expand this live formal window to own calibration lanes B-D.
+The project specification records the stable research objective, architecture thesis, claim standard, workload classification contract, implementation plan, and long-term roadmap. `chatgpt_handoff/` records only the currently authorized executable stage.
 
-## Parallel calibration lanes — new Codex windows
+Current key objective:
 
-Shared status board:
+> Under comparable L2 storage budget and basic L2 timing, improve the L2's ability to sustain concurrent misses, pending transactions, and payload state while reducing structural blocking caused by static resource/lifetime coupling. End-to-end speedup is stronger evidence, but is not the only valid evidence of a better L2 when another subsystem becomes the new bottleneck.
+
+Performance-headroom policy lives in:
+
+```text
+docs/ep_l2/project_spec/PERFORMANCE_HEADROOM_PLAN.md
+```
+
+## Shared status board
 
 ```text
 docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 ```
 
-Every new Lane B/C/D window begins from the coordination worktree:
+All active/new windows start from the coordination worktree:
 
 ```text
 /workspace/worktrees/accel-sim-ep-l2/
 ```
 
-and first reads:
+and read:
 
 ```text
 CURRENT_STATE.md
-INTERIM_22OF26_CHATGPT_REVIEW.md
 ../coordination/PARALLEL_WORKBOARD.md
 PARALLEL_MASTER_PLAN.md
+SPECULATIVE_PARALLEL_EXECUTION_POLICY.md
 PARALLEL_NEW_WINDOW_BOOTSTRAP.md
 ```
 
-Then read one complete lane contract:
+Then read the lane-specific `HANDOFF + ACCEPTANCE_CRITERIA + TARGET_GOAL` and any latest ChatGPT review/fanout file named by that target.
 
-### Window B — Descriptor 512
+## Lane ownership
+
+### Lane A — formal D256 Target Baseline
+
+Lane A is frozen/closed after the reviewed 26/26 formal campaign. Its formal runtime worktrees are read-only anchors.
+
+### Lane B — Descriptor 512 calibration
+
+Lane B is complete at `D512_READY + D512_MIRROR_COMPLETE`.
+
+### Lane C — L1 causality
+
+Lane C is complete at `L1_CAUSALITY_SCREEN_COMPLETE`.
+
+### Lane D — final calibration convergence
+
+Current authorized target:
 
 ```text
-LANE_B_DESCRIPTOR512_HANDOFF.md
-LANE_B_DESCRIPTOR512_ACCEPTANCE_CRITERIA.md
-LANE_B_TARGET_GOAL.md
+FINAL_CALIBRATION_CONVERGENCE_HANDOFF.md
+FINAL_CALIBRATION_CONVERGENCE_ACCEPTANCE_CRITERIA.md
+LANE_D_FINAL_CONVERGENCE_TARGET_GOAL.md
 ```
 
-### Window C — L1 causality
+Lane D must first publish a 13-workload archetype checkpoint, then finish the six-cell calibration convergence and baseline/mechanism-priority recommendation. No new simulator run is authorized in this stage.
+
+### Lane E — Line-MSHR causality
+
+Lane E is complete at `LINE_MSHR_CAUSALITY_PROBE_COMPLETE` and is supplemental controlled sensitivity evidence.
+
+### Lane F — mechanism implementation preparation
+
+Current authorized parallel source/design audit:
 
 ```text
-LANE_C_L1_CAUSALITY_HANDOFF.md
-LANE_C_L1_CAUSALITY_ACCEPTANCE_CRITERIA.md
-LANE_C_TARGET_GOAL.md
+LANE_F_MECHANISM_PREP_HANDOFF.md
+LANE_F_MECHANISM_PREP_ACCEPTANCE_CRITERIA.md
+LANE_F_TARGET_GOAL.md
 ```
 
-### Window D — analysis / cost / opportunity prep
+Lane F converts the architecture roadmap into exact M0/M1/M2 source/state-machine modification plans. It may inspect source deeply but must not push a functional mechanism implementation yet.
 
-```text
-LANE_D_ANALYSIS_INFRA_HANDOFF.md
-LANE_D_ANALYSIS_INFRA_ACCEPTANCE_CRITERIA.md
-LANE_D_TARGET_GOAL.md
-```
+One Codex window owns one scientific lane, not one simulator process. A lane may launch multiple processes internally only with isolated result directories and frozen source/config identities.
 
-`*_HANDOFF.md` defines the detailed scientific/experimental task.
-
-`*_ACCEPTANCE_CRITERIA.md` defines the mandatory implementation-correctness, validation, self-repair and completion gates.
-
-`*_TARGET_GOAL.md` is the Codex goal-mode entry point.
-
-Recommended concurrency is **4 Codex windows total**: the existing Lane A window plus 3 new B/C/D windows. Each lane may launch multiple simulator processes internally; do not create a Codex window per simulator run.
-
-## Existing local formal anchors
-
-The new-window bootstrap records the current topology:
+## Existing formal anchors
 
 ```text
 Coordination / handoff:
 /workspace/worktrees/accel-sim-ep-l2/
   hrl/ep-l2-exp-v0
 
-Lane A C7e Framework — read-only to B/C/D:
+Frozen C7e Framework:
 /workspace/worktrees/accel-sim-ep-l2-c7e/
   hrl/ep-l2-c7e-final-char-v0
 
-Lane A C7e Core/config — read-only to B/C/D:
+Frozen C7e Core/config:
 /workspace/worktrees/gpgpu-sim-ep-l2-c7e/
   hrl/ep-l2-c7e-final-char-v0
 ```
 
-B/C/D must create independent worktrees and never rebuild/edit the two Lane A formal worktrees.
+Other lanes must never rebuild/edit/reuse these result roots as experimental workspaces.
 
 ## File roles
 
-`CURRENT_STATE.md` records reviewed architecture/research state.
+```text
+project_spec/             long-lived goals/architecture/evidence/roadmap
+chatgpt_handoff/          current ChatGPT-owned executable specifications
+codex_handoff/            Codex-owned execution reports
+review_packs/             Codex-generated independently reviewable evidence
+coordination/workboard    shared execution/review state
+```
 
-`*_DISCUSSION_REFERENCE.md` records source-audited rationale.
-
-`*_HANDOFF.md` files define executable scopes and hard boundaries.
-
-`*_ACCEPTANCE_CRITERIA.md` files define exact PASS conditions and implementation/counter correctness tests.
-
-`*_TARGET_GOAL.md` files define autonomous target-mode loops.
-
-`PARALLEL_MASTER_PLAN.md` defines lane ownership, dependency handshakes, and concurrency rules.
-
-Codex must not modify ChatGPT-owned handoff files unless explicitly instructed.
+Codex must not modify ChatGPT-owned `project_spec/` or `chatgpt_handoff/` files unless explicitly instructed.
 
 ## Codex -> ChatGPT return path
 
-Source is pushed on lane/stage implementation branches. Documentation-only status/review packs are mirrored to the coordination branch.
-
-During parallel execution use dedicated reports to avoid write collisions:
+During parallel execution use dedicated reports to avoid collisions:
 
 ```text
-docs/ep_l2/codex_handoff/LATEST_REPORT.md       # Lane A/global formal owner
+docs/ep_l2/codex_handoff/LATEST_REPORT.md
 docs/ep_l2/codex_handoff/LANE_B_LATEST.md
 docs/ep_l2/codex_handoff/LANE_C_LATEST.md
 docs/ep_l2/codex_handoff/LANE_D_LATEST.md
+docs/ep_l2/codex_handoff/LANE_E_LATEST.md
+docs/ep_l2/codex_handoff/LANE_F_LATEST.md
 ```
 
-Expected review-pack families include:
-
-```text
-docs/ep_l2/review_packs/C7E_FINAL_READINESS_r1/
-docs/ep_l2/review_packs/FINAL_TARGET_BASELINE_850_r1/
-docs/ep_l2/review_packs/D512_CALIBRATION_r1/
-docs/ep_l2/review_packs/L1_CAUSALITY_CALIBRATION_r1/
-docs/ep_l2/review_packs/CALIBRATION_ANALYSIS_INFRA_r1/
-```
-
-Calibration data is not automatically formal. The shared convergence gate is `BASELINE-DECISION` in `PARALLEL_WORKBOARD.md`.
+Calibration data is never silently promoted to the primary formal baseline. `BASELINE-DECISION` remains a reviewed convergence gate.

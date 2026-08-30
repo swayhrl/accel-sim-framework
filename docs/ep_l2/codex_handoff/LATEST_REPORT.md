@@ -1,31 +1,35 @@
 # Codex → ChatGPT latest report
 
-Stage: Final Target Baseline — Interim 22/26
+Stage: Final Target Baseline — ChatGPT independent review ready
 
-Status: **INTERIM_FORMAL_22_OF_26**
+Status: **TARGET_BASELINE_26RUN_REVIEW_READY**
 
-Core SHA: `ece1a3a77c5628763e0a4605bfd1c639ee6a1495`
-Framework SHA: `f08d2ce857972fad73c4e1ab7162ba94c6336507`
+Runtime Core SHA: `ece1a3a77c5628763e0a4605bfd1c639ee6a1495`
 
-Completed: 22 / 26
+Runtime Framework SHA: `f08d2ce857972fad73c4e1ab7162ba94c6336507`
 
-Missing: gemm Legacy/Banked; 3mm Legacy/Banked
+Analysis Framework SHA: `cb83606eb8640382b7c1932d8981b70608d9d130`
 
-22-run provenance audit: **PASS** (all completed runs are `VALID_FOR_FORMAL`)
+Accepted formal rows: 26 / 26
 
-C7e telemetry observed on natural formal runs: **PASS**
+Excluded diagnostic rows: 2 (the quarantined duplicate-write 3mm paths)
 
-Main interim findings:
+3mm replacement audit: PASS
 
-- The shared descriptor pool reaches 256 with pool-full events in six completed workloads while line-MSHR-full remains zero.
-- `cfd_097k` is the only completed Banked workload with measured nonzero C6d true conflict and wait.
-- Scan/vectorAdd/convolution/FWT_7 show request-side lower pressure; ReturnQ and DRAM-to-L2 path are measured zero in the completed subset.
+A–K self-gate: PASS. The self-gate is evidence for independent review, not an
+acceptance decision.
 
-Issues requiring action before 26/26:
+Main conclusions:
 
-- None identified in the completed-run provenance, terminal invariants, parser outputs, or C7e completeness audit.
-- This is not final: do not publish `TARGET_BASELINE_26RUN_PASS`, `READY_FOR_OPPORTUNITY`, or final aggregates until the four live runs complete and final aggregation passes.
+- The frozen formal rows have uniform runtime source/config provenance and
+  complete parsed/invariant evidence.
+- The review supplement reprocesses all 26 direct formal rows with the
+  isolated Lane-D V3 analyzer, including corrected lower-admission, native
+  physical-DRAM, temporal-cardinality, and channel-imbalance semantics.
+- The original final pack remains immutable; diagnostic 3mm paths are indexed
+  but excluded from every formal aggregate.
 
-Running jobs healthy: **YES**
+Formal campaign recommendation: **REQUEST CHATGPT INDEPENDENT REVIEW**. Do not
+start 1GHz, RO, TVD, Unified, or Opportunity Study yet.
 
-Review entry point: [TARGET_BASELINE_FINAL_INTERIM_22OF26_r1](../review_packs/TARGET_BASELINE_FINAL_INTERIM_22OF26_r1/README.md)
+Review entry point: [TARGET_BASELINE_FINAL_26OF26_C7E_REVIEW_READY_r1](../review_packs/TARGET_BASELINE_FINAL_26OF26_C7E_REVIEW_READY_r1/README.md)

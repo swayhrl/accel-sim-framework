@@ -4,6 +4,14 @@ This file is the authoritative self-gating contract for Lane B.
 
 Codex may autonomously diagnose, repair, recommit, rebuild, and rerun **within Lane B's authorized parameterization/config/analysis scope** until all mandatory gates pass. A failed gate is not a reason to stop unless fixing it crosses a hard boundary below.
 
+Execution scheduling additionally follows:
+
+```text
+docs/ep_l2/chatgpt_handoff/SPECULATIVE_PARALLEL_EXECUTION_POLICY.md
+```
+
+That policy may allow early computation, but it does **not** weaken any mandatory PASS condition below.
+
 ## B0. Source identity and isolation — mandatory
 
 PASS only if:
@@ -16,14 +24,21 @@ Lane B has independent worktrees/branches/result roots
 all D512 runs record source SHA + config hash + trace identity
 ```
 
-Current expected formal anchors:
+Formal base:
 
 ```text
 Framework f08d2ce857972fad73c4e1ab7162ba94c6336507
 Core      ece1a3a77c5628763e0a4605bfd1c639ee6a1495
 ```
 
-If Lane A publishes a superseding exact-final source pair before Lane B freezes, reconcile against the formal campaign manifest rather than guessing.
+Current frozen D512 candidate authorized for speculative execution:
+
+```text
+Framework aae62b66685f15437cecf0193934f628e6fac6ae
+Core      878f80869ce212e779df20b6421e4dc7f987825d
+```
+
+Do not run speculative descendants from a later moving branch tip without publishing a new explicit candidate identity.
 
 ## B1. Authorized experimental delta — mandatory
 
@@ -33,7 +48,7 @@ D512 changes exactly:
 shared persistent descriptor capacity: 256 -> 512
 ```
 
-These remain unchanged:
+Unchanged:
 
 ```text
 Line MSHR = 128
@@ -52,50 +67,19 @@ Any additional modeled timing/architecture change is a hard failure.
 
 ## B2. Descriptor cardinality/code audit — mandatory
 
-Before D512 simulation, audit all source and tooling assumptions for capacities above 256.
+Audit allocator/lifetime, pool-full logic, per-address-cap independence, occupancy/max/invariants, histogram/vector bounds, p95/max, app/kernel/window delta state, parser/schema/analyzer handling, and review tooling.
 
-Must explicitly inspect and document:
+PASS only if existing code is parameter-safe or required changes are parameterization/observation-only and B3 passes.
 
-```text
-allocator/free descriptor IDs
-allocation/release lifetime
-pool-full condition
-per-address cap independence
-occupancy/max/invariant arithmetic
-histogram/vector bounds
-p95/max implementation
-kernel/app/window delta state
-parser/schema/analyzer numeric handling
-review-pack scripts/tests
-```
+## B3. D256 backward-equivalence — mandatory promotion gate
 
-Search for hard-coded `256`, `257`, or equivalent bit widths/bounds whose semantic role is descriptor capacity.
-
-PASS only if either:
-
-```text
-A. existing code is already parameter-safe for 512
-```
-
-or:
-
-```text
-B. all required changes are parameterization/observation-only and B3 equivalence passes
-```
-
-## B3. D256 backward-equivalence after any code generalization — mandatory when source changes
-
-Configure generalized code back to the exact D256 formal settings.
-
-Use at least:
+Configure generalized source back to exact D256 formal settings and compare at least:
 
 ```text
 vectorAdd_4M
 spmv
 one longer descriptor-heavy workload: scan or FWT_7_21
 ```
-
-Compare against exact C7e D256 reference.
 
 Require exact equality for:
 
@@ -108,55 +92,45 @@ bank logical/conflict/wait counters
 terminal invariants
 ```
 
-Descriptor telemetry may differ only in formatting/schema if the semantic value is identical.
+Descriptor telemetry may differ only in representation if semantic values are identical.
 
-Any unexplained simulated timing difference is a HARD STOP.
+Current state: short `vectorAdd_4M` and `spmv` checks have passed; long `scan` remains required before promotion.
+
+An unexplained mismatch remains a hard failure for **promotion**. However, while `scan` is still running, B6/B8 computations may execute provisionally under the speculative policy.
 
 ## B4. Boundary-directed descriptor tests — mandatory
 
-Add/retain directed tests that exercise descriptor capacity boundaries without depending on long natural traces.
-
-At minimum validate behavior around:
+Validate at least:
 
 ```text
 used = 255 / 256 / 257 under D512
 used = 511 / 512
-attempt allocation at full pool
-release one descriptor and allocate again
-reuse descriptor IDs without double ownership
-multiple addresses sharing the pool
-one address hitting the independent 32/address cap while global pool remains available
+allocation at full pool
+release then allocate
+ID reuse/no double ownership
+multiple addresses share pool
+32/address cap remains independent
 ```
 
-Required assertions/evidence:
+Require no histogram OOB, no leak/double ownership, correct capacity arithmetic, pool-full only at configured global capacity, cap remains 32, terminal descriptor_used=0.
+
+Also require evidence that D512 telemetry itself can represent values above 256. This may be a directed telemetry fixture or a natural preflight result proving e.g. `descriptor_max > 256` / `descriptor_p95 > 256` when workload pressure warrants it.
+
+## B5. Build/regression — mandatory
+
+PASS only if final candidate has:
 
 ```text
-no out-of-bounds telemetry histogram access
-no descriptor leak
-no duplicate live ownership
-free + used == configured capacity at valid checkpoints
-pool-full only at configured global capacity
-per-address-cap remains 32 and is not silently widened
-terminal descriptor_used == 0
-```
-
-## B5. Build and regression — mandatory
-
-PASS only if final Lane B source has:
-
-```text
-full Release build PASS
-relevant existing C3-C7/C6d/C7e descriptor regressions PASS
-new D512 boundary tests PASS
-parser/schema tests PASS
-analyzer tests PASS
+Release build PASS
+relevant C3-C7/C6d/C7e regressions PASS
+D512 boundary tests PASS
+D512 config-diff test PASS
+parser/schema/analyzer tests PASS
 git diff --check PASS
 clean frozen source worktrees
 ```
 
-If new telemetry is added, apply the universal timing-neutral instrumentation gate from `PARALLEL_NEW_WINDOW_BOOTSTRAP.md`.
-
-## B6. D512 natural preflight — mandatory
+## B6. D512 natural preflight — mandatory promotion gate, may run early
 
 Run at least:
 
@@ -168,111 +142,104 @@ FWT_7_21
 one low-descriptor-pressure control: sad or btree
 ```
 
-Prefer B0-Banked for fast screening; use Legacy paired control where needed to ensure no unexpected bank/port interaction.
+Prefer B0-Banked plus at least one Legacy paired control.
 
-For every run require:
+Every row requires COMPLETE_VALID, exact source/config identity, terminal_clean=1, payload consistency, parser success, and required telemetry.
 
-```text
-COMPLETE_VALID
-normal exit
-expected source/config hashes
-terminal_clean = 1
-payload consistency = 1
-parser success
-all C7e telemetry families present
-```
-
-The preflight must report, not assume:
+Report:
 
 ```text
 cycles D256 vs D512
 descriptor need/block/avg/p95/max
 Line-MSHR avg/p95/max/full
-per-address-cap
+per-address cap
 L1 pressure
-L2->DRAM/scheduler/BW
+L2->DRAM/scheduler/lower-admission rate
+native DRAM BW when available from Lane D
 5K temporal movement
 ```
 
-## B7. D512_READY gate — mandatory before full mirror
+### Speculative scheduling
 
-Codex may declare exactly:
+B6 may start while B3 `scan` equivalence is still running, provided it uses the frozen candidate above and is marked:
+
+```text
+SPECULATIVE_PENDING_GATE
+promotion_dependencies = D256_EQ_SCAN_PASS
+```
+
+If B3 later fails due a source/producer/timing defect, these preflight results are invalidated.
+
+## B7. D512_READY gate — unchanged
+
+Codex may declare:
 
 ```text
 D512_READY
 ```
 
-only if B0-B6 pass and no modeled variable except descriptor capacity differs.
+only when B0-B6 all PASS and no modeled variable except descriptor capacity differs.
 
-Update workboard:
+Update:
 
 ```text
 D512-AUDIT = DONE
 D512-PREFLIGHT = DONE
 ```
 
-with exact source/config/result paths.
+with exact SHAs/config hashes/results/equivalence evidence.
 
-This handshake authorizes Lane C to consume the exact D512 source/config for D512 L1 interaction cells.
+This is the point where provisional descendants may be promoted.
 
-## B8. Full speculative D512 mirror — mandatory target after D512_READY
+## B8. Full D512 mirror — mandatory target; speculative early launch authorized
 
-Launch:
+Target remains:
 
 ```text
 13 workloads x {B0-Legacy, B0-Banked} @850 MHz
 Descriptor = 512
+= 26 runs
 ```
 
-Label every result:
+All runs use one immutable candidate source/config family.
+
+Lane B is authorized to launch this mirror **before B3/B6 promotion gates finish**. Until both pass, every result is:
 
 ```text
-SPECULATIVE_CALIBRATION
+run_status = COMPLETE_VALID or local status
+maturity   = SPECULATIVE_PENDING_GATE
+promotion_dependencies:
+  - D256_EQ_SCAN_PASS
+  - D512_PREFLIGHT_PASS
 ```
 
-not `FORMAL` and not `PRIMARY_BASELINE`.
+Prefer one frozen 26-run campaign whose preflight workloads receive scheduling priority. Those identical rows may satisfy B6 once complete, avoiding duplicate simulation.
 
-All 26 runs must use one frozen Lane B source/config pair unless a proven simulator defect forces a restart. Parser/analyzer-only fixes may reprocess raw logs without rerunning simulator jobs when producer data is sufficient.
+If both gates pass, exact already-completed rows may be relabeled `PROMOTED_VALID_CALIBRATION` without rerun. If a gate exposes a source/config/producer defect, affected rows are `INVALIDATED_BY_UPSTREAM_GATE` and rerun after repair.
+
+Never label this mirror FORMAL or PRIMARY_BASELINE.
 
 ## B9. Mirror completion — mandatory
 
-PASS only if:
+`D512_MIRROR_COMPLETE` requires:
 
 ```text
 26/26 COMPLETE_VALID
-single frozen source pair
-single intended D512 config family
+all rows PROMOTED_VALID_CALIBRATION
+single frozen source/config family
 all manifests/provenance consistent
-all terminal invariants clean
-no missing expected telemetry
-analysis-ready comparison to D256 generated
+terminal invariants clean
+no missing required telemetry
+analysis-ready D256 comparison
 ```
 
-Do not declare D512 the primary baseline. Final status is:
+A fully computed 26/26 set that is still `SPECULATIVE_PENDING_GATE` is **not** `D512_MIRROR_COMPLETE`.
 
-```text
-D512_MIRROR_COMPLETE
-```
+## B10. Interpretation output
 
-and requires later `BASELINE-DECISION` review.
+For every workload report D256/D512 cycles, speedup, descriptor pressure, Line-MSHR movement, L1 movement, lower/scheduler/native-BW movement, and whether the bottleneck moved rather than disappeared.
 
-## B10. Required interpretation output
-
-For every workload report:
-
-```text
-D256 cycles
-D512 cycles
-speedup/slowdown
-descriptor block/need change
-descriptor occupancy distribution change
-Line-MSHR pressure change
-L1 pressure change
-lower/scheduler/BW change
-whether bottleneck moved rather than disappeared
-```
-
-Classify evidence conservatively:
+Use conservative classifications:
 
 ```text
 DESCRIPTOR_CAUSAL_SENSITIVE
@@ -282,33 +249,20 @@ D512_STILL_DESCRIPTOR_LIMITED
 INSUFFICIENT_EVIDENCE
 ```
 
-## B11. Review pack / return path — mandatory
+## B11. Review pack / return path
 
-Create a directly browsable pack such as:
+Create/update:
 
 ```text
 docs/ep_l2/review_packs/D512_CALIBRATION_r1/
-```
-
-with source anchors, config hashes, changed files, equivalence evidence, boundary tests, preflight, 26-run status, comparison tables, raw-log index, SHA256SUMS, and open issues.
-
-Update:
-
-```text
 docs/ep_l2/codex_handoff/LANE_B_LATEST.md
+docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 ```
 
-and the Lane B rows in `PARALLEL_WORKBOARD.md`.
+Include source anchors, candidate identity, config hashes, D256 equivalence evidence, boundary/telemetry tests, preflight, mirror status with maturity/promotion dependencies, comparison tables, raw-log index, SHA256SUMS, open issues, and a machine-readable equivalence/config contract consumable by Lane D.
 
 ## Hard stops
 
-Stop and request review if completion would require:
+Stop and request review if fixing a failed promotion gate requires changing Line MSHR/per-address cap/L1/lower resources, descriptor lifetime semantics, workload/trace, Lane A runtime state, or accepting an unexplained D256 timing mismatch.
 
-```text
-changing Line MSHR/per-address cap/L1/lower resources
-changing descriptor lifetime/semantics rather than capacity/parameterization
-accepting unexplained D256 equivalence mismatch
-changing workload/trace
-modifying Lane A formal worktrees
-silently promoting D512 calibration to formal baseline
-```
+Do not implement RO/TVD/Unified or silently promote D512 to the primary baseline.

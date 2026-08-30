@@ -2,11 +2,23 @@
 
 Updated: 2026-08-30
 
-This is the authoritative high-level coordination state. Detailed historical rationale remains in the C7D/C7E discussion and closeout documents.
+This file is the authoritative **current coordination snapshot**. Long-lived research goals, architecture intent, evidence standards, workload classification, implementation roadmap, and headroom policy live in:
 
-## 1. Frozen architectural facts
+```text
+docs/ep_l2/project_spec/
+```
 
-Primary Target Baseline remains:
+Read `project_spec/README.md` before treating a lane-specific target as the overall project objective.
+
+## 1. Long-lived research objective
+
+> Under comparable L2 storage budget and basic L2 timing, improve the L2's ability to sustain concurrent misses, pending transactions, and payload state while reducing structural blocking caused by static resource/lifetime coupling.
+
+End-to-end speedup is a stronger evidence tier, but a structurally/service-wise better L2 remains meaningful when the removed L2 ceiling exposes a later system bottleneck.
+
+## 2. Frozen target geometry / formal semantic base
+
+Current formal target geometry remains:
 
 ```text
 64 L2 slices
@@ -14,164 +26,219 @@ Primary Target Baseline remains:
 Resident Tag: 64 sets x 16 ways = 1024 / slice
 Resident payload: 1024 / slice
 Bypass payload: 128 / slice
-B0-Legacy: separate resident/bypass 1R1W
-B0-Banked: 4 x 288 banks, bank=payload_id%4, static 1024+128 roles
-Line MSHR: 128
-Persistent shared requester descriptors: 256 in the current formal baseline
+B0-Legacy: separate resident/bypass organization
+B0-Banked: 4 x 288 payload banks, bank=payload_id%4, static 1024+128 roles
+Line MSHR: 128 until BASELINE-DECISION
 Per-address descriptor cap: 32
 WAD: 128
-ICNT->L2 64
-L2->DRAM 128
-DRAM->L2 64/slice
-L2->ICNT 64
-FR-FCFS scheduler 128/channel
-internal DRAM ReturnQ 192/channel
+L2->DRAM queue: 128
+FR-FCFS scheduler: 128/channel
+internal DRAM ReturnQ: 192/channel
+DRAM->L2: 64/slice
 850 MHz primary DRAM clock
-L1D 64 KiB, 4 sets x 128 ways x 128 B, 4 banks, 20 cycles
+L1D: 64 KiB, 4 sets x 128 ways x 128 B, 4 banks, 20 cycles
+L1 MSHR=512, merge cap=8, MissQ=16
 ```
 
-C6d bank arbitration is frozen: idle first operation can grant same cycle; oldest pending priority is preserved; one arbitrary payload op/bank/cycle; true contention is separated from retry bookkeeping.
-
-No Unified borrowing, functional RO no-MSHR, TVD, or 1GHz primary change belongs in the current baseline/calibration stage.
-
-## 2. C7e / formal source state
-
-The current formal campaign manifest declares the exact C7e pair:
+Formal C7e source/config:
 
 ```text
 Core      ece1a3a77c5628763e0a4605bfd1c639ee6a1495
 Framework f08d2ce857972fad73c4e1ab7162ba94c6336507
+runtime   85562fce759876616806d32791ea3b7d1b13ee68cf20a84e48c63c96f67b8c0d
 ```
 
-These are the source/config semantics used by the live formal Target-Baseline campaign. Publishing these exact existing commit objects to stable remote C7e branches is a required reviewability item; do not rebuild or create replacement source merely to publish them.
+No functional Unified borrowing, RO pending/no-MSHR, TVD, or primary 1GHz change is authorized before reviewed convergence and a mechanism-stage handoff.
 
-C7e provides the final characterization families needed for Tag/MSHR/descriptor/WAD/payload/bank/L1D/lower/DRAM/window analysis.
+## 3. Lane A — formal D256 baseline
 
-## 3. Formal Lane A status
-
-Current final D256 Target-Baseline campaign:
+Complete and frozen:
 
 ```text
 13 workloads x {B0-Legacy, B0-Banked} @850 MHz
-= 26 runs
+26/26 COMPLETE_VALID
 ```
 
-Interim reviewed state:
+The two duplicate-write 3mm diagnostic paths are quarantined; clean direct replacements are the only formal rows.
+
+Evidence:
 
 ```text
-22/26 COMPLETE_VALID
-missing/running: gemm Legacy/Banked and 3mm Legacy/Banked
-status: CONDITIONAL PASS to continue
+docs/ep_l2/review_packs/TARGET_BASELINE_FINAL_26OF26_C7E_REVIEW_READY_r1/
+docs/ep_l2/chatgpt_handoff/LANE_A_FINAL_26OF26_CHATGPT_REVIEW.md
 ```
 
-Review pack:
+Formal worktrees/results are read-only anchors.
+
+## 4. Lane B — Descriptor 256->512 calibration
+
+Complete:
 
 ```text
-docs/ep_l2/review_packs/TARGET_BASELINE_FINAL_INTERIM_22OF26_r1/
+Core      878f80869ce212e779df20b6421e4dc7f987825d
+Framework aae62b66685f15437cecf0193934f628e6fac6ae
+runtime   a7dc3ce28f5e54ca966d08a7e3548a844533a9bee08b63ea4d964cd9ec2c9416
+
+D256 backward equivalence PASS
+D512 natural preflight PASS
+D512_READY PASS
+26/26 D512 COMPLETE_VALID
+26/26 PROMOTED_VALID_CALIBRATION
+D512_MIRROR_COMPLETE PASS
 ```
 
-ChatGPT review:
+`D512_BASE.json` is published under `docs/ep_l2/calibration/contracts/` with exact source/config/equivalence/config-delta provenance.
+
+Key conclusion: Descriptor256 is a real structural admission ceiling in several workloads. D512 removes it but generally does not improve application cycles, exposing later Line-MSHR/lower-path pressure.
+
+## 5. Lane C — L1 causality
+
+Complete:
 
 ```text
-docs/ep_l2/chatgpt_handoff/INTERIM_22OF26_CHATGPT_REVIEW.md
+L1_CAUSALITY_SCREEN_COMPLETE
 ```
 
-Do not interrupt the four live formal runs.
+All D256/D512 META-HR/BANK-HR cells are complete and promoted. Four `EP_L2_CALIBRATION_CONTRACT_V2` contracts are published.
 
-## 4. Current scientific observations to test, not assume
+Broad L1 headroom has small performance sensitivity; the tested data do not justify changing the primary L1 baseline or mandatory one-at-a-time decomposition.
 
-The 22/26 data show:
+## 6. Lane E — Line-MSHR causal probe
+
+Complete:
 
 ```text
-- strong global descriptor-256 pressure in multiple workloads
-- Line-MSHR-full remains zero in those strong descriptor cases
-- old fixed small per-MSHR merge fragmentation is largely removed
-- Tag/set blocking is generally weak (scan is a small exception)
-- WAD pressure is heterogeneous and real in scan/dwt/FWT/convolution/cfd
-- payload capacity denial is measured zero in completed runs
-- B0-Banked is timing-equal to Legacy in 10/11 completed pairs with zero true conflicts;
-  cfd has real bank contention and ~2.37% slowdown
-- substantial L1D retry/stall pressure exists in several workloads
-- lower-path scheduler/L2->DRAM pressure is workload-dependent
-- internal DRAM ReturnQ is not implicated in the completed subset
+LINE_MSHR_CAUSALITY_PROBE_COMPLETE
 ```
 
-These observations motivate calibration; they are not yet all performance-causal conclusions.
-
-## 5. Parallel calibration is now authorized
-
-The project no longer waits serially for Lane A to finish before preparing calibration.
-
-Shared plan:
+Controlled convolution result:
 
 ```text
-docs/ep_l2/chatgpt_handoff/PARALLEL_MASTER_PLAN.md
+D256 M128 = 290,308
+D256 M256 = 290,308
+D512 M128 = 292,211 with 931,416 Line-MSHR-full blocks
+D512 M256 = 291,108 with 0 Line-MSHR-full blocks
+```
+
+Removing exact Line-MSHR-full pressure yields only ~0.38% speedup while pressure moves elsewhere. Accepted classification:
+
+```text
+MSHR_ADMISSION_THROTTLE_DOWNSTREAM_LIMITED
+```
+
+D512 spmv M128->M256 is unchanged and acts as a negative control. MSHR256 is not a primary-baseline recommendation.
+
+## 7. Lane D — final calibration convergence
+
+Lane-D V3 analysis/provenance infrastructure is independently accepted:
+
+```text
+TEMPORAL_ANALYSIS_READY
+CALIBRATION_ANALYZER_READY
+D512_COST_READY
+```
+
+All required promoted B/C/E inputs now exist. Final convergence is **authorized now** under:
+
+```text
+docs/ep_l2/chatgpt_handoff/FINAL_CALIBRATION_CONVERGENCE_HANDOFF.md
+docs/ep_l2/chatgpt_handoff/FINAL_CALIBRATION_CONVERGENCE_ACCEPTANCE_CRITERIA.md
+docs/ep_l2/chatgpt_handoff/LANE_D_FINAL_CONVERGENCE_TARGET_GOAL.md
+```
+
+Lane D must first produce an all-13 workload archetype checkpoint, then the six-cell final calibration matrix, baseline-decision evidence, mechanism-priority recommendation, and headroom candidates. No simulator run is authorized in this convergence stage.
+
+## 8. Lane F — mechanism implementation preparation
+
+A new source/design-analysis lane is authorized in parallel with Lane D:
+
+```text
+docs/ep_l2/chatgpt_handoff/LANE_F_MECHANISM_PREP_HANDOFF.md
+docs/ep_l2/chatgpt_handoff/LANE_F_MECHANISM_PREP_ACCEPTANCE_CRITERIA.md
+docs/ep_l2/chatgpt_handoff/LANE_F_TARGET_GOAL.md
+```
+
+Lane F must map the exact source/state/lifecycle implementation for:
+
+```text
+M0 mechanism-readiness telemetry/shadow opportunity
+M1 behavior-preserving elastic payload/resource substrate
+M2 Unified Payload Pool v1
+M3 RO pending-state source dependencies
+M4 WAD/TVD source dependencies
+```
+
+It may not push a functional mechanism change. The goal is to make the first implementation stage ready to start immediately after baseline-decision review.
+
+## 9. Preliminary workload archetypes
+
+Current evidence-backed preliminary map is in:
+
+```text
+docs/ep_l2/project_spec/WORKLOAD_ARCHETYPES_PRELIMINARY.md
+```
+
+Current high-level groups include:
+
+```text
+scan/vectorAdd: sustained descriptor + lower/scheduler + high-BW
+convolution: controlled Descriptor -> Line-MSHR -> downstream substitution
+spmv: Descriptor -> per-address / near-MSHR + lower path
+FWTs: bursty/phase-local descriptor pressure
+cfd: true payload-bank service contention
+dwt2d: WAD/victim-lifetime candidate
+btree: address-local / weak L1 sensitivity
+gemm/3mm/sad/sgemm: low-L2-pressure/control families
+```
+
+Lane D must validate/revise this across the full promoted matrix before it becomes final characterization.
+
+## 10. Performance-headroom policy
+
+No broad new telemetry is required before the first headroom sensitivity screen. Existing C7e/Lane-D V3 telemetry is sufficient for an initial controlled scheduler/L2->DRAM/bandwidth headroom matrix.
+
+If a meaningful L2-mechanism x downstream-headroom interaction appears, prioritize observation-only additions:
+
+```text
+P1 native per-channel physical DRAM bus utilization per 5K window
+P2 cycle-based L2 admission blocking by exact reason
+P3 selected request/transaction lifetime distributions
+P4 useful per-window L2 admission/completion throughput
+```
+
+See `docs/ep_l2/project_spec/PERFORMANCE_HEADROOM_PLAN.md`.
+
+## 11. Staged implementation roadmap
+
+See:
+
+```text
+docs/ep_l2/project_spec/MECHANISM_IMPLEMENTATION_PLAN.md
+```
+
+Current intended sequence:
+
+```text
+Final calibration convergence
+        -> BASELINE-DECISION
+        -> M0 targeted opportunity/shadow telemetry
+        -> M1 behavior-preserving elastic substrate
+        -> first measured-opportunity functional mechanism
+        -> remaining mechanism families
+        -> integrated EP-L2
+        -> performance headroom / full-suite evaluation
+```
+
+The default first functional candidate is Unified Payload Pool v1 because it directly targets static payload-role coupling and the 4x288 physical substrate already exists, **but only if M0 establishes real role-complementarity/residency opportunity**. If M0 does not, implementation priority must follow the evidence rather than force Unified Payload.
+
+## 12. Shared update protocol
+
+Codex updates execution/progress/evidence in:
+
+```text
 docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 ```
 
-Recommended lane ownership:
+ChatGPT updates review/conclusion/next-action after inspecting pushed evidence.
 
-```text
-Lane A — existing Codex window; finish formal D256 26-run only
-Lane B — descriptor 256->512 calibration and speculative D512 mirror
-Lane C — L1 causality/headroom factorial
-Lane D — temporal/calibration analysis, descriptor hardware cost, opportunity scaffold
-```
-
-Use four Codex windows total (three new B/C/D windows).
-
-## 6. Descriptor calibration question
-
-Descriptor 512 is a high-priority candidate because 512 entries are considered practically provisionable, but calibration must not tune the system until MSHR becomes the bottleneck by construction.
-
-Lane B asks:
-
-```text
-Does D256 create an unnecessarily tight/cheap metadata ceiling?
-If D512 removes it, where does pressure naturally move?
-```
-
-Keep Line MSHR=128 and per-address cap=32 fixed while changing D256->D512.
-
-## 7. L1 causality question
-
-Large L1 blocker/retry counts do not by themselves prove L1 is the root cause; downstream L2/DRAM backpressure can extend L1 lifetimes and create retries.
-
-Lane C therefore keeps L1 capacity/tag geometry fixed and tests only:
-
-```text
-META-HR: MSHR 512->1024, merge 8->32, MissQ 16->64
-BANK-HR: banks 4->8
-```
-
-on selected B0-Banked workloads under both D256 and, after Lane B preflight, D512.
-
-Interpret performance together with downstream pressure movement to distinguish L1-local bottleneck vs downstream symptom vs L1 throttling/masking L2.
-
-## 8. Baseline decision gate
-
-No lane independently chooses the final calibrated primary baseline.
-
-After Lane A/B/C data and Lane D analysis converge:
-
-```text
-CAL-ANALYSIS
-  -> BASELINE-DECISION
-      -> choose/justify D256 or D512
-      -> retain or recalibrate L1 baseline if evidence requires
-      -> only then freeze opportunity-study baseline
-```
-
-If D512 naturally reveals Line-MSHR pressure, that strengthens RO no-MSHR motivation. If it instead exposes L1/lower/WAD limits, mechanism motivation must follow that evidence.
-
-## 9. Shared update protocol
-
-Codex updates execution/progress/evidence columns in:
-
-```text
-docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
-```
-
-ChatGPT updates review/conclusion/next-action columns after inspecting pushed evidence.
-
-Each parallel lane uses its own `codex_handoff/LANE_*_LATEST.md` to avoid write conflicts. Lane A owns the global `LATEST_REPORT.md` until formal closeout.
+Lane-specific reports stay under `docs/ep_l2/codex_handoff/LANE_*_LATEST.md`.
