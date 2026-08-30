@@ -1,0 +1,3 @@
+# Production request-class audit
+
+The target path accepts ordinary reads, writes, atomics, L1/L2 writebacks, and synthetic read `mem_fetch` objects made by write-allocate misses. `wr_miss_wa_naive` and `wr_miss_wa_fetch_on_write` construct `mem_access_t(..., false /* performing a read */)` and may attach the original write. Thus `!is_write()` does not prove read-only semantics. Same-line write/read/write exclusion uses `is_read_after_write_pending`; sector masks merge; descriptor pool records per-request masks and response-queued state. Local write absorption, modified-on-fill, writeback issue, tag/fill ownership, late merges, and L2->ICNT backpressure remain source-coupled to the entry.
