@@ -2,305 +2,176 @@
 
 Updated: 2026-08-30
 
-This is the authoritative coordination summary for EP-L2. If it conflicts with a newer reviewed closeout, stop and report the conflict instead of guessing.
+This is the authoritative high-level coordination state. Detailed historical rationale remains in the C7D/C7E discussion and closeout documents.
 
-## 1. Current reviewed source anchors
+## 1. Frozen architectural facts
 
-C6d corrected-bank evidence:
-
-```text
-Core      0cde333340792cffed869cbbc7e7dc88667c6b8b
-Framework 0a0c0fc3e1ffb6ca346090e59e94d2128e5adc0e
-```
-
-C7d final reviewed pair:
+Primary Target Baseline remains:
 
 ```text
-Core      88e243e8e421002079adc85b9efae3452c02a828
-Framework 2aef9fad48207415a9697f9b891068b42008e0a8
-```
-
-Branches:
-
-```text
-Core      hrl/ep-l2-c7d-char-v0
-Framework hrl/ep-l2-c7d-char-v0
-```
-
-C7d is **not** authorized as the final 26-run source pair yet. The next stage is C7e final characterization-readiness closeout, derived from the C7d final pair.
-
-## 2. C6d review result
-
-**PASS. Freeze the C6d bank-arbitration semantics.**
-
-The pre-fix B0-Banked implementation forced every idle-bank payload operation through a mandatory staging/retry cycle. C6d removes that artifact while preserving one operation/bank/cycle and oldest-ready priority for already-pending work.
-
-Retained smoke evidence:
-
-```text
-spmv:
-  Legacy = 23,453 cycles
-  Banked = 23,453 cycles
-  true bank conflicts = 0
-
-gemm:
-  pre-fix Banked slowdown ≈ 20.7%
-  C6d Legacy == Banked
-  true bank conflicts = 0
-
-FWT_7_21:
-  pre-fix Banked slowdown ≈ 14.5%
-  C6d Legacy == Banked
-  true bank conflicts = 0
-
-cfd_097k:
-  Legacy = 79,555
-  Banked = 81,443
-  residual slowdown ≈ 2.37%
-  true conflict ops/events = 16,166
-  bank wait cycles = 16,166
-```
-
-These are diagnostic/correctness evidence only after C7d changed source SHAs. They are not final Target-Baseline characterization data.
-
-## 3. Frozen Target Baseline architecture
-
-Per L2 slice unless stated otherwise:
-
-```text
-64 L2 slices total
+64 L2 slices
 128 B line, 4 x 32 B sectors
-
-Resident Tag:
-  64 sets x 16 ways = 1024 entries
-
-Payload:
-  1024 resident entries
-  128 bypass entries
-
-B0-Legacy:
-  separate resident and bypass 1R1W RAMs
-
-B0-Banked:
-  1152 entries
-  4 x 288 banks
-  bank = payload_id % 4
-  static 1024 resident + 128 bypass ownership
-
-Line MSHR entries:                 128
-Shared persistent request descriptors: 256
-Per-address descriptor cap:        32
-WAD:                               128 line addresses
-
-ICNT->L2:                          64
-L2->DRAM:                          128
-DRAM->L2:                          64 / slice
-L2->ICNT:                          64
-FR-FCFS scheduler:                 128 / channel
-DRAM internal ReturnQ:             192 / channel
-
-Primary DRAM clock:                850 MHz
-
-Primary L1D:
-  64 KiB
-  4 sets x 128 ways x 128 B
-  4 banks
-  20-cycle latency
-  existing QV100 MSHR/MissQ/write semantics retained unless later evidence requires revision
+Resident Tag: 64 sets x 16 ways = 1024 / slice
+Resident payload: 1024 / slice
+Bypass payload: 128 / slice
+B0-Legacy: separate resident/bypass 1R1W
+B0-Banked: 4 x 288 banks, bank=payload_id%4, static 1024+128 roles
+Line MSHR: 128
+Persistent shared requester descriptors: 256 in the current formal baseline
+Per-address descriptor cap: 32
+WAD: 128
+ICNT->L2 64
+L2->DRAM 128
+DRAM->L2 64/slice
+L2->ICNT 64
+FR-FCFS scheduler 128/channel
+internal DRAM ReturnQ 192/channel
+850 MHz primary DRAM clock
+L1D 64 KiB, 4 sets x 128 ways x 128 B, 4 banks, 20 cycles
 ```
 
-No Unified borrowing, RO no-MSHR, replaceable RO pending, TVD functionality, graphics borrowing, or 1GHz primary change belongs in the Target Baseline stage.
+C6d bank arbitration is frozen: idle first operation can grant same cycle; oldest pending priority is preserved; one arbitrary payload op/bank/cycle; true contention is separated from retry bookkeeping.
 
-## 4. Round-2 diagnostic evidence that remains valid
+No Unified borrowing, functional RO no-MSHR, TVD, or 1GHz primary change belongs in the current baseline/calibration stage.
+
+## 2. C7e / formal source state
+
+The current formal campaign manifest declares the exact C7e pair:
 
 ```text
-btree merge sensitivity:
-  2 -> 4 -> 8 improves strongly
-  8 -> 16 saturates
-  => fixed per-MSHR target fragmentation was a real QV100 bottleneck
-
-MissQ 32 -> 64:
-  little/no general performance benefit
-
-L2->DRAM 64 -> 128:
-  little/no general performance benefit
-
-FR-FCFS scheduler depth:
-  vectorAdd strongly benefits from a larger reordering window
-  spmv is essentially saturated by 128
-  cfd is non-monotonic / negative control
+Core      ece1a3a77c5628763e0a4605bfd1c639ee6a1495
+Framework f08d2ce857972fad73c4e1ab7162ba94c6336507
 ```
 
-Do not interpret FR-FCFS queue-depth sensitivity as pure buffer capacity; it changes scheduling/reordering opportunity.
+These are the source/config semantics used by the live formal Target-Baseline campaign. Publishing these exact existing commit objects to stable remote C7e branches is a required reviewability item; do not rebuild or create replacement source merely to publish them.
 
-## 5. C7d review result
+C7e provides the final characterization families needed for Tag/MSHR/descriptor/WAD/payload/bank/L1D/lower/DRAM/window analysis.
 
-**CONDITIONAL PASS as instrumentation development, but NOT READY for the final 26-run.**
+## 3. Formal Lane A status
 
-C7d successfully added or repaired:
-
-```text
-exact LINE_MSHR_FULL / DESCRIPTOR_POOL_FULL / PER_ADDRESS_CAP blocker separation
-WAD full vs same-address hazard separation
-payload service vs capacity naming
-C6d bank logical/attempt/grant/retry/true-conflict/wait semantics
-per-bank and operation-class bank counters
-kernel bank interval deltas
-compact 5K L2/payload/bank windows
-additional lower-path counters
-parser/analyzer availability discipline
-```
-
-The Codex closeout itself correctly reports `NOT_READY_FOR_FINAL_26_RUN` because final-SHA validation evidence and L1 aggregation are incomplete.
-
-## 6. Additional ChatGPT source-review findings after C7d
-
-The following must be resolved in C7e before the expensive final campaign.
-
-### 6.1 L1D is still not actually aggregated into Target telemetry
-
-Core `88e243e8` adds `cache_stats::total_fail_reason()`, but does not wire L1D-only application/kernel snapshots into a Target output schema.
-
-The final campaign therefore cannot yet prove whether L1D MSHR/MissQ/merge/line-allocation/bank pressure is limiting.
-
-### 6.2 C7d DRAM `*_issues` counters are issue-attempt observations, not successful issues
-
-`memory_sub_partition::l2_char_record_dram_issue()` increments `dram_read_issues` / `dram_write_issues` before `can_issue_to_dram()` and before the scheduler-full check has accepted the request.
-
-C7e must separate:
-
-```text
-issue/head attempts
-actual successful read issues
-actual successful write issues
-actual issued bytes
-```
-
-### 6.3 `c7d_dram_returnq_block` is not the internal DRAM ReturnQ
-
-The producer's `return_block` is based on the per-subpartition `dram_L2_queue_full()` condition. That is the DRAM->L2 slice FIFO / return-path destination, not the channel's internal `dram_t::returnq`.
-
-C7e must measure the two structures separately.
-
-### 6.4 Scheduler occupancy is request-opportunity-weighted, not DRAM-cycle time-weighted
-
-C7d samples scheduler occupancy when an L2->DRAM head is inspected. This is useful conditional telemetry but is not a per-DRAM-cycle average occupancy.
-
-Because Round-2 showed scheduler behavior is important, C7e should add channel-scope DRAM-cycle scheduler occupancy/full-cycle statistics and, if low-cost, 5K channel windows.
-
-### 6.5 Tag/set eligibility denominator is too broad for new-way pressure
-
-C7d `line_alloc_eligible` includes `SECTOR_MISS`, but a sector miss on an already-resident line does not require a new Tag way.
-
-Keep compatibility fields, but add an exact `tag_way_alloc_need/eligible` metric that represents new line/way allocation only.
-
-### 6.6 MSHR/descriptor/cap eligible counters are blocker-reason dependent
-
-When one resource is the selected `full_reason`, other resources needed by the same request may not increment their current `*_eligible` counters.
-
-C7e should add independent need/demand denominators based on request semantics, for example:
-
-```text
-line_mshr_need           = needs_new_mshr
-descriptor_need          = needs_new_mshr || needs_mshr_merge
-per_address_cap_check    = needs_mshr_merge
-```
-
-Keep exact blocker reasons separate.
-
-### 6.7 Kernel WAD lifetime fields are currently cumulative
-
-The kernel snapshot prints WAD lifetime statistics directly from cumulative `l2_cache` lifetime totals, rather than launch-to-completion delta state.
-
-Either implement true kernel deltas or explicitly make WAD lifetime application-only; do not label cumulative values as kernel interval data.
-
-### 6.8 Analyzer still lacks final memory-bandwidth output
-
-The current analyzer deliberately returns `NOT_EMITTED_BY_EPL2B0V1` for DRAM bandwidth utilization. Before the final run, either parse exact native DRAM utilization with verified semantics or add explicit channel-scope Target output.
-
-### 6.9 5K windows do not include scheduler occupancy
-
-Current 5K records contain line MSHR, descriptor, WAD, resident payload, MissQ, L2->DRAM FIFO, and bank metrics, but not scheduler occupancy. Add it if the channel-level collector can do so without material host overhead.
-
-### 6.10 Final runner captures SHAs but does not fail-fast on expected SHAs
-
-The final runner records current Framework/Core HEADs, but a user can still launch from the wrong revision.
-
-C7e should add explicit expected-SHA and clean-worktree checks before a formal campaign starts.
-
-## 7. C7e objective
-
-C7e is the **last instrumentation/readiness stage before the final 26-run**.
-
-It must remain timing-neutral and must not change Target architecture behavior.
-
-After C7e passes, freeze one final source pair and run exactly one clean:
+Current final D256 Target-Baseline campaign:
 
 ```text
 13 workloads x {B0-Legacy, B0-Banked} @850 MHz
-= 26 formal runs
+= 26 runs
 ```
 
-The campaign must be sufficient to analyze:
+Interim reviewed state:
 
 ```text
-Tag/set new-way pressure
-Line MSHR pressure
-Global descriptor pool pressure
-Per-address cap pressure
-WAD capacity and ordering hazards
-Payload role/service pressure
-real bank contention
-L1D pressure
-MissQ and L2->DRAM FIFO pressure
-DRAM scheduler pressure
-internal ReturnQ pressure
-DRAM->L2 return-path pressure
-actual lower traffic / bytes / bandwidth utilization
-sustained vs bursty behavior
-Legacy vs Banked attribution
+22/26 COMPLETE_VALID
+missing/running: gemm Legacy/Banked and 3mm Legacy/Banked
+status: CONDITIONAL PASS to continue
 ```
 
-## 8. Opportunity study remains separate
-
-The final 26-run characterizes the Target Baseline. It does not replace the later timing-neutral opportunity stage.
-
-After Target-Baseline freeze:
+Review pack:
 
 ```text
-RO oracle + RO shadow
-TVD shadow
-Payload-role complementarity shadow
-kernel/epoch snapshots
+docs/ep_l2/review_packs/TARGET_BASELINE_FINAL_INTERIM_22OF26_r1/
 ```
 
-Opportunity runs should primarily use B0-Banked because the proposed Unified design uses the same 4-bank physical organization.
-
-## 9. Current execution order
+ChatGPT review:
 
 ```text
-C6d PASS / frozen
-        |
-C7d CONDITIONAL PASS
-        |
-        v
-C7e final characterization-readiness instrumentation
-        |
-        v
-final-SHA build/regression/timing-neutrality/host-overhead closeout
-        |
-        v
-ChatGPT review
-        |
-        v
-one clean final 26-run @850 MHz
-        |
-        v
-Target-Baseline bottleneck analysis and freeze
-        |
-        v
-small 1GHz headroom subset if justified
-        |
-        v
-RO / TVD / complementarity opportunity branch
+docs/ep_l2/chatgpt_handoff/INTERIM_22OF26_CHATGPT_REVIEW.md
 ```
+
+Do not interrupt the four live formal runs.
+
+## 4. Current scientific observations to test, not assume
+
+The 22/26 data show:
+
+```text
+- strong global descriptor-256 pressure in multiple workloads
+- Line-MSHR-full remains zero in those strong descriptor cases
+- old fixed small per-MSHR merge fragmentation is largely removed
+- Tag/set blocking is generally weak (scan is a small exception)
+- WAD pressure is heterogeneous and real in scan/dwt/FWT/convolution/cfd
+- payload capacity denial is measured zero in completed runs
+- B0-Banked is timing-equal to Legacy in 10/11 completed pairs with zero true conflicts;
+  cfd has real bank contention and ~2.37% slowdown
+- substantial L1D retry/stall pressure exists in several workloads
+- lower-path scheduler/L2->DRAM pressure is workload-dependent
+- internal DRAM ReturnQ is not implicated in the completed subset
+```
+
+These observations motivate calibration; they are not yet all performance-causal conclusions.
+
+## 5. Parallel calibration is now authorized
+
+The project no longer waits serially for Lane A to finish before preparing calibration.
+
+Shared plan:
+
+```text
+docs/ep_l2/chatgpt_handoff/PARALLEL_MASTER_PLAN.md
+docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
+```
+
+Recommended lane ownership:
+
+```text
+Lane A — existing Codex window; finish formal D256 26-run only
+Lane B — descriptor 256->512 calibration and speculative D512 mirror
+Lane C — L1 causality/headroom factorial
+Lane D — temporal/calibration analysis, descriptor hardware cost, opportunity scaffold
+```
+
+Use four Codex windows total (three new B/C/D windows).
+
+## 6. Descriptor calibration question
+
+Descriptor 512 is a high-priority candidate because 512 entries are considered practically provisionable, but calibration must not tune the system until MSHR becomes the bottleneck by construction.
+
+Lane B asks:
+
+```text
+Does D256 create an unnecessarily tight/cheap metadata ceiling?
+If D512 removes it, where does pressure naturally move?
+```
+
+Keep Line MSHR=128 and per-address cap=32 fixed while changing D256->D512.
+
+## 7. L1 causality question
+
+Large L1 blocker/retry counts do not by themselves prove L1 is the root cause; downstream L2/DRAM backpressure can extend L1 lifetimes and create retries.
+
+Lane C therefore keeps L1 capacity/tag geometry fixed and tests only:
+
+```text
+META-HR: MSHR 512->1024, merge 8->32, MissQ 16->64
+BANK-HR: banks 4->8
+```
+
+on selected B0-Banked workloads under both D256 and, after Lane B preflight, D512.
+
+Interpret performance together with downstream pressure movement to distinguish L1-local bottleneck vs downstream symptom vs L1 throttling/masking L2.
+
+## 8. Baseline decision gate
+
+No lane independently chooses the final calibrated primary baseline.
+
+After Lane A/B/C data and Lane D analysis converge:
+
+```text
+CAL-ANALYSIS
+  -> BASELINE-DECISION
+      -> choose/justify D256 or D512
+      -> retain or recalibrate L1 baseline if evidence requires
+      -> only then freeze opportunity-study baseline
+```
+
+If D512 naturally reveals Line-MSHR pressure, that strengthens RO no-MSHR motivation. If it instead exposes L1/lower/WAD limits, mechanism motivation must follow that evidence.
+
+## 9. Shared update protocol
+
+Codex updates execution/progress/evidence columns in:
+
+```text
+docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
+```
+
+ChatGPT updates review/conclusion/next-action columns after inspecting pushed evidence.
+
+Each parallel lane uses its own `codex_handoff/LANE_*_LATEST.md` to avoid write conflicts. Lane A owns the global `LATEST_REPORT.md` until formal closeout.
