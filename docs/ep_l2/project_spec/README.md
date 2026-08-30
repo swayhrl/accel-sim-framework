@@ -22,10 +22,11 @@ docs/ep_l2/coordination/        shared multi-lane execution/status board
 4. `WORKLOAD_CHARACTERIZATION_SCHEMA.md` — common 13-workload classification/evidence contract.
 5. `WORKLOAD_ARCHETYPES_PRELIMINARY.md` — current evidence-backed preliminary workload map; final Lane-D convergence may revise it.
 6. `MECHANISM_IMPLEMENTATION_PLAN.md` — staged M0-M7 build plan from opportunity telemetry through integrated EP-L2.
-7. `EXPERIMENT_ROADMAP.md` — baseline calibration -> causal probes -> performance headroom -> opportunity mechanisms.
-8. `PERFORMANCE_HEADROOM_PLAN.md` — how to separate L2-local improvement from downstream masking.
-9. `WORKFLOW_GOVERNANCE.md` — ChatGPT/Codex/GitHub ownership and update discipline.
-10. `decisions/` — architecture/research ADRs for major decisions.
+7. `EXPERIMENT_MODE_SWITCH_CONTRACT.md` — mandatory baseline/mechanism switching, ablation, config, and provenance interface for all functional stages.
+8. `EXPERIMENT_ROADMAP.md` — baseline calibration -> causal probes -> performance headroom -> opportunity mechanisms.
+9. `PERFORMANCE_HEADROOM_PLAN.md` — how to separate L2-local improvement from downstream masking.
+10. `WORKFLOW_GOVERNANCE.md` — ChatGPT/Codex/GitHub ownership and update discipline.
+11. `decisions/` — architecture/research ADRs for major decisions.
 
 ## One-sentence research objective
 
@@ -45,6 +46,8 @@ Final calibration convergence
 ```
 
 A separate Lane-F source-audit/preparation stage may run in parallel with final calibration convergence because it does not modify functional simulator behavior or choose the primary baseline.
+
+Every functional stage must preserve an explicit baseline/OFF path and use the experiment-mode contract so the same source/binary family can run baseline, single-mechanism, ablation, and integrated configurations without branch/source switching.
 
 ## What this directory is not
 
