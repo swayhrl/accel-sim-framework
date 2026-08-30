@@ -26,8 +26,9 @@ docs/ep_l2/coordination/        shared multi-lane execution/status board
 8. `EXPERIMENT_MODE_SWITCH_CONTRACT.md` — mandatory baseline/mechanism switching, ablation, config, and provenance interface for all functional stages.
 9. `EXPERIMENT_ROADMAP.md` — baseline calibration -> causal probes -> performance headroom -> opportunity mechanisms.
 10. `PERFORMANCE_HEADROOM_PLAN.md` — how to separate L2-local improvement from downstream masking.
-11. `WORKFLOW_GOVERNANCE.md` — ChatGPT/Codex/GitHub ownership and update discipline.
-12. `decisions/` — architecture/research ADRs, including the accepted calibrated baseline and Unified-payload precondition.
+11. `MOTIVATION_FIGURES_PLAN.md` — canonical definitions for the reuse-distance and structural-blocking motivation figures, including the WBUF 4/8/16 shadow model.
+12. `WORKFLOW_GOVERNANCE.md` — ChatGPT/Codex/GitHub ownership and update discipline.
+13. `decisions/` — architecture/research ADRs, including the accepted calibrated baseline, Unified-payload precondition, and motivation-WBUF shadow definition.
 
 ## One-sentence research objective
 
@@ -73,6 +74,17 @@ M0a generic observation  ||  M1 behavior-preserving elastic substrate
 `ADR-006-unified-payload-opportunity-precondition.md` records the Lane-F finding that the current 128 bypass slots have no production consumer and that fixed 1024 resident tags mean M2 alone cannot create extra resident-line capacity. Do not fabricate bypass traffic to justify Unified Payload.
 
 Every functional stage must preserve an explicit baseline/OFF path and use the experiment-mode contract so the same source/binary family can run baseline, single-mechanism, ablation, and integrated configurations without branch/source switching.
+
+## Motivation-figure contract
+
+`MOTIVATION_FIGURES_PLAN.md` freezes two paper-facing motivation measurements:
+
+```text
+Figure 1: L2 reuse-distance distribution
+Figure 2: L2 miss-admission structural blocking composition
+```
+
+The WB-path study uses a timing-neutral finite dirty-writeback-data WBUF shadow at capacities 4/8/16 in one workload replay. `decisions/ADR-009-motivation-wbuf-shadow-definition.md` freezes WBUF lifetime as WB-packet creation -> successful lower-path acceptance; WAD remains a separate longer-lived ordering resource.
 
 ## What this directory is not
 
