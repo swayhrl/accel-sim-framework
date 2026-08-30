@@ -21,7 +21,7 @@ docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
 docs/ep_l2/chatgpt_handoff/PARALLEL_MASTER_PLAN.md
 docs/ep_l2/chatgpt_handoff/SPECULATIVE_PARALLEL_EXECUTION_POLICY.md
 docs/ep_l2/chatgpt_handoff/PARALLEL_NEW_WINDOW_BOOTSTRAP.md
-docs/ep_l2/chatgpt_handoff/LANE_B_CHATGPT_INTERIM_22OF26_REVIEW.md
+docs/ep_l2/chatgpt_handoff/LANE_B_INTERIM_22OF26_CHATGPT_REVIEW.md
 docs/ep_l2/chatgpt_handoff/LANE_E_LINE_MSHR_CAUSALITY_HANDOFF.md
 docs/ep_l2/chatgpt_handoff/LANE_E_LINE_MSHR_CAUSALITY_ACCEPTANCE_CRITERIA.md
 ```
