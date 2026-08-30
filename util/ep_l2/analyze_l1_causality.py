@@ -39,7 +39,7 @@ def percentile(values: list[float], p: float) -> float:
     return ordered[round((len(ordered) - 1) * p)]
 
 
-def temporal(directory: Path) -> dict[str, float]:
+def temporal(directory: Path, descriptor_capacity: int) -> dict[str, float]:
     with (directory / "target_window.csv").open(newline="") as source:
         l2 = [item for item in csv.DictReader(source) if item.get("scope") == "window"]
     with (directory / "target_dram.csv").open(newline="") as source:
@@ -58,7 +58,7 @@ def temporal(directory: Path) -> dict[str, float]:
     return {
         "l2_window_rows": len(l2), "dram_window_rows": len(dram),
         "descriptor_window_p50": median(descriptor) if descriptor else 0, "descriptor_window_p95": percentile(descriptor, .95),
-        "descriptor_window_max": max(descriptor, default=0), "descriptor_near_full_fraction": sum(v >= 0.95 * 256 for v in descriptor) / len(descriptor) if descriptor else 0,
+        "descriptor_window_max": max(descriptor, default=0), "descriptor_near_full_fraction": sum(v >= 0.95 * descriptor_capacity for v in descriptor) / len(descriptor) if descriptor else 0,
         "line_mshr_window_p50": median(line_mshr) if line_mshr else 0, "line_mshr_window_p95": percentile(line_mshr, .95), "line_mshr_window_max": max(line_mshr, default=0),
         "lowerq_window_p50": median(lowerq) if lowerq else 0, "lowerq_window_p95": percentile(lowerq, .95), "lowerq_window_max": max(lowerq, default=0),
         "scheduler_window_p50": median(sched) if sched else 0, "scheduler_window_p95": percentile(sched, .95), "scheduler_window_max": max(sched, default=0),
@@ -68,7 +68,7 @@ def temporal(directory: Path) -> dict[str, float]:
     }
 
 
-def record(directory: Path) -> dict[str, float]:
+def record(directory: Path, descriptor_capacity: int) -> dict[str, float]:
     status = json.loads((directory / "run_status.json").read_text())
     if status.get("status") != "COMPLETE_VALID":
         raise ValueError("invalid run: " + str(directory))
@@ -77,7 +77,7 @@ def record(directory: Path) -> dict[str, float]:
     result.update({"l1_" + key: number(value) for key, value in row(directory / "target_l1.csv", "application").items() if key in L1_FIELDS})
     dram = row(directory / "target_dram.csv", "application")
     result.update({"dram_" + key: number(dram.get(key)) for key in ("successful_read_bytes", "successful_write_bytes", "scheduler_full_cycles", "bandwidth_util")})
-    result.update(temporal(directory))
+    result.update(temporal(directory, descriptor_capacity))
     return result
 
 
@@ -116,23 +116,31 @@ def main() -> None:
     parser.add_argument("--results", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--cells", nargs="+", default=["META-HR", "BANK-HR"])
+    parser.add_argument("--descriptor-capacity", type=int, default=256)
+    parser.add_argument("--base-layout", choices=("c7e", "lane_b_speculative"), default="c7e",
+                        help="C7e final-base layout or Lane-B's isolated speculative D512 layout")
     args = parser.parse_args(); args.out.mkdir(parents=True, exist_ok=True)
     comparisons: list[dict[str, object]] = []
     temporal_rows: list[dict[str, object]] = []
     classifications: list[dict[str, object]] = []
     for workload in WORKLOADS:
-        base_dir = args.base / "B0-Banked" / workload
+        if args.base_layout == "c7e":
+            base_dir = args.base / "B0-Banked" / workload
+        else:
+            base_dir = args.base / "speculative_rows" / f"B0-Banked__{workload}" / "B0-Banked" / workload
         if not (base_dir / "run_status.json").is_file():
             continue
-        base = record(base_dir)
-        temporal_rows.append({"descriptor_capacity": 256, "cell": "BASE", "workload": workload, **temporal(base_dir)})
+        base = record(base_dir, args.descriptor_capacity)
+        temporal_rows.append({"descriptor_capacity": args.descriptor_capacity, "cell": "BASE", "workload": workload,
+                              **temporal(base_dir, args.descriptor_capacity)})
         for cell in args.cells:
             directory = args.results / cell / workload
             if not (directory / "run_status.json").is_file():
                 continue
-            current = record(directory)
-            temporal_rows.append({"descriptor_capacity": 256, "cell": cell, "workload": workload, **temporal(directory)})
-            comparison: dict[str, object] = {"descriptor_capacity": 256, "cell": cell, "workload": workload,
+            current = record(directory, args.descriptor_capacity)
+            temporal_rows.append({"descriptor_capacity": args.descriptor_capacity, "cell": cell, "workload": workload,
+                                  **temporal(directory, args.descriptor_capacity)})
+            comparison: dict[str, object] = {"descriptor_capacity": args.descriptor_capacity, "cell": cell, "workload": workload,
                                              "base_cycles": base["cycles"], "cell_cycles": current["cycles"],
                                              "speedup_pct": (base["cycles"] / current["cycles"] - 1) * 100}
             for key in ("l1_mshr_entry_fail", "l1_mshr_merge_fail", "l1_miss_queue_full", "l1_bank_latency_queue_conflict",
@@ -141,7 +149,7 @@ def main() -> None:
                 comparison["base_" + key] = base[key]; comparison["cell_" + key] = current[key]
                 comparison[key + "_delta_pct"] = relative(base[key], current[key]) * 100
             comparisons.append(comparison)
-            classifications.append({"descriptor_capacity": 256, "cell": cell, "workload": workload,
+            classifications.append({"descriptor_capacity": args.descriptor_capacity, "cell": cell, "workload": workload,
                                     "speedup_pct": comparison["speedup_pct"],
                                     "classification": classify(comparison["speedup_pct"], comparison["c7d_descriptor_pool_full_block_delta_pct"],
                                                                comparison["c7d_l2_to_dram_full_block_delta_pct"], comparison["c7d_dram_scheduler_full_block_delta_pct"],
