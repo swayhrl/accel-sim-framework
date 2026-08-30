@@ -8,9 +8,9 @@ Permanent coordination branch:
 hrl/ep-l2-exp-v0
 ```
 
-## Current EP-L2 target-mode read order
+## Lane A — current formal target mode
 
-Codex should fetch this branch and read:
+The existing Codex target-mode window owns Lane A only. Read:
 
 ```text
 CURRENT_STATE.md
@@ -21,42 +21,71 @@ FINAL_26RUN_HANDOFF.md
 FINAL_26RUN_ACCEPTANCE_CRITERIA.md
 CODEX_TARGET_GOAL.md
 CODEX_NEXT_STAGE.md
+INTERIM_22OF26_CHATGPT_REVIEW.md
 ```
 
-`CURRENT_STATE.md` records the reviewed research/architecture state.
+Do not expand this live formal window to own calibration lanes B-D.
 
-`C7E_DISCUSSION_REFERENCE.md` explains why the remaining C7e telemetry work is required.
+## Parallel calibration lanes
 
-`C7E_IMPLEMENTATION_HANDOFF.md` defines the allowed C7e implementation scope.
+The shared plan/progress board is:
 
-`C7E_ACCEPTANCE_CRITERIA.md` is the authoritative C7e self-gating contract.
+```text
+docs/ep_l2/coordination/PARALLEL_WORKBOARD.md
+```
 
-`FINAL_26RUN_HANDOFF.md` defines the one clean 13x2 @850 MHz formal campaign.
+New Codex windows should first read:
 
-`FINAL_26RUN_ACCEPTANCE_CRITERIA.md` defines when that campaign is complete.
+```text
+CURRENT_STATE.md
+INTERIM_22OF26_CHATGPT_REVIEW.md
+PARALLEL_MASTER_PLAN.md
+../coordination/PARALLEL_WORKBOARD.md
+```
 
-`CODEX_TARGET_GOAL.md` defines the autonomous repair/transition loop from C7e through 26/26 completion.
+Then read exactly one lane-specific handoff:
 
-`CODEX_NEXT_STAGE.md` is the short executable entry point and current authorization/STOP boundary.
+```text
+Window B -> LANE_B_DESCRIPTOR512_HANDOFF.md
+Window C -> LANE_C_L1_CAUSALITY_HANDOFF.md
+Window D -> LANE_D_ANALYSIS_INFRA_HANDOFF.md
+```
 
-For the current target-mode stage, the explicit authorization in `CODEX_NEXT_STAGE.md` / `CODEX_TARGET_GOAL.md` supersedes any older wording in historical coordination text that required a manual ChatGPT pause between C7e acceptance and the final 26-run.
+Recommended concurrency is **4 Codex windows total**: the existing Lane A window plus 3 new B/C/D windows. Each lane may launch multiple simulator processes internally; do not create a Codex window per simulator run.
 
-Codex must not modify these ChatGPT-owned files unless explicitly instructed.
+## File roles
+
+`CURRENT_STATE.md` records reviewed architecture/research state.
+
+`*_DISCUSSION_REFERENCE.md` records source-audited rationale.
+
+`*_HANDOFF.md` files define executable scopes and hard boundaries.
+
+`PARALLEL_MASTER_PLAN.md` defines lane ownership, dependency handshakes, and concurrency rules.
+
+Codex must not modify ChatGPT-owned handoff files unless explicitly instructed.
 
 ## Codex -> ChatGPT return path
 
-At closeout, Codex should publish source on the stage implementation branch, but mirror documentation-only return artifacts to this coordination branch:
+Source is pushed on lane/stage implementation branches. Documentation-only status/review packs are mirrored to the coordination branch.
+
+During parallel execution use dedicated reports to avoid write collisions:
 
 ```text
-docs/ep_l2/codex_handoff/LATEST_REPORT.md
-docs/ep_l2/review_packs/<stage>/
+docs/ep_l2/codex_handoff/LATEST_REPORT.md       # Lane A/global formal owner
+docs/ep_l2/codex_handoff/LANE_B_LATEST.md
+docs/ep_l2/codex_handoff/LANE_C_LATEST.md
+docs/ep_l2/codex_handoff/LANE_D_LATEST.md
 ```
 
-For the current goal, expected final review packs are:
+Expected review-pack families include:
 
 ```text
 docs/ep_l2/review_packs/C7E_FINAL_READINESS_r1/
 docs/ep_l2/review_packs/FINAL_TARGET_BASELINE_850_r1/
+docs/ep_l2/review_packs/D512_CALIBRATION_r1/
+docs/ep_l2/review_packs/L1_CAUSALITY_r1/
+docs/ep_l2/review_packs/CALIBRATION_ANALYSIS_INFRA_r1/
 ```
 
-This gives ChatGPT one stable remote entry point without merging stage source code into the coordination branch.
+Calibration data is not automatically formal. The shared convergence gate is `BASELINE-DECISION` in `PARALLEL_WORKBOARD.md`.
