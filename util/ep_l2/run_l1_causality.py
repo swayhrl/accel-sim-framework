@@ -85,7 +85,7 @@ def c7e_semantic_base(framework_source: str, core_source: str) -> list[str]:
         raise ValueError("Framework is not derived from the exact C7e commit: " + framework_source)
     changed = subprocess.check_output(("git", "-C", str(ROOT), "diff", "--name-only",
                                        EXPECTED_FRAMEWORK, framework_source), text=True).splitlines()
-    allowed = {"util/ep_l2/run_l1_causality.py", "tests/ep_l2/l1_meta_hr.config",
+    allowed = {"util/ep_l2/run_l1_causality.py", "util/ep_l2/analyze_l1_causality.py", "tests/ep_l2/l1_meta_hr.config",
                "tests/ep_l2/l1_bank_hr.config", "tests/ep_l2/l1_mshr_hr.config",
                "tests/ep_l2/l1_merge_hr.config", "tests/ep_l2/l1_missq_hr.config"}
     if not set(changed).issubset(allowed):
