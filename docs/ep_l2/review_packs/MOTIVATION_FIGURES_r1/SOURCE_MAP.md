@@ -29,6 +29,6 @@ The classifier uses the audited production preview order:
 This is exclusive classification of a frontend **demand miss** admission cycle
 (read or write). For a write, MSHR and MissQ predicates participate only when
 the production preview marks them required; locally absorbed writes do not
-fabricate a resource demand. It is
-it is not a sum of independent existing M0a counters. `OTHER` remains emitted
+fabricate a resource demand. It is not a sum of independent existing M0a
+counters. `OTHER` remains emitted
 and is never renormalized away.
