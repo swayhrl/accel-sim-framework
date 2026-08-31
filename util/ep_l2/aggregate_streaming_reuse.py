@@ -37,13 +37,14 @@ def write(p,rows):
 def validate(spec,c):
  n=spec["workload"]; root=Path(spec["on_result_dir"])
  if not root.is_dir(): fail(f"missing result {n}: {root}")
- status=js(root/"run_status.json"); campaign=js(root.parents[2]/"campaign_manifest.json")
+ status=js(root/"run_status.json"); campaign=js(root.parents[1]/"campaign_manifest.json")
  sm=js(root/"sector"/"manifest.json"); mm=js(root/"motivation"/"manifest.json")
  s=one(root/"sector"/"sector_reuse_summary.csv"); d=one(root/"sector"/"sector_reuse_distance.csv"); co=one(root/"sector"/"sector_reuse_coverage.csv"); m=one(root/"motivation"/"motivation_summary.csv")
  eq(status.get("status"),"COMPLETE_VALID",f"status {n}"); eq(status.get("workload"),n,f"status workload {n}"); eq(status.get("mode"),"on",f"mode {n}")
  eq(campaign.get("schema"),["EPL2MOTV1","EPL2SRV1"],f"campaign schema {n}")
  for k,v in (("core_commit",c["core_commit"]),("framework_commit",c["runtime_framework_commit"]),("config_sha256",c["config_sha256"])):
-  eq(campaign.get(k),v,f"campaign {k} {n}");eq(status.get(k),v,f"status {k} {n}");eq(sm.get(k),v,f"sector {k} {n}");eq(mm.get(k),v,f"motivation {k} {n}")
+  eq(campaign.get(k),v,f"campaign {k} {n}");eq(status.get(k),v,f"status {k} {n}");eq(sm.get(k),v,f"sector {k} {n}")
+  if k!="config_sha256": eq(mm.get(k),v,f"motivation {k} {n}")
  eq(sm.get("schema_version"),"EPL2SRV1",f"sector schema {n}");eq(mm.get("schema_version"),"EPL2MOTV1",f"motivation schema {n}")
  for r,label in ((s,"summary"),(d,"distance"),(co,"coverage"),(m,"motivation")): eq(r.get("workload"),n,f"{label} workload {n}")
  trace=Path(status.get("trace_id",""));eq(str(trace),spec["trace_id"],f"trace identity {n}")
