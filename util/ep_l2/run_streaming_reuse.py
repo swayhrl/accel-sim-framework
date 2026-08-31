@@ -39,6 +39,12 @@ ROSTER = {
     "nn": "decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/nn-rodinia-3.1/__data_filelist_4__r_5__lat_30__lng_90",
     "hotspot": "decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot-rodinia-3.1/1024_2_2___data_temp_1024___data_power_1024_output_out",
     "hybridsort": "decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hybridsort-rodinia-3.1/__data_500000_txt",
+    "parboil_bfs": "decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-bfs/_i___data_NY_input_graph_input_dat__o_bfs_NY_out",
+    "parboil_mriq": "decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-mri-q/_i___data_small_input_32_32_32_dataset_bin__o_32_32_32_dataset_out",
+    "polybench_correlation": "decoupled-l2-extract/polybench.correlation.closeout.stage/polybench/11.0/polybench-correlation/NO_ARGS",
+    "polybench_covariance": "decoupled-l2-extract/polybench.covariance.closeout.stage/polybench/11.0/polybench-covariance/NO_ARGS",
+    "pathfinder": "decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/pathfinder-rodinia-3.1/100000_100_20___result_txt",
+    "lavaMD": "decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10",
 }
 
 def digest(path: Path) -> str:
@@ -81,6 +87,7 @@ def main() -> None:
     parser.add_argument("--modes", nargs="+", choices=("off", "on"), default=("on",))
     parser.add_argument("--expected-framework-sha", required=True)
     parser.add_argument("--expected-core-sha", required=True)
+    parser.add_argument("--runtime-framework-sha", help="runtime provenance when this checkout contains tooling-only commits")
     args = parser.parse_args()
     if head(ROOT) != args.expected_framework_sha or head(CORE) != args.expected_core_sha:
         raise SystemExit("source SHA differs from frozen launch expectation")
@@ -97,7 +104,8 @@ def main() -> None:
         if not asset.is_file(): raise SystemExit("missing runtime asset: " + str(asset))
     config = {key: digest(path) for key, path in {"base": base, "trace": trace_cfg, "model": model, **overlays}.items()}
     config_sha = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
-    campaign = {"framework_commit": head(ROOT), "core_commit": head(CORE),
+    runtime_framework = args.runtime_framework_sha or head(ROOT)
+    campaign = {"framework_commit": runtime_framework, "tooling_framework_commit": head(ROOT), "core_commit": head(CORE),
                 "config_sha256": config_sha, "config_sha256s": config,
                 "simulator": str(sim), "label": args.label, "workloads": args.workloads,
                 "modes": args.modes, "schema": ["EPL2MOTV1", "EPL2SRV1"]}
@@ -121,7 +129,7 @@ def main() -> None:
                       "normal_simulator_exit": normal, "cycles": cycles, "instructions": instructions,
                       "wall_seconds": round(time.time() - started, 3), "trace": str(trace),
                       "trace_kernelslist_sha256": digest(trace), "trace_id": str(trace),
-                      "framework_commit": campaign["framework_commit"], "core_commit": campaign["core_commit"],
+                      "framework_commit": campaign["framework_commit"], "tooling_framework_commit": campaign["tooling_framework_commit"], "core_commit": campaign["core_commit"],
                       "config_sha256": config_sha, "epl2motv1_enabled": True,
                       "epl2srv1_enabled": mode == "on"}
             if completed.returncode or not normal:
