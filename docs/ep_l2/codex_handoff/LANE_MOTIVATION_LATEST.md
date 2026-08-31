@@ -11,3 +11,9 @@ Frozen formal provenance: Core `2a6a31591bc42023e5997cca969e4b672efe0405`; Frame
 All formal Motivation-ON rows close packet-identity shadow WBUF state (`created == lower_accepted`, terminal active state zero). `OTHER` is retained; the maximum WBUF=8 rate is 0.1155% (scan), so Figure 2's fifth segment remains present in the generated source figure and exact category values remain in CSV.
 
 No performance/speedup claim is made for the C=4/8/16 trace-projected WBUF capacity-pressure views.
+
+Packaging-only delta closeout: final-review `validation/` now exposes Release
+build/direct-test/parser/aggregation commands and results, OFF/ON equality,
+host wall/RSS, frozen-worktree cleanliness, and SHA256 validation. No runtime
+source, raw workload result, or scientific CSV was changed. Requesting a delta
+ChatGPT review; status remains `MOTIVATION_FIGURES_REVIEW_READY`.

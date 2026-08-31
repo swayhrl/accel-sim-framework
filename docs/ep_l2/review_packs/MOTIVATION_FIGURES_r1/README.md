@@ -16,3 +16,8 @@ is not used by any table or figure here.
 `VALIDATION_SUMMARY.md` records the stage gates. The CSVs are the exact
 machine-readable inputs for the six files in `figures/`; `RAW_LOG_INDEX.tsv`
 binds every row to a raw-log checksum and frozen provenance.
+
+The packaging-only closeout evidence required by final review is in
+`validation/`. It exposes the build/test commands, OFF/ON equality digests,
+host wall/RSS observations, frozen-worktree cleanliness checks, and pack
+checksum verification without modifying simulator results or scientific CSVs.

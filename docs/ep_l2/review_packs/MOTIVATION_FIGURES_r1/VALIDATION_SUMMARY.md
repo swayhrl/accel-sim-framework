@@ -27,3 +27,11 @@ The machine-generated `WORKLOAD_STATUS.csv`, `RAW_LOG_INDEX.tsv`, aggregate
 CSVs and figures bind the completed broad 10/10 set to the same pair. Every
 row is revalidated during Stage-6 aggregation for manifest identity, WBUF
 closure, reuse closure, and exclusive WBUF4/8/16 blocker closure.
+
+## Packaging-only final closeout
+
+`validation/BUILD_AND_TESTS.txt`, `OFF_ON_NEUTRALITY.md`,
+`HOST_OVERHEAD.csv`, `GIT_CLEANLINESS.txt`, and `PACK_VALIDATION.txt` expose
+the previously summarized Gate-Q evidence. This amendment leaves frozen Core,
+frozen Framework runtime, raw results, and scientific aggregate CSV values
+unchanged.

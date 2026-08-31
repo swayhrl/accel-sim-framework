@@ -1,0 +1,14 @@
+Packaging-only final closeout verification
+
+Commands:
+  cd docs/ep_l2/review_packs/MOTIVATION_FIGURES_r1
+  sha256sum -c SHA256SUMS
+  git -C /workspace/worktrees/accel-sim-ep-l2-motivation diff --check
+
+Results:
+  SHA256SUMS: all listed payload files verified OK after this validation
+  git diff --check: PASS (empty output)
+
+The checksum manifest intentionally does not hash itself or this report, to
+avoid a recursive checksum dependency. It covers every other final-pack
+payload file, including the four independently reviewable validation records.

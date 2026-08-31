@@ -1,0 +1,15 @@
+Frozen runtime worktrees were checked before this packaging-only amendment:
+
+  git -C /workspace/worktrees/gpgpu-sim-ep-l2-motivation status --short
+  git -C /workspace/worktrees/gpgpu-sim-ep-l2-motivation diff --check
+Result: empty output; Core runtime tree clean at
+  2a6a31591bc42023e5997cca969e4b672efe0405
+
+  git -C /workspace/worktrees/accel-sim-ep-l2-motivation status --short
+  git -C /workspace/worktrees/accel-sim-ep-l2-motivation diff --check
+Result: empty output before the documentation-only package amendment; the
+frozen Framework runtime tree was clean at
+  02f36816f60afcff55e910cdef2b60937e691cdc
+
+The subsequent commit changes only this review package, handoff, and the
+Stage-6 aggregation utility; it does not alter frozen simulator runtime.
