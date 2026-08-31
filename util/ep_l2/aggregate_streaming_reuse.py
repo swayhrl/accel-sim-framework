@@ -41,6 +41,7 @@ def validate(spec,c):
  sm=js(root/"sector"/"manifest.json"); mm=js(root/"motivation"/"manifest.json")
  s=one(root/"sector"/"sector_reuse_summary.csv"); d=one(root/"sector"/"sector_reuse_distance.csv"); co=one(root/"sector"/"sector_reuse_coverage.csv"); m=one(root/"motivation"/"motivation_summary.csv")
  eq(status.get("status"),"COMPLETE_VALID",f"status {n}"); eq(status.get("workload"),n,f"status workload {n}"); eq(status.get("mode"),"on",f"mode {n}")
+ eq(status.get("epl2motv1_enabled"),True,f"Motivation enabled {n}");eq(status.get("epl2srv1_enabled"),True,f"sector telemetry enabled {n}")
  eq(campaign.get("schema"),["EPL2MOTV1","EPL2SRV1"],f"campaign schema {n}")
  for k,v in (("core_commit",c["core_commit"]),("framework_commit",c["runtime_framework_commit"]),("config_sha256",c["config_sha256"])):
   eq(campaign.get(k),v,f"campaign {k} {n}");eq(status.get(k),v,f"status {k} {n}");eq(sm.get(k),v,f"sector {k} {n}")
@@ -61,10 +62,13 @@ def validate(spec,c):
  eligible=num(m,"eligible_demand_references",n)
  if eligible<=0: fail(f"nonpositive eligible demand references {n}")
  s["eligible_demand_references"]=eligible;s["sector_events_per_demand_reference"]=total/eligible
- ref=Path(spec["motivation_reference"])
- for f in PRODUCTS:
-  if not (root/"motivation"/f).is_file() or not (ref/f).is_file(): fail(f"missing Motivation compatibility product {n}/{f}")
-  if sha(root/"motivation"/f)!=sha(ref/f): fail(f"Motivation compatibility mismatch {n}/{f}")
+ ref=spec.get("motivation_reference")
+ if ref:
+  ref=Path(ref)
+  for f in PRODUCTS:
+   if not (root/"motivation"/f).is_file() or not (ref/f).is_file(): fail(f"missing Motivation compatibility product {n}/{f}")
+   if sha(root/"motivation"/f)!=sha(ref/f): fail(f"Motivation compatibility mismatch {n}/{f}")
+ elif spec.get("cohort")=="original_motivation": fail(f"missing Motivation compatibility reference {n}")
  return s,d,co,m
 
 def fig(svg,png,rows):
