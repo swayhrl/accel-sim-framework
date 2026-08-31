@@ -30,10 +30,16 @@ with tempfile.TemporaryDirectory() as temp:
     log.write_text("".join(base.format(slice=item) for item in range(2)) + base.format(slice=0))
     run = subprocess.run((sys.executable, str(PARSER), str(log), "--out", str(temp / "dup"), *args, "--expected-slices", "2"), capture_output=True, text=True)
     assert run.returncode == 0, run.stderr
-    assert json.loads((temp / "dup/manifest.json").read_text())["identical_terminal_records_ignored"] == 1
-    log.write_text("".join(base.format(slice=item) for item in range(2)) + base.format(slice=0).replace("total_sector_reference_events=2", "total_sector_reference_events=3"))
+    assert json.loads((temp / "dup/manifest.json").read_text())["application_snapshot_records_superseded"] == 1
+    advanced = (base.format(slice=0).replace("total_sector_reference_events=2", "total_sector_reference_events=3")
+                .replace("temporal_sector_reuse_instances=1", "temporal_sector_reuse_instances=2")
+                .replace("sector_reuse_le8=1", "sector_reuse_le8=2"))
+    log.write_text("".join(base.format(slice=item) for item in range(2)) + advanced)
+    run = subprocess.run((sys.executable, str(PARSER), str(log), "--out", str(temp / "advanced"), *args, "--expected-slices", "2"), capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    log.write_text("".join(base.format(slice=item) for item in range(2)) + base.format(slice=0).replace("temporal_sector_reuse_instances=1", "temporal_sector_reuse_instances=0").replace("sector_reuse_le8=1", "sector_reuse_le8=0").replace("one_touch_unique_sectors=0", "one_touch_unique_sectors=1"))
     run = subprocess.run((sys.executable, str(PARSER), str(log), "--out", str(temp / "bad"), *args, "--expected-slices", "2"), capture_output=True, text=True)
-    assert run.returncode != 0 and "conflicting" in run.stderr
+    assert run.returncode != 0 and "non-monotonic" in run.stderr
 source = PARSER.read_text()
 assert ".read_text(" not in source and ".read_bytes(" not in source
 print("EPL2SRV1 parser regression: PASS")

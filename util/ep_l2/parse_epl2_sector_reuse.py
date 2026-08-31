@@ -71,7 +71,7 @@ def main():
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
-    apps, duplicate_terminal_records = {}, 0
+    apps, application_records_seen, superseded_snapshots = {}, 0, 0
     # Deliberately process one line at a time; simulator logs may be multi-GB.
     with args.log.open("r", encoding="utf-8", errors="replace") as source:
         for line in source:
@@ -79,11 +79,18 @@ def main():
             if row is None or row["scope"] != "application":
                 continue
             slice_id = row["slice"]
+            application_records_seen += 1
             if slice_id in apps:
-                if apps[slice_id] != row:
-                    raise ValueError("conflicting application terminal record for slice %d" % slice_id)
-                duplicate_terminal_records += 1
-                continue
+                # Application records are cumulative snapshots emitted at every
+                # kernel boundary.  Select the final log-order snapshot, but
+                # fail closed if any counter goes backwards on the way there.
+                previous = apps[slice_id]
+                for key, value in row.items():
+                    if isinstance(value, int) and key not in ("slice", "kernel_uid"):
+                        if value < previous[key]:
+                            raise ValueError("non-monotonic application snapshot for slice %d field %s" %
+                                             (slice_id, key))
+                superseded_snapshots += 1
             apps[slice_id] = row
     if len(apps) != args.expected_slices:
         raise ValueError("expected exactly %d application slice records, found %d" %
@@ -138,8 +145,9 @@ def main():
         "trace_id": args.trace_id,
         "source_log_sha256": digest(args.log),
         "expected_application_slices": args.expected_slices,
-        "terminal_record_policy": "identical duplicates are deduplicated; conflicting duplicates fail closed",
-        "identical_terminal_records_ignored": duplicate_terminal_records,
+        "terminal_record_policy": "select final log-order cumulative application snapshot per slice; prior snapshots must be non-decreasing for every counter",
+        "application_records_seen": application_records_seen,
+        "application_snapshot_records_superseded": superseded_snapshots,
     }
     (args.out / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 
