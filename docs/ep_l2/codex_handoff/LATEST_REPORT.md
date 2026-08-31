@@ -1,11 +1,11 @@
 # Codex → ChatGPT latest report
 
-Stage: figure-only utilization quicklook — visual review ready
+Stage: paper-figure style-only redraw — visual review ready
 
-Status: **UTILIZATION_QUICKLOOK_REVIEW_READY**
+Status: **PAPER_FIGURES_STYLE_REDRAW_REVIEW_READY**
 
-This is a new, isolated visual checkpoint.  It does not supersede the Target
-Baseline campaign or make a scientific acceptance claim.
+This is a new, isolated visual restyling checkpoint.  It does not supersede
+the Target Baseline campaign or make a scientific acceptance claim.
 
 Frozen runtime provenance used by this quicklook:
 
@@ -13,14 +13,11 @@ Frozen runtime provenance used by this quicklook:
 * Framework: `db1c90182fad02aacbd282b67ecdc57b8e4cc365`
 * B0/Motivation schemas: `EPL2B0V1` / `EPL2MOTV1`
 
-The package contains CSV-only redraws for exactly seven selected workloads:
-`dwt2d`, `convolutionSeparable`, `spmv`, `scan`, `FWT_7_21`, `cfd_097k`, and
-`btree`.  It includes a P95/AVG hotspot-slice occupancy heatmap, matching grouped
-bars, and a WBUF=8 exclusive-blocking subset view.  No simulator workload was
-rerun; no Core source, raw result, or scientific CSV was modified.
+The package restyles the exact seven-workload utilization and WBUF=8 structural
+blocking plotting tables: `dwt2d`, `convolutionSeparable`, `spmv`, `scan`,
+`FWT_7_21`, `cfd_097k`, and `btree`.  It found and adapted the reference-style
+script from `PAPER_FIGURES_DRAFT_v5`; no simulator workload was rerun, and no
+Core source, raw result, scientific CSV, denominator, or semantic definition
+was modified.
 
-The frozen outputs do not contain joint blocker states, so no simultaneous
-overlap matrix is inferred or plotted.  The precise limitation and required
-future telemetry are documented in the package.
-
-Review entry point: [UTILIZATION_QUICKLOOK_r1](../review_packs/UTILIZATION_QUICKLOOK_r1/README.md)
+Review entry point: [PAPER_FIGURES_STYLE_REDRAW_r1](../review_packs/PAPER_FIGURES_STYLE_REDRAW_r1/README.md)
