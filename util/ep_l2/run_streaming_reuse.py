@@ -132,7 +132,10 @@ def main() -> None:
             motivation = subprocess.run((sys.executable, str(ROOT / "util/ep_l2/parse_epl2_motivation.py"), str(log), "--out", str(directory / "motivation"), *common), text=True, capture_output=True)
             (directory / "motivation_parser.stdout").write_text(motivation.stdout)
             (directory / "motivation_parser.stderr").write_text(motivation.stderr)
-            b0 = subprocess.run((sys.executable, str(ROOT / "util/ep_l2/parse_epl2_b0.py"), str(log), "--out", str(directory / "b0"), *common, "--source-log", str(log)), text=True, capture_output=True)
+            b0 = subprocess.run((sys.executable, str(ROOT / "util/ep_l2/parse_epl2_b0.py"), str(log), "--out", str(directory / "b0"),
+                                 "--framework-commit", campaign["framework_commit"],
+                                 "--core-commit", campaign["core_commit"],
+                                 "--source-log", str(log)), text=True, capture_output=True)
             (directory / "b0_parser.stdout").write_text(b0.stdout)
             (directory / "b0_parser.stderr").write_text(b0.stderr)
             sector = None
