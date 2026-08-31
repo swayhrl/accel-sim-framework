@@ -67,7 +67,7 @@ def terminal(log: Path) -> tuple[bool, str | None, str | None]:
 
 def observable_digest(log: Path) -> str:
     h = hashlib.sha256()
-    prefixes = ("EPL2B0V1|", "EPL2M0AV1|", "EPL2MOTV1|", "EPL2DRAMV1|", "L2_char_resource_leak_free")
+    prefixes = (b"EPL2B0V1|", b"EPL2M0AV1|", b"EPL2MOTV1|", b"EPL2DRAMV1|", b"L2_char_resource_leak_free")
     with log.open("rb") as source:
         for line in source:
             if line.startswith(prefixes): h.update(line)
