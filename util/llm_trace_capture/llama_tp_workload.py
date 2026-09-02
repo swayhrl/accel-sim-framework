@@ -221,7 +221,7 @@ def write_sidecar(path: Path, revision: str, route: str, rank: int, flat, table,
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
-def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, str], region: str, phase: str, model_source: dict, capture_status: str) -> None:
+def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, str], region: str, phase: str, model_source: dict, capture_status: str, rank_mapping: list[dict]) -> None:
     payload = {"schema_version": "m4a-llama-workload-manifest-v2", "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
                "model_id": MODEL_ID, "model_revision": revision, "tokenizer_revision": revision,
                "input_method": "deterministic token IDs; no prompt/tokenizer fallback", "batch_size": BATCH,
@@ -230,7 +230,7 @@ def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, st
                "roi_control": "ACTIVE_FROM_START=0 plus cuProfilerStart/cuProfilerStop for trace phase only",
                "package_versions": versions, "requirements_file": "util/llm_trace_capture/requirements-llama-tp4.txt",
                "model_transport": model_source["transport"], "model_source": model_source["provenance"],
-               "capture_status": capture_status}
+               "capture_status": capture_status, "rank_mapping": rank_mapping}
     (run_dir / "workload-manifest.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
@@ -250,12 +250,24 @@ def profiler_region(torch, phase: str, region: str):
         if int(stop) != 0: raise RuntimeError(f"cudaProfilerStop failed for {region}: {stop}")
 
 
+def record_rank_mapping(run_dir: Path, rank: int, torch, dist) -> list[dict]:
+    """Persist the actual rank-to-GPU assignment without putting it in a trace ROI."""
+    local_rank = int(os.environ["LOCAL_RANK"])
+    row = {"rank": rank, "local_rank": local_rank, "cuda_device": torch.cuda.current_device(),
+           "gpu_name": torch.cuda.get_device_name(), "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES", "")}
+    run_dir.mkdir(parents=True, exist_ok=True)
+    (run_dir / f"rank-mapping-rank{rank}.json").write_text(json.dumps(row, indent=2, sort_keys=True) + "\n")
+    dist.barrier()
+    return [json.loads((run_dir / f"rank-mapping-rank{item}.json").read_text()) for item in range(TP_SIZE)] if rank == 0 else []
+
+
 def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str, model_source: dict, capture_status: str) -> None:
     import torch
     import torch.distributed as dist
     from transformers import AutoModelForCausalLM
     if int(os.environ.get("WORLD_SIZE", "0")) != TP_SIZE: raise RuntimeError("real-tp4 route requires torchrun world size 4")
     dist.init_process_group("nccl"); rank = dist.get_rank(); torch.cuda.set_device(int(os.environ["LOCAL_RANK"])); versions = package_versions()
+    rank_mapping = record_rank_mapping(run_dir, rank, torch, dist)
     # The frozen tracer is inactive until profiler_region. Do not move setup inside it.
     model = AutoModelForCausalLM.from_pretrained(**model_load_kwargs(model_source, revision), torch_dtype=torch.bfloat16, tp_plan="auto")
     model.eval(); flat, table = bind_flat_weight_storage(model, torch)
@@ -289,7 +301,7 @@ def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str
     print(f"rank={rank} PASS finite logits and stable flat-weight binding", flush=True)
     if rank == 0:
         write_sidecar(output, revision, "real-tp4-rank0", rank, flat, table, versions, kv_events, model_source, capture_status)
-        write_workload_manifest(run_dir, revision, versions, region, phase, model_source, capture_status)
+        write_workload_manifest(run_dir, revision, versions, region, phase, model_source, capture_status, rank_mapping)
     dist.barrier(); dist.destroy_process_group()
 
 
