@@ -1,33 +1,26 @@
 # Latest Codex Report
 
-Stage: `M1_FOUNDATION`
+Stage: `M2_IO_READ`
 
-Status: **PASS — M2_IO_READ AUTHORIZED**
+Status: **HARD_FAIL — STOPPED BEFORE M3**
 
-Core SHA: `48b0be73833fc89fcf833349e82886ddc6d883b0`
+Core SHA: `3ccf4ffcb15f9456db546d2f1bab133c1e933a9c`
 
-Framework implementation/parser SHA: `ff26ef4642fdf10d353fb7d981b931afb25291a8`
+Framework SHA before this report update: `1804d85190f64b9228322def256620784217b7a8`
 
-## M1 closeout
+## Failure
 
-Authorized B07 recovery and R07.1-R07.6 are complete. The repaired L1-hit
-true-completion path retires the Paper Base PIB UID; B07 `A:1:1` completes
-with 166 native merge-full observations and PIB 33/33/0. A frozen clean
-upstream run reports the same merge-full count.
+The first real `PAPER_IO` VecAdd integration run aborted in conventional
+`baseline_cache::fill()` because an IO-direct lower request had no conventional
+L1D `m_extra_mf_fields` identity. This invalidates the required IO no-MSHR
+data-path proof. The experimental Core integration was discarded, leaving the
+pushed Core branch clean.
 
-All M1 HARD gates passed. The release Core build and CTest suite pass. B06
-MSHR=1 reports 26,265 entry-full observations; B08 cap=2 reaches exactly peak
-2 and closes 64 token acquires/releases. Strict parser output records both
-the primary closure and independent PIB/Tag/lower/MSHR resource views.
+Evidence and exact log/config hashes:
+`implementation/M2_IO_INTEGRATION_FAILURE.md`.
 
-LEGACY exactly matches frozen clean Core `91880c533` for deterministic hit,
-merge, bypass, and VecAdd: dynamic instructions, cycles, L1 accesses/misses,
-L2 global reads, and DRAM reads all agree.
+## Required disposition
 
-## Review entry point
-
-`review_packs/M1_FOUNDATION/README.md`
-
-## Next action
-
-Begin M2 IO-DTC whole-line read implementation. Do not start M5.
+Do not create an M2 review pack and do not start M3, M4, or M5. Any later
+recovery must first establish a source-safe IO response route that never calls
+conventional `baseline_cache::fill()` for an IO-owned request.
