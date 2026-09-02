@@ -2,11 +2,30 @@
 
 Stage: `M1_FOUNDATION`
 
-Status: **IN_PROGRESS — M1 RESOURCE PATHS VALIDATED; HARD GATES PENDING**
+Status: **STOPPED — M1 HARD GATE B07 FAILED**
 
-Core SHA: `e363a7730ac4ae4f00e6fa252c18653468ba672a`
+Core SHA: `581fff76cf1dabbf1b2b9fe709a0f2142ab0d8e7`
 
-Framework implementation/evidence base SHA: `c05b84e83c215e5f63aa6218f85666847b03c272`
+Framework implementation/evidence base SHA: `1f63d0c793784b41dbf02343c6442af5e68141a3`
+
+## Stop evidence — B07 traditional-MSHR merge-full
+
+M1 must not proceed.  The directed 1,024-thread same-line merge microbenchmark
+was run in `PAPER_BASE` with a temporary, uncommitted validation-only override
+that set traditional L1 MSHR entries to `1` and merge depth to `1`.  Rather
+than draining after `MSHR_MERGE_ENRTY_FAIL` backpressure, the simulator
+reported a deadlock: no core-0 writeback after GPU cycle `5081`, followed by
+the watchdog after `94,919` more cycles.  The run log is retained outside the
+repositories at `/tmp/dtc-l1-paper-merge1-x7Zf3G/run.log`; relevant lines are
+`65–66` (effective configuration) and `324–326` (deadlock evidence).
+
+The temporary Core source change that exposed the merge-depth override was
+discarded and was never committed or pushed.  The committed Core branch is
+clean at the SHA above.  This is a HARD B07 failure, not an architectural
+interpretation issue: the source distinguishes `MSHR_ENRTY_FAIL` and
+`MSHR_MERGE_ENRTY_FAIL`, but the directed merge-full configuration does not
+make forward progress.  Do not begin M2, M3, M4, or M5 until this failure has
+been resolved, revalidated, and independently reviewed.
 
 ## Main conclusions
 
@@ -38,16 +57,15 @@ evidence.
 
 ## Remaining issues
 
-- M1 HARD validation remains incomplete: full directed simulator-path B02-B09
-  evidence, the remaining two LEGACY-neutrality workloads, primary/non-exclusive
-  stall closure, and the M1 review pack are still required. A strict
-  provenance-bearing JSON parser now exists, but it has only been used for a
-  diagnostic vecadd smoke run and is not review-pack evidence.
+- B07 is failing as described above; this is the immediate stop condition.
+- The M1 review pack has not been created and M1 does not pass.  Earlier
+  evidence for B01–B06, B08–B09, and LEGACY neutrality remains diagnostic only
+  and cannot override this failure.
 - No M2/M3/M4 work has started.
 
 ## Recommendation
 
-`M1_IN_PROGRESS`
+`M1_HARD_FAILURE_B07_STOP`
 
 ## Review entry point
 
