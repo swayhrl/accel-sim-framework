@@ -2,38 +2,36 @@
 
 ## Status
 
-`M1_VM_CORE_FOUNDATION`: **PASS**.
-
-`M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF accepted**.
-
-`G3-0`: **PASS**.
-
-`G3-1 — PTE backend/request contract`: **PASS**.
-
-`G3-2A — address provenance`: **PASS — CASE A**.
-
-`G3-2B — generic trace-width extension`: **PASS**.
-
-`G3-2 — real PTE L2/DRAM integration`: **PASS — independently accepted**.
+Accepted:
+- M1 PASS
+- M2 PASS after M2-RF
+- G3-0 PASS
+- G3-1 PASS
+- G3-2/G3-2B PASS
+- G3-2C PASS
+- G3-3 PASS
 
 Accepted Core start:
-`965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
 
-Framework G3-2 evidence:
-`dbbd9d8360121aeda553eaf9365073e7332018bf`
+`1b18b3c5da6e5ba22e4a03c20e3adce498311336`
+
+Accepted Framework evidence head before this handoff:
+
+`a3af1f34b4e6fcac4f43faf8d80d8a914eb34958`
 
 ## Next authorized target
 
-Execute as one continuous internal target:
+Resume Codex Goal/target mode and execute as one continuous macro target:
 
-`G3-2C hierarchy-prefix PTE identity -> G3-3 generic PWC`
+`G3-4A -> G3-4B -> G3-5A -> G3-5B -> G3-CLOSEOUT -> M1_M3_VM_BASELINE_CLOSEOUT`
 
-Specification:
+Full specification:
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2C_HIERARCHY_AND_G3_3_PWC.md`
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_4_G3_5_FINAL_CLOSEOUT.md`
 
-If G3-2C PASSes, continue automatically into G3-3.  After G3-3 PASS, commit,
-push and STOP for ChatGPT review before G3-4.
+Do not stop for ordinary successful transitions. Continue automatically when each internal gate PASSes.
+
+After final macro closeout, commit/push both repositories and STOP before M4B.
 
 ## Mandatory read order
 
@@ -41,12 +39,12 @@ push and STOP for ChatGPT review before G3-4.
 2. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
 4. this file
-5. `stage_specs/M3_G3_2C_HIERARCHY_AND_G3_3_PWC.md`
+5. `stage_specs/M3_G3_4_G3_5_FINAL_CLOSEOUT.md`
 6. `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
 7. `stage_specs/M3_REFERENCE_MATERIALS.md`
-8. G3-2B/G3-2 closeout evidence
-9. accepted M1/M2/G3-1 evidence
-10. long-lived VM specs and parameter ledger
+8. G3-2C/G3-3 closeout review evidence
+9. accepted M1/M2/G3-1/G3-2 review packs
+10. long-lived VM specs and paper parameter ledger
 
 Do not modify `chatgpt_handoff/*`.
 
@@ -56,146 +54,123 @@ Core:
 `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
 
 Expected Core start:
-`965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
+`1b18b3c5da6e5ba22e4a03c20e3adce498311336`
 
 Framework:
 `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-Fetch/pull latest Framework handoff before implementation.
+Fetch/pull the latest Framework handoff before implementation.
 
-## Architecture decision
+## G3-4A — page-size foundation
 
-The old flat `(level, full VPN)` PTE identity was sufficient for G3-2 plumbing
-but is not accepted for final PWC locality.
+Validate separate run-selected 64KB and 2MB modes.
 
-Implement the balanced generic radix-prefix model in the stage spec.
+Generic v0 does not need a simultaneous mixed-page OS/promotion policy. If mixed pages already coexist cleanly, test them; otherwise explicitly document one configured page size per run as `MODELING_DECISION`.
 
-For each page size:
+Required exact checks include 64KB/2MB offset, coverage boundary, page-size-aware TLB tags/fills, radix/PWC keys, range separation and M2 64KB regression.
 
-```text
-B = virtual_address_bits - log2(page_size)
-L = levels
-r = ceil(B/L)
-top = B - r*(L-1)
-level widths = [top, r, r, ...]
-```
+Do not implement 4KB or target-paper sub-entry just to expand scope.
 
-PTE identity at level `l` must use the VPN prefix through that level.  Physical
-PTE namespace subranges must be deterministic, non-overlapping and
-overflow-safe.
+## G3-4B — non-zero TLB lookup timing
 
-Required directed examples:
+Current TLBs have finite ports but functional/zero service latency. Add explicit configurable L1 and L2 lookup service latency.
 
-- 56-bit/64KB `[10,10,10,10]`;
-- 56-bit/2MB `[8,9,9,9]`;
-- 49-bit/64KB `[6,9,9,9]`;
-- 49-bit/2MB `[7,7,7,7]`.
+Generic baseline seed:
+- L1 = 10 core cycles
+- L2 = 80 core cycles
 
-This is `MODELING_DECISION`, not target-paper exact behavior.
+These are generic/reference-motivated, not target Segmentation-paper exact parameters.
 
-## G3-2C gate
+Required semantics:
+- port consumed once at lookup launch;
+- lookup waits for service completion without re-probing/re-consuming ports;
+- hit/miss counted once;
+- accepted pending-MSHR retry bypass remains intact;
+- new waiter still performs normal first lookup;
+- L2 hit fills L1 only when L2 result becomes available;
+- no data request before translation READY.
 
-Before PWC, prove:
+Hard STOP if the old polling/retry pollution pattern reappears.
 
-- intended upper-level PTE sharing for related VPNs;
-- leaf uniqueness;
-- unrelated-prefix separation;
-- 64KB/2MB class separation;
-- physical namespace/range safety;
-- 49-bit and 56-bit tests PASS;
-- former BFS offender still preserves raw SimVA/identity-like SimPA;
-- full G3-2 real PTE L2/DRAM suite, LUD/BFS, response identity and M1/M2
-  regressions PASS under the new hierarchy identities.
+## G3-5A — latency decomposition
 
-Changed L2 PTE hit counts are allowed only when directly explained by the new
-hierarchy-prefix identities.
+Implement the accounting contract from the stage spec.
 
-On PASS continue automatically into G3-3.
+Separate requester/waiter timing from unique MSHR/walk timing. Do not multiply shared walk work by waiter count or force overlapping intervals into a fake additive total.
 
-## G3-3 PWC contract
+Required analytical expected-vs-actual timing test must cover L1 hit, L2 hit, PTW, PWC/PTE memory and merged waiter behavior.
 
-Cache intermediate/non-leaf PTEs only, levels `0..L-2`.
+## G3-5B — causality/sensitivity
 
-PWC key:
+Only after correctness gates PASS.
 
-`(ASID, page-size-class, level, prefix(vpn,level))`
+Required minimum sweeps:
+- L2 TLB capacity: 3 points around 768;
+- translation MSHR: 3 points;
+- walkers: 1 / 4 / 16 or justified equivalent;
+- PWC: OFF / FINITE-128 / IDEAL;
+- M2 fixed-latency vs M3 real-memory PTW;
+- 64KB vs 2MB on at least one valid trace;
+- zero-latency diagnostic vs non-zero generic TLB timing on a bounded case.
 
-Required modes:
+Use structured TSV/CSV and exact provenance. If only LUD and BFS exist, use only those and state that limitation.
 
-- `OFF`: no entries;
-- `FINITE`: default 128 entries, fully associative LRU;
-- `IDEAL`: diagnostic unbounded/no-eviction.
+Do not tune away non-monotonic results; investigate and explain them with measured resource/timing statistics.
 
-The 128-entry default is generic/reference-motivated only; it is not a
-Segmentation-paper parameter.
+## Parameter evidence rules
 
-A hit skips exactly that intermediate level's PTE memory request.  Leaf PTE
-reads still use the real accepted PTE memory path.
+Maintain `PARAMETER_EVIDENCE_LEDGER.md`.
 
-Required exact tests include:
+Do not blur:
+- `SEGMENTATION_PAPER_KNOWN`
+- project `MODELING_DECISION`
+- `REFERENCE_OTHER_PAPER`
+- `DIAGNOSTIC`
+- `UNKNOWN`
 
-- `vm_pwc_zero`;
-- `vm_pwc_warm`: first related 56-bit/64KB walk = 4 PTE requests, second walk
-  sharing upper 30 bits = three PWC hits + one leaf PTE request, total 5 rather
-  than 8;
-- `vm_pwc_partial_share`;
-- deterministic finite-capacity LRU eviction;
-- `vm_pwc_no_leaf`;
-- `vm_pwc_2mb`;
-- integrated real-memory PWC traffic reduction;
-- no change to resolved SimPA/data semantics;
-- all response/waiter/replay/conservation invariants remain PASS.
+In particular, target-paper known TLB capacities/walkers do not make the generic 10/80-cycle lookup seed or 128-entry PWC paper-exact.
 
-Maintain structured per-level PWC access/hit/miss, insert/eviction, occupancy,
-high-water and skipped-PTE-request statistics.
+## Required final artifacts
 
-## Important timing policy
+Complete:
 
-Do not invent an unexplained PWC port bottleneck.  Follow the stage spec:
-configurable one-cycle generic service with enough logical lookup bandwidth for
-active walkers is preferred.  If a zero-cycle functional PWC probe is used for
-implementation safety, document it explicitly and leave G3-5 responsible for
-adding/accounting the final configured PWC lookup latency before M3 closeout.
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/`
 
-## Explicitly forbidden
+and create:
 
-Do not:
+`docs/vm_tlb/review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`
 
-- rewrite/mask/canonicalize generic SimVA;
-- start G3-4 before review;
-- implement Segmentation or L2-TLB sub-entry/coalescing;
-- inject synthetic KV;
-- add page faults/migration/UVM/MCM;
-- claim hierarchy/PWC organization is exact NVIDIA hardware or exact target
-  Segmentation-paper behavior;
-- silently broaden claims to multi-ASID.
-
-## Reporting
-
-Maintain:
+Maintain throughout:
 
 `docs/vm_tlb/codex_handoff/m1_m3/TARGET_PROGRESS.md`
 
-and:
-
 `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
 
-Update the M3 review pack with separate hierarchy and PWC evidence.
+## Hard STOP conditions
 
-## STOP conditions
-
-STOP on:
-
-- hierarchy namespace collision/overflow;
-- PTE/application physical-range overlap;
-- unexpected prefix-sharing behavior;
-- PWC nondeterminism;
+STOP before advancing on any:
+- repeated TLB probing/port consumption while a lookup is already in service;
 - recursive PTE translation;
-- response identity/misassociation failure;
-- request loss, duplicate wakeup/store/atomic effect;
+- response misassociation or request loss;
+- duplicate waiter wakeup/store/atomic side effect;
+- hierarchy/PWC/address-range collision or overflow;
 - M1/M2 regression;
 - deadlock or unexplained nondeterminism;
-- source/provenance ambiguity;
-- any need to change the approved hierarchy/PWC policy.
+- inconsistent/negative latency accounting;
+- provenance ambiguity;
+- need for a materially new architecture decision not covered by the final-stage spec.
 
-After G3-3 PASS, push both repositories and STOP before G3-4.
+## Final STOP
+
+After M3 PASS and `M1_M3_VM_BASELINE_CLOSEOUT`:
+- push Core + Framework;
+- report final SHAs;
+- STOP.
+
+Do NOT start:
+- M4B
+- Segmentation
+- L2-TLB sub-entry/coalescing
+- synthetic KV
+- page fault/migration/UVM/MCM
+- new AI-aware VM mechanisms.
