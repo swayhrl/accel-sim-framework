@@ -2,108 +2,112 @@
 
 Last coordination update: 2026-09-02
 
-Status: **M0 SPEC FROZEN; IMPLEMENTATION HOLD**
+Status: **M0 SPEC FROZEN; M1-M4 CONTINUOUS GOAL AUTHORIZED**
 
 ## Source anchors
 
-Framework:
+Frozen M0 framework anchor:
 
 - official: `accel-sim/accel-sim-framework:dev`
-- base SHA: `d930ad6d02c09bb56867132583735aba0389cff4`
-- project: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-v0`
+- official base SHA: `d930ad6d02c09bb56867132583735aba0389cff4`
+- project M0 branch: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-v0`
+- M0 documentation SHA: `4ce6da7f000aa3cd68cc011cbc004d4774383e66`
 
-Core:
+Active framework goal branch:
+
+- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`
+- created directly from the M0 branch; M0 remains read-only.
+
+Frozen M0 core anchor:
 
 - official: `accel-sim/gpgpu-sim_distribution:dev`
-- base SHA: `91880c53383d5a6a6742bfb1be2c5f34e39c7871`
-- project: `swayhrl/gpgpu-sim:hrl/decoupled-l1-v0`
+- official base SHA: `91880c53383d5a6a6742bfb1be2c5f34e39c7871`
+- project M0 branch: `swayhrl/gpgpu-sim:hrl/decoupled-l1-v0`
+- M0 documentation SHA: `5e35de9914f1ad28647ef3a416d054b86f3e44a5`
 
-## Frozen architecture / design decisions
+Active core goal branch:
 
-The authoritative detailed specification is in the core repository's `docs/dtc_l1/DTC_L1_SPEC.md`.
+- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`
+- created directly from the M0 branch; M0 remains read-only.
 
-High-level frozen defaults:
+## Authoritative design specification
 
-- paper-mode warp width: 32 threads;
-- simulator default coalescer width: 32 threads/cycle; 16 threads/cycle retained as a configurable original-RTL sensitivity;
-- logical Tag capacity: 16KB;
-- line size: 128B;
-- logical geometry: 32 sets × 4 ways;
-- replacement: LRU;
-- Tag Array: 4 banks/partitions, each 8 sets × 4 ways;
-- Tag-bank mapping: `logical_set_index % 4`;
-- Tag-bank throughput: 1 request/bank/cycle;
-- physical Cacheline Array: fixed 80KB = 640 × 128B lines, entirely L1-owned;
-- physical allocation: round-robin, aggregate width 4 lines/cycle;
-- partial allocation allowed; allocated lines are retained when later allocation stalls; no rollback;
-- default Data-bank conflict modeling disabled in the first mechanism model;
-- every depicted pipeline stage is modeled as 1 cycle;
-- bounded queues/buffers apply upstream backpressure when full;
-- Baseline PIB: 8;
-- Baseline MSHR: 32;
-- IO PIB: 256;
-- OO PIB: 128;
-- IO retire width: 1 instruction/cycle;
-- OO retire width: 1 instruction/cycle;
-- physical release is visible to allocation in the same cycle;
-- 8-SM paper-mode default;
-- each SM L1 may issue 1 lower-memory request/cycle;
-- global lower-memory outstanding limit: 256;
-- OO Ref Count granularity: per coalesced 128B cacheline reference/request;
-- Ref Count default width: 13 bits (conservative 128×32 upper bound);
-- primary thesis reproduction uses whole-line 128B DTC;
-- modern sector extension keeps 128B Tag→Physical renaming and line-level Ref Count, but uses 4×32B INVALID/PENDING/VALID state, per-sector OO merge state, and per-sector `wait_cnt` dependencies.
+Core repository:
 
-## Important mechanism interpretation
+`docs/dtc_l1/DTC_L1_SPEC.md`
 
-The 80KB physical array and 16KB logical Tag space are deliberately decoupled. A Tag bank does not constrain which physical line may be allocated.
+Frozen paper-mode defaults include:
 
-The original RTL has area-driven 16-thread processing and 4-bank allocation resources. The simulator preserves the important throughput/resource constraints while allowing a 32-thread/cycle coalescer default for Base/IO/OO symmetry.
+- warp width 32;
+- simulator coalescer default 32 threads/cycle, with 16-thread original-RTL sensitivity;
+- logical Tag capacity 16KB;
+- 128B line;
+- 32 sets x 4 ways, LRU;
+- 4 Tag banks, 8 sets x 4 ways per bank;
+- `tag_bank = logical_set_index % 4`;
+- 1 Tag request/bank/cycle;
+- fixed 80KB physical array = 640 x 128B lines;
+- no Tag-bank-to-Data-location binding;
+- RR physical allocation, max 4 lines/cycle;
+- partial allocation retained on stall; no rollback;
+- every depicted pipeline stage = 1 cycle;
+- bounded queues/buffers backpressure upstream;
+- Baseline PIB 8, Baseline MSHR 32;
+- IO PIB 256, OO PIB 128;
+- IO/OO retire width 1 instruction/cycle;
+- same-cycle physical-line release visibility;
+- paper default 8 SM;
+- each SM L1 lower issue width 1 request/cycle;
+- global lower outstanding limit 256;
+- OO Ref Count = per coalesced 128B cacheline reference;
+- 13-bit default Ref Count width;
+- paper reproduction first uses whole-line 128B DTC;
+- modern sector extension keeps 128B Tag->Physical mapping and line-level Ref Count, while readiness/merge/wait dependencies are 4 x 32B sector granular.
 
-IO-DTC physical-space deadlock is not to be prevented by an all-or-nothing allocator. It should emerge naturally when a partially allocated instruction holds physical lines, cannot allocate its remaining lines, and FIFO progress cannot release enough older lines.
+## Active goal
 
-## Completed stages
+The single authorized Goal-mode task is to execute M1 through M4 continuously, with HARD gates between major stages:
 
-- M0 research/design discussion: COMPLETE.
-- official upstream branch anchoring: COMPLETE.
-- M0 architecture spec committed: COMPLETE.
+- M1 — Foundation + paper Baseline + observability;
+- M2 — IO-DTC read path;
+- M3 — OO-DTC read path + Ref Count/Merge + sector extension;
+- M4 — Store/Atomic/Fence/architectural-bypass integration + compute workload bring-up.
 
-## Not yet implemented
+Codex may advance automatically only when every HARD gate for the current stage passes. On any hard failure or source-semantic ambiguity requiring a guess, STOP and report.
 
-- explicit thesis-style Baseline PIB model;
-- IO-DTC read path;
-- OO-DTC read path;
-- DTC statistics/assertions;
-- Store/Atomic/Fence integration;
-- DTC policy bypass;
-- formal paper workload experiments;
-- modern sector-DTC formal experiments;
-- graphics-memory proxy/calibration.
+Detailed executable specifications:
 
-## Deferred semantics
+- `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
+- `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
+- `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
+- `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
 
-For the first read-path implementation, Store/Atomic/Fence full DTC lifecycle semantics are deferred. Existing architectural L1 bypass semantics must still remain correct. Thesis DTC policy bypass is a later extension.
+## Current implementation state
 
-Temporary Store/Atomic routing used only to bring up workloads must not be treated as formal IO-vs-OO evidence.
+Not yet implemented at goal authorization time:
 
-## Current open implementation questions
+- explicit thesis-style Baseline PIB;
+- shared paper-mode Tag-bank timing layer;
+- DTC instruction lifecycle/context;
+- IO-DTC;
+- OO-DTC;
+- DTC counter/parser infrastructure;
+- sector-DTC extension;
+- Store/Atomic/Fence DTC lifecycle;
+- DTC workload presets and diagnostic result pipeline.
 
-These are source-integration questions, not permission to change the frozen architecture:
+## Scientific boundary of this goal
 
-1. exact insertion point for explicit Baseline/DTC PIB admission and backpressure;
-2. exact physical-allocation identity carried by lower-memory fills/returns;
-3. clean reuse/wrapping strategy for current sector-cache classes;
-4. authoritative relationship between standalone core and framework `gpu-simulator` source trees;
-5. Store/Atomic/Fence lifecycle attachment points for the later compute-complete stage;
-6. stats/config/run-script plumbing.
+M1-M4 establishes a trustworthy implementation and brings real compute workloads to completion under Base/IO/OO.
 
-## Current research direction
+It does NOT authorize:
 
-First reproduce and validate the mechanism with compute workloads and directed microbenchmarks. Separate paper-mode whole-line DTC from modern sector-DTC. Graphics is supplemental unless calibrated against real/request-stream evidence.
+- fitting speedups to thesis numbers;
+- claiming reproduction of +22%/+30%;
+- final Chapter 4 figure generation;
+- equal-area conclusions;
+- graphics proxy/calibration;
+- final modern-sector performance claims;
+- DTC policy-driven bypass.
 
-## Immediate execution order
-
-1. Keep both branches frozen except for coordination/spec documents.
-2. Plan M1-M3 in ChatGPT with explicit implementation goals, tests, acceptance criteria, and STOP boundaries.
-3. Update `CODEX_NEXT_STAGE.md` with the approved goal-mode plan.
-4. Only then allow Codex implementation.
+Those belong to M5+ after implementation review.
