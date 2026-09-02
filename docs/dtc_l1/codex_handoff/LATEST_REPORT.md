@@ -2,20 +2,29 @@
 
 Stage: `M1_FOUNDATION`
 
-Status: **IN_PROGRESS — BUILD PATH VALIDATED; HARD GATES PENDING**
+Status: **IN_PROGRESS — M1 RESOURCE PATHS VALIDATED; HARD GATES PENDING**
 
-Core SHA: `06a2e689457e867dce35050b84510b1c62f70498`
+Core SHA: `d5325305272460444a822eff6546873a840028a5`
 
 Framework implementation/evidence base SHA: `c05b84e83c215e5f63aa6218f85666847b03c272`
 
 ## Main conclusions
 
 The authorized M1 source-integration audit is complete and recorded in
-`implementation/SOURCE_INTEGRATION_MAP.md`.  Core M1 work has added a
-default-off Paper Base configuration surface plus initial explicit PIB/Tag-bank
-admission plumbing and directed common-model tests.  The Core static library
-and the deterministic CTest target build successfully with the normal tracing
-configuration.
+`implementation/SOURCE_INTEGRATION_MAP.md`. Core M1 work now provides
+default-off Paper Base PIB/Tag arbitration, a dedicated 32-entry traditional
+MSHR default, and a global lower-request token cap (default 256) that is
+acquired at L1 new-miss commit and released at final L1 fill. The Core static
+library and deterministic CTest target build successfully with the normal
+tracing configuration.
+
+Real execution evidence uses an isolated temporary copy of the existing vecadd
+PTX application. LEGACY matches clean upstream SHA `91880c53` exactly on this
+kernel: 5,376 dynamic instructions, 5,562 cycles, and 96/96 L1D
+accesses/misses; both runs pass the application self-check. PAPER_BASE also
+passes the self-check. With MSHR=1 it reports 26,265 L1 reservation failures;
+with lower cap=2 it reaches peak outstanding=2, records 13,091 cap-full events,
+and closes 64 token acquires/releases at drain.
 
 The Framework CMake integration was corrected to make an isolated external
 `GPGPUSIM_ROOT` buildable.  A complete `accel-sim.out` build now succeeds and
@@ -27,11 +36,10 @@ evidence.
 
 ## Remaining issues
 
-- M1 HARD validation remains incomplete: full simulator-path B02-B09 evidence,
-  LEGACY neutrality, counter/invariant closure, parsers, and M1 review pack are
-  still required.
-- Full simulator-path B02-B09 evidence, LEGACY neutrality, counter/invariant
-  closure, parsers, and M1 review pack remain outstanding.
+- M1 HARD validation remains incomplete: full directed simulator-path B02-B09
+  evidence, the remaining two LEGACY-neutrality workloads, primary/non-exclusive
+  stall closure, machine-readable parser/provenance summaries, and the M1
+  review pack are still required.
 - No M2/M3/M4 work has started.
 
 ## Recommendation
