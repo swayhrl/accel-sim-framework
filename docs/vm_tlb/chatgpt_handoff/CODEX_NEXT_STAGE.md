@@ -4,120 +4,106 @@
 
 `M1_VM_CORE_FOUNDATION`: **PASS**.
 
-`M2_FUNCTIONAL_TRANSLATION` reached `G2-4` and is currently **BLOCKED** by reproducible abnormal pre-trace memory growth in functional VM mode. M3 has **not** started.
+Codex reported `M2_FUNCTIONAL_TRANSLATION` closeout PASS, but independent ChatGPT review has **reopened M2 before further M3 work**.
 
-Do not move to a larger-memory host as the first response. The current evidence is not sufficient to classify ~65 GiB pre-replay RSS as a legitimate simulator requirement, because M1 baseline runs succeeded and the intended M2 structures are finite/small.
+The prior runtime-memory blocker is closed. The remaining issue is architectural retry semantics/observability: while a waiter is already registered in an active translation MSHR, the current path re-enters `translation_controller::translate()` each cycle and probes/consumes L1/L2 resources before rediscovering the same waiter. Existing sensitivity evidence shows this pollutes L2 misses as fixed PTW latency grows.
+
+G3-0 entry/freeze has completed. One G3-1 Core commit already exists:
+
+`8c613a356e6a146951cd59c9929046c6c4cfd856`
+
+Treat it as **provisional/unaccepted**. Do not force-rewrite it, but do not start G3-2 or any further M3 semantic work.
 
 ## Next authorized stage
 
-Execute immediately:
+Execute only:
 
-`stage_specs/M2_RUNTIME_MEMORY_DIAG.md`
-
-This is a narrow diagnosis/fix substage inserted before G2-4 can resume.
-
-## Required execution order
-
-1. read `CURRENT_STATE.md`;
-2. read repository-root `AGENTS.md`;
-3. read `stage_specs/M2_RUNTIME_MEMORY_DIAG.md`;
-4. review existing `TARGET_PROGRESS.md` and `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_4_RUNNING.md`;
-5. perform M2-D D0 -> D6 in order;
-6. if a concrete M2 bug is identified, implement only the minimal authorized fix and rerun regressions;
-7. if M2-D PASS, resume original G2-4 real replay validation;
-8. only after G2-4 + complete M2 closeout PASS, resume the already-authorized target-mode M3 flow;
-9. after M3 PASS, create `M1_M3_VM_BASELINE_CLOSEOUT` and STOP before later mechanisms.
+`stage_specs/M2_REVIEW_FIX_BEFORE_M3.md`
 
 Do not modify `chatgpt_handoff/*`.
 
 ## Source anchors
 
-Current blocked Track-A anchors:
+Core branch:
+`swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
 
-- Core branch: `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
-- Core G2-4 checkpoint: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
-- Framework branch: `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
-- Framework blocked report checkpoint: `200e6ddf14b6247a25c6aa4108195ee0904702d8`
-
-Relevant Core history to isolate first-bad behavior:
+Important Core anchors:
 
 - M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
-- G2-1: `06f0ae7a24f1deacd86ddf95237e0ffa5e1a1b83`
-- G2-2: `740d96f8be80977c150ffc911063969cafd25b8f`
-- G2-3: `e579c40d907c201728331a1208c64bb18b869549`
-- G2-4: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
+- M2 closeout: `e7999554200760b31b4efe16d98e050370e1ea71`
+- provisional G3-1: `8c613a356e6a146951cd59c9929046c6c4cfd856`
 
-Use the existing one-kernel trace/list that already reproduces the issue. Do not acquire another workload for diagnosis.
+Framework branch:
+`swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-## Diagnostic decision rule
+Important Framework anchors:
 
-The first question is same-head causality:
+- M2 dependency fix: `4012be3606c300d11e7b34826ee1cb22b0852b93`
+- M2 closeout: `a7020e603d6081f1f16f26b5ad1ead5ca17d7756`
+- G3-0 freeze: `65a6e68d35cded7b78293b92a253e09c75c5aa36`
 
-`same binary + same one-kernel trace + same config`
+Fetch/pull the latest ChatGPT handoff before continuing.
 
-compare:
+## Required execution
 
-- VM mode 0;
-- VM mode 1 where useful;
-- VM mode 2.
+Follow `M2_REVIEW_FIX_BEFORE_M3.md` RF1–RF8.
 
-Then isolate the first offending M2 commit and measure effective VM configuration / expected storage footprint.
+The minimum semantic requirement is:
 
-A larger host is justified only if evidence demonstrates that the corresponding unchanged VM-disabled/baseline path has a comparable legitimate memory requirement. Functional-mode-only 65 GiB RSS is not sufficient evidence for `BLOCKED_HOST_CAPACITY`.
+> once `(translation key, waiter UID)` is accepted/registered in an active MSHR, retries of that same waiter while the walk remains active must wait without consuming/probing L1/L2 TLB ports or adding new TLB access/miss events.
 
-## Fix authorization
+A new waiter for the same key must still perform its own first lookup before merging.
 
-If diagnostics identify a concrete source/config/integration bug, Codex may fix it without another human pause only when the fix is minimal and does not alter frozen VM semantics or weaken finite-resource modeling/tests.
+Do not solve this merely by renaming the existing polluted counters. The resource behavior itself must stop same-waiter polling from occupying TLB lookup bandwidth.
 
-After any fix, rerun:
+## Required validation emphasis
 
-- M1 disabled/ideal transparency;
-- G2-1 mapper/TLB tests;
-- G2-2 MSHR tests;
-- G2-3 PWQ/walker tests;
-- G2-4 directed replay/store/atomic tests;
-- one-kernel functional VM memory regression;
-- real G2-4 trace replay with end statistics.
+Before re-closing M2:
 
-## Target-mode continuation
+- exact same-waiter non-reprobe directed test;
+- proof an unrelated translation can use the shared L2 port while the first waiter is pending;
+- waiter allocation/merge/wakeup exact-once conservation;
+- M1 transparency;
+- all G2 directed regressions;
+- functional one-kernel/LUD/BFS replay;
+- kernel-boundary persistence evidence;
+- expanded MSHR observability;
+- complete M2 review-pack minimum files;
+- controlled fixed-walk-latency sensitivity.
 
-Keep the overall Goal alive, but mark the active internal gate as:
+The controlled sensitivity must specifically demonstrate that merely increasing walk latency no longer causes same-waiter retry polling to inflate L2 misses roughly in proportion to wait time.
 
-`M2-D_RUNTIME_MEMORY_DIAG`
+## Interaction with provisional G3-1
+
+Do not rewrite history.
+
+Implement the M2 review repair on the current Core branch, then rerun the provisional G3-1 backend/no-recursion tests. If the two conflict semantically, STOP and report.
+
+No G3-2 source change is authorized.
+
+## Reporting
 
 Maintain:
 
 `docs/vm_tlb/codex_handoff/m1_m3/TARGET_PROGRESS.md`
 
-If M2-D and G2-4 PASS, continue automatically:
-
-`M2 closeout -> M3 -> M1-M3 macro closeout`.
-
-If M2-D remains ambiguous, requires a semantic redesign, or proves a true external host-capacity blocker, push evidence and STOP.
-
-## Reporting
-
-Active report:
+and:
 
 `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
 
-Diagnostic review pack:
-
-`docs/vm_tlb/review_packs/M2_RUNTIME_MEMORY_DIAG/`
-
-Existing M2 evidence remains under:
+Update/reclose:
 
 `docs/vm_tlb/review_packs/M2_FUNCTIONAL_TRANSLATION/`
 
-## STOP conditions
+Create a dedicated repair evidence section/file or review pack if useful, but the final M2 README must remain the sole review entry.
 
-STOP immediately on:
+## STOP boundary
 
-- proposed fix changes frozen VM semantics;
-- baseline transparency failure;
-- request loss / duplicate wakeup / duplicate store or atomic;
-- deadlock / unexplained nondeterminism;
-- diagnosis remains materially ambiguous after D0-D4;
-- unsafe host-wide resource pressure prevents bounded diagnosis.
+After M2-RF acceptance criteria pass:
 
-**Do not enter M3 until a real functional VM replay passes G2-4.**
+- push Core + Framework;
+- update reports/progress;
+- provide final M2-RF SHAs and review entry;
+- **STOP FOR CHATGPT REVIEW**.
+
+Do not continue to G3-2 / real PTE memory integration until ChatGPT accepts the repaired M2 baseline.
