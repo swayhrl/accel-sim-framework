@@ -48,6 +48,48 @@ SUMMARY_KEYS = (
     "DTC_L1_lower_requests_released",
     "DTC_L1_tag_requests",
     "DTC_L1_tag_conflicts",
+    "DTC_L1_io_lower_created",
+    "DTC_L1_io_lower_issued",
+    "DTC_L1_io_lower_responses",
+    "DTC_L1_io_inflight_current",
+    "DTC_L1_io_inflight_peak_per_sm",
+    "DTC_L1_io_inflight_identity_mismatch",
+    "DTC_L1_io_responses_routed_dtc",
+    "DTC_L1_io_responses_routed_conventional",
+    "DTC_L1_io_pib_occupancy",
+    "DTC_L1_io_pib_peak_per_sm",
+    "DTC_L1_io_head_not_ready_cycles",
+    "DTC_L1_io_hol_ready_younger_cycles",
+    "DTC_L1_io_hol_ready_younger_count_sum",
+    "DTC_L1_io_hol_ready_younger_peak_per_sm",
+    "DTC_L1_io_tag_requests",
+    "DTC_L1_io_tag_conflicts",
+    "DTC_L1_io_retire_count",
+    "DTC_L1_io_completion_dependency_count",
+    "DTC_L1_io_completion_dependency_closed",
+    "DTC_L1_io_valid_hits",
+    "DTC_L1_io_pending_hits",
+    "DTC_L1_io_physical_allocations",
+    "DTC_L1_io_physical_releases",
+    "DTC_L1_io_tag_evictions",
+    "DTC_L1_io_duplicate_after_eviction",
+    "DTC_L1_io_partial_allocation_events",
+    "DTC_L1_io_allocation_width_limited_events",
+    "DTC_L1_io_no_free_physical_events",
+    "DTC_L1_io_physical_allocated_current",
+    "DTC_L1_io_physical_allocated_peak_per_sm",
+    "DTC_L1_io_physical_free_current",
+    "DTC_L1_io_physical_free_minimum_per_sm",
+    "DTC_L1_io_partial_entries_current",
+    "DTC_L1_io_partial_entries_peak_per_sm",
+    "DTC_L1_io_partial_lines_held_current",
+    "DTC_L1_io_partial_lines_held_peak_per_sm",
+    "DTC_L1_lower_credit_acquired",
+    "DTC_L1_lower_credit_released",
+    "DTC_L1_lower_outstanding",
+    "DTC_L1_lower_cap_full_events",
+    "DTC_L1_conventional_l1d_mshr_entry_full_events",
+    "DTC_L1_conventional_l1d_mshr_merge_full_events",
 )
 
 
@@ -91,6 +133,14 @@ def main():
             if key.startswith("DTC_L1_tag_bank_") and key.endswith("_requests")
         }
     )
+    metrics.update(
+        {
+            key: value
+            for key, value in values.items()
+            if key.startswith("DTC_L1_io_tag_bank_") and
+            key.endswith("_requests")
+        }
+    )
     if args.strict:
         for required in ("gpu_tot_sim_insn", "gpu_tot_sim_cycle"):
             if required not in metrics:
@@ -107,6 +157,21 @@ def main():
             ):
                 if required not in metrics:
                     parser.error("missing required Paper Base metric: " + required)
+        if metrics.get("DTC_L1_mode") == "PAPER_IO":
+            for required in (
+                "DTC_L1_io_lower_created",
+                "DTC_L1_io_lower_issued",
+                "DTC_L1_io_lower_responses",
+                "DTC_L1_io_inflight_current",
+                "DTC_L1_io_pib_occupancy",
+                "DTC_L1_io_retire_count",
+                "DTC_L1_io_completion_dependency_count",
+                "DTC_L1_io_completion_dependency_closed",
+                "DTC_L1_lower_credit_acquired",
+                "DTC_L1_lower_credit_released",
+            ):
+                if required not in metrics:
+                    parser.error("missing required Paper IO metric: " + required)
 
     result = {
         "schema": "dtc_l1_summary_v1",
