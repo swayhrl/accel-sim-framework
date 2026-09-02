@@ -1,43 +1,73 @@
 # Current state
 
-Stage: `S1_B0_BOOTSTRAP_REVIEWED`
+## Stage
 
-## Source anchors
+`S1_B0_BOOTSTRAP` reviewed by ChatGPT: **ACCEPTED WITH RESOLVED REMOTE BLOCKER**.
 
-- Core baseline: `73774727e25fadf89df6f30ef5cf014091115db7`
-- Framework baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
-- Framework branch: `swayhrl/accel-sim-framework@hrl/vm-core-v0`
-- Core project repository: `swayhrl/gpgpu-sim`
-- Core project branch: `hrl/vm-core-v0`
+Next authorized work is a two-track macro execution:
 
-## Bootstrap review
+- **Track A:** `M1 -> M2 -> M3` single-GPU VM/TLB/PTW substrate.
+- **Track B:** `M4A` LLM trace / allocation metadata / paper-input preparation.
 
-S1-B0 is accepted as `CONDITIONAL_PASS` on its original evidence: the clean baseline builds and both QV100 and unchanged RTX3070 trace smoke runs pass; no simulator behavior was changed.
+Track B may run in parallel with Track A, but it must not change the M1-M3 VM semantics or Core simulator source.
 
-The original blocker was the lack of a verified writable Core remote in the local Core worktree. During ChatGPT review, GitHub access verified that `swayhrl/gpgpu-sim` exists, is writable by the project account, contains the frozen Core baseline commit, and now has remote branch `hrl/vm-core-v0` created from exactly that baseline.
+## Frozen source anchors
 
-Therefore the repository-level provenance blocker is resolved. Before the first Core source modification, Codex must configure/verify the local Core worktree remote against `swayhrl/gpgpu-sim` and confirm that pushes target the project fork rather than the official upstream.
+- Core/GPGPU-Sim baseline: `73774727e25fadf89df6f30ef5cf014091115db7`
+- Framework/Accel-Sim baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
+- Bootstrap Framework branch: `hrl/vm-core-v0`
+- Bootstrap Core branch: `hrl/vm-core-v0`
 
-## Baseline VERIFIED_RUN
+## Writable repositories
 
-- Standard clean build: PASS.
-- Rodinia LUD-64/QV100 trace smoke: PASS.
-- Same trace with unchanged SM86/RTX3070 config: PASS.
+- Framework: `swayhrl/accel-sim-framework`
+- Core: `swayhrl/gpgpu-sim`
 
-See `docs/vm_tlb/review_packs/S1_B0_BOOTSTRAP/` for original commands and provenance.
+ChatGPT independently verified that `swayhrl/gpgpu-sim` is writable and contains the frozen Core baseline. Remote branches have been created:
 
-## Agent guardrails
+- `swayhrl/gpgpu-sim:hrl/vm-core-v0`
+- `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
+- `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
+- `swayhrl/accel-sim-framework:hrl/llm-trace-prep-v0`
 
-Project guardrails are now committed in root `AGENTS.md` in both Framework and Core research branches. These guardrails are authoritative for future Codex target-mode work together with the current ChatGPT handoff.
+Codex must configure a local writable Core remote (recommended name: `research`) before modifying Core source. Do not push to the official Accel-Sim/GPGPU-Sim upstream.
 
-## Frozen direction
+## Verified bootstrap evidence
 
-1. M1: VM-Core Foundation.
-2. M2: Functional single-GPU TLB/MSHR/PTW pipeline.
-3. M3: timing-realistic PTE/L2/DRAM translation baseline.
-4. M4 may prepare LLM trace/metadata/paper evidence in parallel, but must not modify or destabilize M1–M3 semantics without explicit authorization.
-5. Segmentation reproduction follows only after the required baseline pieces and LLM inputs are validated.
+`VERIFIED_RUN` from S1-B0:
 
-## Current authorization
+- clean baseline build: PASS;
+- Rodinia LUD-64 / QV100 smoke: PASS;
+- same trace with unchanged SM86 RTX3070 config: PASS;
+- no simulator behavior/config/trace-parser/VM-TLB functionality modified during bootstrap.
 
-No M1–M4 implementation is authorized by this file alone. `CODEX_NEXT_STAGE.md` remains the executable authorization boundary.
+Review entry:
+`docs/vm_tlb/review_packs/S1_B0_BOOTSTRAP/README.md`
+
+## Frozen modeling decisions for M1-M3
+
+- Trace memory address is named `SimVA` by simulator contract; this is not a claim about the exact NVIDIA internal address stage captured by NVBit.
+- Translation produces `SimPA`; preserve both SimVA and SimPA for observability.
+- Initial mapper is identity-like at page granularity: `SimPPN = SimVPN`, so data `SimPA == SimVA`.
+- Translation operates on coalesced memory transactions before the real L1D/data-cache access unless directed evidence requires a different split.
+- M1-M3 model address translation only: all application pages resident; no GPU page fault, migration, UVM oversubscription, or CPU fault service.
+- TLB state persists across ordinary kernels in one simulated context unless explicitly invalidated/reset.
+- PTE requests are physical and must never recursively translate.
+
+## Target-paper state
+
+Primary reproduction target:
+`Towards Segmentation-Based Address Translation for LLM Inference`, IEEE Computer Architecture Letters, 2026, DOI `10.1109/LCA.2026.3693796`.
+
+The copyrighted PDF is not committed to this public repository. Extracted reproduction specifications are stored in:
+`docs/vm_tlb/paper_specs/SEGMENTATION_LLM_2026.md`.
+
+## STOP boundary
+
+M1 may proceed to M2 only after M1 acceptance criteria pass. M2 may proceed to M3 only after M2 acceptance criteria pass. M4A may proceed independently through its approved preparation stages. Codex must STOP before:
+
+- any unresolved correctness failure;
+- converting a required `PAPER_EXACT` detail to an approximation without authorization;
+- implementing the Segmentation mechanism itself;
+- synthetic-KV performance experiments;
+- any new AI-aware TLB research mechanism beyond the reproduction inputs.

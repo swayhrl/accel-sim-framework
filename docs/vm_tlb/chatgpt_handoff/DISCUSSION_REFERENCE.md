@@ -1,46 +1,78 @@
 # Discussion reference
 
-## Why the clean dev baseline is retained
+## Research objective
 
-The project deliberately starts from the clean Core/Framework baselines rather than TLS/MCM or legacy UVM code. The current TLS branch has no usable timing TLB/PTW pipeline and carries substantial MCM/cache-specific semantics. The old `dev-uvm` branch contains useful historical implementation ideas but is heavily diverged and is reference-only.
+Build a reusable, research-grade GPU virtual-memory substrate on a clean Accel-Sim/GPGPU-Sim baseline, validate it in a single-GPU setting, reproduce `Towards Segmentation-Based Address Translation for LLM Inference`, and only then use the infrastructure for new AI-workload TLB research.
 
-Frozen bases:
+## Why the clean dev baseline is the root
 
-- Core/GPGPU-Sim: `73774727e25fadf89df6f30ef5cf014091115db7`
-- Framework/Accel-Sim: `3016c658f810bdae9a14bf4534ee99e9945eedae`
+S1-R0 established that the current TLS branch contains useful MCM/cache infrastructure but no usable timing TLB/PTW implementation. The legacy `dev-uvm` branch has older TLB/GMMU/UVM code but is heavily diverged. Therefore:
 
-## Bootstrap outcome
+- TLS/MCM code is a future adapter/reference, not the VM root.
+- `dev-uvm` is a behavior/interface reference only; do not wholesale cherry-pick it.
+- M1-M3 start from the frozen clean Core and Framework baselines.
 
-S1-B0 established isolated worktrees and produced the first clean `VERIFIED_RUN` evidence. The only original condition was lack of a writable Core project remote. ChatGPT review subsequently verified `swayhrl/gpgpu-sim` as writable, verified that it contains the frozen Core commit, and created `hrl/vm-core-v0` there from that exact commit.
+## Why SimVA / SimPA are explicit simulator contracts
 
-Codex still needs to configure/verify the local Core worktree remote before the first Core source modification. Official upstream must remain read-only.
+Current trace parsing carries raw 64-bit addresses without a VA/PA type. We therefore define the trace memory address as `SimVA` for the simulator model, while explicitly avoiding a claim that this proves the exact internal NVIDIA hardware VA stage observed by NVBit.
 
-## VM modeling decisions to preserve into M1
+The first mapper is identity-like (`SimPPN = SimVPN`) so the data address reaching cache/DRAM remains numerically unchanged. This isolates translation effects from changes in cache set mapping, DRAM partition mapping, or memory locality.
 
-These are modeling contracts, not claims about undocumented NVIDIA internals:
+The strongest transparency checks are:
 
-1. The raw trace memory address becomes simulator input address `SimVA`.
-2. VM translation produces `SimPA`; preserve both identities for observability.
-3. Initial mapping is identity-like (`SimPPN = SimVPN`) so enabling ideal translation does not silently alter cache/DRAM locality.
-4. Translation is expected to operate on coalesced memory transactions before real data-cache access, not as one TLB lookup per lane by default.
-5. M1–M3 model resident memory only: no page faults, migration, UVM oversubscription, or CPU fault service.
-6. TLB state should persist across normal kernels in the same simulated context unless an explicit invalidation/remapping event is modeled.
-7. PTE memory traffic must never recursively enter normal translation.
+1. VM disabled == frozen baseline.
+2. VM enabled + ideal translation + identity mapping == frozen baseline for all non-VM architectural outcomes.
 
-The exact state-machine details, queue semantics, page-size representation, and statistical definitions remain to be frozen by M1 specifications.
+Failure of either blocks later stages.
 
-## Why M4 can proceed in parallel
+## Why translation is inserted after coalescing
 
-LLM input preparation has a separable critical path: paper/artifact audit, trace availability, trace acquisition planning, allocation/tensor metadata design, and local paper-reference extraction can proceed while M1–M3 implement the generic VM substrate.
+The existing trace-driven path first creates coalesced 32/64/128B memory transactions and then sends them toward L1D. M1-M3 therefore model translation per approved coalesced transaction rather than per lane. Codex must prove whether any transaction can cross the base-page boundary and add splitting only if evidence requires it.
 
-M4 parallel work must not modify Core VM semantics or assume unapproved TLB/PTW behavior. It should produce inputs/specifications that M1–M3 can consume later.
+## Why page faults are excluded from M1-M3
 
-The target paper uses Llama-3.2 1B with a scaled partition and short real simulation, then injects synthetic KV translation pressure for long-context emulation. Therefore an exact public 12K-context instruction trace is not required. However, an exact public paper trace/artifact has not yet been established; absence of such an artifact must not be silently replaced by an approximation.
+The immediate research question is TLB/PTW/MSHR behavior, not residency management. Adding page fault service, migration, UVM oversubscription, PCIe/NVLink transfer, and shootdown behavior now would couple multiple phenomena and make correctness and causality harder to establish. These remain future extensions for CLAP/UVM work.
 
-## Paper handling
+## Why M1-M3 are one macro track
 
-The uploaded IEEE paper may be copied to a local server-only reference directory if useful, but should not be committed to the public repository. Commit bibliographic metadata, extracted reproduction parameters, and provenance notes instead.
+M1, M2, and M3 have a strict dependency chain but can be executed continuously in Codex target mode because each stage has deterministic internal gates:
 
-## Research boundary
+- M1: semantic substrate + transparency.
+- M2: functional TLB/MSHR/fixed-PTW/stall-replay pipeline.
+- M3: timing-realistic PTE memory path + PWC + page sizes + characterization readiness.
 
-M1–M3 close out the generic single-GPU translation substrate. Segmentation-specific behavior, tensor-aware policies, and new AI-aware mechanisms must not be used to simplify or bias the generic baseline.
+Codex may advance automatically only after the current stage's acceptance criteria pass. A failed invariant is a macro-task STOP, not an invitation to weaken the test.
+
+## Why M4A can run in parallel
+
+LLM trace and metadata preparation is mostly independent of the VM implementation. It can proceed concurrently to reduce schedule risk, provided it does not alter the M1-M3 Core semantics.
+
+M4A must establish:
+
+- whether an exact public paper artifact/trace exists;
+- a reproducible Llama-3.2 1B workload/capture path if not;
+- allocation/tensor metadata sufficient to classify WEIGHT/KV_CACHE/ACTIVATION/WORKSPACE;
+- a credible path to the paper's contiguous-weight layout;
+- trace/config compatibility with the frozen simulator.
+
+M4A is preparation only. It must STOP before implementing segmentation or synthetic-KV performance behavior.
+
+## Target-paper facts that matter
+
+The paper evaluates Llama-3.2 1B using a TP-equivalent 1/4 partition on a downscaled RTX3070-like configuration, batch size 8, base input sequence length 64, and 3 generated tokens. It focuses on prefill and the first decoding phase, and emulates longer contexts by injecting synthetic KV translation requests rather than fully simulating a 12K-token execution.
+
+The scheme requires model weights to be virtually and physically contiguous, uses a small segment descriptor containing base/limit/offset, bypasses page-based translation for matching weight accesses, and leaves KV/activation on conventional paging.
+
+Exact parameters and unresolved paper details are maintained in `docs/vm_tlb/paper_specs/SEGMENTATION_LLM_2026.md`.
+
+## Rejected shortcuts
+
+Do not:
+
+- build single-GPU TLB research on top of the full TLS implementation;
+- treat the old `dev-uvm` implementation as authoritative;
+- infer tensor type from address patterns without metadata evidence;
+- call an approximation `PAPER_EXACT`;
+- represent translation-MSHR merge as a TLB hit;
+- model realistic PTW as a single fixed penalty once M3 requires real PTE traffic;
+- run paper performance figures before correctness invariants are closed.
