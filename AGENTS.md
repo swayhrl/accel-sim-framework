@@ -7,12 +7,15 @@ This repository is the coordination, experiment-orchestration, and review-eviden
 Before doing any project work on `hrl/decoupled-l1-exp-m1m4-v0`, read:
 
 1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
-2. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+2. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 3. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
-4. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
-5. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
-6. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
-7. Core architecture spec in `swayhrl/gpgpu-sim@hrl/decoupled-l1-m1m4-v0:docs/dtc_l1/DTC_L1_SPEC.md`
+4. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+5. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+6. `docs/dtc_l1/goal/M2_IO_RESPONSE_RECOVERY_SPEC.md`
+7. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
+8. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
+9. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
+10. Core architecture spec in `swayhrl/gpgpu-sim@hrl/decoupled-l1-m1m4-v0:docs/dtc_l1/DTC_L1_SPEC.md`
 
 If these disagree, STOP and report the conflict. Do not choose a meaning silently.
 
@@ -57,9 +60,9 @@ Do not silently guess or upgrade uncertainty.
 
 ## Goal-mode progression rule
 
-The currently authorized goal is M1 through M4 only.
+The currently authorized persistent Goal is the remaining M2 work through M4 only. The explicit durable objective and final stopping condition are in `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`.
 
-Codex may continue automatically from M1 -> M2 -> M3 -> M4 without waiting for human confirmation only when every HARD gate for the completed stage passes.
+Codex may continue automatically M2 -> M3 -> M4 without waiting for human confirmation only when every HARD gate for the completed stage passes.
 
 At each major stage boundary Codex must:
 
@@ -69,6 +72,8 @@ At each major stage boundary Codex must:
 4. push both affected repositories;
 5. update Codex-owned `codex_handoff/LATEST_REPORT.md`;
 6. then continue to the next stage if and only if all HARD gates pass.
+
+Ordinary progress is not a stop boundary. Do not stop merely because a directed test passed, a safe semantic checkpoint was committed/pushed, a build succeeded, or M2/M3 passed. Preserve evidence and continue toward the persistent Goal.
 
 If any HARD gate fails, or a source-semantic ambiguity would require guessing, Codex must record evidence, push review material if safe, and STOP. Do not continue in order to "see if later stages fix it".
 
@@ -103,7 +108,7 @@ Do not commit raw traces, large simulator logs, build trees, or large generated 
 
 ## Baseline protection
 
-When DTC/paper instrumentation is disabled, modified code/configuration must remain behaviorally and timing neutral relative to the frozen clean baseline. If exact neutrality is not demonstrated on the required tests, M1 fails and later stages are blocked.
+When DTC/paper instrumentation is disabled, modified code/configuration must remain behaviorally and timing neutral relative to the frozen clean baseline. M1 is already closed PASS; later stages must not regress that boundary.
 
 ## Research-scope protection
 
@@ -116,7 +121,7 @@ When DTC/paper instrumentation is disabled, modified code/configuration must rem
 
 ## Long-running jobs
 
-Inspect a no-progress job around 20 minutes, diagnose/escalate around 40 minutes, and stop plus record state by around 60 minutes unless the active stage explicitly expects a longer silent interval.
+Inspect a no-progress job around 20 minutes, diagnose/escalate around 40 minutes, and stop plus record state by around 60 minutes unless the active stage explicitly expects a longer silent interval. A long job that is making measurable progress is not itself a stop condition.
 
 ## Review-pack requirement
 
