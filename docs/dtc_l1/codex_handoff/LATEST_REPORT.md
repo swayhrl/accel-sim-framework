@@ -1,29 +1,28 @@
 # Latest Codex Report
 
-Stage: `M2_IO_READ`
+Stage: `M3_OO_SECTOR`
 
-Status: **PASS — M3 AUTHORIZED**
+Status: **PASS — M4 AUTHORIZED**
 
-Core M2 checkpoint: `ec81a7771e56670588538ca2ec7945c3a4543383`
+Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 
-Framework M2 implementation/parser checkpoint:
-`9754e80735121f5dea3dbf27fdf399bd13b037cc`
+Framework M3 implementation/parser checkpoint: pending semantic commit.
 
-## Recovery status
+## M3 closeout status
 
-The conventional-fill failure has been recovered through a dedicated IO
-request/response/PIB-writeback path. The source-safe root/sector-child identity
-rule, default and cap=2 VecAdd PASS, natural tiny-pool resource-deadlock
-diagnostic, high-MLP no-MSHR test, and strict parser closure are recorded in:
+Whole-line OO random-access retirement, line-level Ref Count, merge/wakeup,
+active reclamation, O01–O13, IO-vs-OO causal HOL, and the 4x32B sector
+extension S01–S09 have passed. Real modes 2/3/4 VecAdd self-checks and strict
+provenance parsers are recorded in:
+
+`implementation/M3_OO_SECTOR_EVIDENCE.md`.
+
+M2 recovery evidence remains authoritative historical context in:
 
 `implementation/M2_IO_RESPONSE_RECOVERY_EVIDENCE.md`.
 
-The original failure evidence remains authoritative historical context in:
-
-`implementation/M2_IO_INTEGRATION_FAILURE.md`.
-
 ## Required disposition
 
-`review_packs/M2_IO_READ/` is the independent M2 closeout. M3 whole-line OO
-is authorized. Do not begin the M3 sector extension until every whole-line
-O01-O13 HARD gate passes. M5 remains forbidden.
+`review_packs/M3_OO_SECTOR/` is the independent M3 closeout. Begin M4 only
+with the required source-backed Store/Atomic/Fence/bypass audit. M5 remains
+forbidden.

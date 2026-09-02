@@ -1,7 +1,7 @@
 # DTC-L1 counter and output map
 
-Status: `M2_IO_RECOVERY_IN_PROGRESS`. This map distinguishes currently emitted
-Core text counters from later required machine-readable outputs.
+Status: `M3_OO_SECTOR_CLOSEOUT`. This map distinguishes emitted Core text
+counters from later M4 workload-result outputs.
 
 ## Current Paper Base emission
 
@@ -59,8 +59,36 @@ The strict summary parser recognizes `PAPER_IO` and requires the essential IO
 lower/PIB/dependency/credit closure fields before writing a provenance-bearing
 summary.
 
-## Deferred beyond M2
+## Current Paper OO emission
 
-OO/sector counters and the full M4 CSV suite remain deferred until their
-corresponding mechanisms exist. No CSV artifact is claimed until an actual
-parser and provenance-checked simulator run produce it.
+When `-gpgpu_dtc_l1_mode 3` is active, the Core emits:
+
+| Key family | Meaning |
+| --- | --- |
+| `DTC_L1_oo_lower_{created,issued,responses}`, `DTC_L1_oo_inflight_current` | whole-line lower-request lifecycle and drain closure |
+| `DTC_L1_oo_pib_occupancy`, `DTC_L1_oo_retire_count`, `DTC_L1_oo_out_of_order_retires` | random-access PIB and deterministic oldest-ready retirement evidence |
+| `DTC_L1_oo_completion_dependency_{count,closed}`, `DTC_L1_oo_active_refs` | unique-128B dependency and Ref Count closure |
+
+The strict parser recognizes `PAPER_OO` and requires lower/PIB/dependency/Ref
+and lower-credit closure fields.
+
+## Current modern OO-sector diagnostic emission
+
+When `-gpgpu_dtc_l1_mode 4` is active, the Core emits:
+
+| Key family | Meaning |
+| --- | --- |
+| `DTC_L1_sector_lower_{created,issued,responses}`, `DTC_L1_sector_inflight_current` | 32B single-sector lower-read lifecycle and drain closure |
+| `DTC_L1_sector_{new_line_misses,new_requests,valid_hits,pending_hits}` | 128B physical allocation versus exact 32B readiness/request behavior |
+| `DTC_L1_sector_fill_wakeups`, `DTC_L1_sector_completion_dependency_{count,closed}`, `DTC_L1_sector_active_refs` | per-sector wakeup, line-level completion cardinality, and Ref Count closure |
+| `DTC_L1_sector_pib_occupancy`, `DTC_L1_sector_retire_count`, `DTC_L1_sector_out_of_order_retires` | random-access PIB lifecycle for sector diagnostic mode |
+
+The strict parser recognizes `MODERN_OO_SECTOR` and requires all lower/PIB,
+sector-request/wakeup, dependency/Ref, and lower-credit closure fields. This
+is diagnostic implementation evidence, not M5 performance interpretation.
+
+## Deferred beyond M3
+
+The full M4 operation-semantic workload suite and all M5 performance claims
+remain deferred. No CSV artifact is claimed until an actual parser and
+provenance-checked simulator run produces it.

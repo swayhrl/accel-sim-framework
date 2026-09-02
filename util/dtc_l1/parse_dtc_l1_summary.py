@@ -90,6 +90,32 @@ SUMMARY_KEYS = (
     "DTC_L1_lower_cap_full_events",
     "DTC_L1_conventional_l1d_mshr_entry_full_events",
     "DTC_L1_conventional_l1d_mshr_merge_full_events",
+    "DTC_L1_oo_lower_created",
+    "DTC_L1_oo_lower_issued",
+    "DTC_L1_oo_lower_responses",
+    "DTC_L1_oo_inflight_current",
+    "DTC_L1_oo_pib_occupancy",
+    "DTC_L1_oo_retire_count",
+    "DTC_L1_oo_out_of_order_retires",
+    "DTC_L1_oo_completion_dependency_count",
+    "DTC_L1_oo_completion_dependency_closed",
+    "DTC_L1_oo_active_refs",
+    "DTC_L1_sector_lower_created",
+    "DTC_L1_sector_lower_issued",
+    "DTC_L1_sector_lower_responses",
+    "DTC_L1_sector_inflight_current",
+    "DTC_L1_sector_pib_occupancy",
+    "DTC_L1_sector_retire_count",
+    "DTC_L1_sector_out_of_order_retires",
+    "DTC_L1_sector_completion_dependency_count",
+    "DTC_L1_sector_completion_dependency_closed",
+    "DTC_L1_sector_valid_hits",
+    "DTC_L1_sector_pending_hits",
+    "DTC_L1_sector_new_line_misses",
+    "DTC_L1_sector_new_requests",
+    "DTC_L1_sector_fill_wakeups",
+    "DTC_L1_sector_active_refs",
+    "DTC_L1_sector_physical_allocated",
 )
 
 
@@ -172,6 +198,40 @@ def main():
             ):
                 if required not in metrics:
                     parser.error("missing required Paper IO metric: " + required)
+        if metrics.get("DTC_L1_mode") == "PAPER_OO":
+            for required in (
+                "DTC_L1_oo_lower_created",
+                "DTC_L1_oo_lower_issued",
+                "DTC_L1_oo_lower_responses",
+                "DTC_L1_oo_inflight_current",
+                "DTC_L1_oo_pib_occupancy",
+                "DTC_L1_oo_retire_count",
+                "DTC_L1_oo_completion_dependency_count",
+                "DTC_L1_oo_completion_dependency_closed",
+                "DTC_L1_oo_active_refs",
+                "DTC_L1_lower_credit_acquired",
+                "DTC_L1_lower_credit_released",
+            ):
+                if required not in metrics:
+                    parser.error("missing required Paper OO metric: " + required)
+        if metrics.get("DTC_L1_mode") == "MODERN_OO_SECTOR":
+            for required in (
+                "DTC_L1_sector_lower_created",
+                "DTC_L1_sector_lower_issued",
+                "DTC_L1_sector_lower_responses",
+                "DTC_L1_sector_inflight_current",
+                "DTC_L1_sector_pib_occupancy",
+                "DTC_L1_sector_retire_count",
+                "DTC_L1_sector_completion_dependency_count",
+                "DTC_L1_sector_completion_dependency_closed",
+                "DTC_L1_sector_new_requests",
+                "DTC_L1_sector_fill_wakeups",
+                "DTC_L1_sector_active_refs",
+                "DTC_L1_lower_credit_acquired",
+                "DTC_L1_lower_credit_released",
+            ):
+                if required not in metrics:
+                    parser.error("missing required OO sector metric: " + required)
 
     result = {
         "schema": "dtc_l1_summary_v1",
