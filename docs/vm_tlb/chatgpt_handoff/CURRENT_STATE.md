@@ -16,67 +16,82 @@ The registered-waiter retry pollution is closed: already accepted `(translation 
 
 `G3-0`: **PASS**.
 
-`G3-1 — PTE backend / physical request contract`: **PASS — independently accepted after namespace repair**.
+`G3-1 — PTE backend / physical request contract`: **PASS — accepted after namespace repair**.
 
-Accepted Core G3-1 repaired head:
+Accepted Core G3-1 head:
 
 `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
 
-Framework G3-1-RF evidence head:
+The former 64KB/2MB PTE-address alias is closed. The accepted backend uses one fixed maximum VPN namespace width for every `(page-size-class, level)` namespace, and PTE requests remain physical/non-recursive. That acceptance was for the then-configured 49-bit generic backend; G3-2A has since shown that generic trace SimVA cannot be globally constrained to 49 bits.
 
-`329b80b27a2db8709e2b2a0609f4783789552d98`
+## G3-2 / G3-2A review result
 
-The former cross-page-size PTE-address alias is closed. The generic backend uses one fixed 33-bit maximum VPN namespace width for every `(page-size-class, level)` namespace. Directed tests cover the explicit old collision and all 64KB/2MB × four-level namespace min/max boundaries. PTE requests remain physical and translation-bypassing; application and PTE physical ranges remain separated for the accepted 49-bit generic backend.
+`G3-2 — real PTE L2/DRAM integration`: **BLOCKED pending width-contract repair; plumbing evidence is positive but unaccepted source remains local/uncommitted**.
 
-This accepts G3-1 as a **generic simulator contract**, not as target-paper exact PTW behavior.
-
-## G3-2 current status
-
-`G3-2 — real PTE L2/DRAM integration`: **BLOCKED — correctness STOP**.
-
-Framework blocked-evidence head reported by Codex:
-
-`cc055d3a4b044136b37a1ab2ccba8f4a8a360ba5`
-
-Core remains at the accepted G3-1 head; G3-2 source is local/uncommitted and is not accepted evidence.
-
-What G3-2 established before the stop:
+Before the stop, local G3-2 proved:
 
 - explicit `PTE_ACC_R` requests are physical and translation-bypassing;
-- they bypass shader L1D and can traverse real interconnect/L2/DRAM resources;
-- walkers wait for matching PTE responses;
+- they bypass shader L1D and traverse real interconnect/L2/DRAM resources;
+- walkers advance only on matching PTE responses;
 - one-kernel replay produced `4/4` PTE requests/responses, all DRAM, zero misassociation;
-- an earlier completed BFS kernel produced both L2-resident and DRAM PTE responses with zero misassociation.
+- BFS produced both L2-resident and DRAM PTE returns with zero misassociation before reaching the old width assertion.
 
-The later BFS kernel then reached a translation key whose VPN violates the G3-1 backend's hardcoded 49-bit VA contract and asserted before G3-2 could close.
+`G3-2A — Address Provenance Diagnostic`: **PASS — CASE A independently accepted**.
 
-### Important review decision
+Framework diagnostic evidence head:
 
-Do **not** widen, truncate, mask, canonicalize, or bypass the offending address yet.
+`8eefe9d69764000f860871ca92770d986e7be0b6`
 
-The M1 long-lived contract names the transaction address `SimVA` and preserves identity-like `SimPA == SimVA`; it did not independently freeze a 49-bit width for every Accel-Sim trace/simulator address. Conversely, the Segmentation paper's 49-bit VA assumption is target-paper-specific and does not prove that every generic simulator address is a 49-bit GPU VA.
+The first >49-bit request is a real trace-derived BFS kernel-7 global store, not local/param-local, not a sentinel, and not recursive PTE traffic:
 
-The current evidence does not record the exact offending `SimVA`, memory-space class, kernel/PC, access type, or whether the value came directly from the trace versus simulator local/generic-address linearization. Therefore an address-width/backend redesign is not yet authorized.
+- raw lane address: `0x00fffdc0000000cd`
+- coalesced `SimVA`: `0x00fffdc0000000c0`
+- required width: 56 bits
+- operation: `STG.E.SYS`, `GLOBAL_ACC_W`
+- VM-disabled and VM-ideal-identity controls accept the same transaction and finish normally.
+
+Complete disabled/ideal BFS controls observed 49,047 global transactions, 12 at/above `2^49`, and a maximum required width of 56 bits. The available LUD run stayed within 47 bits. This evidence establishes a **generic simulator trace-width requirement**, not a commercial GPU architectural VA-width claim.
+
+## Architecture decision after G3-2A
+
+For the generic M1-M3 VM substrate:
+
+- keep the frozen M1 meaning: the raw/coalesced trace address is `SimVA`;
+- preserve resident identity-like data mapping, `SimPA == SimVA`;
+- do not mask, truncate, canonicalize or rewrite generic `SimVA`;
+- make generic PTE-backend VA width configurable;
+- use **56 bits** for the current generic M3 trace-driven baseline, because that is the maximum width established by the complete available BFS control;
+- requests requiring more than the configured width remain hard correctness stops;
+- the target Segmentation paper's 49-bit VA remains a later **paper-specific configuration**, not a generic trace contract.
+
+The exact high address is suggestive of a 49-bit payload encoded with repeated high bits. This is worth recording as `TRACE_ENCODING_OBSERVATION` for the later paper-specific trace adapter, but it is not authorization to canonicalize generic M3.
 
 ## Current authorization
 
 Execute only:
 
-`G3-2A — Address Provenance Diagnostic`
+`G3-2B — generic trace-width extension and G3-2 resume`
 
-Source specification:
+Specification:
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2_ADDRESS_PROVENANCE_DIAG.md`
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2_TRACE_WIDTH_EXTENSION.md`
 
-The diagnostic must determine the exact provenance of the >49-bit request and STOP for ChatGPT review. G3-2 semantic changes, G3-3/PWC, and later M3 gates remain unauthorized.
+Required outcome:
 
-## Important generic-page-table locality boundary
+1. generic page-table width is configurable and the current generic M3 run uses 56 bits;
+2. 49-bit configuration remains directed-tested for later paper-specific use;
+3. application and PTE physical ranges remain provably disjoint with overflow-safe namespace arithmetic;
+4. the exact former BFS offender translates without rewriting its raw `SimVA`/identity-like `SimPA`;
+5. real G3-2 PTE L2/DRAM plumbing passes integrated validation;
+6. STOP before G3-3/PWC.
 
-The accepted G3-1 namespace encoding proves collision-free deterministic physical PTE identities only within its currently accepted 49-bit generic backend. It does **not**, by itself, prove that upper-level PTE physical-address sharing exactly matches a conventional hardware radix tree or the Segmentation paper.
+## Important PWC/locality boundary
 
-Before G3-3/PWC and certainly before G3-5 timing characterization, explicitly define/document the generic hierarchy-prefix/PTE-sharing semantics used by PWC and page-table locality. If conventional prefix sharing is implemented, directed-test it; if a flatter synthetic model is retained, label it `MODELING_DECISION` and quantify the locality implication.
+G3-1/G3-2 currently use a collision-free deterministic flat per-level/full-VPN synthetic PTE identity. This is sufficient for G3-2 memory-path plumbing, but it is not yet an approved hierarchy-prefix/PTE-sharing model for PWC locality.
 
-Current M3 v0 remains one simulated address space / ASID-0 execution path; do not claim multi-ASID PTE physical separation without extending the backend.
+Therefore G3-2B must STOP after G3-2 closeout. Before G3-3, ChatGPT will separately decide and specify the generic hierarchy-prefix/PTE-sharing semantics. Do not present current PTE L2-hit behavior as paper-exact radix locality.
+
+Current M3 remains one simulated address space / ASID-0 path. Do not claim multi-ASID PTE physical separation.
 
 ## Frozen / accepted source anchors
 
@@ -84,17 +99,16 @@ Core/GPGPU-Sim:
 
 - baseline: `73774727e25fadf89df6f30ef5cf014091115db7`
 - M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
-- accepted repaired M2 execution head: `3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
-- G3-1 provisional parent: `8c613a356e6a146951cd59c9929046c6c4cfd856`
+- accepted repaired M2: `3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
 - accepted G3-1 namespace repair: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
 
 Framework/Accel-Sim:
 
 - baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
-- M2 dependency fix: `4012be3606c300d11e7b34826ee1cb22b0852b93`
 - M2-RF evidence: `c12ad7bc9fb6865e97ff8b65c215490a5d92305a`
 - G3-1-RF evidence: `329b80b27a2db8709e2b2a0609f4783789552d98`
 - G3-2 blocked evidence: `cc055d3a4b044136b37a1ab2ccba8f4a8a360ba5`
+- G3-2A provenance evidence: `8eefe9d69764000f860871ca92770d986e7be0b6`
 
 Branches:
 
@@ -103,18 +117,19 @@ Branches:
 
 ## Frozen modeling decisions
 
-- trace/coalesced transaction address is simulator `SimVA`; translation produces `SimPA`; preserve both;
-- baseline data mapping remains resident and identity-like (`SimPPN=SimVPN`);
+- coalesced trace address is simulator `SimVA`; translation produces `SimPA`; preserve both;
+- baseline data mapping is resident and identity-like (`SimPA == SimVA`);
 - translation operates on coalesced transactions before real data-cache access;
+- generic M3 trace/backend width is configurable; current generic configuration is 56-bit after G3-2A;
+- paper-specific 49-bit width remains separate and must be explicitly selected later;
 - M1-M3 excludes page fault/migration/UVM oversubscription/MCM;
 - TLB persists across ordinary kernels in the simulated context;
 - M2 zero-hit-latency TLB with finite ports is functional only; timing-realistic lookup latency belongs to M3;
 - M3 PTE requests are physical and non-recursive;
-- page-table organization, PWC and timing details not exposed by the target paper remain explicit generic `MODELING_DECISION`s;
-- **no generic VA-width change is frozen yet beyond the accepted G3-1 backend; G3-2A must establish the provenance of addresses that violate it.**
+- page-table hierarchy/PWC/timing details not exposed by the target paper remain explicit generic `MODELING_DECISION`s.
 
 ## STOP boundary
 
-STOP immediately on recursive PTE translation, response misassociation, request loss, duplicate wakeup/store/atomic, deadlock, M2 regression, source/provenance ambiguity, or any attempt to change VA width/address canonicalization/PTE namespace before the G3-2A provenance evidence is reviewed.
+STOP on any width/range overflow, application/PTE physical-range overlap, recursive PTE translation, response misassociation, request loss, duplicate wakeup/store/atomic, M2 regression, deadlock, or provenance ambiguity.
 
-After G3-2A evidence is pushed, STOP for ChatGPT review. Do not enter G3-3.
+After G3-2B closes G3-2, STOP before G3-3/PWC for a separate hierarchy/locality architecture review.
