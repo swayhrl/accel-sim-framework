@@ -6,7 +6,7 @@ usage() {
   cat <<'EOF'
 Usage (only after explicit M4A-C authorization):
   M4A_C_AUTHORIZED=1 run_m4a_c.sh --framework-root DIR --work-root DIR \
-    --workload-command-file FILE --trace-region prefill|decode1|decode_reuse \
+    --cuda-home DIR --workload-command-file FILE --trace-region prefill|decode1|decode_reuse \
     [--minimum-free-gib N] [--required-gpu-count N]
 
 The executable command file is run once normally (M4A_PHASE=smoke) and once
@@ -16,11 +16,12 @@ approve the paper's unknown TP=4/dtype/model-revision details.
 EOF
 }
 
-framework_root=""; work_root=""; command_file=""; minimum_free_gib=500; required_gpu_count=4
+framework_root=""; work_root=""; cuda_home=""; command_file=""; minimum_free_gib=500; required_gpu_count=4
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --framework-root) framework_root="$2"; shift 2 ;;
     --work-root) work_root="$2"; shift 2 ;;
+    --cuda-home) cuda_home="$2"; shift 2 ;;
     --workload-command-file) command_file="$2"; shift 2 ;;
     --minimum-free-gib) minimum_free_gib="$2"; shift 2 ;;
     --required-gpu-count) required_gpu_count="$2"; shift 2 ;;
@@ -30,12 +31,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 [[ "${M4A_C_AUTHORIZED:-0}" == 1 ]] || { echo "BLOCKED: M4A-C is not authorized" >&2; exit 3; }
-[[ -n "$framework_root" && -n "$work_root" && -n "$command_file" && -n "${trace_region:-}" ]] || { usage >&2; exit 2; }
+[[ -n "$framework_root" && -n "$work_root" && -n "$cuda_home" && -n "$command_file" && -n "${trace_region:-}" ]] || { usage >&2; exit 2; }
 [[ "$trace_region" =~ ^(prefill|decode1|decode_reuse)$ ]] || { echo "error: --trace-region must be prefill, decode1, or decode_reuse" >&2; exit 2; }
 [[ -x "$command_file" ]] || { echo "error: command file must be executable" >&2; exit 2; }
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 framework_root="$(cd "$framework_root" && pwd)"; mkdir -p "$work_root"; work_root="$(cd "$work_root" && pwd)"
-python3 "$script_dir/capture_ready_preflight.py" --framework-root "$framework_root" --work-root "$work_root" --minimum-free-gib "$minimum_free_gib" --required-gpu-count "$required_gpu_count"
+python3 "$script_dir/capture_ready_preflight.py" --framework-root "$framework_root" --work-root "$work_root" --cuda-home "$cuda_home" --minimum-free-gib "$minimum_free_gib" --required-gpu-count "$required_gpu_count"
 tracer="$framework_root/util/tracer_nvbit/tracer_tool/tracer_tool.so"
 post="$framework_root/util/tracer_nvbit/tracer_tool/traces-processing/post-traces-processing"
 run_id="m4a-llama-${trace_region}-$(date -u +%Y%m%dT%H%M%SZ)"; run_dir="$work_root/runs/$run_id"; trace_dir="$run_dir/traces"

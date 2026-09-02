@@ -10,6 +10,7 @@ authorization.
 ```bash
 M4A_C_AUTHORIZED=1 bash util/llm_trace_capture/run_m4a_c.sh \
   --framework-root "$PWD" --work-root /mnt/nvme/m4a-llama \
+  --cuda-home /opt/cuda-12.6 \
   --workload-command-file util/llm_trace_capture/run_llama_tp4_rank0.sh \
   --trace-region prefill \
   --required-gpu-count 4 \
@@ -26,7 +27,8 @@ capture-ready preflight. Do not use the old unpinned `install_vllm.sh`.
 1. Record `nvidia-smi -L`, full `nvidia-smi`, driver, CUDA, CPU/RAM, OS/image,
    free disk, Framework SHA, wrapper digest, and NVBit archive checksum. Require
    four same-node same-model SM86 GPUs with at least 12 GiB each and 500 GiB free disk.
-2. Run `host_preflight.py`, then `capture_ready_preflight.py`; reject any
+2. Run `host_preflight.py`, then `capture_ready_preflight.py --cuda-home
+   /opt/cuda-12.6`; reject any
    non-SM86 source or failed isolated-environment lock.
 3. Run a tiny known-good CUDA/NVBit trace through postprocessing and archive
    validation.  Do not start LLM work if it fails.

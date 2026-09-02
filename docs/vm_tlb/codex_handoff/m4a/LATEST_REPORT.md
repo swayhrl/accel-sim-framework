@@ -1,13 +1,13 @@
-# M4A-PR pre-rental finalization report
+# M4A-PR2 pre-rental review-fix report
 
-Stage: `M4A_PRERENTAL_FINALIZE`
+Stage: `M4A_PRERENTAL_REVIEW_FIX`
 
-## READY_TO_RENT
+## READY_TO_RENT_REVIEW_FIX_PASS
 
-The Route-E package is ready for the user to rent a qualifying host. This is a
-package readiness decision only: M4A-C remains unauthorized and this stage did
-not rent/access an external GPU, download model weights, collect a trace,
-implement Segmentation, or create synthetic KV.
+The Route-E package passed the final no-GPU review fix. M4A-C remains
+unauthorized: this result did not rent/access a GPU, change a driver, download
+formal Llama weights, collect a trace, implement Segmentation, or create
+synthetic KV.
 
 Route E remains the sole selected formal self-capture route: one physical host
 with four same-model SM86 GPUs, actual TP=4, and NVBit injected solely into
@@ -15,38 +15,38 @@ rank 0. It is `PAPER_COMPATIBLE_SELF_CAPTURE`, not author-exact. A full-model
 single-GPU trace remains rejected as a formal paper workload; Route A remains
 an approval-required approximation.
 
-The finalized Route-E package source commit is
-`4c4c083bac8d17f9a6901fc7132c273ade2d6849`, based on the required handoff
-`51a36b376a8c6a59c02c181b26233bd0c4c3322f`.
+The review-fix began at required handoff
+`38c9b224dae55002b159f07c9f4fc3b4035ce8d5`; final commit is recorded in the
+review pack after push.
 
-## Completed PR0–PR10
+## Completed RF0–RF7
 
-- PR0: required handoff `51a36b376a8c6a59c02c181b26233bd0c4c3322f` was the
-  starting `HEAD`; Route E, frozen NVBit 1.7.6, and profiler capability audited.
-- PR1: parent and wrapper clear inherited injection; only `trace` rank 0 sets
-  it. The no-GPU four-rank mock proves smoke none / trace rank-0-only.
-- PR2: separate `prefill` and `decode1` runs use `ACTIVE_FROM_START=0` plus
-  CUDA profiler control; loading, TP setup, flat binding, sidecar prep, and
-  warmup remain inactive. `decode_reuse` is diagnostic-only.
-- PR3/PR4: explicit Python/PyTorch/CUDA/tool/package/model/NVBit lock,
-  metadata-only immutable model SHA, SHA-verifying NVBit bootstrap, and generic
-  CUDA/NVBit smoke are prepared. No driver change is permitted.
-- PR5–PR9: split preflights, real KV runtime event preparation, raw NCCL
-  preservation/classification, separate ROI archives, and AutoDL checklist are
-  complete. RTX 3080 Ti 12 GiB is acceptable; rent one host with >=4 idle
-  same-model SM86 GPUs, >=500 GiB free/expandable local disk, adequate RAM, and
-  SSH/copy-back.
-- PR10: all permitted no-GPU syntax, static, fake, mock, dry-run, classifier,
-  and authorization-guard tests passed. See the review pack.
+- RF0: clean required handoff and stale lock values audited.
+- RF1/RF2: selected `--cuda-home` now controls NVBit Make invocation through
+  explicit realpath `nvcc`/`ptxas` and scoped PATH; capture-ready preflight
+  records selected and host-PATH tools, versions, provenance, PyTorch runtime
+  CUDA, build artifacts, NVBit marker, and artifact digests. Fake CUDA A/B
+  proves PATH B cannot be selected.
+- RF3: `cuMemcpyHtoD_v2` now uses the same profiler ROI state as kernels when
+  `ACTIVE_FROM_START=0`; inactive initialization copies cannot enter formal
+  replay lists while active copies remain eligible.
+- RF4: classifier has `COMPUTE`, `NCCL_COLLECTIVE`, `MEMCPY`, and
+  `UNKNOWN_OTHER`; derived compute-only excludes the latter three and raw order
+  remains intact.
+- RF5/RF6: lock digests/docs were refreshed and all required no-GPU regression
+  tests passed, including M4A-C guard.
+- RF7: this report and `M4A_PRERENTAL_REVIEW_FIX` review pack are complete.
 
 ## Future-only sequence after a new M4A-C authorization
 
 1. `host_preflight.py` on the rented host.
 2. Create the isolated locked environment and run
-   `bootstrap_route_e_nvbit.sh` with its explicit CUDA toolkit path.
-3. Run `run_generic_nvbit_smoke.sh`, then `capture_ready_preflight.py`.
-4. Only then run `run_m4a_c.sh` separately with `--trace-region prefill` and
+   `bootstrap_route_e_nvbit.sh --cuda-home /opt/cuda-12.6` with the selected
+   CUDA 12.6 toolkit path.
+3. Run `run_generic_nvbit_smoke.sh --cuda-home /opt/cuda-12.6`, then
+   `capture_ready_preflight.py --cuda-home /opt/cuda-12.6`.
+4. Only then run `run_m4a_c.sh --cuda-home /opt/cuda-12.6` separately with `--trace-region prefill` and
    `--trace-region decode1`; preserve raw rank-0 trace and derive manifests.
 
-The review pack is `docs/vm_tlb/review_packs/M4A_PRERENTAL_FINALIZE/`.
-STOP BEFORE M4A-C.
+The review pack is `docs/vm_tlb/review_packs/M4A_PRERENTAL_REVIEW_FIX/`.
+STOP for ChatGPT review before M4A-C.

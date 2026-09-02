@@ -13,6 +13,8 @@ creates all of the following:
 
 Rules classify names matching `nccl`, `allreduce`, `all_gather`,
 `reduce_scatter`, or `broadcast` (case insensitive) as `NCCL_COLLECTIVE`;
-nonempty remaining lines are `COMPUTE`; empty/comments are `UNKNOWN_OTHER`.
+`MemcpyHtoD` and conservative future memcpy forms as `MEMCPY`; nonempty
+remaining lines are `COMPUTE`; empty/comments are `UNKNOWN_OTHER`. The derived
+compute-only list excludes NCCL, MEMCPY, and UNKNOWN_OTHER entries.
 M4A-C decides parser compatibility and keep/exclude/report-both policy after a
 tiny trace, without recapturing raw ROI evidence.

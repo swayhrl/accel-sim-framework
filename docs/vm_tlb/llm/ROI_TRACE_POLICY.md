@@ -11,6 +11,11 @@ workload calls the CUDA profiler only around exactly one selected inference
 operation. All of model load, TP sharding, flat-buffer binding, static metadata
 preparation, and a warmup prefill occur before activation.
 
+The frozen tracer now applies this same state to `cuMemcpyHtoD_v2` list
+records: with `ACTIVE_FROM_START=0`, an inactive HtoD copy is absent from the
+formal `kernelslist.g`; an HtoD copy during an active ROI remains as a `MEMCPY`
+entry. This does not broaden the ROI or alter kernel activation behavior.
+
 | Route | inactive preparation | sole profiler-delimited operation | later work |
 |---|---|---|---|
 | `prefill` | load/TP/bind/warmup | B=8, S=64 prefill | three decode tokens inactive |

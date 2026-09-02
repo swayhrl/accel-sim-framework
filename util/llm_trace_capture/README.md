@@ -16,7 +16,10 @@ python3 util/llm_trace_capture/validate_metadata.py --self-test
 python3 util/llm_trace_capture/llama_tp_workload.py --self-test
 bash util/llm_trace_capture/test_rank0_nvbit_mock.sh
 python3 util/llm_trace_capture/test_roi_contract.py
+python3 util/llm_trace_capture/test_roi_memcpy_policy.py
 python3 util/llm_trace_capture/classify_kernels.py --self-test
+python3 util/llm_trace_capture/capture_ready_preflight.py --self-test
+bash util/llm_trace_capture/test_bootstrap_toolchain_provenance.sh
 bash util/llm_trace_capture/bootstrap_route_e_nvbit.sh --framework-root "$PWD" --work-root /tmp/m4a --cuda-home /opt/cuda-12.6 --dry-run
 bash util/llm_trace_capture/run_m4a_c.sh --help
 ```
