@@ -4,168 +4,163 @@
 
 `M1_VM_CORE_FOUNDATION`: **PASS**.
 
-`M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF independently accepted**.
-
-Accepted repaired M2 Core:
-`3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
+`M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF accepted**.
 
 `G3-0`: **PASS**.
 
-`G3-1 — PTE backend / physical request contract`: **PASS — accepted after namespace repair**.
+`G3-1 — PTE backend / physical request contract`: **PASS**.
 
-Accepted G3-1 Core:
-`a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
+`G3-2A — address provenance`: **PASS — CASE A**.
 
-`G3-2A — address provenance diagnostic`: **PASS — CASE A accepted**.
+`G3-2B — generic trace-width extension`: **PASS**.
 
-It proved that generic Accel-Sim trace/coalesced `SimVA` can legitimately exceed
-49 bits.  The first offender was a real BFS global store with
-`SimVA=0x00fffdc0000000c0`, and the same transaction completed in disabled and
-ideal-identity modes.
+`G3-2 — real PTE L2/DRAM integration`: **PASS**.
 
-## G3-2B / G3-2 review result
+`G3-2C — radix-prefix PTE identity`: **PASS — independently accepted**.
 
-`G3-2B — generic trace-width extension`: **PASS — independently accepted**.
+`G3-3 — generic PWC`: **PASS — independently accepted**.
 
-`G3-2 — real PTE L2/DRAM integration`: **PASS — independently accepted**.
-
-Accepted Core:
-`965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
-
-Framework evidence head reported by Codex:
-`dbbd9d8360121aeda553eaf9365073e7332018bf`
-
-Accepted generic address contract:
-
-- raw/coalesced trace address remains `SimVA`;
-- generic resident data mapping remains identity-like, `SimPA == SimVA`;
-- generic backend width is configurable;
-- current generic M3 baseline uses 56-bit SimVA;
-- retained 49-bit configuration is directed-tested for later paper-specific use;
-- no masking/truncation/canonicalization is performed;
-- application identity-like physical range is `[0,2^56)`;
-- synthetic PTE physical range is disjoint and overflow-checked;
-- requests wider than configured width remain correctness stops.
-
-Accepted G3-2 real-memory behavior:
-
-- PTE reads use explicit `PTE_ACC_R` traffic;
-- PTE requests are physical and translation-bypassing;
-- they bypass shader L1D and consume real request/response interconnect, L2 and
-  lower-memory/DRAM resources;
-- walkers advance only after the matching PTE response;
-- response association preserves request identity even when L2 aligns its
-  working address;
-- complete BFS and LUD replays pass with zero response misassociation and final
-  MSHR/PWQ/walker quiescence;
-- the former 56-bit BFS offender completes without rewriting SimVA/SimPA;
-- M1/M2/G3 directed regressions and release build remain PASS.
-
-The 12 observed BFS addresses above `2^49` are retained only as
-`TRACE_ENCODING_OBSERVATION`; they are not canonicalized or used to redefine
-generic SimVA.
-
-## Remaining hierarchy/PWC ambiguity
-
-G3-2 intentionally used a collision-free flat `(page-size-class, level, full
-VPN)` synthetic PTE identity.  That was sufficient to prove physical PTE
-request plumbing, but it is not an acceptable final locality model for PWC:
-upper-level PTE sharing would otherwise be determined by an arbitrary flat
-identity rather than a radix-prefix relationship.
-
-Therefore G3-3 cannot use the old flat identity unchanged.
-
-## Architecture decision for next gate
-
-Authorize a generic balanced radix-prefix hierarchy as `MODELING_DECISION`.
-For each page-size class:
-
-```text
-B = virtual_address_bits - log2(page_size)
-L = levels
-r = ceil(B/L)
-top = B - r*(L-1)
-level widths = [top, r, r, ...]
-```
-
-Examples:
-
-- 56-bit / 64KB: `[10,10,10,10]`;
-- 56-bit / 2MB: `[8,9,9,9]`;
-- 49-bit / 64KB: `[6,9,9,9]`;
-- 49-bit / 2MB: `[7,7,7,7]`.
-
-At walk level `l`, PTE identity is based on the VPN prefix through that level,
-not the full VPN.  Physical PTE subranges are deterministic and non-overlapping
-per `(page-size-class, level)`, with overflow-safe prefix-sum sizing.
-
-This is a generic simulator hierarchy, not an NVIDIA hardware claim and not a
-Segmentation-paper exact page table.
-
-For G3-3, the generic PWC caches intermediate/non-leaf PTEs only, keyed by
-`(ASID, page-size-class, level, prefix)`.  Default finite organization is 128
-entries, fully associative LRU; OFF and IDEAL diagnostic modes are required.
-The 128-entry default is motivated only by other recent GPU VM simulation work
-(e.g. CLAP), not by the target Segmentation paper.
-
-## Current authorization
-
-Execute:
-
-`G3-2C — hierarchy-prefix PTE identity`
-
-then, only if it PASSes, automatically continue to:
-
-`G3-3 — generic PWC`.
-
-Specification:
-
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2C_HIERARCHY_AND_G3_3_PWC.md`
-
-After G3-3 PASS, STOP for ChatGPT review before G3-4.
-
-## Frozen / accepted source anchors
+## Accepted current source anchors
 
 Core/GPGPU-Sim:
 
-- baseline: `73774727e25fadf89df6f30ef5cf014091115db7`
-- M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
-- accepted repaired M2: `3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
-- accepted G3-1: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
-- accepted G3-2B/G3-2: `965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
+`1b18b3c5da6e5ba22e4a03c20e3adce498311336`
 
-Framework/Accel-Sim:
+Framework/Accel-Sim evidence:
 
-- baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
-- M2-RF evidence: `c12ad7bc9fb6865e97ff8b65c215490a5d92305a`
-- G3-1-RF evidence: `329b80b27a2db8709e2b2a0609f4783789552d98`
-- G3-2A evidence: `8eefe9d69764000f860871ca92770d986e7be0b6`
-- G3-2B/G3-2 evidence: `dbbd9d8360121aeda553eaf9365073e7332018bf`
+`a3af1f34b4e6fcac4f43faf8d80d8a914eb34958`
 
 Branches:
 
 - Core: `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
 - Framework: `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-## Frozen modeling decisions
+## Accepted architecture
 
-- coalesced trace address is simulator `SimVA`; translation produces `SimPA`;
-- resident baseline data mapping is identity-like;
-- generic current address width = 56 bits; paper-specific 49-bit mode remains
-  separate;
-- translation occurs after coalescing and before real data-cache access;
-- PTE traffic is physical, non-recursive and uses real L2/DRAM resources;
-- current M1-M3 is resident-memory, single-address-space/ASID-0 for claims;
-- TLB persists across ordinary kernels;
-- page faults/migration/UVM/MCM/Segmentation/sub-entry are outside M3;
-- hierarchy and PWC details not exposed by the target paper are explicit generic
-  `MODELING_DECISION`s.
+### Address contract
+
+- raw/coalesced trace address is simulator `SimVA`;
+- translated data address is `SimPA`; preserve both;
+- current generic resident mapping is identity-like: `SimPA == SimVA`;
+- generic trace/backend width is configurable;
+- current generic baseline uses 56 bits;
+- retained 49-bit configuration is for later paper-specific use;
+- generic SimVA is never silently masked, truncated or canonicalized;
+- requests wider than configured width are correctness stops.
+
+### Translation path
+
+Current functional/timing path is:
+
+`coalesced SimVA -> per-SM L1 TLB -> shared L2 TLB -> translation MSHR -> PWQ -> walker -> PWC/intermediate PTE -> physical PTE request -> real ICNT/L2/DRAM -> matching walker -> L2/L1 fill -> waiter wakeup/replay -> SimPA -> data-cache path`
+
+Accepted invariants include:
+- one active translation walk per key;
+- registered pending waiter retries do not re-probe/reconsume TLB resources;
+- new waiters perform their first lookup and may merge;
+- PTE requests are physical, translation-bypassing and non-recursive;
+- PTE responses preserve request/walk identity;
+- no data-cache request issues before translation is READY;
+- store/atomic side effects remain exact-once;
+- TLB/PWC state persists across ordinary kernels in the simulated context.
+
+### PTE hierarchy
+
+The generic page-table hierarchy is a project `MODELING_DECISION`.
+
+For each page-size class:
+
+`B = VA bits - page-offset bits`, `L = levels`, `r = ceil(B/L)`, `top = B-r*(L-1)`.
+
+Accepted 4-level examples:
+- 56-bit / 64KB: `[10,10,10,10]`
+- 56-bit / 2MB: `[8,9,9,9]`
+- 49-bit / 64KB: `[6,9,9,9]`
+- 49-bit / 2MB: `[7,7,7,7]`
+
+PTE identity at each level uses the VPN prefix through that level. Physical PTE subranges are deterministic, non-overlapping and overflow-checked.
+
+### PWC
+
+Accepted generic PWC:
+- caches intermediate/non-leaf PTEs only;
+- key = `(ASID, page-size class, level, VPN prefix)`;
+- `OFF`;
+- `FINITE`: 128 entries, fully-associative LRU;
+- `IDEAL`: unbounded/no eviction diagnostic;
+- leaf PTE always uses the accepted real PTE L2/DRAM path;
+- default lookup service is configurable one-cycle generic service with no invented PWC port bottleneck.
+
+The 128-entry seed is `REFERENCE_OTHER_PAPER`, not a Segmentation-paper or NVIDIA fact.
+
+## G3-2C / G3-3 acceptance evidence
+
+Directed hierarchy tests prove intended upper-level prefix sharing, leaf separation, 49/56-bit layouts, 64KB/2MB class separation, physical-range safety, original raw SimVA preservation and non-recursive PTE behavior.
+
+Directed PWC tests prove:
+- OFF: two related cold 4-level walks issue 8 PTE memory requests;
+- FINITE/IDEAL: same pair issues 5 requests, with three intermediate PWC hits;
+- leaf entries never hit/insert in PWC;
+- partial sharing, deterministic finite LRU and 2MB behavior pass.
+
+Integrated revalidation:
+- complete BFS PWC OFF: PTE `28/28`;
+- complete BFS FINITE: PTE `19/19`, PWC accesses/hits/misses `21/9/12`, nine skipped intermediate PTE requests;
+- zero PTE response misassociation;
+- final MSHR/PWQ/walker state quiescent;
+- LUD VM-disabled and VM-ideal remain exactly `139766` cycles.
+
+G3-2C/G3-3 are accepted as generic simulator behavior, not target-paper exact page-table/PWC behavior.
+
+## Remaining M3 work
+
+The current TLB path has finite lookup ports but still needs explicit non-zero L1/L2 lookup service latency before M3 can be called timing-realistic.
+
+The final authorized continuous target is:
+
+`G3-4A page-size foundation -> G3-4B TLB lookup timing -> G3-5 latency decomposition/causality -> G3-CLOSEOUT -> M1_M3_VM_BASELINE_CLOSEOUT`
+
+Specification:
+
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_4_G3_5_FINAL_CLOSEOUT.md`
+
+After every internal gate PASSes, Codex may continue automatically. Stop only on a hard correctness/provenance failure or after final macro closeout.
+
+## Parameter evidence boundary
+
+Target Segmentation paper facts remain separate from generic M3 choices.
+
+Known paper-facing items already recorded include 64KB paging, 32-entry fully-associative L1 TLB, 768-entry/16-way L2 TLB and 16 walkers. The target paper does not establish our generic radix split, PWC organization, MSHR/PWQ sizes, generic 56-bit trace contract, or L1/L2 TLB lookup latencies.
+
+Generic/reference seeds for final M3 include:
+- current generic VA width 56: `MODELING_DECISION`;
+- balanced radix-prefix hierarchy: `MODELING_DECISION`;
+- intermediate-only PWC: `MODELING_DECISION`;
+- 128-entry PWC: `REFERENCE_OTHER_PAPER`;
+- L1/L2 TLB lookup latency seed 10/80 cycles: `REFERENCE_OTHER_PAPER` / generic `MODELING_DECISION` until stronger evidence exists.
+
+## Scope exclusions
+
+M1-M3 still exclude:
+- page fault/migration/UVM oversubscription;
+- MCM/chiplet placement;
+- Segmentation;
+- target-paper L2-TLB sub-entry/coalescing;
+- synthetic KV injection;
+- multi-ASID physical-separation claims.
 
 ## STOP boundary
 
-STOP on hierarchy namespace collision/overflow, application/PTE range overlap,
-recursive PTE translation, response misassociation, request loss, duplicate
-wakeup/store/atomic, M1/M2 regression, PWC determinism failure, deadlock, or
-provenance ambiguity.
+STOP immediately on:
+- TLB lookup polling/repeated port consumption while service is pending;
+- hierarchy/PTE/PWC collision or nondeterminism;
+- application/PTE physical-range overlap or overflow;
+- recursive PTE translation;
+- response misassociation/request loss;
+- duplicate wakeup/store/atomic side effect;
+- M1/M2 regression;
+- deadlock/unexplained nondeterminism;
+- source/provenance ambiguity;
+- a materially new architecture decision outside the authorized final-stage spec.
 
-After G3-3 PASS, STOP before G3-4 for review.
+After `M1_M3_VM_BASELINE_CLOSEOUT` PASS, STOP before M4B/Segmentation/sub-entry/synthetic-KV/new AI-aware mechanisms.
