@@ -1,52 +1,33 @@
-# M4A-PR2 pre-rental review-fix report
+# M4A-C0 rented-host pilot report
 
-Stage: `M4A_PRERENTAL_REVIEW_FIX`
+Stage: `M4A_C0_RENTED_HOST_PILOT`
 
-## READY_TO_RENT_REVIEW_FIX_PASS
+## PILOT_BLOCKED
 
-The Route-E package passed the final no-GPU review fix. M4A-C remains
-unauthorized: this result did not rent/access a GPU, change a driver, download
-formal Llama weights, collect a trace, implement Segmentation, or create
-synthetic KV.
+P0–P4 passed on the rented qualifying host. P5 cannot proceed because the
+remote environment has no Hugging Face credential with access to the frozen,
+gated model revision `meta-llama/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08`.
+The access probe returned `LocalTokenNotFoundError`; no token value was read or
+logged. Consequently no Llama weights were downloaded, no TP4 model smoke was
+run, and no Llama trace was collected.
 
-Route E remains the sole selected formal self-capture route: one physical host
-with four same-model SM86 GPUs, actual TP=4, and NVBit injected solely into
-rank 0. It is `PAPER_COMPATIBLE_SELF_CAPTURE`, not author-exact. A full-model
-single-GPU trace remains rejected as a formal paper workload; Route A remains
-an approval-required approximation.
+The minimal action required to resume is to set a token that has accepted the
+Llama 3.2 license and can read that exact revision in the remote execution
+environment, e.g. `HF_TOKEN` for the AutoDL session. Do not put the token in a
+repository file or handoff report.
 
-The review-fix began at required handoff
-`38c9b224dae55002b159f07c9f4fc3b4035ce8d5`; its finalized implementation
-commit is `524cb20785ec4632b434a0786181ff814ad7eaba`.
+Passed evidence:
 
-## Completed RF0–RF7
+- P1: one host, 4× RTX 3080 Ti 12 GiB, all SM86, 251 GiB RAM, 80 CPUs, and
+  999 GiB initial free on `/root/autodl-tmp`.
+- P2: Python 3.10.12, PyTorch `2.6.0+cu126` (`torch.version.cuda=12.6`),
+  selected local CUDA 12.6.85 `nvcc`/`ptxas`, and all other locked package
+  versions.
+- P3: checksum-verified NVBit 1.7.6, explicit-toolchain build,
+  capture-ready preflight, and generic injection→postprocess→archive chain.
+- P4: real four-rank CUDA/Gloo synchronization; smoke had no injection on all
+  ranks and trace had the reviewed tracer path only on rank 0.
 
-- RF0: clean required handoff and stale lock values audited.
-- RF1/RF2: selected `--cuda-home` now controls NVBit Make invocation through
-  explicit realpath `nvcc`/`ptxas` and scoped PATH; capture-ready preflight
-  records selected and host-PATH tools, versions, provenance, PyTorch runtime
-  CUDA, build artifacts, NVBit marker, and artifact digests. Fake CUDA A/B
-  proves PATH B cannot be selected.
-- RF3: `cuMemcpyHtoD_v2` now uses the same profiler ROI state as kernels when
-  `ACTIVE_FROM_START=0`; inactive initialization copies cannot enter formal
-  replay lists while active copies remain eligible.
-- RF4: classifier has `COMPUTE`, `NCCL_COLLECTIVE`, `MEMCPY`, and
-  `UNKNOWN_OTHER`; derived compute-only excludes the latter three and raw order
-  remains intact.
-- RF5/RF6: lock digests/docs were refreshed and all required no-GPU regression
-  tests passed, including M4A-C guard.
-- RF7: this report and `M4A_PRERENTAL_REVIEW_FIX` review pack are complete.
-
-## Future-only sequence after a new M4A-C authorization
-
-1. `host_preflight.py` on the rented host.
-2. Create the isolated locked environment and run
-   `bootstrap_route_e_nvbit.sh --cuda-home /opt/cuda-12.6` with the selected
-   CUDA 12.6 toolkit path.
-3. Run `run_generic_nvbit_smoke.sh --cuda-home /opt/cuda-12.6`, then
-   `capture_ready_preflight.py --cuda-home /opt/cuda-12.6`.
-4. Only then run `run_m4a_c.sh --cuda-home /opt/cuda-12.6` separately with `--trace-region prefill` and
-   `--trace-region decode1`; preserve raw rank-0 trace and derive manifests.
-
-The review pack is `docs/vm_tlb/review_packs/M4A_PRERENTAL_REVIEW_FIX/`.
-STOP for ChatGPT review before M4A-C.
+The copy-backed evidence and gate-level details are in
+`docs/vm_tlb/review_packs/M4A_RENTED_HOST_PILOT/`. No M4A-C Goal-mode action is
+authorized by this blocked pilot result.
