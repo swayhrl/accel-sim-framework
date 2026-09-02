@@ -1,0 +1,7 @@
+run	status	config	completion	key_results	evidence
+one_kernel_lud_real_56	PASS	/tmp/g3-2b-vm-real.config	exit_normal_3s	cycles=25811; pte_req_resp=4/4; dram=4; l2_only=0; misassoc=0; active_mshr_pwq_walkers=0/0/0	/tmp/g3-2b/one-kernel-lud-real.log
+lud_disabled	PASS	/tmp/g3-2a-vm-disabled.config	exit_normal	10 kernels; total_cycles=139766	/tmp/g3-2b/lud-disabled.log
+lud_ideal_identity	PASS	/tmp/g3-2a-vm-ideal.config	exit_normal	10 kernels; total_cycles=139766	/tmp/g3-2b/lud-ideal.log
+lud_real_56	PASS	/tmp/g3-2b-vm-real.config	exit_normal	total_cycles=141588; per-kernel PTE responses complete; misassoc=0; final active=0/0/0	/tmp/g3-2b/lud-real.log
+bfs_default_real_56	PASS	/tmp/g3-2b-vm-real.config	exit_normal_22s	49048 global tx; high_ge_2pow49=12; PTE=28/28; L2_only=8; DRAM=20; L2 PTE hit/miss=8/20; misassoc=0; final active=0/0/0	/tmp/g3-2b/bfs-default-v1.{log,summary.tsv,offenders.tsv}
+bfs_small_tlb_pressure_56	DIAGNOSTIC	/tmp/g3-2b-vm-real-small-tlb.config	timeout_180s_at_kernel9	crossed former offender; PTE=4936/4936; L2_only=4920; DRAM=16; L2 PTE hit/miss=4920/16; misassoc=0; final kernel8 active=0/0/0	/tmp/g3-2b/bfs-functional.{log,summary.tsv,offenders.tsv}

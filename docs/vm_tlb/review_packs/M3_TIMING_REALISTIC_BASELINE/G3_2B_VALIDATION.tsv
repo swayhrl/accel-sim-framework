@@ -1,0 +1,11 @@
+test_or_check	status	kind	expected	actual	evidence
+release_core_framework_build	PASS	VERIFIED_RUN	full release build succeeds	PASS; Core modified build and Framework binary linked	/tmp/g3-2b build command in execution report
+vm_core_m1_test	PASS	VERIFIED_RUN	SimVA/SimPA identity substrate	PASS page=65536 simva=0x12344321	/tmp/g3-2b-unit/vm_core_m1_test
+vm_m2_g2_1_to_g2_4	PASS	VERIFIED_RUN	finite TLB/MSHR/PWQ/replay invariants	all four PASS	/tmp/g3-2b-unit/
+vm_m2_rf_pending_retry_and_persistence	PASS	VERIFIED_RUN	repaired M2 waiter semantics and lifetime	both PASS	/tmp/g3-2b-unit/
+vm_m3_g3_1_test_49bit	PASS	VERIFIED_RUN	former 64KB/2MB collision absent at 49 bits	PASS	/tmp/g3-2b-unit/vm_m3_g3_1_test
+vm_m3_g3_2b_width_test_56bit	PASS	VERIFIED_RUN	56-bit range, offender, boundary, eight namespaces, 49-bit retained	PASS	/tmp/g3-2b-unit/vm_m3_g3_2b_width_test
+configured_width_hard_stop	PASS	VERIFIED_CODE_AND_RUN	57-bit key rejected; no rewrite or modulo mapping	supports_key=false and pte_address asserts predicate	vm_m3_g3_2b_width_test; src/gpgpu-sim/vm_translation.cc
+vm_m3_g3_2_test	PASS	VERIFIED_RUN	two walkers, four levels, out-of-order 8/8 PTE response identity	PASS; l2-only=4 dram=4 misassociation=0	/tmp/g3-2b-unit/vm_m3_g3_2_test
+identity_former_offender	PASS	VERIFIED_RUN	0xfffdc0000000c0 unchanged as SimVA/SimPA	unit identity assertion and complete BFS transaction observed	vm_m3_g3_2b_width_test; /tmp/g3-2b/bfs-default-v1.offenders.tsv
+lud_disabled_vs_ideal	PASS	VERIFIED_RUN	identical non-VM cycle sequence	both total 139766 cycles and exit normally	/tmp/g3-2b/lud-{disabled,ideal}.log

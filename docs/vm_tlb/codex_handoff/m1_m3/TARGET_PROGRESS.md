@@ -5,18 +5,44 @@
 Goal: `M2_FUNCTIONAL_TRANSLATION -> M3_TIMING_REALISTIC_BASELINE ->
 M1_M3_VM_BASELINE_CLOSEOUT`.
 
-Current Goal boundary: `G3-2 — real PTE L2/DRAM integration (paused)`
-Completed diagnostic sub-gate: `G3-2A — PASS / CASE A`
-Status: `BLOCKED — STOP FOR CHATGPT ARCHITECTURE REVIEW`
-Core SHA: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
-Framework handoff SHA: `971b1f46b74ed5eaaf4447d416a47f0e3e22d733`
+Current Goal boundary: `G3-2 — real PTE L2/DRAM integration (closed)`
+Completed sub-gates: `G3-2A PASS / CASE A`, `G3-2B PASS`
+Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-3/PWC`
+Core SHA: `965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
+Framework handoff SHA: `f8a272b9b6d59f25b0a2ba8a35ee0b207ec58b64`
 
-M2-RF and G3-1-RF are accepted historical prerequisites.  G3-2A proves that
-the first >49-bit request is a Case-A raw/global trace-derived SimVA, not a
-local-memory artifact or recursive PTE request.  This closes the diagnostic
-gate only; it is not permission to alter frozen VM semantics or resume G3-2.
+M2-RF and G3-1-RF are accepted historical prerequisites.  G3-2B applies the
+approved generic trace-width decision without altering a raw/coalesced SimVA:
+generic backend width is configurable, current M3 is 56 bits, 49-bit remains
+directed-tested, and outside-width keys still hard-stop.  PTE requests now
+traverse the real interconnect/L2/DRAM path with UID-correct response return.
 Evidence/review path:
-`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`.
+`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2B_TRACE_WIDTH_AND_CLOSEOUT.md`.
+
+## G3-2B — generic trace-width extension and G3-2 closeout
+
+Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-3/PWC`
+
+Core `965bd8e1` makes generic PTE backend width configuration-derived and
+sets the generic default to 56 bits.  The 56-bit application identity range is
+`[0,2^56)` and the disjoint synthetic PTE reservation is
+`[2^56,2^56+2^46)`; overflow, range, and all eight namespace boundaries are
+directed-tested.  The retained 49-bit configuration keeps the original G3-1
+namespace proof.  The exact old offender `0xfffdc0000000c0` completes unchanged
+as raw/coalesced SimVA and identity-like SimPA; a >56-bit key is rejected.
+
+The non-semantic `TRACE_ENCODING_OBSERVATION` covers all 12 complete-BFS
+transactions at/above `2^49`: none is treated as canonical 49-bit and no
+distinct observed values collapse under lower-49-bit projection.  Complete
+default BFS exits normally with PTE `28/28`, DRAM/L2-only `20/8`, zero response
+misassociation and final active MSHR/PWQ/walkers `0/0/0`.  One-kernel cold LUD
+is `4/4` DRAM PTE responses; LUD disabled/ideal transparency has identical
+cycle sequence.  All M1/M2/G3 directed tests pass after release build.
+
+Framework handoff SHA: `f8a272b9b6d59f25b0a2ba8a35ee0b207ec58b64`.
+Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2B_TRACE_WIDTH_AND_CLOSEOUT.md`.
+
+Next gate: none.  G3-2 is closed; stop for ChatGPT review before G3-3/PWC.
 
 ## G3-2A — address provenance diagnostic
 
@@ -40,9 +66,9 @@ supporting TSVs in that directory, and indexed `/tmp/g3-2a/` artifacts.
 Next gate: none.  Do not resume G3-2 or start G3-3 until ChatGPT makes the
 generic address-width/backend semantic decision.
 
-## G3-2 — real PTE L2/DRAM integration
+## Historical G3-2 hard stop (superseded by G3-2B)
 
-Status: `BLOCKED — correctness STOP`
+Status: `HISTORICAL — resolved by G3-2B`
 
 Completed before the stop: standalone out-of-order response-identity test;
 standard rebuild; one-kernel cold PTE DRAM replay (4 PTE requests/responses,

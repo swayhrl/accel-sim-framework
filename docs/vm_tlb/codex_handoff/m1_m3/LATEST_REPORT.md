@@ -1,12 +1,35 @@
 # Track A report
 
-Stage: `G3-2A address provenance diagnostic`
-Status: `PASS — CASE A; STOP FOR CHATGPT ARCHITECTURE REVIEW`
+Stage: `G3-2B generic trace-width extension / G3-2 closeout`
+Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-3/PWC`
 
 Framework was fetched to the required handoff
-`971b1f46b74ed5eaaf4447d416a47f0e3e22d733`.  Core remains anchored at
-accepted `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`; G3-2 source is local and
-uncommitted because the gate did not pass.
+`f8a272b9b6d59f25b0a2ba8a35ee0b207ec58b64`.  G3-2B/G3-2 is Core
+`965bd8e188175731c31cabfef6c3bdeb7c59e1fd`, on accepted G3-1
+`a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`.
+
+The backend now has an explicit configurable generic width.  Current M3 is
+56-bit; 49-bit remains directed-tested.  Identity-like application SimPA is
+`[0,2^56)`, while synthetic PTE physical storage is the disjoint,
+overflow-checked `[2^56,2^56+2^46)` range.  The old BFS offender
+`0xfffdc0000000c0` completes without changing raw/coalesced SimVA or
+identity-like SimPA; a key above configured width is explicitly rejected.
+
+Complete 56-bit BFS exits normally (49,048 global VM-hook transactions; all
+12 >=2^49 transactions complete; PTE `28/28`, DRAM/L2-only `20/8`, zero
+misassociation, final MSHR/PWQ/walkers zero).  Isolated one-kernel LUD is
+`4/4` DRAM PTE response; full LUD real replay finishes normally; disabled and
+ideal LUD share the identical 139,766-cycle sequence.  M1/M2/G3 directed
+regressions and release build pass.  Trace high-bit findings are recorded only
+as `TRACE_ENCODING_OBSERVATION`; generic addresses were not canonicalized.
+
+No stash was restored/popped/dropped.  No PWC/G3-3, segmentation, sub-entry,
+synthetic KV, fault/migration/UVM/MCM, multi-ASID, page-size semantic change,
+or address rewrite was made.  Review entry:
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2B_TRACE_WIDTH_AND_CLOSEOUT.md`.
+Stop now for ChatGPT review before G3-3/PWC.
+
+## Historical G3-2A / pre-repair report
 
 G3-2A D0–D5 are complete.  The first request that trips the 49-bit generic
 backend is a real global BFS store: kernel 7, PC `0x250`, raw active-lane trace

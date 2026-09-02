@@ -1,8 +1,8 @@
 # M3 timing-realistic baseline review pack
 
-Current gate: `G3-2 — real PTE L2/DRAM integration` (`BLOCKED — correctness
-STOP`).  G3-2A established Case A provenance and is now stopped for ChatGPT
-architecture review; no G3-3 work is authorized.
+Current gate: `G3-2 — real PTE L2/DRAM integration` (`PASS — STOP FOR CHATGPT
+REVIEW`).  G3-2B implements the approved generic 56-bit trace/backend contract
+and closes real PTE L2/DRAM integration.  No G3-3/PWC work is authorized.
 
 ## Frozen M3 entry snapshot
 
@@ -30,6 +30,10 @@ Entry artifacts:
 - [G3-1-RF namespace-fix evidence](G3_1_ADDRESS_NAMESPACE_FIX.md)
 - [G3-2 blocked evidence and required semantic decision](G3_2_BLOCKED.md)
 - [G3-2A address provenance diagnostic](G3_2_ADDRESS_PROVENANCE_DIAG.md)
+- [G3-2B trace-width extension and G3-2 closeout](G3_2B_TRACE_WIDTH_AND_CLOSEOUT.md)
+- [G3-2B validation matrix](G3_2B_VALIDATION.tsv)
+- [G3-2B runtime summary](G3_2B_RUNTIME_SUMMARY.tsv)
+- [Trace encoding observation (non-semantic)](TRACE_ENCODING_OBSERVATION.tsv)
 
 The M3 evidence boundary is generic reusable VM timing infrastructure.  It is
 not a claim of exact Segmentation-paper PTW, PWC, sub-entry, or commercial-GPU
