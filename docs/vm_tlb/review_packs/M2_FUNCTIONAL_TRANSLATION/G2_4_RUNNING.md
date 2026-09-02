@@ -10,3 +10,9 @@ A third diagnostic used only the existing 54 KiB `kernel-8.traceg` through a
 temporary one-kernel list. It again grew to about 65 GiB RSS in roughly 41 s,
 so the failure is not explained by full trace-list preload. The process was
 terminated; raw log: `/tmp/g2-4-one-kernel.log`.
+
+Final bounded reproduction: `ulimit -v 10485760` produces deterministic
+`std::bad_alloc` immediately after the memory-subpartition initialization
+banner, before trace replay. GDB itself could not start an inferior under this
+limit because its debug mapping needed more virtual memory. Raw logs:
+`/tmp/g2-4-one-kernel-vmem10g.log` and `/tmp/g2-4-badalloc-gdb.log`.

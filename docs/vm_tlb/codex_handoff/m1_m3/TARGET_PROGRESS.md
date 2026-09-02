@@ -58,14 +58,19 @@ Next goal: `G2-4`.
 
 ## G2-4 — real stall/replay correctness
 
-Status: `RUNNING`
+Status: `BLOCKED`
 Core SHA: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
 Framework SHA: `a63e243c350ea3628e9dab68620ee77982a6b0b9`
 
 Directed replay/store/atomic/cross-page checks and the standard build pass.
 Evidence: `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_4_RUNNING.md`.
 
-Gate remains RUNNING: VM-mode trace replay did not complete because two bounded
-attempts showed abnormal host-resource growth; neither is treated as evidence.
-A third one-kernel diagnostic reproduced about 65 GiB RSS growth, ruling out
-the full trace list as the immediate explanation.
+Blocked acceptance: three reproducible real-runtime attempts cannot reach
+cache-path replay. A one-kernel diagnostic reproduced about 65 GiB RSS growth,
+and a 10 GiB-address-space run deterministically throws `std::bad_alloc` just
+after memory-subpartition initialization. This rules out full trace-list
+preload but leaves no safe local run capacity for the required evidence.
+
+Required external change: a simulator host with sufficient isolated memory, or
+an approved diagnosis/fix for the pre-trace memory allocation. Do not advance
+to M2 closeout or M3 before a completed VM-mode replay run passes.
