@@ -2,86 +2,81 @@
 
 ## Track A status
 
-`M1_VM_CORE_FOUNDATION` has been independently reviewed by ChatGPT and is **PASS**.
+`M1_VM_CORE_FOUNDATION`: **PASS**.
 
-Reviewed source anchors:
+`M2_FUNCTIONAL_TRANSLATION` progressed through:
 
-- Core/GPGPU-Sim M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
-- Framework Track-A branch: `hrl/vm-m1-m3-v0`
-- Framework M1 closeout reported by Codex: `ccee0a821c379b1fb8ac183c3519ed6b3762b141`
+- G2-1 mapper + finite L1/L2 TLB: PASS
+- G2-2 translation MSHR / same-key merge / backpressure: PASS
+- G2-3 finite PWQ + fixed-latency walkers: PASS
+- G2-4 real stall/replay validation: **BLOCKED**
 
-Review entry:
-`docs/vm_tlb/review_packs/M1_VM_CORE_FOUNDATION/README.md`
+M3 has not started.
 
-M1 evidence accepted:
+## Current blocker
 
-- VM-disabled path matches frozen baseline on required architectural counters;
-- ideal identity translation matches VM-disabled behavior;
-- QV100 LUD-64, RTX3070 LUD-64, and BFS-4096 transparency runs pass;
-- `SimVA == SimPA` in identity mode;
-- ideal/disabled modes add zero translation stall;
-- directed page-offset/cross-page helper tests pass;
-- M1 contains no functional TLB/MSHR/PTW implementation.
+At Core checkpoint `c1431e01f593719f9201d4ad4d7666bebead8a4f`, all M2 directed tests and the standard build pass, but real functional-VM trace replay cannot yet provide acceptance evidence.
 
-### Non-blocking M2 caution
+Observed diagnostics:
 
-The M1 substrate initializes `SimPA` numerically from the original address before functional translation, while validity is represented by translation-applied state. M2 must preserve the invariant that no consumer treats `SimPA` as completed translation before completion. Replay must not re-enter or double-apply translation for an already translated request.
+- QV100/RTX3070 functional-mode attempts showed abnormal memory growth;
+- a tiny one-kernel trace (`~54 KiB`) still grew to about `65 GiB RSS` in roughly 41 seconds;
+- with a 10 GiB virtual-memory limit, the simulator deterministically throws `std::bad_alloc` just after memory-subpartition initialization and before useful trace replay;
+- GDB could not start the inferior under that limit.
+
+This is treated as a **runtime allocation diagnosis blocker**, not as proof that a larger-memory host is legitimately required.
+
+The intended M2 VM structures are finite and small. M1 baseline runs previously completed on the same project environment. Therefore the next step is to isolate the first offending commit/allocation and compare mode 0/1/2 on the same head before considering a larger host.
 
 ## Current authorization
 
-Track A is now authorized to execute **M2 -> M3 continuously in Codex target mode**.
+Execute:
 
-Execution/monitoring source:
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M2_RUNTIME_MEMORY_DIAG.md`
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M2_M3_TARGET_MODE.md`
+Active goal gate:
 
-M2 source spec:
+`M2-D_RUNTIME_MEMORY_DIAG`
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M2_FUNCTIONAL_TRANSLATION.md`
+Codex may implement a minimal source/config/integration fix without another human pause only if root cause is directly established and the fix does not change frozen VM semantics or weaken resource modeling/tests.
 
-M3 source spec:
+If M2-D + original G2-4 PASS, resume automatically:
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
+`M2 closeout -> M3 -> M1-M3 macro closeout`.
 
-M3 evidence/reference boundary:
+## Source anchors
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_REFERENCE_MATERIALS.md`
+Core/GPGPU-Sim:
 
-Codex maintains target progress in:
+- baseline: `73774727e25fadf89df6f30ef5cf014091115db7`
+- M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
+- G2-1: `06f0ae7a24f1deacd86ddf95237e0ffa5e1a1b83`
+- G2-2: `740d96f8be80977c150ffc911063969cafd25b8f`
+- G2-3: `e579c40d907c201728331a1208c64bb18b869549`
+- G2-4 checkpoint: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
 
-`docs/vm_tlb/codex_handoff/m1_m3/TARGET_PROGRESS.md`
+Framework/Accel-Sim:
 
-M2 may transition automatically to M3 only after the complete M2 stage gate passes. No human pause is required between M2 and M3 when every gate is PASS. Any failed correctness/provenance gate is an immediate STOP.
+- baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
+- blocked report commit: `200e6ddf14b6247a25c6aa4108195ee0904702d8`
 
-## Frozen source anchors
+Branches:
 
-- Core/GPGPU-Sim baseline: `73774727e25fadf89df6f30ef5cf014091115db7`
-- M1 Core: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
-- Framework/Accel-Sim baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
-- Writable Framework: `swayhrl/accel-sim-framework`
-- Writable Core: `swayhrl/gpgpu-sim`
-- Track-A branches: `hrl/vm-m1-m3-v0` in both repositories
+- Core: `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
+- Framework: `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-## Frozen M1-M3 modeling decisions
+## Frozen modeling decisions
 
-- Trace address is simulator `SimVA` by modeling contract, not a claim about exact internal NVIDIA address stage captured by NVBit.
-- Translation produces `SimPA`; preserve both identities.
-- Identity bring-up uses `SimPPN = SimVPN`, so data `SimPA == SimVA`.
-- Translation operates on approved coalesced transactions before real L1D/data-cache access.
-- M1-M3 model resident-memory address translation only: no page fault, migration, UVM oversubscription, or CPU fault service.
-- TLB state persists across ordinary kernels in one simulated context unless explicitly invalidated/reset.
-- PTE requests in M3 are physical and must never recursively translate.
-
-## M3 evidence boundary
-
-M3 builds a reusable generic timing-realistic VM/TLB/PTW substrate. It does not yet claim exact reproduction of the Segmentation paper's PTW or sub-entry implementation.
-
-Known target-paper parameters may be recorded separately from generic M3 choices. Any unavailable PTW/PWC/latency detail remains `UNKNOWN` or an explicitly documented `MODELING_DECISION`. CLAP/legacy `dev-uvm` values/code are references only and must not be relabeled as target-paper exactness.
+- trace address is simulator `SimVA` by modeling contract;
+- translation produces `SimPA`; preserve both identities;
+- identity bring-up keeps `SimPPN = SimVPN`;
+- translation is on approved coalesced transactions before real L1D/data access;
+- M1-M3 study resident-memory translation only: no page fault/migration/UVM oversubscription;
+- TLB persists across ordinary kernels in one simulated context unless invalidated/reset;
+- PTE requests in M3 will be physical and non-recursive.
 
 ## STOP boundary
 
-M2 must STOP before M3 if any required directed test, conservation law, replay invariant, or transparency check fails.
+Do not enter M3 until G2-4 real functional VM replay passes.
 
-M3 must STOP on recursive PTE translation, PTE response misassociation, request loss, deadlock, duplicate wakeup/side effect, unexplained nondeterminism, or timing/model ambiguity requiring an unapproved semantic change.
-
-After M3 PASS and M1-M3 macro closeout, STOP before M4B, Segmentation, synthetic-KV injection, or new AI-aware TLB mechanisms.
+Do not classify this as a host-capacity requirement without same-head baseline/mode-control evidence. Stop if diagnosis requires changing frozen VM semantics, if baseline transparency regresses, or if bounded diagnosis cannot be performed safely.
