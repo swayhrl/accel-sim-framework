@@ -111,7 +111,7 @@ def parameter_data_pointer(parameter) -> int:
     return int(local_parameter_tensor(parameter).data_ptr())
 
 
-def rebind_parameter_from_local_view(parameter, view):
+def rebind_parameter_from_local_view(model, name: str, parameter, view, torch):
     """Preserve DTensor mesh/placements while changing only its rank-local backing view."""
     if not (hasattr(parameter, "to_local") and hasattr(parameter, "placements")):
         parameter.data = view
@@ -119,8 +119,14 @@ def rebind_parameter_from_local_view(parameter, view):
     from torch.distributed.tensor import DTensor
     rebound = DTensor.from_local(view, parameter.device_mesh, parameter.placements, run_check=False,
                                  shape=parameter.shape, stride=tuple(parameter.stride()))
-    parameter.data = rebound
-    return rebound
+    module_name, parameter_name = name.rsplit(".", 1)
+    owner = model.get_submodule(module_name) if module_name else model
+    # Parameter.data assignment leaves a DTensor Parameter's original local
+    # storage in place. Replace only this module entry with an equivalent
+    # DTensor Parameter so module dispatch retains its mesh/placements.
+    replacement = torch.nn.Parameter(rebound, requires_grad=parameter.requires_grad)
+    owner._parameters[parameter_name] = replacement
+    return replacement
 
 
 def bind_flat_weight_storage(model, torch):
@@ -135,8 +141,8 @@ def bind_flat_weight_storage(model, torch):
     with torch.no_grad():
         for name, parameter, local, offset, nbytes in entries:
             view = flat.narrow(0, offset, nbytes).view(local.dtype).view_as(local)
-            view.copy_(local); rebound = rebind_parameter_from_local_view(parameter, view)
-            actual, expected = parameter_data_pointer(parameter), base + offset
+            view.copy_(local); rebound = rebind_parameter_from_local_view(model, name, parameter, view, torch)
+            actual, expected = parameter_data_pointer(rebound), base + offset
             if actual != expected:
                 raise RuntimeError(f"flat bind failed: {name}; expected_local_ptr={expected:#x} actual_local_ptr={actual:#x} "
                                    f"parameter_type={type(parameter).__name__} rebound_type={type(rebound).__name__} "
