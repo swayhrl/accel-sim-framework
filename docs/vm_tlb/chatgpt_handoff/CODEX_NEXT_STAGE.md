@@ -6,35 +6,32 @@
 
 `M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF independently accepted**.
 
-Accepted repaired M2 execution head:
-
+Accepted M2 execution head:
 `3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
 
-Framework M2-RF review evidence head before this handoff:
+`G3-0`: **PASS**.
 
-`c12ad7bc9fb6865e97ff8b65c215490a5d92305a`
+`G3-1 — PTE backend/request contract`: **PASS — independently accepted after G3-1-RF namespace repair**.
 
-The pending-waiter retry pollution is closed: already-registered waiters bypass before TLB port/probe, new waiters retain first lookup/merge semantics, cold/integrated regressions pass, and latency sensitivity no longer turns same-waiter wait time into proportional L2 miss inflation.
+Accepted G3-1 Core head:
+`a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
 
-## G3-1 review result
+Framework G3-1-RF evidence head before this handoff:
+`329b80b27a2db8709e2b2a0609f4783789552d98`
 
-The preserved provisional G3-1 commit:
+The fixed 33-bit maximum VPN namespace removes the former 64KB/2MB alias; all eight page-size-class/level namespace boundaries are directed-tested. PTE requests remain physical/non-recursive and M2 regressions remain clean.
 
-`8c613a356e6a146951cd59c9929046c6c4cfd856`
+## Next authorized execution
 
-is **NOT YET ACCEPTED**.
+Resume the existing Codex Goal / target-mode macro from:
 
-Independent review found a deterministic PTE-address alias because current address encoding uses page-size-dependent VPN widths. A 64KB level-0 key with `vpn=(4<<28)|X` aliases a 2MB level-0 key with `vpn=X` under the current formula.
+`G3-2 — real PTE L2/DRAM integration`
 
-Do not start G3-2.
+Then continue automatically through:
 
-## Next authorized stage
+`G3-2 -> G3-3 -> G3-4 -> G3-5 -> G3-CLOSEOUT -> M1_M3_VM_BASELINE_CLOSEOUT`
 
-Execute only:
-
-`stage_specs/M3_G3_1_ADDRESS_NAMESPACE_FIX.md`
-
-Do not modify `chatgpt_handoff/*`.
+only when each gate is PASS. Do not pause for ordinary successful gate transitions; STOP on any hard failure/ambiguity below.
 
 ## Mandatory read order
 
@@ -42,78 +39,79 @@ Do not modify `chatgpt_handoff/*`.
 2. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
 4. this file
-5. `stage_specs/M3_G3_1_ADDRESS_NAMESPACE_FIX.md`
+5. `stage_specs/M2_M3_TARGET_MODE.md`
 6. `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
 7. `stage_specs/M3_REFERENCE_MATERIALS.md`
 8. repaired M2 review pack
-9. current M3 review pack / G3-1 evidence
+9. M3 review pack including `G3_1_PTE_BACKEND.md` and `G3_1_ADDRESS_NAMESPACE_FIX.md`
+10. long-lived VM specs and target-paper known/unknown ledger
+
+Do not modify `chatgpt_handoff/*`.
 
 ## Source anchors
 
 Core branch:
 `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
 
-Expected Core start:
-`3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
+Expected accepted Core start:
+`a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
 
 Framework branch:
 `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
 Fetch/pull the latest Framework handoff before implementation.
 
-## Required G3-1-RF behavior
+## G3-2 stash handling
 
-Fix the generic PTE physical-address namespace so `(page-size-class, level, VPN)` is globally injective across supported 64KB and 2MB classes.
+The user reports prior uncommitted G3-2 WIP in Core `stash@{0}`.
 
-Prefer a fixed namespace width based on the maximum supported VPN width:
+It is not accepted evidence. Do **not** blindly `git stash pop`.
 
-```text
-max_vpn_bits = 49 - log2(64KB) = 33
-namespace_id = page_size_class * levels + level
-slot = (namespace_id << max_vpn_bits) | vpn
-```
+First inspect it with a read-only diff against the accepted Core head. Reuse only code that still satisfies the repaired M2 and accepted G3-1 contracts. Prefer selective application/reimplementation if the stash contains stale assumptions. Do not drop the stash until the replacement G3-2 work is committed, tested, and safely recoverable.
 
-An equivalent provably injective mapping is acceptable.
+## G3-2 acceptance emphasis
 
-The existing PTE-range sizing already assumes the maximum 64KB VPN width; keep sizing and encoding consistent.
+Implement the real timing path:
 
-## Mandatory tests
+`L2 TLB miss -> translation MSHR -> PWQ -> walker -> PTE request -> real L2/lower memory -> matching response -> walker progress -> fill/wakeup/replay`.
 
-At minimum prove:
+Required:
 
-- explicit former collision is gone:
-  - 64KB level0 `vpn=(4<<28)|0x12345`
-  - 2MB level0 `vpn=0x12345`
-  - PTE PAs must differ;
-- min/max VPN namespace boundaries do not overlap for every supported class/level;
-- same key different levels remain distinct;
-- 64KB/2MB PTE namespaces are distinct;
-- PTE PA stays in reserved PTE range;
-- application physical range stays outside PTE range;
-- PTE request remains physical and translation-bypassing;
-- replacement backend seam remains valid;
-- repaired M2 regressions and pending-retry test remain PASS;
-- one bounded functional M2 replay remains clean/quiescent.
+- PTE request is explicitly physical and bypasses translation;
+- PTE request bypasses L1D under the generic M3 policy and uses actual L2/memory-subpartition/interconnect/DRAM timing resources;
+- walker cannot advance before the correct PTE response;
+- multiple outstanding PTE requests are associated with the correct translation key, walk level, and request identity;
+- PTE and data traffic are separately observable;
+- PTE traffic consumes a demonstrable shared resource, not merely a counter/fixed delay;
+- deterministic `vm_pte_l2_hit`, `vm_pte_dram`, response-identity, no-recursion, and shared-resource-pressure tests pass;
+- all repaired M2 replay/conservation/store/atomic tests remain PASS.
 
-## Documentation/status cleanup
+Hard STOP on recursive translation, lost/misassociated response, deadlock, duplicate wakeup/side effect, or unexplained early walker progress.
 
-Update the M3 review pack and Codex progress/report so they do not claim G3-2 is RUNNING before this fix is accepted.
+## Page-table locality / PWC guard for later gates
 
-If touching the M2 invariant wording, state precisely:
+G3-1 proves collision-free deterministic PTE physical identities, but the target paper does not expose its exact page-table hierarchy/locality.
 
-> the repaired M2 execution path emits no PTE memory traffic.
+Current generic address identity must not be presented as paper-exact upper-level radix locality.
 
-Do not claim the current source tree contains no `pte_request` class, because the provisional G3-1 definitions are already in history.
+Before G3-3/PWC is accepted, explicitly document and test the hierarchy-prefix/PTE-sharing semantics used by the generic baseline. If conventional prefix sharing is implemented, prove related VPNs share the intended upper-level PTE/PWC keys; if a flatter synthetic model is retained, label it `MODELING_DECISION`, quantify its locality implication, and do not make hardware-fidelity claims. This issue must be resolved before G3-5 performance characterization.
 
-## G3-2 stash boundary
+Current M3 v0 is one simulated address space / ASID-0 execution path; do not claim multi-ASID PTE physical separation without extending the backend.
 
-The user reports G3-2 WIP is preserved in Core `stash@{0}`.
+## G3-3 onward
 
-Do not apply, modify, drop, or rely on that stash during this stage. No G3-2 source is authorized.
+Continue with the existing stage specification:
+
+- G3-3: finite PWC, zero/baseline/ideal modes, shared-resource behavior, M2 regressions;
+- G3-4: 64KB/2MB semantics and timing decomposition;
+- G3-5: integrated causality/sensitivity including fixed-latency M2 vs real-memory M3;
+- closeout: complete `M3_TIMING_REALISTIC_BASELINE` and `M1_M3_VM_BASELINE_CLOSEOUT` review packs.
+
+Do not implement target-paper L2-TLB sub-entry, Segmentation, synthetic KV, page faults/migration/UVM, MCM, or new AI-aware mechanisms in M3.
 
 ## Reporting
 
-Update:
+Maintain:
 
 `docs/vm_tlb/codex_handoff/m1_m3/TARGET_PROGRESS.md`
 
@@ -121,14 +119,24 @@ and:
 
 `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
 
-Update/reclose:
+Update:
 
 `docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/`
 
-After G3-1-RF acceptance criteria pass:
+Final macro pack:
 
-- push Core + Framework;
-- report exact SHAs and evidence entry;
-- **STOP FOR CHATGPT REVIEW**.
+`docs/vm_tlb/review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`
 
-Do not continue to G3-2, PWC, later M3 gates, Segmentation, synthetic KV, page faults/migration/UVM, or MCM work until the next ChatGPT handoff.
+## STOP conditions
+
+STOP immediately on:
+
+- recursive PTE translation;
+- PTE response identity/misassociation failure;
+- request loss, duplicate wakeup, duplicate store/atomic effect;
+- M1/M2 transparency or replay regression;
+- deadlock or unexplained nondeterminism;
+- a materially new page-table/timing modeling choice not covered by the approved generic-M3 policy;
+- source/provenance uncertainty.
+
+After M3 PASS and macro closeout, push both repositories, report final SHAs, and STOP before M4B / Segmentation / sub-entry / synthetic-KV / new research mechanisms.
