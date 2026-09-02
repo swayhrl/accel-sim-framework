@@ -24,7 +24,9 @@ kernel: 5,376 dynamic instructions, 5,562 cycles, and 96/96 L1D
 accesses/misses; both runs pass the application self-check. PAPER_BASE also
 passes the self-check. With MSHR=1 it reports 26,265 L1 reservation failures;
 with lower cap=2 it reaches peak outstanding=2, records 13,091 cap-full events,
-and closes 64 token acquires/releases at drain.
+and closes 64 token acquires/releases at drain. Its defined front-end primary
+stall accounting closes exactly: 3,970 PIB-full + 72 Tag-bank + 13,091
+lower-cap = 17,133 frontend stall cycles.
 
 The Framework CMake integration was corrected to make an isolated external
 `GPGPUSIM_ROOT` buildable.  A complete `accel-sim.out` build now succeeds and
