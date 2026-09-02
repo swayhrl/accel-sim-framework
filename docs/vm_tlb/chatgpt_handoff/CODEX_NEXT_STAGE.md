@@ -4,35 +4,36 @@
 
 `M1_VM_CORE_FOUNDATION`: **PASS**.
 
-`M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF independently accepted**.
+`M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF accepted**.
 
 `G3-0`: **PASS**.
 
-`G3-1 — PTE backend/request contract`: **PASS — accepted after namespace repair**.
+`G3-1 — PTE backend/request contract`: **PASS**.
 
-Accepted G3-1 Core head:
+`G3-2A — address provenance`: **PASS — CASE A**.
 
-`a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
+`G3-2B — generic trace-width extension`: **PASS**.
 
-`G3-2A — Address Provenance Diagnostic`: **PASS — CASE A accepted**.
+`G3-2 — real PTE L2/DRAM integration`: **PASS — independently accepted**.
 
-Framework G3-2A evidence:
+Accepted Core start:
+`965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
 
-`8eefe9d69764000f860871ca92770d986e7be0b6`
+Framework G3-2 evidence:
+`dbbd9d8360121aeda553eaf9365073e7332018bf`
 
-The first >49-bit request is a legitimate raw/coalesced global BFS store with 56-bit `SimVA`; VM-disabled and ideal-identity controls accept the same transaction. Therefore the generic M3 backend must not hard-code the target paper's 49-bit VA width.
+## Next authorized target
 
-## Next authorized execution
+Execute as one continuous internal target:
 
-Execute only:
-
-`G3-2B — generic trace-width extension and G3-2 resume`
+`G3-2C hierarchy-prefix PTE identity -> G3-3 generic PWC`
 
 Specification:
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2_TRACE_WIDTH_EXTENSION.md`
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2C_HIERARCHY_AND_G3_3_PWC.md`
 
-After G3-2B closes G3-2, STOP for ChatGPT review before G3-3/PWC.
+If G3-2C PASSes, continue automatically into G3-3.  After G3-3 PASS, commit,
+push and STOP for ChatGPT review before G3-4.
 
 ## Mandatory read order
 
@@ -40,82 +41,134 @@ After G3-2B closes G3-2, STOP for ChatGPT review before G3-3/PWC.
 2. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
 4. this file
-5. `stage_specs/M3_G3_2_TRACE_WIDTH_EXTENSION.md`
+5. `stage_specs/M3_G3_2C_HIERARCHY_AND_G3_3_PWC.md`
 6. `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
 7. `stage_specs/M3_REFERENCE_MATERIALS.md`
-8. `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`
-9. `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md`
-10. accepted M1/M2/G3-1 evidence and long-lived VM specs
+8. G3-2B/G3-2 closeout evidence
+9. accepted M1/M2/G3-1 evidence
+10. long-lived VM specs and parameter ledger
 
 Do not modify `chatgpt_handoff/*`.
 
 ## Source anchors
 
-Core branch:
-
+Core:
 `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
 
-Accepted Core semantic anchor:
+Expected Core start:
+`965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
 
-`a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
-
-Framework branch:
-
+Framework:
 `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
 Fetch/pull latest Framework handoff before implementation.
 
-## Architecture decision to implement
+## Architecture decision
 
-For generic M1-M3:
+The old flat `(level, full VPN)` PTE identity was sufficient for G3-2 plumbing
+but is not accepted for final PWC locality.
 
-- raw/coalesced trace address remains `SimVA`;
-- preserve identity-like data mapping `SimPA == SimVA`;
-- do not mask/truncate/canonicalize generic SimVA;
-- generic PTE backend VA width becomes configurable;
-- current generic M3 configuration = **56 bits**;
-- 49-bit configuration remains supported/tested for later target-paper use;
-- more-than-configured-width requests remain explicit correctness stops.
+Implement the balanced generic radix-prefix model in the stage spec.
 
-This is a simulator trace/backend modeling decision, not a commercial SM86 VA-width claim.
+For each page size:
 
-## Required implementation and validation
+```text
+B = virtual_address_bits - log2(page_size)
+L = levels
+r = ceil(B/L)
+top = B - r*(L-1)
+level widths = [top, r, r, ...]
+```
 
-Follow every gate in `M3_G3_2_TRACE_WIDTH_EXTENSION.md`.
+PTE identity at level `l` must use the VPN prefix through that level.  Physical
+PTE namespace subranges must be deterministic, non-overlapping and
+overflow-safe.
 
-At minimum:
+Required directed examples:
 
-1. remove the semantic hard-code that accepts only 49-bit generic VA;
-2. make width/range arithmetic overflow-safe and configuration-derived;
-3. prove non-overlap of 56-bit application identity-like addresses and the synthetic PTE-reserved range;
-4. prove all 64KB/2MB × four-level PTE namespaces remain disjoint under 56-bit config;
-5. keep original 49-bit namespace tests passing;
-6. accept the exact former BFS offender without changing its raw SimVA/identity-like SimPA;
-7. record a non-blocking high-bit/canonical-pattern audit over all available BFS transactions >=2^49 as `TRACE_ENCODING_OBSERVATION` only;
-8. reimplement/selectively reuse the local G3-2 WIP only after inspecting it against the accepted source;
-9. rerun real PTE request/response, L2/DRAM, multi-walker identity, one-kernel, BFS, LUD, M1 transparency and repaired M2 regressions;
-10. prove zero PTE response misassociation, conservation and final MSHR/PWQ/walker quiescence.
+- 56-bit/64KB `[10,10,10,10]`;
+- 56-bit/2MB `[8,9,9,9]`;
+- 49-bit/64KB `[6,9,9,9]`;
+- 49-bit/2MB `[7,7,7,7]`.
 
-The historical `stash@{0}` remains non-evidence. Do not blindly pop/drop it.
+This is `MODELING_DECISION`, not target-paper exact behavior.
 
-## PWC stop boundary
+## G3-2C gate
 
-Do **not** enter G3-3 after G3-2 PASS.
+Before PWC, prove:
 
-Current PTE identities are sufficient for G3-2 physical-memory plumbing but are not yet an approved hierarchy-prefix/PTE-sharing model for PWC locality. ChatGPT will specify that separately after G3-2 closeout.
+- intended upper-level PTE sharing for related VPNs;
+- leaf uniqueness;
+- unrelated-prefix separation;
+- 64KB/2MB class separation;
+- physical namespace/range safety;
+- 49-bit and 56-bit tests PASS;
+- former BFS offender still preserves raw SimVA/identity-like SimPA;
+- full G3-2 real PTE L2/DRAM suite, LUD/BFS, response identity and M1/M2
+  regressions PASS under the new hierarchy identities.
+
+Changed L2 PTE hit counts are allowed only when directly explained by the new
+hierarchy-prefix identities.
+
+On PASS continue automatically into G3-3.
+
+## G3-3 PWC contract
+
+Cache intermediate/non-leaf PTEs only, levels `0..L-2`.
+
+PWC key:
+
+`(ASID, page-size-class, level, prefix(vpn,level))`
+
+Required modes:
+
+- `OFF`: no entries;
+- `FINITE`: default 128 entries, fully associative LRU;
+- `IDEAL`: diagnostic unbounded/no-eviction.
+
+The 128-entry default is generic/reference-motivated only; it is not a
+Segmentation-paper parameter.
+
+A hit skips exactly that intermediate level's PTE memory request.  Leaf PTE
+reads still use the real accepted PTE memory path.
+
+Required exact tests include:
+
+- `vm_pwc_zero`;
+- `vm_pwc_warm`: first related 56-bit/64KB walk = 4 PTE requests, second walk
+  sharing upper 30 bits = three PWC hits + one leaf PTE request, total 5 rather
+  than 8;
+- `vm_pwc_partial_share`;
+- deterministic finite-capacity LRU eviction;
+- `vm_pwc_no_leaf`;
+- `vm_pwc_2mb`;
+- integrated real-memory PWC traffic reduction;
+- no change to resolved SimPA/data semantics;
+- all response/waiter/replay/conservation invariants remain PASS.
+
+Maintain structured per-level PWC access/hit/miss, insert/eviction, occupancy,
+high-water and skipped-PTE-request statistics.
+
+## Important timing policy
+
+Do not invent an unexplained PWC port bottleneck.  Follow the stage spec:
+configurable one-cycle generic service with enough logical lookup bandwidth for
+active walkers is preferred.  If a zero-cycle functional PWC probe is used for
+implementation safety, document it explicitly and leave G3-5 responsible for
+adding/accounting the final configured PWC lookup latency before M3 closeout.
 
 ## Explicitly forbidden
 
 Do not:
 
-- canonicalize, mask or truncate raw SimVA;
-- silently modulo-map PTE addresses;
-- change TLB/MSHR/PWQ/replay semantics;
-- expand to multi-ASID;
-- implement PWC/G3-3;
-- implement Segmentation, L2-TLB sub-entry or synthetic KV;
-- implement page fault/migration/UVM/MCM;
-- claim generic 56-bit mode is target-paper exact.
+- rewrite/mask/canonicalize generic SimVA;
+- start G3-4 before review;
+- implement Segmentation or L2-TLB sub-entry/coalescing;
+- inject synthetic KV;
+- add page faults/migration/UVM/MCM;
+- claim hierarchy/PWC organization is exact NVIDIA hardware or exact target
+  Segmentation-paper behavior;
+- silently broaden claims to multi-ASID.
 
 ## Reporting
 
@@ -127,22 +180,22 @@ and:
 
 `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
 
-Update:
-
-`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/`
-
-Commit/push safe Core + Framework results and STOP after G3-2 closeout for ChatGPT review.
+Update the M3 review pack with separate hierarchy and PWC evidence.
 
 ## STOP conditions
 
-STOP immediately on:
+STOP on:
 
-- width/range overflow or overlap;
-- a trace request requiring more than configured 56-bit generic width;
+- hierarchy namespace collision/overflow;
+- PTE/application physical-range overlap;
+- unexpected prefix-sharing behavior;
+- PWC nondeterminism;
 - recursive PTE translation;
-- PTE response identity failure/misassociation;
-- request loss, duplicate wakeup, duplicate store/atomic effect;
+- response identity/misassociation failure;
+- request loss, duplicate wakeup/store/atomic effect;
 - M1/M2 regression;
 - deadlock or unexplained nondeterminism;
 - source/provenance ambiguity;
-- any need to change the approved generic width policy rather than implement it.
+- any need to change the approved hierarchy/PWC policy.
+
+After G3-3 PASS, push both repositories and STOP before G3-4.
