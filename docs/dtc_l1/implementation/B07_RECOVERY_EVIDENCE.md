@@ -1,9 +1,9 @@
 # B07 recovery evidence
 
-Status: `R07.1_R07.5_COMPLETE_R07.6_PENDING`
+Status: `R07.1_R07.6_COMPLETE_M1_PASS`
 
-This document records bounded recovery evidence only.  It does not mark M1 as
-passed and does not authorize M2.
+This document records the bounded recovery evidence and its final M1
+revalidation. M2 authorization is recorded separately by the M1 review pack.
 
 ## Source anchors
 
@@ -108,9 +108,10 @@ Raw logs are intentionally outside version control.
 | `DIAGNOSTIC` B07 max-merge 1 | `/tmp/dtc-l1-b07-prefix-5Iqwvu/run-postfix.log` | `fce3d9edc1c078c49a528d151de85f4dd824b6a3cf15de68110a000452ffaf49` |
 | `DIAGNOSTIC` B07 max-merge 2 | `/tmp/dtc-l1-b07-merge2-SK0d6v/run.log` | `699085960f0f8330dd764d51ecfee5151e225e039e6c75afd9df10e388fe078b` |
 | `FORMAL_VALIDATION` frozen clean B07 | `/tmp/dtc-l1-b07-clean-v5uccW/run.log` | `abf928128d658a789af2632720c5741505006d083acf6471f23cd5f7ae3a25ec` |
+| `FORMAL_VALIDATION` R07.6 B07 final | `/tmp/dtc-l1-b07-prefix-5Iqwvu/run-final.log` | `16d8e21acfca561f9354d6670f3e1dc903ccdf4486a879c8db5a876248288e8c` |
 
 ## Next gate
 
-R07.6 remains required: rerun every M1 HARD gate, LEGACY exact differential
-set, counter/parser closure, release build, and clean-worktree checks.  Do
-not create `review_packs/M1_FOUNDATION/` or begin M2 until that work passes.
+R07.6 passed at Core `48b0be73`: the full CTest suite, B06/B07/B08, strict
+parser closure, and the complete LEGACY differential set all passed. See
+`review_packs/M1_FOUNDATION/` for the independently reviewable closeout.
