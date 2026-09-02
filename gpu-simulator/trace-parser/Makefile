@@ -61,6 +61,9 @@ $(BUILD_DIR)/trace-parser.Makefile.makedepend: depend
 
 depend:
 	touch $(BUILD_DIR)/trace-parser.Makefile.makedepend
-	makedepend -f$(BUILD_DIR)/trace-parser.Makefile.makedepend -p$(BUILD_DIR)/ $(CSRCS) 2> /dev/null
+	makedepend -I$(GPGPUSIM_ROOT)/libcuda -I$(GPGPUSIM_ROOT)/src \
+		-I$(CUDA_INSTALL_PATH)/include -I. \
+		-f$(BUILD_DIR)/trace-parser.Makefile.makedepend -p$(BUILD_DIR)/ \
+		$(CSRCS) 2> /dev/null
 
 include $(BUILD_DIR)/trace-parser.Makefile.makedepend
