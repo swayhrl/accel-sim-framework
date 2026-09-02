@@ -1,10 +1,10 @@
-# M2 IO response-recovery evidence (in progress)
+# M2 IO response-recovery evidence
 
-Status: `R2.0-R2.5 IMPLEMENTED; M2 NOT YET ACCEPTED`
+Status: `M2 HARD GATES COMPLETE — REVIEW PACK PENDING COMMIT`
 
-Core recovery checkpoint:
+Core implementation checkpoint:
 
-`3be79d4d41f381ab07895b3a67da63224bdea62f`
+`ec81a7771e56670588538ca2ec7945c3a4543383`
 
 ## R2.0 identity rule
 
@@ -46,24 +46,34 @@ cover its line; this is also when its lower credit and root object are released.
   that becomes a Valid/Pending hit clears that condition; it cannot become a
   historical sticky retirement dependency.
 
-## Current validation
+## Completed validation
 
-- Core release build: PASS.
-- `dtc_l1_m1_common_test`: PASS, including multi-sector grouping, pending
-  merge, transient block retry, valid hit, and allocation-width regressions.
-- Real `PAPER_IO` VecAdd smoke: PASS (`vecAdd result: PASS`).  The final
+- Core release build and `dtc_l1_m1_common_test`: PASS. The directed unit
+  covers I01-I11 and the explicit 64-independent-request no-MSHR case: it
+  holds 64 pending IO PIB entries (> Baseline PIB 8 and MSHR 32), while a
+  second reader is a Pending hit and leaves new misses at exactly 64. It also
+  covers Tag-bank serialization/four-bank service, exact LRU, delayed fill to
+  original `{id,generation}`, duplicate-after-pending-eviction accounting,
+  FIFO HOL, same-cycle release reuse, partial hold/no rollback, and transient
+  allocation-block retry.
+- Real default-80KB `PAPER_IO` VecAdd: PASS (`vecAdd result: PASS`). The final
   counters were: `io_lower_created=16`, `issued=16`, `responses=16`,
   `inflight_current=0`, `identity_mismatch=0`,
   `responses_routed_conventional=0`, `pib_occupancy=0`,
-  `retire_count=16`, dependencies `16/16`, and lower credits `16/16`.
+  `retire_count=16`, dependencies `16/16`, lower credits `16/16`, and
+  conventional-L1D MSHR entry/merge-full `0/0`. It reports 16 IO Tag requests
+  (four per bank) and no unexpected watchdog.
+- I12 tiny-pool run (`logical_sets=1`, `ways=1`, `physical_lines=1`) reaches
+  the native simulator deadlock detector without a recovery special case. Its
+  compact DTC dump reports `pib=1`, `free_phys=0`, `allocated_phys=1`, and one
+  partial entry; this run is classified `EXPECTED_RESOURCE_DEADLOCK`.
 - R2.1/I14 pressure smoke with `-gpgpu_dtc_l1_lower_outstanding_cap 2`: PASS.
   It completed the same VecAdd with created/issued/responded requests `16/16/16`,
   credits `16/16`, final outstanding `0`, and `lower_cap_full_events=1190`.
   Thus the third and later candidates wait for credit rather than creating an
   untracked lower request.
 
-## Remaining HARD work
-
-M2 remains incomplete.  The directed I06-I15 matrix, explicit high-MLP
-no-traditional-MSHR proof, complete counter/parser acceptance, and M2 review
-pack are still required.  M3/M4/M5 remain forbidden.
+The Framework strict parser now requires Paper IO request, PIB, dependency,
+and credit closure fields and captures the IO physical/duplicate/HOL/Tag and
+independent conventional-MSHR evidence. `git diff --check` and clean-tree
+closeout are recorded in the M2 review pack.
