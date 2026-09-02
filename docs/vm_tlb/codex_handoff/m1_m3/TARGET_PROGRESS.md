@@ -58,19 +58,32 @@ Next goal: `G2-4`.
 
 ## G2-4 — real stall/replay correctness
 
-Status: `BLOCKED`
-Core SHA: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
-Framework SHA: `a63e243c350ea3628e9dab68620ee77982a6b0b9`
+Status: `PASS`
+Core SHA: `e7999554200760b31b4efe16d98e050370e1ea71`
+Framework SHA: `4012be3606c300d11e7b34826ee1cb22b0852b93`
 
-Directed replay/store/atomic/cross-page checks and the standard build pass.
-Evidence: `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_4_RUNNING.md`.
+Directed replay/store/atomic/cross-page checks, a cold build, and a real
+one-kernel functional replay pass.  The latter ends with 85 translation
+requests, one MSHR/walk, waiter registration/wakeup 1/1, and no active
+translation state.  Evidence: `review_packs/M2_RUNTIME_MEMORY_DIAG/`.
 
-Blocked acceptance: three reproducible real-runtime attempts cannot reach
-cache-path replay. A one-kernel diagnostic reproduced about 65 GiB RSS growth,
-and a 10 GiB-address-space run deterministically throws `std::bad_alloc` just
-after memory-subpartition initialization. This rules out full trace-list
-preload but leaves no safe local run capacity for the required evidence.
+## M2-D — runtime memory diagnosis
 
-Required external change: a simulator host with sufficient isolated memory, or
-an approved diagnosis/fix for the pre-trace memory allocation. Do not advance
-to M2 closeout or M3 before a completed VM-mode replay run passes.
+Status: `PASS`
+Core SHA: `e7999554200760b31b4efe16d98e050370e1ea71`
+Framework SHA: `4012be3606c300d11e7b34826ee1cb22b0852b93`
+
+Completed D0–D6: same-head 0/1/2 control, cold checkpoint isolation, effective
+configuration/footprint, standalone controller, allocation phase diagnosis,
+minimal fixes, and bounded post-fix regression.  Evidence:
+`review_packs/M2_RUNTIME_MEMORY_DIAG/`.
+
+## G2-CLOSEOUT — M2 full acceptance
+
+Status: `RUNNING`
+Core SHA: `e7999554200760b31b4efe16d98e050370e1ea71`
+Framework SHA: `4012be3606c300d11e7b34826ee1cb22b0852b93`
+
+Current work: required regular/memory-intensive/irregular integrated smoke and
+small resource sensitivity checks.  Next goal: `G3-0` only after this gate
+passes.
