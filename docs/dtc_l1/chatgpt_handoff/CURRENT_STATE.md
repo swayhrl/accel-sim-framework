@@ -2,7 +2,7 @@
 
 Last coordination update: 2026-09-03
 
-Status: **M1 PASS; M2 HARD-STOPPED ON IO RESPONSE ROUTING; RECOVERY AUTHORIZED**
+Status: **M1 PASS; M2 RECOVERY IN PROGRESS; EXPLICIT GOAL MODE AUTHORIZED THROUGH M4**
 
 ## Source anchors
 
@@ -23,6 +23,8 @@ Active goal branches:
 - Core: `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`;
 - Framework: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`.
 
+M0 branches are read-only design anchors.
+
 ## M1 closeout — PASS
 
 M1 Foundation is independently reviewable at:
@@ -41,84 +43,101 @@ M1 established:
 - conventional Paper-Base MSHR capacity/merge behavior;
 - lower outstanding-cap accounting;
 - common counters/parser plumbing;
-- B07 recovery for the L1-hit true-completion PIB retirement leak;
+- B07 L1-hit completion PIB-retirement recovery;
 - all B01-B09 and M1 accounting/hygiene HARD gates PASS.
 
 M1 is closed and must not be weakened to solve later DTC issues.
 
-## Current M2 committed state
+## M2 recovery — current verified progress
 
-After M1, Codex committed directed/scaffolding work for the IO frontend, including:
-
-- whole-line IO logical Tag -> physical model helpers;
-- physical `{id,generation}` identity;
-- configurable 16KB/4-way logical and 80KB physical geometry;
-- RR physical allocation with width control;
-- directed IO eviction/generation tests;
-- access to already-coalesced source data needed to form 128B line references.
-
-The current committed Core branch is clean at the reported M2 stop SHA. The failed real request/response experiment was discarded rather than pushed.
-
-## M2 HARD failure
-
-The first real `PAPER_IO` VecAdd integration created an IO-owned lower request that correctly bypassed conventional L1D MSHR allocation. On return, the existing `ldst_unit::cycle()` cached-read response branch still called:
-
-`m_L1D->fill(mf, ...)`
-
-That conventional fill path requires `baseline_cache::m_extra_mf_fields`, which a true IO-owned request intentionally does not have. The simulator therefore asserted in `baseline_cache::fill()`.
-
-Evidence:
+The original Paper-IO integration failure was that an IO-owned lower read bypassed conventional L1D MSHR allocation but its return still entered conventional `baseline_cache::fill()`, which requires `m_extra_mf_fields`. That failure is preserved in:
 
 `docs/dtc_l1/implementation/M2_IO_INTEGRATION_FAILURE.md`
 
-The STOP was correct. No M2 PASS is claimed; M3/M4/M5 have not started.
+The recovery has now crossed that blocker.
 
-## ChatGPT recovery design
+Current pushed Core recovery state includes at least checkpoint:
 
-The failure demonstrates that Paper IO must own the **entire read lifecycle**, not merely Tag/physical allocation and request issue.
+`f6ce41c610ab27e886f86c1cd98d52d4548c39c5`
 
-Required architecture for cacheable PAPER_IO reads:
+Current detailed evidence:
 
-1. DTC PIB owns the dynamic instruction lifecycle;
-2. DTC logical Tag/physical allocation owns hit/pending/miss state;
-3. DTC new miss creates one DTC-owned whole-line lower request;
-4. an immutable request identity maps the returning request to `{phys_id,generation}`;
-5. response dispatch recognizes DTC ownership before conventional L1D fill;
-6. DTC response marks the intended physical allocation ready and releases lower credit;
-7. the IO FIFO head retires through a finite operand-collector/writeback-aware DTC path;
-8. conventional L1D MSHR/`m_extra_mf_fields`/`next_access()` are not used to simulate DTC read completion.
+`docs/dtc_l1/implementation/M2_IO_RESPONSE_RECOVERY_EVIDENCE.md`
 
-The detailed authorized recovery is:
+Verified recovery behavior includes:
 
-`docs/dtc_l1/goal/M2_IO_RESPONSE_RECOVERY_SPEC.md`
+- DTC-owned whole-line lower request identity using root request UID plus source-backed sector-child/original mapping;
+- response dispatch recognizes IO ownership before conventional L1D fill;
+- no IO-owned read response is routed through conventional `baseline_cache::fill()` in the validated smoke;
+- physical `{id,generation}` completion identity is checked;
+- IO PIB retains completion payload and retires FIFO head through finite operand-collector/writeback availability;
+- whole-line Paper IO completion cardinality uses unique coalesced 128B line references;
+- allocation blocking is transient rather than a sticky historical retirement dependency;
+- real `PAPER_IO` VecAdd self-check PASS;
+- VecAdd IO request/response, PIB, dependency, inflight, and lower-credit state drain to zero;
+- lower-outstanding cap=2 pressure run completes and observes cap blocking instead of creating untracked requests.
 
-## Additional source-review risks to resolve during recovery
+Latest mutable execution status is always Codex-owned:
 
-### Completion cardinality
+`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 
-The current simulator increments load `m_pending_writes` from upstream `accessq_count()`, which may reflect sector transactions. Whole-line Paper IO instead uses unique coalesced 128B line references. PAPER_IO completion accounting must use the same dependency cardinality as its PIB model while leaving LEGACY/PAPER_BASE unchanged.
+Do not redo already-passed recovery work solely because a planning document predates the latest checkpoint.
 
-### Sticky allocation-block state
+## M2 remaining HARD work
 
-The current committed `io_frontend` keeps an `allocation_blocked` entry flag. A failed allocation followed by a retry that resolves as a Valid/Pending Tag hit can leave that flag stale. Recovery must make allocation blocking transient (or otherwise prove every transition clears it correctly) so historical resource pressure cannot permanently prevent retirement.
+M2 is **not** yet accepted and no M2 review pack should exist until all HARD items pass.
 
-## Active execution authority
+Remaining priority is:
 
-Follow:
+1. close directed state/resource cases I06-I15 that are not already formally evidenced;
+2. formalize/reuse valid I14 cap=2 evidence rather than rerun it without purpose;
+3. perform an explicit high-MLP no-traditional-L1-MSHR proof that exceeds Baseline PIB=8 / MSHR=32 concurrency and demonstrates Paper-IO reads do not depend on conventional L1D MSHR capacity/merge state;
+4. close all IO request/response/PIB/dependency/physical/lower-credit counters and strict parser checks;
+5. close release build/CTest/`git diff --check`/clean-worktree gates;
+6. create/push `review_packs/M2_IO_READ/` only after complete M2 HARD PASS.
 
-- `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`;
+## M3 progression after M2 PASS
+
+M3 is authorized automatically after full M2 PASS and review-pack creation.
+
+Required order:
+
+1. PAPER_OO whole-line random-access PIB and deterministic oldest-ready retirement;
+2. line-level Ref Count and independent Shadow Ref checker;
+3. pending-hit Merge/wakeup;
+4. active reclamation using `tag_valid==0 && ref_count==0`;
+5. O01-O13 and IO-vs-OO causal HOL test;
+6. **only after all whole-line OO HARD gates pass**, implement/validate the 4x32B sector-readiness extension;
+7. create/push M3 review pack and continue to M4 on PASS.
+
+## M4 progression after M3 PASS
+
+M4 is authorized automatically after full M3 PASS.
+
+Before functional edits, perform the source-backed Store/Atomic/Fence/architectural-bypass semantics audit. Preserve existing underlying memory semantics and attach them to the DTC lifecycle. Atomic side effects must never be collapsed by read pending-hit merge logic.
+
+M4 closes only after mixed-operation regressions and the required representative Base/IO/OO compute bring-up complete with matching dynamic operation counts, closed invariants, provenance, and a review pack.
+
+## Explicit Goal-mode execution authority
+
+Primary short Goal contract:
+
+`docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+
+Executable stage authority:
+
+`docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
+
+Detailed specifications:
+
 - `docs/dtc_l1/goal/M2_IO_RESPONSE_RECOVERY_SPEC.md`;
-- existing M1-M4 goal/counter/validation specifications.
+- `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`;
+- `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`;
+- `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`;
+- Core `docs/dtc_l1/DTC_L1_SPEC.md`.
 
-Required recovery order:
+Codex should run this as one persistent Goal through M2 -> M3 -> M4. Ordinary checkpoint commits/test passes are not stop conditions. Major-stage PASS requires a review pack but does not require new human authorization.
 
-1. R2.0 prove lower-request identity round trip;
-2. R2.1 dedicated IO request ownership and response dispatch;
-3. R2.2 dedicated IO PIB payload and writeback/retirement;
-4. R2.3 completion-cardinality alignment to 128B line refs;
-5. R2.4 allocation-block-state correction/proof;
-6. R2.5 prove IO read isolation from conventional L1D MSHR/fill;
-7. R2.6 real VecAdd smoke;
-8. R2.7 full M2 I01-I15/no-MSHR/accounting closeout.
+Any reproducible HARD failure or source-semantic ambiguity requiring a guess still requires evidence + STOP.
 
-If M2 fully passes, Codex may automatically continue M3 -> M4. Any HARD failure still requires STOP. M5 remains forbidden.
+Final authorized end state is `READY_FOR_M5_REVIEW`. M5 remains forbidden.
