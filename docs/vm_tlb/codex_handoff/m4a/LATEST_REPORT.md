@@ -16,8 +16,8 @@ single-GPU trace remains rejected as a formal paper workload; Route A remains
 an approval-required approximation.
 
 The review-fix began at required handoff
-`38c9b224dae55002b159f07c9f4fc3b4035ce8d5`; final commit is recorded in the
-review pack after push.
+`38c9b224dae55002b159f07c9f4fc3b4035ce8d5`; its finalized implementation
+commit is `524cb20785ec4632b434a0786181ff814ad7eaba`.
 
 ## Completed RF0–RF7
 
