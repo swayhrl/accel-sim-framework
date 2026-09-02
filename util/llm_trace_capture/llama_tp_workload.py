@@ -23,6 +23,19 @@ PACKAGE_PINS = {"torch": "2.6.0", "transformers": "4.51.3", "accelerate": "1.6.0
                 "safetensors": "0.5.3", "huggingface_hub": "0.30.2"}
 LOCAL_SNAPSHOT_FILES = ("model.safetensors", "config.json", "generation_config.json", "tokenizer.json",
                         "tokenizer_config.json", "special_tokens_map.json")
+DEFAULT_DIST_TIMEOUT_SECONDS = 3600
+
+
+def distributed_timeout_seconds() -> int:
+    """Allow rank0's deliberately slower NVBit ROI to hold TP collectives safely."""
+    raw = os.environ.get("M4A_DIST_TIMEOUT_SECONDS", str(DEFAULT_DIST_TIMEOUT_SECONDS))
+    try:
+        value = int(raw)
+    except ValueError as error:
+        raise RuntimeError("M4A_DIST_TIMEOUT_SECONDS must be an integer number of seconds") from error
+    if value < 600:
+        raise RuntimeError("M4A_DIST_TIMEOUT_SECONDS must be at least 600 seconds")
+    return value
 
 
 def require_model_source(revision: str) -> dict:
@@ -221,7 +234,7 @@ def write_sidecar(path: Path, revision: str, route: str, rank: int, flat, table,
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
-def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, str], region: str, phase: str, model_source: dict, capture_status: str, rank_mapping: list[dict]) -> None:
+def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, str], region: str, phase: str, model_source: dict, capture_status: str, rank_mapping: list[dict], dist_timeout_seconds: int) -> None:
     payload = {"schema_version": "m4a-llama-workload-manifest-v2", "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
                "model_id": MODEL_ID, "model_revision": revision, "tokenizer_revision": revision,
                "input_method": "deterministic token IDs; no prompt/tokenizer fallback", "batch_size": BATCH,
@@ -230,7 +243,8 @@ def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, st
                "roi_control": "ACTIVE_FROM_START=0 plus cuProfilerStart/cuProfilerStop for trace phase only",
                "package_versions": versions, "requirements_file": "util/llm_trace_capture/requirements-llama-tp4.txt",
                "model_transport": model_source["transport"], "model_source": model_source["provenance"],
-               "capture_status": capture_status, "rank_mapping": rank_mapping}
+               "capture_status": capture_status, "rank_mapping": rank_mapping,
+               "distributed_timeout_seconds": dist_timeout_seconds}
     (run_dir / "workload-manifest.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
@@ -266,7 +280,8 @@ def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str
     import torch.distributed as dist
     from transformers import AutoModelForCausalLM
     if int(os.environ.get("WORLD_SIZE", "0")) != TP_SIZE: raise RuntimeError("real-tp4 route requires torchrun world size 4")
-    dist.init_process_group("nccl"); rank = dist.get_rank(); torch.cuda.set_device(int(os.environ["LOCAL_RANK"])); versions = package_versions()
+    timeout_seconds = distributed_timeout_seconds()
+    dist.init_process_group("nccl", timeout=dt.timedelta(seconds=timeout_seconds)); rank = dist.get_rank(); torch.cuda.set_device(int(os.environ["LOCAL_RANK"])); versions = package_versions()
     rank_mapping = record_rank_mapping(run_dir, rank, torch, dist)
     # The frozen tracer is inactive until profiler_region. Do not move setup inside it.
     model = AutoModelForCausalLM.from_pretrained(**model_load_kwargs(model_source, revision), torch_dtype=torch.bfloat16, tp_plan="auto")
@@ -301,7 +316,7 @@ def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str
     print(f"rank={rank} PASS finite logits and stable flat-weight binding", flush=True)
     if rank == 0:
         write_sidecar(output, revision, "real-tp4-rank0", rank, flat, table, versions, kv_events, model_source, capture_status)
-        write_workload_manifest(run_dir, revision, versions, region, phase, model_source, capture_status, rank_mapping)
+        write_workload_manifest(run_dir, revision, versions, region, phase, model_source, capture_status, rank_mapping, timeout_seconds)
     dist.barrier(); dist.destroy_process_group()
 
 
@@ -309,6 +324,18 @@ def self_test() -> None:
     assert MODEL_ID == "meta-llama/Llama-3.2-1B" and (BATCH, SEQ, OUTPUT_TOKENS, TP_SIZE) == (8, 64, 3, 4)
     assert aligned(1) == 256 and MODEL_SHA.fullmatch("a" * 40) and REGIONS == {"prefill", "decode1", "decode_reuse"}
     assert CAPTURE_STATUSES == {"P5_LOCAL_SMOKE", "DIAGNOSTIC_PILOT", "FORMAL"}
+    old_timeout = os.environ.pop("M4A_DIST_TIMEOUT_SECONDS", None)
+    try:
+        assert distributed_timeout_seconds() == DEFAULT_DIST_TIMEOUT_SECONDS
+        os.environ["M4A_DIST_TIMEOUT_SECONDS"] = "600"
+        assert distributed_timeout_seconds() == 600
+        os.environ["M4A_DIST_TIMEOUT_SECONDS"] = "599"
+        try: distributed_timeout_seconds()
+        except RuntimeError: pass
+        else: raise AssertionError("short distributed timeout was accepted")
+    finally:
+        if old_timeout is None: os.environ.pop("M4A_DIST_TIMEOUT_SECONDS", None)
+        else: os.environ["M4A_DIST_TIMEOUT_SECONDS"] = old_timeout
     class FakeDistributed:
         placements = object()
         def __init__(self, local): self.local = local

@@ -22,6 +22,13 @@ framework TP=4, and NVBit injection limited to rank 0. It is
 method is unavailable. Rank-0 NCCL/collective activity is retained and
 labelled; it must not be silently removed before later compatibility review.
 
+Rank-selective instruction tracing intentionally makes rank 0 much slower than
+its peers while the real TP=4 collectives remain live. The workload therefore
+uses a recorded `M4A_DIST_TIMEOUT_SECONDS` process-group timeout (default
+3600 seconds; values below 600 are rejected). This is a liveness guard only: it
+does not change TP topology, workload shape, ROI placement, collectives, or the
+raw trace-retention policy.
+
 Route A is a future single-GPU one-rank local-shape/weight-shard emulation
 candidate, not the formal default. It needs local Q/K/V and MLP shards plus
 explicit row-parallel peer placeholders, and is `DOCUMENTED_APPROX` only after
