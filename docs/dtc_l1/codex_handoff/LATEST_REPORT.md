@@ -2,7 +2,7 @@
 
 Stage: `M1_FOUNDATION`
 
-Status: **IN_PROGRESS — INTEGRATION VALIDATION BLOCKED BY ENVIRONMENT**
+Status: **IN_PROGRESS — BUILD PATH VALIDATED; HARD GATES PENDING**
 
 Core SHA: `06a2e689457e867dce35050b84510b1c62f70498`
 
@@ -18,19 +18,20 @@ and the deterministic CTest target build successfully with the normal tracing
 configuration.
 
 The Framework CMake integration was corrected to make an isolated external
-`GPGPUSIM_ROOT` buildable.  Its executable build then stopped before linking
-because the environment provides `libzstd.so.1` but no `zstd.h` development
-header required by `gpu-simulator/trace-parser/warp_trace_stream.h`.  This is
-recorded as an environment dependency blocker, not as an architecture result
-or an M1 PASS.
+`GPGPUSIM_ROOT` buildable.  A complete `accel-sim.out` build now succeeds and
+its banner reports Core `06a2e689…`.  The host lacks the normal Zstandard
+development package, so this build used a transient `/tmp` checkout of the
+matching 1.4.8 header and a transient link-name shim for the existing
+`libzstd.so.1`; neither is a repository dependency nor formal experiment
+evidence.
 
 ## Remaining issues
 
 - M1 HARD validation remains incomplete: full simulator-path B02-B09 evidence,
   LEGACY neutrality, counter/invariant closure, parsers, and M1 review pack are
   still required.
-- The missing Zstandard development header prevents the required Framework
-  executable/integration validation in the current environment.
+- Full simulator-path B02-B09 evidence, LEGACY neutrality, counter/invariant
+  closure, parsers, and M1 review pack remain outstanding.
 - No M2/M3/M4 work has started.
 
 ## Recommendation
