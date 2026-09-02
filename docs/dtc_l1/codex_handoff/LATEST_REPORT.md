@@ -6,7 +6,8 @@ Status: **PASS — M4 AUTHORIZED**
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 
-Framework M3 implementation/parser checkpoint: pending semantic commit.
+Framework M3 implementation/parser checkpoint:
+`800fc95fe2b502e30e76ce1cb6de050f6069178e`.
 
 ## M3 closeout status
 
