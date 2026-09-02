@@ -1,6 +1,6 @@
 # M4A LLM workload contract
 
-Status: `M4A-P_PREPARED`; no LLM trace has been collected.
+Status: `M4A_PRECAPTURE_FIXUP_PREPARED`; no LLM trace has been collected.
 
 ## Frozen paper workload
 
@@ -14,10 +14,35 @@ Status: `M4A-P_PREPARED`; no LLM trace has been collected.
 | Primary regions | prefill and first decode | `PAPER_SPEC` |
 | Long context | no full 12K instruction trace; later synthetic-KV work only | `PAPER_SPEC` |
 
-The capture package requires the runtime command to record its exact framework,
-model revision, tokenizer revision, dtype/quantization, and TP method.  Those
-four fields remain `UNKNOWN`/`PAPER_DETAIL_UNAVAILABLE`; a full-model,
-single-GPU trace must never be relabelled as the paper's TP=4 partition.
+## Formal-route decision
+
+Route E is the preferred formal candidate: one node with **4 x SM86**, actual
+framework TP=4, and NVBit injection limited to rank 0. It is
+`PAPER_COMPATIBLE_SELF_CAPTURE`, not `PAPER_EXACT`, because the authors' TP
+method is unavailable. Rank-0 NCCL/collective activity is retained and
+labelled; it must not be silently removed before later compatibility review.
+
+Route A is a future single-GPU one-rank local-shape/weight-shard emulation
+candidate, not the formal default. It needs local Q/K/V and MLP shards plus
+explicit row-parallel peer placeholders, and is `DOCUMENTED_APPROX` only after
+approval. A full Llama-3.2 1B single-GPU trace is diagnostic-only and rejected
+as the formal paper workload.
+
+For TP size 4, Route A would use local column-parallel Q output `H/4`, K/V
+output `(N_kv_heads/4)*head_dim`, and gate/up MLP output `I/4`. The local
+attention output projection (`H/4 -> H`) and MLP down projection (`I/4 -> H`)
+produce only a partial result and require an explicit peer-sum/all-reduce
+placeholder. No wrapper may replace those operations with a full `H -> H` or
+`I -> H` full-model layer and still call the result a paper partition.
+
+## Pinned executable Route-E wrapper
+
+`util/llm_trace_capture/run_llama_tp4_rank0.sh` launches four ranks with
+`torchrun`, requires the immutable Llama model ID and a 40-hex model revision,
+and enforces B8/S64/G3/TP4. Runtime package pins are in
+`util/llm_trace_capture/requirements-llama-tp4.txt`. Inputs are deterministic
+token IDs, so no prompt/tokenizer fallback exists; the model revision is also
+recorded as tokenizer revision.
 
 ## Required command-file contract
 

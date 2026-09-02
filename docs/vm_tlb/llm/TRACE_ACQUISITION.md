@@ -10,7 +10,8 @@ authorization.
 ```bash
 M4A_C_AUTHORIZED=1 bash util/llm_trace_capture/run_m4a_c.sh \
   --framework-root "$PWD" --work-root /mnt/nvme/m4a-llama \
-  --workload-command-file /mnt/nvme/m4a-llama/llama_workload.sh \
+  --workload-command-file util/llm_trace_capture/run_llama_tp4_rank0.sh \
+  --required-gpu-count 4 \
   --minimum-free-gib 500
 ```
 
@@ -21,8 +22,8 @@ package/model revision; do not use the old unpinned `install_vllm.sh` as-is.
 ## Required order and release gate
 
 1. Record `nvidia-smi -L`, full `nvidia-smi`, driver, CUDA, CPU/RAM, OS/image,
-   free disk, Framework SHA, and NVBit archive checksum.  Require one SM86 GPU
-   with at least 24 GiB VRAM and 500 GiB free disk.
+   free disk, Framework SHA, and NVBit archive checksum. Require four same-node
+   SM86 GPUs with at least 24 GiB each and 500 GiB free disk for Route E.
 2. Run `preflight.py`; reject a non-SM86 source for the paper route.
 3. Run a tiny known-good CUDA/NVBit trace through postprocessing and archive
    validation.  Do not start LLM work if it fails.

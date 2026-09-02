@@ -14,9 +14,9 @@ stops here rather than treating absence as implementation permission.
 | L2-TLB sub-entry format/timing | `PAPER_DETAIL_UNAVAILABLE` | not specified in letter |
 | PTW/PWC detailed model | `PAPER_DETAIL_UNAVAILABLE` | not specified in letter |
 | Synthetic-KV distribution | `PAPER_DETAIL_UNAVAILABLE` | not specified in letter; excluded from M4A-P |
-| TP=4 single-partition capture method | `PAPER_DETAIL_UNAVAILABLE` | do not substitute full model |
+| TP=4 single-partition capture method | `PAPER_DETAIL_UNAVAILABLE` | Route E is a self-capture candidate; full model rejected; Route A needs approval |
 | dtype / quantization | `PAPER_DETAIL_UNAVAILABLE` | record at capture only |
-| contiguous-weight loader | `PAPER_DETAIL_UNAVAILABLE` | static one-buffer layout plan only |
+| contiguous-weight loader | `PAPER_DETAIL_UNAVAILABLE` | Route-E runtime flat-buffer binder is self-capture strategy, not author code |
 
 Public evidence: [Korea University record](https://pure.korea.ac.kr/en/publications/towards-segmentation-based-address-translation-for-llm-inference/),
 [corresponding author's publication list](https://jeongseob.github.io/publications.html),

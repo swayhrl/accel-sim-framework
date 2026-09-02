@@ -23,6 +23,12 @@ claim about the exact NVIDIA internal address stage.
 Active ranges must not overlap unless an explicit future schema extension
 explains aliasing. Unknown allocations remain `UNKNOWN`.
 
+The Route-E wrapper also writes `weight_layout`: one `WEIGHT` allocation ID,
+256-byte alignment, and deterministic per-parameter name/offset/size rows.
+Its runtime binder checks parameters remain views into one buffer after
+prefill/decode and fails on a detected post-load storage replacement. This is
+a GPU-virtual-buffer check only; physical contiguity remains an M4A-C check.
+
 `util/llm_trace_capture/validate_metadata.py` validates syntax, non-overlap,
 positive sizes, phase names, and optional trace-address coverage.  GPU VA
 stability and trace coverage are M4A-C checks, not asserted by M4A-P.

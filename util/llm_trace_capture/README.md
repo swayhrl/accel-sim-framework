@@ -16,6 +16,7 @@ python3 util/llm_trace_capture/validate_metadata.py --self-test
 bash util/llm_trace_capture/run_m4a_c.sh --help
 ```
 
-The M4A-C workload command must be an executable, pinned runtime wrapper that
-writes `$M4A_METADATA_PATH` and observes `M4A_PHASE`.  See
-`docs/vm_tlb/llm/WORKLOAD_CONTRACT.md`.
+The concrete preferred wrapper is `run_llama_tp4_rank0.sh`: it uses four SM86
+GPUs, real TP=4, rank-0-only NVBit injection, `llama_tp_workload.py`, and the
+pinned requirements file. Set an immutable `M4A_MODEL_REVISION`; secrets stay
+external. See `docs/vm_tlb/llm/WORKLOAD_CONTRACT.md`.

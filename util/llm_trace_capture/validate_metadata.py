@@ -34,6 +34,19 @@ def validate(data: dict, addresses: list[int] | None = None) -> dict:
         if right[0] < left[1]: raise ValueError(f"active range overlap: {left[2]} / {right[2]}")
     for phase in data.get("phases", []):
         if phase.get("name") not in PHASES: raise ValueError("invalid phase")
+    layout = data.get("weight_layout")
+    if layout is not None:
+        if not isinstance(layout, dict) or layout.get("alignment_bytes") != 256:
+            raise ValueError("invalid weight_layout alignment")
+        weight = [r for r in ranges if r[2] == layout.get("allocation_id") and r[3] == "WEIGHT"]
+        if len(weight) != 1: raise ValueError("weight_layout requires one WEIGHT allocation")
+        prior = 0
+        for tensor in layout.get("tensors", []):
+            offset, size = tensor.get("offset_bytes"), tensor.get("size_bytes")
+            if not isinstance(offset, int) or not isinstance(size, int) or size <= 0 or offset < prior or offset % 256:
+                raise ValueError("invalid or overlapping weight tensor offset")
+            prior = offset + size
+        if prior > weight[0][1] - weight[0][0]: raise ValueError("weight layout exceeds allocation")
     coverage = {kind: 0 for kind in KINDS}
     unknown = 0
     for address in addresses or []:
@@ -46,7 +59,8 @@ def validate(data: dict, addresses: list[int] | None = None) -> dict:
 
 def self_test() -> None:
     sample = {"schema_version": SCHEMA, "run": {"run_id": "unit"}, "phases": [{"name": "PREFILL"}],
-              "allocations": [{"allocation_id": "w", "simva_start": "0x1000", "size_bytes": 16, "object_kind": "WEIGHT"}]}
+              "allocations": [{"allocation_id": "w", "simva_start": "0x1000", "size_bytes": 512, "object_kind": "WEIGHT"}],
+              "weight_layout": {"allocation_id": "w", "alignment_bytes": 256, "tensors": [{"name": "x", "offset_bytes": 0, "size_bytes": 16}]}}
     result = validate(sample, [0x1000, 0x100f, 0x2000])
     assert result["address_coverage"]["WEIGHT"] == 2 and result["unknown_addresses"] == 1
 
