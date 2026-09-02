@@ -33,10 +33,12 @@ passed with Atomic lifecycle closure.
 
 However `src/cuda-sim/ptx.l` and `ptx.y` contain no `fence` opcode or
 `FENCE_OP` mapping. The existing LD/ST proxy-fence path is therefore
-unreachable from loaded PTX, while `membar` is a distinct operation and a
-regular fence asserts unsupported. F01--F03 cannot be run without extending
-the parser and specifying new semantics, which is outside the authorized M4
-scope. This is a reproducible M4 HARD failure.
+unreachable from loaded PTX. A second source audit also found no static PTX
+decode case and no producer of `set_proxy_fence()` or
+`set_fence_proxy_kind()`; it is not a lexer-only omission. `membar` is a
+distinct operation and a regular fence asserts unsupported. F01--F03 cannot
+be run without adding parser, decode, and semantics work, which is outside the
+authorized M4 scope. This is a reproducible M4 HARD failure.
 
 External raw evidence (not committed):
 

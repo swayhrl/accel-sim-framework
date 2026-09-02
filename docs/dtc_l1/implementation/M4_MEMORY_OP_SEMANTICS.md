@@ -83,6 +83,11 @@ build cannot produce it:
 - `src/cuda-sim/ptx.y` has no `FENCE_OP` token/production/mapping.
 - A repository-wide source search finds `FENCE_OP` only in the dynamic
   instruction/LDST handling, not in the PTX lexer or parser.
+- The second source audit confirms that this is not a one-line lexer omission:
+  the static `ptx_instruction` opcode/decode path has no fence opcode case,
+  and no source path calls `set_proxy_fence()` or
+  `set_fence_proxy_kind()`. The existing dynamic fields therefore have no
+  PTX-originating producer.
 
 This is a reachability failure, not a missing test harness: no normal loaded
 PTX can enter the only source-supported proxy-fence path. A regular PTX
@@ -94,12 +99,14 @@ Reproduce the evidence from the Core checkout:
 
 ```sh
 rg -n "fence|FENCE_OP" src/cuda-sim/ptx.l src/cuda-sim/ptx.y
+rg -n "FENCE_OP|set_proxy_fence|set_fence_proxy_kind" src/cuda-sim src/abstract_hardware_model.h
 rg -n "membar|OPCODE" src/cuda-sim/ptx.l
 rg -n "FENCE_OP|is_proxy_fence" src/abstract_hardware_model.h src/gpgpu-sim/shader.cc src/gpgpu-sim/shader.h
 ```
 
-The first command returns no lexer/parser support while the latter two show
-the distinct `membar` and dynamically unreachable `FENCE_OP` paths. Therefore
+The first two commands show no static producer for a fence instruction while
+the latter commands show the distinct `membar` and dynamically unreachable
+`FENCE_OP` paths. Therefore
 F01 (`LoadFenceLoad`), F02 (`StoreFenceLoad`), and F03
 (`AtomicFenceLoad`) cannot be executed under the required current-source
 semantics. Those are M4 HARD gates, so M4 cannot pass and the continuous goal
