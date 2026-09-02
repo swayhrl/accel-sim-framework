@@ -123,6 +123,12 @@ def verify_flat_storage(model, flat, table) -> None:
             raise RuntimeError(f"one-buffer invariant broken by post-load copy/replacement: {name}")
 
 
+def require_finite_logits(torch, result, label: str) -> None:
+    logits = getattr(result, "logits", None)
+    if logits is None or not bool(torch.isfinite(logits).all().item()):
+        raise RuntimeError(f"non-finite or missing logits after {label}")
+
+
 def cache_layers(cache):
     """Return observable legacy (layer, (key, value)) pairs, or no records."""
     if cache is None: return []
@@ -215,14 +221,17 @@ def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str
     model.eval(); flat, table = bind_flat_weight_storage(model, torch)
     vocab = int(model.config.vocab_size); ids = (torch.arange(1, SEQ + 1, device="cuda").unsqueeze(0).repeat(BATCH, 1) % vocab)
     with torch.inference_mode():
-        model(input_ids=ids, use_cache=True)  # warmup while tracer remains inactive
+        warmup = model(input_ids=ids, use_cache=True)  # warmup while tracer remains inactive
+        require_finite_logits(torch, warmup, "warmup")
         kv_events, prior = [], {}
         if region == "prefill":
             with profiler_region(torch, phase, region): result = model(input_ids=ids, use_cache=True)
+            require_finite_logits(torch, result, "prefill")
             observed, prior = observe_kv_cache(result.past_key_values, prior, region, "PREFILL", 0); kv_events += observed
             next_ids, cache = ids[:, -1:], result.past_key_values
         else:
             result = model(input_ids=ids, use_cache=True)
+            require_finite_logits(torch, result, "prefill-before-decode")
             observed, prior = observe_kv_cache(result.past_key_values, prior, region, "PREFILL", 0); kv_events += observed
             next_ids, cache = ids[:, -1:], result.past_key_values
         profiled = 0
@@ -231,11 +240,13 @@ def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str
             if selected:
                 with profiler_region(torch, phase, region): result = model(input_ids=next_ids, past_key_values=cache, use_cache=True)
             else: result = model(input_ids=next_ids, past_key_values=cache, use_cache=True)
+            require_finite_logits(torch, result, f"decode-step-{step}")
             cache = result.past_key_values
             observed, prior = observe_kv_cache(cache, prior, region, "DECODE", step); kv_events += observed
             next_ids = result.logits[:, -1:].argmax(dim=-1); profiled += int(selected)
         if region != "prefill" and profiled != 1: raise RuntimeError("requested decode ROI was not executed exactly once")
     verify_flat_storage(model, flat, table)
+    print(f"rank={rank} PASS finite logits and stable flat-weight binding", flush=True)
     if rank == 0:
         write_sidecar(output, revision, "real-tp4-rank0", rank, flat, table, versions, kv_events, model_source)
         write_workload_manifest(run_dir, revision, versions, region, phase, model_source)
