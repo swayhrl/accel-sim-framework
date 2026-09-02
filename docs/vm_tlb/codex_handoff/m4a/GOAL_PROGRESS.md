@@ -8,3 +8,13 @@ Goal: `M4A_C_FORMAL_CAPTURE`
 | G1–G8 | NOT_STARTED | — | — | Not authorized because G0 is BLOCKED. |
 
 No formal run ID, archive, or copy-back path exists for this Goal attempt.
+
+## Pre-shutdown checkpoint
+
+Created at `2026-09-02T14:05:25Z` before the user powers off the retained
+AutoDL instance. The main-server checkpoint is
+`/workspace/m4a-rented-host-pilot/pre-shutdown/20260902T140525Z/`; it contains
+the exact remote resume paths, selected small evidence, and 24 successful
+remote-to-main-server SHA256 comparisons. The remote work root remains
+`/root/autodl-tmp/m4a-llama` and was left intact. P5 remains the next required
+gate; this checkpoint neither changes `PILOT_BLOCKED` nor authorizes capture.
