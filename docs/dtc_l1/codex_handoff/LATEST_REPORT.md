@@ -2,25 +2,27 @@
 
 Stage: `M2_IO_READ`
 
-Status: **HARD_FAIL — STOPPED BEFORE M3**
+Status: **M2_RECOVERY_IN_PROGRESS — M3 FORBIDDEN**
 
-Core SHA: `3ccf4ffcb15f9456db546d2f1bab133c1e933a9c`
+Core recovery checkpoint: `3be79d4d41f381ab07895b3a67da63224bdea62f`
 
-Framework SHA before this report update: `1804d85190f64b9228322def256620784217b7a8`
+Framework SHA before this report update: `0b8f03463ebab057b2371a489492688903e837ea`
 
-## Failure
+## Recovery status
 
-The first real `PAPER_IO` VecAdd integration run aborted in conventional
-`baseline_cache::fill()` because an IO-direct lower request had no conventional
-L1D `m_extra_mf_fields` identity. This invalidates the required IO no-MSHR
-data-path proof. The experimental Core integration was discarded, leaving the
-pushed Core branch clean.
+The original conventional-fill failure has been recovered through a dedicated
+IO request/response/PIB-writeback path.  The source-safe root/sector-child
+identity rule, the real VecAdd PASS, and drain/no-conventional-route counters
+are recorded in:
 
-Evidence and exact log/config hashes:
+`implementation/M2_IO_RESPONSE_RECOVERY_EVIDENCE.md`.
+
+The original failure evidence remains authoritative historical context in:
+
 `implementation/M2_IO_INTEGRATION_FAILURE.md`.
 
 ## Required disposition
 
-Do not create an M2 review pack and do not start M3, M4, or M5. Any later
-recovery must first establish a source-safe IO response route that never calls
-conventional `baseline_cache::fill()` for an IO-owned request.
+M2 is not accepted.  Do not create an M2 review pack or start M3, M4, or M5.
+Complete every remaining M2 HARD gate (I06-I15, no-MSHR high-MLP proof,
+counter/parser closeout, and hygiene) before changing this status to PASS.
