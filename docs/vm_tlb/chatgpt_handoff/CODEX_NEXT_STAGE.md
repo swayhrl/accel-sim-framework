@@ -2,142 +2,122 @@
 
 ## Status
 
-`M1_VM_CORE_FOUNDATION` has been reviewed by ChatGPT: **PASS**.
+`M1_VM_CORE_FOUNDATION`: **PASS**.
 
-Execute **M2 and M3 as one continuous Codex target-mode macro task** with internal acceptance gates. Do not pause for human review between M2 and M3 when M2 fully passes; do not continue when any gate fails.
+`M2_FUNCTIONAL_TRANSLATION` reached `G2-4` and is currently **BLOCKED** by reproducible abnormal pre-trace memory growth in functional VM mode. M3 has **not** started.
 
-Execution order:
+Do not move to a larger-memory host as the first response. The current evidence is not sufficient to classify ~65 GiB pre-replay RSS as a legitimate simulator requirement, because M1 baseline runs succeeded and the intended M2 structures are finite/small.
 
-1. read `stage_specs/M2_M3_TARGET_MODE.md`;
-2. execute `stage_specs/M2_FUNCTIONAL_TRANSLATION.md` through all M2 gates;
-3. if and only if M2 closeout is PASS, continue automatically into `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`;
-4. create `review_packs/M1_M3_VM_BASELINE_CLOSEOUT/` after M3 PASS;
-5. push, report, and STOP before M4B / Segmentation / synthetic-KV / new AI-aware mechanisms.
+## Next authorized stage
+
+Execute immediately:
+
+`stage_specs/M2_RUNTIME_MEMORY_DIAG.md`
+
+This is a narrow diagnosis/fix substage inserted before G2-4 can resume.
+
+## Required execution order
+
+1. read `CURRENT_STATE.md`;
+2. read repository-root `AGENTS.md`;
+3. read `stage_specs/M2_RUNTIME_MEMORY_DIAG.md`;
+4. review existing `TARGET_PROGRESS.md` and `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_4_RUNNING.md`;
+5. perform M2-D D0 -> D6 in order;
+6. if a concrete M2 bug is identified, implement only the minimal authorized fix and rerun regressions;
+7. if M2-D PASS, resume original G2-4 real replay validation;
+8. only after G2-4 + complete M2 closeout PASS, resume the already-authorized target-mode M3 flow;
+9. after M3 PASS, create `M1_M3_VM_BASELINE_CLOSEOUT` and STOP before later mechanisms.
 
 Do not modify `chatgpt_handoff/*`.
 
-## Mandatory read order
-
-1. `CURRENT_STATE.md`
-2. `DISCUSSION_REFERENCE.md`
-3. repository-root `AGENTS.md`
-4. `stage_specs/M2_M3_TARGET_MODE.md`
-5. `stage_specs/M2_FUNCTIONAL_TRANSLATION.md`
-6. `stage_specs/M3_REFERENCE_MATERIALS.md`
-7. `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
-8. M1 review pack; at M3 entry, completed M2 review pack
-9. long-lived VM specs under `docs/vm_tlb/specs/`
-
 ## Source anchors
 
-Continue from the current pushed Track-A heads:
+Current blocked Track-A anchors:
 
 - Core branch: `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
-- M1 Core commit: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
+- Core G2-4 checkpoint: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
 - Framework branch: `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
+- Framework blocked report checkpoint: `200e6ddf14b6247a25c6aa4108195ee0904702d8`
 
-Use the existing isolated Track-A worktrees. Fetch/pull the latest Framework handoff commit before implementation, then verify Core/Framework branch and worktree cleanliness.
+Relevant Core history to isolate first-bad behavior:
 
-## Target-mode monitoring
+- M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
+- G2-1: `06f0ae7a24f1deacd86ddf95237e0ffa5e1a1b83`
+- G2-2: `740d96f8be80977c150ffc911063969cafd25b8f`
+- G2-3: `e579c40d907c201728331a1208c64bb18b869549`
+- G2-4: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
 
-Maintain the Codex-owned checkpoint file:
+Use the existing one-kernel trace/list that already reproduces the issue. Do not acquire another workload for diagnosis.
+
+## Diagnostic decision rule
+
+The first question is same-head causality:
+
+`same binary + same one-kernel trace + same config`
+
+compare:
+
+- VM mode 0;
+- VM mode 1 where useful;
+- VM mode 2.
+
+Then isolate the first offending M2 commit and measure effective VM configuration / expected storage footprint.
+
+A larger host is justified only if evidence demonstrates that the corresponding unchanged VM-disabled/baseline path has a comparable legitimate memory requirement. Functional-mode-only 65 GiB RSS is not sufficient evidence for `BLOCKED_HOST_CAPACITY`.
+
+## Fix authorization
+
+If diagnostics identify a concrete source/config/integration bug, Codex may fix it without another human pause only when the fix is minimal and does not alter frozen VM semantics or weaken finite-resource modeling/tests.
+
+After any fix, rerun:
+
+- M1 disabled/ideal transparency;
+- G2-1 mapper/TLB tests;
+- G2-2 MSHR tests;
+- G2-3 PWQ/walker tests;
+- G2-4 directed replay/store/atomic tests;
+- one-kernel functional VM memory regression;
+- real G2-4 trace replay with end statistics.
+
+## Target-mode continuation
+
+Keep the overall Goal alive, but mark the active internal gate as:
+
+`M2-D_RUNTIME_MEMORY_DIAG`
+
+Maintain:
 
 `docs/vm_tlb/codex_handoff/m1_m3/TARGET_PROGRESS.md`
 
-Follow all goal/gate IDs in `M2_M3_TARGET_MODE.md`. Update the progress file after each gate so the long task is restartable and externally auditable.
+If M2-D and G2-4 PASS, continue automatically:
 
-A gate may advance only when its required tests/evidence are PASS. On FAIL/BLOCKED:
+`M2 closeout -> M3 -> M1-M3 macro closeout`.
 
-- stop implementation beyond that gate;
-- update `TARGET_PROGRESS.md` and `LATEST_REPORT.md`;
-- create/update the relevant review pack;
-- commit/push review evidence when safe;
-- STOP.
-
-## M2 review emphasis
-
-In addition to the M2 stage spec:
-
-- `SimPA` is not semantically valid merely because it contains an initialized numeric value; completion/validity must gate downstream use.
-- untranslated requests must not enter the real data-cache path.
-- replay must not retranslate completed requests or duplicate load/store/atomic side effects.
-- one `(ASID, VPN, page-size-class)` has at most one active walk.
-- translation-MSHR merge is not a TLB hit.
-- finite lookup throughput/resources, MSHR, PWQ and walkers must affect behavior, not only statistics.
-- directed tests must assert expected counts and conservation.
-
-## M2 -> M3 automatic transition gate
-
-Codex may enter M3 without waiting for ChatGPT only when all M2 acceptance criteria are PASS and the M2 review pack contains:
-
-- expected-vs-actual directed-test table;
-- invariant/conservation report;
-- structured TLB/MSHR/PWQ/walker statistics;
-- integrated workload smoke;
-- VM-disabled transparency regression;
-- exact Core/Framework SHAs and clean provenance.
-
-Any unresolved functional failure blocks M3.
-
-## M3 implementation emphasis
-
-M3 must build a reusable **generic timing-realistic** page-walk substrate, not silently claim exact Segmentation-paper PTW behavior.
-
-Required principles:
-
-- PTE requests are explicit physical requests and never recursively translate.
-- PTE reads must consume actual intended L2/lower-memory resources and walkers must wait for real responses.
-- multiple outstanding PTE responses must be associated with the correct walk/request.
-- PWC must be finite/configurable with zero-capacity and optional ideal diagnostic modes.
-- 64KB and 2MB semantics must be validated; target-paper sub-entry stays out of M3.
-- timing components require explicit timestamp ownership and double-counting checks.
-- retain M2 fixed-latency PTW as a diagnostic causal comparison through M3 closeout where practical.
-- every parameter must be labeled according to evidence (`PAPER_SPEC`, `MODELING_DECISION`, `REFERENCE_OTHER_PAPER`, `DIAGNOSTIC`, `UNKNOWN`).
-
-Use `M3_REFERENCE_MATERIALS.md` to distinguish target-paper facts, CLAP reference values, legacy `dev-uvm` reference code, and project modeling choices.
+If M2-D remains ambiguous, requires a semantic redesign, or proves a true external host-capacity blocker, push evidence and STOP.
 
 ## Reporting
 
-Active Track-A report:
+Active report:
 
 `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
 
-Target progress:
+Diagnostic review pack:
 
-`docs/vm_tlb/codex_handoff/m1_m3/TARGET_PROGRESS.md`
+`docs/vm_tlb/review_packs/M2_RUNTIME_MEMORY_DIAG/`
 
-Review packs:
+Existing M2 evidence remains under:
 
-- `docs/vm_tlb/review_packs/M2_FUNCTIONAL_TRANSLATION/`
-- `docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/`
-- `docs/vm_tlb/review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`
-
-Update report/progress at least at M2 closeout, M3 major gates, and final macro closeout.
+`docs/vm_tlb/review_packs/M2_FUNCTIONAL_TRANSLATION/`
 
 ## STOP conditions
 
 STOP immediately on:
 
-- any correctness invariant failure;
-- baseline-transparency regression;
-- request loss;
-- duplicate wakeup;
-- duplicate store/atomic effect;
-- recursive PTE translation;
-- PTE response misassociation;
-- deadlock or unexplained nondeterminism;
-- a material semantic ambiguity requiring a new modeling decision not already authorized;
-- source/provenance uncertainty.
+- proposed fix changes frozen VM semantics;
+- baseline transparency failure;
+- request loss / duplicate wakeup / duplicate store or atomic;
+- deadlock / unexplained nondeterminism;
+- diagnosis remains materially ambiguous after D0-D4;
+- unsafe host-wide resource pressure prevents bounded diagnosis.
 
-Do not weaken tests or convert a paper-specific unknown into `PAPER_EXACT` to continue.
-
-## Final STOP boundary
-
-After M3 PASS and `M1_M3_VM_BASELINE_CLOSEOUT`:
-
-- push Core and Framework Track-A branches;
-- update `LATEST_REPORT.md` and `TARGET_PROGRESS.md`;
-- provide final SHAs and review-pack entry points;
-- STOP.
-
-**STOP BEFORE M4B / Segmentation implementation / synthetic-KV simulator injection / new AI-aware TLB mechanism.**
+**Do not enter M3 until a real functional VM replay passes G2-4.**
