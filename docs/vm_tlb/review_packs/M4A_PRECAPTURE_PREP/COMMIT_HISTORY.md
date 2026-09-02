@@ -1,10 +1,8 @@
 # Commit history
 
-Closeout commit history is finalized with the Track-B report after the M4A-P
-preparation content is committed.  Use:
+| Commit | Subject | Scope |
+|---|---|---|
+| `e6a98c7748e5cd7f55e89eb966506efb1eb54231` | `docs(vm): prepare M4A LLM trace capture package` | M4A-P documents, safe static tooling, prepared driver, and review pack |
 
-```bash
-git log --oneline --decorate origin/hrl/llm-trace-prep-v0..HEAD
-```
-
+The Track-B report closeout is committed immediately after this history update.
 No Core commit is part of this stage.
