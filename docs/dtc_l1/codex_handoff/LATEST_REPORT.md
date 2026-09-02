@@ -4,9 +4,9 @@ Stage: `M1_FOUNDATION`
 
 Status: **IN_PROGRESS — NO STAGE GATE EVALUATED**
 
-Core SHA: `007b25713b311db0304892136c909050974b12b6`
+Core SHA: `007b2571e1fb9691cecc84d39599cbe322ec60e4`
 
-Framework SHA: `c05b84e82bd998ac45574e87f2d5f4a0118904f5`
+Framework implementation/evidence base SHA: `c05b84e83c215e5f63aa6218f85666847b03c272`
 
 ## Main conclusions
 
