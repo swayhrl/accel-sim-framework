@@ -121,6 +121,24 @@ def self_test() -> None:
             _, mismatch = inspect_toolchain(contaminant); assert any("not locked CUDA 12.6" in x for x in mismatch)
         finally:
             os.environ["PATH"] = old_path
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory) / "snapshot"; root.mkdir(); revision = "c" * 40; rows = []
+        for name in LOCAL_SNAPSHOT_FILES:
+            payload = name.encode(); (root / name).write_bytes(payload)
+            rows.append({"path": name, "size_bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()})
+        manifest = Path(directory) / "snapshot-manifest.json"
+        manifest.write_text(json.dumps({"schema_version": "m4a-local-model-snapshot-v1",
+                                        "model": {"canonical_id": MODEL_ID, "revision": revision}, "files": rows}))
+        old_local, old_manifest = os.environ.get("M4A_MODEL_LOCAL_PATH"), os.environ.get("M4A_MODEL_LOCAL_MANIFEST")
+        os.environ["M4A_MODEL_LOCAL_PATH"], os.environ["M4A_MODEL_LOCAL_MANIFEST"] = str(root), str(manifest)
+        try:
+            details, errors = inspect_model_transport(revision)
+            assert not errors and details["transport"] == "LOCAL_SNAPSHOT" and details["manifest_sha256"]
+        finally:
+            if old_local is None: os.environ.pop("M4A_MODEL_LOCAL_PATH", None)
+            else: os.environ["M4A_MODEL_LOCAL_PATH"] = old_local
+            if old_manifest is None: os.environ.pop("M4A_MODEL_LOCAL_MANIFEST", None)
+            else: os.environ["M4A_MODEL_LOCAL_MANIFEST"] = old_manifest
 
 
 def main() -> int:
