@@ -80,10 +80,19 @@ minimal fixes, and bounded post-fix regression.  Evidence:
 
 ## G2-CLOSEOUT — M2 full acceptance
 
-Status: `RUNNING`
+Status: `PASS`
 Core SHA: `e7999554200760b31b4efe16d98e050370e1ea71`
 Framework SHA: `4012be3606c300d11e7b34826ee1cb22b0852b93`
 
-Current work: required regular/memory-intensive/irregular integrated smoke and
-small resource sensitivity checks.  Next goal: `G3-0` only after this gate
-passes.
+Completed acceptance: all M1/G2 directed regressions; cold clean build;
+disabled/ideal transparency; G2-4 real replay; regular/memory-path LUD and
+irregular BFS functional replays; L2, MSHR, walker, and fixed-latency sweeps;
+review-pack/provenance integrity.  Directed tests demonstrate finite MSHR/PWQ/
+walker backpressure; all real functional replays quiesce with no loss,
+duplicate wakeup, or duplicate store/atomic diagnostic.
+
+Evidence: `review_packs/M2_FUNCTIONAL_TRANSLATION/README.md` and
+`review_packs/M2_RUNTIME_MEMORY_DIAG/README.md`.
+
+Next goal: `G3-0` (M3 entry snapshot/freeze).  M3 source semantics must not
+change before its entry checks pass.

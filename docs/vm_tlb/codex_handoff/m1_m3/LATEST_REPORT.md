@@ -1,7 +1,7 @@
 # Track A report
 
 Stage: `M2_FUNCTIONAL_TRANSLATION / G2-CLOSEOUT`
-Status: `RUNNING`
+Status: `PASS`
 
 Core M1 commit: `82fa2bc79cf09dd137073431dc41e48bc2f30cec` (pushed to
 `research/hrl/vm-m1-m3-v0`). Framework source anchor before this report:
@@ -20,5 +20,13 @@ bound with final MSHR/PWQ/walker state empty and waiter registration/wakeup 1/1.
 
 Review evidence: `docs/vm_tlb/review_packs/M2_RUNTIME_MEMORY_DIAG/README.md`.
 
-M2 closeout is now running.  M3 has not started and remains prohibited until
-the required integrated M2 smoke/sensitivity evidence passes.
+M2 closeout is PASS.  The final pack is
+`docs/vm_tlb/review_packs/M2_FUNCTIONAL_TRANSLATION/README.md`: it records all
+directed expected-versus-actual tests, conservation checks, cold build,
+disabled/ideal transparency, real functional replay, and integrated LUD/BFS
+smokes with the required small resource sweeps.  The local trace set contained
+LUD and BFS only; LUD was used as regular/memory-path smoke and BFS as the
+available irregular smoke.  No unsupported third workload claim is made.
+
+Next internal gate: `G3-0`.  M3 source work has not started yet; its entry
+snapshot, M2 regression freeze, and required M3-material reread are pending.

@@ -1,18 +1,36 @@
-# G2-4 — stall/replay correctness (running)
+# G2-4 — real stall/replay correctness
 
-Core checkpoint: `c1431e01f593719f9201d4ad4d7666bebead8a4f`.
+Status: `PASS`\
+Core: `e7999554200760b31b4efe16d98e050370e1ea71`\
+Framework source: `4012be3606c300d11e7b34826ee1cb22b0852b93`
 
-`vm_m2_g2_4_test PASS` covers pending translation, walker completion, same-UID replay, exactly-one modeled store/atomic effect, and cross-page boundary. G2-1 through G2-3 regressions and standard build pass.
+The prior apparent allocation failure was closed by M2-D as a stale
+cross-repository C++ layout build artifact.  A Framework dependency-generation
+repair forces recompilation when Core headers change.  The Core follow-up only
+classifies an early replay stall for existing statistics accounting; it does
+not change frozen VM resources or translation semantics.  Full diagnosis and
+before/after evidence are in `../M2_RUNTIME_MEMORY_DIAG/`.
 
-This is not G2-4 acceptance. QV100 and RTX3070 VM-mode LUD smoke attempts ended without statistics after abnormal memory growth; QV100 exited 137 and RTX was terminated near 64 GiB RSS. The host had swap exhaustion and unrelated TLS jobs. No actual cache-path replay claim is made. Raw logs: `/tmp/g2-4-qv-functional.log` and `/tmp/g2-4-rtx-functional.log`.
+## Directed replay proof
 
-A third diagnostic used only the existing 54 KiB `kernel-8.traceg` through a
-temporary one-kernel list. It again grew to about 65 GiB RSS in roughly 41 s,
-so the failure is not explained by full trace-list preload. The process was
-terminated; raw log: `/tmp/g2-4-one-kernel.log`.
+`vm_m2_g2_4_test PASS` covers pending translation, walker completion, repeated
+same-UID replay, exactly-one modeled store side effect, exactly-one modeled
+atomic side effect, and the approved cross-page boundary behavior.  The M1 and
+G2-1/G2-2/G2-3 directed regressions all passed after the repair.
 
-Final bounded reproduction: `ulimit -v 10485760` produces deterministic
-`std::bad_alloc` immediately after the memory-subpartition initialization
-banner, before trace replay. GDB itself could not start an inferior under this
-limit because its debug mapping needed more virtual memory. Raw logs:
-`/tmp/g2-4-one-kernel-vmem10g.log` and `/tmp/g2-4-badalloc-gdb.log`.
+## Real cache-path replay
+
+After a cold rebuild, the existing one-kernel RTX3070 trace reaches normal end
+statistics in functional mode under the same 10 GiB virtual-memory bound used
+for the disabled/ideal/functionality control:
+
+- 85 translation access attempts; 79 completions;
+- one MSHR allocation, one walk start/completion, one waiter registration and
+  wakeup; zero active MSHRs, PWQ entries, and walkers at end;
+- no MSHR-full or PWQ-full event in this small trace;
+- normal program termination (not timeout/kill).
+
+The full LUD and BFS functional replays in
+[INTEGRATED_VALIDATION.md](INTEGRATED_VALIDATION.md) independently finish with
+the same quiescence relations.  This is the first accepted real-path replay
+evidence; the earlier pre-M2-D abnormal runs remain diagnostic history only.
