@@ -1,8 +1,9 @@
 # M3 timing-realistic baseline review pack
 
-Current gate: `G3-2 — real PTE L2/DRAM integration` (`PASS — STOP FOR CHATGPT
-REVIEW`).  G3-2B implements the approved generic 56-bit trace/backend contract
-and closes real PTE L2/DRAM integration.  No G3-3/PWC work is authorized.
+Current gate: `G3-3 — generic PWC` (`PASS — STOP FOR CHATGPT REVIEW BEFORE
+G3-4`).  G3-2C closes hierarchy-prefix PTE identity and revalidates the
+accepted real PTE L2/DRAM path.  G3-3 adds the generic intermediate-only PWC.
+No G3-4 work is authorized.
 
 ## Frozen M3 entry snapshot
 
@@ -34,6 +35,9 @@ Entry artifacts:
 - [G3-2B validation matrix](G3_2B_VALIDATION.tsv)
 - [G3-2B runtime summary](G3_2B_RUNTIME_SUMMARY.tsv)
 - [Trace encoding observation (non-semantic)](TRACE_ENCODING_OBSERVATION.tsv)
+- [G3-2C/G3-3 hierarchy and PWC closeout](G3_2C_G3_3_HIERARCHY_PWC_CLOSEOUT.md)
+- [G3-2C/G3-3 validation matrix](G3_2C_G3_3_VALIDATION.tsv)
+- [G3-2C/G3-3 runtime summary](G3_2C_G3_3_RUNTIME_SUMMARY.tsv)
 
 The M3 evidence boundary is generic reusable VM timing infrastructure.  It is
 not a claim of exact Segmentation-paper PTW, PWC, sub-entry, or commercial-GPU

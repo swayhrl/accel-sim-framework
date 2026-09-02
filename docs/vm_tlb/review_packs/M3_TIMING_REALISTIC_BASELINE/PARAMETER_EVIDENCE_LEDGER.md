@@ -19,7 +19,8 @@ target-paper truth.
 | PTE physical range | reserved deterministic non-overlapping simulated range | MODELING_DECISION | must be asserted/validated in G3-1 |
 | PTE request class | explicit physical/non-recursive request | MODELING_DECISION | hard correctness invariant |
 | PTE L2/DRAM timing | must use real simulator resources | VERIFIED_CODE target for M3 | no fixed-latency substitute after G3-2 |
-| PWC capacity/organization | unset | UNKNOWN | choose only as labeled generic model and validate |
+| PWC capacity/organization | OFF / FINITE 128-entry fully associative LRU / IDEAL unbounded; intermediate levels only | MODELING_DECISION / REFERENCE_OTHER_PAPER | generic baseline motivated by CLAP-style reference, never Segmentation-paper exact |
+| PWC lookup service | one configured cycle, sufficient logical bandwidth | MODELING_DECISION | no speculative port bottleneck in G3-3 |
 | L1/L2 lookup latency/ports | existing M2 configuration | MODELING_DECISION | target-paper detail is unknown |
 | Segmentation L2 sub-entry | not implemented in M3 | PAPER_SPEC future boundary | M4B only |
 | Page faults/migration/UVM | not implemented | MODELING_DECISION scope exclusion | resident-memory M1-M3 only |

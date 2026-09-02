@@ -1,7 +1,39 @@
 # Track A report
 
+Stage: `G3-2C hierarchy-prefix PTE identity / G3-3 generic PWC`
+Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-4`
+
+Framework was fetched to required handoff
+`6c73a24e433f0eab2b60ec26df597649aa1a60be`.  Core is
+`1b18b3c5da6e5ba22e4a03c20e3adce498311336`, on accepted G3-2
+`965bd8e188175731c31cabfef6c3bdeb7c59e1fd`.
+
+G3-2C replaces the former flat `(page-size class, level, full VPN)` PTE
+identity with the frozen balanced radix prefix model.  The directed suite
+checks all required 56/49-bit bit partitions, hierarchy sharing and split
+points, physical namespace disjointness, raw offender identity, and physical
+non-recursive requests.  The complete real-PTE G3-2 suite passed again: PWC
+OFF BFS is `28/28` PTE requests/responses, `12/16` L2-only/DRAM, zero
+misassociation and final MSHR/PWQ/walkers `0/0/0`.
+
+G3-3 adds one-cycle, unlimited-logical-bandwidth PWC lookup service for
+intermediate levels only.  OFF has zero entries; FINITE is 128-entry fully
+associative LRU; IDEAL is unbounded/no-eviction.  Exact controller tests cover
+OFF, warm sharing, partial sharing, finite LRU, no leaf caching, 2MB keys and
+IDEAL.  In complete BFS, FINITE reduces real PTE traffic from `28/28` to
+`19/19` via nine intermediate PWC hits/skips, without response misassociation
+or residual VM state.  Disabled/ideal LUD control sequences remain exactly
+139,766 cycles.  This generic PWC is not attributed to the Segmentation paper.
+
+Review entry:
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2C_G3_3_HIERARCHY_PWC_CLOSEOUT.md`.
+No G3-4/page-size policy, segmentation/sub-entry, synthetic KV, fault,
+migration, UVM, MCM, multi-ASID claim, or SimVA rewrite was made.
+
+## Historical G3-2B report
+
 Stage: `G3-2B generic trace-width extension / G3-2 closeout`
-Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-3/PWC`
+Status: historical predecessor superseded by G3-2C/G3-3
 
 Framework was fetched to the required handoff
 `f8a272b9b6d59f25b0a2ba8a35ee0b207ec58b64`.  G3-2B/G3-2 is Core

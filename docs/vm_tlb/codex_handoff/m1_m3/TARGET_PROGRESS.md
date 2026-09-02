@@ -5,19 +5,26 @@
 Goal: `M2_FUNCTIONAL_TRANSLATION -> M3_TIMING_REALISTIC_BASELINE ->
 M1_M3_VM_BASELINE_CLOSEOUT`.
 
-Current Goal boundary: `G3-2 — real PTE L2/DRAM integration (closed)`
-Completed sub-gates: `G3-2A PASS / CASE A`, `G3-2B PASS`
-Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-3/PWC`
-Core SHA: `965bd8e188175731c31cabfef6c3bdeb7c59e1fd`
-Framework handoff SHA: `f8a272b9b6d59f25b0a2ba8a35ee0b207ec58b64`
+Current Goal boundary: `G3-3 — generic PWC (closed)`
+Completed sub-gates: `G3-2A PASS / CASE A`, `G3-2B PASS`,
+`G3-2C PASS`, `G3-3 PASS`
+Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-4`
+Core SHA: `1b18b3c5da6e5ba22e4a03c20e3adce498311336`
+Framework handoff SHA: `6c73a24e433f0eab2b60ec26df597649aa1a60be`
 
 M2-RF and G3-1-RF are accepted historical prerequisites.  G3-2B applies the
 approved generic trace-width decision without altering a raw/coalesced SimVA:
 generic backend width is configurable, current M3 is 56 bits, 49-bit remains
 directed-tested, and outside-width keys still hard-stop.  PTE requests now
 traverse the real interconnect/L2/DRAM path with UID-correct response return.
-Evidence/review path:
-`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2B_TRACE_WIDTH_AND_CLOSEOUT.md`.
+G3-2C replaces flat full-VPN PTE identities with a generic balanced radix
+prefix identity and validates the real PTE path again.  G3-3 adds a generic,
+intermediate-only PWC with OFF/FINITE/IDEAL modes.  These are explicitly
+`MODELING_DECISION`s; neither is a claim about target-paper or commercial-GPU
+page-table organization.  Evidence/review path:
+`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2C_G3_3_HIERARCHY_PWC_CLOSEOUT.md`.
+
+Next gate: none.  Do not begin G3-4 until ChatGPT review.
 
 ## G3-2B — generic trace-width extension and G3-2 closeout
 
