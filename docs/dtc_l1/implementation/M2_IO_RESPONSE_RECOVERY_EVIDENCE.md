@@ -56,6 +56,11 @@ cover its line; this is also when its lower credit and root object are released.
   `inflight_current=0`, `identity_mismatch=0`,
   `responses_routed_conventional=0`, `pib_occupancy=0`,
   `retire_count=16`, dependencies `16/16`, and lower credits `16/16`.
+- R2.1/I14 pressure smoke with `-gpgpu_dtc_l1_lower_outstanding_cap 2`: PASS.
+  It completed the same VecAdd with created/issued/responded requests `16/16/16`,
+  credits `16/16`, final outstanding `0`, and `lower_cap_full_events=1190`.
+  Thus the third and later candidates wait for credit rather than creating an
+  untracked lower request.
 
 ## Remaining HARD work
 
