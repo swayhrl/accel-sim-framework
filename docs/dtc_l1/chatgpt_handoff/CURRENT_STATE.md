@@ -2,7 +2,7 @@
 
 Last coordination update: 2026-09-02
 
-Status: **M0 SPEC FROZEN; M1-M4 CONTINUOUS GOAL AUTHORIZED**
+Status: **M1 BLOCKED AT B07; B07 RECOVERY AUTHORIZED**
 
 ## Source anchors
 
@@ -30,84 +30,83 @@ Active core goal branch:
 - `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`
 - created directly from the M0 branch; M0 remains read-only.
 
+Latest stopped-run report recorded:
+
+- Core SHA: `581fff76cf1dabbf1b2b9fe709a0f2142ab0d8e7`
+- Framework implementation/evidence base SHA: `1f63d0c793784b41dbf02343c6442af5e68141a3`
+- stop reason: M1 HARD gate `B07` merge-full test deadlocked.
+
 ## Authoritative design specification
 
 Core repository:
 
 `docs/dtc_l1/DTC_L1_SPEC.md`
 
-Frozen paper-mode defaults include:
+Frozen paper-mode defaults remain unchanged, including:
 
-- warp width 32;
-- simulator coalescer default 32 threads/cycle, with 16-thread original-RTL sensitivity;
-- logical Tag capacity 16KB;
-- 128B line;
-- 32 sets x 4 ways, LRU;
-- 4 Tag banks, 8 sets x 4 ways per bank;
-- `tag_bank = logical_set_index % 4`;
-- 1 Tag request/bank/cycle;
-- fixed 80KB physical array = 640 x 128B lines;
-- no Tag-bank-to-Data-location binding;
-- RR physical allocation, max 4 lines/cycle;
-- partial allocation retained on stall; no rollback;
-- every depicted pipeline stage = 1 cycle;
-- bounded queues/buffers backpressure upstream;
-- Baseline PIB 8, Baseline MSHR 32;
+- logical Tag 16KB, 128B line, 32 sets x 4 ways, LRU;
+- 4 Tag banks, 1 request/bank/cycle;
+- fixed 80KB physical array;
+- RR allocation, width 4, partial allocation retained/no rollback;
+- Baseline PIB 8 and Baseline traditional MSHR 32;
 - IO PIB 256, OO PIB 128;
-- IO/OO retire width 1 instruction/cycle;
-- same-cycle physical-line release visibility;
-- paper default 8 SM;
-- each SM L1 lower issue width 1 request/cycle;
-- global lower outstanding limit 256;
-- OO Ref Count = per coalesced 128B cacheline reference;
-- 13-bit default Ref Count width;
-- paper reproduction first uses whole-line 128B DTC;
-- modern sector extension keeps 128B Tag->Physical mapping and line-level Ref Count, while readiness/merge/wait dependencies are 4 x 32B sector granular.
+- IO/OO retire width 1;
+- per-SM lower issue width 1 and global lower outstanding cap 256;
+- OO Ref Count per coalesced 128B line reference;
+- whole-line paper mode before sector extension.
 
-## Active goal
+No M0 architecture decision is changed by the B07 recovery.
 
-The single authorized Goal-mode task is to execute M1 through M4 continuously, with HARD gates between major stages:
+## M1 implementation progress before stop
 
-- M1 — Foundation + paper Baseline + observability;
-- M2 — IO-DTC read path;
-- M3 — OO-DTC read path + Ref Count/Merge + sector extension;
-- M4 — Store/Atomic/Fence/architectural-bypass integration + compute workload bring-up.
+Codex reports that the following M1 infrastructure exists on the active goal branches:
 
-Codex may advance automatically only when every HARD gate for the current stage passes. On any hard failure or source-semantic ambiguity requiring a guess, STOP and report.
+- source integration audit;
+- default-off `LEGACY` / `PAPER_BASE` mode plumbing;
+- explicit Paper-Base PIB admission/backpressure;
+- Paper-Base Tag-bank arbitration;
+- Paper-Base traditional MSHR entry override (default 32);
+- global lower-request outstanding cap;
+- common counters/parser plumbing;
+- deterministic M1 tests/build integration.
 
-Detailed executable specifications:
+Reported evidence before B07 stop includes exact LEGACY equality on a small integrated kernel and successful directed evidence for several other M1 resource gates. These remain diagnostic until M1 is fully revalidated and the M1 review pack is produced.
 
-- `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
-- `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
-- `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
-- `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
+## Current blocker — B07
 
-## Current implementation state
+B07 intentionally drives the conventional L1 MSHR merge-full path with many warps reading the same address. The stopped run observed `MSHR_MERGE_ENRTY_FAIL` and then simulator deadlock instead of recovery.
 
-Not yet implemented at goal authorization time:
+The stop was correct: M2-M4 must not proceed while a M1 HARD gate fails.
 
-- explicit thesis-style Baseline PIB;
-- shared paper-mode Tag-bank timing layer;
-- DTC instruction lifecycle/context;
-- IO-DTC;
-- OO-DTC;
-- DTC counter/parser infrastructure;
-- sector-DTC extension;
-- Store/Atomic/Fence DTC lifecycle;
-- DTC workload presets and diagnostic result pipeline.
+## ChatGPT source-review finding
 
-## Scientific boundary of this goal
+Independent source review found a concrete high-priority defect in the current Paper-Base PIB lifecycle:
 
-M1-M4 establishes a trustworthy implementation and brings real compute workloads to completion under Base/IO/OO.
+- the L1-latency `HIT` completion path in `ldst_unit::L1_latency_queue_cycle()` calls `m_core->warp_inst_complete(mf_next->get_inst())` when the load actually completes;
+- that path does not call `dtc_l1_retire(...)`;
+- other tracked `ldst_unit` completion paths already pair `warp_inst_complete(...)` with `dtc_l1_retire(...)`.
 
-It does NOT authorize:
+This can leak a live Paper-Base PIB UID on an L1-hit completion. B07 is a natural trigger: the first same-line access misses; after it fills, later same-line accesses become hits. If their PIB entries do not retire, an 8-entry PIB can remain permanently full even though the cache accesses themselves complete.
 
-- fitting speedups to thesis numbers;
-- claiming reproduction of +22%/+30%;
-- final Chapter 4 figure generation;
-- equal-area conclusions;
-- graphics proxy/calibration;
-- final modern-sector performance claims;
-- DTC policy-driven bypass.
+This source-level explanation must be verified with bounded pre-fix diagnostics before applying the minimal fix.
 
-Those belong to M5+ after implementation review.
+## Authorized recovery
+
+Execution authority is now:
+
+`docs/dtc_l1/goal/B07_RECOVERY_SPEC.md`
+
+Required sequence:
+
+1. localize the pre-fix failure and confirm/disprove the hit-completion PIB leak;
+2. if confirmed, minimally pair the true L1-hit completion event with idempotent DTC PIB retirement;
+3. add a permanent hit-completion PIB-leak regression/invariant;
+4. re-run B07 with reproducible source-supported conventional MSHR entry/max-merge settings;
+5. run frozen clean-upstream differential evidence under the same conventional MSHR geometry;
+6. re-run all M1 HARD gates and LEGACY neutrality.
+
+If full M1 revalidation passes, Codex is authorized to create `review_packs/M1_FOUNDATION/` and resume the existing M2 -> M3 -> M4 continuous goal automatically. Any HARD failure still requires STOP.
+
+## Scientific boundary
+
+M1-M4 remains an implementation/correctness/workload-bring-up goal. It does not authorize final thesis speedup reproduction, final Chapter-4 figures, equal-area conclusions, graphics proxy claims, or M5 work.
