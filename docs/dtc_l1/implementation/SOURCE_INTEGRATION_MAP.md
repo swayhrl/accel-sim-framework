@@ -10,7 +10,7 @@ change the frozen M0 architecture.
 | --- | --- | --- |
 | Framework | `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0` at `96406169153bf9224ce0e890e8eade0c0b2ee322` | Framework worktree `git rev-parse HEAD` |
 | Core | `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0` at `cfbd365eec7402b96b46faf4a51d1c54115016a0` | Core worktree `git rev-parse HEAD` |
-| Build selection | Framework `gpu-simulator/CMakeLists.txt` consumes `$GPGPUSIM_ROOT`; `gpu-simulator/setup_environment.sh` clones only when that variable is absent/unusable | Framework files `gpu-simulator/CMakeLists.txt:72`, `gpu-simulator/setup_environment.sh:92-128` |
+| Build selection | Framework `gpu-simulator/CMakeLists.txt` consumes `$GPGPUSIM_ROOT` as an explicit out-of-tree CMake subproject; `gpu-simulator/setup_environment.sh` clones only when that variable is absent/unusable | Framework files `gpu-simulator/CMakeLists.txt:74`, `gpu-simulator/setup_environment.sh:92-128` |
 
 The active Framework worktree deliberately has no
 `gpu-simulator/gpgpu-sim/` checkout.  All project builds/runners must therefore
