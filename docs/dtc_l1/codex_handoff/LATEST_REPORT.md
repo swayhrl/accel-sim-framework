@@ -4,7 +4,7 @@ Stage: `M1_FOUNDATION`
 
 Status: **IN_PROGRESS — INTEGRATION VALIDATION BLOCKED BY ENVIRONMENT**
 
-Core SHA: `007b2571e1fb9691cecc84d39599cbe322ec60e4`
+Core SHA: `06a2e689c6b6944b3dacaaa7387e0e89ceea0c85`
 
 Framework implementation/evidence base SHA: `c05b84e83c215e5f63aa6218f85666847b03c272`
 
