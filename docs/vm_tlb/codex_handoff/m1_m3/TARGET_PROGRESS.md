@@ -1,20 +1,33 @@
 # Track-A M2-M3 target progress
 
-## Active goal and review-repair boundary
+## Active goal and current review boundary
 
 Goal: `M2_FUNCTIONAL_TRANSLATION -> M3_TIMING_REALISTIC_BASELINE ->
 M1_M3_VM_BASELINE_CLOSEOUT`.
 
-Current authorized gate: `M2-RF closeout — STOP FOR CHATGPT REVIEW`
+Current authorized gate: `G3-1-RF closeout — STOP FOR CHATGPT REVIEW`
 Status: `PASS`
-Core SHA: `3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
-Framework SHA: `e6b8d6b6034acd34f5f5176c3b0f4c3a865c09dc`
+Core SHA: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
+Framework handoff SHA: `0ca67e7ca0c22f6352b63ff8a24471717be3dc3f`
 
-The independently reviewed M2 retry-pollution finding reopens M2.  G3-1 is
-preserved as `PROVISIONAL`; its uncommitted G3-2 work was safely stashed and
-all further M3 work is paused.  RF1-RF8 now pass and require independent
-ChatGPT review before this goal can resume M3.  Evidence/review path:
-`review_packs/M2_FUNCTIONAL_TRANSLATION/README.md`.
+M2-RF is independently accepted.  G3-1-RF repairs the provisional PTE address
+namespace collision with a fixed 33-bit namespace width, while preserving the
+identity mapping and M2 semantics.  The G3-2 WIP remains safely stashed and
+all further M3 work is paused pending independent review.  Evidence/review
+path: `review_packs/M3_TIMING_REALISTIC_BASELINE/README.md`.
+
+## G3-1-RF — PTE address namespace injectivity
+
+Status: `PASS — STOP FOR CHATGPT REVIEW`
+
+Acceptance: former 64KB/2MB collision is explicitly non-aliasing; min/max VPN
+boundaries across every supported page-size class/level are separated; PTE
+physical/non-recursive and reserved-range contracts plus replacement-backend
+seam pass; M1/G2/M2-RF regressions and cold one-kernel functional replay pass
+and quiesce.  Evidence:
+`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_1_ADDRESS_NAMESPACE_FIX.md`.
+
+Next gate: none.  Do not start G3-2 before ChatGPT review.
 
 ## M2-RF — independent review repair
 
@@ -29,8 +42,8 @@ ChatGPT review before this goal can resume M3.  Evidence/review path:
 | RF7 cold regression + real replays | PASS | `3b93e243` / `e6b8d6b6` | M1/G2, cold build, one-kernel/LUD/BFS, 5/50 sensitivity in `/tmp/m2-rf-evidence/` |
 | RF8 provisional G3-1 compatibility | PASS | `3b93e243` / `e6b8d6b6` | `vm_m3_g3_1_test PASS`; `8c613a35` stays provisional |
 
-Next gate: no M3 gate is authorized.  Push both repositories, then STOP FOR
-CHATGPT REVIEW.
+M2-RF is accepted historical evidence; its prior stop boundary is superseded
+by the currently authorized G3-1-RF review fix.
 
 ## G2-0 — M2 entry/provenance check
 

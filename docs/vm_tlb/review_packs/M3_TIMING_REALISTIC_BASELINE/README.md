@@ -1,13 +1,14 @@
 # M3 timing-realistic baseline review pack
 
-Current gate: `G3-2 — real PTE L2/DRAM integration` (`RUNNING`).
+Current gate: `G3-1-RF — PTE address namespace injectivity` (`PASS — STOP FOR
+CHATGPT REVIEW`).  G3-2 is not running and remains unauthorized.
 
 ## Frozen M3 entry snapshot
 
 | Repository | M2 source anchor | Entry status |
 | --- | --- | --- |
-| Core/GPGPU-Sim | `e7999554200760b31b4efe16d98e050370e1ea71` | clean, pushed to `research/hrl/vm-m1-m3-v0` |
-| Framework/Accel-Sim | `a7020e603d6081f1f16f26b5ad1ead5ca17d7756` | clean, pushed to `origin/hrl/vm-m1-m3-v0` |
+| Core/GPGPU-Sim | M2 accepted `3b93e243`; G3-1-RF `a192e5dc` | pending push at closeout |
+| Framework/Accel-Sim | handoff `0ca67e7c` | pending evidence push at closeout |
 
 G3-0 is `PASS`: the completed M2 pack, M2-D diagnosis, target-mode plan,
 M3 reference materials, M3 stage specification, long-lived VM specifications,
@@ -25,6 +26,7 @@ Entry artifacts:
 - [Parameter/evidence ledger](PARAMETER_EVIDENCE_LEDGER.md)
 - [M2 regression freeze](M2_REGRESSION_FREEZE.md)
 - [G3-1 PTE backend/request contract](G3_1_PTE_BACKEND.md)
+- [G3-1-RF namespace-fix evidence](G3_1_ADDRESS_NAMESPACE_FIX.md)
 
 The M3 evidence boundary is generic reusable VM timing infrastructure.  It is
 not a claim of exact Segmentation-paper PTW, PWC, sub-entry, or commercial-GPU

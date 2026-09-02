@@ -12,7 +12,7 @@ from real replays check that they remain true at quiescence.
 | Walk starts equal completions | G2-3 invariant test | LUD 1=1; BFS 7=7 |
 | No untranslated data request enters the data path | G2-1 source gate plus G2-4 pending/replay test | real functional replay terminates normally |
 | No duplicate store/atomic effect | G2-4 exact-once tests | no duplicate-side-effect diagnostic in real runs |
-| No PTE-memory request in M2 | fixed-latency walker design and directed suite | M2 uses no PTE request class/traffic |
+| No PTE-memory traffic in repaired M2 execution | fixed-latency walker design and directed suite | the source contains the provisional `pte_request` class, but the M2 execution path emits no PTE memory traffic |
 | Registered waiter cannot monopolize TLB ports | RF pending-retry test: 9 bypasses, zero added L1/L2 probes/stalls; B uses sole L2 port | BFS latency 50: 901 bypasses, 156 L2 probes, no loss/starvation |
 | Kernel-boundary TLB persistence | RF focused warm-boundary test plus `gpgpu_sim` lifetime source proof | controller is constructed once and not reset by ordinary init/done paths |
 
