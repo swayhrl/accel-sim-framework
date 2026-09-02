@@ -1,8 +1,11 @@
 # M4 memory-operation semantics audit
 
-Status: **SOURCE-BACKED — functional M4 work authorized only within these
-observed semantics.** Core source reviewed at M3 final
-`90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`.
+Status: **HARD FAILURE — STOP.** The source-backed audit authorized the
+partial Store/Atomic/bypass lifecycle work below, but it also found that the
+required source-supported proxy-fence instruction is not reachable from the
+current PTX input frontend. Core source reviewed at M3 final
+`90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`; the failure is independent of
+the subsequent M4 sidecar implementation.
 
 ## Common entrance and completion
 
@@ -69,6 +72,40 @@ Tag/physical/Ref state in M3.
   limitation; unsupported regular fence is not a valid simulator workload.
 - No fence allocates a DTC Tag or physical line in current source.
 
+### HARD failure: the PTX frontend cannot construct the audited fence
+
+The LD/ST code has a `FENCE_OP` path, but the actual PTX frontend used by this
+build cannot produce it:
+
+- `src/cuda-sim/ptx.l` recognizes `membar` as `MEMBAR_OP`, and its exhaustive
+  opcode table has no `fence`/`fence.proxy` rule and no rule returning
+  `FENCE_OP`.
+- `src/cuda-sim/ptx.y` has no `FENCE_OP` token/production/mapping.
+- A repository-wide source search finds `FENCE_OP` only in the dynamic
+  instruction/LDST handling, not in the PTX lexer or parser.
+
+This is a reachability failure, not a missing test harness: no normal loaded
+PTX can enter the only source-supported proxy-fence path. A regular PTX
+`membar` is a different `MEMBAR_OP`; attempting to equate it with the proxy
+fence would invent a semantic substitution, and regular `FENCE_OP` itself
+asserts unsupported in `ldst_unit::cycle`.
+
+Reproduce the evidence from the Core checkout:
+
+```sh
+rg -n "fence|FENCE_OP" src/cuda-sim/ptx.l src/cuda-sim/ptx.y
+rg -n "membar|OPCODE" src/cuda-sim/ptx.l
+rg -n "FENCE_OP|is_proxy_fence" src/abstract_hardware_model.h src/gpgpu-sim/shader.cc src/gpgpu-sim/shader.h
+```
+
+The first command returns no lexer/parser support while the latter two show
+the distinct `membar` and dynamically unreachable `FENCE_OP` paths. Therefore
+F01 (`LoadFenceLoad`), F02 (`StoreFenceLoad`), and F03
+(`AtomicFenceLoad`) cannot be executed under the required current-source
+semantics. Those are M4 HARD gates, so M4 cannot pass and the continuous goal
+must stop here. Adding parser/semantic support would be an architectural
+extension needing new authorization; M5 remains forbidden.
+
 ## Architectural bypass
 
 `memory_cycle` sets `bypassL1D` for `CACHE_GLOBAL`, absent L1D, or global
@@ -88,3 +125,14 @@ the out-of-scope thesis policy bypass.
    must prove executed and completed atomic cardinality agree.
 4. OO ready selection must not pass a source-supported unresolved async proxy
    fence in the same warp. No regular-fence behavior is synthesized.
+
+## Partial M4 implementation evidence before the stop
+
+The Core adds a sidecar external-dependency entry for Store, Atomic, bypass
+Load, and proxy-fence lifecycle observation. It deliberately does not alter
+their source request/cache/acknowledgement/side-effect routes and allocates no
+DTC Tag/physical state for them. Whole-line IO, OO, and sector VecAdd
+regressions passed with eight Stores admitted/completed/retired exactly once;
+the available atomic-contention workload passed with one Atomic admitted,
+completed, and retired exactly once. These checks cannot satisfy F01--F03 and
+are recorded only as partial evidence, not as M4 acceptance.
