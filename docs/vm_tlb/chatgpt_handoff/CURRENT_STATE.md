@@ -1,103 +1,59 @@
 # Current state
 
-## Stage
+## Track A status
 
-`S1_B0_BOOTSTRAP` reviewed by ChatGPT: **ACCEPTED WITH RESOLVED REMOTE BLOCKER**.
+`M1_VM_CORE_FOUNDATION` has been independently reviewed by ChatGPT and is **PASS**.
 
-Next authorized work is a two-track macro execution:
+Reviewed source anchors:
 
-- **Track A:** `M1 -> M2 -> M3` single-GPU VM/TLB/PTW substrate.
-- **Track B:** `M4A-P` LLM **pre-capture** preparation only.
+- Core/GPGPU-Sim M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
+- Framework M1 closeout branch: `hrl/vm-m1-m3-v0`
+- Framework closeout HEAD reported by Codex: `ccee0a821c379b1fb8ac183c3519ed6b3762b141`
 
-Real rented-GPU trace collection has been split into a separate prepared stage, `M4A-C`, and is **not authorized yet**. Track B must finish the capture package/runbook and STOP before external capture so the user can select/provision the rental GPU deliberately.
+Review entry:
+`docs/vm_tlb/review_packs/M1_VM_CORE_FOUNDATION/README.md`
 
-Track B may run in parallel with Track A, but it must not change M1-M3 VM semantics or Core simulator source.
+M1 evidence accepted:
+
+- VM-disabled path matches the frozen baseline on the required key architectural counters;
+- ideal identity translation matches VM-disabled behavior;
+- QV100 LUD-64, RTX3070 LUD-64, and BFS-4096 transparency runs pass;
+- `SimVA == SimPA` in identity mode;
+- ideal/disabled modes add zero translation stall;
+- directed page-offset and cross-page helper tests pass;
+- M1 contains no functional TLB/MSHR/PTW implementation.
+
+### Non-blocking M2 caution
+
+The M1 substrate initializes `SimPA` numerically from the original address before functional translation, while validity is represented by the translation-applied state. M2 must preserve the invariant that no consumer treats `SimPA` as a completed physical translation before translation has actually completed. Replay must not re-enter or double-apply translation for an already translated request.
+
+## Next authorized Track A work
+
+Proceed directly to:
+
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M2_FUNCTIONAL_TRANSLATION.md`
+
+If M2 PASS, continue automatically to M3 under the existing target-mode macro authorization.
+
+Do not repeat M1 implementation unless a later correctness failure proves M1 itself is implicated.
 
 ## Frozen source anchors
 
 - Core/GPGPU-Sim baseline: `73774727e25fadf89df6f30ef5cf014091115db7`
 - Framework/Accel-Sim baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
-- Bootstrap Framework branch: `hrl/vm-core-v0`
-- Bootstrap Core branch: `hrl/vm-core-v0`
+- Writable Framework: `swayhrl/accel-sim-framework`
+- Writable Core: `swayhrl/gpgpu-sim`
 
-## Writable repositories
+## Frozen M1-M3 modeling decisions
 
-- Framework: `swayhrl/accel-sim-framework`
-- Core: `swayhrl/gpgpu-sim`
-
-Writable Core repository access and project branches are available. Codex must configure/verify a writable local Core remote (recommended name `research`) before modifying Core source. Do not push to the official Accel-Sim/GPGPU-Sim upstream.
-
-Project branches:
-
-- `swayhrl/gpgpu-sim:hrl/vm-core-v0`
-- `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
-- `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
-- `swayhrl/accel-sim-framework:hrl/llm-trace-prep-v0`
-
-## Verified bootstrap evidence
-
-`VERIFIED_RUN` from S1-B0:
-
-- clean baseline build: PASS;
-- Rodinia LUD-64 / QV100 smoke: PASS;
-- same trace with unchanged SM86 RTX3070 config: PASS;
-- no simulator behavior/config/trace-parser/VM-TLB functionality modified during bootstrap.
-
-Review entry:
-`docs/vm_tlb/review_packs/S1_B0_BOOTSTRAP/README.md`
-
-## Frozen modeling decisions for M1-M3
-
-- Trace memory address is named `SimVA` by simulator contract; this is not a claim about the exact NVIDIA internal address stage captured by NVBit.
-- Translation produces `SimPA`; preserve both SimVA and SimPA for observability.
-- Initial mapper is identity-like at page granularity: `SimPPN = SimVPN`, so data `SimPA == SimVA`.
-- Translation operates on coalesced memory transactions before the real L1D/data-cache access unless directed evidence requires a different split.
-- M1-M3 model address translation only: all application pages resident; no GPU page fault, migration, UVM oversubscription, or CPU fault service.
+- Trace address is simulator `SimVA` by modeling contract, not a claim about the exact internal NVIDIA address stage captured by NVBit.
+- Translation produces `SimPA`; preserve both identities.
+- Identity bring-up uses `SimPPN = SimVPN`, so data `SimPA == SimVA`.
+- Translation operates on approved coalesced memory transactions before real L1D/data-cache access.
+- M1-M3 model resident-memory address translation only: no page fault, migration, UVM oversubscription, or CPU fault service.
 - TLB state persists across ordinary kernels in one simulated context unless explicitly invalidated/reset.
-- PTE requests are physical and must never recursively translate.
-
-## Target-paper state
-
-Primary reproduction target:
-`Towards Segmentation-Based Address Translation for LLM Inference`, IEEE Computer Architecture Letters, 2026, DOI `10.1109/LCA.2026.3693796`.
-
-The copyrighted PDF is not committed to this public repository. Extracted reproduction specifications are stored in:
-`docs/vm_tlb/paper_specs/SEGMENTATION_LLM_2026.md`.
-
-## LLM capture execution split
-
-### Authorized now: M4A-P
-
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_PRECAPTURE_PREP.md`
-
-M4A-P must recover/review previous rented-server trace scripts, freeze workload/hardware contracts, prepare metadata and contiguous-weight support as far as possible without the rental GPU, and deliver a ready capture package/runbook.
-
-### Prepared, not authorized: M4A-C
-
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_EXTERNAL_CAPTURE.md`
-
-M4A-C starts only after the user selects/provisions a rented GPU and ChatGPT explicitly authorizes it.
-
-For current paper reproduction, prefer SM86-compatible capture hardware. For future Accel-Sim 2.0 work, tracer support and simulator-target support must be treated separately; RTX5090/Blackwell instrumentation capability does not by itself make RTX5090 a validated H100/H200 simulation input.
-
-## Parallel reporting
-
-Because two Codex windows will run on separate branches, active reports are track-specific:
-
-- Track A: `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
-- Track B: `docs/vm_tlb/codex_handoff/m4a/LATEST_REPORT.md`
-
-The root `codex_handoff/LATEST_REPORT.md` is retained as bootstrap/historical state rather than a shared parallel-writer target.
+- PTE requests in M3 are physical and must never recursively translate.
 
 ## STOP boundary
 
-M1 may proceed to M2 only after M1 acceptance criteria pass. M2 may proceed to M3 only after M2 acceptance criteria pass. M4A-P may proceed independently through its approved pre-capture tasks.
-
-Codex must STOP before:
-
-- any unresolved correctness failure;
-- converting a required `PAPER_EXACT` detail to an approximation without authorization;
-- Track B starting real external GPU capture (`M4A-C`) before explicit authorization;
-- implementing the Segmentation mechanism itself;
-- synthetic-KV performance experiments;
-- any new AI-aware TLB research mechanism beyond the reproduction inputs.
+M2 must STOP before M3 if any required directed test or correctness invariant fails. Performance characterization remains blocked by deadlock, request loss, duplicate wakeup, duplicate store/atomic side effect, recursive PTE translation, unexplained nondeterminism, or baseline-transparency failure.
