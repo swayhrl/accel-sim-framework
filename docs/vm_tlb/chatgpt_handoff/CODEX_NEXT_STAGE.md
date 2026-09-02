@@ -14,27 +14,25 @@ Accepted G3-1 Core head:
 
 `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
 
-`G3-2 — real PTE L2/DRAM integration`: **BLOCKED — correctness STOP**.
+`G3-2A — Address Provenance Diagnostic`: **PASS — CASE A accepted**.
 
-Framework blocked-evidence head:
+Framework G3-2A evidence:
 
-`cc055d3a4b044136b37a1ab2ccba8f4a8a360ba5`
+`8eefe9d69764000f860871ca92770d986e7be0b6`
 
-G3-2 locally proved the real physical/non-recursive PTE memory path and response association on completed kernels, but a later BFS kernel reached a VPN outside the accepted G3-1 backend's hardcoded 49-bit address contract. No width/namespace workaround is authorized.
+The first >49-bit request is a legitimate raw/coalesced global BFS store with 56-bit `SimVA`; VM-disabled and ideal-identity controls accept the same transaction. Therefore the generic M3 backend must not hard-code the target paper's 49-bit VA width.
 
 ## Next authorized execution
 
 Execute only:
 
-`G3-2A — Address Provenance Diagnostic`
+`G3-2B — generic trace-width extension and G3-2 resume`
 
 Specification:
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2_ADDRESS_PROVENANCE_DIAG.md`
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2_TRACE_WIDTH_EXTENSION.md`
 
-This is a diagnostic gate, not a G3-2 implementation gate.
-
-After the diagnostic evidence is complete, STOP for ChatGPT review. Do **not** resume G3-2 or start G3-3 automatically.
+After G3-2B closes G3-2, STOP for ChatGPT review before G3-3/PWC.
 
 ## Mandatory read order
 
@@ -42,12 +40,12 @@ After the diagnostic evidence is complete, STOP for ChatGPT review. Do **not** r
 2. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
 4. this file
-5. `stage_specs/M3_G3_2_ADDRESS_PROVENANCE_DIAG.md`
+5. `stage_specs/M3_G3_2_TRACE_WIDTH_EXTENSION.md`
 6. `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
 7. `stage_specs/M3_REFERENCE_MATERIALS.md`
-8. `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md`
-9. accepted M1/M2/G3-1 review evidence
-10. long-lived VM specs
+8. `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`
+9. `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md`
+10. accepted M1/M2/G3-1 evidence and long-lived VM specs
 
 Do not modify `chatgpt_handoff/*`.
 
@@ -65,45 +63,59 @@ Framework branch:
 
 `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-Fetch/pull the latest Framework handoff before diagnosis.
+Fetch/pull latest Framework handoff before implementation.
 
-## G3-2 local WIP handling
+## Architecture decision to implement
 
-The local uncommitted G3-2 implementation may be used only to reproduce the blocked path and collect diagnostic evidence. It remains unaccepted source.
+For generic M1-M3:
 
-- Do not commit/push it as G3-2 implementation evidence.
-- Do not blindly restore/pop/drop historical `stash@{0}`.
-- Temporary diagnostic instrumentation is permitted but must not silently alter VM semantics.
-- Keep the accepted Core branch semantics unchanged at diagnostic closeout.
+- raw/coalesced trace address remains `SimVA`;
+- preserve identity-like data mapping `SimPA == SimVA`;
+- do not mask/truncate/canonicalize generic SimVA;
+- generic PTE backend VA width becomes configurable;
+- current generic M3 configuration = **56 bits**;
+- 49-bit configuration remains supported/tested for later target-paper use;
+- more-than-configured-width requests remain explicit correctness stops.
 
-## Diagnostic objective
+This is a simulator trace/backend modeling decision, not a commercial SM86 VA-width claim.
 
-Determine exactly what the first >49-bit `SimVA` represents.
+## Required implementation and validation
 
-At minimum capture:
+Follow every gate in `M3_G3_2_TRACE_WIDTH_EXTENSION.md`.
 
-- exact SimVA/VPN/page size/required width;
-- kernel sequence/name, PC, UID, SID/WID when available;
-- load/store/atomic, mem-access type and instruction memory space;
-- whether the value comes directly from the trace or from simulator local/generic-address transformation;
-- min/max and >49-bit counts by global/local/param-local space for available LUD/BFS;
-- the same address/path under VM disabled and ideal identity;
-- proof that it is not sentinel/uninitialized/PTE recursion/corruption.
+At minimum:
 
-The final diagnostic must classify the evidence as Case A/B/C/D exactly as defined in the stage spec.
+1. remove the semantic hard-code that accepts only 49-bit generic VA;
+2. make width/range arithmetic overflow-safe and configuration-derived;
+3. prove non-overlap of 56-bit application identity-like addresses and the synthetic PTE-reserved range;
+4. prove all 64KB/2MB × four-level PTE namespaces remain disjoint under 56-bit config;
+5. keep original 49-bit namespace tests passing;
+6. accept the exact former BFS offender without changing its raw SimVA/identity-like SimPA;
+7. record a non-blocking high-bit/canonical-pattern audit over all available BFS transactions >=2^49 as `TRACE_ENCODING_OBSERVATION` only;
+8. reimplement/selectively reuse the local G3-2 WIP only after inspecting it against the accepted source;
+9. rerun real PTE request/response, L2/DRAM, multi-walker identity, one-kernel, BFS, LUD, M1 transparency and repaired M2 regressions;
+10. prove zero PTE response misassociation, conservation and final MSHR/PWQ/walker quiescence.
+
+The historical `stash@{0}` remains non-evidence. Do not blindly pop/drop it.
+
+## PWC stop boundary
+
+Do **not** enter G3-3 after G3-2 PASS.
+
+Current PTE identities are sufficient for G3-2 physical-memory plumbing but are not yet an approved hierarchy-prefix/PTE-sharing model for PWC locality. ChatGPT will specify that separately after G3-2 closeout.
 
 ## Explicitly forbidden
 
 Do not:
 
-- widen `virtual_address_bits`;
-- truncate/mask/canonicalize the address;
-- alter PTE namespace/range;
-- bypass functional VM for one memory space to make the test pass;
-- change page size or ASID semantics;
-- start PWC/G3-3;
-- claim the Segmentation paper's 49-bit VA is a generic trace-width fact;
-- claim an observed high value is a valid GPU VA until provenance proves it.
+- canonicalize, mask or truncate raw SimVA;
+- silently modulo-map PTE addresses;
+- change TLB/MSHR/PWQ/replay semantics;
+- expand to multi-ASID;
+- implement PWC/G3-3;
+- implement Segmentation, L2-TLB sub-entry or synthetic KV;
+- implement page fault/migration/UVM/MCM;
+- claim generic 56-bit mode is target-paper exact.
 
 ## Reporting
 
@@ -115,14 +127,22 @@ and:
 
 `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
 
-Create/update:
+Update:
 
-`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/`
 
-with compact evidence files specified by the stage spec.
+Commit/push safe Core + Framework results and STOP after G3-2 closeout for ChatGPT review.
 
-Push Framework diagnostic evidence and STOP.
+## STOP conditions
 
-## STOP condition
+STOP immediately on:
 
-After D0-D5, STOP regardless of whether provenance is Case A, B, C, or D. The next architecture decision belongs to ChatGPT review.
+- width/range overflow or overlap;
+- a trace request requiring more than configured 56-bit generic width;
+- recursive PTE translation;
+- PTE response identity failure/misassociation;
+- request loss, duplicate wakeup, duplicate store/atomic effect;
+- M1/M2 regression;
+- deadlock or unexplained nondeterminism;
+- source/provenance ambiguity;
+- any need to change the approved generic width policy rather than implement it.
