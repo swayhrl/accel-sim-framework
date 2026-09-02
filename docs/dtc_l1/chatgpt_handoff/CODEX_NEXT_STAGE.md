@@ -2,9 +2,9 @@
 
 ## Status
 
-**ACTIVE — CONTINUOUS GOAL AUTHORIZED FOR M1 THROUGH M4**
+**ACTIVE — B07 RECOVERY AUTHORIZED; RESUME M1 -> M4 ONLY AFTER M1 HARD PASS**
 
-Execute M1 -> M2 -> M3 -> M4 on the dedicated goal branches. Human re-authorization is not required between passing major stages. Every HARD gate remains mandatory.
+The previous continuous goal correctly stopped at M1 HARD gate B07. Resume work only on the dedicated goal branches and execute the recovery specification below.
 
 ## Active branches
 
@@ -16,106 +16,89 @@ Framework / experiments / evidence:
 
 - `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`
 
-Frozen M0 branches are read-only anchors:
+Frozen M0 branches remain read-only anchors:
 
 - `swayhrl/gpgpu-sim:hrl/decoupled-l1-v0`
 - `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-v0`
 
-## Required reading before implementation
+## Required reading before recovery
 
 Framework:
 
 1. `AGENTS.md`
 2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
-3. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+3. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 4. this file
-5. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
-6. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
-7. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
+5. `docs/dtc_l1/goal/B07_RECOVERY_SPEC.md`
+6. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
+7. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
+8. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
 
 Core:
 
-8. `AGENTS.md`
-9. `docs/dtc_l1/DTC_L1_SPEC.md`
+9. `AGENTS.md`
+10. `docs/dtc_l1/DTC_L1_SPEC.md`
 
-## Goal objective
+## Immediate objective
 
-Deliver a validated, parameterized Accel-Sim/GPGPU-Sim implementation that:
+Resolve the M1 B07 traditional-MSHR merge-full deadlock without changing the frozen architecture or conventional cache/MSHR semantics.
 
-1. preserves an exactly neutral LEGACY path;
-2. implements the paper Baseline with explicit PIB and MSHR limits;
-3. implements IO-DTC read semantics;
-4. implements OO-DTC read semantics, Ref Count, Merge wakeup, and active reclamation;
-5. implements and validates the modern sector readiness extension after whole-line OO passes;
-6. attaches Store/Atomic/Fence and architectural bypass to the correct DTC lifecycle without changing their underlying memory semantics;
-7. runs a representative available Chapter-4 compute workload set under Paper Base / IO / OO;
-8. emits enough counters, invariants, parsers, and compact evidence to diagnose the mechanism and bottlenecks without rerunning solely to discover why a result moved.
+ChatGPT source review found a concrete high-priority defect to verify first: the current `ldst_unit::L1_latency_queue_cycle()` L1-hit completion path calls `warp_inst_complete(...)` but does not pair that true completion event with `dtc_l1_retire(...)`. Other tracked memory completion paths already pair the two. This can leak Paper-Base PIB entries after the first same-line miss fills and younger requests become hits.
 
-## Stage progression
+Follow `docs/dtc_l1/goal/B07_RECOVERY_SPEC.md` exactly. Do not apply a broad workaround before bounded pre-fix localization confirms or disproves this cause.
 
-Run the following in order:
+## Recovery progression
 
-- `M1_FOUNDATION`
-- `M2_IO_READ`
-- `M3_OO_SECTOR`
-- `M4_COMPUTE_BRINGUP`
+Execute in order:
 
-At each major stage:
+- `R07.1` reproduce/localize the pre-fix failure with bounded diagnostics;
+- `R07.2` minimal completion-lifecycle fix if confirmed;
+- `R07.3` permanent hit-completion PIB-leak regression/invariant;
+- `R07.4` re-run B07 with reproducible source-supported MSHR entry/max-merge configuration;
+- `R07.5` frozen clean-upstream differential check;
+- `R07.6` full M1 HARD revalidation.
 
-1. complete every required substage;
-2. run every HARD acceptance item in `VALIDATION_ACCEPTANCE_MATRIX.md`;
-3. close counter/accounting checks;
-4. create `docs/dtc_l1/review_packs/<STAGE>/`;
-5. update `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`;
-6. commit using explicit-path staging only;
-7. push both affected branches;
-8. continue automatically only if the stage is PASS.
+If any recovery HARD item fails or the proposed cause is disproved without another source-backed root cause, STOP and report.
 
-If a HARD gate fails, STOP. If the current official source reveals an architecture-semantic ambiguity that cannot be resolved from source + frozen spec, classify it `UNKNOWN`, document it, and STOP rather than guessing.
+## Resume authorization after recovery
 
-## Required persistent Codex-owned implementation documents
+If and only if **all** M1 HARD gates pass after R07.6:
 
-Create/update under `docs/dtc_l1/implementation/` as execution proceeds:
+1. create and push `docs/dtc_l1/review_packs/M1_FOUNDATION/`;
+2. update `docs/dtc_l1/codex_handoff/LATEST_REPORT.md` with M1 PASS evidence;
+3. make semantic commits with explicit-path staging only;
+4. push both affected branches;
+5. resume the existing continuous goal automatically:
+   - `M2_IO_READ`
+   - `M3_OO_SECTOR`
+   - `M4_COMPUTE_BRINGUP`
 
-- `SOURCE_INTEGRATION_MAP.md` in M1.0;
-- `CONFIG_KNOB_MAP.md` by M1 closeout;
-- `COUNTER_OUTPUT_MAP.md` by M1 closeout;
-- `M4_MEMORY_OP_SEMANTICS.md` before M4 functional changes;
-- `WORKLOAD_MANIFEST.md` before M4 workload runs.
+No new human re-authorization is required between M1 PASS and M4 as long as every subsequent HARD gate passes.
 
-## Explicitly forbidden during this goal
+## Explicitly forbidden
 
 Do NOT:
 
-- modify the M0 anchor branches;
-- alter the frozen M0 architecture choices without a STOP/report;
-- tune code/configs to target thesis speedup numbers;
-- add all-or-nothing physical allocation or rollback;
-- special-case small physical-cache deadlock;
-- let DTC use the traditional L1 MSHR as its own capacity/merge mechanism;
-- make OO retire more than the configured width;
-- merge Atomic side effects as if they were read misses;
-- redesign L2/NoC/DRAM;
-- implement thesis DTC policy bypass;
-- run or claim final paper-reproduction experiments;
-- call M4 workload speedups FORMAL;
-- modify ChatGPT-owned `chatgpt_handoff/` files.
+- modify M0 anchor branches;
+- weaken/skip B07 to continue;
+- special-case this workload or deadlock;
+- add a PIB timeout/forced release;
+- release a PIB entry before the simulator's true memory-instruction completion point;
+- change conventional MSHR merge semantics merely to make B07 finish;
+- tune target speedups;
+- alter L2/NoC/DRAM;
+- begin M2 before full M1 revalidation passes;
+- modify ChatGPT-owned handoff/spec files;
+- begin M5.
 
-## Required result labels
+## Result/evidence requirements
 
-- Directed/unit and workload bring-up runs in M1-M4: `DIAGNOSTIC` unless explicitly used for exact neutrality.
-- Clean-baseline neutrality evidence may be labeled `FORMAL_VALIDATION` inside the review pack, but not as a paper performance result.
-- Pre-fix runs: `PRE_FIX`.
-- Superseded runs: `OBSOLETE`.
+The B07 recovery evidence must record pre-fix and post-fix source SHAs, effective MSHR entry/max-merge settings, workload identity, compact pre-fix localization, clean-upstream differential behavior, PIB admits/retires/drain state, merge-full count, and application completion/self-check.
 
-## Final M4 closeout
+Pre-fix evidence: `PRE_FIX`.
+Recovery/directed tests: `DIAGNOSTIC`.
+LEGACY neutrality: `FORMAL_VALIDATION` only as implementation validation, never as paper performance evidence.
 
-The continuous goal is complete only when all M1-M4 HARD gates pass and Base/IO/OO complete the required available compute workload bring-up set with matching dynamic-operation counts and clean invariants.
+## Final STOP condition
 
-Then:
-
-- update `LATEST_REPORT.md` with `READY_FOR_M5_REVIEW`;
-- push all source/evidence;
-- STOP.
-
-Do not begin M5.
+If M4 eventually passes, update `LATEST_REPORT.md` with `READY_FOR_M5_REVIEW`, push all source/evidence, and STOP. Do not begin M5.
