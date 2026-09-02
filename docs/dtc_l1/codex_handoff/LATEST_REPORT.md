@@ -4,7 +4,7 @@ Stage: `M2_IO_READ`
 
 Status: **M2_RECOVERY_IN_PROGRESS — M3 FORBIDDEN**
 
-Core recovery checkpoint: `f6ce41c610ab27e886f86c1cd98d52d4548c39c5`
+Core recovery checkpoint: `58e4c3d97ab084cfccd39d747dc1c979f10bb21b`
 
 Framework SHA before this report update: `0b8f03463ebab057b2371a489492688903e837ea`
 
@@ -26,3 +26,8 @@ The original failure evidence remains authoritative historical context in:
 M2 is not accepted.  Do not create an M2 review pack or start M3, M4, or M5.
 Complete every remaining M2 HARD gate (I06-I15, no-MSHR high-MLP proof,
 counter/parser closeout, and hygiene) before changing this status to PASS.
+
+The current Core checkpoint adds directed model coverage for I06-I11
+(partial hold/no rollback, exact LRU, pending-Tag eviction/duplicate request,
+FIFO HOL, and release visibility).  Full integration/formal M2 closeout is
+still required.
