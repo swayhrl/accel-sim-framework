@@ -65,7 +65,8 @@ export M4A_PHASE=trace TRACES_FOLDER="$run_dir" M4A_NVBIT_PATH="$tracer" ACTIVE_
 "$command_file" |& tee "$run_dir/trace.log"
 "$post" "$trace_dir" |& tee "$run_dir/postprocess.log"
 test -s "$trace_dir/kernelslist.g" || { echo "error: missing kernelslist.g" >&2; exit 1; }
-find "$trace_dir" -type f -name '*.traceg*' -size +0c | grep -q . || { echo "error: no nonempty traceg files" >&2; exit 1; }
+first_traceg="$(find "$trace_dir" -type f -name '*.traceg*' -size +0c -print -quit)"
+[[ -n "$first_traceg" ]] || { echo "error: no nonempty traceg files" >&2; exit 1; }
 python3 "$script_dir/classify_kernels.py" --kernelslist "$trace_dir/kernelslist.g" --output-dir "$run_dir/kernel-classification" |& tee "$run_dir/kernel-classification.log"
 python3 "$script_dir/validate_metadata.py" "$M4A_METADATA_PATH" | tee "$run_dir/metadata-trace.json"
 (cd "$run_dir" && find . -type f ! -name SHA256SUMS -printf '%P\n' | sort | xargs -r sha256sum) > "$run_dir/SHA256SUMS"
