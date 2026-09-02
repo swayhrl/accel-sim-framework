@@ -18,5 +18,15 @@ Passed real-host checks:
 - generic injection/postprocess/archive/integrity smoke;
 - four-rank smoke and rank0-only trace-injection proof.
 
-The absence of a usable gated-model credential is deliberately a BLOCKED
-result, not a failed model or trace validation.
+Additional repaired-route host validations:
+
+- all six local-snapshot files rechecked against the immutable manifest;
+- real NCCL TP=4 Llama no-trace run, B=8/S=64/G=3, finite logits and stable
+  contiguous flat-weight binding;
+- one rank0-only NVBit diagnostic `decode1` capture with raw trace retention,
+  postprocessing, classification, Weight/KV validation, archive, and SHA256;
+- remote-to-main-server archive digest equality;
+- bounded frozen-parser smoke over 35 real SM86 trace kernels.
+
+No synthetic KV object was introduced and no Segmentation implementation or
+policy change was made.

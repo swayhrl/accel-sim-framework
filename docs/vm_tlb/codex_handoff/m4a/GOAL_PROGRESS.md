@@ -2,19 +2,19 @@
 
 Goal: `M4A_C_FORMAL_CAPTURE`
 
-| Gate | Status | Local SHA | Remote SHA | Evidence / next action |
-| --- | --- | --- | --- | --- |
-| G0 | BLOCKED | `cc76b6b77ac7b26a3180c77540d9bc18ac83cce6` | `ac9f42f824abb325acec0846b0da6cce78849d56` | Pilot report ended `PILOT_BLOCKED`, so Goal activation is prohibited. Remote host remains the approved 4×SM86 host with 982 GiB free and no GPU compute processes. Resolve gated-model credential under a new P5 handoff. |
-| G1–G8 | NOT_STARTED | — | — | Not authorized because G0 is BLOCKED. |
+| Gate | Status | Framework source SHA | Evidence / next action |
+| --- | --- | --- | --- |
+| G0 | PASS | `f994fc9156329b0335f56702dafc2884ce003fe8` | Repaired pilot status is exactly `PILOT_PASS_READY_FOR_GOAL_CAPTURE`. Re-admission found clean source, four idle homogeneous SM86 RTX 3080 Ti GPUs, retained local snapshot verified, CUDA 12.6/PyTorch 2.6.0+cu126, and 978 GiB free. |
+| G1 | PASS | `f994fc9156329b0335f56702dafc2884ce003fe8` | Canonical ID/revision are supplied from the six-file manifest-verified local snapshot. Network model access is disabled; no HF credential is needed or recorded. |
+| G2 | READY | `f994fc9156329b0335f56702dafc2884ce003fe8` | Launch exactly one `FORMAL` prefill ROI with rank0-only NVBit, then archive and copy it back before decode1. |
+| G3–G8 | NOT_STARTED | — | Formal prefill/decode1 evidence does not yet exist. |
 
-No formal run ID, archive, or copy-back path exists for this Goal attempt.
+## Pilot evidence retained on the main server
 
-## Pre-shutdown checkpoint
+- R3/P5 four-rank real TP4 evidence:
+  `/workspace/m4a-rented-host-pilot/r3-p5-local-smoke-final/`
+- R4/P6 diagnostic archive and checksum record:
+  `/workspace/m4a-rented-host-pilot/r4-diagnostic-decode1/`
 
-Created at `2026-09-02T14:05:25Z` before the user powers off the retained
-AutoDL instance. The main-server checkpoint is
-`/workspace/m4a-rented-host-pilot/pre-shutdown/20260902T140525Z/`; it contains
-the exact remote resume paths, selected small evidence, and 24 successful
-remote-to-main-server SHA256 comparisons. The remote work root remains
-`/root/autodl-tmp/m4a-llama` and was left intact. P5 remains the next required
-gate; this checkpoint neither changes `PILOT_BLOCKED` nor authorizes capture.
+The diagnostic trace is not formal evidence. No formal run ID or archive exists
+at the time of this progress update.

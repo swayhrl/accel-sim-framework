@@ -18,3 +18,24 @@ compute-only derived list. This is an integrity/classifier smoke only.
 The frozen simulator trace parser was not run: P6 produced no Llama pilot
 bundle, so a parser result would not satisfy its compatibility objective. No
 Core M1–M3 code or NCCL policy was changed.
+
+## Repaired local-snapshot pilot evidence
+
+The checksum-verified diagnostic bundle was copied to
+`/workspace/m4a-rented-host-pilot/r4-diagnostic-decode1/`:
+
+| Artifact | SHA256 |
+| --- | --- |
+| `m4a-llama-decode1-20260902T171148Z.tar.zst` | `291dcc3c21ba29579842dd5897995c52887625caaa3342f0f75758242b8bcf98` |
+
+The remote and main-server digests are equal, as recorded in the bundle's
+`COPYBACK_VERIFICATION.md`. The small R3 four-rank workload/sidecar evidence is
+also retained at `/workspace/m4a-rented-host-pilot/r3-p5-local-smoke-final/`.
+
+For parser compatibility, the frozen Core
+`73774727e25fadf89df6f30ef5cf014091115db7` and the SM86 RTX 3070 trace
+configuration were used only as a parser smoke. The 75-second bounded run
+initialized the performance model and parsed/started 35 real SM86 trace
+kernels; no trace-format, unsupported-binary-version, or parser fatal error
+was observed. This is not a performance result and does not claim that the
+RTX 3070 configuration represents the captured RTX 3080 Ti hardware.

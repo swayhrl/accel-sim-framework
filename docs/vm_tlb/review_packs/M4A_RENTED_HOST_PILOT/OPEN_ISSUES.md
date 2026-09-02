@@ -1,13 +1,10 @@
-# Open issue
+# Open issues / scope boundaries
 
-The sole blocker is Hugging Face authorization on the remote host.
+The local-snapshot route removes the Hugging Face credential blocker for this
+authorized Goal. Formal capture must continue to use the same manifest-verified
+snapshot and must not fall back to a network model download.
 
-Required user action: make a token that has accepted the Llama 3.2 license and
-can read `meta-llama/Llama-3.2-1B` revision
-`4e20de362430cd3b72f300e6b0f18e50e7166e08` available to the remote pilot
-session as `HF_TOKEN`. Keep it out of terminal transcripts, repository files,
-and review packs.
-
-After that action, rerun P5 first. Do not jump directly to P6. The existing
-host/work root, CUDA toolkit, locked venv, NVBit build, and copied evidence may
-be reused after their provenance/preflight checks are rerun.
+The pilot parser result is a bounded format-compatibility smoke only. Formal
+archive parsing and subsequent simulator campaigns remain separate Goal gates.
+No synthetic KV data, Segmentation implementation, or NCCL policy alteration
+is authorized by this pilot repair.
