@@ -1,6 +1,6 @@
 # M3 timing-realistic baseline review pack
 
-Current gate: `G3-1 — PTE backend / request contract` (`RUNNING`).
+Current gate: `G3-2 — real PTE L2/DRAM integration` (`RUNNING`).
 
 ## Frozen M3 entry snapshot
 
@@ -24,6 +24,7 @@ Entry artifacts:
 
 - [Parameter/evidence ledger](PARAMETER_EVIDENCE_LEDGER.md)
 - [M2 regression freeze](M2_REGRESSION_FREEZE.md)
+- [G3-1 PTE backend/request contract](G3_1_PTE_BACKEND.md)
 
 The M3 evidence boundary is generic reusable VM timing infrastructure.  It is
 not a claim of exact Segmentation-paper PTW, PWC, sub-entry, or commercial-GPU

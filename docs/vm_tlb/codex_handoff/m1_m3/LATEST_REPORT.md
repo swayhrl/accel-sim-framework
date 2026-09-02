@@ -30,6 +30,10 @@ available irregular smoke.  No unsupported third workload claim is made.
 
 M3 entry gate G3-0 is PASS at Core `e7999554` and Framework `a7020e60`.
 The G3-0 pack records the compact M2 regression freeze and an explicit
-parameter/evidence ledger.  Current work is G3-1: a generic replaceable PTE
-backend and physical/non-recursive request contract.  No Segmentation,
-sub-entry, synthetic-KV, page-fault, migration, or MCM work is authorized.
+parameter/evidence ledger.  G3-1 is PASS at Core `8c613a35`: the generic
+replaceable PTE backend reserves a validated simulated physical range and
+creates explicit physical/non-recursive PTE request objects.  Full build,
+directed tests, and bounded functional replay remain clean.  Current work is
+G3-2: connecting those objects to the real L2/DRAM path with response identity.
+No Segmentation, sub-entry, synthetic-KV, page-fault, migration, or MCM work
+is authorized.

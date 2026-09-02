@@ -111,3 +111,21 @@ known/unknown boundary reread; parameter/evidence ledger recorded.
 Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/README.md`.
 
 Next goal: `G3-1` (replaceable PTE backend and non-recursive request contract).
+
+## G3-1 — PTE backend / request contract
+
+Status: `PASS`
+Core SHA: `8c613a356e6a146951cd59c9929046c6c4cfd856`
+Framework SHA: `65a6e68d35cded7b78293b92a253e09c75c5aa36`
+
+Completed acceptance: replaceable generic radix backend; deterministic PTE
+physical address and non-overlapping range contract; explicit physical,
+non-recursive PTE request object and identity; 64KB/2MB PTE address tests;
+replacement-backend seam; M1/G2 regressions, full build, and bounded real
+functional replay all PASS.
+
+Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_1_PTE_BACKEND.md`.
+
+Next goal: `G3-2` (real PTE L2/DRAM integration).  A PTE must not be counted
+as M3 timing evidence until its real memory response is associated with the
+correct active walk.
