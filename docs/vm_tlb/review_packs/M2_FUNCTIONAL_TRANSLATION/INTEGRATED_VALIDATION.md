@@ -12,16 +12,14 @@ was acquired or relabeled.
 | BFS full trace | normal exit | 138532 cycles, 1210998 instructions; 49047 completed translations; 7 MSHR allocations/walks/waiters; MSHR/PWQ/walkers all zero |
 | one-kernel G2-4 trace | normal exit | 9522 cycles, 16080 instructions; 79 completions; one allocation/start/completion/registration/wakeup; all active state zero |
 
-## BFS sensitivity (functional mode)
+## BFS sensitivity (functional mode, repaired M2-RF)
 
 | Change from baseline | Observed end-state/result | Interpretation |
 | --- | --- | --- |
-| baseline: L2=768, MSHR=32, walkers=16, latency=5 | 138532 cycles; 7 walks; 42 L2 misses | reference only |
-| L2 entries=1 | normal exit; 57 walks, 339 L2 misses, 56 L2 evictions, 63 registrations/wakeups | finite L2 capacity changes translation activity as expected |
-| MSHR entries=1 | normal exit; same 7 walks and zero full events | this trace did not saturate MSHRs; directed G2-2 proves the full path |
-| walkers=1 | normal exit; same 7 walks | this trace did not overlap enough walks; directed G2-3 proves saturation/queueing |
-| fixed walk latency=50 | normal exit; 138727 cycles; 7 walks, 8 registrations/wakeups, 357 L2 misses | timing parameter affects the replayed functional path without loss/deadlock |
+| baseline: L2=768, MSHR=32, walkers=16, latency=5 | normal exit; 7 walks, 16 L2 misses, 57 pending bypasses | clean reference |
+| fixed walk latency=50 | normal exit; 7 walks, 19 L2 misses, 901 pending bypasses | no wait-pollution miss explosion; 3 additional new waiters/merges from timing overlap |
 
-These are sanity observations, not calibrated performance claims.  No strict
-IPC monotonicity is asserted, and no M3 PTE-memory timing is inferred from
-them.
+The earlier L2/MSHR/walker capacity sweeps remain historical pre-RF evidence
+only and are not used for the repaired counter claim.  These are sanity
+observations, not calibrated performance claims.  No M3 PTE-memory timing is
+inferred from them.

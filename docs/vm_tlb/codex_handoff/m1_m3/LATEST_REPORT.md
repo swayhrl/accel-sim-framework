@@ -1,7 +1,30 @@
 # Track A report
 
-Stage: `M2_FUNCTIONAL_TRANSLATION / G2-CLOSEOUT`
-Status: `PASS`
+Stage: `M2_FUNCTIONAL_TRANSLATION / M2-RF`
+Status: `PASS — STOP FOR CHATGPT REVIEW`
+
+M2 was independently reopened because a registered pending waiter re-probed
+and consumed L1/L2 lookup resources before the active MSHR recognized it.
+The repair is Core `3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`, on top of the
+preserved provisional G3-1 `8c613a356e6a146951cd59c9929046c6c4cfd856`.
+Framework handoff is `e6b8d6b6034acd34f5f5176c3b0f4c3a865c09dc`.
+
+The controller now returns `TRANSLATION_PENDING` before any TLB port/probe for
+an already registered `(translation key, waiter UID)`.  A new UID still
+performs its normal first lookup and then merges.  The exact directed test
+proves one A L1/L2 miss, nine A no-probe/no-port retries, B's use of the sole
+shared L2 port while A waits, and exact-once registration/wakeup/completion.
+
+The cold build, M1 transparency, G2-1..G2-4, new retry and persistence tests,
+one-kernel/LUD/BFS replays, and G3-1 backend/no-recursion test pass.  BFS
+latency 5/50 retains seven walks and changes L2 misses only 16→19 while bypass
+events rise 57→901; this removes the earlier polling-driven 42→357 miss
+explosion.  All functional replays exit normally with MSHR/PWQ/walkers empty.
+
+Review entry: `docs/vm_tlb/review_packs/M2_FUNCTIONAL_TRANSLATION/README.md`.
+M3 is paused; do not begin G3-2 until independent ChatGPT accepts M2-RF.
+
+## Historical pre-RF closeout
 
 Core M1 commit: `82fa2bc79cf09dd137073431dc41e48bc2f30cec` (pushed to
 `research/hrl/vm-m1-m3-v0`). Framework source anchor before this report:
@@ -28,12 +51,9 @@ smokes with the required small resource sweeps.  The local trace set contained
 LUD and BFS only; LUD was used as regular/memory-path smoke and BFS as the
 available irregular smoke.  No unsupported third workload claim is made.
 
-M3 entry gate G3-0 is PASS at Core `e7999554` and Framework `a7020e60`.
-The G3-0 pack records the compact M2 regression freeze and an explicit
-parameter/evidence ledger.  G3-1 is PASS at Core `8c613a35`: the generic
-replaceable PTE backend reserves a validated simulated physical range and
-creates explicit physical/non-recursive PTE request objects.  Full build,
-directed tests, and bounded functional replay remain clean.  Current work is
-G3-2: connecting those objects to the real L2/DRAM path with response identity.
-No Segmentation, sub-entry, synthetic-KV, page-fault, migration, or MCM work
-is authorized.
+M3 entry gate G3-0 remains historical PASS at Core `e7999554` and Framework
+`a7020e60`.  G3-1 `8c613a35` is preserved but is now `PROVISIONAL / NOT YET
+ACCEPTED`; RF8 only establishes compatibility of its backend/no-recursion unit
+test.  Current work is not G3-2: it is paused pending ChatGPT review of M2-RF.
+No Segmentation, sub-entry, synthetic-KV, page-fault, migration, MCM, or real
+PTE L2/DRAM integration is authorized.

@@ -1,5 +1,37 @@
 # Track-A M2-M3 target progress
 
+## Active goal and review-repair boundary
+
+Goal: `M2_FUNCTIONAL_TRANSLATION -> M3_TIMING_REALISTIC_BASELINE ->
+M1_M3_VM_BASELINE_CLOSEOUT`.
+
+Current authorized gate: `M2-RF closeout — STOP FOR CHATGPT REVIEW`
+Status: `PASS`
+Core SHA: `3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
+Framework SHA: `e6b8d6b6034acd34f5f5176c3b0f4c3a865c09dc`
+
+The independently reviewed M2 retry-pollution finding reopens M2.  G3-1 is
+preserved as `PROVISIONAL`; its uncommitted G3-2 work was safely stashed and
+all further M3 work is paused.  RF1-RF8 now pass and require independent
+ChatGPT review before this goal can resume M3.  Evidence/review path:
+`review_packs/M2_FUNCTIONAL_TRANSLATION/README.md`.
+
+## M2-RF — independent review repair
+
+| Gate | Status | Core / Framework | Completed acceptance and evidence |
+| --- | --- | --- | --- |
+| RF1 pending-waiter fast path | PASS | `3b93e243` / `e6b8d6b6` | registered `(key, UID)` bypasses before TLB ports/probes; `M2_RF_REPAIR.md` |
+| RF2 directed non-reprobe/non-starvation | PASS | `3b93e243` / `e6b8d6b6` | `vm_m2_rf_pending_retry_test PASS`; exact A/B counts |
+| RF3 clean counter semantics | PASS | `3b93e243` / `e6b8d6b6` | probe counters, lookup attempts, bypasses, merge/backpressure documented |
+| RF4 MSHR observability | PASS | `3b93e243` / `e6b8d6b6` | page size, occupancy HWM, depth and lifetime aggregate/max added |
+| RF5 kernel persistence | PASS | `3b93e243` / `e6b8d6b6` | focused boundary test and constructor/init/done source proof |
+| RF6 review-pack completeness | PASS | `3b93e243` / `e6b8d6b6` | standard anchors/history/files/validation/issues present |
+| RF7 cold regression + real replays | PASS | `3b93e243` / `e6b8d6b6` | M1/G2, cold build, one-kernel/LUD/BFS, 5/50 sensitivity in `/tmp/m2-rf-evidence/` |
+| RF8 provisional G3-1 compatibility | PASS | `3b93e243` / `e6b8d6b6` | `vm_m3_g3_1_test PASS`; `8c613a35` stays provisional |
+
+Next gate: no M3 gate is authorized.  Push both repositories, then STOP FOR
+CHATGPT REVIEW.
+
 ## G2-0 — M2 entry/provenance check
 
 Status: `PASS`  
@@ -114,18 +146,14 @@ Next goal: `G3-1` (replaceable PTE backend and non-recursive request contract).
 
 ## G3-1 — PTE backend / request contract
 
-Status: `PASS`
+Status: `PROVISIONAL / NOT ACCEPTED`
 Core SHA: `8c613a356e6a146951cd59c9929046c6c4cfd856`
 Framework SHA: `65a6e68d35cded7b78293b92a253e09c75c5aa36`
 
-Completed acceptance: replaceable generic radix backend; deterministic PTE
-physical address and non-overlapping range contract; explicit physical,
-non-recursive PTE request object and identity; 64KB/2MB PTE address tests;
-replacement-backend seam; M1/G2 regressions, full build, and bounded real
-functional replay all PASS.
+This already-pushed commit is retained without rewrite.  Its prior test result
+is historical only until RF8 reruns the backend/no-recursion unit test on the
+repaired M2 head.  No G3-2 work is authorized.
 
 Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_1_PTE_BACKEND.md`.
 
-Next goal: `G3-2` (real PTE L2/DRAM integration).  A PTE must not be counted
-as M3 timing evidence until its real memory response is associated with the
-correct active walk.
+Next authorized goal: `M2-RF / RF1`; `G3-2` is paused.

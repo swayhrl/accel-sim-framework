@@ -4,6 +4,11 @@ Status: `PASS`\
 Core: `e7999554200760b31b4efe16d98e050370e1ea71`\
 Framework source: `4012be3606c300d11e7b34826ee1cb22b0852b93`
 
+M2-RF re-ran this directed replay test at Core
+`3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`; it remains PASS.  The related
+pending-waiter TLB-resource repair and exact non-reprobe evidence are recorded
+in [M2_RF_REPAIR.md](M2_RF_REPAIR.md).
+
 The prior apparent allocation failure was closed by M2-D as a stale
 cross-repository C++ layout build artifact.  A Framework dependency-generation
 repair forces recompilation when Core headers change.  The Core follow-up only
