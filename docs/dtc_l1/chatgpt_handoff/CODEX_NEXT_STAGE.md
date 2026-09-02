@@ -2,9 +2,9 @@
 
 ## Status
 
-**ACTIVE — B07 RECOVERY AUTHORIZED; RESUME M1 -> M4 ONLY AFTER M1 HARD PASS**
+**ACTIVE — M2 IO RESPONSE/RETIREMENT RECOVERY AUTHORIZED**
 
-The previous continuous goal correctly stopped at M1 HARD gate B07. Resume work only on the dedicated goal branches and execute the recovery specification below.
+M1 is closed PASS. The continuous goal correctly stopped on the first real `PAPER_IO` integration HARD failure. Resume only on the dedicated M1-M4 goal branches and recover M2 according to the specification below.
 
 ## Active branches
 
@@ -16,10 +16,17 @@ Framework / experiments / evidence:
 
 - `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`
 
-Frozen M0 branches remain read-only anchors:
+Frozen M0 branches remain read-only anchors.
 
-- `swayhrl/gpgpu-sim:hrl/decoupled-l1-v0`
-- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-v0`
+## Current validated state
+
+M1 `FOUNDATION` is PASS and must remain closed:
+
+- Core M1 closeout anchor: `48b0be73833fc89fcf833349e82886ddc6d883b0`;
+- M1 review pack: `docs/dtc_l1/review_packs/M1_FOUNDATION/`;
+- B07, B06, B08, strict parser/accounting, all M1 CTests, and LEGACY exact differential validation passed.
+
+M2 committed directed-model/scaffolding work currently exists on the active Core branch. The first real PAPER_IO request/response experiment was discarded after the HARD failure, leaving the committed Core worktree clean at the reported stop SHA.
 
 ## Required reading before recovery
 
@@ -28,77 +35,70 @@ Framework:
 1. `AGENTS.md`
 2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-4. this file
-5. `docs/dtc_l1/goal/B07_RECOVERY_SPEC.md`
-6. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
-7. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
-8. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
+4. `docs/dtc_l1/implementation/M2_IO_INTEGRATION_FAILURE.md`
+5. this file
+6. `docs/dtc_l1/goal/M2_IO_RESPONSE_RECOVERY_SPEC.md`
+7. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
+8. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
+9. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
 
 Core:
 
-9. `AGENTS.md`
-10. `docs/dtc_l1/DTC_L1_SPEC.md`
+10. `AGENTS.md`
+11. `docs/dtc_l1/DTC_L1_SPEC.md`
 
 ## Immediate objective
 
-Resolve the M1 B07 traditional-MSHR merge-full deadlock without changing the frozen architecture or conventional cache/MSHR semantics.
+Build a source-safe, fully DTC-owned Paper IO **read** request/response/retirement path.
 
-ChatGPT source review found a concrete high-priority defect to verify first: the current `ldst_unit::L1_latency_queue_cycle()` L1-hit completion path calls `warp_inst_complete(...)` but does not pair that true completion event with `dtc_l1_retire(...)`. Other tracked memory completion paths already pair the two. This can leak Paper-Base PIB entries after the first same-line miss fills and younger requests become hits.
+The observed failure is not permission to reintroduce the conventional L1D MSHR. An IO-owned lower request must be recognized on return and completed directly against its immutable DTC physical allocation identity; it must never be sent to conventional `baseline_cache::fill()` merely to reuse `m_extra_mf_fields`/MSHR completion machinery.
 
-Follow `docs/dtc_l1/goal/B07_RECOVERY_SPEC.md` exactly. Do not apply a broad workaround before bounded pre-fix localization confirms or disproves this cause.
+Follow `M2_IO_RESPONSE_RECOVERY_SPEC.md` in order:
 
-## Recovery progression
+- `R2.0` prove request identity survives the lower-memory round trip;
+- `R2.1` implement dedicated IO request ownership, bounded queue/issue, and response dispatch;
+- `R2.2` implement dedicated IO PIB payload plus finite writeback/retirement;
+- `R2.3` align completion/pending-write cardinality to unique 128B paper line references;
+- `R2.4` remove/prove-safe the current sticky allocation-block state;
+- `R2.5` prove Paper IO read-path isolation from conventional L1D MSHR/fill;
+- `R2.6` rerun real VecAdd smoke;
+- `R2.7` rerun every M2 HARD gate I01-I15 plus no-MSHR/accounting closeout.
 
-Execute in order:
+## Progression authorization
 
-- `R07.1` reproduce/localize the pre-fix failure with bounded diagnostics;
-- `R07.2` minimal completion-lifecycle fix if confirmed;
-- `R07.3` permanent hit-completion PIB-leak regression/invariant;
-- `R07.4` re-run B07 with reproducible source-supported MSHR entry/max-merge configuration;
-- `R07.5` frozen clean-upstream differential check;
-- `R07.6` full M1 HARD revalidation.
+If and only if all M2 HARD gates pass:
 
-If any recovery HARD item fails or the proposed cause is disproved without another source-backed root cause, STOP and report.
-
-## Resume authorization after recovery
-
-If and only if **all** M1 HARD gates pass after R07.6:
-
-1. create and push `docs/dtc_l1/review_packs/M1_FOUNDATION/`;
-2. update `docs/dtc_l1/codex_handoff/LATEST_REPORT.md` with M1 PASS evidence;
-3. make semantic commits with explicit-path staging only;
+1. create/push `docs/dtc_l1/review_packs/M2_IO_READ/`;
+2. update Codex-owned `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`;
+3. make semantic commits using explicit-path staging only;
 4. push both affected branches;
-5. resume the existing continuous goal automatically:
-   - `M2_IO_READ`
-   - `M3_OO_SECTOR`
-   - `M4_COMPUTE_BRINGUP`
+5. continue automatically to the already-authorized:
+   - `M3_OO_SECTOR`;
+   - `M4_COMPUTE_BRINGUP`.
 
-No new human re-authorization is required between M1 PASS and M4 as long as every subsequent HARD gate passes.
+No new human authorization is required between M2 PASS and M4 as long as all HARD gates pass.
 
 ## Explicitly forbidden
 
 Do NOT:
 
-- modify M0 anchor branches;
-- weaken/skip B07 to continue;
-- special-case this workload or deadlock;
-- add a PIB timeout/forced release;
-- release a PIB entry before the simulator's true memory-instruction completion point;
-- change conventional MSHR merge semantics merely to make B07 finish;
-- tune target speedups;
-- alter L2/NoC/DRAM;
-- begin M2 before full M1 revalidation passes;
-- modify ChatGPT-owned handoff/spec files;
+- modify M0 anchors;
+- weaken or skip any M2 HARD gate;
+- fabricate `m_extra_mf_fields` or a hidden traditional L1 MSHR entry for IO reads;
+- route an IO-owned read response through conventional `baseline_cache::fill()`;
+- use the conventional L1D MSHR as DTC merge/capacity state;
+- silently keep both DTC and conventional L1D read accesses active for the same Paper IO request;
+- create a second lane-level coalescing algorithm;
+- let completion cardinality depend accidentally on 32B sector transactions in whole-line paper mode;
+- make allocation-block state sticky after the blocking condition has cleared;
+- bypass operand-collector/writeback resource availability at IO retirement;
+- tune speedups;
+- redesign L2/NoC/DRAM;
+- begin M3 before M2 fully passes;
 - begin M5.
 
-## Result/evidence requirements
+## STOP condition
 
-The B07 recovery evidence must record pre-fix and post-fix source SHAs, effective MSHR entry/max-merge settings, workload identity, compact pre-fix localization, clean-upstream differential behavior, PIB admits/retires/drain state, merge-full count, and application completion/self-check.
+On any HARD failure or unresolved source-semantic ambiguity, push compact evidence, update `LATEST_REPORT.md`, and STOP.
 
-Pre-fix evidence: `PRE_FIX`.
-Recovery/directed tests: `DIAGNOSTIC`.
-LEGACY neutrality: `FORMAL_VALIDATION` only as implementation validation, never as paper performance evidence.
-
-## Final STOP condition
-
-If M4 eventually passes, update `LATEST_REPORT.md` with `READY_FOR_M5_REVIEW`, push all source/evidence, and STOP. Do not begin M5.
+If M4 eventually passes, update `LATEST_REPORT.md` to `READY_FOR_M5_REVIEW`, push, and STOP. Do not begin M5.
