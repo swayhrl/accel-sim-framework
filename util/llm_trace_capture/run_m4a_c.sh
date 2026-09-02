@@ -35,6 +35,8 @@ done
 [[ "$trace_region" =~ ^(prefill|decode1|decode_reuse)$ ]] || { echo "error: --trace-region must be prefill, decode1, or decode_reuse" >&2; exit 2; }
 [[ -x "$command_file" ]] || { echo "error: command file must be executable" >&2; exit 2; }
 [[ -n "${M4A_MODEL_LOCAL_PATH:-}" && -n "${M4A_MODEL_LOCAL_MANIFEST:-}" ]] || { echo "error: formal Route-E capture requires verified M4A_MODEL_LOCAL_PATH and M4A_MODEL_LOCAL_MANIFEST" >&2; exit 2; }
+capture_status="${M4A_CAPTURE_STATUS:-FORMAL}"
+[[ "$capture_status" =~ ^(DIAGNOSTIC_PILOT|FORMAL)$ ]] || { echo "error: M4A_CAPTURE_STATUS must be DIAGNOSTIC_PILOT or FORMAL for traced Route-E runs" >&2; exit 2; }
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 framework_root="$(cd "$framework_root" && pwd)"; mkdir -p "$work_root"; work_root="$(cd "$work_root" && pwd)"
 python3 "$script_dir/capture_ready_preflight.py" --framework-root "$framework_root" --work-root "$work_root" --cuda-home "$cuda_home" --minimum-free-gib "$minimum_free_gib" --required-gpu-count "$required_gpu_count"
@@ -42,7 +44,7 @@ tracer="$framework_root/util/tracer_nvbit/tracer_tool/tracer_tool.so"
 post="$framework_root/util/tracer_nvbit/tracer_tool/traces-processing/post-traces-processing"
 run_id="m4a-llama-${trace_region}-$(date -u +%Y%m%dT%H%M%SZ)"; run_dir="$work_root/runs/$run_id"; trace_dir="$run_dir/traces"
 mkdir -p "$trace_dir"
-export M4A_RUN_DIR="$run_dir" M4A_METADATA_PATH="$run_dir/allocation-sidecar.json" M4A_REQUIRED_GPU_COUNT="$required_gpu_count" M4A_TRACE_REGION="$trace_region"
+export M4A_RUN_DIR="$run_dir" M4A_METADATA_PATH="$run_dir/allocation-sidecar.json" M4A_REQUIRED_GPU_COUNT="$required_gpu_count" M4A_TRACE_REGION="$trace_region" M4A_CAPTURE_STATUS="$capture_status"
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-$(seq -s, 0 $((required_gpu_count - 1)))}"
 export PATH="$cuda_home/bin:$PATH"
 unset CUDA_INJECTION64_PATH

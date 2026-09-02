@@ -18,6 +18,7 @@ MODEL_ID = "meta-llama/Llama-3.2-1B"
 BATCH, SEQ, OUTPUT_TOKENS, TP_SIZE = 8, 64, 3, 4
 MODEL_SHA = re.compile(r"^[0-9a-f]{40}$")
 REGIONS = {"prefill", "decode1", "decode_reuse"}
+CAPTURE_STATUSES = {"P5_LOCAL_SMOKE", "DIAGNOSTIC_PILOT", "FORMAL"}
 PACKAGE_PINS = {"torch": "2.6.0", "transformers": "4.51.3", "accelerate": "1.6.0",
                 "safetensors": "0.5.3", "huggingface_hub": "0.30.2"}
 LOCAL_SNAPSHOT_FILES = ("model.safetensors", "config.json", "generation_config.json", "tokenizer.json",
@@ -73,7 +74,7 @@ def model_load_kwargs(source: dict, revision: str) -> dict:
     return kwargs
 
 
-def require_environment() -> tuple[str, Path, Path, str, str, dict]:
+def require_environment() -> tuple[str, Path, Path, str, str, str, dict]:
     revision = os.environ.get("M4A_MODEL_REVISION", "")
     if not MODEL_SHA.fullmatch(revision):
         raise RuntimeError("M4A_MODEL_REVISION must be an immutable 40-hex Hugging Face commit")
@@ -81,9 +82,12 @@ def require_environment() -> tuple[str, Path, Path, str, str, dict]:
     if phase not in {"smoke", "trace"}: raise RuntimeError("M4A_PHASE must be smoke or trace")
     region = os.environ.get("M4A_TRACE_REGION", "")
     if region not in REGIONS: raise RuntimeError("M4A_TRACE_REGION must be prefill, decode1, or decode_reuse")
+    capture_status = os.environ.get("M4A_CAPTURE_STATUS", "")
+    if capture_status not in CAPTURE_STATUSES:
+        raise RuntimeError("M4A_CAPTURE_STATUS must be P5_LOCAL_SMOKE, DIAGNOSTIC_PILOT, or FORMAL")
     run_raw, metadata_raw = os.environ.get("M4A_RUN_DIR", ""), os.environ.get("M4A_METADATA_PATH", "")
     if not run_raw or not metadata_raw: raise RuntimeError("M4A_RUN_DIR and M4A_METADATA_PATH are required")
-    return revision, Path(run_raw), Path(metadata_raw), phase, region, require_model_source(revision)
+    return revision, Path(run_raw), Path(metadata_raw), phase, region, capture_status, require_model_source(revision)
 
 
 def package_versions() -> dict[str, str]:
@@ -161,7 +165,7 @@ def observe_kv_cache(cache, previous: dict, region: str, phase_name: str, step: 
     return events, current
 
 
-def write_sidecar(path: Path, revision: str, route: str, rank: int, flat, table, versions: dict[str, str], kv_events: list[dict], model_source: dict) -> None:
+def write_sidecar(path: Path, revision: str, route: str, rank: int, flat, table, versions: dict[str, str], kv_events: list[dict], model_source: dict, capture_status: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {"schema_version": "m4a-allocation-sidecar-v1",
       "run": {"run_id": os.environ["M4A_RUN_DIR"].rsplit("/", 1)[-1], "model_id": MODEL_ID,
@@ -169,7 +173,8 @@ def write_sidecar(path: Path, revision: str, route: str, rank: int, flat, table,
               "classification": "PAPER_COMPATIBLE_SELF_CAPTURE", "tp_route": route, "tp_size": TP_SIZE,
               "rank": rank, "packages": versions, "self_capture_dtype": "bfloat16",
               "self_capture_dtype_provenance": "CAPTURE_ENV_LOCK.md explicit self-capture choice",
-              "model_transport": model_source["transport"], "model_source": model_source["provenance"]},
+              "model_transport": model_source["transport"], "model_source": model_source["provenance"],
+              "capture_status": capture_status},
       "allocations": [{"allocation_id": f"weight-flat-rank{rank}", "simva_start": hex(flat.data_ptr()),
           "size_bytes": flat.numel(), "object_kind": "WEIGHT", "tensor_name": "ALL_PARAMETERS",
           "lifetime": {"start_phase": "MODEL_LOAD", "end_phase": "DECODE"},
@@ -182,7 +187,7 @@ def write_sidecar(path: Path, revision: str, route: str, rank: int, flat, table,
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
-def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, str], region: str, phase: str, model_source: dict) -> None:
+def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, str], region: str, phase: str, model_source: dict, capture_status: str) -> None:
     payload = {"schema_version": "m4a-llama-workload-manifest-v2", "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
                "model_id": MODEL_ID, "model_revision": revision, "tokenizer_revision": revision,
                "input_method": "deterministic token IDs; no prompt/tokenizer fallback", "batch_size": BATCH,
@@ -190,7 +195,8 @@ def write_workload_manifest(run_dir: Path, revision: str, versions: dict[str, st
                "route": "real-tp4-rank0", "trace_region": region, "phase": phase,
                "roi_control": "ACTIVE_FROM_START=0 plus cuProfilerStart/cuProfilerStop for trace phase only",
                "package_versions": versions, "requirements_file": "util/llm_trace_capture/requirements-llama-tp4.txt",
-               "model_transport": model_source["transport"], "model_source": model_source["provenance"]}
+               "model_transport": model_source["transport"], "model_source": model_source["provenance"],
+               "capture_status": capture_status}
     (run_dir / "workload-manifest.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
@@ -210,7 +216,7 @@ def profiler_region(torch, phase: str, region: str):
         if int(stop) != 0: raise RuntimeError(f"cudaProfilerStop failed for {region}: {stop}")
 
 
-def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str, model_source: dict) -> None:
+def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str, model_source: dict, capture_status: str) -> None:
     import torch
     import torch.distributed as dist
     from transformers import AutoModelForCausalLM
@@ -248,14 +254,15 @@ def real_tp4(revision: str, run_dir: Path, output: Path, phase: str, region: str
     verify_flat_storage(model, flat, table)
     print(f"rank={rank} PASS finite logits and stable flat-weight binding", flush=True)
     if rank == 0:
-        write_sidecar(output, revision, "real-tp4-rank0", rank, flat, table, versions, kv_events, model_source)
-        write_workload_manifest(run_dir, revision, versions, region, phase, model_source)
+        write_sidecar(output, revision, "real-tp4-rank0", rank, flat, table, versions, kv_events, model_source, capture_status)
+        write_workload_manifest(run_dir, revision, versions, region, phase, model_source, capture_status)
     dist.barrier(); dist.destroy_process_group()
 
 
 def self_test() -> None:
     assert MODEL_ID == "meta-llama/Llama-3.2-1B" and (BATCH, SEQ, OUTPUT_TOKENS, TP_SIZE) == (8, 64, 3, 4)
     assert aligned(1) == 256 and MODEL_SHA.fullmatch("a" * 40) and REGIONS == {"prefill", "decode1", "decode_reuse"}
+    assert CAPTURE_STATUSES == {"P5_LOCAL_SMOKE", "DIAGNOSTIC_PILOT", "FORMAL"}
     class FakeTensor:
         def __init__(self, ptr, n, width): self.ptr, self.n, self.width = ptr, n, width
         def data_ptr(self): return self.ptr
@@ -272,9 +279,11 @@ def self_test() -> None:
         source = {"transport": "HUGGING_FACE", "load_target": MODEL_ID,
                   "provenance": {"canonical_model_id": MODEL_ID, "frozen_revision": "a" * 40}}
         write_sidecar(output, "a" * 40, "real-tp4-rank0", 0, FakeFlat(),
-                      [{"name": "x", "offset_bytes": 0, "size_bytes": 16, "dtype": "torch.bfloat16", "shape": [8, 2]}], PACKAGE_PINS, events1 + events2, source)
+                      [{"name": "x", "offset_bytes": 0, "size_bytes": 16, "dtype": "torch.bfloat16", "shape": [8, 2]}], PACKAGE_PINS, events1 + events2, source, "P5_LOCAL_SMOKE")
         from validate_metadata import validate
-        assert validate(json.loads(output.read_text()))["kv_cache_events"] == 4 and "SYNTHETIC_KV" not in output.read_text()
+        sidecar = json.loads(output.read_text())
+        assert validate(sidecar)["kv_cache_events"] == 4 and sidecar["run"]["capture_status"] == "P5_LOCAL_SMOKE"
+        assert "SYNTHETIC_KV" not in output.read_text()
         if old is None: del os.environ["M4A_RUN_DIR"]
         else: os.environ["M4A_RUN_DIR"] = old
     with tempfile.TemporaryDirectory() as directory:
@@ -304,9 +313,9 @@ def main() -> int:
     args = parser.parse_args()
     if args.self_test: self_test(); print("PASS llama TP wrapper/KV self-test"); return 0
     if args.route != "real-tp4-rank0" or args.region not in REGIONS: parser.error("only real-tp4-rank0 with an explicit ROI is executable")
-    revision, run_dir, metadata_path, phase, environment_region, model_source = require_environment()
+    revision, run_dir, metadata_path, phase, environment_region, capture_status, model_source = require_environment()
     if args.region != environment_region: raise RuntimeError("CLI ROI and M4A_TRACE_REGION disagree")
-    real_tp4(revision, run_dir, metadata_path, phase, args.region, model_source); print("PASS real-tp4 workload"); return 0
+    real_tp4(revision, run_dir, metadata_path, phase, args.region, model_source, capture_status); print("PASS real-tp4 workload"); return 0
 
 
 if __name__ == "__main__":
