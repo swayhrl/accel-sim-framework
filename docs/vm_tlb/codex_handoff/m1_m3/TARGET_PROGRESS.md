@@ -96,3 +96,18 @@ Evidence: `review_packs/M2_FUNCTIONAL_TRANSLATION/README.md` and
 
 Next goal: `G3-0` (M3 entry snapshot/freeze).  M3 source semantics must not
 change before its entry checks pass.
+
+## G3-0 — M3 entry snapshot / M2 regression freeze
+
+Status: `PASS`
+Core SHA: `e7999554200760b31b4efe16d98e050370e1ea71`
+Framework SHA: `a7020e603d6081f1f16f26b5ad1ead5ca17d7756`
+
+Completed acceptance: M2 pack/source anchors reviewed; M1 and G2-1 through
+G2-4 compact directed regressions rerun PASS; M2 transparency and real replay
+evidence linked; M3 reference, specification, project specs, and paper
+known/unknown boundary reread; parameter/evidence ledger recorded.
+
+Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/README.md`.
+
+Next goal: `G3-1` (replaceable PTE backend and non-recursive request contract).

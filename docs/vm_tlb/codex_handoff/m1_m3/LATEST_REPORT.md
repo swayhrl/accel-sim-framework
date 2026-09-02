@@ -28,5 +28,8 @@ smokes with the required small resource sweeps.  The local trace set contained
 LUD and BFS only; LUD was used as regular/memory-path smoke and BFS as the
 available irregular smoke.  No unsupported third workload claim is made.
 
-Next internal gate: `G3-0`.  M3 source work has not started yet; its entry
-snapshot, M2 regression freeze, and required M3-material reread are pending.
+M3 entry gate G3-0 is PASS at Core `e7999554` and Framework `a7020e60`.
+The G3-0 pack records the compact M2 regression freeze and an explicit
+parameter/evidence ledger.  Current work is G3-1: a generic replaceable PTE
+backend and physical/non-recursive request contract.  No Segmentation,
+sub-entry, synthetic-KV, page-fault, migration, or MCM work is authorized.
