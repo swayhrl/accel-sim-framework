@@ -67,3 +67,5 @@ Evidence: `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_4_RUNNING.md`.
 
 Gate remains RUNNING: VM-mode trace replay did not complete because two bounded
 attempts showed abnormal host-resource growth; neither is treated as evidence.
+A third one-kernel diagnostic reproduced about 65 GiB RSS growth, ruling out
+the full trace list as the immediate explanation.
