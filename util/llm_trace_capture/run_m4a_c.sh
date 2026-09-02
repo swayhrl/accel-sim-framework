@@ -48,6 +48,16 @@ export M4A_RUN_DIR="$run_dir" M4A_METADATA_PATH="$run_dir/allocation-sidecar.jso
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-$(seq -s, 0 $((required_gpu_count - 1)))}"
 export PATH="$cuda_home/bin:$PATH"
 unset CUDA_INJECTION64_PATH
+# Keep a small, secret-free run ledger inside every independently copyable bundle.
+git -C "$framework_root" rev-parse HEAD > "$run_dir/framework-head.txt"
+sha256sum "$command_file" > "$run_dir/workload-command.sha256"
+cp "$M4A_MODEL_LOCAL_MANIFEST" "$run_dir/model-source-manifest.json"
+sha256sum "$run_dir/model-source-manifest.json" > "$run_dir/model-source-manifest.sha256"
+cp "$work_root/capture-ready-preflight.json" "$run_dir/capture-ready-preflight.json"
+nvidia-smi --query-gpu=index,name,uuid,driver_version,compute_cap,memory.total --format=csv,noheader > "$run_dir/gpu-inventory.csv"
+nvidia-smi topo -m > "$run_dir/gpu-topology.txt"
+printf 'capture_status=%s\ntrace_region=%s\ncuda_home=%s\ncuda_visible_devices=%s\ntracer=%s\npostprocessor=%s\n' \
+  "$capture_status" "$trace_region" "$cuda_home" "$CUDA_VISIBLE_DEVICES" "$tracer" "$post" > "$run_dir/runtime-provenance.env"
 M4A_PHASE=smoke "$command_file" |& tee "$run_dir/smoke.log"
 python3 "$script_dir/validate_metadata.py" "$M4A_METADATA_PATH" | tee "$run_dir/metadata-smoke.json"
 unset CUDA_INJECTION64_PATH
@@ -58,8 +68,8 @@ test -s "$trace_dir/kernelslist.g" || { echo "error: missing kernelslist.g" >&2;
 find "$trace_dir" -type f -name '*.traceg*' -size +0c | grep -q . || { echo "error: no nonempty traceg files" >&2; exit 1; }
 python3 "$script_dir/classify_kernels.py" --kernelslist "$trace_dir/kernelslist.g" --output-dir "$run_dir/kernel-classification" |& tee "$run_dir/kernel-classification.log"
 python3 "$script_dir/validate_metadata.py" "$M4A_METADATA_PATH" | tee "$run_dir/metadata-trace.json"
-(cd "$run_dir" && find . -type f -printf '%P\n' | sort | xargs -r sha256sum) > "$run_dir/SHA256SUMS"
+(cd "$run_dir" && find . -type f ! -name SHA256SUMS -printf '%P\n' | sort | xargs -r sha256sum) > "$run_dir/SHA256SUMS"
 archive="$work_root/archives/$run_id.tar.zst"; mkdir -p "$(dirname "$archive")"
 if command -v zstd >/dev/null 2>&1; then tar --use-compress-program='zstd -T0 -3' -cf "$archive" -C "$run_dir/.." "$run_id"; else archive="${archive%.zst}.gz"; tar -czf "$archive" -C "$run_dir/.." "$run_id"; fi
-sha256sum "$archive" > "$archive.sha256"; tar -tf "$archive" >/dev/null
+sha256sum "$archive" > "$archive.sha256"; sha256sum -c "$archive.sha256"; tar -tf "$archive" >/dev/null
 printf 'PASS archive=%s sha256=%s\n' "$archive" "$archive.sha256"
