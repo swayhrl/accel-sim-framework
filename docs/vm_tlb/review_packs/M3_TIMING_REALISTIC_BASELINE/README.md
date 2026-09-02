@@ -1,7 +1,7 @@
 # M3 timing-realistic baseline review pack
 
-Current gate: `G3-1-RF — PTE address namespace injectivity` (`PASS — STOP FOR
-CHATGPT REVIEW`).  G3-2 is not running and remains unauthorized.
+Current gate: `G3-2 — real PTE L2/DRAM integration` (`BLOCKED — correctness
+STOP`).  No G3-3 work is authorized.
 
 ## Frozen M3 entry snapshot
 
@@ -27,6 +27,7 @@ Entry artifacts:
 - [M2 regression freeze](M2_REGRESSION_FREEZE.md)
 - [G3-1 PTE backend/request contract](G3_1_PTE_BACKEND.md)
 - [G3-1-RF namespace-fix evidence](G3_1_ADDRESS_NAMESPACE_FIX.md)
+- [G3-2 blocked evidence and required semantic decision](G3_2_BLOCKED.md)
 
 The M3 evidence boundary is generic reusable VM timing infrastructure.  It is
 not a claim of exact Segmentation-paper PTW, PWC, sub-entry, or commercial-GPU

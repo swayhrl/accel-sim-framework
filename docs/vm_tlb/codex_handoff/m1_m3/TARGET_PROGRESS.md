@@ -5,16 +5,38 @@
 Goal: `M2_FUNCTIONAL_TRANSLATION -> M3_TIMING_REALISTIC_BASELINE ->
 M1_M3_VM_BASELINE_CLOSEOUT`.
 
-Current authorized gate: `G3-1-RF closeout — STOP FOR CHATGPT REVIEW`
-Status: `PASS`
+Current authorized gate: `G3-2 — real PTE L2/DRAM integration`
+Status: `BLOCKED — correctness STOP`
 Core SHA: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
-Framework handoff SHA: `0ca67e7ca0c22f6352b63ff8a24471717be3dc3f`
+Framework handoff SHA: `198b32b278d30f04d113028cf4c328d457a134b9`
 
-M2-RF is independently accepted.  G3-1-RF repairs the provisional PTE address
-namespace collision with a fixed 33-bit namespace width, while preserving the
-identity mapping and M2 semantics.  The G3-2 WIP remains safely stashed and
-all further M3 work is paused pending independent review.  Evidence/review
-path: `review_packs/M3_TIMING_REALISTIC_BASELINE/README.md`.
+M2-RF and G3-1-RF are accepted historical prerequisites.  G3-2 local
+integration demonstrated physical/non-recursive PTE traffic through real L2,
+DRAM, and both interconnect directions, but a BFS trace later asserted because
+its VPN exceeded the frozen generic 49-bit backend contract.  This is a hard
+correctness STOP, not a performance result.  Evidence/review path:
+`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md`.
+
+## G3-2 — real PTE L2/DRAM integration
+
+Status: `BLOCKED — correctness STOP`
+
+Completed before the stop: standalone out-of-order response-identity test;
+standard rebuild; one-kernel cold PTE DRAM replay (4 PTE requests/responses,
+zero misassociations, zero active VM state); BFS small-TLB replay that exercised
+both lower-memory and L2-resident PTE responses.  Current work stopped when a
+later BFS kernel issued a VPN outside the accepted 49-bit backend range and
+triggered `vm_translation.cc:73`.
+
+Core SHA: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9` plus uncommitted,
+unpushable G3-2 review work.  Framework handoff SHA:
+`198b32b278d30f04d113028cf4c328d457a134b9`.
+
+Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md` and
+`/tmp/g3-2-runtime/{one-kernel.log,bfs-small-tlb.log}`.
+
+Next gate: none.  Do not start G3-3 until the address-namespace semantic
+decision is reviewed and a repaired G3-2 reruns its acceptance suite.
 
 ## G3-1-RF — PTE address namespace injectivity
 

@@ -1,7 +1,29 @@
 # Track A report
 
-Stage: `M3_G3_1_ADDRESS_NAMESPACE_FIX / G3-1-RF`
-Status: `PASS — STOP FOR CHATGPT REVIEW`
+Stage: `G3-2 real PTE L2/DRAM integration`
+Status: `BLOCKED — correctness STOP`
+
+Framework was fetched to the required handoff
+`198b32b278d30f04d113028cf4c328d457a134b9`.  Core remains anchored at
+accepted `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`; G3-2 source is local and
+uncommitted because the gate did not pass.
+
+The local path correctly generated distinct physical `PTE_ACC_R` traffic,
+bypassed shader L1D, consumed actual request/response interconnect plus L2 and
+DRAM resources, and associated returns by `mem_fetch` UID and PTE request ID.
+A one-kernel cold replay completed with four PTE DRAM responses and zero
+misassociations.  A small-TLB BFS replay exercised both cold DRAM and L2-only
+PTE returns (e.g. 12 DRAM and 1556 L2-only responses in one completed kernel).
+
+The BFS replay then reached a trace VPN outside the G3-1 generic 49-bit
+backend contract and asserted in `radix_page_table_backend::pte_address`.
+This is an immediate correctness stop: widening/truncating the address space
+or changing the PTE namespace would alter frozen semantics.  No workaround,
+stash restore, Core commit, or G3-3 work was performed.  Full evidence and the
+required decision are in
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md`.
+
+## Historical G3-1-RF report
 
 G3-1-RF repairs the provisional generic PTE physical-address encoding at Core
 `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`; Framework handoff is
