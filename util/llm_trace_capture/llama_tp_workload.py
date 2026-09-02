@@ -135,8 +135,12 @@ def bind_flat_weight_storage(model, torch):
     with torch.no_grad():
         for name, parameter, local, offset, nbytes in entries:
             view = flat.narrow(0, offset, nbytes).view(local.dtype).view_as(local)
-            view.copy_(local); rebind_parameter_from_local_view(parameter, view)
-            if parameter_data_pointer(parameter) != base + offset: raise RuntimeError(f"flat bind failed: {name}")
+            view.copy_(local); rebound = rebind_parameter_from_local_view(parameter, view)
+            actual, expected = parameter_data_pointer(parameter), base + offset
+            if actual != expected:
+                raise RuntimeError(f"flat bind failed: {name}; expected_local_ptr={expected:#x} actual_local_ptr={actual:#x} "
+                                   f"parameter_type={type(parameter).__name__} rebound_type={type(rebound).__name__} "
+                                   f"local_type={type(local).__name__}")
             table.append({"name": name, "offset_bytes": offset, "size_bytes": nbytes,
                           "dtype": str(local.dtype), "shape": list(local.shape),
                           "distributed_tensor": local is not parameter,

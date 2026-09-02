@@ -21,7 +21,7 @@ CUDA_RELEASE = "12.6"
 LOCKED_ARTIFACTS = {
     "run_llama_tp4_rank0.sh": "cc38edf0eda9b4498ce639145618770f44e417563799be26b1ac50af29380829",
     "rank0_nvbit_exec.sh": "02d34b01c44d9b11abe281addba7b2bda7488175305c42f9b246c5525ff8bbba",
-    "llama_tp_workload.py": "c784e8d0f99ef26aa34c2cfc5201fe463a1322d59f5b1a8f4b8269a7ff739ecb",
+    "llama_tp_workload.py": "ac15e622556b515c9d4c20dcd028bee1da825a64a34cd970ac98910d02312e74",
     "run_m4a_c.sh": "e81adb8e1da0c2d86cca0aee16d61b7e483feacf9e794d2d0530765e7d56199a",
     "copyback_m4a_bundle.sh": "c1e7c1dfc280312507d019b874a6c70170ffdb03763c1bce1ab8d2e865ec7c91",
     "bootstrap_route_e_nvbit.sh": "de78fcd105d809ff35e4819826435c821e74f7bc5cb50251291fec9f51be19f3",
