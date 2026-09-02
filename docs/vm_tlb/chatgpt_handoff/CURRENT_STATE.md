@@ -2,58 +2,65 @@
 
 ## Review result
 
-`M4A_PRECAPTURE_PREP` has been reviewed by ChatGPT and is accepted as **CONDITIONAL_PASS**.
+`M4A_PRECAPTURE_PREP` and `M4A_PRECAPTURE_FIXUP` have been reviewed by ChatGPT and accepted as preparation checkpoints.
 
 Reviewed Framework branch:
 `hrl/llm-trace-prep-v0`
 
-Reviewed closeout HEAD:
-`27bdeeb947dc1f84b6dc8ec400480fbc2048e264`
+Latest completed Codex closeout before this handoff:
+`9a02eecc9534726294c7e6ae2a5c8db3bbc05988`
 
-Review entry:
-`docs/vm_tlb/review_packs/M4A_PRECAPTURE_PREP/README.md`
+Accepted Track-B state:
 
-Accepted evidence:
+- previous AutoDL/V100 campaign recovery and reusable capture-safety patterns are accepted;
+- formal preferred self-capture route is Route E: one 4x same-model SM86 node, real TP=4, trace rank0 only;
+- Route A remains an approval-only `DOCUMENTED_APPROX` fallback;
+- full-model single-GPU trace is rejected as the formal paper workload;
+- concrete TP4 wrapper, runtime flat-weight binder, sidecar/manifest path, and rank wrapper exist;
+- no external GPU has been rented and M4A-C has not started;
+- paper-exact trace, TP implementation, dtype, contiguous loader, sub-entry/PTW details, synthetic-KV distribution, and collective treatment remain unavailable.
 
-- previous AutoDL/V100 campaign recovered at `3bed497023c7ee52e2b7ea0393628f34997ea974`;
-- reusable preflight, disk-guard, postprocess verification, archive/checksum/offload patterns identified;
-- current branch contains static contiguous-weight planning, metadata validation, preflight, and a gated external-capture driver;
-- no Core VM/TLB semantics were changed;
-- external capture remains blocked by authorization guard;
-- exact public paper artifact/trace, TP=4 capture method, dtype, contiguous loader, sub-entry/PTW details, and synthetic-KV distribution remain unavailable.
+## User-confirmed rental availability snapshot
+
+`USER_CONFIRMED`, snapshot date 2026-09-02:
+
+- AutoDL showed RTX 3080 Ti 12 GiB / SM86 physical hosts with at least four idle GPUs on one host;
+- one candidate showed 6 / 8 idle GPUs and expandable local storage up to about 1.6 TB;
+- another showed 5 / 8 idle GPUs and expandable local storage up to about 2 TB;
+- the displayed host environment used a recent NVIDIA driver and CUDA 13.x label.
+
+This is evidence that the required host class can exist, not a reservation. Availability and all host details must be revalidated after rental. Do not hard-code a host ID as a project requirement.
 
 ## Why M4A-C is still not authorized
 
-The current `run_m4a_c.sh` deliberately requires an externally supplied executable LLM workload command. The repository does not yet contain a concrete pinned workload wrapper that resolves the paper's `TP=4, simulate one partition` requirement.
+Before spending rental time, the package still needs several avoidable pre-rental gaps closed:
 
-This creates a material ambiguity:
+1. parent-level `CUDA_INJECTION64_PATH` must not leak NVBit injection to ranks 1–3;
+2. formal trace ROI must exclude model loading, TP setup and flat-weight copy/rebind work;
+3. prefill and first-decode traces need explicit, independent ROI/provenance paths;
+4. driver / CUDA toolkit / PyTorch runtime / NVBit version/checksum and model revision/dtype provenance need a frozen environment contract;
+5. host suitability preflight must be separated from post-build tracer readiness;
+6. runtime metadata should record real KV-cache ranges/lifetimes where observable, not only Weight;
+7. raw NCCL/collective kernels must be retained and classified so later replay policy does not require recapture.
 
-- a **real TP=4 run traced on one rank** likely requires a 4-GPU SM86 node;
-- a **single RTX3090** can support a single-rank emulation route, but that is not automatically paper-exact;
-- a full-model single-GPU trace is not an acceptable substitute for the paper workload.
-
-Therefore the previous blanket recommendation `1 x RTX3090` is not yet sufficient to authorize rental/capture.
+These are preparation tasks and should be completed without renting a GPU.
 
 ## Next authorized Track B work
 
 Execute:
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_PRECAPTURE_FIXUP.md`
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_PRERENTAL_FINALIZE.md`
 
-The fixup must:
+Goal: close all practical no-GPU setup gaps and return a package explicitly classified as `READY_TO_RENT` or `NOT_READY_TO_RENT`.
 
-- compare real 4-GPU TP=4/rank0 capture against a single-GPU one-rank emulation;
-- create at least one concrete pinned executable workload wrapper candidate;
-- connect runtime metadata generation into that wrapper/hook path;
-- prepare the runtime contiguous-weight hook to the strongest non-GPU-verifiable level;
-- revise the rental hardware recommendation based on the selected TP route.
+## Prepared but not authorized
 
-## Prepared but still not authorized
+Future execution specification:
 
 `docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_EXTERNAL_CAPTURE.md`
 
-Do not rent/capture yet from this branch solely on the basis of the prior `1 x RTX3090` recommendation.
+M4A-C remains blocked until ChatGPT reviews M4A-PR and the user then rents a selected 4xSM86 node.
 
 ## STOP boundary
 
-After `M4A_PRECAPTURE_FIXUP`, push the Track-B report/review pack and STOP. The user/ChatGPT will then select the actual rental route and explicitly authorize M4A-C.
+After M4A-PR, push/report and STOP. Do not rent a GPU, run formal external capture, implement Segmentation, or inject synthetic KV traffic until a new ChatGPT-owned handoff explicitly authorizes M4A-C.
