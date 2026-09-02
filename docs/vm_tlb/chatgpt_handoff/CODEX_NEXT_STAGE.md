@@ -4,86 +4,116 @@
 
 `M1_VM_CORE_FOUNDATION`: **PASS**.
 
-Codex reported `M2_FUNCTIONAL_TRANSLATION` closeout PASS, but independent ChatGPT review has **reopened M2 before further M3 work**.
+`M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF independently accepted**.
 
-The prior runtime-memory blocker is closed. The remaining issue is architectural retry semantics/observability: while a waiter is already registered in an active translation MSHR, the current path re-enters `translation_controller::translate()` each cycle and probes/consumes L1/L2 resources before rediscovering the same waiter. Existing sensitivity evidence shows this pollutes L2 misses as fixed PTW latency grows.
+Accepted repaired M2 execution head:
 
-G3-0 entry/freeze has completed. One G3-1 Core commit already exists:
+`3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
+
+Framework M2-RF review evidence head before this handoff:
+
+`c12ad7bc9fb6865e97ff8b65c215490a5d92305a`
+
+The pending-waiter retry pollution is closed: already-registered waiters bypass before TLB port/probe, new waiters retain first lookup/merge semantics, cold/integrated regressions pass, and latency sensitivity no longer turns same-waiter wait time into proportional L2 miss inflation.
+
+## G3-1 review result
+
+The preserved provisional G3-1 commit:
 
 `8c613a356e6a146951cd59c9929046c6c4cfd856`
 
-Treat it as **provisional/unaccepted**. Do not force-rewrite it, but do not start G3-2 or any further M3 semantic work.
+is **NOT YET ACCEPTED**.
+
+Independent review found a deterministic PTE-address alias because current address encoding uses page-size-dependent VPN widths. A 64KB level-0 key with `vpn=(4<<28)|X` aliases a 2MB level-0 key with `vpn=X` under the current formula.
+
+Do not start G3-2.
 
 ## Next authorized stage
 
 Execute only:
 
-`stage_specs/M2_REVIEW_FIX_BEFORE_M3.md`
+`stage_specs/M3_G3_1_ADDRESS_NAMESPACE_FIX.md`
 
 Do not modify `chatgpt_handoff/*`.
+
+## Mandatory read order
+
+1. repository-root `AGENTS.md`
+2. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
+3. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+4. this file
+5. `stage_specs/M3_G3_1_ADDRESS_NAMESPACE_FIX.md`
+6. `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
+7. `stage_specs/M3_REFERENCE_MATERIALS.md`
+8. repaired M2 review pack
+9. current M3 review pack / G3-1 evidence
 
 ## Source anchors
 
 Core branch:
 `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
 
-Important Core anchors:
-
-- M1: `82fa2bc79cf09dd137073431dc41e48bc2f30cec`
-- M2 closeout: `e7999554200760b31b4efe16d98e050370e1ea71`
-- provisional G3-1: `8c613a356e6a146951cd59c9929046c6c4cfd856`
+Expected Core start:
+`3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
 
 Framework branch:
 `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-Important Framework anchors:
+Fetch/pull the latest Framework handoff before implementation.
 
-- M2 dependency fix: `4012be3606c300d11e7b34826ee1cb22b0852b93`
-- M2 closeout: `a7020e603d6081f1f16f26b5ad1ead5ca17d7756`
-- G3-0 freeze: `65a6e68d35cded7b78293b92a253e09c75c5aa36`
+## Required G3-1-RF behavior
 
-Fetch/pull the latest ChatGPT handoff before continuing.
+Fix the generic PTE physical-address namespace so `(page-size-class, level, VPN)` is globally injective across supported 64KB and 2MB classes.
 
-## Required execution
+Prefer a fixed namespace width based on the maximum supported VPN width:
 
-Follow `M2_REVIEW_FIX_BEFORE_M3.md` RF1–RF8.
+```text
+max_vpn_bits = 49 - log2(64KB) = 33
+namespace_id = page_size_class * levels + level
+slot = (namespace_id << max_vpn_bits) | vpn
+```
 
-The minimum semantic requirement is:
+An equivalent provably injective mapping is acceptable.
 
-> once `(translation key, waiter UID)` is accepted/registered in an active MSHR, retries of that same waiter while the walk remains active must wait without consuming/probing L1/L2 TLB ports or adding new TLB access/miss events.
+The existing PTE-range sizing already assumes the maximum 64KB VPN width; keep sizing and encoding consistent.
 
-A new waiter for the same key must still perform its own first lookup before merging.
+## Mandatory tests
 
-Do not solve this merely by renaming the existing polluted counters. The resource behavior itself must stop same-waiter polling from occupying TLB lookup bandwidth.
+At minimum prove:
 
-## Required validation emphasis
+- explicit former collision is gone:
+  - 64KB level0 `vpn=(4<<28)|0x12345`
+  - 2MB level0 `vpn=0x12345`
+  - PTE PAs must differ;
+- min/max VPN namespace boundaries do not overlap for every supported class/level;
+- same key different levels remain distinct;
+- 64KB/2MB PTE namespaces are distinct;
+- PTE PA stays in reserved PTE range;
+- application physical range stays outside PTE range;
+- PTE request remains physical and translation-bypassing;
+- replacement backend seam remains valid;
+- repaired M2 regressions and pending-retry test remain PASS;
+- one bounded functional M2 replay remains clean/quiescent.
 
-Before re-closing M2:
+## Documentation/status cleanup
 
-- exact same-waiter non-reprobe directed test;
-- proof an unrelated translation can use the shared L2 port while the first waiter is pending;
-- waiter allocation/merge/wakeup exact-once conservation;
-- M1 transparency;
-- all G2 directed regressions;
-- functional one-kernel/LUD/BFS replay;
-- kernel-boundary persistence evidence;
-- expanded MSHR observability;
-- complete M2 review-pack minimum files;
-- controlled fixed-walk-latency sensitivity.
+Update the M3 review pack and Codex progress/report so they do not claim G3-2 is RUNNING before this fix is accepted.
 
-The controlled sensitivity must specifically demonstrate that merely increasing walk latency no longer causes same-waiter retry polling to inflate L2 misses roughly in proportion to wait time.
+If touching the M2 invariant wording, state precisely:
 
-## Interaction with provisional G3-1
+> the repaired M2 execution path emits no PTE memory traffic.
 
-Do not rewrite history.
+Do not claim the current source tree contains no `pte_request` class, because the provisional G3-1 definitions are already in history.
 
-Implement the M2 review repair on the current Core branch, then rerun the provisional G3-1 backend/no-recursion tests. If the two conflict semantically, STOP and report.
+## G3-2 stash boundary
 
-No G3-2 source change is authorized.
+The user reports G3-2 WIP is preserved in Core `stash@{0}`.
+
+Do not apply, modify, drop, or rely on that stash during this stage. No G3-2 source is authorized.
 
 ## Reporting
 
-Maintain:
+Update:
 
 `docs/vm_tlb/codex_handoff/m1_m3/TARGET_PROGRESS.md`
 
@@ -93,17 +123,12 @@ and:
 
 Update/reclose:
 
-`docs/vm_tlb/review_packs/M2_FUNCTIONAL_TRANSLATION/`
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/`
 
-Create a dedicated repair evidence section/file or review pack if useful, but the final M2 README must remain the sole review entry.
-
-## STOP boundary
-
-After M2-RF acceptance criteria pass:
+After G3-1-RF acceptance criteria pass:
 
 - push Core + Framework;
-- update reports/progress;
-- provide final M2-RF SHAs and review entry;
+- report exact SHAs and evidence entry;
 - **STOP FOR CHATGPT REVIEW**.
 
-Do not continue to G3-2 / real PTE memory integration until ChatGPT accepts the repaired M2 baseline.
+Do not continue to G3-2, PWC, later M3 gates, Segmentation, synthetic KV, page faults/migration/UVM, or MCM work until the next ChatGPT handoff.
