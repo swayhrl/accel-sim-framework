@@ -10,6 +10,7 @@ listed modes are implemented.
 | `-gpgpu_dtc_l1_mode` | `0` | implemented: `0=LEGACY`, `1=PAPER_BASE`; modes 2–4 reserved | variant selection |
 | `-gpgpu_dtc_l1_pib_entries` | `8` | implemented for Paper Base admission | Baseline PIB depth |
 | `-gpgpu_dtc_l1_mshr_entries` | `32` | implemented: overrides only Paper Base's traditional L1 MSHR capacity | Baseline MSHR depth |
+| `-gpgpu_dtc_l1_debug_event_limit` | `0` | implemented: default-off bounded Paper Base diagnostic trace | R07 source localization |
 | `-gpgpu_dtc_l1_lower_outstanding_cap` | `256` | implemented: global Paper Base token cap, acquired on L1 new-miss commit and released on final L1 fill | 8-SM lower outstanding cap |
 | `-gpgpu_dtc_l1_tag_banks` | `4` | implemented for Paper Base Tag arbitration | Tag-bank count |
 | `-gpgpu_dtc_l1_tag_req_per_bank` | `1` | implemented for Paper Base Tag arbitration | per-bank throughput |

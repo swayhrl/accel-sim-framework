@@ -2,30 +2,27 @@
 
 Stage: `M1_FOUNDATION`
 
-Status: **STOPPED — M1 HARD GATE B07 FAILED**
+Status: **IN_PROGRESS — B07 RECOVERED; R07.6 FULL M1 REVALIDATION PENDING**
 
-Core SHA: `581fff76cf1dabbf1b2b9fe709a0f2142ab0d8e7`
+Core SHA: `06aa534aab516578cb481e74bf006927a1828d58`
 
-Framework implementation/evidence base SHA: `1f63d0c793784b41dbf02343c6442af5e68141a3`
+Framework implementation/evidence base SHA: `9c2e10a191991148e447b1b170bec0491f25e839` (before this report update)
 
-## Stop evidence — B07 traditional-MSHR merge-full
+## B07 recovery status
 
-M1 must not proceed.  The directed 1,024-thread same-line merge microbenchmark
-was run in `PAPER_BASE` with a temporary, uncommitted validation-only override
-that set traditional L1 MSHR entries to `1` and merge depth to `1`.  Rather
-than draining after `MSHR_MERGE_ENRTY_FAIL` backpressure, the simulator
-reported a deadlock: no core-0 writeback after GPU cycle `5081`, followed by
-the watchdog after `94,919` more cycles.  The run log is retained outside the
-repositories at `/tmp/dtc-l1-paper-merge1-x7Zf3G/run.log`; relevant lines are
-`65–66` (effective configuration) and `324–326` (deadlock evidence).
+The authorized R07.1 diagnosis confirmed the proposed source-backed cause:
+an L1 hit reached `warp_inst_complete()` without retiring its tracked Paper
+Base PIB UID.  The minimal fix pairs that existing true-completion event with
+idempotent `dtc_l1_retire()`.  A default-off bounded diagnostic trace,
+drain assertion, and directed CTest accompany the change.
 
-The temporary Core source change that exposed the merge-depth override was
-discarded and was never committed or pushed.  The committed Core branch is
-clean at the SHA above.  This is a HARD B07 failure, not an architectural
-interpretation issue: the source distinguishes `MSHR_ENRTY_FAIL` and
-`MSHR_MERGE_ENRTY_FAIL`, but the directed merge-full configuration does not
-make forward progress.  Do not begin M2, M3, M4, or M5 until this failure has
-been resolved, revalidated, and independently reviewed.
+Using a reproducible source-supported conventional L1 configuration
+(`entries=1`, `max_merge=1`), the repaired B07 run completes with
+`MSHR_MERGE_ENRTY_FAIL=166`, PIB `33/33/0`, and application PASS.  The
+less-pathological `max_merge=2` run also passes.  Frozen clean upstream under
+the same `A:1:1` L1 geometry completes and reports the same 166 merge-full
+events, so the recovery does not alter native MSHR semantics.  Full details
+and raw-log hashes are in `implementation/B07_RECOVERY_EVIDENCE.md`.
 
 ## Main conclusions
 
@@ -57,16 +54,15 @@ evidence.
 
 ## Remaining issues
 
-- B07 is failing as described above; this is the immediate stop condition.
-- The M1 review pack has not been created and M1 does not pass.  Earlier
-  evidence for B01–B06, B08–B09, and LEGACY neutrality remains diagnostic only
-  and cannot override this failure.
+- R07.6 still must re-run every M1 HARD gate, including exact LEGACY
+  differential checks and counter/parser closure.
+- The M1 review pack has not been created and M1 does not pass yet.
 - No M2/M3/M4 work has started.
 
 ## Recommendation
 
-`M1_HARD_FAILURE_B07_STOP`
+`R07.6_M1_REVALIDATION_REQUIRED`
 
 ## Review entry point
 
-`implementation/SOURCE_INTEGRATION_MAP.md`
+`implementation/B07_RECOVERY_EVIDENCE.md`
