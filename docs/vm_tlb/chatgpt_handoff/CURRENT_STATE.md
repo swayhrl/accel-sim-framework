@@ -1,50 +1,55 @@
 # Current state
 
-## Track A status
+## Track A status after independent M2 review
 
 `M1_VM_CORE_FOUNDATION`: **PASS**.
 
-`M2_FUNCTIONAL_TRANSLATION` progressed through:
+Codex completed and pushed an M2 closeout at:
 
-- G2-1 mapper + finite L1/L2 TLB: PASS
-- G2-2 translation MSHR / same-key merge / backpressure: PASS
-- G2-3 finite PWQ + fixed-latency walkers: PASS
-- G2-4 real stall/replay validation: **BLOCKED**
+- Core M2 source: `e7999554200760b31b4efe16d98e050370e1ea71`
+- Framework M2 source/dependency repair: `4012be3606c300d11e7b34826ee1cb22b0852b93`
+- Framework M2 closeout/report head: `a7020e603d6081f1f16f26b5ad1ead5ca17d7756`
 
-M3 has not started.
+The prior 32–65 GiB runtime-memory blocker was correctly diagnosed as a stale Framework/Core C++ layout artifact and fixed through Framework dependency generation; a subsequent one-line Core stall-classification fix preserves VM semantics. Cold-build disabled/ideal transparency, directed tests, and real functional LUD/BFS replays pass.
 
-## Current blocker
+However, independent ChatGPT review has **reopened M2 before further M3 work** because the current waiting-request retry path re-probes L1/L2 TLBs every cycle before noticing that the same waiter UID is already registered in the translation MSHR. This artificially consumes TLB ports and pollutes access/miss statistics as PTW latency grows.
 
-At Core checkpoint `c1431e01f593719f9201d4ad4d7666bebead8a4f`, all M2 directed tests and the standard build pass, but real functional-VM trace replay cannot yet provide acceptance evidence.
+Concrete evidence already present in the M2 closeout: BFS keeps 7 walks while increasing fixed walk latency from the baseline to 50 cycles increases reported L2 misses from 42 to 357. This makes the current counters/timing path unsuitable as the basis for M3 realistic PTW or later Segmentation-paper L2-TLB miss-rate analysis.
 
-Observed diagnostics:
+## M3 status
 
-- QV100/RTX3070 functional-mode attempts showed abnormal memory growth;
-- a tiny one-kernel trace (`~54 KiB`) still grew to about `65 GiB RSS` in roughly 41 seconds;
-- with a 10 GiB virtual-memory limit, the simulator deterministically throws `std::bad_alloc` just after memory-subpartition initialization and before useful trace replay;
-- GDB could not start the inferior under that limit.
+G3-0 read-only entry/freeze completed.
 
-This is treated as a **runtime allocation diagnosis blocker**, not as proof that a larger-memory host is legitimately required.
+Before this independent review update reached the Codex window, one G3-1 Core commit was already pushed:
 
-The intended M2 VM structures are finite and small. M1 baseline runs previously completed on the same project environment. Therefore the next step is to isolate the first offending commit/allocation and compare mode 0/1/2 on the same head before considering a larger host.
+`8c613a356e6a146951cd59c9929046c6c4cfd856` — `vm(m3): add replaceable PTE backend contract`
+
+Do not rewrite/force-push it. Treat it as **PROVISIONAL / NOT YET ACCEPTED**. No G3-2 or later M3 semantic work is authorized until M2-RF below passes and is reviewed.
 
 ## Current authorization
 
-Execute:
+Execute only:
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M2_RUNTIME_MEMORY_DIAG.md`
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M2_REVIEW_FIX_BEFORE_M3.md`
 
-Active goal gate:
+Active gate:
 
-`M2-D_RUNTIME_MEMORY_DIAG`
+`M2-RF — pending-retry semantics, observability, and review-pack completion`
 
-Codex may implement a minimal source/config/integration fix without another human pause only if root cause is directly established and the fix does not change frozen VM semantics or weaken resource modeling/tests.
+Key required repairs:
 
-If M2-D + original G2-4 PASS, resume automatically:
+- an already registered pending waiter must not repeatedly consume/probe L1/L2 TLB ports while waiting for the same walk;
+- add exact non-reprobe/non-starvation directed evidence;
+- make TLB miss-rate event semantics clean/separable from retries/backpressure;
+- close MSHR observability gaps needed for research analysis;
+- provide explicit kernel-boundary TLB-persistence evidence;
+- complete the M2 review-pack minimum files required by `AGENTS.md`;
+- rerun cold M1/M2 regressions and fixed-latency sensitivity;
+- rerun the provisional G3-1 PTE-backend tests after the M2 repair.
 
-`M2 closeout -> M3 -> M1-M3 macro closeout`.
+After M2-RF, STOP for ChatGPT review before G3-2.
 
-## Source anchors
+## Frozen source anchors
 
 Core/GPGPU-Sim:
 
@@ -53,12 +58,15 @@ Core/GPGPU-Sim:
 - G2-1: `06f0ae7a24f1deacd86ddf95237e0ffa5e1a1b83`
 - G2-2: `740d96f8be80977c150ffc911063969cafd25b8f`
 - G2-3: `e579c40d907c201728331a1208c64bb18b869549`
-- G2-4 checkpoint: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
+- M2 closeout source: `e7999554200760b31b4efe16d98e050370e1ea71`
+- provisional G3-1: `8c613a356e6a146951cd59c9929046c6c4cfd856`
 
 Framework/Accel-Sim:
 
 - baseline: `3016c658f810bdae9a14bf4534ee99e9945eedae`
-- blocked report commit: `200e6ddf14b6247a25c6aa4108195ee0904702d8`
+- M2 dependency fix: `4012be3606c300d11e7b34826ee1cb22b0852b93`
+- M2 closeout: `a7020e603d6081f1f16f26b5ad1ead5ca17d7756`
+- G3-0 entry freeze: `65a6e68d35cded7b78293b92a253e09c75c5aa36`
 
 Branches:
 
@@ -73,10 +81,11 @@ Branches:
 - translation is on approved coalesced transactions before real L1D/data access;
 - M1-M3 study resident-memory translation only: no page fault/migration/UVM oversubscription;
 - TLB persists across ordinary kernels in one simulated context unless invalidated/reset;
-- PTE requests in M3 will be physical and non-recursive.
+- M2 uses functional zero-hit-latency TLB lookup with finite ports; timing-realistic configurable lookup latency is an M3 requirement, not a paper-exact M2 claim;
+- PTE requests in M3 are physical and non-recursive.
 
 ## STOP boundary
 
-Do not enter M3 until G2-4 real functional VM replay passes.
+Do not begin G3-2 real PTE L2/DRAM integration until M2-RF is complete and independently accepted.
 
-Do not classify this as a host-capacity requirement without same-head baseline/mode-control evidence. Stop if diagnosis requires changing frozen VM semantics, if baseline transparency regresses, or if bounded diagnosis cannot be performed safely.
+Stop on baseline transparency regression, request loss, duplicate wakeup/store/atomic, retry-induced starvation that cannot be resolved within the frozen semantics, or a conflict between the M2 repair and the provisional G3-1 backend contract.
