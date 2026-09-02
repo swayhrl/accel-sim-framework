@@ -4,19 +4,32 @@ This directory is the cross-repository coordination root for reproducing the the
 
 ## Repositories and branches
 
-### Framework / coordination
+### Frozen M0 anchors
 
-- repository: `swayhrl/accel-sim-framework`
-- branch: `hrl/decoupled-l1-exp-v0`
-- official base: `accel-sim/accel-sim-framework:dev`
-- official base SHA: `d930ad6d02c09bb56867132583735aba0389cff4`
+Framework:
 
-### Core simulator
+- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-v0`
 
-- repository: `swayhrl/gpgpu-sim`
-- branch: `hrl/decoupled-l1-v0`
-- official base: `accel-sim/gpgpu-sim_distribution:dev`
-- official base SHA: `91880c53383d5a6a6742bfb1be2c5f34e39c7871`
+Core:
+
+- `swayhrl/gpgpu-sim:hrl/decoupled-l1-v0`
+
+These remain read-only architecture/design anchors.
+
+### Active M1-M4 Goal branches
+
+Framework / coordination / experiments:
+
+- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`
+
+Core simulator:
+
+- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`
+
+Official source anchors remain:
+
+- framework: `accel-sim/accel-sim-framework:dev` at `d930ad6d02c09bb56867132583735aba0389cff4`;
+- core: `accel-sim/gpgpu-sim_distribution:dev` at `91880c53383d5a6a6742bfb1be2c5f34e39c7871`.
 
 Core architecture specification:
 
@@ -26,17 +39,15 @@ Core architecture specification:
 
 ```text
 docs/dtc_l1/
-├── chatgpt_handoff/     # research decisions and active stage specification
+├── chatgpt_handoff/     # ChatGPT-owned state and executable authorization
+├── goal/                # ChatGPT-owned M1-M4 execution / counters / validation specs
+├── implementation/      # Codex-owned source-backed implementation records
 ├── codex_handoff/       # Codex execution report entry point
 └── review_packs/        # stage-by-stage review evidence
 ```
 
-Ownership:
-
-- `chatgpt_handoff/`: ChatGPT-owned;
-- `codex_handoff/`: Codex-owned after bootstrap;
-- `review_packs/`: Codex-generated evidence.
-
 ## Current status
 
-M0 architecture/model decisions are frozen. The current stage is intentionally HOLD until M1-M3 implementation goals are planned and written into `CODEX_NEXT_STAGE.md`.
+M0 is frozen. A continuous Goal-mode execution from M1 through M4 is authorized on the active goal branches, with HARD validation gates between each major stage. Codex may continue automatically only after a stage fully passes; any hard failure or unresolved semantic ambiguity requires STOP.
+
+M5 paper-result reproduction and later research experiments remain unauthorized until review of M1-M4.
