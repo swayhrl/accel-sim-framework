@@ -5,17 +5,40 @@
 Goal: `M2_FUNCTIONAL_TRANSLATION -> M3_TIMING_REALISTIC_BASELINE ->
 M1_M3_VM_BASELINE_CLOSEOUT`.
 
-Current authorized gate: `G3-2 — real PTE L2/DRAM integration`
-Status: `BLOCKED — correctness STOP`
+Current Goal boundary: `G3-2 — real PTE L2/DRAM integration (paused)`
+Completed diagnostic sub-gate: `G3-2A — PASS / CASE A`
+Status: `BLOCKED — STOP FOR CHATGPT ARCHITECTURE REVIEW`
 Core SHA: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
-Framework handoff SHA: `198b32b278d30f04d113028cf4c328d457a134b9`
+Framework handoff SHA: `971b1f46b74ed5eaaf4447d416a47f0e3e22d733`
 
-M2-RF and G3-1-RF are accepted historical prerequisites.  G3-2 local
-integration demonstrated physical/non-recursive PTE traffic through real L2,
-DRAM, and both interconnect directions, but a BFS trace later asserted because
-its VPN exceeded the frozen generic 49-bit backend contract.  This is a hard
-correctness STOP, not a performance result.  Evidence/review path:
-`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md`.
+M2-RF and G3-1-RF are accepted historical prerequisites.  G3-2A proves that
+the first >49-bit request is a Case-A raw/global trace-derived SimVA, not a
+local-memory artifact or recursive PTE request.  This closes the diagnostic
+gate only; it is not permission to alter frozen VM semantics or resume G3-2.
+Evidence/review path:
+`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`.
+
+## G3-2A — address provenance diagnostic
+
+Status: `PASS — CASE A; STOP FOR CHATGPT ARCHITECTURE REVIEW`
+
+Completed D0–D5 using the local uncommitted G3-2 path solely for observation.
+The first functional offender is BFS kernel 7, `STG.E.SYS` PC `0x250`, raw
+trace lane address `0x00fffdc0000000cd`, ordinarily coalesced to global
+`SimVA=0xfffdc0000000c0` (56 bits).  Its 64KB VPN violates the current generic
+49-bit backend assertion.  The same coalesced numeric request is accepted and
+the trace completes in VM_DISABLED and VM_IDEAL_IDENTITY controls.  LUD and
+the bounded BFS corpus sent no local or param-local transaction to the VM hook.
+
+Core SHA: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9` plus local,
+uncommitted, unaccepted diagnostic/G3-2 work.  Framework handoff SHA:
+`971b1f46b74ed5eaaf4447d416a47f0e3e22d733`.
+
+Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`,
+supporting TSVs in that directory, and indexed `/tmp/g3-2a/` artifacts.
+
+Next gate: none.  Do not resume G3-2 or start G3-3 until ChatGPT makes the
+generic address-width/backend semantic decision.
 
 ## G3-2 — real PTE L2/DRAM integration
 
@@ -30,7 +53,7 @@ triggered `vm_translation.cc:73`.
 
 Core SHA: `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9` plus uncommitted,
 unpushable G3-2 review work.  Framework handoff SHA:
-`198b32b278d30f04d113028cf4c328d457a134b9`.
+`971b1f46b74ed5eaaf4447d416a47f0e3e22d733`.
 
 Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md` and
 `/tmp/g3-2-runtime/{one-kernel.log,bfs-small-tlb.log}`.

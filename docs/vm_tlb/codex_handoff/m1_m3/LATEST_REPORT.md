@@ -1,12 +1,29 @@
 # Track A report
 
-Stage: `G3-2 real PTE L2/DRAM integration`
-Status: `BLOCKED — correctness STOP`
+Stage: `G3-2A address provenance diagnostic`
+Status: `PASS — CASE A; STOP FOR CHATGPT ARCHITECTURE REVIEW`
 
 Framework was fetched to the required handoff
-`198b32b278d30f04d113028cf4c328d457a134b9`.  Core remains anchored at
+`971b1f46b74ed5eaaf4447d416a47f0e3e22d733`.  Core remains anchored at
 accepted `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`; G3-2 source is local and
 uncommitted because the gate did not pass.
+
+G3-2A D0–D5 are complete.  The first request that trips the 49-bit generic
+backend is a real global BFS store: kernel 7, PC `0x250`, raw active-lane trace
+address `0x00fffdc0000000cd`, normally coalesced to
+`SimVA=0xfffdc0000000c0` (56 bits; 64KB VPN `0xfffdc00000`).  It is neither a
+local/param-local linearization nor a recursive `PTE_ACC_R`.  The same
+coalesced value occurs in VM_DISABLED and VM_IDEAL_IDENTITY controls, each of
+which completes the trace (exit 0); ideal mode retains its SimVA=SimPA
+assertion.  This is **Case A: legitimate raw/global simulator trace SimVA
+exceeds 49 bits**, not a general hardware-VA validity claim.
+
+No virtual-address-width, masking/truncation/canonicalization, PTE namespace,
+page-size, ASID, hierarchy, or translation-scope semantic change was made.
+No stash was restored/popped/dropped, no Core G3-2 implementation was
+committed, and G3-3 was not started.  The evidence pack is
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`.
+The Goal remains paused pending ChatGPT's architecture decision.
 
 The local path correctly generated distinct physical `PTE_ACC_R` traffic,
 bypassed shader L1D, consumed actual request/response interconnect plus L2 and
