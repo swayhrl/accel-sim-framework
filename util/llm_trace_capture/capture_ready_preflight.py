@@ -23,7 +23,7 @@ LOCKED_ARTIFACTS = {
     "rank0_nvbit_exec.sh": "02d34b01c44d9b11abe281addba7b2bda7488175305c42f9b246c5525ff8bbba",
     "llama_tp_workload.py": "a713f79c39bd0c9038d89f3960e561b258361effb2012fa358586e60cd8a48a1",
     "run_m4a_c.sh": "05dfc2d2b4cef8f66c636b916083735666e997f5c3bdf4cb6a52fad04ce217ec",
-    "bootstrap_route_e_nvbit.sh": "b4b73aa9f3c66addb22f24e40059da7e1d36eacab3c14ea636b79d8785f958b7",
+    "bootstrap_route_e_nvbit.sh": "de78fcd105d809ff35e4819826435c821e74f7bc5cb50251291fec9f51be19f3",
     "build_nvbit_with_toolchain.sh": "070a842ec3e0e03f5a6e2a8281a96ab3c051d2f230163a9d6e0d6c351100a5ee",
     "classify_kernels.py": "a23c05ebd1b8494cb9a80d0d65ae153a1a76eeb0f1da98f4a21ef5b386983374",
     "run_generic_nvbit_smoke.sh": "c1c9476258bed94133339b74191595693768b28af3874462e08644165d6ba520",

@@ -24,7 +24,14 @@ if [[ $dry_run == 1 ]]; then
 fi
 [[ -x "$nvcc" && -x "$ptxas" ]] || { echo "missing explicit nvcc/ptxas under $cuda_home/bin" >&2; exit 1; }
 mkdir -p "$(dirname "$archive")"
-curl --fail --location --retry 3 --output "$archive" "$url"
+if ! test -f "$archive" || ! echo "$sha  $archive" | sha256sum --check --status; then
+  # A verified archive may be staged from the main development host when the
+  # rental image cannot reach GitHub.  Never trust an unverified cache entry.
+  partial="$archive.partial"
+  curl --fail --location --retry 3 --output "$partial" "$url"
+  echo "$sha  $partial" | sha256sum --check --status || { echo 'NVBit checksum mismatch' >&2; exit 1; }
+  mv "$partial" "$archive"
+fi
 echo "$sha  $archive" | sha256sum --check --status || { echo 'NVBit checksum mismatch' >&2; exit 1; }
 rm -rf "$release"; mkdir -p "$release"; tar -xjf "$archive" -C "$release" --strip-components=1
 printf '%s  %s\n' "$sha" "$archive" > "$work_root/bootstrap/nvbit-1.7.6.sha256"
