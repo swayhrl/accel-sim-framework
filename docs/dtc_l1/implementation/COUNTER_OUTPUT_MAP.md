@@ -24,6 +24,15 @@ state in `gpgpu_sim::shader_print_dtc_l1_stats` and emits:
 The Core asserts `admits - retires == live_pib_entries` and
 `live_pib_entries <= configured_pib_entries` on modeled LD/ST cycles.
 
+## Machine-readable summary parser
+
+`util/dtc_l1/parse_dtc_l1_summary.py` converts a simulator log to the stable
+`dtc_l1_summary_v1` JSON shape. In `--strict` mode it requires dynamic
+instruction/cycle fields, configuration/workload files for SHA256 provenance,
+and the required Paper Base closure fields whenever `DTC_L1_mode=PAPER_BASE`.
+The parser records a caller-supplied result classification; it does not infer
+scientific validity from a successful process exit.
+
 ## Required but not yet emitted
 
 The M1 HARD closeout still requires the non-exclusive stall view, explicit

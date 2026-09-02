@@ -40,8 +40,9 @@ evidence.
 
 - M1 HARD validation remains incomplete: full directed simulator-path B02-B09
   evidence, the remaining two LEGACY-neutrality workloads, primary/non-exclusive
-  stall closure, machine-readable parser/provenance summaries, and the M1
-  review pack are still required.
+  stall closure, and the M1 review pack are still required. A strict
+  provenance-bearing JSON parser now exists, but it has only been used for a
+  diagnostic vecadd smoke run and is not review-pack evidence.
 - No M2/M3/M4 work has started.
 
 ## Recommendation
