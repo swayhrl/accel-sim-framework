@@ -36,7 +36,8 @@ def require_environment() -> tuple[str, Path, Path, str, str]:
 
 def package_versions() -> dict[str, str]:
     actual = {name: metadata.version(name) for name in PACKAGE_PINS}
-    mismatch = {name: value for name, value in actual.items() if value != PACKAGE_PINS[name]}
+    mismatch = {name: value for name, value in actual.items()
+                if value != PACKAGE_PINS[name] and not (name == "torch" and value == f"{PACKAGE_PINS[name]}+cu126")}
     if mismatch: raise RuntimeError(f"runtime package pins do not match requirements-llama-tp4.txt: {mismatch}")
     return actual
 

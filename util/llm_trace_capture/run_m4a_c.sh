@@ -43,6 +43,7 @@ run_id="m4a-llama-${trace_region}-$(date -u +%Y%m%dT%H%M%SZ)"; run_dir="$work_ro
 mkdir -p "$trace_dir"
 export M4A_RUN_DIR="$run_dir" M4A_METADATA_PATH="$run_dir/allocation-sidecar.json" M4A_REQUIRED_GPU_COUNT="$required_gpu_count" M4A_TRACE_REGION="$trace_region"
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-$(seq -s, 0 $((required_gpu_count - 1)))}"
+export PATH="$cuda_home/bin:$PATH"
 unset CUDA_INJECTION64_PATH
 M4A_PHASE=smoke "$command_file" |& tee "$run_dir/smoke.log"
 python3 "$script_dir/validate_metadata.py" "$M4A_METADATA_PATH" | tee "$run_dir/metadata-smoke.json"

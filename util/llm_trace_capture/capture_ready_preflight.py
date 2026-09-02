@@ -21,12 +21,12 @@ CUDA_RELEASE = "12.6"
 LOCKED_ARTIFACTS = {
     "run_llama_tp4_rank0.sh": "cc38edf0eda9b4498ce639145618770f44e417563799be26b1ac50af29380829",
     "rank0_nvbit_exec.sh": "02d34b01c44d9b11abe281addba7b2bda7488175305c42f9b246c5525ff8bbba",
-    "llama_tp_workload.py": "a713f79c39bd0c9038d89f3960e561b258361effb2012fa358586e60cd8a48a1",
-    "run_m4a_c.sh": "05dfc2d2b4cef8f66c636b916083735666e997f5c3bdf4cb6a52fad04ce217ec",
+    "llama_tp_workload.py": "067a4217e8b14f950e76d1fc777520c3dd6447a247df2124d7f9b2a516ca7cb7",
+    "run_m4a_c.sh": "969d53fe4c5798b3c15cb2a23146bea4aaf30672a223210279ae7555cc533d4e",
     "bootstrap_route_e_nvbit.sh": "de78fcd105d809ff35e4819826435c821e74f7bc5cb50251291fec9f51be19f3",
     "build_nvbit_with_toolchain.sh": "070a842ec3e0e03f5a6e2a8281a96ab3c051d2f230163a9d6e0d6c351100a5ee",
     "classify_kernels.py": "a23c05ebd1b8494cb9a80d0d65ae153a1a76eeb0f1da98f4a21ef5b386983374",
-    "run_generic_nvbit_smoke.sh": "c1c9476258bed94133339b74191595693768b28af3874462e08644165d6ba520",
+    "run_generic_nvbit_smoke.sh": "a11341806c92113cb9be3b6b8ad31af36902569be89844240fbeb6a59abbf371",
     "tracer_tool.cu": "414bdeebebf807a1134a53079ed0b7eee47e7fb3eda72250da25b445f5876ab4",
 }
 
@@ -41,6 +41,11 @@ def command(*argv: str) -> tuple[int, str]:
 
 def version_is_locked(text: str) -> bool:
     return bool(re.search(rf"release\s+{re.escape(CUDA_RELEASE)}(?:[,.\s]|$)", text, re.I))
+
+
+def package_pin_matches(package: str, actual: str, pin: str) -> bool:
+    """Accept PyTorch's cu126 local-version suffix; CUDA is checked separately."""
+    return actual == pin or (package == "torch" and actual == f"{pin}+cu126")
 
 
 def inspect_toolchain(cuda_home: Path) -> tuple[dict, list[str]]:
@@ -105,7 +110,7 @@ def main() -> int:
     for package, pin in PINS.items():
         try: versions[package] = md.version(package)
         except md.PackageNotFoundError: versions[package] = "MISSING"
-        if versions[package] != pin: errors.append(f"package pin mismatch: {package}={versions[package]} != {pin}")
+        if not package_pin_matches(package, versions[package], pin): errors.append(f"package pin mismatch: {package}={versions[package]} != {pin} or {pin}+cu126")
     try:
         import torch
         torch_runtime_cuda = torch.version.cuda

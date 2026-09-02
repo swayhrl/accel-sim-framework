@@ -9,6 +9,6 @@ tracer="$framework_root/util/tracer_nvbit/tracer_tool/tracer_tool.so"; post="$fr
 if [[ $dry_run == 1 ]]; then printf 'DRY-RUN nvcc=%s/bin/nvcc\nptxas=%s/bin/ptxas\ninject=%s\npost=%s\noutput=%s\n' "$cuda_home" "$cuda_home" "$tracer" "$post" "$out"; exit 0;fi
 [[ -x "$cuda_home/bin/nvcc" && -x "$cuda_home/bin/ptxas" && -f "$tracer" && -x "$post" ]] || { echo 'missing explicit nvcc/ptxas/tracer/postprocessor' >&2;exit 1; }
 mkdir -p "$out/traces"; PATH="$cuda_home/bin:$PATH" "$cuda_home/bin/nvcc" "$framework_root/util/llm_trace_capture/nvbit_generic_smoke.cu" -o "$out/smoke"
-TRACES_FOLDER="$out" ACTIVE_FROM_START=0 CUDA_INJECTION64_PATH="$tracer" "$out/smoke" |& tee "$out/injection.log"
+PATH="$cuda_home/bin:$PATH" TRACES_FOLDER="$out" ACTIVE_FROM_START=0 CUDA_INJECTION64_PATH="$tracer" "$out/smoke" |& tee "$out/injection.log"
 "$post" "$out/traces" |& tee "$out/postprocess.log"; test -s "$out/traces/kernelslist.g"; find "$out/traces" -type f -name '*.traceg*' -size +0c | grep -q .
 (cd "$out" && find . -type f -printf '%P\n' | sort | xargs -r sha256sum) > "$out/SHA256SUMS"; tar -czf "$out.tar.gz" -C "$(dirname "$out")" "$(basename "$out")"; sha256sum "$out.tar.gz" > "$out.tar.gz.sha256"; tar -tf "$out.tar.gz" >/dev/null; echo "PASS generic NVBit smoke archive=$out.tar.gz"
