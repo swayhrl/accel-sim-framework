@@ -102,28 +102,52 @@ def aligned(value: int, alignment: int = 256) -> int:
     return (value + alignment - 1) // alignment * alignment
 
 
+def local_parameter_tensor(parameter):
+    """Return the rank-local Tensor for a TP DTensor, or the ordinary parameter."""
+    return parameter.to_local() if hasattr(parameter, "to_local") and hasattr(parameter, "placements") else parameter
+
+
+def parameter_data_pointer(parameter) -> int:
+    return int(local_parameter_tensor(parameter).data_ptr())
+
+
+def rebind_parameter_from_local_view(parameter, view):
+    """Preserve DTensor mesh/placements while changing only its rank-local backing view."""
+    if not (hasattr(parameter, "to_local") and hasattr(parameter, "placements")):
+        parameter.data = view
+        return parameter
+    from torch.distributed.tensor import DTensor
+    rebound = DTensor.from_local(view, parameter.device_mesh, parameter.placements, run_check=False,
+                                 shape=parameter.shape, stride=tuple(parameter.stride()))
+    parameter.data = rebound
+    return rebound
+
+
 def bind_flat_weight_storage(model, torch):
     """Copy all rank-local parameters once into a deterministic aligned buffer."""
     entries, offset = [], 0
     for name, parameter in model.named_parameters():
         if not parameter.is_cuda: raise RuntimeError(f"parameter is not on CUDA: {name}")
-        nbytes = parameter.numel() * parameter.element_size(); offset = aligned(offset)
-        entries.append((name, parameter, offset, nbytes)); offset += nbytes
+        local = local_parameter_tensor(parameter)
+        nbytes = local.numel() * local.element_size(); offset = aligned(offset)
+        entries.append((name, parameter, local, offset, nbytes)); offset += nbytes
     flat = torch.empty(aligned(offset), dtype=torch.uint8, device="cuda"); base = flat.data_ptr(); table = []
     with torch.no_grad():
-        for name, parameter, offset, nbytes in entries:
-            view = flat.narrow(0, offset, nbytes).view(parameter.dtype).view_as(parameter)
-            view.copy_(parameter); parameter.data = view
-            if parameter.data_ptr() != base + offset: raise RuntimeError(f"flat bind failed: {name}")
+        for name, parameter, local, offset, nbytes in entries:
+            view = flat.narrow(0, offset, nbytes).view(local.dtype).view_as(local)
+            view.copy_(local); rebind_parameter_from_local_view(parameter, view)
+            if parameter_data_pointer(parameter) != base + offset: raise RuntimeError(f"flat bind failed: {name}")
             table.append({"name": name, "offset_bytes": offset, "size_bytes": nbytes,
-                          "dtype": str(parameter.dtype), "shape": list(parameter.shape)})
+                          "dtype": str(local.dtype), "shape": list(local.shape),
+                          "distributed_tensor": local is not parameter,
+                          "global_shape": list(parameter.shape)})
     torch.cuda.synchronize(); return flat, table
 
 
 def verify_flat_storage(model, flat, table) -> None:
     expected, base = {row["name"]: row["offset_bytes"] for row in table}, flat.data_ptr()
     for name, parameter in model.named_parameters():
-        if name not in expected or parameter.data_ptr() != base + expected[name]:
+        if name not in expected or parameter_data_pointer(parameter) != base + expected[name]:
             raise RuntimeError(f"one-buffer invariant broken by post-load copy/replacement: {name}")
 
 
@@ -263,6 +287,11 @@ def self_test() -> None:
     assert MODEL_ID == "meta-llama/Llama-3.2-1B" and (BATCH, SEQ, OUTPUT_TOKENS, TP_SIZE) == (8, 64, 3, 4)
     assert aligned(1) == 256 and MODEL_SHA.fullmatch("a" * 40) and REGIONS == {"prefill", "decode1", "decode_reuse"}
     assert CAPTURE_STATUSES == {"P5_LOCAL_SMOKE", "DIAGNOSTIC_PILOT", "FORMAL"}
+    class FakeDistributed:
+        placements = object()
+        def __init__(self, local): self.local = local
+        def to_local(self): return self.local
+    assert local_parameter_tensor(FakeDistributed("local")) == "local"
     class FakeTensor:
         def __init__(self, ptr, n, width): self.ptr, self.n, self.width = ptr, n, width
         def data_ptr(self): return self.ptr
