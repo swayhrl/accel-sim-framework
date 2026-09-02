@@ -32,3 +32,13 @@ a GPU-virtual-buffer check only; physical contiguity remains an M4A-C check.
 `util/llm_trace_capture/validate_metadata.py` validates syntax, non-overlap,
 positive sizes, phase names, and optional trace-address coverage.  GPU VA
 stability and trace coverage are M4A-C checks, not asserted by M4A-P.
+
+## Real KV event records
+
+`kv_cache_events` is an append-only observation log, not a synthetic
+allocation plan. For each observable rank-0 key/value tensor it records
+`KV_CACHE`, layer, `K`/`V`, SimVA-labelled pointer, size, selected ROI,
+prefill/decode step, state (`CREATED`, `REUSED`, `GROWN`, or `REPLACED`), and a
+lifetime whose end remains `UNKNOWN_ACTIVE` unless the runtime proves release.
+Opaque cache objects create no invented records; activation/workspace remains
+`UNKNOWN`. `SYNTHETIC_KV` is prohibited.

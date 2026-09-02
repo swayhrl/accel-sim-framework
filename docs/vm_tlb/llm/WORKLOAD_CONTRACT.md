@@ -1,6 +1,6 @@
 # M4A LLM workload contract
 
-Status: `M4A_PRECAPTURE_FIXUP_PREPARED`; no LLM trace has been collected.
+Status: `M4A_PRERENTAL_FINALIZE_PREPARED`; no LLM trace has been collected.
 
 ## Frozen paper workload
 
@@ -39,7 +39,8 @@ placeholder. No wrapper may replace those operations with a full `H -> H` or
 
 `util/llm_trace_capture/run_llama_tp4_rank0.sh` launches four ranks with
 `torchrun`, requires the immutable Llama model ID and a 40-hex model revision,
-and enforces B8/S64/G3/TP4. Runtime package pins are in
+an explicit `prefill`, `decode1`, or diagnostic `decode_reuse` ROI, and
+enforces B8/S64/G3/TP4. Runtime package pins are in
 `util/llm_trace_capture/requirements-llama-tp4.txt`. Inputs are deterministic
 token IDs, so no prompt/tokenizer fallback exists; the model revision is also
 recorded as tokenizer revision.
@@ -54,8 +55,12 @@ file is invoked twice, first with `M4A_PHASE=smoke` and then with
 M4A_RUN_DIR        per-run output directory
 M4A_METADATA_PATH  required allocation sidecar output
 M4A_PHASE          smoke | trace
+M4A_TRACE_REGION   prefill | decode1 | decode_reuse
 ```
 
-The command must use deterministic prompt/token input, emit a metadata sidecar
-in `m4a-allocation-sidecar-v1`, and fail rather than silently changing batch,
-length, generation count, model revision, or TP setup.
+The Route-E parent explicitly unsets inherited `CUDA_INJECTION64_PATH` before
+`torchrun`. The rank wrapper then sets it only for `trace` rank 0; smoke has it
+absent at all ranks. The command must use deterministic prompt/token input,
+emit a metadata sidecar in `m4a-allocation-sidecar-v1`, and fail rather than
+silently changing batch, length, generation count, model revision, ROI, or TP
+setup.

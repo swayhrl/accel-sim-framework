@@ -1,57 +1,48 @@
-# M4A-PF pre-capture fixup report
+# M4A-PR pre-rental finalization report
 
-Stage: `M4A_PRECAPTURE_FIXUP`
+Stage: `M4A_PRERENTAL_FINALIZE`
 
-Status: `CONDITIONAL_PASS`.
+## READY_TO_RENT
 
-## Result
+The Route-E package is ready for the user to rent a qualifying host. This is a
+package readiness decision only: M4A-C remains unauthorized and this stage did
+not rent/access an external GPU, download model weights, collect a trace,
+implement Segmentation, or create synthetic KV.
 
-The authorized fixup completed. No external GPU was rented, no LLM trace was
-collected, no Core VM/TLB source was changed, and M4A-C has not started.
+Route E remains the sole selected formal self-capture route: one physical host
+with four same-model SM86 GPUs, actual TP=4, and NVBit injected solely into
+rank 0. It is `PAPER_COMPATIBLE_SELF_CAPTURE`, not author-exact. A full-model
+single-GPU trace remains rejected as a formal paper workload; Route A remains
+an approval-required approximation.
 
-The formal preferred candidate is Route E: real TP=4 on one **4 x SM86** node
-and NVBit injection only for rank 0. It is `PAPER_COMPATIBLE_SELF_CAPTURE`,
-not author-exact. Rank-0 collective/NCCL activity is retained and tagged for a
-later explicit compatibility decision. Route A (one SM86 rank-local emulation)
-remains a `DOCUMENTED_APPROX` candidate requiring approval. A full-model
-single-GPU trace is explicitly rejected as a formal paper workload.
+## Completed PR0–PR10
 
-## Capture recommendation and entry
+- PR0: required handoff `51a36b376a8c6a59c02c181b26233bd0c4c3322f` was the
+  starting `HEAD`; Route E, frozen NVBit 1.7.6, and profiler capability audited.
+- PR1: parent and wrapper clear inherited injection; only `trace` rank 0 sets
+  it. The no-GPU four-rank mock proves smoke none / trace rank-0-only.
+- PR2: separate `prefill` and `decode1` runs use `ACTIVE_FROM_START=0` plus
+  CUDA profiler control; loading, TP setup, flat binding, sidecar prep, and
+  warmup remain inactive. `decode_reuse` is diagnostic-only.
+- PR3/PR4: explicit Python/PyTorch/CUDA/tool/package/model/NVBit lock,
+  metadata-only immutable model SHA, SHA-verifying NVBit bootstrap, and generic
+  CUDA/NVBit smoke are prepared. No driver change is permitted.
+- PR5–PR9: split preflights, real KV runtime event preparation, raw NCCL
+  preservation/classification, separate ROI archives, and AutoDL checklist are
+  complete. RTX 3080 Ti 12 GiB is acceptable; rent one host with >=4 idle
+  same-model SM86 GPUs, >=500 GiB free/expandable local disk, adequate RAM, and
+  SSH/copy-back.
+- PR10: all permitted no-GPU syntax, static, fake, mock, dry-run, classifier,
+  and authorization-guard tests passed. See the review pack.
 
-Do not rent yet. If Route E is selected after review, require four same-model
-SM86 GPUs on one node (24 GiB+ each) and 500 GiB free NVMe. A single RTX3090
-is appropriate only if Route A is later selected and explicitly approved.
+## Future-only sequence after a new M4A-C authorization
 
-After explicit M4A-C authorization only, the exact entry is:
+1. `host_preflight.py` on the rented host.
+2. Create the isolated locked environment and run
+   `bootstrap_route_e_nvbit.sh` with its explicit CUDA toolkit path.
+3. Run `run_generic_nvbit_smoke.sh`, then `capture_ready_preflight.py`.
+4. Only then run `run_m4a_c.sh` separately with `--trace-region prefill` and
+   `--trace-region decode1`; preserve raw rank-0 trace and derive manifests.
 
-```bash
-M4A_C_AUTHORIZED=1 bash util/llm_trace_capture/run_m4a_c.sh \
-  --framework-root "$PWD" --work-root /mnt/nvme/m4a-llama \
-  --workload-command-file util/llm_trace_capture/run_llama_tp4_rank0.sh \
-  --required-gpu-count 4 \
-  --minimum-free-gib 500
-```
-
-Without `M4A_C_AUTHORIZED=1` it exits `BLOCKED` before touching the workload.
-
-## Evidence and outstanding blockers
-
-- Route analysis: `docs/vm_tlb/llm/TP_CAPTURE_ROUTE_DECISION.md`.
-- Concrete wrapper: `util/llm_trace_capture/run_llama_tp4_rank0.sh`.
-- Pinned runtime: `util/llm_trace_capture/requirements-llama-tp4.txt`.
-- Runtime flat-buffer binder/sidecar: `util/llm_trace_capture/llama_tp_workload.py`.
-- Review entry: `docs/vm_tlb/review_packs/M4A_PRECAPTURE_FIXUP/README.md`.
-- Public author code, exact trace, TP=4 capture method, dtype, contiguous
-  loader, sub-entry, PTW, and synthetic-KV details remain
-  `PAPER_DETAIL_UNAVAILABLE`.
-- Local host has CUDA 11.8 but no visible GPU, no built tracer, no LLM Python
-  stack/model cache, and only 231 GiB free, so it correctly classifies as
-  `EXTERNAL_SM86_GPU_REQUIRED`.
-
-## Provenance
-
-- Prior M4A-P preparation commit: `e6a98c7748e5cd7f55e89eb966506efb1eb54231`.
-- This report's closeout commit is the branch `HEAD` after commit/push.
-- Core commit: none.
-
-STOP BEFORE `M4A_EXTERNAL_CAPTURE`.
+The review pack is `docs/vm_tlb/review_packs/M4A_PRERENTAL_FINALIZE/`.
+STOP BEFORE M4A-C.

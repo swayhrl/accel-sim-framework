@@ -11,20 +11,23 @@ authorization.
 M4A_C_AUTHORIZED=1 bash util/llm_trace_capture/run_m4a_c.sh \
   --framework-root "$PWD" --work-root /mnt/nvme/m4a-llama \
   --workload-command-file util/llm_trace_capture/run_llama_tp4_rank0.sh \
+  --trace-region prefill \
   --required-gpu-count 4 \
   --minimum-free-gib 500
 ```
 
-Before this command, use an isolated venv/container and build the frozen
-Framework NVBit tracer under the selected checkout.  Pin and record every
-package/model revision; do not use the old unpinned `install_vllm.sh` as-is.
+Run this command separately for `prefill` and `decode1`; `decode_reuse` is
+diagnostic-only. Before it, use the explicit environment in `CAPTURE_ENV_LOCK`,
+run host preflight, `bootstrap_route_e_nvbit.sh`, generic smoke, and
+capture-ready preflight. Do not use the old unpinned `install_vllm.sh`.
 
 ## Required order and release gate
 
 1. Record `nvidia-smi -L`, full `nvidia-smi`, driver, CUDA, CPU/RAM, OS/image,
-   free disk, Framework SHA, and NVBit archive checksum. Require four same-node
-   SM86 GPUs with at least 24 GiB each and 500 GiB free disk for Route E.
-2. Run `preflight.py`; reject a non-SM86 source for the paper route.
+   free disk, Framework SHA, wrapper digest, and NVBit archive checksum. Require
+   four same-node same-model SM86 GPUs with at least 12 GiB each and 500 GiB free disk.
+2. Run `host_preflight.py`, then `capture_ready_preflight.py`; reject any
+   non-SM86 source or failed isolated-environment lock.
 3. Run a tiny known-good CUDA/NVBit trace through postprocessing and archive
    validation.  Do not start LLM work if it fails.
 4. Run the frozen workload normally (`M4A_PHASE=smoke`): B8, S64, 3 tokens,
@@ -33,8 +36,8 @@ package/model revision; do not use the old unpinned `install_vllm.sh` as-is.
    Runtime VA ranges, no overlap, and cross-kernel stability must be checked.
 6. Run the tiny LLM trace smoke, measure bytes/kernel, and recompute the disk
    safety margin.  Stop if inadequate.
-7. Trace only allocation context, seq-64 prefill, first decode, and minimal
-   reuse iterations.  Never attempt a 12K instruction trace.
+7. Trace `prefill` and `decode1` independently with profiler-controlled ROI;
+   use minimal `decode_reuse` only diagnostically. Never attempt a 12K trace.
 8. Postprocess, validate metadata coverage, produce SHA256 manifest, package
    with `tar.zst` (or documented `tar.gz` fallback), copy back, verify the
    archive, then retain or release the rental instance.

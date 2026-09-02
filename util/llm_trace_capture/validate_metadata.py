@@ -9,6 +9,7 @@ from pathlib import Path
 SCHEMA = "m4a-allocation-sidecar-v1"
 KINDS = {"WEIGHT", "KV_CACHE", "ACTIVATION", "WORKSPACE", "UNKNOWN"}
 PHASES = {"MODEL_LOAD", "PREFILL", "DECODE"}
+KV_STATES = {"CREATED", "REUSED", "GROWN", "REPLACED"}
 
 
 def number(value):
@@ -47,6 +48,16 @@ def validate(data: dict, addresses: list[int] | None = None) -> dict:
                 raise ValueError("invalid or overlapping weight tensor offset")
             prior = offset + size
         if prior > weight[0][1] - weight[0][0]: raise ValueError("weight layout exceeds allocation")
+    kv_events = data.get("kv_cache_events", [])
+    if not isinstance(kv_events, list): raise ValueError("kv_cache_events must be a list")
+    for event in kv_events:
+        if not isinstance(event, dict) or event.get("object_kind") != "KV_CACHE": raise ValueError("invalid KV event kind")
+        if not isinstance(event.get("layer"), int) or event.get("component") not in {"K", "V"}: raise ValueError("invalid KV identity")
+        if event.get("state") not in KV_STATES or event.get("phase") not in {"PREFILL", "DECODE"}: raise ValueError("invalid KV state")
+        if not isinstance(event.get("step"), int) or event["step"] < 0: raise ValueError("invalid KV step")
+        if number(event.get("simva_start")) <= 0 or not isinstance(event.get("size_bytes"), int) or event["size_bytes"] <= 0: raise ValueError("invalid KV range")
+        lifetime = event.get("lifetime")
+        if not isinstance(lifetime, dict) or not lifetime.get("start_phase") or not lifetime.get("end_phase"): raise ValueError("invalid KV lifetime")
     coverage = {kind: 0 for kind in KINDS}
     unknown = 0
     for address in addresses or []:
@@ -54,7 +65,7 @@ def validate(data: dict, addresses: list[int] | None = None) -> dict:
         if len(matches) > 1: raise ValueError("ambiguous trace address")
         if matches: coverage[matches[0][3]] += 1
         else: unknown += 1
-    return {"allocations": len(ranges), "address_coverage": coverage, "unknown_addresses": unknown}
+    return {"allocations": len(ranges), "kv_cache_events": len(kv_events), "address_coverage": coverage, "unknown_addresses": unknown}
 
 
 def self_test() -> None:
@@ -62,7 +73,7 @@ def self_test() -> None:
               "allocations": [{"allocation_id": "w", "simva_start": "0x1000", "size_bytes": 512, "object_kind": "WEIGHT"}],
               "weight_layout": {"allocation_id": "w", "alignment_bytes": 256, "tensors": [{"name": "x", "offset_bytes": 0, "size_bytes": 16}]}}
     result = validate(sample, [0x1000, 0x100f, 0x2000])
-    assert result["address_coverage"]["WEIGHT"] == 2 and result["unknown_addresses"] == 1
+    assert result["address_coverage"]["WEIGHT"] == 2 and result["unknown_addresses"] == 1 and result["kv_cache_events"] == 0
 
 
 def main() -> int:
