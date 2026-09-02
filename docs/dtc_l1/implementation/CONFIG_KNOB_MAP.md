@@ -1,13 +1,13 @@
 # DTC-L1 configuration knob map
 
-Status: `M1_IN_PROGRESS`; this is an evidence map, not a declaration that all
+Status: `M2_IN_PROGRESS`; this is an evidence map, not a declaration that all
 listed modes are implemented.
 
 ## Current Core option surface
 
 | Option | Default | Current status | M0 role |
 | --- | ---: | --- | --- |
-| `-gpgpu_dtc_l1_mode` | `0` | implemented: `0=LEGACY`, `1=PAPER_BASE`; modes 2–4 reserved | variant selection |
+| `-gpgpu_dtc_l1_mode` | `0` | implemented: `0=LEGACY`, `1=PAPER_BASE`; `2=PAPER_IO` constructs the M2 whole-line model, with LD/ST data-path integration still pending | variant selection |
 | `-gpgpu_dtc_l1_pib_entries` | `8` | implemented for Paper Base admission | Baseline PIB depth |
 | `-gpgpu_dtc_l1_mshr_entries` | `32` | implemented: overrides only Paper Base's traditional L1 MSHR capacity | Baseline MSHR depth |
 | `-gpgpu_dtc_l1_debug_event_limit` | `0` | implemented: default-off bounded Paper Base diagnostic trace | R07 source localization |
@@ -16,6 +16,10 @@ listed modes are implemented.
 | `-gpgpu_dtc_l1_tag_req_per_bank` | `1` | implemented for Paper Base Tag arbitration | per-bank throughput |
 | `-gpgpu_dtc_l1_tag_req_per_cycle` | `4` | implemented for Paper Base Tag arbitration | aggregate Tag throughput |
 | `-gpgpu_dtc_l1_logical_sets` | `32` | implemented for `logical_set % tag_banks` mapping | 16KB/4-way logical Tag geometry |
+| `-gpgpu_dtc_l1_logical_ways` | `4` | implemented for M2 whole-line logical Tag model | logical Tag associativity |
+| `-gpgpu_dtc_l1_physical_lines` | `640` | implemented for M2 whole-line physical pool model | 80KB / 128B physical capacity |
+| `-gpgpu_dtc_l1_allocation_width` | `4` | implemented for M2 model allocation arbitration | physical allocations/cycle |
+| `-gpgpu_dtc_l1_io_pib_entries` | `256` | implemented for M2 model FIFO capacity | IO PIB/FIFO depth |
 
 These options are registered by
 `src/gpgpu-sim/gpu-sim.cc:shader_core_config::reg_options` and consumed by
@@ -34,9 +38,8 @@ capacity and LEGACY leaves the configured L1D MSHR untouched.
 ## Required later additions
 
 The following frozen parameters remain unimplemented and must be added before
-their corresponding stage can pass: physical capacity/allocation width and
-policy, IO/OO PIB and retirement controls, lower-request issue width,
-Ref Count width/checker, sector mode/count/size, debug-event filtering, and
-no-progress watchdog controls.
+their corresponding stage can pass: IO lower-request issue width and its
+runtime data-path integration, Ref Count width/checker, sector mode/count/size,
+debug-event filtering, and no-progress watchdog controls.
 
 Do not infer a paper result from the currently implemented M1 controls alone.
