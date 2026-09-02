@@ -59,7 +59,11 @@ Next goal: `G2-4`.
 ## G2-4 — real stall/replay correctness
 
 Status: `RUNNING`
-Core SHA: `e579c40d907c201728331a1208c64bb18b869549`
+Core SHA: `c1431e01f593719f9201d4ad4d7666bebead8a4f`
 Framework SHA: `a63e243c350ea3628e9dab68620ee77982a6b0b9`
 
-Current work: validate real data-path replay and exactly-once data effects.
+Directed replay/store/atomic/cross-page checks and the standard build pass.
+Evidence: `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_4_RUNNING.md`.
+
+Gate remains RUNNING: VM-mode trace replay did not complete because two bounded
+attempts showed abnormal host-resource growth; neither is treated as evidence.
