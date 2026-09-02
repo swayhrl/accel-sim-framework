@@ -2,7 +2,7 @@
 
 | PR gate | Evidence / source anchor |
 |---|---|
-| PR0 | Track-B `HEAD` began at `51a36b376a8c6a59c02c181b26233bd0c4c3322f`; `util/tracer_nvbit/install_nvbit.sh`; `tracer_tool.cu:250-252,830-838` |
+| PR0 | Track-B `HEAD` began at `51a36b376a8c6a59c02c181b26233bd0c4c3322f`; Route-E package commit `4c4c083bac8d17f9a6901fc7132c273ade2d6849`; `util/tracer_nvbit/install_nvbit.sh`; `tracer_tool.cu:250-252,830-838` |
 | PR1 | `run_m4a_c.sh`, `run_llama_tp4_rank0.sh`, `rank0_nvbit_exec.sh`, `test_rank0_nvbit_mock.sh` |
 | PR2 | `ROI_TRACE_POLICY.md`; `llama_tp_workload.py:profiler_region`; `tracer_tool.cu` profiler callback above |
 | PR3 | `CAPTURE_ENV_LOCK.md`; PyTorch 2.6.0 official wheel instructions; Hugging Face TP guide; pinned Transformers `v4.51.3` Llama configuration `base_model_tp_plan` and `modeling_utils.py` `tp_plan="auto"` source inspection; metadata API revision `4e20de362430cd3b72f300e6b0f18e50e7166e08` |

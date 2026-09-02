@@ -17,6 +17,7 @@ displayed CUDA 13.x image label.
 | NVBit | 1.7.6, `https://github.com/NVlabs/NVBit/releases/download/v1.7.6/nvbit-Linux-x86_64-1.7.6.tar.bz2` |
 | NVBit SHA-256 | `dba61708b702ff4562343716bb8b38a2d14aae5991b9719aece097afe505467f` |
 | Framework handoff base | `51a36b376a8c6a59c02c181b26233bd0c4c3322f` |
+| Framework Route-E package commit | `4c4c083bac8d17f9a6901fc7132c273ade2d6849` (checkout must be this commit or its reviewed descendant) |
 | Wrapper digests (SHA-256) | `run_llama_tp4_rank0.sh` `cc38edf0eda9b4498ce639145618770f44e417563799be26b1ac50af29380829`; `rank0_nvbit_exec.sh` `02d34b01c44d9b11abe281addba7b2bda7488175305c42f9b246c5525ff8bbba`; `llama_tp_workload.py` `a713f79c39bd0c9038d89f3960e561b258361effb2012fa358586e60cd8a48a1`; `run_m4a_c.sh` `3f4112cc71ccb86ae876235665c9a662185a39e8139ac4a44a91ba850d69fb6b` |
 | Model | `meta-llama/Llama-3.2-1B` at `4e20de362430cd3b72f300e6b0f18e50e7166e08` |
 | Capture dtype | `bfloat16`, an explicit self-capture choice; paper dtype is `PAPER_DETAIL_UNAVAILABLE` |

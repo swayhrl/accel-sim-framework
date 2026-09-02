@@ -15,6 +15,10 @@ rank 0. It is `PAPER_COMPATIBLE_SELF_CAPTURE`, not author-exact. A full-model
 single-GPU trace remains rejected as a formal paper workload; Route A remains
 an approval-required approximation.
 
+The finalized Route-E package source commit is
+`4c4c083bac8d17f9a6901fc7132c273ade2d6849`, based on the required handoff
+`51a36b376a8c6a59c02c181b26233bd0c4c3322f`.
+
 ## Completed PR0–PR10
 
 - PR0: required handoff `51a36b376a8c6a59c02c181b26233bd0c4c3322f` was the
