@@ -34,11 +34,25 @@ Next goal: `G2-2`.
 
 ## G2-2 — translation MSHR, same-key merge, and backpressure
 
-Status: `RUNNING`  
-Core SHA: `06f0ae7a24f1deacd86ddf95237e0ffa5e1a1b83`  
-Framework SHA: `8959f40ba88a28c6dffb7d5530064ea7c3710f2f`
+Status: `PASS`
+Core SHA: `740d96f8be80977c150ffc911063969cafd25b8f`
+Framework SHA: `ed43cc81e3f5cea179281307b1ebb7f3e718e94b`
 
-Current work: replace synchronous mapper-miss resolution with finite MSHRs
-keyed by `(ASID, VPN, page-size-class)`, with explicit merge and full behavior.
+Completed acceptance: one active key; same-key merge; replay registration only
+once; finite MSHR full backpressure; fill/release; active and quiescent
+allocation/release and waiter-registration/wakeup conservation.
 
-Next goal: `G2-3` after all G2-2 checks pass.
+Evidence path: `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_2_MSHR.md`.
+
+Next goal: `G2-3`.
+
+## G2-3 — fixed-latency PWQ and walkers
+
+Status: `RUNNING`
+Core SHA: `740d96f8be80977c150ffc911063969cafd25b8f`
+Framework SHA: `ed43cc81e3f5cea179281307b1ebb7f3e718e94b`
+
+Current work: add a finite page-walk queue, finite walkers, fixed M2 service
+latency, and completion into the existing MSHR fill/wakeup path.
+
+Next goal: `G2-4` after all G2-3 checks pass.
