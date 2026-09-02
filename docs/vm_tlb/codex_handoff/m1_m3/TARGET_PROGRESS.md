@@ -48,11 +48,18 @@ Next goal: `G2-3`.
 
 ## G2-3 — fixed-latency PWQ and walkers
 
-Status: `RUNNING`
-Core SHA: `740d96f8be80977c150ffc911063969cafd25b8f`
+Status: `PASS`
+Core SHA: `e579c40d907c201728331a1208c64bb18b869549`
 Framework SHA: `ed43cc81e3f5cea179281307b1ebb7f3e718e94b`
 
-Current work: add a finite page-walk queue, finite walkers, fixed M2 service
-latency, and completion into the existing MSHR fill/wakeup path.
+Evidence path: `review_packs/M2_FUNCTIONAL_TRANSLATION/G2_3_PWQ_WALKERS.md`.
 
-Next goal: `G2-4` after all G2-3 checks pass.
+Next goal: `G2-4`.
+
+## G2-4 — real stall/replay correctness
+
+Status: `RUNNING`
+Core SHA: `e579c40d907c201728331a1208c64bb18b869549`
+Framework SHA: `a63e243c350ea3628e9dab68620ee77982a6b0b9`
+
+Current work: validate real data-path replay and exactly-once data effects.
