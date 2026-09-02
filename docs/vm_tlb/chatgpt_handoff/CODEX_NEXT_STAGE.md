@@ -6,32 +6,35 @@
 
 `M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF independently accepted**.
 
-Accepted M2 execution head:
-`3b93e2432cbde1fcfa0eb68efc8b10d57ff3546b`
-
 `G3-0`: **PASS**.
 
-`G3-1 — PTE backend/request contract`: **PASS — independently accepted after G3-1-RF namespace repair**.
+`G3-1 — PTE backend/request contract`: **PASS — accepted after namespace repair**.
 
 Accepted G3-1 Core head:
+
 `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
 
-Framework G3-1-RF evidence head before this handoff:
-`329b80b27a2db8709e2b2a0609f4783789552d98`
+`G3-2 — real PTE L2/DRAM integration`: **BLOCKED — correctness STOP**.
 
-The fixed 33-bit maximum VPN namespace removes the former 64KB/2MB alias; all eight page-size-class/level namespace boundaries are directed-tested. PTE requests remain physical/non-recursive and M2 regressions remain clean.
+Framework blocked-evidence head:
+
+`cc055d3a4b044136b37a1ab2ccba8f4a8a360ba5`
+
+G3-2 locally proved the real physical/non-recursive PTE memory path and response association on completed kernels, but a later BFS kernel reached a VPN outside the accepted G3-1 backend's hardcoded 49-bit address contract. No width/namespace workaround is authorized.
 
 ## Next authorized execution
 
-Resume the existing Codex Goal / target-mode macro from:
+Execute only:
 
-`G3-2 — real PTE L2/DRAM integration`
+`G3-2A — Address Provenance Diagnostic`
 
-Then continue automatically through:
+Specification:
 
-`G3-2 -> G3-3 -> G3-4 -> G3-5 -> G3-CLOSEOUT -> M1_M3_VM_BASELINE_CLOSEOUT`
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_2_ADDRESS_PROVENANCE_DIAG.md`
 
-only when each gate is PASS. Do not pause for ordinary successful gate transitions; STOP on any hard failure/ambiguity below.
+This is a diagnostic gate, not a G3-2 implementation gate.
+
+After the diagnostic evidence is complete, STOP for ChatGPT review. Do **not** resume G3-2 or start G3-3 automatically.
 
 ## Mandatory read order
 
@@ -39,75 +42,68 @@ only when each gate is PASS. Do not pause for ordinary successful gate transitio
 2. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
 4. this file
-5. `stage_specs/M2_M3_TARGET_MODE.md`
+5. `stage_specs/M3_G3_2_ADDRESS_PROVENANCE_DIAG.md`
 6. `stage_specs/M3_TIMING_REALISTIC_BASELINE.md`
 7. `stage_specs/M3_REFERENCE_MATERIALS.md`
-8. repaired M2 review pack
-9. M3 review pack including `G3_1_PTE_BACKEND.md` and `G3_1_ADDRESS_NAMESPACE_FIX.md`
-10. long-lived VM specs and target-paper known/unknown ledger
+8. `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_BLOCKED.md`
+9. accepted M1/M2/G3-1 review evidence
+10. long-lived VM specs
 
 Do not modify `chatgpt_handoff/*`.
 
 ## Source anchors
 
 Core branch:
+
 `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
 
-Expected accepted Core start:
+Accepted Core semantic anchor:
+
 `a192e5dcb5b28b51fcae4b22fb9c985f60a4f5e9`
 
 Framework branch:
+
 `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-Fetch/pull the latest Framework handoff before implementation.
+Fetch/pull the latest Framework handoff before diagnosis.
 
-## G3-2 stash handling
+## G3-2 local WIP handling
 
-The user reports prior uncommitted G3-2 WIP in Core `stash@{0}`.
+The local uncommitted G3-2 implementation may be used only to reproduce the blocked path and collect diagnostic evidence. It remains unaccepted source.
 
-It is not accepted evidence. Do **not** blindly `git stash pop`.
+- Do not commit/push it as G3-2 implementation evidence.
+- Do not blindly restore/pop/drop historical `stash@{0}`.
+- Temporary diagnostic instrumentation is permitted but must not silently alter VM semantics.
+- Keep the accepted Core branch semantics unchanged at diagnostic closeout.
 
-First inspect it with a read-only diff against the accepted Core head. Reuse only code that still satisfies the repaired M2 and accepted G3-1 contracts. Prefer selective application/reimplementation if the stash contains stale assumptions. Do not drop the stash until the replacement G3-2 work is committed, tested, and safely recoverable.
+## Diagnostic objective
 
-## G3-2 acceptance emphasis
+Determine exactly what the first >49-bit `SimVA` represents.
 
-Implement the real timing path:
+At minimum capture:
 
-`L2 TLB miss -> translation MSHR -> PWQ -> walker -> PTE request -> real L2/lower memory -> matching response -> walker progress -> fill/wakeup/replay`.
+- exact SimVA/VPN/page size/required width;
+- kernel sequence/name, PC, UID, SID/WID when available;
+- load/store/atomic, mem-access type and instruction memory space;
+- whether the value comes directly from the trace or from simulator local/generic-address transformation;
+- min/max and >49-bit counts by global/local/param-local space for available LUD/BFS;
+- the same address/path under VM disabled and ideal identity;
+- proof that it is not sentinel/uninitialized/PTE recursion/corruption.
 
-Required:
+The final diagnostic must classify the evidence as Case A/B/C/D exactly as defined in the stage spec.
 
-- PTE request is explicitly physical and bypasses translation;
-- PTE request bypasses L1D under the generic M3 policy and uses actual L2/memory-subpartition/interconnect/DRAM timing resources;
-- walker cannot advance before the correct PTE response;
-- multiple outstanding PTE requests are associated with the correct translation key, walk level, and request identity;
-- PTE and data traffic are separately observable;
-- PTE traffic consumes a demonstrable shared resource, not merely a counter/fixed delay;
-- deterministic `vm_pte_l2_hit`, `vm_pte_dram`, response-identity, no-recursion, and shared-resource-pressure tests pass;
-- all repaired M2 replay/conservation/store/atomic tests remain PASS.
+## Explicitly forbidden
 
-Hard STOP on recursive translation, lost/misassociated response, deadlock, duplicate wakeup/side effect, or unexplained early walker progress.
+Do not:
 
-## Page-table locality / PWC guard for later gates
-
-G3-1 proves collision-free deterministic PTE physical identities, but the target paper does not expose its exact page-table hierarchy/locality.
-
-Current generic address identity must not be presented as paper-exact upper-level radix locality.
-
-Before G3-3/PWC is accepted, explicitly document and test the hierarchy-prefix/PTE-sharing semantics used by the generic baseline. If conventional prefix sharing is implemented, prove related VPNs share the intended upper-level PTE/PWC keys; if a flatter synthetic model is retained, label it `MODELING_DECISION`, quantify its locality implication, and do not make hardware-fidelity claims. This issue must be resolved before G3-5 performance characterization.
-
-Current M3 v0 is one simulated address space / ASID-0 execution path; do not claim multi-ASID PTE physical separation without extending the backend.
-
-## G3-3 onward
-
-Continue with the existing stage specification:
-
-- G3-3: finite PWC, zero/baseline/ideal modes, shared-resource behavior, M2 regressions;
-- G3-4: 64KB/2MB semantics and timing decomposition;
-- G3-5: integrated causality/sensitivity including fixed-latency M2 vs real-memory M3;
-- closeout: complete `M3_TIMING_REALISTIC_BASELINE` and `M1_M3_VM_BASELINE_CLOSEOUT` review packs.
-
-Do not implement target-paper L2-TLB sub-entry, Segmentation, synthetic KV, page faults/migration/UVM, MCM, or new AI-aware mechanisms in M3.
+- widen `virtual_address_bits`;
+- truncate/mask/canonicalize the address;
+- alter PTE namespace/range;
+- bypass functional VM for one memory space to make the test pass;
+- change page size or ASID semantics;
+- start PWC/G3-3;
+- claim the Segmentation paper's 49-bit VA is a generic trace-width fact;
+- claim an observed high value is a valid GPU VA until provenance proves it.
 
 ## Reporting
 
@@ -119,24 +115,14 @@ and:
 
 `docs/vm_tlb/codex_handoff/m1_m3/LATEST_REPORT.md`
 
-Update:
+Create/update:
 
-`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/`
+`docs/vm_tlb/review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2_ADDRESS_PROVENANCE_DIAG.md`
 
-Final macro pack:
+with compact evidence files specified by the stage spec.
 
-`docs/vm_tlb/review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`
+Push Framework diagnostic evidence and STOP.
 
-## STOP conditions
+## STOP condition
 
-STOP immediately on:
-
-- recursive PTE translation;
-- PTE response identity/misassociation failure;
-- request loss, duplicate wakeup, duplicate store/atomic effect;
-- M1/M2 transparency or replay regression;
-- deadlock or unexplained nondeterminism;
-- a materially new page-table/timing modeling choice not covered by the approved generic-M3 policy;
-- source/provenance uncertainty.
-
-After M3 PASS and macro closeout, push both repositories, report final SHAs, and STOP before M4B / Segmentation / sub-entry / synthetic-KV / new research mechanisms.
+After D0-D5, STOP regardless of whether provenance is Case A, B, C, or D. The next architecture decision belongs to ChatGPT review.
