@@ -18,13 +18,28 @@ displayed CUDA 13.x image label.
 | NVBit SHA-256 | `dba61708b702ff4562343716bb8b38a2d14aae5991b9719aece097afe505467f` |
 | Framework handoff base | `51a36b376a8c6a59c02c181b26233bd0c4c3322f` |
 | Framework Route-E package commit | `524cb20785ec4632b434a0786181ff814ad7eaba` (checkout must be this commit or its reviewed descendant) |
-| Route-E artifact digests (SHA-256) | `run_llama_tp4_rank0.sh` `cc38edf0eda9b4498ce639145618770f44e417563799be26b1ac50af29380829`; `rank0_nvbit_exec.sh` `02d34b01c44d9b11abe281addba7b2bda7488175305c42f9b246c5525ff8bbba`; `llama_tp_workload.py` `067a4217e8b14f950e76d1fc777520c3dd6447a247df2124d7f9b2a516ca7cb7`; `run_m4a_c.sh` `969d53fe4c5798b3c15cb2a23146bea4aaf30672a223210279ae7555cc533d4e`; `bootstrap_route_e_nvbit.sh` `de78fcd105d809ff35e4819826435c821e74f7bc5cb50251291fec9f51be19f3`; `build_nvbit_with_toolchain.sh` `070a842ec3e0e03f5a6e2a8281a96ab3c051d2f230163a9d6e0d6c351100a5ee`; `classify_kernels.py` `a23c05ebd1b8494cb9a80d0d65ae153a1a76eeb0f1da98f4a21ef5b386983374`; `run_generic_nvbit_smoke.sh` `a11341806c92113cb9be3b6b8ad31af36902569be89844240fbeb6a59abbf371`; tracer `tracer_tool.cu` `414bdeebebf807a1134a53079ed0b7eee47e7fb3eda72250da25b445f5876ab4` |
+| Route-E artifact digests (SHA-256) | `run_llama_tp4_rank0.sh` `cc38edf0eda9b4498ce639145618770f44e417563799be26b1ac50af29380829`; `rank0_nvbit_exec.sh` `02d34b01c44d9b11abe281addba7b2bda7488175305c42f9b246c5525ff8bbba`; `llama_tp_workload.py` `de8cf872e9ba3aca8390b913441dde65acf2161bb03352b73ed36982d63b7c63`; `run_m4a_c.sh` `1f1a8dff9ae38bf1cde3125f0e162175b60219e2766620d20c041e1845a82492`; `bootstrap_route_e_nvbit.sh` `de78fcd105d809ff35e4819826435c821e74f7bc5cb50251291fec9f51be19f3`; `build_nvbit_with_toolchain.sh` `070a842ec3e0e03f5a6e2a8281a96ab3c051d2f230163a9d6e0d6c351100a5ee`; `classify_kernels.py` `a23c05ebd1b8494cb9a80d0d65ae153a1a76eeb0f1da98f4a21ef5b386983374`; `run_generic_nvbit_smoke.sh` `a11341806c92113cb9be3b6b8ad31af36902569be89844240fbeb6a59abbf371`; tracer `tracer_tool.cu` `414bdeebebf807a1134a53079ed0b7eee47e7fb3eda72250da25b445f5876ab4` |
 | Model | `meta-llama/Llama-3.2-1B` at `4e20de362430cd3b72f300e6b0f18e50e7166e08` |
 | Capture dtype | `bfloat16`, an explicit self-capture choice; paper dtype is `PAPER_DETAIL_UNAVAILABLE` |
 
 The model revision was obtained through the Hugging Face model metadata API;
 no model file was requested. A future gated-model request uses `HF_TOKEN` only
 from the process environment and must not log it.
+
+## Local-snapshot transport contract
+
+For the authorized retained-host resume, the exact frozen snapshot may be
+transferred from the main server rather than downloaded by the rented host.
+The route requires both `M4A_MODEL_LOCAL_PATH` and
+`M4A_MODEL_LOCAL_MANIFEST`. The latter is an
+`m4a-local-model-snapshot-v1` SHA256 manifest with canonical model ID and
+frozen revision. When this route is selected, the workload passes the local
+directory to Transformers with `local_files_only=True`; it cannot silently
+fall back to Hugging Face. The sidecar and workload manifest preserve the
+canonical ID/revision plus the snapshot-manifest SHA256. The manifest is
+verified source-to-destination before workload execution; the runtime checks
+the selected files and manifest identity without rehashing multi-GiB weights
+on every rank.
 
 `resolve_model_metadata.py --dry-run` is safe now. Its non-dry-run mode calls
 only `HfApi.model_info`, records the revision and visible config dtype if any,

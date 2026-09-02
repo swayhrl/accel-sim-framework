@@ -21,14 +21,17 @@ CUDA_RELEASE = "12.6"
 LOCKED_ARTIFACTS = {
     "run_llama_tp4_rank0.sh": "cc38edf0eda9b4498ce639145618770f44e417563799be26b1ac50af29380829",
     "rank0_nvbit_exec.sh": "02d34b01c44d9b11abe281addba7b2bda7488175305c42f9b246c5525ff8bbba",
-    "llama_tp_workload.py": "067a4217e8b14f950e76d1fc777520c3dd6447a247df2124d7f9b2a516ca7cb7",
-    "run_m4a_c.sh": "969d53fe4c5798b3c15cb2a23146bea4aaf30672a223210279ae7555cc533d4e",
+    "llama_tp_workload.py": "de8cf872e9ba3aca8390b913441dde65acf2161bb03352b73ed36982d63b7c63",
+    "run_m4a_c.sh": "1f1a8dff9ae38bf1cde3125f0e162175b60219e2766620d20c041e1845a82492",
     "bootstrap_route_e_nvbit.sh": "de78fcd105d809ff35e4819826435c821e74f7bc5cb50251291fec9f51be19f3",
     "build_nvbit_with_toolchain.sh": "070a842ec3e0e03f5a6e2a8281a96ab3c051d2f230163a9d6e0d6c351100a5ee",
     "classify_kernels.py": "a23c05ebd1b8494cb9a80d0d65ae153a1a76eeb0f1da98f4a21ef5b386983374",
     "run_generic_nvbit_smoke.sh": "a11341806c92113cb9be3b6b8ad31af36902569be89844240fbeb6a59abbf371",
     "tracer_tool.cu": "414bdeebebf807a1134a53079ed0b7eee47e7fb3eda72250da25b445f5876ab4",
 }
+LOCAL_SNAPSHOT_FILES = ("model.safetensors", "config.json", "generation_config.json", "tokenizer.json",
+                        "tokenizer_config.json", "special_tokens_map.json")
+MODEL_ID = "meta-llama/Llama-3.2-1B"
 
 
 def command(*argv: str) -> tuple[int, str]:
@@ -64,6 +67,40 @@ def inspect_toolchain(cuda_home: Path) -> tuple[dict, list[str]]:
         elif not version_is_locked(output): errors.append(f"selected {label} is not locked CUDA {CUDA_RELEASE}: {output.strip()}")
     details["path_nvcc_disagrees"] = bool(details["path_nvcc"] and details.get("selected_nvcc") and Path(details["path_nvcc"]).resolve() != Path(details["selected_nvcc"]))
     details["path_ptxas_disagrees"] = bool(details["path_ptxas"] and details.get("selected_ptxas") and Path(details["path_ptxas"]).resolve() != Path(details["selected_ptxas"]))
+    return details, errors
+
+
+def inspect_model_transport(revision: str) -> tuple[dict, list[str]]:
+    """Validate local-snapshot identity without any network access or weight hashing."""
+    local_raw, manifest_raw = os.environ.get("M4A_MODEL_LOCAL_PATH", ""), os.environ.get("M4A_MODEL_LOCAL_MANIFEST", "")
+    if not local_raw:
+        return {"transport": "HUGGING_FACE", "canonical_model_id": MODEL_ID, "frozen_revision": revision}, []
+    root = Path(local_raw).expanduser().resolve(); details = {"transport": "LOCAL_SNAPSHOT", "local_path": str(root),
+                                                               "canonical_model_id": MODEL_ID, "frozen_revision": revision}
+    errors: list[str] = []
+    if not root.is_dir(): errors.append(f"M4A_MODEL_LOCAL_PATH is not a directory: {root}")
+    else:
+        missing = [name for name in LOCAL_SNAPSHOT_FILES if not (root / name).is_file()]
+        if missing: errors.append(f"local model snapshot is incomplete: {missing}")
+    if not manifest_raw:
+        errors.append("M4A_MODEL_LOCAL_MANIFEST is required with M4A_MODEL_LOCAL_PATH")
+        return details, errors
+    manifest_path = Path(manifest_raw).expanduser().resolve(); details["manifest_path"] = str(manifest_path)
+    if not manifest_path.is_file():
+        errors.append(f"M4A_MODEL_LOCAL_MANIFEST is not a file: {manifest_path}")
+        return details, errors
+    details["manifest_sha256"] = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+    try:
+        manifest = json.loads(manifest_path.read_text()); model = manifest["model"]
+        file_rows = {row["path"]: row for row in manifest["files"]}
+    except (json.JSONDecodeError, KeyError, TypeError) as error:
+        errors.append(f"invalid local model manifest: {error}")
+        return details, errors
+    if manifest.get("schema_version") != "m4a-local-model-snapshot-v1": errors.append("local model manifest schema mismatch")
+    if model.get("canonical_id") != MODEL_ID or model.get("revision") != revision: errors.append("local model manifest identity mismatch")
+    for name in LOCAL_SNAPSHOT_FILES:
+        if not isinstance(file_rows.get(name), dict) or not isinstance(file_rows[name].get("sha256"), str):
+            errors.append(f"local model manifest missing SHA256 for {name}")
     return details, errors
 
 
@@ -139,12 +176,13 @@ def main() -> int:
     if rc or len([x for x in gpus.splitlines() if x.strip()]) != 4 or any(x.strip() != "8.6" for x in gpus.splitlines() if x.strip()): errors.append("four visible SM86 GPUs unavailable")
     revision, token_set = os.environ.get("M4A_MODEL_REVISION", ""), bool(os.environ.get("HF_TOKEN"))
     if len(revision) != 40: errors.append("M4A_MODEL_REVISION immutable SHA is not set")
+    model_transport, model_errors = inspect_model_transport(revision); errors += model_errors
     report = {"schema_version": "m4a-route-e-capture-ready-v2", "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
               "status": "PASS" if not errors else "BLOCKED", "errors": errors, "python": sys.version,
               "packages": versions, "torch_runtime_cuda": torch_runtime_cuda, "toolchain": toolchain,
               "locked_artifact_sha256": artifact_actual, "nvbit_sha256": NVBIT_SHA, "tracer": str(tracer),
               "postprocessor": str(post), "free_gib": free_gib, "hf_token_present": token_set,
-              "model_revision_set": len(revision) == 40}
+              "model_revision_set": len(revision) == 40, "model_transport": model_transport}
     output = work / "capture-ready-preflight.json"; output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     print(f"{report['status']} report={output}")
     for error in errors: print(f"error: {error}")

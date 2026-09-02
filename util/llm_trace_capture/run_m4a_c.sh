@@ -34,6 +34,7 @@ done
 [[ -n "$framework_root" && -n "$work_root" && -n "$cuda_home" && -n "$command_file" && -n "${trace_region:-}" ]] || { usage >&2; exit 2; }
 [[ "$trace_region" =~ ^(prefill|decode1|decode_reuse)$ ]] || { echo "error: --trace-region must be prefill, decode1, or decode_reuse" >&2; exit 2; }
 [[ -x "$command_file" ]] || { echo "error: command file must be executable" >&2; exit 2; }
+[[ -n "${M4A_MODEL_LOCAL_PATH:-}" && -n "${M4A_MODEL_LOCAL_MANIFEST:-}" ]] || { echo "error: formal Route-E capture requires verified M4A_MODEL_LOCAL_PATH and M4A_MODEL_LOCAL_MANIFEST" >&2; exit 2; }
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 framework_root="$(cd "$framework_root" && pwd)"; mkdir -p "$work_root"; work_root="$(cd "$work_root" && pwd)"
 python3 "$script_dir/capture_ready_preflight.py" --framework-root "$framework_root" --work-root "$work_root" --cuda-home "$cuda_home" --minimum-free-gib "$minimum_free_gib" --required-gpu-count "$required_gpu_count"
