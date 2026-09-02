@@ -51,9 +51,11 @@ Read in this order before every new task:
 Ownership:
 
 - `chatgpt_handoff/*` is ChatGPT-owned. Codex must not modify it unless the current stage specification explicitly grants permission.
-- `codex_handoff/LATEST_REPORT.md` is Codex-owned.
+- `codex_handoff/*` is Codex-owned execution reporting, subject to the report path assigned by the current stage.
 - `review_packs/<stage>/` is Codex-generated review evidence.
 - Long-lived architecture/specification documents may be modified only when the current stage explicitly authorizes them.
+
+When multiple Codex windows run in parallel, they must use separate track-specific report paths assigned by `CODEX_NEXT_STAGE.md`; do not let both branches overwrite the same active `LATEST_REPORT.md`. The root bootstrap report may remain historical.
 
 A chat message is not a substitute for committed handoff state when the two disagree. Stop and report the conflict.
 
@@ -238,7 +240,7 @@ The pack must be sufficient for independent review without relying on Codex chat
 
 For functional VM stages also include or link machine-checkable invariant results and representative structured statistics.
 
-Update `docs/vm_tlb/codex_handoff/LATEST_REPORT.md` at stage completion.
+Update the **track-specific Codex report path assigned by the current `CODEX_NEXT_STAGE.md`** at stage completion.
 
 ## 12. STOP policy for long target-mode tasks
 
@@ -279,3 +281,13 @@ LLM reproduction must keep these artifacts distinct:
 Weight, KV-cache, activation, workspace, unknown, and synthetic-KV classifications must not be conflated.
 
 The paper PDF itself may be used locally for research, but do not commit copyrighted paper PDFs to the public repository unless explicitly authorized and legally appropriate. Commit bibliographic metadata and extracted reproduction specifications instead.
+
+Real rented-GPU capture is a separate operational stage from pre-capture preparation. If the current handoff authorizes only pre-capture work, Codex must finish a ready-to-run capture package and STOP before starting an external rental/capture session.
+
+## 15. Trace capture hardware guardrails
+
+Always distinguish **tracer compatibility** from **simulator target compatibility**.
+
+For the current Segmentation-paper reproduction, the intended simulated target is RTX3070-class / SM86. Prefer SM86 capture hardware and do not silently replay a trace from a different SASS generation as SM86.
+
+For future Accel-Sim 2.0 AI-TLB work, a GPU that NVBit can instrument is not automatically a validated simulator target. In particular, RTX5090/Blackwell capture-tool support does not by itself authorize treating an RTX5090 trace as an H100/H200 trace. Follow the current Accel-Sim release support and the approved stage hardware matrix.
