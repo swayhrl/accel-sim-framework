@@ -2,65 +2,98 @@
 
 ## Review result
 
-`M4A_PRECAPTURE_PREP` and `M4A_PRECAPTURE_FIXUP` have been reviewed by ChatGPT and accepted as preparation checkpoints.
+Track B pre-rental preparation is **PASS / READY_TO_RENT** after independent ChatGPT review.
+
+Accepted stages:
+
+- `M4A_PRECAPTURE_PREP`: PASS/accepted;
+- `M4A_PRECAPTURE_FIXUP`: PASS/accepted;
+- `M4A_PRERENTAL_FINALIZE`: accepted after review-fix;
+- `M4A_PRERENTAL_REVIEW_FIX`: **PASS / READY_TO_RENT_REVIEW_FIX_PASS**.
 
 Reviewed Framework branch:
 `hrl/llm-trace-prep-v0`
 
-Latest completed Codex closeout before this handoff:
-`9a02eecc9534726294c7e6ae2a5c8db3bbc05988`
+Accepted Route-E implementation commit:
+`524cb20785ec4632b434a0786181ff814ad7eaba`
 
-Accepted Track-B state:
+Final provenance/report descendant:
+`11b4fc33fe3b9e95ad470bccedc306182c5122b5`
 
-- previous AutoDL/V100 campaign recovery and reusable capture-safety patterns are accepted;
-- formal preferred self-capture route is Route E: one 4x same-model SM86 node, real TP=4, trace rank0 only;
-- Route A remains an approval-only `DOCUMENTED_APPROX` fallback;
-- full-model single-GPU trace is rejected as the formal paper workload;
-- concrete TP4 wrapper, runtime flat-weight binder, sidecar/manifest path, and rank wrapper exist;
-- no external GPU has been rented and M4A-C has not started;
-- paper-exact trace, TP implementation, dtype, contiguous loader, sub-entry/PTW details, synthetic-KV distribution, and collective treatment remain unavailable.
+## Approved formal self-capture route
 
-## User-confirmed rental availability snapshot
+Route E is approved:
 
-`USER_CONFIRMED`, snapshot date 2026-09-02:
+- one physical host with four same-model SM86 GPUs;
+- real TP=4 execution;
+- NVBit injected only into rank 0;
+- B8 / S64 / G3 workload contract;
+- separate profiler-controlled `prefill` and `decode1` formal ROI captures;
+- raw rank-0 ROI trace retained intact;
+- contiguous rank-local weight buffer + runtime sidecar;
+- observable real KV-cache events/ranges where the pinned framework exposes them;
+- resulting trace is `PAPER_COMPATIBLE_SELF_CAPTURE`, never author-exact.
 
-- AutoDL showed RTX 3080 Ti 12 GiB / SM86 physical hosts with at least four idle GPUs on one host;
-- one candidate showed 6 / 8 idle GPUs and expandable local storage up to about 1.6 TB;
-- another showed 5 / 8 idle GPUs and expandable local storage up to about 2 TB;
-- the displayed host environment used a recent NVIDIA driver and CUDA 13.x label.
+A full-model single-GPU trace remains rejected as the formal paper workload. Route A remains an approval-only `DOCUMENTED_APPROX` fallback.
 
-This is evidence that the required host class can exist, not a reservation. Availability and all host details must be revalidated after rental. Do not hard-code a host ID as a project requirement.
+## Accepted review-fix results
 
-## Why M4A-C is still not authorized
+The final two engineering blockers are closed:
 
-Before spending rental time, the package still needs several avoidable pre-rental gaps closed:
+- selected `--cuda-home` now controls the actual NVBit `nvcc` and `ptxas` paths; contaminating host PATH toolkits cannot silently take over the build;
+- capture-ready preflight records selected compiler realpaths/versions, host-PATH compiler values, PyTorch runtime CUDA, tracer/postprocessor existence, NVBit checksum marker, and locked artifact digests;
+- with `ACTIVE_FROM_START=0`, ROI-inactive `cuMemcpyHtoD_v2` events no longer enter the formal replay list, while active-ROI memcpy remains eligible;
+- kernel classification now separates `COMPUTE`, `NCCL_COLLECTIVE`, `MEMCPY`, and `UNKNOWN_OTHER`; the compute-only derivative excludes non-compute entries without altering raw evidence;
+- rank0-only injection, TP/ROI, Weight/KV metadata, checksum/bootstrap, host/capture preflights, model metadata lock, and M4A-C authorization guard all retain passing no-GPU tests.
 
-1. parent-level `CUDA_INJECTION64_PATH` must not leak NVBit injection to ranks 1–3;
-2. formal trace ROI must exclude model loading, TP setup and flat-weight copy/rebind work;
-3. prefill and first-decode traces need explicit, independent ROI/provenance paths;
-4. driver / CUDA toolkit / PyTorch runtime / NVBit version/checksum and model revision/dtype provenance need a frozen environment contract;
-5. host suitability preflight must be separated from post-build tracer readiness;
-6. runtime metadata should record real KV-cache ranges/lifetimes where observable, not only Weight;
-7. raw NCCL/collective kernels must be retained and classified so later replay policy does not require recapture.
+Review entry:
+`docs/vm_tlb/review_packs/M4A_PRERENTAL_REVIEW_FIX/README.md`
 
-These are preparation tasks and should be completed without renting a GPU.
+## Rental hardware requirements
 
-## Next authorized Track B work
+At rental time require:
 
-Execute:
+- one physical host row with at least four currently idle GPUs;
+- allocate all four GPUs in the same instance;
+- all four GPUs same model and compute capability 8.6 (SM86);
+- RTX 3080 Ti 12 GiB is accepted; RTX 3090 24 GiB provides more headroom but is not required;
+- host RAM target >=64 GiB;
+- at least 500 GiB free/immediately expandable local storage before formal trace; more is preferred when inexpensive;
+- SSH and checksum-verified copy-back capability;
+- do not rely on the rental page's CUDA 13.x label as the project toolchain.
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_PRERENTAL_FINALIZE.md`
+The 2026-09-02 AutoDL availability screenshot is a mutable `USER_CONFIRMED` snapshot only. Recheck availability when paying.
 
-Goal: close all practical no-GPU setup gaps and return a package explicitly classified as `READY_TO_RENT` or `NOT_READY_TO_RENT`.
+Prefer an instance/image where an explicit CUDA 12.6 toolkit is already available at a known path. If it is not, stop after host preflight and establish the approved local CUDA-12.6 toolkit path before any NVBit build/model download; never change the host NVIDIA driver.
 
-## Prepared but not authorized
+## Current authorization boundary
 
-Future execution specification:
+The **user may now rent** a qualifying Route-E host.
 
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_EXTERNAL_CAPTURE.md`
+`M4A-C` formal capture is still **NOT YET AUTHORIZED**. Immediately after rental, only the host-suitability gate should run first; no model download or formal tracing is needed for that gate.
 
-M4A-C remains blocked until ChatGPT reviews M4A-PR and the user then rents a selected 4xSM86 node.
+Future first command is `host_preflight.py` using the actual large local-data mount as `--work-root`.
+
+After host-preflight PASS, report the generated `host-preflight.json` / host summary back for the M4A-C authorization handoff. Then the sequence will be:
+
+`isolated env -> checksum NVBit bootstrap with explicit CUDA 12.6 -> generic NVBit smoke -> capture-ready preflight -> real TP4 smoke -> tiny LLM ROI trace -> measured disk projection -> formal prefill/decode1 capture -> archive/copy-back -> parser/simulator compatibility`.
+
+## Remaining host-only gates
+
+The following are intentionally unresolved until the rented host exists:
+
+- real driver/NVBit compatibility;
+- actual four-GPU `torchrun`/NCCL TP behavior;
+- profiler ROI behavior under the real CUDA runtime;
+- flat-weight rebinding stability and numerical sanity on real TP4;
+- real KV VA/lifetime coverage;
+- real trace growth/disk projection;
+- NCCL kernel inventory and parser/simulator compatibility;
+- final raw/full/compute-only replay policy;
+- imported trace parser/simulator smoke.
+
+These are M4A-C execution gates, not pre-rental blockers.
 
 ## STOP boundary
 
-After M4A-PR, push/report and STOP. Do not rent a GPU, run formal external capture, implement Segmentation, or inject synthetic KV traffic until a new ChatGPT-owned handoff explicitly authorizes M4A-C.
+Until a qualifying host is rented and host preflight is reviewed, do not set `M4A_C_AUTHORIZED=1`, bootstrap a real capture environment, download formal model weights, collect trace data, implement Segmentation, or inject synthetic KV.
