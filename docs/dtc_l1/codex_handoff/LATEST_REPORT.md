@@ -4,7 +4,7 @@ Stage: `M2_IO_READ`
 
 Status: **M2_RECOVERY_IN_PROGRESS — M3 FORBIDDEN**
 
-Core recovery checkpoint: `3be79d4d41f381ab07895b3a67da63224bdea62f`
+Core recovery checkpoint: `f6ce41c610ab27e886f86c1cd98d52d4548c39c5`
 
 Framework SHA before this report update: `0b8f03463ebab057b2371a489492688903e837ea`
 
