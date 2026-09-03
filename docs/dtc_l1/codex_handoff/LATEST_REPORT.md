@@ -2,11 +2,33 @@
 
 Stage: `M5.0B_WORKLOAD_RECOVERY`
 
-Status: **M5 BLOCKED — RESEARCHER_DECISION_REQUIRED**
+Status: **RESOLVING_ISSUE — M5-T005 R5DV VALIDATION ACTIVE**
 
-## Stop record — frozen 16 KiB conventional-L1 dirty-set deadlock
+## Active recovery — approved ratio-zero conventional-L1 policy
 
-M5.0B cannot continue. Canonical Parboil CUDA JDS SpMV reproduces a real
+The M5-T005 researcher-decision boundary is resolved.  The paper-facing
+LEGACY/PAPER_BASE/PAPER_IO/PAPER_OO configuration family now explicitly uses
+`-gpgpu_l1_cache_write_ratio 0`; the frozen 16 KiB, 128B-line, four-way
+geometry and all write-through/allocation/scoreboard semantics are unchanged.
+
+- Framework `81c75b5d315a29607412a3e28a07c83a2e0a1486` records the four
+  ratio-zero formal configurations.  The 32/128 KiB ratio-25 controls and all
+  pre-decision evidence remain `DIAGNOSTIC_PLATFORM_POLICY`.
+- Core `22db16b8feb007a405634588b6bec97c935d2ecb` adds a source-level CUDA
+  dirty-set regression.  Under LEGACY ratio 0 it completes with application
+  `PASS`, six L1D misses and zero reservation failures; the log has five
+  lower global writes, one global read, and zero `L1_WRBK_ACC` events.
+- A fresh Release build and all three DTC CTests PASS.  LEGACY/Base/IO/OO
+  VecAdd ratio-zero sentinels PASS at `5562/5708/5545/5533` cycles.  The
+  same four M4 Store/Atomic/architectural-`.cg` mixed sentinels PASS.
+- Canonical Parboil JDS SpMV medium ratio-zero LEGACY and PAPER_BASE runs are
+  active in `/tmp/dtc-l1-m5-r5dv3-{legacy,base}-ratio0-20260904`; their
+  correct-output checks run only after normal simulator completion.  They are
+  the remaining R5DV closure gate.
+
+## Historic stop record — frozen 16 KiB conventional-L1 dirty-set deadlock
+
+Before the researcher resolution, canonical Parboil CUDA JDS SpMV reproduced a real
 deadlock in both PAPER_BASE and LEGACY with the frozen 16 KiB, 128B-line,
 four-way L1 geometry. The LEGACY control excludes DTC PIB/Tag behavior.
 
@@ -21,10 +43,11 @@ four-way L1 geometry. The LEGACY control excludes DTC PIB/Tag behavior.
   The retry remains at L1 latency-queue stage zero, so its dependent
   pending-write/scoreboard state cannot retire.
 
-This is a source-reachable conventional-L1 policy ambiguity at the researcher-
-frozen geometry. Do not change the dirty-victim ratio, reinterpret
-write-through `MODIFIED` state, enlarge the L1, disable deadlock detection, or
-weaken pending-write/scoreboard assertions without a researcher decision.
+This was a source-reachable conventional-L1 policy ambiguity at the researcher-
+frozen geometry.  The later researcher-approved resolution permits only the
+explicit ratio-zero configuration correction.  Do not reinterpret write-through
+`MODIFIED` state, enlarge the L1, disable deadlock detection, or weaken
+pending-write/scoreboard assertions.
 
 Evidence is pushed:
 
@@ -34,9 +57,9 @@ Evidence is pushed:
   (`docs(m5): record frozen 16KiB L1 deadlock evidence`)
 - Full causal record: `implementation/M5_ISSUE_LOG.md`, M5-T005.
 
-The user-requested parallel jobs have not been interrupted; their outputs are
-diagnostic only and cannot advance M5 while this HARD gate is unresolved. M5,
-including M5 review, must not proceed.
+The user-requested parallel ratio-25 jobs have not been interrupted; their
+outputs remain diagnostic only.  M5 resumes only after the active ratio-zero
+canonical SpMV validation closes R5DV.
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 

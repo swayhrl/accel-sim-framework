@@ -149,7 +149,7 @@
 
 ## M5-T005 — 16 KiB four-way conventional L1 reaches a source-defined dirty-set deadlock
 
-- State: `OBSERVED -> REPRODUCED -> ROOT_CAUSE_CLASSIFIED -> ACTIVE_HARD_FAILURE`.
+- State: `OBSERVED -> REPRODUCED -> ROOT_CAUSE_CLASSIFIED -> RESEARCHER_DECISION_RESOLVED -> R5DV_VALIDATION_ACTIVE`.
 - Affected experiment: M5.0B canonical Parboil CUDA JDS SpMV, medium
   `bcsstk18` input, `PAPER_BASE_16KB.config` SHA-256
   `0f037eb6d7ae5bb66ae57110f5c3e93112adfd810f9b91898957286a93259c10`.
@@ -185,7 +185,7 @@
   that stage-0 request for retry; because no candidate can become eligible,
   the queue cannot advance and its dependent pending writes/scoreboard
   registers never close.
-- Disposition: this is a source-reachable conventional-L1 policy outcome at
+- Historical disposition: this is a source-reachable conventional-L1 policy outcome at
   the frozen 16 KiB/4-way geometry, not a DTC completion-accounting failure.
   Raising/changing the inherited dirty-victim ratio or altering write-through
   `MODIFIED` semantics would change the frozen conventional-L1 policy and the
@@ -194,3 +194,18 @@
   diagnostic work, but cannot replace the frozen 16 KiB result. Do not
   disable deadlock detection, enlarge the formal L1, or weaken any
   pending-write/scoreboard assertion. **RESEARCHER_DECISION_REQUIRED.**
+
+- Researcher resolution and active recovery: the approved paper-facing policy
+  is explicit `-gpgpu_l1_cache_write_ratio 0` for every LEGACY/PAPER_BASE/
+  PAPER_IO/PAPER_OO 16 KiB formal configuration.  Framework commit
+  `81c75b5d315a29607412a3e28a07c83a2e0a1486` changes only that option in the
+  four corrected files; 32/128 KiB ratio-25 controls remain diagnostic.
+  Core commit `22db16b8feb007a405634588b6bec97c935d2ecb` adds a real-path
+  regression with four write-through MODIFIED same-set lines followed by a
+  fifth same-set load.  Under ratio 0 it passes with zero L1D reservation
+  failures and zero fabricated L1 writebacks while five global writes and one
+  global read reach the lower hierarchy.  Release/CTest, four ratio-zero
+  VecAdd sentinels, and four M4 Store/Atomic/`.cg` sentinels pass.  Canonical
+  medium SpMV LEGACY/PAPER_BASE ratio-zero runs are active; retain every
+  ratio-25 run and hash as pre-decision diagnostic evidence, never as formal
+  ratio-zero data.
