@@ -9,7 +9,7 @@ Current Goal boundary: `M1_M3_VM_BASELINE_CLOSEOUT`
 Completed sub-gates: `G3-2A PASS / CASE A`, `G3-2B PASS`,
 `G3-2C PASS`, `G3-3 PASS`, `G3-4A PASS`, `G3-4B PASS`,
 `G3-5A PASS`, `G3-5B PASS`, `G3-CLOSEOUT PASS`
-Status: `PASS — FINAL CLOSEOUT EVIDENCE READY TO COMMIT/PUSH; STOP AFTER PUSH`
+Status: `PASS — FINAL CLOSEOUT PUSHED; STOP`
 Core SHA: `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
 Framework handoff SHA: `a105fae027150a0047d23a3a5e78b9110be9c84c`
 
@@ -30,6 +30,11 @@ Evidence/review path:
 `review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`.  Next gate: none.  Stop before
 M4B, Segmentation, sub-entry/coalescing, synthetic KV, page fault, migration,
 UVM or MCM.
+
+Published evidence commit: Framework `0dfef612d3a6b597049aceb9eaeb7f8d3e00dc40`
+on `origin/hrl/vm-m1-m3-v0`; corresponding Core source commit:
+`5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d` on
+`research/hrl/vm-m1-m3-v0`.
 
 ## G3-2B — generic trace-width extension and G3-2 closeout
 

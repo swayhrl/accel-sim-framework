@@ -27,7 +27,9 @@ flat by construction.
 Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_4_G3_5_FINAL_CLOSEOUT.md`
 and `review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`.  No M4B, Segmentation,
 sub-entry/coalescing, synthetic KV, page fault, migration, UVM, MCM, or new
-AI-aware mechanism was started.
+AI-aware mechanism was started.  The evidence was pushed as Framework
+`0dfef612d3a6b597049aceb9eaeb7f8d3e00dc40` and Core
+`5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`.
 
 ## Historical G3-2C/G3-3 report
 
