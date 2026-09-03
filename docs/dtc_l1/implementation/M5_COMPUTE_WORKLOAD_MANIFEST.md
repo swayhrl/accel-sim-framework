@@ -14,11 +14,12 @@ are appended only after each completed run.
 - Input identity: each listed source release selects `STANDARD_DATASET` when no
   dataset macro is supplied.  The dimension-header SHA below is the deterministic
   input-definition hash.  No DTC result selected these dimensions.
-- Run contract: substitute the M5 Core `libcudart.so` (SHA-256
-  `c5710f5ed1fb9e147300baac15c6153e8c9b874a3aea8823606935fe6b51b052`),
+- Run contract: the M5.0A runtime anchor remains historical. The active
+  ratio-zero recovery uses Core runtime `libcudart.so` SHA-256
+  `f115144d6009bab4af6d8ab0d86b69e54e8449a4c76a3809561571d32075a453`,
   set `PTX_SIM_USE_PTX_FILE=1` and `PTX_SIM_KERNELFILE=<artifact>.1.sm_52.ptx`,
   and use the fixed `PAPER_BASE_16KB.config` (SHA-256
-  `96621d2899d26d939afbf4eb8a9f0f303629263adf1c42c65743f60cda90b634`)
+  `993513296458bf014cfa33ff047e1ed7391a1fee990e3b4a2d9d738cab0ff366`)
   for formal Base smoke.  The M5.0A one-process calibration was superseded by
   measured host headroom and the explicit authorized parallel campaign; each
   process remains isolated and carries its own identity record.
@@ -67,5 +68,5 @@ SpMV source provenance: wrapper checkout `gpgpu-workloads`
 | Workload | Status | Evidence |
 | --- | --- | --- |
 | `bicg` | `ACTIVE_FORMAL_BASE_16KB` | Earlier `M5-27a653d36a4da01b` completed cleanly but is `DIAGNOSTIC_CONFIG_INVALIDATED` by M5-T004 because it dynamically used a 128 KiB conventional L1; the corrected isolated rerun is active. |
-| `spmv` | `ACTIVE_HARD_FAILURE / RESEARCHER_DECISION_REQUIRED` | Earlier `M5-9c1b7df007ca2a11` completed with official-output PASS but is `DIAGNOSTIC_CONFIG_INVALIDATED` by M5-T004. Corrected 16 KiB Base and LEGACY replays reproduce M5-T005: the source dirty-victim policy rejects a fully modified four-way set, retaining loads in the L1 latency queue. No result can be substituted for the frozen 16 KiB geometry. |
+| `spmv` | `R5DV_CLOSED_RATIO0_CANONICAL_SMOKE` | Earlier `M5-9c1b7df007ca2a11` remains `DIAGNOSTIC_CONFIG_INVALIDATED` by M5-T004 and ratio-25 evidence remains diagnostic. Corrected LEGACY/PAPER_BASE ratio-zero runs both pass the official comparison and strict drain checks; canonical Base is `3,202,814` cycles, 121,342,000 instructions, and lower acquired/released `3,844,406/3,844,406`. This closes M5-T005 but does not close the normal M5.0B triplet campaign. |
 | other eight | `ACTIVE_FORMAL_BASE_16KB` | Corrected isolated Base runs are active; no output claim is made before source self-check and strict invariant parsing complete. |

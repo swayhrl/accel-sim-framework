@@ -12,10 +12,10 @@ only in `-gpgpu_dtc_l1_mode`; every other byte is identical.
 
 | Configuration | Mode | SHA-256 |
 | --- | ---: | --- |
-| `configs/dtc_l1/m5/LEGACY_16KB.config` | 0 | `462703a8c083f8442da1b67bc74a92ad3441aefac9953b8b69f784e9238702cc` |
-| `configs/dtc_l1/m5/PAPER_BASE_16KB.config` | 1 | `96621d2899d26d939afbf4eb8a9f0f303629263adf1c42c65743f60cda90b634` |
-| `configs/dtc_l1/m5/PAPER_IO_16KB.config` | 2 | `10d3da49675afdc90ed142f190cdd6de0cef3acca57afac9741e4eef8b09e8e8` |
-| `configs/dtc_l1/m5/PAPER_OO_16KB.config` | 3 | `0005c35015730e50de5af6933ef7f9f88763e47cf838043ab8c6901dc0d026dc` |
+| `configs/dtc_l1/m5/LEGACY_16KB.config` | 0 | `e49453b37d2bc430abf9bc56caf1f1a10e7d665cd5b9d24f7f919fd65f1f1970` |
+| `configs/dtc_l1/m5/PAPER_BASE_16KB.config` | 1 | `993513296458bf014cfa33ff047e1ed7391a1fee990e3b4a2d9d738cab0ff366` |
+| `configs/dtc_l1/m5/PAPER_IO_16KB.config` | 2 | `5efe4113415732a83366949d5aaaf4863848d5f7f2f606d4a4e36e1246ad87a5` |
+| `configs/dtc_l1/m5/PAPER_OO_16KB.config` | 3 | `9fdad38d8bba8967b177596858761580f7fde50ec15dbc68df3495fdb7cf42ea` |
 
 The old temporary config `5ca33d...` is not formal: its adaptive path emitted
 `Reconfigure L1 cache to 128KB`.  M5-T004 records the root cause and
@@ -57,11 +57,12 @@ These values are byte-identical across the four formal configs:
 
 - 80 clusters × 1 core (`-gpgpu_n_clusters 80`,
   `-gpgpu_n_cores_per_cluster 1`), four L1 banks, L1 latency 20 cycles, and
-  global-memory L1 bypass disabled. The inherited SM7
-  `-gpgpu_l1_cache_write_ratio 25` remains frozen; it is source-reachable
-  conventional-L1 dirty-victim behavior, not a DTC knob. M5-T005 records a
-  16 KiB/4-way deadlock caused by that policy and requires a researcher
-  decision rather than a silent tuning change.
+  global-memory L1 bypass disabled. The paper-facing conventional-L1 policy
+  explicitly sets `-gpgpu_l1_cache_write_ratio 0` in all four files. This is
+  the researcher-approved M5-T005 correction: it preserves the frozen
+  16 KiB/4-way geometry and write-through/allocation semantics while removing
+  the inherited SM7 25%-global-dirty retention heuristic. Ratio-25 controls
+  remain diagnostic only.
 - 32 memory controllers × 2 subpartitions, 6 MiB L2
   (`S:32:128:24` per subpartition), L2 queue tuple `64:64:64:64`, and
   FR-FCFS DRAM scheduling queue 64 / return queue 192.

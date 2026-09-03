@@ -42,3 +42,17 @@ Base lower acquired/released is `64/64` with final outstanding zero. IO and OO d
 ## Host concurrency calibration
 
 A timed PAPER_BASE VecAdd used 1.16 s user, 0.47 s system, 1.53 s wall, and 385,024 KiB max RSS without swaps. Other host workloads are active and system swap is full, so initial M5 batch concurrency is **one simulator process**. Raise it only after representative Base smoke memory/headroom measurements.
+
+## R5DV dirty-victim recovery refresh
+
+The M5-T005 researcher-approved correction supersedes the old ratio-25 formal
+config identity only: all LEGACY/PAPER_BASE/PAPER_IO/PAPER_OO 16 KiB formal
+configs now set `-gpgpu_l1_cache_write_ratio 0`. The corrected hashes are in
+`implementation/M5_CONFIG_KNOB_MAP.md`; geometry and all DTC, pending-write,
+scoreboard, and write-through semantics are unchanged.
+
+The directed same-set dirty replacement regression, a Release build, all three
+DTC CTests, four ratio-zero VecAdd sentinels, and four M4 mixed
+Store/Atomic/architectural-`.cg` sentinels pass. Canonical medium Parboil JDS
+SpMV LEGACY/PAPER_BASE also pass output and strict drain parsing. Exact runtime
+and raw-log identity are in `m5/handoffs/M5_R5DV_DIRTY_VICTIM_VALIDATION.md`.
