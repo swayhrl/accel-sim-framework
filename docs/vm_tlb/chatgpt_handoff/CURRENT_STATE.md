@@ -75,9 +75,28 @@ The LUD/BFS sensitivity results validate infrastructure and causality only. They
 
 Track B is currently performing `M4A_MERGE_PREP` on the accepted formal LLM traces. Do not merge A/B or start M4B until Track B has passed its merge-prep review.
 
-After Track B PASS, ChatGPT will issue a new integration handoff for a fresh Framework integration branch. The final integrated Core must start from this accepted Track-A Core:
+After Track B PASS, the final integrated Core must start from this accepted Track-A Core:
 
 `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
+
+## Future M4 contract already prepared
+
+To minimize delay after Track-B review, the future integration/reproduction
+contracts are already drafted on this branch:
+
+- `docs/vm_tlb/chatgpt_handoff/M4_INTEGRATION_GOAL_START_DRAFT.md`
+- `docs/vm_tlb/chatgpt_handoff/stage_specs/M4_INTEGRATION_TO_SEGMENTATION_MASTER.md`
+- `docs/vm_tlb/chatgpt_handoff/stage_specs/M4I_AB_INTEGRATION_AND_REPLAY.md`
+- `docs/vm_tlb/chatgpt_handoff/stage_specs/M4C_LLM_BASELINE_CHARACTERIZATION.md`
+- `docs/vm_tlb/chatgpt_handoff/stage_specs/M4B_SEGMENTATION_REPRODUCTION.md`
+
+These files are **future contracts only and are not authorization** while B is
+running.  After B closes, ChatGPT will review the accepted B SHA/integration
+manifest and coverage/NCCL findings, replace the remaining placeholders, make
+small evidence-driven corrections, and publish an explicit authorized start
+file.  The planned continuous goal is:
+
+`A/B integration -> formal replay compatibility -> real LLM baseline translation characterization -> paper paging/sub-entry baseline -> Weight Segmentation on real prefill/decode1 -> M4B closeout -> STOP before M5 synthetic KV`.
 
 ## Current authorization
 
