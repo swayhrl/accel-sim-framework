@@ -1,60 +1,42 @@
 # M5 Graphics Handoff Contract
 
-Status: **ACTIVE AFTER M5.6 COMPUTE CLOSEOUT**
+Status: **ACTIVE — M5.7/M5.8 MAY RUN NOW; M5.9+ REQUIRES M5.COMPUTE_FREEZE**
 
-Authority: `M5_GRAPHICS_POST_COMPUTE_PLAN.md`.
+Scheduling authority:
 
-Graphics stages are independently reviewable quality gates, but PASS handoffs are not human-approval pauses. After M5.6 compute freeze, Codex continues automatically through the graphics plan unless a genuine researcher-decision boundary is reached.
+- `M5_V3_PARALLEL_TRACKS_APPROVAL.md`
+- `M5_GRAPHICS_INDEPENDENT_WINDOW_HANDOFF.md`
+- `M5_GRAPHICS_POST_COMPUTE_PLAN.md` for integration/formal details
 
-## 1. Compute-to-graphics transition handoff
+## 1. Two-phase graphics workflow
 
-Before M5.7, create:
+Graphics is split deliberately:
 
-`docs/dtc_l1/m5/handoffs/M5_6_TO_GRAPHICS.md`
+### Phase A — independent research now
 
-Required fields:
+Framework-only graphics-research branch executes:
 
-- compute final status `M5_COMPUTE_READY_FOR_GRAPHICS_CONTINUATION`;
-- `COMPUTE_FREEZE_CORE_SHA`;
-- `COMPUTE_FREEZE_FRAMEWORK_SHA`;
-- compute review-pack path;
-- compute formal behavior/config/parser anchors;
-- list of reusable compute results;
-- list of graphics-preparation evidence already completed (G0/G1/G2);
-- exact graphics branch names and creation SHAs;
-- explicit statement that later graphics changes do not rewrite compute FORMAL data.
+`M5.7 -> M5.8`
 
-After this handoff, create/use isolated graphics branches:
+No Core modifications and no active-compute branch writes.
 
-- Core `hrl/decoupled-l1-m5-graphics-v0`;
-- Framework `hrl/decoupled-l1-exp-m5-graphics-v0`.
+### Phase B — integration after compute freeze
 
-## 2. Standard graphics-stage handoff fields
+Only after `M5.COMPUTE_FREEZE`:
 
-Every `M5.7-M5.12` handoff must include:
+`M5.9 -> M5.10 -> M5.11 -> M5.12`
 
-1. **Status**: PASS / RESOLVING_ISSUE / RESEARCHER_DECISION_REQUIRED / GRAPHICS_SOURCE_BACKED_UNAVAILABLE.
-2. **Input anchors**: graphics Core SHA, graphics Framework SHA, compute-freeze SHAs.
-3. **Previous handoff SHA/path**.
-4. **Graphics provenance version**: source/tag/asset/shader hashes.
-5. **Execution-path class**: DIRECT_SOURCE_BACKED / TRACE_SOURCE_BACKED / PROXY_SUPPLEMENTAL / unavailable.
-6. **Semantic-fidelity checklist status**.
-7. **Config and parser/schema identities**.
-8. **Completed experiment IDs**.
-9. **Acceptance checklist with evidence paths**.
-10. **Issue IDs and resolution state**.
-11. **Invalidated/obsolete graphics result IDs**.
-12. **Result artifacts and raw-log index**.
-13. **Mechanism finding** without claiming numeric thesis matching.
-14. **Cross-path comparability state** for compute/graphics performance metrics.
-15. **Next executable scope**.
-16. **Do-not-redo list**.
+on fresh graphics branches created from exact compute-freeze SHAs.
 
-## 3. M5.7 provenance handoff
+## 2. M5.7 provenance handoff
 
 Path:
 
-`m5/handoffs/M5_7_GRAPHICS_PROVENANCE.md`
+`docs/dtc_l1/m5/handoffs/M5_7_GRAPHICS_PROVENANCE.md`
+
+Branch:
+
+`hrl/decoupled-l1-exp-m5-graphics-research-v0`
 
 Must contain one row per thesis graphics workload:
 
@@ -64,143 +46,192 @@ Acceptance:
 
 - all five have explicit mapping classes;
 - no silent scene substitution;
-- exact versus inferred settings are separated.
+- exact and inferred/reconstructed settings are separated;
+- provenance/source/asset hashes are recorded.
 
-PASS -> M5.8.
+PASS -> M5.8 in the same research window.
 
-## 4. M5.8 path-recovery handoff
-
-Path:
-
-`m5/handoffs/M5_8_GRAPHICS_PATH.md`
-
-Must report evidence for each attempted path:
-
-- original thesis/project artifacts;
-- historical graphics-enabled simulator artifacts;
-- direct OpenGL/frontend integration;
-- source-backed trace/replay;
-- proxy only as non-formal fallback.
-
-For any selected DIRECT/TRACE path, include the complete semantic-fidelity checklist and cycle/performance definition.
-
-Valid closeouts:
-
-- `GRAPHICS_PATH_SOURCE_BACKED` -> M5.9;
-- `GRAPHICS_SOURCE_BACKED_UNAVAILABLE` -> M5.12 negative-evidence closure.
-
-Do not stop merely because the first candidate path fails.
-
-## 5. M5.9 infrastructure handoff
+## 3. M5.8 path-recovery handoff
 
 Path:
 
-`m5/handoffs/M5_9_GRAPHICS_INFRA.md`
+`docs/dtc_l1/m5/handoffs/M5_8_GRAPHICS_PATH.md`
+
+Must report evidence for all candidate routes:
+
+1. original thesis/project artifacts/traces/simulator/scripts;
+2. historical graphics-enabled simulator/fork artifacts;
+3. direct graphics frontend integration;
+4. source-backed trace/replay;
+5. proxy only as non-formal supplemental fallback.
+
+For any DIRECT/TRACE candidate include:
+
+- shader-stage identity;
+- thread/warp grouping semantics;
+- memory addresses/sizes;
+- global vs texture behavior;
+- ordering/completion semantics;
+- draw/frame boundaries;
+- fixed-function/framebuffer scope;
+- cycle/performance metric definition;
+- comparability plan across Base/IO/OO.
+
+Valid M5.8 closeouts:
+
+### Source-backed path found
+
+`M5_GRAPHICS_RESEARCH_READY_FOR_COMPUTE_FREEZE`
+
+Include M5.9 implementation/test plan, but do not modify Core yet.
+
+### Exhaustive source-backed path unavailable
+
+`GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
+
+Preserve negative evidence; no formal proxy. Wait for compute freeze, then M5.12 consumes the unavailable result.
+
+## 4. Compute-to-graphics integration handoff
+
+Before M5.9, the compute window must create:
+
+`docs/dtc_l1/m5/handoffs/M5_COMPUTE_FREEZE.md`
+
+with:
+
+- `COMPUTE_FREEZE_CORE_SHA`;
+- `COMPUTE_FREEZE_FRAMEWORK_SHA`;
+- Paper-10 M5.6 PASS evidence;
+- Extended-20 M5.E3 PASS evidence;
+- no unresolved correctness/fidelity issues;
+- clean/pushed compute branches.
+
+Then create:
+
+- Core `hrl/decoupled-l1-m5-graphics-v0` from `COMPUTE_FREEZE_CORE_SHA`;
+- Framework `hrl/decoupled-l1-exp-m5-graphics-v0` from `COMPUTE_FREEZE_FRAMEWORK_SHA`.
+
+Carry forward reviewed M5.7/M5.8 research evidence intentionally; do not merge stale pre-freeze compute source state from the research branch.
+
+## 5. Standard M5.9-M5.12 handoff fields
+
+Every integration/formal graphics handoff records:
+
+1. status;
+2. graphics Core/Framework SHAs and compute-freeze SHAs;
+3. previous graphics-research handoff;
+4. graphics provenance version/source/asset/shader hashes;
+5. execution-path class;
+6. semantic-fidelity checklist;
+7. config/parser identities;
+8. completed experiment IDs;
+9. acceptance checklist;
+10. issue/resolution IDs;
+11. obsolete graphics results;
+12. compact results/raw-log index;
+13. mechanism finding;
+14. compute/graphics metric-comparability state;
+15. next scope;
+16. do-not-redo list.
+
+## 6. M5.9 infrastructure handoff
+
+Path:
+
+`docs/dtc_l1/m5/handoffs/M5_9_GRAPHICS_INFRA.md`
 
 Must include:
 
 - graphics source modifications and branch SHAs;
-- directed tests for shader-memory routing, texture semantics, completion, ordering, lower lifecycle, and request identity;
-- DTC CTest and compute-sentinel regressions on graphics Core;
-- explicit separation of fixed-function/framebuffer traffic outside DTC scope;
-- source proof that no graphics benchmark identity is special-cased inside DTC.
+- shader-memory routing tests;
+- texture semantics tests;
+- draw/frame completion exactly-once evidence;
+- Base/IO/OO request identity/comparability;
+- IO/OO ordering constraints;
+- lower/request lifecycle drain;
+- fixed-function/framebuffer traffic separation;
+- DTC CTests and compute-sentinel regressions on graphics Core;
+- proof no scene identity is special-cased inside DTC.
 
 PASS -> M5.10.
 
-## 6. M5.10 fidelity-lock handoff
+## 7. M5.10 fidelity-lock handoff
 
 Path:
 
-`m5/handoffs/M5_10_GRAPHICS_FIDELITY.md`
+`docs/dtc_l1/m5/handoffs/M5_10_GRAPHICS_FIDELITY.md`
 
-Required pilots:
+Pilots:
 
 - jellyfish;
 - one texture-heavy scene (`cat-tex` or `cube-tex`);
 - horse.
 
-For Base/IO/OO record:
+For Base/IO/OO record source/asset/trace identity, dynamic request counts, performance metric, output/frame or trace completion, structural pressure, live misses, accounting drain and causal classification.
 
-- source/asset/trace identity;
-- dynamic shader/request counts;
-- cycles/performance metric;
-- output/frame checksum or trace-completion proof;
-- Base structural pressure;
-- common live misses;
-- lower/accounting drain;
-- weak/negative-result causal classification.
+PASS freezes `M5_GRAPHICS_FORMAL_BEHAVIOR_ANCHOR` -> M5.11.
 
-PASS freezes `M5_GRAPHICS_FORMAL_BEHAVIOR_ANCHOR` and continues M5.11.
-
-## 7. M5.11 formal graphics handoff
+## 8. M5.11 formal graphics handoff
 
 Path:
 
-`m5/handoffs/M5_11_GRAPHICS_FORMAL.md`
+`docs/dtc_l1/m5/handoffs/M5_11_GRAPHICS_FORMAL.md`
 
 Review pack:
 
-`review_packs/M5_11_GRAPHICS_FORMAL/`
+`docs/dtc_l1/review_packs/M5_11_GRAPHICS_FORMAL/`
 
-Minimum contents:
+Cover all five source-backed graphics workloads for Figure 4.2, 4.5, 4.7, 4.8 and 4.10. Figure 4.9 remains compute-only.
 
-- README.md
-- SOURCE_ANCHORS.md
-- GRAPHICS_PROVENANCE.md
-- GRAPHICS_PATH_FIDELITY.md
-- FORMAL_ANCHOR.md
-- CONFIG_MANIFEST.md
-- PARSER_SCHEMA.md
-- COUNTER_SANITY.md
-- VALIDATION_SUMMARY.md
-- RESULT_MANIFEST.tsv
-- RAW_LOG_INDEX.tsv
-- OPEN_ISSUES.md
-- generated/ compact CSV/JSON
-
-Must cover all five graphics workloads for Figure 4.2, 4.5, 4.7, 4.8 and 4.10 as authorized by the plan. Figure 4.9 remains compute-only.
-
-Before emitting `GM-ALL-PAPER`, include a dedicated `COMPUTE_GRAPHICS_COMPARABILITY.md` proving the performance metric can be aggregated across the compute and graphics execution paths.
+Before `GM-ALL-PAPER`, create `COMPUTE_GRAPHICS_COMPARABILITY.md` proving metric aggregation is meaningful.
 
 PASS -> M5.12.
 
-## 8. M5.12 full synthesis handoff
+## 9. M5.12 full synthesis handoff
 
 Path:
 
-`m5/handoffs/M5_12_FULL_SYNTHESIS.md`
+`docs/dtc_l1/m5/handoffs/M5_12_FULL_SYNTHESIS.md`
 
 Final review pack:
 
-`review_packs/M5_FULL_REPRO/`
+`docs/dtc_l1/review_packs/M5_FULL_REPRO/`
 
-If graphics succeeds, required final status:
+M5.12 requires the v3 join conditions:
 
-`M5_FULL_REPRO_READY_FOR_REVIEW`
+- Paper-10 M5.6 PASS;
+- Extended-20 M5.E3 PASS;
+- `M5.COMPUTE_FREEZE`;
+- graphics M5.11 PASS **or** exhaustive M5.8 `GRAPHICS_SOURCE_BACKED_UNAVAILABLE`;
+- no unresolved correctness/fidelity issue.
 
-If exhaustive path recovery proves graphics unavailable, required final status:
+Final synthesis must report separately:
 
-`M5_COMPUTE_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
+- `GM-PAPER10` / `GM-GP`;
+- `GM-EXTENDED20`;
+- `GM-ALL-COMPUTE30` as supplemental generalization;
+- `GM-GRAPHICS` if source-backed;
+- `GM-ALL-PAPER` only for original 10 compute + 5 graphics and only if comparability is proven.
 
-In the unavailable case, the review pack must preserve:
+Extended-20 is never part of `GM-ALL-PAPER`.
 
-- compute-complete evidence;
-- exhaustive graphics path audit;
-- exact reasons formal graphics cannot be claimed;
-- any proxy/supplemental artifacts clearly segregated and excluded from paper figures;
-- no `GM-ALL-PAPER`.
+Final statuses:
 
-## 9. Transition rules
+- `M5_FULL_REPRO_READY_FOR_REVIEW`; or
+- `M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`.
 
-At every graphics-stage PASS:
+## 10. Mutable-report ownership
 
-1. finish correctness/fidelity acceptance;
-2. run parser/counter sanity;
-3. commit compact evidence with explicit path staging;
-4. push graphics branches;
-5. update `codex_handoff/LATEST_REPORT.md`;
-6. begin the next graphics stage automatically.
+During M5.7/M5.8 research use only the graphics-research branch's:
 
-Ordinary recoverable problems remain in the active stage and follow `M5_PROBLEM_RESOLUTION_POLICY.md` plus the graphics-specific rules in `M5_GRAPHICS_POST_COMPUTE_PLAN.md`.
+`docs/dtc_l1/codex_handoff/LATEST_GRAPHICS_RESEARCH_REPORT.md`
 
-Pause only for a real researcher decision or final terminal review state.
+Do not edit active compute `LATEST_REPORT.md` from the graphics window.
+
+After compute freeze and migration to graphics integration branches, the graphics integration window may establish its own final mutable report according to the compute-freeze handoff.
+
+## 11. Transition/stop rules
+
+Ordinary missing dependencies/assets, build failures, parser/integration bugs, timeouts with progress, weak speedup and individual path failures are resolve-in-track issues.
+
+Pause only for a genuine research decision, a proposal to use approximation/proxy as formal graphics, a required frozen-DTC semantic change, irreducible timing/comparability ambiguity, or final M5 review state.
