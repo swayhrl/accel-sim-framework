@@ -2,7 +2,7 @@
 
 Stage: `M4_COMPUTE_BRINGUP`
 
-Status: **STOP — HARD FAILURE: SOURCE-REACHABLE DTC COMPLETION ACCOUNTING**
+Status: **RECOVERY PASS — M4 IN PROGRESS**
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 
@@ -22,36 +22,23 @@ M2 recovery evidence remains authoritative historical context in:
 
 `implementation/M2_IO_RESPONSE_RECOVERY_EVIDENCE.md`.
 
-## M4 active HARD stop
+## M4 completion-accounting recovery closed
 
-The PTX proxy-fence frontend limitation is governed by the current authorized
-source-reachability resolution: no PTX fence frontend support or
-`membar -> FENCE_OP` mapping was added. Before F00/F01 disposition or any
-remaining M4 gate could close, the first provenance-controlled real compute
-triplet exposed a new source-reachable failure:
+The first provenance-controlled 2DConv triplet exposed a source-reachable DTC
+completion failure.  It was recovered under the authorized R4C procedure:
 
-- `PAPER_IO` aborts in `ldst_unit::dtc_l1_io_complete_instruction` at
-  `shader.cc:2824`, `pending >= dependencies`.
-- `PAPER_OO` aborts in `ldst_unit::dtc_l1_oo_complete_instruction` at
-  `shader.cc:3068`, the same invariant.
-- `PAPER_BASE` did not finish within the fixed 240-second diagnostic limit.
+- R4C.0--R4C.2 established Category C duplicate DTC completion for UID 15888
+  at PC `0x148`; no conventional pending-write consumption occurred.
+- Core `a33ffa87ed4d31d9725b693ea4f822ad1ed1c330` gates IO/OO completion on
+  full PIB-reference admission, carries the registered count through a
+  production exactly-once ledger, and retains all pending/scoreboard asserts.
+- Final-source 2DConv PAPER_IO/PAPER_OO both pass with correct output and
+  strict request/dependency/credit/PIB/inflight/ref drain.
+- The separate Base rerun is `SLOW_BUT_PROGRESSING`, not deadlocked.
 
-This failure invalidates M4 compute bring-up and is not eligible for
-`SOURCE_UNREACHABLE_NA`. It blocks F00 closure, remaining M4 HARD gates,
-workload acceptance, review-pack creation, and M5.
+Complete cause, source proof, final log/config hashes, and regression results
+are in `implementation/M4_COMPLETION_ACCOUNTING_RECOVERY_EVIDENCE.md`.
 
-Complete reproduction provenance, compact raw-log/config hashes, and the
-explicit no-repair disposition are in:
-
-`implementation/M4_COMPUTE_BRINGUP_FAILURE.md`.
-
-Core source-domain operation observability checkpoint:
-
-`56a9230e4a538b69a30673ebdf66c42526fb324a`
-
-It adds only dynamic Load/Store/Atomic/source-reachable-FENCE_OP counters for
-Base/IO/OO comparison. Full Core build and both CTests passed before the
-workload attempt; it does not change routing, cache policy, completion, or
-fence semantics.
-
-M4 is not accepted. Do not start M5.
+The existing fence reachability resolution remains unchanged: do not add PTX
+fence frontend support and do not map `membar` to `FENCE_OP`.  Continue the
+remaining M4 HARD gates; do not start M5.
