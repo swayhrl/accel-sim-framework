@@ -1,6 +1,8 @@
 # M5 Graphics Preparation Track
 
-Status: **PLANNING DRAFT — PREPARATION MAY RUN IN PARALLEL AFTER M5 GOAL AUTHORIZATION; IT MUST NOT BLOCK COMPUTE M5**
+Status: **ACTIVE PARALLEL PREPARATION — MUST NOT BLOCK COMPUTE M5**
+
+Authority: `M5_V1_APPROVAL.md` + `M5_EXPERIMENT_MATRIX.md`.
 
 The thesis uses five glmark2 graphics workloads in Table 4.1. Current M1-M4 infrastructure has not established a source-backed end-to-end graphics fixed-function pipeline, so graphics preparation is a separate track. Its job is to make graphics ready to attach immediately after the ten-compute study, not to force a proxy into paper GM-ALL.
 
@@ -105,3 +107,5 @@ Figure 4.9 remains compute-only, matching the thesis discussion.
 Only after all five graphics workloads are source-backed and correctness-clean may the aggregate label `GM-ALL-PAPER` be emitted.
 
 If only a calibrated proxy is possible, keep graphics in a separate supplemental section and do not compare proxy results numerically to thesis FPS/performance bars as if they were direct reproduction.
+
+Compute Goal may continue through M5.6 regardless of G0-G2 outcome. A graphics feasibility limitation is recorded and carried to compute review; it is not a compute-stop condition.
