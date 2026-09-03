@@ -258,7 +258,7 @@
 
 ## M5-E1-001 — historical FWT `11_19` label is not yet a formal source identity
 
-- State: `OBSERVED -> SOURCE_CLASSIFIED -> RECOVERY_ACTIVE`.
+- State: `OBSERVED -> SOURCE_CLASSIFIED -> SOURCE_RECOVERED -> BUILD_PTX_REPRODUCED -> OUTPUT_SMOKE_PENDING`.
 - Scope: Extended-20 E1 source/build/input recovery only.  This does not
   alter Paper-10 M5.0B, and E2 remains gated on M5.2.
 - Evidence: the historical CUDA-SDK launcher declares
@@ -272,10 +272,11 @@
   fixes `log2Kernel=7` and `log2Data=23`; its `main` does not parse `-logK` or
   `-logD`.  It therefore cannot be silently relabeled as the approved
   `fastWalshTransform_11_19` workload.
-- Automatic recovery contract: recover or reconstruct a source-pinned wrapper
-  whose recorded arguments demonstrably select logK=11/logD=19; rebuild with
-  the M5 toolchain; freeze binary/PTX/input/output-check/launch identities;
-  and record any source-equivalence analysis.  If recovery changes the
-  approved workload identity, apply the approved Extended-20 alternate and
-  portfolio rules before E2.  No historical trace/cycle result is promoted to
-  an M5 formal result by this investigation.
+- Recovery result: historical commit
+  `b059fdae25c2aabf737486aada743fca114469ce` contains the exact parameter
+  parser.  Its isolated CUDA-11.8 `sm_52` rebuild and PTX extraction succeed;
+  the future source-defined checker remains the `L2norm < 1e-6` `PASSED`
+  verdict.  Complete hashes, compatibility-helper identities, and the pending
+  simulator smoke are in `m5/extended20/FWT_11_19_E1_RECOVERY.md`.  No
+  historical trace/cycle result is promoted to an M5 formal result by this
+  recovery.
