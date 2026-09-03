@@ -1,8 +1,8 @@
 # DTC-L1 Current State
 
-Last coordination update: 2026-09-03
+Last coordination update: 2026-09-04
 
-Status: **M1-M4 VALIDATED; M5.0A PASS; M5.0B RESUME AUTHORIZED VIA DIRTY-VICTIM POLICY RESOLUTION**
+Status: **M1-M4 VALIDATED; M5.0A PASS; M5.0B R5DV VALIDATION ACTIVE; POST-COMPUTE GRAPHICS CONTINUATION AUTHORIZED**
 
 ## Validated anchors
 
@@ -11,101 +11,101 @@ M1-M4 remain frozen validated infrastructure:
 - Core final: `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0` at `cdeec769fd0c1be12b45d58536ecb81074d4b415`.
 - Framework final: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0` at `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`.
 
-Active M5 branches:
+Active compute M5 branches:
 
-- Core: `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`.
-- Framework: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`.
+- Core `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`.
+- Framework `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`.
 
-## Approved M5 authority
+After compute M5.6, create isolated graphics branches from exact compute-freeze heads:
 
-Read the M5 documents in this order:
+- Core `hrl/decoupled-l1-m5-graphics-v0`;
+- Framework `hrl/decoupled-l1-exp-m5-graphics-v0`.
 
-1. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`;
-2. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md` — specific active refinement for M5-T005;
-3. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`;
-4. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`;
-5. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`;
-6. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`;
-7. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`;
-8. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`;
-9. M1-M4 final review packs/specs as regression context.
+## Active authority
 
-The dirty-victim resolution is researcher-approved and supersedes the previous researcher-decision stop only for this conventional-L1 policy issue.
+1. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
+2. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+3. `docs/dtc_l1/m5/M5_V2_GRAPHICS_CONTINUATION_APPROVAL.md`
+4. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
+5. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+6. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+7. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
+8. `docs/dtc_l1/m5/M5_GRAPHICS_POST_COMPUTE_PLAN.md`
+9. `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
+10. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
+11. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
 
-## M5 research objective
+## Research objective
 
-M5 remains a **mechanism/trend reproduction**, not numerical fitting to thesis speedups.
+M5 is a mechanism/trend reproduction, not numerical fitting to thesis speedup values.
 
 Causal target:
 
 `Base structural limits -> constrained live misses -> DTC removes limits -> concurrency/latency hiding changes -> performance effect`.
 
-Weak or negative performance must be diagnosed as implementation/modeling, workload/input fidelity, downstream/platform, traffic side effect, compute-bound behavior, or genuine mechanism limitation. Do not tune inputs or architecture to thesis numbers.
+Weak/negative results require source-backed classification rather than tuning.
 
-## Researcher-frozen M5 v1 interpretations
+## Frozen compute definitions
 
 ### Figure 4.5
 
 - PAPER_BASE: conventional 16 KiB L1, 128B, 4-way, PIB=8, MSHR=32.
-- PAPER_IO: 16 KiB logical Tag capacity + 80 KiB physical Cacheline Array, PIB=256.
-- PAPER_OO: 16 KiB logical Tag capacity + 80 KiB physical Cacheline Array, PIB=128.
+- PAPER_IO: 16 KiB logical Tag + 80 KiB physical Cacheline Array, PIB=256.
+- PAPER_OO: 16 KiB logical Tag + 80 KiB physical Cacheline Array, PIB=128.
 
 ### Figure 4.7
 
-Live miss lifecycle is new-miss lower-request commit through final lower response. Primary metric is per-SM cycle average.
+Live miss = new-miss lower-request commit through final lower response. Primary metric = per-SM cycle average.
 
 ### Figure 4.2
 
-Paper-facing structural categories are PIB full, true Tag+Cacheline allocation failure, MSHR capacity/merge failure, and Miss Queue/lower-capacity failure. Tag-bank arbitration remains diagnostic.
+Formal structural categories: PIB full, true Tag+Cacheline allocation failure, MSHR capacity/merge, Miss Queue/lower capacity. Tag-bank arbitration is diagnostic.
 
-### Conventional-L1 dirty-victim policy — new approved refinement
+### Dirty-victim policy
 
-For all paper-facing M5 formal configurations, explicitly use:
+All paper-facing formal configs explicitly use:
 
-`-gpgpu_l1_cache_write_ratio 0`.
+`-gpgpu_l1_cache_write_ratio 0`
 
-Keep the existing write-through/cache-allocation/replacement semantics otherwise unchanged. Ratio 25 is an inherited SM7 diagnostic platform policy, not the paper-facing formal policy.
+Preserve write-through/cache-allocation/LRU/MSHR/scoreboard semantics otherwise. Ratio 25 is diagnostic platform policy only.
 
-## M5.0A
+## Current stage — M5.0B / R5DV
 
-M5.0A anchor/reproducibility lock is closed PASS according to Codex evidence. Do not redo it except for the ratio-0 config/sentinel refresh explicitly required by the dirty-victim resolution.
+M5.0A is PASS.
 
-## Current stage — M5.0B workload recovery
+M5-T005's prior 16 KiB ratio-25 dirty-set deadlock researcher decision is resolved. Ratio-zero config and directed dirty-victim regression are active/validated according to the latest Codex evidence. Canonical SpMV LEGACY/PAPER_BASE ratio-zero completion/output checks remain the closure gate before M5-T005 can be marked CLOSED.
 
-M5.0B reached M5-T005 on canonical Parboil JDS SpMV at the corrected 16 KiB geometry. LEGACY and PAPER_BASE both reproduced a source-level deadlock when all four ways of a set became MODIFIED before the inherited global dirty threshold of 25% allowed a dirty victim.
+After R5DV closes, resume remaining M5.0B work without redoing valid provenance checkpoints.
 
-The researcher decision is now resolved by:
+## Compute progression
 
-`docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`.
+`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
 
-Immediate ordered work:
+M5.6 PASS produces a frozen compute result set and `M5_6_TO_GRAPHICS.md` handoff. It is no longer the persistent Goal terminal state.
 
-1. preserve ratio-25 evidence and in-flight diagnostics;
-2. update the formal config family to explicit ratio 0 only, without unrelated knob changes;
-3. add/execute a directed dirty-set replacement regression;
-4. rerun canonical SpMV LEGACY and PAPER_BASE under corrected 16 KiB ratio-0 configs and require correctness/forward progress;
-5. refresh config identities and required sentinels;
-6. close M5-T005;
-7. resume the remaining M5.0B workload recovery without redoing valid provenance work.
+## Graphics continuation after compute
 
-Already-running 16/32/128 KiB ratio-25 jobs need not be interrupted solely because of this decision. Their results remain diagnostic and cannot replace ratio-0 formal runs.
+Post-compute sequence is now authorized:
 
-## Continuous progression after M5-T005 closes
+`M5.7 Graphics Provenance -> M5.8 Graphics Path Recovery -> M5.9 Graphics Infrastructure -> M5.10 Graphics Fidelity Pilot -> M5.11 Five-Scene Formal Graphics -> M5.12 Full Synthesis`
 
-Resume automatically:
+The existing G1 classification `UNAVAILABLE_WITH_CURRENT_INFRA` remains valid for the current ready-made infrastructure, but post-compute M5.8 must perform deeper source/artifact recovery before treating graphics as scientifically unavailable.
 
-`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`.
+Valid final M5 states:
 
-Terminal compute state remains:
+- `M5_FULL_REPRO_READY_FOR_REVIEW`; or
+- `M5_COMPUTE_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW` after exhaustive source-backed graphics path recovery fails.
 
-`M5_COMPUTE_READY_FOR_REVIEW`.
+A memory proxy can be supplemental only and cannot be used as paper graphics reproduction.
 
-Use the handoff contract at each passing substage. Do not pause for ordinary resolvable workload/build/assertion/timeout/performance issues; execute the M5 issue loop and continue.
+`GM-ALL-PAPER` requires all 15 source-backed/correctness-clean workloads plus an explicit compute/graphics performance-metric comparability proof.
 
-## Parallel graphics
+## Problem behavior
 
-Graphics G0-G2 preparation remains nonblocking and may continue when resources allow. It must not contaminate the compute formal behavior/config identity. `GM-ALL-PAPER` remains forbidden until all five graphics workloads are source-backed and correctness-clean.
+Ordinary workload/build/assertion/parser/counter/timeout/performance/graphics-integration issues are resolve-in-goal. Diagnose, repair/reconstruct, regress, invalidate stale evidence as needed, and continue.
+
+Pause only at a genuine researcher-decision boundary or a final M5 review state.
 
 ## Scope boundary
 
-M5 v1 authorizes the ten-compute mechanism study through M5.6 plus graphics preparation G0-G2. It does not authorize M5.7+ supplemental studies, post-review graphics aggregation, Figure 4.6 area claims, or sector-extension paper comparisons before compute review.
+Figure 4.6 fresh area/synthesis reproduction is outside M5. If required, treat it as a separately authorized M6 track.
