@@ -2,9 +2,15 @@
 
 ## Status
 
-**ACTIVE — M5 v1 CONTINUOUS COMPUTE GOAL AUTHORIZED**
+**ACTIVE — RESOLVE M5-T005 WITH APPROVED RATIO-0 POLICY, THEN CONTINUE M5.0B -> M5.6**
 
-M1-M4 are closed PASS and frozen as validated infrastructure. M5 v1 has been researcher-approved and may now execute continuously on the dedicated M5 branches.
+The prior `RESEARCHER_DECISION_REQUIRED` boundary is resolved.
+
+Specific authoritative resolution:
+
+`docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+
+M1-M4 remain closed PASS. M5.0A is closed PASS. Current work resumes inside M5.0B.
 
 ## Active branches
 
@@ -16,12 +22,7 @@ Framework:
 
 - `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`
 
-Validated parents:
-
-- Core M1-M4 final: `cdeec769fd0c1be12b45d58536ecb81074d4b415`;
-- Framework M1-M4 final: `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`.
-
-Do not run M5 formal work on the M1-M4 branches.
+Do not modify validated M1-M4 branches.
 
 ## Mandatory read order
 
@@ -30,144 +31,88 @@ Framework:
 1. `AGENTS.md`
 2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
-4. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
-5. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
-6. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-7. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
-8. this file
-9. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
-10. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-11. final M4 review pack and completion-recovery evidence as regression context
+4. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+5. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
+6. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+7. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+8. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
+9. this file
+10. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+11. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+12. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`, especially M5-T004/T005
+13. final M4 review pack as regression context
 
 Core:
 
-12. `AGENTS.md`
-13. `docs/dtc_l1/DTC_L1_SPEC.md`
+14. `AGENTS.md`
+15. `docs/dtc_l1/DTC_L1_SPEC.md`
 
-`M5_V1_APPROVAL.md` supersedes the stale planning-status banner in the long matrix. The matrix body is the approved detailed v1 plan.
+## Researcher decision for M5-T005
 
-## Research objective
+The 16 KiB conventional L1 geometry remains frozen.
 
-Do not optimize for the thesis' exact +22%/+30% numbers. The Goal is to establish the performance effect and causal chain of the already implemented DTC mechanism.
+For every paper-facing M5 formal config use explicitly:
 
-For weak/negative/unexpected performance, determine whether the cause is:
+```text
+-gpgpu_l1_cache_write_ratio 0
+```
 
-- implementation/modeling fidelity;
-- workload/input fidelity;
-- downstream/platform saturation;
-- traffic side effect;
-- compute-bound behavior;
-- or genuine mechanism limitation.
+Preserve the existing write-through and allocation semantics. Do not modify `tag_array::probe` to invent a new dirty-victim fallback for formal M5 merely to retain the inherited 25% heuristic.
 
-Preserve valid negative results after diagnosis.
+The old value 25 is classified as inherited SM7 `DIAGNOSTIC_PLATFORM_POLICY`. It may be retained in diagnostic controls but is not the formal Chapter-4 baseline policy.
 
-## Researcher-frozen M5 v1 choices
+## Immediate recovery sequence
 
-1. Figure 4.5 primary DTC configuration: **16KB logical Tag capacity + 80KB physical Cacheline Array**; IO PIB=256, OO PIB=128.
-2. Figure 4.7 primary metric: new-miss lower-request commit through final lower-response completion; plotted as per-SM cycle average.
-3. Figure 4.2 formal categories: PIB full, true Tag+Cacheline allocation failure, MSHR capacity/merge failure, Miss Queue/lower-capacity failure. Tag-bank arbitration is diagnostic only.
+Execute R5DV.0-R5DV.5 from `M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`.
 
-Do not reinterpret these without a researcher-decision handoff.
+Required minimum sequence:
 
-## Immediate execution — M5.0A
+1. preserve all existing ratio-25 deadlock evidence and current in-flight jobs;
+2. update the complete LEGACY/Base/IO/OO formal config family to explicit ratio 0, with a strict diff proving no unrelated knob changes;
+3. add a deterministic dirty-set conventional-L1 regression proving a fifth same-set access can replace a MODIFIED victim and make forward progress under write-through ratio 0 without weakened assertions;
+4. rerun canonical Parboil JDS SpMV medium under corrected 16 KiB LEGACY and PAPER_BASE configs and require valid output and no dirty-set deadlock;
+5. refresh formal config hashes/result identities and ratio-0 LEGACY/Base/IO/OO sentinels;
+6. update M5-T005 through RESOLVED/REGRESSED/CLOSED when evidence supports it;
+7. resume the remaining M5.0B workload recovery immediately.
 
-Execute `M5.0A Branch/anchor and reproducibility lock` exactly as defined in `M5_EXPERIMENT_MATRIX.md`:
+Do not wait for the already-running 32/128 KiB or other ratio-25 diagnostics to finish before starting corrected work if the calibrated host-concurrency budget permits it. Do not kill them solely because of this resolution either.
 
-- verify M5 branch ancestry;
-- release build and all DTC CTests;
-- LEGACY/PAPER_BASE/PAPER_IO/PAPER_OO VecAdd sentinel regression against M4;
-- create `m5/FORMAL_ANCHOR.md`;
-- create resumable formal-result registry keyed by source/config/workload/parser identity;
-- calibrate safe host simulation concurrency from measured CPU/RAM use;
-- emit `m5/handoffs/M5_0A_ANCHOR.md`;
-- commit/push compact evidence;
-- update `codex_handoff/LATEST_REPORT.md`;
-- continue immediately to M5.0B when acceptance passes.
+## Why this is configuration fidelity, not architecture redesign
 
-## Continuous authorized sequence
+The generic GPGPU-Sim cache option defaults the write ratio to zero. The inherited formal files explicitly set 25 from the SM7/Volta platform. Current source uses that threshold to exclude MODIFIED lines from replacement below the global dirty percentage. At 16 KiB/4-way this can create a set with four MODIFIED lines and no eligible victim.
 
-After each substage passes its acceptance criteria, continue automatically:
+The configured L1 is write-through: writes are sent to the lower level immediately even though local line state is marked MODIFIED. The thesis describes GPU L1 as normally write-through and does not freeze a 25% dirty-retention threshold for the Chapter-4 baseline.
 
-`M5.0A -> M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`.
+Therefore the approved formal policy is the source-supported ratio 0, not a source-code replacement-policy redesign.
 
-Required major products:
+## Continue after issue closure
 
-- all ten thesis compute workloads source-resolved;
-- Figure 4.2 compute stall reproduction;
-- Figure 4.5 Base/IO/OO compute result;
-- Figure 4.7 common average concurrent misses;
-- Figure 4.8 logical sensitivity;
-- Figure 4.9 physical sensitivity/deadlock pressure;
-- Figure 4.10 PIB sensitivity;
-- integrated causal classification;
-- parallel graphics G0-G2 preparation status.
+Once R5DV closes, continue automatically under the existing M5 v1 sequence:
 
-Terminal compute state:
+`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`.
 
-`M5_COMPUTE_READY_FOR_REVIEW`.
+Do not stop for ordinary recoverable issues. Follow `M5_PROBLEM_RESOLUTION_POLICY.md` and keep `M5_ISSUE_LOG.md` current.
 
-## First workload-recovery priority
+## Pause conditions
 
-M5.0B must explicitly source-resolve:
+Pause only at a new genuine `RESEARCHER_DECISION_REQUIRED` boundary, such as:
 
-- `gemv -> gemver?`;
-- `gesu -> gesummv?`;
-- `conv2d -> 2DConvolution/pb_2dconv?`.
+- the only source-correct next step would alter frozen DTC/M0-M4 architecture semantics;
+- ratio 0 still cannot provide a source-correct conventional-L1 execution and multiple scientifically distinct paper-facing policies remain;
+- an irreducible workload/metric interpretation needs researcher choice;
+- or terminal `M5_COMPUTE_READY_FOR_REVIEW` is reached.
 
-Do not stop merely because a ready binary is missing. Search canonical source, rebuild scientifically equivalent wrappers where justified, extract PTX, validate output, and record provenance.
+A large performance shift from 25 -> 0 is **not** a pause condition. Diagnose it as platform-policy sensitivity and continue.
 
-All ten compute workloads must receive deterministic input provenance. Select scale from canonical/standard datasets and Base-only full-load/work-amount evidence, never from which size gives the highest DTC speedup.
-
-SpMV requires special fidelity investigation because the M4 `fidapm05` case did not reproduce the thesis-discussed Base PIB pressure.
-
-## Problem handling — solve and continue
-
-Follow `M5_PROBLEM_RESOLUTION_POLICY.md`.
-
-Normally do **not** pause for:
-
-- missing workload/input/wrapper;
-- build/PTX-extraction failures;
-- missing counter/parser;
-- simulator assertion found during M5 workload bring-up;
-- Base/IO/OO dynamic-count mismatch;
-- timeout with diagnosable progress;
-- poor or negative speedup;
-- absent expected PIB/MSHR pressure;
-- Tag-bank/downstream domination;
-- source-backed implementation bug;
-- stale formal data after a justified repair.
-
-Instead create/update `implementation/M5_ISSUE_LOG.md`, reproduce/classify, repair or scientifically resolve, regress, invalidate affected formal data, and resume the same substage.
-
-## Researcher-decision pause conditions
-
-Pause only when the issue cannot be solved without a genuine research decision, including:
-
-- changing frozen M0/M1-M4 architecture semantics;
-- two scientifically different source-supported interpretations remain and the thesis cannot resolve them;
-- a required compute algorithm cannot be source-verified/reconstructed without changing experiment meaning;
-- a finding contradicts the researcher-frozen M5 metric/config interpretation;
-- terminal `M5_COMPUTE_READY_FOR_REVIEW`.
-
-Use `RESEARCHER_DECISION_REQUIRED` with compact evidence when such a boundary is reached.
-
-## Graphics parallelism
-
-Run graphics G0-G2 opportunistically in parallel with compute work when resources allow. Graphics preparation must not block compute M5 and must not modify/contaminate the compute formal behavior anchor.
-
-Do not emit `GM-ALL-PAPER` unless all five thesis graphics workloads become source-backed and correctness-clean.
-
-## Forbidden scope before compute review
+## Forbidden shortcuts
 
 Do not:
 
-- change M0/M1-M4 architecture to chase speedup;
-- select inputs by DTC benefit;
-- hide/omit valid negative results;
-- fold Tag-bank conflicts into Figure 4.2 Tag+Cacheline allocation failures;
-- use heterogeneous occupancy proxies as Figure 4.7 concurrent misses;
-- include `MODERN_OO_SECTOR` in Figures 4.2-4.10 paper-reproduction plots;
-- claim C++ simulator object size as Figure 4.6 area;
-- use graphics memory proxies as direct paper graphics results;
-- begin post-review M5.7+ supplemental studies before compute review.
+- enlarge the formal 16 KiB Base L1;
+- disable deadlock detection;
+- weaken pending-write/scoreboard assertions;
+- keep ratio 25 for one formal mode but use ratio 0 for another;
+- modify DTC architecture to compensate for the conventional cache artifact;
+- treat 32/128 KiB controls as replacement paper baselines;
+- tune input sizes to recover thesis speedups;
+- begin M5.7+ before compute review.
