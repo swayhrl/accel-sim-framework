@@ -194,13 +194,13 @@ M3 PASS -> create/push `review_packs/M3_OO_SECTOR/` and continue to M4.
 
 ---
 
-# M4 — Full memory-operation lifecycle + workload bring-up
+# M4 — Full source-reachable memory-operation lifecycle + workload bring-up
 
 ## M4.0 Semantics audit — HARD
 
 `implementation/M4_MEMORY_OP_SEMANTICS.md` must source-map current Load/Store/Atomic/Fence/bypass behavior before functional M4 edits.
 
-Any unresolved behavior that would require inventing write/atomic/fence semantics blocks M4 implementation and requires STOP.
+A verified source limitation is an acceptable audit result when it is documented rather than silently replaced. For the frozen current source, the PTX frontend cannot generate the existing dynamic proxy-fence path; apply `goal/M4_FENCE_REACHABILITY_RESOLUTION.md`.
 
 ## M4.1 Store tests — HARD
 
@@ -214,15 +214,20 @@ Any unresolved behavior that would require inventing write/atomic/fence semantic
 - `A01 SingleAtomic`: executes exactly one architectural atomic operation.
 - `A02 SameAddressTwoAtomics`: two executed atomics to same address remain two side effects/lower operations according to audited semantics; never merged into one read dependency.
 - `A03 AtomicHOLIO`: long Atomic at IO head can block a younger ready load when ordering permits the younger load to become ready.
-- `A04 AtomicHOLOO`: OO may retire the younger eligible load early without violating architectural ordering.
+- `A04 AtomicHOLOO`: OO may retire the younger eligible load early without violating source-reachable architectural ordering.
 
-## M4.3 Fence/order tests — HARD
+## M4.3 Fence reachability / ordering boundary — HARD
 
-- `F01 LoadFenceLoad`.
-- `F02 StoreFenceLoad`.
-- `F03 AtomicFenceLoad`.
+For the frozen current source, end-to-end PTX F01-F03 are classified `SOURCE_UNREACHABLE_NA`, not failed, only after all replacement gates below pass:
 
-All must preserve source-backed ordering. OO may not retire an operation across an unresolved required fence ordering edge.
+- `F00A FenceReachabilityAudit`: prove PTX lexer/parser/static decode cannot generate `FENCE_OP` / proxy-fence state and distinguish `membar` from fence.
+- `F00B NoSilentSubstitution`: no parser/decode fence semantics, `membar -> FENCE_OP`, forced proxy bits, or regular-fence bypass is introduced by this project.
+- `F00C CurrentDomainFenceAccounting`: accepted workload triplets have identical source-reachable `FENCE_OP` counts; under the frozen source expected count is zero. If a real source-backed `FENCE_OP` producer appears, STOP and reactivate end-to-end fence validation.
+- `F00D DynamicProxyPathPreserved`: M4 changes do not semantically alter the existing unreachable dynamic proxy-fence path.
+
+Optional synthetic direct-object testing may exercise the already-existing dynamic proxy-fence path as DIAGNOSTIC evidence, but must not be described as PTX frontend support.
+
+Do not substitute PTX `membar` for proxy fence. See `goal/M4_FENCE_REACHABILITY_RESOLUTION.md`.
 
 ## M4.4 Architectural bypass tests — HARD
 
@@ -233,11 +238,12 @@ Do not implement DTC policy bypass.
 
 ## M4.5 Mixed regression — HARD
 
-`MIX01`: deterministic mixed Load/Store/Atomic/Fence/bypass sequence under LEGACY/Paper Base/IO/OO.
+For the frozen current source, `MIX01` is a deterministic mixed **source-reachable** Load/Store/Atomic/architectural-bypass sequence under LEGACY/Paper Base/IO/OO. Do not insert `membar` as a fence substitute.
 
 Require:
 
 - identical dynamic operation counts where architecture dictates;
+- identical source-reachable `FENCE_OP` count (expected zero for current source);
 - Atomic side-effect counts preserved;
 - no stale fills/ref/merge violations;
 - no unexpected deadlock;
@@ -247,7 +253,7 @@ Require:
 
 Before running workload set, document mapping/status/input/provenance in `implementation/WORKLOAD_MANIFEST.md`.
 
-No silent benchmark substitution.
+No silent benchmark substitution. A workload requiring unsupported PTX `fence` syntax cannot count toward the accepted bring-up set.
 
 ## M4.7 Diagnostic workload bring-up — HARD
 
@@ -261,7 +267,7 @@ For every accepted triplet require:
 - same Load count;
 - same Store count;
 - same Atomic count;
-- same Fence count;
+- same source-reachable `FENCE_OP` count (current frozen source expected zero);
 - no HARD invariant failure;
 - no unexpected watchdog/deadlock;
 - valid Core/Framework/config/trace provenance;
@@ -289,9 +295,10 @@ Causal consistency warnings are generated but are non-fatal review signals.
 - all M1-M4 review packs independently navigable;
 - source anchors/final SHAs recorded;
 - semantic commit history recorded;
+- M4 review pack explicitly records the current-source proxy-fence frontend limitation and `F01-F03 SOURCE_UNREACHABLE_NA` disposition;
 - `git diff --check` clean;
 - expected working-tree status documented;
 - no raw traces/huge logs/build trees committed;
-- `codex_handoff/LATEST_REPORT.md` points to M4 review pack and says `READY_FOR_M5_REVIEW` only if all HARD gates pass.
+- `codex_handoff/LATEST_REPORT.md` points to M4 review pack and says `READY_FOR_M5_REVIEW` only if all active HARD gates pass.
 
 Then STOP. M5 is not authorized.
