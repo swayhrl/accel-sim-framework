@@ -10,7 +10,7 @@ evidence only; they are not formal M5 results.
 
 | Approved ID | source entry | source-backed input | output contract | source SHA-256 | E1 status |
 | --- | --- | --- | --- | --- | --- |
-| `BlackScholes` | `BlackScholes/BlackScholes.cu` | fixed `OPT_N=100000`, `NUM_ITERATIONS=1` | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `7540eeeccf9c5489a51db0aafb99d1ff05488c9ee787c3afdbda0fc078dd452d` | source recovered |
+| `BlackScholes` | `BlackScholes/BlackScholes.cu` | fixed `OPT_N=100000`, `NUM_ITERATIONS=1` | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `7540eeeccf9c5489a51db0aafb99d1ff05488c9ee787c3afdbda0fc078dd452d` | source/PTX recovered; original `shrutil` executable link dependency pending |
 | `convolutionSeparable` | `convolutionSeparable/main.cpp` | `--size 3072` parsed; `imageW=size/8`, `imageH=size/16` | CPU/GPU L2 norm `<1e-6`, `QA_PASSED` | `6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0` | source/PTX recovered; executable/output smoke pending |
 | `fastWalshTransform_11_19` | `fastWalshTransform/fastWalshTransform.cu` | `-logK 11 -logD 19` parsed | L2 norm `<1e-6`, `PASSED` | `284332c572510b2415d23506f72e3d9f879c2c895ddb86e4e1d34b2033d2030e` | source/build/PTX recovered; see `FWT_11_19_E1_RECOVERY.md` |
 | `scalarProd_13920` | `scalarProd/scalarProd.cu` | `--size 13920` parsed | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `742008e11f8888c5521c913497a1b48fd8de104cbeff2dc6df24f667eab8ab8e` | source/build/PTX recovered; output smoke pending |
@@ -102,6 +102,21 @@ The CUDA-11.8 `sm_52` extraction from the frozen
 The source-defined `--size 3072` host setup and L2-norm checker remain part
 of the required executable/output smoke.  PTX extraction alone does not close
 that E1 member.
+
+## BlackScholes PTX recovery
+
+The source is the approved Black-Scholes option-pricing workload (not a Monte
+Carlo substitution).  Its isolated CUDA-11.8 `sm_52` PTX extraction preserves
+the recovered fixed input contract:
+
+| Artifact | SHA-256 | PTX entry |
+| --- | --- | --- |
+| `BlackScholes.ptx` | `301372d7f0f6fe0e02cf74605b325c9f8c0bb9808b7448cb97f9d954cbacf489` | `_Z15BlackScholesGPUPfS_S_S_S_ffi` |
+
+This does not overcome the missing original `shrutil` host-link dependency.
+The executable and its source-defined L1-norm `QA_PASSED` smoke remain
+pending; no substitute helper or nonidentical sample is admitted as formal
+evidence.
 
 No member enters E2 until M5.2 freezes the common Core/Framework/config/parser
 anchor and the complete E1 identity tuple is rechecked.
