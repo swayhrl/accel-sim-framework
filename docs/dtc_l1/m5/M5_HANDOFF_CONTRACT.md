@@ -1,16 +1,16 @@
 # M5 Substage Handoff Contract
 
-Status: **ACTIVE — M5 v1 GOAL AUTHORIZED**
+Status: **ACTIVE — M5 v2 COMPUTE + GRAPHICS GOAL AUTHORIZED**
 
-Authority: `M5_V1_APPROVAL.md` + `M5_EXPERIMENT_MATRIX.md`.
+Compute authority: `M5_V1_APPROVAL.md` + `M5_EXPERIMENT_MATRIX.md`.
 
-M5 is intentionally split into small independently reviewable substages, but those substages are **handoff boundaries, not human-approval stop boundaries**. After a substage passes its acceptance criteria, Codex must checkpoint evidence, commit/push, update the mutable report, and continue automatically.
+Post-compute graphics authority: `M5_V2_GRAPHICS_CONTINUATION_APPROVAL.md` + `M5_GRAPHICS_POST_COMPUTE_PLAN.md` + `M5_GRAPHICS_HANDOFF_CONTRACT.md`.
 
----
+M5 is intentionally split into small independently reviewable substages. Those substages are handoff/quality boundaries, not ordinary human-approval stops. After a substage passes its acceptance criteria, Codex checkpoints evidence, commits/pushes, updates the mutable report, and continues automatically.
 
-## 1. Standard handoff artifacts
+## 1. Standard compute handoff artifacts
 
-Each substage `M5_X` creates:
+Each compute substage creates:
 
 `docs/dtc_l1/m5/handoffs/M5_X_<NAME>.md`
 
@@ -18,228 +18,169 @@ and, for major experiment waves, a review pack:
 
 `docs/dtc_l1/review_packs/M5_X_<NAME>/`
 
-The handoff is a compact executable state transition, not a prose diary.
+Required handoff sections:
 
-Required sections:
-
-1. **Status**: PASS / RESOLVING_ISSUE / RESEARCHER_DECISION_REQUIRED.
-2. **Input anchors**: Core SHA, Framework SHA, previous handoff SHA.
-3. **Formal behavior anchor**: the Core behavior/timing SHA used by the runs.
-4. **Workload manifest version**.
-5. **Config manifest/hash**.
-6. **Parser/schema version**.
-7. **Completed experiment IDs**.
-8. **Acceptance checklist** with evidence links.
-9. **Issues encountered and resolution IDs** from `implementation/M5_ISSUE_LOG.md`.
-10. **Invalidated/obsolete result IDs**, if any.
-11. **Result artifacts**: CSV/JSON names, raw-log-index location.
-12. **Mechanism finding**: one concise paragraph describing what the stage established, without overclaiming numerical thesis reproduction.
-13. **Next executable scope**: exact next experiment IDs and permitted changes.
-14. **Do-not-redo list**: valid evidence the next stage should reuse.
-
----
+1. Status: PASS / RESOLVING_ISSUE / RESEARCHER_DECISION_REQUIRED.
+2. Input anchors: Core SHA, Framework SHA, previous handoff SHA.
+3. Formal behavior anchor.
+4. Workload manifest version.
+5. Config manifest/hash.
+6. Parser/schema version.
+7. Completed experiment IDs.
+8. Acceptance checklist with evidence links.
+9. Issue/resolution IDs.
+10. Invalidated/obsolete result IDs.
+11. Result artifacts and raw-log index.
+12. Mechanism finding without numeric overclaim.
+13. Next executable scope.
+14. Do-not-redo list.
 
 ## 2. Review-pack minimum contents
 
-For major stages (`M5_0`, `M5_2`, `M5_6`, and final compute closeout), use at least:
+For major compute stages (`M5_0`, `M5_2`, `M5_6`) use at least:
 
-- `README.md`;
-- `SOURCE_ANCHORS.md`;
-- `FORMAL_ANCHOR.md`;
-- `WORKLOAD_PROVENANCE.md`;
-- `CONFIG_MANIFEST.md`;
-- `CHANGED_FILES.md`;
-- `COMMIT_HISTORY.md`;
-- `VALIDATION_SUMMARY.md`;
-- `COUNTER_SANITY.md`;
-- `RESULT_MANIFEST.tsv`;
-- `RAW_LOG_INDEX.tsv`;
-- `OPEN_ISSUES.md`;
-- `generated/` compact CSV/JSON.
+- README.md
+- SOURCE_ANCHORS.md
+- FORMAL_ANCHOR.md
+- WORKLOAD_PROVENANCE.md
+- CONFIG_MANIFEST.md
+- CHANGED_FILES.md
+- COMMIT_HISTORY.md
+- VALIDATION_SUMMARY.md
+- COUNTER_SANITY.md
+- RESULT_MANIFEST.tsv
+- RAW_LOG_INDEX.tsv
+- OPEN_ISSUES.md
+- generated/ compact CSV/JSON
 
 Raw simulator logs, binaries, traces, build trees, and large datasets are not committed.
 
----
-
 ## 3. Acceptance levels
 
-Every acceptance item is labeled one of:
+Every acceptance item is one of:
 
-- `CORRECTNESS_HARD`: output/accounting/source identity must pass before data interpretation;
-- `FIDELITY_HARD`: experiment must match the frozen mechanism/workload/config/metric contract;
-- `MECHANISM_EXPECTATION`: trend to investigate, **not** a numeric pass/fail target;
-- `DIAGNOSTIC`: useful evidence that cannot block a source-correct result.
+- `CORRECTNESS_HARD`
+- `FIDELITY_HARD`
+- `MECHANISM_EXPECTATION`
+- `DIAGNOSTIC`
 
-Example:
+Exact thesis speedup values are references, not pass thresholds.
 
-- `create==complete`, output correct, dynamic counts equal -> CORRECTNESS_HARD.
-- logical-cache sweep changes only logical size -> FIDELITY_HARD.
-- IO should generally become more physical-capacity-sensitive than OO -> MECHANISM_EXPECTATION.
-- thesis exact +22% speedup -> DIAGNOSTIC reference, not acceptance threshold.
+## 4. Compute-stage handoffs
 
-This prevents Goal mode from either overfitting thesis numbers or ignoring real correctness/fidelity failures.
+### M5.0A Anchor
 
----
+Must state exact parents/heads, Release build and DTC CTests, LEGACY/Base/IO/OO sentinels, toolchain/runtime hashes, safe concurrency, and resumable result registry.
 
-## 4. Stage-specific handoffs
+PASS -> M5.0B.
 
-### M5.0A Anchor handoff
+### M5.0B Workloads
 
-Must state:
+One row for each of ten compute algorithms:
 
-- exact M1-M4 parents;
-- M5 branch heads;
-- release build/test status;
-- M4 sentinel differentials;
-- runtime-library/toolchain hashes;
-- safe simulation concurrency;
-- formal result cache/resume mechanism.
-
-Pass -> continue M5.0B.
-
-### M5.0B Workload handoff
-
-Must contain one row for each of the 10 compute algorithms:
-
-`paper name | canonical algorithm | mapping status | source version | build wrapper | PTX hash | input/dimensions | launch geometry | Base smoke | wall time`.
+`paper name | canonical algorithm | mapping status | source version | wrapper | PTX hash | input/dimensions | launch geometry | Base smoke | wall time`.
 
 Explicitly resolve `gemv/gemver`, `gesu/gesummv`, `conv2d/2DConvolution`.
 
-Pass -> continue M5.0C.
+PASS -> M5.0C.
 
-### M5.0C Platform handoff
+### M5.0C Platform
 
-Must include:
+Must include actual option values/source anchors, SM count, natural downstream caps, Tag-bank/coalescer service comparison, ratio-zero conventional-L1 policy identity, and any repaired fidelity mismatch plus regressions.
 
-- actual option values;
-- source anchors for each architecture-sensitive knob;
-- actual SM count;
-- natural downstream caps;
-- Tag-bank/coalescer service comparison across Base/IO/OO;
-- any repaired fidelity mismatch plus regressions.
+PASS -> M5.0D.
 
-Pass -> continue M5.0D.
+### M5.0D Metrics
 
-### M5.0D Metrics handoff
+Freeze Figure 4.2 four structural categories, diagnostic Tag-bank/other stalls, Figure 4.7 common live-miss lifecycle, averages/peaks/denominators/sampling interval, strict parser schema, and directed counter tests.
 
-Must freeze formulas and counter names for:
+PASS -> M5.0E.
 
-- Figure 4.2 four structural categories;
-- diagnostic Tag-bank/other stalls;
-- Figure 4.7 common live-miss lifecycle;
-- averages, peaks, denominators, sampling interval;
-- strict parser schema.
+### M5.0E Fidelity Lock
 
-Directed counter tests must be included.
+Include ATAX/SpMV/2MM/Conv2D Base/IO/OO pilots and root-cause classification for surprising results. Freeze `M5_FORMAL_BEHAVIOR_ANCHOR`.
 
-Pass -> continue M5.0E.
+PASS -> M5.1.
 
-### M5.0E Fidelity-lock handoff
+### M5.1 Figure 4.2
 
-Must include ATAX/SpMV/2MM/Conv2D pilot triplets and for every surprising result a completed issue/root-cause classification.
+Ten Base formal runs, four-category percentages/raw counts, diagnostic stalls, paper references, bottleneck classification.
 
-This handoff defines the first `M5_FORMAL_BEHAVIOR_ANCHOR`. Once emitted, formal paper-figure runs may start.
+PASS -> M5.2.
 
-Pass -> continue M5.1.
+### M5.2 Figure 4.5 + 4.7
 
-### M5.1 Figure-4.2 handoff
+Ten Base/IO/OO triplets, cycles/speedups, GM-CE/GM-GP, common live misses, speedup/concurrency relation, weak-result causal classification, IO-vs-OO evidence.
 
-Must include:
+PASS -> M5.3.
 
-- 10 Base formal runs;
-- four-category percentages and raw counts;
-- full diagnostic stall table;
-- paper reference averages separately;
-- workload-by-workload bottleneck classification.
+### M5.3 Figure 4.8
 
-Pass -> continue M5.2.
+Prove logical size is the intended varied knob; 16/32/64 KiB config identities; IO/OO per-workload/GM sensitivity; optional Base control.
 
-### M5.2 Main-result handoff
+PASS -> M5.4.
 
-Must include:
+### M5.4 Figure 4.9
 
-- 10 Base/IO/OO triplets;
-- per-workload cycles/speedups;
-- GM-CE and GM-GP;
-- average concurrent misses Base/IO/OO;
-- speedup/concurrency relationship;
-- per-workload root-cause classification for weak/negative results;
-- IO-vs-OO HOL/OOO evidence.
+16.5/24/32/40/48 KiB physical runs, IO-32 KiB normalization, physical pressure/reclaim counters, exact deadlock classification. Generic timeout is never encoded as deadlock/performance zero.
 
-Pass -> continue M5.3.
+PASS -> M5.5.
 
-### M5.3 Logical-sweep handoff
+### M5.5 Figure 4.10
 
-Must prove logical size is the only changed mechanism knob, list 16/32/64KB exact config hashes, report IO/OO per-workload/GM sensitivity, and optional conventional Base control.
+32/64/128/192 PIB runs, IO-128 normalization, PIB/HOL/concurrency counters, explicit SpMV analysis.
 
-Pass -> continue M5.4.
+PASS -> M5.6.
 
-### M5.4 Physical-sweep handoff
+### M5.6 Compute causal synthesis
 
-Must list 16.5/24/32/40/48KB runs, normalized IO-32KB basis, physical pressure/reclaim counters, and exact deadlock classifications. Never encode generic timeout as deadlock or performance zero.
+Provide per-workload causal classification covering implementation/modeling, workload/input, downstream/platform, compute-bound, traffic side effect, and genuine mechanism limitation.
 
-Pass -> continue M5.5.
+M5.6 PASS produces a frozen compute checkpoint, **not the persistent Goal terminal state**.
 
-### M5.5 PIB-sweep handoff
+Required transition artifact:
 
-Must list 32/64/128/192 runs, normalized IO-128 basis, PIB/HOL/concurrency counters, and explicit SpMV behavior analysis.
+`docs/dtc_l1/m5/handoffs/M5_6_TO_GRAPHICS.md`
 
-Pass -> continue M5.6.
+It records immutable `COMPUTE_FREEZE_CORE_SHA` / `COMPUTE_FREEZE_FRAMEWORK_SHA`, compute review pack, reusable result identities, graphics-prep state, and exact graphics-branch creation points.
 
-### M5.6 Causal-synthesis handoff
+After M5.6 PASS create isolated graphics branches and continue M5.7 automatically.
 
-Must provide a per-workload causal classification with evidence from all prior runs and explicitly distinguish:
+## 5. Post-compute graphics handoffs
 
-- implementation/modeling;
-- workload/input;
-- downstream/platform;
-- compute-bound;
-- traffic side effect;
-- genuine mechanism limitation.
+All graphics-specific details and acceptance requirements are defined in:
 
-This stage may use prior data without rerunning simulations.
+`docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
 
-Pass -> terminal compute state `M5_COMPUTE_READY_FOR_REVIEW`.
+Sequence:
 
----
+`M5.7 -> M5.8 -> M5.9 -> M5.10 -> M5.11 -> M5.12`
 
-## 5. Stage transition rules
+Do not rewrite frozen compute results from graphics branches.
 
-At every PASS transition Codex must:
+## 6. Stage transition rules
+
+At every PASS transition:
 
 1. finish acceptance checks;
-2. run strict parsers/counter sanity;
+2. run strict parser/counter sanity;
 3. commit compact evidence with explicit paths;
-4. push both affected repositories;
+4. push affected branches;
 5. update `codex_handoff/LATEST_REPORT.md`;
 6. immediately begin the next authorized stage.
 
-Do not ask for confirmation between M5 substages.
+If a resolve-in-goal issue occurs, remain in the current stage, execute the problem-resolution policy, checkpoint when useful, regress/invalidate stale evidence as needed, and continue.
 
-If a resolve-in-goal issue occurs, remain in the current stage, execute `M5_PROBLEM_RESOLUTION_POLICY.md`, checkpoint when useful, and continue after regression.
+Only a genuine `RESEARCHER_DECISION_REQUIRED` boundary pauses the Goal.
 
-Only `RESEARCHER_DECISION_REQUIRED` pauses the Goal.
+## 7. M5 terminal review states
 
----
+If source-backed graphics formal reproduction succeeds:
 
-## 6. Final compute handoff
+`M5_FULL_REPRO_READY_FOR_REVIEW`
 
-The compute portion of M5 ends at:
+If exhaustive post-compute graphics path recovery proves source-backed reproduction unavailable:
 
-`M5_COMPUTE_READY_FOR_REVIEW`
+`M5_COMPUTE_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
 
-Required final evidence:
-
-- all ten compute workloads resolved;
-- Figure 4.2 compute reproduction;
-- Figure 4.5 compute main result;
-- Figure 4.7 common concurrent-miss result;
-- Figure 4.8 logical sensitivity;
-- Figure 4.9 physical sensitivity;
-- Figure 4.10 PIB sensitivity;
-- integrated causal synthesis;
-- graphics-preparation status;
-- no unclassified correctness/fidelity issue;
-- both M5 branches pushed/clean.
-
-This is a review boundary before optional graphics execution and M5.7+ supplemental studies.
+Figure 4.6 area/synthesis remains outside M5 and requires separate M6 authorization.
