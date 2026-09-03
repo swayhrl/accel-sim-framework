@@ -1,166 +1,86 @@
-# Current state
+# Current state — Track A
 
-## Track A status
+## Review result
 
-`M1_VM_CORE_FOUNDATION`: **PASS**.
+`M1_M3_VM_BASELINE_CLOSEOUT`: **PASS — independently accepted by ChatGPT**.
 
-`M2_FUNCTIONAL_TRANSLATION`: **PASS — repaired M2-RF accepted**.
+Accepted final source anchors:
 
-`G3-0`: **PASS**.
+- Core/GPGPU-Sim: `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
+- Framework/Accel-Sim evidence: `47dde5767af8d30b892c7d63d932455644b7cf3a`
+- Core branch: `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
+- Framework branch: `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
 
-`G3-1 — PTE backend / physical request contract`: **PASS**.
+## Accepted reusable single-GPU VM baseline
 
-`G3-2A — address provenance`: **PASS — CASE A**.
+The accepted generic default is:
 
-`G3-2B — generic trace-width extension`: **PASS**.
+- raw/coalesced `SimVA` preserved; translated `SimPA` preserved separately;
+- current resident mapping remains identity-like (`SimPA == SimVA`);
+- configurable virtual-address width; generic M3 default = 56 bits;
+- 64KB page size per run, with separately validated 2MB mode;
+- 32-entry fully associative per-SM L1 TLB;
+- 768-entry, 16-way shared L2 TLB;
+- 32 translation MSHR/PWQ entries;
+- 16 walkers;
+- physical, non-recursive PTE traffic through real interconnect/L2/DRAM;
+- balanced radix-prefix generic page-table identity;
+- FINITE-128 fully-associative LRU intermediate-only PWC;
+- leaf PTEs always use the real PTE memory path;
+- explicit TLB lookup service timing: L1=10 cycles, L2=80 cycles for the generic baseline;
+- zero lookup latency and fixed-latency PTW retained only as diagnostics.
 
-`G3-2 — real PTE L2/DRAM integration`: **PASS**.
+The radix split, PWC organization, 128-entry PWC seed and 10/80-cycle lookup seed are generic/reference modeling choices, not exact claims about NVIDIA hardware or the Segmentation paper.
 
-`G3-2C — radix-prefix PTE identity`: **PASS — independently accepted**.
+## Accepted correctness/timing invariants
 
-`G3-3 — generic PWC`: **PASS — independently accepted**.
-
-## Accepted current source anchors
-
-Core/GPGPU-Sim:
-
-`1b18b3c5da6e5ba22e4a03c20e3adce498311336`
-
-Framework/Accel-Sim evidence:
-
-`a3af1f34b4e6fcac4f43faf8d80d8a914eb34958`
-
-Branches:
-
-- Core: `swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
-- Framework: `swayhrl/accel-sim-framework:hrl/vm-m1-m3-v0`
-
-## Accepted architecture
-
-### Address contract
-
-- raw/coalesced trace address is simulator `SimVA`;
-- translated data address is `SimPA`; preserve both;
-- current generic resident mapping is identity-like: `SimPA == SimVA`;
-- generic trace/backend width is configurable;
-- current generic baseline uses 56 bits;
-- retained 49-bit configuration is for later paper-specific use;
-- generic SimVA is never silently masked, truncated or canonicalized;
-- requests wider than configured width are correctness stops.
-
-### Translation path
-
-Current functional/timing path is:
-
-`coalesced SimVA -> per-SM L1 TLB -> shared L2 TLB -> translation MSHR -> PWQ -> walker -> PWC/intermediate PTE -> physical PTE request -> real ICNT/L2/DRAM -> matching walker -> L2/L1 fill -> waiter wakeup/replay -> SimPA -> data-cache path`
-
-Accepted invariants include:
-- one active translation walk per key;
-- registered pending waiter retries do not re-probe/reconsume TLB resources;
-- new waiters perform their first lookup and may merge;
+- one active translation walk per translation key;
+- registered pending waiter retries do not re-probe or re-consume TLB ports;
+- in-flight L1/L2 lookup service does not poll/re-probe while waiting;
+- new waiter UIDs perform their first normal lookup and may then merge;
+- port is consumed once at lookup launch;
+- data-cache access waits until translation is READY;
 - PTE requests are physical, translation-bypassing and non-recursive;
-- PTE responses preserve request/walk identity;
-- no data-cache request issues before translation is READY;
-- store/atomic side effects remain exact-once;
-- TLB/PWC state persists across ordinary kernels in the simulated context.
+- PTE request/response identity remains exact;
+- store/atomic replay remains exact-once;
+- ordinary kernel boundaries preserve TLB/PWC state in the simulated context;
+- final MSHR/PWQ/walker/lookup state quiesces.
 
-### PTE hierarchy
+## Accepted validation highlights
 
-The generic page-table hierarchy is a project `MODELING_DECISION`.
+- full M1/M2/G3 directed regression: PASS;
+- one-kernel LUD disabled and ideal identity are identical: 23,977 cycles, IPC 0.8205;
+- real 64KB and 2MB one-kernel LUD replays: PASS;
+- complete BFS real-PTW integration: PASS;
+- BFS generic baseline observes 156 L2-TLB probes (132 hits / 24 misses), 7 walks, 17 MSHR merges, and 9 PWC-skipped intermediate PTE requests;
+- sensitivity matrix covers L2-TLB capacity, MSHR entries, walkers, PWC modes, fixed-vs-real PTW, 64KB-vs-2MB, and zero-vs-nonzero lookup timing;
+- latency accounting separates requester intervals from unique MSHR/walk/PTE-memory work and does not multiply shared PTW work by waiter count.
 
-For each page-size class:
+## Scope boundary
 
-`B = VA bits - page-offset bits`, `L = levels`, `r = ceil(B/L)`, `top = B-r*(L-1)`.
+M1-M3 are now frozen as reusable infrastructure. They intentionally do not include:
 
-Accepted 4-level examples:
-- 56-bit / 64KB: `[10,10,10,10]`
-- 56-bit / 2MB: `[8,9,9,9]`
-- 49-bit / 64KB: `[6,9,9,9]`
-- 49-bit / 2MB: `[7,7,7,7]`
-
-PTE identity at each level uses the VPN prefix through that level. Physical PTE subranges are deterministic, non-overlapping and overflow-checked.
-
-### PWC
-
-Accepted generic PWC:
-- caches intermediate/non-leaf PTEs only;
-- key = `(ASID, page-size class, level, VPN prefix)`;
-- `OFF`;
-- `FINITE`: 128 entries, fully-associative LRU;
-- `IDEAL`: unbounded/no eviction diagnostic;
-- leaf PTE always uses the accepted real PTE L2/DRAM path;
-- default lookup service is configurable one-cycle generic service with no invented PWC port bottleneck.
-
-The 128-entry seed is `REFERENCE_OTHER_PAPER`, not a Segmentation-paper or NVIDIA fact.
-
-## G3-2C / G3-3 acceptance evidence
-
-Directed hierarchy tests prove intended upper-level prefix sharing, leaf separation, 49/56-bit layouts, 64KB/2MB class separation, physical-range safety, original raw SimVA preservation and non-recursive PTE behavior.
-
-Directed PWC tests prove:
-- OFF: two related cold 4-level walks issue 8 PTE memory requests;
-- FINITE/IDEAL: same pair issues 5 requests, with three intermediate PWC hits;
-- leaf entries never hit/insert in PWC;
-- partial sharing, deterministic finite LRU and 2MB behavior pass.
-
-Integrated revalidation:
-- complete BFS PWC OFF: PTE `28/28`;
-- complete BFS FINITE: PTE `19/19`, PWC accesses/hits/misses `21/9/12`, nine skipped intermediate PTE requests;
-- zero PTE response misassociation;
-- final MSHR/PWQ/walker state quiescent;
-- LUD VM-disabled and VM-ideal remain exactly `139766` cycles.
-
-G3-2C/G3-3 are accepted as generic simulator behavior, not target-paper exact page-table/PWC behavior.
-
-## Remaining M3 work
-
-The current TLB path has finite lookup ports but still needs explicit non-zero L1/L2 lookup service latency before M3 can be called timing-realistic.
-
-The final authorized continuous target is:
-
-`G3-4A page-size foundation -> G3-4B TLB lookup timing -> G3-5 latency decomposition/causality -> G3-CLOSEOUT -> M1_M3_VM_BASELINE_CLOSEOUT`
-
-Specification:
-
-`docs/vm_tlb/chatgpt_handoff/stage_specs/M3_G3_4_G3_5_FINAL_CLOSEOUT.md`
-
-After every internal gate PASSes, Codex may continue automatically. Stop only on a hard correctness/provenance failure or after final macro closeout.
-
-## Parameter evidence boundary
-
-Target Segmentation paper facts remain separate from generic M3 choices.
-
-Known paper-facing items already recorded include 64KB paging, 32-entry fully-associative L1 TLB, 768-entry/16-way L2 TLB and 16 walkers. The target paper does not establish our generic radix split, PWC organization, MSHR/PWQ sizes, generic 56-bit trace contract, or L1/L2 TLB lookup latencies.
-
-Generic/reference seeds for final M3 include:
-- current generic VA width 56: `MODELING_DECISION`;
-- balanced radix-prefix hierarchy: `MODELING_DECISION`;
-- intermediate-only PWC: `MODELING_DECISION`;
-- 128-entry PWC: `REFERENCE_OTHER_PAPER`;
-- L1/L2 TLB lookup latency seed 10/80 cycles: `REFERENCE_OTHER_PAPER` / generic `MODELING_DECISION` until stronger evidence exists.
-
-## Scope exclusions
-
-M1-M3 still exclude:
-- page fault/migration/UVM oversubscription;
-- MCM/chiplet placement;
+- M4B / LLM baseline integration;
 - Segmentation;
-- target-paper L2-TLB sub-entry/coalescing;
-- synthetic KV injection;
-- multi-ASID physical-separation claims.
+- L2-TLB sub-entry/coalescing;
+- synthetic KV pressure;
+- page fault/migration/UVM;
+- MCM/chiplet behavior;
+- multi-ASID physical-separation claims;
+- mixed-page placement/promotion policy.
 
-## STOP boundary
+The LUD/BFS sensitivity results validate infrastructure and causality only. They are not paper-facing LLM characterization; capacity/MSHR/walker sweeps on the one-kernel LUD case are intentionally flat because that trace contains only one cold translation.
 
-STOP immediately on:
-- TLB lookup polling/repeated port consumption while service is pending;
-- hierarchy/PTE/PWC collision or nondeterminism;
-- application/PTE physical-range overlap or overflow;
-- recursive PTE translation;
-- response misassociation/request loss;
-- duplicate wakeup/store/atomic side effect;
-- M1/M2 regression;
-- deadlock/unexplained nondeterminism;
-- source/provenance ambiguity;
-- a materially new architecture decision outside the authorized final-stage spec.
+## Integration dependency
 
-After `M1_M3_VM_BASELINE_CLOSEOUT` PASS, STOP before M4B/Segmentation/sub-entry/synthetic-KV/new AI-aware mechanisms.
+Track B is currently performing `M4A_MERGE_PREP` on the accepted formal LLM traces. Do not merge A/B or start M4B until Track B has passed its merge-prep review.
+
+After Track B PASS, ChatGPT will issue a new integration handoff for a fresh Framework integration branch. The final integrated Core must start from this accepted Track-A Core:
+
+`5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
+
+## Current authorization
+
+**STOP / HOLD.** No additional Track-A implementation is authorized now.
+
+Do not start M4B, Segmentation, sub-entry/coalescing, synthetic KV, faults/migration/UVM/MCM, or branch integration without the next ChatGPT handoff.
