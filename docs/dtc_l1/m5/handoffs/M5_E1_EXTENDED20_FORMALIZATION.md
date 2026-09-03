@@ -16,14 +16,16 @@ Core/Framework/config/parser/metric anchor.
 | active Framework branch | `hrl/decoupled-l1-exp-m5-v0` |
 | approved selection evidence | `hrl/decoupled-l1-exp-m5-extended20-select-v0@d43b6eec93f68efa94057f34ffa699463b53e6a6` |
 | portfolio roster | `extended20/EXTENDED20_APPROVED.tsv` |
-| CUDA samples candidate source | `/tmp/dtc-l1-m5-cuda-samples-probe.oDOw3x@b7c5481c556c3fe98db060207ecaa41a4b9a9abc` |
+| CUDA samples discovery lead | `/tmp/dtc-l1-m5-cuda-samples-probe.oDOw3x@b7c5481c556c3fe98db060207ecaa41a4b9a9abc` (2,022 dirty paths; **not eligible** as an E1 source) |
 | Parboil candidate source | `/tmp/dtc-l1-m5-parboil@4e0fc54866546efa44fe93af57c9cef62f6c8eb9` |
-| Rodinia candidate source | `/tmp/decoupled-rodinia-batch.KpLPSn` (not a Git worktree; source identity must be recovered before formal readiness) |
+| GPU App Collection candidate source | `/tmp/accelsim-gpu-app-collection-seed@dad09cb0487845edc7524ded814c6cde9f0ef6a1` (clean; contains the six selected Rodinia 3.1 trees) |
 | E2 launch gate | M5.2 PASS plus revalidation of the frozen common formal anchor |
 
-The CUDA SDK and Parboil entries above are only discovered candidate source
-trees.  No executable, PTX, input, output-reference, or launch identity has
-yet been frozen from them.  The existing framework launch definitions in
+The CUDA SDK, Parboil, and GPU App Collection entries above are only discovered
+candidate source trees.  In particular, the dirty CUDA samples scratch tree
+must not be used to build E1 artifacts.  No executable, PTX, input,
+output-reference, or launch identity has yet been frozen from any candidate.
+The existing framework launch definitions in
 `util/job_launching/apps/define-all-apps.yml` are useful provenance leads, not
 E1 acceptance evidence.
 
@@ -34,20 +36,20 @@ mean that a build or simulator run was attempted.
 
 | workload | suite | source commit | wrapper/build | executable SHA | PTX SHA | input SHA | output checker/reference | launch geometry | provenance status | formal-ready status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BlackScholes | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | candidate source located; Black-Scholes option pricing metadata corrected | NOT_READY |
-| convolutionSeparable | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 3072` candidate only | candidate source located | NOT_READY |
-| fastWalshTransform_11_19 | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `-logK 11 -logD 19` candidate only | candidate source located | NOT_READY |
-| scalarProd_13920 | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 13920` candidate only | candidate source located | NOT_READY |
-| scan | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | candidate source located | NOT_READY |
-| sortingNetworks | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | candidate source located | NOT_READY |
-| transpose | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `dimX512 dimY512` candidate only | candidate source located | NOT_READY |
-| vectorAdd_6000000 | CUDA SDK | candidate `b7c5481c…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 6000000` candidate only | candidate source located | NOT_READY |
-| cfd_097k | Rodinia | PENDING_RECOVERY | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | non-Git candidate tree only | NOT_READY |
-| btree | Rodinia | PENDING_RECOVERY | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: `file ./data/mil.txt command ./data/command.txt` | non-Git candidate tree only | NOT_READY |
-| dwt2d | Rodinia | PENDING_RECOVERY | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | non-Git candidate tree only | NOT_READY |
-| gaussian | Rodinia | PENDING_RECOVERY | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | non-Git candidate tree only | NOT_READY |
-| hotspot1 | Rodinia | PENDING_RECOVERY | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | non-Git candidate tree only | NOT_READY |
-| lud | Rodinia | PENDING_RECOVERY | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: `-s 256 -v` | non-Git candidate tree only; review-promoted primary | NOT_READY |
+| BlackScholes | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | dirty `b7c5481c…` scratch tree rejected; Black-Scholes option pricing metadata corrected | NOT_READY |
+| convolutionSeparable | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 3072` candidate only | dirty scratch source rejected | NOT_READY |
+| fastWalshTransform_11_19 | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `-logK 11 -logD 19` candidate only | clean GPU App Collection has a named path; compatibility unverified | NOT_READY |
+| scalarProd_13920 | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 13920` candidate only | dirty scratch source rejected | NOT_READY |
+| scan | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean GPU App Collection has a named path; compatibility unverified | NOT_READY |
+| sortingNetworks | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | dirty scratch source rejected | NOT_READY |
+| transpose | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `dimX512 dimY512` candidate only | dirty scratch source rejected | NOT_READY |
+| vectorAdd_6000000 | CUDA SDK | PENDING_CLEAN_COMPATIBLE_SOURCE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 6000000` candidate only | clean GPU App Collection has a named path; compatibility unverified | NOT_READY |
+| cfd_097k | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source tree located | NOT_READY |
+| btree | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: `file ./data/mil.txt command ./data/command.txt` | clean Rodinia 3.1 source tree located | NOT_READY |
+| dwt2d | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source tree located | NOT_READY |
+| gaussian | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source tree located | NOT_READY |
+| hotspot1 | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source tree located | NOT_READY |
+| lud | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: `-s 256 -v` | clean Rodinia 3.1 source tree located; review-promoted primary | NOT_READY |
 | bfs | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | candidate source located | NOT_READY |
 | cutcp | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: small `watbox.sl40.pqr` | candidate source located | NOT_READY |
 | histo | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: default `img.bin -- 20 4` | candidate source located | NOT_READY |
