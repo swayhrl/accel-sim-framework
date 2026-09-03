@@ -8,7 +8,7 @@ Accepted final Core:
 
 `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
 
-Accepted Framework evidence before this review update:
+Accepted Framework evidence:
 
 `47dde5767af8d30b892c7d63d932455644b7cf3a`
 
@@ -32,12 +32,50 @@ Any future integrated VM/LLM branch must use this Core as its starting VM baseli
 
 Do not replace it with Track B's old frozen parser Core; that old Core exists only as trace-format compatibility evidence.
 
+## Future target is prewritten but NOT authorized
+
+The detailed post-B contracts have already been prepared:
+
+1. `M4_INTEGRATION_GOAL_START_DRAFT.md`
+2. `stage_specs/M4_INTEGRATION_TO_SEGMENTATION_MASTER.md`
+3. `stage_specs/M4I_AB_INTEGRATION_AND_REPLAY.md`
+4. `stage_specs/M4C_LLM_BASELINE_CHARACTERIZATION.md`
+5. `stage_specs/M4B_SEGMENTATION_REPRODUCTION.md`
+
+They define the planned continuous target:
+
+```text
+M4I A/B integration
+ -> M4R final-Core formal trace replay compatibility
+ -> M4C real LLM baseline translation characterization
+ -> M4B-P paper paging/L2-sub-entry baseline
+ -> M4B-S Weight Segmentation on formal prefill/decode1
+ -> M4B-CLOSEOUT
+ -> STOP before M5 synthetic KV
+```
+
+`M4_INTEGRATION_GOAL_START_DRAFT.md` is deliberately marked NOT AUTHORIZED and
+contains placeholders for the final accepted B merge-prep SHA, semantic list
+hashes/coverage evidence and integration manifest.
+
+After Track B reports `M4A_MERGE_PREP_PASS_READY_FOR_INTEGRATION`, ChatGPT will:
+
+- review B independently;
+- fill those immutable placeholders;
+- adjust the drafted contracts only where B's measured NCCL/address/object
+  evidence requires it;
+- issue a new explicit `AUTHORIZED` start file.
+
+The intent is that Codex can then enter Goal mode immediately rather than wait
+for another architecture-planning round.
+
 ## Do not execute now
 
 Do not:
 
 - merge Track B into Track A;
 - create the final A/B integration branch unless explicitly authorized;
+- execute the draft start file;
 - start M4B;
 - implement Segmentation;
 - implement L2-TLB sub-entry/coalescing;
@@ -46,16 +84,4 @@ Do not:
 - broaden to multi-ASID claims;
 - retune the accepted generic M1-M3 baseline in anticipation of LLM results.
 
-## Next expected handoff
-
-After Track B reports `M4A_MERGE_PREP_PASS_READY_FOR_INTEGRATION` and ChatGPT independently accepts it, ChatGPT will issue a new integration-stage specification covering approximately:
-
-1. creation of a fresh Framework integration branch from accepted Track A;
-2. selective import/merge of B-owned LLM capture utilities, docs and immutable trace provenance;
-3. preservation of A-owned final `CURRENT_STATE.md` / `CODEX_NEXT_STAGE.md` semantics during merge;
-4. exact binding of formal prefill/decode1 archive hashes and derived semantic kernel lists;
-5. replay/parser compatibility against the final accepted M1-M3 Core;
-6. LLM baseline translation characterization before Segmentation;
-7. only after that gate, M4B paper reproduction work.
-
-Until then, remain stopped.
+Until the explicit post-B authorization is published, remain stopped.
