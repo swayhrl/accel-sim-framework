@@ -2,7 +2,7 @@
 
 Last coordination update: 2026-09-03
 
-Status: **M1/M2/M3 PASS; M4 RESUMED UNDER VERIFIED SOURCE-REACHABILITY BOUNDARY**
+Status: **M1/M2/M3 PASS; M4 BLOCKED ON SOURCE-REACHABLE COMPLETION ACCOUNTING; RECOVERY AUTHORIZED**
 
 ## Source anchors
 
@@ -23,7 +23,7 @@ Active goal branches:
 - Core: `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`;
 - Framework: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`.
 
-M0 branches are read-only design anchors.
+M0 branches remain read-only design anchors.
 
 ## Closed stages
 
@@ -33,99 +33,92 @@ Review pack: `docs/dtc_l1/review_packs/M1_FOUNDATION/`.
 
 Validated M1 Core anchor: `48b0be73833fc89fcf833349e82886ddc6d883b0`.
 
-M1 established exact LEGACY neutrality, Paper-Base PIB/Tag/MSHR/lower-cap behavior, counters/parser infrastructure, and B01-B09 HARD validation.
+M1 established LEGACY neutrality, Paper-Base PIB/Tag/MSHR/lower-cap behavior, common counters/parser infrastructure, and B01-B09 HARD validation.
 
 ### M2 — PASS
 
-Paper IO now has a dedicated DTC-owned whole-line read request/response/PIB-writeback lifecycle. The conventional-fill failure and recovery are preserved in the implementation evidence. M2 includes physical `{id,generation}`, no-traditional-L1-MSHR read semantics, partial allocation/no rollback, lower issue/outstanding limits, IO FIFO retirement/HOL, and required directed/resource validation.
+Review pack: `docs/dtc_l1/review_packs/M2_IO_READ/`.
+
+Validated scope includes dedicated Paper-IO whole-line request/response/PIB-writeback lifecycle, no traditional L1D MSHR capacity/merge dependence, physical `{id,generation}` identity, partial allocation/no rollback, lower caps/issue width, I01-I15, high-MLP no-MSHR proof, and closed counters/invariants.
 
 ### M3 — PASS
 
-Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`.
+Review pack: `docs/dtc_l1/review_packs/M3_OO_SECTOR/`.
 
-Framework M3 implementation/parser checkpoint: `800fc95fe2b502e30e76ce1cb6de050f6069178e`.
+Validated M3 scope includes whole-line OO random-access PIB, deterministic ready retirement, line-level Ref Count and Shadow Ref, pending-hit merge/wakeup, active reclamation, O01-O13, IO-vs-OO causal HOL, and 4x32B sector extension S01-S09. Real modes 2/3/4 VecAdd diagnostic self-checks passed.
 
-Validated M3 scope includes:
+Do not redo or weaken M1-M3 unless the active M4 recovery proves a real regression.
 
-- PAPER_OO whole-line random-access PIB and deterministic ready retirement;
-- line-level Ref Count and Shadow Ref validation;
-- pending-hit merge/wakeup;
-- active reclamation;
-- O01-O13;
-- IO-vs-OO causal HOL;
-- 4x32B sector extension S01-S09;
-- real modes 2/3/4 VecAdd diagnostic self-checks and strict provenance parsing.
+## M4 partial progress before current stop
 
-Do not redo M1-M3 unless M4 reveals an actual regression.
-
-## M4 current implementation checkpoint
-
-Core checkpoint before the latest specification refinement:
-
-`5aea1cbb41575e31c0c61f97dfc6d77cc15a3c9f`
-
-Framework fence-evidence checkpoint:
-
-`b18eca499b6fe92569070c4ebebe8d7374f6f68a`
-
-M4 source audit/evidence:
+M4 source semantics audit:
 
 `docs/dtc_l1/implementation/M4_MEMORY_OP_SEMANTICS.md`
 
-Partial validated M4 work already includes source-preserving Store/Atomic/architectural-bypass lifecycle observation, modes 2/3/4 VecAdd Store closure, and an available atomic-contention workload with Atomic closure. No M4 PASS is implied yet.
+Partial work already preserves/observes current Store, Atomic, and architectural-bypass lifecycle semantics without changing their source request/cache/ack/side-effect routes. Atomic read-merge prohibition remains mandatory.
 
-## Verified PTX proxy-fence reachability limitation
-
-Repeated source audit established that the frozen current PTX frontend cannot generate the existing dynamic `FENCE_OP` / async proxy-fence path:
-
-- no `fence` lexer rule;
-- no parser token/production/mapping;
-- no static PTX decode case;
-- no PTX-originating producer of `set_proxy_fence()` / `set_fence_proxy_kind()`;
-- PTX `membar` is a distinct `MEMBAR_OP` and cannot be substituted;
-- regular dynamic fence behavior is explicitly unsupported.
-
-This is a verified source-domain limitation, not a DTC Tag/PIB/Ref correctness ambiguity.
-
-The old end-to-end PTX F01-F03 requirements were planning-time project tests. Implementing a new PTX fence frontend is unrelated to the Chapter-4 DTC mechanism reproduction and would expand scope unnecessarily.
-
-Authorized disposition:
+The frozen PTX frontend proxy-fence reachability limitation remains established and is governed by:
 
 `docs/dtc_l1/goal/M4_FENCE_REACHABILITY_RESOLUTION.md`
 
-For the frozen source:
+No PTX fence frontend support or `membar -> FENCE_OP` substitution is authorized.
 
-- F00A-F00D are the active HARD fence/source-domain gates;
-- F01-F03 are `SOURCE_UNREACHABLE_NA` after F00A-F00D close;
-- no `membar` substitution or new fence parser semantics may be added;
-- accepted workload triplets must have identical source-reachable `FENCE_OP` counts, expected zero;
-- discovery of a real source-backed FENCE_OP producer requires STOP and reopens end-to-end fence validation.
+## Active M4 HARD failure — completion accounting
 
-This changes the validation boundary only; it does not alter frozen M0 DTC architecture choices.
+Failure evidence:
 
-## Current M4 execution authority
+`docs/dtc_l1/implementation/M4_COMPUTE_BRINGUP_FAILURE.md`
 
-Resume M4 rather than remaining blocked.
+Failure checkpoints:
 
-Primary files:
+- Core: `56a9230e4a538b69a30673ebdf66c42526fb324a`;
+- Framework: `5f674edccdf48dc768155fbd008723dc8a126b31`.
 
-- `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`;
-- `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`;
-- `docs/dtc_l1/goal/M4_FENCE_REACHABILITY_RESOLUTION.md`;
-- updated `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`;
-- `docs/dtc_l1/implementation/M4_MEMORY_OP_SEMANTICS.md`.
+The first provenance-controlled PolyBench 2DConv triplet exposed:
 
-Immediate required work:
+- `PAPER_IO`: `dtc_l1_io_complete_instruction` aborts on `pending >= dependencies`;
+- `PAPER_OO`: `dtc_l1_oo_complete_instruction` aborts on the same invariant;
+- `PAPER_BASE`: 240-second wall-clock `TIMEOUT_DIAGNOSTIC`, not yet classified as deadlock.
 
-1. close F00A-F00D and record F01-F03 `SOURCE_UNREACHABLE_NA`;
-2. close W01-W04, A01-A04, BP01-BP02, and refined source-reachable MIX01;
-3. finalize `implementation/WORKLOAD_MANIFEST.md`;
-4. run at least five provenance-resolved representative Chapter-4 compute workloads under PAPER_BASE/PAPER_IO/PAPER_OO;
-5. require matching dynamic instruction/Load/Store/Atomic/source-reachable-FENCE_OP counts and closed invariants/provenance/accounting;
-6. generate/validate required compact CSV/parser outputs;
-7. create `review_packs/M4_COMPUTE_BRINGUP/` only after all active M4 HARD gates pass;
-8. update `LATEST_REPORT.md` to `READY_FOR_M5_REVIEW`, push, and STOP.
+IO and OO use different retirement policies but share the failing bridge between DTC-owned 128B line dependencies and GPGPU-Sim `m_pending_writes` / scoreboard completion state. Therefore the active issue is a common completion-accounting/ownership integration bug, not currently evidence of a Tag->Physical, Ref Count, Merge, or sector-state mechanism failure.
 
-## Final scope boundary
+Current source already registers DTC cacheable-load pending writes using unique coalesced 128B line references in `ldst_unit::issue()`, and IO/OO PIBs retain unique 128B line references. The failure means the registered/remaining aggregate and retirement-owned dependency count are not conserved for at least one real workload instruction. Root cause is not yet frozen.
 
-M5 remains forbidden. No final thesis speedup reproduction, equal-area study, graphics proxy study, or final figure generation is authorized before independent M4 review.
+## Authorized recovery
+
+Primary active specification:
+
+`docs/dtc_l1/goal/M4_COMPLETION_ACCOUNTING_RECOVERY.md`
+
+Required order:
+
+1. reproduce/localize the first failing UID/PC and exact cardinality values;
+2. add a per-instruction DTC dependency ownership ledger/checker;
+3. trace all relevant `m_pending_writes` mutations and classify root cause as premature consumption, cardinality divergence, duplicate completion, cross-instruction aggregate alias, or another source-proven category;
+4. apply only the minimal source-backed repair;
+5. add permanent cardinality/exactly-once regressions;
+6. rerun the exact 2DConv PAPER_IO/PAPER_OO cases to full completion/accounting closure;
+7. rerun the closed-stage regression subset because the fix touches shared load-completion glue;
+8. separately classify PAPER_BASE timeout from progress evidence;
+9. only after recovery PASS, resume the remaining M4 source-reachability/fence, Store/Atomic/bypass/mixed/workload/parser/CSV closeout automatically.
+
+No new human authorization is required after full recovery PASS.
+
+## Recovery prohibitions
+
+Do not:
+
+- remove/weaken/clamp the failing accounting assertion;
+- force `m_pending_writes` to zero;
+- release scoreboard registers without exact ownership closure;
+- change frozen 128B DTC dependency granularity merely to match the observed failing value;
+- reintroduce conventional L1D MSHR/fill as the DTC read backend;
+- change L2/NoC/DRAM;
+- implement PTX fence frontend semantics;
+- begin M5.
+
+## Final boundary
+
+M4 remains unaccepted until this source-reachable correctness failure is closed and all remaining active M4 HARD gates pass. Only then may `LATEST_REPORT.md` become `READY_FOR_M5_REVIEW`.
+
+M5 remains forbidden.
