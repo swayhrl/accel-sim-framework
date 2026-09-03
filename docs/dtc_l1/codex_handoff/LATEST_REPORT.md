@@ -4,6 +4,19 @@ Stage: `M5.0B_WORKLOAD_RECOVERY`
 
 Status: **M5-T005 CLOSED — M5.0B WORKLOAD RECOVERY RESUMED**
 
+## Active corrected Paper-10 Base batch
+
+The normal M5.0B recovery wave is active as nine isolated ratio-zero
+`PAPER_BASE` runs for BICG, ATAX, GEMVER, MVT, SYRK, GESUMMV, SYR2K, 2MM, and
+2DConv; the corrected ratio-zero canonical SpMV Base run is already closed by
+R5DV.  Every active run uses config SHA-256
+`993513296458bf014cfa33ff047e1ed7391a1fee990e3b4a2d9d738cab0ff366` and
+runtime SHA-256 `f115144d6009bab4af6d8ab0d86b69e54e8449a4c76a3809561571d32075a453`.
+They have separate `/tmp/dtc-l1-m5-0b-ratio0-base-*-20260904` directories and
+are currently computing with no deadlock/assertion/fatal signature.  The
+earlier ratio-25/old-runtime jobs remain preserved diagnostics, never formal
+substitutes.  See `m5/handoffs/M5_0B_RATIO0_BASE_BATCH.md`.
+
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
 The M5-T005 researcher-decision boundary is resolved.  The paper-facing
