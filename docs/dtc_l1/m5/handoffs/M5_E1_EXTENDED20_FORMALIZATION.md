@@ -53,12 +53,12 @@ mean that a build or simulator run was attempted.
 | gaussian | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source tree located | NOT_READY |
 | hotspot1 | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source tree located | NOT_READY |
 | lud | Rodinia | candidate `dad09cb0…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: `-s 256 -v` | clean Rodinia 3.1 source tree located; review-promoted primary | NOT_READY |
-| bfs | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | candidate source located | NOT_READY |
-| cutcp | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: small `watbox.sl40.pqr` | candidate source located | NOT_READY |
-| histo | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: default `img.bin -- 20 4` | candidate source located | NOT_READY |
-| mri-q | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: small `32_32_32_dataset.bin` | candidate source located | NOT_READY |
-| sad | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: default reference/frame inputs | candidate source located | NOT_READY |
-| stencil | Parboil | candidate `4e0fc548…` | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: small `128x128x32`, 100 iterations | candidate source located | NOT_READY |
+| bfs | Parboil | candidate `4e0fc548…` | `benchmarks/bfs/src/cuda/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean source and CUDA build entry located | NOT_READY |
+| cutcp | Parboil | candidate `4e0fc548…` | `benchmarks/cutcp/src/cuda/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: small `watbox.sl40.pqr` | clean source and CUDA build entry located | NOT_READY |
+| histo | Parboil | candidate `4e0fc548…` | `benchmarks/histo/src/cuda/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: default `img.bin -- 20 4` | clean source and CUDA build entry located | NOT_READY |
+| mri-q | Parboil | candidate `4e0fc548…` | `benchmarks/mri-q/src/cuda/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: small `32_32_32_dataset.bin` | clean source and CUDA build entry located | NOT_READY |
+| sad | Parboil | candidate `4e0fc548…` | `benchmarks/sad/src/cuda/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: default reference/frame inputs | clean source and CUDA build entry located | NOT_READY |
+| stencil | Parboil | candidate `4e0fc548…` | `benchmarks/stencil/src/cuda/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | framework candidate: small `128x128x32`, 100 iterations | clean source and CUDA build entry located | NOT_READY |
 
 ## Acceptance and next scope
 
