@@ -21,7 +21,8 @@ target-paper truth.
 | PTE L2/DRAM timing | must use real simulator resources | VERIFIED_CODE target for M3 | no fixed-latency substitute after G3-2 |
 | PWC capacity/organization | OFF / FINITE 128-entry fully associative LRU / IDEAL unbounded; intermediate levels only | MODELING_DECISION / REFERENCE_OTHER_PAPER | generic baseline motivated by CLAP-style reference, never Segmentation-paper exact |
 | PWC lookup service | one configured cycle, sufficient logical bandwidth | MODELING_DECISION | no speculative port bottleneck in G3-3 |
-| L1/L2 lookup latency/ports | existing M2 configuration | MODELING_DECISION | target-paper detail is unknown |
+| L1/L2 lookup latency | 10 / 80 core cycles in generic M3 results; zero retained only for diagnostics | REFERENCE_OTHER_PAPER / MODELING_DECISION | explicit G3-4B service seed; not target-paper exact |
+| L1/L2 lookup ports | 1 / 1 lookup launch per core cycle | MODELING_DECISION | existing finite-port model, separate from lookup service latency |
 | Segmentation L2 sub-entry | not implemented in M3 | PAPER_SPEC future boundary | M4B only |
 | Page faults/migration/UVM | not implemented | MODELING_DECISION scope exclusion | resident-memory M1-M3 only |
 | 2MB large pages | required generic M3 foundation | MODELING_DECISION | paper baseline remains 64KB |

@@ -5,12 +5,13 @@
 Goal: `M2_FUNCTIONAL_TRANSLATION -> M3_TIMING_REALISTIC_BASELINE ->
 M1_M3_VM_BASELINE_CLOSEOUT`.
 
-Current Goal boundary: `G3-3 — generic PWC (closed)`
+Current Goal boundary: `M1_M3_VM_BASELINE_CLOSEOUT`
 Completed sub-gates: `G3-2A PASS / CASE A`, `G3-2B PASS`,
-`G3-2C PASS`, `G3-3 PASS`
-Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-4`
-Core SHA: `1b18b3c5da6e5ba22e4a03c20e3adce498311336`
-Framework handoff SHA: `6c73a24e433f0eab2b60ec26df597649aa1a60be`
+`G3-2C PASS`, `G3-3 PASS`, `G3-4A PASS`, `G3-4B PASS`,
+`G3-5A PASS`, `G3-5B PASS`, `G3-CLOSEOUT PASS`
+Status: `PASS — FINAL CLOSEOUT EVIDENCE READY TO COMMIT/PUSH; STOP AFTER PUSH`
+Core SHA: `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
+Framework handoff SHA: `a105fae027150a0047d23a3a5e78b9110be9c84c`
 
 M2-RF and G3-1-RF are accepted historical prerequisites.  G3-2B applies the
 approved generic trace-width decision without altering a raw/coalesced SimVA:
@@ -24,7 +25,11 @@ intermediate-only PWC with OFF/FINITE/IDEAL modes.  These are explicitly
 page-table organization.  Evidence/review path:
 `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_2C_G3_3_HIERARCHY_PWC_CLOSEOUT.md`.
 
-Next gate: none.  Do not begin G3-4 until ChatGPT review.
+Evidence/review path:
+`review_packs/M3_TIMING_REALISTIC_BASELINE/G3_4_G3_5_FINAL_CLOSEOUT.md` and
+`review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`.  Next gate: none.  Stop before
+M4B, Segmentation, sub-entry/coalescing, synthetic KV, page fault, migration,
+UVM or MCM.
 
 ## G3-2B — generic trace-width extension and G3-2 closeout
 

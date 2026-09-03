@@ -1,9 +1,13 @@
 # M3 timing-realistic baseline review pack
 
-Current gate: `G3-3 — generic PWC` (`PASS — STOP FOR CHATGPT REVIEW BEFORE
-G3-4`).  G3-2C closes hierarchy-prefix PTE identity and revalidates the
-accepted real PTE L2/DRAM path.  G3-3 adds the generic intermediate-only PWC.
-No G3-4 work is authorized.
+Status: `M3 PASS — G3-4A/G3-4B/G3-5A/G3-5B closed`.
+
+The final Core implementation is `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d` on accepted G3-3 Core
+`1b18b3c5`.  It selects one 64KB or 2MB translation page size per run, adds
+explicit non-zero L1/L2 lookup service timing (generic seed 10/80 cycles),
+and records requester critical-path intervals without multiplying shared walk
+work by merge depth.  The real-PTE, hierarchy-prefix and intermediate-only PWC
+semantics remain unchanged.
 
 ## Frozen M3 entry snapshot
 
@@ -38,6 +42,11 @@ Entry artifacts:
 - [G3-2C/G3-3 hierarchy and PWC closeout](G3_2C_G3_3_HIERARCHY_PWC_CLOSEOUT.md)
 - [G3-2C/G3-3 validation matrix](G3_2C_G3_3_VALIDATION.tsv)
 - [G3-2C/G3-3 runtime summary](G3_2C_G3_3_RUNTIME_SUMMARY.tsv)
+- [G3-4/G3-5 final closeout](G3_4_G3_5_FINAL_CLOSEOUT.md)
+- [G3-4/G3-5 directed and integrated validation](G3_4_G3_5_VALIDATION.tsv)
+- [G3-5A latency-accounting contract](G3_5A_LATENCY_ACCOUNTING.md)
+- [G3-5B structured sensitivity summary](G3_5B_SENSITIVITY.tsv)
+- [PTE conservation report](PTE_CONSERVATION.md)
 
 The M3 evidence boundary is generic reusable VM timing infrastructure.  It is
 not a claim of exact Segmentation-paper PTW, PWC, sub-entry, or commercial-GPU

@@ -1,7 +1,35 @@
 # Track A report
 
-Stage: `G3-2C hierarchy-prefix PTE identity / G3-3 generic PWC`
-Status: `PASS — STOP FOR CHATGPT REVIEW BEFORE G3-4`
+Stage: `G3-4A -> G3-4B -> G3-5A -> G3-5B -> G3-CLOSEOUT -> M1-M3 closeout`
+Status: `PASS — STOP AT FINAL M3 BOUNDARY`
+
+Framework was fetched to required handoff
+`a105fae027150a0047d23a3a5e78b9110be9c84c`; Core closeout is
+`5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`.
+
+Generic M3 now has run-selected 64KB or 2MB translation pages, explicit L1/L2
+lookup services at 10/80 cycles, and critical-path latency observability for
+requesters, unique MSHRs/walkers and physical PTE requests.  LUD passes with
+either page size and quiesces; the 64KB/2MB exact unit test passes.  The exact
+lookup test proves no in-service polling/reprobe or port re-consumption, while
+the existing M2 pending-waiter bypass remains intact.  The G3-5 deterministic
+test proves A=25/B=19 merged-waiter timing, an L1 hit of two cycles, three PWC
+intermediate hits and a four-cycle physical PTE response.
+
+All M1/M2/G3 directed regressions pass.  M1 disabled/ideal one-kernel LUD
+controls are identical (23,977 cycles, IPC 0.8205).  BFS completes with 156
+L2 accesses (132 hits, 24 misses), seven walks and 17 merges, PTE 19/19 with
+zero misassociation, PWC nine hits, and final MSHR/PWQ/walkers zero.  The full
+sensitivity TSV records the requested L2/MSHR/walker/PWC/PTW/page/timing
+points; single-kernel LUD has one cold translation so its capacity points are
+flat by construction.
+
+Evidence: `review_packs/M3_TIMING_REALISTIC_BASELINE/G3_4_G3_5_FINAL_CLOSEOUT.md`
+and `review_packs/M1_M3_VM_BASELINE_CLOSEOUT/`.  No M4B, Segmentation,
+sub-entry/coalescing, synthetic KV, page fault, migration, UVM, MCM, or new
+AI-aware mechanism was started.
+
+## Historical G3-2C/G3-3 report
 
 Framework was fetched to required handoff
 `6c73a24e433f0eab2b60ec26df597649aa1a60be`.  Core is

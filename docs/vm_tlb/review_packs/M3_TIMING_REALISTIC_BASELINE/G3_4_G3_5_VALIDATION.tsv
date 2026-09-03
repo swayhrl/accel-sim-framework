@@ -1,0 +1,11 @@
+gate	case	status	core_sha	framework_handoff	command_or_artifact	expected_and_observed
+G3-4A	64KB offset/range/same-page/next-page	PASS	5ba17a1b	a105fae0	/tmp/vm_m3_g3_4a_page_size_test	64KB identity offset exact; same page hit and next page miss
+G3-4A	2MB offset/range/same-page/next-page	PASS	5ba17a1b	a105fae0	/tmp/vm_m3_g3_4a_page_size_test	2MB identity offset exact; same page hit and next page miss
+G3-4A	real one-kernel LUD 64KB	PASS	5ba17a1b	 a105fae0	/tmp/g3-4b-runtime/one-lud-64k.log	page=65536; PTE 4/4; response misassociation=0; final active MSHR/PWQ/walkers=0/0/0
+G3-4A	real one-kernel LUD 2MB	PASS	5ba17a1b	 a105fae0	/tmp/g3-4b-runtime/one-lud-2mb.log	page=2097152; PTE 4/4; response misassociation=0; final active MSHR/PWQ/walkers=0/0/0
+G3-4B	exact service/port/retry test	PASS	5ba17a1b	 a105fae0	/tmp/vm_m3_g3_4b_tlb_timing_test	L1=2 and L2=3 directed timing; no re-probe/re-consume for in-flight or registered waiter; distinct waiter merges
+G3-4B	real generic seed	PASS	5ba17a1b	 a105fae0	/tmp/g3-4b-runtime/one-lud-64k.log	printed L1/L2 lookup latency=10/80; all VM state quiesces
+G3-5A	analytical critical-path test	PASS	5ba17a1b	 a105fae0	/tmp/vm_m3_g3_5_latency_accounting_test	A=25 and B=19 cycles with one shared walk; L1 hit=2; PWC intermediate hits=3; PTE-memory total/max=4/4
+G3-5A	full directed regression	PASS	5ba17a1b	 a105fae0	/tmp/vm_{core_m1,m2_*,m3_*}_test	M1, G2-1..4, M2-RF, G3-1, G3-2/B/C, G3-3, G3-4A/B and G3-5A all PASS
+G3-5B	M1 disabled vs ideal transparency	PASS	5ba17a1b	 a105fae0	/tmp/g3-4b-runtime/m1-{disabled,ideal}.log	one-kernel LUD cycles identical: 23977 vs 23977; IPC identical: 0.8205
+G3-5B	BFS real generic integration	PASS	5ba17a1b	 a105fae0	/tmp/g3-4b-runtime/bfs-64k.log	cycles=5485; L1 49071/48915/156; L2 156/132/24; PTE 19/19 (L2/DRAM 3/16); PWC hits=9; final VM state 0/0/0
