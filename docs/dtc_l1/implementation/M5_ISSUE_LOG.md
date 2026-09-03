@@ -227,3 +227,31 @@
   `m5/handoffs/M5_R5DV_DIRTY_VICTIM_VALIDATION.md`; raw outputs remain outside
   Git.  This closes M5-T005 without changing frozen DTC or conventional-L1
   semantics.
+
+## M5-T006 — M5.0D preflight finds unexported Figure-4.2/Figure-4.7 fields
+
+- State: `OBSERVED -> SOURCE_CLASSIFIED -> QUEUED_FOR_M5.0D`.
+- Scope: this is an instrumentation-completeness item for the later M5.0D
+  metric lock; it does not invalidate or alter the currently running M5.0B
+  source-recovery Base jobs.
+- Source evidence: `cache_reservation_fail_reason` already distinguishes
+  `LINE_ALLOC_FAIL`, `MISS_QUEUE_FULL`, `MSHR_ENRTY_FAIL`, and
+  `MSHR_MERGE_ENRTY_FAIL` (`gpu-cache.h`).  `cache_stats` exposes those
+  reasoned counters through `get_aggregated_fail_stats`, but the current
+  Paper-Base M5 emission in `gpgpu_sim::shader_print_dtc_l1_stats`
+  (`shader.cc`) exports only the two MSHR reasons.  It must not substitute
+  `DTC_L1_primary_stall_tag_bank` for the missing true Tag/cacheline category:
+  that event remains a separate diagnostic channel.
+- Source evidence for Figure 4.7: lower-request acquire/release and current
+  outstanding state are exact and asserted (`gpgpu_sim::dtc_l1_try_acquire_*
+  / release_*` in `gpu-sim.cc`), but the current anchor records only final
+  current/peak values.  It lacks the frozen active-kernel cycle sum and sample
+  denominator needed for the required per-SM average live-miss metric.
+- Authorized automatic resolution after M5.0C: export all four conventional
+  failure-reason counters without changing cache decisions; sample the common
+  lower-request live state at the source-defined active-kernel boundary; add
+  directed cases for each reason and create/complete closure; extend strict
+  parser fields; prove sentinel timing is unchanged apart from an explicitly
+  repaired behavior.  This is ordinary Goal work, not a researcher-decision
+  boundary.  The current ratio-zero M5.0B runtime and its live processes stay
+  untouched until their natural terminal state.
