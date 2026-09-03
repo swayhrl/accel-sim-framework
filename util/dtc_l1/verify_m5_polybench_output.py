@@ -12,9 +12,9 @@ import re
 from pathlib import Path
 
 
-MISS_WORKLOADS = {"bicg", "gemv"}
+MISS_WORKLOADS = {"gemv"}
 COMPARE_WORKLOADS = {
-    "atax", "mvt", "syrk", "gesu", "syr2k", "2mm", "conv2d",
+    "atax", "bicg", "mvt", "syrk", "gesu", "syr2k", "2mm", "conv2d",
 }
 
 MISS = re.compile(r"^\s*Number of misses:\s*(\d+)\s*$", re.MULTILINE)

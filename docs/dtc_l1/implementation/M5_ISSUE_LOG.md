@@ -256,6 +256,26 @@
   boundary.  The current ratio-zero M5.0B runtime and its live processes stay
   untouched until their natural terminal state.
 
+## M5-T007 — BICG output checker selected the wrong source-defined verdict format
+
+- State: `OBSERVED -> SOURCE_CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
+- Evidence: the natural corrected ratio-zero BICG completion at
+  `/tmp/dtc-l1-m5-0b-ratio0-base-bicg-20260904/m5_run.log` ends with
+  `Non-Matching CPU-GPU Outputs Beyond Error Threshold of 0.50 Percent: 0`
+  and normal simulator exit.  The old checker classified `bicg` with the
+  unrelated `Number of misses` expression and therefore falsely reported zero
+  source verdicts.
+- Root cause: the checker workload map, not BICG source or simulator output.
+  The canonical source's emitted comparison is the common CPU/GPU mismatch
+  count, matching ATAX/MVT/SYRK/GESU/SYR2K/2MM/Conv2D format.
+- Repair/regression: move `bicg` to `COMPARE_WORKLOADS` in
+  `util/dtc_l1/verify_m5_polybench_output.py`; rerunning the repaired checker
+  on the preserved raw log prints
+  `PASS workload=bicg source_comparison_mismatches=0`.  The strict summary
+  `m5/generated/m5_0b_bicg_base_ratio0.json` passes with final PIB/lower
+  occupancy zero and exact `19186845/19186845` lower acquire/release closure.
+  No simulator behavior, workload, config, or assertion changed.
+
 ## M5-E1-001 — historical FWT `11_19` label is not yet a formal source identity
 
 - State: `OBSERVED -> SOURCE_CLASSIFIED -> SOURCE_RECOVERED -> BUILD_PTX_REPRODUCED -> OUTPUT_SMOKE_PENDING`.

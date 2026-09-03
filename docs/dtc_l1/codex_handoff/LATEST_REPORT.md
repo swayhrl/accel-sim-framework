@@ -6,16 +6,24 @@ Status: **M5-T005 CLOSED — M5.0B WORKLOAD RECOVERY RESUMED**
 
 ## Active corrected Paper-10 Base batch
 
-The normal M5.0B recovery wave is active as nine isolated ratio-zero
-`PAPER_BASE` runs for BICG, ATAX, GEMVER, MVT, SYRK, GESUMMV, SYR2K, 2MM, and
-2DConv; the corrected ratio-zero canonical SpMV Base run is already closed by
-R5DV.  Every active run uses config SHA-256
+The normal M5.0B recovery wave has one `OUTPUT_CLEAN_STRICT` ratio-zero
+`PAPER_BASE` BICG completion and eight active isolated runs for ATAX, GEMVER,
+MVT, SYRK, GESUMMV, SYR2K, 2MM, and 2DConv; the corrected ratio-zero canonical
+SpMV Base run is already closed by R5DV.  Every active run uses config SHA-256
 `993513296458bf014cfa33ff047e1ed7391a1fee990e3b4a2d9d738cab0ff366` and
 runtime SHA-256 `f115144d6009bab4af6d8ab0d86b69e54e8449a4c76a3809561571d32075a453`.
 They have separate `/tmp/dtc-l1-m5-0b-ratio0-base-*-20260904` directories and
 are currently computing with no deadlock/assertion/fatal signature.  The
 earlier ratio-25/old-runtime jobs remain preserved diagnostics, never formal
 substitutes.  See `m5/handoffs/M5_0B_RATIO0_BASE_BATCH.md`.
+
+Corrected BICG completed naturally with zero source-defined CPU/GPU mismatches,
+strict parser PASS, final PIB/lower occupancy zero, and exact
+`19186845/19186845` lower acquire/release closure.  A checker-only mapping bug
+initially expected the wrong BICG verdict format; it is repaired and regressed
+against the preserved raw log.  BICG evidence is
+`m5/generated/m5_0b_bicg_base_ratio0.json`; M5.0B remains active until all
+remaining Base workloads complete with the same checks.
 
 At the wall-clock diagnostic threshold, all nine ratio-zero processes advanced
 CPU time during a two-second observation.  They are therefore classified

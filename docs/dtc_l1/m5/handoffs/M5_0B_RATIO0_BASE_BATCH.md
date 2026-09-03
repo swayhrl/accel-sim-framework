@@ -20,24 +20,41 @@ any DTC/pending-write/scoreboard assertion.
 | policy | explicit `-gpgpu_l1_cache_write_ratio 0` |
 | source/build | existing M5 PolyBench/GPU anchor in `implementation/M5_COMPUTE_WORKLOAD_MANIFEST.md` |
 
-## Active job set
+## Corrected job set and state
 
-| Paper workload | executable | isolated run directory |
-| --- | --- | --- |
-| bicg | `bicg` | `/tmp/dtc-l1-m5-0b-ratio0-base-bicg-20260904` |
-| atax | `atax` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-20260904` |
-| gemv | `gemver` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-20260904` |
-| mvt | `mvt` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-20260904` |
-| syrk | `syrk` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-20260904` |
-| gesu | `gesummv` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-20260904` |
-| syr2k | `syr2k` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-20260904` |
-| 2mm | `twomm` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-20260904` |
-| conv2d | `twodconv` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-20260904` |
+| Paper workload | executable | state | isolated run directory |
+| --- | --- | --- | --- |
+| bicg | `bicg` | `OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-bicg-20260904` |
+| atax | `atax` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-20260904` |
+| gemv | `gemver` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-20260904` |
+| mvt | `mvt` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-20260904` |
+| syrk | `syrk` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-20260904` |
+| gesu | `gesummv` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-20260904` |
+| syr2k | `syr2k` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-20260904` |
+| 2mm | `twomm` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-20260904` |
+| conv2d | `twodconv` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-20260904` |
 
 All jobs carry their binary/PTX/config/runtime identity in `run_identity.txt`.
 They use isolated output directories and the M5 runner; no live process is
 shared or reused.  Source-defined output verdicts and strict summaries are
 created only after a natural terminal state.
+
+### BICG terminal evidence
+
+The corrected BICG run reached normal simulator exit at `2026-09-04T06:43:14Z`.
+Its source-defined CPU/GPU verdict is zero mismatches beyond the 0.50% threshold,
+and the strict summary is
+`generated/m5_0b_bicg_base_ratio0.json` (`gpu_tot_sim_cycle=51041920`,
+`gpu_tot_sim_insn=184803328`).  Final PIB and lower outstanding are zero;
+lower acquire/release closes exactly at `19186845/19186845`.  Raw log SHA-256:
+`f93222e8d227d869eecc70c88a0036f67c3d49499f9fb02f3621e427bcc69a5a`.
+
+The first automatic checker result was a tool mapping false negative:
+`bicg` was incorrectly assigned the `Number of misses` format even though the
+canonical BICG source emits the common `Non-Matching CPU-GPU Outputs` verdict.
+`verify_m5_polybench_output.py` now assigns BICG to that comparison format;
+the repaired checker passes the preserved raw log.  This does not alter the
+workload, source, simulator runtime, or result.
 
 ## Observed worker-pool envelope
 
