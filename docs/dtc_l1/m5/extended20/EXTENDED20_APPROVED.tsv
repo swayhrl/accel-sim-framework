@@ -1,0 +1,28 @@
+rank	workload	suite	algorithm	domain	role	selection_disposition
+1	BlackScholes	CUDA SDK	Black-Scholes option pricing	OTHER_SOURCE_BACKED_COMPUTE	compute-heavy/low-memory-pressure financial control	selected proposal; metadata corrected during review
+2	convolutionSeparable	CUDA SDK	separable 2-D convolution	IMAGE_SIGNAL_PROCESSING	high-spatial-reuse image stencil	selected proposal
+3	fastWalshTransform_11_19	CUDA SDK	Walsh-Hadamard transform	SEARCH_SORT_SCAN_REDUCTION	multi-stage transform/reordering	selected proposal
+4	scalarProd_13920	CUDA SDK	dot-product reduction	SEARCH_SORT_SCAN_REDUCTION	reduction/streaming coverage	selected proposal
+5	scan	CUDA SDK	prefix scan	SEARCH_SORT_SCAN_REDUCTION	write-heavy multi-level scan	selected proposal
+6	sortingNetworks	CUDA SDK	sorting network	SEARCH_SORT_SCAN_REDUCTION	compare-exchange/control sorting coverage	selected proposal
+7	transpose	CUDA SDK	matrix transpose	DENSE_LINEAR_ALGEBRA	coalesced/strided read-write contrast	selected proposal
+8	vectorAdd_6000000	CUDA SDK	vector addition	OTHER_SOURCE_BACKED_COMPUTE	large streaming low-pressure control	selected proposal
+9	cfd_097k	Rodinia	unstructured CFD	OTHER_SOURCE_BACKED_COMPUTE	unstructured indirect high-pressure scientific case	selected proposal
+10	btree	Rodinia	B+ tree search	SEARCH_SORT_SCAN_REDUCTION	pointer/index irregular search	selected proposal
+11	dwt2d	Rodinia	2-D wavelet transform	IMAGE_SIGNAL_PROCESSING	stage-dependent transform/locality	selected proposal
+12	gaussian	Rodinia	Gaussian elimination	DENSE_LINEAR_ALGEBRA	dense pivot/update control	selected proposal
+13	hotspot1	Rodinia	thermal stencil	STENCIL_STRUCTURED_GRID	iterative structured-grid reuse	selected proposal
+14	lud	Rodinia	LU decomposition	DENSE_LINEAR_ALGEBRA	blocked factorization/update; review promotion for broader coverage	promoted from proposal ALT02; replaces 3mm pre-performance
+15	bfs	Parboil	graph breadth-first search	GRAPH_TRAVERSAL	frontier irregular/atomic graph traversal	selected proposal
+16	cutcp	Parboil	Coulombic potential	PARTICLE_PHYSICS_NBODY	particle-to-grid mixed-access scientific case	selected proposal
+17	histo	Parboil	image histogram	IMAGE_SIGNAL_PROCESSING	atomic-hotspot/update-heavy coverage	selected proposal
+18	mri-q	Parboil	MRI-Q reconstruction	IMAGE_SIGNAL_PROCESSING	scientific streaming reconstruction	selected proposal
+19	sad	Parboil	sum of absolute differences	IMAGE_SIGNAL_PROCESSING	block-matching low-pressure contrast	selected proposal
+20	stencil	Parboil	3-D structured stencil	STENCIL_STRUCTURED_GRID	3-D structured-grid coverage	selected proposal
+
+# Ranked alternates after review
+ALT01	3mm	PolyBench	three chained matrix multiplies	DENSE_LINEAR_ALGEBRA	near Paper-10 2mm family; source-valid but demoted for diversity	review-demoted from primary
+ALT02	sgemm	Parboil	single-precision GEMM	DENSE_LINEAR_ALGEBRA	dense-reuse substitute	proposal ALT01 shifted
+ALT03	fastWalshTransform_7_21	CUDA SDK	Walsh-Hadamard transform	SEARCH_SORT_SCAN_REDUCTION	scale alternate for FWT	proposal ALT03
+ALT04	scalarProd_8192	CUDA SDK	dot-product reduction	SEARCH_SORT_SCAN_REDUCTION	scale alternate for scalarProd	proposal ALT04
+ALT05	vectorAdd_4000000	CUDA SDK	vector addition	OTHER_SOURCE_BACKED_COMPUTE	scale alternate for vectorAdd	proposal ALT05
