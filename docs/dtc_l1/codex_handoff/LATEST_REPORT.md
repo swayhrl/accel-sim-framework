@@ -2,7 +2,41 @@
 
 Stage: `M5.0B_WORKLOAD_RECOVERY`
 
-Status: **M5.0A PASS — M5.0B IN PROGRESS**
+Status: **M5 BLOCKED — RESEARCHER_DECISION_REQUIRED**
+
+## Stop record — frozen 16 KiB conventional-L1 dirty-set deadlock
+
+M5.0B cannot continue. Canonical Parboil CUDA JDS SpMV reproduces a real
+deadlock in both PAPER_BASE and LEGACY with the frozen 16 KiB, 128B-line,
+four-way L1 geometry. The LEGACY control excludes DTC PIB/Tag behavior.
+
+- Corrected source-reachable `cudaFuncCachePreferL1`/`PreferShared` variants
+  now use the same frozen 16 KiB geometry; the exact corrected replay still
+  fails, so that earlier configuration-fidelity omission is not causal.
+- Fatal-state evidence shows no L1D MSHR, no L1 miss-queue item, no memory or
+  interconnect traffic, but an L1 latency-queue load retry with all four ways
+  of its target set `MODIFIED`.
+- `tag_array::probe` returns `RESERVATION_FAIL` because the inherited SM7
+  `gpgpu_l1_cache_write_ratio=25` policy does not yet permit a modified victim.
+  The retry remains at L1 latency-queue stage zero, so its dependent
+  pending-write/scoreboard state cannot retire.
+
+This is a source-reachable conventional-L1 policy ambiguity at the researcher-
+frozen geometry. Do not change the dirty-victim ratio, reinterpret
+write-through `MODIFIED` state, enlarge the L1, disable deadlock detection, or
+weaken pending-write/scoreboard assertions without a researcher decision.
+
+Evidence is pushed:
+
+- Core `2f99d81422649242ae4a328767a4848de92a1c3e`
+  (`debug(l1): capture fatal dirty-set deadlock state`)
+- Framework `a5b1084520a8d06ef032469e538a545c8c6f8fe4`
+  (`docs(m5): record frozen 16KiB L1 deadlock evidence`)
+- Full causal record: `implementation/M5_ISSUE_LOG.md`, M5-T005.
+
+The user-requested parallel jobs have not been interrupted; their outputs are
+diagnostic only and cannot advance M5 while this HARD gate is unresolved. M5,
+including M5 review, must not proceed.
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 
