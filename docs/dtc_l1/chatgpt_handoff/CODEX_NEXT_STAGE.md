@@ -2,13 +2,19 @@
 
 ## Status
 
-**ACTIVE — EXPLICIT GOAL MODE: COMPLETE M2 -> M3 -> M4**
+**ACTIVE — RESUME M4 UNDER VERIFIED SOURCE-REACHABILITY BOUNDARY**
 
-M1 is closed PASS. M2 response/retirement recovery has already crossed the original conventional-fill blocker and is in validation/closeout. Run the remaining work as one persistent Codex Goal, not as a sequence of ordinary one-turn tasks.
+M1, M2, and M3 are closed PASS. M4 correctly stopped after proving that the frozen current PTX frontend cannot generate the existing dynamic proxy-fence path. That finding is now an accepted, explicitly documented source limitation rather than a requirement to implement unrelated PTX frontend semantics.
 
 Primary Goal contract:
 
 `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+
+Specific M4 fence disposition:
+
+`docs/dtc_l1/goal/M4_FENCE_REACHABILITY_RESOLUTION.md`
+
+For M4 fence-related requirements only, the resolution file and the updated `VALIDATION_ACCEPTANCE_MATRIX.md` are authoritative refinements of older generic M4 plan language.
 
 ## Active branches
 
@@ -22,21 +28,32 @@ Framework:
 
 M0 branches remain read-only anchors.
 
-## Current validated state
+## Closed validated stages
 
-M1 `FOUNDATION` is PASS and must remain closed:
+- `M1_FOUNDATION`: PASS; review pack exists.
+- `M2_IO_READ`: PASS; review pack exists.
+- `M3_OO_SECTOR`: PASS; whole-line OO, Ref Count/Shadow Ref, merge/wakeup, active reclamation, IO-vs-OO causal HOL, and sector S01-S09 are closed.
 
-- Core M1 closeout anchor: `48b0be73833fc89fcf833349e82886ddc6d883b0`;
-- M1 review pack: `docs/dtc_l1/review_packs/M1_FOUNDATION/`;
-- B01-B09, B07 recovery, parser/accounting, CTests, and LEGACY exact differential validation passed.
+Do not redo closed-stage work unless M4 reveals a real regression.
 
-M2 recovery has already established and smoke-tested a dedicated Paper-IO read request/response/PIB-writeback path. The latest mutable execution checkpoint is Codex-owned:
+## Current M4 source-backed state
 
-`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+Core M4 checkpoint before this specification refinement: `5aea1cbb41575e31c0c61f97dfc6d77cc15a3c9f`.
 
-Do not repeat already-passed recovery work solely because an older planning file describes the original failure.
+Framework fence-evidence checkpoint: `b18eca499b6fe92569070c4ebebe8d7374f6f68a`.
 
-## Required read order before launching/resuming Goal
+`implementation/M4_MEMORY_OP_SEMANTICS.md` establishes:
+
+- Store lifecycle observation without changing the configured source write/cache policy;
+- Atomic lifecycle observation without merging/loss of side effects;
+- architectural bypass preservation;
+- current PTX frontend cannot produce `FENCE_OP` / proxy-fence state;
+- PTX `membar` is distinct and must not be substituted;
+- regular dynamic fence behavior is explicitly unsupported.
+
+The source limitation is not permission to invent new parser/decode semantics.
+
+## Required read order before resuming Goal
 
 Framework:
 
@@ -45,88 +62,62 @@ Framework:
 3. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 4. this file
 5. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
-6. `docs/dtc_l1/goal/M2_IO_RESPONSE_RECOVERY_SPEC.md`
-7. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
-8. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
-9. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
+6. `docs/dtc_l1/goal/M4_FENCE_REACHABILITY_RESOLUTION.md`
+7. `docs/dtc_l1/implementation/M4_MEMORY_OP_SEMANTICS.md`
+8. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
+9. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
+10. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
 
 Core:
 
-10. `AGENTS.md`
-11. `docs/dtc_l1/DTC_L1_SPEC.md`
-
-If these conflict, STOP and report rather than guessing.
+11. `AGENTS.md`
+12. `docs/dtc_l1/DTC_L1_SPEC.md`
 
 ## Immediate execution objective
 
-Finish M2 completely:
+Resume M4 from the existing safe checkpoint. Do not add PTX fence support.
 
-1. close remaining I06-I15 HARD validation;
-2. perform the explicit high-MLP no-traditional-L1-MSHR proof;
-3. close counters/parser/inflight/PIB/dependency/lower-credit invariants;
-4. close release build/CTest/git hygiene;
-5. create/push `review_packs/M2_IO_READ/` only on full PASS.
-
-Then, without waiting for human confirmation:
-
-- execute `M3_OO_SECTOR`, with PAPER_OO whole-line HARD closeout before sector extension;
-- execute `M4_COMPUTE_BRINGUP`, beginning with the source-backed Store/Atomic/Fence/bypass semantics audit;
-- stop at `READY_FOR_M5_REVIEW`.
+1. Record `F00A FenceReachabilityAudit` PASS from the existing source evidence.
+2. Close `F00B NoSilentSubstitution`, `F00C CurrentDomainFenceAccounting`, and `F00D DynamicProxyPathPreserved`.
+3. Classify legacy end-to-end `F01-F03` as `SOURCE_UNREACHABLE_NA` for this frozen source anchor; do not call them PASS and do not substitute `membar`.
+4. Close W01-W04, A01-A04, BP01-BP02, and refined source-reachable MIX01.
+5. Finalize `implementation/WORKLOAD_MANIFEST.md`.
+6. Run at least five provenance-resolved representative Chapter-4 compute workloads under PAPER_BASE/PAPER_IO/PAPER_OO with identical input/unrelated configuration.
+7. For each accepted triplet, require identical dynamic instruction/Load/Store/Atomic/source-reachable-FENCE_OP counts, clean invariants, provenance, and accounting. Current-source FENCE_OP is expected to be zero; a real producer requires STOP/review.
+8. Close required CSV/parser outputs and hygiene.
+9. Create/push `review_packs/M4_COMPUTE_BRINGUP/` only after every active M4 HARD gate passes.
+10. Set `LATEST_REPORT.md` to `READY_FOR_M5_REVIEW`, push, and STOP.
 
 ## Explicit Goal behavior
 
-Ordinary checkpoints are **not stop conditions**.
+Ordinary checkpoints are not stop conditions. Continue automatically through M4 validation/workload bring-up when tests pass.
 
-Codex may make semantic checkpoint commits, push safe evidence, and update `LATEST_REPORT.md`, but should continue automatically after:
-
-- individual directed-test PASS;
-- successful builds;
-- M2 PASS;
-- M3 PASS;
-- successful diagnostic workload runs.
-
-A major-stage PASS requires its review pack before progression, but does not require new human authorization.
-
-Use the 20/40/60-minute no-progress policy for long commands. Do not terminate a job merely because it is long if measurable progress is present.
+A verified unsupported source feature is not repaired by inventing semantics. Stay inside the frozen source-reachable domain and report limitations explicitly.
 
 ## HARD stop conditions
 
 STOP only when:
 
-- a HARD gate fails reproducibly;
-- a correctness/architecture ambiguity cannot be source-resolved without guessing;
-- a fix would require changing frozen M0 semantics;
-- LEGACY/M1 closed behavior regresses;
-- progress would require a forbidden shortcut such as hidden conventional L1D MSHR/fill dependence for PAPER_IO reads;
+- an **active** HARD gate fails reproducibly;
+- a source-reachable correctness/architecture ambiguity cannot be resolved without guessing;
+- a real PTX/source path unexpectedly produces `FENCE_OP` and therefore reopens fence ordering validation;
+- a fix would require changing frozen M0 DTC semantics;
+- M1/M2/M3 closed behavior regresses;
 - unauthorized L2/NoC/DRAM redesign is required;
 - M4 reaches `READY_FOR_M5_REVIEW`.
-
-On HARD stop: preserve compact evidence, make only safe semantic commits, push, update Codex-owned `LATEST_REPORT.md`, and stop.
 
 ## Forbidden scope
 
 Do NOT:
 
+- implement `fence` lexer/parser/static-decode support in this goal;
+- map `membar` to `FENCE_OP` or proxy fence;
+- force `set_proxy_fence()`/`set_fence_proxy_kind()` on ordinary instructions;
+- bypass the source's unsupported regular-fence assertion to make a test run;
 - modify M0 anchors;
-- weaken/skip HARD gates;
-- fabricate conventional L1D MSHR or `m_extra_mf_fields` state for Paper-IO reads;
-- route IO-owned read responses through conventional `baseline_cache::fill()`;
-- keep DTC and conventional L1D read backends active for the same Paper-IO request;
-- create a second lane-level coalescing algorithm;
-- tune implementation toward thesis speedup values;
-- special-case expected deadlock/performance outcomes;
-- redesign L2/NoC/DRAM;
-- start sector extension before whole-line OO passes;
+- tune to thesis speedup values;
 - begin M5.
 
 ## Final completion condition
 
-The persistent Goal completes only when:
-
-- M2 PASS review pack exists;
-- M3 PASS review pack exists;
-- M4 PASS review pack exists;
-- required Base/IO/OO compute bring-up has matching dynamic operation counts and closed invariants;
-- both active branches are pushed and clean;
-- `LATEST_REPORT.md` is `READY_FOR_M5_REVIEW`;
-- M5 has not started.
+The persistent Goal completes when M4 passes under the explicitly documented frozen-source reachability domain, the M4 review pack is complete, accepted Base/IO/OO workload triplets close all active invariants/provenance, both branches are pushed/clean, `LATEST_REPORT.md` says `READY_FOR_M5_REVIEW`, and M5 has not started.
