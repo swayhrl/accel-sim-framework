@@ -39,6 +39,24 @@ They use isolated output directories and the M5 runner; no live process is
 shared or reused.  Source-defined output verdicts and strict summaries are
 created only after a natural terminal state.
 
+## Observed worker-pool envelope
+
+The M5.0A one-process value was an initial VecAdd calibration, not a bound for
+the representative corrected Base wave.  At `2026-09-03T18:26:55Z`, the
+already-running nine-job wave was remeasured without launching a further job:
+the host had 512 CPUs and 120,471,716 KiB `MemAvailable`; every ratio-zero
+worker had zero private `VmSwap`, with RSS 524,288--1,196,032 KiB (median
+1,003,520 KiB; p95 1,196,032 KiB).  The host's pre-existing 2 GiB swap pool
+was nearly full (72 KiB free), so no additional work is admitted merely from
+aggregate-memory arithmetic.
+
+Accordingly, `N_safe=9` is the observed envelope for this **current corrected
+Base-only batch**: all nine independent remaining M5.0B jobs are already
+admitted, continuously consume CPU, and retain isolated output paths.  This
+is scheduling evidence only, not a simulator-performance metric.  Any later
+IO/OO, Extended-20, or changed-runtime wave must remeasure its own RSS and
+headroom before admission.
+
 ## Diagnostic separation
 
 Older active jobs with config hashes `5ca33d...` or `0f037e...`, and older
