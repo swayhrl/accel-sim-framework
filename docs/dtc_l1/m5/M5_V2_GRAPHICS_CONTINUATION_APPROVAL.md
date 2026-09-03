@@ -1,48 +1,24 @@
 # M5 v2 Graphics Continuation Approval
 
-Status: **APPROVED — CONTINUE GRAPHICS AFTER COMPUTE M5.6**
+Status: **HISTORICAL APPROVAL — SCHEDULING SUPERSEDED BY M5 v3**
 
 Approval date: 2026-09-04.
 
-This file records the researcher decision to extend the active M5 Goal beyond the ten-compute closeout. It does not change the already-approved M5 v1 compute matrix, ratio-zero dirty-victim refinement, Figure 4.2 category contract, Figure 4.7 metric, or frozen DTC architecture.
+This file originally authorized graphics continuation after the ten-compute M5.6 closeout. Its scientific constraints remain valid, but its sequencing/freeze assumptions are superseded by:
 
-## Approved progression
+`docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
 
-Immediate work remains the existing compute path:
+Current authoritative interpretation:
 
-`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+- M5.7 provenance and M5.8 graphics path recovery may run **now** in an isolated Framework-only graphics-research window;
+- M5.9+ graphics Core/integration work must wait for `M5.COMPUTE_FREEZE`;
+- `M5.COMPUTE_FREEZE` requires both Paper-10 M5.6 PASS and Extended-20 M5.E3 PASS;
+- graphics integration branches are created from the exact compute-freeze SHAs;
+- M5.12 depends on Paper-10, Extended-20, and the graphics formal/unavailable terminal evidence.
 
-After M5.6 passes, Codex must freeze the compute result set and continue automatically:
+Preserved scientific constraints:
 
-`M5.7 Graphics Provenance -> M5.8 Graphics Path Recovery -> M5.9 Graphics Infrastructure -> M5.10 Graphics Fidelity Pilot -> M5.11 Five-Scene Formal Graphics -> M5.12 Full Synthesis`
-
-Detailed authority:
-
-- `M5_GRAPHICS_POST_COMPUTE_PLAN.md`
-- `M5_GRAPHICS_HANDOFF_CONTRACT.md`
-
-## Compute preservation
-
-At M5.6, record immutable compute Core/Framework SHAs and create isolated graphics branches from those exact heads. Graphics integration work must not rewrite or invalidate completed compute FORMAL results.
-
-## Existing G1 result
-
-The existing `UNAVAILABLE_WITH_CURRENT_INFRA` audit is retained as valid evidence about the current ready-made infrastructure. It does not terminate the post-compute graphics effort. M5.8 is authorized to search for original thesis/project artifacts, historical graphics-enabled simulator support, a defensible direct path, or a source-backed trace/replay path.
-
-A calibrated memory proxy is supplemental only and cannot be used for paper graphics bars or `GM-ALL-PAPER`.
-
-## Allowed terminal states
-
-If source-backed graphics reproduction succeeds:
-
-`M5_FULL_REPRO_READY_FOR_REVIEW`
-
-If an exhaustive post-compute audit proves that no source-backed graphics path can be established without inventing semantics:
-
-`M5_COMPUTE_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
-
-Do not stop at `M5_COMPUTE_READY_FOR_REVIEW` merely because compute M5.6 passes. That state is now a checkpoint/freeze boundary, not the persistent Goal terminal state.
-
-## Scope boundary
-
-Figure 4.6 area/synthesis remains outside this continuation. A fresh RTL/synthesis reproduction, if desired, is reserved for a later M6 authorization.
+- do not use a calibrated memory proxy as formal paper graphics reproduction;
+- `GM-ALL-PAPER` requires all original 10 compute + 5 graphics workloads to be source-backed/correctness-clean and requires cross-path metric comparability;
+- Extended-20 is supplemental and never part of `GM-ALL-PAPER`;
+- Figure 4.6 area/synthesis remains outside M5 and requires separate M6 authorization.
