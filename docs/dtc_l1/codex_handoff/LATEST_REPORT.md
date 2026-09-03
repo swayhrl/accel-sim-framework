@@ -1,8 +1,8 @@
 # Latest Codex Report
 
-Stage: `M4_COMPUTE_BRINGUP`
+Stage: `M5.0B_WORKLOAD_RECOVERY`
 
-Status: **READY_FOR_M5_REVIEW**
+Status: **M5.0A PASS — M5.0B IN PROGRESS**
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 
@@ -52,4 +52,13 @@ The review pack is `review_packs/M4_COMPUTE_BRINGUP/`.
   frontend cannot produce the existing dynamic proxy-fence path. No PTX fence
   support was added and `membar` was not mapped to `FENCE_OP`.
 
-M5 is not begun and remains unauthorized. Stop at this handoff state.
+## M5.0A anchor closed
+
+M5 now runs only on dedicated M5 branches. Branch ancestry, a Release Core
+build, all three DTC CTests, and LEGACY/Base/IO/OO VecAdd sentinels pass. The
+M4 LEGACY/IO/OO cycle sentinels match exactly. Runtime/toolchain/config hashes,
+the resumable identity registry, safe initial concurrency, and raw-log index
+are recorded in `m5/FORMAL_ANCHOR.md` and `m5/handoffs/M5_0A_ANCHOR.md`.
+
+Active work is M5.0B recovery and source verification of all ten thesis compute
+workloads. No formal paper performance figure has been claimed yet.
