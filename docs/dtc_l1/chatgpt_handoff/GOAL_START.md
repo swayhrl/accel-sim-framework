@@ -1,42 +1,31 @@
 # DTC-L1 M5 Explicit Goal Launch Contract
 
-Status: **ACTIVE — M5 v1 CONTINUOUS COMPUTE GOAL AUTHORIZED**
+Status: **ACTIVE — M5 v1 CONTINUOUS COMPUTE GOAL; M5-T005 DECISION RESOLVED**
 
-This is the durable objective for Codex Goal mode. Detailed experiment definitions are in `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`; the researcher-approved interpretation/activation is in `docs/dtc_l1/m5/M5_V1_APPROVAL.md`.
+This is the durable objective for Codex Goal mode.
+
+Primary M5 authority:
+
+- `docs/dtc_l1/m5/M5_V1_APPROVAL.md`;
+- `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md` — specific approved refinement for M5-T005;
+- `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`;
+- `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`;
+- `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`;
+- `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`.
 
 ## Persistent Goal
 
-Establish a source/workload/config/metric fidelity lock, then reproduce and explain the Decoupled-Tag Cache mechanism on the ten thesis general-purpose compute workloads through Figures 4.2, 4.5, 4.7, 4.8, 4.9, and 4.10, resolving ordinary implementation/workload/platform issues inside Goal mode instead of stopping at the first failure.
+Reproduce and explain the Decoupled-Tag Cache mechanism on the ten thesis general-purpose compute workloads through Figures 4.2, 4.5, 4.7, 4.8, 4.9, and 4.10, resolving ordinary implementation/workload/platform issues inside Goal mode rather than stopping at the first failure.
 
-Primary scientific objective:
+Scientific target:
 
 `traditional L1 structural limits -> fewer live concurrent misses -> DTC removes structural limits -> more concurrency / better latency hiding -> performance effect`.
 
 Exact thesis speedups are references, not pass thresholds.
 
-Final compute state:
+Terminal compute state:
 
 `M5_COMPUTE_READY_FOR_REVIEW`.
-
-The Goal is complete only when:
-
-1. M5.0 fidelity lock is complete and a formal behavior anchor exists;
-2. all ten thesis compute algorithms have source-backed reproducible mappings and deterministic inputs;
-3. `gemv/gemver`, `gesu/gesummv`, and `conv2d/2DConvolution` naming/algorithm mappings are explicitly resolved;
-4. platform/config and metric definitions are source-audited and frozen;
-5. Figure 4.2 Base structural-bottleneck experiment is complete;
-6. Figure 4.5 Base/IO/OO compute performance is complete;
-7. Figure 4.7 common live-miss per-SM cycle-average result is complete;
-8. Figure 4.8 logical-cache sensitivity is complete;
-9. Figure 4.9 physical-cache/reclaim/deadlock-pressure sensitivity is complete;
-10. Figure 4.10 PIB sensitivity is complete;
-11. every weak/negative/surprising result has a source-backed causal classification rather than only a comparison to thesis numbers;
-12. M5.6 integrated causal synthesis is complete;
-13. graphics G0-G2 preparation has a source-backed readiness/feasibility classification;
-14. all formal result identities, parsers, counter sanity, raw-log indexes, handoffs, and review packs required by the matrix/contract exist;
-15. both M5 branches are pushed/clean and `git diff --check` passes;
-16. `codex_handoff/LATEST_REPORT.md` says `M5_COMPUTE_READY_FOR_REVIEW`;
-17. no post-review M5.7+ supplemental/graphics-formal stage has begun.
 
 ## Active branches
 
@@ -48,12 +37,7 @@ Framework:
 
 - `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`
 
-Validated parents:
-
-- Core `cdeec769fd0c1be12b45d58536ecb81074d4b415`;
-- Framework `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`.
-
-Do not modify the validated M1-M4 branches for M5 experiments.
+Validated parents remain M1-M4 final anchors. Do not write M5 work back to them.
 
 ## Mandatory read order
 
@@ -62,138 +46,102 @@ Framework:
 1. `AGENTS.md`
 2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
-4. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
-5. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
-6. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-7. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
-8. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
-9. this file
-10. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-11. final M4 review pack / completion-accounting recovery evidence as regression context
+4. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+5. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
+6. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+7. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+8. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
+9. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
+10. this file
+11. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+12. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
+13. final M4 review pack as regression context
 
 Core:
 
-12. `AGENTS.md`
-13. `docs/dtc_l1/DTC_L1_SPEC.md`
+14. `AGENTS.md`
+15. `docs/dtc_l1/DTC_L1_SPEC.md`
 
-The stale planning banner in `M5_EXPERIMENT_MATRIX.md` is superseded by `M5_V1_APPROVAL.md`; the matrix body is approved v1.
+## Researcher-frozen M5 definitions
 
-## Researcher-frozen interpretations
+### Main configuration
 
-### Figure 4.5
+- PAPER_BASE: conventional 16 KiB L1, 128B, 4-way, PIB=8, MSHR=32.
+- PAPER_IO: 16 KiB logical Tag capacity + 80 KiB physical Cacheline Array, PIB=256.
+- PAPER_OO: 16 KiB logical Tag capacity + 80 KiB physical Cacheline Array, PIB=128.
 
-Primary DTC configuration uses **16KB logical Tag/cache capacity + 80KB physical Cacheline Array**. IO PIB=256; OO PIB=128. Base remains conventional 16KB L1, PIB=8, MSHR=32.
+### Conventional-L1 dirty-victim policy
+
+All paper-facing formal configs explicitly use:
+
+`-gpgpu_l1_cache_write_ratio 0`.
+
+Keep write-through and all other frozen cache semantics unchanged. Ratio 25 is diagnostic only.
 
 ### Figure 4.7
 
-A live miss begins when a new L1/DTC miss is committed into lower-request ownership and ends on final lower-response completion. Pending-hit merge adds no live request; a real duplicate lower request after Tag eviction does.
-
-Primary metric:
-
-`avg_concurrent_misses_per_sm = sum(live misses across all SMs/cycles) / (num_SM * sampled_kernel_cycles)`.
+Common live miss = new-miss lower-request commit through final lower response. Primary plotted metric = per-SM cycle average.
 
 ### Figure 4.2
 
-Formal paper-facing categories only:
+Paper-facing categories = PIB full, true Tag+Cacheline allocation failure, MSHR capacity/merge, Miss Queue/lower-capacity. Tag-bank arbitration is separate diagnostic evidence.
 
-1. PIB/waiting-buffer full;
-2. true Tag & Cacheline allocation failure;
-3. MSHR capacity/merge failure;
-4. Miss Queue/lower-request-capacity failure.
+## Current resume point
 
-Tag-bank arbitration conflicts remain a separate diagnostic channel.
+M5.0A is PASS. M5.0B is active.
+
+Before continuing unresolved workload recovery, close M5-T005 through the ordered R5DV sequence in `M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`:
+
+- preserve ratio-25 diagnostics;
+- change the complete formal config family to explicit ratio 0 only;
+- directed dirty-set replacement regression;
+- canonical SpMV LEGACY/PAPER_BASE 16 KiB ratio-0 recovery;
+- sentinel/config-identity refresh;
+- close M5-T005;
+- resume M5.0B from existing valid checkpoints.
+
+Existing diagnostic jobs may continue. Corrected work need not wait for them if calibrated host resources permit parallel execution.
 
 ## Authorized continuous sequence
 
-Execute and transition automatically:
+After M5-T005 closes, continue automatically:
 
-`M5.0A -> M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`.
+`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`.
 
-Each successful substage must:
+At each PASS boundary:
 
-1. satisfy its acceptance criteria;
-2. produce the handoff required by `M5_HANDOFF_CONTRACT.md`;
-3. run strict parser/counter sanity;
-4. commit compact evidence with explicit path staging;
-5. push affected branches;
-6. update `codex_handoff/LATEST_REPORT.md`;
-7. immediately begin the next authorized substage.
-
-Do not stop to ask for confirmation between passing substages.
-
-## Immediate start point — M5.0A
-
-Start with branch/anchor/reproducibility lock:
-
-- verify ancestry from validated M4 finals;
-- release build and all DTC CTests;
-- LEGACY/Base/IO/OO sentinel regressions;
-- formal source/config/workload/parser identity format;
-- runtime/toolchain/library hashes;
-- resumable result registry;
-- safe measured simulation concurrency;
-- `m5/handoffs/M5_0A_ANCHOR.md`.
-
-Then continue to workload recovery M5.0B.
-
-## Workload recovery behavior
-
-All ten thesis compute algorithms must be recovered/source-verified. Missing binaries or wrappers are not ordinary stop conditions.
-
-Use canonical suite source where necessary, build source-equivalent wrappers, validate output, and lock source/PTX/input provenance. Never substitute a different algorithm because it is easy to run.
-
-Input sizes are selected from canonical/standard datasets and Base-only full-load/work-amount evidence. Never choose a dataset because it maximizes DTC speedup.
-
-SpMV receives special fidelity investigation if Base still does not exhibit the paper-discussed PIB pressure.
+1. satisfy acceptance criteria;
+2. produce required handoff/review evidence;
+3. strict parser/counter sanity;
+4. explicit-path commit/push;
+5. update `codex_handoff/LATEST_REPORT.md`;
+6. begin the next substage without asking for confirmation.
 
 ## Problem-resolution behavior
 
 Follow `M5_PROBLEM_RESOLUTION_POLICY.md`.
 
-The following are normally in-goal problems to diagnose and resolve rather than Goal-stop boundaries:
+Ordinary issues — missing workload/wrapper, build/PTX failure, assertions, counter gaps, timeout, poor speedup, absent expected pressure, platform bottlenecks, or source-correct repairable bugs — are normally solved inside the Goal.
 
-- missing workload/input/wrapper;
-- build/PTX extraction failure;
-- missing parser/counter;
-- assertion discovered under a new workload;
-- operation-count mismatch;
-- timeouts;
-- weak/negative performance;
-- absent expected Base structural pressure;
-- unexpected Tag-bank/downstream bottleneck;
-- source-backed simulator bug;
-- stale formal results after a repair.
-
-Use the issue lifecycle in `implementation/M5_ISSUE_LOG.md`, regress after repairs, invalidate stale results, and resume.
+A substantial speed/performance difference caused by the ratio-0 correction is evidence to classify, not a target to tune away.
 
 ## Pause conditions
 
-Pause with `RESEARCHER_DECISION_REQUIRED` only if:
+Pause only for a genuine researcher-decision boundary that cannot be source/thesis resolved without choosing different experiment meaning, a required change to frozen M0-M4 architecture semantics, or terminal `M5_COMPUTE_READY_FOR_REVIEW`.
 
-- the needed change would alter frozen M0/M1-M4 architecture semantics rather than correct implementation fidelity;
-- multiple scientifically different source-supported interpretations remain and the thesis does not resolve them;
-- a required compute algorithm cannot be source-verified/reconstructed without changing experiment meaning;
-- a finding invalidates one of the researcher-frozen M5 definitions above;
-- compute M5 reaches terminal `M5_COMPUTE_READY_FOR_REVIEW`.
+## Parallel graphics
 
-Graphics infeasibility alone is not a compute pause condition.
-
-## Parallel graphics preparation
-
-Progress G0-G2 in parallel when resources permit. It may recover provenance, audit simulator/trace feasibility, and prepare a source-backed execution manifest.
-
-Do not let graphics work alter the compute formal behavior anchor without normal invalidation/regression. Do not emit `GM-ALL-PAPER` until all five graphics workloads are source-backed and correctness-clean.
+Graphics G0-G2 preparation remains nonblocking and may progress when resources permit. Do not contaminate compute formal identities. Do not emit `GM-ALL-PAPER` until all five graphics workloads are source-backed and correctness-clean.
 
 ## Forbidden before compute review
 
 Do not:
 
-- tune architecture, workload size, or downstream parameters to thesis speedups;
-- hide valid negative results;
-- silently replace algorithms;
-- fold Tag-bank conflict into Figure 4.2 Tag+Cacheline allocation failure;
-- use heterogeneous occupancy proxies for Figure 4.7;
-- include MODERN_OO_SECTOR in paper Figures 4.2-4.10;
-- claim simulator C++ storage as Figure 4.6 synthesis area;
-- present a graphics memory proxy as direct graphics reproduction;
-- start M5.7+ supplemental studies before compute review.
+- enlarge 16 KiB Base to bypass pressure;
+- restore ratio 25 to paper-facing runs merely because it changes performance;
+- invent a new `tag_array::probe` fallback just to keep the 25% heuristic;
+- disable deadlock detection or weaken scoreboard/accounting assertions;
+- tune architecture/input/downstream settings to thesis bars;
+- substitute algorithms silently;
+- mix MODERN_OO_SECTOR into Figures 4.2-4.10;
+- begin M5.7+ supplemental studies before compute review.
