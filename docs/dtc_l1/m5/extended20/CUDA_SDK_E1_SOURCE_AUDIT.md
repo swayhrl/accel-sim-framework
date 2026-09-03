@@ -11,7 +11,7 @@ evidence only; they are not formal M5 results.
 | Approved ID | source entry | source-backed input | output contract | source SHA-256 | E1 status |
 | --- | --- | --- | --- | --- | --- |
 | `BlackScholes` | `BlackScholes/BlackScholes.cu` | fixed `OPT_N=100000`, `NUM_ITERATIONS=1` | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `7540eeeccf9c5489a51db0aafb99d1ff05488c9ee787c3afdbda0fc078dd452d` | source recovered |
-| `convolutionSeparable` | `convolutionSeparable/main.cpp` | `--size 3072` parsed; `imageW=size/8`, `imageH=size/16` | CPU/GPU L2 norm `<1e-6`, `QA_PASSED` | `6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0` | source recovered |
+| `convolutionSeparable` | `convolutionSeparable/main.cpp` | `--size 3072` parsed; `imageW=size/8`, `imageH=size/16` | CPU/GPU L2 norm `<1e-6`, `QA_PASSED` | `6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0` | source/PTX recovered; executable/output smoke pending |
 | `fastWalshTransform_11_19` | `fastWalshTransform/fastWalshTransform.cu` | `-logK 11 -logD 19` parsed | L2 norm `<1e-6`, `PASSED` | `284332c572510b2415d23506f72e3d9f879c2c895ddb86e4e1d34b2033d2030e` | source/build/PTX recovered; see `FWT_11_19_E1_RECOVERY.md` |
 | `scalarProd_13920` | `scalarProd/scalarProd.cu` | `--size 13920` parsed | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `742008e11f8888c5521c913497a1b48fd8de104cbeff2dc6df24f667eab8ab8e` | source/build/PTX recovered; output smoke pending |
 | `scan` | `scan/main.cpp` | source-fixed `N=13*(1048576/2)/256`; no workload arguments | exhaustive CPU/GPU scan comparison, `QA_PASSED` | `dba6488710d5d7ba6ac6b11d5441fad389b7e2431881c906047b1b66f0dbd7c0` | source/PTX recovered; executable/output smoke pending |
@@ -89,6 +89,19 @@ without changing any workload file:
 These are source/PTX identities only.  The host executables and their
 source-defined output checkers remain pending until the exact legacy helper
 link surface is recovered; no PTX-only artifact is treated as an E1 PASS.
+
+## convolutionSeparable PTX recovery
+
+The CUDA-11.8 `sm_52` extraction from the frozen
+`convolutionSeparable.cu` source succeeds without changes:
+
+| Artifact | SHA-256 | PTX entries |
+| --- | --- | --- |
+| `convolutionSeparable.ptx` | `6642ed9bb4cff7627b7f2d2318770203ea996dc6b15a4bd9b422afad5e8c4f8c` | `_Z21convolutionRowsKernelPfS_iii`, `_Z24convolutionColumnsKernelPfS_iii` |
+
+The source-defined `--size 3072` host setup and L2-norm checker remain part
+of the required executable/output smoke.  PTX extraction alone does not close
+that E1 member.
 
 No member enters E2 until M5.2 freezes the common Core/Framework/config/parser
 anchor and the complete E1 identity tuple is rechecked.
