@@ -1,6 +1,8 @@
 # M5 Problem Resolution Policy
 
-Status: **PLANNING DRAFT — applies after M5 Goal authorization**
+Status: **ACTIVE — M5 v1 GOAL AUTHORIZED**
+
+Authority: `M5_V1_APPROVAL.md` + `M5_EXPERIMENT_MATRIX.md`.
 
 M5 is a long-running experimental Goal. Its default behavior is to **solve problems and continue**, not stop at the first missing workload, build error, assertion, timeout, or disappointing speedup.
 
@@ -218,13 +220,8 @@ Graphics unavailability does **not** stop compute M5. It remains a parallel prep
 
 ## 9. Goal communication policy
 
-Ordinary progress messages, safe checkpoint commits, or one experiment PASS are not stop boundaries.
+Ordinary progress messages, safe checkpoint commits, resolved bugs, completed workload recovery, individual figure completion, or surprising-but-classified performance are not human-approval boundaries.
 
-At each M5 substage:
+At every substage PASS, follow `M5_HANDOFF_CONTRACT.md`: write the handoff, commit/push compact evidence, update `codex_handoff/LATEST_REPORT.md`, and continue automatically.
 
-- preserve evidence;
-- write the required handoff/review pack;
-- push semantic commits;
-- continue automatically to the next authorized substage.
-
-If an issue is being actively resolved, `LATEST_REPORT.md` should say `M5_<stage>_RESOLVING_<issue>` rather than `HARD_FAIL` unless the issue has reached one of the true researcher-decision boundaries above.
+If a stage has an active issue, `LATEST_REPORT.md` should say `RESOLVING_ISSUE` and identify the issue ID/resume point while work continues. Use `RESEARCHER_DECISION_REQUIRED` only for the pause conditions in section 8.
