@@ -13,11 +13,12 @@ the profiler-controlled prefill ROI.
 - Postprocessed traces retained: 724 `*.traceg.xz`.
 - Raw/full `kernelslist.g` SHA256:
   `1ac8a5c2496491be41af6305673b34a661175c15754a438fc740ca2d2449c971`.
-- Classifier result: 724 `COMPUTE`, 0 `NCCL_COLLECTIVE`, 0 `MEMCPY`, and 0
-  `UNKNOWN_OTHER`; the raw list remains in the bundle.
+- Embedded-header classifier result: 692 `COMPUTE`, 32 `NCCL_COLLECTIVE`, 0
+  `MEMCPY`, and 0 `UNKNOWN_OTHER`; the raw list remains in the bundle. The
+  older filename-only 724 COMPUTE result is historical-invalid semantically.
 - Metadata validator: one contiguous Weight allocation, 128 real KV events,
-  no synthetic KV; trace-address coverage is correctly reported as unavailable
-  (all coverage counters zero), not inferred.
+  no synthetic KV; a full trace-format-aware runtime-range coverage scan is
+  maintained in the M4A merge-prep review pack, not inferred.
 
 The archive is retained locally at
 `/workspace/m4a-rented-host-pilot/formal-prefill/m4a-llama-prefill-20260902T182016Z.tar.zst`.

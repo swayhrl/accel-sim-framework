@@ -4,6 +4,17 @@ Stage: `M4A_C_FORMAL_CAPTURE`
 
 ## POSTCAPTURE_REVIEW_PASS_SAFE_TO_POWER_OFF
 
+## M4A_MERGE_PREP_PASS_READY_FOR_INTEGRATION
+
+Main-server-only MP0--MP8 merge preparation completed against the immutable
+formal prefill/decode1 archives. Exact active-lane coverage completed with
+724/724 prefill and 772/772 decode1 trace files, zero decoder invariant
+failures, 47-bit minimum required VA width for both ROIs, and zero addresses
+at or above 2^49 or 2^56. The controlled integration handoff is
+`docs/vm_tlb/review_packs/M4A_MERGE_PREP/INTEGRATION_MANIFEST.md`; exact
+object/page statistics are in `ADDRESS_COVERAGE.md`. This is not a Track-A
+merge and makes no permanent NCCL-policy decision.
+
 The current local-model Goal authorization supersedes the historical
 credential-only `GOAL_BLOCKED` snapshot. The exact frozen local snapshot of
 `meta-llama/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08` was

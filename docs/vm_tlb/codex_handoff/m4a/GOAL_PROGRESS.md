@@ -2,6 +2,15 @@
 
 Goal: `M4A_C_FORMAL_CAPTURE`
 
+## M4A merge preparation
+
+MP0--MP8: PASS. Both formal archives were independently admitted, semantic
+kernel classification was rebuilt from embedded headers, full exact address
+coverage was computed from SHA-bound resumable partials, and bounded frozen
+parser compatibility evidence is retained in the M4A merge-prep review pack.
+The next authorized consumer is later integration review; no Track-A merge was
+performed in this stage.
+
 ## Power-loss recovery record
 
 `INFRASTRUCTURE_INTERRUPTION / AUTO-DL_BALANCE_SHUTDOWN`: the rented instance

@@ -1,7 +1,7 @@
 # Open issues
 
-Traceg carries memory addresses/widths, so the new read-only streaming analyzer
-can calculate sidecar-range coverage; a full prefill scan was stopped as
-impractical under current local temporary-expansion constraints, so formal
-coverage remains UNKNOWN until run on sufficient scratch capacity. No permanent
-NCCL policy is claimed; filename-only classifier counts are not semantic counts.
+The frozen traceg payload carries active masks, widths, and all three tracer
+address formats. M4A merge-prep performs the complete bounded-memory streaming
+scan without materializing decompressed trace text. Its runtime-range result is
+not exact tensor-lifetime attribution. No permanent NCCL policy is claimed;
+filename-only classifier counts are superseded by embedded-header semantics.
