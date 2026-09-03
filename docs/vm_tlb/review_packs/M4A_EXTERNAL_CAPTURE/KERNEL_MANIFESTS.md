@@ -1,6 +1,8 @@
 # Kernel manifests
 
 Raw rank0 traces and raw/full `kernelslist.g` are retained inside both archives.
-The reproducible classifier reports prefill 724 and decode1 772 `COMPUTE`, with
-zero `NCCL_COLLECTIVE`, `MEMCPY`, and `UNKNOWN_OTHER`; derived compute-only lists
-are byte-identical to the corresponding full lists. No raw trace was deleted.
+The filename-only classifier reports all entries COMPUTE, but RF3 established
+that this is not an absence of NCCL: a prefill middle trace header is
+`ncclDevKernel_AllReduce_Sum_bf16_TREE...`. `kernelslist.g` contains filenames,
+not embedded kernel names, so the current classifier cannot recognize it. Raw
+evidence remains intact; no permanent keep/drop policy is made.

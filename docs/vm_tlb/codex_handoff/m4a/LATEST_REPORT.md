@@ -2,7 +2,7 @@
 
 Stage: `M4A_C_FORMAL_CAPTURE`
 
-## GOAL_PASS_READY_FOR_CHATGPT_REVIEW
+## POSTCAPTURE_REVIEW_PASS_SAFE_TO_POWER_OFF
 
 The current local-model Goal authorization supersedes the historical
 credential-only `GOAL_BLOCKED` snapshot. The exact frozen local snapshot of
@@ -35,3 +35,5 @@ Both have real Weight/KV sidecars (one flat Weight allocation, 128 KV events),
 no synthetic KV, retained raw/full lists, and bounded frozen-parser starts on
 ordinary compute kernels. The AutoDL balance shutdown after G3 is recorded as
 `INFRASTRUCTURE_INTERRUPTION / AUTO-DL_BALANCE_SHUTDOWN`, not a capture failure.
+RF0 independently reverified both main-server archives and all required
+non-regenerable evidence. `SAFE_TO_POWER_OFF`.

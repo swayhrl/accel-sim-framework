@@ -33,3 +33,10 @@ zstd/tar listing test passed. It must not be recaptured.
   `/workspace/m4a-rented-host-pilot/r4-diagnostic-decode1/`
 
 The diagnostic decode1 trace is not formal evidence.
+
+## Post-capture review fix
+
+`POSTCAPTURE_REVIEW_PASS_SAFE_TO_POWER_OFF`: both main-server formal archives,
+internal manifests, traces, sidecars, logs, and provenance were independently
+reverified. Embedded NCCL headers explain the filename-only classifier result;
+offline full coverage remains UNKNOWN under current scratch limits.
