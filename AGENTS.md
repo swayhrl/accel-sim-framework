@@ -1,143 +1,149 @@
 # AGENTS.md — Decoupled-Tag L1 M5 Research Workflow
 
-This repository is the coordination, experiment-orchestration, and evidence repository for M5 performance/mechanism reproduction.
+This repository coordinates M5 mechanism/performance reproduction.
 
 ## Mandatory read order on `hrl/decoupled-l1-exp-m5-v0`
 
 1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 2. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
 3. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
-4. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
-5. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
-6. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-7. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
-8. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
-9. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
-10. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-11. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
-12. `docs/dtc_l1/review_packs/M4_COMPUTE_BRINGUP/README.md`
-13. Core M5 `AGENTS.md`
-14. Core `docs/dtc_l1/DTC_L1_SPEC.md`
+4. `docs/dtc_l1/m5/M5_V2_GRAPHICS_CONTINUATION_APPROVAL.md`
+5. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
+6. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+7. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+8. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
+9. `docs/dtc_l1/m5/M5_GRAPHICS_POST_COMPUTE_PLAN.md`
+10. `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
+11. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
+12. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+13. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+14. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
+15. final M4 review pack
+16. Core M5 `AGENTS.md`
+17. Core `docs/dtc_l1/DTC_L1_SPEC.md`
 
-`M5_V1_APPROVAL.md` activates the detailed matrix. `M5_DIRTY_VICTIM_POLICY_RESOLUTION.md` is the researcher-approved specific refinement for M5-T005. For unrelated scientific conflicts that change experiment meaning, do not guess.
+`M5_V1_APPROVAL.md` activates the compute matrix. `M5_DIRTY_VICTIM_POLICY_RESOLUTION.md` resolves M5-T005. `M5_V2_GRAPHICS_CONTINUATION_APPROVAL.md` extends the persistent Goal beyond M5.6 into post-compute graphics recovery/execution.
 
 ## Branch roles
 
-Validated historical anchors:
+Validated M1-M4 branches are read-only anchors.
 
-- Core M1-M4: `hrl/decoupled-l1-m1m4-v0` at `cdeec769fd0c1be12b45d58536ecb81074d4b415`.
-- Framework M1-M4: `hrl/decoupled-l1-exp-m1m4-v0` at `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`.
+Active compute branches:
 
-M5 working branches:
+- Core `hrl/decoupled-l1-m5-v0`
+- Framework `hrl/decoupled-l1-exp-m5-v0`
 
-- Core: `hrl/decoupled-l1-m5-v0`.
-- Framework: `hrl/decoupled-l1-exp-m5-v0`.
+After M5.6 PASS, freeze compute SHAs and create isolated graphics branches:
 
-Do not write M5 changes back to M0 or M1-M4 branches.
+- Core `hrl/decoupled-l1-m5-graphics-v0`
+- Framework `hrl/decoupled-l1-exp-m5-graphics-v0`
+
+Do not rewrite compute FORMAL evidence from graphics branches.
 
 ## Current progression
 
-M5.0A is PASS. M5.0B is ACTIVE.
+M5.0A is PASS. M5.0B is ACTIVE. Close M5-T005 through the approved R5DV sequence, then resume the existing valid workload-recovery checkpoint.
 
-M5-T005's prior `RESEARCHER_DECISION_REQUIRED` boundary is resolved. Execute the R5DV sequence in `M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`, close the issue with evidence, then resume the existing M5.0B workload work without redoing valid provenance work.
+Compute sequence:
 
-After M5.0B PASS, continue automatically:
+`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
 
-`M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`.
+M5.6 is a compute freeze/checkpoint, not the persistent Goal terminal state.
 
-Terminal compute state:
+Post-compute sequence:
 
-`M5_COMPUTE_READY_FOR_REVIEW`.
+`M5.7 -> M5.8 -> M5.9 -> M5.10 -> M5.11 -> M5.12`
+
+Final M5 states:
+
+- `M5_FULL_REPRO_READY_FOR_REVIEW`, or
+- `M5_COMPUTE_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW` after exhaustive source-backed graphics recovery fails.
 
 ## Scientific objective
 
-M5 targets **mechanism/trend fidelity**, not numerical fitting to thesis speedup values.
+M5 targets mechanism/trend fidelity, not fitting thesis speedup numbers.
 
 Expected causal chain:
 
 `Base structural stalls -> limited concurrent misses -> DTC removes structural constraints -> higher live-miss concurrency / latency hiding -> performance effect`.
 
-If this chain is weak or broken, diagnose the reason. Do not tune workload or architecture to make bars resemble the thesis.
+Weak or negative results must be diagnosed, not tuned away.
 
-## Researcher-frozen M5 definitions
+## Researcher-frozen compute definitions
 
 ### Figure 4.5
 
-Primary DTC main-result configuration is 16 KiB logical Tag/cache capacity + 80 KiB physical Cacheline Array. IO PIB=256, OO PIB=128. Base remains conventional 16 KiB L1, PIB=8, MSHR=32.
+PAPER_IO/PAPER_OO: 16 KiB logical Tag/cache + 80 KiB physical Cacheline Array; IO PIB=256, OO PIB=128. PAPER_BASE: conventional 16 KiB L1, PIB=8, MSHR=32.
 
 ### Conventional-L1 dirty-victim policy
 
-All paper-facing M5 formal configurations explicitly use:
+All paper-facing formal configs use explicit:
 
-`-gpgpu_l1_cache_write_ratio 0`.
+`-gpgpu_l1_cache_write_ratio 0`
 
-Preserve current write-through, allocation, LRU, MSHR, scoreboard, and DTC semantics. Do not add a new `tag_array::probe` fallback solely to preserve the inherited 25% dirty-retention heuristic. Ratio 25 is diagnostic only.
-
-Already-running ratio-25 jobs may finish and be preserved as diagnostics; they cannot become paper-facing formal results. Corrected work may start concurrently when the calibrated resource budget permits.
+Preserve write-through, allocation, LRU, MSHR, scoreboard, and DTC semantics. Ratio 25 is diagnostic only.
 
 ### Figure 4.7
 
-Count one live miss from new-miss lower-request commit through final lower response. Primary plotted metric is per-SM cycle average.
+Common live miss = new-miss lower-request commit through final lower response. Primary metric = per-SM cycle average.
 
 ### Figure 4.2
 
-Formal categories are PIB/waiting-buffer full, true Tag & Cacheline allocation failure, MSHR entry/merge capacity failure, and Miss Queue/lower-request-capacity failure. Tag-bank arbitration remains separate diagnostic evidence.
+Formal categories: PIB/waiting-buffer full, true Tag & Cacheline allocation failure, MSHR capacity/merge, Miss Queue/lower capacity. Tag-bank arbitration is diagnostic only.
 
-## Problem behavior
+## Compute problem behavior
 
-Ordinary problems are resolved inside the Goal according to `M5_PROBLEM_RESOLUTION_POLICY.md`.
+Use `M5_PROBLEM_RESOLUTION_POLICY.md`.
 
-Do not STOP merely for:
+Do not STOP merely for missing workload/input/wrapper, build/PTX/parser failure, assertions, operation-count mismatch, weak speedup, timeout with progress, counter gap, unexpected platform bottleneck, repairable source-backed bug, or significant performance change after a fidelity correction.
 
-- missing workload binary/input/wrapper;
-- alias/provenance uncertainty that can still be researched;
-- build/PTX/parser failure;
-- workload assertion;
-- Base/IO/OO operation-count mismatch;
-- poor or negative speedup;
-- timeout with diagnosable progress;
-- counter/instrumentation gap;
-- unexpected Tag-bank/downstream bottleneck;
-- a repairable source-backed simulator bug;
-- a significant performance change after the ratio-0 correction.
+Diagnose -> repair/reconstruct -> regress -> invalidate stale data when required -> continue.
 
-Diagnose -> repair/reconstruct -> regress -> invalidate stale formal results when necessary -> resume.
+## Graphics behavior
 
-Pause only at a new genuine `RESEARCHER_DECISION_REQUIRED` boundary or final `M5_COMPUTE_READY_FOR_REVIEW`.
+The existing G1 result `UNAVAILABLE_WITH_CURRENT_INFRA` means no ready-made source-backed path exists. It does not terminate the post-compute effort.
 
-## Workload-recovery discipline
+After M5.6, follow `M5_GRAPHICS_POST_COMPUTE_PLAN.md`:
 
-M5.0B must recover/source-verify all ten thesis compute algorithms. Explicit alias audit includes `gemv -> gemver?`, `gesu -> gesummv?`, and `conv2d -> 2DConvolution/pb_2dconv?`.
+1. close provenance for all five thesis scenes;
+2. deeply search original thesis/project artifacts and historical graphics-enabled simulator paths;
+3. investigate defensible direct integration and source-backed trace/replay;
+4. if a source-backed path exists, integrate/test/pilot and run all five scenes;
+5. if exhaustive recovery proves no source-backed path exists, preserve negative evidence and finish without fabricating a proxy.
 
-Missing ready binaries are not permission to substitute algorithms. Input scale must come from canonical/standard datasets and Base-only work-amount evidence, never from the size with the best DTC speedup.
+A calibrated memory proxy is supplemental only and cannot appear in formal paper graphics bars or `GM-ALL-PAPER`.
+
+If graphics uses a different driver/path from compute, `GM-ALL-PAPER` requires an explicit cross-path performance-metric comparability proof.
+
+## Workload discipline
+
+Compute M5.0B must recover/source-verify all ten thesis compute algorithms, including explicit alias audit for `gemv/gemver`, `gesu/gesummv`, and `conv2d/2DConvolution`.
+
+Graphics M5.7 must source-resolve all five thesis glmark2 workloads without silent scene substitution.
+
+Input/scene selection must come from source/paper provenance, never from whichever choice gives the largest DTC benefit.
 
 ## Formal-result discipline
 
-Every result records Core SHA, Framework SHA, config hash, workload source/binary/PTX/input hashes, parser schema, and classification.
+Every result records source SHAs, config hash, workload/asset/binary/PTX/trace hashes as applicable, parser schema, and classification.
 
-FORMAL data from an invalidated behavior/config identity becomes OBSOLETE for affected stages. Preserve diagnostic evidence accurately; do not relabel ratio-25 runs as ratio-0 results.
+Invalidated FORMAL data becomes OBSOLETE. Preserve diagnostic evidence accurately. Do not relabel ratio-25 data as ratio-0 or proxy graphics as source-backed graphics.
 
-Do not commit raw logs, traces, binaries, build trees, or large datasets. Commit compact JSON/CSV and raw-log indexes.
+Do not commit raw logs, traces, binaries, build trees, or large datasets. Commit compact evidence plus raw-log indexes.
 
 ## Git discipline
 
-- Never use `git add .` or `git add -A`.
+- Never `git add .` or `git add -A`.
 - Stage explicit paths only.
 - Keep semantic commits separate.
 - Do not force-push shared branches.
 - Preserve pre-policy evidence.
-- Use clean worktrees and `git diff --check` at substage handoffs.
-
-## Paper/extension separation
-
-Primary paper-mode figures use only PAPER_BASE, PAPER_IO, and PAPER_OO.
-
-Do not mix `MODERN_OO_SECTOR`, equal-area controls, coalescer sensitivities, dirty-ratio sensitivity controls, or other extensions into Figures 4.2-4.10.
-
-Compute-only aggregate is `GM-GP`; reserve `GM-ALL-PAPER` until all five graphics workloads have a source-backed execution path.
-
-Graphics G0-G2 preparation is active but nonblocking for compute M5.
+- Use clean worktrees and `git diff --check` at handoffs.
 
 ## Handoff progression
 
-Use `M5_HANDOFF_CONTRACT.md`. Substage PASS is a checkpoint-and-continue boundary, not a human-approval stop. Preserve evidence, commit/push, update `LATEST_REPORT.md`, and continue automatically.
+Use `M5_HANDOFF_CONTRACT.md` for compute and `M5_GRAPHICS_HANDOFF_CONTRACT.md` after compute freeze.
+
+PASS is checkpoint-and-continue, not an ordinary approval stop. Pause only at a genuine researcher-decision boundary or a final M5 review state.
+
+Figure 4.6 area/synthesis is outside this Goal and requires separate M6 authorization.
