@@ -2,7 +2,7 @@
 
 Stage: `M4_COMPUTE_BRINGUP`
 
-Status: **STOP — HARD FAILURE: PROXY-FENCE PTX FRONTEND UNREACHABLE**
+Status: **STOP — HARD FAILURE: SOURCE-REACHABLE DTC COMPLETION ACCOUNTING**
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 
@@ -22,29 +22,36 @@ M2 recovery evidence remains authoritative historical context in:
 
 `implementation/M2_IO_RESPONSE_RECOVERY_EVIDENCE.md`.
 
-## M4 partial progress and HARD stop
+## M4 active HARD stop
 
-M4 source audit and its failure evidence are in
-`implementation/M4_MEMORY_OP_SEMANTICS.md`. Store/Atomic/bypass lifecycle
-observation was implemented without changing their source request/cache/ack
-or atomic-side-effect paths. Core build/CTest passed; modes 2/3/4 VecAdd
-passed with Store lifecycle closure; the available atomic-contention workload
-passed with Atomic lifecycle closure.
+The PTX proxy-fence frontend limitation is governed by the current authorized
+source-reachability resolution: no PTX fence frontend support or
+`membar -> FENCE_OP` mapping was added. Before F00/F01 disposition or any
+remaining M4 gate could close, the first provenance-controlled real compute
+triplet exposed a new source-reachable failure:
 
-However `src/cuda-sim/ptx.l` and `ptx.y` contain no `fence` opcode or
-`FENCE_OP` mapping. The existing LD/ST proxy-fence path is therefore
-unreachable from loaded PTX. A second source audit also found no static PTX
-decode case and no producer of `set_proxy_fence()` or
-`set_fence_proxy_kind()`; it is not a lexer-only omission. `membar` is a
-distinct operation and a regular fence asserts unsupported. F01--F03 cannot
-be run without adding parser, decode, and semantics work, which is outside the
-authorized M4 scope. This is a reproducible M4 HARD failure.
+- `PAPER_IO` aborts in `ldst_unit::dtc_l1_io_complete_instruction` at
+  `shader.cc:2824`, `pending >= dependencies`.
+- `PAPER_OO` aborts in `ldst_unit::dtc_l1_oo_complete_instruction` at
+  `shader.cc:3068`, the same invariant.
+- `PAPER_BASE` did not finish within the fixed 240-second diagnostic limit.
 
-External raw evidence (not committed):
+This failure invalidates M4 compute bring-up and is not eligible for
+`SOURCE_UNREACHABLE_NA`. It blocks F00 closure, remaining M4 HARD gates,
+workload acceptance, review-pack creation, and M5.
 
-- `/tmp/dtc-l1-r20/m4-fence-frontend-audit.log` SHA-256
-  `d8fb91298affb8806380bc5a911ef50a37232ef7ca110a4557412330f3569839`;
-- IO/OO/sector VecAdd logs: `002abddd…`, `5b4a4160…`, `8fb2e616…`;
-- atomic-contention IO log: `c2350349…`.
+Complete reproduction provenance, compact raw-log/config hashes, and the
+explicit no-repair disposition are in:
 
-No M4 review pack was created, M4 is not accepted, and M5 remains forbidden.
+`implementation/M4_COMPUTE_BRINGUP_FAILURE.md`.
+
+Core source-domain operation observability checkpoint:
+
+`56a9230e4a538b69a30673ebdf66c42526fb324a`
+
+It adds only dynamic Load/Store/Atomic/source-reachable-FENCE_OP counters for
+Base/IO/OO comparison. Full Core build and both CTests passed before the
+workload attempt; it does not change routing, cache policy, completion, or
+fence semantics.
+
+M4 is not accepted. Do not start M5.
