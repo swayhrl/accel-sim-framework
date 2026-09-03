@@ -2,123 +2,123 @@
 
 Last coordination update: 2026-09-03
 
-Status: **M1/M2/M3 PASS; M4 BLOCKED ON SOURCE-REACHABLE COMPLETION ACCOUNTING; RECOVERY AUTHORIZED**
+Status: **M1-M4 PASS; M5 EXPERIMENT MATRIX DRAFTED; M5 EXECUTION NOT YET AUTHORIZED**
 
-## Source anchors
+## Validated parent anchors
 
-Frozen M0 framework anchor:
+M1-M4 final Core:
 
-- official: `accel-sim/accel-sim-framework:dev`;
-- official base SHA: `d930ad6d02c09bb56867132583735aba0389cff4`;
-- M0 branch: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-v0`.
+- branch: `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`
+- SHA: `cdeec769fd0c1be12b45d58536ecb81074d4b415`
 
-Frozen M0 core anchor:
+M1-M4 final Framework:
 
-- official: `accel-sim/gpgpu-sim_distribution:dev`;
-- official base SHA: `91880c53383d5a6a6742bfb1be2c5f34e39c7871`;
-- M0 branch: `swayhrl/gpgpu-sim:hrl/decoupled-l1-v0`.
+- branch: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`
+- SHA: `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`
 
-Active goal branches:
+M4 review pack:
 
-- Core: `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`;
-- Framework: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`.
+`docs/dtc_l1/review_packs/M4_COMPUTE_BRINGUP/`
 
-M0 branches remain read-only design anchors.
+Codex final M4 report:
 
-## Closed stages
+`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 
-### M1 — PASS
+M0 and M1-M4 branches are now historical validated anchors. Do not perform M5 experiments or exploratory implementation on them.
 
-Review pack: `docs/dtc_l1/review_packs/M1_FOUNDATION/`.
+## M5 planning branches
 
-Validated M1 Core anchor: `48b0be73833fc89fcf833349e82886ddc6d883b0`.
+Core:
 
-M1 established LEGACY neutrality, Paper-Base PIB/Tag/MSHR/lower-cap behavior, common counters/parser infrastructure, and B01-B09 HARD validation.
+- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`
+- created from Core M1-M4 final SHA `cdeec769...`.
 
-### M2 — PASS
+Framework:
 
-Review pack: `docs/dtc_l1/review_packs/M2_IO_READ/`.
+- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`
+- created from Framework M1-M4 final SHA `56369da3...`.
 
-Validated scope includes dedicated Paper-IO whole-line request/response/PIB-writeback lifecycle, no traditional L1D MSHR capacity/merge dependence, physical `{id,generation}` identity, partial allocation/no rollback, lower caps/issue width, I01-I15, high-MLP no-MSHR proof, and closed counters/invariants.
+These branches currently contain M5 planning/coordination only. Formal M5 execution is not authorized until the user approves the experiment matrix.
 
-### M3 — PASS
+## Research objective for M5
 
-Review pack: `docs/dtc_l1/review_packs/M3_OO_SECTOR/`.
+M5 is not a numerical-target replication exercise. The goal is to show, in the simulator, the performance benefit and causal mechanism of the already-implemented Decoupled-Tag Cache RTL idea.
 
-Validated M3 scope includes whole-line OO random-access PIB, deterministic ready retirement, line-level Ref Count and Shadow Ref, pending-hit merge/wakeup, active reclamation, O01-O13, IO-vs-OO causal HOL, and 4x32B sector extension S01-S09. Real modes 2/3/4 VecAdd diagnostic self-checks passed.
+Primary scientific objective:
 
-Do not redo or weaken M1-M3 unless the active M4 recovery proves a real regression.
+`traditional L1 structural constraints -> lower memory-level concurrency -> DTC removes constraints -> higher live concurrent miss requests / latency hiding -> performance effect`.
 
-## M4 partial progress before current stop
+If performance is weak or negative, M5 must determine whether the cause is:
 
-M4 source semantics audit:
+- implementation/modeling fidelity;
+- workload/input fidelity;
+- downstream simulator/platform bottleneck;
+- traffic side effect;
+- compute-bound behavior;
+- or a genuine mechanism limitation.
 
-`docs/dtc_l1/implementation/M4_MEMORY_OP_SEMANTICS.md`
+Do not tune the design or input to hit the thesis' +22%/+30% results.
 
-Partial work already preserves/observes current Store, Atomic, and architectural-bypass lifecycle semantics without changing their source request/cache/ack/side-effect routes. Atomic read-merge prohibition remains mandatory.
+## User-frozen M5 decisions
 
-The frozen PTX frontend proxy-fence reachability limitation remains established and is governed by:
+1. Reproduction target: **mechanism/trend fidelity**, not exact numeric speedup.
+2. Recover all ten thesis general-purpose compute workloads first.
+3. Prepare graphics in parallel so it can attach immediately after compute closeout.
+4. First workload-provenance audit must test `gemv -> gemver`, `gesu -> gesummv`, and `conv2d -> 2DConvolution/pb_2dconv` hypotheses from thesis descriptions/source.
+5. Figure 4.2 is part of formal M5.
+6. Figure 4.7 concurrent miss metric is frozen as a common lifecycle: **L1/DTC new miss committed into lower-request ownership -> final lower response completes that request**, cycle-averaged.
+7. Ordinary problems must be solved inside Goal mode rather than treated as automatic stop conditions.
 
-`docs/dtc_l1/goal/M4_FENCE_REACHABILITY_RESOLUTION.md`
+## M5 planning documents
 
-No PTX fence frontend support or `membar -> FENCE_OP` substitution is authorized.
+Read:
 
-## Active M4 HARD failure — completion accounting
+1. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
+2. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+3. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+4. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
 
-Failure evidence:
+The matrix currently covers:
 
-`docs/dtc_l1/implementation/M4_COMPUTE_BRINGUP_FAILURE.md`
+- M5.0 Fidelity Lock;
+- M5.1 Figure 4.2 baseline motivation;
+- M5.2 Figures 4.5 + 4.7 main result;
+- M5.3 Figure 4.8 logical-cache sweep;
+- M5.4 Figure 4.9 physical-cache/release sweep;
+- M5.5 Figure 4.10 PIB sweep;
+- M5.6 integrated causal analysis;
+- M5.G nonblocking graphics preparation;
+- M5.7+ optional extensions after paper-mode compute closeout.
 
-Failure checkpoints:
+## Paper compute workload set
 
-- Core: `56a9230e4a538b69a30673ebdf66c42526fb324a`;
-- Framework: `5f674edccdf48dc768155fbd008723dc8a126b31`.
+The thesis Table 4.1 compute set to recover is:
 
-The first provenance-controlled PolyBench 2DConv triplet exposed:
+Cache-efficient:
 
-- `PAPER_IO`: `dtc_l1_io_complete_instruction` aborts on `pending >= dependencies`;
-- `PAPER_OO`: `dtc_l1_oo_complete_instruction` aborts on the same invariant;
-- `PAPER_BASE`: 240-second wall-clock `TIMEOUT_DIAGNOSTIC`, not yet classified as deadlock.
+- bicg
+- atax
+- gemv (alias audit required)
+- mvt
+- syrk
+- gesu (alias audit required)
+- syr2k
 
-IO and OO use different retirement policies but share the failing bridge between DTC-owned 128B line dependencies and GPGPU-Sim `m_pending_writes` / scoreboard completion state. Therefore the active issue is a common completion-accounting/ownership integration bug, not currently evidence of a Tag->Physical, Ref Count, Merge, or sector-state mechanism failure.
+Cache-inefficient:
 
-Current source already registers DTC cacheable-load pending writes using unique coalesced 128B line references in `ldst_unit::issue()`, and IO/OO PIBs retain unique 128B line references. The failure means the registered/remaining aggregate and retirement-owned dependency count are not conserved for at least one real workload instruction. Root cause is not yet frozen.
+- spmv
+- 2mm
 
-## Authorized recovery
+Compute-intensive:
 
-Primary active specification:
+- conv2d (source-equivalence audit required)
 
-`docs/dtc_l1/goal/M4_COMPLETION_ACCOUNTING_RECOVERY.md`
+Compute-only geometric mean must be labeled `GM-GP`. Do not call it thesis `GM-ALL`, which includes graphics.
 
-Required order:
+## Current execution boundary
 
-1. reproduce/localize the first failing UID/PC and exact cardinality values;
-2. add a per-instruction DTC dependency ownership ledger/checker;
-3. trace all relevant `m_pending_writes` mutations and classify root cause as premature consumption, cardinality divergence, duplicate completion, cross-instruction aggregate alias, or another source-proven category;
-4. apply only the minimal source-backed repair;
-5. add permanent cardinality/exactly-once regressions;
-6. rerun the exact 2DConv PAPER_IO/PAPER_OO cases to full completion/accounting closure;
-7. rerun the closed-stage regression subset because the fix touches shared load-completion glue;
-8. separately classify PAPER_BASE timeout from progress evidence;
-9. only after recovery PASS, resume the remaining M4 source-reachability/fence, Store/Atomic/bypass/mixed/workload/parser/CSV closeout automatically.
+`CODEX_NEXT_STAGE.md` and `GOAL_START.md` remain in **PLANNING HOLD** state on the M5 branch until user approval.
 
-No new human authorization is required after full recovery PASS.
+Do not start formal M5 runs yet.
 
-## Recovery prohibitions
-
-Do not:
-
-- remove/weaken/clamp the failing accounting assertion;
-- force `m_pending_writes` to zero;
-- release scoreboard registers without exact ownership closure;
-- change frozen 128B DTC dependency granularity merely to match the observed failing value;
-- reintroduce conventional L1D MSHR/fill as the DTC read backend;
-- change L2/NoC/DRAM;
-- implement PTX fence frontend semantics;
-- begin M5.
-
-## Final boundary
-
-M4 remains unaccepted until this source-reachable correctness failure is closed and all remaining active M4 HARD gates pass. Only then may `LATEST_REPORT.md` become `READY_FOR_M5_REVIEW`.
-
-M5 remains forbidden.
+After approval, ChatGPT will flip the M5 Goal contract to ACTIVE and Codex may execute continuously through M5.0 -> M5.6, resolving ordinary issues in-goal according to `M5_PROBLEM_RESOLUTION_POLICY.md` and stopping at `M5_COMPUTE_READY_FOR_REVIEW` or a true researcher-decision boundary.
