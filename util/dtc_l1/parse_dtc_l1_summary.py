@@ -146,6 +146,18 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def require_equal(parser, metrics, left, right):
+    if metrics[left] != metrics[right]:
+        parser.error("counter invariant failed: %s=%r != %s=%r" %
+                     (left, metrics[left], right, metrics[right]))
+
+
+def require_zero(parser, metrics, key):
+    if metrics[key] != 0:
+        parser.error("counter invariant failed: %s=%r (expected 0)" %
+                     (key, metrics[key]))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("log", type=Path)
@@ -193,6 +205,12 @@ def main():
             ):
                 if required not in metrics:
                     parser.error("missing required Paper Base metric: " + required)
+            require_equal(parser, metrics, "DTC_L1_pib_admits",
+                          "DTC_L1_pib_retires")
+            require_zero(parser, metrics, "DTC_L1_pib_occupancy")
+            require_equal(parser, metrics, "DTC_L1_lower_requests_acquired",
+                          "DTC_L1_lower_requests_released")
+            require_zero(parser, metrics, "DTC_L1_lower_outstanding")
         if metrics.get("DTC_L1_mode") == "PAPER_IO":
             for required in (
                 "DTC_L1_io_lower_created",
@@ -208,6 +226,18 @@ def main():
             ):
                 if required not in metrics:
                     parser.error("missing required Paper IO metric: " + required)
+            for left, right in (
+                    ("DTC_L1_io_lower_created", "DTC_L1_io_lower_issued"),
+                    ("DTC_L1_io_lower_created", "DTC_L1_io_lower_responses"),
+                    ("DTC_L1_io_completion_dependency_count",
+                     "DTC_L1_io_completion_dependency_closed"),
+                    ("DTC_L1_lower_credit_acquired",
+                     "DTC_L1_lower_credit_released")):
+                require_equal(parser, metrics, left, right)
+            for key in ("DTC_L1_io_inflight_current",
+                        "DTC_L1_io_pib_occupancy",
+                        "DTC_L1_lower_outstanding"):
+                require_zero(parser, metrics, key)
         if metrics.get("DTC_L1_mode") == "PAPER_OO":
             for required in (
                 "DTC_L1_oo_lower_created",
@@ -224,6 +254,19 @@ def main():
             ):
                 if required not in metrics:
                     parser.error("missing required Paper OO metric: " + required)
+            for left, right in (
+                    ("DTC_L1_oo_lower_created", "DTC_L1_oo_lower_issued"),
+                    ("DTC_L1_oo_lower_created", "DTC_L1_oo_lower_responses"),
+                    ("DTC_L1_oo_completion_dependency_count",
+                     "DTC_L1_oo_completion_dependency_closed"),
+                    ("DTC_L1_lower_credit_acquired",
+                     "DTC_L1_lower_credit_released")):
+                require_equal(parser, metrics, left, right)
+            for key in ("DTC_L1_oo_inflight_current",
+                        "DTC_L1_oo_pib_occupancy",
+                        "DTC_L1_oo_active_refs",
+                        "DTC_L1_lower_outstanding"):
+                require_zero(parser, metrics, key)
         if metrics.get("DTC_L1_mode") == "MODERN_OO_SECTOR":
             for required in (
                 "DTC_L1_sector_lower_created",

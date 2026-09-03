@@ -2,7 +2,7 @@
 
 Stage: `M5.0B_WORKLOAD_RECOVERY`
 
-Status: **RESOLVING_ISSUE — M5-T005 R5DV VALIDATION ACTIVE**
+Status: **M5-T005 CLOSED — M5.0B WORKLOAD RECOVERY RESUMED**
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
@@ -21,10 +21,16 @@ geometry and all write-through/allocation/scoreboard semantics are unchanged.
 - A fresh Release build and all three DTC CTests PASS.  LEGACY/Base/IO/OO
   VecAdd ratio-zero sentinels PASS at `5562/5708/5545/5533` cycles.  The
   same four M4 Store/Atomic/architectural-`.cg` mixed sentinels PASS.
-- Canonical Parboil JDS SpMV medium ratio-zero LEGACY and PAPER_BASE runs are
-  active in `/tmp/dtc-l1-m5-r5dv3-{legacy,base}-ratio0-20260904`; their
-  correct-output checks run only after normal simulator completion.  They are
-  the remaining R5DV closure gate.
+- Canonical Parboil JDS SpMV medium ratio-zero LEGACY and PAPER_BASE both
+  completed naturally in `/tmp/dtc-l1-m5-r5dv3-{legacy,base}-ratio0-20260904`.
+  The independent official-output checker passed all 11,948 elements for both.
+  LEGACY completed at 1,343,406 cycles / 121,342,000 instructions; PAPER_BASE
+  completed at 3,202,814 cycles / 121,342,000 instructions.  PAPER_BASE has
+  balanced PIB admit/retire (`741200/741200`) and lower acquire/release
+  (`3844406/3844406`) with zero final PIB occupancy and lower outstanding.
+  The compact registry IDs are `M5-f43a919958f43224` (LEGACY) and
+  `M5-eaf5eb9173dbad12` (PAPER_BASE).  See
+  `m5/handoffs/M5_R5DV_DIRTY_VICTIM_VALIDATION.md`.
 
 ## Historic stop record — frozen 16 KiB conventional-L1 dirty-set deadlock
 
@@ -58,8 +64,8 @@ Evidence is pushed:
 - Full causal record: `implementation/M5_ISSUE_LOG.md`, M5-T005.
 
 The user-requested parallel ratio-25 jobs have not been interrupted; their
-outputs remain diagnostic only.  M5 resumes only after the active ratio-zero
-canonical SpMV validation closes R5DV.
+outputs remain diagnostic only.  R5DV is closed and M5.0B continues from its
+existing workload-recovery checkpoint without redoing valid provenance work.
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 

@@ -149,7 +149,7 @@
 
 ## M5-T005 — 16 KiB four-way conventional L1 reaches a source-defined dirty-set deadlock
 
-- State: `OBSERVED -> REPRODUCED -> ROOT_CAUSE_CLASSIFIED -> RESEARCHER_DECISION_RESOLVED -> R5DV_VALIDATION_ACTIVE`.
+- State: `OBSERVED -> REPRODUCED -> ROOT_CAUSE_CLASSIFIED -> RESEARCHER_DECISION_RESOLVED -> R5DV_VALIDATION_ACTIVE -> CLOSED`.
 - Affected experiment: M5.0B canonical Parboil CUDA JDS SpMV, medium
   `bcsstk18` input, `PAPER_BASE_16KB.config` SHA-256
   `0f037eb6d7ae5bb66ae57110f5c3e93112adfd810f9b91898957286a93259c10`.
@@ -209,3 +209,21 @@
   medium SpMV LEGACY/PAPER_BASE ratio-zero runs are active; retain every
   ratio-25 run and hash as pre-decision diagnostic evidence, never as formal
   ratio-zero data.
+
+- R5DV closure: the canonical medium (`bcsstk18`) ratio-zero LEGACY and
+  PAPER_BASE replays both reached normal simulator exit with the deadlock
+  detector enabled and `parboil_spmv result: PASS`.  The independent official
+  output checker passed all 11,948 elements for both outputs (identical output
+  SHA-256 `94148cba6fbed65468efb4317ee255e8f90fec37e1b6a31c706337a02d785127`).
+  LEGACY completed at 1,343,406 cycles / 121,342,000 instructions under config
+  `e49453b37d2bc430abf9bc56caf1f1a10e7d665cd5b9d24f7e919fd65f1f1970`.
+  PAPER_BASE completed at 3,202,814 cycles / 121,342,000 instructions under
+  config `993513296458bf014cfa33ff047e1ed7391a1fee990e3b4a2d9d738cab0ff366`;
+  it drained exactly `741200/741200` PIB admits/retires and
+  `3844406/3844406` lower acquires/releases with final PIB occupancy and lower
+  outstanding both zero.  Strict summaries/registry records are
+  `M5-f43a919958f43224` and `M5-eaf5eb9173dbad12`.  Raw-log SHA-256 values and
+  complete identities are preserved in
+  `m5/handoffs/M5_R5DV_DIRTY_VICTIM_VALIDATION.md`; raw outputs remain outside
+  Git.  This closes M5-T005 without changing frozen DTC or conventional-L1
+  semantics.
