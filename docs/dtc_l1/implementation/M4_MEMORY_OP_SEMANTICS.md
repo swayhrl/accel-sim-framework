@@ -1,11 +1,13 @@
 # M4 memory-operation semantics audit
 
-Status: **HARD FAILURE — STOP.** The source-backed audit authorized the
-partial Store/Atomic/bypass lifecycle work below, but it also found that the
-required source-supported proxy-fence instruction is not reachable from the
-current PTX input frontend. Core source reviewed at M3 final
-`90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`; the failure is independent of
-the subsequent M4 sidecar implementation.
+Status: **SOURCE-LIMITED BOUNDARY — M4 RESUMED.** The source-backed audit
+found that the required source-supported proxy-fence instruction is not
+reachable from the current PTX input frontend. Under the authorized
+`goal/M4_FENCE_REACHABILITY_RESOLUTION.md`, this is the source-limited
+boundary for F01--F03 rather than an active M4 stop: F01--F03 are
+`SOURCE_UNREACHABLE_NA` after F00A--F00D pass. Core source was initially
+reviewed at M3 final `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`; the
+limitation is independent of the subsequent M4 sidecar implementation.
 
 ## Common entrance and completion
 
@@ -109,9 +111,10 @@ the latter commands show the distinct `membar` and dynamically unreachable
 `FENCE_OP` paths. Therefore
 F01 (`LoadFenceLoad`), F02 (`StoreFenceLoad`), and F03
 (`AtomicFenceLoad`) cannot be executed under the required current-source
-semantics. Those are M4 HARD gates, so M4 cannot pass and the continuous goal
-must stop here. Adding parser/semantic support would be an architectural
-extension needing new authorization; M5 remains forbidden.
+semantics. Under the later authorized reachability resolution, F01--F03 are
+`SOURCE_UNREACHABLE_NA` after F00A--F00D rather than active failures. Adding
+parser/semantic support remains an architectural extension outside M4; M5 is
+still forbidden.
 
 ## Architectural bypass
 
@@ -133,7 +136,7 @@ the out-of-scope thesis policy bypass.
 4. OO ready selection must not pass a source-supported unresolved async proxy
    fence in the same warp. No regular-fence behavior is synthesized.
 
-## Partial M4 implementation evidence before the stop
+## M4 implementation evidence under the source-limited boundary
 
 The Core adds a sidecar external-dependency entry for Store, Atomic, bypass
 Load, and proxy-fence lifecycle observation. It deliberately does not alter
@@ -141,5 +144,7 @@ their source request/cache/acknowledgement/side-effect routes and allocates no
 DTC Tag/physical state for them. Whole-line IO, OO, and sector VecAdd
 regressions passed with eight Stores admitted/completed/retired exactly once;
 the available atomic-contention workload passed with one Atomic admitted,
-completed, and retired exactly once. These checks cannot satisfy F01--F03 and
-are recorded only as partial evidence, not as M4 acceptance.
+completed, and retired exactly once. These checks do not implement or
+substitute fence semantics. The authorized resolution instead requires
+F00A--F00D plus the source-reachable Load/Store/Atomic/bypass validation
+domain; see the M4 review pack for the acceptance evidence.

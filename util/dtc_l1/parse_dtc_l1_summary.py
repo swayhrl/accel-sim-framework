@@ -116,6 +116,16 @@ SUMMARY_KEYS = (
     "DTC_L1_sector_fill_wakeups",
     "DTC_L1_sector_active_refs",
     "DTC_L1_sector_physical_allocated",
+    "DTC_L1_m4_store_admits",
+    "DTC_L1_m4_atomic_admits",
+    "DTC_L1_m4_bypass_load_admits",
+    "DTC_L1_m4_proxy_fence_admits",
+    "DTC_L1_m4_source_completions",
+    "DTC_L1_m4_observation_retires",
+    "DTC_L1_m4_dynamic_loads",
+    "DTC_L1_m4_dynamic_stores",
+    "DTC_L1_m4_dynamic_atomics",
+    "DTC_L1_m4_source_reachable_fence_ops",
 )
 
 

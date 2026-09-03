@@ -2,7 +2,7 @@
 
 Stage: `M4_COMPUTE_BRINGUP`
 
-Status: **RECOVERY PASS — M4 IN PROGRESS**
+Status: **READY_FOR_M5_REVIEW**
 
 Core M3 checkpoint: `90cb35d5c4f9511a2eacb9e0e809a2d9c74ecb2c`
 
@@ -39,6 +39,17 @@ completion failure.  It was recovered under the authorized R4C procedure:
 Complete cause, source proof, final log/config hashes, and regression results
 are in `implementation/M4_COMPLETION_ACCOUNTING_RECOVERY_EVIDENCE.md`.
 
-The existing fence reachability resolution remains unchanged: do not add PTX
-fence frontend support and do not map `membar` to `FENCE_OP`.  Continue the
-remaining M4 HARD gates; do not start M5.
+## M4 final closeout
+
+All active M4 HARD gates now pass under the authorized frozen-source boundary.
+The review pack is `review_packs/M4_COMPUTE_BRINGUP/`.
+
+- Five provenance-resolved Base/IO/OO compute triplets have exact matching
+  source-domain Load/Store/Atomic/FENCE_OP counts.
+- Store, same-address atomic, architectural `.cg` bypass, IO HOL, OO
+  ready-younger retirement, lifecycle closure, parser, and CTest gates pass.
+- F00A--F00D pass. F01--F03 are explicitly `SOURCE_UNREACHABLE_NA`: the PTX
+  frontend cannot produce the existing dynamic proxy-fence path. No PTX fence
+  support was added and `membar` was not mapped to `FENCE_OP`.
+
+M5 is not begun and remains unauthorized. Stop at this handoff state.
