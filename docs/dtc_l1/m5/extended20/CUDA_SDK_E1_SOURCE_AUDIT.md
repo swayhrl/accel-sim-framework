@@ -10,13 +10,13 @@ evidence only; they are not formal M5 results.
 
 | Approved ID | source entry | source-backed input | output contract | source SHA-256 | E1 status |
 | --- | --- | --- | --- | --- | --- |
-| `BlackScholes` | `BlackScholes/BlackScholes.cu` | fixed `OPT_N=100000`, `NUM_ITERATIONS=1` | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `7540eeeccf9c5489a51db0aafb99d1ff05488c9ee787c3afdbda0fc078dd452d` | source/PTX recovered; original `shrutil` executable link dependency pending |
-| `convolutionSeparable` | `convolutionSeparable/main.cpp` | `--size 3072` parsed; `imageW=size/8`, `imageH=size/16` | CPU/GPU L2 norm `<1e-6`, `QA_PASSED` | `6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0` | source/PTX recovered; executable/output smoke pending |
+| `BlackScholes` | `BlackScholes/BlackScholes.cu` | fixed `OPT_N=100000`, `NUM_ITERATIONS=1` | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `7540eeeccf9c5489a51db0aafb99d1ff05488c9ee787c3afdbda0fc078dd452d` | source/build/PTX recovered; output smoke pending |
+| `convolutionSeparable` | `convolutionSeparable/main.cpp` | `--size 3072` parsed; `imageW=size/8`, `imageH=size/16` | CPU/GPU L2 norm `<1e-6`, `QA_PASSED` | `6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0` | source/build/PTX recovered; output smoke pending |
 | `fastWalshTransform_11_19` | `fastWalshTransform/fastWalshTransform.cu` | `-logK 11 -logD 19` parsed | L2 norm `<1e-6`, `PASSED` | `284332c572510b2415d23506f72e3d9f879c2c895ddb86e4e1d34b2033d2030e` | source/build/PTX recovered; see `FWT_11_19_E1_RECOVERY.md` |
 | `scalarProd_13920` | `scalarProd/scalarProd.cu` | `--size 13920` parsed | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `742008e11f8888c5521c913497a1b48fd8de104cbeff2dc6df24f667eab8ab8e` | source/build/PTX recovered; output smoke pending |
-| `scan` | `scan/main.cpp` | source-fixed `N=13*(1048576/2)/256`; no workload arguments | exhaustive CPU/GPU scan comparison, `QA_PASSED` | `dba6488710d5d7ba6ac6b11d5441fad389b7e2431881c906047b1b66f0dbd7c0` | source/PTX recovered; executable/output smoke pending |
-| `sortingNetworks` | `sortingNetworks/main.cpp` | source-fixed `N=1024`, `numValues=65536`, one iteration | key/value integrity and order validator, `QA_PASSED` | `7460c5b6882bd6a86d086d19319822683831d8fb6021e111898a25d24a6cbfa8` | source/PTX recovered; executable/output smoke pending |
-| `transpose` | `transpose/transpose.cu` | `dimX512 dimY512` parsed; square/tile-multiple checks enforce validity | source `compareData`, `QA_PASSED` | `d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563` | source/PTX recovered; original `shrutil` executable link dependency pending |
+| `scan` | `scan/main.cpp` | source-fixed `N=13*(1048576/2)/256`; no workload arguments | exhaustive CPU/GPU scan comparison, `QA_PASSED` | `dba6488710d5d7ba6ac6b11d5441fad389b7e2431881c906047b1b66f0dbd7c0` | source/build/PTX recovered; output smoke pending |
+| `sortingNetworks` | `sortingNetworks/main.cpp` | source-fixed `N=1024`, `numValues=65536`, one iteration | key/value integrity and order validator, `QA_PASSED` | `7460c5b6882bd6a86d086d19319822683831d8fb6021e111898a25d24a6cbfa8` | source/build/PTX recovered; output smoke pending |
+| `transpose` | `transpose/transpose.cu` | `dimX512 dimY512` parsed; square/tile-multiple checks enforce validity | source `compareData`, `QA_PASSED` | `d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563` | source/build/PTX recovered; output smoke pending |
 | `vectorAdd_6000000` | `vectorAdd/vectorAdd.cu` | `--size 6000000` parsed | elementwise comparison, `QA_PASSED` | `14991a235ab811b5ff4cac639825a4e4238b2af3e3d1ca0a629134db5b5cd3d5` | source/build/PTX recovered; output smoke pending |
 
 All eight use the legacy CUDA-SDK helper layer.  FWT proved that the original
@@ -24,6 +24,31 @@ Makefiles' obsolete compute_10--compute_62 targets must be replaced by a
 recorded CUDA-11.8 `sm_52` build recipe and frozen helper artifacts.  Reuse
 that approach per workload, then record executable/PTX hashes and execute the
 source-defined output checker before declaring E1 complete.
+
+## NVIDIA SDK 4.2 `shrutil` recovery
+
+The original `gpu-app-collection` source tree retains the applications but
+not the legacy `shrutil` implementation.  The exact missing helper was
+recovered from NVIDIA's official CUDA 4.2 Linux GPU Computing SDK archive:
+`gpucomputingsdk_4.2.9_linux.run`, SHA-256
+`f671601d2656d2f85aca6db5b21b5dad0170ce145281b92777da7f188f96a311`.
+Only its `shared` source/headers were extracted in an isolated temporary
+directory; no legacy toolkit was installed and no workload source changed.
+
+| Original helper artifact | SHA-256 |
+| --- | --- |
+| `shared/src/shrUtils.cpp` | `d6177f8e69b10c0f757a620df27c24734a2ab04dcf712bfc6d823d401c645678` |
+| `shared/src/cmd_arg_reader.cpp` | `649e7088af739857c8a753469e820d81d3ca292b3af18ac1e516e75358ab0d76` |
+| `shared/inc/cmd_arg_reader.h` | `70a4abe9f904657102accee0ae2548be66871660f10af229d36d356b349c27fe` |
+| `shared/inc/exception.h` | `339544482d43132e1a1446b3509b106a38b57b6a201a4d59daf410f7e0a862ce` |
+| reconstructed `libshrutil_x86_64.a` | `3a16b504d7311059596cd56fffd5d71e89c822c6eb8da980d2025a94b033471b` |
+
+The library is a recorded CUDA-11.8 host rebuild of the original helper
+sources, not a handwritten substitute.  It exports the previously unresolved
+`shrLog`, `shrLogEx`, and `shrSetLogFileName` symbols.  Linked with the
+already frozen CUDA-SDK `libcutil_x86_64.a`, it closes the build-only helper
+gap for the five affected SDK workloads below.  Their source-defined output
+smokes remain required before E1 PASS.
 
 ## vectorAdd CUDA-11.8 build recovery
 
@@ -56,24 +81,20 @@ The PTX exposes `_Z13scalarProdGPUPfS_S_ii`.  This is build provenance only;
 its source-defined output smoke remains queued behind the M5.0B worker-pool
 closeout.
 
-## transpose PTX recovery and executable-link boundary
+## transpose build/PTX recovery
 
 The isolated CUDA-11.8 `sm_52` PTX extraction completed with source hash
 unchanged:
 
 | Artifact | SHA-256 |
 | --- | --- |
+| `transpose` executable | `2a1dadb36963a1f2847c0c9460f2091d78fab7c25eec1d045c4fc85374fa0573` |
 | `transpose.ptx` | `6f831e96b1e375ff49deccd5b3bba2bb8b8a46656d898cce54cb22feee0d94ed` |
 
 It exposes the source-defined copy and transpose kernel family, including
 `_Z18transposeCoalescedPfS_iii` and `_Z24transposeNoBankConflictsPfS_iii`.
-The executable link remains correctly incomplete: the historical source calls
-`shrLog`, `shrLogEx`, and `shrSetLogFileName`, while the recovered frozen
-`libcutil_x86_64.a` does not define those `shrutil` symbols and no reachable
-`gpu-app-collection` historical tree contains their implementation/archive.
-Do not substitute a locally invented logger and do not mark the output smoke
-as complete; this is a tooling-dependency recovery item, not a DTC or workload
-semantic failure.
+The original-SDK `shrutil` recovery closes the host link without changing the
+workload.  Its `compareData`/`QA_PASSED` output smoke remains pending.
 
 ## scan and sortingNetworks PTX recovery
 
@@ -86,9 +107,13 @@ without changing any workload file:
 | `bitonicSort.ptx` | `51183222eae756509ae91d7caf473ebfbf7434439577299ac8dc3127c5c32e17` | shared/global bitonic sort and merge entries |
 | `oddEvenMergeSort.ptx` | `55470b3f5ff3f7730bab10116e7b8b820cb5a498c9d9453e98d6605d7c2e1f9a` | shared/global odd-even merge entries |
 
-These are source/PTX identities only.  The host executables and their
-source-defined output checkers remain pending until the exact legacy helper
-link surface is recovered; no PTX-only artifact is treated as an E1 PASS.
+| Executable | SHA-256 |
+| --- | --- |
+| `scan` | `ccde0db460fdc40f3a7671e541de2b103d6cb7f9a1baf9a9e803f1ffbd1fd305` |
+| `sortingNetworks` | `5e35f98af2db0b2ca74f6051673f854d13a943d73ca30fd1bc0a3841c0eaecb5` |
+
+Both host builds use the recovered original SDK helper.  Their source-defined
+output checkers remain pending; no build-only artifact is treated as E1 PASS.
 
 ## convolutionSeparable PTX recovery
 
@@ -97,6 +122,7 @@ The CUDA-11.8 `sm_52` extraction from the frozen
 
 | Artifact | SHA-256 | PTX entries |
 | --- | --- | --- |
+| `convolutionSeparable` executable | `089fa57a17c51f9b634d8c32de5f3d5d2395f03746f41d038358227363df1d09` | n/a |
 | `convolutionSeparable.ptx` | `6642ed9bb4cff7627b7f2d2318770203ea996dc6b15a4bd9b422afad5e8c4f8c` | `_Z21convolutionRowsKernelPfS_iii`, `_Z24convolutionColumnsKernelPfS_iii` |
 
 The source-defined `--size 3072` host setup and L2-norm checker remain part
@@ -111,12 +137,11 @@ the recovered fixed input contract:
 
 | Artifact | SHA-256 | PTX entry |
 | --- | --- | --- |
+| `BlackScholes` executable | `4eeb72dbddbf3246d54a6ead4dff63a0d8acb77c805d5afb4f8d3b1cc7c81356` | n/a |
 | `BlackScholes.ptx` | `301372d7f0f6fe0e02cf74605b325c9f8c0bb9808b7448cb97f9d954cbacf489` | `_Z15BlackScholesGPUPfS_S_S_S_ffi` |
 
-This does not overcome the missing original `shrutil` host-link dependency.
-The executable and its source-defined L1-norm `QA_PASSED` smoke remain
-pending; no substitute helper or nonidentical sample is admitted as formal
-evidence.
+The executable now links only through the recovered original-SDK helper
+sources.  Its source-defined L1-norm `QA_PASSED` smoke remains pending.
 
 No member enters E2 until M5.2 freezes the common Core/Framework/config/parser
 anchor and the complete E1 identity tuple is rechecked.
