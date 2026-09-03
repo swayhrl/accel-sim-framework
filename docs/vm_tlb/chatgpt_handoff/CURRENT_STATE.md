@@ -1,99 +1,128 @@
 # Current state — Track B
 
-## Review result
+## Accepted capture state
 
-Track B pre-rental preparation is **PASS / READY_TO_RENT** after independent ChatGPT review.
+Track-B Route-E LLM data acquisition is **PASS / FROZEN** after post-capture review.
 
-Accepted stages:
+Accepted/prepared stages:
 
-- `M4A_PRECAPTURE_PREP`: PASS/accepted;
-- `M4A_PRECAPTURE_FIXUP`: PASS/accepted;
-- `M4A_PRERENTAL_FINALIZE`: accepted after review-fix;
-- `M4A_PRERENTAL_REVIEW_FIX`: **PASS / READY_TO_RENT_REVIEW_FIX_PASS**.
+- `M4A_PRECAPTURE_PREP`: PASS;
+- `M4A_PRECAPTURE_FIXUP`: PASS;
+- `M4A_PRERENTAL_FINALIZE`: PASS after review-fix;
+- `M4A_PRERENTAL_REVIEW_FIX`: PASS;
+- rented-host pilot / real TP4 validation: PASS for capture admission;
+- `M4A_C_FORMAL_CAPTURE`: PASS;
+- post-capture archive/evidence audit: `POSTCAPTURE_REVIEW_PASS_SAFE_TO_POWER_OFF`.
 
-Reviewed Framework branch:
-`hrl/llm-trace-prep-v0`
+The rented GPU host is no longer required. No recapture is authorized.
 
-Accepted Route-E implementation commit:
-`524cb20785ec4632b434a0786181ff814ad7eaba`
+## Frozen formal artifacts
 
-Final provenance/report descendant:
-`11b4fc33fe3b9e95ad470bccedc306182c5122b5`
+Capture executable Framework:
 
-## Approved formal self-capture route
+`c79f4469c6a2befa59e4c4efcd3c885dc2259a81`
 
-Route E is approved:
+Model:
 
-- one physical host with four same-model SM86 GPUs;
-- real TP=4 execution;
-- NVBit injected only into rank 0;
-- B8 / S64 / G3 workload contract;
-- separate profiler-controlled `prefill` and `decode1` formal ROI captures;
-- raw rank-0 ROI trace retained intact;
-- contiguous rank-local weight buffer + runtime sidecar;
-- observable real KV-cache events/ranges where the pinned framework exposes them;
-- resulting trace is `PAPER_COMPATIBLE_SELF_CAPTURE`, never author-exact.
+`meta-llama/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08`
 
-A full-model single-GPU trace remains rejected as the formal paper workload. Route A remains an approval-only `DOCUMENTED_APPROX` fallback.
+Workload/capture contract:
 
-## Accepted review-fix results
+- one physical 4xSM86 host during capture;
+- real TP=4;
+- rank0-only NVBit injection;
+- BF16;
+- batch 8;
+- input sequence 64;
+- generation 3;
+- distinct profiler-controlled prefill and first-decode (`decode1`) ROIs;
+- raw/full rank0 ROI trace retained intact;
+- one contiguous rank-local Weight allocation plus runtime-observed real KV events;
+- no synthetic KV;
+- fidelity label: `PAPER_COMPATIBLE_SELF_CAPTURE`, not author-exact.
 
-The final two engineering blockers are closed:
+Formal prefill:
 
-- selected `--cuda-home` now controls the actual NVBit `nvcc` and `ptxas` paths; contaminating host PATH toolkits cannot silently take over the build;
-- capture-ready preflight records selected compiler realpaths/versions, host-PATH compiler values, PyTorch runtime CUDA, tracer/postprocessor existence, NVBit checksum marker, and locked artifact digests;
-- with `ACTIVE_FROM_START=0`, ROI-inactive `cuMemcpyHtoD_v2` events no longer enter the formal replay list, while active-ROI memcpy remains eligible;
-- kernel classification now separates `COMPUTE`, `NCCL_COLLECTIVE`, `MEMCPY`, and `UNKNOWN_OTHER`; the compute-only derivative excludes non-compute entries without altering raw evidence;
-- rank0-only injection, TP/ROI, Weight/KV metadata, checksum/bootstrap, host/capture preflights, model metadata lock, and M4A-C authorization guard all retain passing no-GPU tests.
+- run `m4a-llama-prefill-20260902T182016Z`;
+- 724 raw traces / 724 traceg traces;
+- archive `/workspace/m4a-rented-host-pilot/formal-prefill/m4a-llama-prefill-20260902T182016Z.tar.zst`;
+- SHA256 `f96b7ea91b798e2ce8eb8f4592b1ef6512a762870471d2dbb85ab4777c97f181`.
 
-Review entry:
-`docs/vm_tlb/review_packs/M4A_PRERENTAL_REVIEW_FIX/README.md`
+Formal decode1:
 
-## Rental hardware requirements
+- run `m4a-llama-decode1-20260903T004138Z`;
+- 772 raw traces / 772 traceg traces;
+- archive `/workspace/m4a-rented-host-pilot/formal-decode1/m4a-llama-decode1-20260903T004138Z.tar.zst`;
+- SHA256 `5bdd4b55ed0e1499cbfee756d289cbd8072f556db4f467a882a54e42cd32dcad`.
 
-At rental time require:
+Both main-server archives have independently verified outer SHA256, zstd/tar integrity and internal `SHA256SUMS`. Raw/traceg data, sidecars, manifests, logs and provenance are retained.
 
-- one physical host row with at least four currently idle GPUs;
-- allocate all four GPUs in the same instance;
-- all four GPUs same model and compute capability 8.6 (SM86);
-- RTX 3080 Ti 12 GiB is accepted; RTX 3090 24 GiB provides more headroom but is not required;
-- host RAM target >=64 GiB;
-- at least 500 GiB free/immediately expandable local storage before formal trace; more is preferred when inexpensive;
-- SSH and checksum-verified copy-back capability;
-- do not rely on the rental page's CUDA 13.x label as the project toolchain.
+Frozen parser compatibility anchor used by capture closeout:
 
-The 2026-09-02 AutoDL availability screenshot is a mutable `USER_CONFIRMED` snapshot only. Recheck availability when paying.
+`73774727e25fadf89df6f30ef5cf014091115db7`
 
-Prefer an instance/image where an explicit CUDA 12.6 toolkit is already available at a known path. If it is not, stop after host preflight and establish the approved local CUDA-12.6 toolkit path before any NVBit build/model download; never change the host NVIDIA driver.
+This old Core is only a trace-format/parser compatibility anchor. Future integration must use the final accepted Track-A M1–M3 Core.
 
-## Current authorization boundary
+## Independent review findings before integration
 
-The **user may now rent** a qualifying Route-E host.
+Two post-capture analysis issues do **not** invalidate capture, but must be repaired before A/B integration:
 
-`M4A-C` formal capture is still **NOT YET AUTHORIZED**. Immediately after rental, only the host-suitability gate should run first; no model download or formal tracing is needed for that gate.
+### Semantic kernel classification
 
-Future first command is `host_preflight.py` using the actual large local-data mount as `--work-root`.
+The formal `kernelslist.g` entries are trace filenames. Actual semantic CUDA kernel names live inside each trace header (`-kernel name = ...`). The existing filename-only classifier therefore incorrectly reports embedded NCCL kernels as COMPUTE. The current old compute-only derivative is not a valid semantic compute-only partition list.
 
-After host-preflight PASS, report the generated `host-preflight.json` / host summary back for the M4A-C authorization handoff. Then the sequence will be:
+Raw/full capture evidence remains valid and immutable. No permanent NCCL keep/drop decision has been made.
 
-`isolated env -> checksum NVBit bootstrap with explicit CUDA 12.6 -> generic NVBit smoke -> capture-ready preflight -> real TP4 smoke -> tiny LLM ROI trace -> measured disk projection -> formal prefill/decode1 capture -> archive/copy-back -> parser/simulator compatibility`.
+### Address/object coverage
 
-## Remaining host-only gates
+The existing coverage analyzer is not accepted for formal quantitative use because it does not decode all tracer address encodings/all active-lane references. The tracer uses list-all, base-stride and base-delta warp-address formats. Formal Weight/KV coverage therefore remains `UNKNOWN` until corrected offline streaming analysis completes.
 
-The following are intentionally unresolved until the rented host exists:
+KV matching must also respect ROI timing: prefill must not classify future decode-step ranges as active prefill KV; decode1 may conservatively use the observed prefill state plus the immediate decode1 result, but not future decode2/3 ranges.
 
-- real driver/NVBit compatibility;
-- actual four-GPU `torchrun`/NCCL TP behavior;
-- profiler ROI behavior under the real CUDA runtime;
-- flat-weight rebinding stability and numerical sanity on real TP4;
-- real KV VA/lifetime coverage;
-- real trace growth/disk projection;
-- NCCL kernel inventory and parser/simulator compatibility;
-- final raw/full/compute-only replay policy;
-- imported trace parser/simulator smoke.
+## Current authorization
 
-These are M4A-C execution gates, not pre-rental blockers.
+Execute only:
 
-## STOP boundary
+`M4A_MERGE_PREP`
 
-Until a qualifying host is rented and host preflight is reviewed, do not set `M4A_C_AUTHORIZED=1`, bootstrap a real capture environment, download formal model weights, collect trace data, implement Segmentation, or inject synthetic KV.
+Specification:
+
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_MERGE_PREP.md`
+
+Start override:
+
+`docs/vm_tlb/chatgpt_handoff/M4A_MERGE_PREP_START.md`
+
+Run as one continuous internal target:
+
+`MP0 -> MP1 -> MP2 -> MP3 -> MP4 -> MP5 -> MP6 -> MP7 -> MP8`.
+
+After PASS, STOP for ChatGPT review before any Track-A merge or M4B work.
+
+## Merge boundary
+
+Track A is currently independently finishing M1–M3 VM baseline closeout on `hrl/vm-m1-m3-v0`.
+
+Do **not** merge while Track A is running.
+
+Future intended integration, only after both sides independently PASS:
+
+- create a new integration branch (planned class: `hrl/vm-llm-m4b-v0`);
+- Core source comes from final accepted Track-A M1–M3;
+- carry Track-B LLM/capture utilities, immutable artifact provenance and reviewed M4A evidence into the integration branch;
+- rewrite unified `CURRENT_STATE.md` / `CODEX_NEXT_STAGE.md` rather than choosing stale A/B versions mechanically;
+- first integration gate is LLM replay/translation characterization before Segmentation.
+
+## Explicit exclusions
+
+Track B must not currently:
+
+- access/rent a GPU or recapture data;
+- modify either formal archive;
+- modify Track-A branch or Core;
+- merge A and B;
+- implement Segmentation or L2-TLB sub-entry/coalescing;
+- inject synthetic KV;
+- add page faults/migration/UVM/MCM;
+- choose a permanent NCCL keep/drop policy;
+- claim runtime-range matching is exact per-instruction tensor lifetime attribution.
