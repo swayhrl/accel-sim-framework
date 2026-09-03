@@ -2,135 +2,166 @@
 
 ## Status
 
-`M4A_PRECAPTURE_PREP` and `M4A_PRECAPTURE_FIXUP` have been reviewed by ChatGPT and accepted as preparation checkpoints.
+Route-E capture and post-capture audit are complete.
 
-Preferred formal self-capture route remains:
+Current accepted state:
 
-- **Route E**: one physical host with 4 same-model SM86 GPUs;
-- real TP=4 execution;
-- NVBit injected only into rank 0;
-- raw rank-0 ROI trace retained intact;
-- self-capture fidelity label, never author-exact.
+- real TP=4 / rank0-only NVBit / BF16 / B8/S64/G3 capture completed;
+- formal prefill and decode1 archives are checksum-verified on the main server;
+- capture executable source is `c79f4469c6a2befa59e4c4efcd3c885dc2259a81`;
+- post-capture audit reached `POSTCAPTURE_REVIEW_PASS_SAFE_TO_POWER_OFF`;
+- GPU host is no longer required;
+- no recapture is authorized.
 
-Real rented-GPU capture (`M4A-C`) remains **NOT AUTHORIZED**.
+Two offline-analysis issues remain before A/B integration:
 
-Before rental, one final preparation round is authorized to eliminate avoidable runtime/setup ambiguity and to make the rental session execution-focused.
+1. formal kernel classification must use embedded trace-header semantic names rather than `kernelslist.g` filenames;
+2. formal address coverage must decode every active-lane reference for list-all/base-stride/base-delta trace formats and apply ROI-aware Weight/KV matching.
 
-## Next authorized stage
+## Next authorized target
 
 Execute only:
 
-`stage_specs/M4A_PRERENTAL_FINALIZE.md`
+`M4A_MERGE_PREP`
 
-Do not repeat the completed route-selection work except where needed to implement/validate the final package.
+Specification:
+
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_MERGE_PREP.md`
+
+Current start override:
+
+`docs/vm_tlb/chatgpt_handoff/M4A_MERGE_PREP_START.md`
+
+Run as one continuous internal Goal:
+
+`MP0 -> MP1 -> MP2 -> MP3 -> MP4 -> MP5 -> MP6 -> MP7 -> MP8`.
+
+Continue automatically after passing internal gates. Stop only on stage-spec hard blockers. After MP8 commit/push and STOP for ChatGPT review.
 
 ## Mandatory read order
 
 1. repository-root `AGENTS.md`
-2. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
-3. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
-4. this file
-5. `stage_specs/M4A_PRERENTAL_FINALIZE.md`
-6. `stage_specs/M4A_EXTERNAL_CAPTURE.md` as the future execution contract only
-7. `docs/vm_tlb/paper_specs/SEGMENTATION_LLM_2026.md`
-8. existing `docs/vm_tlb/llm/*`
-9. existing `util/llm_trace_capture/*`
-10. M4A-P / M4A-PF review packs
+2. `docs/vm_tlb/chatgpt_handoff/M4A_MERGE_PREP_START.md`
+3. `docs/vm_tlb/chatgpt_handoff/CURRENT_STATE.md`
+4. `docs/vm_tlb/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+5. this file
+6. `docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_MERGE_PREP.md`
+7. `docs/vm_tlb/chatgpt_handoff/stage_specs/M4A_POSTCAPTURE_REVIEW_FIX.md`
+8. `docs/vm_tlb/review_packs/M4A_EXTERNAL_CAPTURE/*`
+9. `docs/vm_tlb/llm/*`
+10. `util/llm_trace_capture/*`
+11. `util/tracer_nvbit/tracer_tool/tracer_tool.cu`
+12. `util/tracer_nvbit/tracer_tool/traces-processing/post-traces-processing.cpp`
 
-Do not modify `chatgpt_handoff/*`.
+`chatgpt_handoff/*` is ChatGPT-owned. Read it; do not modify it.
 
-## Source anchor
+## Source and artifact anchors
 
-Start from Framework branch:
+Framework branch:
 
 `swayhrl/accel-sim-framework:hrl/llm-trace-prep-v0`
 
-Expected prior closeout:
+Required authorization handoff:
 
-`9a02eecc9534726294c7e6ae2a5c8db3bbc05988`
+use the latest descendant containing `M4A_MERGE_PREP_START.md` and `stage_specs/M4A_MERGE_PREP.md`.
 
-or a descendant containing the latest ChatGPT handoff.
+Frozen capture source:
 
-Verify branch/worktree cleanliness before editing.
+`c79f4469c6a2befa59e4c4efcd3c885dc2259a81`
 
-## Core tasks
+Formal prefill:
 
-Follow every PR gate in `M4A_PRERENTAL_FINALIZE.md`. In particular:
+`/workspace/m4a-rented-host-pilot/formal-prefill/m4a-llama-prefill-20260902T182016Z.tar.zst`
 
-1. fix the rank0-only injection environment contract so the parent driver never injects ranks 1–3;
-2. use the frozen tracer's ROI control (`ACTIVE_FROM_START=0` plus profiler start/stop semantics) so model load, TP setup and flat-weight copies are not in formal traces;
-3. prepare distinct `prefill` and `decode1` formal capture regions;
-4. freeze/document Python, PyTorch/CUDA runtime, Transformers, Accelerate, NVBit archive/checksum, tracer CUDA toolkit, Framework SHA, wrapper SHA and model revision/dtype provenance;
-5. prepare a checksum-verifying NVBit/bootstrap path without changing the host NVIDIA driver;
-6. split host-only preflight from post-build capture-ready preflight;
-7. extend runtime metadata preparation from weight-only to real KV-cache ranges/lifetimes where observable;
-8. retain all raw rank0 ROI kernels and add reproducible NCCL/compute/other classification plus derived kernel lists without destructive filtering;
-9. produce the AutoDL rental checklist for one 4xSM86 instance;
-10. run all no-GPU unit/syntax/mock/dry-run tests.
+SHA256:
 
-## User-confirmed candidate host class
+`f96b7ea91b798e2ce8eb8f4592b1ef6512a762870471d2dbb85ab4777c97f181`
 
-A 2026-09-02 AutoDL snapshot showed same-node RTX 3080 Ti / SM86 hosts with >=4 idle GPUs and expandable local storage. Treat this as `USER_CONFIRMED` mutable availability, not a permanent host guarantee.
+Formal decode1:
 
-Do not hard-code a specific host ID as required. M4A-C must re-check availability and hardware immediately after rental.
+`/workspace/m4a-rented-host-pilot/formal-decode1/m4a-llama-decode1-20260903T004138Z.tar.zst`
 
-## Important known implementation hazards to close
+SHA256:
 
-### Rank injection
+`5bdd4b55ed0e1499cbfee756d289cbd8072f556db4f467a882a54e42cd32dcad`
 
-The parent Route-E driver must not globally export `CUDA_INJECTION64_PATH` before `torchrun`. Only the rank wrapper may set it for rank 0 during trace phase.
+Frozen parser compatibility Core:
 
-### Formal trace scope
+`73774727e25fadf89df6f30ef5cf014091115db7`
 
-Do not trace model download/load, TP initialization, flat weight rebinding, or unrelated initialization. Formal trace data should be selected inference ROI only.
+This Core is only the old parser/simulator compatibility anchor. Do not modify it and do not treat it as the future integrated VM Core.
 
-### CUDA / driver / PyTorch
+## Required work summary
 
-Do not assume the rental page's displayed CUDA 13.x stack is the project environment. Select and document an isolated, compatible CUDA/PyTorch/NVBit path from authoritative evidence. Do not alter the NVIDIA driver during the rental workflow.
+Follow the stage spec exactly. Core requirements are:
 
-### NCCL
+1. independently reverify both immutable formal archives before analysis;
+2. implement semantic kernel-name extraction from each trace header;
+3. regenerate non-destructive full semantic manifest, true compute-only list and NCCL-only diagnostic list for prefill/decode1;
+4. quantify real semantic NCCL inventory and supersede the historical filename-only `0 NCCL` counts;
+5. replace the regex-only coverage path with an exact streaming trace-address decoder for `list_all`, `base_stride`, and `base_delta`;
+6. assert every decoded memory instruction reconstructs exactly `popcount(active_mask)` addresses;
+7. make Weight/KV matching ROI-aware and conservative;
+8. run full formal prefill/decode1 coverage plus 64KB/2MB object page-footprint analysis without fully decompressing trace text to disk;
+9. perform representative semantic COMPUTE and NCCL parser/simulator compatibility checks;
+10. repair stale B-owned post-capture docs and create a frozen integration manifest/review pack.
 
-The paper's collective-kernel treatment is unavailable. Preserve the raw trace and classify collectives; do not silently delete or permanently include them as a paper-exact choice.
+## Scientific boundaries
+
+The following are not yet decided and must remain explicit:
+
+- whether final M4B formal replay uses FULL_RANK0, COMPUTE_ONLY_TP_PARTITION, or reports both;
+- whether NCCL kernels are representable/performance-meaningful in the one-partition Accel-Sim reproduction;
+- exact per-instruction KV lifetime identity;
+- Segmentation implementation details unavailable from the paper;
+- synthetic long-context KV distribution.
+
+Raw/full trace evidence must remain immutable regardless of later policy.
+
+## Track-A coexistence
+
+Track A is independently executing final M1–M3 VM closeout.
+
+Do not fetch/merge/cherry-pick Track-A source into this Goal. Do not modify `hrl/vm-m1-m3-v0` or `swayhrl/gpgpu-sim`.
+
+The future A/B merge will happen only after both independent closeouts pass. At that point Core will come from final Track A and Framework integration will occur on a new branch with a rewritten unified handoff.
 
 ## Reporting
 
-Maintain:
-
-`docs/vm_tlb/codex_handoff/m4a/LATEST_REPORT.md`
-
 Create:
 
-`docs/vm_tlb/review_packs/M4A_PRERENTAL_FINALIZE/`
+`docs/vm_tlb/review_packs/M4A_MERGE_PREP/`
 
-The final report must state:
+Maintain:
 
-- final Route E host requirements;
-- exact prepared bootstrap command(s);
-- exact future M4A-C entry command(s);
-- pinned/locked environment identities;
-- rank0-only mock-test result;
-- prefill/decode1 ROI design;
-- Weight + KV metadata readiness;
-- NCCL classification readiness;
-- which remaining checks require the rented GPU;
-- whether the package is `READY_TO_RENT` or `NOT_READY_TO_RENT`.
+- `docs/vm_tlb/codex_handoff/m4a/LATEST_REPORT.md`
+- `docs/vm_tlb/codex_handoff/m4a/GOAL_PROGRESS.md` if present.
+
+Final report must state exactly one:
+
+- `M4A_MERGE_PREP_PASS_READY_FOR_INTEGRATION`
+- `M4A_MERGE_PREP_BLOCKED`
+
+It must include actual formal semantic kernel counts, corrected coverage/page-footprint summary, parser compatibility status, artifact/output hashes, remaining NCCL-policy ambiguity and changed-file/source anchors.
 
 ## STOP boundary
 
-After M4A-PR:
+After MP8:
 
-- commit and push `hrl/llm-trace-prep-v0`;
-- update Track-B report;
-- provide review-pack entry;
-- STOP.
+- run required validation;
+- commit only explicit paths;
+- push `hrl/llm-trace-prep-v0`;
+- STOP for ChatGPT review.
 
-Do **not**:
+Do not:
 
-- rent a GPU;
-- start `M4A_EXTERNAL_CAPTURE`;
-- set the authorization variable for a real LLM capture;
-- collect formal trace data;
-- implement Segmentation;
-- inject synthetic KV.
-
-ChatGPT will review this closeout before the user rents the AutoDL node.
+- access/rent a GPU;
+- recapture data;
+- modify frozen formal archives;
+- modify Track A or Core;
+- merge branches;
+- implement Segmentation/M4B;
+- implement L2-TLB sub-entry/coalescing;
+- inject synthetic KV;
+- add page faults/migration/UVM/MCM;
+- make a permanent NCCL keep/drop choice.
