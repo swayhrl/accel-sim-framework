@@ -4,20 +4,23 @@ This repository is the coordination, experiment-orchestration, and review-eviden
 
 ## Mandatory read order
 
-Before doing any project work on `hrl/decoupled-l1-exp-m1m4-v0`, read:
+Before doing project work on `hrl/decoupled-l1-exp-m1m4-v0`, read:
 
 1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 2. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 3. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
 4. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
-5. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
-6. `docs/dtc_l1/goal/M2_IO_RESPONSE_RECOVERY_SPEC.md`
-7. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
-8. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
-9. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
-10. Core architecture spec in `swayhrl/gpgpu-sim@hrl/decoupled-l1-m1m4-v0:docs/dtc_l1/DTC_L1_SPEC.md`
+5. `docs/dtc_l1/goal/M4_FENCE_REACHABILITY_RESOLUTION.md`
+6. `docs/dtc_l1/implementation/M4_MEMORY_OP_SEMANTICS.md`
+7. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
+8. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
+9. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
+10. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+11. Core architecture spec in `swayhrl/gpgpu-sim@hrl/decoupled-l1-m1m4-v0:docs/dtc_l1/DTC_L1_SPEC.md`
 
-If these disagree, STOP and report the conflict. Do not choose a meaning silently.
+For M4 fence-related requirements only, `M4_FENCE_REACHABILITY_RESOLUTION.md` and the updated `VALIDATION_ACCEPTANCE_MATRIX.md` are the specific authoritative refinement of older generic plan language. This precedence is intentional, not a conflict.
+
+For all other conflicts, STOP and report rather than silently choosing a meaning.
 
 ## Repository roles
 
@@ -26,103 +29,88 @@ If these disagree, STOP and report the conflict. Do not choose a meaning silentl
 - M0 frozen framework anchor: `swayhrl/accel-sim-framework@hrl/decoupled-l1-exp-v0`.
 - Active goal framework: `swayhrl/accel-sim-framework@hrl/decoupled-l1-exp-m1m4-v0`.
 
-The M0 branches are read-only design anchors. Do not implement M1-M4 on them.
-
-Do not duplicate simulator-core logic inside framework scripts as a workaround for missing core behavior.
+M0 branches are read-only design anchors. Do not implement M1-M4 on them.
 
 ## Frozen upstream anchors
 
-Framework upstream base:
+Framework upstream base: `accel-sim/accel-sim-framework:dev` at `d930ad6d02c09bb56867132583735aba0389cff4`.
 
-- upstream: `accel-sim/accel-sim-framework:dev`
-- SHA: `d930ad6d02c09bb56867132583735aba0389cff4`
+Core upstream base: `accel-sim/gpgpu-sim_distribution:dev` at `91880c53383d5a6a6742bfb1be2c5f34e39c7871`.
 
-Core upstream base:
+## Authority and evidence states
 
-- upstream: `accel-sim/gpgpu-sim_distribution:dev`
-- SHA: `91880c53383d5a6a6742bfb1be2c5f34e39c7871`
-
-## Authority and ownership
-
-`docs/dtc_l1/chatgpt_handoff/` is ChatGPT-owned coordination state. Codex must not modify it unless an active stage explicitly grants permission.
+`docs/dtc_l1/chatgpt_handoff/` is ChatGPT-owned coordination state. Codex must not modify it unless explicitly authorized.
 
 `docs/dtc_l1/codex_handoff/`, `docs/dtc_l1/review_packs/`, and `docs/dtc_l1/implementation/` are Codex-owned execution/evidence locations during the active goal.
 
-Architecture facts use:
+Use evidence labels:
 
 - `VERIFIED_SOURCE`
 - `USER_CONFIRMED`
 - `THESIS_SPEC`
 - `PROVISIONAL_MODEL`
 - `UNKNOWN`
+- `SOURCE_UNREACHABLE_NA` only when an active specification explicitly authorizes that classification from source audit.
 
 Do not silently guess or upgrade uncertainty.
 
-## Goal-mode progression rule
+## Current Goal-mode progression
 
-The currently authorized persistent Goal is the remaining M2 work through M4 only. The explicit durable objective and final stopping condition are in `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`.
+M1, M2, and M3 are closed PASS. The currently authorized persistent Goal is to finish M4 only and stop at `READY_FOR_M5_REVIEW`.
 
-Codex may continue automatically M2 -> M3 -> M4 without waiting for human confirmation only when every HARD gate for the completed stage passes.
+Ordinary progress is not a stop boundary. Do not stop merely because a directed test, build, workload, or semantic checkpoint passes. Commit/push safe evidence and continue.
 
-At each major stage boundary Codex must:
+M4 may close only when every **active** HARD gate in the updated validation matrix passes and `review_packs/M4_COMPUTE_BRINGUP/` is complete.
 
-1. run the required validation;
-2. create/update that stage's review pack;
-3. make semantic commits with explicit-path staging;
-4. push both affected repositories;
-5. update Codex-owned `codex_handoff/LATEST_REPORT.md`;
-6. then continue to the next stage if and only if all HARD gates pass.
+If an active HARD gate fails, a source-reachable semantic ambiguity requires guessing, or a closed M1-M3 stage regresses, record evidence and STOP.
 
-Ordinary progress is not a stop boundary. Do not stop merely because a directed test passed, a safe semantic checkpoint was committed/pushed, a build succeeded, or M2/M3 passed. Preserve evidence and continue toward the persistent Goal.
+M5 is not authorized.
 
-If any HARD gate fails, or a source-semantic ambiguity would require guessing, Codex must record evidence, push review material if safe, and STOP. Do not continue in order to "see if later stages fix it".
+## Fence source-reachability boundary
 
-M5 experiments, paper-result reproduction, graphics proxy work, equal-area studies, and performance claims are NOT authorized by this goal.
+The frozen current PTX frontend has been verified unable to generate the existing dynamic proxy-fence path. Do not repair this by expanding PTX frontend semantics during M4.
+
+Explicitly forbidden:
+
+- adding `fence` lexer/parser/static-decode semantics;
+- mapping `membar` to `FENCE_OP` or proxy fence;
+- forcing proxy-fence fields on ordinary instructions;
+- bypassing the source's unsupported regular-fence behavior to satisfy old F01-F03.
+
+Use F00A-F00D and `SOURCE_UNREACHABLE_NA` exactly as defined in `M4_FENCE_REACHABILITY_RESOLUTION.md`.
+
+## Scientific and implementation discipline
+
+- Do not duplicate simulator-core logic inside framework scripts as a workaround.
+- Do not change LEGACY or closed M1-M3 behavior.
+- Do not add cache semantics merely to make a benchmark complete.
+- Do not tune any mechanism to reproduce target speedups.
+- Do not special-case expected deadlock/performance outcomes.
+- Do not alter L2/NoC/DRAM for DTC benefit in this goal.
+- Preserve architectural L1 bypass and keep it distinct from out-of-scope DTC policy bypass.
+- Atomic operations are side effects and must never be collapsed by read pending-hit merge logic.
 
 ## Git discipline
 
 - Never use `git add .` or `git add -A`.
 - Stage explicit paths only.
 - Keep semantic commits separate.
-- Record both Core SHA and Framework SHA in every formal/diagnostic result.
-- Run `git diff --check` and record clean/expected working-tree status at stage closeout.
-- Do not force-push shared project branches without explicit authorization.
+- Record Core/Framework/config/workload identity for evidence.
+- Run `git diff --check` and record clean/expected working-tree status at closeout.
+- Do not force-push shared project branches.
 
 ## Experiment discipline
 
-Formal comparisons must preserve identical workload input/trace and unrelated GPU configuration across variants. Only intended DTC knobs may differ.
+M4 workload runs are `DIAGNOSTIC` bring-up evidence, not final paper-performance evidence.
 
-Every result must carry:
+Accepted Base/IO/OO triplets must preserve identical workload input/trace and unrelated GPU configuration and must close dynamic instruction/Load/Store/Atomic/source-reachable-FENCE_OP counts, invariants, and provenance.
 
-- Core SHA;
-- Framework SHA;
-- config identity/SHA;
-- trace/workload identity;
-- status: `FORMAL`, `DIAGNOSTIC`, `PRE_FIX`, or `OBSOLETE`.
-
-M4 workload runs in this goal are `DIAGNOSTIC` bring-up evidence, not final paper evidence.
-
-Do not mix results from different source SHAs into one formal aggregate unless explicitly normalized and documented.
-
-Do not commit raw traces, large simulator logs, build trees, or large generated artifacts. Commit compact summaries and `RAW_LOG_INDEX.tsv` provenance instead.
-
-## Baseline protection
-
-When DTC/paper instrumentation is disabled, modified code/configuration must remain behaviorally and timing neutral relative to the frozen clean baseline. M1 is already closed PASS; later stages must not regress that boundary.
-
-## Research-scope protection
-
-- Do not add cache semantics merely to make a benchmark complete.
-- Do not tune any mechanism to reproduce a target speedup.
-- Do not special-case expected deadlock/performance outcomes.
-- Do not alter L2/NoC/DRAM to make DTC look better unless a later explicitly authorized sensitivity experiment requires it.
-- Preserve architectural L1 bypass behavior; do not confuse it with later DTC policy bypass.
-- Atomic operations are side effects and must never be collapsed by read pending-hit merge logic.
+Do not commit raw traces, large logs, build trees, or binaries; commit compact summaries plus log hashes/indexes.
 
 ## Long-running jobs
 
-Inspect a no-progress job around 20 minutes, diagnose/escalate around 40 minutes, and stop plus record state by around 60 minutes unless the active stage explicitly expects a longer silent interval. A long job that is making measurable progress is not itself a stop condition.
+Inspect no-progress jobs around 20 minutes, diagnose/escalate around 40 minutes, and stop plus record state around 60 minutes unless the stage explicitly expects longer silence. A job making measurable progress is not itself a stop condition.
 
 ## Review-pack requirement
 
-A stage is not PASS because Codex says PASS. The review pack must allow independent review from source anchors, changed files, tests, configs, CSV summaries, invariants, and logs/indexes.
+A stage is not PASS because Codex says PASS. The M4 review pack must allow independent review from source anchors, changed files, tests, configs, CSV summaries, invariants, limitation statements, and log indexes.
