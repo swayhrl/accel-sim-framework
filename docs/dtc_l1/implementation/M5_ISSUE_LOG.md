@@ -255,3 +255,27 @@
   repaired behavior.  This is ordinary Goal work, not a researcher-decision
   boundary.  The current ratio-zero M5.0B runtime and its live processes stay
   untouched until their natural terminal state.
+
+## M5-E1-001 — historical FWT `11_19` label is not yet a formal source identity
+
+- State: `OBSERVED -> SOURCE_CLASSIFIED -> RECOVERY_ACTIVE`.
+- Scope: Extended-20 E1 source/build/input recovery only.  This does not
+  alter Paper-10 M5.0B, and E2 remains gated on M5.2.
+- Evidence: the historical CUDA-SDK launcher declares
+  `fastWalshTransform -logK 11 -logD 19`
+  (`accel-sim-decoupled-l2/util/job_launching/apps/define-all-apps.yml`), and
+  the old pretrace records a fixed trace manifest SHA-256
+  `a91e2655cd672585257294d09834e7d6647350e6c9ece7769fea5cb38fb6d6f2`.
+  Those artifacts remain useful only for historical runtime planning.
+- Source mismatch: the locally recoverable CUDA 11.0 sample at
+  `gpgpu-workloads`-derived commit `dad09cb0487845edc7524ded814c6cde9f0ef6a1`
+  fixes `log2Kernel=7` and `log2Data=23`; its `main` does not parse `-logK` or
+  `-logD`.  It therefore cannot be silently relabeled as the approved
+  `fastWalshTransform_11_19` workload.
+- Automatic recovery contract: recover or reconstruct a source-pinned wrapper
+  whose recorded arguments demonstrably select logK=11/logD=19; rebuild with
+  the M5 toolchain; freeze binary/PTX/input/output-check/launch identities;
+  and record any source-equivalence analysis.  If recovery changes the
+  approved workload identity, apply the approved Extended-20 alternate and
+  portfolio rules before E2.  No historical trace/cycle result is promoted to
+  an M5 formal result by this investigation.
