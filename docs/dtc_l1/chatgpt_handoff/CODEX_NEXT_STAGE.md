@@ -2,142 +2,149 @@
 
 ## Status
 
-**ACTIVE — CLOSE M5-T005, CONTINUE COMPUTE THROUGH M5.6, THEN CONTINUE GRAPHICS THROUGH M5.12**
+**ACTIVE — FINISH PAPER COMPUTE, EXECUTE EXTENDED-20 IN PARALLEL AFTER M5.2, COORDINATE WITH SEPARATE GRAPHICS RESEARCH WINDOW**
 
-The M5-T005 researcher-decision boundary is resolved by:
+Current scheduling authority:
 
-`docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+`docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
 
-The researcher has also authorized post-compute graphics continuation through:
+M1-M4 remain closed PASS. M5.0A is PASS. Current Paper-10 work remains M5.0B/R5DV until canonical ratio-zero SpMV closes M5-T005.
 
-- `docs/dtc_l1/m5/M5_V2_GRAPHICS_CONTINUATION_APPROVAL.md`
-- `docs/dtc_l1/m5/M5_GRAPHICS_POST_COMPUTE_PLAN.md`
-- `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
-
-M1-M4 remain closed PASS. M5.0A is closed PASS. Current work remains M5.0B/R5DV until canonical ratio-zero SpMV closes M5-T005.
-
-## Active compute branches
+## Active compute branches owned by this window
 
 Core:
-- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`
+
+`hrl/decoupled-l1-m5-v0`
 
 Framework:
-- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`
 
-Do not modify validated M1-M4 branches.
+`hrl/decoupled-l1-exp-m5-v0`
 
-## Immediate work — finish R5DV
+Do not modify validated M1-M4 branches or the independent graphics-research branch.
 
-Complete R5DV.0-R5DV.5 from `M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`.
+## Mandatory read order after integrating latest docs
 
-The formal paper-facing policy remains:
+1. Framework `AGENTS.md`
+2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
+3. `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
+4. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+5. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
+6. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
+7. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
+8. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
+9. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+10. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+11. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
+12. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
+13. `docs/dtc_l1/m5/M5_GRAPHICS_INDEPENDENT_WINDOW_HANDOFF.md`
+14. `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
+15. this file
+16. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+17. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+18. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
+19. Core `AGENTS.md` and `docs/dtc_l1/DTC_L1_SPEC.md`
 
-`-gpgpu_l1_cache_write_ratio 0`
+## Immediate work — do not disturb active R5DV jobs
 
-for LEGACY/PAPER_BASE/PAPER_IO/PAPER_OO and all derived formal configs unless a later authorized sensitivity explicitly varies it.
+Preserve every currently running canonical SpMV/diagnostic job and all existing uncommitted Framework experiment/graphics artifacts.
 
-Require canonical Parboil JDS SpMV medium LEGACY/PAPER_BASE to complete with correct output, no old dirty-set deadlock, and clean accounting. Close M5-T005 only after that evidence is complete.
+Finish R5DV according to the approved ratio-zero policy:
 
-Do not kill existing ratio-25 diagnostic jobs solely because they are non-formal.
+- canonical SpMV medium LEGACY/PAPER_BASE complete;
+- output checks PASS;
+- no old dirty-set deadlock;
+- accounting drains;
+- close M5-T005;
+- resume remaining M5.0B workload recovery.
 
-## Continue compute automatically
+Do not redo already valid R5DV evidence.
 
-After M5-T005 closes, resume the existing valid M5.0B checkpoint and execute:
+## Paper compute sequence
+
+Continue automatically:
 
 `M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
 
-At each substage PASS:
+Use existing stage acceptance/handoff contracts.
 
-1. close acceptance checks;
-2. strict parser/counter sanity;
-3. produce required handoff/review evidence;
-4. explicit-path commit/push;
-5. update `codex_handoff/LATEST_REPORT.md`;
-6. continue automatically.
+## Extended-20 sequence owned by this compute window
 
-Do not stop at ordinary workload, implementation, instrumentation, timeout, or performance problems. Follow `M5_PROBLEM_RESOLUTION_POLICY.md`.
+Selection is already reviewed/approved. Do not rerun the 52-candidate selection.
 
-## M5.6 is now a freeze boundary, not terminal Goal state
+Approved selection anchor:
 
-When compute M5.6 passes:
+`hrl/decoupled-l1-exp-m5-extended20-select-v0@d43b6eec93f68efa94057f34ffa699463b53e6a6`
 
-1. create/finalize the compute review pack;
-2. record immutable `COMPUTE_FREEZE_CORE_SHA` and `COMPUTE_FREEZE_FRAMEWORK_SHA`;
-3. emit `docs/dtc_l1/m5/handoffs/M5_6_TO_GRAPHICS.md`;
-4. push/clean both compute branches;
-5. create graphics branches from the exact freeze heads:
-   - Core `hrl/decoupled-l1-m5-graphics-v0`
-   - Framework `hrl/decoupled-l1-exp-m5-graphics-v0`
-6. continue automatically to M5.7.
+### M5.E1
 
-Do not modify frozen compute results from the graphics branches.
+Source/build/input/output/PTX formalization of all approved 20 may begin opportunistically when it does not disturb active Paper jobs.
 
-## Post-compute graphics sequence
+Do not launch the 60 formal runs before M5.2.
 
-Execute:
+Correct BlackScholes metadata to `Black-Scholes option pricing`; do not assume Monte Carlo.
 
-`M5.7 -> M5.8 -> M5.9 -> M5.10 -> M5.11 -> M5.12`
+### M5.E2
 
-### M5.7
-Close provenance for all five thesis graphics workloads and exact/closest source-backed glmark2 scene, shader, model, texture, resolution, and invocation identities.
+After M5.2 PASS, verify E1 identities against the frozen M5.2 Core/Framework/config/parser anchor, then launch:
 
-### M5.8
-Treat the existing `UNAVAILABLE_WITH_CURRENT_INFRA` audit as starting evidence, then deeply recover possible source-backed execution paths in this order:
+`20 workloads x {PAPER_BASE,PAPER_IO,PAPER_OO} = 60 primary runs`.
 
-1. original thesis/project simulator/artifacts/traces;
-2. historical graphics-enabled simulator/fork/artifacts;
-3. real direct graphics frontend integration;
-4. source-backed shader/request trace replay;
-5. proxy only as supplemental non-formal work.
+Execute through `M5_PARALLEL_BATCH_POLICY.md`:
 
-Do not declare graphics unavailable merely because the current ready-made path is absent. Exhaust the source-backed routes first.
+- dynamic measured-safe worker pool;
+- isolated output directories;
+- resumable job registry;
+- mix workload/mode/heavy classes;
+- do not run one workload triplet at a time unnecessarily;
+- keep unrelated jobs progressing while an isolated issue is diagnosed when scientifically safe.
 
-If a DIRECT_SOURCE_BACKED or TRACE_SOURCE_BACKED path is established, continue M5.9.
+Paper M5.3/M5.4/M5.5/M5.6 and Extended E2/E3 are allowed to overlap in wall-clock time after M5.2.
 
-If all source-backed routes are exhaustively ruled out, record `GRAPHICS_SOURCE_BACKED_UNAVAILABLE` and proceed to M5.12 negative-evidence closure rather than inventing a proxy.
+### M5.E3
 
-### M5.9-M5.10
-Integrate/validate the selected path and perform directed graphics-DTC tests plus representative Base/IO/OO pilots. Preserve texture/order/completion semantics and separate fixed-function traffic outside DTC scope.
+Produce causal/generalization synthesis, `GM-EXTENDED20` and `GM-ALL-COMPUTE30`. Preserve weak/negative results. Blanket parameter sweeps across all 20 are not required; targeted diagnostic follow-ups only for specific causal ambiguity.
 
-### M5.11
-Run all five source-backed graphics workloads for paper-facing Figure 4.2, 4.5, 4.7, 4.8 and 4.10 experiments. Figure 4.9 remains compute-only.
+## Compute freeze
 
-Do not emit `GM-ALL-PAPER` until compute/graphics performance metric comparability is explicitly proven.
+M5.6 PASS alone is not the compute-freeze boundary.
 
-### M5.12
-Produce integrated compute+graphics causal synthesis and the final review pack.
+If Paper M5.6 finishes before Extended E3, use status:
 
-## Final Goal terminal states
+`M5_PAPER10_READY_WAITING_FOR_EXTENDED20`
 
-Successful graphics reproduction:
+Create `M5.COMPUTE_FREEZE` only after:
 
-`M5_FULL_REPRO_READY_FOR_REVIEW`
+- Paper M5.6 PASS;
+- Extended M5.E3 PASS;
+- no unresolved correctness/fidelity issue;
+- both active compute branches pushed/clean.
 
-Exhaustive source-backed graphics unavailability:
+Then emit `docs/dtc_l1/m5/handoffs/M5_COMPUTE_FREEZE.md` with exact Core/Framework freeze SHAs.
 
-`M5_COMPUTE_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
+## Graphics coordination
 
-`M5_COMPUTE_READY_FOR_REVIEW` alone is no longer a stop condition.
+A separate Codex window owns Framework graphics research branch:
+
+`hrl/decoupled-l1-exp-m5-graphics-research-v0`
+
+That window may do M5.7/M5.8 only and must not modify this compute worktree/Core or this window's `LATEST_REPORT.md`.
+
+Do not perform graphics M5.9+ integration on compute branches. After compute freeze, fresh graphics integration branches must be created from the exact freeze SHAs.
+
+## Problem behavior
+
+Ordinary workload/build/PTX/assertion/parser/counter/timeout/performance problems remain resolve-in-goal. Reproduce -> classify -> repair/reconstruct -> regress -> invalidate stale data -> continue.
+
+A weak or negative DTC result is evidence, not a stop condition.
 
 ## Pause conditions
 
-Pause only at a genuine `RESEARCHER_DECISION_REQUIRED` boundary, including:
+Pause only for a genuine researcher-decision boundary, for example:
 
-- the only source-correct next step changes frozen DTC/M0-M4 architecture semantics;
-- irreducible scientific ambiguity requires choosing a different experiment meaning;
-- formal graphics would require a proxy/approximation rather than a source-backed path;
-- compute/graphics metric comparability is irreducibly ambiguous while attempting a combined claim;
-- or one of the final M5 terminal review states is reached.
+- required change to frozen DTC/M0-M4 architecture semantics;
+- irreducible experiment-meaning ambiguity;
+- approved Extended workload becomes unusable and substitution choice cannot be resolved using pre-performance alternate rules;
+- a cross-track finding requires changing a frozen common metric/config definition;
+- final M5 review state after graphics/final synthesis.
 
-## Forbidden shortcuts
-
-Do not:
-
-- enlarge the formal 16 KiB Base L1 to bypass pressure;
-- weaken deadlock, pending-write, scoreboard, or accounting assertions;
-- change ratio 0 asymmetrically across paper-facing modes;
-- tune inputs/architecture for target speedups;
-- silently substitute algorithms/scenes;
-- treat current graphics infeasibility as permission to use a compute proxy;
-- mix MODERN_OO_SECTOR into paper Figures 4.2-4.10;
-- start Figure 4.6 area/synthesis without separate M6 authorization.
+Do not stop merely at Paper M5.6 or Extended E3; their join produces compute freeze for the graphics integration track.
