@@ -45,6 +45,18 @@ Older active jobs with config hashes `5ca33d...` or `0f037e...`, and older
 runtime `c5710...`, are preserved as diagnostic raw evidence.  They must not
 be relabeled, deleted, or used as formal ratio-zero data.
 
+## Long-run diagnostic
+
+The first full-load PolyBench kernels are long-running.  At the batch's
+wall-clock diagnostic threshold all nine ratio-zero simulator processes remain
+live, have no deadlock/assertion/fatal signature, and each advanced Linux
+user+system CPU ticks during a two-second observation (`9/9`).  The simulator
+log is quiet while a large kernel executes, so lack of new bind lines is not
+by itself no progress.  Under `M5_PROBLEM_RESOLUTION_POLICY.md` this state is
+`SLOW_BUT_PROGRESSING`, not a performance outcome or `NO_PROGRESS_DEADLOCK`.
+The live jobs are preserved; any later terminal state will be classified from
+its exact raw log and identity.
+
 ## Next action
 
 For each natural completion: run the source-defined output checker, inspect

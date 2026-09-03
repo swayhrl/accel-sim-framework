@@ -17,6 +17,11 @@ are currently computing with no deadlock/assertion/fatal signature.  The
 earlier ratio-25/old-runtime jobs remain preserved diagnostics, never formal
 substitutes.  See `m5/handoffs/M5_0B_RATIO0_BASE_BATCH.md`.
 
+At the wall-clock diagnostic threshold, all nine ratio-zero processes advanced
+CPU time during a two-second observation.  They are therefore classified
+`SLOW_BUT_PROGRESSING`; no timeout is presented as a performance result or a
+deadlock, and no live job has been terminated.
+
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
 The M5-T005 researcher-decision boundary is resolved.  The paper-facing
