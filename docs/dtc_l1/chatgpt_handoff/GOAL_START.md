@@ -1,115 +1,74 @@
-# DTC-L1 Explicit Goal Launch Contract
+# DTC-L1 M5 Explicit Goal Launch Contract
 
-Status: **ACTIVE GOAL CONTRACT — RECOVER M4 COMPLETION ACCOUNTING, THEN FINISH M4, STOP BEFORE M5**
+Status: **DRAFT ONLY — NOT YET AUTHORIZED**
 
-This file is the short durable objective for Codex Goal mode. The active recovery details are in `goal/M4_COMPLETION_ACCOUNTING_RECOVERY.md`.
+This file is the short durable objective that will be activated after the user approves the M5 experiment matrix.
 
-## Goal
+## Proposed persistent Goal
 
-Recover the source-reachable DTC cacheable-load completion-accounting failure exposed by PolyBench 2DConv, prove no regression of closed M1-M3 behavior, then finish all remaining M4 HARD validation and stop at:
+Establish a source/workload/config/metric fidelity lock, then reproduce and explain the Decoupled-Tag Cache mechanism on the ten thesis general-purpose compute workloads through Figures 4.2, 4.5, 4.7, 4.8, 4.9, and 4.10, resolving ordinary implementation/workload/platform issues inside Goal mode instead of stopping at the first failure.
 
-`READY_FOR_M5_REVIEW`
+Final compute state:
 
-The persistent Goal is not complete merely because 2DConv is repaired. It is complete only when:
+`M5_COMPUTE_READY_FOR_REVIEW`
 
-1. the first 2DConv `PAPER_IO` / `PAPER_OO` dependency mismatch is localized to a source-backed root cause;
-2. a minimal architecture-neutral repair restores conserved exactly-once DTC dependency ownership;
-3. permanent cardinality/completion regressions exist;
-4. exact 2DConv IO/OO runs complete with closed dependency/PIB/inflight/credit invariants;
-5. PAPER_BASE timeout is separately classified from progress evidence;
-6. closed-stage CTests and IO/OO/sector/LEGACY regression checks pass;
-7. the existing PTX fence reachability resolution remains respected without adding frontend semantics;
-8. all remaining active M4 Store/Atomic/bypass/mixed/workload/parser/CSV/hygiene gates pass;
-9. at least five provenance-resolved representative Base/IO/OO workload triplets are accepted;
-10. `review_packs/M4_COMPUTE_BRINGUP/` is complete;
-11. both branches are pushed/clean and `git diff --check` passes;
-12. `codex_handoff/LATEST_REPORT.md` says `READY_FOR_M5_REVIEW`;
-13. M5 has not started.
+The Goal is complete only when:
 
-## Active branches
+1. all ten thesis compute algorithms have source-backed reproducible mappings and deterministic inputs;
+2. platform/config and metric definitions are locked and source-audited;
+3. Figure 4.2 Base structural bottleneck experiment is complete;
+4. Base/IO/OO main performance and common average-concurrent-miss results are complete;
+5. logical-cache, physical-cache, and PIB sensitivity sweeps are complete;
+6. every surprising performance result has a mechanism root-cause classification rather than a numerical-target workaround;
+7. integrated causal analysis explains performance through stall, concurrency, HOL, reclaim, traffic, and downstream evidence;
+8. graphics provenance/feasibility preparation has progressed independently and its status is recorded;
+9. all FORMAL results have complete provenance and strict counter/accounting checks;
+10. both M5 branches are pushed/clean;
+11. no unresolved correctness/fidelity issue remains in compute scope.
+
+## Branches
 
 Core:
 
-- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`
+- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`
+- parent `cdeec769fd0c1be12b45d58536ecb81074d4b415`.
 
 Framework:
 
-- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`
+- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`
+- parent `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`.
 
-M0 branches remain read-only anchors.
+Do not write M5 work back onto the M1-M4 branches.
 
-## Mandatory current-state read order
+## Mandatory future read order
 
-Framework:
-
-1. `AGENTS.md`
+1. Framework `AGENTS.md`
 2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 3. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 4. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
 5. this file
-6. `docs/dtc_l1/goal/M4_COMPLETION_ACCOUNTING_RECOVERY.md`
-7. `docs/dtc_l1/implementation/M4_COMPUTE_BRINGUP_FAILURE.md`
-8. `docs/dtc_l1/implementation/M4_MEMORY_OP_SEMANTICS.md`
-9. `docs/dtc_l1/goal/M4_FENCE_REACHABILITY_RESOLUTION.md`
-10. `docs/dtc_l1/goal/VALIDATION_ACCEPTANCE_MATRIX.md`
-11. `docs/dtc_l1/goal/M1_M4_GOAL_PLAN.md`
-12. `docs/dtc_l1/goal/COUNTER_INVARIANT_SPEC.md`
+6. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
+7. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+8. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+9. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
+10. M4 final review pack and implementation evidence as historical validated context
+11. Core `AGENTS.md`
+12. Core `docs/dtc_l1/DTC_L1_SPEC.md`
 
-Core:
+## Proposed progression
 
-13. `AGENTS.md`
-14. `docs/dtc_l1/DTC_L1_SPEC.md`
+`M5.0A anchor -> M5.0B workloads -> M5.0C platform -> M5.0D metrics -> M5.0E pilots -> M5.1 Fig4.2 -> M5.2 Fig4.5+4.7 -> M5.3 Fig4.8 -> M5.4 Fig4.9 -> M5.5 Fig4.10 -> M5.6 causal -> M5_COMPUTE_READY_FOR_REVIEW`.
 
-Specific precedence:
+Graphics G0-G2 preparation proceeds as a nonblocking side track.
 
-- for the active completion-accounting blocker, `M4_COMPLETION_ACCOUNTING_RECOVERY.md` is authoritative;
-- for fence/source-reachability only, `M4_FENCE_REACHABILITY_RESOLUTION.md` plus the updated validation matrix are authoritative refinements of older generic plan language.
+## Proposed continuation policy
 
-## Closed stages
+Ordinary failures are not terminal. Follow `M5_PROBLEM_RESOLUTION_POLICY.md` for workload recovery, build/PTX problems, assertions, counter gaps, performance anomalies, timeouts, configuration mismatches, and implementation bugs. Diagnose -> minimally repair/reconstruct -> regress -> invalidate stale data when needed -> resume the same substage.
 
-- M1: PASS.
-- M2: PASS.
-- M3: PASS.
+Do not tune design knobs or inputs to reproduce thesis speedup numbers.
 
-Do not redo or weaken closed work unless the active recovery demonstrates a real regression.
+A future active Goal may pause only when a real scientific/researcher decision cannot be resolved from thesis/source/canonical-workload evidence or when final compute review is reached.
 
-## Current active blocker
+## Current boundary
 
-PolyBench 2DConv:
-
-- `PAPER_IO` aborts on `pending >= dependencies` in DTC instruction completion;
-- `PAPER_OO` aborts on the same invariant;
-- `PAPER_BASE` reached the fixed 240-second diagnostic wall-clock limit and is not yet classified as deadlock.
-
-The IO/OO failure is a source-reachable correctness failure. It must be repaired by tracing and conserving dependency ownership, not by weakening assertions.
-
-## Immediate priority
-
-Execute `R4C.0 -> R4C.8` from `M4_COMPLETION_ACCOUNTING_RECOVERY.md`.
-
-Do not stop for ordinary localization/checkpoint PASS results. Commit/push safe semantic checkpoints and continue until either:
-
-- a recovery HARD stop condition occurs; or
-- recovery fully passes and the remaining M4 Goal can resume automatically.
-
-After recovery PASS, continue the remaining M4 work without new human authorization and stop only at an active HARD failure or final `READY_FOR_M5_REVIEW`.
-
-## Forbidden shortcuts
-
-Do not:
-
-- clamp/zero pending-write accounting;
-- remove the failing assertion to obtain workload completion;
-- release scoreboard state without exact dependency ownership;
-- change 128B DTC dependency granularity just to match a failing count;
-- reintroduce conventional L1D MSHR/fill as the IO/OO read backend;
-- modify L2/NoC/DRAM;
-- add PTX fence frontend semantics or map `membar` to `FENCE_OP`;
-- tune performance toward thesis numbers;
-- begin M5.
-
-## Final STOP boundary
-
-STOP with pushed evidence if a source-backed minimal repair cannot be established, a closed-stage regression appears, PAPER_BASE is proven unexpectedly no-progress/deadlocked, another active M4 HARD gate fails, or M4 reaches `READY_FOR_M5_REVIEW`.
-
-Do not begin M5.
+This file is a draft. Do not start M5 merely because this file exists. Wait for explicit user approval and the status flip to ACTIVE.
