@@ -1,9 +1,12 @@
 # M5 formal platform/config knob map
 
-Status: `M5.0C_PRELIMINARY_SOURCE_AUDIT`.  This map is current for Core
-`ddb9aac59cd1f6c80d7990b8bb9ec173d4819680`; it is preparation evidence, not
-an M5.0C PASS declaration.  The M5.0B corrected Base batch must finish before
-the platform handoff can close.
+Status: `M5.0C_PRELIMINARY_SOURCE_AUDIT`.  This map is current for the
+ratio-zero behavior anchor Core `22db16b8feb007a405634588b6bec97c935d2ecb`
+used by the corrected M5.0B batch; it is preparation evidence, not an M5.0C
+PASS declaration.  The active Core branch's later commits through
+`d3d1cb8d` are workflow/documentation-only relative to this behavior anchor.
+The M5.0B corrected Base batch must finish before the platform handoff can
+close.
 
 ## Committed formal configuration family
 
