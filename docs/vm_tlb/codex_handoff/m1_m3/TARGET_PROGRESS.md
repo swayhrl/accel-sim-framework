@@ -31,7 +31,7 @@ Evidence/review path:
 M4B, Segmentation, sub-entry/coalescing, synthetic KV, page fault, migration,
 UVM or MCM.
 
-Published evidence commit: Framework `0dfef612d3a6b597049aceb9eaeb7f8d3e00dc40`
+Published evidence commit: Framework `0dfef61284f0608ff0faabbd14ff42b9f9a54854`
 on `origin/hrl/vm-m1-m3-v0`; corresponding Core source commit:
 `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d` on
 `research/hrl/vm-m1-m3-v0`.
