@@ -16,7 +16,7 @@ evidence only; they are not formal M5 results.
 | `scalarProd_13920` | `scalarProd/scalarProd.cu` | `--size 13920` parsed | CPU/GPU L1 norm `<1e-6`, `QA_PASSED` | `742008e11f8888c5521c913497a1b48fd8de104cbeff2dc6df24f667eab8ab8e` | source/build/PTX recovered; output smoke pending |
 | `scan` | `scan/main.cpp` | source-fixed `N=13*(1048576/2)/256`; no workload arguments | exhaustive CPU/GPU scan comparison, `QA_PASSED` | `dba6488710d5d7ba6ac6b11d5441fad389b7e2431881c906047b1b66f0dbd7c0` | source recovered |
 | `sortingNetworks` | `sortingNetworks/main.cpp` | source-fixed `N=1024`, `numValues=65536`, one iteration | key/value integrity and order validator, `QA_PASSED` | `7460c5b6882bd6a86d086d19319822683831d8fb6021e111898a25d24a6cbfa8` | source recovered |
-| `transpose` | `transpose/transpose.cu` | `dimX512 dimY512` parsed; square/tile-multiple checks enforce validity | source `compareData`, `QA_PASSED` | `d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563` | source recovered |
+| `transpose` | `transpose/transpose.cu` | `dimX512 dimY512` parsed; square/tile-multiple checks enforce validity | source `compareData`, `QA_PASSED` | `d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563` | source/PTX recovered; original `shrutil` executable link dependency pending |
 | `vectorAdd_6000000` | `vectorAdd/vectorAdd.cu` | `--size 6000000` parsed | elementwise comparison, `QA_PASSED` | `14991a235ab811b5ff4cac639825a4e4238b2af3e3d1ca0a629134db5b5cd3d5` | source/build/PTX recovered; output smoke pending |
 
 All eight use the legacy CUDA-SDK helper layer.  FWT proved that the original
@@ -55,6 +55,25 @@ same frozen helper set:
 The PTX exposes `_Z13scalarProdGPUPfS_S_ii`.  This is build provenance only;
 its source-defined output smoke remains queued behind the M5.0B worker-pool
 closeout.
+
+## transpose PTX recovery and executable-link boundary
+
+The isolated CUDA-11.8 `sm_52` PTX extraction completed with source hash
+unchanged:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `transpose.ptx` | `6f831e96b1e375ff49deccd5b3bba2bb8b8a46656d898cce54cb22feee0d94ed` |
+
+It exposes the source-defined copy and transpose kernel family, including
+`_Z18transposeCoalescedPfS_iii` and `_Z24transposeNoBankConflictsPfS_iii`.
+The executable link remains correctly incomplete: the historical source calls
+`shrLog`, `shrLogEx`, and `shrSetLogFileName`, while the recovered frozen
+`libcutil_x86_64.a` does not define those `shrutil` symbols and no reachable
+`gpu-app-collection` historical tree contains their implementation/archive.
+Do not substitute a locally invented logger and do not mark the output smoke
+as complete; this is a tooling-dependency recovery item, not a DTC or workload
+semantic failure.
 
 No member enters E2 until M5.2 freezes the common Core/Framework/config/parser
 anchor and the complete E1 identity tuple is rechecked.
