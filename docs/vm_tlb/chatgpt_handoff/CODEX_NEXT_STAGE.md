@@ -1,87 +1,146 @@
-# CODEX_NEXT_STAGE — Track A
+# CODEX_NEXT_STAGE — integrated M4 Goal
 
 ## Status
 
-`M1_M3_VM_BASELINE_CLOSEOUT`: **PASS / ACCEPTED**.
+Accepted prerequisites:
 
-Accepted final Core:
+- `M1_M3_VM_BASELINE_CLOSEOUT`: PASS / ACCEPTED;
+- `M4A_MERGE_PREP`: PASS / ACCEPTED FOR INTEGRATION.
+
+Final VM Core anchor:
 
 `5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
 
-Accepted Framework evidence:
+Accepted Track-B merge-prep Framework:
 
-`47dde5767af8d30b892c7d63d932455644b7cf3a`
+`e21ffebce280e6b932fb4556ef75c609ff54c326`
 
-Track A has completed G3-4A, G3-4B, G3-5A, G3-5B, G3-CLOSEOUT and the M1-M3 macro closeout.
+Accepted B integration-manifest blob:
+
+`291d749e7b96cc858f09335b052c6e37e5966b98`
 
 ## Current authorization
 
-**STOP / HOLD.**
+**AUTHORIZED:** execute the integrated M4 Goal from the explicit start file:
 
-There is no additional Track-A implementation target at this time.
+`docs/vm_tlb/chatgpt_handoff/M4_INTEGRATION_GOAL_START.md`
 
-Track B is still executing `M4A_MERGE_PREP` on the frozen formal LLM traces. Wait for its ChatGPT review before any A/B integration or M4B work.
+Read the evidence-driven override before the prepared stage specs:
 
-## Frozen integration anchor
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M4_INTEGRATION_AUTHORIZED_ADDENDUM.md`
 
-Any future integrated VM/LLM branch must use this Core as its starting VM baseline:
+The addendum supersedes old draft-only status markers and resolves the frozen
+B evidence/decisions.
 
-`swayhrl/gpgpu-sim:hrl/vm-m1-m3-v0`
+## Continuous target
 
-`5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
-
-Do not replace it with Track B's old frozen parser Core; that old Core exists only as trace-format compatibility evidence.
-
-## Future target is prewritten but NOT authorized
-
-The detailed post-B contracts have already been prepared:
-
-1. `M4_INTEGRATION_GOAL_START_DRAFT.md`
-2. `stage_specs/M4_INTEGRATION_TO_SEGMENTATION_MASTER.md`
-3. `stage_specs/M4I_AB_INTEGRATION_AND_REPLAY.md`
-4. `stage_specs/M4C_LLM_BASELINE_CHARACTERIZATION.md`
-5. `stage_specs/M4B_SEGMENTATION_REPRODUCTION.md`
-
-They define the planned continuous target:
+Create fresh integration worktrees/branches and execute:
 
 ```text
-M4I A/B integration
- -> M4R final-Core formal trace replay compatibility
+M4I-0 admission
+ -> M4I-1 path-scoped B import
+ -> M4I-2 immutable artifact lock
+ -> M4I-RF0 range-index/object-coverage safety check
+ -> M4I-3 final-Core cold build + M1-M3 regression
+ -> M4I-4 49-bit/object metadata admission
+ -> M4I-5 final-Core parser smoke
+ -> M4R replay policy + throughput/feasibility
  -> M4C real LLM baseline translation characterization
- -> M4B-P paper paging/L2-sub-entry baseline
- -> M4B-S Weight Segmentation on formal prefill/decode1
+ -> M4B-P paper paging/sub-entry baseline
+ -> M4B-S Weight Segmentation on real prefill/decode1
  -> M4B-CLOSEOUT
- -> STOP before M5 synthetic KV
+ -> STOP before M5
 ```
 
-`M4_INTEGRATION_GOAL_START_DRAFT.md` is deliberately marked NOT AUTHORIZED and
-contains placeholders for the final accepted B merge-prep SHA, semantic list
-hashes/coverage evidence and integration manifest.
+Do not stop for ordinary successful transitions. Continue automatically after
+each passing internal gate.
 
-After Track B reports `M4A_MERGE_PREP_PASS_READY_FOR_INTEGRATION`, ChatGPT will:
+## Branch/source rule
 
-- review B independently;
-- fill those immutable placeholders;
-- adjust the drafted contracts only where B's measured NCCL/address/object
-  evidence requires it;
-- issue a new explicit `AUTHORIZED` start file.
+Framework:
 
-The intent is that Codex can then enter Goal mode immediately rather than wait
-for another architecture-planning round.
+`hrl/vm-llm-m4b-v0`
 
-## Do not execute now
+must branch from the exact Track-A authorization HEAD supplied by the startup
+instruction.
 
-Do not:
+Core:
 
-- merge Track B into Track A;
-- create the final A/B integration branch unless explicitly authorized;
-- execute the draft start file;
-- start M4B;
-- implement Segmentation;
-- implement L2-TLB sub-entry/coalescing;
-- inject synthetic KV;
-- add page faults/migration/UVM/MCM;
-- broaden to multi-ASID claims;
-- retune the accepted generic M1-M3 baseline in anticipation of LLM results.
+`hrl/vm-llm-m4b-v0`
 
-Until the explicit post-B authorization is published, remain stopped.
+must branch exactly from:
+
+`5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`.
+
+Do not reuse historical A/B implementation worktrees and do not wholesale merge
+Track B. Import B-owned paths from exact SHA `e21ffeb...` and record every
+source/destination blob in `B_IMPORT_MANIFEST.tsv`.
+
+## Frozen formal evidence
+
+- prefill: 724 entries = 692 COMPUTE + 32 NCCL;
+- decode1: 772 entries = 740 COMPUTE + 32 NCCL;
+- both formal full address scans require only 47-bit VA;
+- zero decoded addresses are `>=2^49`;
+- paper-facing 49-bit mode is authorized without address rewriting;
+- primary paper-facing trace policy is `COMPUTE_ONLY_TP_PARTITION`;
+- `FULL_RANK0` remains required self-capture sensitivity/provenance;
+- no synthetic KV is allowed before the final M4B stop.
+
+Exact archive/list/coverage hashes are in the authorized addendum.
+
+## Mandatory M4I-RF0 correction
+
+Before using B's historical Weight/KV/UNKNOWN object split for M4C or Segment
+registration, resolve the range-index ordering risk described in the addendum.
+
+Required outcome:
+
+- corrected integration analyzer globally sorts merged ranges and asserts
+  monotonic starts;
+- tests cover KV below and above Weight;
+- resumable partial identity is strengthened to bind analysis/range-map
+  semantics;
+- if actual historical B sidecar ranges were already monotonic, document and
+  retain B object totals;
+- if not, recompute affected object coverage offline before M4C.
+
+This does not reopen capture or the already accepted 49-bit/global-address
+result.
+
+## M4C / M4B policy
+
+M4C is behavior-neutral characterization only. It must establish object-specific
+TLB/MSHR/walker/PWC/PTE/latency behavior and L2-TLB incoming-object -> victim-
+object replacement evidence before Segmentation.
+
+M4B-P must first audit the paper/reference source for L2 sub-entry semantics. If
+still unavailable, the prepared `REFERENCE_APPROX_SUBENTRY_16` fallback is
+pre-authorized only as `PAPER_PAGING_BASELINE_APPROX`.
+
+M4B-S segments only the frozen contiguous Weight range. Segment + L1 lookup are
+parallel; default Segment service latency equals L1 service latency as an
+explicit modeling decision. A Segment hit must suppress conventional L2-TLB,
+MSHR/PWQ/walker/PWC/PTE activity and conventional Weight TLB fills. A Segment
+miss reuses the already completed L1 result and must not re-probe L1.
+
+## Hard STOP
+
+Follow all hard-stop rules in the start/addendum/master specs. In particular,
+STOP on source/artifact mismatch, unresolved import provenance, M1-M3 regression,
+required compute trace corruption, legitimate SimVA outside the approved
+paper-width contract, repeated lookup polling, recursive/misassociated PTE
+traffic, duplicate side effects, materially new unapproved sub-entry semantics,
+Segmentation changing non-weight behavior, Segment hits still producing paging
+work, deadlock/no-progress, or provenance ambiguity.
+
+## Final boundary
+
+After `M4B-CLOSEOUT`:
+
+- commit/push both integration branches;
+- complete the M4 review packs and integrated report/progress ledgers;
+- STOP for ChatGPT review.
+
+Do not start M5 synthetic-KV/12K pressure, KV segmentation, new AI-aware
+mechanisms, page faults/migration/UVM/MCM, or multi-ASID work.
