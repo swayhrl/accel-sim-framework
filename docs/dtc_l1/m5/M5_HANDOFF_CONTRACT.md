@@ -1,6 +1,8 @@
 # M5 Substage Handoff Contract
 
-Status: **PLANNING DRAFT — activate with M5 Goal authorization**
+Status: **ACTIVE — M5 v1 GOAL AUTHORIZED**
+
+Authority: `M5_V1_APPROVAL.md` + `M5_EXPERIMENT_MATRIX.md`.
 
 M5 is intentionally split into small independently reviewable substages, but those substages are **handoff boundaries, not human-approval stop boundaries**. After a substage passes its acceptance criteria, Codex must checkpoint evidence, commit/push, update the mutable report, and continue automatically.
 
@@ -212,7 +214,7 @@ At every PASS transition Codex must:
 5. update `codex_handoff/LATEST_REPORT.md`;
 6. immediately begin the next authorized stage.
 
-Do not ask for confirmation between M5 substages once the user authorizes the M5 Goal.
+Do not ask for confirmation between M5 substages.
 
 If a resolve-in-goal issue occurs, remain in the current stage, execute `M5_PROBLEM_RESOLUTION_POLICY.md`, checkpoint when useful, and continue after regression.
 
