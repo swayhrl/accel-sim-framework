@@ -2,123 +2,154 @@
 
 Last coordination update: 2026-09-03
 
-Status: **M1-M4 PASS; M5 EXPERIMENT MATRIX DRAFTED; M5 EXECUTION NOT YET AUTHORIZED**
+Status: **M1-M4 VALIDATED; M5 v1 APPROVED; M5.0A FIDELITY LOCK AUTHORIZED**
 
 ## Validated parent anchors
 
-M1-M4 final Core:
+M1-M4 are frozen validated infrastructure for M5.
 
-- branch: `swayhrl/gpgpu-sim:hrl/decoupled-l1-m1m4-v0`
-- SHA: `cdeec769fd0c1be12b45d58536ecb81074d4b415`
+Core parent:
 
-M1-M4 final Framework:
+- repository: `swayhrl/gpgpu-sim`;
+- branch: `hrl/decoupled-l1-m1m4-v0`;
+- final validated SHA: `cdeec769fd0c1be12b45d58536ecb81074d4b415`.
 
-- branch: `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m1m4-v0`
-- SHA: `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`
+Framework parent:
 
-M4 review pack:
+- repository: `swayhrl/accel-sim-framework`;
+- branch: `hrl/decoupled-l1-exp-m1m4-v0`;
+- final validated SHA: `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`.
 
-`docs/dtc_l1/review_packs/M4_COMPUTE_BRINGUP/`
+M0 and M1-M4 validated branches are read-only experimental anchors unless an M5-discovered implementation-fidelity bug requires a separately documented M5 repair on the M5 branch.
 
-Codex final M4 report:
-
-`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-
-M0 and M1-M4 branches are now historical validated anchors. Do not perform M5 experiments or exploratory implementation on them.
-
-## M5 planning branches
+## Active M5 branches
 
 Core:
 
-- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`
-- created from Core M1-M4 final SHA `cdeec769...`.
+- `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`.
 
 Framework:
 
-- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`
-- created from Framework M1-M4 final SHA `56369da3...`.
+- `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`.
 
-These branches currently contain M5 planning/coordination only. Formal M5 execution is not authorized until the user approves the experiment matrix.
+Both were created directly from the validated M1-M4 final anchors. M5 implementation/instrumentation/experiments belong on these branches.
 
-## Research objective for M5
+## Approved M5 authority
 
-M5 is not a numerical-target replication exercise. The goal is to show, in the simulator, the performance benefit and causal mechanism of the already-implemented Decoupled-Tag Cache RTL idea.
+Read in this order:
 
-Primary scientific objective:
+1. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`;
+2. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`;
+3. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`;
+4. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`;
+5. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`;
+6. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`;
+7. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`;
+8. M1-M4 final review packs/specs as regression/source context.
 
-`traditional L1 structural constraints -> lower memory-level concurrency -> DTC removes constraints -> higher live concurrent miss requests / latency hiding -> performance effect`.
+The stale `PLANNING DRAFT` banner inside the long matrix is superseded by `M5_V1_APPROVAL.md`; the matrix body is the approved v1 detailed execution plan.
 
-If performance is weak or negative, M5 must determine whether the cause is:
+## M5 research objective
 
-- implementation/modeling fidelity;
-- workload/input fidelity;
-- downstream simulator/platform bottleneck;
-- traffic side effect;
-- compute-bound behavior;
-- or a genuine mechanism limitation.
+M5 is a **mechanism/trend reproduction**, not a numeric-target recreation of the thesis' +22%/+30% aggregate speedups.
 
-Do not tune the design or input to hit the thesis' +22%/+30% results.
+The causal question is:
 
-## User-frozen M5 decisions
+`Base structural limits -> constrained live misses -> DTC removes limits -> concurrency/latency hiding changes -> performance effect`.
 
-1. Reproduction target: **mechanism/trend fidelity**, not exact numeric speedup.
-2. Recover all ten thesis general-purpose compute workloads first.
-3. Prepare graphics in parallel so it can attach immediately after compute closeout.
-4. First workload-provenance audit must test `gemv -> gemver`, `gesu -> gesummv`, and `conv2d -> 2DConvolution/pb_2dconv` hypotheses from thesis descriptions/source.
-5. Figure 4.2 is part of formal M5.
-6. Figure 4.7 concurrent miss metric is frozen as a common lifecycle: **L1/DTC new miss committed into lower-request ownership -> final lower response completes that request**, cycle-averaged.
-7. Ordinary problems must be solved inside Goal mode rather than treated as automatic stop conditions.
+Weak or negative performance is not by itself a failure. It must be classified as implementation/modeling, workload/input fidelity, downstream/platform, traffic side effect, compute-bound behavior, or a genuine mechanism limitation. Do not tune inputs or architecture to thesis numbers.
 
-## M5 planning documents
+## Researcher-frozen M5 v1 interpretations
 
-Read:
+### Figure 4.5 main configuration
 
-1. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
-2. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
-3. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-4. `docs/dtc_l1/m5/M5_GRAPHICS_PREP.md`
+Primary DTC result uses:
 
-The matrix currently covers:
+- 16KB logical Tag/cache capacity;
+- 80KB physical Cacheline Array;
+- IO PIB=256;
+- OO PIB=128;
+- remaining frozen M1-M4 paper-mode defaults.
 
-- M5.0 Fidelity Lock;
-- M5.1 Figure 4.2 baseline motivation;
-- M5.2 Figures 4.5 + 4.7 main result;
-- M5.3 Figure 4.8 logical-cache sweep;
-- M5.4 Figure 4.9 physical-cache/release sweep;
-- M5.5 Figure 4.10 PIB sweep;
-- M5.6 integrated causal analysis;
-- M5.G nonblocking graphics preparation;
-- M5.7+ optional extensions after paper-mode compute closeout.
+PAPER_BASE remains the conventional 16KB L1 with PIB=8 and MSHR=32.
 
-## Paper compute workload set
+### Figure 4.7 metric
 
-The thesis Table 4.1 compute set to recover is:
+A live concurrent miss is counted from new-miss lower-request commit through final lower response completion.
 
-Cache-efficient:
+Primary plot metric:
 
-- bicg
-- atax
-- gemv (alias audit required)
-- mvt
-- syrk
-- gesu (alias audit required)
-- syr2k
+`avg_concurrent_misses_per_sm = sum(live misses across all SMs/cycles) / (num_SM * sampled_kernel_cycles)`.
 
-Cache-inefficient:
+GPU-total cycle average and peaks are retained as audit data.
 
-- spmv
-- 2mm
+### Figure 4.2 categories
 
-Compute-intensive:
+Formal paper-facing categories are only:
 
-- conv2d (source-equivalence audit required)
+1. PIB/waiting-buffer full;
+2. true Tag & Cacheline allocation failure;
+3. MSHR capacity/merge failure;
+4. Miss Queue/lower-request-capacity failure.
 
-Compute-only geometric mean must be labeled `GM-GP`. Do not call it thesis `GM-ALL`, which includes graphics.
+Tag-bank arbitration conflicts are diagnostic and must not be folded into Tag & Cacheline allocation failure.
 
-## Current execution boundary
+## Authorized continuous compute progression
 
-`CODEX_NEXT_STAGE.md` and `GOAL_START.md` remain in **PLANNING HOLD** state on the M5 branch until user approval.
+`M5.0A Anchor -> M5.0B Workloads -> M5.0C Platform -> M5.0D Metrics -> M5.0E Pilot/Fidelity Lock -> M5.1 Fig4.2 -> M5.2 Fig4.5+4.7 -> M5.3 Fig4.8 -> M5.4 Fig4.9 -> M5.5 Fig4.10 -> M5.6 Causal Synthesis`.
 
-Do not start formal M5 runs yet.
+Terminal compute state:
 
-After approval, ChatGPT will flip the M5 Goal contract to ACTIVE and Codex may execute continuously through M5.0 -> M5.6, resolving ordinary issues in-goal according to `M5_PROBLEM_RESOLUTION_POLICY.md` and stopping at `M5_COMPUTE_READY_FOR_REVIEW` or a true researcher-decision boundary.
+`M5_COMPUTE_READY_FOR_REVIEW`.
+
+Do not pause between passing substages. Emit the required handoff/review evidence, commit/push, update `codex_handoff/LATEST_REPORT.md`, and continue.
+
+## Current immediate stage — M5.0A
+
+First establish the M5 formal anchor and resumable experiment infrastructure:
+
+- prove branch ancestry;
+- release build + all DTC CTests;
+- LEGACY/Base/IO/OO sentinel regressions against M4;
+- formal identity tuple and runtime/toolchain hashes;
+- resumable result registry;
+- measured safe batch concurrency;
+- `handoffs/M5_0A_ANCHOR.md`.
+
+Then continue automatically to M5.0B.
+
+## M5.0B workload priority
+
+Recover and source-verify all ten thesis compute algorithms. First explicitly audit:
+
+- `gemv -> gemver?`;
+- `gesu -> gesummv?`;
+- `conv2d -> 2DConvolution/pb_2dconv?`.
+
+Missing binaries/wrappers are problems to solve inside the Goal, not reasons to substitute algorithms or stop immediately.
+
+SpMV receives special fidelity analysis because the M4 input did not exercise the Base PIB bottleneck described by the thesis.
+
+## Parallel graphics preparation
+
+Graphics G0-G2 may run in parallel with compute work:
+
+- recover glmark2 scene/version/assets/provenance;
+- audit direct/trace/proxy feasibility;
+- prepare source-backed execution if possible.
+
+Graphics must not block compute M5 and must not contaminate the compute formal behavior anchor. `GM-ALL-PAPER` remains forbidden until all five graphics workloads are source-backed and correctness-clean.
+
+## Problem behavior
+
+Follow `M5_PROBLEM_RESOLUTION_POLICY.md`.
+
+Assertions, missing counters, missing workloads, build errors, timeouts, unexpected bottlenecks, weak speedup, and newly discovered implementation bugs are normally `RESOLVING_ISSUE` states. Diagnose, repair when source-correct, regress, invalidate stale results as needed, and continue.
+
+Pause only at a true `RESEARCHER_DECISION_REQUIRED` boundary: required change to frozen architecture semantics, irreducible scientific ambiguity, inability to verify a required compute algorithm without changing experiment meaning, contradiction of a researcher-frozen metric definition, or final compute review state.
+
+## Scope boundary
+
+M5 v1 authorizes the ten-compute paper mechanism study through M5.6 plus parallel graphics preparation G0-G2.
+
+It does **not** yet authorize post-review graphics formal aggregation, Figure 4.6 area claims, MODERN_OO_SECTOR paper comparisons, or M5.7+ supplemental studies.
