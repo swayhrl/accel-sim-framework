@@ -303,7 +303,7 @@
 
 ## M5-E1-002 — selected Parboil output checkers require legacy Python semantics
 
-- State: `OBSERVED -> SOURCE_CLASSIFIED -> COMPATIBILITY_ADAPTER_PENDING`.
+- State: `OBSERVED -> SOURCE_CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
 - Scope: Extended-20 E1 output-check formalization only; Paper-10 M5.0B
   processes and the M5.2 gate for E2 are unaffected.
 - Evidence: selected Parboil `bfs`, `cutcp`, `mri-q`, `sad`, and `stencil`
@@ -326,3 +326,13 @@
   run the source-defined checker/adapter smoke for each selected Parboil
   workload, then retain the exact interpreter/adapter identity in the E1
   manifest. No E2 job may launch before M5.2 freezes the common anchor.
+- Resolution/regression: add
+  `util/dtc_l1/verify_m5_extended_parboil_output.py`, a Python-3 adapter that
+  directly preserves each selected source checker's file format, exact/relative
+  tolerance predicate, and trailing-data rule. Its fixture suite
+  `test_verify_m5_extended_parboil_output.py` exercises both an accepted and a
+  deliberately mismatching case for `bfs`, `cutcp`, `histo`, `mri-q`, `sad`,
+  and `stencil`; `python3 -m py_compile` and all six tests pass. A real
+  `histo` candidate input self-comparison also prints PASS. This closes the
+  interpreter-compatibility issue only; every workload still requires its own
+  source-defined output smoke after build/PTX/input recovery.

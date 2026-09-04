@@ -95,6 +95,15 @@ Support-module identities in the same clean Parboil commit:
 | `common/python/binaryfilecompare.py` | `e93b39382a6028b4d52809a2035273505aac7f84` | `921d1b5b65f3789747eecab54a08c94782a5c46f397c15531018fb41251f95e3` |
 | `common/python/textfilecompare.py` | `f7cd7abc5d16677f8a7aa8d730625aa24c713cd2` | `50f340e3093bec07fc1ad71933fcdc6c2de85d2193352ef02ccb6df799084c45` |
 
+The checked-in Python-3 compatibility adapter is
+`util/dtc_l1/verify_m5_extended_parboil_output.py` (SHA-256
+`f656c3bd78c9ae937e94351dd44dec4602b172d2245022ebeb5eb977d3df7431`).
+It directly implements the selected native
+predicates rather than relying on a generic conversion: BFS text floats,
+CUTCP's two source tolerances, exact histo bytes, MRI-Q's source tolerance,
+SAD's structured uint16 payload, and stencil's original loop bounds. Its
+companion pass/mismatch fixture suite is required to pass before E1 use.
+
 ## Remaining hard E1 work
 
 - materialize each selected canonical input and freeze its byte SHA-256;
