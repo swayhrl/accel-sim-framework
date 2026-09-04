@@ -29,6 +29,10 @@ parameterized label; the exact source audit records those boundaries.  In
 particular, the dirty CUDA samples scratch tree must not be used to build E1
 artifacts.  No executable, PTX, input, output-reference, or launch identity
 has yet been frozen from the CUDA Samples materialization.
+For the approved parameterized CUDA SDK labels, the source-backed candidate is
+the legacy SDK 4.2 commit recorded in
+`extended20/SDK42_PARAMETERIZED_E1_SOURCE_AUDIT.md`; it remains build/PTX/
+input/output pending.
 The existing framework launch definitions in
 `util/job_launching/apps/define-all-apps.yml` are useful provenance leads, not
 E1 acceptance evidence.
@@ -40,14 +44,14 @@ mean that a build or simulator run was attempted.
 
 | workload | suite | source commit | wrapper/build | executable SHA | PTX SHA | input SHA | output checker/reference | launch geometry | provenance status | formal-ready status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BlackScholes | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | dirty `b7c5481c…` scratch tree rejected; source path now cleanly materialized | NOT_READY |
-| convolutionSeparable | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 3072` candidate only | source path materialized; argument compatibility remains unverified | NOT_READY |
-| fastWalshTransform_11_19 | CUDA SDK | current `db3eea…` materialized but parameter-incompatible; legacy `b059fdae…` separately recovered | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `-logK 11 -logD 19` source-backed only by legacy recovery | do not mix current source with legacy parameters; executable/PTX trail pending | NOT_READY |
-| scalarProd_13920 | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 13920` candidate only | source path materialized; parameter compatibility remains unverified | NOT_READY |
-| scan | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | source path materialized; launch/input compatibility unverified | NOT_READY |
-| sortingNetworks | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | source path materialized; launch/input compatibility unverified | NOT_READY |
-| transpose | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `dimX512 dimY512` candidate only | source parses dimX/dimY; isolated build/argument check remains | NOT_READY |
-| vectorAdd_6000000 | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 6000000` candidate only | current source hard-codes 50,000; compatible source/wrapper recovery required | NOT_READY |
+| BlackScholes | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42 audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | source default `OPT_N=100000` | current CUDA Samples is a non-equivalent lead; legacy source contract recovered | NOT_READY |
+| convolutionSeparable | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42 audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 3072` source-backed | legacy source parses approved scale; build/PTX/input trail pending | NOT_READY |
+| fastWalshTransform_11_19 | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42/FWT audits | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `-logK 11 -logD 19` source-backed | isolated build evidence exists; simulator smoke pending | NOT_READY |
+| scalarProd_13920 | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42 audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 13920` source-backed | legacy source parses approved scale; build/PTX/input trail pending | NOT_READY |
+| scan | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42 audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | deterministic source default | source contract recovered; build/PTX/input trail pending | NOT_READY |
+| sortingNetworks | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42 audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | deterministic source default | source contract recovered; build/PTX/input trail pending | NOT_READY |
+| transpose | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42 audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `-dimX 512 -dimY 512` source-backed | legacy source parses approved dimensions; build/PTX/input trail pending | NOT_READY |
+| vectorAdd_6000000 | CUDA SDK 4.2 | `b059fdae…`; exact path/tree in SDK42 audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 6000000` source-backed | legacy source parses approved scale; build/PTX/input trail pending | NOT_READY |
 | cfd_097k | Rodinia | candidate `dad09cb0…` | `src/cuda/rodinia/3.1/cuda/cfd/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | no native final-output checker found; reference PENDING_FREEZE | PENDING_FREEZE | clean source and CUDA build entry located | NOT_READY |
 | btree | Rodinia | candidate `dad09cb0…` | `src/cuda/rodinia/3.1/cuda/b+tree/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | writes `output.txt`; native reference/checker PENDING_FREEZE | framework candidate: `file ./data/mil.txt command ./data/command.txt` | clean source and `b+tree` mapping located | NOT_READY |
 | dwt2d | Rodinia | candidate `dad09cb0…` | `src/cuda/rodinia/3.1/cuda/dwt2d/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | output-capable build; native final checker/reference PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source and CUDA build entry located | NOT_READY |
