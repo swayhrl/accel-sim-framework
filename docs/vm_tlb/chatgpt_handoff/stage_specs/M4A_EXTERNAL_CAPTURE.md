@@ -4,180 +4,252 @@
 
 **PREPARED BUT NOT AUTHORIZED.**
 
-This specification is the second half of M4A. It begins only after M4A-P has closed out and the user/ChatGPT explicitly authorizes a selected rented GPU instance.
+This is the future rented-GPU execution stage. It begins only after:
+
+1. `M4A_PRERENTAL_FINALIZE` closes out;
+2. ChatGPT reviews that closeout as ready;
+3. the user rents/selects a suitable Route-E host;
+4. a new ChatGPT-owned handoff explicitly authorizes M4A-C.
+
+## Selected formal candidate
+
+Route E:
+
+- one physical host;
+- 4 same-model SM86 GPUs;
+- real tensor parallelism TP=4;
+- rank 0 only receives NVBit injection;
+- raw rank-0 inference ROI trace is retained intact;
+- self-captured trace is `PAPER_COMPATIBLE_SELF_CAPTURE`, never the authors' exact trace.
+
+RTX 3080 Ti 12 GiB is an acceptable SM86 host class if runtime smoke passes. RTX 3090 24 GiB provides more headroom but is not required by policy.
 
 ## Objective
 
-Execute the prebuilt capture package on a rented GPU server, collect the minimum real LLM trace/metadata required for later Segmentation-paper reproduction, safely package/copy the artifacts back, and validate them against the frozen simulator/parser without modifying M1-M3 VM semantics.
+Execute the fully prepared package on the rented node, validate every hardware/runtime assumption cheaply before expensive tracing, collect separate short-context prefill and first-decode traces plus metadata, copy them back with integrity checks, and validate parser/simulator compatibility without modifying M1-M3 VM semantics.
 
 ## Entry prerequisites
 
-Before starting, require:
+Require all of the following before any formal tracing:
 
-- M4A-P review status PASS or acceptable CONDITIONAL_PASS;
-- selected rental GPU recorded with model, compute capability, VRAM, driver, CUDA availability, and evidence classification;
-- disk-space estimate and safety margin;
-- capture package commit/SHA frozen;
-- exact model/workload revision frozen;
-- no unresolved question that would make the chosen GPU's SASS incompatible with the intended simulator target.
+- M4A-PR closeout reviewed as `READY_TO_RENT`;
+- selected host can allocate 4 GPUs in one instance;
+- all 4 GPUs are same model, SM86, and meet the prepared VRAM requirement;
+- expandable/free local storage satisfies the initial gate;
+- capture-package SHA is frozen;
+- environment/tool lock is frozen;
+- model revision/dtype choice is frozen or an explicit token-gated resolution step is part of the prepared bootstrap;
+- `M4A_C_AUTHORIZED` is set only after the new handoff authorizes this stage.
 
-For paper-reproduction trace capture, default target is SM86-compatible hardware. Do not substitute SM80/SM89/SM90/SM120 and later replay it as RTX3070/SM86 without explicit approval.
+Do not substitute SM70/SM80/SM89/SM90/SM120 SASS for the RTX3070-class paper route.
 
-## C1 — Fresh-instance preflight
+# C0 — Cheap rental smoke gates before model tracing
 
-On the rented server, record before installation/modification:
+The rental session must begin with cheap gates. Do not download/run the full formal workload until these pass.
 
-- `nvidia-smi -L` and full `nvidia-smi`;
-- GPU model / UUID if appropriate / compute capability;
+## C0.1 Host-only preflight
+
+Immediately record/validate:
+
+- full `nvidia-smi` and `nvidia-smi -L`;
+- exactly 4 visible GPUs;
+- identical GPU model;
+- compute capability 8.6 on every GPU;
+- VRAM on every GPU;
 - driver version;
-- CUDA toolkit/runtime availability;
-- CPU/RAM;
-- filesystem/free disk;
-- OS/container image;
-- network/model-download feasibility.
+- host CPU/RAM;
+- OS/image;
+- filesystem and free/expandable local disk;
+- network access required by the prepared dependency/model path;
+- cloned Framework branch/SHA.
 
-Run the prepared preflight script. Prefer isolated env/container/venv. Do not make unnecessary destructive system-wide changes.
+This gate must not require an already-built tracer.
 
-If the GPU architecture differs from the approved route, STOP before trace capture.
+If hardware differs from the approved Route-E requirements, STOP before installs/model work.
 
-## C2 — Reuse proven generic trace infrastructure first
+## C0.2 Environment/bootstrap gate
 
-Use the legacy/proven capture components identified in `LEGACY_CAPTURE_ASSET_AUDIT.md` wherever compatible.
+Execute the prepared isolated bootstrap. Validate the exact lock:
 
-Before LLM tracing, run one tiny known-good CUDA/general-purpose workload through the actual NVBit capture + postprocess + archive path. This proves the rental environment, tracer, filesystem, and packaging chain independently of vLLM/PyTorch complexity.
+- Python;
+- PyTorch + CUDA runtime build;
+- Transformers / Accelerate / Safetensors / HF Hub;
+- selected CUDA toolkit / `nvcc` for tracer build;
+- NVBit exact version + archive SHA256;
+- tracer/postprocessor build.
+
+Do not update the NVIDIA driver. Do not silently choose the rental page's CUDA label or `latest` packages.
+
+Run the capture-ready preflight after bootstrap.
+
+## C0.3 Generic NVBit tracer smoke
+
+Before model download/LLM work, run one tiny known-good CUDA program through:
+
+`NVBit injection -> trace -> postprocess -> kernelslist.g -> checksum/archive validation`.
 
 Required evidence:
 
-- command;
-- exit status;
-- tracer output;
-- post-processing status;
-- produced trace manifest/checksum;
-- archive test/listing;
+- command/exit status;
+- non-empty raw trace;
+- non-empty postprocessed kernels list;
+- tool/tracer version identity;
+- archive/checksum integrity;
 - wall-clock.
 
-Failure here blocks LLM capture until understood.
+Failure blocks all LLM work.
 
-## C3 — LLM workload bring-up without tracing
+## C0.4 Rank0-only injection proof on real 4-GPU torchrun
 
-Run the frozen Llama workload normally first.
+Run the prepared tiny four-rank injection smoke. Prove on the actual node:
+
+- smoke phase: no rank has NVBit injection;
+- trace phase: rank 0 has injection;
+- ranks 1–3 do not inherit `CUDA_INJECTION64_PATH`;
+- all four ranks launch and synchronize correctly.
+
+Failure blocks LLM tracing.
+
+## C0.5 TP + contiguous-weight runtime smoke
+
+Bring up the pinned Llama-3.2 1B TP=4 workload **without tracing first**.
 
 Validate:
 
-- exact model revision;
-- batch 8;
-- base input length 64;
-- 3 output tokens;
-- intended TP=4 / one-partition interpretation or approved approximation;
-- deterministic/frozen input tokens;
-- dtype/quantization recorded;
-- successful inference/output sanity;
-- phase identification for prefill and decode.
+- exact immutable model revision;
+- selected self-capture dtype/quantization provenance;
+- B8 / S64 / G3 workload contract;
+- real world size 4;
+- correct rank/GPU mapping;
+- model output sanity;
+- runtime one-buffer weight bind succeeds on every participating rank as designed;
+- rank0 flat-buffer base/size/tensor offsets are valid;
+- a second forward/check confirms the framework did not silently replace/reallocate weight backing storage;
+- no unexpected OOM on the selected VRAM class.
 
-Do not enable expensive tracing until the workload is stable.
+Do not call this evidence of GPU physical contiguity. Simulated physical contiguity remains a later VM mapping input.
 
-## C4 — Contiguous-weight runtime validation
+## C0.6 ROI-control smoke
 
-Enable the prepared one-buffer weight layout or strongest approved equivalent.
+Before a large LLM trace, validate the prepared profiler-controlled tracing path:
 
-Record/validate on the real GPU:
+- tracer loaded but inactive during model load/TP setup/flat binding when `ACTIVE_FROM_START=0`;
+- instrumentation activates only for the selected ROI;
+- a tiny prefill/decode-region test produces trace only from the intended region;
+- initialization kernels are absent from the formal ROI trace.
 
-- flat weight-buffer base VA;
-- total bytes and alignment;
-- tensor offset table;
-- all weight tensor addresses fall inside the planned range;
-- no unintended weight copies/reallocations invalidate the range during the traced phase;
-- weight range does not overlap KV/activation/workspace ranges;
-- addresses are stable across the kernels/iterations used for capture.
+Failure blocks formal trace.
 
-Do not claim real hardware physical contiguity unless directly evidenced. The reproduction's simulated physical contiguity is a later VM-mapping input.
+## C0.7 Tiny LLM trace + NCCL inventory
 
-## C5 — Metadata sidecar validation
+Capture the smallest practical real TP4/rank0 ROI sample.
 
-Generate allocation/tensor/phase metadata and validate:
+Measure/record:
 
-- no unjustified active-range overlap;
-- weight-address classification target: 100% of known weight accesses/ranges;
-- KV ranges identified where supported;
-- activation/workspace only classified when evidence exists;
+- kernel sequence;
+- compute vs NCCL/collective vs unknown classification;
+- whether raw NCCL kernels postprocess correctly;
+- whether full and derived compute-only kernel lists can be generated reproducibly;
+- trace-size growth metric and disk projection;
+- metadata Weight/KV coverage;
+- parser compatibility smoke with the frozen paper-reproduction parser/config path when practical.
+
+The raw trace must be retained intact. Do not decide a permanent paper-exact NCCL keep/drop policy by deleting files.
+
+If parser/ISA/NCCL behavior creates a material ambiguity, STOP for review before formal trace.
+
+# C1 — Formal workload validation
+
+After every C0 gate passes, run the frozen workload normally once more and record:
+
+- model / immutable revision;
+- package/environment lock;
+- B8/S64/G3;
+- TP=4 Route E;
+- deterministic input IDs;
+- self-capture dtype;
+- rank mapping;
+- output sanity;
+- Weight and real KV metadata sidecar generation.
+
+# C2 — Formal separate ROI trace captures
+
+Do not capture full 12K context. Long-context pressure remains a later synthetic translation mechanism.
+
+Collect at minimum two separate, provenance-distinct rank0 traces:
+
+## C2.1 Prefill
+
+- initialization / TP setup / flat binding executed with tracing inactive;
+- trace only B8/S64 prefill ROI;
+- save raw trace, postprocessed list, metadata, kernel classification, manifest, checksums.
+
+## C2.2 First decode
+
+- initialization and required prefill executed with tracing inactive;
+- trace only first decode step;
+- save raw trace, postprocessed list, metadata, kernel classification, manifest, checksums.
+
+Optional:
+
+- one later decode/reuse trace for validating stable weight addresses/reuse, clearly diagnostic.
+
+# C3 — Metadata runtime validation
+
+For the formal runs validate:
+
+- Weight range/tensor offsets stable;
+- all known Weight tensors fall in the flat rank0 region;
+- real KV cache ranges are recorded where observable;
+- KV reallocation/growth/lifetime behavior is recorded across prefill/decode;
 - unknowns remain `UNKNOWN`;
-- object-type address coverage reported;
-- cross-kernel stability reported;
-- sidecar schema/version/provenance recorded.
+- no `SYNTHETIC_KV` entries exist;
+- no unjustified active-range overlap;
+- address classification provenance is recorded;
+- trace-address coverage is quantified.
 
-If the required metadata cannot be observed with the prepared hooks and fixing it would require simulator/Core semantic changes, STOP and report rather than improvising.
+# C4 — NCCL / kernel-list decision evidence
 
-## C6 — Tiny LLM trace smoke
+Retain raw rank0 traces regardless of policy.
 
-Before the paper-sized short trace, capture the smallest practical LLM region (for example one selected layer/phase or a reduced smoke invocation) to validate:
+Produce:
 
-- NVBit instrumentation stability;
-- trace growth rate;
-- post-processing;
-- address preservation;
-- parser compatibility path;
-- estimated bytes per relevant kernel/instruction and projected formal trace size.
+- raw/full kernels list;
+- classified kernel manifest;
+- derived compute-only list;
+- parser/simulator result for each relevant list when feasible.
 
-Recompute disk requirement using measured data. Do not start the formal trace if the safety margin is inadequate.
+If the paper's single-partition interpretation still leaves collective treatment ambiguous, report both and STOP before declaring one `PAPER_EXACT`. A later paper-reproduction handoff may select the formal replay policy without recapturing the raw trace.
 
-## C7 — Paper short-context trace capture
+# C5 — Trace size / archive / copy-back
 
-Capture only what is required for later reproduction:
+Using the measured tiny trace, recompute disk projection and require safety margin before completing formal capture.
 
-- required initialization/allocation context;
-- seq-64 prefill;
-- first decode phase/token(s);
-- a small number of additional decode iterations only if needed to validate repeated weight accesses.
+For each trace bundle:
 
-Do **not** attempt a full 12K-context instruction trace. The paper emulates long-context translation pressure synthetically in the later mechanism stage.
+- generate SHA256 manifest;
+- package with the approved archive format;
+- integrity-test the archive;
+- copy to the main project server / persistent destination;
+- verify destination checksum;
+- record local and destination paths.
 
-Record exact:
+Do not release/delete the rental instance until required trace bundles are safely copied and verified when operationally practical.
 
-- capture package SHA;
-- model/framework/tracer revisions;
-- command line;
-- GPU identity/compute capability;
-- kernel count;
-- trace format;
-- total bytes;
-- checksums;
-- wall-clock;
-- metadata bundle checksums.
+# C6 — Frozen parser/simulator compatibility
 
-## C8 — Package and copy-back
+After import to the main server, validate:
 
-Package traces and sidecars with manifests/checksums. Large trace/model payloads remain outside Git.
-
-The archive must be integrity-testable before rental release.
-
-Record:
-
-- archive path/name;
-- byte size;
-- SHA256;
-- included manifest;
-- destination on the main project server after copy-back;
-- copy verification result.
-
-Do not release/delete the rental instance until archive integrity and copy-back are confirmed when operationally practical.
-
-## C9 — Frozen simulator/parser compatibility
-
-After import to the main project server, validate the proposed trace against the frozen paper-reproduction parser/config path.
-
-At minimum:
-
-- trace parser accepts the files;
-- ISA/config compatibility is explicitly checked;
-- a minimal simulator smoke starts/completes when feasible;
-- trace address identities correspond to sidecar ranges as expected;
+- trace parser accepts the selected raw/derived lists;
+- ISA/config compatibility is explicit;
+- a minimal simulator smoke starts/completes where feasible;
+- trace addresses correspond to sidecar ranges as expected;
 - no M1-M3 simulator modification is made merely to accept an incompatible trace.
 
-Classify the resulting trace as one of:
+Classify resulting traces as:
 
-- `PAPER_ARTIFACT_EXACT`
-- `PAPER_COMPATIBLE_SELF_CAPTURE`
-- `DOCUMENTED_APPROX_CAPTURE`
+- `PAPER_COMPATIBLE_SELF_CAPTURE`, or
+- `DOCUMENTED_APPROX_CAPTURE` only if later explicitly approved.
 
 Never call a self-captured trace the authors' exact trace.
 
@@ -187,34 +259,41 @@ Review pack:
 
 `docs/vm_tlb/review_packs/M4A_EXTERNAL_CAPTURE/`
 
-Stable docs/manifests should include:
+Include at minimum:
 
-- rental hardware/environment provenance;
-- exact capture command/runbook version;
-- trace manifest/checksums;
-- metadata validation;
-- contiguous-weight validation;
-- parser/simulator smoke;
-- paper-exactness classification;
-- raw artifact index/local paths.
-
-Large raw traces/model weights remain out of Git.
+- rental host provenance;
+- environment/tool lock realization;
+- C0 gate summary;
+- rank0-only injection proof;
+- TP/flat-weight runtime validation;
+- ROI-control proof;
+- tiny-trace/NCCL inventory;
+- prefill trace manifest;
+- decode1 trace manifest;
+- Weight/KV metadata validation;
+- raw/full and compute-only kernel-list identities;
+- parser/simulator compatibility;
+- archive/copy-back checksums;
+- exactness classification;
+- raw artifact index (not payloads in Git).
 
 ## Acceptance criteria
 
 M4A-C PASS requires:
 
-1. approved architecture-compatible rented GPU used;
-2. generic tracer smoke PASS;
-3. frozen LLM workload runs correctly before tracing;
-4. contiguous-weight runtime range and tensor offsets validated;
-5. metadata sidecar generated and coverage/unknowns quantified;
-6. tiny trace smoke PASS and disk projection safe;
-7. required short paper trace captured without attempting full 12K execution;
-8. package/copy-back checksum integrity PASS;
-9. frozen parser/config compatibility validated or any residual incompatibility explicitly blocks later reproduction;
-10. provenance/exactness classification complete;
-11. no Core VM semantic changes; no synthetic-KV/Segmentation implementation started.
+1. approved 4x same-model SM86 host used;
+2. host and capture-ready preflights PASS;
+3. generic NVBit smoke PASS;
+4. actual four-rank rank0-only injection proof PASS;
+5. TP=4 workload and flat-weight runtime smoke PASS without OOM/semantic fallback;
+6. ROI control proves model load/setup are outside formal trace;
+7. tiny LLM trace and NCCL classification/parser smoke are explainable;
+8. separate prefill and first-decode traces collected;
+9. Weight + real KV metadata collected/validated to the available evidence level;
+10. trace-size/disk/archive/copy-back integrity PASS;
+11. parser/config compatibility validated or any residual ambiguity explicitly blocks later formal replay selection;
+12. provenance/exactness classification complete;
+13. no Core VM semantic changes; no Segmentation/sub-entry/synthetic-KV mechanism started.
 
 ## STOP boundary
 

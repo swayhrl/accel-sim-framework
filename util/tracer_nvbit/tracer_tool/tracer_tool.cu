@@ -816,7 +816,11 @@ void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
   } break;
   // Now we need to record cuda memcpy events
   case API_CUDA_cuMemcpyHtoD_v2: {
-    if (!is_exit) {
+    // With ACTIVE_FROM_START=0, kernels and memcpy records must share the
+    // profiler-controlled ROI boundary.  Keep legacy always-on behavior when
+    // ACTIVE_FROM_START=1, but never let initialization copies pollute a
+    // formal Route-E ROI kernels list.
+    if (!is_exit && (active_from_start || active_region)) {
       cuMemcpyHtoD_v2_params *p = (cuMemcpyHtoD_v2_params *)params;
       char buffer[1024];
       kernelsFile = fopen(ctx_kernelslist[ctx].c_str(), "a");
