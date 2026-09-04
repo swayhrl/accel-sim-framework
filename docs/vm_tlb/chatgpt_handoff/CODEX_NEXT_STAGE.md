@@ -32,6 +32,15 @@ Read the evidence-driven override before the prepared stage specs:
 The addendum supersedes old draft-only status markers and resolves the frozen
 B evidence/decisions.
 
+Before M4C characterization instrumentation or any M4C formal replay, also read
+and implement the behavior-neutral reusable memory-hierarchy telemetry contract:
+
+`docs/vm_tlb/chatgpt_handoff/stage_specs/M4C_MEMORY_HIERARCHY_TELEMETRY_ADDENDUM.md`
+
+This telemetry addendum extends M4C/M4B observability across L1D, L2, PTE/data
+contention, DRAM, and cross-layer outcomes. It does not require repeating
+completed M4I/M4R gates solely because it was added.
+
 ## Continuous target
 
 Create fresh integration worktrees/branches and execute:
@@ -113,6 +122,14 @@ result.
 M4C is behavior-neutral characterization only. It must establish object-specific
 TLB/MSHR/walker/PWC/PTE/latency behavior and L2-TLB incoming-object -> victim-
 object replacement evidence before Segmentation.
+
+M4C must also collect the reusable cross-memory-hierarchy telemetry defined in
+`M4C_MEMORY_HIERARCHY_TELEMETRY_ADDENDUM.md`. Formal full-trace runs must not use
+unbounded per-access logging; prefer ROI/per-kernel/fixed-window structured
+statistics and offline trace-derived locality analysis. The same schema must be
+retained through M4B-P/M4B-S so paging/Segmentation can be compared at TLB, L1D,
+L2, PTE/data contention, and DRAM levels without rerunning solely for missing
+observability.
 
 M4B-P must first audit the paper/reference source for L2 sub-entry semantics. If
 still unavailable, the prepared `REFERENCE_APPROX_SUBENTRY_16` fallback is
