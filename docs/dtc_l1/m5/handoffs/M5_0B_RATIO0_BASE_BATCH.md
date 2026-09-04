@@ -1,6 +1,6 @@
 # M5.0B corrected ratio-zero Base batch
 
-Status: **RESOLVING TIMEOUT — no formal outcome claimed**
+Status: **ACTIVE RECOVERY — no formal outcome claimed**
 
 ## Purpose
 
@@ -25,14 +25,14 @@ any DTC/pending-write/scoreboard assertion.
 | Paper workload | executable | state | isolated run directory |
 | --- | --- | --- | --- |
 | bicg | `bicg` | `OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-bicg-20260904` |
-| atax | `atax` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-20260904` |
-| gemv | `gemver` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-20260904` |
-| mvt | `mvt` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-20260904` |
-| syrk | `syrk` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-20260904` |
-| gesu | `gesummv` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-20260904` |
-| syr2k | `syr2k` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-20260904` |
-| 2mm | `twomm` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-20260904` |
-| conv2d | `twodconv` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-20260904` |
+| atax | `atax` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-recovery24h-20260904` |
+| gemv | `gemver` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-recovery24h-20260904` |
+| mvt | `mvt` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-recovery24h-20260904` |
+| syrk | `syrk` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-recovery24h-20260904` |
+| gesu | `gesummv` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-recovery24h-20260904` |
+| syr2k | `syr2k` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-recovery24h-20260904` |
+| 2mm | `twomm` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-recovery24h-20260904` |
+| conv2d | `twodconv` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-recovery24h-20260904` |
 
 All jobs carry their binary/PTX/config/runtime identity in `run_identity.txt`.
 They use isolated output directories and the M5 runner; no live process is
@@ -124,6 +124,23 @@ runtime SHA-256 `f115144d6009bab4af6d8ab0d86b69e54e8449a4c76a3809561571d32075a45
 The next action is a documented bounded-timeout recovery that preserves the
 canonical source/algorithm and full-load criterion; no timed-out log may be
 strict-parsed or registered as a formal result.
+
+## Recovery wave
+
+The source headers used for the timed-out wave fix the relevant PolyBench
+dimensions at 4096 (and 1024 for the standard 2MM header) across their
+dataset-label branches.  A `SMALL_DATASET`/`LARGE_DATASET` rebuild would
+therefore not yield a distinct source-defined full-load dataset.  The recovery
+keeps the exact executable/PTX pair, ratio-zero `PAPER_BASE` configuration and
+runtime above, and changes only the externally imposed allowance from 28,800
+seconds to a bounded 86,400 seconds.
+
+At `2026-09-04T02:12Z`, eight new isolated directories named
+`/tmp/dtc-l1-m5-0b-ratio0-base-<workload>-recovery24h-20260904` were launched
+through the same runner.  All eight application processes were live in the
+initial two-second check.  The older directories remain immutable timeout
+evidence; a recovery result will be output-verified, strict-parsed and
+registered only after normal simulator termination.
 
 ## Next action
 
