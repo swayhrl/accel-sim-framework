@@ -117,9 +117,14 @@ printf '%s\n' "-gpgpu_vm_object_map $object_map" \
 } > "$run_dir/RUN_MANIFEST.tsv"
 
 set +e
-/usr/bin/time -f 'WALL_SECONDS=%e RSS_KB=%M' \
-  "$simulator" -config "$run_dir/gpgpusim.config" -trace "$selected_list" \
-  2>&1 | tee "$run_dir/run.log"
+# Some upstream simulator paths emit auxiliary statistics relative to the
+# process working directory.  Execute inside the isolated run root so those
+# files can never dirty the Framework checkout or leak across comparisons.
+(
+  cd "$run_dir"
+  /usr/bin/time -f 'WALL_SECONDS=%e RSS_KB=%M' \
+    "$simulator" -config "$run_dir/gpgpusim.config" -trace "$selected_list"
+) 2>&1 | tee "$run_dir/run.log"
 sim_status=${PIPESTATUS[0]}
 set -e
 printf 'simulator_exit_status\t%s\n' "$sim_status" >> "$run_dir/RUN_MANIFEST.tsv"
