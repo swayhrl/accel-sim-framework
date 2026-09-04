@@ -18,12 +18,13 @@ Owner: **Compute Codex window**.
 
 Scope:
 
-- current R5DV/M5.0B recovery;
+- current M5.0B workload recovery (R5DV/M5-T005 already closed);
 - Paper-10 through M5.6;
 - M5.E1-E3 Extended-20 formal track after its dependencies;
 - compute review packs;
 - active `codex_handoff/LATEST_REPORT.md`;
-- `M5.COMPUTE_FREEZE` join handoff.
+- `M5.COMPUTE_FREEZE` join handoff;
+- final M5.12 negative-evidence synthesis after compute freeze.
 
 No other Codex window writes these branches/worktrees.
 
@@ -41,51 +42,46 @@ Status: **reviewed/frozen selection evidence**.
 
 Do not run formal simulations or modify Core from this branch. Keep it as provenance for why the 20 workloads were chosen.
 
-## 3. Graphics research window — available before compute freeze
+The active compute branch contains the researcher/ChatGPT review-refined approved portfolio. Do not change membership on the selection branch based on later DTC results.
+
+## 3. Graphics research branch — completed/frozen
 
 Framework-only branch:
 
 `hrl/decoupled-l1-exp-m5-graphics-research-v0`
 
-Owner: **Graphics Research Codex window**.
+Reviewed closeout commit:
 
-Scope only:
+`ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`
+
+Status:
+
+`GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
+
+Owner: **no active writer under current evidence**. Treat this branch as frozen research evidence.
+
+Completed scope:
 
 - M5.7 provenance;
 - M5.8 path recovery;
-- source/artifact search;
-- non-Core helper/research scripts where appropriate;
+- source/artifact/history audit;
 - `LATEST_GRAPHICS_RESEARCH_REPORT.md`;
-- implementation/test plans for later M5.9.
+- accepted negative-evidence handoffs.
 
-Forbidden before compute freeze:
+Do not continue editing this branch merely to search the same already-audited routes again. Reopen only if genuinely new original/source-backed evidence appears.
 
-- modifying GPGPU-Sim Core;
-- writing active compute Framework branch;
-- running Paper/Extended formal waves;
-- editing active compute `LATEST_REPORT.md`;
-- starting M5.9 integration.
+## 4. No graphics integration branches under current closeout
 
-## 4. Graphics integration branches — created only after compute freeze
+The earlier plan to create:
 
-After `M5.COMPUTE_FREEZE`, create from exact freeze SHAs:
+- Core `hrl/decoupled-l1-m5-graphics-v0`;
+- Framework `hrl/decoupled-l1-exp-m5-graphics-v0`;
 
-Core:
+after compute freeze is **inactive** because M5.8 closed `GRAPHICS_SOURCE_BACKED_UNAVAILABLE` and that result was accepted in `M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`.
 
-`hrl/decoupled-l1-m5-graphics-v0`
+Do not create those branches merely to restate unavailability or to build a proxy.
 
-Framework:
-
-`hrl/decoupled-l1-exp-m5-graphics-v0`
-
-Owner: graphics integration window.
-
-The branch bases must be exactly:
-
-- `COMPUTE_FREEZE_CORE_SHA`;
-- `COMPUTE_FREEZE_FRAMEWORK_SHA`.
-
-Do not base graphics integration on the earlier graphics-research branch's stale compute tree. Transfer only reviewed research documents/scripts/patches intentionally.
+If a genuinely new artifact later reopens M5.8 and establishes `GRAPHICS_PATH_SOURCE_BACKED`, then create fresh graphics integration branches from the exact `COMPUTE_FREEZE_CORE_SHA` / `COMPUTE_FREEZE_FRAMEWORK_SHA`. Never base integration on the stale pre-freeze graphics-research tree.
 
 ## 5. Shared-file ownership
 
@@ -97,17 +93,21 @@ Only the compute window updates on active compute branches:
 - active compute issue log entries
 - Paper/Extended current-state handoffs
 - formal result registries
+- `M5_COMPUTE_FREEZE.md`
+- final M5.12 synthesis/review pack
 
-### Graphics-research-owned mutable files
+### Frozen graphics-research files
 
-Only graphics research updates on its branch:
+The accepted graphics branch contains:
 
 - `docs/dtc_l1/codex_handoff/LATEST_GRAPHICS_RESEARCH_REPORT.md`
 - M5.7/M5.8 graphics handoffs/evidence
 
+These are evidence inputs, not active mutable coordination files after closeout.
+
 ### ChatGPT/researcher authority files
 
-Roadmap/approval documents written by ChatGPT/researcher are not silently rewritten by either window. Codex may propose corrections in its own report/handoff; semantic changes that alter approved experiment meaning require the normal decision process.
+Roadmap/approval documents written by ChatGPT/researcher are not silently rewritten by Codex. Codex may propose corrections in its own report/handoff; semantic changes that alter approved experiment meaning require the normal decision process.
 
 ## 6. Worktree isolation
 
@@ -125,12 +125,14 @@ Never use `git add .` or `git add -A`; stage explicit paths only.
 
 ## 7. Process/output isolation
 
-Each simulation job uses a unique output directory keyed by experiment identity. Research windows must not reuse `/tmp` directories owned by live compute jobs.
+Each simulation job uses a unique output directory keyed by experiment identity.
 
 Do not kill another window's processes unless the owning window has explicitly classified them obsolete/unsafe.
+
+Under the current graphics-unavailable closeout there should be no graphics simulation jobs competing with active compute waves.
 
 ## 8. Merge/cherry-pick discipline
 
 - Selection evidence is referenced by immutable commit; it need not be merged wholesale into compute history.
-- Graphics research evidence may later be cherry-picked/copied onto graphics integration branches, but avoid merges that reintroduce stale pre-freeze compute state.
-- Any Core patch needed by graphics after freeze is implemented/reviewed on the graphics Core branch, never back-written into frozen compute branches.
+- Graphics research evidence is referenced by immutable closeout commit and consumed by final M5.12; no merge of stale pre-freeze compute state is needed.
+- If graphics is ever reopened by new source-backed artifacts, transfer only reviewed evidence/patches intentionally onto integration branches created from compute-freeze SHAs.
