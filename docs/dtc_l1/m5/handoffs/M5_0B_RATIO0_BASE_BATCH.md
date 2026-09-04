@@ -29,7 +29,7 @@ any DTC/pending-write/scoreboard assertion.
 | gemv | `gemver` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-recovery24h-20260904` |
 | mvt | `mvt` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-recovery24h-20260904` |
 | syrk | `syrk` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-recovery24h-20260904` |
-| gesu | `gesummv` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-recovery24h-20260904` |
+| gesu | `gesummv` | `RECOVERY_24H_OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-recovery24h-20260904` |
 | syr2k | `syr2k` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-recovery24h-20260904` |
 | 2mm | `twomm` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-recovery24h-20260904` |
 | conv2d | `twodconv` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-recovery24h-20260904` |
@@ -141,6 +141,21 @@ through the same runner.  All eight application processes were live in the
 initial two-second check.  The older directories remain immutable timeout
 evidence; a recovery result will be output-verified, strict-parsed and
 registered only after normal simulator termination.
+
+### GESUMMV terminal evidence
+
+`gesummv` naturally terminated from its recovery directory after `32693`
+seconds of simulator wall time.  Its source-defined output verdict is zero
+CPU/GPU mismatches beyond the 0.05% threshold, and
+`verify_m5_polybench_output.py gesu` passed.  The strict summary is
+`generated/m5_0b_gesummv_base_ratio0.json` with
+`gpu_tot_sim_cycle=97750749` and `gpu_tot_sim_insn=197296128`.  Termination
+accounting closes `DTC_L1_pib_admits/retires=4194688/4194688` and
+`DTC_L1_lower_requests_acquired/released=34327761/34327761`; final PIB and
+lower outstanding are both zero.  The raw-log SHA-256 is
+`7790f664ba70a2e4942714ba7fb494700727ad0bc65f7057ad5461b8054d6089`.
+The exact frozen identity is registered as `M5-e648006f1b9cf5f4` under
+`M5_0B_RATIO0_BASE_OUTPUT_CLEAN_STRICT`.
 
 ## Next action
 
