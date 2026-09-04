@@ -26,7 +26,7 @@ any DTC/pending-write/scoreboard assertion.
 | --- | --- | --- | --- |
 | bicg | `bicg` | `OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-bicg-20260904` |
 | atax | `atax` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-recovery24h-20260904` |
-| gemv | `gemver` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-recovery24h-20260904` |
+| gemv | `gemver` | `RECOVERY_24H_OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-recovery24h-20260904` |
 | mvt | `mvt` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-recovery24h-20260904` |
 | syrk | `syrk` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-recovery24h-20260904` |
 | gesu | `gesummv` | `RECOVERY_24H_OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-recovery24h-20260904` |
@@ -155,6 +155,20 @@ accounting closes `DTC_L1_pib_admits/retires=4194688/4194688` and
 lower outstanding are both zero.  The raw-log SHA-256 is
 `7790f664ba70a2e4942714ba7fb494700727ad0bc65f7057ad5461b8054d6089`.
 The exact frozen identity is registered as `M5-e648006f1b9cf5f4` under
+`M5_0B_RATIO0_BASE_OUTPUT_CLEAN_STRICT`.
+
+### GEMVER terminal evidence
+
+`gemver` naturally terminated from its recovery directory after `37378`
+seconds of simulator wall time.  Its source-defined `Number of misses` verdict
+is zero, and `verify_m5_polybench_output.py gemv` passed.  The strict summary
+is `generated/m5_0b_gemver_base_ratio0.json` with
+`gpu_tot_sim_cycle=54960348` and `gpu_tot_sim_insn=923029504`.  Termination
+accounting closes `DTC_L1_pib_admits/retires=6292096/6292096` and
+`DTC_L1_lower_requests_acquired/released=22065010/22065010`; final PIB and
+lower outstanding are both zero.  The raw-log SHA-256 is
+`140fefea69d3e3cfc0aa637747a16c7102090cfbdd3d37f5c7ef72f89884e480`.
+The exact frozen identity is registered as `M5-f24650643302f0ac` under
 `M5_0B_RATIO0_BASE_OUTPUT_CLEAN_STRICT`.
 
 ## Next action
