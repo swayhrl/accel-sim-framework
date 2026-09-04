@@ -1,6 +1,6 @@
 # M5.0B corrected ratio-zero Base batch
 
-Status: **ACTIVE — no formal outcome claimed**
+Status: **RESOLVING TIMEOUT — no formal outcome claimed**
 
 ## Purpose
 
@@ -25,14 +25,14 @@ any DTC/pending-write/scoreboard assertion.
 | Paper workload | executable | state | isolated run directory |
 | --- | --- | --- | --- |
 | bicg | `bicg` | `OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-bicg-20260904` |
-| atax | `atax` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-20260904` |
-| gemv | `gemver` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-20260904` |
-| mvt | `mvt` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-20260904` |
-| syrk | `syrk` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-20260904` |
-| gesu | `gesummv` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-20260904` |
-| syr2k | `syr2k` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-20260904` |
-| 2mm | `twomm` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-20260904` |
-| conv2d | `twodconv` | `ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-20260904` |
+| atax | `atax` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-20260904` |
+| gemv | `gemver` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-gemver-20260904` |
+| mvt | `mvt` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-20260904` |
+| syrk | `syrk` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-20260904` |
+| gesu | `gesummv` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-20260904` |
+| syr2k | `syr2k` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-20260904` |
+| 2mm | `twomm` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-20260904` |
+| conv2d | `twodconv` | `TIMEOUT_SLOW_BUT_PROGRESSING` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-20260904` |
 
 All jobs carry their binary/PTX/config/runtime identity in `run_identity.txt`.
 They use isolated output directories and the M5 runner; no live process is
@@ -92,6 +92,38 @@ by itself no progress.  Under `M5_PROBLEM_RESOLUTION_POLICY.md` this state is
 `SLOW_BUT_PROGRESSING`, not a performance outcome or `NO_PROGRESS_DEADLOCK`.
 The live jobs are preserved; any later terminal state will be classified from
 its exact raw log and identity.
+
+## Eight-hour terminal classification
+
+At `2026-09-04T02:09:18Z`, the existing `timeout 28800` guards had ended all
+eight remaining worker processes.  The guards were allowed to expire; no
+process was manually stopped or restarted.  Before that threshold, each of the
+eight processes advanced Linux CPU time during the two-second progress sample,
+and each continued at approximately one CPU core through the final monitor
+sample.  None of the preserved logs contains normal simulator exit, the
+source-defined output verdict, a simulator deadlock report, an assertion, or a
+fatal/error signature.  Therefore every row is
+`TIMEOUT_SLOW_BUT_PROGRESSING`, not a correctness result, deadlock, or
+performance point.
+
+| workload | raw `m5_run.log` SHA-256 |
+| --- | --- |
+| atax | `0f278782128b765c0d241154043246b309c04870beb8968d836eadde5be055c3` |
+| gemver | `4b77163a6bf775b250ac5664943ab73570aeed892007bacea53e92fb4eb8d3ce` |
+| gesummv | `3e6cdb00ce35496767bdc2e314bee552538cb66d4b248795f1b52fc7fcb5f748` |
+| mvt | `31e68de230a9c4117bff867f1c490e3b4eb1fc2790fdebb7c721476b33aa819c` |
+| syrk | `d3cf7c63711546e452b0e96f2f6bc0df20d2771224dd070958128604ad181c1c` |
+| syr2k | `ba359d5da634394a8a44bc24d3324aa267bbc45b2d9b923ba67acd1e13811437` |
+| twomm | `31c4e55174e13c85bd882a8405f9300ab93b6ee3c94bc4ea9de30e7262f1a995` |
+| twodconv | `c8e004d4a1cf7a8f43929dd7c049ce3838856ef96fcb40f50589f85703735937` |
+
+All directories and their `run_identity.txt` files remain in `/tmp`.  They
+share the frozen ratio-zero `PAPER_BASE` config SHA-256
+`993513296458bf014cfa33ff047e1ed7391a1fee990e3b4a2d9d738cab0ff366` and
+runtime SHA-256 `f115144d6009bab4af6d8ab0d86b69e54e8449a4c76a3809561571d32075a453`.
+The next action is a documented bounded-timeout recovery that preserves the
+canonical source/algorithm and full-load criterion; no timed-out log may be
+strict-parsed or registered as a formal result.
 
 ## Next action
 
