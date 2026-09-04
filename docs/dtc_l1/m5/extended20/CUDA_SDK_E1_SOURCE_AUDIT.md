@@ -1,7 +1,7 @@
 # Extended-20 E1 CUDA-SDK source audit
 
-Status: **SOURCE/PARAMETER/OUTPUT-CONTRACT RECOVERED — BUILD/PTX/SMOKE PENDING
-EXCEPT FWT**
+Status: **SOURCE/PARAMETER/BUILD/PTX/OUTPUT-CONTRACT RECOVERED — SIMULATOR
+OUTPUT SMOKE PENDING FOR ALL EIGHT MEMBERS**
 
 The source authority for this audit is `gpu-app-collection`
 `b059fdae25c2aabf737486aada743fca114469ce`, the historical commit that added
