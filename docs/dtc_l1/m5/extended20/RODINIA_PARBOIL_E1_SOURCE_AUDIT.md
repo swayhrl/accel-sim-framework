@@ -69,6 +69,30 @@ Rodinia inputs remain `PENDING_FREEZE`: its candidate source checkout contains
 the selected programs but not the six launcher data files required to byte-hash
 their final input identities.
 
+### Rodinia data-source recovery status
+
+The official Rodinia site identifies 3.1 as the current released suite. The
+archived `yuhc/gpu-rodinia` 3.1 source README directs data recovery to the
+original package and records this 3.1 data mirror:
+
+```text
+https://www.dropbox.com/s/cc6cozpboht3mtu/rodinia-3.1-data.tar.gz?dl=1
+```
+
+On 2026-09-04, the original UVA package URL redirected to HTTPS but returned
+HTTP 403. The source-recorded mirror resolved to an attachment of 395,919,830
+bytes. It has **not** been downloaded or extracted: the active M5.0B
+ratio-zero Base wave still has seven long-running workers, and the M5 parallel
+batch policy forbids forcing a large source/data materialization while that
+resource envelope is active. The exact archive SHA-256 and the selected
+Rodinia input-file SHA-256 values therefore remain `PENDING_FREEZE`.
+
+When a measured resource window opens, materialize the archive in a new
+isolated directory, first hash the full archive, then identify and hash only
+the approved `cfd_097k`, `btree`, `dwt2d`, `gaussian`, `hotspot1`, and `lud`
+inputs before any build or simulator smoke. Do not use an unrelated fork's
+near-match data as a shortcut.
+
 ## Parboil checker runtime contract
 
 The selected checker files are part of the E1 output identity.  `histo` uses
