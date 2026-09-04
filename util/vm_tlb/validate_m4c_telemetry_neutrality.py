@@ -7,6 +7,10 @@ from pathlib import Path
 
 
 def canonical(path: Path) -> bytes:
+    if path.is_dir():
+        path = path / "run.log"
+    if not path.is_file():
+        raise SystemExit(f"{path}: expected a replay run directory or run.log")
     lines = path.read_text(errors="strict").splitlines()
     try:
         begin = next(i for i, line in enumerate(lines)
@@ -48,8 +52,10 @@ def canonical(path: Path) -> bytes:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--off", required=True, type=Path)
-    parser.add_argument("--on", required=True, type=Path)
+    parser.add_argument("--off", required=True, type=Path,
+                        help="telemetry-off replay directory or its run.log")
+    parser.add_argument("--on", required=True, type=Path,
+                        help="telemetry-on replay directory or its run.log")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     off = canonical(args.off)
