@@ -300,3 +300,29 @@
   simulator smoke are in `m5/extended20/FWT_11_19_E1_RECOVERY.md`.  No
   historical trace/cycle result is promoted to an M5 formal result by this
   recovery.
+
+## M5-E1-002 — selected Parboil output checkers require legacy Python semantics
+
+- State: `OBSERVED -> SOURCE_CLASSIFIED -> COMPATIBILITY_ADAPTER_PENDING`.
+- Scope: Extended-20 E1 output-check formalization only; Paper-10 M5.0B
+  processes and the M5.2 gate for E2 are unaffected.
+- Evidence: selected Parboil `bfs`, `cutcp`, `mri-q`, `sad`, and `stencil`
+  `tools/compare-output` scripts declare `#!/usr/bin/env python` and use
+  Python-2 `file(...)` and/or `print` syntax. Their exact checker and support
+  module hashes are frozen in
+  `m5/extended20/RODINIA_PARBOIL_E1_SOURCE_AUDIT.md`. The observed host has
+  Python 3.11 and no `python2` executable. `histo` is distinct: its native
+  checker is exact host `cmp`.
+- Classification: `OUTPUT_CHECKER_RUNTIME_COMPATIBILITY`, not a workload,
+  source-algorithm, simulator, or DTC semantic issue. The source-defined
+  comparison predicates remain authoritative.
+- Required resolution/regression: use an isolated source-equivalent Python-2
+  runtime or an explicitly recorded Python-3 compatibility adapter. Before
+  accepting any E1 smoke, demonstrate equivalence on preserved reference and
+  deliberately mismatching fixtures for every affected predicate; keep the
+  original scripts and identities unchanged. Do not replace a tolerance
+  checker with exit-code-only, file-size-only, or omitted validation.
+- Resume point: after deterministic CUDA builds/PTX and inputs are available,
+  run the source-defined checker/adapter smoke for each selected Parboil
+  workload, then retain the exact interpreter/adapter identity in the E1
+  manifest. No E2 job may launch before M5.2 freezes the common anchor.
