@@ -2,7 +2,7 @@
 
 Last coordination update: 2026-09-04
 
-Status: **M1-M4 VALIDATED; M5.0A PASS; M5.0B/R5DV ACTIVE; EXTENDED-20 APPROVED; GRAPHICS M5.7/M5.8 PARALLEL RESEARCH AUTHORIZED**
+Status: **M1-M4 VALIDATED; M5.0A PASS; M5-T005 CLOSED; M5.0B ACTIVE; EXTENDED-20 APPROVED; GRAPHICS M5.7/M5.8 CLOSED SOURCE-BACKED-UNAVAILABLE**
 
 ## Validated anchors
 
@@ -21,21 +21,22 @@ Active M5 compute branches:
 Read current M5 authority in this order:
 
 1. `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
-2. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
-3. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
-4. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-5. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
-6. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
-7. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-8. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
-9. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
-10. `docs/dtc_l1/m5/M5_GRAPHICS_INDEPENDENT_WINDOW_HANDOFF.md`
-11. `docs/dtc_l1/m5/M5_GRAPHICS_POST_COMPUTE_PLAN.md`
-12. `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
-13. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
-14. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+2. `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
+3. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
+4. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+5. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
+6. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
+7. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
+8. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+9. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
+10. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
+11. `docs/dtc_l1/m5/M5_GRAPHICS_INDEPENDENT_WINDOW_HANDOFF.md`
+12. `docs/dtc_l1/m5/M5_GRAPHICS_POST_COMPUTE_PLAN.md`
+13. `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
+14. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
+15. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
 
-Older M5 v2 graphics sequencing that required all graphics research to wait until M5.6 is superseded by v3. Scientific no-proxy/comparability constraints remain.
+The graphics closeout supersedes the previously active graphics-search state. M5.9-M5.11 are not active under current evidence.
 
 ## Research objective
 
@@ -69,17 +70,24 @@ Live miss = new-miss lower-request commit through final lower response; primary 
 
 Formal categories: PIB full, true Tag+Cacheline allocation failure, MSHR capacity/merge, Miss Queue/lower capacity. Tag-bank arbitration remains diagnostic.
 
-## Current Paper-10 stage — M5.0B / R5DV
+## Current Paper-10 stage — M5.0B workload recovery
 
 M5.0A is PASS.
 
-M5-T005's ratio-25 dirty-set deadlock decision is resolved by explicit ratio 0. Directed dirty-victim regression, Release build, DTC CTests, four-mode VecAdd and mixed Store/Atomic/.cg sentinels have passed according to latest Codex evidence. Canonical SpMV medium LEGACY/PAPER_BASE ratio-zero completion/output validation remains the R5DV closure gate.
+M5-T005 is CLOSED. Canonical Parboil JDS SpMV medium ratio-zero LEGACY and PAPER_BASE both completed naturally with official output checking PASS. PAPER_BASE also closed PIB/lower accounting, so R5DV no longer blocks M5.0B.
 
-After R5DV closes, resume remaining M5.0B work without redoing valid provenance checkpoints.
+Current committed M5.0B evidence reports:
+
+- corrected BICG PAPER_BASE ratio-zero completion PASS with strict output/accounting checks;
+- the remaining corrected Paper-10 Base jobs progressing in isolated output directories;
+- no active formal Base run showing deadlock/assertion/fatal evidence at the last committed checkpoint;
+- old ratio-25/old-runtime data retained as diagnostic only.
 
 Paper progression:
 
 `M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+
+Do not redo closed R5DV unless a later source-correct behavior change invalidates it.
 
 ## Extended-20 state
 
@@ -91,35 +99,53 @@ Reviewed selection commit:
 
 `d43b6eec93f68efa94057f34ffa699463b53e6a6`
 
-Independent review verdict: **APPROVED**.
+Independent review verdict: **APPROVED WITH PRE-PERFORMANCE REFINEMENT**.
 
-Approved set: 20 primary workloads + 5 ranked alternates as recorded in `M5_EXTENDED20_APPROVAL.md`.
+Final approved primary set and alternates are authoritative in:
 
-One metadata correction is required during E1: CUDA SDK BlackScholes must be described as Black-Scholes option pricing, not assumed Monte Carlo.
+`docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
+
+Key review refinements:
+
+- Rodinia `lud` replaces PolyBench `3mm` in the primary 20 to reduce near-duplicate dense-family/Q4-cost bias;
+- `3mm` becomes ALT01;
+- CUDA SDK `BlackScholes` metadata is corrected to `Black-Scholes option pricing`, not assumed Monte Carlo.
 
 Extended progression:
 
-`M5.E0 selection approved -> M5.E1 formalization -> M5.E2 60-run Base/IO/OO wave -> M5.E3 synthesis`
+`M5.E1 formalization -> M5.E2 60-run Base/IO/OO wave -> M5.E3 synthesis`
 
-E1 may prepare source/build/input identity early. E2 begins only after M5.2 freezes the common formal anchor.
+E1 may prepare source/build/input/PTX/output identity early when host resources allow. E2 begins only after M5.2 freezes the common formal anchor.
 
 Extended jobs must use the resource-aware worker pool in `M5_PARALLEL_BATCH_POLICY.md`; unnecessary one-by-one execution is forbidden.
 
-## Graphics state
+## Graphics state — research complete
 
-Existing audit: ready-made current infrastructure is `UNAVAILABLE_WITH_CURRENT_INFRA` for direct/source-faithful graphics execution. This is starting evidence, not the terminal M5.8 conclusion.
+Graphics research branch:
 
-A separate Framework-only graphics-research branch/window is authorized now for:
+`hrl/decoupled-l1-exp-m5-graphics-research-v0@ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`
 
-`M5.7 provenance -> M5.8 path recovery`
+Accepted terminal state:
 
-Target branch:
+`GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
 
-`hrl/decoupled-l1-exp-m5-graphics-research-v0`
+M5.7 established source-equivalent glmark2 provenance for `jellyfish`, `cat-tex`, `cube-tex`, and `horse`, while retaining `2D-tex` as unresolved with no visual near-match substitution.
 
-It may not modify active compute Framework/Core or start M5.9 Core integration.
+M5.8 exhaustively audited the authorized original-artifact, historical-simulator, direct-front-end, and source-backed trace/replay routes. No route establishes the required shader/grouping/request/texture/order/draw-frame/framebuffer/timing contract needed to exercise Base/IO/OO through the same DTC mechanism.
 
-M5.9+ waits for `M5.COMPUTE_FREEZE`.
+The negative conclusion is bounded to available/recovered evidence. A genuinely new original/source-backed artifact may reopen M5.8 only under its explicit admission contract.
+
+Current consequence:
+
+- graphics research branch is evidence/read-only;
+- no M5.9/M5.10/M5.11 execution;
+- no graphics Core integration branches are needed after compute freeze under current evidence;
+- no formal `GM-GRAPHICS` or `GM-ALL-PAPER`;
+- final M5.12 carries the graphics negative evidence explicitly.
+
+Authoritative review:
+
+`docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
 
 ## Compute-freeze join barrier
 
@@ -132,29 +158,35 @@ M5.6 alone does not freeze compute.
 - no unresolved correctness/fidelity issue;
 - active compute branches pushed/clean.
 
-Then record immutable `COMPUTE_FREEZE_CORE_SHA` and `COMPUTE_FREEZE_FRAMEWORK_SHA` and create fresh graphics integration branches from those exact SHAs.
+Then record immutable `COMPUTE_FREEZE_CORE_SHA` and `COMPUTE_FREEZE_FRAMEWORK_SHA` in:
+
+`docs/dtc_l1/m5/handoffs/M5_COMPUTE_FREEZE.md`
 
 ## Final M5 dependency
 
-M5.12 requires:
+M5.12 now requires:
 
 - Paper-10 through M5.6;
 - Extended-20 through M5.E3;
-- compute freeze;
-- graphics M5.11 PASS or exhaustive M5.8 source-backed-unavailable evidence;
+- `M5.COMPUTE_FREEZE`;
+- accepted graphics closeout commit `ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`;
 - no unresolved correctness/fidelity issue.
 
-Reporting groups remain distinct:
+Reporting groups:
 
 - `GM-PAPER10` / `GM-GP`;
 - `GM-EXTENDED20`;
-- `GM-ALL-COMPUTE30` supplemental;
-- `GM-GRAPHICS` if source-backed;
-- `GM-ALL-PAPER` only original ten compute + five graphics with comparability proof.
+- `GM-ALL-COMPUTE30` supplemental.
 
-## Final states
+Under the current graphics closeout:
 
-- `M5_FULL_REPRO_READY_FOR_REVIEW`; or
-- `M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`.
+- no `GM-GRAPHICS`;
+- no `GM-ALL-PAPER`.
+
+## Final state
+
+Current expected M5 terminal state:
+
+`M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
 
 Figure 4.6 fresh area/synthesis is outside M5 and remains a separate M6 decision.
