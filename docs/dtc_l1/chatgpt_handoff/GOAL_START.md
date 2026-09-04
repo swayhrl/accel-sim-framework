@@ -1,10 +1,11 @@
 # DTC-L1 M5 Explicit Goal Launch Contract
 
-Status: **ACTIVE — M5 v3 PAPER COMPUTE + EXTENDED-20 + PARALLEL GRAPHICS RESEARCH**
+Status: **ACTIVE — M5 v3 PAPER COMPUTE + EXTENDED-20; GRAPHICS RESEARCH CLOSED SOURCE-BACKED-UNAVAILABLE**
 
 Current durable scheduling authority:
 
-`docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
+- `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
+- `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
 
 ## Persistent scientific goal
 
@@ -14,11 +15,13 @@ Demonstrate and explain the performance effect of the validated Decoupled-Tag Ca
 
 Do not fit architecture/workload inputs to thesis speedup numbers.
 
-M5 now contains three coordinated tracks:
+The active M5 execution scope is now:
 
 - Paper-10 compute reproduction;
 - approved Extended-20 generalization;
-- five-workload graphics source-backed reproduction/recovery.
+- final M5.12 synthesis carrying the accepted graphics-unavailability evidence.
+
+The separate graphics research track has completed at `GRAPHICS_SOURCE_BACKED_UNAVAILABLE`; M5.9-M5.11 are skipped unless genuinely new source-backed graphics artifacts reopen M5.8.
 
 ## Frozen Paper compute definitions
 
@@ -51,7 +54,7 @@ Active compute branches:
 - Core `hrl/decoupled-l1-m5-v0`
 - Framework `hrl/decoupled-l1-exp-m5-v0`
 
-Current state remains M5.0B/R5DV until canonical ratio-zero SpMV closes M5-T005.
+M5-T005/R5DV is closed. Continue active M5.0B workload recovery from existing valid checkpoints.
 
 Continue:
 
@@ -67,11 +70,13 @@ Selection is approved from immutable selection evidence:
 
 Do not redo selection or use DTC benefit to alter membership.
 
+Use the review-refined final portfolio in `M5_EXTENDED20_APPROVAL.md` and `extended20/EXTENDED20_APPROVED.tsv`.
+
 Sequence:
 
 `M5.E1 formalization -> M5.E2 60 primary runs -> M5.E3 synthesis`
 
-E1 can prepare early.
+E1 may prepare early when host CPU/RAM/disk/I/O conditions permit without disturbing active Paper jobs.
 
 E2 begins only after Paper M5.2 PASS establishes the common formal Core/Framework/config/parser/metric anchor.
 
@@ -83,29 +88,27 @@ Use `M5_PARALLEL_BATCH_POLICY.md`: long independent jobs should run in a measure
 
 After M5.2, Paper M5.3-M5.6 and Extended E2/E3 may progress concurrently in wall-clock time.
 
-## Track C — graphics research/integration
+## Graphics research closeout
 
-A separate Framework-only research window/branch may execute now:
+Reviewed graphics branch:
 
-`M5.7 provenance -> M5.8 source-backed path recovery`
+`hrl/decoupled-l1-exp-m5-graphics-research-v0@ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`
 
-Research branch:
-
-`hrl/decoupled-l1-exp-m5-graphics-research-v0`
-
-The research window must not modify active compute branches/Core or active compute `LATEST_REPORT.md`.
-
-M5.9+ Core integration is forbidden before compute freeze.
-
-If M5.8 finds a source-backed path, research-only state becomes:
-
-`M5_GRAPHICS_RESEARCH_READY_FOR_COMPUTE_FREEZE`
-
-If exhaustive source/artifact/direct/trace recovery fails:
+Accepted result:
 
 `GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
 
-No proxy may be relabeled formal.
+Consequences under current evidence:
+
+- treat the graphics-research branch as frozen evidence;
+- do not modify GPGPU-Sim Core for graphics;
+- do not create graphics integration branches after compute freeze;
+- skip M5.9/M5.10/M5.11;
+- do not run formal graphics Base/IO/OO experiments;
+- do not emit `GM-GRAPHICS` or `GM-ALL-PAPER`;
+- carry four source-equivalent scene mappings plus unresolved `2D-tex` and the M5.8 negative path audit into M5.12.
+
+Reopen M5.8 only if genuinely new original/source-backed artifacts meet the explicit admission contract in the accepted M5.8 handoff.
 
 ## Compute-freeze join barrier
 
@@ -129,38 +132,25 @@ with exact:
 
 If Paper finishes first, use `M5_PAPER10_READY_WAITING_FOR_EXTENDED20` and continue Extended work rather than freezing Core.
 
-## Graphics integration after compute freeze
-
-If M5.8 established a source-backed path, create fresh branches from the exact compute-freeze SHAs:
-
-- Core `hrl/decoupled-l1-m5-graphics-v0`
-- Framework `hrl/decoupled-l1-exp-m5-graphics-v0`
-
-Then execute:
-
-`M5.9 -> M5.10 -> M5.11 -> M5.12`
-
-If M5.8 exhaustively established graphics unavailable, skip M5.9-M5.11 and proceed to M5.12 negative-evidence synthesis after compute freeze.
-
 ## M5.12 final dependency
+
+After `M5.COMPUTE_FREEZE`, proceed directly to M5.12 negative-evidence synthesis.
 
 M5.12 requires:
 
 - Paper M5.6 PASS;
 - Extended M5.E3 PASS;
 - `M5.COMPUTE_FREEZE`;
-- graphics M5.11 PASS or exhaustive `GRAPHICS_SOURCE_BACKED_UNAVAILABLE` evidence;
+- accepted graphics closeout commit `ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`;
 - no unresolved correctness/fidelity issue.
 
 Final reporting groups:
 
 - `GM-PAPER10` / `GM-GP` — original ten compute;
 - `GM-EXTENDED20` — supplemental twenty;
-- `GM-ALL-COMPUTE30` — supplemental union;
-- `GM-GRAPHICS` — five graphics if source-backed;
-- `GM-ALL-PAPER` — original ten compute + five graphics only, and only with cross-path metric comparability proof.
+- `GM-ALL-COMPUTE30` — supplemental union.
 
-Extended-20 is never included in `GM-ALL-PAPER`.
+No graphics aggregate is emitted under the current closeout.
 
 ## Branch ownership
 
@@ -168,12 +158,14 @@ Follow `M5_BRANCH_OWNERSHIP.md`.
 
 Never let two Codex windows write the same branch/worktree/mutable report. Preserve live jobs and uncommitted artifacts before integrating documentation updates.
 
+The graphics-research window has reached its accepted terminal state and does not need to keep running unless new source-backed evidence appears.
+
 ## Problem-resolution behavior
 
 Do not pause for ordinary:
 
-- missing workload/asset/dependency;
-- build/PTX/shader failure;
+- missing workload/dependency;
+- build/PTX failure;
 - parser/counter gap;
 - simulator assertion that can be source-correctly repaired;
 - timeout with diagnosable progress;
@@ -185,15 +177,11 @@ Diagnose -> classify -> repair/reconstruct -> regress -> invalidate stale identi
 
 ## Pause conditions
 
-Pause only for a genuine researcher decision that changes frozen architecture/experiment meaning, a required approximation to make a formal graphics claim, irreducible metric/comparability ambiguity, or a final M5 review state.
+Pause only for a genuine researcher decision that changes frozen architecture/experiment meaning, an approved Extended substitution that cannot be resolved by the pre-performance alternate rules, a cross-track finding that requires changing a frozen common metric/config definition, or the final M5 review state.
 
-## Final M5 states
+## Final M5 state
 
-Successful source-backed graphics reproduction:
-
-`M5_FULL_REPRO_READY_FOR_REVIEW`
-
-Exhaustive formal graphics unavailability:
+Current expected terminal state:
 
 `M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
 
