@@ -6,28 +6,26 @@ This repository coordinates M5 mechanism/performance reproduction.
 
 1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 2. `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
-3. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
-4. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
-5. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-6. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
-7. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
-8. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
-9. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
-10. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-11. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
-12. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
-13. `docs/dtc_l1/m5/M5_GRAPHICS_INDEPENDENT_WINDOW_HANDOFF.md`
-14. `docs/dtc_l1/m5/M5_GRAPHICS_POST_COMPUTE_PLAN.md`
-15. `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
-16. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
-17. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
-18. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-19. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
-20. final M4 review pack
-21. Core M5 `AGENTS.md`
-22. Core `docs/dtc_l1/DTC_L1_SPEC.md`
+3. `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
+4. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
+5. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
+6. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
+7. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
+8. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
+9. `docs/dtc_l1/m5/M5_EXPERIMENT_MATRIX.md`
+10. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
+11. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
+12. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
+13. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
+14. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
+15. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+16. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+17. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
+18. final M4 review pack
+19. Core M5 `AGENTS.md`
+20. Core `docs/dtc_l1/DTC_L1_SPEC.md`
 
-`M5_V3_PARALLEL_TRACKS_APPROVAL.md` is the current scheduling/ownership authority. Older v2 wording that assumes graphics research must wait until M5.6 is superseded.
+`M5_V3_PARALLEL_TRACKS_APPROVAL.md` is the current scheduling authority. `M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md` consumes the completed graphics M5.7/M5.8 research result and supersedes any older wording that treats M5.9-M5.11 as currently active.
 
 ## Branch/window ownership
 
@@ -44,15 +42,26 @@ It executes current Paper-10 work plus the approved Extended-20 formal track whe
 
 Framework `hrl/decoupled-l1-exp-m5-extended20-select-v0` at reviewed commit `d43b6eec93f68efa94057f34ffa699463b53e6a6` is frozen selection provenance. Do not run formal experiments there.
 
-### Graphics research window
+### Graphics research evidence
 
-Framework-only `hrl/decoupled-l1-exp-m5-graphics-research-v0` may execute M5.7/M5.8 now. It must not edit active compute branches/Core or active compute `LATEST_REPORT.md`.
+Framework `hrl/decoupled-l1-exp-m5-graphics-research-v0` at accepted closeout commit `ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d` is frozen graphics evidence.
 
-M5.9+ graphics integration waits for `M5.COMPUTE_FREEZE` and uses fresh graphics branches created from exact freeze SHAs.
+Accepted status:
+
+`GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
+
+Do not keep a graphics Codex window active merely to repeat already-audited routes. Reopen only if genuinely new original/source-backed evidence appears.
+
+Under current evidence:
+
+- no M5.9/M5.10/M5.11;
+- no graphics Core integration branch;
+- no graphics Base/IO/OO formal runs;
+- no `GM-GRAPHICS` or `GM-ALL-PAPER`.
 
 ## Current progression
 
-M5.0A is PASS. M5.0B/R5DV remains the active Paper-10 compute work until Codex closes the canonical ratio-zero SpMV gate and resumes workload recovery.
+M5.0A is PASS. M5-T005/R5DV is CLOSED. Current Paper-10 work is M5.0B workload recovery.
 
 Paper sequence:
 
@@ -62,21 +71,15 @@ Extended sequence:
 
 `M5.E0(selection approved) -> M5.E1 -> M5.E2 -> M5.E3`
 
-- E1 metadata/build/input formalization may prepare before M5.2.
+- E1 metadata/build/input formalization may prepare before M5.2 when host resources permit.
 - E2's 60 Base/IO/OO runs begin only after M5.2 freezes the common formal anchor.
 - E2 uses resource-aware parallel worker-pool execution; do not unnecessarily serialize independent jobs.
 
-Graphics research sequence in separate window:
-
-`M5.7 -> M5.8`
-
-Integration after compute freeze:
-
-`M5.9 -> M5.10 -> M5.11 -> M5.12`
+After Paper M5.6 + Extended M5.E3, create `M5.COMPUTE_FREEZE` and proceed directly to M5.12 negative-evidence synthesis under the accepted graphics closeout.
 
 ## Compute-freeze join barrier
 
-M5.6 alone is no longer a freeze boundary.
+M5.6 alone is not a freeze boundary.
 
 `M5.COMPUTE_FREEZE` requires:
 
@@ -85,7 +88,7 @@ M5.6 alone is no longer a freeze boundary.
 - no unresolved correctness/fidelity issue;
 - active compute branches pushed/clean.
 
-Then record exact `COMPUTE_FREEZE_CORE_SHA` and `COMPUTE_FREEZE_FRAMEWORK_SHA` and create fresh graphics integration branches from those SHAs.
+Record exact `COMPUTE_FREEZE_CORE_SHA` and `COMPUTE_FREEZE_FRAMEWORK_SHA` in `docs/dtc_l1/m5/handoffs/M5_COMPUTE_FREEZE.md`.
 
 ## Scientific objective
 
@@ -143,7 +146,7 @@ Do not stop merely because performance is weak/negative or a workload differs fr
 
 Follow `M5_PARALLEL_BATCH_POLICY.md` for long independent runs.
 
-Default is a measured safe worker pool with isolated job directories and resumable identities, not one-workload-at-a-time execution.
+Default is a measured-safe worker pool with isolated job directories and resumable identities, not one-workload-at-a-time execution.
 
 ## Formal-result discipline
 
@@ -162,11 +165,10 @@ Do not commit raw logs, traces, binaries, datasets or build trees.
 
 ## Final M5 dependency
 
-M5.12 requires Paper M5.6 + Extended M5.E3 + compute freeze + either graphics M5.11 PASS or exhaustive M5.8 source-backed-unavailable evidence.
+M5.12 requires Paper M5.6 + Extended M5.E3 + `M5.COMPUTE_FREEZE` + accepted graphics closeout commit `ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d` + no unresolved correctness/fidelity issue.
 
-Final states:
+Current expected final state:
 
-- `M5_FULL_REPRO_READY_FOR_REVIEW`; or
-- `M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`.
+`M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
 
 Figure 4.6 area/synthesis remains outside M5 and requires M6 authorization.
