@@ -12,7 +12,10 @@ from collections import Counter
 from pathlib import Path
 P64=65536; P2=2*1024*1024
 class RangeIndex(list):
- def __init__(self,items): super().__init__(items);self.starts=[a for a,_,_ in items]
+ def __init__(self,items):
+  super().__init__(items);self.starts=[a for a,_,_ in items]
+  if any(a>b for a,b in zip(self.starts,self.starts[1:])):
+   raise AssertionError('RangeIndex.starts must be monotonic')
 def pop(mask): return int(mask,16).bit_count()
 def is_record(line):
  t=line.split(maxsplit=1)
@@ -41,10 +44,14 @@ def merge(rs):
  out=[]
  for k in ('WEIGHT','KV_CACHE'):
   items=sorted((a,b) for a,b,l in rs if l==k)
+  merged=[]
   for a,b in items:
-   if out and out[-1][2]==k and a<=out[-1][1]: out[-1]=(out[-1][0],max(b,out[-1][1]),k)
-   else: out.append((a,b,k))
- return out
+   if merged and a<=merged[-1][1]: merged[-1]=(merged[-1][0],max(b,merged[-1][1]),k)
+   else: merged.append((a,b,k))
+  out.extend(merged)
+ # Class-local merging is not an index order.  The binary-search RangeIndex
+ # requires all starts to be globally ordered, including KV below Weight.
+ return sorted(out,key=lambda x:(x[0],x[1],x[2]))
 def ranges(side,roi):
  r=[(int(x['simva_start'],16),int(x['simva_start'],16)+x['size_bytes'],'WEIGHT') for x in side['allocations']]
  for x in side['kv_cache_events']:
@@ -135,6 +142,17 @@ def selftest():
  assert kind(0x3000,4,ranges(side,'decode1'))[0]=='KV_CACHE'
  assert kind(0x4000,4,ranges(side,'decode1'))[0]=='UNKNOWN'
  assert kind(0x100e,4,ranges(side,'prefill'))==( 'UNKNOWN', True)
+ below={'allocations':[{'simva_start':'0x3000','size_bytes':16}],
+        'kv_cache_events':[{'simva_start':'0x1000','size_bytes':16,'phase':'PREFILL','step':0}]}
+ above={'allocations':[{'simva_start':'0x1000','size_bytes':16}],
+        'kv_cache_events':[{'simva_start':'0x3000','size_bytes':16,'phase':'PREFILL','step':0}]}
+ below_index=ranges(below,'prefill');above_index=ranges(above,'prefill')
+ assert below_index.starts==sorted(below_index.starts)
+ assert above_index.starts==sorted(above_index.starts)
+ assert kind(0x1000,4,below_index)[0]=='KV_CACHE'
+ assert kind(0x3000,4,below_index)[0]=='WEIGHT'
+ assert kind(0x1000,4,above_index)[0]=='WEIGHT'
+ assert kind(0x3000,4,above_index)[0]=='KV_CACHE'
 def main():
  p=argparse.ArgumentParser();p.add_argument('--run',type=Path);p.add_argument('--roi',choices=('prefill','decode1'));p.add_argument('--output',type=Path);p.add_argument('--self-test',action='store_true');a=p.parse_args()
  if a.self_test:selftest();print('PASS exact address decoder self-test');return
