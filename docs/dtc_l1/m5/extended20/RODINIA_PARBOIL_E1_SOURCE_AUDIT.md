@@ -69,6 +69,32 @@ Rodinia inputs remain `PENDING_FREEZE`: its candidate source checkout contains
 the selected programs but not the six launcher data files required to byte-hash
 their final input identities.
 
+## Parboil checker runtime contract
+
+The selected checker files are part of the E1 output identity.  `histo` uses
+the host `cmp` utility.  The other five declare `#!/usr/bin/env python` but
+use Python-2 `file(...)` and/or `print` syntax; the observed host exposes
+Python 3.11 and no `python2` executable.  This is a reproducible E1
+compatibility task, not permission to omit the source-defined checker or to
+substitute a weaker output predicate.
+
+| workload | checker contract | required support modules |
+| --- | --- | --- |
+| `bfs` | Python-2 `filecompare` + `textfilecompare` float comparison | `filecompare.py`, `textfilecompare.py` |
+| `cutcp` | Python-2 `filecompare` + `binaryfilecompare` tolerance comparison | `filecompare.py`, `binaryfilecompare.py` |
+| `histo` | `cmp $1 $2`, exact byte comparison | none |
+| `mri-q` | Python-2 `filecompare` + `binaryfilecompare` relative/absolute tolerance | `filecompare.py`, `binaryfilecompare.py` |
+| `sad` | Python-2 `filecompare` + `binaryfilecompare` exact structured comparison | `filecompare.py`, `binaryfilecompare.py` |
+| `stencil` | Python-2 inline binary float tolerance comparison | none |
+
+Support-module identities in the same clean Parboil commit:
+
+| path | Git blob | SHA-256 |
+| --- | --- | --- |
+| `common/python/filecompare.py` | `eb80e44c90fc634d8ddf74be3dc89dd7c860b8a9` | `8544527c556d11396b5c449700f2d5cc3123024905335521e8e6efcccf23d465` |
+| `common/python/binaryfilecompare.py` | `e93b39382a6028b4d52809a2035273505aac7f84` | `921d1b5b65f3789747eecab54a08c94782a5c46f397c15531018fb41251f95e3` |
+| `common/python/textfilecompare.py` | `f7cd7abc5d16677f8a7aa8d730625aa24c713cd2` | `50f340e3093bec07fc1ad71933fcdc6c2de85d2193352ef02ccb6df799084c45` |
+
 ## Remaining hard E1 work
 
 - materialize each selected canonical input and freeze its byte SHA-256;
