@@ -47,6 +47,28 @@ All Parboil `tools/compare-output` files are source candidates only.  Their
 interpreter/dependency identity, reference-input/output byte hashes and an
 actual source-defined PASS remain E1 requirements.
 
+## Parboil selected input identities
+
+The six launcher-selected input sets below are materialized in the clean
+`parboil@4e0fc54866546efa44fe93af57c9cef62f6c8eb9` candidate checkout.  These
+are deterministic input identities for future E1 smoke work; they do not by
+themselves prove that the CUDA build or output checker is compatible with the
+M5 simulator runtime.
+
+| workload | repository-relative input | Git blob | SHA-256 |
+| --- | --- | --- | --- |
+| `bfs` | `datasets/bfs/NY/input/graph_input.dat` | `0157cfbe12b2677b3669bf2cdfae3f549abb22f7` | `6de0d396b9675326bec4764ff1d9ae6b788b36281c5d0fcafad386fa9e7f14bd` |
+| `cutcp` | `datasets/cutcp/small/input/watbox.sl40.pqr` | `917c3faa3a75ed47e8eb3d0d158690358f17793d` | `7b2059d475ecebc5007570617959ebea62cfc94668f38dc8f7e8690379490f84` |
+| `histo` | `datasets/histo/default/input/img.bin` | `f42bc53c648e1da7213ecabd8a0ec0ea5b5598ae` | `4b1783ec5606cae0791cdc369732397e8f082736d4cbeb010008553ddec1307a` |
+| `mri-q` | `datasets/mri-q/small/input/32_32_32_dataset.bin` | `db8385bb0ea6916e969fdba41a0355ab2a1ca471` | `c3d4e1a79b1c51570d36d44c366b36b67500008dbe78aa01578383f2eb26d961` |
+| `sad` | `datasets/sad/default/input/reference.bin` | `94fb04f5014bcdfc10c383c6fddc6e29daa3ef30` | `7962566f7ae96f234f39dcfc916c5fd847eef25dc1112ef790e1b7d814de968c` |
+| `sad` | `datasets/sad/default/input/frame.bin` | `f8142c46a0cf2ce6695a639d213ad50cefd8c605` | `5b0375c637c7f6fdfc936c9a5f1623891c4c7fa72dcdcf4ed62bf5ce89497251` |
+| `stencil` | `datasets/stencil/small/input/128x128x32.bin` | `aea526505970f6ce114de1ac73db6c9764146536` | `f58af01bb8300328ac35a72d4ad267b3fc7685d5146a7108eb987441ea844ebf` |
+
+Rodinia inputs remain `PENDING_FREEZE`: its candidate source checkout contains
+the selected programs but not the six launcher data files required to byte-hash
+their final input identities.
+
 ## Remaining hard E1 work
 
 - materialize each selected canonical input and freeze its byte SHA-256;
