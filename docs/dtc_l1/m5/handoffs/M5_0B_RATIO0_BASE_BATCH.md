@@ -32,7 +32,7 @@ any DTC/pending-write/scoreboard assertion.
 | gesu | `gesummv` | `RECOVERY_24H_OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-gesummv-recovery24h-20260904` |
 | syr2k | `syr2k` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-recovery24h-20260904` |
 | 2mm | `twomm` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-recovery24h-20260904` |
-| conv2d | `twodconv` | `RECOVERY_24H_ACTIVE` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-recovery24h-20260904` |
+| conv2d | `twodconv` | `RECOVERY_24H_OUTPUT_CLEAN_STRICT` | `/tmp/dtc-l1-m5-0b-ratio0-base-twodconv-recovery24h-20260904` |
 
 All jobs carry their binary/PTX/config/runtime identity in `run_identity.txt`.
 They use isolated output directories and the M5 runner; no live process is
@@ -169,6 +169,21 @@ accounting closes `DTC_L1_pib_admits/retires=6292096/6292096` and
 lower outstanding are both zero.  The raw-log SHA-256 is
 `140fefea69d3e3cfc0aa637747a16c7102090cfbdd3d37f5c7ef72f89884e480`.
 The exact frozen identity is registered as `M5-f24650643302f0ac` under
+`M5_0B_RATIO0_BASE_OUTPUT_CLEAN_STRICT`.
+
+### 2DConv terminal evidence
+
+`twodconv` naturally terminated from its recovery directory.  Its
+source-defined output verdict is zero CPU/GPU mismatches beyond the 0.05%
+threshold, and `verify_m5_polybench_output.py conv2d` passed.  The independent
+strict parser exactly matches the strict-observer summary
+`generated/m5_0b_conv2d_base_ratio0.json`, with `gpu_tot_sim_cycle=10215552`
+and `gpu_tot_sim_insn=855179376`.  Termination accounting closes
+`DTC_L1_pib_admits/retires=5240320/5240320` and
+`DTC_L1_lower_requests_acquired/released=14042618/14042618`; final PIB and
+lower outstanding are both zero.  The raw-log SHA-256 is
+`2278ba0ec95dda577845ef72e63d33e7de7b221b1a3bd6d5d54bceef6dcadc0f`.
+The exact frozen identity is registered as `M5-0dbd48dfa4816277` under
 `M5_0B_RATIO0_BASE_OUTPUT_CLEAN_STRICT`.
 
 ## Next action
