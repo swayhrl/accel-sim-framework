@@ -1,0 +1,20 @@
+field	value	classification	provenance_or_rationale
+base_gpu_config	configs/tested-cfgs/SM86_RTX3070/gpgpusim.config	INHERITED_SIM_CONFIG	Core SHA256 f6b480d66fb04a948c04e1a5b65527600f3959ac561dcfa2de0b6632e864fe9c; consumed read-only by the launcher
+trace_config	gpu-simulator/configs/tested-cfgs/SM86_RTX3070/trace.config	INHERITED_SIM_CONFIG	Framework SHA256 a46fe47a14f3ca4116a35c5bf1dc156f4e861484b91278e8b3f6e09519bd7e5b
+trace_policy	COMPUTE_ONLY_TP_PARTITION	MODELING_DECISION	M4R accepted primary one-TP-partition policy; FULL_RANK0 remains sensitivity/provenance only
+vm_page_size	64KB	PAPER_SPEC	Table I / paper ledger
+l1_tlb	32 entries fully associative	PAPER_SPEC	Table I / paper ledger
+l2_tlb	768 entries 16-way standard mode	PAPER_SPEC	Table I; sub-entry behavior intentionally absent until M4B-P
+walkers	16	PAPER_SPEC	Table I / paper ledger
+virtual_address_width	49 bits	MODELING_DECISION	M4I-I4/RF0 proves every formal decoded address is below 2^49; no address rewriting
+translation_mshrs	32	MODELING_DECISION	Accepted M1-M3 generic baseline
+pwq_entries	32	MODELING_DECISION	Accepted M1-M3 generic baseline
+pwc	FINITE-128 intermediate-only, 1 cycle	MODELING_DECISION	Accepted M1-M3 generic baseline
+tlb_service_latency	10/80 core cycles	MODELING_DECISION	Accepted M1-M3 generic baseline
+ptw	4-level real PTE L2/DRAM traffic	MODELING_DECISION	Accepted M3 path; required for M4C baseline
+paper_sms	35	PAPER_SPEC	Table I
+paper_core_clock	1500 MHz	PAPER_SPEC	Table I; ICNT/L2 co-clocked because the source clock-domain control is a four-value coupled setting
+paper_l1d	128KB per SM	PAPER_SPEC	Retained SM86 L1D geometry already realizes 128KB
+paper_l2	3MB 16-way	PAPER_SPEC	12 channels * 2 inherited subpartitions * 64 sets * 128B * 16 ways
+paper_memory_channels	12 GDDR6 channels	PAPER_SPEC	Table I; retained SM86 GDDR6 timing and 3500.5MHz DRAM clock are INHERITED_SIM_CONFIG, not a claimed paper timing reconstruction
+telemetry	M4C_MEMORY_TELEMETRY_V1, runtime level 0/1/2/3	MODELING_DECISION	Authorized observability-only addendum; formal M4C/M4B runs use level 2
