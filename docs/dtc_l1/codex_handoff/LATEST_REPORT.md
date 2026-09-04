@@ -22,6 +22,7 @@ strict parser PASS, final PIB/lower occupancy zero, and exact
 `19186845/19186845` lower acquire/release closure.  A checker-only mapping bug
 initially expected the wrong BICG verdict format; it is repaired and regressed
 against the preserved raw log.  BICG evidence is
+registry `M5-949124579bf220d2` and
 `m5/generated/m5_0b_bicg_base_ratio0.json`; M5.0B remains active until all
 remaining Base workloads complete with the same checks.
 

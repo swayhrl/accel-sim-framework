@@ -48,6 +48,7 @@ and the strict summary is
 `gpu_tot_sim_insn=184803328`).  Final PIB and lower outstanding are zero;
 lower acquire/release closes exactly at `19186845/19186845`.  Raw log SHA-256:
 `f93222e8d227d869eecc70c88a0036f67c3d49499f9fb02f3621e427bcc69a5a`.
+The identity is registered as `M5-949124579bf220d2`.
 
 The first automatic checker result was a tool mapping false negative:
 `bicg` was incorrectly assigned the `Number of misses` format even though the
