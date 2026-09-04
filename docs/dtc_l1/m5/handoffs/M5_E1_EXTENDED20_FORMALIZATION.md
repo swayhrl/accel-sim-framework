@@ -17,17 +17,18 @@ Core/Framework/config/parser/metric anchor.
 | approved selection evidence | `hrl/decoupled-l1-exp-m5-extended20-select-v0@d43b6eec93f68efa94057f34ffa699463b53e6a6` |
 | portfolio roster | `extended20/EXTENDED20_APPROVED.tsv` |
 | CUDA samples discovery lead | `/tmp/dtc-l1-m5-cuda-samples-probe.oDOw3x@b7c5481c556c3fe98db060207ecaa41a4b9a9abc` (2,022 dirty paths; **not eligible** as an E1 source) |
-| CUDA Samples clean-source pointer | `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/cuda-samples = db3eea23946bca2e90a75eca2b5b3e07158a9e11` (Gitlink recorded; submodule not materialized or compatibility-verified) |
+| CUDA Samples clean-source pointer | `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/cuda-samples = db3eea23946bca2e90a75eca2b5b3e07158a9e11`; detached clean source materialization/audit: `extended20/CUDA_SAMPLES_E1_SOURCE_AUDIT.md` |
 | Parboil candidate source | `/tmp/dtc-l1-m5-parboil@4e0fc54866546efa44fe93af57c9cef62f6c8eb9` |
 | GPU App Collection candidate source | `/tmp/accelsim-gpu-app-collection-seed@dad09cb0487845edc7524ded814c6cde9f0ef6a1` (clean; contains the six selected Rodinia 3.1 trees) |
 | E2 launch gate | M5.2 PASS plus revalidation of the frozen common formal anchor |
 
-The CUDA SDK, Parboil, and GPU App Collection entries above are only discovered
-candidate source trees.  The CUDA Samples Gitlink is a reproducible source
-pointer but is not a checked-out E1 source tree yet.  In particular, the dirty
-CUDA samples scratch tree must not be used to build E1 artifacts.  No
-executable, PTX, input, output-reference, or launch identity has yet been
-frozen from any candidate.
+The CUDA SDK, Parboil, and GPU App Collection entries above are only candidate
+source trees.  The CUDA Samples gitlink is now materialized as a clean,
+detached source checkout, but it is not yet compatible with every historical
+parameterized label; the exact source audit records those boundaries.  In
+particular, the dirty CUDA samples scratch tree must not be used to build E1
+artifacts.  No executable, PTX, input, output-reference, or launch identity
+has yet been frozen from the CUDA Samples materialization.
 The existing framework launch definitions in
 `util/job_launching/apps/define-all-apps.yml` are useful provenance leads, not
 E1 acceptance evidence.
@@ -39,14 +40,14 @@ mean that a build or simulator run was attempted.
 
 | workload | suite | source commit | wrapper/build | executable SHA | PTX SHA | input SHA | output checker/reference | launch geometry | provenance status | formal-ready status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BlackScholes | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | dirty `b7c5481c…` scratch tree rejected; Black-Scholes option pricing metadata corrected | NOT_READY |
-| convolutionSeparable | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 3072` candidate only | clean source pointer requires materialization and compatibility check | NOT_READY |
-| fastWalshTransform_11_19 | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `-logK 11 -logD 19` candidate only | clean GPU App Collection has a named path; compatibility unverified | NOT_READY |
-| scalarProd_13920 | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 13920` candidate only | clean source pointer requires materialization and compatibility check | NOT_READY |
-| scan | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean GPU App Collection has a named path; compatibility unverified | NOT_READY |
-| sortingNetworks | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | clean source pointer requires materialization and compatibility check | NOT_READY |
-| transpose | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `dimX512 dimY512` candidate only | clean source pointer requires materialization and compatibility check | NOT_READY |
-| vectorAdd_6000000 | CUDA SDK | gitlink `db3eea…` (unmaterialized) | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 6000000` candidate only | clean GPU App Collection has a named path; compatibility unverified | NOT_READY |
+| BlackScholes | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | dirty `b7c5481c…` scratch tree rejected; source path now cleanly materialized | NOT_READY |
+| convolutionSeparable | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 3072` candidate only | source path materialized; argument compatibility remains unverified | NOT_READY |
+| fastWalshTransform_11_19 | CUDA SDK | current `db3eea…` materialized but parameter-incompatible; legacy `b059fdae…` separately recovered | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `-logK 11 -logD 19` source-backed only by legacy recovery | do not mix current source with legacy parameters; executable/PTX trail pending | NOT_READY |
+| scalarProd_13920 | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 13920` candidate only | source path materialized; parameter compatibility remains unverified | NOT_READY |
+| scan | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | source path materialized; launch/input compatibility unverified | NOT_READY |
+| sortingNetworks | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | source path materialized; launch/input compatibility unverified | NOT_READY |
+| transpose | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `dimX512 dimY512` candidate only | source parses dimX/dimY; isolated build/argument check remains | NOT_READY |
+| vectorAdd_6000000 | CUDA SDK | `db3eea…` materialized; exact path/tree in CUDA audit | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | `--size 6000000` candidate only | current source hard-codes 50,000; compatible source/wrapper recovery required | NOT_READY |
 | cfd_097k | Rodinia | candidate `dad09cb0…` | `src/cuda/rodinia/3.1/cuda/cfd/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | no native final-output checker found; reference PENDING_FREEZE | PENDING_FREEZE | clean source and CUDA build entry located | NOT_READY |
 | btree | Rodinia | candidate `dad09cb0…` | `src/cuda/rodinia/3.1/cuda/b+tree/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | writes `output.txt`; native reference/checker PENDING_FREEZE | framework candidate: `file ./data/mil.txt command ./data/command.txt` | clean source and `b+tree` mapping located | NOT_READY |
 | dwt2d | Rodinia | candidate `dad09cb0…` | `src/cuda/rodinia/3.1/cuda/dwt2d/Makefile`; command/toolchain PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | PENDING_FREEZE | output-capable build; native final checker/reference PENDING_FREEZE | PENDING_FREEZE | clean Rodinia 3.1 source and CUDA build entry located | NOT_READY |
