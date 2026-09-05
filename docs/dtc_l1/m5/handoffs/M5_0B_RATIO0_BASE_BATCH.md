@@ -193,3 +193,11 @@ deadlock/assertion signatures, strict-parse the log with the exact identity,
 and register only a correctness/fidelity-clean result.  A timeout is first
 classified using progress evidence under `M5_PROBLEM_RESOLUTION_POLICY.md`; it
 is not treated as a performance result or a deadlock by duration alone.
+
+## 2026-09-05 active checkpoint
+
+The reviewable live-PID, simulator-counter, strict-result, and completion
+accounting snapshot is `M5_0B_PROGRESS_CHECKPOINT.md`.  It records five
+validated Paper-10 Base members (canonical SpMV, BICG, GEMVER, GESUMMV, and
+2DConv) and the five untouched live recovery jobs (ATAX, MVT, SYR2K, 2MM, and
+SYRK).  This batch remains **ACTIVE**, not PASS.
