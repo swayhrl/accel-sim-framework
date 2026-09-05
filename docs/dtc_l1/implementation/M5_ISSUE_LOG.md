@@ -402,7 +402,7 @@
 
 ## M5-0BT-004 — selected PolyBench build propagated a false final predicate
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PASS -> CLOSED`.
 - Scope: the exact BICG CUDA application build after tracer and device
   preflight passed. No application execution, raw trace, immutable bundle,
   archive, replay, or formal result has started.
@@ -415,5 +415,8 @@
   final item now completes successfully rather than changing the selected
   build's status. Source files, source SHA, CUDA version, sm70 flag and build
   command are unchanged; the contract test locks this success behavior.
+- Hardware retest: exact BICG CUDA-11.8/sm70 build completed with status 0
+  and an executable. Fresh builds record their own executable SHA in capture
+  provenance; no claim of cross-build ELF hash equality is made.
 - Resume point: deploy to a new clean control checkout, rerun the exact BICG
   build on V100, then resume the same T1 capture identity.

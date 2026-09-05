@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-004.
+Status: M5.0BT T1 ACTIVE; BICG exact-capture retry-6 authorized.
 
 ## Current authoritative state
 
@@ -28,8 +28,9 @@ Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-004.
   No application, raw trace, immutable bundle or formal result has been
   created. Retry-5 reached the BICG CUDA build and exposed M5-0BT-004: its
   selected-workload loop propagated a false final predicate as status 1 after
-  a successful `nvcc` build. The source/flags/binary identity are unaffected;
-  the explicit-success loop repair is pending exact V100 retest.
+  a successful `nvcc` build. The explicit-success repair passed an exact V100
+  BICG build retest. Frozen source, CUDA 11.8 and sm70 build contract are
+  unchanged; each fresh build's executable SHA is captured as provenance.
 
 ## Required next action after a V100 host is supplied
 
