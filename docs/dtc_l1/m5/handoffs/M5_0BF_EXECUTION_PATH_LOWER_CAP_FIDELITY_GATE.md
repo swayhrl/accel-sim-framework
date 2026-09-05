@@ -138,6 +138,25 @@ architecture/model fidelity, Base-only structural-stall behavior, absence of a
 premature synthetic mask on PIB/MSHR/Tag-cacheline bottlenecks, and interaction
 with real bounded NoC/L2/DRAM queues—not by a larger DTC speedup.
 
+### Q3 observability contract
+
+The historical DTC terminal report contained only lower-credit peak and final
+drain state; it could not establish the required time-weighted lower
+outstanding average.  The isolated BF Core therefore adds two
+statistics-only, per-simulated-core-cycle counters:
+`DTC_L1_lower_outstanding_cycle_sum` and
+`DTC_L1_lower_outstanding_sample_cycles`.  Their quotient is the Q3 lower
+outstanding average.  The sample is taken after that cycle's core-pipeline
+admission/completion transitions.  It neither changes lower-credit admission,
+lower-credit release, timing, scheduling, nor any existing assertion.
+
+Any Q3 run launched before this instrumentation is available remains a
+non-decisive pre-instrumentation diagnostic.  It may establish that a
+candidate executes and has no immediate hard failure, but it cannot freeze a
+cap or platform because the required average is absent.  A separately built,
+isolated Core and repeat of the minimum Base-only candidates is required
+before Q3 closeout; this has no effect on the live M5.0B jobs.
+
 ## Required terminal declaration
 
 M5.0BF must declare exactly one terminal outcome:

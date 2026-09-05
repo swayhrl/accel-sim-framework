@@ -83,6 +83,16 @@ provenance-blocked by the absent exact Paper trace/GPU tracer environment, so
 the Q3 BICG rows are explicitly execution-driven rather than a trace-result
 substitute.
 
+Q3 source audit then found that the prior Core terminal report provided peak
+but no time-weighted lower-outstanding average.  The current three live BICG
+diagnostics are consequently **pre-instrumentation and non-decisive**: they
+remain untouched and may naturally close as health/structural evidence, but
+they cannot freeze the cap.  The isolated BF Core has a statistics-only
+per-core-cycle occupancy sum/sample counter and the BF extractor requires it;
+after an isolated rebuild, the minimum Base-only diagnostic must be repeated
+before Q3 can close.  No lower-credit admission/release, scheduling, timing,
+or assertion behavior changes, and the M5.0B jobs remain untouched.
+
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
 The M5-T005 researcher-decision boundary is resolved.  The paper-facing

@@ -94,12 +94,22 @@ def main():
         instructions = required(terminal, "gpu_tot_sim_insn")
         if cycles <= 0:
             raise ValueError("gpu_tot_sim_cycle must be positive")
+        lower_occupancy_cycle_sum = required(
+            terminal, "DTC_L1_lower_outstanding_cycle_sum")
+        lower_occupancy_sample_cycles = required(
+            terminal, "DTC_L1_lower_outstanding_sample_cycles")
+        if lower_occupancy_sample_cycles <= 0:
+            raise ValueError("DTC_L1_lower_outstanding_sample_cycles must be positive")
         metrics = {
             "base_cycles": cycles,
             "base_instructions": instructions,
             "base_ipc": instructions / cycles,
             "lower_outstanding_cap": required(terminal, "DTC_L1_lower_outstanding_cap"),
+            "lower_outstanding_average": lower_occupancy_cycle_sum /
+                                         lower_occupancy_sample_cycles,
             "lower_outstanding_peak": required(terminal, "DTC_L1_lower_outstanding_peak"),
+            "lower_outstanding_cycle_sum": lower_occupancy_cycle_sum,
+            "lower_outstanding_sample_cycles": lower_occupancy_sample_cycles,
             "lower_cap_full_events": required(terminal, "DTC_L1_lower_cap_full_events"),
             "pib_full_events": required(terminal, "DTC_L1_pib_full_events"),
             "pib_full_cycles": required(terminal, "DTC_L1_nonexclusive_pib_full_cycles"),
