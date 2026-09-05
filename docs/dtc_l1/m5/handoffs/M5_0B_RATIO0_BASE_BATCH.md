@@ -201,3 +201,12 @@ accounting snapshot is `M5_0B_PROGRESS_CHECKPOINT.md`.  It records five
 validated Paper-10 Base members (canonical SpMV, BICG, GEMVER, GESUMMV, and
 2DConv) and the five untouched live recovery jobs (ATAX, MVT, SYR2K, 2MM, and
 SYRK).  This batch remains **ACTIVE**, not PASS.
+
+## External timeout-guard recovery
+
+The 86,400-second external supervisors were an operational allowance, not a
+simulator semantic boundary.  After each live recovery job demonstrated
+simulator-level progress, the obsolete supervisors were safely detached using
+a disposable process-topology/FD/observer proof.  No simulator or runner was
+signalled, restarted, or reconfigured.  The exact topology and post-detach
+progress evidence is `M5_0B_TIMEOUT_GUARD_RECOVERY.md`.

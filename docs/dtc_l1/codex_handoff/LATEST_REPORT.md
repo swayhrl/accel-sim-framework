@@ -20,6 +20,12 @@ accounting, live-PID, E1, and graphics record; the batch detail remains in
 `m5/handoffs/M5_0B_RATIO0_BASE_BATCH.md`.  M5.0B is not PASS and M5.0C is not
 authorized.
 
+The obsolete external `timeout 86400` supervisors on the five demonstrably
+progressing recovery jobs were safely detached after a disposable topology/FD/
+observer proof.  The simulators retained their PIDs, process groups, log FDs,
+and source-backed simulator progress; no supervisor deadline remains armed.
+See `m5/handoffs/M5_0B_TIMEOUT_GUARD_RECOVERY.md`.
+
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
 The M5-T005 researcher-decision boundary is resolved.  The paper-facing
