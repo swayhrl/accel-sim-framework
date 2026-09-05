@@ -115,6 +115,8 @@ def main():
             "pib_full_cycles": required(terminal, "DTC_L1_nonexclusive_pib_full_cycles"),
             "mshr_entry_full_cycles": required(terminal, "DTC_L1_nonexclusive_mshr_entry_full_cycles"),
             "mshr_merge_full_cycles": required(terminal, "DTC_L1_nonexclusive_mshr_merge_full_cycles"),
+            "true_tag_cacheline_allocation_fail_events": required(
+                terminal, "DTC_L1_baseline_l1d_line_allocation_fail_events"),
             "tag_bank_conflict_cycles": required(terminal, "DTC_L1_nonexclusive_tag_bank_conflict_cycles"),
             "native_gpu_stall_dramfull": required(terminal, "gpu_stall_dramfull"),
             "native_chiplet_queue_full": pressure(counter, "chiplet_queue_full_"),

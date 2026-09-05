@@ -150,6 +150,14 @@ outstanding average.  The sample is taken after that cycle's core-pipeline
 admission/completion transitions.  It neither changes lower-credit admission,
 lower-credit release, timing, scheduling, nor any existing assertion.
 
+Q3 also exports the source-defined conventional-L1
+`LINE_ALLOC_FAIL` aggregate as
+`DTC_L1_baseline_l1d_line_allocation_fail_events`.  It means all candidate
+cache lines were reserved, and is the required true Tag/cacheline-allocation
+signal.  It remains distinct from `DTC_L1_primary_stall_tag_bank` (DTC
+Tag-bank arbitration), baseline MSHR entry/merge failures, and miss-queue or
+native downstream pressure.
+
 Any Q3 run launched before this instrumentation is available remains a
 non-decisive pre-instrumentation diagnostic.  It may establish that a
 candidate executes and has no immediate hard failure, but it cannot freeze a
