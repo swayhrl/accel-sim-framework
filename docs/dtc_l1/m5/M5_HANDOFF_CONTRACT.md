@@ -55,6 +55,10 @@ Exact thesis speedups are references, not pass thresholds.
 
 ## 3. Paper compute sequence
 
+> **Active supersession.** Historical M5.0B cap-256 natural-terminal recovery
+> is closed/obsolete and is never an executable dependency. The active entry
+> is M5.0BT exact trace capture/qualification; only M5.0BT PASS enters M5.0C.
+
 ### M5.0BT Exact trace capture and qualification
 
 M5.0BT supersedes the obsolete execution-driven cap-256 natural-terminal wait.

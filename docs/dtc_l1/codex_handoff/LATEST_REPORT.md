@@ -4,7 +4,9 @@ Stage: `M5.0BT_EXACT_TRACE_CAPTURE_AND_QUALIFICATION`
 
 Status: **M5_0BT_CAPTURE_PACKAGE_NEEDS_FINAL_OFFLINE_FIX — M5.0BT GATES M5.0C**
 
-Capture package status is now **`M5_0BT_CAPTURE_PACKAGE_V100_READY`**. The
+The prior `M5_0BT_CAPTURE_PACKAGE_V100_READY` statement is superseded:
+current status remains **`M5_0BT_CAPTURE_PACKAGE_NEEDS_FINAL_OFFLINE_FIX`**.
+The
 repair closes the reviewed T01--T10 blockers: sm70 capture binaries are
 distinct from historical sm52 recovery, selected CUDA-device/tracer provenance
 is fail-closed, capture is resumable, BICG pilot storage gates the full wave,

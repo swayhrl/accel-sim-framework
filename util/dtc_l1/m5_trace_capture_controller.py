@@ -23,11 +23,11 @@ def valid_bundle(p):
  return all(sha(p/name)==digest for digest,name in (x.split("  ",1) for x in sums.read_text().splitlines() if x))
 def archive_bundle(bundle):
  if not valid_bundle(bundle):raise RuntimeError("invalid bundle before archive")
- out=bundle.with_suffix(".tar.gz")
+ out=bundle.parent.parent/"archives"/(bundle.name+".tar.gz");out.parent.mkdir(exist_ok=True)
  if out.exists():raise RuntimeError("refuse overwrite archive")
  with tarfile.open(out,"w:gz",format=tarfile.PAX_FORMAT) as t:
   for p in sorted(bundle.rglob("*")):t.add(p,arcname=f"{bundle.name}/{p.relative_to(bundle)}",recursive=False)
- meta={"trace_bundle_id":json.loads((bundle/"CAPTURE_RESULT.json").read_text())["trace_bundle_id"],"archive_sha256":sha(out),"archive_bytes":out.stat().st_size};(bundle/"ARCHIVE.json").write_text(json.dumps(meta,sort_keys=True,indent=2));return out,meta
+ meta={"workload":bundle.name,"trace_bundle_id":json.loads((bundle/"CAPTURE_RESULT.json").read_text())["trace_bundle_id"],"archive_path":str(out),"archive_sha256":sha(out),"archive_bytes":out.stat().st_size};(out.with_suffix(".archive.json")).write_text(json.dumps(meta,sort_keys=True,indent=2));return out,meta
 def verify_transfer(src,dst):
  if sha(src)!=sha(dst):raise RuntimeError("transfer SHA mismatch")
  return {"source_sha256":sha(src),"destination_sha256":sha(dst),"status":"PASS"}
@@ -89,16 +89,16 @@ def main():
   try:
    exe=d/(bin.get(w,w)); buildscript=root/("util/dtc_l1/build_m5_parboil_spmv_trace_sm70.sh" if w=="spmv" else "util/dtc_l1/build_m5_polybench_cuda_trace_sm70.sh")
    if w=="spmv":run([str(buildscript),str(a.spmv_wrapper),str(a.parboil_src),str(d/"build")]);exe=d/"build/spmv";cmd=[str(exe),"-i",str(a.spmv_input_dir/"bcsstk18.mtx")+","+str(a.spmv_input_dir/"vector.bin"),"-o","result.bin"]
-   else:run([str(nvcc),"-arch=sm_70","-O2","-cudart","shared",str(a.polybench_src/"CUDA"/src[w]),"-o",str(exe)]);cmd=[str(exe)]
+   else:run([str(buildscript),str(a.polybench_src),str(d/"build"),"--workload",bin.get(w,w)]);exe=d/"build"/bin.get(w,w);cmd=[str(exe)]
    env={**os.environ,"LD_PRELOAD":str(tool)};env.pop("DYNAMIC_KERNEL_RANGE",None)
    with open(d/"application.stdout","w") as so,open(d/"tracer.stderr","w") as se:run(cmd,cwd=d,env=env,stdout=so,stderr=se)
    if w=="spmv":run([sys.executable,str(root/"util/dtc_l1/verify_m5_parboil_spmv_output.py"),str(a.spmv_reference),str(d/"result.bin")],stdout=open(d/"correctness.log","w"))
    else:run([sys.executable,str(root/"util/dtc_l1/verify_m5_polybench_output.py"),C[w],str(d/"application.stdout")],stdout=open(d/"correctness.log","w"))
    t=d/"traces";run([str(post),str(t/"kernelslist")],cwd=d,stdout=open(d/"postprocess.stdout","w"));inv,raw,grp=inventory(t);(d/"kernel_inventory.json").write_text(json.dumps(inv,sort_keys=True,indent=2));err=(d/"tracer.stderr").read_text(errors="replace")
    if any(x in err.lower() for x in ("cudaerror","nvbit fatal","tracer fatal","assertion")):raise RuntimeError("explicit tracer/CUDA error")
-   b.parent.mkdir(exist_ok=True);shutil.move(str(d),str(b));rawh=setsha(list(b.glob("traces/kernel-*.trace")));gh=setsha(list(b.glob("traces/kernel-*.traceg")));bid=hashlib.sha256((w+rawh+gh+sha(b/"traces/kernelslist.g")).encode()).hexdigest();rec={"trace_bundle_id":bid,"trace_capture_binary_sha":sha(exe),"kernel_inventory":inv,"device":device[1],"provenance":prov,"raw_trace_set_sha256":rawh,"traceg_set_sha256":gh};(b/"CAPTURE_RESULT.json").write_text(json.dumps(rec,sort_keys=True,indent=2));files=[p for p in b.rglob("*") if p.is_file() and p.name!="SHA256SUMS"];(b/"SHA256SUMS").write_text("".join(f"{sha(p)}  {p.relative_to(b)}\n" for p in sorted(files)))
-   vals=[w,w,git(a.polybench_src,"rev-parse","HEAD"),tree(a.polybench_src),sha(buildscript),sha(exe)," ".join(cmd[1:]),"N/A",sha(a.spmv_reference) if w=="spmv" else "N/A","PASS",device[1],"environment.json",prov["tracer_source_tree_sha"],prov["tracer_tool_sha"],prov["nvbit_archive_sha"],prov["postprocess_sha"],"NVBit-v1.8",sha(b/"kernel_inventory.json"),str(len(inv)),str(len(raw)),str(len(grp)),sha(b/"traces/kernelslist"),sha(b/"traces/kernelslist.g"),rawh,gh,bid,"PASS"]
+   binsha=sha(exe);rawh=setsha(raw);gh=setsha(grp);bid=hashlib.sha256((w+rawh+gh+sha(t/"kernelslist.g")).encode()).hexdigest();rec={"trace_bundle_id":bid,"trace_capture_binary_sha":binsha,"kernel_inventory":inv,"device":device[1],"provenance":prov,"raw_trace_set_sha256":rawh,"traceg_set_sha256":gh};(d/"CAPTURE_RESULT.json").write_text(json.dumps(rec,sort_keys=True,indent=2));files=[p for p in d.rglob("*") if p.is_file() and p.name!="SHA256SUMS"];(d/"SHA256SUMS").write_text("".join(f"{sha(p)}  {p.relative_to(d)}\n" for p in sorted(files)))
+   vals=[w,w,git(a.polybench_src,"rev-parse","HEAD"),tree(a.polybench_src),sha(buildscript),binsha," ".join(cmd[1:]),"N/A",sha(a.spmv_reference) if w=="spmv" else "N/A","PASS",device[1],"environment.json",prov["tracer_source_tree_sha"],prov["tracer_tool_sha"],prov["nvbit_archive_sha"],prov["postprocess_sha"],"NVBit-v1.8",sha(d/"kernel_inventory.json"),str(len(inv)),str(len(raw)),str(len(grp)),sha(t/"kernelslist"),sha(t/"kernelslist.g"),rawh,gh,bid,"PASS"]
    with result.open("a") as f:f.write("\t".join(vals)+"\n")
-   write_state(o,w,"PASS");archive_bundle(b)
-  except Exception as e:write_state(o,w,"RETRY_READY");(d/"controller.stderr").write_text(str(e)+"\n")
+   b.parent.mkdir(exist_ok=True);os.replace(d,b);write_state(o,w,"BUNDLE_READY_TEMP");arc,_=archive_bundle(b);write_state(o,w,"PASS")
+  except Exception as e:write_state(o,w,"RETRY_READY");(o/"controller-errors.log").open("a").write(f"{w}: {e}\n")
 if __name__=="__main__":main()
