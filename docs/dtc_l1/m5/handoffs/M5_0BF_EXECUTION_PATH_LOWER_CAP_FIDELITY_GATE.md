@@ -76,6 +76,24 @@ tracer/NVBit source SHA, trace workload/input identity, trace parser/frontend
 SHA, Core SHA containing the DTC path, formal platform/config SHA, and proof
 that Base/IO/OO all traverse the same DTC timing mechanism.
 
+### Q1 decision — current Paper-10 formal campaign
+
+**`EXECUTION_DRIVEN_REQUIRED`** is selected for the current Paper-10 formal
+campaign. The static audit proves that a semantically admissible trace would
+enter the same DTC timing mechanism, but no local trace satisfies the required
+exact source, input, launch-ABI, and cache-semantics identity: the archived
+BICG, GESUMMV, and 2DConv candidates have source/ABI mismatches, and the
+archived SpMV candidate has a different matrix/input. A fresh NVBit trace
+cannot be generated on this host because no NVBit-capable GPU device is
+visible. This is a provenance/semantic-contract failure for these formal
+workloads, not a claim that the trace frontend is defective.
+
+Accordingly, the current formal Paper-10 campaign retains execution-driven
+mode. The rejected-trace BICG smoke remains nonformal transport/lifecycle
+evidence only and cannot reverse this decision. If an exact frozen trace is
+later supplied, it may be evaluated for that workload under the Base/IO/OO
+contract without relabelling the current campaign or any existing result.
+
 ## Q2 — SM-count fidelity
 
 The original thesis platform is the **2-SM Unified-Cache GPGPU**.  It is the

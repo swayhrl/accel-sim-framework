@@ -35,9 +35,12 @@ an accepted M5.0BF frozen execution-path/platform outcome.  See
 Its researcher-confirmed scaling anchor is thesis `2 SM + cap 256` (128
 credits/SM), with 80 SM primary and 64 SM sensitivity formal candidates;
 current `80 SM + cap 256` is diagnostic-only `CURRENT_INVALID_SUSPECT`.
-If Q1 validates the trace semantic contract, trace-driven Accel-Sim becomes
-the default remaining formal performance path; workload-local trace gaps use
-explicit execution-driven exceptions rather than reverting the campaign.
+Q1 now closes as **`EXECUTION_DRIVEN_REQUIRED` for the current Paper-10 formal
+campaign**: trace-driven mode remains source-path-plausible, but no local
+trace has the exact formal source/input/launch-ABI/cache-semantics identity.
+The retained execution-driven path is a provenance-contract decision, not a
+claim that the trace frontend is defective; an exact future trace may be
+re-evaluated per workload without relabelling this campaign.
 
 `m5/handoffs/M5_0BF_Q1_Q2_STATIC_AUDIT.md` records the source-backed common
 trace-to-DTC path and the SM7/QV100 origin of the inherited 80-SM platform.
@@ -47,11 +50,11 @@ and this host has no visible NVIDIA device for fresh NVBit tracing. A single
 isolated, explicitly **nonformal** BICG `PAPER_BASE` trace
 transport/lifecycle smoke is active under `/tmp/dtc-l1-m5-0bf-nonformal-trace-bicg-base-20260905`.
 Its archived source/ABI mismatch means it is excluded from every formal result
-registry/performance table and cannot decide Q1 or Q3; it only tests whether a
-real trace frontend reaches and can close the common DTC path. No platform
-freeze or M5.0C advancement has occurred. The
-formal Q1 pilot remains blocked on an admissible trace artifact/execution
-environment. An isolated M5.0BF trace simulator is now built at
+registry/performance table and cannot decide Q3; it only tests whether a real
+trace frontend reaches and can close the common DTC path. No platform freeze
+or M5.0C advancement has occurred. The lack of an admissible trace artifact /
+GPU tracer environment is the source-backed reason for Q1's current
+execution-driven formal-path decision. An isolated M5.0BF trace simulator is now built at
 `/tmp/dtc-l1-m5-0bf-build/accel-sim.out` (SHA-256
 `5b26b8a1e6390596eb449ddcefc4c5a2fbad0ddd1bb85b8396bf90b3ae2fb2c6`) against
 Core `12097864`; the auxiliary ignored pybind11 dependency is frozen in the

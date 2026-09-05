@@ -1,13 +1,17 @@
 # M5.0BF Q1/Q2 static source and platform-lineage audit
 
-Status: **Q1 SOURCE PATH PLAUSIBLE; FORMAL-PROVENANCE PILOT INPUT NOT YET
-ADMISSIBLE. A NONFORMAL BICG TRACE TRANSPORT/LIFECYCLE SMOKE IS ACTIVE. Q2
-STATIC LINEAGE COMPLETE.**
+Status: **Q1 EXECUTION_DRIVEN_REQUIRED FOR THE CURRENT PAPER-10 FORMAL
+CAMPAIGN; TRACE SOURCE PATH PLAUSIBLE BUT NO ADMISSIBLE TRACE EXISTS. A
+NONFORMAL BICG TRACE TRANSPORT/LIFECYCLE SMOKE IS ACTIVE. Q2 STATIC LINEAGE
+COMPLETE.**
 
-This is an M5.0BF evidence checkpoint, not a `TRACE_FORMAL_PATH_VALID`, an
-`EXECUTION_DRIVEN_REQUIRED`, a frozen platform decision, or M5.0BF PASS. It
-was produced in isolated M5.0BF worktrees and does not interact with the five
-live M5.0B execution-driven processes. The governing parallel/join gate was
+This is an M5.0BF evidence checkpoint, not a `TRACE_FORMAL_PATH_VALID`, a
+frozen platform decision, or M5.0BF PASS. Its Q1 decision is
+`EXECUTION_DRIVEN_REQUIRED` for the current Paper-10 formal campaign; this
+does not claim that the trace frontend is broken and does not prevent a future
+workload-local re-evaluation if an exact trace becomes available. It was
+produced in isolated M5.0BF worktrees and does not interact with the five live
+M5.0B execution-driven processes. The governing parallel/join gate was
 committed before this smoke began (`08dad4c3`,
 `docs(m5): authorize parallel fidelity gate`): M5.0B and M5.0BF may run in
 parallel, but M5.0C remains closed until both have their respective accepted
@@ -108,11 +112,16 @@ configuration registers zero CTests, so that fact is recorded as build
 inventory rather than a passing test claim. The binary is ready only for an
 admissible isolated trace pilot.
 
-Thus Q1 remains **FORMAL-PILOT-BLOCKED BY MISSING ADMISSIBLE TRACE INPUT / GPU
-TRACE EXECUTION**, rather than falsely declaring either formal trace validity
-or a source-semantic failure. The next admissible formal Q1 action is an
-isolated build and Base/IO/OO replay of an exact completed Paper-10 trace with
-frozen source/input/tracer/parser/config identities.
+Thus Q1 is **EXECUTION_DRIVEN_REQUIRED FOR THE CURRENT PAPER-10 FORMAL
+CAMPAIGN**. The failed trace-semantic/provenance requirement is exact equality
+of the traced workload's source, input, launch ABI, and cache semantics with
+the formal Paper-10 workload. The available BICG, GESUMMV, 2DConv, and SpMV
+traces fail that requirement as documented above; a fresh NVBit trace cannot
+be generated on this host because no NVBit-capable GPU is visible. This is not
+a claim that the trace frontend is broken. A future exact completed Paper-10
+trace may be isolated, frozen, and tested with Base/IO/OO before a
+workload-local trace-path re-evaluation; it cannot retroactively relabel the
+current execution-driven formal campaign.
 
 After the parallel/join policy was committed, a deliberately **nonformal**
 transport/lifecycle smoke was started in an isolated namespace to test the
