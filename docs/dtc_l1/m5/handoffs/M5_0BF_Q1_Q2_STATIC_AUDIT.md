@@ -170,7 +170,13 @@ explicit, positive, reproducible high cap and demonstrate from Base-only
 counters that increasing beyond it no longer changes the artificial-cap
 stall/peak behavior before a bounded native NoC/L2/DRAM queue becomes the
 downstream limit. This is a measurement requirement, not a change to Core
-semantics. Q3 remains unstarted pending the active Q1 Base smoke.
+semantics. At the time of this static-audit snapshot, Q3 had not started
+pending the active Q1 Base smoke. That historical state is superseded by the
+later complete-metrics execution-driven BICG and GESUMMV diagnostics recorded
+in `M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`; the rejected local
+traces remain a workload-local provenance gap. Those six isolated runs are
+live diagnostics only, not completed results, a platform freeze, or an M5.0BF
+terminal declaration.
 
 `util/dtc_l1/parse_m5_0bf_q3.py` is the separate Q3 extractor. It combines
 terminal Base/DTC metrics with the final complete row of the compressed
@@ -230,4 +236,6 @@ M5.0B remains independently active. The isolated nonformal Base smoke is
 running and has no observed assertion, fatal, deadlock, pending-write, or
 scoreboard signature at this checkpoint; it has no formal result status. The
 M5.0C join remains closed until both M5.0B natural-terminal/provenance closure
-and an accepted M5.0BF terminal path/platform decision are present.
+and an accepted M5.0BF terminal path/platform decision are present. For current
+Q3 process identities and terminal-validation requirements, the authoritative
+live record is `M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`.
