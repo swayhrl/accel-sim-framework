@@ -31,6 +31,9 @@ lower-cap fidelity gate.  It is explicitly pending until all M5.0B live jobs
 reach natural-terminal workload/provenance closure; no trace pilot, platform
 diagnostic, or M5.0C work may begin sooner.  See
 `m5/handoffs/M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`.
+Its researcher-confirmed scaling anchor is thesis `2 SM + cap 256` (128
+credits/SM), with 80 SM primary and 64 SM sensitivity formal candidates;
+current `80 SM + cap 256` is diagnostic-only `CURRENT_INVALID_SUSPECT`.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
