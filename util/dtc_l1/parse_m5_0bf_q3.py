@@ -128,7 +128,7 @@ def main():
         parser.error(str(exc))
 
     result = {
-        "schema": "dtc_l1_m5_0bf_q3_v1",
+        "schema": "dtc_l1_m5_0bf_q3_v2",
         "provenance": {
             "candidate": args.candidate,
             "core_sha": args.core_sha,

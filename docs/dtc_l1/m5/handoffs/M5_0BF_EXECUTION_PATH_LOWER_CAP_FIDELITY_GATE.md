@@ -164,6 +164,11 @@ keys.  The latter is the required lower-cap-full-cycle field for comparison;
 the former remains an admission-attempt diagnostic and must not silently be
 substituted for it.
 
+The compact extractor output is schema `dtc_l1_m5_0bf_q3_v2`.  Version 2
+requires the lower-occupancy sum/sample pair, distinct lower-cap event and
+cycle fields, and the source-defined `LINE_ALLOC_FAIL` aggregate; no older Q3
+JSON may be compared or relabelled as a complete-metrics result.
+
 Any Q3 run launched before this instrumentation is available remains a
 non-decisive pre-instrumentation diagnostic.  It may establish that a
 candidate executes and has no immediate hard failure, but it cannot freeze a
