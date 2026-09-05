@@ -18,6 +18,7 @@ assert 'git(p,"ls-files","-s")' in text
 assert 'make","-C","tracer_tool' in text and 'make","-C","tracer_tool/traces-processing' in text
 assert 'm5_trace_capture_device_probe.cu' in text and '"-lcuda"' in text
 assert '"PATH":str(nvcc.parent)+":"+os.environ["PATH"],"LD_PRELOAD":str(tool)' in text
+assert '"TRACE_FILE_COMPRESS":"0"' in text and 'kernelslist_ctx_*' in text and '"--text"' in text
 build=(ROOT/'util/dtc_l1/build_m5_polybench_cuda_trace_sm70.sh').read_text()
 assert 'if [[ $selected == all || $selected == "$1" ]]; then build "$1" "$2"; fi' in build
 assert 'kernel_invocation_manifest_sha' in text and 'kernel_geometry_manifest_sha' in text

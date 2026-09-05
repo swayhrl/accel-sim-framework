@@ -423,7 +423,7 @@
 
 ## M5-0BT-005 — NVBit application environment omitted the installed CUDA bin
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PASS -> CLOSED`.
 - Scope: BICG's first NVBit-loaded application launch; no raw trace completed,
   no checker passed, and no immutable bundle, archive, replay, or formal
   result exists.
@@ -441,3 +441,27 @@
   changes.
 - Resume point: V100-retest the exact BICG NVBit launch under this environment
   and continue the same T1 identity if it passes.
+
+## M5-0BT-006 — current NVBit context names and default tracez output mismatched the frozen legacy bundle contract
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PENDING`.
+- Scope: BICG after application correctness and raw capture pass. Retry-7
+  captured two full raw kernel traces and the checker reported zero source
+  comparison mismatches, but no postprocess PASS, bundle, archive, replay or
+  formal result exists.
+- Evidence: pinned NVBit 1.8 writes `kernelslist_ctx_<context>` and
+  `stats_ctx_<context>`; its postprocessor documents `--text` for legacy
+  `.traceg` output, while its default is newer `.tracez`. The frozen M5 T1
+  contract requires raw `.trace`, grouped `.traceg`, canonical
+  `kernelslist`/`kernelslist.g`, ordered mapping and a geometry manifest.
+- Classification: source-backed trace-layout adapter defect, not a failed raw
+  capture, checker, tracer instrumentation, workload semantic, DTC or
+  provenance failure.
+- Repair: set NVBit's documented `TRACE_FILE_COMPRESS=0`; require exactly one
+  source-produced context list/stat pair; postprocess that list with its
+  documented `--text` option; copy the selected source outputs to canonical
+  list/stat names only after the postprocess. Kernel files, list ordering,
+  geometry, trace records and no-subset policy are unchanged.
+- Resume point: V100-retest the same exact BICG capture and continue T1 only
+  after strict raw/grouped ordering, geometry, immutable bundle and archive
+  validation pass.

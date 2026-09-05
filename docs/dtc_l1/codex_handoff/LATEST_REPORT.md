@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-005.
+Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-006.
 
 ## Current authoritative state
 
@@ -32,8 +32,12 @@ Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-005.
   BICG build retest. Frozen source, CUDA 11.8 and sm70 build contract are
   unchanged; each fresh build's executable SHA is captured as provenance.
   Retry-6 then loaded NVBit on V100 but found the installed CUDA-11.8
-  `nvdisasm` absent from the application PATH (M5-0BT-005); the narrow PATH
-  propagation repair is pending exact host retest. No trace bundle exists.
+  `nvdisasm` absent from the application PATH (M5-0BT-005). Retry-7's PATH
+  repair passed: the BICG checker passed and full raw traces were captured.
+  Its postprocess exposed M5-0BT-006: current NVBit names a context list while
+  the frozen formal bundle requires canonical `kernelslist`/`.traceg`. The
+  source-backed one-context legacy-trace adapter is pending host retest; no
+  immutable bundle exists.
 
 ## Required next action after a V100 host is supplied
 

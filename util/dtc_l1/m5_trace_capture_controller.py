@@ -176,11 +176,13 @@ def main():
    script=ROOT/s.build_script
    if s.source_kind=="spmv":run([str(script),str(a.spmv_wrapper),str(a.parboil_src),str(d/"build")]);exe=d/"build/spmv";cmd=[str(exe),"-i",str(a.spmv_input_dir/"bcsstk18.mtx")+","+str(a.spmv_input_dir/"vector.bin"),"-o","result.bin"]
    else:run([str(script),str(a.polybench_src),str(d/"build"),*s.build_arguments]);exe=d/"build"/s.binary_name;cmd=[str(exe)]
-   env={**os.environ,"PATH":str(nvcc.parent)+":"+os.environ["PATH"],"LD_PRELOAD":str(tool)};env.pop("DYNAMIC_KERNEL_RANGE",None)
+   env={**os.environ,"PATH":str(nvcc.parent)+":"+os.environ["PATH"],"LD_PRELOAD":str(tool),"TRACE_FILE_COMPRESS":"0"};env.pop("DYNAMIC_KERNEL_RANGE",None)
    with (d/"application.stdout").open("w") as so,(d/"tracer.stderr").open("w") as se:run(cmd,cwd=d,env=env,stdout=so,stderr=se)
    if s.source_kind=="spmv":run([sys.executable,str(ROOT/"util/dtc_l1/verify_m5_parboil_spmv_output.py"),str(a.spmv_reference),str(d/"result.bin")],stdout=(d/"correctness.log").open("w"))
    else:run([sys.executable,str(ROOT/"util/dtc_l1/verify_m5_polybench_output.py"),s.checker_kind,str(d/"application.stdout")],stdout=(d/"correctness.log").open("w"))
-   t=d/"traces";run([str(post),str(t/"kernelslist")],cwd=d,stdout=(d/"postprocess.stdout").open("w"));inv,geom,raw,grp=inventory(t);(d/"kernel_invocation_manifest.json").write_text(json.dumps(inv,sort_keys=True,indent=2)+"\n");(d/"kernel_geometry_manifest.json").write_text(json.dumps(geom,sort_keys=True,indent=2)+"\n")
+   t=d/"traces";kl=sorted(t.glob("kernelslist_ctx_*"));ss=sorted(t.glob("stats_ctx_*"));
+   if len(kl)!=1 or len(ss)!=1:raise RuntimeError("expected exactly one source-backed NVBit context list/stat pair")
+   run([str(post),str(kl[0]),"--text"],cwd=d,stdout=(d/"postprocess.stdout").open("w"));shutil.copyfile(kl[0],t/"kernelslist");shutil.copyfile(ss[0],t/"stats.csv");inv,geom,raw,grp=inventory(t);(d/"kernel_invocation_manifest.json").write_text(json.dumps(inv,sort_keys=True,indent=2)+"\n");(d/"kernel_geometry_manifest.json").write_text(json.dumps(geom,sort_keys=True,indent=2)+"\n")
    if any(x in (d/"tracer.stderr").read_text(errors="replace").lower() for x in ("cudaerror","nvbit fatal","tracer fatal","assertion")):raise RuntimeError("explicit tracer/CUDA error")
    r=record(a,s,src,script," ".join(cmd),exe,inv,t,raw,grp,prov,dev[1]);(d/"CAPTURE_RESULT.json").write_text(json.dumps(r,sort_keys=True,indent=2)+"\n");sums(d)
    if not valid_bundle(d):raise RuntimeError("internal bundle validation failed")
