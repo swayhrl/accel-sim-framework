@@ -45,6 +45,29 @@ PTX execution-driven and SASS trace-driven cycle equality is not required and
 must not be used as the criterion.  The criterion is mechanism/lifecycle
 equivalence plus stable Base/IO/OO causal behavior against the M5.0B anchors.
 
+### Q1 formal execution-policy closeout
+
+If Q1 concludes `TRACE_FORMAL_PATH_VALID`, trace-driven Accel-Sim becomes the
+**default formal performance execution path** for the remaining M5 campaign:
+Paper-10 Base/IO/OO formal measurements, M5.1--M5.5 sweeps, and later
+Extended-20 E2/E3 members whose workload satisfies the trace semantic
+contract.  The current execution-driven M1--M4 and M5.0B evidence remains the
+mechanism/correctness validation anchor, source/provenance reference, and
+causal cross-check; it need not be rerun execution-driven solely because later
+formal performance measurement uses the trace path.
+
+If a particular workload has a semantic requirement the trace path cannot
+faithfully preserve—such as unsupported ordering, atomic, or cache-control
+behavior—classify that workload explicitly and use execution-driven only for
+that workload.  Do not revert the whole campaign by implication.  If Q1
+instead concludes `EXECUTION_DRIVEN_REQUIRED`, retain execution-driven as the
+formal path and record the exact trace-semantic requirement that failed.
+
+`TRACE_FORMAL_PATH_VALID` closeout must freeze the trace format/version,
+tracer/NVBit source SHA, trace workload/input identity, trace parser/frontend
+SHA, Core SHA containing the DTC path, formal platform/config SHA, and proof
+that Base/IO/OO all traverse the same DTC timing mechanism.
+
 ## Q2 — SM-count fidelity
 
 The original thesis platform is the **2-SM Unified-Cache GPGPU**.  It is the

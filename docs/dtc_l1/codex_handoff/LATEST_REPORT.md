@@ -34,6 +34,9 @@ diagnostic, or M5.0C work may begin sooner.  See
 Its researcher-confirmed scaling anchor is thesis `2 SM + cap 256` (128
 credits/SM), with 80 SM primary and 64 SM sensitivity formal candidates;
 current `80 SM + cap 256` is diagnostic-only `CURRENT_INVALID_SUSPECT`.
+If Q1 validates the trace semantic contract, trace-driven Accel-Sim becomes
+the default remaining formal performance path; workload-local trace gaps use
+explicit execution-driven exceptions rather than reverting the campaign.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
