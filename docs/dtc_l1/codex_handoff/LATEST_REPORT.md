@@ -2,8 +2,8 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1, BICG storage admission, and immutable-store copyback PASS;
-2DConv heavy-pilot admission update and T2 BICG replay qualification ACTIVE.
+Status: M5.0BT T1, BICG/2DConv storage admission, and immutable-store
+copybacks PASS; T2 BICG same-bundle Base/IO/OO replay qualification ACTIVE.
 
 ## Current authoritative state
 
@@ -47,14 +47,16 @@ Status: M5.0BT T1, BICG storage admission, and immutable-store copyback PASS;
   revalidated against its bundle sums. The BICG admission projects
   47,591,571,552 bytes against 104,537,268,224 measured free bytes, but is
   provisional because BICG's two small-grid invocations do not bound 2DConv.
-  The required exact 2DConv heavy storage-fidelity pilot is active before the
-  remaining capture queue is admitted. See
-  `m5/handoffs/M5_0BT_BICG_ADMISSION_COPYBACK.md`.
+  The required exact 2DConv 65,536-CTA heavy pilot now passes its hardware
+  checker, archive/copyback SHA chain and internal immutable-store sum check.
+  Its conservative ten-workload/twofold-reserve projection is 55,353,177,980
+  bytes below 101,566,291,968 measured free bytes, admitting the remaining
+  sequential Paper queue. See `m5/handoffs/M5_0BT_BICG_ADMISSION_COPYBACK.md`
+  and `m5/handoffs/M5_0BT_2DCONV_HEAVY_ADMISSION.md`.
 
 ## Required next action after a V100 host is supplied
 
-Complete the exact 2DConv heavy-pilot storage update and independently qualify
-the immutable BICG bundle under the same-bundle Base/IO/OO T2 contract. Then
+Complete the running immutable-BICG same-bundle Base/IO/OO T2 contract. Then
 capture/qualify GESUMMV and continue the remaining exact Paper queue. No
 M5.0C transition is authorized.
 
