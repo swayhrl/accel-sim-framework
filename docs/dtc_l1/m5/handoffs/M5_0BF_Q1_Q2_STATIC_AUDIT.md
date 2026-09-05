@@ -184,6 +184,20 @@ only a parser fixture and corroborates the existing `80 SM + cap 256`
 diagnostic classification; it is not a Q3 candidate result, is not registered,
 and must not be reused after any formal platform/cap change.
 
+The following checked-in configuration artifacts are **pre-run diagnostics,
+not a platform freeze and not formal results**. They preserve the frozen
+ratio-zero 16 KiB Base geometry and differ only in the declared Q3 candidate:
+
+| candidate | config artifact | purpose |
+| --- | --- | --- |
+| 80 SM + 256 | `configs/dtc_l1/m5/M5_0BF_PAPER_BASE_80SM_CAP256.config` | inherited/suspect control (3.2 credits/SM) |
+| 80 SM + 10240 | `configs/dtc_l1/m5/M5_0BF_PAPER_BASE_80SM_CAP10240.config` | researcher-proportional primary (128 credits/SM) |
+| 80 SM + 1048576 | `configs/dtc_l1/m5/M5_0BF_PAPER_BASE_80SM_CAP1048576.config` | explicit high finite `natural/high` diagnostic; it must empirically prove non-dominance rather than be assumed natural |
+| 64 SM + 8192 | `configs/dtc_l1/m5/M5_0BF_PAPER_BASE_64SM_CAP8192.config` | researcher-proportional platform-size sensitivity |
+
+No Q3 candidate has been launched. The 64-SM row is sensitivity evidence only
+and does not displace the approved 80-SM primary without Base-only analysis.
+
 ## Required continuation and join status
 
 M5.0B remains independently active. The isolated nonformal Base smoke is
