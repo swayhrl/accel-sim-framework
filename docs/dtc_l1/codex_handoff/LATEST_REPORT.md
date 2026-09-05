@@ -50,7 +50,11 @@ environment. An isolated M5.0BF trace simulator is now built at
 `/tmp/dtc-l1-m5-0bf-build/accel-sim.out` (SHA-256
 `5b26b8a1e6390596eb449ddcefc4c5a2fbad0ddd1bb85b8396bf90b3ae2fb2c6`) against
 Core `12097864`; the auxiliary ignored pybind11 dependency is frozen in the
-audit. The five M5.0B jobs remain untouched.
+audit. A later full-trace search found BICG/GESUMMV/2DConv candidates, but
+their `gpu-app-collection@dad09cb` source hashes and kernel ABIs differ from
+the completed M5 anchors; the local SpMV trace also has a different matrix
+input. They are explicitly rejected rather than replayed. The five M5.0B jobs
+remain untouched.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 

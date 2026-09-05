@@ -61,6 +61,22 @@ grid and has no frozen M5 source/input identity. ATAX is also one of the five
 currently live M5.0B jobs. It is inadmissible as an M5.0BF formal-pilot
 substitute and was not replayed.
 
+A later read-only search found complete V100/NVBit 1.4 trace directories in a
+separate Decoupled-L2 worktree. They are better formed than the ATAX fragment,
+but still fail the M5 provenance contract and were not replayed:
+
+| candidate | trace identity | rejection evidence |
+| --- | --- | --- |
+| BICG | `polybench/11.0/polybench-bicg/NO_ARGS`; two full `(16,1,1) x (256,1,1)` kernels; `kernelslist.g` SHA-256 `388740a7...cf5e0a4b` | trace is from `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1`, source SHA-256 `c38c3b0...5b68f6fe`, and kernel ABI `_Z12bicg_kernel1PfS_S_`; M5 source SHA-256 is `e6a480c7...c75965bd` and PTX ABI `_Z12bicg_kernel1iiPfS_S_`. Same dimensions do not establish same generated instruction stream. |
+| GESUMMV | `polybench/11.0/polybench-gesummv/NO_ARGS`; full `(16,1,1) x (256,1,1)` kernel; `kernelslist.g` SHA-256 `ed0da283...111044a8` | archived source SHA-256 `29557f8c...1d8d56f8`, ABI `_Z14gesummv_kernelPfS_S_S_S_`; M5 source SHA-256 `717c2bc6...02f384a4`, ABI `_Z14gesummv_kerneliffPfS_S_S_S_`. |
+| 2DConv | `polybench/11.0/polybench-2DConvolution/NO_ARGS`; full `(128,512,1) x (32,8,1)` kernel; `kernelslist.g` SHA-256 `23bcc08b...62227d64` | archived source SHA-256 `5e12047c...da63a192`, ABI `_Z20Convolution2D_kernelPfS_`; M5 source SHA-256 `cef6d23d...63b390d8`, ABI `_Z20convolution2D_kerneliiPfS_`. |
+| SpMV | Parboil `Dubcova3 large`, one `(765,1,1) x (192,1,1)` JDS kernel | M5 canonical result is `bcsstk18 medium`; matrix/input identity differs. |
+
+The source/ABI differences are evidence of a workload-local trace semantic
+gap, not a trace-front-end failure. Per the M5.0BF policy, these workloads
+must remain execution-driven unless an exact M5 source/input trace is supplied
+or generated; this does not revert the entire campaign by implication.
+
 The existing `/tmp/dtc-l1-framework-build/accel-sim.out` was built from the
 M1--M4 Framework/Core worktrees, not either M5.0BF source SHA, and was not
 used. CUDA 11.8 is installed, but this host has neither `nvidia-smi` nor a
