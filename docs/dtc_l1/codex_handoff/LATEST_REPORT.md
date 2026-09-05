@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-008.
+Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-009.
 
 ## Current authoritative state
 
@@ -37,10 +37,11 @@ Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-008.
   Its postprocess exposed M5-0BT-006; retry-8 passed that legacy-layout
   adapter, application checker, raw capture and `.traceg` postprocess. It then
   exposed M5-0BT-007; its CSV repair passed on resume. Strict mapping then
-  exposed M5-0BT-008 because source-valid `Memcpy*` list entries were treated
-  as malformed kernel rows. The line-preserving replay mapping repair is
-  pending; retry-8 remains the sole resumable candidate and no immutable bundle
-  exists yet.
+  exposed M5-0BT-008; its line-preserving repair also passed. Finalization
+  reached record construction and exposed M5-0BT-009: it had not materialized
+  the validated manifest files before hashing them. The write-before-hash
+  repair is pending; retry-8 remains the sole resumable candidate and no
+  immutable bundle exists yet.
 
 ## Required next action after a V100 host is supplied
 

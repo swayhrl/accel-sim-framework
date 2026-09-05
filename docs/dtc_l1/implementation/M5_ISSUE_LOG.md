@@ -490,7 +490,7 @@
 
 ## M5-0BT-008 — strict list mapping initially rejected source-valid Memcpy entries
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PASS -> CLOSED`.
 - Scope: retry-8 resume after CSV parsing passed; no bundle/archive/replay or
   formal result exists, and no application rerun is authorized or needed.
 - Evidence: the source `kernelslist` and postprocessed `kernelslist.g` both
@@ -507,3 +507,19 @@
 - Resume point: deploy and resume retry-8. Any changed memcpy row, changed
   ordering, unknown row, kernel mismatch, missing geometry/checker, tracer
   error or ambiguous candidate prevents finalization.
+
+## M5-0BT-009 — resume finalization hashed manifests before materializing them
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PENDING`.
+- Scope: retry-8 after strict CSV and full replay-list mapping passed. No
+  application rerun, bundle/archive/replay or formal result occurred.
+- Evidence: resume-2 reached `record()` and failed with `FileNotFoundError`
+  for `kernel_invocation_manifest.json`; the source raw/grouped traces,
+  checker PASS, canonical list/stat and inventory objects all remain intact.
+- Classification: finalization operation ordering defect, not a trace,
+  geometry, provenance, DTC or workload semantic failure.
+- Repair: materialize the validated invocation and geometry JSON manifests
+  immediately after inventory and before record/bundle-ID hashing. This is the
+  same data produced by the fresh-capture path and changes no captured trace.
+- Resume point: deploy and resume the one strict retry-8 candidate. Any failed
+  manifest/hash/bundle/archive validation remains fail-closed.

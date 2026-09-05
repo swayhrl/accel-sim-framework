@@ -182,7 +182,7 @@ def main():
   pending=[x for x in sorted((o/"attempts"/w).glob("attempt-*")) if (x/"correctness.log").is_file() and (x/"postprocess.stdout").is_file() and (x/"traces/kernelslist").is_file()] if (o/"attempts"/w).is_dir() else []
   if a.resume and pending:
    if len(pending)!=1:raise RuntimeError("ambiguous resumable capture attempts")
-   d=pending[0];t=d/"traces";inv,geom,raw,grp=inventory(t)
+   d=pending[0];t=d/"traces";inv,geom,raw,grp=inventory(t);(d/"kernel_invocation_manifest.json").write_text(json.dumps(inv,sort_keys=True,indent=2)+"\n");(d/"kernel_geometry_manifest.json").write_text(json.dumps(geom,sort_keys=True,indent=2)+"\n")
    if not (d/"correctness.log").read_text(errors="replace").startswith("PASS"):raise RuntimeError("resumable capture lacks checker PASS")
    if any(x in (d/"tracer.stderr").read_text(errors="replace").lower() for x in ("cudaerror","nvbit fatal","tracer fatal","assertion")):raise RuntimeError("resumable capture has explicit tracer/CUDA error")
    script=ROOT/s.build_script;exe=d/"build"/s.binary_name
