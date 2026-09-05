@@ -1,16 +1,25 @@
 # M5.0BF — execution-path & lower-cap fidelity gate
 
-Status: **PENDING — EXECUTION PROHIBITED UNTIL M5.0B NATURAL-TERMINAL CLOSURE**
+Status: **AUTHORIZED IN PARALLEL — M5.0C JOIN-GATED**
 
 ## Mandatory ordering
 
-M5.0BF must not execute while any current M5.0B recovery process is live.
-Its entry condition is complete M5.0B workload/provenance closure: every live
-Base job reaches a natural terminal state and has its source-defined output,
-strict parser, registry identity, and final lifecycle/accounting status
-recorded.  M5.0C is prohibited until M5.0BF PASS.  This gate changes no live
-job, configuration, workload, trace, parser, Core source, or experimental
-meaning.
+M5.0B and M5.0BF are authorized to proceed in parallel.  M5.0BF uses an
+isolated Core/Framework worktree, build, and output namespace; it must not
+stop, restart, signal, reconfigure, duplicate, or otherwise disturb the five
+live M5.0B execution-driven jobs.  M5.0BF may complete its fidelity decision
+before those jobs reach natural terminal states.
+
+M5.0C is the join barrier and is prohibited until **both** conditions hold:
+
+1. M5.0B has complete workload/provenance closure: every live Base job has a
+   natural terminal state and source-defined output, strict parser, registry
+   identity, and final lifecycle/accounting status; and
+2. M5.0BF has an accepted terminal outcome with frozen formal execution-path
+   and platform configuration.
+
+This gate changes no live M5.0B job, configuration, workload, parser, Core
+source, or experimental meaning.
 
 Existing execution-driven M5.0B results remain validation/provenance anchors.
 They are not performance results for any subsequently changed formal platform
@@ -33,8 +42,7 @@ memory-instruction grouping, warp/active mask, memory opcode and space,
 per-lane addresses, read/write semantics, and all cache/bypass semantics used
 by Paper-10.  Prefer an existing exact, provenance-compatible PolyBench trace.
 If none exists, determine whether a fresh NVBit trace can be generated with
-the identical executable, input, launch, and cache semantics; do not make one
-until this gate is allowed to execute.
+the identical executable, input, launch, and cache semantics.
 
 Run only the minimum pilot needed to decide one of:
 

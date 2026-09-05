@@ -27,9 +27,10 @@ and source-backed simulator progress; no supervisor deadline remains armed.
 See `m5/handoffs/M5_0B_TIMEOUT_GUARD_RECOVERY.md`.
 
 M5.0BF is now a mandatory pre-M5.0C execution-path, SM-count, and global
-lower-cap fidelity gate.  It is explicitly pending until all M5.0B live jobs
-reach natural-terminal workload/provenance closure; no trace pilot, platform
-diagnostic, or M5.0C work may begin sooner.  See
+lower-cap fidelity gate.  It is authorized now in an isolated worktree/build/
+output namespace while M5.0B jobs continue untouched.  M5.0C remains a join
+barrier requiring both M5.0B natural-terminal workload/provenance closure and
+an accepted M5.0BF frozen execution-path/platform outcome.  See
 `m5/handoffs/M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`.
 Its researcher-confirmed scaling anchor is thesis `2 SM + cap 256` (128
 credits/SM), with 80 SM primary and 64 SM sensitivity formal candidates;

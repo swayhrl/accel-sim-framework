@@ -213,8 +213,8 @@ progress evidence is `M5_0B_TIMEOUT_GUARD_RECOVERY.md`.
 
 ## M5.0BF pre-M5.0C fidelity gate
 
-After every M5.0B member has a natural-terminal provenance closeout, execute
-the mandatory `M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md` before M5.0C.
-It resolves trace execution-path equivalence, SM-count fidelity, and the global
-lower-cap definition.  It may not run while a M5.0B job is live, and M5.0C may
-not start until it passes.
+The mandatory `M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md` may now run
+in an isolated worktree/build/output namespace while M5.0B jobs remain
+untouched.  It resolves trace execution-path equivalence, SM-count fidelity,
+and the global lower-cap definition.  M5.0C is a join: it may not start until
+both this batch has natural-terminal provenance closeout and M5.0BF passes.
