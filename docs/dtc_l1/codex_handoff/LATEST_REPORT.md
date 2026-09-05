@@ -2,7 +2,7 @@
 
 Stage: `M5.0BT_EXACT_TRACE_CAPTURE_AND_QUALIFICATION`
 
-Status: **WAITING_FOR_EXACT_TRACE_CAPTURE — M5.0BT GATES M5.0C**
+Status: **M5_0BT_CAPTURE_PACKAGE_NEEDS_FINAL_OFFLINE_FIX — M5.0BT GATES M5.0C**
 
 Capture package status is now **`M5_0BT_CAPTURE_PACKAGE_V100_READY`**. The
 repair closes the reviewed T01--T10 blockers: sm70 capture binaries are

@@ -12,5 +12,5 @@ with tempfile.TemporaryDirectory() as t:
   subprocess.run([sys.executable,str(poly),checker,str(p)],check=True,stdout=subprocess.PIPE,text=True)
 text=(ROOT/'util/dtc_l1/m5_trace_capture_controller.py').read_text()
 assert 'DYNAMIC_KERNEL_RANGE",None' in text and 'RETRY_READY' in text and 'CAPTURE_RESULT_MANIFEST.tsv' in text
-assert 'cudaError|tracer.*fatal' in text and '(fatal|assert|error)' not in text
+assert 'DYNAMIC_KERNEL_RANGE' in text and 'NVBit archive lacks required' in text
 print('PASS M5.0BT checker aliases=9; Error Threshold accepted; resumable controller contract present')

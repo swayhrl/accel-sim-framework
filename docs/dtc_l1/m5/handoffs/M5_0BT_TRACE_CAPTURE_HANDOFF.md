@@ -1,6 +1,10 @@
 # M5.0BT — Paper-10 Exact Trace Capture and Qualification
 
-Status: **M5_0BT_CAPTURE_PACKAGE_V100_READY — `WAITING_FOR_CAPTURE_HOST`**
+Status: **M5_0BT_CAPTURE_PACKAGE_NEEDS_FINAL_OFFLINE_FIX — do not request V100**
+
+Post-commit R1--R10 controller repairs are under offline regression. This
+handoff must not be interpreted as V100 authorization until its source manifest
+and final authority reconciliation are also closed.
 
 ## Rental-readiness repairs (T-BLOCKER-01..10)
 

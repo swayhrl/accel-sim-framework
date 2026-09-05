@@ -56,6 +56,37 @@ and refill `N_safe` rather than retain a conservative fixed worker count.
 
 ## Acceptance chain
 
+## Stage-level HARD contract and automatic transition
+
+Each row requires its predecessor PASS, compact registry/review evidence and
+an explicit invalidation of any changed identity. `C` means correctness hard;
+`F` means fidelity hard. A PASS commits/pushes its handoff and immediately
+enters the listed successor; ordinary build, trace, parser, counter, timeout,
+negative-performance, or workload-local failure uses the repair lifecycle.
+
+| stage | C/F acceptance and required artifact | reuse / PASS successor |
+| --- | --- | --- |
+| T0 | capture scripts/tests/config family; `M5_0BT_TRACE_CAPTURE_HANDOFF.md` | none; T1 |
+| T1 | V100 UUID/CC, pinned tracer, BICG checker/complete bundle; result manifest | immutable bundle; T2 |
+| T2 | BICG same-bundle Base/IO/OO parser/path/drain/conservation; qualification pack | triplet reusable; T3 |
+| T3 | GESUMMV contrasting qualification under same rules | reusable; T4 |
+| T4 | all Paper exact bundles, hashes, transfer/store verification | payload identities; M5.0BT PASS |
+| M5.0BT | Q1 trace formal path valid or documented local exception | capture changes invalidate trace rows; M5.0C |
+| M5.0C | 80SM/cap10240 family, payload/geometry/active-SM audit | only exact config reuse; M5.0D |
+| M5.0D | Fig4.2/4.7 directed tests, parser schema, timing-neutral proof | parser change invalidates affected parsing; M5.0E |
+| M5.0E | ATAX/SpMV/2MM/2DConv same-payload triplets and causal pack | `PILOT_FORMAL_REUSABLE`; M5.1 wave |
+| M5.1 | ten valid Base rows and reconciled Fig4.2 | matching Base reused; M5.2 |
+| M5.2 | ten same-payload triplets, Fig4.5/4.7/traffic/HOL review pack | activates E2 and sensitivity acquisition |
+| M5.3 | 16/32/64 logical-only sensitivity | exact 16K reuse; M5.4 closure |
+| M5.4 | approved physical points, source-proven deadlock classification | matching 32K row reuse; M5.5 closure |
+| M5.5 | PIB-only 32/64/128/192 sensitivity and HOL analysis | matching rows reused; M5.6 |
+| M5.6 | Paper causal classification/review pack | Paper ready; await/continue E3 |
+| M5.E1 | 20 source/input/checker/payload eligibility rows | frozen E1 rows; await M5.2 |
+| M5.E2 | 60 payload-aware exact triplets/review pack | no sensitivity reruns; E3 |
+| M5.E3 | 20 causal classes and Extended aggregates | Extended ready; COMPUTE_FREEZE |
+| COMPUTE_FREEZE | M5.6+E3, clean pushed branches, immutable SHAs | freeze prevents rewrite; M5.12 |
+| M5.12 | Paper+Extended+graphics-unavailable synthesis/limitations | terminal review state |
+
 - M5.0BT: exact capture identities, BICG+GESUMMV Base/IO/OO replay/drain,
   all ten transferred trace bundles or explicit source-backed local exception.
 - M5.0C: frozen cap10240 config family, payload/parser/trace-store identity,
