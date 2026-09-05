@@ -336,3 +336,23 @@
   `histo` candidate input self-comparison also prints PASS. This closes the
   interpreter-compatibility issue only; every workload still requires its own
   source-defined output smoke after build/PTX/input recovery.
+
+## M5-0BT-001 — traced-source tree hash dereferenced a tracked directory symlink
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
+- Scope: T1 BICG capture setup only; no CUDA application, raw trace, immutable
+  bundle, or formal result was produced.
+- Reproduction: the clean tracer pin
+  `0db04452ec1c47630e4b08002067d82c6811e243` tracks `.cursor` as a symlink
+  to `.claude`.  The controller's source-tree hash iterated `git ls-files`
+  then opened each resolved path, so on the capture host it attempted to read
+  the directory target and raised `IsADirectoryError`.
+- Classification: capture-controller provenance implementation defect, not an
+  NVBit, CUDA, workload, trace, DTC, or source-identity ambiguity.
+- Resolution: hash the canonical `git ls-files -s` tracked mode/object/path
+  listing after the clean pinned-commit check. This retains Git object identity
+  for regular files and symlinks without dereferencing links.
+- Regression/resume: offline capture-contract test asserts the mode/object
+  listing path; controller compilation and full no-GPU suite pass. Resume T1
+  from the same BICG sources, NVBit archive, CUDA 11.8, V100 and output root;
+  the two pre-build failed launcher logs remain operational evidence only.

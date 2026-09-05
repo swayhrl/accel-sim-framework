@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5_0BT_CAPTURE_PACKAGE_V100_READY; WAITING_FOR_CAPTURE_HOST.
+Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-001.
 
 ## Current authoritative state
 
@@ -17,6 +17,10 @@ Status: M5_0BT_CAPTURE_PACKAGE_V100_READY; WAITING_FOR_CAPTURE_HOST.
 - The two remote checkouts are non-interchangeable: current M5 control checkout
   runs the command; detached 0db04452ec1c47630e4b08002067d82c6811e243
   supplies tracer sources only.
+- The provisioned capture host passed V100/CC7.0, CUDA 11.8, toolchain,
+  writable-data-volume and pinned-source preflight. Its first BICG launcher
+  exposed M5-0BT-001 before CUDA build/capture; the source-tree hash repair is
+  committed with regression before the identical pilot resumes.
 
 ## Required next action after a V100 host is supplied
 

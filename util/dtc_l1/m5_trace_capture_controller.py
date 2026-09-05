@@ -22,7 +22,10 @@ def sha(p):
  return h.hexdigest()
 def setsha(ps,root):return hashlib.sha256("".join(f"{sha(p)}  {p.relative_to(root)}\n" for p in sorted(ps)).encode()).hexdigest()
 def git(p,*a):return run(["git","-C",str(p),*a]).stdout.strip()
-def tree(p):return hashlib.sha256("".join(f"{sha(Path(p)/x)}  {x}\n" for x in sorted(git(p,"ls-files").splitlines())).encode()).hexdigest()
+def tree(p):
+ # Git mode/object identity is authoritative for tracked regular files and
+ # symlinks; do not dereference a tracked symlink whose target is a directory.
+ return hashlib.sha256(git(p,"ls-files","-s").encode()).hexdigest()
 def st(o,w,x):(o/"state").mkdir(exist_ok=True);(o/"state"/(w+".state")).write_text(x+"\n")
 def req(p,name):
  if p is None or not p.exists():raise RuntimeError(f"{name} required by selected workload")

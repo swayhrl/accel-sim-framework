@@ -14,6 +14,7 @@ text=(ROOT/'util/dtc_l1/m5_trace_capture_controller.py').read_text()
 assert 'DYNAMIC_KERNEL_RANGE",None' in text and 'RETRY_READY' in text and 'CAPTURE_RESULT_MANIFEST.tsv' in text
 assert 'DYNAMIC_KERNEL_RANGE' in text and 'NVBit archive lacks required' in text
 assert 'class WorkloadSpec' in text and 'valid BICG bundle/archive and storage admission receipt required' in text
+assert 'git(p,"ls-files","-s")' in text
 assert 'kernel_invocation_manifest_sha' in text and 'kernel_geometry_manifest_sha' in text
 assert '"spmv_wrapper"' in text and '"parboil"' in text and '"matrix_sha256"' in text
 tsv=(ROOT/'docs/dtc_l1/m5/trace/PAPER10_TRACE_CAPTURE_MANIFEST.tsv').read_text().splitlines()
