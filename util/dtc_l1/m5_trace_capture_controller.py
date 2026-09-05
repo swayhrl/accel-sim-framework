@@ -90,8 +90,16 @@ def inventory(t):
  rows=list(csv.DictReader(stats.open(),skipinitialspace=True))
  fields=("grid_dimX","grid_dimY","grid_dimZ","block_dimX","block_dimY","block_dimZ")
  if not rows or any(not x.get("kernel mangled name") or any(not x.get(k) for k in fields) for x in rows):raise RuntimeError("stats lacks source-supported kernel ABI/geometry")
- rn=[token(x,".trace") for x in kl.read_text().splitlines()];gn=[token(x,".traceg") for x in kg.read_text().splitlines()]
- if None in rn or None in gn or gn!=[x+"g" for x in rn] or len(rn)!=len(raw) or len(gn)!=len(grp) or len(rows)!=len(rn) or set(rn)!={x.name for x in raw} or set(gn)!={x.name for x in grp}:raise RuntimeError("ordered replay mapping mismatch")
+ rl=kl.read_text().splitlines();gl=kg.read_text().splitlines();rn=[];gn=[]
+ if len(rl)!=len(gl):raise RuntimeError("ordered replay mapping mismatch")
+ for x,y in zip(rl,gl):
+  if x.startswith("Memcpy"):
+   if x!=y:raise RuntimeError("ordered replay memcpy mapping mismatch")
+  else:
+   r=token(x,".trace");g=token(y,".traceg")
+   if r is None or g!=r+"g":raise RuntimeError("ordered replay mapping mismatch")
+   rn.append(r);gn.append(g)
+ if len(rn)!=len(raw) or len(gn)!=len(grp) or len(rows)!=len(rn) or set(rn)!={x.name for x in raw} or set(gn)!={x.name for x in grp}:raise RuntimeError("ordered replay mapping mismatch")
  inv=[{"dynamic_invocation_index":i,"raw_trace":n,"grouped_trace":n+"g","kernel_mangled_name":r["kernel mangled name"],**{k:int(r[k]) for k in fields},"cta_count":int(r["grid_dimX"])*int(r["grid_dimY"])*int(r["grid_dimZ"])} for i,(n,r) in enumerate(zip(rn,rows))]
  geom=[{k:x[k] for k in ("dynamic_invocation_index","raw_trace","grouped_trace",*fields,"cta_count")} for x in inv];return inv,geom,raw,grp
 def rows():return {x["thesis_id"]:x for x in csv.DictReader((z for z in MANIFEST.read_text().splitlines() if not z.startswith("#")),delimiter="\t")}

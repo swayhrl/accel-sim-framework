@@ -468,7 +468,7 @@
 
 ## M5-0BT-007 — NVBit's source CSV header needs space-aware parsing
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PASS -> CLOSED`.
 - Scope: retry-8 after application checker, raw capture and `.traceg`
   postprocess passed. No immutable bundle/archive/replay/formal result exists.
 - Evidence: the source-produced CSV has complete BICG ABI and geometry rows,
@@ -487,3 +487,23 @@
 - Resume point: deploy then run `--resume` for BICG. Any ambiguous candidate,
   checker failure, mapping/geometry failure or tracer error remains HARD and
   prevents finalization.
+
+## M5-0BT-008 — strict list mapping initially rejected source-valid Memcpy entries
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PENDING`.
+- Scope: retry-8 resume after CSV parsing passed; no bundle/archive/replay or
+  formal result exists, and no application rerun is authorized or needed.
+- Evidence: the source `kernelslist` and postprocessed `kernelslist.g` both
+  begin with matching `MemcpyHtoD` records followed by two ordered BICG
+  kernel records. The old checker attempted to tokenise every row as a kernel
+  and rejected the valid memcpy rows.
+- Classification: replay-list parser adapter defect, not a memory-operation
+  semantic mismatch: the source records preserve the same memcpy rows in both
+  lists and kernel trace mapping remains exact.
+- Repair: compare lists positionally; require each `Memcpy*` row to be byte
+  identical, and require each kernel row to be the exact `.trace` to
+  `.traceg` transform. Only validated kernel rows enter dynamic invocation /
+  geometry mapping; the complete ordered replay lists remain immutable input.
+- Resume point: deploy and resume retry-8. Any changed memcpy row, changed
+  ordering, unknown row, kernel mismatch, missing geometry/checker, tracer
+  error or ambiguous candidate prevents finalization.

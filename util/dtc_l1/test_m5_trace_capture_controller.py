@@ -8,7 +8,7 @@ def sums(b):
 def bundle(root,w="bicg"):
  b=root/"bundles"/w;t=b/"traces";t.mkdir(parents=True)
  for n,v in {"application.stdout":"ok","tracer.stderr":"","correctness.log":"PASS","postprocess.stdout":"PASS"}.items():(b/n).write_text(v)
- (t/"kernel-1.trace").write_text("raw");(t/"kernel-1.traceg").write_text("grouped");(t/"kernelslist").write_text("kernel-1.trace\n");(t/"kernelslist.g").write_text("kernel-1.traceg\n");(t/"stats.csv").write_text("kernel id, kernel mangled name, grid_dimX, grid_dimY, grid_dimZ, block_dimX, block_dimY, block_dimZ\n0, _Zx, 1, 1, 1, 32, 1, 1\n")
+ (t/"kernel-1.trace").write_text("raw");(t/"kernel-1.traceg").write_text("grouped");(t/"kernelslist").write_text("MemcpyHtoD,0x1,4\nkernel-1.trace\n");(t/"kernelslist.g").write_text("MemcpyHtoD,0x1,4\nkernel-1.traceg\n");(t/"stats.csv").write_text("kernel id, kernel mangled name, grid_dimX, grid_dimY, grid_dimZ, block_dimX, block_dimY, block_dimZ\n0, _Zx, 1, 1, 1, 32, 1, 1\n")
  inv,geo,_,_=c.inventory(t);(b/"kernel_invocation_manifest.json").write_text(json.dumps(inv));(b/"kernel_geometry_manifest.json").write_text(json.dumps(geo));(b/"CAPTURE_RESULT.json").write_text(json.dumps({"trace_bundle_id":"id-"+w,"kernel_invocation_count":1}));sums(b);return b
 with tempfile.TemporaryDirectory() as x:
  o=Path(x);b=bundle(o);assert c.valid_bundle(b)
