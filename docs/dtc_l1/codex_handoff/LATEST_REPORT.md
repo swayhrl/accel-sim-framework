@@ -101,6 +101,12 @@ directories (simulator PIDs 3547120/3547122/3547124).  Its first read-only
 sample showed advancing simulator counters and no hard-error signature; it is
 not a completed result or a cap/platform freeze.  The pre-instrumentation trio
 and the five protected M5.0B jobs also continue untouched.
+The companion, source-equivalent GESUMMV Base-only cap-256/cap-10240/
+cap-1048576 control trio is also live under
+`/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-*` (simulator PIDs
+3551756/3551758/3551755).  It uses the strict-validated Base anchor's binary
+and actual PTX identities, the same isolated metrics runtime, and no timeout;
+it remains unclassified until natural-terminal correctness and parser closure.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 

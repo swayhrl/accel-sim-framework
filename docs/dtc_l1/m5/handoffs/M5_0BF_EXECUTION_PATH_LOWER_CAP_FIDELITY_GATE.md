@@ -200,6 +200,26 @@ the reviewed per-candidate config hashes, and the instrumented runtime hash
 above.  They are live diagnostics, not completed results or a frozen Q3
 decision; the five M5.0B processes remain untouched.
 
+The second required representative is the known non-lower-cap-saturated
+control, source-equivalent GESUMMV.  Its same three complete-metrics,
+Base-only candidates were launched after the same no-swap host audit:
+
+| candidate | runner PID | simulator PID | output directory |
+| --- | ---: | ---: | --- |
+| 80 SM + cap 256 | 3551706 | 3551756 | `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-80sm-cap256-20260905` |
+| 80 SM + cap 10240 | 3551707 | 3551758 | `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-80sm-cap10240-20260905` |
+| 80 SM + cap 1048576 | 3551708 | 3551755 | `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-80sm-cap1048576-20260905` |
+
+Each identity pins binary SHA-256
+`32da3ab10c6b0cdb0a7e9af569899e51ebb302a19602f9d37e3377469ab6447e`,
+the exact PTX artifact SHA-256
+`484a2f76bcd03e27ff8cdcd7920a9ea2f36a755116e07ed057302432a1f936f2`
+used by the already strict-validated M5.0B GESUMMV run and registry, the
+reviewed config hash, and runtime SHA-256 above.  These fresh processes are
+live diagnostics only; output checking (`verify_m5_polybench_output.py gesu`),
+strict parsing, Q3 extraction, and Base-only comparison remain mandatory at
+natural terminal state.
+
 ## Required terminal declaration
 
 M5.0BF must declare exactly one terminal outcome:
