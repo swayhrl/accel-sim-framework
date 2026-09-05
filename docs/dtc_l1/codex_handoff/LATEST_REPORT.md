@@ -4,6 +4,11 @@ Stage: `M5.0B_WORKLOAD_RECOVERY`
 
 Status: **M5.0B ACTIVE — M5.0BF PASS; M5.0C JOIN-GATED**
 
+Current review checkpoint: `m5/handoffs/M5_0B_LIVE_REVIEW_CHECKPOINT.md`
+(`2026-09-05T22:44:19+08:00`).  It is the current compact, read-only evidence
+for the five live M5.0B jobs, host envelope, protected artifacts, and the
+exact natural-terminal closeout condition.
+
 ## Superseding M5.0BF closeout
 
 M5.0BF is **PASS** with terminal outcome
