@@ -68,15 +68,24 @@ visible `/dev/nvidia*` device, so a fresh NVBit trace cannot be generated here.
 Accel-Sim's own tracer requires an NVBit-equipped GPU execution to emit the
 trace (`util/tracer_nvbit/README.md` and `run_hw_trace.py`).
 
-An isolated M5.0BF CMake configure was attempted in
-`/tmp/dtc-l1-m5-0bf-build`. Its cache proves the requested Framework/Core
-sources (`08dad4c3...` / `12097864...`) were selected, but configuration stops
-before compilation because the Framework checkout has no
-`gpu-simulator/extern/pybind11` directory. It has no `.gitmodules` entry or
-tree-pinned pybind11 revision to recover that dependency locally. The older
-M1--M4 worktree happens to contain pybind11, but it is not an M5.0BF-pinned
-dependency and was not linked or copied into this isolated worktree. No
-simulator binary or pilot process was produced.
+The Framework checkout does not carry `gpu-simulator/extern/pybind11` in its
+tree or a `.gitmodules` entry. The isolated build therefore uses an ignored
+read-only symlink to the already-present local pybind11 checkout at
+`d87cf0b873e42f0e541a4be9b29ea4b2681148ed` (pybind11 3.1.0); this auxiliary
+binding dependency does not alter Core, config, trace, or simulator semantics.
+The missing local zstd development link was built from the already-present
+zstd 1.4.8 source in `/tmp`; the resulting executable dynamically resolves the
+host's same-version `libzstd.so.1`.
+
+The isolated CMake cache proves the requested Framework/Core sources
+(`08dad4c3...` / `12097864...`) were selected. The build completed successfully
+at `/tmp/dtc-l1-m5-0bf-build/accel-sim.out` (SHA-256
+`5b26b8a1e6390596eb449ddcefc4c5a2fbad0ddd1bb85b8396bf90b3ae2fb2c6`). Its
+startup banner identifies Core `12097864`; invoking unsupported `--help`
+exited before any simulation and produced no trace/result artifact. This CMake
+configuration registers zero CTests, so that fact is recorded as build
+inventory rather than a passing test claim. The binary is ready only for an
+admissible isolated trace pilot.
 
 Thus Q1 remains **PILOT-BLOCKED BY MISSING ADMISSIBLE TRACE INPUT / GPU TRACE
 EXECUTION**, rather than falsely declaring either formal trace validity or a

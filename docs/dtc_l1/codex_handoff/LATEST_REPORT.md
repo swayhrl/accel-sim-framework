@@ -46,8 +46,11 @@ but no exact provenance-compatible completed-Paper trace is locally available
 and this host has no visible NVIDIA device for fresh NVBit tracing. No trace
 simulation, Q3 lower-cap simulation, platform freeze, or M5.0C advancement has
 occurred. The Q1 pilot is blocked on an admissible trace artifact/execution
-environment and the isolated trace build additionally lacks a repository-pinned
-`extern/pybind11` dependency; the five M5.0B jobs remain untouched.
+environment. An isolated M5.0BF trace simulator is now built at
+`/tmp/dtc-l1-m5-0bf-build/accel-sim.out` (SHA-256
+`5b26b8a1e6390596eb449ddcefc4c5a2fbad0ddd1bb85b8396bf90b3ae2fb2c6`) against
+Core `12097864`; the auxiliary ignored pybind11 dependency is frozen in the
+audit. The five M5.0B jobs remain untouched.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
