@@ -15,6 +15,11 @@ preserved as `RESEARCHER_ABORTED_SUPERSEDED_CAP256`, not failures. M5.0BT
 exact Paper-10 capture/qualification now gates M5.0C; see
 `m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`.
 
+The capture package has passed M5.0BT-A static repair and is
+`M5_0BT_CAPTURE_PACKAGE_V100_READY`; it awaits only a selected V100 capture
+host. The continuing state machine is authoritative in
+`m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md`.
+
 ## Validated anchors
 
 M1-M4 remain frozen validated infrastructure:

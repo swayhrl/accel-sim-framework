@@ -1,6 +1,9 @@
 # DTC-L1 M5 Experiment Matrix
 
-Status: **PLANNING DRAFT — DO NOT START FORMAL M5 RUNS UNTIL USER APPROVES THIS MATRIX**
+Status: **HISTORICAL MATRIX WITH M5.0BT SUPERSESSION — DO NOT USE STALE CAP-256/PTX-ONLY WORDING**
+
+> Active supersession: exact trace capture/qualification gates M5.0C;
+> formal replay is 80 SM, cap10240, ratio-zero and payload-aware after M5.0BT.
 
 Parent validated anchors:
 

@@ -28,7 +28,13 @@ about `144 GiB` MemAvailable and `86 GiB` free `/tmp`; no artifact cleanup was
 performed. M5.0BT exact trace capture, not these partial runs, now gates
 M5.0C.
 
-This is a read-only review checkpoint.  It does not restart, signal,
+## HISTORICAL SNAPSHOT — SUPERSEDED
+
+The remainder is a pre-termination snapshot retained only for provenance/debug.
+It is not current authority and must never instruct a future Goal to wait for,
+restart, or close these five cap-256 runs.
+
+This was a read-only review checkpoint. It did not restart, signal,
 reconfigure, duplicate, or relabel any live simulator; it contains no raw log,
 binary, trace, build tree, or perf-counter payload.
 

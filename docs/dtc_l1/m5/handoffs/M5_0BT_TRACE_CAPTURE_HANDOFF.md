@@ -1,6 +1,21 @@
 # M5.0BT — Paper-10 Exact Trace Capture and Qualification
 
-Status: **ACTIVE — `WAITING_FOR_EXACT_TRACE_CAPTURE`**
+Status: **M5_0BT_CAPTURE_PACKAGE_V100_READY — `WAITING_FOR_CAPTURE_HOST`**
+
+## Rental-readiness repairs (T-BLOCKER-01..10)
+
+| blocker | closure |
+| --- | --- |
+| T01 | Dedicated `build_m5_*_trace_sm70.sh` scripts build CUDA-11.8/sm70 capture binaries; old sm52 hashes are explicitly recovery-only. |
+| T02 | Controller separates application stdout/tracer stderr and scans only explicit CUDA/NVBit/tracer fatal signatures. |
+| T03 | Explicit checker map includes `2dconv -> conv2d`; static regression invokes all nine PolyBench checkers. |
+| T04 | Per-workload immutable `CAPTURE_RESULT_MANIFEST.tsv` rows record binary, device, kernel inventory, geometry, counts, set hashes and bundle ID. |
+| T05 | `--tracer-framework-src` must be clean and exactly `0db04452`; tool is built in workflow and NVBit archive/tool/postprocess hashes are frozen. |
+| T06 | CUDA runtime probe requires one CUDA-visible logical device 0 and records UUID/model/CC; V100/7.0 is required. |
+| T07 | `--workloads`, `--resume`, isolated attempts, and PENDING/CAPTURING/PASS/RETRY_READY state files prevent overwriting PASS bundles. |
+| T08 | BICG-first pilot emits `STORAGE_BUDGET.tsv` and gzip archive; full wave requires explicit post-pilot `--admit-full-wave`; transfer requires archive and destination SHA equality. |
+| T09 | Base/IO/OO named qualification family now explicitly sets cap10240; TSV comparison freezes the common 80-SM/ratio-zero contract. |
+| T10 | The old live review is marked superseded; its lower historical snapshot is not an executable instruction. |
 
 This is the researcher-authorized successor to the obsolete cap-256 natural-terminal wait.  It is a provenance and mechanism-qualification gate, not a hardware-performance experiment.
 
@@ -27,12 +42,18 @@ CUDA_VISIBLE_DEVICES=<V100> \
   --parboil-src <parboil@4e0fc...> \
   --spmv-input-dir <canonical-medium-input-dir> \
   --spmv-reference <canonical-reference.bin> \
-  --tracer-so <tracer_tool.so> \
-  --postprocess <post-traces-processing> \
+  --tracer-framework-src <clean Framework checkout at 0db04452...> \
+  --nvbit-archive <nvbit-Linux-x86_64-1.8.tar.bz2> \
   --out <absolute/paper10-traces>
 ```
 
-The script must run with CUDA 11.8 `nvcc` and an NVBit 1.8 tracer compiled from Framework tracer source at `0db04452ec1c47630e4b08002067d82c6811e243`.  It uses `LD_PRELOAD=<tracer_tool.so> <exact command>`, checks each application, runs `post-traces-processing kernelslist`, requires raw files and `kernelslist.g`, detects tracer fatal/error lines, records `nvidia-smi`, CUDA/toolchain and hashes all raw/grouped/list/stdout/correctness evidence.  No DYNAMIC_KERNEL_RANGE/fractional trace is allowed.
+The controller must run with CUDA 11.8 `nvcc`, exactly one V100 made visible to
+the CUDA runtime, and a clean tracer Framework checkout at
+`0db04452ec1c47630e4b08002067d82c6811e243`. It builds the NVBit 1.8 tracer
+itself, builds dedicated sm70 applications, uses `LD_PRELOAD=<tracer_tool.so>
+<exact command>`, and records device UUID/model/CC, source/tool/archive hashes,
+raw/grouped/list/stdout/correctness evidence. No DYNAMIC_KERNEL_RANGE/fractional
+trace is allowed.
 
 Expected return layout:
 

@@ -1,5 +1,9 @@
 # M5 Parallel Batch Execution Policy
 
+> M5.0BT supersession: keep a trace bundle once in an immutable shared replay
+> store. Derive/refill `N_safe` from CPU, p95 RSS, memory/swap, trace-I/O and
+> disk measurements; never serialize independent eligible acquisitions by stage.
+
 Status: **ACTIVE — REQUIRED FOR LONG INDEPENDENT SIMULATION WAVES**
 
 Purpose: minimize wall-clock time without changing simulator semantics or compromising reproducibility. This policy applies to Extended-20 and may also be reused for Paper-10 sweeps when experiments are independent.

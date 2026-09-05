@@ -60,6 +60,10 @@ traces on V100, then qualify identical Base/IO/OO trace streams at 80 SM and
 cap 10240. Q2/Q3 are frozen; no cap-256 evidence is formal. Continue only
 after M5.0BT PASS.
 
+The persistent no-routine-pause authority is
+`docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md`; M5.0BT-A is V100
+rental-ready and T1 begins only with an actual selected V100.
+
 Continue:
 
 `M5.0BT -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`

@@ -1,5 +1,9 @@
 # M5 Extended-20 Formal Experiment Matrix
 
+> After Paper M5.0BT freezes the trace path, E1 classifies each member as
+> TRACE_FORMAL_ELIGIBLE, TRACE_ELIGIBLE_WITH_REVIEW, or
+> EXECUTION_DRIVEN_EXCEPTION_REQUIRED; E2 identity is payload-aware.
+
 Status: **APPROVED — EXECUTE UNDER M5 v3 DEPENDENCIES**
 
 Authority:

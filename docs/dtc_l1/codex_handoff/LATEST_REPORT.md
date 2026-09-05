@@ -4,6 +4,14 @@ Stage: `M5.0BT_EXACT_TRACE_CAPTURE_AND_QUALIFICATION`
 
 Status: **WAITING_FOR_EXACT_TRACE_CAPTURE — M5.0BT GATES M5.0C**
 
+Capture package status is now **`M5_0BT_CAPTURE_PACKAGE_V100_READY`**. The
+repair closes the reviewed T01--T10 blockers: sm70 capture binaries are
+distinct from historical sm52 recovery, selected CUDA-device/tracer provenance
+is fail-closed, capture is resumable, BICG pilot storage gates the full wave,
+and all qualification modes explicitly use cap10240. See
+`m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md` and
+`m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md`.
+
 ## Current authoritative state (2026-09-05)
 
 M5.0BF Q1 is reopened as `M5.0BF_Q1_REOPENED_FOR_EXACT_TRACE_RECAPTURE`:

@@ -57,6 +57,10 @@ Use `m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`, its Paper-10 TSV contract,
 and its V100 capture script. Q2/Q3 remain frozen at 80 SM/cap 10240. M5.0C is
 prohibited until exact capture and Base/IO/OO trace qualification PASS.
 
+M5.0BT-A is complete: use the dedicated sm70, source-pinned, resumable V100
+controller. On V100 access run BICG `--pilot-only`, validate its storage gate,
+transfer/qualify its immutable bundle, then continue the single-goal contract.
+
 The last committed M5.0B checkpoint is historical only: five earlier Base
 members completed under obsolete cap-256 and five subsequently-progressing
 members were research-authorizedly terminated as superseded. Do not claim any

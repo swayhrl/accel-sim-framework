@@ -1,5 +1,8 @@
 # M5 Extended-20 Handoff Contract
 
+> For a trace payload, capture-side application correctness, trace identity,
+> replay terminal status and replay accounting are separate evidence fields.
+
 Status: **ACTIVE AFTER PORTFOLIO APPROVAL**
 
 Authority:
