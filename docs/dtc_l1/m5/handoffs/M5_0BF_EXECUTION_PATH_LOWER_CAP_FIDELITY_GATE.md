@@ -158,6 +158,12 @@ signal.  It remains distinct from `DTC_L1_primary_stall_tag_bank` (DTC
 Tag-bank arbitration), baseline MSHR entry/merge failures, and miss-queue or
 native downstream pressure.
 
+The Q3 extractor records both `DTC_L1_lower_cap_full_events` and the existing
+source-emitted `DTC_L1_nonexclusive_lower_cap_full_cycles` under distinct JSON
+keys.  The latter is the required lower-cap-full-cycle field for comparison;
+the former remains an admission-attempt diagnostic and must not silently be
+substituted for it.
+
 Any Q3 run launched before this instrumentation is available remains a
 non-decisive pre-instrumentation diagnostic.  It may establish that a
 candidate executes and has no immediate hard failure, but it cannot freeze a

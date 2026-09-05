@@ -111,6 +111,8 @@ def main():
             "lower_outstanding_cycle_sum": lower_occupancy_cycle_sum,
             "lower_outstanding_sample_cycles": lower_occupancy_sample_cycles,
             "lower_cap_full_events": required(terminal, "DTC_L1_lower_cap_full_events"),
+            "lower_cap_full_cycles": required(
+                terminal, "DTC_L1_nonexclusive_lower_cap_full_cycles"),
             "pib_full_events": required(terminal, "DTC_L1_pib_full_events"),
             "pib_full_cycles": required(terminal, "DTC_L1_nonexclusive_pib_full_cycles"),
             "mshr_entry_full_cycles": required(terminal, "DTC_L1_nonexclusive_mshr_entry_full_cycles"),
