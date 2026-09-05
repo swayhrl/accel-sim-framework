@@ -172,6 +172,18 @@ stall/peak behavior before a bounded native NoC/L2/DRAM queue becomes the
 downstream limit. This is a measurement requirement, not a change to Core
 semantics. Q3 remains unstarted pending the active Q1 Base smoke.
 
+`util/dtc_l1/parse_m5_0bf_q3.py` is the separate Q3 extractor. It combines
+terminal Base/DTC metrics with the final complete row of the compressed
+perf-counter CSV and records aggregate/max/nonzero-subpartition pressure for
+both `chiplet_queue_full_*` and `L2_dram_queue_full_*`, plus terminal
+`gpu_stall_dramfull`. A smoke replay against the already-validated, old-identity
+M5.0B BICG Base raw artifacts completed successfully: it recovered cap 256,
+peak 256, 77,761,587 lower-cap-full events, 30,536,937 PIB-full cycles, zero
+MSHR-full cycles, and zero native chiplet/L2-DRAM queue-full counters. This is
+only a parser fixture and corroborates the existing `80 SM + cap 256`
+diagnostic classification; it is not a Q3 candidate result, is not registered,
+and must not be reused after any formal platform/cap change.
+
 ## Required continuation and join status
 
 M5.0B remains independently active. The isolated nonformal Base smoke is
