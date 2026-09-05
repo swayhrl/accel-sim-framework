@@ -420,3 +420,24 @@
   provenance; no claim of cross-build ELF hash equality is made.
 - Resume point: deploy to a new clean control checkout, rerun the exact BICG
   build on V100, then resume the same T1 capture identity.
+
+## M5-0BT-005 — NVBit application environment omitted the installed CUDA bin
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PENDING`.
+- Scope: BICG's first NVBit-loaded application launch; no raw trace completed,
+  no checker passed, and no immutable bundle, archive, replay, or formal
+  result exists.
+- Evidence: retry-6's application stdout records NVBit loading on the selected
+  V100 and then `ERROR: nvdisasm not found on PATH`. The host has the pinned
+  CUDA-11.8 `cuda-nvdisasm-11-8` package and
+  `/usr/local/cuda-11.8/bin/nvdisasm`; it was simply absent from the inherited
+  application PATH.
+- Classification: controller launch-environment adapter defect, not a missing
+  package, CUDA/NVBit incompatibility, workload semantic, trace-format, DTC or
+  provenance failure.
+- Repair: preserve the same `NVCC` parent directory already used to build the
+  tracer in the application's PATH together with `LD_PRELOAD=tracer_tool.so`.
+  No tool, CUDA package, source, input, binary build contract, or trace option
+  changes.
+- Resume point: V100-retest the exact BICG NVBit launch under this environment
+  and continue the same T1 identity if it passes.

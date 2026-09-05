@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 ACTIVE; BICG exact-capture retry-6 authorized.
+Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-005.
 
 ## Current authoritative state
 
@@ -31,6 +31,9 @@ Status: M5.0BT T1 ACTIVE; BICG exact-capture retry-6 authorized.
   a successful `nvcc` build. The explicit-success repair passed an exact V100
   BICG build retest. Frozen source, CUDA 11.8 and sm70 build contract are
   unchanged; each fresh build's executable SHA is captured as provenance.
+  Retry-6 then loaded NVBit on V100 but found the installed CUDA-11.8
+  `nvdisasm` absent from the application PATH (M5-0BT-005); the narrow PATH
+  propagation repair is pending exact host retest. No trace bundle exists.
 
 ## Required next action after a V100 host is supplied
 

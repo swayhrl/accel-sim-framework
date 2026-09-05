@@ -176,7 +176,7 @@ def main():
    script=ROOT/s.build_script
    if s.source_kind=="spmv":run([str(script),str(a.spmv_wrapper),str(a.parboil_src),str(d/"build")]);exe=d/"build/spmv";cmd=[str(exe),"-i",str(a.spmv_input_dir/"bcsstk18.mtx")+","+str(a.spmv_input_dir/"vector.bin"),"-o","result.bin"]
    else:run([str(script),str(a.polybench_src),str(d/"build"),*s.build_arguments]);exe=d/"build"/s.binary_name;cmd=[str(exe)]
-   env={**os.environ,"LD_PRELOAD":str(tool)};env.pop("DYNAMIC_KERNEL_RANGE",None)
+   env={**os.environ,"PATH":str(nvcc.parent)+":"+os.environ["PATH"],"LD_PRELOAD":str(tool)};env.pop("DYNAMIC_KERNEL_RANGE",None)
    with (d/"application.stdout").open("w") as so,(d/"tracer.stderr").open("w") as se:run(cmd,cwd=d,env=env,stdout=so,stderr=se)
    if s.source_kind=="spmv":run([sys.executable,str(ROOT/"util/dtc_l1/verify_m5_parboil_spmv_output.py"),str(a.spmv_reference),str(d/"result.bin")],stdout=(d/"correctness.log").open("w"))
    else:run([sys.executable,str(ROOT/"util/dtc_l1/verify_m5_polybench_output.py"),s.checker_kind,str(d/"application.stdout")],stdout=(d/"correctness.log").open("w"))
