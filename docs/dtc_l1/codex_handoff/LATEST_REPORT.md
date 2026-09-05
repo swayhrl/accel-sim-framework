@@ -92,9 +92,9 @@ per-core-cycle occupancy sum/sample counter and the BF extractor requires it;
 after an isolated rebuild, the minimum Base-only diagnostic must be repeated
 before Q3 can close.  No lower-credit admission/release, scheduling, timing,
 or assertion behavior changes, and the M5.0B jobs remain untouched.
-The isolated CMake Release build of Core `8860786e` has completed at
+The isolated CMake Release build of Core `3f23c4aa` has completed at
 `/tmp/dtc-l1-m5-0bf-metrics-build` (`libcudart.so` SHA-256
-`0af303762613f7f80baf6ce71e160363404c2b291be5655dbc9ac1e417017e9b`).
+`d39481291fe688f18a3867ecec0c21b8ee3d8a800d351848a0b075b67cca7a9c`).
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 

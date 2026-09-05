@@ -167,9 +167,9 @@ before Q3 closeout; this has no effect on the live M5.0B jobs.
 
 The instrumented Core was CMake Release-built in its own disposable namespace
 `/tmp/dtc-l1-m5-0bf-metrics-build` from Core
-`8860786e6acacab273c0cda2078929b85ad6a3a3`; target `cudart` compiled
+`3f23c4aa198ef6acfa1354a473a7fd151d05af3e`; target `cudart` compiled
 successfully.  The resulting `libcudart.so` SHA-256 is
-`0af303762613f7f80baf6ce71e160363404c2b291be5655dbc9ac1e417017e9b`.
+`d39481291fe688f18a3867ecec0c21b8ee3d8a800d351848a0b075b67cca7a9c`.
 No target named `dtc_l1_m1_common_test` or
 `dtc_l1_completion_accounting_test` exists in this CMake configuration and
 CTest declares zero tests, so validation is a clean production-runtime build
