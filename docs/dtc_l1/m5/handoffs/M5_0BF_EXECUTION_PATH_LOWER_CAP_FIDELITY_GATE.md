@@ -269,6 +269,66 @@ live diagnostics only; output checking (`verify_m5_polybench_output.py gesu`),
 strict parsing, Q3 extraction, and Base-only comparison remain mandatory at
 natural terminal state.
 
+### GESUMMV terminal checkpoint — Q3 control
+
+All three GESUMMV candidates naturally reached `GPGPU-Sim: *** exit detected
+***`.  `verify_m5_polybench_output.py gesu` reports exactly zero source
+comparison mismatches for every row.  The strict summaries show equal
+PIB admit/retire (`4194688/4194688`), lower acquire/release
+(`34327761/34327761`), and final PIB/lower outstanding (`0/0`).  No terminal
+log has an assertion, fatal, deadlock, or output-mismatch signature.  The
+following schema-v2 evidence was extracted from each terminal log and its
+matching perf counter; `framework_sha` in those compact JSONs identifies the
+extractor checkout, while the exact executed Core/runtime/config/workload
+identities are separately pinned above and in the JSON provenance.
+
+| candidate | cycles / instructions / IPC | lower avg / peak / full cycles | PIB / MSHR / true allocation | native downstream pressure | compact Q3 evidence |
+| --- | --- | --- | --- | --- | --- |
+| 80 SM + cap 256 | `97750749` / `197296128` / `2.0183592455` | `65.2569847726` / `208` / `0` | `22701138` / `0` / `1773816697` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_gesummv_80sm_cap256.json` |
+| 80 SM + cap 10240 | `97750749` / `197296128` / `2.0183592455` | `65.2569847726` / `208` / `0` | `22701138` / `0` / `1773816697` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_gesummv_80sm_cap10240.json` |
+| 80 SM + cap 1048576 | `97750749` / `197296128` / `2.0183592455` | `65.2569847726` / `208` / `0` | `22701138` / `0` / `1773816697` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_gesummv_80sm_cap1048576.json` |
+
+GESUMMV is the intended non-saturated control: its peak (`208`) never reaches
+the suspect cap (`256`), so all three rows are expectedly identical.  In the
+lower-cap-saturated BICG representative, by contrast, cap `256` incurred
+`77761587` lower-cap-full cycles, whereas cap `10240` and cap `1048576` were
+identical and had zero lower-cap-full cycles.  Thus both representatives show
+that the proportional cap `10240` is observationally equivalent to the high
+finite control.  The zero native queue counters mean that neither workload
+reaches a native NoC/L2/DRAM queue bound; that absence does not preserve the
+synthetic cap—rather, it leaves the observed PIB/tag/cacheline structural
+stalls visible without an artificial global-credit mask.
+
+## M5.0BF terminal declaration — PASS
+
+**`EXEC_PATH_REQUIRED + PLATFORM_CONFIG_FROZEN`**
+
+Q1 freezes execution-driven mode for the current Paper-10 formal campaign:
+the source audit proves a semantically admissible trace would enter the common
+DTC timing path, but no exact local trace preserves the required source,
+input, launch-ABI, and cache-semantics contract, and this host cannot produce
+one with NVBit.  Q2 establishes that the approved primary platform is the
+inherited V100/SM7-style **80 SM** model, not a thesis-derived SM count.  Q3
+freezes the researcher-proportional **10240 global lower credits** (128/SM)
+for that 80-SM platform.  The exact Base configuration authority is
+`configs/dtc_l1/m5/M5_0BF_PAPER_BASE_80SM_CAP10240.config`, SHA-256
+`36005d29a6e29b45089468f5ad9f76efca6a4f4a07f809b5384a40c6d833d1f5`; later
+Base/IO/OO formal configs must preserve the same platform and lower-cap policy.
+
+`80 SM + cap 256` is frozen as diagnostic-only `CURRENT_INVALID_SUSPECT` and
+may not be used as the formal platform.  The 64-SM/cap-8192 option is a
+secondary sensitivity candidate, not required to resolve the approved 80-SM
+primary: two source-identical, Base-only representatives establish cap-10240
+equals the explicit high control, while cap-256 either creates an artificial
+bottleneck (BICG) or is not reached (GESUMMV).  No IO/OO speedup contributed
+to this decision.  These Q3 diagnostics remain excluded from the formal
+result registry, and pre-freeze M5.0B performance counters remain validation/
+provenance anchors rather than results under this frozen platform.
+
+M5.0BF is PASS independently of M5.0B.  M5.0C remains prohibited until the
+five live M5.0B workloads reach natural terminal, correctness, strict-parser,
+registry, and lifecycle/provenance closure.
+
 ## Required terminal declaration
 
 M5.0BF must declare exactly one terminal outcome:

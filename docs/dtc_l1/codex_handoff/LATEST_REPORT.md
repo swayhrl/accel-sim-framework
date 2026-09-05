@@ -2,7 +2,41 @@
 
 Stage: `M5.0B_WORKLOAD_RECOVERY`
 
-Status: **M5-T005 CLOSED — M5.0B WORKLOAD RECOVERY RESUMED**
+Status: **M5.0B ACTIVE — M5.0BF PASS; M5.0C JOIN-GATED**
+
+## Superseding M5.0BF closeout
+
+M5.0BF is **PASS** with terminal outcome
+**`EXEC_PATH_REQUIRED + PLATFORM_CONFIG_FROZEN`**.  Q1 retains
+execution-driven Paper-10 formal measurement because no local trace has the
+exact formal source/input/launch-ABI/cache-semantics identity; this is not a
+trace-frontend defect claim.  Q2 freezes the researcher-approved 80-SM
+V100/SM7-style primary platform.  Q3 freezes the proportional 10240 global
+lower-credit cap (128 credits/SM), represented by
+`configs/dtc_l1/m5/M5_0BF_PAPER_BASE_80SM_CAP10240.config` SHA-256
+`36005d29a6e29b45089468f5ad9f76efca6a4f4a07f809b5384a40c6d833d1f5`.
+
+Two completed, source-identical Base-only representatives (BICG and GESUMMV)
+show cap 10240 identical to the explicit high-cap control on every required
+metric.  BICG proves cap 256 is an artificial bottleneck (`77761587`
+lower-cap-full cycles versus zero at 10240/high); GESUMMV is a non-saturated
+control (peak 208) with all three caps identical.  Both have zero observed
+native chiplet/L2-DRAM/DRAMfull queue pressure, leaving PIB/tag/cacheline
+stalls observable rather than masked by a synthetic credit limit.  Q3 is
+Base-only; IO/OO speedup was not considered.  Complete evidence is in
+`m5/handoffs/M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md` and the six
+`m5/generated/m5_0bf_q3_{bicg,gesummv}_*.json` files.  These are platform
+diagnostics, not formal registry results.  `80 SM + cap 256` remains
+diagnostic-only `CURRENT_INVALID_SUSPECT`; the 64-SM/cap-8192 row is not
+needed to freeze the approved 80-SM primary.
+
+The M5.0C join is still closed solely by M5.0B: ATAX, MVT, SYR2K, 2MM, and
+SYRK remain live and require natural-terminal provenance/correctness/lifecycle
+closure.  No live job was disturbed during M5.0BF closeout.
+
+The chronological Q3 launch/checkpoint entries below are retained as
+provenance history; this superseding closeout is the authoritative M5.0BF
+state.
 
 ## Active corrected Paper-10 Base batch
 

@@ -273,3 +273,14 @@ M5.0C join remains closed until both M5.0B natural-terminal/provenance closure
 and an accepted M5.0BF terminal path/platform decision are present. For current
 Q3 process identities and terminal-validation requirements, the authoritative
 live record is `M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`.
+
+### Superseding Q3 terminal state
+
+The historical live-Q3 language above is superseded.  The instrumented,
+source-identical BICG and GESUMMV 80-SM cap-256/cap-10240/cap-1048576 trios
+have each reached natural terminal state and passed source-defined output
+checking, strict lifecycle parsing, and schema-v2 Q3 extraction.  The
+authoritative comparison and the terminal declaration
+`EXEC_PATH_REQUIRED + PLATFORM_CONFIG_FROZEN` are recorded in
+`M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`.  M5.0BF is PASS;
+M5.0C remains join-gated exclusively by the five live M5.0B workload closures.
