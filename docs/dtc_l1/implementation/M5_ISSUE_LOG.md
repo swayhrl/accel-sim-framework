@@ -374,3 +374,25 @@
   NVBit/tracer/application source, trace format or runtime semantics changed.
 - Resume point: restart the same BICG T1 identity after deploying the compact
   controller repair; retain failed launcher logs as operational evidence.
+
+## M5-0BT-003 — capture-host device probe used unavailable Runtime UUID APIs
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> HARDWARE_RETEST_PENDING`.
+- Scope: V100/CUDA-11.8 identity preflight after the required tracer and
+  postprocessor build; no CUDA workload application, raw trace, immutable
+  bundle, archive, replay, or formal result has started.
+- Evidence: retry-4's controller reached the probe compile and failed. Exact
+  CUDA-11.8 reproduction reports that `cudaDeviceGetProperties` and
+  `cudaDeviceGetUuid` are undefined. The Runtime header exports
+  `cudaGetDeviceProperties`; UUID lookup is the CUDA Driver API
+  `cuDeviceGetUuid`.
+- Classification: capture-controller host-identity adapter defect, not a
+  V100, CUDA toolchain, NVBit tracer, workload, trace-format, DTC, or source
+  provenance failure.
+- Repair: obtain device properties with `cudaGetDeviceProperties`, obtain the
+  UUID with `cuDeviceGetUuid`, check each API result, and link the isolated
+  probe with `-lcuda`. The output contract remains exactly the logical-device
+  header plus the V100/UUID/CC/memory row used in capture provenance.
+- Resume point: deploy this tested adapter to a new clean control checkout and
+  resume the same BICG T1 identity, retaining every prior retry log and the
+  already-built scratch tracer only as operational evidence.

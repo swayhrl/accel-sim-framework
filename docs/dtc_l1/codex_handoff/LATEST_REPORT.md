@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-002.
+Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-003.
 
 ## Current authoritative state
 
@@ -20,8 +20,11 @@ Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-002.
 - The provisioned capture host passed V100/CC7.0, CUDA 11.8, toolchain,
   writable-data-volume and pinned-source preflight. M5-0BT-001 was repaired
   before CUDA build; M5-0BT-002 then found an unrelated root-Makefile legacy
-  tool after the required trace tool/postprocessor compiled. The scoped-build
-  repair is regressed before the identical pilot resumes.
+  tool after the required trace tool/postprocessor compiled. Its scoped-build
+  repair and regression contract now pass. Retry-4 completed that build but
+  exposed M5-0BT-003: the host identity probe used incorrect CUDA Runtime UUID
+  APIs. The compact Driver-API UUID adapter is pending V100 revalidation; no
+  application, raw trace, immutable bundle or formal result has been created.
 
 ## Required next action after a V100 host is supplied
 

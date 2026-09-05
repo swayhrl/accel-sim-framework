@@ -161,7 +161,7 @@ def main():
  if any(s.workload_id!="bicg" for s in ss):gate(o)
  nvcc=Path(os.environ.get("NVCC","/usr/local/cuda-11.8/bin/nvcc"))
  if "release 11.8" not in run([str(nvcc),"--version"]).stdout:raise RuntimeError("CUDA 11.8 required")
- tool,post,prov=tracer(a,o,nvcc);(o/"environment.json").write_text(json.dumps(prov,sort_keys=True,indent=2)+"\n");probe=o/"tools/device_probe";probe.parent.mkdir(exist_ok=True);run([str(nvcc),"-arch=sm_70",str(ROOT/"util/dtc_l1/m5_trace_capture_device_probe.cu"),"-o",str(probe)]);dev=run([str(probe)]).stdout.splitlines()
+ tool,post,prov=tracer(a,o,nvcc);(o/"environment.json").write_text(json.dumps(prov,sort_keys=True,indent=2)+"\n");probe=o/"tools/device_probe";probe.parent.mkdir(exist_ok=True);run([str(nvcc),"-arch=sm_70",str(ROOT/"util/dtc_l1/m5_trace_capture_device_probe.cu"),"-lcuda","-o",str(probe)]);dev=run([str(probe)]).stdout.splitlines()
  if len(dev)!=2 or "V100" not in dev[1]:raise RuntimeError("selected CUDA-visible logical device 0 is not V100")
  for s in ss:
   w=s.workload_id;b=o/"bundles"/w
