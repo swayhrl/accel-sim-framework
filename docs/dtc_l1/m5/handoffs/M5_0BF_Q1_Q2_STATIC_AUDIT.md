@@ -159,6 +159,27 @@ platform setting, not a DTC or thesis-platform derivation.** The researcher
 has authorized it as the primary formal candidate but that authorization does
 not freeze it until Q3's Base-only lower-cap evidence closes.
 
+### Thesis-source revalidation and authority boundary
+
+The local primary copy
+`/workspace/worktrees/accel-sim-decoupled-l2/docs/reference/赵皓宇 博士论文.pdf`
+(SHA-256 `a9482b420b62636aac379c4a9e670c0f09ec78c287d51fe90a4ac02d66687213`,
+*访存友好的通用图形处理器设计研究*, 2024) was re-read on 2026-09-05.  PDF
+page 64 states that the Unified-Cache GPGPU contains two streaming
+multiprocessors, independently corroborating the `THESIS_PLATFORM = 2 SM`
+anchor.  PDF page 69 defines the conventional-L1 quantitative baseline as
+16 KiB, 8 pending-instruction-buffer entries, and 32 MSHRs.  PDF page 67
+states that a full miss-request queue means the L1-external NoC/L2/memory
+system is saturated and the bottleneck is not in L1.  These passages support
+the frozen 16 KiB comparison geometry and Q3's requirement to observe native
+downstream queues rather than hide them behind a synthetic limit.
+
+The thesis does **not** define the synthetic aggregate lower-credit value of
+256.  `256 aggregate credits at 2 SM`, and hence the `128 credits/SM`
+proportional rule, is a researcher-confirmed M5 authority—not a numerical
+claim attributed to the dissertation.  This distinction preserves both the
+thesis platform evidence and the scope of the formal Accel-Sim scaling rule.
+
 | dimension | 80-SM inherited platform consequence |
 | --- | --- |
 | occupancy and wall time | CTA distribution, scheduler population, and simulator work scale with `n_simt_clusters`; source creates/iterates that many core clusters in `src/gpgpu-sim/gpu-sim.cc:1054-1068` and throughout simulation scheduling. |

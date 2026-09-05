@@ -32,9 +32,10 @@ output namespace while M5.0B jobs continue untouched.  M5.0C remains a join
 barrier requiring both M5.0B natural-terminal workload/provenance closure and
 an accepted M5.0BF frozen execution-path/platform outcome.  See
 `m5/handoffs/M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`.
-Its researcher-confirmed scaling anchor is thesis `2 SM + cap 256` (128
-credits/SM), with 80 SM primary and 64 SM sensitivity formal candidates;
-current `80 SM + cap 256` is diagnostic-only `CURRENT_INVALID_SUSPECT`.
+Its scaling anchor combines the thesis `2 SM` platform with the
+researcher-confirmed `256` aggregate-credit rule (128 credits/SM), with 80 SM
+primary and 64 SM sensitivity formal candidates; current `80 SM + cap 256`
+is diagnostic-only `CURRENT_INVALID_SUSPECT`.
 Q1 now closes as **`EXECUTION_DRIVEN_REQUIRED` for the current Paper-10 formal
 campaign**: trace-driven mode remains source-path-plausible, but no local
 trace has the exact formal source/input/launch-ABI/cache-semantics identity.
