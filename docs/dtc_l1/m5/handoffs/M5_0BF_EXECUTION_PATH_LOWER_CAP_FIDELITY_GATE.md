@@ -157,6 +157,16 @@ cap or platform because the required average is absent.  A separately built,
 isolated Core and repeat of the minimum Base-only candidates is required
 before Q3 closeout; this has no effect on the live M5.0B jobs.
 
+The instrumented Core was CMake Release-built in its own disposable namespace
+`/tmp/dtc-l1-m5-0bf-metrics-build` from Core
+`8860786e6acacab273c0cda2078929b85ad6a3a3`; target `cudart` compiled
+successfully.  The resulting `libcudart.so` SHA-256 is
+`0af303762613f7f80baf6ce71e160363404c2b291be5655dbc9ac1e417017e9b`.
+No target named `dtc_l1_m1_common_test` or
+`dtc_l1_completion_accounting_test` exists in this CMake configuration and
+CTest declares zero tests, so validation is a clean production-runtime build
+plus the existing static/strict-parser checks—not an invented unit-test PASS.
+
 ## Required terminal declaration
 
 M5.0BF must declare exactly one terminal outcome:
