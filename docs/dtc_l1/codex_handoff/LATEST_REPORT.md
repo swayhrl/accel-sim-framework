@@ -43,9 +43,14 @@ explicit execution-driven exceptions rather than reverting the campaign.
 trace-to-DTC path and the SM7/QV100 origin of the inherited 80-SM platform.
 The static path is plausible for the Paper-10 cacheable-global LD/ST contract,
 but no exact provenance-compatible completed-Paper trace is locally available
-and this host has no visible NVIDIA device for fresh NVBit tracing. No trace
-simulation, Q3 lower-cap simulation, platform freeze, or M5.0C advancement has
-occurred. The Q1 pilot is blocked on an admissible trace artifact/execution
+and this host has no visible NVIDIA device for fresh NVBit tracing. A single
+isolated, explicitly **nonformal** BICG `PAPER_BASE` trace
+transport/lifecycle smoke is active under `/tmp/dtc-l1-m5-0bf-nonformal-trace-bicg-base-20260905`.
+Its archived source/ABI mismatch means it is excluded from every formal result
+registry/performance table and cannot decide Q1 or Q3; it only tests whether a
+real trace frontend reaches and can close the common DTC path. No Q3
+lower-cap simulation, platform freeze, or M5.0C advancement has occurred. The
+formal Q1 pilot remains blocked on an admissible trace artifact/execution
 environment. An isolated M5.0BF trace simulator is now built at
 `/tmp/dtc-l1-m5-0bf-build/accel-sim.out` (SHA-256
 `5b26b8a1e6390596eb449ddcefc4c5a2fbad0ddd1bb85b8396bf90b3ae2fb2c6`) against

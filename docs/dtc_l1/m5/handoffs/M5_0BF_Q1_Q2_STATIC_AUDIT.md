@@ -1,12 +1,17 @@
 # M5.0BF Q1/Q2 static source and platform-lineage audit
 
-Status: **Q1 SOURCE PATH PLAUSIBLE; PILOT INPUT/EXECUTION ENVIRONMENT NOT
-YET ADMISSIBLE. Q2 STATIC LINEAGE COMPLETE.**
+Status: **Q1 SOURCE PATH PLAUSIBLE; FORMAL-PROVENANCE PILOT INPUT NOT YET
+ADMISSIBLE. A NONFORMAL BICG TRACE TRANSPORT/LIFECYCLE SMOKE IS ACTIVE. Q2
+STATIC LINEAGE COMPLETE.**
 
 This is an M5.0BF evidence checkpoint, not a `TRACE_FORMAL_PATH_VALID`, an
 `EXECUTION_DRIVEN_REQUIRED`, a frozen platform decision, or M5.0BF PASS. It
 was produced in isolated M5.0BF worktrees and does not interact with the five
-live M5.0B execution-driven processes.
+live M5.0B execution-driven processes. The governing parallel/join gate was
+committed before this smoke began (`08dad4c3`,
+`docs(m5): authorize parallel fidelity gate`): M5.0B and M5.0BF may run in
+parallel, but M5.0C remains closed until both have their respective accepted
+closeouts.
 
 | item | identity |
 | --- | --- |
@@ -51,7 +56,7 @@ contract match. Atomics, unsupported ordering, and unsupported cache-control
 encodings are not silently eligible: they must be checked per trace and are
 explicitly not a reason to generalize a pilot result.
 
-### Why no Q1 simulation was admitted
+### Formal trace candidates and the isolated nonformal smoke
 
 No exact, provenance-compatible trace for completed BICG, canonical SpMV,
 GESUMMV, or 2DConv was found in the local trace inventory. The only relevant
@@ -103,13 +108,30 @@ configuration registers zero CTests, so that fact is recorded as build
 inventory rather than a passing test claim. The binary is ready only for an
 admissible isolated trace pilot.
 
-Thus Q1 remains **PILOT-BLOCKED BY MISSING ADMISSIBLE TRACE INPUT / GPU TRACE
-EXECUTION**, rather than falsely declaring either formal trace validity or a
-source-semantic failure. The next admissible Q1 action is an isolated build
-and Base/IO/OO replay of an exact completed Paper-10 trace with frozen
-source/input/tracer/parser/config identities. Q3 is correspondingly not
-started: it is Base-only, but the authorization requires it to follow trace
-path viability.
+Thus Q1 remains **FORMAL-PILOT-BLOCKED BY MISSING ADMISSIBLE TRACE INPUT / GPU
+TRACE EXECUTION**, rather than falsely declaring either formal trace validity
+or a source-semantic failure. The next admissible formal Q1 action is an
+isolated build and Base/IO/OO replay of an exact completed Paper-10 trace with
+frozen source/input/tracer/parser/config identities.
+
+After the parallel/join policy was committed, a deliberately **nonformal**
+transport/lifecycle smoke was started in an isolated namespace to test the
+static common-path claim without creating a performance result:
+
+| field | identity |
+| --- | --- |
+| workload trace | rejected BICG candidate above, `kernelslist.g` SHA-256 `388740a7...cf5e0a4b` |
+| status | active `PAPER_BASE` transport/lifecycle smoke; not a Paper-10 formal result and excluded from all result registries/tables |
+| simulator | `/tmp/dtc-l1-m5-0bf-build/accel-sim.out`, SHA-256 `5b26b8a1e6390596eb449ddcefc4c5a2fbad0ddd1bb85b8396bf90b3ae2fb2c6` |
+| source/config | Framework `08dad4c3...`; Core `12097864...`; ratio-zero `PAPER_BASE_16KB.config` SHA-256 `993513296458bf014cfa33ff047e1ed7391a1fee990e3b4a2d9d738cab0ff366` |
+| output isolation | `/tmp/dtc-l1-m5-0bf-nonformal-trace-bicg-base-20260905` |
+| pilot scope | after natural Base completion only, inspect DTC lifecycle/assertion closure before deciding whether equally nonformal IO then OO smokes are warranted; no application-output check is available in trace replay |
+
+The smoke cannot cure the source/ABI/input mismatch, cannot establish
+`TRACE_FORMAL_PATH_VALID`, cannot choose Q3's formal platform/cap, and cannot
+be used to compare cycles with execution-driven M5.0B. It exists only to
+falsify the source-path/lifecycle premise under a real trace frontend. Q3 has
+not started.
 
 ## Q2 — 80-SM platform lineage
 
@@ -138,7 +160,8 @@ not freeze it until Q3's Base-only lower-cap evidence closes.
 
 ## Required continuation and join status
 
-M5.0B remains independently active. M5.0BF has not started a simulation and
-has no new correctness, deadlock, pending-write, or scoreboard failure. The
+M5.0B remains independently active. The isolated nonformal Base smoke is
+running and has no observed assertion, fatal, deadlock, pending-write, or
+scoreboard signature at this checkpoint; it has no formal result status. The
 M5.0C join remains closed until both M5.0B natural-terminal/provenance closure
 and an accepted M5.0BF terminal path/platform decision are present.
