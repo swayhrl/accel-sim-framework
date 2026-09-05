@@ -510,7 +510,7 @@
 
 ## M5-0BT-009 — resume finalization hashed manifests before materializing them
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PASS -> CLOSED`.
 - Scope: retry-8 after strict CSV and full replay-list mapping passed. No
   application rerun, bundle/archive/replay or formal result occurred.
 - Evidence: resume-2 reached `record()` and failed with `FileNotFoundError`
@@ -523,3 +523,6 @@
   same data produced by the fresh-capture path and changes no captured trace.
 - Resume point: deploy and resume the one strict retry-8 candidate. Any failed
   manifest/hash/bundle/archive validation remains fail-closed.
+- Outcome: resume-3 wrote both manifests before record hashing, validated the
+  immutable SHA256SUMS bundle, and completed the BICG `tar.zst` archive. No
+  GPU application was rerun during finalization.
