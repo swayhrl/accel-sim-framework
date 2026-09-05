@@ -195,8 +195,34 @@ ratio-zero 16 KiB Base geometry and differ only in the declared Q3 candidate:
 | 80 SM + 1048576 | `configs/dtc_l1/m5/M5_0BF_PAPER_BASE_80SM_CAP1048576.config` | explicit high finite `natural/high` diagnostic; it must empirically prove non-dominance rather than be assumed natural |
 | 64 SM + 8192 | `configs/dtc_l1/m5/M5_0BF_PAPER_BASE_64SM_CAP8192.config` | researcher-proportional platform-size sensitivity |
 
-No Q3 candidate has been launched. The 64-SM row is sensitivity evidence only
-and does not displace the approved 80-SM primary without Base-only analysis.
+The 64-SM row is sensitivity evidence only and does not displace the approved
+80-SM primary without Base-only analysis.
+
+### Active Q3 Base-only BICG diagnostics
+
+The source-path audit is positive and the isolated trace smoke is actively
+exercising the common Base path, but no provenance-incompatible trace is being
+treated as a formal performance result. Because no exact local BICG trace can
+meet the formal source/input contract, the Q3 diagnostics use the
+source-identical **execution-driven** BICG binary/PTX that produced the prior
+strictly validated anchor. This is the workload-local execution-driven path
+required by the Q1 provenance gap, not a declaration that the trace frontend
+is broken.
+
+| candidate | run directory | state | initial simulator evidence |
+| --- | --- | --- | --- |
+| 80 SM + cap 256 | `/tmp/dtc-l1-m5-0bf-q3-bicg-80sm-cap256-20260905` | `RUNNING` | explicit parsed cap 256; at 38 s: current cycle 138,000 / instruction 5,219,008 |
+| 80 SM + cap 10240 | `/tmp/dtc-l1-m5-0bf-q3-bicg-80sm-cap10240-20260905` | `RUNNING` | explicit parsed cap 10240; at 96 s: current cycle 315,000 / instruction 19,873,344 |
+| 80 SM + cap 1048576 | `/tmp/dtc-l1-m5-0bf-q3-bicg-80sm-cap1048576-20260905` | `RUNNING` | explicit parsed cap 1048576; at 97 s: current cycle 328,000 / instruction 20,696,960 |
+
+All three use the same source-exact BICG executable/PTX and the same current
+Core runtime SHA-256 `f115144d6009bab4af6d8ab0d86b69e54e8449a4c76a3809561571d32075a453`;
+only their checked-in config identity differs. They have separate sessions,
+output directories and perf counters, no external timeout, and no observed
+assertion/fatal/deadlock/output-mismatch/error signature at admission. No live
+row is a Q3 result, no 64-SM sensitivity run has started, and no platform/cap
+is frozen pending natural completion, output checking, strict lifecycle parse,
+and the Q3 native-pressure extraction.
 
 ## Required continuation and join status
 

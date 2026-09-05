@@ -48,8 +48,8 @@ isolated, explicitly **nonformal** BICG `PAPER_BASE` trace
 transport/lifecycle smoke is active under `/tmp/dtc-l1-m5-0bf-nonformal-trace-bicg-base-20260905`.
 Its archived source/ABI mismatch means it is excluded from every formal result
 registry/performance table and cannot decide Q1 or Q3; it only tests whether a
-real trace frontend reaches and can close the common DTC path. No Q3
-lower-cap simulation, platform freeze, or M5.0C advancement has occurred. The
+real trace frontend reaches and can close the common DTC path. No platform
+freeze or M5.0C advancement has occurred. The
 formal Q1 pilot remains blocked on an admissible trace artifact/execution
 environment. An isolated M5.0BF trace simulator is now built at
 `/tmp/dtc-l1-m5-0bf-build/accel-sim.out` (SHA-256
@@ -68,7 +68,20 @@ metrics with perf-counter `chiplet_queue_full_*` and
 `L2_dram_queue_full_*` aggregates, so native downstream pressure cannot be
 silently omitted. Its only completed replay is a parser smoke over the old
 M5.0B BICG raw artifacts; that data remains unregistered and may not be
-reused as a formal Q3 result. Q3 has not started.
+reused as a formal Q3 result.
+
+Q3 has now started only its minimum source-exact, execution-driven BICG
+Base-only primary comparison on the isolated BF namespace: explicit 80-SM
+cap-256, cap-10240, and cap-1048576 configurations are each `RUNNING` in
+separate `/tmp/dtc-l1-m5-0bf-q3-bicg-*` directories. They have no external
+timeouts and their initial simulator cycle/instruction counters advance with
+no assertion/fatal/deadlock/output-mismatch signature. These live diagnostics
+are not results, do not freeze a platform/cap, do not start the 64-SM
+sensitivity or any IO/OO/Extended work, and do not alter the five M5.0B jobs.
+The Q1 trace smoke remains active; the formal trace path stays
+provenance-blocked by the absent exact Paper trace/GPU tracer environment, so
+the Q3 BICG rows are explicitly execution-driven rather than a trace-result
+substitute.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
