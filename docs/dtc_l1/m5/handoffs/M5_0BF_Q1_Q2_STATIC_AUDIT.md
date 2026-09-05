@@ -158,6 +158,20 @@ not freeze it until Q3's Base-only lower-cap evidence closes.
 | native downstream provisioning | retained SM7 values are 32 MC x 2 subpartitions, 6 MiB L2 (`S:32:128:24`), L2 queue tuple `64:64:64:64`, ICNT buffers 512, DRAM schedule queue 64 and return queue 192. These bounded queues must be observed in Q3 rather than replaced by the synthetic cap. |
 | comparability | existing 80-SM/cap-256 M5.0B results remain execution-driven mechanism/provenance anchors only. Their counters are not reusable formal results under a newly frozen cap or SM count. |
 
+### Q3 implementation-boundary note (pre-run)
+
+The Core does not encode a disabled/unbounded lower-credit mode. In
+`src/gpgpu-sim/gpu-sim.cc:1328-1362`, each DTC mode calls
+`dtc_l1_try_acquire_lower_request`; the option's default is 256
+(`:414-416`), `assert(cap > 0)` is unconditional (`:1336-1337`), and every
+admitted request is counted against that positive cap. Therefore a Q3
+`natural/high` row must not be represented by cap zero. It must name an
+explicit, positive, reproducible high cap and demonstrate from Base-only
+counters that increasing beyond it no longer changes the artificial-cap
+stall/peak behavior before a bounded native NoC/L2/DRAM queue becomes the
+downstream limit. This is a measurement requirement, not a change to Core
+semantics. Q3 remains unstarted pending the active Q1 Base smoke.
+
 ## Required continuation and join status
 
 M5.0B remains independently active. The isolated nonformal Base smoke is
