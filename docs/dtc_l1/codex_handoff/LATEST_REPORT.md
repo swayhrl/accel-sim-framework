@@ -26,6 +26,12 @@ observer proof.  The simulators retained their PIDs, process groups, log FDs,
 and source-backed simulator progress; no supervisor deadline remains armed.
 See `m5/handoffs/M5_0B_TIMEOUT_GUARD_RECOVERY.md`.
 
+M5.0BF is now a mandatory pre-M5.0C execution-path, SM-count, and global
+lower-cap fidelity gate.  It is explicitly pending until all M5.0B live jobs
+reach natural-terminal workload/provenance closure; no trace pilot, platform
+diagnostic, or M5.0C work may begin sooner.  See
+`m5/handoffs/M5_0BF_EXECUTION_PATH_LOWER_CAP_FIDELITY_GATE.md`.
+
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
 The M5-T005 researcher-decision boundary is resolved.  The paper-facing
