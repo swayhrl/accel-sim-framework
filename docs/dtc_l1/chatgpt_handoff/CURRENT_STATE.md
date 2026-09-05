@@ -2,7 +2,7 @@
 
 Last coordination update: 2026-09-05
 
-Status: **M1-M4 VALIDATED; M5.0A PASS; M5.0BT WAITING_FOR_EXACT_TRACE_CAPTURE; EXTENDED-20 APPROVED; GRAPHICS M5.7/M5.8 CLOSED SOURCE-BACKED-UNAVAILABLE**
+Status: **M1-M4 VALIDATED; M5_0BT_CAPTURE_PACKAGE_V100_READY; WAITING_FOR_CAPTURE_HOST; EXTENDED-20 APPROVED; GRAPHICS M5.7/M5.8 CLOSED SOURCE-BACKED-UNAVAILABLE**
 
 ## Current M5.0BT authority
 
@@ -15,8 +15,8 @@ preserved as `RESEARCHER_ABORTED_SUPERSEDED_CAP256`, not failures. M5.0BT
 exact Paper-10 capture/qualification now gates M5.0C; see
 `m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`.
 
-The capture package is `M5_0BT_CAPTURE_PACKAGE_NEEDS_FINAL_OFFLINE_FIX`; do
-not request V100 until the current controller/manifest closeout is complete.
+The capture package is `M5_0BT_CAPTURE_PACKAGE_V100_READY`; a capture host
+may be supplied, but this record does not itself rent, request, or start one.
 The continuing state machine is authoritative in
 `m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md`.
 
@@ -86,7 +86,14 @@ Live miss = new-miss lower-request commit through final lower response; primary 
 
 Formal categories: PIB full, true Tag+Cacheline allocation failure, MSHR capacity/merge, Miss Queue/lower capacity. Tag-bank arbitration remains diagnostic.
 
-## Current Paper-10 stage — M5.0B workload recovery
+## HISTORICAL / SUPERSEDED — DO NOT EXECUTE
+
+All following M5.0B cap-256 workload-recovery material is retained only as
+provenance/debug evidence. It imposes no live-job, natural-terminal, or
+cap-256 transition gate. The active transition is M5.0BT trace capture and
+qualification at 80 SM/cap10240.
+
+## Historical Paper-10 stage — M5.0B workload recovery
 
 M5.0A is PASS.
 
@@ -101,7 +108,7 @@ Current committed M5.0B evidence reports:
 
 Paper progression:
 
-`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+`M5.0BT -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
 
 Do not redo closed R5DV unless a later source-correct behavior change invalidates it.
 

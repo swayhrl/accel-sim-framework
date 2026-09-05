@@ -71,6 +71,11 @@ until this passes; Q2/Q3 are already frozen and are not reopened.
 
 PASS -> M5.0C.
 
+## HISTORICAL / SUPERSEDED — DO NOT EXECUTE
+
+The legacy M5.0A/M5.0B sequence below is retained as provenance only. It does
+not reinstate an M5.0B natural-terminal condition or cap-256 performance gate.
+
 ### M5.0A Anchor
 
 Branch ancestry, Release build/tests, LEGACY/Base/IO/OO sentinels, runtime/toolchain/config identities, resumable registry, safe host concurrency.

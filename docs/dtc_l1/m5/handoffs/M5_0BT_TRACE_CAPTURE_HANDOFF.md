@@ -1,10 +1,9 @@
 # M5.0BT — Paper-10 Exact Trace Capture and Qualification
 
-Status: **M5_0BT_CAPTURE_PACKAGE_NEEDS_FINAL_OFFLINE_FIX — do not request V100**
+Status: **M5_0BT_CAPTURE_PACKAGE_V100_READY — WAITING_FOR_CAPTURE_HOST**
 
-Post-commit R1--R10 controller repairs are under offline regression. This
-handoff must not be interpreted as V100 authorization until its source manifest
-and final authority reconciliation are also closed.
+The final offline closure is PASS. V100 capture remains a separately supplied
+host action; this handoff neither rents nor starts a host.
 
 ## Rental-readiness repairs (T-BLOCKER-01..10)
 
@@ -13,11 +12,11 @@ and final authority reconciliation are also closed.
 | T01 | Dedicated `build_m5_*_trace_sm70.sh` scripts build CUDA-11.8/sm70 capture binaries; old sm52 hashes are explicitly recovery-only. |
 | T02 | Controller separates application stdout/tracer stderr and scans only explicit CUDA/NVBit/tracer fatal signatures. |
 | T03 | Explicit checker map includes `2dconv -> conv2d`; static regression invokes all nine PolyBench checkers. |
-| T04 | Per-workload immutable `CAPTURE_RESULT_MANIFEST.tsv` rows record binary, device, kernel inventory, geometry, counts, set hashes and bundle ID. |
+| T04 | Per-workload immutable CAPTURE_RESULT.json records binary, device, separate ordered invocation/geometry manifest hashes, counts, set hashes and bundle ID; global TSV is regenerated only from archive-backed bundles. |
 | T05 | `--tracer-framework-src` must be clean and exactly `0db04452`; tool is built in workflow and NVBit archive/tool/postprocess hashes are frozen. |
 | T06 | CUDA runtime probe requires one CUDA-visible logical device 0 and records UUID/model/CC; V100/7.0 is required. |
-| T07 | `--workloads`, `--resume`, isolated attempts, and PENDING/CAPTURING/PASS/RETRY_READY state files prevent overwriting PASS bundles. |
-| T08 | BICG-first pilot emits `STORAGE_BUDGET.tsv` and gzip archive; full wave requires explicit post-pilot `--admit-full-wave`; transfer requires archive and destination SHA equality. |
+| T07 | Per-workload WorkloadSpec drives conditional CLI/source/build/checker paths; BICG needs no SpMV tree. Resume separates capture-bundle, archive and transfer states. |
+| T08 | BICG-first pilot creates a BICG-bound STORAGE_ADMISSION.json. Any non-BICG capture fails without it; projection includes raw+grouped+archive+headroom and safety factor. |
 | T09 | Base/IO/OO named qualification family now explicitly sets cap10240; TSV comparison freezes the common 80-SM/ratio-zero contract. |
 | T10 | The old live review is marked superseded; its lower historical snapshot is not an executable instruction. |
 
@@ -59,14 +58,29 @@ itself, builds dedicated sm70 applications, uses `LD_PRELOAD=<tracer_tool.so>
 raw/grouped/list/stdout/correctness evidence. No DYNAMIC_KERNEL_RANGE/fractional
 trace is allowed.
 
-Expected return layout:
+Actual capture layout:
 
 ```text
-paper10-traces/{manifest.tsv,SHA256SUMS,environment.txt}/<workload>/
-  {capture.log,correctness.log,kernelslist,kernelslist.g,stats.csv,kernel-*.trace,kernel-*.traceg}
+paper10-traces/
+  bundles/<workload>/{CAPTURE_RESULT.json,SHA256SUMS,application.stdout,
+    tracer.stderr,correctness.log,postprocess.stdout,kernel_*_manifest.json,
+    traces/{kernelslist,kernelslist.g,stats.csv,kernel-*.trace,kernel-*.traceg}}
+  archives/<workload>.tar.zst and archives/<workload>.archive.json
+  transfers/<workload>.transfer.json
+  CAPTURE_RESULT_MANIFEST.tsv
 ```
 
 Do not delete uncompressed data before archive/hash verification.  Do not commit traces, executables, raw logs, or datasets; transfer the archive and compact provenance only.
+
+## Ordered invocation and geometry contract
+
+The pinned tracer source writes stats.csv at tracer_tool.cu lines 878--879 with
+kernel mangled name plus grid_dimX/Y/Z and block_dimX/Y/Z. The controller
+requires those source-supported columns, derives CTA count as grid X*Y*Z, and
+creates separate ordered kernel_invocation_manifest.json and
+kernel_geometry_manifest.json files. It validates the ordered kernelslist to
+kernelslist.g mapping and every replay-required traceg file; it neither uses
+an unordered set nor invents geometry fields absent from tracer output.
 
 ## Qualification after capture
 
@@ -74,4 +88,4 @@ On the simulator host, first qualify BICG (pressure case) and GESUMMV (contrasti
 
 Only then close Q1 as `TRACE_FORMAL_PATH_VALID` and make trace-driven the default remaining Paper campaign path.  A workload that fails the trace semantic contract is individually classified and may remain execution-driven; this does not silently revert the campaign.
 
-Next state before a capture returns: **`WAITING_FOR_EXACT_TRACE_CAPTURE`**.
+Next state before a capture host is supplied: **`WAITING_FOR_CAPTURE_HOST`**.

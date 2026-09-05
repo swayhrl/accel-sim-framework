@@ -1,6 +1,6 @@
 # M5 trace-to-final single persistent Goal contract
 
-Status: **ACTIVE — M5.0BT-A CAPTURE PACKAGE REPAIR COMPLETE; AWAITS V100**
+Status: **ACTIVE — M5_0BT_CAPTURE_PACKAGE_V100_READY; WAITING_FOR_CAPTURE_HOST**
 
 This active-branch contract revalidates the isolated review input
 `M5_SINGLE_GOAL_TRACE_TO_FINAL_REVIEW.md@eeaba7375e5895c531b30b07e02095610b5b52d7`.
@@ -24,7 +24,9 @@ PARALLEL_{M5.3,M5.4,M5.5,E2}_ACQUISITION -> M5.3 -> M5.4 -> M5.5 -> M5.6
 -> E3 -> M5.COMPUTE_FREEZE -> M5.12 ->
 M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`.
 
-T0 is PASS only when the ten review blockers are closed in the M5.0BT handoff.
+T0 is PASS: workload specifications, conditional CLI/source checks, immutable
+bundle/archive/transfer recovery, storage admission, source TSV, host handoff,
+and SIM_HOST orchestrator have passed no-GPU regression.
 At every ordinary problem use: observe, reproduce, classify, source/trace/config
 investigate, repair or reconstruct, regress, invalidate affected identity, resume.
 Do not pause at a normal stage transition or one workload-local failure.

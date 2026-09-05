@@ -13,4 +13,14 @@ with tempfile.TemporaryDirectory() as t:
 text=(ROOT/'util/dtc_l1/m5_trace_capture_controller.py').read_text()
 assert 'DYNAMIC_KERNEL_RANGE",None' in text and 'RETRY_READY' in text and 'CAPTURE_RESULT_MANIFEST.tsv' in text
 assert 'DYNAMIC_KERNEL_RANGE' in text and 'NVBit archive lacks required' in text
-print('PASS M5.0BT checker aliases=9; Error Threshold accepted; resumable controller contract present')
+assert 'class WorkloadSpec' in text and 'valid BICG bundle/archive and storage admission receipt required' in text
+assert 'kernel_invocation_manifest_sha' in text and 'kernel_geometry_manifest_sha' in text
+assert '"spmv_wrapper"' in text and '"parboil"' in text and '"matrix_sha256"' in text
+tsv=(ROOT/'docs/dtc_l1/m5/trace/PAPER10_TRACE_CAPTURE_MANIFEST.tsv').read_text().splitlines()
+hdr=tsv[0].split('\t'); col=hdr.index('trace_capture_build_contract')
+assert all('sm_52' not in x.split('\t')[col] for x in tsv[2:] if x)
+handoff=(ROOT/'docs/dtc_l1/m5/AUTODL_V100_CAPTURE_HOST_HANDOFF.md').read_text()
+assert '--workloads bicg --pilot-only' in handoff and '--spmv-wrapper' not in handoff.split('## Exact BICG pilot command',1)[1].split('The expected',1)[0]
+orchestrator=(ROOT/'util/dtc_l1/m5_autodl_capture_orchestrator.sh').read_text()
+assert 'M5_CONTROL_CHECKOUT_PREPARED' in orchestrator and 'TRACER_PIN_CHECKOUT_PREPARED' in orchestrator and 'rsync -a --partial --append-verify' in orchestrator
+print('PASS M5.0BT checker aliases=9; workload-spec/TSV/AutoDL contract present')

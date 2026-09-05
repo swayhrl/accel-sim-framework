@@ -1,17 +1,45 @@
 #!/usr/bin/env python3
-"""No-GPU integration tests for controller redirection, bundle and storage rules."""
-import importlib.util, json, tempfile
+"""No-GPU regression for M5.0BT immutability, resume and spec contracts."""
+import importlib.util,json,tempfile
 from pathlib import Path
 spec=importlib.util.spec_from_file_location("c",Path(__file__).with_name("m5_trace_capture_controller.py"));c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+def sums(b):
+ (b/"SHA256SUMS").write_text("".join(f"{c.sha(p)}  {p.relative_to(b)}\n" for p in sorted(x for x in b.rglob("*") if x.is_file() and x.name!="SHA256SUMS")))
+def bundle(root,w="bicg"):
+ b=root/"bundles"/w;t=b/"traces";t.mkdir(parents=True)
+ for n,v in {"application.stdout":"ok","tracer.stderr":"","correctness.log":"PASS","postprocess.stdout":"PASS"}.items():(b/n).write_text(v)
+ (t/"kernel-1.trace").write_text("raw");(t/"kernel-1.traceg").write_text("grouped");(t/"kernelslist").write_text("kernel-1.trace\n");(t/"kernelslist.g").write_text("kernel-1.traceg\n");(t/"stats.csv").write_text("kernel id,kernel mangled name,grid_dimX,grid_dimY,grid_dimZ,block_dimX,block_dimY,block_dimZ\n0,_Zx,1,1,1,32,1,1\n")
+ inv,geo,_,_=c.inventory(t);(b/"kernel_invocation_manifest.json").write_text(json.dumps(inv));(b/"kernel_geometry_manifest.json").write_text(json.dumps(geo));(b/"CAPTURE_RESULT.json").write_text(json.dumps({"trace_bundle_id":"id-"+w,"kernel_invocation_count":1}));sums(b);return b
 with tempfile.TemporaryDirectory() as x:
- o=Path(x); log=o/'log'; c.run(['sh','-c','echo checker-pass'],stdout=log.open('w')); assert log.read_text().strip()=='checker-pass'
- p=o/'bundles/bicg/traces';p.mkdir(parents=True);(p/'kernel-1.trace').write_text('x');(p/'kernel-1.traceg').write_text('y');(p/'kernelslist').write_text('kernel-1.trace\n');(p/'kernelslist.g').write_text('kernel-1.traceg\n');(p/'stats.csv').write_text('kernel id,kernel mangled name,grid_dimX,block_dimX\nkernel-1.trace,_Zx,1,32\n')
- inv,raw,grp=c.inventory(p); assert len(inv)==len(raw)==len(grp)==1
- b=p.parent;(b/'CAPTURE_RESULT.json').write_text(json.dumps({'trace_bundle_id':'id'}));(b/'SHA256SUMS').write_text('')
- # write sums over all prior files, then validate/immutable archive and transfer.
- fs=[z for z in b.rglob('*') if z.is_file() and z.name!='SHA256SUMS'];(b/'SHA256SUMS').write_text(''.join(f'{c.sha(z)}  {z.relative_to(b)}\n' for z in fs));assert c.valid_bundle(b); arc,meta=c.archive_bundle(b); dst=o/'copy.tar.gz';dst.write_bytes(arc.read_bytes());assert c.verify_transfer(arc,dst)['status']=='PASS'
- try:c.verify_transfer(arc,o/'missing')
- except FileNotFoundError:pass
- else:raise AssertionError('bad transfer accepted')
- (o/'STORAGE_BUDGET.tsv').write_text('pilot\traw_bytes\tgrouped_bytes\tarchive_bytes\tprojected_10_raw_bytes\tfree_bytes\nBICG\t1\t1\t1\t10\t999999999999\n');assert c.storage_gate(o)['status']=='PASS'
-print('PASS controller offline redirects/inventory/immutability/archive/transfer/storage gate')
+ o=Path(x);b=bundle(o);assert c.valid_bundle(b)
+ # D: all checksum hazards fail closed.
+ bad=o/"bad";bad.mkdir()
+ for name,content in {"empty":"","malformed":"x","absolute":"0"*64+"  /etc/passwd\n","escape":"0"*64+"  ../x\n","duplicate":"0"*64+"  x\n"+"0"*64+"  x\n"}.items():
+  q=bad/name;q.mkdir();(q/"CAPTURE_RESULT.json").write_text("{}");(q/"SHA256SUMS").write_text(content);assert not c.valid_bundle(q),name
+ (b/"SHA256SUMS").write_text((b/"SHA256SUMS").read_text().replace("application.stdout","missing"));assert not c.valid_bundle(b);sums(b)
+ (b/"SHA256SUMS").write_text((b/"SHA256SUMS").read_text().replace("a","b",1));assert not c.valid_bundle(b);sums(b)
+ # E: valid bundle with no archive performs archive only; no capture mutation.
+ before=c.sha(b/"CAPTURE_RESULT.json");assert not c.valid_archive(o,"bicg");arc=c.archive(o,b);assert c.valid_archive(o,"bicg") and c.sha(b/"CAPTURE_RESULT.json")==before
+ # F: valid archive with no receipt transfers only.
+ assert not c.receipt(o,"bicg").exists();dst=o/"copy/bicg.tar.zst";c.transfer(o,"bicg",dst);assert c.receipt(o,"bicg").is_file() and c.sha(arc)==c.sha(dst)
+ # H: global rows are deterministic and only archive-backed.
+ c.global_manifest(o);assert (o/"CAPTURE_RESULT_MANIFEST.tsv").read_text().count("\nid-")==0
+ # C: a single non-BICG request cannot evade admission.
+ try:c.gate(o)
+ except RuntimeError:pass
+ else:raise AssertionError("non-BICG gate accepted absent receipt")
+ a,_=c.paths(o,"bicg");(o/"STORAGE_ADMISSION.json").write_text(json.dumps({"bicg_trace_bundle_id":"id-bicg","bicg_archive_sha256":c.sha(a),"raw_bytes":1,"grouped_bytes":1,"archive_bytes":1,"working_headroom_bytes":1,"safety_factor":1,"projected_bytes":4,"free_bytes":999999,"data_volume":str(o),"admission":"PASS"}));assert c.gate(o)["status"]=="PASS"
+ # L: ordered correspondence rejects reordering.
+ t=b/"traces";(t/"kernelslist.g").write_text("kernel-2.traceg\n")
+ try:c.inventory(t)
+ except RuntimeError:pass
+ else:raise AssertionError("reordered replay list accepted")
+ # A/B: a BICG selection has no SpMV dependency and only pins requested roots.
+ m=o/"manifest.tsv";old=c.MANIFEST;c.MANIFEST=m
+ poly=o/"poly";(poly/"CUDA/BICG").mkdir(parents=True);(poly/"CUDA/BICG/bicg.cu").write_text("x")
+ m.write_text("thesis_id\tsource_sha256\nbicg\t"+c.sha(poly/"CUDA/BICG/bicg.cu")+"\n")
+ tracer=o/"tracer";tracer.mkdir();nv=o/"nvbit.tar";nv.write_text("x")
+ class A: pass
+ z=A();z.workloads="bicg";z.pilot_only=True;z.polybench_src=poly;z.tracer_framework_src=tracer;z.nvbit_archive=nv;z.spmv_wrapper=None;z.parboil_src=None;z.spmv_input_dir=None;z.spmv_reference=None
+ oldgit,oldtree=c.git,c.tree;c.git=lambda p,*q: ("" if q[0]=="status" else c.PIN if p==tracer else c.POLY_PIN if p==poly else "");c.tree=lambda p:"tree";assert c.sources(z,c.specs(z))["polybench"]["tree"]=="tree";c.git,c.tree,c.MANIFEST=oldgit,oldtree,old
+print("PASS M5.0BT controller: fail-closed sums, archive/transfer resume, storage gate, ordered replay, BICG-only spec")
