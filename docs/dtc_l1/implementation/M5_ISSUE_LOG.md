@@ -444,7 +444,7 @@
 
 ## M5-0BT-006 — current NVBit context names and default tracez output mismatched the frozen legacy bundle contract
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PASS -> CLOSED`.
 - Scope: BICG after application correctness and raw capture pass. Retry-7
   captured two full raw kernel traces and the checker reported zero source
   comparison mismatches, but no postprocess PASS, bundle, archive, replay or
@@ -465,3 +465,25 @@
 - Resume point: V100-retest the same exact BICG capture and continue T1 only
   after strict raw/grouped ordering, geometry, immutable bundle and archive
   validation pass.
+
+## M5-0BT-007 — NVBit's source CSV header needs space-aware parsing
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> RESUME_RETEST_PENDING`.
+- Scope: retry-8 after application checker, raw capture and `.traceg`
+  postprocess passed. No immutable bundle/archive/replay/formal result exists.
+- Evidence: the source-produced CSV has complete BICG ABI and geometry rows,
+  but header fields are comma-space separated (for example
+  ` kernel mangled name` and ` grid_dimX`). The controller's default
+  `csv.DictReader` retained the leading spaces and correctly failed closed.
+- Classification: CSV header adapter defect, not missing geometry, an ABI
+  mismatch, tracer failure, checker failure, DTC semantic ambiguity or source
+  provenance failure.
+- Repair: use `skipinitialspace=True`, preserving every source column/value;
+  add a strict resume finalizer which accepts exactly one candidate only when
+  it already has checker PASS, canonical list/stat, raw/grouped traces, strict
+  ordered inventory and no explicit tracer/CUDA error. It then emits the
+  capture result, SHA256SUMS, immutable bundle and archive without rerunning
+  the application.
+- Resume point: deploy then run `--resume` for BICG. Any ambiguous candidate,
+  checker failure, mapping/geometry failure or tracer error remains HARD and
+  prevents finalization.

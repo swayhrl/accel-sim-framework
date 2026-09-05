@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-006.
+Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-007.
 
 ## Current authoritative state
 
@@ -34,10 +34,12 @@ Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-006.
   Retry-6 then loaded NVBit on V100 but found the installed CUDA-11.8
   `nvdisasm` absent from the application PATH (M5-0BT-005). Retry-7's PATH
   repair passed: the BICG checker passed and full raw traces were captured.
-  Its postprocess exposed M5-0BT-006: current NVBit names a context list while
-  the frozen formal bundle requires canonical `kernelslist`/`.traceg`. The
-  source-backed one-context legacy-trace adapter is pending host retest; no
-  immutable bundle exists.
+  Its postprocess exposed M5-0BT-006; retry-8 passed that legacy-layout
+  adapter, application checker, raw capture and `.traceg` postprocess. It then
+  exposed M5-0BT-007: NVBit's space-padded CSV header was parsed without
+  `skipinitialspace`. The strict CSV/resume-finalization repair is pending;
+  retry-8 is retained for validation rather than recaptured, and no immutable
+  bundle exists yet.
 
 ## Required next action after a V100 host is supplied
 

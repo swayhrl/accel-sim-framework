@@ -87,7 +87,7 @@ def token(line,suffix):
 def inventory(t):
  raw=sorted(t.glob("kernel-*.trace"));grp=sorted(t.glob("kernel-*.traceg"));kl=t/"kernelslist";kg=t/"kernelslist.g";stats=t/"stats.csv"
  if not(raw and grp and kl.is_file() and kg.is_file() and stats.is_file()):raise RuntimeError("incomplete trace artifact set")
- rows=list(csv.DictReader(stats.open()))
+ rows=list(csv.DictReader(stats.open(),skipinitialspace=True))
  fields=("grid_dimX","grid_dimY","grid_dimZ","block_dimX","block_dimY","block_dimZ")
  if not rows or any(not x.get("kernel mangled name") or any(not x.get(k) for k in fields) for x in rows):raise RuntimeError("stats lacks source-supported kernel ABI/geometry")
  rn=[token(x,".trace") for x in kl.read_text().splitlines()];gn=[token(x,".traceg") for x in kg.read_text().splitlines()]
@@ -171,6 +171,19 @@ def main():
    if a.transfer_destination and not receipt(o,w).is_file():st(o,w,"TRANSFER_PENDING");transfer(o,w,a.transfer_destination/(w+".tar.zst"));st(o,w,"TRANSFER_PASS")
    continue
   if b.exists():raise RuntimeError(f"invalid immutable bundle exists: {b}")
+  pending=[x for x in sorted((o/"attempts"/w).glob("attempt-*")) if (x/"correctness.log").is_file() and (x/"postprocess.stdout").is_file() and (x/"traces/kernelslist").is_file()] if (o/"attempts"/w).is_dir() else []
+  if a.resume and pending:
+   if len(pending)!=1:raise RuntimeError("ambiguous resumable capture attempts")
+   d=pending[0];t=d/"traces";inv,geom,raw,grp=inventory(t)
+   if not (d/"correctness.log").read_text(errors="replace").startswith("PASS"):raise RuntimeError("resumable capture lacks checker PASS")
+   if any(x in (d/"tracer.stderr").read_text(errors="replace").lower() for x in ("cudaerror","nvbit fatal","tracer fatal","assertion")):raise RuntimeError("resumable capture has explicit tracer/CUDA error")
+   script=ROOT/s.build_script;exe=d/"build"/s.binary_name
+   if not exe.is_file():raise RuntimeError("resumable capture lacks build binary")
+   r=record(a,s,src,script,str(exe),exe,inv,t,raw,grp,prov,dev[1]);(d/"CAPTURE_RESULT.json").write_text(json.dumps(r,sort_keys=True,indent=2)+"\n");sums(d)
+   if not valid_bundle(d):raise RuntimeError("resumable capture failed immutable bundle validation")
+   st(o,w,"BUNDLE_READY_TEMP");b.parent.mkdir(exist_ok=True);os.replace(d,b);st(o,w,"CAPTURE_BUNDLE_PASS");st(o,w,"ARCHIVE_PENDING");archive(o,b);st(o,w,"ARCHIVE_PASS")
+   if a.transfer_destination:st(o,w,"TRANSFER_PENDING");transfer(o,w,a.transfer_destination/(w+".tar.zst"));st(o,w,"TRANSFER_PASS")
+   continue
   st(o,w,"CAPTURING");d=o/"attempts"/w/("attempt-"+str(int(time.time())));d.mkdir(parents=True)
   try:
    script=ROOT/s.build_script
