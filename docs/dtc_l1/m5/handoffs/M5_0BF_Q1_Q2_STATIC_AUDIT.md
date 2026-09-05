@@ -68,6 +68,16 @@ visible `/dev/nvidia*` device, so a fresh NVBit trace cannot be generated here.
 Accel-Sim's own tracer requires an NVBit-equipped GPU execution to emit the
 trace (`util/tracer_nvbit/README.md` and `run_hw_trace.py`).
 
+An isolated M5.0BF CMake configure was attempted in
+`/tmp/dtc-l1-m5-0bf-build`. Its cache proves the requested Framework/Core
+sources (`08dad4c3...` / `12097864...`) were selected, but configuration stops
+before compilation because the Framework checkout has no
+`gpu-simulator/extern/pybind11` directory. It has no `.gitmodules` entry or
+tree-pinned pybind11 revision to recover that dependency locally. The older
+M1--M4 worktree happens to contain pybind11, but it is not an M5.0BF-pinned
+dependency and was not linked or copied into this isolated worktree. No
+simulator binary or pilot process was produced.
+
 Thus Q1 remains **PILOT-BLOCKED BY MISSING ADMISSIBLE TRACE INPUT / GPU TRACE
 EXECUTION**, rather than falsely declaring either formal trace validity or a
 source-semantic failure. The next admissible Q1 action is an isolated build

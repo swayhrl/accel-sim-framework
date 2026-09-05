@@ -46,7 +46,8 @@ but no exact provenance-compatible completed-Paper trace is locally available
 and this host has no visible NVIDIA device for fresh NVBit tracing. No trace
 simulation, Q3 lower-cap simulation, platform freeze, or M5.0C advancement has
 occurred. The Q1 pilot is blocked on an admissible trace artifact/execution
-environment; the five M5.0B jobs remain untouched.
+environment and the isolated trace build additionally lacks a repository-pinned
+`extern/pybind11` dependency; the five M5.0B jobs remain untouched.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
