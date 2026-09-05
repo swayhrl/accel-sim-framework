@@ -39,6 +39,15 @@ If Q1 validates the trace semantic contract, trace-driven Accel-Sim becomes
 the default remaining formal performance path; workload-local trace gaps use
 explicit execution-driven exceptions rather than reverting the campaign.
 
+`m5/handoffs/M5_0BF_Q1_Q2_STATIC_AUDIT.md` records the source-backed common
+trace-to-DTC path and the SM7/QV100 origin of the inherited 80-SM platform.
+The static path is plausible for the Paper-10 cacheable-global LD/ST contract,
+but no exact provenance-compatible completed-Paper trace is locally available
+and this host has no visible NVIDIA device for fresh NVBit tracing. No trace
+simulation, Q3 lower-cap simulation, platform freeze, or M5.0C advancement has
+occurred. The Q1 pilot is blocked on an admissible trace artifact/execution
+environment; the five M5.0B jobs remain untouched.
+
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
 The M5-T005 researcher-decision boundary is resolved.  The paper-facing
