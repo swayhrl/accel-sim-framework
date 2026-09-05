@@ -210,7 +210,7 @@ metrics BICG Base-only minimum was launched in isolated, no-timeout sessions:
 
 | candidate | runner PID | simulator PID | output directory |
 | --- | ---: | ---: | --- |
-| 80 SM + cap 256 | 3547071 | 3547120 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap256-20260905` (live) |
+| 80 SM + cap 256 | 3547071 | 3547120 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap256-20260905` (natural terminal; checked) |
 | 80 SM + cap 10240 | 3547072 | 3547122 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap10240-20260905` (natural terminal; checked) |
 | 80 SM + cap 1048576 | 3547073 | 3547124 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap1048576-20260905` (natural terminal; checked) |
 
@@ -223,26 +223,31 @@ the reviewed per-candidate config hashes, and the instrumented runtime hash
 above.  They are live diagnostics, not completed results or a frozen Q3
 decision; the five M5.0B processes remain untouched.
 
-### BICG partial terminal checkpoint — non-decisive
+### BICG terminal checkpoint — Q3 representative, still non-decisive overall
 
-The `80 SM + cap 10240` and `80 SM + cap 1048576` BICG runs naturally reached
+All three BICG candidates naturally reached
 `GPGPU-Sim: *** exit detected ***`, and each source-defined BICG checker
 reports zero CPU/GPU comparison mismatches.  Strict summaries close PIB
-admit/retire at `3145984/3145984`, lower acquire/release at
-`19187022/19187022`, and final PIB/lower outstanding at zero.
+admit/retire at `3145984/3145984`, final PIB/lower outstanding at zero, and
+lower acquire/release at `19186845/19186845` (cap 256) or
+`19187022/19187022` (cap 10240/high).
 
 | candidate | cycles / instructions / IPC | lower avg / peak / full cycles | PIB / MSHR / true allocation | native downstream pressure | compact Q3 evidence |
 | --- | --- | --- | --- | --- | --- |
+| 80 SM + cap 256 | `51041920` / `184803328` / `3.6206186601` | `74.1975749737` / `256` / `77761587` | `30536937` / `0` / `895862507` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_bicg_80sm_cap256.json` |
 | 80 SM + cap 10240 | `50083030` / `184803328` / `3.6899390472` | `75.7330360204` / `512` / `0` | `13522489` / `0` / `893775912` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_bicg_80sm_cap10240.json` |
 | 80 SM + cap 1048576 | `50083030` / `184803328` / `3.6899390472` | `75.7330360204` / `512` / `0` | `13522489` / `0` / `893775912` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_bicg_80sm_cap1048576.json` |
 
 Thus the researcher-proportional `10240` row is identical to the explicit
 high-cap row for every required BICG Base-only metric and has no synthetic
-lower-cap-full event/cycle.  This is positive evidence that cap `10240` is
-not the dominant artificial limiter for this representative.  It does **not**
-yet freeze the formal platform: the cap-256 diagnostic control and all three
-GESUMMV controls remain live, and no Q3 diagnostic is added to the formal
-result registry.
+lower-cap-full event/cycle.  In contrast, cap `256` is full for `77761587`
+cycles, doubles BICG PIB-full cycles, and has no compensating native queue
+pressure; it is an artificial global lower-credit bottleneck rather than the
+intended natural downstream limit.  This is positive evidence that cap
+`10240` is not the dominant artificial limiter for this representative and
+that `80 SM + 256` must remain diagnostic-only.  It does **not** yet freeze
+the formal platform: all three GESUMMV controls remain live, and no Q3
+diagnostic is added to the formal result registry.
 
 The second required representative is the known non-lower-cap-saturated
 control, source-equivalent GESUMMV.  Its same three complete-metrics,

@@ -105,11 +105,15 @@ directories.  The `10240` and `1048576` rows have now naturally terminated,
 passed source-defined zero-mismatch output checking and strict drain/accounting
 parsing, and have schema-v2 compact Q3 evidence.  They are exactly equal on
 cycles, IPC, lower average/peak/full cycles, PIB/MSHR/true-allocation stalls,
-and native downstream pressure: BICG shows no synthetic lower-cap saturation
-at either 10240 or high cap.  The cap-256 BICG control (PID 3547120) remains
-live, as do all GESUMMV controls.  These are fidelity diagnostics only—not
-formal registry entries or a cap/platform freeze.  The pre-instrumentation
-trio and the five protected M5.0B jobs also continue untouched.
+and native downstream pressure.  The cap-256 BICG control has also naturally
+terminated and passed terminal checks, but exposes `77,761,587` lower-cap-full
+cycles and `30,536,937` PIB-full cycles versus zero and `13,522,489` at
+10240/high, while every native downstream-pressure metric remains zero.  BICG
+therefore proves `80 SM + cap 256` is an artificial diagnostic bottleneck and
+that 10240 is equivalent to high cap for this representative.  All GESUMMV
+controls remain live; these are fidelity diagnostics only—not formal registry
+entries or a cap/platform freeze.  The pre-instrumentation trio and the five
+protected M5.0B jobs also continue untouched.
 The companion, source-equivalent GESUMMV Base-only cap-256/cap-10240/
 cap-1048576 control trio is also live under
 `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-*` (simulator PIDs
