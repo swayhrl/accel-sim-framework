@@ -175,7 +175,11 @@ the frozen 16 KiB comparison geometry and Q3's requirement to observe native
 downstream queues rather than hide them behind a synthetic limit.
 
 The thesis does **not** define the synthetic aggregate lower-credit value of
-256.  `256 aggregate credits at 2 SM`, and hence the `128 credits/SM`
+256.  Its DTC-relevant `256` values are instead pending-instruction-buffer
+capacities: PDF page 74 describes a 256-entry pending-instruction queue and
+PDF page 79 gives IO/OO buffer capacities of 256/128 instructions.  Those
+PIB capacities cannot be substituted for a global lower-outstanding credit
+limit.  `256 aggregate credits at 2 SM`, and hence the `128 credits/SM`
 proportional rule, is a researcher-confirmed M5 authority—not a numerical
 claim attributed to the dissertation.  This distinction preserves both the
 thesis platform evidence and the scope of the formal Accel-Sim scaling rule.
