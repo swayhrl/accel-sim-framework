@@ -61,6 +61,15 @@ the completed M5 anchors; the local SpMV trace also has a different matrix
 input. They are explicitly rejected rather than replayed. The five M5.0B jobs
 remain untouched.
 
+For the later Base-only Q3 cap decision, Framework BF commit
+`01a2f91f41d008faaa295e3e9cbd471ea50520e3` adds the separate read-only
+`util/dtc_l1/parse_m5_0bf_q3.py` extractor. It combines terminal DTC/Base
+metrics with perf-counter `chiplet_queue_full_*` and
+`L2_dram_queue_full_*` aggregates, so native downstream pressure cannot be
+silently omitted. Its only completed replay is a parser smoke over the old
+M5.0B BICG raw artifacts; that data remains unregistered and may not be
+reused as a formal Q3 result. Q3 has not started.
+
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
 The M5-T005 researcher-decision boundary is resolved.  The paper-facing
