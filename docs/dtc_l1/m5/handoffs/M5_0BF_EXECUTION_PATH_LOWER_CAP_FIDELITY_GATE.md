@@ -175,6 +175,25 @@ No target named `dtc_l1_m1_common_test` or
 CTest declares zero tests, so validation is a clean production-runtime build
 plus the existing static/strict-parser checks—not an invented unit-test PASS.
 
+After a pre-launch host audit found 512 logical CPUs, approximately 107 GiB
+MemAvailable, `vmstat` `si=0`/`so=0`, and no active swap I/O, the complete-
+metrics BICG Base-only minimum was launched in isolated, no-timeout sessions:
+
+| candidate | runner PID | simulator PID | output directory |
+| --- | ---: | ---: | --- |
+| 80 SM + cap 256 | 3547071 | 3547120 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap256-20260905` |
+| 80 SM + cap 10240 | 3547072 | 3547122 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap10240-20260905` |
+| 80 SM + cap 1048576 | 3547073 | 3547124 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap1048576-20260905` |
+
+At the first 56-second read-only sample, all three simulators were live with
+approximately one CPU each, growing simulator cycle/instruction counters, and
+no assertion/fatal/deadlock/output-mismatch signature.  The run identities
+pin BICG binary SHA-256 `db1cc9246ee97389b32396d3b20294a3c8a89139067cabcda93ec87d0ed1f84b`,
+PTX SHA-256 `8a0f2ab72a5ac679037e17cfd2f748e7e53ce119c03648948fe8771058c98485`,
+the reviewed per-candidate config hashes, and the instrumented runtime hash
+above.  They are live diagnostics, not completed results or a frozen Q3
+decision; the five M5.0B processes remain untouched.
+
 ## Required terminal declaration
 
 M5.0BF must declare exactly one terminal outcome:

@@ -95,6 +95,12 @@ or assertion behavior changes, and the M5.0B jobs remain untouched.
 The isolated CMake Release build of Core `3f23c4aa` has completed at
 `/tmp/dtc-l1-m5-0bf-metrics-build` (`libcudart.so` SHA-256
 `d39481291fe688f18a3867ecec0c21b8ee3d8a800d351848a0b075b67cca7a9c`).
+The valid, instrumented BICG Base-only cap-256/cap-10240/cap-1048576 trio is
+now live in isolated no-timeout `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-*` output
+directories (simulator PIDs 3547120/3547122/3547124).  Its first read-only
+sample showed advancing simulator counters and no hard-error signature; it is
+not a completed result or a cap/platform freeze.  The pre-instrumentation trio
+and the five protected M5.0B jobs also continue untouched.
 
 ## Active recovery — approved ratio-zero conventional-L1 policy
 
