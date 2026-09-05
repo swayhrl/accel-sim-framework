@@ -22,6 +22,7 @@ REQUIRED = (
     "L2_CLASS_REPLACEMENT_MATRIX.tsv",
     "DRAM_REQUEST_CLASS_STATS.tsv",
     "CROSS_LAYER_OUTCOME_MATRIX.tsv",
+    "NATIVE_MEMORY_SYSTEM_STATS.tsv",
     "TELEMETRY_SCHEMA.md",
 )
 PROVENANCE_COLUMNS = (
@@ -211,10 +212,46 @@ def main() -> None:
     write_tsv(output_dir / "L1D_FAIL_PRESSURE.tsv", provenance,
               ["scope", "metric", "value"], pressure_rows)
 
+    # Reuse the simulator's final global memory-system report.  This parser
+    # intentionally reads only an existing log; it adds neither tracing nor a
+    # replay requirement.  Per-object attribution is not inferred here.
+    native_rows: list[list[str]] = []
+    scalar = re.compile(r"^(maxmflatency|averagemflatency|max_icnt2mem_latency|"
+                        r"avg_icnt2mem_latency|maxmrqlatency|avg_mrq_latency|"
+                        r"max_icnt2sh_latency|avg_icnt2sh_latency|total dram reads|"
+                        r"total dram writes|average row locality)\s*=\s*(.+)$")
+    sections = {
+        "number of total read accesses:": "READ_ACCESSES",
+        "number of total write accesses:": "WRITE_ACCESSES",
+        "average mf latency per bank:": "AVG_MF_LATENCY",
+        "maximum mf latency per bank:": "MAX_MF_LATENCY",
+        "average row accesses per activate:": "ROW_ACCESSES_PER_ACTIVATE",
+        "maximum concurrent accesses to same row:": "MAX_CONCURRENT_SAME_ROW",
+        "maximum service time to same row:": "MAX_SERVICE_SAME_ROW",
+    }
+    active_section = ""
+    latest: dict[tuple[str, str], str] = {}
+    for line in lines:
+        match = scalar.match(line)
+        if match:
+            latest[("GLOBAL", match.group(1))] = match.group(2).strip()
+        if line in sections:
+            active_section = sections[line]
+            continue
+        bank = re.match(r"^dram\[(\d+)\]:\s*(.*)$", line)
+        if bank and active_section:
+            latest[(active_section, bank.group(1))] = bank.group(2).strip()
+        elif line and not line.startswith("dram["):
+            active_section = ""
+    for (scope, metric), value in sorted(latest.items()):
+        native_rows.append([scope, metric, value])
+    write_tsv(output_dir / "NATIVE_MEMORY_SYSTEM_STATS.tsv", provenance,
+              ["scope", "metric", "value"], native_rows)
+
     (output_dir / "TELEMETRY_SCHEMA.md").write_text(
         "# M4C/M4B bounded memory telemetry schema\n\n"
         "Schema: `M4C_MEMORY_TELEMETRY_V1`.  The simulator emits ROI-per-run, "
-        "per-kernel, and deterministic fixed transaction-window aggregate records. "
+        "per-kernel, and deterministic L1D-access-attempt-window aggregate records. "
         "It never emits a formal per-access log. `m4c_telemetry` is L1D; "
         "`m4c_telemetry_l2` is L2; `m4c_telemetry_dram*` is DRAM; "
         "`m4c_telemetry_l2_replacement` is incoming-to-victim attribution; "
@@ -226,8 +263,12 @@ def main() -> None:
         "`KERNEL_MEMORY_STATS.tsv` and `WINDOW_MEMORY_STATS.tsv` retain the "
         "simulator record type plus its ordered payload; the typed layer-specific "
         "tables provide named columns for L1D, L2, queue, replacement, and "
-        "cross-layer records.  The window payload is a deterministic bounded "
-        "aggregate, never an access sequence.\n\n"
+        "cross-layer records.  `FIXED_WINDOW` is formally named "
+        "`L1D_ACCESS_ATTEMPT_WINDOW`: it advances in `record_l1()`, is a "
+        "deterministic bounded aggregate, and is never an access sequence.  It "
+        "is not an exact unique-coalesced-transaction window and must not be "
+        "used to compute exact transactions-per-memory-instruction.  Per-kernel "
+        "frontend instruction/transaction records retain their existing meaning.\n\n"
         "Translation source is exact only for application transactions that passed "
         "the shader-side admission point: VM_DISABLED, IDEAL_IDENTITY, "
         "L1_TLB_HIT, L2_TLB_HIT, or PTW.  In mode-2 profiles, the simulator "
