@@ -377,7 +377,7 @@
 
 ## M5-0BT-003 — capture-host device probe used unavailable Runtime UUID APIs
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> HARDWARE_RETEST_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PASS -> CLOSED`.
 - Scope: V100/CUDA-11.8 identity preflight after the required tracer and
   postprocessor build; no CUDA workload application, raw trace, immutable
   bundle, archive, replay, or formal result has started.
@@ -393,6 +393,9 @@
   UUID with `cuDeviceGetUuid`, check each API result, and link the isolated
   probe with `-lcuda`. The output contract remains exactly the logical-device
   header plus the V100/UUID/CC/memory row used in capture provenance.
+- Hardware retest: the isolated CUDA-11.8/sm70 probe emitted the selected
+  Tesla V100-PCIE-32GB, CC 7.0 and Driver-API UUID; the values agree with the
+  independent `nvidia-smi` identity query.
 - Resume point: deploy this tested adapter to a new clean control checkout and
   resume the same BICG T1 identity, retaining every prior retry log and the
   already-built scratch tracer only as operational evidence.

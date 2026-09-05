@@ -2,7 +2,7 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-003.
+Status: M5.0BT T1 ACTIVE; BICG exact-capture retry-5 authorized.
 
 ## Current authoritative state
 
@@ -23,8 +23,10 @@ Status: M5.0BT T1 ACTIVE; RESOLVING_ISSUE M5-0BT-003.
   tool after the required trace tool/postprocessor compiled. Its scoped-build
   repair and regression contract now pass. Retry-4 completed that build but
   exposed M5-0BT-003: the host identity probe used incorrect CUDA Runtime UUID
-  APIs. The compact Driver-API UUID adapter is pending V100 revalidation; no
-  application, raw trace, immutable bundle or formal result has been created.
+  APIs. The compact Driver-API UUID adapter passed isolated CUDA-11.8/V100
+  revalidation (properties, Driver UUID and CC 7.0 agree with `nvidia-smi`).
+  No application, raw trace, immutable bundle or formal result has been
+  created; retry-5 is the same BICG T1 identity.
 
 ## Required next action after a V100 host is supplied
 
