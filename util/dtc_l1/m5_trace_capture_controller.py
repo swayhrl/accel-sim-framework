@@ -122,7 +122,12 @@ def tracer(a,o,nvcc):
  kids=list((d/"nvbit_release").iterdir())
  if not (d/"nvbit_release/core").exists() and len(kids)==1 and kids[0].is_dir():shutil.move(str(kids[0]),str(d/"tmp"));shutil.rmtree(d/"nvbit_release");shutil.move(str(d/"tmp"),str(d/"nvbit_release"))
  if not (d/"nvbit_release/core/libnvbit.a").exists():raise RuntimeError("NVBit archive lacks required core/libnvbit.a")
- run(["make"],cwd=d,env={**os.environ,"NVCC":str(nvcc),"PATH":str(nvcc.parent)+":"+os.environ["PATH"]});tool=d/"tracer_tool/tracer_tool.so";post=d/"tracer_tool/traces-processing/post-traces-processing"
+ env={**os.environ,"NVCC":str(nvcc),"PATH":str(nvcc.parent)+":"+os.environ["PATH"]}
+ # The root Makefile also builds unrelated legacy demonstration tools. Build
+ # only the trace tool and its postprocessor that this controller consumes.
+ run(["make","-C","tracer_tool"],cwd=d,env=env)
+ run(["make","-C","tracer_tool/traces-processing"],cwd=d,env=env)
+ tool=d/"tracer_tool/tracer_tool.so";post=d/"tracer_tool/traces-processing/post-traces-processing"
  if not tool.exists() or not post.exists():raise RuntimeError("tracer build incomplete")
  return tool,post,{"tracer_source_tree_sha":tree(a.tracer_framework_src),"tracer_tool_sha":sha(tool),"nvbit_archive_sha":sha(a.nvbit_archive),"postprocess_sha":sha(post)}
 def record(a,s,src,script,cmd,exe,inv,t,raw,grp,prov,device):

@@ -356,3 +356,21 @@
   listing path; controller compilation and full no-GPU suite pass. Resume T1
   from the same BICG sources, NVBit archive, CUDA 11.8, V100 and output root;
   the two pre-build failed launcher logs remain operational evidence only.
+
+## M5-0BT-002 — root tracer Makefile builds an unrelated incompatible legacy tool
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
+- Scope: T1 capture-host tracer build only. The required NVBit trace tool and
+  postprocessor both compiled; no GPU application, raw trace or bundle started.
+- Evidence: root `make` built `tracer_tool/tracer_tool.so` and
+  `traces-processing/post-traces-processing`, then entered
+  `others/spinlock_tool`, whose legacy source fails against NVBit 1.8 with
+  unresolved instrumentation API identifiers.
+- Classification: unrelated auxiliary-tool build scope, not a trace tool,
+  NVBit, CUDA, workload, DTC or source-identity failure.
+- Resolution/regression: controller now invokes only `make -C tracer_tool`
+  and `make -C tracer_tool/traces-processing`, exactly the two artifacts it
+  validates and uses. The contract regression asserts this scoped build; no
+  NVBit/tracer/application source, trace format or runtime semantics changed.
+- Resume point: restart the same BICG T1 identity after deploying the compact
+  controller repair; retain failed launcher logs as operational evidence.
