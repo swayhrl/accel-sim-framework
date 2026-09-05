@@ -2,7 +2,8 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1 PASS; STORAGE_ADMISSION/COPYBACK/T2 ACTIVE.
+Status: M5.0BT T1, BICG storage admission, and immutable-store copyback PASS;
+2DConv heavy-pilot admission update and T2 BICG replay qualification ACTIVE.
 
 ## Current authoritative state
 
@@ -41,14 +42,21 @@ Status: M5.0BT T1 PASS; STORAGE_ADMISSION/COPYBACK/T2 ACTIVE.
   reached record construction and exposed M5-0BT-009: it had not materialized
   the validated manifest files before hashing them. Its write-before-hash
   repair passed: retry-8 is now an immutable, archived BICG T1 bundle. See
-  `m5/handoffs/M5_0BT_BICG_T1_REVIEW.md`; no non-BICG capture has started.
+  `m5/handoffs/M5_0BT_BICG_T1_REVIEW.md`. The archive was SHA-verified after
+  copyback, unpacked once into the immutable replay store, and internally
+  revalidated against its bundle sums. The BICG admission projects
+  47,591,571,552 bytes against 104,537,268,224 measured free bytes, but is
+  provisional because BICG's two small-grid invocations do not bound 2DConv.
+  The required exact 2DConv heavy storage-fidelity pilot is active before the
+  remaining capture queue is admitted. See
+  `m5/handoffs/M5_0BT_BICG_ADMISSION_COPYBACK.md`.
 
 ## Required next action after a V100 host is supplied
 
-Run the documented BICG pilot. It requires only PolyBench, tracer pin and
-NVBit; it intentionally requires no SpMV/Parboil paths. Archive/copyback and
-storage admission must pass before any non-BICG capture. Then complete the
-Base/IO/OO trace mechanism qualification before entering M5.0C.
+Complete the exact 2DConv heavy-pilot storage update and independently qualify
+the immutable BICG bundle under the same-bundle Base/IO/OO T2 contract. Then
+capture/qualify GESUMMV and continue the remaining exact Paper queue. No
+M5.0C transition is authorized.
 
 ## HISTORICAL / SUPERSEDED — DO NOT EXECUTE
 

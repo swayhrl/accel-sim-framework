@@ -34,5 +34,7 @@ evidence, not a Base/IO/OO simulator result.
 
 M5-0BT-001 through M5-0BT-009 are preserved recovery evidence, not formal
 results. The accepted bundle is retry-8 plus resume-only finalization; no GPU
-application reran after raw/grouped/checker success. Next: BICG-bound storage
-admission, copyback receipt, then same-bundle Base/IO/OO T2 qualification.
+application reran after raw/grouped/checker success. BICG-bound storage
+admission and the immutable-store copyback receipt are closed separately in
+`M5_0BT_BICG_ADMISSION_COPYBACK.md`. The next capture-side storage gate is the
+required 2DConv heavy-pilot update; T2 uses this exact BICG bundle unchanged.
