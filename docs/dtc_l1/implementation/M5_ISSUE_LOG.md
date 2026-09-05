@@ -399,3 +399,21 @@
 - Resume point: deploy this tested adapter to a new clean control checkout and
   resume the same BICG T1 identity, retaining every prior retry log and the
   already-built scratch tracer only as operational evidence.
+
+## M5-0BT-004 — selected PolyBench build propagated a false final predicate
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> V100_RETEST_PENDING`.
+- Scope: the exact BICG CUDA application build after tracer and device
+  preflight passed. No application execution, raw trace, immutable bundle,
+  archive, replay, or formal result has started.
+- Evidence: retry-5 invoked the fixed CUDA-11.8/sm70 BICG script; `nvcc`
+  emitted the expected binary, but the script returned 1. Exact reproduction
+  showed only compiler warnings and the same binary, followed by `RC=1`.
+- Root cause: with `set -e`, the final unselected workload's
+  `[[ selected ]] && build` predicate became the script's final status.
+- Repair: use an explicit `if` for each requested workload. An unselected
+  final item now completes successfully rather than changing the selected
+  build's status. Source files, source SHA, CUDA version, sm70 flag and build
+  command are unchanged; the contract test locks this success behavior.
+- Resume point: deploy to a new clean control checkout, rerun the exact BICG
+  build on V100, then resume the same T1 capture identity.
