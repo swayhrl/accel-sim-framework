@@ -76,6 +76,24 @@ tracer/NVBit source SHA, trace workload/input identity, trace parser/frontend
 SHA, Core SHA containing the DTC path, formal platform/config SHA, and proof
 that Base/IO/OO all traverse the same DTC timing mechanism.
 
+### Q1 decision — current Paper-10 formal campaign
+
+**`EXECUTION_DRIVEN_REQUIRED`** is selected for the current Paper-10 formal
+campaign. The static audit proves that a semantically admissible trace would
+enter the same DTC timing mechanism, but no local trace satisfies the required
+exact source, input, launch-ABI, and cache-semantics identity: the archived
+BICG, GESUMMV, and 2DConv candidates have source/ABI mismatches, and the
+archived SpMV candidate has a different matrix/input. A fresh NVBit trace
+cannot be generated on this host because no NVBit-capable GPU device is
+visible. This is a provenance/semantic-contract failure for these formal
+workloads, not a claim that the trace frontend is defective.
+
+Accordingly, the current formal Paper-10 campaign retains execution-driven
+mode. The rejected-trace BICG smoke remains nonformal transport/lifecycle
+evidence only and cannot reverse this decision. If an exact frozen trace is
+later supplied, it may be evaluated for that workload under the Base/IO/OO
+contract without relabelling the current campaign or any existing result.
+
 ## Q2 — SM-count fidelity
 
 The original thesis platform is the **2-SM Unified-Cache GPGPU**.  It is the
@@ -137,6 +155,179 @@ L2/subpartition/DRAM queue pressure, Base cycles, and IPC.  Select only by
 architecture/model fidelity, Base-only structural-stall behavior, absence of a
 premature synthetic mask on PIB/MSHR/Tag-cacheline bottlenecks, and interaction
 with real bounded NoC/L2/DRAM queues—not by a larger DTC speedup.
+
+### Q3 observability contract
+
+The historical DTC terminal report contained only lower-credit peak and final
+drain state; it could not establish the required time-weighted lower
+outstanding average.  The isolated BF Core therefore adds two
+statistics-only, per-simulated-core-cycle counters:
+`DTC_L1_lower_outstanding_cycle_sum` and
+`DTC_L1_lower_outstanding_sample_cycles`.  Their quotient is the Q3 lower
+outstanding average.  The sample is taken after that cycle's core-pipeline
+admission/completion transitions.  It neither changes lower-credit admission,
+lower-credit release, timing, scheduling, nor any existing assertion.
+
+Q3 also exports the source-defined conventional-L1
+`LINE_ALLOC_FAIL` aggregate as
+`DTC_L1_baseline_l1d_line_allocation_fail_events`.  It means all candidate
+cache lines were reserved, and is the required true Tag/cacheline-allocation
+signal.  It remains distinct from `DTC_L1_primary_stall_tag_bank` (DTC
+Tag-bank arbitration), baseline MSHR entry/merge failures, and miss-queue or
+native downstream pressure.
+
+The Q3 extractor records both `DTC_L1_lower_cap_full_events` and the existing
+source-emitted `DTC_L1_nonexclusive_lower_cap_full_cycles` under distinct JSON
+keys.  The latter is the required lower-cap-full-cycle field for comparison;
+the former remains an admission-attempt diagnostic and must not silently be
+substituted for it.
+
+The compact extractor output is schema `dtc_l1_m5_0bf_q3_v2`.  Version 2
+requires the lower-occupancy sum/sample pair, distinct lower-cap event and
+cycle fields, and the source-defined `LINE_ALLOC_FAIL` aggregate; no older Q3
+JSON may be compared or relabelled as a complete-metrics result.
+
+Any Q3 run launched before this instrumentation is available remains a
+non-decisive pre-instrumentation diagnostic.  It may establish that a
+candidate executes and has no immediate hard failure, but it cannot freeze a
+cap or platform because the required average is absent.  A separately built,
+isolated Core and repeat of the minimum Base-only candidates is required
+before Q3 closeout; this has no effect on the live M5.0B jobs.
+
+The instrumented Core was CMake Release-built in its own disposable namespace
+`/tmp/dtc-l1-m5-0bf-metrics-build` from Core
+`3f23c4aa198ef6acfa1354a473a7fd151d05af3e`; target `cudart` compiled
+successfully.  The resulting `libcudart.so` SHA-256 is
+`d39481291fe688f18a3867ecec0c21b8ee3d8a800d351848a0b075b67cca7a9c`.
+No target named `dtc_l1_m1_common_test` or
+`dtc_l1_completion_accounting_test` exists in this CMake configuration and
+CTest declares zero tests, so validation is a clean production-runtime build
+plus the existing static/strict-parser checks—not an invented unit-test PASS.
+
+After a pre-launch host audit found 512 logical CPUs, approximately 107 GiB
+MemAvailable, `vmstat` `si=0`/`so=0`, and no active swap I/O, the complete-
+metrics BICG Base-only minimum was launched in isolated, no-timeout sessions:
+
+| candidate | runner PID | simulator PID | output directory |
+| --- | ---: | ---: | --- |
+| 80 SM + cap 256 | 3547071 | 3547120 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap256-20260905` (natural terminal; checked) |
+| 80 SM + cap 10240 | 3547072 | 3547122 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap10240-20260905` (natural terminal; checked) |
+| 80 SM + cap 1048576 | 3547073 | 3547124 | `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-80sm-cap1048576-20260905` (natural terminal; checked) |
+
+At the first 56-second read-only sample, all three simulators were live with
+approximately one CPU each, growing simulator cycle/instruction counters, and
+no assertion/fatal/deadlock/output-mismatch signature.  The run identities
+pin BICG binary SHA-256 `db1cc9246ee97389b32396d3b20294a3c8a89139067cabcda93ec87d0ed1f84b`,
+PTX SHA-256 `8a0f2ab72a5ac679037e17cfd2f748e7e53ce119c03648948fe8771058c98485`,
+the reviewed per-candidate config hashes, and the instrumented runtime hash
+above.  They are live diagnostics, not completed results or a frozen Q3
+decision; the five M5.0B processes remain untouched.
+
+### BICG terminal checkpoint — Q3 representative, still non-decisive overall
+
+All three BICG candidates naturally reached
+`GPGPU-Sim: *** exit detected ***`, and each source-defined BICG checker
+reports zero CPU/GPU comparison mismatches.  Strict summaries close PIB
+admit/retire at `3145984/3145984`, final PIB/lower outstanding at zero, and
+lower acquire/release at `19186845/19186845` (cap 256) or
+`19187022/19187022` (cap 10240/high).
+
+| candidate | cycles / instructions / IPC | lower avg / peak / full cycles | PIB / MSHR / true allocation | native downstream pressure | compact Q3 evidence |
+| --- | --- | --- | --- | --- | --- |
+| 80 SM + cap 256 | `51041920` / `184803328` / `3.6206186601` | `74.1975749737` / `256` / `77761587` | `30536937` / `0` / `895862507` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_bicg_80sm_cap256.json` |
+| 80 SM + cap 10240 | `50083030` / `184803328` / `3.6899390472` | `75.7330360204` / `512` / `0` | `13522489` / `0` / `893775912` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_bicg_80sm_cap10240.json` |
+| 80 SM + cap 1048576 | `50083030` / `184803328` / `3.6899390472` | `75.7330360204` / `512` / `0` | `13522489` / `0` / `893775912` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_bicg_80sm_cap1048576.json` |
+
+Thus the researcher-proportional `10240` row is identical to the explicit
+high-cap row for every required BICG Base-only metric and has no synthetic
+lower-cap-full event/cycle.  In contrast, cap `256` is full for `77761587`
+cycles, doubles BICG PIB-full cycles, and has no compensating native queue
+pressure; it is an artificial global lower-credit bottleneck rather than the
+intended natural downstream limit.  This is positive evidence that cap
+`10240` is not the dominant artificial limiter for this representative and
+that `80 SM + 256` must remain diagnostic-only.  It does **not** yet freeze
+the formal platform: all three GESUMMV controls remain live, and no Q3
+diagnostic is added to the formal result registry.
+
+The second required representative is the known non-lower-cap-saturated
+control, source-equivalent GESUMMV.  Its same three complete-metrics,
+Base-only candidates were launched after the same no-swap host audit:
+
+| candidate | runner PID | simulator PID | output directory |
+| --- | ---: | ---: | --- |
+| 80 SM + cap 256 | 3551706 | 3551756 | `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-80sm-cap256-20260905` |
+| 80 SM + cap 10240 | 3551707 | 3551758 | `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-80sm-cap10240-20260905` |
+| 80 SM + cap 1048576 | 3551708 | 3551755 | `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-80sm-cap1048576-20260905` |
+
+Each identity pins binary SHA-256
+`32da3ab10c6b0cdb0a7e9af569899e51ebb302a19602f9d37e3377469ab6447e`,
+the exact PTX artifact SHA-256
+`484a2f76bcd03e27ff8cdcd7920a9ea2f36a755116e07ed057302432a1f936f2`
+used by the already strict-validated M5.0B GESUMMV run and registry, the
+reviewed config hash, and runtime SHA-256 above.  These fresh processes are
+live diagnostics only; output checking (`verify_m5_polybench_output.py gesu`),
+strict parsing, Q3 extraction, and Base-only comparison remain mandatory at
+natural terminal state.
+
+### GESUMMV terminal checkpoint — Q3 control
+
+All three GESUMMV candidates naturally reached `GPGPU-Sim: *** exit detected
+***`.  `verify_m5_polybench_output.py gesu` reports exactly zero source
+comparison mismatches for every row.  The strict summaries show equal
+PIB admit/retire (`4194688/4194688`), lower acquire/release
+(`34327761/34327761`), and final PIB/lower outstanding (`0/0`).  No terminal
+log has an assertion, fatal, deadlock, or output-mismatch signature.  The
+following schema-v2 evidence was extracted from each terminal log and its
+matching perf counter; `framework_sha` in those compact JSONs identifies the
+extractor checkout, while the exact executed Core/runtime/config/workload
+identities are separately pinned above and in the JSON provenance.
+
+| candidate | cycles / instructions / IPC | lower avg / peak / full cycles | PIB / MSHR / true allocation | native downstream pressure | compact Q3 evidence |
+| --- | --- | --- | --- | --- | --- |
+| 80 SM + cap 256 | `97750749` / `197296128` / `2.0183592455` | `65.2569847726` / `208` / `0` | `22701138` / `0` / `1773816697` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_gesummv_80sm_cap256.json` |
+| 80 SM + cap 10240 | `97750749` / `197296128` / `2.0183592455` | `65.2569847726` / `208` / `0` | `22701138` / `0` / `1773816697` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_gesummv_80sm_cap10240.json` |
+| 80 SM + cap 1048576 | `97750749` / `197296128` / `2.0183592455` | `65.2569847726` / `208` / `0` | `22701138` / `0` / `1773816697` | chiplet `0`, L2-DRAM `0`, DRAMfull `0` | `generated/m5_0bf_q3_gesummv_80sm_cap1048576.json` |
+
+GESUMMV is the intended non-saturated control: its peak (`208`) never reaches
+the suspect cap (`256`), so all three rows are expectedly identical.  In the
+lower-cap-saturated BICG representative, by contrast, cap `256` incurred
+`77761587` lower-cap-full cycles, whereas cap `10240` and cap `1048576` were
+identical and had zero lower-cap-full cycles.  Thus both representatives show
+that the proportional cap `10240` is observationally equivalent to the high
+finite control.  The zero native queue counters mean that neither workload
+reaches a native NoC/L2/DRAM queue bound; that absence does not preserve the
+synthetic cap—rather, it leaves the observed PIB/tag/cacheline structural
+stalls visible without an artificial global-credit mask.
+
+## M5.0BF terminal declaration — PASS
+
+**`EXEC_PATH_REQUIRED + PLATFORM_CONFIG_FROZEN`**
+
+Q1 freezes execution-driven mode for the current Paper-10 formal campaign:
+the source audit proves a semantically admissible trace would enter the common
+DTC timing path, but no exact local trace preserves the required source,
+input, launch-ABI, and cache-semantics contract, and this host cannot produce
+one with NVBit.  Q2 establishes that the approved primary platform is the
+inherited V100/SM7-style **80 SM** model, not a thesis-derived SM count.  Q3
+freezes the researcher-proportional **10240 global lower credits** (128/SM)
+for that 80-SM platform.  The exact Base configuration authority is
+`configs/dtc_l1/m5/M5_0BF_PAPER_BASE_80SM_CAP10240.config`, SHA-256
+`36005d29a6e29b45089468f5ad9f76efca6a4f4a07f809b5384a40c6d833d1f5`; later
+Base/IO/OO formal configs must preserve the same platform and lower-cap policy.
+
+`80 SM + cap 256` is frozen as diagnostic-only `CURRENT_INVALID_SUSPECT` and
+may not be used as the formal platform.  The 64-SM/cap-8192 option is a
+secondary sensitivity candidate, not required to resolve the approved 80-SM
+primary: two source-identical, Base-only representatives establish cap-10240
+equals the explicit high control, while cap-256 either creates an artificial
+bottleneck (BICG) or is not reached (GESUMMV).  No IO/OO speedup contributed
+to this decision.  These Q3 diagnostics remain excluded from the formal
+result registry, and pre-freeze M5.0B performance counters remain validation/
+provenance anchors rather than results under this frozen platform.
+
+M5.0BF is PASS independently of M5.0B.  M5.0C remains prohibited until the
+five live M5.0B workloads reach natural terminal, correctness, strict-parser,
+registry, and lifecycle/provenance closure.
 
 ## Required terminal declaration
 
