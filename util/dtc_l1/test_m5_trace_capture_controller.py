@@ -20,10 +20,17 @@ with tempfile.TemporaryDirectory() as x:
  (b/"SHA256SUMS").write_text((b/"SHA256SUMS").read_text().replace("a","b",1));assert not c.valid_bundle(b);sums(b)
  # E: valid bundle with no archive performs archive only; no capture mutation.
  before=c.sha(b/"CAPTURE_RESULT.json");assert not c.valid_archive(o,"bicg");arc=c.archive(o,b);assert c.valid_archive(o,"bicg") and c.sha(b/"CAPTURE_RESULT.json")==before
+ # G: an archive failure leaves the scientifically valid bundle non-final.
+ failing=bundle(o,"atax");oldrun=c.run;c.run=lambda *a,**k: (_ for _ in ()).throw(RuntimeError("injected archive failure"))
+ try:c.archive(o,failing)
+ except RuntimeError:pass
+ else:raise AssertionError("injected archive failure accepted")
+ finally:c.run=oldrun
+ assert c.valid_bundle(failing) and not c.valid_archive(o,"atax") and not c.receipt(o,"atax").exists()
  # F: valid archive with no receipt transfers only.
  assert not c.receipt(o,"bicg").exists();dst=o/"copy/bicg.tar.zst";c.transfer(o,"bicg",dst);assert c.receipt(o,"bicg").is_file() and c.sha(arc)==c.sha(dst)
  # H: global rows are deterministic and only archive-backed.
- c.global_manifest(o);assert (o/"CAPTURE_RESULT_MANIFEST.tsv").read_text().count("\nid-")==0
+ c.global_manifest(o);first=(o/"CAPTURE_RESULT_MANIFEST.tsv").read_text();c.global_manifest(o);assert first==(o/"CAPTURE_RESULT_MANIFEST.tsv").read_text() and len(first.splitlines())==2
  # C: a single non-BICG request cannot evade admission.
  try:c.gate(o)
  except RuntimeError:pass
