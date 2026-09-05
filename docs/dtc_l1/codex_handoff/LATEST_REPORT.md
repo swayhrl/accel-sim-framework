@@ -99,12 +99,17 @@ or assertion behavior changes, and the M5.0B jobs remain untouched.
 The isolated CMake Release build of Core `3f23c4aa` has completed at
 `/tmp/dtc-l1-m5-0bf-metrics-build` (`libcudart.so` SHA-256
 `d39481291fe688f18a3867ecec0c21b8ee3d8a800d351848a0b075b67cca7a9c`).
-The valid, instrumented BICG Base-only cap-256/cap-10240/cap-1048576 trio is
-now live in isolated no-timeout `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-*` output
-directories (simulator PIDs 3547120/3547122/3547124).  Its first read-only
-sample showed advancing simulator counters and no hard-error signature; it is
-not a completed result or a cap/platform freeze.  The pre-instrumentation trio
-and the five protected M5.0B jobs also continue untouched.
+The valid, instrumented BICG Base-only cap-256/cap-10240/cap-1048576 trio ran
+in isolated no-timeout `/tmp/dtc-l1-m5-0bf-q3-valid-bicg-*` output
+directories.  The `10240` and `1048576` rows have now naturally terminated,
+passed source-defined zero-mismatch output checking and strict drain/accounting
+parsing, and have schema-v2 compact Q3 evidence.  They are exactly equal on
+cycles, IPC, lower average/peak/full cycles, PIB/MSHR/true-allocation stalls,
+and native downstream pressure: BICG shows no synthetic lower-cap saturation
+at either 10240 or high cap.  The cap-256 BICG control (PID 3547120) remains
+live, as do all GESUMMV controls.  These are fidelity diagnostics only—not
+formal registry entries or a cap/platform freeze.  The pre-instrumentation
+trio and the five protected M5.0B jobs also continue untouched.
 The companion, source-equivalent GESUMMV Base-only cap-256/cap-10240/
 cap-1048576 control trio is also live under
 `/tmp/dtc-l1-m5-0bf-q3-valid-gesummv-*` (simulator PIDs
