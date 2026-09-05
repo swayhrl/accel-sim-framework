@@ -1,7 +1,32 @@
 # M5.0B live review checkpoint
 
-Status: **ACTIVE — WAITING ON NATURAL TERMINALS; NOT M5.0B PASS**
+Status: **SUPERSEDED CAP-256 CLOSEOUT — NOT A FORMAL RESULT OR M5.0B PASS**
 Snapshot: `2026-09-05T22:44:19+08:00`
+
+## 2026-09-05 researcher-authorized cap-256 closeout
+
+The natural-terminal wait condition is withdrawn. After final read-only
+topology/identity/progress snapshots, graceful `SIGTERM` was sent only to the
+five run-owned PGIDs. All five process groups exited within 30 seconds; no
+SIGKILL, restart, deletion, reconfiguration, or signal to an observer was
+used. Output directories/logs/counters remain preserved. Every row is exactly
+**`RESEARCHER_ABORTED_SUPERSEDED_CAP256`** — not FAIL, DEADLOCK, TIMEOUT, or
+PASS — because its 80-SM/cap-256 configuration is superseded by the frozen
+80-SM/cap-10240 formal candidate.
+
+| workload | runner / simulator / PGID / SID | final wall / CPU | final progress evidence | retained directory |
+| --- | --- | --- | --- | --- |
+| ATAX | `3572154 / 3572276 / 3572144 / 3572132` | `1-12:53:17 / 1-12:49:43` | perf `748146232`, mtime `23:05:27+08:00` | `/tmp/dtc-l1-m5-0b-ratio0-base-atax-recovery24h-20260904` |
+| MVT | `3572157 / 3572277 / 3572147 / 3572132` | `1-12:53:17 / 1-12:54:26` | perf `782407276`, mtime `23:05:27+08:00` | `/tmp/dtc-l1-m5-0b-ratio0-base-mvt-recovery24h-20260904` |
+| SYR2K | `3572155 / 3572296 / 3572149 / 3572132` | `1-12:53:17 / 1-12:46:11` | perf `202045667`, mtime `23:05:26+08:00` | `/tmp/dtc-l1-m5-0b-ratio0-base-syr2k-recovery24h-20260904` |
+| 2MM | `3572159 / 3572310 / 3572150 / 3572132` | `1-12:53:17 / 1-12:57:47` | perf `307693405`, mtime `23:05:26+08:00` | `/tmp/dtc-l1-m5-0b-ratio0-base-twomm-recovery24h-20260904` |
+| SYRK | `3572158 / 3572311 / 3572148 / 3572132` | `1-12:53:17 / 1-12:56:37` | perf `216775883`, mtime `23:05:25+08:00` | `/tmp/dtc-l1-m5-0b-ratio0-base-syrk-recovery24h-20260904` |
+
+All five final logs printed `-gpgpu_dtc_l1_lower_outstanding_cap 256`; this
+establishes the obsolete identity. Final host snapshot after closure retained
+about `144 GiB` MemAvailable and `86 GiB` free `/tmp`; no artifact cleanup was
+performed. M5.0BT exact trace capture, not these partial runs, now gates
+M5.0C.
 
 This is a read-only review checkpoint.  It does not restart, signal,
 reconfigure, duplicate, or relabel any live simulator; it contains no raw log,

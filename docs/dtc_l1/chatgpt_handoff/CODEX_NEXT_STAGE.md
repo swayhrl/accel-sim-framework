@@ -9,7 +9,8 @@ Current scheduling authority:
 - `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
 - `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
 
-M1-M4 remain closed PASS. M5.0A is PASS. M5-T005/R5DV is CLOSED. Current Paper-10 work is M5.0B workload recovery.
+M1-M4 remain closed PASS. M5.0A is PASS. M5-T005/R5DV is CLOSED. Current
+Paper-10 work is M5.0BT exact trace capture and qualification.
 
 ## Active compute branches owned by this window
 
@@ -46,19 +47,26 @@ Do not modify validated M1-M4 branches or the frozen graphics-research branch.
 
 Graphics M5.7/M5.8 handoffs remain evidence inputs for final M5.12 but are not active work for this compute window.
 
-## Immediate work — continue M5.0B
+## Immediate work — M5.0BT
 
-Do not redo R5DV. Canonical ratio-zero SpMV LEGACY/PAPER_BASE completed with correct output and clean accounting; M5-T005 is CLOSED.
+Do not redo R5DV. Q1 is reopened only because an exact Paper trace is now
+authorized: `TRACE_CAPTURE_AUTHORIZED`,
+`TRACE_FORMAL_PATH_QUALIFICATION_PENDING`. The five cap-256 live jobs are now
+preserved `RESEARCHER_ABORTED_SUPERSEDED_CAP256`; do not revive or reuse them.
+Use `m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`, its Paper-10 TSV contract,
+and its V100 capture script. Q2/Q3 remain frozen at 80 SM/cap 10240. M5.0C is
+prohibited until exact capture and Base/IO/OO trace qualification PASS.
 
-Preserve all currently running corrected M5.0B Base jobs and their isolated output directories. Continue remaining workload recovery and strict output/accounting validation.
-
-At the last committed checkpoint BICG completed PASS and the remaining corrected Paper-10 Base runs were progressing without deadlock/assertion/fatal evidence.
+The last committed M5.0B checkpoint is historical only: five earlier Base
+members completed under obsolete cap-256 and five subsequently-progressing
+members were research-authorizedly terminated as superseded. Do not claim any
+of those as formal cap-10240 performance.
 
 ## Paper compute sequence
 
 Continue automatically:
 
-`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+`M5.0BT -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
 
 Use existing stage acceptance/handoff contracts.
 

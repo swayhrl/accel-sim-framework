@@ -1,8 +1,19 @@
 # DTC-L1 Current State
 
-Last coordination update: 2026-09-04
+Last coordination update: 2026-09-05
 
-Status: **M1-M4 VALIDATED; M5.0A PASS; M5-T005 CLOSED; M5.0B ACTIVE; EXTENDED-20 APPROVED; GRAPHICS M5.7/M5.8 CLOSED SOURCE-BACKED-UNAVAILABLE**
+Status: **M1-M4 VALIDATED; M5.0A PASS; M5.0BT WAITING_FOR_EXACT_TRACE_CAPTURE; EXTENDED-20 APPROVED; GRAPHICS M5.7/M5.8 CLOSED SOURCE-BACKED-UNAVAILABLE**
+
+## Current M5.0BT authority
+
+Researcher authority supersedes the cap-256 execution-driven wait: Q1 is
+`M5.0BF_Q1_REOPENED_FOR_EXACT_TRACE_RECAPTURE`, with trace capture authorized
+and formal-path qualification pending. Q2/Q3 remain frozen at 80 SM and cap
+10240 (128 credits/SM); cap-256 is obsolete diagnostic-only. Five live
+cap-256 jobs were gracefully terminated only in their run-owned PGIDs and are
+preserved as `RESEARCHER_ABORTED_SUPERSEDED_CAP256`, not failures. M5.0BT
+exact Paper-10 capture/qualification now gates M5.0C; see
+`m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`.
 
 ## Validated anchors
 

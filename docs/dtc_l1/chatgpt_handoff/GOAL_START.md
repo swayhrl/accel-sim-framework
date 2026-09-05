@@ -54,11 +54,15 @@ Active compute branches:
 - Core `hrl/decoupled-l1-m5-v0`
 - Framework `hrl/decoupled-l1-exp-m5-v0`
 
-M5-T005/R5DV is closed. Continue active M5.0B workload recovery from existing valid checkpoints.
+M5-T005/R5DV is closed. M5.0BF Q1 is reopened solely for exact-trace
+recapture; M5.0BT is the active Paper gate. Capture Paper-10 exact NVBit
+traces on V100, then qualify identical Base/IO/OO trace streams at 80 SM and
+cap 10240. Q2/Q3 are frozen; no cap-256 evidence is formal. Continue only
+after M5.0BT PASS.
 
 Continue:
 
-`M5.0B -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+`M5.0BT -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
 
 Ordinary issues are resolved inside the Goal under `M5_PROBLEM_RESOLUTION_POLICY.md`.
 

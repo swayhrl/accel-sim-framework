@@ -1,6 +1,26 @@
 # M5.0BF — execution-path & lower-cap fidelity gate
 
-Status: **AUTHORIZED IN PARALLEL — M5.0C JOIN-GATED**
+Status: **Q1 REOPENED FOR EXACT TRACE RECAPTURE; Q2/Q3 PASS/FROZEN — M5.0C JOIN-GATED BY M5.0BT**
+
+## 2026-09-05 researcher supersession
+
+The prior Q1 closeout below remains chronological evidence: it selected
+`EXECUTION_DRIVEN_REQUIRED` only because an exact provenance-compatible trace
+did not exist locally. It was not a DTC trace-path defect or a semantic
+incompatibility finding. The researcher now authorizes fresh exact NVBit
+capture. Q1 is therefore superseded to:
+
+`M5.0BF_Q1_REOPENED_FOR_EXACT_TRACE_RECAPTURE`
+
+`TRACE_CAPTURE_AUTHORIZED`
+`TRACE_FORMAL_PATH_QUALIFICATION_PENDING`
+
+Q2/Q3 are not reopened: the formal platform remains 80-SM V100/SM7-style and
+the global lower cap remains 10240 (128 credits/SM). `80 SM + cap 256` is
+`CURRENT_INVALID_SUSPECT`, diagnostic-only. New stage M5.0BT, documented in
+`M5_0BT_TRACE_CAPTURE_HANDOFF.md`, now gates M5.0C. It requires exact
+Paper-10 capture and trace Base/IO/OO qualification before Q1 may become
+`TRACE_FORMAL_PATH_VALID`.
 
 ## Mandatory ordering
 

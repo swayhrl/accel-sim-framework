@@ -1,8 +1,30 @@
 # Latest Codex Report
 
-Stage: `M5.0B_WORKLOAD_RECOVERY`
+Stage: `M5.0BT_EXACT_TRACE_CAPTURE_AND_QUALIFICATION`
 
-Status: **M5.0B ACTIVE — M5.0BF PASS; M5.0C JOIN-GATED**
+Status: **WAITING_FOR_EXACT_TRACE_CAPTURE — M5.0BT GATES M5.0C**
+
+## Current authoritative state (2026-09-05)
+
+M5.0BF Q1 is reopened as `M5.0BF_Q1_REOPENED_FOR_EXACT_TRACE_RECAPTURE`:
+`TRACE_CAPTURE_AUTHORIZED`, `TRACE_FORMAL_PATH_QUALIFICATION_PENDING`. The
+old `EXECUTION_DRIVEN_REQUIRED` conclusion is preserved below as historical
+evidence of missing exact traces, not an execution-path defect. Q2/Q3 remain
+frozen: 80-SM V100/SM7-style formal platform, cap 10240, 128 credits/SM;
+80-SM/cap-256 remains `CURRENT_INVALID_SUSPECT` only.
+
+The researcher-authorized graceful closeout of ATAX/MVT/SYR2K/2MM/SYRK
+cap-256 jobs succeeded: their run PGIDs are absent after SIGTERM, no SIGKILL
+or artifact deletion occurred, and each is
+`RESEARCHER_ABORTED_SUPERSEDED_CAP256`. They and the five earlier cap-256
+natural completions are provenance/debug anchors, not formal performance.
+
+The ready-to-run portable contract is
+`m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`, manifest
+`m5/trace/PAPER10_TRACE_CAPTURE_MANIFEST.tsv`, and capture script
+`util/dtc_l1/capture_m5_paper10_traces.sh`. Exact V100 capture followed by
+BICG/GESUMMV (and if needed SpMV/2DConv) Base/IO/OO trace qualification is the
+only current gate. No M5.0C, formal run, Extended E2, or graphics work began.
 
 Current review checkpoint: `m5/handoffs/M5_0B_LIVE_REVIEW_CHECKPOINT.md`
 (`2026-09-05T22:44:19+08:00`).  It is the current compact, read-only evidence

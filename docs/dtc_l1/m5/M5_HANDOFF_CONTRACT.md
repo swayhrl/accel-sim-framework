@@ -55,6 +55,18 @@ Exact thesis speedups are references, not pass thresholds.
 
 ## 3. Paper compute sequence
 
+### M5.0BT Exact trace capture and qualification
+
+M5.0BT supersedes the obsolete execution-driven cap-256 natural-terminal wait.
+It captures the exact Paper-10 source/input/executable contract with NVBit on
+V100 and qualifies a representative identical trace through PAPER_BASE/IO/OO
+under the frozen 80-SM/cap-10240 platform. It must record trace/parser/Core/
+platform identities, application correctness, raw/grouped trace integrity,
+and clean DTC lifecycle drains. Q1 is `TRACE_FORMAL_PATH_QUALIFICATION_PENDING`
+until this passes; Q2/Q3 are already frozen and are not reopened.
+
+PASS -> M5.0C.
+
 ### M5.0A Anchor
 
 Branch ancestry, Release build/tests, LEGACY/Base/IO/OO sentinels, runtime/toolchain/config identities, resumable registry, safe host concurrency.
