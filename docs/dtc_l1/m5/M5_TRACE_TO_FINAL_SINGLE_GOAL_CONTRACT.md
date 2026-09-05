@@ -6,6 +6,25 @@ This active-branch contract revalidates the isolated review input
 `M5_SINGLE_GOAL_TRACE_TO_FINAL_REVIEW.md@eeaba7375e5895c531b30b07e02095610b5b52d7`.
 It supersedes only stale transition wording; it preserves historical evidence.
 
+## Mandatory execution runbook
+
+The operational authority for carrying this Goal from the rented AutoDL V100
+through final M5.12 is:
+
+`docs/dtc_l1/m5/M5_TRACE_TO_FINAL_EXECUTION_RUNBOOK.md`
+
+The Goal must re-read that runbook:
+
+- at Goal start;
+- after every stage PASS, before entering the next stage;
+- after any interrupted resume;
+- before every major long replay wave.
+
+The re-read is a self-check, **not** a human-approval pause.  After satisfying
+the completed stage's HARD acceptance, the Goal commits/pushes compact evidence
+and automatically executes the already-authorized next stage.  Runtime AutoDL
+host/port/credentials are ephemeral inputs and are not committed to Git.
+
 ## Frozen authority
 
 - V100/SM7-style 80 SM; global lower cap 10240; 128 credits/SM.
