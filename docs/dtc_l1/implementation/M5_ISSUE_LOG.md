@@ -625,6 +625,13 @@
   bytes, so it exited `STOP_LOCAL_STORAGE_ADMISSION` before opening rsync.
 - Classification: `SIM_HOST_IMMUTABLE_RECEIPT_CAPACITY`, not a GPU capture,
   checker, archive, trace, parser, DTC, lower-create, or workload failure.
+- Source recovery investigation: the active text-trace frontend explicitly
+  accepts `.traceg.xz` via `xz -dc`; the isolated
+  `TEXT_TRACEG_XZ_DERIVED` candidate and its mandatory byte/dynamic-stream/
+  Base-IO-OO equivalence proof are recorded in
+  `m5/handoffs/M5_0BT_COMPRESSED_TRACE_STORAGE_CANDIDATE.md`.  This is only a
+  source-path finding: no 2MM representation, formal identity, or result has
+  been changed.
 - Preservation: no remote archive/bundle, local immutable payload, simulator,
   or active controller was deleted, signalled, restarted, or relabelled.  On
   researcher authorization, a separate archive-only rsync began after the

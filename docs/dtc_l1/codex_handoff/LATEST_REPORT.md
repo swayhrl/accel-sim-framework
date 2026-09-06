@@ -18,6 +18,12 @@ archive SHA, internal bundle validation, or `LOCAL_IMMUTABLE_PASS` is claimed.
 requires capacity provision followed by full transfer-only receipt resume;
 M5.0BT remains ACTIVE.
 
+A source audit has also confirmed a native `.traceg.xz` frontend route.  It is
+an isolated `TEXT_TRACEG_XZ_DERIVED` storage candidate only, not an accepted
+trace representation: byte-decompression, ordered-list, and same-bundle
+Base/IO/OO differential proofs remain mandatory before formal use.  See
+`m5/handoffs/M5_0BT_COMPRESSED_TRACE_STORAGE_CANDIDATE.md`.
+
 ## E1 local `sm_70` build preflight (2026-09-06)
 
 BlackScholes has a reproducible, isolated CUDA-11.8 `sm_70` source/build/PTX
