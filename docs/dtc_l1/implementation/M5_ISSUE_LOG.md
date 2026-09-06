@@ -526,3 +526,29 @@
 - Outcome: resume-3 wrote both manifests before record hashing, validated the
   immutable SHA256SUMS bundle, and completed the BICG `tar.zst` archive. No
   GPU application was rerun during finalization.
+
+## M5-0BT-010 — disposable V100 capture host became unreachable during live queue
+
+- State: `OBSERVED -> RETRYING`.
+- Scope: capture-host transport only.  It does not change the frozen V100
+  capture contract, Core behavior, trace semantics, capture identities, or
+  any SIM_HOST replay result.
+- Evidence: three independent read-only SSH connection attempts between
+  `2026-09-06T12:17+08:00` and `2026-09-06T12:22+08:00` were refused during
+  connection setup.  Because no remote shell was established, no inference is
+  made about the active SYR2K capture, the detached `SYR2K -> SpMV -> 2MM`
+  supervisor, archives, source recoveries, or state files.
+- Classification: `CAPTURE_HOST_TRANSPORT_UNAVAILABLE`, an ordinary external
+  execution-environment recovery issue rather than a simulator deadlock,
+  trace failure, storage failure, workload failure, or a source-semantic
+  ambiguity.
+- Recovery discipline: do not restart, duplicate, signal, or otherwise
+  perturb an unobserved remote process.  Continue independent SIM_HOST
+  replays and E1 source work; periodically re-establish read-only access via
+  the existing runtime endpoint.  Once reachable, inspect the retained
+  process/state/archive topology before taking any queue action.  If the
+  original capture worker has genuinely disappeared, recover only verified
+  archive/copyback gaps or resume the documented queue state; never recapture
+  a valid bundle merely because transport failed.
+- Resume point: capture remains the existing fail-closed sequence `SYR2K ->
+  SpMV -> 2MM` after source, storage, lock, and state gates are re-observed.
