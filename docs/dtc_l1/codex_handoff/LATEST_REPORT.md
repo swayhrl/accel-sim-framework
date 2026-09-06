@@ -24,12 +24,13 @@ At researcher direction, the live archive-only 2MM rsync and the repaired
 ATAX Base/IO/OO replays continue naturally in the background while no new M5
 stage work is started.  The compact handoff is
 `m5/handoffs/M5_0BT_2MM_STORAGE_ADMISSION_STOP.md`.  The rented capture host
-is **not yet safe to release** merely when this archive-only transfer ends:
-the exact local archive still lacks archive-SHA, internal-bundle, and local
-immutable-receipt proof.  No shutdown/release recommendation may be made
-until a durable source-correct receipt (or equivalent independently verified
-durable retention) preserves the unique 2MM payload.  This is a provenance
-constraint; it does not imply an active GPU workload.
+is **not yet safe to release** while this archive-only transfer is partial.
+After its natural completion, a SHA-256 comparison of the compressed archive
+to the recorded remote archive SHA is sufficient no-unpack proof that permits
+capture-host release, while still leaving 2MM outside formal
+`COPYBACK_SHA_PASS`/`LOCAL_IMMUTABLE_PASS`.  Its later formal receipt remains
+gated on capacity plus internal-bundle and immutable-store validation.  This
+is a provenance constraint; it does not imply an active GPU workload.
 
 A source audit has also confirmed a native `.traceg.xz` frontend route.  It is
 an isolated `TEXT_TRACEG_XZ_DERIVED` storage candidate only, not an accepted

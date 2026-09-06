@@ -58,14 +58,14 @@ change, or stage transition is authorized by this checkpoint.  A future
 resume must first re-read the M5 trace-to-final contract and runbook, then
 re-observe both the transfer and the three ATAX terminal states.
 
-`RENTED_GPU_RELEASE_NOT_SAFE_YET` is the required operational disposition.
-The capture GPU is not needed for the bytes currently crossing `rsync`, but
-2MM has only an in-progress archive-only local copy.  Even after that copy
-naturally completes, it remains deliberately outside `COPYBACK_SHA_PASS` and
-`LOCAL_IMMUTABLE_PASS`; it cannot be used to prove that the sole remote 2MM
-archive is recoverable after an ephemeral rented-host release.  The host may
-be declared releasable only after the exact archive has a durable,
-source-correct receipt (or an equivalently durable externally verified
-retention record) and the unchanged remote archive is still preserved through
-that proof.  This is a storage/provenance gate, not a request to keep a GPU
-busy.
+`RENTED_GPU_RELEASE_NOT_SAFE_YET` applies while the archive-only copy is
+partial.  The capture GPU is not needed for the bytes currently crossing
+`rsync`.  Once the copy naturally completes, a SHA-256 comparison of the
+compressed local `.tar.zst` against the recorded remote archive SHA is the
+minimum no-unpack durable-retention proof.  If that archive-SHA proof passes,
+the V100 host may be released for capture-storage purposes: the exact archive
+then has a locally retained identical copy.  This release decision does
+**not** promote 2MM to `COPYBACK_SHA_PASS` or `LOCAL_IMMUTABLE_PASS`; the
+later formal receipt still requires capacity, internal `SHA256SUMS`, and
+`valid_bundle()` validation before replay or formal-result use.  This keeps
+the host-release and formal-receipt decisions distinct.
