@@ -44,3 +44,27 @@ unsupported-feature evidence. As soon as a row reaches TRACE_CAPTURE_READY,
 it joins the sequential V100 queue after Paper-10 2MM ARCHIVE_PASS; every
 capture then follows archive, copyback, local immutable validation and
 proof-bound streaming eviction before the next storage-constrained capture.
+
+## Live scheduling ledger (2026-09-06)
+
+The following is an **exclusive highest-demonstrated-pre-build-state** count
+for worker-pool scheduling.  It is not a formal-result classification and does
+not relax the per-row requirements in the table above.  In particular, a
+historical CUDA-11.8 `sm_52` provenance build is not `BUILD_READY`: every row
+needs its own clean CUDA-11.8 `sm_70` V100 build and runtime checker smoke.
+
+| exclusive state | count | members / evidence boundary |
+| --- | ---: | --- |
+| `NOT_READY` | 0 | Every approved member has a clean source anchor. |
+| `SOURCE_READY` | 9 | Eight CUDA SDK 4.2 members plus Rodinia `gaussian`; each still lacks an accepted input/checker and/or V100 build boundary. |
+| `INPUT_READY` | 5 | Rodinia `cfd_097k`, `btree`, `dwt2d`, `hotspot1`, `lud`; their source-backed input contracts are frozen, but output checker and V100 build/smoke remain pending. |
+| `CHECKER_READY` | 6 | Parboil `bfs`, `cutcp`, `histo`, `mri-q`, `sad`, `stencil`; clean input hashes and the source-predicate Python-3 adapter fixture suite are revalidated. |
+| `BUILD_READY` | 0 | No clean V100/sm70 build and real-device checker smoke has yet completed. |
+| `TRACE_CAPTURE_READY` | 0 | Paper-10 physical capture retains priority; no Extended row may be queued as ready before the V100 build, checker and dynamic trace-semantic gates close. |
+
+These counts total 20.  The clean Parboil source at `4e0fc548...`, clean
+GPU-app-collection/Rodinia source at `dad09cb0...`, and the SDK 4.2 object at
+`b059fdae...` were rechecked locally without modifying any source tree.  The
+Parboil source-predicate adapter fixture suite remains six-for-six PASS.  This
+is a low-cost E1 drift check only; it neither starts an Extended simulation nor
+turns a static audit into a V100 trace claim.
