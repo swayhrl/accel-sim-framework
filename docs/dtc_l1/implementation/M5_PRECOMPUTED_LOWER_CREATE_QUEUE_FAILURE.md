@@ -64,6 +64,16 @@ old-Core triplet can be silently reused as a formal post-repair result.
 Already-running old-runtime jobs are preserved as provenance/diagnostic
 evidence and are not relabeled as repaired results.
 
+### Identity invalidation scope
+
+The repair is a Core behavior change.  Therefore all trace replay outputs
+using pre-repair Core `120978646e4c8bae2707ddfc6b31512a4a0c76c8` are retained
+as mechanism/diagnostic anchors only and are **not** silently promoted to the
+post-repair formal identity.  This includes the previously qualified BICG T2
+triplet and the still-running GESUMMV T3 triplet.  They may complete naturally
+without interruption, but the repaired Core requires same-bundle replacement
+triplets before those logical gates can PASS under the active identity.
+
 ATAX IO/OO recovery replays were launched in the separate
 `/workspace/m5-lowerq-recovery-80sm-cap10240-20260906/atax/{io,oo}` namespace
 using that runtime and the unchanged ATAX bundle/config identities.  At 101 s

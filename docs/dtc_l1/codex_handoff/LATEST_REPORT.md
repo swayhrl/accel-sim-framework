@@ -11,19 +11,26 @@ at the bounded lower-create queue assertion.  Core
 abort with pre-allocation retriable backpressure and retains all correctness
 assertions.  Exact-bundle ATAX IO/OO recovery replays are active under the
 new runtime; neither they nor any old-Core row is a formal result yet.
+The existing BICG T2 and live GESUMMV T3 replays use pre-repair Core
+`12097864...`; preserve them to natural termination, but treat them as
+diagnostic/mechanism anchors.  Same-bundle triplets under `15cfa76e...` are
+required before a repaired-identity T2/T3 formal acceptance claim.
 
 ## Live scheduling update
 
 ### Concurrent three-track checkpoint
 
-- **Track A — T3:** GESUMMV Base/IO/OO run as independent sessions on the
+- **Track A — T3 (pre-repair diagnostic):** GESUMMV Base/IO/OO run as
+  independent sessions on the
   immutable `d8cf9b57...` bundle under the frozen 80-SM/cap-10240/ratio-zero
   identities.  The latest non-invasive counter sample was Base
   `2,446,000` cycles / `5,539,040` instructions, IO `1,809,000` /
   `24,494,688`, and OO `1,864,000` / `22,761,472`; all three processes were
   CPU-active with no fatal/assert/deadlock signature (the only `deadlock`
-  text is the printed enabled-config option).  They must naturally terminate
-  before T3 qualification.
+  text is the printed enabled-config option).  They must naturally terminate.
+  Because their Core predates the lower-create-queue repair, they cannot close
+  repaired-identity T3 and a new-Core same-bundle replacement triplet remains
+  required.
 - **Track B — V100 capture:** ATAX is `ARCHIVE_PASS` remotely and locally
   transfer-verified: archive SHA-256
   `4db328affd8a81d444bca1bc034110e1e51458fbce6ab901078a101c6beadff3`,
