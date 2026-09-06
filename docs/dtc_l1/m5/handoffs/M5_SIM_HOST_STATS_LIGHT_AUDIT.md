@@ -173,3 +173,19 @@ fields.  Only host-time/rate and rounded generic observer latency reports
 differ.  This proves an observer-only A1 candidate; it does not yet adopt it.
 The documented independent same-placement confirmation remains required
 before future formal rows may use A1.
+
+## Same-placement confirmation closeout and future identity (2026-09-06)
+
+The required repaired-BICG IO A0/A1 confirmation subsequently ran sequentially
+on the same CPU 46. Both runs naturally exited zero, strict-parsed, and had
+exactly equal cycles, instructions, all 62 parser-visible scientific metrics,
+lower/dependency conservation and final drain states. Its full compact table
+and identities are in `M5_STATS_LIGHT_A1_TERMINAL_EQUIVALENCE.md`.
+
+Accordingly A1 is adopted only for future, not-yet-launched formal
+Base/IO/OO triplets. The frozen observer overlay is
+`-gpgpu_runtime_stat 500000`, SHA-256
+`2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`.
+No existing valid A0 result is rerun or relabelled, and no future triplet may
+mix A0/A1 observer identities. The adoption changes no DTC or platform
+semantic and invalidates no completed scientific row.

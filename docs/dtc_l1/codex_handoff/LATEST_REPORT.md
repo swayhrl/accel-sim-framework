@@ -66,17 +66,17 @@ trace audit; Paper-10 capture priority and readiness counts are unchanged.
 
 ## Live audit update (2026-09-06)
 
-The natural-terminal BICG stats-light A0/A1 comparisons are now complete.
-Base, repaired PAPER_IO, and repaired PAPER_OO all strict-parse and match
-exactly in every parser-visible scientific field, including final cycles and
-instructions, DTC lifecycle/accounting, and parser-visible traffic fields.
+The natural-terminal BICG stats-light A0/A1 comparisons and the required
+independent same-placement IO confirmation are complete. Base, repaired
+PAPER_IO, and repaired PAPER_OO strict-parse and match exactly in every
+parser-visible scientific field, including final cycles/instructions,
+DTC lifecycle/accounting, and parser-visible traffic. The same-placement
+confirmation again found zero differing metrics and natural zero drain.
 A1 (`gpgpu_runtime_stat=500000`, observer-overlay SHA
-`2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`) improves
-host rate by 1.0330x / 1.3673x / 1.2786x for Base/IO/OO respectively while
-reducing runtime CSV output by more than 99.8%.  It is **not adopted yet**:
-the standing independent same-placement confirmation remains required before
-future formal rows change observer identity.  See
-`m5/handoffs/M5_STATS_LIGHT_A1_TERMINAL_EQUIVALENCE.md`.
+`2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`) is now
+adopted for **future, not-yet-launched** formal triplets only. Existing valid
+A0 rows are neither rerun nor relabelled, and no future triplet may mix A0/A1.
+See `m5/handoffs/M5_STATS_LIGHT_A1_TERMINAL_EQUIVALENCE.md`.
 
 The repaired BICG Base replay has now naturally terminated (exit zero), strict
 parsed, and reclosed the same-bundle repaired-Core T2 triplet with IO/OO.

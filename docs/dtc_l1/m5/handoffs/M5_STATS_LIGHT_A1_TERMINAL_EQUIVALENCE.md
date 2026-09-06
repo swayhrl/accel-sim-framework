@@ -1,6 +1,7 @@
 # M5 statistics-light A1 terminal equivalence
 
-Status: **TERMINAL_EQUIVALENCE_PASS; A1_NOT_YET_ADOPTED**.
+Status: **TERMINAL_EQUIVALENCE_PASS; INDEPENDENT_SAME_PLACEMENT_PASS;
+A1_ADOPTED_FOR_FUTURE_UNLAUNCHED_FORMAL_TRIPLETS**.
 
 This is a host-observer audit only.  It changes neither the Core mechanism nor
 the trace, cache, memory, DTC, parser, or formal-result identity of any row.
@@ -36,18 +37,38 @@ Base pair closes Base PIB and lower accounting likewise.  Compact local
 evidence is retained in the existing isolated namespaces; raw logs and CSVs
 are intentionally not committed.
 
-## Adoption disposition
+## Independent same-placement confirmation and adoption
 
-A1 is materially faster for repaired IO and OO and reduces the compressed
-runtime CSV by more than 99.8% in every measured pair.  It is nevertheless
-**not yet the formal default**.  The existing audit acceptance rule requires
-one independent same-placement A0-versus-best-A1 confirmation before A1 may
-be proposed for future formal rows.  Existing completed formal candidates
-remain reusable only under their recorded observer identity; none is rerun or
-relabelled because of this host-cost result.
+The required independent confirmation ran after the table above on CPU 46,
+with repaired Core `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`, runtime binary
+SHA-256 `3e71cb73e7769be43fc4e7c95c59dba6d50540e3827a38a46e4016cb2877dc27`,
+the same immutable BICG bundle, `PAPER_IO` base config SHA-256
+`7acb491414f84f9738f6bbc76b0bc2bc83dd146fd205e6f8636126b135599f5c`, and
+the A1 observer overlay SHA-256
+`2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`.
+There is no architecture, cache, memory, DTC, trace, payload, or source-input
+difference between the two runs.
 
-The next bounded action is that controlled confirmation.  It must again use
-the same Core/runtime, immutable BICG trace, frozen platform/config, natural
-terminal/drain requirement, strict parser, and full parser-visible comparison.
-Only after it passes may an adoption review freeze the observer-only config
-SHA and authorize A1 for unfinished future formal rows.
+| same-placement row | A0 | A1 | result |
+| --- | ---: | ---: | --- |
+| natural exit status | 0 | 0 | PASS |
+| wall seconds | 2,683.85 | 2,666.21 | A1 `1.0066x` faster |
+| simulated cycles / instructions | 9,324,397 / 158,601,216 | 9,324,397 / 158,601,216 | exact |
+| all 62 strict parser-visible metrics | reference | reference | exact; zero differing fields |
+| IO lower create / issue / response | 17,823,985 / 17,823,985 / 17,823,985 | same | balanced |
+| completion dependencies closed / count | 18,350,080 / 18,350,080 | same | balanced |
+| final IO PIB / inflight / lower outstanding | 0 / 0 / 0 | 0 / 0 / 0 | drained |
+| compressed runtime CSV bytes | 29,949,952 | 61,440 | A1 reduced by 99.79% |
+
+The sole `deadlock` text is the echoed enabled configuration option; both
+stderr files record exit zero and neither has assertion, fatal, output-mismatch
+or unclassified-deadlock evidence. This closes the final adoption condition.
+
+**Frozen adoption boundary.** A1 means exactly the base formal configuration
+plus `-gpgpu_runtime_stat 500000` from the overlay hash above. It is now the
+observer identity for **future, not-yet-launched** Paper and Extended formal
+Base/IO/OO triplets. Existing valid A0 or pre-adoption candidates remain under
+their recorded identity, are neither rerun nor relabelled, and a future triplet
+must use one common observer identity across all three modes. This adoption is
+host-observer-only and has no scientific-result invalidation scope because the
+independent terminal comparison proved parser-visible equivalence.
