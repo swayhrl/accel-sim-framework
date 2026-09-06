@@ -16,10 +16,13 @@ the standing independent same-placement confirmation remains required before
 future formal rows change observer identity.  See
 `m5/handoffs/M5_STATS_LIGHT_A1_TERMINAL_EQUIVALENCE.md`.
 
-The repaired BICG Base replay and repaired ATAX Base/IO/OO replays remain
-live; neither repaired T2 nor the lower-create repair gate is PASS.  Current
-SIM_HOST resources are ample, but MVT replacement and repaired GESUMMV T3
-remain correctly gated by the ATAX natural-terminal/parser/drain closure.
+The repaired BICG Base replay has now naturally terminated (exit zero), strict
+parsed, and reclosed the same-bundle repaired-Core T2 triplet with IO/OO.
+`review_packs/M5_0BT_T2_BICG/` is now bound to Core `15cfa76e...`; the
+pre-repair T2 remains diagnostic only.  The ATAX Base/IO/OO recovery triplet
+remains live, so the lower-create repair gate is not yet PASS; repaired MVT
+replacement and repaired GESUMMV T3 remain correctly gated by its required
+natural-terminal/parser/drain closure.
 
 The capture-host control route is presently unreachable (connection refused).
 No remote process was signaled, restarted, duplicated, or inferred failed;
