@@ -10,9 +10,13 @@ projection. Future capture uses the researcher-authorized serial-streaming
 admission floor of 61,516,599,357 bytes: the maximum measured complete SYR2K
 bundle + archive + measurable scratch footprint. The old ten-bundle/twofold
 multiplier is superseded because proof-bound streaming offload is now required.
-SYR2K local immutable validation, remote eviction and live-gate PASS remain
-pending; SpMV has not started. 2MM is HEAVY_SIZE_UNKNOWN and may start only
-under the recalibrated gate. See
+SYR2K now has copyback SHA and local immutable validation PASS: its remote
+archive SHA, local resumed archive SHA, unpacked internal sums and capture
+bundle have closed under receipt
+`6a6b590dc7d05a10d85ab30b37c6350092aba981c65be82249c6374e3e825513`.
+The proof-bound remote working-bundle eviction and fresh live gate are active,
+not yet claimed PASS; SpMV has not started. 2MM is HEAVY_SIZE_UNKNOWN and may
+start only under the recalibrated gate. See
 docs/dtc_l1/m5/handoffs/M5_0BT_SYR2K_HEAVY_STORAGE_RECALIBRATION.md.
 
 Status: M5.0BT T1, BICG/2DConv storage admission, immutable-store copybacks,

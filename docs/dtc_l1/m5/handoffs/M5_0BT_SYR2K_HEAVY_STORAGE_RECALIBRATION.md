@@ -1,6 +1,6 @@
 # M5.0BT — SYR2K heavy storage recalibration
 
-Status: **ACTIVE — SERIAL_STREAMING_ADMISSION_REPLACES_2DCONV_UPPER_BOUND**
+Status: **ACTIVE — SYR2K_LOCAL_IMMUTABLE_PASS; PROOF-BOUND_EVICTION_IN_PROGRESS**
 
 This is an operational storage-policy correction authorized for the current
 capture host. It changes no workload, source, input, tracer, formal platform,
@@ -23,6 +23,24 @@ bundle is therefore used rather than a partial raw/grouped proxy. The
 reconstructed footprint includes all retained raw and grouped traces, checker
 and build files, the concurrently created archive, and all surviving measurable
 scratch.
+
+## SIM_HOST immutable receipt (2026-09-06)
+
+The remote archive and the resumed local archive have the same SHA-256:
+
+`ceb135c2baf1560658b4222ebcc5771c02c3f9a3e31a4f90ede957c94ce0dffa`.
+
+The local archive SHA, unpacked `SHA256SUMS`, capture manifest and complete
+bundle were independently revalidated before the receipt was written:
+
+`/workspace/m5-trace-immutable/syr2k/LOCAL_IMMUTABLE_PASS.json`
+
+The receipt binds the exact SYR2K bundle ID
+`6a6b590dc7d05a10d85ab30b37c6350092aba981c65be82249c6374e3e825513`
+to that archive and records `LOCAL_IMMUTABLE_PASS`.  This closes only
+copyback/local immutable validation.  It does **not** claim remote working
+bundle eviction, a fresh live admission pass, SpMV start, or a formal replay
+result; the existing proof-bound continuation is performing those next steps.
 
 ## Recalibrated fail-closed admission
 
@@ -57,8 +75,9 @@ free bytes; these are not a promise that an unmeasured workload fits.
 
 ## Consequences
 
-- **SpMV** remains next and is admitted only after SYR2K local immutable PASS,
-  proof-bound eviction, and a fresh live gate PASS.
+- **SpMV** remains next. SYR2K local immutable PASS is now satisfied; it is
+  admitted only after the in-progress proof-bound eviction and a fresh live
+  gate PASS.
 - **2MM** is HEAVY_SIZE_UNKNOWN: frozen NI=NJ=NK=NL=1024, two dense
   multiplication phases, no downsizing. It needs the recalibrated gate plus
   pre-identified proof-bound eviction candidates before launch.
