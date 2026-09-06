@@ -2,6 +2,19 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
+## Current capture-storage authority (2026-09-06)
+
+SYR2K has reached remote ARCHIVE_PASS with an exact 57,694,970,930-byte
+working bundle, exceeding the old 55,353,177,980-byte 2DConv-based aggregate
+projection. Future capture uses the researcher-authorized serial-streaming
+admission floor of 61,516,599,357 bytes: the maximum measured complete SYR2K
+bundle + archive + measurable scratch footprint. The old ten-bundle/twofold
+multiplier is superseded because proof-bound streaming offload is now required.
+SYR2K local immutable validation, remote eviction and live-gate PASS remain
+pending; SpMV has not started. 2MM is HEAVY_SIZE_UNKNOWN and may start only
+under the recalibrated gate. See
+docs/dtc_l1/m5/handoffs/M5_0BT_SYR2K_HEAVY_STORAGE_RECALIBRATION.md.
+
 Status: M5.0BT T1, BICG/2DConv storage admission, immutable-store copybacks,
 and T2 BICG same-bundle Base/IO/OO replay qualification PASS.  T3 GESUMMV
 same-bundle Base/IO/OO formal replay is ACTIVE; `CAPTURE_AND_REPLAY_PIPELINED`.

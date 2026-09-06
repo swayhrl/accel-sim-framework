@@ -87,3 +87,13 @@ mean that a build or simulator run was attempted.
   may enter a resumable runtime registry.
 - Do not redo the approved 20-workload selection, and do not use the
   review-demoted `3mm` in place of `lud`.
+
+## Current V100 capture-readiness view
+
+The active V100 remains reserved for the Paper-10 SYR2K -> SpMV -> 2MM
+physical queue. The researcher has authorized Extended capture immediately
+afterwards for workload-local rows that become ready without changing their
+scientific identity. The complete per-row source/build/input/checker/V100-build
+and trace-eligibility view is maintained in
+`M5_E1_V100_CAPTURE_READINESS.md`. No historical sm52 build is a physical
+capture identity, and no row currently claims TRACE_CAPTURE_READY.
