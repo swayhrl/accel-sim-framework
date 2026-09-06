@@ -126,3 +126,39 @@ separate hardware-capture checker evidence remains bound by
 this replay terminal event.  The manifest state is therefore
 `PRECOMPUTED_TERMINAL_STRICT_PASS`, pending same-payload Base/IO/OO closure
 and the later stage/review acceptance decision.
+
+### SpMV same-bundle triplet strict closeout (2026-09-06)
+
+All three SpMV rows have now naturally terminated with exit status zero.  Each
+strict-parses, consumes exactly 50 immutable trace invocation headers and 50
+`Processing kernel` entries, and has no assertion, fatal, unclassified
+deadlock, or output-mismatch signature.  The Base/IO/OO rows share the same
+Core, Framework runtime, source/input/tracer identity and bundle recorded in
+the manifest; the source-domain dynamic identity is exact:
+
+| source-domain field | Base | IO | OO |
+| --- | ---: | ---: | ---: |
+| instructions | 96,963,600 | 96,963,600 | 96,963,600 |
+| dynamic loads | 722,500 | 722,500 | 722,500 |
+| dynamic stores | 18,700 | 18,700 | 18,700 |
+| dynamic atomics / source-reachable fences | 0 / 0 | 0 / 0 | 0 / 0 |
+
+The Base `m4_source_completions` and `m4_observation_retires` remain zero by
+the documented PAPER_BASE no-sidecar contract; these are not source-domain
+trace differences.  IO and OO each close those DTC completion/retire counters
+at 18,700.  Strict lifecycle closure is:
+
+| mode | cycles | lower/conservation closure | final lifecycle state |
+| --- | ---: | --- | --- |
+| Base | 765,542 | lower acquire/release `3,859,653/3,859,653`; PIB admit/retire `741,200/741,200` | PIB and lower outstanding zero |
+| IO | 658,328 | lower create/issue/response `1,329,938/1,329,938/1,329,938`; dependency `4,518,800/4,518,800` | PIB, inflight and lower outstanding zero |
+| OO | 638,856 | lower create/issue/response `1,323,449/1,323,449/1,323,449`; dependency `4,518,800/4,518,800` | PIB, inflight, active refs and lower outstanding zero |
+
+The Base/IO/OO strict-summary SHA-256 values are respectively
+`383c82ce5eb6e76b55b6613db7b910fa22d4671fc701aed7d90d46c846bb65a1`,
+`05ea2e854a1e0a977571a42d4a9070a51b34267239994256f0db9b5890f273bf`, and
+`7a5f6e4a706926e1d8e6261fca6b8ce0b7c698b420e8d8e931802e2664dfa2d5`.
+The rows are now `PRECOMPUTED_SAME_BUNDLE_TRIPLET_STRICT_PASS`.  This makes
+the exact repaired-Core SpMV triplet reusable only after the relevant M5.0BT
+and later stage review gate; it does not register a formal result or advance
+M5.0BT/M5.0C.
