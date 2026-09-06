@@ -55,7 +55,11 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   capture scratch and one checker-failed, non-candidate GESUMMV raw attempt;
   its compact logs/provenance were retained.  The unchanged gate subsequently
   passed (`55,478,362,112` free bytes versus `55,353,177,980` projected), and
-  the single SYR2K controller resumed under the capture lock.  See
+  the single SYR2K controller resumed under the capture lock.  While SYR2K
+  was actively capturing, the proof-bound R3 controller operation offloaded
+  only the redundant remote ATAX working bundle (5,806,756,882 bytes); its
+  remote archive and all verified SIM_HOST artifacts remain preserved.  The
+  post-R3 unchanged gate passed with 59,432,751,104 free bytes.  See
   `m5/handoffs/M5_0BT_AUTODL_SPACE_RECLAMATION.md`.  None of these capture
   bundles is a formal result.
 - **Track C — SIM_HOST statistics-light A/B:** the initial BICG
