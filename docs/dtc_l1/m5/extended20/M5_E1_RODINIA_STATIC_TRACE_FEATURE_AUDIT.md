@@ -86,6 +86,27 @@ runtime/input/launch identity, or undergone a dynamic trace-semantic audit.
 It is not a capture authorization and leaves the Paper-10 capture priority and
 the E1 readiness counts unchanged.
 
+## dwt2d local `sm_70` build preflight (2026-09-06)
+
+The exact Rodinia 3.1 `dwt2d` tree was independently materialized twice from
+clean `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1`, tree
+`698ebcbedd3b3e8b304847d64784bf5d1afafcbb`. CUDA 11.8.89 built the original
+eight-CUDA-translation-unit graph using `-arch=sm_70 -O2`; unsupported
+historical architecture flags were omitted, with no source or runtime change.
+The two normalized ELFs and an ordered eight-unit PTX hash manifest are
+byte-identical.
+
+| item | identity / result |
+| --- | --- |
+| canonical executable | two `strip --strip-unneeded` artifacts: SHA-256 `bb57391bad2e842c8e4a2bc33acba823c88d069d33f01de48c0a4910d8144b60` |
+| PTX set manifest | SHA-256 `e2314e4cd3826fc8493ec71c6066e5d4d346c815f81eee599c76c960cb3b324b`; all eight entries `.target sm_70` |
+| selected kernel evidence | component copy plus forward/reverse DWT 5/3 and 9/7 kernel entries are present in the manifest-bound PTX set |
+| classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `INPUT_READY`, not `BUILD_READY` |
+
+No real-V100 source checker, output/reference freeze, runtime/launch freeze,
+or dynamic trace-semantic audit has run. The source-only static classification
+therefore remains unchanged and this evidence does not authorize a capture.
+
 `STATIC_TRACE_CANDIDATE` means only that the selected source scan found no
 listed feature.  It does not establish trace compatibility or permit a
 capture.  Runtime audit must prove the actual binary's operation, grouping,

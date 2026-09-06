@@ -24,7 +24,7 @@ used where no source-backed trace-volume basis exists.
 | vectorAdd_6000000 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
 | cfd_097k | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY; checker, semantic audit and V100 build pending |
 | btree | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
-| dwt2d | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
+| dwt2d | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | gaussian | Rodinia 3.1 dad09cb0 | Makefile located | CANDIDATE_SET_HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; primary input/checker, dynamic contract and V100 build pending |
 | hotspot1 | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | lud | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | SOURCE_GENERATED_CONTRACT | source -v verifier | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; exact V100 verifier smoke and dynamic contract pending |
@@ -111,3 +111,8 @@ Rodinia lud has a reproducible two-build local CUDA-11.8 `sm_70` preflight
 with its original `-O3 -use_fast_math` mode and three selected-kernel PTX
 entries. It remains `INPUT_READY`, not `BUILD_READY`, pending its exact V100
 verifier smoke and dynamic trace audit; counts and queue are unchanged.
+
+Rodinia dwt2d has a two-build CUDA-11.8 `sm_70` preflight with a byte-identical
+eight-translation-unit PTX manifest. It remains `INPUT_READY`, not
+`BUILD_READY`, pending its output/reference checker and dynamic trace audit;
+counts and queue are unchanged.

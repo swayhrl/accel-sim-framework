@@ -59,6 +59,11 @@ PTX entries. It remains `INPUT_READY`, not `BUILD_READY`: the V100 verifier,
 runtime/input/launch freeze, and dynamic trace audit have not run. Paper-10
 capture priority and readiness counts remain unchanged.
 
+Rodinia dwt2d has also completed a two-build local CUDA-11.8 `sm_70` preflight
+with a reproducible eight-unit PTX manifest. It remains `INPUT_READY`, not
+`BUILD_READY`, pending source-defined output/reference checking and dynamic
+trace audit; Paper-10 capture priority and readiness counts are unchanged.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.
