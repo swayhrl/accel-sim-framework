@@ -157,3 +157,27 @@ historical source commit is read by object identity rather than inferred from
 the checkout tip.  This is source-provenance revalidation only: it neither
 reruns nor rehashes the isolated executable/PTX artifacts, freezes generated
 inputs, executes an output smoke, or changes the M5.2 E2 gate.
+
+## BlackScholes local `sm_70` build preflight (2026-09-06)
+
+An isolated, non-executing CUDA 11.8 build preflight reconstructed the exact
+SDK 4.2 `BlackScholes` source object for `sm_70`. This is host-side build
+evidence only: SIM_HOST has no visible GPU, so it does **not** establish a
+real-V100 executable identity, a source-defined `QA_PASSED` output verdict,
+or trace-capture eligibility.
+
+| item | identity / result |
+| --- | --- |
+| source commit | `gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce` |
+| source inputs | `BlackScholes.cu` `7540eeeccf9c5489a51db0aafb99d1ff05488c9ee787c3afdbda0fc078dd452d`; `BlackScholes_gold.cpp` `33d9a614eca99e4907711236161aa9799cefa68cce34d758132a634675b136dc`; `BlackScholes_kernel.cuh` `1a49728f87f3b95bbeb05e9d7e8b9a04854901a8f9993437db71c399ab829dbf` |
+| compatibility inputs | original-SDK `libshrutil_x86_64.a` `3a16b504d7311059596cd56fffd5d71e89c822c6eb8da980d2025a94b033471b`; frozen `libcutil_x86_64.a` `ebc5bcfe63ec81ece16dd14ee57811c780e93df1776a49a04d62f800e989e412`; `cutil_inline.h` `c7abcf2902af637e6c83ff677c74135aaaa706879ddbccf3190ce48b06278ddc`; `shrQATest.h` `07f691c08d7bac6ee3ca93169e6a9288a3d4d1a2bc855af1c1beb340877f7f55` |
+| toolchain | CUDA 11.8.89 `nvcc`; `-arch=sm_70 -O2 -cudart shared` |
+| linked executable | SHA-256 `1d581ce9830e6e60a9856bdd213670239d518773dd166bd372203bd6a5c87895` |
+| PTX | SHA-256 `dc3f48102d762167cece9f06ee353a4aba4cb0651493d12cc261e970bdbaccc3`; expected `_Z15BlackScholesGPUPfS_S_S_S_ffi` entry present |
+| classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `SOURCE_READY`, not `BUILD_READY` |
+
+The V100 step must rebuild from the same inputs (or prove byte-identical
+toolchain equivalence), execute the source-defined L1-norm `QA_PASSED`
+checker, freeze input/runtime/launch identities, and then complete the
+dynamic trace-semantic audit. This preflight must not be substituted for
+those physical-device gates.

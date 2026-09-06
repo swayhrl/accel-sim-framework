@@ -68,3 +68,9 @@ GPU-app-collection/Rodinia source at `dad09cb0...`, and the SDK 4.2 object at
 Parboil source-predicate adapter fixture suite remains six-for-six PASS.  This
 is a low-cost E1 drift check only; it neither starts an Extended simulation nor
 turns a static audit into a V100 trace claim.
+
+BlackScholes additionally has a reproducible local CUDA-11.8 `sm_70` build
+preflight (executable/PTX hashes and compatibility-input identities in
+`extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`). Because it was not built and
+executed on the actual V100 with the source-defined output checker, it remains
+`SOURCE_READY`; all exclusive readiness counts above are unchanged.

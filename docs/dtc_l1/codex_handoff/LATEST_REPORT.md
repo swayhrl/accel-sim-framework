@@ -2,6 +2,18 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
+## E1 local `sm_70` build preflight (2026-09-06)
+
+BlackScholes has a reproducible, isolated CUDA-11.8 `sm_70` source/build/PTX
+preflight with all legacy helper inputs hash-bound.  SIM_HOST has no visible
+GPU, so it did not execute the source-defined `QA_PASSED` checker and has not
+promoted the row beyond `SOURCE_READY`; `BUILD_READY` and
+`TRACE_CAPTURE_READY` counts remain zero.  The exact candidate identities and
+the mandatory real-V100 follow-up gates are recorded in
+`m5/extended20/CUDA_SDK_E1_SOURCE_AUDIT.md` and
+`m5/handoffs/M5_E1_V100_CAPTURE_READINESS.md`.  This is E1 preparation only;
+it neither consumes V100 capture capacity nor changes the Paper-10 priority.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.
