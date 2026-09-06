@@ -101,6 +101,11 @@ formal identity until a source-backed primary command and correctness contract
 is recovered.  The other rows' input readiness does not waive their pending
 build, checker, trace semantic-contract or M5.2 anchor gates.
 
+`util/dtc_l1/verify_m5_e1_rodinia_inputs.py` is the portable, read-only
+staging verifier.  It checks the archive when supplied and the six frozen file
+inputs under a supplied root; `--include-gaussian-candidates` verifies the two
+candidate files without falsely promoting either to a formal identity.
+
 ## Parboil checker runtime contract
 
 The selected checker files are part of the E1 output identity.  `histo` uses
