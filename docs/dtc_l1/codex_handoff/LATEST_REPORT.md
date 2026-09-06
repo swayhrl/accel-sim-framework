@@ -220,6 +220,11 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   evidence only: CUDA builds, PTX, generated output references/smokes, payload
   eligibility and all Rodinia input recovery remain pending.  No Extended
   simulation, trace capture, result registration, or E2 launch occurred.
+- The eight selected CUDA SDK 4.2 source files were independently rehashed
+  straight from Git commit `b059fdae...`; all match the recorded E1 source
+  identities.  This is source-only provenance confirmation: executable/PTX
+  artifact revalidation, deterministic runtime I/O, source-defined smoke and
+  M5.2 anchor recheck remain required.
 
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or

@@ -41,6 +41,12 @@ The existing framework launch definitions in
 `util/job_launching/apps/define-all-apps.yml` are useful provenance leads, not
 E1 acceptance evidence.
 
+The eight approved SDK 4.2 source hashes were independently revalidated
+directly from the clean Git object database at `b059fdae…` on 2026-09-06.
+That validates source identity, not executable/PTX identity or an output
+smoke; every SDK row remains `NOT_READY` until its pending runtime checks and
+the M5.2 common-anchor recheck are complete.
+
 ## Per-workload identity inventory
 
 `PENDING_FREEZE` means the required field has not been asserted.  It does not

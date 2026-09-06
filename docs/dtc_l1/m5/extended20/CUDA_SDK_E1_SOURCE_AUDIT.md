@@ -145,3 +145,15 @@ sources.  Its source-defined L1-norm `QA_PASSED` smoke remains pending.
 
 No member enters E2 until M5.2 freezes the common Core/Framework/config/parser
 anchor and the complete E1 identity tuple is rechecked.
+
+## Offline source-object revalidation (2026-09-06)
+
+The eight approved source-file SHA-256 values in the first table were
+independently recomputed directly from the clean GPU App Collection object
+database at commit `b059fdae25c2aabf737486aada743fca114469ce`; all eight
+match exactly.  The available clean checkout remains at
+`dad09cb0487845edc7524ded814c6cde9f0ef6a1` with no worktree changes, so the
+historical source commit is read by object identity rather than inferred from
+the checkout tip.  This is source-provenance revalidation only: it neither
+reruns nor rehashes the isolated executable/PTX artifacts, freezes generated
+inputs, executes an output smoke, or changes the M5.2 E2 gate.
