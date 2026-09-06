@@ -76,8 +76,11 @@ def gate(o):
  if keys-set(x) or x["admission"]!="PASS":raise RuntimeError("incomplete storage admission receipt")
  a,_=paths(o,"bicg");r=json.loads((b/"CAPTURE_RESULT.json").read_text())
  if x["bicg_trace_bundle_id"]!=r["trace_bundle_id"] or x["bicg_archive_sha256"]!=sha(a):raise RuntimeError("storage receipt not BICG-bound")
- raw,grp,arc,head=[int(x[k]) for k in ("raw_bytes","grouped_bytes","archive_bytes","working_headroom_bytes")];projected=(raw+grp+arc+head)*float(x["safety_factor"])
- if min(raw,grp,arc,head)<=0 or projected>int(x["projected_bytes"]) or shutil.disk_usage(o).free<projected:raise RuntimeError("unsafe projected heterogeneous trace storage")
+ raw,grp,arc,head=[int(x[k]) for k in ("raw_bytes","grouped_bytes","archive_bytes","working_headroom_bytes")];projected=head*float(x["safety_factor"])
+ # A heavy-pilot receipt deliberately reserves a multiple of the complete
+ # working set.  Do not add its raw/grouped/archive components a second time:
+ # they are already included in working_headroom_bytes.
+ if min(raw,grp,arc,head)<=0 or projected!=int(x["projected_bytes"]) or shutil.disk_usage(o).free<projected:raise RuntimeError("unsafe projected heterogeneous trace storage")
  return {"projected_bytes":int(projected),"free_bytes":shutil.disk_usage(o).free,"status":"PASS"}
 def token(line,suffix):
  for x in line.split():

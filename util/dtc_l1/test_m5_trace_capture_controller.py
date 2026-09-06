@@ -35,7 +35,14 @@ with tempfile.TemporaryDirectory() as x:
  try:c.gate(o)
  except RuntimeError:pass
  else:raise AssertionError("non-BICG gate accepted absent receipt")
- a,_=c.paths(o,"bicg");(o/"STORAGE_ADMISSION.json").write_text(json.dumps({"bicg_trace_bundle_id":"id-bicg","bicg_archive_sha256":c.sha(a),"raw_bytes":1,"grouped_bytes":1,"archive_bytes":1,"working_headroom_bytes":1,"safety_factor":1,"projected_bytes":4,"free_bytes":999999,"data_volume":str(o),"admission":"PASS"}));assert c.gate(o)["status"]=="PASS"
+ a,_=c.paths(o,"bicg");(o/"STORAGE_ADMISSION.json").write_text(json.dumps({"bicg_trace_bundle_id":"id-bicg","bicg_archive_sha256":c.sha(a),"raw_bytes":1,"grouped_bytes":1,"archive_bytes":1,"working_headroom_bytes":1,"safety_factor":1,"projected_bytes":1,"free_bytes":999999,"data_volume":str(o),"admission":"PASS"}));assert c.gate(o)["status"]=="PASS"
+ # Heavy-pilot receipts reserve a multiple of the complete working set; a
+ # stale sum-of-components projection must fail closed.
+ (o/"STORAGE_ADMISSION.json").write_text(json.dumps({"bicg_trace_bundle_id":"id-bicg","bicg_archive_sha256":c.sha(a),"raw_bytes":2,"grouped_bytes":3,"archive_bytes":5,"working_headroom_bytes":11,"safety_factor":7,"projected_bytes":147,"free_bytes":999999,"data_volume":str(o),"admission":"PASS"}))
+ try:c.gate(o)
+ except RuntimeError:pass
+ else:raise AssertionError("stale sum-of-components projection accepted")
+ (o/"STORAGE_ADMISSION.json").write_text(json.dumps({"bicg_trace_bundle_id":"id-bicg","bicg_archive_sha256":c.sha(a),"raw_bytes":2,"grouped_bytes":3,"archive_bytes":5,"working_headroom_bytes":11,"safety_factor":7,"projected_bytes":77,"free_bytes":999999,"data_volume":str(o),"admission":"PASS"}));assert c.gate(o)["status"]=="PASS"
  # L: ordered correspondence rejects reordering.
  t=b/"traces";(t/"kernelslist.g").write_text("kernel-2.traceg\n")
  try:c.inventory(t)

@@ -16,7 +16,7 @@ host action; this handoff neither rents nor starts a host.
 | T05 | `--tracer-framework-src` must be clean and exactly `0db04452`; tool is built in workflow and NVBit archive/tool/postprocess hashes are frozen. |
 | T06 | CUDA runtime probe requires one CUDA-visible logical device 0 and records UUID/model/CC; V100/7.0 is required. |
 | T07 | Per-workload WorkloadSpec drives conditional CLI/source/build/checker paths; BICG needs no SpMV tree. Resume separates capture-bundle, archive and transfer states. |
-| T08 | BICG-first pilot creates a BICG-bound STORAGE_ADMISSION.json. Any non-BICG capture fails without it; projection includes raw+grouped+archive+headroom and safety factor. |
+| T08 | BICG-first pilot creates a BICG-bound STORAGE_ADMISSION.json. Any non-BICG capture fails without it; the receipt reserves `working_headroom_bytes * safety_factor`. For a heavy-pilot receipt, headroom is the complete raw/grouped/archive working set and must not be summed again. |
 | T09 | Base/IO/OO named qualification family now explicitly sets cap10240; TSV comparison freezes the common 80-SM/ratio-zero contract. |
 | T10 | The old live review is marked superseded; its lower historical snapshot is not an executable instruction. |
 
