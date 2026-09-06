@@ -16,16 +16,19 @@ copybacks PASS; T2 BICG same-bundle Base/IO/OO replay qualification ACTIVE;
 - A 90-second read-only sample recorded `33,182,550 -> 33,316,550` current
   kernel cycles and `54,363,616 -> 54,570,624` instructions: about 1,489
   cycles/s and 2,300 instructions/s. Classification:
-  `TRACE_REPLAY_HEALTHY_PROGRESSING`. IO and OO have naturally terminated and
-  strict-parsed; Base remains live, so T2 is not PASS.
+  `TRACE_REPLAY_HEALTHY_PROGRESSING`. Base subsequently naturally terminated
+  and strict-parsed at `50,303,549` cycles / `158,601,216` instructions; the
+  full same-bundle BICG Base/IO/OO qualification is now T2 PASS. Its review
+  pack is `review_packs/M5_0BT_T2_BICG/`; T3 is the next logical replay gate.
 - Physical V100 capture now pipelines independently. The first GESUMMV
   (`gesu`) attempt is preserved `RETRY_READY`: its checker found 1,964
   mismatches caused by the pinned CUDA source copying uninitialized host
   `tmp`/`y` into additive device accumulators. A source-copy-only repair is
   hash-constrained to those two zero initializations and records both source
   hashes/replacements in capture provenance; the frozen source and failed raw
-  attempt are untouched. Its next capture is a new attempt, not a resume or
-  bundle of the failed one. Framework
+  attempt are untouched. Its corrected replacement capture now has checker,
+  immutable-bundle/archive, copyback-SHA and local bundle-revalidation PASS;
+  it is a T3 payload, not yet a formal result. Framework
   `14be71c7968f0fb5bc1e021cf40eda41d8314171` corrects the controller's
   heavy-pilot admission formula and passes its no-GPU regressions. This is a
   capture-controller repair only; it changes no trace bundle, replay config,

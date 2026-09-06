@@ -27,11 +27,14 @@ At the audit, the only live simulator was BICG `PAPER_BASE`:
 | two-point progress | over 90 seconds, current-kernel `gpu_sim_cycle` advanced `33,182,550 -> 33,316,550` and `gpu_sim_insn` `54,363,616 -> 54,570,624`: about 1,489 cycles/s and 2,300 instructions/s |
 | classification | `TRACE_REPLAY_HEALTHY_PROGRESSING` |
 
-The same immutable BICG bundle was used by all three T2 modes. OO naturally
-terminated and strict-parsed with zero lower/inflight/PIB/active-reference
-state; IO naturally terminated and strict-parsed with zero lower/inflight/PIB
-state. Base remains live, so T2 remains `ACTIVE` and no formal result is
-registered yet.
+The same immutable BICG bundle was used by all three T2 modes. Base now
+naturally terminated at `50,303,549` cycles / `158,601,216` instructions and
+strict-parsed with PIB admit/retire `3,145,984/3,145,984`, lower
+acquire/release `19,175,277/19,175,277`, and final PIB/lower `0/0`. IO and OO
+had already naturally terminated and strict-parsed with their final
+lower/inflight/PIB (and OO active-reference) states zero. The complete T2
+review pack is `review_packs/M5_0BT_T2_BICG/`; T2 is `PASS`, admitting T3 but
+not closing M5.0BT/Q1.
 
 ## Capture queue and admission repair
 
@@ -58,3 +61,8 @@ replacement map in `source_repair`, and refuses GESUMMV capture provenance if
 that record is absent. The next attempt is therefore a new exact repaired
 capture; the failed raw attempt is neither postprocessed nor bundled. BICG and
 2DConv immutable bundles were not recaptured.
+
+The corrected GESUMMV capture is now `ARCHIVE_PASS`, source checker PASS and
+locally copyback-SHA/internal-bundle revalidated. It carries the audited
+`GESUMMV_ZERO_DEVICE_ACCUMULATORS` provenance and is eligible for T3 only
+after this T2 closure. The capture queue has independently advanced to ATAX.
