@@ -1,6 +1,6 @@
 # Extended-20 E1 Rodinia/Parboil source audit
 
-Status: **SOURCE/LAUNCHER/OUTPUT-CONTRACT RECOVERED — BUILD/PTX/INPUT/SMOKE PENDING**
+Status: **SOURCE/LAUNCHER/OUTPUT-CONTRACT RECOVERED — PARBOIL INPUTS REVALIDATED; BUILD/PTX/SMOKE PENDING**
 
 This is E1 provenance preparation only.  It neither admits an M5.E2 run nor
 converts historical launcher entries into FORMAL performance evidence.  Every
@@ -139,3 +139,23 @@ companion pass/mismatch fixture suite is required to pass before E1 use.
 
 No workload was built, executed, reordered, substituted, or performance-ranked
 by this audit.
+
+## Offline Parboil input/checker revalidation (2026-09-06)
+
+The clean detached `parboil@4e0fc54866546efa44fe93af57c9cef62f6c8eb9`
+candidate remained clean while every selected input byte hash was recomputed.
+All seven file hashes (the `sad` input set has reference and frame files)
+match the table above, and their Git blob IDs match the recorded source
+identity.  This closes only local candidate-input drift detection; it does not
+freeze a generated output reference or an E2 payload identity.
+
+The Python-3 adapter and fixture suite were also re-run with
+`python3 -m py_compile` followed by
+`python3 util/dtc_l1/test_verify_m5_extended_parboil_output.py`: all six
+pass/mismatch tests passed.  The adapter SHA-256 remains
+`f656c3bd78c9ae937e94351dd44dec4602b172d2245022ebeb5eb977d3df7431` and the
+fixture-suite SHA-256 is
+`f08975b1ce89095349960199e3692b5f9cbed3e88fb8373c442d2aa11a1acda1`.
+This validates the checker adapter's reproducible local contract only; it is
+not a substitute for source-defined workload output smokes after CUDA build
+and trace capture.

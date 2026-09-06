@@ -211,6 +211,16 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   existing fail-closed `SYR2K -> SpMV -> 2MM` capture pipeline only after the
   host is reachable and its retained controller state can be read.
 
+### Extended E1 offline provenance progress (2026-09-06)
+
+- The six selected Parboil input sets were byte-hash and Git-blob revalidated
+  in clean `parboil@4e0fc548...`; the six selected checker identities remain
+  source-pinned.  The Python-3 source-predicate adapter recompiled and passed
+  all six accepted/mismatch fixtures.  This closes local input/checker drift
+  evidence only: CUDA builds, PTX, generated output references/smokes, payload
+  eligibility and all Rodinia input recovery remain pending.  No Extended
+  simulation, trace capture, result registration, or E2 launch occurred.
+
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or
   capture-host rental/start is authorized by this report.
