@@ -14,14 +14,14 @@ used where no source-backed trace-volume basis exists.
 
 | workload | source | build evidence | input | checker | V100 build | trace eligibility | size class | state / blocker |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BlackScholes | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
-| convolutionSeparable | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
-| fastWalshTransform_11_19 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
-| scalarProd_13920 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
-| scan | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
-| sortingNetworks | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
-| transpose | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
-| vectorAdd_6000000 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke pending |
+| BlackScholes | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
+| convolutionSeparable | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and semantic audit pending |
+| fastWalshTransform_11_19 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
+| scalarProd_13920 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
+| scan | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
+| sortingNetworks | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
+| transpose | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
+| vectorAdd_6000000 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
 | cfd_097k | Rodinia 3.1 dad09cb0 | Makefile located | PENDING_FREEZE | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY; deterministic input/checker, semantic audit and V100 build pending |
 | btree | Rodinia 3.1 dad09cb0 | Makefile located | PENDING_FREEZE | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; output reference/checker, dynamic contract and V100 build pending |
 | dwt2d | Rodinia 3.1 dad09cb0 | Makefile located | PENDING_FREEZE | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; deterministic input/checker, dynamic contract and V100 build pending |
