@@ -50,9 +50,14 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   claim.  The subsequent SYR2K launch was refused before capture by the
   controller's fail-closed heterogeneous-storage projection gate
   (`RuntimeError: unsafe projected heterogeneous trace storage`): no SYR2K
-  state, trace, or capture process was created.  This is an operational
-  admission block, not a workload/checker or simulator failure.  None of
-  these capture bundles is a formal result.
+  state, trace, or capture process was created.  Researcher-authorized,
+  provenance-preserving R1/R2 reclamation then removed only regenerable
+  capture scratch and one checker-failed, non-candidate GESUMMV raw attempt;
+  its compact logs/provenance were retained.  The unchanged gate subsequently
+  passed (`55,478,362,112` free bytes versus `55,353,177,980` projected), and
+  the single SYR2K controller resumed under the capture lock.  See
+  `m5/handoffs/M5_0BT_AUTODL_SPACE_RECLAMATION.md`.  None of these capture
+  bundles is a formal result.
 - **Track C — SIM_HOST statistics-light A/B:** the initial BICG
   same-trace/same-binary/80-SM/cap-10240/PAPER_BASE cutoff round established
   that `gpgpu_max_cycle=2000000` is not a valid DTC observation boundary: it
