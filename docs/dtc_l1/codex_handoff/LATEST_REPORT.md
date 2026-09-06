@@ -180,12 +180,15 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   See `m5/handoffs/M5_0BT_AUTODL_SPACE_RECLAMATION.md` and remote
   `reclamation/R6_syrk_offload_evict.json`.
 - The next exact SpMV payload has its canonical matrix/vector/reference SHA
-  verified on the V100 host.  Its wrapper is a clean detached `de9cf429...`
-  checkout recovered from a verified local Git bundle; public Parboil source
-  recovery is in progress.  One detached supervisor is fail-closed on those
-  source proofs, SYR2K `ARCHIVE_PASS`, and the capture lock before starting
-  SpMV, and then applies the same ordering to 2MM.  No new capture has begun
-  from this preparation alone.
+  verified on the V100 host.  The SIM_HOST now holds two verified,
+  complete-history source bundles: clean wrapper `de9cf429...` (tree
+  `5b8b3a8...`) and clean Parboil `4e0fc548...` (tree `0bc8944...`), with
+  immutable transfer SHA-256 values in
+  `m5/handoffs/M5_0BT_SPMV_SOURCE_TRANSFER_READY.md`.  This replaces any
+  dependence on slow public-source recovery.  One detached supervisor remains
+  fail-closed on those source proofs, SYR2K `ARCHIVE_PASS`, storage, and the
+  capture lock before starting SpMV, and then applies the same ordering to
+  2MM.  No new capture has begun while AutoDL control is unreachable.
 
 ### Live throughput checkpoint (2026-09-06T12:19+08:00)
 
