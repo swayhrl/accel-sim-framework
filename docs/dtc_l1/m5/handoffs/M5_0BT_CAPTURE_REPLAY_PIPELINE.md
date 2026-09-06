@@ -100,3 +100,15 @@ The corrected GESUMMV capture is now `ARCHIVE_PASS`, source checker PASS and
 locally copyback-SHA/internal-bundle revalidated. It carries the audited
 `GESUMMV_ZERO_DEVICE_ACCUMULATORS` provenance and is eligible for T3 only
 after this T2 closure. The capture queue has independently advanced to ATAX.
+
+## Capture-host communication observation (2026-09-06T12:17--12:19+08:00)
+
+Two read-only SSH health probes to the existing disposable V100 capture host
+were refused at connection setup.  No remote command was executed, and no
+inference is made about the live SYR2K process, detached SpMV/2MM supervisor,
+archives, or state files while the host is unreachable.  This is an
+operational reachability observation, not a capture failure, queue transition,
+or result classification.  SIM_HOST replay work continues independently;
+the next capture action remains the already-authorized, fail-closed sequence
+`SYR2K -> SpMV -> 2MM` once communication is restored and its existing
+controller gates are observed again.

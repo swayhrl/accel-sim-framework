@@ -127,3 +127,21 @@ These rows are active observer-only confirmations, not a stats-light adoption
 or formal result.  They require natural terminal, strict parser, terminal
 drain/accounting, and full M5-consumed counter equivalence against their
 respective repaired-Core A0 rows.
+
+## Concurrent repaired-Core observation (2026-09-06T12:19+08:00)
+
+The independent repaired-Core BICG `PAPER_OO` A0 replay has naturally ended
+with exit status zero.  Strict parsing succeeds under Core
+`15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`, Framework
+`dc7836c484544b78d143837bbbb40ecbabb15aee`, the immutable BICG trace bundle,
+and the frozen 80-SM/cap-10240/ratio-zero `PAPER_OO` configuration.  It is a
+post-repair T2 candidate, not a stats-light decision: its paired A1 observer
+run (PID `1512240`) and the repaired A0 Base/IO triplet members remain live.
+No observer setting has been adopted and no formal registry entry was made.
+
+The resulting A0 OO closure is exact: 8,764,792 simulated cycles, 158,601,216
+instructions, lower create/issue/response `17,827,090/17,827,090/17,827,090`,
+completion dependencies `18,350,080/18,350,080`, final PIB/inflight/active
+refs/lower outstanding all zero.  This provides a clean terminal reference
+for the later A0-versus-A1 equivalence comparison, but no comparison is made
+before A1 naturally terminates.

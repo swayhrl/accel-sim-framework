@@ -96,3 +96,31 @@ This is a source/correctness gate, not a stage-number serialization.  Refill
 those slots immediately after that gate and a fresh resource sample permit it;
 priority remains MVT IO/OO, repaired GESUMMV Base/IO/OO, then other locally
 immutable Paper rows.
+
+## Live-pool checkpoint (2026-09-06T12:19+08:00)
+
+The repaired-Core BICG `PAPER_OO` A0 row naturally terminated (exit status
+zero) in its existing isolated namespace
+`/workspace/m5-repaired-core-replays-80sm-cap10240-20260906/bicg/oo`.
+Its strict parser summary is retained beside that output only; it is not
+registered and does not by itself re-close T2.  The exact terminal values are
+`gpu_tot_sim_cycle=8764792`, `gpu_tot_sim_insn=158601216`, and
+`DTC_L1_oo_lower_created/issued/responses=17827090/17827090/17827090`.
+Dependencies close `18350080/18350080`; final OO PIB, inflight, active refs,
+and lower outstanding are all zero.  The only `deadlock` text in stdout is
+the echoed enabled configuration option; stderr reports exit status zero and
+no assertion/fatal/output-mismatch signature was found.  It remains
+`POST_REPAIR_T2_REPLAY_CANDIDATE` until the corresponding BICG Base and IO
+rows naturally terminate and the same-bundle triplet is reconciled.
+
+At this checkpoint 14 M5 simulator processes remain live: A0/A1 Base,
+precomputed ATAX Base, repaired ATAX Base/IO/OO, repaired BICG Base/IO,
+BICG IO/OO A1 confirmations, GEMVER Base/IO/OO, and MVT Base.  Every live
+row has isolated output and approximately one advancing host CPU.  The
+dynamic limit remains **N_safe=18**, not a permission to dispatch four new
+rows: the remaining capacity is protected by the unresolved ATAX
+post-repair natural-terminal/parser/drain gate.  The current cgroup exposes
+`0-511` but has `cpu.max=38400000 100000` (384-core aggregate quota); it has
+not throttled.  Host load is nevertheless about 440 on this shared machine
+and the output filesystem has about 102 GiB free, so neither nominal 512-way
+topology nor the lack of cgroup throttling justifies raising the limit.

@@ -187,6 +187,30 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   SpMV, and then applies the same ordering to 2MM.  No new capture has begun
   from this preparation alone.
 
+### Live throughput checkpoint (2026-09-06T12:19+08:00)
+
+- The repaired-Core BICG PAPER_OO A0 replay naturally ended with exit status
+  zero and strict parser/drain/accounting PASS in its isolated output
+  namespace.  It records 8,764,792 cycles / 158,601,216 instructions, lower
+  create/issue/response `17,827,090/17,827,090/17,827,090`, dependencies
+  `18,350,080/18,350,080`, and final OO PIB/inflight/active-ref/lower state
+  all zero.  It is only a `POST_REPAIR_T2_REPLAY_CANDIDATE`: repaired BICG
+  Base/IO and the required IO/OO A1 equivalence confirmations are still live,
+  so no T2 re-close, stats-light adoption, or formal registry update occurs.
+- Fourteen isolated M5 simulator processes remain active and each continues
+  to accrue near-one-core CPU time.  The dynamic limit remains `N_safe=18`;
+  the unfilled capacity is intentionally protected until repaired ATAX
+  Base/IO/OO close their natural-terminal/parser/drain gate, after which MVT
+  IO/OO and repaired GESUMMV receive priority.  The container has cpuset
+  `0-511` and a non-throttling 384-core `cpu.max` quota, but the shared host
+  load is about 440 and does not support increasing concurrency from topology
+  alone.
+- Two non-invasive V100 SSH probes were refused during this checkpoint.  No
+  remote process, queue, archive, or state file was touched, and this is not
+  classified as a capture failure.  Continue local replays and resume the
+  existing fail-closed `SYR2K -> SpMV -> 2MM` capture pipeline only after the
+  host is reachable and its retained controller state can be read.
+
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or
   capture-host rental/start is authorized by this report.
