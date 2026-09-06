@@ -11,9 +11,12 @@ not yet a SIM_HOST receipt or formal result.  The fail-closed copyback gate
 stopped before rsync because 36,313,600,000 local free bytes are below its
 58,013,565,949-byte exact requirement (archive 3,416,630,277 + complete
 bundle 50,301,968,376 + 4 GiB margin).  No payload was deleted, recaptured,
-or partially transferred.  `m5/handoffs/M5_0BT_2MM_STORAGE_ADMISSION_STOP.md`
-binds the evidence and requires capacity provision followed by transfer-only
-resume of the same archive; M5.0BT remains ACTIVE.
+or unpacked.  Researcher-authorized archive-only rsync is now preserving the
+compressed `.tar.zst` locally, but it is deliberately not a receipt: no
+archive SHA, internal bundle validation, or `LOCAL_IMMUTABLE_PASS` is claimed.
+`m5/handoffs/M5_0BT_2MM_STORAGE_ADMISSION_STOP.md` binds the evidence and
+requires capacity provision followed by full transfer-only receipt resume;
+M5.0BT remains ACTIVE.
 
 ## E1 local `sm_70` build preflight (2026-09-06)
 

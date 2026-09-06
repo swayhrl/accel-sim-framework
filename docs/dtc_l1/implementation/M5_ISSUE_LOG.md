@@ -612,7 +612,7 @@
 
 ## M5-0BT-011 — 2MM immutable receipt stopped at local storage admission
 
-- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> TRANSFER_RESUME_PENDING`.
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> ARCHIVE_ONLY_COPYBACK_IN_PROGRESS -> TRANSFER_RECEIPT_PENDING`.
 - Scope: SIM_HOST receipt capacity only.  The frozen 2MM source/input/tracer,
   V100 capture, remote archive, trace semantics, Core, formal configuration,
   and live replay jobs are unchanged.
@@ -626,9 +626,11 @@
 - Classification: `SIM_HOST_IMMUTABLE_RECEIPT_CAPACITY`, not a GPU capture,
   checker, archive, trace, parser, DTC, lower-create, or workload failure.
 - Preservation: no remote archive/bundle, local immutable payload, simulator,
-  or active controller was deleted, signalled, restarted, or relabelled.  No
-  partial local 2MM archive exists, so no incomplete object can be mistaken
-  for a receipt.
+  or active controller was deleted, signalled, restarted, or relabelled.  On
+  researcher authorization, a separate archive-only rsync began after the
+  original fail-closed controller exited.  Its partial/completed compressed
+  archive is explicitly non-receipt evidence: it is not unpacked, internally
+  validated, or registered.
 - Resume point: supply sufficient SIM_HOST destination capacity, then resume
   only the transfer/receipt path for the same remote archive.  Require remote
   archive SHA, local archive SHA, unpacked internal `SHA256SUMS`, controller

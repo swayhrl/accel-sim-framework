@@ -1,6 +1,7 @@
 # M5.0BT — 2MM local storage-admission stop
 
-Status: **REMOTE_ARCHIVE_PASS; STOP_LOCAL_STORAGE_ADMISSION; NO_RECAPTURE**.
+Status: **REMOTE_ARCHIVE_PASS; ARCHIVE_ONLY_COPYBACK_IN_PROGRESS;
+STOP_LOCAL_STORAGE_ADMISSION; NO_RECAPTURE**.
 
 This is a fail-closed transfer receipt, not a capture or trace-fidelity
 failure.  It records the exact 2MM transfer boundary so that resumption can
@@ -23,8 +24,17 @@ The wait-only copyback controller reached `ARCHIVE_PASS`, calculated the
 unmodified receipt requirement
 `archive + complete_bundle + 4 GiB`, and exited with its documented
 `STOP_LOCAL_STORAGE_ADMISSION` result before opening `rsync`.  Consequently
-there is no local partial archive, no local unpacked 2MM bundle, no
+the original receipt path produced no unpacked 2MM bundle, no
 `COPYBACK_SHA_PASS`, and no `LOCAL_IMMUTABLE_PASS` claim.
+
+After that fail-closed stop, researcher authorization started one separate
+`archive-only` rsync of the exact already-created `.tar.zst` to the same
+SIM_HOST namespace.  It intentionally does **not** unpack, run internal
+bundle validation, rewrite `kernelslist.g`, or promote any trace/formal
+result.  During this transfer the local archive is necessarily partial and
+must never be treated as a receipt.  Its sole purpose is to preserve a
+compressed local copy while capacity recovery is investigated.  Completion of
+the archive-only copy does not change the remaining hard receipt requirement.
 
 The current SIM_HOST filesystem and its accessible alternate mount have no
 sufficient free capacity.  Existing local immutable scientific bundles are
