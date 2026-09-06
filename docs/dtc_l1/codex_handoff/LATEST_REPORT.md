@@ -189,6 +189,13 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   fail-closed on those source proofs, SYR2K `ARCHIVE_PASS`, storage, and the
   capture lock before starting SpMV, and then applies the same ordering to
   2MM.  No new capture has begun while AutoDL control is unreachable.
+- 2MM CPU-side capture preparation is complete and does not wait for SpMV:
+  its clean `polybenchGpu@5584aaa7...` source/header hashes, deterministic
+  source-tar transfer identity, sm70 build, source checker, dimensions, and
+  existing capture/storage gates are frozen in
+  `m5/handoffs/M5_0BT_2MM_CAPTURE_READY.md`.  It remains `PENDING` and may
+  start only after the ordered SpMV predecessor reaches its safe archive state
+  and the AutoDL lock/gates are re-observed.
 
 ### Live throughput checkpoint (2026-09-06T12:19+08:00)
 
