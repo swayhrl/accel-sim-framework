@@ -225,3 +225,27 @@ None of these local builds executed a source-defined output checker on a V100,
 and no dynamic trace-semantic audit has occurred.  Their approved real-device
 input/launch/output identities remain mandatory; all three remain
 `SOURCE_READY`, not `BUILD_READY` or `TRACE_CAPTURE_READY`.
+
+## convolutionSeparable local `sm_70` build preflight (2026-09-06)
+
+The exact SDK 4.2 source tree was independently materialized twice from
+`gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce`, tree
+`1b7beaa703800b27a3f63e2c55010d0695ecfd19`.  Each isolated build used CUDA
+11.8.89 with `-arch=sm_70 -O2 -cudart shared` and the M5-E1-003 post-link
+normalization rule.  The raw linked ELFs differ only in nvcc-generated local
+temporary-name metadata; both normalized ELFs and both PTX files are
+byte-identical.  Generated artifacts remain outside Git.
+
+| item | identity / result |
+| --- | --- |
+| source inputs | `convolutionSeparable.cu` `220fc92116969e66cd7d77af35867ea557773019400493f6ea744c0b52843daf`; `main.cpp` `6953fa19ba12aeea767610510d685bfb792d972dd46df790ae04e1e5748fabc0`; `convolutionSeparable_gold.cpp` `0a7f6c67ec7e9164bcbbc5fdc5b265a60cfe02c0086600107619df082dd62f5e`; `convolutionSeparable_common.h` `d919689fcf8c3adde2d846cf2c86b2b190dd5cdfe49563f95d83eecde89117e7` |
+| canonical executable | two `strip --strip-unneeded` artifacts: SHA-256 `a37c8b8a2689bf595ccdec63be24c38aa17bcbb9559f4f15bda6f3c1e2546058` |
+| PTX | two artifacts: SHA-256 `dc95bf7fed6ede526cebf4ce12b0ae1b289af6e49e2eb23590a7367df50e20ba`; `.target sm_70`; rows and columns kernel entries present |
+| classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `SOURCE_READY`, not `BUILD_READY` |
+
+This is static host-side evidence only.  The source-defined `--size 3072`
+real-V100 invocation, L2-norm `QA_PASSED` checker, launch/input freeze, and
+dynamic trace-semantic audit are still mandatory.  In particular, the static
+`__constant__ c_Kernel` / `cudaMemcpyToSymbol` path remains
+`RUNTIME_AUDIT_CONSTANT`; this preflight neither starts a capture nor changes
+the E1 readiness ledger.

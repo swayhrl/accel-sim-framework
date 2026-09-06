@@ -69,11 +69,13 @@ Parboil source-predicate adapter fixture suite remains six-for-six PASS.  This
 is a low-cost E1 drift check only; it neither starts an Extended simulation nor
 turns a static audit into a V100 trace claim.
 
-BlackScholes additionally has a reproducible local CUDA-11.8 `sm_70` build
-preflight (executable/PTX hashes and compatibility-input identities in
-`extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`). Because it was not built and
-executed on the actual V100 with the source-defined output checker, it remains
-`SOURCE_READY`; all exclusive readiness counts above are unchanged.
+BlackScholes and convolutionSeparable additionally have reproducible local
+CUDA-11.8 `sm_70` build preflights (executable/PTX hashes and compatibility-
+input identities in `extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`). Neither was
+built and executed on the actual V100 with its source-defined output checker.
+For convolutionSeparable, the constant-memory transfer path also remains a
+runtime semantic audit. Both rows therefore remain `SOURCE_READY`; all
+exclusive readiness counts above are unchanged.
 
 FastWalshTransform has the same two-build local `sm_70` preflight, with its
 fixed `-logK 11 -logD 19` source contract and canonical artifact hashes in

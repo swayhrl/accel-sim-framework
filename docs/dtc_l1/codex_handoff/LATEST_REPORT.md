@@ -32,6 +32,14 @@ two-build local `sm_70` preflights under their exact SDK 4.2 tree identities.
 They remain `SOURCE_READY` pending V100 output smokes and dynamic trace audits;
 the physical-capture queue and E1 readiness ledger remain unchanged.
 
+convolutionSeparable has now completed the same isolated two-build CUDA-11.8
+`sm_70` preflight from the frozen SDK 4.2 object.  Its normalized ELF and PTX
+are byte-identical across both builds, but SIM_HOST did not run the real-V100
+`--size 3072` L2-norm `QA_PASSED` checker or dynamic trace audit.  Its
+constant-memory transfer path remains a runtime semantic gate, so it remains
+`SOURCE_READY`; no readiness count, capture priority, or active V100 work is
+changed.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.
