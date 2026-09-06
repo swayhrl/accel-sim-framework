@@ -274,6 +274,11 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   capture scheduling authority.  See
   `m5/extended20/M5_E1_PARBOIL_STATIC_TRACE_FEATURE_AUDIT.md` and
   `m5/handoffs/M5_E1_V100_CAPTURE_READINESS.md`.
+- The selected Rodinia 3.1 CUDA source scan likewise identifies CFD's
+  constant-memory transfer path for a runtime audit; BTree, DWT2D, Gaussian,
+  Hotspot1 and LUD are static candidates only.  Their missing deterministic
+  inputs/checkers and all clean V100/sm70 builds still prohibit capture.  See
+  `m5/extended20/M5_E1_RODINIA_STATIC_TRACE_FEATURE_AUDIT.md`.
 
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or
