@@ -42,6 +42,15 @@ same-bundle Base/IO/OO formal replay is ACTIVE; `CAPTURE_AND_REPLAY_PIPELINED`.
   `m5/handoffs/M5_SIM_HOST_STATS_LIGHT_AUDIT.md`; no candidate is adopted
   until terminal counter equivalence and a controlled confirmation pass.
 
+- **Pipelined returned-trace acquisition:** researcher authorization permits
+  independent replay acquisition before T3/M5.0BT logical PASS.  The fully
+  validated ATAX, GEMVER and MVT immutable payloads each have a Base/IO/OO
+  replay on the unchanged frozen formal configuration, recorded as
+  `PRECOMPUTED_PENDING_STAGE_ACCEPTANCE` in
+  `m5/handoffs/M5_0BT_PRECOMPUTED_REPLAY_QUEUE.md`.  These live rows are not
+  a stage result and must close all terminal/parser/accounting gates before
+  later exact-identity reuse.
+
 - BICG Base remains a verified trace-driven replay, not a PTX/execution-driven
   payload: its live argv uses immutable BICG `kernelslist.g`, loads both
   ordered `.traceg` invocations through the trace frontend, and has no trace
