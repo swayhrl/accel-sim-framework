@@ -25,6 +25,7 @@ assert 'resumable capture failed immutable bundle validation' in text
 build=(ROOT/'util/dtc_l1/build_m5_polybench_cuda_trace_sm70.sh').read_text()
 assert 'if [[ $selected == all || $selected == "$1" ]]; then build "$1" "$2"; fi' in build
 assert 'prepare_m5_gesummv_source.py' in build and 'gesummv.m5_source_repair.json' in build
+assert 'dirname "$src/CUDA/$2"' in build
 assert 'kernel_invocation_manifest_sha' in text and 'kernel_geometry_manifest_sha' in text
 assert 'source_repair' in text and 'GESUMMV_ZERO_DEVICE_ACCUMULATORS' in text
 assert '"spmv_wrapper"' in text and '"parboil"' in text and '"matrix_sha256"' in text

@@ -12,7 +12,9 @@ build() {
     # Preserve the pinned source checkout: only this capture build receives
     # the audited, CPU-equivalent zero-initialized accumulator copy.
     python3 "$script_dir/prepare_m5_gesummv_source.py" "$src/CUDA/$2" "$out/gesummv.m5.cu" "$out/gesummv.m5_source_repair.json"
-    "$nvcc" -arch=sm_70 -O2 -cudart shared -o "$out/$1" "$out/gesummv.m5.cu"
+    # The prepared copy lives outside the frozen source directory; retain the
+    # original sibling-header lookup contract without copying headers.
+    "$nvcc" -arch=sm_70 -O2 -cudart shared -I "$(dirname "$src/CUDA/$2")" -o "$out/$1" "$out/gesummv.m5.cu"
   else
     "$nvcc" -arch=sm_70 -O2 -cudart shared -o "$out/$1" "$src/CUDA/$2"
   fi
