@@ -40,6 +40,12 @@ constant-memory transfer path remains a runtime semantic gate, so it remains
 `SOURCE_READY`; no readiness count, capture priority, or active V100 work is
 changed.
 
+Rodinia hotspot1 has independently passed an equivalent local CUDA-11.8
+`sm_70` build/PTX reproducibility preflight from the clean 3.1 source tree.
+It remains `INPUT_READY`, not `BUILD_READY`: no V100 source-defined checker,
+input/runtime/launch freeze, or dynamic trace audit has run. The Paper-10
+capture queue and all E1 exclusive readiness counts are unchanged.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.

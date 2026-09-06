@@ -26,7 +26,7 @@ used where no source-backed trace-volume basis exists.
 | btree | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | dwt2d | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | gaussian | Rodinia 3.1 dad09cb0 | Makefile located | CANDIDATE_SET_HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; primary input/checker, dynamic contract and V100 build pending |
-| hotspot1 | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
+| hotspot1 | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | lud | Rodinia 3.1 dad09cb0 | Makefile located | SOURCE_GENERATED_CONTRACT | source -v verifier | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; exact V100 verifier smoke and dynamic contract pending |
 | bfs | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_ATOMICS_TEXTURE_GLOBAL_BARRIER | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
 | cutcp | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_STREAM_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
@@ -93,3 +93,9 @@ Transpose, scan, and sortingNetworks now likewise have two-build local
 `sm_70` preflights recorded in `extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`.
 Their V100 source-checker smokes and dynamic trace audits are still absent, so
 they remain `SOURCE_READY`; no capture queue or readiness count changes.
+
+Rodinia hotspot1 has a matching two-build local CUDA-11.8 `sm_70` preflight
+recorded in `extended20/M5_E1_RODINIA_STATIC_TRACE_FEATURE_AUDIT.md`. It
+retains `INPUT_READY`, not `BUILD_READY`, because its real-V100 checker and
+dynamic trace contract remain open; the exclusive counts and capture queue are
+unchanged.
