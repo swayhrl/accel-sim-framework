@@ -43,6 +43,17 @@ with tempfile.TemporaryDirectory() as x:
  except RuntimeError:pass
  else:raise AssertionError("stale sum-of-components projection accepted")
  (o/"STORAGE_ADMISSION.json").write_text(json.dumps({"bicg_trace_bundle_id":"id-bicg","bicg_archive_sha256":c.sha(a),"raw_bytes":2,"grouped_bytes":3,"archive_bytes":5,"working_headroom_bytes":11,"safety_factor":7,"projected_bytes":77,"free_bytes":999999,"data_volume":str(o),"admission":"PASS"}));assert c.gate(o)["status"]=="PASS"
+ # I: remote bundle eviction is opt-in and requires a local immutable receipt
+ # bound to both archive and bundle identities; BICG is never evicted.
+ ea=o/"bundles"/"atax";c.archive(o,ea);assert c.valid_bundle(ea) and c.valid_archive(o,"atax")
+ try:c.evict_offloaded(o,"atax")
+ except RuntimeError:pass
+ else:raise AssertionError("unproven offload eviction accepted")
+ arc,_=c.paths(o,"atax");(o/"offloads").mkdir();(o/"offloads/atax.json").write_text(json.dumps({"workload":"atax","trace_bundle_id":"id-atax","source_archive_sha256":c.sha(arc),"local_archive_sha256":c.sha(arc),"local_bundle_sums_sha256":c.sha(ea/"SHA256SUMS"),"local_immutable_validation":"PASS","status":"OFFLOAD_ELIGIBLE"}))
+ assert c.valid_offload(o,"atax");c.evict_offloaded(o,"atax");assert not ea.exists() and c.valid_archive(o,"atax")
+ try:c.evict_offloaded(o,"bicg")
+ except RuntimeError:pass
+ else:raise AssertionError("BICG admission anchor eviction accepted")
  # L: ordered correspondence rejects reordering.
  t=b/"traces";(t/"kernelslist.g").write_text("kernel-2.traceg\n")
  try:c.inventory(t)

@@ -61,12 +61,33 @@ def archive(o,b):
  run(["tar","--zstd","-cf",str(tmp),"-C",str(b.parent),b.name]);os.replace(tmp,a)
  m.write_text(json.dumps({"workload":b.name,"trace_bundle_id":json.loads((b/"CAPTURE_RESULT.json").read_text())["trace_bundle_id"],"archive_path":str(a),"archive_sha256":sha(a),"archive_bytes":a.stat().st_size,"archive_format":"tar.zst","source_host":os.uname().nodename,"created_unix":int(time.time())},sort_keys=True,indent=2)+"\n");return a
 def receipt(o,w):return o/"transfers"/(w+".transfer.json")
+def offload_receipt(o,w):return o/"offloads"/(w+".json")
 def transfer(o,w,dst):
  a,_=paths(o,w);r=receipt(o,w)
  if r.is_file():return
  dst.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(a,dst)
  if sha(a)!=sha(dst):raise RuntimeError("copyback SHA mismatch")
  r.parent.mkdir(exist_ok=True);r.write_text(json.dumps({"workload":w,"source_archive":str(a),"destination_archive":str(dst),"source_sha256":sha(a),"destination_sha256":sha(dst),"status":"TRANSFER_PASS","created_unix":int(time.time())},sort_keys=True,indent=2)+"\n")
+def valid_offload(o,w):
+ """Accept only an externally recorded, exact local immutable-store receipt.
+
+ The capture host is disposable, but it must never silently discard a valid
+ bundle.  The receipt is deliberately written by the copyback side after its
+ archive SHA and immutable-store validation; this side rebinds it to the
+ still-present remote bundle and archive immediately before eviction.
+ """
+ b=o/"bundles"/w;a,_=paths(o,w);q=offload_receipt(o,w)
+ try:x=json.loads(q.read_text());r=json.loads((b/"CAPTURE_RESULT.json").read_text())
+ except (OSError,KeyError,json.JSONDecodeError):return False
+ keys={"workload","trace_bundle_id","source_archive_sha256","local_archive_sha256","local_bundle_sums_sha256","local_immutable_validation","status"}
+ return keys<=set(x) and x["workload"]==w and x["trace_bundle_id"]==r["trace_bundle_id"] and x["source_archive_sha256"]==sha(a) and x["local_archive_sha256"]==sha(a) and x["local_bundle_sums_sha256"]==sha(b/"SHA256SUMS") and x["local_immutable_validation"]=="PASS" and x["status"]=="OFFLOAD_ELIGIBLE"
+def evict_offloaded(o,w):
+ """Remove only a remotely redundant non-BICG bundle after exact offload proof."""
+ if w=="bicg":raise RuntimeError("BICG remains capture-side storage-admission anchor")
+ b=o/"bundles"/w
+ if not b.is_dir() or not valid_bundle(b) or not valid_archive(o,w) or not valid_offload(o,w):raise RuntimeError("refuse eviction without exact local immutable offload proof")
+ shutil.rmtree(b)
+ if b.exists() or not valid_archive(o,w):raise RuntimeError("remote offload eviction did not preserve archive")
 def gate(o):
  b=o/"bundles/bicg";f=o/"STORAGE_ADMISSION.json"
  if not valid_bundle(b) or not valid_archive(o,"bicg") or not f.is_file():raise RuntimeError("valid BICG bundle/archive and storage admission receipt required")
@@ -166,7 +187,9 @@ def main():
  p=argparse.ArgumentParser()
  for x in ("tracer-framework-src","nvbit-archive","out"):p.add_argument("--"+x,type=Path,required=True)
  for x in ("polybench-src","spmv-wrapper","parboil-src","spmv-input-dir","spmv-reference","transfer-destination"):p.add_argument("--"+x,type=Path)
- p.add_argument("--workloads",default=",".join(W));p.add_argument("--resume",action="store_true");p.add_argument("--pilot-only",action="store_true");a=p.parse_args();o=a.out.resolve();o.mkdir(parents=True,exist_ok=True);ss=specs(a);src=sources(a,ss)
+ p.add_argument("--workloads",default=",".join(W));p.add_argument("--resume",action="store_true");p.add_argument("--pilot-only",action="store_true");p.add_argument("--evict-offloaded",choices=W);a=p.parse_args();o=a.out.resolve();o.mkdir(parents=True,exist_ok=True)
+ if a.evict_offloaded:evict_offloaded(o,a.evict_offloaded);return
+ ss=specs(a);src=sources(a,ss)
  # Archive/copyback recovery is intentionally GPU-free and never re-captures.
  if a.resume and all((o/"bundles"/s.workload_id).exists() and valid_bundle(o/"bundles"/s.workload_id) for s in ss):
   for s in ss:
