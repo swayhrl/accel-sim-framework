@@ -86,3 +86,8 @@ canonical executable/PTX/source-helper identities in
 `extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`.  They require the actual-V100
 `--size 6000000` / `--size 13920` source-checker smokes and dynamic trace
 audits before advancing; both remain `SOURCE_READY`, so counts are unchanged.
+
+Transpose, scan, and sortingNetworks now likewise have two-build local
+`sm_70` preflights recorded in `extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`.
+Their V100 source-checker smokes and dynamic trace audits are still absent, so
+they remain `SOURCE_READY`; no capture queue or readiness count changes.

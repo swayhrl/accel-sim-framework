@@ -27,6 +27,11 @@ preflight with normalized ELF/PTX identities.  Neither has run a V100
 source-defined output smoke or dynamic trace audit, so both remain
 `SOURCE_READY`; the E1 readiness ledger remains unchanged.
 
+Transpose, scan, and sortingNetworks have also completed their independent
+two-build local `sm_70` preflights under their exact SDK 4.2 tree identities.
+They remain `SOURCE_READY` pending V100 output smokes and dynamic trace audits;
+the physical-capture queue and E1 readiness ledger remain unchanged.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.

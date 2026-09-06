@@ -207,3 +207,21 @@ approved `--size 6000000` and `--size 13920` V100 output-smoke identities,
 their source-defined verdicts, and dynamic trace-semantic audits remain
 mandatory. Both rows remain `SOURCE_READY`, not `BUILD_READY` or
 `TRACE_CAPTURE_READY`.
+
+## Transpose, scan, and sortingNetworks local `sm_70` build preflights (2026-09-06)
+
+Each candidate was independently materialized twice from the exact SDK 4.2
+tree, built with the same CUDA 11.8 `sm_70` recipe, and normalized under
+M5-E1-003.  Canonical executable and PTX identities are byte-identical within
+each workload; no generated artifact is committed.
+
+| workload | SDK 4.2 tree / selected source | canonical stripped executable | PTX / entry proof |
+| --- | --- | --- | --- |
+| `transpose` | tree `813b148eae62d93be6ee04a3036a357ed5d93783`; `transpose.cu` `d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563` | `32d1117cc6ca10e9603579b951e52b1ecc3eaaf903ca33d3bb8503c03191bd1f` | `7aaf1e3e0c7f4630f00c5cbbcceae53c35032d6b0186862f4a33c855a8e3c43c`; `.target sm_70`, copy/coalesced/no-bank-conflict kernels present |
+| `scan` | tree `2657e8dfa1feb3dcccb876f8b9b430c40b7ba7e8`; source set `scan.cu`, `main.cpp`, `scan_gold.cpp`, `scan_common.h` is frozen by that tree | `de62da05169fc396c0b4d30e9c567ebfd2375f9748bfe262ea336fb5942b2545` | `299081b50a3100ffbb5b4f343bb7766dee7cccb2ed86da47c578cf51675c443b`; `.target sm_70`, shared scan and uniform-update entries present |
+| `sortingNetworks` | tree `52b68c51622139c6c5042fa20bc7a7725d997d27`; `main.cpp` `7460c5b6882bd6a86d086d19319822683831d8fb6021e111898a25d24a6cbfa8`, with the two exact kernel source files in the tree | `6ccc7c1c7da8076875f3428264b3f9342e83d173d672454aec45bb2e41d16b32` | bitonic `70c564fbd016b9a210b83af5ca9ff7c124d8ee65f9d993fb1ce5c392b516f407`, odd-even `4ddbeb0569cccb6603db60ab87d374a00841d247c7b16dad0b7c905a81618093`; both `.target sm_70` with expected shared-sort entries |
+
+None of these local builds executed a source-defined output checker on a V100,
+and no dynamic trace-semantic audit has occurred.  Their approved real-device
+input/launch/output identities remain mandatory; all three remain
+`SOURCE_READY`, not `BUILD_READY` or `TRACE_CAPTURE_READY`.
