@@ -40,3 +40,26 @@ the older BICG T2 remains a diagnostic anchor only.
 
 Recalibrate before any further dispatch or if MemAvailable, swap activity,
 iowait, trace-store throughput or output-space headroom becomes adverse.
+
+## Pipeline scheduling clarification (2026-09-06T10:44+08:00)
+
+The active researcher scheduling authority permits a V100-captured workload to
+enter the SIM_HOST dynamic replay queue immediately after all of the following
+are PASS: hardware checker, immutable bundle, archive SHA, copyback, and local
+bundle validation.  This acquisition rule does not wait for T3, a different
+workload replay, the remaining capture queue, or the stats-light A/B study.
+Rows completed before their predecessor logical gate are explicitly
+`PRECOMPUTED_PENDING_STAGE_ACCEPTANCE`; they are not a stage PASS claim.
+
+The current measurement still holds the M5 admission limit at **N_safe = 18**:
+there are 18 live M5 workers, 512 logical CPUs across two NUMA nodes, per-M5
+worker RSS p50 about 2.4 GiB and p95 about 8.5 GiB, and current workers retain
+near-one-core CPU progress with zero `si`/`so`.  However, the host also has
+substantial unrelated load, swap is historically occupied, and the shared
+filesystem has only about 58 GiB free.  Therefore no nineteenth M5 worker is
+admitted until a worker naturally exits and the resource sample is repeated.
+This is a conservative dynamic-pool decision, not a serialization rule:
+ready repaired-Core triplets (including GEMVER and MVT) are next eligible when
+a safely calibrated slot exists.  All formal rows continue to use the frozen
+statistics/configuration identity until the isolated stats-light equivalence
+study is accepted; no stats-light result is a formal result.
