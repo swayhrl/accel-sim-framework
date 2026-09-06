@@ -189,3 +189,21 @@ dynamic symbol tables and `.nv_fatbin` sections are byte-identical. The
 canonical stripped artifacts are byte-identical, retain the same dynamic-link
 surface and fatbin, and do not change workload source, CUDA launch geometry,
 or any simulated mechanism. M5-E1-003 records the recovery and regression.
+
+## VectorAdd and scalarProd local `sm_70` build preflights (2026-09-06)
+
+Each row below was materialized twice from the frozen SDK 4.2 object, built
+with CUDA 11.8 `-arch=sm_70 -O2 -cudart shared`, and normalized with the
+M5-E1-003 post-link rule.  The two canonical ELFs and the two PTX files match
+byte-for-byte for each workload; generated artifacts remain outside Git.
+
+| workload | source / helper identity | canonical stripped executable | PTX / entry proof |
+| --- | --- | --- | --- |
+| `vectorAdd_6000000` | `vectorAdd.cu` `14991a235ab811b5ff4cac639825a4e4238b2af3e3d1ca0a629134db5b5cd3d5`; `sdkHelper.h` `cb528eeda1e7acd502e5eabcfbecf7d7e2be4cf3a135e6acd264552bd1cc2139`; frozen `libshrutil` / `libcutil` identities above | `a094fb3127f036f4093df19af97514178d5e8f31802811e4ee055772b6369dbf` | `1a07ff58ad7d971fa715e9431ae4e82b42d2a6ba8bc4f54837335b18fef19d21`; `.target sm_70`, `_Z6VecAddPKfS0_Pfi` |
+| `scalarProd_13920` | `scalarProd.cu` `742008e11f8888c5521c913497a1b48fd8de104cbeff2dc6df24f667eab8ab8e`; `scalarProd_gold.cpp` `92ba199e8966651519e7e504cdb45c9a9cbf9498b100fb771898e159ec47f611`; `scalarProd_kernel.cu` `49a6709c6ceded5a52f0d1c965999f240defd855f9bf82e07d622516f12b2c76` | `ad32f09b32e0027fec23ec4b98819f27339fedca5133c61b9f23c8931985e701` | `3f353726337a2d64611f23c3d6a5a643253d0ff570e2d763f478cc60e5fb481e`; `.target sm_70`, `_Z13scalarProdGPUPfS_S_ii` |
+
+SIM_HOST did not execute either binary because it has no visible GPU. The
+approved `--size 6000000` and `--size 13920` V100 output-smoke identities,
+their source-defined verdicts, and dynamic trace-semantic audits remain
+mandatory. Both rows remain `SOURCE_READY`, not `BUILD_READY` or
+`TRACE_CAPTURE_READY`.

@@ -80,3 +80,9 @@ fixed `-logK 11 -logD 19` source contract and canonical artifact hashes in
 `extended20/FWT_11_19_E1_RECOVERY.md`.  It likewise lacks a real-V100
 `PASSED` smoke and dynamic trace audit, so it remains `SOURCE_READY`; the
 exclusive readiness counts remain unchanged.
+
+VectorAdd and scalarProd also have two-build local `sm_70` preflights, with
+canonical executable/PTX/source-helper identities in
+`extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`.  They require the actual-V100
+`--size 6000000` / `--size 13920` source-checker smokes and dynamic trace
+audits before advancing; both remain `SOURCE_READY`, so counts are unchanged.

@@ -22,6 +22,11 @@ its exact `-logK 11 -logD 19` source contract.  It remains `SOURCE_READY`
 because no V100 output smoke or dynamic trace audit has run; E1 readiness
 counts and the Paper-10 capture priority are unchanged.
 
+VectorAdd and scalarProd have now passed the same two-build local `sm_70`
+preflight with normalized ELF/PTX identities.  Neither has run a V100
+source-defined output smoke or dynamic trace audit, so both remain
+`SOURCE_READY`; the E1 readiness ledger remains unchanged.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.
