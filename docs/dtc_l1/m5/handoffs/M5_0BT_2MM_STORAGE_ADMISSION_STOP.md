@@ -69,3 +69,17 @@ then has a locally retained identical copy.  This release decision does
 later formal receipt still requires capacity, internal `SHA256SUMS`, and
 `valid_bundle()` validation before replay or formal-result use.  This keeps
 the host-release and formal-receipt decisions distinct.
+
+### Archive-only durable-retention proof (2026-09-06)
+
+The archive-only transfer then naturally completed without an unpack step.
+The local compressed object has the expected 3,416,630,277 bytes and its
+direct SHA-256 is
+`59e918821bc54a772434acc70d2d439abefd8ccf696c055be2564b53d520863e`, exactly
+matching the already recorded remote `ARCHIVE_PASS` archive SHA.  Therefore
+`ARCHIVE_ONLY_COPYBACK_SHA_PASS` and
+`V100_CAPTURE_HOST_RELEASE_SAFE_FOR_STORAGE` are now established: the rented
+host is no longer the unique holder of the 2MM capture archive.  No archive
+was unpacked, no internal bundle member was read, and neither
+`COPYBACK_SHA_PASS` nor `LOCAL_IMMUTABLE_PASS` is claimed.  M5.0BT remains on
+hold pending the separate, capacity-backed formal receipt path.

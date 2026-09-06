@@ -32,6 +32,15 @@ capture-host release, while still leaving 2MM outside formal
 gated on capacity plus internal-bundle and immutable-store validation.  This
 is a provenance constraint; it does not imply an active GPU workload.
 
+The archive-only transfer has now naturally completed.  Its local compressed
+archive is exactly 3,416,630,277 bytes and direct SHA-256 matches the recorded
+remote archive SHA:
+`59e918821bc54a772434acc70d2d439abefd8ccf696c055be2564b53d520863e`.
+`ARCHIVE_ONLY_COPYBACK_SHA_PASS` makes the rented V100 capture host safe to
+release for storage purposes.  This no-unpack retention proof deliberately
+does not promote 2MM to a formal immutable receipt or authorize a new M5
+stage.
+
 A source audit has also confirmed a native `.traceg.xz` frontend route.  It is
 an isolated `TEXT_TRACEG_XZ_DERIVED` storage candidate only, not an accepted
 trace representation: byte-decompression, ordered-list, and same-bundle
