@@ -1,6 +1,6 @@
 # M5.0BT SpMV source transfer readiness
 
-Status: **AUTODL_SOURCE_SWITCH_PASS; SYR2K_ARCHIVE_GATED**.
+Status: **SOURCE_SWITCH_PASS; SPMV_CAPTURE_AND_LOCAL_IMMUTABLE_PASS**.
 
 This is a source-provenance/transport record for the exact Paper-10 SpMV
 capture identity.  It is neither a capture result nor permission to use a
@@ -60,4 +60,7 @@ Before the SpMV queue entry can start, the controller must:
 4. let the existing `SYR2K -> SpMV -> 2MM` supervisor start SpMV only after
    those gates pass.
 
-No SpMV capture has been launched by this transfer/recovery record.
+The source gate subsequently admitted exactly one SpMV capture.  Its archive,
+copyback SHA and local immutable validation are now PASS; see
+`M5_0BT_SPMV_CAPTURE_CLOSEOUT.md`.  This readiness record remains the source
+transport evidence and is not itself a replay/formal result.

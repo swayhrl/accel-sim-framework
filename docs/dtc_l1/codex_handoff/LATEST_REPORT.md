@@ -24,9 +24,13 @@ remains live, so the lower-create repair gate is not yet PASS; repaired MVT
 replacement and repaired GESUMMV T3 remain correctly gated by its required
 natural-terminal/parser/drain closure.
 
-The capture-host control route is presently unreachable (connection refused).
-No remote process was signaled, restarted, duplicated, or inferred failed;
-SpMV/2MM are therefore `REMOTE_STATE_UNVERIFIED`, not completed or failed.
+The source-script capture route has been recovered and read non-invasively.
+SpMV is `ARCHIVE_PASS`, has copyback SHA and local immutable validation PASS,
+and is bound to exact source/input/tracer identity in
+`m5/handoffs/M5_0BT_SPMV_CAPTURE_CLOSEOUT.md`.  2MM is currently `CAPTURING`
+under the same ordered supervisor (GPU active, capture lock held); it has no
+archive/transfer/result claim yet.  No production capture was restarted or
+duplicated during the reachability recovery.
 
 ## Current capture-storage authority (2026-09-06)
 

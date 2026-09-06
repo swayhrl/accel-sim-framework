@@ -80,9 +80,12 @@ free bytes; these are not a promise that an unmeasured workload fits.
 
 ## Consequences
 
-- **SpMV** is the active next queue item. SYR2K local immutable PASS,
-  proof-bound eviction and a fresh live gate PASS are satisfied; its own
-  checker/bundle/archive/copyback/local-immutable gates remain independent.
+- **SpMV** has now closed its independent checker/bundle/archive/copyback/
+  local-immutable gates under the recalibrated policy.  Its 53,292,499-byte
+  archive SHA and immutable receipt are recorded in
+  `M5_0BT_SPMV_CAPTURE_CLOSEOUT.md`; it is not yet a replay/formal result.
+- **2MM** is now the active capture item.  It remains HEAVY_SIZE_UNKNOWN and
+  may claim no archive/transfer/result until its own unchanged gate closes.
 - **2MM** is HEAVY_SIZE_UNKNOWN: frozen NI=NJ=NK=NL=1024, two dense
   multiplication phases, no downsizing. It needs the recalibrated gate plus
   pre-identified proof-bound eviction candidates before launch.
