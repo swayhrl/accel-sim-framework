@@ -172,7 +172,8 @@ or trace-capture eligibility.
 | source inputs | `BlackScholes.cu` `7540eeeccf9c5489a51db0aafb99d1ff05488c9ee787c3afdbda0fc078dd452d`; `BlackScholes_gold.cpp` `33d9a614eca99e4907711236161aa9799cefa68cce34d758132a634675b136dc`; `BlackScholes_kernel.cuh` `1a49728f87f3b95bbeb05e9d7e8b9a04854901a8f9993437db71c399ab829dbf` |
 | compatibility inputs | original-SDK `libshrutil_x86_64.a` `3a16b504d7311059596cd56fffd5d71e89c822c6eb8da980d2025a94b033471b`; frozen `libcutil_x86_64.a` `ebc5bcfe63ec81ece16dd14ee57811c780e93df1776a49a04d62f800e989e412`; `cutil_inline.h` `c7abcf2902af637e6c83ff677c74135aaaa706879ddbccf3190ce48b06278ddc`; `shrQATest.h` `07f691c08d7bac6ee3ca93169e6a9288a3d4d1a2bc855af1c1beb340877f7f55` |
 | toolchain | CUDA 11.8.89 `nvcc`; `-arch=sm_70 -O2 -cudart shared` |
-| linked executable | SHA-256 `1d581ce9830e6e60a9856bdd213670239d518773dd166bd372203bd6a5c87895` |
+| raw linked executable | first isolated build SHA-256 `1d581ce9830e6e60a9856bdd213670239d518773dd166bd372203bd6a5c87895`; do not use as the canonical artifact because nvcc emits a per-build temporary local symbol name |
+| canonical executable | `strip --strip-unneeded` after link: two independently materialized builds are byte-identical at SHA-256 `ccbb7ebec30a02cc8ad00c726f4af524dceb175352dd3d6cc424917f467d5639` |
 | PTX | SHA-256 `dc3f48102d762167cece9f06ee353a4aba4cb0651493d12cc261e970bdbaccc3`; expected `_Z15BlackScholesGPUPfS_S_S_S_ffi` entry present |
 | classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `SOURCE_READY`, not `BUILD_READY` |
 
@@ -181,3 +182,10 @@ toolchain equivalence), execute the source-defined L1-norm `QA_PASSED`
 checker, freeze input/runtime/launch identities, and then complete the
 dynamic trace-semantic audit. This preflight must not be substituted for
 those physical-device gates.
+
+The post-link stripping is an artifact-normalization step only. The two raw
+ELFs differ only in nvcc-generated local `tmpxft_*` names in `.strtab`; their
+dynamic symbol tables and `.nv_fatbin` sections are byte-identical. The
+canonical stripped artifacts are byte-identical, retain the same dynamic-link
+surface and fatbin, and do not change workload source, CUDA launch geometry,
+or any simulated mechanism. M5-E1-003 records the recovery and regression.

@@ -13,6 +13,9 @@ the mandatory real-V100 follow-up gates are recorded in
 `m5/extended20/CUDA_SDK_E1_SOURCE_AUDIT.md` and
 `m5/handoffs/M5_E1_V100_CAPTURE_READINESS.md`.  This is E1 preparation only;
 it neither consumes V100 capture capacity nor changes the Paper-10 priority.
+The canonical post-link artifact is an independently double-built,
+byte-identical stripped ELF; the resolved nvcc local-symbol metadata issue is
+recorded as `M5-E1-003`.
 
 ## Live audit update (2026-09-06)
 

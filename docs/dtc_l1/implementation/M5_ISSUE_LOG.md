@@ -337,6 +337,32 @@
   interpreter-compatibility issue only; every workload still requires its own
   source-defined output smoke after build/PTX/input recovery.
 
+## M5-E1-003 — nvcc local temporary symbol names made raw `sm_70` ELF hashes non-reproducible
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
+- Scope: one Extended-20 E1 BlackScholes host-side build preflight only. It
+  changes neither CUDA source, launch, V100 capture, trace semantics, Core,
+  formal configuration, nor any Paper-10 process.
+- Evidence: two independent isolated CUDA 11.8 `-arch=sm_70 -O2 -cudart
+  shared` rebuilds produced identical PTX (`dc3f48102d762167cece9f06ee353a4aba4cb0651493d12cc261e970bdbaccc3`)
+  but different raw ELF hashes. `readelf` and byte comparison localize the
+  differences to nvcc-generated `tmpxft_*BlackScholes.cudafe1.cpp` local names
+  in `.strtab`; dynamic symbols, GNU build-id and `.nv_fatbin` are identical.
+- Classification: `HOST_BUILD_ARTIFACT_METADATA_NONDETERMINISM`, not a CUDA
+  source, kernel/fatbin, workload, output-checker, trace, DTC, or simulator
+  semantic discrepancy.
+- Repair/regression: normalize the host artifact with
+  `strip --strip-unneeded` after link. Two independently materialized stripped
+  binaries are byte-identical (`ccbb7ebec30a02cc8ad00c726f4af524dceb175352dd3d6cc424917f467d5639`), retain identical dynamic
+  symbol tables and fatbin, and the companion PTX retains `.target sm_70` and
+  `_Z15BlackScholesGPUPfS_S_S_S_ffi`. The generated executables/PTX remain
+  uncommitted temporary artifacts; their identities are recorded in the E1
+  source audit.
+- Resume point: a real-V100 build/output smoke and dynamic trace-contract
+  audit are still mandatory. This closure only makes the local build preflight
+  reproducible; it does not change `SOURCE_READY`, `BUILD_READY`, or
+  `TRACE_CAPTURE_READY` status.
+
 ## M5-0BT-001 — traced-source tree hash dereferenced a tracked directory symlink
 
 - State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
