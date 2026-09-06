@@ -64,6 +64,28 @@ build/selected-kernel PTX proof: the frozen btree input still needs its
 real-V100 output/reference checker, launch/runtime freeze, and dynamic trace
 semantic audit before capture eligibility is assessed.
 
+## lud local `sm_70` build preflight (2026-09-06)
+
+The exact Rodinia 3.1 `lud` source tree was independently materialized twice
+from clean `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1`,
+tree `ac7c71d010fa1e51f8bd5a50e192a6d9e114ac15`. CUDA 11.8.89 built the
+original source/object/link graph with `-arch=sm_70 -O3 -use_fast_math`; the
+historical unsupported architecture flags were omitted while retaining the
+source-defined optimization and math mode. M5-E1-003 normalization makes both
+linked artifacts byte-identical.
+
+| item | identity / result |
+| --- | --- |
+| selected source set | `cuda/lud.cu` `ef26e175c582210a7b55bba1ed9ea45cce4c8ba2ede17e89b0f4bac9aa7b6757`; `cuda/lud_kernel.cu` `fe3d0a5f06c82947f54cbf6fd9a75342b61263808a1587ead929fc3f8763fdc0`; `common/common.c` `8a6cca89c03be97a690a5fc0a657810dabd451e86c34bf97857785a36eb28e5c` |
+| canonical executable | two `strip --strip-unneeded` artifacts: SHA-256 `49e05942e6159f80bbda0450e8d2bd92236525f4f9f7b639c1edac5a123f0965` |
+| PTX | two artifacts: SHA-256 `5b0544b22b7f1af5c30cd40afd253bfd28968106da2fc5d85346b54da5d052eb`; `.target sm_70`; `lud_diagonal`, `lud_perimeter`, and `lud_internal` entries |
+| classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `INPUT_READY`, not `BUILD_READY` |
+
+This build has not executed the source-defined V100 verifier, frozen the
+runtime/input/launch identity, or undergone a dynamic trace-semantic audit.
+It is not a capture authorization and leaves the Paper-10 capture priority and
+the E1 readiness counts unchanged.
+
 `STATIC_TRACE_CANDIDATE` means only that the selected source scan found no
 listed feature.  It does not establish trace compatibility or permit a
 capture.  Runtime audit must prove the actual binary's operation, grouping,

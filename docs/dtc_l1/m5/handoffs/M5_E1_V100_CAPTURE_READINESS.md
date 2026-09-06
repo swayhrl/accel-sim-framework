@@ -27,7 +27,7 @@ used where no source-backed trace-volume basis exists.
 | dwt2d | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | gaussian | Rodinia 3.1 dad09cb0 | Makefile located | CANDIDATE_SET_HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; primary input/checker, dynamic contract and V100 build pending |
 | hotspot1 | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
-| lud | Rodinia 3.1 dad09cb0 | Makefile located | SOURCE_GENERATED_CONTRACT | source -v verifier | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; exact V100 verifier smoke and dynamic contract pending |
+| lud | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | SOURCE_GENERATED_CONTRACT | source -v verifier | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; exact V100 verifier smoke and dynamic contract pending |
 | bfs | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_ATOMICS_TEXTURE_GLOBAL_BARRIER | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
 | cutcp | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_STREAM_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
 | histo | Parboil 4e0fc548 | CUDA Makefile located | HASHED | byte-exact checker adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_ATOMICS | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
@@ -106,3 +106,8 @@ needed only an equivalent CUDA-11.8 driver-flag wrapper; no workload source or
 runtime semantics changed. It remains `INPUT_READY`, not `BUILD_READY`, until
 the real-V100 checker and dynamic trace audit complete; counts and queue are
 unchanged.
+
+Rodinia lud has a reproducible two-build local CUDA-11.8 `sm_70` preflight
+with its original `-O3 -use_fast_math` mode and three selected-kernel PTX
+entries. It remains `INPUT_READY`, not `BUILD_READY`, pending its exact V100
+verifier smoke and dynamic trace audit; counts and queue are unchanged.

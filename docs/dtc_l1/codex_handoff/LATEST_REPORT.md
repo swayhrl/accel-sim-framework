@@ -53,6 +53,12 @@ expansion; it changes no source, launch, or runtime semantics. btree remains
 `INPUT_READY`, not `BUILD_READY`, pending its V100 checker and dynamic trace
 audit; Paper-10 capture priority and readiness counts are unchanged.
 
+Rodinia lud likewise has a two-build local CUDA-11.8 `sm_70` preflight,
+preserving its source-defined `-O3 -use_fast_math` build mode and three kernel
+PTX entries. It remains `INPUT_READY`, not `BUILD_READY`: the V100 verifier,
+runtime/input/launch freeze, and dynamic trace audit have not run. Paper-10
+capture priority and readiness counts remain unchanged.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.
