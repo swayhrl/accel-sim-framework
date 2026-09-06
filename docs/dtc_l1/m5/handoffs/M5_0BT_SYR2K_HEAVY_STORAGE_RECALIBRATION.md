@@ -86,9 +86,9 @@ free bytes; these are not a promise that an unmeasured workload fits.
   `M5_0BT_SPMV_CAPTURE_CLOSEOUT.md`; it is not yet a replay/formal result.
 - **2MM** is now the active capture item.  It remains HEAVY_SIZE_UNKNOWN and
   may claim no archive/transfer/result until its own unchanged gate closes.
-- **2MM** is HEAVY_SIZE_UNKNOWN: frozen NI=NJ=NK=NL=1024, two dense
-  multiplication phases, no downsizing. It needs the recalibrated gate plus
-  pre-identified proof-bound eviction candidates before launch.
+- Its frozen `NI=NJ=NK=NL=1024` identity has two dense multiplication phases
+  with no downsizing; any later archive/offload action still needs the
+  recalibrated gate plus proof-bound eviction evidence.
 - Every Extended-20 capture uses this same floor until it establishes a larger
   measured footprint. If any workload exceeds SYR2K, its exact whole footprint
   becomes the new maximum for all following captures.

@@ -78,3 +78,19 @@ triplets are queue-eligible only after a naturally released, recalibrated
 SIM_HOST worker slot.  Thus no historical row is silently relabelled, no
 valid live process is disturbed, and every later formal triplet retains one
 same-bundle, same-payload, frozen-config, repaired-Core identity.
+
+## SpMV repaired-Core pipelined acquisition (2026-09-06)
+
+The exact SpMV payload subsequently reached archive/copyback/local-immutable
+PASS under receipt `d8790ea7279aa79345650ffaafc61835187d8b1e6c4b10a6e6e2cc24891db270`.
+Its current repaired-Core A0 Base/IO/OO acquisition began without waiting for
+the independent 2MM physical capture, using Core `15cfa76e...`, runtime
+Framework `dc7836c4...`, binary `3e71cb...`, and the frozen 80-SM/cap-10240/
+ratio-zero configs.  The three isolated rows use CPUs 61/62/63 and output
+roots `/workspace/m5-spmv-repaired-precompute-80sm-cap10240-20260906/{base,io,oo}`.
+Each has consumed its immutable first `.traceg` header with empty stderr.
+
+They are `PRECOMPUTED_PENDING_STAGE_ACCEPTANCE`, not formal results.  They
+must naturally terminate and satisfy strict parser, trace-consumption,
+application, accounting and review gates before later reuse.  Their full
+identity rows are in `M5_REPAIRED_CORE_REPLAY_JOB_MANIFEST.tsv`.

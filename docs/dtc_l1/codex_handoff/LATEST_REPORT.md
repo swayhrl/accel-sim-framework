@@ -32,6 +32,12 @@ under the same ordered supervisor (GPU active, capture lock held); it has no
 archive/transfer/result claim yet.  No production capture was restarted or
 duplicated during the reachability recovery.
 
+The newly immutable SpMV bundle has entered the repaired-Core SIM_HOST pool as
+three isolated `PRECOMPUTED_PENDING_STAGE_ACCEPTANCE` Base/IO/OO rows.  All
+three have loaded the first immutable `.traceg` through the trace frontend,
+with empty stderr; no formal-result claim is made before their own natural
+terminal/parser/accounting closure.
+
 ## Current capture-storage authority (2026-09-06)
 
 SYR2K has reached remote ARCHIVE_PASS with an exact 57,694,970,930-byte
