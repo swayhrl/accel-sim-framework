@@ -631,7 +631,10 @@
   Base-IO-OO equivalence proof are recorded in
   `m5/handoffs/M5_0BT_COMPRESSED_TRACE_STORAGE_CANDIDATE.md`.  This is only a
   source-path finding: no 2MM representation, formal identity, or result has
-  been changed.
+  been changed.  A no-write SpMV one-trace XZ round trip has now established
+  byte-exact decompression (`3,928,927 -> 317,784` bytes; SHA-256
+  `4e09caf4f03d08cca2587dfd0611956bc014ea31da4fa2a4d9db3a0d9647f4a6`), but
+  all complete-bundle/list/runtime equivalence gates remain open.
 - Preservation: no remote archive/bundle, local immutable payload, simulator,
   or active controller was deleted, signalled, restarted, or relabelled.  On
   researcher authorization, a separate archive-only rsync began after the

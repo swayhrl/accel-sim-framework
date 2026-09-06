@@ -53,3 +53,20 @@ to make this candidate fit.
 
 Until all five conditions pass, this is not a receipt shortcut and does not
 close M5-0BT-011 or permit M5.0BT advancement.
+
+## Byte-representation smoke (2026-09-06)
+
+One existing immutable SpMV text trace was passed through an in-memory
+`xz -0 -c | xz -dc` round trip.  No file was created, changed, or promoted.
+
+| item | value |
+| --- | --- |
+| source object | `kernel-1-ctx_0x56276fd1a7d0.traceg` from the existing immutable SpMV bundle |
+| source bytes | 3,928,927 |
+| XZ stream bytes | 317,784 |
+| source and decompressed SHA-256 | `4e09caf4f03d08cca2587dfd0611956bc014ea31da4fa2a4d9db3a0d9647f4a6` |
+| result | `TRACEG_XZ_BYTE_PROOF=PASS` |
+
+This proves only reversible text-byte representation for one object.  It does
+not prove list transformation, complete-bundle coverage, trace frontend
+runtime behavior, or Base/IO/OO simulation equivalence.

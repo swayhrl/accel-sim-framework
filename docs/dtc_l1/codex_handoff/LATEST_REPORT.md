@@ -22,7 +22,9 @@ A source audit has also confirmed a native `.traceg.xz` frontend route.  It is
 an isolated `TEXT_TRACEG_XZ_DERIVED` storage candidate only, not an accepted
 trace representation: byte-decompression, ordered-list, and same-bundle
 Base/IO/OO differential proofs remain mandatory before formal use.  See
-`m5/handoffs/M5_0BT_COMPRESSED_TRACE_STORAGE_CANDIDATE.md`.
+`m5/handoffs/M5_0BT_COMPRESSED_TRACE_STORAGE_CANDIDATE.md`.  Its first
+no-write SpMV trace byte-round-trip PASS is evidence only, not a formal replay
+or receipt claim.
 
 ## E1 local `sm_70` build preflight (2026-09-06)
 
