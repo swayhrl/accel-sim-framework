@@ -23,7 +23,7 @@ used where no source-backed trace-volume basis exists.
 | transpose | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
 | vectorAdd_6000000 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
 | cfd_097k | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY; checker, semantic audit and V100 build pending |
-| btree | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
+| btree | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | dwt2d | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | gaussian | Rodinia 3.1 dad09cb0 | Makefile located | CANDIDATE_SET_HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; primary input/checker, dynamic contract and V100 build pending |
 | hotspot1 | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
@@ -98,4 +98,11 @@ Rodinia hotspot1 has a matching two-build local CUDA-11.8 `sm_70` preflight
 recorded in `extended20/M5_E1_RODINIA_STATIC_TRACE_FEATURE_AUDIT.md`. It
 retains `INPUT_READY`, not `BUILD_READY`, because its real-V100 checker and
 dynamic trace contract remain open; the exclusive counts and capture queue are
+unchanged.
+
+Rodinia btree has the same two-build local CUDA-11.8 `sm_70` preflight,
+including both selected GPU-kernel PTX identities. Its historical Makefile
+needed only an equivalent CUDA-11.8 driver-flag wrapper; no workload source or
+runtime semantics changed. It remains `INPUT_READY`, not `BUILD_READY`, until
+the real-V100 checker and dynamic trace audit complete; counts and queue are
 unchanged.

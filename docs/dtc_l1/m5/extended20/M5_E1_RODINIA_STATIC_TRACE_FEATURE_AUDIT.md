@@ -39,6 +39,31 @@ checker nor freezes the V100 input/runtime/launch contract. It does not prove
 the dynamic trace contract and does not make `hotspot1` eligible for capture;
 the row remains outside the Paper-10 priority queue.
 
+## btree local `sm_70` build preflight (2026-09-06)
+
+The exact Rodinia 3.1 `b+tree` tree was independently materialized twice from
+clean `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1`, tree
+`26cdc6bcb8332767f274a5ed7e0305862d8e1abf`. The original Makefile's full
+source/object/link graph was retained. Its historical quoted multi-`gencode`
+driver expansion is not accepted by CUDA 11.8, so the isolated build wrapper
+supplied only an equivalent compiler-driver override:
+`CUD_C='/usr/local/cuda-11.8/bin/nvcc -arch=sm_70'` and the CUDA 11.8 lib64
+path. No workload source, object selection, launch source, input, or runtime
+option was changed.
+
+| item | identity / result |
+| --- | --- |
+| selected source set | `main.c` `f461ed1696a757de44b4d3453b5699e5cb8cc0b71ff06be8a650ce44f26ef918`; `kernel_gpu_cuda.cu` `4c79bdc48cc5bc03612e703ac86f13e190f7f5f3b6b1f32616447a12113fefb7`; `kernel_gpu_cuda_2.cu` `7b2da2312b0b7c38f6c83a5cb8a8ae5394be155f7d7dc6373a1d2b7b72267daa`; wrappers/utilities are bound by the tree above |
+| canonical executable | two `strip --strip-unneeded` artifacts: SHA-256 `fbb22305a08e5d220ef44b55f5d7e8665d2db54fcc2fb252436f9fa51e91d445` |
+| PTX kernel set | `findK` SHA-256 `d5f57379045a2ea7f0dc4eaa8e114128ad54caf97aca969b70baca5397d199fd`; `findRangeK` SHA-256 `8a229d085e1c3db557149f0fb850516318116289a0eb3dfbc59fd3ddc3e0934e`; both `.target sm_70` |
+| classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `INPUT_READY`, not `BUILD_READY` |
+
+The raw linked ELFs differ only in nvcc-generated local temporary-name
+metadata and normalize byte-identically under M5-E1-003. This is a host-only
+build/selected-kernel PTX proof: the frozen btree input still needs its
+real-V100 output/reference checker, launch/runtime freeze, and dynamic trace
+semantic audit before capture eligibility is assessed.
+
 `STATIC_TRACE_CANDIDATE` means only that the selected source scan found no
 listed feature.  It does not establish trace compatibility or permit a
 capture.  Runtime audit must prove the actual binary's operation, grouping,
