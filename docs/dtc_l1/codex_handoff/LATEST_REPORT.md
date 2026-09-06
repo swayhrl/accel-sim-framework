@@ -41,6 +41,13 @@ release for storage purposes.  This no-unpack retention proof deliberately
 does not promote 2MM to a formal immutable receipt or authorize a new M5
 stage.
 
+The researcher has authorized the interim eight-workload repaired-Core replay
+batch (Paper-10 excluding `2mm` and `syrk`). Its exact scope, non-bypass ATAX
+qualification gate, and dispatch order are frozen in
+`m5/handoffs/M5_0BT_EIGHT_WORKLOAD_REPLAY_PLAN.md`. BICG and SpMV are retained
+instead of duplicated; no new replay may bypass the live ATAX natural-terminal
+parser/accounting gate.
+
 A source audit has also confirmed a native `.traceg.xz` frontend route.  It is
 an isolated `TEXT_TRACEG_XZ_DERIVED` storage candidate only, not an accepted
 trace representation: byte-decompression, ordered-list, and same-bundle
