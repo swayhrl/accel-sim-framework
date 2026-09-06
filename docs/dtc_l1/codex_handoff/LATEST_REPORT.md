@@ -5,6 +5,12 @@ Stage: M5.0BT exact trace capture and qualification.
 Status: M5.0BT T1, BICG/2DConv storage admission, immutable-store copybacks,
 and T2 BICG same-bundle Base/IO/OO replay qualification PASS.  T3 GESUMMV
 same-bundle Base/IO/OO formal replay is ACTIVE; `CAPTURE_AND_REPLAY_PIPELINED`.
+**New Core recovery active:** four precomputed ATAX/MVT IO/OO rows aborted
+at the bounded lower-create queue assertion.  Core
+`15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` replaces that post-allocation
+abort with pre-allocation retriable backpressure and retains all correctness
+assertions.  Exact-bundle ATAX IO/OO recovery replays are active under the
+new runtime; neither they nor any old-Core row is a formal result yet.
 
 ## Live scheduling update
 
@@ -50,6 +56,20 @@ same-bundle Base/IO/OO formal replay is ACTIVE; `CAPTURE_AND_REPLAY_PIPELINED`.
   `m5/handoffs/M5_0BT_PRECOMPUTED_REPLAY_QUEUE.md`.  These live rows are not
   a stage result and must close all terminal/parser/accounting gates before
   later exact-identity reuse.
+
+- **Lower-create queue recovery:** the frozen 80-SM/cap-10240 pool exposed
+  the same source-reachable IO/OO assertion for ATAX and MVT.  The failed
+  evidence is preserved, excluded from the registry, and documented in
+  `implementation/M5_PRECOMPUTED_LOWER_CREATE_QUEUE_FAILURE.md`.  The Core
+  repair exports explicit queue-full stall counters, passes the three DTC
+  CTests in an isolated Release build, and has an isolated trace frontend
+  runtime.  ATAX IO (PID `1045897`) and OO (PID `1045896`) now replay the same
+  immutable bundle/config in a separate recovery namespace.  At 101 s both
+  exceeded their old 83.81 s / 84.96 s abort window with empty stderr and no
+  assertion/fatal/deadlock/error signature.  They must still close natural-
+  terminal/parser/accounting gates before any post-repair formal reuse; MVT
+  remains queued behind that evidence.  This is a HARD recovery gate, not a
+  stage advance.
 
 - BICG Base remains a verified trace-driven replay, not a PTX/execution-driven
   payload: its live argv uses immutable BICG `kernelslist.g`, loads both
