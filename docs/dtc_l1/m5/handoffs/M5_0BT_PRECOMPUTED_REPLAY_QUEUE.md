@@ -53,3 +53,28 @@ and avoid the diagnostic cores 40--47.
 The output directories contain no committed raw logs, traces, binaries, or
 datasets.  On natural terminal each row is parsed and checked independently;
 only a complete same-payload triplet may enter a later reuse decision.
+
+## Post-repair identity supersession (2026-09-06T10:49+08:00)
+
+This historical queue used Core
+`120978646e4c8bae2707ddfc6b31512a4a0c76c8`.  It is retained as acquisition
+and diagnosis evidence only; it cannot produce a formal M5 result after the
+source-correct lower-candidate-queue repair in Core
+`15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.  The repair's full source and
+invalidation evidence is
+`docs/dtc_l1/implementation/M5_PRECOMPUTED_LOWER_CREATE_QUEUE_FAILURE.md`.
+
+The pre-repair ATAX IO/OO and MVT IO/OO rows naturally exposed the exact
+bounded-candidate-queue assertions in `shader.cc` (IO line 2972, OO line
+3241).  They are preserved as `OBSOLETE_SOURCE_REPAIR_REQUIRED`, never as
+failed workload correctness or formal performance rows.  The pre-repair ATAX
+Base, GEMVER Base/IO/OO, and MVT Base workers remain non-destructively live as
+diagnostic/progress anchors, but their natural terminal counters must not be
+registered as formal due to the Core identity mismatch.
+
+The repaired-Core ATAX and BICG triplets are separately manifested in
+`M5_REPAIRED_CORE_REPLAY_JOB_MANIFEST.tsv`; GEMVER and MVT repaired-Core
+triplets are queue-eligible only after a naturally released, recalibrated
+SIM_HOST worker slot.  Thus no historical row is silently relabelled, no
+valid live process is disturbed, and every later formal triplet retains one
+same-bundle, same-payload, frozen-config, repaired-Core identity.
