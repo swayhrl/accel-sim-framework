@@ -2,6 +2,29 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
+## Live audit update (2026-09-06)
+
+The natural-terminal BICG stats-light A0/A1 comparisons are now complete.
+Base, repaired PAPER_IO, and repaired PAPER_OO all strict-parse and match
+exactly in every parser-visible scientific field, including final cycles and
+instructions, DTC lifecycle/accounting, and parser-visible traffic fields.
+A1 (`gpgpu_runtime_stat=500000`, observer-overlay SHA
+`2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`) improves
+host rate by 1.0330x / 1.3673x / 1.2786x for Base/IO/OO respectively while
+reducing runtime CSV output by more than 99.8%.  It is **not adopted yet**:
+the standing independent same-placement confirmation remains required before
+future formal rows change observer identity.  See
+`m5/handoffs/M5_STATS_LIGHT_A1_TERMINAL_EQUIVALENCE.md`.
+
+The repaired BICG Base replay and repaired ATAX Base/IO/OO replays remain
+live; neither repaired T2 nor the lower-create repair gate is PASS.  Current
+SIM_HOST resources are ample, but MVT replacement and repaired GESUMMV T3
+remain correctly gated by the ATAX natural-terminal/parser/drain closure.
+
+The capture-host control route is presently unreachable (connection refused).
+No remote process was signaled, restarted, duplicated, or inferred failed;
+SpMV/2MM are therefore `REMOTE_STATE_UNVERIFIED`, not completed or failed.
+
 ## Current capture-storage authority (2026-09-06)
 
 SYR2K has reached remote ARCHIVE_PASS with an exact 57,694,970,930-byte

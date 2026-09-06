@@ -153,3 +153,23 @@ create/issue/response `17,823,985/17,823,985/17,823,985`, dependencies
 Its explicit lower-create-queue-full stalls are zero.  The paired IO A1
 observer confirmation remains live, so this is not yet an A0/A1 equivalence
 or stats-light adoption decision.
+
+## Natural-terminal A0/A1 closeout (2026-09-06)
+
+All remaining competitive A0/A1 rows have now naturally terminated with exit
+status zero and empty stderr.  The controlled comparison is recorded in
+`M5_STATS_LIGHT_A1_TERMINAL_EQUIVALENCE.md`.
+
+| pair | A0 seconds | A1 seconds | A1 gain | strict parser / parser-visible science |
+| --- | ---: | ---: | ---: | --- |
+| Base | 19,482 | 18,860 | 1.0330x | PASS / exact |
+| repaired BICG IO | 6,630 | 4,849 | 1.3673x | PASS / exact |
+| repaired BICG OO | 6,123 | 4,789 | 1.2786x | PASS / exact |
+
+Each pair has equal final simulated cycles/instructions and equal values for
+every field consumed by the strict M5 parser, including DTC lifecycle,
+PIB/lower/dependency/inflight/ref closure and parser-visible cache/traffic
+fields.  Only host-time/rate and rounded generic observer latency reports
+differ.  This proves an observer-only A1 candidate; it does not yet adopt it.
+The documented independent same-placement confirmation remains required
+before future formal rows may use A1.
