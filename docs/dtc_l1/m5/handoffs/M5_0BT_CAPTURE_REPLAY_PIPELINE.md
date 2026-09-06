@@ -11,13 +11,22 @@ terminated or become a result.  ATAX is independently remote-archived and
 locally immutable-store validated (archive SHA-256
 `4db328affd8a81d444bca1bc034110e1e51458fbce6ab901078a101c6beadff3`, checker
 PASS, internal sums PASS and controller `valid_bundle()` PASS).  GEMVER has
-remote archive/checker PASS and background transfer; the exclusive V100 queue
-then advanced to MVT.  These capture receipts make no performance claim.
+remote archive/checker PASS.  MVT now also has remote checker/archive and
+SIM_HOST transfer PASS: archive SHA-256
+`6c537caf1e110c3804bdc943211078565580f88d9ed85ac8dfa12d685964f270`,
+bundle ID `8b96abe81eed02a614014401cb074ff9d57abd3dc6ba72260167050679ca4f3a`,
+all local `SHA256SUMS` entries PASS, and controller `valid_bundle()` PASS at
+the preserved bundle root `/workspace/m5-trace-immutable/mvt/mvt/mvt`.
+The V100 queue is now capturing SYRK.  These capture receipts make no
+performance claim.
 
-SIM_HOST host-cost diagnostics use the already-qualified immutable BICG trace
-in four independent same-cutoff (2,000,000-cycle) Base replay rows.  The only
-differences are observer-statistics settings, and their configurations are
-explicitly diagnostic-only.  The source dependency and acceptance contract is
+SIM_HOST host-cost diagnostics use the already-qualified immutable BICG trace.
+The initial four same-cutoff (2,000,000-cycle) rows are source-classification
+evidence only: `gpgpu_max_cycle` prevents normal DTC drain and correctly
+triggers the terminal lifecycle assertion.  A separately isolated natural-
+terminal A0--A3 round is active; its only differences are observer-statistics
+settings, and its configurations are explicitly diagnostic-only.  The source
+dependency and acceptance contract is
 `M5_SIM_HOST_STATS_LIGHT_AUDIT.md`; no row may change a future formal identity
 without full terminal-equivalence and independent confirmation evidence.
 

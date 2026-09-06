@@ -23,11 +23,19 @@ same-bundle Base/IO/OO formal replay is ACTIVE; `CAPTURE_AND_REPLAY_PIPELINED`.
   `4db328affd8a81d444bca1bc034110e1e51458fbce6ab901078a101c6beadff3`,
   internal sums PASS, controller `valid_bundle()` PASS, and checker PASS with
   zero mismatches.  It is a T4-eligible payload, not a formal performance
-  result.  GEMVER has remote checker/archival PASS and transfers concurrently;
-  MVT was then launched under the single V100 capture lock.
-- **Track C — SIM_HOST statistics-light A/B:** four isolated BICG
-  same-trace/same-binary/80-SM/cap-10240/PAPER_BASE replays run concurrently
-  at a diagnostic-only 2,000,000-cycle cutoff.  A0 is current observer
+  result.  GEMVER has remote checker/archival PASS.  MVT has now completed
+  checker/archive/copyback: archive SHA-256
+  `6c537caf1e110c3804bdc943211078565580f88d9ed85ac8dfa12d685964f270`,
+  bundle ID `8b96abe81eed02a614014401cb074ff9d57abd3dc6ba72260167050679ca4f3a`,
+  internal sums PASS, and `valid_bundle()` PASS at preserved local root
+  `/workspace/m5-trace-immutable/mvt/mvt/mvt`.  SYRK holds the single V100
+  capture lock; none of these capture bundles is a formal result.
+- **Track C — SIM_HOST statistics-light A/B:** the initial BICG
+  same-trace/same-binary/80-SM/cap-10240/PAPER_BASE cutoff round established
+  that `gpgpu_max_cycle=2000000` is not a valid DTC observation boundary: it
+  bypasses normal drain and correctly fails the terminal lifecycle assertion.
+  Those outputs remain diagnostic-only.  A separately isolated natural-
+  terminal A0--A3 round is active.  A0 is current observer
   settings; A1 sparse runtime CSV; A2 additionally suppresses the final PTX
   line report; A3 additionally disables generic memlatency observer stats.
   This does not alter a formal run or registry.  See
