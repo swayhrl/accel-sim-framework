@@ -94,10 +94,10 @@ natural-terminal/parser/drain closure.
 The source-script capture route has been recovered and read non-invasively.
 SpMV is `ARCHIVE_PASS`, has copyback SHA and local immutable validation PASS,
 and is bound to exact source/input/tracer identity in
-`m5/handoffs/M5_0BT_SPMV_CAPTURE_CLOSEOUT.md`.  2MM is currently `CAPTURING`
-under the same ordered supervisor (GPU active, capture lock held); it has no
-archive/transfer/result claim yet.  No production capture was restarted or
-duplicated during the reachability recovery.
+`m5/handoffs/M5_0BT_SPMV_CAPTURE_CLOSEOUT.md`.  2MM has completed its
+capture/postprocess phase and is currently controller `ARCHIVE_PENDING`; it
+has no archive/transfer/result claim yet. No production capture was restarted
+or duplicated during the reachability recovery.
 
 The newly immutable SpMV bundle has entered the repaired-Core SIM_HOST pool as
 three isolated `PRECOMPUTED_PENDING_STAGE_ACCEPTANCE` Base/IO/OO rows.  All

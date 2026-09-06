@@ -27,6 +27,6 @@ They are distinct fields and must not be compared as if both were Git tree
 objects.  The commit, required source-file hashes, clean-source gate, and
 capture-time fingerprint together bind the actual build surface.
 
-The ordered queue has advanced to the already prepared 2MM workload.  Its
-state is currently `CAPTURING`; no 2MM archive, transfer, or result is claimed
-until its independent gates close.
+The ordered queue has advanced to the already prepared 2MM workload. Its
+controller has reached `ARCHIVE_PENDING` after capture/postprocess; no 2MM
+archive, transfer, or result is claimed until its independent gates close.
