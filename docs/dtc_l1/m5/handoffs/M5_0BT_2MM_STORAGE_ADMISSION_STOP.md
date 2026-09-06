@@ -48,3 +48,24 @@ admission stopped.
 This evidence leaves M5.0BT ACTIVE.  It does not change formal configuration,
 payload identity, result registry, capture priority, or any running SIM_HOST
 replay.
+
+## Researcher-requested background holding checkpoint (2026-09-06)
+
+The already-started archive-only transfer and the independent repaired-ATAX
+Base/IO/OO replays are left to run naturally in the background.  No additional
+capture, replay, unpack, checksum, deletion, remote eviction, configuration
+change, or stage transition is authorized by this checkpoint.  A future
+resume must first re-read the M5 trace-to-final contract and runbook, then
+re-observe both the transfer and the three ATAX terminal states.
+
+`RENTED_GPU_RELEASE_NOT_SAFE_YET` is the required operational disposition.
+The capture GPU is not needed for the bytes currently crossing `rsync`, but
+2MM has only an in-progress archive-only local copy.  Even after that copy
+naturally completes, it remains deliberately outside `COPYBACK_SHA_PASS` and
+`LOCAL_IMMUTABLE_PASS`; it cannot be used to prove that the sole remote 2MM
+archive is recoverable after an ephemeral rented-host release.  The host may
+be declared releasable only after the exact archive has a durable,
+source-correct receipt (or an equivalently durable externally verified
+retention record) and the unchanged remote archive is still preserved through
+that proof.  This is a storage/provenance gate, not a request to keep a GPU
+busy.

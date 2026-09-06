@@ -18,6 +18,19 @@ archive SHA, internal bundle validation, or `LOCAL_IMMUTABLE_PASS` is claimed.
 requires capacity provision followed by full transfer-only receipt resume;
 M5.0BT remains ACTIVE.
 
+### Background hold and rented-host disposition
+
+At researcher direction, the live archive-only 2MM rsync and the repaired
+ATAX Base/IO/OO replays continue naturally in the background while no new M5
+stage work is started.  The compact handoff is
+`m5/handoffs/M5_0BT_2MM_STORAGE_ADMISSION_STOP.md`.  The rented capture host
+is **not yet safe to release** merely when this archive-only transfer ends:
+the exact local archive still lacks archive-SHA, internal-bundle, and local
+immutable-receipt proof.  No shutdown/release recommendation may be made
+until a durable source-correct receipt (or equivalent independently verified
+durable retention) preserves the unique 2MM payload.  This is a provenance
+constraint; it does not imply an active GPU workload.
+
 A source audit has also confirmed a native `.traceg.xz` frontend route.  It is
 an isolated `TEXT_TRACEG_XZ_DERIVED` storage candidate only, not an accepted
 trace representation: byte-decompression, ordered-list, and same-bundle
