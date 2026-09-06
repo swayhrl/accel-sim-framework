@@ -285,6 +285,13 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   row can capture before its own clean V100/sm70 build, checker/input freeze
   and dynamic contract.  See
   `m5/extended20/M5_E1_CUDA_SDK_STATIC_TRACE_FEATURE_AUDIT.md`.
+- The source-recorded Rodinia 3.1 data archive is now archive-hashed and only
+  the approved input members have been materialized in an isolated local E1
+  namespace.  CFD, BTree, DWT2D and Hotspot now have exact launcher-input
+  hashes; LUD's source-generated `-s 256` contract is distinguished from a
+  data file.  Gaussian has several source-recorded candidates and remains
+  deliberately unfrozen.  No V100 capture, build, trace or formal result was
+  started.  See `extended20/RODINIA_PARBOIL_E1_SOURCE_AUDIT.md`.
 
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or

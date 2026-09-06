@@ -69,7 +69,7 @@ Rodinia inputs remain `PENDING_FREEZE`: its candidate source checkout contains
 the selected programs but not the six launcher data files required to byte-hash
 their final input identities.
 
-### Rodinia data-source recovery status
+### Rodinia data-source recovery and input materialization
 
 The official Rodinia site identifies 3.1 as the current released suite. The
 archived `yuhc/gpu-rodinia` 3.1 source README directs data recovery to the
@@ -79,19 +79,27 @@ original package and records this 3.1 data mirror:
 https://www.dropbox.com/s/cc6cozpboht3mtu/rodinia-3.1-data.tar.gz?dl=1
 ```
 
-On 2026-09-04, the original UVA package URL redirected to HTTPS but returned
-HTTP 403. The source-recorded mirror resolved to an attachment of 395,919,830
-bytes. It has **not** been downloaded or extracted: the active M5.0B
-ratio-zero Base wave still has seven long-running workers, and the M5 parallel
-batch policy forbids forcing a large source/data materialization while that
-resource envelope is active. The exact archive SHA-256 and the selected
-Rodinia input-file SHA-256 values therefore remain `PENDING_FREEZE`.
+On 2026-09-06 the source-recorded mirror archive was materialized only into an
+isolated E1 input namespace.  Its SHA-256 is
+`b90994d5208ec5a0a133dfb9ab7928a1e8a16741503a91d212884b9e4fce8cd8`
+(395,919,830 bytes).  No source tree, simulator, V100 binary, trace or formal
+result was changed.  Only the launcher-selected members below (and Gaussian's
+unresolved source candidates) were extracted; no unrelated fork or near-match
+data was substituted.
 
-When a measured resource window opens, materialize the archive in a new
-isolated directory, first hash the full archive, then identify and hash only
-the approved `cfd_097k`, `btree`, `dwt2d`, `gaussian`, `hotspot1`, and `lud`
-inputs before any build or simulator smoke. Do not use an unrelated fork's
-near-match data as a shortcut.
+| workload | source-backed input/command | SHA-256 / identity | E1 input state |
+| --- | --- | --- | --- |
+| `cfd_097k` | `cfd/fvcorr.domn.097K` | `43534e58454ba8baf95253e14d3b07150b9960577e922a954d6e51142a27abfa` | INPUT_READY; output checker/V100 build still pending |
+| `btree` | `b+tree/mil.txt`, `b+tree/command.txt` | `1b52b1caf9e0926afbe070cd96327e2645dade902fe9cfd078938ff6d755a29d`; `3c07868498ad4646db842f3c5aeabcde7f3b4e6ebf209578d6b4e690a3d7f8da` | INPUT_READY; output checker/V100 build still pending |
+| `dwt2d` | `dwt2d/192.bmp`, with launcher `-d 192x192 -f -5 -l 3` | `595e63ccd303dcc3387d0fea97d96be524a6f32f5e7593ab09a2704c7571207e` | INPUT_READY; output checker/V100 build still pending |
+| `hotspot1` | `hotspot/temp_512`, `hotspot/power_512`, with launcher `512 2 2` | `503e20bbed397d6799dd55ce928dadc300c0a7834bf7d9ad69eda73c67d23172`; `863d922187ae70f8eefda603b71a161a9e61bc4cf7f4cc0cb2c0b8feead58471` | INPUT_READY; output checker/V100 build still pending |
+| `lud` | source-generated `-s 256 -v`; no external file is read by this command | deterministic source parameter; extracted `lud/256.dat` is not promoted to this identity | INPUT_CONTRACT_READY; V100 build/verifier smoke still pending |
+| `gaussian` | source/launcher records both file and generated alternatives | `matrix4.txt=dda3ac09727d7dc785b9d0bf96d15dcf7afb758fcfba06d539a91304969d587a`; `matrix208.txt=5da49623c6d7b237a018dc1465b21eb21888564c66a945732235408546c8557a`; also `-s 16`, `-s 64`, `-s 256` | CANDIDATE_SET_HASHED, **not frozen**: no source-backed primary choice has yet been established |
+
+The Gaussian candidate set deliberately remains outside any V100 capture or
+formal identity until a source-backed primary command and correctness contract
+is recovered.  The other rows' input readiness does not waive their pending
+build, checker, trace semantic-contract or M5.2 anchor gates.
 
 ## Parboil checker runtime contract
 
