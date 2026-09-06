@@ -204,7 +204,13 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   No assertion, fatal, output mismatch, or non-config deadlock text was
   observed.  This leaves only repaired BICG Base A0 before same-bundle T2
   triplet reconciliation; the IO/OO A1 stats-light confirmations remain live.
-- Fourteen isolated M5 simulator processes remain active and each continues
+- **Current-pool correction (2026-09-06T12:33+08:00):** after the BICG IO A0
+  terminal transition, 13 (not 14) isolated M5 simulator processes remain
+  live.  The repaired BICG IO/OO A0 rows are recorded in the replay-job
+  manifest as `POST_REPAIR_T2_REPLAY_CANDIDATE`; they are not registered
+  formal results and still await Base A0 plus same-mode A1 equivalence.
+- At the 12:19 historical snapshot, fourteen isolated M5 simulator processes
+  remained active and each continued
   to accrue near-one-core CPU time.  The dynamic limit remains `N_safe=18`;
   the unfilled capacity is intentionally protected until repaired ATAX
   Base/IO/OO close their natural-terminal/parser/drain gate, after which MVT
