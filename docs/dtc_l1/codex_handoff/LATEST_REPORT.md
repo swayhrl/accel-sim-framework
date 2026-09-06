@@ -1,6 +1,7 @@
 # Latest Codex Report
 
-Stage: M5.0BT exact trace capture and qualification.
+Stage: M5.0BT exact trace capture and qualification — **RESOLVING_ISSUE
+M5-0BT-011 (2MM SIM_HOST immutable-receipt capacity)**.
 
 ## 2MM copyback storage admission (2026-09-06)
 
