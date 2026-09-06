@@ -2,6 +2,18 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
+## 2MM copyback storage admission (2026-09-06)
+
+2MM has reached remote `ARCHIVE_PASS` with archive SHA-256
+`59e918821bc54a772434acc70d2d439abefd8ccf696c055be2564b53d520863e`; this is
+not yet a SIM_HOST receipt or formal result.  The fail-closed copyback gate
+stopped before rsync because 36,313,600,000 local free bytes are below its
+58,013,565,949-byte exact requirement (archive 3,416,630,277 + complete
+bundle 50,301,968,376 + 4 GiB margin).  No payload was deleted, recaptured,
+or partially transferred.  `m5/handoffs/M5_0BT_2MM_STORAGE_ADMISSION_STOP.md`
+binds the evidence and requires capacity provision followed by transfer-only
+resume of the same archive; M5.0BT remains ACTIVE.
+
 ## E1 local `sm_70` build preflight (2026-09-06)
 
 BlackScholes has a reproducible, isolated CUDA-11.8 `sm_70` source/build/PTX

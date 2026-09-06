@@ -609,3 +609,28 @@
   a valid bundle merely because transport failed.
 - Resume point: capture remains the existing fail-closed sequence `SYR2K ->
   SpMV -> 2MM` after source, storage, lock, and state gates are re-observed.
+
+## M5-0BT-011 — 2MM immutable receipt stopped at local storage admission
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> TRANSFER_RESUME_PENDING`.
+- Scope: SIM_HOST receipt capacity only.  The frozen 2MM source/input/tracer,
+  V100 capture, remote archive, trace semantics, Core, formal configuration,
+  and live replay jobs are unchanged.
+- Evidence: remote controller state is `ARCHIVE_PASS`; its exact 2MM archive
+  is 3,416,630,277 bytes with SHA-256
+  `59e918821bc54a772434acc70d2d439abefd8ccf696c055be2564b53d520863e`, while
+  the complete remote bundle is 50,301,968,376 bytes.  The existing
+  transfer-only controller correctly requires `archive + bundle + 4 GiB` =
+  58,013,565,949 bytes.  Its destination filesystem had 36,313,600,000 free
+  bytes, so it exited `STOP_LOCAL_STORAGE_ADMISSION` before opening rsync.
+- Classification: `SIM_HOST_IMMUTABLE_RECEIPT_CAPACITY`, not a GPU capture,
+  checker, archive, trace, parser, DTC, lower-create, or workload failure.
+- Preservation: no remote archive/bundle, local immutable payload, simulator,
+  or active controller was deleted, signalled, restarted, or relabelled.  No
+  partial local 2MM archive exists, so no incomplete object can be mistaken
+  for a receipt.
+- Resume point: supply sufficient SIM_HOST destination capacity, then resume
+  only the transfer/receipt path for the same remote archive.  Require remote
+  archive SHA, local archive SHA, unpacked internal `SHA256SUMS`, controller
+  `valid_bundle()`, and `LOCAL_IMMUTABLE_PASS` before admitting 2MM replay.
+  Never recapture a valid 2MM bundle to address a receipt-space stop.
