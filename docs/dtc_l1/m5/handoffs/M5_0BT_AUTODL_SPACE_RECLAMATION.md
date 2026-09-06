@@ -1,6 +1,6 @@
 # M5.0BT — AutoDL provenance-preserving space reclamation
 
-Status: `R5_GATE_PASS; SYR2K_CAPTURE_ACTIVE`.
+Status: `R6_GATE_RESTORED; SYR2K_CAPTURE_ACTIVE; SPMV_2MM_GATED_QUEUE_ACTIVE`.
 
 This recovery is capture-host storage management only.  It changes no Core
 behavior, frozen platform/configuration, trace identity, replay result, or
@@ -27,6 +27,7 @@ archive SHA and `LOCAL_IMMUTABLE_PASS`; it was not needed for R1/R2.
 | R3 | ATAX remote uncompressed working bundle | 5,806,756,882 | redundant only after remote archive SHA, SIM_HOST archive SHA, local immutable `SHA256SUMS` binding and recorded local validation all passed | 54,448,041,984 (last exact pre-receipt sample) | 59,566,977,024 | PASS (59,432,751,104 at gate sample) |
 | R4 | MVT remote uncompressed working bundle | 5,777,441,032 | redundant only after remote archive SHA, SIM_HOST archive SHA, local immutable `SHA256SUMS` binding and recorded local validation all passed | 54,885,117,952 | 59,949,592,576 (first post-deletion observation while SYR2K writes continued) | PASS (59,907,649,536 at controller gate sample) |
 | R5 | GEMVER remote uncompressed working bundle | 2,647,569,402 | redundant only after remote archive SHA, SIM_HOST archive SHA, local immutable `SHA256SUMS` binding and recorded local validation all passed | 57,012,793,344 | 59,584,905,216 | PASS (59,551,346,688 at controller gate sample) |
+| R6 | SYRK remote uncompressed working bundle | 27,998,390,213 | redundant only after remote archive SHA, SIM_HOST archive SHA, local immutable `SHA256SUMS` binding and recorded local validation all passed | 54,673,100,800 (last pre-controller observation while SYR2K writes continued) | 82,369,568,768 | PASS (capacity restored; next controller rechecks live gate) |
 
 Before R2 removal, the compact application stdout, tracer stderr, empty
 checker log, full file-size inventory and their `SHA256SUMS` were retained in
@@ -65,6 +66,18 @@ archive and locally immutable GEMVER payload. Its machine receipt is
 `reclamation/R5_gemv_offload_evict.json`; the unmodified gate passed with
 `free_bytes=59,551,346,688`. SYR2K remained active throughout.
 
+R6 became necessary when the continuing SYR2K write stream reduced free space
+below the fixed heavy-pilot admission figure.  SYRK first completed copyback
+SHA and an independent SIM_HOST `valid_bundle()` validation; its local receipt
+binds archive SHA `b82e9ef0310778f8e3493ca555532a636a08f84e466d9e733ebea53a11b3b6a3`,
+bundle ID `66957eacdb8435c12c097631460450923adf9ed39bf8bfe37464cdf868c9a09b`,
+and local `SHA256SUMS` SHA `8cc9801d3747792b31fbcd3d38587872b32661af98114b2e60032c4ed39d45b5`.
+The remote `offloads/syrk.json` then supplied the exact proof consumed by
+Framework `6bb28841...`'s `--evict-offloaded syrk` controller path.  That
+controller removed only `bundles/syrk`, preserved `archives/syrk.tar.zst`, and
+left the active SYR2K process untouched.  Its remote machine receipt is
+`reclamation/R6_syrk_offload_evict.json`.
+
 ## Resume
 
 Immediately after R2, the unmodified fail-closed gate returned
@@ -73,3 +86,10 @@ The capture host then started the one permitted SYR2K controller under the
 exclusive capture lock.  The sequential next order remains SYR2K, SpMV, then
 2MM; each still requires its normal checker, bundle, archive, copyback and
 local immutable-store gates.
+
+The SpMV/2MM queue is now represented by one detached, low-cost supervisor.
+It waits for all of: clean pinned SpMV wrapper `de9cf429...`, clean Parboil
+`4e0fc548...`, canonical matrix/vector SHA checks, SYR2K `ARCHIVE_PASS`, and
+the exclusive capture lock.  It then launches only SpMV; only after SpMV
+`ARCHIVE_PASS` does it launch 2MM.  Any source/state failure is logged and
+stops the supervisor without a speculative capture or a replacement job.

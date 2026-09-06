@@ -170,6 +170,23 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   for priority dispatch but remain correctly gated, rather than being launched
   under an unqualified repaired runtime.
 
+### Capture-storage recovery R6 (2026-09-06)
+
+- SYRK reached archive/copyback/local-immutable PASS and was then reclaimed
+  only through the proof-bound controller path.  `bundles/syrk` (27,998,390,213
+  bytes) was removed; its remote archive, local immutable payload and evidence
+  were preserved.  Free space increased from the last pre-controller observed
+  54,673,100,800 bytes to 82,369,568,768 bytes while SYR2K continued capture.
+  See `m5/handoffs/M5_0BT_AUTODL_SPACE_RECLAMATION.md` and remote
+  `reclamation/R6_syrk_offload_evict.json`.
+- The next exact SpMV payload has its canonical matrix/vector/reference SHA
+  verified on the V100 host.  Its wrapper is a clean detached `de9cf429...`
+  checkout recovered from a verified local Git bundle; public Parboil source
+  recovery is in progress.  One detached supervisor is fail-closed on those
+  source proofs, SYR2K `ARCHIVE_PASS`, and the capture lock before starting
+  SpMV, and then applies the same ordering to 2MM.  No new capture has begun
+  from this preparation alone.
+
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or
   capture-host rental/start is authorized by this report.
