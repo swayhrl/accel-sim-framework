@@ -17,8 +17,15 @@ SIM_HOST transfer PASS: archive SHA-256
 bundle ID `8b96abe81eed02a614014401cb074ff9d57abd3dc6ba72260167050679ca4f3a`,
 all local `SHA256SUMS` entries PASS, and controller `valid_bundle()` PASS at
 the preserved bundle root `/workspace/m5-trace-immutable/mvt/mvt/mvt`.
-The V100 queue is now capturing SYRK.  These capture receipts make no
-performance claim.
+SYRK has now reached remote `ARCHIVE_PASS` (bundle
+`66957eacdb8435c12c097631460450923adf9ed39bf8bfe37464cdf868c9a09b`, archive
+SHA-256 `b82e9ef0310778f8e3493ca555532a636a08f84e466d9e733ebea53a11b3b6a3`);
+its local copyback is active and has not yet been claimed immutable.  The
+next SYR2K controller admission was fail-closed before capture with
+`RuntimeError: unsafe projected heterogeneous trace storage`; it created no
+SYR2K state, trace, or process.  This is a storage-admission blocker, not a
+workload correctness result.  These capture receipts make no performance
+claim.
 
 SIM_HOST host-cost diagnostics use the already-qualified immutable BICG trace.
 The initial four same-cutoff (2,000,000-cycle) rows are source-classification

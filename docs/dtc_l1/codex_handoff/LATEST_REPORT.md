@@ -41,8 +41,18 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   `6c537caf1e110c3804bdc943211078565580f88d9ed85ac8dfa12d685964f270`,
   bundle ID `8b96abe81eed02a614014401cb074ff9d57abd3dc6ba72260167050679ca4f3a`,
   internal sums PASS, and `valid_bundle()` PASS at preserved local root
-  `/workspace/m5-trace-immutable/mvt/mvt/mvt`.  SYRK holds the single V100
-  capture lock; none of these capture bundles is a formal result.
+  `/workspace/m5-trace-immutable/mvt/mvt/mvt`.  SYRK has since reached
+  `ARCHIVE_PASS` with bundle
+  `66957eacdb8435c12c097631460450923adf9ed39bf8bfe37464cdf868c9a09b` and
+  archive SHA-256
+  `b82e9ef0310778f8e3493ca555532a636a08f84e466d9e733ebea53a11b3b6a3`;
+  SIM_HOST copyback is active but local immutable validation is not yet a
+  claim.  The subsequent SYR2K launch was refused before capture by the
+  controller's fail-closed heterogeneous-storage projection gate
+  (`RuntimeError: unsafe projected heterogeneous trace storage`): no SYR2K
+  state, trace, or capture process was created.  This is an operational
+  admission block, not a workload/checker or simulator failure.  None of
+  these capture bundles is a formal result.
 - **Track C — SIM_HOST statistics-light A/B:** the initial BICG
   same-trace/same-binary/80-SM/cap-10240/PAPER_BASE cutoff round established
   that `gpgpu_max_cycle=2000000` is not a valid DTC observation boundary: it
