@@ -179,23 +179,27 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   54,673,100,800 bytes to 82,369,568,768 bytes while SYR2K continued capture.
   See `m5/handoffs/M5_0BT_AUTODL_SPACE_RECLAMATION.md` and remote
   `reclamation/R6_syrk_offload_evict.json`.
-- The next exact SpMV payload has its canonical matrix/vector/reference SHA
-  verified on the V100 host.  The SIM_HOST now holds two verified,
-  complete-history source bundles: clean wrapper `de9cf429...` (tree
-  `5b8b3a8...`) and clean Parboil `4e0fc548...` (tree `0bc8944...`), with
-  immutable transfer SHA-256 values in
-  `m5/handoffs/M5_0BT_SPMV_SOURCE_TRANSFER_READY.md`.  This replaces any
-  dependence on slow public-source recovery.  One detached supervisor remains
-  fail-closed on those source proofs, SYR2K `ARCHIVE_PASS`, storage, and the
-  capture lock before starting SpMV, and then applies the same ordering to
-  2MM.  No new capture has begun while AutoDL control is unreachable.
-- 2MM CPU-side capture preparation is complete and does not wait for SpMV:
-  its clean `polybenchGpu@5584aaa7...` source/header hashes, deterministic
-  source-tar transfer identity, sm70 build, source checker, dimensions, and
-  existing capture/storage gates are frozen in
-  `m5/handoffs/M5_0BT_2MM_CAPTURE_READY.md`.  It remains `PENDING` and may
-  start only after the ordered SpMV predecessor reaches its safe archive state
-  and the AutoDL lock/gates are re-observed.
+- The AutoDL control plane is again readable through the live capture-host
+  route.  SYR2K is in its natural post-GPU trace-processing phase:
+  application checker PASS (zero mismatches), raw trace present, and the
+  controller remains live while its CPU postprocessor runs.  Its state is
+  still `CAPTURING`, so neither `ARCHIVE_PASS` nor copyback is claimed.
+- The next exact SpMV payload's canonical matrix/vector/reference identities
+  and clean wrapper `de9cf429...` / tree `5b8b3a8...` remain verified.  Both
+  SIM_HOST source bundles were copied to an isolated AutoDL staging area with
+  SHA-256 and complete-history bundle verification; a clean detached
+  `parboil@4e0fc548...` / tree `0bc8944...` checkout now occupies the source
+  path consumed by the existing queue supervisor.  This replaces the
+  prolonged non-candidate public clone without changing any capture artifact.
+  The supervisor is now fail-closed only on SYR2K `ARCHIVE_PASS`, storage, and
+  the capture lock before starting SpMV, then applies the same ordering to
+  2MM.  See `m5/handoffs/M5_0BT_SPMV_SOURCE_TRANSFER_READY.md`.
+- 2MM CPU-side preparation and isolated AutoDL source-tar transfer are both
+  verified: clean `polybenchGpu@5584aaa7...` source/header hashes,
+  deterministic tar identity, sm70 build, source checker and dimensions are
+  frozen in `m5/handoffs/M5_0BT_2MM_CAPTURE_READY.md`.  It remains `PENDING`
+  and may start only after SpMV reaches its safe archive state and the normal
+  lock/storage gates pass.
 
 ### Live throughput checkpoint (2026-09-06T12:19+08:00)
 

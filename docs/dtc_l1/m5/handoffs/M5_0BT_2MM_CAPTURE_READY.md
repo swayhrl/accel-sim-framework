@@ -1,6 +1,6 @@
 # M5.0BT 2MM capture readiness
 
-Status: **SIM_HOST_PREPARED; AUTODL_TRANSFER_AND_LAUNCH_PENDING_SPMV_PREDECESSOR**.
+Status: **AUTODL_SOURCE_TRANSFER_VERIFIED; LAUNCH_PENDING_SPMV_PREDECESSOR**.
 
 This prepares only the CPU-side prerequisites for the Paper-10 2MM physical
 capture.  It does not launch, build, trace, archive, or register a 2MM result.
@@ -23,6 +23,12 @@ an accepted workload.  The tarball is used rather than an unverified source
 checkout: it was generated from the clean pinned Git tree and its extracted
 2MM source and dimension-header hashes exactly match the committed Paper-10
 manifest.
+
+The exact tarball has also reached the isolated AutoDL source-transfer
+staging area.  Its transfer SHA-256 and an independent remote unpack of its
+top-level `polybenchGpu-5584aaa7/` directory reproduce both frozen 2MM source
+and dimension-header hashes.  It is staged evidence only: no 2MM source path
+has been substituted into a running controller and no 2MM capture has begun.
 
 ## Capture sequencing and admission
 

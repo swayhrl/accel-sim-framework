@@ -1,6 +1,6 @@
 # M5.0BT SpMV source transfer readiness
 
-Status: **SIM_HOST_VERIFIED; AUTODL_RSYNC_PENDING_CONTROL_RESTORATION**.
+Status: **AUTODL_SOURCE_SWITCH_PASS; SYR2K_ARCHIVE_GATED**.
 
 This is a source-provenance/transport record for the exact Paper-10 SpMV
 capture identity.  It is neither a capture result nor permission to use a
@@ -20,6 +20,25 @@ surface.  The staged Parboil checkout is clean at its pinned commit.  Bundle
 verification was performed in new temporary bare repositories; no mutable
 worktree is a source input.
 
+## AutoDL transfer and source-switch receipt
+
+The three source-transfer objects reached an isolated capture-host staging
+directory with their exact SHA-256 values.  Both Git bundles then passed
+complete-history verification in fresh temporary bare repositories.  A fresh
+detached Parboil checkout from the transferred bundle was verified clean at
+`4e0fc548...`, with tree `0bc8944...`, before becoming the source path used by
+the already-running SpMV queue supervisor.  The pre-existing public-network
+clone had made no progress for the observed interval; it was terminated only
+after the verified replacement was ready, and its clone cleanup removed its
+incomplete, non-candidate directory.  No trace, archive, capture attempt,
+controller lock, or result state was changed by this source recovery.
+
+The existing remote wrapper path independently remains clean at
+`de9cf429...` / tree `5b8b3a8...`; the frozen matrix/vector checks remain
+part of the supervisor.  Thus the sole remaining SpMV predecessor is the
+current SYR2K `ARCHIVE_PASS` transition plus the controller's normal storage
+and exclusive-lock gates.
+
 ## Bound Paper capture identity
 
 The transfer objects are bound to the committed Paper-10 manifest row:
@@ -30,20 +49,15 @@ The transfer objects are bound to the committed Paper-10 manifest row:
 - build: CUDA 11.8, sm70, `-O2`, shared cudart;
 - checker: `verify_m5_parboil_spmv_output.py`.
 
-## Control-restoration action
+## Remaining gated action
 
-After the existing capture host is reachable, transfer only these verified
-bundle objects through the existing controlled path.  On AutoDL, before the
-SpMV queue entry can start, the controller/operator must:
+Before the SpMV queue entry can start, the controller must:
 
-1. verify each transferred bundle SHA-256 against this table;
-2. verify `git bundle verify`, pinned commit, and tree ID in fresh detached
-   checkouts;
-3. verify the already-frozen matrix/vector/reference identities again;
-4. re-observe the exclusive capture lock and unchanged storage-admission
+1. retain the completed bundle-SHA and detached-checkout proofs above;
+2. verify the already-frozen matrix/vector/reference identities again;
+3. re-observe the exclusive capture lock and unchanged storage-admission
    state; and
-5. let the existing `SYR2K -> SpMV -> 2MM` supervisor start SpMV only after
+4. let the existing `SYR2K -> SpMV -> 2MM` supervisor start SpMV only after
    those gates pass.
 
-No capture was launched, altered, or inferred while the AutoDL SSH control
-endpoint was refusing connections.
+No SpMV capture has been launched by this transfer/recovery record.
