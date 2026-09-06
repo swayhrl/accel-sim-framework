@@ -61,7 +61,13 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   remote archive and all verified SIM_HOST artifacts remain preserved.  The
   post-R3 unchanged gate passed with 59,432,751,104 free bytes.  See
   `m5/handoffs/M5_0BT_AUTODL_SPACE_RECLAMATION.md`.  None of these capture
-  bundles is a formal result.
+  bundles is a formal result.  As SYR2K's live trace later consumed the
+  start-gate margin, R4 used the same proof-bound controller action for MVT:
+  only its redundant 5,777,441,032-byte remote working bundle was removed,
+  after remote/local archive SHA and local immutable manifest validation
+  matched.  Its remote archive and SIM_HOST immutable payload remain intact;
+  the post-R4 unchanged gate passed with 59,907,649,536 free bytes.  SYR2K
+  remained active throughout.
 - **Track C — SIM_HOST statistics-light A/B:** the initial BICG
   same-trace/same-binary/80-SM/cap-10240/PAPER_BASE cutoff round established
   that `gpgpu_max_cycle=2000000` is not a valid DTC observation boundary: it

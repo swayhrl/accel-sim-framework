@@ -1,6 +1,6 @@
 # M5.0BT — AutoDL provenance-preserving space reclamation
 
-Status: `R2_GATE_PASS; SYR2K_CAPTURE_RESUMED`.
+Status: `R4_GATE_PASS; SYR2K_CAPTURE_ACTIVE`.
 
 This recovery is capture-host storage management only.  It changes no Core
 behavior, frozen platform/configuration, trace identity, replay result, or
@@ -25,6 +25,7 @@ archive SHA and `LOCAL_IMMUTABLE_PASS`; it was not needed for R1/R2.
 | R1 | controller tracer scratch and probe-tool directories | 18,112,615 | non-scientific, controller-regenerable build/probe products | 54,886,830,080 | 54,905,155,584 | FAIL (expected: still below budget) |
 | R2 | one GESUMMV failed attempt's raw working directory | 573,214,227 | checker-failed non-candidate attempt (1,964 mismatches), separately superseded by the source-repair-provenanced accepted GESUMMV bundle | 54,905,151,488 | 55,478,362,112 | PASS |
 | R3 | ATAX remote uncompressed working bundle | 5,806,756,882 | redundant only after remote archive SHA, SIM_HOST archive SHA, local immutable `SHA256SUMS` binding and recorded local validation all passed | 54,448,041,984 (last exact pre-receipt sample) | 59,566,977,024 | PASS (59,432,751,104 at gate sample) |
+| R4 | MVT remote uncompressed working bundle | 5,777,441,032 | redundant only after remote archive SHA, SIM_HOST archive SHA, local immutable `SHA256SUMS` binding and recorded local validation all passed | 54,885,117,952 | 59,949,592,576 (first post-deletion observation while SYR2K writes continued) | PASS (59,907,649,536 at controller gate sample) |
 
 Before R2 removal, the compact application stdout, tracer stderr, empty
 checker log, full file-size inventory and their `SHA256SUMS` were retained in
@@ -40,6 +41,18 @@ trace writes mean the recorded `free_before` is the final exact pre-receipt
 sample rather than an invented instantaneous value; the controller's separate
 post-R3 gate sample is recorded above.  BICG and SYRK were not reclamation
 targets.
+
+R4 was triggered before SYR2K could consume the remaining start-gate margin.
+The local and remote MVT archives both had SHA-256
+`6c537caf1e110c3804bdc943211078565580f88d9ed85ac8dfa12d685964f270`, and
+their bundle manifests both had SHA-256
+`073fcc922d13e700c78c39429ae1bf55abc31d405ce5a2b5789f5f04b7ae5e10`.
+The controller's proof-bound `--evict-offloaded mvt` action removed only
+`bundles/mvt`; it preserved the remote archive and the locally immutable MVT
+payload.  The remote machine-readable receipt is
+`reclamation/R4_mvt_offload_evict.json`.  The unchanged gate then returned
+`projected_bytes=55,353,177,980`, `free_bytes=59,907,649,536`, `status=PASS`.
+SYR2K remained `CAPTURING` throughout; its active trace is not part of R4.
 
 ## Resume
 
