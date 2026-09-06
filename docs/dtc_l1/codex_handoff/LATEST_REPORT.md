@@ -18,8 +18,14 @@ copybacks PASS; T2 BICG same-bundle Base/IO/OO replay qualification ACTIVE;
   cycles/s and 2,300 instructions/s. Classification:
   `TRACE_REPLAY_HEALTHY_PROGRESSING`. IO and OO have naturally terminated and
   strict-parsed; Base remains live, so T2 is not PASS.
-- Physical V100 capture now pipelines independently: GESUMMV (`gesu`) is
-  active in an isolated current control checkout. Framework
+- Physical V100 capture now pipelines independently. The first GESUMMV
+  (`gesu`) attempt is preserved `RETRY_READY`: its checker found 1,964
+  mismatches caused by the pinned CUDA source copying uninitialized host
+  `tmp`/`y` into additive device accumulators. A source-copy-only repair is
+  hash-constrained to those two zero initializations and records both source
+  hashes/replacements in capture provenance; the frozen source and failed raw
+  attempt are untouched. Its next capture is a new attempt, not a resume or
+  bundle of the failed one. Framework
   `14be71c7968f0fb5bc1e021cf40eda41d8314171` corrects the controller's
   heavy-pilot admission formula and passes its no-GPU regressions. This is a
   capture-controller repair only; it changes no trace bundle, replay config,

@@ -46,6 +46,15 @@ projection. The actual heavy-pilot receipt remains BICG-bound and admits
 55,353,177,980 bytes against 101,565,759,488 available bytes.
 
 After that repair, an isolated AutoDL control checkout at `14be71c7` started
-the GESUMMV controller under an exclusive capture lock. It entered pinned
-tracer-tool build before GPU application capture; no GESUMMV bundle or formal
-result is claimed yet. BICG and 2DConv immutable bundles were not recaptured.
+the GESUMMV controller under an exclusive capture lock. Its first GPU attempt
+correctly remains preserved as `RETRY_READY`, with no bundle/archive/result:
+the pinned source initializes CPU `tmp`/`y` to zero but copies uninitialized
+host buffers to additive CUDA accumulators, yielding 1,964 checker mismatches.
+This is a source-backed, workload-local initialization defect, not a trace or
+replay verdict. The frozen source is never modified. The capture build now
+requires an exact-byte checked source copy that replaces only those two device
+copies with zero initialization, records the original/prepared hashes and
+replacement map in `source_repair`, and refuses GESUMMV capture provenance if
+that record is absent. The next attempt is therefore a new exact repaired
+capture; the failed raw attempt is neither postprocessed nor bundled. BICG and
+2DConv immutable bundles were not recaptured.
