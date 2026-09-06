@@ -2,11 +2,37 @@
 
 Stage: M5.0BT exact trace capture and qualification.
 
-Status: M5.0BT T1, BICG/2DConv storage admission, and immutable-store
-copybacks PASS; T2 BICG same-bundle Base/IO/OO replay qualification ACTIVE;
-`CAPTURE_AND_REPLAY_PIPELINED`.
+Status: M5.0BT T1, BICG/2DConv storage admission, immutable-store copybacks,
+and T2 BICG same-bundle Base/IO/OO replay qualification PASS.  T3 GESUMMV
+same-bundle Base/IO/OO formal replay is ACTIVE; `CAPTURE_AND_REPLAY_PIPELINED`.
 
 ## Live scheduling update
+
+### Concurrent three-track checkpoint
+
+- **Track A — T3:** GESUMMV Base/IO/OO run as independent sessions on the
+  immutable `d8cf9b57...` bundle under the frozen 80-SM/cap-10240/ratio-zero
+  identities.  The latest non-invasive counter sample was Base
+  `2,446,000` cycles / `5,539,040` instructions, IO `1,809,000` /
+  `24,494,688`, and OO `1,864,000` / `22,761,472`; all three processes were
+  CPU-active with no fatal/assert/deadlock signature (the only `deadlock`
+  text is the printed enabled-config option).  They must naturally terminate
+  before T3 qualification.
+- **Track B — V100 capture:** ATAX is `ARCHIVE_PASS` remotely and locally
+  transfer-verified: archive SHA-256
+  `4db328affd8a81d444bca1bc034110e1e51458fbce6ab901078a101c6beadff3`,
+  internal sums PASS, controller `valid_bundle()` PASS, and checker PASS with
+  zero mismatches.  It is a T4-eligible payload, not a formal performance
+  result.  GEMVER has remote checker/archival PASS and transfers concurrently;
+  MVT was then launched under the single V100 capture lock.
+- **Track C — SIM_HOST statistics-light A/B:** four isolated BICG
+  same-trace/same-binary/80-SM/cap-10240/PAPER_BASE replays run concurrently
+  at a diagnostic-only 2,000,000-cycle cutoff.  A0 is current observer
+  settings; A1 sparse runtime CSV; A2 additionally suppresses the final PTX
+  line report; A3 additionally disables generic memlatency observer stats.
+  This does not alter a formal run or registry.  See
+  `m5/handoffs/M5_SIM_HOST_STATS_LIGHT_AUDIT.md`; no candidate is adopted
+  until terminal counter equivalence and a controlled confirmation pass.
 
 - BICG Base remains a verified trace-driven replay, not a PTX/execution-driven
   payload: its live argv uses immutable BICG `kernelslist.g`, loads both
@@ -88,9 +114,9 @@ copybacks PASS; T2 BICG same-bundle Base/IO/OO replay qualification ACTIVE;
 
 ## Required next action after a V100 host is supplied
 
-Complete the running immutable-BICG same-bundle Base/IO/OO T2 contract. Then
-capture/qualify GESUMMV and continue the remaining exact Paper queue. No
-M5.0C transition is authorized.
+Complete natural-terminal GESUMMV T3 qualification while the exact Paper
+capture queue continues independently.  Then obtain/qualify the remaining
+Paper trace bundles.  No M5.0C transition is authorized.
 
 ## HISTORICAL / SUPERSEDED — DO NOT EXECUTE
 

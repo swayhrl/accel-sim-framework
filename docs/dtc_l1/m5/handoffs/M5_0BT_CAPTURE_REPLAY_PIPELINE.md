@@ -3,6 +3,24 @@
 Status: `CAPTURE_AND_REPLAY_PIPELINED`; this is a scheduling admission, not a
 T2 PASS or a `TRACE_FORMAL_PATH_VALID` verdict.
 
+## Current concurrent checkpoint
+
+T2 BICG is now PASS.  T3 runs the corrected, source-repair-provenanced
+GESUMMV immutable bundle in Base/IO/OO concurrently; it has not yet naturally
+terminated or become a result.  ATAX is independently remote-archived and
+locally immutable-store validated (archive SHA-256
+`4db328affd8a81d444bca1bc034110e1e51458fbce6ab901078a101c6beadff3`, checker
+PASS, internal sums PASS and controller `valid_bundle()` PASS).  GEMVER has
+remote archive/checker PASS and background transfer; the exclusive V100 queue
+then advanced to MVT.  These capture receipts make no performance claim.
+
+SIM_HOST host-cost diagnostics use the already-qualified immutable BICG trace
+in four independent same-cutoff (2,000,000-cycle) Base replay rows.  The only
+differences are observer-statistics settings, and their configurations are
+explicitly diagnostic-only.  The source dependency and acceptance contract is
+`M5_SIM_HOST_STATS_LIGHT_AUDIT.md`; no row may change a future formal identity
+without full terminal-equivalence and independent confirmation evidence.
+
 ## Researcher scheduling authority
 
 Exact physical-GPU capture and SIM_HOST trace replay are independent pipelines.
