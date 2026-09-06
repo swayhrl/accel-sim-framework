@@ -3,7 +3,30 @@
 Stage: M5.0BT exact trace capture and qualification.
 
 Status: M5.0BT T1, BICG/2DConv storage admission, and immutable-store
-copybacks PASS; T2 BICG same-bundle Base/IO/OO replay qualification ACTIVE.
+copybacks PASS; T2 BICG same-bundle Base/IO/OO replay qualification ACTIVE;
+`CAPTURE_AND_REPLAY_PIPELINED`.
+
+## Live scheduling update
+
+- BICG Base remains a verified trace-driven replay, not a PTX/execution-driven
+  payload: its live argv uses immutable BICG `kernelslist.g`, loads both
+  ordered `.traceg` invocations through the trace frontend, and has no trace
+  corruption/fatal/assert/deadlock/output-mismatch signature. Its immutable
+  bundle ID is `ae7f9dbd07e2da471b6e218d160b7446c710872cd85797e54bd58b42708e8a33`.
+- A 90-second read-only sample recorded `33,182,550 -> 33,316,550` current
+  kernel cycles and `54,363,616 -> 54,570,624` instructions: about 1,489
+  cycles/s and 2,300 instructions/s. Classification:
+  `TRACE_REPLAY_HEALTHY_PROGRESSING`. IO and OO have naturally terminated and
+  strict-parsed; Base remains live, so T2 is not PASS.
+- Physical V100 capture now pipelines independently: GESUMMV (`gesu`) is
+  active in an isolated current control checkout. Framework
+  `14be71c7968f0fb5bc1e021cf40eda41d8314171` corrects the controller's
+  heavy-pilot admission formula and passes its no-GPU regressions. This is a
+  capture-controller repair only; it changes no trace bundle, replay config,
+  Core behavior, or formal result.
+- See `m5/handoffs/M5_0BT_CAPTURE_REPLAY_PIPELINE.md`. Capture ahead of replay
+  is a scheduling admission only; M5.0C remains prohibited until full M5.0BT
+  acceptance.
 
 ## Current authoritative state
 

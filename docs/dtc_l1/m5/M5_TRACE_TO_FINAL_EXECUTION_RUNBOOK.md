@@ -97,6 +97,18 @@ Prefer SIM_HOST -> SSH -> AutoDL orchestration.  If GitHub SSH is unavailable
 on the rented host, use public HTTPS or rsync a verified clean checkout from
 SIM_HOST; do not copy long-lived private Git credentials to AutoDL.
 
+### Capture/replay pipelining
+
+`CAPTURE_AND_REPLAY_PIPELINED` is the active scheduling policy. Once a live
+trace replay proves immutable trace frontend startup, expected invocation
+acceptance, no systemic trace-format failure, and real simulator-level
+cycle/instruction progress, physical-GPU capture may continue sequentially on
+the capture host while SIM_HOST replays remain live. This does not relax T2/T3
+logical acceptance, payload identity, terminal/accounting requirements, or
+the rule that a captured bundle is not yet a formal result. Throttle or
+serialize copyback when destination I/O would disturb replay; never stop a
+healthy replay merely to copy a trace.
+
 ---
 
 ## 4. AutoDL preflight — T1 entry
