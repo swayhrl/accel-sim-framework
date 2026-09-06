@@ -101,6 +101,16 @@ formal identity until a source-backed primary command and correctness contract
 is recovered.  The other rows' input readiness does not waive their pending
 build, checker, trace semantic-contract or M5.2 anchor gates.
 
+Gaussian reference recovery remains incomplete.  The comment in the exact
+3.1 source names `ge_3.dat`, but an indexed search of the two clean Rodinia
+source trees and the verified 3.1 data archive found neither that file nor a
+source-provided final-output checker.  The program itself reads only the
+matrix and right-hand-side fields, prints a rounded final vector, and performs
+no comparison.  Therefore no local/generated reference or arbitrary tolerance
+may be called a source-defined checker; the row remains non-capture-ready
+pending recovery of an original reference/contract or a documented
+source-backed alternative.
+
 `util/dtc_l1/verify_m5_e1_rodinia_inputs.py` is the portable, read-only
 staging verifier.  It checks the archive when supplied and the six frozen file
 inputs under a supplied root; `--include-gaussian-candidates` verifies the two
