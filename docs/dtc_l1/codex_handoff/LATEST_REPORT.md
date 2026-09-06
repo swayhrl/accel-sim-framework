@@ -78,10 +78,11 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   remains queued behind that evidence.  This is a HARD recovery gate, not a
   stage advance.
 
-- **Repaired-identity replay pool:** a new isolated runtime built from Core
-  `15cfa76e...` and Framework `dc7836c4...` now runs ATAX Base/IO/OO and BICG
-  Base/IO/OO on their existing immutable bundles/configs.  The BICG triplet
-  is the post-repair T2 replacement, not a duplicate formal result.  The
+- **Repaired-identity replay pool:** isolated runtimes built from Core
+  `15cfa76e...` now run ATAX Base/IO/OO and BICG Base/IO/OO on their existing
+  immutable bundles/configs.  ATAX uses Framework `2bb015a8...`; BICG uses
+  Framework `dc7836c4...`; each triplet is internally source-identical.  The
+  BICG triplet is the post-repair T2 replacement, not a duplicate formal result.  The
   dynamically calibrated pool has 18 live simulator workers, including the
   four stats-light diagnostics; MemAvailable remains about 101 GiB with zero
   swap I/O, so further dispatch is frozen pending a natural exit or fresh

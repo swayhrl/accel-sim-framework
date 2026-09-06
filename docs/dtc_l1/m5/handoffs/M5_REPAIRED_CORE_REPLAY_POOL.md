@@ -30,9 +30,13 @@ semantics are unchanged.
 The BICG triplet uses its one immutable bundle, the repaired Core
 `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`, Framework
 `dc7836c484544b78d143837bbbb40ecbabb15aee`, the frozen ratio-zero 80-SM/
-cap-10240 configs, and distinct output directories.  Its purpose is to
-re-establish T2 under the post-repair identity; the older BICG T2 remains a
-diagnostic anchor only.
+cap-10240 configs, and distinct output directories.  ATAX uses the same
+repaired Core but the earlier Framework `2bb015a812ad4ec5245d396a2a9cbe469ef9b41b`;
+the two ATAX modes and Base all share that exact identity.  The source-level
+Framework difference is documentation/parser only, not an unrecorded runtime
+substitution; the complete per-job identity is in the companion manifest.
+The BICG triplet's purpose is to re-establish T2 under the post-repair identity;
+the older BICG T2 remains a diagnostic anchor only.
 
 Recalibrate before any further dispatch or if MemAvailable, swap activity,
 iowait, trace-store throughput or output-space headroom becomes adverse.
