@@ -94,3 +94,35 @@ They are `PRECOMPUTED_PENDING_STAGE_ACCEPTANCE`, not formal results.  They
 must naturally terminate and satisfy strict parser, trace-consumption,
 application, accounting and review gates before later reuse.  Their full
 identity rows are in `M5_REPAIRED_CORE_REPLAY_JOB_MANIFEST.tsv`.
+
+### SpMV PAPER_IO terminal sub-row (2026-09-06)
+
+The repaired-Core SpMV `PAPER_IO` acquisition row has naturally terminated
+with `/usr/bin/time` exit status zero.  It remains a **single precomputed row**
+and is not a formal result or a triplet PASS: its matching Base and OO rows are
+still live at this observation.
+
+The immutable trace frontend consumed all 50 expected invocation headers and
+all 50 `Processing kernel` entries.  Strict parsing passed under Core
+`15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`, Framework runtime
+`dc7836c484544b78d143837bbbb40ecbabb15aee`, the frozen IO config
+`7acb4914...`, and the SpMV bundle
+`d8790ea7279aa79345650ffaafc61835187d8b1e6c4b10a6e6e2cc24891db270`.
+The compact local strict summary has SHA-256
+`05ea2e854a1e0a977571a42d4a9070a51b34267239994256f0db9b5890f273bf`.
+
+| terminal check | value |
+| --- | ---: |
+| simulated cycles / instructions | `658,328` / `96,963,600` |
+| IO lower create / issue / response | `1,329,938` / `1,329,938` / `1,329,938` |
+| lower credit acquire / release / final outstanding | `1,329,938` / `1,329,938` / `0` |
+| completion dependency count / closed | `4,518,800` / `4,518,800` |
+| final IO PIB / inflight | `0` / `0` |
+| lower-create-queue-full stalls | `0` |
+
+No assertion, fatal, deadlock, or output-mismatch signature was found.  The
+separate hardware-capture checker evidence remains bound by
+`M5_0BT_SPMV_CAPTURE_CLOSEOUT.md`; no application checker is inferred from
+this replay terminal event.  The manifest state is therefore
+`PRECOMPUTED_TERMINAL_STRICT_PASS`, pending same-payload Base/IO/OO closure
+and the later stage/review acceptance decision.
