@@ -28,12 +28,12 @@ used where no source-backed trace-volume basis exists.
 | gaussian | Rodinia 3.1 dad09cb0 | Makefile located | PENDING_FREEZE | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; exact verification contract missing |
 | hotspot1 | Rodinia 3.1 dad09cb0 | Makefile located | PENDING_FREEZE | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; deterministic input/checker missing |
 | lud | Rodinia 3.1 dad09cb0 | Makefile located | PENDING_FREEZE | source -v verifier | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY; exact V100 verifier/input freeze pending |
-| bfs | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; V100 build pending |
-| cutcp | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; V100 build pending |
-| histo | Parboil 4e0fc548 | CUDA Makefile located | HASHED | byte-exact checker adapter PASS | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; V100 build pending |
-| mri-q | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; V100 build pending |
-| sad | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; V100 build pending |
-| stencil | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | PENDING_UNSUPPORTED_AUDIT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; V100 build pending |
+| bfs | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_ATOMICS_TEXTURE_GLOBAL_BARRIER | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
+| cutcp | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_STREAM_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
+| histo | Parboil 4e0fc548 | CUDA Makefile located | HASHED | byte-exact checker adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_ATOMICS | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
+| mri-q | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
+| sad | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_TEXTURE | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
+| stencil | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; V100 build/dynamic contract pending |
 
 ## Capture queue rule
 

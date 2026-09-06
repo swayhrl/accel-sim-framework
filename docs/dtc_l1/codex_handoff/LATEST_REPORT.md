@@ -265,6 +265,15 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   identities.  This is source-only provenance confirmation: executable/PTX
   artifact revalidation, deterministic runtime I/O, source-defined smoke and
   M5.2 anchor recheck remain required.
+- A conservative static source audit now classifies the six Parboil rows
+  before any V100 work: BFS (atomics/textures/global barrier), CUTCP
+  (stream/constant memory), Histo (atomics), MRI-Q (constant memory), and
+  SAD (textures) require workload-local runtime semantic audits; Stencil is a
+  static trace candidate only.  None is yet `TRACE_CAPTURE_READY`, no feature
+  is presumed unsupported, and the per-row readiness table remains the
+  capture scheduling authority.  See
+  `m5/extended20/M5_E1_PARBOIL_STATIC_TRACE_FEATURE_AUDIT.md` and
+  `m5/handoffs/M5_E1_V100_CAPTURE_READINESS.md`.
 
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or
