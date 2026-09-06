@@ -145,3 +145,11 @@ completion dependencies `18,350,080/18,350,080`, final PIB/inflight/active
 refs/lower outstanding all zero.  This provides a clean terminal reference
 for the later A0-versus-A1 equivalence comparison, but no comparison is made
 before A1 naturally terminates.
+
+The repaired-Core BICG IO A0 reference has now also naturally terminated and
+strict-parsed: 9,324,397 simulated cycles, 158,601,216 instructions, lower
+create/issue/response `17,823,985/17,823,985/17,823,985`, dependencies
+`18,350,080/18,350,080`, and final IO inflight/PIB/lower state all zero.
+Its explicit lower-create-queue-full stalls are zero.  The paired IO A1
+observer confirmation remains live, so this is not yet an A0/A1 equivalence
+or stats-light adoption decision.

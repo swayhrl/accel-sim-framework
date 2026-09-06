@@ -110,8 +110,20 @@ Dependencies close `18350080/18350080`; final OO PIB, inflight, active refs,
 and lower outstanding are all zero.  The only `deadlock` text in stdout is
 the echoed enabled configuration option; stderr reports exit status zero and
 no assertion/fatal/output-mismatch signature was found.  It remains
-`POST_REPAIR_T2_REPLAY_CANDIDATE` until the corresponding BICG Base and IO
-rows naturally terminate and the same-bundle triplet is reconciled.
+`POST_REPAIR_T2_REPLAY_CANDIDATE` until the corresponding BICG Base row
+naturally terminates and the same-bundle triplet is reconciled.
+
+The repaired-Core BICG `PAPER_IO` A0 row subsequently ended naturally with
+exit status zero in
+`/workspace/m5-repaired-core-replays-80sm-cap10240-20260906/bicg/io`.
+Its strict summary is likewise retained only beside the run output.  It
+records `gpu_tot_sim_cycle=9324397`, `gpu_tot_sim_insn=158601216`, lower
+create/issue/response `17823985/17823985/17823985`, dependencies
+`18350080/18350080`, and final IO inflight/PIB/lower state all zero; the
+explicit lower-create-queue-full stall counter is zero.  The sole deadlock
+text is the enabled-config echo, and no assertion/fatal/output mismatch was
+observed.  It is not registered or used to re-close T2 before BICG Base A0
+and triplet reconciliation complete.
 
 At this checkpoint 14 M5 simulator processes remain live: A0/A1 Base,
 precomputed ATAX Base, repaired ATAX Base/IO/OO, repaired BICG Base/IO,

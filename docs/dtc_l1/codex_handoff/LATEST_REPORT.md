@@ -197,6 +197,13 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   all zero.  It is only a `POST_REPAIR_T2_REPLAY_CANDIDATE`: repaired BICG
   Base/IO and the required IO/OO A1 equivalence confirmations are still live,
   so no T2 re-close, stats-light adoption, or formal registry update occurs.
+- The repaired-Core BICG PAPER_IO A0 member has now also naturally ended and
+  strict-parsed: 9,324,397 cycles / 158,601,216 instructions, lower
+  create/issue/response `17,823,985/17,823,985/17,823,985`, dependencies
+  `18,350,080/18,350,080`, and final IO inflight/PIB/lower state all zero.
+  No assertion, fatal, output mismatch, or non-config deadlock text was
+  observed.  This leaves only repaired BICG Base A0 before same-bundle T2
+  triplet reconciliation; the IO/OO A1 stats-light confirmations remain live.
 - Fourteen isolated M5 simulator processes remain active and each continues
   to accrue near-one-core CPU time.  The dynamic limit remains `N_safe=18`;
   the unfilled capacity is intentionally protected until repaired ATAX
