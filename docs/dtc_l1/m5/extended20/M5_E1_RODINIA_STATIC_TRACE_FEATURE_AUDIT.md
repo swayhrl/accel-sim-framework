@@ -107,6 +107,25 @@ No real-V100 source checker, output/reference freeze, runtime/launch freeze,
 or dynamic trace-semantic audit has run. The source-only static classification
 therefore remains unchanged and this evidence does not authorize a capture.
 
+## gaussian local `sm_70` build preflight (2026-09-06)
+
+The exact Rodinia 3.1 Gaussian source was independently materialized twice
+from clean `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1`,
+tree `2838e708e1591ac0bfdd2ff9c5de5917e56abce0`. CUDA 11.8.89 reproduced the
+source Makefile's `RD_WG_SIZE_0=128`, `RD_WG_SIZE_1=16` launch-build defines
+with `-arch=sm_70`; both normalized ELFs and PTX files are byte-identical.
+
+| item | identity / result |
+| --- | --- |
+| selected source | `gaussian.cu` SHA-256 `8b383f5c5149cb70c84720cac80f9115fe2cfd06907e321e589250fc21a5a5a4` |
+| canonical executable | two `strip --strip-unneeded` artifacts: SHA-256 `75353c1b235569e77986cf75ea72189505470fd3d543f5dadbf4c80761069404` |
+| PTX | two artifacts: SHA-256 `f9133ebb39fef8df6ea6cb400015e303898165f3953c7fd98d0de77a6999cf28`; `.target sm_70`; `Fan1` and `Fan2` entries |
+| classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `SOURCE_READY`, not `BUILD_READY` |
+
+Gaussian still lacks its selected input/output checker, real-V100 execution,
+and dynamic trace-semantic audit. This host-side build evidence does not make
+the row capture-ready and does not alter the Paper-10 capture queue.
+
 `STATIC_TRACE_CANDIDATE` means only that the selected source scan found no
 listed feature.  It does not establish trace compatibility or permit a
 capture.  Runtime audit must prove the actual binary's operation, grouping,

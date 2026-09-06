@@ -25,7 +25,7 @@ used where no source-backed trace-volume basis exists.
 | cfd_097k | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY; checker, semantic audit and V100 build pending |
 | btree | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | dwt2d | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
-| gaussian | Rodinia 3.1 dad09cb0 | Makefile located | CANDIDATE_SET_HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; primary input/checker, dynamic contract and V100 build pending |
+| gaussian | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | CANDIDATE_SET_HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; primary input/checker, dynamic contract and V100 build pending |
 | hotspot1 | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | lud | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | SOURCE_GENERATED_CONTRACT | source -v verifier | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; exact V100 verifier smoke and dynamic contract pending |
 | bfs | Parboil 4e0fc548 | CUDA Makefile located | HASHED | Python3 predicate adapter PASS | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_ATOMICS_TEXTURE_GLOBAL_BARRIER | UNKNOWN | SOURCE_READY, INPUT_READY, CHECKER_READY; semantic audit and V100 build pending |
@@ -116,3 +116,8 @@ Rodinia dwt2d has a two-build CUDA-11.8 `sm_70` preflight with a byte-identical
 eight-translation-unit PTX manifest. It remains `INPUT_READY`, not
 `BUILD_READY`, pending its output/reference checker and dynamic trace audit;
 counts and queue are unchanged.
+
+Rodinia gaussian has a two-build local CUDA-11.8 `sm_70` preflight preserving
+its source-defined workgroup constants. It remains `SOURCE_READY`, not
+`BUILD_READY`, because the selected input/checker, V100 smoke, and dynamic
+trace audit are still pending; counts and queue are unchanged.
