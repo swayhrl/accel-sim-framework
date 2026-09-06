@@ -1,6 +1,6 @@
 # M5.0BT — SYR2K heavy storage recalibration
 
-Status: **ACTIVE — SYR2K_LOCAL_IMMUTABLE_PASS; PROOF-BOUND_EVICTION_IN_PROGRESS**
+Status: **ACTIVE — SYR2K_EVICTION_AND_GATE_PASS; SPMV_QUEUE_RESTARTED**
 
 This is an operational storage-policy correction authorized for the current
 capture host. It changes no workload, source, input, tracer, formal platform,
@@ -40,7 +40,12 @@ The receipt binds the exact SYR2K bundle ID
 to that archive and records `LOCAL_IMMUTABLE_PASS`.  This closes only
 copyback/local immutable validation.  It does **not** claim remote working
 bundle eviction, a fresh live admission pass, SpMV start, or a formal replay
-result; the existing proof-bound continuation is performing those next steps.
+result.  The existing proof-bound continuation subsequently revalidated the
+receipt remotely, evicted only the redundant SYR2K remote working bundle,
+passed a fresh live storage gate, and restarted the ordered `SpMV -> 2MM`
+queue at 2026-09-06T15:17:42+08:00.  The remote SYR2K archive and compact
+provenance remain retained.  A restarted queue is not a claim that SpMV has
+captured, archived, transferred, or passed a formal replay gate.
 
 ## Recalibrated fail-closed admission
 
@@ -75,9 +80,9 @@ free bytes; these are not a promise that an unmeasured workload fits.
 
 ## Consequences
 
-- **SpMV** remains next. SYR2K local immutable PASS is now satisfied; it is
-  admitted only after the in-progress proof-bound eviction and a fresh live
-  gate PASS.
+- **SpMV** is the active next queue item. SYR2K local immutable PASS,
+  proof-bound eviction and a fresh live gate PASS are satisfied; its own
+  checker/bundle/archive/copyback/local-immutable gates remain independent.
 - **2MM** is HEAVY_SIZE_UNKNOWN: frozen NI=NJ=NK=NL=1024, two dense
   multiplication phases, no downsizing. It needs the recalibrated gate plus
   pre-identified proof-bound eviction candidates before launch.
