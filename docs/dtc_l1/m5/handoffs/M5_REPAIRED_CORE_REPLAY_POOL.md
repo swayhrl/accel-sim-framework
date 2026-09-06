@@ -63,3 +63,36 @@ ready repaired-Core triplets (including GEMVER and MVT) are next eligible when
 a safely calibrated slot exists.  All formal rows continue to use the frozen
 statistics/configuration identity until the isolated stats-light equivalence
 study is accepted; no stats-light result is a formal result.
+
+## Throughput recalibration and protected capacity (2026-09-06)
+
+The container has all CPUs `0-511` in its effective cpuset, but
+`/sys/fs/cgroup/cpu.max` is `38400000 100000`: its hard aggregate CPU quota is
+384 cores, not 512.  The relevant resource sample found about 19% system idle
+while the M5 workers each retained near-one-core progress.  Thus the prior
+18-worker value is a conservative scheduling limit, not a cpuset or quota
+ceiling.  It is not raised solely from nominal topology because shared-host
+unrelated demand remains material and several active rows are approximately
+9-GiB heavy.
+
+Five researcher-authorized superseded/non-candidate workers were gracefully
+retired after evidence snapshot: stats-light A2/A3 and the old-Core GESUMMV
+Base/IO/OO diagnostic triplet.  The three GESUMMV rows are explicitly
+`RESEARCHER_ABORTED_SUPERSEDED_DIAGNOSTIC`: their runtime predates the
+lower-create repair and they can never be repaired-identity formal rows.
+Their preserved namespace is
+`/workspace/m5-t3-gesu-80sm-cap10240-r3-20260906/{base,io,oo}`; each had about
+2:30 CPU time, empty stderr, and no fatal/assertion/deadlock/output-mismatch
+signature at retirement.  `SIGTERM` was sent only to their distinct PGIDs
+`480579`, `480592`, and `480604`; all exited without escalation.
+
+Two released slots are now occupied by the required repaired-Core BICG
+PAPER_IO/PAPER_OO A1 natural-terminal confirmations (CPUs 46/47).  Three
+slots remain intentionally unfilled: ATAX repair rows have exceeded the old
+failure window but have not yet naturally terminated, strict-parsed, or closed
+drain/accounting.  Therefore the broad repaired-runtime gate required before
+MVT replacement and repaired GESUMMV T3 dispatch is not yet established.
+This is a source/correctness gate, not a stage-number serialization.  Refill
+those slots immediately after that gate and a fresh resource sample permit it;
+priority remains MVT IO/OO, repaired GESUMMV Base/IO/OO, then other locally
+immutable Paper rows.

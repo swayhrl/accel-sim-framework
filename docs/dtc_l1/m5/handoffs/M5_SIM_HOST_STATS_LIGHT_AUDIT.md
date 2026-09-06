@@ -95,3 +95,35 @@ formal rows.  Existing T2 results retain their original configuration identity.
 Hardware `perf` cannot attach in this container: `perf_event_paranoid=4` and
 the process lacks `CAP_PERFMON`; no security sysctl is changed.  The direct
 wall-clock A/B is therefore the admissible host measurement.
+
+## Researcher-authorized non-candidate retirement (2026-09-06)
+
+The researcher authorized recovery of workers consumed by candidates that can
+no longer affect a stats-light adoption or repaired-Core result.  Before any
+signal, their PID/PGID, argv identity, output namespace, CPU/wall time,
+resident memory, compressed CSV/stdout sizes, and error scan were snapshotted.
+All output namespaces remain preserved; no result registry entry was made.
+
+| row | PID / PGID | preserved namespace | disposition | reason |
+| --- | --- | --- | --- | --- |
+| A2 | `795048` / `795044` | `/workspace/m5-hostdiag-bicg-80sm-cap10240-natural-r4-20260906/A2` | `RESEARCHER_ABORTED_NONCOMPETITIVE_STATS_CANDIDATE` | PTX-line suppression had no observed advantage over A1 and is not needed for the required decision. |
+| A3 | `795055` / `795052` | `/workspace/m5-hostdiag-bicg-80sm-cap10240-natural-r4-20260906/A3` | `RESEARCHER_ABORTED_NONCOMPETITIVE_STATS_CANDIDATE` | No observed advantage over A1; it also carries the documented memlatency type-contract risk. |
+
+At the snapshot both rows had about 1:58 CPU time, approximately 2.41 GiB
+RSS, empty stderr, and no active fatal/assertion/deadlock/output-mismatch
+signature.  `SIGTERM` was delivered only to the two isolated time-wrapper
+process groups (`795044`, `795052`); both groups exited.  No `SIGKILL` was
+used and A0/A1 Base were not signaled.
+
+The released physical CPUs 46 and 47 now host the explicitly authorized,
+natural-terminal repaired-Core BICG confirmation pair:
+
+| row | PID | CPU | namespace | identity |
+| --- | --- | --- | --- | --- |
+| BICG PAPER_IO A1 | `1512229` | 46 | `/workspace/m5-statslight-confirm-bicg-repaired-core-80sm-cap10240-20260906/io-a1` | Core `15cfa76e...`, runtime SHA `3e71cb...`, immutable BICG trace, 80-SM/cap10240/ratio-zero, only `gpgpu_runtime_stat=500000` added. |
+| BICG PAPER_OO A1 | `1512240` | 47 | `/workspace/m5-statslight-confirm-bicg-repaired-core-80sm-cap10240-20260906/oo-a1` | Same as IO except frozen PAPER_OO config. |
+
+These rows are active observer-only confirmations, not a stats-light adoption
+or formal result.  They require natural terminal, strict parser, terminal
+drain/accounting, and full M5-consumed counter equivalence against their
+respective repaired-Core A0 rows.

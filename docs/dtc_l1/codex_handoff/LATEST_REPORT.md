@@ -147,6 +147,29 @@ required before a repaired-identity T2/T3 formal acceptance claim.
 
 ## Current authoritative state
 
+### Throughput checkpoint (2026-09-06)
+
+- Researcher-authorized worker recovery preserved and then gracefully retired
+  stats-light A2/A3 and the old-Core GESUMMV Base/IO/OO diagnostics.  The
+  exact preserved namespaces, pre-signal evidence, classifications and PGIDs
+  are recorded in `m5/handoffs/M5_SIM_HOST_STATS_LIGHT_AUDIT.md` and
+  `m5/handoffs/M5_REPAIRED_CORE_REPLAY_POOL.md`.  No repaired-Core formal
+  candidate was signaled, no raw evidence was deleted, and no `SIGKILL` was
+  required.
+- The real container CPU boundary is a 384-core cgroup quota with cpuset
+  `0-511`, not an 18-core allocation.  Eighteen was a conservative shared-host
+  scheduling limit.  After retirement, BICG repaired PAPER_IO/PAPER_OO A1
+  natural-terminal observer-only confirmations started on dedicated CPUs 46
+  and 47 (`1512229`, `1512240`); they retain the immutable BICG trace, Core
+  `15cfa76e...`, 80-SM/cap10240/ratio-zero model and differ only by runtime
+  statistics cadence.  They are not adoption/formal results pending full
+  terminal equivalence.
+- ATAX repaired Base/IO/OO remain live and have only exceeded the historical
+  abort window; they have not completed the HARD terminal/parser/drain/lower
+  accounting gate.  Consequently MVT IO/OO and repaired GESUMMV T3 are ready
+  for priority dispatch but remain correctly gated, rather than being launched
+  under an unqualified repaired runtime.
+
 - One persistent Goal: docs/dtc_l1/m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md.
 - M5.0BT is active and gates M5.0C. No M5.0C, Extended E2, graphics work, or
   capture-host rental/start is authorized by this report.
