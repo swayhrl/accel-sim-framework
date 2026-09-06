@@ -60,3 +60,22 @@ the common M5.2 anchor is frozen; require the source-defined `PASSED` output,
 strict parser/provenance capture, and explicit simulator compatibility.  The
 pre-existing L2 trace manifest remains historical runtime-planning evidence
 only and is not reused as a formal M5 result.
+
+## Local `sm_70` build preflight (2026-09-06)
+
+Two newly materialized, isolated CUDA 11.8 builds used the same frozen source
+and helper inputs with `-arch=sm_70 -O2 -cudart shared`.  The canonical
+post-link artifacts apply the M5-E1-003 `strip --strip-unneeded`
+normalization, which removes only nvcc-generated local symbol-table metadata.
+The two canonical ELFs have the same SHA-256
+`c5791dcc3b87b334f582b2085d5db327802a2afd3b302b393168e5c90b4c8073`; their
+PTX is also byte-identical at
+`45778d06ff6e1323c1e3647a660beefaff137eacffa49b785db6f480f3551854`.
+The PTX declares `.target sm_70` and the expected `fwtBatch1Kernel`,
+`fwtBatch2Kernel`, and `modulateKernel` entries.
+
+This is a local build reproducibility preflight only.  SIM_HOST has no visible
+GPU, so neither output nor the source-defined `PASSED` verdict was executed.
+The V100 build/output-smoke, fixed `-logK 11 -logD 19` run identity, and
+dynamic trace-semantic contract remain mandatory; this row remains
+`SOURCE_READY`, not `BUILD_READY` or `TRACE_CAPTURE_READY`.

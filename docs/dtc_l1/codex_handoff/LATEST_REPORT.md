@@ -17,6 +17,11 @@ The canonical post-link artifact is an independently double-built,
 byte-identical stripped ELF; the resolved nvcc local-symbol metadata issue is
 recorded as `M5-E1-003`.
 
+FastWalshTransform now has the same local two-build `sm_70` preflight under
+its exact `-logK 11 -logD 19` source contract.  It remains `SOURCE_READY`
+because no V100 output smoke or dynamic trace audit has run; E1 readiness
+counts and the Paper-10 capture priority are unchanged.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons are now complete.

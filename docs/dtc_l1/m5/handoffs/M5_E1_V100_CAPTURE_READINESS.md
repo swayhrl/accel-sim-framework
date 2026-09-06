@@ -74,3 +74,9 @@ preflight (executable/PTX hashes and compatibility-input identities in
 `extended20/CUDA_SDK_E1_SOURCE_AUDIT.md`). Because it was not built and
 executed on the actual V100 with the source-defined output checker, it remains
 `SOURCE_READY`; all exclusive readiness counts above are unchanged.
+
+FastWalshTransform has the same two-build local `sm_70` preflight, with its
+fixed `-logK 11 -logD 19` source contract and canonical artifact hashes in
+`extended20/FWT_11_19_E1_RECOVERY.md`.  It likewise lacks a real-V100
+`PASSED` smoke and dynamic trace audit, so it remains `SOURCE_READY`; the
+exclusive readiness counts remain unchanged.
