@@ -69,6 +69,15 @@ preflight while preserving its source-defined workgroup constants. It remains
 `SOURCE_READY`, not `BUILD_READY`, pending a selected input/checker, V100
 smoke, and dynamic trace audit; Paper-10 capture priority is unchanged.
 
+Rodinia cfd_097k has completed an independently repeated local CUDA-11.8
+`sm_70` build/PTX preflight using only the exact frozen tree's legacy
+host-timer helper headers.  This source-bound dependency recovery changes no
+workload source or runtime semantics.  Because CFD uses constant-memory setup,
+it remains `INPUT_READY/RUNTIME_AUDIT_CONSTANT`, not `BUILD_READY`: a real
+V100 checker, frozen launch/input contract, and dynamic trace-ordering audit
+are still required.  Paper-10 capture priority and all readiness counts are
+unchanged.
+
 ## Live audit update (2026-09-06)
 
 The natural-terminal BICG stats-light A0/A1 comparisons and the required

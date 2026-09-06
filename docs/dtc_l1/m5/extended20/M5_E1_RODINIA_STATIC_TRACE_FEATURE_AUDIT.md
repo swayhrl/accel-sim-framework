@@ -126,6 +126,32 @@ Gaussian still lacks its selected input/output checker, real-V100 execution,
 and dynamic trace-semantic audit. This host-side build evidence does not make
 the row capture-ready and does not alter the Paper-10 capture queue.
 
+## cfd_097k local `sm_70` build preflight (2026-09-06)
+
+The exact Rodinia 3.1 `cfd/euler3d.cu` source was independently materialized
+twice from clean `gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1`,
+tree `fe8279d4be56b847d9af28cae64221dd55576314`.  The historical Makefile
+expects the CUDA-SDK timer include path.  The selected frozen tree itself
+contains the required `hybridsort/helper_timer.h` and `exception.h`, so each
+isolated build used only those hash-bound, same-tree headers with CUDA 11.8
+and `-arch=sm_70 -O2`; no workload source, input, kernel selection, or
+runtime behavior was changed.  The helper supplies host timing only.
+
+| item | identity / result |
+| --- | --- |
+| selected source | `euler3d.cu` SHA-256 `b5015e61e413dbf711a1e928505d5591f21639644a156dfe31f2e126ce788079` |
+| source-bound helper recovery | `helper_timer.h` SHA-256 `735c5a9b3eb704450cfdf2eedebaca4bfcaccf3de3b7e7abf388dbb759434c79`; `exception.h` SHA-256 `95a0be5385b1d684b6d9bfa028de157494e4d6307b95fa63307b5cb3d70a0aca` |
+| canonical executable | two `strip --strip-unneeded` artifacts: SHA-256 `bfe4276789174945083beaa45398d02adcdcd2e0a80e945dc32f8c05d318c336` |
+| PTX | two artifacts: SHA-256 `3d85b4a4e8d6fe1ca260b471b03c786673f908b1301e974867a4ec993a81d363`; `.target sm_70`; `cuda_initialize_variables`, `cuda_compute_step_factor`, `cuda_compute_flux`, and `cuda_time_step` entries |
+| classification | `LOCAL_SM70_BUILD_PREFLIGHT_PASS`; retain `INPUT_READY/RUNTIME_AUDIT_CONSTANT`, not `BUILD_READY` |
+
+The required dynamic audit is especially material: this source uses
+constant-memory initialization through `cudaMemcpyToSymbol`.  A real-V100
+source-defined checker, input/runtime/launch freeze, and proof that the
+trace/frontend preserves that constant-memory ordering all remain mandatory.
+This build proof therefore does not authorize capture or alter the Paper-10
+priority queue.
+
 `STATIC_TRACE_CANDIDATE` means only that the selected source scan found no
 listed feature.  It does not establish trace compatibility or permit a
 capture.  Runtime audit must prove the actual binary's operation, grouping,

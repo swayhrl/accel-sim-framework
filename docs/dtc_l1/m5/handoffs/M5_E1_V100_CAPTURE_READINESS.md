@@ -22,7 +22,7 @@ used where no source-backed trace-volume basis exists.
 | sortingNetworks | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
 | transpose | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
 | vectorAdd_6000000 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
-| cfd_097k | Rodinia 3.1 dad09cb0 | Makefile located | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY; checker, semantic audit and V100 build pending |
+| cfd_097k | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; source-bound legacy timer helper recovery; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY; checker, semantic audit and V100 build pending |
 | btree | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | dwt2d | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | gaussian | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | CANDIDATE_SET_HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; primary input/checker, dynamic contract and V100 build pending |
@@ -121,3 +121,10 @@ Rodinia gaussian has a two-build local CUDA-11.8 `sm_70` preflight preserving
 its source-defined workgroup constants. It remains `SOURCE_READY`, not
 `BUILD_READY`, because the selected input/checker, V100 smoke, and dynamic
 trace audit are still pending; counts and queue are unchanged.
+
+Rodinia cfd_097k also has a reproducible two-build local CUDA-11.8 `sm_70`
+preflight.  The historical timer include was recovered only from the same
+frozen Rodinia tree and is a host-only helper; the local proof therefore
+retains `INPUT_READY/RUNTIME_AUDIT_CONSTANT`, not `BUILD_READY`.  The V100
+checker, launch/input freeze, and constant-memory trace-ordering audit remain
+hard gates; counts and queue are unchanged.

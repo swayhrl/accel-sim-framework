@@ -363,6 +363,37 @@
   reproducible; it does not change `SOURCE_READY`, `BUILD_READY`, or
   `TRACE_CAPTURE_READY` status.
 
+## M5-E1-004 — Rodinia cfd build required a source-bound legacy timer helper
+
+- State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
+- Scope: Extended-20 E1 host-side build preflight for selected `cfd_097k`
+  only.  It changes neither CFD workload source/input/runtime semantics, Core,
+  formal configuration, capture eligibility, nor Paper-10 work.
+- Evidence: an isolated CUDA 11.8 `sm_70` build first failed because the
+  historical CFD Makefile expects `helper_timer.h` from a CUDA-SDK include
+  location.  The exact frozen Rodinia tree contains the required host-timer
+  header at `src/cuda/rodinia/3.1/cuda/hybridsort/helper_timer.h` (SHA-256
+  `735c5a9b3eb704450cfdf2eedebaca4bfcaccf3de3b7e7abf388dbb759434c79`) and
+  its sibling `exception.h` (SHA-256
+  `95a0be5385b1d684b6d9bfa028de157494e4d6307b95fa63307b5cb3d70a0aca`).
+- Classification: `HOST_BUILD_DEPENDENCY_RECOVERY`.  CFD references the
+  helper only for host `StopWatch` timing; it is not a kernel, input, output,
+  trace, DTC, or simulator semantic repair.
+- Repair/regression: two independently materialized copies of frozen
+  `euler3d.cu` (SHA-256
+  `b5015e61e413dbf711a1e928505d5591f21639644a156dfe31f2e126ce788079`) were
+  built with CUDA 11.8 `-arch=sm_70 -O2` and only those source-bound headers.
+  After the established post-link normalization, both executable artifacts
+  hash to `bfe4276789174945083beaa45398d02adcdcd2e0a80e945dc32f8c05d318c336`
+  and both PTX artifacts to
+  `3d85b4a4e8d6fe1ca260b471b03c786673f908b1301e974867a4ec993a81d363`.
+  PTX preserves the expected CFD kernel entry set.  Generated artifacts remain
+  uncommitted.
+- Resume point: cfd_097k remains `INPUT_READY/RUNTIME_AUDIT_CONSTANT`.  Its
+  real-V100 input/checker/launch freeze and dynamic constant-memory ordering
+  audit remain mandatory before any trace capture claim; this closure creates
+  no `BUILD_READY` or `TRACE_CAPTURE_READY` record.
+
 ## M5-0BT-001 — traced-source tree hash dereferenced a tracked directory symlink
 
 - State: `OBSERVED -> REPRODUCED -> CLASSIFIED -> REPAIRED -> REGRESSED -> CLOSED`.
