@@ -67,7 +67,10 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   after remote/local archive SHA and local immutable manifest validation
   matched.  Its remote archive and SIM_HOST immutable payload remain intact;
   the post-R4 unchanged gate passed with 59,907,649,536 free bytes.  SYR2K
-  remained active throughout.
+  remained active throughout.  R5 then proof-bound-offloaded only GEMVER's
+  redundant 2,647,569,402-byte remote working bundle after the same archive
+  and local immutable checks; its archive and local payload remain preserved,
+  and the unmodified gate passed with 59,551,346,688 free bytes.
 - **Track C — SIM_HOST statistics-light A/B:** the initial BICG
   same-trace/same-binary/80-SM/cap-10240/PAPER_BASE cutoff round established
   that `gpgpu_max_cycle=2000000` is not a valid DTC observation boundary: it
