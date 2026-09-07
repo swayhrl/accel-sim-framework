@@ -1,0 +1,25 @@
+evidence_label	experiment_id	arm_id	baseline_arm_id	change_scope	option_or_source	baseline_effective_value	arm_effective_value	classification	static_guard
+SPECULATIVE_DIAGNOSTIC	E01	E01-generic	NONE	config_stack	base_trace_trace_list_object_map	IMMUTABLE_BASELINE	IMMUTABLE_BASELINE	CONTROLLED_IDENTICAL	identical hashes and paths; no cache_clock_trace delta
+SPECULATIVE_DIAGNOSTIC	E01	E01-generic	NONE	profile	-gpgpu_vm_mode	2	2	INTENDED_GENERIC_BASELINE	profile is generic; all non-VM inputs identical
+SPECULATIVE_DIAGNOSTIC	E01	E01-pwc32	E01-generic	vm_overlay	-gpgpu_vm_pwc_entries	128	32	INTENDED_CHANGE	only finite32 overlay option changes effective capacity
+SPECULATIVE_DIAGNOSTIC	E01	E01-pwc32	E01-generic	vm_overlay	-gpgpu_vm_pwc_mode	1	1	IDENTICAL_REASSERTION	overlay explicitly reasserts finite PWC; no semantic delta
+SPECULATIVE_DIAGNOSTIC	E02	E02-generic	NONE	config_stack	base_trace_trace_list_object_map	IMMUTABLE_BASELINE	IMMUTABLE_BASELINE	CONTROLLED_IDENTICAL	identical hashes and paths; no cache_clock_trace delta
+SPECULATIVE_DIAGNOSTIC	E02	E02-generic	NONE	profile	-gpgpu_vm_mode	2	2	INTENDED_GENERIC_BASELINE	profile is generic; all non-VM inputs identical
+SPECULATIVE_DIAGNOSTIC	E02	E02-pwc512	E02-generic	vm_overlay	-gpgpu_vm_pwc_entries	128	512	INTENDED_CHANGE	only finite512 overlay option changes effective capacity
+SPECULATIVE_DIAGNOSTIC	E02	E02-pwc512	E02-generic	vm_overlay	-gpgpu_vm_pwc_mode	1	1	IDENTICAL_REASSERTION	overlay explicitly reasserts finite PWC; no semantic delta
+SPECULATIVE_DIAGNOSTIC	E03	E03-generic	NONE	config_stack	base_trace_trace_list_object_map	IMMUTABLE_BASELINE	IMMUTABLE_BASELINE	CONTROLLED_IDENTICAL	identical hashes and paths; no cache_clock_trace delta
+SPECULATIVE_DIAGNOSTIC	E03	E03-generic	NONE	profile	-gpgpu_vm_mode	2	2	INTENDED_GENERIC_BASELINE	profile is generic; all non-VM inputs identical
+SPECULATIVE_DIAGNOSTIC	E03	E03-pwcideal	E03-generic	vm_overlay	-gpgpu_vm_pwc_mode	1	2	INTENDED_CHANGE	ideal PWC diagnostic; entries remain configured but mode controls realization
+SPECULATIVE_DIAGNOSTIC	E03	E03-pwcideal	E03-generic	vm_overlay	-gpgpu_vm_pwc_entries	128	128	UNCHANGED_CONFIGURED_VALUE	no cache_clock_trace or other VM option drift
+SPECULATIVE_DIAGNOSTIC	E04	E04-generic64k	NONE	config_stack	base_trace_trace_list_object_map	IMMUTABLE_BASELINE	IMMUTABLE_BASELINE	CONTROLLED_IDENTICAL	identical hashes and paths; no cache_clock_trace delta
+SPECULATIVE_DIAGNOSTIC	E04	E04-generic64k	NONE	profile	-gpgpu_vm_page_size	65536	65536	INTENDED_GENERIC_BASELINE	generic profile; all non-VM inputs identical
+SPECULATIVE_DIAGNOSTIC	E04	E04-page2mb	E04-generic64k	vm_overlay	-gpgpu_vm_page_size	65536	2097152	INTENDED_CHANGE	only page-size diagnostic overlay changes effective page size
+SPECULATIVE_DIAGNOSTIC	E04	E04-page2mb	E04-generic64k	vm_overlay	all_other_vm_options	GENERIC_VALUES	GENERIC_VALUES	CONTROLLED_IDENTICAL	no TLB_PWC_MSHR_PWQ_walker/cache_clock_trace drift
+SPECULATIVE_DIAGNOSTIC	E05	E05-generic	NONE	config_stack	base_trace_trace_list_object_map	IMMUTABLE_BASELINE	IMMUTABLE_BASELINE	CONTROLLED_IDENTICAL	identical hashes and paths; no cache_clock_trace delta
+SPECULATIVE_DIAGNOSTIC	E05	E05-generic	NONE	profile	-gpgpu_vm_mode	2	2	INTENDED_GENERIC_BASELINE	profile is generic; all non-VM inputs identical
+SPECULATIVE_DIAGNOSTIC	E05	E05-disabled	E05-generic	profile_selector	-gpgpu_vm_mode	2	0	INTENDED_CHANGE	exact disabled control profile; no overlay
+SPECULATIVE_DIAGNOSTIC	E05	E05-disabled	E05-generic	profile_selector	all_non_vm_options	IDENTICAL_BASE_TRACE	IDENTICAL_BASE_TRACE	CONTROLLED_IDENTICAL	profile delta contains only gpgpu_vm option; cache_clock_trace unchanged
+SPECULATIVE_DIAGNOSTIC	E06	E06-generic	NONE	config_stack	base_trace_trace_list_object_map	IMMUTABLE_BASELINE	IMMUTABLE_BASELINE	CONTROLLED_IDENTICAL	identical hashes and paths; no cache_clock_trace delta
+SPECULATIVE_DIAGNOSTIC	E06	E06-generic	NONE	profile	-gpgpu_vm_mode	2	2	INTENDED_GENERIC_BASELINE	profile is generic; all non-VM inputs identical
+SPECULATIVE_DIAGNOSTIC	E06	E06-ideal	E06-generic	profile_selector	-gpgpu_vm_mode	2	1	INTENDED_CHANGE	exact ideal identity control profile; no overlay
+SPECULATIVE_DIAGNOSTIC	E06	E06-ideal	E06-generic	profile_selector	all_non_vm_options	IDENTICAL_BASE_TRACE	IDENTICAL_BASE_TRACE	CONTROLLED_IDENTICAL	profile delta contains only gpgpu_vm option; cache_clock_trace unchanged

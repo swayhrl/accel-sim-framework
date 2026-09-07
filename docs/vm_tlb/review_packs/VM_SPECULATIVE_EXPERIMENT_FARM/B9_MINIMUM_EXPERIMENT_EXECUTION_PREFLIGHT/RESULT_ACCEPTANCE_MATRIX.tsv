@@ -1,0 +1,17 @@
+evidence_label	row_kind	name	requirement_or_allowed_value	missing_value	decision_rule
+SPECULATIVE_DIAGNOSTIC	result_field	experiment_id	E01..E10	NONE	required per arm
+SPECULATIVE_DIAGNOSTIC	result_field	arm_id	unique frozen manifest arm	NONE	required per arm
+SPECULATIVE_DIAGNOSTIC	result_field	baseline_id	frozen paired baseline or NONE	NONE	required per arm
+SPECULATIVE_DIAGNOSTIC	result_field	command_sha256;config_sha256	exact prelaunch command and generated config hash	NOT_AVAILABLE	required before interpretation
+SPECULATIVE_DIAGNOSTIC	result_field	binary_sha256;runtime_sha256;trace_hashes	frozen/provenance hashes	NOT_AVAILABLE	mismatch is INVALID_CONFIG
+SPECULATIVE_DIAGNOSTIC	result_field	semantic_realization_pass	PASS or FAIL	NOT_AVAILABLE	FAIL is INVALID_CONFIG
+SPECULATIVE_DIAGNOSTIC	result_field	simulator_exit_status	numeric exit status	NOT_AVAILABLE	nonzero is FAIL
+SPECULATIVE_DIAGNOSTIC	result_field	terminal_count_gate	processing and telemetry count gate	NOT_AVAILABLE	failure is FAIL
+SPECULATIVE_DIAGNOSTIC	result_field	resource_gate_snapshot	MemAvailable;swap;iowait;threshold;peak/span	NOT_AVAILABLE	admission failure is RESOURCE_DEFERRED
+SPECULATIVE_DIAGNOSTIC	result_field	requested_observables	all EXPECTED_OBSERVABLES identifiers	NOT_AVAILABLE	required set persisted
+SPECULATIVE_DIAGNOSTIC	result_field	missing_observables	comma list or NONE	NOT_AVAILABLE	missing is never numeric zero
+SPECULATIVE_DIAGNOSTIC	result_field	result_class	PASS;FAIL;INVALID_CONFIG;INCONCLUSIVE;RESOURCE_DEFERRED	NONE	exact enum only
+SPECULATIVE_DIAGNOSTIC	result_field	hypothesis_implications	predeclared positive;negative;no_difference branch	NOT_AVAILABLE	no confirmation-only conclusion
+SPECULATIVE_DIAGNOSTIC	acceptance	E01-E06	terminal PASS plus realization and observable schema	PASS	otherwise FAIL or INVALID_CONFIG
+SPECULATIVE_DIAGNOSTIC	acceptance	E07-E08	time-v plus clean resource window plus nonempty partial hash	PASS	pressure is RESOURCE_DEFERRED
+SPECULATIVE_DIAGNOSTIC	acceptance	E09-E10	16 selected traces; conservation PASS; provenance and UNKNOWN retained	PASS	selector/config failure is INVALID_CONFIG
