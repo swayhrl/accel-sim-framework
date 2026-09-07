@@ -4,9 +4,11 @@ Status: **ACTIVE — PAPER10_CAPTURE_HAS_PRIORITY**
 
 This is a per-row E1 scheduling inventory for the current rented V100. It does
 not alter Extended-20 membership, inputs, dimensions, source identity, or the
-M5.2 gate for E2 performance runs. A historical sm52 build is provenance only;
-a row becomes TRACE_CAPTURE_READY only after its own clean CUDA-11.8 V100/sm70
-build, real-V100 checker, input/reference freeze, and unsupported-feature
+M5.2 gate for E2 performance runs.  The eight CUDA SDK rows have recorded
+local CUDA-11.8/sm70 build/PTX preflights; those artifacts are provenance only,
+not real-V100 runtime identities.  A row becomes TRACE_CAPTURE_READY only after
+its own real-V100 output smoke/checker, input/reference/launch-runtime freeze,
+and unsupported-feature
 audit pass.
 
 All size classes below are planning labels, not measured traces. UNKNOWN is
@@ -14,14 +16,14 @@ used where no source-backed trace-volume basis exists.
 
 | workload | source | build evidence | input | checker | V100 build | trace eligibility | size class | state / blocker |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BlackScholes | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
-| convolutionSeparable | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and semantic audit pending |
-| fastWalshTransform_11_19 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
-| scalarProd_13920 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
-| scan | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
-| sortingNetworks | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
-| transpose | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
-| vectorAdd_6000000 | CUDA SDK 4.2 b059fdae | sm52 provenance only | PENDING_FREEZE | QA_PASSED | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 build/input smoke and dynamic contract pending |
+| BlackScholes | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker, input/launch/runtime freeze and dynamic contract pending |
+| convolutionSeparable | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker and freeze pending; constant-memory runtime semantic audit remains mandatory |
+| fastWalshTransform_11_19 | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker, input/launch/runtime freeze and dynamic contract pending |
+| scalarProd_13920 | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker, input/launch/runtime freeze and dynamic contract pending |
+| scan | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker, input/launch/runtime freeze and dynamic contract pending |
+| sortingNetworks | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker, input/launch/runtime freeze and dynamic contract pending |
+| transpose | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker, input/launch/runtime freeze and dynamic contract pending |
+| vectorAdd_6000000 | CUDA SDK 4.2 b059fdae | LOCAL_CUDA11_8_SM70_BUILD_PTX_PREFLIGHT_RECORDED | PENDING_FREEZE | QA_PASSED | PENDING_REAL_V100_RUNTIME_IDENTITY | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY; real-V100 output smoke/checker, input/launch/runtime freeze and dynamic contract pending |
 | cfd_097k | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; source-bound legacy timer helper recovery; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | RUNTIME_AUDIT_CONSTANT | UNKNOWN | SOURCE_READY, INPUT_READY; checker, semantic audit and V100 build pending |
 | btree | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |
 | dwt2d | Rodinia 3.1 dad09cb0 | local `sm_70` preflight; V100 build pending | HASHED | PENDING_FREEZE | PENDING_CUDA11_8_SM70 | STATIC_TRACE_CANDIDATE | UNKNOWN | SOURCE_READY, INPUT_READY; output reference/checker, dynamic contract and V100 build pending |

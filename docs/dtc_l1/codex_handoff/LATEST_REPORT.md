@@ -48,6 +48,13 @@ a scientific wait barrier.  The whole r1 qualification wave is
 nonformal.  See
 `fast64/handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
+R2 admission is **FAST64_1_R2_RESOURCE_WAIT_ACTIVE**, not Goal blocked: the
+fresh audit keeps launch fail-closed while swap headroom is exhausted.  The
+dispatcher/collector/config/identity preparation and independent FAST64.2
+diagnostic work remain authorized; whenever a historical job naturally exits,
+take a new resource audit and admit the highest-priority safe R2 row without a
+wait-for-all barrier.
+
 ## FAST64.1 r1 execution-path contamination (2026-09-07)
 
 FAST64.1 is **ACTIVE_HARD_EXECUTION_FAILURE** and is not promotable.  The
@@ -553,9 +560,9 @@ required before a repaired-identity T2/T3 formal acceptance claim.
   `m5/extended20/M5_E1_RODINIA_STATIC_TRACE_FEATURE_AUDIT.md`.
 - The CUDA SDK 4.2 static screen identifies convolutionSeparable's
   constant-memory transfer path; the other seven selected rows are static
-  candidates only.  Historical sm52 builds remain provenance-only and no SDK
-  row can capture before its own clean V100/sm70 build, checker/input freeze
-  and dynamic contract.  See
+  candidates only.  All eight already have recorded local CUDA-11.8/sm70
+  build/PTX preflights, but no SDK row can capture before its own real-V100
+  output smoke/checker, input/launch/runtime freeze and dynamic contract.  See
   `m5/extended20/M5_E1_CUDA_SDK_STATIC_TRACE_FEATURE_AUDIT.md`.
 - The source-recorded Rodinia 3.1 data archive is now archive-hashed and only
   the approved input members have been materialized in an isolated local E1
