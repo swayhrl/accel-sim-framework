@@ -1,5 +1,24 @@
 # Latest Codex Report
 
+## FAST64 throughput-update checkpoint (2026-09-07)
+
+FAST64 logical state remains **FAST64.1 ACTIVE**; no FAST64.1, FAST64.2, or
+FAST64.3 PASS is claimed.  The seven formal-instrumented-Core r1 qualification
+rows continue naturally and untouched.  The researcher-authorized scheduling
+policy now separates strict `LOGICAL_STAGE_ACCEPTANCE` from provenance-bound
+`PHYSICAL_PRECOMPUTED_ACQUISITION` (Framework `4144983b...`).
+
+One high-cap BICG/IO lower-create stress diagnostic is live as
+`PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`; it uses the
+formal `bbcbb5e...` Core and a source-coupled candidate-queue/PIB bound of one,
+not a performance configuration.  NN/Base@8192 has naturally terminated and
+strict-validated as `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` (6,985 cycles,
+1,284,872 instructions, zero lower-cap-full and drained accounting).  It is
+not yet an accepted FAST64.3 result.  Shared-host swap is exhausted and output
+headroom is about 62 GiB, so the first controlled ramp stops pending a fresh
+resource/throughput audit.  See
+`fast64/handoffs/FAST64_PRECOMPUTED_ACQUISITION.md`.
+
 Stage: M5.0BT exact trace capture and qualification — **RESOLVING_ISSUE
 M5-0BT-011 (2MM SIM_HOST immutable-receipt capacity)**.
 
