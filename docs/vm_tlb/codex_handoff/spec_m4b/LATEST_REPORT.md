@@ -1,6 +1,6 @@
 # Window C — SPECULATIVE M4B DEVELOPMENT 当前交接
 
-结论：`C0-C4 PASS；C5 SKIPPED_POLICY；C6 closeout；C7/C8 analysis-only 完成`。历史实现与结果继续标记 `SPECULATIVE_CANDIDATE`，sub-entry 保持 `REFERENCE_APPROX_SUBENTRY_16`，不得作为 target paper 精确复现或正式性能结论。
+结论：`C0-C4 PASS；C5 SKIPPED_POLICY；C6 closeout；C7/C8 analysis-only 完成；C9 design-only 完成`。历史实现与结果继续标记 `SPECULATIVE_CANDIDATE`，sub-entry 保持 `REFERENCE_APPROX_SUBENTRY_16`，不得作为 target paper 精确复现或正式性能结论。
 
 ## 冻结身份
 
@@ -36,33 +36,24 @@ A progress checkpoint：`73d25ebbdd96833ee1ddb8ea42b9017cefbceb75`。
 
 七个 C3 arms 已 terminal，prefill-paper 在 checkpoint 时仍 RUNNING。A decode evidence 显示 ideal/disabled 相同，而 generic/paper 有显著 translation overhead；paper 虽有更低部分 miss/MSHR-full counters，cycles 仍高于 generic。这只作为 motivation：未来 C architecture/reporting 必须保留 queue/backpressure/latency/stall observables，不能只靠 hit/miss rate。A/C 数值不得合并，也不得据此调参匹配比例。
 
-## C9 authorized next stage
+## C9 architecture decision（完成）
 
-下一阶段：
+C9 在 Core `c21137bc...` 完全冻结、无 build/simulator/C5/trace 的条件下完成设计收敛。
+唯一决定是：`ARCHITECTURE_READY_FOR_MODEL_IMPLEMENTATION`。它只允许一个将来独立授权的
+C10 模型实现阶段，绝不自动授权 C10 或 C5。
 
-`C9_SEGMENT_SUBENTRY_ARCHITECTURE_DECISION`
+冻结 v1 设计为：privileged runtime/driver 注册、真正 `PA_base + (VA-VA_base)` 的物理连续
+64KiB Weight extents；每 translation cluster 一个总 8-slot、单 provisioned-ASID 的本地复制
+table；`HIT_FIRST / MISS_JOIN` completion；5/10/20 参数化 Segment latency；pinned immutable
+inference epoch。object map 仅 telemetry。non-contiguous extent 拆 descriptor，admission
+失败则原子回退 conventional paging。
 
-模式：`DESIGN_ONLY`。
+sub-entry 采用明确 C9 accounting ABI：66,000-bit 64KiB exact baseline 对应 standalone
+`G_equal_bit=96` group。35 个 N=8 Segment replica 的 37,800 bits 全额收费，故 equal-budget
+combined 为 32 groups。F0--F9 公平政策包含 exact、expanded/bit-matched exact、PWC、2MiB、
+leaf-capacity diagnostic、Segment 和 combined，历史 768-group candidate 永不作为 equal-cost arm。
 
-目标是把 C8 的开放问题收敛成 future C10 可直接实现的 architecture specification：
-- real VA->PA Segment descriptor；
-- trusted runtime/driver installation；
-- descriptor topology/capacity/throughput；
-- parallel L1/Segment completion ordering；
-- pinned inference epoch / context / invalidate lifecycle；
-- parameterized Segment latency；
-- Sub-entry equal-bit budget `G_equal_bit`；
-- exact/PWC/2MiB/leaf-capacity/combined candidate 的公平 baseline policy。
+完整 C9 architecture spec 与 C10 requirements 位于：
+`docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C9_SEGMENT_SUBENTRY_ARCHITECTURE_DECISION/`。
 
-严格执行：
-- `docs/vm_tlb/codex_handoff/spec_m4b/C9_SEGMENT_SUBENTRY_ARCHITECTURE_DECISION.md`
-- `docs/vm_tlb/codex_handoff/spec_m4b/C9_ACCEPTANCE_MATRIX.md`
-- `docs/vm_tlb/paper_specs/SEGMENTATION_LLM_2026.md`
-
-Core `c21137bc...` 必须保持完全冻结。本轮禁止 build、simulator、C5、trace/full-scan 或实现修改。
-
-C9 最终只能选择：
-- `ARCHITECTURE_READY_FOR_MODEL_IMPLEMENTATION`
-- `ARCHITECTURE_DECISION_STILL_OPEN`
-
-完成后 commit/push 并 STOP，不自动启动 C10/C5/KV segmentation/12K/M5。
+C10/C5、KV segmentation、12K、M5 仍不得自动启动。
