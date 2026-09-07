@@ -91,10 +91,12 @@ marker, one natural-exit marker per row).
 Receipt publication is fail-closed: v2 writes each receipt to a private
 temporary file, makes it non-writable, then atomically renames it into the
 public receipt name.  If publication is incomplete, no public receipt exists
-and strict validation fails.  The controller regression uses a harmless
-`/bin/true` invocation to verify both published receipts and zero temporary
-receipt files; temporarily withholding the terminal receipt makes the
-validator fail before parsing.
+and strict validation fails.  The committed non-scientific controller
+regression `util/dtc_l1/test_fast64_trace_v2_receipts.sh` uses a harmless
+`/bin/true` invocation to verify both published receipts, zero temporary
+receipt files, and duplicate-namespace rejection.  It also injects a terminal
+receipt-name collision from a harmless child and proves that no terminal status
+is published and strict validation fails before parsing.
 
 The controller also separates the frozen scientific/config snapshot
 (`037f008b330eb230353b60edf126d6be9f45afdc`) from runner/controller SHA and
