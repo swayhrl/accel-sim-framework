@@ -1,11 +1,14 @@
 # Extended-20 E1 CUDA Samples source audit
 
-Status: **SOURCE MATERIALIZED — BUILD/PTX/INPUT/OUTPUT FREEZE PENDING**
+Status: **ALTERNATE CUDA-SAMPLES SOURCE MATERIALIZED — NOT THE APPROVED SDK-4.2 PERFORMANCE IDENTITY**
 
 This is an E1 source-provenance record only.  It does not authorize a build,
 a simulator run, or an Extended M5.E2 result.  In particular, it does not
 silently substitute the current CUDA Samples behavior for a historical
-parameterized workload label.
+parameterized workload label.  The approved eight SDK-4.2 identities already
+have recorded local CUDA-11.8/sm_70 build/PTX preflights in
+`CUDA_SDK_E1_SOURCE_AUDIT.md` (and FWT's companion recovery); this alternate
+tree neither supersedes nor leaves those approved preflights pending.
 
 ## Reproducible source materialization
 
@@ -51,5 +54,7 @@ hash is claimed before an isolated reproducible build.
   trail.
 - `vectorAdd_6000000` must not be downgraded to the current source's
   hard-coded 50,000-element run.
-- E1 stays incomplete until all build, executable, PTX, input, output-check,
-  and launch identities are frozen; M5.E2 remains blocked on M5.2.
+- This alternate tree cannot be used to satisfy an approved SDK-4.2 row's
+  source identity.  The approved rows still require real-V100 output smoke,
+  source-defined checker verdict, launch/input/runtime freeze, and dynamic
+  trace-semantic audit; M5.E2 remains locked by its existing authority.
