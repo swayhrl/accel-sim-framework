@@ -18,5 +18,10 @@ derived databases are versioned here.  See [SOURCE_ANCHORS.md](SOURCE_ANCHORS.md
 [FORMAL_ARM_STATUS.tsv](FORMAL_ARM_STATUS.tsv), and
 [REVIEW_REQUEST.md](REVIEW_REQUEST.md).
 
+The subsequent, read-only runtime/liveness observation is in
+[C3_LIVENESS_AND_RUNTIME_PROVENANCE_CHECK.md](C3_LIVENESS_AND_RUNTIME_PROVENANCE_CHECK.md).
+It supersedes the historical host-`libcudart` runtime attribution without
+altering any formal manifest.
+
 The preceding implementation checkpoint remains available at
 [`../M4C_C3_INTERIM_CHECKPOINT/`](../M4C_C3_INTERIM_CHECKPOINT/README.md).
