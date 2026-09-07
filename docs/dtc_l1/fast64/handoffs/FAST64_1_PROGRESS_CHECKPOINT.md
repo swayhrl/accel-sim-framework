@@ -73,7 +73,7 @@ The following live controllers are preserved:
 | ---: | --- | --- |
 | 3261725 | original qualification collector | live, waiting for old rows |
 | 3291777 | deferred new-Core telemetry-rerun dispatcher | live, preserved historical controller that waits all seven old rows; it is not the immediate r1 scheduler |
-| 3362160 | new-Core r1 collector | live, waiting for r1 rows |
+| 3657888 | new-Core r1 collector | live, restarted before r1 launch with exact execution-source provenance handling |
 
 ## Review-authorized r1 immediate dispatch
 
