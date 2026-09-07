@@ -13,6 +13,7 @@ import csv
 import hashlib
 import re
 import sqlite3
+import subprocess
 from collections import defaultdict
 from pathlib import Path
 from typing import Iterable
@@ -24,6 +25,15 @@ ARMS = tuple(
     for profile in ("disabled", "ideal", "generic", "paper")
 )
 OBJECTS = ("WEIGHT", "KV_CACHE", "UNKNOWN")
+C3_SIMULATOR_SHA256 = "100527f1d54600dcbbf7c713584512344a688521089aaa995a0b7e4106f81eda"
+C3_RUNTIME_LIBCUDART_SHA256 = "fc07def22e239de9fec8a3dd83d237a607a82162cab2933d6707a37c0a208b0a"
+C3_RUNTIME_LIBCUDART_REALPATH = (
+    "/workspace/worktrees/gpgpu-sim-vm-llm-m4b-integration/"
+    "lib/gcc-11.4.0/cuda-11080/release/libcudart.so"
+)
+PRE_CORRECTION_FRAMEWORK_HEAD = "7709376eb7c7358247e1868f80a143edb54ce69d"
+POST_CORRECTION_FRAMEWORK_HEAD = "a7c0759be7f293ed0d5e2179c62094b6de49c1e8"
+FROZEN_CORE_HEAD = "0d92e6aa8fd8bc885ffdf081a559bc616aaa85fd"
 EXPORT_FILES = (
     "KERNEL_MEMORY_STATS.tsv", "WINDOW_MEMORY_STATS.tsv",
     "L1D_OBJECT_STATS.tsv", "L1D_FAIL_PRESSURE.tsv",
@@ -155,9 +165,35 @@ def collect_runs(root: Path) -> dict[str, dict[str, object]]:
             "expected": expected, "markers": markers, "telemetry": telemetry,
             "scalars": scalars,
         }
-    if len(framework_heads) != 1 or len(core_heads) != 1:
-        fail("formal source heads are not uniform across arms")
+    # The first three decode arms predate the accepted Framework-only C4
+    # exporter correction.  That correction changed docs and a log parser,
+    # never the C3 simulator binary.  Preserve the original arm manifests
+    # rather than rewriting them, and prove the narrow lineage separately.
+    if not framework_heads.issubset({PRE_CORRECTION_FRAMEWORK_HEAD, POST_CORRECTION_FRAMEWORK_HEAD}):
+        fail(f"unexpected Framework manifest lineage: {sorted(framework_heads)}")
+    if core_heads != {FROZEN_CORE_HEAD}:
+        fail(f"unexpected Core manifest lineage: {sorted(core_heads)}")
     return result
+
+
+def validate_framework_only_correction(framework_root: Path) -> None:
+    """Prove the permitted 770->a7 evolution cannot change C3 execution."""
+    try:
+        changed = subprocess.check_output(
+            ["git", "-C", str(framework_root), "diff", "--name-only",
+             PRE_CORRECTION_FRAMEWORK_HEAD, POST_CORRECTION_FRAMEWORK_HEAD],
+            text=True,
+        ).splitlines()
+    except subprocess.CalledProcessError as error:
+        fail(f"cannot inspect Framework correction lineage: {error}")
+    allowed = {
+        "util/vm_tlb/export_m4c_telemetry.py",
+    }
+    for path in changed:
+        if path not in allowed and not path.startswith("docs/"):
+            fail(f"Framework correction touches runtime-relevant path: {path}")
+    if "util/vm_tlb/export_m4c_telemetry.py" not in changed:
+        fail("Framework correction lineage is incomplete")
 
 
 def arm_from_export(row: dict[str, str]) -> str:
@@ -213,6 +249,28 @@ def run_matrix(runs: dict[str, dict[str, object]], output: Path) -> None:
     ], rows)
 
 
+def runtime_provenance(runs: dict[str, dict[str, object]], output: Path) -> None:
+    heads = sorted({str(data["manifest"]["framework_head"]) for data in runs.values()})
+    write_tsv(output / "C3_RUNTIME_PROVENANCE.tsv", ["scope", "field", "value", "evidence"], [
+        ("all_arms", "simulator_binary_sha256", C3_SIMULATOR_SHA256,
+         "frozen C3 direct binary SHA256 record"),
+        ("all_arms", "mapped_libcudart_realpath", C3_RUNTIME_LIBCUDART_REALPATH,
+         "direct /proc/<pid>/maps record; supersedes host-path recording error"),
+        ("all_arms", "mapped_libcudart_sha256", C3_RUNTIME_LIBCUDART_SHA256,
+         "direct /proc/<pid>/maps resolved Core-local runtime SHA256"),
+        ("manifest_lineage", "framework_heads", ",".join(heads),
+         "original per-arm RUN_MANIFEST.tsv values; never rewritten"),
+        ("manifest_lineage", "pre_correction_framework_head", PRE_CORRECTION_FRAMEWORK_HEAD,
+         "first three decode arms"),
+        ("manifest_lineage", "post_correction_framework_head", POST_CORRECTION_FRAMEWORK_HEAD,
+         "decode1-paper and all prefill arms"),
+        ("manifest_lineage", "core_head", FROZEN_CORE_HEAD,
+         "uniform original per-arm RUN_MANIFEST.tsv value"),
+        ("correction_scope", "770_to_a7", "docs plus export_m4c_telemetry.py only",
+         "validated Git path scope; no simulator runtime source path changed"),
+    ])
+
+
 def config_provenance(runs: dict[str, dict[str, object]], output: Path) -> None:
     rows = []
     for arm in ARMS:
@@ -220,9 +278,13 @@ def config_provenance(runs: dict[str, dict[str, object]], output: Path) -> None:
         for key, value in sorted(data["manifest"].items()):
             if key.startswith("sha256:"):
                 rows.append([arm, data["roi"], data["profile"], key[len("sha256:"):], value])
-    write_tsv(output / "FORMAL_CONFIG_PROVENANCE.tsv", [
+    header = [
         "arm", "roi", "profile", "artifact_path", "sha256",
-    ], rows)
+    ]
+    write_tsv(output / "FORMAL_CONFIG_PROVENANCE.tsv", header, rows)
+    # Window A names the same original-manifest inventory as its baseline
+    # configuration matrix.  Emit both names from one source of truth.
+    write_tsv(output / "BASELINE_CONFIG_MATRIX.tsv", header, rows)
 
 
 def performance(runs: dict[str, dict[str, object]], output: Path) -> None:
@@ -359,6 +421,24 @@ def aggregate_exports(c4_root: Path, output: Path) -> None:
               [(*key, value) for key, value in sorted(windows.items())])
 
 
+def latency_summary(output: Path) -> None:
+    """Retain latency/queue timing facts without conflating their sources."""
+    rows: list[list[str]] = []
+    _, translation = read_tsv(output / "TRANSLATION_TOTALS.tsv")
+    for row in translation:
+        if any(token in row["metric"] for token in ("latency", "wait", "stall")):
+            rows.append(["translation_runtime_counter", row["roi"], row["profile"],
+                         "GLOBAL_OR_OBJECT", row["metric"], row["value"], row["provenance"]])
+    _, native = read_tsv(output / "NATIVE_DRAM_MEMORY_SYSTEM_STATS.tsv")
+    for row in native:
+        if "latency" in row["metric"].lower():
+            rows.append(["native_memory_system_stat", row["roi"], row["profile"],
+                         row["scope"], row["metric"], row["value"], row["provenance"]])
+    write_tsv(output / "LATENCY_SUMMARY.tsv", [
+        "source", "roi", "profile", "scope", "metric", "value", "provenance",
+    ], rows)
+
+
 def offline_locality(c4_root: Path, output: Path) -> None:
     rows = []
     for roi in ("decode1", "prefill"):
@@ -381,12 +461,14 @@ def offline_locality(c4_root: Path, output: Path) -> None:
             rows.append([roi, klass, item["kernel_rows"], item["memory_instructions"], item["lane_references"], item["requested_bytes"],
                          item["unique_128b_lines"], item["unique_32b_sectors"], item["unique_64kb_pages"], item["unique_2mb_pages"],
                          lines, pages, item["prior_kernel_line_overlap"], item["line_access_max"], item["line_access_p50"], item["line_access_p90"], item["line_access_p99"]])
-    write_tsv(output / "OFFLINE_TRACE_LOCALITY_SUMMARY.tsv", [
+    header = [
         "roi", "object_class", "kernel_rows", "sum_memory_instructions", "sum_lane_references", "sum_requested_bytes",
         "sum_per_kernel_unique_128b_lines", "sum_per_kernel_unique_32b_sectors", "sum_per_kernel_unique_64kb_pages", "sum_per_kernel_unique_2mb_pages",
         "roi_union_unique_128b_lines", "roi_union_unique_64kb_pages", "prior_union_line_overlap_sum",
         "max_kernel_line_access_max", "max_kernel_line_access_p50", "max_kernel_line_access_p90", "max_kernel_line_access_p99",
-    ], rows)
+    ]
+    write_tsv(output / "OFFLINE_TRACE_LOCALITY_SUMMARY.tsv", header, rows)
+    write_tsv(output / "TRACE_LOCALITY_OFFLINE.tsv", header, rows)
 
 
 def input_index(c3: Path, c4: Path, output: Path) -> None:
@@ -399,6 +481,12 @@ def input_index(c3: Path, c4: Path, output: Path) -> None:
             path = c3 / arm / relative
             rows.append(["C3", f"{arm}/{relative}", sha256(path)])
     write_tsv(output / "INPUT_ARTIFACT_INDEX.tsv", ["stage", "relative_path", "sha256"], rows)
+    raw_log_rows = [
+        [relative_path.split("/", 1)[0], relative_path, digest]
+        for stage, relative_path, digest in rows
+        if stage == "C3" and relative_path.endswith("/run.log")
+    ]
+    write_tsv(output / "RAW_LOG_INDEX.tsv", ["arm", "relative_path", "sha256"], raw_log_rows)
 
 
 def main() -> None:
@@ -406,6 +494,8 @@ def main() -> None:
     parser.add_argument("--runs-root", type=Path, required=True)
     parser.add_argument("--c4-root", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--framework-root", type=Path, required=True,
+                        help="Framework checkout used to verify the permitted C4 parser lineage")
     args = parser.parse_args()
     c3 = args.runs_root.resolve()
     c4 = args.c4_root.resolve()
@@ -414,19 +504,23 @@ def main() -> None:
         fail(f"refusing to overwrite nonempty output directory: {output}")
     output.mkdir(parents=True, exist_ok=True)
     runs = collect_runs(c3)
+    validate_framework_only_correction(args.framework_root.resolve())
     require_export_tree(c4, runs)
     run_matrix(runs, output)
+    runtime_provenance(runs, output)
     config_provenance(runs, output)
     performance(runs, output)
     translation_and_objects(runs, output)
     aggregate_exports(c4, output)
+    latency_summary(output)
     offline_locality(c4, output)
     input_index(c3, c4, output)
     write_tsv(output / "C4_VALIDATION.tsv", ["check", "result", "detail"], [
         ("all_eight_formal_arms", "PASS", "exit=0; markers=kernel-list; telemetry=kernel-list"),
         ("generic_paper_vm_invariants", "PASS", "PTE/requester/object conservation and terminal quiescence"),
         ("all_required_c4_exports", "PASS", "telemetry, native-memory and offline locality artifacts present"),
-        ("source_provenance", "PASS", "export provenance equals each formal manifest"),
+        ("source_provenance", "PASS", "export provenance equals each original formal manifest; permitted Framework-only parser lineage verified"),
+        ("runtime_provenance", "PASS", "frozen simulator SHA256 and direct Core-local libcudart SHA256 recorded"),
         ("replay", "NOT_PERFORMED", "analysis reads existing logs and immutable artifacts only"),
     ])
     print(f"PASS C4_characterization={output}")
