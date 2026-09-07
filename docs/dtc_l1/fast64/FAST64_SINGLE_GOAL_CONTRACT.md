@@ -52,13 +52,31 @@ and reproducible storage/trace handling before considering a human pause.
 Pause only at the researcher-decision boundaries enumerated in
 `FAST64_EXECUTION_RUNBOOK.md`, or after the terminal state is reached.
 
-## Acquisition versus acceptance
+## Logical-stage acceptance versus physical precomputed acquisition
 
-Logical acceptance order must remain FAST64.0 through FAST64.7.
-Physical acquisition inside an active stage should be parallel whenever rows
-are independent and resource-safe.
+`LOGICAL_STAGE_ACCEPTANCE` remains strictly ordered from FAST64.0 through
+FAST64.7.  A PASS state, result promotion, causal conclusion, or stage advance
+occurs only after that stage's HARD gates pass.
 
-Use measured dynamic `N_safe`; refill the pool as jobs finish.
+`PHYSICAL_PRECOMPUTED_ACQUISITION` is permitted before a later logical stage
+opens only when the exact frozen Core, payload, platform, observer, config and
+isolated namespace are recorded.  It never relaxes a HARD gate and must retain
+one of these explicit pending classifications until the applicable gate passes:
+
+- `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE` for the
+  forced lower-create-queue stress with a high/non-binding global lower cap;
+- `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` for FAST12 Base@8192 rows;
+- `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` for main-matrix IO/OO rows acquired
+  only after FAST64.2 repair PASS;
+- `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` for frozen one-dimensional
+  sensitivity points acquired after FAST64.2 PASS.
+
+The live FAST64.1 r1 BICG Base/IO/OO@8192 triplet may be directly reused as the
+FAST64.2 normal triplet only when its complete FAST64.2 identity and accounting
+requirements pass; it is not rerun merely because the logical stage changes.
+
+Use measured dynamic `N_safe`, prefer one worker per physical core before SMT,
+and refill only after a fresh CPU, memory, swap, I/O, and output-space audit.
 
 ## Checkpoint rule
 

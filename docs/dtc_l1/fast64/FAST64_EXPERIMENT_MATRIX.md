@@ -89,6 +89,11 @@ without changing source/input.
 
 It is not a performance point.
 
+It may be acquired in an isolated namespace before FAST64.1 logical PASS only
+as `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`.  The overlay
+uses a high/non-binding global lower cap and reduces only the relevant
+lower-create candidate-queue/headroom control; it is never an aggregate row.
+
 The existing large 80-SM ATAX recovery triplet may continue independently but
 is no longer a FAST64 gate after this stage passes.
 
@@ -114,11 +119,18 @@ Purpose: correctness, workload classification, runtime planning, and Base
 structural-pressure evidence. It is **not** a selection round; all valid rows
 remain in FAST12 regardless of pressure.
 
+Before FAST64.1/2 close, isolated Base@8192 acquisition is allowed only as
+`PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`.  Such rows become FAST64.3 results
+only after their complete stage identity/accounting gates pass.
+
 ## FAST64.4 — Primary Base/IO/OO matrix
 
 Primary matrix membership is fixed at 12 workloads x 3 modes = **36 rows**.
 
 Reuse the valid FAST64.3 Base rows. Launch the missing **24 IO/OO rows**.
+After FAST64.2 PASS these may be physically acquired before FAST64.3 logical
+PASS as `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, but cannot affect FAST12
+membership, inputs, or Base characterization before that PASS.
 
 Scheduling:
 

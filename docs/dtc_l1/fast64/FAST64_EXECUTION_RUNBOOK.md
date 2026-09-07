@@ -95,7 +95,23 @@ Pause only when continuing would require one of the following:
 
 ## 5. Parallel scheduling policy
 
-Logical analysis order does not imply physical serialization.
+Logical analysis order does not imply physical serialization.  Distinguish
+`LOGICAL_STAGE_ACCEPTANCE` (strict FAST64.0 -> FAST64.7 HARD-gate order) from
+`PHYSICAL_PRECOMPUTED_ACQUISITION` (identity-frozen rows labeled pending until
+their owning stage can accept them).
+
+Before FAST64.1 closes, the only authorized later-stage acquisition is the
+high-cap, reduced lower-create-headroom FAST64.2 stress diagnostic labeled
+`PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`, plus isolated
+FAST12 Base@8192 rows labeled `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`.
+Do not precompute main-matrix IO/OO rows before FAST64.2 repair PASS.
+
+After FAST64.2 PASS, launch missing Base/IO/OO rows through one dynamic pool;
+IO/OO rows obtained before FAST64.3 closes are
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` and cannot influence membership,
+input, or Base-characterization decisions.  Frozen one-dimensional sensitivity
+rows may run concurrently after FAST64.2 PASS as
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.
 
 Whenever dependencies permit:
 
@@ -117,7 +133,11 @@ Before each long wave measure:
 - trace-store read throughput;
 - output filesystem free space.
 
-Derive a current `N_safe`; do not retain an old worker limit blindly.
+Derive a current `N_safe`; do not retain an old worker limit blindly.  Prefer
+one simulator per distinct physical core before SMT.  Ramp in controlled steps
+and retain an increase only when aggregate simulated instructions/s materially
+improves without CFS throttling, swap pressure, I/O pressure, major-fault
+growth, or unsafe output headroom.
 
 Use dynamic refill: when one row exits, validate it and immediately dispatch
 the highest-priority eligible row if resources remain safe.

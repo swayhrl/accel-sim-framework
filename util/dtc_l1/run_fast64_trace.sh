@@ -4,7 +4,7 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: $0 --simulator PATH --config PATH --trace PATH --run-dir PATH [--cpu N] [--framework-source-head SHA] [--core-source-head SHA] [--observer-overlay-sha SHA]" >&2
+  echo "usage: $0 --simulator PATH --config PATH --trace PATH --run-dir PATH [--cpu N] [--framework-source-head SHA] [--core-source-head SHA] [--observer-overlay-sha SHA] [--result-classification LABEL]" >&2
   exit 2
 }
 
@@ -16,6 +16,7 @@ cpu=
 framework_source_head=
 core_source_head=
 observer_overlay_sha=
+result_classification=
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --simulator) simulator=${2:-}; shift 2 ;;
@@ -26,6 +27,7 @@ while [ "$#" -gt 0 ]; do
     --framework-source-head) framework_source_head=${2:-}; shift 2 ;;
     --core-source-head) core_source_head=${2:-}; shift 2 ;;
     --observer-overlay-sha) observer_overlay_sha=${2:-}; shift 2 ;;
+    --result-classification) result_classification=${2:-}; shift 2 ;;
     *) usage ;;
   esac
 done
@@ -59,6 +61,9 @@ mkdir -p "$run_dir"
   fi
   if [ -n "$observer_overlay_sha" ]; then
     printf 'observer_overlay_sha256\t%s\n' "$observer_overlay_sha"
+  fi
+  if [ -n "$result_classification" ]; then
+    printf 'result_classification\t%s\n' "$result_classification"
   fi
   printf 'launch_utc\t%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 } >"$run_dir/RUN_MANIFEST.tsv"

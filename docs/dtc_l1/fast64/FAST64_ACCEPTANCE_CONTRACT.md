@@ -138,7 +138,10 @@ merely because an internal retriable stall code is reused.
 ### FIDELITY_HARD
 
 The forced-stress overlay is diagnostic only and is never included in FAST64
-performance aggregates.
+performance aggregates.  It may be physically acquired before FAST64.1 PASS
+only as `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`; that
+classification cannot be promoted or used to advance FAST64.2 before every
+FAST64.1 HARD gate passes.
 
 ### PASS artifact
 
@@ -167,7 +170,11 @@ frozen.
 
 ### FIDELITY_HARD
 
-- No IO/OO result exists or is consulted for workload retention decisions.
+- IO/OO physical acquisition may exist only with an explicit
+  `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` classification.  It must not be
+  consulted to alter FAST12 membership, inputs, or Base-characterization
+  decisions before FAST64.3 PASS.  Main-matrix IO/OO precomputation begins only
+  after FAST64.2 repair PASS.
 - All 12 remain in the primary roster regardless of structural pressure.
 - Same frozen Base platform/config identity is used except documented
   workload-independent trace-frontend necessities.
