@@ -57,6 +57,12 @@ output namespace exactly as observed.
 - Do not launch additional precompute or repair rows while swap is exhausted
   and the contamination source has not been resolved.
 - Recovery requires a source-backed explanation/fix for the duplicate epoch,
-  a fresh absent namespace, and a new exact-identity BICG OO@8192 acquisition;
-  only a natural exit-0 plus strict validator/comparator evidence may restore
-  FAST64.1 eligibility.
+  a fresh absent namespace, and a new exact-identity BICG OO@8192 acquisition.
+  Future recovery dispatch now uses `util/dtc_l1/run_fast64_trace_v2.sh`,
+  which atomically creates its namespace before writing any manifest or
+  output; the live historical runner is not modified.  A harmless `/bin/true`
+  controller test recorded exit status zero, then rejected a second launch to
+  the same namespace without changing its manifest.  This validates the
+  fail-closed namespace boundary, not a scientific result.  Only a natural
+  exit-0 plus strict validator/comparator evidence may restore FAST64.1
+  eligibility.

@@ -127,4 +127,6 @@ cannot participate in the BICG OO candidate/high comparison.  This is an
 execution/controller failure, not a DTC mechanism result; the precise
 read-only evidence and fail-closed recovery boundary are in
 `FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.  No FAST64.1 PASS or FAST64.2
-promotion is allowed while this HARD item remains unresolved.
+promotion is allowed while this HARD item remains unresolved.  Future recovery
+dispatch uses the separately added atomic-namespace v2 runner; it does not
+alter a currently mapped historical runner or launch a replacement row.

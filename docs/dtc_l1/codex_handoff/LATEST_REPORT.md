@@ -9,7 +9,8 @@ anomaly (`line 74: d: command not found`).  Its prior epoch reached
 47,231,655 cycles, but neither epoch is formal evidence.  The cgroup's
 `oom_kill=12` is retained as host-pressure evidence only; causal attribution
 has not been established.  All remaining live r1 and FAST64.2 processes are
-preserved untouched.  See
+preserved untouched.  A future-only atomic-namespace runner has passed a
+harmless controller test; no formal recovery row has been launched.  See
 `fast64/handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 ## FAST64 throughput-update checkpoint (2026-09-07)

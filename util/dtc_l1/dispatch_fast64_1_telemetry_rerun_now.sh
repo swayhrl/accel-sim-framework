@@ -19,7 +19,10 @@ expected_core=bbcbb5e7565417102087bc80b14c349b4e568c05
 runtime=/tmp/dtc-fast64-telemetry-build-sEWez4/accel-sim.out
 expected_runtime=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
 observer_sha=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
-runner="$repo_root/util/dtc_l1/run_fast64_trace.sh"
+# Existing r1 jobs retain the historical runner they already mapped.  Any
+# recovery dispatch uses the v2 atomic-namespace runner and can never reopen a
+# historical output directory.
+runner="$repo_root/util/dtc_l1/run_fast64_trace_v2.sh"
 lock_file="$runs_root/.fast64_1_r1_immediate_dispatch.lock"
 
 new_rows=(
