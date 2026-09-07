@@ -42,8 +42,10 @@ formal-closeout priority whenever a fresh resource audit is safe.
 
 ## FAST64.1 immutable R2 recovery preparation (2026-09-08)
 
-FAST64.1 remains **ACTIVE_HARD_EXECUTION_FAILURE**; no stage promotion and no
-R2 simulator launch occurred.  Read-only `/proc` evidence resolves the
+At this recovery checkpoint FAST64.1 was stage-gated by an execution-path
+failure; no stage promotion and no R2 simulator launch had occurred.  Current
+authority is `GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING`, rather than a global
+Goal-blocked state.  Read-only `/proc` evidence resolves the
 historical controller issue as
 `ROOT_CAUSE_PROBABLE_ACTIVE_SCRIPT_MUTATION`: all live r1 Bash wrappers still
 read fd `255` from the mutable worktree runner, whose SHA changed from the
@@ -75,7 +77,8 @@ safe R2 row without a wait-for-all barrier.
 
 ## FAST64.1 r1 execution-path contamination (2026-09-07)
 
-FAST64.1 is **ACTIVE_HARD_EXECUTION_FAILURE** and is not promotable.  The
+This historical R1 checkpoint is nonpromotable; it does not describe the
+current R2 execution state.  The
 BICG OO@8192 r1 namespace has two observed simulator epochs in a single
 exactly-once output directory, no `simulator_exit_status`, and a controller
 anomaly (`line 74: d: command not found`).  Its prior epoch reached
