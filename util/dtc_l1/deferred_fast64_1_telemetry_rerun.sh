@@ -21,9 +21,9 @@ old_rows=(
   fast64_1_gesummv_io_cap1048576_a1
 )
 new_rows=(
-  'fast64_1r1_bicg_base_cap8192_a1|BICG|BASE|FAST64_BASE.config|64|74'
-  'fast64_1r1_bicg_io_cap8192_a1|BICG|IO|FAST64_IO.config|64|75'
-  'fast64_1r1_bicg_oo_cap8192_a1|BICG|OO|FAST64_OO.config|64|76'
+  'fast64_1r1_bicg_base_cap8192_a1|BICG|BASE|FAST64_BASE.config|8192|74'
+  'fast64_1r1_bicg_io_cap8192_a1|BICG|IO|FAST64_IO.config|8192|75'
+  'fast64_1r1_bicg_oo_cap8192_a1|BICG|OO|FAST64_OO.config|8192|76'
   'fast64_1r1_bicg_io_cap1048576_a1|BICG|IO|FAST64_IO_CAP1048576.config|1048576|77'
   'fast64_1r1_bicg_oo_cap1048576_a1|BICG|OO|FAST64_OO_CAP1048576.config|1048576|78'
   'fast64_1r1_gesummv_io_cap8192_a1|GESUMMV|IO|FAST64_IO.config|8192|79'

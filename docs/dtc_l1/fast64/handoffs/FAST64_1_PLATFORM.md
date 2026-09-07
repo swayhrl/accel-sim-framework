@@ -64,6 +64,19 @@ current Core SHA and runtime SHA to match this handoff, and all target
 namespaces to be absent before dispatching exact new-Core replacements. It
 contains no timeout, kill, overwrite, renice, debugger, or cleanup action.
 
+### Controller metadata correction — `FAST64-1-CTRL-001`
+
+The BICG Base/IO/OO 8192-cap replacement rows always invoke the corresponding
+`FAST64_*.config`, whose resolved final lower-cap setting and recorded SHA
+identify cap 8192.  Their detached controller's human-readable supervisor TSV
+field was discovered to be initialized as `64`; that field is not an input to
+the launch command and cannot alter the simulator/configuration.  The
+checked-in controller now records `8192`.  The already-running controller is
+deliberately not restarted while it preserves live pre-repair rows, so a later
+`64` value in only that sidecar TSV must be treated as non-authoritative and
+regenerated from `RUN_MANIFEST.tsv` plus the config SHA.  The strict validator
+requires the latter identities and will reject any different configuration.
+
 ## FAST64.1 HARD checklist
 
 | HARD item | state |
