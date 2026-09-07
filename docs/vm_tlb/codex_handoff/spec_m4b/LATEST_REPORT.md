@@ -55,6 +55,13 @@ Weight Segment 和 ideal 均退出码 0。四种 profile 的前端 data/store/at
 216 KiB，违反资源 farm policy。此为有意的 `SKIPPED_POLICY`，不代表候选失败；详细
 快照在 `C5_RESOURCE_DECISION.md`。
 
+## C7 analysis-only（实现冻结）
+
+没有启动 C5 或任何新的 simulator workload。后续的离线 opportunity 审计位于
+`docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C7_SPECULATIVE_CANDIDATE_OPPORTUNITY_ANALYSIS.md`；
+它维持 `REFERENCE_APPROX_SUBENTRY_16` / `SPECULATIVE_CANDIDATE` 标签，并将 Weight
+Segment 评为 HIGH、sub-entry 评为 MEDIUM 的**分析机会**，不是性能结论。
+
 ## 边界与下一步
 
 若将来由资源健康的窗口继续，先重新做 C5 host gate，再运行完整 speculative replay；
