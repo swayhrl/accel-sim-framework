@@ -38,3 +38,7 @@
 完整入口在 [VM_SPECULATIVE_EXPERIMENT_FARM](../../review_packs/VM_SPECULATIVE_EXPERIMENT_FARM/)。其中包含 B0 校准、B1 覆盖账本、B2 结果账本、B3/B5 planned 几何、B4 deferred 矩阵、失败/替代记录、原始日志路径索引及本次 resource gate。日志全量 SHA-256 在低资源 I/O 保护下标为 deferred，而非遗漏或伪造。
 
 本报告及审查包内所有结果均为 `SPECULATIVE_DIAGNOSTIC`；没有 `FORMAL` 结论。
+
+## B7 analysis-only 后续
+
+已完成纯离线 B7 synthesis，且没有恢复 worker。详见 [B7_PARTIAL_FARM_EVIDENCE_SYNTHESIS.md](B7_PARTIAL_FARM_EVIDENCE_SYNTHESIS.md) 与 [B7 审查包](../../review_packs/VM_SPECULATIVE_EXPERIMENT_FARM/B7_PARTIAL_FARM_EVIDENCE_SYNTHESIS/B7_SYNTHESIS.md)。
