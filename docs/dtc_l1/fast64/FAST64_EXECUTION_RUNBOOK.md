@@ -149,6 +149,10 @@ and fails closed for a missing supervisor, missing terminal state, identity
 mismatch, or parser/accounting failure.  It does not authorize a stage; its
 pending-class policy remains enforced by the row dispatcher.
 
+Before FAST64.6 acquisition, use the frozen source-control mapping in
+`FAST64_SENSITIVITY_CONFIG_PLAN.md`.  Do not generate the sensitivity configs
+before FAST64.2 repair PASS.
+
 ## 6. Priority within stages
 
 ### FAST64.1
