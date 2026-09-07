@@ -52,11 +52,16 @@ lower-cap overlay line.
 
 ## Live preservation and recovery state
 
-Seven original-Core qualification rows are still live in
-`/workspace/fast64-runs/`: BICG Base, IO/OO at 8192 and 1048576, plus GESUMMV
-IO at 8192 and 1048576. They are
-`PRE_REPAIR_TELEMETRY_INCOMPLETE_ANCHOR`, not failures; their processes and
-raw namespaces remain untouched.
+The original-Core qualification set in `/workspace/fast64-runs/` remains
+`PRE_REPAIR_TELEMETRY_INCOMPLETE_ANCHOR`, not formal FAST64.1 evidence.  At
+the 2026-09-07T08:27:49Z review snapshot, BICG OO at both 8192 and 1048576
+had naturally exited zero and five other original-Core rows remained live.
+Both terminal OO anchors have correct payload/config identity, no scanned
+assertion/fatal/deadlock/output error, and closed lower/dependency/drain
+state, but cannot close the candidate-cap HARD gate because the old runtime
+lacks the required OO lower-cap-full telemetry.  Their processes and raw
+namespaces remain untouched.  The compact, reviewable inventory is
+`handoffs/FAST64_1_PROGRESS_CHECKPOINT.md`.
 
 `util/dtc_l1/deferred_fast64_1_telemetry_rerun.sh` is an isolated,
 fail-closed controller. It requires every old row to naturally exit zero, the
