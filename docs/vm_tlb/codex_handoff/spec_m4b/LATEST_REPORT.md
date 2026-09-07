@@ -15,7 +15,8 @@
 `/workspace/worktrees/accel-sim-vm-m4b-speculative` 与
 `/workspace/worktrees/gpgpu-sim-vm-m4b-speculative`，所有运行 scratch 位于
 `/workspace/vm-m4b-speculative/`。没有合并到 Window A，也没有实现任何被明确禁止的
-后续机制。
+后续机制。两个隔离分支均已推送到各自的 `origin`；此 closeout 记录也随 Framework
+分支推送。
 
 ## 已实现的内容
 
