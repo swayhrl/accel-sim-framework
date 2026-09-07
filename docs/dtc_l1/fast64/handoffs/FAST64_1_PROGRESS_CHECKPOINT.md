@@ -137,7 +137,8 @@ and satisfy every FAST64.1 HARD comparison before FAST64.2 can begin.
 
 There is no new HARD failure and no researcher-decision boundary. The two
 completed old OO rows are sound lifecycle anchors but deliberately cannot be
-relabeled as formal telemetry qualification. The next action is an isolated,
-resource-gated r1 dispatch under the formal instrumented Core, followed by the
-strict row validator and non-binding-cap comparator. No FAST64.2 work may
-start before every pending FAST64.1 HARD item passes.
+relabeled as formal telemetry qualification. The seven isolated r1 rows are
+running under the formal instrumented Core; after their natural terminal
+states, the collector performs strict validation and the non-binding-cap
+comparators. No FAST64.2 work may start before every pending FAST64.1 HARD
+item passes.

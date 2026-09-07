@@ -1,6 +1,6 @@
 # FAST64.1 — Platform and Payload Lock
 
-Status: **ACTIVE_TELEMETRY_RERUN_PENDING**
+Status: **ACTIVE_R1_QUALIFICATION_RUNNING**
 
 This is an active recovery checkpoint, not a FAST64.1 PASS artifact. No
 FAST64.2 work may begin from it.
