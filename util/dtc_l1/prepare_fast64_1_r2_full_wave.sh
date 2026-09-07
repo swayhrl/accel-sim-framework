@@ -36,15 +36,6 @@ observer_sha=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
 runner_source="$repo_root/util/dtc_l1/run_fast64_trace_v2.sh"
 trace_config="$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
 immutable_root=/tmp/fast64-runners
-historical_rows=(
-  fast64_1r1_bicg_base_cap8192_a1
-  fast64_1r1_bicg_io_cap8192_a1
-  fast64_1r1_bicg_oo_cap8192_a1
-  fast64_1r1_bicg_io_cap1048576_a1
-  fast64_1r1_bicg_oo_cap1048576_a1
-  fast64_1r1_gesummv_io_cap8192_a1
-  fast64_1r1_gesummv_io_cap1048576_a1
-)
 rows=(
   'fast64_1r2_bicg_base_cap8192_a1|BICG|BASE|FAST64_BASE.config|74'
   'fast64_1r2_bicg_io_cap8192_a1|BICG|IO|FAST64_IO.config|75'
@@ -62,41 +53,53 @@ test -x "$runner_source" && test -r "$trace_config"
 runner_sha=$(sha256sum "$runner_source" | awk '{print $1}')
 immutable_dir="$immutable_root/$runner_sha"
 immutable_runner="$immutable_dir/run_fast64_trace_v2.sh"
+eligible_rows=()
 for row in "${rows[@]}"; do
   IFS='|' read -r name workload row_mode config cpu <<<"$row"
   trace_root=$(awk -F '\t' -v workload="${workload,,}" '$1 == workload { print $2; exit }' \
     "$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv")
   test -n "$trace_root" && test -r "$trace_root/kernelslist.g"
   test -r "$repo_root/configs/dtc_l1/fast64/$config"
-  for target in "$runs_root/$name" "$runs_root/$name.launcher.log" "$runs_root/$name.supervisor.tsv"; do
-    test ! -e "$target" || { echo "R2_TARGET_ALREADY_EXISTS $target" >&2; exit 1; }
-  done
+  if [ -e "$runs_root/$name" ]; then
+    test -f "$runs_root/$name/RUN_MANIFEST.tsv" || {
+      echo "R2_EXISTING_NAMESPACE_WITHOUT_MANIFEST $name" >&2
+      exit 1
+    }
+  else
+    test ! -e "$runs_root/$name.launcher.log" || { echo "R2_ORPHAN_LAUNCHER_LOG $name" >&2; exit 1; }
+    test ! -e "$runs_root/$name.supervisor.tsv" || { echo "R2_ORPHAN_SUPERVISOR $name" >&2; exit 1; }
+    eligible_rows+=("$row")
+  fi
 done
 
 if [ "$dispatch_mode" = dry-run ]; then
-  printf 'R2_FULL_WAVE_DRY_RUN_PASS\trows=%s\trunner_sha256=%s\timmutable_runner=%s\tscientific_config_source=%s\n' \
-    "${#rows[@]}" "$runner_sha" "$immutable_runner" "$scientific_config_source"
+  printf 'R2_DYNAMIC_DISPATCH_DRY_RUN_PASS\ttotal_rows=%s\teligible_rows=%s\trunner_sha256=%s\timmutable_runner=%s\tscientific_config_source=%s\n' \
+    "${#rows[@]}" "${#eligible_rows[@]}" "$runner_sha" "$immutable_runner" "$scientific_config_source"
   exit 0
 fi
 
-# No r2 work may overlap an active r1 wrapper. The audit also has to bind the
-# exact wave size, thereby preventing an old or one-row admission from being
-# reused to launch this full seven-worker replacement.
+# The audit binds the number of new R2 workers admitted *now*.  Existing old
+# diagnostic jobs are deliberately not a scientific launch barrier.
 test -r "$resource_audit" || { echo "R2_RESOURCE_AUDIT_UNAVAILABLE" >&2; exit 1; }
-awk -F '\t' -v workers="${#rows[@]}" '
+authorized_workers=$(awk -F '\t' '
   $1 == "schema" && $2 == "FAST64_R2_RESOURCE_AUDIT_V1" { schema=1 }
   $1 == "safe_to_launch" && $2 == "YES" { safe=1 }
-  $1 == "authorized_workers" && $2 == workers { count=1 }
-  END { exit !(schema && safe && count) }
-' "$resource_audit" || { echo "R2_RESOURCE_AUDIT_NOT_SAFE_FOR_FULL_WAVE" >&2; exit 1; }
-for name in "${historical_rows[@]}"; do
-  manifest="$runs_root/$name/RUN_MANIFEST.tsv"
-  test -f "$manifest"
-  awk -F '\t' '$1 == "simulator_exit_status" { found=1 } END { exit !found }' "$manifest" || {
-    echo "R2_HISTORICAL_R1_NOT_TERMINAL $name" >&2
-    exit 1
-  }
-done
+  $1 == "authorized_workers" { workers=$2 }
+  $1 == "memavailable_bytes" && $2 ~ /^[0-9]+$/ { mem=1 }
+  $1 == "memory_current_bytes" && $2 ~ /^[0-9]+$/ { current=1 }
+  $1 == "memory_max_bytes" && $2 ~ /^[0-9]+$/ { maximum=1 }
+  $1 == "swap_si_delta" && $2 ~ /^[0-9]+$/ { si=1 }
+  $1 == "swap_so_delta" && $2 ~ /^[0-9]+$/ { so=1 }
+  $1 == "oom_kill_delta" && $2 ~ /^[0-9]+$/ { oom=1 }
+  $1 == "p95_rss_bytes" && $2 ~ /^[0-9]+$/ { rss=1 }
+  $1 == "iowait_pct" && $2 ~ /^[0-9.]+$/ { iowait=1 }
+  $1 == "output_free_bytes" && $2 ~ /^[0-9]+$/ { output=1 }
+  END { if (schema && safe && mem && current && maximum && si && so && oom && rss && iowait && output && workers ~ /^[1-7]$/) print workers; else exit 1 }
+' "$resource_audit") || { echo "R2_RESOURCE_AUDIT_INCOMPLETE_OR_UNSAFE" >&2; exit 1; }
+test "$authorized_workers" -le "${#eligible_rows[@]}" || {
+  echo "R2_AUDIT_EXCEEDS_ELIGIBLE_ROWS authorized=$authorized_workers eligible=${#eligible_rows[@]}" >&2
+  exit 1
+}
 
 if [ ! -d "$immutable_dir" ]; then
   mkdir -p -- "$immutable_dir"
@@ -111,13 +114,13 @@ chmod 555 "$immutable_dir"
 
 exec 9>"$runs_root/.fast64_1_r2_full_wave_dispatch.lock"
 flock -n 9 || { echo "R2_FULL_WAVE_DISPATCH_LOCK_HELD" >&2; exit 1; }
-for row in "${rows[@]}"; do
+for row in "${eligible_rows[@]:0:authorized_workers}"; do
   IFS='|' read -r name _ <<<"$row"
   for target in "$runs_root/$name" "$runs_root/$name.launcher.log" "$runs_root/$name.supervisor.tsv"; do
     test ! -e "$target" || { echo "R2_TARGET_RACED $target" >&2; exit 1; }
   done
 done
-for row in "${rows[@]}"; do
+for row in "${eligible_rows[@]:0:authorized_workers}"; do
   IFS='|' read -r name workload row_mode config cpu <<<"$row"
   trace_root=$(awk -F '\t' -v workload="${workload,,}" '$1 == workload { print $2; exit }' \
     "$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv")

@@ -22,9 +22,9 @@ Current execution gate: both historical BICG OO r1 namespaces (8192 and high
 cap) are `INVALID_EXECUTION_PATH_CONTAMINATED` after independent two-epoch
 controller anomalies.  The source-backed future remedy is a full seven-row
 immutable v2 r2 qualification wave plus explicit START/TERMINAL receipts; do
-not advance FAST64.1 or launch R2 until all current r1 epochs have naturally
-terminated and a fresh resource audit approves the replacement wave's
-memory/swap/output headroom.  See
+not advance FAST64.1 until the full R2 wave passes.  R2 acquisition can
+dynamically begin when a fresh resource audit approves the admitted workers;
+old r1 jobs remain diagnostic and are not a scientific launch barrier.  See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 ## Mission

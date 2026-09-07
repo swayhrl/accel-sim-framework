@@ -109,24 +109,18 @@ retry uses `BK_CONF`.
 
 ## Next executable action
 
-The pre-repair anchors remain live, untouched supporting evidence. Launch the
-isolated r1 rows under `bbcbb5e…` when the dynamic resource gate passes;
-validate them with the strict row validator and close the lower-cap comparison
-before considering FAST64.1 PASS.
-
-The dynamic resource gate passed and all seven r1 rows were dispatched at
-`2026-09-07T08:49:18Z`; their exact source/runtime/config/payload manifests
-and active PID inventory are recorded in `FAST64_1_PROGRESS_CHECKPOINT.md`.
-This does not change the ACTIVE/PENDING gate state.
+The pre-repair anchors remain live, untouched supporting evidence.  The
+historical r1 wave is now `SUPERSEDED_NONFORMAL_EXECUTION_PATH_AT_RISK` and
+must never close FAST64.1.  Dynamic resource-gated immutable r2 dispatch may
+start one or more fresh rows while old diagnostic jobs continue, with no
+scientific wait-for-all-old-jobs barrier.  Only the all-r2 lower-cap
+comparisons can close FAST64.1.
 
 ## r1 execution-path contamination (2026-09-07)
 
-`fast64_1r1_bicg_oo_cap8192_a1` has two observed simulator execution epochs
-in one exactly-once namespace.  It lacks the mandatory terminal status and
-cannot participate in the BICG OO candidate/high comparison.  This is an
-execution/controller failure, not a DTC mechanism result; the precise
-read-only evidence and fail-closed recovery boundary are in
-`FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.  No FAST64.1 PASS or FAST64.2
-promotion is allowed while this HARD item remains unresolved.  Future recovery
-dispatch uses the separately added atomic-namespace v2 runner; it does not
-alter a currently mapped historical runner or launch a replacement row.
+Both BICG OO r1 cap rows have two observed execution epochs and are
+`INVALID_EXECUTION_PATH_CONTAMINATED`; the remaining r1 rows are
+`LEGACY_R1_EXECUTION_PATH_AT_RISK`.  This is an execution/controller failure,
+not a DTC mechanism result.  The precise evidence and immutable dynamic-r2
+boundary are in `FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.  No FAST64.1
+PASS or FAST64.2 promotion is allowed until the complete r2 wave passes.

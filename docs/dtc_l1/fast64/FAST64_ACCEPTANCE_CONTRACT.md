@@ -89,6 +89,24 @@ Record:
 - observer overlay SHA;
 - each FAST12 payload identity.
 
+### Execution-path HARD authority
+
+The r1 qualification wave was launched through a mutable long-lived Bash
+runner and is `SUPERSEDED_NONFORMAL_EXECUTION_PATH_AT_RISK` for formal
+acceptance.  Two rows are specifically
+`INVALID_EXECUTION_PATH_CONTAMINATED`; clean-looking historical rows are not
+promotable.  Only the seven fresh immutable r2 rows may satisfy FAST64.1:
+
+- one SHA-addressed non-writable v2 runner per row;
+- atomic fresh namespace, one UUID, and atomically published START/TERMINAL
+  receipts;
+- strict single-epoch validation and natural exit zero;
+- common frozen Core/runtime/A1 observer/scientific-config identities;
+- R2-vs-R2 lower-cap comparisons only.
+
+`ALL_R1_COLLECTOR_OUTPUTS = SUPERSEDED_NONFORMAL`; no historical collector or
+its artifacts may transition FAST64.1.
+
 ### PASS artifact
 
 `handoffs/FAST64_1_PLATFORM.md`

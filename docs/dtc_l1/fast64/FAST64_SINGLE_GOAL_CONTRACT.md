@@ -71,9 +71,11 @@ one of these explicit pending classifications until the applicable gate passes:
 - `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` for frozen one-dimensional
   sensitivity points acquired after FAST64.2 PASS.
 
-The live FAST64.1 r1 BICG Base/IO/OO@8192 triplet may be directly reused as the
-FAST64.2 normal triplet only when its complete FAST64.2 identity and accounting
-requirements pass; it is not rerun merely because the logical stage changes.
+The entire historical FAST64.1 r1 wave is
+`SUPERSEDED_NONFORMAL_EXECUTION_PATH_AT_RISK`.  It may remain as diagnostic or
+supporting evidence only; no r1 row may close FAST64.1 or be reused as the
+FAST64.2 normal triplet.  Those formal gates require the complete immutable
+seven-row r2 qualification set.
 
 Use measured dynamic `N_safe`, prefer one worker per physical core before SMT,
 and refill only after a fresh CPU, memory, swap, I/O, and output-space audit.

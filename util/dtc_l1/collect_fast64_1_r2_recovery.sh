@@ -3,6 +3,11 @@
 # This is a new closeout path; it neither changes nor adopts the live r1 collector.
 set -euo pipefail
 
+# Superseded after two independent r1 controller-path contaminations.  Formal
+# FAST64.1 closeout must be seven-row R2 only; this path can never compose R1.
+echo "FAST64_R1_R2_MIXED_COLLECTOR_SUPERSEDED_USE_FULL_R2_COLLECTOR" >&2
+exit 1
+
 repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 runs_root=/workspace/fast64-runs
 core_sha=bbcbb5e7565417102087bc80b14c349b4e568c05

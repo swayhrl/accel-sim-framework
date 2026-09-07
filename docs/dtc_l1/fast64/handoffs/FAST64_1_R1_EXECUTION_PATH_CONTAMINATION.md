@@ -88,6 +88,14 @@ with one matching UUID.  The strict validator's single-epoch rule is
 calibrated against the three clean NN rows (one perf stream, one initialization
 marker, one natural-exit marker per row).
 
+Receipt publication is fail-closed: v2 writes each receipt to a private
+temporary file, makes it non-writable, then atomically renames it into the
+public receipt name.  If publication is incomplete, no public receipt exists
+and strict validation fails.  The controller regression uses a harmless
+`/bin/true` invocation to verify both published receipts and zero temporary
+receipt files; temporarily withholding the terminal receipt makes the
+validator fail before parsing.
+
 The controller also separates the frozen scientific/config snapshot
 (`037f008b330eb230353b60edf126d6be9f45afdc`) from runner/controller SHA and
 from parser/validator identity.  The v2 `/bin/true` controller test passed
@@ -99,21 +107,27 @@ restarted, the former one-row r2 repair is superseded and permanently
 fail-closed.  A complete seven-row immutable r2 qualification wave is prepared
 under `prepare_fast64_1_r2_full_wave.sh` with distinct `fast64_1r2_*`
 namespaces, exact Core/runtime/config/payload/observer binding, and a matching
-seven-row receipt-aware collector.  It has no default launch path and refuses
-to start unless all seven historical wrappers are terminal and a fresh audit
-explicitly admits exactly seven workers.  The five remaining r1 rows are not
-preemptively called contaminated, but no r1 row will be reused for FAST64.1
-qualification after this systemic controller finding.
+seven-row receipt-aware collector.  It has no default launch path.  A fresh
+audit must explicitly admit the number of R2 workers started now and record
+MemAvailable, cgroup memory, swap si/so, OOM delta, p95 RSS, iowait, and output
+space.  Eligible R2 rows may be dynamically refilled while historical
+diagnostic jobs continue; there is no wait-for-all-old-jobs scientific gate.
 
-The historical collector `collect_fast64_1_telemetry_rerun.sh` is itself live
-under PID `3657888`; it is preserved and not rewritten.  Any later artifacts
-it emits are historical-controller output only and cannot establish FAST64.1
-PASS; the new r2 full-wave collector is the only formal closeout route.
+The historical collectors `collect_fast64_1_telemetry_rerun.sh` and
+`collect_fast64_1_qualification.sh` are live and are preserved, not rewritten.
+`ALL_R1_COLLECTOR_OUTPUTS = SUPERSEDED_NONFORMAL`: any later artifacts they
+emit are historical-controller output only and cannot establish FAST64.1 PASS.
+The new full-r2 collector is the only formal closeout route.
 
 ## Required disposition
 
-- Classification: `INVALID_EXECUTION_PATH_CONTAMINATED`; never aggregate or
-  treat either epoch as BICG OO@8192 formal evidence.
+- `fast64_1r1_bicg_oo_cap8192_a1` and
+  `fast64_1r1_bicg_oo_cap1048576_a1` are
+  `INVALID_EXECUTION_PATH_CONTAMINATED`; never aggregate either epoch.
+- The five remaining r1 rows are `LEGACY_R1_EXECUTION_PATH_AT_RISK` and are
+  retained only as diagnostic/supporting evidence.
+- The entire seven-row r1 qualification wave is
+  `SUPERSEDED_NONFORMAL_EXECUTION_PATH_AT_RISK` for FAST64.1 acceptance.
 - FAST64.1 remains **ACTIVE** and its BICG OO 8192-vs-high HARD comparison is
   **UNSATISFIED**.
 - Do not stop, signal, rerun, overwrite, clean, or relabel the live process or

@@ -53,6 +53,22 @@ test $((8#$runner_mode & 0222)) -eq 0 || {
   exit 1
 }
 
+# Publish receipts only after their complete bytes are present.  A partial
+# receipt remains under a private temporary name and cannot satisfy validation.
+publish_receipt() {
+  local temporary=$1 destination=$2
+  test ! -e "$destination" || {
+    echo "RECEIPT_DESTINATION_ALREADY_EXISTS $destination" >&2
+    exit 1
+  }
+  chmod 444 "$temporary"
+  mv -n -- "$temporary" "$destination"
+  test -f "$destination" && test ! -e "$temporary" || {
+    echo "RECEIPT_ATOMIC_PUBLICATION_FAILED $destination" >&2
+    exit 1
+  }
+}
+
 # mkdir is the durable exactly-once witness. Duplicate dispatch must fail
 # before any manifest, receipt, or simulator output can be opened.
 umask 077
@@ -65,6 +81,7 @@ launch_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 manifest="$run_dir/RUN_MANIFEST.tsv"
 start_receipt="$run_dir/RUN_START.tsv"
 terminal_receipt="$run_dir/RUN_TERMINAL.tsv"
+start_temporary=$(mktemp "$run_dir/.RUN_START.tsv.tmp.XXXXXX")
 {
   printf 'key\tvalue\n'
   printf 'runner_schema\tFAST64_TRACE_V2_IMMUTABLE_ATTEMPT\n'
@@ -95,8 +112,8 @@ terminal_receipt="$run_dir/RUN_TERMINAL.tsv"
   printf 'runner_sha256\t%s\n' "$runner_sha256"
   printf 'immutable_runner_path\t%s\n' "$immutable_path"
   printf 'launch_utc\t%s\n' "$launch_utc"
-} >"$start_receipt"
-chmod 444 "$start_receipt"
+} >"$start_temporary"
+publish_receipt "$start_temporary" "$start_receipt"
 
 run=("$simulator" -trace "$trace" -config "$config" -config "$trace_config")
 cd "$run_dir"
@@ -109,6 +126,7 @@ fi
 status=$?
 set -e
 terminal_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+terminal_temporary=$(mktemp "$run_dir/.RUN_TERMINAL.tsv.tmp.XXXXXX")
 {
   printf 'key\tvalue\n'
   printf 'receipt_schema\tFAST64_ATTEMPT_RECEIPT_V1\n'
@@ -118,8 +136,8 @@ terminal_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   printf 'immutable_runner_path\t%s\n' "$immutable_path"
   printf 'simulator_exit_status\t%s\n' "$status"
   printf 'terminal_utc\t%s\n' "$terminal_utc"
-} >"$terminal_receipt"
-chmod 444 "$terminal_receipt"
+} >"$terminal_temporary"
+publish_receipt "$terminal_temporary" "$terminal_receipt"
 printf 'simulator_exit_status\t%s\n' "$status" >>"$manifest"
 printf 'terminal_utc\t%s\n' "$terminal_utc" >>"$manifest"
 exit "$status"

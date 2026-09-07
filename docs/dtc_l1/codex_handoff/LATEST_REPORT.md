@@ -19,9 +19,11 @@ one-row patch.  The v2 runner requires an SHA-verified, non-writable
 immutable START/TERMINAL receipts.  Its validator requires the receipt chain
 and a single-epoch proof calibrated on the clean NN rows.  A harmless
 `/bin/true` test passed immutable binding, receipts, and duplicate namespace
-rejection; it is not a scientific result.  The guarded dispatcher will refuse
-to launch without a fresh seven-worker resource audit and all historical r1
-epochs terminal.  See
+rejection; it is not a scientific result.  The guarded dispatcher dynamically
+admits only the fresh audited number of R2 workers; old r1 diagnostics are not
+a scientific wait barrier.  The whole r1 qualification wave is
+`SUPERSEDED_NONFORMAL_EXECUTION_PATH_AT_RISK`; all r1 collector output is
+nonformal.  See
 `fast64/handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 ## FAST64.1 r1 execution-path contamination (2026-09-07)
