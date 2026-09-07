@@ -22,6 +22,12 @@ observation source for that audit: it records p95 RSS in bytes, swap/OOM/I/O,
 CPU/cpuset, cgroup memory, and output space, but deliberately cannot mark an
 admission safe or dispatch a process.
 
+An attempted host-only escape-pool audit did not expand R2 beyond `74-80`:
+although CPU 82 was momentarily unused, other live simulators retain an allowed
+CPU range of `0-511` and may migrate there.  The dispatcher correctly rejects
+that nonisolated slot; no production config, process, or formal identity was
+changed.
+
 ## FAST64.2 forced lower-create stress decision resolved (2026-09-08)
 
 The one high-cap BICG/PAPER_IO diagnostic has naturally terminated with a

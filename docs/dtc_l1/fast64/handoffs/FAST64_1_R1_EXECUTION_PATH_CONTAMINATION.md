@@ -133,6 +133,17 @@ different slot.  The non-scientific
 isolated synthetic process table and verifies that occupied slots are skipped
 while `74,76,79,80` are correctly reported free.
 
+### Host-placement boundary — no unisolated CPU-pool expansion (2026-09-08)
+
+A fresh host audit found CPU 82 momentarily free in scheduler placement, but
+did **not** promote it into the R2 pool: other live `accel-sim.out` processes
+have an allowed-affinity range covering `0-511`.  They can migrate onto CPU 82
+even when their instantaneous `psr` differs, so it is not an isolated core for
+a fail-closed R2 launch.  The dispatcher correctly treats such an allowed
+range as occupied.  Keep the R2 pool at the explicitly isolated historical
+`74-80` cores until a naturally terminated R1 process releases one; this is a
+host-safety conclusion only and changes neither formal identity nor mechanism.
+
 The historical collectors `collect_fast64_1_telemetry_rerun.sh` and
 `collect_fast64_1_qualification.sh` are live and are preserved, not rewritten.
 `ALL_R1_COLLECTOR_OUTPUTS = SUPERSEDED_NONFORMAL`: any later artifacts they
