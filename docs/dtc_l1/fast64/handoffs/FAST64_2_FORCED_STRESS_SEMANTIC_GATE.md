@@ -1,6 +1,6 @@
 # FAST64.2 forced lower-create stress — semantic gate
 
-Status: **HARD_GATE_UNSATISFIED; RESEARCHER_DECISION_REQUIRED**
+Status: **RESEARCHER_DECISION_RESOLVED; POSITIVE COUPLED STRESS PREPARED**
 
 This record preserves a naturally terminated diagnostic and the source proof
 that prevents choosing a replacement experiment by intuition.  It does not
@@ -67,24 +67,33 @@ The sector mode can reserve several sector requests, but at entries one a
 multi-sector reservation is rejected before allocation and may not make
 forward progress; it is not PAPER_OO formal behavior.
 
-## Decision required
+## Researcher decision — source-correct Option 2
 
-The current acceptance wording simultaneously requires (a) a high/non-binding
-global cap and (b) a naturally terminating source-execution run with nonzero
-bounded lower-create queue-full events.  The frozen source makes those
-requirements incompatible for the specified PAPER_IO overlay.  No additional
-stress row is launched while that meaning is unresolved.
+The researcher authorizes Option 2.  The completed row is now
+`FAST64_2_HIGH_CAP_NEGATIVE_CONTROL`: it proves natural termination, clean
+single epoch, conservation/drain, and zero lower-cap-full plus zero
+create-queue-full events when global credit is non-binding.  It is never the
+positive forced-stress PASS.
 
-Researcher direction is required to choose one source-correct resolution:
+The positive diagnostic is
+`SOURCE_REACHABLE_COUPLED_LOWER_CAP_CREATE_QUEUE_STRESS`.  Its prepared
+isolated row is `fast64_2_precomputed_nn_io_coupled_cap512_pib1_a1_r2`, using
+the frozen NN trace, PAPER_IO, global lower cap `512`, and source-coupled IO
+candidate/PIB entries `1`.  NN is chosen before any performance observation:
+the existing 80-SM NN/IO anchor has 2,673 lower requests, so it is the smallest
+already provenance-resolved source-path candidate.  `cap=512` is deliberately
+below the observed normal 80-SM lower concurrency scale while remaining far
+above a one-credit global serialization; this is a diagnostic construction,
+not performance tuning.
 
-1. authorize a **directed/unit-level** proof which controls a retained
-   candidate while preserving the original pre-allocation retry assertion;
-2. authorize a diagnostic in which the global lower cap deliberately blocks
-   acquisition, explicitly reclassifying it as a lower-cap/candidate-queue
-   coupling test rather than high-cap-independent create-queue pressure; or
-3. revise the Core model to introduce a separately bounded candidate/issue
-   relationship, with a new mechanism review and regressions.
+`materialize_fast64_coupled_lower_cap_stress_config.sh` writes the exact
+overlay and provenance.  `prepare_fast64_2_coupled_stress.sh` uses the
+immutable v2 runner and refuses launch without a complete fresh safe resource
+audit that explicitly authorizes this lower-priority diagnostic after R2
+allocation.  The collector requires nonzero lower-cap-full and IO
+create-queue-full events, natural exit 0, exact immutable receipts, no
+failure signature, lower/dependency conservation, and zero final state.
 
-None is selected here.  In particular, this record does not silently weaken
-the FAST64.2 HARD gate, relabel `BK_CONF` as a Tag-bank event, or use the zero
-event run as PASS.
+No Core semantic change is authorized.  The queue-full condition remains
+MissQueue/lower-capacity pressure, never a Tag-bank conflict because of an
+internal `BK_CONF` retry.

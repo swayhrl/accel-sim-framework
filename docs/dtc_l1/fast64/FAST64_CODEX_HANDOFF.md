@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **FAST64.1 ACTIVE_HARD_EXECUTION_FAILURE; R2 RECOVERY PREPARED ONLY**
+Status: **FAST64.1 ACTIVE_HARD_EXECUTION_FAILURE; IMMUTABLE R2 RECOVERY AND FAST64.2 COUPLED-STRESS PREPARATION READY**
 
 Framework branch:
 
@@ -26,6 +26,14 @@ not advance FAST64.1 until the full R2 wave passes.  R2 acquisition can
 dynamically begin when a fresh resource audit approves the admitted workers;
 old r1 jobs remain diagnostic and are not a scientific launch barrier.  See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
+
+FAST64.2's former high-cap/create-queue requirement is resolved by researcher
+authority: retain the completed BICG/IO high-cap run only as
+`FAST64_2_HIGH_CAP_NEGATIVE_CONTROL`, and acquire a separate diagnostic-only,
+binding-lower-cap/source-coupled-candidate positive stress.  It changes no
+Core semantics and remains outside all performance aggregates.  The exact
+source proof, fixed NN/IO `cap=512, PIB=1` construction, and later acceptance
+conditions are in `handoffs/FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.
 
 ## Mission
 

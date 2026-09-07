@@ -101,9 +101,11 @@ Logical analysis order does not imply physical serialization.  Distinguish
 their owning stage can accept them).
 
 Before FAST64.1 closes, the only authorized later-stage acquisition is the
-high-cap, reduced lower-create-headroom FAST64.2 stress diagnostic labeled
-`PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`, plus isolated
-FAST12 Base@8192 rows labeled `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`.
+source-reachable coupled lower-cap/create-queue FAST64.2 positive stress,
+labeled `PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE`,
+plus isolated FAST12 Base@8192 rows labeled
+`PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`.  The completed high-cap stress is
+retained as `FAST64_2_HIGH_CAP_NEGATIVE_CONTROL`, not as a positive result.
 Do not precompute main-matrix IO/OO rows before FAST64.2 repair PASS.
 
 After FAST64.2 PASS, launch missing Base/IO/OO rows through one dynamic pool;

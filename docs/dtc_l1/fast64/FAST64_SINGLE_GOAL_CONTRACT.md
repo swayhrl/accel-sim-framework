@@ -63,8 +63,9 @@ opens only when the exact frozen Core, payload, platform, observer, config and
 isolated namespace are recorded.  It never relaxes a HARD gate and must retain
 one of these explicit pending classifications until the applicable gate passes:
 
-- `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE` for the
-  forced lower-create-queue stress with a high/non-binding global lower cap;
+- `PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE` for the
+  source-reachable coupled lower-cap/create-queue positive stress; the
+  preserved high-cap row is `FAST64_2_HIGH_CAP_NEGATIVE_CONTROL` only;
 - `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` for FAST12 Base@8192 rows;
 - `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` for main-matrix IO/OO rows acquired
   only after FAST64.2 repair PASS;

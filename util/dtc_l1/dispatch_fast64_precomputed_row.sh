@@ -42,11 +42,12 @@ run_dir="$runs_root/$name"
 fast64_2_pass="$repo_root/docs/dtc_l1/fast64/handoffs/FAST64_2_REPAIR_QUALIFICATION.md"
 case "$classification" in
   PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE)
-    case "$mode" in IO|OO) ;; *) echo "stress diagnostic must be IO or OO" >&2; exit 2 ;; esac
-    test "$(grep -F -- '-gpgpu_dtc_l1_lower_outstanding_cap ' "$config" | tail -1)" = \
-      '-gpgpu_dtc_l1_lower_outstanding_cap 1048576' || {
-        echo "stress diagnostic requires final high/non-binding cap" >&2; exit 1;
-      }
+    echo "historical high-cap FAST64.2 class is a negative control only" >&2
+    exit 1
+    ;;
+  PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE)
+    echo "coupled stress requires immutable v2 dispatch via prepare_fast64_2_coupled_stress.sh" >&2
+    exit 1
     ;;
   PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE)
     test "$mode" = BASE || {

@@ -27,7 +27,7 @@ parser, accounting, or FAST64.1 PASS claim is made here.
 | --- | --- |
 | namespace | `fast64_2_precomputed_bicg_io_stress_cap1048576_pib1_a1` |
 | workload/mode | BICG / IO |
-| status | `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE` |
+| status | `FAST64_2_HIGH_CAP_NEGATIVE_CONTROL` |
 | formal Framework launch source | `5ee236f9452cd09145ab275c530c34f263a1c2e4` |
 | Core | `bbcbb5e7565417102087bc80b14c349b4e568c05` |
 | high-cap config SHA-256 | `f2de27d772e667f475c0e01a41c77c6ce66084cdcb76122ce2f58266b28b3015` |
@@ -36,11 +36,11 @@ parser, accounting, or FAST64.1 PASS claim is made here.
 | terminal | natural exit `0` at `2026-09-07T16:42:35Z` |
 
 The overlay is diagnostic only, never a performance aggregate.  It has natural
-termination, zero terminal state, and lower conservation, but records zero IO
-lower-create-queue-full stalls and therefore cannot close FAST64.2.  The
-source-backed semantic incompatibility and required researcher decision are
-recorded in `FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.  The external overlay
-provenance is
+termination, zero terminal state, and lower conservation, and records zero IO
+lower-create-queue-full stalls exactly as required for the preserved high-cap
+negative control.  It cannot close FAST64.2 by itself.  Researcher-authorized
+positive coupled-stress construction is recorded in
+`FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.  The external overlay provenance is
 `/workspace/fast64-runs/overlays/FAST64_IO_CAP1048576_STRESS_PIB1.config.PROVENANCE.tsv`.
 
 ## FAST64.3 Base acquisition — terminal but pending

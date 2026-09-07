@@ -131,7 +131,20 @@ A natural-terminal FAST64 Base/IO/OO triplet must satisfy:
 
 ### CORRECTNESS_HARD — forced queue-full stress
 
-The diagnostic must deliberately observe:
+The forced-stress evidence has two diagnostic-only controls:
+
+- the preserved high-cap negative control, which must demonstrate that a
+  non-binding global cap produces zero lower-cap-full and zero create-queue
+  full events; and
+- a source-reachable coupled positive stress, which deliberately makes the
+  global lower cap binding while the source-coupled candidate headroom is
+  small.
+
+The positive stress must deliberately observe:
+
+`DTC_L1_lower_cap_full_events > 0`
+
+and:
 
 `DTC_L1_io_lower_create_queue_full_stalls > 0`
 
@@ -155,10 +168,13 @@ merely because an internal retriable stall code is reused.
 
 ### FIDELITY_HARD
 
-The forced-stress overlay is diagnostic only and is never included in FAST64
-performance aggregates.  It may be physically acquired before FAST64.1 PASS
-only as `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`; that
-classification cannot be promoted or used to advance FAST64.2 before every
+Both forced-stress controls are diagnostic only and are never included in
+FAST64 performance aggregates.  The completed high-cap BICG/IO run is
+`FAST64_2_HIGH_CAP_NEGATIVE_CONTROL`; it is not a positive PASS substitute.
+The source-reachable positive overlay may be physically acquired before
+FAST64.1 PASS only as
+`PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE`.  Neither
+classification can be promoted or used to advance FAST64.2 before every
 FAST64.1 HARD gate passes.
 
 ### PASS artifact

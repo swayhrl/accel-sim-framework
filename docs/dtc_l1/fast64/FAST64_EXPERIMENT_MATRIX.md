@@ -84,16 +84,21 @@ candidate capacity/credits tight enough to produce:
 
 `DTC_L1_*_lower_create_queue_full_stalls > 0`
 
-The diagnostic may use BICG or ATAX, whichever reaches the target event faster
-without changing source/input.
+Use the frozen NN/PAPER_IO payload first: its existing 80-SM baseline has
+2,673 lower requests and is the smallest already provenance-resolved trace
+known to exercise this source path.  BICG or ATAX are fallbacks only if this
+small deterministic diagnostic does not reach the required event without a
+source-correct reason.
 
 It is not a performance point.
 
 It may be acquired in an isolated namespace before FAST64.1 logical PASS only
-as `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`.  The overlay
-uses a high/non-binding global lower cap and reduces the relevant source-coupled
-lower-create candidate-queue/PIB headroom control; it is never an aggregate
-row.
+as `PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE`.  The
+positive overlay deliberately uses a binding global lower cap and reduces the
+relevant source-coupled lower-create candidate-queue/PIB headroom control; it
+is never an aggregate row.  The completed high-cap overlay is retained only as
+`FAST64_2_HIGH_CAP_NEGATIVE_CONTROL`, proving that the queue does not fill when
+credits are non-binding.
 
 The existing large 80-SM ATAX recovery triplet may continue independently but
 is no longer a FAST64 gate after this stage passes.
