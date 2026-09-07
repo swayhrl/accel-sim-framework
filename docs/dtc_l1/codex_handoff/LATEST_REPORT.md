@@ -3,6 +3,26 @@
 Stage: M5.0BT exact trace capture and qualification — **RESOLVING_ISSUE
 M5-0BT-011 (2MM SIM_HOST immutable-receipt capacity)**.
 
+## C2P trace versus M5 ATAX host-throughput review (2026-09-07)
+
+The requested non-invasive audit is recorded in
+`m5/handoffs/M5_0BT_C2P_TRACE_HOST_THROUGHPUT_AUDIT.md`.  It establishes that
+the historical C2P ATAX trace and the exact M5 NVBit trace are not the same
+payload: kernel-1 ABI differs, C2P has `(16,1,1) x (256,1,1)` while M5 has
+`(128,1,1) x (32,8,1)`, M5 kernel-1 has 8.95x C2P's dynamic instructions, and
+the two-kernel M5 traceg set is 10.26x the C2P byte size.  C2P therefore
+cannot be used as a formal M5 trace substitute, although it may later be an
+explicitly nonformal host-diagnostic control.
+
+The apparent 2,466-versus-about-280 simulated-cycles/s gap does not show a
+nine-fold per-instruction host regression.  The available evidence decomposes
+it into about 6.58x higher M5 simulated IPC/work per cycle and only about
+1.34x lower host simulated-instruction throughput.  The live M5 process was
+CPU-active with no sampled I/O wait or swap pressure; the shared legacy
+observer settings and the independently equivalent A1 observer experiment
+cannot explain the gap.  No active process, config, Core behavior, formal
+result identity, or stage has changed.
+
 ## 2MM copyback storage admission (2026-09-06)
 
 2MM has reached remote `ARCHIVE_PASS` with archive SHA-256
