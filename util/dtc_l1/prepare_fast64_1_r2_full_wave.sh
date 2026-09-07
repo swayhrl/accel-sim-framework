@@ -37,14 +37,47 @@ runner_source="$repo_root/util/dtc_l1/run_fast64_trace_v2.sh"
 trace_config="$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
 immutable_root=/tmp/fast64-runners
 rows=(
-  'fast64_1r2_bicg_base_cap8192_a1|BICG|BASE|FAST64_BASE.config|74'
-  'fast64_1r2_bicg_io_cap8192_a1|BICG|IO|FAST64_IO.config|75'
-  'fast64_1r2_bicg_oo_cap8192_a1|BICG|OO|FAST64_OO.config|76'
-  'fast64_1r2_bicg_io_cap1048576_a1|BICG|IO|FAST64_IO_CAP1048576.config|77'
-  'fast64_1r2_bicg_oo_cap1048576_a1|BICG|OO|FAST64_OO_CAP1048576.config|78'
-  'fast64_1r2_gesummv_io_cap8192_a1|GESUMMV|IO|FAST64_IO.config|79'
-  'fast64_1r2_gesummv_io_cap1048576_a1|GESUMMV|IO|FAST64_IO_CAP1048576.config|80'
+  'fast64_1r2_bicg_base_cap8192_a1|BICG|BASE|FAST64_BASE.config'
+  'fast64_1r2_bicg_io_cap8192_a1|BICG|IO|FAST64_IO.config'
+  'fast64_1r2_bicg_oo_cap8192_a1|BICG|OO|FAST64_OO.config'
+  'fast64_1r2_bicg_io_cap1048576_a1|BICG|IO|FAST64_IO_CAP1048576.config'
+  'fast64_1r2_bicg_oo_cap1048576_a1|BICG|OO|FAST64_OO_CAP1048576.config'
+  'fast64_1r2_gesummv_io_cap8192_a1|GESUMMV|IO|FAST64_IO.config'
+  'fast64_1r2_gesummv_io_cap1048576_a1|GESUMMV|IO|FAST64_IO_CAP1048576.config'
 )
+# Host placement is deliberately not part of a row's scientific identity.  R2
+# is admitted in priority order onto whichever isolated 74--80 simulator slot
+# naturally becomes free, so surviving historical R1 jobs never force a
+# wait-for-all barrier or CPU contention.
+cpu_slots=(74 75 76 77 78 79 80)
+
+cpu_slot_in_use() {
+  local requested_cpu=$1 pid cmdline allowed segment start end
+  for proc in /proc/[0-9]*; do
+    pid=${proc##*/}
+    [ -r "$proc/cmdline" ] && [ -r "$proc/status" ] || continue
+    cmdline=$(tr '\0' ' ' <"$proc/cmdline" 2>/dev/null || true)
+    case "$cmdline" in
+      *accel-sim.out*) ;;
+      *) continue ;;
+    esac
+    allowed=$(awk '/^Cpus_allowed_list:/ { print $2; exit }' "$proc/status" 2>/dev/null || true)
+    IFS=',' read -r -a segments <<<"$allowed"
+    for segment in "${segments[@]}"; do
+      if [[ $segment == *-* ]]; then
+        start=${segment%-*}
+        end=${segment#*-}
+        if [[ $start =~ ^[0-9]+$ && $end =~ ^[0-9]+$ ]] &&
+           (( requested_cpu >= start && requested_cpu <= end )); then
+          return 0
+        fi
+      elif [ "$segment" = "$requested_cpu" ]; then
+        return 0
+      fi
+    done
+  done
+  return 1
+}
 
 test "$(git -C "$core_root" rev-parse HEAD)" = "$expected_core"
 test -x "$runtime"
@@ -55,7 +88,7 @@ immutable_dir="$immutable_root/$runner_sha"
 immutable_runner="$immutable_dir/run_fast64_trace_v2.sh"
 eligible_rows=()
 for row in "${rows[@]}"; do
-  IFS='|' read -r name workload row_mode config cpu <<<"$row"
+  IFS='|' read -r name workload row_mode config <<<"$row"
   trace_root=$(awk -F '\t' -v workload="${workload,,}" '$1 == workload { print $2; exit }' \
     "$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv")
   test -n "$trace_root" && test -r "$trace_root/kernelslist.g"
@@ -72,9 +105,17 @@ for row in "${rows[@]}"; do
   fi
 done
 
+free_cpus=()
+for cpu in "${cpu_slots[@]}"; do
+  if ! cpu_slot_in_use "$cpu"; then
+    free_cpus+=("$cpu")
+  fi
+done
+free_cpu_list=$(IFS=,; echo "${free_cpus[*]:-none}")
+
 if [ "$dispatch_mode" = dry-run ]; then
-  printf 'R2_DYNAMIC_DISPATCH_DRY_RUN_PASS\ttotal_rows=%s\teligible_rows=%s\trunner_sha256=%s\timmutable_runner=%s\tscientific_config_source=%s\n' \
-    "${#rows[@]}" "${#eligible_rows[@]}" "$runner_sha" "$immutable_runner" "$scientific_config_source"
+  printf 'R2_DYNAMIC_DISPATCH_DRY_RUN_PASS\ttotal_rows=%s\teligible_rows=%s\tfree_cpu_slots=%s\tfree_cpus=%s\trunner_sha256=%s\timmutable_runner=%s\tscientific_config_source=%s\n' \
+    "${#rows[@]}" "${#eligible_rows[@]}" "${#free_cpus[@]}" "$free_cpu_list" "$runner_sha" "$immutable_runner" "$scientific_config_source"
   exit 0
 fi
 
@@ -100,6 +141,10 @@ test "$authorized_workers" -le "${#eligible_rows[@]}" || {
   echo "R2_AUDIT_EXCEEDS_ELIGIBLE_ROWS authorized=$authorized_workers eligible=${#eligible_rows[@]}" >&2
   exit 1
 }
+test "$authorized_workers" -le "${#free_cpus[@]}" || {
+  echo "R2_INSUFFICIENT_FREE_CPU_SLOTS authorized=$authorized_workers free=${#free_cpus[@]} slots=$free_cpu_list" >&2
+  exit 1
+}
 
 if [ ! -d "$immutable_dir" ]; then
   mkdir -p -- "$immutable_dir"
@@ -120,8 +165,11 @@ for row in "${eligible_rows[@]:0:authorized_workers}"; do
     test ! -e "$target" || { echo "R2_TARGET_RACED $target" >&2; exit 1; }
   done
 done
-for row in "${eligible_rows[@]:0:authorized_workers}"; do
-  IFS='|' read -r name workload row_mode config cpu <<<"$row"
+for index in "${!eligible_rows[@]}"; do
+  [ "$index" -lt "$authorized_workers" ] || break
+  row=${eligible_rows[$index]}
+  cpu=${free_cpus[$index]}
+  IFS='|' read -r name workload row_mode config <<<"$row"
   trace_root=$(awk -F '\t' -v workload="${workload,,}" '$1 == workload { print $2; exit }' \
     "$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv")
   attempt_uuid=$(cat /proc/sys/kernel/random/uuid)
@@ -135,8 +183,8 @@ for row in "${eligible_rows[@]:0:authorized_workers}"; do
     --result-classification FAST64_1_R2_FULL_WAVE_IMMUTABLE_RECOVERY \
     >"$runs_root/$name.launcher.log" 2>&1 &
   supervisor=$!
-  printf 'row\tsupervisor_pid\tattempt_uuid\trunner_sha256\timmutable_runner\tscientific_config_source\tcore_sha\truntime_sha256\n' >"$runs_root/$name.supervisor.tsv"
-  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$name" "$supervisor" "$attempt_uuid" \
+  printf 'row\tsupervisor_pid\tcpu_slot\tattempt_uuid\trunner_sha256\timmutable_runner\tscientific_config_source\tcore_sha\truntime_sha256\n' >"$runs_root/$name.supervisor.tsv"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$name" "$supervisor" "$cpu" "$attempt_uuid" \
     "$runner_sha" "$immutable_runner" "$scientific_config_source" "$expected_core" "$expected_runtime" >>"$runs_root/$name.supervisor.tsv"
-  echo "R2_FULL_WAVE_DISPATCHED row=$name supervisor=$supervisor attempt_uuid=$attempt_uuid"
+  echo "R2_FULL_WAVE_DISPATCHED row=$name cpu_slot=$cpu supervisor=$supervisor attempt_uuid=$attempt_uuid"
 done

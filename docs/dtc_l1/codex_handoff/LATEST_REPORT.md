@@ -1,5 +1,19 @@
 # Latest Codex Report
 
+## FAST64.1 resource-aware R2 CPU refill is ready (2026-09-08)
+
+The immutable seven-row R2 dispatcher now assigns frozen-priority rows to the
+actual naturally free CPU slot within the isolated `74-80` pool, instead of
+requiring the first priority row to reuse historical CPU 74.  It fail-closes
+when a fresh resource audit admits more workers than the number of free slots.
+This is host-only placement, not a scientific identity or configuration
+change: Core/runtime/observer/payload/config binding and atomic immutable-v2
+receipts are unchanged.  A dry-run found all seven slots currently occupied
+by live historical R1 simulators, so no R2 launch occurred and no simulator or
+mapped historical collector was touched.  FAST64.1 remains
+`FAST64_1_R2_RESOURCE_WAIT_ACTIVE`; on a natural exit, re-audit and dispatch
+the next missing R2 row if the resource gate passes.
+
 ## FAST64.2 forced lower-create stress decision resolved (2026-09-08)
 
 The one high-cap BICG/PAPER_IO diagnostic has naturally terminated with a

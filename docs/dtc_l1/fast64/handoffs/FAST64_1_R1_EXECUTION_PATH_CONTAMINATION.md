@@ -112,6 +112,12 @@ audit must explicitly admit the number of R2 workers started now and record
 MemAvailable, cgroup memory, swap si/so, OOM delta, p95 RSS, iowait, and output
 space.  Eligible R2 rows may be dynamically refilled while historical
 diagnostic jobs continue; there is no wait-for-all-old-jobs scientific gate.
+Host CPU placement is not a scientific row identity: the immutable dispatcher
+assigns R2 rows in frozen priority order to the actually free member of the
+isolated `74-80` simulator-slot pool, and fail-closes if the audit admits more
+workers than free slots.  Thus a naturally freed historical slot can admit the
+next R2 row without contending with a still-live historical row pinned to a
+different slot.
 
 The historical collectors `collect_fast64_1_telemetry_rerun.sh` and
 `collect_fast64_1_qualification.sh` are live and are preserved, not rewritten.
