@@ -34,7 +34,10 @@ validator="$repo_root/util/dtc_l1/validate_fast64_trace_row.py"
 core=bbcbb5e7565417102087bc80b14c349b4e568c05
 observer=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
 runtime=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
-framework=$(git -C "$repo_root" rev-parse HEAD)
+# Scientific execution identity is frozen independently from later controller,
+# review, and checkpoint commits in this worktree.
+framework=037f008b330eb230353b60edf126d6be9f45afdc
+git -C "$repo_root" cat-file -e "$framework^{commit}"
 test -r "$manifest" && test -x "$dispatcher" && test -x "$validator"
 
 IFS=, read -r -a cpu_list <<<"$cpus"

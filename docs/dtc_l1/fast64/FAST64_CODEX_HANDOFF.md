@@ -18,6 +18,12 @@ The latter changes no DTC mechanism behavior: it exposes the pre-existing OO
 differential. Formal FAST64 execution uses the instrumented Core/runtime; the
 former remains the mechanism semantic/source anchor.
 
+All formal FAST64 acquisition, including later dynamic-pool rows, records the
+frozen execution-scientific Framework snapshot
+`037f008b330eb230353b60edf126d6be9f45afdc`.  The current worktree HEAD is a
+controller/review identity and must not be substituted for that execution
+source in a result manifest.
+
 Current execution gate: both historical BICG OO r1 namespaces (8192 and high
 cap) are `INVALID_EXECUTION_PATH_CONTAMINATED` after independent two-epoch
 controller anomalies.  The source-backed future remedy is a full seven-row
