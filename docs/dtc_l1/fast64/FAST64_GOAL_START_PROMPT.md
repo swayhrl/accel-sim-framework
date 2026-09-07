@@ -32,6 +32,15 @@ Then inspect the actual live SIM_HOST processes, existing worktrees, available
 C2P canonical trace payloads, disk/RAM/CPU state, and current Git status before
 launching anything. Never duplicate a still-live or already-valid run.
 
+WORKTREE SAFETY:
+If the current Framework worktree is still being used by healthy legacy M5
+processes, contains pre-existing untracked scientific artifacts, or is not on
+the FAST64 branch, do NOT force-checkout or clean it. Create/reuse a dedicated
+FAST64 worktree from `hrl/decoupled-l1-fast64-v0`, record its path in the
+FAST64.0 handoff, and leave legacy jobs/worktrees undisturbed. The Core worktree
+may remain on the frozen `15cfa76e...` authority unless a generic source defect
+requires a separately reviewed repair.
+
 Execute the complete state machine without ordinary human pauses:
 
 FAST64.0
