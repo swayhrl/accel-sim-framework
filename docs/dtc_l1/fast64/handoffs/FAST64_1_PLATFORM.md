@@ -1,6 +1,6 @@
 # FAST64.1 — Platform and Payload Lock
 
-Status: **ACTIVE_R1_QUALIFICATION_RUNNING**
+Status: **ACTIVE_HARD_EXECUTION_FAILURE; R1 QUALIFICATION NOT PROMOTABLE**
 
 This is an active recovery checkpoint, not a FAST64.1 PASS artifact. No
 FAST64.2 work may begin from it.
@@ -118,3 +118,13 @@ The dynamic resource gate passed and all seven r1 rows were dispatched at
 `2026-09-07T08:49:18Z`; their exact source/runtime/config/payload manifests
 and active PID inventory are recorded in `FAST64_1_PROGRESS_CHECKPOINT.md`.
 This does not change the ACTIVE/PENDING gate state.
+
+## r1 execution-path contamination (2026-09-07)
+
+`fast64_1r1_bicg_oo_cap8192_a1` has two observed simulator execution epochs
+in one exactly-once namespace.  It lacks the mandatory terminal status and
+cannot participate in the BICG OO candidate/high comparison.  This is an
+execution/controller failure, not a DTC mechanism result; the precise
+read-only evidence and fail-closed recovery boundary are in
+`FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.  No FAST64.1 PASS or FAST64.2
+promotion is allowed while this HARD item remains unresolved.

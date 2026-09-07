@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## FAST64.1 r1 execution-path contamination (2026-09-07)
+
+FAST64.1 is **ACTIVE_HARD_EXECUTION_FAILURE** and is not promotable.  The
+BICG OO@8192 r1 namespace has two observed simulator epochs in a single
+exactly-once output directory, no `simulator_exit_status`, and a controller
+anomaly (`line 74: d: command not found`).  Its prior epoch reached
+47,231,655 cycles, but neither epoch is formal evidence.  The cgroup's
+`oom_kill=12` is retained as host-pressure evidence only; causal attribution
+has not been established.  All remaining live r1 and FAST64.2 processes are
+preserved untouched.  See
+`fast64/handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
+
 ## FAST64 throughput-update checkpoint (2026-09-07)
 
 FAST64 logical state remains **FAST64.1 ACTIVE**; no FAST64.1, FAST64.2, or
