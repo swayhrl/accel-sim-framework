@@ -7,7 +7,8 @@ GOAL — COMPLETE DTC FAST64 FROM PIVOT THROUGH FINAL REVIEW STATE
 
 Work continuously on:
   Framework: hrl/decoupled-l1-fast64-v0
-  Core authority: hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9
+  MECHANISM_BEHAVIOR_ANCHOR: hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9
+  FAST64_FORMAL_INSTRUMENTED_CORE: hrl/decoupled-l1-m5-v0@bbcbb5e7565417102087bc80b14c349b4e568c05
 
 Your terminal target is exactly:
   FAST64_COMPLETE_READY_FOR_REVIEW
@@ -37,9 +38,10 @@ If the current Framework worktree is still being used by healthy legacy M5
 processes, contains pre-existing untracked scientific artifacts, or is not on
 the FAST64 branch, do NOT force-checkout or clean it. Create/reuse a dedicated
 FAST64 worktree from `hrl/decoupled-l1-fast64-v0`, record its path in the
-FAST64.0 handoff, and leave legacy jobs/worktrees undisturbed. The Core worktree
-may remain on the frozen `15cfa76e...` authority unless a generic source defect
-requires a separately reviewed repair.
+FAST64.0 handoff, and leave legacy jobs/worktrees undisturbed. `15cfa76e...`
+remains the mechanism-source anchor, but every formal FAST64 runtime must be
+built from/verified against `bbcbb5e...`, whose telemetry-only OO counter print
+was differential-qualified. Do not silently revert formal rows to `15cfa76e...`.
 
 Execute the complete state machine without ordinary human pauses:
 

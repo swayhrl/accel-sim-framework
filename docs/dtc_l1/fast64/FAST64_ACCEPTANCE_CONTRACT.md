@@ -24,8 +24,9 @@ General meanings:
 ### HARD acceptance
 
 - Framework branch descends from `a9cdb3328a346cbc9a76b7ffadae3725b4209ab5`.
-- Core authority is recorded as
-  `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.
+- Core authority distinguishes the mechanism behavior anchor
+  `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` from the formal instrumented Core
+  `bbcbb5e7565417102087bc80b14c349b4e568c05`.
 - Existing M5 evidence is classified into Tier A/B/C without deletion or
   relabelling.
 - 2MM and SYR2K primary-path work is marked
@@ -81,7 +82,7 @@ same test. Record why. Do not optimize cap for speedup.
 
 Record:
 
-- Core SHA;
+- mechanism behavior-anchor SHA and formal instrumented-Core SHA;
 - Framework SHA;
 - runtime binary SHA;
 - resolved Base/IO/OO config SHA-256;

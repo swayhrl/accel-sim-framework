@@ -21,7 +21,15 @@ commit/push. The Goal must not stop at ordinary stage boundaries.
 
 - Framework branch: `hrl/decoupled-l1-fast64-v0`.
 - Pivot parent: `a9cdb3328a346cbc9a76b7ffadae3725b4209ab5`.
-- Core: `hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.
+- `MECHANISM_BEHAVIOR_ANCHOR`:
+  `hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.
+- `FAST64_FORMAL_INSTRUMENTED_CORE`:
+  `hrl/decoupled-l1-m5-v0@bbcbb5e7565417102087bc80b14c349b4e568c05`.
+  This descendant adds only the missing OO print of the existing
+  `DTC_L1_lower_cap_full_events` counter and passed exact NN Base/IO/OO
+  timing/scientific differential. Every formal FAST64 row uses this
+  instrumented Core/runtime; the behavior anchor remains the source-semantic
+  reference and is not the default formal runtime.
 - FAST12 membership: `FAST64_WORKLOAD_MANIFEST.tsv`.
 - Platform/mechanism contract: `FAST64_PLATFORM_CONTRACT.md`.
 - Stage work: `FAST64_EXPERIMENT_MATRIX.md`.

@@ -12,7 +12,8 @@ does not authorize FAST64.2.
 
 | item | identity / status |
 | --- | --- |
-| Framework branch / HEAD | `hrl/decoupled-l1-fast64-v0` / `db5fbf84cd020012dc7702c72526df8aebbd3243` |
+| execution snapshot source HEAD | Framework `hrl/decoupled-l1-fast64-v0` at `db5fbf84cd020012dc7702c72526df8aebbd3243` |
+| review/checkpoint commit | `e0e4debdad5dfc0404a8f5695e94b48a45b45fa7` |
 | original Core behavior anchor | `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` |
 | telemetry-only Core repair | `bbcbb5e7565417102087bc80b14c349b4e568c05` (`FAST64-1-TELE-001`) |
 | formal r1 runtime | `/tmp/dtc-fast64-telemetry-build-sEWez4/accel-sim.out`, SHA-256 `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` |
@@ -71,15 +72,15 @@ The following live controllers are preserved:
 | PID | role | state |
 | ---: | --- | --- |
 | 3261725 | original qualification collector | live, waiting for old rows |
-| 3291777 | deferred new-Core telemetry-rerun dispatcher | live, fail-closed, waits all seven old rows to exit 0 |
+| 3291777 | deferred new-Core telemetry-rerun dispatcher | live, preserved historical controller that waits all seven old rows; it is not the immediate r1 scheduler |
 | 3362160 | new-Core r1 collector | live, waiting for r1 rows |
 
 At this snapshot no `fast64_1r1_*` namespace and no
-`generated/qualification_r1/` result file exists.  This is expected: the
-dispatcher verifies every old row's natural `exit=0`, the repaired Core/runtime
-identity, and target absence before it dispatches the seven isolated r1 rows.
-The r1 rows are the only rows eligible to close the BICG IO/OO and GESUMMV IO
-8192-versus-1048576 qualification.
+`generated/qualification_r1/` result file exists. The review-authorized
+immediate dispatcher verifies the repaired Core/runtime identity and target
+absence before it dispatches the seven isolated r1 rows without changing the
+old rows. The r1 rows are the only rows eligible to close the BICG IO/OO and
+GESUMMV IO 8192-versus-1048576 qualification.
 
 ## HARD-gate ledger
 
@@ -95,10 +96,9 @@ The r1 rows are the only rows eligible to close the BICG IO/OO and GESUMMV IO
 
 ## Review conclusion and next action
 
-There is no new HARD failure and no researcher-decision boundary.  The two
+There is no new HARD failure and no researcher-decision boundary. The two
 completed old OO rows are sound lifecycle anchors but deliberately cannot be
-relabeled as formal telemetry qualification.  The only next action is to let
-the five live old rows naturally terminate, allow the existing fail-closed
-controller to dispatch r1 exactly once, then run the existing strict row
-validator and non-binding-cap comparator.  No FAST64.2 work may start before
-every pending FAST64.1 HARD item passes.
+relabeled as formal telemetry qualification. The next action is an isolated,
+resource-gated r1 dispatch under the formal instrumented Core, followed by the
+strict row validator and non-binding-cap comparator. No FAST64.2 work may
+start before every pending FAST64.1 HARD item passes.

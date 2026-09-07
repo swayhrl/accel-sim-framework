@@ -6,9 +6,17 @@ Framework branch:
 
 `hrl/decoupled-l1-fast64-v0`
 
-Core authority:
+Core authority is deliberately split:
 
-`hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`
+- `MECHANISM_BEHAVIOR_ANCHOR`:
+  `hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.
+- `FAST64_FORMAL_INSTRUMENTED_CORE`:
+  `hrl/decoupled-l1-m5-v0@bbcbb5e7565417102087bc80b14c349b4e568c05`.
+
+The latter changes no DTC mechanism behavior: it exposes the pre-existing OO
+`DTC_L1_lower_cap_full_events` counter and passed exact NN Base/IO/OO
+differential. Formal FAST64 execution uses the instrumented Core/runtime; the
+former remains the mechanism semantic/source anchor.
 
 ## Mission
 

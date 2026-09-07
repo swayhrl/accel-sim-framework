@@ -4,7 +4,7 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: $0 --simulator PATH --config PATH --trace PATH --run-dir PATH [--cpu N]" >&2
+  echo "usage: $0 --simulator PATH --config PATH --trace PATH --run-dir PATH [--cpu N] [--framework-source-head SHA] [--core-source-head SHA] [--observer-overlay-sha SHA]" >&2
   exit 2
 }
 
@@ -13,6 +13,9 @@ config=
 trace=
 run_dir=
 cpu=
+framework_source_head=
+core_source_head=
+observer_overlay_sha=
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --simulator) simulator=${2:-}; shift 2 ;;
@@ -20,6 +23,9 @@ while [ "$#" -gt 0 ]; do
     --trace) trace=${2:-}; shift 2 ;;
     --run-dir) run_dir=${2:-}; shift 2 ;;
     --cpu) cpu=${2:-}; shift 2 ;;
+    --framework-source-head) framework_source_head=${2:-}; shift 2 ;;
+    --core-source-head) core_source_head=${2:-}; shift 2 ;;
+    --observer-overlay-sha) observer_overlay_sha=${2:-}; shift 2 ;;
     *) usage ;;
   esac
 done
@@ -45,6 +51,15 @@ mkdir -p "$run_dir"
   printf 'trace_list_sha256\t%s\n' "$(sha256sum "$trace" | awk '{print $1}')"
   printf 'trace_config\t%s\n' "$trace_config"
   printf 'trace_config_sha256\t%s\n' "$(sha256sum "$trace_config" | awk '{print $1}')"
+  if [ -n "$framework_source_head" ]; then
+    printf 'framework_source_head\t%s\n' "$framework_source_head"
+  fi
+  if [ -n "$core_source_head" ]; then
+    printf 'core_source_head\t%s\n' "$core_source_head"
+  fi
+  if [ -n "$observer_overlay_sha" ]; then
+    printf 'observer_overlay_sha256\t%s\n' "$observer_overlay_sha"
+  fi
   printf 'launch_utc\t%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 } >"$run_dir/RUN_MANIFEST.tsv"
 

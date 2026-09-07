@@ -6,10 +6,14 @@ Framework branch: `hrl/decoupled-l1-fast64-v0`
 
 Pivot parent: `a9cdb3328a346cbc9a76b7ffadae3725b4209ab5`
 
-Core authority remains:
+Core authority is deliberately split:
 
-- branch: `hrl/decoupled-l1-m5-v0`
-- commit: `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`
+- `MECHANISM_BEHAVIOR_ANCHOR`: branch `hrl/decoupled-l1-m5-v0`, commit
+  `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.
+- `FAST64_FORMAL_INSTRUMENTED_CORE`: telemetry-only descendant
+  `bbcbb5e7565417102087bc80b14c349b4e568c05`, which adds the missing OO print
+  of existing `DTC_L1_lower_cap_full_events` and passed exact NN Base/IO/OO
+  differential.
 
 ## 1. Research objective
 
@@ -94,8 +98,8 @@ FAST64 after FAST64's own repair-qualification gate passes.
    unfavorable.
 6. A workload-local infrastructure defect is isolated and repaired; it does
    not justify architecture retuning.
-7. The Core mechanism SHA remains `15cfa76e...` unless a source-correct generic
-   bug is demonstrated. Any Core change requires explicit invalidation mapping.
+7. Formal rows use `bbcbb5e...`; `15cfa76e...` remains the mechanism behavior
+   anchor. Any further Core change requires explicit invalidation mapping.
 
 ## 5. Reporting boundary
 

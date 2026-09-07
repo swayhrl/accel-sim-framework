@@ -10,8 +10,8 @@ FAST64.2 work may begin from it.
 | item | identity |
 | --- | --- |
 | prior stage | `FAST64_0_PIVOT_PASS` at Framework `c02ea2259e4bc6ee0ee026734aa60e561ea79724` |
-| original Core anchor | `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` |
-| current Core authority | `bbcbb5e7565417102087bc80b14c349b4e568c05` |
+| `MECHANISM_BEHAVIOR_ANCHOR` | `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` |
+| `FAST64_FORMAL_INSTRUMENTED_CORE` | `bbcbb5e7565417102087bc80b14c349b4e568c05` |
 | Core change disposition | telemetry-only repair `FAST64-1-TELE-001`; source and NN regression in `FAST64_1_TELEMETRY_RESOLUTION.md` |
 | current formal runtime | `/tmp/dtc-fast64-telemetry-build-sEWez4/accel-sim.out`, SHA `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` |
 | observer | A1, `-gpgpu_runtime_stat 500000`; overlay SHA `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e` |
@@ -63,11 +63,14 @@ lacks the required OO lower-cap-full telemetry.  Their processes and raw
 namespaces remain untouched.  The compact, reviewable inventory is
 `handoffs/FAST64_1_PROGRESS_CHECKPOINT.md`.
 
-`util/dtc_l1/deferred_fast64_1_telemetry_rerun.sh` is an isolated,
-fail-closed controller. It requires every old row to naturally exit zero, the
-current Core SHA and runtime SHA to match this handoff, and all target
-namespaces to be absent before dispatching exact new-Core replacements. It
-contains no timeout, kill, overwrite, renice, debugger, or cleanup action.
+`util/dtc_l1/deferred_fast64_1_telemetry_rerun.sh` remains a preserved
+fail-closed historical controller. It waits for old rows and therefore is not
+the active r1 scheduling authority. Resource-safe independent r1 dispatch is
+performed by `util/dtc_l1/dispatch_fast64_1_telemetry_rerun_now.sh`, which
+requires the formal Core/runtime identity and all target namespaces to be
+absent before exact new-Core launch. Both paths fail closed on an existing
+target; neither contains a timeout, kill, overwrite, renice, debugger, or
+cleanup action.
 
 ### Controller metadata correction — `FAST64-1-CTRL-001`
 
@@ -84,6 +87,13 @@ requires the latter identities and will reject any different configuration.
 
 ## FAST64.1 HARD checklist
 
+Counter interpretation is stage-specific: FAST64.1's
+`DTC_L1_lower_cap_full_events` is the global lower-outstanding-cap gate.
+FAST64.2's `DTC_L1_io_lower_create_queue_full_stalls` and
+`DTC_L1_oo_lower_create_queue_full_stalls` are bounded lower-create candidate
+queue backpressure. Neither is a Tag-bank conflict solely because an internal
+retry uses `BK_CONF`.
+
 | HARD item | state |
 | --- | --- |
 | resolved Base/IO/OO configs build and launch | PASS (new-Core NN triplet) |
@@ -99,6 +109,7 @@ requires the latter identities and will reject any different configuration.
 
 ## Next executable action
 
-Allow the pre-repair anchors to finish naturally. The deferred controller will
-then dispatch replacements under `bbcbb5e…`; validate them with the strict row
-validator and close the lower-cap comparison before considering FAST64.1 PASS.
+The pre-repair anchors remain live, untouched supporting evidence. Launch the
+isolated r1 rows under `bbcbb5e…` when the dynamic resource gate passes;
+validate them with the strict row validator and close the lower-cap comparison
+before considering FAST64.1 PASS.

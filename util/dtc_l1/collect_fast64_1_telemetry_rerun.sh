@@ -6,10 +6,8 @@ set -euo pipefail
 repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 runs_root=/workspace/fast64-runs
 core_sha=bbcbb5e7565417102087bc80b14c349b4e568c05
-# The deferred dispatcher was started from this Framework checkpoint; the
-# collector itself does not affect simulator/config behavior.
-framework_sha=9c59122e7b891015a2bfc30aa4ca493252c5f36d
 runtime_sha=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
+observer_sha=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
 output_dir="$repo_root/docs/dtc_l1/fast64/generated/qualification_r1"
 payload_manifest="$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv"
 validator="$repo_root/util/dtc_l1/validate_fast64_trace_row.py"
@@ -28,6 +26,8 @@ rows=(
 run_value() {
   awk -F '\t' -v key="$2" '$1 == key { value=$2 } END { print value }' "$1/RUN_MANIFEST.tsv"
 }
+
+framework_sha=
 
 while :; do
   pending=0
@@ -56,6 +56,27 @@ for row in "${rows[@]}"; do
     echo "RUNTIME_IDENTITY_MISMATCH $name $manifest_runtime" >&2
     exit 1
   }
+  test "$(run_value "$run_dir" core_source_head)" = "$core_sha" || {
+    echo "CORE_SOURCE_IDENTITY_MISMATCH $name" >&2
+    exit 1
+  }
+  test "$(run_value "$run_dir" observer_overlay_sha256)" = "$observer_sha" || {
+    echo "OBSERVER_IDENTITY_MISMATCH $name" >&2
+    exit 1
+  }
+  row_framework_sha=$(run_value "$run_dir" framework_source_head)
+  test -n "$row_framework_sha" || {
+    echo "FRAMEWORK_SOURCE_IDENTITY_MISSING $name" >&2
+    exit 1
+  }
+  if [ -z "$framework_sha" ]; then
+    framework_sha=$row_framework_sha
+  else
+    test "$framework_sha" = "$row_framework_sha" || {
+      echo "FRAMEWORK_SOURCE_IDENTITY_MISMATCH $name $row_framework_sha" >&2
+      exit 1
+    }
+  fi
   test "$(run_value "$run_dir" config_sha256)" = "$(sha256sum "$repo_root/configs/dtc_l1/fast64/$config_file" | awk '{print $1}')" || {
     echo "CONFIG_IDENTITY_MISMATCH $name" >&2
     exit 1
