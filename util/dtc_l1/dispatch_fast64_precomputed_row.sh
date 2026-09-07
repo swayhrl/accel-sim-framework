@@ -34,6 +34,35 @@ observer_sha=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
 runner="$repo_root/util/dtc_l1/run_fast64_trace.sh"
 run_dir="$runs_root/$name"
 
+# Physical acquisition is allowed to overlap logical stages only under the
+# researcher-approved pending classes.  Keep that policy mechanically
+# fail-closed so a generic wave cannot accidentally start main IO/OO rows
+# before the FAST64.2 repair qualification exists.
+fast64_2_pass="$repo_root/docs/dtc_l1/fast64/handoffs/FAST64_2_REPAIR_QUALIFICATION.md"
+case "$classification" in
+  PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE)
+    case "$mode" in IO|OO) ;; *) echo "stress diagnostic must be IO or OO" >&2; exit 2 ;; esac
+    test "$(grep -F -- '-gpgpu_dtc_l1_lower_outstanding_cap ' "$config" | tail -1)" = \
+      '-gpgpu_dtc_l1_lower_outstanding_cap 1048576' || {
+        echo "stress diagnostic requires final high/non-binding cap" >&2; exit 1;
+      }
+    ;;
+  PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE)
+    test "$mode" = BASE || {
+      echo "only Base may precompute before FAST64.2 repair PASS" >&2; exit 2;
+    }
+    ;;
+  PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE|PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE)
+    test -f "$fast64_2_pass" && grep -Fxq 'FAST64_2_REPAIR_PASS' "$fast64_2_pass" || {
+      echo "FAST64.2 repair PASS evidence is required for $classification" >&2; exit 1;
+    }
+    ;;
+  *)
+    echo "unsupported or unclassified precomputed acquisition: $classification" >&2
+    exit 2
+    ;;
+esac
+
 test "$(git -C "$core_root" rev-parse HEAD)" = "$expected_core"
 test -x "$runtime"
 test "$(sha256sum "$runtime" | awk '{print $1}')" = "$expected_runtime"
