@@ -22,6 +22,13 @@ SUMMARY_KEYS = (
     "gpu_tot_sim_cycle",
     "L1D_total_cache_accesses",
     "L1D_total_cache_misses",
+    "L1D_total_cache_pending_hits",
+    "L2_total_cache_accesses",
+    "L2_total_cache_misses",
+    "L2_total_cache_pending_hits",
+    "L2_total_cache_reservation_fails",
+    "gpgpu_n_mem_read_global",
+    "gpgpu_n_mem_write_global",
     "DTC_L1_mode",
     "DTC_L1_pib_admits",
     "DTC_L1_pib_retires",
@@ -60,6 +67,8 @@ SUMMARY_KEYS = (
     "DTC_L1_io_pib_occupancy",
     "DTC_L1_io_pib_peak_per_sm",
     "DTC_L1_io_head_not_ready_cycles",
+    "DTC_L1_io_pib_head_ready_cycles",
+    "DTC_L1_io_ready_but_writeback_blocked_cycles",
     "DTC_L1_io_hol_ready_younger_cycles",
     "DTC_L1_io_hol_ready_younger_count_sum",
     "DTC_L1_io_hol_ready_younger_peak_per_sm",
@@ -99,9 +108,19 @@ SUMMARY_KEYS = (
     "DTC_L1_oo_pib_occupancy",
     "DTC_L1_oo_retire_count",
     "DTC_L1_oo_out_of_order_retires",
+    "DTC_L1_oo_ready_but_writeback_blocked_cycles",
     "DTC_L1_oo_completion_dependency_count",
     "DTC_L1_oo_completion_dependency_closed",
     "DTC_L1_oo_active_refs",
+    "DTC_L1_oo_valid_hits",
+    "DTC_L1_oo_pending_hits",
+    "DTC_L1_oo_new_misses",
+    "DTC_L1_oo_tag_evictions",
+    "DTC_L1_oo_immediate_reclaims",
+    "DTC_L1_oo_deferred_reclaims",
+    "DTC_L1_oo_final_ref_reclaims",
+    "DTC_L1_oo_wakeups",
+    "DTC_L1_oo_physical_allocated",
     "DTC_L1_sector_lower_created",
     "DTC_L1_sector_lower_issued",
     "DTC_L1_sector_lower_responses",
@@ -148,6 +167,35 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def extract_resource_time(path):
+    """Parse GNU time -v's host-only planning fields without affecting metrics."""
+    fields = {}
+    labels = {
+        "User time (seconds)": "user_seconds",
+        "System time (seconds)": "system_seconds",
+        "Percent of CPU this job got": "cpu_percent",
+        "Elapsed (wall clock) time (h:mm:ss or m:ss)": "elapsed_wall",
+        "Maximum resident set size (kbytes)": "max_rss_kb",
+        "Major (requiring I/O) page faults": "major_page_faults",
+        "Minor (reclaiming a frame) page faults": "minor_page_faults",
+        "Voluntary context switches": "voluntary_context_switches",
+        "Involuntary context switches": "involuntary_context_switches",
+    }
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        line = line.strip()
+        for label, key in labels.items():
+            prefix = label + ":"
+            if line.startswith(prefix):
+                value = line[len(prefix):].strip().rstrip("%")
+                if key == "elapsed_wall":
+                    fields[key] = value
+                elif key in {"user_seconds", "system_seconds", "cpu_percent"}:
+                    fields[key] = float(value)
+                else:
+                    fields[key] = int(value)
+    return fields
+
+
 def require_equal(parser, metrics, left, right):
     if metrics[left] != metrics[right]:
         parser.error("counter invariant failed: %s=%r != %s=%r" %
@@ -170,6 +218,7 @@ def main():
     parser.add_argument("--config-file", type=Path)
     parser.add_argument("--workload-id", required=True)
     parser.add_argument("--workload-file", type=Path)
+    parser.add_argument("--resource-file", type=Path)
     parser.add_argument("--result-classification", required=True)
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args()
@@ -303,9 +352,14 @@ def main():
             else None,
             "source_log": str(args.log),
             "result_classification": args.result_classification,
+            "parser_sha256": sha256(Path(__file__)),
         },
         "metrics": metrics,
     }
+    if args.resource_file is not None:
+        if not args.resource_file.is_file():
+            parser.error("resource file does not exist: " + str(args.resource_file))
+        result["host"] = extract_resource_time(args.resource_file)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
 
 
