@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **READY FOR GOAL MODE**
+Status: **FAST64.1 ACTIVE_HARD_EXECUTION_FAILURE; R2 RECOVERY PREPARED ONLY**
 
 Framework branch:
 
@@ -17,6 +17,14 @@ The latter changes no DTC mechanism behavior: it exposes the pre-existing OO
 `DTC_L1_lower_cap_full_events` counter and passed exact NN Base/IO/OO
 differential. Formal FAST64 execution uses the instrumented Core/runtime; the
 former remains the mechanism semantic/source anchor.
+
+Current execution gate: the historical BICG OO@8192 r1 namespace is
+`INVALID_EXECUTION_PATH_CONTAMINATED` after a two-epoch controller anomaly.
+The source-backed future remedy is an immutable v2 runner plus explicit
+START/TERMINAL attempt receipts; do not advance FAST64.1 or launch R2 until
+the current contaminated epoch has naturally terminated and a fresh resource
+audit approves memory/swap/output headroom.  See
+`handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 ## Mission
 
