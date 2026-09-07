@@ -7,6 +7,8 @@ repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 runs_root=/workspace/fast64-runs
 core_sha=bbcbb5e7565417102087bc80b14c349b4e568c05
 framework_scientific_sha=037f008b330eb230353b60edf126d6be9f45afdc
+runtime_sha=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
+observer_sha=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
 payload_manifest="$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv"
 validator="$repo_root/util/dtc_l1/validate_fast64_trace_row.py"
 comparator="$repo_root/util/dtc_l1/compare_fast64_nonbinding_cap.py"
@@ -30,6 +32,18 @@ legacy_single_epoch() {
   test "$(rg -F -c 'GPGPU-Sim: *** exit detected ***' "$dir/simulator.stdout")" = 1
   test ! -s "$log"
 }
+verify_identity() {
+  local dir=$1 provenance=$2 config_file=$3
+  test "$(run_value "$dir" simulator_sha256)" = "$runtime_sha"
+  test "$(run_value "$dir" core_source_head)" = "$core_sha"
+  test "$(run_value "$dir" observer_overlay_sha256)" = "$observer_sha"
+  test "$(run_value "$dir" config_sha256)" = "$(sha256sum "$repo_root/configs/dtc_l1/fast64/$config_file" | awk '{print $1}')"
+  if [ "$provenance" = immutable ]; then
+    test "$(run_value "$dir" framework_scientific_config_source_sha)" = "$framework_scientific_sha"
+  else
+    test "$(run_value "$dir" framework_source_head)" = "$framework_scientific_sha"
+  fi
+}
 
 for row in "${rows[@]}"; do
   IFS='|' read -r name _ <<<"$row"
@@ -42,6 +56,10 @@ mkdir -p "$output_dir"
 for row in "${rows[@]}"; do
   IFS='|' read -r name workload mode config_id config_file provenance <<<"$row"
   dir="$runs_root/$name"
+  verify_identity "$dir" "$provenance" "$config_file" || {
+    echo "ROW_IDENTITY_MISMATCH $name" >&2
+    exit 1
+  }
   args=(--run-dir "$dir" --workload-id "$workload" --mode "$mode" --config-id "$config_id"
     --config-file "$repo_root/configs/dtc_l1/fast64/$config_file" --core-sha "$core_sha"
     --framework-sha "$framework_scientific_sha" --payload-manifest "$payload_manifest"
