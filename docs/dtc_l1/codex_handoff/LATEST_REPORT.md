@@ -17,6 +17,10 @@ swap-in/out and memory PSI, about 203 GiB `MemAvailable`, and about 71 GiB
 cgroup memory under its 256-GiB limit; under existing M5 authority, occupied
 swap without I/O is not active swap pressure.  On a natural exit, re-audit and
 dispatch the next missing R2 row only if the complete gate remains safe.
+`util/dtc_l1/audit_fast64_r2_resources.sh` is now the read-only, 60-second
+observation source for that audit: it records p95 RSS in bytes, swap/OOM/I/O,
+CPU/cpuset, cgroup memory, and output space, but deliberately cannot mark an
+admission safe or dispatch a process.
 
 ## FAST64.2 forced lower-create stress decision resolved (2026-09-08)
 

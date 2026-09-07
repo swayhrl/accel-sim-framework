@@ -44,6 +44,11 @@ every natural historical-row exit, take a fresh complete resource audit and
 admit the highest-priority missing R2 row only if it remains safe.  Continue
 source-correct controller/validator/config preparation, independent FAST64.2
 coupled-stress preparation, and evidence consistency work while waiting.
+Use `util/dtc_l1/audit_fast64_r2_resources.sh --output <external-tsv>` for the
+read-only 60-second observation.  It records correct byte-valued p95 RSS and
+all dispatcher-required raw resource fields but intentionally emits
+`safe_to_launch=UNASSESSED_REQUIRES_CURRENT_N_SAFE_JUDGMENT`; it cannot launch
+or approve a row by itself.
 
 FAST64.2's former high-cap/create-queue requirement is resolved by researcher
 authority: retain the completed BICG/IO high-cap run only as
