@@ -1,9 +1,11 @@
 # FAST64.1 — Platform and Payload Lock
 
-Status: **ACTIVE_HARD_EXECUTION_FAILURE; R1 QUALIFICATION NOT PROMOTABLE**
+Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; R1 SUPERSEDED_NONFORMAL; IMMUTABLE R2 REQUIRED**
 
-This is an active recovery checkpoint, not a FAST64.1 PASS artifact. No
-FAST64.2 work may begin from it.
+This is an active recovery checkpoint, not a FAST64.1 PASS artifact.  The
+unsatisfied HARD gate blocks FAST64.1 result/stage promotion, not independent
+source-correct preparation, validation, documentation repair, or safe dynamic
+R2 acquisition.  FAST64.2 promotion cannot occur from this artifact.
 
 ## Authority and reproducibility
 

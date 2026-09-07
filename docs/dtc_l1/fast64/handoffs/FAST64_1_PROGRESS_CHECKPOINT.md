@@ -1,12 +1,17 @@
 # FAST64.1 Progress Checkpoint
 
-Status: **ACTIVE_R1_QUALIFICATION_RUNNING — REVIEW CHECKPOINT ONLY**
+Status: **SUPERSEDED_HISTORICAL_R1_REVIEW_CHECKPOINT — NONFORMAL SUPPORTING EVIDENCE ONLY**
 
 Snapshot: `2026-09-07T08:27:49Z`
 
-This checkpoint makes the active FAST64.1 state reviewable.  It is not a
-stage PASS artifact, changes no simulator/configuration/trace behavior, and
-does not authorize FAST64.2.
+This snapshot made the then-active r1 state reviewable.  It is not a stage
+PASS artifact and changes no simulator/configuration/trace behavior.  The
+later execution-path audit supersedes r1 for formal acceptance:
+`ALL_R1_COLLECTOR_OUTPUTS = SUPERSEDED_NONFORMAL`.  Current authority is the
+seven-row immutable-r2 wave in
+`FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md` and `FAST64_1_PLATFORM.md`.
+Historical r1 rows may continue naturally, but neither their terminal state
+nor this checkpoint can authorize FAST64.1 or FAST64.2.
 
 ## Immutable stage authority
 
@@ -117,9 +122,11 @@ trace command identity. The only `deadlock` scan hit was the configuration echo
 deadlock is currently observed. CPU-time alone is startup evidence, not a
 claim of simulator-level completion or cap qualification.
 
-The r1 rows are the only rows eligible to close BICG IO/OO and GESUMMV IO
-8192-versus-1048576 qualification. They must naturally terminate, strict-parse
-and satisfy every FAST64.1 HARD comparison before FAST64.2 can begin.
+This historical r1 wave is not eligible to close BICG IO/OO or GESUMMV IO
+8192-versus-1048576 qualification.  Its rows may naturally terminate and be
+preserved as diagnostics only.  A complete fresh immutable r2 wave must
+naturally terminate, strict-parse, and satisfy the all-r2 comparisons before
+FAST64.1 can promote.
 
 ## HARD-gate ledger
 
@@ -135,10 +142,10 @@ and satisfy every FAST64.1 HARD comparison before FAST64.2 can begin.
 
 ## Review conclusion and next action
 
-There is no new HARD failure and no researcher-decision boundary. The two
-completed old OO rows are sound lifecycle anchors but deliberately cannot be
-relabeled as formal telemetry qualification. The seven isolated r1 rows are
-running under the formal instrumented Core; after their natural terminal
-states, the collector performs strict validation and the non-binding-cap
-comparators. No FAST64.2 work may start before every pending FAST64.1 HARD
-item passes.
+The two completed old OO rows remain sound lifecycle anchors but deliberately
+cannot be relabeled as formal telemetry qualification.  This snapshot's r1
+wave is now nonformal because its mutable long-lived execution path was shared
+by contaminated rows.  It is retained for diagnosis only; no result from its
+historical collectors may promote FAST64.1.  Current R2 acquisition is
+resource/CPU-slot gated and may dynamically refill while old diagnostic jobs
+continue; FAST64.2 promotion remains gated on FAST64.1 HARD PASS.
