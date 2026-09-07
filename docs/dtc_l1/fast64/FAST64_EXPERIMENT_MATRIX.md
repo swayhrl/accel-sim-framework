@@ -91,8 +91,9 @@ It is not a performance point.
 
 It may be acquired in an isolated namespace before FAST64.1 logical PASS only
 as `PRECOMPUTED_FAST64_2_DIAGNOSTIC_PENDING_FAST64_1_ACCEPTANCE`.  The overlay
-uses a high/non-binding global lower cap and reduces only the relevant
-lower-create candidate-queue/headroom control; it is never an aggregate row.
+uses a high/non-binding global lower cap and reduces the relevant source-coupled
+lower-create candidate-queue/PIB headroom control; it is never an aggregate
+row.
 
 The existing large 80-SM ATAX recovery triplet may continue independently but
 is no longer a FAST64 gate after this stage passes.
