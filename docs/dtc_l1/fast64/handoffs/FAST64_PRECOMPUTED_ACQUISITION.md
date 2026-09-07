@@ -21,7 +21,7 @@ The seven r1 qualification rows remain live and untouched: BICG Base/IO/OO at
 8192, BICG IO/OO at 1048576, and GESUMMV IO at 8192/1048576.  No terminal,
 parser, accounting, or FAST64.1 PASS claim is made here.
 
-## FAST64.2 forced-stress diagnostic — live
+## FAST64.2 forced-stress diagnostic — terminal, gate unsatisfied
 
 | item | value |
 | --- | --- |
@@ -33,12 +33,14 @@ parser, accounting, or FAST64.1 PASS claim is made here.
 | high-cap config SHA-256 | `f2de27d772e667f475c0e01a41c77c6ce66084cdcb76122ce2f58266b28b3015` |
 | overlay transformation | only `-gpgpu_dtc_l1_io_pib_entries: 256 -> 1`; final global cap remains 1048576 |
 | source meaning | the Core bounds the IO lower-create candidate queue by this mode PIB setting before physical allocation; the two controls are source-coupled |
-| live simulator | PID 4000022, CPU 81 |
+| terminal | natural exit `0` at `2026-09-07T16:42:35Z` |
 
-The overlay is diagnostic only, never a performance aggregate.  Its required
-terminal proof remains nonzero IO lower-create-queue-full stalls plus natural
-termination, zero terminal state, and conservation checks.  The external
-overlay provenance is
+The overlay is diagnostic only, never a performance aggregate.  It has natural
+termination, zero terminal state, and lower conservation, but records zero IO
+lower-create-queue-full stalls and therefore cannot close FAST64.2.  The
+source-backed semantic incompatibility and required researcher decision are
+recorded in `FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.  The external overlay
+provenance is
 `/workspace/fast64-runs/overlays/FAST64_IO_CAP1048576_STRESS_PIB1.config.PROVENANCE.tsv`.
 
 ## FAST64.3 Base acquisition — terminal but pending

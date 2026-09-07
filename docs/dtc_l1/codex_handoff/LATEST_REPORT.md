@@ -1,5 +1,23 @@
 # Latest Codex Report
 
+## FAST64.2 forced lower-create stress semantic gate (2026-09-08)
+
+The one high-cap BICG/PAPER_IO diagnostic has naturally terminated with a
+clean single execution epoch, exit 0, exact lower create/issue/response
+conservation, and drained final state.  It is **not** FAST64.2 PASS: its
+source-coupled entries-one overlay recorded
+`DTC_L1_io_lower_create_queue_full_stalls = 0`.
+
+Frozen-Core source sequencing explains why no config-only retry is valid:
+PAPER_IO produces at most one candidate per SM cycle, and the following
+cycle's pre-memory-stage issue routine removes it whenever the high global cap
+has credit.  The NoC-full path only retains a separate unbounded issue queue.
+Hence the stated high/non-binding-cap plus natural queue-full requirement is
+incompatible with this PAPER_IO path.  The record
+`fast64/handoffs/FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md` preserves the exact
+run and identifies the required researcher decision; no Core change or new
+stress run was made.
+
 ## FAST64.1 immutable R2 recovery preparation (2026-09-08)
 
 FAST64.1 remains **ACTIVE_HARD_EXECUTION_FAILURE**; no stage promotion and no
