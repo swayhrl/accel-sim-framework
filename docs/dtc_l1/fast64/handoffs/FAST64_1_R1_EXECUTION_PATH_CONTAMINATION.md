@@ -107,7 +107,9 @@ Formal R2 collectors also pass the expected A1 observer SHA to the row
 validator.  The validator compares it with `observer_overlay_sha256` in the
 run manifest and includes the observed value in compact result provenance; the
 receipt regression proves an incorrect expected observer fails before any
-metric is parsed.
+metric is parsed.  Formal R2, coupled-stress, and later dynamic-pool callers
+also pass the expected runtime binary SHA; compact result provenance records
+the observed `simulator_sha256` alongside the Core/config/observer tuple.
 
 Because two rows under the shared mutable historical execution path have now
 restarted, the former one-row r2 repair is superseded and permanently

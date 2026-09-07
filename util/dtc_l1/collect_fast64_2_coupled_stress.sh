@@ -13,6 +13,7 @@ qualification="$runs_root/validated/$row.qualification.json"
 core=bbcbb5e7565417102087bc80b14c349b4e568c05
 framework=037f008b330eb230353b60edf126d6be9f45afdc
 observer=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
+runtime=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
 classification=PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE
 payload="$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv"
 
@@ -25,7 +26,7 @@ test "$(grep -Fxc -- '-gpgpu_dtc_l1_io_pib_entries 1' "$config")" = 1
 python3 "$repo_root/util/dtc_l1/validate_fast64_trace_row.py" \
   --run-dir "$run_dir" --workload-id NN --mode IO \
   --config-id FAST64_IO_COUPLED_STRESS_CAP512_PIB1_A1_R2 --config-file "$config" \
-  --core-sha "$core" --framework-sha "$framework" --observer-sha "$observer" --payload-manifest "$payload" \
+  --core-sha "$core" --framework-sha "$framework" --observer-sha "$observer" --runtime-sha "$runtime" --payload-manifest "$payload" \
   --classification "$classification" --require-immutable-attempt --output "$summary"
 
 if rg -n -i 'post-allocation|output mismatch|checker.*fail' \

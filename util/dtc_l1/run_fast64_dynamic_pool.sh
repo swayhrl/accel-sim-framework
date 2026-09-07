@@ -33,6 +33,7 @@ dispatcher="$repo_root/util/dtc_l1/dispatch_fast64_precomputed_row.sh"
 validator="$repo_root/util/dtc_l1/validate_fast64_trace_row.py"
 core=bbcbb5e7565417102087bc80b14c349b4e568c05
 observer=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
+runtime=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
 framework=$(git -C "$repo_root" rev-parse HEAD)
 test -r "$manifest" && test -x "$dispatcher" && test -x "$validator"
 
@@ -107,7 +108,7 @@ validate_terminal() {
   }
   python3 "$validator" --run-dir "$run_dir" --workload-id "$workload" --mode "$mode" \
     --config-id "FAST64_${mode}_CAP8192_A1" --config-file "$config" \
-    --core-sha "$core" --framework-sha "$framework" --observer-sha "$observer" --payload-manifest "$manifest" \
+    --core-sha "$core" --framework-sha "$framework" --observer-sha "$observer" --runtime-sha "$runtime" --payload-manifest "$manifest" \
     --classification "$classification" --output "$output"
 }
 

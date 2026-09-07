@@ -41,6 +41,16 @@ if python3 "$validator" --run-dir "$run_normal" --workload-id NN --mode BASE \
   exit 1
 fi
 rg -q 'observer overlay identity mismatch' "$work_root/wrong-observer.out"
+if python3 "$validator" --run-dir "$run_normal" --workload-id NN --mode BASE \
+  --config-id FAST64_BASE_A1 --config-file "$runner_source" --core-sha test-core \
+  --framework-sha test-framework --observer-sha test-observer --runtime-sha wrong-runtime \
+  --payload-manifest "$runner_source" --classification FAST64_CONTROLLER_REGRESSION \
+  --output "$work_root/wrong-runtime.json" --require-immutable-attempt \
+  >"$work_root/wrong-runtime.out" 2>&1; then
+  echo "RUNTIME_MISMATCH_UNEXPECTEDLY_ACCEPTED" >&2
+  exit 1
+fi
+rg -q 'runtime binary identity mismatch' "$work_root/wrong-runtime.out"
 
 normal_manifest_sha=$(sha256sum "$run_normal/RUN_MANIFEST.tsv" | awk '{print $1}')
 if "$immutable_runner" --simulator /bin/true --config "$runner_source" --trace "$runner_source" \
