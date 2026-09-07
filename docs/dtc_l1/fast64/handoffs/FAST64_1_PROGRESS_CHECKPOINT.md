@@ -131,7 +131,7 @@ and satisfy every FAST64.1 HARD comparison before FAST64.2 can begin.
 | BICG Base/IO/OO new-Core smoke and terminal strict accounting; BICG Base 8192 global cap-full zero | seven r1 rows live; natural terminal pending | PENDING |
 | BICG IO/OO candidate-vs-high exact comparison; each 8192 candidate global cap-full zero | r1 BICG comparison pairs live | PENDING |
 | GESUMMV IO candidate-vs-high exact comparison; 8192 candidate global cap-full zero | r1 GESUMMV comparison pair live | PENDING |
-| formal row runtime/Core/config/observer provenance | launch manifests recorded; terminal strict validation pending | PENDING |
+| formal row runtime/Core/config/observer/payload provenance and exact execution source `037f008b…` | launch manifests recorded; terminal strict validation pending | PENDING |
 
 ## Review conclusion and next action
 

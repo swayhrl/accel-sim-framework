@@ -8,6 +8,9 @@ runs_root=/workspace/fast64-runs
 core_sha=bbcbb5e7565417102087bc80b14c349b4e568c05
 runtime_sha=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
 observer_sha=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
+# Immutable source snapshot that dispatched the live r1 rows.  A later
+# review/checkpoint commit must never become their execution identity.
+framework_sha=037f008b330eb230353b60edf126d6be9f45afdc
 output_dir="$repo_root/docs/dtc_l1/fast64/generated/qualification_r1"
 payload_manifest="$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv"
 validator="$repo_root/util/dtc_l1/validate_fast64_trace_row.py"
@@ -26,8 +29,6 @@ rows=(
 run_value() {
   awk -F '\t' -v key="$2" '$1 == key { value=$2 } END { print value }' "$1/RUN_MANIFEST.tsv"
 }
-
-framework_sha=
 
 while :; do
   pending=0
@@ -65,18 +66,10 @@ for row in "${rows[@]}"; do
     exit 1
   }
   row_framework_sha=$(run_value "$run_dir" framework_source_head)
-  test -n "$row_framework_sha" || {
-    echo "FRAMEWORK_SOURCE_IDENTITY_MISSING $name" >&2
+  test "$row_framework_sha" = "$framework_sha" || {
+    echo "FRAMEWORK_SOURCE_IDENTITY_MISMATCH $name $row_framework_sha" >&2
     exit 1
   }
-  if [ -z "$framework_sha" ]; then
-    framework_sha=$row_framework_sha
-  else
-    test "$framework_sha" = "$row_framework_sha" || {
-      echo "FRAMEWORK_SOURCE_IDENTITY_MISMATCH $name $row_framework_sha" >&2
-      exit 1
-    }
-  fi
   test "$(run_value "$run_dir" config_sha256)" = "$(sha256sum "$repo_root/configs/dtc_l1/fast64/$config_file" | awk '{print $1}')" || {
     echo "CONFIG_IDENTITY_MISMATCH $name" >&2
     exit 1

@@ -217,6 +217,7 @@ def main():
     parser.add_argument("--config-id", required=True)
     parser.add_argument("--config-file", type=Path)
     parser.add_argument("--workload-id", required=True)
+    parser.add_argument("--mode", choices=("BASE", "IO", "OO"))
     parser.add_argument("--workload-file", type=Path)
     parser.add_argument("--resource-file", type=Path)
     parser.add_argument("--result-classification", required=True)
@@ -241,6 +242,18 @@ def main():
         }
     )
     if args.strict:
+        if args.mode is not None:
+            expected_modes = {
+                "BASE": "PAPER_BASE",
+                "IO": "PAPER_IO",
+                "OO": "PAPER_OO",
+            }
+            expected_mode = expected_modes[args.mode]
+            if metrics.get("DTC_L1_mode") != expected_mode:
+                parser.error(
+                    "resolved DTC mode disagrees with requested row mode: "
+                    f"{metrics.get('DTC_L1_mode')!r} != {expected_mode!r}"
+                )
         for required in ("gpu_tot_sim_insn", "gpu_tot_sim_cycle"):
             if required not in metrics:
                 parser.error("missing required simulator metric: " + required)

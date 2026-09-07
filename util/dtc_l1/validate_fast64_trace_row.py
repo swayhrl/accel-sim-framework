@@ -93,7 +93,8 @@ def main() -> int:
         sys.executable, str(parser_path), str(stdout), "--output", str(args.output),
         "--core-sha", args.core_sha, "--framework-sha", args.framework_sha,
         "--config-id", args.config_id, "--config-file", str(args.config_file),
-        "--workload-id", args.workload_id, "--workload-file", str(args.payload_manifest),
+        "--workload-id", args.workload_id, "--mode", args.mode,
+        "--workload-file", str(args.payload_manifest),
         "--resource-file", str(resource), "--result-classification", args.classification,
         "--strict",
     ]
