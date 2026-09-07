@@ -142,6 +142,13 @@ growth, or unsafe output headroom.
 Use dynamic refill: when one row exits, validate it and immediately dispatch
 the highest-priority eligible row if resources remain safe.
 
+Use `util/dtc_l1/run_fast64_dynamic_pool.sh` for an authorized formal wave.
+It pins one Framework source identity for the pool, records isolated rows,
+strict-validates each natural terminal before refilling its physical CPU slot,
+and fails closed for a missing supervisor, missing terminal state, identity
+mismatch, or parser/accounting failure.  It does not authorize a stage; its
+pending-class policy remains enforced by the row dispatcher.
+
 ## 6. Priority within stages
 
 ### FAST64.1

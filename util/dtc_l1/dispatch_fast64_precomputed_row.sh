@@ -3,11 +3,11 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: $0 --name NAME --workload NAME --mode BASE|IO|OO --config PATH --cpu N --classification LABEL [--dry-run]" >&2
+  echo "usage: $0 --name NAME --workload NAME --mode BASE|IO|OO --config PATH --cpu N --classification LABEL [--framework-source-head SHA] [--dry-run]" >&2
   exit 2
 }
 
-name= workload= mode= config= cpu= classification= dry_run=0
+name= workload= mode= config= cpu= classification= framework_source_head= dry_run=0
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --name) name=${2:-}; shift 2 ;;
@@ -16,6 +16,7 @@ while [ "$#" -gt 0 ]; do
     --config) config=${2:-}; shift 2 ;;
     --cpu) cpu=${2:-}; shift 2 ;;
     --classification) classification=${2:-}; shift 2 ;;
+    --framework-source-head) framework_source_head=${2:-}; shift 2 ;;
     --dry-run) dry_run=1; shift ;;
     *) usage ;;
   esac
@@ -73,7 +74,8 @@ trace_root=$(awk -F '\t' -v workload="${workload,,}" '$1 == workload { print $2;
   "$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv")
 test -n "$trace_root"
 test -r "$trace_root/kernelslist.g"
-framework_sha=$(git -C "$repo_root" rev-parse HEAD)
+framework_sha=${framework_source_head:-$(git -C "$repo_root" rev-parse HEAD)}
+git -C "$repo_root" cat-file -e "$framework_sha^{commit}"
 
 if [ "$dry_run" = 1 ]; then
   printf 'DRY_RUN_PASS\tname=%s\tframework=%s\tcore=%s\ttrace=%s\n' \
