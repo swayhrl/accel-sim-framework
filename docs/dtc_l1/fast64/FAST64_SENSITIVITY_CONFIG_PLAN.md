@@ -70,6 +70,8 @@ the extra 256 point is explicitly retained by the FAST64 scope.
 1. Do not materialize a sensitivity config or launch a sensitivity row until
    `handoffs/FAST64_2_REPAIR_QUALIFICATION.md` contains the exact line
    `FAST64_2_REPAIR_PASS`.
+   `util/dtc_l1/materialize_fast64_sensitivity_configs.sh` enforces this gate;
+   its `--plan-only` mode is read-only mapping audit only.
 2. Every generated config must have a one-dimensional resolved-config diff
    against its corresponding 16-KiB/640-line/primary-PIB mode identity.
 3. Every row uses the formal instrumented Core
