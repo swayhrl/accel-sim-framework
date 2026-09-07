@@ -11,8 +11,12 @@ change: Core/runtime/observer/payload/config binding and atomic immutable-v2
 receipts are unchanged.  A dry-run found all seven slots currently occupied
 by live historical R1 simulators, so no R2 launch occurred and no simulator or
 mapped historical collector was touched.  FAST64.1 remains
-`FAST64_1_R2_RESOURCE_WAIT_ACTIVE`; on a natural exit, re-audit and dispatch
-the next missing R2 row if the resource gate passes.
+`FAST64_1_R2_CPU_SLOT_WAIT_ACTIVE`: the 74--80 isolated slots are all occupied
+by historical R1 simulators.  A fresh 60-second host sample found zero
+swap-in/out and memory PSI, about 203 GiB `MemAvailable`, and about 71 GiB
+cgroup memory under its 256-GiB limit; under existing M5 authority, occupied
+swap without I/O is not active swap pressure.  On a natural exit, re-audit and
+dispatch the next missing R2 row only if the complete gate remains safe.
 
 ## FAST64.2 forced lower-create stress decision resolved (2026-09-08)
 
@@ -62,12 +66,12 @@ a scientific wait barrier.  The whole r1 qualification wave is
 nonformal.  See
 `fast64/handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
-R2 admission is **FAST64_1_R2_RESOURCE_WAIT_ACTIVE**, not Goal blocked: the
-fresh audit keeps launch fail-closed while swap headroom is exhausted.  The
-dispatcher/collector/config/identity preparation and independent FAST64.2
-diagnostic work remain authorized; whenever a historical job naturally exits,
-take a new resource audit and admit the highest-priority safe R2 row without a
-wait-for-all barrier.
+The earlier R2 resource snapshot was `FAST64_1_R2_RESOURCE_WAIT_ACTIVE`, not
+Goal blocked.  It has since been superseded by the fresh CPU-slot-wait
+observation above; the dispatcher/collector/config/identity preparation and
+independent FAST64.2 diagnostic work remain authorized.  Whenever a historical
+job naturally exits, take a new resource audit and admit the highest-priority
+safe R2 row without a wait-for-all barrier.
 
 ## FAST64.1 r1 execution-path contamination (2026-09-07)
 

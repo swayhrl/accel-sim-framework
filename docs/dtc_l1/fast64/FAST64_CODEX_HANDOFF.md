@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_RESOURCE_WAIT_ACTIVE; IMMUTABLE R2 RECOVERY AND FAST64.2 COUPLED-STRESS PREPARATION READY**
+Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_CPU_SLOT_WAIT_ACTIVE; IMMUTABLE R2 RECOVERY AND FAST64.2 COUPLED-STRESS PREPARATION READY**
 
 Framework branch:
 
@@ -28,11 +28,16 @@ old r1 jobs remain diagnostic and are not a scientific launch barrier.  See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 The unsatisfied FAST64.1 HARD requirements block only FAST64.1 result/stage
-promotion.  They do not block the persistent Goal: while an R2 resource audit
-is unsafe, continue source-correct controller/validator/config preparation,
-independent FAST64.2 coupled-stress preparation, and evidence consistency
-work.  On every natural historical-row exit, take a fresh resource audit and
-admit the highest-priority missing R2 row when it is safe.
+promotion.  They do not block the persistent Goal.  The current wait is CPU
+slot availability: all isolated `74-80` slots remain occupied by the preserved
+historical R1 jobs.  The fresh 60-second observation has zero `vmstat si/so`,
+zero cgroup memory PSI, approximately 203 GiB `MemAvailable`, and about 71
+GiB current cgroup memory under a 256-GiB limit; existing M5 authority treats
+occupied swap without current I/O as non-pressure, not usable headroom.  On
+every natural historical-row exit, take a fresh complete resource audit and
+admit the highest-priority missing R2 row only if it remains safe.  Continue
+source-correct controller/validator/config preparation, independent FAST64.2
+coupled-stress preparation, and evidence consistency work while waiting.
 
 FAST64.2's former high-cap/create-queue requirement is resolved by researcher
 authority: retain the completed BICG/IO high-cap run only as
