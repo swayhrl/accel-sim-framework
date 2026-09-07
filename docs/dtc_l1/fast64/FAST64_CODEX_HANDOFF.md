@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **FAST64.1 ACTIVE_HARD_EXECUTION_FAILURE; IMMUTABLE R2 RECOVERY AND FAST64.2 COUPLED-STRESS PREPARATION READY**
+Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_RESOURCE_WAIT_ACTIVE; IMMUTABLE R2 RECOVERY AND FAST64.2 COUPLED-STRESS PREPARATION READY**
 
 Framework branch:
 
@@ -26,6 +26,13 @@ not advance FAST64.1 until the full R2 wave passes.  R2 acquisition can
 dynamically begin when a fresh resource audit approves the admitted workers;
 old r1 jobs remain diagnostic and are not a scientific launch barrier.  See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
+
+The unsatisfied FAST64.1 HARD requirements block only FAST64.1 result/stage
+promotion.  They do not block the persistent Goal: while an R2 resource audit
+is unsafe, continue source-correct controller/validator/config preparation,
+independent FAST64.2 coupled-stress preparation, and evidence consistency
+work.  On every natural historical-row exit, take a fresh resource audit and
+admit the highest-priority missing R2 row when it is safe.
 
 FAST64.2's former high-cap/create-queue requirement is resolved by researcher
 authority: retain the completed BICG/IO high-cap run only as
