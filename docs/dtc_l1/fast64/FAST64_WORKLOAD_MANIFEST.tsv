@@ -1,0 +1,24 @@
+rank	workload	suite	input_label	planning_trace_size	role	trace_source_family	primary_status
+1	atax	PolyBench	NO_ARGS	~228 MiB	thesis-overlap; structural/memory-pressure case	C2P paper16 canonical trace	FROZEN_PRIMARY
+2	bicg	PolyBench	NO_ARGS	~228 MiB	thesis-overlap; mechanism-anchor overlap	C2P paper16 canonical trace	FROZEN_PRIMARY
+3	gesummv	PolyBench	NO_ARGS	~302 MiB	thesis-overlap; dense/vector memory case	C2P paper16 canonical trace	FROZEN_PRIMARY
+4	gemm	PolyBench	NO_ARGS	~1.1 GiB	dense/reuse case	C2P paper16 canonical trace	FROZEN_PRIMARY
+5	2DConvolution	PolyBench	NO_ARGS	~803 MiB	compute/reuse control	C2P paper16 canonical trace	FROZEN_PRIMARY
+6	btree	Rodinia-3.1	file ./data/mil.txt command ./data/command.txt	~773 MiB	irregular/pointer-search case	C2P paper16 canonical trace	FROZEN_PRIMARY
+7	dwt2d	Rodinia-3.1	1024x1024; -f -5 -l 3	~404 MiB	transform/stage-locality case	C2P paper16 canonical trace	FROZEN_PRIMARY
+8	gaussian	Rodinia-3.1	-s 256	~838 MiB	dense/update control	C2P paper16 canonical trace	FROZEN_PRIMARY
+9	hotspot1	Rodinia-3.1	1024x1024; 2 iterations	~994 MiB	structured-stencil case	C2P paper16 canonical trace	FROZEN_PRIMARY
+10	lud	Rodinia-3.1	matrix-512	~1.5 GiB	blocked factorization/update case	C2P paper16 canonical trace	FROZEN_PRIMARY
+11	nn	Rodinia-3.1	filelist-4; r=5; lat=30; lng=90	~2 MiB	very-light/low-pressure control	C2P paper16 canonical trace	FROZEN_PRIMARY
+12	mri-q	Parboil	32x32x32 small input	~1.7 GiB	third-suite scientific streaming case	C2P paper16 canonical trace	FROZEN_PRIMARY
+
+# Selection rule
+# - The primary roster is frozen before any FAST64 IO/OO performance is observed.
+# - It is the <=~2 GiB representative subset chosen from the already frozen C2P paper16 payload family, with suite/domain diversity retained.
+# - Do not remove a row because IO/OO speedup is weak/negative.
+# - Do not change an input based on DTC benefit.
+# - Planning sizes are historical scheduling estimates, not payload identity. FAST64.1 must hash the exact ordered trace payload for each row.
+
+# Deliberately excluded from the primary performance roster for resource cost, not performance:
+# cutcp (~11 GiB), stencil (~3.5 GiB), 3mm (~2.8 GiB), sgemm (~2.1 GiB).
+# They remain eligible as optional auxiliary/generalization workloads after FAST64.4 if resources justify them.
