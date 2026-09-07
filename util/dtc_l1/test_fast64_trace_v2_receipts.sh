@@ -31,6 +31,16 @@ test "$(awk -F '\t' '$1 == "simulator_exit_status" { count++; value=$2 } END { i
 test "$(find "$run_normal" -maxdepth 1 -name '.RUN_*.tmp.*' -print -quit)" = ""
 test $((8#$(stat -c %a "$run_normal/RUN_START.tsv") & 0222)) -eq 0
 test $((8#$(stat -c %a "$run_normal/RUN_TERMINAL.tsv") & 0222)) -eq 0
+if python3 "$validator" --run-dir "$run_normal" --workload-id NN --mode BASE \
+  --config-id FAST64_BASE_A1 --config-file "$runner_source" --core-sha test-core \
+  --framework-sha test-framework --observer-sha wrong-observer \
+  --payload-manifest "$runner_source" --classification FAST64_CONTROLLER_REGRESSION \
+  --output "$work_root/wrong-observer.json" --require-immutable-attempt \
+  >"$work_root/wrong-observer.out" 2>&1; then
+  echo "OBSERVER_MISMATCH_UNEXPECTEDLY_ACCEPTED" >&2
+  exit 1
+fi
+rg -q 'observer overlay identity mismatch' "$work_root/wrong-observer.out"
 
 normal_manifest_sha=$(sha256sum "$run_normal/RUN_MANIFEST.tsv" | awk '{print $1}')
 if "$immutable_runner" --simulator /bin/true --config "$runner_source" --trace "$runner_source" \
@@ -67,7 +77,7 @@ test ! -n "$(awk -F '\t' '$1 == "simulator_exit_status" { print; exit }' "$run_c
 rg -q 'RECEIPT_DESTINATION_ALREADY_EXISTS' "$work_root/collision.out"
 if python3 "$validator" --run-dir "$run_collision" --workload-id NN --mode BASE \
   --config-id FAST64_BASE_A1 --config-file "$runner_source" --core-sha test-core \
-  --framework-sha test-framework --payload-manifest "$runner_source" \
+  --framework-sha test-framework --observer-sha test-observer --payload-manifest "$runner_source" \
   --classification FAST64_CONTROLLER_REGRESSION \
   --output "$work_root/collision.json" --require-immutable-attempt \
   >"$work_root/collision-validator.out" 2>&1; then

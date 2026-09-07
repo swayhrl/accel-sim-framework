@@ -47,7 +47,7 @@ for row in "${rows[@]}"; do
   verify_identity "$dir" "$config_file" || { echo "ROW_IDENTITY_MISMATCH $name" >&2; exit 1; }
   "$validator" --run-dir "$dir" --workload-id "$workload" --mode "$mode" \
     --config-id "$config_id" --config-file "$repo_root/configs/dtc_l1/fast64/$config_file" \
-    --core-sha "$core_sha" --framework-sha "$framework_scientific_sha" \
+    --core-sha "$core_sha" --framework-sha "$framework_scientific_sha" --observer-sha "$observer_sha" \
     --payload-manifest "$payload_manifest" --classification FAST64_1_R2_FULL_WAVE \
     --output "$output_dir/$name.json" --require-immutable-attempt
 done

@@ -103,6 +103,11 @@ The controller also separates the frozen scientific/config snapshot
 from parser/validator identity.  The v2 `/bin/true` controller test passed
 receipt creation, immutable-path/SHA binding, natural exit-0 recording, and
 fail-closed rejection of a duplicate namespace.  It is not a simulator result.
+Formal R2 collectors also pass the expected A1 observer SHA to the row
+validator.  The validator compares it with `observer_overlay_sha256` in the
+run manifest and includes the observed value in compact result provenance; the
+receipt regression proves an incorrect expected observer fails before any
+metric is parsed.
 
 Because two rows under the shared mutable historical execution path have now
 restarted, the former one-row r2 repair is superseded and permanently

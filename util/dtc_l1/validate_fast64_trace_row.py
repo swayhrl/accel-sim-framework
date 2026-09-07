@@ -75,7 +75,7 @@ def validate_immutable_attempt(args: argparse.Namespace, run_manifest: pathlib.P
     required_manifest = (
         "runner_schema", "runner_sha256", "immutable_runner_path", "attempt_uuid",
         "framework_scientific_config_source_sha", "core_source_head",
-        "launch_utc", "simulator_exit_status", "terminal_utc",
+        "observer_overlay_sha256", "launch_utc", "simulator_exit_status", "terminal_utc",
     )
     manifest = {key: run_value(run_manifest, key) for key in required_manifest}
     if manifest["runner_schema"] != "FAST64_TRACE_V2_IMMUTABLE_ATTEMPT":
@@ -84,6 +84,8 @@ def validate_immutable_attempt(args: argparse.Namespace, run_manifest: pathlib.P
         raise ValueError("framework scientific/config source identity mismatch")
     if manifest["core_source_head"] != args.core_sha:
         raise ValueError("Core source identity mismatch")
+    if args.observer_sha is not None and manifest["observer_overlay_sha256"] != args.observer_sha:
+        raise ValueError("observer overlay identity mismatch")
     runner = pathlib.Path(manifest["immutable_runner_path"])
     if not runner.is_file() or sha256(runner) != manifest["runner_sha256"]:
         raise ValueError("immutable runner path/SHA no longer verifies")
@@ -138,6 +140,8 @@ def main() -> int:
     parser.add_argument("--config-file", required=True, type=pathlib.Path)
     parser.add_argument("--core-sha", required=True)
     parser.add_argument("--framework-sha", required=True)
+    parser.add_argument("--observer-sha",
+                        help="expected observer overlay SHA-256; required by formal collectors")
     parser.add_argument("--payload-manifest", required=True, type=pathlib.Path)
     parser.add_argument("--classification", required=True)
     parser.add_argument("--output", required=True, type=pathlib.Path)
@@ -155,6 +159,9 @@ def main() -> int:
             parser.error("required file does not exist: " + str(path))
     if run_value(run_manifest, "simulator_exit_status") != "0":
         parser.error("simulator did not terminate with exit status zero")
+    manifest_observer_sha = run_value(run_manifest, "observer_overlay_sha256")
+    if args.observer_sha is not None and manifest_observer_sha != args.observer_sha:
+        parser.error("observer overlay identity mismatch")
 
     immutable_attempt: dict[str, str] | None = None
     if args.require_immutable_attempt:
@@ -201,6 +208,7 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(command, check=True)
     result = json.loads(args.output.read_text(encoding="utf-8"))
+    result["provenance"]["observer_overlay_sha256"] = manifest_observer_sha
     result["external_artifacts"] = {
         "run_dir": str(args.run_dir),
         "run_manifest_sha256": sha256(run_manifest),

@@ -67,7 +67,7 @@ for row in "${rows[@]}"; do
   }
   args=(--run-dir "$dir" --workload-id "$workload" --mode "$mode" --config-id "$config_id"
     --config-file "$repo_root/configs/dtc_l1/fast64/$config_file" --core-sha "$core_sha"
-    --framework-sha "$framework_scientific_sha" --payload-manifest "$payload_manifest"
+    --framework-sha "$framework_scientific_sha" --observer-sha "$observer_sha" --payload-manifest "$payload_manifest"
     --classification FAST64_1_R2_RECOVERY --output "$output_dir/$name.json")
   if [ "$provenance" = immutable ]; then
     "$validator" "${args[@]}" --require-immutable-attempt
