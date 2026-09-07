@@ -7,9 +7,10 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: run_m4c_replay.sh --framework-root DIR --core-root DIR --simulator PATH \
-  --roi {prefill|decode1} --profile {disabled|ideal|generic|paper} \
+  --roi {prefill|decode1|nonllm} --profile {disabled|ideal|generic|paper} \
   --trace-list LIST --trace-dir DIR --run-dir DIR [--max-kernels N] \
-  [--telemetry-level {0|1|2|3}] [--window-transactions N]
+  [--telemetry-level {0|1|2|3}] [--window-transactions N] [--object-map PATH|NONE] \
+  [--extra-config PATH]
 
 The trace list must be one of the immutable semantic policy derivatives.  A
 fresh `traces/` directory of symlinks is made below RUN-DIR so bounded and full
@@ -28,6 +29,8 @@ run_dir=""
 max_kernels=0
 telemetry_level=2
 window_transactions=1000000
+extra_config=""
+object_map_override=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --framework-root) framework_root="$2"; shift 2 ;;
@@ -41,6 +44,8 @@ while [[ $# -gt 0 ]]; do
     --max-kernels) max_kernels="$2"; shift 2 ;;
     --telemetry-level) telemetry_level="$2"; shift 2 ;;
     --window-transactions) window_transactions="$2"; shift 2 ;;
+    --extra-config) extra_config="$2"; shift 2 ;;
+    --object-map) object_map_override="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "unknown argument: $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -49,7 +54,7 @@ done
 [[ -n "$framework_root" && -n "$core_root" && -x "$simulator" && -n "$roi" && -n "$profile" && -f "$trace_list" && -d "$trace_dir" && -n "$run_dir" ]] || {
   usage >&2; exit 2;
 }
-[[ "$roi" == prefill || "$roi" == decode1 ]] || { echo "invalid ROI" >&2; exit 2; }
+[[ "$roi" == prefill || "$roi" == decode1 || "$roi" == nonllm ]] || { echo "invalid ROI" >&2; exit 2; }
 [[ "$profile" == disabled || "$profile" == ideal || "$profile" == generic || "$profile" == paper ]] || { echo "invalid profile" >&2; exit 2; }
 [[ "$telemetry_level" =~ ^[0-3]$ ]] || { echo "invalid telemetry level" >&2; exit 2; }
 [[ "$max_kernels" =~ ^[0-9]+$ && "$window_transactions" =~ ^[1-9][0-9]*$ ]] || { echo "invalid bounded-run parameter" >&2; exit 2; }
@@ -58,7 +63,15 @@ done
 case "$roi" in
   prefill) object_map="$framework_root/configs/vm_tlb/object_maps/M4C_PREFILL_OBJECT_MAP.tsv" ;;
   decode1) object_map="$framework_root/configs/vm_tlb/object_maps/M4C_DECODE1_OBJECT_MAP.tsv" ;;
+  nonllm) object_map="" ;;
 esac
+if [[ -n "$object_map_override" ]]; then
+  if [[ "$object_map_override" == "NONE" ]]; then
+    object_map=""
+  else
+    object_map="$object_map_override"
+  fi
+fi
 case "$profile" in
   disabled) profile_config="$framework_root/configs/vm_tlb/M4C_CONTROL_VM_DISABLED.config" ;;
   ideal) profile_config="$framework_root/configs/vm_tlb/M4C_CONTROL_VM_IDEAL_IDENTITY.config" ;;
@@ -67,9 +80,14 @@ case "$profile" in
 esac
 base_config="$core_root/configs/tested-cfgs/SM86_RTX3070/gpgpusim.config"
 trace_config="$framework_root/gpu-simulator/configs/tested-cfgs/SM86_RTX3070/trace.config"
-for input in "$object_map" "$profile_config" "$base_config" "$trace_config"; do
+for input in "$profile_config" "$base_config" "$trace_config"; do
   [[ -f "$input" ]] || { echo "missing immutable input: $input" >&2; exit 2; }
 done
+[[ -z "$object_map" || -f "$object_map" ]] || { echo "missing object map: $object_map" >&2; exit 2; }
+if [[ -n "$extra_config" && ! -f "$extra_config" ]]; then
+  echo "missing extra config: $extra_config" >&2
+  exit 2
+fi
 
 # Trace replay must bind to the locally built simulator runtime, never to a
 # host CUDA libcudart with the same SONAME.  That binding is part of the run
@@ -90,16 +108,26 @@ else
 fi
 [[ -s "$selected_list" ]] || { echo "selected trace list is empty" >&2; exit 2; }
 while IFS= read -r trace_name; do
-  [[ "$trace_name" =~ ^[A-Za-z0-9._-]+\.traceg\.xz$ ]] || {
-    echo "unsafe/unexpected trace-list entry: $trace_name" >&2; exit 2;
-  }
-  [[ -f "$trace_dir/$trace_name" ]] || { echo "missing trace: $trace_name" >&2; exit 2; }
-  ln -s "$trace_dir/$trace_name" "$run_dir/traces/$trace_name"
+  if [[ "$trace_name" =~ ^[A-Za-z0-9._-]+\.traceg(\.xz)?$ ]]; then
+    [[ -f "$trace_dir/$trace_name" ]] || { echo "missing trace: $trace_name" >&2; exit 2; }
+    ln -s "$trace_dir/$trace_name" "$run_dir/traces/$trace_name"
+  elif [[ "$trace_name" =~ ^MemcpyHtoD,0x[0-9A-Fa-f]+,[0-9]+$ ]]; then
+    # These immutable trace-list records are simulator commands, not files.
+    # Preserve them verbatim for compatible conventional workloads.
+    :
+  else
+    echo "unsafe/unexpected trace-list entry: $trace_name" >&2; exit 2
+  fi
 done < "$selected_list"
 
 cat "$base_config" "$trace_config" "$profile_config" > "$run_dir/gpgpusim.config"
-printf '%s\n' "-gpgpu_vm_object_map $object_map" \
-  "-gpgpu_memory_telemetry_level $telemetry_level" \
+if [[ -n "$extra_config" ]]; then
+  cat "$extra_config" >> "$run_dir/gpgpusim.config"
+fi
+if [[ -n "$object_map" ]]; then
+  printf '%s\n' "-gpgpu_vm_object_map $object_map" >> "$run_dir/gpgpusim.config"
+fi
+printf '%s\n' "-gpgpu_memory_telemetry_level $telemetry_level" \
   "-gpgpu_memory_telemetry_window_transactions $window_transactions" \
   >> "$run_dir/gpgpusim.config"
 
@@ -110,9 +138,18 @@ printf '%s\n' "-gpgpu_vm_object_map $object_map" \
   printf 'telemetry_level\t%s\n' "$telemetry_level"
   printf 'window_transactions\t%s\n' "$window_transactions"
   printf 'max_kernels\t%s\n' "$max_kernels"
+  printf 'extra_config\t%s\n' "${extra_config:-NONE}"
+  printf 'object_map\t%s\n' "${object_map:-NONE}"
   printf 'framework_head\t%s\n' "$(git -C "$framework_root" rev-parse HEAD)"
   printf 'core_head\t%s\n' "$(git -C "$core_root" rev-parse HEAD)"
-  sha256sum "$base_config" "$trace_config" "$profile_config" "$object_map" "$trace_list" "$selected_list" "$run_dir/gpgpusim.config" |
+  hash_inputs=("$base_config" "$trace_config" "$profile_config" "$trace_list" "$selected_list" "$run_dir/gpgpusim.config")
+  if [[ -n "$object_map" ]]; then
+    hash_inputs+=("$object_map")
+  fi
+  if [[ -n "$extra_config" ]]; then
+    hash_inputs+=("$extra_config")
+  fi
+  sha256sum "${hash_inputs[@]}" |
     awk '{print "sha256:" $2 "\t" $1}'
 } > "$run_dir/RUN_MANIFEST.tsv"
 
