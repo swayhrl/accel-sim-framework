@@ -104,7 +104,7 @@ retry uses `BK_CONF`.
 | no C2P 64-KiB/32-way or peer mechanism | PASS |
 | machine-readable diff has no unrelated mode difference | PASS |
 | all FAST12 payload identities frozen | PASS |
-| 8192 non-binding versus high cap | PENDING new-Core BICG IO/OO and GESUMMV IO pairs |
+| 8192 non-binding versus high cap; global cap-full events zero on every 8192 candidate row | PENDING new-Core BICG Base plus BICG IO/OO and GESUMMV IO pairs |
 | Core/runtime/config/observer provenance | PASS for completed rows; PENDING replacement rows |
 
 ## Next executable action

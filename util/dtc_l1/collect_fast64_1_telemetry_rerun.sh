@@ -109,6 +109,7 @@ import sys
 
 out = pathlib.Path(sys.argv[1])
 for name in (
+    'fast64_1r1_bicg_base_cap8192_a1',
     'fast64_1r1_bicg_io_cap8192_a1',
     'fast64_1r1_bicg_oo_cap8192_a1',
     'fast64_1r1_gesummv_io_cap8192_a1',
