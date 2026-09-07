@@ -1,0 +1,16 @@
+id	case	artifact	result	interpretation
+V1a	non-identity VA VPN16 -> PPN256	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+V1b	multi-page arithmetic and second PA extent	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+V1c	wrong ASID/boundary/non-read fallback	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+V1d	write conventional PTE equals descriptor PA	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+V2a	Segment-first immediate ownership/lower suppression	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+V2b	L1-first ownership under Lseg=20	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+V2c	updated frozen C3 HIT_FIRST contract	vm_m4b_weight_segmentation_test.cc	SOURCE_UPDATED_UNRUN	post-delta execution deferred
+V4a	G96=6 sets; G32=2 sets	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+V4b	sibling leaf/empty release/ASID/global flush	vm_c10a_registered_segment_test.cc	SOURCE_ADDED_UNRUN	new focused directed test
+F1	F0--F9 formulas and H0 guard	util/vm_tlb/validate_c10a_fair_contract.py	PASS	Python static validation
+S0	whitespace/error scan	git diff --check in both repositories	PASS	static validation only
+C0	translation-only g++ compile -j1, interim source	g++ test+vm_translation.cc	PASS_AT_5191BB5B_ONLY	binary was not executed; later c27bf0e2 delta remains unbuilt
+R0	post-delta compile/link/run/full regression	C10-B	DEFERRED_TO_C10B_FULL_BUILD	Swap gate forbade further compile/run
+
+`SOURCE_ADDED_UNRUN` is explicitly not a passing execution test.

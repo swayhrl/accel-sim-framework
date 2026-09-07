@@ -1,0 +1,20 @@
+key	meaning	implementation_status	caveat
+vm_weight_segment_registration_schema	V2 versus historical V1	IMPLEMENTED	V1 is historical/unfair only
+vm_weight_segment_provisioned_asid	active registered ASID	IMPLEMENTED	construction-time immutable state
+vm_weight_segment_active_epoch	active registered epoch	IMPLEMENTED	no runtime epoch transition
+vm_weight_segment_local_table_entries	N descriptor slots	IMPLEMENTED	V2 parser caps N=8
+vm_weight_segment_local_table_replicas	logical local replica count	IMPLEMENTED	must be 35 in F7/F8 future config
+vm_weight_segment_local_accepts_per_cycle	local admission contract	IMPLEMENTED	fixed v1 contract = 1
+vm_weight_segment_lookup_latency_cycles	configured Lseg	IMPLEMENTED	profile selection plumbing deferred
+vm_weight_segment_lookup_attempts	candidate attempts at local admission	IMPLEMENTED	object labels do not control it
+vm_weight_segment_lookup_accepts	accepted Segment operations	IMPLEMENTED	lockstep with accepted L1 admission
+vm_weight_segment_port_denials	admission denies	IMPLEMENTED	represented by existing L1 local-port denial
+vm_weight_segment_lookup_completions/hits/misses	Segment service outcomes	IMPLEMENTED	directed execution deferred
+vm_weight_segment_fallback_{no_descriptor,asid,epoch,rights,boundary}	reasoned conservative fallback	IMPLEMENTED	no dynamic table-overflow event path
+vm_weight_segment_{l1_first,first}_owners	winner ordering	IMPLEMENTED	`first` means Segment-first
+vm_weight_segment_both_miss	MISS_JOIN outcome	IMPLEMENTED	one increment before lower launch
+vm_weight_segment_miss_join_wait_cycles	interval between first/final miss observation	IMPLEMENTED	bounded aggregate
+vm_weight_segment_late_result_discards	logical late loser cancellation	IMPLEMENTED	no physical background response model
+vm_weight_segment_mapping_mismatch_faults	dual-map consistency fault	IMPLEMENTED	assert follows increment
+vm_weight_segment_{install,revoke}_{attempts,acks}	lifecycle events	PARTIAL	install is construction-time only; revoke absent
+existing vm_l1/vm_l2/mshr/pwq/walker/pwc/pte/requester/memory telemetry	conventional and cross-layer continuity	PRESERVED_SOURCE	full binary schema check deferred C10-B

@@ -1,0 +1,15 @@
+# C10A fair-arm manifest contract.  This is static execution metadata only;
+# it starts no workload and is consumed by util/vm_tlb/validate_c10a_fair_contract.py.
+# labels are frozen: REFERENCE_APPROX_SUBENTRY_16 and SPECULATIVE_CANDIDATE.
+arm_id	official_selectable	kind	page_size_class	exact_entries	group_count	associativity	sets	leaves_per_group	segment_replicas	segment_slots_per_replica	segment_latency_cycles	segment_accepts_per_cycle	pwc_entries	pwc_layout	charged_bits	bit_formula	status
+F0	true	exact_baseline	64KiB	768	0	16	48	0	0	0	NA	1	0	NA	66000	768*85+48*15	OFFICIAL_BASELINE
+F1	true	subentry_equal_bit	64KiB	0	96	16	6	16	0	0	NA	1	0	NA	59802	96*622+6*15	OFFICIAL_REFERENCE_APPROX_SUBENTRY_16
+F2	true	exact_bit_matched_to_F1	64KiB	688	0	16	43	0	0	0	NA	1	0	NA	59125	688*85+43*15	OFFICIAL_COMPARATOR
+F3	true	exact_charged_sweep	64KiB	PARAMETER_E_MULTIPLE_OF_16	0	16	E/16	0	0	0	NA	1	0	NA	E*85+(E/16)*15	E*85+(E/16)*15	OFFICIAL_CHARGED_SWEEP
+F4	true	exact_leaf_capacity_diagnostic	64KiB	1536	0	16	96	0	0	0	NA	1	0	NA	132000	1536*85+96*15	DIAGNOSTIC_NOT_EQUAL_COST
+F5	true	exact_plus_physical_pwc	64KiB	656	0	16	41	0	0	0	NA	1	120	40/40/40_4way_pointer_payload	64745	656*85+41*15+8370	F5_MODEL_IMPLEMENTATION_INCOMPLETE_C10B_BLOCKER
+F6	true	exact_superpage_diagnostic	2MiB	848	0	16	53	0	0	0	NA	1	0	NA	65243	848*76+53*15	DIAGNOSTIC_PAGE_POLICY_REQUIRED
+F7	true	segment_plus_exact	64KiB	320	0	16	20	0	35	8	5|10|20	1	0	NA	65300	35*8*135+320*85+20*15	OFFICIAL_SPECULATIVE_CANDIDATE
+F8	true	segment_plus_subentry_charged	64KiB	0	32	16	2	16	35	8	5|10|20	1	0	NA	57734	35*8*135+32*622+2*15	OFFICIAL_REFERENCE_APPROX_SUBENTRY_16_SPECULATIVE_CANDIDATE
+F9	true	exact_bit_matched_to_F8	64KiB	656	0	16	41	0	0	0	NA	1	0	NA	56375	656*85+41*15	OFFICIAL_COMPARATOR
+H0	false	historical_unfair_subentry	64KiB	0	768	16	48	16	0	0	NA	1	0	NA	478416	768*622+48*15	HISTORICAL_UNFAIR_SPECULATIVE_CANDIDATE_DO_NOT_SELECT
