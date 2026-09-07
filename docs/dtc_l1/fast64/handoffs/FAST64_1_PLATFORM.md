@@ -113,3 +113,8 @@ The pre-repair anchors remain live, untouched supporting evidence. Launch the
 isolated r1 rows under `bbcbb5e…` when the dynamic resource gate passes;
 validate them with the strict row validator and close the lower-cap comparison
 before considering FAST64.1 PASS.
+
+The dynamic resource gate passed and all seven r1 rows were dispatched at
+`2026-09-07T08:49:18Z`; their exact source/runtime/config/payload manifests
+and active PID inventory are recorded in `FAST64_1_PROGRESS_CHECKPOINT.md`.
+This does not change the ACTIVE/PENDING gate state.

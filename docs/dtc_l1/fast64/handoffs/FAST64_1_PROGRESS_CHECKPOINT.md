@@ -1,6 +1,6 @@
 # FAST64.1 Progress Checkpoint
 
-Status: **ACTIVE_TELEMETRY_RERUN_PENDING — REVIEW CHECKPOINT ONLY**
+Status: **ACTIVE_R1_QUALIFICATION_RUNNING — REVIEW CHECKPOINT ONLY**
 
 Snapshot: `2026-09-07T08:27:49Z`
 
@@ -75,12 +75,51 @@ The following live controllers are preserved:
 | 3291777 | deferred new-Core telemetry-rerun dispatcher | live, preserved historical controller that waits all seven old rows; it is not the immediate r1 scheduler |
 | 3362160 | new-Core r1 collector | live, waiting for r1 rows |
 
-At this snapshot no `fast64_1r1_*` namespace and no
-`generated/qualification_r1/` result file exists. The review-authorized
-immediate dispatcher verifies the repaired Core/runtime identity and target
-absence before it dispatches the seven isolated r1 rows without changing the
-old rows. The r1 rows are the only rows eligible to close the BICG IO/OO and
-GESUMMV IO 8192-versus-1048576 qualification.
+## Review-authorized r1 immediate dispatch
+
+Dispatch occurred at `2026-09-07T08:49:18Z` after a fresh resource gate:
+cpuset `0-511`, CPU quota 384 cores, a 60-second cgroup sample with zero CFS
+throttling, `MemAvailable` about 120 GiB, zero `vmstat si/so`, no iowait, and
+69 GiB output free space. Seven one-core rows are safe under that measured
+envelope; their bindings do not change any original-Core row.
+
+This is the required provenance distinction:
+
+| identity kind | value |
+| --- | --- |
+| execution snapshot source HEAD | `037f008b330eb230353b60edf126d6be9f45afdc` |
+| review/checkpoint commit | the commit containing this checkpoint update; it must never be substituted for the execution source HEAD |
+| formal Core source | `bbcbb5e7565417102087bc80b14c349b4e568c05` |
+| formal runtime SHA-256 | `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` |
+| observer overlay SHA-256 | `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e` |
+
+All target namespaces were absent in a dry preflight. The original deferred
+dispatcher remains untouched; when its historical wait completes, pre-existing
+r1 namespaces make it fail closed rather than duplicate a row. Its role is not
+the active r1 scheduler. The stale idle r1 evidence collector was replaced
+before launch only because it carried an old Framework SHA; no simulator or
+original-Core row was signalled, restarted, renamed, or otherwise modified.
+
+| r1 row | simulator PID | CPU | namespace | launch state |
+| --- | ---: | ---: | --- | --- |
+| BICG Base 8192 | 3658012 | 74 | `fast64_1r1_bicg_base_cap8192_a1` | `R`, live |
+| BICG IO 8192 | 3658027 | 75 | `fast64_1r1_bicg_io_cap8192_a1` | `R`, live |
+| BICG OO 8192 | 3658034 | 76 | `fast64_1r1_bicg_oo_cap8192_a1` | `R`, live |
+| BICG IO 1048576 | 3658057 | 77 | `fast64_1r1_bicg_io_cap1048576_a1` | `R`, live |
+| BICG OO 1048576 | 3658048 | 78 | `fast64_1r1_bicg_oo_cap1048576_a1` | `R`, live |
+| GESUMMV IO 8192 | 3658060 | 79 | `fast64_1r1_gesummv_io_cap8192_a1` | `R`, live |
+| GESUMMV IO 1048576 | 3658062 | 80 | `fast64_1r1_gesummv_io_cap1048576_a1` | `R`, live |
+
+At the non-invasive start observation each simulator had advanced roughly two
+minutes of CPU time, remained runnable, and had the expected runtime/config/
+trace command identity. The only `deadlock` scan hit was the configuration echo
+`-gpgpu_deadlock_detect 1`; no assertion, fatal, output mismatch, or actual
+deadlock is currently observed. CPU-time alone is startup evidence, not a
+claim of simulator-level completion or cap qualification.
+
+The r1 rows are the only rows eligible to close BICG IO/OO and GESUMMV IO
+8192-versus-1048576 qualification. They must naturally terminate, strict-parse
+and satisfy every FAST64.1 HARD comparison before FAST64.2 can begin.
 
 ## HARD-gate ledger
 
@@ -89,10 +128,10 @@ GESUMMV IO 8192-versus-1048576 qualification.
 | resolved configs; 64x1 DTC geometry; no unrelated config difference | resolved diff, NN telemetry triplet, `FAST64_1_PLATFORM.md` | PASS |
 | frozen FAST12 payload identity | generated manifests; this checkpoint | PASS |
 | new-Core NN Base/IO/OO natural terminal and strict telemetry regression | `generated/telemetry_regression/` | PASS |
-| BICG Base/IO/OO new-Core smoke and terminal strict accounting | r1 replacements not yet dispatched | PENDING |
-| BICG IO/OO candidate-vs-high exact comparison, candidate cap-full zero | r1 replacements not yet dispatched | PENDING |
-| GESUMMV IO candidate-vs-high exact comparison, candidate cap-full zero | r1 replacements not yet dispatched | PENDING |
-| formal row runtime/Core/config/observer provenance | r1 replacements not yet dispatched | PENDING |
+| BICG Base/IO/OO new-Core smoke and terminal strict accounting | seven r1 rows live; natural terminal pending | PENDING |
+| BICG IO/OO candidate-vs-high exact comparison, candidate cap-full zero | r1 BICG comparison pairs live | PENDING |
+| GESUMMV IO candidate-vs-high exact comparison, candidate cap-full zero | r1 GESUMMV comparison pair live | PENDING |
+| formal row runtime/Core/config/observer provenance | launch manifests recorded; terminal strict validation pending | PENDING |
 
 ## Review conclusion and next action
 
