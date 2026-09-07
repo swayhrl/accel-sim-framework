@@ -64,10 +64,13 @@ def validate_immutable_attempt(args: argparse.Namespace, run_manifest: pathlib.P
                                stdout: pathlib.Path) -> dict[str, str]:
     """Validate the v2 receipt boundary and the calibrated single-epoch proof.
 
-    The epoch checks were calibrated against all three known-clean NN r2
-    directories: one perf stream, one initialization marker, and one natural
-    exit marker.  Receipts are the primary future exactly-once witness; these
-    output checks prevent an additional simulator epoch from being hidden.
+    The epoch checks were calibrated against the three known-clean historical
+    NN directories whose names contain ``_r2``: one perf stream, one
+    initialization marker, and one natural exit marker.  Those historical
+    directories predate the immutable-v2 receipt schema and are *not* formal
+    FAST64.1 R2 evidence.  Receipts are the primary future exactly-once
+    witness; these output checks prevent an additional simulator epoch from
+    being hidden.
     """
     required_manifest = (
         "runner_schema", "runner_sha256", "immutable_runner_path", "attempt_uuid",
