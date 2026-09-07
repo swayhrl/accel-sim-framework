@@ -8,18 +8,20 @@ historical controller issue as
 `ROOT_CAUSE_PROBABLE_ACTIVE_SCRIPT_MUTATION`: all live r1 Bash wrappers still
 read fd `255` from the mutable worktree runner, whose SHA changed from the
 launch snapshot's `6f078314…` to `14635253…`; the contaminated BICG OO parent
-survived both observed epochs.  The exact malformed continuation cannot be
+survived both observed epochs.  A second BICG OO@1048576 row has independently
+produced the same two-epoch footprint and `line 74: d: command not found`.
+The exact malformed continuation cannot be
 reconstructed, so this is deliberately not labeled confirmed.
 
-Future-only recovery is now prepared for the distinct absent namespace
-`fast64_1r2_bicg_oo_cap8192_a1`.  The v2 runner requires an SHA-verified,
-non-writable `/tmp/fast64-runners/<sha>/` copy, one UUID, atomic namespace
-creation, and immutable START/TERMINAL receipts.  Its validator requires the
-receipt chain and a single-epoch proof calibrated on the clean NN rows.  A
-harmless `/bin/true` test passed immutable binding, receipts, and duplicate
-namespace rejection; it is not a scientific result.  The guarded dispatcher
-will refuse to launch without a fresh explicit safe resource audit and the
-contaminated epoch's natural terminal state.  See
+Future-only recovery is now prepared as a complete seven-row R2 wave, not a
+one-row patch.  The v2 runner requires an SHA-verified, non-writable
+`/tmp/fast64-runners/<sha>/` copy, one UUID, atomic namespace creation, and
+immutable START/TERMINAL receipts.  Its validator requires the receipt chain
+and a single-epoch proof calibrated on the clean NN rows.  A harmless
+`/bin/true` test passed immutable binding, receipts, and duplicate namespace
+rejection; it is not a scientific result.  The guarded dispatcher will refuse
+to launch without a fresh seven-worker resource audit and all historical r1
+epochs terminal.  See
 `fast64/handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 ## FAST64.1 r1 execution-path contamination (2026-09-07)

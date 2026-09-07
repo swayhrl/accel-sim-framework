@@ -3,6 +3,12 @@
 # FAST64.1 BICG OO@8192 replacement.  It can never address a historical r1 row.
 set -euo pipefail
 
+# Two independently observed restart anomalies on the shared historical runner
+# supersede the former one-row repair plan.  Keep this path fail-closed so it
+# cannot accidentally launch an incomplete recovery set.
+echo "FAST64_R2_SINGLE_ROW_RECOVERY_SUPERSEDED_USE_FULL_WAVE" >&2
+exit 1
+
 usage() {
   echo "usage: $0 [--dry-run | --launch --resource-audit FILE]" >&2
   exit 2

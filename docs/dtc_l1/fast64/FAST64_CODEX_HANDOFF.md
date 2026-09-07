@@ -18,12 +18,13 @@ The latter changes no DTC mechanism behavior: it exposes the pre-existing OO
 differential. Formal FAST64 execution uses the instrumented Core/runtime; the
 former remains the mechanism semantic/source anchor.
 
-Current execution gate: the historical BICG OO@8192 r1 namespace is
-`INVALID_EXECUTION_PATH_CONTAMINATED` after a two-epoch controller anomaly.
-The source-backed future remedy is an immutable v2 runner plus explicit
-START/TERMINAL attempt receipts; do not advance FAST64.1 or launch R2 until
-the current contaminated epoch has naturally terminated and a fresh resource
-audit approves memory/swap/output headroom.  See
+Current execution gate: both historical BICG OO r1 namespaces (8192 and high
+cap) are `INVALID_EXECUTION_PATH_CONTAMINATED` after independent two-epoch
+controller anomalies.  The source-backed future remedy is a full seven-row
+immutable v2 r2 qualification wave plus explicit START/TERMINAL receipts; do
+not advance FAST64.1 or launch R2 until all current r1 epochs have naturally
+terminated and a fresh resource audit approves the replacement wave's
+memory/swap/output headroom.  See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 ## Mission

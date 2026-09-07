@@ -6,12 +6,12 @@ This is a compact failure record, not a performance result and not a claim of
 a DTC-L1 mechanism defect.  It preserves the live processes and historical
 output namespace exactly as observed.
 
-## Affected formal row
+## Confirmed affected formal rows
 
 | item | value |
 | --- | --- |
-| row | `fast64_1r1_bicg_oo_cap8192_a1` |
-| workload/mode/cap | BICG / OO / 8192 |
+| first row | `fast64_1r1_bicg_oo_cap8192_a1` (BICG / OO / 8192) |
+| second row | `fast64_1r1_bicg_oo_cap1048576_a1` (BICG / OO / 1048576) |
 | frozen Core | `bbcbb5e7565417102087bc80b14c349b4e568c05` |
 | dispatched Framework snapshot | `037f008b330eb230353b60edf126d6be9f45afdc` |
 | runtime SHA-256 | `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` |
@@ -44,6 +44,13 @@ output namespace exactly as observed.
 5. The cgroup reports `oom_kill=12`, but no contemporaneous kernel record
    attributes an OOM kill to this PID/row.  OOM is retained as host-pressure
    evidence only, not as the asserted causal explanation.
+6. The second BICG OO row independently has two perf streams,
+   `perf_counter_2026-09-07_16-49-18.csv.gz` and
+   `perf_counter_2026-09-07_23-48-58.csv.gz`, with the first stream ending and
+   `resource.time` reopening at `2026-09-07T23:48:58+08:00`.  Its launcher log
+   has the identical `line 74: d: command not found` diagnostic and its same
+   original wrapper (`3657942`) remains parent of the second epoch.  This is a
+   second independently observed controller-path restart anomaly.
 
 ## Root-cause audit (2026-09-08)
 
@@ -87,6 +94,22 @@ from parser/validator identity.  The v2 `/bin/true` controller test passed
 receipt creation, immutable-path/SHA binding, natural exit-0 recording, and
 fail-closed rejection of a duplicate namespace.  It is not a simulator result.
 
+Because two rows under the shared mutable historical execution path have now
+restarted, the former one-row r2 repair is superseded and permanently
+fail-closed.  A complete seven-row immutable r2 qualification wave is prepared
+under `prepare_fast64_1_r2_full_wave.sh` with distinct `fast64_1r2_*`
+namespaces, exact Core/runtime/config/payload/observer binding, and a matching
+seven-row receipt-aware collector.  It has no default launch path and refuses
+to start unless all seven historical wrappers are terminal and a fresh audit
+explicitly admits exactly seven workers.  The five remaining r1 rows are not
+preemptively called contaminated, but no r1 row will be reused for FAST64.1
+qualification after this systemic controller finding.
+
+The historical collector `collect_fast64_1_telemetry_rerun.sh` is itself live
+under PID `3657888`; it is preserved and not rewritten.  Any later artifacts
+it emits are historical-controller output only and cannot establish FAST64.1
+PASS; the new r2 full-wave collector is the only formal closeout route.
+
 ## Required disposition
 
 - Classification: `INVALID_EXECUTION_PATH_CONTAMINATED`; never aggregate or
@@ -98,12 +121,6 @@ fail-closed rejection of a duplicate namespace.  It is not a simulator result.
   observationally preserved.
 - Do not launch additional precompute or repair rows while swap is exhausted
   and the contamination source has not been resolved.
-- Recovery is prepared only, under
-  `util/dtc_l1/prepare_fast64_1_r2_recovery.sh`, for the distinct absent
-  namespace `fast64_1r2_bicg_oo_cap8192_a1`.  It has no default launch mode;
-  its guarded launch path requires a fresh explicit resource audit and the
-  contaminated epoch's natural terminal receipt before it can start.  The
-  companion `collect_fast64_1_r2_recovery.sh` composes clean unaffected r1
-  rows with the r2 replacement without changing the historical collector.
-  Only natural exit-0, exact immutable-receipt, strict validator, accounting,
-  and cap-comparator evidence may restore FAST64.1 eligibility.
+- Recovery is prepared only as a complete seven-row r2 wave.  Only natural
+  exit-0, exact immutable-receipt, strict validator, accounting, and
+  cap-comparator evidence for that full wave may restore FAST64.1 eligibility.
