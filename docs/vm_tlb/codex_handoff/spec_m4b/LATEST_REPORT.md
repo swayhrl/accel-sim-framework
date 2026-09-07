@@ -1,84 +1,68 @@
-# Window C — SPECULATIVE M4B DEVELOPMENT 交接报告
+# Window C — SPECULATIVE M4B DEVELOPMENT 当前交接
 
-结论：`C0 → C4 PASS；C5 SKIPPED_POLICY；C6 closeout 完成；C7 analysis-only 完成；C8 analysis-only 完成`。实现和数据均为
-`SPECULATIVE_CANDIDATE`，sub-entry 采用冻结的
-`REFERENCE_APPROX_SUBENTRY_16`，绝不作为 target 论文精确复现或正式 M4B 性能结论。
+结论：`C0-C4 PASS；C5 SKIPPED_POLICY；C6 closeout；C7/C8 analysis-only 完成`。历史实现与结果继续标记 `SPECULATIVE_CANDIDATE`，sub-entry 保持 `REFERENCE_APPROX_SUBENTRY_16`，不得作为 target paper 精确复现或正式性能结论。
 
-## 隔离与分支
+## 冻结身份
 
 | 项目 | SHA / 状态 |
-| --- | --- |
+|---|---|
 | Framework branch | `hrl/vm-m4b-speculative-v0` |
-| Framework C4 tested runtime anchor | `5dd4501a51720a959129860b72988a6961b07477` |
-| Framework C7 evidence HEAD | `ea07cb0ec6fb3212c18f3435637f055e1296d737` |
+| C8 evidence SHA | `468fe62ddc1c4d1786133072b540e52e0d8bdc23` |
+| C4 tested runtime anchor | `5dd4501a51720a959129860b72988a6961b07477` |
 | Core frozen functional SHA | `c21137bcb86010215c008292f272aacefac175d3` |
-| Framework original branch point | `eb18c43c516bdcd52c164969df10d97b895f45f1` |
-| Core original branch point | `0d92e6aa8fd8bc885ffdf081a559bc616aaa85fd` |
+| original Framework branch point | `eb18c43c516bdcd52c164969df10d97b895f45f1` |
+| original Core branch point | `0d92e6aa8fd8bc885ffdf081a559bc616aaa85fd` |
 
-两者均为 `hrl/vm-m4b-speculative-v0`。使用的 worktree 是
-`/workspace/worktrees/accel-sim-vm-m4b-speculative` 与
-`/workspace/worktrees/gpgpu-sim-vm-m4b-speculative`，所有运行 scratch 位于
-`/workspace/vm-m4b-speculative/`。没有合并到 Window A，也没有实现任何被明确禁止的
-后续机制。两个隔离分支均已推送到各自的 `origin`。
+C0-C4 已有 18 个定向测试、bounded real replay 和 Weight Segment C4 telemetry。C7 将 Weight Segment 评为 HIGH analytical opportunity、Sub-entry MEDIUM；均不是性能结论。
 
-## 已实现的内容
+## C8 architecture gate
 
-- C0 恢复 completed-delivery 不阻塞 quiescent completion 的既有 invariant；M1--M3 与
-  M4C 标准基线通过。
-- C1 审计后冻结 `REFERENCE_APPROX_SUBENTRY_16`：仅 64KiB、每 group 16 leaf、group
-  LRU/replacement；标准 L2 exact-page 路径不变。
-- C2 增加分离的 speculative `subentry_tlb` 和运行 profile；标准模式与 2MiB 标准行为
-  保持回归兼容。
-- C3 增加 immutable Weight Segment descriptor 和显式 parallel Segment + L1 状态机。
-  Segment hit 不触及 conventional L2/MSHR/PWQ/walker/PWC/PTE 且不填充 conventional
-  TLB；Segment miss 只复用已经完成的 L1；KV/Unknown 保持普通 paging；PTW retry 不会
-  二次 Segment probe。
+C8 的唯一 C5 gate：
 
-完整语义和证据限制见 `C1_SUBENTRY_SEMANTICS_AUDIT.md`、
-`C2_SUBENTRY_VALIDATION.md`、`C3_WEIGHT_SEGMENTATION_STATE_MACHINE.md`。
+`ARCHITECTURE_DECISION_REQUIRED`
 
-## 验证
+原因：
+- current Segment hit 使用 identity-like `ppn=vpn`，没有真实 PA mapping；
+- `OBJECT_WEIGHT` 是 simulator metadata，不是可信硬件安装来源；
+- Segment table port/bank/queue/latency 及 parallel-L1 ordering 未定义；
+- descriptor context/lifecycle/migration/shootdown 未定义；
+- current 768-group sub-entry 最多可容纳 12,288 leaves，对 768 exact entries 不是同预算比较。
 
-已通过 M1、全部 M2/M3、M4C、sub-entry、Weight Segmentation 共 18 个定向测试；全量
-构建成功。提交后二进制/本地 runtime SHA-256 分别为：
+因此不得在资源恢复后直接重启 C5。
 
-```
-6a40636e76b33f7f3622e175144379febf8d018b9e3e93d1e62d7c8383fb74fd
-20d1c446391c2f6da4f764ab3904b2b236f7571ad8511f4bf0c68a5607297b7e
-```
+## External A checkpoint context
 
-提交后的受限真实 Llama decode1 三连续 kernel 回放，paper、sub-entry、sub-entry +
-Weight Segment 和 ideal 均退出码 0。四种 profile 的前端 data/store/atomic telemetry
-哈希完全一致；Segment profile 显示 512 次 Weight hit 和 512 次下游 L2 语义抑制。详情见
-`C4_BOUNDED_REPLAY.md`。
+A progress checkpoint：`73d25ebbdd96833ee1ddb8ea42b9017cefbceb75`。
 
-## C5 决策
+七个 C3 arms 已 terminal，prefill-paper 在 checkpoint 时仍 RUNNING。A decode evidence 显示 ideal/disabled 相同，而 generic/paper 有显著 translation overhead；paper 虽有更低部分 miss/MSHR-full counters，cycles 仍高于 generic。这只作为 motivation：未来 C architecture/reporting 必须保留 queue/backpressure/latency/stall observables，不能只靠 hit/miss rate。A/C 数值不得合并，也不得据此调参匹配比例。
 
-完整 speculative prefill/decode1 replay 没有启动：scratch 仅约 2% 可用，swap 仅剩
-216 KiB，违反资源 farm policy。此为有意的 `SKIPPED_POLICY`，不代表候选失败；详细
-快照在 `C5_RESOURCE_DECISION.md`。
+## C9 authorized next stage
 
-## C7 analysis-only（实现冻结）
+下一阶段：
 
-没有启动 C5 或任何新的 simulator workload。离线 opportunity 审计位于
-`docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C7_SPECULATIVE_CANDIDATE_OPPORTUNITY_ANALYSIS.md`；
-它维持 `REFERENCE_APPROX_SUBENTRY_16` / `SPECULATIVE_CANDIDATE` 标签，并将 Weight
-Segment 评为 HIGH、sub-entry 评为 MEDIUM 的**分析机会**，不是性能结论。
+`C9_SEGMENT_SUBENTRY_ARCHITECTURE_DECISION`
 
-## C8 hardware cost and model risk audit（完成）
+模式：`DESIGN_ONLY`。
 
-C8 在 Framework `753d320c` / 冻结 Core `c21137bc` 上仅做只读分析。审计结论是：现有
-Weight Segment 与 sub-entry state machine 可继续作为 `SPECULATIVE_CANDIDATE`，但尚不能
-代表合理、可实现且公平比较的 GPU translation architecture。
+目标是把 C8 的开放问题收敛成 future C10 可直接实现的 architecture specification：
+- real VA->PA Segment descriptor；
+- trusted runtime/driver installation；
+- descriptor topology/capacity/throughput；
+- parallel L1/Segment completion ordering；
+- pinned inference epoch / context / invalidate lifecycle；
+- parameterized Segment latency；
+- Sub-entry equal-bit budget `G_equal_bit`；
+- exact/PWC/2MiB/leaf-capacity/combined candidate 的公平 baseline policy。
 
-唯一 C5 gate 是：`ARCHITECTURE_DECISION_REQUIRED`。identity-like `ppn=vpn`、object-map
-classification、Segment ports/queue/L1 ordering、descriptor lifecycle 与 sub-entry 的 768
-group（最多 12,288 leaf）对 768 exact-entry 的公平预算，都需要先获架构决定。C5 没有启动。
+严格执行：
+- `docs/vm_tlb/codex_handoff/spec_m4b/C9_SEGMENT_SUBENTRY_ARCHITECTURE_DECISION.md`
+- `docs/vm_tlb/codex_handoff/spec_m4b/C9_ACCEPTANCE_MATRIX.md`
+- `docs/vm_tlb/paper_specs/SEGMENTATION_LLM_2026.md`
 
-完整证据位于
-`docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C8_HARDWARE_COST_AND_MODEL_RISK_AUDIT/`。
-其中没有无工艺依据的 PPA 数字，也没有修改 Core、build、simulator、trace 或 Window A/B。
+Core `c21137bc...` 必须保持完全冻结。本轮禁止 build、simulator、C5、trace/full-scan 或实现修改。
 
-## 边界
+C9 最终只能选择：
+- `ARCHITECTURE_READY_FOR_MODEL_IMPLEMENTATION`
+- `ARCHITECTURE_DECISION_STILL_OPEN`
 
-保持 `REFERENCE_APPROX_SUBENTRY_16` / `SPECULATIVE_CANDIDATE`。不要进入 synthetic 12K KV、KV segmentation、M5，或将此分支并入 Window A。
+完成后 commit/push 并 STOP，不自动启动 C10/C5/KV segmentation/12K/M5。
