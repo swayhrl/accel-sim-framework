@@ -1,10 +1,12 @@
 # FAST64.1 r1 — Execution-path / exactly-once contamination
 
-Status: **ACTIVE_HARD_EXECUTION_FAILURE; NO_FAST64_1_PASS**
+Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; R1 EXECUTION PATH SUPERSEDED; NO FAST64.1 PASS**
 
 This is a compact failure record, not a performance result and not a claim of
 a DTC-L1 mechanism defect.  It preserves the live processes and historical
-output namespace exactly as observed.
+output namespace exactly as observed.  The failure blocks R1 result promotion
+and FAST64.1 stage promotion only; it does not globally block the persistent
+Goal or source-correct R2 preparation/acquisition.
 
 ## Confirmed affected formal rows
 
