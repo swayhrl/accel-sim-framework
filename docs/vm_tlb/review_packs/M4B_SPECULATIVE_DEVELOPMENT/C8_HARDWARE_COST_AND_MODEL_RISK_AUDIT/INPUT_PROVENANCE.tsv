@@ -1,0 +1,15 @@
+kind	path_or_identifier	binding	use_and_limit
+framework_authoritative_head	git:hrl/vm-m4b-speculative-v0	753d320c00a80f76f7f0cbcb90ff4cffbf0f6e9d	C8 document/report branch; only documentation is changed by this closeout
+core_frozen_head	git:swayhrl/gpgpu-sim:hrl/vm-m4b-speculative-v0	c21137bcb86010215c008292f272aacefac175d3	read-only source audit; Core status was clean and no Core file was modified
+c8_handoff	docs/vm_tlb/codex_handoff/spec_m4b/C8_HARDWARE_COST_AND_MODEL_RISK_AUDIT.md	sha256:730209687c1d589b5a35da904c05cd3ff317a9751d30e9c7455950d1336a17e1	mandatory scope, prohibitions, questions, and required output
+c8_acceptance	docs/vm_tlb/codex_handoff/spec_m4b/C8_ACCEPTANCE_MATRIX.md	sha256:674d5bf616fe5f8af8494b3e495da70856da339fcb40af2a554dd2718c75ef51	mandatory C8-A1 through C8-A20 acceptance criteria
+c1_semantics	docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C1_SUBENTRY_SEMANTICS_AUDIT.md	sha256:a49b1e03e38a773aa265d8101f9586c834c2a7ec8e45a3de7847d48dc5eeb244	frozen REFERENCE_APPROX_SUBENTRY_16 scope and evidence boundary
+c3_state_machine	docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C3_WEIGHT_SEGMENTATION_STATE_MACHINE.md	sha256:a3cf91af5f3833ce2085ebc59cacb55a5d744c3ef1ade92429f4ef7742037568	parallel Segment+L1 simulator semantic contract
+c4_bounded	docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C4_BOUNDED_REPLAY.md	sha256:dde5c0bbe0528bde3f2c98c40843a4dd4acfa795ca6c1dabdef2f1196dc16637	three-kernel immutable C4 result and frozen runtime anchors; not full-ROI evidence
+c7_opportunity	docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C7_SPECULATIVE_CANDIDATE_OPPORTUNITY_ANALYSIS.md	sha256:0b519092139590d8a89f4c8181b6d32bd572d330e1e4327b6f3a2d85fd24ba31	analytical trace geometry and C4 telemetry interpretation; no new ROI scan
+weight_segment_config	configs/vm_tlb/M4B_SPECULATIVE_SUBENTRY16_WEIGHT_SEGMENT.config	sha256:3c4380fd24f3cdf963b2ee15bd1c9082d29678a7b19a15b864bd7929e8865865	35 clusters, 64KiB pages, L1=32/32-way/1-port/10cy, L2=768/16-way/1-port/80cy, Segment=1 entry/10cy
+subentry_config	configs/vm_tlb/M4B_SPECULATIVE_SUBENTRY16.config	sha256:777b5491cf5e98a28ec31a5c72f7048bb599fc6ea6036b445811a956c97ede00	separable REFERENCE_APPROX_SUBENTRY_16 profile and same L2 entry count parameter
+c4_scratch	/workspace/vm-m4b-speculative/c4/	immutable existing artifact	read-only manifests/logs/telemetry only; no replay, build, or trace generation in C8
+c7_scratch	/workspace/vm-m4b-speculative/c7/	immutable existing artifact	read-only offline chunks and summary only; no full-list scan in C8
+core_translation_sources	Core:src/gpgpu-sim/vm_translation.{h,cc};Core:src/gpgpu-sim/shader.cc	frozen c21137bc	read-only inspection of descriptor, mapping, sub-entry, port and ASID semantics
+scope_boundary	Window A/B and DTC-L1/M5 worktrees	untouched	no filesystem operation, process, build, or artifact access in C8

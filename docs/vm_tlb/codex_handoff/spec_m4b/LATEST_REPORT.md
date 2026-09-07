@@ -1,6 +1,6 @@
 # Window C — SPECULATIVE M4B DEVELOPMENT 交接报告
 
-结论：`C0 → C4 PASS；C5 SKIPPED_POLICY；C6 closeout 完成；C7 analysis-only 完成`。实现和数据均为
+结论：`C0 → C4 PASS；C5 SKIPPED_POLICY；C6 closeout 完成；C7 analysis-only 完成；C8 analysis-only 完成`。实现和数据均为
 `SPECULATIVE_CANDIDATE`，sub-entry 采用冻结的
 `REFERENCE_APPROX_SUBENTRY_16`，绝不作为 target 论文精确复现或正式 M4B 性能结论。
 
@@ -65,18 +65,19 @@ Weight Segment 和 ideal 均退出码 0。四种 profile 的前端 data/store/at
 它维持 `REFERENCE_APPROX_SUBENTRY_16` / `SPECULATIVE_CANDIDATE` 标签，并将 Weight
 Segment 评为 HIGH、sub-entry 评为 MEDIUM 的**分析机会**，不是性能结论。
 
-## C8 authorized next stage
+## C8 hardware cost and model risk audit（完成）
 
-下一阶段为 analysis-only：`C8_HARDWARE_COST_AND_MODEL_RISK_AUDIT`。
+C8 在 Framework `753d320c` / 冻结 Core `c21137bc` 上仅做只读分析。审计结论是：现有
+Weight Segment 与 sub-entry state machine 可继续作为 `SPECULATIVE_CANDIDATE`，但尚不能
+代表合理、可实现且公平比较的 GPU translation architecture。
 
-C8 只读审计当前冻结 Core `c21137bc...` 与 C1/C3/C4/C7 证据，目标是回答 Weight Segment/Sub-entry 是否对应合理可实现的硬件、当前 simulator shortcut/assumption 有哪些风险、以及 C5 full replay 前是否必须先修正模型。
+唯一 C5 gate 是：`ARCHITECTURE_DECISION_REQUIRED`。identity-like `ppn=vpn`、object-map
+classification、Segment ports/queue/L1 ordering、descriptor lifecycle 与 sub-entry 的 768
+group（最多 12,288 leaf）对 768 exact-entry 的公平预算，都需要先获架构决定。C5 没有启动。
 
-C8 禁止修改 Core、build、启动 simulator/C5、生成 trace 或扫描完整大 ROI。完整要求见：
-
-- `docs/vm_tlb/codex_handoff/spec_m4b/C8_HARDWARE_COST_AND_MODEL_RISK_AUDIT.md`
-- `docs/vm_tlb/codex_handoff/spec_m4b/C8_ACCEPTANCE_MATRIX.md`
-
-C8 最终必须从规定的 C5 gate conclusion 中选择一个，commit/push 后 STOP；不得自动启动 C5 或继续实现 KV segmentation/12K/M5。
+完整证据位于
+`docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C8_HARDWARE_COST_AND_MODEL_RISK_AUDIT/`。
+其中没有无工艺依据的 PPA 数字，也没有修改 Core、build、simulator、trace 或 Window A/B。
 
 ## 边界
 
