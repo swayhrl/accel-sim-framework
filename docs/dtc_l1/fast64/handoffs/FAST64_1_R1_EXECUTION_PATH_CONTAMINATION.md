@@ -119,7 +119,10 @@ assigns R2 rows in frozen priority order to the actually free member of the
 isolated `74-80` simulator-slot pool, and fail-closes if the audit admits more
 workers than free slots.  Thus a naturally freed historical slot can admit the
 next R2 row without contending with a still-live historical row pinned to a
-different slot.
+different slot.  The non-scientific
+`util/dtc_l1/test_fast64_1_r2_dynamic_slots.sh` regression supplies an
+isolated synthetic process table and verifies that occupied slots are skipped
+while `74,76,79,80` are correctly reported free.
 
 The historical collectors `collect_fast64_1_telemetry_rerun.sh` and
 `collect_fast64_1_qualification.sh` are live and are preserved, not rewritten.

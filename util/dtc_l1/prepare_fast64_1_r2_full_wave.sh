@@ -50,10 +50,18 @@ rows=(
 # naturally becomes free, so surviving historical R1 jobs never force a
 # wait-for-all barrier or CPU contention.
 cpu_slots=(74 75 76 77 78 79 80)
+# Test-only override for a synthetic process table.  Production dispatch uses
+# the kernel process table unconditionally unless this explicit path is set.
+proc_root=${FAST64_PROC_ROOT:-/proc}
+case "$proc_root" in
+  /*) ;;
+  *) echo "R2_PROC_ROOT_MUST_BE_ABSOLUTE $proc_root" >&2; exit 2 ;;
+esac
 
 cpu_slot_in_use() {
   local requested_cpu=$1 pid cmdline allowed segment start end
-  for proc in /proc/[0-9]*; do
+  for proc in "$proc_root"/[0-9]*; do
+    [ -d "$proc" ] || continue
     pid=${proc##*/}
     [ -r "$proc/cmdline" ] && [ -r "$proc/status" ] || continue
     cmdline=$(tr '\0' ' ' <"$proc/cmdline" 2>/dev/null || true)
