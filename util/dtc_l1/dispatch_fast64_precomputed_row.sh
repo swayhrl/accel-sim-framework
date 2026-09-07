@@ -53,15 +53,20 @@ if [ "$dry_run" = 1 ]; then
 fi
 
 mkdir -p "$runs_root"
-lock_file="$runs_root/.fast64_precomputed_dispatch.lock"
+# v2 is intentionally distinct from the original lock: an already-live first
+# dispatch inherited that old descriptor before this fix.  The persistent
+# namespace check remains the exactly-once witness across both generations.
+lock_file="$runs_root/.fast64_precomputed_dispatch_v2.lock"
 exec 9>"$lock_file"
 flock -n 9 || { echo "DISPATCH_LOCK_HELD $lock_file" >&2; exit 1; }
 test ! -e "$run_dir" || { echo "TARGET_EXISTS $run_dir" >&2; exit 1; }
+# Do not let the detached runner inherit fd 9, or it would retain this launch
+# lock until natural terminal state and serialize unrelated pending rows.
 setsid "$runner" --simulator "$runtime" --config "$config" \
   --trace "$trace_root/kernelslist.g" --run-dir "$run_dir" --cpu "$cpu" \
   --framework-source-head "$framework_sha" --core-source-head "$expected_core" \
   --observer-overlay-sha "$observer_sha" --result-classification "$classification" \
-  >"$run_dir.launcher.log" 2>&1 &
+  >"$run_dir.launcher.log" 2>&1 9>&- &
 supervisor=$!
 printf 'name\t%s\nsupervisor_pid\t%s\ncpu\t%s\nworkload\t%s\nmode\t%s\nclassification\t%s\nframework_source_head\t%s\ncore_source_head\t%s\n' \
   "$name" "$supervisor" "$cpu" "$workload" "$mode" "$classification" "$framework_sha" "$expected_core" \
