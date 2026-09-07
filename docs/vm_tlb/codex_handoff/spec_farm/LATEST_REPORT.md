@@ -42,3 +42,14 @@
 ## B7 analysis-only 后续
 
 已完成纯离线 B7 synthesis，且没有恢复 worker。详见 [B7_PARTIAL_FARM_EVIDENCE_SYNTHESIS.md](B7_PARTIAL_FARM_EVIDENCE_SYNTHESIS.md) 与 [B7 审查包](../../review_packs/VM_SPECULATIVE_EXPERIMENT_FARM/B7_PARTIAL_FARM_EVIDENCE_SYNTHESIS/B7_SYNTHESIS.md)。
+
+## B8 authorized next stage
+
+下一阶段为 analysis-only：`B8_CROSS_WINDOW_HYPOTHESIS_AND_EXPERIMENT_PRIORITIZATION`。
+
+B8 只读综合 B7 与 Window C 已提交的 C7/C4 证据，建立可证伪 hypothesis matrix 和最小信息实验集；禁止启动 simulator/worker、生成 trace、build、扫描完整大 ROI 或操作 Window A/C。完整要求见：
+
+- `B8_CROSS_WINDOW_HYPOTHESIS_AND_EXPERIMENT_PRIORITIZATION.md`
+- `B8_ACCEPTANCE_MATRIX.md`
+
+B8 完成后必须 commit/push 并 STOP，不自动执行所规划实验。
