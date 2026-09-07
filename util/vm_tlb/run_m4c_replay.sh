@@ -7,7 +7,7 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: run_m4c_replay.sh --framework-root DIR --core-root DIR --simulator PATH \
-  --roi {prefill|decode1} --profile {disabled|ideal|generic|paper} \
+  --roi {prefill|decode1} --profile {disabled|ideal|generic|paper|subentry} \
   --trace-list LIST --trace-dir DIR --run-dir DIR [--max-kernels N] \
   [--telemetry-level {0|1|2|3}] [--window-transactions N]
 
@@ -50,7 +50,7 @@ done
   usage >&2; exit 2;
 }
 [[ "$roi" == prefill || "$roi" == decode1 ]] || { echo "invalid ROI" >&2; exit 2; }
-[[ "$profile" == disabled || "$profile" == ideal || "$profile" == generic || "$profile" == paper ]] || { echo "invalid profile" >&2; exit 2; }
+[[ "$profile" == disabled || "$profile" == ideal || "$profile" == generic || "$profile" == paper || "$profile" == subentry ]] || { echo "invalid profile" >&2; exit 2; }
 [[ "$telemetry_level" =~ ^[0-3]$ ]] || { echo "invalid telemetry level" >&2; exit 2; }
 [[ "$max_kernels" =~ ^[0-9]+$ && "$window_transactions" =~ ^[1-9][0-9]*$ ]] || { echo "invalid bounded-run parameter" >&2; exit 2; }
 [[ ! -e "$run_dir" ]] || { echo "run directory already exists: $run_dir" >&2; exit 2; }
@@ -64,6 +64,7 @@ case "$profile" in
   ideal) profile_config="$framework_root/configs/vm_tlb/M4C_CONTROL_VM_IDEAL_IDENTITY.config" ;;
   generic) profile_config="$framework_root/configs/vm_tlb/M4C_GENERIC_M3_LLM_BASELINE.config" ;;
   paper) profile_config="$framework_root/configs/vm_tlb/M4C_PAPER_PLATFORM_SHELL_NO_SUBENTRY.config" ;;
+  subentry) profile_config="$framework_root/configs/vm_tlb/M4B_SPECULATIVE_SUBENTRY16.config" ;;
 esac
 base_config="$core_root/configs/tested-cfgs/SM86_RTX3070/gpgpusim.config"
 trace_config="$framework_root/gpu-simulator/configs/tested-cfgs/SM86_RTX3070/trace.config"

@@ -1,0 +1,7 @@
+claim_id	claim	label	source	decision	verification_or_limit
+C1-01	目标 Segmentation 论文确认 L2 TLB 存在 sub-entry 概念	PAPER_DIRECT	paper_specs/SEGMENTATION_LLM_2026.md	仅作为机制方向；不据此虚构组织/时序	本地论文摘录未给出可实施的 sub-entry 标签、替换或时序细节
+C1-02	目标作者公开页面未提供可复现模拟器代码或 sub-entry 配置	PAPER_DETAIL_UNAVAILABLE	https://jeongseob.github.io/publications.html	停止公开检索并使用已授权近似	2026-09-07 定向检查；没有相冲突的更强证据
+C1-03	16 个子项、组标签命中后检查选中子项有效位、组级 LRU/fill 语义	REFERENCE_APPROX_SUBENTRY_16	https://yueqiwang42.github.io/assets/pdf/papers/STAR_MICRO24.pdf	采用为隔离的候选 L2 模式	STAR 是参考设计而非目标论文实现；数字/集合索引不外推为目标事实
+C1-04	GPU TLB 子项的 16-item 组织可作为参考硬件背景	REFERENCE_CONTEXT	https://casrl.ece.ucf.edu/wp-content/uploads/2023/05/2023-ccs.pdf	不采用其 Ampere 组数、共享拓扑或 hash	仅支持参考背景，不能覆盖目标细节缺失
+C1-05	768 组、16 路、64KiB、既有 L2 端口和 M3 时序	MODEL_DECISION	configs/vm_tlb/M4C_PAPER_PLATFORM_SHELL_NO_SUBENTRY.config + WINDOW_C_VALIDATION_CONTRACT.md	候选只把 L2 entry 解释为 16-leaf group；标准模式不变	64KiB-only；2MiB 配置被显式拒绝，避免未经授权的 leaf 语义
+C1-06	组索引	MODEL_DECISION	src/gpgpu-sim/vm_translation.cc	复用既有 generic hash 形状，但输入 base VPN	不是 Ampere XOR 或目标论文声明；C6 必须标记 SPECULATIVE_CANDIDATE
