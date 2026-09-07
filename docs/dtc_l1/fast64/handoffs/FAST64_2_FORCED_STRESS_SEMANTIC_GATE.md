@@ -89,8 +89,9 @@ not performance tuning.
 `materialize_fast64_coupled_lower_cap_stress_config.sh` writes the exact
 overlay and provenance.  `prepare_fast64_2_coupled_stress.sh` uses the
 immutable v2 runner and refuses launch without a complete fresh safe resource
-audit that explicitly authorizes this lower-priority diagnostic after R2
-allocation.  The collector requires nonzero lower-cap-full and IO
+audit.  Newly admitted capacity dispatches the highest-priority missing R2 row
+first; the positive diagnostic remains independently launchable only through
+its explicit audited command.  The collector requires nonzero lower-cap-full and IO
 create-queue-full events, natural exit 0, exact immutable receipts, no
 failure signature, lower/dependency conservation, and zero final state.
 

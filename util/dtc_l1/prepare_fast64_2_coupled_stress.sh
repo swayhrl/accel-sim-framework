@@ -72,7 +72,6 @@ test -r "$audit" || { echo "COUPLED_STRESS_RESOURCE_AUDIT_UNAVAILABLE" >&2; exit
 authorized=$(awk -F '\t' '
   $1 == "schema" && $2 == "FAST64_R2_RESOURCE_AUDIT_V1" { schema=1 }
   $1 == "safe_to_launch" && $2 == "YES" { safe=1 }
-  $1 == "fast64_2_coupled_stress_authorized" && $2 == "YES" { stress=1 }
   $1 == "authorized_workers" && $2 ~ /^[1-7]$/ { workers=1 }
   $1 == "memavailable_bytes" && $2 ~ /^[0-9]+$/ { mem=1 }
   $1 == "memory_current_bytes" && $2 ~ /^[0-9]+$/ { current=1 }
@@ -83,7 +82,7 @@ authorized=$(awk -F '\t' '
   $1 == "p95_rss_bytes" && $2 ~ /^[0-9]+$/ { rss=1 }
   $1 == "iowait_pct" && $2 ~ /^[0-9.]+$/ { iowait=1 }
   $1 == "output_free_bytes" && $2 ~ /^[0-9]+$/ { output=1 }
-  END { exit !(schema && safe && stress && workers && mem && current && maximum && si && so && oom && rss && iowait && output) }
+  END { exit !(schema && safe && workers && mem && current && maximum && si && so && oom && rss && iowait && output) }
 ' "$audit") || { echo "COUPLED_STRESS_RESOURCE_AUDIT_INCOMPLETE_OR_UNSAFE" >&2; exit 1; }
 test -r "$config" && test -r "$provenance" || { echo "COUPLED_STRESS_CONFIG_NOT_MATERIALIZED" >&2; exit 1; }
 test "$(grep -F -- '-gpgpu_dtc_l1_lower_outstanding_cap ' "$config" | tail -1)" = '-gpgpu_dtc_l1_lower_outstanding_cap 512'
