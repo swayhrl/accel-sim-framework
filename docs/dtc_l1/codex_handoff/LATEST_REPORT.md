@@ -69,6 +69,17 @@ text mentioning the deadlock flag).  This is the only expansion: it remains
 `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`, has no formal performance claim,
 and does not alter any frozen R2 byte or controller.
 
+The new GESUMMV row now has its own future-only strict collector,
+`collect_fast64_3_gesummv_base_alias_v2.sh`.  It is deliberately separate from
+all R2 closeout bytes and rejects before creating output unless a natural
+terminal receipt exists.  Static syntax validation and a live-row
+pre-terminal invocation both passed this fail-closed check; no run-directory
+file or result artifact was created.  At natural terminal it will require the
+immutable identity tuple, Base/cap identity, lower-credit and PIB
+conservation, zero final lower/PIB state, positive cycle/instruction progress,
+and an assertion/fatal/deadlock/output-mismatch scan before it can record only
+the still-pending precompute classification.
+
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 
 The seven-row R2 closeout dependency closure is now frozen, byte-addressed in

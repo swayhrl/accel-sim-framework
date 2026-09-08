@@ -157,6 +157,17 @@ collector, manifest or trace config was opened or changed.  This row has no
 formal result or stage-promotion meaning until it reaches natural terminal and
 the relevant FAST64.1/FAST64.2 gates pass.
 
+The separate future-only collector
+`util/dtc_l1/collect_fast64_3_gesummv_base_alias_v2.sh` is ready for this exact
+namespace.  It is not part of the frozen R2 closure.  Its static syntax check
+and intentional pre-terminal invocation both passed: before a
+`RUN_TERMINAL.tsv` it exits fail-closed and creates neither an output directory
+nor a result artifact.  After natural terminal it will require immutable
+receipts and identity, `PAPER_BASE`/8192 configuration identity, lower-credit
+and PIB conservation, drained final state, positive progress and a clean
+failure scan; even then its only possible result label remains
+`PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` until the governing gates pass.
+
 The first dispatcher inherited its launch lock into the detached child; this
 was corrected in Framework `0de11045...` with a new migration lock and fd
 closure.  No duplicate namespace was created and no live row was perturbed.
