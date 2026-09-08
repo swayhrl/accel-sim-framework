@@ -125,6 +125,38 @@ cgroup OOM, or new error signature occurred.  No further ramp is authorized
 until fresh capacity shows that throughput and memory/output headroom remain
 safe.
 
+## Controlled second Base admission (2026-09-08T15:53:37Z)
+
+The next independent, post-ATAX-1.5M-cycle, 60-second audit is retained at
+`/tmp/fast64-future-precompute-audit-20260908T155148Z-after-atax15m.tsv`.
+It authorizes exactly one worker (`safe_to_launch=YES`): sampled swap-out,
+cgroup OOM, memory PSI and CPU throttling were all zero; cgroup memory
+headroom was 194,155,401,216 bytes and output free space was
+61,786,910,720 bytes.  This is a new measurement, not a relaxation of the
+prior swap-out rejection.
+
+Only one new future-only immutable-v2 row was dispatched:
+
+| item | value |
+| --- | --- |
+| namespace | `fast64_3_precomputed_gesummv_base_cap8192_a1_r2` |
+| workload/mode | GESUMMV / Base |
+| classification | `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` |
+| CPU | 3 |
+| launch UTC | `2026-09-08T15:53:37Z` |
+| attempt UUID | `c4d6d35e-23ad-4466-b578-ed1f00eb2ee9` |
+| execution snapshot Framework source | `037f008b330eb230353b60edf126d6be9f45afdc` |
+| Core / runtime / observer | `bbcbb5e...` / `6a8743b4...` / `2c2a6a27...` |
+| runner | SHA-addressed immutable-v2 `bf9a84c8...` |
+
+The START receipt is present; initial process inspection finds the simulator
+CPU-active and the assertion/fatal/deadlock/error scan empty except for the
+printed deadlock-detection configuration description.  No FAST64.1 R2
+process, R2 closeout controller, frozen R2 config, parser, validator,
+collector, manifest or trace config was opened or changed.  This row has no
+formal result or stage-promotion meaning until it reaches natural terminal and
+the relevant FAST64.1/FAST64.2 gates pass.
+
 The first dispatcher inherited its launch lock into the detached child; this
 was corrected in Framework `0de11045...` with a new migration lock and fd
 closure.  No duplicate namespace was created and no live row was perturbed.

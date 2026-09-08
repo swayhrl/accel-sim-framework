@@ -24,7 +24,7 @@ The compact evidence is
 source/configuration-pressure diagnosis does not alter R2 semantics or any
 frozen closeout dependency.
 
-## FAST64.3 one-row Base precompute admitted, pending (2026-09-08)
+## FAST64.3 controlled two-row Base precompute, pending (2026-09-08)
 
 `prepare_fast64_3_base_precompute_v2.sh` is a future-only immutable-v2,
 topology-aware one-row Base dispatcher. It permits only the ten nonredundant
@@ -52,6 +52,22 @@ point lower-bound rate is about 1,299 cycles/s and 877 instructions/s, while
 all five R2 workers retained about 99.4--99.5% CPU.  The required fresh expansion audit
 nevertheless failed solely on `swap_so_delta=103`, so no second Base worker
 was launched.
+
+A subsequent independent 60-second admission audit at
+`/tmp/fast64-future-precompute-audit-20260908T155148Z-after-atax15m.tsv`
+returned `safe_to_launch=YES` for exactly one additional worker: zero sampled
+swap-out/OOM/memory-PSI/throttling, 181 GiB cgroup memory headroom and 57.5
+GiB output space.  It was taken only after ATAX had crossed its 1,500,000-cycle
+perf boundary and the five live R2 simulators remained CPU-active.  The
+future-only dispatcher then admitted exactly one nonredundant row,
+`fast64_3_precomputed_gesummv_base_cap8192_a1_r2`, on CPU 3 at
+`2026-09-08T15:53:37Z`; its immutable attempt UUID is
+`c4d6d35e-23ad-4466-b578-ed1f00eb2ee9`.  Its START receipt and source identity
+chain are present, its simulator is CPU-active, and its initial
+assertion/fatal/deadlock/error scan is clean (apart from configuration help
+text mentioning the deadlock flag).  This is the only expansion: it remains
+`PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`, has no formal performance claim,
+and does not alter any frozen R2 byte or controller.
 
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 
