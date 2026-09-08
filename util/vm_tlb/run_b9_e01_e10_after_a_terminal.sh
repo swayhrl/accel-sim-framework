@@ -120,7 +120,11 @@ require_execute_gate() {
 }
 
 run_sim() {
-  local arm=$1 profile=$2 extra=$3 out="$future_root/$arm" trace_file="$scratch_root/staging/llama-f96b7ea9-5bdd4b55/decode1/m4a-llama-decode1-20260903T004138Z/traces/kernel-1464-ctx_0x55d98da1ddf0.traceg.xz"
+  # With set -u, do not refer to arm in the same local declaration that
+  # initializes it: bash expands the complete declaration before assigning.
+  local arm=$1 profile=$2 extra=$3
+  local out="$future_root/$arm"
+  local trace_file="$scratch_root/staging/llama-f96b7ea9-5bdd4b55/decode1/m4a-llama-decode1-20260903T004138Z/traces/kernel-1464-ctx_0x55d98da1ddf0.traceg.xz"
   resource_gate
   if [[ -e "$out" ]]; then
     if (( resume_valid )) && [[ -f "$out/RUN_MANIFEST.tsv" && -f "$out/run.log" ]] &&
@@ -137,7 +141,12 @@ run_sim() {
   local command=("$runner" --framework-root "$framework_root" --core-root "$core_root" --simulator "$simulator" --roi decode1 --profile "$profile" --trace-list "$scratch_root/inputs/semantic-rebuilt/decode1/compute-only-kernelslist.g" --trace-dir "$scratch_root/staging/llama-f96b7ea9-5bdd4b55/decode1/m4a-llama-decode1-20260903T004138Z/traces" --run-dir "$out" --max-kernels 1 --telemetry-level 3 --window-transactions 1000000)
   [[ "$extra" == NONE ]] || command+=(--extra-config "$extra")
   { printf 'field\tvalue\n'; printf 'arm_id\t%s\n' "$arm"; printf 'command\t'; printf '%q ' "${command[@]}"; printf '\n'; printf 'command_sha256\t'; printf '%q ' "${command[@]}" | sha256sum | awk '{print $1}'; printf 'binary_sha256\t%s\n' "$expected_binary"; sha256sum "$trace_file" "$scratch_root/inputs/semantic-rebuilt/decode1/compute-only-kernelslist.g" "$runner"; } > "$future_root/$arm.PRELAUNCH.tsv"
-  "${command[@]}"
+  if [[ -n "${B9_TIME_V_OUTPUT:-}" ]]; then
+    [[ ! -e "$B9_TIME_V_OUTPUT" ]] || { echo "FAIL existing time-v evidence: $B9_TIME_V_OUTPUT" >&2; exit 2; }
+    /usr/bin/time -v -o "$B9_TIME_V_OUTPUT" "${command[@]}"
+  else
+    "${command[@]}"
+  fi
 }
 
 run_miner() {

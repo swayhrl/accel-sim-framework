@@ -4,8 +4,9 @@
 The supervisor deliberately owns only Window-B scratch.  It does not inspect
 or manipulate another window's worktree/processes.  It gates each frozen B9
 heavy job with a ten-second host sample and a shared advisory flock, records
-all waits, and invokes the previously validated B9 launcher unchanged except
-for its safe valid-arm resume option.
+all waits, and invokes the frozen B9 launcher with its safe valid-arm resume
+option.  ADAPTIVE_RESOURCE_V2 uses the imminent task's measured/predicted RSS
+instead of absolute host-free-memory or SwapFree gates.
 """
 from __future__ import annotations
 
@@ -38,6 +39,9 @@ SIM_ARMS = {
     "E05": ("E05-generic", "E05-disabled"),
     "E06": ("E06-generic", "E06-ideal"),
 }
+GIB_KB = 1024 * 1024
+DEFAULT_PEAK_KB = {"SMOKE": 12 * GIB_KB, "MINER_CAL": 12 * GIB_KB}
+POLICY_VERSION = "ADAPTIVE_RESOURCE_V2"
 
 
 def utcnow() -> str:
@@ -103,33 +107,54 @@ def one_sample() -> Dict[str, int]:
     }
 
 
-def resource_sample() -> Dict[str, object]:
+def resource_sample(predicted_peak_kb: int, static_peak_kb: int | None = None,
+                    static_span_kb: int | None = None) -> Dict[str, object]:
+    """Take the required 10-second Adaptive Resource V2 admission sample."""
     first = one_sample()
     time.sleep(10)
     second = one_sample()
-    mem_required = max(64 * 1024 * 1024, second["mem_total_kb"] // 5)
+    reserve = max(16 * GIB_KB, int(second["mem_total_kb"] * .04))
+    if static_peak_kb is not None:
+        if static_span_kb is None:
+            raise RuntimeError("static miner admission requires peak and memory span")
+        mem_required = reserve + max(int(2.5 * static_peak_kb), static_peak_kb + static_span_kb + 8 * GIB_KB)
+    else:
+        mem_required = reserve + max(2 * predicted_peak_kb, predicted_peak_kb + 8 * GIB_KB)
     mem_full = (second["memory_full_total_us"] - first["memory_full_total_us"]) / 10000000 * 100
     io_full = (second["io_full_total_us"] - first["io_full_total_us"]) / 10000000 * 100
     cpu_delta = second["cpu_total"] - first["cpu_total"]
     iowait = (second["iowait"] - first["iowait"]) / max(cpu_delta, 1) * 100
     swapin = second["pswpin"] - first["pswpin"]
     swapout = second["pswpout"] - first["pswpout"]
-    failures = []
-    if second["mem_available_kb"] < mem_required:
-        failures.append("MEMAVAILABLE")
-    if second["swap_total_kb"] and second["swap_free_kb"] < 512 * 1024:
-        failures.append("SWAPFREE")
+    red = []
+    if second["mem_available_kb"] < 12 * GIB_KB:
+        red.append("MEMAVAILABLE_LT_12GIB")
     if swapin or swapout:
-        failures.append("SWAP_ACTIVITY")
+        red.append("SWAP_ACTIVITY")
+    if mem_full > 2.0:
+        red.append("MEMORY_PSI_FULL_GT_2PCT")
+    if io_full > 5.0:
+        red.append("IO_PSI_FULL_GT_5PCT")
+    if iowait > 20.0:
+        red.append("IOWAIT_GT_20PCT")
+    green_failures = []
+    if second["mem_available_kb"] < mem_required:
+        green_failures.append("MEMAVAILABLE_LT_REQUIRED")
     if mem_full > 0.5:
-        failures.append("MEMORY_PSI_FULL")
+        green_failures.append("MEMORY_PSI_FULL_GT_0P5PCT")
     if io_full > 1.0:
-        failures.append("IO_PSI_FULL")
+        green_failures.append("IO_PSI_FULL_GT_1PCT")
     if iowait > 10.0:
-        failures.append("IOWAIT")
+        green_failures.append("IOWAIT_GT_10PCT")
+    if swapin or swapout:
+        green_failures.append("SWAP_ACTIVITY")
+    decision = "RED" if red else ("GREEN" if not green_failures else "YELLOW")
     return {
-        "pass": not failures,
-        "reason": ",".join(failures) if failures else "PASS",
+        "pass": decision == "GREEN",
+        "decision": decision,
+        "reason": ",".join(red if red else green_failures) if decision != "GREEN" else "PASS",
+        "reserve_kb": reserve,
+        "predicted_peak_rss_kb": predicted_peak_kb,
         "mem_available_kb": second["mem_available_kb"],
         "mem_required_kb": mem_required,
         "swap_free_kb": second["swap_free_kb"],
@@ -161,8 +186,14 @@ class Supervisor:
         self.log_root = self.root / "attempt_logs"
         self.log_root.mkdir(exist_ok=True)
         self.state_path = self.root / "GOAL_STATE.tsv"
+        # Preserve the original fixed-threshold history verbatim.  Adaptive
+        # samples begin in a separate append-only V2 ledger so their schema
+        # cannot rewrite or obscure the earlier evidence.
         self.wait_path = self.root / "RESOURCE_WAIT_HISTORY.tsv"
+        self.wait_v2_path = self.root / "RESOURCE_WAIT_HISTORY_V2.tsv"
         self.calibration_path = self.root / "RSS_CALIBRATION.tsv"
+        self.heavy_rss_path = self.root / "HEAVY_RSS.tsv"
+        self.runtime_path = self.root / "RUNTIME_RESOURCE_MONITOR.tsv"
         self._initialize_state()
 
     def _initialize_state(self) -> None:
@@ -181,6 +212,70 @@ class Supervisor:
             "timestamp_utc", "task", "event", "reason", "mem_available_kb", "mem_required_kb",
             "swap_free_kb", "swap_in_delta", "swap_out_delta", "memory_full_pct", "io_full_pct", "iowait_pct",
         ), {"timestamp_utc": utcnow(), "task": task, "event": event, **sample})
+
+    def task_class(self, task: str) -> str:
+        if task in SIM_ARMS:
+            return "SMOKE"
+        if task in ("E07", "E08"):
+            return "MINER_CAL"
+        return "STATIC_MINER"
+
+    def recorded_rss(self, task_class: str) -> List[int]:
+        if not self.heavy_rss_path.exists():
+            return []
+        with self.heavy_rss_path.open(newline="") as handle:
+            return [int(row["peak_rss_kb"]) for row in csv.DictReader(handle, delimiter="\t")
+                    if row["task_class"] == task_class and row["peak_rss_kb"].isdigit()]
+
+    def static_calibration(self, task: str) -> Tuple[int, int] | None:
+        if task not in ("E09", "E10") or not self.calibration_path.exists():
+            return None
+        need = "E08" if task == "E09" else "E07"
+        with self.calibration_path.open(newline="") as handle:
+            candidates = [row for row in csv.DictReader(handle, delimiter="\t") if row["task"] == need]
+        if not candidates:
+            return None
+        latest = candidates[-1]
+        return int(latest["peak_rss_kb"]), int(latest["memory_span_kb"])
+
+    def predicted_peak(self, task: str) -> int:
+        task_class = self.task_class(task)
+        if task_class == "STATIC_MINER":
+            calibration = self.static_calibration(task)
+            if calibration is None:
+                raise RuntimeError(f"missing prerequisite RSS calibration for {task}")
+            # The static-miner formula takes this observed calibration peak
+            # directly; it must not silently revert to the retired host gate.
+            return calibration[0]
+        observed = self.recorded_rss(task_class)
+        default = DEFAULT_PEAK_KB[task_class]
+        return max(default, int(1.5 * max(observed))) if observed else default
+
+    def record_sample_v2(self, task: str, event: str, sample: Dict[str, object]) -> None:
+        append_tsv(self.wait_v2_path, (
+            "timestamp_utc", "policy_version", "task", "task_class", "event", "decision", "reason",
+            "predicted_peak_rss_kb", "observed_peak_rss_kb", "reserve_kb", "mem_available_kb", "mem_required_kb",
+            "swap_free_kb", "swap_in_delta", "swap_out_delta", "memory_full_pct", "io_full_pct", "iowait_pct",
+        ), {"timestamp_utc": utcnow(), "policy_version": POLICY_VERSION, "task": task,
+            "task_class": self.task_class(task), "event": event,
+            "observed_peak_rss_kb": max(self.recorded_rss(self.task_class(task)), default=0), **sample})
+
+    def record_rss(self, task: str, unit: str | None, before_kb: int, after_kb: int) -> int:
+        arm = unit if unit is not None else ("E07-decode-rss" if task == "E07" else
+                                             "E08-prefill-rss" if task == "E08" else
+                                             "E09-prefill-static16" if task == "E09" else "E10-decode-static16")
+        time_v = self.future / f"{arm}.time-v.txt"
+        match = re.search(r"Maximum resident set size \(kbytes\):\s*(\d+)", time_v.read_text(errors="replace"))
+        if not match:
+            raise RuntimeError(f"missing /usr/bin/time -v peak RSS for {arm}")
+        peak = int(match.group(1))
+        append_tsv(self.heavy_rss_path, (
+            "timestamp_utc", "policy_version", "task", "arm", "task_class", "peak_rss_kb",
+            "mem_before_kb", "mem_after_kb", "memory_span_kb", "time_v_path",
+        ), {"timestamp_utc": utcnow(), "policy_version": POLICY_VERSION, "task": task, "arm": arm,
+            "task_class": self.task_class(task), "peak_rss_kb": peak, "mem_before_kb": before_kb,
+            "mem_after_kb": after_kb, "memory_span_kb": abs(after_kb - before_kb), "time_v_path": str(time_v)})
+        return peak
 
     def validate_inputs(self) -> None:
         attestation = Path(self.args.attestation)
@@ -240,6 +335,7 @@ class Supervisor:
             for arm in SIM_ARMS[task]:
                 yield self.future / arm
                 yield self.future / f"{arm}.PRELAUNCH.tsv"
+                yield self.future / f"{arm}.time-v.txt"
         elif task in ("E07", "E08"):
             arm = "E07-decode-rss" if task == "E07" else "E08-prefill-rss"
             yield self.future / arm
@@ -263,6 +359,7 @@ class Supervisor:
         if unit is not None:
             yield self.future / unit
             yield self.future / f"{unit}.PRELAUNCH.tsv"
+            yield self.future / f"{unit}.time-v.txt"
             return
         yield from self.task_artifacts(task)
 
@@ -310,6 +407,46 @@ class Supervisor:
             "mem_before_kb": before_kb, "mem_after_kb": after_kb,
             "memory_span_kb": abs(after_kb - before_kb), "time_v_path": str(self.future / f"{arm}.time-v.txt")})
 
+    def runtime_monitor(self, task: str, unit: str | None, process: subprocess.Popen[object]) -> int:
+        """Observe a running B heavy quantum without touching other windows."""
+        previous = one_sample()
+        red_windows = 0
+        while process.poll() is None:
+            time.sleep(30)
+            current = one_sample()
+            mem_full = (current["memory_full_total_us"] - previous["memory_full_total_us"]) / 30000000 * 100
+            io_full = (current["io_full_total_us"] - previous["io_full_total_us"]) / 30000000 * 100
+            swapin, swapout = current["pswpin"] - previous["pswpin"], current["pswpout"] - previous["pswpout"]
+            red = (swapin != 0 or swapout != 0 or current["mem_available_kb"] < 12 * GIB_KB or mem_full > 2.0 or io_full > 5.0)
+            red_windows = red_windows + 1 if red else 0
+            append_tsv(self.runtime_path, (
+                "timestamp_utc", "policy_version", "task", "arm", "mem_available_kb", "swap_free_kb",
+                "swap_in_delta", "swap_out_delta", "memory_full_pct", "io_full_pct", "red_windows", "action",
+            ), {"timestamp_utc": utcnow(), "policy_version": POLICY_VERSION, "task": task,
+                "arm": unit if unit is not None else task, "mem_available_kb": current["mem_available_kb"],
+                "swap_free_kb": current["swap_free_kb"], "swap_in_delta": swapin, "swap_out_delta": swapout,
+                "memory_full_pct": f"{mem_full:.6f}", "io_full_pct": f"{io_full:.6f}",
+                "red_windows": red_windows, "action": "OBSERVE"})
+            # A simulator is allowed to finish unless the B process itself is
+            # clearly contributing to near-OOM thrashing. A streaming miner is
+            # safely retryable after two red windows.
+            miner = task not in SIM_ARMS
+            severe = current["mem_available_kb"] < 12 * GIB_KB and (swapin != 0 or swapout != 0)
+            if (miner and red_windows >= 2) or (not miner and severe and red_windows >= 3):
+                self._runtime_terminated = True
+                process.terminate()
+                append_tsv(self.runtime_path, (
+                    "timestamp_utc", "policy_version", "task", "arm", "mem_available_kb", "swap_free_kb",
+                    "swap_in_delta", "swap_out_delta", "memory_full_pct", "io_full_pct", "red_windows", "action",
+                ), {"timestamp_utc": utcnow(), "policy_version": POLICY_VERSION, "task": task,
+                    "arm": unit if unit is not None else task, "mem_available_kb": current["mem_available_kb"],
+                    "swap_free_kb": current["swap_free_kb"], "swap_in_delta": swapin, "swap_out_delta": swapout,
+                    "memory_full_pct": f"{mem_full:.6f}", "io_full_pct": f"{io_full:.6f}",
+                    "red_windows": red_windows, "action": "TERMINATE_B_ONLY_FOR_THRASHING"})
+                return process.wait()
+            previous = current
+        return process.wait()
+
     def invoke(self, task: str, unit: str | None) -> Tuple[int, Path]:
         command = [str(self.helper), "--enable-execution", "--resume-valid", "--a-terminal-attestation", self.args.attestation,
                    "--experiment", task]
@@ -317,34 +454,48 @@ class Supervisor:
             command.extend(("--arm", unit))
         environment = os.environ.copy()
         environment["B9_EXTERNAL_RESOURCE_GATE"] = "1"
+        if unit is not None:
+            environment["B9_TIME_V_OUTPUT"] = str(self.future / f"{unit}.time-v.txt")
         if task in ("E09", "E10"):
             environment.update(self.calibrated_environment(task))
         label = unit if unit is not None else task
         log = self.log_root / f"{utcnow().replace(':', '').replace('-', '')}_{label}.log"
+        self._runtime_terminated = False
         with log.open("w") as handle:
             handle.write("command\t" + " ".join(command) + "\n")
             handle.flush()
-            completed = subprocess.run(command, cwd=FRAMEWORK, env=environment, stdout=handle, stderr=subprocess.STDOUT)
-        return completed.returncode, log
+            process = subprocess.Popen(command, cwd=FRAMEWORK, env=environment, stdout=handle, stderr=subprocess.STDOUT)
+            return_code = self.runtime_monitor(task, unit, process)
+        return return_code, log
 
     def wait_for_admission(self, task: str) -> object:
+        consecutive_red = 0
         while True:
-            sample = resource_sample()
-            self.record_sample(task, "RESOURCE_GATE", sample)
+            calibration = self.static_calibration(task)
+            predicted = self.predicted_peak(task)
+            sample = resource_sample(predicted, *(calibration or (None, None)))
+            self.record_sample_v2(task, "RESOURCE_GATE", sample)
             if not sample["pass"]:
-                self.state(task, "NOT_STARTED", f"RESOURCE_DEFERRED {sample['reason']}; retry after {self.args.wait_seconds}s")
-                time.sleep(self.args.wait_seconds)
+                if sample["decision"] == "RED":
+                    consecutive_red += 1
+                    delay = 300 if consecutive_red >= 3 else 120
+                else:
+                    consecutive_red = 0
+                    delay = 60
+                self.state(task, "NOT_STARTED", f"RESOURCE_DEFERRED {POLICY_VERSION} {sample['decision']} {sample['reason']}; retry after {delay}s")
+                time.sleep(delay)
                 continue
+            consecutive_red = 0
             lock = LOCK_PATH.open("a+")
             try:
                 fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-                self.record_sample(task, "LOCK_ACQUIRED", sample)
+                self.record_sample_v2(task, "LOCK_ACQUIRED", sample)
                 return lock
             except BlockingIOError:
                 lock.close()
-                self.record_sample(task, "LOCK_BUSY", sample)
-                self.state(task, "NOT_STARTED", f"heavy-slot lock busy; retry after {self.args.wait_seconds}s")
-                time.sleep(self.args.wait_seconds)
+                self.record_sample_v2(task, "LOCK_BUSY", sample)
+                self.state(task, "NOT_STARTED", f"{POLICY_VERSION} heavy-slot lock busy; retry after 60s")
+                time.sleep(60)
 
     def run_task(self, task: str) -> None:
         if self.task_valid(task):
@@ -366,14 +517,19 @@ class Supervisor:
                     fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
                     lock.close()
                 if code == 0 and self.unit_valid(task, unit):
+                    self.record_rss(task, unit, before, after)
                     if task in ("E07", "E08"):
                         self.record_calibration(task, before, after)
                     break
                 log_text = log.read_text(errors="replace") if log.exists() else ""
+                if self._runtime_terminated:
+                    self.quarantine_invalid(task, unit)
+                    self.state(task, "NOT_STARTED", "B-only retryable task stopped for sustained runtime thrashing; retry after 120s")
+                    time.sleep(120)
+                    continue
                 if "RESOURCE_DEFERRED" in log_text:
-                    self.state(task, "NOT_STARTED", "inner B9 resource gate deferred; B11 will wait/retry")
-                    self.record_sample(task, "INNER_RESOURCE_DEFERRED", {"reason": "B9_INNER_GATE", "pass": False})
-                    time.sleep(self.args.wait_seconds)
+                    self.state(task, "NOT_STARTED", "unexpected inner B9 resource defer; B11 will re-admit under V2")
+                    time.sleep(60)
                     continue
                 self.state(task, "FAILED_DIAGNOSING", f"B9 executor exit={code}; log={log}; no blind retry")
                 raise RuntimeError(f"{task} failed non-transiently; inspect {log} before retry")
