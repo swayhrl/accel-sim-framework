@@ -66,6 +66,40 @@ headroom.  No Btree or other replacement row was launched.  This is an
 operational fail-closed wait, not a FAST64 result failure or a change to the
 current nine live jobs.
 
+### DWT2D Base natural terminal — strict-valid but still pre-acceptance
+
+The admitted DWT2D/Base row naturally terminated with exit `0` at
+`2026-09-08T17:40:19Z`.  The separate v3 closeout monitor observed its atomic
+`RUN_TERMINAL.tsv` and produced compact evidence in
+`fast64/generated/fast64_3_dwt2d_base_alias_v3/`; it did not modify the live
+v2 monitor or any frozen R2 closeout dependency.  The result is strictly
+valid only as physical precomputation:
+
+| item | value |
+| --- | --- |
+| status | `FAST64_3_BASE_PRECOMPUTED_STRICT_VALID_PENDING_FAST64_1_2_ACCEPTANCE` |
+| mode / cap | `PAPER_BASE` / `8192` |
+| cycles / instructions | `344,119` / `148,684,429` |
+| lower accounting | acquired/released `757,359/757,359`; terminal lower `0` |
+| PIB accounting | admits/retires `437,886/437,886`; terminal PIB `0` |
+| cap condition | `DTC_L1_lower_cap_full_events=0`; peak outstanding `2048` |
+| immutable attempt | UUID `adc75323-a985-4222-bc28-804e4a9dedad`; runner `bf9a84c8...` |
+| provenance | Core `bbcbb5e...`; runtime `6a8743b4...`; observer `2c2a6a27...`; execution snapshot `037f008b...` |
+
+The alias-aware v3 collector accepted one canonical timestamped perf stream
+and its normal `perf_counter.csv.gz` alias as one epoch.  It records a clean
+precise assertion/fatal/deadlock/output-mismatch scan, positive cycle and
+instruction progress, exact Base/cap identity, and drained terminal state.
+This is **not** a FAST64.3 PASS, a later-stage performance claim, or permission
+to launch IO/OO work: it remains governed by FAST64.1 and FAST64.2 acceptance.
+
+The subsequent review-time 60-second audit
+`/tmp/fast64-post-review-r2-fullwave-resource-audit-20260908T174003Z.tsv`
+again rejected a new worker fail-closed because `memory_psi_avg10=0.01`.
+It observed zero sampled swap-out/OOM/throttling, 205,547,999,232 bytes
+cgroup headroom and 62,614,523,904 bytes output free, but no new worker was
+admitted.
+
 ## FAST64.2 forced-stress diagnostic — terminal, gate unsatisfied
 
 | item | value |

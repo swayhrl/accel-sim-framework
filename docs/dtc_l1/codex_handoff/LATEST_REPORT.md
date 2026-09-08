@@ -1,5 +1,24 @@
 # Latest Codex Report
 
+## FAST64.3 DWT2D/Base strict-valid precompute (2026-09-08)
+
+The isolated DWT2D/Base immutable-v2 row naturally exited `0` at
+`2026-09-08T17:40:19Z`.  Its future-only v3 collector produced only compact
+evidence under `fast64/generated/fast64_3_dwt2d_base_alias_v3/`: one canonical
+perf epoch (with the normal alias normalized), exact frozen identity, positive
+progress (`344,119` cycles; `148,684,429` instructions), lower
+acquired/released `757,359/757,359`, PIB admits/retires `437,886/437,886`, and
+terminal lower/PIB state `0/0`.  The precise failure scan is clean.  Its sole
+status is `FAST64_3_BASE_PRECOMPUTED_STRICT_VALID_PENDING_FAST64_1_2_ACCEPTANCE`;
+it is not a FAST64.3 PASS and it authorizes neither later-stage IO/OO rows nor
+a performance claim.
+
+The current 60-second, read-only post-review admission audit was fail-closed:
+although swap-out/OOM/throttling were zero and cgroup/output headroom remained
+ample, `memory_psi_avg10=0.01`, so `safe_to_launch=NO`.  No replacement worker
+was launched.  The seven R2 closeout bytes and live simulators remain
+untouched.
+
 ## FAST64 controlled third Base admission and Base closeout recovery (2026-09-08)
 
 A new 60-second post-small-batch audit at
