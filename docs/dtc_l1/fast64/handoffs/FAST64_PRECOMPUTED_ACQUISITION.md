@@ -106,6 +106,15 @@ create/response (`757,359/757,359`) as the Base live-miss lifecycle closure.
 This source-backed extraction is a pre-acceptance metric companion, not a
 FAST64.3 result promotion.
 
+`monitor_fast64_3_base_structural_companion_v1.sh` is a separate future-only
+observer for ATAX, GESUMMV, DWT2D and GEMM.  It waits for both an atomic Base
+terminal receipt and the corresponding already-strict alias-aware JSON before
+calling the structural extractor once.  The DWT2D companion remains preserved;
+the live rows have no companion output.  Its static/once regression passed and
+the detached monitor writes only its explicit log.  It cannot signal, launch,
+collect Base validity, or modify the active v3/v4 Base collectors or frozen R2
+closure.
+
 The subsequent review-time 60-second audit
 `/tmp/fast64-post-review-r2-fullwave-resource-audit-20260908T174003Z.tsv`
 again rejected a new worker fail-closed because `memory_psi_avg10=0.01`.

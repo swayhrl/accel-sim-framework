@@ -24,6 +24,13 @@ compact companion records line-allocation `1,417,779`, MSHR-entry-full
 lower-request lifecycle.  This improves future FAST64.3 metric completeness
 only; it does not promote DWT2D or alter any live row.
 
+The future-only structural-companion monitor is now prepared for ATAX,
+GESUMMV, DWT2D and GEMM.  It requires a natural terminal receipt plus the
+existing strict Base JSON before it extracts a companion exactly once; it
+cannot create Base validity evidence or alter any active Base/R2 monitor.  Its
+static/once regression confirms that live rows remain waiting-only and have no
+premature companion output.
+
 The current 60-second, read-only post-review admission audit was fail-closed:
 although swap-out/OOM/throttling were zero and cgroup/output headroom remained
 ample, `memory_psi_avg10=0.01`, so `safe_to_launch=NO`.  No replacement worker
