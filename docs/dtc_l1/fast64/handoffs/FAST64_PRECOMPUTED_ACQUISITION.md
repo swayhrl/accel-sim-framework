@@ -58,6 +58,14 @@ receipt.  Their pre-terminal regression passed; the v3 monitor has its own
 lock and remains pending-only.  This changes neither simulator behavior nor
 the R2 frozen closeout closure.
 
+The next fresh 60-second audit at
+`/tmp/fast64-post-dwt-resource-audit-20260908T173337Z.tsv` rejected another
+admission solely because `swap_so_delta=72`, despite zero sampled OOM,
+memory-PSI, and CFS throttling and 207,377,240,064 bytes cgroup memory
+headroom.  No Btree or other replacement row was launched.  This is an
+operational fail-closed wait, not a FAST64 result failure or a change to the
+current nine live jobs.
+
 ## FAST64.2 forced-stress diagnostic — terminal, gate unsatisfied
 
 | item | value |
