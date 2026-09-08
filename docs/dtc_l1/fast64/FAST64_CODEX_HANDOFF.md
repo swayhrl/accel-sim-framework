@@ -39,6 +39,18 @@ scientific launch barrier.  See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md` and
 `handoffs/FAST64_1_R2_CLOSEOUT_DEPENDENCY_FREEZE.md`.
 
+### Live trace-counter interpretation
+
+Do not diagnose a live first-kernel trace row as stalled solely because its
+`gpu_tot_sim_insn` or `gpu_tot_issued_cta` perf fields are zero.  Source
+`src/gpgpu-sim/gpu-sim.cc` registers both completed-grid fields alongside the
+current-grid `gpu_sim_insn` and `gpu_sim_cycle` fields; `update_stats()` moves
+the latter into the former only at kernel completion.  The live GESUMMV R2
+IO@8192, IO@1048576, and pending Base rows currently have respectively about
+36.0M, 33.8M, and 8.18M `gpu_sim_insn`, despite zero completed-grid totals.
+Their advancing current-grid instruction/cycle counters are the applicable
+simulator-level progress evidence until natural terminal accounting occurs.
+
 The unsatisfied FAST64.1 HARD requirements block only FAST64.1 result/stage
 promotion.  They do not block the persistent Goal.  The remote host-policy
 review supersedes the former `74-80` exclusive-pool wait: CPU placement is not
