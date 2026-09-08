@@ -1,5 +1,23 @@
 # Latest Codex Report
 
+## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
+
+The seven-row R2 closeout dependency closure is now frozen, byte-addressed in
+`fast64/handoffs/FAST64_1_R2_CLOSEOUT_DEPENDENCY_FREEZE.md`, and must remain
+unchanged until the existing closeout controller publishes
+`FAST64_1_R2_FULL_WAVE_COLLECTOR_PASS`. This includes the controller,
+collector, parser/validator/cap comparator, payload manifest, all R2 configs,
+and R2 `trace.config`. Future work must use versioned controllers and only
+read these bytes.
+
+Two cohort-1 rows have naturally reached immutable terminal exit 0: BICG
+Base@8192 at `2026-09-08T12:56:42Z` and BICG IO@8192 at
+`2026-09-08T13:08:48Z`. Their receipt UUID/immutable-runner chain is intact;
+the error scan found only configuration text and zero-valued invariant prints.
+The five continuation R2 rows remain CPU-active. The untouched closeout
+controller has observed `2/7` terminal receipts and remains the only route to
+strict collection or FAST64.1 promotion.
+
 ## FAST64.1 five-row immutable-R2 continuation authorized (2026-09-08)
 
 The researcher superseded the bootstrap two-worker ramp and authorized an
