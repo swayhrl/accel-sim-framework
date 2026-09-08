@@ -83,11 +83,13 @@ def main():
                 row["segment_latency_cycles"] == "5|10|20" and
                 as_int(row, "segment_accepts_per_cycle") == 1,
                 "%s Segment contract is incomplete" % arm)
-    require("INCOMPLETE_C10B_BLOCKER" in by_id["F5"]["status"],
-            "F5 must be honestly marked unavailable until its PWC model exists")
+    require(by_id["F5"]["pwc_entries"] == "120" and
+            "one_port_queue" in by_id["F5"]["pwc_layout"] and
+            "OFFICIAL_C10B_PHYSICAL_PWC" in by_id["F5"]["status"],
+            "F5 must name the implemented C10B physical-PWC contract")
 
     print("C10A fair contract PASS: F0--F9 accounting, F1/F8 geometry, "
-          "Segment latency/port contract, and H0 unfair-arm guard")
+          "Segment latency/port contract, F5 physical PWC, and H0 unfair-arm guard")
 
 
 if __name__ == "__main__":

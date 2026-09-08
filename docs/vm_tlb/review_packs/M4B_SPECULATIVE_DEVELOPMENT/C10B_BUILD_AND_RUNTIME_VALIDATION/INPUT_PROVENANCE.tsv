@@ -1,9 +1,13 @@
-field	value	status
-framework_branch	hrl/vm-m4b-speculative-v0	VERIFIED
-framework_head	f01e80866a8446e672bf9c6921ba44c0f10684fd	VERIFIED
-core_branch	hrl/vm-m4b-speculative-v0	VERIFIED
-core_head	12267bb7ed1dc0257d1d903f6baf7cbdc6ca550e	VERIFIED_CLEAN
-a_terminal_attestation	/workspace/m4c-c3-formal-20260905-v1/A_TERMINAL_ATTESTATION.txt	VERIFIED_FIRST_LINE_A_TERMINAL_CONFIRMED
-handoff	docs/vm_tlb/codex_handoff/spec_m4b/C10B_POST_A_TERMINAL_BUILD_AND_RUNTIME_VALIDATION.md	READ
-superseded_canary	C10B0_CONCURRENT_FOCUSED_COMPILE_CANARY	NOT_EXECUTED
-c5	NOT_STARTED	ENFORCED
+item	value	role	verification
+goal	C10B_CONTINUOUS_BUILD_RUNTIME_VALIDATION_GOAL	continuous post-terminal scope	ACTIVE
+framework_repository	swayhrl/accel-sim-framework	Window C Framework worktree	VERIFIED
+framework_branch	hrl/vm-m4b-speculative-v0	authoritative speculative branch	VERIFIED
+framework_goal_admission_head	2d8fae249887b4082046aa3ffc21f3d73eccea2f	C10B handoff input	VERIFIED
+core_repository	swayhrl/gpgpu-sim	functional simulator worktree	VERIFIED
+core_branch	hrl/vm-m4b-speculative-v0	authoritative speculative branch	VERIFIED
+core_goal_admission_head	12267bb7ed1dc0257d1d903f6baf7cbdc6ca550e	compile-before-functional-change input	VERIFIED
+a_terminal_checkpoint	14edbe200859f6ddf42bc3d459334f184a920a82	A terminal prerequisite	VERIFIED
+subentry_label	REFERENCE_APPROX_SUBENTRY_16	candidate provenance label	PRESERVED
+candidate_label	SPECULATIVE_CANDIDATE	Window C result label	PRESERVED
+c5_execution	NOT_STARTED	boundary before separately frozen execution contract	ENFORCED
+resource_policy	ADAPTIVE_RESOURCE_V2	current resource admission policy	ACTIVE

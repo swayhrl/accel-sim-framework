@@ -132,12 +132,18 @@ def main():
     for arm, value in selector_values.items():
         require(by_arm[arm]["selector_value"] == value,
                 "%s selector value is inconsistent" % arm)
-    for arm in expected - set(["F5", "H0"]):
+    for arm in expected - set(["H0"]):
         require(by_arm[arm]["official_selectable"] == "true",
                 "%s must be official/selectable" % arm)
-    for arm in ("F5", "H0"):
-        require(by_arm[arm]["official_selectable"] == "false",
-                "%s must be hard blocked" % arm)
+    require(by_arm["H0"]["official_selectable"] == "false",
+            "H0 must remain permanently hard blocked")
+    require(by_arm["F5"]["official_selectable"] == "true" and
+            by_arm["F5"]["l2_entries"] == "656" and
+            by_arm["F5"]["sets"] == "41" and
+            by_arm["F5"]["segment_accept_rate"] ==
+            "ONE_GLOBAL_PWC_ACCEPT_PER_CYCLE" and
+            "PHYSICAL_PWC" in by_arm["F5"]["status"],
+            "F5 physical PWC profile contract incomplete")
     require(by_arm["F1"]["sets"] == "6" and
             by_arm["F8"]["sets"] == "2" and
             by_arm["F1"]["associativity"] == "16" and
@@ -202,6 +208,20 @@ def main():
             "production caller lacks explicit READ/WRITE/ATOMIC wiring")
     require("&translated_pa, &translation_outcome, translation_access" in shader,
             "production translation call still depends on default READ")
+    # C10 registered descriptors may map a SimVA extent to a distinct SimPA
+    # extent.  Keep the M1 ideal-mode equality assertion, but prohibit the
+    # obsolete functional-mode equality assertion after the real mapping is
+    # installed; SimVA must remain observable while lower memory uses SimPA.
+    functional_start = shader.index("assert(m_config->gpgpu_vm_mode == 2);")
+    functional_end = shader.index("// The class is captured", functional_start)
+    functional = shader[functional_start:functional_end]
+    require("access.set_sim_pa(static_cast<new_addr_type>(translated_pa));" in
+            functional and
+            "if (access.get_sim_va() == access.get_sim_pa())" in functional,
+            "functional non-identity SimPA observation guard is missing")
+    require("assert(access.get_sim_va() == access.get_sim_pa());" not in
+            functional,
+            "functional mode still incorrectly requires identity SimPA")
     service_start = source.index("void translation_controller::service_lookups")
     service_end = source.index("lookup_result translation_controller::allocate_or_merge")
     service = source[service_start:service_end]
@@ -224,12 +244,13 @@ def main():
         require(token in source or token in header,
                 "missing generation/stale-fill guard: %s" % token)
 
-    # Runtime selector exists and rejects F5/H0 at the configuration boundary.
+    # Runtime selector realizes physical F5 and rejects H0 permanently.
     require("-gpgpu_vm_fair_arm" in gpu and "configure_fair_arm" in gpu,
             "fair arm is not wired through runtime configuration")
-    require("FAIR_ARM_F5_BLOCKED_PHYSICAL_PWC" in source and
+    require("FAIR_ARM_F5_PHYSICAL_PWC" in source and
+            "PWC_PHYSICAL_F5" in source and
             "FAIR_ARM_H0_HISTORICAL_UNFAIR" in source,
-            "F5/H0 hard selector guard missing")
+            "F5 physical selector or H0 permanent guard missing")
     require("official_segment_arm && !m_weight_segments.registered_v2()" in source,
             "official Segment arms must reject historical V1 registration")
     print("C10A2 static closure PASS: transaction/lifecycle/generation pure "
