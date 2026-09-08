@@ -326,8 +326,12 @@ class Supervisor:
                 fields = line.split("\t")
                 if len(fields) >= 3:
                     rows[fields[0]] = fields
+            # This is the miner's committed reducer schema.  It reports three
+            # arithmetic conservation checks; page/line uniqueness is exposed
+            # in the static summary, not duplicated in this ledger.
             return all(name in rows and rows[name][-1] == "PASS"
-                       for name in ("lane_references_by_object", "sectors_by_object", "lines_by_object"))
+                       for name in ("lane_references_by_object", "requested_bytes_by_object",
+                                    "memory_instructions_exclusive_object_bucket"))
         raise AssertionError(task)
 
     def task_artifacts(self, task: str) -> Iterable[Path]:
