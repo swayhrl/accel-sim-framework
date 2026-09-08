@@ -19,4 +19,26 @@ printf '%s\n' "$output"
 printf '%s\n' "$output" | rg -q 'R2_TOPOLOGY_AWARE_DISPATCH_DRY_RUN_PASS'
 printf '%s\n' "$output" | rg -q 'available_distinct_physical_cores=4'
 printf '%s\n' "$output" | rg -q 'candidate_cpus=74,76,79,80'
+
+# Regression for the dispatcher's advisory-lock lifetime: a detached child
+# must not inherit the lock descriptor.  This is a disposable shell/sleep
+# topology only; it neither starts a simulator nor touches a real namespace.
+lock_file="$work_root/dispatch.lock"
+child_pid_file="$work_root/child.pid"
+bash -c '
+  exec 9>"$1"
+  flock -n 9
+  ( exec 9>&-; exec sleep 2 ) &
+  printf "%s\\n" "$!" >"$2"
+' bash "$lock_file" "$child_pid_file"
+child_pid=$(cat "$child_pid_file")
+kill -0 "$child_pid"
+flock -n "$lock_file" -c true
+wait_for_child=0
+while kill -0 "$child_pid" 2>/dev/null; do
+  sleep 0.1
+  wait_for_child=$((wait_for_child + 1))
+  test "$wait_for_child" -lt 40 || { echo "R2_LOCK_FD_REGRESSION_CHILD_STUCK" >&2; exit 1; }
+done
+printf 'FAST64_R2_DISPATCH_LOCK_FD_CLOSURE_REGRESSION_PASS\tchild_pid=%s\n' "$child_pid"
 printf 'FAST64_R2_TOPOLOGY_SELECTOR_REGRESSION_PASS\twork_root=%s\n' "$work_root"

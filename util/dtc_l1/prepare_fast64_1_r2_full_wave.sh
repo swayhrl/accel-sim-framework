@@ -150,15 +150,21 @@ for index in "${!eligible_rows[@]}"; do
   trace_root=$(awk -F '\t' -v workload="${workload,,}" '$1 == workload { print $2; exit }' \
     "$repo_root/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv")
   attempt_uuid=$(cat /proc/sys/kernel/random/uuid)
-  setsid "$immutable_runner" --simulator "$runtime" \
-    --config "$repo_root/configs/dtc_l1/fast64/$config" --trace "$trace_root/kernelslist.g" \
-    --trace-config "$trace_config" --run-dir "$runs_root/$name" --cpu "$cpu" \
-    --attempt-uuid "$attempt_uuid" --runner-sha256 "$runner_sha" \
-    --immutable-runner-path "$immutable_runner" \
-    --framework-scientific-config-source-sha "$scientific_config_source" \
-    --core-source-head "$expected_core" --observer-overlay-sha "$observer_sha" \
-    --result-classification FAST64_1_R2_FULL_WAVE_IMMUTABLE_RECOVERY \
-    >"$runs_root/$name.launcher.log" 2>&1 &
+  # Do not let the dispatch lock FD survive in the detached supervisor or in
+  # its simulator descendants.  The namespace mkdir remains the exactly-once
+  # witness; closing this inherited descriptor only makes the short-lived
+  # dispatch lock release when this launcher exits.
+  (
+    exec 9>&-
+    exec setsid "$immutable_runner" --simulator "$runtime" \
+      --config "$repo_root/configs/dtc_l1/fast64/$config" --trace "$trace_root/kernelslist.g" \
+      --trace-config "$trace_config" --run-dir "$runs_root/$name" --cpu "$cpu" \
+      --attempt-uuid "$attempt_uuid" --runner-sha256 "$runner_sha" \
+      --immutable-runner-path "$immutable_runner" \
+      --framework-scientific-config-source-sha "$scientific_config_source" \
+      --core-source-head "$expected_core" --observer-overlay-sha "$observer_sha" \
+      --result-classification FAST64_1_R2_FULL_WAVE_IMMUTABLE_RECOVERY
+  ) >"$runs_root/$name.launcher.log" 2>&1 &
   supervisor=$!
   printf 'row\tsupervisor_pid\tcpu_slot\tattempt_uuid\trunner_sha256\timmutable_runner\tscientific_config_source\tcore_sha\truntime_sha256\n' >"$runs_root/$name.supervisor.tsv"
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$name" "$supervisor" "$cpu" "$attempt_uuid" \

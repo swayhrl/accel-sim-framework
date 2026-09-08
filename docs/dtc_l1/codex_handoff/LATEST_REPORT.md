@@ -1,5 +1,25 @@
 # Latest Codex Report
 
+## FAST64.1 R2 dispatch-lock inheritance recovery (2026-09-08)
+
+The first two immutable R2 supervisors inherited the dispatcher's advisory
+lock descriptor.  Read-only `fuser` and `/proc/<pid>/fd/9` evidence ties the
+lock to both live supervisor/process trees; this is an execution-controller
+lifetime defect, not a simulator, DTC, configuration, or scientific-identity
+defect.  The live rows are preserved untouched: there is no safe in-place FD
+closure that does not perturb production processes, so the current lock will
+release only when those rows naturally reach their terminal state.
+
+The future-only dispatcher now closes FD 9 before `setsid` creates a detached
+supervisor.  A disposable lock/sleep topology regression proves that the child
+remains live while a second dispatcher can acquire the advisory lock; the
+existing namespace mkdir, immutable SHA binding, UUID, receipts, and
+single-epoch validator are unchanged.  This removes the issue for all rows
+launched after the two live rows.  Status is
+`FAST64_1_R2_RESOURCE_ADMISSION_PENDING` solely for this bounded lock lifetime;
+FAST64 Goal execution remains active.  On either natural terminal event, take
+a fresh resource audit and admit the next frozen-priority missing R2 row.
+
 ## FAST64.1 topology-aware R2 admission is ready (2026-09-08)
 
 The remote review supersedes the former fixed/exclusive `74-80` pool rule:
@@ -24,8 +44,8 @@ The first formal immutable R2 ramp was admitted at `2026-09-08T04:06:56Z`
 from `/tmp/fast64-r2-resource-audit-launch-v2.tsv`: `safe_to_launch=YES`,
 `authorized_workers=2`, 384 cgroup quota cores, 249 available distinct
 physical-core candidates, 9 pre-launch simulators, p95 RSS 8,925,478,912
-bytes, 130,078 MiB MemAvailable, zero swap-out/OOM/throttling/PSI/iowait and
-45,600 MiB output free.  The sample's 30-page swap-in without swap-out or PSI
+bytes, 139,714,740,224 bytes MemAvailable, zero swap-out/OOM/throttling/PSI/iowait and
+45,600,477,184 bytes output free.  The sample's 30-page swap-in without swap-out or PSI
 is recorded but is not active pressure.  The new live rows are BICG
 Base@8192 (`fast64_1r2_bicg_base_cap8192_a1`, CPU 0, UUID
 `0c84f039-346e-4d28-9d0f-b7a4e04ee8b0`) and BICG IO@8192

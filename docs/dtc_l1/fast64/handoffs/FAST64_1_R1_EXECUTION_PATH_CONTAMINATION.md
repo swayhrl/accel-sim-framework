@@ -152,8 +152,8 @@ The remote-approved topology-aware policy admitted the first two frozen-priority
 rows after the complete 60-second `FAST64_R2_RESOURCE_AUDIT_V1` at
 `/tmp/fast64-r2-resource-audit-launch-v2.tsv` returned `YES / 2`.  The audit
 recorded 384 quota cores, 249 distinct physical-core candidates, 9 live
-simulators, p95 RSS 8,925,478,912 bytes, 130,078 MiB MemAvailable, 45,600 MiB
-output free, zero swap-out/OOM/throttling/memory-PSI/iowait.  Its 30-page
+simulators, p95 RSS 8,925,478,912 bytes, 139,714,740,224 bytes MemAvailable,
+45,600,477,184 bytes output free, zero swap-out/OOM/throttling/memory-PSI/iowait.  Its 30-page
 swap-in is retained as an observation, not treated as pressure without
 swap-out/PSI/headroom evidence.
 
@@ -168,6 +168,25 @@ observer `2c2a6a…`, frozen scientific configuration source `037f008b…`, and
 the BICG payload SHA `388740a7…`.  After a short non-invasive host observation,
 only a fresh passing audit may refill further R2 rows.  No historical R1
 process was signalled, restarted, renamed or relabelled.
+
+### Dispatch-lock lifetime recovery (2026-09-08)
+
+The first two live R2 supervisors inherited the dispatcher's advisory lock FD
+9.  Read-only `fuser` plus `/proc/<pid>/fd/9` confirms that their complete
+supervisor/simulator descendants still reference
+`.fast64_1_r2_full_wave_dispatch.lock`, so a second ordinary dispatcher
+correctly fails closed rather than racing a duplicate launch.  The two
+production rows will not be signalled, attached, restarted, or otherwise
+modified; their natural terminal closeout is the only safe way to release this
+already-inherited descriptor.
+
+For future rows, the dispatcher now closes FD 9 in the background subshell
+before `setsid`/the immutable runner.  A disposable lock-plus-sleep regression
+proved the detached child stays alive while another process can acquire the
+lock.  This changes no immutable runner, namespace, attempt UUID, receipt,
+or scientific identity.  Until one of the two live rows exits naturally,
+`FAST64_1_R2_RESOURCE_ADMISSION_PENDING` denotes this controller-lifetime
+wait only; it is not a FAST64 Goal block or a scientific acceptance failure.
 
 ## Required disposition
 
