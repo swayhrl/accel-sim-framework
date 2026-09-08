@@ -24,6 +24,20 @@ The compact evidence is
 source/configuration-pressure diagnosis does not alter R2 semantics or any
 frozen closeout dependency.
 
+A later fresh 60-second admission at
+`/tmp/fast64-future-precompute-audit-20260908T164959Z-for-f2-recheck.tsv`
+returned `safe_to_launch=YES` for exactly one worker: sampled swap-out,
+cgroup OOM and memory PSI were zero, with 191.8 GiB cgroup headroom and 58.5
+GiB output space.  The researcher-authorized BICG fallback is therefore now
+physically acquired, not inferred: `fast64_2_precomputed_bicg_io_coupled_cap512_pib1_a1_r2`
+started at `2026-09-08T16:51:44Z` on CPU 9 with immutable attempt UUID
+`24e4fff0-e2c5-4832-b8d6-fec5ae911249`.  Its START receipt is present, the
+simulator is CPU-active, and the initial assertion/fatal/deadlock/output
+mismatch scan is clean.  Its class remains
+`PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE`; no FAST64.2
+PASS or R2-dependent stage transition is claimed before natural terminal and
+strict collection.
+
 ## FAST64.3 controlled two-row Base precompute, pending (2026-09-08)
 
 `prepare_fast64_3_base_precompute_v2.sh` is a future-only immutable-v2,

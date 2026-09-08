@@ -143,3 +143,28 @@ terminal receipt, exact immutable provenance, strict trace/parser/accounting
 validation, and a separate machine-readable outcome for pressure-present
 versus pressure-absent.  It is future-only and does not alter the NN evidence
 or the frozen R2 closeout chain.
+
+## BICG fallback acquisition (active; no result claim)
+
+The fresh 60-second resource admission at
+`/tmp/fast64-future-precompute-audit-20260908T164959Z-for-f2-recheck.tsv`
+passed exactly one additional worker: swap-out/OOM/memory-PSI and throttling
+were zero, cgroup headroom was 205,898,829,824 bytes, and output free space was
+62,861,844,480 bytes.  The exact separate BICG immutable-v2 launcher was then
+admitted without changing the R2 wave or its closeout closure.
+
+| item | value |
+| --- | --- |
+| namespace | `fast64_2_precomputed_bicg_io_coupled_cap512_pib1_a1_r2` |
+| mode / source-coupled controls | PAPER_IO / global cap `512`, IO PIB entries `1` |
+| class | `PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE` |
+| launch UTC / CPU | `2026-09-08T16:51:44Z` / `9` |
+| immutable attempt UUID | `24e4fff0-e2c5-4832-b8d6-fec5ae911249` |
+| Core / runtime / observer | `bbcbb5e...` / `6a8743b4...` / `2c2a6a27...` |
+| formal Framework source | `037f008b330eb230353b60edf126d6be9f45afdc` |
+| lifecycle | START receipt published; simulator CPU-active; initial failure scan clean |
+
+This is physical precomputation only.  It cannot promote FAST64.2 before the
+full immutable FAST64.1 R2 wave passes, and it cannot claim the forced-stress
+gate until its own natural terminal, strict alias-aware collection, pressure
+event observation and accounting checks complete.

@@ -45,6 +45,26 @@ positive coupled-stress construction is recorded in
 `FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.  The external overlay provenance is
 `/workspace/fast64-runs/overlays/FAST64_IO_CAP1048576_STRESS_PIB1.config.PROVENANCE.tsv`.
 
+## FAST64.2 BICG coupled fallback — active, pending
+
+| item | value |
+| --- | --- |
+| namespace | `fast64_2_precomputed_bicg_io_coupled_cap512_pib1_a1_r2` |
+| workload/mode | BICG / PAPER_IO |
+| controls | global cap `512`; source-coupled IO PIB entries `1` |
+| class | `PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE` |
+| execution source | `037f008b330eb230353b60edf126d6be9f45afdc` |
+| Core / runtime / observer | `bbcbb5e...` / `6a8743b4...` / `2c2a6a27...` |
+| CPU / attempt UUID | `9` / `24e4fff0-e2c5-4832-b8d6-fec5ae911249` |
+| lifecycle | START receipt present; simulator CPU-active; initial failure scan clean |
+
+The explicit 60-second admission evidence is
+`/tmp/fast64-future-precompute-audit-20260908T164959Z-for-f2-recheck.tsv`:
+it passed exactly one worker with zero sampled swap-out/OOM/memory PSI.  This
+row is the researcher-authorized BICG fallback after NN's strict negative
+pressure result.  It remains pending until natural terminal, strict collection
+and FAST64.1 acceptance; it has no FAST64.2 PASS or performance-result claim.
+
 ## FAST64.3 Base acquisition — terminal but pending
 
 | item | value |
