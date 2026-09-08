@@ -141,6 +141,17 @@ atomic terminal receipt and cannot modify a simulator, the v3 monitor, or the
 frozen R2 closure.  GEMM remains physical precomputation only until the
 FAST64.1 and FAST64.2 gates pass.
 
+The first detached v4 monitor inherited a closing caller stdout pipe.  Its
+next `tee` write therefore exited before a second poll; GEMM itself remained
+CPU-active, had no terminal receipt, and was never signalled.  A short
+read-only two-second-poll reproduction proved the monitor loop correct.
+The exact already-committed v4 bytes were then relaunched in a separate session
+with stdout/stderr redirected to `/dev/null`; its explicit log remains the
+only monitor output channel.  It survived a complete 120-second poll and
+wrote the subsequent wait record at `2026-09-08T18:03:47Z`.  This is a
+controller-lifecycle repair only, not an evidence collection, result change,
+or modification of any frozen R2 dependency.
+
 ## FAST64.2 forced-stress diagnostic — terminal, gate unsatisfied
 
 | item | value |

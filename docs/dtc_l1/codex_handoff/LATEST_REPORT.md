@@ -49,6 +49,15 @@ atomic terminal receipt.  It cannot affect R2 or any active v3 row.  GEMM is
 strictly `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`, not a formal result or
 stage advancement.
 
+The first GEMM v4 monitor exited after its inherited caller stdout closed; its
+simulator stayed CPU-active and untouched.  A bounded read-only reproduction
+proved the monitor loop itself correct.  The same committed monitor was
+relaunched in an independent session with stdout/stderr redirected to
+`/dev/null`, retaining only its explicit log channel.  It survived a full
+120-second poll and recorded the next wait state.  This is solely a monitor
+lifecycle recovery, with no collection/promotion claim and no R2 dependency
+change.
+
 ## FAST64 controlled third Base admission and Base closeout recovery (2026-09-08)
 
 A new 60-second post-small-batch audit at
