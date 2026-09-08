@@ -1,50 +1,59 @@
 # Window C — SPECULATIVE M4B DEVELOPMENT current handoff
 
-Status: `SPECULATIVE_CANDIDATE` / `REFERENCE_APPROX_SUBENTRY_16`. C9 architecture is frozen; C10-A/C10-A2 source/static implementation is complete. Window A C3 is formally terminal.
+Status: `SPECULATIVE_CANDIDATE` / `REFERENCE_APPROX_SUBENTRY_16`.
 
-## authoritative identity
+C9 architecture is frozen. C10-A/C10-A2 implementation is complete. C10B-0 through C10B-5 have passed runtime validation, including standard regression, non-identity registration/lifecycle/access/ordering/generation tests, emitted telemetry, F5 physical PWC, and fair-arm sanity.
 
-Framework branch: `hrl/vm-m4b-speculative-v0`
+## Current validated C10B identity
 
-- pre-Goal Framework checkpoint: `70499d4790a0d3bd2158a23be7ae260af56f92de`
-- C10-A2 evidence: `447ad52cf867e35a616fa16ab12e32b8914f50b9`
-- C10-A2 Core: `12267bb7ed1dc0257d1d903f6baf7cbdc6ca550e`
-- C9 architecture: `04be2899a19b1fe756956dbe5e459494ae1da8df`
+Framework evidence closeout:
 
-## Window A terminal evidence
+`28edd4e6c59691ea2b766f8221d0b0a1442ff167`
 
-A publication checkpoint:
+Core:
 
-`14edbe200859f6ddf42bc3d459334f184a920a82`
+`5b4094931910cd3bb9b30df47a552eb0ae596983`
 
-records `C3_FINAL_STATUS = TERMINAL_PASS`, 8/8 terminal arms, and no active C3 simulator. Shared attestation begins with `A_TERMINAL_CONFIRMED`.
+Validated binary SHA-256:
 
-The old pre-terminal `C10B0_CONCURRENT_FOCUSED_COMPILE_CANARY` is superseded. The prior PSI `RESOURCE_DEFERRED` checkpoint is only a temporary resource observation, not the final C10-B state.
+`74307f3a9b975300e469a7768be1324444c927498e3b19d40d39dc326df31345`
+
+C10B final state was `C10B_HARD_BLOCKER_WITH_EVIDENCE`, but the blocker is C5 input provenance, not C10B model correctness. No C5 performance replay has run.
+
+## C5 blocker
+
+C5 cannot yet bind a fair full prefill+decode matrix because C lacks:
+
+- a C-owned immutable full prefill trace-list;
+- a legal C10 V2 prefill non-identity driver registration;
+- a fully auditable common PA allocation binding across fair arms.
+
+The old prefill V1 identity-like map and object map are not legal C10 Segment registrations.
 
 ## Current authorized Goal
 
-`C10B_CONTINUOUS_BUILD_RUNTIME_VALIDATION_GOAL`
+`C11_C5_PREFILL_PROVENANCE_CLOSURE`
 
 Read and execute:
 
-- `docs/vm_tlb/codex_handoff/spec_m4b/C10B_CONTINUOUS_GOAL.md`
-- `docs/vm_tlb/codex_handoff/spec_m4b/C10B_CONTINUOUS_GOAL_ACCEPTANCE_MATRIX.md`
-- existing `C10B_POST_A_TERMINAL_BUILD_AND_RUNTIME_VALIDATION.md`
-- C9/C10-A/C10-A2 evidence packs
+- `docs/vm_tlb/codex_handoff/spec_m4b/C11_C5_PREFILL_PROVENANCE_CLOSURE.md`
+- `docs/vm_tlb/codex_handoff/spec_m4b/C11_ACCEPTANCE_MATRIX.md`
+- C10B final report / C5 preflight
+- C9 Weight Segment architecture specification
+- A terminal publication provenance checkpoint `14edbe200859f6ddf42bc3d459334f184a920a82`
 
-Goal mode continuously executes C10B-0 through C10B-5 and prepares C5 execution preflight. It does not launch full C5 performance replay.
+A full-ROI trace-list identities are authoritative:
 
-Transient host pressure is a wait/retry condition, not a final stop. B/C heavy operations cooperate through:
+- prefill `a40d6832219e5b0a6232875bb181754ac121bb5f867c9b13c84370e2a2cb6e6f`
+- decode1 `b6c42eb1932fcacefc2429b91a2015d38003a764a5319fe4bcbaf65b3d0cd0dc`
 
-`/workspace/vm_tlb_post_terminal_heavy_slot.lock`
+C11 is input/provenance closure only. It may create explicit `MODELED_DRIVER_PA` artifacts under C9's modeled physical namespace using the frozen deterministic `C5_MODELED_PA_HIGH_UNUSED_BIT_V1` policy defined by the handoff. It must not claim modeled PPNs were measured hardware PAs, must not tune them from performance, and must apply one common driver PA mapping across conventional and Segment fair arms for each ROI.
 
-Resource admission uses bounded PSI percentages rather than requiring exact-zero PSI deltas.
+C11 must prepare exact full C5 trace/config/registration/command/acceptance manifests but must not launch C5.
 
-Ordinary compile/link/test/runtime/harness problems must be actively root-caused and repaired while preserving C9. Only genuine architecture/provenance/standard-correctness/evidence blockers may terminate the Goal.
+Final C11 status is one of:
 
-Final Goal status:
+- `C11_C5_INPUTS_CLOSED_READY_FOR_C5_REVIEW`
+- `C11_HARD_BLOCKER_WITH_EVIDENCE`
 
-- `C10B_READY_FOR_C5_RESOURCE_GATED_REPLAY`
-- `C10B_HARD_BLOCKER_WITH_EVIDENCE`
-
-Do not use `RESOURCE_DEFERRED` as a final status.
+`READY_FOR_C5_REVIEW` is not execution authorization.
