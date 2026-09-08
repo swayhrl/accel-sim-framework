@@ -34,9 +34,11 @@ test -x "$runtime" && test "$(sha256sum "$runtime" | awk '{print $1}')" = "$runt
 test -x "$runner" && test "$(sha256sum "$runner" | awk '{print $1}')" = "$runner_sha"
 test $((8#$(stat -c %a "$runner") & 0222)) -eq 0
 test -r "$config" && test -r "$provenance" && test -r "$trace_config"
+test "$(sha256sum "$trace_config" | awk '{print $1}')" = "$(git -C "$repo" show "$framework_sha:gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config" | sha256sum | awk '{print $1}')"
 test "$(grep -F -- '-gpgpu_dtc_l1_lower_outstanding_cap ' "$config" | tail -1)" = '-gpgpu_dtc_l1_lower_outstanding_cap 512'
 test "$(grep -Fxc -- '-gpgpu_dtc_l1_io_pib_entries 1' "$config")" = 1
 test "$(awk -F '\t' '$1=="output_config_sha256" {print $2}' "$provenance")" = "$(sha256sum "$config" | awk '{print $1}')"
+test "$(sha256sum "$config" | awk '{print $1}')" = 9b01eb0c163ad825743a19e7192f4e4a934791ae11aee30699d2eda5fe42d4ba
 trace_root=$(awk -F '\t' '$1=="bicg" {print $2;exit}' "$repo/docs/dtc_l1/fast64/generated/FAST64_PAYLOAD_MANIFEST.tsv")
 test -n "$trace_root" && test -r "$trace_root/kernelslist.g"
 for p in "$run" "$run.launcher.log" "$run.supervisor.tsv"; do test ! -e "$p" || { echo "FAST64_2_BICG_TARGET_EXISTS $p" >&2; exit 1; }; done
