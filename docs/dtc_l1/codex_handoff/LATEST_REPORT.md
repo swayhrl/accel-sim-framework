@@ -80,6 +80,13 @@ conservation, zero final lower/PIB state, positive cycle/instruction progress,
 and an assertion/fatal/deadlock/output-mismatch scan before it can record only
 the still-pending precompute classification.
 
+A separate future-only Base closeout monitor is now prepared for the active
+ATAX and GESUMMV namespaces.  It treats only an atomic `RUN_TERMINAL.tsv` as a
+trigger, then invokes the corresponding strict pending collector once; it has
+no launch, signal, restart or R2-closeout capability.  Its once-mode regression
+proves pre-terminal rows are only observed, not collected.  It remains a
+pending-evidence convenience and cannot promote FAST64.3.
+
 For later post-FAST64.2 formal waves, the legacy mutable dynamic pool is now
 explicitly superseded for future use by separate
 `dispatch_fast64_precomputed_row_v2.sh` and `run_fast64_dynamic_pool_v2.sh`

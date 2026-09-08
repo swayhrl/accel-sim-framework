@@ -168,6 +168,13 @@ and PIB conservation, drained final state, positive progress and a clean
 failure scan; even then its only possible result label remains
 `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` until the governing gates pass.
 
+The future-only `monitor_fast64_3_precompute_closeout_v2.sh` is also prepared
+for these two active namespaces.  It has a dedicated lock and observes only
+the atomic terminal receipt; after that it runs the corresponding strict
+collector once and checks for its compact evidence.  Before terminal it writes
+only a monitor wait record.  It cannot launch, signal, restart or alter a
+simulator, cannot modify the frozen R2 chain, and cannot promote FAST64.3.
+
 ## Future formal dynamic-pool path (prepared; not invoked)
 
 The existing generic dynamic pool reads the legacy mutable trace runner and is
