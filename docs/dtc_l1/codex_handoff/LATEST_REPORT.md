@@ -1,32 +1,24 @@
 # Latest Codex Report
 
-## FAST64.1 resource-aware R2 CPU refill is ready (2026-09-08)
+## FAST64.1 topology-aware R2 admission is ready (2026-09-08)
 
-The immutable seven-row R2 dispatcher now assigns frozen-priority rows to the
-actual naturally free CPU slot within the isolated `74-80` pool, instead of
-requiring the first priority row to reuse historical CPU 74.  It fail-closes
-when a fresh resource audit admits more workers than the number of free slots.
-This is host-only placement, not a scientific identity or configuration
-change: Core/runtime/observer/payload/config binding and atomic immutable-v2
-receipts are unchanged.  A dry-run found all seven slots currently occupied
-by live historical R1 simulators, so no R2 launch occurred and no simulator or
-mapped historical collector was touched.  FAST64.1 remains
-`FAST64_1_R2_CPU_SLOT_WAIT_ACTIVE`: the 74--80 isolated slots are all occupied
-by historical R1 simulators.  A fresh 60-second host sample found zero
-swap-in/out and memory PSI, about 203 GiB `MemAvailable`, and about 71 GiB
-cgroup memory under its 256-GiB limit; under existing M5 authority, occupied
-swap without I/O is not active swap pressure.  On a natural exit, re-audit and
-dispatch the next missing R2 row only if the complete gate remains safe.
-`util/dtc_l1/audit_fast64_r2_resources.sh` is now the read-only, 60-second
-observation source for that audit: it records p95 RSS in bytes, swap/OOM/I/O,
-CPU/cpuset, cgroup memory, and output space, but deliberately cannot mark an
-admission safe or dispatch a process.
+The remote review supersedes the former fixed/exclusive `74-80` pool rule:
+host CPU placement is scheduling metadata, never a FAST64 scientific identity.
+The dispatcher now uses `lscpu -p=CPU,CORE,SOCKET,NODE` and live affinity data,
+prefers distinct physical cores, excludes only singleton/narrow pinned
+simulator affinity, and ranks remaining candidates by current scheduler
+occupancy.  A broad `Cpus_allowed_list=0-511` is soft host contention, not
+exclusive ownership of every CPU.  R2 remains explicitly `taskset` pinned;
+all immutable-v2, SHA, UUID, namespace, receipt and strict-validator guarantees
+are unchanged.
 
-An attempted host-only escape-pool audit did not expand R2 beyond `74-80`:
-although CPU 82 was momentarily unused, other live simulators retain an allowed
-CPU range of `0-511` and may migrate there.  The dispatcher correctly rejects
-that nonisolated slot; no production config, process, or formal identity was
-changed.
+`audit_fast64_r2_resources.sh` remains read-only but now publishes the
+required `FAST64_R2_RESOURCE_AUDIT_V1`, including topology candidates, realistic
+live p95 RSS and historical-R1 output footprint, cgroup/swap/OOM/PSI/I/O
+deltas, and autonomous `safe_to_launch` / `authorized_workers` N_safe decision.
+It never launches a process.  A passing audit authorizes the dispatcher to
+admit the frozen-priority missing R2 rows without waiting for historical R1
+termination; a conservative one-to-two worker ramp remains the policy.
 
 ## FAST64.2 forced lower-create stress decision resolved (2026-09-08)
 

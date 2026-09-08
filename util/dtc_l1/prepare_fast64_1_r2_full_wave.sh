@@ -34,6 +34,7 @@ runtime=/tmp/dtc-fast64-telemetry-build-sEWez4/accel-sim.out
 expected_runtime=6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041
 observer_sha=2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e
 runner_source="$repo_root/util/dtc_l1/run_fast64_trace_v2.sh"
+cpu_selector="$repo_root/util/dtc_l1/select_fast64_r2_cpus.py"
 trace_config="$repo_root/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config"
 immutable_root=/tmp/fast64-runners
 rows=(
@@ -45,52 +46,21 @@ rows=(
   'fast64_1r2_gesummv_io_cap8192_a1|GESUMMV|IO|FAST64_IO.config'
   'fast64_1r2_gesummv_io_cap1048576_a1|GESUMMV|IO|FAST64_IO_CAP1048576.config'
 )
-# Host placement is deliberately not part of a row's scientific identity.  R2
-# is admitted in priority order onto whichever isolated 74--80 simulator slot
-# naturally becomes free, so surviving historical R1 jobs never force a
-# wait-for-all barrier or CPU contention.
-cpu_slots=(74 75 76 77 78 79 80)
-# Test-only override for a synthetic process table.  Production dispatch uses
-# the kernel process table unconditionally unless this explicit path is set.
+# Host placement is deliberately not part of a row's scientific identity.  The
+# selector is topology-aware: it excludes only singleton/narrow affinity
+# reservations, ranks remaining distinct physical cores by current scheduler
+# occupancy, and treats broad affinity as soft throughput contention.
+# Test-only proc/candidate overrides feed synthetic selector regression tests.
 proc_root=${FAST64_PROC_ROOT:-/proc}
 case "$proc_root" in
   /*) ;;
   *) echo "R2_PROC_ROOT_MUST_BE_ABSOLUTE $proc_root" >&2; exit 2 ;;
 esac
 
-cpu_slot_in_use() {
-  local requested_cpu=$1 pid cmdline allowed segment start end
-  for proc in "$proc_root"/[0-9]*; do
-    [ -d "$proc" ] || continue
-    pid=${proc##*/}
-    [ -r "$proc/cmdline" ] && [ -r "$proc/status" ] || continue
-    cmdline=$(tr '\0' ' ' <"$proc/cmdline" 2>/dev/null || true)
-    case "$cmdline" in
-      *accel-sim.out*) ;;
-      *) continue ;;
-    esac
-    allowed=$(awk '/^Cpus_allowed_list:/ { print $2; exit }' "$proc/status" 2>/dev/null || true)
-    IFS=',' read -r -a segments <<<"$allowed"
-    for segment in "${segments[@]}"; do
-      if [[ $segment == *-* ]]; then
-        start=${segment%-*}
-        end=${segment#*-}
-        if [[ $start =~ ^[0-9]+$ && $end =~ ^[0-9]+$ ]] &&
-           (( requested_cpu >= start && requested_cpu <= end )); then
-          return 0
-        fi
-      elif [ "$segment" = "$requested_cpu" ]; then
-        return 0
-      fi
-    done
-  done
-  return 1
-}
-
 test "$(git -C "$core_root" rev-parse HEAD)" = "$expected_core"
 test -x "$runtime"
 test "$(sha256sum "$runtime" | awk '{print $1}')" = "$expected_runtime"
-test -x "$runner_source" && test -r "$trace_config"
+test -x "$runner_source" && test -r "$trace_config" && test -r "$cpu_selector"
 runner_sha=$(sha256sum "$runner_source" | awk '{print $1}')
 immutable_dir="$immutable_root/$runner_sha"
 immutable_runner="$immutable_dir/run_fast64_trace_v2.sh"
@@ -113,17 +83,16 @@ for row in "${rows[@]}"; do
   fi
 done
 
-free_cpus=()
-for cpu in "${cpu_slots[@]}"; do
-  if ! cpu_slot_in_use "$cpu"; then
-    free_cpus+=("$cpu")
-  fi
-done
+selection=$(python3 "$cpu_selector" --proc-root "$proc_root" --format tsv)
+candidate_line=$(printf '%s\n' "$selection" | awk -F '\t' '$1 == "candidate_cpus" { print $2; exit }')
+candidate_core_count=$(printf '%s\n' "$selection" | awk -F '\t' '$1 == "available_distinct_physical_cores" { print $2; exit }')
+test -n "$candidate_line" && [[ "$candidate_core_count" =~ ^[0-9]+$ ]]
+IFS=',' read -r -a free_cpus <<<"$candidate_line"
 free_cpu_list=$(IFS=,; echo "${free_cpus[*]:-none}")
 
 if [ "$dispatch_mode" = dry-run ]; then
-  printf 'R2_DYNAMIC_DISPATCH_DRY_RUN_PASS\ttotal_rows=%s\teligible_rows=%s\tfree_cpu_slots=%s\tfree_cpus=%s\trunner_sha256=%s\timmutable_runner=%s\tscientific_config_source=%s\n' \
-    "${#rows[@]}" "${#eligible_rows[@]}" "${#free_cpus[@]}" "$free_cpu_list" "$runner_sha" "$immutable_runner" "$scientific_config_source"
+  printf 'R2_TOPOLOGY_AWARE_DISPATCH_DRY_RUN_PASS\ttotal_rows=%s\teligible_rows=%s\tavailable_distinct_physical_cores=%s\tcandidate_cpus=%s\trunner_sha256=%s\timmutable_runner=%s\tscientific_config_source=%s\n' \
+    "${#rows[@]}" "${#eligible_rows[@]}" "$candidate_core_count" "$free_cpu_list" "$runner_sha" "$immutable_runner" "$scientific_config_source"
   exit 0
 fi
 
@@ -150,7 +119,7 @@ test "$authorized_workers" -le "${#eligible_rows[@]}" || {
   exit 1
 }
 test "$authorized_workers" -le "${#free_cpus[@]}" || {
-  echo "R2_INSUFFICIENT_FREE_CPU_SLOTS authorized=$authorized_workers free=${#free_cpus[@]} slots=$free_cpu_list" >&2
+  echo "R2_INSUFFICIENT_TOPOLOGY_CANDIDATES authorized=$authorized_workers available=${#free_cpus[@]} candidates=$free_cpu_list" >&2
   exit 1
 }
 

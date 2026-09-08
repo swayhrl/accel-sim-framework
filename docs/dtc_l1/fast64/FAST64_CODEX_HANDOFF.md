@@ -34,21 +34,19 @@ old r1 jobs remain diagnostic and are not a scientific launch barrier.  See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
 
 The unsatisfied FAST64.1 HARD requirements block only FAST64.1 result/stage
-promotion.  They do not block the persistent Goal.  The current wait is CPU
-slot availability: all isolated `74-80` slots remain occupied by the preserved
-historical R1 jobs.  The fresh 60-second observation has zero `vmstat si/so`,
-zero cgroup memory PSI, approximately 203 GiB `MemAvailable`, and about 71
-GiB current cgroup memory under a 256-GiB limit; existing M5 authority treats
-occupied swap without current I/O as non-pressure, not usable headroom.  On
-every natural historical-row exit, take a fresh complete resource audit and
-admit the highest-priority missing R2 row only if it remains safe.  Continue
-source-correct controller/validator/config preparation, independent FAST64.2
-coupled-stress preparation, and evidence consistency work while waiting.
+promotion.  They do not block the persistent Goal.  The remote host-policy
+review supersedes the former `74-80` exclusive-pool wait: CPU placement is not
+a formal row identity.  Prefer a naturally free historical CPU when available,
+but otherwise use topology-aware candidates that are not singleton/narrow
+pinned by a live simulator; broad `0-511` affinity is soft contention only.
+R2 remains taskset-pinned and no existing process affinity may be modified.
+
 Use `util/dtc_l1/audit_fast64_r2_resources.sh --output <external-tsv>` for the
-read-only 60-second observation.  It records correct byte-valued p95 RSS and
-all dispatcher-required raw resource fields but intentionally emits
-`safe_to_launch=UNASSESSED_REQUIRES_CURRENT_N_SAFE_JUDGMENT`; it cannot launch
-or approve a row by itself.
+read-only 60-second `FAST64_R2_RESOURCE_AUDIT_V1`.  It makes the autonomous,
+conservative N_safe decision from CPU/cpuset/topology, observed p95 RSS and
+historical R1 output, cgroup headroom, swap/OOM/PSI/I/O deltas and output
+space.  `safe_to_launch=YES` is an ordinary operational admission decision,
+not a researcher approval; the audit itself cannot launch a process.
 
 FAST64.2's former high-cap/create-queue requirement is resolved by researcher
 authority: retain the completed BICG/IO high-cap run only as
