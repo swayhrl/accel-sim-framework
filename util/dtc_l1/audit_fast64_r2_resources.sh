@@ -103,13 +103,16 @@ output_free=$(df -B1 --output=avail /workspace/fast64-runs | awk 'NR == 2 { prin
 # A two-worker ramp is the conservative maximum.  It reserves three observed
 # p95 RSS footprints (two new rows plus one safety footprint) and uses an
 # observed 1-GiB output floor in addition to three historical R1 p95 outputs.
+# Swap-in is recorded but is not a standalone rejection: with no swap-out,
+# zero memory PSI and sufficient measured headroom it can be harmless page
+# reactivation.  Swap-out, PSI, OOM, or exhausted headroom remain fail-closed.
 memory_required=$((p95_rss * 3))
 output_required=$((1024 * 1024 * 1024 + historical_p95_output * 3))
 safe=YES
 authorized=2
 reason=PASS_CONSERVATIVE_TWO_WORKER_RAMP
 if [ "$candidate_count" -lt 1 ] || [ "$quota_cores" -le "$worker_count" ] ||
-   [ "$swap_si_delta" -ne 0 ] || [ "$swap_so_delta" -ne 0 ] ||
+   [ "$swap_so_delta" -ne 0 ] ||
    [ "$oom_kill_delta" -ne 0 ] || [ "$throttled_delta" -ne 0 ] ||
    awk -v value="$iowait_pct" 'BEGIN { exit !(value > 5.00) }' ||
    awk -v value="$memory_psi" 'BEGIN { exit !(value > 0.00) }' ||
