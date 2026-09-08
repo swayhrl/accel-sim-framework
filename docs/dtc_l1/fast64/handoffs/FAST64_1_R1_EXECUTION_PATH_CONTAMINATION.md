@@ -192,6 +192,12 @@ at low frequency under the `fast64-r2-autorefiller` persistent tmux controller. 
 fresh audit before each one-to-two-row dispatch; it exits fail-closed if the
 dispatcher source changes.  It does not operate on a live namespace.
 
+The separate `fast64-r2-closeout` persistent controller waits for the complete
+seven-row terminal set and then invokes only the existing receipt-aware strict
+collector.  Its collector SHA is pinned at startup; a compact pass marker is
+atomically published only after strict collector success.  It neither launches
+nor alters any R2 process and cannot promote FAST64.1 by itself.
+
 ## Required disposition
 
 - `fast64_1r1_bicg_oo_cap8192_a1` and

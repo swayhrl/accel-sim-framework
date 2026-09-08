@@ -26,6 +26,13 @@ same 60-second read-only audit, and invokes the dispatcher only for a fresh
 `YES` admission.  It exits fail-closed on dispatcher-source drift and does not
 inspect, signal, alter, or collect an existing R2 namespace.
 
+A separate `fast64-r2-closeout` persistent tmux controller now waits only for
+all seven fixed R2 terminal receipts.  It is SHA-pinned to the existing
+fail-closed R2 collector, invokes that collector only after all seven rows are
+terminal, and atomically publishes an external collector-pass marker only on
+strict success.  It never launches or alters a simulator, and a collector
+failure remains a retryable evidence failure rather than a stage promotion.
+
 ## FAST64.1 topology-aware R2 admission is ready (2026-09-08)
 
 The remote review supersedes the former fixed/exclusive `74-80` pool rule:
