@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_CPU_SLOT_WAIT_ACTIVE; IMMUTABLE R2 RECOVERY AND FAST64.2 COUPLED-STRESS PREPARATION READY**
+Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_FULL_WAVE_LIVE_2_OF_7_TERMINAL; FROZEN R2 CLOSEOUT WAIT ACTIVE; FAST64.2 COUPLED-STRESS AND FAST64.3 BASE PRECOMPUTE PENDING**
 
 Framework branch:
 
@@ -26,12 +26,18 @@ source in a result manifest.
 
 Current execution gate: both historical BICG OO r1 namespaces (8192 and high
 cap) are `INVALID_EXECUTION_PATH_CONTAMINATED` after independent two-epoch
-controller anomalies.  The source-backed future remedy is a full seven-row
-immutable v2 r2 qualification wave plus explicit START/TERMINAL receipts; do
-not advance FAST64.1 until the full R2 wave passes.  R2 acquisition can
-dynamically begin when a fresh resource audit approves the admitted workers;
-old r1 jobs remain diagnostic and are not a scientific launch barrier.  See
-`handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md`.
+controller anomalies.  The source-backed remedy, the complete seven-row
+immutable-v2 R2 qualification wave with explicit START/TERMINAL receipts, is
+already dispatched.  BICG Base@8192 and IO@8192 have naturally terminated;
+the other five rows remain live.  Do not advance FAST64.1 until all seven have
+naturally terminated and the frozen closeout controller has published
+`FAST64_1_R2_FULL_WAVE_COLLECTOR_PASS`.  The current controller, collector,
+validator, parser, cap comparator, R2 configs, payload manifest, and
+`trace.config` are frozen closeout dependencies; future work may only use
+separate versioned files.  Old r1 jobs remain diagnostic and are not a
+scientific launch barrier.  See
+`handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md` and
+`handoffs/FAST64_1_R2_CLOSEOUT_DEPENDENCY_FREEZE.md`.
 
 The unsatisfied FAST64.1 HARD requirements block only FAST64.1 result/stage
 promotion.  They do not block the persistent Goal.  The remote host-policy
