@@ -150,7 +150,8 @@ run_sim() {
 }
 
 run_miner() {
-  local arm=$1 roi=$2 filename=$3 trace_dir=$4 object_map=$5 selected="$future_root/$arm.kernelslist.g" out="$future_root/$arm"
+  local arm=$1 roi=$2 filename=$3 trace_dir=$4 object_map=$5
+  local selected="$future_root/$arm.kernelslist.g" out="$future_root/$arm"
   resource_gate
   [[ ! -e "$out" && ! -e "$selected" && ! -e "$future_root/$arm.time-v.txt" ]] || { echo "FAIL existing miner evidence: $arm" >&2; exit 2; }
   printf '%s\n' "$filename" > "$selected"
@@ -159,7 +160,8 @@ run_miner() {
 }
 
 run_static16() {
-  local arm=$1 roi=$2 trace_list=$3 trace_dir=$4 object_map=$5 prerequisite=$6 out="$future_root/$arm" selected="$future_root/$arm.kernelslist.g" selector_out="$future_root/B9_MATCHED_16_SELECTOR.tsv"
+  local arm=$1 roi=$2 trace_list=$3 trace_dir=$4 object_map=$5 prerequisite=$6
+  local out="$future_root/$arm" selected="$future_root/$arm.kernelslist.g" selector_out="$future_root/B9_MATCHED_16_SELECTOR.tsv"
   [[ -n "${B9_CALIBRATED_PEAK_KB:-}" && -n "${B9_MEMORY_SPAN_KB:-}" ]] || { echo "FAIL calibrated peak/span required for $arm" >&2; exit 2; }
   resource_gate
   [[ -s "$prerequisite/partials/00000.pkl.xz" ]] || { echo "FAIL prerequisite calibration missing: $prerequisite" >&2; exit 2; }
