@@ -13,6 +13,17 @@ status is `FAST64_3_BASE_PRECOMPUTED_STRICT_VALID_PENDING_FAST64_1_2_ACCEPTANCE`
 it is not a FAST64.3 PASS and it authorizes neither later-stage IO/OO rows nor
 a performance claim.
 
+A separate future-only structural-metric extractor now reads only the
+canonical terminal perf row, leaving the frozen R2 parser unchanged.  Its DWT2D
+regression resolves the relevant category semantics from Core source:
+`LINE_ALLOC_FAIL` means conventional L1D cache lines are all reserved and is
+not interchangeable with the diagnostic Tag-bank conflict counter.  The
+compact companion records line-allocation `1,417,779`, MSHR-entry-full
+`346,268` (exactly cross-checked with the terminal summary), MSHR-merge-full
+`0`, downstream miss-queue-full `18,367`, and the already closed Base
+lower-request lifecycle.  This improves future FAST64.3 metric completeness
+only; it does not promote DWT2D or alter any live row.
+
 The current 60-second, read-only post-review admission audit was fail-closed:
 although swap-out/OOM/throttling were zero and cgroup/output headroom remained
 ample, `memory_psi_avg10=0.01`, so `safe_to_launch=NO`.  No replacement worker

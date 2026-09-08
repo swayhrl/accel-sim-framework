@@ -93,6 +93,19 @@ instruction progress, exact Base/cap identity, and drained terminal state.
 This is **not** a FAST64.3 PASS, a later-stage performance claim, or permission
 to launch IO/OO work: it remains governed by FAST64.1 and FAST64.2 acceptance.
 
+The future-only Base structural companion extractor additionally establishes
+the source-correct distinction required by FAST64.3 metric completeness.
+Core `gpu-cache.h` defines `LINE_ALLOC_FAIL` as all cache lines reserved, while
+`DTC_L1_tag_conflicts` remains Tag-bank arbitration only.  From DWT2D's final
+canonical perf row it records `1,417,779` conventional L1D cache-line
+reservation failures, `346,268` MSHR-entry-full events (cross-checked exactly
+against the terminal DTC summary), zero MSHR-merge-full events, and `18,367`
+L1D miss-queue/downstream-full events.  The compact companion is
+`FAST64_3_DWT2D_BASE_STRUCTURAL_METRICS_V1.json`; it also preserves lower
+create/response (`757,359/757,359`) as the Base live-miss lifecycle closure.
+This source-backed extraction is a pre-acceptance metric companion, not a
+FAST64.3 result promotion.
+
 The subsequent review-time 60-second audit
 `/tmp/fast64-post-review-r2-fullwave-resource-audit-20260908T174003Z.tsv`
 again rejected a new worker fail-closed because `memory_psi_avg10=0.01`.
