@@ -1,0 +1,13 @@
+# Validation summary
+
+| Check | Result | Detail |
+| --- | --- | --- |
+| all_eight_formal_arms | PASS | exit=0; markers=kernel-list; telemetry=kernel-list |
+| generic_paper_vm_invariants | PASS | PTE/requester/object conservation and terminal quiescence |
+| all_required_c4_exports | PASS | telemetry, native-memory and offline locality artifacts present |
+| source_provenance | PASS | export provenance equals each original formal manifest; permitted Framework-only parser lineage verified |
+| runtime_provenance | PASS | frozen simulator SHA256 and direct Core-local libcudart SHA256 recorded |
+| replay | NOT_PERFORMED | analysis reads existing logs and immutable artifacts only |
+
+`NOT_PERFORMED` is used only for replay: C4 reads existing immutable C3
+evidence and does not rerun an arm.
