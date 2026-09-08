@@ -361,7 +361,9 @@ def emit_review_tables(binary_sha, core_sha, binary_path, runtime_path):
         "trace_root\tregistration_path\tregistration_sha256\tbinary\tbinary_sha256\t"
         "runtime_libcudart\toutput_dir\tresume_policy\texact_command\n"
     ]
-    framework_sha = "1e45b7692d77981664c48740f407ae4ba46cf25c"
+    # The executable C11 input/configuration anchor.  A later review-only
+    # evidence commit does not change simulator code or any C5 input hash.
+    framework_sha = "d64408a97d76a320a6d49468653d416e33677af8"
     for line in rows:
         roi, arm, lseg, rel, cfg_sha, reg_rel, reg_sha, bits, geometry = line.split("\t")
         facts = EXPECTED[roi]
@@ -380,7 +382,7 @@ def emit_review_tables(binary_sha, core_sha, binary_path, runtime_path):
             "sha256sum '{out}/traces/kernelslist.g' | grep -q '^{trace_sha}  ' && "
             "while IFS= read -r f; do ln -s '{trace_root}/'\"$f\" "
             "'{out}/traces/'\"$f\"; done < '{out}/traces/kernelslist.g' && "
-            "( cd '{out}' && GPGPUSIM_ROOT='{core}' LD_LIBRARY_PATH='{runtime_dir}:$LD_LIBRARY_PATH' "
+            "( cd '{out}' && GPGPUSIM_ROOT='{core}' LD_LIBRARY_PATH='{runtime_dir}' "
             "/usr/bin/time -v '{binary}' -config '{config}' -trace "
             "'{out}/traces/kernelslist.g' ) 2>&1 | tee '{out}/run.log'"
         ).format(out=out, trace_list=facts["list"], trace_sha=facts["list_sha"],

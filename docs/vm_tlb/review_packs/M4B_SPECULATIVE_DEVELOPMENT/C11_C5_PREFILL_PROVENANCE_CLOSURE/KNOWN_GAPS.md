@@ -10,3 +10,7 @@
   common PA。因此 F6 不作为 C11 C5 execution point；这不是移除 comparator，而是防止
   不公平或未授权的 2MiB driver mapping architecture。
 - 本包没有运行任何 C5 trace、没有生成 trace、没有 KV segmentation/12K/M5。
+
+- `C11_C5_INPUTS_CLOSED_READY_FOR_C5_REVIEW` 只关闭输入与预检。C5 仍须获得
+  单独 execution/review authorization，并按 `C5_COMMAND_MANIFEST.tsv` 的每个
+  hash、资源锁、resume 和 acceptance rule 重新准入。
