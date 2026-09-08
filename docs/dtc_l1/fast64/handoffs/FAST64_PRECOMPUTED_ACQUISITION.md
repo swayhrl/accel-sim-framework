@@ -100,6 +100,34 @@ It observed zero sampled swap-out/OOM/throttling, 205,547,999,232 bytes
 cgroup headroom and 62,614,523,904 bytes output free, but no new worker was
 admitted.
 
+### GEMM Base controlled replacement admission — active, pending
+
+DWT2D's natural terminal justified a new, independent 60-second admission
+measurement.  `/tmp/fast64-post-dwt-terminal-resource-audit-20260908T174330Z.tsv`
+returned `safe_to_launch=YES` for exactly one worker: zero sampled
+swap-out/OOM/memory PSI/CFS throttling, 246 candidate physical cores,
+207,427,174,400 bytes cgroup headroom and 62,598,434,816 bytes output free.
+The immutable-v2 dispatcher then admitted only the next nonredundant Base row:
+
+| item | value |
+| --- | --- |
+| namespace | `fast64_3_precomputed_gemm_base_cap8192_a1_r2` |
+| workload/mode | GEMM / Base |
+| CPU / attempt UUID | `11` / `4b62ba62-9ee3-41ed-8a67-402172e594fa` |
+| launch | `2026-09-08T17:45:33Z` |
+| class | `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` |
+| identity | Core `bbcbb5e...`; runtime `6a8743b4...`; A1 observer `2c2a6a27...`; Framework execution snapshot `037f008b...` |
+| payload | frozen GEMM `kernelslist.g` SHA-256 `fd9a9430fc95eb0af4c73b9710db271f8e32bff4ea2f5dd08a4e8e17c9b02057` |
+| lifecycle | atomic START receipt present; CPU-active; initial precise failure scan clean |
+
+The active v3 Base monitor has a fixed three-row scope and is not changed.
+Future-only `collect_fast64_3_gemm_base_alias_v4.sh` and
+`monitor_fast64_3_gemm_base_alias_v4_closeout.sh` instead cover this one new
+namespace.  Their static regression passed; the monitor observes only its
+atomic terminal receipt and cannot modify a simulator, the v3 monitor, or the
+frozen R2 closure.  GEMM remains physical precomputation only until the
+FAST64.1 and FAST64.2 gates pass.
+
 ## FAST64.2 forced-stress diagnostic — terminal, gate unsatisfied
 
 | item | value |

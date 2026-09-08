@@ -19,6 +19,25 @@ ample, `memory_psi_avg10=0.01`, so `safe_to_launch=NO`.  No replacement worker
 was launched.  The seven R2 closeout bytes and live simulators remain
 untouched.
 
+## FAST64.3 GEMM/Base controlled replacement admission (2026-09-08)
+
+After DWT2D naturally freed its worker, a new 60-second read-only resource
+audit passed exactly one replacement: zero sampled swap-out/OOM/memory PSI/CFS
+throttling, 246 candidate physical cores, 207.4 GiB cgroup headroom and 62.6
+GiB output space.  The immutable-v2 dispatcher admitted only
+`fast64_3_precomputed_gemm_base_cap8192_a1_r2`, GEMM/Base, at
+`2026-09-08T17:45:33Z` on CPU 11 with UUID
+`4b62ba62-9ee3-41ed-8a67-402172e594fa`.  Its atomic START receipt, frozen
+payload identity and complete Core/runtime/A1-observer/framework tuple are
+present; the direct simulator is CPU-active and the precise initial error scan
+is clean.
+
+The existing live v3 monitor is left untouched.  A separate future-only GEMM
+v4 collector/monitor pair passed static regression and waits only for GEMM's
+atomic terminal receipt.  It cannot affect R2 or any active v3 row.  GEMM is
+strictly `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`, not a formal result or
+stage advancement.
+
 ## FAST64 controlled third Base admission and Base closeout recovery (2026-09-08)
 
 A new 60-second post-small-batch audit at
