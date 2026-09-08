@@ -84,6 +84,16 @@ This is the single small Base ramp authorized by the post-R2 audit.  It has no
 claim beyond physical acquisition, and it must naturally terminate then pass
 strict validation before any later-stage reuse decision.
 
+The frozen A1 observer's final `-gpgpu_runtime_stat 500000` value parses as a
+500,000-cycle sampling frequency with runtime-stat flag zero.  Source shows
+that this deliberately suppresses human-readable runtime-stat output while
+still calling `perf_counters.print_counters()` at each 500,000 simulated-cycle
+boundary.  No perf stream exists for the live ATAX row yet, so no
+simulator-level throughput interval is available; host CPU-time progress is
+the only current liveness evidence.  The observer/config remains frozen, and
+no additional worker is admitted until a complete perf interval or natural
+terminal evidence supports the ramp decision.
+
 An independent future-only strict collector is prepared for this exact ATAX
 namespace.  It requires immutable receipts, exact identity, Base lower-credit
 and PIB conservation, drained terminal state, and positive simulated

@@ -41,6 +41,12 @@ on CPU 0, with immutable runner UUID
 initial failure scan is empty. This live row remains nonformal pending work and
 cannot advance FAST64.3 or interfere with FAST64.1 R2 closeout.
 
+The final frozen A1 `runtime_stat=500000` has flag zero: it suppresses
+human-readable runtime-stat output but emits a perf-counter stream only after
+each 500,000 simulated-cycle boundary. No such stream exists yet for ATAX, so
+host CPU-time progress is the available liveness evidence and no second worker
+is admitted.
+
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 
 The seven-row R2 closeout dependency closure is now frozen, byte-addressed in
