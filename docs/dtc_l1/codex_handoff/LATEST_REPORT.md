@@ -20,6 +20,20 @@ strict negative evidence, not FAST64.2 PASS. This is an ordinary
 source/configuration-pressure diagnosis item; it does not alter R2 semantics
 or any frozen closeout dependency.
 
+## FAST64.3 future Base path prepared; admission currently fail-closed (2026-09-08)
+
+`prepare_fast64_3_base_precompute_v2.sh` is a future-only immutable-v2,
+topology-aware one-row Base dispatcher. It permits only the ten nonredundant
+FAST12 candidates while preserving potential BICG/NN evidence reuse. Its ATAX
+dry-run passed. A fresh one-worker post-R2 audit at
+`/tmp/fast64-future-precompute-audit-20260908T152143Z.tsv` found 24.567 cgroup
+core equivalents under the 384-core quota, 249 physical-core candidates,
+ample memory/output headroom, zero OOM/memory-PSI/throttling, but
+`swap_so_delta=299` during the 60-second sample. The gate therefore returned
+`RESOURCE_GATE_REJECTED_SEE_FIELDS`; no Base row was launched. This is a
+resource-safe wait, not a FAST64 stage or scientific block; later fresh audits
+may admit exactly one small Base row when swap-out is zero.
+
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 
 The seven-row R2 closeout dependency closure is now frozen, byte-addressed in
