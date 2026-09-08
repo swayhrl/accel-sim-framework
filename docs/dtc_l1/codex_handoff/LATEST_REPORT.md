@@ -20,6 +20,20 @@ It never launches a process.  A passing audit authorizes the dispatcher to
 admit the frozen-priority missing R2 rows without waiting for historical R1
 termination; a conservative one-to-two worker ramp remains the policy.
 
+The first formal immutable R2 ramp was admitted at `2026-09-08T04:06:56Z`
+from `/tmp/fast64-r2-resource-audit-launch-v2.tsv`: `safe_to_launch=YES`,
+`authorized_workers=2`, 384 cgroup quota cores, 249 available distinct
+physical-core candidates, 9 pre-launch simulators, p95 RSS 8,925,478,912
+bytes, 130,078 MiB MemAvailable, zero swap-out/OOM/throttling/PSI/iowait and
+45,600 MiB output free.  The sample's 30-page swap-in without swap-out or PSI
+is recorded but is not active pressure.  The new live rows are BICG
+Base@8192 (`fast64_1r2_bicg_base_cap8192_a1`, CPU 0, UUID
+`0c84f039-346e-4d28-9d0f-b7a4e04ee8b0`) and BICG IO@8192
+(`fast64_1r2_bicg_io_cap8192_a1`, CPU 3, UUID
+`81a1e97c-af78-417d-a38a-440a0a43ccd7`).  Both have immutable runner SHA
+`bf9a84…`, exact Core/runtime/A1/scientific-config provenance and published
+`RUN_START.tsv`; neither is terminal or promotable yet.
+
 ## FAST64.2 forced lower-create stress decision resolved (2026-09-08)
 
 The one high-cap BICG/PAPER_IO diagnostic has naturally terminated with a

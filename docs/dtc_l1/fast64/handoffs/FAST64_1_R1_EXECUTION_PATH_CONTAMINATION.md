@@ -146,6 +146,29 @@ The historical collectors `collect_fast64_1_telemetry_rerun.sh` and
 emit are historical-controller output only and cannot establish FAST64.1 PASS.
 The new full-r2 collector is the only formal closeout route.
 
+## Immutable R2 topology-aware ramp (2026-09-08)
+
+The remote-approved topology-aware policy admitted the first two frozen-priority
+rows after the complete 60-second `FAST64_R2_RESOURCE_AUDIT_V1` at
+`/tmp/fast64-r2-resource-audit-launch-v2.tsv` returned `YES / 2`.  The audit
+recorded 384 quota cores, 249 distinct physical-core candidates, 9 live
+simulators, p95 RSS 8,925,478,912 bytes, 130,078 MiB MemAvailable, 45,600 MiB
+output free, zero swap-out/OOM/throttling/memory-PSI/iowait.  Its 30-page
+swap-in is retained as an observation, not treated as pressure without
+swap-out/PSI/headroom evidence.
+
+| row | CPU | attempt UUID | runner / receipt | state |
+| --- | ---: | --- | --- | --- |
+| `fast64_1r2_bicg_base_cap8192_a1` | 0 | `0c84f039-346e-4d28-9d0f-b7a4e04ee8b0` | immutable `bf9a84…`; `RUN_START.tsv` published | LIVE; no result claim |
+| `fast64_1r2_bicg_io_cap8192_a1` | 3 | `81a1e97c-af78-417d-a38a-440a0a43ccd7` | immutable `bf9a84…`; `RUN_START.tsv` published | LIVE; no result claim |
+
+Both manifests bind Core `bbcbb5e…`, runtime
+`6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041`, A1
+observer `2c2a6a…`, frozen scientific configuration source `037f008b…`, and
+the BICG payload SHA `388740a7…`.  After a short non-invasive host observation,
+only a fresh passing audit may refill further R2 rows.  No historical R1
+process was signalled, restarted, renamed or relabelled.
+
 ## Required disposition
 
 - `fast64_1r1_bicg_oo_cap8192_a1` and
@@ -160,8 +183,9 @@ The new full-r2 collector is the only formal closeout route.
 - Do not stop, signal, rerun, overwrite, clean, or relabel the live process or
   this namespace.  The remaining r1 rows and the FAST64.2 diagnostic remain
   observationally preserved.
-- Do not launch additional precompute or repair rows while swap is exhausted
-  and the contamination source has not been resolved.
+- Allocated swap alone is not a launch barrier.  Use fresh swap-in/out,
+  OOM, memory-PSI and headroom evidence; broad CPU affinity is soft host
+  contention, not a reservation.
 - Recovery is prepared only as a complete seven-row r2 wave.  Only natural
   exit-0, exact immutable-receipt, strict validator, accounting, and
   cap-comparator evidence for that full wave may restore FAST64.1 eligibility.
