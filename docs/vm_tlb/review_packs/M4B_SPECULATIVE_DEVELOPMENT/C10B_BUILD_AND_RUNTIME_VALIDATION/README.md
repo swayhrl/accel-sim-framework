@@ -1,19 +1,18 @@
-# C10-B build/runtime validation
+# C10-B build and runtime validation
 
-## Current checkpoint
+Final status: `C10B_HARD_BLOCKER_WITH_EVIDENCE`.
 
-`C10B-0: RESOURCE_DEFERRED`
+All implementation and validation gates C10B-0 through C10B-5 passed on the
+current Window-C sources. This pack does **not** authorize or contain a C5
+replay. C5 preflight found that decode1 has a C10 V2 privileged registration,
+whereas prefill has only the historical identity-like V1 segment map and no
+immutable C-side trace-list provenance. C9 forbids deriving a formal V2 PA
+mapping from either the V1 range or the telemetry object map. That immutable
+provenance gap is the sole final blocker; it is not a resource, compile,
+standard-regression, or architecture-implementation failure.
 
-A terminal attestation was present and began exactly with
-`A_TERMINAL_CONFIRMED`. Framework was safely advanced to
-`f01e80866a8446e672bf9c6921ba44c0f10684fd`; Core was clean at
-`12267bb7ed1dc0257d1d903f6baf7cbdc6ca550e`.
+Retained labels: `SPECULATIVE_CANDIDATE` and
+`REFERENCE_APPROX_SUBENTRY_16`.
 
-The host resource confirmation still observed a positive memory/io PSI
-`full` delta. Per the C10B handoff and user resource gate, no compile, link,
-focused unit test, simulator, replay, C5, or source change was started.
-This is a safe C10B-0 checkpoint, not a C10-B final state or a performance
-result.
-
-Retained labels: `REFERENCE_APPROX_SUBENTRY_16` and
-`SPECULATIVE_CANDIDATE`.
+No C5, KV segmentation, 12K workload, M5 work, Window-A/B worktree, or
+historical Window-A result was operated by this Goal.

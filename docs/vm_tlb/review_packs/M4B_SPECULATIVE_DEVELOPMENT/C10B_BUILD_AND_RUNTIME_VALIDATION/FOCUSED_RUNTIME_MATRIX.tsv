@@ -1,0 +1,10 @@
+area	required_runtime_evidence	directed_target	status	result
+B2_real_pa_registration	non-identity PA; two extents; ordinary/Segment agreement; boundary and ASID fallback	vm_c10a_registered_segment_test	PASS	PPN 256 differs from VPN; registered PTE and Segment result agree
+B3_registration_rejection	capacity/overlap/unsorted/rights/class/ASID-epoch/extent atomic reject and zero live descriptors	vm_c10a2_static_model_test	PASS	all rejection classes fail closed
+B4_lifecycle_replicas	INACTIVE/INSTALLING/ACTIVE/REVOKING/INACTIVE; 35 install/revoke acknowledgements; epoch wrap quiesce	vm_c10b_runtime_validation_test	PASS	F7 and F8 at every Lseg=5/10/20
+B5_access_class	READ descriptor hit; WRITE/ATOMIC conventional; no object-map eligibility	vm_c10b_runtime_validation_test	PASS	READ non-identity result; WRITE/ATOMIC rights fallback
+B6_ordering_exact_once	Segment-first, L1-first, opposite-side miss, both-miss one lower launch, retry, mismatch abort	vm_c10b_runtime_validation_test	PASS	HIT_FIRST/MISS_JOIN and fail-closed mismatch validated
+B7_generation_subentry	stale exact/sub-entry fills/waiters/ready outcomes discarded; G96/G32; H0 reject	vm_c10b_runtime_validation_test; vm_m4b_subentry_test	PASS	standard and sub-entry stale state invalidated
+candidate_compatibility	C10 ordering with legacy candidate state machines	vm_m4b_weight_segmentation_test; vm_m4b_subentry_test	PASS	no standard-mode regression introduced
+C10B-3_emitted_direct	Segment/conventional/PTE/PWC/exact-once emitted fields	vm_c10b_telemetry_conservation_test + parser	PASS	parser input SHA256 0bed8c8b5e2a6694e3324e2275a5c9c3df2a85a803592ff7bc23159a2cdecc34
+C10B-3_bounded_current_binary	immutable three-kernel F8 runtime and cross-layer fields	final binary F8 + parser	PASS	log SHA256 0cf8d8cb320e7bd96394ace924157231e2e78952321381e8136786cdf832f2a4

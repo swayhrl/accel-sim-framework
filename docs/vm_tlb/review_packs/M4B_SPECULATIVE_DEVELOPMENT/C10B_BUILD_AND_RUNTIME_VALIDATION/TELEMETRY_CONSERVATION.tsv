@@ -1,0 +1,12 @@
+workload_or_test	observable	conservation_or_value	result
+directed_segment	attempts/accepts/hit/miss	3=3; 1 hit + 2 miss; one hit suppresses L2/MSHR	PASS
+directed_segment	frontend and PTE	completed=3; requester scope accounts waiter wakeups; PTE requests=responses	PASS
+directed_subentry	group/leaf state	accesses=3; hits=1; misses=2; one group fill plus one existing-group leaf fill	PASS
+physical_F5	PWC port/queue/payload	accesses=hits+misses; one-port denials and queue wait observed; payload validations=hits	PASS
+physical_F5	PTE and drain	PTE requests=responses; completed=MSHR completed; no active MSHR/walker	PASS
+bounded_F8_final_binary	fair realization	F8, 57,734 bits, 32 groups/2 sets, 35 replicas, entries=8, Lseg=10	PASS
+bounded_F8_final_binary	Segment outcome	512 hits; 1,027 misses; 513 no-descriptor and 514 rights fallback; mismatch=0	PASS
+bounded_F8_final_binary	lower-path pressure	MSHR allocations=1, merges=15, active=0; PWQ/walkers=0; PTE=4/4	PASS
+bounded_F8_final_binary	exact-once/cross-layer	functional completed=1,539; object attribution conservation=1; existing L1D/L2/queue/DRAM schema emitted	PASS
+
+# These are correctness/observability checks, never speedup or C5 performance results.

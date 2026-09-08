@@ -1,0 +1,7 @@
+access_or_condition	validator	expected_route	result
+READ_registered_weight	vm_c10b_runtime_validation_test	Segment may return registered nonidentity PA	PASS
+WRITE_registered_weight	vm_c10b_runtime_validation_test	read-only descriptor rejects; conventional translation returns mapped PA	PASS
+ATOMIC_registered_weight	vm_c10b_runtime_validation_test	read-only descriptor rejects; conventional translation returns mapped PA	PASS
+ASID_mismatch	vm_c10a_registered_segment_test	Segment fallback, no access grant	PASS
+page_cross_boundary	vm_c10a_registered_segment_test	Segment fallback, no fabricated cross-page result	PASS
+object_label_without_descriptor	vm_c10b_runtime_validation_test	conventional route; OBJECT_WEIGHT is telemetry-only	PASS

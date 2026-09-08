@@ -1,6 +1,7 @@
-stage	window_s	MemAvailable_kB_begin	MemAvailable_kB_end	SwapFree_kB_begin	SwapFree_kB_end	pswpin_delta	pswpout_delta	memory_PSI_full_delta_us	io_PSI_full_delta_us	iowait_pct	decision
-C10B-0_precompile_confirmation	10	43473904	41771564	80	80	0	0	4372	335	0.000	RESOURCE_DEFERRED
+policy_version	window_s	MemAvailable_kB	SwapFree_kB_informational	swap_in_MiB_per_s	swap_out_MiB_per_s	memory_PSI_full_pct	io_PSI_full_pct	iowait_pct	decision	note
+ADAPTIVE_RESOURCE_V2	10	43473904	80	0	0	0.04372	0.00335	0.000	RESOURCE_DEFERRED_HISTORICAL	old conservative policy; retained only as host-pressure evidence
+C10B_AGGRESSIVE_PARALLEL_V3	10	170636908	1756	0.04258	0.00000	0.00003	0.00689	0.00571	GREEN_ADMIT	final bounded-F8 preflight; SwapFree is informational only
 
-# Interpretation: memory/io PSI full totals continued increasing during the
-# confirmation interval. Zero swap traffic and low iowait do not override the
-# explicit persistent-PSI defer rule. No compile/test may start from this row.
+# V3 admission: MemAvailable >= 32 GiB; memory full <= 1%; io full <= 2%;
+# iowait <= 10%; swap-in/out <= 4 MiB/s. The shared heavy slot was acquired
+# once per C batch and released at batch completion.

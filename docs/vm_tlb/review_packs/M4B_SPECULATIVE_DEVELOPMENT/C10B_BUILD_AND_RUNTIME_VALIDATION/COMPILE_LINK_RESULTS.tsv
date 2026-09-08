@@ -1,6 +1,8 @@
-stage	command_or_target	parallelism	status	peak_rss_kB	reason
-C10B-0_focused_compile_1	vm_c10a2_static_model_test + vm_translation.cc	-j1	PASS	147456	ADAPTIVE_RESOURCE_V2 GREEN; /usr/bin/time -v; no swaps
-C10B-0_focused_run_1	vm_c10a2_static_model_test	single process	PASS	0	tiny binary passed in a separate lock quantum
-C10B-0_focused_compile_2	vm_c10a_registered_segment_test + vm_translation.cc	-j1	PASS	151552	ADAPTIVE_RESOURCE_V2 GREEN; /usr/bin/time -v; no swaps
-C10B-0_focused_run_2	vm_c10a_registered_segment_test	single process	PASS	0	tiny binary passed in a separate lock quantum
-C10B-0_full_link	bash -c 'source Core/setup_environment release; source Framework/gpu-simulator/setup_environment.sh release; make -C Framework/gpu-simulator -j1'	-j1	PASS	462848	2m40.77s; Core build banner=12267bb7; accel-sim.out SHA-256=7afdb9b217f3cf7d5d6b0aee4d6407b9af35d1bc5d0a07310440bdfb5ecdde47; no source fix required
+stage	command_or_target	parallelism	status	peak_rss_kB	binding_or_result
+C10B-0_focused_compile_1	vm_c10a2_static_model_test + vm_translation.cc	-j1	PASS	147456	admission Core 12267bb7; ran separately PASS
+C10B-0_focused_compile_2	vm_c10a_registered_segment_test + vm_translation.cc	-j1	PASS	151552	admission Core 12267bb7; ran separately PASS
+C10B-0_admission_full_link	Accel-Sim external-Core make	-j1	PASS	462848	Core 12267bb7; historical binary SHA-256=7afdb9b217f3cf7d5d6b0aee4d6407b9af35d1bc5d0a07310440bdfb5ecdde47
+C10B-0_final_full_link	make -C gpu-simulator -j16	-j16	PASS	453768	Framework b0926503; Core 5b409493; external Core; binary SHA-256=74307f3a9b975300e469a7768be1324444c927498e3b19d40d39dc326df31345
+C10B-2_focused_suite	seven independent current-Core directed targets	up_to_16	PASS	159744	static-model, registered-segment, runtime, legacy Weight/subentry, emitted telemetry, physical F5
+C10B-5_fair_sanity	vm_c10b_fair_arm_sanity_test	focused	PASS	159744	F0--F9 executable arms; F7/F8 at Lseg=5/10/20; H0 rejected
+C10B-3_bounded_F8	final binary + existing immutable three-kernel decode1 trace	single_worker	PASS	159744	4.83 s; run-time environment explicitly bound to external Core; emitted parser PASS

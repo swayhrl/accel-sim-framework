@@ -1,0 +1,8 @@
+case	validator	expected	result
+nonidentity_two_extent	vm_c10a_registered_segment_test	Segment PA derives pa_base_ppn plus VPN offset; conventional PTE agrees	PASS
+invalid_registration_atomic	vm_c10a2_static_model_test	capacity/overlap/unsorted/rights/class/ASID-epoch/extent failure leaves zero live descriptor	PASS
+install_visibility	vm_c10b_runtime_validation_test	no Segment lookup/hit before final one of 35 install acks	PASS
+active_epoch_context	vm_c10b_runtime_validation_test	ASID=7/epoch=11 must match active local replicas	PASS
+revoke_visibility	vm_c10b_runtime_validation_test	REVOKING immediately removes hit eligibility; all 35 revoke acks return INACTIVE	PASS
+epoch_wrap	vm_c10b_runtime_validation_test	wrap install rejected until quiesce	PASS
+object_map_independence	vm_c10b_runtime_validation_test	object attribution disabled in directed controller; registration alone decides eligibility	PASS
