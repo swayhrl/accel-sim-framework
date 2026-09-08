@@ -1,5 +1,23 @@
 # Latest Codex Report
 
+## FAST64.1 fifth immutable-R2 natural terminal (2026-09-08)
+
+`fast64_1r2_bicg_io_cap1048576_a1` (BICG / PAPER_IO / cap 1048576)
+naturally exited `0` at `2026-09-08T22:48:52Z`. Its atomic immutable-v2
+START/TERMINAL receipts agree on attempt
+`661b4953-6045-4bc6-8943-9a0f6d90c35b` and runner `bf9a84c8...`; the
+manifest binds Core `bbcbb5e...`, runtime `6a8743b4...`, A1 observer
+`2c2a6a27...`, execution snapshot `037f008b...`, frozen IO-high-cap config
+`c0d169b8...`, and canonical BICG trace-list `388740a7...`. The simulator
+emitted its normal exit sequence, and the precise assertion/fatal/deadlock/
+output-mismatch scan is clean.
+
+R2 receipt state is now **5/7 natural terminals**, with GESUMMV
+IO@8192/@1048576 remaining live. The frozen R2 controller remains untouched
+and is the sole authoritative full-wave collector after 7/7. This is a
+pending natural-terminal observation only, not individual strict validation,
+cap-comparison acceptance, or FAST64.1 PASS.
+
 ## FAST64.1 fourth immutable-R2 natural terminal (2026-09-08)
 
 `fast64_1r2_bicg_oo_cap8192_a1` (BICG / PAPER_OO / cap 8192) naturally
