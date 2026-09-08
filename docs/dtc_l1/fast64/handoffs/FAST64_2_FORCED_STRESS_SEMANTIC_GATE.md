@@ -134,5 +134,12 @@ mechanism, R2 frozen dependency, or live job is changed by this record.
 The frozen experiment matrix already names BICG as the first fallback payload
 when NN does not reach the event.  A separate immutable-v2 BICG launcher is
 therefore prepared with the same `cap=512, PIB=1` diagnostic overlay and a
-fresh-audit requirement.  It has **not** been launched: the current host has
-active swap traffic, so admission remains fail-closed.
+fresh-audit requirement.  It has **not** been launched: the later one-worker
+safe-admission slot was deliberately assigned to the small FAST64.3 ATAX Base
+ramp, so BICG remains ready without competing with the critical R2 wave.
+
+Its independent strict collector is also prepared.  It requires a natural
+terminal receipt, exact immutable provenance, strict trace/parser/accounting
+validation, and a separate machine-readable outcome for pressure-present
+versus pressure-absent.  It is future-only and does not alter the NN evidence
+or the frozen R2 closeout chain.
