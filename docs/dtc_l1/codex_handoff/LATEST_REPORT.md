@@ -43,9 +43,15 @@ cannot advance FAST64.3 or interfere with FAST64.1 R2 closeout.
 
 The final frozen A1 `runtime_stat=500000` has flag zero: it suppresses
 human-readable runtime-stat output but emits a perf-counter stream only after
-each 500,000 simulated-cycle boundary. No such stream exists yet for ATAX, so
-host CPU-time progress is the available liveness evidence and no second worker
-is admitted.
+each 500,000 simulated-cycle boundary. Before that first boundary, host
+CPU-time progress was the available liveness evidence.
+
+ATAX has since crossed two perf boundaries (500,000 and 1,000,000 simulated
+cycles; 386,656 and 675,008 instructions).  Its provisional launch-to-second-
+point lower-bound rate is about 1,299 cycles/s and 877 instructions/s, while
+all five R2 workers retained about 99.4--99.5% CPU.  The required fresh expansion audit
+nevertheless failed solely on `swap_so_delta=103`, so no second Base worker
+was launched.
 
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 

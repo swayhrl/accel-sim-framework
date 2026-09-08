@@ -88,11 +88,25 @@ The frozen A1 observer's final `-gpgpu_runtime_stat 500000` value parses as a
 500,000-cycle sampling frequency with runtime-stat flag zero.  Source shows
 that this deliberately suppresses human-readable runtime-stat output while
 still calling `perf_counters.print_counters()` at each 500,000 simulated-cycle
-boundary.  No perf stream exists for the live ATAX row yet, so no
-simulator-level throughput interval is available; host CPU-time progress is
-the only current liveness evidence.  The observer/config remains frozen, and
-no additional worker is admitted until a complete perf interval or natural
-terminal evidence supports the ramp decision.
+boundary.  Before its first perf boundary, host CPU-time progress was the only
+ATAX liveness evidence.  The observer/config remains frozen throughout the
+ramp.
+
+That first interval is now present and gzip-valid: the immutable ATAX perf
+stream records 500,000 and 1,000,000 simulated cycles with 386,656 and
+675,008 simulated instructions, respectively.  At a host observation after
+the second point, the single ATAX worker had accumulated about 770 host CPU
+seconds; this establishes conservative launch-to-observation lower bounds of
+about 1,299 simulated cycles/s and 877 simulated instructions/s. During the
+same observation, all five R2 simulator processes retained approximately
+99.4--99.5% CPU.  This is a host-throughput/ramp observation, not a formal
+performance result.
+
+The required post-ramp 60-second admission audit at
+`/tmp/fast64-future-precompute-audit-20260908T154840Z-post-atax.tsv` then
+returned `safe_to_launch=NO`: it saw zero OOM/memory PSI/throttling and ample
+headroom, but `swap_so_delta=103`.  The next Base worker was therefore not
+launched.  A later fresh audit must again pass before any expansion.
 
 An independent future-only strict collector is prepared for this exact ATAX
 namespace.  It requires immutable receipts, exact identity, Base lower-credit
