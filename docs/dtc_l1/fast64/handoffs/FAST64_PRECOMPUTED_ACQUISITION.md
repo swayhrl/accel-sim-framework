@@ -84,6 +84,12 @@ This is the single small Base ramp authorized by the post-R2 audit.  It has no
 claim beyond physical acquisition, and it must naturally terminate then pass
 strict validation before any later-stage reuse decision.
 
+An independent future-only strict collector is prepared for this exact ATAX
+namespace.  It requires immutable receipts, exact identity, Base lower-credit
+and PIB conservation, drained terminal state, and positive simulated
+cycle/instruction progress; its result remains
+`PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`, never a FAST64.3 PASS substitute.
+
 ## Resource decision
 
 The controlled first ramp reached 18 active simulator workers (the seven r1
