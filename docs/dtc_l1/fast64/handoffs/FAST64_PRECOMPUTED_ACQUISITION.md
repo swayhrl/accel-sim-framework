@@ -352,3 +352,17 @@ stage acceptance.
 The first dispatcher inherited its launch lock into the detached child; this
 was corrected in Framework `0de11045...` with a new migration lock and fd
 closure.  No duplicate namespace was created and no live row was perturbed.
+
+## Future-only FAST64.4 triplet validator preflight
+
+`validate_fast64_triplet_v1.py` is prepared but is not connected to a live
+dispatcher, monitor, or acceptance transition.  It consumes only three
+already strict-parsed compact JSON summaries and requires Base/IO/OO mode
+identity, common workload/payload/Core/Framework identity, common trace-list
+identity, equal dynamic instruction-domain progress, and source-mode terminal
+drain/conservation.  Its formal invocation additionally requires immutable
+attempt receipts plus common runtime and observer identities.  A synthetic
+immutable fixture based on the existing NN telemetry triplet passes, while a
+one-instruction OO mismatch fails closed.  The only PASS string it can write
+is `FAST64_TRIPLET_STRICT_VALID_PENDING_STAGE_ACCEPTANCE`; it cannot confer
+FAST64.2, FAST64.3, or FAST64.4 acceptance.

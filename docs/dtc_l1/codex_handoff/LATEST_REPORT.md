@@ -65,6 +65,16 @@ relaunched in an independent session with stdout/stderr redirected to
 lifecycle recovery, with no collection/promotion claim and no R2 dependency
 change.
 
+## Future-only FAST64.4 triplet consistency preflight (2026-09-08)
+
+`validate_fast64_triplet_v1.py` now provides a fail-closed compact-JSON
+validator for a later Base/IO/OO triplet.  It validates common payload and
+trace-list identity, dynamic instruction-domain equality, per-mode drain and
+conservation, and—in formal mode—immutable receipts plus common runtime/A1
+observer identity.  Its synthetic immutable-fixture regression passes and its
+deliberate instruction-mismatch fixture fails.  It is not connected to a live
+controller and cannot promote any current precompute or stage.
+
 ## FAST64 controlled third Base admission and Base closeout recovery (2026-09-08)
 
 A new 60-second post-small-batch audit at
