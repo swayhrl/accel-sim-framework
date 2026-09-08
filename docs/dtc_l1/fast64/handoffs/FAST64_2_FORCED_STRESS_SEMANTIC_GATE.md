@@ -130,3 +130,9 @@ or silently choosing a replacement cap from total requests.  The next
 source-correct action is bounded diagnosis of a pressure-producing diagnostic
 construction under existing authority; no performance configuration, Core
 mechanism, R2 frozen dependency, or live job is changed by this record.
+
+The frozen experiment matrix already names BICG as the first fallback payload
+when NN does not reach the event.  A separate immutable-v2 BICG launcher is
+therefore prepared with the same `cap=512, PIB=1` diagnostic overlay and a
+fresh-audit requirement.  It has **not** been launched: the current host has
+active swap traffic, so admission remains fail-closed.
