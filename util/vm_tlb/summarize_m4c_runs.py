@@ -53,7 +53,13 @@ def main() -> None:
             continue
         lines = log_path.read_text(errors="strict").splitlines()
         expected = sum(1 for line in (run_dir / "traces/kernelslist.g").read_text().splitlines() if line)
-        completed = sum(1 for line in lines if line.startswith("Processing kernel "))
+        # These log markers prove that a kernel was started.  Formal completion
+        # is established only in combination with normal exit, telemetry count,
+        # and the other invariants below; do not label this marker count as a
+        # standalone completed-kernel count.
+        processing_kernel_markers = sum(
+            1 for line in lines if line.startswith("Processing kernel ")
+        )
         status = data.get("simulator_exit_status", "MISSING")
         telemetry = sum(1 for line in lines if line.startswith("m4c_telemetry_schema ="))
         profile = data.get("profile", "MISSING")
@@ -84,24 +90,27 @@ def main() -> None:
                 vm_metrics["vm_object_attribution_conservation_pass"] == "1",
             ]
         checks = [
-            status == "0", completed == expected,
+            status == "0", processing_kernel_markers == expected,
             telemetry == expected if args.require_level else telemetry == 0,
             *vm_checks,
         ]
         result = "PASS" if all(checks) else "FAIL"
         if result == "FAIL":
-            failures.append(f"{run_dir}: status={status} completed={completed}/{expected} telemetry={telemetry}")
+            failures.append(
+                f"{run_dir}: status={status} processing_kernel_markers="
+                f"{processing_kernel_markers}/{expected} telemetry={telemetry}"
+            )
         rows.append([
             run_dir.name, result, data.get("roi", "MISSING"),
             data.get("profile", "MISSING"), data.get("telemetry_level", "MISSING"),
-            str(expected), str(completed), str(telemetry),
+            str(expected), str(processing_kernel_markers), str(telemetry),
             data.get("framework_head", "MISSING"), data.get("core_head", "MISSING"),
             *[last_value(lines, metric) for metric in METRICS],
         ])
     if not rows:
         failures.append("no replay manifests found")
     header = ["run", "result", "roi", "profile", "telemetry_level",
-              "expected_kernels", "completed_kernels", "telemetry_kernel_records",
+              "expected_kernels", "processing_kernel_markers", "telemetry_kernel_records",
               "framework_head", "core_head", *METRICS]
     with args.output.open("w", newline="") as output:
         writer = csv.writer(output, delimiter="\t", lineterminator="\n")
