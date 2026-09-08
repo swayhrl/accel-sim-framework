@@ -1,5 +1,24 @@
 # Latest Codex Report
 
+## FAST64.1 third immutable-R2 natural terminal (2026-09-08)
+
+`fast64_1r2_bicg_oo_cap1048576_a1` (BICG / PAPER_OO / cap 1048576)
+naturally exited `0` at `2026-09-08T18:19:06Z`.  Its atomic immutable-v2
+terminal receipt is chained to attempt
+`26b9fab6-0138-4750-923d-3d79a4b7f9df`, runner `bf9a84c8...`, Core
+`bbcbb5e...`, runtime `6a8743b4...`, A1 observer `2c2a6a27...`, execution
+snapshot `037f008b...`, its frozen OO-high-cap config, and the canonical BICG
+trace-list SHA-256 `388740a7...`.  The direct simulator emitted its normal
+exit sequence, stderr is empty, and the precise assertion/fatal/deadlock/
+output-mismatch scan is clean.
+
+This changes the R2 receipt state to **3/7 natural terminals**, with the four
+remaining R2 rows still live.  The frozen R2 closeout controller remains
+untouched and will perform the only authoritative strict collection after all
+seven terminal receipts exist.  Consequently this record is a pending
+natural-terminal observation, not individual strict validation, cap-comparison
+acceptance, or a FAST64.1 PASS claim.
+
 ## FAST64 review-time safe-parallelism audit (2026-09-08)
 
 The requested post-seven-row-R2, 60-second read-only admission audit is
