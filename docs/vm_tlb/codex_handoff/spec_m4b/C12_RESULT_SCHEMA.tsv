@@ -1,0 +1,58 @@
+field	meaning	required
+roi	prefill or decode1	YES
+arm	F0/F1/F2/F5/F7/F8/F9	YES
+lseg	NONE/5/10/20	YES
+terminal_status	PASS/FAILED_DIAGNOSING/INVALIDATED_BY_IDENTITY_CHANGE/HARD_BLOCKED	YES
+framework_anchor	frozen functional/config Framework identity	YES
+core_head	frozen Core identity	YES
+binary_sha256	linked simulator identity	YES
+config_sha256	arm config identity	YES
+trace_sha256	full ROI trace-list identity	YES
+registration_sha256	common driver PA registration identity	YES
+charged_bits	fair-state accounting	YES
+gpu_tot_sim_cycle	full ROI cycles	YES
+gpu_tot_sim_insn	full ROI instructions	YES
+gpu_tot_ipc	full ROI IPC	YES
+speedup_vs_f0	F0_cycles/arm_cycles for same ROI	YES
+vm_l1_tlb_accesses	L1 translation accesses	YES
+vm_l1_tlb_hits	L1 TLB hits	YES
+vm_l1_tlb_misses	L1 TLB misses	YES
+vm_l2_tlb_accesses	L2 TLB accesses	YES
+vm_l2_tlb_hits	L2 TLB hits	YES
+vm_l2_tlb_misses	L2 TLB misses	YES
+vm_l2_tlb_evictions	L2 TLB evictions	YES
+vm_l2_tlb_port_stalls	L2 port stalls	YES
+vm_translation_mshr_allocations	translation MSHR allocations	YES
+vm_translation_mshr_merges	translation MSHR merges	YES
+vm_translation_mshr_full_events	MSHR-full event counter	YES
+vm_translation_requester_mshr_wait_cycles_total	MSHR waiter time	YES
+vm_translation_requester_latency_cycles_total	total requester translation latency	YES
+vm_translation_requester_latency_cycles_max	max requester translation latency	YES
+vm_translation_walk_starts	PTW starts	YES
+vm_pte_requests	PTE requests	YES
+vm_pte_responses	PTE responses	YES
+vm_pte_l2_only_responses	PTE satisfied by L2	YES
+vm_pte_dram_responses	PTE satisfied by DRAM	YES
+vm_pte_memory_wait_cycles_total	PTE memory wait	YES
+vm_pte_memory_wait_cycles_max	max PTE memory wait	YES
+vm_pwc_accesses	PWC accesses	YES
+vm_pwc_hits	PWC hits	YES
+vm_pwc_misses	PWC misses	YES
+vm_pwc_evictions	PWC evictions	YES
+segment_lookup_attempts	Segment lookups	ARM_SPECIFIC
+segment_hits	Segment hits	ARM_SPECIFIC
+segment_l2_suppressed	conventional L2/PTW path avoided	ARM_SPECIFIC
+subentry_hits	Sub-entry hits	ARM_SPECIFIC
+subentry_misses	Sub-entry misses	ARM_SPECIFIC
+l1d_summary	object-aware L1D aggregate reference	YES
+l2_summary	object-aware L2 aggregate reference	YES
+l2_queue_summary	L2 queue pressure reference	YES
+native_memory_latency_summary	DRAM/interconnect latency reference	YES
+object_conservation_pass	object attribution exact conservation	YES
+pte_conservation_pass	PTE request/response conservation	YES
+kernel_markers	processed kernel markers	YES
+telemetry_records	telemetry kernel records	YES
+peak_rss_kb	/usr/bin/time -v max RSS	YES
+elapsed_seconds	wall-clock runtime	YES
+raw_log_sha256	raw run log identity	YES
+parser_version	parser script/hash identity	YES
