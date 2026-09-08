@@ -1,5 +1,25 @@
 # Latest Codex Report
 
+## FAST64 frozen R2 alias defect and F2 negative evidence (2026-09-08)
+
+The frozen R2 validator's single-epoch glob counts a normal simulator symlink
+alias (`perf_counter.csv.gz`) in addition to its sole timestamped perf stream.
+Read-only inode/initialization evidence proves this is one epoch, but the
+frozen validator rejects it as two streams. The frozen R2 collector also asks
+the parser for lower-cap configuration, although the cap is source/config
+identity rather than a terminal metric. Neither frozen byte was changed. A
+versioned alias-aware reader is prepared and documented in
+`fast64/handoffs/FAST64_1_R2_PERF_ALIAS_VALIDATOR_RESOLUTION.md`; it may only
+become relevant after the existing frozen controller has fail-closed at 7/7.
+
+The newly acquired immutable FAST64.2 NN/IO coupled stress naturally exited
+0 and has valid single-epoch receipt/trace/accounting evidence under the
+versioned reader. Its required pressure events are both zero
+(`lower_cap_full_events=0`, `io_lower_create_queue_full_stalls=0`), so it is
+strict negative evidence, not FAST64.2 PASS. This is an ordinary
+source/configuration-pressure diagnosis item; it does not alter R2 semantics
+or any frozen closeout dependency.
+
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 
 The seven-row R2 closeout dependency closure is now frozen, byte-addressed in
