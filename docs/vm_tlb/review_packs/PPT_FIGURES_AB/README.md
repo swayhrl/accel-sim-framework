@@ -1,6 +1,6 @@
 # PPT Figures A/B review pack
 
-状态：`PPT_FIGURES_AB_READY_FOR_REVIEW`。
+状态：`PPT_FIGURES_AB_ASSETS_READY_FOR_REVIEW`。
 
 本包索引单页 PPT 的两张图，不包含任何 simulator 运行或新的研究数据。权威输入为
 A C4 closeout `74d5fbe6a5ca2411309674cf457baa1efa78f58d` 的
@@ -18,6 +18,17 @@ A C4 closeout `74d5fbe6a5ca2411309674cf457baa1efa78f58d` 的
 `FIGURES_AB_REFERENCE_DATA.tsv` 对齐；Decode 的 L2 replacement matrix 还被断言为
 9 格总和等于 L2 TLB eviction 总数。生成物为两张 1920×1080 SVG/PNG，且已实际检查
 Pillow PNG 与 LibreOffice SVG 渲染，无文字裁切、中文缺字或标签重叠。
+
+本次 asset 重构新增（不覆盖原 first-pass 图）：
+
+- `FIG_A_PREFILL_DECODE_TLB_PRESSURE_ASSET.svg/png`：透明、紧裁的两列三级路径；
+  移除图内标题、结论框、脚注和大面积卡片。
+- `FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET_ASSET.svg/png`：透明、紧裁的柱图；
+  指标直接标在柱下，`97.1% L2 TLB 替换：Weight → Weight` 为无框短注释。
+
+`--asset-only` 会在不覆盖第一版图的前提下重跑解析/assertion 并生成 asset。PNG 为
+3600×1300 和 3200×1440 的透明高分辨率输出；SVG root 不含背景矩形。二者均经实际
+PNG 及 LibreOffice SVG 渲染检查，不呈现“PPT 中嵌 PPT”的视觉层级。
 
 ## 范围与已知边界
 

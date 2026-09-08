@@ -106,35 +106,45 @@ def font_path(bold: bool) -> str:
 
 
 class PngCanvas:
-    def __init__(self) -> None:
-        self.image = Image.new("RGB", (WIDTH, HEIGHT), WHITE)
+    def __init__(self, width: int = WIDTH, height: int = HEIGHT,
+                 background: str | None = WHITE, scale: float = 1.0) -> None:
+        self.width, self.height, self.scale = width, height, scale
+        if background is None:
+            self.image = Image.new("RGBA", (round(width * scale), round(height * scale)),
+                                   (255, 255, 255, 0))
+        else:
+            self.image = Image.new("RGB", (round(width * scale), round(height * scale)), background)
         self.draw = ImageDraw.Draw(self.image)
         self._fonts: Dict[Tuple[int, bool], ImageFont.FreeTypeFont] = {}
+
+    def scaled(self, value: float) -> int:
+        return round(value * self.scale)
 
     def font(self, size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
         key = (size, bold)
         if key not in self._fonts:
-            self._fonts[key] = ImageFont.truetype(font_path(bold), size=size, index=0)
+            self._fonts[key] = ImageFont.truetype(font_path(bold), size=self.scaled(size), index=0)
         return self._fonts[key]
 
     def rect(self, x: float, y: float, w: float, h: float, fill: str,
              outline: str | None = None, radius: int = 0, width: int = 2) -> None:
-        box = (round(x), round(y), round(x + w), round(y + h))
+        box = (self.scaled(x), self.scaled(y), self.scaled(x + w), self.scaled(y + h))
         if radius:
-            self.draw.rounded_rectangle(box, radius=radius, fill=fill,
-                                        outline=outline, width=width)
+            self.draw.rounded_rectangle(box, radius=self.scaled(radius), fill=fill,
+                                        outline=outline, width=self.scaled(width))
         else:
-            self.draw.rectangle(box, fill=fill, outline=outline, width=width)
+            self.draw.rectangle(box, fill=fill, outline=outline, width=self.scaled(width))
 
     def line(self, points: Sequence[Tuple[float, float]], fill: str, width: int = 2) -> None:
-        self.draw.line([(round(x), round(y)) for x, y in points], fill=fill, width=width)
+        self.draw.line([(self.scaled(x), self.scaled(y)) for x, y in points], fill=fill,
+                       width=self.scaled(width))
 
     def polygon(self, points: Sequence[Tuple[float, float]], fill: str) -> None:
-        self.draw.polygon([(round(x), round(y)) for x, y in points], fill=fill)
+        self.draw.polygon([(self.scaled(x), self.scaled(y)) for x, y in points], fill=fill)
 
     def text(self, x: float, y: float, text: str, size: int, fill: str = TEXT,
              bold: bool = False, anchor: str = "la") -> None:
-        self.draw.text((round(x), round(y)), text, font=self.font(size, bold),
+        self.draw.text((self.scaled(x), self.scaled(y)), text, font=self.font(size, bold),
                        fill=fill, anchor=anchor)
 
     def save(self, path: Path) -> None:
@@ -142,13 +152,15 @@ class PngCanvas:
 
 
 class SvgCanvas:
-    def __init__(self) -> None:
+    def __init__(self, width: int = WIDTH, height: int = HEIGHT,
+                 background: str | None = WHITE) -> None:
         self.parts: List[str] = [
             '<?xml version="1.0" encoding="UTF-8"?>',
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" '
-            f'viewBox="0 0 {WIDTH} {HEIGHT}" role="img">',
-            f'<rect width="100%" height="100%" fill="{WHITE}"/>',
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+            f'viewBox="0 0 {width} {height}" role="img">',
         ]
+        if background is not None:
+            self.parts.append(f'<rect width="100%" height="100%" fill="{background}"/>')
 
     @staticmethod
     def esc(value: str) -> str:
@@ -414,6 +426,100 @@ def draw_figure_b(metrics: Sequence[Metric], png_path: Path, svg_path: Path) -> 
     svg.save(svg_path)
 
 
+def draw_figure_a_asset(metrics: Sequence[Metric], png_path: Path, svg_path: Path) -> None:
+    """Draw a tightly cropped, title-free pressure-path figure asset."""
+    logical_width, logical_height = 1800, 650
+    png = PngCanvas(logical_width, logical_height, background=None, scale=2.0)
+    svg = SvgCanvas(logical_width, logical_height, background=None)
+    canvases: Sequence[object] = (png, svg)
+    columns = [
+        (80, "预填充  Prefill", "prefill", BLUE, PALE_BLUE),
+        (970, "解码  Decode", "decode1", ORANGE, PALE_ORANGE),
+    ]
+    row_y = (125, 305, 485)
+    for x, stage, roi, color, pale in columns:
+        # A short stage chip and one thin rail encode the column/path identity;
+        # unlike the original slide, neither is a title band or a large card.
+        both(canvases, "rect", x, 35, 250, 42, color, color, 10, 1)
+        both(canvases, "text", x + 125, 56, stage, 23, WHITE, True, "mm")
+        rail_x = x + 25
+        both(canvases, "line", [(rail_x, 109), (rail_x, 573)], color, 3)
+        arrow(canvases, rail_x, 212, 276, color)
+        arrow(canvases, rail_x, 392, 456, color)
+        for index, y in enumerate(row_y, start=1):
+            both(canvases, "rect", x + 3, y - 18, 44, 44, pale, color, 22, 2)
+            both(canvases, "text", x + 25, y + 4, str(index), 19, color, True, "mm")
+            if index < 3:
+                both(canvases, "line", [(x + 68, y + 85), (x + 745, y + 85)], GRID, 2)
+
+        l1 = metric(metrics, "A", "L1_TLB_miss_rate_pct", roi)
+        l2 = metric(metrics, "A", "L2_continued_miss_pct", roi)
+        mshr_total = metric(metrics, "A", "MSHR_full_events_full_roi", roi)
+        label_x, value_x = x + 74, x + 766
+        both(canvases, "text", label_x, 126, "L1 TLB 未命中率", 28, TEXT, True, "la")
+        both(canvases, "text", value_x, 126, l1.display, 34, color, True, "ra")
+        both(canvases, "text", label_x, 171, f"{l1.numerator:,} / {l1.denominator:,}",
+             20, MUTED, False, "la")
+        both(canvases, "text", label_x, 306, "L2 继续未命中率", 28, TEXT, True, "la")
+        both(canvases, "text", value_x, 306, l2.display, 34, color, True, "ra")
+        both(canvases, "text", label_x, 351, f"{l2.numerator:,} / {l2.denominator:,}",
+             20, MUTED, False, "la")
+        both(canvases, "text", label_x, 486, "Translation MSHR-full", 28, TEXT, True, "la")
+        if mshr_total.numerator == 0:
+            total_text = "full-ROI：0"
+            norm_text = "0 events / 1M translation requests"
+        else:
+            total_text = "full-ROI：~2.30M"
+            norm_text = "30.35K events / 1M translation requests"
+        both(canvases, "text", label_x, 532, total_text, 29, color, True, "la")
+        both(canvases, "text", label_x, 575, norm_text, 19, TEXT, False, "la")
+    png.save(png_path)
+    svg.save(svg_path)
+
+
+def draw_figure_b_asset(metrics: Sequence[Metric], png_path: Path, svg_path: Path) -> None:
+    """Draw a compact bar-chart asset with direct labels instead of a legend."""
+    logical_width, logical_height = 1600, 720
+    png = PngCanvas(logical_width, logical_height, background=None, scale=2.0)
+    svg = SvgCanvas(logical_width, logical_height, background=None)
+    canvases: Sequence[object] = (png, svg)
+    plot_left, plot_right, plot_top, plot_bottom = 130, 1540, 135, 535
+    plot_height = plot_bottom - plot_top
+    for pct in (0, 50, 100):
+        y = plot_bottom - plot_height * pct / 100.0
+        both(canvases, "line", [(plot_left, y), (plot_right, y)], GRID, 2 if pct == 0 else 1)
+        both(canvases, "text", plot_left - 18, y, f"{pct}%", 18, MUTED, False, "rm")
+    both(canvases, "line", [(plot_left, plot_top), (plot_left, plot_bottom)], NAVY, 2)
+    both(canvases, "line", [(plot_left, plot_bottom), (plot_right, plot_bottom)], NAVY, 2)
+    groups = [(510, "预填充（Prefill）", "prefill"), (1170, "解码（Decode）", "decode1")]
+    bar_width, gap = 112, 40
+    for center, group_label, roi in groups:
+        access = metric(metrics, "B", "Weight_lane_reference_share_pct", roi)
+        pages = metric(metrics, "B", "Weight_64KB_unique_page_share_pct", roi)
+        bar_items = (
+            (center - gap / 2 - bar_width, access, BLUE, "动态访问"),
+            (center + gap / 2, pages, TEAL, "64KB页工作集"),
+        )
+        for x, item, color, direct_label in bar_items:
+            h = plot_height * item.value / 100.0
+            y = plot_bottom - h
+            both(canvases, "rect", x, y, bar_width, h, color, NAVY, 4, 1)
+            both(canvases, "text", x + bar_width / 2, y - 18, f"{item.value:.2f}%",
+                 25, color, True, "mm")
+            both(canvases, "text", x + bar_width / 2, 584, direct_label,
+                 18, color, True, "mm")
+        both(canvases, "text", center, 643, group_label, 23, NAVY, True, "mm")
+
+    # A plain annotation rather than a slide-sized callout card.  Its arrow
+    # lands in the Decode group gap, away from the 98.96% label.
+    both(canvases, "text", 1168, 49, "97.1% L2 TLB 替换：Weight → Weight", 22,
+         ORANGE, True, "mm")
+    both(canvases, "line", [(1168, 69), (1168, 101)], ORANGE, 3)
+    both(canvases, "polygon", [(1159, 99), (1177, 99), (1168, 111)], ORANGE)
+    png.save(png_path)
+    svg.save(svg_path)
+
+
 def write_data_used(metrics: Sequence[Metric], path: Path) -> None:
     headers = [
         "figure", "metric", "roi", "numerator", "denominator", "computed_value",
@@ -461,9 +567,44 @@ def verify_outputs(paths: Sequence[Path]) -> None:
             raise AssertionError(f"{path}: malformed SVG envelope")
 
 
+def verify_asset_outputs(paths: Sequence[Path]) -> None:
+    """Check asset-specific dimensions, transparent backgrounds, and required text."""
+    expected_sizes = ((3600, 1300), (3200, 1440))
+    for path in paths:
+        if not path.exists() or path.stat().st_size == 0:
+            raise AssertionError(f"missing asset output: {path}")
+    for path, expected in zip((paths[0], paths[2]), expected_sizes):
+        with Image.open(path) as image:
+            if image.size != expected or image.mode != "RGBA":
+                raise AssertionError(f"{path}: expected transparent high-res PNG {expected}, got "
+                                     f"{image.mode} {image.size}")
+            if image.getpixel((0, 0))[3] != 0:
+                raise AssertionError(f"{path}: corner is not transparent")
+            if image.getbbox() is None:
+                raise AssertionError(f"{path}: blank PNG")
+    required_text = {
+        paths[1]: ("预填充  Prefill", "解码  Decode", "Translation MSHR-full",
+                   "full-ROI：~2.30M", "30.35K events / 1M translation requests"),
+        paths[3]: ("15.98%", "87.41%", "7.86%", "98.96%",
+                   "97.1% L2 TLB 替换：Weight → Weight"),
+    }
+    for path, phrases in required_text.items():
+        text = path.read_text(encoding="utf-8")
+        if not (text.startswith("<?xml") and text.rstrip().endswith("</svg>")):
+            raise AssertionError(f"{path}: malformed SVG envelope")
+        # There is no root background rectangle in an asset SVG.
+        if '<rect width="100%" height="100%"' in text:
+            raise AssertionError(f"{path}: asset SVG background is not transparent")
+        for phrase in phrases:
+            if phrase not in text:
+                raise AssertionError(f"{path}: missing required label {phrase!r}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=OUT)
+    parser.add_argument("--asset-only", action="store_true",
+                        help="generate only the title-free compact figure assets")
     args = parser.parse_args()
     for required in (TOTALS, LOCALITY, REPLACEMENTS, REFERENCE):
         if not required.is_file():
@@ -471,15 +612,25 @@ def main() -> int:
     output = args.output_dir
     output.mkdir(parents=True, exist_ok=True)
     metrics = compute_metrics()
-    a_png = output / "FIG_A_PREFILL_DECODE_TLB_PRESSURE.png"
-    a_svg = output / "FIG_A_PREFILL_DECODE_TLB_PRESSURE.svg"
-    b_png = output / "FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET.png"
-    b_svg = output / "FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET.svg"
-    draw_figure_a(metrics, a_png, a_svg)
-    draw_figure_b(metrics, b_png, b_svg)
     write_data_used(metrics, output / "FIGURE_DATA_USED.tsv")
-    verify_outputs((a_png, a_svg, b_png, b_svg))
-    print("PPT_FIGURES_AB_DATA_ASSERTIONS PASS")
+    if args.asset_only:
+        a_png = output / "FIG_A_PREFILL_DECODE_TLB_PRESSURE_ASSET.png"
+        a_svg = output / "FIG_A_PREFILL_DECODE_TLB_PRESSURE_ASSET.svg"
+        b_png = output / "FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET_ASSET.png"
+        b_svg = output / "FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET_ASSET.svg"
+        draw_figure_a_asset(metrics, a_png, a_svg)
+        draw_figure_b_asset(metrics, b_png, b_svg)
+        verify_asset_outputs((a_png, a_svg, b_png, b_svg))
+        print("PPT_FIGURES_AB_ASSET_ASSERTIONS PASS")
+    else:
+        a_png = output / "FIG_A_PREFILL_DECODE_TLB_PRESSURE.png"
+        a_svg = output / "FIG_A_PREFILL_DECODE_TLB_PRESSURE.svg"
+        b_png = output / "FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET.png"
+        b_svg = output / "FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET.svg"
+        draw_figure_a(metrics, a_png, a_svg)
+        draw_figure_b(metrics, b_png, b_svg)
+        verify_outputs((a_png, a_svg, b_png, b_svg))
+        print("PPT_FIGURES_AB_DATA_ASSERTIONS PASS")
     for item in (a_svg, a_png, b_svg, b_png, output / "FIGURE_DATA_USED.tsv"):
         print(item.relative_to(ROOT))
     return 0
