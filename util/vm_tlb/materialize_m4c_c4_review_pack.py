@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import shutil
 from pathlib import Path
 
@@ -85,10 +86,27 @@ def write(path: Path, text: str) -> None:
     path.write_text(text.rstrip() + "\n")
 
 
+def write_tsv(path: Path, header: list[str], rows: list[dict[str, str]]) -> None:
+    """Write a compact review-facing projection without mutating source tables."""
+    with path.open("w", newline="") as output:
+        writer = csv.DictWriter(output, fieldnames=header, delimiter="\t", lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def copy_table(source: Path, destination: Path) -> None:
+    """Copy one already-validated compact table under a handoff-mandated name."""
+    shutil.copyfile(source, destination)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--characterization-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--resource-snapshot", type=Path, required=True,
+                        help="small TSV captured after C3 release; copied verbatim")
+    parser.add_argument("--attestation-file", type=Path, required=True,
+                        help="Window-A external attestation whose first line is required")
     args = parser.parse_args()
     source = args.characterization_dir.resolve()
     output = args.output_dir.resolve()
@@ -103,9 +121,50 @@ def main() -> None:
     _, performance = read_tsv(source / "PERFORMANCE_SUMMARY.tsv")
     require_terminal_formal_matrix(formal)
     require_validation(validation)
+    resource_snapshot = args.resource_snapshot.resolve()
+    if not resource_snapshot.is_file():
+        fail(f"missing resource snapshot: {resource_snapshot}")
+    attestation_file = args.attestation_file.resolve()
+    if not attestation_file.is_file():
+        fail(f"missing Window-A attestation: {attestation_file}")
+    if attestation_file.read_text().splitlines()[:1] != ["A_TERMINAL_CONFIRMED"]:
+        fail("Window-A attestation first line is not A_TERMINAL_CONFIRMED")
     output.mkdir(parents=True, exist_ok=True)
     for name in TABLES:
         shutil.copyfile(source / name, output / name)
+
+    # These names are the compact review entry points named by the terminal
+    # handoff.  They are projections/copies of the validation-backed source
+    # tables above; no raw log, trace, or simulator artifact is copied.
+    write_tsv(output / "C3_FINAL_ARM_MATRIX.tsv", list(formal[0].keys()), formal)
+    runtime_values = {row["field"]: row["value"] for row in runtime}
+    provenance_header = [
+        "arm", "roi", "profile", "framework_head", "core_head",
+        "simulator_binary_sha256", "mapped_libcudart_sha256",
+        "mapped_libcudart_realpath", "run_manifest_sha256",
+        "kernel_list_sha256", "run_log_sha256",
+    ]
+    provenance_rows = [{
+        "arm": row["arm"], "roi": row["roi"], "profile": row["profile"],
+        "framework_head": row["framework_head"], "core_head": row["core_head"],
+        "simulator_binary_sha256": runtime_values.get("simulator_binary_sha256", "MISSING"),
+        "mapped_libcudart_sha256": runtime_values.get("mapped_libcudart_sha256", "MISSING"),
+        "mapped_libcudart_realpath": runtime_values.get("mapped_libcudart_realpath", "MISSING"),
+        "run_manifest_sha256": row["run_manifest_sha256"],
+        "kernel_list_sha256": row["kernel_list_sha256"],
+        "run_log_sha256": row["run_log_sha256"],
+    } for row in formal]
+    write_tsv(output / "C3_FINAL_PROVENANCE.tsv", provenance_header, provenance_rows)
+    performance_header = list(performance[0].keys())
+    for roi, name in (("prefill", "PREFILL_FINAL_PROFILE_COMPARISON.tsv"),
+                      ("decode1", "DECODE_FINAL_PROFILE_COMPARISON.tsv")):
+        write_tsv(output / name, performance_header,
+                  [row for row in performance if row["roi"] == roi])
+    copy_table(source / "CROSS_LAYER_TRANSLATION_L1D_L2.tsv",
+               output / "C4_CROSS_LAYER_SUMMARY.tsv")
+    copy_table(source / "TRACE_LOCALITY_OFFLINE.tsv",
+               output / "C4_TRACE_LOCALITY_SUMMARY.tsv")
+    copy_table(resource_snapshot, output / "RESOURCE_RELEASE_SNAPSHOT.tsv")
 
     formal_rows = [[
         row["arm"], row["terminal_result"], row["expected_kernel_list_entries"],
@@ -222,6 +281,49 @@ transactions per memory instruction.
 - The pre-correction/post-correction Framework manifest lineage is preserved
   explicitly in `C3_RUNTIME_PROVENANCE.tsv`; no historical manifest is edited.
 - This package stops after C4.  No C5, M4B, or M5 execution is authorized here.
+""")
+    write(output / "C4_OBSERVABILITY_GAPS.md", """# C4 observability gaps
+
+- Object-specific Weight/KV/PTE attribution by DRAM channel, bank, or row is
+  not available; no such attribution is inferred from global native DRAM
+  statistics.
+- `L1D_ACCESS_ATTEMPT_WINDOW` is an observation-only access-attempt window,
+  not an exact unique coalesced-transaction window.  It must not be used to
+  derive exact transactions per memory instruction.
+- Native global DRAM channel/bank/read/write/latency/row-locality values are
+  reused existing GPGPU-Sim statistics and are retained in
+  `NATIVE_DRAM_MEMORY_SYSTEM_STATS.tsv`.
+- A counter difference alone is not a causal mechanism proof; the package
+  separates measured facts from supported signals and unresolved gaps.
+""")
+    attestation_sha256 = hashlib.sha256(attestation_file.read_bytes()).hexdigest()
+    write(output / "A_TERMINAL_ATTESTATION_RECORD.md", """# Window-A terminal attestation record
+
+- External attestation: `{path}`
+- SHA256: `{digest}`
+- First line verified: `A_TERMINAL_CONFIRMED`
+- Scope: C3 simulator-heavy execution is terminal and its eight-arm formal
+  gate passed.  This is not a claim that other windows have passed their own
+  independent resource gates.
+""".format(path=attestation_file, digest=attestation_sha256))
+    write(output / "FINAL_REPORT.md", """# M4C C3+C4 final report
+
+Status: **C3 TERMINAL PASS / C4 OFFLINE CHARACTERIZATION COMPLETE — PENDING CHATGPT REVIEW**
+
+All eight authorized C3 arms have terminal exit status zero and exact
+kernel-marker/telemetry-record agreement with their immutable kernel lists.
+The C4 package uses existing C3 logs, structured exports, and immutable-trace
+offline locality only; it launches no replay.  The pre-correction/post-
+correction Framework provenance split remains explicit in the final matrix.
+
+Primary measured comparison tables are
+`DECODE_FINAL_PROFILE_COMPARISON.tsv`,
+`PREFILL_FINAL_PROFILE_COMPARISON.tsv`,
+`C4_CROSS_LAYER_SUMMARY.tsv`, and
+`C4_TRACE_LOCALITY_SUMMARY.tsv`.  Interpretation limits are recorded in
+`C4_OBSERVABILITY_GAPS.md`.
+
+Scope terminates after C4.  C5, M4B-P, M4B-S, and M5 are not started.
 """)
     print(f"PASS review_pack={output}")
 
