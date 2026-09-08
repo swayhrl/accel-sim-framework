@@ -38,6 +38,12 @@ mismatch scan is clean.  Its class remains
 PASS or R2-dependent stage transition is claimed before natural terminal and
 strict collection.
 
+The BICG row also has a dedicated future-only closeout monitor.  It observes
+only the immutable terminal receipt, then invokes the existing BICG strict
+collector once and checks for its compact evidence; it cannot launch, signal,
+restart or promote a row.  Its once-mode pre-terminal regression confirms that
+it only records a wait state before a terminal receipt exists.
+
 ## FAST64.3 controlled two-row Base precompute, pending (2026-09-08)
 
 `prepare_fast64_3_base_precompute_v2.sh` is a future-only immutable-v2,
