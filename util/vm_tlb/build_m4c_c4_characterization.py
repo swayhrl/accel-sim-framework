@@ -510,6 +510,18 @@ def offline_locality(c4_root: Path, output: Path) -> None:
     write_tsv(output / "TRACE_LOCALITY_OFFLINE.tsv", header, rows)
 
 
+def require_complete_locality_inputs(c4_root: Path) -> None:
+    """Fail before creating any C4 output when resumable locality is partial.
+
+    ``offline_locality`` validates again while producing its summary.  This
+    early gate is intentionally separate so a wrapper cannot mistake a
+    partially written output directory for a completed C4 characterization.
+    """
+    for roi, expected_kernels in (("decode1", 740), ("prefill", 692)):
+        _, records = read_tsv(c4_root / "offline" / f"{roi}_locality.tsv")
+        validate_complete_locality(records, roi, expected_kernels)
+
+
 def input_index(c3: Path, c4: Path, output: Path) -> None:
     rows = []
     for path in sorted(c4.rglob("*")):
@@ -541,10 +553,11 @@ def main() -> None:
     output = args.output_dir.resolve()
     if output.exists() and any(output.iterdir()):
         fail(f"refusing to overwrite nonempty output directory: {output}")
-    output.mkdir(parents=True, exist_ok=True)
     runs = collect_runs(c3)
     validate_framework_only_correction(args.framework_root.resolve())
     require_export_tree(c4, runs)
+    require_complete_locality_inputs(c4)
+    output.mkdir(parents=True, exist_ok=True)
     run_matrix(runs, output)
     runtime_provenance(runs, output)
     config_provenance(runs, output)
