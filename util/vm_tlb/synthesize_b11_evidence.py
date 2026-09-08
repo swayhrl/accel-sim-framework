@@ -28,6 +28,7 @@ CORE_METRICS = (
     "vm_l1_tlb_hits", "vm_l1_tlb_misses", "vm_l2_tlb_hits", "vm_l2_tlb_misses",
     "vm_translation_mshr_allocations", "vm_translation_mshr_merges", "vm_translation_mshr_full_events",
     "vm_translation_mshr_lifetime_cycles_total", "vm_translation_mshr_lifetime_cycles_max",
+    "vm_translation_requester_mshr_wait_cycles_total", "vm_translation_requester_mshr_wait_cycles_max",
     "vm_translation_pwq_occupancy", "vm_translation_pwq_full_events",
     "vm_translation_requester_l2_queue_cycles_total", "vm_translation_requester_l2_queue_cycles_max",
     "vm_translation_walkers_active", "vm_translation_walk_starts", "vm_translation_walk_completions",
@@ -78,16 +79,33 @@ def manifest(path: Path) -> Dict[str, str]:
 
 
 def log_values(path: Path, wanted: Iterable[str]) -> Dict[str, str]:
-    wanted = set(wanted)
+    wanted = tuple(wanted)
+    wanted_set = set(wanted)
     values = {key: "NOT_EMITTED" for key in wanted}
     with path.open(errors="replace") as stream:
         for line in stream:
             if " = " not in line:
                 continue
             key, value = line.rstrip("\n").split(" = ", 1)
-            if key in wanted:
+            if key in wanted_set:
                 values[key] = value.strip()
     return values
+
+
+def realized_config(path: Path) -> Dict[str, str]:
+    flags = {
+        "-gpgpu_vm_mode": "realized_vm_mode",
+        "-gpgpu_vm_page_size": "realized_page_size_bytes",
+        "-gpgpu_vm_pwc_mode": "realized_pwc_mode",
+        "-gpgpu_vm_pwc_entries": "realized_pwc_entries",
+    }
+    result = {value: "NOT_EMITTED" for value in flags.values()}
+    with path.open(errors="replace") as stream:
+        for line in stream:
+            fields = line.split()
+            if len(fields) >= 2 and fields[0] in flags:
+                result[flags[fields[0]]] = fields[1]
+    return result
 
 
 def float_or_none(value: str) -> float | None:
@@ -117,6 +135,11 @@ def simulator_rows(future: Path) -> tuple[List[Dict[str, object]], List[Dict[str
                 raise RuntimeError(f"missing frozen simulator evidence for {arm}")
             run = manifest(run_manifest)
             values = log_values(log, all_metrics)
+            realization = realized_config(log)
+            prelaunch = manifest(future / f"{arm}.PRELAUNCH.tsv")
+            time_v = future / f"{arm}.time-v.txt"
+            if not time_v.is_file():
+                raise RuntimeError(f"missing B11 RSS sidecar for {arm}")
             log_text = log.read_text(errors="replace")
             processing = sum(line.startswith("Processing kernel ") for line in log_text.splitlines())
             profile = run.get("profile", "NOT_AVAILABLE")
@@ -126,10 +149,12 @@ def simulator_rows(future: Path) -> tuple[List[Dict[str, object]], List[Dict[str
                 "profile": profile, "extra_config": run.get("extra_config", "NONE"),
                 "simulator_exit_status": run.get("simulator_exit_status", "NOT_AVAILABLE"),
                 "processing_kernels": processing, "telemetry_schema_records": log_text.count("m4c_telemetry_schema ="),
-                "binary_sha256": "NOT_AVAILABLE", "run_manifest_sha256": sha256(run_manifest),
-                "run_log_sha256": sha256(log),
+                "binary_sha256": prelaunch.get("binary_sha256", "NOT_AVAILABLE"),
+                "run_manifest_sha256": sha256(run_manifest), "run_log_sha256": sha256(log),
+                "time_v_sha256": sha256(time_v),
                 "interpretation_guard": "single-kernel smoke; do not infer full-ROI performance from hit/miss or IPC alone",
             }
+            base.update(realization)
             base.update(values)
             rows.append(base)
             common = (run.get("simulator_exit_status") == "0" and processing == 1 and
@@ -222,22 +247,49 @@ def pair_deltas(rows: List[Dict[str, object]]) -> List[Dict[str, object]]:
     return output
 
 
+def normalized_resource_history(legacy: List[Dict[str, str]], adaptive: List[Dict[str, str]]) -> List[Dict[str, object]]:
+    fields = ("timestamp_utc", "policy_version", "task", "task_class", "event", "decision", "reason",
+              "predicted_peak_rss_kb", "observed_peak_rss_kb", "reserve_kb", "mem_available_kb", "mem_required_kb",
+              "swap_free_kb", "swap_in_delta", "swap_out_delta", "memory_full_pct", "io_full_pct", "iowait_pct")
+    rows: List[Dict[str, object]] = []
+    for row in legacy:
+        rows.append({"timestamp_utc": row["timestamp_utc"], "policy_version": "LEGACY_FIXED_GATE_V1",
+                     "task": row["task"], "task_class": "SMOKE", "event": row["event"],
+                     "decision": "RESOURCE_DEFERRED", "reason": row["reason"], "predicted_peak_rss_kb": "NOT_APPLICABLE",
+                     "observed_peak_rss_kb": "NOT_APPLICABLE", "reserve_kb": "NOT_APPLICABLE",
+                     "mem_available_kb": row["mem_available_kb"], "mem_required_kb": row["mem_required_kb"],
+                     "swap_free_kb": row["swap_free_kb"], "swap_in_delta": row["swap_in_delta"],
+                     "swap_out_delta": row["swap_out_delta"], "memory_full_pct": row["memory_full_pct"],
+                     "io_full_pct": row["io_full_pct"], "iowait_pct": row["iowait_pct"]})
+    for row in adaptive:
+        rows.append({field: row.get(field, "NOT_AVAILABLE") for field in fields})
+    return rows
+
+
 def write_markdown(pack: Path, static: List[Dict[str, object]], deltas: List[Dict[str, object]], waits: List[Dict[str, str]]) -> None:
     static_by_experiment = {str(row["experiment_id"]): row for row in static if row.get("memory_instructions_sum") != "NOT_APPLICABLE"}
     e09, e10 = static_by_experiment["E09"], static_by_experiment["E10"]
     unknown_high = all(float(str(row["unknown_lane_pct"])) >= 50.0 for row in (e09, e10))
-    changed = [row for row in deltas if row["absolute_delta"] not in ("0.000000", "NOT_APPLICABLE")]
+    def delta(baseline: str, target: str, metric: str) -> Dict[str, object]:
+        return next(row for row in deltas if row["baseline_arm"] == baseline and row["target_arm"] == target and row["metric"] == metric)
+    pwc_pairs = {("E01-generic", "E01-pwc32"), ("E02-generic", "E02-pwc512"),
+                 ("E03-generic", "E03-pwcideal")}
+    pwc_changed = [row for row in deltas if (row["baseline_arm"], row["target_arm"]) in pwc_pairs and
+                   row["absolute_delta"] not in ("0.000000", "NOT_APPLICABLE")]
+    control_cycle = delta("E05-generic", "E05-disabled", "gpu_tot_sim_cycle")
+    control_ipc = delta("E05-generic", "E05-disabled", "gpu_tot_ipc")
+    page_cycle = delta("E04-generic64k", "E04-page2mb", "gpu_tot_sim_cycle")
     h6 = "SUPPORTED" if unknown_high else "UNRESOLVED"
     (pack / "HYPOTHESIS_UPDATE.md").write_text(
         "# B11 hypothesis update\n\n"
         "All entries are **SPECULATIVE_DIAGNOSTIC**. E01–E06 are one-kernel simulator smokes; "
         "E09/E10 are metadata-matched static 16-kernel samples. Neither is full-ROI evidence.\n\n"
         "| Hypothesis | B11 status | Evidence and limit |\n|---|---|---|\n"
-        "| H1 phase structure | UNRESOLVED | E09/E10 add same-budget static samples, but metadata matching does not establish dynamic equivalence or full-phase behavior. |\n"
-        f"| H2 PWC/PTW sensitivity | UNRESOLVED | The PWC ladder produced {len(changed)} non-zero registered pair-metric deltas; smoke cannot establish sustained decode sensitivity. |\n"
-        "| H3 Weight Segment coverage limit | UNRESOLVED | B11 audits classified static lanes but does not observe C candidate path avoidance or end-to-end benefit. |\n"
+        f"| H1 phase structure | UNRESOLVED | Same-budget static samples differ descriptively (prefill/decode UNKNOWN {e09['unknown_lane_pct']}%/{e10['unknown_lane_pct']}%; equal-width adjacency {e09['adjacent_equal_width_pct']}%/{e10['adjacent_equal_width_pct']}%), but metadata matching is not dynamic matching or full-phase evidence. |\n"
+        f"| H2 PWC/PTW sensitivity | WEAKENED | E01–E03 realize finite-32, finite-512, and ideal PWC, yet their registered ladder pair deltas are {len(pwc_changed)} for the reported performance/translation metrics. This weakens the prior one-kernel PWC sensitivity signal only at this smoke scope. |\n"
+        f"| H3 Weight Segment coverage limit | SUPPORTED | Static classified Weight lanes are only {e09['weight_lane_pct']}% prefill and {e10['weight_lane_pct']}% decode while UNKNOWN is high. This supports an attribution/coverage ceiling, not a Segment performance claim. |\n"
         "| H4 post-L1 sibling locality | UNRESOLVED | No B11 arm measures the C-owned post-L1 sibling occupancy falsifier. |\n"
-        "| H5 conventional VM importance | UNRESOLVED | Conventional controls are screened only in smoke; no candidate comparison or continuous ROI bracket was executed. |\n"
+        f"| H5 conventional VM importance | UNRESOLVED | VM-disabled/ideal controls change this smoke from {control_cycle['baseline_value']} to {control_cycle['target_value']} cycles ({control_cycle['relative_delta_pct']}%) and IPC from {control_ipc['baseline_value']} to {control_ipc['target_value']} ({control_ipc['relative_delta_pct']}%), while the 2 MiB diagnostic cycle delta is {page_cycle['relative_delta_pct']}%. There is no full-ROI or candidate comparison to rank mechanisms. |\n"
         f"| H6 UNKNOWN attribution risk | {h6} | E09 UNKNOWN lane fractions: prefill {e09['unknown_lane_pct']}%; decode1 {e10['unknown_lane_pct']}%. UNKNOWN remains distinct and is not reassigned. |\n")
     (pack / "ANOMALIES_AND_GAPS.md").write_text(
         "# B11 anomalies and remaining gaps\n\n"
@@ -245,6 +297,7 @@ def write_markdown(pack: Path, static: List[Dict[str, object]], deltas: List[Dic
         "- E01–E06 are exactly one-kernel smoke/control replays; they cannot settle full-workload ranking.\n"
         "- E09/E10 select 16 kernels by frozen metadata selector; static locality is not dynamic translation timing.\n"
         "- UNKNOWN is retained as an independent object class. No B11 result proves that it is Weight, KV, or a mapping error.\n"
+        "- B11 repaired three B-local launcher/supervisor defects (Bash local expansion in simulator/miner paths, selector filename field, and reducer-schema completion check). Failed pre-start/invalid sidecars are retained under scratch failed_attempts; no valid raw result was overwritten.\n"
         "- No E11–E18 workload or candidate experiment was executed.\n")
     (pack / "NEXT_EXPERIMENT_RECOMMENDATIONS.md").write_text(
         "# Next recommendations after B11 review\n\n"
@@ -256,11 +309,14 @@ def write_markdown(pack: Path, static: List[Dict[str, object]], deltas: List[Dic
         "5. E18 only after decode-side candidate falsifiers are informative; retain prefill/decode separation.\n")
     (pack / "FINAL_REPORT.md").write_text(
         "# B11 final report\n\n"
-        "**Status: `B11_E01_E10_COMPLETE_READY_FOR_REVIEW`**  \n"
+        "**Status: `B11_E01_E10_COMPLETE_READY_FOR_REVIEW`**\n"
         "**Evidence label: `SPECULATIVE_DIAGNOSTIC`**\n\n"
-        "B11 executed the frozen E01–E10 package with effective B heavy concurrency one, a 10-second resource gate, and a shared heavy-slot lock. "
-        "Its 12 simulator arms are one-kernel smoke/control evidence; its E09/E10 outputs are static 16-kernel metadata-matched evidence. "
-        "The pack intentionally does not promote either into full-workload, formal, or candidate-performance evidence.\n\n"
+        "B11 executed the frozen E01–E10 package with effective B heavy concurrency one, a 10-second `ADAPTIVE_RESOURCE_V2` gate, per-quantum shared heavy-slot locking, and `/usr/bin/time -v` sidecars. "
+        "All 12 simulator arms, two one-kernel calibrations, and two 16-kernel static mining tasks pass their recorded completion/conservation contracts.\n\n"
+        f"The PWC finite-32/finite-512/ideal ladder and the 2 MiB diagnostic were realized but showed zero registered cycle deltas in this one-kernel smoke; the VM-disabled/ideal controls instead reduce cycles by {control_cycle['relative_delta_pct']}% and raise IPC by {control_ipc['relative_delta_pct']}%. "
+        "This is a control-boundary observation, not a full-ROI performance conclusion and not a hit/miss-only conclusion.\n\n"
+        f"E09/E10 static samples contain 16 kernels each. Prefill/decode UNKNOWN lane mass is {e09['unknown_lane_pct']}%/{e10['unknown_lane_pct']}%; Weight is {e09['weight_lane_pct']}%/{e10['weight_lane_pct']}%. "
+        "Those attribution facts are retained as static evidence only. The pack intentionally does not promote any result into full-workload, formal, or candidate-performance evidence.\n\n"
         "See `E01_E06_TRANSLATION_AND_PERF.tsv` for joint performance/translation observables, "
         "`E07_E08_RSS_CALIBRATION.tsv` for calibration, `E09_E10_STATIC_MINING_SUMMARY.tsv` for static scope, "
         "and `HYPOTHESIS_UPDATE.md` for the bounded H1–H6 update.\n")
@@ -270,10 +326,14 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scratch-root", type=Path, default=Path("/workspace/vm-spec-farm"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--replace-generated-pack", action="store_true",
+                        help="replace only the exact B11 derived review-pack after all raw inputs validate")
     args = parser.parse_args()
     scratch, pack = args.scratch_root, args.output
-    if pack.exists():
+    if pack.exists() and not args.replace_generated_pack:
         raise SystemExit(f"FAIL refusing to overwrite review pack: {pack}")
+    if pack.name != "B11_POST_TERMINAL_E01_E10_EXECUTION_GOAL":
+        raise SystemExit("FAIL output must be the exact B11 review-pack directory")
     state_path = scratch / "b11-goal/GOAL_STATE.tsv"
     wait_path = scratch / "b11-goal/RESOURCE_WAIT_HISTORY.tsv"
     calibration_path = scratch / "b11-goal/RSS_CALIBRATION.tsv"
@@ -287,8 +347,15 @@ def main() -> None:
     if {row["task"] for row in calibration} != {"E07", "E08"}:
         raise SystemExit("FAIL E07/E08 calibration ledger incomplete")
     waits = read_tsv(wait_path)
+    adaptive_wait_path = scratch / "b11-goal/RESOURCE_WAIT_HISTORY_V2.tsv"
+    adaptive_waits = read_tsv(adaptive_wait_path) if adaptive_wait_path.is_file() else []
     manifest = Path(__file__).resolve().parents[2] / "docs/vm_tlb/review_packs/VM_SPECULATIVE_EXPERIMENT_FARM/B9_MINIMUM_EXPERIMENT_EXECUTION_PREFLIGHT/E01_E10_EXECUTION_MANIFEST.tsv"
     whitelist = manifest.with_name("ARM_DELTA_WHITELIST.tsv")
+    # This removes only a previous derived report at the exact required target;
+    # raw simulator/miner evidence stays under scratch and has already passed
+    # all completion checks above.
+    if pack.exists():
+        shutil.rmtree(pack)
     pack.mkdir(parents=True)
     provenance = [
         {"evidence_label": LABEL, "input": "B9_EXECUTION_MANIFEST", "path": str(manifest), "sha256": sha256(manifest), "role": "frozen experiment identity"},
@@ -298,7 +365,16 @@ def main() -> None:
     ]
     write_tsv(pack / "INPUT_PROVENANCE.tsv", provenance)
     shutil.copy2(state_path, pack / "GOAL_STATE.tsv")
-    shutil.copy2(wait_path, pack / "RESOURCE_WAIT_HISTORY.tsv")
+    shutil.copy2(wait_path, pack / "RESOURCE_WAIT_HISTORY_LEGACY_V1.tsv")
+    if adaptive_wait_path.is_file():
+        shutil.copy2(adaptive_wait_path, pack / "RESOURCE_WAIT_HISTORY_V2.tsv")
+    heavy_rss = scratch / "b11-goal/HEAVY_RSS.tsv"
+    runtime = scratch / "b11-goal/RUNTIME_RESOURCE_MONITOR.tsv"
+    if heavy_rss.is_file():
+        shutil.copy2(heavy_rss, pack / "HEAVY_RSS.tsv")
+    if runtime.is_file():
+        shutil.copy2(runtime, pack / "RUNTIME_RESOURCE_MONITOR.tsv")
+    write_tsv(pack / "RESOURCE_WAIT_HISTORY.tsv", normalized_resource_history(waits, adaptive_waits))
     write_tsv(pack / "E01_E06_TRANSLATION_AND_PERF.tsv", sim)
     write_tsv(pack / "E07_E08_RSS_CALIBRATION.tsv", calibration)
     write_tsv(pack / "E09_E10_STATIC_MINING_SUMMARY.tsv", static)
@@ -311,7 +387,7 @@ def main() -> None:
     write_tsv(pack / "CONSERVATION_AND_VALIDATION.tsv", sim_checks + static_checks)
     deltas = pair_deltas(sim)
     write_tsv(pack / "E01_E06_PAIR_DELTAS.tsv", deltas)
-    write_markdown(pack, static, deltas, waits)
+    write_markdown(pack, static, deltas, waits + adaptive_waits)
     print(f"PASS B11 evidence synthesis: {pack}")
 
 
