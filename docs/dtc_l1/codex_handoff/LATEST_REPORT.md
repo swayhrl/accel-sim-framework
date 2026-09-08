@@ -1,5 +1,29 @@
 # Latest Codex Report
 
+## FAST64 review-time safe-parallelism audit (2026-09-08)
+
+The requested post-seven-row-R2, 60-second read-only admission audit is
+`/tmp/fast64-post-r2-fullwave-safeparallel-audit-20260908T181439Z.tsv`.
+It authorizes exactly one additional worker: zero sampled swap-out, cgroup
+OOM, memory PSI, and CFS throttling; 245 available distinct physical-core
+candidates; 197,735,043,072 bytes cgroup memory headroom; and
+61,653,282,816 bytes output free space.  The five live R2 simulators remained
+near one CPU core each during this observation.  This is an operational
+capacity result, not a FAST64.1 acceptance result.
+
+No duplicate NN coupled-stress process was launched.  The specifically named
+NN/PAPER_IO, cap-512, PIB-1 immutable-v2 row already naturally exited `0` with
+the exact frozen Core/runtime/A1-observer/config identity and was strictly
+collected as `FAST64_2_COUPLED_STRESS_STRICT_NEGATIVE_PRESSURE_ABSENT`: both
+required pressure counters were zero.  Repeating the identical NN row would
+not add evidence.  Its authorized BICG/PAPER_IO fallback under the same
+cap-512/PIB-1 source-coupled configuration is already live in an isolated
+immutable-v2 namespace and remains the positive-pressure candidate.  The
+current small FAST64.3 Base batch (ATAX, GESUMMV, GEMM) is also live; no batch
+expansion is made until it has supplied its planned progress/throughput
+observation.  Nothing in the frozen R2 closeout dependency closure, any R2
+process, or any active monitor was changed.
+
 ## FAST64.3 DWT2D/Base strict-valid precompute (2026-09-08)
 
 The isolated DWT2D/Base immutable-v2 row naturally exited `0` at
