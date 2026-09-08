@@ -19,8 +19,8 @@ launched after the two live rows.  Status is
 `FAST64_1_R2_RESOURCE_ADMISSION_PENDING` solely for this bounded lock lifetime;
 FAST64 Goal execution remains active.  On either natural terminal event, take
 a fresh resource audit and admit the next frozen-priority missing R2 row.
-A low-frequency host-only `monitor_fast64_1_r2_autorefiller.sh` is active for
-that exact continuation: it holds a separate monitor lock, pins the reviewed
+A low-frequency host-only `monitor_fast64_1_r2_autorefiller.sh` is prepared for
+that exact continuation under a persistent controller: it holds a separate monitor lock, pins the reviewed
 dispatcher SHA, waits for the live dispatch lock to disappear, performs the
 same 60-second read-only audit, and invokes the dispatcher only for a fresh
 `YES` admission.  It exits fail-closed on dispatcher-source drift and does not

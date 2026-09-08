@@ -187,8 +187,8 @@ lock.  This changes no immutable runner, namespace, attempt UUID, receipt,
 or scientific identity.  Until one of the two live rows exits naturally,
 `FAST64_1_R2_RESOURCE_ADMISSION_PENDING` denotes this controller-lifetime
 wait only; it is not a FAST64 Goal block or a scientific acceptance failure.
-The bounded host-only autorefiller monitors this natural transition at low
-frequency.  It is SHA-pinned to the reviewed dispatcher and requires another
+The bounded host-only autorefiller is prepared to monitor this natural transition
+at low frequency under a persistent controller.  It is SHA-pinned to the reviewed dispatcher and requires another
 fresh audit before each one-to-two-row dispatch; it exits fail-closed if the
 dispatcher source changes.  It does not operate on a live namespace.
 
