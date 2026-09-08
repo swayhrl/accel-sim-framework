@@ -20,18 +20,29 @@ future_root="${B9_FUTURE_EVIDENCE_ROOT:-$scratch_root/future-evidence/b9-e01-e10
 mode=dry-run
 experiments=ALL
 attestation=""
+resume_valid=0
+arms=ALL
 
 usage() {
   cat <<'EOF'
 Usage: run_b9_e01_e10_after_a_terminal.sh [--dry-run] [--experiment E01,...]
        run_b9_e01_e10_after_a_terminal.sh --enable-execution \
-         --a-terminal-attestation FILE [--experiment E01,...]
+         --a-terminal-attestation FILE [--experiment E01,...] [--arm ARM,...] [--resume-valid]
 
 Dry-run is the default and only performs static validation plus command
 rendering. Execution is intentionally opt-in, sequential (effective
 concurrency=1), refuses pre-existing output, and checks resource pressure
 before every job. It never turns a stateful continuous ROI into per-kernel
 processes; B9 E01--E06 are explicitly one-kernel smoke experiments only.
+
+--resume-valid is for the B11 supervisor only.  It skips an existing simulator
+arm only after checking its recorded zero exit status, exactly one kernel, and
+the telemetry schema marker.  Incomplete or otherwise invalid evidence still
+refuses execution and must be quarantined by the supervisor first.
+
+--arm restricts an E01--E06 invocation to an exact manifest arm.  It is used
+only by B11 so that each simulator run gets its own external ten-second
+resource gate and shared heavy-slot lock.  It is rejected for miner tasks.
 EOF
 }
 
@@ -40,7 +51,9 @@ while [[ $# -gt 0 ]]; do
     --dry-run) mode=dry-run; shift ;;
     --enable-execution) mode=execute; shift ;;
     --experiment) experiments="$2"; shift 2 ;;
+    --arm) arms="$2"; shift 2 ;;
     --a-terminal-attestation) attestation="$2"; shift 2 ;;
+    --resume-valid) resume_valid=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "FAIL unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -58,10 +71,22 @@ selected() {
   [[ ",$experiments," == *",$1,"* ]]
 }
 
+arm_selected() {
+  [[ "$arms" == ALL ]] && return 0
+  [[ ",$arms," == *",$1,"* ]]
+}
+
 proc_field() { awk -v key="$1" '$1 == key {print $2}' "$2"; }
 cpu_iowait() { awk 'NR==1 {print $6, $2+$3+$4+$5+$6+$7+$8+$9+$10}' /proc/stat; }
 
 resource_gate() {
+  # The B11 supervisor performs the authoritative 10-second B11 gate before
+  # acquiring its per-arm shared heavy slot.  Avoid a second legacy sleep while
+  # that lock is held, but retain the original gate for direct B9 use.
+  if [[ "${B9_EXTERNAL_RESOURCE_GATE:-0}" == 1 ]]; then
+    echo "PASS B9 external B11 resource gate accepted"
+    return 0
+  fi
   local mem_total mem_available normal_required sw1 sw2 si1 so1 si2 so2 iw1 total1 iw2 total2 iowait
   mem_total=$(proc_field MemTotal: /proc/meminfo)
   mem_available=$(proc_field MemAvailable: /proc/meminfo)
@@ -97,7 +122,18 @@ require_execute_gate() {
 run_sim() {
   local arm=$1 profile=$2 extra=$3 out="$future_root/$arm" trace_file="$scratch_root/staging/llama-f96b7ea9-5bdd4b55/decode1/m4a-llama-decode1-20260903T004138Z/traces/kernel-1464-ctx_0x55d98da1ddf0.traceg.xz"
   resource_gate
-  [[ ! -e "$out" && ! -e "$future_root/$arm.PRELAUNCH.tsv" ]] || { echo "FAIL existing arm evidence: $arm" >&2; exit 2; }
+  if [[ -e "$out" ]]; then
+    if (( resume_valid )) && [[ -f "$out/RUN_MANIFEST.tsv" && -f "$out/run.log" ]] &&
+       grep -q $'^simulator_exit_status\t0$' "$out/RUN_MANIFEST.tsv" &&
+       [[ "$(grep -c '^Processing kernel ' "$out/run.log")" -eq 1 ]] &&
+       grep -q '^m4c_telemetry_schema =' "$out/run.log"; then
+      echo "SKIP_VALID arm=$arm"
+      return 0
+    fi
+    echo "FAIL existing non-resumable arm evidence: $arm" >&2
+    exit 2
+  fi
+  [[ ! -e "$future_root/$arm.PRELAUNCH.tsv" ]] || { echo "FAIL existing prelaunch evidence: $arm" >&2; exit 2; }
   local command=("$runner" --framework-root "$framework_root" --core-root "$core_root" --simulator "$simulator" --roi decode1 --profile "$profile" --trace-list "$scratch_root/inputs/semantic-rebuilt/decode1/compute-only-kernelslist.g" --trace-dir "$scratch_root/staging/llama-f96b7ea9-5bdd4b55/decode1/m4a-llama-decode1-20260903T004138Z/traces" --run-dir "$out" --max-kernels 1 --telemetry-level 3 --window-transactions 1000000)
   [[ "$extra" == NONE ]] || command+=(--extra-config "$extra")
   { printf 'field\tvalue\n'; printf 'arm_id\t%s\n' "$arm"; printf 'command\t'; printf '%q ' "${command[@]}"; printf '\n'; printf 'command_sha256\t'; printf '%q ' "${command[@]}" | sha256sum | awk '{print $1}'; printf 'binary_sha256\t%s\n' "$expected_binary"; sha256sum "$trace_file" "$scratch_root/inputs/semantic-rebuilt/decode1/compute-only-kernelslist.g" "$runner"; } > "$future_root/$arm.PRELAUNCH.tsv"
@@ -133,18 +169,26 @@ render() {
 }
 
 static_validate
+if [[ "$arms" != ALL ]]; then
+  [[ "$experiments" != ALL ]] || { echo "FAIL --arm requires one --experiment" >&2; exit 2; }
+  case ",$arms," in
+    *,E01-generic,*|*,E01-pwc32,*|*,E02-generic,*|*,E02-pwc512,*|*,E03-generic,*|*,E03-pwcideal,*|*,E04-generic64k,*|*,E04-page2mb,*|*,E05-generic,*|*,E05-disabled,*|*,E06-generic,*|*,E06-ideal,*) ;;
+    *) echo "FAIL --arm only accepts exact E01--E06 simulator arms" >&2; exit 2 ;;
+  esac
+  [[ ",${arms}," == *",${experiments}-"* ]] || { echo "FAIL --arm is not part of --experiment" >&2; exit 2; }
+fi
 if [[ "$mode" == dry-run ]]; then
   echo "PASS B9_DRY_RUN_ONLY effective_concurrency=1 no_simulator_or_worker_started"
   render
   exit 0
 fi
 require_execute_gate
-selected E01 && { run_sim E01-generic generic NONE; run_sim E01-pwc32 generic "$scratch_root/configs/b2/b2-pwc-finite32.config"; }
-selected E02 && { run_sim E02-generic generic NONE; run_sim E02-pwc512 generic "$scratch_root/configs/b2/b2-pwc-finite512.config"; }
-selected E03 && { run_sim E03-generic generic NONE; run_sim E03-pwcideal generic "$scratch_root/configs/b2/b2-pwc-ideal.config"; }
-selected E04 && { run_sim E04-generic64k generic NONE; run_sim E04-page2mb generic "$scratch_root/configs/b2/b2-page-2mb-diagnostic.config"; }
-selected E05 && { run_sim E05-generic generic NONE; run_sim E05-disabled disabled NONE; }
-selected E06 && { run_sim E06-generic generic NONE; run_sim E06-ideal ideal NONE; }
+selected E01 && { arm_selected E01-generic && run_sim E01-generic generic NONE; arm_selected E01-pwc32 && run_sim E01-pwc32 generic "$scratch_root/configs/b2/b2-pwc-finite32.config"; }
+selected E02 && { arm_selected E02-generic && run_sim E02-generic generic NONE; arm_selected E02-pwc512 && run_sim E02-pwc512 generic "$scratch_root/configs/b2/b2-pwc-finite512.config"; }
+selected E03 && { arm_selected E03-generic && run_sim E03-generic generic NONE; arm_selected E03-pwcideal && run_sim E03-pwcideal generic "$scratch_root/configs/b2/b2-pwc-ideal.config"; }
+selected E04 && { arm_selected E04-generic64k && run_sim E04-generic64k generic NONE; arm_selected E04-page2mb && run_sim E04-page2mb generic "$scratch_root/configs/b2/b2-page-2mb-diagnostic.config"; }
+selected E05 && { arm_selected E05-generic && run_sim E05-generic generic NONE; arm_selected E05-disabled && run_sim E05-disabled disabled NONE; }
+selected E06 && { arm_selected E06-generic && run_sim E06-generic generic NONE; arm_selected E06-ideal && run_sim E06-ideal ideal NONE; }
 selected E07 && run_miner E07-decode-rss decode1 kernel-1464-ctx_0x55d98da1ddf0.traceg.xz "$scratch_root/staging/llama-f96b7ea9-5bdd4b55/decode1/m4a-llama-decode1-20260903T004138Z/traces" "$framework_root/configs/vm_tlb/object_maps/M4C_DECODE1_OBJECT_MAP.tsv"
 selected E08 && run_miner E08-prefill-rss prefill kernel-735-ctx_0x55f2413c4de0.traceg.xz "$scratch_root/staging/llama-f96b7ea9-5bdd4b55/prefill/m4a-llama-prefill-20260902T182016Z/traces" "$framework_root/configs/vm_tlb/object_maps/M4C_PREFILL_OBJECT_MAP.tsv"
 selected E09 && run_static16 E09-prefill-static16 prefill "$scratch_root/inputs/semantic-rebuilt/prefill/compute-only-kernelslist.g" "$scratch_root/staging/llama-f96b7ea9-5bdd4b55/prefill/m4a-llama-prefill-20260902T182016Z/traces" "$framework_root/configs/vm_tlb/object_maps/M4C_PREFILL_OBJECT_MAP.tsv" "$future_root/E08-prefill-rss"
