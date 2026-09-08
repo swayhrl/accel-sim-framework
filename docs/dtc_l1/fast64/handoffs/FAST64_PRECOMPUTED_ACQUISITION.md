@@ -23,6 +23,41 @@ Base@8192 and BICG IO@8192); BICG OO@8192, BICG IO/OO@1048576, and GESUMMV
 IO@8192/1048576 remain live and untouched.  The frozen R2 closeout controller
 is waiting for all seven receipts; no FAST64.1 PASS claim is made here.
 
+## FAST64.3 controlled third Base admission and v3 closeout recovery
+
+After the two-row Base ramp and BICG coupled stress remained CPU-active without
+cgroup throttling, swap-out, OOM, memory PSI, or unsafe output-space behavior,
+the fresh 60-second audit
+`/tmp/fast64-post-smallbatch-resource-audit-20260908T172527Z.tsv` returned
+`safe_to_launch=YES` for exactly one additional worker.  It observed 17.215
+cgroup CPU-core equivalents, 205,771,091,968 bytes cgroup memory headroom,
+zero sampled swap-out/OOM/memory PSI/throttling, and 62,715,150,336 bytes
+output free space.
+
+The immutable-v2 dispatcher then admitted exactly one additional frozen Base
+row, not an IO/OO row:
+
+| item | value |
+| --- | --- |
+| namespace | `fast64_3_precomputed_dwt2d_base_cap8192_a1_r2` |
+| workload/mode | DWT2D / Base |
+| CPU / attempt UUID | `11` / `adc75323-a985-4222-bc28-804e4a9dedad` |
+| launch | `2026-09-08T17:26:51Z` |
+| class | `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` |
+| identity | Core `bbcbb5e...`; runtime `6a8743b4...`; A1 observer `2c2a6a27...`; Framework execution snapshot `037f008b...` |
+| payload | frozen DWT2D `kernelslist.g` SHA-256 `337087fedad435cd92cbd7e0f962f90d567ec9e77038fd8150977b7c6beb7164` |
+| lifecycle | atomic START receipt published; CPU-active; narrow initial error scan clean |
+
+The running v2 ATAX/GESUMMV collectors match the normal configuration echo
+`-gpgpu_deadlock_detect` as though it were a real deadlock, so they would
+false-fail at terminal.  They were not modified while their v2 monitor is
+live.  Versioned `collect_fast64_3_base_alias_v3.sh` and
+`monitor_fast64_3_base_alias_v3_closeout.sh` instead match actual failure
+diagnostics and cover ATAX, GESUMMV, and DWT2D only after each atomic terminal
+receipt.  Their pre-terminal regression passed; the v3 monitor has its own
+lock and remains pending-only.  This changes neither simulator behavior nor
+the R2 frozen closeout closure.
+
 ## FAST64.2 forced-stress diagnostic — terminal, gate unsatisfied
 
 | item | value |

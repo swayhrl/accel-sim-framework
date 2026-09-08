@@ -1,5 +1,26 @@
 # Latest Codex Report
 
+## FAST64 controlled third Base admission and Base closeout recovery (2026-09-08)
+
+A new 60-second post-small-batch audit at
+`/tmp/fast64-post-smallbatch-resource-audit-20260908T172527Z.tsv` authorized
+exactly one worker: it recorded zero swap-out/OOM/memory PSI/CFS throttling,
+205.8 GiB cgroup memory headroom, and 62.7 GiB output space.  The immutable-v2
+Base dispatcher therefore admitted DWT2D/Base only, on CPU 11, into
+`fast64_3_precomputed_dwt2d_base_cap8192_a1_r2` at
+`2026-09-08T17:26:51Z` with UUID
+`adc75323-a985-4222-bc28-804e4a9dedad`.  Its START receipt and frozen identity
+chain are present; it is CPU-active and classified solely as
+`PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`.
+
+Read-only source/log inspection found that the active v2 ATAX/GESUMMV Base
+collectors' broad `deadlock` pattern matches the normal
+`-gpgpu_deadlock_detect` configuration-help echo.  The active monitor was not
+edited.  Separate v3 collector/monitor files now use precise diagnostic
+patterns and independently wait for atomic terminal receipts for ATAX,
+GESUMMV, and DWT2D.  Their pre-terminal regression passed.  No Base result is
+promoted and no R2 closeout byte or live simulator was changed.
+
 ## FAST64 frozen R2 alias defect and F2 negative evidence (2026-09-08)
 
 The frozen R2 validator's single-epoch glob counts a normal simulator symlink
