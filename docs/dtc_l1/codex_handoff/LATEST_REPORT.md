@@ -80,6 +80,16 @@ conservation, zero final lower/PIB state, positive cycle/instruction progress,
 and an assertion/fatal/deadlock/output-mismatch scan before it can record only
 the still-pending precompute classification.
 
+For later post-FAST64.2 formal waves, the legacy mutable dynamic pool is now
+explicitly superseded for future use by separate
+`dispatch_fast64_precomputed_row_v2.sh` and `run_fast64_dynamic_pool_v2.sh`
+files.  They verify the read-only SHA-addressed runner, runtime/Core/observer
+and scientific-config identities, atomic immutable-v2 receipts and the R2
+trace-config identity; they neither reference nor change the frozen R2
+closeout bytes.  Their dry-run regression proves that a pending Base wave can
+be planned without creating a namespace and that IO is refused before
+FAST64.2 PASS.  No formal row was launched and no stage authority changed.
+
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 
 The seven-row R2 closeout dependency closure is now frozen, byte-addressed in

@@ -168,6 +168,22 @@ and PIB conservation, drained final state, positive progress and a clean
 failure scan; even then its only possible result label remains
 `PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE` until the governing gates pass.
 
+## Future formal dynamic-pool path (prepared; not invoked)
+
+The existing generic dynamic pool reads the legacy mutable trace runner and is
+therefore not an acceptable launcher for future long formal rows.  It is not
+modified, because no current row needs it.  The separately versioned
+`dispatch_fast64_precomputed_row_v2.sh` and
+`run_fast64_dynamic_pool_v2.sh` instead use the read-only SHA-addressed v2
+runner and atomic receipts, validate the Core/runtime/A1 observer/scientific
+config and trace-config identities, and alias-strict-validate every terminal
+before its CPU slot is refilled.  They enforce that only Base may carry the
+pre-FAST64.2 pending classification and require the later `FAST64_2_REPAIR_PASS`
+artifact for post-FAST64.2 IO/OO acquisition.  Their dry-run regression creates
+no namespace and demonstrates early-IO refusal.  These are future-only files:
+they do not replace or modify any R2 closeout dependency, current process or
+stage acceptance.
+
 The first dispatcher inherited its launch lock into the detached child; this
 was corrected in Framework `0de11045...` with a new migration lock and fd
 closure.  No duplicate namespace was created and no live row was perturbed.
