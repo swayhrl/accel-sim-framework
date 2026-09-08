@@ -198,6 +198,23 @@ collector.  Its collector SHA is pinned at startup; a compact pass marker is
 atomically published only after strict collector success.  It neither launches
 nor alters any R2 process and cannot promote FAST64.1 by itself.
 
+### Full-wave continuation authority (2026-09-08)
+
+The prior two-worker limit was an operational bootstrap ramp, not a scientific
+requirement. Researcher authority now permits an immediate, resource-gated
+five-row continuation without waiting for cohort-1's inherited lock to
+release. It uses a new coordination lock and touches only the five fixed
+missing namespaces; the two live cohort-1 rows, existing autorefiller,
+closeout controller, dispatcher, collector, and monitor remain unchanged.
+
+The required fresh 60-second cgroup audit passed five-worker admission at
+`2026-09-08T12:37:18Z`: 12.822 useful core equivalents under 384 quota cores,
+zero throttling/swap-out/OOM/memory-PSI, 252 distinct physical-core candidates,
+and 18,647,875,584-byte 5+1 RSS need within 203,603,755,008 bytes cgroup
+headroom. The complete compact authority and audit table are in
+`FAST64_1_R2_FULL_WAVE_CONTINUATION.md`. Only 7/7 immutable terminal receipts
+plus the existing strict collector can close FAST64.1.
+
 ## Required disposition
 
 - `fast64_1r1_bicg_oo_cap8192_a1` and

@@ -1,5 +1,26 @@
 # Latest Codex Report
 
+## FAST64.1 five-row immutable-R2 continuation authorized (2026-09-08)
+
+The researcher superseded the bootstrap two-worker ramp and authorized an
+immediate five-row continuation wave, while preserving the two live cohort-1
+R2 process trees and all existing SHA-pinned controllers unchanged. A new,
+future-only one-shot dispatcher has a separate continuation lock and a fixed
+five-row scope; it cannot touch the two existing namespaces. It verifies the
+same immutable-v2 runner, Core/runtime/A1 observer/scientific-config identity
+tuple, frozen config bytes, fresh namespace absence, unique UUID, atomic
+receipts, and topology-aware explicit CPU placement.
+
+The fresh 60-second cgroup audit at
+`/tmp/fast64-r2-continuation-resource-audit-20260908T123617Z.tsv` passed full
+five-worker admission: 12.822 useful core equivalents under a 384-core quota,
+zero throttling/swap-out/OOM/memory-PSI, 252 distinct physical-core candidates,
+18,647,875,584-byte 5+1 RSS requirement versus 203,603,755,008-byte cgroup
+headroom, and 67,846,701,056 output-free bytes. Host loadavg is supplemental,
+not a mixed-scope cgroup rejection. See
+`fast64/handoffs/FAST64_1_R2_FULL_WAVE_CONTINUATION.md`. Admission is
+authorized; dispatch receipts determine the next execution-state update.
+
 ## FAST64.1 R2 dispatch-lock inheritance recovery (2026-09-08)
 
 The first two immutable R2 supervisors inherited the dispatcher's advisory
