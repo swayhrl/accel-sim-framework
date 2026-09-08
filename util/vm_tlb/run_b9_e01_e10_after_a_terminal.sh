@@ -169,7 +169,9 @@ run_static16() {
   if [[ ! -e "$selector_out" ]]; then
     python3 "$selector" --output "$selector_out" --prefill-list "$scratch_root/inputs/semantic-rebuilt/prefill/compute-only-kernelslist.g" --prefill-trace-dir "$scratch_root/staging/llama-f96b7ea9-5bdd4b55/prefill/m4a-llama-prefill-20260902T182016Z/traces" --decode-list "$scratch_root/inputs/semantic-rebuilt/decode1/compute-only-kernelslist.g" --decode-trace-dir "$scratch_root/staging/llama-f96b7ea9-5bdd4b55/decode1/m4a-llama-decode1-20260903T004138Z/traces"
   fi
-  awk -F '\t' -v wanted="$roi" 'NR > 1 && $1 == wanted {print $9}' "$selector_out" > "$selected"
+  # trace_filename is field 8. Field 9 is the compressed metadata size and
+  # cannot be passed to the immutable trace-list validator as a filename.
+  awk -F '\t' -v wanted="$roi" 'NR > 1 && $1 == wanted {print $8}' "$selector_out" > "$selected"
   [[ "$(wc -l < "$selected")" -eq 16 ]] || { echo "FAIL selector cardinality for $roi" >&2; exit 2; }
   /usr/bin/time -v -o "$future_root/$arm.time-v.txt" python3 "$miner" --roi "$roi" --trace-list "$selected" --trace-dir "$trace_dir" --object-map "$object_map" --output-dir "$out" --workers 1 --sample-stride 1024
   grep -q $'lane_references_by_object\t.*\tPASS' "$out/TRACE_MINING_CONSERVATION.tsv" || { echo "FAIL static-mining conservation" >&2; exit 2; }

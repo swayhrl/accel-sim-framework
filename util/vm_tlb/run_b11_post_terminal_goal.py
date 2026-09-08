@@ -346,8 +346,6 @@ class Supervisor:
             yield self.future / arm
             yield self.future / f"{arm}.kernelslist.g"
             yield self.future / f"{arm}.time-v.txt"
-            if task == "E09":
-                yield self.future / "B9_MATCHED_16_SELECTOR.tsv"
 
     def task_units(self, task: str) -> Tuple[str | None, ...]:
         return SIM_ARMS[task] if task in SIM_ARMS else (None,)
