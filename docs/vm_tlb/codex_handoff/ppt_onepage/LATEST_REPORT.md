@@ -1,41 +1,35 @@
 # 单页PPT绘图窗口当前状态
 
-状态：`PPT_FIGURES_AB_READY_FOR_REVIEW`
+状态：`PPT_FIGURES_AB_ASSET_REFACTOR_AUTHORIZED`
 
 分支：`hrl/vm-tlb-ppt-figures-v0`
 
 权威数据基线：A closeout `74d5fbe6a5ca2411309674cf457baa1efa78f58d`。
 
-本窗口已完成且仅绘制两张图：
+第一版两张图已经完成并通过数据复核，但 review 发现其视觉层级更像两张独立“小型幻灯片”，不适合作为真正 PPT 页面中的 figure asset。
 
-- 图A：Prefill vs Decode TLB 压力三级路径图；
-- 图B：Weight 动态访问占比 vs 64KB 翻译工作集分组柱状图。
+当前追加任务不是重做数据分析，而是进行“去 PPT 化”资产重构：
 
-输出目录：
+- 保留图A的 Prefill/Decode 两列三级 TLB 压力路径；
+- 保留图B的 Weight 动态访问占比 vs 64KB 翻译工作集柱状图；
+- 删除图内大标题、副标题、页脚、结论框、顶部横线、过大外围白边与大型说明卡片；
+- 输出紧裁、透明背景优先的 SVG/PNG 图形资产。
 
-`docs/vm_tlb/ppt_figures/llm_memory_onepage/`
+执行：
 
-- `FIG_A_PREFILL_DECODE_TLB_PRESSURE.svg/png`：左右两列、三级向下的
-  L1 TLB miss → L2 continued miss → Translation MSHR-full 路径；Decode 清晰
-  区分 full-ROI `2.30M` event counter 和 `30.35K events / 1M translation requests`。
-- `FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET.svg/png`：Weight 动态 lane
-  访问占比与 64KB 唯一页工作集的分组柱状图；Decode 标明 `97.1%` 的
-  Weight → Weight L2 TLB 替换。
-- `FIGURE_DATA_USED.tsv`：从权威 TSV 重算的 13 项指标、公式、输入 SHA-256 与
-  对 `FIGURES_AB_REFERENCE_DATA.tsv` 的逐项 assertion。
+- `docs/vm_tlb/codex_handoff/ppt_onepage/FIGURES_AB_ASSET_REFACTOR_ADDENDUM.md`
+- `docs/vm_tlb/codex_handoff/ppt_onepage/FIGURES_AB_ASSET_REFACTOR_ACCEPTANCE.md`
+- 原 `FIGURES_AB_REFERENCE_DATA.tsv` 与 `FIGURE_DATA_USED.tsv` 继续作为数据权威。
 
-生成器是：
+建议新输出：
 
-`util/vm_tlb/plot_ppt_onepage_figures.py`
+- `FIG_A_PREFILL_DECODE_TLB_PRESSURE_ASSET.svg/png`
+- `FIG_B_WEIGHT_ACCESS_VS_TRANSLATION_WORKING_SET_ASSET.svg/png`
 
-已通过数据 assertion、SVG XML/PNG 尺寸检查，以及 PNG 和 LibreOffice SVG 渲染的
-实际视觉检查；没有重跑 simulator、改写正式 C3/C4 数据或触碰 Window C。
+原 review-ready 图保留作为历史版本，不覆盖。
 
-本窗口执行依据：
+禁止重跑 simulator、修改正式 C3/C4 数据或触碰 Window C。
 
-- `FIGURES_AB_HANDOFF.md`
-- `FIGURES_AB_ACCEPTANCE_MATRIX.md`
-- `FIGURES_AB_REFERENCE_DATA.tsv`
+最终状态：
 
-禁止重跑模拟器、修改正式数据或触碰 Window C。C11 前后的其他 VM 工作不属于本 PPT
-图窗口范围。
+`PPT_FIGURES_AB_ASSETS_READY_FOR_REVIEW`
