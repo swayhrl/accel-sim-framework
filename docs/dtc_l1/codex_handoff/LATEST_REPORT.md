@@ -21,6 +21,24 @@ not a mixed-scope cgroup rejection. See
 `fast64/handoffs/FAST64_1_R2_FULL_WAVE_CONTINUATION.md`. Admission is
 authorized; dispatch receipts determine the next execution-state update.
 
+The dispatch succeeded at `2026-09-08T12:41:22Z`: all five fixed future-only
+rows received fresh immutable START receipts, so the complete R2 wave is now
+**7/7 LIVE**. The rows are BICG OO@8192, BICG IO@1048576, BICG OO@1048576,
+GESUMMV IO@8192, and GESUMMV IO@1048576, pinned to topology-selected CPUs
+5/6/7/8/10. Their runner/Core/runtime/A1/scientific-config tuple exactly
+matches cohort 1. The original Base@8192 and IO@8192 rows were neither opened
+nor altered. A short follow-up found all seven direct simulator children in
+state `R` at about 99% CPU, no growth in swap-out or OOM totals, zero memory
+PSI and zero cgroup throttling. The two cohort-1 perf streams had progressed
+to 82.0M and 88.0M cycles; new rows are live, not yet terminal results.
+
+The existing autorefiller observed seven namespaces and recorded
+`FAST64_R2_AUTOREFILL_DISPATCH_COMPLETE` at `2026-09-08T12:42:26Z`; it did not
+create duplicates. The untouched strict closeout controller remains waiting
+for 7/7 terminal receipts. FAST64.1 is still stage-gated pending natural
+terminal/strict collector/comparison evidence. Compact per-row UUID/PID and
+follow-up evidence is in `fast64/handoffs/FAST64_1_R2_FULL_WAVE_CONTINUATION.md`.
+
 ## FAST64.1 R2 dispatch-lock inheritance recovery (2026-09-08)
 
 The first two immutable R2 supervisors inherited the dispatcher's advisory

@@ -1,6 +1,6 @@
 # FAST64.1 immutable R2 — full-wave continuation admission
 
-Status: **ADMISSION PASS; five future-only rows authorized; no cohort-1 row altered**
+Status: **7/7 LIVE; no cohort-1 row altered; no result or stage PASS claimed**
 
 The researcher supersedes the bootstrap two-worker ramp only for the five
 missing immutable-R2 rows. The two cohort-1 rows remain unchanged and must
@@ -57,3 +57,31 @@ already-running SHA-pinned autorefiller, closeout controller, ordinary R2
 dispatcher, collector, or either live cohort-1 process tree. The existing
 closeout controller remains sole authority for 7/7 terminal strict collection
 and `FAST64_1_R2_FULL_WAVE_COLLECTOR_PASS` publication.
+
+## Dispatch and short follow-up
+
+At `2026-09-08T12:41:22Z`, the independent continuation dispatcher published
+START receipts for all five missing rows:
+
+| row | CPU | attempt UUID | simulator PID at follow-up |
+| --- | ---: | --- | ---: |
+| BICG OO / 8192 | 5 | `89d2c798-e66c-4e8d-8dfd-df26d01ff9f7` | 1502669 |
+| BICG IO / 1048576 | 6 | `661b4953-6045-4bc6-8943-9a0f6d90c35b` | 1502688 |
+| BICG OO / 1048576 | 7 | `26b9fab6-0138-4750-923d-3d79a4b7f9df` | 1502694 |
+| GESUMMV IO / 8192 | 8 | `244a1891-6619-4b83-8cde-3b6e16534f04` | 1502699 |
+| GESUMMV IO / 1048576 | 10 | `f04dcdc9-1ac1-4d98-8959-8f0a23053335` | 1502703 |
+
+The two cohort-1 rows retain their original CPU/UUID/receipt identities. At
+the `2026-09-08T12:44:10Z` follow-up, all seven direct simulator children were
+in state `R` at approximately 99% CPU. Each new row had about 2:46 accumulated
+CPU time; the cohort-1 BICG Base and IO perf streams had advanced to 82.0M and
+88.0M cycles respectively. `pswpout` and `oom_kill` totals remained unchanged
+from the immediate post-launch observation (8,797,522 and 12); cgroup memory
+PSI remained 0.00 and `nr_throttled` remained 0. This establishes initial
+full-wave host liveness without treating host CPU alone as a terminal result.
+
+At `2026-09-08T12:42:26Z`, the unchanged autorefiller recorded
+`FAST64_R2_AUTOREFILL_DISPATCH_COMPLETE rows=7` and naturally ended its
+dispatch role. The unchanged closeout controller remains authoritative and is
+waiting for seven terminal receipts; no R2 terminal receipt, collector marker,
+strict result, cap comparison, or FAST64.1 promotion is yet present.
