@@ -141,7 +141,7 @@ def main() -> None:
     parser.add_argument("--disk-backed-threshold-bytes", type=int,
                         default=16 * 1024 * 1024,
                         help="use exact SQLite spill aggregation for traces at or above this compressed size")
-    parser.add_argument("--disk-batch-entries", type=int, default=32768,
+    parser.add_argument("--disk-batch-entries", type=int, default=262144,
                         help="maximum distinct in-memory spill entries before a durable SQLite batch")
     parser.add_argument("--resume", action="store_true",
                         help="resume only from a verified complete output/SQLite prefix")
