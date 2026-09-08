@@ -24,19 +24,22 @@ The compact evidence is
 source/configuration-pressure diagnosis does not alter R2 semantics or any
 frozen closeout dependency.
 
-## FAST64.3 future Base path prepared; admission currently fail-closed (2026-09-08)
+## FAST64.3 one-row Base precompute admitted, pending (2026-09-08)
 
 `prepare_fast64_3_base_precompute_v2.sh` is a future-only immutable-v2,
 topology-aware one-row Base dispatcher. It permits only the ten nonredundant
 FAST12 candidates while preserving potential BICG/NN evidence reuse. Its ATAX
-dry-run passed. A fresh one-worker post-R2 audit at
-`/tmp/fast64-future-precompute-audit-20260908T152143Z.tsv` found 24.567 cgroup
-core equivalents under the 384-core quota, 249 physical-core candidates,
-ample memory/output headroom, zero OOM/memory-PSI/throttling, but
-`swap_so_delta=299` during the 60-second sample. The gate therefore returned
-`RESOURCE_GATE_REJECTED_SEE_FIELDS`; no Base row was launched. This is a
-resource-safe wait, not a FAST64 stage or scientific block; later fresh audits
-may admit exactly one small Base row when swap-out is zero.
+dry-run passed. The earlier rejected audit is retained as evidence; a later
+60-second audit at
+`/tmp/fast64-future-precompute-audit-20260908T153334Z.tsv` observed zero
+swap-out/OOM/memory-PSI/throttling, 249 distinct physical-core candidates, and
+adequate memory/output headroom, returning `safe_to_launch=YES` for exactly
+one worker. It admitted only `fast64_3_precomputed_atax_base_cap8192_a1_r2`
+on CPU 0, with immutable runner UUID
+`2e51d286-4483-45fd-8795-dd19fcd413c4` and classification
+`PRECOMPUTED_PENDING_FAST64_1_2_ACCEPTANCE`. The START receipt exists and the
+initial failure scan is empty. This live row remains nonformal pending work and
+cannot advance FAST64.3 or interfere with FAST64.1 R2 closeout.
 
 ## FAST64.1 R2 closeout freeze and first natural terminals (2026-09-08)
 
