@@ -33,7 +33,7 @@ test "$(grep -Fxc -- "$key 256" "$source_config")" = 1 || {
 }
 source_cap=$(grep -F -- "$cap_key " "$source_config" | tail -1 | awk '{print $2}')
 case "$source_cap" in ''|*[!0-9]*) echo "source config has no numeric final lower cap" >&2; exit 1 ;; esac
-# The coupled diagnostic starts from the frozen 80-SM candidate configuration,
+# The coupled diagnostic starts from the frozen FAST64 64-SM candidate configuration,
 # not from the separate high-cap negative-control overlay.
 test "$source_cap" = 8192 || {
   echo "expected frozen FAST64 candidate final lower cap 8192, got $source_cap" >&2; exit 1;

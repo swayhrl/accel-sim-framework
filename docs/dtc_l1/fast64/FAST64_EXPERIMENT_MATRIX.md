@@ -84,7 +84,7 @@ candidate capacity/credits tight enough to produce:
 
 `DTC_L1_*_lower_create_queue_full_stalls > 0`
 
-Use the frozen NN/PAPER_IO payload first: its existing 80-SM baseline has
+Use the frozen NN/PAPER_IO payload first: its existing FAST64 64-SM baseline has
 2,673 lower requests and is the smallest already provenance-resolved trace
 known to exercise this source path.  BICG or ATAX are fallbacks only if this
 small deterministic diagnostic does not reach the required event without a

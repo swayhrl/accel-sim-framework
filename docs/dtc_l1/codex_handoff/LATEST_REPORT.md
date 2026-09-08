@@ -12,13 +12,17 @@ versioned alias-aware reader is prepared and documented in
 `fast64/handoffs/FAST64_1_R2_PERF_ALIAS_VALIDATOR_RESOLUTION.md`; it may only
 become relevant after the existing frozen controller has fail-closed at 7/7.
 
-The newly acquired immutable FAST64.2 NN/IO coupled stress naturally exited
-0 and has valid single-epoch receipt/trace/accounting evidence under the
-versioned reader. Its required pressure events are both zero
+The newly acquired immutable FAST64.2 NN/IO coupled stress has now been
+strictly collected with a future-only alias-aware reader. It naturally exited
+0, has one immutable epoch, exact identity, lower create/issue/response
+conservation (`2673`), dependency conservation (`5346`), and drained final
+state. Its required pressure events are both zero
 (`lower_cap_full_events=0`, `io_lower_create_queue_full_stalls=0`), so it is
-strict negative evidence, not FAST64.2 PASS. This is an ordinary
-source/configuration-pressure diagnosis item; it does not alter R2 semantics
-or any frozen closeout dependency.
+`FAST64_2_COUPLED_STRESS_STRICT_NEGATIVE_PRESSURE_ABSENT`, not FAST64.2 PASS.
+The compact evidence is
+`fast64/generated/fast64_2_coupled_stress_alias_v2/`; this ordinary
+source/configuration-pressure diagnosis does not alter R2 semantics or any
+frozen closeout dependency.
 
 ## FAST64.3 future Base path prepared; admission currently fail-closed (2026-09-08)
 

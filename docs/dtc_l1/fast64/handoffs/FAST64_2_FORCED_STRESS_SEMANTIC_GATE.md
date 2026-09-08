@@ -1,6 +1,6 @@
 # FAST64.2 forced lower-create stress — semantic gate
 
-Status: **RESEARCHER_DECISION_RESOLVED; POSITIVE COUPLED STRESS PREPARED**
+Status: **RESEARCHER_DECISION_RESOLVED; POSITIVE COUPLED STRESS STRICTLY COLLECTED — PRESSURE ABSENT**
 
 This record preserves a naturally terminated diagnostic and the source proof
 that prevents choosing a replacement experiment by intuition.  It does not
@@ -80,9 +80,9 @@ The positive diagnostic is
 isolated row is `fast64_2_precomputed_nn_io_coupled_cap512_pib1_a1_r2`, using
 the frozen NN trace, PAPER_IO, global lower cap `512`, and source-coupled IO
 candidate/PIB entries `1`.  NN is chosen before any performance observation:
-the existing 80-SM NN/IO anchor has 2,673 lower requests, so it is the smallest
+the existing frozen FAST64 64-SM NN/IO anchor has 2,673 lower requests, so it is the smallest
 already provenance-resolved source-path candidate.  `cap=512` is deliberately
-below the observed normal 80-SM lower concurrency scale while remaining far
+below the intended normal FAST64 lower concurrency scale while remaining far
 above a one-credit global serialization; this is a diagnostic construction,
 not performance tuning.
 
@@ -98,3 +98,35 @@ failure signature, lower/dependency conservation, and zero final state.
 No Core semantic change is authorized.  The queue-full condition remains
 MissQueue/lower-capacity pressure, never a Tag-bank conflict because of an
 internal `BK_CONF` retry.
+
+## Immutable-v2 NN/IO `cap=512, PIB=1` collection
+
+The authorized positive construction subsequently ran in its own immutable-v2
+namespace and naturally exited `0`.  Its strict collection is a success as an
+execution/provenance/conservation check, but it is a **negative pressure
+result**, not a FAST64.2 acceptance result.
+
+| item | value |
+| --- | --- |
+| row | `fast64_2_precomputed_nn_io_coupled_cap512_pib1_a1_r2` |
+| resolved platform | `64 x 1` SM shell (the frozen FAST64 platform, not a legacy 80-SM M5 anchor) |
+| mode / trace | PAPER_IO / frozen NN payload |
+| global cap / coupled bound | `512` / `-gpgpu_dtc_l1_io_pib_entries=1` |
+| natural terminal | exit `0`; one immutable attempt UUID and START/TERMINAL receipts |
+| strict execution result | single perf epoch; exact Core/runtime/observer/config/payload identity; no failure signature |
+| lower conservation | create = issue = response = `2673` |
+| dependency conservation | created = closed = `5346` |
+| final state | IO inflight = PIB occupancy = lower outstanding = `0` |
+| `DTC_L1_lower_cap_full_events` | `0` |
+| `DTC_L1_io_lower_create_queue_full_stalls` | `0` |
+| compact evidence | `generated/fast64_2_coupled_stress_alias_v2/` |
+
+The finalized source path still requires a failed global-credit acquisition to
+retain a candidate into the next cycle.  This run shows that `cap=512` did not
+cause that condition at an attempted candidate pop; therefore entries-one
+alone cannot produce the requested queue-full event.  The terminal reporter
+does not expose the global lower peak, so the result does not justify deriving
+or silently choosing a replacement cap from total requests.  The next
+source-correct action is bounded diagnosis of a pressure-producing diagnostic
+construction under existing authority; no performance configuration, Core
+mechanism, R2 frozen dependency, or live job is changed by this record.
