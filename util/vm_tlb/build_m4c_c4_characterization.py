@@ -439,10 +439,49 @@ def latency_summary(output: Path) -> None:
     ], rows)
 
 
+def validate_complete_locality(
+        records: list[dict[str, str]], roi: str, expected_kernels: int) -> None:
+    """Reject a resumable locality table until every kernel/class row is durable.
+
+    The locality analyzer intentionally publishes progress after each kernel.
+    File existence alone is therefore not a completion signal: a partial table
+    is useful for recovery but must never be aggregated into a final C4 pack.
+    """
+    required = {"roi", "semantic_kernel_index", "object_class", "row_kind"}
+    if not records:
+        fail(f"empty offline locality table: {roi}")
+    missing = required.difference(records[0])
+    if missing:
+        fail(f"offline locality schema missing {sorted(missing)}: {roi}")
+    expected = {
+        (kernel_index, object_class)
+        for kernel_index in range(expected_kernels)
+        for object_class in OBJECTS
+    }
+    observed: set[tuple[int, str]] = set()
+    for row in records:
+        if row.get("roi") != roi or row.get("row_kind") != "FOOTPRINT":
+            fail(f"offline locality identity mismatch: {roi}")
+        try:
+            key = (int(row["semantic_kernel_index"]), row["object_class"])
+        except ValueError as error:
+            fail(f"non-integer offline locality kernel index: {roi}")
+            raise AssertionError from error
+        if key not in expected:
+            fail(f"unexpected offline locality kernel/class {key}: {roi}")
+        if key in observed:
+            fail(f"duplicate offline locality kernel/class {key}: {roi}")
+        observed.add(key)
+    if observed != expected:
+        missing_rows = len(expected.difference(observed))
+        fail(f"incomplete offline locality table: {roi}; missing_rows={missing_rows}")
+
+
 def offline_locality(c4_root: Path, output: Path) -> None:
     rows = []
-    for roi in ("decode1", "prefill"):
+    for roi, expected_kernels in (("decode1", 740), ("prefill", 692)):
         _, records = read_tsv(c4_root / "offline" / f"{roi}_locality.tsv")
+        validate_complete_locality(records, roi, expected_kernels)
         aggregate: defaultdict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
         for row in records:
             klass = row["object_class"]
