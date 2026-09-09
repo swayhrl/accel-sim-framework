@@ -154,3 +154,32 @@ errors 为空。没有启动或终止其它 simulator，未改任何 C5 input。
 旧 finalizer 已依据当时的 `FAILED_DIAGNOSING` 侧车退出；在 F0 reparse 后，仅重启该
 non-simulator finalizer（新 PID `2855891`），其状态已恢复为
 `WAITING_FOR_22_TERMINAL_ARMS`。未向任何 live worker 发送 signal。
+
+### Prefill F2 parser-only reparse
+
+Prefill F2 自然完成时 exit 为 `0`，raw-log SHA-256 为
+`e4fc67d645c01f9588898f9cad6e021db4dde4619558edcac24d3575a881b914`，完整包含
+`692/692` kernel marker、`692/692` telemetry record、对象/PTE 守恒以及不变的
+frozen identity。它由装载旧 IPC integer-validator 的 P1 collector 初步标为
+`FAILED_DIAGNOSING`，唯一错误是合法浮点 `gpu_tot_ipc=291.4973`。
+
+当前 `finite_float` parser 对同一 raw log 重解析为 `PASS`（cycles 不变、elapsed
+`84042.0` seconds、errors 为空）；未重跑、移动或改写 simulator 输出，未向其余
+8-way batch 的任何 live worker 发送 signal。该 arm 现在可作为正式 Prefill F2
+C5 结果参与后续同 ROI F0 对比。
+
+### Prefill F5 and F7-Lseg10 parser-only reparses
+
+Prefill F5 与 Prefill F7-Lseg10 都以 exit `0` 自然结束，分别保留完整的
+`692/692` marker/telemetry、对象/PTE 守恒及冻结 identity。F5 的 raw-log SHA-256 是
+`9881d28fd3570cd6333bfac0d07f3435b8f96fa68f39ce9235fe564cc3237b8a`；F7-Lseg10 的是
+`6d29515bf7e393da19cab337122eb98836c998b2ec5bd4e1a54cfba599fa800d`。两者最初由旧
+P1 collector 标记为 `FAILED_DIAGNOSING`：F5 同时报告合法浮点
+`gpu_tot_ipc=291.8642` 为 noninteger，并使用旧的 F5 whole-arm-budget 几何检查；
+F7-Lseg10 的唯一错误是合法浮点 `gpu_tot_ipc=291.1845`。
+
+当前 parser 对完全不变的 F5 raw log 核对 physical-PWC payload `8370` bits 与独立的
+fair-arm budget `64745` bits；对 F7-Lseg10 使用有限浮点 IPC 校验。两点均在
+`2026-09-09T07:28Z` 后的 parser-only reparse 中得到 `PASS`，无 simulator 重放、无
+Core/config/trace/registration/binary 修改，且没有向其余 8-way live workers 发送
+signal。F5/F7-Lseg10 因而均可作为正式 Prefill C5 结果参与同 ROI F0 对比。
