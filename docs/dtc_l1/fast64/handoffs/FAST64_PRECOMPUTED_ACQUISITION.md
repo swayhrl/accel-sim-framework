@@ -42,8 +42,8 @@ update while retaining the strict logical order
   `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`.
 
 Historical r1 rows are superseded/nonformal.  The current seven-row R2 wave
-uses the SHA-addressed immutable runner and has two natural terminals (BICG
-Base@8192 and BICG IO@8192); BICG OO@8192, BICG IO/OO@1048576, and GESUMMV
+uses the SHA-addressed immutable runner and has five natural terminals (BICG
+Base@8192, IO@8192, OO@8192, IO@1048576, and OO@1048576); only GESUMMV
 IO@8192/1048576 remain live and untouched.  The frozen R2 closeout controller
 is waiting for all seven receipts; no FAST64.1 PASS claim is made here.
 

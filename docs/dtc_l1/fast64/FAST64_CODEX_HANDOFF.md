@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_FULL_WAVE_LIVE_2_OF_7_TERMINAL; FROZEN R2 CLOSEOUT WAIT ACTIVE; FAST64.2 COUPLED-STRESS PENDING; FAST64.3 HAS DWT2D/BASE STRICT-VALID PRECOMPUTE PENDING FAST64.1/2 ACCEPTANCE**
+Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_FULL_WAVE_LIVE_5_OF_7_TERMINAL; FROZEN R2 CLOSEOUT WAIT ACTIVE; FAST64.2 COUPLED-STRESS STRICT-NEGATIVE PRESSURE ABSENT; FAST64.3 HAS DWT2D/GEMM/ATAX BASE STRICT-VALID PRECOMPUTES PENDING FAST64.1/2 ACCEPTANCE**
 
 Framework branch:
 
@@ -28,9 +28,10 @@ Current execution gate: both historical BICG OO r1 namespaces (8192 and high
 cap) are `INVALID_EXECUTION_PATH_CONTAMINATED` after independent two-epoch
 controller anomalies.  The source-backed remedy, the complete seven-row
 immutable-v2 R2 qualification wave with explicit START/TERMINAL receipts, is
-already dispatched.  BICG Base@8192 and IO@8192 have naturally terminated;
-the other five rows remain live.  Do not advance FAST64.1 until all seven have
-naturally terminated and the frozen closeout controller has published
+already dispatched.  BICG Base@8192, IO@8192, OO@8192, IO@1048576, and
+OO@1048576 have naturally terminated; only GESUMMV IO@8192 and IO@1048576
+remain live.  Do not advance FAST64.1 until all seven have naturally
+terminated and the frozen closeout controller has published
 `FAST64_1_R2_FULL_WAVE_COLLECTOR_PASS`.  The current controller, collector,
 validator, parser, cap comparator, R2 configs, payload manifest, and
 `trace.config` are frozen closeout dependencies; future work may only use
