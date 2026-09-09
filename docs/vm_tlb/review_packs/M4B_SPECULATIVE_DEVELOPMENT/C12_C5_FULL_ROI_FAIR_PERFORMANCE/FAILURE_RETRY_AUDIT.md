@@ -204,3 +204,15 @@ collector 现以 C9-consistent 的 launch/completion/late-discard 三段守恒�
 单一 hit/miss 守恒，并在同一、未修改的 raw log 上重新验证 F7-Lseg20 为 `PASS`
 （cycles `36035731`、IPC `114.5683`、errors 为空）。未重跑 simulator，未改变
 Core/config/trace/registration/binary，也未向任何 live worker 发送 signal。
+
+### Decode1 F8-Lseg20 reparse under the same HIT_FIRST correction
+
+Decode1 F8-Lseg20 也在 parser 修复前启动，因此自然结束的旧 Python launcher 复现了
+同一过严的 `F8 Segment hit/miss conservation` 报告；simulator 自身 exit 为 `0`，其
+raw-log SHA-256 为
+`8b1254b6ccc526766473ea17131086341c7058a78d3cd530d19238c6cc5b4d08`，且完整包含
+`740/740` marker/telemetry、F8 G32 geometry、对象/PTE 守恒与冻结 identity。当前
+C9-consistent parser 在同一 raw log 上重解析为 `PASS`（cycles `36035731`、IPC
+`114.5683`）。这与 Decode1 F7-Lseg20 是同一 Lseg20 L1-first late-discard accounting
+条件，而非另一项 simulator 或 architecture failure；没有重放、输入变更或 live-worker
+signal。
