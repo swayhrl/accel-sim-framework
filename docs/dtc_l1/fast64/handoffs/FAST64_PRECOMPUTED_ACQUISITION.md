@@ -209,7 +209,7 @@ positive coupled-stress construction is recorded in
 `FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.  The external overlay provenance is
 `/workspace/fast64-runs/overlays/FAST64_IO_CAP1048576_STRESS_PIB1.config.PROVENANCE.tsv`.
 
-## FAST64.2 BICG coupled fallback — active, pending
+## FAST64.2 BICG coupled fallback — terminal, strict negative-pressure evidence
 
 | item | value |
 | --- | --- |
@@ -220,14 +220,20 @@ positive coupled-stress construction is recorded in
 | execution source | `037f008b330eb230353b60edf126d6be9f45afdc` |
 | Core / runtime / observer | `bbcbb5e...` / `6a8743b4...` / `2c2a6a27...` |
 | CPU / attempt UUID | `9` / `24e4fff0-e2c5-4832-b8d6-fec5ae911249` |
-| lifecycle | START receipt present; simulator CPU-active; initial failure scan clean |
+| lifecycle | natural exit `0` at `2026-09-08T21:51:34Z`; one immutable epoch; precise failure scan clean |
 
 The explicit 60-second admission evidence is
 `/tmp/fast64-future-precompute-audit-20260908T164959Z-for-f2-recheck.tsv`:
 it passed exactly one worker with zero sampled swap-out/OOM/memory PSI.  This
 row is the researcher-authorized BICG fallback after NN's strict negative
-pressure result.  It remains pending until natural terminal, strict collection
-and FAST64.1 acceptance; it has no FAST64.2 PASS or performance-result claim.
+pressure result. Its strict alias-aware collection closed lower
+create/issue/response at `17,607,590` each, dependencies at
+`18,350,080/18,350,080`, and final IO inflight/PIB/lower at `0/0/0`. Both
+required pressure counters remain zero, so the exact outcome is
+`FAST64_2_BICG_COUPLED_STRESS_STRICT_NEGATIVE_PRESSURE_ABSENT`. The full
+terminal/provenance record is in `FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.
+It has no FAST64.2 PASS or performance-result claim and does not alter the
+FAST64.1 R2 dependency closure.
 
 ## FAST64.3 Base acquisition — terminal but pending
 
