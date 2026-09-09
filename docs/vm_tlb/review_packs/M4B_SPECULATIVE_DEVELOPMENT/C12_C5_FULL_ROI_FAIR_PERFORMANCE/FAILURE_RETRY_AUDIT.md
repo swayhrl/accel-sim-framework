@@ -183,3 +183,24 @@ fair-arm budget `64745` bits；对 F7-Lseg10 使用有限浮点 IPC 校验。两
 `2026-09-09T07:28Z` 后的 parser-only reparse 中得到 `PASS`，无 simulator 重放、无
 Core/config/trace/registration/binary 修改，且没有向其余 8-way live workers 发送
 signal。F5/F7-Lseg10 因而均可作为正式 Prefill C5 结果参与同 ROI F0 对比。
+
+### Decode1 F7-Lseg20 HIT_FIRST late-discard parser correction
+
+Decode1 F7-Lseg20 正常结束（exit `0`），raw-log SHA-256 为
+`14003dcfd4fe25434cabfbaece13260a55b56d7abdad138e1554bd09edf2e26f`，并具有完整
+`740/740` marker/telemetry、对象/PTE 守恒及所有冻结 identity。初始 collector 仅报
+`F7 Segment hit/miss conservation`。这不是 simulator failure：旧 parser 错误假定每个
+Segment launch 都必须成为 Segment hit 或 miss。
+
+该假定与冻结的 C9 `HIT_FIRST / MISS_JOIN` 合约冲突：L1-first hit 可在慢 Segment
+结果前完成，随后 Segment 结果仅作为 checked late shadow/discard，不产生第二次完成。
+该 raw log 严格满足原始 telemetry 算术：`attempts=75820504`、`launches=75820504`、
+`completions=7950153`、`hits=7922297`、`misses=27856`、
+`late_result_discards=67870351`，即 `completions=hits+misses` 且
+`late_discards=attempts-completions`。Lseg10 中所有 lookup 在 L1 winner 前完成，因而
+恰好退化为旧的 `attempts=hits+misses` 特例；Lseg20 暴露了该 parser-only 漏洞。
+
+collector 现以 C9-consistent 的 launch/completion/late-discard 三段守恒取代错误的
+单一 hit/miss 守恒，并在同一、未修改的 raw log 上重新验证 F7-Lseg20 为 `PASS`
+（cycles `36035731`、IPC `114.5683`、errors 为空）。未重跑 simulator，未改变
+Core/config/trace/registration/binary，也未向任何 live worker 发送 signal。
