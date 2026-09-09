@@ -1,5 +1,32 @@
 # Latest Codex Report
 
+## FAST64.3 ATAX/Base natural terminal — strict-valid precompute (2026-09-09)
+
+The future-only immutable-v2 ATAX/Base precompute
+`fast64_3_precomputed_atax_base_cap8192_a1_r2` naturally exited `0` at
+`2026-09-09T01:26:57Z`.  Its separate alias-aware v3 collector records one
+immutable attempt (`2e51d286-4483-45fd-8795-dd19fcd413c4`), normal simulator
+exit, an empty precise assertion/fatal/deadlock/output-mismatch scan, and one
+canonical perf epoch (with the normal alias normalized).  The bound identity
+is Core `bbcbb5e...`, runtime `6a8743b4...`, A1 observer `2c2a6a27...`,
+execution snapshot `037f008b...`, Base config `1a016e3c...`, and frozen ATAX
+trace-list `b6dcd0e3...`.
+
+Compact evidence under `fast64/generated/fast64_3_atax_base_alias_v3/` closes
+lower acquired/released at `19,215,755/19,215,755`, PIB admits/retires at
+`3,145,984/3,145,984`, and terminal lower/PIB at `0/0`; it records
+`87,750,512` cycles and `145,666,048` instructions.  The structural companion
+keeps cacheline allocation (`1,349,272,650`), MSHR-entry (`0`), miss-queue
+(`1,070`), and Tag-bank (`20,972,288`) categories distinct.  Its sole status
+is `FAST64_3_BASE_PRECOMPUTED_STRICT_VALID_PENDING_FAST64_1_2_ACCEPTANCE`:
+this neither promotes FAST64.3 nor authorizes IO/OO work.
+
+The FAST64.1 R2 closure is unchanged: it remains **5/7** terminal, with both
+GESUMMV IO rows CPU-active and the frozen closeout controller waiting.  A
+fresh resource audit is fail-closed for another worker (swap essentially full,
+load above the 512 logical CPUs, and only about 56 GiB output free), so neither
+the optional FAST64.2 stress nor another FAST64.3 row is launched.
+
 ## FAST64.2 BICG coupled stress and FAST64.3 GEMM/Base terminals (2026-09-08)
 
 The immutable BICG/PAPER_IO coupled-stress fallback (`cap=512`, source-coupled

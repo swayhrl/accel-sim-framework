@@ -2,6 +2,30 @@
 
 Status: **ACTIVE — NO LATER STAGE PASS CLAIMED**
 
+## ATAX/Base natural terminal — strict-valid precompute (2026-09-09)
+
+`fast64_3_precomputed_atax_base_cap8192_a1_r2` naturally exited `0` at
+`2026-09-09T01:26:57Z`.  The future-only v3 alias-aware collector records one
+immutable attempt (`2e51d286-4483-45fd-8795-dd19fcd413c4`), a normal simulator
+exit, exact frozen Core/runtime/A1 observer/execution-snapshot identity, one
+canonical perf epoch, and an empty precise failure scan.  Its compact evidence
+is `generated/fast64_3_atax_base_alias_v3/`:
+
+| condition | observed value |
+| --- | ---: |
+| cycles / instructions | `87,750,512 / 145,666,048` |
+| lower acquired / released | `19,215,755 / 19,215,755` |
+| PIB admits / retires | `3,145,984 / 3,145,984` |
+| final lower / PIB | `0 / 0` |
+| lower-cap-full / peak | `0 / 512` |
+
+The separately extracted structural companion preserves conventional L1D
+cacheline allocation (`1,349,272,650`), MSHR-entry-full (`0`), downstream
+miss-queue-full (`1,070`), and diagnostic Tag-bank conflicts (`20,972,288`)
+as distinct categories.  ATAX is solely
+`FAST64_3_BASE_PRECOMPUTED_STRICT_VALID_PENDING_FAST64_1_2_ACCEPTANCE`; it is
+not a FAST64.3 PASS and creates no permission to launch IO/OO work.
+
 This checkpoint records physical acquisition authorized by the throughput
 update while retaining the strict logical order
 `FAST64.1 -> FAST64.2 -> FAST64.3 -> ...`.
