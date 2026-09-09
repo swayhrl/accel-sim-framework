@@ -144,7 +144,7 @@ validation, and a separate machine-readable outcome for pressure-present
 versus pressure-absent.  It is future-only and does not alter the NN evidence
 or the frozen R2 closeout chain.
 
-## BICG fallback acquisition (active; no result claim)
+## BICG fallback acquisition (historical launch snapshot; terminal outcome below)
 
 The fresh 60-second resource admission at
 `/tmp/fast64-future-precompute-audit-20260908T164959Z-for-f2-recheck.tsv`

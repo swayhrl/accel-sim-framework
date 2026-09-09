@@ -122,7 +122,7 @@ It observed zero sampled swap-out/OOM/throttling, 205,547,999,232 bytes
 cgroup headroom and 62,614,523,904 bytes output free, but no new worker was
 admitted.
 
-### GEMM Base controlled replacement admission — active, pending
+### GEMM Base controlled replacement admission — historical launch snapshot
 
 DWT2D's natural terminal justified a new, independent 60-second admission
 measurement.  `/tmp/fast64-post-dwt-terminal-resource-audit-20260908T174330Z.tsv`

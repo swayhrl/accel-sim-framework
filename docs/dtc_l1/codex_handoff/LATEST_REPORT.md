@@ -100,12 +100,12 @@ the exact frozen Core/runtime/A1-observer/config identity and was strictly
 collected as `FAST64_2_COUPLED_STRESS_STRICT_NEGATIVE_PRESSURE_ABSENT`: both
 required pressure counters were zero.  Repeating the identical NN row would
 not add evidence.  Its authorized BICG/PAPER_IO fallback under the same
-cap-512/PIB-1 source-coupled configuration is already live in an isolated
-immutable-v2 namespace and remains the positive-pressure candidate.  The
-current small FAST64.3 Base batch (ATAX, GESUMMV, GEMM) is also live; no batch
-expansion is made until it has supplied its planned progress/throughput
-observation.  Nothing in the frozen R2 closeout dependency closure, any R2
-process, or any active monitor was changed.
+cap-512/PIB-1 source-coupled configuration was then live in an isolated
+immutable-v2 namespace.  This is a historical launch snapshot: the BICG
+terminal strict-negative result and GEMM/Base terminal are recorded at the top
+of this report; only ATAX/GESUMMV Base remain live.  Nothing in the frozen R2
+closeout dependency closure, any R2 process, or any active monitor was
+changed.
 
 ## FAST64.3 DWT2D/Base strict-valid precompute (2026-09-08)
 
@@ -152,10 +152,9 @@ throttling, 246 candidate physical cores, 207.4 GiB cgroup headroom and 62.6
 GiB output space.  The immutable-v2 dispatcher admitted only
 `fast64_3_precomputed_gemm_base_cap8192_a1_r2`, GEMM/Base, at
 `2026-09-08T17:45:33Z` on CPU 11 with UUID
-`4b62ba62-9ee3-41ed-8a67-402172e594fa`.  Its atomic START receipt, frozen
-payload identity and complete Core/runtime/A1-observer/framework tuple are
-present; the direct simulator is CPU-active and the precise initial error scan
-is clean.
+`4b62ba62-9ee3-41ed-8a67-402172e594fa`.  This is a historical admission
+snapshot; GEMM subsequently reached its terminal strict-valid precompute
+state, recorded at the top of this report.
 
 The existing live v3 monitor is left untouched.  A separate future-only GEMM
 v4 collector/monitor pair passed static regression and waits only for GEMM's
@@ -234,12 +233,10 @@ cgroup OOM and memory PSI were zero, with 191.8 GiB cgroup headroom and 58.5
 GiB output space.  The researcher-authorized BICG fallback is therefore now
 physically acquired, not inferred: `fast64_2_precomputed_bicg_io_coupled_cap512_pib1_a1_r2`
 started at `2026-09-08T16:51:44Z` on CPU 9 with immutable attempt UUID
-`24e4fff0-e2c5-4832-b8d6-fec5ae911249`.  Its START receipt is present, the
-simulator is CPU-active, and the initial assertion/fatal/deadlock/output
-mismatch scan is clean.  Its class remains
-`PRECOMPUTED_FAST64_2_COUPLED_STRESS_PENDING_FAST64_1_ACCEPTANCE`; no FAST64.2
-PASS or R2-dependent stage transition is claimed before natural terminal and
-strict collection.
+`24e4fff0-e2c5-4832-b8d6-fec5ae911249`.  This is a historical launch snapshot:
+the row subsequently naturally terminated and was strictly collected as the
+negative-pressure result recorded at the top of this report.  It has no
+FAST64.2 PASS or R2-dependent stage transition claim.
 
 The BICG row also has a dedicated future-only closeout monitor.  It observes
 only the immutable terminal receipt, then invokes the existing BICG strict
