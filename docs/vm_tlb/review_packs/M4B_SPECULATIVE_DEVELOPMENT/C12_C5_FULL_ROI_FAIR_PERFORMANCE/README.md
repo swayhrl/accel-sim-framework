@@ -15,6 +15,10 @@
 `SPEEDUP_SUMMARY.tsv` → `TRANSLATION_MECHANISM_SUMMARY.tsv` →
 `CROSS_LAYER_SUMMARY.tsv` → `PROVENANCE_MATRIX.tsv` → `RAW_LOG_INDEX.tsv`。
 
+在矩阵完成前，已 terminal PASS 的两个 F0 可单独审阅
+`C12_CACHE_BEHAVIOR_FINDINGS.md` 与 `C12_CACHE_BEHAVIOR_CHECKPOINT.tsv`；它们是
+只读 full-ROI F0 cache characterization，不替代 22-point fair-arm 结论。
+
 标签保持：`SPECULATIVE_CANDIDATE`；F1/F8 保持
 `REFERENCE_APPROX_SUBENTRY_16`。F6、KV segmentation、12K、M5 和 Window A/B
 均不在本轮范围内。
