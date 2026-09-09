@@ -161,6 +161,32 @@ wrote the subsequent wait record at `2026-09-08T18:03:47Z`.  This is a
 controller-lifecycle repair only, not an evidence collection, result change,
 or modification of any frozen R2 dependency.
 
+### GEMM/Base natural terminal — strict-valid precompute
+
+GEMM/Base naturally exited `0` at `2026-09-08T23:15:14Z`. Its independent
+future-only v4 monitor observed the atomic terminal receipt and produced
+compact alias-aware evidence in `generated/fast64_3_gemm_base_alias_v4/`.
+The sole immutable attempt is `4b62ba62-9ee3-41ed-8a67-402172e594fa` with
+runner `bf9a84c8...`; identity is Core `bbcbb5e...`, runtime `6a8743b4...`,
+A1 observer `2c2a6a27...`, execution snapshot `037f008b...`, Base config
+`1a016e3c...`, and frozen GEMM payload. The precise failure scan is clean;
+one canonical perf epoch is normalized from the normal alias.
+
+| condition | observed value |
+| --- | ---: |
+| cycles / instructions | `2,662,394` / `739,246,080` |
+| lower acquired / released | `16,813,388 / 16,813,388` |
+| PIB admits / retires | `12,599,296 / 12,599,296` |
+| final lower / PIB | `0 / 0` |
+| lower-cap-full / peak | `0 / 2,048` |
+| line allocation / MSHR-entry / miss-queue events | `114,099,368 / 0 / 49,091` |
+
+The compact structural companion preserves Tag-bank conflicts (`25,214,976`)
+as a separate diagnostic category. GEMM is
+`FAST64_3_BASE_PRECOMPUTED_STRICT_VALID_PENDING_FAST64_1_2_ACCEPTANCE` only:
+it is not a FAST64.3 result promotion, a triplet result, or authorization to
+launch additional Base work.
+
 ## FAST64.2 forced-stress diagnostic — terminal, gate unsatisfied
 
 | item | value |

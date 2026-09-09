@@ -1,5 +1,34 @@
 # Latest Codex Report
 
+## FAST64.2 BICG coupled stress and FAST64.3 GEMM/Base terminals (2026-09-08)
+
+The immutable BICG/PAPER_IO coupled-stress fallback (`cap=512`, source-coupled
+IO PIB entries `1`) naturally exited `0` at `2026-09-08T21:51:34Z`. Its
+future-only alias-aware collector proves one immutable epoch, exact frozen
+identity, clean failure scan, lower create/issue/response conservation
+(`17,607,590` each), dependency conservation (`18,350,080` each), and final
+IO inflight/PIB/lower `0/0/0`. Both required pressure observations remain zero:
+`DTC_L1_lower_cap_full_events=0` and
+`DTC_L1_io_lower_create_queue_full_stalls=0`. It is therefore
+`FAST64_2_BICG_COUPLED_STRESS_STRICT_NEGATIVE_PRESSURE_ABSENT`, not a
+FAST64.2 PASS; compact evidence is
+`fast64/generated/fast64_2_coupled_stress_bicg_alias_v2/`.
+
+GEMM/Base also naturally exited `0` at `2026-09-08T23:15:14Z` and is strictly
+valid only as FAST64.3 physical precomputation: cycles/instructions
+`2,662,394/739,246,080`, lower acquired/released
+`16,813,388/16,813,388`, PIB admits/retires `12,599,296/12,599,296`, final
+lower/PIB `0/0`, and lower-cap-full `0`. Its independent future-only v4
+collector and structural companion are compact evidence under
+`fast64/generated/fast64_3_gemm_base_alias_v4/`; this does not promote
+FAST64.3 or authorize an expanded batch.
+
+The fresh resource audit is fail-closed for additional work: swap is fully
+used, load is about `569` on `512` logical CPUs, and output free space is
+about `55 GiB`. No new worker is launched. The frozen FAST64.1 R2 closure
+bytes retain their recorded hashes; R2 remains **5/7** natural terminals with
+the two GESUMMV IO rows live and the unmodified frozen controller waiting.
+
 ## FAST64.1 fifth immutable-R2 natural terminal (2026-09-08)
 
 `fast64_1r2_bicg_io_cap1048576_a1` (BICG / PAPER_IO / cap 1048576)

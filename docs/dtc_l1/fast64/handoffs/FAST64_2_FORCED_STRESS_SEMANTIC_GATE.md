@@ -168,3 +168,30 @@ This is physical precomputation only.  It cannot promote FAST64.2 before the
 full immutable FAST64.1 R2 wave passes, and it cannot claim the forced-stress
 gate until its own natural terminal, strict alias-aware collection, pressure
 event observation and accounting checks complete.
+
+### BICG fallback natural terminal — strict negative-pressure evidence
+
+The immutable BICG fallback naturally exited `0` at `2026-09-08T21:51:34Z`.
+Its separate alias-aware collector produced compact evidence in
+`generated/fast64_2_coupled_stress_bicg_alias_v2/`. START/TERMINAL receipts
+identify one attempt `24e4fff0-e2c5-4832-b8d6-fec5ae911249` and immutable
+runner `bf9a84c8...`; the record binds Core `bbcbb5e...`, runtime
+`6a8743b4...`, A1 observer `2c2a6a27...`, execution snapshot `037f008b...`,
+BICG trace-list `388740a7...`, and coupled diagnostic config `9b01eb0c...`.
+The precise assertion/fatal/deadlock/output-mismatch scan is empty and the
+canonical simulator output contains its normal exit sequence.
+
+| condition | observed value |
+| --- | ---: |
+| cycles / instructions | `47,171,114` / `145,666,048` |
+| lower create / issue / response | `17,607,590 / 17,607,590 / 17,607,590` |
+| completion dependencies created / closed | `18,350,080 / 18,350,080` |
+| final IO inflight / PIB / lower | `0 / 0 / 0` |
+| `DTC_L1_lower_cap_full_events` | `0` |
+| `DTC_L1_io_lower_create_queue_full_stalls` | `0` |
+
+Its exact status is `FAST64_2_BICG_COUPLED_STRESS_STRICT_NEGATIVE_PRESSURE_ABSENT`.
+This strictly valid diagnostic does **not** satisfy the required positive
+coupled-stress events and therefore does not pass or promote FAST64.2. It
+changes neither the R2 closure dependency freeze nor the formal-performance
+configuration.
