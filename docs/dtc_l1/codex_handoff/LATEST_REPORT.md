@@ -1,5 +1,34 @@
 # Latest Codex Report
 
+## FAST64.3 failure preservation / FAST64.6 pre-dispatch freeze (2026-09-10)
+
+The historical bbcbb 2DConvolution/Base acquisition is no longer live: its
+immutable terminal receipt records exit `1` at `2026-09-10T12:50:39Z` after a
+source-recorded simulator deadlock, not a timeout.  The raw diagnostic has
+129 `MEM_FETCH_INITIALIZED` L1D latency-queue fetches and conventional-L1
+reserved-line/retry state; the failed attempt is isolated in
+`fast64/handoffs/FAST64_3_2DCONVOLUTION_BASE_FAILURE.md` and cannot enter
+FAST64.3.  The zero-access repair is source-inert for PAPER_BASE, so a blind
+repaired-Core rerun is not claimed as a remedy; root-cause work continues.
+
+FAST64.6 physical acquisition is independently authorized after FAST64.2.  A
+new, versioned pre-dispatch handoff and 78-row IO/OO matrix freeze BICG,
+GESUMMV and Btree along the logical/physical/PIB axes; the M5 authority makes
+logical Base a supplemental-only control, with physical and PIB both IO/OO.
+The dispatcher separately binds the scientific snapshot `037f008b...` and
+config-materialization commit `180e81c6...`, then launches only the immutable
+repaired Core/runtime/A1 identity.  This remains physical precomputation under
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, not a FAST64.6 stage advance.
+
+The fresh three-window target-16 audit at
+`/tmp/fast64-resource-audit-v3-20260910T1325Z-target16.tsv` found 11 live
+FAST64 leaves, p50/p95/max RSS 2.37/4.87/4.87 GiB, zero sampled swap-out,
+memory PSI, OOM, major faults and CFS throttling.  It admits five additional
+workers with projected 71.8 GiB `MemAvailable`, 213.5 GiB cgroup headroom and
+110.2 GiB output free.  Provisional nonpromoting triplet/speedup/structural
+tables are now generated; only Btree, Hotspot1 and MRI-Q have complete common
+repaired-Core candidate triplets, so no GM-FAST12 is computed or claimed.
+
 ## FAST64.6 frozen sensitivity configuration materialization (2026-09-10)
 
 Following the already-passed `FAST64_2_REPAIR_PASS` gate, the future-only
