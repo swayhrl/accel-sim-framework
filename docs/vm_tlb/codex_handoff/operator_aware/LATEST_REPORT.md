@@ -26,6 +26,7 @@ The review pack is committed in Framework commit
   and KERNEL cache attribution, and terminal-arm mechanism deltas.
 - Conservation audit: F0 operator cycles, instructions, selected translation
   counters, and trace refs each exactly close against same-source totals.
+- Exact changed-path inventory: `CHANGED_FILES.md` in the review pack.
 
 ## Review entry points
 
@@ -38,3 +39,9 @@ The review pack is committed in Framework commit
 No C12 simulator replay was launched and no live-C12 asset was changed.  The
 only remaining action is a read-only regeneration after official C12 publishes
 its final 22/22 terminal-PASS state.
+
+## Worktree state at handoff
+
+Tracked worktree: clean after committing this handoff.  Local ignored scanner
+resume/input shards and Python bytecode are not part of the review pack or any
+commit; they neither modify nor duplicate C12 evidence.
