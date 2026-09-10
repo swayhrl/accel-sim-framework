@@ -92,6 +92,25 @@ Their manifests bind repaired Core `95ccdb7a...`, runtime
 `bf9a84c8...`.  Neither replaces, relabels, or interrupts its literal bbcbb
 predecessor.
 
+### Old-Core continuation deauthorization guard (2026-09-10)
+
+The already-live historical `continue_fast64_4_precompute_v1.sh` controller is
+preserved unchanged while it waits for its old-Core ATAX/IO predecessor.  Its
+hard-coded bbcbb/runtime tuple is superseded for *new* long acquisition by the
+repaired-Core authority above.  To prevent it from dispatching its first
+old-Core successor without signalling, editing, or otherwise perturbing that
+controller or any simulator, the otherwise-unused first legacy namespace
+`/workspace/fast64-runs/fast64_4_atax_oo_cap8192_a1_v3` was atomically reserved
+as an empty directory before the controller's prerequisite exists.  On a later
+attempt the controller's own pre-existing namespace-absence check will emit
+`REFUSE_NAMESPACE` and exit before a new simulator is launched.
+
+This guard contains no receipt, configuration, payload, log, or result and is
+not a failed experiment or a matrix row.  It preserves the live old ATAX/IO
+process and its read-only closeout path as literal historical evidence.  Any
+subsequent replacement must use a fresh repaired-Core immutable namespace and
+may not reuse this legacy name.
+
 ## 2. Fixed 36-row matrix
 
 Fill exactly one accepted Base/IO/OO row per workload. Base rows must be reused

@@ -1,5 +1,22 @@
 # Latest Codex Report
 
+## FAST64 old-Core continuation deauthorized before successor dispatch (2026-09-10)
+
+The old `continue_fast64_4_precompute_v1.sh` controller (PID `72912`) remains
+live and unchanged while its bbcbb ATAX/IO predecessor continues naturally.
+Because that controller would otherwise dispatch a new long old-Core row after
+its prerequisite closes, an empty, otherwise-unused first legacy namespace
+`/workspace/fast64-runs/fast64_4_atax_oo_cap8192_a1_v3` was atomically reserved
+before the prerequisite exists.  The controller will therefore take its own
+existing `REFUSE_NAMESPACE` exit path before it can launch a successor.
+
+No simulator, controller, runner, config, payload, raw evidence, or compact
+result was modified; the reservation contains no files and is not a result.
+This enforces the existing authority that new long FAST64 acquisition uses
+repaired Core `95ccdb7a...` / runtime `462d105c...cc4dbc9`, while preserving
+the still-live bbcbb ATAX/IO row as literal historical precompute evidence.
+Any later replacement must use a fresh repaired-Core namespace.
+
 ## FAST64 precomputed closeout recovery and repaired ATAX/IO dispatch (2026-09-10)
 
 FAST64.1 and FAST64.2 remain PASS; FAST64.3 remains ACTIVE and FAST64.4
