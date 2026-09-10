@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64_2_REPAIR_PASS; FAST64.3 ACTIVE WITH 5/12 BASE ROWS ACCEPTED AND 7/12 AWAITING SWAP-SAFE ADMISSION**
+Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64_2_REPAIR_PASS; FAST64.3 ACTIVE; REPAIRED-CORE HOTSPOT1 TRIPLET STRICT-VALID; REMAINING BASE/PRIMARY ACQUISITION ACTIVE**
 
 Framework branch:
 
@@ -10,13 +10,21 @@ Core authority is deliberately split:
 
 - `MECHANISM_BEHAVIOR_ANCHOR`:
   `hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.
-- `FAST64_FORMAL_INSTRUMENTED_CORE`:
+- `FAST64_HISTORICAL_TELEMETRY_CORE`:
   `hrl/decoupled-l1-m5-v0@bbcbb5e7565417102087bc80b14c349b4e568c05`.
+- `FAST64_FORMAL_REPAIRED_CORE`:
+  `hrl/decoupled-l1-m5-v0@95ccdb7a056f2d53f740d90869785cac6d4ee0f5`,
+  trace-enabled Release runtime
+  `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`.
 
-The latter changes no DTC mechanism behavior: it exposes the pre-existing OO
-`DTC_L1_lower_cap_full_events` counter and passed exact NN Base/IO/OO
-differential. Formal FAST64 execution uses the instrumented Core/runtime; the
-former remains the mechanism semantic/source anchor.
+The historical telemetry Core exposes the OO lower-cap counter and its prior
+results retain that identity. The repaired Core excludes only empty access
+queues from the IO/OO issue-side DTC path while preserving the nonempty
+assertion. Its common Hotspot1 Base/IO/OO triplet strict-validates, and the
+repaired Base is exact against historical bbcbb Base on cycles, instructions,
+PIB/lower lifecycle and drain. New formal FAST64 execution uses the repaired
+Core/runtime; reuse of bbcbb rows is only through the explicit source-proof
+map `handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.
 
 All formal FAST64 acquisition, including later dynamic-pool rows, records the
 frozen execution-scientific Framework snapshot

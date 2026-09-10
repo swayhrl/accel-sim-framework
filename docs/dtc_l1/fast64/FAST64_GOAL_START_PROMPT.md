@@ -8,7 +8,7 @@ GOAL — COMPLETE DTC FAST64 FROM PIVOT THROUGH FINAL REVIEW STATE
 Work continuously on:
   Framework: hrl/decoupled-l1-fast64-v0
   MECHANISM_BEHAVIOR_ANCHOR: hrl/decoupled-l1-m5-v0@15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9
-  FAST64_FORMAL_INSTRUMENTED_CORE: hrl/decoupled-l1-m5-v0@bbcbb5e7565417102087bc80b14c349b4e568c05
+  FAST64_FORMAL_REPAIRED_CORE: hrl/decoupled-l1-m5-v0@95ccdb7a056f2d53f740d90869785cac6d4ee0f5
 
 Your terminal target is exactly:
   FAST64_COMPLETE_READY_FOR_REVIEW
@@ -39,9 +39,11 @@ processes, contains pre-existing untracked scientific artifacts, or is not on
 the FAST64 branch, do NOT force-checkout or clean it. Create/reuse a dedicated
 FAST64 worktree from `hrl/decoupled-l1-fast64-v0`, record its path in the
 FAST64.0 handoff, and leave legacy jobs/worktrees undisturbed. `15cfa76e...`
-remains the mechanism-source anchor, but every formal FAST64 runtime must be
-built from/verified against `bbcbb5e...`, whose telemetry-only OO counter print
-was differential-qualified. Do not silently revert formal rows to `15cfa76e...`.
+remains the mechanism-source anchor, but every new formal FAST64 runtime must
+be built from/verified against `95ccdb7a...` with runtime
+`462d105c...cc4dbc9`. Historical bbcbb rows retain their literal identity and
+are reusable only through the explicit zero-access identity map. Do not
+silently revert formal rows to `15cfa76e...` or relabel bbcbb evidence.
 
 Execute the complete state machine without ordinary human pauses:
 

@@ -32,12 +32,17 @@ output SHA-256 exactly matches the canonical IO JSON
 Both Gaussian rows are strictly
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, never accepted FAST64.4 evidence.
 
-The common repaired-Core Hotspot1 triplet uses Core `95ccdb7a...` and runtime
-`462d105c...cc4dbc9`.  IO and OO have naturally exited `0` and strict-collected
-under that identity: IO records `85,206` cycles and OO `83,439`, both at
-`377,291,004` instructions with clean required-log scans.  Base remains
-CPU-active. No triplet or identity promotion is claimed until Base's compact
-record and the required differential/reuse map pass.
+The common repaired-Core Hotspot1 triplet is now strict-valid under Core
+`95ccdb7a...` and runtime `462d105c...cc4dbc9`: Base/IO/OO naturally exit `0`,
+have common immutable payload/trace/A1/Framework identity, and pass the
+immutable triplet validator. They record `160,486` / `85,206` / `83,439`
+cycles at common `377,291,004` instructions. The repaired Base is exact against
+the historical bbcbb Base on cycles, instructions, PIB/lower lifecycle,
+terminal state and lower-cap-full. The finalized explicit reuse/invalidation
+authority is `fast64/handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`:
+new formal rows use repaired Core/runtime, while historical bbcbb rows retain
+their literal identity and can be reused only under that map. Stage promotion
+remains separately gated.
 
 ## FAST64.3 Gaussian/Base and MRI-Q/Base strict terminals (2026-09-10)
 

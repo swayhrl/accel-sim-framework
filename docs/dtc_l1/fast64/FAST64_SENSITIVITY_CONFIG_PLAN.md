@@ -74,9 +74,12 @@ the extra 256 point is explicitly retained by the FAST64 scope.
    its `--plan-only` mode is read-only mapping audit only.
 2. Every generated config must have a one-dimensional resolved-config diff
    against its corresponding 16-KiB/640-line/primary-PIB mode identity.
-3. Every row uses the formal instrumented Core
-   `bbcbb5e7565417102087bc80b14c349b4e568c05`, A1 observer, candidate cap
-   8192, frozen payload identity, and an isolated namespace.
+3. Every new row uses formal repaired Core
+   `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`, runtime
+   `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`, A1
+   observer, candidate cap 8192, frozen payload identity, and an isolated
+   namespace. Historical bbcbb rows retain their literal identity and are not
+   silently reused outside the zero-access transition map.
 4. Rows retain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` until the logical
    acceptance gates are satisfied.  They cannot alter FAST12 membership,
    primary platform choice, or the primary matrix.

@@ -21,13 +21,16 @@ Formal identities to record at closeout:
 | item | required identity |
 | --- | --- |
 | mechanism behavior anchor | `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` |
-| formal instrumented Core | `bbcbb5e7565417102087bc80b14c349b4e568c05` |
-| runtime SHA-256 | `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` |
+| historical telemetry Core/runtime | `bbcbb5e7565417102087bc80b14c349b4e568c05` / `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` (literal historical evidence only) |
+| current formal repaired Core/runtime | `95ccdb7a056f2d53f740d90869785cac6d4ee0f5` / `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9` (new acquisition) |
 | A1 observer SHA-256 | `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e` |
 | scientific/config Framework snapshot | `037f008b330eb230353b60edf126d6be9f45afdc` |
 | payload authority | `FAST64_WORKLOAD_MANIFEST.tsv` + `generated/FAST64_PAYLOAD_MANIFEST.tsv` |
 
 Record exact Base/IO/OO config SHA-256 values in the final handoff.
+Historical bbcbb rows may enter a matrix only through the explicit
+`FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md` classification and retain
+their literal provenance; no accepted triplet may mix Core/runtime identities.
 
 ## 2. Fixed 36-row matrix
 

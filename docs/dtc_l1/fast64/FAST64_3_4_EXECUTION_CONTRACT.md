@@ -7,11 +7,11 @@ FAST64.3 and FAST64.4. It does not weaken `FAST64_ACCEPTANCE_CONTRACT.md`; if a
 conflict is discovered, the stricter existing scientific requirement wins and
 the conflict must be resolved explicitly rather than silently reinterpreted.
 
-Authoritative common identity remains:
+Authoritative common identity for new formal acquisition is:
 
 - mechanism behavior anchor: `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`;
-- formal instrumented Core: `bbcbb5e7565417102087bc80b14c349b4e568c05`;
-- formal runtime SHA-256: `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041`;
+- formal repaired Core: `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`;
+- formal runtime SHA-256: `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`;
 - A1 observer SHA-256: `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`;
 - frozen scientific/config Framework snapshot: `037f008b330eb230353b60edf126d6be9f45afdc`;
 - FAST12 membership and payload identities: `FAST64_WORKLOAD_MANIFEST.tsv` and
@@ -19,6 +19,11 @@ Authoritative common identity remains:
 
 No current controller/review HEAD may replace the frozen scientific execution
 snapshot in a result identity.
+
+Historical bbcbb/runtime rows retain their literal identity and require the
+explicit map in `handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`; they
+must never be rewritten as repaired-Core rows.  No new long formal row may use
+the former bbcbb runtime after this authority transition.
 
 ## 1. Stage-order and physical-acquisition rule
 

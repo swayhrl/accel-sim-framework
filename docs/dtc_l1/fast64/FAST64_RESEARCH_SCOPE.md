@@ -10,10 +10,12 @@ Core authority is deliberately split:
 
 - `MECHANISM_BEHAVIOR_ANCHOR`: branch `hrl/decoupled-l1-m5-v0`, commit
   `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`.
-- `FAST64_FORMAL_INSTRUMENTED_CORE`: telemetry-only descendant
-  `bbcbb5e7565417102087bc80b14c349b4e568c05`, which adds the missing OO print
-  of existing `DTC_L1_lower_cap_full_events` and passed exact NN Base/IO/OO
-  differential.
+- `FAST64_HISTORICAL_TELEMETRY_CORE`: `bbcbb5e7565417102087bc80b14c349b4e568c05`,
+  retained with its original runtime/provenance for historical formal rows.
+- `FAST64_FORMAL_REPAIRED_CORE`: `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`,
+  the validated empty-access IO/OO guard. New formal acquisition uses its
+  runtime `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`.
+  The explicit old-to-new evidence map prevents silent identity mixing.
 
 ## 1. Research objective
 

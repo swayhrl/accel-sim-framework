@@ -21,8 +21,8 @@ Formal identities to record at closeout:
 | item | required identity |
 | --- | --- |
 | mechanism behavior anchor | `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` |
-| formal instrumented Core | `bbcbb5e7565417102087bc80b14c349b4e568c05` |
-| runtime SHA-256 | `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` |
+| historical telemetry Core/runtime | `bbcbb5e7565417102087bc80b14c349b4e568c05` / `6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` (literal historical evidence only) |
+| current formal repaired Core/runtime | `95ccdb7a056f2d53f740d90869785cac6d4ee0f5` / `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9` (new acquisition) |
 | A1 observer SHA-256 | `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e` |
 | scientific/config Framework snapshot | `037f008b330eb230353b60edf126d6be9f45afdc` |
 | Base config | record exact current `FAST64_BASE.config` SHA-256 |
@@ -46,7 +46,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | Btree | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 | DWT2D | `generated/fast64_3_dwt2d_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | Gaussian | `generated/fast64_3_dynamic_base_v1/fast64_3_Gaussian_base_cap8192_a1_v2.json` + `FAST64_3_GAUSSIAN_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
-| Hotspot1 | `generated/fast64_3_dynamic_base_v1/fast64_3_Hotspot1_base_cap8192_a1_v2.json` + `FAST64_3_HOTSPOT1_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
+| Hotspot1 | `generated/fast64_repaired_core_qual_v1/fast64_hotspot1_base_core95ccdb7a_a1_v1.json` + `FAST64_HOTSPOT1_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | LUD | `generated/fast64_3_dynamic_base_v1/fast64_3_LUD_base_cap8192_a1_v2.json` + `FAST64_3_LUD_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | NN | `generated/fast64_3_dynamic_base_v1/` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | MRI-Q | `generated/fast64_3_dynamic_base_v1/fast64_3_MRI-Q_base_cap8192_a1_v2.json` + `FAST64_3_MRI_Q_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |

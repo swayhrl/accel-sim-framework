@@ -94,10 +94,17 @@ guard is consequently committed and pushed as Core
 runtime SHA-256 is
 `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`.
 
-Fresh immutable Hotspot1 Base/IO/OO runs under that common Core/runtime are
-active in `fast64-repair-formal/`. Their purpose is both a source-local
-nonempty lifecycle differential and the internally common final Hotspot1
-triplet. A future-only parameterized collector
-`monitor_fast64_repaired_core_row_v1.sh` owns their compact records; it does
-not alter the runner or any bbcbb collector. The explicit reuse/invalidation
-authority is `FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.
+Fresh immutable Hotspot1 Base/IO/OO runs under that common Core/runtime have
+all naturally exited `0`, strict-collected, and passed the immutable common
+triplet validator. Compact evidence is under
+`generated/fast64_repaired_core_qual_v1/`, including
+`FAST64_HOTSPOT1_REPAIRED_CORE_TRIPLET_V1.json`. Base/IO/OO record
+`160,486` / `85,206` / `83,439` cycles at common `377,291,004` instructions.
+Base exactly matches the historical bbcbb Base on cycles, instructions,
+PIB/lower lifecycle, drain and lower-cap-full. Future-only
+`monitor_fast64_repaired_core_row_v2.sh` performed the strict closeout; it
+fixes only v1's optional launcher-log scan and never alters a runner or bbcbb
+collector. The final reuse/invalidation authority is
+`FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`. The repair boundary is
+closed; remaining FAST64.3/4 work may use the repaired Core/runtime subject to
+their own HARD gates.

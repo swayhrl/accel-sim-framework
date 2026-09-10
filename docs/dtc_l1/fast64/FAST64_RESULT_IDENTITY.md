@@ -25,6 +25,25 @@ The provenance label for reused C2P traces is:
 
 It must never be relabelled as a dissertation-exact payload.
 
+## Current formal Core/runtime authority
+
+`15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` remains the mechanism-behavior
+source anchor.  `bbcbb5e7565417102087bc80b14c349b4e568c05` and runtime
+`6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041` remain
+the historical FAST64 telemetry identity; their existing immutable evidence
+retains those literal values.
+
+For every **new** FAST64 formal row after the zero-access repair qualification,
+the required Core/runtime identity is Core
+`95ccdb7a056f2d53f740d90869785cac6d4ee0f5` and trace-enabled Release runtime
+SHA-256 `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`.
+The change only excludes an empty access queue from the IO/OO DTC issue-side
+path; the nonempty assertion remains.  The common repaired-Core Hotspot1
+Base/IO/OO triplet strict-validates, and its Base row is exact against the
+historical bbcbb Base on cycles, instructions, PIB/lower lifecycle and final
+state.  The authoritative old-to-new classification is
+`handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.
+
 ## Observer rule
 
 Future not-yet-launched FAST64 triplets use A1:
@@ -42,6 +61,11 @@ A triplet may not mix observer identities.
 A completed row may be reused only if every identity field relevant to that
 row is identical. A later source/config/parser/Core change must produce an
 explicit invalidation map.
+
+The zero-access repair map is that required Core-transition map. A bbcbb row
+must retain its bbcbb identity and may be reused only under the map's explicit
+source-inert/unreachable classification and any required differential. It must
+never be relabelled as `95ccdb7a`.
 
 Instrumentation-only changes may preserve performance cycles only after an
 exact differential proves no timing/dynamic-operation change; newly introduced

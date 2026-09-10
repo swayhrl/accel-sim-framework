@@ -25,8 +25,11 @@ General meanings:
 
 - Framework branch descends from `a9cdb3328a346cbc9a76b7ffadae3725b4209ab5`.
 - Core authority distinguishes the mechanism behavior anchor
-  `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9` from the formal instrumented Core
-  `bbcbb5e7565417102087bc80b14c349b4e568c05`.
+  `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`, the historical formal telemetry
+  Core `bbcbb5e7565417102087bc80b14c349b4e568c05`, and the current formal
+  zero-access-repaired Core `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`.
+  The explicit old-to-new reuse/invalidation authority is
+  `handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.
 - Existing M5 evidence is classified into Tier A/B/C without deletion or
   relabelling.
 - 2MM and SYR2K primary-path work is marked

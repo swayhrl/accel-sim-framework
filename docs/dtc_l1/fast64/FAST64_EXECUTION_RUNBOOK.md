@@ -11,9 +11,11 @@ At Goal start and after every interruption:
 
 1. verify Framework branch is `hrl/decoupled-l1-fast64-v0`;
 2. fetch/read the current branch HEAD;
-3. verify both Core authorities: the `15cfa76e...` mechanism behavior anchor
-   and the `bbcbb5e...` FAST64 formal instrumented Core/runtime; never launch
-   a formal row under the former merely because it is the semantic anchor;
+3. verify all Core authorities: the `15cfa76e...` mechanism behavior anchor,
+   historical bbcbb telemetry identity, and current `95ccdb7a...` repaired
+   formal Core/runtime. Never launch a new formal row under the behavior anchor
+   or the superseded bbcbb runtime; preserve bbcbb rows under the explicit
+   zero-access reuse/invalidation map;
 4. read, in order:
    - `FAST64_RESEARCH_SCOPE.md`;
    - `FAST64_PLATFORM_CONTRACT.md`;
