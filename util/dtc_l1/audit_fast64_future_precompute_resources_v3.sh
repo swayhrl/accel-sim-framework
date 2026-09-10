@@ -52,12 +52,15 @@ projected_new_rss=$((fast64_p95 * workers))
 projected_memavailable=$((memavailable - projected_new_rss))
 reserve_bytes=$((reserve_gib * 1024 * 1024 * 1024))
 throttle_events=$(awk -F '\t' '$1~/^[0-9]+$/ && $10>0 {n+=$10} END {print n+0}' "$v2_output")
+io_total=$(awk -F '\t' '$1=="cgroup_io_total_bytes" {print $2; exit}' "$v2_output")
+io_rate=$(awk -v b="$io_total" -v n="$samples" -v s="$interval" 'BEGIN {printf "%.0f", b/(n*s)}')
 safe_v2=$(awk -F '\t' '$1=="safe_to_launch" {print $2; exit}' "$v2_output")
 reason_v2=$(awk -F '\t' '$1=="admission_reason" {print $2; exit}' "$v2_output")
 safe=$safe_v2
 reason=$reason_v2
 if [ "$safe" = YES ]; then reason=PASS_FUTURE_PRECOMPUTE_ADMISSION_V3; fi
 if [ "$throttle_events" -gt 0 ]; then safe=NO; reason=CFS_THROTTLING_OBSERVED; fi
+if [ "$io_rate" -gt 1073741824 ]; then safe=NO; reason=PATHOLOGICAL_CGROUP_IO; fi
 if [ "$projected_memavailable" -lt "$reserve_bytes" ]; then safe=NO; reason=MEMAVAILABLE_RESERVE_NOT_MET; fi
 
 tmp=$(mktemp "$parent/.${output##*/}.tmp.XXXXXX")
@@ -74,6 +77,7 @@ FAST64_V3_SAFE="$safe" FAST64_V3_WORKERS="$workers" FAST64_V3_REASON="$reason" \
   printf 'memavailable_reserve_bytes\t%s\n' "$reserve_bytes"
   printf 'projected_memavailable_after_bytes\t%s\n' "$projected_memavailable"
   printf 'cfs_throttle_event_windows\t%s\n' "$throttle_events"
+  printf 'cgroup_io_rate_bytes_per_second\t%s\n' "$io_rate"
 } >> "$tmp"
 mv -f -- "$tmp" "$output"
 printf 'FAST64_FUTURE_PRECOMPUTE_RESOURCE_AUDIT_V3_WRITTEN\t%s\n' "$output"
