@@ -32,10 +32,12 @@ output SHA-256 exactly matches the canonical IO JSON
 Both Gaussian rows are strictly
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, never accepted FAST64.4 evidence.
 
-The common repaired-Core Hotspot1 Base/IO/OO triplet remains CPU-active in
-fresh isolated namespaces under Core `95ccdb7a...` and runtime
-`462d105c...cc4dbc9`; it has not yet reached strict terminal closeout and no
-identity promotion is claimed.
+The common repaired-Core Hotspot1 triplet uses Core `95ccdb7a...` and runtime
+`462d105c...cc4dbc9`.  IO has naturally exited `0` and strict-collected under
+that identity (`85,206` cycles, `377,291,004` instructions); Base remains
+CPU-active and OO has a natural terminal receipt awaiting collector closeout.
+No triplet or identity promotion is claimed until all three compact records
+and the required differential/reuse map pass.
 
 ## FAST64.3 Gaussian/Base and MRI-Q/Base strict terminals (2026-09-10)
 

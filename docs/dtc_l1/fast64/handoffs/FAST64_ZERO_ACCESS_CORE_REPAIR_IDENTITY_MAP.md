@@ -1,6 +1,6 @@
 # FAST64 zero-access Core repair identity / reuse map
 
-Status: **ACTIVE — REPAIRED-CORE HOTSPOT1 TRIPLET RUNNING**
+Status: **ACTIVE — REPAIRED-CORE HOTSPOT1 IO STRICT-COLLECTED; BASE ACTIVE; OO TERMINAL AWAITING COLLECTION**
 
 This is an adoption-planning artifact, not a result promotion, Core authority,
 or replacement for `FAST64_RESULT_IDENTITY.md`. It records the required
@@ -67,10 +67,25 @@ mechanism semantics, or any existing raw artifact.
 
 The fresh immutable-v2 runs below use the same frozen Hotspot1 payload,
 scientific Framework snapshot, A1 observer and only the documented mode config
-differences. They are physically active as
+differences. They retain
 `REPAIRED_CORE_FORMAL_QUALIFICATION_PENDING_IDENTITY_MAP_FINALIZATION` and are
 not promoted until all three strict collectors and the required differential
-review pass.
+review pass.  IO naturally exited `0` and strict-collected to
+`generated/fast64_repaired_core_qual_v1/fast64_hotspot1_io_core95ccdb7a_a1_v1.json`:
+`85,206` cycles / `377,291,004` instructions, immutable attempt
+`b362f344-86b1-4b73-9f09-8be4d5e71f2e`, clean simulator logs and matching
+Core/runtime/config/payload identity.  OO has its terminal receipt; Base alone
+remains CPU-active.  This is partial triplet evidence, never a final triplet
+claim.
+
+The original v1 repaired-Core collector only recorded its initial wait line in
+this execution environment, so it cannot be relied upon for final closeout.
+It remains unchanged.  Future-only
+`monitor_fast64_repaired_core_row_v2.sh` preserves the same validator and
+receipt contract but scans the optional launcher log only when it exists.  Its
+read-only Hotspot1/IO smoke replay passes and produces byte-identical compact
+JSON (`f2080ee37d08b8f7b93e7dddcd7633132ec5f0efc6adb1767ca2d5eff6918fef`);
+this is a host collector correction, not a simulator or DTC semantic change.
 
 | mode | CPU | attempt UUID | namespace |
 | --- | ---: | --- | --- |
