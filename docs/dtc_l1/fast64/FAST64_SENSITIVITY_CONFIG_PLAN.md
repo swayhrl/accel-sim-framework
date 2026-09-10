@@ -68,8 +68,8 @@ the extra 256 point is explicitly retained by the FAST64 scope.
 ## Execution and identity rules
 
 1. Do not materialize a sensitivity config or launch a sensitivity row until
-   `handoffs/FAST64_2_REPAIR_QUALIFICATION.md` contains the exact line
-   `FAST64_2_REPAIR_PASS`.
+   `handoffs/FAST64_2_REPAIR_QUALIFICATION.md` contains the exact canonical
+   status header `Status: **FAST64_2_REPAIR_PASS**`.
    `util/dtc_l1/materialize_fast64_sensitivity_configs.sh` enforces this gate;
    its `--plan-only` mode is read-only mapping audit only.
 2. Every generated config must have a one-dimensional resolved-config diff
@@ -86,6 +86,25 @@ the extra 256 point is explicitly retained by the FAST64 scope.
 5. Any deadlock is preserved as `EXPECTED_RESOURCE_DEADLOCK` only after
    source-backed no-progress/physical-pressure evidence; no timeout is a
    deadlock classifier.
+
+## Materialized configuration set (2026-09-10)
+
+`sensitivity_frozen_v2` is the sole materialized configuration set.  It
+contains all 29 frozen resolved configurations (nine logical, ten physical,
+and ten PIB).  Every file preserves lower cap `8192`; each was normalized
+against its corresponding Base/IO/OO primary configuration and compared
+byte-for-byte after removing only its declared family field(s).  The manifest
+`generated/FAST64_SENSITIVITY_CONFIG_MANIFEST_V1.tsv` records the paths and
+SHA-256 values.
+
+An earlier `sensitivity_frozen_v1` attempt stopped at the stale standalone
+PASS-text assertion before it wrote a configuration file.  It supplies no
+configuration or result evidence.  The materializer now tests the canonical
+FAST64.2 status header and accepts ordinary horizontal whitespace in the three
+Base cache geometry lines.  This is an authority/format repair only: no
+sensitivity simulator was launched, and the materialized files remain
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` until their separate execution
+and acceptance gates close.
 
 ## Authority reconciliation
 

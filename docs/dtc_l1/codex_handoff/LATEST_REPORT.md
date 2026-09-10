@@ -1,5 +1,22 @@
 # Latest Codex Report
 
+## FAST64.6 frozen sensitivity configuration materialization (2026-09-10)
+
+Following the already-passed `FAST64_2_REPAIR_PASS` gate, the future-only
+materializer has produced 29 resolved sensitivity configurations in
+`configs/dtc_l1/fast64/sensitivity_frozen_v2`: logical 16/32/64 KiB
+Base/IO/OO (9), physical 16.5/24/32/40/48 KiB IO/OO (10), and PIB
+32/64/128/192/256 IO/OO (10).  The compact checked-in manifest is
+`fast64/generated/FAST64_SENSITIVITY_CONFIG_MANIFEST_V1.tsv`.
+
+Each configuration was checked to retain global lower cap `8192`, and a
+resolved-config normalization test proved it identical to the appropriate
+primary Base/IO/OO file except for the declared sensitivity field(s).  The
+fixed materializer now checks the actual canonical FAST64.2 PASS header and
+tolerates the existing Base geometry whitespace; its aborted v1 attempt had
+written no config file.  This is configuration precomputation only: no
+sensitivity simulation, result, promotion, or scientific claim has begun.
+
 ## FAST64 safe-parallelism recalibration / Hotspot repair reconciliation (2026-09-10)
 
 The latest review's requested Hotspot1/PAPER_OO isolated minimal-guard check

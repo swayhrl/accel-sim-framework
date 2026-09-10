@@ -64,7 +64,7 @@ for mode in "${modes[@]}"; do
 done
 
 if [ "$plan_only" = 1 ]; then exit 0; fi
-test -f "$pass_artifact" && grep -Fxq 'FAST64_2_REPAIR_PASS' "$pass_artifact" || {
+test -f "$pass_artifact" && grep -Fxq 'Status: **FAST64_2_REPAIR_PASS**' "$pass_artifact" || {
   echo "FAST64.2 repair PASS required before sensitivity config materialization" >&2; exit 1;
 }
 test ! -e "$output_dir" || { echo "output directory already exists: $output_dir" >&2; exit 1; }
@@ -77,9 +77,9 @@ for mode in "${modes[@]}"; do
     logical)
       test "$(grep -Fxc -- '-gpgpu_dtc_l1_logical_sets 32' "$input")" = 1
       if [ "$mode" = BASE ]; then
-        test "$(grep -Fxc -- '-gpgpu_cache:dl1 S:32:128:4,L:T:m:L:L,A:512:8,16:0,32' "$input")" = 1
-        test "$(grep -Fxc -- '-gpgpu_cache:dl1PrefL1 S:32:128:4,L:T:m:L:L,A:512:8,16:0,32' "$input")" = 1
-        test "$(grep -Fxc -- '-gpgpu_cache:dl1PrefShared S:32:128:4,L:T:m:L:L,A:512:8,16:0,32' "$input")" = 1
+        test "$(grep -Ecx -- '^-gpgpu_cache:dl1[[:space:]]+S:32:128:4,L:T:m:L:L,A:512:8,16:0,32$' "$input")" = 1
+        test "$(grep -Ecx -- '^-gpgpu_cache:dl1PrefL1[[:space:]]+S:32:128:4,L:T:m:L:L,A:512:8,16:0,32$' "$input")" = 1
+        test "$(grep -Ecx -- '^-gpgpu_cache:dl1PrefShared[[:space:]]+S:32:128:4,L:T:m:L:L,A:512:8,16:0,32$' "$input")" = 1
         sed -e "s/-gpgpu_dtc_l1_logical_sets 32/-gpgpu_dtc_l1_logical_sets $sets/" \
             -e "s/S:32:128:4,L:T:m:L:L,A:512:8,16:0,32/S:$sets:128:4,L:T:m:L:L,A:512:8,16:0,32/g" \
             "$input" >"$output"
