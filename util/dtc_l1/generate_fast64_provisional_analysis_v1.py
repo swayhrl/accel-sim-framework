@@ -37,6 +37,30 @@ def value(metrics, key):
     return metrics.get(key, "NA")
 
 
+def companion_pib_full(item):
+    """Read the Base summary named by an older companion when needed.
+
+    The initial V1 companion schema did not copy PIB-full events even though
+    every companion pins its compact Base summary.  Retain the old companion
+    bytes and recover the source-defined terminal counter for preliminary
+    analysis; future companions carry the field directly.
+    """
+    metrics = item.get("metrics", {})
+    if metrics.get("pib_full_events") is not None:
+        return metrics["pib_full_events"]
+    source = item.get("source_summary")
+    if not source:
+        return "NA"
+    path = Path(source)
+    if not path.is_absolute():
+        path = ROOT / path
+    try:
+        summary = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return "NA"
+    return summary.get("metrics", {}).get("DTC_L1_pib_full_events", "NA")
+
+
 def drained(metrics):
     occupancy = metrics.get(
         "DTC_L1_pib_occupancy",
@@ -91,7 +115,7 @@ def main():
         except (OSError, json.JSONDecodeError):
             continue
         workload = path.name.removeprefix("FAST64_3_").removesuffix("_BASE_STRUCTURAL_METRICS_V1.json").replace("_", "-")
-        structural.append("\t".join(map(str, (workload, item.get("source_summary", "NA"), value(m, "cycles"), value(m, "instructions"), value(m, "pib_full_events"), value(m, "cacheline_all_lines_reserved_events"), value(m, "mshr_entry_full_events"), value(m, "mshr_merge_full_events"), value(m, "miss_queue_downstream_full_events"), value(m, "tag_bank_conflicts"), value(m, "live_miss_lower_acquired"), value(m, "live_miss_lower_released"), value(m, "terminal_pib_occupancy"), value(m, "terminal_lower_outstanding")))))
+        structural.append("\t".join(map(str, (workload, item.get("source_summary", "NA"), value(m, "cycles"), value(m, "instructions"), companion_pib_full(item), value(m, "cacheline_all_lines_reserved_events"), value(m, "mshr_entry_full_events"), value(m, "mshr_merge_full_events"), value(m, "miss_queue_downstream_full_events"), value(m, "tag_bank_conflicts"), value(m, "live_miss_lower_acquired"), value(m, "live_miss_lower_released"), value(m, "terminal_pib_occupancy"), value(m, "terminal_lower_outstanding")))))
 
     (GEN / "provisional_stage4_triplets.tsv").write_text("\n".join(triplets) + "\n", encoding="utf-8")
     (GEN / "provisional_stage4_speedup.tsv").write_text("\n".join(speedup) + "\n", encoding="utf-8")

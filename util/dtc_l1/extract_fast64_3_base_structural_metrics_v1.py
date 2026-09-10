@@ -111,6 +111,7 @@ def main() -> None:
             **totals,
             "tag_bank_conflicts": metrics.get("DTC_L1_tag_conflicts"),
             "tag_requests": metrics.get("DTC_L1_tag_requests"),
+            "pib_full_events": metrics.get("DTC_L1_pib_full_events"),
             "live_miss_lower_acquired": metrics.get("DTC_L1_lower_requests_acquired"),
             "live_miss_lower_released": metrics.get("DTC_L1_lower_requests_released"),
             "terminal_lower_outstanding": metrics.get("DTC_L1_lower_outstanding"),

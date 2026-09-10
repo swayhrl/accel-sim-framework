@@ -83,6 +83,30 @@ pressure but little IO-to-OO incremental change; MRI-Q is near neutral.  The
 future causal review must cross-check those observations with its explicit
 HOL, merge, retirement/reclaim, traffic, and live-miss evidence.
 
+### Structural-counter completeness and preliminary contrasts (2026-09-11)
+
+Every terminal Base compact summary already carries the source-defined
+`DTC_L1_pib_full_events` field.  Early V1 structural companions did not copy
+that field, which made the provisional structural table display `NA` despite
+the pinned source evidence.  Future companions now preserve it; the
+provisional generator reads the cited compact Base summary for older immutable
+companions.  The DWT2D extractor regression passes with the new field, and
+all 13 current structural rows now have a concrete PIB-full value.  Existing
+companion/result bytes were not rewritten.
+
+The resulting source-backed *hypotheses*, not classifications, include:
+
+| Base evidence | PIB-full | MSHR-entry-full | cacheline-all-reserved | downstream-full | permitted preliminary reading |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Btree (repaired Core) | 18,175,485 | 1,622,927 | 590 | 0 | strong PIB and conventional-MSHR pressure; compare with IO HOL and OO retirement/reclaim only after its Stage4 authority is complete |
+| Hotspot1 (repaired Core) | 5,037,171 | 866,624 | 24,303,354 | 15,056 | substantial Base structural pressure, but the small current IO-to-OO cycle change rules out a premature OO-reclaim conclusion |
+| Gaussian (historical Core) | 3,706,501 | 2,025,717 | 29,611,524 | 78,330 | useful source contrast only; historical identity prevents repaired-Core causal use |
+| LUD (historical Core) | 5,720,827 | 0 | 6,288,688 | 1,372 | useful near-neutral/low-MSHR contrast only; historical identity prevents repaired-Core causal use |
+
+These fields establish neither stall attribution nor speedup causation.
+FAST64.5 still requires accepted common-identity triplets and its complete
+HOL/merge/live-miss/traffic/retire/reclaim reconciliation.
+
 ## 2DConvolution/Base remains an implementation incident
 
 `fast64_3_2DConvolution_base_cap8192_a1_v2` is a preserved failed attempt,

@@ -27,6 +27,7 @@ assert result["classification"] == "PRECOMPUTED_STRUCTURAL_METRIC_COMPANION_NOT_
 assert result["metrics"]["cacheline_all_lines_reserved_events"] > 0
 assert result["metrics"]["mshr_entry_full_events"] > 0
 assert result["metrics"]["mshr_merge_full_events"] == 0
+assert result["metrics"]["pib_full_events"] > 0
 assert result["metrics"]["live_miss_lower_acquired"] == result["metrics"]["live_miss_lower_released"]
 PY
 printf 'FAST64_3_BASE_STRUCTURAL_METRICS_V1_REGRESSION_PASS\n'

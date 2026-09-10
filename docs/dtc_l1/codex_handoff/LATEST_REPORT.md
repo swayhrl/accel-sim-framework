@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## Stage3 PIB structural mapping completed for preliminary review (2026-09-11)
+
+The fixed Base summaries all contained `DTC_L1_pib_full_events`; an early
+structural-companion omission made the provisional table display `NA`.  The
+future extractor now preserves the field and the provisional generator safely
+recovers it from the already pinned summary for older companions.  DWT2D
+regression passes and all 13 current structural rows now have source-backed
+PIB-full values.  The updated preliminary handoff records Btree, Hotspot1,
+Gaussian and LUD contrasts as hypotheses only.  It expressly retains the
+historical-Core boundary for Gaussian/LUD and makes no causal, primary-stage,
+or GM claim.
+
 ## Preliminary Stage3/4 analysis boundary repaired (2026-09-11)
 
 The provisional Stage3/4 generator was audited against newly published
