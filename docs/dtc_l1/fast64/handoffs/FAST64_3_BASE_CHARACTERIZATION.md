@@ -1,6 +1,6 @@
 # FAST64.3 — Base Characterization Handoff
 
-Status: **PREPARED — DO NOT CLAIM FAST64_3_BASE_PASS UNTIL EVERY HARD ITEM BELOW IS CHECKED**
+Status: **ACTIVE — 5/12 Base rows promoted; 7/12 fresh immutable Base rows pending resource-safe acquisition**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -38,13 +38,13 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 
 | workload | accepted namespace/evidence | origin (`fresh`/`promoted`) | natural exit | strict parse | metric complete | cap-full=0 or resolution | status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| ATAX | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
-| BICG | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
-| GESUMMV | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
-| GEMM | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
+| ATAX | `generated/fast64_3_atax_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
+| BICG | `generated/qualification_r2_full_wave_alias_v2/` + `generated/fast64_3_bicg_base_structural_v1/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
+| GESUMMV | `generated/fast64_3_gesummv_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
+| GEMM | `generated/fast64_3_gemm_base_alias_v4/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | 2DConvolution | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 | Btree | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
-| DWT2D | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
+| DWT2D | `generated/fast64_3_dwt2d_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | Gaussian | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 | Hotspot1 | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 | LUD | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
@@ -54,6 +54,14 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 No row may be dropped for pressure level, runtime, or later benefit.
 
 ## 3. Promotion/reuse audit
+
+`generated/fast64_3_base_promotion_audit_v1.tsv` is the authoritative
+row-level audit. It verifies all five promoted rows against the frozen payload
+manifest and formal Base identity, then verifies natural immutable terminal,
+strict accounting/drain, host fields, required structural companion, and
+`DTC_L1_lower_cap_full_events=0`. The remaining seven rows are explicitly
+listed as `MISSING`; NN is deliberately reacquired because its historical
+precompute did not use the current frozen Framework execution snapshot.
 
 Before launching a Base row, document whether exact-identity evidence already
 exists. At closeout list every promoted row and prove:
