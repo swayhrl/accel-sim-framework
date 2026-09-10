@@ -53,6 +53,16 @@ It is recorded as `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` only in
 The corresponding repaired ATAX Base/IO rows are still nonterminal, so this
 does not create an ATAX triplet, a FAST64.3 result, or any stage promotion.
 
+Repaired-Core BICG/OO is likewise terminal and strict-preserved only:
+`145,666,048` instructions, `47,231,655` cycles, balanced lower
+create/issue/response and credit lifecycle (`17,814,913` each), balanced OO
+dependencies (`18,350,080`), and all final lower/PIB/inflight/OO-ref counters
+drained.  Its immutable receipts bind Core `95ccdb7a...`, runtime `462d105c...`
+and the A1/scientific identities.  The compact record
+`fast64/generated/fast64_repaired_ramp2_v1/fast64_bicg_oo_core95ccdb7a_a1_r1.json`
+remains `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; BICG Base and IO remain
+live, so no triplet or stage claim is made.
+
 ## FAST64.3/4 preliminary strict review; FAST64.6 held at current safe concurrency (2026-09-10)
 
 The current strict parser was rerun against every discovered terminal
