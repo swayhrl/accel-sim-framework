@@ -1,6 +1,34 @@
 # FAST64 Pending Precomputed-Acquisition Checkpoint
 
-Status: **ACTIVE — NO LATER STAGE PASS CLAIMED**
+Status: **HISTORICAL PRECOMPUTE CHECKPOINT — CURRENT FAST64.1 STATUS IS PASS; FAST64.2 REMAINS ACTIVE**
+
+## Current-authority reconciliation (2026-09-10)
+
+This handoff preserves the acquisition chronology below; it is not the
+current stage-state authority.  In particular, descriptions below of a live
+R2 wave or a pending FAST64.1 closeout are historical observations and are
+superseded by `handoffs/FAST64_1_PLATFORM.md`, whose status is
+`FAST64_1_PLATFORM_PASS`.
+
+The current logical state is:
+
+- FAST64.1: `FAST64_1_PLATFORM_PASS`;
+- FAST64.2: `REPAIR_QUALIFICATION_ACTIVE`, awaiting the naturally running
+  source-reachable cap-1 coupled-stress diagnostic; and
+- FAST64.3: prepared only.  Its precomputed Base rows remain physical
+  evidence pending FAST64.2 acceptance and must not be promoted early.
+
+The exact-identity FAST64.3 Base promotion candidates presently retained in
+the compact evidence tree are ATAX, DWT2D, GEMM, GESUMMV, and the immutable
+R2 BICG Base row.  Each still requires the FAST64.3 promotion audit after the
+FAST64.2 PASS anchor.  The historical NN Base entry below is retained as a
+trace/provenance record; its recorded Framework launch source is not the
+current frozen formal execution snapshot and it is not pre-authorized for
+automatic promotion.
+
+No text in this historical checkpoint can advance a stage, replace the frozen
+scientific execution snapshot `037f008b330eb230353b60edf126d6be9f45afdc`,
+or supersede the current FAST64.2 forced-stress handoff.
 
 ## ATAX/Base natural terminal — strict-valid precompute (2026-09-09)
 
