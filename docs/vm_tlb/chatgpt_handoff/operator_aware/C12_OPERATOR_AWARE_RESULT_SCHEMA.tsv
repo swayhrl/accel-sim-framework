@@ -1,0 +1,65 @@
+artifact	field	meaning	required
+INDEX_ALIGNMENT_AUDIT.tsv	roi	prefill/decode1	YES
+INDEX_ALIGNMENT_AUDIT.tsv	compute_index	0-based compute-only index	YES
+INDEX_ALIGNMENT_AUDIT.tsv	trace_filename	compute-only trace entry	YES
+INDEX_ALIGNMENT_AUDIT.tsv	semantic_kernel_name	embedded -kernel name	YES
+INDEX_ALIGNMENT_AUDIT.tsv	simulator_marker_index	aligned simulator processing-kernel index	YES
+INDEX_ALIGNMENT_AUDIT.tsv	alignment_status	PASS/FAIL/UNRESOLVED	YES
+INDEX_ALIGNMENT_AUDIT.tsv	evidence	path/hash/marker evidence	YES
+KERNEL_OPERATOR_MAP.tsv	roi	prefill/decode1	YES
+KERNEL_OPERATOR_MAP.tsv	compute_index	0-based compute-only index	YES
+KERNEL_OPERATOR_MAP.tsv	trace_filename	trace file	YES
+KERNEL_OPERATOR_MAP.tsv	semantic_kernel_name	embedded semantic kernel name	YES
+KERNEL_OPERATOR_MAP.tsv	operator_class	frozen taxonomy class	YES
+KERNEL_OPERATOR_MAP.tsv	operator_group	ATTENTION/FFN/OTHER_MODEL/OTHER_COMPUTE/MIXED/UNRESOLVED	YES
+KERNEL_OPERATOR_MAP.tsv	evidence_kind	DIRECT_PARAMETER_RANGE/DIRECT_SEMANTIC_NAME/MIXED_DIRECT/HEURISTIC_SEQUENCE/UNRESOLVED	YES
+KERNEL_OPERATOR_MAP.tsv	evidence_detail	auditable evidence summary	YES
+KERNEL_OPERATOR_MAP.tsv	parameter_names	directly touched Weight parameter names or NONE	YES
+KERNEL_OPERATOR_MAP.tsv	layer_id	direct layer id, MULTI_LAYER, or NA	YES
+KERNEL_OPERATOR_MAP.tsv	weight_refs	trace-derived Weight references	YES
+KERNEL_OPERATOR_MAP.tsv	kv_refs	trace-derived KV references	YES
+KERNEL_OPERATOR_MAP.tsv	unknown_refs	trace-derived UNKNOWN references	YES
+KERNEL_OPERATOR_MAP.tsv	weight_unique_pages_64k	trace-derived unique 64KiB Weight pages	YES
+KERNEL_OPERATOR_MAP.tsv	kv_unique_pages_64k	trace-derived unique 64KiB KV pages	YES
+KERNEL_OPERATOR_MAP.tsv	classification_status	DIRECT/HEURISTIC/UNRESOLVED/CONFLICT	YES
+OPERATOR_COVERAGE.tsv	roi	prefill/decode1	YES
+OPERATOR_COVERAGE.tsv	coverage_basis	kernel_count/trace_memory_refs/instructions/cycles	YES
+OPERATOR_COVERAGE.tsv	direct_fraction	fraction covered by direct evidence	YES
+OPERATOR_COVERAGE.tsv	heuristic_fraction	fraction heuristic only	YES
+OPERATOR_COVERAGE.tsv	unresolved_fraction	fraction unresolved/unattributed	YES
+OPERATOR_COVERAGE.tsv	numerator	raw numerator	YES
+OPERATOR_COVERAGE.tsv	denominator	raw denominator	YES
+F0_OPERATOR_CHARACTERIZATION.tsv	roi	prefill/decode1	YES
+F0_OPERATOR_CHARACTERIZATION.tsv	operator_class	frozen taxonomy class or UNATTRIBUTED	YES
+F0_OPERATOR_CHARACTERIZATION.tsv	metric	metric name	YES
+F0_OPERATOR_CHARACTERIZATION.tsv	metric_scope	EXACT_PER_KERNEL/TRACE_DERIVED/FULL_ROI_ONLY	YES
+F0_OPERATOR_CHARACTERIZATION.tsv	unit	cycles/instructions/refs/pages/events/transactions/etc	YES
+F0_OPERATOR_CHARACTERIZATION.tsv	numerator	count numerator if rate	CONDITIONAL
+F0_OPERATOR_CHARACTERIZATION.tsv	denominator	count denominator if rate	CONDITIONAL
+F0_OPERATOR_CHARACTERIZATION.tsv	value	count or recomputed rate	YES
+F0_OPERATOR_CHARACTERIZATION.tsv	source	trace/raw-log/sidecar path and identity	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	roi	prefill/decode1	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	arm	F0/F1/F2/F5/F7/F8/F9	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	lseg	NONE/5/10/20	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	operator_class	frozen taxonomy class or UNATTRIBUTED	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	metric	mechanism/runtime metric	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	metric_scope	EXACT_PER_KERNEL/TRACE_DERIVED/FULL_ROI_ONLY	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	unit	metric unit	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	value	metric value	YES
+ARM_OPERATOR_CHARACTERIZATION.tsv	source_raw_log_sha256	C12 immutable raw log identity	YES
+OPERATOR_ARM_DELTAS.tsv	roi	prefill/decode1	YES
+OPERATOR_ARM_DELTAS.tsv	comparison	F1_vs_F2/F5_vs_F0/F7_vs_F0/F8_vs_F0/F8_vs_F7/F8L10_vs_F9/etc	YES
+OPERATOR_ARM_DELTAS.tsv	operator_class	frozen taxonomy class or FULL_ROI	YES
+OPERATOR_ARM_DELTAS.tsv	metric	compared metric	YES
+OPERATOR_ARM_DELTAS.tsv	baseline_value	baseline count/value	YES
+OPERATOR_ARM_DELTAS.tsv	candidate_value	candidate count/value	YES
+OPERATOR_ARM_DELTAS.tsv	delta_abs	candidate-baseline	YES
+OPERATOR_ARM_DELTAS.tsv	delta_rel	relative delta when denominator valid	YES
+OPERATOR_ARM_DELTAS.tsv	claim_scope	MEASURED_OPERATOR_FACT/SUPPORTED_OPERATOR_SIGNAL/FULL_ROI_ONLY	YES
+LSEG_OPERATOR_SENSITIVITY.tsv	roi	prefill/decode1	YES
+LSEG_OPERATOR_SENSITIVITY.tsv	arm_family	F7/F8	YES
+LSEG_OPERATOR_SENSITIVITY.tsv	lseg	5/10/20	YES
+LSEG_OPERATOR_SENSITIVITY.tsv	operator_class	frozen class or FULL_ROI	YES
+LSEG_OPERATOR_SENSITIVITY.tsv	metric	cycles if exact-per-kernel else mechanism activity	YES
+LSEG_OPERATOR_SENSITIVITY.tsv	value	metric value	YES
+LSEG_OPERATOR_SENSITIVITY.tsv	note	latency-sensitivity interpretation boundary	YES
