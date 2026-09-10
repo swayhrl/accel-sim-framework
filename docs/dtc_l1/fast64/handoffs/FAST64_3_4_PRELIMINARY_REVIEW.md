@@ -27,6 +27,19 @@ simulator output.  A passed row still requires its identity/reuse and stage
 acceptance gates.  In particular, historical `bbcbb5e...` IO/OO evidence is
 not silently promoted to repaired-Core evidence.
 
+### ATAX historical IO reconciliation (2026-09-11)
+
+`fast64_4_atax_io_cap8192_a1_v3` is a natural-exit-zero historical-Core IO
+attempt, not an unobserved placeholder.  The strict validator was rerun in an
+isolated output namespace using its exact immutable receipt, config, payload,
+Core `bbcbb5e...`, runtime `6a8743b4...`, A1 and Framework identity; its
+compact result was byte-identical to
+`generated/fast64_4_precomputed_rows_v1/fast64_4_atax_io_cap8192_a1_v3.json`.
+The zero-access transition map permits this successful literal IO observation
+only under its recorded historical provenance.  The provisional triplet table
+now records one IO candidate, but it has no matching same-identity Base/OO
+triple and is therefore explicitly incomplete and nonpromoting.
+
 ## Current provisional aggregates
 
 The mechanically regenerated, checked-in, nonpromoting tables are:

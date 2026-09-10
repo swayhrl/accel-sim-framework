@@ -1,5 +1,14 @@
 # Latest Codex Report
 
+## ATAX historical IO strict-revalidated as a literal candidate (2026-09-11)
+
+The previously untracked ATAX/PAPER_IO compact row was verified from its
+immutable START/TERMINAL receipts, exact historical Core `bbcbb5e...`/
+runtime `6a8743b4...`, A1, config and payload.  A fresh isolated strict
+validation produced byte-identical JSON.  It is now tracked as a literal
+historical IO reuse candidate in the provisional table; it is not relabeled as
+Core-95, has no common-identity triplet, and creates no stage/result promotion.
+
 ## BICG physical-32 OO future-only closeout restored (2026-09-11)
 
 The original v4 controller is no longer a live process, while its one
