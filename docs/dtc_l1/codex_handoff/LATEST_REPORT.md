@@ -12,11 +12,30 @@ with cycles/instructions `6,985/1,284,872`, lower `10,691/10,691`, PIB
 and structural evidence is under `generated/fast64_3_dynamic_base_v1/`.
 NN is `STRICT_VALID_PENDING_STAGE_ACCEPTANCE`, not a FAST64.3 PASS claim.
 
-2DConvolution/Base plus fresh Gaussian/Base, Hotspot1/Base, and LUD/Base are
-currently immutable and CPU-active. Btree/Base remains reserved for the
-existing single-slot continuation after 2DConvolution naturally terminates;
-MRI-Q/Base remains queued. No active row has an assertion/fatal/actual-deadlock/
-output-mismatch signature.
+LUD/Base is now a second fresh strict-valid row, not yet a stage PASS claim:
+immutable attempt `3a5f2814-bfb6-4f77-84c0-8c860d93b6e4` naturally exited `0`
+and records `1,113,878/184,963,840` cycles/instructions, lower
+`1,048,098/1,048,098`, PIB `373,488/373,488`, terminal lower/PIB `0/0`, and
+lower-cap-full `0`.  Its compact strict, dynamic, and structural evidence is
+`generated/fast64_3_dynamic_base_v1/fast64_3_LUD_base_cap8192_a1_v2.json`,
+`FAST64_3_LUD_BASE_DYNAMIC_V1.tsv`, and
+`FAST64_3_LUD_BASE_STRUCTURAL_METRICS_V1.json`.  The formal identity is the
+frozen Core/runtime/A1/framework tuple and frozen LUD payload; its status is
+`STRICT_VALID_PENDING_STAGE_ACCEPTANCE`.
+
+Hotspot1/Base is a third fresh strict-valid row, also pending the full-stage
+acceptance: immutable attempt `409dbf6b-9a36-41c8-8c34-4aad51e6154a` naturally
+exited `0` with `160,486/377,291,004` cycles/instructions, lower
+`701,725/701,725`, PIB `161,336/161,336`, terminal lower/PIB `0/0`, and
+lower-cap-full `0`. Its compact evidence is the Hotspot1 triple under
+`generated/fast64_3_dynamic_base_v1/`.  This is the frozen formal
+Core/runtime/A1/framework identity and source payload, with status
+`STRICT_VALID_PENDING_STAGE_ACCEPTANCE`.
+
+2DConvolution/Base plus fresh Gaussian/Base and MRI-Q/Base are immutable and
+CPU-active. Btree/Base remains reserved for the existing single-slot
+continuation after 2DConvolution naturally terminates. No active row has an
+assertion/fatal/actual-deadlock/output-mismatch signature.
 
 The four-worker admission audit
 `/tmp/fast64-future-wave4-audit-20260910T0807Z.tsv` passed: sampled swap-out,
@@ -54,6 +73,16 @@ result is claimed while the row is live. Separate future-only observer
 `3d437ff5b8470ab0eee0ec1de576b6a7e6b601320e986d59c64df32a52ef7dd5`) waits
 for that strict summary before materializing compact JSON/TSV evidence and its
 source-defined Base structural companion; it never writes live run state.
+
+The LUD natural terminal freed CPU 7.  A fresh measured admission audit
+`/tmp/fast64-future-lud-terminal-refill-audit-20260910T082614Z.tsv` authorized
+exactly one worker (zero sampled swap-out/OOM/PSI/throttle, about 190 GiB
+cgroup headroom, and about 117 GiB output free).  It dispatched only
+`fast64_4_lud_io_cap8192_a1_v3`, immutable attempt
+`ad50c217-c4cc-4cf4-a514-91a368509f03`, on CPU 7 with a separate v2 collector.
+This is physical precomputation under
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; it is neither a FAST64.4 logical
+opening nor an accepted performance row.
 
 ## FAST64.4 physical precompute — ATAX/IO active (2026-09-10)
 
