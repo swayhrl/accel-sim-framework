@@ -47,6 +47,8 @@ The mechanically regenerated, checked-in, nonpromoting tables are:
 - `generated/provisional_stage3_structural.tsv`
 - `generated/provisional_stage4_triplets.tsv`
 - `generated/provisional_stage4_speedup.tsv`
+- `generated/FAST64_STAGE_GATE_LEDGER_V1.tsv` (cross-stage HARD-gate state;
+  not an acceptance artifact)
 
 The only common repaired-Core triplet candidates presently represented are
 `Btree`, `Hotspot1`, and `MRI-Q`.  Their preliminary cycle observations are:

@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## FAST64 stage-gate ledger reconciled (2026-09-11)
+
+`fast64/generated/FAST64_STAGE_GATE_LEDGER_V1.tsv` records the current
+nonpromoting state machine from the acceptance contract: FAST64.0/.1/.2 are
+PASS; FAST64.3 is ACTIVE pending the 2DConvolution/Base closure and full Base
+promotion audit; FAST64.4 is PREPARED; FAST64.5 is preliminary analysis only;
+FAST64.6 is physical precomputation only; and FAST64.7 is not entered.  The
+ledger names the exact evidence or still-missing HARD boundary for every
+stage, so no precompute or provisional aggregate can advance a stage by
+renaming.
+
 ## GESUMMV 48-KiB future-only closeout prepared (2026-09-11)
 
 The final unlaunched physical pair, GESUMMV 48 KiB IO/OO, now has passing
