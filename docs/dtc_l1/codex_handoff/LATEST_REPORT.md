@@ -14,6 +14,14 @@ for the failed historical attempt, and is deferred until a resource-safe slot
 is available. No simulator, live controller, scientific config, or formal
 result was changed by this preparation.
 
+The paired read-only analyzer
+`util/dtc_l1/analyze_fast64_3_2d_base_diagnostic_v1.py` is now ready for that
+future terminal stdout. It mechanically joins each reserved L1D block to its
+observed fill owner and `pending_read` count, rejects the old dump because it
+lacks this required instrumentation, and labels all output observation-only.
+It was tested with a synthetic owner/absence mapping and cannot create a
+formal result or select a repair.
+
 ## FAST64.6 BICG/16.5-KiB capacity boundary preserved; Btree IO precomputes added (2026-09-10)
 
 Two Btree physical-pool IO rows naturally exit 0 and strict-validate as
