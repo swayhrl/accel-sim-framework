@@ -1,5 +1,21 @@
 # Latest Codex Report
 
+## Preliminary Stage3/4 analysis boundary repaired (2026-09-11)
+
+The provisional Stage3/4 generator was audited against newly published
+FAST64.6 records and found to be too broad: a `FAST64_SENS_*` physical
+precompute could otherwise add duplicate IO/OO candidates to the primary
+matrix.  The future analysis utility now excludes that exact config-ID family
+only.  It does not modify simulators, experimental configurations, compact
+results, or frozen collectors.  Regeneration and an explicit assertion prove
+that Btree remains the single 1/1/1 repaired-Core preliminary candidate and
+that the BICG physical-24-KiB pair is excluded from Stage4 aggregation.
+
+The refreshed table also exposes repaired-Core ATAX/OO and BICG/OO only as
+incomplete primary groups; neither row has the required matching triplet.  All
+tables remain `PRELIMINARY_NONPROMOTING`, with no FAST64.3/.4/.5 PASS or
+FAST12-GM claim.
+
 ## BICG 24-KiB pair strictly closed; GESUMMV 40-KiB IO safely precomputed (2026-09-11)
 
 BICG/physical-24-KiB/PAPER_IO naturally exited zero and the unchanged V1

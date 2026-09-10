@@ -20,6 +20,13 @@ def rows():
         metrics, provenance = value.get("metrics", {}), value.get("provenance", {})
         if value.get("schema") != "dtc_l1_summary_v1" or metrics.get("DTC_L1_mode") not in {"PAPER_BASE", "PAPER_IO", "PAPER_OO"}:
             continue
+        # FAST64.6 sensitivity acquisition is permitted to run ahead of the
+        # Stage3/4 logical gates, but it is never a Stage4 primary candidate.
+        # Do not let a same-workload/mode physical point create a duplicate
+        # candidate or replace the frozen primary configuration in these
+        # preliminary (and explicitly nonpromoting) aggregates.
+        if provenance.get("config_id", "").startswith("FAST64_SENS_"):
+            continue
         attempt = value.get("immutable_attempt", {})
         if not attempt.get("terminal_receipt_sha256"):
             continue

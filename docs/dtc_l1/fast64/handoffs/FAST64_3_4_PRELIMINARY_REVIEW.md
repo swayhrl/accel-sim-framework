@@ -27,6 +27,23 @@ simulator output.  A passed row still requires its identity/reuse and stage
 acceptance gates.  In particular, historical `bbcbb5e...` IO/OO evidence is
 not silently promoted to repaired-Core evidence.
 
+### FAST64.6 exclusion regression (2026-09-11)
+
+The provisional generator originally discovered every terminal compact JSON.
+That scope was too broad once FAST64.6 physical precomputation began: a
+`FAST64_SENS_*` record shares workload/mode provenance with the primary
+matrix, but is explicitly not a Stage4 primary candidate.  The generator now
+excludes only `provenance.config_id` values with the `FAST64_SENS_` prefix.
+This is an analysis-boundary repair, not a simulator/config/result change.
+
+The regenerated review contains 47 non-sensitivity terminal rows in 16
+identity groups.  A regression assertion confirms that Btree remains exactly
+one repaired-Core Base/IO/OO candidate with common instruction identity and
+drain, while BICG's physical-24-KiB IO/OO pair cannot create a primary
+candidate.  The independently terminal repaired-Core ATAX/OO and BICG/OO
+records now appear only as incomplete Stage3/4 groups because their matching
+primary-mode triplets are still absent.  No status is promoted.
+
 ### ATAX historical IO reconciliation (2026-09-11)
 
 `fast64_4_atax_io_cap8192_a1_v3` is a natural-exit-zero historical-Core IO
