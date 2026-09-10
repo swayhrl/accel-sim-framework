@@ -1,5 +1,23 @@
 # Latest Codex Report
 
+## FAST64.3 Gaussian/Base and MRI-Q/Base strict terminals (2026-09-10)
+
+Fresh immutable Gaussian/Base (`3ec79940-ae70-444a-8991-816d6f570223`) and
+MRI-Q/Base (`4549f146-690a-4c32-be7f-ac8a8b363d3d`) both naturally exited `0`
+and passed the future-only strict v2 collector with the frozen bbcbb/runtime/
+A1/framework/Base-config identities. Gaussian records `4,229,815` cycles and
+`283,685,120` instructions, lower acquire/release `1,951,815/1,951,815`, PIB
+admit/retire `743,656/743,656`, terminal lower/PIB `0/0`, and cap-full `0`.
+MRI-Q records `366,667` cycles and `1,411,757,056` instructions, lower
+acquire/release `62,208/62,208`, PIB admit/retire `21,792/21,792`, terminal
+lower/PIB `0/0`, and cap-full `0`. Both error scans are empty and their compact
+strict/dynamic/structural evidence is retained under
+`fast64/generated/fast64_3_dynamic_base_v1/` as
+`STRICT_VALID_PENDING_STAGE_ACCEPTANCE`.
+
+FAST64.3 is still active: 2DConvolution/Base remains live and Btree/Base is
+queued behind its existing read-only continuation; no stage PASS is claimed.
+
 ## FAST64.4 Hotspot1 IO/OO source-reachable failure (2026-09-10)
 
 Hotspot1 IO and OO physical precomputes remain preserved but are
