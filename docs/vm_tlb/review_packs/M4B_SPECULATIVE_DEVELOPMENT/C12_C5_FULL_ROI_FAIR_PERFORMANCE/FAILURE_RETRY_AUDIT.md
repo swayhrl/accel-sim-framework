@@ -216,3 +216,21 @@ C9-consistent parser 在同一 raw log 上重解析为 `PASS`（cycles `36035731
 `114.5683`）。这与 Decode1 F7-Lseg20 是同一 Lseg20 L1-first late-discard accounting
 条件，而非另一项 simulator 或 architecture failure；没有重放、输入变更或 live-worker
 signal。
+
+### Prefill F7-Lseg20 HIT_FIRST late-discard parser-only reparse
+
+Prefill F7-Lseg20 naturally exited at `2026-09-10T05:47:35Z` with exit `0`; its immutable
+raw-log SHA-256 is `561262be54cb01195ae728f7c997842d6c8959ce18a06de69a481e6cacef46f4`.
+It contains complete `692/692` kernel markers and telemetry records, and object/PTE
+conservation both pass. The older collector reported only `F7 Segment hit/miss conservation`,
+the same pre-C9 accounting error already documented for Decode1 Lseg20 arms.
+
+The unchanged raw telemetry satisfies the C9 HIT_FIRST/MISS_JOIN partition exactly:
+`attempts=launches=93915052`, `completions=48940078`, `hits=47926636`,
+`misses=1013442`, and `late_result_discards=44974974`. Therefore
+`completions=hits+misses` and `late_result_discards=attempts-completions`; late shadow results
+do not become second translation completions. At `2026-09-10T06:09Z`, the current parser was
+run in `--validate --point prefill:F7:20` mode against this same raw log. It returned `PASS`
+with no errors and did not launch, signal, or rerun a simulator. Framework/Core/binary, config,
+trace, registration, and raw-log identities remain unchanged; this is a formal C12 PASS, not a
+retry result.
