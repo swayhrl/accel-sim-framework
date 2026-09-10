@@ -62,6 +62,28 @@ each with `184,963,840` instructions. Their compact records are
 They are strictly `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: FAST64.4 has not
 opened logically and no performance/triplet promotion is claimed.
 
+## FAST64 future-wave parallelism recalibration (2026-09-10)
+
+A read-only live inventory records 9 current FAST64 workers: 8 formal bbcbb
+rows and the isolated Hotspot1/OO repair qualification. The formal-worker RSS
+p50/p95/max is `644 MiB` / `4.79 GiB` / `4.79 GiB`; total live simulator RSS,
+including two unrelated VM-TLB simulations, is about `18.0 GiB`. The cgroup
+has a `384`-core quota, about `209 GiB` memory headroom, `~81 GiB`
+MemAvailable, `~116 GiB` output capacity, zero CFS throttling and zero memory
+PSI; iowait was `0.38%`. A 20-worker total FAST64 target is resource-safe by
+the measured p95 planning model, subject to staged post-expansion evidence.
+
+Future-only `util/dtc_l1/audit_fast64_future_precompute_resources_v2.sh`
+supersedes v1 for new admission decisions. It retains every sampled
+swap/major-fault/cgroup-I/O/PSI/OOM/CPU observation and classifies one positive
+swap window as `TRANSIENT_SWAP_ACTIVITY`; only repeated positive windows are
+`SUSTAINED_SWAP_ACTIVITY` and a pressure rejection. Its initial two-window
+audit observed zero swap-out, major faults, PSI, OOM, and throttling. No live
+controller or frozen closeout dependency was changed. To avoid avoidable Core
+identity migration, unused capacity remains reserved for the Hotspot repair,
+remaining Base work, and repaired-Core regression preparation rather than a
+large old-bbcbb FAST64.4 wave before the repair is qualified.
+
 ## FAST64.3 active Base promotion / acquisition state (2026-09-10)
 
 The exact-identity Base promotion audit accepts ATAX, BICG, GESUMMV, GEMM and

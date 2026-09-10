@@ -206,6 +206,17 @@ Record the worker-pool calibration actually used:
 
 Efficiency decisions are not scientific result identities.
 
+For all future FAST64.3/4 launch decisions, use the future-only
+`util/dtc_l1/audit_fast64_future_precompute_resources_v2.sh`, not the v1
+single-window any-swap rejection. V2 captures repeated short windows and
+classifies one positive `pswpout` observation as transient activity while
+rejecting only sustained swap activity or independent OOM/PSI/memory/output/
+CPU safety failures. The initial v2 two-window calibration reports zero
+swap-out, major faults, PSI, OOM, and throttling; formal FAST64 p95/max RSS is
+`4.79 GiB`, with roughly `209 GiB` cgroup memory headroom. This supports a
+measured total-worker target of up to 20, verified incrementally after each
+material refill. It changes scheduling only, never scientific row identity.
+
 ## 10. FAST64.3 HARD acceptance checklist
 
 Do not change `Status` to PASS until every applicable item is checked.
