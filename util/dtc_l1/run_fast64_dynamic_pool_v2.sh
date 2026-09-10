@@ -52,7 +52,7 @@ if [ -z "$workloads" ]; then workloads=$(awk -F '\t' 'NR > 1 {print $1}' "$manif
 IFS=, read -r -a workload_list <<<"$workloads"
 test "${#workload_list[@]}" -gt 0
 for workload in "${workload_list[@]}"; do
-  test -n "$(awk -F '\t' -v w="${workload,,}" '$1==w {print $1;exit}' "$manifest")" || {
+  test -n "$(awk -F '\t' -v w="$workload" 'tolower($1)==tolower(w) {print $1;exit}' "$manifest")" || {
     echo "UNKNOWN_FROZEN_WORKLOAD $workload" >&2; exit 2;
   }
 done

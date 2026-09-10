@@ -69,7 +69,7 @@ test "$(sha256sum "$config" | awk '{print $1}')" = \
   "$(git -C "$repo" show "$framework:${config#$repo/}" | sha256sum | awk '{print $1}')"
 test "$(sha256sum "$trace_config" | awk '{print $1}')" = \
   "$(git -C "$repo" show "$framework:gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config" | sha256sum | awk '{print $1}')"
-trace=$(awk -F '\t' -v w="${workload,,}" '$1 == w {print $2; exit}' "$payload")
+trace=$(awk -F '\t' -v w="$workload" 'tolower($1) == tolower(w) {print $2; exit}' "$payload")
 test -n "$trace" && test -r "$trace/kernelslist.g"
 for p in "$run" "$run.launcher.log" "$run.supervisor.tsv"; do
   test ! -e "$p" || { echo "TARGET_EXISTS_REFUSE_RERUN $p" >&2; exit 1; }
