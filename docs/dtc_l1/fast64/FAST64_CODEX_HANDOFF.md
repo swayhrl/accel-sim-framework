@@ -1,6 +1,8 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64_2_REPAIR_PASS; FAST64.3 ACTIVE; REPAIRED-CORE HOTSPOT1 TRIPLET STRICT-VALID; REMAINING BASE/PRIMARY ACQUISITION ACTIVE**
+Status: **GOAL ACTIVE; FAST64.0/.1/.2 PASS; FAST64.3 ACTIVE;
+FAST64.4 PREPARED; FAST64.5 PRELIMINARY ONLY; FAST64.6 PHYSICAL
+PRECOMPUTATION ACTIVE; FAST64.7 NOT ENTERED**
 
 Framework branch:
 
@@ -91,14 +93,22 @@ It is diagnostic-only, not a performance point. Together with the retained
 high-cap negative control and BICG normal-triplet reuse it closes
 `FAST64_2_REPAIR_PASS`; see `handoffs/FAST64_2_REPAIR_QUALIFICATION.md`.
 
-FAST64.3 promotion audit `generated/fast64_3_base_promotion_audit_v1.tsv`
-accepts exact-identity ATAX, BICG, GESUMMV, GEMM, and DWT2D Base evidence.
-The remaining 2DConvolution, Btree, Gaussian, Hotspot1, LUD, NN, and MRI-Q
-Base rows are a fresh immutable dynamic-pool queue. A 7-worker and a 1-worker
-60-second admission each correctly rejected on nonzero swap-out; this is an
-operational wait, not a data or architecture failure. Future-only alias-v3
-preserves frozen-validator/manifest bytes while accepting canonical manifest
-name casing, and the dynamic pool's full seven-row dry-run passes.
+The authoritative current cross-stage state is
+`generated/FAST64_STAGE_GATE_LEDGER_V1.tsv`, not the historical queue wording
+in earlier handoffs.  It records FAST64.0/.1/.2 as PASS; FAST64.3 as ACTIVE
+pending the 2DConvolution/Base source-backed terminal diagnosis and the full
+12-row Base promotion audit; FAST64.4 as PREPARED; FAST64.5 as preliminary
+analysis only; FAST64.6 as permitted physical precomputation only; and
+FAST64.7 as not entered.  `codex_handoff/LATEST_REPORT.md` contains the
+latest compact execution transition, but its review/checkpoint commit SHA is
+never substituted for the frozen scientific Framework snapshot in a result.
+
+FAST64.6 retained sensitivity rows are explicitly
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; their existence does not alter
+the FAST64.3/4/5 promotion order, primary matrix, causal classification, or
+FAST12 aggregate.  The sensitivity handoff and coverage index are
+`handoffs/FAST64_6_SENSITIVITY.md` and
+`generated/FAST64_6_PHYSICAL_COVERAGE_V1.tsv`.
 
 ## Mission
 
