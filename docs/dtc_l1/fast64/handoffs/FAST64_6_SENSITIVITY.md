@@ -246,3 +246,31 @@ fresh BICG / 40 KiB / IO in namespace
 `2c49d8fe-5b05-4814-84a5-0d588996b90b`, exact physical-40 config and formal
 Core-95/runtime/A1 identities. Future-only v5 collection is isolated to this
 row. Neither fact advances FAST64.4 or FAST64.6 logical acceptance.
+
+## BICG / 40-KiB / OO paired physical precompute (2026-09-11)
+
+The source-backed mode policy is frozen before this dispatch: physical-pool
+points run both PAPER_IO and PAPER_OO, keep the 16-KiB logical geometry and
+mode-primary PIB value fixed, and normalize to the 32-KiB PAPER_IO point.
+`40 KiB` is exactly `320` 128-B physical lines (`40,960 B`), as recorded in
+`generated/FAST64_6_SENSITIVITY_MATRIX_V1.tsv` and the resolved config plan.
+No config is rounded or jointly tuned.
+
+At the fresh admission snapshot there were 19 FAST64 leaves; `MemAvailable`
+was 129.5 GiB, cgroup use 64.3 GiB of 256 GiB, memory/I/O PSI and CFS
+throttling were zero, and output headroom was about 106 GiB.  CPU 41 was an
+unshared physical core.  The missing BICG/physical-40/PAPER_OO pair therefore
+passed the immutable dispatcher dry run and was started exactly once:
+
+| Row | CPU | UUID | config | collector | disposition |
+| --- | ---: | --- | --- | --- | --- |
+| BICG / 40 KiB / OO | 41 | `11383078-382d-4f18-9eb3-975bce4fb434` | `FAST64_SENS_PHYSICAL_40KB_OO`, SHA `6b1cf347...` | future-only `collect_fast64_6_precompute_v6.sh` | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
+
+The row binds formal repaired Core `95ccdb7a...`, runtime `462d105c...`, A1
+observer, frozen scientific Framework `037f008b...`, materialization
+`180e81c...`, and read-only immutable runner `bf9a84c8...`.  Its atomic START
+receipt is present in fresh namespace `fast64_sens_v8_bicg_physical40_oo`.
+The v6 collector is isolated to this one future row; no live V3/V4/V5
+collector, Stage3/4 simulator, or diagnostic was edited or restarted.  This
+is physical acquisition only and cannot promote FAST64.4, FAST64.5, or
+FAST64.6.

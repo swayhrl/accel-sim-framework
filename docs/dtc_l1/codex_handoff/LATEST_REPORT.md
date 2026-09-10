@@ -1,5 +1,38 @@
 # Latest Codex Report
 
+## Stage3/4 preliminary review refreshed; FAST64.6 BICG 40-KiB OO precompute dispatched (2026-09-11)
+
+Goal mode remains active.  The already checked-in preliminary Stage3/4 tables
+were reread against their compact strict records and the zero-access transition
+map.  They remain explicitly nonpromoting: the only complete, same
+repaired-Core/runtime triplet candidates are Btree, Hotspot1, and MRI-Q;
+historical `bbcbb5e...` rows retain their literal identity and only the
+source-inert/reuse status recorded in
+`fast64/handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.  No
+FAST64.3, FAST64.4, FAST64.5, or FAST12-GM claim is made.  The preliminary
+structural/speedup tables continue to be hypotheses for the later causal
+review, not a correlation-to-causation conversion.
+
+The frozen FAST64.6 authority resolves the execution policy without an
+experiment-design choice: logical, physical-pool, and PIB families use
+PAPER_IO and PAPER_OO; physical points normalize to 32-KiB IO; and the
+physical mapping remains exact whole lines (including 40 KiB = 320 lines).
+After a fresh resource audit found 19 FAST64 simulator leaves, 129.5 GiB
+`MemAvailable`, 64.3 GiB of the 256-GiB cgroup currently used, zero current
+memory/I/O PSI, no CFS throttling, and about 106 GiB output headroom, one
+unshared physical core was safely available.  The exact missing paired point
+BICG / physical 40 KiB / PAPER_OO was dry-run verified and atomically
+dispatched on CPU 41 as UUID `11383078-382d-4f18-9eb3-975bce4fb434`.
+
+It uses formal Core `95ccdb7a...`, runtime `462d105c...`, A1 observer,
+scientific Framework `037f008b...`, materialization `180e81c...`, the
+read-only immutable-v2 runner `bf9a84c8...`, and fresh namespace
+`fast64_sens_v8_bicg_physical40_oo`.  Its START receipt is present and a new
+future-only v6 collector watches only that namespace.  Existing V3/V4/V5
+collectors and every live Stage3/4 or sensitivity simulator were not changed.
+This is solely `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, never a primary
+FAST64.4 result or FAST64.6 logical acceptance.
+
 ## Prepared exact 2DConvolution/Base diagnostic replay; no live work disturbed (2026-09-11)
 
 The preserved 2DConvolution/Base failure now has a hash-pinned, future-only
