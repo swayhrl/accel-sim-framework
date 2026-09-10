@@ -1,5 +1,19 @@
 # Latest Codex Report
 
+## Prepared exact 2DConvolution/Base diagnostic replay; no live work disturbed (2026-09-11)
+
+The preserved 2DConvolution/Base failure now has a hash-pinned, future-only
+diagnostic dispatcher at
+`util/dtc_l1/dispatch_fast64_3_2d_base_diagnostic_v1.sh`. Its read-only
+default dry-run passed against clean observational Core `f2836ea1...`, its
+Release binary `361aada1...`, immutable runner `bf9a84c8...`, the frozen Base
+config `1a016e3c...`, and the exact frozen trace list `23bcc08b...`. It
+cannot dispatch without an explicit CPU and refuses an existing namespace.
+Any eventual run is `NONFORMAL_DIAGNOSTIC_NOT_RESULT`, is not a replacement
+for the failed historical attempt, and is deferred until a resource-safe slot
+is available. No simulator, live controller, scientific config, or formal
+result was changed by this preparation.
+
 ## FAST64.6 BICG/16.5-KiB capacity boundary preserved; Btree IO precomputes added (2026-09-10)
 
 Two Btree physical-pool IO rows naturally exit 0 and strict-validate as

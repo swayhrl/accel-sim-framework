@@ -44,3 +44,20 @@ fill owner, which localizes loss before/at cache ownership retirement; and
 (3) a sector owner with nonzero `pending_read`, which identifies incomplete
 child-response aggregation.  No functional repair or new formal result is
 authorized until that observation supports a root-cause classification.
+
+## Reproducible future-only dispatch preparation
+
+`util/dtc_l1/dispatch_fast64_3_2d_base_diagnostic_v1.sh` was prepared and
+dry-run validated without creating a run directory or starting a simulator.
+It refuses a non-clean diagnostic-Core tree, a hash mismatch, or a preexisting
+namespace. Its default `--dry-run` is read-only; its explicit `--dispatch
+--cpu N` path uses the exact frozen Base config SHA `1a016e3c...`, exact
+trace-list SHA `23bcc08b...`, atomic-receipt immutable runner SHA
+`bf9a84c8...`, and a fresh namespace
+`fast64_3_2DConvolution_base_coref283_diag_v1`.
+
+The diagnostic binary is the clean observational Core `f2836ea1...` Release
+build (`361aada1...`): it includes the prior baseline fill-owner dump and
+adds only an OO deadlock-state print. This directed run is explicitly
+`NONFORMAL_DIAGNOSTIC_NOT_RESULT`; it is deferred until a resource-safe slot
+exists and must never displace the live Stage3/4 or FAST64.6 rows.
