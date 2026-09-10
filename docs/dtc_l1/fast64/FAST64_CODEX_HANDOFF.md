@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64_2_REPAIR_PASS; FAST64.3 BASE CHARACTERIZATION READY FOR PROMOTION/AQUISITION**
+Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64_2_REPAIR_PASS; FAST64.3 ACTIVE WITH 5/12 BASE ROWS ACCEPTED AND 7/12 AWAITING SWAP-SAFE ADMISSION**
 
 Framework branch:
 
@@ -82,6 +82,15 @@ dependencies are `5,346/5,346`, and final IO inflight/PIB/lower is `0/0/0`.
 It is diagnostic-only, not a performance point. Together with the retained
 high-cap negative control and BICG normal-triplet reuse it closes
 `FAST64_2_REPAIR_PASS`; see `handoffs/FAST64_2_REPAIR_QUALIFICATION.md`.
+
+FAST64.3 promotion audit `generated/fast64_3_base_promotion_audit_v1.tsv`
+accepts exact-identity ATAX, BICG, GESUMMV, GEMM, and DWT2D Base evidence.
+The remaining 2DConvolution, Btree, Gaussian, Hotspot1, LUD, NN, and MRI-Q
+Base rows are a fresh immutable dynamic-pool queue. A 7-worker and a 1-worker
+60-second admission each correctly rejected on nonzero swap-out; this is an
+operational wait, not a data or architecture failure. Future-only alias-v3
+preserves frozen-validator/manifest bytes while accepting canonical manifest
+name casing, and the dynamic pool's full seven-row dry-run passes.
 
 ## Mission
 

@@ -1,5 +1,19 @@
 # Latest Codex Report
 
+## FAST64.3 active Base promotion / acquisition state (2026-09-10)
+
+The exact-identity Base promotion audit accepts ATAX, BICG, GESUMMV, GEMM and
+DWT2D (5/12), including BICG's separately extracted canonical-perf structural
+companion. 2DConvolution, Btree, Gaussian, Hotspot1, LUD, NN and MRI-Q remain
+the immutable fresh-Base acquisition queue; historical NN Base is deliberately
+not reused because it lacks the current frozen Framework execution identity.
+
+The seven-row pool and every canonical workload dry-run pass using the
+future-only alias-v3 validator, which keeps frozen validator/manifest bytes
+unchanged and fixes lookup casing only. Two 60-second resource audits correctly
+refused launch due to swap-out (`2289` for seven workers; `222` for one); no
+FAST64 simulation was started and the shared VM-TLB jobs were not disturbed.
+
 ## FAST64.2 repair qualification PASS (2026-09-10)
 
 FAST64.2 is `FAST64_2_REPAIR_PASS`. The source-reachable diagnostic
