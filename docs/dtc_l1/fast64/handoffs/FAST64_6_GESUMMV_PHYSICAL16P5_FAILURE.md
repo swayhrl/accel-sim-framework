@@ -35,10 +35,20 @@ lower-cap-full observation is used as a substitute.
 
 ## Next ordinary action
 
-When a resource-safe slot exists, run a hash-pinned, diagnostic-only replay
-under the observational Core descendant that prints the missing ownership
-state.  It must preserve the exact GESUMMV payload/config and be labeled
-`NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  Its sole purpose is to distinguish the
-source transitions reserve/physical allocation, pending read/response, and
-reclaim.  Until then these attempts remain failed evidence and cannot be used
-for FAST64.4, FAST64.5, FAST64.6, or any normalized sensitivity curve.
+The hash-pinned future-only dispatcher
+`util/dtc_l1/dispatch_fast64_6_gesummv_physical16p5_diagnostic_v1.sh` is now
+dry-run verified for both IO and OO.  It binds observational Core
+`f2836ea1...`, binary `361aada1...`, the immutable runner, each original
+physical-16.5 config and the exact GESUMMV trace.  It refuses an existing
+namespace and requires both `--dispatch` and an explicitly supplied safe CPU;
+therefore it has not launched a duplicate while the target-20 pool is full.
+
+The companion parser
+`analyze_fast64_6_physical16p5_diagnostic_v1.py` only accepts the
+post-deadlock `DTC_L1_IO_DEADLOCK` or `DTC_L1_OO_DEADLOCK` source print.  It
+records IO FIFO/partial-allocation state separately from OO ownership/refcount
+state and explicitly refuses to assign IO semantics to OO.  A future
+diagnostic remains `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; its sole purpose is to
+distinguish reserve/physical allocation, pending read/response, and reclaim.
+Until then these attempts remain failed evidence and cannot be used for
+FAST64.4, FAST64.5, FAST64.6, or any normalized sensitivity curve.

@@ -1,5 +1,21 @@
 # Latest Codex Report
 
+## GESUMMV 16.5-KiB source-state diagnostic prepared without dispatch (2026-09-11)
+
+The GESUMMV physical-16.5 KiB failure now has a source-backed, future-only
+diagnostic path.  Existing observational Core `f2836ea1...` already prints
+post-deadlock IO FIFO/physical-pool state and distinct OO PIB/refcount state,
+after the pre-existing deadlock decision only.  Its Core behavior is not in
+the formal Core-95 identity and no formal binary or live process changed.
+
+`dispatch_fast64_6_gesummv_physical16p5_diagnostic_v1.sh` dry-run passes for
+both exact frozen IO and OO configs.  It verifies Core/binary/runner/config
+hashes, refuses an existing namespace, and needs an explicit `--dispatch` plus
+safe CPU; it consequently did not consume a target-20 slot.  The paired
+parser consumes only those source diagnostic lines and preserves the semantic
+boundary that IO partial-allocation evidence cannot be used to assign an OO
+root cause.  The old formal failures remain failed evidence only.
+
 ## Btree/32-KiB strict pair closed; BICG/48-KiB and GESUMMV/32-KiB pairs in acquisition (2026-09-11)
 
 The formerly inactive v4 supervisor was not altered; its unchanged collector
