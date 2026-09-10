@@ -1,5 +1,13 @@
 # Latest Codex Report
 
+## GESUMMV 48-KiB future-only closeout prepared (2026-09-11)
+
+The final unlaunched physical pair, GESUMMV 48 KiB IO/OO, now has passing
+immutable-v2 dry-runs and an isolated V11 strict collector.  Its config delta
+from 40 KiB is only 320 to 384 physical 128-B lines.  No namespace was
+created and no live simulation/controller was changed; dispatch remains
+strictly gated on a naturally released target-20 slot.
+
 ## 2DConvolution/Base terminal-classification map frozen (2026-09-11)
 
 The active nonformal 2DConvolution/Base diagnostic was left untouched and is

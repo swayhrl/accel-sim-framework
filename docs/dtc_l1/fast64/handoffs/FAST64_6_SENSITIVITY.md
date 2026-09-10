@@ -300,6 +300,20 @@ reads nor modifies active V1--V9 collection dependencies.  Dispatch remains
 resource-gated at the target-20 limit; this preparation has no result or
 stage-promotion meaning.
 
+## GESUMMV / 48-KiB pair closeout prepared, not dispatched (2026-09-11)
+
+The final currently unlaunched physical-pool pair is 48 KiB, exactly 384
+128-B lines (49,152 B).  Immutable-v2 dry-runs for fresh V15/V16 namespaces
+pass with no directory creation.  The only physical-40-to-48 config delta is
+`-gpgpu_dtc_l1_physical_lines 320 -> 384` in both IO and OO.
+
+Future-only `util/dtc_l1/collect_fast64_6_precompute_v11.sh` is isolated to
+those names and preserves the exact formal identity plus atomic strict-result
+publication.  It does not read or modify V1--V10 collector state.  As with
+the 40-KiB pair, it will remain unlaunched until a fresh target-20 admission
+audit accepts a naturally freed slot; no performance or stage conclusion is
+claimed.
+
 ## BICG / 24-KiB / OO terminal physical precompute (2026-09-11)
 
 BICG / physical 24 KiB / PAPER_OO naturally terminated with exit zero and was
