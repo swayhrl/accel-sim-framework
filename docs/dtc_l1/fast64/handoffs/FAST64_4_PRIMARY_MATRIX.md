@@ -32,6 +32,16 @@ Historical bbcbb rows may enter a matrix only through the explicit
 `FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md` classification and retain
 their literal provenance; no accepted triplet may mix Core/runtime identities.
 
+## Repaired-Core physical precompute wave
+
+The first post-transition wave is active under
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: Btree Base/IO/OO, MRI-Q
+Base/IO/OO, ATAX/OO and GESUMMV/OO.  Each has a fresh immutable-v2 START
+receipt in `/workspace/fast64-repaired-ramp/`, Core `95ccdb7a...`, runtime
+`462d105c...cc4dbc9`, A1 observer, frozen Framework snapshot/payload identity,
+and a distinct physical CPU.  These rows are not formal FAST64.4 results until
+their natural terminal, strict collector, stage-3 and triplet gates pass.
+
 ## 2. Fixed 36-row matrix
 
 Fill exactly one accepted Base/IO/OO row per workload. Base rows must be reused

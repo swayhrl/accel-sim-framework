@@ -1,5 +1,26 @@
 # Latest Codex Report
 
+## FAST64 repaired-Core eight-row ramp (2026-09-10)
+
+After the repaired-Core identity transition, the three-window audit
+`/tmp/fast64-repaired-ramp-audit-20260910T100407Z.tsv` authorized eight new
+workers: zero swap-out, major faults, OOM, PSI and CFS-throttling deltas;
+218,369,044,480 bytes cgroup memory headroom; 98,321,244,160 bytes
+`MemAvailable`; and 123,047,563,264 bytes output free.  It used only
+8.40--8.72 cgroup CPU-core equivalents of the 384-core quota.
+
+Eight fresh immutable-v2 repaired-Core rows are active under exact
+`95ccdb7a...` / `462d105c...cc4dbc9` / A1 / frozen Framework and payload
+identities: Btree Base/IO/OO (`f4c5dbe9...`, `002abb01...`, `49062c94...`),
+MRI-Q Base/IO/OO (`53d3653f...`, `add9ada3...`, `e32fff64...`), ATAX/OO
+(`e05083ea...`) and GESUMMV/OO (`023b0b17...`).  They use isolated
+`/workspace/fast64-repaired-ramp/fast64_*_core95ccdb7a_a1_r1` namespaces and
+physical CPUs 5/6/7/8/9/10/13/18. Initial true leaf inspection finds all eight
+CPU-active (96--99%), RSS 0.56--4.20 GiB, and no assertion/fatal/deadlock/
+output-mismatch signature.  They are physical precomputes only under
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; no FAST64.3/4 promotion is claimed.
+Existing old-Core processes/controllers were neither modified nor relabelled.
+
 ## FAST64 current parallelism / Gaussian closeout reconciliation (2026-09-10)
 
 FAST64.1 and FAST64.2 remain PASS; FAST64.3 remains ACTIVE and FAST64.4
