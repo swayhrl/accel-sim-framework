@@ -1,5 +1,34 @@
 # Latest Codex Report
 
+## FAST64 precomputed closeout recovery and repaired ATAX/IO dispatch (2026-09-10)
+
+FAST64.1 and FAST64.2 remain PASS; FAST64.3 remains ACTIVE and FAST64.4
+remains physical precomputation.  Seven terminal bbcbb rows whose original
+monitor had written only an early `WAIT_TERMINAL` marker were strict-collected
+with a future-only v2 collector into distinct `*_recovered_v2.json` files:
+2DConvolution/IO, DWT2D/IO+OO, Gaussian/IO+OO, and LUD/IO+OO.  All retain their
+literal original identity and are only
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; none is a FAST64.4 result or a
+mixed-identity triplet.  The original locks, monitors, raw outputs, and the
+known Hotspot1 bbcbb IO/OO failures were preserved.  Details are in
+`fast64/handoffs/FAST64_PRECOMPUTED_CLOSEOUT_RECOVERY_V2.md`.
+
+A new three-window V2 resource audit authorized two workers with no sampled
+swap-out/OOM/PSI/throttling.  One nonduplicative repaired-Core row was ready:
+ATAX/IO started under Core `95ccdb7a...`, runtime `462d105c...cc4dbc9`, A1,
+and immutable attempt `9c740af2-0d06-4f8a-b2b1-439128a39fa5` on CPU 6.  It is
+CPU-active with its separate read-only v2 terminal collector.  The other
+admission slot remains intentionally unused: all remaining FAST64.3 Base
+requirements are already accepted, active, or have source-authorized literal
+reuse, so a duplicate scientific row would add no valid evidence.
+
+Btree/Base subsequently reached natural exit `0` and completed its common
+repaired-Core Base/IO/OO strict triplet at 369,977 / 244,231 / 172,795 cycles
+and common 444,467,849 instructions.  Its Base structural companion records
+balanced lower lifecycle, cap-full zero, 590 cacheline-reservation events,
+1,622,927 MSHR-entry-full events, and no MSHR-merge or downstream-full event.
+It is still `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, not a stage promotion.
+
 ## FAST64 repaired-Core eight-row ramp (2026-09-10)
 
 After the repaired-Core identity transition, the three-window audit

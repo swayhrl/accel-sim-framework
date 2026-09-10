@@ -52,9 +52,27 @@ their natural terminal, strict collector, stage-3 and triplet gates pass.
 | MRI-Q / PAPER_IO | `generated/fast64_repaired_ramp_v1/fast64_mriq_io_core95ccdb7a_a1_r1.json` | immutable attempt `add9ada3-c014-47a3-b664-b3b4678e2a5a`; terminal receipt `2026-09-10T10:34:27Z`, exit `0`; collector PASS | `360,536` cycles / `1,411,757,056` instructions; lower acquired/released and IO create/issue/response `15,517/15,517`; dependency closed/count `15,552/15,552`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
 | MRI-Q / PAPER_OO | `generated/fast64_repaired_ramp_v1/fast64_mriq_oo_core95ccdb7a_a1_r1.json` | immutable attempt `e32fff64-f847-4c79-9c3d-94c41622dd54`; terminal receipt `2026-09-10T10:37:45Z`, exit `0`; collector PASS | `361,415` cycles / `1,411,757,056` instructions; lower acquired/released and OO create/issue/response `15,516/15,516`; dependency closed/count `15,552/15,552`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
 
-The Btree Base peer remains live.  These terminal rows
-are retained as repaired-Core physical precompute evidence only: they do not
-populate accepted FAST64.4 matrix cells or permit mixed-identity triplets.
+The Btree Base peer has now naturally exited `0`, strict-collected, and joins
+the Btree IO/OO rows in the common repaired-Core triplet
+`generated/fast64_repaired_ramp_v1/FAST64_BTREE_REPAIRED_CORE_TRIPLET_V1.json`.
+The companion `FAST64_3_BTREE_BASE_STRUCTURAL_METRICS_V1.json` records Base
+lower acquire/release `1,458,407/1,458,407`, cacheline-reservation events
+`590`, Tag-bank conflicts `1,751,328`, MSHR-entry-full `1,622,927`, and zero
+MSHR-merge/downstream-full.  These terminal rows remain repaired-Core physical
+precompute evidence only: they do not populate accepted FAST64.4 matrix cells
+before FAST64.3 PASS.
+
+### Recovered old-Core terminal evidence
+
+The original terminal receipts for 2DConvolution/IO, DWT2D/IO+OO,
+Gaussian/IO+OO, and LUD/IO+OO have now been strict-collected by a future-only
+v2 observer into distinct `*_recovered_v2.json` evidence files.  The original
+monitor bytes, raw output, and locks remain preserved.  This is a
+host-closeout recovery only: every record retains literal bbcbb/runtime/A1/
+frozen-Framework provenance and
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`.  Refer to
+`FAST64_PRECOMPUTED_CLOSEOUT_RECOVERY_V2.md`; no row is promoted into this
+matrix before FAST64.3 PASS and the common-identity triplet audit.
 
 After the fresh V2 post-MRI-Q admission passed two additional workers at
 `2026-09-10T10:42:54Z` (zero sampled swap-out/major-fault/PSI/OOM/throttling,

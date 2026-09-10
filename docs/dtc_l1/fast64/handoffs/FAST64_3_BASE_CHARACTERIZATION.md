@@ -1,6 +1,6 @@
 # FAST64.3 — Base Characterization Handoff
 
-Status: **ACTIVE — 5/12 Base rows accepted; NN/Base, LUD/Base, Hotspot1/Base, Gaussian/Base, and repaired-Core MRI-Q/Base strict-valid pending stage acceptance; 2DConvolution Base plus repaired-Core Btree/Base active**
+Status: **ACTIVE — 5/12 Base rows accepted; NN/Base, LUD/Base, Hotspot1/Base, Gaussian/Base, repaired-Core MRI-Q/Base, and repaired-Core Btree/Base strict-valid pending stage acceptance; 2DConvolution Base active**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -43,7 +43,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | GESUMMV | `generated/fast64_3_gesummv_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | GEMM | `generated/fast64_3_gemm_base_alias_v4/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | 2DConvolution | `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` | fresh immutable (active) | [ ] | [ ] | [ ] | [ ] | ACTIVE |
-| Btree | `fast64-repaired-ramp/fast64_btree_base_core95ccdb7a_a1_r1` | fresh repaired-Core immutable v2 (active) | [ ] | [ ] | [ ] | [ ] | ACTIVE |
+| Btree | `generated/fast64_repaired_ramp_v1/fast64_btree_base_core95ccdb7a_a1_r1.json` + `FAST64_3_BTREE_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_BTREE_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | DWT2D | `generated/fast64_3_dwt2d_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | Gaussian | `generated/fast64_3_dynamic_base_v1/fast64_3_Gaussian_base_cap8192_a1_v2.json` + `FAST64_3_GAUSSIAN_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | Hotspot1 | `generated/fast64_repaired_core_qual_v1/fast64_hotspot1_base_core95ccdb7a_a1_v1.json` + `FAST64_HOTSPOT1_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
