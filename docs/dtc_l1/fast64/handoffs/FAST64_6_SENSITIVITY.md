@@ -40,6 +40,10 @@ atomic START/TERMINAL receipts.  Versioned dispatcher
 scientific snapshot and the later config-materialization commit, then gives
 the immutable runner only the scientific snapshot identity.  This avoids
 silently claiming that a configuration-only commit changed scientific inputs.
+Future dispatches use `dispatch_fast64_sensitivity_row_v5.sh`, which performs
+the same checks against the detached clean Core-`95ccdb7a...` formal worktree.
+The active Core worktree may advance only for diagnostic-only descendants; its
+HEAD is never allowed to substitute for the frozen formal Core identity.
 
 ## One-dimensional controls and normalization
 
