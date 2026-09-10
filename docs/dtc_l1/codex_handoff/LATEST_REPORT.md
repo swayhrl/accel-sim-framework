@@ -43,6 +43,16 @@ memory PSI, CFS throttling and forbidden simulator signatures.  These live
 rows remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no performance result
 or stage conclusion has been accepted.
 
+The newly terminal repaired-Core ATAX/OO row was also independently reconciled
+from its immutable START/TERMINAL receipts and strict compact record: exit 0,
+the exact `145,666,048` instructions, lower create/issue/response
+`17,814,804/17,814,804/17,814,804`, lower credit acquire/release balance,
+dependency `18,350,336/18,350,336`, and final PIB/inflight/lower/OO-ref drain.
+It is recorded as `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` only in
+`fast64/generated/fast64_repaired_ramp_v1/fast64_atax_oo_core95ccdb7a_a1_r1.json`.
+The corresponding repaired ATAX Base/IO rows are still nonterminal, so this
+does not create an ATAX triplet, a FAST64.3 result, or any stage promotion.
+
 ## FAST64.3/4 preliminary strict review; FAST64.6 held at current safe concurrency (2026-09-10)
 
 The current strict parser was rerun against every discovered terminal
