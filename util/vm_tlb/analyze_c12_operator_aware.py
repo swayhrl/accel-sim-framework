@@ -36,8 +36,16 @@ DEFAULT_RESULTS = ROOT / "docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C
 OUT_ROOT = ROOT / "docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C12_OPERATOR_AWARE_CHARACTERIZATION"
 
 EXPECTED = {
-    "prefill": {"count": 692, "sha": "a40d6832219e5b0a6232875bb181754ac121bb5f867c9b13c84370e2a2cb6e6f"},
-    "decode1": {"count": 740, "sha": "b6c42eb1932fcacefc2429b91a2015d38003a764a5319fe4bcbaf65b3d0cd0dc"},
+    "prefill": {
+        "count": 692,
+        "sha": "a40d6832219e5b0a6232875bb181754ac121bb5f867c9b13c84370e2a2cb6e6f",
+        "registration_sha256": "6ae0e18cc3bba29871002c4ff1877052489740163424723a845ead45c4a5f4b0",
+    },
+    "decode1": {
+        "count": 740,
+        "sha": "b6c42eb1932fcacefc2429b91a2015d38003a764a5319fe4bcbaf65b3d0cd0dc",
+        "registration_sha256": "3dc77c1f348028ba7b8abfef3dc6c4cffa0c9678f003bc23bdc9158d62762b48",
+    },
 }
 FROZEN = {
     "framework_anchor": "d64408a97d76a320a6d49468653d416e33677af8",
@@ -206,18 +214,57 @@ def object_ranges(sidecar_data: dict, roi: str) -> list[tuple[int, int, str]]:
         if row.get("object_kind") == "WEIGHT":
             start = int(row["simva_start"], 0)
             result.append((start, start + int(row["size_bytes"]), "WEIGHT"))
-    for row in sidecar_data.get("kv_cache_events", []):
-        phase, step = row.get("phase"), row.get("step")
-        keep = (roi == "prefill" and phase == "PREFILL" and step == 0) or (
-            roi == "decode1" and ((phase == "PREFILL" and step == 0) or (phase == "DECODE" and step == 1)))
-        if keep:
-            start = int(row["simva_start"], 0)
-            result.append((start, start + int(row["size_bytes"]), "KV_CACHE"))
+    for row in selected_kv_events(sidecar_data, roi):
+        start = int(row["simva_start"], 0)
+        result.append((start, start + int(row["size_bytes"]), "KV_CACHE"))
     result.sort()
     for left, right in zip(result, result[1:]):
         if left[2] != right[2] and left[1] > right[0]:
             raise RuntimeError("runtime WEIGHT/KV SimVA ranges overlap")
     return result
+
+
+def selected_kv_events(sidecar_data: dict, roi: str) -> list[dict]:
+    """Return exactly the runtime KV events admitted by the frozen C4 contract.
+
+    This selection deliberately retains the historical Prefill step-0 events
+    in Decode1 as well as Decode step-1 replacements.  It is a range contract,
+    not a per-instruction tensor-lifetime proof; the KV audit makes that limit
+    visible rather than silently assigning semantic ownership.
+    """
+    result: list[dict] = []
+    for row in sidecar_data.get("kv_cache_events", []):
+        phase, step = row.get("phase"), row.get("step")
+        keep = (roi == "prefill" and phase == "PREFILL" and step == 0) or (
+            roi == "decode1" and ((phase == "PREFILL" and step == 0) or (phase == "DECODE" and step == 1)))
+        if keep:
+            result.append(row)
+    return result
+
+
+def interval_union_stats(events: list[dict]) -> tuple[int, int, int]:
+    """Return (event-byte sum, union bytes, merged spans) for a sidecar view."""
+    intervals = sorted((int(row["simva_start"], 0), int(row["simva_start"], 0) + int(row["size_bytes"])) for row in events)
+    merged: list[tuple[int, int]] = []
+    for start, end in intervals:
+        if merged and start <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(end, merged[-1][1]))
+        else:
+            merged.append((start, end))
+    total = sum(end - start for start, end in intervals)
+    union = sum(end - start for start, end in merged)
+    return total, union, len(merged)
+
+
+def semantic_family(kernel: Kernel) -> str:
+    lower = kernel.semantic_name.lower()
+    if "cutlass" in lower:
+        return "CUTLASS_GEMM"
+    if "ampere" in lower and "gemm" in lower:
+        return "AMPERE_GEMM"
+    if "flash" in lower:
+        return "FLASH_ATTENTION"
+    return "OTHER_SEMANTIC_SYMBOL"
 
 
 def merged_object_ranges(sidecar_data: dict, roi: str) -> list[tuple[int, int, str]]:
@@ -477,6 +524,8 @@ def safe_status_rows(status: list[dict[str, str]], results: list[dict[str, str]]
                 raise RuntimeError(f"{key}: frozen {field} mismatch {result.get(field)}")
         if result.get("trace_sha256") != EXPECTED[row["roi"]]["sha"]:
             raise RuntimeError(f"{key}: trace hash mismatch")
+        if result.get("registration_sha256") != EXPECTED[row["roi"]]["registration_sha256"]:
+            raise RuntimeError(f"{key}: registration hash mismatch")
         raw = Path(row["run_dir"]) / "run.log"
         validation = Path(row["run_dir"]) / "C12_ARM_VALIDATION.json"
         if not raw.is_file() or not validation.is_file():
@@ -542,6 +591,7 @@ def main() -> None:
         raise RuntimeError("both terminal C5 F0 baselines are required")
 
     all_kernels: dict[str, list[Kernel]] = {}
+    sidecar_data_by_roi: dict[str, dict] = {}
     index_rows: list[dict] = []
     provenance_lines = ["# C12 Operator-aware provenance", "", f"Consumed formal C12 source commit: `{args.source_commit}`.",
                         "Only rows marked terminal `PASS` in both ARM_STATUS.tsv and ARM_RESULTS.tsv were parsed.", ""]
@@ -568,6 +618,7 @@ def main() -> None:
         if compute_from_raw != listed:
             raise RuntimeError(f"{roi}: raw semantic manifest NCCL filtering does not reproduce compute list")
         params, starts, address = range_index(sidecar)
+        sidecar_data_by_roi[roi] = address["data"]
         if any(not (trace_dir / filename).is_file() for filename in listed):
             raise RuntimeError(f"{roi}: a C12 trace-list entry is unavailable")
         kernels = fast_scan_traces(args.scanner, roi, listed, trace_list, trace_dir, params, address["data"], out)
@@ -588,7 +639,7 @@ def main() -> None:
         provenance_lines += [f"## {roi}", "", f"- C12 F0 compute-only list: `{trace_list}`", f"- list SHA-256: `{digest}` ({len(listed)} entries)",
                              f"- semantic derivative: `{semantic_list}` (byte-identical)",
                              f"- raw semantic manifest: `{semantic_manifest}`; raw COMPUTE filtering exactly recreates C12 list (NCCL removal has no index shift)",
-                             f"- runtime sidecar: `{sidecar}`; weight base `{address['allocation']['simva_start']}`, size `{address['allocation']['size_bytes']}`, {len(params)} non-overlapping parameter ranges", ""]
+                             f"- runtime sidecar: `{sidecar}`; sha256 `{sha256(sidecar)}`; weight base `{address['allocation']['simva_start']}`, size `{address['allocation']['size_bytes']}`, {len(params)} non-overlapping parameter ranges", ""]
 
     write_tsv(out / "INDEX_ALIGNMENT_AUDIT.tsv",
               ["roi", "compute_index", "trace_filename", "semantic_kernel_name", "simulator_marker_index", "alignment_status", "evidence"], index_rows)
@@ -600,6 +651,7 @@ def main() -> None:
     object_rows: list[dict] = []
     translation_rows: list[dict] = []
     cache_rows: list[dict] = []
+    kv_audit_rows: list[dict] = []
     raw_by_arm: dict[tuple[str, str, str], tuple[list[RawKernel], list[dict[str, int]]]] = {}
 
     for roi, kernels in all_kernels.items():
@@ -676,6 +728,55 @@ def main() -> None:
                                "object_class": object_name, "outcome": outcome, "metric_scope": "EXACT_PER_KERNEL",
                                "unit": "cache_transactions", "value": value, "source": source + "; scope=KERNEL only"})
 
+        # The taxonomy assigns FFN/Embedding from a direct Weight parameter
+        # range, whereas DATA_KV_CACHE is a runtime object-range label.  Audit
+        # their conjunction explicitly: it establishes what was observed in a
+        # single trace/marker, but never promotes that fact to semantic FFN/KV
+        # ownership or a fusion claim.
+        events = selected_kv_events(sidecar_data_by_roi[roi], roi)
+        event_bytes, event_union_bytes, event_spans = interval_union_stats(events)
+        event_contract = "; ".join(f"{phase}/step{step}/{state}={count}" for (phase, step, state), count in
+                                   sorted(Counter((row.get("phase"), row.get("step"), row.get("state")) for row in events).items()))
+        for operator in ("FFN_MLP", "EMBEDDING_OUTPUT"):
+            selected = [kernel for kernel in kernels if kernel.operator_class == operator]
+            cross_object = [kernel for kernel in selected if kernel.weight_refs and kernel.kv_refs]
+            cross_indices = {kernel.index for kernel in cross_object}
+
+            def cache_value(rows: list[RawKernel], level: str, outcome: str | None = None) -> int:
+                return sum(value for raw in rows for (cache_level, object_name, cache_outcome), value in raw.cache.items()
+                           if cache_level == level and object_name == "DATA_KV_CACHE" and
+                           (outcome is None or cache_outcome == outcome))
+
+            class_raw = [raw_rows[kernel.index] for kernel in selected]
+            cross_raw = [raw_rows[index] for index in sorted(cross_indices)]
+            names = ";".join(sorted({semantic_family(kernel) for kernel in cross_object})) if cross_object else "NONE"
+            kv_audit_rows.append({
+                "roi": roi,
+                "operator_class": operator,
+                "class_kernel_count": len(selected),
+                "same_kernel_weight_and_kv_trace_count": len(cross_object),
+                "same_kernel_compute_indices": ",".join(str(kernel.index) for kernel in cross_object) if cross_object else "NONE",
+                "same_kernel_semantic_families": names,
+                "same_kernel_weight_lane_refs": sum(kernel.weight_refs for kernel in cross_object),
+                "same_kernel_kv_lane_refs": sum(kernel.kv_refs for kernel in cross_object),
+                "same_kernel_kv_unique_64kb_pages": len(set().union(*(kernel.pages["KV_CACHE"] for kernel in cross_object))) if cross_object else 0,
+                "class_l1d_kv_transactions": cache_value(class_raw, "m4c_telemetry"),
+                "same_kernel_l1d_kv_transactions": cache_value(cross_raw, "m4c_telemetry"),
+                "class_l2_kv_transactions": cache_value(class_raw, "m4c_telemetry_l2"),
+                "same_kernel_l2_kv_transactions": cache_value(cross_raw, "m4c_telemetry_l2"),
+                "same_kernel_l2_kv_hits": cache_value(cross_raw, "m4c_telemetry_l2", "HIT"),
+                "same_kernel_l2_kv_misses": cache_value(cross_raw, "m4c_telemetry_l2", "MISS"),
+                "same_kernel_l2_kv_reservation_fails": cache_value(cross_raw, "m4c_telemetry_l2", "RESERVATION_FAIL"),
+                "selected_runtime_kv_events": len(events),
+                "runtime_event_contract": event_contract,
+                "runtime_kv_event_bytes": event_bytes,
+                "runtime_kv_union_bytes": event_union_bytes,
+                "runtime_kv_merged_spans": event_spans,
+                "runtime_kv_interval_overlap_bytes": event_bytes - event_union_bytes,
+                "lifetime_limit": "all selected events end_phase=UNKNOWN_ACTIVE; range matching is not per-instruction tensor-lifetime attribution",
+                "auditable_conclusion": "observed same-kernel direct-Weight and KV-runtime-range intersections; no semantic FFN/Embedding-to-KV ownership or fusion conclusion",
+            })
+
     write_tsv(out / "KERNEL_OPERATOR_MAP.tsv",
               ["roi", "compute_index", "trace_filename", "semantic_kernel_name", "operator_class", "operator_group", "evidence_kind",
                "evidence_detail", "parameter_names", "layer_id", "weight_refs", "kv_refs", "unknown_refs", "weight_unique_pages_64k",
@@ -685,6 +786,15 @@ def main() -> None:
     write_tsv(out / "F0_OPERATOR_OBJECT_SUMMARY.tsv", ["roi", "operator_class", "object_class", "metric", "metric_scope", "unit", "value", "source"], object_rows)
     write_tsv(out / "F0_OPERATOR_TRANSLATION_SUMMARY.tsv", ["roi", "operator_class", "metric", "metric_scope", "unit", "value", "source"], translation_rows)
     write_tsv(out / "F0_OPERATOR_CACHE_SUMMARY.tsv", ["roi", "operator_class", "cache_level", "object_class", "outcome", "metric_scope", "unit", "value", "source"], cache_rows)
+    write_tsv(out / "KV_CLASS_TRANSACTION_AUDIT.tsv", [
+        "roi", "operator_class", "class_kernel_count", "same_kernel_weight_and_kv_trace_count", "same_kernel_compute_indices",
+        "same_kernel_semantic_families", "same_kernel_weight_lane_refs", "same_kernel_kv_lane_refs",
+        "same_kernel_kv_unique_64kb_pages", "class_l1d_kv_transactions", "same_kernel_l1d_kv_transactions",
+        "class_l2_kv_transactions", "same_kernel_l2_kv_transactions", "same_kernel_l2_kv_hits",
+        "same_kernel_l2_kv_misses", "same_kernel_l2_kv_reservation_fails", "selected_runtime_kv_events",
+        "runtime_event_contract", "runtime_kv_event_bytes", "runtime_kv_union_bytes", "runtime_kv_merged_spans",
+        "runtime_kv_interval_overlap_bytes", "lifetime_limit", "auditable_conclusion",
+    ], kv_audit_rows)
 
     # OA3: parse only the terminal PASS rows, use the immutable F0 mapping for
     # every arm, and retain full-ROI performance separately from per-kernel data.

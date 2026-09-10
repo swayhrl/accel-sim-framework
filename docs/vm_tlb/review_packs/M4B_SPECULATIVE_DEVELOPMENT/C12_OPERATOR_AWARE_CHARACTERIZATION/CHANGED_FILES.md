@@ -11,14 +11,15 @@
 
 ## Review-pack evidence
 
-- Required review artifacts: `INTERIM_REPORT.md`, `PROVENANCE.md`,
+- Required review artifacts: `FINAL_REPORT.md`, `PAPER_FACING_FINDINGS.md`, `PROVENANCE.md`,
   `OBSERVABILITY_AUDIT.md`, `INDEX_ALIGNMENT_AUDIT.tsv`,
   `KERNEL_OPERATOR_MAP.tsv`, `OPERATOR_COVERAGE.tsv`,
   `F0_OPERATOR_CHARACTERIZATION.tsv`, `F0_OPERATOR_OBJECT_SUMMARY.tsv`,
   `F0_OPERATOR_TRANSLATION_SUMMARY.tsv`, `F0_OPERATOR_CACHE_SUMMARY.tsv`,
   `ARM_OPERATOR_CHARACTERIZATION.tsv`, `OPERATOR_ARM_DELTAS.tsv`,
   `LSEG_OPERATOR_SENSITIVITY.tsv`, and `PAPER_FACING_FINDINGS.md`.
-- Additional audit evidence: `CONSERVATION_AUDIT.md`,
+- Additional audit evidence: `INTERIM_REPORT.md` (superseded historical pointer), `CONSERVATION_AUDIT.md`,
+  `KV_CLASS_TRANSACTION_AUDIT.tsv`, `KV_CLASS_TRANSACTION_AUDIT.md`,
   `PARAMETER_RANGES_{prefill,decode1}.tsv`,
   `OBJECT_RANGES_{prefill,decode1}.tsv`, and
   `TRACE_SCAN_{prefill,decode1}.tsv`.

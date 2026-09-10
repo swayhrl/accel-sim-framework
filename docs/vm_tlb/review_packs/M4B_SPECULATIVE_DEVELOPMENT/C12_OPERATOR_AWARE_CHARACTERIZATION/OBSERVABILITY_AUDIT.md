@@ -11,6 +11,7 @@
 
 - Weight/KV/UNKNOWN lane references and 64 KiB page sets are reconstructed from all predicated lanes in immutable trace records, using runtime SimVA ranges.  These are trace references, not coalesced cache transactions.
 - Direct parameter labels are derived only by exact intersection of those trace addresses with `weight_layout` ranges.
+- A `KV` object class proves only that a trace address intersects the selected runtime KV range. The available records do not establish per-instruction logical KV ownership, object lifetime use, or semantic fusion; `KV_CLASS_TRANSACTION_AUDIT.md` preserves that boundary for FFN and Embedding/Output observations.
 
 ## Full ROI only / deliberately unattributed
 
