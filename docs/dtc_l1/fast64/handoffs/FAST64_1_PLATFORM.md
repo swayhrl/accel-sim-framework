@@ -1,11 +1,10 @@
 # FAST64.1 — Platform and Payload Lock
 
-Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; R1 SUPERSEDED_NONFORMAL; IMMUTABLE R2 REQUIRED**
+Status: **FAST64_1_PLATFORM_PASS**
 
-This is an active recovery checkpoint, not a FAST64.1 PASS artifact.  The
-unsatisfied HARD gate blocks FAST64.1 result/stage promotion, not independent
-source-correct preparation, validation, documentation repair, or safe dynamic
-R2 acquisition.  FAST64.2 promotion cannot occur from this artifact.
+This is the formal FAST64.1 PASS artifact. Historical r1 evidence remains
+superseded/nonformal; the immutable R2 full wave below is the sole
+execution-path acceptance evidence.
 
 ## Authority and reproducibility
 
@@ -99,24 +98,54 @@ retry uses `BK_CONF`.
 | HARD item | state |
 | --- | --- |
 | resolved Base/IO/OO configs build and launch | PASS (new-Core NN triplet) |
-| NN and BICG smoke natural terminal in all modes | PENDING BICG new-Core replacements |
-| no assertion/fatal/trace error/deadlock | PENDING terminal validation |
-| terminal accounting drains | PASS for NN; PENDING BICG/GESUMMV replacements |
+| NN and BICG smoke natural terminal in all modes | PASS |
+| no assertion/fatal/trace error/deadlock | PASS |
+| terminal accounting drains | PASS |
 | 64x1 shell and frozen DTC geometry | PASS |
 | no C2P 64-KiB/32-way or peer mechanism | PASS |
 | machine-readable diff has no unrelated mode difference | PASS |
 | all FAST12 payload identities frozen | PASS |
-| 8192 non-binding versus high cap; global cap-full events zero on every 8192 candidate row | PENDING new-Core BICG Base plus BICG IO/OO and GESUMMV IO pairs |
-| Core/runtime/config/observer provenance | PASS for completed rows; PENDING replacement rows |
+| 8192 non-binding versus high cap; global cap-full events zero on every 8192 candidate row | PASS |
+| Core/runtime/config/observer provenance | PASS |
+
+## Immutable R2 closeout (2026-09-10)
+
+The full seven-row immutable R2 wave is the formal FAST64.1 execution-path
+evidence. Every row naturally exited `0`, has one atomic immutable attempt
+UUID and one natural-exit epoch, and binds formal Core
+`bbcbb5e7565417102087bc80b14c349b4e568c05`, runtime
+`6a8743b4d7adc7f56d40aafdf913718c9e0ad13641e962aa8ef5e3ee35d4f041`,
+A1 observer `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e`,
+scientific Framework snapshot `037f008b330eb230353b60edf126d6be9f45afdc`,
+the frozen payload manifest, and the resolved configuration SHA recorded in
+its compact JSON. The normal error scan and all required lower/dependency/drain
+closures pass.
+
+The three R2-vs-R2 candidate/high comparisons are exact metric matches:
+BICG/IO, BICG/OO, and GESUMMV/IO. Every required 8192 candidate has
+`DTC_L1_lower_cap_full_events = 0`, establishing that cap 8192 is non-binding
+for FAST64.1; platform, payload, and the 64x1 DTC configuration lock are
+unchanged.
+
+The frozen closeout controller is retained as negative controller evidence,
+not a scientific disqualification. Its unmodified validator counts the normal
+`perf_counter.csv.gz` symlink alias as a second stream and fail-closes on
+"single-epoch proof requires one perf stream, found 2". The future-only
+alias-v2 reader verifies the optional alias resolves exactly to one canonical
+timestamped perf stream; it does not relax single-epoch validation or change
+simulator mechanism, runtime, config, payload, or results. The compact evidence
+and SHA manifest are under `generated/qualification_r2_full_wave_alias_v2/`.
+The obsolete frozen monitor was then stopped after its final retained log was
+secured (`/workspace/fast64-runs/fast64_1_r2_closeout.log`, SHA-256
+`f3c1cd810d4d86d6a62274655b855967e6994abb84b850d1f84e65f7ba545ea2`).
 
 ## Next executable action
 
-The pre-repair anchors remain live, untouched supporting evidence.  The
-historical r1 wave is now `SUPERSEDED_NONFORMAL_EXECUTION_PATH_AT_RISK` and
-must never close FAST64.1.  Dynamic resource-gated immutable r2 dispatch may
-start one or more fresh rows while old diagnostic jobs continue, with no
-scientific wait-for-all-old-jobs barrier.  Only the all-r2 lower-cap
-comparisons can close FAST64.1.
+Enter FAST64.2. Reuse exact-identity R2 normal-triplet evidence only where the
+contract permits. The existing coupled positive-stress attempts remain strict
+negative pressure evidence; inspect the source path and construct the smallest
+source-correct immutable diagnostic that can observe the required binding
+lower-cap/create-queue pressure without changing DTC mechanism semantics.
 
 ## r1 execution-path contamination (2026-09-07)
 

@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64.1 STAGE_GATE_PENDING; FAST64_1_R2_FULL_WAVE_LIVE_5_OF_7_TERMINAL; FROZEN R2 CLOSEOUT WAIT ACTIVE; FAST64.2 COUPLED-STRESS STRICT-NEGATIVE PRESSURE ABSENT; FAST64.3 HAS DWT2D/GEMM/ATAX BASE STRICT-VALID PRECOMPUTES PENDING FAST64.1/2 ACCEPTANCE**
+Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64.2 REPAIR_QUALIFICATION_ACTIVE; FAST64.2 COUPLED-STRESS STRICT-NEGATIVE PRESSURE ABSENT; FAST64.3 HAS DWT2D/GEMM/ATAX BASE STRICT-VALID PRECOMPUTES PENDING FAST64.2 ACCEPTANCE**
 
 Framework branch:
 
@@ -24,19 +24,19 @@ frozen execution-scientific Framework snapshot
 controller/review identity and must not be substituted for that execution
 source in a result manifest.
 
-Current execution gate: both historical BICG OO r1 namespaces (8192 and high
-cap) are `INVALID_EXECUTION_PATH_CONTAMINATED` after independent two-epoch
-controller anomalies.  The source-backed remedy, the complete seven-row
-immutable-v2 R2 qualification wave with explicit START/TERMINAL receipts, is
-already dispatched.  BICG Base@8192, IO@8192, OO@8192, IO@1048576, and
-OO@1048576 have naturally terminated; only GESUMMV IO@8192 and IO@1048576
-remain live.  Do not advance FAST64.1 until all seven have naturally
-terminated and the frozen closeout controller has published
-`FAST64_1_R2_FULL_WAVE_COLLECTOR_PASS`.  The current controller, collector,
-validator, parser, cap comparator, R2 configs, payload manifest, and
-`trace.config` are frozen closeout dependencies; future work may only use
-separate versioned files.  Old r1 jobs remain diagnostic and are not a
-scientific launch barrier.  See
+FAST64.1 is now PASS. Both historical BICG OO r1 namespaces (8192 and high
+cap) remain `INVALID_EXECUTION_PATH_CONTAMINATED`; all historical r1 is
+superseded/nonformal. The source-backed remedy, the complete seven-row
+immutable-v2 R2 qualification wave with explicit START/TERMINAL receipts,
+naturally terminated and strict-validates through the versioned alias-v2
+reader. BICG IO, BICG OO, and GESUMMV IO candidate/high comparisons are exact
+matches, and every required candidate cap 8192 records
+`DTC_L1_lower_cap_full_events = 0`. The frozen closeout dependency bytes
+remain unchanged and fail-close only because their reader counts the normal
+`perf_counter.csv.gz` symlink as a second stream; see the alias-v2 compact
+evidence/manifest at `generated/qualification_r2_full_wave_alias_v2/`.
+Future work must continue to use separate versioned files. Old r1 jobs remain
+diagnostic and are not a scientific launch barrier. See
 `handoffs/FAST64_1_R1_EXECUTION_PATH_CONTAMINATION.md` and
 `handoffs/FAST64_1_R2_CLOSEOUT_DEPENDENCY_FREEZE.md`.
 

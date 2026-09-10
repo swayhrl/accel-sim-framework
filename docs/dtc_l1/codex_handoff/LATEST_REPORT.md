@@ -1,5 +1,33 @@
 # Latest Codex Report
 
+## FAST64.1 immutable R2 full-wave PASS (2026-09-10)
+
+FAST64.1 is `FAST64_1_PLATFORM_PASS`. All seven immutable-v2 R2 rows naturally
+exited `0`, have one atomic START/TERMINAL attempt UUID and one natural-exit
+epoch, and strict-validate with formal Core `bbcbb5e...`, runtime
+`6a8743b4...`, A1 observer `2c2a6a27...`, scientific Framework snapshot
+`037f008b...`, the frozen payload, and resolved config identity. Required
+terminal lower/dependency/drain state is closed and error scans are clean.
+
+R2-vs-R2 BICG/IO, BICG/OO, and GESUMMV/IO 8192-vs-high comparisons are each
+`EXACT_METRIC_MATCH`; every required 8192 candidate records
+`DTC_L1_lower_cap_full_events = 0`. This freezes the unchanged 64x1 platform,
+payload, DTC configuration, and cap-8192 non-binding conclusion.
+
+The frozen full-wave reader was preserved unchanged and fail-closed on its
+known alias defect: it counts the normal `perf_counter.csv.gz` symlink as a
+second perf stream. Its final retained log SHA-256 is
+`f3c1cd810d4d86d6a62274655b855967e6994abb84b850d1f84e65f7ba545ea2`.
+Future-only alias-v2 verifies that each optional alias resolves to the one
+canonical timestamped stream, preserving—not weakening—single-epoch proof.
+The compact row JSONs, comparison TSVs, PASS marker, and SHA manifest are in
+`fast64/generated/qualification_r2_full_wave_alias_v2/`.
+
+FAST64.2 is now active. The existing coupled stress remains strict-negative
+pressure evidence; no FAST64.2 PASS is claimed. Disk headroom is about 45 GiB
+at 99% use, so storage inventory/retention proof is the immediate operational
+task before any large later-stage wave.
+
 ## FAST64.3 ATAX/Base natural terminal — strict-valid precompute (2026-09-09)
 
 The future-only immutable-v2 ATAX/Base precompute
