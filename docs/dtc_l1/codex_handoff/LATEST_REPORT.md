@@ -1,5 +1,23 @@
 # Latest Codex Report
 
+## FAST64.4 Hotspot1 IO/OO source-reachable failure (2026-09-10)
+
+Hotspot1 IO and OO physical precomputes remain preserved but are
+non-authoritative failed attempts: their immutable-v2 attempts
+`de96e9b8-eea8-4f2f-a179-b0d4b4a7f472` (IO) and
+`0fdfa2a2-e9fb-427f-a8dd-97c412172ef8` (OO) each terminated `1` in seconds at
+the same bbcbb `shader.cc:4279` `n_accesses > 0` assertion. They use the
+frozen Hotspot1 payload, Core/runtime/A1/framework identities and distinct
+correct IO/OO configs; they are not parser/accounting/results and will never
+enter FAST64.4 aggregates. Hotspot1/Base with the same payload/identity is
+strict-valid, isolating a mode-specific source-reachable empty-access issue.
+
+The source-backed classification and isolated repair boundary are recorded in
+`fast64/handoffs/FAST64_4_HOTSPOT1_ZERO_ACCESS_FAILURE.md`. Existing live
+bbcbb rows and their frozen controllers are untouched. FAST64.1 and FAST64.2
+remain closed (`FAST64_1_PLATFORM_PASS`, `FAST64_2_REPAIR_PASS`); FAST64.3 is
+active and FAST64.4 is physical precomputation only.
+
 ## FAST64.3 active Base promotion / acquisition state (2026-09-10)
 
 The exact-identity Base promotion audit accepts ATAX, BICG, GESUMMV, GEMM and
