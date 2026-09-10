@@ -36,6 +36,14 @@ bbcbb rows and their frozen controllers are untouched. FAST64.1 and FAST64.2
 remain closed (`FAST64_1_PLATFORM_PASS`, `FAST64_2_REPAIR_PASS`); FAST64.3 is
 active and FAST64.4 is physical precomputation only.
 
+The isolated minimal Core guard has now completed the exact Hotspot1 IO trace
+naturally (`85,206` cycles; `377,291,004` instructions) with zero stderr,
+closed lower/dependency accounting, and final IO PIB/inflight/lower `0/0/0`.
+It is a repair qualification only, built from uncommitted isolated source and
+therefore cannot be promoted or mixed with bbcbb formal evidence. Matching OO
+qualification is queued behind a fresh resource admission: the latest
+one-worker audit correctly rejected launch on `swap_so_delta=85`.
+
 ## FAST64.3 active Base promotion / acquisition state (2026-09-10)
 
 The exact-identity Base promotion audit accepts ATAX, BICG, GESUMMV, GEMM and

@@ -60,6 +60,21 @@ invalidation/reuse map before formal adoption, and uses fresh namespaces only.
 
 ## Next executable action
 
-Build and validate the minimal empty-access issue-side guard in an isolated
-Core worktree. Preserve all bbcbb evidence as mechanism/diagnostic anchors;
-do not promote or relabel either failed attempt.
+The isolated Release build with the minimal guard naturally completed the
+exact Hotspot1/PAPER_IO payload in
+`/workspace/fast64-repair-qual/hotspot1_io_zero_access_guard_r2` (exit `0`,
+2026-09-10). It reached `85,206` cycles and `377,291,004` instructions with an
+empty stderr/failure scan. The guarded IO lifecycle closes lower
+create/issue/response and credit acquire/release at `351,899/351,899/351,899`,
+closes dependencies at `353,069/353,069`, and ends with IO PIB/inflight/lower
+`0/0/0`. This is an isolated uncommitted repair qualification, not a formal
+FAST64 row: its runtime SHA-256 is
+`8fc679619587b660bd3a034456f60ed36805af77a15ba499d8083cbc892fd29f` and it
+must not be mixed with bbcbb results.
+
+The matching OO qualification remains required before any Core adoption. Its
+2026-09-10 fresh one-worker admission correctly failed closed because
+`swap_so_delta=85`; no OO simulator was launched. Re-audit and launch the OO
+qualification only when the normal FAST64 resource gate passes. Preserve all
+bbcbb evidence as mechanism/diagnostic anchors; do not promote or relabel
+either original failed attempt.
