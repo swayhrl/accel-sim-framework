@@ -84,6 +84,22 @@ identity migration, unused capacity remains reserved for the Hotspot repair,
 remaining Base work, and repaired-Core regression preparation rather than a
 large old-bbcbb FAST64.4 wave before the repair is qualified.
 
+## FAST64 Hotspot1 zero-access repair adopted / common triplet active (2026-09-10)
+
+The isolated exact Hotspot1 repair qualifications now pass in both DTC modes.
+PAPER_IO records `85,206` cycles and PAPER_OO `83,439`, each at
+`377,291,004` instructions with clean stderr/failure scans, balanced lower and
+dependency lifecycles, and zero terminal state. The minimal, source-local guard
+is committed on the active Core branch as `95ccdb7a…`; a fresh trace-enabled
+Release formal runtime is SHA-256 `462d105c…cc4dbc9`.
+
+Fresh immutable Hotspot1 Base/IO/OO rows are active under that one common
+Core/runtime on CPUs 5/6/8. They retain the frozen trace/config/A1/scientific
+Framework identities and are classified
+`REPAIRED_CORE_FORMAL_QUALIFICATION_PENDING_IDENTITY_MAP_FINALIZATION` until
+all strict collectors and the explicit reuse/differential map close. Existing
+bbcbb raw/results remain preserved and are neither relabelled nor mixed.
+
 ## FAST64.3 active Base promotion / acquisition state (2026-09-10)
 
 The exact-identity Base promotion audit accepts ATAX, BICG, GESUMMV, GEMM and

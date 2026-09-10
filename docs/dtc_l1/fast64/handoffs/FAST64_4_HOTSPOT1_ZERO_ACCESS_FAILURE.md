@@ -83,3 +83,21 @@ It is uncommitted repair evidence only and must naturally terminate with the
 same lifecycle checks before an explicit Core-adoption invalidation/reuse map
 is considered. Preserve all bbcbb evidence as mechanism/diagnostic anchors;
 do not promote or relabel either original failed attempt.
+
+## Adopted repair / fresh formal qualification
+
+Both isolated IO and OO qualifications now pass, including natural exit zero,
+clean error scans, lower create/issue/response and credit conservation,
+dependency conservation, and all required zero terminal state. The minimal
+guard is consequently committed and pushed as Core
+`95ccdb7a056f2d53f740d90869785cac6d4ee0f5`; its fresh trace-enabled Release
+runtime SHA-256 is
+`462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`.
+
+Fresh immutable Hotspot1 Base/IO/OO runs under that common Core/runtime are
+active in `fast64-repair-formal/`. Their purpose is both a source-local
+nonempty lifecycle differential and the internally common final Hotspot1
+triplet. A future-only parameterized collector
+`monitor_fast64_repaired_core_row_v1.sh` owns their compact records; it does
+not alter the runner or any bbcbb collector. The explicit reuse/invalidation
+authority is `FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.
