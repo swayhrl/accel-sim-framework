@@ -1,6 +1,6 @@
 # FAST64.3 — Base Characterization Handoff
 
-Status: **ACTIVE — 5/12 Base rows promoted; 7/12 fresh immutable Base rows pending resource-safe acquisition**
+Status: **ACTIVE — 5/12 Base rows accepted; NN/Base strict-valid pending stage acceptance; 2DConvolution/Gaussian/Hotspot1/LUD Base active; Btree and MRI-Q queued**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -48,7 +48,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | Gaussian | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 | Hotspot1 | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 | LUD | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
-| NN | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
+| NN | `generated/fast64_3_dynamic_base_v1/` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | MRI-Q | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 
 No row may be dropped for pressure level, runtime, or later benefit.
@@ -59,9 +59,12 @@ No row may be dropped for pressure level, runtime, or later benefit.
 row-level audit. It verifies all five promoted rows against the frozen payload
 manifest and formal Base identity, then verifies natural immutable terminal,
 strict accounting/drain, host fields, required structural companion, and
-`DTC_L1_lower_cap_full_events=0`. The remaining seven rows are explicitly
-listed as `MISSING`; NN is deliberately reacquired because its historical
-precompute did not use the current frozen Framework execution snapshot.
+`DTC_L1_lower_cap_full_events=0`. The remaining seven rows were initially
+listed as `MISSING`; NN was deliberately reacquired because its historical
+precompute did not use the current frozen Framework execution snapshot. Its
+fresh immutable row now strict-validates with the current identity and awaits
+only FAST64.3's full-matrix acceptance. The other six remain active or queued
+as listed above.
 
 Before launching a Base row, document whether exact-identity evidence already
 exists. At closeout list every promoted row and prove:
@@ -155,6 +158,27 @@ then waits for the pool's strict summary before materializing compact JSON/TSV
 evidence and the separate source-defined Base structural companion. It never
 writes a live run directory. No raw log is committed and no accepted result is
 claimed until that validation completes.
+
+The later four-worker audit at
+`/tmp/fast64-future-wave4-audit-20260910T0807Z.tsv` passed with zero sampled
+swap-out/OOM/memory-PSI/CFS-throttling, 208,555,491,328 bytes cgroup headroom,
+125,939,712,000 bytes output free space, and four distinct CPU slots. It
+admitted fresh immutable Base rows Gaussian (CPU 5, attempt
+`3ec79940-ae70-444a-8991-816d6f570223`), Hotspot1 (CPU 6,
+`409dbf6b-9a36-41c8-8c34-4aad51e6154a`), LUD (CPU 7,
+`3a5f2814-bfb6-4f77-84c0-8c860d93b6e4`), and NN (CPU 8,
+`7500b5ff-1b6e-4ead-882f-5a1f2aa24f29`). All use the same frozen Base
+identity and `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` classification.
+
+NN naturally exited `0` and was strict-collected into
+`generated/fast64_3_dynamic_base_v1/`: cycles/instructions `6,985/1,284,872`,
+lower acquired/released `10,691/10,691`, PIB admits/retires `4,011/4,011`,
+final lower/PIB `0/0`, and lower-cap-full `0`. The generic v1 closeout monitor
+was retained for its live users but cannot execute the non-executable Python
+validator directly. Future-only `monitor_fast64_precomputed_row_v2.sh` invokes
+the identical frozen validator via `python3`; it strictly collected NN and is
+watching the three remaining parallel rows. This is a host-controller repair
+only and changes no simulator/config/payload/result semantics.
 
 Record the worker-pool calibration actually used:
 

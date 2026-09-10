@@ -4,9 +4,34 @@
 
 The exact-identity Base promotion audit accepts ATAX, BICG, GESUMMV, GEMM and
 DWT2D (5/12), including BICG's separately extracted canonical-perf structural
-companion. 2DConvolution, Btree, Gaussian, Hotspot1, LUD, NN and MRI-Q remain
-the immutable fresh-Base acquisition queue; historical NN Base is deliberately
-not reused because it lacks the current frozen Framework execution identity.
+companion. Historical NN Base was deliberately not reused because it lacks the
+current frozen Framework execution identity. Its fresh immutable replacement
+`fast64_3_NN_base_cap8192_a1_v2` naturally exited `0` and is strictly collected
+with cycles/instructions `6,985/1,284,872`, lower `10,691/10,691`, PIB
+`4,011/4,011`, final lower/PIB `0/0`, and lower-cap-full `0`; compact strict
+and structural evidence is under `generated/fast64_3_dynamic_base_v1/`.
+NN is `STRICT_VALID_PENDING_STAGE_ACCEPTANCE`, not a FAST64.3 PASS claim.
+
+2DConvolution/Base plus fresh Gaussian/Base, Hotspot1/Base, and LUD/Base are
+currently immutable and CPU-active. Btree/Base remains reserved for the
+existing single-slot continuation after 2DConvolution naturally terminates;
+MRI-Q/Base remains queued. No active row has an assertion/fatal/actual-deadlock/
+output-mismatch signature.
+
+The four-worker admission audit
+`/tmp/fast64-future-wave4-audit-20260910T0807Z.tsv` passed: sampled swap-out,
+OOM, memory-PSI and CFS throttling are zero; cgroup headroom is about 194 GiB
+and output free space about 117 GiB. It admitted Gaussian (CPU 5), Hotspot1
+(CPU 6), LUD (CPU 7), and NN (CPU 8) under distinct immutable attempt UUIDs.
+This replaces the earlier arbitrary one-worker operational limit with a
+measured-safe wave; it changes no scientific identity.
+
+The generic v1 closeout monitor invokes the non-executable Python validator as
+an executable and therefore cannot close a terminal row. It remains untouched
+while live. Future-only `monitor_fast64_precomputed_row_v2.sh` invokes the
+same frozen validator through `python3`; its static regression and NN
+integration strict collection pass. This is a host-only controller repair, not
+a parser/configuration/mechanism change.
 
 The seven-row pool and every canonical workload dry-run pass using the
 future-only alias-v3 validator, which keeps frozen validator/manifest bytes
