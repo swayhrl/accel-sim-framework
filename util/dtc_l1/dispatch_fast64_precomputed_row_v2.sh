@@ -51,7 +51,7 @@ case "$classification" in
     test "$mode" = BASE || { echo "ONLY_BASE_MAY_PRECOMPUTE_BEFORE_FAST64_2_PASS" >&2; exit 2; }
     ;;
   PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE|PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE)
-    test -f "$pass_artifact" && grep -Fxq FAST64_2_REPAIR_PASS "$pass_artifact" || {
+    test -f "$pass_artifact" && grep -Fq 'FAST64_2_REPAIR_PASS' "$pass_artifact" || {
       echo "FAST64_2_REPAIR_PASS_REQUIRED" >&2; exit 1;
     }
     ;;
