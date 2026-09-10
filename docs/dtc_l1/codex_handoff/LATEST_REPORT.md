@@ -1,5 +1,42 @@
 # Latest Codex Report
 
+## FAST64 current parallelism / Gaussian closeout reconciliation (2026-09-10)
+
+FAST64.1 and FAST64.2 remain PASS; FAST64.3 remains ACTIVE and FAST64.4
+remains physical precomputation only.  A fresh three-window, read-only V2
+admission audit is retained at
+`/tmp/fast64-review-parallelism-20260910T094045Z.tsv`.  It observed `0`
+swap-out pages, `0` major faults, `0` OOM kills, `0` memory PSI and `0` CFS
+throttling across all windows; the cgroup used 11.47--11.71 CPU-core
+equivalents out of 384, with 230,305,792,000 bytes cgroup headroom,
+75,037,433,856 bytes `MemAvailable`, and 124,287,619,072 bytes output free.
+It therefore authorizes up to eight *future* additional workers.  This is a
+scheduling authorization only; no live process/controller was changed and
+new old-Core FAST64.4 dispatch remains deferred until the repaired-Core
+identity boundary closes.
+
+Gaussian/IO and Gaussian/OO both naturally exited `0` under their immutable
+bbcbb/A1/formal-runtime identities and wrote canonical strict JSON records:
+`generated/fast64_4_precomputed_rows_v1/fast64_4_gaussian_{io,oo}_cap8192_a1_v3.json`.
+They record respectively `3,815,204` / `3,818,467` cycles at common
+`283,685,120` instructions, with clean required simulator log scans.  The
+initial v2 collector successfully wrote and validated both JSON files, then
+exited before its final PASS line because it treated the absent optional
+`simulator.launcher.log` as a required `rg` input.  This is a host-only
+closeout-marker defect, not a simulator failure.  Frozen v2 remains untouched
+for its live GEMM users.  Future-only
+`monitor_fast64_precomputed_row_v3.sh` scans the required stdout/stderr and
+the launcher log only if present; syntax and a Gaussian/IO replay pass, whose
+output SHA-256 exactly matches the canonical IO JSON
+`0774d66aa058762a58bd4461e243d93030d631633f68c8cd1a79a6aa1798747f`.
+Both Gaussian rows are strictly
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, never accepted FAST64.4 evidence.
+
+The common repaired-Core Hotspot1 Base/IO/OO triplet remains CPU-active in
+fresh isolated namespaces under Core `95ccdb7a...` and runtime
+`462d105c...cc4dbc9`; it has not yet reached strict terminal closeout and no
+identity promotion is claimed.
+
 ## FAST64.3 Gaussian/Base and MRI-Q/Base strict terminals (2026-09-10)
 
 Fresh immutable Gaussian/Base (`3ec79940-ae70-444a-8991-816d6f570223`) and

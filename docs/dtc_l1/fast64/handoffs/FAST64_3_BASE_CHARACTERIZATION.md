@@ -217,6 +217,34 @@ swap-out, major faults, PSI, OOM, and throttling; formal FAST64 p95/max RSS is
 measured total-worker target of up to 20, verified incrementally after each
 material refill. It changes scheduling only, never scientific row identity.
 
+The current three-window V2 observation
+`/tmp/fast64-review-parallelism-20260910T094045Z.tsv` strengthens that
+calibration without changing an existing run: requested-new-workers `8`,
+swap-out/major-fault/OOM/PSI/throttling deltas all `0`, cgroup CPU use
+11.47--11.71 core-equivalents of the 384-core quota, cgroup headroom
+230,305,792,000 bytes, `MemAvailable` 75,037,433,856 bytes and output free
+124,287,619,072 bytes.  Its admission is `PASS_FUTURE_PRECOMPUTE_ADMISSION_V2`
+for eight further workers.  The operational order remains: complete the
+common repaired-Core Hotspot1 triplet, finish remaining Base acquisition, then
+fill new FAST64.4 work under the settled identity; this does not authorize
+altering the existing bbcbb controllers or relabelling their rows.
+
+## 9.1 Gaussian IO/OO precompute collector reconciliation
+
+Gaussian IO and OO immutable attempts `5251ab7f-13b1-43dc-9b7d-0434ef498817`
+and `40293c57-f695-42d0-8b70-9bbe6c0842b3` naturally exited `0` and their v2
+validator invocations wrote compact canonical JSON evidence.  IO records
+3,815,204 cycles and OO 3,818,467, each at 283,685,120 instructions.  Required
+simulator stdout/stderr scans have no assertion/fatal/deadlock/mismatch
+signature.  V2 then lacked its final PASS marker solely because
+`simulator.launcher.log` is optional for this runner but was passed as a
+required `rg` path.  Do not treat this post-validator marker defect as a
+simulation failure or rewrite the live v2 GEMM monitor.  Future-only v3 fixes
+only that optional-file scan and passes a deterministic Gaussian/IO replay;
+the replay JSON SHA-256 exactly equals the canonical output SHA.  Gaussian
+IO/OO remain `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` and must still satisfy
+their owning stage/triplet acceptance before any promotion.
+
 ## 10. FAST64.3 HARD acceptance checklist
 
 Do not change `Status` to PASS until every applicable item is checked.
