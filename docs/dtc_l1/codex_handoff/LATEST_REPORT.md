@@ -34,6 +34,15 @@ under Core `f2836ea1...` solely to print previously unavailable OO deadlock
 resource state; it is explicitly `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  No
 formal stage or result promotion is implied.
 
+After a healthy target-16 observation, four further nonduplicate frozen rows
+were admitted to the authorized target-20 total: Btree physical 40-KiB/OO,
+48-KiB/IO, 48-KiB/OO, and BICG physical 32-KiB/IO.  Each uses the detached
+formal Core-95 identity, immutable runner, atomically published START receipt
+and an unshared physical CPU.  The fresh post-launch audit remains free of
+memory PSI, CFS throttling and forbidden simulator signatures.  These live
+rows remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no performance result
+or stage conclusion has been accepted.
+
 ## FAST64.3/4 preliminary strict review; FAST64.6 held at current safe concurrency (2026-09-10)
 
 The current strict parser was rerun against every discovered terminal

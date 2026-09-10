@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; THREE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, EIGHT
+Status: **FROZEN; THREE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TWELVE
 ACTIVE, AND TWO PRESERVED CAPACITY-BOUND FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
@@ -161,3 +161,25 @@ It uses diagnostic-only Core `f2836ea1...` and binary SHA `361aada1...`, CPU
 config, and `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  This binary prints only after
 the existing deadlock decision; it cannot change normal simulation behavior or
 replace formal Core `95ccdb7a...` for any retained row.
+
+## Target-20 expansion (2026-09-10)
+
+The target-16 workers sustained useful CPU progress without terminal or
+forbidden-log signatures, while `MemAvailable` remained about 166 GiB, cgroup
+memory was 57.9 GiB of 256 GiB, memory PSI and CFS throttling were zero, and
+output free space remained 108.8 GiB.  The four next nonduplicate frozen
+physical points were dry-run verified then launched onto unshared physical
+cores 37--40.  Each has an atomic START receipt, formal Core-95/runtime/A1
+identity, immutable runner and fresh namespace:
+
+| Row | CPU / simulator PID | UUID | config |
+| --- | --- | --- | --- |
+| Btree / 40 KiB / OO | 37 / 807685 | `caed8185-190f-4c5d-9579-6f9ab35eccad` | `FAST64_SENS_PHYSICAL_40KB_OO` |
+| Btree / 48 KiB / IO | 38 / 807749 | `e6d49d31-0c68-498a-b1ac-9a1c1bca4f5b` | `FAST64_SENS_PHYSICAL_48KB_IO` |
+| Btree / 48 KiB / OO | 39 / 807807 | `826c71df-70b5-4157-bf4d-f5213111c361` | `FAST64_SENS_PHYSICAL_48KB_OO` |
+| BICG / 32 KiB / IO | 40 / 807848 | `3e5e4a69-0884-44c1-9340-d83e20ced89f` | `FAST64_SENS_PHYSICAL_32KB_IO` |
+
+These four and the target-16 formal rows are live
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` rows only.  The compact identity
+index below is extended with their exact config hashes.  No 16.5-KiB failed
+attempt was restarted, and no Stage3/4 work was modified.
