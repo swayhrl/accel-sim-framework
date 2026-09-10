@@ -61,3 +61,11 @@ build (`361aada1...`): it includes the prior baseline fill-owner dump and
 adds only an OO deadlock-state print. This directed run is explicitly
 `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; it is deferred until a resource-safe slot
 exists and must never displace the live Stage3/4 or FAST64.6 rows.
+
+The accompanying read-only analyzer,
+`util/dtc_l1/analyze_fast64_3_2d_base_diagnostic_v1.py`, accepts only a
+terminal diagnostic stdout and a previously absent output path. It records
+deadlocked cores plus each L1D reserved block, its matching root fill-owner
+record (if any), and any nonzero sector-child `pending_read`. Its JSON is
+observation-only and cannot select a repair, create a formal result, or
+advance FAST64.3.
