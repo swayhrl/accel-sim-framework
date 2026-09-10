@@ -37,6 +37,16 @@ the hash-pinned observational binary and the frozen Base trace/config. The
 row is live as `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; all other FAST64 work was
 left running naturally.
 
+Three additional Btree sensitivity rows (physical 40-KiB IO/OO and 48-KiB OO)
+then naturally exit 0 and strict-validate, bringing retained physical
+precomputes to seven. Their compact records retain exact identities, balanced
+lower/dependency accounting, terminal drains and zero lower-cap-full, but all
+remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`. The freed capacity safely
+admitted fresh, nonduplicate physical-32 Btree IO/OO and BICG OO rows under
+the detached formal Core-95 identity and immutable START receipts. A separate
+future-only v4 collector covers just this v6 wave, leaving the live v3
+collector byte-for-byte unchanged.
+
 ## FAST64.6 BICG/16.5-KiB capacity boundary preserved; Btree IO precomputes added (2026-09-10)
 
 Two Btree physical-pool IO rows naturally exit 0 and strict-validate as

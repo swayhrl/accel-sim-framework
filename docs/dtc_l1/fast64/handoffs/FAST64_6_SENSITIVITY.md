@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; FOUR PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
+Status: **FROZEN; SEVEN PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
 FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND TWO PRESERVED
 CAPACITY-BOUND FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
@@ -202,3 +202,30 @@ atomically publishing
 It is a physical acquisition only and remains
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; it is not a FAST64.4/FAST64.6
 logical result or a performance conclusion.
+
+## Btree / 40--48-KiB terminal precomputes and 32-KiB refill (2026-09-10)
+
+Three more Btree physical-pool rows naturally exited zero and were independently
+strict-validated by the frozen v3 collector. Each has exact repaired formal
+Core/runtime/A1/scientific/payload provenance, balanced mode-specific lower
+create/issue/response and dependency lifecycles, zero final PIB/inflight/lower
+state and lower-cap-full zero:
+
+| point | UUID | cycles / instructions | lower lifecycle | dependency lifecycle |
+| --- | --- | --- | --- | --- |
+| Btree / 40 KiB / IO | `bef2beaf-5bbd-45b2-b449-89008a3afc87` | 244,231 / 444,467,849 | 507,779 / 507,779 / 507,779 | 2,388,513 / 2,388,513 |
+| Btree / 40 KiB / OO | `caed8185-190f-4c5d-9579-6f9ab35eccad` | 172,795 / 444,467,849 | 502,450 / 502,450 / 502,450 | 2,388,513 / 2,388,513 |
+| Btree / 48 KiB / OO | `826c71df-70b5-4157-bf4d-f5213111c361` | 172,795 / 444,467,849 | 502,450 / 502,450 / 502,450 | 2,388,513 / 2,388,513 |
+
+Their compact records reside in `generated/fast64_6_precomputed_v3/`. They
+remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` only.
+
+The three naturally released slots were re-audited with about 151 GiB
+`MemAvailable`, zero sampled memory PSI and 115 GB output headroom. Three
+fresh nonduplicate physical-32 rows were dry-run validated and atomically
+started: Btree IO (CPU 35, UUID `cb54525c-c634-4bbc-96e7-b8a43570c55f`), Btree
+OO (CPU 37, UUID `55755348-52c5-4c96-858c-638814aa0570`), and BICG OO (CPU
+39, UUID `37a406ef-9111-4a18-a2d1-99f498893b9c`). They use the detached formal
+Core-95 worktree and exact frozen physical-32 configs. New
+`collect_fast64_6_precompute_v4.sh` is future-only for these v6 namespaces;
+the active v3 collector remains untouched. All three are precomputes only.
