@@ -73,6 +73,15 @@ if [ "$dry_run" = 1 ]; then for task in "${tasks[@]}"; do printf 'FAST64_V2_POOL
 
 mkdir -p "$runs/validated"
 value() { awk -F '\t' -v key="$2" '$1==key {n++;v=$2} END {if(n==1)print v;else exit 1}' "$1"; }
+# The immutable v2 dispatcher writes a headered two-line supervisor receipt,
+# not a key/value record.  Keep this reader explicit so a future pool cannot
+# mistake the header text for a PID or abandon a healthy live namespace.
+supervisor_from_receipt() {
+  awk -F '\t' '
+    NR == 1 { for (i = 1; i <= NF; ++i) if ($i == "supervisor_pid") col = i; next }
+    NR == 2 && col { print $col; exit }
+  ' "$1"
+}
 validate_terminal() {
   local name=$1 workload=$2 mode=$3 run=$4 config=$5 output=$6
   test -f "$run/RUN_TERMINAL.tsv" || { echo "MISSING_TERMINAL_RECEIPT $name" >&2; return 1; }
@@ -107,7 +116,7 @@ while [ "$next" -lt "${#tasks[@]}" ] || [ "${#active[@]}" -gt 0 ]; do
       unset 'active[$name]'
       printf 'FAST64_V2_POOL_VALIDATED\t%s\n' "$name"
     else
-      supervisor=$(awk -F '\t' '$1=="supervisor_pid" {print $2;exit}' "$runs/$name.supervisor.tsv")
+      supervisor=$(supervisor_from_receipt "$runs/$name.supervisor.tsv")
       test -n "$supervisor" && kill -0 "$supervisor" 2>/dev/null || {
         echo "LIVE_NAMESPACE_WITHOUT_TERMINAL_OR_SUPERVISOR $name" >&2; exit 1;
       }
