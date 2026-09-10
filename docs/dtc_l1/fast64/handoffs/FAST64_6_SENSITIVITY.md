@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; THREE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, SIX
+Status: **FROZEN; THREE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, EIGHT
 ACTIVE, AND TWO PRESERVED CAPACITY-BOUND FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
@@ -131,3 +131,33 @@ and excluded; its current fatal dump lacks a mode-equivalent DTC resource
 snapshot, so it remains an observability follow-up rather than an inferred
 root cause.  `FAST64_6_BICG_PHYSICAL16P5_FAILURE.md` holds the exact evidence
 and disposition.
+
+## Target-16 refill: two new formal rows; separate OO observation (2026-09-10)
+
+A fresh read-only admission observation found 13 live FAST64 simulator leaves,
+about 167 GiB `MemAvailable`, cgroup memory current/max 54.6/256 GiB, zero
+memory-PSI and CFS throttling, and 108.8 GiB output free.  The two real
+physical cores 34 and 35 were unoccupied by FAST64.  It was therefore safe to
+raise the formal total only toward the authorized target 16, rather than jump
+to 20.  `dispatch_fast64_sensitivity_row_v5.sh` was dry-run verified and then
+launched these new nonduplicate formal rows:
+
+| Row | core / simulator PID | immutable UUID | exact config | classification |
+| --- | --- | --- | --- | --- |
+| Btree / 24 KiB / OO | 34 / 802101 | `6d24efbd-473c-487e-b4d6-d93209a07d66` | `FAST64_SENS_PHYSICAL_24KB_OO`, SHA `e7161643...` | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
+| Btree / 40 KiB / IO | 35 / 802165 | `bef2beaf-5bbd-45b2-b449-89008a3afc87` | `FAST64_SENS_PHYSICAL_40KB_IO`, SHA `69a9c237...` | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
+
+`generated/FAST64_6_PRECOMPUTE_DISPATCH_V2.tsv` records their exact frozen
+formal identities.  Both START receipts were atomically published; a brief
+read-only observation showed the processes CPU-active with growing output and
+no forbidden signature.  They are live precomputes, not PASS records.
+
+The third target-16 slot is deliberately **not** a formal result.  It is the
+one exact BICG / 16.5-KiB / OO reproduction needed to observe the preserved OO
+failure, in fresh namespace
+`/workspace/fast64-diagnostics/fast64_6_bicg_physical16p5_oo_coref283_diag_v1`.
+It uses diagnostic-only Core `f2836ea1...` and binary SHA `361aada1...`, CPU
+36, UUID `2ef7f749-cf0c-4d45-a9d0-4a73b35d9d21`, the exact frozen payload and
+config, and `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  This binary prints only after
+the existing deadlock decision; it cannot change normal simulation behavior or
+replace formal Core `95ccdb7a...` for any retained row.

@@ -24,6 +24,16 @@ nonpromotion disposition are in
 `fast64/handoffs/FAST64_6_BICG_PHYSICAL16P5_FAILURE.md`.  Active 24-KiB BICG,
 all other sensitivity rows and every Stage3/4 simulator remain untouched.
 
+The fresh capacity audit subsequently admitted only the target-16 refill:
+Btree physical-24-KiB/OO and physical-40-KiB/IO are live, exact formal
+Core-`95ccdb7a` immutable precomputes with START receipts, fresh namespaces
+and topology-separated cores.  The new dispatcher binds a detached clean
+Core-95 worktree so the current diagnostic-only Core descendant cannot bleed
+into formal provenance.  Separately, one BICG/16.5-KiB/OO reproduction runs
+under Core `f2836ea1...` solely to print previously unavailable OO deadlock
+resource state; it is explicitly `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  No
+formal stage or result promotion is implied.
+
 ## FAST64.3/4 preliminary strict review; FAST64.6 held at current safe concurrency (2026-09-10)
 
 The current strict parser was rerun against every discovered terminal
