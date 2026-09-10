@@ -22,6 +22,21 @@ lacks this required instrumentation, and labels all output observation-only.
 It was tested with a synthetic owner/absence mapping and cannot create a
 formal result or select a repair.
 
+One permitted target-20 slot subsequently became free when Btree / physical
+24-KiB / OO naturally exited zero. The frozen v3 collector strict-validated
+and atomically recorded its `172,795` cycles / `444,467,849` instructions,
+balanced lower `502,450/502,450` and dependency `2,388,513/2,388,513`
+lifecycles, complete drain and lower-cap-full zero in
+`fast64/generated/fast64_6_precomputed_v3/fast64_sens_v5_btree_physical24_oo.json`.
+It remains `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` only.
+
+The released CPU 34 was safely used for the exact, fresh 2DConvolution/Base
+observational diagnostic UUID `a970b692-22d5-441d-ad6a-faa500d9d573`, not a
+formal rerun. Its immutable START receipt binds diagnostic Core `f2836ea1...`,
+the hash-pinned observational binary and the frozen Base trace/config. The
+row is live as `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; all other FAST64 work was
+left running naturally.
+
 ## FAST64.6 BICG/16.5-KiB capacity boundary preserved; Btree IO precomputes added (2026-09-10)
 
 Two Btree physical-pool IO rows naturally exit 0 and strict-validate as

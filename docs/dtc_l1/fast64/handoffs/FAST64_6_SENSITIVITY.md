@@ -1,7 +1,8 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; THREE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TWELVE
-ACTIVE, AND TWO PRESERVED CAPACITY-BOUND FAILURES UNDER
+Status: **FROZEN; FOUR PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
+FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND TWO PRESERVED
+CAPACITY-BOUND FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
 Logical stage order remains unchanged: FAST64.3, FAST64.4 and FAST64.5 must
@@ -183,3 +184,21 @@ These four and the target-16 formal rows are live
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` rows only.  The compact identity
 index below is extended with their exact config hashes.  No 16.5-KiB failed
 attempt was restarted, and no Stage3/4 work was modified.
+
+## Btree / 24-KiB / OO terminal precompute (2026-09-10)
+
+The target-16 Btree / 24-KiB / PAPER_OO row naturally terminated with exit
+zero at `2026-09-10T19:09:27Z`. The frozen v3 collector then independently
+validated its immutable START/TERMINAL receipt pair, exact formal
+Core-`95ccdb7a...`/runtime-`462d105c...`/A1/scientific identities, config SHA
+`e7161643...`, payload identity and strict parser/accounting contract before
+atomically publishing
+`generated/fast64_6_precomputed_v3/fast64_sens_v5_btree_physical24_oo.json`.
+
+| point | UUID | cycles / instructions | lower acquire/release | dependencies closed/count | final drain |
+| --- | --- | --- | --- | --- | --- |
+| Btree / 24 KiB / OO | `6d24efbd-473c-487e-b4d6-d93209a07d66` | 172,795 / 444,467,849 | 502,450 / 502,450 | 2,388,513 / 2,388,513 | lower, PIB, OO inflight and active refs all zero; lower-cap-full 0 |
+
+It is a physical acquisition only and remains
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; it is not a FAST64.4/FAST64.6
+logical result or a performance conclusion.

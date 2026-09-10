@@ -69,3 +69,17 @@ deadlocked cores plus each L1D reserved block, its matching root fill-owner
 record (if any), and any nonzero sector-child `pending_read`. Its JSON is
 observation-only and cannot select a repair, create a formal result, or
 advance FAST64.3.
+
+## Diagnostic acquisition active (2026-09-10)
+
+After Btree / 24-KiB / OO naturally completed, its CPU 34 slot was re-audited:
+about 147 GiB `MemAvailable`, zero sampled memory PSI, no CPU-34 occupant and
+115.6 GB output headroom. The hash-pinned dispatcher preflight passed, then
+atomically published a fresh START receipt for
+`/workspace/fast64-diagnostics/fast64_3_2DConvolution_base_coref283_diag_v1`.
+It runs on CPU 34 with attempt UUID
+`a970b692-22d5-441d-ad6a-faa500d9d573`, diagnostic Core `f2836ea1...`, binary
+`361aada1...`, the frozen Base config/trace and classification
+`NONFORMAL_DIAGNOSTIC_NOT_RESULT`. It is an observational reproduction only:
+it cannot replace the preserved failed attempt, enter any formal collector or
+advance FAST64.3. It will be allowed to reach its natural terminal state.
