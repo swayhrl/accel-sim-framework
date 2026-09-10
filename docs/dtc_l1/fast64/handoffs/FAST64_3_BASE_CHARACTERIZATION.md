@@ -142,9 +142,15 @@ Base row only: 2DConvolution/Base namespace
 `fast64_3_2DConvolution_base_cap8192_a1_v2`, immutable attempt
 `844f1ba7-58a9-4208-98e5-71e01b1a6885`, CPU `0`, and classification
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`. The detached dynamic pool has a
-single worker and strict alias-v3 terminal validation before it refills the
-next frozen workload; no raw log is committed and no accepted result is
-claimed until that validation completes.
+single worker. Its initial controller exited immediately after launch because
+it incorrectly read the headered `supervisor_pid` record as TSV column one;
+the live immutable 2DConvolution runner was not touched. Future-only
+`util/dtc_l1/continue_fast64_dynamic_pool_v3.sh` (SHA-256
+`9fe78b45e048e97534cd4179b71d12b789a86d3c52cdabc91c6cdc678c6418c1`) adopts
+that runner read-only, parses the receipt header correctly, and strictly
+alias-v3 validates its natural terminal before it refills the next frozen
+workload. No raw log is committed and no accepted result is claimed until that
+validation completes.
 
 Record the worker-pool calibration actually used:
 

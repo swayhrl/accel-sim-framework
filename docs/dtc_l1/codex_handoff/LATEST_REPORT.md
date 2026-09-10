@@ -18,7 +18,12 @@ A subsequent one-worker audit passed with zero sampled swap-out and admitted
 only the first missing Base row: 2DConvolution/Base in immutable namespace
 `fast64_3_2DConvolution_base_cap8192_a1_v2`, attempt
 `844f1ba7-58a9-4208-98e5-71e01b1a6885`, CPU 0. Its one-worker dynamic pool
-will strict-validate each natural terminal before it refills Btree; no formal
+exited after dispatch because it read the headered `supervisor_pid` field as
+column one. The live immutable runner was not touched. Future-only
+`continue_fast64_dynamic_pool_v3.sh` (SHA-256
+`9fe78b45e048e97534cd4179b71d12b789a86d3c52cdabc91c6cdc678c6418c1`) now
+adopts that live row read-only, corrects the header-aware receipt parse, and
+will strict-validate its natural terminal before it refills Btree. No formal
 result is claimed while the row is live.
 
 ## FAST64.2 repair qualification PASS (2026-09-10)
