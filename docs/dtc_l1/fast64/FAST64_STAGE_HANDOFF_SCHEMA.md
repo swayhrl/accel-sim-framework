@@ -2,6 +2,11 @@
 
 Status: **ACTIVE**
 
+For FAST64.3 and FAST64.4, the prepared handoff files and detailed promotion/
+acceptance rules in `FAST64_3_4_EXECUTION_CONTRACT.md` are mandatory operating
+authority in addition to this schema and `FAST64_ACCEPTANCE_CONTRACT.md`.
+Goal-mode resume may use `FAST64_3_4_GOAL_RESUME_PROMPT.md`.
+
 Create/update the following stage handoffs as execution proceeds:
 
 - `handoffs/FAST64_0_PIVOT.md`
@@ -62,7 +67,10 @@ Every handoff must contain:
 - structural-pressure table;
 - live-miss table;
 - host runtime/resource table;
-- any workload-local issue resolution.
+- any workload-local issue resolution;
+- exact-identity promotion/reuse audit for precomputed rows;
+- metric-completeness closure for every frozen FAST12 member;
+- identity/evidence manifest and raw-log index.
 
 ### FAST64.4
 
@@ -70,7 +78,9 @@ Every handoff must contain:
 - Base/IO/OO cycles and instruction identity;
 - correctness/drain status;
 - speedups and GM-FAST12;
-- retry/obsolete map.
+- retry/obsolete map;
+- triplet identity audit and mode-specific accounting table;
+- identity/evidence manifest and raw-log index.
 
 ### FAST64.5
 
