@@ -72,9 +72,14 @@ FAST64 row: its runtime SHA-256 is
 `8fc679619587b660bd3a034456f60ed36805af77a15ba499d8083cbc892fd29f` and it
 must not be mixed with bbcbb results.
 
-The matching OO qualification remains required before any Core adoption. Its
-2026-09-10 fresh one-worker admission correctly failed closed because
-`swap_so_delta=85`; no OO simulator was launched. Re-audit and launch the OO
-qualification only when the normal FAST64 resource gate passes. Preserve all
-bbcbb evidence as mechanism/diagnostic anchors; do not promote or relabel
-either original failed attempt.
+The matching OO qualification remains required before any Core adoption. The
+first 2026-09-10 one-worker audit correctly failed closed at
+`swap_so_delta=85`, but a later independent 60-second audit passed with
+`swap_so_delta=0`, no OOM/PSI/throttle, sufficient cgroup memory headroom, and
+124 GiB output free. The exact guarded Hotspot1/PAPER_OO qualification is now
+active in the fresh isolated namespace
+`/workspace/fast64-repair-qual/hotspot1_oo_zero_access_guard_r0` on CPU 29.
+It is uncommitted repair evidence only and must naturally terminate with the
+same lifecycle checks before an explicit Core-adoption invalidation/reuse map
+is considered. Preserve all bbcbb evidence as mechanism/diagnostic anchors;
+do not promote or relabel either original failed attempt.

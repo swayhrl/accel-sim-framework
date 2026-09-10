@@ -180,6 +180,19 @@ the identical frozen validator via `python3`; it strictly collected NN and is
 watching the three remaining parallel rows. This is a host-controller repair
 only and changes no simulator/config/payload/result semantics.
 
+LUD/IO and LUD/OO were physically acquired only after FAST64.2 PASS and have
+now both naturally exited `0` and strict-collected through that future-only v2
+path. Their compact records are
+`generated/fast64_4_precomputed_rows_v1/fast64_4_lud_io_cap8192_a1_v3.json`
+and `generated/fast64_4_precomputed_rows_v1/fast64_4_lud_oo_cap8192_a1_v3.json`.
+The IO attempt `ad50c217-c4cc-4cf4-a514-91a368509f03` records
+`1,089,813` cycles / `184,963,840` instructions; the OO attempt
+`ce6a4a2b-8986-4d3d-b8e0-c40f8141f76e` records `1,086,338` cycles at the
+same instructions. Each has balanced lower create/issue/response and
+dependencies, zero final PIB/inflight/lower state, and OO active refs zero.
+They remain `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, not accepted FAST64.4
+evidence, until the FAST64.3 Base gate and later triplet audit pass.
+
 Record the worker-pool calibration actually used:
 
 - cgroup CPU quota/cpuset;

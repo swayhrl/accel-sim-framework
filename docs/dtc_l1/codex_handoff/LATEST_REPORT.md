@@ -40,9 +40,27 @@ The isolated minimal Core guard has now completed the exact Hotspot1 IO trace
 naturally (`85,206` cycles; `377,291,004` instructions) with zero stderr,
 closed lower/dependency accounting, and final IO PIB/inflight/lower `0/0/0`.
 It is a repair qualification only, built from uncommitted isolated source and
-therefore cannot be promoted or mixed with bbcbb formal evidence. Matching OO
-qualification is queued behind a fresh resource admission: the latest
-one-worker audit correctly rejected launch on `swap_so_delta=85`.
+therefore cannot be promoted or mixed with bbcbb formal evidence. A later
+60-second one-worker audit passed (`swap_so_delta=0`, no OOM/PSI/throttle,
+about 212 GiB cgroup headroom and 124 GiB output free), so the matching exact
+Hotspot1/OO qualification is active in the fresh isolated namespace
+`/workspace/fast64-repair-qual/hotspot1_oo_zero_access_guard_r0` on CPU 29.
+It is likewise not a formal FAST64 row and has no result claim before natural
+terminal lifecycle validation.
+
+## FAST64.4 LUD IO/OO physical-precompute strict terminals (2026-09-10)
+
+LUD/IO (`ad50c217-c4cc-4cf4-a514-91a368509f03`) and LUD/OO
+(`ce6a4a2b-8986-4d3d-b8e0-c40f8141f76e`) naturally exited `0` and passed the
+future-only v2 strict collector. Both preserve the frozen bbcbb/runtime/A1/
+scientific-Framework/payload identities, one immutable execution epoch, empty
+failure scans, lower create/issue/response conservation, dependency
+create/complete conservation, and final PIB/inflight/lower state zero; OO also
+ends with active refs zero. IO records `1,089,813` cycles and OO `1,086,338`,
+each with `184,963,840` instructions. Their compact records are
+`generated/fast64_4_precomputed_rows_v1/fast64_4_lud_{io,oo}_cap8192_a1_v3.json`.
+They are strictly `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: FAST64.4 has not
+opened logically and no performance/triplet promotion is claimed.
 
 ## FAST64.3 active Base promotion / acquisition state (2026-09-10)
 
