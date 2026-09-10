@@ -56,6 +56,24 @@ The Btree Base peer remains live.  These terminal rows
 are retained as repaired-Core physical precompute evidence only: they do not
 populate accepted FAST64.4 matrix cells or permit mixed-identity triplets.
 
+After the fresh V2 post-MRI-Q admission passed two additional workers at
+`2026-09-10T10:42:54Z` (zero sampled swap-out/major-fault/PSI/OOM/throttling,
+`42,749,964,288` bytes MemAvailable and `217,963,790,336` bytes cgroup memory
+headroom), the following independent repaired-Core rows were dispatched in new
+immutable namespaces.  They are physical precompute only and each has a
+separate read-only v2 terminal collector:
+
+| row | CPU | immutable attempt | status |
+| --- | ---: | --- | --- |
+| GESUMMV / PAPER_IO | 16 | `10440267-d296-4a36-82df-38e6cf8f5ec5` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` (active) |
+| ATAX / PAPER_BASE | 23 | `13e5b9ee-80ba-4f23-b9be-d927766c2bd8` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` (active) |
+
+Their manifests bind repaired Core `95ccdb7a...`, runtime
+`462d105c...cc4dbc9`, A1 observer, Framework scientific snapshot
+`037f008b...`, frozen config/payload hashes, and immutable runner
+`bf9a84c8...`.  Neither replaces, relabels, or interrupts its literal bbcbb
+predecessor.
+
 ## 2. Fixed 36-row matrix
 
 Fill exactly one accepted Base/IO/OO row per workload. Base rows must be reused
