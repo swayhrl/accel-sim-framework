@@ -1,5 +1,26 @@
 # Latest Codex Report
 
+## FAST64.6 first physical-precompute wave active (2026-09-10)
+
+The authorized frozen FAST64.6 matrix is now in physical acquisition, without
+advancing FAST64.6 logically.  V3 resource admission for target 20 passed with
+15 live FAST64 leaves, p95 RSS 2.96 GiB, 103.2 GiB `MemAvailable`, 208.7 GiB
+cgroup headroom, 110.2 GiB output free, and zero sampled swap-out, OOM,
+memory PSI, CFS throttling and pathological I/O.  Ten immutable-v2,
+repaired-Core/A1 rows then started in fresh namespaces: 16.5-KiB physical
+IO/OO for BICG, GESUMMV and Btree, plus 24-KiB IO/OO for BICG and GESUMMV.
+Each has an atomic START receipt and a distinct read-only terminal monitor;
+the compact identity index is
+`fast64/generated/FAST64_6_PRECOMPUTE_DISPATCH_V1.tsv`.
+
+All ten are strictly classified
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  They are neither FAST64.4
+primary results nor a FAST64.6 PASS.  Existing Stage3/4 simulators and their
+controllers were not modified.  The 2DConvolution/Base historical failure
+remains an active source-diagnosis item: its deadlock snapshot shows reserved
+conventional L1 lines with no live L1 MSHR/miss-queue owner; this is evidence,
+not yet a root-cause conclusion or a repair.
+
 ## FAST64.3 failure preservation / FAST64.6 pre-dispatch freeze (2026-09-10)
 
 The historical bbcbb 2DConvolution/Base acquisition is no longer live: its

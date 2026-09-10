@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN PRE-DISPATCH; PHYSICAL PRECOMPUTATION MAY RUN UNDER
+Status: **FROZEN; TEN PHYSICAL PRECOMPUTATION ROWS ACTIVE UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
 Logical stage order remains unchanged: FAST64.3, FAST64.4 and FAST64.5 must
@@ -56,3 +56,25 @@ renaming.  A baseline point can be reused only after repaired-Core terminal
 identity, exact payload/config/observer/snapshot, parser and drain checks.
 All new rows must naturally exit zero and strict-validate lower/dependency and
 mode-specific drain before any later logical promotion.
+
+## First physical-acquisition wave (2026-09-10)
+
+The two fresh three-window V3 resource audits recorded
+`PASS_FUTURE_PRECOMPUTE_ADMISSION_V3`: no sampled swap-out, OOM, memory PSI,
+CFS throttling or pathological cgroup I/O.  The target-20 audit at
+`/tmp/fast64-resource-audit-v3-20260910T1340Z-target20.tsv` observed 15 live
+FAST64 leaves and admitted five more, projecting 20 total workers and about
+88.4 GiB `MemAvailable` after the fixed 16-GiB reserve.  This was followed by
+ten nonduplicate physical-pool rows, all with atomic START receipts and
+separate read-only closeout monitors:
+
+| Physical pool | Workloads/modes |
+| --- | --- |
+| 16.5 KiB (132 lines, 16,896 B) | BICG IO/OO; GESUMMV IO/OO; Btree IO/OO |
+| 24 KiB (192 lines, 24,576 B) | BICG IO/OO; GESUMMV IO/OO |
+
+`generated/FAST64_6_PRECOMPUTE_DISPATCH_V1.tsv` is the compact immutable
+attempt index (namespace, CPU, supervisor/simulator PID, UUID and config
+hash).  It records launch identity, not a result.  Every row remains
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no terminal receipt, parser
+verdict, FAST64.6 logical promotion, or performance conclusion is claimed.
