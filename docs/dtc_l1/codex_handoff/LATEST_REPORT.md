@@ -106,6 +106,18 @@ Gaussian/IO.  Every member is an isolated immutable-v2 attempt under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; none is a logical FAST64.4 result
 until the FAST64.3 gate and later primary-matrix acceptance both pass.
 
+DWT2D/IO and DWT2D/OO have since naturally exited `0` and passed their
+independent v2 strict collectors. Their immutable attempts are respectively
+`257ccf84-1651-4116-a36d-b8227a4e1548` and
+`8d866b57-202e-4386-b221-b1b418d68735`; both retain the frozen formal identity,
+one execution epoch, clean failure scan, `148,684,429` dynamic instructions,
+final lower `0`, and lower-cap-full `0`.  The IO row records `241,380` cycles
+and zero IO lower-create-queue-full stalls; the OO row records `234,651`
+cycles, zero OO lower-create-queue-full stalls, and final OO active refs `0`.
+Their compact JSON evidence is retained under
+`generated/fast64_4_precomputed_rows_v1/` as
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, not as an accepted FAST64.4 triplet.
+
 ## FAST64.4 physical precompute — ATAX/IO active (2026-09-10)
 
 A fresh 60-second `FAST64_FUTURE_PRECOMPUTE_RESOURCE_AUDIT_V1` admitted one
