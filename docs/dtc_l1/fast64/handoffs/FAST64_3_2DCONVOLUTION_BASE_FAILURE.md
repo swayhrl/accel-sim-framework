@@ -89,6 +89,13 @@ record (if any), and any nonzero sector-child `pending_read`. Its JSON is
 observation-only and cannot select a repair, create a formal result, or
 advance FAST64.3.
 
+Its isolated regression
+`util/dtc_l1/test_fast64_3_2d_base_diagnostic_v1.sh` uses a versioned,
+synthetic dump only.  It verifies the parser's owner-present, owner-absent,
+deadlocked-core, and nonzero-`pending_read` paths while asserting the output
+remains `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  It does not read or modify the
+live diagnostic namespace.
+
 ## Diagnostic acquisition active (2026-09-10)
 
 After Btree / 24-KiB / OO naturally completed, its CPU 34 slot was re-audited:
