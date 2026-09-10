@@ -5,7 +5,7 @@
 `C12_OPERATOR_AWARE_COMPLETE_READY_FOR_REVIEW`
 
 The final review pack is committed in Framework commit
-`2342614f60bb70e8b567309a4b4411e2de3cbbbf` on
+`23bb01dd5681b94eb0d89b4660fca78f1177b6f5` on
 `hrl/vm-m4b-operator-aware-v0`. This handoff records that completed pack.
 
 ## C12 source cutoff
@@ -25,6 +25,10 @@ The final review pack is committed in Framework commit
 - Complete 22-arm `ARM_OPERATOR_CHARACTERIZATION.tsv`,
   `OPERATOR_ARM_DELTAS.tsv`, and `LSEG_OPERATOR_SENSITIVITY.tsv`, including
   Prefill F1-vs-F2, F8-L20-vs-F7-L20, and F8 Lseg 5/10/20.
+- Final-review exact-per-kernel acceptance: all 15,752 kernel markers across
+  22 arms have one explicit cycle, every arm closes to its formal and
+  validation total, and all 302 active cumulative `vm_*` metrics pass
+  snapshot continuity and final-value closure.
 - Direct parameter-range/direct-semantic mapping only; no heuristic
   assignments; one deliberately retained `UNRESOLVED` kernel per ROI; and
   `UNKNOWN` remains an address class.
@@ -41,9 +45,11 @@ The final review pack is committed in Framework commit
    tiers, and unresolved limits.
 3. `CONSERVATION_AUDIT.md` — identity checks, numerical closure, and read-only
    reproduction command.
-4. `KV_CLASS_TRANSACTION_AUDIT.md` — limits of the FFN/Embedding KV-class
+4. `ARM_CONSERVATION.tsv` — all 22 exact per-kernel cycle and cumulative-field
+   acceptance records.
+5. `KV_CLASS_TRANSACTION_AUDIT.md` — limits of the FFN/Embedding KV-class
    observation.
-5. `KERNEL_OPERATOR_MAP.tsv`, `ARM_OPERATOR_CHARACTERIZATION.tsv`, and
+6. `KERNEL_OPERATOR_MAP.tsv`, `ARM_OPERATOR_CHARACTERIZATION.tsv`, and
    `OPERATOR_ARM_DELTAS.tsv` — row-level evidence.
 
 No C12 simulator replay was launched and no formal-C12 raw log, trace, config,
