@@ -1,5 +1,33 @@
 # Latest Codex Report
 
+## Btree/32-KiB strict pair closed; BICG/48-KiB and GESUMMV/32-KiB pairs in acquisition (2026-09-11)
+
+The formerly inactive v4 supervisor was not altered; its unchanged collector
+was invoked once as a read-only, atomic closeout step after both of its Btree
+physical-32 rows had naturally terminated.  It strictly published the pair:
+Btree/IO UUID `cb54525c-c634-4bbc-96e7-b8a43570c55f` at 244,231 cycles and
+Btree/OO UUID `55755348-52c5-4c96-858c-638814aa0570` at 172,795 cycles, both
+at 444,467,849 instructions.  The IO lower lifecycle is
+`507,779/507,779/507,779`; OO is `502,450/502,450/502,450`; both dependency
+lifecycles close `2,388,513/2,388,513`, all terminal lower/PIB/inflight (and
+OO active-ref) state drains, and lower-cap-full is zero.  Both retain formal
+Core/runtime/A1/scientific/payload identity and only
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` classification.
+
+GESUMMV/physical-16.5/IO naturally exited 1 at its deadlock detector, matching
+the already preserved OO failure; it has no PASS record and is held apart from
+the eleven strict-terminal precomputes pending resource-state source
+classification.  It does not alter the frozen matrix or constitute a stage
+gate.  With the newly free capacity and a fresh healthy resource audit, four
+exactly-once rows were dry-run verified then launched with atomic START
+receipts: BICG/48-KiB IO `4a5a9737-1928-48b6-8ae9-f017f465466d` on CPU 31,
+BICG/48-KiB OO `7e733ecb-f9b2-46e6-9899-4c5dd1e7213f` on CPU 37,
+GESUMMV/32-KiB IO `cfed0564-14df-4e0f-b650-ae5460b88e25` on CPU 26, and
+GESUMMV/32-KiB OO `00a173e5-8402-4345-9f4f-b5121b89957a` on CPU 35.
+Future-only v7/v8 collectors isolate these new namespaces; no active
+collector or simulator was changed.  All four are physical acquisitions only,
+not FAST64.4/5/6 logical results.
+
 ## BICG / 24-KiB / OO strict-terminal physical precompute (2026-09-11)
 
 The existing independent collector has now atomically published the compact

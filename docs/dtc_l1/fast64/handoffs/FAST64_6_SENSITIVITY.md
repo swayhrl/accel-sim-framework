@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; NINE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
+Status: **FROZEN; ELEVEN PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, ELEVEN
 FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND TWO PRESERVED
 CAPACITY-BOUND FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
@@ -292,3 +292,43 @@ This is the ninth strict-terminal physical precompute.  It remains
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; BICG / 24 KiB / IO is still live,
 so this evidence does not create a mode-pair comparison, FAST64.4 primary
 result, FAST64.5 causal claim, or FAST64.6 logical promotion.
+
+## Btree / 32-KiB strict physical pair and next pairwise refills (2026-09-11)
+
+Both Btree / physical 32-KiB modes naturally exited zero and the unchanged,
+then-inactive v4 collector was invoked once to atomically strict-validate their
+own terminal receipts.  It touched neither the remaining live v6 BICG row nor
+any simulator.  The two compact records are
+`generated/fast64_6_precomputed_v4/fast64_sens_v6_btree_physical32_io.json`
+and `...physical32_oo.json`; each binds Core `95ccdb7a...`, runtime
+`462d105c...`, A1, scientific Framework `037f008b...`, frozen Btree payload,
+and its exact physical-32 config.
+
+| point | UUID | terminal UTC | cycles / instructions | lower lifecycle | dependency closed/count | terminal state |
+| --- | --- | --- | --- | --- | --- | --- |
+| Btree / 32 KiB / IO | `cb54525c-c634-4bbc-96e7-b8a43570c55f` | `2026-09-10T19:48:48Z` | 244,231 / 444,467,849 | 507,779 / 507,779 / 507,779 | 2,388,513 / 2,388,513 | lower, PIB, IO inflight zero; lower-cap-full 0 |
+| Btree / 32 KiB / OO | `55755348-52c5-4c96-858c-638814aa0570` | `2026-09-10T19:42:30Z` | 172,795 / 444,467,849 | 502,450 / 502,450 / 502,450 | 2,388,513 / 2,388,513 | lower, PIB, OO inflight and active refs zero; lower-cap-full 0 |
+
+They raise the strict-terminal physical-precompute count to eleven and remain
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` only.  The BICG/physical-24 OO
+and Btree/physical-32 pairwise results must not be used as FAST64.4 primary
+comparisons or FAST64.6 logical acceptance.
+
+GESUMMV/physical-16.5/IO has now naturally reached the same exit-1 deadlock
+class as the preserved 16.5-OO attempt.  It is a terminal failure with no PASS
+record, retained separately pending source-backed resource-state classification;
+it is not silently relabeled as a valid sensitivity result and does not change
+the frozen matrix.
+
+Fresh capacity released by natural terminal rows admitted the following exact
+nonduplicate physical acquisitions after dry-run verification.  All bind the
+formal repaired Core/runtime/A1/scientific identities, immutable-v2 runner,
+fresh namespace and atomic START receipt.  Future-only v7/v8 collectors cover
+only these new rows.
+
+| Row | CPU | UUID | collector | disposition |
+| --- | ---: | --- | --- | --- |
+| BICG / 48 KiB / IO | 31 | `4a5a9737-1928-48b6-8ae9-f017f465466d` | v7 | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
+| BICG / 48 KiB / OO | 37 | `7e733ecb-f9b2-46e6-9899-4c5dd1e7213f` | v7 | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
+| GESUMMV / 32 KiB / IO | 26 | `cfed0564-14df-4e0f-b650-ae5460b88e25` | v8 | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
+| GESUMMV / 32 KiB / OO | 35 | `00a173e5-8402-4345-9f4f-b5121b89957a` | v8 | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
