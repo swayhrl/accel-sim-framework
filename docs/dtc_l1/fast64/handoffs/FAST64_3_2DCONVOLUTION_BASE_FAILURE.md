@@ -23,3 +23,24 @@ be represented as a repair for this Base deadlock.  The next action is
 source-backed root-cause/reproduction analysis of the conventional Base
 reservation/lower-progress path; only an identified source-correct remedy may
 create a fresh replacement namespace.  FAST64.3 remains ACTIVE.
+
+## Prepared ownership diagnostic (not a formal result)
+
+Core commit `1c69f97aac7cb7267faecb5d07658ee5321d6fd8` adds no timing or
+mechanism change.  It extends only `baseline_cache::display_state()` so a
+fatal dump reports every `m_extra_mf_fields` fill owner: root request UID,
+block/address, cache index and sector-response `pending_read`.  This closes a
+specific blind spot in the preserved dump, which showed four reserved ways but
+not their corresponding fill-owner map.  The isolated Release build succeeded
+at `/tmp/dtc-fast64-2d-fill-owner-YXYc7J/accel-sim.out` (SHA-256
+`420423894d3561fe4b254dc5942d10932e4820d4841c09b3e6c0de2d37bde928`).
+
+When a resource-safe slot becomes available, the directed diagnostic will use
+the exact frozen 2DConvolution trace and Base configuration in a fresh,
+nonformal namespace.  It will not replace or promote this failed attempt.
+The dump will distinguish: (1) reserved lines with a live fill owner, which
+requires tracing that owner's lower/response path; (2) reserved lines with no
+fill owner, which localizes loss before/at cache ownership retirement; and
+(3) a sector owner with nonzero `pending_read`, which identifies incomplete
+child-response aggregation.  No functional repair or new formal result is
+authorized until that observation supports a root-cause classification.

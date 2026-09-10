@@ -17,7 +17,12 @@ both a lower-cap-full interpretation and the obsolete dirty-victim condition.
 Its three blocked SMs have stage-zero conventional-L1 reservation retries,
 four `RESERVED` ways, and no displayed MSHR/miss-queue/response/lower owner.
 This proves a reservation-completion ownership incident but not its root
-cause.  No speculative Core change or blind re-run was made.
+cause.  No speculative functional Core change or blind re-run was made.  A
+diagnostic-only Core commit `1c69f97a...` now makes the unprinted baseline
+fill-owner map visible in a fatal dump; an isolated build passed.  Its future
+directed run is nonformal, preserves the exact frozen 2D Base payload/config,
+and waits for a resource-safe free slot rather than displacing current Stage3/4
+or FAST64.6 simulators.
 
 The first FAST64.6 terminal is Btree / 16.5-KiB physical / PAPER_OO: it
 naturally exited 0 at `2026-09-10T14:06:03Z` and strict-validated with the
