@@ -1,47 +1,56 @@
 # C12 operator-aware Codex handoff
 
-## Final state for this publication
+## Final state
 
-`C12_OPERATOR_AWARE_INTERIM_READY_WAITING_C12_FINAL`
+`C12_OPERATOR_AWARE_COMPLETE_READY_FOR_REVIEW`
 
-The review pack is committed in Framework commit
-`27ade79ca3e2041a96b4e49bdc2c9c2ae4a23eef` on
-`hrl/vm-m4b-operator-aware-v0`.
+The final review pack is committed in Framework commit
+`2342614f60bb70e8b567309a4b4411e2de3cbbbf` on
+`hrl/vm-m4b-operator-aware-v0`. This handoff records that completed pack.
 
 ## C12 source cutoff
 
 - Read-only source branch: `origin/hrl/vm-m4b-speculative-v0`
-- Fetched source commit: `269c274712f4eeaee15d304033a9e6d61b5b3206`
-- Formal status at publication: 20 `PASS`, 2 `PENDING`
-- Excluded pending arms: `Prefill F1`, `Prefill F8-Lseg20`
-- Decode1: 11/11 terminal-PASS arms analyzed.
+- Verified source commit: `a268aba0d01310294074ded5bb8017e2092394c0`
+- Formal status: `C12_C5_FULL_ROI_COMPLETE_READY_FOR_REVIEW`; 22/22 terminal `PASS`
+- Newly admitted final Prefill arms: `F1` and `F8-Lseg20`
+- Decode1 remains complete at 11/11 terminal-PASS arms.
 
 ## Delivered
 
-- Review pack: `docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C12_OPERATOR_AWARE_CHARACTERIZATION/`
-- Exact 692/692 Prefill and 740/740 Decode1 list/header/marker alignment.
-- Direct parameter-range and direct-semantic mapping, with no heuristic
-  assignments and one retained `UNRESOLVED` kernel per ROI.
-- F0 Weight/KV/UNKNOWN trace characterization, exact per-kernel translation
-  and KERNEL cache attribution, and terminal-arm mechanism deltas.
-- Conservation audit: F0 operator cycles, instructions, selected translation
-  counters, and trace refs each exactly close against same-source totals.
-- Exact changed-path inventory: `CHANGED_FILES.md` in the review pack.
+- Final review pack: `docs/vm_tlb/review_packs/M4B_SPECULATIVE_DEVELOPMENT/C12_OPERATOR_AWARE_CHARACTERIZATION/`
+- Exact 692/692 Prefill and 740/740 Decode1 trace-list, embedded semantic
+  header, and simulator-marker alignment, revalidated without a trace or
+  sidecar identity change.
+- Complete 22-arm `ARM_OPERATOR_CHARACTERIZATION.tsv`,
+  `OPERATOR_ARM_DELTAS.tsv`, and `LSEG_OPERATOR_SENSITIVITY.tsv`, including
+  Prefill F1-vs-F2, F8-L20-vs-F7-L20, and F8 Lseg 5/10/20.
+- Direct parameter-range/direct-semantic mapping only; no heuristic
+  assignments; one deliberately retained `UNRESOLVED` kernel per ROI; and
+  `UNKNOWN` remains an address class.
+- `KV_CLASS_TRANSACTION_AUDIT.*`: same-marker FFN/Embedding direct-Weight plus
+  KV-runtime-range/cache-transaction observations are documented, while
+  semantic FFN/Embedding KV use and fusion remain explicitly unproven.
+- Final conservation and provenance audits, including formal registration,
+  trace, raw-log, framework/Core/binary, and final-arm admission gates.
 
 ## Review entry points
 
-1. `INTERIM_REPORT.md` — scope, OA0--OA5 status, and final-attach condition.
-2. `PAPER_FACING_FINDINGS.md` — measured facts, supported signals, and
-   explicit unresolved boundaries.
-3. `CONSERVATION_AUDIT.md` — numerical closure and read-only reproduction.
-4. `KERNEL_OPERATOR_MAP.tsv` / `OPERATOR_ARM_DELTAS.tsv` — row-level evidence.
+1. `FINAL_REPORT.md` — completion state and primary 22-arm findings.
+2. `PAPER_FACING_FINDINGS.md` — measured facts, supported signals, evidence
+   tiers, and unresolved limits.
+3. `CONSERVATION_AUDIT.md` — identity checks, numerical closure, and read-only
+   reproduction command.
+4. `KV_CLASS_TRANSACTION_AUDIT.md` — limits of the FFN/Embedding KV-class
+   observation.
+5. `KERNEL_OPERATOR_MAP.tsv`, `ARM_OPERATOR_CHARACTERIZATION.tsv`, and
+   `OPERATOR_ARM_DELTAS.tsv` — row-level evidence.
 
-No C12 simulator replay was launched and no live-C12 asset was changed.  The
-only remaining action is a read-only regeneration after official C12 publishes
-its final 22/22 terminal-PASS state.
+No C12 simulator replay was launched and no formal-C12 raw log, trace, config,
+registration, binary, Core, scheduler, or finalizer was modified.
 
 ## Worktree state at handoff
 
-Tracked worktree: clean after committing this handoff.  Local ignored scanner
-resume/input shards and Python bytecode are not part of the review pack or any
-commit; they neither modify nor duplicate C12 evidence.
+Tracked worktree is clean after the final handoff commit. Local ignored scanner
+resume/input shards and Python bytecode are not review-pack evidence and are
+not committed.
