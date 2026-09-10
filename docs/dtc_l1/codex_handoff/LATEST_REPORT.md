@@ -1,5 +1,31 @@
 # Latest Codex Report
 
+## FAST64.3/4 preliminary strict review; FAST64.6 held at current safe concurrency (2026-09-10)
+
+The current strict parser was rerun against every discovered terminal
+Base/IO/OO compact record using the original config and trace receipt.  Of 50
+records, 44 passed parser, receipt, config/trace/stdout-hash and forbidden-log
+checks.  The other six are deliberately receipt-less early NN smoke/telemetry
+anchors: they parse and hash-check cleanly but remain supporting-only rather
+than formal candidates.  This is recorded without stage promotion in
+`fast64/handoffs/FAST64_3_4_PRELIMINARY_REVIEW.md`; the checked-in provisional
+structural/triplet/speedup tables remain explicitly nonpromoting and contain
+no FAST12 GM.
+
+The source review of the preserved 2DConvolution/Base failure now excludes
+both a lower-cap-full interpretation and the obsolete dirty-victim condition.
+Its three blocked SMs have stage-zero conventional-L1 reservation retries,
+four `RESERVED` ways, and no displayed MSHR/miss-queue/response/lower owner.
+This proves a reservation-completion ownership incident but not its root
+cause.  No speculative Core change or blind re-run was made.
+
+The ten active FAST64.6 physical-sensitivity rows remain immutable,
+repaired-Core/A1 precomputes only.  At the latest read-only snapshot all were
+CPU-active and clean of assertion/fatal/deadlock signatures.  `MemAvailable`
+is now about 49 GiB and swap is nearly allocated but without sampled swap-out
+or memory-PSI; existing 20-worker concurrency is retained and no additional
+worker is admitted pending a fresh healthy observation.
+
 ## FAST64.6 first physical-precompute wave active (2026-09-10)
 
 The authorized frozen FAST64.6 matrix is now in physical acquisition, without
