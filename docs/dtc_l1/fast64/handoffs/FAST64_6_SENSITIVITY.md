@@ -27,6 +27,14 @@ classification.  The nine materialized Base logical controls are retained as
 source-supported *supplemental* configurations and are not part of the formal
 FAST64.6 bar/matrix roster.
 
+The companion operational ledger is
+`generated/FAST64_6_PHYSICAL_COVERAGE_V1.tsv`.  It records each physical
+IO/OO point exactly once as a strict terminal precompute, active immutable
+attempt, preserved failure, diagnostic, or not-yet-launched point.  It is
+nonpromoting scheduling evidence: terminal rows remain
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, and a complete pair in the ledger
+does not promote FAST64.4, FAST64.5, or FAST64.6.
+
 ## Exact identities
 
 - scientific Framework snapshot: `037f008b330eb230353b60edf126d6be9f45afdc`;

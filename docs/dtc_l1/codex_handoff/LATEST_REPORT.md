@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## FAST64.6 physical coverage ledger refreshed without changing live work (2026-09-11)
+
+`fast64/generated/FAST64_6_PHYSICAL_COVERAGE_V1.tsv` reconciles the frozen
+30-row physical IO/OO roster before further dispatch.  It separates eleven
+strict-terminal precomputes, eleven live formal rows, one live nonformal
+BICG/16.5-KiB observation, four preserved 16.5-KiB failures, and four
+not-yet-launched GESUMMV points.  This is preliminary operational coverage:
+terminal rows remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; failures
+remain excluded; and no FAST64.3/4/5/6 or FAST12-GM result is asserted.  The
+live target-20 worker set and all collectors were read only.
+
 ## ATAX historical IO strict-revalidated as a literal candidate (2026-09-11)
 
 The previously untracked ATAX/PAPER_IO compact row was verified from its
