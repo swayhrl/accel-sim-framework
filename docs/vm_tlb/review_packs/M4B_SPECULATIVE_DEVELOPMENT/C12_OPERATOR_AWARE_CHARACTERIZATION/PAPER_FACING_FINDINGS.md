@@ -31,13 +31,14 @@ Evidence cutoff: C12 final source commit
   Embedding/Output, FFN, and Attention Projection account for 20,545 / 11,626
   / 3,971 Prefill L2 misses and 8,210 / 6,389 / 4,172 Decode1 L2 misses.
 - Decode Weight's zero-L2-hit signature is present in direct Attention
-  Projection, FFN, and Embedding/Output, not one operator alone. KV L2 reuse
-  is also not attention-exclusive: Decode1 Attention Core has 33,395 hits and
-  157 misses, but Embedding/Output has 933,824 hits and FFN 120,817.
-- Decode1 observes KV-class transactions inside FFN/Embedding-classified
-  markers, but the audit establishes only direct Weight plus selected
-  KV-runtime-range intersection in the same trace/marker. It does not prove
-  semantic FFN/Embedding KV use or fusion. See `KV_CLASS_TRANSACTION_AUDIT.*`.
+  Projection, FFN, and Embedding/Output, not one operator alone. KERNEL-scope
+  `DATA_KV_CACHE` L2 HIT transactions are observed in several
+  operator-classified markers: 33,395 in Attention Core, 933,824 in
+  Embedding/Output-classified markers, and 120,817 in FFN-classified markers.
+- For FFN/Embedding-classified markers, those are only observed
+  KV-runtime-range / KV-class Cache transactions in the same marker as the
+  direct Weight classification. They do not prove semantic FFN/Embedding KV
+  use, cache reuse, or fusion. See `KV_CLASS_TRANSACTION_AUDIT.*`.
 
 ## SUPPORTED_OPERATOR_SIGNAL
 

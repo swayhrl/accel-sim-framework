@@ -11,6 +11,13 @@ All 22 `ARM_STATUS.tsv`/`ARM_RESULTS.tsv` rows passed the frozen Framework,
 Core, binary, ROI trace, registration, and raw-log-SHA checks before analysis.
 No simulator replay was launched and no C12 asset was changed.
 
+Final-review reparse acceptance is also closed: all 15,752 kernel markers
+across the 22 arms contain exactly one explicit `gpu_sim_cycle`, and every
+arm's per-kernel sum equals both formal `gpu_tot_sim_cycle` and its immutable
+validation value. The 302 cumulative `vm_*` metrics actually used for
+per-kernel attribution pass snapshot continuity, monotonicity, delta-to-final,
+and numeric validation closure over 216,232 metric snapshots.
+
 ## Continuation identity check
 
 The existing 692/740 alignment and trace scans were reused, then rechecked.

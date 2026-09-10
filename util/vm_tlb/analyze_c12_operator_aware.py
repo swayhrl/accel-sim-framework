@@ -53,6 +53,37 @@ FROZEN = {
     "binary_sha256": "2351f67bba60d333fdcc08b4cea81f39082958da67982d497ee8b4d83f321d3a",
 }
 
+# These are the monotonic vm_* checkpoints that are attributed per kernel in
+# the F0 and/or arm tables.  Values which never appear in an arm are not
+# attributed; values which do appear must be present exactly once at every
+# kernel snapshot in that arm.
+CUMULATIVE_METRIC_VALIDATION = {
+    "vm_l1_tlb_accesses": "vm_l1_tlb_accesses",
+    "vm_l1_tlb_hits": "vm_l1_tlb_hits",
+    "vm_l1_tlb_misses": "vm_l1_tlb_misses",
+    "vm_l2_tlb_accesses": "vm_l2_tlb_accesses",
+    "vm_l2_tlb_hits": "vm_l2_tlb_hits",
+    "vm_l2_tlb_misses": "vm_l2_tlb_misses",
+    "vm_translation_walk_starts": "vm_translation_walk_starts",
+    "vm_pte_requests": "vm_pte_requests",
+    "vm_pte_l2_only_responses": "vm_pte_l2_only_responses",
+    "vm_pte_dram_responses": "vm_pte_dram_responses",
+    "vm_translation_requester_latency_cycles_total": "vm_translation_requester_latency_cycles_total",
+    "vm_weight_segment_hits": "segment_hits",
+    "vm_weight_segment_l2_suppressed": "segment_l2_suppressed",
+    "vm_l2_tlb_subentry_hits": "subentry_hits",
+    "vm_l2_tlb_subentry_misses": "subentry_misses",
+}
+
+EXPECTED_TERMINAL_ARMS = {
+    roi: {
+        ("F0", "NONE"), ("F1", "NONE"), ("F2", "NONE"), ("F5", "NONE"),
+        ("F7", "5"), ("F7", "10"), ("F7", "20"),
+        ("F8", "5"), ("F8", "10"), ("F8", "20"), ("F9", "NONE"),
+    }
+    for roi in ("prefill", "decode1")
+}
+
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -291,11 +322,9 @@ def parse_pages(value: str | None) -> set[int]:
     return {int(part) for part in (value or "").split(",") if part}
 
 
-def fast_scan_traces(scanner: Path, roi: str, listed: list[str], trace_list: Path, trace_dir: Path,
-                     params: list[Parameter], sidecar_data: dict, out: Path) -> list[Kernel]:
+def fast_scan_traces(scanner: Path | None, roi: str, listed: list[str], trace_list: Path, trace_dir: Path,
+                     params: list[Parameter], sidecar_data: dict, out: Path, reuse_existing: bool) -> list[Kernel]:
     """Use the compiled analytical scanner without weakening full-lane accounting."""
-    if not scanner.is_file() or not scanner.stat().st_mode & 0o111:
-        raise RuntimeError(f"fast trace scanner is absent or not executable: {scanner}")
     param_path = out / f"PARAMETER_RANGES_{roi}.tsv"
     object_path = out / f"OBJECT_RANGES_{roi}.tsv"
     with param_path.open("w") as output:
@@ -320,6 +349,10 @@ def fast_scan_traces(scanner: Path, roi: str, listed: list[str], trace_list: Pat
         pending = [name for name in names if name not in prior_names]
         if not pending:
             continue
+        if reuse_existing:
+            raise RuntimeError(f"{roi}: cached trace scan is incomplete; refusing to rescan {len(pending)} traces")
+        if scanner is None or not scanner.is_file() or not scanner.stat().st_mode & 0o111:
+            raise RuntimeError(f"fast trace scanner is absent or not executable: {scanner}")
         list_path = out / f"TRACE_SCAN_INPUT_{roi}_{part}.list"
         scan_path = out / f"TRACE_SCAN_{roi}_{part}_resume.tsv"
         list_path.write_text("\n".join(pending) + "\n")
@@ -419,7 +452,9 @@ class RawKernel:
     marker: str
     index: int | None = None
     exact: dict[str, int] = field(default_factory=dict)
+    exact_occurrences: Counter = field(default_factory=Counter)
     cumulative: dict[str, int] = field(default_factory=dict)
+    cumulative_occurrences: Counter = field(default_factory=Counter)
     cache: Counter = field(default_factory=Counter)
     cross: Counter = field(default_factory=Counter)
 
@@ -446,8 +481,12 @@ def raw_kernels(path: Path) -> list[RawKernel]:
             if counter:
                 name, value = counter.group(1), int(counter.group(2))
                 if name in {"gpu_sim_cycle", "gpu_sim_insn"}:
+                    current.exact_occurrences[name] += 1
+                    if current.exact_occurrences[name] != 1:
+                        raise RuntimeError(f"{path}: duplicate {name} in marker {current.marker}")
                     current.exact[name] = value
                 elif name.startswith("vm_"):
+                    current.cumulative_occurrences[name] += 1
                     current.cumulative[name] = value
                 continue
             fields = line.rstrip("\n").split("\t")
@@ -466,39 +505,101 @@ def raw_kernels(path: Path) -> list[RawKernel]:
     return output
 
 
-def delta_counters(rows: list[RawKernel], validation: dict, raw_path: Path) -> list[dict[str, int]]:
-    # Raw dumps include both monotonic event counters and instantaneous gauges
-    # (for example sub-entry valid occupancy).  Only the listed event counters
-    # may be differenced across kernels; treating a gauge as a counter would
-    # manufacture a negative event count after a legitimate replacement.
-    cumulative_metrics = {
-        "vm_l1_tlb_accesses", "vm_l1_tlb_hits", "vm_l1_tlb_misses",
-        "vm_l2_tlb_accesses", "vm_l2_tlb_hits", "vm_l2_tlb_misses",
-        "vm_translation_walk_starts", "vm_pte_requests", "vm_pte_l2_only_responses", "vm_pte_dram_responses",
-        "vm_translation_requester_latency_cycles_total", "vm_weight_segment_hits",
-        "vm_weight_segment_l2_suppressed", "vm_l2_tlb_subentry_hits", "vm_l2_tlb_subentry_misses",
-    }
-    prior: Counter = Counter()
+def delta_counters(rows: list[RawKernel], validation: dict, raw_path: Path) -> tuple[list[dict[str, int]], dict[str, int | str]]:
+    """Validate and difference every cumulative field used for attribution.
+
+    An active metric is one present in the final marker snapshot. It must be
+    present exactly once in every snapshot, never decrease, and have its sum
+    of per-kernel deltas equal its terminal raw value. When the C12 validation
+    sidecar emits a numeric final value, that final raw value must agree too.
+    Fields absent from the complete raw arm are deliberately not attributed.
+    """
+    if not rows:
+        raise RuntimeError(f"{raw_path}: no Processing kernel markers")
+    active = tuple(metric for metric in CUMULATIVE_METRIC_VALIDATION if metric in rows[-1].cumulative)
+    prior = {metric: 0 for metric in active}
     deltas: list[dict[str, int]] = []
-    for row in rows:
-        now = Counter({key: value for key, value in row.cumulative.items() if key in cumulative_metrics})
-        delta = {key: now[key] - prior[key] for key in now}
+    for index, row in enumerate(rows):
+        missing = [metric for metric in active if metric not in row.cumulative]
+        duplicate = [metric for metric in active if row.cumulative_occurrences[metric] != 1]
+        if missing or duplicate:
+            raise RuntimeError(
+                f"{raw_path}: snapshot {index} marker {row.marker} cumulative-field continuity failed; "
+                f"missing={missing[:5]} duplicate={duplicate[:5]}"
+            )
+        now = {metric: row.cumulative[metric] for metric in active}
+        delta = {metric: now[metric] - prior[metric] for metric in active}
         if any(value < 0 for value in delta.values()):
-            bad = [key for key, value in delta.items() if value < 0]
-            raise RuntimeError(f"{raw_path}: cumulative counter decreased: {bad[:5]}")
+            bad = [metric for metric, value in delta.items() if value < 0]
+            raise RuntimeError(f"{raw_path}: cumulative counter decreased at snapshot {index}: {bad[:5]}")
         deltas.append(delta)
         prior = now
-    checks = {
-        "vm_l1_tlb_accesses": "vm_l1_tlb_accesses", "vm_l1_tlb_hits": "vm_l1_tlb_hits",
-        "vm_l1_tlb_misses": "vm_l1_tlb_misses", "vm_l2_tlb_accesses": "vm_l2_tlb_accesses",
-        "vm_l2_tlb_hits": "vm_l2_tlb_hits", "vm_l2_tlb_misses": "vm_l2_tlb_misses",
-        "vm_translation_walk_starts": "vm_translation_walk_starts", "vm_pte_requests": "vm_pte_requests",
+
+    numeric_validation_checks = 0
+    nonemitted_validation_checks = 0
+    for metric in active:
+        terminal = rows[-1].cumulative[metric]
+        recovered = sum(delta[metric] for delta in deltas)
+        if recovered != terminal:
+            raise RuntimeError(f"{raw_path}: delta sum {metric}={recovered} != terminal snapshot {terminal}")
+        sidecar_name = CUMULATIVE_METRIC_VALIDATION[metric]
+        sidecar_value = validation.get(sidecar_name)
+        if sidecar_value in {None, "", "NOT_EMITTED"}:
+            nonemitted_validation_checks += 1
+            continue
+        try:
+            expected = int(sidecar_value)
+        except ValueError as exc:
+            raise RuntimeError(f"{raw_path}: nonnumeric validation {sidecar_name}={sidecar_value!r}") from exc
+        if terminal != expected:
+            raise RuntimeError(f"{raw_path}: final {metric}={terminal} != validation {sidecar_name}={expected}")
+        numeric_validation_checks += 1
+    return deltas, {
+        "active_vm_metrics": len(active),
+        "vm_snapshot_fields": len(active) * len(rows),
+        "vm_numeric_validation_checks": numeric_validation_checks,
+        "vm_nonemitted_validation_checks": nonemitted_validation_checks,
     }
-    for raw_name, sidecar_name in checks.items():
-        if raw_name in prior and sidecar_name in validation and validation[sidecar_name] not in {"NOT_EMITTED", ""}:
-            if prior[raw_name] != int(validation[sidecar_name]):
-                raise RuntimeError(f"{raw_path}: final {raw_name}={prior[raw_name]} != validation {validation[sidecar_name]}")
-    return deltas
+
+
+def validate_arm_conservation(arm: dict[str, str], rows: list[RawKernel], validation: dict, raw_path: Path) -> tuple[list[dict[str, int]], dict[str, int | str]]:
+    """Fail fast unless exact cycles and all active vm_* fields close per arm."""
+    key = arm_key(arm)
+    expected_kernels = int(arm["expected_kernels"])
+    if len(rows) != expected_kernels:
+        raise RuntimeError(f"{key}: expected {expected_kernels} kernel markers, parsed {len(rows)}")
+    missing_cycles = [str(index) for index, row in enumerate(rows) if row.exact_occurrences["gpu_sim_cycle"] != 1]
+    if missing_cycles:
+        raise RuntimeError(f"{key}: gpu_sim_cycle must appear exactly once for every kernel; bad indices {','.join(missing_cycles[:12])}")
+    cycle_sum = sum(row.exact["gpu_sim_cycle"] for row in rows)
+    try:
+        formal_total = int(arm["result_gpu_tot_sim_cycle"])
+        validation_total = int(validation["gpu_tot_sim_cycle"])
+    except (KeyError, ValueError) as exc:
+        raise RuntimeError(f"{key}: missing or nonnumeric gpu_tot_sim_cycle formal/validation anchor") from exc
+    if cycle_sum != formal_total or cycle_sum != validation_total:
+        raise RuntimeError(
+            f"{key}: per-kernel gpu_sim_cycle sum {cycle_sum} != formal {formal_total} or validation {validation_total}"
+        )
+    deltas, vm_summary = delta_counters(rows, validation, raw_path)
+    return deltas, {
+        "roi": arm["roi"],
+        "arm": arm["arm"],
+        "lseg": arm["lseg"],
+        "kernel_markers": len(rows),
+        "gpu_sim_cycle_rows": len(rows),
+        "gpu_sim_cycle_sum": cycle_sum,
+        "formal_gpu_tot_sim_cycle": formal_total,
+        "validation_gpu_tot_sim_cycle": validation_total,
+        "cycle_conservation": "PASS",
+        "vm_active_metrics": vm_summary["active_vm_metrics"],
+        "vm_snapshot_fields": vm_summary["vm_snapshot_fields"],
+        "vm_snapshot_continuity": "PASS",
+        "vm_delta_to_terminal": "PASS",
+        "vm_numeric_validation_checks": vm_summary["vm_numeric_validation_checks"],
+        "vm_nonemitted_validation_checks": vm_summary["vm_nonemitted_validation_checks"],
+        "status": "PASS",
+    }
 
 
 def arm_key(row: dict[str, str]) -> tuple[str, str, str]:
@@ -573,8 +674,10 @@ def main() -> None:
     parser.add_argument("--c12-root", type=Path, default=DEFAULT_C12)
     parser.add_argument("--arm-status", type=Path, default=DEFAULT_STATUS)
     parser.add_argument("--arm-results", type=Path, default=DEFAULT_RESULTS)
-    parser.add_argument("--scanner", type=Path, required=True, help="compiled c12_operator_trace_scan executable")
+    parser.add_argument("--scanner", type=Path, help="compiled c12_operator_trace_scan executable, required only when scanning")
     parser.add_argument("--resume", action="store_true", help="resume an interrupted trace scan in this output directory")
+    parser.add_argument("--reuse-existing-trace-scan", action="store_true",
+                        help="require complete cached trace-scan evidence and never invoke the scanner")
     parser.add_argument("--source-commit", required=True, help="C12 source commit whose formal tables were consumed")
     parser.add_argument("--output-dir", type=Path, default=OUT_ROOT)
     args = parser.parse_args()
@@ -585,6 +688,10 @@ def main() -> None:
 
     status, results = tsv_read(args.arm_status), tsv_read(args.arm_results)
     terminal = safe_status_rows(status, results)
+    terminal_set = {(row["roi"], row["arm"], row["lseg"]) for row in terminal}
+    expected_terminal_set = {(roi, arm, lseg) for roi, arms in EXPECTED_TERMINAL_ARMS.items() for arm, lseg in arms}
+    if len(terminal) != 22 or len(terminal_set) != len(terminal) or terminal_set != expected_terminal_set:
+        raise RuntimeError(f"expected exactly the frozen 22 terminal-PASS arms; got {len(terminal)} rows / {len(terminal_set)} unique keys")
     terminal_by_key = {arm_key(row): row for row in terminal}
     f0_rows = {row["roi"]: row for row in terminal if row["arm"] == "F0" and row["lseg"] == "NONE"}
     if set(f0_rows) != {"prefill", "decode1"}:
@@ -621,7 +728,8 @@ def main() -> None:
         sidecar_data_by_roi[roi] = address["data"]
         if any(not (trace_dir / filename).is_file() for filename in listed):
             raise RuntimeError(f"{roi}: a C12 trace-list entry is unavailable")
-        kernels = fast_scan_traces(args.scanner, roi, listed, trace_list, trace_dir, params, address["data"], out)
+        kernels = fast_scan_traces(args.scanner, roi, listed, trace_list, trace_dir, params, address["data"], out,
+                                   args.reuse_existing_trace_scan)
         raw = run_dir / "run.log"
         raw_rows = raw_kernels(raw)
         markers = [row.marker for row in raw_rows]
@@ -652,7 +760,7 @@ def main() -> None:
     translation_rows: list[dict] = []
     cache_rows: list[dict] = []
     kv_audit_rows: list[dict] = []
-    raw_by_arm: dict[tuple[str, str, str], tuple[list[RawKernel], list[dict[str, int]]]] = {}
+    raw_by_arm: dict[tuple[str, str, str], tuple[list[RawKernel], list[dict[str, int]], dict[str, int | str]]] = {}
 
     for roi, kernels in all_kernels.items():
         for kernel in kernels:
@@ -670,16 +778,16 @@ def main() -> None:
         raw_rows = raw_kernels(Path(f0["run_dir"]) / "run.log")
         if [row.marker for row in raw_rows] != [kernel.filename for kernel in kernels]:
             raise RuntimeError(f"{roi} F0 marker/map mismatch while parsing telemetry")
-        deltas = delta_counters(raw_rows, validations, Path(f0["run_dir"]) / "run.log")
-        raw_by_arm[f0_key] = (raw_rows, deltas)
+        deltas, conservation = validate_arm_conservation(f0, raw_rows, validations, Path(f0["run_dir"]) / "run.log")
+        raw_by_arm[f0_key] = (raw_rows, deltas, conservation)
         for i, raw in enumerate(raw_rows):
             if raw.index is None:
                 raw.index = i
         direct_kernels = sum(kernel.direct for kernel in kernels)
         total_refs = sum(kernel.weight_refs + kernel.kv_refs + kernel.unknown_refs for kernel in kernels)
         direct_refs = sum(kernel.weight_refs + kernel.kv_refs + kernel.unknown_refs for kernel in kernels if kernel.direct)
-        cycles = {i: row.exact.get("gpu_sim_cycle", 0) for i, row in enumerate(raw_rows)}
-        insns = {i: row.exact.get("gpu_sim_insn", 0) for i, row in enumerate(raw_rows)}
+        cycles = {i: row.exact["gpu_sim_cycle"] for i, row in enumerate(raw_rows)}
+        insns = {i: row.exact["gpu_sim_insn"] for i, row in enumerate(raw_rows)}
         for basis, total, direct in (("kernel_count", len(kernels), direct_kernels), ("trace_memory_refs", total_refs, direct_refs),
                                      ("instructions", sum(insns.values()), sum(insns[i] for i, k in enumerate(kernels) if k.direct)),
                                      ("cycles", sum(cycles.values()), sum(cycles[i] for i, k in enumerate(kernels) if k.direct))):
@@ -709,9 +817,9 @@ def main() -> None:
                              "vm_l2_tlb_hits", "vm_l2_tlb_misses", "vm_translation_walk_starts", "vm_pte_requests",
                              "vm_pte_l2_only_responses", "vm_pte_dram_responses", "vm_translation_requester_latency_cycles_total")
         for metric in translation_names:
-            values = {i: delta.get(metric, 0) for i, delta in enumerate(deltas)}
             if metric not in deltas[-1]:
                 continue
+            values = {i: delta[metric] for i, delta in enumerate(deltas)}
             for operator, value in sorted(sum_by_operator(kernels, values).items()):
                 translation_rows.append({"roi": roi, "operator_class": operator, "metric": metric,
                                          "metric_scope": "EXACT_PER_KERNEL", "unit": "events" if "cycles" not in metric else "cycles",
@@ -799,32 +907,30 @@ def main() -> None:
     # OA3: parse only the terminal PASS rows, use the immutable F0 mapping for
     # every arm, and retain full-ROI performance separately from per-kernel data.
     arm_rows: list[dict] = []
+    arm_conservation_rows: list[dict[str, int | str]] = []
     arm_metrics: dict[tuple[str, str, str], dict[str, dict[str, int]]] = {}
     for arm in terminal:
         key = arm_key(arm)
         roi, arm_name, lseg = key
         kernels = all_kernels[roi]
         if key in raw_by_arm:
-            raw_rows, deltas = raw_by_arm[key]
+            raw_rows, deltas, conservation = raw_by_arm[key]
         else:
             validation = json.loads((Path(arm["run_dir"]) / "C12_ARM_VALIDATION.json").read_text())
             raw_rows = raw_kernels(Path(arm["run_dir"]) / "run.log")
             if [row.marker for row in raw_rows] != [kernel.filename for kernel in kernels]:
                 raise RuntimeError(f"{key}: marker sequence does not match F0-proven operator map")
-            deltas = delta_counters(raw_rows, validation, Path(arm["run_dir"]) / "run.log")
-            raw_by_arm[key] = (raw_rows, deltas)
+            deltas, conservation = validate_arm_conservation(arm, raw_rows, validation, Path(arm["run_dir"]) / "run.log")
+            raw_by_arm[key] = (raw_rows, deltas, conservation)
+        arm_conservation_rows.append(conservation)
         source = arm["raw_log_sha256"]
         metrics: dict[str, dict[str, int]] = {}
-        metric_values = {
-            "gpu_sim_cycle": {i: raw.exact.get("gpu_sim_cycle", 0) for i, raw in enumerate(raw_rows)},
-            "vm_weight_segment_hits": {i: delta.get("vm_weight_segment_hits", 0) for i, delta in enumerate(deltas)},
-            "vm_weight_segment_l2_suppressed": {i: delta.get("vm_weight_segment_l2_suppressed", 0) for i, delta in enumerate(deltas)},
-            "vm_l2_tlb_subentry_hits": {i: delta.get("vm_l2_tlb_subentry_hits", 0) for i, delta in enumerate(deltas)},
-            "vm_l2_tlb_subentry_misses": {i: delta.get("vm_l2_tlb_subentry_misses", 0) for i, delta in enumerate(deltas)},
-        }
+        metric_values = {"gpu_sim_cycle": {i: raw.exact["gpu_sim_cycle"] for i, raw in enumerate(raw_rows)}}
+        for metric in ("vm_weight_segment_hits", "vm_weight_segment_l2_suppressed",
+                       "vm_l2_tlb_subentry_hits", "vm_l2_tlb_subentry_misses"):
+            if metric in deltas[-1]:
+                metric_values[metric] = {i: delta[metric] for i, delta in enumerate(deltas)}
         for metric, values in metric_values.items():
-            if metric != "gpu_sim_cycle" and metric not in deltas[-1]:
-                continue
             metrics[metric] = sum_by_operator(kernels, values)
             for operator, value in sorted(metrics[metric].items()):
                 arm_rows.append({"roi": roi, "arm": arm_name, "lseg": lseg, "operator_class": operator, "metric": metric,
@@ -877,6 +983,12 @@ def main() -> None:
 
     write_tsv(out / "ARM_OPERATOR_CHARACTERIZATION.tsv",
               ["roi", "arm", "lseg", "operator_class", "metric", "metric_scope", "unit", "value", "source_raw_log_sha256"], arm_rows)
+    write_tsv(out / "ARM_CONSERVATION.tsv",
+              ["roi", "arm", "lseg", "kernel_markers", "gpu_sim_cycle_rows", "gpu_sim_cycle_sum",
+               "formal_gpu_tot_sim_cycle", "validation_gpu_tot_sim_cycle", "cycle_conservation",
+               "vm_active_metrics", "vm_snapshot_fields", "vm_snapshot_continuity", "vm_delta_to_terminal",
+               "vm_numeric_validation_checks", "vm_nonemitted_validation_checks", "status"],
+              arm_conservation_rows)
     write_tsv(out / "OPERATOR_ARM_DELTAS.tsv",
               ["roi", "comparison", "operator_class", "metric", "baseline_value", "candidate_value", "delta_abs", "delta_rel", "claim_scope"], delta_rows)
     write_tsv(out / "LSEG_OPERATOR_SENSITIVITY.tsv",
@@ -887,8 +999,8 @@ def main() -> None:
 ## Exact per kernel
 
 - `Processing kernel` markers are ordered exactly as the C12 compute-only list; `INDEX_ALIGNMENT_AUDIT.tsv` records every mapping.
-- `gpu_sim_cycle` and `gpu_sim_insn` appear once per processed kernel in each terminal raw log.
-- `vm_*` translation, Segment, and Sub-entry fields are end-of-kernel cumulative snapshots.  This parser differences adjacent snapshots and verifies selected final totals against immutable `C12_ARM_VALIDATION.json`; the resulting deltas are exact per-kernel events.
+- Every one of the 22 terminal-PASS arms has exactly one explicit `gpu_sim_cycle` value per processed kernel.  The per-kernel sum must equal both formal `gpu_tot_sim_cycle` and `C12_ARM_VALIDATION.json`, or parsing fails.
+- `vm_*` translation, Segment, and Sub-entry fields are end-of-kernel cumulative snapshots.  For every field used for per-kernel attribution, this parser requires exactly one value at every kernel snapshot, monotonicity, delta-sum closure to the terminal raw value, and equality to a numeric immutable validation value when emitted; any mismatch fails parsing.  A field absent from an entire raw arm is not attributed.
 - `m4c_telemetry` and `m4c_telemetry_l2` rows with scope `KERNEL` are exact per-kernel cache transactions.  Reservation fails remain a distinct outcome.
 
 ## Trace derived
