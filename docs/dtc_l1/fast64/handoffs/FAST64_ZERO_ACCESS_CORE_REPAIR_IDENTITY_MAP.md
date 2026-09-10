@@ -1,6 +1,6 @@
 # FAST64 zero-access Core repair identity / reuse map
 
-Status: **ACTIVE — REPAIRED-CORE HOTSPOT1 IO STRICT-COLLECTED; BASE ACTIVE; OO TERMINAL AWAITING COLLECTION**
+Status: **ACTIVE — REPAIRED-CORE HOTSPOT1 IO/OO STRICT-COLLECTED; BASE ACTIVE**
 
 This is an adoption-planning artifact, not a result promotion, Core authority,
 or replacement for `FAST64_RESULT_IDENTITY.md`. It records the required
@@ -74,9 +74,14 @@ review pass.  IO naturally exited `0` and strict-collected to
 `generated/fast64_repaired_core_qual_v1/fast64_hotspot1_io_core95ccdb7a_a1_v1.json`:
 `85,206` cycles / `377,291,004` instructions, immutable attempt
 `b362f344-86b1-4b73-9f09-8be4d5e71f2e`, clean simulator logs and matching
-Core/runtime/config/payload identity.  OO has its terminal receipt; Base alone
-remains CPU-active.  This is partial triplet evidence, never a final triplet
-claim.
+Core/runtime/config/payload identity.  OO also naturally exited `0` and
+strict-collected to
+`generated/fast64_repaired_core_qual_v1/fast64_hotspot1_oo_core95ccdb7a_a1_v1.json`:
+`83,439` cycles / `377,291,004` instructions, immutable attempt
+`05ee615d-0402-40a2-87a6-fa282e1054cf`, clean required log scan, lower-cap-full
+`139,750` and OO lower-create-queue-full `35,982` (diagnostic structural
+events, not errors).  Base alone remains CPU-active. This is partial triplet
+evidence, never a final triplet claim.
 
 The original v1 repaired-Core collector only recorded its initial wait line in
 this execution environment, so it cannot be relied upon for final closeout.

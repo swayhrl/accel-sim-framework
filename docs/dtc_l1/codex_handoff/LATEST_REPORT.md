@@ -33,11 +33,11 @@ Both Gaussian rows are strictly
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, never accepted FAST64.4 evidence.
 
 The common repaired-Core Hotspot1 triplet uses Core `95ccdb7a...` and runtime
-`462d105c...cc4dbc9`.  IO has naturally exited `0` and strict-collected under
-that identity (`85,206` cycles, `377,291,004` instructions); Base remains
-CPU-active and OO has a natural terminal receipt awaiting collector closeout.
-No triplet or identity promotion is claimed until all three compact records
-and the required differential/reuse map pass.
+`462d105c...cc4dbc9`.  IO and OO have naturally exited `0` and strict-collected
+under that identity: IO records `85,206` cycles and OO `83,439`, both at
+`377,291,004` instructions with clean required-log scans.  Base remains
+CPU-active. No triplet or identity promotion is claimed until Base's compact
+record and the required differential/reuse map pass.
 
 ## FAST64.3 Gaussian/Base and MRI-Q/Base strict terminals (2026-09-10)
 
