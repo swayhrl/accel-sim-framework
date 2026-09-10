@@ -195,3 +195,31 @@ This strictly valid diagnostic does **not** satisfy the required positive
 coupled-stress events and therefore does not pass or promote FAST64.2. It
 changes neither the R2 closure dependency freeze nor the formal-performance
 configuration.
+
+## Cap-1 source-derived next diagnostic (prepared; not launched)
+
+The immutable FAST64.1 R2 BICG Base/IO/OO rows have been revalidated as the
+FAST64.2 normal triplet by `validate_fast64_triplet_v1.py` with immutable
+attempt proof.  Compact reuse evidence is
+`generated/fast64_2_normal_triplet_reuse_v1/FAST64_2_BICG_NORMAL_TRIPLET_REUSE_V1.json`.
+All three rows share the frozen BICG trace-list SHA, formal Core/runtime/A1
+observer/scientific Framework identities, have positive natural-terminal
+progress, and close their required lower/dependency/PIB/inflight/OO-active-ref
+state.  They are reused; they are not rerun.
+
+The next positive diagnostic is intentionally **not** another performance
+point.  Source `shader.cc` performs lower-credit acquisition before each
+memory-cycle candidate admission.  On a failed acquisition it retains the
+candidate; the following new miss then takes the pre-allocation
+`create_queue.size() >= io_pib_entries` branch.  With global cap one and IO
+entries one, one outstanding lower request is sufficient to exercise that
+source-reachable path.  The cap-1 overlay is derived only from frozen
+`FAST64_IO.config` (source SHA `d4a2d9d0...`), changes exactly the global
+diagnostic cap and source-coupled IO bound, and has SHA-256
+`54f8552b00e3a280f01261e72191a404799687595afc6f2222af3edbdf1a0e4f`.
+
+`prepare_fast64_2_coupled_stress_cap1_v1.sh` is a future-only, fresh-namespace
+immutable launcher; its dry run passed.  It is gated on a new safe resource
+audit.  The 2026-09-10 60-second audit was correctly fail-closed because
+`swap_so_delta=704`; no cap-1 simulator was launched.  This is an operational
+resource wait, not an evidence failure or a FAST64.2 PASS claim.
