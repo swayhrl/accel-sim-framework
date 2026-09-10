@@ -1,6 +1,6 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64.2 REPAIR_QUALIFICATION_ACTIVE; FAST64.2 COUPLED-STRESS STRICT-NEGATIVE PRESSURE ABSENT; FAST64.3 HAS DWT2D/GEMM/ATAX BASE STRICT-VALID PRECOMPUTES PENDING FAST64.2 ACCEPTANCE**
+Status: **GOAL ACTIVE; FAST64_1_PLATFORM_PASS; FAST64_2_REPAIR_PASS; FAST64.3 BASE CHARACTERIZATION READY FOR PROMOTION/AQUISITION**
 
 Framework branch:
 
@@ -74,6 +74,14 @@ binding-lower-cap/source-coupled-candidate positive stress.  It changes no
 Core semantics and remains outside all performance aggregates.  The exact
 source proof, fixed NN/IO `cap=512, PIB=1` construction, and later acceptance
 conditions are in `handoffs/FAST64_2_FORCED_STRESS_SEMANTIC_GATE.md`.
+
+The source-reachable NN/PAPER_IO cap-1/PIB-1 positive diagnostic now naturally
+terminates and strict-validates: lower-cap-full is `31,399,562`, IO
+lower-create-queue-full is `31,105,381`, lower lifecycle is `2,673/2,673/2,673`,
+dependencies are `5,346/5,346`, and final IO inflight/PIB/lower is `0/0/0`.
+It is diagnostic-only, not a performance point. Together with the retained
+high-cap negative control and BICG normal-triplet reuse it closes
+`FAST64_2_REPAIR_PASS`; see `handoffs/FAST64_2_REPAIR_QUALIFICATION.md`.
 
 ## Mission
 

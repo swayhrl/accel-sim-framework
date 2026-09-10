@@ -1,6 +1,6 @@
 # FAST64.2 forced lower-create stress — semantic gate
 
-Status: **RESEARCHER_DECISION_RESOLVED; POSITIVE COUPLED STRESS STRICTLY COLLECTED — PRESSURE ABSENT**
+Status: **FAST64_2_REPAIR_PASS — SOURCE-REACHABLE POSITIVE COUPLED STRESS STRICTLY COLLECTED**
 
 This record preserves a naturally terminated diagnostic and the source proof
 that prevents choosing a replacement experiment by intuition.  It does not
@@ -223,3 +223,35 @@ immutable launcher; its dry run passed.  It is gated on a new safe resource
 audit.  The 2026-09-10 60-second audit was correctly fail-closed because
 `swap_so_delta=704`; no cap-1 simulator was launched.  This is an operational
 resource wait, not an evidence failure or a FAST64.2 PASS claim.
+
+## Cap-1 positive coupled stress — natural terminal and strict PASS
+
+The subsequent fresh admission passed and launched the prepared isolated
+NN/PAPER_IO diagnostic exactly once. It naturally exited `0` at
+`2026-09-10T07:08:50Z`. The future-only strict collector
+`collect_fast64_2_coupled_stress_cap1_v1.sh` verified immutable receipts, final
+overlay values, one canonical perf epoch, exact formal identity, failure scan,
+accounting, and terminal drain before atomically publishing
+`generated/fast64_2_coupled_stress_cap1_v1/`.
+
+| item | observed value |
+| --- | --- |
+| namespace / workload / mode | `fast64_2_nn_io_coupled_cap1_pib1_a1_v1` / NN / PAPER_IO |
+| diagnostic-only controls | global lower cap `1`; IO lower-create/PIB bound `1` |
+| Core / runtime / observer / Framework snapshot | `bbcbb5e...` / `6a8743b4...` / `2c2a6a27...` / `037f008b...` |
+| immutable attempt / runner | `b6ebf9fc-009b-4cab-80e0-4981a0a34857` / `bf9a84c8...` |
+| natural terminal / progress | exit `0`; `564,234` cycles; `1,284,872` instructions |
+| lower-cap-full events | **31,399,562** |
+| IO lower-create-queue-full stalls | **31,105,381** |
+| IO lower create / issue / response | `2,673 / 2,673 / 2,673` |
+| completion dependencies created / closed | `5,346 / 5,346` |
+| terminal IO inflight / PIB / lower | `0 / 0 / 0` |
+| assertion/fatal/deadlock/output mismatch scan | empty |
+
+This is the required source-reachable positive diagnostic: global-credit
+acquisition failure retains a candidate, and the following new miss reaches
+the pre-allocation lower-create bound. It is not a performance point, does not
+change the production lower-cap configuration or Core semantics, and is never
+included in Base/IO/OO aggregates. Together with the retained high-cap
+negative control and exact-identity BICG normal-triplet reuse, it closes
+FAST64.2 as `FAST64_2_REPAIR_PASS`.

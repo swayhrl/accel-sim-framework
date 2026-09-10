@@ -1,5 +1,24 @@
 # Latest Codex Report
 
+## FAST64.2 repair qualification PASS (2026-09-10)
+
+FAST64.2 is `FAST64_2_REPAIR_PASS`. The source-reachable diagnostic
+`fast64_2_nn_io_coupled_cap1_pib1_a1_v1` naturally exited `0` under the
+immutable-v2 receipt chain and strict validation. Its diagnostic-only cap-1,
+IO-entries-1 overlay records `31,399,562` global lower-cap-full events and
+`31,105,381` IO lower-create-queue-full stalls, while closing lower
+create/issue/response at `2,673/2,673/2,673`, dependencies at `5,346/5,346`,
+and final inflight/PIB/lower state at `0/0/0`. It has `564,234` cycles and
+`1,284,872` instructions, with an empty assertion/fatal/actual-deadlock/output
+mismatch scan.
+
+The cap-1 row is a source-backed diagnostic only: it does not alter the
+formal 8192-cap platform or enter performance aggregates. The retained
+high-cap BICG negative control and immutable R2 BICG Base/IO/OO normal-triplet
+reuse complete the FAST64.2 acceptance set. Compact evidence and the full
+checklist are in `fast64/handoffs/FAST64_2_REPAIR_QUALIFICATION.md` and
+`fast64/generated/fast64_2_coupled_stress_cap1_v1/`.
+
 ## FAST64.1 immutable R2 full-wave PASS (2026-09-10)
 
 FAST64.1 is `FAST64_1_PLATFORM_PASS`. All seven immutable-v2 R2 rows naturally
