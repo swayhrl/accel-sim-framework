@@ -1,5 +1,24 @@
 # Latest Codex Report
 
+## BICG / 24-KiB / OO strict-terminal physical precompute (2026-09-11)
+
+The existing independent collector has now atomically published the compact
+record for BICG / physical 24 KiB / PAPER_OO, immutable attempt
+`e33abcc8-c43f-4599-a55b-4e895fe2fe32`.  Its START/TERMINAL receipts show
+natural exit zero; strict validation binds formal Core `95ccdb7a...`, runtime
+`462d105c...`, A1 observer, scientific Framework `037f008b...`, exact OO
+config SHA `e7161643...`, and the frozen BICG payload.  It records 37,846,112
+cycles and 145,666,048 instructions; lower create/issue/response and credit
+acquire/release are all `17,639,701`, OO dependencies close
+`18,350,080/18,350,080`, final lower/PIB/inflight/active-ref state is zero,
+and lower-cap-full is zero.  The compact evidence is
+`fast64/generated/fast64_6_precomputed_v1/fast64_sens_v1_bicg_physical24_oo.json`.
+
+This is the ninth strict-terminal FAST64.6 physical acquisition only:
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  The paired BICG / 24-KiB / IO
+row remains live, so no pair comparison, primary result, stage acceptance, or
+FAST12 aggregation is asserted.
+
 ## Stage3/4 preliminary review refreshed; FAST64.6 BICG 40-KiB OO precompute dispatched (2026-09-11)
 
 Goal mode remains active.  The already checked-in preliminary Stage3/4 tables

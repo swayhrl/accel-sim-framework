@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; EIGHT PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
+Status: **FROZEN; NINE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
 FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND TWO PRESERVED
 CAPACITY-BOUND FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
@@ -274,3 +274,21 @@ The v6 collector is isolated to this one future row; no live V3/V4/V5
 collector, Stage3/4 simulator, or diagnostic was edited or restarted.  This
 is physical acquisition only and cannot promote FAST64.4, FAST64.5, or
 FAST64.6.
+
+## BICG / 24-KiB / OO terminal physical precompute (2026-09-11)
+
+BICG / physical 24 KiB / PAPER_OO naturally terminated with exit zero and was
+strict-collected by the existing independent v1 collector into
+`generated/fast64_6_precomputed_v1/fast64_sens_v1_bicg_physical24_oo.json`.
+The atomic receipts and record bind formal Core `95ccdb7a...`, runtime
+`462d105c...`, A1 observer, scientific Framework `037f008b...`, exact
+physical-24 OO config SHA `e7161643...`, and the frozen BICG payload.
+
+| point | UUID | cycles / instructions | lower create/issue/response and credit acquire/release | OO dependency closed/count | terminal state |
+| --- | --- | --- | --- | --- | --- |
+| BICG / 24 KiB / OO | `e33abcc8-c43f-4599-a55b-4e895fe2fe32` | 37,846,112 / 145,666,048 | 17,639,701 / 17,639,701 / 17,639,701 | 18,350,080 / 18,350,080 | lower, PIB, OO inflight, and active refs zero; lower-cap-full 0 |
+
+This is the ninth strict-terminal physical precompute.  It remains
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; BICG / 24 KiB / IO is still live,
+so this evidence does not create a mode-pair comparison, FAST64.4 primary
+result, FAST64.5 causal claim, or FAST64.6 logical promotion.
