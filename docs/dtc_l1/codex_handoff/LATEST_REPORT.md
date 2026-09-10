@@ -92,6 +92,20 @@ immutable attempt `7ae2c41b-a4f1-444c-bade-ae93dbc6293e` and its independent
 v2 collector.  It carries the same physical-precompute classification and is
 not an accepted FAST64.4 row while live.
 
+The next two-worker audit
+`/tmp/fast64-future-two-worker-refill-audit-20260910T083444Z.tsv` also passed
+with zero sampled swap-out/OOM/PSI/throttle.  It dispatched
+`fast64_4_2DConvolution_oo_cap8192_a1_v3` on CPU 17 (attempt
+`7e6c31bb-6887-4117-850c-6a3b2bc2764e`) and
+`fast64_4_gaussian_io_cap8192_a1_v3` on CPU 18 (attempt
+`5251ab7f-13b1-43dc-9b7d-0434ef498817`), each with a separate v2 collector.
+
+The active FAST64.4 physical-only wave is ATAX/IO; GEMM/IO and GEMM/OO;
+DWT2D/IO and DWT2D/OO; LUD/IO; 2DConvolution/IO and 2DConvolution/OO; and
+Gaussian/IO.  Every member is an isolated immutable-v2 attempt under
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; none is a logical FAST64.4 result
+until the FAST64.3 gate and later primary-matrix acceptance both pass.
+
 ## FAST64.4 physical precompute — ATAX/IO active (2026-09-10)
 
 A fresh 60-second `FAST64_FUTURE_PRECOMPUTE_RESOURCE_AUDIT_V1` admitted one
