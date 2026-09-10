@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GEN = ROOT / "docs/dtc_l1/fast64/generated"
+FORMAL_REPAIRED_CORE = "95ccdb7a056f2d53f740d90869785cac6d4ee0f5"
 
 
 def rows():
@@ -60,7 +61,15 @@ def main():
         if all(selected):
             insns = [r["metrics"].get("gpu_tot_sim_insn") for r in selected]
             drain = all(drained(r["metrics"]) for r in selected)
-            identity = "COMMON_IDENTITY_CANDIDATE" if len(set(insns)) == 1 and drain else "REVIEW_REQUIRED"
+            # The zero-access repair map authorizes literal historical-Core
+            # reuse only for source-inert Base evidence.  It does not make an
+            # old-Core IO/OO pair equivalent to repaired-Core IO/OO.  Keep
+            # such complete historical triplets visible, but never permit a
+            # preliminary speedup candidate or downstream promotion from them.
+            if core != FORMAL_REPAIRED_CORE:
+                identity = "HISTORICAL_CORE_NONPROMOTING"
+            else:
+                identity = "COMMON_IDENTITY_CANDIDATE" if len(set(insns)) == 1 and drain else "REVIEW_REQUIRED"
             cycles = [r["metrics"].get("gpu_tot_sim_cycle") for r in selected]
             if identity == "COMMON_IDENTITY_CANDIDATE" and all(isinstance(x, int) and x > 0 for x in cycles):
                 speedup.append("\t".join(map(str, (workload, core, cycles[0], cycles[1], cycles[2], f"{cycles[0]/cycles[1]:.6f}", f"{cycles[0]/cycles[2]:.6f}", "PRELIMINARY_CANDIDATE"))))

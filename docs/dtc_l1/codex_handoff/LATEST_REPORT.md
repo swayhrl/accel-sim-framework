@@ -21,6 +21,15 @@ remains an active source-diagnosis item: its deadlock snapshot shows reserved
 conventional L1 lines with no live L1 MSHR/miss-queue owner; this is evidence,
 not yet a root-cause conclusion or a repair.
 
+The historical GEMM/OO row naturally reached exit 0 and strict validation:
+its old-Core lower lifecycle is `4,113,199/4,113,199`, dependencies
+`8,396,800/8,396,800`, and final lower/PIB/inflight/OO-ref state is drained.
+It is retained as `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` only.  Because the
+zero-access repair map authorizes historical reuse only for source-inert Base,
+the preliminary analyzer now labels the otherwise-complete old-Core GEMM
+Base/IO/OO set `HISTORICAL_CORE_NONPROMOTING`; it cannot become a repaired-Core
+FAST64.4 triplet or candidate speedup.
+
 ## FAST64.3 failure preservation / FAST64.6 pre-dispatch freeze (2026-09-10)
 
 The historical bbcbb 2DConvolution/Base acquisition is no longer live: its
