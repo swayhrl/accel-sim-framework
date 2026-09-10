@@ -84,6 +84,14 @@ This is physical precomputation under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; it is neither a FAST64.4 logical
 opening nor an accepted performance row.
 
+A second post-LUD/IO audit
+`/tmp/fast64-future-post-lud-io-refill-audit-20260910T083209Z.tsv` again
+admitted exactly one worker with zero sampled swap-out/OOM/PSI/throttle.
+`fast64_4_2DConvolution_io_cap8192_a1_v3` is therefore active on CPU 16 under
+immutable attempt `7ae2c41b-a4f1-444c-bade-ae93dbc6293e` and its independent
+v2 collector.  It carries the same physical-precompute classification and is
+not an accepted FAST64.4 row while live.
+
 ## FAST64.4 physical precompute — ATAX/IO active (2026-09-10)
 
 A fresh 60-second `FAST64_FUTURE_PRECOMPUTE_RESOURCE_AUDIT_V1` admitted one
