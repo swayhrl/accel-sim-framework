@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; ONE PHYSICAL PRECOMPUTATION ROW STRICT-TERMINAL AND NINE
+Status: **FROZEN; ONE PHYSICAL PRECOMPUTATION ROW STRICT-TERMINAL AND TEN
 ACTIVE UNDER `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
 Logical stage order remains unchanged: FAST64.3, FAST64.4 and FAST64.5 must
@@ -72,6 +72,16 @@ separate read-only closeout monitors:
 | --- | --- |
 | 16.5 KiB (132 lines, 16,896 B) | BICG IO/OO; GESUMMV IO/OO; Btree IO/OO |
 | 24 KiB (192 lines, 24,576 B) | BICG IO/OO; GESUMMV IO/OO |
+
+After the Btree/16.5-KiB/OO terminal freed one of the admitted slots, a fresh
+three-window target-20 refill audit at
+`/tmp/fast64-resource-audit-v3-20260910T1422Z-target20-refill.tsv` passed for
+one new worker (no sustained swap-out, PSI, OOM, CFS throttle or pathological
+I/O; projected `MemAvailable` 57.6 GiB after the fixed reserve).  The next
+frozen, nonduplicate point, Btree / 24 KiB / IO, launched with immutable START
+receipt UUID `c0902c8e-e9b8-4783-a021-933494c8b558` on CPU 29.  Its collector
+is versioned separately as `collect_fast64_6_precompute_v2.sh`, so the live
+v1 closeout dependency was not modified.
 
 `generated/FAST64_6_PRECOMPUTE_DISPATCH_V1.tsv` is the compact immutable
 attempt index (namespace, CPU, supervisor/simulator PID, UUID and config

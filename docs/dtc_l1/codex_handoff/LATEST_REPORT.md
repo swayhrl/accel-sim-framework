@@ -32,7 +32,11 @@ repaired-Core/A1 precomputes only; at the latest read-only snapshot they were
 CPU-active and clean of assertion/fatal/deadlock signatures.  `MemAvailable`
 is about 52 GiB, while swap is nearly allocated but has no sampled swap-out or
 memory-PSI.  Existing concurrency is retained; no new worker is admitted
-pending a fresh healthy observation.
+pending a fresh healthy observation.  The subsequent three-window refill
+audit passed one new worker for a 20-worker total, so the next frozen,
+nonduplicate Btree / 24-KiB / IO physical row began with UUID
+`c0902c8e-e9b8-4783-a021-933494c8b558`; it is likewise only
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.
 
 ## FAST64.6 first physical-precompute wave active (2026-09-10)
 
