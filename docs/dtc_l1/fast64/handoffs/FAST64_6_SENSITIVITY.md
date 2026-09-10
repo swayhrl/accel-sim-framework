@@ -1,7 +1,8 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; ONE PHYSICAL PRECOMPUTATION ROW STRICT-TERMINAL AND TEN
-ACTIVE UNDER `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
+Status: **FROZEN; THREE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, SIX
+ACTIVE, AND TWO PRESERVED CAPACITY-BOUND FAILURES UNDER
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
 Logical stage order remains unchanged: FAST64.3, FAST64.4 and FAST64.5 must
 pass before FAST64.6 logical acceptance.  This handoff freezes only the
@@ -96,3 +97,33 @@ there; lower-cap-full is zero.  This is a retained physical precompute only.
 All rows, including that terminal row, remain
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: no FAST64.6 logical promotion or
 performance conclusion is claimed.
+
+## Terminal and failure accounting update (2026-09-10)
+
+Two further Btree IO rows naturally exited zero and passed immutable receipt,
+strict-parser, payload/config/identity, lower/dependency-conservation and
+terminal-drain checks.  They remain retained precomputes only:
+
+| Workload / point / mode | UUID | terminal UTC | cycles / instructions | lower acquire/release | dependencies closed/count | terminal resource state |
+| --- | --- | --- | --- | --- | --- | --- |
+| Btree / 16.5 KiB / IO | `3936327b-fe50-4212-bb1d-b0e79b2c6e23` | `2026-09-10T14:36:40Z` | 548,243 / 444,467,849 | 507,647 / 507,647 | 2,388,513 / 2,388,513 | lower, PIB, inflight and partial entries/lines drain to zero; cap-full 0 |
+| Btree / 24 KiB / IO | `c0902c8e-e9b8-4783-a021-933494c8b558` | `2026-09-10T15:39:55Z` | 244,231 / 444,467,849 | 507,779 / 507,779 | 2,388,513 / 2,388,513 | lower, PIB, inflight and partial entries/lines drain to zero; cap-full 0 |
+
+Their compact records are `generated/fast64_6_precomputed_v1/fast64_sens_v1_btree_physical16p5_io.json` and `generated/fast64_6_precomputed_v1/fast64_sens_v1_btree_physical24_io.json`.  Both bind repaired Core `95ccdb7a...`, repaired runtime `462d105c...`, scientific Framework `037f008b...`, A1 observer and exact Btree trace payload.  Both remain only `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.
+
+The BICG / 16.5-KiB IO and OO attempts are preserved failures, never result
+records.  Both use the frozen repaired-Core/runtime/A1 identity and immutable
+runner, but their TERMINAL receipts record exit 1: IO UUID
+`cf459ee2-7ac4-4caa-8649-26eeb31d1d4e` at `2026-09-10T17:34:54Z`; OO UUID
+`a6061cae-52b5-4263-a7fd-04434386ffaa` at `2026-09-10T17:17:10Z`.  The IO
+fatal dump is source-classified as the frozen valid undersized-pool IO circular
+resource dependency: 132/132 physical lines allocated, zero free, one
+non-ready FIFO head per affected SM and 28--31 partially held lines, with zero
+lower-create/issue/inflight work.  `DTC_L1_SPEC.md` §§3.4 and 8 expressly
+require retained partial allocations/no rollback and identify this
+undersized-configuration deadlock as emergent behavior.  It must not be
+"fixed" by changing allocation semantics.  The OO failure is also preserved
+and excluded; its current fatal dump lacks a mode-equivalent DTC resource
+snapshot, so it remains an observability follow-up rather than an inferred
+root cause.  `FAST64_6_BICG_PHYSICAL16P5_FAILURE.md` holds the exact evidence
+and disposition.

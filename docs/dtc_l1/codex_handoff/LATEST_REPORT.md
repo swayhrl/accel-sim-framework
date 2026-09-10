@@ -1,5 +1,29 @@
 # Latest Codex Report
 
+## FAST64.6 BICG/16.5-KiB capacity boundary preserved; Btree IO precomputes added (2026-09-10)
+
+Two Btree physical-pool IO rows naturally exit 0 and strict-validate as
+precomputes only: 16.5 KiB (`548,243` cycles) and 24 KiB (`244,231` cycles),
+both at the exact `444,467,849` instructions with balanced lower and
+dependency accounting, complete drain and lower-cap-full zero.  Their compact
+identity/result records are in `fast64/generated/fast64_6_precomputed_v1/`.
+Together with the prior Btree/16.5-KiB/OO record, these are strictly
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, never FAST64.4 or FAST64.6
+logical results.
+
+BICG at 16.5 KiB naturally reaches the simulator deadlock detector in both
+IO and OO; both exit-1 receipts and raw namespaces are preserved and the
+collector correctly produces no PASS record.  IO has source-backed
+classification: the frozen no-rollback partial-allocation model reaches its
+explicitly allowed undersized-pool circular resource deadlock (132/132
+physical lines allocated, FIFO head incomplete, no outstanding lower work).
+This must not be repaired by weakening the mechanism.  OO remains excluded
+with a telemetry-only fatal-dump observation follow-up because its current
+formal dump lacks equivalent resource detail.  The full evidence and
+nonpromotion disposition are in
+`fast64/handoffs/FAST64_6_BICG_PHYSICAL16P5_FAILURE.md`.  Active 24-KiB BICG,
+all other sensitivity rows and every Stage3/4 simulator remain untouched.
+
 ## FAST64.3/4 preliminary strict review; FAST64.6 held at current safe concurrency (2026-09-10)
 
 The current strict parser was rerun against every discovered terminal
