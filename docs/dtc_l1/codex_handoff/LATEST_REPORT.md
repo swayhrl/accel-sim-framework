@@ -118,6 +118,14 @@ Their compact JSON evidence is retained under
 `generated/fast64_4_precomputed_rows_v1/` as
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, not as an accepted FAST64.4 triplet.
 
+After those DWT2D terminals, the four-worker audit
+`/tmp/fast64-future-four-worker-refill-audit-20260910T083734Z.tsv` admitted a
+new isolated wave: Gaussian/OO on CPU 22 (attempt `40293c57…`), Hotspot1/IO
+on CPU 23 (attempt `de96e9b8…`), Hotspot1/OO on CPU 24 (attempt `0fdfa2a2…`),
+and LUD/OO on CPU 25 (attempt `ce6a4a2b…`).  All four retain exact frozen
+identity and independent immutable-v2 collectors, and all remain physical
+precomputes pending FAST64.3 acceptance.
+
 ## FAST64.4 physical precompute — ATAX/IO active (2026-09-10)
 
 A fresh 60-second `FAST64_FUTURE_PRECOMPUTE_RESOURCE_AUDIT_V1` admitted one
