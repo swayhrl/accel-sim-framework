@@ -45,6 +45,25 @@ fill owner, which localizes loss before/at cache ownership retirement; and
 child-response aggregation.  No functional repair or new formal result is
 authorized until that observation supports a root-cause classification.
 
+### Frozen source transition map for terminal classification (2026-09-11)
+
+This is a source map, not a diagnosis.  The formal Core-95 to diagnostic-Core
+`f2836ea1...` diff changes only fatal-state observability in
+`gpu-cache.cc`/`shader.cc`; it does not change the following Base timing
+transitions.  The future terminal analyzer must use the map to classify the
+observed state before any repair is proposed:
+
+| transition | source-backed state change | implication if terminal evidence shows the state |
+| --- | --- | --- |
+| first conventional read miss | `baseline_cache::send_read_request()` first obtains the L1 lower credit, then reserves/accesses the tag, inserts MSHR and `m_extra_mf_fields`, rewrites the root to atom size and appends it to the miss queue | A reserved line with no matching extra-field owner cannot be attributed to the lower cap alone; the observation must be traced across ownership creation, outbound issue, and final fill. |
+| outbound injection | `baseline_cache::cycle()` removes only the miss-queue head after `m_memport->full()` permits `push()` | An owner still present with an empty miss queue requires inspection of the downstream/response route, not a rollback of the tag reservation. |
+| sector response aggregation and final fill | `baseline_cache::fill()` finds the root owner, decrements `pending_read`, retains the root until the final sector, then fills the tag, marks the MSHR ready, erases the owner and releases the L1 lower credit | Nonzero `pending_read` is source-backed evidence of incomplete sector aggregation.  An owner present with zero `pending_read` is a response/fill-path observation requiring further evidence; it is not itself a repair decision. |
+| frontend retry | `ldst_unit::process_memory_access_queue()` maps a conventional `RESERVATION_FAIL` to `BK_CONF` and deletes only its newly allocated request | Repeated `BK_CONF` proves retry backpressure but does not release a pre-existing reserved cache line, MSHR, owner, or lower credit. |
+
+The table does not infer an owner-loss cause from a snapshot and does not
+authorize changes to tag allocation, pending-write/scoreboard assertions, or
+the frozen formal Core identity.
+
 ## Reproducible future-only dispatch preparation
 
 `util/dtc_l1/dispatch_fast64_3_2d_base_diagnostic_v1.sh` was prepared and

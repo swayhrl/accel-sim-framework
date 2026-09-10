@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## 2DConvolution/Base terminal-classification map frozen (2026-09-11)
+
+The active nonformal 2DConvolution/Base diagnostic was left untouched and is
+CPU-active with growing stdout.  Its failure record now maps the observed
+reserved-line/fill-owner state to the frozen conventional Base source path:
+lower-credit and ownership creation, miss-queue injection, sector aggregation
+and final fill/release, plus the frontend `BK_CONF` retry behavior.  The map
+explicitly prevents a snapshot from being mistaken for a root cause or a
+license to alter tag allocation or assertions.  It is observation-only
+preparation for the diagnostic's natural terminal state.
+
 ## GESUMMV 40-KiB future-only closeout prepared (2026-09-11)
 
 The fresh immutable-v2 dispatcher dry-runs for GESUMMV physical-40 KiB
