@@ -234,3 +234,27 @@ run in `--validate --point prefill:F7:20` mode against this same raw log. It ret
 with no errors and did not launch, signal, or rerun a simulator. Framework/Core/binary, config,
 trace, registration, and raw-log identities remain unchanged; this is a formal C12 PASS, not a
 retry result.
+
+### Full-matrix late-shadow validator correction
+
+The first C9-aware parser revision correctly stopped treating every Segment launch as a mandatory
+Segment completion. A subsequent full-matrix audit exposed a second, opposite overconstraint on
+the completed Lseg5 arms: it required `late_result_discards=attempts-completions`. That equality
+is not an architectural invariant. In the frozen implementation, `late_result_discards` counts a
+late *shadow* in either direction: a Segment-first hit can complete while its L1 shadow is
+discarded, or an L1-first hit can cancel an unresolved Segment shadow. The counter may therefore
+overlap a completed Segment hit or represent an unresolved cancellation.
+
+This is directly demonstrated by all four Lseg5 F7/F8 logs: for example Prefill F8-Lseg5 has
+`attempts=launches=completions=96116757`, `hits=49654479`, `misses=46462278`, and
+`late_result_discards=49654479`. The raw log is correct because `completions=hits+misses`; its
+late shadows are completed Segment-first hits, not missing completions. The implementation's two
+increment sites match the C9 ordering contract: Segment-first hit with an uncompleted L1 shadow,
+or L1-first hit with an uncompleted Segment shadow.
+
+The validation-only parser now enforces the supported, non-overlapping invariants:
+`attempts=launches`, `completions=hits+misses`, `completions<=attempts`, and
+`late_result_discards<=attempts`. At `2026-09-10T13:23Z` it revalidated all 22 immutable raw logs
+to `PASS`. This edit changes no simulator source, binary, configuration, trace, registration, or
+raw log, and launches no replay; it only fixes the review-layer accounting to match the frozen C9
+HIT_FIRST/MISS_JOIN semantics.
