@@ -128,7 +128,11 @@ attempt.
 
 | workload | mode | obsolete/failed row | reason | resolution ID | authoritative replacement |
 | --- | --- | --- | --- | --- | --- |
-| TBD | | | | | |
+| ATAX | IO | `fast64_4_atax_io_cap8192_a1_v2` | Relative FAST64_IO config path was resolved after immutable runner changed to run directory; simulator exited `1` before an execution epoch. | F64-IO-001 | `fast64_4_atax_io_cap8192_a1_v3` active, using identical frozen config bytes by absolute path. |
+
+`F64-IO-001` is an execution-path-only repair. The v2 receipt, stdout,
+stderr, and resource record remain externally preserved; it is not a result
+and must never enter a speedup, accounting, or matrix aggregate.
 
 Do not overwrite or silently discard failed attempts. Do not restart the full
 matrix for a row-local issue.

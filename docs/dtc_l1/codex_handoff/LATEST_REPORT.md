@@ -30,6 +30,23 @@ result is claimed while the row is live. Separate future-only observer
 for that strict summary before materializing compact JSON/TSV evidence and its
 source-defined Base structural companion; it never writes live run state.
 
+## FAST64.4 physical precompute — ATAX/IO active (2026-09-10)
+
+A fresh 60-second `FAST64_FUTURE_PRECOMPUTE_RESOURCE_AUDIT_V1` admitted one
+additional isolated worker (`swap_so_delta=0`, OOM/PSI/throttle deltas zero,
+about 126 GB output free). The first ATAX/IO dispatch
+`fast64_4_atax_io_cap8192_a1_v2` is retained as a non-authoritative
+pre-simulation launch failure: it used a relative config path, so the
+immutable runner changed to its run directory and the simulator immediately
+exited `1` before an execution epoch. It produced no scientific result.
+
+Its fresh repair `fast64_4_atax_io_cap8192_a1_v3` uses the same frozen,
+absolute FAST64_IO config (SHA-256 `d4a2d9d0...`), payload, Core/runtime/A1
+and framework identities; immutable attempt
+`105ec7d4-8330-4493-b09a-0f3c2b6d402d` runs on CPU 3 under
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`. It is physically acquired only:
+FAST64.4 is not logically open and no result is claimed while live.
+
 ## FAST64.2 repair qualification PASS (2026-09-10)
 
 FAST64.2 is `FAST64_2_REPAIR_PASS`. The source-reachable diagnostic
