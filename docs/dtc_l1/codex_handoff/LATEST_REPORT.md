@@ -1,5 +1,29 @@
 # Latest Codex Report
 
+## BICG 24-KiB pair strictly closed; GESUMMV 40-KiB IO safely precomputed (2026-09-11)
+
+BICG/physical-24-KiB/PAPER_IO naturally exited zero and the unchanged V1
+collector atomically published its strict compact record.  It binds formal
+Core `95ccdb7a...`, runtime `462d105c...`, A1, scientific Framework
+`037f008b...`, exact IO config `6d8ab5fa...`, and frozen payload; it records
+42,351,523 cycles / 145,666,048 instructions, balanced lower
+create/issue/response and credit lifecycles of 17,647,559, closed IO
+dependencies 18,350,080/18,350,080, final lower/PIB/partial/inflight drain,
+and lower-cap-full zero.  Together with the already strict OO companion, it
+is a complete **precomputed only** pair, still
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.
+
+A fresh two-window target-20 replacement audit passed: zero sampled swap-out,
+OOM, memory PSI and CFS throttling; 133.75 GiB `MemAvailable`; 187.86 GiB
+cgroup headroom; and 104.16 GiB output headroom.  The exact nonduplicate
+GESUMMV/physical-40-KiB/PAPER_IO row was dry-run verified then launched once
+on CPU 30 (UUID `146b0390-2592-436d-bf4c-fad1e96148c6`, supervisor 948487,
+simulator 948512).  Its immutable START receipt and short CPU-progress/no-real
+fatal scan are clean.  New future-only V10 collection watches only this new
+V13/V14 pair and does not modify existing collectors or simulators.  The OO
+companion is not yet launched.  No FAST64.3/.4/.5/.6 promotion or FAST12
+aggregation is claimed.
+
 ## FAST64 stage-gate ledger reconciled (2026-09-11)
 
 `fast64/generated/FAST64_STAGE_GATE_LEDGER_V1.tsv` records the current

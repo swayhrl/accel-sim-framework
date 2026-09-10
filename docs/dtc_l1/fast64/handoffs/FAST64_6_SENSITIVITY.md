@@ -1,8 +1,8 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; ELEVEN PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, ELEVEN
-FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND TWO PRESERVED
-CAPACITY-BOUND FAILURES UNDER
+Status: **FROZEN; TWELVE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, ELEVEN
+FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND FOUR PRESERVED
+16.5-KIB FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
 Logical stage order remains unchanged: FAST64.3, FAST64.4 and FAST64.5 must
@@ -283,22 +283,30 @@ collector, Stage3/4 simulator, or diagnostic was edited or restarted.  This
 is physical acquisition only and cannot promote FAST64.4, FAST64.5, or
 FAST64.6.
 
-## GESUMMV / 40-KiB pair closeout prepared, not dispatched (2026-09-11)
+## GESUMMV / 40-KiB IO dispatched after BICG-24K pair closure (2026-09-11)
 
 The next nonduplicate GESUMMV physical point is 40 KiB, exactly 320 physical
-128-B lines (40,960 B).  Read-only immutable-v2 dispatcher dry-runs for fresh
+128-B lines (40,960 B).  Immutable-v2 dispatcher dry-runs passed for fresh
 namespaces `fast64_sens_v13_gesummv_physical40_io` and
-`fast64_sens_v14_gesummv_physical40_oo` pass, while the namespace-absence
-check proves that no run was created.  The physical-32-to-40 config diff is
+`fast64_sens_v14_gesummv_physical40_oo`.  The physical-32-to-40 config diff is
 only `-gpgpu_dtc_l1_physical_lines 256 -> 320` in each mode.
 
-Future-only `util/dtc_l1/collect_fast64_6_precompute_v10.sh` strictly targets
-only those two not-yet-dispatched names, uses the frozen Core-95/runtime/A1/
-scientific/payload identities and atomic temporary-result publication, and
-waits without creating output if no terminal receipt exists.  It neither
-reads nor modifies active V1--V9 collection dependencies.  Dispatch remains
-resource-gated at the target-20 limit; this preparation has no result or
-stage-promotion meaning.
+After BICG/24-KiB/IO naturally terminated, a fresh two-window resource audit
+admitted one replacement: no sampled swap-out, OOM, memory PSI or CFS
+throttling; p95 simulator RSS was 3.18 GiB; `MemAvailable` was 133.75 GiB;
+cgroup headroom was 187.86 GiB; and output headroom was 104.16 GiB.  GESUMMV
+/ 40 KiB / IO was atomically started once on CPU 30 as immutable attempt
+`146b0390-2592-436d-bf4c-fad1e96148c6` in
+`fast64_sens_v13_gesummv_physical40_io` (supervisor 948487, simulator 948512).
+Its START receipt binds the formal Core/runtime/A1/scientific/payload and
+physical-40 IO config SHA `69a9c237...`; a short read-only observation found
+CPU progress and no actual assertion/fatal/deadlock/output-mismatch signature.
+
+Future-only `util/dtc_l1/collect_fast64_6_precompute_v10.sh` (monitor PID
+949578) targets only V13/V14, uses atomic temporary-result publication, and
+does not read or modify active V1--V9 collection dependencies.  V14 remains
+undispatched.  V13 is `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` only: it is
+not a result, pair comparison, or stage promotion.
 
 ## GESUMMV / 48-KiB pair closeout prepared, not dispatched (2026-09-11)
 
@@ -378,3 +386,23 @@ BICG / physical 32 KiB / OO, has been adopted by future-only v9 collector
 the existing immutable terminal receipt, and writes only a distinct v9 compact
 record after strict validation.  This closes collection coverage without
 touching the simulator or changing its experimental identity.
+
+## BICG / 24-KiB / IO strict-terminal paired precompute (2026-09-11)
+
+The BICG / physical 24 KiB / PAPER_IO companion naturally terminated with
+exit zero at `2026-09-10T20:23:30Z` and was atomically strict-collected into
+`generated/fast64_6_precomputed_v1/fast64_sens_v1_bicg_physical24_io.json`.
+The immutable attempt is `15f1c709-7c73-439c-93f6-f64f2c7623f4`; receipts and
+the compact record bind Core `95ccdb7a...`, runtime `462d105c...`, A1,
+scientific Framework `037f008b...`, the exact IO config SHA `6d8ab5fa...`,
+and the frozen BICG payload.
+
+| point | cycles / instructions | lower create/issue/response and credit acquire/release | IO dependency closed/count | terminal state |
+| --- | --- | --- | --- | --- |
+| BICG / 24 KiB / IO | 42,351,523 / 145,666,048 | 17,647,559 / 17,647,559 / 17,647,559 | 18,350,080 / 18,350,080 | lower outstanding, PIB, partial-entry/line and IO-inflight state zero; lower-cap-full 0 |
+
+This brings the retained physical-precompute count to twelve and makes the
+BICG/24-KiB IO/OO pair terminal under the same formal identity.  Both rows
+remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no pair performance
+interpretation, FAST64.4 primary result, FAST64.5 causal claim, FAST64.6
+logical acceptance, or FAST12 aggregation is asserted.
