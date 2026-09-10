@@ -1,6 +1,6 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; SEVEN PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
+Status: **FROZEN; EIGHT PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, TEN
 FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND TWO PRESERVED
 CAPACITY-BOUND FAILURES UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
@@ -229,3 +229,20 @@ OO (CPU 37, UUID `55755348-52c5-4c96-858c-638814aa0570`), and BICG OO (CPU
 Core-95 worktree and exact frozen physical-32 configs. New
 `collect_fast64_6_precompute_v4.sh` is future-only for these v6 namespaces;
 the active v3 collector remains untouched. All three are precomputes only.
+
+## Btree / 48-KiB / IO terminal and BICG / 40-KiB / IO refill (2026-09-10)
+
+Btree / 48 KiB / IO (UUID `e6d49d31-0c68-498a-b1ac-9a1c1bca4f5b`) naturally
+exited zero and strict-validated into
+`generated/fast64_6_precomputed_v3/fast64_sens_v5_btree_physical48_io.json`:
+244,231 cycles, 444,467,849 instructions, lower
+create/issue/response `507,779/507,779/507,779`, dependencies
+`2,388,513/2,388,513`, final lower/PIB/inflight zero and lower-cap-full zero.
+It is the eighth retained precompute only.
+
+The released CPU 38 passed the same resource admission checks and now runs
+fresh BICG / 40 KiB / IO in namespace
+`fast64_sens_v7_bicg_physical40_io`, UUID
+`2c49d8fe-5b05-4814-84a5-0d588996b90b`, exact physical-40 config and formal
+Core-95/runtime/A1 identities. Future-only v5 collection is isolated to this
+row. Neither fact advances FAST64.4 or FAST64.6 logical acceptance.

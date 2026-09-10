@@ -47,6 +47,13 @@ the detached formal Core-95 identity and immutable START receipts. A separate
 future-only v4 collector covers just this v6 wave, leaving the live v3
 collector byte-for-byte unchanged.
 
+Btree/48-KiB/IO also naturally completed with exact formal identity, 244,231
+cycles at 444,467,849 instructions, closed lower/dependency accounting and
+full terminal drain. It is the eighth retained precompute only. Its released
+slot now runs fresh BICG/40-KiB/IO under immutable UUID
+`2c49d8fe-5b05-4814-84a5-0d588996b90b`; a future-only v5 collector is isolated
+to that row so existing live collectors remain unchanged.
+
 ## FAST64.6 BICG/16.5-KiB capacity boundary preserved; Btree IO precomputes added (2026-09-10)
 
 Two Btree physical-pool IO rows naturally exit 0 and strict-validate as
