@@ -332,3 +332,10 @@ only these new rows.
 | BICG / 48 KiB / OO | 37 | `7e733ecb-f9b2-46e6-9899-4c5dd1e7213f` | v7 | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
 | GESUMMV / 32 KiB / IO | 26 | `cfed0564-14df-4e0f-b650-ae5460b88e25` | v8 | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
 | GESUMMV / 32 KiB / OO | 35 | `00a173e5-8402-4345-9f4f-b5121b89957a` | v8 | `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` |
+
+The original v4 controller is no longer live.  Its only remaining live input,
+BICG / physical 32 KiB / OO, has been adopted by future-only v9 collector
+`collect_fast64_6_precompute_v9.sh`.  The script does not alter v4, waits for
+the existing immutable terminal receipt, and writes only a distinct v9 compact
+record after strict validation.  This closes collection coverage without
+touching the simulator or changing its experimental identity.

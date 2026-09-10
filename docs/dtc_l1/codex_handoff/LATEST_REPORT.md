@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## BICG physical-32 OO future-only closeout restored (2026-09-11)
+
+The original v4 controller is no longer a live process, while its one
+remaining BICG/physical-32/PAPER_OO row is still CPU-active with a valid
+immutable START receipt.  New `collect_fast64_6_precompute_v9.sh` therefore
+strictly targets only that namespace and publishes to a distinct v9 evidence
+directory after natural terminal.  It preserves the exact Core-95/runtime/A1/
+Framework/payload/config identity, scans fatal signatures, verifies receipt
+and config hashes, and atomically writes a compact result only on strict PASS.
+The controller is live and currently waits; no existing collector file or
+simulator was modified.
+
 ## GESUMMV 16.5-KiB source-state diagnostic prepared without dispatch (2026-09-11)
 
 The GESUMMV physical-16.5 KiB failure now has a source-backed, future-only
