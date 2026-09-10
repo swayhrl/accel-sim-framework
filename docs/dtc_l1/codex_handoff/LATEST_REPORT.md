@@ -24,7 +24,11 @@ column one. The live immutable runner was not touched. Future-only
 `9fe78b45e048e97534cd4179b71d12b789a86d3c52cdabc91c6cdc678c6418c1`) now
 adopts that live row read-only, corrects the header-aware receipt parse, and
 will strict-validate its natural terminal before it refills Btree. No formal
-result is claimed while the row is live.
+result is claimed while the row is live. Separate future-only observer
+`monitor_fast64_3_dynamic_base_evidence_v1.py` (SHA-256
+`3d437ff5b8470ab0eee0ec1de576b6a7e6b601320e986d59c64df32a52ef7dd5`) waits
+for that strict summary before materializing compact JSON/TSV evidence and its
+source-defined Base structural companion; it never writes live run state.
 
 ## FAST64.2 repair qualification PASS (2026-09-10)
 

@@ -149,8 +149,12 @@ the live immutable 2DConvolution runner was not touched. Future-only
 `9fe78b45e048e97534cd4179b71d12b789a86d3c52cdabc91c6cdc678c6418c1`) adopts
 that runner read-only, parses the receipt header correctly, and strictly
 alias-v3 validates its natural terminal before it refills the next frozen
-workload. No raw log is committed and no accepted result is claimed until that
-validation completes.
+workload. Future-only `util/dtc_l1/monitor_fast64_3_dynamic_base_evidence_v1.py`
+(SHA-256 `3d437ff5b8470ab0eee0ec1de576b6a7e6b601320e986d59c64df32a52ef7dd5`)
+then waits for the pool's strict summary before materializing compact JSON/TSV
+evidence and the separate source-defined Base structural companion. It never
+writes a live run directory. No raw log is committed and no accepted result is
+claimed until that validation completes.
 
 Record the worker-pool calibration actually used:
 
