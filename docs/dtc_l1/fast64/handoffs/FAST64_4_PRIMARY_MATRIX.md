@@ -47,10 +47,11 @@ their natural terminal, strict collector, stage-3 and triplet gates pass.
 | row | compact evidence | natural/strict evidence | terminal accounting | status |
 | --- | --- | --- | --- | --- |
 | Btree / PAPER_OO | `generated/fast64_repaired_ramp_v1/fast64_btree_oo_core95ccdb7a_a1_r1.json` | immutable attempt `49062c94-3354-4b33-b8b8-03e885335095`; terminal receipt `2026-09-10T10:30:28Z`, exit `0`; collector PASS | `172,795` cycles / `444,467,849` instructions; lower acquired/released and OO create/issue/response `502,450/502,450`; dependency closed/count `2,388,513/2,388,513`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
+| MRI-Q / PAPER_IO | `generated/fast64_repaired_ramp_v1/fast64_mriq_io_core95ccdb7a_a1_r1.json` | immutable attempt `add9ada3-c014-47a3-b664-b3b4678e2a5a`; terminal receipt `2026-09-10T10:34:27Z`, exit `0`; collector PASS | `360,536` cycles / `1,411,757,056` instructions; lower acquired/released and IO create/issue/response `15,517/15,517`; dependency closed/count `15,552/15,552`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
 
-The Btree Base and IO peers remain live.  This terminal row is retained as
-repaired-Core physical precompute evidence only: it does not populate an
-accepted FAST64.4 matrix cell or permit a mixed-identity triplet.
+The Btree Base/IO and MRI-Q Base/OO peers remain live.  These terminal rows
+are retained as repaired-Core physical precompute evidence only: they do not
+populate accepted FAST64.4 matrix cells or permit mixed-identity triplets.
 
 ## 2. Fixed 36-row matrix
 
