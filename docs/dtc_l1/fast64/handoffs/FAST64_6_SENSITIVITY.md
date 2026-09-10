@@ -283,6 +283,23 @@ collector, Stage3/4 simulator, or diagnostic was edited or restarted.  This
 is physical acquisition only and cannot promote FAST64.4, FAST64.5, or
 FAST64.6.
 
+## GESUMMV / 40-KiB pair closeout prepared, not dispatched (2026-09-11)
+
+The next nonduplicate GESUMMV physical point is 40 KiB, exactly 320 physical
+128-B lines (40,960 B).  Read-only immutable-v2 dispatcher dry-runs for fresh
+namespaces `fast64_sens_v13_gesummv_physical40_io` and
+`fast64_sens_v14_gesummv_physical40_oo` pass, while the namespace-absence
+check proves that no run was created.  The physical-32-to-40 config diff is
+only `-gpgpu_dtc_l1_physical_lines 256 -> 320` in each mode.
+
+Future-only `util/dtc_l1/collect_fast64_6_precompute_v10.sh` strictly targets
+only those two not-yet-dispatched names, uses the frozen Core-95/runtime/A1/
+scientific/payload identities and atomic temporary-result publication, and
+waits without creating output if no terminal receipt exists.  It neither
+reads nor modifies active V1--V9 collection dependencies.  Dispatch remains
+resource-gated at the target-20 limit; this preparation has no result or
+stage-promotion meaning.
+
 ## BICG / 24-KiB / OO terminal physical precompute (2026-09-11)
 
 BICG / physical 24 KiB / PAPER_OO naturally terminated with exit zero and was

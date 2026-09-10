@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## GESUMMV 40-KiB future-only closeout prepared (2026-09-11)
+
+The fresh immutable-v2 dispatcher dry-runs for GESUMMV physical-40 KiB
+PAPER_IO/OO pass without creating either namespace.  The config diff from the
+physical-32 reference changes only the 128-B-line pool from 256 to 320 lines.
+Future-only `collect_fast64_6_precompute_v10.sh` validates only V13/V14,
+publishes atomically after a natural terminal receipt, and leaves all live
+V1--V9 collectors untouched.  No work was launched because the approved
+target-20 pool remains full; this is preparation only, never a result or
+promotion.
+
 ## FAST64.6 physical coverage ledger refreshed without changing live work (2026-09-11)
 
 `fast64/generated/FAST64_6_PHYSICAL_COVERAGE_V1.tsv` reconciles the frozen
