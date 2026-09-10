@@ -14,6 +14,13 @@ unchanged and fixes lookup casing only. Two 60-second resource audits correctly
 refused launch due to swap-out (`2289` for seven workers; `222` for one); no
 FAST64 simulation was started and the shared VM-TLB jobs were not disturbed.
 
+A subsequent one-worker audit passed with zero sampled swap-out and admitted
+only the first missing Base row: 2DConvolution/Base in immutable namespace
+`fast64_3_2DConvolution_base_cap8192_a1_v2`, attempt
+`844f1ba7-58a9-4208-98e5-71e01b1a6885`, CPU 0. Its one-worker dynamic pool
+will strict-validate each natural terminal before it refills Btree; no formal
+result is claimed while the row is live.
+
 ## FAST64.2 repair qualification PASS (2026-09-10)
 
 FAST64.2 is `FAST64_2_REPAIR_PASS`. The source-reachable diagnostic

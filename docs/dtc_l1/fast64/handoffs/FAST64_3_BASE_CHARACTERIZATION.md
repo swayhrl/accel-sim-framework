@@ -42,7 +42,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | BICG | `generated/qualification_r2_full_wave_alias_v2/` + `generated/fast64_3_bicg_base_structural_v1/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | GESUMMV | `generated/fast64_3_gesummv_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | GEMM | `generated/fast64_3_gemm_base_alias_v4/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
-| 2DConvolution | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
+| 2DConvolution | `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` | fresh immutable (active) | [ ] | [ ] | [ ] | [ ] | ACTIVE |
 | Btree | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
 | DWT2D | `generated/fast64_3_dwt2d_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | Gaussian | TBD | TBD | [ ] | [ ] | [ ] | [ ] | PENDING |
@@ -134,6 +134,17 @@ independent rows.
 | TBD | | | | |
 
 ## 9. Resource calibration
+
+The `FAST64_FUTURE_PRECOMPUTE_RESOURCE_AUDIT_V1` at
+`/tmp/fast64-stage3-base-oneworker-audit-20260910T0729Z.tsv` passed one worker
+with zero sampled swap-out, OOM, and memory PSI. It admitted the first missing
+Base row only: 2DConvolution/Base namespace
+`fast64_3_2DConvolution_base_cap8192_a1_v2`, immutable attempt
+`844f1ba7-58a9-4208-98e5-71e01b1a6885`, CPU `0`, and classification
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`. The detached dynamic pool has a
+single worker and strict alias-v3 terminal validation before it refills the
+next frozen workload; no raw log is committed and no accepted result is
+claimed until that validation completes.
 
 Record the worker-pool calibration actually used:
 
