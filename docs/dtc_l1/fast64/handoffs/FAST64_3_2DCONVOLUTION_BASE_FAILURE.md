@@ -83,3 +83,11 @@ It runs on CPU 34 with attempt UUID
 `NONFORMAL_DIAGNOSTIC_NOT_RESULT`. It is an observational reproduction only:
 it cannot replace the preserved failed attempt, enter any formal collector or
 advance FAST64.3. It will be allowed to reach its natural terminal state.
+
+`collect_fast64_3_2d_base_diagnostic_v1.py --collect` is a separate,
+fail-closed, read-only terminal collector for this exact attempt UUID. It
+refuses any manifest/receipt/binary/config/trace/Core mismatch, never launches
+or signals a process, and accepts terminal exit 0 or 1 only as a diagnostic
+observation. Once the immutable TERMINAL receipt exists, it invokes the
+ownership analyzer to atomically publish an observation-only JSON; that JSON
+is not a FAST64 result and cannot advance a stage.
