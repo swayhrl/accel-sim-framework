@@ -20,6 +20,11 @@ CPU-active (96--99%), RSS 0.56--4.20 GiB, and no assertion/fatal/deadlock/
 output-mismatch signature.  They are physical precomputes only under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; no FAST64.3/4 promotion is claimed.
 Existing old-Core processes/controllers were neither modified nor relabelled.
+Future-only `collect_fast64_repaired_ramp_v1.sh` provides terminal-only strict
+closeout for exactly this wave. Its default dry run returned
+`WAIT_TERMINAL` for all eight and created no compact result; `--collect` is
+required before it invokes the repaired-Core v2 validator after a natural
+immutable terminal receipt.
 
 ## FAST64 current parallelism / Gaussian closeout reconciliation (2026-09-10)
 
