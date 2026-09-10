@@ -229,6 +229,23 @@ common repaired-Core Hotspot1 triplet, finish remaining Base acquisition, then
 fill new FAST64.4 work under the settled identity; this does not authorize
 altering the existing bbcbb controllers or relabelling their rows.
 
+The later three-window V2 admission at
+`/tmp/fast64-repaired-ramp3-admission-20260910T102552Z.tsv` also passes two
+additional workers: sampled swap-out and major faults are `0` in all windows,
+memory PSI/OOM/CFS throttling are `0`, cgroup CPU use is `20.376--20.979`
+core-equivalents of the `384`-core quota, p95 RSS is `5,142,216,704` bytes,
+`MemAvailable` is `28,210,438,144` bytes, cgroup headroom is
+`207,717,339,136` bytes, and output free space is `120,583,127,040` bytes.
+The observed `2 GiB` aggregate swap allocation is therefore not classified as
+active pressure: the sampled `pswpout` rate is zero.  At that observation the
+machine had eighteen live FAST64 leaf simulators.  After Btree/OO naturally
+terminated, the two safe slots remain reserved for a genuinely missing,
+non-duplicate repaired-Core row; no redundant row is dispatched merely to
+fill a target.  Future-only
+`util/dtc_l1/dispatch_fast64_repaired_core_row_v3.sh` is now the
+exactly-once, SHA-pinned path for that refill and cannot alter a live
+bbcbb/controller namespace.
+
 ## 9.1 Gaussian IO/OO precompute collector reconciliation
 
 Gaussian IO and OO immutable attempts `5251ab7f-13b1-43dc-9b7d-0434ef498817`
