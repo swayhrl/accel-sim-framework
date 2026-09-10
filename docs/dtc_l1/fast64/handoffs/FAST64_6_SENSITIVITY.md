@@ -1,7 +1,7 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; TEN PHYSICAL PRECOMPUTATION ROWS ACTIVE UNDER
-`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
+Status: **FROZEN; ONE PHYSICAL PRECOMPUTATION ROW STRICT-TERMINAL AND NINE
+ACTIVE UNDER `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
 Logical stage order remains unchanged: FAST64.3, FAST64.4 and FAST64.5 must
 pass before FAST64.6 logical acceptance.  This handoff freezes only the
@@ -75,6 +75,14 @@ separate read-only closeout monitors:
 
 `generated/FAST64_6_PRECOMPUTE_DISPATCH_V1.tsv` is the compact immutable
 attempt index (namespace, CPU, supervisor/simulator PID, UUID and config
-hash).  It records launch identity, not a result.  Every row remains
-`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no terminal receipt, parser
-verdict, FAST64.6 logical promotion, or performance conclusion is claimed.
+hash).  The Btree / 16.5-KiB / OO row (UUID
+`3a34fc35-38d0-48f3-a0e0-399f72c348f1`) naturally terminated exit 0 at
+`2026-09-10T14:06:03Z` and strict-validated into
+`generated/fast64_6_precomputed_v1/fast64_sens_v1_btree_physical16p5_oo.json`.
+Its exact repaired-Core/runtime/scientific/A1 identities, payload trace hash,
+receipt hashes, lower acquire/release `501958/501958`, dependency
+`2388513/2388513`, and final lower/PIB/inflight/OO-ref drains are recorded
+there; lower-cap-full is zero.  This is a retained physical precompute only.
+All rows, including that terminal row, remain
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: no FAST64.6 logical promotion or
+performance conclusion is claimed.

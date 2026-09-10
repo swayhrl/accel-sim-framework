@@ -19,12 +19,20 @@ four `RESERVED` ways, and no displayed MSHR/miss-queue/response/lower owner.
 This proves a reservation-completion ownership incident but not its root
 cause.  No speculative Core change or blind re-run was made.
 
-The ten active FAST64.6 physical-sensitivity rows remain immutable,
-repaired-Core/A1 precomputes only.  At the latest read-only snapshot all were
+The first FAST64.6 terminal is Btree / 16.5-KiB physical / PAPER_OO: it
+naturally exited 0 at `2026-09-10T14:06:03Z` and strict-validated with the
+formal repaired Core/runtime, scientific Framework and A1 identities.  Its
+lower lifecycle is `501958/501958`, its OO dependencies are
+`2388513/2388513`, final lower/PIB/inflight/OO-ref state is drained, and
+lower-cap-full is zero.  The compact record is
+`fast64/generated/fast64_6_precomputed_v1/fast64_sens_v1_btree_physical16p5_oo.json`.
+It remains only `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, not a stage
+result.  The other nine physical-sensitivity rows remain immutable,
+repaired-Core/A1 precomputes only; at the latest read-only snapshot they were
 CPU-active and clean of assertion/fatal/deadlock signatures.  `MemAvailable`
-is now about 49 GiB and swap is nearly allocated but without sampled swap-out
-or memory-PSI; existing 20-worker concurrency is retained and no additional
-worker is admitted pending a fresh healthy observation.
+is about 52 GiB, while swap is nearly allocated but has no sampled swap-out or
+memory-PSI.  Existing concurrency is retained; no new worker is admitted
+pending a fresh healthy observation.
 
 ## FAST64.6 first physical-precompute wave active (2026-09-10)
 
