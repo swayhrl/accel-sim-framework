@@ -111,6 +111,32 @@ process and its read-only closeout path as literal historical evidence.  Any
 subsequent replacement must use a fresh repaired-Core immutable namespace and
 may not reuse this legacy name.
 
+### Current future-wave capacity calibration (2026-09-10)
+
+The future-only V3 admission auditor is independent of all live execution and
+closeout bytes.  It treats a single positive swap-out sample followed by clean
+samples as `TRANSIENT_SWAP_ACTIVITY`, but rejects repeated swap-out, any memory
+PSI/OOM/major-fault growth, CFS throttling, insufficient output space, or a
+projected `MemAvailable` value below a declared 16-GiB reserve.
+
+At `2026-09-10T12:18:47Z`, 13 FAST64 executable leaves used 31.1 GiB total
+RSS (p50/p95/max 2.31/4.80/4.80 GiB).  The paired three-window audits retained
+at `/tmp/fast64-resource-audit-v3-20260910T121815Z-target{16,20}.tsv` saw
+one 65-page swap-out sample and then two zero samples, no PSI/OOM/major faults
+or CFS throttling, about 39.2 GiB `MemAvailable`, 208 GiB cgroup headroom, and
+111 GiB output free.  The 16-worker target (three additions) passes with a
+projected 25.7 GiB `MemAvailable`; the 20-worker target fails the reserve with
+only 6.5 GiB projected.  Thus the current `N_safe` is 16, with a maximum of
+three new workers before fresh admission evidence is required.
+
+No duplicate row was dispatched simply to consume this capacity.  The final
+FAST64.3 Base acquisition (2DConvolution) is already live, Btree/MRI-Q have
+repaired-Core terminal candidates awaiting the stage-3 reconciliation, and
+the remaining physical FAST64.4 rows either have live immutable attempts or
+strict terminal candidates.  The next repaired-Core dispatch must remain a
+new, missing, identity-compatible row after another fresh audit; it must not
+reuse a live/old namespace or defeat the old-Core guard above.
+
 ## 2. Fixed 36-row matrix
 
 Fill exactly one accepted Base/IO/OO row per workload. Base rows must be reused

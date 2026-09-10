@@ -1,5 +1,57 @@
 # Latest Codex Report
 
+## FAST64 safe-parallelism recalibration / Hotspot repair reconciliation (2026-09-10)
+
+The latest review's requested Hotspot1/PAPER_OO isolated minimal-guard check
+was already complete in the live repository state, so no duplicate simulator
+was launched.  The common repaired-Core Hotspot1 Base/IO/OO immutable triplet
+has terminal receipts with exit `0`, strict validator status
+`FAST64_TRIPLET_STRICT_VALID_PENDING_STAGE_ACCEPTANCE`, and common repaired
+Core/runtime `95ccdb7a...` / `462d105c...cc4dbc9`.  IO/OO record `85,206` /
+`83,439` cycles at common `377,291,004` instructions; the repair and its
+identity/reuse boundary are already committed and documented in
+`fast64/handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.  Thus it is
+not permissible to relaunch either qualification merely to satisfy a stale
+dispatch instruction.
+
+A new future-only, read-only v3 admission wrapper,
+`util/dtc_l1/audit_fast64_future_precompute_resources_v3.sh`, retains the
+existing multi-window V2 samples but adds FAST64-only RSS p50/p95/max,
+projected total workers, a fixed 16-GiB `MemAvailable` reserve, and explicit
+CFS-throttle rejection.  It changes neither simulator semantics nor any live
+controller/collector.  Its source syntax and a two-window live dry run pass.
+
+At the 2026-09-10T12:18:47Z three-window snapshot, exactly 13 FAST64
+`accel-sim.out` leaves were live: old-Core 2DConvolution/Base (PID `57531`),
+ATAX/IO (`67664`), GEMM/IO (`101725`), GEMM/OO (`101766`); repaired-Core
+ATAX/OO (`219903`), GESUMMV/OO (`219910`), BICG/Base/IO/OO
+(`232965`/`232978`/`232988`), GESUMMV/Base/IO (`232992`/`269155`), and
+ATAX/Base/IO (`269186`/`289484`).  Every leaf was CPU-active at 99.4--99.5%
+on a distinct CPU.  Aggregate FAST64 RSS was 31.1 GiB; p50/p95/max were
+2.31/4.80/4.80 GiB.  The cgroup quota is 384 CPUs with 0 throttle events,
+about 208 GiB cgroup-memory headroom, 39.2 GiB `MemAvailable`, zero memory
+PSI/OOM/major faults, 111 GiB output free, and low cgroup I/O.
+
+The paired audit artifacts are retained outside the repository at
+`/tmp/fast64-resource-audit-v3-20260910T121815Z-target{16,20}.tsv`.  Both
+observed one 65-page swap-out window followed by two zero windows, therefore
+`TRANSIENT_SWAP_ACTIVITY`, not sustained memory pressure.  Target 16
+(three additional p95-RSS workers) passes: projected `MemAvailable` remains
+25.7 GiB after the new workers and above the 16-GiB reserve.  Target 20
+(seven new workers) is rejected because it would leave only 6.5 GiB, below
+that reserve.  The current resource-safe target is consequently
+`N_safe = 16`, with no more than three new workers before another fresh audit.
+
+Those three slots were deliberately not filled with duplicate simulations:
+the sole pending FAST64.3 Base acquisition is the already-live
+2DConvolution/Base; Btree and MRI-Q already have repaired-Core terminal
+evidence awaiting promotion reconciliation; all other Base requirements are
+accepted, strict-valid, or already active.  Existing FAST64.4 precompute rows
+also retain their individual immutable namespaces/closeout paths.  Filling a
+slot with an already-running or identity-incompatible row would violate
+exactly-once and the zero-access reuse map.  FAST64.3 remains ACTIVE and
+FAST64.4 remains physical precomputation only.
+
 ## FAST64 old-Core continuation deauthorized before successor dispatch (2026-09-10)
 
 The old `continue_fast64_4_precompute_v1.sh` controller (PID `72912`) remains
