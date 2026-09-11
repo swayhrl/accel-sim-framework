@@ -50,8 +50,9 @@ NN payload, and immutable runner `bf9a84c8...` in fresh namespaces.
 | NN / PAPER_IO | `d1c7df08-769e-4b68-ba61-359d3902f86f` | exit 0 at `2026-09-11T02:20:34Z`; strict PASS | `generated/fast64_4_primary_core95_v1/fast64_4_primary_nn_io_core95ccdb7a_a1_v1.json` | 6,095 cycles / 1,284,872 instructions; lower credit `2673/2673`, IO create/issue/response `2673/2673/2673`, dependency closed/count `5346/5346`, final lower/inflight/PIB `0/0/0`, cap-full `0` |
 | NN / PAPER_OO | `f7dc6dbb-1951-49cc-a865-22f07bb7de4f` | exit 0 at `2026-09-11T02:20:34Z`; strict PASS | `generated/fast64_4_primary_core95_v1/fast64_4_primary_nn_oo_core95ccdb7a_a1_v1.json` | 6,105 cycles / 1,284,872 instructions; lower credit `2673/2673`, OO create/issue/response `2673/2673/2673`, dependency closed/count `5346/5346`, final lower/inflight/PIB/active-refs `0/0/0/0`, cap-full `0` |
 
-The coverage state is now 20 strict-terminal candidates, two live rows, and
-two cells blocked on the final 2DConvolution Core-41 identity.  These rows are
+The coverage state is now 21 strict-terminal candidates, one live Core-95
+GESUMMV/IO row, and two cells blocked on the final 2DConvolution Core-41
+identity.  These rows are
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; they neither form an accepted
 triplet nor advance FAST64.4, and no GM or primary-stage claim is made.
 
@@ -69,8 +70,8 @@ no 2DConvolution IO/OO simulator has been launched by this path.
 
 ### 2026-09-11 primary-acquisition coverage and capacity audit
 
-The current exact 24-cell IO/OO audit remains: 20
-`STRICT_TERMINAL_REUSE_CANDIDATE`, two Core-95 GESUMMV cells
+The current exact 24-cell IO/OO audit is: 21
+`STRICT_TERMINAL_REUSE_CANDIDATE`, one Core-95 GESUMMV/IO cell
 `LIVE_NONTERMINAL`, and two 2DConvolution cells
 `BLOCKED_ON_FINAL_CORE_IDENTITY`.  There is no
 `MISSING_READY_TO_DISPATCH` non-2DConvolution cell, so no duplicate primary
@@ -123,6 +124,7 @@ their natural terminal, strict collector, stage-3 and triplet gates pass.
 | --- | --- | --- | --- | --- |
 | Btree / PAPER_IO | `generated/fast64_repaired_ramp_v1/fast64_btree_io_core95ccdb7a_a1_r1.json` | immutable attempt `002abb01-33c5-469a-b593-1cebc125d4aa`; terminal receipt `2026-09-10T10:36:28Z`, exit `0`; collector PASS | `244,231` cycles / `444,467,849` instructions; lower acquired/released and IO create/issue/response `507,779/507,779`; dependency closed/count `2,388,513/2,388,513`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
 | Btree / PAPER_OO | `generated/fast64_repaired_ramp_v1/fast64_btree_oo_core95ccdb7a_a1_r1.json` | immutable attempt `49062c94-3354-4b33-b8b8-03e885335095`; terminal receipt `2026-09-10T10:30:28Z`, exit `0`; collector PASS | `172,795` cycles / `444,467,849` instructions; lower acquired/released and OO create/issue/response `502,450/502,450`; dependency closed/count `2,388,513/2,388,513`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
+| GESUMMV / PAPER_OO | `generated/fast64_repaired_ramp_v1/fast64_gesummv_oo_core95ccdb7a_a1_r1.json` | immutable attempt `023b0b17-4d77-490a-ae14-fb42daddc17e`; terminal receipt `2026-09-11T03:50:40Z`, exit `0`; collector PASS | `143,059,605` cycles / `190,918,656` instructions; lower acquired/released and OO create/issue/response `34,598,098/34,598,098`; dependency closed/count `35,651,712/35,651,712`; final PIB/inflight/lower/active-refs `0/0/0/0`; cap-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
 | MRI-Q / PAPER_BASE | `generated/fast64_repaired_ramp_v1/fast64_mriq_base_core95ccdb7a_a1_r1.json` | immutable attempt `53d3653f-1b85-4bd1-9d41-1c8fd0783812`; terminal receipt `2026-09-10T10:37:58Z`, exit `0`; collector PASS | `366,667` cycles / `1,411,757,056` instructions; PIB admit/retire `21,792/21,792`; lower acquired/released `62,208/62,208`; final PIB/lower `0/0`; cap-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
 | MRI-Q / PAPER_IO | `generated/fast64_repaired_ramp_v1/fast64_mriq_io_core95ccdb7a_a1_r1.json` | immutable attempt `add9ada3-c014-47a3-b664-b3b4678e2a5a`; terminal receipt `2026-09-10T10:34:27Z`, exit `0`; collector PASS | `360,536` cycles / `1,411,757,056` instructions; lower acquired/released and IO create/issue/response `15,517/15,517`; dependency closed/count `15,552/15,552`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
 | MRI-Q / PAPER_OO | `generated/fast64_repaired_ramp_v1/fast64_mriq_oo_core95ccdb7a_a1_r1.json` | immutable attempt `e32fff64-f847-4c79-9c3d-94c41622dd54`; terminal receipt `2026-09-10T10:37:45Z`, exit `0`; collector PASS | `361,415` cycles / `1,411,757,056` instructions; lower acquired/released and OO create/issue/response `15,516/15,516`; dependency closed/count `15,552/15,552`; final PIB/inflight/lower `0/0/0`; cap-full and lower-create-queue-full `0` | `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` |
