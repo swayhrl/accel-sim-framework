@@ -71,17 +71,17 @@ regression both pass.  Its current production dry run correctly fails at the
 absent final Core-41 Base registry, so it cannot prematurely compose a
 primary-matrix candidate.
 
-### Core-41 2DConvolution IO/OO future path (prepared, not dispatched)
+### Core-41 2DConvolution IO/OO path retired pending final repair identity
 
 The historical bbcbb 2DConvolution IO/OO rows remain literal precompute only
-and may not be paired with the live Core-41 Base replacement.  Future-only
-`dispatch_fast64_4_2d_core41_v1.sh` binds both successor modes to Core
-`41d740e8...`, runtime `6e72d366...`, A1, the frozen 2D payload and exact
-FAST64 IO/OO configs.  Before even a dry run can pass, it requires both the
-strict Core-41 Base compact JSON and its structural companion, verifies that
-the companion binds that exact Base summary and terminal lower/PIB drain, and
-refuses any pre-existing namespace.  Its current pre-Base check fails closed;
-no 2DConvolution IO/OO simulator has been launched by this path.
+and may not be paired with the failed Core-41 Base replacement.  The
+future-only `dispatch_fast64_4_2d_core41_v1.sh` remains retained as historical
+preparation, but is `SUPERSEDED_UNTIL_FINAL_2D_REPAIR_IDENTITY`: its required
+Core-41 Base compact JSON and structural companion cannot exist because the
+immutable Base attempt terminally deadlocked.  It must not dispatch either
+successor.  A later dispatch path, if source recovery succeeds, must bind the
+new final repaired Core/runtime identity consistently across the complete
+2DConvolution Base/IO/OO triplet and use fresh namespaces.
 
 ### 2026-09-11 primary-acquisition coverage and capacity audit
 
@@ -108,24 +108,20 @@ not used to launch a duplicate.  The exact temporary audit records are
 `/tmp/fast64-r4-admission-16-20260911T024945Z.tsv` and
 `/tmp/fast64-r4-admission-20-20260911T025043Z.tsv` on the execution host.
 
-Thus capacity is ready for the already-authorized priority order—first the
-strict-gated Core-41 2DConvolution IO/OO successors, then any genuinely
-missing primary row—but it does not override the no-duplicate and
-common-triplet-identity rules.
+Thus the recorded capacity observation does not authorize any 2DConvolution
+IO/OO successor while the final repaired Base identity is absent, and it does
+not override the no-duplicate and common-triplet-identity rules.
 
-To avoid an unattended gap at that precise transition, the future-only
-`auto_dispatch_fast64_4_2d_core41_v1.sh` controller is prepared and statically
-regressed.  It pins the SHA-256 of the Core-41 dispatcher, generic strict
-collector, and resource-audit helper; requires the exact strict Base JSON plus
-structural companion; takes a new two-worker admission audit; and only then
-dispatches fresh IO/OO namespaces on distinct eligible CPUs and starts their
-strict terminal monitors.  A helper-byte mismatch, missing Base artifact,
-unsafe audit, pre-existing namespace, or collector output causes no launch.
-The current `--once` regression reached only
-`FAST64_4_2D_CORE41_WAIT_BASE_STRICT_GATE` and proved that it cannot
-prematurely dispatch either successor while Base remains live.
+The future-only `auto_dispatch_fast64_4_2d_core41_v1.sh` controller remains
+retained with its historical static regression only.  It pins the SHA-256 of
+the Core-41 dispatcher, generic strict collector, and resource-audit helper;
+requires the exact strict Base JSON plus structural companion; and rejects the
+now-absent Base gate.  The recorded `--once` regression reached only
+`FAST64_4_2D_CORE41_WAIT_BASE_STRICT_GATE`; it proves no successor was
+prematurely dispatched, but is not authorization to use Core-41 after its
+terminal failure.
 
-The first post-transition wave is active under
+The historical first post-transition wave was prepared under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: Btree Base/IO/OO, MRI-Q
 Base/IO/OO, ATAX/OO and GESUMMV/OO.  Each has a fresh immutable-v2 START
 receipt in `/workspace/fast64-repaired-ramp/`, Core `95ccdb7a...`, runtime
