@@ -171,7 +171,14 @@ def validate(row: dict[str,str], code: int) -> dict[str,object]:
     if len(raw) != markers: errors.append('raw_marker_parse')
     if any(k.exact_occurrences['gpu_sim_cycle'] != 1 for k in raw): errors.append('kernel_cycle_missing_or_duplicate')
     if raw and sum(k.exact['gpu_sim_cycle'] for k in raw) != int(vals.get('gpu_tot_sim_cycle','-1')): errors.append('kernel_cycle_sum')
-    active=[x for x in raw[-1].cumulative] if raw else []
+    # The raw parser records every ``vm_*`` snapshot.  Only the accepted
+    # Operator-aware cumulative set, however, is a monotonic per-kernel
+    # attribution counter.  Fields such as ``vm_l2_tlb_subentry_valid_*``
+    # are instantaneous occupancy gauges and are explicitly not suitable for
+    # delta-to-terminal recovery.  Applying a monotonicity check to every
+    # ``vm_*`` field would reject a quiescent, otherwise valid arm when a
+    # final eviction lowers such a gauge.
+    active=[x for x in op.CUMULATIVE_METRIC_VALIDATION if raw and x in raw[-1].cumulative]
     for name in active:
         prior=0
         for k in raw:
@@ -206,7 +213,28 @@ def execute(exp: str) -> None:
     if starts: (run/'time-v.txt').write_text('\n'.join(lines[starts[-1]:])+'\n')
     validate(row,code)
 
+def revalidate(exp: str) -> None:
+    """Re-parse an already terminal arm without invoking the simulator."""
+    row=read_rows().get(exp)
+    if not row: fail('unknown exp '+exp)
+    run=Path(row['output_dir']); log=run/'run.log'; sidecar=run/'time-v.txt'
+    if not log.is_file() or not sidecar.is_file(): fail(exp+' read-only validation requires raw log and time sidecar')
+    live_trace=str(run/'traces'/'kernelslist.g')
+    if live_trace in subprocess.check_output(['ps','-eo','args='], text=True, errors='replace'):
+        fail(exp+' read-only validation refuses a live output directory')
+    exit_status=re.search(r'^\s*Exit status:\s*(\d+)\s*$',sidecar.read_text(errors='strict'),re.M)
+    if not exit_status: fail(exp+' time sidecar lacks an exit status')
+    validation=run/'C13_ARM_VALIDATION.json'
+    if validation.is_file():
+        prior=json.loads(validation.read_text())
+        backup=run/'C13_ARM_VALIDATION_PRE_REPAIR.json'
+        if prior.get('terminal_status')=='FAILED_DIAGNOSING' and not backup.exists():
+            backup.write_text(validation.read_text())
+    validate(row,int(exit_status.group(1)))
+
 if __name__ == '__main__':
-    p=argparse.ArgumentParser();p.add_argument('--prepare',action='store_true');p.add_argument('--execute');a=p.parse_args()
-    if a.prepare == bool(a.execute): fail('select exactly one of --prepare or --execute')
-    prepare() if a.prepare else execute(a.execute)
+    p=argparse.ArgumentParser();p.add_argument('--prepare',action='store_true');p.add_argument('--execute');p.add_argument('--validate');a=p.parse_args()
+    if sum((bool(a.prepare),bool(a.execute),bool(a.validate))) != 1: fail('select exactly one of --prepare, --execute, or --validate')
+    if a.prepare: prepare()
+    elif a.execute: execute(a.execute)
+    else: revalidate(a.validate)

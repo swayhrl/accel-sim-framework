@@ -90,3 +90,31 @@ cores) and over 130 GiB available memory; even a conservative addition of five
 C12-scale arm peaks remains well within headroom.  The campaign limit is
 therefore nine—the complete fixed matrix and never a tenth arm—and the five
 remaining manifest rows may be launched concurrently.
+
+## Source-correct validator repair — `C13-SEL-D10` (no replay)
+
+`C13-SEL-D10` exited cleanly with 740/740 markers and telemetry records, but
+the first validator image incorrectly applied monotonic cumulative-counter
+checks to every `vm_*` snapshot field.  Its only four errors were the
+continuity/final-value checks for `vm_l2_tlb_subentry_valid_UNKNOWN` and
+`vm_l2_tlb_subentry_valid_KV_CACHE`.  These are instantaneous valid-entry
+gauges: the final Selective-policy snapshot can decrease after eviction and
+must not be treated as per-kernel cumulative attribution.
+
+The source-correct repair limits monotonic/delta-to-terminal validation to the
+accepted Operator-aware `CUMULATIVE_METRIC_VALIDATION` set.  It adds a
+`--validate` path that reads only an existing raw log and its `time-v` sidecar,
+records the prior failed validation as
+`C13_ARM_VALIDATION_PRE_REPAIR.json`, and refuses a live output directory.  No
+simulator, Core, binary, trace, config, registration, or raw log is modified;
+the immutable raw SHA remains the provenance anchor.  Any error that survives
+this read-only revalidation remains fail-fast.
+
+The repaired validator re-read the existing `C13-SEL-D10` log with SHA-256
+`cb380b1288587ba5064b3b59e8ba949230e44ea860c309127f115f2c8750a426`.
+The pre-repair JSON is retained alongside it and records exactly the four
+gauge-only errors above.  Revalidation passed with simulator exit 0, 740/740
+markers and telemetry records, and `gpu_tot_sim_cycle=34470902`; the accepted
+monotonic attribution set had four active metrics and passed continuity plus
+delta closure.  This is parser-only revalidation, not a replay.  Its paired
+same-new-binary Decode control independently passed before the repair.
