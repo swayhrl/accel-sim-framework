@@ -2,10 +2,10 @@
 
 Status: **ACTIVE — 11/12 non-2D Base registry rows pass the exact final matrix
 validator; historical 2DConvolution/Base and the Core-41 formal replacement
-are invalid. The immutable dc6062 transition observation is live as
-NONFORMAL_DIAGNOSTIC_NOT_RESULT. No FAST64.3 promotion is made until its
-source-backed classification, minimal repair, and a fresh 12th formal Base row
-validate.**
+are invalid. The immutable dc6062 transition observation is terminal and
+strictly retained as NONFORMAL_DIAGNOSTIC_NOT_RESULT. No FAST64.3 promotion is
+made until its source-backed sector-MSHR classification, minimal repair, and a
+fresh 12th formal Base row validate.**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -47,7 +47,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | BICG | `generated/qualification_r2_full_wave_alias_v2/` + `generated/fast64_3_bicg_base_structural_v1/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | GESUMMV | historical `generated/fast64_3_gesummv_base_alias_v3/`; fresh Core95 candidate `generated/fast64_repaired_ramp2_v1/fast64_gesummv_base_core95ccdb7a_a1_r1.json` + `FAST64_3_GESUMMV_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` | promoted; fresh repaired-Core candidate | [x] | [x] | [x] | [x] | ACCEPTED; CORE95_CANDIDATE_PENDING_FINAL_REGISTRY |
 | GEMM | `generated/fast64_3_gemm_base_alias_v4/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
-| 2DConvolution | historical `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` and the Core-41 replacement `/workspace/fast64-stage3-repair/fast64_3_2DConvolution_base_core41d740e8_a1_v1` are preserved invalid attempts; the dc6062 transition diagnostic is observation-only | Core-41 UUID `7ba2205a-e205-4793-a3c0-8bce1a56d2f1` terminal exit 1; source-root-cause diagnostic active | [ ] | [ ] | [ ] | [ ] | REPAIR_REPLACEMENT_FAILED_SOURCE_DIAGNOSTIC_ACTIVE |
+| 2DConvolution | historical `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` and the Core-41 replacement `/workspace/fast64-stage3-repair/fast64_3_2DConvolution_base_core41d740e8_a1_v1` are preserved invalid attempts; dc6062 terminal observation evidence is nonformal | Core-41 UUID `7ba2205a-e205-4793-a3c0-8bce1a56d2f1` terminal exit 1; dc6062 terminal `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; sector-MSHR source classification pending | [ ] | [ ] | [ ] | [ ] | REPAIR_REPLACEMENT_FAILED_SOURCE_DIAGNOSTIC_ACTIVE |
 | Btree | `generated/fast64_repaired_ramp_v1/fast64_btree_base_core95ccdb7a_a1_r1.json` + `FAST64_3_BTREE_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_BTREE_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | DWT2D | `generated/fast64_3_dwt2d_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | Gaussian | `generated/fast64_3_dynamic_base_v1/fast64_3_Gaussian_base_cap8192_a1_v2.json` + `FAST64_3_GAUSSIAN_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |

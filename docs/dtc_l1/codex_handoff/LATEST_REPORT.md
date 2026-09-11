@@ -1,12 +1,32 @@
 # Latest Codex Report
 
+## FAST64.3 2D transition observation terminal; sector-MSHR follow-up prepared (2026-09-11)
+
+The immutable dc6062 2DConvolution/Base observation naturally reached its
+terminal deadlock and was strictly collected as
+`NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  Its terminal dump has empty conventional
+MSHR, miss-queue and fill-owner state but four ownerless reserved ways on each
+of L1D_003/L1D_029/L1D_051.  The original transition collector also proves
+that all `INVALIDATE_ACTUAL` events for those L1Ds occurred by cycle 5,000,
+whereas the relevant owner/fill lifecycle continues through cycle 1,541,955;
+the prior Core-41 invalidation-deferral premise is therefore not enough to
+identify the actual retained-reservation transition.
+
+Diagnostic-only Core `6083f04bd40f356f253408e496d2603dd0fb13ff` is built and
+pushed on the isolated transition branch.  It adds opt-in records of the
+actual sector MSHR key, root-vs-merge decision, tag result, and MSHR consume
+event; it changes no formal Core behavior or DTC lifecycle.  A fresh
+diagnostic is deliberately not launched while 96 FAST64 simulator leaves are
+active, swap is fully allocated, and the cgroup records historical OOM kills.
+No functional repair has been selected.
+
 ## FAST64.3/4 2D execution-identity reconciliation (2026-09-11)
 
 The Core-41 2DConvolution/Base formal replacement is terminal-invalid and is
-not a final triplet candidate. The current dc6062 run is an immutable,
-observation-only `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; its automatic collector
-must first publish terminal evidence before source classification and any
-minimal repair. Consequently 2DConvolution IO/OO remain
+not a final triplet candidate. The dc6062 run is a terminal immutable,
+observation-only `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; its strict evidence now
+requires source-level sector-MSHR classification before any minimal repair.
+Consequently 2DConvolution IO/OO remain
 `BLOCKED_ON_FINAL_CORE_IDENTITY`: literal historical bbcbb IO/OO evidence may
 not mix with either the failed Core-41 Base or the diagnostic. This corrects
 future collector/coverage wording only; no live simulator, monitor, runner,
