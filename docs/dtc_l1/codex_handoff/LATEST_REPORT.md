@@ -1,5 +1,27 @@
 # Latest Codex Report
 
+## FAST64 preliminary inventory reconciled; GESUMMV 40-KiB OO dispatched (2026-09-11)
+
+The nonpromoting Stage3/4 generator was rerun over the current compact
+evidence. It now includes repaired-Core ATAX and BICG as complete,
+common-identity preliminary triplet candidates. Independent
+`--require-immutable` validation confirmed their immutable receipts, exact
+identity, equal instruction domains, accounting and terminal drain. Their
+observed Base/IO/OO cycles are respectively
+`87,750,512/88,363,340/48,078,114` and
+`88,495,620/93,942,704/47,231,655`. Both remain
+`PRELIMINARY_CANDIDATE` only: no FAST64.3/.4/.5/FAST12 claim changes.
+
+A fresh two-window resource audit passed (about 107--110 GiB MemAvailable,
+zero sampled swap I/O and memory PSI, and about 99 GiB output headroom), so
+the previously missing nonduplicate GESUMMV/physical-40-KiB/OO row was
+launched once in `fast64_sens_v14_gesummv_physical40_oo`, UUID
+`301770a0-2ef4-4b1e-b51c-500624ab2dd6`, CPU 3. It uses the frozen
+Core-95/runtime/A1/scientific-Framework/payload/config identity and immutable
+runner, has an atomic START receipt, and remains
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`. The existing V10 collector
+continues to cover only the V13/V14 pair. No live row was changed.
+
 ## FAST64.6 physical-pool terminal evidence retained without promotion (2026-09-11)
 
 Four already natural-terminal, strict-collected physical-pool rows are now

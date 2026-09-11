@@ -57,6 +57,26 @@ only under its recorded historical provenance.  The provisional triplet table
 now records one IO candidate, but it has no matching same-identity Base/OO
 triple and is therefore explicitly incomplete and nonpromoting.
 
+### Repaired-Core ATAX and BICG common-triplet audit (2026-09-11)
+
+Regeneration from the current compact-record set exposed two previously
+unlisted common-Core-95 candidate triplets. They were independently passed
+through `validate_fast64_triplet_v1.py --require-immutable` in an isolated
+audit namespace. The validator confirmed matching Core/runtime/A1/Framework
+and frozen trace identity, a single immutable terminal receipt per member,
+equal dynamic instruction domains, lifecycle conservation, and terminal
+drain. The observations are retained only as preliminary candidates:
+
+| workload | Base / IO / OO cycles | common instructions | provisional disposition |
+| --- | ---: | ---: | --- |
+| ATAX | 87,750,512 / 88,363,340 / 48,078,114 | 145,666,048 | `PRELIMINARY_CANDIDATE` |
+| BICG | 88,495,620 / 93,942,704 / 47,231,655 | 145,666,048 | `PRELIMINARY_CANDIDATE` |
+
+This audit does not make either triplet a FAST64.4 primary result and does
+not advance FAST64.3, FAST64.4, FAST64.5, or any FAST12 aggregate. It merely
+corrects the nonpromoting inventory so later acceptance cannot overlook the
+already strict-collected common-identity candidates.
+
 ## Current provisional aggregates
 
 The mechanically regenerated, checked-in, nonpromoting tables are:
@@ -67,11 +87,13 @@ The mechanically regenerated, checked-in, nonpromoting tables are:
 - `generated/FAST64_STAGE_GATE_LEDGER_V1.tsv` (cross-stage HARD-gate state;
   not an acceptance artifact)
 
-The only common repaired-Core triplet candidates presently represented are
-`Btree`, `Hotspot1`, and `MRI-Q`.  Their preliminary cycle observations are:
+The common repaired-Core triplet candidates presently represented are ATAX,
+BICG, Btree, Hotspot1, and MRI-Q. Their preliminary cycle observations are:
 
 | workload | Base | IO | OO | Base/IO | Base/OO |
 | --- | ---: | ---: | ---: | ---: | ---: |
+| ATAX | 87,750,512 | 88,363,340 | 48,078,114 | 0.993065 | 1.825165 |
+| BICG | 88,495,620 | 93,942,704 | 47,231,655 | 0.942017 | 1.873651 |
 | Btree | 369,977 | 244,231 | 172,795 | 1.514865 | 2.141133 |
 | Hotspot1 | 160,486 | 85,206 | 83,439 | 1.883506 | 1.923393 |
 | MRI-Q | 366,667 | 360,536 | 361,415 | 1.017005 | 1.014532 |
