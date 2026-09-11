@@ -747,3 +747,18 @@ Both records retain the frozen Core-95/runtime/A1/scientific-Framework and
 payload identities and classification
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  GESUMMV physical-48 IO remains
 live, so the physical-48 pair is not claimed closed.
+
+## BICG logical-64 and PIB 64/128/192 IO terminal batch (2026-09-11)
+
+Four further immutable BICG / PAPER_IO precomputes naturally exited zero and
+passed the existing strict receipt, parser, provenance, conservation, and
+terminal-drain checks.  They are registered in the two partial-terminal
+registries, remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, and do not
+constitute a sensitivity curve or promote any FAST64 stage.
+
+| point | terminal UTC | cycles / instructions | accounting and drain | compact evidence |
+| --- | --- | --- | --- | --- |
+| logical 64 KiB | `2026-09-11T15:30:51Z` | `93,697,186 / 145,666,048` | create/issue/response and credits `17,818,019/17,818,019/17,818,019`; dependencies `18,350,080/18,350,080`; lower/PIB/inflight `0/0/0`; cap-full `0` | `generated/FAST64_6_BICG_LOGICAL_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` |
+| PIB 64 | `2026-09-11T15:37:31Z` | `93,942,704 / 145,666,048` | create/issue/response `17,821,394/17,821,394/17,821,394`; dependencies `18,350,080/18,350,080`; lower/PIB/inflight `0/0/0`; cap-full `0` | `generated/FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` |
+| PIB 128 | `2026-09-11T15:28:52Z` | `93,942,704 / 145,666,048` | same strict lifecycle and terminal drain as PIB 64; cap-full `0` | `generated/FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` |
+| PIB 192 | `2026-09-11T15:35:20Z` | `93,942,704 / 145,666,048` | same strict lifecycle and terminal drain as PIB 64; cap-full `0` | `generated/FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` |

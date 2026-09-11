@@ -1,6 +1,6 @@
 # Latest Codex Report
 
-## FAST64.3 PASS; Core658 2D common-triplet IO/OO live (2026-09-11)
+## FAST64.3 PASS; Core658 2D common-triplet IO strict-terminal, OO live (2026-09-11)
 
 The source-correct Core658 2DConvolution/Base replacement naturally exited
 zero and strict-collected at `2,247,155` cycles / `620,347,492` instructions,
@@ -15,9 +15,24 @@ the stale V1 structural-companion pointer by requiring V2's final-JSON-bound
 companion; it passed IO/OO dry runs.  Fresh resource admission then launched
 the same Core658/runtime/trace pair for 2D IO and OO with immutable UUIDs
 `437620fb-ef5b-436e-8f35-63e7f1df0f4c` and
-`981ff10e-492d-479d-b41f-a916a0c14a58`; both are live only as
-`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` until strict terminal collection and
-the complete FAST64.4 36-row matrix gate.
+`981ff10e-492d-479d-b41f-a916a0c14a58`.  IO naturally exited zero at
+`2026-09-11T15:54:35Z` and passed the frozen strict collector; its final
+lower/PIB/inflight are zero.  OO remains live only as
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; the complete FAST64.4 36-row gate
+cannot close until it independently reaches the same strict terminal state.
+
+## FAST64.6 BICG logical-64 and PIB 64/128/192 IO terminal batch (2026-09-11)
+
+The four immutable BICG / PAPER_IO rows naturally exited zero and passed the
+existing strict receipt, parser, provenance, conservation, and terminal-drain
+checks.  `FAST64_6_BICG_LOGICAL_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` now
+includes logical 64 KiB (`93,697,186` cycles / `145,666,048` instructions);
+`FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` includes PIB 64, 128
+and 192 (each `93,942,704` cycles / `145,666,048` instructions).  All record
+balanced lower lifecycle and dependencies, terminal lower/PIB/inflight zero,
+and lower-cap-full zero.  They remain strictly
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: no curve, causal claim, or stage
+promotion is asserted.
 
 ## FAST64.3 2D sector-MSHR tag-identity repair selected; build/validation pending (2026-09-11)
 
