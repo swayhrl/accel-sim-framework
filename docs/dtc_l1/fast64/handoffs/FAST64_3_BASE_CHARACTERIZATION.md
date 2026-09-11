@@ -1,6 +1,9 @@
 # FAST64.3 — Base Characterization Handoff
 
-Status: **ACTIVE — 5/12 Base rows accepted; NN/Base, LUD/Base, Hotspot1/Base, Gaussian/Base, repaired-Core MRI-Q/Base, and repaired-Core Btree/Base strict-valid pending stage acceptance; the historical 2DConvolution/Base is invalid, and its source-correct Core-41 formal replacement is live under immutable receipts**
+Status: **ACTIVE — 11/12 non-2D Base registry rows pass the exact final matrix
+validator; the historical 2DConvolution/Base is invalid, and its source-correct
+Core-41 formal replacement is live under immutable receipts.  No FAST64.3
+promotion is made until the full 12/12 matrix validates.**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -263,6 +266,17 @@ IO/OO remain `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` and must still satisfy
 their owning stage/triplet acceptance before any promotion.
 
 ## 10. FAST64.3 HARD acceptance checklist
+
+### Pre-closeout registry audit (2026-09-11)
+
+The final matrix collector's own `validate()` implementation was applied
+read-only to every current non-2D registry row.  All 11 passed exact summary
+and structural availability, frozen Framework/A1/Base-config identity, payload
+identity, lower and PIB conservation/drain, non-binding-cap check, and
+structural lifecycle reconciliation.  This is not a partial stage PASS: the
+collector deliberately still rejects the registry while its 2DConvolution row
+is `INVALID_HISTORICAL_BASE_PENDING_REPAIR`.  It establishes that the live
+Core-41 2D Base replacement is the sole remaining FAST64.3 Base-input closure.
 
 Do not change `Status` to PASS until every applicable item is checked.
 

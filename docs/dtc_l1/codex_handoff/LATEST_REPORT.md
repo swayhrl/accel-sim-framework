@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## FAST64.3 Base registry pre-closeout audit: 11/11 non-2D rows pass (2026-09-11)
+
+The final Stage3 matrix collector's own `validate()` path was run read-only on
+every non-2D registry record.  All eleven pass their compact provenance,
+frozen identity/payload, accounting and drain, lower-cap, and structural
+lifecycle requirements.  This does not promote a partial stage: 2DConvolution
+remains `INVALID_HISTORICAL_BASE_PENDING_REPAIR` until the live Core-41
+replacement naturally terminates and publishes strict plus structural evidence.
+It proves that this single replacement is the only remaining Stage3 Base-input
+closure.
+
 ## FAST64.4 Core-41 2DConvolution successor path prepared fail-closed (2026-09-11)
 
 The future-only Core-41 2DConvolution IO/OO dispatcher is prepared but not
