@@ -51,7 +51,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | Gaussian | `generated/fast64_3_dynamic_base_v1/fast64_3_Gaussian_base_cap8192_a1_v2.json` + `FAST64_3_GAUSSIAN_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | Hotspot1 | `generated/fast64_repaired_core_qual_v1/fast64_hotspot1_base_core95ccdb7a_a1_v1.json` + `FAST64_3_HOTSPOT1_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_HOTSPOT1_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | LUD | `generated/fast64_3_dynamic_base_v1/fast64_3_LUD_base_cap8192_a1_v2.json` + `FAST64_3_LUD_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
-| NN | `generated/fast64_3_dynamic_base_v1/` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
+| NN | historical `generated/fast64_3_dynamic_base_v1/` is literal bbcbb Base evidence; fresh Core95 replacement `fast64_3_nn_base_core95ccdb7a_a1_v1` is required to join the already strict Core95 IO/OO rows | historical anchor + fresh Core95 immutable v2 replacement | [ ] | [ ] | [ ] | [ ] | CORE95_REPLACEMENT_ACTIVE_NONPROMOTING |
 | MRI-Q | `generated/fast64_repaired_ramp_v1/fast64_mriq_base_core95ccdb7a_a1_r1.json` + `FAST64_3_MRI_Q_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_MRIQ_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2; historical bbcbb compact retained as mapped anchor | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 
 No row may be dropped for pressure level, runtime, or later benefit.
@@ -62,12 +62,13 @@ No row may be dropped for pressure level, runtime, or later benefit.
 row-level audit. It verifies all five promoted rows against the frozen payload
 manifest and formal Base identity, then verifies natural immutable terminal,
 strict accounting/drain, host fields, required structural companion, and
-`DTC_L1_lower_cap_full_events=0`. The remaining seven rows were initially
-listed as `MISSING`; NN was deliberately reacquired because its historical
-precompute did not use the current frozen Framework execution snapshot. Its
-fresh immutable row now strict-validates with the current identity and awaits
-only FAST64.3's full-matrix acceptance. The other six remain active or queued
-as listed above.
+`DTC_L1_lower_cap_full_events=0`. The earlier NN dynamic Base compact result
+is an immutable literal bbcbb row (not a Core95 row as a stale handoff sentence
+previously implied). Its source-inert Base evidence is preserved, but it cannot
+form a common-identity triplet with the strict Core95 NN IO/OO rows. Fresh
+Core95 `fast64_3_nn_base_core95ccdb7a_a1_v1` is therefore the required
+nonpromoting replacement. The remaining rows retain their existing
+active/queued/reuse classification as listed above.
 
 Before launching a Base row, document whether exact-identity evidence already
 exists. At closeout list every promoted row and prove:
@@ -270,7 +271,7 @@ their owning stage/triplet acceptance before any promotion.
 ### Pre-closeout registry audit (2026-09-11)
 
 The final matrix collector's own `validate()` implementation was applied
-read-only to every current non-2D registry row.  All 11 passed exact summary
+read-only to every currently promotable non-2D registry row. Ten passed exact summary
 and structural availability, frozen Framework/A1/Base-config identity, payload
 identity, lower and PIB conservation/drain, non-binding-cap check, and
 structural lifecycle reconciliation.  This is not a partial stage PASS: the
