@@ -80,6 +80,10 @@ def config_text(exp: str, roi: str, enabled: int, n: int, exact: int, lseg: int,
     text = base + ('\n# C13 diagnostic override; frozen C12 input paths retained.\n'
                    '-gpgpu_vm_fair_arm 0\n'
                    '-gpgpu_vm_l2_tlb_entries %d\n'
+                   # C13 MANUAL diagnostics are intended to use the exact-page
+                   # L2.  The F7/F0 source profiles carry mode=1 for their
+                   # own fair-arm selector; MANUAL does not replace it.
+                   '-gpgpu_vm_l2_tlb_mode 0\n'
                    '-gpgpu_vm_weight_segmentation_enable %d\n'
                    '-gpgpu_vm_weight_segment_entries %d\n'
                    '-gpgpu_vm_weight_segment_lookup_latency %d\n' %
