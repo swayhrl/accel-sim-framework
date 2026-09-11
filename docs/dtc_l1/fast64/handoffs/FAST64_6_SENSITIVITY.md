@@ -1,8 +1,8 @@
 # FAST64.6 — Frozen sensitivity acquisition handoff
 
-Status: **FROZEN; TWELVE PHYSICAL PRECOMPUTATION ROWS STRICT-TERMINAL, ELEVEN
-FORMAL ROWS PLUS ONE NONFORMAL DIAGNOSTIC ACTIVE, AND FOUR PRESERVED
-16.5-KIB FAILURES UNDER
+Status: **FROZEN; THE 30-CELL PHYSICAL-POOL ROSTER IS FULLY ACCOUNTED (26
+STRICT-TERMINAL PRECOMPUTES AND FOUR PRESERVED 16.5-KIB FAILURES). LOGICAL/PIB
+PRECOMPUTES REMAIN ACTIVE UNDER
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`**
 
 Logical stage order remains unchanged: FAST64.3, FAST64.4 and FAST64.5 must
@@ -70,6 +70,25 @@ renaming.  A baseline point can be reused only after repaired-Core terminal
 identity, exact payload/config/observer/snapshot, parser and drain checks.
 All new rows must naturally exit zero and strict-validate lower/dependency and
 mode-specific drain before any later logical promotion.
+
+## Physical-pool roster closure (2026-09-11)
+
+GESUMMV / 48 KiB / PAPER_IO, the final active physical-pool acquisition,
+naturally reached exit zero at `2026-09-11T16:09:53Z` and strict-validated
+into `generated/fast64_6_precomputed_v11/fast64_sens_v15_gesummv_physical48_io.json`.
+It binds immutable UUID `d7fe42d6-1422-46b8-8d13-7824cff471b9`, repaired
+Core/runtime `95ccdb7a...` / `462d105c...`, the frozen GESUMMV payload,
+scientific Framework `037f008b...`, A1 observer, and the exact 48-KiB
+(`384`-line / `49,152`-B) IO configuration.  Its cycles/instructions are
+`148,257,172 / 190,918,656`; IO lower create/issue/response and lower-credit
+acquire/release are each `34,594,315`; dependencies closed/count are each
+`35,651,712`; lower, PIB and inflight drain to zero; and lower-cap-full is
+zero.  Forbidden-signature scanning was clean.
+
+The physical roster is therefore scheduling-complete: 26 strict terminal
+precomputes plus the four already preserved 16.5-KiB capacity-bound failures.
+This is not a FAST64.6 logical PASS and does not alter FAST64.3--.5 ordering;
+all retained records remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.
 
 ## First physical-acquisition wave (2026-09-10)
 
