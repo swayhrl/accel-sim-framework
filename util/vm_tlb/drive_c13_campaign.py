@@ -5,7 +5,8 @@ The driver is intentionally unable to alter a simulator configuration, trace,
 registration, Core, or binary.  It only selects the next already-prepared
 manifest row, admits it under the C13 adaptive-addendum policy, and invokes
 the existing per-arm runner.  It is safe to leave running while a simulator is
-live: it never launches more than four full-ROI C13 arms.
+live: it never launches more than the nine full-ROI arms in the fixed C13
+matrix; it cannot create an additional experiment row.
 """
 from __future__ import annotations
 
@@ -34,7 +35,10 @@ RSS = re.compile(r'Maximum resident set size \(kbytes\):\s*(\d+)')
 ORDER = ('C13-LAT-P8', 'C13-LAT-D11', 'C13-LAT-P9', 'C13-CAP-P320',
          'C13-CAP-P768S10', 'C13-SEL-P10-CTRL-NEWBIN',
          'C13-SEL-D10-CTRL-NEWBIN', 'C13-SEL-P10', 'C13-SEL-D10')
-MAX_LIVE_ARMS = 4
+# User-authorized expansion after three GREEN host windows. This is exactly
+# the complete fixed C13 matrix (seven primary rows plus two mandatory
+# same-new-binary controls), never a license to add a tenth experiment.
+MAX_LIVE_ARMS = 9
 
 
 def fail(message: str) -> None:
@@ -187,7 +191,7 @@ def needs_collection(exp: str, row: dict[str, str]) -> bool:
 
 def once(plan: dict[str, dict[str, str]], dry_run: bool) -> bool:
     current = [exp for exp, row in plan.items() if terminal(exp, row) == 'RUNNING']
-    if len(current) > MAX_LIVE_ARMS: fail('C13 observed more than four live full-ROI arms')
+    if len(current) > MAX_LIVE_ARMS: fail('C13 observed more live full-ROI arms than the fixed matrix')
     completed_uncollected = [exp for exp, row in plan.items()
                              if terminal(exp, row) == 'PASS' and needs_collection(exp, row)]
     if completed_uncollected:

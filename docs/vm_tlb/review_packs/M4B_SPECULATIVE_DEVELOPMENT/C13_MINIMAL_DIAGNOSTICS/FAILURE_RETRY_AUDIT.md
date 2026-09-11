@@ -73,3 +73,20 @@ RSS about 1.15 GiB.  Under this explicit authorization, the existing simulator
 PIDs were preserved and two independent, manifest-fixed config-only P0 arms
 were added: `C13-LAT-P9` and `C13-CAP-P320`.  The C13 campaign driver was
 updated to hold at four live arms and must not start a fifth.
+
+## User-authorized full-matrix concurrent launch — 2026-09-11
+
+The user then explicitly asked whether the five remaining fixed arms could run
+alongside the existing four and authorized raising the limit if resources
+allowed.  This is a scheduling override only: it does **not** add an
+experiment, alter any config/trace/registration/Core/binary identity, or make
+the diagnostic matrix exceed its fixed nine valid full-ROI arms.
+
+Three additional 10 s-spaced windows were GREEN: CPU idle 9--10%,
+MemAvailable 133.5--135.1 GiB, memory PSI full 0.00%, IO PSI full 0.00%,
+iowait 0%, and swap-in/out 0 KiB/s.  The four live C13 arms had combined RSS
+about 2.36 GiB.  This leaves material CPU headroom (roughly fifty logical
+cores) and over 130 GiB available memory; even a conservative addition of five
+C12-scale arm peaks remains well within headroom.  The campaign limit is
+therefore nine—the complete fixed matrix and never a tenth arm—and the five
+remaining manifest rows may be launched concurrently.
