@@ -33,8 +33,8 @@ source anchor.  `bbcbb5e7565417102087bc80b14c349b4e568c05` and runtime
 the historical FAST64 telemetry identity; their existing immutable evidence
 retains those literal values.
 
-For every **new** FAST64 formal row after the zero-access repair qualification,
-the required Core/runtime identity is Core
+For every **new non-2DConvolution** FAST64 formal row after the zero-access
+repair qualification, the required Core/runtime identity is Core
 `95ccdb7a056f2d53f740d90869785cac6d4ee0f5` and trace-enabled Release runtime
 SHA-256 `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`.
 The change only excludes an empty access queue from the IO/OO DTC issue-side
@@ -43,6 +43,14 @@ Base/IO/OO triplet strict-validates, and its Base row is exact against the
 historical bbcbb Base on cycles, instructions, PIB/lower lifecycle and final
 state.  The authoritative old-to-new classification is
 `handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.
+
+The only current exception is the repaired 2DConvolution common triplet and
+its cap controls/reacquisition: Core
+`6587238c60214d99491f4048e28ce8a3458c1509`, runtime SHA-256
+`29a3dd9f57a5accb89822ca3fcf06b11c437bfe864ee43d2ff5f26c8c056f3c1`.  Its
+source-backed scope is fixed by
+`handoffs/FAST64_2D_TAG_IDENTITY_CORE_AUTHORITY_MAP.md`; it is not a global
+replacement for Core95 and cannot be mixed with Core95 in a 2D triplet.
 
 ## Observer rule
 

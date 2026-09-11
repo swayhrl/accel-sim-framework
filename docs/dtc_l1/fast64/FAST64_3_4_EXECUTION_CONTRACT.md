@@ -7,7 +7,7 @@ FAST64.3 and FAST64.4. It does not weaken `FAST64_ACCEPTANCE_CONTRACT.md`; if a
 conflict is discovered, the stricter existing scientific requirement wins and
 the conflict must be resolved explicitly rather than silently reinterpreted.
 
-Authoritative common identity for new formal acquisition is:
+Authoritative default identity for new formal acquisition is:
 
 - mechanism behavior anchor: `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`;
 - formal repaired Core: `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`;
@@ -16,6 +16,14 @@ Authoritative common identity for new formal acquisition is:
 - frozen scientific/config Framework snapshot: `037f008b330eb230353b60edf126d6be9f45afdc`;
 - FAST12 membership and payload identities: `FAST64_WORKLOAD_MANIFEST.tsv` and
   `generated/FAST64_PAYLOAD_MANIFEST.tsv`.
+
+The narrow 2DConvolution exception is Core
+`6587238c60214d99491f4048e28ce8a3458c1509` with runtime SHA-256
+`29a3dd9f57a5accb89822ca3fcf06b11c437bfe864ee43d2ff5f26c8c056f3c1`.
+It applies only to the repaired common 2DConvolution Base/IO/OO triplet and
+its cap-resolution controls or required reacquisition.  The source-backed
+scope, anti-mixing rule, and non-supersession status are mandatory in
+`handoffs/FAST64_2D_TAG_IDENTITY_CORE_AUTHORITY_MAP.md`.
 
 No current controller/review HEAD may replace the frozen scientific execution
 snapshot in a result identity.

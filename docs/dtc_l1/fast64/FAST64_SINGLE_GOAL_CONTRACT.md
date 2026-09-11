@@ -32,7 +32,9 @@ commit/push. The Goal must not stop at ordinary stage boundaries.
   It guards only zero-effective-access IO/OO loads before DTC reference
   admission, preserves the nonempty assertion, and has a strict common
   Hotspot1 Base/IO/OO triplet plus exact Base differential.  Every new formal
-  FAST64 row uses this identity.  Historical bbcbb reuse is governed solely by
+  FAST64 row uses this identity, except the narrow 2DConvolution tag-identity
+  repair mapping in `handoffs/FAST64_2D_TAG_IDENTITY_CORE_AUTHORITY_MAP.md`.
+  Historical bbcbb reuse is governed solely by
   `handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`; never silently
   mix or relabel identities.
 - FAST12 membership: `FAST64_WORKLOAD_MANIFEST.tsv`.

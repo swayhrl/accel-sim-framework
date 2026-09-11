@@ -41,7 +41,9 @@ FAST64 worktree from `hrl/decoupled-l1-fast64-v0`, record its path in the
 FAST64.0 handoff, and leave legacy jobs/worktrees undisturbed. `15cfa76e...`
 remains the mechanism-source anchor, but every new formal FAST64 runtime must
 be built from/verified against `95ccdb7a...` with runtime
-`462d105c...cc4dbc9`. Historical bbcbb rows retain their literal identity and
+`462d105c...cc4dbc9`, except the narrowly mapped 2DConvolution tag-identity
+repair identity in `handoffs/FAST64_2D_TAG_IDENTITY_CORE_AUTHORITY_MAP.md`.
+Historical bbcbb rows retain their literal identity and
 are reusable only through the explicit zero-access identity map. Do not
 silently revert formal rows to `15cfa76e...` or relabel bbcbb evidence.
 

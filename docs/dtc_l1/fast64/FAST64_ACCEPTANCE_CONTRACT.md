@@ -27,9 +27,13 @@ General meanings:
 - Core authority distinguishes the mechanism behavior anchor
   `15cfa76ed3b041fa5b78161dfba02bae1e6d7fe9`, the historical formal telemetry
   Core `bbcbb5e7565417102087bc80b14c349b4e568c05`, and the current formal
-  zero-access-repaired Core `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`.
+  zero-access-repaired default Core `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`
+  and the narrowly scoped 2DConvolution tag-identity descendant
+  `6587238c60214d99491f4048e28ce8a3458c1509`.
   The explicit old-to-new reuse/invalidation authority is
   `handoffs/FAST64_ZERO_ACCESS_CORE_REPAIR_IDENTITY_MAP.md`.
+  The separate, non-global 2D authority is
+  `handoffs/FAST64_2D_TAG_IDENTITY_CORE_AUTHORITY_MAP.md`.
 - Existing M5 evidence is classified into Tier A/B/C without deletion or
   relabelling.
 - 2MM and SYR2K primary-path work is marked
