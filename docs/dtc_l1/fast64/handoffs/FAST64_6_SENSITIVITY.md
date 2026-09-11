@@ -455,3 +455,21 @@ The matching 32-KiB IO record was already retained under the same formal
 identity, but this remains `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no
 pair performance interpretation, FAST64.4 primary result, FAST64.5 causal
 claim, or FAST64.6 logical promotion is asserted.
+
+## BICG / 48-KiB / IO and GESUMMV / 32-KiB / OO terminal precomputes (2026-09-11)
+
+The existing strict collectors published two additional natural-exit-zero
+records without changing any simulator or configuration.  Both bind Core
+`95ccdb7a...`, runtime `462d105c...`, A1, scientific Framework `037f008b...`,
+their frozen payloads, and atomically published immutable receipts.
+
+| point | UUID | terminal UTC | cycles / instructions | conserved lower lifecycle | dependency closure | terminal state |
+| --- | --- | --- | --- | --- | --- | --- |
+| BICG / 48 KiB / IO | `4a5a9737-1928-48b6-8ae9-f017f465466d` | `2026-09-11T04:27:32Z` | 77,916,699 / 145,666,048 | credit and IO create/issue/response `17,822,880` | `18,350,080/18,350,080` | lower, PIB and IO inflight zero; cap-full 0 |
+| GESUMMV / 32 KiB / OO | `00a173e5-8402-4345-9f4f-b5121b89957a` | `2026-09-11T04:37:24Z` | 78,961,728 / 190,918,656 | credit and OO create/issue/response `34,370,858` | `35,651,712/35,651,712` | lower, PIB, OO inflight and active refs zero; cap-full 0 |
+
+These raise the retained strict-terminal physical-precompute count to sixteen.
+BICG/48 now has both modes retained; GESUMMV/32 still awaits its live IO
+companion.  All remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no pair
+interpretation, FAST64.4 primary result, FAST64.5 causal claim, or FAST64.6
+logical promotion is asserted.
