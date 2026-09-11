@@ -1,0 +1,22 @@
+output_column	source_artifact	source_metric_keys	formula	units_or_normalization	semantic_interpretation	missing_disposition
+base_cycles	FAST64.4 primary compact Base JSON	gpu_tot_sim_cycle	identity	cycles	Base simulated cycles	FAIL_CLOSED
+io_cycles	FAST64.4 primary compact IO JSON	gpu_tot_sim_cycle	identity	cycles	IO simulated cycles	FAIL_CLOSED
+oo_cycles	FAST64.4 primary compact OO JSON	gpu_tot_sim_cycle	identity	cycles	OO simulated cycles	FAIL_CLOSED
+speedup_io	FAST64.4 primary compact triplet	gpu_tot_sim_cycle(BASE),gpu_tot_sim_cycle(IO)	Base_cycles/IO_cycles	ratio	IO performance relative to Base	FAIL_CLOSED
+speedup_oo	FAST64.4 primary compact triplet	gpu_tot_sim_cycle(BASE),gpu_tot_sim_cycle(OO)	Base_cycles/OO_cycles	ratio	OO performance relative to Base	FAIL_CLOSED
+pib_full_events	FAST64.3 accepted structural companion	DTC_L1_pib_full_events	identity	events	Base PIB-full structural pressure	UNSUPPORTED_IF_ABSENT
+cacheline_all_lines_reserved_events	FAST64.3 accepted structural companion	cacheline_all_lines_reserved_events	identity	events	true cacheline allocation pressure; distinct from Tag arbitration	UNSUPPORTED_IF_ABSENT
+tag_bank_conflicts	FAST64.3 accepted structural companion	tag_bank_conflicts	identity	events	Tag-bank arbitration only; never allocation-failure proxy	UNSUPPORTED_IF_ABSENT
+mshr_entry_full_events	FAST64.3 accepted structural companion	mshr_entry_full_events	identity	events	MSHR-entry capacity pressure	UNSUPPORTED_IF_ABSENT
+mshr_merge_full_events	FAST64.3 accepted structural companion	mshr_merge_full_events	identity	events	MSHR-merge capacity pressure	UNSUPPORTED_IF_ABSENT
+downstream_full_events	FAST64.3 accepted structural companion	miss_queue_downstream_full_events	identity	events	MissQueue/downstream pressure	UNSUPPORTED_IF_ABSENT
+live_miss_create_or_acquire	FAST64.4 compact JSON	DTC_L1_lower_requests_acquired or DTC_L1_lower_credit_acquired	mode-specific identity	requests	common lower/live-miss admission	FAIL_CLOSED
+live_miss_complete_or_release	FAST64.4 compact JSON	DTC_L1_lower_requests_released or DTC_L1_lower_credit_released	mode-specific identity	requests	common lower/live-miss completion	FAIL_CLOSED
+live_miss_peak	FAST64.4 compact JSON	DTC_L1_lower_outstanding_peak	identity	global aggregate requests	observed global lower outstanding peak; not per-SM	MISSING_SOURCE_DEFINED_PEAK_IF_ABSENT
+average_live_misses_per_sm	Core source audit: shader.cc/gpu-sim.cc	NO_LOWER_OUTSTANDING_OCCUPANCY_INTEGRAL	NOT_DERIVED	requests per SM	No source-defined lower/live-miss occupancy integral exists; PIB occupancy sum is semantically different	MISSING_SOURCE_DEFINED_AVERAGE
+l1_accesses	FAST64.4 compact JSON	L1D_total_cache_accesses	identity	accesses	L1 cache traffic	UNSUPPORTED_IF_ABSENT
+l2_accesses	FAST64.4 compact JSON	L2_total_cache_accesses	identity	accesses	L2 cache traffic	UNSUPPORTED_IF_ABSENT
+global_reads	FAST64.4 compact JSON	gpgpu_n_mem_read_global	identity	requests	global-memory reads	UNSUPPORTED_IF_ABSENT
+global_writes	FAST64.4 compact JSON	gpgpu_n_mem_write_global	identity	requests	global-memory writes	UNSUPPORTED_IF_ABSENT
+io_hol_ready_younger_cycles	FAST64.4 compact IO JSON	DTC_L1_io_hol_ready_younger_cycles	identity	cycles	IO head-of-line evidence	UNSUPPORTED_IF_ABSENT
+oo_deferred_reclaims	FAST64.4 compact OO JSON	DTC_L1_oo_deferred_reclaims	identity	events	OO deferred reclaim evidence	UNSUPPORTED_IF_ABSENT
