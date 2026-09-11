@@ -55,6 +55,18 @@ two cells blocked on the final 2DConvolution Core-41 identity.  These rows are
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; they neither form an accepted
 triplet nor advance FAST64.4, and no GM or primary-stage claim is made.
 
+### Core-41 2DConvolution IO/OO future path (prepared, not dispatched)
+
+The historical bbcbb 2DConvolution IO/OO rows remain literal precompute only
+and may not be paired with the live Core-41 Base replacement.  Future-only
+`dispatch_fast64_4_2d_core41_v1.sh` binds both successor modes to Core
+`41d740e8...`, runtime `6e72d366...`, A1, the frozen 2D payload and exact
+FAST64 IO/OO configs.  Before even a dry run can pass, it requires both the
+strict Core-41 Base compact JSON and its structural companion, verifies that
+the companion binds that exact Base summary and terminal lower/PIB drain, and
+refuses any pre-existing namespace.  Its current pre-Base check fails closed;
+no 2DConvolution IO/OO simulator has been launched by this path.
+
 The first post-transition wave is active under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: Btree Base/IO/OO, MRI-Q
 Base/IO/OO, ATAX/OO and GESUMMV/OO.  Each has a fresh immutable-v2 START

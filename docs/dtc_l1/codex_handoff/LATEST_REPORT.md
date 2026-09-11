@@ -1,5 +1,15 @@
 # Latest Codex Report
 
+## FAST64.4 Core-41 2DConvolution successor path prepared fail-closed (2026-09-11)
+
+The future-only Core-41 2DConvolution IO/OO dispatcher is prepared but not
+dispatched.  It binds the eventual triplet to Core `41d740e8...`, runtime
+`6e72d366...`, A1 and the literal frozen 2D payload, and refuses launch until
+the current Base replacement has strict compact evidence plus a structural
+companion bound to that exact summary with terminal lower/PIB drain.  Both
+mode dry runs currently fail at this intentional Base gate.  It cannot mix the
+historical bbcbb IO/OO evidence with the Core-41 Base or promote FAST64.4.
+
 ## FAST64.6 GESUMMV 16.5-KiB IO/OO diagnostic acquisition active (2026-09-11)
 
 The committed V2 observational dispatcher was dry-run verified and, after a
