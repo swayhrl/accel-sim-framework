@@ -21,8 +21,22 @@ def tsv(path: Path, fields: tuple[str, ...], rows: list[dict[str, object]]) -> N
 
 with tempfile.TemporaryDirectory() as raw:
     root = Path(raw); feature = root / "feature"; feature.mkdir()
-    for name in ("fast12_summary.csv", "fast12_stalls.csv", "fast12_live_misses.csv", "fast12_traffic.csv", "fast12_io_oo.csv", "fast64_5_emitted_column_provenance.tsv"):
-        (feature / name).write_text("fixture\n", encoding="utf-8")
+    feature_headers = {
+        "fast12_summary.csv": "workload,base_cycles\nfixture,1\n",
+        "fast12_stalls.csv": "workload,pib_full_events\nfixture,1\n",
+        "fast12_live_misses.csv": "workload,mode\nfixture,BASE\n",
+        "fast12_traffic.csv": "workload,mode\nfixture,BASE\n",
+        "fast12_io_oo.csv": "workload,mode\nfixture,IO\n",
+    }
+    for name, contents in feature_headers.items():
+        (feature / name).write_text(contents, encoding="utf-8")
+    provenance_rows = [(name, column, "fixture", "fixture", "identity", "fixture", "SOURCE_DEFINED")
+                       for name, contents in feature_headers.items()
+                       for column in contents.splitlines()[0].split(",")]
+    with (feature / "fast64_5_emitted_column_provenance.tsv").open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.writer(stream, delimiter="\t", lineterminator="\n")
+        writer.writerow(("output_file", "output_column", "source_artifact", "source_metric_keys", "formula", "units_or_normalization", "missing_disposition"))
+        writer.writerows(provenance_rows)
     tsv(feature / "fast64_5_input_manifest.tsv", ("workload", "mode"),
         [{"workload": workload, "mode": mode} for workload in ROSTER for mode in ("BASE", "IO", "OO")])
     tsv(feature / "fast64_5_feature_build_status.tsv", ("item", "value"), [{"item": "status", "value": "MEASURED_FEATURES_PENDING_RESEARCHER_CAUSAL_CLASSIFICATION"}])

@@ -141,39 +141,68 @@ def write_tsv(path: Path, fields: tuple[str, ...], items: list[tuple[object, ...
 
 
 def emitted_provenance(path: Path) -> None:
-    # Table/column-level provenance covers every emitted feature column.  A
-    # column whose structural name is carried from Stage3 is intentionally
-    # source-keyed by that exact name rather than converted to a proxy.
+    # Table/column-level provenance covers every emitted feature column.  In
+    # particular, no wildcard entry may stand in for a structural metric: that
+    # would make a later reader guess whether a Tag conflict was an allocation
+    # failure.  Mode-specific fields retain their literal source keys.
     entries = []
     mappings = {
-        "fast12_summary.csv": {"workload": ("FAST64.4 matrix", "workload", "identity", "member"),
+        "fast12_summary.csv": {
+            "workload": ("FAST64.4 matrix", "workload", "identity", "member"),
             "base_cycles": ("FAST64.4 Base compact JSON", "gpu_tot_sim_cycle", "identity", "cycles"),
             "io_cycles": ("FAST64.4 IO compact JSON", "gpu_tot_sim_cycle", "identity", "cycles"),
             "oo_cycles": ("FAST64.4 OO compact JSON", "gpu_tot_sim_cycle", "identity", "cycles"),
-            "speedup_io": ("FAST64.4 compact triplet", "Base/IO gpu_tot_sim_cycle", "Base/IO", "ratio"),
-            "speedup_oo": ("FAST64.4 compact triplet", "Base/OO gpu_tot_sim_cycle", "Base/OO", "ratio"),
-            "instructions": ("FAST64.4 Base compact JSON", "gpu_tot_sim_insn", "identity", "instructions")},
-        "fast12_live_misses.csv": {"workload": ("FAST64.4 matrix", "workload", "identity", "member"), "mode": ("FAST64.4 matrix", "mode", "identity", "mode"),
-            "create_or_acquire": ("FAST64.4 compact JSON", "mode-specific lower acquire", "identity", "requests"),
-            "complete_or_release": ("FAST64.4 compact JSON", "mode-specific lower release", "identity", "requests"),
+            "speedup_io": ("FAST64.4 compact triplet", "gpu_tot_sim_cycle(BASE),gpu_tot_sim_cycle(IO)", "Base/IO", "ratio"),
+            "speedup_oo": ("FAST64.4 compact triplet", "gpu_tot_sim_cycle(BASE),gpu_tot_sim_cycle(OO)", "Base/OO", "ratio"),
+            "instructions": ("FAST64.4 Base compact JSON", "gpu_tot_sim_insn", "identity", "instructions"),
+        },
+        "fast12_stalls.csv": {
+            "workload": ("FAST64.3 structural companion", "workload", "identity", "member"),
+            "pib_full_events": ("FAST64.3 Base compact JSON", "DTC_L1_pib_full_events", "identity", "events"),
+            "cacheline_all_lines_reserved_events": ("FAST64.3 structural companion", "cacheline_all_lines_reserved_events", "identity", "events"),
+            "tag_bank_conflicts": ("FAST64.3 structural companion", "tag_bank_conflicts", "identity", "events"),
+            "mshr_entry_full_events": ("FAST64.3 structural companion", "mshr_entry_full_events", "identity", "events"),
+            "mshr_merge_full_events": ("FAST64.3 structural companion", "mshr_merge_full_events", "identity", "events"),
+            "miss_queue_downstream_full_events": ("FAST64.3 structural companion", "miss_queue_downstream_full_events", "identity", "events"),
+            "base_lower_cap_full": ("FAST64.4 Base compact JSON", "DTC_L1_lower_cap_full_events", "identity", "events"),
+        },
+        "fast12_live_misses.csv": {
+            "workload": ("FAST64.4 matrix", "workload", "identity", "member"),
+            "mode": ("FAST64.4 matrix", "mode", "identity", "mode"),
+            "create_or_acquire": ("FAST64.4 compact JSON", "BASE:DTC_L1_lower_requests_acquired;IO/OO:DTC_L1_lower_credit_acquired", "mode-specific identity", "requests"),
+            "complete_or_release": ("FAST64.4 compact JSON", "BASE:DTC_L1_lower_requests_released;IO/OO:DTC_L1_lower_credit_released", "mode-specific identity", "requests"),
             "peak": ("FAST64.4 compact JSON", "DTC_L1_lower_outstanding_peak", "identity", "global requests"),
             "average_per_sm": ("Core telemetry audit", "NO_LOWER_OUTSTANDING_OCCUPANCY_INTEGRAL", "NOT_DERIVED", "MISSING_SOURCE_DEFINED_AVERAGE"),
-            "terminal_lower": ("FAST64.4 compact JSON", "DTC_L1_lower_outstanding", "identity", "global requests")},
-        "fast12_traffic.csv": {"workload": ("FAST64.4 matrix", "workload", "identity", "member"), "mode": ("FAST64.4 matrix", "mode", "identity", "mode")},
-        "fast12_io_oo.csv": {"workload": ("FAST64.4 matrix", "workload", "identity", "member"), "mode": ("FAST64.4 matrix", "mode", "identity", "mode")},
-    }
-    columns = {
-        "fast12_traffic.csv": ("l1_accesses", "l1_misses", "l2_accesses", "l2_misses", "l2_reservation_fails", "global_reads", "global_writes"),
-        "fast12_io_oo.csv": ("head_not_ready", "head_ready", "hol_cycles", "hol_count", "retire", "ooo_retire", "immediate_reclaim", "deferred_reclaim", "final_ref_reclaim", "active_refs", "wakeups"),
+            "terminal_lower": ("FAST64.4 compact JSON", "DTC_L1_lower_outstanding", "identity", "global requests"),
+        },
+        "fast12_traffic.csv": {
+            "workload": ("FAST64.4 matrix", "workload", "identity", "member"), "mode": ("FAST64.4 matrix", "mode", "identity", "mode"),
+            "l1_accesses": ("FAST64.4 compact JSON", "L1D_total_cache_accesses", "identity", "accesses"),
+            "l1_misses": ("FAST64.4 compact JSON", "L1D_total_cache_misses", "identity", "accesses"),
+            "l2_accesses": ("FAST64.4 compact JSON", "L2_total_cache_accesses", "identity", "accesses"),
+            "l2_misses": ("FAST64.4 compact JSON", "L2_total_cache_misses", "identity", "accesses"),
+            "l2_reservation_fails": ("FAST64.4 compact JSON", "L2_total_cache_reservation_fails", "identity", "events"),
+            "global_reads": ("FAST64.4 compact JSON", "gpgpu_n_mem_read_global", "identity", "requests"),
+            "global_writes": ("FAST64.4 compact JSON", "gpgpu_n_mem_write_global", "identity", "requests"),
+        },
+        "fast12_io_oo.csv": {
+            "workload": ("FAST64.4 matrix", "workload", "identity", "member"), "mode": ("FAST64.4 matrix", "mode", "identity", "mode"),
+            "head_not_ready": ("FAST64.4 IO compact JSON", "DTC_L1_io_head_not_ready_cycles", "identity", "cycles; UNSUPPORTED in OO"),
+            "head_ready": ("FAST64.4 IO compact JSON", "DTC_L1_io_pib_head_ready_cycles", "identity", "cycles; UNSUPPORTED in OO"),
+            "hol_cycles": ("FAST64.4 IO compact JSON", "DTC_L1_io_hol_ready_younger_cycles", "identity", "cycles; UNSUPPORTED in OO"),
+            "hol_count": ("FAST64.4 IO compact JSON", "DTC_L1_io_hol_ready_younger_count_sum", "identity", "events; UNSUPPORTED in OO"),
+            "retire": ("FAST64.4 compact JSON", "IO:DTC_L1_io_retire_count;OO:DTC_L1_oo_retire_count", "mode-specific identity", "events"),
+            "ooo_retire": ("FAST64.4 OO compact JSON", "DTC_L1_oo_out_of_order_retires", "identity", "events; UNSUPPORTED in IO"),
+            "immediate_reclaim": ("FAST64.4 OO compact JSON", "DTC_L1_oo_immediate_reclaims", "identity", "events; UNSUPPORTED in IO"),
+            "deferred_reclaim": ("FAST64.4 OO compact JSON", "DTC_L1_oo_deferred_reclaims", "identity", "events; UNSUPPORTED in IO"),
+            "final_ref_reclaim": ("FAST64.4 OO compact JSON", "DTC_L1_oo_final_ref_reclaims", "identity", "events; UNSUPPORTED in IO"),
+            "active_refs": ("FAST64.4 OO compact JSON", "DTC_L1_oo_active_refs", "identity", "references; UNSUPPORTED in IO"),
+            "wakeups": ("FAST64.4 OO compact JSON", "DTC_L1_oo_wakeups", "identity", "events; UNSUPPORTED in IO"),
+        },
     }
     for table, mapping in mappings.items():
         for column, (artifact, keys, formula, units) in mapping.items():
             entries.append((table, column, artifact, keys, formula, units, "SOURCE_DEFINED_OR_EXPLICIT_MISSING"))
-    for table, names in columns.items():
-        for column in names:
-            entries.append((table, column, "FAST64.4 compact JSON", column, "identity", "source counter", "UNSUPPORTED_IF_ABSENT"))
-    entries.append(("fast12_stalls.csv", "workload", "FAST64.3 structural companion", "workload", "identity", "member", "FAIL_CLOSED"))
-    entries.append(("fast12_stalls.csv", "*", "FAST64.3 structural companion", "same-named structural column", "identity", "events/source units", "UNSUPPORTED_IF_ABSENT"))
     write_tsv(path, ("output_file", "output_column", "source_artifact", "source_metric_keys", "formula", "units_or_normalization", "missing_disposition"), entries)
 
 

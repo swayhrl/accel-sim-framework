@@ -66,6 +66,16 @@ def require_features(directory: Path) -> None:
     roster = set(classification.ROSTER)
     if len(manifest) != 36 or pairs != {(workload, mode) for workload in roster for mode in ("BASE", "IO", "OO")}:
         fail("FAST64_5_FEATURE_MANIFEST_EXACT_MATRIX_REQUIRED")
+    provenance = read_tsv(directory / "fast64_5_emitted_column_provenance.tsv", "output_file\t")
+    covered = {(row.get("output_file"), row.get("output_column")) for row in provenance}
+    for name in ("fast12_summary.csv", "fast12_stalls.csv", "fast12_live_misses.csv", "fast12_traffic.csv", "fast12_io_oo.csv"):
+        with (directory / name).open(encoding="utf-8", newline="") as stream:
+            header = csv.DictReader(stream).fieldnames
+        if not header:
+            fail("FAST64_5_FEATURE_TABLE_SCHEMA_INVALID=" + name)
+        missing_columns = [column for column in header if (name, column) not in covered]
+        if missing_columns:
+            fail("FAST64_5_FEATURE_PROVENANCE_COLUMN_MISSING=" + name + ":" + ",".join(missing_columns))
 
 
 def write_tsv(path: Path, headings: tuple[str, ...], rows: list[tuple[object, ...]]) -> None:
