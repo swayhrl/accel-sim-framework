@@ -415,3 +415,23 @@ BICG/24-KiB IO/OO pair terminal under the same formal identity.  Both rows
 remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no pair performance
 interpretation, FAST64.4 primary result, FAST64.5 causal claim, FAST64.6
 logical acceptance, or FAST12 aggregation is asserted.
+
+## BICG / 48-KiB / OO terminal physical precompute (2026-09-11)
+
+BICG / physical 48 KiB / PAPER_OO naturally terminated with exit zero at
+`2026-09-11T01:14:18Z`.  The independent v7 collector strict-collected the
+immutable receipts into
+`generated/fast64_6_precomputed_v7/fast64_sens_v10_bicg_physical48_oo.json`.
+The record binds formal Core `95ccdb7a...`, runtime `462d105c...`, A1
+observer, scientific Framework `037f008b...`, the frozen BICG payload, and
+exact physical-48 OO config SHA `361c9c98...`.
+
+| point | UUID | cycles / instructions | lower create/issue/response and credit acquire/release | OO dependency closed/count | terminal state |
+| --- | --- | --- | --- | --- | --- |
+| BICG / 48 KiB / OO | `7e733ecb-f9b2-46e6-9899-4c5dd1e7213f` | 47,093,407 / 145,666,048 | 17,815,083 / 17,815,083 / 17,815,083 | 18,350,080 / 18,350,080 | lower, PIB, OO inflight, and active refs zero; lower-cap-full 0 |
+
+This raises the retained strict-terminal physical-precompute count to thirteen.
+It remains `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: its BICG / 48-KiB /
+IO peer is still live, so the record creates no mode-pair comparison, no
+FAST64.4 primary result, no FAST64.5 causal claim, and no FAST64.6 logical
+promotion.
