@@ -632,3 +632,24 @@ acquisitions.  The exact primary-reuse endpoint remains governed by the
 future-only Stage4 acceptance rule, not by a duplicate run.  The retained
 records remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no Stage6 curve,
 performance conclusion or FAST64 promotion is claimed.
+
+## BICG logical-capacity OO wave strictly collected (2026-09-11)
+
+The BICG logical 16/32/64-KiB PAPER_OO rows naturally terminated exit zero and
+were strictly collected with the unchanged immutable-v2 monitor after their
+terminal receipts appeared.  The compact terminal registry is
+`generated/FAST64_6_BICG_LOGICAL_OO_TERMINAL_REGISTRY_V1.tsv`; it pins the
+three JSON hashes, UUIDs, configuration hashes, terminal timestamps and the
+shared formal Core-95/runtime/A1/scientific-Framework/frozen-BICG-payload
+identity.
+
+| logical capacity | cycles | instructions | lower create/issue/response | dependency count/closed | terminal state |
+| ---: | ---: | ---: | --- | --- | --- |
+| 16 KiB | 47,231,655 | 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
+| 32 KiB | 47,182,217 | 145,666,048 | 17,813,954 / 17,813,954 / 17,813,954 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
+| 64 KiB | 42,468,441 | 145,666,048 | 17,797,218 / 17,797,218 / 17,797,218 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
+
+Their IO peers remain independently live, so this is a strict terminal
+precompute checkpoint only.  All three records remain
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no pairwise sensitivity claim,
+FAST64.4/5 result, FAST64.6 curve or stage promotion is asserted.
