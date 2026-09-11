@@ -109,3 +109,11 @@ check passes.  The paired collector's pre-terminal check reports only
 Dispatch is deliberately deferred until a fresh resource admission is safe;
 the current populated FAST64 pool is not altered to make room.  This path
 therefore prepares, but does not itself produce, the required formal row.
+
+The paired future-only Core-658 IO/OO files are
+`dispatch_fast64_4_2d_tag_identity_v2.sh` and
+`collect_fast64_4_2d_tag_identity_v2.sh`.  They pin the same Core/runtime,
+payload, observer and immutable runner, and require the Base JSON plus
+structural companion above to agree on that identity before either mode can
+launch.  Both IO and OO no-dispatch checks currently reject with
+`BASE_STRICT_GATE_REQUIRED`, as required; neither has created a run directory.
