@@ -370,11 +370,15 @@ They raise the strict-terminal physical-precompute count to eleven and remain
 and Btree/physical-32 pairwise results must not be used as FAST64.4 primary
 comparisons or FAST64.6 logical acceptance.
 
-GESUMMV/physical-16.5/IO has now naturally reached the same exit-1 deadlock
-class as the preserved 16.5-OO attempt.  It is a terminal failure with no PASS
-record, retained separately pending source-backed resource-state classification;
-it is not silently relabeled as a valid sensitivity result and does not change
-the frozen matrix.
+GESUMMV/physical-16.5/IO and OO are now closed as preserved terminal failures
+with a source-backed capacity-bound resource-deadlock classification.  Their
+separate f283 observational diagnostics show all 132 physical lines allocated
+per affected SM, no lower-create/lower-issue/inflight work, and mode-specific
+non-retirable state (IO partial FIFO head; OO active references).  The compact
+observations and exact source mapping are recorded in
+`handoffs/FAST64_6_GESUMMV_PHYSICAL16P5_FAILURE.md`.  They remain failed
+evidence only: no PASS record, no normalized curve point, and no change to the
+frozen matrix.
 
 Fresh capacity released by natural terminal rows admitted the following exact
 nonduplicate physical acquisitions after dry-run verification.  All bind the

@@ -1,7 +1,7 @@
 # FAST64.6 — GESUMMV physical-16.5-KiB terminal-failure record
 
-Status: **PRESERVED TERMINAL FAILURE — NOT A RESULT; SOURCE-STATE
-CLASSIFICATION PENDING**
+Status: **PRESERVED TERMINAL FAILURE — NOT A RESULT; SOURCE-BACKED
+CAPACITY-BOUND CLASSIFICATION CLOSED**
 
 This record preserves the two exact frozen physical-16.5-KiB GESUMMV attempts
 separately from retained FAST64.6 precompute results.  It does not alter the
@@ -33,30 +33,60 @@ the mode-equivalent DTC physical-pool ownership/free-line state required to
 prove a circular undersized-pool condition.  No timeout, host slowdown, or
 lower-cap-full observation is used as a substitute.
 
-## Next ordinary action
+## Diagnostic collection and source-backed classification (2026-09-11)
 
-The original hash-pinned V1 dispatcher correctly fails closed after the active
-Core worktree advanced to Core-41: its specified observational Core is
-`f2836ea1...`, so it must not silently validate the changed worktree.  The
-future-only V2 dispatcher
-`util/dtc_l1/dispatch_fast64_6_gesummv_physical16p5_diagnostic_v2.sh` preserves
-the same observational Core/binary/config/trace contract but validates
-`f2836ea1...` in a clean detached worktree.  Both IO and OO V2 dry runs pass.
-It refuses an existing namespace and requires both `--dispatch` and an
-explicitly supplied safe CPU; it cannot modify the active Core-41 worktree or
-create a formal result.
+The two V2 observational replays have now both reached their own immutable
+terminal receipts (exit `1`) and the unchanged V2 collector atomically
+published the mode-specific compact observations:
 
-The companion parser
-`analyze_fast64_6_physical16p5_diagnostic_v1.py` only accepts the
-post-deadlock `DTC_L1_IO_DEADLOCK` or `DTC_L1_OO_DEADLOCK` source print.  It
-records IO FIFO/partial-allocation state separately from OO ownership/refcount
-state and explicitly refuses to assign IO semantics to OO.  A future
-diagnostic remains `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; its sole purpose is to
-distinguish reserve/physical allocation, pending read/response, and reclaim.
-Until then these attempts remain failed evidence and cannot be used for
-FAST64.4, FAST64.5, FAST64.6, or any normalized sensitivity curve.
+| mode | diagnostic UUID | terminal UTC | compact observation |
+| --- | --- | --- | --- |
+| IO | `5a6b4eeb-1563-49f5-8af0-a20ded38fc3c` | `2026-09-11T07:10:43Z` | `generated/fast64_6_diagnostics_v2/fast64_6_gesummv_physical16p5_io_coref283_diag_v2.json` |
+| OO | `ac6c1a27-7980-4cdc-85c1-64974a536b76` | `2026-09-11T06:59:05Z` | `generated/fast64_6_diagnostics_v2/fast64_6_gesummv_physical16p5_oo_coref283_diag_v2.json` |
 
-## V2 diagnostic acquisition active (2026-09-11)
+Both observations are explicitly `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  They
+retain the frozen f283 observational Core, its immutable runner, the original
+payload/config identity and the source print's mode separation; neither JSON
+is a formal sensitivity row.
+
+Each of the 16 printed IO SMs has `allocated_phys=132`, `free_phys=0`, one FIFO
+PIB and frontend entry, a non-ready head, `partial_entries=1`,
+`partial_lines_held=31`, and zero lower-create/lower-issue/inflight work.  Each
+of the same 16 printed OO SMs has one
+PIB/frontend entry, `allocated_phys=132`, active references 28--31, and zero
+lower-create/lower-issue/inflight work.  The configuration freezes exactly
+132 physical 128-B lines (16,896 B), so the OO `allocated_phys=132` state also
+exhausts the pool.  Thus the diagnostics exclude a pending lower response,
+lower-create queue, lower-credit, or host-progress explanation.
+
+The f283 diagnostic source prints these fields in
+`src/gpgpu-sim/shader.cc` through `print_dtc_l1_io_deadlock()` and
+`print_dtc_l1_oo_deadlock()`.  The frontend semantics are source-defined:
+
+- IO `access()` keeps an owner's already allocated references when
+  `find_free_physical()` fails, records an unresolved line, and its FIFO head
+  cannot retire until `entry_ready()`; only retirement releases deferred lines.
+- OO `access()` rejects a new allocation when there is no free physical line
+  and its victim has nonzero reference count; final-reference reclamation is
+  performed only by a ready entry's retirement.
+
+`git diff f2836ea1..dc6062` is empty for these two source files, so the source
+mapping is exact for the observational binary rather than inferred from a
+later mechanism revision.  The combined terminal state is therefore a
+**SOURCE_BACKED_CAPACITY_BOUND_RESOURCE_DEADLOCK** at the frozen undersized
+16.5-KiB point.  It is a valid negative sensitivity observation, retained as
+failed evidence rather than repaired, normalized, retried, or included in a
+curve.
+
+## Superseded next ordinary action
+
+The original V2 dispatcher and parser remain the provenance path that produced
+the above observations.  No further diagnostic replay is authorized or
+needed for GESUMMV/16.5 KiB.  The original failures and their diagnostics
+remain excluded from FAST64.4, FAST64.5, FAST64.6 aggregate curves and every
+normalized performance claim.
+
+## V2 diagnostic acquisition record (2026-09-11)
 
 After the V3 admission audit passed two additional workers (no sampled swap
 activity, memory PSI, OOM or CFS throttling; 83.9 GiB projected
@@ -65,8 +95,8 @@ verified and launched exactly once per mode in fresh namespaces:
 
 | mode | CPU | UUID | namespace | status |
 | --- | ---: | --- | --- | --- |
-| IO | 0 | `5a6b4eeb-1563-49f5-8af0-a20ded38fc3c` | `fast64_6_gesummv_physical16p5_io_coref283_diag_v2` | `NONFORMAL_DIAGNOSTIC_NOT_RESULT`, active |
-| OO | 7 | `ac6c1a27-7980-4cdc-85c1-64974a536b76` | `fast64_6_gesummv_physical16p5_oo_coref283_diag_v2` | `NONFORMAL_DIAGNOSTIC_NOT_RESULT`, active |
+| IO | 0 | `5a6b4eeb-1563-49f5-8af0-a20ded38fc3c` | `fast64_6_gesummv_physical16p5_io_coref283_diag_v2` | terminal; `NONFORMAL_DIAGNOSTIC_NOT_RESULT` |
+| OO | 7 | `ac6c1a27-7980-4cdc-85c1-64974a536b76` | `fast64_6_gesummv_physical16p5_oo_coref283_diag_v2` | terminal; `NONFORMAL_DIAGNOSTIC_NOT_RESULT` |
 
 Each namespace has an atomic START receipt binding observational Core
 `f2836ea1...`, binary `361aada1...`, immutable runner `bf9a84c8...`, A1,
@@ -76,12 +106,10 @@ their terminal analyzer output may classify source state but cannot relabel
 the preserved formal failures or create a FAST64 result.
 
 The future-only V2 collector
-`util/dtc_l1/collect_fast64_6_gesummv_physical16p5_diagnostic_v2.sh` was
-syntax-tested and exercised against the live rows; it emitted only
-`WAIT_TERMINAL` and wrote no output.  At terminal it accepts only exit `1` and
-the mode-matching source marker, then atomically materializes a separate
-`NONFORMAL_DIAGNOSTIC_NOT_RESULT` JSON.  It cannot create a primary or
-sensitivity-pass record.
+`util/dtc_l1/collect_fast64_6_gesummv_physical16p5_diagnostic_v2.sh` accepted
+only exit `1` plus the mode-matching source marker, then atomically
+materialized the two separate `NONFORMAL_DIAGNOSTIC_NOT_RESULT` JSON files. It
+cannot create a primary or sensitivity-pass record.
 
 Source/consumer compatibility is verified before terminal collection: the
 observational Core f283 prints the IO fields at `shader.cc:2256` and the OO
