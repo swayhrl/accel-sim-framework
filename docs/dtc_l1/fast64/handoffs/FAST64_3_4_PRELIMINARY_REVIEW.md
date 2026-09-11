@@ -91,6 +91,22 @@ The common repaired-Core triplet candidates presently represented are ATAX,
 BICG, Btree, Hotspot1, MRI-Q, and NN. Their preliminary cycle observations
 are:
 
+### Repaired-Core GESUMMV triplet closure (2026-09-11)
+
+The immutable Core95 GESUMMV/IO row has now naturally exited `0` and passed
+the existing strict collector.  Together with the already strict Core95 Base
+and OO rows, it creates one common-identity preliminary triplet: Core
+`95ccdb7a...`, runtime `462d105c...cc4dbc9`, A1 observer, Framework snapshot
+`037f008b...`, and the exact frozen GESUMMV payload all agree; all three rows
+have `190,918,656` simulated instructions.  The IO row records `210,667,785`
+cycles, lower credit and IO create/issue/response `34,595,564/34,595,564`,
+dependency closed/count `35,651,712/35,651,712`, final lower/inflight/PIB
+`0/0/0`, and lower-cap-full and lower-create-queue-full `0`.  This changes the
+24-cell coverage audit to 22 strict terminal candidates plus only the two
+2DConvolution cells blocked on the final common repair identity.  It remains
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: no FAST64.4 promotion or GM claim
+is created before the FAST64.3 Base gate and full matrix collector pass.
+
 ### Inventory reconciliation: incomplete NN and historical 2D cells (2026-09-11)
 
 The literal bbcbb NN Base record was correctly retained as historical evidence
