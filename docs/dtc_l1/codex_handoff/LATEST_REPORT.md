@@ -12,6 +12,11 @@ They are `NONFORMAL_DIAGNOSTIC_NOT_RESULT`: the terminal analyzer may establish
 source state, but cannot relabel either preserved formal failure or advance a
 FAST64 stage.
 
+Their future-only collector is syntax-tested and presently reports only
+`WAIT_TERMINAL`; it will accept solely exit `1` plus the corresponding
+mode-specific deadlock print before materializing a nonformal JSON.  It wrote
+no evidence during this live-row check and cannot publish a formal result.
+
 ## FAST64.6 GESUMMV 16.5-KiB diagnostic path repaired fail-closed (2026-09-11)
 
 The historical GESUMMV/physical-16.5-KiB IO and OO failures remain preserved

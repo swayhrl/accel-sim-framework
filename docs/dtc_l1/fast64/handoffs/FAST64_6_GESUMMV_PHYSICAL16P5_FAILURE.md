@@ -74,3 +74,11 @@ scientific Framework `037f008b...`, the literal original GESUMMV payload and
 its respective frozen physical-16.5-KiB config.  These are diagnostic only:
 their terminal analyzer output may classify source state but cannot relabel
 the preserved formal failures or create a FAST64 result.
+
+The future-only V2 collector
+`util/dtc_l1/collect_fast64_6_gesummv_physical16p5_diagnostic_v2.sh` was
+syntax-tested and exercised against the live rows; it emitted only
+`WAIT_TERMINAL` and wrote no output.  At terminal it accepts only exit `1` and
+the mode-matching source marker, then atomically materializes a separate
+`NONFORMAL_DIAGNOSTIC_NOT_RESULT` JSON.  It cannot create a primary or
+sensitivity-pass record.
