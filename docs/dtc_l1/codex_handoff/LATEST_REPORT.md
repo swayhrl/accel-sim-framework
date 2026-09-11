@@ -1,5 +1,22 @@
 # Latest Codex Report
 
+## FAST64.6 PASS: frozen one-dimensional sensitivity (2026-09-12)
+
+The final V3 fail-closed collector accepts the frozen BICG/GESUMMV/Btree
+matrix as 74 strict numeric cells plus four separately classified,
+source-defined physical-16.5-KiB resource-boundary deadlocks.  The immutable
+package is `fast64/generated/fast64_6_sensitivity_v3/`; it includes cells,
+logical/physical/PIB tables, raw manifest, expected-deadlock table, and
+SHA-bound status.  All numeric cells pass exact identity, natural terminal,
+parser, payload, lower/dependency conservation, final drain, and cap checks.
+
+The final GESUMMV/IO logical-32/logical-64/PIB-32/64/128/192 wave all
+naturally exited zero and completed strict collection.  A future-only registry
+builder repair makes exact primary reuse cite the Stage4 accepted evidence
+path—not a byte-identical convenience copy—while preserving dedicated Stage6
+records where they exist.  No raw result or mechanism behavior changed.
+`FAST64_6_SENSITIVITY_PASS` is closed; FAST64.7 final synthesis is next.
+
 ## FAST64.5 PASS: source-backed causal analysis (2026-09-12)
 
 The cap-resolved, exact-36 primary matrix has been bridged only after

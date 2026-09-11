@@ -796,3 +796,46 @@ constitute a sensitivity curve or promote any FAST64 stage.
 | PIB 64 | `2026-09-11T15:37:31Z` | `93,942,704 / 145,666,048` | create/issue/response `17,821,394/17,821,394/17,821,394`; dependencies `18,350,080/18,350,080`; lower/PIB/inflight `0/0/0`; cap-full `0` | `generated/FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` |
 | PIB 128 | `2026-09-11T15:28:52Z` | `93,942,704 / 145,666,048` | same strict lifecycle and terminal drain as PIB 64; cap-full `0` | `generated/FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` |
 | PIB 192 | `2026-09-11T15:35:20Z` | `93,942,704 / 145,666,048` | same strict lifecycle and terminal drain as PIB 64; cap-full `0` | `generated/FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv` |
+
+## FAST64.6 closeout — PASS (2026-09-12)
+
+**Status: `FAST64_6_SENSITIVITY_PASS`.**  The final, fail-closed V3 collector
+accepts exactly 74 numeric sensitivity cells from the frozen BICG/GESUMMV/Btree
+matrix and writes the immutable candidate package
+`generated/fast64_6_sensitivity_v3/`.  Its status file binds the frozen matrix
+SHA `da8b2dc1...`, numeric registry SHA `c1d1b1f5...`, and the separate
+expected-deadlock registry SHA `f82c1d10...`; it records 74 strict numeric
+cells, four expected resource-boundary deadlocks, and `promotion=NONE` until
+this handoff/ledger closeout.
+
+All retained numeric rows meet the same strict terminal, payload, provenance,
+parser, lifecycle-conservation, and final-drain criteria as FAST64.4.  The
+collector emits 74 cells plus logical/physical/PIB plot tables and a raw
+manifest.  The four physical-16.5-KiB observations are deliberately excluded
+from numeric tables: BICG and GESUMMV × IO/OO are recorded in
+`fast64_6_expected_deadlocks.tsv` as
+`EXPECTED_RESOURCE_DEADLOCK_NO_NUMERIC_PERFORMANCE`, with exact whole-line
+modeling (`132` lines / `16,896 B`) and their preserved diagnostic authority.
+
+The last GESUMMV/IO recovery wave completed naturally under the frozen
+Core-95/runtime/A1/scientific-Framework/payload identity: logical 32 and 64
+KiB and PIB 32/64/128/192.  Their immutable receipts, compact JSON records,
+and the final registry establish exit zero, exact identity, lower
+create/issue/response and dependency conservation, zero final lower/PIB/
+inflight, and lower-cap-full zero.  No raw log, payload, runtime, config, or
+Core behavior was changed during collection.
+
+Exact-config baseline cells whose Stage6 config ID differs from the inherited
+primary config ID are now cited directly from the accepted 36-cell Stage4
+matrix, rather than a byte-identical convenience copy.  The future-only
+numeric registry builder therefore makes the required
+`EXACT_FAST64_4_PRIMARY_REUSE` acceptance edge explicit for BICG, GESUMMV,
+and Btree PIB baselines.  Dedicated Stage6 records remain preferred whenever
+their exact Stage6 config ID exists.  This is a provenance-path repair only:
+no measurement values or raw JSON were rewritten.
+
+The frozen matrix enforces one-dimensionality: logical points change logical
+capacity only, physical points change the physical pool only, and PIB points
+change PIB capacity only with mechanism-consistent bookkeeping.  The roster
+is unchanged and no point was selected by speedup.  FAST64.6 is consequently
+closed; FAST64.7 final synthesis may begin from this package.

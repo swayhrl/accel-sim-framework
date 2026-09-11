@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 import collect_fast64_6_sensitivity_v1 as tool
+import collect_fast64_6_sensitivity_v2 as reuse
 
 ROOT = Path(__file__).resolve().parents[2]
 DEADLOCK_KEYS = {(w, "physical", "16.5", m) for w in ("BICG", "GESUMMV") for m in tool.MODES}
@@ -34,6 +35,29 @@ def candidate_records() -> list[tuple[Path, dict]]:
         if record.get("schema") == "dtc_l1_summary_v1":
             records.append((path, record))
     return records
+
+
+def primary_reuse_sources(path: Path) -> dict[tuple[str, str, str], Path]:
+    """Map an exact config identity to its accepted Stage4 evidence path."""
+    sources: dict[tuple[str, str, str], Path] = {}
+    for row in reuse.read_tsv(path, "workload\t"):
+        if row.get("acceptance_status") != "STRICT_TERMINAL_ACCEPTED":
+            continue
+        evidence = Path(row["evidence_path"])
+        if not evidence.is_absolute():
+            evidence = ROOT / "docs/dtc_l1/fast64/generated" / evidence
+        try:
+            record = json.loads(evidence.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            fail(f"PRIMARY_REUSE_SOURCE_UNREADABLE={evidence}: {error}")
+        config_sha = record.get("provenance", {}).get("config_sha256", "")
+        key = (row["workload"].casefold(), row["mode"], config_sha)
+        if not config_sha:
+            fail(f"PRIMARY_REUSE_SOURCE_CONFIG_SHA_MISSING={evidence}")
+        if key in sources:
+            fail(f"PRIMARY_REUSE_SOURCE_DUPLICATE={key}")
+        sources[key] = evidence.resolve()
+    return sources
 
 
 def match(path: Path, record: dict, key: tuple[str, str, str, str], spec: dict[str, str], meta: dict[str, str]) -> str | None:
@@ -58,6 +82,7 @@ def match(path: Path, record: dict, key: tuple[str, str, str, str], spec: dict[s
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--matrix", type=Path, required=True)
+    parser.add_argument("--stage4-primary-matrix", type=Path, required=True)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -65,15 +90,31 @@ def main() -> int:
         fail("CHOOSE_EXACTLY_ONE_OF_OUTPUT_OR_DRY_RUN")
     meta, matrix = tool.read_matrix(args.matrix)
     records = candidate_records()
+    primary = primary_reuse_sources(args.stage4_primary_matrix)
     rows, missing, duplicate = [], [], []
     for key, spec in sorted(matrix.items()):
         if key in DEADLOCK_KEYS:
             continue
+        workload, _dimension, _point, mode = key
         found = [(path, origin) for path, record in records if (origin := match(path, record, key, spec, meta))]
-        # A dedicated Stage6 record is the most literal evidence when an
-        # identical config is also represented by an accepted primary row.
-        # This is a provenance preference, not a performance selection.
-        if found:
+        strict_stage6 = [item for item in found
+                         if item[1] == "STRICT_TERMINAL_SENSITIVITY" and "fast64_6_" in str(item[0])]
+        if strict_stage6:
+            # A dedicated Stage6 result remains the literal source for a
+            # point that was actually acquired as Stage6.
+            found = strict_stage6
+        elif any(origin == "EXACT_FAST64_4_PRIMARY_REUSE" for _, origin in found):
+            primary_path = primary.get((workload.casefold(), mode, spec["config_sha256"]))
+            if primary_path is None:
+                fail("PRIMARY_REUSE_ACCEPTED_SOURCE_MISSING=" + "/".join(key))
+            primary_record = json.loads(primary_path.read_text(encoding="utf-8"))
+            origin = match(primary_path, primary_record, key, spec, meta)
+            if origin != "EXACT_FAST64_4_PRIMARY_REUSE":
+                fail("PRIMARY_REUSE_ACCEPTED_SOURCE_IDENTITY_MISMATCH=" + "/".join(key))
+            found = [(primary_path, origin)]
+        # Prefer a dedicated Stage6 record only after exact-primary reuse has
+        # been resolved to its accepted source above.
+        if found and not strict_stage6:
             preferred = [item for item in found if "fast64_6_" in str(item[0])]
             found = preferred or found
         if len(found) == 1:
