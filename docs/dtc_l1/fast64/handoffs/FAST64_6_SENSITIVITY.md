@@ -591,3 +591,19 @@ when FAST64.4 and FAST64.5 are both PASS and the exact compact evidence path
 appears in a complete 36-cell Stage4 matrix as `STRICT_TERMINAL_ACCEPTED`.
 No JSON is rewritten in this process.  A positive reuse fixture and an
 unaccepted-reuse rejection fixture pass; no live collector changes.
+
+## Btree PIB IO non-reuse wave strictly collected (2026-09-11)
+
+The companion Btree PIB 32/64/128/192-entry IO wave naturally terminated exit
+zero and passed the unchanged strict monitors.  The compact registry
+`generated/FAST64_6_BTREE_PIB_IO_TERMINAL_REGISTRY_V1.tsv` pins UUIDs,
+timestamps, JSON hashes and accounting/drain closure.  All four bind the
+formal Core-95/runtime/A1/scientific Framework/frozen Btree payload, conserve
+lower create/issue/response and dependency count/closed, and finish with
+lower/PIB/inflight zero and lower-cap-full zero.
+
+Together with the prior OO registry this closes the eight non-reuse Btree PIB
+acquisitions.  The exact primary-reuse endpoint remains governed by the
+future-only Stage4 acceptance rule, not by a duplicate run.  The retained
+records remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no Stage6 curve,
+performance conclusion or FAST64 promotion is claimed.

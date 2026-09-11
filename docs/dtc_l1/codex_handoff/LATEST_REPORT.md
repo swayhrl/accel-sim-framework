@@ -1,5 +1,14 @@
 # Latest Codex Report
 
+## FAST64.6 Btree PIB IO wave strictly retained (2026-09-11)
+
+Btree PIB-32/64/128/192 IO naturally terminated exit zero and strict
+collection passed.  Its compact registry records exact identity, UUIDs,
+accounting closure and terminal drain; together with the prior OO wave this
+closes the eight non-reuse Btree PIB acquisitions.  They remain only
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, without Stage6 interpretation or
+promotion.
+
 ## FAST64.6 formal primary-reuse closeout is fail-closed (2026-09-11)
 
 Future-only collector v2 closes the raw-classification/reuse mismatch without
