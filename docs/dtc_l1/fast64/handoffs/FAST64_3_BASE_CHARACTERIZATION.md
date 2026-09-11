@@ -1,9 +1,11 @@
 # FAST64.3 — Base Characterization Handoff
 
 Status: **ACTIVE — 11/12 non-2D Base registry rows pass the exact final matrix
-validator; the historical 2DConvolution/Base is invalid, and its source-correct
-Core-41 formal replacement is live under immutable receipts.  No FAST64.3
-promotion is made until the full 12/12 matrix validates.**
+validator; historical 2DConvolution/Base and the Core-41 formal replacement
+are invalid. The immutable dc6062 transition observation is live as
+NONFORMAL_DIAGNOSTIC_NOT_RESULT. No FAST64.3 promotion is made until its
+source-backed classification, minimal repair, and a fresh 12th formal Base row
+validate.**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -292,8 +294,10 @@ and structural availability, frozen Framework/A1/Base-config identity, payload
 identity, lower and PIB conservation/drain, non-binding-cap check, and
 structural lifecycle reconciliation.  This is not a partial stage PASS: the
 collector deliberately still rejects the registry while its 2DConvolution row
-is `INVALID_HISTORICAL_BASE_PENDING_REPAIR`.  It establishes that the live
-Core-41 2D Base replacement is the sole remaining FAST64.3 Base-input closure.
+is `INVALID_HISTORICAL_BASE_PENDING_REPAIR`. The only remaining FAST64.3
+Base-input closure is the dc6062 diagnostic's source-backed classification,
+followed by a fresh source-correct formal replacement; Core-41 is preserved
+invalid evidence, not a live replacement candidate.
 
 Do not change `Status` to PASS until every applicable item is checked.
 

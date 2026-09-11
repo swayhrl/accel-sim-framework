@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## FAST64.3/4 2D execution-identity reconciliation (2026-09-11)
+
+The Core-41 2DConvolution/Base formal replacement is terminal-invalid and is
+not a final triplet candidate. The current dc6062 run is an immutable,
+observation-only `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; its automatic collector
+must first publish terminal evidence before source classification and any
+minimal repair. Consequently 2DConvolution IO/OO remain
+`BLOCKED_ON_FINAL_CORE_IDENTITY`: literal historical bbcbb IO/OO evidence may
+not mix with either the failed Core-41 Base or the diagnostic. This corrects
+future collector/coverage wording only; no live simulator, monitor, runner,
+config, payload, Core behavior, or historical evidence was changed.
+
 ## FAST64.3 2D terminal source-followup classification prepared (2026-09-11)
 
 An independent future-only classifier now consumes only the existing immutable

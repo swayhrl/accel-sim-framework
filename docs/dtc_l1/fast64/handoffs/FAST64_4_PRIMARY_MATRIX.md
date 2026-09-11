@@ -38,8 +38,8 @@ their literal provenance; no accepted triplet may mix Core/runtime identities.
 
 The exact 24-cell IO/OO coverage audit excludes every `FAST64_SENS_*`
 sensitivity row.  At dispatch it found 18 strict-terminal reuse candidates,
-two live GESUMMV/Core-95 rows, two 2DConvolution cells blocked on the final
-Core-41 triplet identity, and only NN/IO plus NN/OO genuinely missing.  A
+two live GESUMMV/Core-95 rows, two 2DConvolution cells blocked on a final
+source-correct triplet identity, and only NN/IO plus NN/OO genuinely missing. A
 fresh resource audit admitted the two missing rows without touching any live
 simulator.  Both used Core `95ccdb7a...`, runtime `462d105c...cc4dbc9`, A1,
 scientific Framework `037f008b...`, their frozen FAST64 IO/OO configs, exact
@@ -51,8 +51,8 @@ NN payload, and immutable runner `bf9a84c8...` in fresh namespaces.
 | NN / PAPER_OO | `f7dc6dbb-1951-49cc-a865-22f07bb7de4f` | exit 0 at `2026-09-11T02:20:34Z`; strict PASS | `generated/fast64_4_primary_core95_v1/fast64_4_primary_nn_oo_core95ccdb7a_a1_v1.json` | 6,105 cycles / 1,284,872 instructions; lower credit `2673/2673`, OO create/issue/response `2673/2673/2673`, dependency closed/count `5346/5346`, final lower/inflight/PIB/active-refs `0/0/0/0`, cap-full `0` |
 
 The coverage state is now 21 strict-terminal candidates, one live Core-95
-GESUMMV/IO row, and two cells blocked on the final 2DConvolution Core-41
-identity.  These rows are
+GESUMMV/IO row, and two cells blocked on the final 2DConvolution
+source-correct repair identity. These rows are
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; they neither form an accepted
 triplet nor advance FAST64.4, and no GM or primary-stage claim is made.
 
