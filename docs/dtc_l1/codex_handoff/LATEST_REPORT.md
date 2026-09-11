@@ -24,6 +24,20 @@ regression and fresh immutable 2DConvolution/Base replacement pass.  Stage
 FAST64.3 remains ACTIVE; the registry now explicitly records
 `INVALID_HISTORICAL_BASE_PENDING_REPAIR` and has no nonexistent evidence path.
 
+The separately committed Core repair is `41d740e862a6ad89ab0fc32b7b927ec787752862`
+(`fix(l1): defer invalidation until miss lifecycle drains`).  A clean isolated
+Release trace runtime built from it hashes to
+`6e72d36665cde18e2845914ee9c2a9f2e65b37b7b3c216edf4b676ad17e2c21c`.
+After a two-window read-only resource audit, the fresh formal replacement was
+launched once on CPU 34 in
+`/workspace/fast64-stage3-repair/fast64_3_2DConvolution_base_core41d740e8_a1_v1`:
+UUID `7ba2205a-e205-4793-a3c0-8bce1a56d2f1`, immutable runner
+`bf9a84c8...`, exact frozen Base config/trace and A1 observer.  Its first
+50-second sample was CPU-active with growing stdout and no fatal signature.
+It is `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, not a result; an isolated
+atomic strict collector will publish nothing unless it naturally exits zero
+and clears all identity, parser, failure-scan and accounting gates.
+
 ## Stage3 PIB structural mapping completed for preliminary review (2026-09-11)
 
 The fixed Base summaries all contained `DTC_L1_pib_full_events`; an early

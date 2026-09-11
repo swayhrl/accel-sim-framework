@@ -1,6 +1,6 @@
 # FAST64.3 — Base Characterization Handoff
 
-Status: **ACTIVE — 5/12 Base rows accepted; NN/Base, LUD/Base, Hotspot1/Base, Gaussian/Base, repaired-Core MRI-Q/Base, and repaired-Core Btree/Base strict-valid pending stage acceptance; the historical 2DConvolution/Base is invalid and its terminal diagnostic has identified a conventional-L1 invalidation repair pending formal replacement**
+Status: **ACTIVE — 5/12 Base rows accepted; NN/Base, LUD/Base, Hotspot1/Base, Gaussian/Base, repaired-Core MRI-Q/Base, and repaired-Core Btree/Base strict-valid pending stage acceptance; the historical 2DConvolution/Base is invalid, and its source-correct Core-41 formal replacement is live under immutable receipts**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -42,7 +42,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | BICG | `generated/qualification_r2_full_wave_alias_v2/` + `generated/fast64_3_bicg_base_structural_v1/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | GESUMMV | `generated/fast64_3_gesummv_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | GEMM | `generated/fast64_3_gemm_base_alias_v4/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
-| 2DConvolution | historical `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` is invalid; terminal observation `generated/fast64_3_diagnostics_v1/fast64_3_2d_base_coref283_diag_v1.json` only | replacement not yet launched | [ ] | [ ] | [ ] | [ ] | INVALID_HISTORICAL_BASE_PENDING_REPAIR |
+| 2DConvolution | historical `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` is invalid; diagnostic JSON is observation-only; fresh replacement `/workspace/fast64-stage3-repair/fast64_3_2DConvolution_base_core41d740e8_a1_v1` | fresh Core-41 immutable v2, UUID `7ba2205a-e205-4793-a3c0-8bce1a56d2f1` | [ ] | [ ] | [ ] | [ ] | REPAIR_REPLACEMENT_ACTIVE_NONPROMOTING |
 | Btree | `generated/fast64_repaired_ramp_v1/fast64_btree_base_core95ccdb7a_a1_r1.json` + `FAST64_3_BTREE_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_BTREE_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
 | DWT2D | `generated/fast64_3_dwt2d_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | Gaussian | `generated/fast64_3_dynamic_base_v1/fast64_3_Gaussian_base_cap8192_a1_v2.json` + `FAST64_3_GAUSSIAN_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
