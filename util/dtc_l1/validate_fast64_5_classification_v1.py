@@ -10,11 +10,10 @@ ROSTER = ("ATAX", "BICG", "GESUMMV", "GEMM", "2DConvolution", "Btree", "DWT2D", 
 HEADINGS = ("workload", "primary_class", "secondary_classes", "evidence_paths", "evidence_backed_rationale", "validator_status")
 CLASSES = {"CONVENTIONAL_STRUCTURE_LIMITED", "LOW_STRUCTURAL_PRESSURE", "DOWNSTREAM_PLATFORM_LIMITED", "COMPUTE_REUSE_DOMINATED", "TRAFFIC_SENSITIVE", "IO_HOL_SENSITIVE", "OO_RECLAIM_SENSITIVE", "GENUINE_MECHANISM_NON_BENEFICIARY", "IMPLEMENTATION_MODELING_ISSUE"}
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--classification", type=Path, required=True)
-    args = parser.parse_args()
-    with args.classification.open(encoding="utf-8", newline="") as stream:
+
+def validate(path: Path, evidence_root: Path | None = None) -> list[dict[str, str]]:
+    """Validate supplied causal evidence without inferring any classification."""
+    with path.open(encoding="utf-8", newline="") as stream:
         rows = list(csv.DictReader(stream, delimiter="\t"))
     if len(rows) != len(ROSTER) or any(tuple(row) != HEADINGS for row in rows) or {row["workload"] for row in rows} != set(ROSTER):
         raise RuntimeError("FAST64_5_CLASSIFICATION_EXACT_FAST12_REQUIRED")
@@ -28,6 +27,21 @@ def main() -> int:
         for key in ("evidence_paths", "evidence_backed_rationale"):
             if not row[key].strip():
                 raise RuntimeError("FAST64_5_CLASSIFICATION_EVIDENCE_MISSING=" + row["workload"])
+        if evidence_root is not None:
+            for raw in row["evidence_paths"].split(";"):
+                candidate = Path(raw.strip())
+                if not candidate.is_absolute():
+                    candidate = evidence_root / candidate
+                if not candidate.is_file():
+                    raise RuntimeError("FAST64_5_CLASSIFICATION_EVIDENCE_PATH_MISSING=" + row["workload"])
+    return rows
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--classification", type=Path, required=True)
+    parser.add_argument("--evidence-root", type=Path)
+    args = parser.parse_args()
+    rows = validate(args.classification, args.evidence_root)
     print("FAST64_5_CLASSIFICATION_V1_PASS rows=12")
     return 0
 

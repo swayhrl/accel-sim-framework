@@ -21,7 +21,16 @@ occupancy.
 Classification remains a separate, researcher/source-backed step.  The frozen
 template and validator enforce exact FAST12 coverage, legal enums, rationale
 and evidence references; the validator cannot manufacture a class and rejects
-an unresolved `IMPLEMENTATION_MODELING_ISSUE` for PASS.
+an unresolved `IMPLEMENTATION_MODELING_ISSUE` for PASS.  When an evidence root
+is provided, it also rejects a classification whose semicolon-separated
+evidence path does not resolve to a real artifact.
+
+`collect_fast64_5_causal_analysis_v1.py` is the future-only join path.  It
+requires FAST64.3/4 PASS, the complete v2 measured-feature package, an exact
+36-cell accepted feature manifest, and a fully validated supplied
+classification.  It atomically produces a hash-bound candidate package but
+does not alter the stage ledger or infer causality.  Positive and prior-stage
+negative regression fixtures cover this boundary.
 
 The v2 regression fixture proves both a valid full accepted matrix and a
 negative `PRIMARY_ACCEPTANCE_REQUIRED` case.  This is tooling preparation

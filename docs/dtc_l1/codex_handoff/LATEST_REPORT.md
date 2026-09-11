@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## FAST64.5/FAST64.7 future-only closeout paths prepared (2026-09-11)
+
+Stage5 now has a fail-closed measured-feature/classification join: it requires
+FAST64.3/4 PASS, the complete accepted 36-cell feature manifest, a supplied
+legal FAST12 classification, and resolvable evidence paths when an evidence
+root is provided.  It cannot infer a causal class or modify a stage ledger.
+Stage7 now has a separate production collector that requires PASS for
+FAST64.0--6 and all named Stage3--6, limitation, and Tier-A/Tier-C inputs; it
+atomically writes hash-bound review-pack candidates and no conclusion.  Both
+paths have positive and prerequisite-negative fixtures.  Existing live
+simulators and frozen closeout paths were not changed.
+
 ## FAST64.6 Btree PIB IO wave strictly retained (2026-09-11)
 
 Btree PIB-32/64/128/192 IO naturally terminated exit zero and strict
