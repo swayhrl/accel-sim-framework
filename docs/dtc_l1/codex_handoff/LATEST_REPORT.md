@@ -1,5 +1,18 @@
 # Latest Codex Report
 
+## FAST64.5 production feature path made fail-closed (2026-09-11)
+
+The future-only Stage5 v2 builder closes a validation gap in the prior compact
+fixture path.  It accepts production input only after `FAST64.4 = PASS` and
+after all 36 rows explicitly declare strict terminal acceptance, agree with
+their compact Core/runtime/A1/Framework/payload provenance, form common
+Base/IO/OO identities, and pass mode-specific lifecycle/drain checks.  It then
+emits the five measured tables, an immutable input manifest, and emitted
+table/column provenance; `average_live_misses_per_sm` remains explicitly
+`MISSING_SOURCE_DEFINED_AVERAGE`.  Positive and identity-negative fixtures
+pass.  This is preparation only; no current Stage3/4 evidence was read as a
+result and no stage has been promoted.
+
 ## FAST64.3 Core-41 2DConvolution/Base replacement invalid; source recovery active (2026-09-11)
 
 The Core-41 formal replacement naturally terminated exit `1` at
