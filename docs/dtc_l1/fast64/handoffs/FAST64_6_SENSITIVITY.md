@@ -730,3 +730,20 @@ is not included here unless it independently reaches the same strict terminal
 gate.  This partial batch remains solely
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; it is neither a curve nor a
 FAST64.6/FAST64.4 promotion.
+
+## BICG PIB-32 IO and GESUMMV physical-48 OO terminal precomputes (2026-09-11)
+
+Two independently monitored rows naturally terminated exit zero and passed the
+immutable receipt, parser, identity, accounting, and drain checks.  They are
+recorded here as compact terminal evidence only; neither closes an incomplete
+mode pair nor creates a FAST64.6 curve or stage promotion.
+
+| row | terminal UTC | cycles / instructions | lifecycle and drain | compact evidence |
+| --- | --- | --- | --- | --- |
+| BICG / PIB 32 / PAPER_IO | `2026-09-11T15:09:37Z` | `93,942,704 / 145,666,048` | create/issue/response `17,821,394/17,821,394/17,821,394`; dependencies `18,350,080/18,350,080`; lower/inflight/PIB `0/0/0`; cap-full `0` | `generated/FAST64_6_BICG_PIB_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv`; `generated/fast64_6_pib_precomputed_v1/fast64_sens_pib32_bicg_io_core95_a1_v1.json` |
+| GESUMMV / physical 48 KiB / PAPER_OO | `2026-09-11T15:09:14Z` | `143,759,327 / 190,918,656` | create/issue/response `34,602,718/34,602,718/34,602,718`; dependencies `35,651,712/35,651,712`; lower/inflight/PIB/active-refs `0/0/0/0`; cap-full `0` | `generated/FAST64_6_PHYSICAL_COVERAGE_V1.tsv`; `generated/fast64_6_precomputed_v11/fast64_sens_v16_gesummv_physical48_oo.json` |
+
+Both records retain the frozen Core-95/runtime/A1/scientific-Framework and
+payload identities and classification
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  GESUMMV physical-48 IO remains
+live, so the physical-48 pair is not claimed closed.
