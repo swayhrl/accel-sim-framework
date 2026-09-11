@@ -654,22 +654,23 @@ precompute checkpoint only.  All three records remain
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no pairwise sensitivity claim,
 FAST64.4/5 result, FAST64.6 curve or stage promotion is asserted.
 
-## BICG PIB 32/64/192-entry OO terminal precomputes (2026-09-11)
+## BICG PIB 32/64/192/256-entry OO terminal precomputes (2026-09-11)
 
-The BICG PIB 32-, 64- and 192-entry PAPER_OO rows naturally exited zero and passed
+The BICG PIB 32-, 64-, 192- and 256-entry PAPER_OO rows naturally exited zero and passed
 the unchanged immutable-v2 strict monitor.  The compact registry
 `generated/FAST64_6_BICG_PIB_OO_TERMINAL_REGISTRY_V1.tsv` binds the exact
 Core-95/runtime/A1/scientific-Framework/frozen-BICG-payload identity, atomic
-receipts, config hashes and JSON hashes for all three independently acquired rows.
+receipts, config hashes and JSON hashes for all four independently acquired rows.
 
 | PIB entries | UUID | terminal UTC | cycles / instructions | lower create/issue/response | dependency count/closed | terminal state |
 | ---: | --- | --- | --- | --- | --- | --- |
 | 32 | `ced2697f-d849-48e3-8f04-dd0f23b6b1f1` | `2026-09-11T11:32:51Z` | 47,231,655 / 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
 | 64 | `98fa21e2-c2e0-40dd-b8ed-14b52a22b4c6` | `2026-09-11T11:39:36Z` | 47,231,655 / 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
 | 192 | `5ea0500b-c2ba-4cce-8be4-f679ef7a48c5` | `2026-09-11T12:03:30Z` | 47,231,655 / 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
+| 256 | `cce8ffd6-89f6-4b3e-90d3-9be872d8432c` | `2026-09-11T12:32:39Z` | 47,231,655 / 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
 
-The 128-entry point is governed by exact primary-reuse authority; the other
-new BICG PIB cells remain live or pending strict collection.  These three
+The 128-entry point is governed by exact primary-reuse authority; the remaining
+BICG PIB IO cells remain live or pending strict collection.  These four
 records are strictly `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: they neither
 form a sensitivity curve nor promote FAST64.4, FAST64.5 or FAST64.6.
 
@@ -694,9 +695,23 @@ future row.
 
 Before dispatch, the frozen 78-cell Stage6 matrix was reconciled against exact
 compact provenance, active immutable namespaces, and the preserved
-source-diagnostic 16.5-KiB cases: 54 cells are strict compact terminals, 20
+source-diagnostic 16.5-KiB cases: 56 cells are strict compact terminals, 18
 are live, and four are source-diagnostic; **no cell is missing**.  Therefore
 no new simulator is launched under this override.  Existing live rows retain
 their immutable identity and `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`
 classification.  Core658 2DConvolution/Base remains the independent Stage3
 critical path and is not affected by this future-only policy.
+
+## GESUMMV physical-40-KiB OO terminal precompute (2026-09-11)
+
+The immutable GESUMMV / physical 40 KiB / PAPER_OO row naturally terminated
+exit zero at `2026-09-11T13:05:53Z` and passed the existing strict collector.
+The compact evidence is
+`generated/fast64_6_precomputed_v10/fast64_sens_v14_gesummv_physical40_oo.json`;
+it records `118,283,945` cycles / `190,918,656` instructions, lower credit and
+OO create/issue/response `34,553,941/34,553,941`, dependency closed/count
+`35,651,712/35,651,712`, final lower/inflight/PIB/active refs `0/0/0/0`, and
+lower-cap-full and lower-create-queue-full `0`.  This completes the 40-KiB
+GESUMMV physical IO/OO pair as strict precompute evidence only; it remains
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` and makes no sensitivity or stage
+promotion claim.
