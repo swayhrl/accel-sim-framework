@@ -82,3 +82,9 @@ syntax-tested and exercised against the live rows; it emitted only
 the mode-matching source marker, then atomically materializes a separate
 `NONFORMAL_DIAGNOSTIC_NOT_RESULT` JSON.  It cannot create a primary or
 sensitivity-pass record.
+
+Source/consumer compatibility is verified before terminal collection: the
+observational Core f283 prints the IO fields at `shader.cc:2256` and the OO
+fields at `shader.cc:2283`, matching the analyzer's mode-specific regular
+expressions exactly.  A synthetic record for each source format passed the
+analyzer and preserved IO `partial_lines_held` and OO `active_refs` separately.

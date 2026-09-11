@@ -16,6 +16,8 @@ Their future-only collector is syntax-tested and presently reports only
 `WAIT_TERMINAL`; it will accept solely exit `1` plus the corresponding
 mode-specific deadlock print before materializing a nonformal JSON.  It wrote
 no evidence during this live-row check and cannot publish a formal result.
+The f283 source print and analyzer were also checked field-for-field with an
+IO and an OO synthetic contract record, preventing cross-mode state inference.
 
 ## FAST64.6 GESUMMV 16.5-KiB diagnostic path repaired fail-closed (2026-09-11)
 
