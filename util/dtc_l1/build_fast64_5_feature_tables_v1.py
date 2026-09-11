@@ -11,7 +11,12 @@ ROOT = Path(__file__).resolve().parents[2]
 ROSTER = ("ATAX", "BICG", "GESUMMV", "GEMM", "2DConvolution", "Btree", "DWT2D", "Gaussian", "Hotspot1", "LUD", "NN", "MRI-Q")
 MODES = ("BASE", "IO", "OO")
 def read(path):
-    with path.open(encoding="utf-8", newline="") as f: return list(csv.DictReader(f, delimiter="\t" if path.suffix==".tsv" else ","))
+    with path.open(encoding="utf-8", newline="") as f:
+        lines=f.readlines()
+    if path.suffix==".tsv":
+        header=next((n for n,line in enumerate(lines) if line.startswith("stage\tcurrent_state")),None)
+        if header is not None: lines=lines[header:]
+    return list(csv.DictReader(lines, delimiter="\t" if path.suffix==".tsv" else ","))
 def write(path, fields, rows):
     with path.open("w", encoding="utf-8", newline="") as f:
         w=csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows(rows)
