@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## FAST64.3 Core-41 2DConvolution/Base replacement invalid; source recovery active (2026-09-11)
+
+The Core-41 formal replacement naturally terminated exit `1` at
+`2026-09-11T04:54:36Z`; immutable UUID
+`7ba2205a-e205-4793-a3c0-8bce1a56d2f1` is preserved as an invalid attempt,
+not a Base result. Its Core/runtime were `41d740e8...` / `6e72d366...`.
+The dump repeats the f283 diagnostic state: active threads on cores 3/29/51,
+four reserved L1D ways at the blocking sets, but empty conventional
+MSHR/miss-queue/fill-owner state. Because Core-41 already defers invalidation,
+the prior explanation is insufficient and exact owner-loss recovery is active.
+No 2D IO/OO row is eligible; FAST64.3 remains ACTIVE.
+
 ## FAST64.3 Base registry pre-closeout audit: 11/11 non-2D rows pass (2026-09-11)
 
 The final Stage3 matrix collector's own `validate()` path was run read-only on

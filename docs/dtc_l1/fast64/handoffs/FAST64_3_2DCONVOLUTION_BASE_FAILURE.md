@@ -150,3 +150,29 @@ or signals a process, and accepts terminal exit 0 or 1 only as a diagnostic
 observation. Once the immutable TERMINAL receipt exists, it invokes the
 ownership analyzer to atomically publish an observation-only JSON; that JSON
 is not a FAST64 result and cannot advance a stage.
+
+## Core-41 formal replacement also fails — root cause remains active (2026-09-11)
+
+The fresh formal replacement
+`fast64_3_2DConvolution_base_core41d740e8_a1_v1` is a preserved failed
+attempt, not a result. It naturally published terminal receipt UUID
+`7ba2205a-e205-4793-a3c0-8bce1a56d2f1` at `2026-09-11T04:54:36Z` with
+simulator exit `1` (deadlock detector/SIGABRT). It used Core
+`41d740e862a6ad89ab0fc32b7b927ec787752862`, runtime `6e72d366...`, the
+frozen Base config/trace, A1, immutable runner, and one attempt epoch. It has
+no strict summary, structural companion, or promotion status.
+
+The terminal dump repeats the diagnostic B-state: deadlocked cores 3, 29 and
+51 retain live threads; their L1D retry queues contain initialized requests
+behind sets whose four ways are `RESERVED`, while the corresponding
+conventional MSHR, miss queue and fill-owner map are empty. This is not a
+timeout, a DTC PIB/lower lifecycle claim, or a valid Base row.
+
+This falsifies the earlier *sufficiency* claim that deferred invalidation alone
+closes the owner-loss root cause: Core-41 contains that change and still
+reaches the same state. The snapshot still rules out sector-child
+`pending_read` and outbound miss-queue blockage at terminal time, but the
+precise owner-loss transition is unresolved. Next source work traces the
+conventional sector-tag reservation, fill and invalidation ordering using a
+diagnostic-only build. No functional repair, assertion weakening, or Core-41
+2D IO/OO dispatch follows from this failed attempt. FAST64.3 remains ACTIVE.
