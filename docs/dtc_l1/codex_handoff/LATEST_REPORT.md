@@ -1,5 +1,24 @@
 # Latest Codex Report
 
+## FAST64.3 PASS; Core658 2D common-triplet IO/OO live (2026-09-11)
+
+The source-correct Core658 2DConvolution/Base replacement naturally exited
+zero and strict-collected at `2,247,155` cycles / `620,347,492` instructions,
+with lower `8,362,183/8,362,183`, final lower/PIB `0/0`, and cap-full `0`.
+The final V4 Base registry selects this result plus the strict Core95 GESUMMV
+Base and passes the fail-closed 12-row collector twice.  Its five compact
+Base tables, identity manifest and external raw-log index are now materialized;
+the historic and Core-41 2D attempts remain preserved non-results.
+
+`FAST64_3_BASE_PASS` is therefore closed.  A future-only V3 dispatcher fixed
+the stale V1 structural-companion pointer by requiring V2's final-JSON-bound
+companion; it passed IO/OO dry runs.  Fresh resource admission then launched
+the same Core658/runtime/trace pair for 2D IO and OO with immutable UUIDs
+`437620fb-ef5b-436e-8f35-63e7f1df0f4c` and
+`981ff10e-492d-479d-b41f-a916a0c14a58`; both are live only as
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` until strict terminal collection and
+the complete FAST64.4 36-row matrix gate.
+
 ## FAST64.3 2D sector-MSHR tag-identity repair selected; build/validation pending (2026-09-11)
 
 The immutable dc6062 2DConvolution/Base observation naturally reached its

@@ -1,11 +1,8 @@
 # FAST64.3 — Base Characterization Handoff
 
-Status: **ACTIVE — 11/12 non-2D Base registry rows pass the exact final matrix
-validator; historical 2DConvolution/Base and the Core-41 formal replacement
-are invalid. The immutable dc6062 transition observation is terminal and
-strictly retained as NONFORMAL_DIAGNOSTIC_NOT_RESULT. Its source-backed
-sector-MSHR tag-identity repair is built and unit-regressed but awaits a fresh
-12th formal Base row; no FAST64.3 promotion is made.**
+Status: **PASS — `FAST64_3_BASE_PASS`. All 12 frozen Base rows strict-validate
+through the final Core658 registry. Historical 2DConvolution/Base and the
+Core-41 replacement remain preserved invalid attempts; neither was promoted.**
 
 This file is the authoritative FAST64.3 stage handoff and is intentionally
 created before execution so Goal mode can fill it in rather than invent a new
@@ -45,16 +42,16 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | ATAX | `generated/fast64_3_atax_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | BICG | `generated/qualification_r2_full_wave_alias_v2/` + `generated/fast64_3_bicg_base_structural_v1/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
-| GESUMMV | historical `generated/fast64_3_gesummv_base_alias_v3/`; fresh Core95 candidate `generated/fast64_repaired_ramp2_v1/fast64_gesummv_base_core95ccdb7a_a1_r1.json` + `FAST64_3_GESUMMV_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` | promoted; fresh repaired-Core candidate | [x] | [x] | [x] | [x] | ACCEPTED; CORE95_CANDIDATE_PENDING_FINAL_REGISTRY |
+| GESUMMV | `generated/fast64_repaired_ramp2_v1/fast64_gesummv_base_core95ccdb7a_a1_r1.json` + `FAST64_3_GESUMMV_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` | accepted fresh Core95 Base for final common triplet | [x] | [x] | [x] | [x] | ACCEPTED_REPAIRED_CORE_FRESH |
 | GEMM | `generated/fast64_3_gemm_base_alias_v4/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
-| 2DConvolution | historical `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` and the Core-41 replacement `/workspace/fast64-stage3-repair/fast64_3_2DConvolution_base_core41d740e8_a1_v1` are preserved invalid attempts; dc6062 terminal observation evidence is nonformal | Core `6587238c...` tag-identity repair built in isolated Release mode; common/generation/completion unit regressions pass; fresh formal Base remains pending | [ ] | [ ] | [ ] | [ ] | SOURCE_CLASSIFIED_FORMAL_REPLACEMENT_PENDING |
-| Btree | `generated/fast64_repaired_ramp_v1/fast64_btree_base_core95ccdb7a_a1_r1.json` + `FAST64_3_BTREE_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_BTREE_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
+| 2DConvolution | `generated/fast64_3_tag_identity_repair_v2/fast64_3_2DConvolution_base_core6587238c_a1_v1.json` + `FAST64_3_2DCONVOLUTION_BASE_STRUCTURAL_METRICS_V2.json`; old historical/Core-41 attempts remain invalid evidence | fresh Core658 immutable v2, `2,247,155` cycles / `620,347,492` instructions, lower `8,362,183/8,362,183`, final lower/PIB `0/0`, cap-full `0` | [x] | [x] | [x] | [x] | ACCEPTED_REPAIRED_CORE_FRESH |
+| Btree | `generated/fast64_repaired_ramp_v1/fast64_btree_base_core95ccdb7a_a1_r1.json` + `FAST64_3_BTREE_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_BTREE_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | ACCEPTED_REPAIRED_CORE_FRESH |
 | DWT2D | `generated/fast64_3_dwt2d_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
-| Gaussian | `generated/fast64_3_dynamic_base_v1/fast64_3_Gaussian_base_cap8192_a1_v2.json` + `FAST64_3_GAUSSIAN_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
-| Hotspot1 | `generated/fast64_repaired_core_qual_v1/fast64_hotspot1_base_core95ccdb7a_a1_v1.json` + `FAST64_3_HOTSPOT1_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_HOTSPOT1_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
-| LUD | `generated/fast64_3_dynamic_base_v1/fast64_3_LUD_base_cap8192_a1_v2.json` + `FAST64_3_LUD_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | fresh immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
-| NN | `generated/fast64_3_nn_core95_v1/fast64_3_nn_base_core95ccdb7a_a1_v1.json` + `FAST64_3_NN_BASE_STRUCTURAL_METRICS_V1.json`; literal bbcbb Base remains historical anchor only | fresh Core95 immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
-| MRI-Q | `generated/fast64_repaired_ramp_v1/fast64_mriq_base_core95ccdb7a_a1_r1.json` + `FAST64_3_MRI_Q_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_MRIQ_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2; historical bbcbb compact retained as mapped anchor | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
+| Gaussian | `generated/fast64_3_dynamic_base_v1/fast64_3_Gaussian_base_cap8192_a1_v2.json` + `FAST64_3_GAUSSIAN_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | accepted immutable v2 | [x] | [x] | [x] | [x] | ACCEPTED |
+| Hotspot1 | `generated/fast64_repaired_core_qual_v1/fast64_hotspot1_base_core95ccdb7a_a1_v1.json` + `FAST64_3_HOTSPOT1_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_HOTSPOT1_REPAIRED_CORE_TRIPLET_V1.json` | accepted fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | ACCEPTED_REPAIRED_CORE_FRESH |
+| LUD | `generated/fast64_3_dynamic_base_v1/fast64_3_LUD_base_cap8192_a1_v2.json` + `FAST64_3_LUD_BASE_{DYNAMIC,STRUCTURAL_METRICS}_V1` | accepted immutable v2 | [x] | [x] | [x] | [x] | ACCEPTED |
+| NN | `generated/fast64_3_nn_core95_v1/fast64_3_nn_base_core95ccdb7a_a1_v1.json` + `FAST64_3_NN_BASE_STRUCTURAL_METRICS_V1.json`; literal bbcbb Base remains historical anchor only | accepted fresh Core95 immutable v2 | [x] | [x] | [x] | [x] | ACCEPTED_REPAIRED_CORE_FRESH |
+| MRI-Q | `generated/fast64_repaired_ramp_v1/fast64_mriq_base_core95ccdb7a_a1_r1.json` + `FAST64_3_MRI_Q_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_MRIQ_REPAIRED_CORE_TRIPLET_V1.json` | accepted fresh repaired-Core immutable v2; historical bbcbb compact retained as mapped anchor | [x] | [x] | [x] | [x] | ACCEPTED_REPAIRED_CORE_FRESH |
 
 No row may be dropped for pressure level, runtime, or later benefit.
 
@@ -284,7 +281,7 @@ the replay JSON SHA-256 exactly equals the canonical output SHA.  Gaussian
 IO/OO remain `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` and must still satisfy
 their owning stage/triplet acceptance before any promotion.
 
-## 10. FAST64.3 HARD acceptance checklist
+## 10. Historical pre-closeout checklist
 
 ### Pre-closeout registry audit (2026-09-11)
 
@@ -345,7 +342,27 @@ After `FAST64_3_BASE_PASS`:
 - continue automatically without researcher approval for the normal stage
   transition.
 
-## 13. Do-not-redo list
+## 13. PASS closure (2026-09-11)
 
-At closeout list accepted/promoted rows that must not be rerun without a
-specific invalidation reason.
+The historical unchecked list above is retained to preserve the former
+Core-41 recovery state.  It is superseded for promotion by this closure:
+
+- [x] FAST64.1 and FAST64.2 PASS anchors were verified.
+- [x] The V4 Core658 registry contains exactly the 12 frozen members and the
+  final collector reports `FAST64_3_BASE_MATRIX_V2_PASS rows=12` both at
+  publication and independent revalidation.
+- [x] Every selected row has frozen payload/Base identity, a natural terminal,
+  strict parser/accounting acceptance, positive cycle/instruction progress,
+  zero final lower/PIB, and lower-cap-full zero.
+- [x] The five required compact tables, V4 identity manifest and
+  `generated/fast64_3_raw_log_index.tsv` reconcile external raw references
+  without committing logs/traces.
+- [x] Structural categories remain separate; no Base-only IO/OO claim is made.
+- [x] The historical 2D and Core-41 failed attempts and dc6062 diagnostic are
+  preserved explicitly as non-results.
+
+The accepted V4 Base rows must not be rerun without a specific identity or
+correctness invalidation.  The fresh Core658 2D IO/OO pair is physically live
+with `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; it cannot promote FAST64.4
+until common-triplet terminal collection and the full 36-row matrix collector
+pass.

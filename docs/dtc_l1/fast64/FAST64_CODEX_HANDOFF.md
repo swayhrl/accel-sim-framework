@@ -1,7 +1,7 @@
 # DTC FAST64 Codex Goal Handoff
 
-Status: **GOAL ACTIVE; FAST64.0/.1/.2 PASS; FAST64.3 ACTIVE;
-FAST64.4 PREPARED; FAST64.5 PRELIMINARY ONLY; FAST64.6 PHYSICAL
+Status: **GOAL ACTIVE; FAST64.0/.1/.2/.3 PASS; FAST64.4 ACTIVE;
+FAST64.5 PRELIMINARY ONLY; FAST64.6 PHYSICAL
 PRECOMPUTATION ACTIVE; FAST64.7 NOT ENTERED**
 
 Framework branch:
@@ -18,6 +18,10 @@ Core authority is deliberately split:
   `hrl/decoupled-l1-m5-v0@95ccdb7a056f2d53f740d90869785cac6d4ee0f5`,
   trace-enabled Release runtime
   `462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9`.
+- `FAST64_2D_TAG_IDENTITY_REPAIRED_CORE`:
+  `6587238c60214d99491f4048e28ce8a3458c1509`, runtime
+  `29a3dd9f57a5accb89822ca3fcf06b11c437bfe864ee43d2ff5f26c8c056f3c1`,
+  used only for the source-correct 2DConvolution common triplet.
 
 The historical telemetry Core exposes the OO lower-cap counter and its prior
 results retain that identity. The repaired Core excludes only empty access
@@ -95,9 +99,9 @@ high-cap negative control and BICG normal-triplet reuse it closes
 
 The authoritative current cross-stage state is
 `generated/FAST64_STAGE_GATE_LEDGER_V1.tsv`, not the historical queue wording
-in earlier handoffs.  It records FAST64.0/.1/.2 as PASS; FAST64.3 as ACTIVE
-pending the 2DConvolution/Base source-backed terminal diagnosis and the full
-12-row Base promotion audit; FAST64.4 as PREPARED; FAST64.5 as preliminary
+in earlier handoffs.  It records FAST64.0/.1/.2/.3 as PASS after the Core658
+2D Base replacement and full 12-row V4 registry pass; FAST64.4 as ACTIVE with
+only physical precompute/pending collection claims; FAST64.5 as preliminary
 analysis only; FAST64.6 as permitted physical precomputation only; and
 FAST64.7 as not entered.  `codex_handoff/LATEST_REPORT.md` contains the
 latest compact execution transition, but its review/checkpoint commit SHA is
