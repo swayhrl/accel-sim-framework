@@ -22,7 +22,7 @@ def lower(m, mode, kind):
 def main():
     p=argparse.ArgumentParser(description=__doc__); p.add_argument("--stage-ledger",type=Path,required=True); p.add_argument("--stage4-dir",type=Path,required=True); p.add_argument("--stage3-dir",type=Path,required=True); p.add_argument("--output-dir",type=Path,required=True); a=p.parse_args()
     ledger=read(a.stage_ledger)
-    if not any(r.get("stage")=="FAST64.4" and r.get("status")=="PASS" for r in ledger): raise RuntimeError("FAST64_4_PASS_REQUIRED")
+    if not any(r.get("stage")=="FAST64.4" and r.get("current_state", r.get("status"))=="PASS" for r in ledger): raise RuntimeError("FAST64_4_PASS_REQUIRED")
     matrix=read(a.stage4_dir/"fast64_4_primary_matrix.tsv")
     if len(matrix)!=36 or {(r.get("workload"),r.get("mode")) for r in matrix}!={(w,m) for w in ROSTER for m in MODES}: raise RuntimeError("FAST64_4_EXACT_MATRIX_REQUIRED")
     structural={r["workload"]:r for r in read(a.stage3_dir/"fast64_3_structural_pressure.tsv")}
