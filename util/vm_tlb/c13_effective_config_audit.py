@@ -479,6 +479,11 @@ def status() -> None:
                      else 'PASS_PENDING_EQ_GATE' if result.get('terminal_status') == 'PASS' and r.get('runtime_status') == 'PASS'
                      else 'FAILED')
             raw_sha = r.get('raw_log_sha256', 'MISSING')
+        elif run.is_dir():
+            # A fresh directory exists only after the static receipt and
+            # actual-command receipt have been written.  It is deliberately
+            # not accepted evidence until terminal validation completes.
+            state, raw_sha = 'RUNNING_SPECULATIVE_REPAIRED_EXECUTION_PENDING_EQ_GATE', 'NONTERMINAL'
         else:
             state, raw_sha = 'NOT_STARTED', 'NOT_EMITTED'
         report.append({'exp_id': row['exp_id'], 'logical_role': row['logical_role'], 'status': state,

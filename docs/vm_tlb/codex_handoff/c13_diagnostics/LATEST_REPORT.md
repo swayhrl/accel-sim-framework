@@ -1,4 +1,31 @@
-# C13 minimal diagnostics — final report
+# C13 effective-config audit — live handoff
+
+Status: `C13_EFFECTIVE_CONFIG_AUDIT_REPAIRED_REPLAYS_IN_PROGRESS`
+
+The earlier C13 minimal-diagnostics conclusions are under effective-config
+review and must not be used as final scientific evidence.  Direct option
+folding and raw terminal telemetry prove that all nine original C13 rows ran
+with `gpgpu_vm_l2_tlb_mode=1` (`SUBENTRY_16`) despite contracts requiring the
+exact-page mode (`0`).  Their raw logs and SHA-256 identities are retained in
+`C13_EFFECTIVE_CONFIG_AUDIT/INVALIDATED_ARM_AUDIT.tsv` as
+`SUPERSEDED_WRONG_L2_MODE_SUBENTRY16`.
+
+All ten fresh Path-A identities (EQ1, EQ2, H3×3, H2×2, and H1 candidate plus
+Decode pair; EQ2 is the reused Prefill H1 control) passed static receipt:
+final config folding has `fair_arm=0`, `l2_mode=0`, the intended entries,
+assoc/sets, Segment fields, binary/Core, trace/registration SHA, and exclusion
+map provenance.  They are currently running as
+`SPECULATIVE_REPAIRED_EXECUTION_PENDING_EQ_GATE`; no repaired result can be
+accepted until terminal validation then EQ1→EQ2 strict comparison pass.
+
+The exact launch identities and current statuses are committed in
+`C13_EFFECTIVE_CONFIG_AUDIT/C13_EFFECTIVE_CONFIG_AUDIT_MANIFEST.tsv` and
+`RERUN_STATUS.tsv`.  Raw logs are not committed.  No C12 asset or Core was
+modified.
+
+---
+
+# Historical C13 minimal diagnostics — superseded pending Path-A repair
 
 Status: `C13_MINIMAL_DIAGNOSTICS_COMPLETE_READY_FOR_REVIEW`
 
