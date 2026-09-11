@@ -1,5 +1,14 @@
 # Latest Codex Report
 
+## FAST64.3 2D terminal source-followup classification prepared (2026-09-11)
+
+An independent future-only classifier now consumes only the existing immutable
+V2 2D transition observation after its active collector publishes it.  It
+mechanically separates A (positive sector-child pending read), B (ownerless
+reserved line), and C (owner-present final-fill/retire path); it leaves D
+unclassified without a source-defined outbound queue snapshot.  The live
+diagnostic runner, supervisor, collector and Core behavior were not modified.
+
 ## FAST64.5/FAST64.7 future-only closeout paths prepared (2026-09-11)
 
 Stage5 now has a fail-closed measured-feature/classification join: it requires

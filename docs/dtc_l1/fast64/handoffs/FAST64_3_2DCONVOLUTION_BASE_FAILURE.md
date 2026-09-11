@@ -208,3 +208,15 @@ contains a parseable deadlock snapshot, then joins each terminal `RESERVED`
 L1D block with the matching cache/block `TAG_ALLOC`, `OWNER_CREATE`, and
 `FILL_FINAL_POST` trace facts. This is the required evidence boundary for a
 later source-correct transition diagnosis, not a classification by heuristic.
+
+### Independent source-followup classifier prepared (2026-09-11)
+
+`classify_fast64_3_2d_transition_v1.py` is intentionally not referenced by
+the live runner, collector, or terminal supervisor.  After the existing V2
+collector has atomically published its immutable observation JSON, this
+future-only classifier maps every terminal reserved line mechanically to only
+the authorized source-followup buckets: **A** if its matching owner has
+positive `pending_read`, **B** if the owner is absent, and **C** if the owner
+is present with zero `pending_read`.  It records that **D** cannot be inferred
+without a source-defined outbound-queue terminal snapshot.  It chooses no
+functional repair, rewrites no observation, and has no promotion authority.
