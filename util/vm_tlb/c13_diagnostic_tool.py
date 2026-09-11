@@ -74,7 +74,7 @@ def source_config(roi: str, enabled: int) -> Path:
         'C11_C5_%s_F0.config' % roi.upper())
 
 def config_text(exp: str, roi: str, enabled: int, n: int, exact: int, lseg: int, exclude: Path | None = None) -> str:
-    base = source_config(roi, enabled).read_text()
+    base = '\n'.join(line.rstrip() for line in source_config(roi, enabled).read_text().splitlines()) + '\n'
     # MANUAL is essential: F7 only admits the historic 5/10/20 points, while
     # C13's L8/L9/L11 and non-equal-capacity observations are config-only.
     text = base + ('\n# C13 diagnostic override; frozen C12 input paths retained.\n'
@@ -104,7 +104,9 @@ def prepare() -> None:
                      'expected_kernels':str(kernels),'segment_enable':str(enabled),'segment_n':str(n),
                      'exact_l2_tlb_entries':str(exact),'lseg':'NONE' if not enabled else str(lseg),
                      'budget_class':budget,'binary_path':str(BINARY),'binary_sha256':BINARY_SHA,
-                     'core_head':CORE_SHA,'output_dir':str(OUT / exp)})
+                     'core_head':CORE_SHA,'eligibility_policy':'ALL_C5_ELIGIBLE_WEIGHT',
+                     'eligibility_artifact_sha256':'NONE','core_path':str(CORE),
+                     'runtime_path':str(RUNTIME),'output_dir':str(OUT / exp)})
     if sha(NEW_BINARY) != NEW_BINARY_SHA: fail('C13 binary SHA mismatch')
     if subprocess.check_output(['git','-C',str(NEW_CORE),'rev-parse','HEAD'], text=True).strip() != NEW_CORE_SHA:
         fail('C13 Core HEAD mismatch')
@@ -121,7 +123,7 @@ def prepare() -> None:
                      'eligibility_policy':policy,'eligibility_artifact_sha256':sha(exclude) if exclude else 'NONE',
                      'core_path':str(NEW_CORE),'runtime_path':str(NEW_RUNTIME),'output_dir':str(OUT/exp)})
     PACK.mkdir(parents=True, exist_ok=True)
-    fields=list(rows[0]) + ['eligibility_policy','eligibility_artifact_sha256','core_path','runtime_path']
+    fields=list(rows[0])
     with (PACK/'C13_COMMAND_MANIFEST.tsv').open('w',newline='') as f:
         w=csv.DictWriter(f,fieldnames=fields,delimiter='\t',lineterminator='\n');w.writeheader();w.writerows(rows)
     print('C13_PREPARE_PASS\tpoints=%d' % len(rows))
