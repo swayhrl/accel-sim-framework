@@ -579,3 +579,15 @@ it is not rerun.  The matching newly acquired IO points remain live, so this
 OO-only batch is retained strictly as
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  It makes no pairwise sensitivity
 claim and does not promote FAST64.4, FAST64.5 or FAST64.6.
+
+## Future formal collector: accepted Stage4 primary reuse (2026-09-11)
+
+The frozen v1 collector only admits a raw
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` record, which would incorrectly
+reject a valid historical primary record after FAST64.4 accepts it.  The
+future-only `collect_fast64_6_sensitivity_v2.py` retains v1's terminal and
+identity validation, but permits the historical `_3` raw classification only
+when FAST64.4 and FAST64.5 are both PASS and the exact compact evidence path
+appears in a complete 36-cell Stage4 matrix as `STRICT_TERMINAL_ACCEPTED`.
+No JSON is rewritten in this process.  A positive reuse fixture and an
+unaccepted-reuse rejection fixture pass; no live collector changes.

@@ -1,5 +1,13 @@
 # Latest Codex Report
 
+## FAST64.6 formal primary-reuse closeout is fail-closed (2026-09-11)
+
+Future-only collector v2 closes the raw-classification/reuse mismatch without
+changing frozen v1 or live monitors.  It accepts a historical primary compact
+record only after FAST64.4/5 PASS and an exact `STRICT_TERMINAL_ACCEPTED`
+Stage4 evidence-path match; positive and negative fixtures pass.  No result or
+stage state changes.
+
 ## FAST64.6 Btree PIB OO wave strictly retained (2026-09-11)
 
 The non-reuse Btree PIB-32/64/192/256 OO wave naturally terminated exit zero
