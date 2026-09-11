@@ -1,5 +1,19 @@
 # Latest Codex Report
 
+## FAST64.6 GESUMMV 48-KiB pair safely dispatched (2026-09-11)
+
+A fresh two-window admission audit found roughly 127--129 GiB MemAvailable,
+about 60 GiB cgroup use of 256 GiB, zero sampled memory PSI and swap I/O, and
+about 98 GiB output headroom. The exact frozen GESUMMV/physical-48-KiB IO and
+OO points were therefore dry-run verified and dispatched once on otherwise
+idle CPUs 5 and 6. They are respectively V15 UUID
+`d7fe42d6-1422-46b8-8d13-7824cff471b9` and V16 UUID
+`d0615a70-d91f-4ae1-a070-28b62944e8c6`; each has the same immutable
+Core-95/runtime/A1/scientific-Framework/payload identity and an atomic START
+receipt. Future-only V11 closeout monitor PID `1269576` observes only those
+two namespaces. Both remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no
+FAST64.3/.4/.5/.6 result or stage is promoted.
+
 ## FAST64 preliminary inventory reconciled; GESUMMV 40-KiB OO dispatched (2026-09-11)
 
 The nonpromoting Stage3/4 generator was rerun over the current compact
