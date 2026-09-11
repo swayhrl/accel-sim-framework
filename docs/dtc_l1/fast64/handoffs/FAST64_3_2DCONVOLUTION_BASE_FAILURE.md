@@ -176,3 +176,30 @@ precise owner-loss transition is unresolved. Next source work traces the
 conventional sector-tag reservation, fill and invalidation ordering using a
 diagnostic-only build. No functional repair, assertion weakening, or Core-41
 2D IO/OO dispatch follows from this failed attempt. FAST64.3 remains ACTIVE.
+
+## Transition-order diagnostic v2 active (2026-09-11)
+
+The first dc6062 transition diagnostic namespace used a nonexistent lowercase
+trace path and reached terminal exit `1` before simulator execution. It is
+preserved as `FAILED_EXECUTION_PATH_PREFLIGHT`, not as an architectural
+observation or a FAST64 row. Its replacement is live in the fresh namespace
+`fast64_3_2DConvolution_base_coredc6062_transition_diag_v2`, UUID
+`482ca8b3-fa7c-4a8b-b99d-494e349961a6`, on CPU 34. It uses the exact canonical
+`polybench-2DConvolution` trace-list SHA `23bcc08b...`, frozen Base config SHA
+`1a016e3c...`, immutable runner SHA `bf9a84c8...`, and diagnostic-only Core
+`dc6062c69843ffb467ceabd32eed625fbc5776bf` / Release binary SHA
+`8ad7f3c62e4b792f4c8aded8f56ba7a9a24cd4e69c331d1c59238ef0a54a1da1`.
+
+Core dc6062 adds opt-in stderr records only for L1D cores 3, 29 and 51:
+`TAG_ALLOC`, `OWNER_CREATE`, `FILL_FINAL_PRE`, `FILL_FINAL_POST`,
+`INVALIDATE_REQUEST`, and `INVALIDATE_ACTUAL`. It changes no formal Core or
+timing behavior. The live stream has confirmed all three ownership/fill event
+families are active; it will be allowed to reach a natural terminal state.
+
+`collect_fast64_3_2d_transition_diagnostic_v2.py` and its streaming analyzer
+are future-only, fail-closed terminal tooling for this exact immutable
+identity. They verify manifest/START/TERMINAL receipts and the hashes above,
+require actual transition records, publish atomically to a new generated path,
+and accept exit 0 or 1 only as an observation. The output is permanently
+`NONFORMAL_DIAGNOSTIC_NOT_RESULT`: it reports transition/owner balance facts
+but cannot choose a repair, reinterpret `BK_CONF`, or advance FAST64.3.
