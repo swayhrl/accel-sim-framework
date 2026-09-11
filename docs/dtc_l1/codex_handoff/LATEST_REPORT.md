@@ -1,5 +1,20 @@
 # Latest Codex Report
 
+## FAST64.6 BICG 40-KiB IO strict precompute retained (2026-09-11)
+
+The previously terminal BICG/physical-40-KiB/IO namespace was strictly
+collected through its existing future-only V5 collector, without changing any
+live process.  Immutable UUID `2c49d8fe-5b05-4814-84a5-0d588996b90b` exited
+zero and binds Core `95ccdb7a...`, runtime `462d105c...cc4dbc9`, A1,
+scientific Framework `037f008b...`, the frozen 320-line physical-pool IO
+config and exact payload.  The compact record reports 61,017,789 cycles /
+145,666,048 instructions; balanced lower credit and IO
+create/issue/response `17,823,522/17,823,522`; dependencies
+`18,350,080/18,350,080`; final lower/inflight/PIB `0/0/0`; and lower-cap-full
+plus lower-create-queue-full `0`.  It remains solely
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no logical FAST64 stage or
+primary result is advanced.
+
 ## FAST64.4 primary IO/OO coverage closed for the currently dispatchable cells (2026-09-11)
 
 The exact 24-cell primary IO/OO audit explicitly excludes all `FAST64_SENS_*`

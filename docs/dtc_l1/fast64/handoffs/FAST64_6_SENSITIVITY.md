@@ -255,6 +255,15 @@ fresh BICG / 40 KiB / IO in namespace
 Core-95/runtime/A1 identities. Future-only v5 collection is isolated to this
 row. Neither fact advances FAST64.4 or FAST64.6 logical acceptance.
 
+The row subsequently reached its immutable terminal receipt with exit `0` at
+`2026-09-11T02:05:21Z`.  The unchanged V5 collector strictly published
+`generated/fast64_6_precomputed_v5/fast64_sens_v7_bicg_physical40_io.json`:
+61,017,789 cycles / 145,666,048 instructions; lower credit and IO
+create/issue/response `17,823,522/17,823,522`; dependencies
+`18,350,080/18,350,080`; final lower/inflight/PIB `0/0/0`; and lower-cap-full
+plus lower-create-queue-full `0`.  It remains
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`, with no FAST64.4/.5/.6 promotion.
+
 ## BICG / 40-KiB / OO paired physical precompute (2026-09-11)
 
 The source-backed mode policy is frozen before this dispatch: physical-pool
