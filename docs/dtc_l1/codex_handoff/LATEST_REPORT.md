@@ -1,5 +1,25 @@
 # Latest Codex Report
 
+## FAST64.5 PASS: source-backed causal analysis (2026-09-12)
+
+The cap-resolved, exact-36 primary matrix has been bridged only after
+hash/cap-map/triplet revalidation and rendered through the production V2
+feature builder.  All five required plot-ready tables, their immutable input
+manifest, and column-level source provenance are retained in
+`fast64/generated/fast64_5_measured_features_v3/`.  The source-table validator
+accepts exactly twelve evidence-backed classifications and rejects missing
+rows, unsupported classes, unresolved implementation/modeling issues, and
+nonexistent evidence paths.  The fail-closed join then produced
+`fast64_5_causal_analysis_v1` with SHA-bound input/classification identities.
+
+Tag-bank arbitration remains explicitly separate from true tag/cacheline
+allocation failure; live-miss conservation is retained; and the unavailable
+source-defined average-live-miss integral is explicitly marked missing rather
+than inferred.  Negative and near-neutral beneficiaries are preserved.  This
+closes `FAST64_5_CAUSAL_PASS`; FAST64.6 remains independent physical
+precomputation until its retained sensitivity matrix reaches strict terminal
+coverage.
+
 ## FAST64.4 PASS: cap-resolved 36-cell primary matrix (2026-09-11)
 
 The common-Core658 2DConvolution IO and OO rows both naturally exited zero and
