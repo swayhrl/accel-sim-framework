@@ -14,9 +14,15 @@ All ten fresh Path-A identities (EQ1, EQ2, H3×3, H2×2, and H1 candidate plus
 Decode pair; EQ2 is the reused Prefill H1 control) passed static receipt:
 final config folding has `fair_arm=0`, `l2_mode=0`, the intended entries,
 assoc/sets, Segment fields, binary/Core, trace/registration SHA, and exclusion
-map provenance.  They are currently running as
-`SPECULATIVE_REPAIRED_EXECUTION_PENDING_EQ_GATE`; no repaired result can be
-accepted until terminal validation then EQ1→EQ2 strict comparison pass.
+map provenance.  Three Decode rows have now completed strict terminal
+validation and runtime geometry receipt, but remain
+`PASS_PENDING_EQ_GATE`: `C13-LAT-D11-REPAIRED-EXACTMODE-A1` (740 markers,
+`34539934` cycles), `C13-SEL-D10-CTRL-NEWBIN-REPAIRED-EXACTMODE-A1` (740,
+`34432059`), and `C13-SEL-D10-REPAIRED-EXACTMODE-A1` (740, `34483640`).
+Each reports fair arm 0, standard L2 mode 0, exact320/16-way/20-set geometry,
+and its intended Segment setting.  They are not scientific evidence until
+EQ1 then EQ2 pass; the remaining seven repaired arms continue as
+`SPECULATIVE_REPAIRED_EXECUTION_PENDING_EQ_GATE`.
 
 The exact launch identities and current statuses are committed in
 `C13_EFFECTIVE_CONFIG_AUDIT/C13_EFFECTIVE_CONFIG_AUDIT_MANIFEST.tsv` and
