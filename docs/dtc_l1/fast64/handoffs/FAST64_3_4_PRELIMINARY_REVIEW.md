@@ -147,12 +147,22 @@ the earlier dirty-only-victim condition: the frozen config has
 `-gpgpu_l1_cache_write_ratio 0`, while this dump shows actual reservation
 ownership rather than an unreplaceable dirty victim.
 
-The conventional Base source path reserves a line in `tag_array::access`,
-adds its MSHR/extra-field record and miss-queue request in
-`baseline_cache::send_read_request`, then clears the reservation only through
-the conventional `baseline_cache::fill` response path.  The snapshot proves a
-lost/unobservable completion relationship, but does not yet identify which
-transition lost ownership.  The next directed diagnostic must separately
-account for reserve, MSHR/extra-field insertion, lower injection, and
-response/fill/credit release before any functional repair or replacement
-namespace is authorized.
+The completed diagnostic and source audit now identify the violating
+transition. With `gpgpu_flush_l1_cache=1`, `gpgpu_sim::cycle()` could request
+`baseline_cache::invalidate()` when an SM had no runnable threads although an
+accepted conventional miss was still live. `tag_array::invalidate()` removed
+the tag reservation but retained the MSHR/fill-owner state. A subsequent MSHR
+merge could reserve a replacement tag; final fill still used the original
+owner index, then erased that owner/MSHR and released its lower credit while
+leaving the replacement tag reserved and ownerless. This is the observed
+terminal state; `BK_CONF` remains only its frontend retry symptom.
+
+Core commit `41d740e862a6ad89ab0fc32b7b927ec787752862` preserves the existing
+invalidate request but defers physical tag invalidation until the conventional
+miss queue, fill-owner map, and MSHR/ready-response state are quiescent. It
+does not change DTC admission/arbitration, pending-write, scoreboard,
+lower-credit, or assertion semantics. Its focused regression and an isolated
+Release trace runtime passed; the fresh immutable Core-41 Base replacement is
+now live. The historical failed attempt remains invalid and neither the repair
+nor this preliminary review promotes FAST64.3 until that replacement naturally
+terminates, strictly parses, drains and yields its structural companion.
