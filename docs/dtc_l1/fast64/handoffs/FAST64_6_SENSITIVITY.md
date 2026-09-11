@@ -672,3 +672,31 @@ The 128-entry point is governed by exact primary-reuse authority; the other
 new BICG PIB cells remain live or pending strict collection.  These three
 records are strictly `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: they neither
 form a sensitivity curve nor promote FAST64.4, FAST64.5 or FAST64.6.
+
+## Researcher disk-policy override and current coverage reconciliation (2026-09-11)
+
+The researcher-authorized future-only output admission floor is **10 GiB
+projected remaining free space**.  Percentage-used is not an admission
+criterion.  The existing future-only V3 resource audit for one additional
+worker passed without a disk rejection, so no V4 wrapper is required: changing
+the live or already-tested admission path would provide no authority benefit.
+
+The read-only V3 audit at `2026-09-11T14:31:55Z` recorded output free space
+`67,230,662,656 B`; its observed FAST64 output p95 was `9,666,864 B` per row
+(the V2 formula's 1-GiB historical cushion is separate).  A one-worker
+projection would leave `67,220,995,792 B`, well above the researcher floor of
+`10,737,418,240 B`.  The same audit recorded 24 live FAST64 workers, p95 RSS
+`3,116,367,872 B`, projected post-admission `MemAvailable`
+`97,168,736,256 B`, a 16-GiB reserve, zero swap-out over all three samples,
+zero memory PSI/OOM/CFS throttling, and cgroup I/O about `75,076,949 B/s`.
+Thus disk and active memory pressure do not presently reject a *nonduplicate*
+future row.
+
+Before dispatch, the frozen 78-cell Stage6 matrix was reconciled against exact
+compact provenance, active immutable namespaces, and the preserved
+source-diagnostic 16.5-KiB cases: 54 cells are strict compact terminals, 20
+are live, and four are source-diagnostic; **no cell is missing**.  Therefore
+no new simulator is launched under this override.  Existing live rows retain
+their immutable identity and `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`
+classification.  Core658 2DConvolution/Base remains the independent Stage3
+critical path and is not affected by this future-only policy.
