@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## FAST64.6 physical coverage reconciled against terminal evidence (2026-09-11)
+
+A row-by-row read-only reconciliation found six physical-pool rows whose
+ledger state was stale: BICG 32-KiB IO/OO, 40-KiB OO, and 48-KiB OO; plus
+GESUMMV 24-KiB IO/OO. Each has a natural terminal receipt and its already
+published strict compact JSON with immutable identity, lifecycle closure and
+terminal drain. The coverage ledger now marks these six as
+`STRICT_TERMINAL_PRECOMPUTE` and pins their existing evidence paths. They
+remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; this is state reconciliation
+only, not FAST64.4 primary acceptance or a result promotion.
+
 ## FAST64.6 GESUMMV 48-KiB pair safely dispatched (2026-09-11)
 
 A fresh two-window admission audit found roughly 127--129 GiB MemAvailable,
