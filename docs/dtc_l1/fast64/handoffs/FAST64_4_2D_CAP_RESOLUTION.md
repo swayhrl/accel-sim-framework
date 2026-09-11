@@ -81,3 +81,28 @@ source proof that the cap guard is not reached. Any other cap identity mix,
 including the retained bound 2D IO@8192 diagnostic, is rejected before output
 publication. The collector has no simulator authority and emits only a
 candidate output; it cannot create a FAST64.4 PASS marker.
+
+## First monotonic candidate prepared
+
+The high-cap IO-mode summary does not expose `DTC_L1_lower_outstanding_peak`;
+the source only prints that peak in the Base reporting branch.  The first
+source-neutral monotonic candidate is therefore `16384`, immediately above
+the failed `8192` point.  It is a sweep point, not a selected final cap.
+
+`FAST64_{BASE,IO,OO}_CAP16384.config` each differ from their frozen source
+config in exactly one final effective line: `8192 -> 16384`.  Future-only
+`dispatch_fast64_4_cap16384_recovery_v1.sh` passes its nine-row dry-run with
+immutable runner and namespace absence checks.  Its fixed acquisition set is:
+
+- 2DConvolution IO under Core658/runtime29a;
+- Gaussian Base/IO/OO under Core95/runtime462;
+- Hotspot1 IO/OO under Core95/runtime462;
+- LUD Base/IO/OO under Core95/runtime462.
+
+The set contains every known cap-bound 8192 primary cell and only the two
+additional Base rows required to keep new Gaussian and LUD triplets on a
+common Core95/runtime462 identity.  Existing 8192 rows with cap-full zero
+remain candidates only for source-proven cap-inert reuse; no bound row is
+reused.  The sweep will start only after this high-cap strict validation and a
+fresh resource admission; no result is selected until a common candidate
+passes the same non-binding comparison rule.
