@@ -119,3 +119,10 @@ nine immutable-v2 rows launched once at `16384` on distinct physical CPUs
 `23f2f0ee29954c6eb639691ea235e3871a0e12059dd18a1b6cbd6f57ee547368`.
 They remain `FAST64_4_CAP16384_CANDIDATE_PENDING_RESOLUTION`; no result is
 selected until a common candidate passes the same non-binding comparison rule.
+
+Hotspot1 IO/OO are the first 16384 terminals. Both strict-validate accounting
+and drain but remain bound (`25,887` and `23,026` cap-full events,
+respectively), so 16384 is not frozen. Future-only
+`dispatch_fast64_4_cap32768_hotspot_v1.sh` and its two full one-line-diff
+configs pass dry run for the next 32768 point; it uses only the two CPUs freed
+by the terminal Hotspot rows while the other seven 16384 rows remain untouched.
