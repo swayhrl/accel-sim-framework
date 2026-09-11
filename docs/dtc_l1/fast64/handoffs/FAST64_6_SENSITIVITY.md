@@ -90,6 +90,18 @@ precomputes plus the four already preserved 16.5-KiB capacity-bound failures.
 This is not a FAST64.6 logical PASS and does not alter FAST64.3--.5 ordering;
 all retained records remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.
 
+## Non-numeric 16.5-KiB closure interface (2026-09-12)
+
+`generated/FAST64_6_EXPECTED_RESOURCE_DEADLOCK_REGISTRY_V1.tsv` pins the four
+formal exit-1 attempts with manifest, START/TERMINAL receipt and stdout hashes,
+plus their mode-specific source-state evidence.  It is deliberately separate
+from strict numeric records: M5.4 requires a confirmed resource deadlock to
+remain `EXPECTED_RESOURCE_DEADLOCK` with no numeric performance, not to be
+silently dropped or converted into a zero-cycle result.  The final Stage6
+collector must consume these four rows only as non-numeric physical-boundary
+observations and must retain all other matrix rows under the ordinary strict
+terminal/parser/accounting rules.
+
 ## First physical-acquisition wave (2026-09-10)
 
 The two fresh three-window V3 resource audits recorded
