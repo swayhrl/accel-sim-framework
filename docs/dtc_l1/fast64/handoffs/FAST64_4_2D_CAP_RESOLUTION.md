@@ -84,13 +84,16 @@ frozen V1 writer only after SHA verification and requires a fresh explicit
 36-cell cap-resolution map. The map binds one final common cap, each row's
 literal config identity, and the SHA of this resolution authority.
 
-A row at the final cap must be classified `REACQUIRED_AT_FINAL_CAP`. An old
-8192 row can enter only as
-`SOURCE_PROVEN_CAP_INERT_REUSE_8192_TO_FINAL`, with zero cap-full and the
-source proof that the cap guard is not reached. Any other cap identity mix,
-including the retained bound 2D IO@8192 diagnostic, is rejected before output
-publication. The collector has no simulator authority and emits only a
-candidate output; it cannot create a FAST64.4 PASS marker.
+A row at the final cap must be classified `REACQUIRED_AT_FINAL_CAP`. A row
+observed at any smaller candidate may enter only as
+`SOURCE_PROVEN_CAP_INERT_REUSE_TO_FINAL`, with zero cap-full and the source
+proof that the cap guard is not reached. This permits an explicit inert reuse
+from (for example) 16384 to a later common 32768 cap; it does not silently
+equate configs. The legacy 8192-specific spelling remains readable only for
+an existing 8192 map. Any other cap identity mix, including the retained bound
+2D IO@8192 diagnostic, is rejected before output publication. The collector
+has no simulator authority and emits only a candidate output; it cannot create
+a FAST64.4 PASS marker.
 
 ## First monotonic candidate prepared
 

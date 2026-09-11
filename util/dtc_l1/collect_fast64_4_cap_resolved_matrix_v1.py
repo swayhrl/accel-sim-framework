@@ -2,7 +2,7 @@
 """Future-only FAST64.4 collector with explicit cap-resolution provenance.
 
 The frozen V1 collector cannot represent a common final cap together with a
-source-proven cap-inert 8192 reuse.  This tool imports only V1's output writer
+source-proven cap-inert reuse.  This tool imports only V1's output writer
 after pinning its source bytes, and independently rejects every undeclared cap
 identity mix.  It has no simulator/controller authority and never emits PASS.
 """
@@ -28,7 +28,10 @@ MODES = {"BASE": "PAPER_BASE", "IO": "PAPER_IO", "OO": "PAPER_OO"}
 REGISTRY_FIELDS = ("workload", "mode", "summary", "origin", "cap_disposition", "retry_resolution")
 CAP_FIELDS = ("workload", "mode", "formal_cap", "source_cap", "cap_identity_class", "expected_config_id", "expected_config_sha256", "resolution_authority", "resolution_authority_sha256")
 REACQUIRED = "REACQUIRED_AT_FINAL_CAP"
-INERT_REUSE = "SOURCE_PROVEN_CAP_INERT_REUSE_8192_TO_FINAL"
+INERT_REUSE = "SOURCE_PROVEN_CAP_INERT_REUSE_TO_FINAL"
+# Retained solely to read a previously prepared 8192-specific map.  New
+# resolution authorities must use the source-cap-agnostic spelling above.
+LEGACY_8192_INERT_REUSE = "SOURCE_PROVEN_CAP_INERT_REUSE_8192_TO_FINAL"
 
 
 def sha256(path: Path) -> str:
@@ -87,8 +90,10 @@ def cap_map(path: Path) -> tuple[dict[tuple[str, str], dict[str, str]], int]:
         if source_cap == formal_cap:
             if row["cap_identity_class"] != REACQUIRED:
                 fail(f"{label}: FINAL_CAP_REACQUISITION_CLASS_REQUIRED")
-        elif not (source_cap == 8192 and row["cap_identity_class"] == INERT_REUSE):
+        elif row["cap_identity_class"] not in {INERT_REUSE, LEGACY_8192_INERT_REUSE}:
             fail(f"{label}: UNDECLARED_CAP_IDENTITY_MIX")
+        elif row["cap_identity_class"] == LEGACY_8192_INERT_REUSE and source_cap != 8192:
+            fail(f"{label}: LEGACY_8192_INERT_REUSE_SOURCE_CAP_MISMATCH")
     return mapped, formal_cap
 
 

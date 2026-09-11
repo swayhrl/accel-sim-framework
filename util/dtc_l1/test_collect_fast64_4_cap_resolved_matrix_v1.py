@@ -33,10 +33,13 @@ with tempfile.TemporaryDirectory(prefix="fast64-cap-resolved-") as tmp:
     for workload in ROSTER:
         for mode in MODES:
             inert = workload == "ATAX" and mode == "IO"
-            source_cap = "8192" if inert else "16384"; config_id = f"FAST64_{mode}_CAP{source_cap}_A1"; config_sha = f"sha-{mode}-{source_cap}"
+            # Exercise reuse from an intermediate observed cap, not just the
+            # historical 8192 candidate: this is the recovery case needed
+            # when a later workload sets a larger common formal cap.
+            source_cap = "16384" if inert else "32768"; config_id = f"FAST64_{mode}_CAP{source_cap}_A1"; config_sha = f"sha-{mode}-{source_cap}"
             path = evidence / f"{workload}-{mode}.json"; path.write_text(json.dumps(record(workload, mode, config_id, config_sha)), encoding="utf-8")
             rows.append((workload, mode, str(path), "SYNTHETIC", "ZERO", "SYNTHETIC"))
-            caps.append((workload, mode, "16384", source_cap, "SOURCE_PROVEN_CAP_INERT_REUSE_8192_TO_FINAL" if inert else "REACQUIRED_AT_FINAL_CAP", config_id, config_sha, str(authority.relative_to(ROOT)) if authority.is_relative_to(ROOT) else str(authority), auth_sha))
+            caps.append((workload, mode, "32768", source_cap, "SOURCE_PROVEN_CAP_INERT_REUSE_TO_FINAL" if inert else "REACQUIRED_AT_FINAL_CAP", config_id, config_sha, str(authority.relative_to(ROOT)) if authority.is_relative_to(ROOT) else str(authority), auth_sha))
     with registry.open("w", encoding="utf-8", newline="") as out:
         w = csv.writer(out, delimiter="\t", lineterminator="\n"); w.writerow(("workload", "mode", "summary", "origin", "cap_disposition", "retry_resolution")); w.writerows(rows)
     # The tool resolves authorities below ROOT, so supply a repository-local temporary authority proxy.
