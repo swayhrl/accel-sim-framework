@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## FAST64.6 GESUMMV 16.5-KiB diagnostic path repaired fail-closed (2026-09-11)
+
+The historical GESUMMV/physical-16.5-KiB IO and OO failures remain preserved
+non-results.  Their source-state classification needs the already-authorized
+observational f283 diagnostic, but the V1 dispatcher correctly refused to run
+after the active Core worktree advanced to Core-41.  A future-only V2 keeps
+the exact f283 binary/config/trace/immutable-runner contract and validates its
+source SHA in a clean detached f283 worktree instead.  Both V2 dry runs and a
+fresh two-worker resource admission pass; V2 still requires an explicit CPU
+and a fresh namespace.  It is only a `NONFORMAL_DIAGNOSTIC_NOT_RESULT` path
+and cannot change any formal Core, sensitivity result, or stage state.
+
 ## FAST64.6 BICG 40-KiB IO strict precompute retained (2026-09-11)
 
 The previously terminal BICG/physical-40-KiB/IO namespace was strictly

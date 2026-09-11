@@ -35,13 +35,16 @@ lower-cap-full observation is used as a substitute.
 
 ## Next ordinary action
 
-The hash-pinned future-only dispatcher
-`util/dtc_l1/dispatch_fast64_6_gesummv_physical16p5_diagnostic_v1.sh` is now
-dry-run verified for both IO and OO.  It binds observational Core
-`f2836ea1...`, binary `361aada1...`, the immutable runner, each original
-physical-16.5 config and the exact GESUMMV trace.  It refuses an existing
-namespace and requires both `--dispatch` and an explicitly supplied safe CPU;
-therefore it has not launched a duplicate while the target-20 pool is full.
+The original hash-pinned V1 dispatcher correctly fails closed after the active
+Core worktree advanced to Core-41: its specified observational Core is
+`f2836ea1...`, so it must not silently validate the changed worktree.  The
+future-only V2 dispatcher
+`util/dtc_l1/dispatch_fast64_6_gesummv_physical16p5_diagnostic_v2.sh` preserves
+the same observational Core/binary/config/trace contract but validates
+`f2836ea1...` in a clean detached worktree.  Both IO and OO V2 dry runs pass.
+It refuses an existing namespace and requires both `--dispatch` and an
+explicitly supplied safe CPU; it cannot modify the active Core-41 worktree or
+create a formal result.
 
 The companion parser
 `analyze_fast64_6_physical16p5_diagnostic_v1.py` only accepts the
