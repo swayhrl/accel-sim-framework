@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## FAST64.6 physical-pool terminal evidence retained without promotion (2026-09-11)
+
+Four already natural-terminal, strict-collected physical-pool rows are now
+retained as compact evidence: GESUMMV/24-KiB IO and OO, BICG/32-KiB IO, and
+BICG/40-KiB OO.  Each carries a unique immutable attempt UUID, exact
+Core-95/runtime/A1/scientific Framework/payload/config provenance, a single
+perf stream, natural exit zero and the collector's terminal accounting/drain
+checks.  They remain solely
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; this does not advance FAST64.3,
+FAST64.4, FAST64.5, or FAST64.6.
+
 ## Four repaired-Core ramp rows revalidated and retained as compact evidence (2026-09-11)
 
 The previously untracked compact records for BICG/Base, BICG/IO, ATAX/Base,
