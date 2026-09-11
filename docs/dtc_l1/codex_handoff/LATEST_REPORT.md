@@ -1,5 +1,14 @@
 # Latest Codex Report
 
+## FAST64.6 Btree PIB OO wave strictly retained (2026-09-11)
+
+The non-reuse Btree PIB-32/64/192/256 OO wave naturally terminated exit zero
+and strict collection passed for all four records.  Compact registry
+`FAST64_6_BTREE_PIB_OO_TERMINAL_REGISTRY_V1.tsv` pins UUIDs, result hashes,
+identity, lifecycle conservation and final drain.  This OO-only set remains
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; its IO peers remain live and no
+sensitivity interpretation or stage promotion is made.
+
 ## FAST64.6 frozen-matrix execution coverage has no missing cell (2026-09-11)
 
 A config-SHA/payload-SHA read-only reconciliation found all 78 frozen Stage6

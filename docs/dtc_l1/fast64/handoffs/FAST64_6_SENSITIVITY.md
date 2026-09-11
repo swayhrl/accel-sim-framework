@@ -563,3 +563,19 @@ The pair has only atomic START receipts and a short healthy observation; it is
 strictly `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` until natural terminal
 and strict collection.  This coverage closure is physical acquisition only:
 it does not create a FAST64.6 curve/PASS or change FAST64.3--5 acceptance.
+
+## Btree PIB OO non-reuse wave strictly collected (2026-09-11)
+
+The non-reuse Btree PIB 32/64/192/256-entry OO wave naturally exited zero and
+was strict-collected by the unchanged per-row v2 monitors.  The compact batch
+registry `generated/FAST64_6_BTREE_PIB_OO_TERMINAL_REGISTRY_V1.tsv` binds each
+immutable UUID, JSON hash and full lifecycle/drain summary.  All records carry
+Core-95/runtime/A1/scientific Framework/frozen-payload identity, 444,467,849
+instructions, conserved lower create/issue/response and dependencies, final
+lower/PIB/inflight/active-ref zero, and lower-cap-full zero.
+
+The 128-entry OO reference remains an existing exact primary-reuse candidate;
+it is not rerun.  The matching newly acquired IO points remain live, so this
+OO-only batch is retained strictly as
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  It makes no pairwise sensitivity
+claim and does not promote FAST64.4, FAST64.5 or FAST64.6.
