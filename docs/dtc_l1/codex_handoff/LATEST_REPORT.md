@@ -1,5 +1,29 @@
 # Latest Codex Report
 
+## 2DConvolution/Base diagnostic closed; source-correct repair in validation (2026-09-11)
+
+The preserved historical formal Base attempt remains invalid: it naturally
+terminated exit `1` with a simulator deadlock and is not relabeled or promoted.
+The separate observational diagnostic UUID
+`a970b692-22d5-441d-ad6a-faa500d9d573` also naturally terminated exit `1`.
+The one-shot fail-closed collector published
+`fast64/generated/fast64_3_diagnostics_v1/fast64_3_2d_base_coref283_diag_v1.json`
+as `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.
+
+It observes reserved L1D tags with no fill owner, empty conventional
+MSHR/miss-queue state, and no sector-child `pending_read`; the 129 latency
+queue fetches are stranded behind that state.  Source tracing localizes the
+cause to an L1 invalidation executed before a conventional miss lifecycle
+drains: a later MSHR merge can reserve a replacement tag while the surviving
+fill owner still points to the original index.  Completion removes the owner
+but leaves the replacement tag reserved.  `BK_CONF` is only the resulting
+retry behavior.  A minimal Core repair now defers the existing invalidation
+until conventional miss/owner/MSHR state drains; it has built and passed the
+existing focused tests, but no new formal result is claimed until its directed
+regression and fresh immutable 2DConvolution/Base replacement pass.  Stage
+FAST64.3 remains ACTIVE; the registry now explicitly records
+`INVALID_HISTORICAL_BASE_PENDING_REPAIR` and has no nonexistent evidence path.
+
 ## Stage3 PIB structural mapping completed for preliminary review (2026-09-11)
 
 The fixed Base summaries all contained `DTC_L1_pib_full_events`; an early

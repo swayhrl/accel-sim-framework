@@ -89,6 +89,39 @@ record (if any), and any nonzero sector-child `pending_read`. Its JSON is
 observation-only and cannot select a repair, create a formal result, or
 advance FAST64.3.
 
+## Terminal diagnostic classification and repair boundary (2026-09-11)
+
+The exact nonformal diagnostic reached its natural terminal state with exit
+`1`; its immutable attempt UUID is `a970b692-22d5-441d-ad6a-faa500d9d573`.
+The fail-closed, read-only collector was invoked once and published
+`generated/fast64_3_diagnostics_v1/fast64_3_2d_base_coref283_diag_v1.json`.
+Its classification is permanently `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.
+
+The dump gives the source-backed **B** classification: deadlocked L1Ds have
+reserved tags but no matching fill-owner, while the ordinary MSHR and
+miss-queue state is empty.  It is not sector-child aggregation (`pending_read`
+is absent), nor an outbound-injection stall.  `BK_CONF` is a frontend retry
+symptom, not the root cause.
+
+Source inspection identifies the violating transition.  With
+`gpgpu_flush_l1_cache=1`, `gpgpu_sim::cycle()` can call
+`baseline_cache::invalidate()` when an SM has no runnable threads but before
+its accepted conventional miss lifecycle drains.  `tag_array::invalidate()`
+then removes the tag reservation without removing the corresponding
+MSHR/owner.  A later MSHR merge can reserve a second tag, but
+`baseline_cache::fill()` still completes through the original owner cache
+index; it erases that owner/MSHR and releases its lower credit while leaving
+the second tag reserved and ownerless.  This exactly matches the observed
+terminal state.
+
+The pending Core repair preserves the invalidation request, but retires it
+only after the conventional miss queue, fill-owner map, and MSHR/ready-response
+state are quiescent.  It changes neither DTC admission/arbitration nor
+pending-write, scoreboard, lower-credit, or assertion semantics.  It requires
+a separate Core commit, focused regression, fresh formal runtime identity and
+a new immutable formal 2DConvolution/Base attempt before any FAST64.3
+promotion.
+
 Its isolated regression
 `util/dtc_l1/test_fast64_3_2d_base_diagnostic_v1.sh` uses a versioned,
 synthetic dump only.  It verifies the parser's owner-present, owner-absent,
