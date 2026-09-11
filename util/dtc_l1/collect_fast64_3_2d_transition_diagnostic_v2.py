@@ -67,7 +67,13 @@ def collect() -> int:
     if not transition_log.is_file():
         raise ValueError("terminal diagnostic transition log missing")
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run([str(ANALYZER), "--transition-log", str(transition_log), "--output", str(OUTPUT)], check=True)
+    terminal_dump = RUN / "simulator.stdout"
+    if not terminal_dump.is_file():
+        raise ValueError("terminal diagnostic stdout missing")
+    analyzer = [str(ANALYZER), "--transition-log", str(transition_log), "--terminal-dump", str(terminal_dump), "--output", str(OUTPUT)]
+    if end.get("simulator_exit_status") == "1":
+        analyzer.append("--require-deadlock-snapshot")
+    subprocess.run(analyzer, check=True)
     if not OUTPUT.is_file():
         raise ValueError("analyzer did not publish output")
     result = json.loads(OUTPUT.read_text(encoding="utf-8"))

@@ -203,3 +203,8 @@ require actual transition records, publish atomically to a new generated path,
 and accept exit 0 or 1 only as an observation. The output is permanently
 `NONFORMAL_DIAGNOSTIC_NOT_RESULT`: it reports transition/owner balance facts
 but cannot choose a repair, reinterpret `BK_CONF`, or advance FAST64.3.
+For an exit-1 observation it additionally fails closed unless `simulator.stdout`
+contains a parseable deadlock snapshot, then joins each terminal `RESERVED`
+L1D block with the matching cache/block `TAG_ALLOC`, `OWNER_CREATE`, and
+`FILL_FINAL_POST` trace facts. This is the required evidence boundary for a
+later source-correct transition diagnosis, not a classification by heuristic.
