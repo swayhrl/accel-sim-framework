@@ -1,6 +1,24 @@
 # Latest Codex Report
 
-## FAST64.3 PASS; Core658 2D common-triplet IO strict-terminal, OO live (2026-09-11)
+## FAST64.4 2DConvolution cap-resolution control live (2026-09-11)
+
+The common-Core658 2DConvolution IO and OO rows both naturally exited zero and
+strict-collected. IO nevertheless records `72,236`
+`DTC_L1_lower_cap_full_events` at FAST64's effective 64-SM/8192-cap candidate;
+OO records zero. Source confirms this is a genuine global lower-credit refusal,
+while IO lifecycle/dependency accounting and terminal drain remain correct. The
+frozen V2 primary coverage builder correctly fail-closed rather than promoting
+the cap-bound IO row.
+
+The authoritative FAST64 platform is 64 SM + 8192, distinct from historical
+M5's 80 SM + 10240. Its contract requires a smallest-common non-binding-cap
+resolution before primary performance interpretation. A new immutable Core658
+2DConvolution/IO high-cap (`1048576`) control is live under UUID
+`c6dca067-6de7-47ee-958c-185ce083fb7b`; it differs only in final effective
+lower cap. See `fast64/handoffs/FAST64_4_2D_CAP_RESOLUTION.md`. No stage is
+promoted and the cap-8192 records are preserved as diagnostics.
+
+## FAST64.3 PASS; Core658 2D common-triplet strict terminal evidence (2026-09-11)
 
 The source-correct Core658 2DConvolution/Base replacement naturally exited
 zero and strict-collected at `2,247,155` cycles / `620,347,492` instructions,
@@ -15,11 +33,11 @@ the stale V1 structural-companion pointer by requiring V2's final-JSON-bound
 companion; it passed IO/OO dry runs.  Fresh resource admission then launched
 the same Core658/runtime/trace pair for 2D IO and OO with immutable UUIDs
 `437620fb-ef5b-436e-8f35-63e7f1df0f4c` and
-`981ff10e-492d-479d-b41f-a916a0c14a58`.  IO naturally exited zero at
-`2026-09-11T15:54:35Z` and passed the frozen strict collector; its final
-lower/PIB/inflight are zero.  OO remains live only as
-`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; the complete FAST64.4 36-row gate
-cannot close until it independently reaches the same strict terminal state.
+`981ff10e-492d-479d-b41f-a916a0c14a58`. IO naturally exited zero at
+`2026-09-11T15:54:35Z`; OO naturally exited zero at `2026-09-11T16:12:25Z`.
+Both passed the frozen strict collector and retain their exact Core658 identity.
+Their matrix disposition is governed by the separate cap-resolution control
+above, rather than by a missing terminal receipt.
 
 ## FAST64.6 BICG logical-64 and PIB 64/128/192 IO terminal batch (2026-09-11)
 

@@ -55,6 +55,18 @@ on the final 2DConvolution source-correct repair identity. These rows are
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; they neither form an accepted
 triplet nor advance FAST64.4, and no GM or primary-stage claim is made.
 
+### Core658 2DConvolution terminal cap-resolution trigger (2026-09-11)
+
+The Core658 2D IO and OO replacements subsequently both reached strict natural
+terminal evidence, but IO records `DTC_L1_lower_cap_full_events = 72,236` at
+the FAST64 candidate cap 8192. This is an active non-binding-cap gate, not a
+row correctness failure: terminal lifecycle/dependency accounting drains and
+OO's cap-full count is zero. The frozen V2 coverage builder correctly refuses
+to promote it. `FAST64_4_2D_CAP_RESOLUTION.md` records the source proof and
+the live isolated high-cap IO control. Until that control and the resulting
+smallest-common-cap resolution close, neither Core658 2D row is an accepted
+primary performance input.
+
 ### Future-only 36-cell collector-registry preparation
 
 `prepare_fast64_4_primary_registry_v1.py` is a future-only, fail-closed bridge
