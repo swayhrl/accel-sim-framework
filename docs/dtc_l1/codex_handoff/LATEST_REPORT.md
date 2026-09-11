@@ -86,6 +86,13 @@ It is `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, not a result; an isolated
 atomic strict collector will publish nothing unless it naturally exits zero
 and clears all identity, parser, failure-scan and accounting gates.
 
+After that strict collector publishes, the separately committed future-only
+structural companion collector (`29e9bf19...`) reads the immutable summary and
+the one terminal perf CSV, then atomically publishes the Base structural
+companion. Its detached monitor is live as PID `1265331`; it currently records
+only `WAIT_TERMINAL`. It has no authority to write the run, strict summary,
+registry, or stage state.
+
 ## Stage3 PIB structural mapping completed for preliminary review (2026-09-11)
 
 The fixed Base summaries all contained `DTC_L1_pib_full_events`; an early
