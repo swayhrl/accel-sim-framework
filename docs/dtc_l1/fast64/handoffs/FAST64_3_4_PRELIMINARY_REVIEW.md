@@ -90,6 +90,23 @@ The mechanically regenerated, checked-in, nonpromoting tables are:
 The common repaired-Core triplet candidates presently represented are ATAX,
 BICG, Btree, Hotspot1, and MRI-Q. Their preliminary cycle observations are:
 
+### Inventory reconciliation: incomplete NN and historical 2D cells (2026-09-11)
+
+Regenerating the nonpromoting aggregate from every currently strict-parsed
+compact summary reconciled two previously omitted inventory groups.  The
+immutable Core-95 NN IO/OO rows in
+`generated/fast64_4_primary_core95_v1/` now appear as one group with zero
+same-identity Base candidates and one IO plus one OO candidate.  They remain
+incomplete and cannot form a speedup or an accepted triplet.  Separately, the
+literal bbcbb 2DConvolution OO compact record now appears beside the existing
+literal IO record, still with zero accepted Base candidates.  It remains
+historical precompute only: it is neither paired with nor a substitute for the
+live Core-41 Base repair and its future Core-41 IO/OO successors.
+
+This is an inventory correction only.  It does not promote a row, alter the
+24-cell primary coverage audit, add a GM member, or change the Core-41
+common-identity gate.
+
 | workload | Base | IO | OO | Base/IO | Base/OO |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | ATAX | 87,750,512 | 88,363,340 | 48,078,114 | 0.993065 | 1.825165 |
