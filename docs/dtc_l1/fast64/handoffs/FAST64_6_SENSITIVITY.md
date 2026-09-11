@@ -100,7 +100,10 @@ remain `EXPECTED_RESOURCE_DEADLOCK` with no numeric performance, not to be
 silently dropped or converted into a zero-cycle result.  The final Stage6
 collector must consume these four rows only as non-numeric physical-boundary
 observations and must retain all other matrix rows under the ordinary strict
-terminal/parser/accounting rules.
+terminal/parser/accounting rules.  Future-only
+`validate_fast64_6_expected_deadlock_registry_v1.py` rechecks all four formal
+receipt/identity/hash chains and the mode-specific resource-state evidence;
+it passes against this frozen registry.
 
 ## First physical-acquisition wave (2026-09-10)
 
