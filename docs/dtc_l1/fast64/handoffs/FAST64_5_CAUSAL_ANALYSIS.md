@@ -1,6 +1,15 @@
 # FAST64.5 causal-analysis preparation
 
-Status: **PREPARED, FUTURE-ONLY — FAST64.4 PASS REQUIRED**
+Status: **ACTIVE — measured package complete; classification reconciliation pending**
+
+The cap-resolved Stage4 bridge is
+`generated/fast64_4_acceptance_bridge_v1/fast64_4_primary_accepted_matrix_v1.tsv`.
+It is generated only after SHA/hash/cap-map revalidation and marks exactly 36
+rows `STRICT_TERMINAL_ACCEPTED`; its adjacent compatibility matrix exists only
+for the frozen feature renderer.  The measured FAST64.5 package at
+`generated/fast64_5_measured_features_v3/` passes the V2 builder with exact
+Stage3/4 membership and table-column provenance.  It remains non-causal until
+the separately validated classification is joined.
 
 `build_fast64_5_feature_tables_v1.py` remains a compact fixture/reference
 builder.  The production path is now the future-only

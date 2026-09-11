@@ -19,7 +19,7 @@ def read(path):
     return list(csv.DictReader(lines, delimiter="\t" if path.suffix==".tsv" else ","))
 def write(path, fields, rows):
     with path.open("w", encoding="utf-8", newline="") as f:
-        w=csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows(rows)
+        w=csv.DictWriter(f, fieldnames=fields, lineterminator="\n"); w.writeheader(); w.writerows(rows)
 def value(m, key): return m.get(key, "UNSUPPORTED")
 def lower(m, mode, kind):
     key = "DTC_L1_lower_requests_" + ("acquired" if kind=="create" else "released") if mode=="BASE" else "DTC_L1_lower_credit_" + ("acquired" if kind=="create" else "released")
