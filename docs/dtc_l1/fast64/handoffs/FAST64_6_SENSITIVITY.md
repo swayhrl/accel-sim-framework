@@ -473,3 +473,44 @@ BICG/48 now has both modes retained; GESUMMV/32 still awaits its live IO
 companion.  All remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no pair
 interpretation, FAST64.4 primary result, FAST64.5 causal claim, or FAST64.6
 logical promotion is asserted.
+
+## Complete-matrix collection contract and logical-capacity precomputation (2026-09-11)
+
+Future-only `util/dtc_l1/collect_fast64_6_sensitivity_v1.py` is the
+fail-closed collector for the entire frozen 78-cell roster.  Its input
+registry must name every BICG/GESUMMV/Btree × logical/physical/PIB × IO/OO
+cell exactly once.  It validates the frozen config hash, trace/payload,
+Core/runtime/A1/scientific identities, immutable receipts, natural-terminal
+lower/dependency accounting and mode-specific drain.  It rejects duplicates,
+conflicting rows, and missing reference cells.  It writes immutable candidate
+tables only: cell and raw manifests plus plot-ready logical/physical/PIB
+tables with the frozen reference normalization.  It cannot emit a PASS
+marker, tune points, or alter a live dispatcher.  Its synthetic positive and
+negative regressions pass.
+
+A fresh three-window V3 audit
+`/workspace/fast64-sensitivity-v2/fast64_6_resource_audit_v5_20260911T0457Z_workers9.tsv`
+authorized nine new workers (projected 20 FAST64 workers): no sustained
+swap-out, memory PSI, OOM, CFS throttling or pathological I/O; projected
+post-admission `MemAvailable` is 115,163,357,184 B after the fixed reserve.
+After v5 immutable-dispatch dry-runs, the following nonduplicate,
+one-dimensional logical points started on distinct physical CPUs.  Existing
+Stage3/4 and physical-sensitivity rows were not changed.
+
+| Workload | logical capacity | mode | CPU | immutable UUID |
+| --- | ---: | --- | ---: | --- |
+| BICG | 16 KiB | OO | 8 | `a5c57367-b457-4d9a-a881-ac56676f9a36` |
+| BICG | 32 KiB | IO | 10 | `d52c6d90-8c5d-4319-b84a-5261c9813b57` |
+| BICG | 32 KiB | OO | 11 | `5d14827b-24cc-4f63-99f8-a62be31a605a` |
+| BICG | 64 KiB | IO | 12 | `e62a6b65-37b0-4d7d-9b61-cd73e56749f1` |
+| BICG | 64 KiB | OO | 13 | `9338a339-d81a-4eb4-8a47-2de9fee18595` |
+| GESUMMV | 16 KiB | IO | 14 | `0819375e-30aa-4537-831e-61fe0103ace1` |
+| GESUMMV | 16 KiB | OO | 17 | `5f5eade2-cafd-484b-b4d3-bf7fcff306d2` |
+| GESUMMV | 32 KiB | IO | 18 | `54bbb3a1-2db5-4961-8d6b-4031c4449e4e` |
+| GESUMMV | 32 KiB | OO | 19 | `dfa700e5-6ac2-4aa3-83b9-076aa8a8deb3` |
+
+All nine are monitored through the pre-existing read-only strict validator and
+remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; they are not results,
+curves, or a FAST64.6 promotion.  The pre-existing BICG/16-KiB/IO immutable
+row remains live in its separate namespace and completes that pair only after
+its own natural terminal validation.
