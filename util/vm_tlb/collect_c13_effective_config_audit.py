@@ -303,6 +303,31 @@ def update_failure_audit() -> None:
     path.write_text(prior)
 
 
+def conservation_report(arms: dict[str, dict], manifest: list[dict[str, str]]) -> str:
+    by_id = {row['exp_id']: row for row in manifest}
+    lines = ['# C13 Path-A repaired per-arm conservation audit', '',
+             'Each row below has a terminal runtime geometry receipt, C13 terminal validator, accepted marker-map identity, exact per-kernel cycle closure, and cumulative accepted `vm_*` snapshot/delta closure.  Raw logs remain outside git.', '',
+             '| arm | ROI | mode | markers | per-kernel cycle sum | full ROI cycle total | active terminal `vm_*` fields | result |',
+             '| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |']
+    for exp_id in sorted(by_id):
+        arm, row = arms[exp_id], by_id[exp_id]
+        lines.append('| %s | %s | %s | %d | %d | %s | %d | PASS |' %
+                     (exp_id, row['roi'], row['l2_mode'], len(arm['raw_kernels']), arm['cycle_total'],
+                      arm['final'].get('gpu_tot_sim_cycle', 'NOT_EMITTED'), len(arm['raw_kernels'][-1].cumulative)))
+    return '\n'.join(lines) + '\n'
+
+
+def changed_files_report() -> str:
+    lines = ['# C13 Path-A changed-files boundary', '',
+             'Only C13-derived scripts, repaired configs, and compact review evidence are committed.  Immutable C12 assets, C13 raw logs, traces, and binaries are excluded.', '',
+             '| path | role |', '| --- | --- |',
+             '| `util/vm_tlb/c13_effective_config_audit.py` | static/runtime effective-geometry gate and terminal runner |',
+             '| `util/vm_tlb/collect_c13_effective_config_audit.py` | strict read-only repaired evidence collector |',
+             '| `configs/vm_tlb/c13_diagnostics/effective_config_audit/` | fresh final-override configs with explicit mode 0 |',
+             '| `docs/.../C13_EFFECTIVE_CONFIG_AUDIT/` | compact Path-A review evidence |']
+    return '\n'.join(lines) + '\n'
+
+
 def main() -> None:
     arms, mapping, manifest = load()
     results = result_rows(arms, manifest)
@@ -313,6 +338,14 @@ def main() -> None:
     k691 = kernel691_rows(arms, mapping['prefill'])
     postmortem = old_vs_repaired(arms)
     write_tsv('SUPERSEDING_C13_RESULTS.tsv', results)
+    write_tsv('ARM_RESULTS.tsv', results)
+    write_tsv('ARM_STATUS.tsv', [{'exp_id': row['exp_id'], 'logical_role': row['logical_role'],
+                                  'roi': row['roi'], 'terminal_status': 'PASS',
+                                  'scientific_status': row['scientific_status'],
+                                  'run_dir': str(audit.OUT / row['exp_id']),
+                                  'raw_log_sha256': row['raw_log_sha256'],
+                                  'effective_l2_mode': row['l2_mode'],
+                                  'eq_gate': row['gate_status']} for row in results])
     write_tsv('LATENCY_FINE_SWEEP.tsv', latency)
     write_tsv('CAPACITY_FACTORIAL.tsv', capacity)
     write_tsv('SELECTIVE_SEGMENT_RESULTS.tsv', selective)
@@ -321,6 +354,8 @@ def main() -> None:
     write_tsv('WRONG_MODE_VS_EXACTMODE_POSTMORTEM.tsv', postmortem)
     provenance = [{key: row[key] for key in ('exp_id', 'logical_role', 'raw_log_sha256', 'config_sha256', 'binary_sha256', 'core_head', 'l2_mode', 'exact_l2_tlb_entries', 'segment_enable', 'segment_n', 'lseg', 'eligibility_policy')} for row in results]
     write_tsv('PROVENANCE_MATRIX.tsv', provenance)
+    (PACK / 'CONSERVATION_AUDIT.md').write_text(conservation_report(arms, manifest))
+    (PACK / 'CHANGED_FILES.md').write_text(changed_files_report())
     reports(arms, latency, capacity, selective, k691)
     update_failure_audit()
     print('C13_PATH_A_FINAL_COLLECTION_PASS\trows=%d' % len(results))
