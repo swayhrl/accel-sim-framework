@@ -28,7 +28,7 @@ with tempfile.TemporaryDirectory() as raw:
     class_rows = "workload\tprimary_class\tsecondary_classes\tevidence_paths\tevidence_backed_rationale\tvalidator_status\n" + "\n".join(f"{w}\tLOW_STRUCTURAL_PRESSURE\t\tevidence\tfixture\tREADY" for w in ROSTER) + "\n"
     write(stage5 / "fast64_5_causal_classification.tsv", class_rows)
     write(stage5 / "FAST64_5_CAUSAL_ANALYSIS_STATUS.tsv", "item\tvalue\nclassification_policy\tSUPPLIED_EVIDENCE_BACKED_NO_AUTOMATIC_CAUSAL_INFERENCE\n")
-    for name in ("fast64_6_cells.tsv", "fast64_6_logical_plot.tsv", "fast64_6_physical_plot.tsv", "fast64_6_pib_plot.tsv", "fast64_6_raw_manifest.tsv", "fast64_6_collector_status.tsv"): write(stage6 / name)
+    for name in ("fast64_6_cells.tsv", "fast64_6_logical_plot.tsv", "fast64_6_physical_plot.tsv", "fast64_6_pib_plot.tsv", "fast64_6_raw_manifest.tsv", "fast64_6_expected_deadlocks.tsv", "fast64_6_collector_status.tsv"): write(stage6 / name)
     for name in ("limits.md", "tier_a.tsv", "tier_c.tsv"): write(root / name)
     ledger = root / "ledger.tsv"; write(ledger, "stage\tcurrent_state\n" + "\n".join(f"FAST64.{n}\tPASS" for n in range(7)) + "\n")
     command = [sys.executable, str(TOOL), "--stage-ledger", str(ledger), "--stage3-dir", str(stage3), "--stage4-dir", str(stage4), "--stage5-dir", str(stage5), "--stage6-dir", str(stage6), "--limitations-boundary", str(root / "limits.md"), "--tier-a-index", str(root / "tier_a.tsv"), "--tier-c-index", str(root / "tier_c.tsv"), "--output-dir", str(root / "out")]

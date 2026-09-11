@@ -1,5 +1,19 @@
 # Latest Codex Report
 
+## FAST64 COMPLETE: ready for review (2026-09-11 UTC)
+
+All FAST64.0–.7 HARD gates are closed.  The final immutable package is
+`fast64/review_packs/FAST64_FINAL/`, with an input manifest SHA
+`5bdedcbd...`, exact FAST12 membership, primary/causal/sensitivity tables,
+Tier-A/Tier-C indices, explicit limitations, raw-log result manifest, and the
+four preserved 16.5-KiB nonnumeric sensitivity boundary observations.  The
+ledger state is `FAST64_COMPLETE_READY_FOR_REVIEW`.
+
+The package has no automatic scientific conclusion: it preserves negative and
+zero outcomes, keeps heavy M5 evidence outside FAST12 aggregation, and states
+that FAST64 is mechanism/trend evidence rather than dissertation-exact
+numerical reproduction.
+
 ## FAST64.6 PASS: frozen one-dimensional sensitivity (2026-09-12)
 
 The final V3 fail-closed collector accepts the frozen BICG/GESUMMV/Btree

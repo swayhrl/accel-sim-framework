@@ -21,7 +21,8 @@ STAGE5 = ("fast12_summary.csv", "fast12_stalls.csv", "fast12_live_misses.csv",
           "fast64_5_causal_classification.tsv", "FAST64_5_CAUSAL_ANALYSIS_STATUS.tsv")
 STAGE6 = ("fast64_6_cells.tsv", "fast64_6_logical_plot.tsv",
           "fast64_6_physical_plot.tsv", "fast64_6_pib_plot.tsv",
-          "fast64_6_raw_manifest.tsv", "fast64_6_collector_status.tsv")
+          "fast64_6_raw_manifest.tsv", "fast64_6_expected_deadlocks.tsv",
+          "fast64_6_collector_status.tsv")
 
 
 def fail(message: str) -> None:
@@ -120,7 +121,7 @@ def main() -> int:
         csv_as_tsv(args.stage5_dir / "fast12_live_misses.csv", temporary, "live_misses.tsv")
         csv_as_tsv(args.stage5_dir / "fast12_traffic.csv", temporary, "traffic_pressure.tsv")
         csv_as_tsv(args.stage5_dir / "fast12_io_oo.csv", temporary, "io_oo_mechanism.tsv")
-        for name in ("fast64_6_logical_plot.tsv", "fast64_6_physical_plot.tsv", "fast64_6_pib_plot.tsv"):
+        for name in ("fast64_6_logical_plot.tsv", "fast64_6_physical_plot.tsv", "fast64_6_pib_plot.tsv", "fast64_6_expected_deadlocks.tsv"):
             copy(args.stage6_dir / name, temporary, name)
         copy(args.stage5_dir / "fast64_5_causal_classification.tsv", temporary, "causal_classification.tsv")
         copy(args.limitations_boundary, temporary, "limitations_boundary.md")
