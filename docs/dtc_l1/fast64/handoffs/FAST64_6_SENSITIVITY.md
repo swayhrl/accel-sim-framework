@@ -715,3 +715,18 @@ lower-cap-full and lower-create-queue-full `0`.  This completes the 40-KiB
 GESUMMV physical IO/OO pair as strict precompute evidence only; it remains
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` and makes no sensitivity or stage
 promotion claim.
+
+## BICG logical 16/32-KiB IO partial terminal batch (2026-09-11)
+
+The BICG logical-16-KiB and logical-32-KiB PAPER_IO rows naturally exited zero
+at `2026-09-11T14:46:08Z` and `2026-09-11T14:45:54Z`.  Their compact records
+and immutable receipts are pinned in
+`generated/FAST64_6_BICG_LOGICAL_IO_PARTIAL_TERMINAL_REGISTRY_V1.tsv`.
+Each records `93,942,704` cycles / `145,666,048` instructions, IO lower
+create/issue/response `17,821,394/17,821,394/17,821,394`, lower credits
+`17,821,394/17,821,394`, dependency count/closed `18,350,080/18,350,080`,
+zero terminal lower/PIB/inflight and lower-cap-full zero.  The 64-KiB IO row
+is not included here unless it independently reaches the same strict terminal
+gate.  This partial batch remains solely
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; it is neither a curve nor a
+FAST64.6/FAST64.4 promotion.
