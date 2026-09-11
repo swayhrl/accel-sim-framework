@@ -64,10 +64,12 @@ before FAST64.3 PASS.
 
 ### Recovered old-Core terminal evidence
 
-The original terminal receipts for 2DConvolution/IO, DWT2D/IO+OO,
-Gaussian/IO+OO, and LUD/IO+OO have now been strict-collected by a future-only
-v2 observer into distinct `*_recovered_v2.json` evidence files.  The original
-monitor bytes, raw output, and locks remain preserved.  This is a
+The original terminal receipts for 2DConvolution/IO+OO, DWT2D/IO+OO,
+Gaussian/IO+OO, and LUD/IO+OO have now been strict-collected into distinct
+recovery evidence files. The original monitor bytes, raw output, and locks
+remain preserved. The 2DConvolution/OO terminal used the future-only v3
+observer because its immutable runner lacks an optional launcher-log path;
+this is a host-closeout repair only. This is a
 host-closeout recovery only: every record retains literal bbcbb/runtime/A1/
 frozen-Framework provenance and
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`.  Refer to

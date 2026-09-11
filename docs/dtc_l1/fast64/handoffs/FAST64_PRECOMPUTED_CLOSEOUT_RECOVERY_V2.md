@@ -1,6 +1,6 @@
 # FAST64 precomputed closeout recovery v2
 
-Status: **RECOVERY COMPLETE FOR THE SEVEN ROWS LISTED BELOW — ALL REMAIN PHYSICAL PRECOMPUTES**
+Status: **RECOVERY COMPLETE FOR THE EIGHT ROWS LISTED BELOW — ALL REMAIN PHYSICAL PRECOMPUTES**
 
 ## Scope and safety boundary
 
@@ -24,6 +24,7 @@ and their original immutable attempt UUIDs.
 | workload | mode | attempt UUID | cycles | instructions | compact evidence | result status |
 | --- | --- | --- | ---: | ---: | --- | --- |
 | 2DConvolution | IO | `7ae2c41b-a4f1-444c-bade-ae93dbc6293e` | 627,590 | 620,347,492 | `generated/fast64_4_precomputed_rows_v1/fast64_4_2DConvolution_io_cap8192_a1_v3_recovered_v2.json` | strict physical precompute |
+| 2DConvolution | OO | `7e6c31bb-6887-4117-850c-6a3b2bc2764e` | 593,208 | 620,347,492 | `generated/fast64_4_precomputed_rows_v1/fast64_4_2DConvolution_oo_cap8192_a1_v3_recovered_v3.json` | strict physical precompute |
 | DWT2D | IO | `257ccf84-1651-4116-a36d-b8227a4e1548` | 241,380 | 148,684,429 | `generated/fast64_4_precomputed_rows_v1/fast64_4_dwt2d_io_cap8192_a1_v3_recovered_v2.json` | strict physical precompute |
 | DWT2D | OO | `8d866b57-202e-4386-b221-b1b418d68735` | 234,651 | 148,684,429 | `generated/fast64_4_precomputed_rows_v1/fast64_4_dwt2d_oo_cap8192_a1_v3_recovered_v2.json` | strict physical precompute |
 | Gaussian | IO | `5251ab7f-13b1-43dc-9b7d-0434ef498817` | 3,815,204 | 283,685,120 | `generated/fast64_4_precomputed_rows_v1/fast64_4_gaussian_io_cap8192_a1_v3_recovered_v2.json` | strict physical precompute |
@@ -36,6 +37,11 @@ deadlock/output-mismatch scan, exact mode/config/payload identity, and the
 validator's accounting/drain checks.  Observed lower-cap and mode-local queue
 pressure counters remain evidence, not failures or performance-selection
 criteria.
+
+The 2DConvolution/OO addition used the future-only v3 host monitor because
+the historical immutable runner does not emit every optional launcher-log
+path assumed by v2. V3 changes only that optional-log scan; it preserves the
+same validator, receipts, inputs, provenance and nonpromotion boundary.
 
 ## Explicit non-promotion
 

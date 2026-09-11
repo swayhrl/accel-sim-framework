@@ -1,5 +1,19 @@
 # Latest Codex Report
 
+## FAST64.4 2DConvolution OO terminal recovered without promotion (2026-09-11)
+
+The old-Core 2DConvolution/OO physical precompute had a natural exit-zero
+receipt but no compact evidence because its original monitor remained at its
+initial wait state. A one-shot future-only v3 monitor strictly collected the
+unchanged namespace into
+`fast64_4_2DConvolution_oo_cap8192_a1_v3_recovered_v3.json`: UUID
+`7e6c31bb-6887-4117-850c-6a3b2bc2764e`, 593,208 cycles and 620,347,492
+instructions, lower create/issue/response `3,305,954/3,305,954/3,305,954`,
+dependencies `7,835,916/7,835,916`, and final OO inflight/PIB/active-ref/lower
+state all zero. It preserves literal bbcbb/runtime/A1 identity and remains
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; it is not a FAST64.4 matrix result
+or a replacement for the live Core-41 2D Base repair.
+
 ## FAST64.6 physical coverage reconciled against terminal evidence (2026-09-11)
 
 A row-by-row read-only reconciliation found six physical-pool rows whose
