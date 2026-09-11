@@ -95,3 +95,17 @@ lower-cap-full resolved, and materialize complete structural metrics.
 Only after that Base gate may 2DConvolution IO and OO be acquired, and both
 must share the same final Core/runtime identity.  Historical bbcbb IO/OO
 evidence cannot be mixed into that triplet.
+
+## Future-only execution path
+
+`util/dtc_l1/dispatch_fast64_3_2d_base_tag_identity_v2.sh` and
+`util/dtc_l1/collect_fast64_3_2d_base_tag_identity_v2.sh` are separate from
+all Core-41 and live-controller bytes.  The dispatcher pins the Core commit,
+Release-binary hash, frozen Base config/payload/trace, A1 observer, immutable
+runner, fresh namespace, and UUID receipt path.  Its no-dispatch identity
+check passes.  The paired collector's pre-terminal check reports only
+`WAIT_TERMINAL`; it has not written result evidence.
+
+Dispatch is deliberately deferred until a fresh resource admission is safe;
+the current populated FAST64 pool is not altered to make room.  This path
+therefore prepares, but does not itself produce, the required formal row.
