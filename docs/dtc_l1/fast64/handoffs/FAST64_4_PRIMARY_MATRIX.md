@@ -67,6 +67,36 @@ the companion binds that exact Base summary and terminal lower/PIB drain, and
 refuses any pre-existing namespace.  Its current pre-Base check fails closed;
 no 2DConvolution IO/OO simulator has been launched by this path.
 
+### 2026-09-11 primary-acquisition coverage and capacity audit
+
+The current exact 24-cell IO/OO audit remains: 20
+`STRICT_TERMINAL_REUSE_CANDIDATE`, two Core-95 GESUMMV cells
+`LIVE_NONTERMINAL`, and two 2DConvolution cells
+`BLOCKED_ON_FINAL_CORE_IDENTITY`.  There is no
+`MISSING_READY_TO_DISPATCH` non-2DConvolution cell, so no duplicate primary
+row was launched merely to consume available capacity.  Every
+`FAST64_SENS_*` sensitivity row remains excluded from this audit.
+
+Two fresh, read-only three-window admission observations used the FAST64-only
+RSS distribution, cgroup limits, memory PSI/OOM, CFS throttling, cgroup I/O,
+swap-out, and output capacity.  At 13 live FAST64 leaves, both the total-16
+(three additional workers) and total-20 (seven additional workers) scenarios
+passed: p95 RSS was 3,443,523,584 B, `MemAvailable` was respectively
+91,457,060,864 B and 92,874,694,656 B, cgroup headroom exceeded 214 GB,
+projected post-admission `MemAvailable` remained 80,881,209,344 B and
+68,747,837,440 B, memory PSI/OOM/CFS throttling were zero, and the total-20
+window had zero swap-out.  Output free space was about 89.7 GiB.  The first
+total-16 window saw a one-sample, 105-page swap-out transient but no major
+fault, PSI, OOM, or sustained swap activity; it is recorded as an observation,
+not used to launch a duplicate.  The exact temporary audit records are
+`/tmp/fast64-r4-admission-16-20260911T024945Z.tsv` and
+`/tmp/fast64-r4-admission-20-20260911T025043Z.tsv` on the execution host.
+
+Thus capacity is ready for the already-authorized priority order—first the
+strict-gated Core-41 2DConvolution IO/OO successors, then any genuinely
+missing primary row—but it does not override the no-duplicate and
+common-triplet-identity rules.
+
 The first post-transition wave is active under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: Btree Base/IO/OO, MRI-Q
 Base/IO/OO, ATAX/OO and GESUMMV/OO.  Each has a fresh immutable-v2 START
