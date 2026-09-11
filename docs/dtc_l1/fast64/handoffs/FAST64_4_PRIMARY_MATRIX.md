@@ -34,6 +34,27 @@ their literal provenance; no accepted triplet may mix Core/runtime identities.
 
 ## Repaired-Core physical precompute wave
 
+### Core-95 NN IO/OO primary acquisition (2026-09-11)
+
+The exact 24-cell IO/OO coverage audit excludes every `FAST64_SENS_*`
+sensitivity row.  At dispatch it found 18 strict-terminal reuse candidates,
+two live GESUMMV/Core-95 rows, two 2DConvolution cells blocked on the final
+Core-41 triplet identity, and only NN/IO plus NN/OO genuinely missing.  A
+fresh resource audit admitted the two missing rows without touching any live
+simulator.  Both used Core `95ccdb7a...`, runtime `462d105c...cc4dbc9`, A1,
+scientific Framework `037f008b...`, their frozen FAST64 IO/OO configs, exact
+NN payload, and immutable runner `bf9a84c8...` in fresh namespaces.
+
+| row | attempt UUID | terminal / strict result | compact evidence | closure |
+| --- | --- | --- | --- | --- |
+| NN / PAPER_IO | `d1c7df08-769e-4b68-ba61-359d3902f86f` | exit 0 at `2026-09-11T02:20:34Z`; strict PASS | `generated/fast64_4_primary_core95_v1/fast64_4_primary_nn_io_core95ccdb7a_a1_v1.json` | 6,095 cycles / 1,284,872 instructions; lower credit `2673/2673`, IO create/issue/response `2673/2673/2673`, dependency closed/count `5346/5346`, final lower/inflight/PIB `0/0/0`, cap-full `0` |
+| NN / PAPER_OO | `f7dc6dbb-1951-49cc-a865-22f07bb7de4f` | exit 0 at `2026-09-11T02:20:34Z`; strict PASS | `generated/fast64_4_primary_core95_v1/fast64_4_primary_nn_oo_core95ccdb7a_a1_v1.json` | 6,105 cycles / 1,284,872 instructions; lower credit `2673/2673`, OO create/issue/response `2673/2673/2673`, dependency closed/count `5346/5346`, final lower/inflight/PIB/active-refs `0/0/0/0`, cap-full `0` |
+
+The coverage state is now 20 strict-terminal candidates, two live rows, and
+two cells blocked on the final 2DConvolution Core-41 identity.  These rows are
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; they neither form an accepted
+triplet nor advance FAST64.4, and no GM or primary-stage claim is made.
+
 The first post-transition wave is active under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: Btree Base/IO/OO, MRI-Q
 Base/IO/OO, ATAX/OO and GESUMMV/OO.  Each has a fresh immutable-v2 START

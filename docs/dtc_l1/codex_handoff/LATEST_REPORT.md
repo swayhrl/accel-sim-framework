@@ -1,5 +1,28 @@
 # Latest Codex Report
 
+## FAST64.4 primary IO/OO coverage closed for the currently dispatchable cells (2026-09-11)
+
+The exact 24-cell primary IO/OO audit explicitly excludes all `FAST64_SENS_*`
+rows.  It found 18 strict-terminal reuse candidates, GESUMMV/IO+OO live under
+the formal Core-95 identity, 2DConvolution/IO+OO blocked on the eventual
+common Core-41 triplet identity, and NN/IO+OO as the only genuinely missing
+cells.  Following a fresh resource admission, those two NN rows were launched
+once through immutable runner `bf9a84c8...` with Core `95ccdb7a...`, runtime
+`462d105c...cc4dbc9`, A1 and scientific Framework `037f008b...`; no live
+simulator was changed.
+
+Both NN rows naturally exited zero at `2026-09-11T02:20:34Z` and strict
+collection passed.  IO records 6,095 cycles / 1,284,872 instructions, balanced
+lower credit and IO create/issue/response `2673/2673`, dependencies
+`5346/5346`, final lower/inflight/PIB `0/0/0`, and lower-cap-full `0`.  OO
+records 6,105 cycles / the same instructions, balanced lower credit and OO
+create/issue/response `2673/2673`, dependencies `5346/5346`, final
+lower/inflight/PIB/active-refs `0/0/0/0`, and lower-cap-full `0`.  Compact
+evidence is `fast64_4_primary_core95_v1/*nn_{io,oo}*.json`.  The 20/2/2
+coverage split is nonpromoting: all retained rows remain
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`, FAST64.3 remains ACTIVE, and neither
+FAST64.4 nor any GM claim is advanced.
+
 ## FAST64.4 2DConvolution OO terminal recovered without promotion (2026-09-11)
 
 The old-Core 2DConvolution/OO physical precompute had a natural exit-zero
