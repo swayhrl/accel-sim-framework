@@ -296,7 +296,7 @@ collector, Stage3/4 simulator, or diagnostic was edited or restarted.  This
 is physical acquisition only and cannot promote FAST64.4, FAST64.5, or
 FAST64.6.
 
-## GESUMMV / 40-KiB IO dispatched after BICG-24K pair closure (2026-09-11)
+## GESUMMV / 40-KiB pair: IO strict terminal, OO active (2026-09-11)
 
 The next nonduplicate GESUMMV physical point is 40 KiB, exactly 320 physical
 128-B lines (40,960 B).  Immutable-v2 dispatcher dry-runs passed for fresh
@@ -315,11 +315,28 @@ Its START receipt binds the formal Core/runtime/A1/scientific/payload and
 physical-40 IO config SHA `69a9c237...`; a short read-only observation found
 CPU progress and no actual assertion/fatal/deadlock/output-mismatch signature.
 
+V13 naturally terminated with exit 0 at `2026-09-11T07:58:41Z`; the frozen
+V10 collector then published
+`generated/fast64_6_precomputed_v10/fast64_sens_v13_gesummv_physical40_io.json`.
+Its exact formal identity is Core `95ccdb7a...`, runtime `462d105c...`, A1,
+scientific Framework `037f008b...`, exact GESUMMV trace-list SHA
+`ed0da283...`, and physical-40 IO config SHA `69a9c237...`.  The compact
+record proves 109,360,156 cycles / 190,918,656 instructions, lower
+acquire/release `34,496,765/34,496,765`, IO create/issue/response
+`34,496,765/34,496,765/34,496,765`, dependency
+`35,651,712/35,651,712`, zero final PIB/inflight/lower, and cap-full zero.
+
+V14 was subsequently atomically started once at `2026-09-11T01:00:21Z` as
+attempt `301770a0-2ef4-4b1e-b51c-500624ab2dd6` in
+`fast64_sens_v14_gesummv_physical40_oo` on CPU 3, with the same immutable
+runner and formal identity and physical-40 OO config SHA `6b1cf347...`.  It
+remains `ACTIVE_NONTERMINAL`; no outcome is inferred from its START receipt.
+
 Future-only `util/dtc_l1/collect_fast64_6_precompute_v10.sh` (monitor PID
 949578) targets only V13/V14, uses atomic temporary-result publication, and
-does not read or modify active V1--V9 collection dependencies.  V14 remains
-undispatched.  V13 is `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` only: it is
-not a result, pair comparison, or stage promotion.
+does not read or modify active V1--V9 collection dependencies.  Both rows
+remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` only: neither is a result,
+pair comparison, or stage promotion.
 
 ## GESUMMV / 48-KiB pair closeout prepared, not dispatched (2026-09-11)
 
