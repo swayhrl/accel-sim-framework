@@ -135,3 +135,10 @@ a fresh two-worker V3 resource admission, dispatches distinct-CPU IO/OO rows,
 and strictly collects those rows at natural terminal.  Its `--once` check
 currently returns `WAIT_BASE_TERMINAL` without launching work.  Once its
 watch instance starts, none of its pinned helper bytes will be edited.
+
+`prepare_fast64_3_tag_identity_registry_v2.py` is the future-only Stage3
+registry bridge.  It replaces only the retained invalid 2D source row after
+pinning the existing Stage3 matrix validator, verifying the new strict and
+structural evidence, and revalidating all twelve Base rows.  Its static
+negative fixture confirms that absent evidence cannot manufacture a candidate
+registry; no FAST64.3 registry or PASS marker exists yet.
