@@ -55,3 +55,22 @@ diagnostic remains `NONFORMAL_DIAGNOSTIC_NOT_RESULT`; its sole purpose is to
 distinguish reserve/physical allocation, pending read/response, and reclaim.
 Until then these attempts remain failed evidence and cannot be used for
 FAST64.4, FAST64.5, FAST64.6, or any normalized sensitivity curve.
+
+## V2 diagnostic acquisition active (2026-09-11)
+
+After the V3 admission audit passed two additional workers (no sampled swap
+activity, memory PSI, OOM or CFS throttling; 83.9 GiB projected
+`MemAvailable` after admission), the committed V2 dispatcher was dry-run
+verified and launched exactly once per mode in fresh namespaces:
+
+| mode | CPU | UUID | namespace | status |
+| --- | ---: | --- | --- | --- |
+| IO | 0 | `5a6b4eeb-1563-49f5-8af0-a20ded38fc3c` | `fast64_6_gesummv_physical16p5_io_coref283_diag_v2` | `NONFORMAL_DIAGNOSTIC_NOT_RESULT`, active |
+| OO | 7 | `ac6c1a27-7980-4cdc-85c1-64974a536b76` | `fast64_6_gesummv_physical16p5_oo_coref283_diag_v2` | `NONFORMAL_DIAGNOSTIC_NOT_RESULT`, active |
+
+Each namespace has an atomic START receipt binding observational Core
+`f2836ea1...`, binary `361aada1...`, immutable runner `bf9a84c8...`, A1,
+scientific Framework `037f008b...`, the literal original GESUMMV payload and
+its respective frozen physical-16.5-KiB config.  These are diagnostic only:
+their terminal analyzer output may classify source state but cannot relabel
+the preserved formal failures or create a FAST64 result.

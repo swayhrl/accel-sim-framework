@@ -1,5 +1,17 @@
 # Latest Codex Report
 
+## FAST64.6 GESUMMV 16.5-KiB IO/OO diagnostic acquisition active (2026-09-11)
+
+The committed V2 observational dispatcher was dry-run verified and, after a
+fresh two-worker resource admission, launched once in each new namespace:
+IO UUID `5a6b4eeb-1563-49f5-8af0-a20ded38fc3c` on CPU 0 and OO UUID
+`ac6c1a27-7980-4cdc-85c1-64974a536b76` on CPU 7.  Both have atomic START
+receipts and bind only observational Core `f2836ea1...`, binary `361aada1...`,
+the original 16.5-KiB configs/payload, A1 and immutable runner `bf9a84c8...`.
+They are `NONFORMAL_DIAGNOSTIC_NOT_RESULT`: the terminal analyzer may establish
+source state, but cannot relabel either preserved formal failure or advance a
+FAST64 stage.
+
 ## FAST64.6 GESUMMV 16.5-KiB diagnostic path repaired fail-closed (2026-09-11)
 
 The historical GESUMMV/physical-16.5-KiB IO and OO failures remain preserved
