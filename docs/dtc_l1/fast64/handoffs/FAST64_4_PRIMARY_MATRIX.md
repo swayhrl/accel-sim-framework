@@ -1,9 +1,9 @@
 # FAST64.4 — Primary Base/IO/OO Matrix Handoff
 
-Status: **PREPARED — DO NOT CLAIM FAST64_4_PRIMARY_PASS UNTIL EVERY HARD ITEM BELOW IS CHECKED**
+Status: **PASS — FAST64_4_PRIMARY_PASS**
 
-This file is the authoritative FAST64.4 stage handoff template. Goal mode must
-fill and close it rather than inventing a weaker ad-hoc matrix closeout.
+This file is the authoritative FAST64.4 stage handoff.  The complete
+cap-resolved closeout below, rather than an ad-hoc matrix, supplies its PASS.
 
 Detailed execution/promotion authority:
 `../FAST64_3_4_EXECUTION_CONTRACT.md`.
@@ -371,34 +371,42 @@ Scheduling differences are not scientific identity differences.
 
 ## 10. FAST64.4 HARD acceptance checklist
 
-Do not change `Status` to PASS until every applicable item is checked.
+The cap-resolved collector output is
+`generated/fast64_4_cap_resolved_matrix_v1/`; its SHA-bound cap identity
+manifest, 36-cell matrix, 12 triplets, accounting table, raw-log index and
+speedup table were rechecked at closeout.  The explicit common-cap authority
+is `FAST64_4_CAP_RESOLUTION_AUTHORITY_V1.md`.  It selects 32768 solely from
+the lower-credit guard's non-binding criterion, preserves all bound controls
+as diagnostics, and permits lower-cap reuse only when the compact strict row
+has zero cap-full events.  The collector's candidate pass is the final
+mechanical evidence below; the handoff makes the stage promotion.
 
-- [ ] FAST64.1 PASS verified.
-- [ ] FAST64.2 PASS verified.
-- [ ] FAST64.3 PASS verified.
-- [ ] Exactly 36 primary rows accepted: 12 Base + 12 IO + 12 OO.
-- [ ] All 12 Base rows are exact accepted FAST64.3 rows unless explicitly invalidated/replaced.
-- [ ] Every row naturally exited zero.
-- [ ] Every row strict-parsed under its recorded versioned validation contract.
-- [ ] Every row consumed exact frozen payload identity/order.
-- [ ] Every triplet has common Core/runtime/A1/scientific Framework identity.
-- [ ] Every triplet differs only in documented mechanism-required mode parameters.
-- [ ] Every triplet passes dynamic-instruction/source-operation identity where required.
-- [ ] Every row has no assertion/fatal/actual deadlock/output mismatch/unresolved controller anomaly.
-- [ ] IO/OO lower create/issue/response accounting conserved.
-- [ ] dependency create/complete accounting conserved where applicable.
-- [ ] final PIB/inflight/lower states drain to zero.
-- [ ] final OO active-ref/reclaim state drains to zero where applicable.
-- [ ] all cap-full observations reviewed; no unresolved binding-cap condition remains.
-- [ ] per-workload IO/OO speedups computed from accepted rows.
-- [ ] `GM-FAST12_IO` contains exactly 12 frozen members.
-- [ ] `GM-FAST12_OO` contains exactly 12 frozen members.
-- [ ] negative/zero results retained; no per-workload resource tuning performed.
-- [ ] primary matrix/triplet/speedup/accounting/identity outputs reconcile.
-- [ ] retry/obsolete map complete.
-- [ ] raw-log index complete.
-- [ ] no unresolved implementation/model correctness issue remains.
-- [ ] `git diff --check` passes and only intended compact evidence is staged.
+- [x] FAST64.1 PASS verified.
+- [x] FAST64.2 PASS verified.
+- [x] FAST64.3 PASS verified.
+- [x] Exactly 36 primary rows accepted: 12 Base + 12 IO + 12 OO.
+- [x] All 12 Base rows are exact accepted FAST64.3 rows unless explicitly invalidated/replaced.
+- [x] Every row naturally exited zero.
+- [x] Every row strict-parsed under its recorded versioned validation contract.
+- [x] Every row consumed exact frozen payload identity/order.
+- [x] Every triplet has common Core/runtime/A1/scientific Framework identity.
+- [x] Every triplet differs only in documented mechanism-required mode parameters.
+- [x] Every triplet passes dynamic-instruction/source-operation identity where required.
+- [x] Every row has no assertion/fatal/actual deadlock/output mismatch/unresolved controller anomaly.
+- [x] IO/OO lower create/issue/response accounting conserved.
+- [x] dependency create/complete accounting conserved where applicable.
+- [x] final PIB/inflight/lower states drain to zero.
+- [x] final OO active-ref/reclaim state drains to zero where applicable.
+- [x] all cap-full observations reviewed; no unresolved binding-cap condition remains.
+- [x] per-workload IO/OO speedups computed from accepted rows.
+- [x] `GM-FAST12_IO` contains exactly 12 frozen members.
+- [x] `GM-FAST12_OO` contains exactly 12 frozen members.
+- [x] negative/zero results retained; no per-workload resource tuning performed.
+- [x] primary matrix/triplet/speedup/accounting/identity outputs reconcile.
+- [x] retry/obsolete map complete.
+- [x] raw-log index complete.
+- [x] no unresolved implementation/model correctness issue remains.
+- [x] `git diff --check` passes and only intended compact evidence is staged.
 
 PASS state, only after all checks:
 

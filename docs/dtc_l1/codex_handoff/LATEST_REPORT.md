@@ -1,6 +1,6 @@
 # Latest Codex Report
 
-## FAST64.4 cap recovery: 32768 minimum candidate; three 16384 rows live (2026-09-11)
+## FAST64.4 PASS: cap-resolved 36-cell primary matrix (2026-09-11)
 
 The common-Core658 2DConvolution IO and OO rows both naturally exited zero and
 strict-collected. IO nevertheless records `72,236`
@@ -20,16 +20,14 @@ Its compact JSON is
 
 No IO/OO lower-peak is emitted by the current reporting branch. The smallest
 source-neutral monotonic candidate, 16384, was acquired in a nine-row
-immutable wave. Strict terminals now establish: Gaussian Base and all three
-LUD modes are cap-inert at 16384; Hotspot1 IO/OO remain bound at 16384
-(`25,887` / `23,026` cap-full events), but both are non-binding at the next
-32768 point (`0` events). Thus 32768 is the current minimum common candidate,
-not a speedup-selected value. The only live recovery rows are 2D IO/Core658
-and Gaussian IO/OO/Core95 at 16384. Their natural terminal/strict results
-decide whether source-proven inert reuse suffices or whether only affected
-cells need acquisition at 32768. The cap-resolved collector rejects undeclared
-cap mixes and now supports explicit inert reuse from any lower verified cap.
-FAST64.4 remains ACTIVE; no stage is promoted.
+immutable wave. Gaussian Base/IO/OO, LUD Base/IO/OO, and Core658 2D IO are
+all non-binding at 16384. Hotspot1 IO/OO remain bound at 16384 (`25,887` /
+`23,026` cap-full events), but both are non-binding at 32768 (`0` events).
+Thus 32768 is the minimum common cap, not a speedup-selected value. The
+SHA-bound 36-cell map admits only explicit source-proven inert reuse or final
+cap reacquisition; the fail-closed collector passes all 12 triplets, all
+accounting/drain conditions, and exact FAST12 membership. GM-FAST12 is
+`1.326143` (IO) / `1.592062` (OO). `FAST64_4_PRIMARY_PASS` is closed.
 
 ## FAST64.3 PASS; Core658 2D common-triplet strict terminal evidence (2026-09-11)
 

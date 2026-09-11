@@ -1,6 +1,6 @@
 # FAST64.4 2DConvolution lower-cap resolution
 
-Status: **ACTIVE — no FAST64.4 promotion**
+Status: **RESOLVED — supports FAST64_4_PRIMARY_PASS**
 
 ## Trigger and preserved evidence
 
@@ -154,3 +154,23 @@ complete the common-cap resolution. The strict JSONs are contained under
 `generated/fast64_4_cap16384_recovery_v1/` and
 `generated/fast64_4_cap32768_recovery_v1/`; raw simulator output remains only
 in the external immutable run namespaces.
+
+## Resolution closeout
+
+Core658 2DConvolution IO@16384 naturally exited zero with UUID
+`93fce0ff-5163-4a7c-9d48-6cb01fb04dc7` and strict compact result
+`fast64_4_2DConvolution_io_cap16384_core658_a1_v1.json`: `627,281` cycles,
+`620,347,492` instructions, cap-full `0`, IO create/issue/response
+`3,375,831/3,375,831/3,375,831`, dependencies
+`7,835,916/7,835,916`, and terminal inflight/PIB/lower `0/0/0`.
+
+Consequently all former 8192-bound cells have a source-proven non-binding
+observation at 16384 or 32768. The SHA-bound
+`FAST64_4_CAP_RESOLUTION_AUTHORITY_V1.md` freezes 32768 as the common
+formal cap and names the literal source cap/config for every Base/IO/OO cell.
+`FAST64_4_CAP_RESOLVED_PRIMARY_REGISTRY_V1.tsv` plus
+`FAST64_4_CAP_RESOLUTION_MAP_V1.tsv` were accepted by the fail-closed
+cap-resolved collector, producing the exact 36-cell candidate package
+`generated/fast64_4_cap_resolved_matrix_v1/`. This resolves the cap gate and
+supports `FAST64_4_PRIMARY_PASS`; the high-cap control and all bound rows
+remain diagnostics rather than primary performance results.
