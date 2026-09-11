@@ -65,3 +65,19 @@ This is a control, not a performance result. At natural terminal it must
 strict-validate its receipt, payload, config-only diff, accounting, drain and
 zero cap-full observation. The 8192-versus-high comparison then determines
 the next source-correct sweep point(s); no cap is selected for DTC speedup.
+
+## Future-only cap-resolved collector
+
+`util/dtc_l1/collect_fast64_4_cap_resolved_matrix_v1.py` is prepared and
+regression-tested, but has not collected a primary matrix. It imports the
+frozen V1 writer only after SHA verification and requires a fresh explicit
+36-cell cap-resolution map. The map binds one final common cap, each row's
+literal config identity, and the SHA of this resolution authority.
+
+A row at the final cap must be classified `REACQUIRED_AT_FINAL_CAP`. An old
+8192 row can enter only as
+`SOURCE_PROVEN_CAP_INERT_REUSE_8192_TO_FINAL`, with zero cap-full and the
+source proof that the cap guard is not reached. Any other cap identity mix,
+including the retained bound 2D IO@8192 diagnostic, is rejected before output
+publication. The collector has no simulator authority and emits only a
+candidate output; it cannot create a FAST64.4 PASS marker.
