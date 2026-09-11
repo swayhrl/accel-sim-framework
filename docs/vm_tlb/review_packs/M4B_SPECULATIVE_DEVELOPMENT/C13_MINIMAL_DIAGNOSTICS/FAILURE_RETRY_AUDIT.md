@@ -118,3 +118,15 @@ markers and telemetry records, and `gpu_tot_sim_cycle=34470902`; the accepted
 monotonic attribution set had four active metrics and passed continuity plus
 delta closure.  This is parser-only revalidation, not a replay.  Its paired
 same-new-binary Decode control independently passed before the repair.
+
+## Terminal parser-only revalidations — immutable evidence retained
+
+The following terminal logs initially encountered the superseded validator image. Each retained `C13_ARM_VALIDATION_PRE_REPAIR.json` is immutable historical evidence; the current result comes from the source-correct `--validate` parser path, which reads the existing raw log only and never starts a simulator.
+
+| arm | raw-log SHA-256 | retained gauge-only errors | final result |
+| --- | --- | --- | --- |
+| `C13-CAP-P320` | `34efd6337843065195b0f76bb6d9100e02a202e66a4c084aff5e7e9601d358eb` | `vm_snapshot_continuity:vm_l2_tlb_subentry_valid_occupancy; vm_terminal:vm_l2_tlb_subentry_valid_occupancy; vm_snapshot_continuity:vm_l2_tlb_subentry_valid_UNKNOWN; vm_terminal:vm_l2_tlb_subentry_valid_UNKNOWN; vm_snapshot_continuity:vm_l2_tlb_subentry_valid_WEIGHT; vm_terminal:vm_l2_tlb_subentry_valid_WEIGHT; vm_snapshot_continuity:vm_l2_tlb_subentry_valid_KV_CACHE; vm_terminal:vm_l2_tlb_subentry_valid_KV_CACHE` | PASS after immutable revalidation |
+| `C13-SEL-D10` | `cb380b1288587ba5064b3b59e8ba949230e44ea860c309127f115f2c8750a426` | `vm_snapshot_continuity:vm_l2_tlb_subentry_valid_UNKNOWN; vm_terminal:vm_l2_tlb_subentry_valid_UNKNOWN; vm_snapshot_continuity:vm_l2_tlb_subentry_valid_KV_CACHE; vm_terminal:vm_l2_tlb_subentry_valid_KV_CACHE` | PASS after immutable revalidation |
+| `C13-SEL-P10` | `f4e1707fbab5718bd567dce5c98373cdaa449d8aa571ff16e80d1bb9269f2f19` | `vm_snapshot_continuity:vm_l2_tlb_subentry_valid_KV_CACHE; vm_terminal:vm_l2_tlb_subentry_valid_KV_CACHE` | PASS after immutable revalidation |
+
+These fields are instantaneous valid-entry occupancy gauges, not monotonic cumulative attribution counters. The accepted cumulative metric set remains fail-fast; any surviving non-gauge error would prevent final collection. No replay, raw-log rewrite, Core/binary/config/trace/registration change, or C12 asset modification occurred.

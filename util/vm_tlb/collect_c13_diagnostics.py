@@ -360,7 +360,7 @@ def result_row(arm: dict[str, Any], all_arms: dict[str, dict[str, Any]], mapping
         'segment_l2_suppressed': fnum(metric(arm, 'vm_weight_segment_l2_suppressed')),
         'kernel691_cycles': str(kernel_cycle(arm, 691)) if arm['roi'] == 'prefill' else 'NOT_APPLICABLE',
         'embedding_output_cycles': str(cycles_by_op.get('EMBEDDING_OUTPUT', 0)),
-        'ffn_cycles': str(cycles_by_op.get('FFN', 0)),
+        'ffn_cycles': str(cycles_by_op.get('FFN_MLP', 0)),
         'attention_projection_cycles': str(cycles_by_op.get('ATTENTION_PROJECTION', 0)),
         'kernel_markers': str(len(arm['raw_kernels'])), 'telemetry_records': arm['result'].get('telemetry_records', 'NOT_EMITTED'),
         'object_conservation_pass': 'PASS', 'pte_conservation_pass': 'PASS',
@@ -380,7 +380,7 @@ def rows_status(manifest: list[dict[str, str]], terminal: dict[str, dict[str, An
     for row in manifest:
         exp = row['exp_id']; run = Path(row['output_dir']); validation = run / 'C13_ARM_VALIDATION.json'
         if exp in terminal:
-            status, failure = 'PASS', ''
+            status, failure = 'PASS', 'NONE'
         elif validation.is_file():
             value = json.loads(validation.read_text()); status = value.get('terminal_status', 'FAILED_DIAGNOSING'); failure = ';'.join(value.get('errors', []))
         elif (run / 'run.log').is_file():
@@ -503,6 +503,39 @@ def changed_files_report() -> str:
     return '\n'.join(lines)+'\n'
 
 
+def update_revalidation_audit(c13: dict[str, dict[str, Any]]) -> None:
+    """Append the retained validator-image history without touching raw evidence."""
+    path = PACK/'FAILURE_RETRY_AUDIT.md'
+    marker = '## Terminal parser-only revalidations — immutable evidence retained'
+    prior = path.read_text() if path.is_file() else '# C13 failure / retry audit\n'
+    if marker in prior:
+        prior = prior.split(marker, 1)[0].rstrip() + '\n'
+    rows=[]
+    for ident, arm in sorted(c13.items()):
+        pre = Path(arm['manifest']['output_dir'])/'C13_ARM_VALIDATION_PRE_REPAIR.json'
+        if not pre.is_file():
+            continue
+        original = json.loads(pre.read_text())
+        rows.append((ident, original, arm))
+    if not rows:
+        return
+    lines=[prior.rstrip(), '', marker, '',
+           'The following terminal logs initially encountered the superseded validator image. Each retained `C13_ARM_VALIDATION_PRE_REPAIR.json` is immutable historical evidence; the current result comes from the source-correct `--validate` parser path, which reads the existing raw log only and never starts a simulator.', '',
+           '| arm | raw-log SHA-256 | retained gauge-only errors | final result |',
+           '| --- | --- | --- | --- |']
+    for ident, original, arm in rows:
+        errors = '; '.join(original.get('errors', []))
+        if any('subentry_valid_' not in error for error in original.get('errors', [])):
+            fail('pre-repair record for %s contains a non-gauge error' % ident)
+        if original.get('raw_log_sha256') != arm['raw_sha']:
+            fail('pre-repair raw SHA differs from accepted raw log for %s' % ident)
+        lines.append('| `%s` | `%s` | `%s` | PASS after immutable revalidation |' %
+                     (ident, arm['raw_sha'], errors))
+    lines += ['',
+              'These fields are instantaneous valid-entry occupancy gauges, not monotonic cumulative attribution counters. The accepted cumulative metric set remains fail-fast; any surviving non-gauge error would prevent final collection. No replay, raw-log rewrite, Core/binary/config/trace/registration change, or C12 asset modification occurred.']
+    path.write_text('\n'.join(lines)+'\n')
+
+
 def final_report(arms: dict[str, dict[str, Any]], complete: bool) -> str:
     state = 'C13_MINIMAL_DIAGNOSTICS_COMPLETE_READY_FOR_REVIEW' if complete else 'C13_DIAGNOSTICS_ADAPTIVE_ADMISSION_AUTHORIZED'
     measured = sorted(key for key,arm in arms.items() if arm['source']=='C13_MEASURED')
@@ -528,6 +561,7 @@ def final_report(arms: dict[str, dict[str, Any]], complete: bool) -> str:
         direction='positive simulated-cycle gain' if value is not None and value < 0 else 'simulated-cycle regression' if value is not None and value > 0 else 'exact tie'
         lines.append('- %s: candidate-minus-F0 cycles = `%s` (%s).'% (label,signed(value),direction))
     lines.append('- `LATENCY_FINE_SWEEP.tsv` combines these new measured points with immutable C12 F7 L5/L10/L20 only after common trace/map identity checks. The prior 8.755/10.827 values remain `EMPIRICAL_INTERPOLATION_ONLY`, not substituted measurements.')
+    lines.append('- The new Prefill L9 gain and immutable L10 regression empirically bracket the crossover as `9 < Lseg* < 10`; therefore the prior 8.755 numeric interpolation is revised, not used as a measured crossover. Decode1 L11 remains a gain while immutable L20 regresses, so its prior 10.827 numeric interpolation is likewise not supported as a precise crossover; the current measured bracket is `11 < Lseg* < 20`.')
 
     # H2: report all mandated contrasts with their observable counters.
     lines += ['', '## MEASURED_C13_DIAGNOSTIC_FACT — H2 exact-remainder 2×2', '']
@@ -541,6 +575,7 @@ def final_report(arms: dict[str, dict[str, Any]], complete: bool) -> str:
                       signed(delta(arms,left,right,'vm_translation_requester_latency_cycles_total'))))
     interaction=(delta(arms,d,b,'gpu_tot_sim_cycle') or 0)-(delta(arms,c,a,'gpu_tot_sim_cycle') or 0)
     lines.append('- Cycle interaction `(D-B)-(C-A)` = `%s`, explicitly `DIAGNOSTIC_INTERACTION_ONLY`.' % signed(interaction))
+    lines.append('- The exact320/no-Segment B-A observation reduces rather than increases walks/PTE DRAM. It therefore does not support attributing a Prefill traditional-walk/PTE-DRAM increase primarily to the exact-remainder 768→320 capacity change; the non-equal-budget interaction does not identify a unique cause.')
 
     # H1 must never compare new-binary selective values directly to old binary.
     lines += ['', '## MEASURED_C13_DIAGNOSTIC_FACT — H1 object-selective Segment', '']
@@ -555,8 +590,9 @@ def final_report(arms: dict[str, dict[str, Any]], complete: bool) -> str:
             lines.append('  - kernel 691 cycle delta `%s`; Embedding/Output aggregate `%s`; FFN `%s`; Attention Projection `%s`.' %
                          (signed(kernel_cycle(arms[candidate],691)-kernel_cycle(arms[control],691)),
                           signed(op_cycles(arms[candidate], load_map()['prefill']).get('EMBEDDING_OUTPUT',0)-op_cycles(arms[control],load_map()['prefill']).get('EMBEDDING_OUTPUT',0)),
-                          signed(op_cycles(arms[candidate], load_map()['prefill']).get('FFN',0)-op_cycles(arms[control],load_map()['prefill']).get('FFN',0)),
+                          signed(op_cycles(arms[candidate], load_map()['prefill']).get('FFN_MLP',0)-op_cycles(arms[control],load_map()['prefill']).get('FFN_MLP',0)),
                           signed(op_cycles(arms[candidate], load_map()['prefill']).get('ATTENTION_PROJECTION',0)-op_cycles(arms[control],load_map()['prefill']).get('ATTENTION_PROJECTION',0))))
+    lines.append('- Relative only to its same-new-binary control, excluding the tied Embedding/Output Weight range regresses both Prefill (`+143881` cycles) and Decode1 (`+38843` cycles). Prefill kernel 691 regresses by `+126026` cycles, while FFN MLP changes by `+601` and Attention Projection by `+13380`; this does not support H1 recovery of kernel 691, a Prefill turnaround, or a phase-direction reversal.')
     lines += ['', '## SUPPORTED_C13_MECHANISM_SIGNAL', '',
               '- The controlled tables support only associations between measured eligibility/capacity/latency changes and observed cycles/translation/cache telemetry. They do not establish a unique critical-path causal chain.',
               '- Whether a phase-aware object policy is warranted is evaluated from the same-new-binary selective pairs, not from cross-binary historical speedups.', '',
@@ -609,6 +645,7 @@ def main() -> None:
     write_tsv(PACK/'KERNEL691_DIAGNOSTIC.tsv',('point_id','source','kernel_index','trace_filename','operator_class','cycles','full_roi_cycles','cycle_share','evidence_kind'),kernel691_rows(arms,mapping['prefill']))
     (PACK/'CONSERVATION_AUDIT.md').write_text(conservation_report(c13))
     (PACK/'CHANGED_FILES.md').write_text(changed_files_report())
+    update_revalidation_audit(c13)
     (PACK/'FINAL_REPORT.md').write_text(final_report(arms,complete))
     HANDOFF.parent.mkdir(parents=True,exist_ok=True)
     HANDOFF.write_text(final_report(arms,complete))
