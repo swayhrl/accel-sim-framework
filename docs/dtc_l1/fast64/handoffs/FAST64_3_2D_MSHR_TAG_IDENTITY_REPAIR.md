@@ -117,3 +117,11 @@ payload, observer and immutable runner, and require the Base JSON plus
 structural companion above to agree on that identity before either mode can
 launch.  Both IO and OO no-dispatch checks currently reject with
 `BASE_STRICT_GATE_REQUIRED`, as required; neither has created a run directory.
+
+The pre-existing FAST64.4 registry bridge defaulted to an obsolete Core-41
+Base registry.  Future-only
+`prepare_fast64_4_primary_registry_v2.py` instead requires explicit final
+Base-registry, IO/OO-coverage, generated-root, and output paths; it binds the
+reused V1 schema validator by SHA-256.  Its positive exact-36-cell and
+nonzero-lower-cap negative fixtures pass.  It has not produced a primary
+registry and cannot promote FAST64.4.
