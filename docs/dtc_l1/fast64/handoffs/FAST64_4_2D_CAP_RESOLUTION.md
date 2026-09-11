@@ -129,3 +129,28 @@ respectively), so 16384 is not frozen. Future-only
 `dispatch_fast64_4_cap32768_hotspot_v1.sh` and its two full one-line-diff
 configs pass dry run for the next 32768 point; it uses only the two CPUs freed
 by the terminal Hotspot rows while the other seven 16384 rows remain untouched.
+
+## First strict terminal batch
+
+The first eight recovery compact records have now passed the immutable strict
+collector. They are evidence only while the remaining three 16384 rows run:
+
+| workload / mode | observed cap | cycles / instructions | cap-full | disposition |
+| --- | ---: | ---: | ---: | --- |
+| Gaussian / Base | 16384 | 4,229,815 / 283,685,120 | 0 | explicit inert-reuse candidate for a later common cap |
+| LUD / Base | 16384 | 1,113,878 / 184,963,840 | 0 | explicit inert-reuse candidate |
+| LUD / IO | 16384 | 1,091,487 / 184,963,840 | 0 | explicit inert-reuse candidate |
+| LUD / OO | 16384 | 1,087,849 / 184,963,840 | 0 | explicit inert-reuse candidate |
+| Hotspot1 / IO | 16384 | 85,670 / 377,291,004 | 25,887 | cap-bound diagnostic, never primary |
+| Hotspot1 / OO | 16384 | 84,174 / 377,291,004 | 23,026 | cap-bound diagnostic, never primary |
+| Hotspot1 / IO | 32768 | 85,633 / 377,291,004 | 0 | next-candidate strict terminal; common-cap candidate only |
+| Hotspot1 / OO | 32768 | 84,173 / 377,291,004 | 0 | next-candidate strict terminal; common-cap candidate only |
+
+The 16384-to-32768 Hotspot transition is the first source-defined monotonic
+proof that 32768 is needed by at least one primary workload: both modes bind
+at 16384 and neither reaches the cap guard at 32768. It neither selects based
+on speedup nor promotes 32768 until 2DConvolution IO and Gaussian Base/IO/OO
+complete the common-cap resolution. The strict JSONs are contained under
+`generated/fast64_4_cap16384_recovery_v1/` and
+`generated/fast64_4_cap32768_recovery_v1/`; raw simulator output remains only
+in the external immutable run namespaces.
