@@ -88,20 +88,21 @@ The mechanically regenerated, checked-in, nonpromoting tables are:
   not an acceptance artifact)
 
 The common repaired-Core triplet candidates presently represented are ATAX,
-BICG, Btree, Hotspot1, and MRI-Q. Their preliminary cycle observations are:
+BICG, Btree, Hotspot1, MRI-Q, and NN. Their preliminary cycle observations
+are:
 
 ### Inventory reconciliation: incomplete NN and historical 2D cells (2026-09-11)
 
-Regenerating the nonpromoting aggregate from every currently strict-parsed
-compact summary reconciled two previously omitted inventory groups.  The
-immutable Core-95 NN IO/OO rows in
-`generated/fast64_4_primary_core95_v1/` now appear as one group with zero
-same-identity Base candidates and one IO plus one OO candidate.  They remain
-incomplete and cannot form a speedup or an accepted triplet.  Separately, the
-literal bbcbb 2DConvolution OO compact record now appears beside the existing
-literal IO record, still with zero accepted Base candidates.  It remains
-historical precompute only: it is neither paired with nor a substitute for the
-live Core-41 Base repair and its future Core-41 IO/OO successors.
+The literal bbcbb NN Base record was correctly retained as historical evidence
+but could not join the Core95 NN IO/OO pair. The fresh immutable Core95 NN
+Base replacement has now naturally exited, strict-validated, and acquired its
+structural companion. The regenerated aggregate therefore has one common
+Core95 NN Base/IO/OO candidate with matching instruction identity and drained
+terminal state. Separately, the literal bbcbb 2DConvolution OO compact record
+appears beside the existing literal IO record, still with zero accepted Base
+candidates. It remains historical precompute only: it is neither paired with
+nor a substitute for the live Core-41 Base repair and its future Core-41
+IO/OO successors.
 
 This is an inventory correction only.  It does not promote a row, alter the
 24-cell primary coverage audit, add a GM member, or change the Core-41
@@ -114,6 +115,7 @@ common-identity gate.
 | Btree | 369,977 | 244,231 | 172,795 | 1.514865 | 2.141133 |
 | Hotspot1 | 160,486 | 85,206 | 83,439 | 1.883506 | 1.923393 |
 | MRI-Q | 366,667 | 360,536 | 361,415 | 1.017005 | 1.014532 |
+| NN | 6,985 | 6,095 | 6,105 | 1.146021 | 1.144144 |
 
 These observations are hypotheses for FAST64.5, not causal claims: Btree
 combines substantial baseline PIB and traditional-MSHR pressure with the
