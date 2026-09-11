@@ -16,6 +16,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -443,7 +444,11 @@ def equivalence() -> None:
         ('EQ2_NEWBIN_DEFAULT_OFF_VS_EQ1', eq2, eq1),
         ('EQ2_NEWBIN_DEFAULT_OFF_VS_C12_F7_L10', eq2, anchor),
     ):
-        if not candidate.is_file() or not baseline.is_file():
+        validation = candidate.parent / 'C13_ARM_VALIDATION.json'
+        receipt = candidate.parent / 'C13_EFFECTIVE_CONFIG_RECEIPT.json'
+        if (not candidate.is_file() or not baseline.is_file() or not validation.is_file() or
+                not receipt.is_file() or json.loads(validation.read_text()).get('terminal_status') != 'PASS' or
+                json.loads(receipt.read_text()).get('runtime_status') != 'PASS'):
             report.append({'comparison': name, 'status': 'WAIT_TERMINAL', 'differences': 'MISSING_RAW_LOG'})
             continue
         differences = strict_compare(baseline, candidate)
@@ -479,6 +484,8 @@ def status() -> None:
                      else 'PASS_PENDING_EQ_GATE' if result.get('terminal_status') == 'PASS' and r.get('runtime_status') == 'PASS'
                      else 'FAILED')
             raw_sha = r.get('raw_log_sha256', 'MISSING')
+        elif receipt.is_file():
+            state, raw_sha = 'FAILED_AFTER_RUNTIME_RECEIPT', 'NONTERMINAL_OR_FAILED'
         elif run.is_dir():
             # A fresh directory exists only after the static receipt and
             # actual-command receipt have been written.  It is deliberately
@@ -496,20 +503,56 @@ def status() -> None:
         sum(item['status'] == 'NOT_STARTED' for item in report)))
 
 
+def watch(interval: int) -> None:
+    """Unattended, read-only controller for gate promotion and status.
+
+    It never launches or terminates a simulator.  Individual launchers still
+    own their terminal validation; this controller merely observes receipts
+    and refuses to compare partial EQ logs.
+    """
+    while True:
+        equivalence()
+        status()
+        rows = read_rows()
+        incomplete = []
+        failed = []
+        for row in rows.values():
+            run = Path(row['output_dir'])
+            validation = run / 'C13_ARM_VALIDATION.json'
+            receipt = run / 'C13_EFFECTIVE_CONFIG_RECEIPT.json'
+            if validation.is_file() and receipt.is_file():
+                if (json.loads(validation.read_text()).get('terminal_status') != 'PASS' or
+                        json.loads(receipt.read_text()).get('runtime_status') != 'PASS'):
+                    failed.append(row['exp_id'])
+            else:
+                incomplete.append(row['exp_id'])
+        if failed:
+            fail('terminal repaired arm failure: ' + ','.join(failed))
+        if not incomplete:
+            print('C13_PATH_A_WATCH_ALL_TERMINAL')
+            return
+        time.sleep(interval)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--prepare', action='store_true')
     parser.add_argument('--execute')
     parser.add_argument('--equivalence', action='store_true')
     parser.add_argument('--status', action='store_true')
+    parser.add_argument('--watch', type=int, metavar='SECONDS')
     args = parser.parse_args()
-    if sum((bool(args.prepare), bool(args.execute), bool(args.equivalence), bool(args.status))) != 1:
-        fail('select exactly one of --prepare, --execute, --equivalence, --status')
+    if sum((bool(args.prepare), bool(args.execute), bool(args.equivalence), bool(args.status), args.watch is not None)) != 1:
+        fail('select exactly one of --prepare, --execute, --equivalence, --status, --watch')
     if args.prepare:
         prepare()
     elif args.execute:
         execute(args.execute)
     elif args.equivalence:
         equivalence()
-    else:
+    elif args.status:
         status()
+    else:
+        if args.watch < 30:
+            fail('watch interval must be at least 30 seconds')
+        watch(args.watch)
