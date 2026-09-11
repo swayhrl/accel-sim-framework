@@ -125,3 +125,13 @@ Base-registry, IO/OO-coverage, generated-root, and output paths; it binds the
 reused V1 schema validator by SHA-256.  Its positive exact-36-cell and
 nonzero-lower-cap negative fixtures pass.  It has not produced a primary
 registry and cannot promote FAST64.4.
+
+The SHA-pinned future-only controller
+`auto_continue_fast64_2d_tag_identity_v2.sh`
+(`9f1185d85f057836ff666b058c73df58447ec09666bba2f383008e783f098baf`)
+is the sole automatic continuation path for this replacement.  It only
+collects after natural terminal receipts, revalidates the Base gate, performs
+a fresh two-worker V3 resource admission, dispatches distinct-CPU IO/OO rows,
+and strictly collects those rows at natural terminal.  Its `--once` check
+currently returns `WAIT_BASE_TERMINAL` without launching work.  Once its
+watch instance starts, none of its pinned helper bytes will be edited.
