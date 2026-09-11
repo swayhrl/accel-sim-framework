@@ -1,5 +1,20 @@
 # Latest Codex Report
 
+## Four repaired-Core ramp rows revalidated and retained as compact evidence (2026-09-11)
+
+The previously untracked compact records for BICG/Base, BICG/IO, ATAX/Base,
+and ATAX/IO were regenerated independently from immutable terminal receipts
+and compared byte-for-byte with the stored records.  All four pass the same
+strict validator, bind Core `95ccdb7a...`, runtime `462d105c...`, A1,
+scientific Framework `037f008b...`, their exact payload/config identity and
+single-epoch immutable runner receipts.  Their lower/dependency accounting,
+terminal drain, and lower-cap-full checks remain closed.
+
+They are committed only as
+`PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE` evidence.  They do not promote
+FAST64.3 or FAST64.4, and do not alter the separate Core-41 2DConvolution
+replacement now running.
+
 ## 2DConvolution/Base diagnostic closed; source-correct repair in validation (2026-09-11)
 
 The preserved historical formal Base attempt remains invalid: it naturally
