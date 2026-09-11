@@ -56,6 +56,21 @@ identity.  These rows are
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`; they neither form an accepted
 triplet nor advance FAST64.4, and no GM or primary-stage claim is made.
 
+### Future-only 36-cell collector-registry preparation
+
+`prepare_fast64_4_primary_registry_v1.py` is a future-only, fail-closed bridge
+from the final Core-41 FAST64.3 Base registry plus the 24-cell IO/OO coverage
+table to the existing 36-cell primary collector.  It has no simulator or
+controller authority, refuses a live/blocked/nonterminal coverage cell,
+requires every compact JSON to be present and schema-valid, and refuses any
+nonzero `DTC_L1_lower_cap_full_events` until an explicit source resolution
+exists.  It writes one new immutable registry only after all 36 inputs are
+strict-terminal; it neither rewrites source registries nor publishes a PASS
+marker.  The synthetic 36-cell positive regression and a nonzero-cap negative
+regression both pass.  Its current production dry run correctly fails at the
+absent final Core-41 Base registry, so it cannot prematurely compose a
+primary-matrix candidate.
+
 ### Core-41 2DConvolution IO/OO future path (prepared, not dispatched)
 
 The historical bbcbb 2DConvolution IO/OO rows remain literal precompute only
