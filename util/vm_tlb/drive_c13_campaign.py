@@ -5,7 +5,7 @@ The driver is intentionally unable to alter a simulator configuration, trace,
 registration, Core, or binary.  It only selects the next already-prepared
 manifest row, admits it under the C13 adaptive-addendum policy, and invokes
 the existing per-arm runner.  It is safe to leave running while a simulator is
-live: it never launches a third full-ROI C13 arm.
+live: it never launches more than four full-ROI C13 arms.
 """
 from __future__ import annotations
 
@@ -34,6 +34,7 @@ RSS = re.compile(r'Maximum resident set size \(kbytes\):\s*(\d+)')
 ORDER = ('C13-LAT-P8', 'C13-LAT-D11', 'C13-LAT-P9', 'C13-CAP-P320',
          'C13-CAP-P768S10', 'C13-SEL-P10-CTRL-NEWBIN',
          'C13-SEL-D10-CTRL-NEWBIN', 'C13-SEL-P10', 'C13-SEL-D10')
+MAX_LIVE_ARMS = 4
 
 
 def fail(message: str) -> None:
@@ -186,14 +187,14 @@ def needs_collection(exp: str, row: dict[str, str]) -> bool:
 
 def once(plan: dict[str, dict[str, str]], dry_run: bool) -> bool:
     current = [exp for exp, row in plan.items() if terminal(exp, row) == 'RUNNING']
-    if len(current) > 2: fail('C13 observed more than two live full-ROI arms')
+    if len(current) > MAX_LIVE_ARMS: fail('C13 observed more than four live full-ROI arms')
     completed_uncollected = [exp for exp, row in plan.items()
                              if terminal(exp, row) == 'PASS' and needs_collection(exp, row)]
     if completed_uncollected:
         print('C13_DRIVER_COLLECT\tarms=' + ','.join(completed_uncollected), flush=True)
         collect()
-    if len(current) == 2:
-        print('C13_DRIVER_HOLD\tlive=2\tarms=' + ','.join(current)); return False
+    if len(current) == MAX_LIVE_ARMS:
+        print('C13_DRIVER_HOLD\tlive=%d\tarms=' % MAX_LIVE_ARMS + ','.join(current)); return False
     candidate = next_candidate(plan)
     if candidate is None:
         if not current: collect(); print('C13_DRIVER_COMPLETE')

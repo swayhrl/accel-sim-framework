@@ -57,3 +57,19 @@ There was no simulator assertion, OOM, resource red condition, terminal
 validator output, or architectural measurement.  The same frozen arm was then
 restarted in a persistent command session into a fresh canonical output
 directory and is the only candidate that can become an admitted C13 result.
+
+## User-authorized 4-way P0 expansion — 2026-09-11
+
+The user explicitly authorized a larger C13 parallel launch window after
+observing approximately fifty logical CPUs of headroom and sufficient memory.
+This instruction supersedes the previous *C13-only 2-way cap* while retaining
+the original Goal's hard maximum of four full-ROI arms.  It does not authorize
+interference with other projects or any fifth C13 arm.
+
+Before expansion, three 10 s-spaced windows recorded CPU idle 9--10%, iowait
+0%, MemAvailable 131.5--131.7 GiB, memory PSI full 0.00%, IO PSI full 0.00%,
+and `vmstat` swap-in/out 0 KiB/s.  The existing P8/D11 simulators had combined
+RSS about 1.15 GiB.  Under this explicit authorization, the existing simulator
+PIDs were preserved and two independent, manifest-fixed config-only P0 arms
+were added: `C13-LAT-P9` and `C13-CAP-P320`.  The C13 campaign driver was
+updated to hold at four live arms and must not start a fifth.

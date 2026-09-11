@@ -461,23 +461,110 @@ def kernel691_rows(arms: dict[str, dict[str, Any]], mapping: list[dict[str, str]
     return rows
 
 
+def signed(value: int | float | None) -> str:
+    if value is None: return 'NOT_EMITTED'
+    return ('+' if value > 0 else '') + fnum(value)
+
+
+def delta(arms: dict[str, dict[str, Any]], candidate: str, baseline: str, metric_name: str) -> int | float | None:
+    if candidate not in arms or baseline not in arms: return None
+    left, right = metric(arms[candidate], metric_name), metric(arms[baseline], metric_name)
+    return None if left is None or right is None else left-right
+
+
+def conservation_report(c13: dict[str, dict[str, Any]]) -> str:
+    lines=['# C13 per-arm conservation audit', '',
+           'Every admitted row below was independently re-parsed from its immutable C13 raw log. `gpu_sim_cycle` occurs exactly once per marker and its sum equals both raw full-ROI total and runner validation total. The accepted Operator-aware parser also rechecks monotonic snapshots and delta-to-terminal closure for active attribution `vm_*` fields.', '',
+           '| arm | ROI | markers | per-kernel cycle sum | full ROI total | active `vm_*` fields | result |',
+           '| --- | --- | ---: | ---: | ---: | ---: | --- |']
+    for ident, arm in sorted(c13.items()):
+        lines.append('| %s | %s | %d | %d | %s | %d | PASS |' %
+                     (ident, arm['roi'], len(arm['raw_kernels']), arm['cycle_total'],
+                      arm['final'].get('gpu_tot_sim_cycle','NOT_EMITTED'), len(arm['raw_kernels'][-1].cumulative)))
+    return '\n'.join(lines)+'\n'
+
+
+def changed_files_report() -> str:
+    paths=[
+        'util/vm_tlb/c13_diagnostic_tool.py',
+        'util/vm_tlb/c13_selective_artifact.py',
+        'util/vm_tlb/validate_c13_selective_static.py',
+        'util/vm_tlb/collect_c13_diagnostics.py',
+        'util/vm_tlb/drive_c13_campaign.py',
+        'configs/vm_tlb/c13_diagnostics/',
+    ]
+    lines=['# C13 changed-files / provenance boundary', '',
+           'This review pack contains only source/configuration and compact derived evidence. It excludes raw C13 logs, trace payloads, C12 assets, and binaries.', '',
+           '| path | role | SHA-256 when a regular file |', '| --- | --- | --- |']
+    for text in paths:
+        path=ROOT/text
+        digest=sha(path) if path.is_file() else 'DIRECTORY_OR_NOT_APPLICABLE'
+        lines.append('| `%s` | C13 diagnostic implementation or frozen config derivative | `%s` |' % (text,digest))
+    return '\n'.join(lines)+'\n'
+
+
 def final_report(arms: dict[str, dict[str, Any]], complete: bool) -> str:
     state = 'C13_MINIMAL_DIAGNOSTICS_COMPLETE_READY_FOR_REVIEW' if complete else 'C13_DIAGNOSTICS_ADAPTIVE_ADMISSION_AUTHORIZED'
     measured = sorted(key for key,arm in arms.items() if arm['source']=='C13_MEASURED')
     lines=['# C13 minimal diagnostics — %s' % ('final report' if complete else 'live evidence status'), '',
-           'Status: `%s`' % state, '', '## Provenance boundary', '',
-           '- C13-only results below are admitted only after terminal validation, immutable raw-log SHA recheck, accepted operator-map marker identity, exact per-kernel cycle closure, and cumulative `vm_*` delta continuity.',
-           '- C12 rows are immutable references; capacity rows are explicitly `DIAGNOSTIC_NON_EQUAL_BUDGET` and interaction values are not paper-matrix claims.', '',
-           '## Measured C13 evidence currently admitted', '']
+           'Status: `%s`' % state, '', '## Evidence boundary', '',
+           '- Each C13 result is accepted only after runner terminal validation, immutable raw-log SHA recheck, accepted operator-map marker identity, exact per-kernel cycle closure, and cumulative `vm_*` delta-to-terminal closure.',
+           '- The C12 F0/F7 reference rows remain immutable. Capacity rows B/C are `DIAGNOSTIC_NON_EQUAL_BUDGET`; no C13 diagnostic result rewrites the C12 fair matrix.',
+           '- Operator labels use the accepted direct/semantic/heuristic/unresolved map. No execution-order inference or trace re-scan is used.', '',
+           '## Terminal C13 evidence currently admitted', '']
     lines += ['- `%s`' % item for item in measured] or ['- None yet.']
     if not complete:
-        lines += ['', '## Status', '', '- Incomplete arms intentionally have no scientific interpretation. This file is an execution-state artifact, not a conclusion.']
-    else:
-        lines += ['', '## Required conclusions', '',
-                  '- `MEASURED_C13_DIAGNOSTIC_FACT`: see `LATENCY_FINE_SWEEP.tsv`, `CAPACITY_FACTORIAL.tsv`, and `SELECTIVE_SEGMENT_RESULTS.tsv` for exact values.',
-                  '- `SUPPORTED_C13_MECHANISM_SIGNAL`: only interpretations that remain consistent across the controlled comparisons may be promoted from those tables.',
-                  '- `DIAGNOSTIC_INTERACTION_ONLY`: capacity factorial interaction is confined to its measured 2×2.',
-                  '- `UNRESOLVED`: telemetry association is not asserted as singular causal critical-path proof.']
+        lines += ['', '## Pending scope', '',
+                  '- Scientific conclusions are intentionally withheld until all seven primary arms and two mandatory same-new-binary controls are terminal PASS.',
+                  '- This is a live execution status artifact, not a partial performance conclusion.']
+        return '\n'.join(lines)+'\n'
+
+    # H3 measured points—not a replacement with the older interpolation.
+    lines += ['', '## MEASURED_C13_DIAGNOSTIC_FACT — H3 fine Segment latency', '']
+    for ident, baseline, label in (('C13-LAT-P8','C12-PREFILL-F0-LNONE','Prefill Lseg=8'),
+                                   ('C13-LAT-P9','C12-PREFILL-F0-LNONE','Prefill Lseg=9'),
+                                   ('C13-LAT-D11','C12-DECODE1-F0-LNONE','Decode1 Lseg=11')):
+        value=delta(arms,ident,baseline,'gpu_tot_sim_cycle')
+        direction='positive simulated-cycle gain' if value is not None and value < 0 else 'simulated-cycle regression' if value is not None and value > 0 else 'exact tie'
+        lines.append('- %s: candidate-minus-F0 cycles = `%s` (%s).'% (label,signed(value),direction))
+    lines.append('- `LATENCY_FINE_SWEEP.tsv` combines these new measured points with immutable C12 F7 L5/L10/L20 only after common trace/map identity checks. The prior 8.755/10.827 values remain `EMPIRICAL_INTERPOLATION_ONLY`, not substituted measurements.')
+
+    # H2: report all mandated contrasts with their observable counters.
+    lines += ['', '## MEASURED_C13_DIAGNOSTIC_FACT — H2 exact-remainder 2×2', '']
+    a,b,c,d=('C12-PREFILL-F0-LNONE','C13-CAP-P320','C13-CAP-P768S10','C12-PREFILL-F7-L10')
+    for name, left, right in (('B-A',b,a),('C-A',c,a),('D-B',d,b),('D-C',d,c)):
+        lines.append('- %s: cycles `%s`; L2 misses `%s`; walks `%s`; PTE DRAM responses `%s`; requester translation latency `%s`.' %
+                     (name,signed(delta(arms,left,right,'gpu_tot_sim_cycle')),
+                      signed(delta(arms,left,right,'vm_l2_tlb_misses')),
+                      signed(delta(arms,left,right,'vm_translation_walk_starts')),
+                      signed(delta(arms,left,right,'vm_pte_dram_responses')),
+                      signed(delta(arms,left,right,'vm_translation_requester_latency_cycles_total'))))
+    interaction=(delta(arms,d,b,'gpu_tot_sim_cycle') or 0)-(delta(arms,c,a,'gpu_tot_sim_cycle') or 0)
+    lines.append('- Cycle interaction `(D-B)-(C-A)` = `%s`, explicitly `DIAGNOSTIC_INTERACTION_ONLY`.' % signed(interaction))
+
+    # H1 must never compare new-binary selective values directly to old binary.
+    lines += ['', '## MEASURED_C13_DIAGNOSTIC_FACT — H1 object-selective Segment', '']
+    for candidate, control in (('C13-SEL-P10','C13-SEL-P10-CTRL-NEWBIN'), ('C13-SEL-D10','C13-SEL-D10-CTRL-NEWBIN')):
+        cycle=delta(arms,candidate,control,'gpu_tot_sim_cycle')
+        lines.append('- %s vs same-new-binary %s: cycles `%s`; L2 misses `%s`; walks `%s`; PTE DRAM `%s`; Segment hits `%s`.' %
+                     (candidate,control,signed(cycle),signed(delta(arms,candidate,control,'vm_l2_tlb_misses')),
+                      signed(delta(arms,candidate,control,'vm_translation_walk_starts')),
+                      signed(delta(arms,candidate,control,'vm_pte_dram_responses')),
+                      signed(delta(arms,candidate,control,'vm_weight_segment_hits'))))
+        if arms[candidate]['roi']=='prefill':
+            lines.append('  - kernel 691 cycle delta `%s`; Embedding/Output aggregate `%s`; FFN `%s`; Attention Projection `%s`.' %
+                         (signed(kernel_cycle(arms[candidate],691)-kernel_cycle(arms[control],691)),
+                          signed(op_cycles(arms[candidate], load_map()['prefill']).get('EMBEDDING_OUTPUT',0)-op_cycles(arms[control],load_map()['prefill']).get('EMBEDDING_OUTPUT',0)),
+                          signed(op_cycles(arms[candidate], load_map()['prefill']).get('FFN',0)-op_cycles(arms[control],load_map()['prefill']).get('FFN',0)),
+                          signed(op_cycles(arms[candidate], load_map()['prefill']).get('ATTENTION_PROJECTION',0)-op_cycles(arms[control],load_map()['prefill']).get('ATTENTION_PROJECTION',0))))
+    lines += ['', '## SUPPORTED_C13_MECHANISM_SIGNAL', '',
+              '- The controlled tables support only associations between measured eligibility/capacity/latency changes and observed cycles/translation/cache telemetry. They do not establish a unique critical-path causal chain.',
+              '- Whether a phase-aware object policy is warranted is evaluated from the same-new-binary selective pairs, not from cross-binary historical speedups.', '',
+              '## DIAGNOSTIC_INTERACTION_ONLY', '',
+              '- The 2×2 capacity interaction is a local measured decomposition for this Prefill setup. It is not an equal-budget result or a general architecture law.', '',
+              '## UNRESOLVED', '',
+              '- Cache/translation counter association cannot by itself prove which downstream queue, memory response, or critical path caused a cycle change.',
+              '- Any operator class whose accepted map evidence is heuristic or unresolved remains so; no C13 result upgrades its semantic evidence tier.']
     return '\n'.join(lines)+'\n'
 
 
@@ -520,6 +607,8 @@ def main() -> None:
         if comp in arms: comparisons.extend(per_operator_delta(arms[comp],arm,mapping[arm['roi']],ident+'_vs_'+comp))
     write_tsv(PACK/'OPERATOR_DIAGNOSTIC_DELTAS.tsv',('comparison','roi','operator_class','baseline_id','candidate_id','baseline_cycles','candidate_cycles','cycle_delta_candidate_minus_baseline','vm_l1_tlb_misses_delta','vm_l2_tlb_misses_delta','vm_translation_walk_starts_delta','vm_pte_requests_delta','vm_pte_dram_responses_delta','vm_translation_requester_latency_cycles_total_delta','vm_weight_segment_hits_delta','vm_weight_segment_l2_suppressed_delta'),comparisons)
     write_tsv(PACK/'KERNEL691_DIAGNOSTIC.tsv',('point_id','source','kernel_index','trace_filename','operator_class','cycles','full_roi_cycles','cycle_share','evidence_kind'),kernel691_rows(arms,mapping['prefill']))
+    (PACK/'CONSERVATION_AUDIT.md').write_text(conservation_report(c13))
+    (PACK/'CHANGED_FILES.md').write_text(changed_files_report())
     (PACK/'FINAL_REPORT.md').write_text(final_report(arms,complete))
     HANDOFF.parent.mkdir(parents=True,exist_ok=True)
     HANDOFF.write_text(final_report(arms,complete))
