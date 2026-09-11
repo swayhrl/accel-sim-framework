@@ -1,0 +1,97 @@
+# FAST64.3 — 2DConvolution sector-MSHR tag-identity repair
+
+Status: **SOURCE-CLASSIFIED; REPAIR BUILT AND UNIT-REGRESSED; FORMAL
+REPLACEMENT PENDING.**  This is not a FAST64.3 result and does not alter any
+existing accepted or historical result.
+
+## Scope and preserved evidence
+
+The formal `2DConvolution/Base` attempts under the historical and Core-41
+identities remain invalid attempts.  The terminal dc6062 observation is
+retained as `NONFORMAL_DIAGNOSTIC_NOT_RESULT`:
+
+- namespace: `fast64_3_2DConvolution_base_coredc6062_transition_diag_v2`
+- UUID: `482ca8b3-fa7c-4a8b-b99d-494e349961a6`
+- diagnostic Core: `dc6062c69843ffb467ceabd32eed625fbc5776bf`
+- compact diagnostic:
+  `generated/fast64_3_transition_diagnostics_v2/fast64_3_2d_base_coredc6062_transition_diag_v2.json`
+- source follow-up:
+  `generated/fast64_3_transition_followup_v1/fast64_3_2d_base_coredc6062_transition_followup_v1.json`
+
+Its terminal dump has no conventional MSHR, miss-queue, or fill-owner entry,
+but has ownerless `RESERVED` ways in L1D_003, L1D_029, and L1D_051.  The
+diagnostic-only Core remains separate from the formal Core and added no
+functional behavior.
+
+## Source-backed root cause
+
+The dc6062 records contain 87,908 read `TAG_ALLOC` records and 87,880
+same-UID read `OWNER_CREATE` records: 28 read tag allocations have no fill
+owner.  Write allocations are excluded from this comparison because their
+lazy-write lifecycle is distinct (22,916 write allocations and zero matching
+read-owner records).
+
+Source inspection establishes the lost identity transition:
+
+1. `tag_array::access()` allocates a tag on `MISS` or `SECTOR_MISS`.
+2. In the old `baseline_cache::send_read_request()` MSHR-merge branch, the
+   code called that access before `m_mshrs.add()` without checking whether the
+   current tag still represented the existing sector-MSHR root.
+3. The root miss records its cache index in `m_extra_mf_fields`; a merge does
+   not create another such owner.
+4. `baseline_cache::fill()` fills only the root's saved cache index and then
+   erases that root owner.  Therefore a merge-side allocation on another tag
+   has no fill-owner transition that can turn its reservation into a valid
+   line.
+
+This is neither a BK_CONF diagnosis nor a justification to weaken tag,
+pending-write, scoreboard, deadlock, or accounting assertions.
+
+## Minimal repair
+
+Core branch `hrl/decoupled-l1-m5-2d-reserved-tag-repair-v0`, rooted at the
+accepted formal Core `95ccdb7a056f2d53f740d90869785cac6d4ee0f5`, contains
+`6587238c60214d99491f4048e28ce8a3458c1509`:
+
+```text
+fix(l1): preserve tag identity across mshr merge
+```
+
+The only source change is in `src/gpgpu-sim/gpu-cache.cc`.  Before a read can
+merge into an existing MSHR, it re-probes the tag and permits the merge only
+for `HIT` or `HIT_RESERVED`.  A `MISS` or `SECTOR_MISS` returns to the
+ordinary retry path *before* calling `tag_array::access()` or `m_mshrs.add()`.
+Thus no second reserved tag can be allocated against an MSHR whose eventual
+fill owns a different cache index.  The repair does not change DTC policy,
+counter semantics, payloads, configs, lower-credit behavior, or completion
+assertions.
+
+## Isolated build and focused regression
+
+The branch was built in the dedicated non-live directory
+`/tmp/dtc-fast64-2d-reserved-tag-repair-v1` with `CMAKE_BUILD_TYPE=Release`
+and the normal trace-enabled DTC test option.  It produced:
+
+- `accel-sim.out` SHA-256:
+  `29a3dd9f57a5accb89822ca3fcf06b11c437bfe864ee43d2ff5f26c8c056f3c1`
+- `dtc_l1_m1_common_test`: PASS
+- `dtc_l1_bad_generation_test`: PASS
+- `dtc_l1_completion_accounting_test`: PASS
+
+These tests establish that the new source compiles and preserves the existing
+common, generation, and completion-accounting unit contracts.  They do not
+substitute for the required fresh formal 2DConvolution/Base result below.
+
+## Required remaining proof
+
+The dedicated Release runtime hash and focused unit regressions are recorded
+above.  A fresh 2DConvolution/Base row must now use that exact Core/runtime
+together with the frozen Base config, payload, A1 observer, immutable runner,
+atomic receipts,
+and a new UUID.  It must naturally exit zero, strict-parse, close
+lower/dependency accounting, drain PIB/inflight/lower state, have
+lower-cap-full resolved, and materialize complete structural metrics.
+
+Only after that Base gate may 2DConvolution IO and OO be acquired, and both
+must share the same final Core/runtime identity.  Historical bbcbb IO/OO
+evidence cannot be mixed into that triplet.

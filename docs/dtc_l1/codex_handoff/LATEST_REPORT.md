@@ -1,6 +1,6 @@
 # Latest Codex Report
 
-## FAST64.3 2D transition observation terminal; sector-MSHR follow-up prepared (2026-09-11)
+## FAST64.3 2D sector-MSHR tag-identity repair selected; build/validation pending (2026-09-11)
 
 The immutable dc6062 2DConvolution/Base observation naturally reached its
 terminal deadlock and was strictly collected as
@@ -18,7 +18,18 @@ actual sector MSHR key, root-vs-merge decision, tag result, and MSHR consume
 event; it changes no formal Core behavior or DTC lifecycle.  A fresh
 diagnostic is deliberately not launched while 96 FAST64 simulator leaves are
 active, swap is fully allocated, and the cgroup records historical OOM kills.
-No functional repair has been selected.
+
+The source follow-up identifies 28 read `TAG_ALLOC` events without a matching
+fill owner: the old MSHR-merge path could allocate a new tag on a sector miss
+while attaching only to an existing MSHR root whose eventual fill owns another
+cache index.  Core repair `6587238c60214d99491f4048e28ce8a3458c1509`, pushed
+on `hrl/decoupled-l1-m5-2d-reserved-tag-repair-v0` rooted exactly at formal
+Core `95ccdb7a...`, adds an identity probe before a merge and retries rather
+than allocating an unowned tag.  Its isolated Release binary has SHA-256
+`29a3dd9f...`, and the existing DTC common/generation/completion unit tests
+pass.  It remains pending a fresh formal 2D Base replacement; it is not a
+result or a FAST64.3 promotion.  See
+`fast64/handoffs/FAST64_3_2D_MSHR_TAG_IDENTITY_REPAIR.md`.
 
 ## FAST64.3/4 2D execution-identity reconciliation (2026-09-11)
 
