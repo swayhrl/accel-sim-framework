@@ -514,3 +514,25 @@ remain `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; they are not results,
 curves, or a FAST64.6 promotion.  The pre-existing BICG/16-KiB/IO immutable
 row remains live in its separate namespace and completes that pair only after
 its own natural terminal validation.
+
+## Btree logical-capacity six-cell precompute strictly collected (2026-09-11)
+
+The six Btree logical-capacity IO/OO rows all naturally exited zero and the
+unchanged immutable-v2 monitors strict-collected each terminal receipt.  The
+complete compact registry is
+`generated/FAST64_6_BTREE_LOGICAL_TERMINAL_REGISTRY_V1.tsv`; it pins the six
+JSON hashes, UUIDs, exact Core-95/runtime/A1/scientific Framework/payload
+identity, terminal timestamps, cycles/instructions and lifecycle closure.
+
+| logical capacity | IO cycles | OO cycles | instructions per mode | lower-cap-full |
+| ---: | ---: | ---: | ---: | ---: |
+| 16 KiB | 244,231 | 172,795 | 444,467,849 | 0 / 0 |
+| 32 KiB | 235,454 | 152,508 | 444,467,849 | 0 / 0 |
+| 64 KiB | 233,835 | 146,453 | 444,467,849 | 0 / 0 |
+
+For every row, lower create/issue/response and dependency count/closed
+conserve; terminal lower, PIB and inflight are zero, with OO active references
+also zero.  These are strict terminal **precomputes only**, classified
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  They do not create a Stage6
+curve or promotion, alter FAST64.4/5, or permit a causal interpretation before
+the required logical gates.

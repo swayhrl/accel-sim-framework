@@ -1,5 +1,18 @@
 # Latest Codex Report
 
+## FAST64.6 Btree logical-capacity batch strictly retained (2026-09-11)
+
+All six Btree logical 16/32/64-KiB × IO/OO immutable-v2 rows naturally
+terminated exit zero and strict collection passed.  Each compact record binds
+Core `95ccdb7a...`, runtime `462d105c...`, A1, scientific Framework
+`037f008b...`, frozen Btree payload and exact config.  The batch has identical
+444,467,849 instructions per mode, lower-cap-full zero, conserved lower and
+dependency accounting, and complete final drain (including OO active refs).
+`generated/FAST64_6_BTREE_LOGICAL_TERMINAL_REGISTRY_V1.tsv` binds the six
+UUIDs, evidence hashes and compact paths.  Classification remains solely
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: no sensitivity curve, primary
+result, causal claim or stage is promoted.
+
 ## FAST64.5 production feature path made fail-closed (2026-09-11)
 
 The future-only Stage5 v2 builder closes a validation gap in the prior compact
