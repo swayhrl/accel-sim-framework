@@ -43,7 +43,7 @@ precomputes should be promoted instead of rerun after all entry gates pass.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | ATAX | `generated/fast64_3_atax_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | BICG | `generated/qualification_r2_full_wave_alias_v2/` + `generated/fast64_3_bicg_base_structural_v1/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
-| GESUMMV | `generated/fast64_3_gesummv_base_alias_v3/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
+| GESUMMV | historical `generated/fast64_3_gesummv_base_alias_v3/`; fresh Core95 candidate `generated/fast64_repaired_ramp2_v1/fast64_gesummv_base_core95ccdb7a_a1_r1.json` + `FAST64_3_GESUMMV_REPAIRED_BASE_STRUCTURAL_METRICS_V1.json` | promoted; fresh repaired-Core candidate | [x] | [x] | [x] | [x] | ACCEPTED; CORE95_CANDIDATE_PENDING_FINAL_REGISTRY |
 | GEMM | `generated/fast64_3_gemm_base_alias_v4/` | promoted | [x] | [x] | [x] | [x] | ACCEPTED |
 | 2DConvolution | historical `fast64-runs/fast64_3_2DConvolution_base_cap8192_a1_v2` and the Core-41 replacement `/workspace/fast64-stage3-repair/fast64_3_2DConvolution_base_core41d740e8_a1_v1` are preserved invalid attempts; the dc6062 transition diagnostic is observation-only | Core-41 UUID `7ba2205a-e205-4793-a3c0-8bce1a56d2f1` terminal exit 1; source-root-cause diagnostic active | [ ] | [ ] | [ ] | [ ] | REPAIR_REPLACEMENT_FAILED_SOURCE_DIAGNOSTIC_ACTIVE |
 | Btree | `generated/fast64_repaired_ramp_v1/fast64_btree_base_core95ccdb7a_a1_r1.json` + `FAST64_3_BTREE_BASE_STRUCTURAL_METRICS_V1.json` + `FAST64_BTREE_REPAIRED_CORE_TRIPLET_V1.json` | fresh repaired-Core immutable v2 | [x] | [x] | [x] | [x] | STRICT_VALID_PENDING_STAGE_ACCEPTANCE |
@@ -72,6 +72,19 @@ validated, and records `6,985` cycles / `1,284,872` instructions, lower
 the required structural companion. It is now the NN candidate; the literal
 bbcbb Base remains historical-only. The remaining rows retain their existing
 active/queued/reuse classification as listed above.
+
+The fresh Core95 GESUMMV/Base candidate naturally exited `0` at
+`2026-09-11T08:11:22Z` and strict-collected as immutable attempt
+`574a2455-f21a-4024-8299-85417c9e5e9b`.  It binds the exact frozen GESUMMV
+payload, Base config SHA `1a016e3c...`, Core `95ccdb7a...`, runtime
+`462d105c...`, A1 observer and Framework `037f008b...`; it records
+194,986,098 cycles / 190,918,656 instructions, lower acquire/release
+34,394,773/34,394,773, final lower/PIB zero and cap-full zero.  Its new
+source-defined structural companion independently reconciles Base cacheline,
+MSHR and miss-queue families against the terminal perf stream.  This is a
+strict, nonpromoting Core95 candidate for the eventual common GESUMMV
+Base/IO/OO triplet; the active V2 registry is deliberately not modified while
+its inherited closeout supervisor remains live.
 
 Before launching a Base row, document whether exact-identity evidence already
 exists. At closeout list every promoted row and prove:
