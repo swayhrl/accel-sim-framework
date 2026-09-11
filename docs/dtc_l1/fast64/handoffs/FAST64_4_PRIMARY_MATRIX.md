@@ -97,6 +97,18 @@ strict-gated Core-41 2DConvolution IO/OO successors, then any genuinely
 missing primary row—but it does not override the no-duplicate and
 common-triplet-identity rules.
 
+To avoid an unattended gap at that precise transition, the future-only
+`auto_dispatch_fast64_4_2d_core41_v1.sh` controller is prepared and statically
+regressed.  It pins the SHA-256 of the Core-41 dispatcher, generic strict
+collector, and resource-audit helper; requires the exact strict Base JSON plus
+structural companion; takes a new two-worker admission audit; and only then
+dispatches fresh IO/OO namespaces on distinct eligible CPUs and starts their
+strict terminal monitors.  A helper-byte mismatch, missing Base artifact,
+unsafe audit, pre-existing namespace, or collector output causes no launch.
+The current `--once` regression reached only
+`FAST64_4_2D_CORE41_WAIT_BASE_STRICT_GATE` and proved that it cannot
+prematurely dispatch either successor while Base remains live.
+
 The first post-transition wave is active under
 `PRECOMPUTED_PENDING_FAST64_3_ACCEPTANCE`: Btree Base/IO/OO, MRI-Q
 Base/IO/OO, ATAX/OO and GESUMMV/OO.  Each has a fresh immutable-v2 START
