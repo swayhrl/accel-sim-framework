@@ -654,20 +654,21 @@ precompute checkpoint only.  All three records remain
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`; no pairwise sensitivity claim,
 FAST64.4/5 result, FAST64.6 curve or stage promotion is asserted.
 
-## BICG PIB 32/64-entry OO terminal precomputes (2026-09-11)
+## BICG PIB 32/64/192-entry OO terminal precomputes (2026-09-11)
 
-The BICG PIB 32- and 64-entry PAPER_OO rows naturally exited zero and passed
+The BICG PIB 32-, 64- and 192-entry PAPER_OO rows naturally exited zero and passed
 the unchanged immutable-v2 strict monitor.  The compact registry
 `generated/FAST64_6_BICG_PIB_OO_TERMINAL_REGISTRY_V1.tsv` binds the exact
 Core-95/runtime/A1/scientific-Framework/frozen-BICG-payload identity, atomic
-receipts, config hashes and JSON hashes for both independently acquired rows.
+receipts, config hashes and JSON hashes for all three independently acquired rows.
 
 | PIB entries | UUID | terminal UTC | cycles / instructions | lower create/issue/response | dependency count/closed | terminal state |
 | ---: | --- | --- | --- | --- | --- | --- |
 | 32 | `ced2697f-d849-48e3-8f04-dd0f23b6b1f1` | `2026-09-11T11:32:51Z` | 47,231,655 / 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
 | 64 | `98fa21e2-c2e0-40dd-b8ed-14b52a22b4c6` | `2026-09-11T11:39:36Z` | 47,231,655 / 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
+| 192 | `5ea0500b-c2ba-4cce-8be4-f679ef7a48c5` | `2026-09-11T12:03:30Z` | 47,231,655 / 145,666,048 | 17,814,913 / 17,814,913 / 17,814,913 | 18,350,080 / 18,350,080 | lower, OO PIB, OO inflight and active refs zero; cap-full 0 |
 
 The 128-entry point is governed by exact primary-reuse authority; the other
-new BICG PIB cells remain live or pending strict collection.  These two
+new BICG PIB cells remain live or pending strict collection.  These three
 records are strictly `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`: they neither
 form a sensitivity curve nor promote FAST64.4, FAST64.5 or FAST64.6.
