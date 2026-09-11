@@ -133,7 +133,7 @@ def read_rows() -> dict[str,dict[str,str]]:
     if not path.is_file(): fail('run --prepare first')
     with path.open(newline='') as f: return {r['exp_id']:r for r in csv.DictReader(f,delimiter='\t')}
 
-COUNTER=re.compile(r'^([A-Za-z0-9_]+) = (-?[0-9]+(?:\.[0-9]+)?)\s*$')
+COUNTER=re.compile(r'^([A-Za-z0-9_]+)\s*=\s*(-?[0-9]+(?:\.[0-9]+)?)\s*$')
 def validate(row: dict[str,str], code: int) -> dict[str,object]:
     run=Path(row['output_dir']); log=run/'run.log'; errors=[]; vals={}
     lines=log.read_text(errors='strict').splitlines() if log.is_file() else []
@@ -142,7 +142,7 @@ def validate(row: dict[str,str], code: int) -> dict[str,object]:
         if m: vals[m.group(1)]=m.group(2)
     markers=sum(x.startswith('Processing kernel ') for x in lines)
     telemetry=sum(x.startswith('m4c_telemetry_schema =') for x in lines)
-    required=('gpu_tot_sim_cycle','gpu_tot_sim_insn','gpu_tot_ipc','vm_l1_tlb_accesses','vm_l1_tlb_hits','vm_l1_tlb_misses','vm_l2_tlb_accesses','vm_l2_tlb_hits','vm_l2_tlb_misses','vm_pte_requests','vm_pte_responses','vm_pte_l2_only_responses','vm_pte_dram_responses','vm_object_attribution_conservation_pass','vm_weight_segmentation_enabled','vm_weight_segment_entries_configured','vm_weight_segment_lookup_latency_cycles','vm_weight_segment_mapping_mismatch_faults')
+    required=('gpu_tot_sim_cycle','gpu_tot_sim_insn','gpu_tot_ipc','vm_l1_tlb_accesses','vm_l1_tlb_hits','vm_l1_tlb_misses','vm_l2_tlb_accesses','vm_l2_tlb_hits','vm_l2_tlb_misses','vm_pte_requests','vm_pte_responses','vm_pte_l2_only_responses','vm_pte_dram_responses','vm_object_attribution_conservation_pass','vm_weight_segmentation_enabled','vm_weight_segment_entries_configured','vm_weight_segment_lookup_latency_cycles','vm_weight_segment_mapping_mismatch_faults','vm_fair_l2_entries_realized','vm_translation_mshr_active','vm_translation_pwq_occupancy','vm_translation_walkers_active','vm_pte_response_misassociations','vm_translation_mshr_allocations','vm_translation_mshr_entries_completed','vm_translation_waiter_registrations','vm_translation_waiter_wakeups','vm_weight_segment_lookup_attempts','vm_weight_segment_lookup_launches','vm_weight_segment_lookup_completions','vm_weight_segment_hits','vm_weight_segment_misses','vm_weight_segment_late_result_discards')
     if code != 0: errors.append('simulator_exit=%d' % code)
     if markers != int(row['expected_kernels']): errors.append('marker_count')
     if telemetry != int(row['expected_kernels']): errors.append('telemetry_count')
@@ -158,6 +158,12 @@ def validate(row: dict[str,str], code: int) -> dict[str,object]:
         if iv('vm_weight_segment_entries_configured') != int(row['segment_n']): errors.append('segment_entries')
         if iv('vm_weight_segment_lookup_latency_cycles') != (0 if row['lseg']=='NONE' else int(row['lseg'])): errors.append('segment_latency')
         if iv('vm_weight_segment_mapping_mismatch_faults') != 0: errors.append('segment_mapping_mismatch')
+        if iv('vm_fair_l2_entries_realized') != int(row['exact_l2_tlb_entries']): errors.append('l2_geometry')
+        if any(iv(name) != 0 for name in ('vm_translation_mshr_active','vm_translation_pwq_occupancy','vm_translation_walkers_active','vm_pte_response_misassociations')): errors.append('terminal_quiescence')
+        if iv('vm_translation_mshr_allocations') != iv('vm_translation_mshr_entries_completed') or iv('vm_translation_waiter_registrations') != iv('vm_translation_waiter_wakeups'): errors.append('translation_conservation')
+        if int(row['segment_enable']):
+            if iv('vm_weight_segment_lookup_attempts') == 0 or iv('vm_weight_segment_lookup_attempts') != iv('vm_weight_segment_lookup_launches') or iv('vm_weight_segment_lookup_completions') != iv('vm_weight_segment_hits') + iv('vm_weight_segment_misses') or iv('vm_weight_segment_lookup_completions') > iv('vm_weight_segment_lookup_attempts') or iv('vm_weight_segment_late_result_discards') > iv('vm_weight_segment_lookup_attempts'): errors.append('segment_conservation')
+        elif any(iv(name) != 0 for name in ('vm_weight_segment_lookup_attempts','vm_weight_segment_lookup_launches','vm_weight_segment_lookup_completions','vm_weight_segment_hits','vm_weight_segment_misses','vm_weight_segment_late_result_discards')): errors.append('segment_off_nonzero')
     except (KeyError,ValueError): errors.append('counter_parse')
     # Import the accepted parser solely for hardened per-kernel conservation.
     sys.path.insert(0,str(OP_PARSER.parent)); import analyze_c12_operator_aware as op

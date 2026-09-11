@@ -21,6 +21,11 @@ from telemetry against the matrix fields before PASS.
 Their mandatory same-new-binary controls are already in the manifest.  No
 cross-binary performance comparison is authorized.
 
+The C13 validator was compatibility-tested by read-only reparsing immutable
+C12 Prefill F7-L10 raw output.  It passed marker/telemetry cardinality,
+realized geometry, quiescence, PTE/object/Segment conservation, and hardened
+per-kernel cycle plus cumulative-snapshot closure.  No replay was used.
+
 ## Replay admission
 
 At preflight sampling, the host had about 512 logical CPUs but roughly 660--700
