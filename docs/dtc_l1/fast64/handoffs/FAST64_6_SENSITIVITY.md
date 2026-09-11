@@ -135,11 +135,13 @@ non-ready FIFO head per affected SM and 28--31 partially held lines, with zero
 lower-create/issue/inflight work.  `DTC_L1_SPEC.md` §§3.4 and 8 expressly
 require retained partial allocations/no rollback and identify this
 undersized-configuration deadlock as emergent behavior.  It must not be
-"fixed" by changing allocation semantics.  The OO failure is also preserved
-and excluded; its current fatal dump lacks a mode-equivalent DTC resource
-snapshot, so it remains an observability follow-up rather than an inferred
-root cause.  `FAST64_6_BICG_PHYSICAL16P5_FAILURE.md` holds the exact evidence
-and disposition.
+"fixed" by changing allocation semantics.  The OO failure is separately
+source-classified by its existing f283 observational replay: all 16 printed
+SMs exhaust the same 132-line pool while retaining active references and have
+zero lower-create/lower-issue/inflight work.  It is thus independently a
+capacity-bound resource deadlock, not an inferred IO root cause.
+`FAST64_6_BICG_PHYSICAL16P5_FAILURE.md` holds the exact evidence and
+disposition.
 
 ## Target-16 refill: two new formal rows; separate OO observation (2026-09-10)
 
@@ -161,14 +163,16 @@ formal identities.  Both START receipts were atomically published; a brief
 read-only observation showed the processes CPU-active with growing output and
 no forbidden signature.  They are live precomputes, not PASS records.
 
-The third target-16 slot is deliberately **not** a formal result.  It is the
-one exact BICG / 16.5-KiB / OO reproduction needed to observe the preserved OO
+The third target-16 slot was deliberately **not** a formal result.  It was the
+one exact BICG / 16.5-KiB / OO reproduction used to observe the preserved OO
 failure, in fresh namespace
 `/workspace/fast64-diagnostics/fast64_6_bicg_physical16p5_oo_coref283_diag_v1`.
 It uses diagnostic-only Core `f2836ea1...` and binary SHA `361aada1...`, CPU
 36, UUID `2ef7f749-cf0c-4d45-a9d0-4a73b35d9d21`, the exact frozen payload and
-config, and `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  This binary prints only after
-the existing deadlock decision; it cannot change normal simulation behavior or
+config, and `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  It naturally reached exit 1
+and its compact mode-specific observation is now retained in
+`generated/fast64_6_diagnostics_v2/`; this binary prints only after the
+existing deadlock decision, so it cannot change normal simulation behavior or
 replace formal Core `95ccdb7a...` for any retained row.
 
 ## Target-20 expansion (2026-09-10)

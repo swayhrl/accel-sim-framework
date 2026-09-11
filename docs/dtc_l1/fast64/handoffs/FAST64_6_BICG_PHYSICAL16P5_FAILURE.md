@@ -1,6 +1,7 @@
 # FAST64.6 — BICG / 16.5-KiB physical-pool preserved failures
 
-Status: **TWO TERMINAL FAILURES PRESERVED; NOT RESULTS; NO STAGE PROMOTION**
+Status: **TWO TERMINAL FAILURES PRESERVED; SOURCE-BACKED CAPACITY-BOUND
+CLASSIFICATION CLOSED; NOT RESULTS; NO STAGE PROMOTION**
 
 ## Frozen attempt identity
 
@@ -44,18 +45,35 @@ undersized configurations.  The implementation must not be changed to
 rollback or atomically allocate all lines just to make this sensitivity point
 complete.
 
-## OO disposition and next observation
+## OO source-backed classification
 
-The OO attempt independently reaches the simulator deadlock detector, but the
-current formal Core emits the detailed resource dump only for PAPER_IO.
-Its last periodic counters have balanced lower lifecycle and zero outstanding
-lower requests, while no terminal OO resource snapshot exists.  It must not be
-silently assigned the IO root cause.  The next action is a future-only,
-telemetry-only OO fatal-dump enhancement and one exact nonformal diagnostic
-reproduction when a resource-safe slot is available.  It cannot change timing,
-allocation, retirement, request lifecycle, config, payload or formal Core
-identity, and the original failure remains preserved regardless of the
-diagnostic outcome.
+The already-acquired, future-only observational replay in
+`/workspace/fast64-diagnostics/fast64_6_bicg_physical16p5_oo_coref283_diag_v1`
+is terminal, not live.  Its immutable receipt records UUID
+`2ef7f749-cf0c-4d45-a9d0-4a73b35d9d21`, exit `1`, and terminal UTC
+`2026-09-10T21:53:36Z`; it binds the detached telemetry-only f283 Core,
+immutable runner, exact frozen BICG payload and OO configuration.  It emits
+the mode-specific `DTC_L1_OO_DEADLOCK` snapshot after the existing simulator
+deadlock decision.
+
+The unchanged diagnostic parser has materialized
+`generated/fast64_6_diagnostics_v2/fast64_6_bicg_physical16p5_oo_coref283_diag_v1.json`
+as `NONFORMAL_DIAGNOSTIC_NOT_RESULT`.  Its 16 printed SMs (16--31) each have
+one PIB/frontend entry, `allocated_phys=132`, active references 28--31, and
+zero lower-create/lower-issue/inflight work.  Since the frozen pool has exactly
+132 physical lines, this independently proves OO capacity exhaustion with no
+pending lower request or response.  It is not an inference from the IO row or
+from GESUMMV.
+
+The source-defined OO frontend rejects an allocation when no physical line is
+free and its victim still has nonzero reference count; a deferred line can be
+released only after a ready entry retires and its final reference closes.  The
+f283 source region is identical to the later diagnostic source for
+`dtc-l1-common.h` and `shader.cc`.  This is therefore a
+**SOURCE_BACKED_CAPACITY_BOUND_RESOURCE_DEADLOCK**, not a source repair
+candidate.  No allocation rollback, forced reclaim, or retry is authorized;
+the original formal failure and the observation remain excluded from all
+performance results and sensitivity curves.
 
 The concurrently active 24-KiB BICG rows and all Stage3/4 simulators are not
 modified, restarted or displaced.  FAST64.6 stays
