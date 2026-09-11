@@ -61,10 +61,20 @@ once:
 | Framework snapshot / A1 | `037f008b330eb230353b60edf126d6be9f45afdc` / `2c2a6a272c129243626617e2b80ded798b30ccb09377d07a2ca453209074074e` |
 | classification | `FAST64_4_NONBINDING_CAP_CONTROL_PENDING_RESOLUTION` |
 
-This is a control, not a performance result. At natural terminal it must
-strict-validate its receipt, payload, config-only diff, accounting, drain and
-zero cap-full observation. The 8192-versus-high comparison then determines
-the next source-correct sweep point(s); no cap is selected for DTC speedup.
+This control naturally terminated exit zero at `2026-09-11T17:11:01Z` and
+strict-collected to
+`generated/fast64_4_2d_cap_resolution_v1/fast64_4_2DConvolution_io_cap1048576_core658_a1_v1.json`
+(SHA-256 `8f157ed21b05c0b55fdb70554808ad8b67e3bed570872a84a9b75bf09b0ca9c1`).
+It records `627,281` cycles / `620,347,492` instructions, cap-full `0`, lower
+credit acquire/release `3,375,831/3,375,831`, IO
+create/issue/response `3,375,831/3,375,831/3,375,831`, dependencies
+`7,835,916/7,835,916`, and final inflight/PIB/lower `0/0/0` with a clean
+error scan. It remains a control, not a primary performance result.
+
+The 8192-versus-high comparator reports non-cap metric differences, including
+cycles `627,590 -> 627,281`, while 8192 has cap-full `72,236` and high has
+zero. Thus 8192 is conclusively cap-bound; no performance observation selects
+the next point.
 
 ## Future-only cap-resolved collector
 
@@ -103,6 +113,9 @@ The set contains every known cap-bound 8192 primary cell and only the two
 additional Base rows required to keep new Gaussian and LUD triplets on a
 common Core95/runtime462 identity.  Existing 8192 rows with cap-full zero
 remain candidates only for source-proven cap-inert reuse; no bound row is
-reused.  The sweep will start only after this high-cap strict validation and a
-fresh resource admission; no result is selected until a common candidate
-passes the same non-binding comparison rule.
+reused. Following high-cap strict validation and fresh resource admission, all
+nine immutable-v2 rows launched once at `16384` on distinct physical CPUs
+`6,7,8,9,10,11,12,13,15`, with dispatcher SHA-256
+`23f2f0ee29954c6eb639691ea235e3871a0e12059dd18a1b6cbd6f57ee547368`.
+They remain `FAST64_4_CAP16384_CANDIDATE_PENDING_RESOLUTION`; no result is
+selected until a common candidate passes the same non-binding comparison rule.

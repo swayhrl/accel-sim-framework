@@ -1,6 +1,6 @@
 # Latest Codex Report
 
-## FAST64.4 2DConvolution cap-resolution control live (2026-09-11)
+## FAST64.4 cap recovery: high control strict PASS; 16384 wave active (2026-09-11)
 
 The common-Core658 2DConvolution IO and OO rows both naturally exited zero and
 strict-collected. IO nevertheless records `72,236`
@@ -10,13 +10,21 @@ while IO lifecycle/dependency accounting and terminal drain remain correct. The
 frozen V2 primary coverage builder correctly fail-closed rather than promoting
 the cap-bound IO row.
 
-The authoritative FAST64 platform is 64 SM + 8192, distinct from historical
-M5's 80 SM + 10240. Its contract requires a smallest-common non-binding-cap
-resolution before primary performance interpretation. A new immutable Core658
-2DConvolution/IO high-cap (`1048576`) control is live under UUID
-`c6dca067-6de7-47ee-958c-185ce083fb7b`; it differs only in final effective
-lower cap. See `fast64/handoffs/FAST64_4_2D_CAP_RESOLUTION.md`. No stage is
-promoted and the cap-8192 records are preserved as diagnostics.
+The Core658 2DConvolution/IO@1048576 control naturally exited zero and strict
+validated: `627,281` cycles / `620,347,492` instructions, cap-full `0`,
+conserved IO/lower/dependency accounting and final inflight/PIB/lower `0/0/0`.
+Its compact JSON is
+`fast64/generated/fast64_4_2d_cap_resolution_v1/fast64_4_2DConvolution_io_cap1048576_core658_a1_v1.json`
+(SHA `8f157ed2...`). The low/high differential is not exact, so it confirms
+8192 is cap-bound and cannot be promoted.
+
+No IO/OO lower-peak is emitted by the current reporting branch. The smallest
+source-neutral monotonic candidate, 16384, is active in a nine-row immutable
+wave: 2D IO/Core658; Gaussian Base/IO/OO/Core95; Hotspot1 IO/OO/Core95; LUD
+Base/IO/OO/Core95. It covers all known bound cells plus only the Base rows
+necessary for common Core95 triplet identities. The cap-resolved collector
+rejects undeclared cap mixes and requires source-proven 8192 cap-inert reuse.
+FAST64.4 remains ACTIVE; no stage is promoted.
 
 ## FAST64.3 PASS; Core658 2D common-triplet strict terminal evidence (2026-09-11)
 
