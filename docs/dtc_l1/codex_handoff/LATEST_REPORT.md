@@ -1,5 +1,16 @@
 # Latest Codex Report
 
+## FAST64.6 frozen-matrix execution coverage has no missing cell (2026-09-11)
+
+A config-SHA/payload-SHA read-only reconciliation found all 78 frozen Stage6
+cells accounted for: 35 strict-terminal compact candidates, 39 exact-formal
+live cells, and four preserved 16.5-KiB source-diagnostic cells.  The sole
+unowned pair, GESUMMV logical-64 KiB IO/OO, passed a fresh two-worker admission
+and launched once with immutable UUIDs `d44047eb-…`/`383691d1-…` on CPUs 20/21.
+Both have atomic START receipts and independent strict monitors; short
+observation shows CPU progress with no failure signature.  This is
+`PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` only, with no Stage6 promotion.
+
 ## FAST64.6 Btree logical-capacity batch strictly retained (2026-09-11)
 
 All six Btree logical 16/32/64-KiB × IO/OO immutable-v2 rows naturally

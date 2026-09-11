@@ -536,3 +536,30 @@ also zero.  These are strict terminal **precomputes only**, classified
 `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE`.  They do not create a Stage6
 curve or promotion, alter FAST64.4/5, or permit a causal interpretation before
 the required logical gates.
+
+## Frozen 78-cell reconciliation closed; GESUMMV logical-64 pair dispatched (2026-09-11)
+
+A read-only reconciliation joins the frozen matrix by config SHA and payload
+SHA (not by config filename) against strict compact records and live formal
+processes.  At the dispatch boundary it found 35 strict-terminal candidates,
+39 exact formal live cells, and four preserved 16.5-KiB source-diagnostic
+cells; no matrix cell was unowned.  The physical-16.5 cells remain preserved
+diagnostic failures, not formal results and not automatic rerun candidates.
+
+The only previously unowned cells were GESUMMV logical 64 KiB IO/OO.  A fresh
+three-window V3 admission for two workers passed: no sampled swap-out, memory
+PSI, OOM or CFS throttling; projected `MemAvailable` after admission was
+65,261,965,312 B with the fixed 16-GiB reserve.  Both fresh namespaces were
+absent before atomic START publication and were launched once on distinct CPUs
+20/21 through immutable runner `bf9a84c8...`; their unchanged read-only v2
+strict monitors have separate sessions.
+
+| point | mode | CPU | immutable UUID | config SHA |
+| --- | --- | ---: | --- | --- |
+| GESUMMV / logical 64 KiB | IO | 20 | `d44047eb-4d10-44fe-9a6b-61c51acdea09` | `35b84094...` |
+| GESUMMV / logical 64 KiB | OO | 21 | `383691d1-9ae2-4eae-b997-e9de38add704` | `313ff909...` |
+
+The pair has only atomic START receipts and a short healthy observation; it is
+strictly `PRECOMPUTED_PENDING_FAST64_4_5_ACCEPTANCE` until natural terminal
+and strict collection.  This coverage closure is physical acquisition only:
+it does not create a FAST64.6 curve/PASS or change FAST64.3--5 acceptance.
