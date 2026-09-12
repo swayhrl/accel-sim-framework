@@ -1,0 +1,78 @@
+{
+  "schema_version": "C16_G_G1_CHECKPOINT_V1",
+  "status": "G1_PASS",
+  "scientific_eligible": true,
+  "qualification_scope": "FROZEN_STANDALONE_S2_STRUCTURED_BASELINE_AND_NSYS_CENSUS",
+  "package": {
+    "id": "C16_GPU_PACKAGE_P3",
+    "fixed_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "manifest_sha256": "704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c"
+  },
+  "baseline": {
+    "run_id": "cd01e7c6-c2fc-42bf-9685-9d4ff4a7adf8",
+    "runtime_source_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "binding_sha256": "19dc6395ff9622c09867dae0b8a7b3f07d115d4a9d81dc6a5df731f100f2b45b",
+    "receipt_sha256": "1ee2902514ce427d33522313421fa73f11dc79abd0352b8c0695845b14c645c8",
+    "median_duration_ms": 1667.07098,
+    "peak_allocated_bytes": 6521643008,
+    "peak_reserved_bytes": 7008681984,
+    "output_checksum": "44afca4f3fb5a694f8fe0039be6652da5a2dc9ed5eb610bb2ffe4371125d0f47"
+  },
+  "census": {
+    "run_id": "0db40447-a201-452d-a48d-be8116d71aee",
+    "runtime_source_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "target_sha256": "c791e887dc0c42f2da8ed6346f8bdcf808344d1e99c3b0a2b7a1b9a4bb03cbb3",
+    "binding_sha256": "f918520ce68a009fceae44c010245cf151595a904f24cadf2bb4f3e31d901b9e",
+    "nsys_receipt_sha256": "f51ad041d06f2393cd9e0ab00b046a0fd8002396c704c27cb39049c52b3c9c10",
+    "profiled_runner_receipt_sha256": "f834ee54756fc1c0b2a43860527346d844d0778be45068423d07169dd700485f",
+    "parent_lease_start_sha256": "a2c0ea3b5c0abd41fd1fc120e4db70876025e6715c222c14aa7920624c3ce997",
+    "parent_lease_closeout_sha256": "88a31099e530bc2036beef9ce4dccba2069c9387217e9b645bfbe12bb6009bbe",
+    "independent_export_validation_sha256": "0f209970f885efa08b5ccef1474f5bbf4cf01b9179e95df8dfdfae660b09015d",
+    "independent_export_evidence": {
+      "cuda_kernel_count": 240380,
+      "distinct_stream_count": 1,
+      "named_kernel_count": 240380,
+      "cuda_runtime_correlation_join_count": 240380,
+      "nvtx_kernel_overlap_count": 475758,
+      "required_nvtx_range_counts": {
+        "C16_NATIVE_FULL_FORWARD": 5,
+        "C16_PHASE_PREFILL": 5,
+        "C16_PHASE_DECODE": 5
+      },
+      "run_package_identity_consistent": true
+    }
+  },
+  "identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S2",
+    "input_class": "STRUCTURED",
+    "input_hash": "0e9ddcb8a03cfed41c2501eb15f761b76a8e8fe376b09a1fb0977c81b58ca765",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "implementation_key": "AUTOAWQ_CAUSAL_LM_EAGER",
+    "dtype": "float16",
+    "quantization": "AWQ",
+    "shape_key": "B1_T2048_D32"
+  },
+  "raw_profile": {
+    "remote_path": "/root/autodl-tmp/c16/runs/p3_awq_s2_structured_g1_0db40447-a201-452d-a48d-be8116d71aee/P3_AWQ_S2_STRUCTURED_CENSUS.nsys-rep",
+    "local_path": "/workspace/c16_exchange/autodl_wave1/returned/P3/p3_awq_s2_structured_g1_0db40447-a201-452d-a48d-be8116d71aee/P3_AWQ_S2_STRUCTURED_CENSUS.nsys-rep",
+    "size_bytes": 34938101,
+    "sha256": "dcb315a50725bbb0f051a9d4a3d58cefe261cb7621de27157c823333140b5201",
+    "local_transfer_state": "LOCAL_SHA256_VERIFIED"
+  },
+  "validation_sqlite": {
+    "remote_path": "/root/autodl-tmp/c16/runs/p3_awq_s2_structured_g1_0db40447-a201-452d-a48d-be8116d71aee/P3_AWQ_S2_STRUCTURED_CENSUS.sqlite",
+    "size_bytes": 29405184,
+    "sha256": "1d708fc49f7e5ddf8b5dcbf1279a91bbff6c33e37b2e7c298207d2dc79ef8367",
+    "retention": "REMOTE_VALIDATION_INPUT_ONLY_NO_LAUNCH_TSV_OR_CATALOG"
+  },
+  "scientific_constraints": {
+    "standalone_only": true,
+    "cpu_offload_forbidden": true,
+    "parent_child_budget_proven": true,
+    "raw_profile_not_committed": true,
+    "remote_launch_tsv_or_catalog_not_generated": true
+  },
+  "next_authorized_task": "P3_S2_TEXT_DIRECT_SEMANTIC_DIAGNOSTIC_ONLY"
+}

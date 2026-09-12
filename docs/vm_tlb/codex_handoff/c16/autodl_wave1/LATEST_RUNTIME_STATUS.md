@@ -64,7 +64,7 @@ consumer-facing coverage/receipt/hash index is in
 |---|---|---|---|---|---|
 | Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Pending fixed target | Pending fixed target | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
 | Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1 (`2ec7d963-228d-4c8a-bcfa-60c895f13b88`) and S2 (`bbe3ef73-bdca-443d-8fa6-58b59a35ca4c`) | Pending fixed target | Pending fixed target | S2 standalone baseline plus G1; this is a meaningful completed standalone model/scenario group. |
-| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`), S2/CODE (`bedbd6bd-f51e-4246-89e9-c0e59c74e0e7`) | Pending fixed target | Pending fixed target | S2/CODE standalone baseline (`77bc26ae-e692-42cd-9e94-841c6fad4ada`) plus independently validated lightweight Nsight census; see [P3_AWQ_S2_CODE_G1_CHECKPOINT.json](P3_AWQ_S2_CODE_G1_CHECKPOINT.json).  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` remains solely `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the earlier string device-map before forward/timing. |
+| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`), S2/CODE (`bedbd6bd-f51e-4246-89e9-c0e59c74e0e7`), S2/STRUCTURED (`0db40447-a201-452d-a48d-be8116d71aee`) | Pending fixed target | Pending fixed target | S2/STRUCTURED standalone baseline (`cd01e7c6-c2fc-42bf-9685-9d4ff4a7adf8`) plus independently validated lightweight Nsight census; see [P3_AWQ_S2_STRUCTURED_G1_CHECKPOINT.json](P3_AWQ_S2_STRUCTURED_G1_CHECKPOINT.json).  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` remains solely `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the earlier string device-map before forward/timing. |
 
 The first malformed Qwen S1 Nsight invocation (`baa55265-4b7b-4dd8-aed6-6fcc6abca148`)
 has a retained ledger entry marked `NON_SCIENTIFIC_DIAGNOSTIC`; it has no raw
@@ -123,8 +123,15 @@ correlation joins, one stream, and full/prefill/decode NVTX linkage.  Its 35.0
 MB `.nsys-rep` has matching remote/local SHA256 and is indexed outside Git; the
 SQLite is validation-only and no remote launch TSV/catalog was generated.
 
-Next authorized GPU task: P3 S2/STRUCTURED standalone resource admission and
-baseline under `ae560163…`, then its G1 lightweight Nsight census.  Continue
+P3 S2/STRUCTURED is now closed with the third required S2 input class.  Its
+independent G1 validation proves 240,380 named CUDA kernels/correlation joins,
+one stream, and full/prefill/decode NVTX linkage.  The 34.9 MB report has
+matching remote/local SHA256 and remains an external raw artifact; no timing
+data is changed by subsequent semantic diagnostics.
+
+Next authorized GPU task: P3 S2/TEXT direct-semantic diagnostic under
+`ae560163…`, explicitly `SEMANTIC_DIAGNOSTIC_ONLY` / `NOT_FOR_NATIVE_TIMING`;
+after it, resume P3 S3/TEXT resource admission and baseline/G1.  Continue
 frozen-scenario resource admission and standalone baseline/G1 census; an OOM is
 `SKIPPED_RESOURCE`, never CPU offload or a resized substitute.  P2 raw remains
 next only after the P3 AWQ frozen main native group.  Lane P's local semantic
