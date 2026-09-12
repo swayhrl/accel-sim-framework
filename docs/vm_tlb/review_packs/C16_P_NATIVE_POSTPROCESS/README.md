@@ -19,6 +19,8 @@ G's formal native producer checkpoint remains pending.
   compact outputs, and raw-index manifest hashes.
 - `VALIDATION_SUMMARY.md` lists the executed checks; `OPEN_ISSUES.md` records
   the remaining producer, transfer, semantic, and retention boundaries.
+- `JOIN_KEY_CONTRACT.md` freezes the actual four-layer identity and report-local
+  ID rules; `EVENT_INPUT_CONTRACT.md` gates all future P1/P2/P3 work.
 
 ## Data boundary
 

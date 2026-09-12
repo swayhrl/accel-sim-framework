@@ -65,6 +65,17 @@ RAW_INDEX_FIELDS = (
     "artifact_role", "run_id", "path", "size_bytes", "sha256", "logical_row_count",
     "git_policy", "hash_binding_or_receipt", "retention_status",
 )
+PROFILE_REPORT_INDEX_FIELDS = (
+    "profile_report_id", "run_id", "deployment_id", "model_id", "model_revision", "tokenizer_revision",
+    "scenario_id", "input_hash", "raw_report_path", "raw_report_bytes", "raw_report_sha256",
+    "sqlite_path", "sqlite_bytes", "sqlite_sha256", "kernel_rows", "local_nsys_version",
+    "validation_receipt_sha256", "status",
+)
+SEMANTIC_COVERAGE_DETAIL_FIELDS = (
+    "run_id", "deployment_id", "scenario_id", "phase", "launch_count", "mapped_launch_count",
+    "mapped_launch_fraction", "total_gpu_duration_ns", "mapped_gpu_duration_ns", "mapped_gpu_time_fraction",
+    "ambiguous_gpu_duration_ns", "unknown_gpu_duration_ns", "status",
+)
 REQUIRED_NVTX = ("C16_NATIVE_FULL_FORWARD", "C16_PHASE_PREFILL", "C16_PHASE_DECODE")
 
 
@@ -339,6 +350,17 @@ def derive_tables(catalog: Path, output_dir: Path) -> dict[str, int]:
         "status": "UNKNOWN_OPERATOR_LAYER_NO_DIRECT_EVIDENCE",
     } for (run_id, deployment_id, scenario_id, phase), duration in sorted(coverage.items())]
     write_tsv(output_dir / "SEMANTIC_COVERAGE.tsv", COVERAGE_FIELDS, coverage_rows)
+    coverage_detail_rows = []
+    for (run_id, deployment_id, scenario_id, phase), members in sorted(phase_rows.items()):
+        total = coverage[(run_id, deployment_id, scenario_id, phase)]
+        coverage_detail_rows.append({
+            "run_id": run_id, "deployment_id": deployment_id, "scenario_id": scenario_id, "phase": phase,
+            "launch_count": len(members), "mapped_launch_count": 0, "mapped_launch_fraction": "0.0",
+            "total_gpu_duration_ns": total, "mapped_gpu_duration_ns": 0, "mapped_gpu_time_fraction": "0.0",
+            "ambiguous_gpu_duration_ns": 0, "unknown_gpu_duration_ns": total,
+            "status": "SEMANTIC_UNKNOWN_UNTIL_DIRECT_RUNTIME_EVIDENCE",
+        })
+    write_tsv(output_dir / "SEMANTIC_COVERAGE_DETAIL.tsv", SEMANTIC_COVERAGE_DETAIL_FIELDS, coverage_detail_rows)
     heavy: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
     for (run_id, deployment_id, scenario_id, phase), members in sorted(phase_rows.items()):
@@ -362,7 +384,7 @@ def derive_tables(catalog: Path, output_dir: Path) -> dict[str, int]:
                 })
     write_tsv(output_dir / "HEAVY_TAIL_KERNELS.tsv", HEAVY_TAIL_FIELDS, heavy)
     write_tsv(output_dir / "PHASE_SUMMARY.tsv", PHASE_SUMMARY_FIELDS, summaries)
-    return {"kernel_catalog_rows": len(rows), "semantic_rows": len(semantic), "heavy_tail_rows": len(heavy), "phase_summary_rows": len(summaries)}
+    return {"kernel_catalog_rows": len(rows), "semantic_rows": len(semantic), "heavy_tail_rows": len(heavy), "phase_summary_rows": len(summaries), "semantic_coverage_detail_rows": len(coverage_detail_rows)}
 
 
 def write_baselines_and_audits(verified: list[dict[str, Any]], output: Path) -> dict[str, int]:
@@ -427,6 +449,102 @@ def write_raw_index(verified: list[dict[str, Any]], output: Path, catalog_rows: 
             "hash_binding_or_receipt": str(output / "POSTPROCESS_MANIFEST.json"), "retention_status": "LOCAL_GENERATED_RETAIN",
         })
     write_tsv(output / "RAW_INDEX.tsv", RAW_INDEX_FIELDS, rows)
+    write_tsv(output / "RAW_ARTIFACT_INDEX.tsv", RAW_INDEX_FIELDS, rows)
+
+
+def write_profile_report_index(verified: list[dict[str, Any]], output: Path) -> None:
+    rows: list[dict[str, Any]] = []
+    for item in verified:
+        identity, paths = item["profile"]["identity"], item["paths"]
+        evidence = export_evidence(paths["sqlite"])
+        rows.append({
+            "profile_report_id": item["hashes"]["raw_profile"], "run_id": identity["run_id"],
+            "deployment_id": identity["deployment_id"], "model_id": identity["model_id"],
+            "model_revision": identity["model_revision"], "tokenizer_revision": identity["tokenizer_revision"],
+            "scenario_id": identity["scenario_id"], "input_hash": identity["input_hash"],
+            "raw_report_path": paths["raw_profile"], "raw_report_bytes": paths["raw_profile"].stat().st_size,
+            "raw_report_sha256": item["hashes"]["raw_profile"], "sqlite_path": paths["sqlite"],
+            "sqlite_bytes": paths["sqlite"].stat().st_size, "sqlite_sha256": item["hashes"]["sqlite"],
+            "kernel_rows": evidence["kernel_rows"],
+            "local_nsys_version": item["source"].get("local_export_tool_version", "UNKNOWN"),
+            "validation_receipt_sha256": sha256_file(paths["validation_receipt"]),
+            "status": "REAL_NATIVE_SCHEMA_SANITY_PROVISIONAL",
+        })
+    write_tsv(output / "PROFILE_REPORT_INDEX.tsv", PROFILE_REPORT_INDEX_FIELDS, rows)
+
+
+def write_run_join_audit(verified: list[dict[str, Any]], catalog: Path, output: Path) -> None:
+    rows = read_rows(catalog)
+    required = (
+        "run_id", "deployment_id", "model_id", "model_revision", "tokenizer_revision", "scenario_id", "input_hash",
+        "device", "context", "stream", "correlation_id", "launch_ordinal", "kernel_name", "implementation_key",
+        "grid", "block", "start_ns", "end_ns", "duration_ns", "operator_class", "layer_id", "shape_key", "dtype_key",
+        "semantic_evidence", "mapping_status",
+    )
+    missing = [field for field in required if field not in (rows[0] if rows else {})]
+    empty_required = sum(any(not row.get(field, "") for field in required) for row in rows)
+    launch_scope = ("run_id", "device", "context", "stream", "correlation_id", "launch_ordinal")
+    keys = [tuple(row[field] for field in launch_scope) for row in rows]
+    duplicate_physical_launch_keys = len(keys) - len(set(keys))
+    by_run: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in rows:
+        by_run[row["run_id"]].append(row)
+    profile_by_run = {item["profile"]["identity"]["run_id"]: item for item in verified}
+    if set(by_run) != set(profile_by_run):
+        raise ContractError("catalog run IDs and hash-closed profile-report inputs differ")
+    run_reports = []
+    for run_id, members in sorted(by_run.items()):
+        item = profile_by_run[run_id]
+        evidence = export_evidence(item["paths"]["sqlite"])
+        if len(members) != evidence["kernel_rows"]:
+            raise ContractError(f"run {run_id} catalog population differs from local SQLite kernel population")
+        identity_fields = ("deployment_id", "model_id", "model_revision", "tokenizer_revision", "scenario_id", "input_hash", "implementation_key", "dtype_key")
+        inconsistent = [field for field in identity_fields if len({row[field] for row in members}) != 1]
+        if inconsistent:
+            raise ContractError(f"run {run_id} has inconsistent identity fields: {','.join(inconsistent)}")
+        run_reports.append({
+            "run_id": run_id, "profile_report_id": item["hashes"]["raw_profile"], "catalog_rows": len(members),
+            "stream_ids": sorted({row["stream"] for row in members}),
+            "correlation_ids": len({row["correlation_id"] for row in members}),
+            "launch_ordinal_min": min(int(row["launch_ordinal"]) for row in members),
+            "launch_ordinal_max": max(int(row["launch_ordinal"]) for row in members),
+        })
+    cross_report_collisions = []
+    ordered_runs = sorted(by_run)
+    for index, left_run in enumerate(ordered_runs):
+        for right_run in ordered_runs[index + 1:]:
+            left, right = by_run[left_run], by_run[right_run]
+            common_streams = sorted({row["stream"] for row in left} & {row["stream"] for row in right})
+            common_correlations = len({row["correlation_id"] for row in left} & {row["correlation_id"] for row in right})
+            cross_report_collisions.append({
+                "left_run_id": left_run, "right_run_id": right_run, "shared_stream_ids": common_streams,
+                "shared_correlation_id_count": common_correlations,
+                "conclusion": "REPORT_LOCAL_IDS_MUST_NOT_BE_JOINED_WITHOUT_RUN_OR_REPORT_SCOPE",
+            })
+    baseline_rows = read_rows(output / "NATIVE_BASELINE.tsv")
+    baseline_key = ("run_id", "measurement_kind", "measurement_index")
+    baseline_keys = [tuple(row[field] for field in baseline_key) for row in baseline_rows]
+    baseline_groups: dict[tuple[str, str, str], list[dict[str, str]]] = defaultdict(list)
+    for row in baseline_rows:
+        baseline_groups[(row["deployment_id"], row["scenario_id"], row["input_hash"])].append(row)
+    baseline_repeat_view = [{
+        "deployment_id": key[0], "scenario_id": key[1], "input_hash": key[2],
+        "baseline_run_ids": sorted({row["run_id"] for row in group}),
+        "measurement_indices": sorted(int(row["measurement_index"]) for row in group), "measurement_rows": len(group),
+        "conclusion": "REPEATS_ARE_SCENARIO_MEASUREMENTS_NOT_ADDITIONAL_PROFILED_LAUNCH_POPULATIONS",
+    } for key, group in sorted(baseline_groups.items())]
+    status = "PASS" if not missing and empty_required == 0 and duplicate_physical_launch_keys == 0 and len(baseline_keys) == len(set(baseline_keys)) else "FAIL"
+    audit = {
+        "schema_version": "C16_P_RUN_JOIN_AUDIT_V1", "status": status,
+        "catalog_required_fields": required, "missing_required_fields": missing, "rows_with_empty_required_key_fields": empty_required,
+        "physical_launch_scope": launch_scope, "catalog_rows": len(rows), "duplicate_physical_launch_keys": duplicate_physical_launch_keys,
+        "run_report_index": run_reports, "cross_report_local_id_collisions": cross_report_collisions,
+        "baseline_repeat_key": baseline_key, "baseline_rows": len(baseline_rows), "duplicate_baseline_repeat_keys": len(baseline_keys) - len(set(baseline_keys)),
+        "logical_scenario_repeat_view": baseline_repeat_view,
+    }
+    write_json(output / "RUN_JOIN_AUDIT.json", audit)
+    if status != "PASS":
+        raise ContractError("run/join audit failed")
 
 
 def qualify(args: argparse.Namespace) -> None:
@@ -514,6 +632,8 @@ def postprocess(args: argparse.Namespace) -> None:
     stats.update(write_baselines_and_audits(verified, output))
     deterministic_gzip(catalog, output / "KERNEL_CATALOG.tsv.gz")
     write_raw_index(verified, output, stats["kernel_catalog_rows"])
+    write_profile_report_index(verified, output)
+    write_run_join_audit(verified, catalog, output)
     run_summaries: list[dict[str, Any]] = []
     for item in verified:
         evidence = export_evidence(item["paths"]["sqlite"])
@@ -530,7 +650,10 @@ def postprocess(args: argparse.Namespace) -> None:
         })
     write_tsv(output / "RUN_SUMMARY.tsv", RUN_SUMMARY_FIELDS, run_summaries)
     files = []
-    for path in sorted(output.glob("*.tsv")) + sorted(output.glob("*.tsv.gz")):
+    payload_paths = sorted(output.glob("*.tsv")) + sorted(output.glob("*.tsv.gz")) + sorted(output.glob("*.json"))
+    for path in payload_paths:
+        if path.name == "POSTPROCESS_MANIFEST.json":
+            continue
         files.append({"path": str(path), "name": path.name, "size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
     output_manifest = {
         "schema_version": "C16_P_LOCAL_NATIVE_POSTPROCESS_V1",

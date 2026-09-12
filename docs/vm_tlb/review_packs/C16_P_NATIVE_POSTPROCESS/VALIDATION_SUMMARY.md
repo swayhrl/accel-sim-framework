@@ -11,6 +11,7 @@
 | Full-population preservation | PASS | No row is outside the required full-forward interval; catalog rows equal source kernel rows per run. |
 | Deterministic compression integrity | PASS | Decompressed gzip has 169,921 lines (header + 169,920 data rows); full TSV and gzip hashes are in the postprocess manifest. |
 | C join-key/schema audit | PASS | All required fields are populated; zero duplicate composite unit identities. |
+| Event-driven run/join audit | PASS | `RUN_JOIN_AUDIT.json` checks report/run scopes, repeat keys, full populations, and report-local ID collisions. |
 | Semantic non-inference | PASS | Zero catalog rows have non-`UNKNOWN` operator or layer values. |
 | P utility syntax | PASS | `python3 -m py_compile util/vm_tlb/c16/lane_p/local_native_postprocess.py`. |
 

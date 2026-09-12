@@ -29,7 +29,7 @@ layers therefore remain `UNKNOWN`.
 The raw-outside-Git index SHA-256 is
 `4a72b166533856806d8b35d95bd2ab75dfb6e80189a3e8ed7cacb7ab1fd95502`; the
 postprocess manifest SHA-256 is
-`9a67a9fe86556f36fb1528621e53905472228ecb1bc22443c94bc4b6f996e4ef`.
+`9a642fb178968c21836aea2ce6c5c890033e08e0b7773b7d6348ccad6617bfe9`.
 Their local paths are:
 
 `/workspace/worktrees/accel-sim-vm-c16-p/artifacts/c16_p_native_postprocess/local_exports_provisional/RAW_INDEX.tsv`

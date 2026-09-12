@@ -1,7 +1,8 @@
 # C16-P local Nsight Systems export qualification
 
-Status: **PASS** — local export is the default for subsequent C16 `.nsys-rep`
-reports received through the hash-closed P input contract.
+Status: `LOCAL_NSYS_EXPORT_QUALIFIED_FOR_CURRENT_TOOL_PAIR` — local export is
+the default for subsequent C16 `.nsys-rep` reports received through the
+hash-closed P input contract.
 
 This qualification is an export-pipeline result, not a cross-lane scientific
 conclusion. All downstream S1/S2 material remains
@@ -62,4 +63,6 @@ shared-table schemas. SQLite byte identity is therefore not required.
 The equality of the consumed schema and all consumed row relationships passes
 the C16 qualification contract. P may export future hash-closed reports with
 the recorded local 2024.2.3 CLI, using the same `nice`/`ionice` policy; report
-input SHA verification and per-run source receipts remain mandatory.
+input SHA verification and per-run source receipts remain mandatory. Requalify
+only for a material G/local tool-version change, report-schema change, export
+command change, or consumed-field-set change.
