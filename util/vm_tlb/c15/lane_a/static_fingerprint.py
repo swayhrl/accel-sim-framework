@@ -81,6 +81,14 @@ HEADER_COLUMNS = [
     "model_id", "revision", "shard", "file_size_bytes", "header_bytes", "header_sha256",
     "tensor_count", "payload_interval_bytes", "validation_status", "missing_reason",
 ]
+WEIGHT_STORAGE_COLUMNS = [
+    "deployment_id", "storage_dtype", "tensor_count", "checkpoint_file_storage_bytes",
+    "dedup_basis", "evidence_tier", "missing_reason",
+]
+ALIAS_AUDIT_COLUMNS = [
+    "deployment_id", "config_tie_declaration", "embedding_tensor_count", "logits_tensor_count",
+    "exact_file_range_alias_observed", "semantic_tying_status", "verdict", "missing_reason",
+]
 COST_COLUMNS = [
     "work_id", "parent_work_id", "lane", "stage_id", "attempt", "operation", "start_utc", "end_utc",
     "wall_s", "cpu_core_s", "gpu_active_s", "peak_rss_B", "peak_vram_B", "bytes_read", "bytes_downloaded",
@@ -149,6 +157,14 @@ def sha256_file(path: Path) -> str:
             if not block:
                 return digest.hexdigest()
             digest.update(block)
+
+
+def git_head(repo_root: Path) -> str:
+    result = subprocess.run(["git", "-C", str(repo_root), "rev-parse", "HEAD"], check=True, capture_output=True, text=True)
+    value = result.stdout.strip()
+    if not re.fullmatch(r"[0-9a-f]{40}", value):
+        raise C15Error("cannot establish producer implementation checkpoint")
+    return value
 
 
 _CONTENT_RANGE = re.compile(r"^bytes (\d+)-(\d+)/(\d+)$")
@@ -584,8 +600,50 @@ def verify_output_root(root: Path) -> list[tuple[str, str]]:
                 raise C15Error("selection plan leaks a candidate result")
             if row["forbidden_result_input"] != "candidate speedup/cycle/miss result":
                 raise C15Error("selection plan does not explicitly exclude candidate outcomes")
+    verify_static_semantics(root, rows["MODEL_REGISTRY.tsv"], rows["TENSOR_STORAGE_CATALOG.tsv"])
     verify_cost_ledger(root)
     return [("T01", "PASS"), ("T14", "PASS"), ("T20", "PASS")] + verify_integration_outputs(root, deployment_ids)
+
+
+def verify_static_semantics(root: Path, registry_rows: list[dict[str, str]], tensor_rows: list[dict[str, str]]) -> None:
+    """Reject stale semantic labels that would overstate checkpoint-file evidence."""
+    tensors_by_deployment: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for tensor in tensor_rows:
+        tensors_by_deployment[tensor["deployment_id"]].append(tensor)
+    for registry in registry_rows:
+        try:
+            observed_fields = json.loads(registry["fields_verified"])
+        except json.JSONDecodeError as exc:
+            raise C15Error("MODEL_REGISTRY.fields_verified is not JSON") from exc
+        if not isinstance(observed_fields, list) or observed_fields != verified_registry_fields(registry, tensors_by_deployment[registry["deployment_id"]]):
+            raise C15Error("MODEL_REGISTRY.fields_verified does not match deployment-specific evidence")
+    breakdown_rows = require_columns(root / "WEIGHT_STORAGE_BREAKDOWN.tsv", WEIGHT_STORAGE_COLUMNS)
+    require_unique(breakdown_rows, ("deployment_id", "storage_dtype"), "WEIGHT_STORAGE_BREAKDOWN")
+    expected_breakdown = {
+        (deployment_id_value, item["storage_dtype"]): item["checkpoint_file_storage_bytes"]
+        for deployment_id_value, tensors in tensors_by_deployment.items()
+        for item in checkpoint_file_storage_by_dtype(tensors)
+    }
+    observed_breakdown = {(row["deployment_id"], row["storage_dtype"]): row["checkpoint_file_storage_bytes"] for row in breakdown_rows}
+    if observed_breakdown != {key: str(value) for key, value in expected_breakdown.items()}:
+        raise C15Error("checkpoint-file storage breakdown does not close to tensor ranges")
+    alias_rows = require_columns(root / "TENSOR_ALIAS_AUDIT.tsv", ALIAS_AUDIT_COLUMNS)
+    require_unique(alias_rows, ("deployment_id",), "TENSOR_ALIAS_AUDIT")
+    alias_by_deployment = {row["deployment_id"]: row for row in alias_rows}
+    if set(alias_by_deployment) != {row["deployment_id"] for row in registry_rows}:
+        raise C15Error("alias audit does not close to registry")
+    for registry in registry_rows:
+        deployment_id_value = registry["deployment_id"]
+        alias = alias_by_deployment[deployment_id_value]
+        local_tensors = tensors_by_deployment[deployment_id_value]
+        if not local_tensors:
+            if alias["embedding_tensor_count"] != NA or alias["logits_tensor_count"] != NA or alias["exact_file_range_alias_observed"] != NA or alias["verdict"] != "HEADER_UNAVAILABLE_NO_FILE_RANGE_ALIAS_AUDIT" or alias["missing_reason"] == NA:
+                raise C15Error("missing-header alias audit overstates consistency")
+            continue
+        expected = alias_audit_row(deployment_id_value, registry["tying_status"] == "CONFIG_TIED", local_tensors, NA)
+        for column in ("config_tie_declaration", "embedding_tensor_count", "logits_tensor_count", "exact_file_range_alias_observed", "semantic_tying_status", "verdict"):
+            if alias[column] != str(expected[column]):
+                raise C15Error("alias audit mismatch in %s" % column)
 
 
 def verify_cost_ledger(root: Path) -> None:
@@ -613,22 +671,22 @@ def verify_integration_outputs(root: Path, deployment_ids: set[str]) -> list[tup
     if not integration.exists():
         return []
     consumed_columns = [
-        "consumer_lane", "producer_lane", "remote_branch", "fetched_commit", "manifest_path",
+        "consumer_lane", "producer_lane", "remote_branch", "artifact_checkpoint", "final_handoff_head", "manifest_path",
         "manifest_sha256", "planning_sha", "verified_payloads", "consumption_scope", "status", "missing_reason",
     ]
     consumed = require_columns(integration / "CONSUMED_INPUTS.tsv", consumed_columns)
     require_unique(consumed, ("consumer_lane", "producer_lane"), "CONSUMED_INPUTS")
     expected = {
-        "B": ("721e30f377dab36d826dc7ea9d47e11c5d85aa5c", "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad"),
-        "C": ("a51d6c91b1e7d7df27a4af80823a29ff30bb9806", "17d7888650c2c51f1dd0d4a418eb45948212a259dd01661d1adca33832e5dec0"),
+        "B": ("57e2ef203befc96cfcefe00de2aaf8b0baab5d8b", "721e30f377dab36d826dc7ea9d47e11c5d85aa5c", "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad"),
+        "C": ("a51d6c91b1e7d7df27a4af80823a29ff30bb9806", "a51d6c91b1e7d7df27a4af80823a29ff30bb9806", "17d7888650c2c51f1dd0d4a418eb45948212a259dd01661d1adca33832e5dec0"),
     }
     if {row["producer_lane"] for row in consumed} != set(expected):
         raise C15Error("integration must identify exactly the accepted B/C producers")
     for row in consumed:
-        commit, manifest_hash = expected[row["producer_lane"]]
+        artifact_checkpoint, final_handoff_head, manifest_hash = expected[row["producer_lane"]]
         if row["consumer_lane"] != "A" or row["planning_sha"] != PLANNING_SHA:
             raise C15Error("integration consumer identity mismatch")
-        if row["fetched_commit"] != commit or row["manifest_sha256"] != manifest_hash:
+        if row["artifact_checkpoint"] != artifact_checkpoint or row["final_handoff_head"] != final_handoff_head or row["manifest_sha256"] != manifest_hash:
             raise C15Error("integration fixed commit or manifest hash mismatch")
         if row["status"] != "ACCEPTED_HASH_BOUND":
             raise C15Error("integration accepted a non-hash-bound input")
@@ -651,7 +709,7 @@ def verify_integration_outputs(root: Path, deployment_ids: set[str]) -> list[tup
     receipt = json_object((integration / "INTEGRATION_RECEIPT.json").read_bytes(), "INTEGRATION_RECEIPT.json")
     if receipt.get("planning_sha") != PLANNING_SHA or receipt.get("conclusion") != "C15_LOWCOST_FOUNDATION_PARTIAL_READY_FOR_REVIEW":
         raise C15Error("integration receipt identity or conclusion mismatch")
-    if receipt.get("consumed_commits") != {"B": expected["B"][0], "C": expected["C"][0]}:
+    if receipt.get("artifact_checkpoints") != {"B": expected["B"][0], "C": expected["C"][0]} or receipt.get("final_handoff_heads") != {"B": expected["B"][1], "C": expected["C"][1]}:
         raise C15Error("integration receipt commits mismatch")
     tests = {entry.get("test_id"): entry.get("result") for entry in receipt.get("tests", []) if isinstance(entry, dict)}
     if tests.get("T22") != "PASS":
@@ -697,6 +755,11 @@ def verify_publish_manifest(root: Path) -> None:
     manifest = json_object(manifest_path.read_bytes(), str(manifest_path))
     if manifest.get("planning_sha") != PLANNING_SHA or manifest.get("lane") != "A":
         raise C15Error("publish manifest identity mismatch")
+    provenance = manifest.get("provenance")
+    if not isinstance(provenance, dict) or provenance.get("planning_authority_sha") != PLANNING_SHA or provenance.get("static_producer_checkpoint") != "9bdb692dfda2a9b42578133b97a84283fed9d34a" or provenance.get("integration_producer_checkpoint") != "a69ee630a8e3bc509029edc5d27c2daf7d2089f4":
+        raise C15Error("publish manifest provenance anchors mismatch")
+    if manifest.get("producer_source_sha") != provenance.get("producer_implementation_checkpoint"):
+        raise C15Error("publish manifest producer implementation mismatch")
     files = manifest.get("files")
     if not isinstance(files, list) or not files:
         raise C15Error("publish manifest has no files")
@@ -718,6 +781,7 @@ def verify_publish_manifest(root: Path) -> None:
 def write_static_publish_manifest(root: Path) -> None:
     """Write the non-self-referential static or fixed-input integration manifest."""
     repo_root = Path(__file__).resolve().parents[4]
+    producer_implementation_checkpoint = git_head(repo_root)
     artifact_files = sorted(path for path in root.rglob("*") if path.is_file() and path.name != "PUBLISH_MANIFEST.json")
     if not artifact_files:
         raise C15Error("cannot publish an empty static result root")
@@ -739,13 +803,20 @@ def write_static_publish_manifest(root: Path) -> None:
     if integrated:
         ready_stages.extend(["C15-5.1", "C15-5.2", "C15-5.4"])
         input_sources.extend([
-            {"name": "LANE_B_PUBLISH", "commit": "721e30f377dab36d826dc7ea9d47e11c5d85aa5c", "manifest_sha256": "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad", "read_policy": "READ_ONLY_FIXED_COMMIT_HASH_BOUND"},
+            {"name": "LANE_B_PUBLISH", "artifact_checkpoint": "57e2ef203befc96cfcefe00de2aaf8b0baab5d8b", "final_handoff_head": "721e30f377dab36d826dc7ea9d47e11c5d85aa5c", "manifest_sha256": "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad", "read_policy": "READ_ONLY_ARTIFACT_COMMIT_HASH_BOUND"},
             {"name": "LANE_C_PUBLISH", "commit": "a51d6c91b1e7d7df27a4af80823a29ff30bb9806", "manifest_sha256": "17d7888650c2c51f1dd0d4a418eb45948212a259dd01661d1adca33832e5dec0", "read_policy": "READ_ONLY_FIXED_COMMIT_HASH_BOUND"},
         ])
         gaps.extend(["NO_NEW_NATIVE_CAPTURE_FROM_B", "SAMPLER_NOT_QUALIFIED_FROM_C", "NO_UPGRADE_AUTHORIZED"])
     json_write(root / "PUBLISH_MANIFEST.json", {
         "schema_version": "C15_PUBLISH_MANIFEST_V1", "planning_sha": PLANNING_SHA, "lane": "A",
-        "run_id": "c15-a-integration-20260912" if integrated else "c15-a-static-20260912", "producer_source_sha": PLANNING_SHA,
+        "run_id": "c15-a-integration-20260912" if integrated else "c15-a-static-20260912", "producer_source_sha": producer_implementation_checkpoint,
+        "provenance": {
+            "planning_authority_sha": PLANNING_SHA,
+            "static_producer_checkpoint": "9bdb692dfda2a9b42578133b97a84283fed9d34a",
+            "integration_producer_checkpoint": "a69ee630a8e3bc509029edc5d27c2daf7d2089f4",
+            "producer_implementation_checkpoint": producer_implementation_checkpoint,
+            "producer_code_scope": "semantic/provenance repair only; no new weight, GPU, simulator, SASS, or full-ROI work",
+        },
         "producer_files": producer_files,
         "ready_stage_ids": ready_stages,
         "input_sources": input_sources,
@@ -822,7 +893,8 @@ def model_safetensor_names(api_metadata: dict[str, Any]) -> tuple[str | None, li
     return None, shard_names
 
 
-def physical_bytes_by_dtype(tensor_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def checkpoint_file_storage_by_dtype(tensor_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Union exact Safetensors file ranges; this is never a GPU physical allocation."""
     groups: dict[str, dict[str, list[tuple[int, int]]]] = defaultdict(lambda: defaultdict(list))
     counts: dict[str, int] = defaultdict(int)
     for row in tensor_rows:
@@ -830,9 +902,60 @@ def physical_bytes_by_dtype(tensor_rows: list[dict[str, Any]]) -> list[dict[str,
         groups[dtype][str(row["shard"])].append((int(row["disk_data_start"]), int(row["disk_data_end"])))
         counts[dtype] += 1
     return [
-        {"storage_dtype": dtype, "tensor_count": counts[dtype], "physical_bytes": sum(union_bytes(ranges) for ranges in by_shard.values())}
+        {"storage_dtype": dtype, "tensor_count": counts[dtype], "checkpoint_file_storage_bytes": sum(union_bytes(ranges) for ranges in by_shard.values())}
         for dtype, by_shard in sorted(groups.items())
     ]
+
+
+def verified_registry_fields(row: dict[str, Any], tensor_rows: list[dict[str, Any]]) -> list[str]:
+    """Return only canonical registry fields observed or reliably derived per deployment."""
+    config_or_derived = [
+        "model_id", "revision", "implementation_identity", "dense_or_moe", "attention_representation",
+        "layer_count", "hidden_size", "intermediate_sizes", "head_dimensions", "local_kv_heads",
+        "expert_count", "top_k", "shared_experts", "quantization_method", "quant_group_size", "tying_status",
+    ]
+    fields = [field for field in config_or_derived if row.get(field) not in (None, NA)]
+    if tensor_rows and row.get("weight_dtype") not in (None, NA):
+        fields.append("weight_dtype")
+    return fields
+
+
+def exact_file_range_alias_between(embed_rows: list[dict[str, Any]], logits_rows: list[dict[str, Any]]) -> bool:
+    """Observe only exact same-shard checkpoint-file ranges, never runtime sharing."""
+    embed_ranges = {(row["shard"], row["disk_data_start"], row["disk_data_end"]) for row in embed_rows}
+    logits_ranges = {(row["shard"], row["disk_data_start"], row["disk_data_end"]) for row in logits_rows}
+    return bool(embed_ranges & logits_ranges)
+
+
+def alias_audit_row(deployment_id_value: str, config_tied: bool, tensor_rows: list[dict[str, Any]], header_missing_reason: str) -> dict[str, Any]:
+    """Keep config semantic tying and checkpoint-file range aliasing independent."""
+    if not tensor_rows:
+        return {
+            "deployment_id": deployment_id_value, "config_tie_declaration": config_tied,
+            "embedding_tensor_count": NA, "logits_tensor_count": NA,
+            "exact_file_range_alias_observed": NA,
+            "semantic_tying_status": "CONFIG_TIED" if config_tied else "CONFIG_UNTIED_OR_UNSPECIFIED",
+            "verdict": "HEADER_UNAVAILABLE_NO_FILE_RANGE_ALIAS_AUDIT",
+            "missing_reason": header_missing_reason,
+        }
+    embed = [row for row in tensor_rows if "embed" in row["tensor_name"].lower()]
+    logits = [row for row in tensor_rows if "lm_head" in row["tensor_name"].lower()]
+    exact_alias = exact_file_range_alias_between(embed, logits)
+    if config_tied and len(embed) == 1 and not logits:
+        semantic_status = "CONFIG_TIED_SINGLE_STORED_EMBEDDING"
+        verdict = "SEMANTIC_TYING_DECLARED_FILE_RANGE_ALIAS_NOT_TESTABLE"
+    elif config_tied:
+        semantic_status = "CONFIG_TIED"
+        verdict = "SEMANTIC_TYING_DECLARED_EXACT_FILE_RANGE_ALIAS_OBSERVED" if exact_alias else "SEMANTIC_TYING_DECLARED_FILE_RANGE_ALIAS_UNOBSERVED"
+    else:
+        semantic_status = "CONFIG_UNTIED_OR_UNSPECIFIED"
+        verdict = "EXACT_FILE_RANGE_ALIAS_OBSERVED_WITHOUT_CONFIG_TYING" if exact_alias else "NO_SEMANTIC_TYING_DECLARED_FILE_RANGE_ALIAS_UNOBSERVED"
+    return {
+        "deployment_id": deployment_id_value, "config_tie_declaration": config_tied,
+        "embedding_tensor_count": len(embed), "logits_tensor_count": len(logits),
+        "exact_file_range_alias_observed": exact_alias, "semantic_tying_status": semantic_status,
+        "verdict": verdict, "missing_reason": NA,
+    }
 
 
 def collect_model(http: BoundedHTTP, candidate: dict[str, str]) -> dict[str, Any]:
@@ -951,8 +1074,7 @@ def collect_static_library(plan_path: Path, root: Path) -> dict[str, int]:
         storage_status = "HEADER_RANGE_VERIFIED" if headers and result["failure"] == NA else "CONFIG_ONLY_OR_PARTIAL_HEADER"
         assets.append({"asset_id": asset_id, "asset_kind": "PUBLIC_MODEL_METADATA", "discovered_path_or_ref": candidate["planned_source_api"], "model_id": candidate["model_id"], "revision": revision, "phase": NA, "dtype": weight_dtype, "framework": "HUGGINGFACE_CONFIG_AND_SAFETENSORS", "hardware_scope": NA, "availability": storage_status, "source_commit": NA, "hash_kind": "CONFIG_AND_HEADER_RECEIPTS", "sha256": next((row["sha256"] for row in result["receipts"] if row["resource_kind"] == "CONFIG_JSON" and row["result_status"] == "PASS"), NA), "size_bytes": sum(int(row["bytes_read"]) for row in result["receipts"] if str(row["bytes_read"]).isdigit()), "readonly": "true", "missing_reason": result["failure"]})
         quant = config.get("quantization_config") if isinstance(config.get("quantization_config"), dict) else {}
-        fields = ["revision", "model_type", "num_hidden_layers", "hidden_size", "num_attention_heads", "num_key_value_heads"]
-        registry_rows.append({
+        registry_row = {
             "model_id": candidate["model_id"], "revision": revision, "deployment_id": deploy_id,
             "dense_or_moe": shape["dense_or_moe"], "attention_representation": shape["attention"],
             "layer_count": value_or_na(shape["layers"]), "hidden_size": value_or_na(shape["hidden"]), "intermediate_sizes": value_or_na(shape["intermediate"]), "head_dimensions": value_or_na(shape["head_dim"]), "local_kv_heads": value_or_na(shape["kv_heads"]),
@@ -963,8 +1085,10 @@ def collect_static_library(plan_path: Path, root: Path) -> dict[str, int]:
             "tensor_parallel": 1, "pipeline_parallel": 1, "expert_parallel": 1, "rank": 0,
             "kv_layout": "UNVERIFIED_STATIC_DEPLOYMENT", "allocation_mode": "UNVERIFIED_RUNTIME", "logits_policy": NA,
             "implementation_identity": value_or_na(config.get("model_type")), "native_hardware": NA,
-            "fields_verified": fields, "readiness_tier": "STATIC_HEADER_VERIFIED" if storage_status == "HEADER_RANGE_VERIFIED" else "STATIC_CONFIG_ONLY",
-        })
+            "fields_verified": NA, "readiness_tier": "STATIC_HEADER_VERIFIED" if storage_status == "HEADER_RANGE_VERIFIED" else "STATIC_CONFIG_ONLY",
+        }
+        registry_row["fields_verified"] = verified_registry_fields(registry_row, local_rows)
+        registry_rows.append(registry_row)
         ranges_by_shard: dict[str, list[tuple[int, int]]] = defaultdict(list)
         for row in local_rows:
             ranges_by_shard[str(row["shard"])].append((int(row["disk_data_start"]), int(row["disk_data_end"])))
@@ -990,13 +1114,10 @@ def collect_static_library(plan_path: Path, root: Path) -> dict[str, int]:
                     kv_curve_rows.append({"deployment_id": deploy_id, "scenario_id": "static-b%d-t%d" % (batch, tokens), "batch": batch, "requested_tokens": tokens, "resident_tokens": resident, "payload_bytes": kv_payload_bytes(shape["layers"], batch, resident, shape["kv_heads"], shape["head_dim"], bytes_per_value), "unit": "B", "formula_id": "STANDARD_KV_K_AND_V_V1", "assumptions_json": {"rank_local_kv_heads": shape["kv_heads"], "tp": 1, "dtype_assumed_from_config": assumed_kv_dtype, "reserved_blocks_excluded": True, "not_runtime_allocation": True}, "evidence_tier": "STATIC_DERIVED", "missing_reason": NA})
         else:
             kv_audit_rows.append({"deployment_id": deploy_id, "model_id": candidate["model_id"], "revision": revision, "representation": shape["attention"], "adapter_status": "UNSUPPORTED_REPRESENTATION" if shape["attention"] != "STANDARD_KV_CANDIDATE" else "INSUFFICIENT_CONFIG_EVIDENCE", "layer_count": value_or_na(shape["layers"]), "local_kv_heads": value_or_na(shape["kv_heads"]), "head_dim": value_or_na(shape["head_dim"]), "kv_dtype_assumption": NA, "token_residency_policy": NA, "evidence_source": "CONFIG_JSON", "missing_reason": "MLA_OR_COMPRESSED_REPRESENTATION" if shape["attention"] != "STANDARD_KV_CANDIDATE" else "MISSING_SHAPE_OR_CONFIG_TORCH_DTYPE"})
-        for item in physical_bytes_by_dtype(local_rows):
-            breakdown_rows.append({"deployment_id": deploy_id, "storage_dtype": item["storage_dtype"], "tensor_count": item["tensor_count"], "physical_bytes": item["physical_bytes"], "dedup_basis": "EXACT_SHARD_OFFSET_RANGE_WITHIN_DTYPE", "evidence_tier": "STATIC_DERIVED", "missing_reason": NA})
+        for item in checkpoint_file_storage_by_dtype(local_rows):
+            breakdown_rows.append({"deployment_id": deploy_id, "storage_dtype": item["storage_dtype"], "tensor_count": item["tensor_count"], "checkpoint_file_storage_bytes": item["checkpoint_file_storage_bytes"], "dedup_basis": "EXACT_SHARD_OFFSET_RANGE_WITHIN_DTYPE", "evidence_tier": "STATIC_DERIVED", "missing_reason": NA})
         tie_config = config.get("tie_word_embeddings") is True
-        embed = [row for row in local_rows if "embed" in row["tensor_name"].lower()]
-        logits = [row for row in local_rows if "lm_head" in row["tensor_name"].lower()]
-        physical_shared = any(row["semantic_alias_group"] != NA for row in embed + logits)
-        alias_rows.append({"deployment_id": deploy_id, "config_tie_declaration": tie_config, "embedding_tensor_count": len(embed), "logits_tensor_count": len(logits), "physical_shared_storage_observed": physical_shared, "verdict": "CONFIG_AND_HEADER_CONSISTENT" if tie_config == physical_shared else "SEMANTIC_PHYSICAL_DIVERGENCE_OR_UNOBSERVED", "missing_reason": NA if headers else result["failure"]})
+        alias_rows.append(alias_audit_row(deploy_id, tie_config, local_rows, NA if headers else result["failure"]))
         deployments.append({"deployment_id": deploy_id, "model_id": candidate["model_id"], "revision": revision, "candidate_id": candidate["candidate_id"], "config_model_type": config.get("model_type", NA), "static_status": storage_status, "config_sha256": next((row["sha256"] for row in result["receipts"] if row["resource_kind"] == "CONFIG_JSON" and row["result_status"] == "PASS"), NA)})
     tsv_write(root / "ASSET_INVENTORY.tsv", ASSET_COLUMNS, assets)
     tsv_write(root / "MODEL_REGISTRY.tsv", REGISTRY_COLUMNS, registry_rows)
@@ -1006,8 +1127,8 @@ def collect_static_library(plan_path: Path, root: Path) -> dict[str, int]:
     tsv_write(root / "KV_CAPACITY_CURVES.tsv", KV_CURVE_COLUMNS, kv_curve_rows)
     tsv_write(root / "METADATA_FETCH_RECEIPTS.tsv", FETCH_COLUMNS, fetch_rows)
     tsv_write(root / "HEADER_VALIDATION.tsv", HEADER_COLUMNS, header_rows)
-    tsv_write(root / "WEIGHT_STORAGE_BREAKDOWN.tsv", ["deployment_id", "storage_dtype", "tensor_count", "physical_bytes", "dedup_basis", "evidence_tier", "missing_reason"], breakdown_rows)
-    tsv_write(root / "TENSOR_ALIAS_AUDIT.tsv", ["deployment_id", "config_tie_declaration", "embedding_tensor_count", "logits_tensor_count", "physical_shared_storage_observed", "verdict", "missing_reason"], alias_rows)
+    tsv_write(root / "WEIGHT_STORAGE_BREAKDOWN.tsv", WEIGHT_STORAGE_COLUMNS, breakdown_rows)
+    tsv_write(root / "TENSOR_ALIAS_AUDIT.tsv", ALIAS_AUDIT_COLUMNS, alias_rows)
     json_write(root / "DEPLOYMENT_MANIFEST.json", {"schema_version": SCHEMA_VERSION, "planning_sha": PLANNING_SHA, "producer_lane": "A", "evidence_tier": "STATIC_DERIVED", "deployments": deployments})
     return {"planned": len(plan), "config_verified": len(registry_rows), "header_verified": len([row for row in registry_rows if row["readiness_tier"] == "STATIC_HEADER_VERIFIED"])}
 

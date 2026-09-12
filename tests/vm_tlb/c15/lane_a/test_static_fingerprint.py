@@ -86,8 +86,31 @@ class StaticFingerprintTest(unittest.TestCase):
             {"shard": "a", "storage_dtype": "F16", "disk_data_start": "0", "disk_data_end": "16"},
             {"shard": "b", "storage_dtype": "F16", "disk_data_start": "0", "disk_data_end": "16"},
         ]
-        self.assertEqual(M.physical_bytes_by_dtype(rows)[0]["physical_bytes"], 32)
+        self.assertEqual(M.checkpoint_file_storage_by_dtype(rows)[0]["checkpoint_file_storage_bytes"], 32)
         self.assertEqual(sum(M.page_union_count(ranges, 4096) for ranges in {"a": [(0, 16)], "b": [(0, 16)]}.values()), 2)
+
+    def test_alias_audit_keeps_semantic_tying_and_file_ranges_separate(self):
+        single_embedding = [{"shard": "one", "tensor_name": "embed.weight", "disk_data_start": "0", "disk_data_end": "16"}]
+        tied = M.alias_audit_row("fixture", True, single_embedding, M.NA)
+        self.assertEqual(tied["verdict"], "SEMANTIC_TYING_DECLARED_FILE_RANGE_ALIAS_NOT_TESTABLE")
+        self.assertFalse(tied["exact_file_range_alias_observed"])
+        unavailable = M.alias_audit_row("fixture", False, [], "HEADER_LIMITED_OR_INVALID")
+        self.assertEqual(unavailable["verdict"], "HEADER_UNAVAILABLE_NO_FILE_RANGE_ALIAS_AUDIT")
+        self.assertEqual(unavailable["exact_file_range_alias_observed"], M.NA)
+
+    def test_fields_verified_is_deployment_specific_and_canonical(self):
+        complete = {
+            "model_id": "fixture", "revision": "r", "implementation_identity": "fixture_type",
+            "dense_or_moe": "DENSE", "attention_representation": "STANDARD_KV_CANDIDATE",
+            "layer_count": 2, "hidden_size": 8, "intermediate_sizes": 16,
+            "head_dimensions": 4, "local_kv_heads": 1, "expert_count": M.NA,
+            "top_k": M.NA, "shared_experts": M.NA, "quantization_method": M.NA,
+            "quant_group_size": M.NA, "tying_status": "CONFIG_TIED", "weight_dtype": "F16",
+        }
+        partial = dict(complete, hidden_size=M.NA, intermediate_sizes=M.NA, weight_dtype=M.NA)
+        self.assertIn("weight_dtype", M.verified_registry_fields(complete, [{"tensor_name": "x"}]))
+        self.assertNotIn("weight_dtype", M.verified_registry_fields(partial, []))
+        self.assertNotIn("hidden_size", M.verified_registry_fields(partial, []))
 
     def test_tsv_write_is_atomic_and_normalizes_missing_to_na(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -122,7 +145,9 @@ class StaticFingerprintTest(unittest.TestCase):
             self.assertEqual(manifest["run_id"], "c15-a-integration-20260912")
             self.assertTrue({"C15-5.1", "C15-5.2", "C15-5.4"}.issubset(manifest["ready_stage_ids"]))
             sources = {item["name"]: item for item in manifest["input_sources"]}
-            self.assertEqual(sources["LANE_B_PUBLISH"]["read_policy"], "READ_ONLY_FIXED_COMMIT_HASH_BOUND")
+            self.assertEqual(sources["LANE_B_PUBLISH"]["artifact_checkpoint"], "57e2ef203befc96cfcefe00de2aaf8b0baab5d8b")
+            self.assertEqual(sources["LANE_B_PUBLISH"]["final_handoff_head"], "721e30f377dab36d826dc7ea9d47e11c5d85aa5c")
+            self.assertEqual(sources["LANE_B_PUBLISH"]["read_policy"], "READ_ONLY_ARTIFACT_COMMIT_HASH_BOUND")
             self.assertEqual(sources["LANE_C_PUBLISH"]["read_policy"], "READ_ONLY_FIXED_COMMIT_HASH_BOUND")
             M.verify_publish_manifest(root)
 
