@@ -13,20 +13,18 @@ promoted to ROI evidence.
    runs, roughly 9–12 h each (18–24 simulator-hours total), 1–2 GiB RSS per
    simulator; schedule at no more than the project resource gate permits.
 
-2. **Prefill N exposure pair — F0 vs F7-L5, conditional on C13 EQ1/EQ2
-   promotion.**  Use the repaired C13 exact-mode selection only after its
-   equivalence gates complete.  This distinguishes a large counter reduction
-   from a cycle-visible effect in FFN, attention projection, and
-   embedding/output.  Estimate: two serial simulator runs, roughly 20–24 h
-   each (40–48 simulator-hours total), 1–2 GiB RSS each.  Do not schedule if
-   C13's repaired evidence is not promoted.
+2. **Prefill C13-repaired exposure pair — F0 vs L9 exact-mode policy.**  C13
+   has now closed EQ1/EQ2 and promoted this bracket point.  Add C14 N
+   telemetry to the same pre-registered whole-policy pair to distinguish the
+   measured `-206118` cycle association from object-/outcome-attributable
+   local exposure in FFN, attention projection, and embedding/output.
+   Estimate: two serial simulator runs, about 14 h each (28 simulator-hours
+   total), 1–2 GiB RSS each.
 
-3. **C13 repaired Decode confirmation / classifier boundary, conditional on
-   its gate verdict.**  If EQ1/EQ2 pass, execute only the minimal
-   pre-registered repeat needed to confirm the selected repaired arm and
-   attach N telemetry; if a gate fails, diagnose the configuration mismatch
-   instead of expanding the matrix.  Estimate: 1–2 serial runs at 9–12 h
-   each, 1–2 GiB RSS each.
+3. **C13 nearest unresolved Prefill latency confirmation.**  Execute at most
+   one fresh exact-mode point at the nearest unresolved integer in C13's
+   adjacent `9 < Lseg* < 10` bracket; preserve its frozen ROI provenance and
+   attach N telemetry.  Estimate: one serial run, about 14 h, 1–2 GiB RSS.
 
 Path P is deliberately absent: C14 has source and runtime evidence that the
 proposed L2 gate is already present and that no local safe cancellation

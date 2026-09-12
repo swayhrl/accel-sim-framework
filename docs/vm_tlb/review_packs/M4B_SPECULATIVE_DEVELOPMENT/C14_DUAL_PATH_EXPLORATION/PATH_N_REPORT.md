@@ -14,6 +14,7 @@ not a global GPU critical path.
 |---|---:|---:|---:|---:|---|
 | N-FFN-L7, Prefill F0-like | 434459 | 91308032 | 8549602 | 8549602 | on/off pair matches cycles and instructions; pending requester HWM=35 |
 | N-AP-L7, Prefill F0-like | 140838 | 31932416 | 2388326 | 2388326 | object-/outcome-keyed proxy emitted |
+| N-EO-691, Prefill F0-like | 17581197 | 4391485440 | 288031809 | 288031809 | L2 misses=19423, walks=12247, PTE-DRAM=6074; Unknown/Weight proxy split=117624160/170407649 |
 | N-DECODE-FFN, Decode F0-like | 456541 | 33181696 | 12946940 | 12946940 | L2 misses=176, walks=132, PTE-DRAM=42 |
 | N-DECODE-AP, Decode F0-like | 127062 | 10571776 | 3469118 | 3469118 | ready L2/PTW accesses in the observed head commonly admitted same cycle |
 | N-LOW-DELTA, Decode F0-like | 33994 | 9961472 | 593653 | 593653 | L2 misses=176, walks=39, PTE-DRAM=17 |
@@ -27,8 +28,8 @@ F7-L5/F0 cycle difference was near zero.  Its cold replay instead differs by
 evidence that the cold single-kernel context is not full-ROI equivalent; it
 must not be used to overwrite the accepted ranking or extrapolate a speedup.
 
-N-EO-691 remains in flight.  N-DECODE-FFN, N-DECODE-EO/high-delta F0, and
-high-delta F7-L5 have terminal receipts.
+All matrix-defined N samples now have terminal receipts.  `N-DECODE-EO` and
+`N-HIGH-DELTA F0` intentionally share the same physical Decode trace receipt.
 
 ## What has been established
 
@@ -50,3 +51,9 @@ former is an accumulated per-access quantity, so this is not a ratio or a
 global-stall conversion.  It does show that even a very large translation
 event reduction should be interpreted through an exposed-stall proxy and
 actual cycle measurement rather than requester-latency alone.
+
+The terminal Prefill E/O replay makes the same boundary visible at scale:
+`288031809` accumulated requester/head-proxy cycles coexist with only
+`17581197` simulated GPU cycles because many request lifecycles overlap.  It
+is evidence against treating requester-latency aggregates as exposed GPU
+stall, not a conversion factor from either counter to performance.
