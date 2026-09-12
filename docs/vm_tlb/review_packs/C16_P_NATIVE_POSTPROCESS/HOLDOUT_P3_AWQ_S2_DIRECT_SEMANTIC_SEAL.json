@@ -1,0 +1,71 @@
+{
+  "schema_version": "C16_P_HOLDOUT_SEAL_V1",
+  "status": "HOLDOUT_PENDING_FREEZE / PIPELINE_DIAGNOSTIC_ONLY / COVERAGE_LIMITED",
+  "cross_lane_visibility": "C_FORBIDDEN_HOLDOUT_PENDING_SELECTOR_FREEZE",
+  "scope": "Prospective Qwen2.5-7B-AWQ S2 direct-semantic handling only. This seal deliberately excludes AWQ timing, memory, result, launch-population, heavy-tail, and semantic outcome measurements.",
+  "exact_g_producer": {
+    "branch": "hrl/vm-c16-g-autodl-wave1-v0",
+    "commit": "d473906f83d9a94060f4092e703ac9dd3c05c77e",
+    "manifest_path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/direct_semantic_p3_awq_s2/SEMANTIC_PUBLISH_MANIFEST.json",
+    "manifest_sha256": "29ab8fc73d8e1a095a6df3c52f7fa3a246bd7b329e8690a7243d6f089f9b2adc"
+  },
+  "identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S2",
+    "diagnostic_run_id": "950a89bb-f862-4d7b-b638-8bc4f0ca65ec",
+    "clean_run_id": "ee52fecb-7bff-4918-bfa4-f0c65838ed5f",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "implementation_key": "AUTOAWQ_CAUSAL_LM_EAGER",
+    "dtype": "float16",
+    "quantization": "AWQ"
+  },
+  "hash_closed_artifacts_outside_git": {
+    "diagnostic_raw_nsys_rep_sha256": "843716c1a8ef0e41bccbc9aa870d13e1e4cf91b6bc0453e4678a69b980a99989",
+    "diagnostic_remote_sqlite_sha256": "79ddce7b9602d0df9084296f18db01eab51c761827b0e3bc8601d2e7a887b9c7",
+    "diagnostic_local_sqlite_sha256": "beeb50f51f70ebefa616cad10b1ce7a0b34bb8430ec6397463d32a1bd1b65d94",
+    "diagnostic_local_export_qualification_sha256": "ae1601776ac8c8a71f066e70af3f32fac04ed10f4a6d07a847f852cdf3a84a67",
+    "producer_direct_semantic_map_sha256": "27e315683150d84d59516c05631bd5ad36791aadd3f9f0b700a0e21a415111a7",
+    "producer_semantic_receipt_sha256": "5a58116985b7be88bde038d348d321a90502a15c64e01ed7f7e40222f69f1dff",
+    "producer_nsys_receipt_sha256": "6a7b7790f1a57e1a651e3e8d048bde34961259ff03c0fbcf24dfa6b594885764",
+    "clean_raw_nsys_rep_sha256": "ceec04743c69abb908dac797f81e2708e3f6004baf78c3f060f88fdc02e53d84",
+    "clean_catalog_sha256": "5923766f6d50c04c9d5d409ee88806062efae47349ba9e55c82b6c017e6a8b78",
+    "clean_profile_index_sha256": "10a607b8f670ef348403218a63b5d865b96c8cb4c1c943a0ec14ff16b3d37239",
+    "direct_semantic_map_gzip_sha256": "a38326445b8548986fdf8f55cc2f134c1e4877e16241c2bd93f0f08321d680af",
+    "semantic_coverage_sha256": "d7d3c3c0a1dacee04ceef23a71190967aeddbf795451204213a22e6756db55cc",
+    "semantic_merge_audit_sha256": "04fb427a0dd5647b5e32e4043a869bd0a0bfee7a0bb3aa01386c43863c2e15c6",
+    "semantic_postprocess_manifest_sha256": "d6d090c679864f7c15ea809c1394fe95a8acfd29f0f16eee9355abe568d4730d",
+    "raw_artifact_index_sha256": "28bc42dd86a7a8892b9400077d7ae2b69193817f74c69d0caa9fe2b2ba125f6f",
+    "event_config_sha256": "156678425d60113d1343721d3051f4e3c625fcbc4c8c89e81aba0162e6aaad11"
+  },
+  "postprocessor": {
+    "p_code_commit": "d51bbc0e2002b7f82913093af8cda819f44770f5",
+    "local_nsys_version": "2024.2.3.38-242334140272v0",
+    "join_key_contract_sha256": "41a84737c2380e51c43e90d8915fd4aa2c462090a1238da22511efe22babfa54",
+    "local_remote_export_qualification": "PASS",
+    "diagnostic_internal_temporal_containment": "ALLOWED_ONLY_FOR_DIRECT_RUNTIME_NVTX",
+    "producer_direct_map_reproduction": "PASS",
+    "operator_layer_policy": "UNKNOWN_UNLESS_DIRECT_EVIDENCE"
+  },
+  "cross_report_join_policy": {
+    "permitted_identity": "REPORT_SCOPED_STRUCTURAL_ONLY",
+    "absolute_timestamp": "FORBIDDEN",
+    "bare_correlation_or_stream": "FORBIDDEN",
+    "naked_launch_ordinal": "FORBIDDEN",
+    "kernel_name_semantic_heuristic": "FORBIDDEN",
+    "zero_or_multiple_candidates": "UNKNOWN"
+  },
+  "input_contract_gap": {
+    "status": "INPUT_CONTRACT_MISSING_FIELDS_DIAGNOSTIC_ONLY",
+    "missing_required_immutable_fields": [
+      "remote_nsys_version",
+      "separate_raw_transfer_receipt_path_and_sha256"
+    ],
+    "required_for_any_future_reclassification": "G must publish the missing fields at an exact immutable producer commit; P will then re-audit without altering the frozen reports."
+  },
+  "release_gate": {
+    "required_c_selector_freeze_sha256": "NOT_YET_PUBLISHED",
+    "action_before_freeze": "DO_NOT_DISCLOSE_OR_APPLY_AWQ_HOLDOUT_OUTCOMES_TO_C",
+    "action_after_freeze": "C may consume only an explicitly released apply-selector view, never retroactively influence selector construction."
+  }
+}

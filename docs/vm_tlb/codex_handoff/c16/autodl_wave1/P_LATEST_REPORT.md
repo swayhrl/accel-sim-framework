@@ -99,6 +99,17 @@ heavy-tail, or semantic-coverage outcome metric. They cannot influence C
 strata, thresholds, or selector construction before C publishes its
 selector-freeze SHA.
 
+G then published a hash-closed S2 direct-semantic diagnostic at
+`d473906f83d9a94060f4092e703ac9dd3c05c77e`. P verified its producer commit,
+receipts, diagnostic raw-report SHA, remote/local export qualification, and
+report identities; it ran the frozen P2 structural merge while keeping all
+zero- or multi-candidate cross-report cases `UNKNOWN`. The resulting
+[S2 direct-semantic holdout seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_DIRECT_SEMANTIC_SEAL.json)
+contains only policy, identities, closure hashes, and join safeguards. It adds
+no AWQ outcome information to any C-visible input and remains
+`C_FORBIDDEN_HOLDOUT_PENDING_SELECTOR_FREEZE` until a selector-freeze SHA is
+published.
+
 G's current checkpoint still omits the immutable remote `nsys --version` and a
 separately named raw-transfer receipt binding remote/local path, size, and SHA.
 P has therefore retained the local output as diagnostic-only, rather than
