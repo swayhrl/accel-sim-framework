@@ -50,6 +50,14 @@ def optional_query(command: list[str]) -> str:
         return "UNAVAILABLE"
 
 
+def discover_tool(name: str, candidates: tuple[Path, ...]) -> dict[str, str]:
+    """Resolve an installed tool even when the image did not export PATH."""
+    for candidate in candidates:
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return {"path": str(candidate), "version": optional_query([str(candidate), "--version"])}
+    return {"path": "UNAVAILABLE", "version": "UNAVAILABLE"}
+
+
 def memory_bytes() -> int:
     try:
         return os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
@@ -149,9 +157,9 @@ def real_receipt(args: argparse.Namespace) -> dict[str, Any]:
         },
         "toolchain": {
             "nvidia_smi_version": query(["nvidia-smi"]),
-            "nvcc_version": optional_query(["nvcc", "--version"]),
-            "nsys_version": optional_query(["nsys", "--version"]),
-            "ncu_version": optional_query(["ncu", "--version"]),
+            "nvcc": discover_tool("nvcc", (Path("/usr/local/cuda-12.4/bin/nvcc"),)),
+            "nsys": discover_tool("nsys", (Path("/opt/nvidia/nsight-compute/2024.1.1/host/target-linux-x64/nsys"),)),
+            "ncu": discover_tool("ncu", (Path("/opt/nvidia/nsight-compute/2024.1.1/ncu"), Path("/usr/local/cuda-12.4/bin/ncu"))),
             "audit_python": str(Path(sys.executable).resolve()),
             "audit_python_version": sys.version,
             "conda_version": optional_query(["conda", "--version"]),
