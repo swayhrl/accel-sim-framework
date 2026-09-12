@@ -727,6 +727,40 @@ def local_row_package_entry(row: dict[str, str], requiredness: str) -> dict[str,
     )
 
 
+def immutable_receipt_from_package_note(row: dict[str, str]) -> dict[str, Any] | None:
+    marker = "IMMUTABLE_VERIFIED_RECEIPT="
+    if row["kind"] != "MODEL_ASSET" or marker not in row["notes"]:
+        return None
+    receipt_path = Path(row["notes"].split(marker, 1)[1].split(";", 1)[0])
+    local_path = Path(row["local_path"])
+    if not receipt_path.is_file() or not local_path.is_file():
+        return None
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if (
+        receipt.get("status") != "IMMUTABLE_VERIFIED"
+        or receipt.get("local_path") != str(local_path)
+        or receipt.get("expected_size_bytes") != int(row["size_bytes"])
+        or receipt.get("sha256") != row["sha256"]
+        or local_path.stat().st_size != int(row["size_bytes"])
+    ):
+        return None
+    return receipt
+
+
+def package_local_payload_matches(row: dict[str, str]) -> bool:
+    """Validate a package source without a second checkpoint whole-file hash."""
+    if row["local_path"] == "NA":
+        return True
+    receipt = immutable_receipt_from_package_note(row)
+    if receipt is not None:
+        return True
+    path = Path(row["local_path"])
+    return path.is_file() and path.stat().st_size == int(row["size_bytes"]) and sha256_file(path) == row["sha256"]
+
+
 def write_rolling_gpu_package(output_root: Path, package_id: str, deployment_id: str) -> None:
     """Publish one immutable, single-deployment rolling GPU package delta.
 
@@ -843,8 +877,7 @@ def validate_rolling_gpu_package(output_root: Path, package_id: str) -> list[str
         rows = list(csv.DictReader(handle, delimiter="\t"))
     for row in rows:
         if row["local_path"] != "NA":
-            path = Path(row["local_path"])
-            if not path.is_file() or path.stat().st_size != int(row["size_bytes"]) or sha256_file(path) != row["sha256"]:
+            if not package_local_payload_matches(row):
                 failures.append(f"rolling package local payload mismatch {row['artifact_id']}")
     return failures
 
@@ -881,6 +914,20 @@ def write_gpu_package(output_root: Path) -> None:
             f"models/{row['deployment_id']}/{row['asset_path']}", row["size_bytes"], row["sha256"], row["verification_status"],
             "RSYNC_FILE_WITH_SHA256_RECHECK", row["notes"],
         ))
+        if row["asset_role"] == "CHECKPOINT_FILE":
+            receipt = immutable_checkpoint_receipt(
+                row["deployment_id"], row["source_repo"], row["source_revision"], row["asset_path"], Path(row["local_path"]),
+                int(row["size_bytes"]), row["sha256"],
+            )
+            if receipt is not None:
+                receipt_path = Path(receipt["receipt_path"])
+                rows.append(package_row(
+                    f"A_IMMUTABLE_RECEIPT:{row['deployment_id']}:{row['asset_path']}", "IMMUTABLE_VERIFICATION_RECEIPT",
+                    requiredness, "A_LOCAL_IMMUTABLE_RECEIPT", str(receipt_path),
+                    f"a_assets/immutable_verified_receipts/{row['deployment_id']}/{row['asset_path']}.json",
+                    str(receipt_path.stat().st_size), sha256_file(receipt_path), "IMMUTABLE_VERIFIED_RECEIPT",
+                    "RSYNC_FILE_WITH_SHA256_RECHECK", "single whole-file SHA-256 closure receipt consumed without rescanning checkpoint",
+                ))
     for path in sorted((output_root / "inputs").glob("*")):
         if path.is_file():
             rows.append(package_row(f"A_INPUT:{path.name}", "FROZEN_INPUT", "REQUIRED_WAVE1", "A_FIXED_INPUT", str(path), f"a_assets/inputs/{path.name}", str(path.stat().st_size), sha256_file(path), "LOCAL_SHA256_VERIFIED", "RSYNC_FILE_WITH_SHA256_RECHECK", "frozen raw input"))
@@ -950,8 +997,7 @@ def validate_gpu_package(output_root: Path) -> list[str]:
         if row["artifact_id"] not in expected_ids:
             failures.append(f"missing expected-hash row {row['artifact_id']}")
         if row["local_path"] != "NA":
-            path = Path(row["local_path"])
-            if not path.is_file() or path.stat().st_size != int(row["size_bytes"]) or sha256_file(path) != row["sha256"]:
+            if not package_local_payload_matches(row):
                 failures.append(f"local package payload mismatch {row['artifact_id']}")
     failures.extend(validate_wave1_local(output_root))
     failures.extend(validate_final_fixed_releases_error())
