@@ -70,4 +70,31 @@ assert [(row["unit_id"], row["inclusion_probability"]) for row in r_plan] == [(r
 assert MODULE.split_role("Qwen2.5-7B-Instruct-AWQ") == "PROSPECTIVE_HOLDOUT"
 assert MODULE.split_role("Qwen3-30B-A3B-MoE") == "STRUCTURAL_HOLDOUT"
 assert MODULE.split_role("unknown-deployment") == "UNASSIGNED_EXCLUDED"
+
+# Post-freeze holdout evaluation only considers a declared holdout deployment,
+# keeps a rate's numerator and denominator separate, and does not promote a
+# structural page metric into an additive population estimate.
+holdout_catalog = [
+    {**unit("h1", "MATMUL", "CUTLASS", "[1,128,4096]", "bf16", 10), "deployment_id": "Qwen2.5-7B-Instruct-AWQ"},
+    {**unit("h2", "MATMUL", "CUTLASS", "[1,128,4096]", "bf16", 20), "deployment_id": "Qwen2.5-7B-Instruct-AWQ"},
+]
+holdout_units = MODULE.annotate_certainty(MODULE.canonicalize_catalog(holdout_catalog, "NATIVE_PROFILED"))
+holdout_plan, _, _ = MODULE.build_plan(holdout_units, 12, "R", 16031)
+for row in holdout_plan:
+    row["split_role"] = MODULE.split_role(row["deployment_id"])
+metric_rows = []
+for unit_id, value, numerator, denominator in (("h1", 10, 1, 1), ("h2", 20, 0, 2)):
+    common = {"deployment_id": "Qwen2.5-7B-Instruct-AWQ", "scenario_id": "S1", "phase": "prefill", "unit_id": unit_id,
+              "evidence_tier": "NATIVE_PROFILED", "target_identity_status": "EXACT", "ground_truth_scope": "FULL_FROZEN_UNIVERSE"}
+    metric_rows += [
+        {**common, "metric": "native_duration_total", "metric_kind": "ADDITIVE", "value": str(value)},
+        {**common, "metric": "counter_miss_rate", "metric_kind": "RATE", "numerator": str(numerator), "denominator": str(denominator)},
+        {**common, "metric": "observed_page_union", "metric_kind": "STRUCTURAL"},
+    ]
+results, qualifications = MODULE.evaluate_holdout(holdout_units, holdout_plan, metric_rows, {"producer_commit": "fixture", "payload_sha256": "fixture"})
+by_metric = {row["metric"]: row for row in results}
+assert by_metric["native_duration_total"]["qualification_status"] == "QUALIFIED"
+assert by_metric["counter_miss_rate"]["estimate"] == 1 / 3
+assert by_metric["observed_page_union"]["qualification_status"] == "STRUCTURAL_ONLY"
+assert {row["status"] for row in qualifications} >= {"QUALIFIED", "SCREENING_ONLY", "STRUCTURAL_ONLY"}
 print("PASS C16 Lane C Sampling V2 no-GPU contract tests")

@@ -686,6 +686,10 @@ def write_protocol(out: Path, state: str, native_receipt: dict[str, Any] | None 
     write_json(out / "PROSPECTIVE_PROTOCOL.json", payload)
 
 
+def write_holdout_schema(out: Path) -> None:
+    atomic_text(out / "HOLDOUT_INPUT_SCHEMA.md", "# Frozen holdout metric input contract\n\nAfter `--freeze-native`, a G/H producer may publish a small, manifest-listed TSV.  C consumes it only with `--consume-holdout --producer-commit <sha> --manifest-path <path> --payload-path <path>`.  Required columns are `deployment_id`, `scenario_id`, `phase`, `unit_id`, `metric`, `metric_kind`, `evidence_tier`, `target_identity_status`, and `ground_truth_scope`. `metric_kind` is one of `ADDITIVE`, `RATE`, `STRUCTURAL`, or `MECHANISM_RESPONSE`.\n\n`ADDITIVE` and `MECHANISM_RESPONSE` require `value`. `RATE` requires independent `numerator` and `denominator`; C recomputes the ratio after weighting. `STRUCTURAL` is never extrapolated with N_s/n_s. `target_identity_status` must be `EXACT`; `ground_truth_scope=FULL_FROZEN_UNIVERSE` is required before error qualification against a population truth. Mechanism response additionally needs `high_fidelity_truth=TRUE` and a common `effect_fraction_of_reference`; it is `INCONCLUSIVE` / `NOT_QUALIFIED` if the interval crosses zero, effect is below the frozen 2% fraction, or the resolution cannot distinguish it.\n")
+
+
 def zero_sampling_control(units: list[dict[str, Any]], metrics: dict[str, dict[str, dict[str, float]]], all_plan_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     full_rows: list[dict[str, Any]] = []
     for unit in units:
@@ -857,6 +861,8 @@ def prepare_historical(out: Path) -> None:
     write_tsv(out / "HISTORICAL_STRUCTURAL_OBSERVATIONS.tsv", ["plan_id", "phase", "stratum_id", "object_class", "address_domain", "page_bucket_bytes", "sampled_units", "sample_observed_unique_pages", "population_union_estimate", "line_observation", "method", "status", "evidence_tier"], historical_structural_observations(all_plan_rows))
     write_target_plan(out, all_plan_rows, historical_only=True)
     write_protocol(out, "OFFLINE_PROTOCOL_FROZEN_AWAITING_COMMITTED_WAVE1_CATALOG")
+    write_holdout_schema(out)
+    write_tsv(out / "HOLDOUT_RESULTS.tsv", ["plan_id", "producer_commit", "producer_payload_sha256", "universe_id", "deployment_id", "scenario_id", "phase", "metric", "metric_kind", "sample_complete", "complete_population", "target_identity_status", "evidence_tier", "effect_fraction_of_reference", "estimate", "exact", "absolute_error", "relative_error", "ci_low", "ci_high", "variance_status", "qualification_status", "scientific_verdict"], [{"plan_id": "NA", "producer_commit": "NA", "metric": "NA", "qualification_status": "UNAVAILABLE", "scientific_verdict": "PENDING_COMMITTED_WAVE1_CATALOG_AND_POST_FREEZE_HOLDOUT"}])
     write_tsv(out / "SAMPLER_QUALIFICATION.tsv", ["metric", "evidence_required", "status", "reason", "boundary"], qualification_rows())
     write_tsv(out / "STAGE_STATUS.tsv", ["stage_id", "execution_status", "scientific_status", "evidence"], stage_status(False))
     write_tsv(out / "TEST_RESULTS.tsv", ["test_id", "status", "scope"], [
@@ -928,10 +934,180 @@ def freeze_native(out: Path, commit: str, manifest_path: str, catalog_path: str)
     write_tsv(out / "NATIVE_SELECTOR_M_PLAN.tsv", plan_fields, [row for row in all_plan_rows if row["selector_kind"] == "SELECTOR_M"])
     write_tsv(out / "NATIVE_SAMPLE_BUDGETS.tsv", ["plan_id", "selector_kind", "universe_id", "budget", "certainty_units", "remaining_after_certainty", "stratum_id", "N_s", "n_s", "count_mass", "duration_mass_ns", "variation_proxy_mass", "variation_proxy_source", "allocation_score", "random_audit_target", "random_audit_actual", "estimated_capture_cost_ns", "status"], all_budget_rows)
     write_tsv(out / "NATIVE_CERTAINTY_UNITS.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "launch_ordinal", "N_s", "certainty_weight", "reason", "duration_ns", "evidence_tier", "capture_authorization"], deduplicate_certainty(all_certainty))
+    membership = []
+    for unit in units:
+        membership.append({"universe_id": unit["universe_id"], "deployment_id": unit["deployment_id"], "scenario_id": unit["scenario_id"], "phase": unit["phase"],
+                           "stratum_id": unit["stratum_id"], "unit_id": unit["unit_id"], "launch_ordinal": unit["launch_ordinal"], "N_s": unit["N_s"],
+                           "certainty": "TRUE" if unit["certainty"] else "FALSE", "certainty_reason": unit["certainty_reason"], "operator_class": unit["operator_class"],
+                           "implementation_key": unit["implementation_key"], "shape_bucket": unit["shape_bucket"], "dtype_key": unit["dtype_key"],
+                           "split_role": split_role(unit["deployment_id"]), "evidence_tier": unit["evidence_tier"]})
+    write_tsv(out / "NATIVE_STRATA_MEMBERSHIP.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "launch_ordinal", "N_s", "certainty", "certainty_reason", "operator_class", "implementation_key", "shape_bucket", "dtype_key", "split_role", "evidence_tier"], membership)
     write_target_plan(out, all_plan_rows, historical_only=False)
     write_protocol(out, "FROZEN_BEFORE_HOLDOUT_METRICS", receipt)
     write_tsv(out / "NATIVE_CATALOG_RECEIPT.tsv", list(receipt), [receipt])
     write_manifest(out, "C16_C_SELECTOR_FROZEN_FOR_PROSPECTIVE_HOLDOUT", native_catalog=True)
+
+
+HOLDOUT_REQUIRED_FIELDS = ("deployment_id", "scenario_id", "phase", "unit_id", "metric", "metric_kind", "evidence_tier", "target_identity_status", "ground_truth_scope")
+HOLDOUT_KINDS = {"ADDITIVE", "RATE", "STRUCTURAL", "MECHANISM_RESPONSE"}
+
+
+def read_manifest_payload(commit: str, manifest_path: str, payload_path: str) -> tuple[list[dict[str, str]], dict[str, Any]]:
+    """Read a small summary only after its producer's committed hash closes."""
+    manifest_text = git_text(commit, manifest_path)
+    manifest = json.loads(manifest_text)
+    payload_text = git_text(commit, payload_path)
+    payload_hash = sha256_bytes(payload_text.encode())
+    files = manifest.get("files", [])
+    if not any((row.get("path") == payload_path or str(row.get("path", "")).endswith(Path(payload_path).name)) and row.get("sha256") == payload_hash for row in files):
+        die("holdout payload SHA does not match its committed producer manifest")
+    return tsv_rows(payload_text), {"producer_commit": commit, "manifest_path": manifest_path, "manifest_blob": git_blob(commit, manifest_path),
+                                    "manifest_sha256": sha256_bytes(manifest_text.encode()), "payload_path": payload_path, "payload_blob": git_blob(commit, payload_path),
+                                    "payload_sha256": payload_hash, "producer_status": manifest.get("status", "UNKNOWN")}
+
+
+def read_native_membership(out: Path) -> list[dict[str, Any]]:
+    path = out / "NATIVE_STRATA_MEMBERSHIP.tsv"
+    if not path.is_file():
+        die("native selector was not frozen: NATIVE_STRATA_MEMBERSHIP.tsv is absent")
+    units: list[dict[str, Any]] = []
+    for row in tsv_rows(path.read_text()):
+        units.append({"universe_id": row["universe_id"], "deployment_id": row["deployment_id"], "scenario_id": row["scenario_id"], "phase": row["phase"],
+                      "stratum_id": row["stratum_id"], "unit_id": row["unit_id"], "launch_ordinal": row["launch_ordinal"], "N_s": int(row["N_s"]),
+                      "certainty": row["certainty"] == "TRUE", "certainty_reason": row["certainty_reason"], "evidence_tier": row["evidence_tier"]})
+    return units
+
+
+def assert_frozen_holdout_gate(out: Path) -> dict[str, Any]:
+    protocol_path = out / "PROSPECTIVE_PROTOCOL.json"
+    if not protocol_path.is_file():
+        die("prospective protocol is absent")
+    protocol = json.loads(protocol_path.read_text())
+    if protocol.get("state") != "FROZEN_BEFORE_HOLDOUT_METRICS":
+        die("holdout metrics cannot be read before --freeze-native records a frozen selector")
+    if protocol.get("selector_code_sha256") != code_sha():
+        die("selector source SHA changed after freeze; create a new selector version before reading holdout")
+    plans = tsv_rows((out / "NATIVE_SELECTOR_R_PLAN.tsv").read_text())
+    if not plans or any(row.get("selector_code_sha256") != code_sha() for row in plans):
+        die("frozen Selector-R plan is absent or does not match protocol source SHA")
+    return protocol
+
+
+def qualify_holdout(metric: str, kind: str, result: dict[str, Any], complete_population: bool, exact_identity: bool, high_fidelity: bool) -> tuple[str, str]:
+    """Return only the contract's per-metric status vocabulary and rationale."""
+    lower = metric.lower()
+    if kind == "STRUCTURAL" or "page" in lower or "line" in lower:
+        return "STRUCTURAL_ONLY", "non-additive page/line sets are reported as observed structure, never N_s/n_s unions"
+    if not exact_identity or result["sample_complete"] == "FALSE":
+        return "UNAVAILABLE", "missing selected target value or target identity mismatch"
+    if kind == "MECHANISM_RESPONSE":
+        ci_crosses_zero = result["ci_low"] == "NA" or (result["ci_low"] <= 0 <= result["ci_high"])
+        resolution = result["absolute_error"] if result["absolute_error"] != "NA" else math.inf
+        effect = abs(result["estimate"])
+        effect_fraction = as_float(result.get("effect_fraction_of_reference"), -1.0)
+        if not high_fidelity or ci_crosses_zero or resolution >= effect or effect_fraction < THRESHOLDS["small_effect_min_absolute_fraction"]:
+            return "NOT_QUALIFIED", "mechanism response is INCONCLUSIVE without matched high-fidelity truth and resolution beyond zero/small-effect boundary"
+        return "SCREENING_ONLY", "matched response resolves a direction but does not establish a general mechanism claim"
+    if not complete_population or result["relative_error"] == "NA":
+        return "SCREENING_ONLY", "design-based sampled estimate available but full frozen-universe truth is not available for error qualification"
+    if result["relative_error"] > THRESHOLDS["native_duration_relative_error_screening"]:
+        return "NOT_QUALIFIED", "holdout relative error exceeds frozen 5% screening threshold"
+    if result["ci_low"] == "NA":
+        return "NOT_QUALIFIED", "holdout sample is too sparse for a design variance interval"
+    if "duration" in lower:
+        return "QUALIFIED", "full-universe holdout error and design interval meet frozen native-duration screening rule"
+    return "SCREENING_ONLY", "counter estimate meets screening error rule; it does not promote page/cache/mechanism claims"
+
+
+def evaluate_holdout(units: list[dict[str, Any]], plan_rows: list[dict[str, Any]], rows: list[dict[str, str]], receipt: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    missing = [field for field in HOLDOUT_REQUIRED_FIELDS if any(field not in row for row in rows)]
+    if missing:
+        die(f"holdout payload lacks required fields: {','.join(sorted(set(missing)))}")
+    if any(row["metric_kind"] not in HOLDOUT_KINDS for row in rows):
+        die("holdout payload contains an unrecognized metric_kind")
+    by_universe: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for unit in units:
+        by_universe[unit["universe_id"]].append(unit)
+    planned: dict[str, list[dict[str, Any]]] = plan_lookup(plan_rows)
+    data: dict[tuple[str, str, str], dict[str, dict[str, str]]] = defaultdict(dict)
+    for row in rows:
+        identity = universe_id(row)
+        if identity not in by_universe:
+            die(f"holdout metric is outside frozen native selector universe: {identity}")
+        if split_role(row["deployment_id"]) not in {"PROSPECTIVE_HOLDOUT", "STRUCTURAL_HOLDOUT"}:
+            die("holdout metric attempts to use a tuning deployment")
+        if row["target_identity_status"] != "EXACT":
+            die("holdout metric does not have exact second-pass target identity")
+        key = (identity, row["metric"], row["metric_kind"])
+        if row["unit_id"] in data[key]:
+            die(f"duplicate holdout unit/metric row: {key} {row['unit_id']}")
+        data[key][row["unit_id"]] = row
+    results: list[dict[str, Any]] = []
+    qualification: list[dict[str, Any]] = []
+    for plan_id, selected in sorted(planned.items()):
+        universe = selected[0]["universe_id"]
+        if selected[0].get("split_role") not in {"PROSPECTIVE_HOLDOUT", "STRUCTURAL_HOLDOUT"}:
+            continue
+        population = by_universe[universe]
+        selected_ids = {row["unit_id"] for row in selected}
+        for (row_universe, metric, kind), by_unit in sorted(data.items()):
+            if row_universe != universe:
+                continue
+            sample_complete = selected_ids.issubset(by_unit)
+            complete_population = {unit["unit_id"] for unit in population}.issubset(by_unit) and all(row["ground_truth_scope"] == "FULL_FROZEN_UNIVERSE" for row in by_unit.values())
+            exact_identity = all(row["target_identity_status"] == "EXACT" for row in by_unit.values())
+            high_fidelity = all(row.get("high_fidelity_truth", "FALSE") == "TRUE" for row in by_unit.values())
+            base = {"plan_id": plan_id, "producer_commit": receipt["producer_commit"], "producer_payload_sha256": receipt["payload_sha256"], "universe_id": universe,
+                    "deployment_id": selected[0]["deployment_id"], "scenario_id": selected[0]["scenario_id"], "phase": selected[0]["phase"], "metric": metric,
+                    "metric_kind": kind, "sample_complete": "TRUE" if sample_complete else "FALSE", "complete_population": "TRUE" if complete_population else "FALSE",
+                    "target_identity_status": "EXACT" if exact_identity else "MISMATCH", "evidence_tier": next(iter(by_unit.values()))["evidence_tier"]}
+            fractions = {row.get("effect_fraction_of_reference", "") for row in by_unit.values()}
+            base["effect_fraction_of_reference"] = next(iter(fractions)) if len(fractions) == 1 else "NA"
+            if kind == "RATE":
+                if any("numerator" not in row or "denominator" not in row for row in by_unit.values()):
+                    die("RATE metric requires independent numerator and denominator columns")
+                numerator = {unit_id: as_float(row["numerator"]) for unit_id, row in by_unit.items()}
+                denominator = {unit_id: as_float(row["denominator"]) for unit_id, row in by_unit.items()}
+                estimate = estimate_ratio(population, selected, numerator, denominator) if sample_complete else {"estimate": "NA", "exact": "NA", "ci_low": "NA", "ci_high": "NA", "variance_status": "MISSING_SELECTED_VALUES"}
+            elif kind in {"ADDITIVE", "MECHANISM_RESPONSE"}:
+                if any("value" not in row for row in by_unit.values()):
+                    die("ADDITIVE/MECHANISM_RESPONSE metric requires value column")
+                values = {unit_id: as_float(row["value"]) for unit_id, row in by_unit.items()}
+                estimate = estimate_additive(population, selected, values) if sample_complete else {"estimate": "NA", "exact": "NA", "ci_low": "NA", "ci_high": "NA", "variance_status": "MISSING_SELECTED_VALUES"}
+            else:
+                estimate = {"estimate": "NA", "exact": "NA", "ci_low": "NA", "ci_high": "NA", "variance_status": "NON_ADDITIVE_STRUCTURAL"}
+            if not complete_population:
+                estimate["exact"] = "NA"
+            error = "NA" if estimate["exact"] == "NA" or estimate["estimate"] == "NA" else abs(estimate["estimate"] - estimate["exact"])
+            relative = "NA" if error == "NA" or estimate["exact"] == 0 else error / abs(estimate["exact"])
+            result = base | {"estimate": estimate["estimate"], "exact": estimate["exact"], "absolute_error": error, "relative_error": relative,
+                             "ci_low": estimate["ci_low"], "ci_high": estimate["ci_high"], "variance_status": estimate["variance_status"]}
+            status, rationale = qualify_holdout(metric, kind, result, complete_population, exact_identity, high_fidelity)
+            result["qualification_status"] = status
+            result["scientific_verdict"] = "INCONCLUSIVE" if kind == "MECHANISM_RESPONSE" and status == "NOT_QUALIFIED" else status
+            results.append(result)
+            qualification.append({"metric": metric, "universe_id": universe, "plan_id": plan_id, "status": status, "reason": rationale,
+                                  "evidence_tier": result["evidence_tier"], "complete_population": result["complete_population"], "ci_low": result["ci_low"], "ci_high": result["ci_high"]})
+    return results, qualification
+
+
+def consume_holdout(out: Path, commit: str, manifest_path: str, payload_path: str) -> None:
+    """Read post-freeze metrics and issue metric-by-metric, not global, verdicts."""
+    protocol = assert_frozen_holdout_gate(out)
+    rows, receipt = read_manifest_payload(commit, manifest_path, payload_path)
+    units = read_native_membership(out)
+    plans = tsv_rows((out / "NATIVE_SELECTOR_R_PLAN.tsv").read_text())
+    results, qualification = evaluate_holdout(units, plans, rows, receipt)
+    if not results:
+        die("holdout payload has no rows for frozen prospective holdout universes")
+    fields = ["plan_id", "producer_commit", "producer_payload_sha256", "universe_id", "deployment_id", "scenario_id", "phase", "metric", "metric_kind", "sample_complete", "complete_population", "target_identity_status", "evidence_tier", "effect_fraction_of_reference", "estimate", "exact", "absolute_error", "relative_error", "ci_low", "ci_high", "variance_status", "qualification_status", "scientific_verdict"]
+    write_tsv(out / "HOLDOUT_RESULTS.tsv", fields, results)
+    write_tsv(out / "HOLDOUT_QUALIFICATION.tsv", ["metric", "universe_id", "plan_id", "status", "reason", "evidence_tier", "complete_population", "ci_low", "ci_high"], qualification)
+    write_tsv(out / "HOLDOUT_CONSUMPTION_RECEIPT.tsv", list(receipt), [receipt])
+    protocol["state"] = "HOLDOUT_METRICS_CONSUMED_AFTER_FREEZE"
+    protocol["holdout_receipt"] = receipt
+    write_json(out / "PROSPECTIVE_PROTOCOL.json", protocol)
+    write_manifest(out, "C16_C_HOLDOUT_METRICS_CONSUMED_FOR_METRIC_BY_METRIC_REVIEW", native_catalog=True)
 
 
 def main() -> None:
@@ -939,20 +1115,27 @@ def main() -> None:
     modes = parser.add_mutually_exclusive_group(required=True)
     modes.add_argument("--prepare-historical", action="store_true")
     modes.add_argument("--freeze-native", action="store_true")
+    modes.add_argument("--consume-holdout", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=OUT)
     parser.add_argument("--producer-commit")
     parser.add_argument("--manifest-path")
     parser.add_argument("--catalog-path")
+    parser.add_argument("--payload-path")
     args = parser.parse_args()
     out = require_out(args.output_dir)
     if args.prepare_historical:
         prepare_historical(out)
         print(f"PASS C16 Sampling V2 historical preparation: {out}")
-    else:
+    elif args.freeze_native:
         if not all((args.producer_commit, args.manifest_path, args.catalog_path)):
             die("--freeze-native requires --producer-commit --manifest-path --catalog-path")
         freeze_native(out, args.producer_commit, args.manifest_path, args.catalog_path)
         print(f"PASS C16 Sampling V2 native selector freeze: {out}")
+    else:
+        if not all((args.producer_commit, args.manifest_path, args.payload_path)):
+            die("--consume-holdout requires --producer-commit --manifest-path --payload-path")
+        consume_holdout(out, args.producer_commit, args.manifest_path, args.payload_path)
+        print(f"PASS C16 Sampling V2 post-freeze holdout consumption: {out}")
 
 
 if __name__ == "__main__":
