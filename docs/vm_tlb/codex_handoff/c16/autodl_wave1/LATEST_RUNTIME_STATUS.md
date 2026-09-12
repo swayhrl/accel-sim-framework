@@ -10,8 +10,9 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 |---|---|
 | Formal standalone runtime source commit | `3f02eef6e0d00ea654821be8539bb82f463e87e5` |
 | Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
-| Current G publication head before this checkpoint | `89d036276ac2429387fcab6db567bb6158274855` |
-| Meaning of current source head | Publication/retention closeout only; it does not change the qualified standalone runner. |
+| Current G publication head before this checkpoint | `f7d1c2cb4d41b26472893a7d23466402c8e92e70` |
+| P3 AWQ native runtime source commit | `07575b6d1abc42f68414a8b0ad27c0a6d7d38e66` |
+| Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load only: `fuse_layers=false`, `device_map=cuda:0`, no offload, exact frozen sequence length.  It does not alter completed P0/P1 scientific receipts. |
 | Formal standalone path | The only scientific performance path.  All rows below were run without CPU offload and with the frozen `float16` / eager / SDPA binding. |
 
 `3f02eef6` is the immutable source anchor for the completed P0/P1 formal runs.  A
@@ -111,3 +112,6 @@ local semantic merge is not a prerequisite for this queue.
   P0/P1 census.  Local nsys 2022.4.2 cannot parse remote nsys 2024.1 reports;
   the S2 semantic SQLite was a one-time remote-export fallback, never a remote
   launch TSV/catalog.
+- P3 AWQ native execution is bound to `07575b6…`, which has a no-GPU focused
+  test for the exact AutoAWQ loader and CUDA-residency contract.  The remote
+  runtime is updated only from that immutable pushed source before P3 G0.
