@@ -11,10 +11,11 @@ import sys
 
 
 NEW_OBSERVER = re.compile(
-    r"^DTC_L1_(?:io|oo)_(?:duplicate_after_eviction|alloc_to_ready_"
-    r"(?:count|sum_cycles|max_cycles)|pending_tag_eviction_count|"
-    r"pending_evict_to_response_(?:count|sum_cycles|max_cycles)|"
-    r"observer_live_records)$"
+    r"^DTC_L1_(?:oo_duplicate_after_eviction|(?:io|oo)_alloc_to_ready_"
+    r"(?:count|sum_cycles|max_cycles)|(?:io|oo)_pending_tag_evictions|"
+    r"io_pending_eviction_to_response_(?:count|sum_cycles|max_cycles)|"
+    r"oo_deferred_tag_eviction_to_final_reclaim_"
+    r"(?:count|sum_cycles|max_cycles)|(?:io|oo)_observer_live_records)$"
 )
 STAT = re.compile(r"^([A-Za-z][A-Za-z0-9_]*) = (.+)$")
 TERMINAL_MARKER = "GPGPU-Sim: *** exit detected ***"

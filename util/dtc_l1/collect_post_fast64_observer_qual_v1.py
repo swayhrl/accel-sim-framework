@@ -22,21 +22,31 @@ SCHEMA: Final = "POST_FAST64_OBSERVER_CLOSEOUT_V1"
 TERMINAL_MARKER: Final = "GPGPU-Sim: *** exit detected ***"
 STAT: Final = re.compile(r"^([A-Za-z][A-Za-z0-9_]*) = (.+)$")
 def observed_keys(mode: str) -> tuple[str, ...]:
-    """Return the nine observer fields emitted by the selected DTC mode."""
-    prefix = {"IO": "DTC_L1_io", "OO": "DTC_L1_oo"}.get(mode)
-    if prefix is None:
-        raise ValueError(f"unsupported observer mode {mode!r}")
-    return (
-        f"{prefix}_duplicate_after_eviction",
-        f"{prefix}_alloc_to_ready_count",
-        f"{prefix}_alloc_to_ready_sum_cycles",
-        f"{prefix}_alloc_to_ready_max_cycles",
-        f"{prefix}_pending_tag_eviction_count",
-        f"{prefix}_pending_evict_to_response_count",
-        f"{prefix}_pending_evict_to_response_sum_cycles",
-        f"{prefix}_pending_evict_to_response_max_cycles",
-        f"{prefix}_observer_live_records",
-    )
+    """Return only new observer fields; IO duplicate is pre-existing science."""
+    if mode == "IO":
+        return (
+            "DTC_L1_io_alloc_to_ready_count",
+            "DTC_L1_io_alloc_to_ready_sum_cycles",
+            "DTC_L1_io_alloc_to_ready_max_cycles",
+            "DTC_L1_io_pending_tag_evictions",
+            "DTC_L1_io_pending_eviction_to_response_count",
+            "DTC_L1_io_pending_eviction_to_response_sum_cycles",
+            "DTC_L1_io_pending_eviction_to_response_max_cycles",
+            "DTC_L1_io_observer_live_records",
+        )
+    if mode == "OO":
+        return (
+            "DTC_L1_oo_duplicate_after_eviction",
+            "DTC_L1_oo_alloc_to_ready_count",
+            "DTC_L1_oo_alloc_to_ready_sum_cycles",
+            "DTC_L1_oo_alloc_to_ready_max_cycles",
+            "DTC_L1_oo_pending_tag_evictions",
+            "DTC_L1_oo_deferred_tag_eviction_to_final_reclaim_count",
+            "DTC_L1_oo_deferred_tag_eviction_to_final_reclaim_sum_cycles",
+            "DTC_L1_oo_deferred_tag_eviction_to_final_reclaim_max_cycles",
+            "DTC_L1_oo_observer_live_records",
+        )
+    raise ValueError(f"unsupported observer mode {mode!r}")
 SCIENTIFIC_PREFIXES: Final = ("DTC_L1_", "L2_", "gpu_tot_sim_", "gpgpu_n_")
 IDENTITY_KEYS: Final = (
     "runner_schema",
@@ -162,6 +172,13 @@ def main() -> int:
                 raise ValueError(f"cycle mismatch versus comparator report for {name}")
             if report.get("instructions") != {"off": off_stats["gpu_tot_sim_insn"], "on": on_stats["gpu_tot_sim_insn"]}:
                 raise ValueError(f"instruction mismatch versus comparator report for {name}")
+            expected_observer_count = len(observed_keys(off_manifest["mode"]))
+            if report.get("new_observer_stat_count") != expected_observer_count:
+                raise ValueError(
+                    f"observer field-count mismatch for {name}: "
+                    f"expected {expected_observer_count}, got "
+                    f"{report.get('new_observer_stat_count')!r}"
+                )
             row = {
                 "schema": SCHEMA,
                 "pair": name,
