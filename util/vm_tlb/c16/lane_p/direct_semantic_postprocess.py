@@ -134,6 +134,28 @@ def require_file_hash(entry: dict[str, Any], *, label: str) -> Path:
     return path
 
 
+def direct_payload_roles(payloads: dict[str, Path]) -> dict[str, Path]:
+    """Resolve direct-semantic payload roles without encoding a model name.
+
+    The producer artifact id is part of the producer's hash-closed manifest.
+    P accepts exactly one raw report, remote SQLite export, and full direct map
+    with the standard role suffixes.  A gzip companion does not satisfy the
+    full-map role.
+    """
+    suffixes = {
+        "raw": "_DIRECT_SEMANTIC_RAW",
+        "remote_sqlite": "_DIRECT_SEMANTIC_SQLITE",
+        "producer_map": "_DIRECT_SEMANTIC_MAP",
+    }
+    result: dict[str, Path] = {}
+    for role, suffix in suffixes.items():
+        matches = [path for artifact_id, path in payloads.items() if artifact_id.endswith(suffix)]
+        if len(matches) != 1:
+            raise ContractError(f"producer manifest must contain exactly one {role} direct-semantic payload")
+        result[role] = matches[0]
+    return result
+
+
 def producer_event(event: dict[str, Any], repo: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Path]]:
     producer = event.get("producer")
     identity = event.get("identity")
@@ -167,19 +189,12 @@ def producer_event(event: dict[str, Any], repo: Path) -> tuple[dict[str, Any], d
         payload = git_bytes(repo, commit, f"{base}/{payload_path}")
         if len(payload) != item["size_bytes"] or sha256_bytes(payload) != item["sha256"]:
             raise ContractError(f"producer Git payload is not hash-closed: {payload_path}")
-    local: dict[str, Path] = {}
+    local_by_artifact_id: dict[str, Path] = {}
     for item in manifest.get("external_hash_closed_payloads", []):
         if not isinstance(item, dict) or not isinstance(item.get("artifact_id"), str):
             raise ContractError("producer manifest has an invalid external payload")
-        local[item["artifact_id"]] = require_file_hash(item, label=item["artifact_id"])
-    required_external = {
-        "C16_G_LLAMA_S2_DIRECT_SEMANTIC_RAW",
-        "C16_G_LLAMA_S2_DIRECT_SEMANTIC_SQLITE",
-        "C16_G_LLAMA_S2_DIRECT_SEMANTIC_MAP",
-    }
-    if not required_external <= set(local):
-        raise ContractError("producer manifest lacks a required Llama S2 external payload")
-    return producer, manifest, local
+        local_by_artifact_id[item["artifact_id"]] = require_file_hash(item, label=item["artifact_id"])
+    return producer, manifest, direct_payload_roles(local_by_artifact_id)
 
 
 def receipt_provenance(event: dict[str, Any], manifest: dict[str, Any], local: dict[str, Path]) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -212,11 +227,8 @@ def receipt_provenance(event: dict[str, Any], manifest: dict[str, Any], local: d
     )
     if not all(required_semantic) or not all(required_nsys):
         raise ContractError("diagnostic receipts do not prove direct, non-timing semantic provenance")
-    raw_sha = sha256_file(local["C16_G_LLAMA_S2_DIRECT_SEMANTIC_RAW"])
-    expected_raw = manifest["external_hash_closed_payloads"]
-    raw_decl = next(item for item in expected_raw if item["artifact_id"] == "C16_G_LLAMA_S2_DIRECT_SEMANTIC_RAW")
-    if raw_sha != raw_decl["sha256"]:
-        raise ContractError("diagnostic raw report SHA changed after producer publication")
+    if not local["raw"].is_file():
+        raise ContractError("diagnostic raw report disappeared after producer-manifest closure")
     return semantic, nsys
 
 
@@ -534,16 +546,16 @@ def main() -> None:
         raise ContractError("local diagnostic SQLite export is absent")
     output = args.output_dir
     output.mkdir(parents=True, exist_ok=True)
-    qualification = local_export_qualification(local["C16_G_LLAMA_S2_DIRECT_SEMANTIC_SQLITE"], args.local_sqlite, output / "LOCAL_DIAGNOSTIC_EXPORT_QUALIFICATION.json", nsys_version=args.local_nsys_version, identity=event["identity"])
-    rows, range_count, direct_ambiguity = diagnostic_rows(args.local_sqlite, identity=event["identity"], profile_sha=sha256_file(local["C16_G_LLAMA_S2_DIRECT_SEMANTIC_RAW"]), semantic_sha=sha256_file(Path(event["receipts"]["semantic"]["path"])), package_sha=str(semantic["checks"]["package_manifest_sha256"]))
+    qualification = local_export_qualification(local["remote_sqlite"], args.local_sqlite, output / "LOCAL_DIAGNOSTIC_EXPORT_QUALIFICATION.json", nsys_version=args.local_nsys_version, identity=event["identity"])
+    rows, range_count, direct_ambiguity = diagnostic_rows(args.local_sqlite, identity=event["identity"], profile_sha=sha256_file(local["raw"]), semantic_sha=sha256_file(Path(event["receipts"]["semantic"]["path"])), package_sha=str(semantic["checks"]["package_manifest_sha256"]))
     write_tsv(output / "DIAGNOSTIC_DIRECT_SEMANTIC_MAP.tsv", DIAGNOSTIC_FIELDS, rows)
     deterministic_gzip(output / "DIAGNOSTIC_DIRECT_SEMANTIC_MAP.tsv", output / "DIAGNOSTIC_DIRECT_SEMANTIC_MAP.tsv.gz")
-    reproduction = reproduce_producer_map(rows, local["C16_G_LLAMA_S2_DIRECT_SEMANTIC_MAP"])
+    reproduction = reproduce_producer_map(rows, local["producer_map"])
     write_tsv(output / "DIAGNOSTIC_SEMANTIC_COVERAGE.tsv", tuple(diagnostic_coverage(rows)[0].keys()), diagnostic_coverage(rows))
     merge, coverage = merge_clean_catalog(event, rows, output)
     write_raw_index(output, [
-        ("DIAGNOSTIC_RAW_NSYS_REP", local["C16_G_LLAMA_S2_DIRECT_SEMANTIC_RAW"], "NA"),
-        ("DIAGNOSTIC_REMOTE_SQLITE", local["C16_G_LLAMA_S2_DIRECT_SEMANTIC_SQLITE"], len(rows)),
+        ("DIAGNOSTIC_RAW_NSYS_REP", local["raw"], "NA"),
+        ("DIAGNOSTIC_REMOTE_SQLITE", local["remote_sqlite"], len(rows)),
         ("DIAGNOSTIC_LOCAL_SQLITE", args.local_sqlite, len(rows)),
         ("DIAGNOSTIC_DIRECT_MAP", output / "DIAGNOSTIC_DIRECT_SEMANTIC_MAP.tsv", len(rows)),
         ("CLEAN_DIRECT_SEMANTIC_MAP", output / "DIRECT_SEMANTIC_MAP.tsv", merge["clean_rows"]),
@@ -553,7 +565,7 @@ def main() -> None:
         "schema_version": "C16_P_SEMANTIC_MERGE_AUDIT_V1", "status": "PASS_COVERAGE_LIMITED",
         "classification": "REAL_NATIVE_SCHEMA_SANITY / PROVISIONAL", "scientific_eligible": False,
         "producer": producer, "identity": event["identity"],
-        "sources": {"producer_manifest_sha256": producer["manifest_sha256"], "diagnostic_raw_profile_sha256": sha256_file(local["C16_G_LLAMA_S2_DIRECT_SEMANTIC_RAW"]), "diagnostic_semantic_receipt_sha256": sha256_file(Path(event["receipts"]["semantic"]["path"])), "diagnostic_nsys_receipt_sha256": sha256_file(Path(event["receipts"]["nsys"]["path"])), "clean_catalog_sha256": event["clean_catalog"]["catalog"]["sha256"], "clean_profile_index_sha256": event["clean_catalog"]["profile_index"]["sha256"], "join_key_contract_path": str(join_contract), "join_key_contract_sha256": event["join_key_contract"]["sha256"]},
+        "sources": {"producer_manifest_sha256": producer["manifest_sha256"], "diagnostic_raw_profile_sha256": sha256_file(local["raw"]), "diagnostic_semantic_receipt_sha256": sha256_file(Path(event["receipts"]["semantic"]["path"])), "diagnostic_nsys_receipt_sha256": sha256_file(Path(event["receipts"]["nsys"]["path"])), "clean_catalog_sha256": event["clean_catalog"]["catalog"]["sha256"], "clean_profile_index_sha256": event["clean_catalog"]["profile_index"]["sha256"], "join_key_contract_path": str(join_contract), "join_key_contract_sha256": event["join_key_contract"]["sha256"]},
         "local_export_qualification": {"path": "LOCAL_DIAGNOSTIC_EXPORT_QUALIFICATION.json", "sha256": sha256_file(output / "LOCAL_DIAGNOSTIC_EXPORT_QUALIFICATION.json"), "status": qualification["status"]},
         "diagnostic_direct_evidence": {"kernel_rows": len(rows), "direct_runtime_range_count": range_count, "direct_unambiguous_rows": sum(row["mapping_status"] == "DIRECT_UNAMBIGUOUS" for row in rows), "unknown_rows": sum(row["mapping_status"] != "DIRECT_UNAMBIGUOUS" for row in rows), "ambiguous_direct_range_rows": direct_ambiguity, "producer_map_reproduction": reproduction},
         "clean_merge": {**merge, "coverage_limited": any(row["status"] == "COVERAGE_LIMITED" for row in coverage)},
