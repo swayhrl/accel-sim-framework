@@ -174,9 +174,33 @@ class NativeContractTest(unittest.TestCase):
         with self.assertRaises(COMMON.ContractError):
             UPSTREAMS.verify_manifest_payload(manifest, "base", lambda path: b"tampered")
 
+    def test_h_dedicated_manifest_validator_rejects_dynamic_or_hash_tampering(self):
+        code = b"hash-bound H code"
+        receipt = b"hash-bound H test receipt"
+        digest = __import__("hashlib").sha256
+        manifest = {
+            "schema_version": "c16-h-offline-publish-manifest-v1",
+            "status": "C16_H_OFFLINE_PREP_READY_FOR_FINAL_REVIEW",
+            "planning_sha": COMMON.PLANNING_SHA,
+            "dynamic_scientific_rows": {"present": False},
+            "implementation_commit": "a" * 40,
+            "admission_hardening_commit": "b" * 40,
+            "code_sha256": {"util/h.py": digest(code).hexdigest()},
+            "test_receipt": {"path": "TEST_RECEIPT.json", "sha256": digest(receipt).hexdigest()},
+        }
+        def read_blob(path):
+            return code if path == "util/h.py" else receipt
+        provenance, count = UPSTREAMS.verify_h_manifest_payload(manifest, read_blob)
+        self.assertIn("implementation=" + "a" * 40, provenance)
+        self.assertEqual(count, 2)
+        manifest["dynamic_scientific_rows"] = {"present": True}
+        with self.assertRaises(COMMON.ContractError):
+            UPSTREAMS.verify_h_manifest_payload(manifest, read_blob)
+
     def test_upstream_consumer_cli_is_import_complete(self):
         self.assertEqual(UPSTREAMS.A_COMMIT, "b458225e")
         self.assertEqual(UPSTREAMS.C_COMMIT, "29e669ec")
+        self.assertEqual(UPSTREAMS.H_COMMIT, "932c6fa4")
         artifact = "a" * 40
         producer = "b" * 40
         receipt = (

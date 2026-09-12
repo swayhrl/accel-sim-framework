@@ -125,7 +125,7 @@ This package is deliberately incomplete until A's committed asset/input/scenario
 def gap_markdown() -> str:
     return """# C16 Lane G offline-package gap receipt
 
-G's code, logical dependency lock, receipt schema, target second-pass guard, and no-GPU dry-runs are locally hash-closed. A's fixed integration release supplies hash-verified metadata, frozen input/token receipts, and scenarios, but C16-0.9 cannot be marked fully complete: its required GPU package and wheel closure remain unpublished, and A records the missing H manifest closure. The final transferred asset/wheel hashes are intentionally `NA` rather than fabricated.
+G's code, logical dependency lock, receipt schema, target second-pass guard, and no-GPU dry-runs are locally hash-closed. A's fixed integration release supplies hash-verified metadata, frozen input/token receipts, and scenarios, and H's dedicated manifest now supplies a hash-verified offline admission/object-map protocol. C16-0.9 still cannot be marked fully complete because A has not published its required GPU package and wheel closure. The final transferred asset/wheel hashes are intentionally `NA` rather than fabricated.
 
 Consequences: do not open an AutoDL scientific run, transfer models, or start G0 until C16-1.2 verifies a published A GPU package and wheelhouse closure. This is a dependency gap, not a GPU or model capability result.
 """
@@ -145,7 +145,7 @@ Status: `C16_G_OFFLINE_PACKAGE_PARTIAL_READY_FOR_UPSTREAM_CLOSURE`.
 
 C16-0.3/0.4 offline infrastructure is ready: idempotent offline bootstrap, logical env lock, unified native runner, explicit Wave-1 adapters, nsys/NCU/NVBit wrappers, receipt schema, target second-pass identity guard, shared execution-budget ledger guard, and no-GPU dry-run validation. All mock outputs are marked non-scientific and cannot enter a native catalog.
 
-C16-0.9 is prepared but cannot close: A's fixed integration receipt hash-verifies model/input/scenario metadata, while its required GPU package and wheel closure remain unpublished pending its H-manifest dependency. No AutoDL SSH/GPU was used, no models were downloaded, and no simulator run was started. Once A publishes a fixed hash-bound package and the user provides AutoDL SSH, proceed with C16-1 inline G0/G1/G2/G3 qualification; G0/G1 success immediately releases its corresponding work while G2/G3 remain nonblocking.
+C16-0.9 is prepared but cannot close: A's fixed integration receipt hash-verifies model/input/scenario metadata, H's dedicated offline manifest is consumed as a non-dynamic protocol, and A's required GPU package and wheel closure remain unpublished. No AutoDL SSH/GPU was used, no models were downloaded, and no simulator run was started. Once A publishes a fixed hash-bound package and the user provides AutoDL SSH, proceed with C16-1 inline G0/G1/G2/G3 qualification; G0/G1 success immediately releases its corresponding work while G2/G3 remain nonblocking.
 
 Execution safety closure: C16-1.1 must initialize the shared execution-budget ledger from an observed provider/AutoDL instance-start timestamp and its receipt path. Every real native runner, nsys, NCU, and NVBit command then requires that initialized ledger; it enforces the 24 GPU-instance-hour wall-clock envelope and separately records GPU-active operation time. NVBit additionally receives the remaining/per-window raw and time guard. Dry-runs need no ledger and remain non-scientific.
 """
@@ -173,7 +173,7 @@ def refresh_manifest(out: Path) -> None:
         "status": "C16_G_OFFLINE_PACKAGE_PARTIAL_READY_FOR_UPSTREAM_CLOSURE",
         "capture_state": "NO_AUTODL_SSH_NO_NATIVE_RUN",
         "scientific_evidence": "NONE_OFFLINE_INFRASTRUCTURE_ONLY",
-        "blocked_on": "UPSTREAM_A_GPU_PACKAGE_WHEEL_CLOSURE_AND_H_MANIFEST_REQUIRED",
+        "blocked_on": "UPSTREAM_A_GPU_PACKAGE_AND_WHEEL_CLOSURE_REQUIRED",
         "files": files,
     }
     atomic_json(out / "PUBLISH_MANIFEST.json", manifest)
@@ -207,7 +207,7 @@ def prepare(out: Path, handoff: Path | None) -> None:
     write_tsv(out / "STAGE_STATUS.tsv", ("stage_id", "owner", "execution_status", "scientific_status", "evidence_tier", "blocking_dependency", "note"), [
         {"stage_id": "C16-0.3", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "bootstrap/logical lock/tool expectations are ready; wheel hashes close at C16-1.2"},
         {"stage_id": "C16-0.4", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "runner/wrappers/schema/budget guard/mock fixtures are ready; no GPU result exists"},
-        {"stage_id": "C16-0.9", "owner": "A,G", "execution_status": "PARTIAL_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "A_C16_GPU_PACKAGE_WHEEL_CLOSURE_AND_H_MANIFEST_REQUIRED", "note": "A fixed integration release is hash-verified, but its required GPU package/wheel closure remains unpublished pending H manifest closure"},
+        {"stage_id": "C16-0.9", "owner": "A,G", "execution_status": "PARTIAL_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "A_C16_GPU_PACKAGE_AND_WHEEL_CLOSURE_REQUIRED", "note": "A fixed integration and H offline-protocol releases are hash-verified, but A's required GPU package/wheel closure remains unpublished"},
         {"stage_id": "C16-2.6", "owner": "G", "execution_status": "OFFLINE_SCHEMA_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "C16-1.3_AND_C16-1.4_REQUIRED", "note": "Wave-1 catalog validator/publisher is ready; no native catalog exists"},
     ])
     if handoff is not None:
@@ -249,8 +249,8 @@ def validate(out: Path) -> None:
             raise ContractError("A consumption receipt is missing or overclaims GPU-package eligibility")
         if by_lane.get("C", {}).get("dynamic_eligibility") != "NO_NATIVE_NVBIT_TARGET_YET":
             raise ContractError("C consumption receipt is missing or overclaims native target eligibility")
-        if by_lane.get("H", {}).get("consumption_status") != "NOT_CONSUMED_MANIFEST_MISSING":
-            raise ContractError("H manifest-free consumption guard changed")
+        if by_lane.get("H", {}).get("consumption_status") != "HASH_VERIFIED_MEMORY_PROTOCOL_ONLY" or by_lane.get("H", {}).get("dynamic_eligibility") != "NO_DYNAMIC_ADDRESS_OR_CAPTURE_INPUT":
+            raise ContractError("H consumption receipt overclaims dynamic capture eligibility")
     print(f"PASS C16 G offline package validation: {len(listed)} files; upstream asset closure remains explicit")
 
 
