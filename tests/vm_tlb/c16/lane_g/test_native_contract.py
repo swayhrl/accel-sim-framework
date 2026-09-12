@@ -112,6 +112,8 @@ class NativeContractTest(unittest.TestCase):
             UPSTREAMS.verify_manifest_payload(manifest, "base", lambda path: b"tampered")
 
     def test_upstream_consumer_cli_is_import_complete(self):
+        self.assertEqual(UPSTREAMS.A_COMMIT, "b458225e")
+        self.assertEqual(UPSTREAMS.C_COMMIT, "75432cbd")
         completed = subprocess.run([sys.executable, str(LANE / "consume_upstreams.py"), "--help"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
         self.assertEqual(completed.returncode, 0, completed.stderr)
 
