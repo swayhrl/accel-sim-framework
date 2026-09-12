@@ -290,6 +290,29 @@ def assert_cuda_residency(model: Any, *, require_raw_dtype: str | None) -> tuple
     return parameter_devices, parameter_dtypes
 
 
+def is_cuda_oom(error: BaseException) -> bool:
+    """Recognize only CUDA allocator failures for explicit resource admission."""
+    return error.__class__.__name__ == "OutOfMemoryError" or "CUDA out of memory" in str(error)
+
+
+def resource_admission_receipt(identity: dict[str, str], args: argparse.Namespace, error: BaseException) -> dict[str, Any]:
+    """Record an OOM as an explicit no-substitution resource result, not timing."""
+    return {
+        "schema_version": "C16_G_RESOURCE_ADMISSION_V1",
+        "stage_id": "C16-2.1",
+        "status": "SKIPPED_RESOURCE",
+        "scientific_eligible": False,
+        "identity": identity,
+        "reason": "CUDA_OOM_RESOURCE_ADMISSION_NO_CPU_OFFLOAD_OR_SHAPE_SUBSTITUTION",
+        "error_class": error.__class__.__name__,
+        "constraints": {
+            "cpu_offload_forbidden": True,
+            "frozen_context_batch_decode_unchanged": True,
+            "timing_result_emitted": False,
+        },
+    }
+
+
 def decode_once(model: Any, prompt_ids: Any, decode_tokens: int, torch: Any) -> tuple[float, str]:
     """Run one complete prefill + cache-correct greedy decode with two syncs only."""
     torch.cuda.synchronize()
@@ -481,13 +504,34 @@ def main() -> None:
         budget, args.parent_lease = wrapper_owned_budget(args, runtime_identity(binding, args))
         args.measurement_active_marker = wrapper_measurement_marker(args, runtime_identity(binding, args))
         args.measurement_active_guard = True
-        receipt = execute(binding, args, budget)
+        try:
+            receipt = execute(binding, args, budget)
+        except Exception as exc:
+            if not is_cuda_oom(exc):
+                raise
+            raise ContractError("wrapper-owned native runner hit CUDA OOM; wrapper must preserve its terminal resource result") from exc
     else:
         with BudgetLease(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}", capture=False) as budget:
             with MeasurementActive(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}") as active:
                 args.measurement_active_marker = active.path
                 args.measurement_active_guard = True
-                receipt = execute(binding, args, budget)
+                try:
+                    receipt = execute(binding, args, budget)
+                except Exception as exc:
+                    if not is_cuda_oom(exc):
+                        raise
+                    identity = runtime_identity(binding, args)
+                    budget.finish(
+                        elapsed_seconds=budget.elapsed_seconds(), raw_bytes=0,
+                        terminal_status="SKIPPED_RESOURCE",
+                        evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
+                        diagnostic_reason="CUDA_OOM_RESOURCE_ADMISSION_NO_CPU_OFFLOAD",
+                    )
+                    skip = resource_admission_receipt(identity, args, exc)
+                    skip_path = args.receipt.with_name(args.receipt.name + ".resource_admission.json")
+                    atomic_json(skip_path, skip)
+                    print(f"SKIPPED_RESOURCE C16 cache-correct native runner: {skip_path}")
+                    return
                 budget.finish(elapsed_seconds=budget.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE")
     atomic_json(args.receipt, receipt)
     print(f"PASS C16 cache-correct native runner: {args.receipt}")

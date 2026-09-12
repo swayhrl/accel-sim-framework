@@ -12,7 +12,7 @@ sys.path.insert(0, str(LANE))
 
 from c16_native_common import ContractError  # noqa: E402
 from model_adapters import resolve_adapter  # noqa: E402
-from runtime_native_runner import assert_cuda_residency, load_runtime_model  # noqa: E402
+from runtime_native_runner import assert_cuda_residency, is_cuda_oom, load_runtime_model, resource_admission_receipt  # noqa: E402
 
 
 class FakeDevice:
@@ -87,6 +87,19 @@ class AwqRuntimeTests(unittest.TestCase):
         model = FakeModel()
         with self.assertRaises(ContractError):
             assert_cuda_residency(model, require_raw_dtype="float16")
+
+    def test_cuda_oom_is_an_explicit_no_substitution_resource_result(self) -> None:
+        class OutOfMemoryError(RuntimeError):
+            pass
+
+        error = OutOfMemoryError("CUDA out of memory")
+        self.assertTrue(is_cuda_oom(error))
+        self.assertFalse(is_cuda_oom(RuntimeError("ordinary loader failure")))
+        receipt = resource_admission_receipt({"run_id": "unit", "deployment_id": "unit"}, types.SimpleNamespace(), error)
+        self.assertEqual(receipt["status"], "SKIPPED_RESOURCE")
+        self.assertFalse(receipt["scientific_eligible"])
+        self.assertTrue(receipt["constraints"]["cpu_offload_forbidden"])
+        self.assertTrue(receipt["constraints"]["frozen_context_batch_decode_unchanged"])
 
 
 if __name__ == "__main__":
