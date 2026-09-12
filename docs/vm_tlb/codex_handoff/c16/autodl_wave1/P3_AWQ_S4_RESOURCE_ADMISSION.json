@@ -1,0 +1,36 @@
+{
+  "schema_version": "C16_G_RESOURCE_ADMISSION_CHECKPOINT_V1",
+  "status": "SKIPPED_RESOURCE",
+  "scientific_eligible": false,
+  "timing_result_emitted": false,
+  "identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S4",
+    "input_class": "STRUCTURED",
+    "run_id": "9c804e21-0c34-4991-a8ad-74c676c0e7aa",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "implementation_key": "AUTOAWQ_CAUSAL_LM_EAGER",
+    "dtype": "float16",
+    "quantization": "AWQ",
+    "runtime_source_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "shape_key": "B4_T2048_D16"
+  },
+  "package": {
+    "fixed_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "manifest_sha256": "704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c"
+  },
+  "resource_admission": {
+    "receipt_path": "/workspace/c16_exchange/autodl_wave1/returned/P3/p3_awq_s4_structured_baseline_9c804e21-0c34-4991-a8ad-74c676c0e7aa/P3_AWQ_S4_STRUCTURED_BASELINE_RECEIPT.json.resource_admission.json",
+    "receipt_sha256": "233d8a919cdf1f68523a2007bd781a044e822d2956522935f60b48bf04320343",
+    "error_class": "OutOfMemoryError",
+    "reason": "CUDA_OOM_RESOURCE_ADMISSION_NO_CPU_OFFLOAD_OR_SHAPE_SUBSTITUTION"
+  },
+  "constraints": {
+    "cpu_offload_forbidden": true,
+    "frozen_context_batch_decode_unchanged": true,
+    "g1_not_started_without_resource_admission": true,
+    "baseline_or_census_not_inferred_from_smaller_shape": true
+  },
+  "next_authorized_task": "P2_RAW_TRANSFER_AND_HASH_CLOSURE"
+}
