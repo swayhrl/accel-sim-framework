@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import statistics
 import subprocess
 import sys
@@ -24,6 +25,26 @@ from c16_native_common import ContractError, atomic_json, canonical_json, repo_r
 from execution_budget import BudgetLease
 from model_adapters import resolve_adapter
 from run_schema import validate_receipt
+
+
+class WrapperOwnedBudget:
+    """Bound a runner launched inside an already-ledgered profiler wrapper.
+
+    The profiler wrapper holds the sole `BudgetLease` for the child process
+    and records the operation.  Acquiring it again in the child would create
+    a deliberate nonblocking-lock failure.  This object preserves the
+    wrapper's remaining wall-time ceiling for warmup/measure checks without
+    creating a second ledger entry.
+    """
+
+    def __init__(self, max_elapsed_seconds: float) -> None:
+        if max_elapsed_seconds <= 0:
+            raise ContractError("wrapper-supplied C16 budget ceiling is invalid")
+        self.max_elapsed_seconds = max_elapsed_seconds
+        self._started = time.monotonic()
+
+    def expired(self) -> bool:
+        return time.monotonic() - self._started >= self.max_elapsed_seconds
 
 
 def git_head() -> str:
@@ -253,6 +274,7 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
             "cache_correct_decode": True,
             "execution_budget_ledger": str(args.budget_ledger),
             "execution_budget_max_elapsed_seconds": budget.max_elapsed_seconds,
+            "execution_budget_ownership": "PROFILER_WRAPPER" if args.budget_owned_by_wrapper else "RUNNER",
             "frozen_binding_receipt": str(args.binding_receipt),
             "frozen_binding_sha256": sha256_file(args.binding_receipt),
             "package_id": binding["package_id"],
@@ -293,6 +315,7 @@ def main() -> None:
     parser.add_argument("--warmups", type=int, default=2)
     parser.add_argument("--measures", type=int, default=3)
     parser.add_argument("--budget-ledger", type=Path, required=True)
+    parser.add_argument("--budget-owned-by-wrapper", action="store_true")
     args = parser.parse_args()
     if not args.execute_native:
         parser.error("runtime-native runner has no mock mode; use the fixed offline runner for non-scientific fixtures")
@@ -304,9 +327,20 @@ def main() -> None:
     except ValueError:
         parser.error("--run-id must be a canonical UUID")
     binding = load_binding(args.binding_receipt, canary=args.mode == "canary")
-    with BudgetLease(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}", capture=False) as budget:
+    if args.budget_owned_by_wrapper:
+        wrapper_ledger = os.environ.get("C16_G_WRAPPER_BUDGET_LEDGER")
+        max_elapsed_text = os.environ.get("C16_G_WRAPPER_MAX_ELAPSED_SECONDS")
+        if wrapper_ledger != str(args.budget_ledger) or max_elapsed_text is None:
+            raise ContractError("wrapper-owned budget mode requires a matching active profiler wrapper lease")
+        try:
+            budget = WrapperOwnedBudget(float(max_elapsed_text))
+        except ValueError as exc:
+            raise ContractError("wrapper-supplied C16 budget ceiling is malformed") from exc
         receipt = execute(binding, args, budget)
-        budget.finish(elapsed_seconds=budget.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE")
+    else:
+        with BudgetLease(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}", capture=False) as budget:
+            receipt = execute(binding, args, budget)
+            budget.finish(elapsed_seconds=budget.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE")
     atomic_json(args.receipt, receipt)
     print(f"PASS C16 cache-correct native runner: {args.receipt}")
 

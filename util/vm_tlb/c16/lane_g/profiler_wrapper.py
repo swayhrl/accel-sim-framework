@@ -116,9 +116,9 @@ def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, targe
     return process.returncode or 0, status, output_bytes(raw_dir), time.monotonic() - started
 
 
-def run_command_guarded(command: list[str], max_seconds: float) -> tuple[int, str, float]:
+def run_command_guarded(command: list[str], max_seconds: float, environment: dict[str, str] | None = None) -> tuple[int, str, float]:
     started = time.monotonic()
-    process = subprocess.Popen(command)
+    process = subprocess.Popen(command, env=environment)
     status = "COMPLETE"
     while process.poll() is None:
         if time.monotonic() - started >= max_seconds:
@@ -192,7 +192,10 @@ def main(tool: str) -> None:
             )
             budget.finish(elapsed_seconds=elapsed, raw_bytes=bytes_written, terminal_status=terminal_status)
         else:
-            returncode, terminal_status, elapsed = run_command_guarded(command, budget.max_elapsed_seconds)
+            environment = dict(os.environ)
+            environment["C16_G_WRAPPER_BUDGET_LEDGER"] = str(args.budget_ledger)
+            environment["C16_G_WRAPPER_MAX_ELAPSED_SECONDS"] = repr(budget.max_elapsed_seconds)
+            returncode, terminal_status, elapsed = run_command_guarded(command, budget.max_elapsed_seconds, environment)
             bytes_written = output_bytes(args.output)
             budget.finish(elapsed_seconds=elapsed, raw_bytes=0, terminal_status=terminal_status)
     receipt = wrapper_receipt(tool, args, target, command, executed=True, terminal_status=terminal_status, returncode=returncode, elapsed_s=elapsed, bytes_written=bytes_written)
