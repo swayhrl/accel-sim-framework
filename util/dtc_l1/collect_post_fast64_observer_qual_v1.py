@@ -141,11 +141,17 @@ def main() -> int:
     )
     parser.add_argument("--identity-output", type=pathlib.Path, required=True)
     parser.add_argument("--telemetry-output", type=pathlib.Path, required=True)
+    parser.add_argument(
+        "--index-output",
+        type=pathlib.Path,
+        help="optional retained D3 qualification index TSV",
+    )
     args = parser.parse_args()
     try:
         seen: set[str] = set()
         identity_rows: list[dict[str, str]] = []
         telemetry_rows: list[dict[str, str]] = []
+        index_rows: list[dict[str, str]] = []
         for name, off_path, on_path, report_path in args.pair:
             if name in seen:
                 raise ValueError(f"duplicate pair name {name!r}")
@@ -188,10 +194,15 @@ def main() -> int:
                 "off_attempt_uuid": off_manifest["attempt_uuid"],
                 "on_attempt_uuid": on_manifest["attempt_uuid"],
                 "runner_sha256": off_manifest["runner_sha256"],
+                "immutable_runner_path": off_manifest["immutable_runner_path"],
+                "simulator": off_manifest["simulator"],
                 "simulator_sha256": off_manifest["simulator_sha256"],
                 "core_source_head": off_manifest["core_source_head"],
+                "config": off_manifest["config"],
                 "config_sha256": off_manifest["config_sha256"],
+                "trace_list": off_manifest["trace_list"],
                 "trace_list_sha256": off_manifest["trace_list_sha256"],
+                "trace_config": off_manifest["trace_config"],
                 "trace_config_sha256": off_manifest["trace_config_sha256"],
                 "off_exit_status": off_manifest["simulator_exit_status"],
                 "on_exit_status": on_manifest["simulator_exit_status"],
@@ -205,6 +216,22 @@ def main() -> int:
                 "comparator_report": str(report_path.resolve()),
             }
             identity_rows.append(row)
+            index_rows.append(
+                {
+                    "schema": SCHEMA,
+                    "pair": name,
+                    "classification": off_manifest["result_classification"],
+                    "retained_scope": "D3_OBSERVER_EQUIVALENCE_QUALIFICATION_ONLY",
+                    "workload": off_manifest["workload"],
+                    "mode": off_manifest["mode"],
+                    "cycles": off_stats["gpu_tot_sim_cycle"],
+                    "instructions": off_stats["gpu_tot_sim_insn"],
+                    "preexisting_exact_match": "true",
+                    "observer_off_all_zero": "true",
+                    "terminal_live_records_zero": "true",
+                    "identity_manifest_pair": name,
+                }
+            )
             for key in observed_keys(off_manifest["mode"]):
                 telemetry_rows.append(
                     {
@@ -226,6 +253,17 @@ def main() -> int:
                 writer = csv.DictWriter(handle, fieldnames=list(rows[0]), delimiter="\t", lineterminator="\n")
                 writer.writeheader()
                 writer.writerows(rows)
+        if args.index_output:
+            args.index_output.parent.mkdir(parents=True, exist_ok=True)
+            with args.index_output.open("w", encoding="utf-8", newline="") as handle:
+                writer = csv.DictWriter(
+                    handle,
+                    fieldnames=list(index_rows[0]),
+                    delimiter="\t",
+                    lineterminator="\n",
+                )
+                writer.writeheader()
+                writer.writerows(index_rows)
         print(f"POST_FAST64_OBSERVER_CLOSEOUT_PASS\tpairs={len(identity_rows)}")
         return 0
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
