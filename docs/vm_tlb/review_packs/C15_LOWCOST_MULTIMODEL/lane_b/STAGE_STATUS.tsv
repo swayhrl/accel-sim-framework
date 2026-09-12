@@ -1,0 +1,13 @@
+stage_id	execution	validation	test_receipt	artifact_manifest	reason
+C15-0.1	COMPLETE	PASS	TEST_RESULTS.tsv:T00,T01,T23	ENV_PREFLIGHT.json	non-detached B worktree at planning SHA
+C15-0.3	COMPLETE	PASS	TEST_RESULTS.tsv:T07,T24	CAPABILITY_MATRIX.tsv;DEPLOYMENT_PREFLIGHT.tsv	actual probe records native capability absent
+C15-2.1	CAPABILITY_LIMITED	NOT_APPLICABLE	TEST_RESULTS.tsv:T07	DEPLOYMENT_PREFLIGHT.tsv	no authorized visible GPU/backend/resource guard; CPU fallback rejected
+C15-2.2	CAPABILITY_LIMITED	NOT_EXECUTED	TEST_RESULTS.tsv:T07,T08	CAPABILITY_MATRIX.tsv	no real deployment canary; tool binary presence is not runtime proof
+C15-2.3	CAPABILITY_LIMITED	NOT_EXECUTED	TEST_RESULTS.tsv:T08,T20	DEPLOYMENT_PREFLIGHT.tsv	no native unprofiled/profiled repetitions
+C15-2.4	COMPLETE	PASS	TEST_RESULTS.tsv:T01,T08,T15	KERNEL_CATALOG_TRACE_HEADER_ONLY.tsv	frozen C12 trace-list provenance imported as header-only; no native timing/semantics asserted
+C15-2.5	CAPABILITY_LIMITED	NOT_EXECUTED	TEST_RESULTS.tsv:T09	TEST_RESULTS.tsv	V2 lifetime observer test passes, but no observable real deployment exists
+C15-2.6	CAPABILITY_LIMITED	NOT_EXECUTED	TEST_RESULTS.tsv:T07,T08,T20,T24	DEPLOYMENT_PREFLIGHT.tsv	0 real deployments and 0 scenarios; upper bounds are not targets
+C15-2.7	COMPLETE	PASS	TEST_RESULTS.tsv:T01,T21,T23	PUBLISH_MANIFEST.json	offline/header-only checkpoint published early
+C15-3.4	CAPABILITY_LIMITED	NOT_EXECUTED	TEST_RESULTS.tsv:T10,T14,T15	SAMPLE_PLAN.tsv;CAPTURE_PREFLIGHT.tsv	no semantic native catalog; did not select targets from header-only/synthetic inputs
+C15-3.5	CAPABILITY_LIMITED	NOT_EXECUTED	TEST_RESULTS.tsv:T10,T24	CAPTURE_PREFLIGHT.tsv	tracer filter only tested synthetically; no actual tracer capture
+C15-3.6	CAPABILITY_LIMITED	NOT_EXECUTED	TEST_RESULTS.tsv:T10,T20,T21,T24	CAPTURE_PREFLIGHT.tsv	0 windows, 0 bytes, 0 GPU-active seconds
