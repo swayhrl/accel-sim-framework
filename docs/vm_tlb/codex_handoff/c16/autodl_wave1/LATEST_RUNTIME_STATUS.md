@@ -10,7 +10,7 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 |---|---|
 | Formal standalone runtime source commit | `3f02eef6e0d00ea654821be8539bb82f463e87e5` |
 | Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
-| Current G publication head before this checkpoint | `f7d1c2cb4d41b26472893a7d23466402c8e92e70` |
+| Current G publication head before this checkpoint | `8c3e1e7a121087dab36c9d62f837d2fd3cadc13d` |
 | P3 AWQ native runtime source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
 | Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load: `fuse_layers=false`, Accelerate-compatible explicit root device map `{"": 0}`, no offload, exact frozen sequence length.  CUDA OOM has an explicit `SKIPPED_RESOURCE` ledger/receipt path with no shape substitution.  It does not alter completed P0/P1 scientific receipts. |
 | P3 AWQ remote source deployment | AutoDL `code_runtime_3f02eef6` is at `a54e25ab…` on `c16-runtime-a54e25ab`; hash-verified source bundle SHA256 is `186a07aba251053194d60f795d3f404d939db78351127adf3f36a17f95fb7262`.  All 14 remote no-GPU focused tests passed before retrying P3 G0.  The prior `6bb18822…` source recorded a retained pre-forward diagnostic and will not retry G0. |
@@ -64,7 +64,7 @@ consumer-facing coverage/receipt/hash index is in
 |---|---|---|---|---|---|
 | Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Pending fixed target | Pending fixed target | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
 | Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1 (`2ec7d963-228d-4c8a-bcfa-60c895f13b88`) and S2 (`bbe3ef73-bdca-443d-8fa6-58b59a35ca4c`) | Pending fixed target | Pending fixed target | S2 standalone baseline plus G1; this is a meaningful completed standalone model/scenario group. |
-| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | Pending frozen baseline/G1 | Pending fixed target | Pending fixed target | G0 source/receipt closure: [P3_AWQ_G0_CHECKPOINT.json](P3_AWQ_G0_CHECKPOINT.json).  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` remains solely `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the earlier string device-map before forward/timing. |
+| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`) | Pending fixed target | Pending fixed target | S1 standalone baseline (`d3df4a5b-5f84-48d3-a44d-03a367d046ef`) plus independently validated lightweight Nsight census; see [P3_AWQ_S1_G1_CHECKPOINT.json](P3_AWQ_S1_G1_CHECKPOINT.json).  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` remains solely `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the earlier string device-map before forward/timing. |
 
 The first malformed Qwen S1 Nsight invocation (`baa55265-4b7b-4dd8-aed6-6fcc6abca148`)
 has a retained ledger entry marked `NON_SCIENTIFIC_DIAGNOSTIC`; it has no raw
@@ -99,12 +99,20 @@ from AutoDL only after their published local SHA256 confirmations.  Qwen0.5's
 matching raw remains remote at this checkpoint; both entries give the local
 hash-closed retained copy, and their small remote receipts remain available.
 
-Next authorized GPU task: P3 S1/CODE standalone baseline under `a54e25ab…`,
-then its G1 lightweight Nsight census.  Continue frozen-scenario resource
-admission and standalone baseline/G1 census; an OOM is
+P3 S1/CODE is now closed: its G1 export-validation receipt independently proves
+119,980 nonzero named CUDA kernels on one stream, 119,980 CUDA-runtime
+correlation joins, and NVTX full/prefill/decode overlap under the exact frozen
+P3 identity.  The only SQLite materialized on AutoDL was the minimal
+validation input; no remote launch TSV or catalog was generated.  The
+hash-closed `.nsys-rep` is local and indexed; its raw-free local postprocess
+does not gate the queue.
+
+Next authorized GPU task: P3 S2/TEXT standalone resource admission and
+baseline under `a54e25ab…`, then its G1 lightweight Nsight census.  Continue
+frozen-scenario resource admission and standalone baseline/G1 census; an OOM is
 `SKIPPED_RESOURCE`, never CPU offload or a resized substitute.  P2 raw remains
-next only after this P3 clean group.  Lane P's local semantic merge is not a
-prerequisite for this queue.
+next only after the P3 AWQ frozen main native group.  Lane P's local semantic
+merge is not a prerequisite for this queue.
 
 ## Known capability / analysis boundaries
 
@@ -117,6 +125,8 @@ prerequisite for this queue.
   P0/P1 census.  Local nsys 2022.4.2 cannot parse remote nsys 2024.1 reports;
   the S2 semantic SQLite was a one-time remote-export fallback, never a remote
   launch TSV/catalog.
-- P3 AWQ native execution is bound to `07575b6…`, which has a no-GPU focused
-  test for the exact AutoAWQ loader and CUDA-residency contract.  The remote
-  runtime is updated only from that immutable pushed source before P3 G0.
+- P3 AWQ native execution is bound to `a54e25ab…`, which has 14 focused tests
+  for the exact AutoAWQ loader, explicit root device map, no-offload residency
+  contract, direct-semantic support, and parent/child budget accounting.  The
+  remote runtime is updated only from that immutable pushed source before P3
+  scientific work.
