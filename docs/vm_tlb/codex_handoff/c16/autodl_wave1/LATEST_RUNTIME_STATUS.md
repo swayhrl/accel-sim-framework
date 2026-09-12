@@ -78,6 +78,11 @@ remote copies were still present at this checkpoint and may be reclaimed only
 after the published index is available and the corresponding local digest is
 reconfirmed.
 
+The two direct-semantic `.nsys-rep` files and its temporary remote SQLite were
+reclaimed from AutoDL only after their published local SHA256 confirmations;
+their small remote receipts remain and the local artifact-index paths are the
+authoritative retained copies.
+
 Next authorized GPU task: wait for A to publish either P2 or P3 with its fixed
 commit and manifest SHA.  If P3 is first, consume and hash-close P3, publish that
 consumption checkpoint, then run standalone Qwen7-AWQ G0 -> baseline -> G1.  If
