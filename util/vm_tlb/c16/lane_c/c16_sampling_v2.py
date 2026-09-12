@@ -889,9 +889,47 @@ def prepare_historical(out: Path) -> None:
     write_manifest(out, "C16_C_SAMPLING_V2_READY_FOR_REVIEW", native_catalog=False)
 
 
+def manifest_entry_path(manifest_path: str, entry_path: str) -> str:
+    return entry_path if entry_path.startswith("docs/") else str(Path(manifest_path).parent / entry_path)
+
+
+def verify_native_catalog_admission(commit: str, manifest_path: str, manifest: dict[str, Any]) -> list[dict[str, str]]:
+    """Reject a schema/offline package before it can become a selector input."""
+    if manifest.get("schema_version") == "C16_G_OFFLINE_PACKAGE_V1" or str(manifest.get("scientific_evidence", "")).startswith("NONE_"):
+        die("G manifest declares offline/no-scientific-evidence state, not NATIVE_CATALOG_V1")
+    files = manifest.get("files", [])
+    required = ("KERNEL_CATALOG.tsv", "KERNEL_SEMANTIC_MAP.tsv", "SEMANTIC_COVERAGE.tsv", "NATIVE_BASELINE.tsv", "RUNTIME_IMPLEMENTATION_AUDIT.tsv")
+    receipts: list[dict[str, str]] = []
+    for basename in required:
+        matches = [entry for entry in files if str(entry.get("path", "")).endswith(basename)]
+        if len(matches) != 1:
+            die(f"NATIVE_CATALOG_V1 admission lacks exactly one {basename} manifest entry")
+        entry = matches[0]
+        path = manifest_entry_path(manifest_path, str(entry["path"]))
+        text = git_text(commit, path)
+        digest = sha256_bytes(text.encode())
+        if digest != entry.get("sha256"):
+            die(f"native manifest hash mismatch for {basename}")
+        receipts.append({"path": path, "sha256": digest, "blob_id": git_blob(commit, path)})
+    heavy = [entry for entry in files if str(entry.get("path", "")).endswith("HEAVY_TAIL_KERNELS.tsv")]
+    # C may recompute the heavy-tail facts from an admitted duration-bearing
+    # catalog, but an explicitly published table must still hash-close if named.
+    if heavy:
+        if len(heavy) != 1:
+            die("ambiguous HEAVY_TAIL_KERNELS manifest entry")
+        path = manifest_entry_path(manifest_path, str(heavy[0]["path"]))
+        text = git_text(commit, path)
+        digest = sha256_bytes(text.encode())
+        if digest != heavy[0].get("sha256"):
+            die("native manifest hash mismatch for HEAVY_TAIL_KERNELS.tsv")
+        receipts.append({"path": path, "sha256": digest, "blob_id": git_blob(commit, path)})
+    return receipts
+
+
 def read_manifest_catalog(commit: str, manifest_path: str, catalog_path: str) -> tuple[list[dict[str, str]], dict[str, Any]]:
     manifest_text = git_text(commit, manifest_path)
     manifest = json.loads(manifest_text)
+    dependencies = verify_native_catalog_admission(commit, manifest_path, manifest)
     catalog_text = git_text(commit, catalog_path)
     catalog_hash = sha256_bytes(catalog_text.encode())
     files = manifest.get("files", [])
@@ -902,7 +940,7 @@ def read_manifest_catalog(commit: str, manifest_path: str, catalog_path: str) ->
         die("native catalog SHA does not match committed manifest")
     return tsv_rows(catalog_text), {"producer_commit": commit, "manifest_path": manifest_path, "manifest_blob": git_blob(commit, manifest_path),
                                     "manifest_sha256": sha256_bytes(manifest_text.encode()), "catalog_path": catalog_path, "catalog_blob": git_blob(commit, catalog_path),
-                                    "catalog_sha256": catalog_hash, "producer_status": manifest.get("status", "UNKNOWN")}
+                                    "catalog_sha256": catalog_hash, "producer_status": manifest.get("status", "UNKNOWN"), "validated_dependencies": dependencies}
 
 
 def freeze_native(out: Path, commit: str, manifest_path: str, catalog_path: str) -> None:
