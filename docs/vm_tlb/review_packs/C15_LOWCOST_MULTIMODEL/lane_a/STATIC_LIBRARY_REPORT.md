@@ -12,8 +12,9 @@ configuration/storage pair, not as a second model.
 for Qwen2.5-0.5B-Instruct, Qwen2.5-7B-Instruct, and
 Qwen2.5-7B-Instruct-AWQ. Their static payload interval unions are respectively
 988,065,536 B, 15,231,233,024 B, and 5,570,747,392 B. The AWQ catalog keeps
-packed `qweight` (I32) separate from scales/zeros (metadata); this is a physical
-checkpoint-storage observation, not a runtime-memory or speed claim.
+packed `qweight` (I32) separate from scales/zeros (metadata); this is a
+checkpoint-file storage observation, not a runtime-memory, GPU-physical-address,
+or speed claim.
 
 The other seven source-bound configurations remain `STATIC_CONFIG_ONLY`, because
 their index/header operation timed out, hit a bounded transport failure, or did
@@ -38,6 +39,10 @@ TLB working sets, TLB misses, cache misses, timing, or dynamic active experts.
 
 The bounded reader, schema, offset, packed-storage, alias, KV, page, selection,
 atomic-publish and operation guards passed their applicable fixture checks. The
-scientific completeness of physical static storage is `INCONCLUSIVE` (3/10
+scientific completeness of checkpoint-file static storage is `INCONCLUSIVE` (3/10
 configuration headers), while source-bound configuration/KV metadata coverage is
 10 configurations. No conclusion about cross-model dynamic behavior is made.
+
+`intermediate_sizes` for the three MoE configurations is retained as the observed
+config scalar only. It is not a complete routed/shared-expert width description
+and is excluded from later MoE clustering; see `MOE_INTERMEDIATE_LIMITATIONS.md`.

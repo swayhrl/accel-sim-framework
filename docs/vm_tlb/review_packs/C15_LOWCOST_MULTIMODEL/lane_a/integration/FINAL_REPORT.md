@@ -1,6 +1,6 @@
-# C15 low-cost foundation — partial ready for review
+# C15 low-cost foundation — partial ready for final review
 
-Status: `C15_LOWCOST_FOUNDATION_PARTIAL_READY_FOR_REVIEW`.
+Status: `C15_LOWCOST_FOUNDATION_PARTIAL_READY_FOR_FINAL_REVIEW`.
 
 Lane A has completed the bounded static foundation: ten immutable-revision
 deployment configurations across nine model lineages, including a raw/AWQ pair;
@@ -9,9 +9,15 @@ formula configurations; and explicit exclusions for MLA/compressed or
 insufficiently specified configurations. Seven storage configurations remain
 config-only. No full weight was downloaded.
 
-Lane A consumed B only from commit `721e30f377dab36d826dc7ea9d47e11c5d85aa5c`
-and C only from commit `a51d6c91b1e7d7df27a4af80823a29ff30bb9806`; their
-manifest and selected-payload hashes were checked before synthesis. B provides a
+All static byte facts are checkpoint-file storage, not GPU memory or GPU physical
+addresses. MoE `intermediate_sizes` are retained only as incomplete config scalars
+and are not eligible for routed/shared-expert clustering.
+
+Lane A consumed B's artifact only from commit
+`57e2ef203befc96cfcefe00de2aaf8b0baab5d8b` and records
+`721e30f377dab36d826dc7ea9d47e11c5d85aa5c` separately as B's final handoff
+HEAD. C's artifact and handoff are both `a51d6c91b1e7d7df27a4af80823a29ff30bb9806`.
+Their manifest and selected-payload hashes were checked before synthesis. B provides a
 capability-limited, trace-header-only checkpoint with zero new native GPU run,
 native timing, SASS, or capture trace. C provides historical C12/C13 validation,
 but its sampler is `SAMPLER_NOT_QUALIFIED` and it reports no new simulator, GPU,
