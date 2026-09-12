@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import os
 import tempfile
@@ -33,9 +34,25 @@ TABLES = {
 }
 
 
+def payload_path(catalog_dir: Path, logical_name: str) -> Path:
+    plain = catalog_dir / logical_name
+    compressed = catalog_dir / f"{logical_name}.gz"
+    if plain.is_file() and compressed.is_file():
+        raise ContractError(f"catalog has duplicate plain/compressed payloads for {logical_name}")
+    if plain.is_file():
+        return plain
+    if compressed.is_file():
+        return compressed
+    return plain
+
+
 def read_tsv(path: Path, fields: tuple[str, ...]) -> list[dict[str, str]]:
     try:
-        with path.open(newline="", encoding="utf-8") as handle:
+        if path.suffix == ".gz":
+            handle_context = gzip.open(path, "rt", newline="", encoding="utf-8")
+        else:
+            handle_context = path.open(newline="", encoding="utf-8")
+        with handle_context as handle:
             reader = csv.DictReader(handle, delimiter="\t")
             if tuple(reader.fieldnames or ()) != fields:
                 raise ContractError(f"schema mismatch in {path.name}")
@@ -60,7 +77,7 @@ def validate(catalog_dir: Path, wave1_path: Path) -> tuple[dict[str, list[dict[s
         raise ContractError("Wave-1 declaration must contain exactly four unique W1 deployments")
     if any(row["catalog_status"] not in {"COMPLETE", "GAP"} for row in expected):
         raise ContractError("Wave-1 deployment catalog status must be COMPLETE or GAP")
-    tables = {name: read_tsv(catalog_dir / name, fields) for name, fields in TABLES.items()}
+    tables = {name: read_tsv(payload_path(catalog_dir, name), fields) for name, fields in TABLES.items()}
     complete = {row["deployment_id"] for row in expected if row["catalog_status"] == "COMPLETE"}
     for name, rows in tables.items():
         for row in rows:
@@ -97,8 +114,8 @@ def publish(catalog_dir: Path, wave1_path: Path) -> dict[str, Any]:
     tables, expected = validate(catalog_dir, wave1_path)
     files = []
     for name in sorted(TABLES):
-        path = catalog_dir / name
-        files.append({"path": name, "sha256": sha256_file(path), "size_bytes": path.stat().st_size})
+        path = payload_path(catalog_dir, name)
+        files.append({"path": path.name, "logical_table": name, "sha256": sha256_file(path), "size_bytes": path.stat().st_size})
     complete = [row["deployment_id"] for row in expected if row["catalog_status"] == "COMPLETE"]
     gaps = [{"deployment_id": row["deployment_id"], "reason": row["gap_reason"]} for row in expected if row["catalog_status"] == "GAP"]
     manifest = {
