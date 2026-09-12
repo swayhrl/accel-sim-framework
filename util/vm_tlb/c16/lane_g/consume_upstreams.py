@@ -129,14 +129,14 @@ def consume(out: Path) -> None:
     if "PENDING_NATIVE_CATALOG" not in target_plan or "NOT_A_NATIVE_CAPTURE_TARGET" not in target_plan:
         raise ContractError("C target plan no longer explicitly awaits a native catalog")
     rows = [
-        {"producer_lane": "A", "fixed_commit": A_COMMIT, "artifact_checkpoint_or_producer": a_provenance, "manifest_path": f"{A_BASE}/PUBLISH_MANIFEST.json", "manifest_sha256": a_sha, "verified_file_count": str(a_count), "consumption_status": "HASH_VERIFIED_METADATA_INPUTS_ONLY", "dynamic_eligibility": "NO_GPU_PACKAGE_OR_TRANSFER_AUTHORIZATION", "reason": "A integrates fixed G/C releases, but its C16 GPU package remains unpublished pending H manifest closure"},
+        {"producer_lane": "A", "fixed_commit": A_COMMIT, "artifact_checkpoint_or_producer": a_provenance, "manifest_path": f"{A_BASE}/PUBLISH_MANIFEST.json", "manifest_sha256": a_sha, "verified_file_count": str(a_count), "consumption_status": "HASH_VERIFIED_METADATA_INPUTS_ONLY", "dynamic_eligibility": "NO_GPU_PACKAGE_OR_TRANSFER_AUTHORIZATION", "reason": "A integrates fixed G/C releases, but its fixed publication contains no C16 GPU package or transfer authorization"},
         {"producer_lane": "C", "fixed_commit": C_COMMIT, "artifact_checkpoint_or_producer": str(c.get("producer_commit", "NA")), "manifest_path": f"{C_BASE}/PUBLISH_MANIFEST.json", "manifest_sha256": c_sha, "verified_file_count": str(c_count), "consumption_status": "HASH_VERIFIED_SELECTOR_PROTOCOL_ONLY", "dynamic_eligibility": "NO_NATIVE_NVBIT_TARGET_YET", "reason": "all current target rows await a committed G native catalog"},
         {"producer_lane": "H", "fixed_commit": H_COMMIT, "artifact_checkpoint_or_producer": h_provenance, "manifest_path": f"{H_BASE}/PUBLISH_MANIFEST.json", "manifest_sha256": h_sha, "verified_file_count": str(h_count), "consumption_status": "HASH_VERIFIED_MEMORY_PROTOCOL_ONLY", "dynamic_eligibility": "NO_DYNAMIC_ADDRESS_OR_CAPTURE_INPUT", "reason": "H admission/object-map protocol is hash-verified; its manifest explicitly has no dynamic scientific rows and awaits G capture"},
     ]
     atomic_tsv(out / "CONSUMED_INPUTS.tsv", rows)
     (out / "UPSTREAM_INPUT_AUDIT.md").write_text(
         "# C16 Lane G fixed upstream-input audit\n\n"
-        f"A fixed commit `{A_COMMIT}` manifest verified {a_count} payload hashes. Its verified handoff provenance is `{a_provenance}`. It integrates fixed G/C releases, but remains a partial local-preparation publication while H's manifest closure is absent; it does not authorize a GPU transfer or rental.\n\n"
+        f"A fixed commit `{A_COMMIT}` manifest verified {a_count} payload hashes. Its verified handoff provenance is `{a_provenance}`. It integrates fixed G/C releases but contains no C16 GPU package or transfer authorization; it remains a partial local-preparation publication.\n\n"
         f"C fixed commit `{C_COMMIT}` manifest verified {c_count} payload hashes. Its selector is consumed only as a protocol; every current NVBit row explicitly awaits a committed G native catalog, so it authorizes no capture target.\n\n"
         f"H fixed commit `{H_COMMIT}` dedicated manifest verified {h_count} code/test-receipt hashes with provenance `{h_provenance}`. It is consumed only as an offline admission/object-map protocol; its manifest explicitly has no dynamic scientific rows, so no live partial or raw address data was read.\n",
         encoding="utf-8",
@@ -149,7 +149,7 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     args = parser.parse_args()
     consume(args.output_dir)
-    print(f"PASS C16 G fixed upstream manifest consumption: A={A_COMMIT}, C={C_COMMIT}; H intentionally not consumed")
+    print(f"PASS C16 G fixed upstream manifest consumption: A={A_COMMIT}, C={C_COMMIT}, H={H_COMMIT} (memory protocol only)")
 
 
 if __name__ == "__main__":
