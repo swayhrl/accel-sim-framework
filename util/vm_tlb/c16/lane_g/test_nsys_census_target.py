@@ -58,6 +58,7 @@ class NsysCensusTargetTests(unittest.TestCase):
         self.assertEqual(target["operator_class"], "UNKNOWN_PRE_CENSUS")
         self.assertEqual(target["identity"]["run_id"], RUN_ID)
         self.assertEqual(target["runtime"]["profiler_mode"], "NSYS_LIGHTWEIGHT_CENSUS_PARENT_LEASED")
+        self.assertTrue(target["source_baseline_runtime_code_compatibility"]["exact_runtime_execution_paths_unchanged"])
 
     def test_rejects_source_identity_mismatch(self) -> None:
         source = receipt()

@@ -10,7 +10,9 @@ baseline into the parent-leased G1 wrapper.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import subprocess
 import sys
 import uuid
 from pathlib import Path
@@ -24,6 +26,49 @@ RUNTIME_FIELDS = (
     "device", "gpu_uuid", "driver_version", "cuda_version", "torch_version",
     "attention_backend", "compile_state",
 )
+
+RUNTIME_EXECUTION_PATHS = (
+    "util/vm_tlb/c16/lane_g/runtime_native_runner.py",
+    "util/vm_tlb/c16/lane_g/model_adapters.py",
+    "util/vm_tlb/c16/lane_g/execution_budget.py",
+    "util/vm_tlb/c16/lane_g/profiler_wrapper.py",
+)
+
+
+def git_blob_sha256(commit: str, path: str) -> str:
+    """Digest one committed execution-path blob without trusting worktree state."""
+    try:
+        blob = subprocess.check_output(
+            ["git", "-C", str(Path(__file__).resolve().parents[4]), "show", f"{commit}:{path}"],
+        )
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise ContractError(f"cannot resolve committed runtime path {path} at {commit}") from exc
+    return hashlib.sha256(blob).hexdigest()
+
+
+def runtime_code_compatibility(source_commit: str, target_commit: str) -> dict[str, Any]:
+    """Prove a new target-builder commit did not alter profiled execution code."""
+    if not isinstance(source_commit, str) or len(source_commit) != 40:
+        raise ContractError("G1 source receipt has no valid source commit")
+    if source_commit == target_commit:
+        return {
+            "source_receipt_code_commit": source_commit,
+            "target_code_commit": target_commit,
+            "exact_runtime_execution_paths_unchanged": True,
+            "paths": {path: {"source_sha256": git_blob_sha256(source_commit, path), "target_sha256": git_blob_sha256(target_commit, path)} for path in RUNTIME_EXECUTION_PATHS},
+        }
+    paths = {
+        path: {"source_sha256": git_blob_sha256(source_commit, path), "target_sha256": git_blob_sha256(target_commit, path)}
+        for path in RUNTIME_EXECUTION_PATHS
+    }
+    if any(item["source_sha256"] != item["target_sha256"] for item in paths.values()):
+        raise ContractError("baseline and G1 source commits differ in a profiled execution path")
+    return {
+        "source_receipt_code_commit": source_commit,
+        "target_code_commit": target_commit,
+        "exact_runtime_execution_paths_unchanged": True,
+        "paths": paths,
+    }
 
 
 def target_from_binding(
@@ -46,8 +91,9 @@ def target_from_binding(
     if not isinstance(source_identity, dict):
         raise ContractError("G1 target source receipt lacks identity")
     for field, value in identity.items():
-        if field != "run_id" and source_identity.get(field) != value:
+        if field not in {"run_id", "code_commit"} and source_identity.get(field) != value:
             raise ContractError(f"G1 target source/binding identity mismatch: {field}")
+    code_compatibility = runtime_code_compatibility(source_identity.get("code_commit"), identity["code_commit"])
     checks = source_receipt.get("checks")
     if not isinstance(checks, dict) or not all(checks.get(field) is True for field in ("model_all_cuda", "input_all_cuda", "cache_correct_decode")):
         raise ContractError("G1 target source has not proven CUDA/cache-correct standalone execution")
@@ -79,6 +125,7 @@ def target_from_binding(
         "semantic_evidence": "NSYS_BOUNDED_FULL_CENSUS_PRE_PARSE",
         "identity": identity,
         "runtime": {**{field: source_runtime[field] for field in RUNTIME_FIELDS}, "profiler_mode": "NSYS_LIGHTWEIGHT_CENSUS_PARENT_LEASED"},
+        "source_baseline_runtime_code_compatibility": code_compatibility,
     }
 
 
