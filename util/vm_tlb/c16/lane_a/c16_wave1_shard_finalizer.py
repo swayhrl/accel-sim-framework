@@ -122,8 +122,10 @@ def frozen_rows() -> list[dict[str, str]]:
         and row["asset_role"] == "CHECKPOINT_FILE"
         and row["local_path"] == "NA"
     ]
-    if len(result) != 5:
-        raise RuntimeError(f"expected five unresolved Wave-1 shards, found {len(result)}")
+    # The set shrinks as independently verified shards are recorded in the
+    # manifest.  A persistent observer must therefore accept one remaining
+    # AWQ shard just as safely as the original five-file bootstrap set.
+    # An empty set is a clean terminal state, not an observer failure.
     return result
 
 
