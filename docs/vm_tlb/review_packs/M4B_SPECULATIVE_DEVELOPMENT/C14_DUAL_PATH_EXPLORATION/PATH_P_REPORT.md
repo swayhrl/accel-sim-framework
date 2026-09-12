@@ -17,7 +17,7 @@ used as a full-ROI estimate.
 | P-AP-L7 | 138163 | 215783 | 132553 | 82590 | 640 | 132553 / 132553 / 132553 / 132553 | PASS |
 | P-AP-L15 | 140732 | 216788 | 133194 | 82954 | 640 | 133194 / 133194 / 133194 / 133194 | PASS |
 | P-OTHER-TOP | 59497 | 65536 | 0 | 62712 | 2824 | 0 / 0 / 0 / 0 | PASS |
-| P-EO-691 | — | — | — | — | — | — | RUNNING; matrix hot trace |
+| P-EO-691 | 18699542 | 25658519 | 16420796 | 8965179 | 272544 | 16420796 / 16420796 / 16420796 / 16420796 | PASS |
 
 The four trailing values are, in order, `l2_not_issued`,
 `mshr_not_allocated`, `ptw_not_started`, and `pte_not_issued`.  For every
@@ -34,6 +34,7 @@ allocation, walk, or PTE request.  Consequently, C14 finds no redundant
 exact translation work on this path that a “Segment-before-L2” gate could
 remove.  The limited L1 port cost has no supported cancellation boundary.
 
-Prototype decisions and the on/off timing receipt are in
-`PATH_P_PROTOTYPE_AUDIT.md`.  The running E/O row will be appended to the
-final result table only after a terminal exit receipt.
+The terminal E/O row extends the same result to the selected hot
+embedding/output trace: all `16420796` Segment winners avoided the downstream
+exact translation backend.  Prototype decisions and the on/off timing receipt
+are in `PATH_P_PROTOTYPE_AUDIT.md`.
