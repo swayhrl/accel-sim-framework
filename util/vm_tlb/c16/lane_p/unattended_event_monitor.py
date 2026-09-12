@@ -24,6 +24,8 @@ from typing import Any
 
 
 STATUS_PATH = "docs/vm_tlb/codex_handoff/c16/autodl_wave1/LATEST_RUNTIME_STATUS.md"
+TERMINAL_MARKERS = ("BLOCKED", "SKIPPED_RESOURCE")
+TERMINAL_VALUE_KEYS = {"status", "terminal_status", "outcome", "result", "classification"}
 
 
 class MonitorError(RuntimeError):
@@ -137,6 +139,78 @@ def candidate_receipts(repo: Path, commit: str, paths: list[str]) -> list[dict[s
     return [{"path": path, "sha256": sha256_bytes(git_bytes(repo, commit, path))} for path in candidates]
 
 
+def terminal_marker(value: str) -> str | None:
+    """Return an explicit terminal marker, never infer one from prose."""
+    upper = value.upper()
+    return next((marker for marker in TERMINAL_MARKERS if marker in upper), None)
+
+
+def deployment_id(value: dict[str, Any]) -> str | None:
+    """Find an exact deployment identifier in a structured G receipt."""
+    candidates = (value.get("deployment_id"), value.get("identity", {}).get("deployment_id") if isinstance(value.get("identity"), dict) else None)
+    for candidate in candidates:
+        if isinstance(candidate, str) and candidate.startswith("c16_"):
+            return candidate
+    return None
+
+
+def receipt_terminal_declarations(path: str, payload: dict[str, Any]) -> list[dict[str, str]]:
+    """Extract only scoped terminal declarations from structured changed receipts.
+
+    A historical `SKIPPED_RESOURCE` mention elsewhere in LATEST_RUNTIME_STATUS is
+    not a declaration about the new event.  Likewise, an instructional line such
+    as "an OOM is SKIPPED_RESOURCE" is not a terminal result.  The receipt must
+    have an exact deployment identity and a terminal-valued status-like field.
+    """
+    declarations: list[dict[str, str]] = []
+
+    def walk(item: Any, pointer: str, inherited_deployment: str | None) -> None:
+        if isinstance(item, dict):
+            scoped_deployment = deployment_id(item) or inherited_deployment
+            for key, child in item.items():
+                child_pointer = f"{pointer}.{key}" if pointer else key
+                if key.lower() in TERMINAL_VALUE_KEYS and isinstance(child, str):
+                    marker = terminal_marker(child)
+                    if marker is not None and scoped_deployment is not None:
+                        declarations.append({
+                            "path": path,
+                            "deployment_id": scoped_deployment,
+                            "json_pointer": child_pointer,
+                            "terminal_marker": marker,
+                            "value": child,
+                        })
+                walk(child, child_pointer, scoped_deployment)
+        elif isinstance(item, list):
+            for index, child in enumerate(item):
+                walk(child, f"{pointer}[{index}]", inherited_deployment)
+
+    walk(payload, "", deployment_id(payload))
+    return declarations
+
+
+def changed_terminal_declarations(repo: Path, previous: str | None, current: str, paths: list[str]) -> list[dict[str, str]]:
+    """Read terminal state only from changed structured receipts at this head.
+
+    Markdown status is intentionally excluded from terminal classification: it
+    contains policy and history in addition to the current deployment result.
+    An unscoped wording there is retained by the immutable status hash, but can
+    never suppress a future P event or label an unrelated package as skipped.
+    """
+    if previous is None:
+        return []
+    declarations: list[dict[str, str]] = []
+    for path in paths:
+        if not path.endswith(".json") or path == STATUS_PATH:
+            continue
+        try:
+            payload = json.loads(git_bytes(repo, current, path))
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            declarations.extend(receipt_terminal_declarations(path, payload))
+    return declarations
+
+
 def inspect_changed_head(repo: Path, branch: str, previous: str | None, advertised: str) -> dict[str, Any]:
     git(repo, "fetch", "origin", branch)
     fetched = str(git(repo, "rev-parse", "FETCH_HEAD")).strip()
@@ -144,12 +218,11 @@ def inspect_changed_head(repo: Path, branch: str, previous: str | None, advertis
         raise MonitorError(f"remote moved during fetch ({advertised} -> {fetched}); no event consumed")
     paths = changed_paths(repo, previous, fetched)
     status_bytes = git_bytes(repo, fetched, STATUS_PATH)
-    status_text = status_bytes.decode("utf-8", errors="replace")
     manifests = [path for path in paths if path.endswith("/SEMANTIC_PUBLISH_MANIFEST.json")]
     events = [event_manifest(repo, fetched, path) for path in manifests]
-    blocked = "BLOCKED" in status_text or "SKIPPED_RESOURCE" in status_text
+    terminal_declarations = changed_terminal_declarations(repo, previous, fetched, paths)
     return {
-        "schema_version": "C16_P_UNATTENDED_HEAD_AUDIT_V1",
+        "schema_version": "C16_P_UNATTENDED_HEAD_AUDIT_V2",
         "observed_at_utc": now(),
         "branch": branch,
         "previous_head": previous,
@@ -158,8 +231,9 @@ def inspect_changed_head(repo: Path, branch: str, previous: str | None, advertis
         "changed_paths": paths,
         "semantic_events": events,
         "p1_p3_receipt_candidates": candidate_receipts(repo, fetched, paths),
-        "deployment_blocked_or_skipped": blocked,
-        "action": "WAIT_FOR_HANDLER_OR_NEXT_HASH_CLOSED_EVENT" if not blocked else "RECORD_BLOCKED_OR_SKIPPED_AND_CONTINUE_MONITORING",
+        "terminal_declarations": terminal_declarations,
+        "deployment_blocked_or_skipped": bool(terminal_declarations),
+        "action": "RECORD_BLOCKED_OR_SKIPPED_AND_CONTINUE_MONITORING" if terminal_declarations else "WAIT_FOR_HANDLER_OR_NEXT_HASH_CLOSED_EVENT",
     }
 
 
