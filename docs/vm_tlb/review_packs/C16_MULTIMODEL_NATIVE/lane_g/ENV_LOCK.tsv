@@ -1,7 +1,10 @@
 component	version_or_constraint	source	wheel_sha256	closure_status	purpose
-CPython	3.10.x	AutoDL base image or local wheelhouse	NA	RUNTIME_VERIFY_REQUIRED	C16 native runner
-PyTorch	2.5.1+cu124	hash-closed C16 wheelhouse	RECORDED_IN_WHEELHOUSE_MANIFEST_AT_C16-1.2	LOGICALLY_LOCKED_IMPORT_PENDING	native CUDA inference
-transformers	4.46.3	hash-closed C16 wheelhouse	RECORDED_IN_WHEELHOUSE_MANIFEST_AT_C16-1.2	LOGICALLY_LOCKED_IMPORT_PENDING	HF causal-LM adapter
-accelerate	1.1.1	hash-closed C16 wheelhouse	RECORDED_IN_WHEELHOUSE_MANIFEST_AT_C16-1.2	LOGICALLY_LOCKED_IMPORT_PENDING	runtime dependency
-safetensors	0.4.5	hash-closed C16 wheelhouse	RECORDED_IN_WHEELHOUSE_MANIFEST_AT_C16-1.2	LOGICALLY_LOCKED_IMPORT_PENDING	local weight format
-AutoAWQ	0.2.8	hash-closed C16 wheelhouse	RECORDED_IN_WHEELHOUSE_MANIFEST_AT_C16-1.2	LOGICALLY_LOCKED_IMPORT_PENDING	Qwen2.5-7B AWQ adapter only
+CPython	3.10.x	local CPython 3.10 clean verification venv	NA	LOCAL_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	C16 native runner; CUDA runtime remains a G0 gate
+pip	26.1	https://pypi.org/simple	4e8486d821d814b77319acb7b9e8bf5a4ee7590a643e7cb21029f209be8573c1	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	offline resolver and clean-venv dry-run installer
+PyTorch	2.5.1+cu124	https://download.pytorch.org/whl/cu124	9dde30f399ca22137455cca4d47140dfb7f4176e2d16a9729fc044eebfadb13a	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	native CUDA inference
+transformers	4.46.3	https://pypi.org/simple	a12ef6f52841fd190a3e5602145b542d03507222f2c64ebb7ee92e8788093aef	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	HF causal-LM adapter
+accelerate	1.1.1	https://pypi.org/simple	61edd81762131b8d4bede008643fa1e1f3bf59bec710ebda9771443e24feae02	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	runtime dependency
+safetensors	0.4.5	https://pypi.org/simple	c6d156bdb26732feada84f9388a9f135528c1ef5b05fae153da365ad4319c4c5	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	local weight format
+huggingface-hub	0.26.5	https://pypi.org/simple	fb7386090bbe892072e64b85f7c4479fd2d65eea5f2543327c970d5169e83924	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	model/tokenizer local-files dependency
+nvidia-ml-py	12.560.30	https://pypi.org/simple	fea371c94d63e38a611c17bbb85fe400e9c8ddb9e8684a9cd0e47786a4bc3c73	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	runtime telemetry dependency
+AutoAWQ	0.2.7.post3	https://pypi.org/simple	02e09d71ca961ca131ac9963a2635fe8c34eb52d6b6a104b8574056aef8f2efe	LOCAL_HASH_CLOSED_CPU_IMPORT_VERIFIED_GPU_RUNTIME_VERIFY_REQUIRED	Qwen2.5-7B AWQ adapter only
