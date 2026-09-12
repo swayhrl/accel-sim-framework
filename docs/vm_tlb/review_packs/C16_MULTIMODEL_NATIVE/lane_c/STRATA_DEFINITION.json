@@ -1,0 +1,33 @@
+{
+  "certainty_rules": {
+    "phase_duration_fraction_ge": 0.01,
+    "rare_implementation_N_le": 2,
+    "special_semantics": [
+      "E/O",
+      "KV management",
+      "MoE router/dispatch"
+    ],
+    "stratum_N_le": 2
+  },
+  "forbidden_selector_inputs": [
+    "candidate_speedup",
+    "candidate_miss",
+    "candidate_counter",
+    "candidate_mechanism_outcome"
+  ],
+  "layer_id": "GROUP_STABILITY_VARIABLE_NOT_PRIMARY_STRATUM",
+  "optional_dimensions": {
+    "kv_representation": "NOT_ENABLED_UNTIL_PREDECLARED_DATA_JUSTIFIES",
+    "quant_mode": "NOT_ENABLED_UNTIL_PREDECLARED_DATA_JUSTIFIES"
+  },
+  "primary_key_order": [
+    "Phase",
+    "Operator",
+    "Implementation",
+    "ShapeBucket",
+    "DType"
+  ],
+  "schema_version": "C16_STRATA_PHASE_OPERATOR_IMPLEMENTATION_SHAPEBUCKET_DTYPE_V2",
+  "shape_bucket": "explicit catalog field, else deterministic dimension power-of-two bucket",
+  "unknown_policy": "EXPLICIT_UNKNOWN_STRATUM_NEVER_DROP"
+}

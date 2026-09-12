@@ -1,0 +1,8 @@
+metric	evidence_required	status	reason	boundary
+native_duration_total	NATIVE_BASELINE plus prospective Selector-R holdout	UNAVAILABLE	Wave-1 committed native catalog/holdout not published at this C-only checkpoint	historical gpu_sim_cycle is not native duration
+native_counter_count	NATIVE_PROFILED counter receipt plus prospective holdout	UNAVAILABLE	no committed NCU result	C12 simulator counter is retrospective oracle only
+native_counter_rate	weighted numerator/denominator plus prospective holdout	UNAVAILABLE	no committed NCU result	ratio implementation is tested but no native denominator exists
+observed_GPU_VA_page_structure	NATIVE_ADDRESS_CAPTURE and H fingerprint validation	UNAVAILABLE	no committed address capture	historical SimVA page information remains retrospective structural oracle
+observed_GPU_VA_line_structure	NATIVE_ADDRESS_CAPTURE and H line validation	UNAVAILABLE	no committed address capture	no additive unique-set estimator is claimed
+historical_SimVA_page_union	exact set estimator (not implemented)	STRUCTURAL_ONLY	only sample-observed sets/stratum distributions are lawful; union is non-additive	not a hardware TLB metric
+mechanism_response	prospective matched high-fidelity ground truth with CI excluding zero	NOT_QUALIFIED	C12/C13 were seen retrospective oracle inputs and do not establish prospective mechanism response	small or CI-crossing-zero effects are INCONCLUSIVE
