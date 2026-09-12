@@ -29,16 +29,26 @@ FIXTURES = Path(__file__).with_name("fixtures")
 OBJECT_MAP = FIXTURES / "object_map_v2.json"
 COMPLETE_TRACE = FIXTURES / "trace_complete.traceg"
 PARTIAL_TRACE = FIXTURES / "trace_partial.traceg"
+TEMPORAL_TRACE_EARLY = FIXTURES / "trace_temporal_early.traceg"
+TEMPORAL_TRACE_LATE = FIXTURES / "trace_temporal_late.traceg"
+TEMPORAL_TRACE_GROW = FIXTURES / "trace_temporal_grow.traceg"
+TEMPORAL_TRACE_REPLACE = FIXTURES / "trace_temporal_replace.traceg"
 
 
 def manifest_entry(trace_name: str, trace_sha: str, *, ordinal: int = 0,
                    capture_status: str = "COMPLETE", terminal_status: str = "COMPLETE",
-                   order_model: str = "SET_ONLY") -> dict[str, object]:
+                   order_model: str = "SET_ONLY", address_domain: str = "MIXED_MEMORY_SPACE_OBSERVED",
+                   temporal_status: str = "BOUND", snapshot_id: str | None = "fixture-after-pointer-reuse",
+                   cutoff: int | None = 10) -> dict[str, object]:
     return {
-        "address_domain": "GPU_VA_OBSERVED",
+        "address_domain": address_domain,
         "capture_status": capture_status,
         "deployment_id": "qwen-fixture-awq",
         "kernel_identity": "fixture_kernel:grid=1:block=32",
+        "object_map_event_ordinal_cutoff": cutoff,
+        "object_map_sha256": sha256_file(OBJECT_MAP),
+        "object_map_snapshot_id": snapshot_id,
+        "object_map_temporal_status": temporal_status,
         "order_model": order_model,
         "phase": "DECODE",
         "run_id": "fixture-run-0",
@@ -75,8 +85,13 @@ class MemoryFingerprintTest(unittest.TestCase):
         self.assertEqual([lane.address for lane in event.lanes], [0x7F, 0x80])
         self.assertEqual(event.width, 4)
         self.assertEqual(event.access_kind, "READ")
+        self.assertEqual(event.memory_space, "GLOBAL")
         self.assertEqual(parse_trace_record("0130 00000005 0 STG.E.32 0 4 2 0x210 16 0", 2).access_kind, "WRITE")
         self.assertEqual(parse_trace_record("0140 00000001 0 ATOM.E.ADD.32 0 4 0 0x80000 0", 3).access_kind, "ATOMIC")
+        self.assertEqual(parse_trace_record("0170 00000001 0 LDL.E.32 0 4 0 0x20 0", 4).memory_space, "LOCAL")
+        self.assertEqual(parse_trace_record("0180 00000001 0 LDS.E.32 0 4 0 0x30 0", 5).memory_space, "SHARED")
+        unknown_space = parse_trace_record("0190 00000001 0 LD.E.32 0 4 0 0x40 0", 6)
+        self.assertEqual((unknown_space.memory_space, unknown_space.tlb_eligible), ("UNKNOWN_SPACE", "UNKNOWN"))
         raw = parse_trace_record("0 0 0 3 0100 00000001 0 LDG.E.32 0 4 0 0x10 0", 4, "RAW_CTA")
         self.assertEqual(raw.cta, (0, 0, 0))
         self.assertEqual(raw.warp_in_cta, 3)
@@ -86,24 +101,27 @@ class MemoryFingerprintTest(unittest.TestCase):
             directory = Path(temporary)
             manifest, manifest_sha = self._manifest(directory, COMPLETE_TRACE)
             loaded_sha, entries = load_manifest(manifest, manifest_sha)
-            result = fingerprint_entry(entries[0], loaded_sha, self.object_map, cache_set_count=16)
+            result = fingerprint_entry(entries[0], loaded_sha, self.object_map, modulo_projection_set_count=16)
             rows = list(fingerprint_rows(result, 16))
             self.assertEqual(result.parse_status, "COMPLETE")
             self.assertEqual(result.zero_active_memory_events, 1)
-            by_key = {(row["object_class"], row["access_kind"]): row for row in rows}
-            self.assertGreaterEqual(by_key[("WEIGHT", "READ")]["unique_128b_lines"], 2)
-            self.assertEqual(by_key[("KV_CACHE", "READ")]["unique_4k_va_buckets"], 2)
-            self.assertEqual(by_key[("KV_CACHE", "READ")]["unique_64k_va_buckets"], 2)
-            self.assertIn(("QUANT_METADATA", "WRITE"), by_key)
-            self.assertIn(("UNKNOWN_RUNTIME", "ATOMIC"), by_key)
-            self.assertEqual(by_key[("WEIGHT", "READ")]["local_line_revisit_references"], "NA")
-            self.assertLessEqual(by_key[("WEIGHT", "READ")]["unique_cache_sets"], 16)
+            by_key = {(row["object_class"], row["access_kind"], row["memory_space"]): row for row in rows}
+            self.assertGreaterEqual(by_key[("WEIGHT", "READ", "GLOBAL")]["unique_128b_lines"], 2)
+            self.assertEqual(by_key[("KV_CACHE", "READ", "GLOBAL")]["unique_4k_va_buckets"], 2)
+            self.assertEqual(by_key[("KV_CACHE", "READ", "GLOBAL")]["unique_64k_va_buckets"], 2)
+            self.assertIn(("QUANT_METADATA", "WRITE", "GLOBAL"), by_key)
+            self.assertIn(("UNKNOWN_RUNTIME", "ATOMIC", "UNKNOWN_SPACE"), by_key)
+            self.assertEqual(by_key[("WEIGHT", "READ", "GLOBAL")]["local_line_revisit_references"], "NA")
+            self.assertLessEqual(by_key[("WEIGHT", "READ", "GLOBAL")]["unique_modulo_set_projections"], 16)
+            self.assertEqual(by_key[("UNKNOWN_RUNTIME", "READ", "SHARED")]["unique_4k_va_buckets"], "NA")
+            self.assertEqual(by_key[("UNKNOWN_RUNTIME", "READ", "SHARED")]["tlb_eligible"], "FALSE")
+            self.assertEqual(by_key[("UNKNOWN_RUNTIME", "READ", "UNKNOWN_SPACE")]["address_domain"], "UNKNOWN_ADDRESS_DOMAIN")
 
             partial_manifest, partial_sha = self._manifest(
                 directory, PARTIAL_TRACE, ordinal=1, capture_status="BOUNDED_PARTIAL", terminal_status="PARTIAL_TERMINAL"
             )
             partial_loaded_sha, partial_entries = load_manifest(partial_manifest, partial_sha)
-            partial = fingerprint_entry(partial_entries[0], partial_loaded_sha, self.object_map, cache_set_count=None)
+            partial = fingerprint_entry(partial_entries[0], partial_loaded_sha, self.object_map, modulo_projection_set_count=None)
             self.assertEqual(partial.parse_status, "PARTIAL_TERMINAL")
             self.assertEqual(partial.entry.capture_status, "BOUNDED_PARTIAL")
 
@@ -118,7 +136,24 @@ class MemoryFingerprintTest(unittest.TestCase):
             manifest.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaises(TraceManifestError):
                 load_manifest(manifest, sha256_file(manifest))
+            payload["entries"][0]["order_model"] = "LOCAL_STREAM_ORDER"
+            payload["entries"][0]["order_evidence_receipt"] = "forged-receipt"
+            manifest.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(TraceManifestError, "TRACEG only admits SET_ONLY"):
+                load_manifest(manifest, sha256_file(manifest))
             self.assertNotEqual(manifest_sha, sha256_file(manifest))
+
+    def test_window_refuses_mismatched_object_map_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            manifest, _ = self._manifest(directory, COMPLETE_TRACE)
+            payload = json.loads(manifest.read_text(encoding="utf-8"))
+            payload["entries"][0]["object_map_sha256"] = "0" * 64
+            manifest.write_text(json.dumps(payload), encoding="utf-8")
+            manifest_sha = sha256_file(manifest)
+            loaded_sha, entries = load_manifest(manifest, manifest_sha)
+            with self.assertRaisesRegex(TraceManifestError, "object-map SHA256 mismatch"):
+                fingerprint_entry(entries[0], loaded_sha, self.object_map, None)
 
     def test_set_overlap_is_not_global_order_and_cli_is_manifest_bound(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -154,6 +189,57 @@ class MemoryFingerprintTest(unittest.TestCase):
             completed = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=True)
             self.assertIn("PASS c16-memory-fingerprint", completed.stdout)
             self.assertTrue(output.read_text(encoding="utf-8").startswith("manifest_sha256\t"))
+
+    def test_temporal_snapshot_prevents_final_state_backfill(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            early = directory / TEMPORAL_TRACE_EARLY.name
+            late = directory / TEMPORAL_TRACE_LATE.name
+            grow = directory / TEMPORAL_TRACE_GROW.name
+            replace = directory / TEMPORAL_TRACE_REPLACE.name
+            shutil.copyfile(TEMPORAL_TRACE_EARLY, early)
+            shutil.copyfile(TEMPORAL_TRACE_LATE, late)
+            shutil.copyfile(TEMPORAL_TRACE_GROW, grow)
+            shutil.copyfile(TEMPORAL_TRACE_REPLACE, replace)
+            payload = {
+                "schema_version": "c16-trace-manifest-v1",
+                "entries": [
+                    manifest_entry(early.name, sha256_file(early), ordinal=0, address_domain="GPU_VA_OBSERVED",
+                                   snapshot_id="fixture-before-pointer-reuse", cutoff=8),
+                    manifest_entry(late.name, sha256_file(late), ordinal=1, address_domain="GPU_VA_OBSERVED",
+                                   snapshot_id="fixture-after-pointer-reuse", cutoff=10),
+                    manifest_entry(late.name, sha256_file(late), ordinal=2, address_domain="GPU_VA_OBSERVED",
+                                   temporal_status="UNPROVEN", snapshot_id=None, cutoff=None),
+                    manifest_entry(grow.name, sha256_file(grow), ordinal=3, address_domain="GPU_VA_OBSERVED",
+                                   snapshot_id="fixture-before-kv-grow", cutoff=3),
+                    manifest_entry(grow.name, sha256_file(grow), ordinal=4, address_domain="GPU_VA_OBSERVED",
+                                   snapshot_id="fixture-after-kv-grow", cutoff=4),
+                    manifest_entry(replace.name, sha256_file(replace), ordinal=5, address_domain="GPU_VA_OBSERVED",
+                                   snapshot_id="fixture-before-kv-grow", cutoff=3),
+                    manifest_entry(replace.name, sha256_file(replace), ordinal=6, address_domain="GPU_VA_OBSERVED",
+                                   snapshot_id="fixture-after-kv-replace", cutoff=5),
+                ],
+            }
+            manifest = directory / "TEMPORAL_TRACE_MANIFEST.json"
+            manifest.write_text(json.dumps(payload), encoding="utf-8")
+            manifest_sha = sha256_file(manifest)
+            loaded_sha, entries = load_manifest(manifest, manifest_sha)
+            results = [fingerprint_entry(entry, loaded_sha, self.object_map, None) for entry in entries]
+            early_row = next(fingerprint_rows(results[0], None))
+            late_row = next(fingerprint_rows(results[1], None))
+            unproven_row = next(fingerprint_rows(results[2], None))
+            before_grow_row = next(fingerprint_rows(results[3], None))
+            after_grow_row = next(fingerprint_rows(results[4], None))
+            before_replace_row = next(fingerprint_rows(results[5], None))
+            after_replace_row = next(fingerprint_rows(results[6], None))
+            self.assertEqual(early_row["object_class"], "WEIGHT")
+            self.assertEqual(late_row["object_class"], "KV_CACHE")
+            self.assertEqual(unproven_row["object_class"], "UNKNOWN_RUNTIME")
+            self.assertEqual(unproven_row["object_map_temporal_status"], "UNPROVEN")
+            self.assertEqual(before_grow_row["object_class"], "UNKNOWN_RUNTIME")
+            self.assertEqual(after_grow_row["object_class"], "KV_CACHE")
+            self.assertEqual(before_replace_row["object_class"], "UNKNOWN_RUNTIME")
+            self.assertEqual(after_replace_row["object_class"], "KV_CACHE")
 
     def test_memory_only_equivalence_gate_is_exact(self) -> None:
         full = parse_trace_record("0100 00000001 0 LDG.E.32 0 4 0 0x7f 0", 1)

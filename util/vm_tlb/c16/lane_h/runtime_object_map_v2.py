@@ -21,6 +21,7 @@ OBJECT_CLASSES = frozenset({"WEIGHT", "QUANT_METADATA", "KV_CACHE", "UNKNOWN_RUN
 EVENT_TYPES = frozenset({"ALLOCATE", "VIEW", "GROW", "REPLACE", "RELEASE"})
 ORDER_EVIDENCE = frozenset({"HOST_ISSUE_ORDER", "CUDA_EVENT", "UNKNOWN_ORDER"})
 RELEASE_EVIDENCE = frozenset({"CUDA_FREE", "RUNTIME_RELEASE", "ALLOCATOR_RELEASE"})
+SNAPSHOT_ORDER_EVIDENCE = frozenset({"CUDA_EVENT", "RUNTIME_EVENT_SEQUENCE"})
 
 
 class ObjectMapError(ValueError):
@@ -67,7 +68,8 @@ class StorageGeneration:
     object_class: str
     allocation: Range
     allocated_ordinal: int
-    views: list[Range] = field(default_factory=list)
+    allocation_history: list[tuple[int, Range]] = field(default_factory=list)
+    views: list[tuple[int, Range]] = field(default_factory=list)
     released_ordinal: int | None = None
     replacement_without_release: bool = False
 
@@ -87,11 +89,20 @@ class StorageGeneration:
             return "UNKNOWN_ACTIVE"
         return "ACTIVE"
 
-    def all_ranges(self) -> Iterable[Range]:
-        # Allocation is a direct storage range.  Views are retained for audit
-        # and do not turn tied/shared storage into duplicate payload.
-        yield self.allocation
-        yield from self.views
+    def allocation_at(self, ordinal: int | None = None) -> Range:
+        """Return only the allocation extent known at the requested cutoff."""
+        cutoff = self.allocation_history[-1][0] if ordinal is None else ordinal
+        known = [item for item in self.allocation_history if item[0] <= cutoff]
+        if not known:
+            raise ObjectMapError("allocation was queried before its allocation event")
+        return known[-1][1]
+
+    def all_ranges(self, ordinal: int | None = None) -> Iterable[Range]:
+        # Allocation and views are temporal evidence.  A grow/view first seen
+        # after a window cutoff must not leak backwards into that window.
+        cutoff = self.allocation_history[-1][0] if ordinal is None else ordinal
+        yield self.allocation_at(cutoff)
+        yield from (view for view_ordinal, view in self.views if view_ordinal <= cutoff)
 
 
 @dataclass(frozen=True)
@@ -102,12 +113,24 @@ class Classification:
     reason: str
 
 
+@dataclass(frozen=True)
+class ObjectMapSnapshot:
+    """A receipt-bound object-map state usable by one captured window."""
+
+    snapshot_id: str
+    event_ordinal_cutoff: int
+    temporal_order_evidence: str
+    temporal_evidence_receipt: str
+
+
 class RuntimeObjectMapV2:
     """Validated event history plus a conservative point-in-time range index."""
 
-    def __init__(self, events: list[dict[str, Any]]) -> None:
+    def __init__(self, events: list[dict[str, Any]], snapshots: list[ObjectMapSnapshot] | None = None) -> None:
         self._records: dict[tuple[str, int], StorageGeneration] = {}
         self._event_count = 0
+        self._last_event_ordinal = -1
+        self._source_sha256: str | None = None
         previous_ordinal = -1
         for raw_event in events:
             ordinal = self._validate_common(raw_event)
@@ -116,6 +139,14 @@ class RuntimeObjectMapV2:
             previous_ordinal = ordinal
             self._apply(raw_event, ordinal)
             self._event_count += 1
+            self._last_event_ordinal = ordinal
+        self._snapshots: dict[str, ObjectMapSnapshot] = {}
+        for snapshot in snapshots or []:
+            if snapshot.snapshot_id in self._snapshots:
+                raise ObjectMapError(f"duplicate snapshot_id: {snapshot.snapshot_id}")
+            if snapshot.event_ordinal_cutoff < 0 or snapshot.event_ordinal_cutoff > self._last_event_ordinal:
+                raise ObjectMapError("snapshot event_ordinal_cutoff must be within the observed event history")
+            self._snapshots[snapshot.snapshot_id] = snapshot
 
     @classmethod
     def from_payload(cls, payload: dict[str, Any]) -> "RuntimeObjectMapV2":
@@ -124,7 +155,29 @@ class RuntimeObjectMapV2:
         events = payload.get("events")
         if not isinstance(events, list) or not events:
             raise ObjectMapError("events must be a nonempty list")
-        return cls(events)
+        snapshots_raw = payload.get("snapshots", [])
+        if not isinstance(snapshots_raw, list):
+            raise ObjectMapError("snapshots must be a list when present")
+        snapshots: list[ObjectMapSnapshot] = []
+        for raw_snapshot in snapshots_raw:
+            if not isinstance(raw_snapshot, dict):
+                raise ObjectMapError("each snapshot must be an object")
+            snapshot_id = raw_snapshot.get("snapshot_id")
+            if not isinstance(snapshot_id, str) or not snapshot_id:
+                raise ObjectMapError("snapshot_id must be a nonempty string")
+            temporal_order_evidence = raw_snapshot.get("temporal_order_evidence")
+            if temporal_order_evidence not in SNAPSHOT_ORDER_EVIDENCE:
+                raise ObjectMapError("snapshot must carry direct CUDA_EVENT or RUNTIME_EVENT_SEQUENCE order evidence")
+            temporal_evidence_receipt = raw_snapshot.get("temporal_evidence_receipt")
+            if not isinstance(temporal_evidence_receipt, str) or not temporal_evidence_receipt:
+                raise ObjectMapError("snapshot must carry a temporal_evidence_receipt")
+            snapshots.append(ObjectMapSnapshot(
+                snapshot_id=snapshot_id,
+                event_ordinal_cutoff=_integer(raw_snapshot.get("event_ordinal_cutoff"), "event_ordinal_cutoff"),
+                temporal_order_evidence=str(temporal_order_evidence),
+                temporal_evidence_receipt=temporal_evidence_receipt,
+            ))
+        return cls(events, snapshots)
 
     @classmethod
     def from_file(cls, path: Path) -> "RuntimeObjectMapV2":
@@ -134,7 +187,9 @@ class RuntimeObjectMapV2:
             raise ObjectMapError(f"invalid JSON: {path}") from error
         if not isinstance(payload, dict):
             raise ObjectMapError("object-map root must be an object")
-        return cls.from_payload(payload)
+        object_map = cls.from_payload(payload)
+        object_map._source_sha256 = sha256_file(path)
+        return object_map
 
     @staticmethod
     def _range(event: dict[str, Any], prefix: str = "range") -> Range:
@@ -201,9 +256,7 @@ class RuntimeObjectMapV2:
             allocation=self._range(event),
             allocated_ordinal=ordinal,
         )
-        # The allocation itself is a directly observed view; a narrower view
-        # may be added later without double-counting tied/shared storage.
-        record.views.append(record.allocation)
+        record.allocation_history.append((ordinal, record.allocation))
         self._records[key] = record
         return record
 
@@ -236,16 +289,16 @@ class RuntimeObjectMapV2:
         record = self._live_record(event)
         if event_type == "VIEW":
             view = self._range(event, "view")
-            if not record.allocation.contains(view.start, view.end_exclusive - view.start):
+            if not record.allocation_at(ordinal).contains(view.start, view.end_exclusive - view.start):
                 raise ObjectMapError("VIEW must fall inside the directly observed allocation")
-            record.views.append(view)
+            record.views.append((ordinal, view))
             return
         if event_type == "GROW":
             grown = self._range(event)
             if grown.start > record.allocation.start or grown.end_exclusive < record.allocation.end_exclusive:
                 raise ObjectMapError("GROW range must contain the prior allocation range")
             record.allocation = grown
-            record.views.append(grown)
+            record.allocation_history.append((ordinal, grown))
             return
         if event_type == "RELEASE":
             release_evidence = event.get("release_evidence")
@@ -259,6 +312,27 @@ class RuntimeObjectMapV2:
     def event_count(self) -> int:
         return self._event_count
 
+    @property
+    def source_sha256(self) -> str | None:
+        """The immutable JSON hash, available only when loaded from a file."""
+        return self._source_sha256
+
+    @property
+    def last_event_ordinal(self) -> int:
+        return self._last_event_ordinal
+
+    def resolve_snapshot(self, snapshot_id: str, event_ordinal_cutoff: int) -> int:
+        """Verify a window's temporal binding before object classification."""
+        snapshot = self._snapshots.get(snapshot_id)
+        if snapshot is None:
+            raise ObjectMapError(f"unknown or unreceipted object-map snapshot_id: {snapshot_id}")
+        if snapshot.event_ordinal_cutoff != event_ordinal_cutoff:
+            raise ObjectMapError(
+                f"snapshot cutoff mismatch for {snapshot_id}: "
+                f"expected {snapshot.event_ordinal_cutoff}, got {event_ordinal_cutoff}"
+            )
+        return snapshot.event_ordinal_cutoff
+
     def records(self) -> list[StorageGeneration]:
         return sorted(self._records.values(), key=lambda item: item.key)
 
@@ -270,7 +344,7 @@ class RuntimeObjectMapV2:
         for record in self._records.values():
             if not record.is_live_at(event_ordinal):
                 continue
-            for observed_range in record.all_ranges():
+            for observed_range in record.all_ranges(event_ordinal):
                 if observed_range.intersects(address, width):
                     touching = True
                 if observed_range.contains(address, width):
@@ -283,7 +357,7 @@ class RuntimeObjectMapV2:
                 item.key
                 for item in self._records.values()
                 if item.is_live_at(event_ordinal)
-                and any(candidate.intersects(address, width) for candidate in item.all_ranges())
+                and any(candidate.intersects(address, width) for candidate in item.all_ranges(event_ordinal))
             }
             if overlapping_keys == {record.key}:
                 return Classification(record.object_class, record.storage_id, record.generation, "EXACT_LIVE_RANGE")
@@ -309,6 +383,17 @@ class RuntimeObjectMapV2:
             })
         return rows
 
+    def snapshot_audit_rows(self) -> list[dict[str, object]]:
+        return [
+            {
+                "snapshot_id": snapshot.snapshot_id,
+                "event_ordinal_cutoff": snapshot.event_ordinal_cutoff,
+                "temporal_order_evidence": snapshot.temporal_order_evidence,
+                "temporal_evidence_receipt": snapshot.temporal_evidence_receipt,
+            }
+            for snapshot in sorted(self._snapshots.values(), key=lambda item: item.snapshot_id)
+        ]
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Validate and audit a C16 Runtime Object Map V2 JSON payload.")
@@ -321,6 +406,7 @@ def main() -> None:
         "object_map_sha256": sha256_file(args.object_map),
         "event_count": object_map.event_count,
         "records": object_map.audit_rows(),
+        "snapshots": object_map.snapshot_audit_rows(),
     }
     args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"PASS runtime_object_map_v2 records={len(payload['records'])} output={args.output}")

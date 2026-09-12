@@ -155,5 +155,37 @@
     }
   ],
   "runtime_kv_representation": "expanded_KV",
-  "schema_version": "c16-runtime-object-map-v2"
+  "schema_version": "c16-runtime-object-map-v2",
+  "snapshots": [
+    {
+      "event_ordinal_cutoff": 3,
+      "snapshot_id": "fixture-before-kv-grow",
+      "temporal_evidence_receipt": "fixture-cuda-event-before-grow",
+      "temporal_order_evidence": "CUDA_EVENT"
+    },
+    {
+      "event_ordinal_cutoff": 4,
+      "snapshot_id": "fixture-after-kv-grow",
+      "temporal_evidence_receipt": "fixture-cuda-event-after-grow",
+      "temporal_order_evidence": "CUDA_EVENT"
+    },
+    {
+      "event_ordinal_cutoff": 5,
+      "snapshot_id": "fixture-after-kv-replace",
+      "temporal_evidence_receipt": "fixture-cuda-event-after-replace",
+      "temporal_order_evidence": "CUDA_EVENT"
+    },
+    {
+      "event_ordinal_cutoff": 8,
+      "snapshot_id": "fixture-before-pointer-reuse",
+      "temporal_evidence_receipt": "fixture-cuda-event-before-reuse",
+      "temporal_order_evidence": "CUDA_EVENT"
+    },
+    {
+      "event_ordinal_cutoff": 10,
+      "snapshot_id": "fixture-after-pointer-reuse",
+      "temporal_evidence_receipt": "fixture-cuda-event-after-reuse",
+      "temporal_order_evidence": "CUDA_EVENT"
+    }
+  ]
 }
