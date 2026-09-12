@@ -1,0 +1,11 @@
+# C16-P → C event-consumption contract
+
+Lane C polls P's published branch but never reads its worktree, exchange directory, live partial report, or an ordinary milestone.  The sole admission event is manifest `status: C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION` at an exact 40-character P commit.
+
+The ready manifest must use `schema_version: C16_P_NATIVE_CATALOG_FOR_C_V1`, set `p_commit` to that exact commit, and contain `hash_closure.status: HASH_CLOSED`, exact source producer commit SHA(s), and SHA-256 raw-artifact receipt(s).  Every `files[]` entry has `cohort`, `kind`, relative/absolute committed `path`, and content SHA-256.  Each cohort has exactly one of these kinds: `KERNEL_CATALOG`, `KERNEL_SEMANTIC_MAP`, `SEMANTIC_COVERAGE`, `NATIVE_BASELINE`, `RUNTIME_IMPLEMENTATION_AUDIT`, `RUN_JOIN_AUDIT`, `PROFILE_REPORT_INDEX`, and `DEPLOYMENT_ROSTER`.
+
+P must publish physically separate cohorts.  `TRAIN_TUNE` contains only the direct roster identities `TRAIN_LLAMA`, `TRAIN_QWEN0_5`, and `TRAIN_QWEN7_RAW`, all `c16_split_role=TUNING`.  `PROSPECTIVE_QWEN7_AWQ` contains exactly direct roster identity `PROSPECTIVE_QWEN7_AWQ`, `c16_split_role=PROSPECTIVE_HOLDOUT`.  The latter payload content is not read until the train source SHA, strata, thresholds, seed, and 12/24/48 plans are frozen and those exact freeze artifacts are committed at C's `HEAD`.
+
+`DEPLOYMENT_ROSTER` must contain `deployment_id`, `c16_cohort`, and `c16_split_role`; it replaces name guessing for the raw/AWQ split.  `PROFILE_REPORT_INDEX` bridges one `run_id` to one `profile_report_id`.  The catalog carries the C16 minimum fields and only `DIRECT_RUNTIME_NVTX`, `DIRECT_MODULE_ID`, or `UNKNOWN` semantic evidence.  An `UNKNOWN` semantic field is retained as an explicit stratum.  Kernel-name semantic inference is forbidden.
+
+The cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome columns.  C reads no such result at either admission stage.  After AWQ application it publishes only a request-only Selector-R B48 target plan (at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  This does not authorize a GPU capture.

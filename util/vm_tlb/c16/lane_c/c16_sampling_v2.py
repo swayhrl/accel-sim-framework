@@ -43,6 +43,26 @@ HEAVY_TAIL_FRACTION = 0.01
 RARE_IMPLEMENTATION_N = 2
 STRATA_VERSION = "C16_STRATA_PHASE_OPERATOR_IMPLEMENTATION_SHAPEBUCKET_DTYPE_V2"
 SELECTOR_VERSION = "C16_SELECTOR_V2_R_PROBABILITY_M_MEDOID"
+P_READY_STATUS = "C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION"
+P_MANIFEST_SCHEMA = "C16_P_NATIVE_CATALOG_FOR_C_V1"
+P_TRAIN_COHORT = "TRAIN_TUNE"
+P_AWQ_COHORT = "PROSPECTIVE_QWEN7_AWQ"
+P_REQUIRED_PAYLOAD_KINDS = (
+    "KERNEL_CATALOG", "KERNEL_SEMANTIC_MAP", "SEMANTIC_COVERAGE",
+    "NATIVE_BASELINE", "RUNTIME_IMPLEMENTATION_AUDIT", "RUN_JOIN_AUDIT",
+    "PROFILE_REPORT_INDEX", "DEPLOYMENT_ROSTER",
+)
+P_TRAIN_ROSTER = {
+    "TRAIN_LLAMA": "TUNING",
+    "TRAIN_QWEN0_5": "TUNING",
+    "TRAIN_QWEN7_RAW": "TUNING",
+}
+P_AWQ_ROSTER = {"PROSPECTIVE_QWEN7_AWQ": "PROSPECTIVE_HOLDOUT"}
+P_DIRECT_SEMANTIC_EVIDENCE = {"DIRECT_RUNTIME_NVTX", "DIRECT_MODULE_ID", "UNKNOWN"}
+P_FORBIDDEN_OUTCOME_COLUMNS = re.compile(
+    r"(^|_)(candidate|speedup|miss|ncu|nvbit|trace|address|page|line|cache|tlb|counter|mechanism|outcome)($|_)",
+    re.IGNORECASE,
+)
 
 # These are frozen before any target metric is allowed to be read.  The values
 # are qualification gates, not parameters which calibration is allowed to tune.
@@ -185,14 +205,15 @@ def unit_identifier(row: dict[str, Any]) -> str:
 
 
 def special_reasons(row: dict[str, Any]) -> list[str]:
-    searchable = " ".join(str(row.get(key, "")) for key in
-                            ("operator_class", "implementation_key", "semantic_evidence", "kernel_name", "special_semantics")).lower()
+    """Use only direct semantic fields; kernel-name inference is prohibited."""
+    operator = str(row.get("operator_class", "")).upper()
+    direct_special = str(row.get("special_semantics", "")).upper()
     reasons: list[str] = []
-    if str(row.get("operator_class", "")).upper() in {"E", "O"} or re.search(r"\b(e|o)[/_ -](operator|kernel)\b", searchable):
+    if operator in {"E", "O"}:
         reasons.append("SPECIAL_E_OR_O")
-    if "kv" in searchable or "key_value" in searchable:
+    if "KV" in operator or direct_special == "KV_MANAGEMENT":
         reasons.append("SPECIAL_KV_MANAGEMENT")
-    if "moe" in searchable and ("router" in searchable or "dispatch" in searchable or "expert" in searchable):
+    if ("MOE" in operator and ("ROUTER" in operator or "DISPATCH" in operator)) or direct_special == "MOE_ROUTER_DISPATCH":
         reasons.append("SPECIAL_MOE_ROUTER_DISPATCH")
     return reasons
 
@@ -220,8 +241,12 @@ def canonicalize_catalog(rows: list[dict[str, str]], evidence_tier: str, histori
             "block": str(source.get("block", "UNKNOWN")),
             "kernel_name": str(source.get("kernel_name", "UNKNOWN")),
             "semantic_evidence": str(source.get("semantic_evidence", "UNKNOWN")),
-            "special_semantics": str(source.get("special_semantics", "")),
+            # It is retained only when P has explicitly recorded one of its
+            # permitted direct semantic evidence types.  Unknown coverage is
+            # an explicit UNKNOWN stratum, never a kernel-name backfill.
+            "special_semantics": str(source.get("special_semantics", "")) if str(source.get("semantic_evidence", "UNKNOWN")).upper() in P_DIRECT_SEMANTIC_EVIDENCE else "",
             "run_id": str(source.get("run_id", "UNKNOWN_RUN")),
+            "profile_report_id": str(source.get("profile_report_id", "UNKNOWN_PROFILE_REPORT")),
             "device": str(source.get("device", "UNKNOWN_DEVICE")),
             "context": str(source.get("context", "UNKNOWN_CONTEXT")),
             "stream": str(source.get("stream", "UNKNOWN_STREAM")),
@@ -658,7 +683,7 @@ def write_strata_definition(out: Path) -> None:
         "schema_version": STRATA_VERSION, "primary_key_order": ["Phase", "Operator", "Implementation", "ShapeBucket", "DType"],
         "optional_dimensions": {"kv_representation": "NOT_ENABLED_UNTIL_PREDECLARED_DATA_JUSTIFIES", "quant_mode": "NOT_ENABLED_UNTIL_PREDECLARED_DATA_JUSTIFIES"},
         "layer_id": "GROUP_STABILITY_VARIABLE_NOT_PRIMARY_STRATUM", "unknown_policy": "EXPLICIT_UNKNOWN_STRATUM_NEVER_DROP",
-        "shape_bucket": "explicit catalog field, else deterministic dimension power-of-two bucket", "forbidden_selector_inputs": ["candidate_speedup", "candidate_miss", "candidate_counter", "candidate_mechanism_outcome"],
+        "shape_bucket": "explicit catalog field, else deterministic dimension power-of-two bucket", "forbidden_selector_inputs": ["candidate_speedup", "candidate_miss", "candidate_counter", "candidate_mechanism_outcome", "kernel_name_semantic_heuristic"],
         "certainty_rules": {"phase_duration_fraction_ge": HEAVY_TAIL_FRACTION, "rare_implementation_N_le": RARE_IMPLEMENTATION_N,
                               "stratum_N_le": 2, "special_semantics": ["E/O", "KV management", "MoE router/dispatch"]},
     })
@@ -688,6 +713,22 @@ def write_protocol(out: Path, state: str, native_receipt: dict[str, Any] | None 
 
 def write_holdout_schema(out: Path) -> None:
     atomic_text(out / "HOLDOUT_INPUT_SCHEMA.md", "# Frozen holdout metric input contract\n\nAfter `--freeze-native`, a G/H producer may publish a small, manifest-listed TSV.  C consumes it only with `--consume-holdout --producer-commit <sha> --manifest-path <path> --payload-path <path>`.  Required columns are `deployment_id`, `scenario_id`, `phase`, `unit_id`, `metric`, `metric_kind`, `evidence_tier`, `target_identity_status`, and `ground_truth_scope`. `metric_kind` is one of `ADDITIVE`, `RATE`, `STRUCTURAL`, or `MECHANISM_RESPONSE`.\n\n`ADDITIVE` and `MECHANISM_RESPONSE` require `value`. `RATE` requires independent `numerator` and `denominator`; C recomputes the ratio after weighting. `STRUCTURAL` is never extrapolated with N_s/n_s. `target_identity_status` must be `EXACT`; `ground_truth_scope=FULL_FROZEN_UNIVERSE` is required before error qualification against a population truth. Mechanism response additionally needs `high_fidelity_truth=TRUE` and a common `effect_fraction_of_reference`; it is `INCONCLUSIVE` / `NOT_QUALIFIED` if the interval crosses zero, effect is below the frozen 2% fraction, or the resolution cannot distinguish it.\n")
+
+
+def write_p_event_consumption_contract(out: Path) -> None:
+    """Document the small, immutable interface P must publish for this lane."""
+    atomic_text(out / "P_EVENT_CONSUMPTION_CONTRACT.md", """# C16-P → C event-consumption contract
+
+Lane C polls P's published branch but never reads its worktree, exchange directory, live partial report, or an ordinary milestone.  The sole admission event is manifest `status: C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION` at an exact 40-character P commit.
+
+The ready manifest must use `schema_version: C16_P_NATIVE_CATALOG_FOR_C_V1`, set `p_commit` to that exact commit, and contain `hash_closure.status: HASH_CLOSED`, exact source producer commit SHA(s), and SHA-256 raw-artifact receipt(s).  Every `files[]` entry has `cohort`, `kind`, relative/absolute committed `path`, and content SHA-256.  Each cohort has exactly one of these kinds: `KERNEL_CATALOG`, `KERNEL_SEMANTIC_MAP`, `SEMANTIC_COVERAGE`, `NATIVE_BASELINE`, `RUNTIME_IMPLEMENTATION_AUDIT`, `RUN_JOIN_AUDIT`, `PROFILE_REPORT_INDEX`, and `DEPLOYMENT_ROSTER`.
+
+P must publish physically separate cohorts.  `TRAIN_TUNE` contains only the direct roster identities `TRAIN_LLAMA`, `TRAIN_QWEN0_5`, and `TRAIN_QWEN7_RAW`, all `c16_split_role=TUNING`.  `PROSPECTIVE_QWEN7_AWQ` contains exactly direct roster identity `PROSPECTIVE_QWEN7_AWQ`, `c16_split_role=PROSPECTIVE_HOLDOUT`.  The latter payload content is not read until the train source SHA, strata, thresholds, seed, and 12/24/48 plans are frozen and those exact freeze artifacts are committed at C's `HEAD`.
+
+`DEPLOYMENT_ROSTER` must contain `deployment_id`, `c16_cohort`, and `c16_split_role`; it replaces name guessing for the raw/AWQ split.  `PROFILE_REPORT_INDEX` bridges one `run_id` to one `profile_report_id`.  The catalog carries the C16 minimum fields and only `DIRECT_RUNTIME_NVTX`, `DIRECT_MODULE_ID`, or `UNKNOWN` semantic evidence.  An `UNKNOWN` semantic field is retained as an explicit stratum.  Kernel-name semantic inference is forbidden.
+
+The cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome columns.  C reads no such result at either admission stage.  After AWQ application it publishes only a request-only Selector-R B48 target plan (at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  This does not authorize a GPU capture.
+""")
 
 
 def zero_sampling_control(units: list[dict[str, Any]], metrics: dict[str, dict[str, dict[str, float]]], all_plan_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -862,6 +903,7 @@ def prepare_historical(out: Path) -> None:
     write_target_plan(out, all_plan_rows, historical_only=True)
     write_protocol(out, "OFFLINE_PROTOCOL_FROZEN_AWAITING_COMMITTED_WAVE1_CATALOG")
     write_holdout_schema(out)
+    write_p_event_consumption_contract(out)
     write_tsv(out / "HOLDOUT_RESULTS.tsv", ["plan_id", "producer_commit", "producer_payload_sha256", "universe_id", "deployment_id", "scenario_id", "phase", "metric", "metric_kind", "sample_complete", "complete_population", "target_identity_status", "evidence_tier", "effect_fraction_of_reference", "estimate", "exact", "absolute_error", "relative_error", "ci_low", "ci_high", "variance_status", "qualification_status", "scientific_verdict"], [{"plan_id": "NA", "producer_commit": "NA", "metric": "NA", "qualification_status": "UNAVAILABLE", "scientific_verdict": "PENDING_COMMITTED_WAVE1_CATALOG_AND_POST_FREEZE_HOLDOUT"}])
     write_tsv(out / "SAMPLER_QUALIFICATION.tsv", ["metric", "evidence_required", "status", "reason", "boundary"], qualification_rows())
     write_tsv(out / "STAGE_STATUS.tsv", ["stage_id", "execution_status", "scientific_status", "evidence"], stage_status(False))
@@ -875,8 +917,8 @@ def prepare_historical(out: Path) -> None:
         {"test_id": "C16-T07", "status": "PASS", "scope": "no new simulator/GPU execution"},
     ])
     atomic_text(out / "HISTORICAL_ORACLE_SCOPE.md", "# Historical scope\n\nC12/C13 are exclusively `RETROSPECTIVE_ORACLE_CALIBRATION`.  Their operator labels, shape absence, per-kernel outcomes and any SimVA page information are not cheap native selector fields.  C13 `mode=1` entries are rejected before evaluation.  No result in this pack is a blind native holdout or a prospective mechanism claim.\n")
-    atomic_text(out / "README.md", "# C16 Lane C review pack\n\nRead `FINAL_REPORT.md`, `ENV_PREFLIGHT.json`, `STRATA_DEFINITION.json`, `PROSPECTIVE_PROTOCOL.json`, and `SAMPLER_QUALIFICATION.tsv` first.  `SELECTOR_R_PLAN.tsv` and `SELECTOR_M_PLAN.tsv` are alternative, intentionally separate plans.  Historical tables are `RETROSPECTIVE_ORACLE_CALIBRATION` only; consume a future native catalog only through the fixed-commit manifest route implemented by `c16_sampling_v2.py --freeze-native`.\n")
-    atomic_text(out / "FINAL_REPORT.md", "# C16 Lane C — Sampling V2 checkpoint\n\nStatus: `C16_C_SAMPLING_V2_READY_FOR_REVIEW` for offline implementation and retrospective oracle calibration; prospective qualification is pending a committed Wave-1 native catalog.  The selector has fixed Phase × Operator × Implementation × ShapeBucket × DType strata, certainty-unit weight 1, separately published probability (`Selector-R`) and medoid (`Selector-M`) plans, and 12/24/48 per deployment/scenario/phase alternative budgets.\n\nC12/C13 are read-only `RETROSPECTIVE_ORACLE_CALIBRATION`; C13 mode=1 is rejected.  Historical operator fields are oracle-only.  `HISTORICAL_STRUCTURAL_OBSERVATIONS.tsv` reports only sampled modeled-SimVA page sets by stratum; no page/line union is extrapolated with N/n.  No GPU, native profiler, trace capture, or simulator replay was started.\n\nNo Wave-1 committed G catalog exists at publication, so `NVBIT_TARGET_PLAN.tsv` deliberately has no historical capture target.  The prospective protocol freezes selector code, strata, seed, budgets, deployment split and thresholds before any holdout metric may be read.  Qualification is metric-by-metric; there is no overall PASS.\n")
+    atomic_text(out / "README.md", "# C16 Lane C review pack\n\nRead `FINAL_REPORT.md`, `ENV_PREFLIGHT.json`, `STRATA_DEFINITION.json`, `PROSPECTIVE_PROTOCOL.json`, `P_EVENT_CONSUMPTION_CONTRACT.md`, and `SAMPLER_QUALIFICATION.tsv` first.  `SELECTOR_R_PLAN.tsv` and `SELECTOR_M_PLAN.tsv` are alternative, intentionally separate plans.  Historical tables are `RETROSPECTIVE_ORACLE_CALIBRATION` only.  P is consumed only through the exact-status, exact-commit, hash-closed train→freeze→AWQ route implemented by `c16_sampling_v2.py --freeze-p-train` then `--apply-p-awq-holdout`; live partial data are never read.\n")
+    atomic_text(out / "FINAL_REPORT.md", "# C16 Lane C — Sampling V2 checkpoint\n\nStatus: `C16_C_SAMPLING_V2_READY_FOR_REVIEW` for offline implementation and retrospective oracle calibration; prospective qualification is pending a committed P-ready native catalog.  The selector has fixed Phase × Operator × Implementation × ShapeBucket × DType strata, certainty-unit weight 1, separately published probability (`Selector-R`) and medoid (`Selector-M`) plans, and 12/24/48 per deployment/scenario/phase alternative budgets.\n\nC12/C13 are read-only `RETROSPECTIVE_ORACLE_CALIBRATION`; C13 mode=1 is rejected.  Historical operator fields are oracle-only.  `HISTORICAL_STRUCTURAL_OBSERVATIONS.tsv` reports only sampled modeled-SimVA page sets by stratum; no page/line union is extrapolated with N/n.  No GPU, native profiler, trace capture, or simulator replay was started.\n\nP may be admitted only at `C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION` with exact commit/hash closure.  C first consumes only the direct Llama/Qwen0.5/Qwen7-raw train roster, audits schema/join, freezes source SHA plus strata/threshold/seed/budget rules and all 12/24/48 plans, then separately unseals Qwen7-AWQ cheap catalog.  It reads no NCU/NVBit outcome, treats UNKNOWN semantic fields as explicit strata, and publishes a bounded request-only target plan immediately after AWQ application.  Qualification remains metric-by-metric; there is no overall PASS.\n")
     requests = [
         {"request_id": "C16-T3-1", "request": "Wave-1 manifest-bound native census holdout for Qwen2.5-7B-AWQ", "go_no_go": "only after frozen selector plan and identity receipt", "requires_new_authorization": "true"},
         {"request_id": "C16-T3-2", "request": "one Qwen3/MoE structural holdout with semantic catalog closure", "go_no_go": "only after frozen split; no selector mutation", "requires_new_authorization": "true"},
@@ -891,6 +933,191 @@ def prepare_historical(out: Path) -> None:
 
 def manifest_entry_path(manifest_path: str, entry_path: str) -> str:
     return entry_path if entry_path.startswith("docs/") else str(Path(manifest_path).parent / entry_path)
+
+
+def require_exact_commit(commit: str) -> None:
+    """A branch name is not an immutable cross-lane input."""
+    if not re.fullmatch(r"[0-9a-f]{40}", commit):
+        die("P consumption requires a full 40-character producer commit SHA")
+    resolved = subprocess.run(["git", "-C", str(ROOT), "rev-parse", f"{commit}^{{commit}}"],
+                               text=True, capture_output=True, check=False)
+    if resolved.returncode or resolved.stdout.strip() != commit:
+        die("P consumption commit is not an exact locally resolvable commit SHA")
+
+
+def p_manifest_entries(manifest: dict[str, Any], cohort: str) -> dict[str, dict[str, Any]]:
+    """Validate the formal P handoff without reading another cohort's payload."""
+    if manifest.get("schema_version") != P_MANIFEST_SCHEMA:
+        die(f"P manifest schema must be {P_MANIFEST_SCHEMA}")
+    if manifest.get("status") != P_READY_STATUS:
+        die(f"P manifest status must be {P_READY_STATUS}; live/provisional P data are forbidden")
+    closure = manifest.get("hash_closure")
+    if not isinstance(closure, dict) or closure.get("status") != "HASH_CLOSED":
+        die("P ready manifest lacks HASH_CLOSED hash_closure")
+    commits = closure.get("producer_commits")
+    raw_artifacts = closure.get("raw_artifacts")
+    if not isinstance(commits, list) or not commits or not all(isinstance(item, str) and re.fullmatch(r"[0-9a-f]{40}", item) for item in commits):
+        die("P hash_closure must name exact source producer commit SHA(s)")
+    if not isinstance(raw_artifacts, list) or not raw_artifacts or any(not isinstance(item, dict) or not re.fullmatch(r"[0-9a-f]{64}", str(item.get("sha256", ""))) for item in raw_artifacts):
+        die("P hash_closure must include SHA-256-closed raw artifact receipt(s)")
+    entries: dict[str, dict[str, Any]] = {}
+    for kind in P_REQUIRED_PAYLOAD_KINDS:
+        matches = [entry for entry in manifest.get("files", [])
+                   if entry.get("cohort") == cohort and entry.get("kind") == kind]
+        if len(matches) != 1:
+            die(f"P manifest needs exactly one {cohort}/{kind} payload")
+        entry = matches[0]
+        if not isinstance(entry.get("path"), str) or not re.fullmatch(r"[0-9a-f]{64}", str(entry.get("sha256", ""))):
+            die(f"P {cohort}/{kind} payload lacks path or SHA-256")
+        entries[kind] = entry
+    return entries
+
+
+def p_read_payloads(commit: str, manifest_path: str, cohort: str) -> tuple[dict[str, str], dict[str, Any]]:
+    """Read one manifest-listed cohort only after P's formal ready event."""
+    require_exact_commit(commit)
+    manifest_text = git_text(commit, manifest_path)
+    manifest = json.loads(manifest_text)
+    if manifest.get("p_commit") != commit:
+        die("P manifest p_commit must equal the exact commit supplied to C")
+    entries = p_manifest_entries(manifest, cohort)
+    payloads: dict[str, str] = {}
+    dependencies: list[dict[str, str]] = []
+    for kind in P_REQUIRED_PAYLOAD_KINDS:
+        entry = entries[kind]
+        path = manifest_entry_path(manifest_path, str(entry["path"]))
+        content = git_text(commit, path)
+        digest = sha256_bytes(content.encode())
+        if digest != entry["sha256"]:
+            die(f"P manifest hash mismatch for {cohort}/{kind}")
+        payloads[kind] = content
+        dependencies.append({"kind": kind, "path": path, "sha256": digest, "blob_id": git_blob(commit, path)})
+    receipt = {
+        "producer_commit": commit,
+        "manifest_path": manifest_path,
+        "manifest_blob": git_blob(commit, manifest_path),
+        "manifest_sha256": sha256_bytes(manifest_text.encode()),
+        "producer_status": manifest["status"],
+        "cohort": cohort,
+        "hash_closure": manifest["hash_closure"],
+        "validated_dependencies": dependencies,
+    }
+    return payloads, receipt
+
+
+def p_validate_catalog_and_roster(catalog_rows: list[dict[str, str]], roster_rows: list[dict[str, str]],
+                                  profile_rows: list[dict[str, str]], cohort: str) -> tuple[dict[str, str], dict[str, str]]:
+    """Audit schema/join cardinality before any selector source freeze.
+
+    This is deliberately stricter than the generic native route.  P provides a
+    separate roster, so C never guesses an AWQ/raw split from a kernel name or
+    fills a missing semantic value from the kernel name.
+    """
+    expected_roster = P_TRAIN_ROSTER if cohort == P_TRAIN_COHORT else P_AWQ_ROSTER
+    required_catalog = {
+        "run_id", "deployment_id", "scenario_id", "phase", "device", "context", "stream", "correlation_id", "launch_ordinal",
+        "kernel_name", "implementation_key", "grid", "block", "start_ns", "end_ns", "duration_ns", "operator_class",
+        "layer_id", "shape_key", "dtype_key", "semantic_evidence", "mapping_status",
+    }
+    if not catalog_rows:
+        die(f"P {cohort} KERNEL_CATALOG is empty")
+    catalog_fields = set(catalog_rows[0])
+    absent = sorted(required_catalog - catalog_fields)
+    if absent:
+        die(f"P {cohort} KERNEL_CATALOG misses required fields: {','.join(absent)}")
+    forbidden = sorted(field for field in catalog_fields if P_FORBIDDEN_OUTCOME_COLUMNS.search(field))
+    if forbidden:
+        die(f"P {cohort} cheap catalog contains forbidden outcome field(s): {','.join(forbidden)}")
+    roster_fields = {"deployment_id", "c16_cohort", "c16_split_role"}
+    if not roster_rows or not roster_fields.issubset(roster_rows[0]):
+        die("P DEPLOYMENT_ROSTER must include deployment_id,c16_cohort,c16_split_role")
+    roster_by_deployment: dict[str, dict[str, str]] = {}
+    for row in roster_rows:
+        deployment = row.get("deployment_id", "")
+        if not deployment or deployment in roster_by_deployment:
+            die("P DEPLOYMENT_ROSTER has empty or duplicate deployment_id")
+        roster_by_deployment[deployment] = row
+    observed_cohorts = {row.get("c16_cohort", "") for row in roster_rows}
+    for roster_name, role in expected_roster.items():
+        matches = [row for row in roster_rows if row.get("c16_cohort") == roster_name and row.get("c16_split_role") == role]
+        if len(matches) != 1:
+            die(f"P {cohort} roster must contain exactly one direct {roster_name}/{role} identity")
+    extra_cohorts = observed_cohorts - set(expected_roster)
+    if extra_cohorts:
+        die(f"P {cohort} roster has an undeclared cohort: {sorted(extra_cohorts)[0]}")
+    if not profile_rows or not {"run_id", "profile_report_id"}.issubset(profile_rows[0]):
+        die("P PROFILE_REPORT_INDEX must include run_id and profile_report_id")
+    report_by_run: dict[str, str] = {}
+    for row in profile_rows:
+        run_id, report_id = row.get("run_id", ""), row.get("profile_report_id", "")
+        if not run_id or not report_id or run_id in report_by_run:
+            die("P PROFILE_REPORT_INDEX has incomplete or ambiguous run/report identity")
+        report_by_run[run_id] = report_id
+    physical_keys: set[tuple[str, str, str, str, str, str]] = set()
+    catalog_deployments: set[str] = set()
+    unknown_semantic_rows = 0
+    direct_semantic_rows = 0
+    for row in catalog_rows:
+        if any(row.get(field, "") == "" for field in required_catalog):
+            die("P KERNEL_CATALOG has an empty required field")
+        deployment = row["deployment_id"]
+        catalog_deployments.add(deployment)
+        roster = roster_by_deployment.get(deployment)
+        if roster is None:
+            die("P catalog deployment is absent from its direct deployment roster")
+        if roster.get("c16_cohort") not in expected_roster or roster.get("c16_split_role") != expected_roster[roster["c16_cohort"]]:
+            die("P catalog deployment has a cohort/split outside the frozen C16 roster")
+        if row["run_id"] not in report_by_run:
+            die("P catalog run_id has no unique PROFILE_REPORT_INDEX bridge")
+        physical_key = tuple(row[field] for field in ("run_id", "device", "context", "stream", "correlation_id", "launch_ordinal"))
+        if physical_key in physical_keys:
+            die("P KERNEL_CATALOG has duplicate physical launch identity")
+        physical_keys.add(physical_key)
+        evidence = row["semantic_evidence"].upper()
+        if evidence not in P_DIRECT_SEMANTIC_EVIDENCE:
+            die("P semantic evidence must be DIRECT_RUNTIME_NVTX, DIRECT_MODULE_ID, or UNKNOWN; kernel-name inference is forbidden")
+        if "KERNEL_NAME_HEURISTIC" in row["mapping_status"].upper():
+            die("P mapping_status declares forbidden kernel-name semantic inference")
+        operator = row["operator_class"].upper()
+        if operator not in {"", "NA", "NONE", "NULL", "UNKNOWN"} and evidence == "UNKNOWN":
+            die("P non-UNKNOWN semantic label lacks direct evidence")
+        if evidence == "UNKNOWN":
+            unknown_semantic_rows += 1
+        else:
+            direct_semantic_rows += 1
+    required_deployments = {row["deployment_id"] for row in roster_rows}
+    if catalog_deployments != required_deployments:
+        die("P catalog/deployment roster coverage differs; every frozen cohort identity needs a cheap-catalog row")
+    audit = {
+        "schema_status": "PASS",
+        "join_status": "PASS_NO_MULTIPLICATION",
+        "cohort": cohort,
+        "catalog_rows": str(len(catalog_rows)),
+        "physical_launch_identities": str(len(physical_keys)),
+        "roster_deployments": str(len(roster_by_deployment)),
+        "profile_runs": str(len(report_by_run)),
+        "unknown_semantic_rows": str(unknown_semantic_rows),
+        "direct_semantic_rows": str(direct_semantic_rows),
+        "unknown_policy": "EXPLICIT_STRATUM_NO_KERNEL_NAME_HEURISTIC",
+        "forbidden_outcome_columns_read": "NONE",
+    }
+    return audit, {deployment: row["c16_split_role"] for deployment, row in roster_by_deployment.items()}
+
+
+def p_catalog_input(commit: str, manifest_path: str, cohort: str) -> tuple[list[dict[str, str]], dict[str, Any], dict[str, str], dict[str, str]]:
+    """Admit a complete P cohort; no P worktree/live path is ever read."""
+    payloads, receipt = p_read_payloads(commit, manifest_path, cohort)
+    rows = tsv_rows(payloads["KERNEL_CATALOG"])
+    roster = tsv_rows(payloads["DEPLOYMENT_ROSTER"])
+    profile = tsv_rows(payloads["PROFILE_REPORT_INDEX"])
+    audit, roles = p_validate_catalog_and_roster(rows, roster, profile, cohort)
+    profile_by_run = {row["run_id"]: row["profile_report_id"] for row in profile}
+    # Carry P's mandatory report bridge into every C target.  This is a
+    # one-to-one enrichment after the cardinality audit, not a row-multiplying
+    # catalog join.
+    for row in rows:
+        row["profile_report_id"] = profile_by_run[row["run_id"]]
+    return rows, receipt, audit, roles
 
 
 def verify_native_catalog_admission(commit: str, manifest_path: str, manifest: dict[str, Any]) -> list[dict[str, str]]:
@@ -990,6 +1217,154 @@ def freeze_native(out: Path, commit: str, manifest_path: str, catalog_path: str)
     write_protocol(out, "FROZEN_BEFORE_HOLDOUT_METRICS", receipt)
     write_tsv(out / "NATIVE_CATALOG_RECEIPT.tsv", list(receipt), [receipt])
     write_manifest(out, "C16_C_SELECTOR_FROZEN_FOR_PROSPECTIVE_HOLDOUT", native_catalog=True)
+
+
+P_PLAN_FIELDS = [
+    "plan_id", "selector_kind", "selector_version", "selector_code_sha256", "universe_id", "deployment_id", "scenario_id", "phase",
+    "stratum_id", "N_s", "n_s", "unit_id", "launch_ordinal", "semantic_key_json", "selection_role", "selection_reason",
+    "inclusion_probability", "design_weight", "design_confidence", "seed", "random_audit", "estimated_capture_cost_ns",
+    "capture_cost_basis", "evidence_tier", "plan_status", "split_role", "source_cohort",
+]
+
+
+def write_p_plan_bundle(out: Path, prefix: str, units: list[dict[str, Any]], roles: dict[str, str], cohort: str) -> list[dict[str, Any]]:
+    """Write all frozen 12/24/48 alternatives for one P cohort."""
+    all_plans: list[dict[str, Any]] = []
+    all_budgets: list[dict[str, Any]] = []
+    all_certainty: list[dict[str, Any]] = []
+    for universe in sorted({row["universe_id"] for row in units}):
+        scope = [row for row in units if row["universe_id"] == universe]
+        for budget in BUDGETS:
+            for selector in ("R", "M"):
+                plans, budgets, certainty = build_plan(scope, budget, selector, PRIMARY_SEED)
+                for row in plans:
+                    row["split_role"] = roles[row["deployment_id"]]
+                    row["source_cohort"] = cohort
+                all_plans.extend(plans)
+                all_budgets.extend(budgets)
+                all_certainty.extend(certainty)
+    write_tsv(out / f"{prefix}_SAMPLE_PLANS.tsv", P_PLAN_FIELDS, all_plans)
+    write_tsv(out / f"{prefix}_SELECTOR_R_PLAN.tsv", P_PLAN_FIELDS, [row for row in all_plans if row["selector_kind"] == "SELECTOR_R"])
+    write_tsv(out / f"{prefix}_SELECTOR_M_PLAN.tsv", P_PLAN_FIELDS, [row for row in all_plans if row["selector_kind"] == "SELECTOR_M"])
+    write_tsv(out / f"{prefix}_SAMPLE_BUDGETS.tsv", ["plan_id", "selector_kind", "universe_id", "budget", "certainty_units", "remaining_after_certainty", "stratum_id", "N_s", "n_s", "count_mass", "duration_mass_ns", "variation_proxy_mass", "variation_proxy_source", "allocation_score", "random_audit_target", "random_audit_actual", "estimated_capture_cost_ns", "status"], all_budgets)
+    write_tsv(out / f"{prefix}_CERTAINTY_UNITS.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "launch_ordinal", "N_s", "certainty_weight", "reason", "duration_ns", "evidence_tier", "capture_authorization"], deduplicate_certainty(all_certainty))
+    membership = []
+    for unit in units:
+        membership.append({"universe_id": unit["universe_id"], "deployment_id": unit["deployment_id"], "scenario_id": unit["scenario_id"], "phase": unit["phase"],
+                           "stratum_id": unit["stratum_id"], "unit_id": unit["unit_id"], "run_id": unit["run_id"], "profile_report_id": unit["profile_report_id"],
+                           "device": unit["device"], "context": unit["context"], "stream": unit["stream"], "correlation_id": unit["correlation_id"],
+                           "launch_ordinal": unit["launch_ordinal"], "N_s": unit["N_s"], "certainty": "TRUE" if unit["certainty"] else "FALSE",
+                           "certainty_reason": unit["certainty_reason"], "operator_class": unit["operator_class"], "implementation_key": unit["implementation_key"],
+                           "shape_bucket": unit["shape_bucket"], "dtype_key": unit["dtype_key"], "split_role": roles[unit["deployment_id"]],
+                           "source_cohort": cohort, "evidence_tier": unit["evidence_tier"]})
+    write_tsv(out / f"{prefix}_STRATA_MEMBERSHIP.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "run_id", "profile_report_id", "device", "context", "stream", "correlation_id", "launch_ordinal", "N_s", "certainty", "certainty_reason", "operator_class", "implementation_key", "shape_bucket", "dtype_key", "split_role", "source_cohort", "evidence_tier"], membership)
+    return all_plans
+
+
+def freeze_p_train(out: Path, commit: str, manifest_path: str) -> None:
+    """Stages 1--5: consume only P train/tune, audit, then freeze source/rules/plans."""
+    require_out(out)
+    if not (out / "PUBLISH_MANIFEST.json").is_file():
+        die("run --prepare-historical before a P train/tune selector freeze")
+    rows, receipt, audit, roles = p_catalog_input(commit, manifest_path, P_TRAIN_COHORT)
+    if set(roles.values()) != {"TUNING"}:
+        die("P train/tune catalog may not contain a holdout deployment")
+    units = annotate_certainty(canonicalize_catalog(rows, "NATIVE_PROFILED", historical_oracle=False))
+    if not units:
+        die("P train/tune catalog is empty")
+    # The source receipt is written before any allocation output.  It makes the
+    # sequence auditable even when an AWQ catalog is published much later.
+    write_json(out / "P_TRAIN_TUNE_CATALOG_RECEIPT.json", receipt)
+    write_json(out / "P_TRAIN_TUNE_SCHEMA_JOIN_AUDIT.json", audit)
+    write_json(out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json", {
+        "state": "SOURCE_SHA_FROZEN_BEFORE_AWQ_UNSEAL",
+        "selector_code_sha256": code_sha(), "selector_version": SELECTOR_VERSION,
+        "selector_source_commit": current_head(), "producer_p_commit": commit,
+        "selector_inputs": "TRAIN_TUNE_NATIVE_CHEAP_CATALOG_ONLY", "kernel_name_heuristic": "FORBIDDEN",
+    })
+    write_preflight(out, "P_FORMAL_TRAIN_TUNE_CATALOG_CONSUMED_AWQ_NOT_READ")
+    write_protocol(out, "P_TRAIN_SELECTOR_RULES_AND_12_24_48_PLANS_FROZEN_AWAITING_AWQ_CHEAP_CATALOG", receipt)
+    write_p_plan_bundle(out, "P_TRAIN_TUNE", units, roles, P_TRAIN_COHORT)
+    atomic_text(out / "P_AWQ_UNSEAL_GATE.md", "# P AWQ cheap-catalog unseal gate\n\n`Qwen7 AWQ` catalog payloads are not read during train/tune freeze.  Only `--apply-p-awq-holdout` after `P_TRAIN_SELECTOR_RULES_AND_12_24_48_PLANS_FROZEN_AWAITING_AWQ_CHEAP_CATALOG` may read the manifest-listed `PROSPECTIVE_QWEN7_AWQ` cheap catalog.  NCU/NVBit outcomes remain outside this gate.\n")
+    write_manifest(out, "C16_C_TRAIN_SELECTOR_FROZEN_AWAITING_P_AWQ_CHEAP_CATALOG", native_catalog=True)
+
+
+def assert_p_train_freeze(out: Path) -> dict[str, Any]:
+    protocol_path = out / "PROSPECTIVE_PROTOCOL.json"
+    if not protocol_path.is_file():
+        die("P train/tune protocol is absent")
+    protocol = json.loads(protocol_path.read_text())
+    if protocol.get("state") != "P_TRAIN_SELECTOR_RULES_AND_12_24_48_PLANS_FROZEN_AWAITING_AWQ_CHEAP_CATALOG":
+        die("AWQ cheap catalog cannot be read before the frozen P train/tune selector plan")
+    source = json.loads((out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json").read_text())
+    if source.get("selector_code_sha256") != code_sha() or protocol.get("selector_code_sha256") != code_sha():
+        die("selector source SHA changed after train/tune freeze; AWQ unseal is forbidden")
+    required = [out / f"P_TRAIN_TUNE_{suffix}" for suffix in ("SELECTOR_R_PLAN.tsv", "SELECTOR_M_PLAN.tsv", "SAMPLE_BUDGETS.tsv")]
+    if any(not path.is_file() for path in required):
+        die("P train/tune 12/24/48 plan bundle is incomplete")
+    frozen_paths = [out / "P_TRAIN_TUNE_CATALOG_RECEIPT.json", out / "P_TRAIN_TUNE_SCHEMA_JOIN_AUDIT.json",
+                    out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json", protocol_path, *required]
+    head = current_head()
+    for path in frozen_paths:
+        relative = str(path.relative_to(ROOT))
+        committed = git_text(head, relative)
+        if sha256_bytes(committed.encode()) != sha256_file(path):
+            die("P train/tune freeze artifacts must be committed at HEAD before AWQ cheap-catalog unseal")
+    return protocol
+
+
+def write_p_awq_target_plan(out: Path, plans: list[dict[str, Any]], units: list[dict[str, Any]], receipt: dict[str, Any]) -> None:
+    """Publish a bounded, request-only Selector-R capture list for G.
+
+    B12/B24/B48 are alternative frozen plans.  The sole execution candidate is
+    B48 Selector-R, capped at 48 units per universe; medoids stay in their own
+    plan and are explicitly not a concurrent capture set.
+    """
+    by_unit = {row["unit_id"]: row for row in units}
+    fields = ["target_plan_id", "selector_kind", "selector_code_sha256", "budget", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "run_id", "profile_report_id", "device", "context", "stream", "correlation_id", "launch_ordinal", "semantic_key_json", "selection_role", "selection_reason", "estimated_capture_cost_ns", "target_status", "capture_cap_per_universe", "identity_validation_required", "p_manifest_sha256", "p_catalog_sha256", "forbidden_input_confirmation"]
+    rows: list[dict[str, Any]] = []
+    for plan in plans:
+        if plan["selector_kind"] != "SELECTOR_R" or "_B48_" not in plan["plan_id"] or plan["plan_status"] != "FROZEN_READY":
+            continue
+        unit = by_unit[plan["unit_id"]]
+        rows.append({"target_plan_id": plan["plan_id"], "selector_kind": plan["selector_kind"], "selector_code_sha256": plan["selector_code_sha256"], "budget": 48,
+                     "deployment_id": plan["deployment_id"], "scenario_id": plan["scenario_id"], "phase": plan["phase"],
+                     "stratum_id": plan["stratum_id"], "unit_id": plan["unit_id"], "run_id": unit["run_id"], "profile_report_id": unit["profile_report_id"],
+                     "device": unit["device"], "context": unit["context"], "stream": unit["stream"], "correlation_id": unit["correlation_id"],
+                     "launch_ordinal": unit["launch_ordinal"], "semantic_key_json": plan["semantic_key_json"], "selection_role": plan["selection_role"],
+                     "selection_reason": plan["selection_reason"], "estimated_capture_cost_ns": plan["estimated_capture_cost_ns"],
+                     "target_status": "REQUEST_ONLY_FROZEN_PRIMARY_SELECTOR_R_NO_OUTCOME_CONSUMED", "capture_cap_per_universe": 48,
+                     "identity_validation_required": "TRUE_REPORT_SCOPED_COMPOSITE_KEY", "p_manifest_sha256": receipt["manifest_sha256"],
+                     "p_catalog_sha256": next(item["sha256"] for item in receipt["validated_dependencies"] if item["kind"] == "KERNEL_CATALOG"),
+                     "forbidden_input_confirmation": "NO_NCU_NVBIT_TRACE_COUNTER_SPEEDUP_MISS_OR_OUTCOME_READ"})
+    if not rows:
+        die("P AWQ B48 Selector-R plan has no bounded target rows; no G target can be published")
+    counts = Counter(row["target_plan_id"] for row in rows)
+    if any(count > 48 for count in counts.values()):
+        die("bounded G target plan exceeds frozen 48-unit per-universe cap")
+    write_tsv(out / "P_AWQ_G_BOUNDED_TARGET_PLAN.tsv", fields, rows)
+    atomic_text(out / "P_AWQ_G_TARGET_PLAN_README.md", "# Bounded G target plan\n\nThis is a request-only, exact-identity `Selector-R` B48 plan from the already-frozen source SHA.  It contains at most 48 units per deployment/scenario/phase universe.  `Selector-M` remains in `P_AWQ_SELECTOR_M_PLAN.tsv` as a non-concurrent deterministic medoid alternative.  G must revalidate the report-scoped composite identity before any authorized second pass.  No NCU/NVBit result, trace outcome, speedup, miss, or candidate mechanism metric was read by C.\n")
+
+
+def apply_p_awq_holdout(out: Path, commit: str, manifest_path: str) -> None:
+    """Stages 6--10: unseal cheap AWQ only, apply frozen source, publish G target."""
+    require_out(out)
+    protocol = assert_p_train_freeze(out)
+    rows, receipt, audit, roles = p_catalog_input(commit, manifest_path, P_AWQ_COHORT)
+    if set(roles.values()) != {"PROSPECTIVE_HOLDOUT"}:
+        die("P AWQ catalog must contain only the direct prospective holdout identity")
+    units = annotate_certainty(canonicalize_catalog(rows, "NATIVE_PROFILED", historical_oracle=False))
+    write_json(out / "P_AWQ_CHEAP_CATALOG_RECEIPT.json", receipt)
+    write_json(out / "P_AWQ_SCHEMA_JOIN_AUDIT.json", audit)
+    plans = write_p_plan_bundle(out, "P_AWQ", units, roles, P_AWQ_COHORT)
+    write_p_awq_target_plan(out, plans, units, receipt)
+    protocol["state"] = "P_AWQ_CHEAP_CATALOG_APPLIED_FROZEN_TARGET_PLAN_PUBLISHED"
+    protocol["awq_cheap_catalog_receipt"] = receipt
+    protocol["g_target_plan"] = "P_AWQ_G_BOUNDED_TARGET_PLAN.tsv"
+    protocol["ncu_nvbit_outcomes_consumed"] = False
+    write_json(out / "PROSPECTIVE_PROTOCOL.json", protocol)
+    write_preflight(out, "P_FORMAL_TRAIN_AND_AWQ_CHEAP_CATALOGS_CONSUMED_NO_OUTCOMES")
+    write_manifest(out, "C16_C_P_AWQ_FROZEN_TARGET_PLAN_READY_FOR_G", native_catalog=True)
 
 
 HOLDOUT_REQUIRED_FIELDS = ("deployment_id", "scenario_id", "phase", "unit_id", "metric", "metric_kind", "evidence_tier", "target_identity_status", "ground_truth_scope")
@@ -1164,6 +1539,8 @@ def main() -> None:
     modes = parser.add_mutually_exclusive_group(required=True)
     modes.add_argument("--prepare-historical", action="store_true")
     modes.add_argument("--freeze-native", action="store_true")
+    modes.add_argument("--freeze-p-train", action="store_true")
+    modes.add_argument("--apply-p-awq-holdout", action="store_true")
     modes.add_argument("--consume-holdout", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=OUT)
     parser.add_argument("--producer-commit")
@@ -1180,6 +1557,16 @@ def main() -> None:
             die("--freeze-native requires --producer-commit --manifest-path --catalog-path")
         freeze_native(out, args.producer_commit, args.manifest_path, args.catalog_path)
         print(f"PASS C16 Sampling V2 native selector freeze: {out}")
+    elif args.freeze_p_train:
+        if not all((args.producer_commit, args.manifest_path)):
+            die("--freeze-p-train requires --producer-commit --manifest-path")
+        freeze_p_train(out, args.producer_commit, args.manifest_path)
+        print(f"PASS C16 Sampling V2 P train/tune selector freeze: {out}")
+    elif args.apply_p_awq_holdout:
+        if not all((args.producer_commit, args.manifest_path)):
+            die("--apply-p-awq-holdout requires --producer-commit --manifest-path")
+        apply_p_awq_holdout(out, args.producer_commit, args.manifest_path)
+        print(f"PASS C16 Sampling V2 P AWQ cheap-catalog target plan: {out}")
     else:
         if not all((args.producer_commit, args.manifest_path, args.payload_path)):
             die("--consume-holdout requires --producer-commit --manifest-path --payload-path")

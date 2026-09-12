@@ -71,6 +71,51 @@ assert MODULE.split_role("Qwen2.5-7B-Instruct-AWQ") == "PROSPECTIVE_HOLDOUT"
 assert MODULE.split_role("Qwen3-30B-A3B-MoE") == "STRUCTURAL_HOLDOUT"
 assert MODULE.split_role("unknown-deployment") == "UNASSIGNED_EXCLUDED"
 
+# P admission has a direct deployment roster, not a model-name or kernel-name
+# guess.  UNKNOWN semantic coverage remains an ordinary explicit stratum.
+p_catalog = [{
+    "run_id": "p-run", "deployment_id": "opaque-deployment-id", "scenario_id": "S1", "phase": "prefill",
+    "device": "GPU-0", "context": "1", "stream": "7", "correlation_id": "8", "launch_ordinal": "9",
+    "kernel_name": "looks_like_kv_router_but_is_not_semantic_evidence", "implementation_key": "opaque-impl",
+    "grid": "(1,1,1)", "block": "(128,1,1)", "start_ns": "0", "end_ns": "10", "duration_ns": "10",
+    "operator_class": "UNKNOWN", "layer_id": "UNKNOWN", "shape_key": "[1,128]", "dtype_key": "bf16",
+    "semantic_evidence": "UNKNOWN", "mapping_status": "UNKNOWN",
+}]
+p_roster = [{"deployment_id": "opaque-deployment-id", "c16_cohort": "TRAIN_LLAMA", "c16_split_role": "TUNING"},
+            {"deployment_id": "opaque-qwen05", "c16_cohort": "TRAIN_QWEN0_5", "c16_split_role": "TUNING"},
+            {"deployment_id": "opaque-qwen7", "c16_cohort": "TRAIN_QWEN7_RAW", "c16_split_role": "TUNING"}]
+p_catalog += [{**p_catalog[0], "run_id": "p-run-qwen05", "deployment_id": "opaque-qwen05", "correlation_id": "10"},
+              {**p_catalog[0], "run_id": "p-run-qwen7", "deployment_id": "opaque-qwen7", "correlation_id": "11"}]
+p_profiles = [{"run_id": "p-run", "profile_report_id": "sha256:report"},
+              {"run_id": "p-run-qwen05", "profile_report_id": "sha256:report-qwen05"},
+              {"run_id": "p-run-qwen7", "profile_report_id": "sha256:report-qwen7"}]
+p_audit, p_roles = MODULE.p_validate_catalog_and_roster(p_catalog, p_roster, p_profiles, MODULE.P_TRAIN_COHORT)
+assert p_audit["unknown_semantic_rows"] == "3"
+assert p_audit["unknown_policy"] == "EXPLICIT_STRATUM_NO_KERNEL_NAME_HEURISTIC"
+assert p_roles["opaque-deployment-id"] == "TUNING"
+p_units = MODULE.annotate_certainty(MODULE.canonicalize_catalog(p_catalog, "NATIVE_PROFILED"))
+assert p_units[0]["operator_class"] == "UNKNOWN_OPERATOR"
+assert "SPECIAL_KV_MANAGEMENT" not in p_units[0]["certainty_reason"]
+try:
+    MODULE.p_validate_catalog_and_roster([{**p_catalog[0], "candidate_speedup": "999"}], p_roster, p_profiles, MODULE.P_TRAIN_COHORT)
+    raise AssertionError("P outcome fields must be rejected before selection")
+except RuntimeError as exc:
+    assert "forbidden outcome" in str(exc)
+
+p_manifest = {
+    "schema_version": MODULE.P_MANIFEST_SCHEMA, "status": MODULE.P_READY_STATUS,
+    "hash_closure": {"status": "HASH_CLOSED", "producer_commits": ["a" * 40], "raw_artifacts": [{"sha256": "b" * 64}]},
+    "files": [{"cohort": MODULE.P_TRAIN_COHORT, "kind": kind, "path": f"train/{kind}.tsv", "sha256": "c" * 64}
+              for kind in MODULE.P_REQUIRED_PAYLOAD_KINDS],
+}
+assert set(MODULE.p_manifest_entries(p_manifest, MODULE.P_TRAIN_COHORT)) == set(MODULE.P_REQUIRED_PAYLOAD_KINDS)
+p_manifest["status"] = "P_ORDINARY_MILESTONE"
+try:
+    MODULE.p_manifest_entries(p_manifest, MODULE.P_TRAIN_COHORT)
+    raise AssertionError("ordinary P milestone must not be admitted")
+except RuntimeError as exc:
+    assert MODULE.P_READY_STATUS in str(exc)
+
 # Post-freeze holdout evaluation only considers a declared holdout deployment,
 # keeps a rate's numerator and denominator separate, and does not promote a
 # structural page metric into an additive population estimate.
