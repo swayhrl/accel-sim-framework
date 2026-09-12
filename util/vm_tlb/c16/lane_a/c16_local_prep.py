@@ -406,6 +406,56 @@ def validate_stage_status(output_root: Path) -> list[str]:
     return failures
 
 
+def write_publish_manifest(output_root: Path, artifact_checkpoint: str) -> None:
+    """Publish only this hash-bound local-prep review package.
+
+    This is intentionally distinct from the contract's future GPU-package
+    manifest: unavailable G/C/H gates remain unavailable after publication.
+    """
+    files = []
+    for path in sorted(output_root.rglob("*")):
+        if not path.is_file() or path.name == "PUBLISH_MANIFEST.json":
+            continue
+        files.append(
+            {
+                "path": str(path.relative_to(output_root)),
+                "sha256": sha256_file(path),
+                "size_bytes": path.stat().st_size,
+            }
+        )
+    manifest = {
+        "schema_version": "C16_A_LOCAL_PREP_PUBLISH_V1",
+        "status": "C16_LOCAL_PREP_AND_INTEGRATION_PARTIAL_READY_FOR_FINAL_REVIEW",
+        "planning_sha": PLANNING_SHA,
+        "artifact_checkpoint": artifact_checkpoint,
+        "scope": "C15 provenance closure plus C16 A local metadata/tokenizer/input/scenario preparation only",
+        "files": files,
+        "gates_not_satisfied": ["C16-0.9", "C16-5.4", "C16-6.2", "C16-6.3"],
+        "prohibitions_honored": [
+            "NO_FULL_NON_LLAMA_WEIGHT_DOWNLOAD",
+            "NO_GPU_OR_CUDA_MODEL_EXECUTION",
+            "NO_PROFILER_NVBIT_SIMULATOR_SASS_OR_FULL_ROI",
+            "NO_LIVE_PARTIAL_CROSS_LANE_CONSUMPTION",
+        ],
+    }
+    atomic_json(output_root / "PUBLISH_MANIFEST.json", manifest)
+
+
+def validate_publish_manifest(output_root: Path) -> list[str]:
+    failures = []
+    manifest_path = output_root / "PUBLISH_MANIFEST.json"
+    value = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if value.get("status") != "C16_LOCAL_PREP_AND_INTEGRATION_PARTIAL_READY_FOR_FINAL_REVIEW":
+        failures.append("unexpected publish status")
+    if len(value.get("artifact_checkpoint", "")) != 40:
+        failures.append("artifact checkpoint is not immutable")
+    for item in value.get("files", []):
+        path = output_root / item["path"]
+        if not path.is_file() or path.stat().st_size != item["size_bytes"] or sha256_file(path) != item["sha256"]:
+            failures.append(f"publish payload mismatch {item['path']}")
+    return failures
+
+
 def selftest() -> list[str]:
     failures = []
     if repeat_to_length([1, 2, 3], 8) != [1, 2, 3, 1, 2, 3, 1, 2]:
@@ -428,10 +478,11 @@ def main() -> int:
     parser.add_argument("--record-assets", action="store_true")
     parser.add_argument("--tokenize", action="store_true")
     parser.add_argument("--write-stage-status", action="store_true")
+    parser.add_argument("--write-publish-manifest", metavar="ARTIFACT_CHECKPOINT")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--selftest", action="store_true")
     args = parser.parse_args()
-    if not any((args.record_assets, args.tokenize, args.write_stage_status, args.validate, args.selftest)):
+    if not any((args.record_assets, args.tokenize, args.write_stage_status, args.write_publish_manifest, args.validate, args.selftest)):
         parser.error("choose at least one operation")
     failures = []
     if args.selftest:
@@ -446,10 +497,15 @@ def main() -> int:
     if args.write_stage_status:
         write_stage_status(args.output_root)
         print("C16A_T05 PASS")
+    if args.write_publish_manifest:
+        write_publish_manifest(args.output_root, args.write_publish_manifest)
+        print("C16A_T09 PASS")
     if args.validate:
         failures.extend(validate_assets(args.output_root))
         failures.extend(validate_tokens(args.output_root))
         failures.extend(validate_stage_status(args.output_root))
+        if (args.output_root / "PUBLISH_MANIFEST.json").is_file():
+            failures.extend(validate_publish_manifest(args.output_root))
         print("C16A_T04", "PASS" if not failures else "FAIL")
     if failures:
         for failure in failures:
