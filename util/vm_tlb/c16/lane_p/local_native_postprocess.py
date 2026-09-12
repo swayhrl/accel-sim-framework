@@ -77,6 +77,12 @@ SEMANTIC_COVERAGE_DETAIL_FIELDS = (
     "ambiguous_gpu_duration_ns", "unknown_gpu_duration_ns", "status",
 )
 REQUIRED_NVTX = ("C16_NATIVE_FULL_FORWARD", "C16_PHASE_PREFILL", "C16_PHASE_DECODE")
+DEFAULT_PUBLICATION_POLICY = {
+    "status": "REAL_NATIVE_SCHEMA_SANITY / PROVISIONAL",
+    "scientific_eligible": False,
+    "provisional_reason": "G formal native producer checkpoint has not yet been committed; not consumable as a cross-lane scientific conclusion.",
+    "cross_lane_visibility": "NOT_CONSUMABLE_UNTIL_HASH_BOUND_PRODUCER_CHECKPOINT",
+}
 
 
 class ContractError(RuntimeError):
@@ -99,6 +105,30 @@ def read_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ContractError(f"JSON root is not an object: {path}")
     return value
+
+
+def publication_policy(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Validate the producer-selected publication boundary for this catalog.
+
+    A raw-outside-Git catalog can legitimately be useful for local pipeline
+    diagnosis while prohibited from Lane-C consumption (for example, a
+    prospective holdout before selector freeze).  The policy lives in the
+    hashable source manifest so every emitted compact table and the final
+    manifest carry the same boundary instead of relying on an operator note.
+    """
+    supplied = manifest.get("publication_policy")
+    if supplied is None:
+        return dict(DEFAULT_PUBLICATION_POLICY)
+    if not isinstance(supplied, dict):
+        raise ContractError("publication_policy must be an object")
+    policy = dict(DEFAULT_PUBLICATION_POLICY)
+    policy.update(supplied)
+    for key in ("status", "provisional_reason", "cross_lane_visibility"):
+        if not isinstance(policy[key], str) or not policy[key].strip():
+            raise ContractError(f"publication_policy.{key} must be a nonempty string")
+    if not isinstance(policy["scientific_eligible"], bool):
+        raise ContractError("publication_policy.scientific_eligible must be boolean")
+    return policy
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -329,7 +359,7 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle, delimiter="\t"))
 
 
-def derive_tables(catalog: Path, output_dir: Path) -> dict[str, int]:
+def derive_tables(catalog: Path, output_dir: Path, *, publication_status: str) -> dict[str, int]:
     rows = read_rows(catalog)
     semantic_seen: set[tuple[str, str, str, str]] = set()
     semantic: list[dict[str, str]] = []
@@ -370,7 +400,7 @@ def derive_tables(catalog: Path, output_dir: Path) -> dict[str, int]:
             "launch_rows": len(members), "gpu_duration_ns": total,
             "distinct_kernel_names": len({row["kernel_name"] for row in members}),
             "distinct_streams": len({row["stream"] for row in members}),
-            "status": "REAL_NATIVE_SCHEMA_SANITY_PROVISIONAL",
+            "status": publication_status,
         })
         for row in members:
             duration = int(row["duration_ns"])
@@ -380,7 +410,7 @@ def derive_tables(catalog: Path, output_dir: Path) -> dict[str, int]:
                     "kernel_identity": "|".join((row["kernel_name"], row["grid"], row["block"], row["dtype_key"])),
                     "duration_ns": duration, "phase_gpu_time_fraction": format(duration / total, ".12g"),
                     "certainty_reason": "SINGLE_LAUNCH_AT_LEAST_ONE_PERCENT_PHASE_GPU_TIME",
-                    "status": "PROVISIONAL_NOT_SELECTOR_FREEZE",
+                    "status": publication_status,
                 })
     write_tsv(output_dir / "HEAVY_TAIL_KERNELS.tsv", HEAVY_TAIL_FIELDS, heavy)
     write_tsv(output_dir / "PHASE_SUMMARY.tsv", PHASE_SUMMARY_FIELDS, summaries)
@@ -452,7 +482,7 @@ def write_raw_index(verified: list[dict[str, Any]], output: Path, catalog_rows: 
     write_tsv(output / "RAW_ARTIFACT_INDEX.tsv", RAW_INDEX_FIELDS, rows)
 
 
-def write_profile_report_index(verified: list[dict[str, Any]], output: Path) -> None:
+def write_profile_report_index(verified: list[dict[str, Any]], output: Path, *, publication_status: str) -> None:
     rows: list[dict[str, Any]] = []
     for item in verified:
         identity, paths = item["profile"]["identity"], item["paths"]
@@ -468,7 +498,7 @@ def write_profile_report_index(verified: list[dict[str, Any]], output: Path) -> 
             "kernel_rows": evidence["kernel_rows"],
             "local_nsys_version": item["source"].get("local_export_tool_version", "UNKNOWN"),
             "validation_receipt_sha256": sha256_file(paths["validation_receipt"]),
-            "status": "REAL_NATIVE_SCHEMA_SANITY_PROVISIONAL",
+            "status": publication_status,
         })
     write_tsv(output / "PROFILE_REPORT_INDEX.tsv", PROFILE_REPORT_INDEX_FIELDS, rows)
 
@@ -620,6 +650,7 @@ def local_export(args: argparse.Namespace) -> None:
 
 def postprocess(args: argparse.Namespace) -> None:
     manifest = read_json(Path(args.source_manifest))
+    policy = publication_policy(manifest)
     source_specs = manifest.get("sources")
     if not isinstance(source_specs, list) or not source_specs:
         raise ContractError("source manifest must have at least one source")
@@ -628,11 +659,11 @@ def postprocess(args: argparse.Namespace) -> None:
     output.mkdir(parents=True, exist_ok=True)
     catalog = output / "KERNEL_CATALOG.tsv"
     write_tsv(catalog, CATALOG_FIELDS, (row for source in verified for row in source_catalog_rows(source)))
-    stats = derive_tables(catalog, output)
+    stats = derive_tables(catalog, output, publication_status=policy["status"])
     stats.update(write_baselines_and_audits(verified, output))
     deterministic_gzip(catalog, output / "KERNEL_CATALOG.tsv.gz")
     write_raw_index(verified, output, stats["kernel_catalog_rows"])
-    write_profile_report_index(verified, output)
+    write_profile_report_index(verified, output, publication_status=policy["status"])
     write_run_join_audit(verified, catalog, output)
     run_summaries: list[dict[str, Any]] = []
     for item in verified:
@@ -646,7 +677,7 @@ def postprocess(args: argparse.Namespace) -> None:
             "nvtx_full_forward_ranges": evidence["nvtx_range_counts"]["C16_NATIVE_FULL_FORWARD"],
             "nvtx_prefill_ranges": evidence["nvtx_range_counts"]["C16_PHASE_PREFILL"],
             "nvtx_decode_ranges": evidence["nvtx_range_counts"]["C16_PHASE_DECODE"],
-            "status": "REAL_NATIVE_SCHEMA_SANITY_PROVISIONAL",
+            "status": policy["status"],
         })
     write_tsv(output / "RUN_SUMMARY.tsv", RUN_SUMMARY_FIELDS, run_summaries)
     files = []
@@ -657,9 +688,10 @@ def postprocess(args: argparse.Namespace) -> None:
         files.append({"path": str(path), "name": path.name, "size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
     output_manifest = {
         "schema_version": "C16_P_LOCAL_NATIVE_POSTPROCESS_V1",
-        "status": "REAL_NATIVE_SCHEMA_SANITY / PROVISIONAL",
-        "scientific_eligible": False,
-        "provisional_reason": "G formal native producer checkpoint has not yet been committed; not consumable as a cross-lane scientific conclusion.",
+        "status": policy["status"],
+        "scientific_eligible": policy["scientific_eligible"],
+        "provisional_reason": policy["provisional_reason"],
+        "cross_lane_visibility": policy["cross_lane_visibility"],
         "semantic_policy": "operator_class and layer_id are UNKNOWN unless direct mapping evidence is supplied; no kernel-name inference was performed.",
         "population_policy": "all source CUPTI kernel rows are retained; full TSV and deterministic gzip remain raw-outside-Git.",
         "sources": [{
