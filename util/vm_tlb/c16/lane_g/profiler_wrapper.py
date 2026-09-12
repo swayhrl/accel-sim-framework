@@ -35,6 +35,7 @@ def parse_args(tool: str) -> argparse.Namespace:
     parser.add_argument("--raw-dir", type=Path)
     parser.add_argument("--budget-ledger", type=Path)
     parser.add_argument("--profile-overhead-threshold", type=float, default=0.10)
+    parser.add_argument("--nsys-capture-range", choices=("nvtx", "none"), default="nvtx")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if args.dry_run == args.execute:
@@ -75,7 +76,10 @@ def metric_names(path: Path) -> list[str]:
 def plan_command(tool: str, args: argparse.Namespace) -> list[str]:
     output = str(args.output)
     if tool == "nsys":
-        return ["nsys", "profile", "--force-overwrite=true", "--trace=cuda,nvtx,osrt", "--capture-range=nvtx", "--capture-range-end=stop", "-o", output, *args.command]
+        command = ["nsys", "profile", "--force-overwrite=true", "--trace=cuda,nvtx,osrt"]
+        if args.nsys_capture_range == "nvtx":
+            command.extend(("--capture-range=nvtx", "--capture-range-end=stop"))
+        return [*command, "-o", output, *args.command]
     if tool == "ncu":
         return ["ncu", "--target-processes", "application", "--replay-mode", "application", "--metrics", ",".join(metric_names(args.metrics_file)), "--export", output, *args.command]
     return list(args.command)
@@ -150,6 +154,7 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
             "naked_launch_ordinal_join_forbidden": True,
             "command": command,
             "profile_overhead_threshold": args.profile_overhead_threshold,
+            "nsys_capture_range": args.nsys_capture_range if tool == "nsys" else "NA",
             "nvbit_size_limit_bytes": MAX_NVBIT_BYTES if tool == "nvbit" else "NA",
             "nvbit_time_limit_seconds": MAX_NVBIT_SECONDS if tool == "nvbit" else "NA",
             "nvbit_injection_tool": str(args.nvbit_tool) if tool == "nvbit" else "NA",
