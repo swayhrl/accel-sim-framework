@@ -149,6 +149,13 @@ frozen S0/TEXT G0 is `SKIPPED_RESOURCE` on CUDA OOM; no P2 baseline or G1 is
 admitted without changing the frozen scenario, which is prohibited.  Lane P's
 local semantic merge is not a prerequisite for other independently admitted work.
 
+P1's remaining frozen S3/TEXT and S4/STRUCTURED groups are now closed through
+standalone baseline plus validated G1.  Next GPU task is **not** an inferred
+G2/G3: Lane C's latest public plan at `6a5b3ac…` still labels all candidate
+NVBit rows `PENDING_NATIVE_CATALOG` / historical-only.  G therefore has no
+exact committed native selector target to execute and remains fail-closed for
+G2/G3 while keeping the hash-closed native evidence available to Lane P/C.
+
 ## Known capability / analysis boundaries
 
 - G2/G3 have no frozen target and cannot gate G0/G1.
