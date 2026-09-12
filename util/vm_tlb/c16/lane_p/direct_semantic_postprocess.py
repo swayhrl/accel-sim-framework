@@ -25,6 +25,11 @@ from typing import Any, Iterable
 
 
 TAG_PREFIX = "C16_DIRECT_SEMANTIC_V1"
+DEFAULT_PUBLICATION_POLICY = {
+    "status": "REAL_NATIVE_SCHEMA_SANITY / PROVISIONAL",
+    "scientific_eligible": False,
+    "cross_lane_visibility": "NOT_CONSUMABLE_UNTIL_HASH_BOUND_PRODUCER_CHECKPOINT",
+}
 DIRECT = "DIRECT_DIAGNOSTIC_STRUCTURAL_UNAMBIGUOUS"
 UNKNOWN_ZERO = "UNKNOWN_NO_DIAGNOSTIC_STRUCTURAL_CANDIDATE"
 UNKNOWN_MULTI = "UNKNOWN_AMBIGUOUS_DIAGNOSTIC_STRUCTURAL_CANDIDATES"
@@ -80,6 +85,23 @@ def read_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ContractError(f"JSON root must be an object: {path}")
     return value
+
+
+def publication_policy(event: dict[str, Any]) -> dict[str, Any]:
+    """Bind semantic outputs to their event's downstream-visibility boundary."""
+    supplied = event.get("publication_policy")
+    if supplied is None:
+        return dict(DEFAULT_PUBLICATION_POLICY)
+    if not isinstance(supplied, dict):
+        raise ContractError("publication_policy must be an object")
+    policy = dict(DEFAULT_PUBLICATION_POLICY)
+    policy.update(supplied)
+    for key in ("status", "cross_lane_visibility"):
+        if not isinstance(policy[key], str) or not policy[key].strip():
+            raise ContractError(f"publication_policy.{key} must be a nonempty string")
+    if not isinstance(policy["scientific_eligible"], bool):
+        raise ContractError("publication_policy.scientific_eligible must be boolean")
+    return policy
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -539,6 +561,7 @@ def main() -> None:
     event = read_json(args.event)
     if event.get("schema_version") != "C16_P_P2_EVENT_V1" or event.get("event_type") != "P2_DIRECT_SEMANTIC":
         raise ContractError("input is not a C16 P hash-closed P2 event")
+    policy = publication_policy(event)
     join_contract = require_file_hash(event.get("join_key_contract", {}), label="frozen P JOIN_KEY_CONTRACT")
     producer, manifest, local = producer_event(event, args.repo)
     semantic, nsys = receipt_provenance(event, manifest, local)
@@ -563,7 +586,8 @@ def main() -> None:
     ])
     audit = {
         "schema_version": "C16_P_SEMANTIC_MERGE_AUDIT_V1", "status": "PASS_COVERAGE_LIMITED",
-        "classification": "REAL_NATIVE_SCHEMA_SANITY / PROVISIONAL", "scientific_eligible": False,
+        "classification": policy["status"], "scientific_eligible": policy["scientific_eligible"],
+        "cross_lane_visibility": policy["cross_lane_visibility"],
         "producer": producer, "identity": event["identity"],
         "sources": {"producer_manifest_sha256": producer["manifest_sha256"], "diagnostic_raw_profile_sha256": sha256_file(local["raw"]), "diagnostic_semantic_receipt_sha256": sha256_file(Path(event["receipts"]["semantic"]["path"])), "diagnostic_nsys_receipt_sha256": sha256_file(Path(event["receipts"]["nsys"]["path"])), "clean_catalog_sha256": event["clean_catalog"]["catalog"]["sha256"], "clean_profile_index_sha256": event["clean_catalog"]["profile_index"]["sha256"], "join_key_contract_path": str(join_contract), "join_key_contract_sha256": event["join_key_contract"]["sha256"]},
         "local_export_qualification": {"path": "LOCAL_DIAGNOSTIC_EXPORT_QUALIFICATION.json", "sha256": sha256_file(output / "LOCAL_DIAGNOSTIC_EXPORT_QUALIFICATION.json"), "status": qualification["status"]},
@@ -576,7 +600,7 @@ def main() -> None:
     for path in sorted(output.iterdir()):
         if path.is_file() and path.name != "SEMANTIC_POSTPROCESS_MANIFEST.json":
             files.append({"name": path.name, "size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
-    write_json(output / "SEMANTIC_POSTPROCESS_MANIFEST.json", {"schema_version": "C16_P_SEMANTIC_POSTPROCESS_V1", "status": "REAL_NATIVE_SCHEMA_SANITY / PROVISIONAL / COVERAGE_LIMITED", "event_sha256": sha256_file(args.event), "audit_sha256": sha256_file(output / "SEMANTIC_MERGE_AUDIT.json"), "files": files})
+    write_json(output / "SEMANTIC_POSTPROCESS_MANIFEST.json", {"schema_version": "C16_P_SEMANTIC_POSTPROCESS_V1", "status": f"{policy['status']} / COVERAGE_LIMITED", "scientific_eligible": policy["scientific_eligible"], "cross_lane_visibility": policy["cross_lane_visibility"], "event_sha256": sha256_file(args.event), "audit_sha256": sha256_file(output / "SEMANTIC_MERGE_AUDIT.json"), "files": files})
     print("PASS C16 P local direct-semantic event: COVERAGE_LIMITED")
 
 
