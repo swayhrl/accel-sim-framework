@@ -102,7 +102,7 @@ This is an offline expectation matrix, not a claim that the current local host o
 | `ncu` | query and freeze a compact available metric list; one target only | wrapper dry-run passed | G2 records `COUNTER_UNAVAILABLE` rather than substituting a similar counter |
 | NVBit launcher/tool | target-in/out filter, terminal trace, identity closure, 4 GiB/20 min guard | wrapper dry-run passed | G3 tiny CUDA fixture then one revalidated model target |
 | PyTorch/HF/AutoAWQ | local-files-only model import with exact dtype/quantization | logical lock only | G0 rejects CPU/dtype/backend fallback |
-| execution-budget ledger | shared 24 GPU-active-hour / 64 GiB raw accounting, serialized capture lease | ledger unit test passed | every real runner/profiler command requires the same ledger |
+| execution-budget ledger | shared 24 GPU-instance-hour wall-time / 64 GiB raw accounting, serialized capture lease | ledger unit test passed | C16-1.1 initializes it; every real runner/profiler command requires it |
 
 No wrapper uses `ncu --set full`; no wrapper requests full SASS; no wrapper invokes Accel-Sim or GPGPU-Sim.
 """
@@ -115,7 +115,7 @@ def transfer_plan_markdown() -> str:
 2. G copies only that fixed package and this G source bundle with `rsync -avP --partial` to the recorded AutoDL work root.
 3. G runs `bootstrap_autodl.sh --install --wheelhouse ...`; the script refuses an empty or hash-mismatched wheelhouse manifest.
 4. G records an instance receipt, then compares every used asset/input/wheel SHA256 to `EXPECTED_HASHES.tsv` before G0.
-5. G creates one shared execution-budget ledger in the AutoDL work root. Every real runner/profiler command receives that ledger; NVBit obtains an exclusive bounded lease before launch.
+5. C16-1.1 records an observed provider/AutoDL instance-start timestamp and initializes one shared execution-budget ledger in the AutoDL work root. Every real runner/profiler command receives that ledger; NVBit obtains an exclusive bounded lease before launch.
 6. Profiler databases and raw NVBit output remain outside Git. Each bounded capture is returned through an exchange path and represented by path/host/size/SHA256/run/target/terminal status in `RAW_INDEX.tsv`.
 
 This package is deliberately incomplete until A's committed asset/input/scenario package is available. It is not permission to download models on rented GPU or to begin G0.
@@ -146,6 +146,8 @@ Status: `C16_G_OFFLINE_PACKAGE_PARTIAL_READY_FOR_UPSTREAM_CLOSURE`.
 C16-0.3/0.4 offline infrastructure is ready: idempotent offline bootstrap, logical env lock, unified native runner, explicit Wave-1 adapters, nsys/NCU/NVBit wrappers, receipt schema, target second-pass identity guard, shared execution-budget ledger guard, and no-GPU dry-run validation. All mock outputs are marked non-scientific and cannot enter a native catalog.
 
 C16-0.9 is prepared but cannot close: A's fixed integration receipt hash-verifies model/input/scenario metadata, while its required GPU package and wheel closure remain unpublished pending its H-manifest dependency. No AutoDL SSH/GPU was used, no models were downloaded, and no simulator run was started. Once A publishes a fixed hash-bound package and the user provides AutoDL SSH, proceed with C16-1 inline G0/G1/G2/G3 qualification; G0/G1 success immediately releases its corresponding work while G2/G3 remain nonblocking.
+
+Execution safety closure: C16-1.1 must initialize the shared execution-budget ledger from an observed provider/AutoDL instance-start timestamp and its receipt path. Every real native runner, nsys, NCU, and NVBit command then requires that initialized ledger; it enforces the 24 GPU-instance-hour wall-clock envelope and separately records GPU-active operation time. NVBit additionally receives the remaining/per-window raw and time guard. Dry-runs need no ledger and remain non-scientific.
 """
 
 

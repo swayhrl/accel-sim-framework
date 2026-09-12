@@ -8,10 +8,12 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
 from c16_native_common import ContractError, atomic_json
+from execution_budget import initialize_ledger
 
 
 def query(command: list[str]) -> str:
@@ -40,7 +42,7 @@ def dry_receipt(work_root: Path) -> dict[str, Any]:
     }
 
 
-def real_receipt(work_root: Path, exclusive_confirmation: str, min_disk_gib: int) -> dict[str, Any]:
+def real_receipt(work_root: Path, exclusive_confirmation: str, min_disk_gib: int, instance_start_unix: float, budget_ledger: Path) -> dict[str, Any]:
     if exclusive_confirmation != "PROVIDER_CONFIRMED_EXCLUSIVE":
         raise ContractError("C16-1.1 requires --exclusive-confirmation PROVIDER_CONFIRMED_EXCLUSIVE; do not infer exclusivity")
     gpu_rows = [line for line in query(["nvidia-smi", "--query-gpu=name,uuid,driver_version,memory.total", "--format=csv,noheader,nounits"]).splitlines() if line]
@@ -56,6 +58,9 @@ def real_receipt(work_root: Path, exclusive_confirmation: str, min_disk_gib: int
         "execution_mode": "AUTODL_RESOURCE_AUDIT",
         "scientific_eligible": False,
         "work_root": str(work_root),
+        "instance_rental_start_unix": instance_start_unix,
+        "instance_rental_wall_seconds_at_audit": time.time() - instance_start_unix,
+        "execution_budget_ledger": str(budget_ledger),
         "gpu_rows": gpu_rows,
         "compute_apps_at_audit": applications.splitlines() if applications else [],
         "provider_exclusive_confirmation": exclusive_confirmation,
@@ -78,11 +83,24 @@ def main() -> None:
     group.add_argument("--execute", action="store_true")
     parser.add_argument("--exclusive-confirmation", default="")
     parser.add_argument("--min-disk-gib", type=int, default=300)
+    parser.add_argument("--budget-ledger", type=Path)
+    parser.add_argument("--instance-start-unix", type=float)
     args = parser.parse_args()
     if args.min_disk_gib < 1:
         parser.error("--min-disk-gib must be positive")
-    receipt = dry_receipt(args.work_root) if args.dry_run else real_receipt(args.work_root, args.exclusive_confirmation, args.min_disk_gib)
+    if args.execute and (args.budget_ledger is None or args.instance_start_unix is None):
+        parser.error("C16-1.1 --execute requires --budget-ledger and observed --instance-start-unix")
+    if args.execute and (args.instance_start_unix <= 0 or args.instance_start_unix > time.time()):
+        parser.error("--instance-start-unix must be an observed non-future Unix timestamp")
+    receipt = dry_receipt(args.work_root) if args.dry_run else real_receipt(args.work_root, args.exclusive_confirmation, args.min_disk_gib, args.instance_start_unix, args.budget_ledger)
     atomic_json(args.receipt, receipt)
+    if args.execute:
+        initialize_ledger(
+            args.budget_ledger,
+            instance_start_unix=args.instance_start_unix,
+            start_source="PROVIDER_OR_AUTODL_RECORDED_UNIX_EPOCH",
+            instance_receipt_path=args.receipt,
+        )
     print(f"PASS C16 AutoDL instance receipt: {args.receipt}")
 
 

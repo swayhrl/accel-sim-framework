@@ -16,7 +16,7 @@ from c16_native_common import ContractError, PLANNING_SHA, atomic_json
 
 
 SCHEMA_VERSION = "C16_G_EXECUTION_BUDGET_V1"
-MAX_GPU_ACTIVE_SECONDS = 24 * 60 * 60
+MAX_GPU_INSTANCE_WALL_SECONDS = 24 * 60 * 60
 MAX_NVBIT_TOTAL_RAW_BYTES = 64 * 1024 * 1024 * 1024
 MAX_NVBIT_WINDOW_BYTES = 4 * 1024 * 1024 * 1024
 MAX_NVBIT_WINDOW_SECONDS = 20 * 60
@@ -28,11 +28,16 @@ def _new_ledger() -> dict[str, Any]:
         "schema_version": SCHEMA_VERSION,
         "planning_sha": PLANNING_SHA,
         "limits": {
-            "gpu_active_seconds": MAX_GPU_ACTIVE_SECONDS,
+            "gpu_instance_wall_seconds": MAX_GPU_INSTANCE_WALL_SECONDS,
             "nvbit_total_raw_bytes": MAX_NVBIT_TOTAL_RAW_BYTES,
             "nvbit_window_raw_bytes": MAX_NVBIT_WINDOW_BYTES,
             "nvbit_window_seconds": MAX_NVBIT_WINDOW_SECONDS,
             "nvbit_windows_per_deployment": MAX_NVBIT_WINDOWS_PER_DEPLOYMENT,
+        },
+        "instance": {
+            "start_unix": None,
+            "start_source": "UNINITIALIZED",
+            "instance_receipt_path": "NA",
         },
         "entries": [],
     }
@@ -49,6 +54,11 @@ def _load(path: Path) -> dict[str, Any]:
         raise ContractError("execution-budget ledger has an unknown schema")
     if payload.get("planning_sha") != PLANNING_SHA or payload.get("limits") != _new_ledger()["limits"]:
         raise ContractError("execution-budget ledger planning authority or hard limits differ")
+    instance = payload.get("instance")
+    if not isinstance(instance, dict) or not isinstance(instance.get("start_source"), str) or not isinstance(instance.get("instance_receipt_path"), str):
+        raise ContractError("execution-budget ledger has malformed instance provenance")
+    if instance.get("start_unix") is not None and (not isinstance(instance["start_unix"], (int, float)) or instance["start_unix"] <= 0):
+        raise ContractError("execution-budget ledger has an invalid instance start time")
     if not isinstance(payload.get("entries"), list):
         raise ContractError("execution-budget ledger has no entry list")
     for entry in payload["entries"]:
@@ -64,6 +74,35 @@ def _totals(payload: dict[str, Any]) -> tuple[float, int]:
         sum(float(entry["elapsed_seconds"]) for entry in payload["entries"]),
         sum(int(entry["raw_bytes"]) for entry in payload["entries"]),
     )
+
+
+def initialize_ledger(ledger_path: Path, *, instance_start_unix: float, start_source: str, instance_receipt_path: Path) -> dict[str, Any]:
+    """Initialize the one ledger from a C16-1.1 receipt without guessing start time."""
+    if instance_start_unix <= 0 or instance_start_unix > time.time() or not start_source:
+        raise ContractError("execution-budget ledger requires an observed, non-future instance start time")
+    ledger_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = ledger_path.with_name(ledger_path.name + ".lock")
+    with lock_path.open("a+", encoding="utf-8") as lock_handle:
+        try:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise ContractError("another C16 GPU operation holds the shared execution-budget ledger") from exc
+        try:
+            ledger = _load(ledger_path)
+            instance = ledger["instance"]
+            expected = {
+                "start_unix": instance_start_unix,
+                "start_source": start_source,
+                "instance_receipt_path": str(instance_receipt_path),
+            }
+            if instance["start_unix"] is None:
+                ledger["instance"] = expected
+                atomic_json(ledger_path, ledger)
+            elif instance != expected:
+                raise ContractError("execution-budget ledger is already initialized with different instance provenance")
+            return ledger
+        finally:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
 
 
 class BudgetLease:
@@ -98,11 +137,15 @@ class BudgetLease:
             raise ContractError("another C16 GPU operation holds the shared execution-budget ledger") from exc
         try:
             self._ledger = _load(self.ledger_path)
-            elapsed_used, raw_used = _totals(self._ledger)
-            active_remaining = MAX_GPU_ACTIVE_SECONDS - elapsed_used
-            if active_remaining <= 0:
-                raise ContractError("C16 GPU-active-hour budget is exhausted")
-            self.max_elapsed_seconds = min(MAX_NVBIT_WINDOW_SECONDS, active_remaining) if self.capture else active_remaining
+            _active_elapsed_used, raw_used = _totals(self._ledger)
+            instance = self._ledger["instance"]
+            start_unix = instance["start_unix"]
+            if start_unix is None:
+                raise ContractError("execution-budget ledger is uninitialized; complete C16-1.1 first")
+            wall_remaining = MAX_GPU_INSTANCE_WALL_SECONDS - (time.time() - float(start_unix))
+            if wall_remaining <= 0:
+                raise ContractError("C16 GPU-instance wall-time budget is exhausted")
+            self.max_elapsed_seconds = min(MAX_NVBIT_WINDOW_SECONDS, wall_remaining) if self.capture else wall_remaining
             if self.capture:
                 deployment = self.identity.get("deployment_id")
                 windows = sum(
@@ -165,7 +208,7 @@ class BudgetLease:
 def ledger_markdown() -> str:
     return """# C16 Lane G execution-budget guard
 
-Real C16 native operations require one shared `--budget-ledger` in the AutoDL work root. The guard serializes C16 GPU operations with a nonblocking lock and records native/profile elapsed time separately from NVBit raw bytes. It refuses a new operation after 24 GPU-active hours, and for NVBit it additionally refuses concurrent use, a seventh first-wave window for one deployment, or a window whose available raw allowance is exhausted.
+Real C16 native operations require one shared `--budget-ledger` in the AutoDL work root. C16-1.1 initializes it from an explicit provider/AutoDL instance-start timestamp and the instance receipt path; a real operation cannot create or use an uninitialized ledger. The guard serializes C16 GPU operations with a nonblocking lock, enforces the 24 GPU-instance-hour wall-clock envelope, and records GPU-active operation elapsed time separately from rental wall time and NVBit raw bytes. For NVBit it additionally refuses concurrent use, a seventh first-wave window for one deployment, or a window whose available raw allowance is exhausted.
 
-NVBit's effective runtime/raw ceiling is the smaller of the per-window 20-minute/4-GiB limit and the remaining global 24-hour/64-GiB budget. A terminal `BOUNDED_PARTIAL` is preserved rather than extended. The ledger is accounting provenance only: it never turns a dry-run into native evidence and it never contains profiler raw output.
+NVBit's effective runtime/raw ceiling is the smaller of the per-window 20-minute/4-GiB limit and the remaining instance wall-time/64-GiB budget. A terminal `BOUNDED_PARTIAL` is preserved rather than extended. The ledger is accounting provenance only: it never turns a dry-run into native evidence and it never contains profiler raw output.
 """

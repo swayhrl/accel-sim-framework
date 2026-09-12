@@ -7,6 +7,7 @@ import json
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -89,6 +90,15 @@ class NativeContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             ledger = Path(directory) / "C16_EXECUTION_BUDGET.json"
             identity = DRY.target()["identity"]
+            with self.assertRaises(COMMON.ContractError):
+                with BUDGET.BudgetLease(ledger, identity, "NVBIT", capture=True):
+                    pass
+            BUDGET.initialize_ledger(
+                ledger,
+                instance_start_unix=time.time(),
+                start_source="UNIT_TEST_OBSERVED_START",
+                instance_receipt_path=Path("fixture-instance-receipt.json"),
+            )
             for _ in range(BUDGET.MAX_NVBIT_WINDOWS_PER_DEPLOYMENT):
                 with BUDGET.BudgetLease(ledger, identity, "NVBIT", capture=True) as lease:
                     self.assertEqual(lease.max_raw_bytes, BUDGET.MAX_NVBIT_WINDOW_BYTES)
@@ -100,6 +110,8 @@ class NativeContractTest(unittest.TestCase):
             ledger_payload = json.loads(ledger.read_text(encoding="utf-8"))
             self.assertEqual(len(ledger_payload["entries"]), BUDGET.MAX_NVBIT_WINDOWS_PER_DEPLOYMENT)
             self.assertEqual(sum(entry["raw_bytes"] for entry in ledger_payload["entries"]), BUDGET.MAX_NVBIT_WINDOWS_PER_DEPLOYMENT)
+            self.assertEqual(ledger_payload["instance"]["start_source"], "UNIT_TEST_OBSERVED_START")
+            self.assertEqual(ledger_payload["limits"]["gpu_instance_wall_seconds"], BUDGET.MAX_GPU_INSTANCE_WALL_SECONDS)
 
     def test_native_execute_requires_budget_ledger_before_any_cuda_import(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -124,6 +136,16 @@ class NativeContractTest(unittest.TestCase):
             ], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
             self.assertNotEqual(completed.returncode, 0)
             self.assertIn("--budget-ledger", completed.stderr)
+
+    def test_autodl_resource_execute_requires_observed_start_before_gpu_query(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            completed = subprocess.run([
+                sys.executable, str(LANE / "autodl_instance_receipt.py"), "--receipt", str(root / "receipt.json"),
+                "--work-root", str(root), "--execute", "--exclusive-confirmation", "PROVIDER_CONFIRMED_EXCLUSIVE",
+            ], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("--budget-ledger and observed --instance-start-unix", completed.stderr)
 
     def test_transfer_verifier_exposes_unclosed_a_package(self):
         with tempfile.TemporaryDirectory() as directory:
