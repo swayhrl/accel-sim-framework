@@ -1,7 +1,8 @@
 gap_id	stage_scope	status	blocking_input	allowed_action	prohibited_substitute
-GAP-C16-01	C16-0.9	CLOSED	G@b5039e160331db993e226bc02fcdfa811db29911 manifest 97b54c7c	consumed after manifest+payload validation	invented environment/runtime lock
-GAP-C16-02	C16-0.9	WAITING_INPUT	H@65b5357400db3b4c77f8a60e575091e22fb081ee has no publish manifest	consume only after commit+manifest+hash publication	live partial tool output
-GAP-C16-03	C16-0.2;C16-0.9	EXPLICIT_ASSET_GAP	non-Llama full checkpoint files absent locally	obtain only after package closure and new authorization	revision replacement or unhashed weight
+GAP-C16-01	C16-0.3;C16-0.4	CLOSED_FIXED_G_MANIFEST	G@45e293b84940ef59b7b134bcda48aca7d0b99b2f: 17/17 release payloads and 66/66 wheel hashes pass	retain hash-bound G release in final package	consume a live branch state or invent environment/runtime lock
+GAP-C16-02	C16-0.8	CLOSED_SIMULTANEOUS_RECONSUMPTION	G@45e293b8, C@29e669ec, and H@932c6fa4 all pass fixed-commit manifest validation	retain the three fixed commit+manifest bindings	live partial tool output or C/H content used to repair G
+GAP-C16-03	C16-0.2;C16-0.9	IN_PROGRESS_WAVE1_LOCAL_PREP	Qwen2.5-7B raw/AWQ checkpoint shards are downloading and unaccepted until whole-file SHA checks pass	continue revision-pinned download and per-file local SHA validation	revision replacement, remote LFS hash treated as local file, or unhashed weight
 GAP-C16-04	C16-5.4	NOT_QUALIFIED	C16 native/fingerprint/qualification metrics	leave common-pattern result empty	static/historical result promoted as C16 native
 GAP-C16-05	C16-6.2	WAITING_INPUT	G native/capture cost; C qualification boundary now fixed but no native metric	retain unknown cost as NA	unfounded cost reduction or provider price
 GAP-C16-06	C16-6.3	UNCLUSTERED	stable selected qualified metrics	leave unclustered	behavior taxonomy forced from architecture labels
+GAP-C16-07	C16-0.2	NONBLOCKING_GATED_REMOTE_CROSSCHECK	Meta Llama Hub revision is gated and anonymous API access rejects the remote LFS lookup	retain recorded local path/size/SHA-256 plus immutable model/tokenizer revision; perform a remote-LFS equality check only with authorized Hub credentials	claim remote-LFS byte equality without an authorized lookup

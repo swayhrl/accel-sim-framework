@@ -1,41 +1,40 @@
-# C16 A local prep and integration closeout
+# C16 A local preparation and integration — reopened status
 
-Final status: `C16_LOCAL_PREP_AND_INTEGRATION_PARTIAL_READY_FOR_FINAL_REVIEW`.
+Status: `C16_A_LOCAL_PREP_REOPENED_WAVE1_IN_PROGRESS`; this is not a final
+closeout and does not satisfy C16-0.9.
 
-Lane A completed the available C15 metadata/provenance closeout and C16 local
-pre-rental preparation.  The C15 A/B/C baselines are separately commit- and
-manifest-hash-bound; model/deployment roles, tokenizer revisions, actual token
-IDs, and S0–S4 identities are frozen.  The C16 stage-by-stage execution and
-scientific status is the one-row-per-stage `C16_STAGE_STATUS.tsv`.
+Already closed, without any GPU execution:
 
-What is ready:
+- C15 metadata/provenance remains read-only and hash-bound.
+- C16 input corpus, actual CPU token receipts, and S0–S4 scenarios remain
+  frozen.
+- Wave-1 Llama3.2-1B and Qwen2.5-0.5B are local, with whole-file SHA-256,
+  immutable model revision, and tokenizer revision recorded.  The Llama remote
+  LFS lookup is gated, so no unsupported remote-equality claim is made.
+- Optional Wave-2 DeepSeek-V2-Lite has four locally present checkpoint files
+  (`31,413,626,576` bytes total), each matching the fixed-revision remote LFS
+  declaration.
 
-- C16-0.0, 0.1, 0.2, 0.6, and 0.7 passed their local/provenance acceptance
-  scope.  Llama's existing checkpoint and every downloaded metadata/tokenizer
-  file have local SHA-256 values.  Every absent non-Llama checkpoint shard has
-  a fixed remote LFS SHA-256 and size, without downloading its content.
-- All 84 stored token receipts are actual CPU tokenizer outputs over three raw,
-  hash-bound input classes and four exact prefill lengths.  No input is inferred
-  from a model family or copied from a live producer worktree.
-- C16-5.4, 6.2, and 6.3 are explicitly not qualified rather than filled with
-  static or historical substitutes.  No common pattern, behavior class, cost
-  reduction, timing, cache/TLB result, or MoE routing result is claimed.
-- Fixed G and C releases are now hash-validated in `integration/`: G provides
-  only offline C16-0.3/0.4 infrastructure closure, and C provides only offline
-  C16-0.8/3.x/6.1 boundaries.  Neither is promoted to native evidence.
+Still active or blocked:
 
-What blocks the remaining work:
-
-- H commit `65b5357400db3b4c77f8a60e575091e22fb081ee` lacks a publish manifest
-  or equivalent payload-hash release.  A rejected it as an input rather than
-  reading a live partial.  This blocks C16-0.9 GPU package publication and all
-  native/fingerprint synthesis.
-- Non-Llama full weights are intentionally not local.  The asset manifest makes
-  the exact file set hash-addressable, but a transfer cannot begin until the
-  complete package, G environment lock, and C/H offline-gate artifacts are
-  published and a fresh authorization permits it.
+- Wave-1 Qwen2.5-7B raw and AWQ shards are in resumable, range-verified local
+  download.  Temporary shards are excluded from the asset manifest until their
+  complete-file SHA-256 check passes.
+- Immutable `C16_GPU_PACKAGE_P0` is published for the already verified Llama
+  assets only. Its own manifest SHA-256 is `ac59f0d2…`; it binds fixed G/C/H,
+  frozen inputs/token receipts, S0–S4 scenarios, and the G wheelhouse manifest.
+  It neither includes nor stands in for Qwen weights, and it starts no GPU job.
+- G `45e293b8…`, C `29e669ec…`, and H `932c6fa4…` are final-consumed only
+  after fixed-commit manifest/payload validation.  They provide offline
+  environment/wheel/runner and selector/admission protocols, not dynamic
+  scientific evidence. Thus the Wave-1 asset gate still prevents publication
+  of the GPU package, expected hash ledger, transfer plan, and any rental
+  recommendation; no native result, common pattern, cost result, or behavior
+  class is published.
+- Wave-2 Qwen3-8B remains non-blocking; Qwen3-30B-A3B is explicitly constrained
+  by local disk capacity and will not be misrepresented as present.
 
 No GPU, CUDA model execution, profiler, NVBit, simulator, SASS, or full-ROI
-task was started.  The three bounded future high-fidelity requests in
-`NEXT_HIGH_FIDELITY_REQUESTS.md` require new authorization and are not queued
-for automatic execution.
+task has been started.  The authoritative execution/scientific status, costs,
+and gaps are `C16_STAGE_STATUS.tsv`, `C16_COST_MODEL.tsv`, and
+`GAP_REGISTER.tsv`.

@@ -1,15 +1,24 @@
 # C16 A fixed-release integration receipt
 
-Integration artifact checkpoint: `2a06944c359a9873ae72c89015eb5235dda2d2ee`.
+Historical integration artifact checkpoint:
+`2a06944c359a9873ae72c89015eb5235dda2d2ee`.
 
-This integration accepts only G
-`b5039e160331db993e226bc02fcdfa811db29911` and C
-`fed28d8113c0d92cf3a576645f5d736769aefb12`, after their respective manifests
-and every listed payload matched.  The exact identities and manifests are in
-`CONSUMED_C16_RELEASES.tsv` and `MANIFEST_VALIDATION.md`.
+This closeout is reopened. The historical G/C inputs are superseded and are not
+used as a fallback for the newly required final G/C/H consumption. Current
+read-only validation is recorded in `CONSUMED_C16_RELEASES.tsv` and
+`MANIFEST_VALIDATION.md`:
 
-H `65b5357400db3b4c77f8a60e575091e22fb081ee` is explicitly rejected because it
-does not carry a publish manifest or equivalent payload-hash release.  It is not
-an input to the C16 GPU package, common-pattern, cost, behavior-class, or final
-dynamic conclusion.  Consequently the overall status remains
-`C16_LOCAL_PREP_AND_INTEGRATION_PARTIAL_READY_FOR_FINAL_REVIEW`.
+- G source `72e9b55f…`, final handoff `45e293b8…`, and manifest
+  `7c18c2a8…` are final-consumed after 17/17 declared release payloads and
+  66/66 local wheel hashes pass.
+- C source `3681c506…`, final handoff `29e669ec…`, and manifest
+  `14a7c029…` are final-consumed after 24/24 payloads pass.
+- H implementation source `20701d21…`, final handoff `932c6fa4…`, and
+  manifest `b7821231…` are final-consumed after four code files plus the
+  root-relative test receipt pass.
+- No live partial branch state is consumed. G/C/H are consumed strictly as
+  offline infrastructure/protocol artifacts and contribute no dynamic result.
+
+The integration remains open until complete locally verified Wave-1 assets
+permit the three formal C16-0.9 package artifacts. No GPU, AutoDL, profiler,
+NVBit, simulator, SASS, or full-ROI action follows from this receipt.

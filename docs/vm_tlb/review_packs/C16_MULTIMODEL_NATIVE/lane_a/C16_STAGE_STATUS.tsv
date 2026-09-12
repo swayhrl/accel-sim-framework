@@ -1,14 +1,14 @@
 stage_id	owner	execution_status	scientific_status	evidence_commit_or_receipt	cost_status	limitation
 C16-0.0	A	EXECUTED_PASS	PROVENANCE_CLOSED	C16_BASELINE_MANIFEST.json;C15_A_CLOSEOUT_RECEIPT.md	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	C15 remains read-only static/offline evidence
 C16-0.1	A	EXECUTED_PASS	SELECTION_FROZEN_NO_RESULTS	MODEL_MATRIX.tsv;MODEL_SELECTION_RATIONALE.md	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	no candidate outcome used for selection
-C16-0.2	A	EXECUTED_PASS	ASSET_IDENTITY_CLOSED	MODEL_ASSET_MANIFEST.tsv;MODEL_ASSET_RECEIPTS/	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	non-Llama full weights are remote-SHA-addressable but not local
-C16-0.3	G	CONSUMED_FIXED_G_RELEASE	OFFLINE_READY_NOT_GPU_EXECUTED	G@b5039e160331db993e226bc02fcdfa811db29911; manifest=97b54c7c	NA	offline environment closure only; no GPU instance or wheel import receipt exists
-C16-0.4	G	CONSUMED_FIXED_G_RELEASE	OFFLINE_READY_NOT_GPU_EXECUTED	G@b5039e160331db993e226bc02fcdfa811db29911; manifest=97b54c7c	NA	runner/wrapper fixtures only; no GPU runner execution exists
-C16-0.5	H	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
+C16-0.2	A	IN_PROGRESS_LOCAL_WAVE1_DOWNLOAD	ASSET_IDENTITY_PARTIAL	MODEL_ASSET_MANIFEST.tsv;MODEL_ASSET_RECEIPTS/;EXECUTION_RECEIPTS.md	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	each Wave-1 checkpoint file must be locally present and SHA-256-verified before PASS; remote LFS declarations alone are insufficient
+C16-0.3	G	EXECUTED_PASS	OFFLINE_WHEEL_ENV_CLOSURE_ONLY	G@45e293b84940ef59b7b134bcda48aca7d0b99b2f; manifest=7c18c2a8; 17/17 release payloads and 66/66 local wheel hashes pass	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	offline wheel/env closure is not a GPU runtime or native measurement
+C16-0.4	G	EXECUTED_PASS	OFFLINE_RUNNER_CLOSURE_ONLY	G@45e293b84940ef59b7b134bcda48aca7d0b99b2f; manifest=7c18c2a8; 17/17 release payloads pass	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	runner wrapper closure is not permission to launch a GPU instance
+C16-0.5	H	EXECUTED_PASS	OFFLINE_ADMISSION_PROTOCOL_ONLY	H@932c6fa44a4896265214fc2136e34698402a5c7f; manifest=b7821231; 5/5 payloads pass	NA	H hardening is final-consumed only as an offline protocol; it has no dynamic scientific rows
 C16-0.6	A	EXECUTED_PASS	INPUT_IDENTITY_CLOSED	INPUT_CORPUS.tsv;TOKEN_RECEIPTS/	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	token IDs are CPU tokenizer results, not runtime outputs
 C16-0.7	A	EXECUTED_PASS	SCENARIOS_FROZEN_NOT_EXECUTED	SCENARIO_MATRIX.tsv;SCENARIO_POLICY.md	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	resource admission and actual backend identity remain G duties
-C16-0.8	C,H	PARTIAL_RELEASE_C_ONLY	OFFLINE_FIXTURE_VALIDATED_C_ONLY	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	H fixed commit lacks a publish manifest, so H data is not consumed
-C16-0.9	A,G	WAITING_INPUT	NOT_EXECUTED	C16_GPU_PACKAGE_READINESS.md;TRANSFER_PREREQUISITES.tsv	NA	G 0.3/0.4 and C 0.8 are hash-bound; H 0.8 lacks a manifest, so package is intentionally unpublished
+C16-0.8	C,H	EXECUTED_PASS	OFFLINE_PROTOCOL_FINAL_CONSUMED	G@45e293b84940ef59b7b134bcda48aca7d0b99b2f;C@29e669eca19ac3b2a1350bf2d097569a41f123e1;H@932c6fa44a4896265214fc2136e34698402a5c7f	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	all three fixed manifests are hash-validated; this is offline tool closure, not a dynamic result
+C16-0.9	A,G	EXECUTED_PARTIAL_P0	LLAMA_ONLY_TRANSFER_PACKAGE	packages/C16_GPU_PACKAGE_P0/	CPU_ONLY_NO_BILLABLE_RATE_RECORDED	immutable P0 contains only the fully local Llama checkpoint and may support only separately authorized Llama import/canary work; it does not close multi-model C16-0.9
 C16-1.1	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
 C16-1.2	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
 C16-1.3	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
@@ -21,14 +21,14 @@ C16-2.3	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTI
 C16-2.4	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
 C16-2.5	G,C	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
 C16-2.6	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
-C16-3.1	C	CONSUMED_FIXED_C_RELEASE	OFFLINE_SCHEMA_VALIDATED	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	strata release is not a native fact table
-C16-3.2	C	CONSUMED_FIXED_C_RELEASE	OFFLINE_SELECTOR_VALIDATED	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	no candidate outcome used; target application waits for G catalog
-C16-3.3	C	CONSUMED_FIXED_C_RELEASE	OFFLINE_ESTIMATOR_VALIDATED	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	fixture conservation does not qualify a native metric
-C16-3.4	C	CONSUMED_FIXED_C_RELEASE	OFFLINE_BUDGET_VALIDATED	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	capture cost fields are not observed provider costs
-C16-3.5	C	CONSUMED_FIXED_C_RELEASE	RETROSPECTIVE_ORACLE_CALIBRATION	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	C12/C13 mode=0 only; no blind or native claim
-C16-3.6	C	CONSUMED_PROTOCOL_WAITING_G	PENDING	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	requires committed Wave-1 catalog
+C16-3.1	C	EXECUTED_PASS	OFFLINE_SCHEMA_BOUNDARY_ONLY	C@29e669eca19ac3b2a1350bf2d097569a41f123e1; manifest=14a7c029	NA	final-consumed offline selector schema; no native fact table
+C16-3.2	C	EXECUTED_PASS	OFFLINE_SELECTOR_BOUNDARY_ONLY	C@29e669eca19ac3b2a1350bf2d097569a41f123e1; manifest=14a7c029	NA	no candidate outcome used; future application needs a committed Wave-1 catalog
+C16-3.3	C	EXECUTED_PASS	OFFLINE_ESTIMATOR_BOUNDARY_ONLY	C@29e669eca19ac3b2a1350bf2d097569a41f123e1; manifest=14a7c029	NA	fixture conservation does not qualify a native metric
+C16-3.4	C	EXECUTED_PASS	OFFLINE_BUDGET_BOUNDARY_ONLY	C@29e669eca19ac3b2a1350bf2d097569a41f123e1; manifest=14a7c029	NA	capture cost fields are not observed provider costs
+C16-3.5	C	EXECUTED_PASS	RETROSPECTIVE_ORACLE_BOUNDARY_ONLY	C@29e669eca19ac3b2a1350bf2d097569a41f123e1; manifest=14a7c029	NA	C12/C13 mode=0 only; no blind or native claim
+C16-3.6	C	WAITING_WAVE1_PACKAGE	PENDING	C@29e669eca19ac3b2a1350bf2d097569a41f123e1; manifest=14a7c029	NA	requires A's committed Wave-1 package before a prospective holdout catalog exists
 C16-4.1	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
-C16-4.2	G,C,H	CONSUMED_PROTOCOL_WAITING_G	PENDING	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	no native target identity exists
+C16-4.2	G,C,H	WAITING_WAVE1_PACKAGE	PENDING	G@45e293b84940ef59b7b134bcda48aca7d0b99b2f;C@29e669eca19ac3b2a1350bf2d097569a41f123e1;H@932c6fa44a4896265214fc2136e34698402a5c7f	NA	offline inputs are final-consumed, but no native target identity exists
 C16-4.3	G	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
 C16-4.4	H	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
 C16-4.5	H	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
@@ -38,7 +38,7 @@ C16-5.2	H,A	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_AR
 C16-5.3	H,A	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
 C16-5.4	A	WAITING_INPUT	NOT_QUALIFIED	COMMON_PATTERN_AUDIT.tsv	NA	no fixed C16 native/fingerprint/qualification inputs; no common pattern claimed
 C16-5.5	H,C,A	WAITING_PRODUCER_PUBLISH	NOT_EXECUTED	NO_FIXED_C16_G_C_H_PRODUCER_ARTIFACT	NA	producer branch currently resolves only to common planning SHA; live partial is not consumed
-C16-6.1	C	CONSUMED_FIXED_C_RELEASE	METRIC_BY_METRIC_BOUNDARY_PUBLISHED	C@fed28d8113c0d92cf3a576645f5d736769aefb12; manifest=20b94eef	NA	no global sampler PASS and no native metric qualification
+C16-6.1	C	EXECUTED_PASS	METRIC_BY_METRIC_BOUNDARY_PUBLISHED	C@29e669eca19ac3b2a1350bf2d097569a41f123e1; manifest=14a7c029	NA	final-consumed qualification schema; no global sampler PASS and no native metric qualification
 C16-6.2	A	WAITING_INPUT	PARTIAL_COST_LEDGER_ONLY	C16_COST_MODEL.tsv	NA	G 2.6/4.3 and C 6.1 are unavailable; all unknown costs are NA
 C16-6.3	A,H,C	WAITING_INPUT	UNCLUSTERED_NOT_QUALIFIED	BEHAVIOR_CLASSES.md	NA	no qualified cross-model metrics; no forced taxonomy
 C16-6.4	A	PARTIAL_READY_FOR_FINAL_REVIEW	NO_NEW_DYNAMIC_CONCLUSION	FINAL_REPORT.md;NEXT_HIGH_FIDELITY_REQUESTS.md	NA	future high-fidelity requests require new authorization; no auto-launch
