@@ -251,11 +251,13 @@ def load_runtime_model(adapter: Any, model_path: Path, torch: Any, dtype: str, *
             from awq import AutoAWQForCausalLM
         except ImportError as exc:
             raise ContractError("AutoAWQ is absent; AWQ is not silently substituted with a raw adapter") from exc
-        # ``fuse_layers=False`` keeps the qualified standalone model structure;
-        # device_map is deliberately a single CUDA device with no offload folder.
+        # ``fuse_layers=False`` keeps the qualified standalone model structure.
+        # Accelerate rejects a literal ``cuda:0`` string here, so use its
+        # explicit root-module map; it is still exactly one CUDA device and
+        # still provides neither a CPU nor an offload-folder route.
         awq = AutoAWQForCausalLM.from_quantized(
             str(model_path), max_seq_len=required_sequence_length, fuse_layers=False,
-            trust_remote_code=False, safetensors=True, device_map="cuda:0",
+            trust_remote_code=False, safetensors=True, device_map={"": 0},
         )
         model = getattr(awq, "model", None)
         if model is None:
@@ -266,7 +268,7 @@ def load_runtime_model(adapter: Any, model_path: Path, torch: Any, dtype: str, *
             "quantization_implementation": "AUTOAWQ_FROM_QUANTIZED_FUSE_FALSE",
             "requested_dtype": dtype,
             "required_sequence_length": required_sequence_length,
-            "device_map": "cuda:0",
+            "device_map": {"": 0},
             "cpu_offload_forbidden": True,
         }
     raise ContractError(f"unsupported runtime-native adapter loader: {adapter.model_loader}")

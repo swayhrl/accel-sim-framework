@@ -76,7 +76,7 @@ class AwqRuntimeTests(unittest.TestCase):
         self.assertTrue(model.evaluated)
         self.assertEqual(FakeAwqLoader.calls, [("/immutable/awq", {
             "max_seq_len": 8200, "fuse_layers": False, "trust_remote_code": False,
-            "safetensors": True, "device_map": "cuda:0",
+            "safetensors": True, "device_map": {"": 0},
         })])
         self.assertEqual(evidence["quantization_implementation"], "AUTOAWQ_FROM_QUANTIZED_FUSE_FALSE")
         self.assertTrue(evidence["cpu_offload_forbidden"])
