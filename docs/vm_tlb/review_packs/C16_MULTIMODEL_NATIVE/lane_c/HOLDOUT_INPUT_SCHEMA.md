@@ -1,0 +1,5 @@
+# Frozen holdout metric input contract
+
+After `--freeze-native`, a G/H producer may publish a small, manifest-listed TSV.  C consumes it only with `--consume-holdout --producer-commit <sha> --manifest-path <path> --payload-path <path>`.  Required columns are `deployment_id`, `scenario_id`, `phase`, `unit_id`, `metric`, `metric_kind`, `evidence_tier`, `target_identity_status`, and `ground_truth_scope`. `metric_kind` is one of `ADDITIVE`, `RATE`, `STRUCTURAL`, or `MECHANISM_RESPONSE`.
+
+`ADDITIVE` and `MECHANISM_RESPONSE` require `value`. `RATE` requires independent `numerator` and `denominator`; C recomputes the ratio after weighting. `STRUCTURAL` is never extrapolated with N_s/n_s. `target_identity_status` must be `EXACT`; `ground_truth_scope=FULL_FROZEN_UNIVERSE` is required before error qualification against a population truth. Mechanism response additionally needs `high_fidelity_truth=TRUE` and a common `effect_fraction_of_reference`; it is `INCONCLUSIVE` / `NOT_QUALIFIED` if the interval crosses zero, effect is below the frozen 2% fraction, or the resolution cannot distinguish it.
