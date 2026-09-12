@@ -438,7 +438,9 @@ def write_publish_manifest(output_root: Path, artifact_checkpoint: str) -> None:
         "schema_version": "C16_A_LOCAL_PREP_PUBLISH_V1",
         "status": "C16_LOCAL_PREP_AND_INTEGRATION_PARTIAL_READY_FOR_FINAL_REVIEW",
         "planning_sha": PLANNING_SHA,
-        "artifact_checkpoint": artifact_checkpoint,
+        "local_prep_artifact_checkpoint": "42d12e149314d00c230ecfa9b8e9e3c39084bf5d",
+        "integration_base_checkpoint": "2a06944c359a9873ae72c89015eb5235dda2d2ee",
+        "integration_producer_checkpoint": artifact_checkpoint,
         "scope": "C15 provenance closure, C16 A local metadata/tokenizer/input/scenario preparation, and fixed-manifest G/C offline integration only",
         "files": files,
         "gates_not_satisfied": ["C16-0.9", "C16-5.4", "C16-6.2", "C16-6.3"],
@@ -458,8 +460,9 @@ def validate_publish_manifest(output_root: Path) -> list[str]:
     value = json.loads(manifest_path.read_text(encoding="utf-8"))
     if value.get("status") != "C16_LOCAL_PREP_AND_INTEGRATION_PARTIAL_READY_FOR_FINAL_REVIEW":
         failures.append("unexpected publish status")
-    if len(value.get("artifact_checkpoint", "")) != 40:
-        failures.append("artifact checkpoint is not immutable")
+    for key in ("local_prep_artifact_checkpoint", "integration_base_checkpoint", "integration_producer_checkpoint"):
+        if len(value.get(key, "")) != 40:
+            failures.append(f"{key} is not immutable")
     for item in value.get("files", []):
         path = output_root / item["path"]
         if not path.is_file() or path.stat().st_size != item["size_bytes"] or sha256_file(path) != item["sha256"]:
