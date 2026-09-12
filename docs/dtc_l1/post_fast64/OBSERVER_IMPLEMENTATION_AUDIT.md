@@ -62,3 +62,16 @@ ordered compact-stat blocks (two for Btree), requires exact equality of
 pre-existing accounting, and checks terminal observer drain. The complete
 provenance manifest, retained telemetry values, and excluded-attempt ledger
 are linked by `OBSERVER_EQUIVALENCE_REPORT.md`.
+
+## D3B occupancy-extension qualification record
+
+The reviewed occupancy-only extension is separately qualified on Core95
+commit `2fcde3eb3fce1502cc0f910cad6f807e530018c5` with runtime SHA-256
+`037d82c61ac90cab41cfdf98234a0889aee16839177a32de23965cb516758d05`.
+NN and Btree each pass exact telemetry-off/on comparison in IO and OO.  The
+comparator checks the complete ordered scientific-stat sequence, including
+both Btree blocks; all 90 IO and 66 OO pre-existing field families match
+exactly, new fields are zero off, and terminal identity records are zero on.
+The D3B retained compact evidence is in
+`generated/D3B_OCCUPANCY_EXTENSION_EQUIVALENCE.tsv` and
+`generated/D3B_OCCUPANCY_EXTENSION_TELEMETRY.tsv`.

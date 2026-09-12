@@ -66,3 +66,12 @@ does not require a formal OO rerun. Thus D4 and D5 are
 Failed, superseded, and mixed-provenance attempts are excluded from these
 tables and listed explicitly in
 `generated/observer_failed_or_obsolete_attempts.tsv`.
+
+## Historical-scope note
+
+The preceding D3 report qualifies the earlier observer field set only.  The
+reviewed time-integrated occupancy extension is qualified by the later
+`D3B_OCCUPANCY_EXTENSION_EQUIVALENCE.md`.  Its separately authorized D4/D5
+diagnostic waves supersede this report's historical `NOT_REQUIRED` disposition
+for those waves; that historical statement is not a result about the new
+telemetry.
