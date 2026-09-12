@@ -3,7 +3,7 @@
 Status: `C15_B_NATIVE_CAPTURE_CAPABILITY_LIMITED_READY_FOR_REVIEW`.
 
 This report describes the published B checkpoint at framework commit
-`1d55935bb8330fecffa6de625cc4ebe07123c5a3` on
+`9ecd9cb4ecc7577b52d6e1e372769b0416365c14` on
 `hrl/vm-c15-native-capture-v0`. It began from planning/handoff commit
 `9a755b14b01c5a77a6fc98c2547616e1c490e806` in the isolated non-detached
 worktree `/workspace/worktrees/accel-sim-vm-c15-native`.
@@ -12,7 +12,7 @@ worktree `/workspace/worktrees/accel-sim-vm-c15-native`.
 
 The sole review entry is
 `docs/vm_tlb/review_packs/C15_LOWCOST_MULTIMODEL/lane_b/README.md`.
-`PUBLISH_MANIFEST.json` lists and hashes 20 small artifacts. It contains:
+`PUBLISH_MANIFEST.json` lists and hashes 21 small artifacts. It contains:
 
 - an actual host/tool/guard probe and three local-weight preflights;
 - 13 executed synthetic contract checks, explicitly marked
@@ -24,6 +24,15 @@ The sole review entry is
 The C12 source is fixed at `a268aba0d01310294074ded5bb8017e2092394c0`.
 Its imported marker counts are not per-launch headers: no kernel name, shape,
 launch identity, duration, or native object attribution has been inferred.
+
+After its publication, B read C's committed selector only at
+`4fd34b1837ab6e23832c9ab1f215869c9185f68a`. All 11 C manifest entries passed
+byte-size and SHA256 validation; `CONSUMED_INPUTS.tsv` records the manifest
+SHA256 `103c44c9bd264a9a3a64476047d5434f5cb8faf8354741153ccf13f1ff900b0e`.
+C explicitly labels the selector `OFFLINE_ONLY_NOT_CAPTURE_AUTHORIZATION`, and
+its historical fine strata are unknown/infeasible here. B therefore retained
+zero capture targets rather than binding opaque historical indices to a native
+launch.
 
 ## Capability result and budget
 
@@ -51,7 +60,7 @@ python3 util/vm_tlb/c15/lane_b/c15_lane_b.py --validate \
   --output-root docs/vm_tlb/review_packs/C15_LOWCOST_MULTIMODEL/lane_b
 ```
 
-Consumers must fetch exactly `1d55935b…`, validate its manifest, and retain
+Consumers must fetch exactly `9ecd9cb4…`, validate its manifest, and retain
 the evidence tiers. In particular, they must not select native capture targets
 from the header-only directory or treat any fixture as a scientific result.
 
