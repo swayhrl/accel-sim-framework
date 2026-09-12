@@ -76,6 +76,23 @@ Qwen0.5, Qwen7 raw, then Qwen7 AWQ. AWQ output will remain
 selector-freeze SHA. A deployment explicitly declared `BLOCKED` or
 `SKIPPED_RESOURCE` is logged and skipped without ending P's event loop.
 
+## Current event-monitor ledger
+
+The monitor is bootstrapped at G head
+`9a20ee3b9c98bfe2a3e42da16e61dae2521a0423` and checks only the remote ref
+during quiet intervals. Its first post-bootstrap action is therefore reserved
+for a new immutable head. The already published Qwen0.5 P2 diagnostic at
+`f7d1c2cb4d41b26472893a7d23466402c8e92e70` is hash-closed as a diagnostic,
+but P has not consumed a clean Qwen P1 catalog: the committed raw index binds
+the two report SHA-256 values, while P's P1 contract still lacks an immutable
+producer manifest binding the associated profile/NSYS/binding/validation receipt
+hashes. It remains `P1_INPUT_NOT_HASH_CLOSED` for clean↔diagnostic reconciliation,
+not an authorization to infer or manufacture clean labels.
+
+The current P3 transfer is explicitly in progress, with no hash-closed raw
+profile/trace event; P records it only as pending. This is not a failure and
+does not stop monitoring.
+
 Read the P review-pack `README.md`, `JOIN_KEY_CONTRACT.md`,
 `EVENT_INPUT_CONTRACT.md`, and `LOCAL_NSYS_EXPORT_QUALIFICATION.md` for the
 full contracts, qualification, and local raw-index paths.
