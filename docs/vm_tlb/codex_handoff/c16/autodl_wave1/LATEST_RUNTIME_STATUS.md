@@ -14,6 +14,8 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 | P3 AWQ native runtime source commit | `07575b6d1abc42f68414a8b0ad27c0a6d7d38e66` |
 | Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load only: `fuse_layers=false`, `device_map=cuda:0`, no offload, exact frozen sequence length.  It does not alter completed P0/P1 scientific receipts. |
 | P3 AWQ remote source deployment | AutoDL `code_runtime_3f02eef6` is at `07575b6…` on `c16-runtime-07575b6`; the hash-verified source bundle SHA256 is `448d8534d1df70476d3b159c0e67fcd19d835f24cabe37a536bbb1b364b339cf`.  Remote no-GPU focused tests passed before any P3 GPU operation. |
+| P3 AWQ direct-semantic source commit | `d90ebac4a57ea95ef2f5c6f74be5e0b93b09ace2` |
+| Meaning of direct-semantic source commit | Extends only the separate non-timing semantic runner to the same explicit AWQ loader/residency contract.  It will be deployed and bound only after P3 clean baseline/G1 close; P3 clean runtime remains bound to `07575b6…`. |
 | Formal standalone path | The only scientific performance path.  All rows below were run without CPU offload and with the frozen `float16` / eager / SDPA binding. |
 
 `3f02eef6` is the immutable source anchor for the completed P0/P1 formal runs.  A
