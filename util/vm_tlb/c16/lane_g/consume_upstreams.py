@@ -59,14 +59,18 @@ def verify_lane(commit: str, base: str) -> tuple[dict[str, Any], str, int]:
     return manifest, hashlib.sha256(manifest_bytes).hexdigest(), count
 
 
-def a_integration_provenance(commit: str) -> str:
-    """Return the two A integration anchors only after verifying their receipt exists."""
-    receipt = blob(commit, A_HANDOFF_RECEIPT).decode("utf-8")
-    artifact = re.search(r"C16 A integration artifact checkpoint `([0-9a-f]{40})`", receipt)
-    producer = re.search(r"C16 A integration producer checkpoint `([0-9a-f]{40})`", receipt)
+def parse_a_integration_provenance(receipt: str) -> str:
+    """Parse A's table-format integration anchors without accepting an unlabeled SHA."""
+    artifact = re.search(r"C16 A integration artifact checkpoint\s*(?:\|\s*)?`([0-9a-f]{40})`", receipt)
+    producer = re.search(r"C16 A integration producer checkpoint\s*(?:\|\s*)?`([0-9a-f]{40})`", receipt)
     if artifact is None or producer is None:
         raise ContractError("A handoff receipt lacks integration artifact/producer provenance")
     return f"integration_artifact={artifact.group(1)};integration_producer={producer.group(1)}"
+
+
+def a_integration_provenance(commit: str) -> str:
+    """Return the two A integration anchors only after verifying their receipt exists."""
+    return parse_a_integration_provenance(blob(commit, A_HANDOFF_RECEIPT).decode("utf-8"))
 
 
 def atomic_tsv(path: Path, rows: list[dict[str, str]]) -> None:

@@ -114,6 +114,16 @@ class NativeContractTest(unittest.TestCase):
     def test_upstream_consumer_cli_is_import_complete(self):
         self.assertEqual(UPSTREAMS.A_COMMIT, "b458225e")
         self.assertEqual(UPSTREAMS.C_COMMIT, "75432cbd")
+        artifact = "a" * 40
+        producer = "b" * 40
+        receipt = (
+            f"| C16 A integration artifact checkpoint | `{artifact}` |\n"
+            f"| C16 A integration producer checkpoint | `{producer}` |\n"
+        )
+        self.assertEqual(
+            UPSTREAMS.parse_a_integration_provenance(receipt),
+            f"integration_artifact={artifact};integration_producer={producer}",
+        )
         completed = subprocess.run([sys.executable, str(LANE / "consume_upstreams.py"), "--help"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
         self.assertEqual(completed.returncode, 0, completed.stderr)
 
