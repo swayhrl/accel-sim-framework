@@ -1,6 +1,6 @@
 # D4/D5 observer diagnostic provenance
 
-Status: `D4_D5_INTERIM_REVIEW_CHECKPOINT`.
+Status: `D4_D5_FINAL_COLLECTION_COMPLETE`.
 
 Every retained row is classified
 `POST_FAST64_EXPLORATORY_NOT_PRIMARY_RESULT`.  These diagnostics extend the
@@ -27,12 +27,10 @@ it intentionally contains no raw simulator output.
 
 ## D4 physical-pool wave
 
-The interim package retains 16 natural-terminal rows from the intended 18-row
-matrix: BICG and Btree at 24/32/48 KiB in IO and whole-line OO, plus GESUMMV at
-24/32 KiB in IO and whole-line OO.  The GESUMMV 48-KiB IO/OO rows remain live
-and are deliberately absent from numerical tables.  The interim raw and
-derived outputs are `generated/D4_INTERIM_TERMINAL_ROWS.tsv` and
-`generated/D4_INTERIM_ANALYSIS.tsv`.
+The final package retains all 18 natural-terminal rows: BICG, GESUMMV and
+Btree at 24/32/48 KiB in IO and whole-line OO.  The final source-bound output
+is `generated/D4_OBSERVER_PHYSICAL_TELEMETRY.tsv`; the interim tables remain an
+immutable historical checkpoint rather than the final authority.
 It carries raw counters plus these descriptive normalizations:
 
 - time-integrated physical occupancy per sampled active SM cycle, its fraction
@@ -55,13 +53,13 @@ the exact emitted event count.
 
 ## D5 OO duplicate FAST12 extension
 
-The interim comparison has eleven whole-line OO primary rows.  Ten are natural
+The final comparison has twelve whole-line OO primary rows.  Eleven are natural
 terminal fresh diagnostics and Btree is a D3B exact reuse with the same
 source/runtime/config/trace identity, labelled `D3B_EXACT_REUSE` in the raw
-index.  GESUMMV OO remains live and is deliberately absent.  The first retained
-Core658 2DConvolution row also requires exact pre-existing agreement with its
-accepted Core658 OO row.  The output is
-`generated/D5_INTERIM_IO_OO_DUPLICATE.tsv`.
+index.  The Core658 2DConvolution row requires exact pre-existing agreement
+with its accepted Core658 OO row.  The outputs are
+`generated/D5_OO_DUPLICATE_FAST12.tsv` and
+`generated/D5_IO_OO_DUPLICATE_COMPARISON.tsv`.
 
 The table reports raw lower-created, pending-hit, Tag-eviction and exact
 `DTC_L1_oo_duplicate_after_eviction` counts.  Its ratios are descriptive:

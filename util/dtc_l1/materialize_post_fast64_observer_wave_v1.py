@@ -118,8 +118,15 @@ def main() -> int:
         plan_by_raw = {row["run_directory"]: row for row in plan}
         if len(plan_by_raw) != 29:
             raise ValueError(f"expected 29 launched plan rows, found {len(plan_by_raw)}")
+        # The wave collector retains the exact D3B reuse compact row beside the
+        # 29 launched compact rows, then also passes that row explicitly so its
+        # provenance remains a required materializer input.  Do not count that
+        # single file twice when enumerating the compact directory.
+        reuse_resolved = args.reuse_row.resolve()
         compact_rows: list[dict[str, str]] = []
         for path in sorted(args.compact_dir.glob("*.tsv")):
+            if path.resolve() == reuse_resolved:
+                continue
             rows = read_tsv(path)
             if len(rows) != 1:
                 raise ValueError(f"compact row must be singular: {path}")
