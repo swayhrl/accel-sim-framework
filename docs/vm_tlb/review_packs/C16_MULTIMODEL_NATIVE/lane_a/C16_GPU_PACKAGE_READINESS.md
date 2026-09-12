@@ -1,6 +1,6 @@
 # C16 GPU package readiness — local preparation continues
 
-Status: `ROLLING_P0_PUBLISHED_WAVE1_REMAINDER_DOWNLOADING`. Immutable
+Status: `ROLLING_P0_P1_PUBLISHED_WAVE1_REMAINDER_DOWNLOADING_WAVE2_30B_BACKGROUND_ACTIVE`. Immutable
 `packages/C16_GPU_PACKAGE_P0/` is a Llama-only transfer delta; it contains its
 own package manifest/identity hash, `C16_GPU_PACKAGE_MANIFEST.tsv`,
 `EXPECTED_HASHES.tsv`, and `TRANSFER_PLAN.md`. It does not close multi-model
@@ -27,8 +27,11 @@ The already verified Qwen2.5-0.5B is separately closed as immutable
 `d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84`.
 
 Wave-2 does not block Wave-1: an existing local DeepSeek-V2-Lite checkpoint is
-being prepared for file-level validation, Qwen3-8B may be prepared only when it
-does not interfere with Wave-1, and Qwen3-30B-A3B must remain explicitly
-resource-limited if local disk cannot hold it. No GPU, CUDA model execution,
-profiler, NVBit, simulator, SASS, or full-ROI run is authorized or performed by
-this lane.
+being prepared for file-level validation and Qwen3-8B remains non-blocking.
+With the user-authorized 85 GiB start gate met, Qwen3-30B-A3B now has one
+serial low-priority resumable download worker.  It has a 15 GiB pause guard,
+records only whole-file size+SHA-256 matches as local assets, and cannot alter
+P0/P1 or form an RTX3090 Wave-1 package. See
+`QWEN3_30B_A3B_DOWNLOAD_POLICY.md`. No GPU, CUDA model execution, profiler,
+NVBit, simulator, SASS, or full-ROI run is authorized or performed by this
+lane.

@@ -892,14 +892,14 @@ def write_publish_manifest(output_root: Path, artifact_checkpoint: str) -> None:
         )
     manifest = {
         "schema_version": "C16_A_LOCAL_PREP_PUBLISH_V1",
-        "status": "C16_A_LOCAL_PREP_REOPENED_WAVE1_IN_PROGRESS",
+        "status": "C16_A_ASSET_DOWNLOAD_AND_ROLLING_PACKAGE_IN_PROGRESS",
         "planning_sha": PLANNING_SHA,
         "local_prep_artifact_checkpoint": "42d12e149314d00c230ecfa9b8e9e3c39084bf5d",
         "integration_base_checkpoint": "2a06944c359a9873ae72c89015eb5235dda2d2ee",
         "integration_producer_checkpoint": artifact_checkpoint,
-        "scope": "C15 provenance closure plus reopened C16 A local checkpoint preparation; C16-0.9 remains blocked until locally verified Wave-1 assets and valid fixed G/C/H manifests are simultaneously consumed",
+        "scope": "C15 provenance closure, fixed G/C/H offline integration, immutable Wave-1 rolling packages, and continuing local Wave-1/Wave-2 asset download; C16-0.9 remains blocked until locally verified Wave-1 assets are simultaneously available",
         "files": files,
-        "gates_not_satisfied": ["C16-0.2", "C16-0.3", "C16-0.4", "C16-0.8", "C16-0.9", "C16-5.4", "C16-6.2", "C16-6.3"],
+        "gates_not_satisfied": ["C16-0.2", "C16-0.9", "C16-5.4", "C16-6.2", "C16-6.3"],
         "prohibitions_honored": [
             "NO_UNVERIFIED_CHECKPOINT_ACCEPTANCE",
             "NO_GPU_OR_CUDA_MODEL_EXECUTION",
@@ -914,7 +914,7 @@ def validate_publish_manifest(output_root: Path) -> list[str]:
     failures = []
     manifest_path = output_root / "PUBLISH_MANIFEST.json"
     value = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if value.get("status") != "C16_A_LOCAL_PREP_REOPENED_WAVE1_IN_PROGRESS":
+    if value.get("status") != "C16_A_ASSET_DOWNLOAD_AND_ROLLING_PACKAGE_IN_PROGRESS":
         failures.append("unexpected publish status")
     for key in ("local_prep_artifact_checkpoint", "integration_base_checkpoint", "integration_producer_checkpoint"):
         if len(value.get(key, "")) != 40:
