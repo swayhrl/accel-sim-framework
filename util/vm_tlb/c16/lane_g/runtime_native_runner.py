@@ -220,6 +220,76 @@ def dtype_for(torch: Any, name: str) -> Any:
     return {"float16": torch.float16, "bfloat16": torch.bfloat16}[name]
 
 
+def load_runtime_model(adapter: Any, model_path: Path, torch: Any, dtype: str, *, required_sequence_length: int) -> tuple[Any, dict[str, Any]]:
+    """Load only the adapter explicitly named by the frozen deployment.
+
+    AWQ is intentionally not substituted with a raw Transformers load.  Its
+    packed parameter dtypes are implementation data rather than the requested
+    floating-point compute dtype, so that branch reports the exact AutoAWQ load
+    contract instead of applying the raw-model dtype assertion to packed weights.
+    """
+    if required_sequence_length <= 0:
+        raise ContractError("frozen scenario has an invalid required sequence length")
+    if adapter.model_loader == "TRANSFORMERS_CAUSAL_LM":
+        try:
+            from transformers import AutoModelForCausalLM
+        except ImportError as exc:
+            raise ContractError("hash-closed transformers environment is unavailable") from exc
+        model = AutoModelForCausalLM.from_pretrained(
+            str(model_path), local_files_only=True, torch_dtype=dtype_for(torch, dtype), trust_remote_code=False,
+        )
+        model.eval().to("cuda:0")
+        return model, {
+            "adapter_loader": adapter.model_loader,
+            "quantization_implementation": "NONE_TRANSFORMERS_LOCAL_FILES_ONLY",
+            "requested_dtype": dtype,
+            "required_sequence_length": required_sequence_length,
+            "cpu_offload_forbidden": True,
+        }
+    if adapter.model_loader == "AUTOAWQ_CAUSAL_LM":
+        try:
+            from awq import AutoAWQForCausalLM
+        except ImportError as exc:
+            raise ContractError("AutoAWQ is absent; AWQ is not silently substituted with a raw adapter") from exc
+        # ``fuse_layers=False`` keeps the qualified standalone model structure;
+        # device_map is deliberately a single CUDA device with no offload folder.
+        awq = AutoAWQForCausalLM.from_quantized(
+            str(model_path), max_seq_len=required_sequence_length, fuse_layers=False,
+            trust_remote_code=False, safetensors=True, device_map="cuda:0",
+        )
+        model = getattr(awq, "model", None)
+        if model is None:
+            raise ContractError("AutoAWQ quantized load did not expose its CUDA causal-LM model")
+        model.eval()
+        return model, {
+            "adapter_loader": adapter.model_loader,
+            "quantization_implementation": "AUTOAWQ_FROM_QUANTIZED_FUSE_FALSE",
+            "requested_dtype": dtype,
+            "required_sequence_length": required_sequence_length,
+            "device_map": "cuda:0",
+            "cpu_offload_forbidden": True,
+        }
+    raise ContractError(f"unsupported runtime-native adapter loader: {adapter.model_loader}")
+
+
+def assert_cuda_residency(model: Any, *, require_raw_dtype: str | None) -> tuple[set[str], set[str]]:
+    """Reject CPU/meta/offloaded parameters or material buffers before inference."""
+    parameter_devices = {parameter.device.type for parameter in model.parameters()}
+    parameter_dtypes = {str(parameter.dtype).removeprefix("torch.") for parameter in model.parameters()}
+    if parameter_devices != {"cuda"}:
+        raise ContractError("model parameters are not all CUDA; refusing CPU/offload fallback")
+    buffer_devices = {buffer.device.type for _name, buffer in model.named_buffers() if buffer.numel()}
+    if buffer_devices and buffer_devices != {"cuda"}:
+        raise ContractError("model buffers are not all CUDA; refusing CPU/offload fallback")
+    device_map = getattr(model, "hf_device_map", None)
+    if device_map is not None:
+        if not isinstance(device_map, dict) or any(str(device) not in {"cuda:0", "0"} for device in device_map.values()):
+            raise ContractError("model device map is not an all-cuda:0 deployment")
+    if require_raw_dtype is not None and parameter_dtypes != {require_raw_dtype}:
+        raise ContractError(f"model parameter dtype differs from bound request: {parameter_dtypes}")
+    return parameter_devices, parameter_dtypes
+
+
 def decode_once(model: Any, prompt_ids: Any, decode_tokens: int, torch: Any) -> tuple[float, str]:
     """Run one complete prefill + cache-correct greedy decode with two syncs only."""
     torch.cuda.synchronize()
@@ -261,14 +331,11 @@ def decode_once(model: Any, prompt_ids: Any, decode_tokens: int, torch: Any) -> 
 def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLease) -> dict[str, Any]:
     try:
         import torch
-        from transformers import AutoModelForCausalLM
     except ImportError as exc:
-        raise ContractError("hash-closed torch/transformers environment is unavailable") from exc
+        raise ContractError("hash-closed torch environment is unavailable") from exc
     if not torch.cuda.is_available():
         raise ContractError("CUDA unavailable; refusing CPU fallback")
     adapter = resolve_adapter(args.adapter, args.dtype, args.quantization)
-    if adapter.model_loader != "TRANSFORMERS_CAUSAL_LM":
-        raise ContractError("runtime-native runner only supports the raw Transformers deployment adapters")
     model_path = Path(binding["model_path"])
     if not model_path.is_dir():
         raise ContractError("bound local model path is absent")
@@ -291,16 +358,14 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
     })
     torch.cuda.reset_peak_memory_stats()
     telemetry_before = smi_row()
-    model = AutoModelForCausalLM.from_pretrained(
-        str(model_path), local_files_only=True, torch_dtype=dtype_for(torch, args.dtype), trust_remote_code=False,
+    required_sequence_length = int(binding["scenario"]["prefill_tokens"]) + int(binding["scenario"]["decode_tokens"])
+    model, loader_evidence = load_runtime_model(
+        adapter, model_path, torch, args.dtype, required_sequence_length=required_sequence_length,
     )
-    model.eval().to("cuda:0")
-    parameter_devices = {parameter.device.type for parameter in model.parameters()}
-    parameter_dtypes = {str(parameter.dtype).removeprefix("torch.") for parameter in model.parameters()}
-    if parameter_devices != {"cuda"}:
-        raise ContractError("model parameters are not all CUDA; refusing CPU/offload fallback")
-    if parameter_dtypes != {args.dtype}:
-        raise ContractError(f"model parameter dtype differs from bound request: {parameter_dtypes}")
+    _parameter_devices, parameter_dtypes = assert_cuda_residency(
+        model,
+        require_raw_dtype=args.dtype if adapter.model_loader == "TRANSFORMERS_CAUSAL_LM" else None,
+    )
     prompt = torch.tensor([token_ids] * int(binding["scenario"]["batch_size"]), device="cuda:0", dtype=torch.long)
     if prompt.device.type != "cuda":
         raise ContractError("frozen prompt IDs did not reach CUDA")
@@ -344,6 +409,7 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
             "model_all_cuda": True,
             "input_all_cuda": True,
             "parameter_dtype_set": sorted(parameter_dtypes),
+            "adapter_load_evidence": loader_evidence,
             "output_checksum": next(iter(checksums)),
             "warmup_count": args.warmups,
             "measurement_count": args.measures,
