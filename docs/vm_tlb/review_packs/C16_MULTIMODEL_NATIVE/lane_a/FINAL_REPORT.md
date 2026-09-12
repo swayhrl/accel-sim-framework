@@ -20,13 +20,16 @@ What is ready:
 - C16-5.4, 6.2, and 6.3 are explicitly not qualified rather than filled with
   static or historical substitutes.  No common pattern, behavior class, cost
   reduction, timing, cache/TLB result, or MoE routing result is claimed.
+- Fixed G and C releases are now hash-validated in `integration/`: G provides
+  only offline C16-0.3/0.4 infrastructure closure, and C provides only offline
+  C16-0.8/3.x/6.1 boundaries.  Neither is promoted to native evidence.
 
 What blocks the remaining work:
 
-- G, C, and H currently have no fixed C16 producer release beyond common
-  planning commit `f222e66f49af56cfd4ded671c4a50c6811237cc2`.  A did not read
-  live partial output.  Their missing fixed releases block C16-0.9 GPU package
-  publication and all native/fingerprint/sampler synthesis.
+- H commit `65b5357400db3b4c77f8a60e575091e22fb081ee` lacks a publish manifest
+  or equivalent payload-hash release.  A rejected it as an input rather than
+  reading a live partial.  This blocks C16-0.9 GPU package publication and all
+  native/fingerprint synthesis.
 - Non-Llama full weights are intentionally not local.  The asset manifest makes
   the exact file set hash-addressable, but a transfer cannot begin until the
   complete package, G environment lock, and C/H offline-gate artifacts are

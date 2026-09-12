@@ -4,15 +4,15 @@ Status: `WAITING_INPUT`; this file is deliberately not a
 `C16_GPU_PACKAGE_MANIFEST.tsv`, `EXPECTED_HASHES.tsv`, or `TRANSFER_PLAN.md`.
 The common contract permits publication of those three artifacts only after the
 required offline gates are available as fixed producer commit plus manifest and
-hash.  As checked at C16 A bootstrap, the G, C, and H remote branches all still
-resolve to common planning commit `f222e66f49af56cfd4ded671c4a50c6811237cc2`;
-they contain no producer release to consume.
+hash.  G and C now satisfy their respective release closures, but H has no
+hash-bound publication; package publication remains blocked.
 
 | Required gate | Required producer payload | Fixed published commit/manifest | A status |
 | --- | --- | --- | --- |
-| C16-0.3 | G environment/wheel/bootstrap lock | unavailable | WAITING_INPUT |
-| C16-0.4 | G runner/wrapper identity | unavailable | WAITING_INPUT |
-| C16-0.8 | C/H offline parser and fixture test release | unavailable | WAITING_INPUT |
+| C16-0.3 | G environment/wheel/bootstrap lock | `b5039e…`, manifest `97b54c7c…`, 11 payloads PASS | PASS (offline only) |
+| C16-0.4 | G runner/wrapper identity | `b5039e…`, manifest `97b54c7c…`, source-package SHA rows PASS | PASS (offline only) |
+| C16-0.8/C | C offline parser/selector release | `fed28d…`, manifest `20b94eef…`, 22 payloads PASS | PASS (offline only) |
+| C16-0.8/H | H offline parser/fingerprint release | commit `65b535…` has no manifest | WAITING_INPUT — not consumed |
 | C16-0.2 | A model assets | this lane's `MODEL_ASSET_MANIFEST.tsv` | PASS |
 | C16-0.6 | A token receipts | this lane's `INPUT_CORPUS.tsv` and `TOKEN_RECEIPTS/` | PASS |
 | C16-0.7 | A scenarios | this lane's `SCENARIO_MATRIX.tsv` | PASS |
