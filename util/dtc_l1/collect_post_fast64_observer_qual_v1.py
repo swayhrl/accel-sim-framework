@@ -77,30 +77,28 @@ def read_tsv_map(path: pathlib.Path) -> dict[str, str]:
     return result
 
 
-def read_stats(run: pathlib.Path, mode: str) -> dict[str, str]:
+def read_stats(run: pathlib.Path, mode: str) -> dict[str, list[str]]:
     stdout = run / "simulator.stdout"
     if not stdout.is_file():
         raise ValueError(f"missing simulator output {stdout}")
     text = stdout.read_text(encoding="utf-8", errors="replace")
     if TERMINAL_MARKER not in text:
         raise ValueError(f"no natural terminal marker in {stdout}")
-    stats: dict[str, str] = {}
+    stats: dict[str, list[str]] = {}
     for line in text.splitlines():
         match = STAT.match(line)
         if match:
             key, value = match.groups()
             if not key.startswith(SCIENTIFIC_PREFIXES):
                 continue
-            if key in stats and stats[key] != value:
-                raise ValueError(f"ambiguous repeated stat {key!r} in {stdout}")
-            stats[key] = value
+            stats.setdefault(key, []).append(value)
     for key in ("gpu_tot_sim_cycle", "gpu_tot_sim_insn", *observed_keys(mode)):
         if key not in stats:
             raise ValueError(f"missing required stat {key!r} in {stdout}")
     return stats
 
 
-def read_run(run: pathlib.Path) -> tuple[dict[str, str], dict[str, str]]:
+def read_run(run: pathlib.Path) -> tuple[dict[str, str], dict[str, list[str]]]:
     manifest = read_tsv_map(run / "RUN_MANIFEST.tsv")
     terminal = read_tsv_map(run / "RUN_TERMINAL.tsv")
     if manifest.get("runner_schema") != "POST_FAST64_OBSERVER_QUAL_V1":
@@ -114,6 +112,13 @@ def read_run(run: pathlib.Path) -> tuple[dict[str, str], dict[str, str]]:
     if manifest.get("attempt_uuid") != terminal.get("attempt_uuid"):
         raise ValueError(f"attempt UUID mismatch in {run}")
     return manifest, read_stats(run, manifest.get("mode", ""))
+
+
+def terminal_value(stats: dict[str, list[str]], key: str) -> str:
+    values = stats[key]
+    if not values:
+        raise ValueError(f"empty observation list for {key!r}")
+    return values[-1]
 
 
 def parse_pair(value: str) -> tuple[str, pathlib.Path, pathlib.Path, pathlib.Path]:
@@ -174,9 +179,15 @@ def main() -> int:
             ]
             if mismatched:
                 raise ValueError(f"scientific identity mismatch for {name}: {', '.join(mismatched)}")
-            if report.get("cycles") != {"off": off_stats["gpu_tot_sim_cycle"], "on": on_stats["gpu_tot_sim_cycle"]}:
+            if report.get("cycles") != {
+                "off": off_stats["gpu_tot_sim_cycle"],
+                "on": on_stats["gpu_tot_sim_cycle"],
+            }:
                 raise ValueError(f"cycle mismatch versus comparator report for {name}")
-            if report.get("instructions") != {"off": off_stats["gpu_tot_sim_insn"], "on": on_stats["gpu_tot_sim_insn"]}:
+            if report.get("instructions") != {
+                "off": off_stats["gpu_tot_sim_insn"],
+                "on": on_stats["gpu_tot_sim_insn"],
+            }:
                 raise ValueError(f"instruction mismatch versus comparator report for {name}")
             expected_observer_count = len(observed_keys(off_manifest["mode"]))
             if report.get("new_observer_stat_count") != expected_observer_count:
@@ -206,10 +217,17 @@ def main() -> int:
                 "trace_config_sha256": off_manifest["trace_config_sha256"],
                 "off_exit_status": off_manifest["simulator_exit_status"],
                 "on_exit_status": on_manifest["simulator_exit_status"],
-                "cycles": off_stats["gpu_tot_sim_cycle"],
-                "instructions": off_stats["gpu_tot_sim_insn"],
+                "cycles": terminal_value(off_stats, "gpu_tot_sim_cycle"),
+                "instructions": terminal_value(off_stats, "gpu_tot_sim_insn"),
+                "stat_block_count": str(len(off_stats["gpu_tot_sim_cycle"])),
                 "preexisting_stat_count": str(report["preexisting_stat_count"]),
+                "preexisting_stat_observation_count": str(
+                    report["preexisting_stat_observation_count"]
+                ),
                 "new_observer_stat_count": str(report["new_observer_stat_count"]),
+                "new_observer_stat_observation_count": str(
+                    report["new_observer_stat_observation_count"]
+                ),
                 "preexisting_exact_match": "true",
                 "observer_off_all_zero": "true",
                 "terminal_live_records_zero": "true",
@@ -224,8 +242,8 @@ def main() -> int:
                     "retained_scope": "D3_OBSERVER_EQUIVALENCE_QUALIFICATION_ONLY",
                     "workload": off_manifest["workload"],
                     "mode": off_manifest["mode"],
-                    "cycles": off_stats["gpu_tot_sim_cycle"],
-                    "instructions": off_stats["gpu_tot_sim_insn"],
+                    "cycles": terminal_value(off_stats, "gpu_tot_sim_cycle"),
+                    "instructions": terminal_value(off_stats, "gpu_tot_sim_insn"),
                     "preexisting_exact_match": "true",
                     "observer_off_all_zero": "true",
                     "terminal_live_records_zero": "true",
@@ -241,8 +259,9 @@ def main() -> int:
                         "workload": off_manifest["workload"],
                         "mode": off_manifest["mode"],
                         "counter": key,
-                        "observer_off_value": off_stats[key],
-                        "observer_on_value": on_stats[key],
+                        "stat_block_count": str(len(off_stats[key])),
+                        "observer_off_terminal_value": terminal_value(off_stats, key),
+                        "observer_on_terminal_value": terminal_value(on_stats, key),
                     }
                 )
         for output, rows in ((args.identity_output, identity_rows), (args.telemetry_output, telemetry_rows)):

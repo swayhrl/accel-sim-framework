@@ -37,16 +37,17 @@ def parse_run(path: pathlib.Path) -> dict[str, object]:
     ).get("simulator_exit_status")
     if status != "0":
         raise ValueError(f"nonzero terminal status {status!r} in {terminal}")
-    stats: dict[str, str] = {}
+    # Btree emits one compact stat block per kernel.  Preserve each ordered
+    # observation rather than collapsing the first/last block: exact D3
+    # equivalence requires the complete scientific sequence to match.
+    stats: dict[str, list[str]] = {}
     for line in text.splitlines():
         match = STAT.match(line)
         if match:
             key, value = match.groups()
             if not key.startswith(SCIENTIFIC_PREFIXES):
                 continue
-            if key in stats and stats[key] != value:
-                raise ValueError(f"ambiguous repeated stat {key!r} in {stdout}")
-            stats[key] = value
+            stats.setdefault(key, []).append(value)
     if "gpu_tot_sim_cycle" not in stats or "gpu_tot_sim_insn" not in stats:
         raise ValueError(f"missing cycle/instruction stats in {stdout}")
     return {"path": str(path), "stats": stats}
@@ -75,12 +76,17 @@ def main() -> int:
         ]
         new_keys = sorted(key for key in set(off_stats) | set(on_stats) if NEW_OBSERVER.match(key))
         missing_new = [key for key in new_keys if key not in off_stats or key not in on_stats]
-        off_nonzero = {key: off_stats[key] for key in new_keys if off_stats.get(key) != "0"}
+        off_nonzero = {
+            key: off_stats[key]
+            for key in new_keys
+            if any(value != "0" for value in off_stats.get(key, []))
+        }
         live_keys = [key for key in new_keys if key.endswith("observer_live_records")]
         live_nonzero = {
             key: {"off": off_stats.get(key), "on": on_stats.get(key)}
             for key in live_keys
-            if off_stats.get(key) != "0" or on_stats.get(key) != "0"
+            if any(value != "0" for value in off_stats.get(key, []))
+            or any(value != "0" for value in on_stats.get(key, []))
         }
         report = {
             "schema": "POST_FAST64_OBSERVER_EQUIVALENCE_V1",
@@ -89,8 +95,22 @@ def main() -> int:
             "on_run": on["path"],
             "cycles": {"off": off_stats["gpu_tot_sim_cycle"], "on": on_stats["gpu_tot_sim_cycle"]},
             "instructions": {"off": off_stats["gpu_tot_sim_insn"], "on": on_stats["gpu_tot_sim_insn"]},
+            "terminal_cycles": {
+                "off": off_stats["gpu_tot_sim_cycle"][-1],
+                "on": on_stats["gpu_tot_sim_cycle"][-1],
+            },
+            "terminal_instructions": {
+                "off": off_stats["gpu_tot_sim_insn"][-1],
+                "on": on_stats["gpu_tot_sim_insn"][-1],
+            },
             "preexisting_stat_count": len(preexisting),
+            "preexisting_stat_observation_count": sum(
+                len(off_stats.get(key, [])) for key in preexisting
+            ),
             "new_observer_stat_count": len(new_keys),
+            "new_observer_stat_observation_count": sum(
+                len(off_stats.get(key, [])) for key in new_keys
+            ),
             "missing_preexisting": missing,
             "changed_preexisting": changed,
             "missing_new_observer": missing_new,
