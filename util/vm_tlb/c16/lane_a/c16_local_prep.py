@@ -54,6 +54,11 @@ ROLLING_PACKAGE_DEPLOYMENTS = {
     "C16_GPU_PACKAGE_P2": "c16_qwen25_7b_raw_reference",
     "C16_GPU_PACKAGE_P3": "c16_qwen25_7b_awq",
 }
+ROLLING_TEMPLATE_FIXED_RELEASES = {
+    "G": {"commit": G_FINAL_COMMIT, "manifest_sha256": "7c18c2a806ac37b974702050567430f83f10bbdacc78c5af2fe09ea871896087"},
+    "C": {"commit": C_FINAL_COMMIT, "manifest_sha256": "14a7c02985d13203bf90d251751ae6ab50c3159ce28e439b51917e05204f9f04"},
+    "H": {"commit": H_FINAL_COMMIT, "manifest_sha256": "b78212310628b479e78636c3d7b42ea4a4d5d9d635115e8b7af79e05b4a88d9c"},
+}
 
 
 @dataclass(frozen=True)
@@ -857,6 +862,81 @@ def write_rolling_gpu_package(output_root: Path, package_id: str, deployment_id:
     write_stage_status(output_root)
 
 
+def write_rolling_package_template(output_root: Path, package_id: str) -> None:
+    """Write a pre-closure P2/P3 template without creating a package artifact."""
+    if package_id not in {"C16_GPU_PACKAGE_P2", "C16_GPU_PACKAGE_P3"}:
+        raise RuntimeError("templates are reserved for pending P2/P3 closures")
+    deployment_id = ROLLING_PACKAGE_DEPLOYMENTS[package_id]
+    template_root = output_root / "package_templates" / package_id
+    if template_root.exists():
+        raise RuntimeError(f"immutable package template already exists: {template_root}")
+    with (output_root / "MODEL_ASSET_MANIFEST.tsv").open(encoding="utf-8", newline="") as handle:
+        asset_rows = list(csv.DictReader(handle, delimiter="\t"))
+    model_rows = [row for row in asset_rows if row["deployment_id"] == deployment_id]
+    checkpoint_rows = [row for row in model_rows if row["asset_role"] == "CHECKPOINT_FILE"]
+    if not model_rows or not checkpoint_rows:
+        raise RuntimeError(f"missing frozen model rows for {package_id}")
+    receipt_paths = [
+        output_root / "INPUT_CORPUS.tsv",
+        output_root / "SCENARIO_MATRIX.tsv",
+        output_root / "SCENARIO_POLICY.md",
+        *sorted((output_root / "inputs").glob("*")),
+        *sorted((output_root / "TOKEN_RECEIPTS" / deployment_id).glob("*.json")),
+    ]
+    bindings = []
+    for path in receipt_paths:
+        if not path.is_file():
+            raise RuntimeError(f"missing template input/scenario binding {path}")
+        bindings.append({"path": str(path.relative_to(output_root)), "size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
+    template = {
+        "schema_version": "C16_A_ROLLING_PACKAGE_TEMPLATE_V1",
+        "status": "PRE_RELEASE_TEMPLATE_NOT_A_TRANSFER_PACKAGE",
+        "package_id": package_id,
+        "deployment_id": deployment_id,
+        "planning_sha": PLANNING_SHA,
+        "model_id": model_rows[0]["source_repo"],
+        "model_revision": model_rows[0]["source_revision"],
+        "tokenizer_revision": model_rows[0]["tokenizer_revision"],
+        "expected_checkpoint_files": [
+            {"asset_path": row["asset_path"], "size_bytes": int(row["size_bytes"]), "sha256": row["sha256"]}
+            for row in checkpoint_rows
+        ],
+        "frozen_input_scenario_bindings": bindings,
+        "cross_lane_fixed_inputs": ROLLING_TEMPLATE_FIXED_RELEASES,
+        "formal_release_gate": "every checkpoint file must have an IMMUTABLE_VERIFIED receipt and local exact byte count before formal package files can be written",
+        "prohibitions": ["NO_TEMPORARY_CHECKPOINT_FILE", "NO_GPU_PROFILER_NVBIT_SIMULATOR_SASS_OR_FULL_ROI", "NO_LIVE_PARTIAL_CROSS_LANE_INPUT"],
+    }
+    template_root.mkdir(parents=True)
+    template_path = template_root / "PACKAGE_TEMPLATE.json"
+    atomic_json(template_path, template)
+    atomic_json(template_root / "TEMPLATE_IDENTITY.json", {
+        "schema_version": "C16_A_ROLLING_PACKAGE_TEMPLATE_IDENTITY_V1",
+        "package_id": package_id,
+        "template_sha256": sha256_file(template_path),
+        "immutability_rule": "template is planning evidence only; P2/P3 formal package directories are separate immutable release artifacts",
+    })
+
+
+def validate_rolling_package_template(output_root: Path, package_id: str) -> list[str]:
+    root = output_root / "package_templates" / package_id
+    identity_path = root / "TEMPLATE_IDENTITY.json"
+    template_path = root / "PACKAGE_TEMPLATE.json"
+    if not identity_path.is_file() or not template_path.is_file():
+        return [f"missing package template {package_id}"]
+    identity = json.loads(identity_path.read_text(encoding="utf-8"))
+    template = json.loads(template_path.read_text(encoding="utf-8"))
+    failures = []
+    if identity.get("template_sha256") != sha256_file(template_path):
+        failures.append("template identity SHA mismatch")
+    if template.get("status") != "PRE_RELEASE_TEMPLATE_NOT_A_TRANSFER_PACKAGE":
+        failures.append("template has wrong pre-release status")
+    if template.get("deployment_id") != ROLLING_PACKAGE_DEPLOYMENTS.get(package_id):
+        failures.append("template deployment/package binding mismatch")
+    if any(len(row.get("sha256", "")) != 64 for row in template.get("expected_checkpoint_files", [])):
+        failures.append("template checkpoint SHA missing")
+    return failures
+
+
 def validate_rolling_gpu_package(output_root: Path, package_id: str) -> list[str]:
     root = output_root / "packages" / package_id
     failures = []
@@ -1092,13 +1172,15 @@ def main() -> int:
     parser.add_argument("--write-publish-manifest", metavar="ARTIFACT_CHECKPOINT")
     parser.add_argument("--write-gpu-package", action="store_true")
     parser.add_argument("--write-rolling-package", nargs=2, metavar=("PACKAGE_ID", "DEPLOYMENT_ID"))
+    parser.add_argument("--write-rolling-template", metavar="PACKAGE_ID")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--validate-wave1-local", action="store_true")
     parser.add_argument("--validate-gpu-package", action="store_true")
     parser.add_argument("--validate-rolling-package", metavar="PACKAGE_ID")
+    parser.add_argument("--validate-rolling-template", metavar="PACKAGE_ID")
     parser.add_argument("--selftest", action="store_true")
     args = parser.parse_args()
-    if not any((args.record_assets, args.tokenize, args.write_stage_status, args.write_publish_manifest, args.write_gpu_package, args.write_rolling_package, args.validate, args.validate_wave1_local, args.validate_gpu_package, args.validate_rolling_package, args.selftest)):
+    if not any((args.record_assets, args.tokenize, args.write_stage_status, args.write_publish_manifest, args.write_gpu_package, args.write_rolling_package, args.write_rolling_template, args.validate, args.validate_wave1_local, args.validate_gpu_package, args.validate_rolling_package, args.validate_rolling_template, args.selftest)):
         parser.error("choose at least one operation")
     failures = []
     if args.selftest:
@@ -1122,6 +1204,9 @@ def main() -> int:
     if args.write_rolling_package:
         write_rolling_gpu_package(args.output_root, *args.write_rolling_package)
         print("C16A_T07_ROLLING PASS")
+    if args.write_rolling_template:
+        write_rolling_package_template(args.output_root, args.write_rolling_template)
+        print("C16A_T07_TEMPLATE PASS")
     if args.validate:
         failures.extend(validate_assets(args.output_root))
         failures.extend(validate_tokens(args.output_root))
@@ -1141,6 +1226,10 @@ def main() -> int:
         rolling_failures = validate_rolling_gpu_package(args.output_root, args.validate_rolling_package)
         failures.extend(rolling_failures)
         print("C16A_T08_ROLLING", "PASS" if not rolling_failures else "FAIL")
+    if args.validate_rolling_template:
+        template_failures = validate_rolling_package_template(args.output_root, args.validate_rolling_template)
+        failures.extend(template_failures)
+        print("C16A_T08_TEMPLATE", "PASS" if not template_failures else "FAIL")
     if failures:
         for failure in failures:
             print("FAIL:", failure)
