@@ -65,7 +65,7 @@ consumer coverage, receipt, and external hash index are in
 | `C16_GPU_PACKAGE_P0` (Llama 3.2-1B) | `20fb38e6ca629f1a93db7939248bd1a03790724c` | `ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f` | Previously hash-closed and used for the formal Llama standalone set. |
 | `C16_GPU_PACKAGE_P1` (Qwen2.5-0.5B) | `4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63` | `d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84` | Hash-closed before execution.  Transfer receipt SHA256: `bfa4e7a625fef437c7a2c131681c14f3c0e182cb403be23c6938ff3d11bfacf1`. |
 | `C16_GPU_PACKAGE_P3` Qwen2.5-7B AWQ | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c` | **CONSUMED_TRANSFER_HASH_CLOSED**: all 58 remote payloads passed independent size/SHA verification.  Local and returned remote receipt SHA256 are both `15e405730af5b76b6f25db6fd126a214d2345ea15bbdb9d9fa0950a3d7ead92c`; see [P3_PACKAGE_CONSUMPTION_RECEIPT.json](P3_PACKAGE_CONSUMPTION_RECEIPT.json).  No P3 GPU work preceded closure. |
-| `C16_GPU_PACKAGE_P2` Qwen2.5-7B raw | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `c937590dd4ea2b4f6407db7d8b077ed263af3cbc14562ef34142aa834b133f26` | Immutable A release verified read-only.  Consume only after the P3 AWQ G0 -> standalone baseline -> G1 group. |
+| `C16_GPU_PACKAGE_P2` Qwen2.5-7B raw | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `c937590dd4ea2b4f6407db7d8b077ed263af3cbc14562ef34142aa834b133f26` | **CONSUMED_TRANSFER_HASH_CLOSED**: all 62 payloads passed independent remote size/SHA verification after the P3 AWQ native group closed.  Local materialization receipt SHA256: `dd84c0dd0908959035a9379943c3e8f856458393ef07f580716be3ecb11cc959`; returned remote receipt SHA256: `44a23f213080ad6925217bbe67dca0af75f1a1da1d35e031724ef9ac635c3563`; see [P2_PACKAGE_CONSUMPTION_RECEIPT.json](P2_PACKAGE_CONSUMPTION_RECEIPT.json).  No P2 GPU work preceded closure. |
 
 ## Qualified execution state
 
@@ -143,9 +143,10 @@ resource-admitted standalone/G1 evidence; S3/TEXT and S4/STRUCTURED are
 truthful `SKIPPED_RESOURCE` outcomes.  Neither skip was substituted, profiled,
 or used to infer a performance row.
 
-Next authorized task: P2 raw package transfer and full size/SHA closure in a
-non-measurement gap, followed by its frozen G0 -> standalone baseline -> G1
-queue if closure passes.  Lane P's local semantic merge is not a prerequisite.
+P2 raw package transfer and full size/SHA closure are complete.  Next
+authorized task: frozen P2 raw G0/S0/TEXT under runtime source `ae560163…`,
+then resource-admitted standalone baseline -> G1.  Lane P's local semantic
+merge is not a prerequisite.
 
 ## Known capability / analysis boundaries
 
