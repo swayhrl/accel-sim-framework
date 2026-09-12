@@ -1,0 +1,8 @@
+wave	model_role	model_id	deployment_variant	primary_purpose	required_scenarios	initial_analysis_role	notes
+W1	historical_bridge	meta-llama/Llama-3.2-1B	frozen-compatible-runtime	connect C12-C15 operator knowledge to new native census	S0,S2	TUNING_AND_BRIDGE	do not restart old full-ROI mechanism sweep
+W1	small_dense_gqa	Qwen/Qwen2.5-0.5B-Instruct	native_reference	low-cost canary + small dense anchor	S0,S1,S2,S3,S4	TUNING	first AutoDL qualification target
+W1	medium_dense_gqa	Qwen/Qwen2.5-7B-Instruct	raw_reference	same-family scale comparison	S1,S2,S3,S4	TUNING	add FP16 runtime control if needed for AWQ causal interpretation
+W1	quantized_dense_pair	Qwen/Qwen2.5-7B-Instruct-AWQ	awq	quantized storage/runtime behavior	S1,S2,S3,S4	PROSPECTIVE_HOLDOUT	keep input/backend/KV dtype as controlled as possible
+W2	modern_dense_bridge	Qwen/Qwen3-8B	native_reference	bridge Qwen3 dense to Qwen3 MoE	S1,S2,S3	PROSPECTIVE_HOLDOUT	static header may be partial; runtime identity must be direct
+W2	moe_standard_kv	Qwen/Qwen3-30B-A3B	native_moe	MoE active expert/weight behavior	S1,S2	STRUCTURAL_HOLDOUT	add multiple frozen S2 inputs for routing audit; no B4 initially
+W2	moe_mla	deepseek-ai/DeepSeek-V2-Lite	native_runtime	architecture-vs-runtime MLA/KV behavior	S1,S2	STRUCTURAL_HOLDOUT	record runtime KV representation separately from architecture
