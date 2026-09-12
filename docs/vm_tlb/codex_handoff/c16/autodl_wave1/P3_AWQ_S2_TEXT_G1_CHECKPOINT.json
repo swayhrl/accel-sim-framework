@@ -1,0 +1,90 @@
+{
+  "schema_version": "C16_G_G1_CHECKPOINT_V1",
+  "status": "G1_PASS",
+  "scientific_eligible": true,
+  "qualification_scope": "FROZEN_STANDALONE_S2_TEXT_BASELINE_AND_NSYS_CENSUS",
+  "package": {
+    "id": "C16_GPU_PACKAGE_P3",
+    "fixed_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "manifest_sha256": "704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c",
+    "wheelhouse_manifest_sha256": "ebae0934de68b36e08da5db0e6bfdc47880620205e8bf6d8c8afe8906abc2d2d"
+  },
+  "baseline": {
+    "run_id": "cffeeb8e-1e92-4e5a-9cc3-975a47810dc8",
+    "runtime_source_commit": "a54e25ab3e86f88530c53436b99294b62fb5ef70",
+    "binding_sha256": "e067040f4bcf38d2837c3a12e6a8f547f2905015307348fb9b3ffea24ad64891",
+    "receipt_sha256": "70cf248a5eb7978180904d6ff97dd6ce7c65aed71b5affed378771734be6eb02",
+    "median_duration_ms": 1596.41956,
+    "peak_allocated_bytes": 6521643008,
+    "peak_reserved_bytes": 6872367104,
+    "output_checksum": "362888892c1e3d14a733f9ddcd4aaa81ea74a7c494389b27fb9e4a351f753c17"
+  },
+  "census": {
+    "run_id": "ee52fecb-7bff-4918-bfa4-f0c65838ed5f",
+    "runtime_source_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "target_sha256": "3bd82e5c3c8f2a1ec85d15339c1d112b2842d1210c30183534b1548a421599a4",
+    "binding_sha256": "46b2525964fb5a55dd8880a03e610799f5897866f92b65c7d27dc6ab936aa03b",
+    "nsys_receipt_sha256": "4f20486c6e68042930f83cc03a0b267be615a367fdb37164d5fded807738f90f",
+    "profiled_runner_receipt_sha256": "03b09d5b52b046d1c08754d4255d8b0ff96e6c877c721149a2349c6a865184bc",
+    "parent_lease_start_sha256": "7a8e243f4a4f9edf13df4c249e1ea947c8412de8d526577bd7cda6c0dfa14cc9",
+    "parent_lease_closeout_sha256": "97ddd0fcd42e23b0518eed7c83e0442d92ef2df820c465ed544052369f60e4c7",
+    "independent_export_validation_sha256": "d42b6c4f34843c59f715eefd5fb198670167a8c6f94803ea631833b92ad76df5",
+    "independent_export_evidence": {
+      "cuda_kernel_count": 240380,
+      "distinct_stream_count": 1,
+      "named_kernel_count": 240380,
+      "cuda_runtime_correlation_join_count": 240380,
+      "nvtx_kernel_overlap_count": 475758,
+      "required_nvtx_range_counts": {
+        "C16_NATIVE_FULL_FORWARD": 5,
+        "C16_PHASE_PREFILL": 5,
+        "C16_PHASE_DECODE": 5
+      },
+      "run_package_identity_consistent": true
+    },
+    "baseline_runtime_code_compatibility": {
+      "source_receipt_code_commit": "a54e25ab3e86f88530c53436b99294b62fb5ef70",
+      "target_code_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+      "exact_runtime_execution_paths_unchanged": true,
+      "paths": [
+        "runtime_native_runner.py",
+        "model_adapters.py",
+        "execution_budget.py",
+        "profiler_wrapper.py"
+      ]
+    }
+  },
+  "identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S2",
+    "input_class": "TEXT",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "implementation_key": "AUTOAWQ_CAUSAL_LM_EAGER",
+    "dtype": "float16",
+    "quantization": "AWQ",
+    "shape_key": "B1_T2048_D32"
+  },
+  "raw_profile": {
+    "remote_path": "/root/autodl-tmp/c16/runs/p3_awq_s2_text_g1_ee52fecb-7bff-4918-bfa4-f0c65838ed5f/P3_AWQ_S2_TEXT_CENSUS.nsys-rep",
+    "local_path": "/workspace/c16_exchange/autodl_wave1/returned/P3/p3_awq_s2_text_g1_ee52fecb-7bff-4918-bfa4-f0c65838ed5f/P3_AWQ_S2_TEXT_CENSUS.nsys-rep",
+    "size_bytes": 34990575,
+    "sha256": "ceec04743c69abb908dac797f81e2708e3f6004baf78c3f060f88fdc02e53d84",
+    "local_transfer_state": "LOCAL_SHA256_VERIFIED"
+  },
+  "validation_sqlite": {
+    "remote_path": "/root/autodl-tmp/c16/runs/p3_awq_s2_text_g1_ee52fecb-7bff-4918-bfa4-f0c65838ed5f/P3_AWQ_S2_TEXT_CENSUS.sqlite",
+    "size_bytes": 29405184,
+    "sha256": "83d2e60abdab01a771c6549bc0f5df120f346f1a2a789738520c40f0f7a82c78",
+    "retention": "REMOTE_VALIDATION_INPUT_ONLY_NO_LAUNCH_TSV_OR_CATALOG"
+  },
+  "scientific_constraints": {
+    "standalone_only": true,
+    "cpu_offload_forbidden": true,
+    "parent_child_budget_proven": true,
+    "raw_profile_not_committed": true,
+    "remote_launch_tsv_or_catalog_not_generated": true
+  },
+  "next_authorized_task": "P3_S2_CODE_STANDALONE_RESOURCE_ADMISSION_AND_BASELINE"
+}

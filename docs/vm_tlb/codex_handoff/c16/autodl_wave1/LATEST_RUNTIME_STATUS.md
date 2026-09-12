@@ -10,10 +10,10 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 |---|---|
 | Formal standalone runtime source commit | `3f02eef6e0d00ea654821be8539bb82f463e87e5` |
 | Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
-| Current G publication head before this checkpoint | `8c3e1e7a121087dab36c9d62f837d2fd3cadc13d` |
+| Current G publication head before this checkpoint | `ae560163ff0462077e766bb737536b4a0f57339c` |
 | P3 AWQ native runtime source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
 | Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load: `fuse_layers=false`, Accelerate-compatible explicit root device map `{"": 0}`, no offload, exact frozen sequence length.  CUDA OOM has an explicit `SKIPPED_RESOURCE` ledger/receipt path with no shape substitution.  It does not alter completed P0/P1 scientific receipts. |
-| P3 AWQ remote source deployment | AutoDL `code_runtime_3f02eef6` is at `a54e25ab…` on `c16-runtime-a54e25ab`; hash-verified source bundle SHA256 is `186a07aba251053194d60f795d3f404d939db78351127adf3f36a17f95fb7262`.  All 14 remote no-GPU focused tests passed before retrying P3 G0.  The prior `6bb18822…` source recorded a retained pre-forward diagnostic and will not retry G0. |
+| P3 AWQ remote source deployment | AutoDL `code_runtime_3f02eef6` is at `ae560163…` on `c16-runtime-ae560163`; hash-verified source bundle SHA256 is `d3711c21d7fa406f734ac252b1bd1513b64a21c5ec92e388cf7f2a0f2ab14689`.  All 16 remote no-GPU focused tests passed before P3 S2 G1.  The target builder permits a preceding baseline from `a54e25ab…` only after proving that its four profiled execution paths are byte-identical to `ae560163…`; it does not waive source identity for the G1 run. |
 | P3 AWQ direct-semantic source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
 | Meaning of direct-semantic source commit | The separate non-timing semantic runner uses the same explicit AWQ loader/residency contract.  It remains deferred until P3 clean baseline/G1 close. |
 | Formal standalone path | The only scientific performance path.  All rows below were run without CPU offload and with the frozen `float16` / eager / SDPA binding. |
@@ -64,7 +64,7 @@ consumer-facing coverage/receipt/hash index is in
 |---|---|---|---|---|---|
 | Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Pending fixed target | Pending fixed target | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
 | Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1 (`2ec7d963-228d-4c8a-bcfa-60c895f13b88`) and S2 (`bbe3ef73-bdca-443d-8fa6-58b59a35ca4c`) | Pending fixed target | Pending fixed target | S2 standalone baseline plus G1; this is a meaningful completed standalone model/scenario group. |
-| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`) | Pending fixed target | Pending fixed target | S1 standalone baseline (`d3df4a5b-5f84-48d3-a44d-03a367d046ef`) plus independently validated lightweight Nsight census; see [P3_AWQ_S1_G1_CHECKPOINT.json](P3_AWQ_S1_G1_CHECKPOINT.json).  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` remains solely `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the earlier string device-map before forward/timing. |
+| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`) | Pending fixed target | Pending fixed target | S2/TEXT standalone baseline (`cffeeb8e-1e92-4e5a-9cc3-975a47810dc8`) plus independently validated lightweight Nsight census; see [P3_AWQ_S2_TEXT_G1_CHECKPOINT.json](P3_AWQ_S2_TEXT_G1_CHECKPOINT.json).  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` remains solely `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the earlier string device-map before forward/timing. |
 
 The first malformed Qwen S1 Nsight invocation (`baa55265-4b7b-4dd8-aed6-6fcc6abca148`)
 has a retained ledger entry marked `NON_SCIENTIFIC_DIAGNOSTIC`; it has no raw
@@ -107,8 +107,18 @@ validation input; no remote launch TSV or catalog was generated.  The
 hash-closed `.nsys-rep` is local and indexed; its raw-free local postprocess
 does not gate the queue.
 
-Next authorized GPU task: P3 S2/TEXT standalone resource admission and
-baseline under `a54e25ab…`, then its G1 lightweight Nsight census.  Continue
+P3 S2/TEXT is now closed: its G1 export-validation receipt independently proves
+240,380 nonzero named CUDA kernels, one profiled stream, 240,380 CUDA-runtime
+correlation joins, and NVTX full/prefill/decode overlap under the exact frozen
+P3 identity.  Its preceding baseline was source `a54e25ab…`; the G1 target/run
+are source `ae560163…`, with committed blob-SHA proof that every profiled
+runtime execution path was unchanged.  The validation-only SQLite is retained
+remotely with an immutable hash; no remote launch TSV or catalog was generated.
+The hash-closed `.nsys-rep` is local and indexed, so any P-side postprocess
+cannot gate the GPU queue.
+
+Next authorized GPU task: P3 S2/CODE standalone resource admission and
+baseline under `ae560163…`, then its G1 lightweight Nsight census.  Continue
 frozen-scenario resource admission and standalone baseline/G1 census; an OOM is
 `SKIPPED_RESOURCE`, never CPU offload or a resized substitute.  P2 raw remains
 next only after the P3 AWQ frozen main native group.  Lane P's local semantic
@@ -125,8 +135,9 @@ merge is not a prerequisite for this queue.
   P0/P1 census.  Local nsys 2022.4.2 cannot parse remote nsys 2024.1 reports;
   the S2 semantic SQLite was a one-time remote-export fallback, never a remote
   launch TSV/catalog.
-- P3 AWQ native execution is bound to `a54e25ab…`, which has 14 focused tests
-  for the exact AutoAWQ loader, explicit root device map, no-offload residency
-  contract, direct-semantic support, and parent/child budget accounting.  The
-  remote runtime is updated only from that immutable pushed source before P3
-  scientific work.
+- P3 AWQ standalone G0/S1 and S2 baseline execution is bound to `a54e25ab…`.
+  Subsequent P3 G1 runs are bound to `ae560163…`, which adds a no-GPU frozen
+  G1 target builder and proves blob identity for the actual runner, adapter,
+  budget, and profiler paths before allowing a preceding `a54e25ab…` baseline.
+  Both commits are focused-test-passed, immutable, and deployed by
+  hash-verified bundle before their named scientific run.
