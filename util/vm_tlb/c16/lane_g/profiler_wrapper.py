@@ -197,11 +197,13 @@ def main(tool: str) -> None:
             environment["C16_G_WRAPPER_MAX_ELAPSED_SECONDS"] = repr(budget.max_elapsed_seconds)
             returncode, terminal_status, elapsed = run_command_guarded(command, budget.max_elapsed_seconds, environment)
             bytes_written = output_bytes(args.output)
+            if tool == "nsys" and terminal_status == "COMPLETE" and returncode == 0 and bytes_written == 0:
+                terminal_status = "FAILED_EMPTY_PROFILE"
             budget.finish(elapsed_seconds=elapsed, raw_bytes=0, terminal_status=terminal_status)
     receipt = wrapper_receipt(tool, args, target, command, executed=True, terminal_status=terminal_status, returncode=returncode, elapsed_s=elapsed, bytes_written=bytes_written)
     atomic_json(args.receipt, receipt)
-    if returncode != 0 and terminal_status != "BOUNDED_PARTIAL":
-        raise ContractError(f"{tool} returned {returncode}")
+    if terminal_status not in {"COMPLETE", "BOUNDED_PARTIAL"}:
+        raise ContractError(f"{tool} did not produce an accepted bounded result: {terminal_status} (returncode {returncode})")
     print(f"PASS C16 {tool} wrapper: {args.receipt} ({terminal_status})")
 
 
