@@ -1,0 +1,5 @@
+# C16 Lane G execution-budget guard
+
+Real C16 native operations require one shared `--budget-ledger` in the AutoDL work root. C16-1.1 initializes it from an explicit provider/AutoDL instance-start timestamp and the instance receipt path; a real operation cannot create or use an uninitialized ledger. The guard serializes C16 GPU operations with a nonblocking lock, enforces the 24 GPU-instance-hour wall-clock envelope, and records GPU-active operation elapsed time separately from rental wall time and NVBit raw bytes. For NVBit it additionally refuses concurrent use, a seventh first-wave window for one deployment, or a window whose available raw allowance is exhausted.
+
+NVBit's effective runtime/raw ceiling is the smaller of the per-window 20-minute/4-GiB limit and the remaining instance wall-time/64-GiB budget. A terminal `BOUNDED_PARTIAL` is preserved rather than extended. The ledger is accounting provenance only: it never turns a dry-run into native evidence and it never contains profiler raw output.
