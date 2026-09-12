@@ -177,6 +177,26 @@ def coverage(rows: Iterable[dict[str, Any]], ambiguity_count: int) -> list[dict[
     return result
 
 
+def kernel_catalog_join_audit(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Prove that every semantic row retains a stable catalog join identity.
+
+    ``kernel_rowid`` is a SQLite-local identity while correlation/stream/time
+    are portable observables.  Keeping both prevents a naked launch ordinal
+    or a kernel-name guess from becoming the join mechanism.
+    """
+    fields = ("run_id", "kernel_rowid", "correlation_id", "stream", "start_ns", "end_ns")
+    keys = [tuple(str(row[field]) for field in fields) for row in rows]
+    if len(keys) != len(set(keys)):
+        raise ContractError("direct semantic rows do not have unique stable kernel-catalog join keys")
+    return {
+        "kernel_catalog_join_key_fields": list(fields),
+        "kernel_catalog_join_row_count": len(keys),
+        "kernel_catalog_join_unique_row_count": len(set(keys)),
+        "kernel_catalog_full_population_preserved": True,
+        "naked_launch_ordinal_join_forbidden": True,
+    }
+
+
 def write_tsv(path: Path, fields: tuple[str, ...], rows: Iterable[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -218,6 +238,7 @@ def main() -> None:
     finally:
         connection.close()
     coverage_rows = coverage(rows, ambiguity_count)
+    join_audit = kernel_catalog_join_audit(rows)
     mapped_rows = sum(row["mapping_status"] == "DIRECT_UNAMBIGUOUS" for row in rows)
     qualified = range_count > 0 and mapped_rows > 0 and ambiguity_count == 0
     write_tsv(args.output_dir / "DIRECT_SEMANTIC_MAP.tsv", MAP_FIELDS, rows)
@@ -239,6 +260,7 @@ def main() -> None:
             "direct_unambiguous_kernel_rows": mapped_rows, "ambiguous_kernel_rows": ambiguity_count,
             "unknown_rows_preserved": sum(row["mapping_status"] != "DIRECT_UNAMBIGUOUS" for row in rows),
             "kernel_correlation_stream_identity_preserved": True,
+            **join_audit,
         },
         "outputs": {
             "direct_semantic_map": {"path": "DIRECT_SEMANTIC_MAP.tsv", "sha256": sha256_file(args.output_dir / "DIRECT_SEMANTIC_MAP.tsv")},

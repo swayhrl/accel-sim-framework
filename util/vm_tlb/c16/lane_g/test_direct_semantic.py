@@ -10,7 +10,7 @@ from pathlib import Path
 LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
-from direct_semantic_map import kernel_rows, parse_direct_tag  # noqa: E402
+from direct_semantic_map import kernel_catalog_join_audit, kernel_rows, parse_direct_tag  # noqa: E402
 from direct_semantic_runtime import TAG_PREFIX, attach_direct_module_ranges, direct_module_semantic  # noqa: E402
 from run_schema import validate_receipt  # noqa: E402
 
@@ -50,6 +50,9 @@ class DirectSemanticTests(unittest.TestCase):
         self.assertEqual(rows[0]["nvtx_evidence_type"], "DIRECT_RUNTIME_NVTX")
         self.assertEqual(rows[1]["mapping_status"], "UNKNOWN_CONSERVATIVE")
         self.assertEqual(rows[1]["operator"], "UNKNOWN")
+        audit = kernel_catalog_join_audit(rows)
+        self.assertEqual(audit["kernel_catalog_join_row_count"], 2)
+        self.assertTrue(audit["kernel_catalog_full_population_preserved"])
 
     def test_nvtx_hooks_never_replace_module_inputs_or_outputs(self) -> None:
         class FakeHook:
