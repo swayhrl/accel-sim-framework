@@ -344,7 +344,7 @@ def record_assets(output_root: Path) -> None:
         local_checkpoint_rows = {row["asset_path"]: row for row in local_rows if row["asset_role"] == "CHECKPOINT_FILE"}
         if local_checkpoint_rows:
             for local_row in local_rows:
-                local_row["notes"] = f"{deployment.local_origin}; LOCAL_CHECKPOINT_FILES_PRESENT"
+                local_row["notes"] = f"{local_row['notes']}; LOCAL_CHECKPOINT_FILES_PRESENT"
         remote_rows = []
         for remote_row in declared_remote_rows:
             local_row = local_checkpoint_rows.get(remote_row["asset_path"])
@@ -361,10 +361,7 @@ def record_assets(output_root: Path) -> None:
                 if "IMMUTABLE_VERIFIED_RECEIPT=" in local_row["notes"]
                 else "LOCAL_SHA256_VERIFIED_AGAINST_IMMUTABLE_REMOTE_LFS"
             )
-            local_row["notes"] = (
-                f"{deployment.local_origin}; LOCAL_CHECKPOINT_FILES_PRESENT; "
-                "REMOTE_LFS_SHA256_MATCHED"
-            )
+            local_row["notes"] = f"{local_row['notes']}; REMOTE_LFS_SHA256_MATCHED"
         if deployment.model_id != "meta-llama/Llama-3.2-1B" and not (local_checkpoint_rows or remote_rows):
             raise RuntimeError(f"no checkpoint identity found for {deployment.model_id}")
         local_checkpoint_bytes = sum(

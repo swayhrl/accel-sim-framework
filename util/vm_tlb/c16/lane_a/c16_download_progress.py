@@ -23,6 +23,7 @@ MANIFEST = Path(
     "MODEL_ASSET_MANIFEST.tsv"
 )
 LOG_ROOT = Path("/workspace/c16_assets/c16-a/download_logs")
+IMMUTABLE_RECEIPT_ROOT = LOG_ROOT / "immutable_verified_receipts"
 PROGRESS_TSV = LOG_ROOT / "DOWNLOAD_PROGRESS.tsv"
 STATE_JSON = LOG_ROOT / "DOWNLOAD_PROGRESS_STATE.json"
 STALL_SECONDS = 15 * 60
@@ -114,6 +115,28 @@ def configured_retry_count(row: dict[str, str]) -> str:
     return str(text.lower().count("retrying"))
 
 
+def immutable_final_receipt(row: dict[str, str]) -> Path | None:
+    suffix = ".incomplete" if row["deployment_id"] == QWEN30_DEPLOYMENT else ".curl.download"
+    temporary = Path(row["temporary_path"])
+    final = Path(str(temporary)[: -len(suffix)])
+    receipt_path = IMMUTABLE_RECEIPT_ROOT / row["deployment_id"] / f"{row['asset_path']}.json"
+    if not final.is_file() or not receipt_path.is_file():
+        return None
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if (
+        receipt.get("status") == "IMMUTABLE_VERIFIED"
+        and receipt.get("local_path") == str(final)
+        and receipt.get("expected_size_bytes") == int(row["size_bytes"])
+        and receipt.get("sha256") == row["sha256"]
+        and final.stat().st_size == int(row["size_bytes"])
+    ):
+        return receipt_path
+    return None
+
+
 def observe_once() -> None:
     workers = frozen_workers()
     try:
@@ -129,6 +152,7 @@ def observe_once() -> None:
     for row in workers:
         key = f"{row['deployment_id']}:{row['asset_path']}"
         temporary = Path(row["temporary_path"])
+        immutable_receipt = immutable_final_receipt(row)
         current = temporary.stat().st_size if temporary.is_file() else 0
         prior = previous.get(key, {})
         prior_current = int(prior.get("current_bytes", 0))
@@ -138,7 +162,15 @@ def observe_once() -> None:
         last_growth = observed_at if grew else prior.get("last_growth_timestamp", observed_at)
         rate = (current - prior_current) / elapsed_window if grew else 0.0
         process = process_for_path(processes, str(temporary))
-        if process is not None:
+        if immutable_receipt is not None:
+            current = int(row["size_bytes"])
+            pid, process_elapsed = "NA", "COMPLETE"
+            state_name = "IMMUTABLE_VERIFIED_FINAL"
+            restart = "NOT_APPLICABLE_IMMUTABLE_RECEIPT_CLOSED"
+            last_growth = prior.get("last_growth_timestamp", observed_at)
+            last_growth_epoch = float(prior.get("last_growth_epoch", observed_epoch))
+            rate = 0.0
+        elif process is not None:
             pid, process_elapsed = process
             state_name = "ACTIVE_GROWING" if grew else "ACTIVE_NO_NEW_BYTES_THIS_SAMPLE"
             restart = "NOT_ELIGIBLE_PROCESS_ACTIVE"
@@ -151,7 +183,8 @@ def observe_once() -> None:
             else:
                 state_name = "INACTIVE_AWAITING_15_MINUTE_STALL_CONFIRMATION"
                 restart = "NOT_YET_ELIGIBLE"
-        last_growth_epoch = observed_epoch if grew else float(prior.get("last_growth_epoch", observed_epoch))
+        if immutable_receipt is None:
+            last_growth_epoch = observed_epoch if grew else float(prior.get("last_growth_epoch", observed_epoch))
         next_state[key] = {
             "current_bytes": current,
             "observed_epoch": observed_epoch,
@@ -176,6 +209,7 @@ def observe_once() -> None:
                 "worker_state": state_name,
                 "restart_policy": restart,
                 "temporary_path": str(temporary),
+                "immutable_receipt_path": str(immutable_receipt) if immutable_receipt else "NA",
             }
         )
     fields = list(output[0])
