@@ -1,0 +1,8 @@
+test_id	stage	command_or_fixture	assertions	result
+H-0.5-01	C16-0.5	python3 -m unittest discover -s tests/vm_tlb/c16/lane_h -p test_*.py -v	storage generation; tied view; quant boundary; KV grow/replace; unknown release; pointer reuse	PASS
+H-0.5-02	C16-0.5	object_map_v2.json	ACTIVATION and Python-GC release rejected; view cannot escape allocation	PASS
+H-0.8-01	C16-0.8	trace_complete.traceg	active lanes 0/2, width, list/base-stride/base-delta decode, 128B crossing, 4KiB/64KiB crossing	PASS
+H-0.8-02	C16-0.8	trace_complete.traceg	READ/WRITE/ATOMIC; duplicate/zero-predicated lane handling; object boundary preservation	PASS
+H-0.8-03	C16-0.8	trace_partial.traceg	only manifest-declared BOUNDED_PARTIAL accepts truncated terminal; result marked PARTIAL_TERMINAL	PASS
+H-0.8-04	C16-0.8	manifest-bound CLI fixture	manifest SHA and trace SHA required; CTA file order rejected; overlap labeled SET_ONLY	PASS
+H-4.4-01	C16-4.4	canonical observer comparator	active mask/width/lane-address/order/terminal difference fails exact comparator	PASS_SCHEMA_ONLY
