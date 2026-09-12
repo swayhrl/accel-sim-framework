@@ -1,0 +1,83 @@
+{
+  "schema_version": "C16_G_G1_CHECKPOINT_V1",
+  "status": "G1_PASS",
+  "scientific_eligible": true,
+  "qualification_scope": "FROZEN_STANDALONE_S2_CODE_BASELINE_AND_NSYS_CENSUS",
+  "package": {
+    "id": "C16_GPU_PACKAGE_P3",
+    "fixed_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "manifest_sha256": "704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c"
+  },
+  "baseline": {
+    "run_id": "77bc26ae-e692-42cd-9e94-841c6fad4ada",
+    "runtime_source_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "binding_sha256": "a3e42603b5fc1b0277989e683279859ee763c3c915961f04800e99c0882f7f89",
+    "receipt_sha256": "570a5cbf7c779a73983fef4468344502fb523659ff368fab0c4385276f1d5956",
+    "median_duration_ms": 1670.479731,
+    "peak_allocated_bytes": 6521643008,
+    "peak_reserved_bytes": 7008681984,
+    "output_checksum": "222118158e615c773e9d76532326bc60899c630317c6d0e6fe33bbb9f7f51016"
+  },
+  "census": {
+    "run_id": "bedbd6bd-f51e-4246-89e9-c0e59c74e0e7",
+    "runtime_source_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "target_sha256": "8aef73cca0a21957af68af8880f75de5b2e980f79e65fdb77018cafa5fb869ce",
+    "binding_sha256": "c42a905c1c61b3c542ed363a874c4351fd80bbbce330fc7c7fad22c6848fd89a",
+    "nsys_receipt_sha256": "550589474a1646b3be00c07f7008d8afeb6c6cd23c9de863f0236ecd143d60c6",
+    "profiled_runner_receipt_sha256": "893fd316cb2e877b1b09b852eddbb358aabfb1eae94ebdab43292622ad580df5",
+    "parent_lease_start_sha256": "4ede6d4d2fcd500c1f2f87ea735a485f2978b6c57b442e09da127bd8a9dc8bc5",
+    "parent_lease_closeout_sha256": "ce52308d35bdd325bacc4f53bb314bf75ccb8e43754cbe8d865941225c1abf46",
+    "independent_export_validation_sha256": "efcb1aba57946cb29491f9f410bd3b5978c6074c06240a7e3cee9eb025d88c2a",
+    "independent_export_evidence": {
+      "cuda_kernel_count": 240380,
+      "distinct_stream_count": 1,
+      "named_kernel_count": 240380,
+      "cuda_runtime_correlation_join_count": 240380,
+      "nvtx_kernel_overlap_count": 475758,
+      "required_nvtx_range_counts": {
+        "C16_NATIVE_FULL_FORWARD": 5,
+        "C16_PHASE_PREFILL": 5,
+        "C16_PHASE_DECODE": 5
+      },
+      "run_package_identity_consistent": true
+    },
+    "baseline_runtime_code_compatibility": {
+      "source_receipt_code_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+      "target_code_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+      "exact_runtime_execution_paths_unchanged": true
+    }
+  },
+  "identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S2",
+    "input_class": "CODE",
+    "input_hash": "fd7cd54612d072f0832e32cab751ab3fd2c8d9e5588f349910eb0ab3db2758ff",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "implementation_key": "AUTOAWQ_CAUSAL_LM_EAGER",
+    "dtype": "float16",
+    "quantization": "AWQ",
+    "shape_key": "B1_T2048_D32"
+  },
+  "raw_profile": {
+    "remote_path": "/root/autodl-tmp/c16/runs/p3_awq_s2_code_g1_bedbd6bd-f51e-4246-89e9-c0e59c74e0e7/P3_AWQ_S2_CODE_CENSUS.nsys-rep",
+    "local_path": "/workspace/c16_exchange/autodl_wave1/returned/P3/p3_awq_s2_code_g1_bedbd6bd-f51e-4246-89e9-c0e59c74e0e7/P3_AWQ_S2_CODE_CENSUS.nsys-rep",
+    "size_bytes": 35029495,
+    "sha256": "3864fa793afc019e595074d84e238465af588fb78cffb961045b77088b58c184",
+    "local_transfer_state": "LOCAL_SHA256_VERIFIED"
+  },
+  "validation_sqlite": {
+    "remote_path": "/root/autodl-tmp/c16/runs/p3_awq_s2_code_g1_bedbd6bd-f51e-4246-89e9-c0e59c74e0e7/P3_AWQ_S2_CODE_CENSUS.sqlite",
+    "size_bytes": 29405184,
+    "sha256": "6f19798de2602aac4e982072788f2401c4d968999ca8bcf13f718d9522fdcf3f",
+    "retention": "REMOTE_VALIDATION_INPUT_ONLY_NO_LAUNCH_TSV_OR_CATALOG"
+  },
+  "scientific_constraints": {
+    "standalone_only": true,
+    "cpu_offload_forbidden": true,
+    "parent_child_budget_proven": true,
+    "raw_profile_not_committed": true,
+    "remote_launch_tsv_or_catalog_not_generated": true
+  },
+  "next_authorized_task": "P3_S2_STRUCTURED_STANDALONE_RESOURCE_ADMISSION_AND_BASELINE"
+}
