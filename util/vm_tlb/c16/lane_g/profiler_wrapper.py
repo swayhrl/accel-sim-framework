@@ -40,6 +40,7 @@ def parse_args(tool: str) -> argparse.Namespace:
     parser.add_argument("--parent-lease-receipt", type=Path)
     parser.add_argument("--profile-overhead-threshold", type=float, default=0.10)
     parser.add_argument("--nsys-capture-range", choices=("nvtx", "none"), default="nvtx")
+    parser.add_argument("--diagnostic-only", action="store_true")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if args.dry_run == args.execute:
@@ -57,6 +58,8 @@ def parse_args(tool: str) -> argparse.Namespace:
         parser.error("real nsys/ncu execution requires an explicit immutable --parent-lease-receipt for its child runner")
     if tool == "nvbit" and args.parent_lease_receipt is not None:
         parser.error("NVBit has no wrapper-owned child-runner lease contract")
+    if args.diagnostic_only and tool != "nsys":
+        parser.error("--diagnostic-only is reserved for direct-semantic Nsight Systems evidence")
     return args
 
 
@@ -189,11 +192,12 @@ def write_parent_lease_closeout(start_path: Path, parent: dict[str, Any], *, ter
 
 def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any], command: list[str], *, executed: bool, terminal_status: str, returncode: int | None, elapsed_s: float, bytes_written: int) -> dict[str, Any]:
     native = executed and terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"}
+    diagnostic_native = native and args.diagnostic_only
     receipt = {
         "schema_version": SCHEMA_VERSION,
         "stage_id": {"nsys": "C16-1.4", "ncu": "C16-1.5", "nvbit": "C16-1.6"}[tool],
         "execution_mode": "NATIVE_GPU" if native else "DRY_RUN",
-        "scientific_eligible": native,
+        "scientific_eligible": native and not args.diagnostic_only,
         "identity": target["identity"],
         "runtime": target["runtime"],
         "checks": {
@@ -210,6 +214,8 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
             "parent_lease_closeout_receipt": str(getattr(args, "parent_lease_closeout", "NA")),
             "measurement_active_marker": str(getattr(args, "measurement_active_marker", "NA")),
             "measurement_active_guard": getattr(args, "measurement_active_guard", False),
+            "semantic_diagnostic_only": args.diagnostic_only,
+            "scientific_eligible_for_timing": False if args.diagnostic_only else native,
         },
         "artifacts": {
             "tool": tool,
@@ -223,7 +229,7 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
     }
     if native:
         require_exact_keys(receipt["runtime"], RUNTIME_FIELDS, "native profiler runtime")
-    validate_receipt(receipt, require_native=native)
+    validate_receipt(receipt, require_native=native and not diagnostic_native, allow_native_diagnostic=diagnostic_native)
     return receipt
 
 
@@ -264,13 +270,16 @@ def main(tool: str) -> None:
                     bytes_written = output_bytes(args.output)
                     if tool == "nsys" and terminal_status == "COMPLETE" and returncode == 0 and bytes_written == 0:
                         terminal_status = "FAILED_EMPTY_PROFILE"
-                    scientific = terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"}
+                    scientific = terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"} and not args.diagnostic_only
                     budget.finish(
                         elapsed_seconds=elapsed,
                         raw_bytes=0,
                         terminal_status=terminal_status,
                         evidence_classification="SCIENTIFIC" if scientific else "NON_SCIENTIFIC_DIAGNOSTIC",
-                        diagnostic_reason=None if scientific else f"{tool.upper()}_{terminal_status}",
+                        diagnostic_reason=None if scientific else (
+                            "SEMANTIC_DIAGNOSTIC_ONLY" if args.diagnostic_only and terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"}
+                            else f"{tool.upper()}_{terminal_status}"
+                        ),
                     )
     except Exception:
         if parent is not None:

@@ -22,7 +22,9 @@ RECEIPT_FIELDS = (
 )
 
 
-def validate_receipt(receipt: dict[str, Any], *, require_native: bool = False) -> None:
+def validate_receipt(
+    receipt: dict[str, Any], *, require_native: bool = False, allow_native_diagnostic: bool = False,
+) -> None:
     require_exact_keys(receipt, RECEIPT_FIELDS, "receipt")
     if receipt["schema_version"] != SCHEMA_VERSION:
         raise ContractError("unexpected receipt schema version")
@@ -37,6 +39,14 @@ def validate_receipt(receipt: dict[str, Any], *, require_native: bool = False) -
             raise ContractError("native receipt reports a non-CUDA device")
         if receipt["runtime"]["profiler_mode"] == "CPU_FALLBACK":
             raise ContractError("CPU fallback is forbidden for native C16 results")
+    elif allow_native_diagnostic:
+        if receipt["execution_mode"] != "NATIVE_GPU" or receipt["scientific_eligible"] is not False:
+            raise ContractError("native diagnostic receipt must be NATIVE_GPU with scientific eligibility false")
+        require_exact_keys(receipt["runtime"], RUNTIME_FIELDS, "native diagnostic runtime")
+        if not str(receipt["runtime"]["device"]).startswith("cuda"):
+            raise ContractError("native diagnostic receipt reports a non-CUDA device")
+        if receipt["runtime"]["profiler_mode"] == "CPU_FALLBACK":
+            raise ContractError("CPU fallback is forbidden for native C16 diagnostics")
     else:
         if receipt["execution_mode"] not in {"DRY_RUN", "MOCK"}:
             raise ContractError("offline receipt must explicitly be DRY_RUN or MOCK")
