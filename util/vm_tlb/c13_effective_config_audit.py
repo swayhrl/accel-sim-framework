@@ -410,7 +410,13 @@ def c12_anchor() -> Path:
 
 
 def strict_compare(left: Path, right: Path) -> list[str]:
-    """Return exact-equivalence differences, excluding only fair labels."""
+    """Return simulated-state equivalence differences.
+
+    ``gpu_total_sim_rate`` is the only excluded telemetry field besides fair
+    labels: it is a host wall-clock-derived reporting rate, not simulator
+    state.  It necessarily varies with concurrent host load even when the
+    trace, kernel cycles, and every translation/cache counter are identical.
+    """
     errors: list[str] = []
     sys.path.insert(0, str(OP_PARSER.parent))
     import analyze_c12_operator_aware as op
@@ -425,7 +431,11 @@ def strict_compare(left: Path, right: Path) -> list[str]:
             errors.append('kernel_cycle:%d' % index)
             break
     a_final, b_final = final_counters(left), final_counters(right)
-    ignore = {'vm_fair_arm_id', 'vm_fair_arm_charged_bits'}
+    ignore = {
+        'vm_fair_arm_id',
+        'vm_fair_arm_charged_bits',
+        'gpu_total_sim_rate',
+    }
     shared = sorted((set(a_final) & set(b_final)) - ignore)
     for name in shared:
         if (name.startswith('gpu_') or name.startswith('vm_')) and a_final[name] != b_final[name]:
@@ -463,8 +473,12 @@ def equivalence() -> None:
     if eq1_status != 'PASS' or eq2_status != 'PASS':
         print('C13_EQ_GATE_WAIT_TERMINAL')
         return
+    # A prior invocation can have produced a Path-B artifact before a
+    # transient comparison issue was corrected.  Once both simulated-state
+    # controls pass, it must not remain as false Path-B provenance.
+    (PACK / 'PATH_B_AUTO_TRANSITION.md').unlink(missing_ok=True)
     (PACK / 'EQ_GATE_PROMOTION.md').write_text(
-        '# Equivalence-gate promotion\n\nEQ1 reproduces the immutable C12 Prefill F7-L10 anchor and EQ2 reproduces EQ1 under empty exclusion.  Terminal repaired arms with PASS receipts may be promoted from `SPECULATIVE_REPAIRED_EXECUTION_PENDING_EQ_GATE` to accepted Path-A evidence.\n')
+        '# Equivalence-gate promotion\n\nEQ1 reproduces the immutable C12 Prefill F7-L10 anchor and EQ2 reproduces EQ1 under empty exclusion.  The comparison is exact for kernel markers/cycles and modeled `gpu_*`/`vm_*` counters; only `gpu_total_sim_rate` is excluded because it is derived from host wall-clock time rather than simulated state.  Terminal repaired arms with PASS receipts may be promoted from `SPECULATIVE_REPAIRED_EXECUTION_PENDING_EQ_GATE` to accepted Path-A evidence.\n')
     print('C13_EQ_GATE_PASS')
 
 

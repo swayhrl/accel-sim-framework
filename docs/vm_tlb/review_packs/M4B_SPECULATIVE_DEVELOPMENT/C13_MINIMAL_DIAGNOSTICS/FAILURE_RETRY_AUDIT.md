@@ -130,3 +130,7 @@ The following terminal logs initially encountered the superseded validator image
 | `C13-SEL-P10` | `f4e1707fbab5718bd567dce5c98373cdaa449d8aa571ff16e80d1bb9269f2f19` | `vm_snapshot_continuity:vm_l2_tlb_subentry_valid_KV_CACHE; vm_terminal:vm_l2_tlb_subentry_valid_KV_CACHE` | PASS after immutable revalidation |
 
 These fields are instantaneous valid-entry occupancy gauges, not monotonic cumulative attribution counters. The accepted cumulative metric set remains fail-fast; any surviving non-gauge error would prevent final collection. No replay, raw-log rewrite, Core/binary/config/trace/registration change, or C12 asset modification occurred.
+
+## Path-A effective-mode supersession
+
+All original nine C13 rows are retained immutable but superseded for science as `SUPERSEDED_WRONG_L2_MODE_SUBENTRY16`.  The root cause was config synthesis for `FAIR_ARM_MANUAL`: it inherited source `gpgpu_vm_l2_tlb_mode=1` and omitted a final explicit mode-0 override.  Path-A repaired configs, receipts, and terminal evidence are in `C13_EFFECTIVE_CONFIG_AUDIT/`; no original raw log was overwritten.
