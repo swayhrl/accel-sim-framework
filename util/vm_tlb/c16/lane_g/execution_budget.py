@@ -214,6 +214,48 @@ class BudgetLease:
         atomic_json(self.ledger_path, self._ledger)
         self._finished = True
 
+    def record_child_operation(
+        self,
+        identity: dict[str, Any],
+        *,
+        operation_kind: str,
+        elapsed_seconds: float,
+        terminal_status: str,
+        evidence_classification: str = "SCIENTIFIC",
+        diagnostic_reason: str | None = None,
+    ) -> None:
+        """Account a resident-session child without taking a second lease.
+
+        A resident process holds this parent lease for its full model lifetime.
+        Each frozen scenario is nevertheless an independently identified GPU
+        operation, so it receives its own ledger row.  The parent is later
+        closed with zero elapsed/raw accounting to avoid double-counting the
+        child elapsed time.
+        """
+        if self._ledger is None or self._finished:
+            raise ContractError("resident child accounting requires an active parent budget lease")
+        if elapsed_seconds < 0 or evidence_classification not in EVIDENCE_CLASSIFICATIONS:
+            raise ContractError("resident child accounting is malformed")
+        if not isinstance(identity.get("deployment_id"), str) or not isinstance(identity.get("run_id"), str):
+            raise ContractError("resident child accounting lacks deployment/run identity")
+        entry = {
+            "operation_kind": operation_kind,
+            "deployment_id": identity["deployment_id"],
+            "run_id": identity["run_id"],
+            "elapsed_seconds": elapsed_seconds,
+            "raw_bytes": 0,
+            "terminal_status": terminal_status,
+            "max_elapsed_seconds_at_start": self.max_elapsed_seconds,
+            "max_raw_bytes_at_start": 0,
+            "evidence_classification": evidence_classification,
+            "parent_operation_kind": self.operation_kind,
+            "parent_run_id": self.identity.get("run_id", "NA"),
+        }
+        if diagnostic_reason is not None:
+            entry["diagnostic_reason"] = diagnostic_reason
+        self._ledger["entries"].append(entry)
+        atomic_json(self.ledger_path, self._ledger)
+
     def __exit__(self, exc_type: object, exc: object, traceback: object) -> bool:
         try:
             if not self._finished and self._ledger is not None:
