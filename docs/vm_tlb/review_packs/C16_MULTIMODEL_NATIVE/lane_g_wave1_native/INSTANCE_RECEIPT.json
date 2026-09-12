@@ -1,0 +1,80 @@
+{
+  "checks": {
+    "disk_minimum_gib": 120,
+    "exclusive_not_inferred": true,
+    "gpu_visible": true,
+    "single_gpu_binding_observed": true,
+    "temperature_clock_power_captured": true
+  },
+  "exclusive_confirmation_evidence": "User-authorized rented single RTX3090 AutoDL instance; current binding requires explicit confirmation; compute-app audit recorded separately",
+  "execution_budget_ledger": "/root/autodl-tmp/c16/ledger/EXECUTION_BUDGET_LEDGER.json",
+  "execution_mode": "AUTODL_RESOURCE_AUDIT",
+  "gpu_compute_apps_at_audit": [],
+  "gpu_identity_rows": [
+    "NVIDIA GeForce RTX 3090, GPU-6975486d-bcb7-deec-7ff8-29734254ceb1, 595.58.03, 24576"
+  ],
+  "gpu_listing": "GPU 0: NVIDIA GeForce RTX 3090 (UUID: GPU-6975486d-bcb7-deec-7ff8-29734254ceb1)",
+  "gpu_state_rows": [
+    "GPU-6975486d-bcb7-deec-7ff8-29734254ceb1, 26, P8, 21.33, 350.00, 210, 405, 2100, 9751, 0x0000000000000004"
+  ],
+  "host": {
+    "container_cgroup": "0::/",
+    "cpu_logical_cores": 112,
+    "cpu_model": "Intel(R) Xeon(R) Gold 6330 CPU @ 2.00GHz",
+    "disk_free_bytes": 156662517760,
+    "disk_total_bytes": 161061273600,
+    "hostname": "autodl-container-5e1a40abb0-8220376c",
+    "kernel": "Linux 5.15.0-135-generic x86_64 GNU/Linux",
+    "os_release": {
+      "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+      "HOME_URL": "https://www.ubuntu.com/",
+      "ID": "ubuntu",
+      "ID_LIKE": "debian",
+      "NAME": "Ubuntu",
+      "PRETTY_NAME": "Ubuntu 22.04.4 LTS",
+      "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+      "SUPPORT_URL": "https://help.ubuntu.com/",
+      "UBUNTU_CODENAME": "jammy",
+      "VERSION": "22.04.4 LTS (Jammy Jellyfish)",
+      "VERSION_CODENAME": "jammy",
+      "VERSION_ID": "22.04"
+    },
+    "ram_bytes": 810969796608
+  },
+  "instance_start": {
+    "source": "CONTAINER_PID1_STARTTIME_OBSERVED_UNIX_EPOCH",
+    "source_note": "PID1 start observed via ps; provider billing start before container creation is not asserted by this receipt",
+    "unix": 1789222144.0,
+    "utc": "2026-09-12T14:09:04+00:00"
+  },
+  "observed_at_unix": 1789225361.2113237,
+  "observed_at_utc": "2026-09-12T15:02:41.211324+00:00",
+  "provider_exclusive_confirmation": "PROVIDER_CONFIRMED_EXCLUSIVE",
+  "runtime_audit_code": {
+    "path": "/root/autodl-tmp/c16/runtime_support/runtime_instance_audit.py",
+    "sha256": "b6f8bc7fa23af3b20467e0c9458b854ca0e5de64de21164fff5d2a0ef1ff2cb1"
+  },
+  "schema_version": "C16_G_RUNTIME_INSTANCE_AUDIT_V1",
+  "scientific_eligible": false,
+  "stage_id": "C16-1.1",
+  "status": "RESOURCE_RECEIPT_COMPLETE_NOT_A_SCIENTIFIC_MEASUREMENT",
+  "toolchain": {
+    "audit_python": "/root/miniconda3/bin/python3.12",
+    "audit_python_version": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+    "conda_version": "UNAVAILABLE",
+    "ncu": {
+      "path": "/opt/nvidia/nsight-compute/2024.1.1/ncu",
+      "version": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2024 NVIDIA Corporation\nVersion 2024.1.1.0 (build 33998838) (public-release)"
+    },
+    "nsys": {
+      "path": "/opt/nvidia/nsight-compute/2024.1.1/host/target-linux-x64/nsys",
+      "version": "NVIDIA Nsight Systems version 2024.1.1.0"
+    },
+    "nvcc": {
+      "path": "/usr/local/cuda-12.4/bin/nvcc",
+      "version": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Thu_Mar_28_02:18:24_PDT_2024\nCuda compilation tools, release 12.4, V12.4.131\nBuild cuda_12.4.r12.4/compiler.34097967_0"
+    },
+    "nvidia_smi_version": "Sat Sep 12 23:02:41 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 595.58.03              Driver Version: 595.58.03      CUDA Version: 13.2     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 3090        Off |   00000000:56:00.0 Off |                  N/A |\n| 30%   26C    P8             21W /  350W |   16451MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+"
+  },
+  "work_root": "/root/autodl-tmp/c16"
+}
