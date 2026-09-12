@@ -11,7 +11,7 @@ LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
 from direct_semantic_map import kernel_rows, parse_direct_tag  # noqa: E402
-from direct_semantic_runtime import TAG_PREFIX, direct_module_semantic  # noqa: E402
+from direct_semantic_runtime import TAG_PREFIX, attach_direct_module_ranges, direct_module_semantic  # noqa: E402
 from run_schema import validate_receipt  # noqa: E402
 
 
@@ -50,6 +50,49 @@ class DirectSemanticTests(unittest.TestCase):
         self.assertEqual(rows[0]["nvtx_evidence_type"], "DIRECT_RUNTIME_NVTX")
         self.assertEqual(rows[1]["mapping_status"], "UNKNOWN_CONSERVATIVE")
         self.assertEqual(rows[1]["operator"], "UNKNOWN")
+
+    def test_nvtx_hooks_never_replace_module_inputs_or_outputs(self) -> None:
+        class FakeHook:
+            def remove(self) -> None:
+                return None
+
+        class FakeModule:
+            def __init__(self) -> None:
+                self.pre = None
+                self.post = None
+
+            def register_forward_pre_hook(self, callback):
+                self.pre = callback
+                return FakeHook()
+
+            def register_forward_hook(self, callback):
+                self.post = callback
+                return FakeHook()
+
+        class FakeModel:
+            def __init__(self, module: FakeModule) -> None:
+                self.module = module
+
+            def named_modules(self):
+                return [("model.layers.0.self_attn.q_proj", self.module)]
+
+        class FakeNvtx:
+            def range_push(self, _tag):
+                return 17
+
+            def range_pop(self):
+                return 19
+
+        class FakeCuda:
+            nvtx = FakeNvtx()
+
+        class FakeTorch:
+            cuda = FakeCuda()
+
+        module = FakeModule()
+        attach_direct_module_ranges(FakeModel(module), FakeTorch(), IDENTITY)
+        self.assertIsNone(module.pre(module, ("frozen-input",)))
+        self.assertIsNone(module.post(module, ("frozen-input",), "frozen-output"))
 
     def test_native_diagnostic_receipt_cannot_be_promoted_to_timing_evidence(self) -> None:
         receipt = {

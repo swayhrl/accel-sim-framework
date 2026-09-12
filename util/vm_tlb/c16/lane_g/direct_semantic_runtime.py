@@ -90,8 +90,19 @@ def attach_direct_module_ranges(model: Any, torch: Any, identity: dict[str, str]
         if semantic is None:
             continue
         tag = semantic.tag(identity)
-        hooks.append(module.register_forward_pre_hook(lambda _module, _inputs, tag=tag: torch.cuda.nvtx.range_push(tag)))
-        hooks.append(module.register_forward_hook(lambda _module, _inputs, _output: torch.cuda.nvtx.range_pop()))
+        # PyTorch treats a non-None hook result as a replacement input/output.
+        # NVTX returns an implementation value, so the hook must explicitly
+        # discard it instead of changing model semantics.
+        def push_range(_module: Any, _inputs: Any, *, tag: str = tag) -> None:
+            torch.cuda.nvtx.range_push(tag)
+            return None
+
+        def pop_range(_module: Any, _inputs: Any, _output: Any) -> None:
+            torch.cuda.nvtx.range_pop()
+            return None
+
+        hooks.append(module.register_forward_pre_hook(push_range))
+        hooks.append(module.register_forward_hook(pop_range))
         semantics.append(semantic)
     if not semantics:
         raise ContractError("no direct module identities were eligible for semantic NVTX instrumentation")
