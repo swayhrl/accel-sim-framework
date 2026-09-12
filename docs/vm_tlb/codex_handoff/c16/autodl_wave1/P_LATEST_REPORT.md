@@ -1,14 +1,14 @@
 # C16-P local postprocess report
 
-Status: `C16_P_LOCAL_POSTPROCESS_READY_WAITING_G_SEMANTIC_OR_NEW_PROFILE`.
+Status: `C16_P_EVENT_DRIVEN_NATIVE_POSTPROCESS_ACTIVE`.
 
-Current P evidence checkpoint: `5a90f9537f3dd7f8a9cc62113fd934ceb2260649`.
-It is an event-driven local CPU lane: P is not holding an active Goal while it
-has no complete P1/P2/P3 input. The preceding local-export/postprocess
-checkpoint `0f7baac672614f39bbc0464555587c667e7db61d` was pushed and its remote
-head was verified before this milestone.
+Current fixed P baseline before this event: `70a8191ef264d91db561115e25e57da953420f94`.
+P now holds an active eight-hour event-driven local CPU role. It polls the G
+remote branch only for a changed remote HEAD, consumes only hash-closed P1/P2/P3
+events, commits/pushes each completed model/scenario batch, and never creates an
+empty commit during a quiet interval.
 
-P found two formal, SHA-bound Llama reports:
+P initially found two formal, SHA-bound Llama reports:
 
 - S1 CODE run `eee03ffd-714e-4c66-beb0-1acd6ed45f79`, raw SHA
   `0aff1fd0c2155527955dab34aaa605135ae9cc103e307ed1353a1cde8eb87364`;
@@ -38,6 +38,23 @@ the same stream (`CUDA_STREAM_7`) across reports, so P prohibits unscoped
 stream/correlation joins. Baseline repeats are separate scenario measurements,
 not multiplied launch populations.
 
+## Llama S2 P2 event consumed
+
+G subsequently committed the passing Llama S2 direct-semantic diagnostic at
+`64f9ea0f00c2a97eedb4cc21d3d38e2b294be736`. P verified its producer manifest,
+receipts, raw report, remote SQLite, and G direct map hashes; locally re-exported
+the frozen `.nsys-rep`; and independently reproduced all 45,280 diagnostic map
+rows with zero mismatches. The P2 outputs are committed as compact receipts;
+large maps remain outside Git.
+
+P's clean↔diagnostic map retains all 113,200 clean S2 launches, but its strict
+report-scoped structural join produced 111,223 multi-candidate rows and 1,977
+zero-candidate rows. All clean rows therefore remain `UNKNOWN`, with
+`COVERAGE_LIMITED` status. This result is intentional: no timestamp,
+correlation, stream, duration, launch-ordinal, or kernel-name semantic guess was
+used across reports. See `P2_LLAMA_S2_DIRECT_SEMANTIC_POSTPROCESS.md` and
+`P2_LLAMA_S2_SEMANTIC_RECEIPT.json`.
+
 ## Requested G closeout metadata and next event
 
 No C join column is missing. Before C consumes a catalog, please commit:
@@ -48,13 +65,16 @@ No C join column is missing. Before C consumes a catalog, please commit:
 3. direct mapping evidence only if non-`UNKNOWN` operator/layer or runtime-KV
    layout labels are desired.
 
-`P_TO_G_SCHEMA_REQUEST.md` states the exact P1/P2/P3 fields. No committed G
-formal producer checkpoint has yet been consumed; the available profile receipts
-record runtime code commit `12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2`.
+`P_TO_G_SCHEMA_REQUEST.md` states the exact P1/P2/P3 fields. P has consumed the
+G P2 diagnostic producer checkpoint above, but no C-consumable multi-model
+native-catalog checkpoint exists yet. The initial clean-profile receipts record
+runtime code commit `12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2`.
 
-The next expected event is either a hash-closed P1 report or a P2 direct
-semantic diagnostic. P will not notify C to freeze a prospective selector from
-the current all-UNKNOWN semantic census.
+The next expected event is a hash-closed P1/P2/P3 receipt. P prioritizes
+Qwen0.5, Qwen7 raw, then Qwen7 AWQ. AWQ output will remain
+`HOLDOUT_PENDING_FREEZE` and will not be supplied to C before C publishes its
+selector-freeze SHA. A deployment explicitly declared `BLOCKED` or
+`SKIPPED_RESOURCE` is logged and skipped without ending P's event loop.
 
 Read the P review-pack `README.md`, `JOIN_KEY_CONTRACT.md`,
 `EVENT_INPUT_CONTRACT.md`, and `LOCAL_NSYS_EXPORT_QUALIFICATION.md` for the
