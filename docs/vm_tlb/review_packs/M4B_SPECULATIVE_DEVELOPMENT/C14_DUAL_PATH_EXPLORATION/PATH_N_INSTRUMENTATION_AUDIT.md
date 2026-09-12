@@ -29,8 +29,11 @@ C12 map; the Core does not claim a new semantic operator classifier.
 - The unit test compares telemetry off/on for identical controller ready
   cycles and conventional resource outcomes, then verifies the new local
   proxy text and counters independently.
-- A C14 trace-replay off/on pair will be retained as the runtime
-  non-perturbation receipt before any N value is interpreted.
+- The retained C14 `N-FFN-L7` trace-replay off/on receipt has identical
+  `gpu_tot_sim_cycle` (`434459`) and instruction count (`91308032`).  Its
+  ordinary translation counters also match; telemetry-on only appends the
+  C14 block.  This is a runtime non-perturbation receipt for that exercised
+  path, not a proof over all workloads.
 
 ## Known observability boundary
 
