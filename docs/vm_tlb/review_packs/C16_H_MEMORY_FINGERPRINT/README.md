@@ -9,6 +9,7 @@ This is the sole entry point for review.
 - C16-H branch base: `f222e66f49af56cfd4ded671c4a50c6811237cc2`.
 - Initial implementation: `9530d6074a1c7bfae5cc3f8727b86c3e048a3492`.
 - Real-capture admission hardening: `20c5ece86a9fae4a3c83e7722fb2e58bbbc81dfc`.
+- Final mixed-domain validation preservation: `20701d2119dccd98351098fcbdbd12f6c48f396f`.
 - Frozen full-tracer interface reviewed: `util/tracer_nvbit/tracer_tool/{common.h,inject_funcs.cu,tracer_tool.cu}` at that implementation commit. The parser supports that tracer's list/base-stride/base-delta address formats.
 - Detailed source/change/test record: `SOURCE_AND_CHANGELOG.md`; immutable pre-G closure: `PUBLISH_MANIFEST.json`.
 

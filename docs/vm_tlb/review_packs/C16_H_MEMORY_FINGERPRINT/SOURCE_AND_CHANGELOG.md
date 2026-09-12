@@ -7,6 +7,7 @@
 | Framework branch base | `f222e66f49af56cfd4ded671c4a50c6811237cc2` |
 | Initial Lane-H implementation | `9530d6074a1c7bfae5cc3f8727b86c3e048a3492` |
 | Real-capture admission hardening | `20c5ece86a9fae4a3c83e7722fb2e58bbbc81dfc` |
+| Mixed-domain validation preservation | `20701d2119dccd98351098fcbdbd12f6c48f396f` |
 | Object-map parser | `util/vm_tlb/c16/lane_h/runtime_object_map_v2.py` |
 | Fingerprint parser | `util/vm_tlb/c16/lane_h/memory_fingerprint.py` |
 | Full tracer interface reviewed | `util/tracer_nvbit/tracer_tool/common.h`, `inject_funcs.cu`, `tracer_tool.cu` |
