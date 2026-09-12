@@ -64,7 +64,7 @@ consumer-facing coverage/receipt/hash index is in
 |---|---|---|---|---|---|
 | Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Pending fixed target | Pending fixed target | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
 | Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1 (`2ec7d963-228d-4c8a-bcfa-60c895f13b88`) and S2 (`bbe3ef73-bdca-443d-8fa6-58b59a35ca4c`) | Pending fixed target | Pending fixed target | S2 standalone baseline plus G1; this is a meaningful completed standalone model/scenario group. |
-| Qwen2.5-7B AWQ P3 | PENDING retry after loader-only runtime update | Pending G0 | Pending fixed target | Pending fixed target | No clean P3 scientific group yet.  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` is retained solely as `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the string device-map before forward/timing. |
+| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | Pending frozen baseline/G1 | Pending fixed target | Pending fixed target | G0 source/receipt closure: [P3_AWQ_G0_CHECKPOINT.json](P3_AWQ_G0_CHECKPOINT.json).  Run `50700f64-d5bd-4438-bdf1-f5e42b5806fb` remains solely `NON_SCIENTIFIC_DIAGNOSTIC`: AutoAWQ rejected the earlier string device-map before forward/timing. |
 
 The first malformed Qwen S1 Nsight invocation (`baa55265-4b7b-4dd8-aed6-6fcc6abca148`)
 has a retained ledger entry marked `NON_SCIENTIFIC_DIAGNOSTIC`; it has no raw
@@ -99,10 +99,9 @@ from AutoDL only after their published local SHA256 confirmations.  Qwen0.5's
 matching raw remains remote at this checkpoint; both entries give the local
 hash-closed retained copy, and their small remote receipts remain available.
 
-Next authorized action: deploy and remote focused-test clean runtime source
-`a54e25ab…`; then retry standalone Qwen7-AWQ G0 with a **new** exact frozen S0/TEXT
-binding.  On G0 PASS, run each frozen
-scenario's resource admission and standalone baseline/G1 census; an OOM is
+Next authorized GPU task: P3 S1/CODE standalone baseline under `a54e25ab…`,
+then its G1 lightweight Nsight census.  Continue frozen-scenario resource
+admission and standalone baseline/G1 census; an OOM is
 `SKIPPED_RESOURCE`, never CPU offload or a resized substitute.  P2 raw remains
 next only after this P3 clean group.  Lane P's local semantic merge is not a
 prerequisite for this queue.

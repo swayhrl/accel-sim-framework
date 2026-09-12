@@ -1,0 +1,53 @@
+{
+  "schema_version": "C16_G_G0_CHECKPOINT_V1",
+  "status": "G0_PASS",
+  "scientific_eligible": true,
+  "qualification_scope": "NATIVE_STANDALONE_G0_CANARY_NOT_G1_CENSUS",
+  "identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S0",
+    "input_class": "TEXT",
+    "run_id": "fc4f33e7-3c49-4ef8-aa74-e503b08c389e",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "implementation_key": "AUTOAWQ_CAUSAL_LM_EAGER",
+    "dtype": "float16",
+    "quantization": "AWQ",
+    "runtime_source_commit": "a54e25ab3e86f88530c53436b99294b62fb5ef70"
+  },
+  "package": {
+    "fixed_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "manifest_sha256": "704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c",
+    "wheelhouse_manifest_sha256": "ebae0934de68b36e08da5db0e6bfdc47880620205e8bf6d8c8afe8906abc2d2d"
+  },
+  "receipt_closure": {
+    "binding_path": "/workspace/c16_exchange/autodl_wave1/returned/P3/p3_awq_s0_g0_fc4f33e7-3c49-4ef8-aa74-e503b08c389e/P3_AWQ_G0_BINDING.json",
+    "binding_sha256": "047b6d440d9cb8c03dd1be30b27e6088bc5c2eb01359990a2d250408256c1d6c",
+    "native_receipt_path": "/workspace/c16_exchange/autodl_wave1/returned/P3/p3_awq_s0_g0_fc4f33e7-3c49-4ef8-aa74-e503b08c389e/P3_AWQ_G0_NATIVE_RECEIPT.json",
+    "native_receipt_sha256": "0188ff6799cbd7e59871419d3681bddc7d850aabad3bd7aaf59210316969708b"
+  },
+  "runtime": {
+    "gpu_uuid": "GPU-6975486d-bcb7-deec-7ff8-29734254ceb1",
+    "driver_version": "595.58.03",
+    "cuda_version": "12.4",
+    "torch_version": "2.5.1+cu124",
+    "attention_backend": "TRANSFORMERS_CONFIG:sdpa",
+    "compile_state": "EAGER_UNCOMPILED",
+    "quantization_implementation": "AUTOAWQ_FROM_QUANTIZED_FUSE_FALSE",
+    "device_map": {"": 0}
+  },
+  "checks": {
+    "model_all_cuda": true,
+    "input_all_cuda": true,
+    "cache_correct_decode": true,
+    "cpu_offload_forbidden": true,
+    "output_checksum": "610eb65cb435ad3a8b92a2b0a47de4a8e95ea5e6c9c77b857750ea2747cad99c",
+    "warmup_count": 2,
+    "measurement_count": 3
+  },
+  "resource_observation": {
+    "peak_allocated_bytes": 5690849792,
+    "peak_reserved_bytes": 5744099328
+  },
+  "next_authorized_task": "P3_S1_CODE_STANDALONE_BASELINE"
+}
