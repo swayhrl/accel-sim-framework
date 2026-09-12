@@ -85,6 +85,20 @@ def division(numerator: int, denominator: int) -> str:
     return "NA_ZERO_SAMPLE_DENOMINATOR" if denominator == 0 else f"{numerator / denominator:.12g}"
 
 
+def optional_integer(stats: dict[str, str], key: str) -> str:
+    if key in stats:
+        return str(integer(stats, key))
+    if key.endswith("no_free_physical_events"):
+        return "NA_NOT_REPORTED_IN_WHOLE_LINE_OO_COMPACT"
+    return "NA_NOT_APPLICABLE"
+
+
+def optional_average(stats: dict[str, str], sum_key: str, count_key: str) -> str:
+    if sum_key not in stats or count_key not in stats:
+        return "NA_NOT_APPLICABLE"
+    return division(integer(stats, sum_key), integer(stats, count_key))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", type=pathlib.Path, required=True)
@@ -148,6 +162,23 @@ def main() -> int:
         live = integer(stats, live_key)
         if live != 0:
             raise ValueError(f"terminal observer records remain live: {live}")
+        prefix = f"DTC_L1_{mode.lower()}_"
+        lower_created = integer(stats, prefix + "lower_created")
+        pending_hits = integer(stats, prefix + "pending_hits")
+        tag_evictions = integer(stats, prefix + "tag_evictions")
+        duplicate_after_eviction = integer(stats, prefix + "duplicate_after_eviction")
+        no_free_physical_events = optional_integer(
+            stats, prefix + "no_free_physical_events"
+        )
+        l2_misses = integer(stats, "L2_total_cache_misses")
+        l2_reservation_fails = integer(stats, "L2_total_cache_reservation_fails")
+        global_reads = integer(stats, "gpgpu_n_mem_read_global")
+        global_writes = integer(stats, "gpgpu_n_mem_write_global")
+        l2_accesses = integer(stats, "L2_total_cache_accesses")
+        alloc_count_key = prefix + "alloc_to_ready_count"
+        alloc_sum_key = prefix + "alloc_to_ready_sum_cycles"
+        alloc_max_key = prefix + "alloc_to_ready_max_cycles"
+        pending_evict_key = prefix + "pending_tag_evictions"
         row = {
             "schema": SCHEMA,
             "classification": CLASSIFICATION,
@@ -175,6 +206,54 @@ def main() -> int:
             "average_physical_allocated_lines_per_sample": division(allocated, sample),
             "physical_full_sample_fraction": division(full, sample),
             "average_inflight_requests_per_sample": division(inflight, sample),
+            "alloc_to_ready_count": optional_integer(stats, alloc_count_key),
+            "alloc_to_ready_sum_cycles": optional_integer(stats, alloc_sum_key),
+            "alloc_to_ready_max_cycles": optional_integer(stats, alloc_max_key),
+            "alloc_to_ready_average_cycles": optional_average(
+                stats, alloc_sum_key, alloc_count_key
+            ),
+            "pending_tag_evictions_observed": optional_integer(stats, pending_evict_key),
+            "pending_tag_evictions_per_lower": optional_average(
+                stats, pending_evict_key, prefix + "lower_created"
+            ),
+            "io_pending_eviction_to_response_count": optional_integer(
+                stats, "DTC_L1_io_pending_eviction_to_response_count"
+            ),
+            "io_pending_eviction_to_response_average_cycles": optional_average(
+                stats,
+                "DTC_L1_io_pending_eviction_to_response_sum_cycles",
+                "DTC_L1_io_pending_eviction_to_response_count",
+            ),
+            "io_pending_eviction_to_response_max_cycles": optional_integer(
+                stats, "DTC_L1_io_pending_eviction_to_response_max_cycles"
+            ),
+            "oo_deferred_eviction_to_final_reclaim_count": optional_integer(
+                stats, "DTC_L1_oo_deferred_tag_eviction_to_final_reclaim_count"
+            ),
+            "oo_deferred_eviction_to_final_reclaim_average_cycles": optional_average(
+                stats,
+                "DTC_L1_oo_deferred_tag_eviction_to_final_reclaim_sum_cycles",
+                "DTC_L1_oo_deferred_tag_eviction_to_final_reclaim_count",
+            ),
+            "oo_deferred_eviction_to_final_reclaim_max_cycles": optional_integer(
+                stats, "DTC_L1_oo_deferred_tag_eviction_to_final_reclaim_max_cycles"
+            ),
+            "lower_created": str(lower_created),
+            "pending_hits": str(pending_hits),
+            "tag_evictions": str(tag_evictions),
+            "duplicate_after_eviction": str(duplicate_after_eviction),
+            "no_free_physical_events": no_free_physical_events,
+            "l2_misses": str(l2_misses),
+            "l2_reservation_fails": str(l2_reservation_fails),
+            "l2_accesses": str(l2_accesses),
+            "global_reads": str(global_reads),
+            "global_writes": str(global_writes),
+            "oo_out_of_order_retires": optional_integer(
+                stats, "DTC_L1_oo_out_of_order_retires"
+            ),
+            "oo_immediate_reclaims": optional_integer(stats, "DTC_L1_oo_immediate_reclaims"),
+            "oo_deferred_reclaims": optional_integer(stats, "DTC_L1_oo_deferred_reclaims"),
+            "oo_final_ref_reclaims": optional_integer(stats, "DTC_L1_oo_final_ref_reclaims"),
             "cycles": stats["gpu_tot_sim_cycle"],
             "instructions": stats["gpu_tot_sim_insn"],
             "raw_run_directory": str(args.run.resolve()),
