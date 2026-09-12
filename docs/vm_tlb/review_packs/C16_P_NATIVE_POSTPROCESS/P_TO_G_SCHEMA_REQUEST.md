@@ -52,6 +52,25 @@ The checkpoint's existing report/receipt hashes and independent export evidence
 remain necessary; this request does not replace them. P will re-audit the same
 frozen local raw copy when these fields are published.
 
+## Newly observed P1 S3 raw: publish the binding manifest before P consumes it
+
+G commit `cc4e1023bef4a1536367329a54724b9eaf62d064` added a raw-index entry
+for deployment `c16_qwen25_05b_native_reference`, S3 run
+`a67d9a5e-049a-401f-bdbe-6281e89b7351`, with raw SHA-256
+`80c7dcf4c99b7e8e7f9741a990e5429aa84895d2e6a7790d1a0a82facafdc08b`.
+This is valuable transport evidence, but that commit changes only the runtime
+status and raw index. It does not publish a P1 producer manifest or bind the
+report to the required profile, export-validation, transfer, and immutable
+Nsight-version receipts. P therefore classifies this input
+`INPUT_NOT_HASH_CLOSED` and will not export it yet.
+
+Please publish one immutable P1 event/checkpoint for this existing frozen raw
+report, with the fields above plus the exact paths/SHA-256 values for the
+profile receipt, binding/validation receipt, and remote validation SQLite when
+one was used. This requests metadata only: do not rerun, substitute a scenario,
+or alter the Qwen0.5 identity. Once the manifest is pushed, P can immediately
+verify the existing raw copy and perform the local export/catalog/join audit.
+
 ## Cross-lane boundary
 
 This is a schema-only request. It carries no performance, memory, output,
