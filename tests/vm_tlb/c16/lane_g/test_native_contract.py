@@ -178,6 +178,26 @@ class NativeContractTest(unittest.TestCase):
             with self.assertRaises(COMMON.ContractError):
                 TRANSFER.verify(rows, ROOT)
 
+    def test_publication_scan_rejects_duplicate_missing_size_and_hash_mismatches(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            payload = out / "payload.txt"
+            payload.write_text("payload", encoding="utf-8")
+            digest = hashlib.sha256(payload.read_bytes()).hexdigest()
+            base = {"files": [{"path": "payload.txt", "size_bytes": payload.stat().st_size, "sha256": digest}]}
+            (out / "PUBLISH_MANIFEST.json").write_text(json.dumps(base), encoding="utf-8")
+            self.assertEqual(PACKAGE.scan_published_payloads(out)[0]["status"], "PASS")
+            for changed in (
+                {"files": [base["files"][0], dict(base["files"][0])]},
+                {"files": [{"path": "missing.txt", "size_bytes": 1, "sha256": "0" * 64}]},
+                {"files": [{"path": "payload.txt", "size_bytes": 999, "sha256": digest}]},
+                {"files": [{"path": "payload.txt", "size_bytes": payload.stat().st_size, "sha256": "0" * 64}]},
+            ):
+                (out / "PUBLISH_MANIFEST.json").write_text(json.dumps(changed), encoding="utf-8")
+                with self.assertRaises(COMMON.ContractError):
+                    PACKAGE.scan_published_payloads(out)
+
     def test_native_catalog_rejects_non_wave1_declaration_before_publish(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

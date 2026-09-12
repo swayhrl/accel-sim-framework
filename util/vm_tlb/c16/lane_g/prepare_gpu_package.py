@@ -12,7 +12,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from c16_native_common import ContractError, PLANNING_SHA, atomic_json, repo_root, sha256_file
+from c16_native_common import ContractError, PLANNING_SHA, atomic_json, repo_root, sha256_file, valid_sha256
 from run_schema import schema_markdown
 from wheelhouse_manifest import canonical_package
 from wheelhouse_verify import read_manifest as read_wheelhouse_manifest
@@ -25,6 +25,10 @@ DEFAULT_HANDOFF = ROOT / "docs/vm_tlb/codex_handoff/c16/lane_g/LATEST_REPORT.md"
 SOURCE_ROOT = ROOT / "util/vm_tlb/c16/lane_g"
 LOCAL_WHEELHOUSE = Path(os.environ.get("C16_LOCAL_WHEELHOUSE", "/workspace/c16_assets/wheelhouse/c16-g-cp310-cu124"))
 LOCAL_WHEELHOUSE_MANIFEST = LOCAL_WHEELHOUSE / "WHEELHOUSE_MANIFEST.tsv"
+# The 66-wheel/import-verified producer implementation was committed before this
+# publication-only closeout.  Later commits may harden publication checks, but
+# must not be represented as a wheelhouse/native-run producer implementation.
+PRODUCER_IMPLEMENTATION_SHA = "72e9b55f48f04be522ac8937fa1d62e6f7c02baa"
 SOURCE_FILES = (
     "__init__.py", "bootstrap_autodl.sh", "requirements.lock", "WHEELHOUSE_MANIFEST.tsv",
     "WHEELHOUSE_CLOSURE.md",
@@ -183,9 +187,11 @@ Start with `LATEST_REPORT.md`, then `STAGE_STATUS.tsv`, `C16_GPU_PACKAGE_MANIFES
 
 
 def handoff_text() -> str:
-    return """# C16 Lane G handoff
+    return f"""# C16 Lane G handoff
 
 Status: `C16_G_OFFLINE_GPU_PACKAGE_READY_WAITING_A_ASSETS`.
+
+Publication provenance: producer implementation anchor = `{PRODUCER_IMPLEMENTATION_SHA}`; publication-validator source anchor = `{git_head()}`. The hash-bound artifact checkpoint is this directory's `PUBLISH_MANIFEST.json`; the final publication/handoff commit is the fixed branch HEAD that carries this handoff and is reported with delivery. Do not substitute the producer implementation anchor for the final publication checkpoint.
 
 C16-0.3/0.4 offline infrastructure is ready: an actual CPython 3.10 Linux x86_64 wheelhouse with resolved transitive wheels, no-index resolver/install/import receipt, idempotent offline bootstrap, unified native runner, explicit Wave-1 adapters, nsys/NCU/NVBit wrappers, receipt schema, target second-pass identity guard, shared execution-budget ledger guard, and no-GPU dry-run validation. The receipt records `GPU_RUNTIME_VERIFY_REQUIRED`: it did not launch a CUDA kernel. All mock outputs are marked non-scientific and cannot enter a native catalog.
 
@@ -212,7 +218,9 @@ def refresh_manifest(out: Path) -> None:
     manifest = {
         "schema_version": "C16_G_OFFLINE_PACKAGE_V1",
         "planning_sha": PLANNING_SHA,
-        "producer_source_sha": git_head(),
+        "producer_source_sha": PRODUCER_IMPLEMENTATION_SHA,
+        "producer_implementation_sha": PRODUCER_IMPLEMENTATION_SHA,
+        "publication_validator_source_sha": git_head(),
         "lane": "G",
         "status": "C16_G_OFFLINE_GPU_PACKAGE_READY_WAITING_A_ASSETS",
         "capture_state": "NO_AUTODL_SSH_NO_NATIVE_RUN",
@@ -265,6 +273,51 @@ def rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle, delimiter="\t"))
 
 
+def scan_published_payloads(out: Path) -> list[dict[str, Any]]:
+    """Read-only publication scan; never materializes or rewrites a payload."""
+    manifest_path = out / "PUBLISH_MANIFEST.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractError(f"cannot read publication manifest: {exc}") from exc
+    entries = manifest.get("files")
+    if not isinstance(entries, list):
+        raise ContractError("publication manifest files field must be a list")
+    seen: set[str] = set()
+    scanned: list[dict[str, Any]] = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise ContractError(f"publication manifest entry {index} is not an object")
+        name = entry.get("path")
+        expected_hash = entry.get("sha256")
+        expected_size = entry.get("size_bytes")
+        if not isinstance(name, str) or not name or Path(name).name != name or name == "PUBLISH_MANIFEST.json":
+            raise ContractError(f"publication manifest entry {index} has an unsafe payload path")
+        if name in seen:
+            raise ContractError(f"publication manifest has duplicate payload path: {name}")
+        seen.add(name)
+        if not isinstance(expected_size, int) or isinstance(expected_size, bool) or expected_size < 0:
+            raise ContractError(f"publication manifest has invalid payload size: {name}")
+        if not isinstance(expected_hash, str) or not valid_sha256(expected_hash):
+            raise ContractError(f"publication manifest has invalid payload hash: {name}")
+        payload = out / name
+        if not payload.is_file():
+            raise ContractError(f"publication manifest references an unmaterialized payload: {name}")
+        actual_size = payload.stat().st_size
+        actual_hash = sha256_file(payload)
+        if actual_size != expected_size:
+            raise ContractError(f"publication manifest payload size mismatch: {name}")
+        if actual_hash != expected_hash:
+            raise ContractError(f"publication manifest payload hash mismatch: {name}")
+        scanned.append({"path": name, "size_bytes": actual_size, "sha256": actual_hash, "status": "PASS"})
+    actual = {path.name for path in out.iterdir() if path.is_file() and path.name != "PUBLISH_MANIFEST.json"}
+    if seen != actual:
+        missing = sorted(actual - seen)
+        stale = sorted(seen - actual)
+        raise ContractError(f"publication manifest payload set mismatch: unlisted={missing}; unmaterialized={stale}")
+    return scanned
+
+
 def validate(out: Path) -> None:
     expected = rows(out / "EXPECTED_HASHES.tsv")
     for row in expected:
@@ -281,14 +334,12 @@ def validate(out: Path) -> None:
     manifest = json.loads((out / "PUBLISH_MANIFEST.json").read_text(encoding="utf-8"))
     if manifest["status"] != "C16_G_OFFLINE_GPU_PACKAGE_READY_WAITING_A_ASSETS" or manifest["capture_state"] != "NO_AUTODL_SSH_NO_NATIVE_RUN":
         raise ContractError("offline package state is not provenance-safe")
-    listed = {item["path"]: item for item in manifest["files"]}
-    actual = {path.name for path in out.iterdir() if path.is_file() and path.name != "PUBLISH_MANIFEST.json"}
-    if set(listed) != actual:
-        raise ContractError("package manifest file set mismatch")
-    for name, item in listed.items():
-        path = out / name
-        if sha256_file(path) != item["sha256"] or path.stat().st_size != item["size_bytes"]:
-            raise ContractError(f"package manifest digest mismatch: {name}")
+    if manifest.get("producer_source_sha") != PRODUCER_IMPLEMENTATION_SHA or manifest.get("producer_implementation_sha") != PRODUCER_IMPLEMENTATION_SHA:
+        raise ContractError("publication manifest producer implementation anchor changed")
+    publication_source = manifest.get("publication_validator_source_sha")
+    if not isinstance(publication_source, str) or len(publication_source) != 40:
+        raise ContractError("publication manifest has no fixed validator-source anchor")
+    scanned = scan_published_payloads(out)
     consumed = out / "CONSUMED_INPUTS.tsv"
     if consumed.is_file():
         with consumed.open(newline="", encoding="utf-8") as handle:
@@ -300,23 +351,27 @@ def validate(out: Path) -> None:
             raise ContractError("C consumption receipt is missing or overclaims native target eligibility")
         if by_lane.get("H", {}).get("consumption_status") != "HASH_VERIFIED_MEMORY_PROTOCOL_ONLY" or by_lane.get("H", {}).get("dynamic_eligibility") != "NO_DYNAMIC_ADDRESS_OR_CAPTURE_INPUT":
             raise ContractError("H consumption receipt overclaims dynamic capture eligibility")
-    print(f"PASS C16 G offline package validation: {len(listed)} files; upstream asset closure remains explicit")
+    print(f"PASS C16 G offline package validation: {len(scanned)} payloads; upstream asset closure remains explicit")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prepare", action="store_true")
     parser.add_argument("--validate", action="store_true")
+    parser.add_argument("--scan-payloads", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--handoff-report", type=Path)
     args = parser.parse_args()
-    if args.prepare == args.validate:
-        parser.error("choose exactly one of --prepare or --validate")
+    if sum((args.prepare, args.validate, args.scan_payloads)) != 1:
+        parser.error("choose exactly one of --prepare, --validate, or --scan-payloads")
     if args.prepare:
         handoff = args.handoff_report if args.handoff_report else (DEFAULT_HANDOFF if args.output_dir == DEFAULT_OUT else None)
         prepare(args.output_dir, handoff)
-    else:
+    elif args.validate:
         validate(args.output_dir)
+    else:
+        scanned = scan_published_payloads(args.output_dir)
+        print(f"PASS C16 G independent publication payload scan: {len(scanned)} payloads")
 
 
 if __name__ == "__main__":
