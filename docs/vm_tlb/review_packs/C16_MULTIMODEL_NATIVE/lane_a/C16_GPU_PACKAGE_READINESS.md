@@ -22,6 +22,10 @@ It is suitable only for a separately authorized Llama transfer/import/canary;
 P0 itself starts no GPU process. Each later full model closure must create a
 new P-numbered delta without editing P0.
 
+The already verified Qwen2.5-0.5B is separately closed as immutable
+`packages/C16_GPU_PACKAGE_P1/`, whose package manifest SHA-256 is
+`d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84`.
+
 Wave-2 does not block Wave-1: an existing local DeepSeek-V2-Lite checkpoint is
 being prepared for file-level validation, Qwen3-8B may be prepared only when it
 does not interfere with Wave-1, and Qwen3-30B-A3B must remain explicitly
