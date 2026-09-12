@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 
 from c16_native_common import ContractError, atomic_json, repo_root
+from native_catalog import schema_markdown as native_catalog_schema_markdown
 from prepare_gpu_package import DEFAULT_HANDOFF, DEFAULT_OUT, prepare, record_offline_dry_run, refresh_manifest, validate
 from run_schema import validate_receipt
 
@@ -76,6 +77,11 @@ def run(out: Path) -> None:
         if transfer_status != "BLOCKED_UPSTREAM_HASH_CLOSURE":
             raise ContractError("offline transfer preflight must expose, not hide, the A hash-closure gap")
         receipts["transfer_verify"] = {"status": "PASS", "mode": "DRY_RUN", "reported_gap": transfer_status}
+        catalog_schema = temp / "native_catalog_schema.md"
+        catalog_schema.write_text(native_catalog_schema_markdown(), encoding="utf-8")
+        if "Mock/fixture rows are rejected" not in catalog_schema.read_text(encoding="utf-8"):
+            raise ContractError("Wave-1 catalog schema omitted the non-scientific fixture guard")
+        receipts["native_catalog_schema"] = {"status": "PASS", "mode": "OFFLINE_SCHEMA", "scientific_eligible": False}
         execute(["bash", str(LANE / "bootstrap_autodl.sh"), "--dry-run", "--wheelhouse", str(temp / "wheelhouse")])
         receipts["bootstrap"] = {"status": "PASS", "mode": "DRY_RUN", "no_gpu_query_download_or_install": True}
         runner = temp / "runner.json"

@@ -26,6 +26,7 @@ SOURCE_FILES = (
     "run_model.py", "scenario_driver.py", "identity_guard.py", "profiler_wrapper.py", "nsys_wrapper.py",
     "ncu_wrapper.py", "nvbit_wrapper.py", "prepare_gpu_package.py", "offline_dry_run.py",
     "autodl_instance_receipt.py", "transfer_verify.py",
+    "native_catalog.py",
 )
 EXPECTED_COLUMNS = ("artifact_id", "kind", "path_or_commit", "sha256", "required_for", "closure_status", "note")
 PACKAGE_COLUMNS = ("package_component", "path_or_ref", "sha256", "required_for", "availability", "transfer_action", "scientific_use")
@@ -189,6 +190,8 @@ def prepare(out: Path, handoff: Path | None) -> None:
     write_tsv(out / "ENV_LOCK.tsv", ENV_COLUMNS, env_rows())
     atomic_text(out / "TOOL_COMPATIBILITY.md", tool_compatibility_markdown())
     atomic_text(out / "RUN_SCHEMA.md", schema_markdown())
+    from native_catalog import schema_markdown as catalog_schema_markdown
+    atomic_text(out / "NATIVE_CATALOG_SCHEMA.md", catalog_schema_markdown())
     atomic_text(out / "TRANSFER_PLAN.md", transfer_plan_markdown())
     atomic_text(out / "C16_G_GAP_RECEIPT.md", gap_markdown())
     atomic_text(out / "README.md", readme())
@@ -197,6 +200,7 @@ def prepare(out: Path, handoff: Path | None) -> None:
         {"stage_id": "C16-0.3", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "bootstrap/logical lock/tool expectations are ready; wheel hashes close at C16-1.2"},
         {"stage_id": "C16-0.4", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "runner/wrappers/schema/mock fixtures are ready; no GPU result exists"},
         {"stage_id": "C16-0.9", "owner": "A,G", "execution_status": "PARTIAL_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "UPSTREAM_A_COMMITTED_MANIFEST_REQUIRED", "note": "G bundle hash-closed; asset/input/scenario closure intentionally pending A"},
+        {"stage_id": "C16-2.6", "owner": "G", "execution_status": "OFFLINE_SCHEMA_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "C16-1.3_AND_C16-1.4_REQUIRED", "note": "Wave-1 catalog validator/publisher is ready; no native catalog exists"},
     ])
     if handoff is not None:
         atomic_text(handoff, handoff_text())

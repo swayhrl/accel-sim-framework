@@ -17,6 +17,7 @@ sys.path.insert(0, str(LANE))
 import c16_native_common as COMMON
 import identity_guard as GUARD
 import model_adapters as ADAPTERS
+import native_catalog as CATALOG
 import offline_dry_run as DRY
 import prepare_gpu_package as PACKAGE
 import profiler_wrapper as PROFILER
@@ -89,6 +90,17 @@ class NativeContractTest(unittest.TestCase):
             self.assertIn("A_MODEL_ASSET_MANIFEST", TRANSFER.preconditions(rows))
             with self.assertRaises(COMMON.ContractError):
                 TRANSFER.verify(rows, ROOT)
+
+    def test_native_catalog_rejects_non_wave1_declaration_before_publish(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            wave1 = root / "WAVE1_DEPLOYMENTS.tsv"
+            CATALOG.write_tsv(wave1, CATALOG.WAVE1_FIELDS, [{
+                "deployment_id": "only-one", "model_id": "fixture", "deployment_variant": "fixture",
+                "wave": "W1", "catalog_status": "GAP", "gap_reason": "fixture",
+            }])
+            with self.assertRaises(COMMON.ContractError):
+                CATALOG.validate(root, wave1)
 
     def test_complete_offline_suite_builds_only_non_scientific_artifacts(self):
         with tempfile.TemporaryDirectory() as directory:
