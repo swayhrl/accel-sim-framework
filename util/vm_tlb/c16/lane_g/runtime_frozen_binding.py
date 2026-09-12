@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import csv
 import hashlib
 import json
 import sys
@@ -63,6 +64,7 @@ def required_string(value: dict[str, Any], key: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--package-root", type=Path, required=True)
+    parser.add_argument("--package-commit", required=True)
     parser.add_argument("--deployment-id", required=True)
     parser.add_argument("--scenario-id", required=True)
     parser.add_argument("--input-class", required=True, choices=("TEXT", "CODE", "STRUCTURED"))
@@ -70,6 +72,8 @@ def main() -> None:
     parser.add_argument("--binding-receipt", type=Path, required=True)
     parser.add_argument("--canary", action="store_true")
     args = parser.parse_args()
+    if len(args.package_commit) != 40 or any(char not in "0123456789abcdef" for char in args.package_commit):
+        parser.error("package commit must be a 40-character lowercase Git SHA")
     package_json_paths = list((args.package_root / "package_metadata").glob("C16_GPU_PACKAGE_*_MANIFEST.json"))
     if len(package_json_paths) != 1:
         raise ContractError("rolling package has no unique package manifest JSON")
@@ -78,6 +82,18 @@ def main() -> None:
         raise ContractError("requested deployment differs from immutable package deployment")
     if not isinstance(package.get("model_revision"), str) or not isinstance(package.get("tokenizer_revision"), str):
         raise ContractError("immutable package does not close model/tokenizer revisions")
+    wheelhouse_manifest_sha = package.get("g_wheelhouse_manifest_sha256")
+    if not isinstance(wheelhouse_manifest_sha, str) or len(wheelhouse_manifest_sha) != 64:
+        raise ContractError("immutable package does not close the G wheelhouse manifest")
+    with (args.package_root / "package_metadata" / "C16_GPU_PACKAGE_MANIFEST.tsv").open(newline="", encoding="utf-8") as handle:
+        package_rows = list(csv.DictReader(handle, delimiter="\t"))
+    model_files = [
+        {"artifact_id": row["artifact_id"], "path": row["destination_relpath"], "size_bytes": int(row["size_bytes"]), "sha256": row["sha256"]}
+        for row in package_rows
+        if row.get("kind") == "MODEL_ASSET" and row.get("destination_relpath", "").startswith(f"models/{args.deployment_id}/")
+    ]
+    if not model_files:
+        raise ContractError("immutable package lacks bound model-file hashes")
     scenario = read_scenario(args.package_root / "a_assets" / "SCENARIO_MATRIX.tsv", args.scenario_id)
     try:
         prefill_tokens = int(scenario["prefill_tokens"])
@@ -116,7 +132,9 @@ def main() -> None:
         "execution_mode": "LOCAL_FROZEN_INPUT_BINDING",
         "scientific_eligible": False,
         "package_id": package.get("package_id"),
+        "package_fixed_commit": args.package_commit,
         "package_manifest_sha256": sha256_file(package_json_paths[0]),
+        "wheelhouse_manifest_sha256": wheelhouse_manifest_sha,
         "deployment_id": args.deployment_id,
         "model_id": required_string(token_receipt, "model_id"),
         "model_revision": package.get("model_revision"),
@@ -138,6 +156,7 @@ def main() -> None:
             "derived_token_ids_sha256": sha256_file(args.token_ids_output),
         },
         "model_path": str(model_path),
+        "model_files": model_files,
         "checks": {
             "no_tokenizer_execution": True,
             "no_context_resize": True,
