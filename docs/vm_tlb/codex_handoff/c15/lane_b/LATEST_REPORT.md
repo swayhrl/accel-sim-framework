@@ -1,12 +1,21 @@
 # C15 Lane B — capability-limited checkpoint
 
-Status: `C15_B_NATIVE_CAPTURE_CAPABILITY_LIMITED_READY_FOR_REVIEW`.
+Status: `C15_B_NATIVE_CAPTURE_CAPABILITY_LIMITED_READY_FOR_FINAL_REVIEW`.
 
-This report describes the published B checkpoint at framework commit
-`9ecd9cb4ecc7577b52d6e1e372769b0416365c14` on
-`hrl/vm-c15-native-capture-v0`. It began from planning/handoff commit
+This report describes the repaired B artifact checkpoint
+`57e2ef203befc96cfcefe00de2aaf8b0baab5d8b` on
+`hrl/vm-c15-native-capture-v0`. Planning authority remains
 `9a755b14b01c5a77a6fc98c2547616e1c490e806` in the isolated non-detached
 worktree `/workspace/worktrees/accel-sim-vm-c15-native`.
+
+Producer implementation is separately anchored at
+`8963919d608d05713e2caa22965d8895c728bc92`, with code
+`util/vm_tlb/c15/lane_b/c15_lane_b.py` SHA256
+`731789f3e35108b4146859e0718876050559ecdb5d69a077e626f722e2e20c07`.
+That commit identifies the frozen generator implementation; it is **not** the
+artifact checkpoint. The final handoff HEAD is the fetched branch ref
+`refs/heads/hrl/vm-c15-native-capture-v0`, which carries this report and is
+also distinct from both anchors. See `PROVENANCE_CLOSEOUT.md` for the mapping.
 
 ## What is publishable
 
@@ -60,9 +69,12 @@ python3 util/vm_tlb/c15/lane_b/c15_lane_b.py --validate \
   --output-root docs/vm_tlb/review_packs/C15_LOWCOST_MULTIMODEL/lane_b
 ```
 
-Consumers must fetch exactly `9ecd9cb4…`, validate its manifest, and retain
-the evidence tiers. In particular, they must not select native capture targets
-from the header-only directory or treat any fixture as a scientific result.
+A must consume artifact checkpoint `57e2ef203befc96cfcefe00de2aaf8b0baab5d8b`
+and validate its `PUBLISH_MANIFEST.json`; it must use `8963919d…` only as the
+producer-code anchor. A should then fetch the B branch tip for the final
+handoff record. In all cases, retain the evidence tiers: do not select native
+capture targets from the header-only directory or treat any fixture as a
+scientific result.
 
 ## Remaining gap / next permitted action
 
