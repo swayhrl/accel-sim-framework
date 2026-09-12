@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import fcntl
 import json
+import os
 import time
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,7 @@ MAX_NVBIT_WINDOW_BYTES = 4 * 1024 * 1024 * 1024
 MAX_NVBIT_WINDOW_SECONDS = 20 * 60
 MAX_NVBIT_WINDOWS_PER_DEPLOYMENT = 6
 EVIDENCE_CLASSIFICATIONS = {"SCIENTIFIC", "NON_SCIENTIFIC_DIAGNOSTIC", "ACCOUNTING_ONLY"}
+MEASUREMENT_ACTIVE_SCHEMA = "C16_G_MEASUREMENT_ACTIVE_V1"
 
 
 def _new_ledger() -> dict[str, Any]:
@@ -224,6 +226,52 @@ class BudgetLease:
                 )
         finally:
             self._release()
+        return False
+
+
+class MeasurementActive:
+    """Fail closed when another operation or host task owns the formal window.
+
+    The ledger lock serializes GPU science.  This separate, small marker lets
+    remote transfer/export helpers observe that they must not share the host
+    with a formal measurement.  It is created only while the caller owns a
+    ledger lease.  A stale marker is intentionally not overwritten.
+    """
+
+    def __init__(self, ledger_path: Path, identity: dict[str, Any], operation_kind: str) -> None:
+        self.ledger_path = ledger_path
+        self.identity = identity
+        self.operation_kind = operation_kind
+        self.path = ledger_path.parent.parent / "control" / "MEASUREMENT_ACTIVE"
+        self.marker_id = ""
+
+    def __enter__(self) -> "MeasurementActive":
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self.path.exists():
+            raise ContractError(f"formal GPU operation is blocked by an existing measurement marker: {self.path}")
+        self.marker_id = f"{self.operation_kind}-{time.time_ns()}"
+        atomic_json(self.path, {
+            "schema_version": MEASUREMENT_ACTIVE_SCHEMA,
+            "marker_id": self.marker_id,
+            "operation_kind": self.operation_kind,
+            "ledger_path": str(self.ledger_path),
+            "deployment_id": self.identity.get("deployment_id"),
+            "run_id": self.identity.get("run_id"),
+            "pid": os.getpid(),
+            "started_unix": time.time(),
+        })
+        return self
+
+    def __exit__(self, exc_type: object, exc: object, traceback: object) -> bool:
+        try:
+            marker = json.loads(self.path.read_text(encoding="utf-8"))
+            if marker.get("schema_version") != MEASUREMENT_ACTIVE_SCHEMA or marker.get("marker_id") != self.marker_id:
+                raise ContractError("measurement marker changed ownership during a formal GPU operation")
+            self.path.unlink()
+        except FileNotFoundError as error:
+            raise ContractError("measurement marker disappeared during a formal GPU operation") from error
+        except json.JSONDecodeError as error:
+            raise ContractError("measurement marker is unreadable during formal GPU cleanup") from error
         return False
 
 

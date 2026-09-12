@@ -18,8 +18,8 @@ LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
 from c16_native_common import ContractError  # noqa: E402
-from execution_budget import BudgetLease, initialize_ledger, mark_existing_entry_diagnostic  # noqa: E402
-from runtime_native_runner import wrapper_owned_budget  # noqa: E402
+from execution_budget import BudgetLease, MEASUREMENT_ACTIVE_SCHEMA, MeasurementActive, initialize_ledger, mark_existing_entry_diagnostic  # noqa: E402
+from runtime_native_runner import wrapper_measurement_marker, wrapper_owned_budget  # noqa: E402
 
 
 IDENTITY = {
@@ -95,6 +95,57 @@ class ParentLeaseTests(unittest.TestCase):
             self.assertEqual(entry["raw_bytes"], 0)
             self.assertEqual(entry["evidence_classification"], "NON_SCIENTIFIC_DIAGNOSTIC")
             self.assertEqual(entry["diagnostic_reason"], "REANNOTATED_UNIT_TEST")
+
+    def test_measurement_marker_is_exclusive_and_cleans_up(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "ledger" / "ledger.json"
+            marker = ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE"
+            with MeasurementActive(ledger, IDENTITY, "NATIVE_BASELINE"):
+                self.assertTrue(marker.is_file())
+                with self.assertRaises(ContractError):
+                    with MeasurementActive(ledger, IDENTITY, "NSYS"):
+                        pass
+            self.assertFalse(marker.exists())
+
+    def test_stale_marker_fails_closed_and_is_accounted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "ledger" / "ledger.json"
+            initialize_ledger(ledger, instance_start_unix=time.time(), start_source="UNIT_TEST", instance_receipt_path=Path("unit-receipt.json"))
+            marker = ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE"
+            marker.parent.mkdir(parents=True)
+            marker.write_text("stale-marker", encoding="utf-8")
+            with self.assertRaises(ContractError):
+                with BudgetLease(ledger, IDENTITY, "NATIVE_BASELINE", capture=False):
+                    with MeasurementActive(ledger, IDENTITY, "NATIVE_BASELINE"):
+                        pass
+            entry = json.loads(ledger.read_text(encoding="utf-8"))["entries"][-1]
+            self.assertEqual(entry["evidence_classification"], "NON_SCIENTIFIC_DIAGNOSTIC")
+            self.assertEqual(entry["terminal_status"], "FAILED_OR_ABORTED")
+
+    def test_wrapper_child_requires_matching_active_marker(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "ledger" / "ledger.json"
+            marker = ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE"
+            marker.parent.mkdir(parents=True)
+            marker.write_text(json.dumps({
+                "schema_version": MEASUREMENT_ACTIVE_SCHEMA,
+                "ledger_path": str(ledger),
+                "deployment_id": IDENTITY["deployment_id"],
+                "run_id": IDENTITY["run_id"],
+            }), encoding="utf-8")
+            args = argparse.Namespace(budget_ledger=ledger)
+            previous = os.environ.get("C16_G_MEASUREMENT_ACTIVE_MARKER")
+            os.environ["C16_G_MEASUREMENT_ACTIVE_MARKER"] = str(marker)
+            try:
+                self.assertEqual(wrapper_measurement_marker(args, IDENTITY), marker)
+                marker.write_text(json.dumps({"schema_version": MEASUREMENT_ACTIVE_SCHEMA}), encoding="utf-8")
+                with self.assertRaises(ContractError):
+                    wrapper_measurement_marker(args, IDENTITY)
+            finally:
+                if previous is None:
+                    os.environ.pop("C16_G_MEASUREMENT_ACTIVE_MARKER", None)
+                else:
+                    os.environ["C16_G_MEASUREMENT_ACTIVE_MARKER"] = previous
 
 
 if __name__ == "__main__":

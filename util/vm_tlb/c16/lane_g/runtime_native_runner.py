@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any
 
 from c16_native_common import ContractError, atomic_json, canonical_json, repo_root, sha256_file
-from execution_budget import BudgetLease
+from execution_budget import BudgetLease, MEASUREMENT_ACTIVE_SCHEMA, MeasurementActive
 from model_adapters import resolve_adapter
 from run_schema import validate_receipt
 
@@ -96,6 +96,26 @@ def wrapper_owned_budget(args: argparse.Namespace, identity: dict[str, str]) -> 
             fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
             raise ContractError("parent lease receipt exists but the shared budget ledger is not locked")
     return WrapperOwnedBudget(float(parent["max_elapsed_seconds"])), parent
+
+
+def wrapper_measurement_marker(args: argparse.Namespace, identity: dict[str, str]) -> Path:
+    """Require a child runner to observe the live marker owned by its wrapper."""
+    marker_text = os.environ.get("C16_G_MEASUREMENT_ACTIVE_MARKER")
+    expected = args.budget_ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE"
+    if marker_text != str(expected):
+        raise ContractError("wrapper-owned budget mode lacks its expected active measurement marker")
+    try:
+        marker = json.loads(expected.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractError(f"cannot read active wrapper measurement marker: {exc}") from exc
+    if (
+        marker.get("schema_version") != MEASUREMENT_ACTIVE_SCHEMA
+        or marker.get("ledger_path") != str(args.budget_ledger)
+        or marker.get("deployment_id") != identity.get("deployment_id")
+        or marker.get("run_id") != identity.get("run_id")
+    ):
+        raise ContractError("active measurement marker does not bind this wrapper-owned child")
+    return expected
 
 
 def git_head() -> str:
@@ -261,7 +281,12 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
         "scientific_eligible": False,
         "identity": identity,
         "runtime": {"device": "cuda:0", "profiler_mode": "UNPROFILED"},
-        "checks": {"identity_persisted_before_gpu_operation": True, "cache_correct_decode_required": True},
+        "checks": {
+            "identity_persisted_before_gpu_operation": True,
+            "cache_correct_decode_required": True,
+            "measurement_active_guard": getattr(args, "measurement_active_guard", False),
+            "measurement_active_marker": str(getattr(args, "measurement_active_marker", "NA")),
+        },
         "artifacts": {"terminal_status": "PENDING"},
     })
     torch.cuda.reset_peak_memory_stats()
@@ -326,6 +351,8 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
             "execution_budget_ledger": str(args.budget_ledger),
             "execution_budget_max_elapsed_seconds": budget.max_elapsed_seconds,
             "execution_budget_ownership": "PROFILER_WRAPPER" if args.budget_owned_by_wrapper else "RUNNER",
+            "measurement_active_guard": getattr(args, "measurement_active_guard", False),
+            "measurement_active_marker": str(getattr(args, "measurement_active_marker", "NA")),
             "parent_lease_receipt": str(args.parent_lease_receipt) if args.budget_owned_by_wrapper else "NA",
             "parent_lease_receipt_sha256": sha256_file(args.parent_lease_receipt) if args.budget_owned_by_wrapper else "NA",
             "parent_lease_id": args.parent_lease["parent_lease_id"] if args.budget_owned_by_wrapper else "NA",
@@ -386,11 +413,16 @@ def main() -> None:
     binding = load_binding(args.binding_receipt, canary=args.mode == "canary")
     if args.budget_owned_by_wrapper:
         budget, args.parent_lease = wrapper_owned_budget(args, runtime_identity(binding, args))
+        args.measurement_active_marker = wrapper_measurement_marker(args, runtime_identity(binding, args))
+        args.measurement_active_guard = True
         receipt = execute(binding, args, budget)
     else:
         with BudgetLease(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}", capture=False) as budget:
-            receipt = execute(binding, args, budget)
-            budget.finish(elapsed_seconds=budget.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE")
+            with MeasurementActive(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}") as active:
+                args.measurement_active_marker = active.path
+                args.measurement_active_guard = True
+                receipt = execute(binding, args, budget)
+                budget.finish(elapsed_seconds=budget.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE")
     atomic_json(args.receipt, receipt)
     print(f"PASS C16 cache-correct native runner: {args.receipt}")
 

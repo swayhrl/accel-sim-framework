@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from c16_native_common import ContractError, SCHEMA_VERSION, atomic_json, require_exact_keys, sha256_file
-from execution_budget import BudgetLease, MAX_NVBIT_WINDOW_BYTES, MAX_NVBIT_WINDOW_SECONDS
+from execution_budget import BudgetLease, MAX_NVBIT_WINDOW_BYTES, MAX_NVBIT_WINDOW_SECONDS, MeasurementActive
 from identity_guard import TARGET_FIELDS, read_object
 from run_schema import IDENTITY_FIELDS, RUNTIME_FIELDS, validate_receipt
 
@@ -208,6 +208,8 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
             "execution_budget_ledger": str(args.budget_ledger) if args.budget_ledger is not None else "NA",
             "parent_lease_start_receipt": str(args.parent_lease_receipt) if args.parent_lease_receipt is not None else "NA",
             "parent_lease_closeout_receipt": str(getattr(args, "parent_lease_closeout", "NA")),
+            "measurement_active_marker": str(getattr(args, "measurement_active_marker", "NA")),
+            "measurement_active_guard": getattr(args, "measurement_active_guard", False),
         },
         "artifacts": {
             "tool": tool,
@@ -243,29 +245,33 @@ def main(tool: str) -> None:
     elapsed = 0.0
     try:
         with BudgetLease(args.budget_ledger, target["identity"], tool.upper(), capture=tool == "nvbit") as budget:
-            if tool == "nvbit":
-                returncode, terminal_status, bytes_written, elapsed = run_nvbit_guarded(
-                    command, args.raw_dir, args.nvbit_tool, args.target_json,
-                    max_raw_bytes=budget.max_raw_bytes, max_seconds=budget.max_elapsed_seconds,
-                )
-                budget.finish(elapsed_seconds=elapsed, raw_bytes=bytes_written, terminal_status=terminal_status)
-            else:
-                parent, token = write_parent_lease_start(args.parent_lease_receipt, target, tool, budget)
-                environment = dict(os.environ)
-                environment["C16_G_PARENT_LEASE_RECEIPT"] = str(args.parent_lease_receipt)
-                environment["C16_G_PARENT_LEASE_TOKEN"] = token
-                returncode, terminal_status, elapsed = run_command_guarded(command, budget.max_elapsed_seconds, environment)
-                bytes_written = output_bytes(args.output)
-                if tool == "nsys" and terminal_status == "COMPLETE" and returncode == 0 and bytes_written == 0:
-                    terminal_status = "FAILED_EMPTY_PROFILE"
-                scientific = terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"}
-                budget.finish(
-                    elapsed_seconds=elapsed,
-                    raw_bytes=0,
-                    terminal_status=terminal_status,
-                    evidence_classification="SCIENTIFIC" if scientific else "NON_SCIENTIFIC_DIAGNOSTIC",
-                    diagnostic_reason=None if scientific else f"{tool.upper()}_{terminal_status}",
-                )
+            with MeasurementActive(args.budget_ledger, target["identity"], tool.upper()) as active:
+                args.measurement_active_marker = active.path
+                args.measurement_active_guard = True
+                if tool == "nvbit":
+                    returncode, terminal_status, bytes_written, elapsed = run_nvbit_guarded(
+                        command, args.raw_dir, args.nvbit_tool, args.target_json,
+                        max_raw_bytes=budget.max_raw_bytes, max_seconds=budget.max_elapsed_seconds,
+                    )
+                    budget.finish(elapsed_seconds=elapsed, raw_bytes=bytes_written, terminal_status=terminal_status)
+                else:
+                    parent, token = write_parent_lease_start(args.parent_lease_receipt, target, tool, budget)
+                    environment = dict(os.environ)
+                    environment["C16_G_PARENT_LEASE_RECEIPT"] = str(args.parent_lease_receipt)
+                    environment["C16_G_PARENT_LEASE_TOKEN"] = token
+                    environment["C16_G_MEASUREMENT_ACTIVE_MARKER"] = str(active.path)
+                    returncode, terminal_status, elapsed = run_command_guarded(command, budget.max_elapsed_seconds, environment)
+                    bytes_written = output_bytes(args.output)
+                    if tool == "nsys" and terminal_status == "COMPLETE" and returncode == 0 and bytes_written == 0:
+                        terminal_status = "FAILED_EMPTY_PROFILE"
+                    scientific = terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"}
+                    budget.finish(
+                        elapsed_seconds=elapsed,
+                        raw_bytes=0,
+                        terminal_status=terminal_status,
+                        evidence_classification="SCIENTIFIC" if scientific else "NON_SCIENTIFIC_DIAGNOSTIC",
+                        diagnostic_reason=None if scientific else f"{tool.upper()}_{terminal_status}",
+                    )
     except Exception:
         if parent is not None:
             args.parent_lease_closeout = write_parent_lease_closeout(
