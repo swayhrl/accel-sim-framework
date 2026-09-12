@@ -930,6 +930,12 @@ def read_manifest_catalog(commit: str, manifest_path: str, catalog_path: str) ->
     manifest_text = git_text(commit, manifest_path)
     manifest = json.loads(manifest_text)
     dependencies = verify_native_catalog_admission(commit, manifest_path, manifest)
+    catalog_entries = [entry for entry in manifest.get("files", []) if str(entry.get("path", "")).endswith("KERNEL_CATALOG.tsv")]
+    if len(catalog_entries) != 1:
+        die("NATIVE_CATALOG_V1 admission has ambiguous KERNEL_CATALOG.tsv entry")
+    expected_catalog_path = manifest_entry_path(manifest_path, str(catalog_entries[0]["path"]))
+    if catalog_path != expected_catalog_path:
+        die("caller catalog path differs from the manifest-bound KERNEL_CATALOG.tsv path")
     catalog_text = git_text(commit, catalog_path)
     catalog_hash = sha256_bytes(catalog_text.encode())
     files = manifest.get("files", [])
@@ -997,7 +1003,12 @@ def read_manifest_payload(commit: str, manifest_path: str, payload_path: str) ->
     payload_text = git_text(commit, payload_path)
     payload_hash = sha256_bytes(payload_text.encode())
     files = manifest.get("files", [])
-    if not any((row.get("path") == payload_path or str(row.get("path", "")).endswith(Path(payload_path).name)) and row.get("sha256") == payload_hash for row in files):
+    matches = [row for row in files if row.get("path") == payload_path or str(row.get("path", "")).endswith(Path(payload_path).name)]
+    if len(matches) != 1:
+        die("holdout producer manifest has ambiguous or absent payload path")
+    if payload_path != manifest_entry_path(manifest_path, str(matches[0]["path"])):
+        die("caller holdout payload path differs from manifest-bound path")
+    if matches[0].get("sha256") != payload_hash:
         die("holdout payload SHA does not match its committed producer manifest")
     return tsv_rows(payload_text), {"producer_commit": commit, "manifest_path": manifest_path, "manifest_blob": git_blob(commit, manifest_path),
                                     "manifest_sha256": sha256_bytes(manifest_text.encode()), "payload_path": payload_path, "payload_blob": git_blob(commit, payload_path),
