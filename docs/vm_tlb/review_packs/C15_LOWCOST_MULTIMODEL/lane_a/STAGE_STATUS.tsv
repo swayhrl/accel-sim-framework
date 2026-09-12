@@ -1,12 +1,12 @@
 stage_id	execution_status	validation_status	test_receipt	artifact_manifest	failure_or_degradation_reason
 C15-0.1	COMPLETE	PASS	receipts/C15-0.1_T00_T23.json	ENV_PREFLIGHT.json;STAGE_STATUS.tsv	NA
 C15-0.2	COMPLETE	PASS	receipts/C15-0.2_T00_T01.json	ASSET_INVENTORY.tsv;BOOTSTRAP_REGISTRY.tsv;EVIDENCE_LINEAGE.md	NO_LOCAL_MODEL_CACHE;PUBLIC_METADATA_WORK_REMAINS
-C15-1.1	RUNNING	NOT_EXECUTED	NA	NA	NA
-C15-1.2	NOT_STARTED	NOT_EXECUTED	NA	NA	NA
-C15-1.3	NOT_STARTED	NOT_EXECUTED	NA	NA	NA
-C15-1.4	NOT_STARTED	NOT_EXECUTED	NA	NA	NA
-C15-1.5	NOT_STARTED	NOT_EXECUTED	NA	NA	NA
-C15-1.6	NOT_STARTED	NOT_EXECUTED	NA	NA	NA
+C15-1.1	COMPLETE	PASS	receipts/C15-1_STATIC.json	MODEL_SELECTION_PLAN.tsv	12-candidate plan frozen before metadata results; 10 revision-verified deployment configs obtained; 2 candidate identities unavailable
+C15-1.2	COMPLETE	PASS	receipts/C15-1_STATIC.json	METADATA_FETCH_RECEIPTS.tsv;HEADER_VALIDATION.tsv	Bounded config/index/header reader passed fixtures and real immutable-revision requests; 6 individual source paths failed within bounds
+C15-1.3	COMPLETE	INCONCLUSIVE	receipts/C15-1_STATIC.json	TENSOR_STORAGE_CATALOG.tsv;WEIGHT_STORAGE_BREAKDOWN.tsv;TENSOR_ALIAS_AUDIT.tsv	Exact header storage verified for 3/10 configs; 7 remain CONFIG_ONLY because headers/indexes were unavailable or bounded out
+C15-1.4	COMPLETE	PASS	receipts/C15-1_STATIC.json	KV_REPRESENTATION_AUDIT.tsv;KV_CAPACITY_CURVES.tsv	7 standard-KV static formula configurations; DeepSeek MLA explicitly unsupported; 2 further configs lack required static dtype/head evidence
+C15-1.5	COMPLETE	INCONCLUSIVE	receipts/C15-1_STATIC.json	MODEL_REGISTRY.tsv;DEPLOYMENT_MANIFEST.json;STATIC_FOOTPRINT.tsv	10 source-bound configuration identities; byte/page scenarios exact only where headers exist and never labelled VA/PA/TLB miss
+C15-1.6	COMPLETE	PASS	receipts/C15-1_STATIC.json	PUBLISH_MANIFEST.json;COST_LEDGER.tsv;LATEST_REPORT.md	Publication schema/hash validation complete; static storage coverage remains capability-limited
 C15-5.1	WAITING_INPUT	NOT_EXECUTED	NA	NA	B_AND_C_COMMITTED_MANIFESTS_NOT_YET_CHECKED
 C15-5.2	WAITING_INPUT	NOT_EXECUTED	NA	NA	REQUIRES_HASH_BOUND_B_AND_C_PUBLISHES
 C15-5.4	WAITING_INPUT	NOT_EXECUTED	NA	NA	REQUIRES_C15_5_2

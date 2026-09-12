@@ -1,22 +1,24 @@
-# C15 lane A — bootstrap published
+# C15 lane A — static library published; integration pending
 
-Status: `C15-0.2 COMPLETE / PASS`; the static-library stages are active.
+Status: `C15-1.6 COMPLETE / PASS`; `C15-1.3` and `C15-1.5` are scientifically
+`INCONCLUSIVE` for configurations lacking a verified Safetensors header.
 
-This checkpoint establishes the isolated A worktree, records both `planning_sha`
-and starting HEAD as `9a755b14b01c5a77a6fc98c2547616e1c490e806`, and inventories the frozen
-C12 provenance inputs with content SHA-256 values.  It also records a negative
-result: no authorized local model/Hugging Face cache was found.  No architecture
-or model identity was inferred from that absence or from a model-family name.
+The frozen plan contains 12 candidates. Ten deployment configurations are bound
+to a source-backed immutable model revision: nine distinct model lineages plus
+the Qwen2.5-7B raw/AWQ storage pair. Three configurations have complete,
+range-verified tensor storage catalogs; the other seven are config-static only.
+This separation is deliberate—no absent header has been turned into a byte count.
 
-The range-limited static reader has deterministic synthetic checks for
-Safetensors storage boundaries, packed metadata accounting, ordinary-KV formulas,
-and byte-range/page unions.  It rejects a server that answers a Range request
-with HTTP 200 before reading a body.
+Seven configurations support the explicitly-assumed standard-KV formula; one
+DeepSeek configuration is verified as MLA/compressed and is explicitly rejected by
+the standard adapter. Two further configurations lack the static dtype/head facts
+needed for a curve. All page values are file-layout scenarios, never GPU VA, PA,
+TLB working set, or TLB misses.
 
-Current guard: free filesystem space is below the C15 64-GiB reserve.  Only small
-review artifacts may be written.  No GPU, simulator, trace capture, full weight
-download, or new model SASS work has occurred.
+Network metadata cost recorded by the final receipt is 833,322 B, versus a 1-GiB
+campaign budget. Full weights, GPU work, SASS, simulator build/replay, and Core
+changes remain zero. The current filesystem reading is still slightly below the
+64-GiB reserve, so outputs remain small review artifacts only.
 
-Next: freeze a diverse, source-backed candidate plan and query only bounded public
-config/index/header metadata at immutable revisions.  This checkpoint contains no
-cross-lane inputs and makes no dynamic or cross-model performance claim.
+Next: fetch B/C only at fixed commits, accept only a hash-valid publish manifest,
+and write any synthesis solely under `lane_a/integration/`.
