@@ -707,7 +707,7 @@ def verify_integration_outputs(root: Path, deployment_ids: set[str]) -> list[tup
         if row["decision"] in {"KNOWN_CLASS_PROFILED", "CHARACTERIZED_NOT_TIMING_VALIDATED", "PROPOSE_T3"}:
             raise C15Error("integration admits an unsupported dynamic upgrade")
     receipt = json_object((integration / "INTEGRATION_RECEIPT.json").read_bytes(), "INTEGRATION_RECEIPT.json")
-    if receipt.get("planning_sha") != PLANNING_SHA or receipt.get("conclusion") != "C15_LOWCOST_FOUNDATION_PARTIAL_READY_FOR_REVIEW":
+    if receipt.get("planning_sha") != PLANNING_SHA or receipt.get("conclusion") != "C15_LOWCOST_FOUNDATION_PARTIAL_READY_FOR_FINAL_REVIEW":
         raise C15Error("integration receipt identity or conclusion mismatch")
     if receipt.get("artifact_checkpoints") != {"B": expected["B"][0], "C": expected["C"][0]} or receipt.get("final_handoff_heads") != {"B": expected["B"][1], "C": expected["C"][1]}:
         raise C15Error("integration receipt commits mismatch")
