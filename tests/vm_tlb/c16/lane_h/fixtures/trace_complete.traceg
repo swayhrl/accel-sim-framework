@@ -1,0 +1,15 @@
+# C16 full-tracer-compatible traceg fixture; CTA grouping is deliberately not global order.
+-kernel name = fixture_kernel
+-enable lineinfo = 0
+#BEGIN_TB
+thread block = 0,0,0
+warp = 0
+insts = 7
+0100 00000005 0 LDG.E.32 0 4 0 0x7f 0x80 0
+0110 00000003 0 LDG.E.128 0 16 0 0x3fff8 0x40000 0
+0120 00000007 0 LDG.E.32 0 4 1 0x10 16 0
+0130 00000005 0 STG.E.32 0 4 2 0x210 16 0
+0140 00000001 0 ATOM.E.ADD.32 0 4 0 0x80000 0
+0150 00000000 0 LDG.E.32 0 4 0 0
+0160 00000001 0 IADD3 0 0
+#END_TB
