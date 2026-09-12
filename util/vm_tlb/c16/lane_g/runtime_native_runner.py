@@ -44,6 +44,25 @@ def smi_row() -> str:
     return rows[0].strip()
 
 
+def smi_driver_version() -> str:
+    """Read the loaded NVIDIA driver version from the same runtime probe.
+
+    ``torch.version.cuda`` describes the wheel build, not the driver.  PyTorch
+    does not expose a stable ``torch.cuda.driver_version`` API across the
+    pinned builds, so use the already-required local ``nvidia-smi`` query.
+    """
+    try:
+        value = subprocess.check_output(
+            ["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader,nounits"],
+            text=True,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise ContractError("cannot record NVIDIA driver version via nvidia-smi") from exc
+    if not value or "\n" in value:
+        raise ContractError("C16 runtime runner requires exactly one driver-version value")
+    return value
+
+
 def load_binding(path: Path, *, canary: bool) -> dict[str, Any]:
     try:
         binding = json.loads(path.read_text(encoding="utf-8"))
@@ -216,7 +235,7 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
             "device": "cuda:0",
             "gpu_name": properties.name,
             "gpu_uuid": smi_row().split(",", 1)[0],
-            "driver_version": torch.cuda.driver_version,
+            "driver_version": smi_driver_version(),
             "cuda_version": torch.version.cuda,
             "torch_version": torch.__version__,
             "attention_backend": f"TRANSFORMERS_CONFIG:{observed_attention}",
