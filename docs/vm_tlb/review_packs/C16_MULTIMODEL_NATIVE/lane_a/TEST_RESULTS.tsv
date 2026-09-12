@@ -1,0 +1,9 @@
+test_id	stage_scope	command_or_method	result	cost_scope	acceptance_note
+C16A-T01	C16-0.2;C16-0.6	c16_local_prep.py --selftest	PASS	CPU_ONLY	pure repeat/trim and canonical-token hash guards
+C16A-T02	C16-0.2	c16_local_prep.py --record-assets	PASS	CPU_NETWORK_METADATA_ONLY	79 per-file rows; local SHA or immutable remote LFS SHA; no full checkpoint download
+C16A-T03	C16-0.6	c16_local_prep.py --tokenize	PASS	CPU_ONLY	84 actual-token receipts for 7 deployments x 3 inputs x 4 prefill lengths
+C16A-T04	C16-0.2;C16-0.6;C16-0.7	c16_local_prep.py --validate	PASS	CPU_ONLY	asset hashes, token derivation, raw hashes, and exact stage-row closure
+C16A-T05	C16-6.4	c16_local_prep.py --write-stage-status	PASS	CPU_ONLY	one row for every C16 common acceptance stage
+C16A-T06	C16-0.2;C16-0.6	python3 -m unittest tests/vm_tlb/c16/lane_a/test_c16_local_prep.py	PASS	CPU_ONLY	4 unit tests
+C16A-T07	C16-0.0	static_fingerprint selftest/validate plus C15 unit tests	PASS	CPU_ONLY	C15 T01/T03-T06/T14/T18/T20/T22 and 11 units revalidated
+C16A-T08	C16-0.0	Git-object manifest/payload SHA recomputation	PASS	CPU_ONLY	C15 A=34 B=21 C=35 immutable payloads verified

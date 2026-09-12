@@ -1,0 +1,44 @@
+{
+  "schema_version": "C16_BASELINE_MANIFEST_V1",
+  "c16_lane": "A",
+  "c16_planning_sha": "f222e66f49af56cfd4ded671c4a50c6811237cc2",
+  "c15_planning_authority_sha": "9a755b14b01c5a77a6fc98c2547616e1c490e806",
+  "read_policy": "READ_ONLY_FIXED_ARTIFACT_COMMIT_AND_MANIFEST_HASH",
+  "validation": {
+    "c15_static_selftest": "PASS:T03,T04,T05,T06",
+    "c15_static_validate": "PASS:T01,T14,T20,T18,T22",
+    "c15_a_unit_tests": "PASS:11",
+    "manifest_payload_validation": "PASS:A=34,B=21,C=35"
+  },
+  "inputs": [
+    {
+      "lane": "C15_A",
+      "planning_authority_sha": "9a755b14b01c5a77a6fc98c2547616e1c490e806",
+      "static_producer_checkpoint": "9bdb692dfda2a9b42578133b97a84283fed9d34a",
+      "integration_producer_checkpoint": "a69ee630a8e3bc509029edc5d27c2daf7d2089f4",
+      "artifact_checkpoint": "4b6acb461940f504a13ad03c321a6a1a808f15fd",
+      "final_handoff_head": "252f5fedbd4fe816167b9f476bba713563d54a3e",
+      "manifest_sha256": "8276847397acbe2d45e03b0b9eb81bbde6a82870dfb86666532f54d5c8dca351",
+      "payloads_verified": 34
+    },
+    {
+      "lane": "C15_B",
+      "artifact_checkpoint": "57e2ef203befc96cfcefe00de2aaf8b0baab5d8b",
+      "final_handoff_head": "721e30f377dab36d826dc7ea9d47e11c5d85aa5c",
+      "manifest_sha256": "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad",
+      "payloads_verified": 21
+    },
+    {
+      "lane": "C15_C",
+      "artifact_checkpoint": "a51d6c91b1e7d7df27a4af80823a29ff30bb9806",
+      "final_handoff_head": "a51d6c91b1e7d7df27a4af80823a29ff30bb9806",
+      "manifest_sha256": "17d7888650c2c51f1dd0d4a418eb45948212a259dd01661d1adca33832e5dec0",
+      "payloads_verified": 35
+    }
+  ],
+  "limitations": [
+    "C15 evidence remains static/offline and does not become C16 native evidence.",
+    "No live producer worktree, branch ref, partial artifact, or naked raw capture is a C16 scientific input.",
+    "C16 dynamic conclusions remain unavailable until G/C/H publish hash-bound evidence."
+  ]
+}

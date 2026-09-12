@@ -1,0 +1,6 @@
+scenario_id	batch_size	prefill_tokens	decode_tokens	frozen_input_classes	input_derivation	feature_policy	wave_scope	status
+S0	1	128	4	TEXT	repeat_then_trim token receipt at T128	prefix-cache=OFF;paged-kv=OFF;continuous-batching=OFF;chunked-prefill=OFF;speculative=OFF;TP=1;PP=1	Wave1 canary plus Llama bridge	FROZEN_NOT_EXECUTED
+S1	1	256	16	CODE	repeat_then_trim token receipt at T256	prefix-cache=OFF;paged-kv=OFF;continuous-batching=OFF;chunked-prefill=OFF;speculative=OFF;TP=1;PP=1	all non-Llama deployments	FROZEN_NOT_EXECUTED
+S2	1	2048	32	TEXT,CODE,STRUCTURED	repeat_then_trim token receipt at T2048	prefix-cache=OFF;paged-kv=OFF;continuous-batching=OFF;chunked-prefill=OFF;speculative=OFF;TP=1;PP=1	all deployments; all three inputs required for MoE routing audit	FROZEN_NOT_EXECUTED
+S3	1	8192	16	TEXT	repeat_then_trim token receipt at T8192	prefix-cache=OFF;paged-kv=OFF;continuous-batching=OFF;chunked-prefill=OFF;speculative=OFF;TP=1;PP=1	dense Qwen deployments only	FROZEN_NOT_EXECUTED
+S4	4	2048	16	STRUCTURED	repeat_then_trim token receipt at T2048	prefix-cache=OFF;paged-kv=OFF;continuous-batching=OFF;chunked-prefill=OFF;speculative=OFF;TP=1;PP=1	Wave1 dense Qwen deployments only	FROZEN_NOT_EXECUTED

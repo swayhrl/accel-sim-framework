@@ -1,0 +1,9 @@
+cost_component	resource_class	amount	currency	status	evidence_or_limitation
+C15_manifest_and_payload_revalidation	CPU	NA	NA	EXECUTED_NO_BILLABLE_RATE_RECORDED	local Git object/hash work only
+C16_metadata_and_tokenizer_download	NETWORK_STORAGE	NA	NA	EXECUTED_NO_BILLABLE_RATE_RECORDED	metadata/tokenizer only; full non-Llama checkpoint download prohibited in this closeout
+C16_tokenization_and_validation	CPU	NA	NA	EXECUTED_NO_BILLABLE_RATE_RECORDED	CPU-only Transformers tokenizer verification; no Torch/CUDA loaded
+C16_local_model_storage	STORAGE	NA	NA	PARTIAL	Llama checkpoint local; other full checkpoints remote-SHA-addressable but absent locally
+C16_upload_and_transfer	NETWORK	NA	NA	WAITING_INPUT	requires C16-0.9 package and transfer plan
+C16_native_load_baseline_profile_capture	GPU	NA	NA	NOT_EXECUTED	no GPU rented or launched; no profiler/NVBit execution
+C16_parse_and_sampling	CPU	NA	NA	WAITING_INPUT	requires fixed G/C/H producer artifacts
+C16_retry_reserve	GPU_CPU_STORAGE	NA	NA	UNAVAILABLE	no native execution basis or provider price receipt
