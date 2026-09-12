@@ -76,6 +76,27 @@ Qwen0.5, Qwen7 raw, then Qwen7 AWQ. AWQ output will remain
 selector-freeze SHA. A deployment explicitly declared `BLOCKED` or
 `SKIPPED_RESOURCE` is logged and skipped without ending P's event loop.
 
+## P3 AWQ holdout seal (not a C input)
+
+P received one immutable Qwen2.5-7B-AWQ S1 native report at G commit
+`57e2cd850b69d939492412382bd6e540283e7055`. Its raw report and all locally
+available receipt hashes verified, and P performed local export, full catalog,
+raw/profile indexing, and a report-scoped join audit entirely outside Git. The
+sealed result is `PIPELINE_DIAGNOSTIC_ONLY / HOLDOUT_PENDING_FREEZE`; it is not
+scientifically eligible and is explicitly `C_FORBIDDEN_HOLDOUT_PENDING_SELECTOR_FREEZE`.
+
+The compact [holdout seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S1_G1_SEAL.json)
+contains only identity, policy, contract gaps, and artifact hashes. It
+intentionally contains no AWQ timing, memory, output, launch-population,
+heavy-tail, or semantic-coverage outcome metric. It cannot influence C strata,
+thresholds, or selector construction before C publishes its selector-freeze SHA.
+
+G's current checkpoint still omits the immutable remote `nsys --version` and a
+separately named raw-transfer receipt binding remote/local path, size, and SHA.
+P has therefore retained the local output as diagnostic-only, rather than
+upgrading it to a C-consumable native event. These are the next requested G
+metadata fields; no rerun or model/scenario substitution is requested.
+
 ## Current event-monitor ledger
 
 The monitor is bootstrapped at G head
@@ -89,9 +110,9 @@ producer manifest binding the associated profile/NSYS/binding/validation receipt
 hashes. It remains `P1_INPUT_NOT_HASH_CLOSED` for clean↔diagnostic reconciliation,
 not an authorization to infer or manufacture clean labels.
 
-The current P3 transfer is explicitly in progress, with no hash-closed raw
-profile/trace event; P records it only as pending. This is not a failure and
-does not stop monitoring.
+The prior P3 package-transfer state is superseded by the sealed AWQ holdout
+handling above. P remains available for future hash-closed P1/P2/P3 events and
+does not expose holdout outcomes while waiting for those events.
 
 Read the P review-pack `README.md`, `JOIN_KEY_CONTRACT.md`,
 `EVENT_INPUT_CONTRACT.md`, and `LOCAL_NSYS_EXPORT_QUALIFICATION.md` for the
