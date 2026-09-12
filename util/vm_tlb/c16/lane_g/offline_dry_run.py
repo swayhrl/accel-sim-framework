@@ -67,6 +67,15 @@ def run(out: Path) -> None:
         atomic_json(observed, target())
         metrics = temp / "ncu_metrics.txt"
         metrics.write_text("l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum\nlts__t_sectors_op_read.sum\ndram__bytes_read.sum\n", encoding="utf-8")
+        instance = temp / "instance.json"
+        execute([sys.executable, str(LANE / "autodl_instance_receipt.py"), "--dry-run", "--work-root", str(temp / "autodl-work"), "--receipt", str(instance)])
+        receipts["instance_receipt"] = {"status": "PASS", "mode": "DRY_RUN", "scientific_eligible": False}
+        transfer = temp / "transfer.json"
+        execute([sys.executable, str(LANE / "transfer_verify.py"), "--dry-run", "--expected-hashes", str(out / "EXPECTED_HASHES.tsv"), "--transfer-root", str(temp / "transfer"), "--receipt", str(transfer)])
+        transfer_status = json.loads(transfer.read_text(encoding="utf-8"))["status"]
+        if transfer_status != "BLOCKED_UPSTREAM_HASH_CLOSURE":
+            raise ContractError("offline transfer preflight must expose, not hide, the A hash-closure gap")
+        receipts["transfer_verify"] = {"status": "PASS", "mode": "DRY_RUN", "reported_gap": transfer_status}
         execute(["bash", str(LANE / "bootstrap_autodl.sh"), "--dry-run", "--wheelhouse", str(temp / "wheelhouse")])
         receipts["bootstrap"] = {"status": "PASS", "mode": "DRY_RUN", "no_gpu_query_download_or_install": True}
         runner = temp / "runner.json"

@@ -23,6 +23,7 @@ import profiler_wrapper as PROFILER
 import run_model as RUNNER
 import run_schema as SCHEMA
 import scenario_driver as SCENARIO
+import transfer_verify as TRANSFER
 import wheelhouse_verify as WHEELS
 
 
@@ -79,6 +80,15 @@ class NativeContractTest(unittest.TestCase):
             manifest.write_text("wheel_filename\tpackage\tversion\tsha256\tstatus\n", encoding="utf-8")
             with self.assertRaises(COMMON.ContractError):
                 WHEELS.validate(root, manifest)
+
+    def test_transfer_verifier_exposes_unclosed_a_package(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory) / "pack"
+            PACKAGE.prepare(out, None)
+            rows = TRANSFER.read_rows(out / "EXPECTED_HASHES.tsv")
+            self.assertIn("A_MODEL_ASSET_MANIFEST", TRANSFER.preconditions(rows))
+            with self.assertRaises(COMMON.ContractError):
+                TRANSFER.verify(rows, ROOT)
 
     def test_complete_offline_suite_builds_only_non_scientific_artifacts(self):
         with tempfile.TemporaryDirectory() as directory:

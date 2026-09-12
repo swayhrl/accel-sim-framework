@@ -25,6 +25,7 @@ SOURCE_FILES = (
     "c16_native_common.py", "wheelhouse_verify.py", "model_adapters.py", "run_schema.py",
     "run_model.py", "scenario_driver.py", "identity_guard.py", "profiler_wrapper.py", "nsys_wrapper.py",
     "ncu_wrapper.py", "nvbit_wrapper.py", "prepare_gpu_package.py", "offline_dry_run.py",
+    "autodl_instance_receipt.py", "transfer_verify.py",
 )
 EXPECTED_COLUMNS = ("artifact_id", "kind", "path_or_commit", "sha256", "required_for", "closure_status", "note")
 PACKAGE_COLUMNS = ("package_component", "path_or_ref", "sha256", "required_for", "availability", "transfer_action", "scientific_use")
