@@ -111,6 +111,21 @@ class StaticFingerprintTest(unittest.TestCase):
             with self.assertRaises(M.C15Error):
                 M.assert_authorized_operation(operation, 1)
 
+    def test_integration_manifest_declares_only_fixed_hash_bound_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            integration = root / "integration"
+            integration.mkdir()
+            (integration / "INTEGRATION_RECEIPT.json").write_text("{}\n", encoding="utf-8")
+            M.write_static_publish_manifest(root)
+            manifest = json.loads((root / "PUBLISH_MANIFEST.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["run_id"], "c15-a-integration-20260912")
+            self.assertTrue({"C15-5.1", "C15-5.2", "C15-5.4"}.issubset(manifest["ready_stage_ids"]))
+            sources = {item["name"]: item for item in manifest["input_sources"]}
+            self.assertEqual(sources["LANE_B_PUBLISH"]["read_policy"], "READ_ONLY_FIXED_COMMIT_HASH_BOUND")
+            self.assertEqual(sources["LANE_C_PUBLISH"]["read_policy"], "READ_ONLY_FIXED_COMMIT_HASH_BOUND")
+            M.verify_publish_manifest(root)
+
 
 if __name__ == "__main__":
     unittest.main()

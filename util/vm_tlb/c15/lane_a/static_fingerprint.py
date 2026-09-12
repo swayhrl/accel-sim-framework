@@ -585,7 +585,7 @@ def verify_output_root(root: Path) -> list[tuple[str, str]]:
             if row["forbidden_result_input"] != "candidate speedup/cycle/miss result":
                 raise C15Error("selection plan does not explicitly exclude candidate outcomes")
     verify_cost_ledger(root)
-    return [("T01", "PASS"), ("T14", "PASS"), ("T20", "PASS")]
+    return [("T01", "PASS"), ("T14", "PASS"), ("T20", "PASS")] + verify_integration_outputs(root, deployment_ids)
 
 
 def verify_cost_ledger(root: Path) -> None:
@@ -605,6 +605,72 @@ def verify_cost_ledger(root: Path) -> None:
                     raise C15Error("non-numeric cost in %s" % column) from exc
         if row["gpu_active_s"] != "0":
             raise C15Error("lane A ledger reports unauthorized GPU use")
+
+
+def verify_integration_outputs(root: Path, deployment_ids: set[str]) -> list[tuple[str, str]]:
+    """Validate A-owned integration metadata without reading producer worktrees."""
+    integration = root / "integration"
+    if not integration.exists():
+        return []
+    consumed_columns = [
+        "consumer_lane", "producer_lane", "remote_branch", "fetched_commit", "manifest_path",
+        "manifest_sha256", "planning_sha", "verified_payloads", "consumption_scope", "status", "missing_reason",
+    ]
+    consumed = require_columns(integration / "CONSUMED_INPUTS.tsv", consumed_columns)
+    require_unique(consumed, ("consumer_lane", "producer_lane"), "CONSUMED_INPUTS")
+    expected = {
+        "B": ("721e30f377dab36d826dc7ea9d47e11c5d85aa5c", "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad"),
+        "C": ("a51d6c91b1e7d7df27a4af80823a29ff30bb9806", "17d7888650c2c51f1dd0d4a418eb45948212a259dd01661d1adca33832e5dec0"),
+    }
+    if {row["producer_lane"] for row in consumed} != set(expected):
+        raise C15Error("integration must identify exactly the accepted B/C producers")
+    for row in consumed:
+        commit, manifest_hash = expected[row["producer_lane"]]
+        if row["consumer_lane"] != "A" or row["planning_sha"] != PLANNING_SHA:
+            raise C15Error("integration consumer identity mismatch")
+        if row["fetched_commit"] != commit or row["manifest_sha256"] != manifest_hash:
+            raise C15Error("integration fixed commit or manifest hash mismatch")
+        if row["status"] != "ACCEPTED_HASH_BOUND":
+            raise C15Error("integration accepted a non-hash-bound input")
+    upgrade_columns = [
+        "deployment_id", "compared_class", "known_dimensions", "novel_dimensions", "uncertainty",
+        "audit_window_evidence", "decision", "reason", "proposed_next_scope", "expected_cost", "requires_new_authorization",
+    ]
+    upgrades = require_columns(integration / "UPGRADE_DECISIONS.tsv", upgrade_columns)
+    require_unique(upgrades, ("deployment_id",), "UPGRADE_DECISIONS")
+    if {row["deployment_id"] for row in upgrades} != deployment_ids:
+        raise C15Error("integration upgrade table does not close to the static deployment registry")
+    allowed_decisions = {"KNOWN_CLASS_PROFILED", "CHARACTERIZED_NOT_TIMING_VALIDATED", "STATIC_ONLY", "NEEDS_T2_AUDIT", "PROPOSE_T3", "INCONCLUSIVE"}
+    for row in upgrades:
+        if row["decision"] not in allowed_decisions:
+            raise C15Error("integration has an invalid upgrade decision")
+        if row["requires_new_authorization"] not in ("true", "false"):
+            raise C15Error("integration authorization field is not boolean")
+        if row["decision"] in {"KNOWN_CLASS_PROFILED", "CHARACTERIZED_NOT_TIMING_VALIDATED", "PROPOSE_T3"}:
+            raise C15Error("integration admits an unsupported dynamic upgrade")
+    receipt = json_object((integration / "INTEGRATION_RECEIPT.json").read_bytes(), "INTEGRATION_RECEIPT.json")
+    if receipt.get("planning_sha") != PLANNING_SHA or receipt.get("conclusion") != "C15_LOWCOST_FOUNDATION_PARTIAL_READY_FOR_REVIEW":
+        raise C15Error("integration receipt identity or conclusion mismatch")
+    if receipt.get("consumed_commits") != {"B": expected["B"][0], "C": expected["C"][0]}:
+        raise C15Error("integration receipt commits mismatch")
+    tests = {entry.get("test_id"): entry.get("result") for entry in receipt.get("tests", []) if isinstance(entry, dict)}
+    if tests.get("T22") != "PASS":
+        raise C15Error("integration T22 receipt is missing or failed")
+    cost_rows = require_columns(integration / "COST_LEDGER.tsv", COST_COLUMNS)
+    require_unique(cost_rows, ("work_id",), "INTEGRATION_COST_LEDGER")
+    for row in cost_rows:
+        if row["gpu_active_s"] not in ("0", NA):
+            raise C15Error("integration ledger reports unauthorized GPU use")
+    summary = require_columns(integration / "STAGE_ACCEPTANCE_SUMMARY.tsv", ["stage_id", "owner", "execution_status", "validation_status", "basis", "limitation_or_failure"])
+    require_unique(summary, ("stage_id",), "STAGE_ACCEPTANCE_SUMMARY")
+    if len(summary) != 36 or {"C15-5.1", "C15-5.2", "C15-5.4"} - {row["stage_id"] for row in summary}:
+        raise C15Error("integration stage acceptance summary is incomplete")
+    findings = (integration / "CROSS_MODEL_FINDINGS.md").read_text(encoding="utf-8")
+    report = (integration / "FINAL_REPORT.md").read_text(encoding="utf-8")
+    for required_boundary in ("SAMPLER_NOT_QUALIFIED", "no dynamic"):
+        if required_boundary not in findings and required_boundary not in report:
+            raise C15Error("integration evidence boundary is missing: %s" % required_boundary)
+    return [("T18", "PASS"), ("T22", "PASS")]
 
 
 def verify_bootstrap_root(root: Path) -> list[tuple[str, str]]:
@@ -650,7 +716,7 @@ def verify_publish_manifest(root: Path) -> None:
 
 
 def write_static_publish_manifest(root: Path) -> None:
-    """Write the non-self-referential C15-1.6 manifest after artifacts are final."""
+    """Write the non-self-referential static or fixed-input integration manifest."""
     repo_root = Path(__file__).resolve().parents[4]
     artifact_files = sorted(path for path in root.rglob("*") if path.is_file() and path.name != "PUBLISH_MANIFEST.json")
     if not artifact_files:
@@ -659,21 +725,32 @@ def write_static_publish_manifest(root: Path) -> None:
     producer_files = []
     for path in (repo_root / "util/vm_tlb/c15/lane_a/static_fingerprint.py", repo_root / "tests/vm_tlb/c15/lane_a/test_static_fingerprint.py"):
         producer_files.append({"path": str(path.relative_to(repo_root)), "sha256": sha256_file(path)})
+    integrated = (root / "integration" / "INTEGRATION_RECEIPT.json").is_file()
+    ready_stages = ["C15-0.1", "C15-0.2", "C15-1.1", "C15-1.2", "C15-1.3", "C15-1.4", "C15-1.5", "C15-1.6"]
+    input_sources = [
+        {"name": "C12_FINAL", "commit": "a268aba0d01310294074ded5bb8017e2092394c0", "read_policy": "READ_ONLY_FIXED_COMMIT"},
+        {"name": "PUBLIC_METADATA", "identity": "per-model immutable revisions and source digests in METADATA_FETCH_RECEIPTS.tsv", "read_policy": "BOUNDED_CONFIG_INDEX_HEADER_ONLY"},
+    ]
+    gaps = [
+        "TWO_PLANNED_CANDIDATE_IDENTITIES_UNAVAILABLE", "SEVEN_OF_TEN_CONFIGURATIONS_STATIC_CONFIG_ONLY",
+        "DEEPSEEK_MLA_OR_COMPRESSED_REPRESENTATION_UNSUPPORTED_BY_STANDARD_KV_ADAPTER",
+        "NO_NATIVE_OR_CROSS_MODEL_DYNAMIC_EVIDENCE",
+    ]
+    if integrated:
+        ready_stages.extend(["C15-5.1", "C15-5.2", "C15-5.4"])
+        input_sources.extend([
+            {"name": "LANE_B_PUBLISH", "commit": "721e30f377dab36d826dc7ea9d47e11c5d85aa5c", "manifest_sha256": "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad", "read_policy": "READ_ONLY_FIXED_COMMIT_HASH_BOUND"},
+            {"name": "LANE_C_PUBLISH", "commit": "a51d6c91b1e7d7df27a4af80823a29ff30bb9806", "manifest_sha256": "17d7888650c2c51f1dd0d4a418eb45948212a259dd01661d1adca33832e5dec0", "read_policy": "READ_ONLY_FIXED_COMMIT_HASH_BOUND"},
+        ])
+        gaps.extend(["NO_NEW_NATIVE_CAPTURE_FROM_B", "SAMPLER_NOT_QUALIFIED_FROM_C", "NO_UPGRADE_AUTHORIZED"])
     json_write(root / "PUBLISH_MANIFEST.json", {
         "schema_version": "C15_PUBLISH_MANIFEST_V1", "planning_sha": PLANNING_SHA, "lane": "A",
-        "run_id": "c15-a-static-20260912", "producer_source_sha": PLANNING_SHA,
+        "run_id": "c15-a-integration-20260912" if integrated else "c15-a-static-20260912", "producer_source_sha": PLANNING_SHA,
         "producer_files": producer_files,
-        "ready_stage_ids": ["C15-0.1", "C15-0.2", "C15-1.1", "C15-1.2", "C15-1.3", "C15-1.4", "C15-1.5", "C15-1.6"],
-        "input_sources": [
-            {"name": "C12_FINAL", "commit": "a268aba0d01310294074ded5bb8017e2092394c0", "read_policy": "READ_ONLY_FIXED_COMMIT"},
-            {"name": "PUBLIC_METADATA", "identity": "per-model immutable revisions and source digests in METADATA_FETCH_RECEIPTS.tsv", "read_policy": "BOUNDED_CONFIG_INDEX_HEADER_ONLY"},
-        ],
-        "evidence_scope": "static configuration metadata, selected safetensors header storage, formula-derived KV curves, and file-layout page scenarios only; no GPU/runtime/cache/TLB/timing measurement",
-        "gaps": [
-            "TWO_PLANNED_CANDIDATE_IDENTITIES_UNAVAILABLE", "SEVEN_OF_TEN_CONFIGURATIONS_STATIC_CONFIG_ONLY",
-            "DEEPSEEK_MLA_OR_COMPRESSED_REPRESENTATION_UNSUPPORTED_BY_STANDARD_KV_ADAPTER",
-            "NO_NATIVE_OR_CROSS_MODEL_DYNAMIC_EVIDENCE", "NO_CROSS_LANE_PUBLISH_CONSUMED",
-        ],
+        "ready_stage_ids": ready_stages,
+        "input_sources": input_sources,
+        "evidence_scope": "static configuration metadata, selected safetensors header storage, formula-derived KV curves, and file-layout page scenarios; fixed-commit B/C capability and historical qualification synthesis only; no GPU/runtime/cache/TLB/timing measurement",
+        "gaps": gaps,
         "files": files,
     })
 

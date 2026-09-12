@@ -1,5 +1,5 @@
 {
-  "evidence_scope": "static configuration metadata, selected safetensors header storage, formula-derived KV curves, and file-layout page scenarios only; no GPU/runtime/cache/TLB/timing measurement",
+  "evidence_scope": "static configuration metadata, selected safetensors header storage, formula-derived KV curves, and file-layout page scenarios; fixed-commit B/C capability and historical qualification synthesis only; no GPU/runtime/cache/TLB/timing measurement",
   "files": [
     {
       "path": "ASSET_INVENTORY.tsv",
@@ -13,8 +13,8 @@
     },
     {
       "path": "COST_LEDGER.tsv",
-      "sha256": "164a9bb120405da6a34e513b12bcf724424df4d2ac71f5ae178fd39ca6542f63",
-      "size_bytes": 1499
+      "sha256": "0bf87d7c6d51133aa17c3455ef402d66e097f52f2f380920c76cdccc81870f06",
+      "size_bytes": 1766
     },
     {
       "path": "DEPLOYMENT_MANIFEST.json",
@@ -48,8 +48,8 @@
     },
     {
       "path": "LATEST_REPORT.md",
-      "sha256": "b03a49fd11a79d60bd4f52b1260fc89d56e99d550a87fbfbd2e81e2b5cdd06f1",
-      "size_bytes": 1416
+      "sha256": "df7c4624fe017a8f2e84b159059fd6739beaac352e395cf1c9c039f1bafe6b57",
+      "size_bytes": 1688
     },
     {
       "path": "METADATA_FETCH_RECEIPTS.tsv",
@@ -68,8 +68,8 @@
     },
     {
       "path": "STAGE_STATUS.tsv",
-      "sha256": "494754391bed4aa19e54c8e79bbd07e9369770397b2cbc294602e0ed9b0b17c7",
-      "size_bytes": 1978
+      "sha256": "029da1b8eb2f0e0b98790fc4dad1c22c64cc227f67094f1dfe5ffc6a4bf0862e",
+      "size_bytes": 2376
     },
     {
       "path": "STATIC_FOOTPRINT.tsv",
@@ -93,13 +93,53 @@
     },
     {
       "path": "TEST_RESULTS.tsv",
-      "sha256": "65cc9e06f43ae9bccdc00d01d96bbcc669b3b99408e887500a5733eced9bb3df",
-      "size_bytes": 4231
+      "sha256": "20fc76feac40d1cecb8ccdfb320e12bf4bc74a212231ab8c22fd415700be1eaa",
+      "size_bytes": 5019
     },
     {
       "path": "WEIGHT_STORAGE_BREAKDOWN.tsv",
       "sha256": "9e5cd3400eccb1f74c7ea0febe4a25ba323536651bf6c07c366e5277d7b70184",
       "size_bytes": 659
+    },
+    {
+      "path": "integration/CONSUMED_INPUTS.tsv",
+      "sha256": "604bef31342684d8914abd2beb136e98e30f81131aca97c7fa0852ca334b1e84",
+      "size_bytes": 1115
+    },
+    {
+      "path": "integration/COST_LEDGER.tsv",
+      "sha256": "818e79d6ab4b339a80ea1d4c0bf2b4b33f01e1797ddb004f159944fb28faaa2c",
+      "size_bytes": 1085
+    },
+    {
+      "path": "integration/CROSS_MODEL_FINDINGS.md",
+      "sha256": "46f601f1902acfa0216e627acffd040dea137e0edd5c657d2a538c2798cc623c",
+      "size_bytes": 2817
+    },
+    {
+      "path": "integration/FINAL_REPORT.md",
+      "sha256": "8b51f8151813ae7b0056920d81436789488b6a4e9be8164baee6f45497bb1d9c",
+      "size_bytes": 1668
+    },
+    {
+      "path": "integration/INTEGRATION_RECEIPT.json",
+      "sha256": "03cff6f7e3ac063d3801055a26ca875359868f8487d129fbc55ce040f0a0233a",
+      "size_bytes": 1267
+    },
+    {
+      "path": "integration/MANIFEST_VALIDATION.md",
+      "sha256": "94aa6dbef9786d6d36820db61d1ae9f88b576427659cf06e1263b7a99ae516de",
+      "size_bytes": 1188
+    },
+    {
+      "path": "integration/STAGE_ACCEPTANCE_SUMMARY.tsv",
+      "sha256": "323c1839cf2002c0a43346dacd438f842c34174d852dfb7f8665b8d990605a00",
+      "size_bytes": 3262
+    },
+    {
+      "path": "integration/UPGRADE_DECISIONS.tsv",
+      "sha256": "fadd4b97f33ce4c36f2e0326778dda40ed011f2268379b3b30c93d4ed94704fc",
+      "size_bytes": 3390
     },
     {
       "path": "receipts/C15-0.1_T00_T23.json",
@@ -122,7 +162,9 @@
     "SEVEN_OF_TEN_CONFIGURATIONS_STATIC_CONFIG_ONLY",
     "DEEPSEEK_MLA_OR_COMPRESSED_REPRESENTATION_UNSUPPORTED_BY_STANDARD_KV_ADAPTER",
     "NO_NATIVE_OR_CROSS_MODEL_DYNAMIC_EVIDENCE",
-    "NO_CROSS_LANE_PUBLISH_CONSUMED"
+    "NO_NEW_NATIVE_CAPTURE_FROM_B",
+    "SAMPLER_NOT_QUALIFIED_FROM_C",
+    "NO_UPGRADE_AUTHORIZED"
   ],
   "input_sources": [
     {
@@ -134,6 +176,18 @@
       "identity": "per-model immutable revisions and source digests in METADATA_FETCH_RECEIPTS.tsv",
       "name": "PUBLIC_METADATA",
       "read_policy": "BOUNDED_CONFIG_INDEX_HEADER_ONLY"
+    },
+    {
+      "commit": "721e30f377dab36d826dc7ea9d47e11c5d85aa5c",
+      "manifest_sha256": "38dcc5c615d531b6c812facffa5b0634b1bafff89b87a57e190a2fca8cdc7aad",
+      "name": "LANE_B_PUBLISH",
+      "read_policy": "READ_ONLY_FIXED_COMMIT_HASH_BOUND"
+    },
+    {
+      "commit": "a51d6c91b1e7d7df27a4af80823a29ff30bb9806",
+      "manifest_sha256": "17d7888650c2c51f1dd0d4a418eb45948212a259dd01661d1adca33832e5dec0",
+      "name": "LANE_C_PUBLISH",
+      "read_policy": "READ_ONLY_FIXED_COMMIT_HASH_BOUND"
     }
   ],
   "lane": "A",
@@ -141,11 +195,11 @@
   "producer_files": [
     {
       "path": "util/vm_tlb/c15/lane_a/static_fingerprint.py",
-      "sha256": "127db26a251e77d87750ffdd2dc7a67c1fbbf2d4a0e5b9c28b24312d60494992"
+      "sha256": "e1f6df7a508403281b5d18646dd23a71b212d4b7b1c96f575e15478c54e26147"
     },
     {
       "path": "tests/vm_tlb/c15/lane_a/test_static_fingerprint.py",
-      "sha256": "070035e0b9b254be6ba71e3eddf7bece29246c4d95ae8f7eaa3365c1167189b1"
+      "sha256": "02afcfe71c88dcd026ec9ff0a6595f2c8d9b0c93dcb40c7eed54238c9f319648"
     }
   ],
   "producer_source_sha": "9a755b14b01c5a77a6fc98c2547616e1c490e806",
@@ -157,8 +211,11 @@
     "C15-1.3",
     "C15-1.4",
     "C15-1.5",
-    "C15-1.6"
+    "C15-1.6",
+    "C15-5.1",
+    "C15-5.2",
+    "C15-5.4"
   ],
-  "run_id": "c15-a-static-20260912",
+  "run_id": "c15-a-integration-20260912",
   "schema_version": "C15_PUBLISH_MANIFEST_V1"
 }
