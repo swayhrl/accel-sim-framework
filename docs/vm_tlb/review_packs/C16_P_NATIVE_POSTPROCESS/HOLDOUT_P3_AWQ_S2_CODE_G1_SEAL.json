@@ -1,0 +1,53 @@
+{
+  "schema_version": "C16_P_HOLDOUT_SEAL_V1",
+  "status": "HOLDOUT_PENDING_FREEZE / PIPELINE_DIAGNOSTIC_ONLY",
+  "cross_lane_visibility": "C_FORBIDDEN_HOLDOUT_PENDING_SELECTOR_FREEZE",
+  "scope": "Prospective Qwen2.5-7B-AWQ holdout local native-catalog handling only. This seal intentionally contains no timing, memory, output, launch-population, heavy-tail, or semantic-coverage outcome metrics.",
+  "exact_g_producer": {
+    "commit": "a7776a8cfa529889e4fe5dfb81685d556e3fa96d",
+    "checkpoint_path": "docs/vm_tlb/codex_handoff/c16/autodl_wave1/P3_AWQ_S2_CODE_G1_CHECKPOINT.json",
+    "checkpoint_sha256": "10e2e5c8271c693bf0a0e154d4b95e1753192db31767bf293c0ef8149b52970a"
+  },
+  "identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S2",
+    "run_id": "bedbd6bd-f51e-4246-89e9-c0e59c74e0e7",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "implementation_key": "AUTOAWQ_CAUSAL_LM_EAGER",
+    "dtype": "float16",
+    "quantization": "AWQ"
+  },
+  "hash_closed_artifacts_outside_git": {
+    "raw_nsys_rep_sha256": "3864fa793afc019e595074d84e238465af588fb78cffb961045b77088b58c184",
+    "local_sqlite_sha256": "eaae55c361f91cdcbdb6b7ee3959b61bcca124fbafb768a44f31e7e526d0e4a8",
+    "full_catalog_tsv_sha256": "7678310fb3573681f49083d2737c84497d3e342117ad8d02fdadbc72aa5c9ee5",
+    "full_catalog_tsv_gzip_sha256": "b049346180236bc11ee396e723356ef6c55cfa0e52c2dbf0f6d451a9fd65ad42",
+    "raw_artifact_index_sha256": "bd6a6f74c89c0d4019479d905a439313d5ede792fd9271e959757b33c937488f",
+    "profile_report_index_sha256": "ebe934a58c61c197aec14f12331629cacc1dba1aa21bbe7c563720a9924cd577",
+    "run_join_audit_sha256": "3bee0f3d71332fae97719f6a91d7a664c24ee7464974bd54e305fed7054f5e5d",
+    "source_manifest_sha256": "bf0a9af8563087addd4e268bed8e4629036eaf208e5a549606688a3edca9ee9d",
+    "input_audit_sha256": "5e396ab8d853dbf47fe46b7c77f42d8e9d5d3b64d04443ce8c06fb353a07135e",
+    "postprocess_manifest_sha256": "64f618bcadfc64ce769cd66c204efc8b3d6245365dbb074609e6215de18584c2"
+  },
+  "postprocessor": {
+    "p_code_commit": "9598bba50d4b47f27d449210bb780927e7cf08be",
+    "p_branch_commit_before_seal": "ed5dbef9d0150b71baf54f41ac36f41132e1dfbf",
+    "join_key_contract_sha256": "41a84737c2380e51c43e90d8915fd4aa2c462090a1238da22511efe22babfa54",
+    "operator_layer_policy": "UNKNOWN_ONLY_UNTIL_DIRECT_EVIDENCE",
+    "direct_semantic_event": "NOT_PRESENT"
+  },
+  "input_contract_gap": {
+    "status": "INPUT_CONTRACT_MISSING_FIELDS_DIAGNOSTIC_ONLY",
+    "missing_required_immutable_fields": [
+      "remote_nsys_version",
+      "separate_raw_transfer_receipt_path_and_sha256"
+    ],
+    "required_for_any_future_reclassification": "G must publish the missing fields at an exact immutable producer commit; P will then re-audit without altering the frozen raw profile."
+  },
+  "release_gate": {
+    "required_c_selector_freeze_sha256": "NOT_YET_PUBLISHED",
+    "action_before_freeze": "DO_NOT_DISCLOSE_OR_APPLY_HOLDOUT_OUTCOMES_TO_C",
+    "action_after_freeze": "C may consume only an explicitly released apply-selector view, never retroactively influence selector construction."
+  }
+}

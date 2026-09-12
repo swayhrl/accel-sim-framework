@@ -78,16 +78,18 @@ selector-freeze SHA. A deployment explicitly declared `BLOCKED` or
 
 ## P3 AWQ holdout seal (not a C input)
 
-P has sealed two immutable Qwen2.5-7B-AWQ holdout native-report inputs at G
+P has sealed three immutable Qwen2.5-7B-AWQ holdout native-report inputs at G
 commits `57e2cd850b69d939492412382bd6e540283e7055` and
-`c9f948382b1312c43457d41122c5b17a4f29a877`. For each, raw report and locally
+`c9f948382b1312c43457d41122c5b17a4f29a877`, and
+`a7776a8cfa529889e4fe5dfb81685d556e3fa96d`. For each, raw report and locally
 available receipt hashes verified; P performed local export, full catalog,
 raw/profile indexing, and a report-scoped join audit entirely outside Git. The
 sealed result is `PIPELINE_DIAGNOSTIC_ONLY / HOLDOUT_PENDING_FREEZE`; it is not
 scientifically eligible and is explicitly `C_FORBIDDEN_HOLDOUT_PENDING_SELECTOR_FREEZE`.
 
 The compact [S1 seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S1_G1_SEAL.json)
-and [S2 seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_TEXT_G1_SEAL.json)
+and [S2/TEXT seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_TEXT_G1_SEAL.json)
+and [S2/CODE seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_CODE_G1_SEAL.json)
 contain only identity, policy, contract gaps, and artifact hashes. They
 intentionally contain no AWQ timing, memory, output, launch-population,
 heavy-tail, or semantic-coverage outcome metric. They cannot influence C
