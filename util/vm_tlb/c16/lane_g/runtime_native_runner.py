@@ -16,6 +16,7 @@ import statistics
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -51,6 +52,8 @@ def load_binding(path: Path, *, canary: bool) -> dict[str, Any]:
     required = (
         "schema_version", "scientific_eligible", "status", "deployment_id", "model_id",
         "model_revision", "tokenizer_revision", "scenario", "input", "model_path",
+        "package_id", "package_fixed_commit", "package_manifest_sha256",
+        "wheelhouse_manifest_sha256", "model_files",
     )
     if not isinstance(binding, dict) or any(key not in binding for key in required):
         raise ContractError("frozen-binding receipt lacks required identity fields")
@@ -233,6 +236,12 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
             "execution_budget_max_elapsed_seconds": budget.max_elapsed_seconds,
             "frozen_binding_receipt": str(args.binding_receipt),
             "frozen_binding_sha256": sha256_file(args.binding_receipt),
+            "package_id": binding["package_id"],
+            "package_fixed_commit": binding["package_fixed_commit"],
+            "package_manifest_sha256": binding["package_manifest_sha256"],
+            "wheelhouse_manifest_sha256": binding["wheelhouse_manifest_sha256"],
+            "bound_model_files": binding["model_files"],
+            "token_receipt_sha256": binding["input"]["token_receipt_sha256"],
             "gpu_telemetry_before": telemetry_before,
             "gpu_telemetry_after": telemetry_after,
         },
@@ -270,6 +279,11 @@ def main() -> None:
         parser.error("runtime-native runner has no mock mode; use the fixed offline runner for non-scientific fixtures")
     if args.warmups != 2 or args.measures not in (3, 4, 5):
         parser.error("C16 native baselines require 2 warmups and 3-5 retained measures")
+    try:
+        if str(uuid.UUID(args.run_id)) != args.run_id:
+            raise ValueError
+    except ValueError:
+        parser.error("--run-id must be a canonical UUID")
     binding = load_binding(args.binding_receipt, canary=args.mode == "canary")
     with BudgetLease(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}", capture=False) as budget:
         receipt = execute(binding, args, budget)
