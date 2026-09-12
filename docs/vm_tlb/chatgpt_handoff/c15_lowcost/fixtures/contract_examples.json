@@ -1,0 +1,19 @@
+{
+  "schema_version": "C15_CONTRACT_FIXTURES_V1",
+  "evidence_tier": "SYNTHETIC_TEST_ONLY",
+  "note": "Only test vectors; never include in scientific registries. This file extends the test catalog. Implementers must execute the tests, not mark the listed expected values as observed PASS.",
+  "fixtures": [
+    {"test_id":"T03","name":"fp16_tensor","shape":[2,4],"bytes_per_element":2,"expected_bytes":16},
+    {"test_id":"T04","name":"packed_int4_plus_scale","logical_elements":8,"weight_bits":4,"scale_count":1,"scale_bytes":2,"expected_payload_bytes":4,"expected_known_storage_bytes":6,"runtime_repack_bytes":null},
+    {"test_id":"T05","name":"standard_kv","layers":2,"batch":3,"resident_tokens":5,"local_kv_heads":2,"head_dim":4,"bytes_per_value":2,"k_v_factor":2,"expected_payload_bytes":960},
+    {"test_id":"T05","name":"sliding_kv","layers":2,"batch":3,"resident_tokens":3,"local_kv_heads":2,"head_dim":4,"bytes_per_value":2,"k_v_factor":2,"expected_payload_bytes":576},
+    {"test_id":"T06","name":"unaligned_two_pages","base":65530,"length":12,"page_bytes":65536,"expected_unique_pages":2},
+    {"test_id":"T06","name":"overlapping_ranges","half_open_ranges":[[0,8],[4,12]],"expected_union_bytes":12},
+    {"test_id":"T15","name":"unequal_denominator_rates","counts":[[1,10],[45,90]],"expected_aggregate_numerator":46,"expected_aggregate_denominator":100,"expected_rate":0.46,"incorrect_unweighted_mean":0.3},
+    {"test_id":"T15","name":"two_overlapping_kernels","intervals_ns":[[0,10],[5,15]],"expected_duration_sum_ns":20,"expected_makespan_ns":15},
+    {"test_id":"T18","name":"undefined_ratio","numerator":0,"denominator":0,"expected_value":null,"expected_status":"UNDEFINED_ZERO_DENOMINATOR"},
+    {"test_id":"T18","name":"uncertain_small_effect","estimated_delta":0.3,"interval_low":-0.2,"interval_high":0.8,"unit":"percent","expected_verdict":"INCONCLUSIVE"},
+    {"test_id":"T17","name":"superseded_c13","intended_l2_mode":0,"effective_l2_mode":1,"expected_admission":"REJECT"},
+    {"test_id":"T24","name":"new_full_roi_replay","requested_runs":1,"authorized_runs":0,"expected_admission":"REJECT"}
+  ]
+}

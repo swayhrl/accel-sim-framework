@@ -1,0 +1,37 @@
+stage_id	owner	tier	prerequisites	work	validation_tests	pass_condition	required_artifacts	failure_action
+C15-0.1	ALL	SETUP	NONE	独立worktree及冻结authority	T00,T01,T23	branch和owner明确;输入固定;无受保护路径写入	ENV_PREFLIGHT.json;STAGE_STATUS.tsv	隔离不明worktree;只做安全读取
+C15-0.2	A	T0	C15-0.1	已有模型与数据资产bootstrap	T00,T01	资产可追溯;未知型号不推断;bootstrap已发布	ASSET_INVENTORY.tsv;BOOTSTRAP_REGISTRY.tsv;EVIDENCE_LINEAGE.md	逐项标不可用;不阻塞工具开发
+C15-0.3	B	CAPABILITY	C15-0.1	实际GPU工具权重能力盘点	T00,T07,T24	设备与环境实查;native可运行性不虚构	CAPABILITY_MATRIX.tsv;DEPLOYMENT_PREFLIGHT.tsv	无GPU走importer和fixture路径
+C15-0.4	C	HISTORICAL	C15-0.1	C12/C13/C14及operator输入adapter	T00,T16,T17	冻结来源及索引一致;排除C13旧mode1	HISTORICAL_INPUTS.tsv;FIELD_OBSERVABILITY_AUDIT.tsv	隔离不合法来源;compact只用于支持范围
+C15-1.1	A	T0	C15-0.2	候选覆盖计划和revision冻结	T01,T14	计划先于结果;目标8-12配置;模型与部署数分开	MODEL_SELECTION_PLAN.tsv	缺来源列明;不凑数
+C15-1.2	A	T0	C15-1.1	有界config/index/header读取器	T02,T03,T21,T24	Range响应超限测试通过;元数据来源固定	METADATA_FETCH_RECEIPTS.tsv;HEADER_VALIDATION.tsv	拒绝整权重响应;有界重试
+C15-1.3	A	T0	C15-1.2	量化Weight存储和共享核算	T03,T04	offset/storage去重一致;逻辑与packed分开	TENSOR_STORAGE_CATALOG.tsv;WEIGHT_STORAGE_BREAKDOWN.tsv;TENSOR_ALIAS_AUDIT.md	未知packing/repack留NA
+C15-1.4	A	T0	C15-1.2	KV表示与rank-local容量适配	T05,T01	标准公式fixture精确;不支持表示显式拒绝	KV_REPRESENTATION_AUDIT.tsv;KV_CAPACITY_CURVES.tsv	MLA等缺证据不套通式
+C15-1.5	A	T0	C15-1.3;C15-1.4	多页粒度静态指纹	T06,T01,T20	页数布局假设明确;并集及bytes同源闭合	MODEL_REGISTRY.tsv;DEPLOYMENT_MANIFEST.json;STATIC_FOOTPRINT.tsv	禁止将解析页数标真实miss
+C15-1.6	A	PUBLISH	C15-1.5	静态库发布	T01,T21,T23	schema/hash/来源测试可再生;费用完整	PUBLISH_MANIFEST.json;COST_LEDGER.tsv;LATEST_REPORT.md	保留partial并标不足
+C15-2.1	B	T1	C15-0.3	真实部署preflight与后端冻结	T07,T01,T24	本地权重和GPU支持;无silent fallback	DEPLOYMENT_MANIFEST.json;DEPLOYMENT_PREFLIGHT.tsv	不可运行部署降为静态或历史导入
+C15-2.2	B	T1	C15-2.1	profiler及语义关联canary	T07,T08	无全SASS;事件关联可证;一个小canary通过	PROFILER_CANARY_RECEIPT.json;PROFILE_CONFIG.json	降低采集配置或替代现有工具
+C15-2.3	B	T1	C15-2.2	无profile基线与开销重复	T08,T20	原生时间定义明确;开销目标10%;超限标perturbed	NATIVE_BASELINE.tsv;PROFILE_OVERHEAD.tsv	补有限重复或只保留语义目录
+C15-2.4	B	T1	C15-2.2	模型算子kernel完整目录	T01,T08,T15	launch唯一;关联无猜测;原生与header-only隔离	KERNEL_CATALOG.tsv;CATALOG_COVERAGE.tsv	模糊语义保留UNKNOWN
+C15-2.5	B	T1	C15-2.4	storage/generation寿命V2	T09,T01	别名/复用/异步测试通过;真实未知不强分类	OBJECT_LIFETIME_V2.tsv;OBJECT_ATTRIBUTION_COVERAGE.tsv;LOGITS_POLICY_AUDIT.md	不明寿命标AMBIGUOUS_LIFETIME
+C15-2.6	B	T1	C15-2.3;C15-2.4	最多3部署8轻量scenario	T07,T08,T20,T24	逐scenario身份和开销通过;无笛卡尔积扩张	SCENARIO_REGISTRY.tsv;KERNEL_CATALOG.tsv	到预算停止动态;继续离线
+C15-2.7	B	PUBLISH	C15-2.4;C15-2.5	提前发布可消费目录	T01,T21,T23	native/history/header来源分离;manifest完整	PUBLISH_MANIFEST.json;LATEST_REPORT.md	无native时能力受限发布
+C15-3.1	C	T0_T1	C15-0.4	feature成本可观测性清单	T01,T12,T14	cheap和oracle输入隔离;单位范围完整	FEATURE_COST_AND_SCOPE.tsv	缺feature留空;不伪装低成本
+C15-3.2	C	SELECTOR	C15-3.1	三策略分层选样与覆盖	T14,T15,T21	确定性;无候选结果泄漏;represented/sampled分开	SAMPLE_PLAN.tsv;SAMPLING_COVERAGE.tsv;SELECTOR_RELEASE.json	不满足覆盖标INFEASIBLE
+C15-3.3	C	PROTOCOL	C15-3.2	seed/split/误差目标预冻结	T14,T18	候选delta突变不改plan;历史数据标retrospective	SAMPLING_VALIDATION_PROTOCOL.json;SPLIT_MANIFEST.tsv	污染测试集后升级版本并重新标seen
+C15-3.4	B	T2_PLAN	C15-2.4	固定语义上下文选区计划	T10,T14,T15	使用C发布版或规定bootstrap;无target双计	SAMPLE_PLAN.tsv;CAPTURE_PREFLIGHT.tsv	缺依赖先2-4个bootstrap或dry-run
+C15-3.5	B	T2_CANARY	C15-3.4	实际tracer过滤与身份canary	T10,T11,T21,T24	选内有选外无;第二次身份核验;未超预算	CAPTURE_CANARY_RECEIPT.json;TRACE_INPUT_RECEIPTS.tsv	wrong selection隔离;partial不能PASS
+C15-3.6	B	T2	C15-3.5	预算内选择性捕获	T10,T11,T20,T21,T24	每窗口terminal和hash闭合;不新增full trace	CAPTURE_MANIFEST.tsv;CAPTURE_STATUS.tsv	超时/超字节保留partial并继续其他可行项
+C15-3.7	C	T2_ANALYSIS	C15-0.4;C15-3.1	页行双尺度解析与sketch	T06,T11,T12,T13,T21	精确/估计区分;顺序边界测试通过;不全扫大trace	FINGERPRINTS.tsv;FINGERPRINT_VALIDATION.tsv	大集合有界估计;无顺序不报真实MRC
+C15-3.8	C	SCREENING	C15-3.2;C15-3.7	新颖性与审核窗口规则	T18,T22	相似不等于机制等价;新颖点理由可审	NOVELTY_AND_UPGRADE.tsv	无新模型保留DYNAMIC_PENDING
+C15-4.1	C	HISTORICAL_VALIDATION	C15-0.4	全量无采样adapter守恒control	T16,T17	所有可加值回同源总量;缺失重复fail-fast	ZERO_SAMPLING_CONSERVATION.tsv	不通过禁止解释采样结果
+C15-4.2	C	RETROSPECTIVE_TEST	C15-3.3;C15-4.1	不同预算代表性回测	T15,T16,T18	误差逐量报告;5%仅筛选目标;不剔除负结果	REPRESENTATIVENESS_ERROR.tsv;COVERAGE_COST_FRONTIER.tsv	误差超目标保留FAIL并有限加样
+C15-4.3	C	RETROSPECTIVE_TEST	C15-4.2	跨配置成对机制响应	T17,T18	同plan对两臂;错误C13排除;小收益可INCONCLUSIVE	CROSS_CONFIG_HOLDOUT.tsv;MECHANISM_SIGN_AUDIT.md	不确定跨0不裁胜负
+C15-4.4	C	CONTEXT_AUDIT	C15-4.1	C14 cold与C12上下文偏差	T19,T17	核身份和confounding;不把cold外推ROI	CONTEXT_BIAS_AUDIT.md;CONTEXT_COMPARISON.tsv	缺matched pair明确无法隔离context因果
+C15-4.5	C	QUALIFICATION	C15-4.2;C15-3.7	sketch与采样精度适用范围	T13,T14,T18	工具PASS与估计达标分开;参数版本固定	METRIC_QUALIFICATION.tsv;LIMITATIONS.md	失败可标SAMPLER_NOT_QUALIFIED
+C15-4.6	C	COST	C15-4.2	完整成本和低成本价值	T20	采集预热重试解析计入;unknown不补0	COST_LEDGER.tsv;LOWCOST_VALUE_ASSESSMENT.md	缺baseline不声称10x成本下降
+C15-4.7	C	PUBLISH	C15-4.3;C15-4.4;C15-4.5;C15-4.6	发布采样校准主体	T01,T21,T22,T23	所有测试与失败可复核;来源分层	FINAL_REPORT.md;PUBLISH_MANIFEST.json;LATEST_REPORT.md	无动态数据只限制跨模型结论
+C15-5.1	A	INTEGRATION	C15-1.6	固定commit导入B/C	T01,T21,T22	只读发布物hash一致;无live partial	integration/CONSUMED_INPUTS.tsv;integration/STAGE_ACCEPTANCE_SUMMARY.tsv	上游未发布先interim不合并live
+C15-5.2	A	SYNTHESIS	C15-5.1	静态与真实动态跨部署比较	T18,T22	证据和维度边界明确;无native不声称动态规律	integration/CROSS_MODEL_FINDINGS.md;integration/UPGRADE_DECISIONS.tsv	缺能力范围内partial
+C15-5.3	C	PLAN_ONLY	C15-4.7	最多3项未来T3申请	T19,T20,T24	上下文/成本/对照/判定清晰;不执行模拟	NEXT_HIGH_FIDELITY_REQUESTS.md	全部requires_new_authorization
+C15-5.4	A	CLOSEOUT	C15-5.2	完整或能力受限整合收口	T01,T20,T22,T23	36小阶段逐项状态;无虚构结果;未改保护资产	integration/FINAL_REPORT.md;LATEST_REPORT.md	PARTIAL与READY明确区分
