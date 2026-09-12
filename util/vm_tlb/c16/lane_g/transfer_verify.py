@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from c16_native_common import ContractError, atomic_json, sha256_file, valid_sha256
+from wheelhouse_verify import validate as validate_wheelhouse
 
 
 EXPECTED_FIELDS = ("artifact_id", "kind", "path_or_commit", "sha256", "required_for", "closure_status", "note")
@@ -37,6 +38,9 @@ def verify(rows: list[dict[str, str]], root: Path) -> list[dict[str, str]]:
         path = root / row["path_or_commit"]
         if not path.is_file():
             raise ContractError(f"expected transferred artifact is absent: {path}")
+        if row["kind"] == "LOCAL_WHEELHOUSE_MANIFEST":
+            requirements = root / "util/vm_tlb/c16/lane_g/requirements.lock"
+            validate_wheelhouse(path.parent, path, requirements)
         actual = sha256_file(path)
         if actual != row["sha256"]:
             raise ContractError(f"transferred artifact hash mismatch: {row['artifact_id']}")

@@ -1,9 +1,13 @@
-# C16-G logical dependency lock. Wheel filenames and SHA256 close at C16-1.2.
+# C16-G exact offline dependency roots.  The matching wheelhouse manifest records
+# every resolved transitive wheel, including filename, tag, size, and SHA256.
+# pip is pinned so a fresh CPython 3.10 venv can perform the required offline
+# resolver dry-run before installing the runner dependencies.
 # Bootstrap is offline-only and rejects a wheelhouse without WHEELHOUSE_MANIFEST.tsv.
+pip==26.1
 torch==2.5.1+cu124
 transformers==4.46.3
 accelerate==1.1.1
 safetensors==0.4.5
-huggingface-hub==0.26.2
+huggingface-hub==0.26.5
 nvidia-ml-py==12.560.30
-autoawq==0.2.8
+autoawq==0.2.7.post3

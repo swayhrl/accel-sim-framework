@@ -9,6 +9,7 @@ import sys
 import tempfile
 import time
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -30,6 +31,7 @@ import run_schema as SCHEMA
 import scenario_driver as SCENARIO
 import transfer_verify as TRANSFER
 import wheelhouse_verify as WHEELS
+import wheelhouse_manifest as WHEEL_MANIFEST
 
 
 class NativeContractTest(unittest.TestCase):
@@ -85,6 +87,25 @@ class NativeContractTest(unittest.TestCase):
             manifest.write_text("wheel_filename\tpackage\tversion\tsha256\tstatus\n", encoding="utf-8")
             with self.assertRaises(COMMON.ContractError):
                 WHEELS.validate(root, manifest)
+
+    def test_wheel_manifest_records_metadata_size_source_and_compatibility_tag(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            wheel = root / "demo_pkg-1.2.3-py3-none-any.whl"
+            with zipfile.ZipFile(wheel, "w") as archive:
+                archive.writestr("demo_pkg-1.2.3.dist-info/METADATA", "Metadata-Version: 2.1\nName: demo-pkg\nVersion: 1.2.3\n")
+                archive.writestr("demo_pkg-1.2.3.dist-info/WHEEL", "Wheel-Version: 1.0\nTag: py3-none-any\n")
+            requirements = root / "requirements.lock"
+            requirements.write_text("demo-pkg==1.2.3\n", encoding="utf-8")
+            manifest = root / "WHEELHOUSE_MANIFEST.tsv"
+            rows = WHEEL_MANIFEST.rows_for(root, requirements)
+            WHEEL_MANIFEST.write_manifest(manifest, rows)
+            self.assertEqual(tuple(rows[0]), WHEEL_MANIFEST.FIELDS)
+            self.assertEqual(rows[0]["size_bytes"], str(wheel.stat().st_size))
+            self.assertEqual(rows[0]["source"], WHEEL_MANIFEST.PYPI_SOURCE)
+            self.assertEqual(rows[0]["compatibility_tag"], "py3-none-any")
+            self.assertEqual(WHEELS.validate(root, manifest, requirements), 1)
+            self.assertFalse(WHEEL_MANIFEST.target_compatible("cp310-cp310-win_amd64"))
 
     def test_execution_budget_serializes_and_bounds_first_wave_capture_windows(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -152,6 +173,7 @@ class NativeContractTest(unittest.TestCase):
             out = Path(directory) / "pack"
             PACKAGE.prepare(out, None)
             rows = TRANSFER.read_rows(out / "EXPECTED_HASHES.tsv")
+            self.assertIn("G_LOCAL_WHEELHOUSE_MANIFEST", {row["artifact_id"] for row in rows})
             self.assertIn("A_MODEL_ASSET_MANIFEST", TRANSFER.preconditions(rows))
             with self.assertRaises(COMMON.ContractError):
                 TRANSFER.verify(rows, ROOT)
