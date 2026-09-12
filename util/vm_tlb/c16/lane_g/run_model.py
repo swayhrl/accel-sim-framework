@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from c16_native_common import ContractError, SCHEMA_VERSION, atomic_json, repo_root
+from execution_budget import BudgetLease
 from model_adapters import resolve_adapter
 from run_schema import validate_receipt
 
@@ -48,6 +49,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--decode-tokens", type=int, default=4)
     parser.add_argument("--warmups", type=int, default=2)
     parser.add_argument("--measures", type=int, default=3)
+    parser.add_argument("--budget-ledger", type=Path)
     args = parser.parse_args()
     if args.mock == args.execute_native:
         parser.error("choose exactly one of --mock or --execute-native")
@@ -57,6 +59,8 @@ def parse_args() -> argparse.Namespace:
         parser.error("--execute-native requires --model-path and --input-token-ids")
     if args.execute_native and args.attention_backend in {"", "MOCK_NO_GPU", "UNRESOLVED"}:
         parser.error("--execute-native requires direct --attention-backend evidence")
+    if args.execute_native and args.budget_ledger is None:
+        parser.error("--execute-native requires the shared C16 --budget-ledger")
     if args.mode == "baseline" and args.execute_native and (args.warmups != 2 or args.measures not in (3, 4, 5)):
         parser.error("native baseline requires 2 warmups and 3-5 retained measures")
     return args
@@ -143,7 +147,7 @@ def run_once(model: Any, input_ids: Any, decode_tokens: int, torch: Any) -> tupl
     return (time.perf_counter_ns() - started) / 1e6, checksum_tensor(output.logits[:, -1, :])
 
 
-def native_receipt(args: argparse.Namespace) -> dict[str, Any]:
+def native_receipt(args: argparse.Namespace, budget: BudgetLease) -> dict[str, Any]:
     try:
         import torch
     except ImportError as exc:
@@ -191,7 +195,13 @@ def native_receipt(args: argparse.Namespace) -> dict[str, Any]:
         raise ContractError("input IDs did not reach CUDA")
     for _ in range(args.warmups):
         run_once(model, input_ids, args.decode_tokens, torch)
-    measurements = [run_once(model, input_ids, args.decode_tokens, torch) for _ in range(args.measures)]
+        if budget.expired():
+            raise ContractError("C16 GPU-active budget expired during native warmup")
+    measurements = []
+    for _ in range(args.measures):
+        measurements.append(run_once(model, input_ids, args.decode_tokens, torch))
+        if budget.expired():
+            raise ContractError("C16 GPU-active budget expired during native measurement")
     durations = [item[0] for item in measurements]
     checksums = {item[1] for item in measurements}
     if len(checksums) != 1:
@@ -223,6 +233,8 @@ def native_receipt(args: argparse.Namespace) -> dict[str, Any]:
             "output_checksum": next(iter(checksums)),
             "warmup_count": args.warmups,
             "measurement_count": args.measures,
+            "execution_budget_ledger": str(args.budget_ledger),
+            "execution_budget_max_elapsed_seconds": budget.max_elapsed_seconds,
         },
         "artifacts": {
             "duration_ms": durations,
@@ -241,7 +253,12 @@ def native_receipt(args: argparse.Namespace) -> dict[str, Any]:
 
 def main() -> None:
     args = parse_args()
-    receipt = mock_receipt(args) if args.mock else native_receipt(args)
+    if args.mock:
+        receipt = mock_receipt(args)
+    else:
+        with BudgetLease(args.budget_ledger, identity(args), f"NATIVE_{args.mode.upper()}", capture=False) as budget:
+            receipt = native_receipt(args, budget)
+            budget.finish(elapsed_seconds=budget.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE")
     validate_receipt(receipt, require_native=args.execute_native)
     atomic_json(args.receipt, receipt)
     print(f"PASS C16 Lane G {receipt['execution_mode']} receipt: {args.receipt}")

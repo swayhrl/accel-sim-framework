@@ -28,6 +28,7 @@ SOURCE_FILES = (
     "autodl_instance_receipt.py", "transfer_verify.py",
     "native_catalog.py",
     "consume_upstreams.py",
+    "execution_budget.py",
 )
 EXPECTED_COLUMNS = ("artifact_id", "kind", "path_or_commit", "sha256", "required_for", "closure_status", "note")
 PACKAGE_COLUMNS = ("package_component", "path_or_ref", "sha256", "required_for", "availability", "transfer_action", "scientific_use")
@@ -101,6 +102,7 @@ This is an offline expectation matrix, not a claim that the current local host o
 | `ncu` | query and freeze a compact available metric list; one target only | wrapper dry-run passed | G2 records `COUNTER_UNAVAILABLE` rather than substituting a similar counter |
 | NVBit launcher/tool | target-in/out filter, terminal trace, identity closure, 4 GiB/20 min guard | wrapper dry-run passed | G3 tiny CUDA fixture then one revalidated model target |
 | PyTorch/HF/AutoAWQ | local-files-only model import with exact dtype/quantization | logical lock only | G0 rejects CPU/dtype/backend fallback |
+| execution-budget ledger | shared 24 GPU-active-hour / 64 GiB raw accounting, serialized capture lease | ledger unit test passed | every real runner/profiler command requires the same ledger |
 
 No wrapper uses `ncu --set full`; no wrapper requests full SASS; no wrapper invokes Accel-Sim or GPGPU-Sim.
 """
@@ -113,7 +115,8 @@ def transfer_plan_markdown() -> str:
 2. G copies only that fixed package and this G source bundle with `rsync -avP --partial` to the recorded AutoDL work root.
 3. G runs `bootstrap_autodl.sh --install --wheelhouse ...`; the script refuses an empty or hash-mismatched wheelhouse manifest.
 4. G records an instance receipt, then compares every used asset/input/wheel SHA256 to `EXPECTED_HASHES.tsv` before G0.
-5. Profiler databases and raw NVBit output remain outside Git. Each bounded capture is returned through an exchange path and represented by path/host/size/SHA256/run/target/terminal status in `RAW_INDEX.tsv`.
+5. G creates one shared execution-budget ledger in the AutoDL work root. Every real runner/profiler command receives that ledger; NVBit obtains an exclusive bounded lease before launch.
+6. Profiler databases and raw NVBit output remain outside Git. Each bounded capture is returned through an exchange path and represented by path/host/size/SHA256/run/target/terminal status in `RAW_INDEX.tsv`.
 
 This package is deliberately incomplete until A's committed asset/input/scenario package is available. It is not permission to download models on rented GPU or to begin G0.
 """
@@ -131,7 +134,7 @@ Consequences: do not open an AutoDL scientific run, transfer models, or start G0
 def readme() -> str:
     return """# C16 Lane G offline GPU package
 
-Start with `LATEST_REPORT.md`, then `STAGE_STATUS.tsv`, `C16_GPU_PACKAGE_MANIFEST.tsv`, `EXPECTED_HASHES.tsv`, and `RUN_SCHEMA.md`. This review pack contains only offline preparation and non-scientific dry-run evidence. It contains no native baseline, profiler result, raw trace, or simulator output.
+Start with `LATEST_REPORT.md`, then `STAGE_STATUS.tsv`, `C16_GPU_PACKAGE_MANIFEST.tsv`, `EXPECTED_HASHES.tsv`, `RUN_SCHEMA.md`, and `EXECUTION_BUDGET_GUARD.md`. This review pack contains only offline preparation and non-scientific dry-run evidence. It contains no native baseline, profiler result, raw trace, or simulator output.
 """
 
 
@@ -140,7 +143,7 @@ def handoff_text() -> str:
 
 Status: `C16_G_OFFLINE_PACKAGE_PARTIAL_READY_FOR_UPSTREAM_CLOSURE`.
 
-C16-0.3/0.4 offline infrastructure is ready: idempotent offline bootstrap, logical env lock, unified native runner, explicit Wave-1 adapters, nsys/NCU/NVBit wrappers, receipt schema, target second-pass identity guard, and no-GPU dry-run validation. All mock outputs are marked non-scientific and cannot enter a native catalog.
+C16-0.3/0.4 offline infrastructure is ready: idempotent offline bootstrap, logical env lock, unified native runner, explicit Wave-1 adapters, nsys/NCU/NVBit wrappers, receipt schema, target second-pass identity guard, shared execution-budget ledger guard, and no-GPU dry-run validation. All mock outputs are marked non-scientific and cannot enter a native catalog.
 
 C16-0.9 is prepared but cannot close: A's fixed integration receipt hash-verifies model/input/scenario metadata, while its required GPU package and wheel closure remain unpublished pending its H-manifest dependency. No AutoDL SSH/GPU was used, no models were downloaded, and no simulator run was started. Once A publishes a fixed hash-bound package and the user provides AutoDL SSH, proceed with C16-1 inline G0/G1/G2/G3 qualification; G0/G1 success immediately releases its corresponding work while G2/G3 remain nonblocking.
 """
@@ -193,13 +196,15 @@ def prepare(out: Path, handoff: Path | None) -> None:
     atomic_text(out / "RUN_SCHEMA.md", schema_markdown())
     from native_catalog import schema_markdown as catalog_schema_markdown
     atomic_text(out / "NATIVE_CATALOG_SCHEMA.md", catalog_schema_markdown())
+    from execution_budget import ledger_markdown
+    atomic_text(out / "EXECUTION_BUDGET_GUARD.md", ledger_markdown())
     atomic_text(out / "TRANSFER_PLAN.md", transfer_plan_markdown())
     atomic_text(out / "C16_G_GAP_RECEIPT.md", gap_markdown())
     atomic_text(out / "README.md", readme())
     write_tsv(out / "OFFLINE_DRY_RUN.tsv", ("check_id", "command_or_fixture", "status", "scientific_eligible", "scope"), offline_rows("PENDING_EXECUTION_BY_OFFLINE_DRY_RUN"))
     write_tsv(out / "STAGE_STATUS.tsv", ("stage_id", "owner", "execution_status", "scientific_status", "evidence_tier", "blocking_dependency", "note"), [
         {"stage_id": "C16-0.3", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "bootstrap/logical lock/tool expectations are ready; wheel hashes close at C16-1.2"},
-        {"stage_id": "C16-0.4", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "runner/wrappers/schema/mock fixtures are ready; no GPU result exists"},
+        {"stage_id": "C16-0.4", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "runner/wrappers/schema/budget guard/mock fixtures are ready; no GPU result exists"},
         {"stage_id": "C16-0.9", "owner": "A,G", "execution_status": "PARTIAL_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "A_C16_GPU_PACKAGE_WHEEL_CLOSURE_AND_H_MANIFEST_REQUIRED", "note": "A fixed integration release is hash-verified, but its required GPU package/wheel closure remains unpublished pending H manifest closure"},
         {"stage_id": "C16-2.6", "owner": "G", "execution_status": "OFFLINE_SCHEMA_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "C16-1.3_AND_C16-1.4_REQUIRED", "note": "Wave-1 catalog validator/publisher is ready; no native catalog exists"},
     ])

@@ -13,13 +13,14 @@ from pathlib import Path
 from typing import Any
 
 from c16_native_common import ContractError, SCHEMA_VERSION, atomic_json, require_exact_keys, sha256_file
+from execution_budget import BudgetLease, MAX_NVBIT_WINDOW_BYTES, MAX_NVBIT_WINDOW_SECONDS
 from identity_guard import TARGET_FIELDS, read_object
 from run_schema import IDENTITY_FIELDS, RUNTIME_FIELDS, validate_receipt
 
 
 TOOL_EXECUTABLE = {"nsys": "nsys", "ncu": "ncu"}
-MAX_NVBIT_BYTES = 4 * 1024 * 1024 * 1024
-MAX_NVBIT_SECONDS = 20 * 60
+MAX_NVBIT_BYTES = MAX_NVBIT_WINDOW_BYTES
+MAX_NVBIT_SECONDS = MAX_NVBIT_WINDOW_SECONDS
 
 
 def parse_args(tool: str) -> argparse.Namespace:
@@ -32,6 +33,7 @@ def parse_args(tool: str) -> argparse.Namespace:
     parser.add_argument("--metrics-file", type=Path)
     parser.add_argument("--nvbit-tool", type=Path)
     parser.add_argument("--raw-dir", type=Path)
+    parser.add_argument("--budget-ledger", type=Path)
     parser.add_argument("--profile-overhead-threshold", type=float, default=0.10)
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
@@ -44,6 +46,8 @@ def parse_args(tool: str) -> argparse.Namespace:
         parser.error("NCU requires a frozen --metrics-file")
     if tool == "nvbit" and (args.nvbit_tool is None or args.raw_dir is None):
         parser.error("NVBit requires --nvbit-tool and --raw-dir")
+    if args.execute and args.budget_ledger is None:
+        parser.error("real C16 profiler execution requires one shared --budget-ledger")
     return args
 
 
@@ -88,7 +92,7 @@ def output_bytes(path: Path) -> int:
     return total
 
 
-def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, target_json: Path) -> tuple[int, str, int, float]:
+def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, target_json: Path, *, max_raw_bytes: int, max_seconds: float) -> tuple[int, str, int, float]:
     raw_dir.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
     environment = dict(os.environ)
@@ -99,7 +103,7 @@ def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, targe
     while process.poll() is None:
         elapsed = time.monotonic() - started
         size = output_bytes(raw_dir)
-        if size >= MAX_NVBIT_BYTES or elapsed >= MAX_NVBIT_SECONDS:
+        if size >= max_raw_bytes or elapsed >= max_seconds:
             status = "BOUNDED_PARTIAL"
             process.terminate()
             try:
@@ -110,6 +114,26 @@ def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, targe
             break
         time.sleep(1)
     return process.returncode or 0, status, output_bytes(raw_dir), time.monotonic() - started
+
+
+def run_command_guarded(command: list[str], max_seconds: float) -> tuple[int, str, float]:
+    started = time.monotonic()
+    process = subprocess.Popen(command)
+    status = "COMPLETE"
+    while process.poll() is None:
+        if time.monotonic() - started >= max_seconds:
+            status = "BOUNDED_PARTIAL"
+            process.terminate()
+            try:
+                process.wait(timeout=30)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+            break
+        time.sleep(0.25)
+    if status == "COMPLETE" and process.returncode not in (0, None):
+        status = "FAILED"
+    return process.returncode or 0, status, time.monotonic() - started
 
 
 def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any], command: list[str], *, executed: bool, terminal_status: str, returncode: int | None, elapsed_s: float, bytes_written: int) -> dict[str, Any]:
@@ -129,6 +153,7 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
             "nvbit_size_limit_bytes": MAX_NVBIT_BYTES if tool == "nvbit" else "NA",
             "nvbit_time_limit_seconds": MAX_NVBIT_SECONDS if tool == "nvbit" else "NA",
             "nvbit_injection_tool": str(args.nvbit_tool) if tool == "nvbit" else "NA",
+            "execution_budget_ledger": str(args.budget_ledger) if args.budget_ledger is not None else "NA",
         },
         "artifacts": {
             "tool": tool,
@@ -159,13 +184,17 @@ def main(tool: str) -> None:
         raise ContractError(f"required {tool} executable is unavailable")
     if tool == "nvbit" and not args.nvbit_tool.is_file():
         raise ContractError("NVBit injection tool is unavailable")
-    started = time.monotonic()
-    if tool == "nvbit":
-        returncode, terminal_status, bytes_written, elapsed = run_nvbit_guarded(command, args.raw_dir, args.nvbit_tool, args.target_json)
-    else:
-        completed = subprocess.run(command, check=False)
-        returncode, elapsed = completed.returncode, time.monotonic() - started
-        terminal_status, bytes_written = ("COMPLETE" if returncode == 0 else "FAILED"), output_bytes(args.output)
+    with BudgetLease(args.budget_ledger, target["identity"], tool.upper(), capture=tool == "nvbit") as budget:
+        if tool == "nvbit":
+            returncode, terminal_status, bytes_written, elapsed = run_nvbit_guarded(
+                command, args.raw_dir, args.nvbit_tool, args.target_json,
+                max_raw_bytes=budget.max_raw_bytes, max_seconds=budget.max_elapsed_seconds,
+            )
+            budget.finish(elapsed_seconds=elapsed, raw_bytes=bytes_written, terminal_status=terminal_status)
+        else:
+            returncode, terminal_status, elapsed = run_command_guarded(command, budget.max_elapsed_seconds)
+            bytes_written = output_bytes(args.output)
+            budget.finish(elapsed_seconds=elapsed, raw_bytes=0, terminal_status=terminal_status)
     receipt = wrapper_receipt(tool, args, target, command, executed=True, terminal_status=terminal_status, returncode=returncode, elapsed_s=elapsed, bytes_written=bytes_written)
     atomic_json(args.receipt, receipt)
     if returncode != 0 and terminal_status != "BOUNDED_PARTIAL":

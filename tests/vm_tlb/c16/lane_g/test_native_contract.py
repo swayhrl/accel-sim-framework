@@ -16,6 +16,7 @@ LANE = ROOT / "util/vm_tlb/c16/lane_g"
 sys.path.insert(0, str(LANE))
 
 import c16_native_common as COMMON
+import execution_budget as BUDGET
 import identity_guard as GUARD
 import model_adapters as ADAPTERS
 import consume_upstreams as UPSTREAMS
@@ -83,6 +84,46 @@ class NativeContractTest(unittest.TestCase):
             manifest.write_text("wheel_filename\tpackage\tversion\tsha256\tstatus\n", encoding="utf-8")
             with self.assertRaises(COMMON.ContractError):
                 WHEELS.validate(root, manifest)
+
+    def test_execution_budget_serializes_and_bounds_first_wave_capture_windows(self):
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "C16_EXECUTION_BUDGET.json"
+            identity = DRY.target()["identity"]
+            for _ in range(BUDGET.MAX_NVBIT_WINDOWS_PER_DEPLOYMENT):
+                with BUDGET.BudgetLease(ledger, identity, "NVBIT", capture=True) as lease:
+                    self.assertEqual(lease.max_raw_bytes, BUDGET.MAX_NVBIT_WINDOW_BYTES)
+                    self.assertEqual(lease.max_elapsed_seconds, BUDGET.MAX_NVBIT_WINDOW_SECONDS)
+                    lease.finish(elapsed_seconds=0.01, raw_bytes=1, terminal_status="COMPLETE")
+            with self.assertRaises(COMMON.ContractError):
+                with BUDGET.BudgetLease(ledger, identity, "NVBIT", capture=True):
+                    pass
+            ledger_payload = json.loads(ledger.read_text(encoding="utf-8"))
+            self.assertEqual(len(ledger_payload["entries"]), BUDGET.MAX_NVBIT_WINDOWS_PER_DEPLOYMENT)
+            self.assertEqual(sum(entry["raw_bytes"] for entry in ledger_payload["entries"]), BUDGET.MAX_NVBIT_WINDOWS_PER_DEPLOYMENT)
+
+    def test_native_execute_requires_budget_ledger_before_any_cuda_import(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tokens = root / "tokens.json"
+            tokens.write_text("[1]", encoding="utf-8")
+            completed = subprocess.run([
+                sys.executable, str(LANE / "run_model.py"), "--mode", "canary", "--execute-native",
+                "--receipt", str(root / "receipt.json"), "--model-path", str(root),
+                "--input-token-ids", str(tokens), "--attention-backend", "TEST_BACKEND",
+            ], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("--budget-ledger", completed.stderr)
+
+    def test_profiler_execute_requires_budget_ledger_before_tool_lookup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            completed = subprocess.run([
+                sys.executable, str(LANE / "nsys_wrapper.py"), "--receipt", str(root / "receipt.json"),
+                "--target-json", str(root / "target.json"), "--output", str(root / "out"), "--execute",
+                "--", sys.executable, "-c", "raise SystemExit(0)",
+            ], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("--budget-ledger", completed.stderr)
 
     def test_transfer_verifier_exposes_unclosed_a_package(self):
         with tempfile.TemporaryDirectory() as directory:
