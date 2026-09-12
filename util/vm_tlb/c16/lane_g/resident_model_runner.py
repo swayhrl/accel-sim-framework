@@ -153,6 +153,21 @@ def execute_scenario(
     post_allocated = torch.cuda.memory_allocated()
     post_reserved = torch.cuda.memory_reserved()
     if post_allocated != model_live_allocated:
+        atomic_json(Path(row["receipt"] + ".diagnostic.json"), {
+            "schema_version": "C16_G_RESIDENT_DIAGNOSTIC_V1",
+            "execution_mode": "NATIVE_GPU_DIAGNOSTIC",
+            "scientific_eligible": False,
+            "identity": identity,
+            "resident_session_id": args.session_id,
+            "terminal_status": "FAILED_RESIDENT_ISOLATION",
+            "reason": "live allocated bytes did not return to model-only envelope",
+            "model_resident_allocated_bytes": model_live_allocated,
+            "pre_scenario_allocated_bytes": pre_allocated,
+            "post_cleanup_allocated_bytes": post_allocated,
+            "pre_scenario_reserved_bytes": pre_reserved,
+            "post_cleanup_reserved_bytes": post_reserved,
+            "reset_policy": reset_policy,
+        })
         raise ContractError("resident scenario cleanup did not return to the qualified model-only live allocation envelope")
     durations = [duration for duration, _checksum in results]
     properties = torch.cuda.get_device_properties(0)
@@ -245,46 +260,57 @@ def main() -> None:
     session_identity_value["run_id"] = plan["session_id"]
     scenario_receipts: list[dict[str, Any]] = []
     with BudgetLease(args.budget_ledger, session_identity_value, "NATIVE_RESIDENT_SESSION", capture=False) as budget:
-        with MeasurementActive(args.budget_ledger, session_identity_value, "NATIVE_RESIDENT_SESSION") as active:
-            args.measurement_active_marker = active.path
-            args.telemetry_before = smi_row()
-            model_load_started = time.perf_counter_ns()
-            model = AutoModelForCausalLM.from_pretrained(
-                bindings[0]["model_path"], local_files_only=True, torch_dtype=dtype_for(torch, args.dtype), trust_remote_code=False,
-            )
-            model.eval().to("cuda:0")
-            torch.cuda.synchronize()
-            model_load_seconds = (time.perf_counter_ns() - model_load_started) / 1e9
-            if {parameter.device.type for parameter in model.parameters()} != {"cuda"}:
-                raise ContractError("resident model parameters are not all CUDA")
-            if {str(parameter.dtype).removeprefix("torch.") for parameter in model.parameters()} != {args.dtype}:
-                raise ContractError("resident model dtype differs from bound request")
-            if str(getattr(model.config, "_attn_implementation", "UNRESOLVED")) in {"", "UNRESOLVED", "None"}:
-                raise ContractError("resident attention backend is unresolved")
-            model_live_allocated = torch.cuda.memory_allocated()
-            model_reserved = torch.cuda.memory_reserved()
-            torch.cuda.nvtx.range_push(f"C16_RESIDENT_SESSION::{bindings[0]['deployment_id']}")
-            try:
-                for binding, row in zip(bindings, rows):
-                    scenario_started = time.monotonic()
-                    try:
-                        scenario_receipts.append(execute_scenario(
-                            model, binding, row, args, torch, budget, model_live_allocated, plan["reset_policy"],
-                        ))
-                    except Exception:
-                        budget.record_child_operation(
-                            session_identity(binding, args, row["run_id"]),
-                            operation_kind="NATIVE_RESIDENT_SCENARIO",
-                            elapsed_seconds=time.monotonic() - scenario_started,
-                            terminal_status="FAILED_OR_ABORTED",
-                            evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
-                            diagnostic_reason="RESIDENT_SCENARIO_FAILED_OR_ABORTED",
-                        )
-                        raise
-            finally:
-                torch.cuda.nvtx.range_pop()
-            session_elapsed = (time.perf_counter_ns() - session_started) / 1e9
-            budget.finish(elapsed_seconds=0.0, raw_bytes=0, terminal_status="COMPLETE", evidence_classification="ACCOUNTING_ONLY")
+        try:
+            with MeasurementActive(args.budget_ledger, session_identity_value, "NATIVE_RESIDENT_SESSION") as active:
+                args.measurement_active_marker = active.path
+                args.telemetry_before = smi_row()
+                model_load_started = time.perf_counter_ns()
+                model = AutoModelForCausalLM.from_pretrained(
+                    bindings[0]["model_path"], local_files_only=True, torch_dtype=dtype_for(torch, args.dtype), trust_remote_code=False,
+                )
+                model.eval().to("cuda:0")
+                torch.cuda.synchronize()
+                model_load_seconds = (time.perf_counter_ns() - model_load_started) / 1e9
+                if {parameter.device.type for parameter in model.parameters()} != {"cuda"}:
+                    raise ContractError("resident model parameters are not all CUDA")
+                if {str(parameter.dtype).removeprefix("torch.") for parameter in model.parameters()} != {args.dtype}:
+                    raise ContractError("resident model dtype differs from bound request")
+                if str(getattr(model.config, "_attn_implementation", "UNRESOLVED")) in {"", "UNRESOLVED", "None"}:
+                    raise ContractError("resident attention backend is unresolved")
+                model_live_allocated = torch.cuda.memory_allocated()
+                model_reserved = torch.cuda.memory_reserved()
+                torch.cuda.nvtx.range_push(f"C16_RESIDENT_SESSION::{bindings[0]['deployment_id']}")
+                try:
+                    for binding, row in zip(bindings, rows):
+                        scenario_started = time.monotonic()
+                        try:
+                            scenario_receipts.append(execute_scenario(
+                                model, binding, row, args, torch, budget, model_live_allocated, plan["reset_policy"],
+                            ))
+                        except Exception:
+                            budget.record_child_operation(
+                                session_identity(binding, args, row["run_id"]),
+                                operation_kind="NATIVE_RESIDENT_SCENARIO",
+                                elapsed_seconds=time.monotonic() - scenario_started,
+                                terminal_status="FAILED_OR_ABORTED",
+                                evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
+                                diagnostic_reason="RESIDENT_SCENARIO_FAILED_OR_ABORTED",
+                            )
+                            raise
+                finally:
+                    torch.cuda.nvtx.range_pop()
+                session_elapsed = (time.perf_counter_ns() - session_started) / 1e9
+                budget.finish(elapsed_seconds=0.0, raw_bytes=0, terminal_status="COMPLETE", evidence_classification="ACCOUNTING_ONLY")
+        except Exception:
+            if not budget._finished:
+                budget.finish(
+                    elapsed_seconds=0.0,
+                    raw_bytes=0,
+                    terminal_status="FAILED_OR_ABORTED",
+                    evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
+                    diagnostic_reason="RESIDENT_SESSION_FAILED_OR_ABORTED",
+                )
+            raise
     atomic_json(args.session_receipt, {
         "schema_version": "C16_G_RESIDENT_SESSION_RECEIPT_V1",
         "execution_mode": "NATIVE_GPU", "scientific_eligible": True,
