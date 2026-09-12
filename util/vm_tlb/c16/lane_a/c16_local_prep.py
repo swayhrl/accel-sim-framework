@@ -47,6 +47,13 @@ G_LANE_ROOT = G_PUBLISH_PATH.parent
 C_LANE_ROOT = C_PUBLISH_PATH.parent
 H_LANE_ROOT = H_PUBLISH_PATH.parent
 G_WHEELHOUSE_ROOT = Path("/workspace/c16_assets/wheelhouse/c16-g-cp310-cu124")
+IMMUTABLE_RECEIPT_ROOT = Path("/workspace/c16_assets/c16-a/download_logs/immutable_verified_receipts")
+ROLLING_PACKAGE_DEPLOYMENTS = {
+    "C16_GPU_PACKAGE_P0": "c16_llama32_1b_frozen_compatible",
+    "C16_GPU_PACKAGE_P1": "c16_qwen25_05b_native_reference",
+    "C16_GPU_PACKAGE_P2": "c16_qwen25_7b_raw_reference",
+    "C16_GPU_PACKAGE_P3": "c16_qwen25_7b_awq",
+}
 
 
 @dataclass(frozen=True)
@@ -129,6 +136,45 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def immutable_checkpoint_receipt_path(deployment_id: str, asset_path: str) -> Path:
+    return IMMUTABLE_RECEIPT_ROOT / deployment_id / f"{asset_path}.json"
+
+
+def immutable_checkpoint_receipt(
+    deployment_id: str,
+    source_repo: str,
+    source_revision: str,
+    asset_path: str,
+    local_path: Path,
+    expected_size: int | None = None,
+    expected_sha256: str | None = None,
+) -> dict[str, Any] | None:
+    """Return a prior single-SHA checkpoint receipt without re-reading weights."""
+    path = immutable_checkpoint_receipt_path(deployment_id, asset_path)
+    if not path.is_file() or not local_path.is_file():
+        return None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    size = int(value.get("expected_size_bytes", -1))
+    if (
+        value.get("status") != "IMMUTABLE_VERIFIED"
+        or value.get("deployment_id") != deployment_id
+        or value.get("source_repo") != source_repo
+        or value.get("source_revision") != source_revision
+        or value.get("asset_path") != asset_path
+        or value.get("local_path") != str(local_path)
+        or len(value.get("sha256", "")) != 64
+        or local_path.stat().st_size != size
+        or (expected_size is not None and size != expected_size)
+        or (expected_sha256 is not None and value.get("sha256") != expected_sha256)
+    ):
+        return None
+    value["receipt_path"] = str(path)
+    return value
 
 
 def canonical_json_bytes(value: Any) -> bytes:
@@ -263,6 +309,13 @@ def record_assets(output_root: Path) -> None:
     for deployment in DEPLOYMENTS:
         local_rows = []
         for path in local_asset_files(deployment):
+            receipt = (
+                immutable_checkpoint_receipt(
+                    deployment.deployment_id, deployment.model_id, deployment.revision, path.name, path,
+                )
+                if asset_role(path.name) == "CHECKPOINT_FILE"
+                else None
+            )
             local_rows.append(
                 {
                     "deployment_id": deployment.deployment_id,
@@ -273,10 +326,13 @@ def record_assets(output_root: Path) -> None:
                     "asset_path": path.name,
                     "local_path": str(path),
                     "size_bytes": str(path.stat().st_size),
-                    "sha256": sha256_file(path),
-                    "verification_status": "LOCAL_SHA256_VERIFIED",
+                    "sha256": receipt["sha256"] if receipt else sha256_file(path),
+                    "verification_status": "LOCAL_SHA256_VERIFIED_RECEIPT_CONSUMED" if receipt else "LOCAL_SHA256_VERIFIED",
                     "transfer_required": "YES",
-                    "notes": deployment.local_origin,
+                    "notes": (
+                        f"{deployment.local_origin}; IMMUTABLE_VERIFIED_RECEIPT={receipt['receipt_path']}"
+                        if receipt else deployment.local_origin
+                    ),
                 }
             )
         declared_remote_rows = remote_weight_rows(deployment)
@@ -295,7 +351,11 @@ def record_assets(output_root: Path) -> None:
                     f"local checkpoint does not match immutable LFS declaration: "
                     f"{deployment.model_id}:{remote_row['asset_path']}"
                 )
-            local_row["verification_status"] = "LOCAL_SHA256_VERIFIED_AGAINST_IMMUTABLE_REMOTE_LFS"
+            local_row["verification_status"] = (
+                "LOCAL_SHA256_VERIFIED_AGAINST_IMMUTABLE_REMOTE_LFS_RECEIPT_CONSUMED"
+                if "IMMUTABLE_VERIFIED_RECEIPT=" in local_row["notes"]
+                else "LOCAL_SHA256_VERIFIED_AGAINST_IMMUTABLE_REMOTE_LFS"
+            )
             local_row["notes"] = (
                 f"{deployment.local_origin}; LOCAL_CHECKPOINT_FILES_PRESENT; "
                 "REMOTE_LFS_SHA256_MATCHED"
@@ -402,6 +462,16 @@ def validate_assets(output_root: Path) -> list[str]:
             failures.append(f"bad SHA-256 {row['deployment_id']}:{row['asset_path']}")
         if row["verification_status"].startswith("LOCAL_SHA256_VERIFIED"):
             path = Path(row["local_path"])
+            receipt = (
+                immutable_checkpoint_receipt(
+                    row["deployment_id"], row["source_repo"], row["source_revision"], row["asset_path"], path,
+                    int(row["size_bytes"]), row["sha256"],
+                )
+                if row["asset_role"] == "CHECKPOINT_FILE" and "RECEIPT_CONSUMED" in row["verification_status"]
+                else None
+            )
+            if receipt is not None:
+                continue
             if not path.is_file() or sha256_file(path) != row["sha256"]:
                 failures.append(f"local asset hash mismatch {path}")
         elif row["verification_status"] != "REMOTE_LFS_SHA256_DECLARED_NOT_LOCAL":
@@ -637,7 +707,15 @@ def package_row(
 
 def local_row_package_entry(row: dict[str, str], requiredness: str) -> dict[str, str]:
     path = Path(row["local_path"])
-    if not path.is_file() or path.stat().st_size != int(row["size_bytes"]) or sha256_file(path) != row["sha256"]:
+    receipt = (
+        immutable_checkpoint_receipt(
+            row["deployment_id"], row["source_repo"], row["source_revision"], row["asset_path"], path,
+            int(row["size_bytes"]), row["sha256"],
+        )
+        if row["asset_role"] == "CHECKPOINT_FILE" and "RECEIPT_CONSUMED" in row["verification_status"]
+        else None
+    )
+    if receipt is None and (not path.is_file() or path.stat().st_size != int(row["size_bytes"]) or sha256_file(path) != row["sha256"]):
         raise RuntimeError(f"local rolling-package asset mismatch {row['deployment_id']}:{row['asset_path']}")
     if not row["verification_status"].startswith("LOCAL_SHA256_VERIFIED"):
         raise RuntimeError(f"unaccepted rolling-package asset {row['deployment_id']}:{row['asset_path']}")
@@ -656,8 +734,10 @@ def write_rolling_gpu_package(output_root: Path, package_id: str, deployment_id:
     assets while Qwen downloads continue. The function refuses any local
     temporary file, remote-only row, or pre-existing package directory.
     """
-    if package_id not in {"C16_GPU_PACKAGE_P0", "C16_GPU_PACKAGE_P1", "C16_GPU_PACKAGE_P2", "C16_GPU_PACKAGE_P3"}:
+    if package_id not in ROLLING_PACKAGE_DEPLOYMENTS:
         raise RuntimeError(f"unsupported rolling package identity {package_id}")
+    if ROLLING_PACKAGE_DEPLOYMENTS[package_id] != deployment_id:
+        raise RuntimeError(f"{package_id} is reserved for {ROLLING_PACKAGE_DEPLOYMENTS[package_id]}, not {deployment_id}")
     package_root = output_root / "packages" / package_id
     if package_root.exists():
         raise RuntimeError(f"immutable rolling package already exists: {package_root}")
@@ -672,6 +752,21 @@ def write_rolling_gpu_package(output_root: Path, package_id: str, deployment_id:
     if not checkpoint_rows:
         raise RuntimeError(f"rolling package has no checkpoint rows for {deployment_id}")
     rows = [local_row_package_entry(row, "REQUIRED_DEPLOYMENT_DELTA") for row in model_rows]
+    for row in checkpoint_rows:
+        receipt = immutable_checkpoint_receipt(
+            row["deployment_id"], row["source_repo"], row["source_revision"], row["asset_path"], Path(row["local_path"]),
+            int(row["size_bytes"]), row["sha256"],
+        )
+        if receipt is None:
+            continue
+        receipt_path = Path(receipt["receipt_path"])
+        rows.append(package_row(
+            f"A_IMMUTABLE_RECEIPT:{row['deployment_id']}:{row['asset_path']}", "IMMUTABLE_VERIFICATION_RECEIPT",
+            "REQUIRED_DEPLOYMENT_DELTA", "A_LOCAL_IMMUTABLE_RECEIPT", str(receipt_path),
+            f"a_assets/immutable_verified_receipts/{row['deployment_id']}/{row['asset_path']}.json",
+            str(receipt_path.stat().st_size), sha256_file(receipt_path), "IMMUTABLE_VERIFIED_RECEIPT",
+            "RSYNC_FILE_WITH_SHA256_RECHECK", "single whole-file SHA-256 closure receipt consumed without rescanning checkpoint",
+        ))
     for path in sorted((output_root / "inputs").glob("*")):
         if path.is_file():
             rows.append(package_row(f"A_INPUT:{path.name}", "FROZEN_INPUT", "REQUIRED_DEPLOYMENT_DELTA", "A_FIXED_INPUT", str(path), f"a_assets/inputs/{path.name}", str(path.stat().st_size), sha256_file(path), "LOCAL_SHA256_VERIFIED", "RSYNC_FILE_WITH_SHA256_RECHECK", "frozen raw input"))
