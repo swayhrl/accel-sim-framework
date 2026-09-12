@@ -65,7 +65,8 @@ No C join column is missing. Before C consumes a catalog, please commit:
 3. direct mapping evidence only if non-`UNKNOWN` operator/layer or runtime-KV
    layout labels are desired.
 
-`P_TO_G_SCHEMA_REQUEST.md` states the exact P1/P2/P3 fields. P has consumed the
+[P_TO_G_SCHEMA_REQUEST.md](../../../review_packs/C16_P_NATIVE_POSTPROCESS/P_TO_G_SCHEMA_REQUEST.md)
+states the exact missing P1 metadata. P has consumed the
 G P2 diagnostic producer checkpoint above, but no C-consumable multi-model
 native-catalog checkpoint exists yet. The initial clean-profile receipts record
 runtime code commit `12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2`.
