@@ -1,6 +1,7 @@
 # Observer implementation audit
 
-Status: D1/D2 complete; D3 runtime qualification is recorded separately.
+Status: D1/D2 complete; D3 runtime qualification passed and is recorded in
+`OBSERVER_EQUIVALENCE_REPORT.md`.
 
 ## Exact diagnostic Core lineage
 
@@ -52,3 +53,12 @@ For both Core descendants:
 
 Compiler warnings were pre-existing warning classes in unrelated simulator
 sources; neither build produced an observer compilation error.
+
+## D3 qualification record
+
+NN and Btree each passed telemetry-off/on exact compact-stat equivalence in
+both IO and OO modes on the Core95 observer descendant. The comparison retains
+ordered compact-stat blocks (two for Btree), requires exact equality of
+pre-existing accounting, and checks terminal observer drain. The complete
+provenance manifest, retained telemetry values, and excluded-attempt ledger
+are linked by `OBSERVER_EQUIVALENCE_REPORT.md`.
