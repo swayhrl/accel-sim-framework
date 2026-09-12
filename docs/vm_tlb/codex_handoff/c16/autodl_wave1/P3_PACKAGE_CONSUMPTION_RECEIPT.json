@@ -1,0 +1,41 @@
+{
+  "schema_version": "C16_G_PACKAGE_CONSUMPTION_RECEIPT_V1",
+  "status": "CONSUMED_TRANSFER_HASH_CLOSED",
+  "scientific_eligible": false,
+  "producer": {
+    "lane": "A",
+    "fixed_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "package_id": "C16_GPU_PACKAGE_P3",
+    "package_manifest_sha256": "704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c"
+  },
+  "package_identity": {
+    "deployment_id": "c16_qwen25_7b_awq",
+    "model_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "tokenizer_revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "wheelhouse_manifest_sha256": "ebae0934de68b36e08da5db0e6bfdc47880620205e8bf6d8c8afe8906abc2d2d"
+  },
+  "hash_closure": {
+    "payload_row_count": 58,
+    "local_materialization_receipt": {
+      "path": "/workspace/c16_exchange/autodl_wave1/outbound/C16_GPU_PACKAGE_P3_168c9714/P3_LOCAL_MATERIALIZATION_RECEIPT.json",
+      "sha256": "d32b6c438fa19fda14d62e8c0b7f27fe72b331b95b3a63bbf8c38eddd72c97c0"
+    },
+    "remote_transfer_receipt": {
+      "path": "/root/autodl-tmp/c16/receipts/P3_TRANSFER_HASH_RECEIPT.json",
+      "sha256": "15e405730af5b76b6f25db6fd126a214d2345ea15bbdb9d9fa0950a3d7ead92c"
+    },
+    "returned_transfer_receipt": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/P3/P3_TRANSFER_HASH_RECEIPT.json",
+      "sha256": "15e405730af5b76b6f25db6fd126a214d2345ea15bbdb9d9fa0950a3d7ead92c"
+    }
+  },
+  "remote_package_root": "/root/autodl-tmp/c16/packages/P3",
+  "p3_clean_runtime_source_commit": "07575b6d1abc42f68414a8b0ad27c0a6d7d38e66",
+  "next_authorized_gpu_task": "C16_P3_AWQ_G0_S0_TEXT_STANDALONE",
+  "constraints": {
+    "no_gpu_work_preceded_transfer_hash_closure": true,
+    "no_cpu_offload": true,
+    "resource_admission_required_per_frozen_scenario": true,
+    "direct_semantic_diagnostic_is_separate_non_timing_work": true
+  }
+}

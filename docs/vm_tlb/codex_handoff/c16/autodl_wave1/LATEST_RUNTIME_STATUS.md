@@ -55,7 +55,7 @@ consumer-facing coverage/receipt/hash index is in
 |---|---|---|---|
 | `C16_GPU_PACKAGE_P0` (Llama 3.2-1B) | `20fb38e6ca629f1a93db7939248bd1a03790724c` | `ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f` | Previously hash-closed and used for the formal Llama standalone set. |
 | `C16_GPU_PACKAGE_P1` (Qwen2.5-0.5B) | `4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63` | `d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84` | Hash-closed before execution.  Transfer receipt SHA256: `bfa4e7a625fef437c7a2c131681c14f3c0e182cb403be23c6938ff3d11bfacf1`. |
-| `C16_GPU_PACKAGE_P3` Qwen2.5-7B AWQ | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c` | Local immutable materialization passed for all 58 payloads (receipt SHA256 `d32b6c438fa19fda14d62e8c0b7f27fe72b331b95b3a63bbf8c38eddd72c97c0`).  Resumable remote transfer is in progress between measurements; **not consumed and no P3 GPU run has started** until remote full size/SHA closure. |
+| `C16_GPU_PACKAGE_P3` Qwen2.5-7B AWQ | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c` | **CONSUMED_TRANSFER_HASH_CLOSED**: all 58 remote payloads passed independent size/SHA verification.  Local and returned remote receipt SHA256 are both `15e405730af5b76b6f25db6fd126a214d2345ea15bbdb9d9fa0950a3d7ead92c`; see [P3_PACKAGE_CONSUMPTION_RECEIPT.json](P3_PACKAGE_CONSUMPTION_RECEIPT.json).  No P3 GPU work preceded closure. |
 | `C16_GPU_PACKAGE_P2` Qwen2.5-7B raw | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `c937590dd4ea2b4f6407db7d8b077ed263af3cbc14562ef34142aa834b133f26` | Immutable A release verified read-only.  Consume only after the P3 AWQ G0 -> standalone baseline -> G1 group. |
 
 ## Qualified execution state
@@ -98,12 +98,12 @@ from AutoDL only after their published local SHA256 confirmations.  Qwen0.5's
 matching raw remains remote at this checkpoint; both entries give the local
 hash-closed retained copy, and their small remote receipts remain available.
 
-Next authorized action: finish the resumable P3 AWQ transfer and remote full
-hash closure from A's fixed `168c9714…` release, publish the consumption
-checkpoint, then run standalone Qwen7-AWQ G0 -> baseline -> G1.  Next is the
-analogous P2 raw group.  Transfer occurs between formal measurement groups,
-never during one, and Lane P's local semantic merge is not a prerequisite for
-this queue.
+Next authorized GPU task: standalone Qwen7-AWQ G0 for the exact frozen S0/TEXT
+binding, under clean runtime source `07575b6…`.  On G0 PASS, run each frozen
+scenario's resource admission and standalone baseline/G1 census; an OOM is
+`SKIPPED_RESOURCE`, never CPU offload or a resized substitute.  P2 raw remains
+next only after this P3 clean group.  Lane P's local semantic merge is not a
+prerequisite for this queue.
 
 ## Known capability / analysis boundaries
 
