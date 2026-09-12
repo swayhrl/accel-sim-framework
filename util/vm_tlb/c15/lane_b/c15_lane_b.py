@@ -438,6 +438,13 @@ def emit_package(args: argparse.Namespace) -> None:
     c12_rows = parse_c12_provenance(args.c12_provenance)
     imported = header_only_rows(c12_rows)
     tests = self_tests(args.fixture_file)
+    supplied_selector = (args.c_source_commit, args.c_manifest_sha256, args.c_validated_files)
+    if any(value is not None for value in supplied_selector) and not all(value is not None for value in supplied_selector):
+        raise ValueError("C selector consumption requires commit, manifest hash, and validated file count together")
+    selector_consumed = all(value is not None for value in supplied_selector)
+    selector_note = ("fixed C selector was manifest-validated but is OFFLINE_ONLY_NOT_CAPTURE_AUTHORIZATION; "
+                     "no native catalog exists for binding" if selector_consumed else
+                     "no semantic native catalog; did not select targets from header-only/synthetic inputs")
     write_json(root / "ENV_PREFLIGHT.json", {"schema_version": SCHEMA, "planning_sha": PLANNING_SHA,
         "producer_lane": "b", "producer_source_sha": SOURCE_SHA, "run_id": args.run_id,
         "status": "CAPABILITY_LIMITED", "probe": probe,
@@ -453,6 +460,13 @@ def emit_package(args: argparse.Namespace) -> None:
     write_tsv(root / "KERNEL_CATALOG_TRACE_HEADER_ONLY.tsv", header_columns, imported)
     write_tsv(root / "TEST_RESULTS.tsv", ["test_id", "command", "planning_sha", "source_sha", "input_sha256",
         "output_sha256", "exit_code", "expected", "observed", "status", "wall_s", "evidence_tier"], tests)
+    write_tsv(root / "CONSUMED_INPUTS.tsv", ["consumer_lane", "source_lane", "source_commit", "manifest_path",
+        "manifest_sha256", "validated_file_count", "validation_status", "applicability", "reason"], [] if not selector_consumed else
+        [{"consumer_lane": "b", "source_lane": "c", "source_commit": args.c_source_commit,
+          "manifest_path": "docs/vm_tlb/review_packs/C15_LOWCOST_MULTIMODEL/lane_c/PUBLISH_MANIFEST.json",
+          "manifest_sha256": args.c_manifest_sha256, "validated_file_count": args.c_validated_files,
+          "validation_status": "PASS", "applicability": "NOT_APPLICABLE_NO_NATIVE_CATALOG",
+          "reason": "C selector release explicitly grants no capture authorization; all C fine strata are infeasible/unknown here"}])
     write_tsv(root / "SAMPLE_PLAN.tsv", ["plan_id", "selector_sha", "deployment_id", "scenario_id", "stratum_id",
         "semantic_key_json", "implementation_key", "shape_regime", "selection_reason", "sampling_unit",
         "target_launch_signature", "target_indices", "warmup_indices", "weight", "weight_basis", "inclusion_probability",
@@ -483,7 +497,7 @@ def emit_package(args: argparse.Namespace) -> None:
         "generation_steps", "kv_state", "logits_policy", "status", "missing_reason"], [])
     write_tsv(root / "CAPTURE_PREFLIGHT.tsv", ["plan_id", "status", "reason", "capture_windows", "capture_bytes",
         "timeout_s", "evidence_tier"], [{"plan_id": "BOOTSTRAP_NOT_EMITTED", "status": "INELIGIBLE",
-        "reason": "NO_NATIVE_CATALOG_OR_AUTHORIZED_GPU; no target selected from synthetic/header-only data",
+        "reason": "NO_NATIVE_CATALOG_OR_AUTHORIZED_GPU; " + selector_note,
         "capture_windows": 0, "capture_bytes": 0, "timeout_s": 0, "evidence_tier": "UNRESOLVED"}])
     write_tsv(root / "CAPTURE_STATUS.tsv", ["deployment_id", "scenario_id", "target_launch_signature", "status",
         "terminal_state", "output_bytes", "gpu_active_s", "missing_reason"], [])
@@ -500,7 +514,7 @@ def emit_package(args: argparse.Namespace) -> None:
         {"stage_id": "C15-2.5", "execution": "CAPABILITY_LIMITED", "validation": "NOT_EXECUTED", "test_receipt": "TEST_RESULTS.tsv:T09", "artifact_manifest": "TEST_RESULTS.tsv", "reason": "V2 lifetime observer test passes, but no observable real deployment exists"},
         {"stage_id": "C15-2.6", "execution": "CAPABILITY_LIMITED", "validation": "NOT_EXECUTED", "test_receipt": "TEST_RESULTS.tsv:T07,T08,T20,T24", "artifact_manifest": "DEPLOYMENT_PREFLIGHT.tsv", "reason": "0 real deployments and 0 scenarios; upper bounds are not targets"},
         {"stage_id": "C15-2.7", "execution": "COMPLETE", "validation": "PASS", "test_receipt": "TEST_RESULTS.tsv:T01,T21,T23", "artifact_manifest": "PUBLISH_MANIFEST.json", "reason": "offline/header-only checkpoint published early"},
-        {"stage_id": "C15-3.4", "execution": "CAPABILITY_LIMITED", "validation": "NOT_EXECUTED", "test_receipt": "TEST_RESULTS.tsv:T10,T14,T15", "artifact_manifest": "SAMPLE_PLAN.tsv;CAPTURE_PREFLIGHT.tsv", "reason": "no semantic native catalog; did not select targets from header-only/synthetic inputs"},
+        {"stage_id": "C15-3.4", "execution": "CAPABILITY_LIMITED", "validation": "NOT_EXECUTED", "test_receipt": "TEST_RESULTS.tsv:T10,T14,T15", "artifact_manifest": "CONSUMED_INPUTS.tsv;SAMPLE_PLAN.tsv;CAPTURE_PREFLIGHT.tsv", "reason": selector_note},
         {"stage_id": "C15-3.5", "execution": "CAPABILITY_LIMITED", "validation": "NOT_EXECUTED", "test_receipt": "TEST_RESULTS.tsv:T10,T24", "artifact_manifest": "CAPTURE_PREFLIGHT.tsv", "reason": "tracer filter only tested synthetically; no actual tracer capture"},
         {"stage_id": "C15-3.6", "execution": "CAPABILITY_LIMITED", "validation": "NOT_EXECUTED", "test_receipt": "TEST_RESULTS.tsv:T10,T20,T21,T24", "artifact_manifest": "CAPTURE_PREFLIGHT.tsv", "reason": "0 windows, 0 bytes, 0 GPU-active seconds"},
     ]
@@ -510,7 +524,7 @@ def emit_package(args: argparse.Namespace) -> None:
         "start_utc", "end_utc", "wall_s", "cpu_core_s", "gpu_active_s", "peak_rss_B", "peak_vram_B", "bytes_read",
         "bytes_downloaded", "bytes_written", "warmup_s", "retry_s", "measured_or_estimated", "result_status"], [
         {"work_id": args.run_id, "parent_work_id": "NA", "lane": "b", "stage_id": "C15-0.3;C15-2.4",
-         "attempt": 1, "operation": "offline_capability_probe_fixture_and_c12_header_import", "start_utc": started_utc,
+         "attempt": 1, "operation": "offline_capability_probe_fixture_c12_header_import" + ("_and_committed_c_selector_validation" if selector_consumed else ""), "start_utc": started_utc,
          "end_utc": utc_now(), "wall_s": f"{elapsed:.6f}", "cpu_core_s": f"{elapsed:.6f}", "gpu_active_s": 0,
          "peak_rss_B": "NA", "peak_vram_B": "NA", "bytes_read": "NA", "bytes_downloaded": 0,
          "bytes_written": "NA", "warmup_s": 0, "retry_s": 0, "measured_or_estimated": "MEASURED_WALL_OTHER_NA",
@@ -523,6 +537,9 @@ def emit_package(args: argparse.Namespace) -> None:
         "`KERNEL_CATALOG_TRACE_HEADER_ONLY.tsv` is a provenance directory: its `kernel_markers` are historical list "
         "counts, not per-launch headers. Its timestamps, launch identity, kernel semantics, shapes, and object "
         "attribution remain `NA`/`UNKNOWN`. Consumers must not treat it as `NATIVE_NEW` or sample targets from it.\n\n"
+        + ("C input: manifest-validated committed selector `" + args.c_source_commit + "`; it is offline-only and "
+           "not a capture authorization. `CONSUMED_INPUTS.tsv` records the exact manifest hash.\n\n" if selector_consumed else "")
+        +
         "Source anchors: planning/handoff `9a755b14b01c5a77a6fc98c2547616e1c490e806`; C12 provenance "
         "`a268aba0d01310294074ded5bb8017e2092394c0` (input file SHA256 "
         + sha256_bytes(args.c12_provenance.read_bytes()) + "). Validation: `python3 -m unittest "
@@ -537,11 +554,12 @@ def emit_package(args: argparse.Namespace) -> None:
              for item in published]
     write_json(root / "PUBLISH_MANIFEST.json", {"schema_version": SCHEMA, "planning_sha": PLANNING_SHA,
         "lane": "b", "run_id": args.run_id, "producer_source_sha": SOURCE_SHA, "input_source_commits": {
-            "handoff": PLANNING_SHA, "c12": "a268aba0d01310294074ded5bb8017e2092394c0"},
+            "handoff": PLANNING_SHA, "c12": "a268aba0d01310294074ded5bb8017e2092394c0",
+            **({"lane_c_selector": args.c_source_commit} if selector_consumed else {})},
         "ready_stage_ids": ["C15-0.1", "C15-0.3", "C15-2.4", "C15-2.7"], "evidence_scope":
             "offline capability probe, synthetic contract tests, frozen C12 trace-list provenance only",
         "capture_state": "NO_NEW_NATIVE_GPU_RUN", "status": "CAPABILITY_LIMITED_READY_FOR_REVIEW",
-        "gaps": ["no authorized visible GPU", "no native backend", "disk/memory resource guard red",
+        "gaps": ["no authorized visible GPU", "no native backend",
                  "local model revisions unresolved", "no real canary/baseline/object observer/capture"], "files": files})
 
 
@@ -553,6 +571,9 @@ def main() -> None:
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--c12-provenance", type=Path)
     parser.add_argument("--fixture-file", type=Path)
+    parser.add_argument("--c-source-commit")
+    parser.add_argument("--c-manifest-sha256")
+    parser.add_argument("--c-validated-files", type=int)
     parser.add_argument("--run-id", default="c15b-offline-20260912")
     parser.add_argument("--model", action="append", nargs=2, metavar=("LABEL", "PATH"), default=[])
     args = parser.parse_args()
