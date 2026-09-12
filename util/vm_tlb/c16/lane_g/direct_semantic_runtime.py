@@ -22,8 +22,9 @@ from c16_native_common import ContractError, atomic_json, canonical_json, sha256
 from execution_budget import BudgetLease, MeasurementActive
 from model_adapters import resolve_adapter
 from runtime_native_runner import (
-    dtype_for, git_head, load_binding, load_token_ids, runtime_identity, smi_driver_version,
-    smi_row, wrapper_measurement_marker, wrapper_owned_budget,
+    assert_cuda_residency, git_head, load_binding, load_runtime_model, load_token_ids,
+    runtime_identity, smi_driver_version, smi_row, wrapper_measurement_marker,
+    wrapper_owned_budget,
 )
 
 
@@ -146,14 +147,11 @@ def semantic_decode(model: Any, prompt_ids: Any, decode_tokens: int, torch: Any)
 def execute(binding: dict[str, Any], args: argparse.Namespace, budget: Any) -> dict[str, Any]:
     try:
         import torch
-        from transformers import AutoModelForCausalLM
     except ImportError as exc:
-        raise ContractError("hash-closed torch/transformers environment is unavailable") from exc
+        raise ContractError("hash-closed torch environment is unavailable") from exc
     if not torch.cuda.is_available():
         raise ContractError("CUDA unavailable; refusing CPU fallback")
     adapter = resolve_adapter(args.adapter, args.dtype, args.quantization)
-    if adapter.model_loader != "TRANSFORMERS_CAUSAL_LM":
-        raise ContractError("direct semantic runner only supports raw Transformers adapters")
     identity = runtime_identity(binding, args)
     if identity["code_commit"] != git_head():
         raise ContractError("semantic runner source commit is not hash-addressable")
@@ -169,14 +167,14 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: Any) -> d
         "identity": identity,
     })
     telemetry_before = smi_row()
-    model = AutoModelForCausalLM.from_pretrained(
-        str(model_path), local_files_only=True, torch_dtype=dtype_for(torch, args.dtype), trust_remote_code=False,
+    required_sequence_length = int(binding["scenario"]["prefill_tokens"]) + int(binding["scenario"]["decode_tokens"])
+    model, loader_evidence = load_runtime_model(
+        adapter, model_path, torch, args.dtype, required_sequence_length=required_sequence_length,
     )
-    model.eval().to("cuda:0")
-    parameter_devices = {parameter.device.type for parameter in model.parameters()}
-    parameter_dtypes = {str(parameter.dtype).removeprefix("torch.") for parameter in model.parameters()}
-    if parameter_devices != {"cuda"} or parameter_dtypes != {args.dtype}:
-        raise ContractError("semantic runner observed CPU/offload or a dtype drift")
+    _parameter_devices, parameter_dtypes = assert_cuda_residency(
+        model,
+        require_raw_dtype=args.dtype if adapter.model_loader == "TRANSFORMERS_CAUSAL_LM" else None,
+    )
     prompt = torch.tensor([token_ids] * int(binding["scenario"]["batch_size"]), device="cuda:0", dtype=torch.long)
     observed_attention = str(getattr(model.config, "_attn_implementation", "UNRESOLVED"))
     if prompt.device.type != "cuda" or observed_attention in {"", "UNRESOLVED", "None"}:
@@ -227,6 +225,7 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: Any) -> d
             "model_all_cuda": True,
             "input_all_cuda": True,
             "parameter_dtype_set": sorted(parameter_dtypes),
+            "adapter_load_evidence": loader_evidence,
             "frozen_binding_receipt": str(args.binding_receipt),
             "frozen_binding_sha256": sha256_file(args.binding_receipt),
             "package_id": binding["package_id"],
