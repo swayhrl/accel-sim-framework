@@ -13,7 +13,7 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 | Current G publication head before this checkpoint | `f7d1c2cb4d41b26472893a7d23466402c8e92e70` |
 | P3 AWQ native runtime source commit | `6bb188220f9eaa0aa7e4c38aff156d18ca78404c` |
 | Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load: `fuse_layers=false`, `device_map=cuda:0`, no offload, exact frozen sequence length.  CUDA OOM now has an explicit `SKIPPED_RESOURCE` ledger/receipt path with no shape substitution.  It does not alter completed P0/P1 scientific receipts. |
-| P3 AWQ remote source deployment | Pending hash-verified deployment of `6bb18822…`; the prior `07575b6…` deployment remains idle and will not run P3 G0. |
+| P3 AWQ remote source deployment | AutoDL `code_runtime_3f02eef6` is at `6bb18822…` on `c16-runtime-6bb18822`; hash-verified source bundle SHA256 is `13a1d5796c1640e7865270418a89409cf7c3860cff3ca575125f6e57303abd03`.  All 14 remote no-GPU focused tests passed before P3 G0. |
 | P3 AWQ direct-semantic source commit | `6bb188220f9eaa0aa7e4c38aff156d18ca78404c` |
 | Meaning of direct-semantic source commit | The separate non-timing semantic runner uses the same explicit AWQ loader/residency contract.  It remains deferred until P3 clean baseline/G1 close. |
 | Formal standalone path | The only scientific performance path.  All rows below were run without CPU offload and with the frozen `float16` / eager / SDPA binding. |
