@@ -10,6 +10,7 @@ fallback path.
 from __future__ import annotations
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -45,6 +46,56 @@ class WrapperOwnedBudget:
 
     def expired(self) -> bool:
         return time.monotonic() - self._started >= self.max_elapsed_seconds
+
+
+PARENT_LEASE_FIELDS = (
+    "schema_version", "state", "parent_lease_id", "lease_token_sha256", "ledger_path",
+    "max_elapsed_seconds", "valid_until_unix", "identity", "operation_kind", "wrapper_pid",
+)
+
+
+def wrapper_owned_budget(args: argparse.Namespace, identity: dict[str, str]) -> tuple[WrapperOwnedBudget, dict[str, Any]]:
+    """Prove the child is inside the live, single wrapper-owned budget lease.
+
+    Environment variables alone are not an authority: the immutable start
+    receipt must bind a secret token, exact run identity and ledger path, and
+    the ledger's advisory lock must be held by another process while the child
+    starts.  A standalone child therefore either obtains its own lease or
+    fails closed; it cannot select wrapper mode as a budget bypass.
+    """
+    if args.parent_lease_receipt is None:
+        raise ContractError("wrapper-owned budget mode requires an explicit parent lease receipt")
+    environment_receipt = os.environ.get("C16_G_PARENT_LEASE_RECEIPT")
+    token = os.environ.get("C16_G_PARENT_LEASE_TOKEN")
+    if environment_receipt != str(args.parent_lease_receipt) or not token:
+        raise ContractError("wrapper-owned budget mode lacks the active parent receipt/token environment")
+    try:
+        parent = json.loads(args.parent_lease_receipt.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractError(f"cannot read parent lease receipt: {exc}") from exc
+    if not isinstance(parent, dict) or any(field not in parent for field in PARENT_LEASE_FIELDS):
+        raise ContractError("parent lease receipt is incomplete")
+    if parent["schema_version"] != "C16_G_PARENT_LEASE_V1" or parent["state"] != "ACTIVE_IMMUTABLE_START_RECEIPT":
+        raise ContractError("parent lease receipt is not an active C16 wrapper session")
+    if parent["ledger_path"] != str(args.budget_ledger) or parent["identity"] != identity:
+        raise ContractError("parent lease receipt does not bind this exact child ledger/identity")
+    if not isinstance(parent["max_elapsed_seconds"], (int, float)) or float(parent["max_elapsed_seconds"]) <= 0:
+        raise ContractError("parent lease receipt has an invalid elapsed-time ceiling")
+    if not isinstance(parent["valid_until_unix"], (int, float)) or time.time() > float(parent["valid_until_unix"]):
+        raise ContractError("parent lease receipt has expired")
+    if hashlib.sha256(token.encode("utf-8")).hexdigest() != parent["lease_token_sha256"]:
+        raise ContractError("parent lease token does not match its immutable receipt")
+    lock_path = args.budget_ledger.with_name(args.budget_ledger.name + ".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as lock_handle:
+        try:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            pass
+        else:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
+            raise ContractError("parent lease receipt exists but the shared budget ledger is not locked")
+    return WrapperOwnedBudget(float(parent["max_elapsed_seconds"])), parent
 
 
 def git_head() -> str:
@@ -275,6 +326,9 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, budget: BudgetLea
             "execution_budget_ledger": str(args.budget_ledger),
             "execution_budget_max_elapsed_seconds": budget.max_elapsed_seconds,
             "execution_budget_ownership": "PROFILER_WRAPPER" if args.budget_owned_by_wrapper else "RUNNER",
+            "parent_lease_receipt": str(args.parent_lease_receipt) if args.budget_owned_by_wrapper else "NA",
+            "parent_lease_receipt_sha256": sha256_file(args.parent_lease_receipt) if args.budget_owned_by_wrapper else "NA",
+            "parent_lease_id": args.parent_lease["parent_lease_id"] if args.budget_owned_by_wrapper else "NA",
             "frozen_binding_receipt": str(args.binding_receipt),
             "frozen_binding_sha256": sha256_file(args.binding_receipt),
             "package_id": binding["package_id"],
@@ -316,11 +370,14 @@ def main() -> None:
     parser.add_argument("--measures", type=int, default=3)
     parser.add_argument("--budget-ledger", type=Path, required=True)
     parser.add_argument("--budget-owned-by-wrapper", action="store_true")
+    parser.add_argument("--parent-lease-receipt", type=Path)
     args = parser.parse_args()
     if not args.execute_native:
         parser.error("runtime-native runner has no mock mode; use the fixed offline runner for non-scientific fixtures")
     if args.warmups != 2 or args.measures not in (3, 4, 5):
         parser.error("C16 native baselines require 2 warmups and 3-5 retained measures")
+    if args.budget_owned_by_wrapper != (args.parent_lease_receipt is not None):
+        parser.error("wrapper-owned budget mode requires --parent-lease-receipt, and vice versa")
     try:
         if str(uuid.UUID(args.run_id)) != args.run_id:
             raise ValueError
@@ -328,14 +385,7 @@ def main() -> None:
         parser.error("--run-id must be a canonical UUID")
     binding = load_binding(args.binding_receipt, canary=args.mode == "canary")
     if args.budget_owned_by_wrapper:
-        wrapper_ledger = os.environ.get("C16_G_WRAPPER_BUDGET_LEDGER")
-        max_elapsed_text = os.environ.get("C16_G_WRAPPER_MAX_ELAPSED_SECONDS")
-        if wrapper_ledger != str(args.budget_ledger) or max_elapsed_text is None:
-            raise ContractError("wrapper-owned budget mode requires a matching active profiler wrapper lease")
-        try:
-            budget = WrapperOwnedBudget(float(max_elapsed_text))
-        except ValueError as exc:
-            raise ContractError("wrapper-supplied C16 budget ceiling is malformed") from exc
+        budget, args.parent_lease = wrapper_owned_budget(args, runtime_identity(binding, args))
         receipt = execute(binding, args, budget)
     else:
         with BudgetLease(args.budget_ledger, runtime_identity(binding, args), f"NATIVE_{args.mode.upper()}", capture=False) as budget:

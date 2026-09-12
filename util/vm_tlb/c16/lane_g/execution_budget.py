@@ -21,6 +21,7 @@ MAX_NVBIT_TOTAL_RAW_BYTES = 64 * 1024 * 1024 * 1024
 MAX_NVBIT_WINDOW_BYTES = 4 * 1024 * 1024 * 1024
 MAX_NVBIT_WINDOW_SECONDS = 20 * 60
 MAX_NVBIT_WINDOWS_PER_DEPLOYMENT = 6
+EVIDENCE_CLASSIFICATIONS = {"SCIENTIFIC", "NON_SCIENTIFIC_DIAGNOSTIC", "ACCOUNTING_ONLY"}
 
 
 def _new_ledger() -> dict[str, Any]:
@@ -66,6 +67,9 @@ def _load(path: Path) -> dict[str, Any]:
             raise ContractError("execution-budget ledger has a malformed entry")
         if entry["elapsed_seconds"] < 0 or entry["raw_bytes"] < 0:
             raise ContractError("execution-budget ledger has a negative accounting value")
+        classification = entry.get("evidence_classification")
+        if classification is not None and classification not in EVIDENCE_CLASSIFICATIONS:
+            raise ContractError("execution-budget ledger has an unknown evidence classification")
     return payload
 
 
@@ -170,16 +174,28 @@ class BudgetLease:
     def expired(self) -> bool:
         return self.elapsed_seconds() >= self.max_elapsed_seconds
 
-    def finish(self, *, elapsed_seconds: float, raw_bytes: int, terminal_status: str) -> None:
+    def finish(
+        self,
+        *,
+        elapsed_seconds: float,
+        raw_bytes: int,
+        terminal_status: str,
+        evidence_classification: str = "SCIENTIFIC",
+        diagnostic_reason: str | None = None,
+    ) -> None:
         if self._ledger is None:
             raise ContractError("execution-budget lease was not acquired")
         if self._finished:
             raise ContractError("execution-budget lease was already finalized")
         if elapsed_seconds < 0 or raw_bytes < 0:
             raise ContractError("cannot record negative execution-budget usage")
+        if evidence_classification not in EVIDENCE_CLASSIFICATIONS:
+            raise ContractError("execution-budget entry has an unknown evidence classification")
+        if diagnostic_reason is not None and (not isinstance(diagnostic_reason, str) or not diagnostic_reason):
+            raise ContractError("execution-budget diagnostic reason is malformed")
         if not isinstance(self.identity.get("deployment_id"), str) or not isinstance(self.identity.get("run_id"), str):
             raise ContractError("execution-budget entry lacks deployment/run identity")
-        self._ledger["entries"].append({
+        entry = {
             "operation_kind": self.operation_kind,
             "deployment_id": self.identity["deployment_id"],
             "run_id": self.identity["run_id"],
@@ -188,7 +204,11 @@ class BudgetLease:
             "terminal_status": terminal_status,
             "max_elapsed_seconds_at_start": self.max_elapsed_seconds,
             "max_raw_bytes_at_start": self.max_raw_bytes if self.capture else 0,
-        })
+            "evidence_classification": evidence_classification,
+        }
+        if diagnostic_reason is not None:
+            entry["diagnostic_reason"] = diagnostic_reason
+        self._ledger["entries"].append(entry)
         atomic_json(self.ledger_path, self._ledger)
         self._finished = True
 
@@ -199,10 +219,44 @@ class BudgetLease:
                     elapsed_seconds=self.elapsed_seconds(),
                     raw_bytes=0,
                     terminal_status="FAILED_OR_ABORTED" if exc_type is not None else "UNRECORDED_ABORT",
+                    evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
+                    diagnostic_reason="UNHANDLED_OPERATION_EXIT",
                 )
         finally:
             self._release()
         return False
+
+
+def mark_existing_entry_diagnostic(ledger_path: Path, *, run_id: str, reason: str) -> dict[str, Any]:
+    """Annotate an already-accounted run without changing elapsed/raw usage.
+
+    This is for historical pre-gate attempts.  It never deletes an entry or
+    rewrites its resource accounting, and refuses to relabel a previously
+    explicit scientific entry.
+    """
+    if not run_id or not reason:
+        raise ContractError("diagnostic annotation requires run ID and reason")
+    lock_path = ledger_path.with_name(ledger_path.name + ".lock")
+    with lock_path.open("a+", encoding="utf-8") as lock_handle:
+        try:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise ContractError("cannot annotate a ledger while a C16 operation is active") from exc
+        try:
+            ledger = _load(ledger_path)
+            matches = [entry for entry in ledger["entries"] if entry.get("run_id") == run_id]
+            if len(matches) != 1:
+                raise ContractError("diagnostic annotation requires exactly one existing ledger entry")
+            entry = matches[0]
+            existing = entry.get("evidence_classification")
+            if existing not in (None, "NON_SCIENTIFIC_DIAGNOSTIC"):
+                raise ContractError("refusing to relabel an explicit scientific ledger entry")
+            entry["evidence_classification"] = "NON_SCIENTIFIC_DIAGNOSTIC"
+            entry["diagnostic_reason"] = reason
+            atomic_json(ledger_path, ledger)
+            return entry
+        finally:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
 
 
 def ledger_markdown() -> str:
