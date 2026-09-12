@@ -740,7 +740,7 @@ def validation_row(result: WindowResult) -> dict[str, str | int]:
         "capture_status": result.entry.capture_status,
         "terminal_status": result.entry.terminal_status,
         "parse_status": result.parse_status,
-        "address_domain": ADDRESS_DOMAIN,
+        "address_domain": result.entry.capture_address_domain,
         "order_model": result.entry.order_model,
         "sha256_verified": "PASS",
         "object_boundary_policy": (
@@ -748,7 +748,11 @@ def validation_row(result: WindowResult) -> dict[str, str | int]:
             if result.entry.object_map_temporal_status == "BOUND"
             else "TEMPORAL_UNPROVEN_FORCED_UNKNOWN_RUNTIME"
         ),
-        "result": "STRUCTURAL_ONLY" if result.entry.capture_status == "BOUNDED_PARTIAL" else "PASS",
+        "result": (
+            "STRUCTURAL_ONLY"
+            if result.entry.capture_status == "BOUNDED_PARTIAL" or result.entry.object_map_temporal_status == "UNPROVEN"
+            else "PASS"
+        ),
         "detail": detail,
     }
 
