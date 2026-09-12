@@ -487,6 +487,9 @@ def emit_package(args: argparse.Namespace) -> None:
         "capture_windows": 0, "capture_bytes": 0, "timeout_s": 0, "evidence_tier": "UNRESOLVED"}])
     write_tsv(root / "CAPTURE_STATUS.tsv", ["deployment_id", "scenario_id", "target_launch_signature", "status",
         "terminal_state", "output_bytes", "gpu_active_s", "missing_reason"], [])
+    write_tsv(root / "RAW_LOG_INDEX.tsv", ["artifact_class", "count", "status", "location", "missing_reason"],
+              [{"artifact_class": "C15_NATIVE_RAW_LOG", "count": 0, "status": "NOT_GENERATED",
+                "location": "NA", "missing_reason": "No native GPU task was authorized or launched"}])
     stages = [
         {"stage_id": "C15-0.1", "execution": "COMPLETE", "validation": "PASS", "test_receipt": "TEST_RESULTS.tsv:T00,T01,T23", "artifact_manifest": "ENV_PREFLIGHT.json", "reason": "non-detached B worktree at planning SHA"},
         {"stage_id": "C15-0.3", "execution": "COMPLETE", "validation": "PASS", "test_receipt": "TEST_RESULTS.tsv:T07,T24", "artifact_manifest": "CAPABILITY_MATRIX.tsv;DEPLOYMENT_PREFLIGHT.tsv", "reason": "actual probe records native capability absent"},
@@ -528,7 +531,7 @@ def emit_package(args: argparse.Namespace) -> None:
         "`--validate --output-root docs/vm_tlb/review_packs/C15_LOWCOST_MULTIMODEL/lane_b`.\n\n"
         "Open issues: an authorized visible GPU, compatible installed native backend, >=64 GiB disk reserve, >=32 GiB "
         "MemAvailable, verified local model revisions, a real profiler canary, and a read-only observer for lifetime V2. "
-        "Raw-log index: none; C15 generated no raw logs.\n")
+        "`RAW_LOG_INDEX.tsv` records the intentional absence of C15 raw logs.\n")
     published = [path for path in sorted(root.iterdir()) if path.name != "PUBLISH_MANIFEST.json"]
     files = [{"path": item.name, "sha256": sha256_bytes(item.read_bytes()), "size_bytes": item.stat().st_size}
              for item in published]
