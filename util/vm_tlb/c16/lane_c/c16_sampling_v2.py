@@ -667,7 +667,7 @@ def write_strata_definition(out: Path) -> None:
 def write_preflight(out: Path, native_catalog_status: str = "PENDING_COMMITTED_WAVE1_CATALOG") -> None:
     write_json(out / "ENV_PREFLIGHT.json", {
         "schema_version": "C16_LANE_C_PREFLIGHT_V2", "lane": "C", "branch": "hrl/vm-c16-c-sampling-v2-v0",
-        "head_at_generation": current_head(), "planning_sha": PLANNING_SHA, "new_simulator_replay": 0,
+        "starting_head": PLANNING_SHA, "head_at_generation": current_head(), "planning_sha": PLANNING_SHA, "new_simulator_replay": 0,
         "new_full_roi_simulation": 0, "new_gpu_execution": 0, "native_catalog_status": native_catalog_status,
         "protected_historical_inputs_read_only": [C15_C_SHA, C12_OPERATOR_SHA, C13_SHA], "status": "PASS",
     })
