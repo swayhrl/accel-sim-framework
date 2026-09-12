@@ -21,7 +21,7 @@ from prepare_gpu_package import DEFAULT_OUT, refresh_manifest
 ROOT = repo_root()
 REPO = ROOT
 A_COMMIT = "b458225e"
-C_COMMIT = "75432cbd"
+C_COMMIT = "29e669ec"
 H_COMMIT = "65b53574"
 A_BASE = "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_a"
 C_BASE = "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_c"

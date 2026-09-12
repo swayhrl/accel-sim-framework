@@ -113,7 +113,7 @@ class NativeContractTest(unittest.TestCase):
 
     def test_upstream_consumer_cli_is_import_complete(self):
         self.assertEqual(UPSTREAMS.A_COMMIT, "b458225e")
-        self.assertEqual(UPSTREAMS.C_COMMIT, "75432cbd")
+        self.assertEqual(UPSTREAMS.C_COMMIT, "29e669ec")
         artifact = "a" * 40
         producer = "b" * 40
         receipt = (
