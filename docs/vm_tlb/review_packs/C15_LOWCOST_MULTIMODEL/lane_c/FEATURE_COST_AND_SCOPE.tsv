@@ -1,0 +1,8 @@
+feature	source_level	unit	address_domain	additivity	requires_full_trace	allowed_use	cost_class
+phase	T0_STATIC	category	none	not_applicable	NO	PRIMARY_SELECTOR	CHEAP
+opaque_launch_index	T1_HEADER_DIRECTORY	ordinal	none	not_applicable	NO	PRIMARY_SELECTOR	CHEAP
+operator_class	HISTORICAL_TRACE_SCAN	category	SimVA-derived	not_applicable	YES	TRACE_INFORMED_ORACLE_ONLY	ORACLE
+layer_id	HISTORICAL_TRACE_SCAN	ordinal	SimVA-derived	not_applicable	YES	TRACE_INFORMED_ORACLE_ONLY	ORACLE
+unique_64KiB_pages	HISTORICAL_TRACE_SCAN	pages	SimVA	union_only	YES	FINGERPRINT_ORACLE_ONLY	ORACLE
+gpu_sim_cycle	FULL_SIMULATOR_LOG	cycles	none	sum	NO	RETROSPECTIVE_EVALUATOR_ONLY	SIMULATOR_INFORMED_ORACLE
+candidate_delta	CANDIDATE_RESULT	cycles/events	none	sum	NO	FORBIDDEN_PRIMARY_SELECTOR	FORBIDDEN

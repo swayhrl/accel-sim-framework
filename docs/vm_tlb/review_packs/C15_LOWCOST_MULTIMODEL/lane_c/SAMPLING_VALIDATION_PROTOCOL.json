@@ -1,0 +1,56 @@
+{
+  "candidate_outcomes_used_for_selection": false,
+  "control_strategy": "STRATIFIED_RANDOM_CHEAP_V1",
+  "historical_label": "RETROSPECTIVE_CALIBRATION_AND_CROSS_CONFIG_TEST",
+  "metrics": [
+    "gpu_sim_cycle",
+    "vm_l1_tlb_accesses",
+    "vm_l1_tlb_misses",
+    "vm_l2_tlb_accesses",
+    "vm_l2_tlb_misses",
+    "vm_translation_walk_starts",
+    "vm_pte_requests",
+    "vm_pte_dram_responses"
+  ],
+  "oracle_strategy": "TRACE_INFORMED_ORACLE_DIAGNOSTIC_V1",
+  "planning_sha": "9a755b14b01c5a77a6fc98c2547616e1c490e806",
+  "primary_strategy": "STRATIFIED_REPRESENTATIVE_CHEAP_V1",
+  "schema_version": "C15_SAMPLING_VALIDATION_PROTOCOL_V1",
+  "seed": 15001,
+  "selector_code_sha256": "d6555f5b478ea09adb364bca5e440bde1545e4b793c76f68c850ddf83da36c07",
+  "sensitivity_seeds": [
+    15002,
+    15003,
+    15004,
+    15005,
+    15006,
+    15007,
+    15008,
+    15009,
+    15010,
+    15011,
+    15012,
+    15013,
+    15014,
+    15015,
+    15016,
+    15017,
+    15018,
+    15019,
+    15020,
+    15021
+  ],
+  "simulator_replays_authorized": 0,
+  "thresholds": {
+    "macro_cycle_screening_relative_error": "<=0.05",
+    "small_effect_rule": "no verdict when empirical envelope crosses zero or effect is no larger than resolution",
+    "unique_page_relative_error_if_N_gt_100": "<=0.05",
+    "unique_page_small_N_absolute_error": "<=max(1,ceil(0.05*N))"
+  },
+  "virtual_budgets": [
+    8,
+    12,
+    24,
+    48
+  ]
+}
