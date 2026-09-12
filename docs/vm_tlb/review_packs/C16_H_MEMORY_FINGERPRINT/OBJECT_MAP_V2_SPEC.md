@@ -29,4 +29,15 @@ Every event carries `event_type`, `event_ordinal`, `storage_id`, `generation`, `
 
 An address access maps to a class only if its full `[address, address+width)` interval is contained by exactly one live storage/generation and no other live storage overlaps any part of that interval. Otherwise the result is `UNKNOWN_RUNTIME`, with an audit reason such as `RANGE_BOUNDARY_CROSSING` or `MULTIPLE_OR_OVERLAPPING_STORAGE`.
 
-This makes generation reuse, tied storage, KV grow/replace, unknown release, cross-stream uncertain order, quant payload/scales/zeros, and MLA architecture-vs-expanded-runtime-KV differences explicit fixture cases. It intentionally favors an unknown bucket over a false semantic classification.
+## Temporal window binding
+
+Allocation history and views are evaluated at an event-ordinal cutoff; grow/view evidence observed after a cutoff cannot leak backwards. A real window manifest must bind all of:
+
+- `object_map_sha256` — exact JSON used by the parser;
+- `object_map_snapshot_id` — a map-defined snapshot;
+- `object_map_event_ordinal_cutoff` — exact snapshot cutoff;
+- `object_map_temporal_status=BOUND`.
+
+Each map snapshot carries `temporal_order_evidence` (`CUDA_EVENT` or `RUNTIME_EVENT_SEQUENCE`) and a nonempty evidence receipt. If that relation cannot be proven, the manifest declares `object_map_temporal_status=UNPROVEN`, supplies no cutoff, and the fingerprinter forces every GLOBAL access to `UNKNOWN_RUNTIME`; it does not infer from the final allocator state.
+
+Fixtures cover tied storage, pointer generation reuse across release (early WEIGHT, late KV_CACHE), KV grow/replace across cutoffs, unknown release, cross-stream uncertain order, quant payload/scales/zeros, and MLA architecture-vs-expanded-runtime-KV differences. The policy intentionally favors an unknown bucket over a false semantic classification.

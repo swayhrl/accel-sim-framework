@@ -1,0 +1,30 @@
+{
+  "schema_version": "c16-h-offline-test-receipt-v1",
+  "planning_sha": "f222e66f49af56cfd4ded671c4a50c6811237cc2",
+  "implementation_commit": "20c5ece86a9fae4a3c83e7722fb2e58bbbc81dfc",
+  "commands": [
+    {
+      "command": "python3 -m unittest discover -s tests/vm_tlb/c16/lane_h -p 'test_*.py' -v",
+      "result": "PASS",
+      "directed_test_count": 10
+    },
+    {
+      "command": "python3 -m py_compile util/vm_tlb/c16/lane_h/*.py tests/vm_tlb/c16/lane_h/test_*.py",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "fixture_coverage": [
+    "temporal WEIGHT -> KV_CACHE pointer reuse across release",
+    "KV grow and replace across window cutoffs",
+    "unproven temporal relation forces UNKNOWN_RUNTIME",
+    "GLOBAL/LOCAL/SHARED/UNKNOWN_SPACE semantics",
+    "TRACEG forged LOCAL_STREAM_ORDER rejection",
+    "modulo line-set projection proxy wording"
+  ],
+  "dynamic_scientific_rows_present": false,
+  "memory_only_decision": "NO_GO_FULL_TRACER_FALLBACK"
+}

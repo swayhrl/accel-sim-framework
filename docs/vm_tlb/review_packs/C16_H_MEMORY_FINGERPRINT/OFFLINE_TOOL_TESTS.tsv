@@ -4,5 +4,8 @@ H-0.5-02	C16-0.5	object_map_v2.json	ACTIVATION and Python-GC release rejected; v
 H-0.8-01	C16-0.8	trace_complete.traceg	active lanes 0/2, width, list/base-stride/base-delta decode, 128B crossing, 4KiB/64KiB crossing	PASS
 H-0.8-02	C16-0.8	trace_complete.traceg	READ/WRITE/ATOMIC; duplicate/zero-predicated lane handling; object boundary preservation	PASS
 H-0.8-03	C16-0.8	trace_partial.traceg	only manifest-declared BOUNDED_PARTIAL accepts truncated terminal; result marked PARTIAL_TERMINAL	PASS
-H-0.8-04	C16-0.8	manifest-bound CLI fixture	manifest SHA and trace SHA required; CTA file order rejected; overlap labeled SET_ONLY	PASS
+H-0.8-04	C16-0.8	manifest-bound CLI fixture	manifest/trace/object-map SHA required; TRACEG forged LOCAL_STREAM_ORDER rejected; overlap labeled SET_ONLY	PASS
+H-0.8-05	C16-0.8	temporal window fixtures	early same-address WEIGHT; late KV_CACHE; unproven time forced UNKNOWN; grow/replace do not leak backwards	PASS
+H-0.8-06	C16-0.8	memory-space fixture	GLOBAL/LOCAL/SHARED/UNKNOWN_SPACE explicit; SHARED page fields NA; UNKNOWN not GLOBAL	PASS
+H-0.8-07	C16-0.8	modulo line-set projection fixture	line %% configured-count is labeled proxy, never hardware cache-set mapping	PASS
 H-4.4-01	C16-4.4	canonical observer comparator	active mask/width/lane-address/order/terminal difference fails exact comparator	PASS_SCHEMA_ONLY
