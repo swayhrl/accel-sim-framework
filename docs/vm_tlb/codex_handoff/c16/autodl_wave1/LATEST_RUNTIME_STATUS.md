@@ -9,13 +9,31 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 | Field | Value |
 |---|---|
 | Formal standalone runtime source commit | `3f02eef6e0d00ea654821be8539bb82f463e87e5` |
-| Current source head before this data-only checkpoint | `5ddc08f5cc3a58530655efe0fd2f51b47a8e8134` |
-| Meaning of current source head | Resident diagnostic-accounting hardening only; it is not deployed for a formal standalone measurement and resident requalification is deferred. |
+| Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
+| Current source head before this publication checkpoint | `3f3868b78be15dd515d091422643ba256a37b56f` |
+| Meaning of current source head | Direct-semantic catalog join audit only; it does not change the qualified standalone runner. |
 | Formal standalone path | The only scientific performance path.  All rows below were run without CPU offload and with the frozen `float16` / eager / SDPA binding. |
 
 `3f02eef6` is the immutable source anchor for the completed P0/P1 formal runs.  A
 future source or contract change that affects a scientific run must pass focused
 tests, be committed and pushed, and be named in that run's receipt before use.
+
+## Direct semantic evidence (non-timing)
+
+Llama S2 run `cd3e40be-a7d5-43e5-9030-d84dc158f406` passed direct module-NVTX
+instrumentation and stable kernel/correlation/stream join qualification under
+runtime source `b241fecf…`.  Its only status is
+`SEMANTIC_DIAGNOSTIC_ONLY` / `NOT_FOR_NATIVE_TIMING`; both native runtime and
+Nsight receipts set scientific eligibility false.  It has 20,669 direct,
+unambiguous mappings, 24,611 conservative `UNKNOWN` rows, and zero ambiguous
+direct-range ties.  The full map remains outside Git; the consumer-facing small
+coverage table, receipt, and exact external artifact hashes are in
+[`direct_semantic_s2`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/direct_semantic_s2/).
+
+The initial direct-semantic run `7c9d0ba8-2376-46f9-9791-2c3b8c8fb260` remains
+in the ledger as `NON_SCIENTIFIC_DIAGNOSTIC` after an NVTX hook-return bug.  The
+corrected source was focused-test-passed and pushed before the successful new
+run.  Neither diagnostic changes G0/G1 or the standalone scientific path.
 
 ## Consumed package checkpoints
 
@@ -52,7 +70,8 @@ baseline, census, profiler, NCU, or NVBit methods.
 
 ## Raw-artifact index and next queue
 
-The four recently returned `.nsys-rep` artifacts are indexed by immutable
+The returned `.nsys-rep` artifacts, including the retained semantic diagnostic
+raw, are indexed by immutable
 path/size/SHA in [RAW_ARTIFACT_INDEX.tsv](RAW_ARTIFACT_INDEX.tsv).  They are not
 Git payloads.  Each listed local copy has an independently verified SHA256; the
 remote copies were still present at this checkpoint and may be reclaimed only
@@ -74,4 +93,6 @@ invented merely to occupy the GPU.
   export is the policy path.
 - Direct runtime semantic evidence is a separately marked diagnostic effort.  It
   may not overwrite any qualified timing row or alter the meaning of the clean
-  P0/P1 census.
+  P0/P1 census.  Local nsys 2022.4.2 cannot parse remote nsys 2024.1 reports;
+  the S2 semantic SQLite was a one-time remote-export fallback, never a remote
+  launch TSV/catalog.
