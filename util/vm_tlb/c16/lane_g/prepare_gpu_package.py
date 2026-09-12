@@ -27,6 +27,7 @@ SOURCE_FILES = (
     "ncu_wrapper.py", "nvbit_wrapper.py", "prepare_gpu_package.py", "offline_dry_run.py",
     "autodl_instance_receipt.py", "transfer_verify.py",
     "native_catalog.py",
+    "consume_upstreams.py",
 )
 EXPECTED_COLUMNS = ("artifact_id", "kind", "path_or_commit", "sha256", "required_for", "closure_status", "note")
 PACKAGE_COLUMNS = ("package_component", "path_or_ref", "sha256", "required_for", "availability", "transfer_action", "scientific_use")
@@ -199,7 +200,7 @@ def prepare(out: Path, handoff: Path | None) -> None:
     write_tsv(out / "STAGE_STATUS.tsv", ("stage_id", "owner", "execution_status", "scientific_status", "evidence_tier", "blocking_dependency", "note"), [
         {"stage_id": "C16-0.3", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "bootstrap/logical lock/tool expectations are ready; wheel hashes close at C16-1.2"},
         {"stage_id": "C16-0.4", "owner": "G", "execution_status": "OFFLINE_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "NA", "note": "runner/wrappers/schema/mock fixtures are ready; no GPU result exists"},
-        {"stage_id": "C16-0.9", "owner": "A,G", "execution_status": "PARTIAL_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "UPSTREAM_A_COMMITTED_MANIFEST_REQUIRED", "note": "G bundle hash-closed; asset/input/scenario closure intentionally pending A"},
+        {"stage_id": "C16-0.9", "owner": "A,G", "execution_status": "PARTIAL_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "A_C16_GPU_PACKAGE_AND_WHEEL_CLOSURE_REQUIRED", "note": "A fixed inputs/scenarios are consumed after manifest verification; the required A GPU package/wheel closure remains unpublished"},
         {"stage_id": "C16-2.6", "owner": "G", "execution_status": "OFFLINE_SCHEMA_READY", "scientific_status": "NOT_APPLICABLE", "evidence_tier": "UNRESOLVED", "blocking_dependency": "C16-1.3_AND_C16-1.4_REQUIRED", "note": "Wave-1 catalog validator/publisher is ready; no native catalog exists"},
     ])
     if handoff is not None:
@@ -232,6 +233,17 @@ def validate(out: Path) -> None:
         path = out / name
         if sha256_file(path) != item["sha256"] or path.stat().st_size != item["size_bytes"]:
             raise ContractError(f"package manifest digest mismatch: {name}")
+    consumed = out / "CONSUMED_INPUTS.tsv"
+    if consumed.is_file():
+        with consumed.open(newline="", encoding="utf-8") as handle:
+            consumed_rows = list(csv.DictReader(handle, delimiter="\t"))
+        by_lane = {row.get("producer_lane"): row for row in consumed_rows}
+        if by_lane.get("A", {}).get("consumption_status") != "HASH_VERIFIED_METADATA_INPUTS_ONLY":
+            raise ContractError("A consumption receipt is missing or overclaims GPU-package eligibility")
+        if by_lane.get("C", {}).get("dynamic_eligibility") != "NO_NATIVE_NVBIT_TARGET_YET":
+            raise ContractError("C consumption receipt is missing or overclaims native target eligibility")
+        if by_lane.get("H", {}).get("consumption_status") != "NOT_CONSUMED_MANIFEST_MISSING":
+            raise ContractError("H manifest-free consumption guard changed")
     print(f"PASS C16 G offline package validation: {len(listed)} files; upstream asset closure remains explicit")
 
 

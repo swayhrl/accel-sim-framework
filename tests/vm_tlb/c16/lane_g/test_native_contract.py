@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -17,6 +18,7 @@ sys.path.insert(0, str(LANE))
 import c16_native_common as COMMON
 import identity_guard as GUARD
 import model_adapters as ADAPTERS
+import consume_upstreams as UPSTREAMS
 import native_catalog as CATALOG
 import offline_dry_run as DRY
 import prepare_gpu_package as PACKAGE
@@ -101,6 +103,17 @@ class NativeContractTest(unittest.TestCase):
             }])
             with self.assertRaises(COMMON.ContractError):
                 CATALOG.validate(root, wave1)
+
+    def test_fixed_manifest_validator_rejects_payload_tampering(self):
+        payload = b"fixed payload"
+        manifest = {"files": [{"path": "one.txt", "sha256": __import__("hashlib").sha256(payload).hexdigest(), "size_bytes": len(payload)}]}
+        self.assertEqual(UPSTREAMS.verify_manifest_payload(manifest, "base", lambda path: payload), 1)
+        with self.assertRaises(COMMON.ContractError):
+            UPSTREAMS.verify_manifest_payload(manifest, "base", lambda path: b"tampered")
+
+    def test_upstream_consumer_cli_is_import_complete(self):
+        completed = subprocess.run([sys.executable, str(LANE / "consume_upstreams.py"), "--help"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
 
     def test_complete_offline_suite_builds_only_non_scientific_artifacts(self):
         with tempfile.TemporaryDirectory() as directory:
