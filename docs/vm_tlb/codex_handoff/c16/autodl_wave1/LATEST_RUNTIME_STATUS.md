@@ -10,8 +10,8 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 |---|---|
 | Formal standalone runtime source commit | `3f02eef6e0d00ea654821be8539bb82f463e87e5` |
 | Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
-| Current source head before this publication checkpoint | `3f3868b78be15dd515d091422643ba256a37b56f` |
-| Meaning of current source head | Direct-semantic catalog join audit only; it does not change the qualified standalone runner. |
+| Current G publication head before this checkpoint | `89d036276ac2429387fcab6db567bb6158274855` |
+| Meaning of current source head | Publication/retention closeout only; it does not change the qualified standalone runner. |
 | Formal standalone path | The only scientific performance path.  All rows below were run without CPU offload and with the frozen `float16` / eager / SDPA binding. |
 
 `3f02eef6` is the immutable source anchor for the completed P0/P1 formal runs.  A
@@ -35,13 +35,24 @@ in the ledger as `NON_SCIENTIFIC_DIAGNOSTIC` after an NVTX hook-return bug.  The
 corrected source was focused-test-passed and pushed before the successful new
 run.  Neither diagnostic changes G0/G1 or the standalone scientific path.
 
+Qwen2.5-0.5B S2 run `1a748d40-8144-47f3-93f6-4b8e75be4e65` also passed
+direct-semantic qualification: 33,184 direct/unambiguous rows, 37,040
+conservative `UNKNOWN` rows, and zero direct-range ties.  It is a separate
+non-timing diagnostic.  Its map never joins absolute timestamps to a different
+run's clean census; Lane P alone may reconcile runs through its
+`EVENT_INPUT_CONTRACT`.  Its semantic publish-manifest SHA256 is
+`b9a0a3aea01887f58877ecadd4d119582e09387702122be0ff4564b918d3d5fb`;
+consumer-facing coverage/receipt/hash index is in
+[`direct_semantic_qwen05_s2`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/direct_semantic_qwen05_s2/).
+
 ## Consumed package checkpoints
 
 | Package | Fixed A commit | Manifest SHA256 | Consumption state |
 |---|---|---|---|
 | `C16_GPU_PACKAGE_P0` (Llama 3.2-1B) | `20fb38e6ca629f1a93db7939248bd1a03790724c` | `ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f` | Previously hash-closed and used for the formal Llama standalone set. |
 | `C16_GPU_PACKAGE_P1` (Qwen2.5-0.5B) | `4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63` | `d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84` | Hash-closed before execution.  Transfer receipt SHA256: `bfa4e7a625fef437c7a2c131681c14f3c0e182cb403be23c6938ff3d11bfacf1`. |
-| `P2` Qwen2.5-7B raw / `P3` Qwen2.5-7B AWQ | Not supplied as immutable published commit + manifest SHA | N/A | Not consumable.  No transfer or GPU work is authorized from a rolling or screenshot-only package. |
+| `C16_GPU_PACKAGE_P3` Qwen2.5-7B AWQ | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c` | Immutable A release verified read-only.  Next authorized package: transfer/hash-close P3 after this semantic checkpoint. |
+| `C16_GPU_PACKAGE_P2` Qwen2.5-7B raw | `168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` | `c937590dd4ea2b4f6407db7d8b077ed263af3cbc14562ef34142aa834b133f26` | Immutable A release verified read-only.  Consume only after the P3 AWQ G0 -> standalone baseline -> G1 group. |
 
 ## Qualified execution state
 
@@ -78,17 +89,16 @@ remote copies were still present at this checkpoint and may be reclaimed only
 after the published index is available and the corresponding local digest is
 reconfirmed.
 
-The two direct-semantic `.nsys-rep` files and its temporary remote SQLite were
-reclaimed from AutoDL only after their published local SHA256 confirmations;
-their small remote receipts remain and the local artifact-index paths are the
-authoritative retained copies.
+Llama's direct-semantic `.nsys-rep` and temporary remote SQLite were reclaimed
+from AutoDL only after their published local SHA256 confirmations.  Qwen0.5's
+matching raw remains remote at this checkpoint; both entries give the local
+hash-closed retained copy, and their small remote receipts remain available.
 
-Next authorized GPU task: wait for A to publish either P2 or P3 with its fixed
-commit and manifest SHA.  If P3 is first, consume and hash-close P3, publish that
-consumption checkpoint, then run standalone Qwen7-AWQ G0 -> baseline -> G1.  If
-P2 is first, take the analogous raw-Qwen7 path.  Package transfer must occur
-between formal measurement groups, never during one.  No scenario will be
-invented merely to occupy the GPU.
+Next authorized GPU task: transfer and full hash-close P3 AWQ from A's fixed
+`168c9714…` release, publish that consumption checkpoint, then run standalone
+Qwen7-AWQ G0 -> baseline -> G1.  Next is the analogous P2 raw group.  Package
+transfer occurs between measurement groups, never during one, and Lane P's
+local semantic merge is not a prerequisite for this queue.
 
 ## Known capability / analysis boundaries
 
