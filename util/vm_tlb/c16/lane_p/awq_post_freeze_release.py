@@ -397,16 +397,81 @@ def verify_existing_output(p_root: Path, output: Path) -> tuple[list[dict[str, A
     return complete, audit
 
 
+def relocate_existing_output(p_root: Path, source: Path, destination: Path, receipt_path: Path) -> tuple[list[dict[str, Any]], str]:
+    """Atomically relocate an already-verified output and repair path metadata.
+
+    This is deliberately *not* a materialization path: it neither opens the
+    four source catalogs nor rewrites the launch TSV.  It performs the one
+    requested final existence/size/SHA closure check on the destination files.
+    """
+    require(source.is_dir(), f"relocation source is absent: {source}")
+    require(not destination.exists(), f"relocation destination already exists: {destination}")
+    require(receipt_path.is_file(), "existing compact receipt is absent")
+    source_relative = source.relative_to(p_root)
+    destination_relative = destination.relative_to(p_root)
+    manifest_name = "P_AWQ_CHEAP_CATALOG_RELEASE_MANIFEST.json"
+    manifest_path = source / manifest_name
+    require(manifest_path.is_file(), "relocation source lacks release manifest")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    require(manifest.get("schema_version") == "C16_P_AWQ_CHEAP_CATALOG_EXTERNAL_MANIFEST_V1", "relocation source manifest schema differs")
+    entries = manifest.get("payloads")
+    require(isinstance(entries, list) and entries, "relocation source has no payload entries")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    os.replace(source, destination)
+    try:
+        for entry in entries:
+            require(isinstance(entry, dict) and isinstance(entry.get("path"), str), "invalid payload during relocation")
+            old = Path(entry["path"])
+            require(old.is_relative_to(source_relative), "manifest payload is outside relocation source")
+            new = destination_relative / old.relative_to(source_relative)
+            entry["path"] = str(new)
+            actual = p_root / new
+            require(actual.is_file(), f"relocated payload absent: {new}")
+            require(actual.stat().st_size == entry.get("size_bytes"), f"relocated payload size changed: {new}")
+            require(sha256_file(actual) == entry.get("sha256"), f"relocated payload SHA changed: {new}")
+        audit_path = destination / "P_AWQ_CHEAP_CATALOG_JOIN_AUDIT.json"
+        require(manifest.get("join_audit_sha256") == sha256_file(audit_path), "relocated join-audit SHA changed")
+        write_json(destination / manifest_name, manifest)
+        manifest_record = payload_record(p_root, destination / manifest_name, "RELEASE_MANIFEST")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        require(receipt.get("status") == "C16_P_AWQ_CHEAP_CATALOG_READY_POST_FREEZE", "existing receipt is not ready")
+        require(receipt.get("awq_outcomes_read") is False, "existing receipt no longer protects AWQ outcomes")
+        require(receipt.get("selector_immutability", {}).get("selector") == "SELECTOR_R" and receipt.get("selector_immutability", {}).get("budget") == "B48", "existing receipt does not bind frozen selector")
+        require(len(receipt.get("p_awq_seal_producers", [])) == 4, "existing receipt does not bind four AWQ clean sources")
+        receipt["catalog_payloads"] = [dict(entry) for entry in entries] + [manifest_record]
+        receipt["post_publication_path_repair"] = {
+            "status": "PASS_CONTENT_UNCHANGED",
+            "source_path": str(source_relative),
+            "final_path": str(destination_relative),
+            "launch_population_reconstructed": False,
+            "source_catalogs_rescanned": False,
+            "semantic_inference_performed": False,
+            "final_payload_existence_size_sha256": "PASS",
+            "performed_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        }
+        write_json(receipt_path, receipt)
+        return [dict(entry) for entry in entries] + [manifest_record], sha256_file(receipt_path)
+    except BaseException:
+        # The directory is already safely at its final path.  Leave it there
+        # for an explicit repair rather than risking a second rename.
+        raise
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--receipt", type=Path, required=True)
     parser.add_argument("--reuse-output", action="store_true", help="revalidate an existing atomic output instead of recreating it")
+    parser.add_argument("--relocate-from", type=Path, help="atomically move an existing verified output and repair only path metadata")
     parser.add_argument("--materializer-commit", default="WORKTREE_UNCOMMITTED", help="exact P commit containing the materializer")
     args = parser.parse_args()
     repo = args.repo.resolve()
     try:
+        if args.relocate_from is not None:
+            payloads, receipt_sha = relocate_existing_output(repo, args.relocate_from.resolve(), args.output.resolve(), args.receipt.resolve())
+            print(json.dumps({"status": "C16_P_AWQ_CHEAP_CATALOG_READY_POST_FREEZE", "receipt": str(args.receipt.resolve()), "receipt_sha256": receipt_sha, "output": str(args.output.resolve()), "payloads": len(payloads), "mode": "PATH_REPAIR_ONLY"}, sort_keys=True))
+            return 0
         freeze = validate_freeze(repo, repo)
         sources = [validate_source(repo, dict(source)) for source in SOURCES]
         skips = validate_skips(repo)

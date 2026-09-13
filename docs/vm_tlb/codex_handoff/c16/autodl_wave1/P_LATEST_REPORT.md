@@ -68,14 +68,15 @@ candidate outcomes were not used before the freeze.
 The exact P materializer commit is
 `65ace4c138b77d6d5f8f1ab13b74b87f4875c6a3`. Its compact
 [post-freeze receipt](../../../review_packs/C16_P_NATIVE_POSTPROCESS/P_AWQ_CHEAP_CATALOG_RECEIPT.json)
-has SHA-256 `687da5a2c88de2d7328bc2da265ffa8248e896a763cf521eb8f9091250fa8627`.
+has SHA-256 `8cdf2836df12f32cf117a035d5df90e826a74f5119d876f234c29c8fbe34a5dc`.
 It binds the four sealed P AWQ producer commits, raw report identities, source
 catalog hashes, C freeze/train-input closure, and the unchanged P
-`JOIN_KEY_CONTRACT` SHA. The immutable P receipt-release commit is
-`5fa7e66e4afa0d3e6a976e69ce9e765139d6f2c2`.
+`JOIN_KEY_CONTRACT` SHA. A path-only closeout then moved the already-verified
+payloads to their final location; it performed no launch-population rebuild,
+source-catalog rescan, or semantic inference.
 
 The hash-closed Git-external apply view is
-`artifacts/c16_p_native_postprocess/post_freeze_awq_cheap_catalog_dd70d5fa_v2`:
+`artifacts/c16_p_native_postprocess/post_freeze_awq_cheap_catalog_dd70d5fa_final`:
 it retains all 841,120 report-scoped physical launches (423,674,371-byte TSV;
 18,357,361-byte deterministic gzip). It provides only the frozen selector's
 cheap structural fields and profile/report bridge. All rows are explicit
