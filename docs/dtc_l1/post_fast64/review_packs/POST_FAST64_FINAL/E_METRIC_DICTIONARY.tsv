@@ -1,0 +1,10 @@
+metric	formula	unit	denominator_or_granularity	boundary
+speedup_mode	Base_cycles/mode_cycles	x	accepted integer cycles	primary performance
+IO_HOL_SM_CYCLE_FRACTION	io_hol_ready_younger_cycles/(64*io_cycles)	fraction	64 SMs times global IO cycles	not an exclusive stall probability
+OO_OOO_RETIRE_FRACTION	oo_out_of_order_retires/oo_retire_count	fraction	OO retires	not an exclusive causal fraction
+physical_full_sample_fraction	physical_full_sm_cycles/observer_sample_sm_cycles	fraction	sampled active SM cycles	not 64*global cycles
+no_free_per_instruction	no_free_physical_events/instructions	events/instruction	completed instructions	accumulated burden
+no_free_per_active_SM_cycle	no_free_physical_events/observer_sample_sm_cycles	events/active-SM-cycle	observer sampled active SM cycles	time exposure
+duplicate_share_of_lower	duplicate/lower_created	descriptive ratio	lower-created requests	not a probability
+duplicate_traffic_inflation	duplicate/(lower_created-duplicate)	descriptive ratio	nonduplicate lower requests	not recoverable performance
+duplicate_payload_bytes	duplicate*128	B	source-proven request payload	not DRAM/total-link traffic
