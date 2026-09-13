@@ -1,0 +1,57 @@
+{
+  "schema_version": "C16_G_NVBIT_COMPATIBILITY_ENVIRONMENT_V1",
+  "diagnostic_status": "NVBIT_COMPATIBILITY_DIAGNOSTIC_ONLY",
+  "scientific_eligible": false,
+  "started_utc": "2026-09-13T05:12:39Z",
+  "closed_utc": "2026-09-13T05:22:42Z",
+  "wall_clock_budget_minutes": 20,
+  "formal_scientific_status_unchanged": "C16_AUTODL_FINAL_G2_G3_COMPLETE_SAFE_TO_POWER_OFF",
+  "formal_g_head": "0d1af3d353a11c48f3b666c8ae28c32652f39c89",
+  "c_fixed_target_authority": "d55075b7752380d6bd22328547db21a5e24eeed2",
+  "diagnostic_source_commit": "d1a87532ac71de796b48c622743bb1826eb2ecec",
+  "diagnostic_workload": {
+    "path": "util/vm_tlb/c16/lane_g/nvbit_compat_workload.py",
+    "sha256": "59c15836d399b5d3742bd6eb9e6c1489f98246bf505bd3f459e193d3dc57d087"
+  },
+  "gpu": {
+    "model": "NVIDIA GeForce RTX 3090",
+    "uuid": "GPU-6975486d-bcb7-deec-7ff8-29734254ceb1",
+    "driver_version": "595.58.03"
+  },
+  "cuda": {
+    "runtime": "12.4",
+    "toolkit": "cuda_12.4.r12.4/compiler.34097967_0"
+  },
+  "python_packages": {
+    "torch": "2.5.1+cu124",
+    "transformers": "4.46.3",
+    "autoawq": "0.2.7.post3"
+  },
+  "nvbit": {
+    "version": "1.7.6",
+    "archive_sha256": "dba61708b702ff4562343716bb8b38a2d14aae5991b9719aece097afe505467f",
+    "bootstrap_receipt_sha256": "9ea5b74278c7479fc3e5ab4896a7db6e50f28e612dddd158f4c34c1074bbb092",
+    "official_simple_tool": {
+      "path": "nvbit_release/tools/instr_count/instr_count.so",
+      "sha256": "425840c47b6d978a4d0acfa0e92399e73a05b0336f745afb4ff7caebfb8dc7c9"
+    },
+    "c16_memory_tracer": {
+      "path": "tracer_tool/tracer_tool.so",
+      "sha256": "627c2ffe6fb129697af5cb6c9856895011b335262810c8f6e6115baec92572b2",
+      "postprocessor_sha256": "65a5f973906cd3e8b2b957cca75b360e50f5efa79e88f54fe1eff6ed1cab4265"
+    }
+  },
+  "injection": {
+    "ld_preload": "",
+    "method": "CUDA_INJECTION64_PATH",
+    "cuda_tool_path_for_retest": "/usr/local/cuda-12.4/bin"
+  },
+  "immutability": [
+    "driver unchanged",
+    "CUDA toolkit unchanged",
+    "torch unchanged",
+    "transformers unchanged",
+    "AutoAWQ unchanged",
+    "C fixed target plan neither read as an executable target nor modified"
+  ]
+}

@@ -4,6 +4,22 @@ Status: `C16_AUTODL_FINAL_G2_G3_COMPLETE_SAFE_TO_POWER_OFF`
 Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 `9938b59ab80e6d1c77cc1efa6f6980e4cdfac5bc`.
 
+## Bounded NVBit compatibility diagnostic (non-scientific)
+
+`NVBIT_COMPATIBILITY_DIAGNOSTIC_COMPLETE` is recorded separately at
+[`nvbit_compatibility_diagnostic`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/nvbit_compatibility_diagnostic/).
+It did not run a C target or modify the frozen target authority.  On the frozen
+RTX3090 / driver 595.58.03 environment, no-NVBit PyTorch elementwise and GEMM
+controls passed, while both NVBit's official `instr_count` tool and the C16
+tracer timed out before the first workload kernel after the `nvdisasm` PATH
+precondition was corrected.  The evidence supports only
+`NVBIT_PYTORCH_RUNTIME_OR_DRIVER_COMPATIBILITY_SUSPECTED`; it does not assign
+root cause to the driver or custom tracer and it is not scientific capture.
+All compact evidence is dual-endpoint hash-closed; trace count and
+`REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT` are zero.  The formal terminal status
+above is unchanged.  Retry only on:
+`PROFILING_ENABLED_SM86_NODE_WITH_NVBIT_SUPPORTED_DRIVER`.
+
 ## Fixed C G2/G3 target execution
 
 Lane C has now formally published the fixed target authority at
