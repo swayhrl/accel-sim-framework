@@ -32,8 +32,10 @@
   },
   "ncu_filter": {
     "kernel_name_base": "demangled",
-    "kernel_id": "::regex:^void\\ at::native::vectorized_elementwise_kernel<\\(int\\)4,\\ at::native::BinaryFunctor<c10::Half,\\ c10::Half,\\ c10::Half,\\ at::native::binary_internal::MulFunctor<float>>,\\ at::detail::Array<char\\ \\*,\\ \\(int\\)3>>\\(int,\\ T2,\\ T3\\)$:4284",
-    "launch_count": 1
+    "kernel_name_filter": "regex:^void at::native::vectorized_elementwise_kernel<\\(int\\)4, at::native::BinaryFunctor<c10::Half, c10::Half, c10::Half, at::native::binary_internal::MulFunctor<float>>, at::detail::Array<char \\*, \\(int\\)3>>\\(int, T2, T3\\)$",
+    "launch_count": 1,
+    "launch_skip": 4283,
+    "ordinal_basis": "source_same_name_invocation_4284"
   },
   "reproduction_contract": {
     "same_frozen_package_input_and_runtime_required": true,

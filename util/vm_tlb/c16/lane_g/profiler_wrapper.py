@@ -35,7 +35,9 @@ def parse_args(tool: str) -> argparse.Namespace:
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--metrics-file", type=Path)
     parser.add_argument("--ncu-kernel-id")
+    parser.add_argument("--ncu-kernel-name-filter")
     parser.add_argument("--ncu-kernel-name-base", choices=("function", "demangled", "mangled"), default="demangled")
+    parser.add_argument("--ncu-launch-skip", type=int, default=0)
     parser.add_argument("--ncu-launch-count", type=int, default=1)
     parser.add_argument("--command-log", type=Path)
     parser.add_argument("--nvbit-tool", type=Path)
@@ -62,8 +64,10 @@ def parse_args(tool: str) -> argparse.Namespace:
         parser.error("real C16 profiler execution requires one shared --budget-ledger")
     if args.execute and tool != "nvbit" and args.parent_lease_receipt is None:
         parser.error("real nsys/ncu execution requires an explicit immutable --parent-lease-receipt for its child runner")
-    if args.execute and tool == "ncu" and (not args.ncu_kernel_id or args.command_log is None):
-        parser.error("real frozen NCU execution requires --ncu-kernel-id and --command-log")
+    if args.execute and tool == "ncu" and ((args.ncu_kernel_id is None) == (args.ncu_kernel_name_filter is None) or args.command_log is None):
+        parser.error("real frozen NCU execution requires exactly one kernel filter and --command-log")
+    if args.ncu_launch_skip < 0:
+        parser.error("--ncu-launch-skip must be non-negative")
     if tool == "nvbit" and args.parent_lease_receipt is not None:
         parser.error("NVBit has no wrapper-owned child-runner lease contract")
     if args.diagnostic_only and tool != "nsys":
@@ -106,6 +110,13 @@ def plan_command(tool: str, args: argparse.Namespace) -> list[str]:
         command = ["ncu", "--target-processes", "application-only", "--replay-mode", "kernel", "--metrics", ",".join(metric_names(args.metrics_file))]
         if args.ncu_kernel_id:
             command.extend(("--kernel-name-base", args.ncu_kernel_name_base, "--kernel-id", args.ncu_kernel_id, "--launch-count", str(args.ncu_launch_count)))
+        elif args.ncu_kernel_name_filter:
+            command.extend((
+                "--kernel-name-base", args.ncu_kernel_name_base,
+                "--kernel-name", args.ncu_kernel_name_filter,
+                "--launch-skip", str(args.ncu_launch_skip),
+                "--launch-count", str(args.ncu_launch_count),
+            ))
         return [*command, "--export", output, *args.command]
     return list(args.command)
 
@@ -235,7 +246,9 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
             "parent_lease_start_receipt": str(args.parent_lease_receipt) if args.parent_lease_receipt is not None else "NA",
             "parent_lease_closeout_receipt": str(getattr(args, "parent_lease_closeout", "NA")),
             "ncu_kernel_id": args.ncu_kernel_id if tool == "ncu" else "NA",
+            "ncu_kernel_name_filter": args.ncu_kernel_name_filter if tool == "ncu" else "NA",
             "ncu_kernel_name_base": args.ncu_kernel_name_base if tool == "ncu" else "NA",
+            "ncu_launch_skip": args.ncu_launch_skip if tool == "ncu" else "NA",
             "ncu_launch_count": args.ncu_launch_count if tool == "ncu" else "NA",
             "measurement_active_marker": str(getattr(args, "measurement_active_marker", "NA")),
             "measurement_active_guard": getattr(args, "measurement_active_guard", False),
