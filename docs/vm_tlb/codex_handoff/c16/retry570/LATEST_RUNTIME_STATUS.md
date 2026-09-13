@@ -1,6 +1,35 @@
 # C16-G Retry570 runtime status
 
-Status: `NVBIT_RETRY570_NVBIT175_MINIMAL_CAPTURE_QUALIFIED_STOP_FOR_REVIEW`.
+Status: `C16_NVBIT175_MULTIMODEL_TRACE_CAMPAIGN_COMPLETE_WITH_BLOCKED_MODELS`.
+
+## Final NVBit 1.7.5 multi-model campaign closeout
+
+The final compact campaign pack is
+[`lane_g_retry570_nvbit175_full_multimodel_campaign`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_full_multimodel_campaign/).
+Its `PUBLISH_MANIFEST.json` is hash-closed and its validator checks every
+published payload for existence, size, SHA256, and duplicate paths. Raw traces
+are not committed.
+
+Llama completed C0 identity freeze, S1 full frozen S0/B1/T128/decode4
+no-trace runtime evidence, and S2 direct NVBit 1.7.5 requalification. Its
+exact target is the full mangled `indexSelectLargeIndex` function and direct
+GLOBAL `LDG.E.U16` static range `[101,102)`; historical SASS text-line `34`
+is explicitly excluded, and historical candidate `348` is not reused. S3 did
+not launch: before any model/GPU process or `MEASUREMENT_ACTIVE`, the immutable
+remote ledger proved that all six allowed `NVBIT` windows for
+`c16_llama32_1b_frozen_compatible` had already been consumed by retained
+historical diagnostics. The campaign preserves those six rows unchanged and
+does not reset, reclassify, or bypass the hard deployment budget. Llama is
+therefore `BLOCKED_RUNTIME_WITH_FROZEN_CONTRACT`; no new Llama raw trace was
+created.
+
+The C0 asset inventory proves Qwen 0.5, Qwen 7B-AWQ, DeepSeek, and GLM lack a
+local exact config/model asset on this node. Each is
+`BLOCKED_ASSET_UNAVAILABLE`; no network download, substitution, model run, or
+trace was attempted. The remote ledger copied for closeout is locally SHA
+closed, and the final remote check found zero active GPU processes and no
+`MEASUREMENT_ACTIVE` marker. This is a campaign closeout with explicit
+blockers, not a claim of missing model traces.
 
 ## NVBit 1.7.5 Q0/Q1/Q2 capture qualification — stop for review
 
