@@ -1,0 +1,162 @@
+{
+  "event_id": "C16_G_LLAMA_S2_TEXT_2a4c3b95",
+  "event_type": "P1_CLEAN_NATIVE_NSYS_REPORT",
+  "export_command_config_sha256": "d5e9ef12abfb1a9530424c5137e91609d514f80993e6d8e4a2e1199563114048",
+  "export_config": {
+    "literal_export_command": "NOT_RECORDED_IN_LEGACY_VALIDATION_RECEIPT",
+    "status": "G1_EXPORT_VALIDATED_PASS",
+    "validation_evidence": {
+      "cuda_kernel_count": 113200,
+      "cuda_runtime_correlation_join_count": 113200,
+      "distinct_stream_count": 1,
+      "named_kernel_count": 113200,
+      "nvtx_kernel_overlap_count": 224423,
+      "parent_lease_receipt": "/root/autodl-tmp/c16/runs/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/PARENT_LEASE_START.json",
+      "required_nvtx_range_counts": {
+        "C16_NATIVE_FULL_FORWARD": 5,
+        "C16_PHASE_DECODE": 5,
+        "C16_PHASE_PREFILL": 5
+      },
+      "run_package_identity_consistent": true
+    },
+    "validation_inputs": {
+      "binding_receipt_sha256": "e41d90c42cc6d60e5088523fb462385aaafb36f8751ee699bc67c2f9204b416e",
+      "profile_receipt_sha256": "f7ea1be9f22c2344e8f1a8384db38b5d4bab6a80183dd9ea0ce39d3aaa1879e8",
+      "raw_profile_path": "/workspace/c16_exchange/autodl_wave1/returned/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_S2_TEXT.nsys-rep",
+      "raw_profile_sha256": "5a602bf2aec7700c5f3efb742ccd86fdc59bb37f17cdb228dae01ab0d6042bf0",
+      "runner_receipt_sha256": "cd33449a5b14b9dd4758af9869f6bb90e266ace98afdbb2649e260190f8edeee",
+      "sqlite_path": "/workspace/c16_exchange/autodl_wave1/returned/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_S2_TEXT.sqlite",
+      "sqlite_sha256": "5ced7f07acf4eb1e4c393a2e0d92d2490db5f07c90686eb3ffe6086faaec9e19"
+    },
+    "validation_schema_version": "C16_G_G1_EXPORT_VALIDATION_V1",
+    "validation_stage_id": "C16-1.4"
+  },
+  "identity": {
+    "code_commit": "12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2",
+    "deployment_id": "c16_llama32_1b_frozen_compatible",
+    "dtype": "float16",
+    "implementation_key": "TRANSFORMERS_CAUSAL_LM_EAGER",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "model_id": "meta-llama/Llama-3.2-1B",
+    "model_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "package_commit": "20fb38e6ca629f1a93db7939248bd1a03790724c",
+    "package_id": "C16_GPU_PACKAGE_P0",
+    "package_manifest_sha256": "ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f",
+    "quantization": "NONE",
+    "run_id": "2a4c3b95-7357-432d-ad17-e95709752be8",
+    "runtime_source_commit": "12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2",
+    "scenario_id": "S2",
+    "tokenizer_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08"
+  },
+  "producer": {
+    "branch": "hrl/vm-c16-g-autodl-wave1-v0",
+    "event_binding_manifest_path": "EVENT_BINDING_MANIFEST.json",
+    "event_binding_manifest_sha256": "cfedb9a45632f72ab01f9ea2497036cebea10d5f9b05cab77decac413decbd5e",
+    "full_g_producer_commit": "12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2",
+    "publication_materializer_source_anchor": "307ad12335745153e8b320ba3ef131d0f451cf06"
+  },
+  "profile_command_config_sha256": "fd319d00fcec95d85274f40033e4791d939387011d7c6a39aa39fab829ab5d61",
+  "profile_config": {
+    "capture_range": "none",
+    "literal_command": [
+      "nsys",
+      "profile",
+      "--force-overwrite=true",
+      "--trace=cuda,nvtx,osrt",
+      "-o",
+      "/root/autodl-tmp/c16/runs/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_S2_TEXT",
+      "/root/autodl-tmp/c16/env/bin/python",
+      "/root/autodl-tmp/c16/code_runtime_12e9f16d/util/vm_tlb/c16/lane_g/runtime_native_runner.py",
+      "--mode",
+      "baseline",
+      "--execute-native",
+      "--receipt",
+      "/root/autodl-tmp/c16/runs/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_PROFILED_NATIVE_RECEIPT.json",
+      "--binding-receipt",
+      "/root/autodl-tmp/c16/runs/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/FROZEN_BINDING.json",
+      "--adapter",
+      "llama32_1b",
+      "--implementation-key",
+      "TRANSFORMERS_CAUSAL_LM_EAGER",
+      "--dtype",
+      "float16",
+      "--quantization",
+      "NONE",
+      "--run-id",
+      "2a4c3b95-7357-432d-ad17-e95709752be8",
+      "--warmups",
+      "2",
+      "--measures",
+      "3",
+      "--budget-ledger",
+      "/root/autodl-tmp/c16/ledger/EXECUTION_BUDGET_LEDGER.json",
+      "--budget-owned-by-wrapper",
+      "--parent-lease-receipt",
+      "/root/autodl-tmp/c16/runs/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/PARENT_LEASE_START.json"
+    ],
+    "profiler_mode": "NSYS_FULL_S2_TEXT_CENSUS_PARENT_LEASED",
+    "target_identity_fields": {
+      "block": "PROFILED_DISCOVERY_PENDING",
+      "context": "PRIMARY_CUDA_CONTEXT",
+      "correlation_id": "PROFILED_DISCOVERY_PENDING",
+      "decode_step_bin": "ALL_DECODE_STEPS",
+      "deployment_id": "c16_llama32_1b_frozen_compatible",
+      "device": "cuda:0",
+      "dtype_key": "float16",
+      "grid": "PROFILED_DISCOVERY_PENDING",
+      "implementation_key": "TRANSFORMERS_CAUSAL_LM_EAGER",
+      "kernel_name": "NSYS_FULL_S2_TEXT_CENSUS_REGION",
+      "layer_id": "UNKNOWN_PRE_CENSUS",
+      "operator_class": "UNKNOWN_PRE_CENSUS",
+      "phase": "FULL_FORWARD",
+      "run_id": "2a4c3b95-7357-432d-ad17-e95709752be8",
+      "scenario_id": "S2",
+      "semantic_evidence": "NSYS_BOUNDED_FULL_CENSUS_PRE_PARSE",
+      "shape_key": "B1_T2048_D32",
+      "stream": "PROFILED_DISCOVERY_PENDING"
+    },
+    "tool": "nsys"
+  },
+  "publication_scope": "PROVENANCE_ONLY_NO_RAW_REGENERATION_NO_NEW_GPU_RUN",
+  "raw_profile": {
+    "dual_endpoint_transfer_receipt": {
+      "path": "transfer_receipts/C16_G_LLAMA_S2_TEXT_2a4c3b95.json",
+      "sha256": "1a3f003b46a839bad07f71b107a08fc511f5b616890e09bc87124a34c4ac2897"
+    },
+    "local_destination_path": "/workspace/c16_exchange/autodl_wave1/returned/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_S2_TEXT.nsys-rep",
+    "local_sha256": "5a602bf2aec7700c5f3efb742ccd86fdc59bb37f17cdb228dae01ab0d6042bf0",
+    "local_size_bytes": 15289809,
+    "remote_endpoint_state": "REMOTE_RECLAIMED_AFTER_PRIOR_LOCAL_SHA_CLOSURE",
+    "remote_logical_path": "/root/autodl-tmp/c16/runs/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_S2_TEXT.nsys-rep",
+    "remote_sha256": "5a602bf2aec7700c5f3efb742ccd86fdc59bb37f17cdb228dae01ab0d6042bf0",
+    "remote_size_bytes": 15289809
+  },
+  "receipts": {
+    "export_validation_binding": {
+      "path": "validation_bindings/C16_G_LLAMA_S2_TEXT_2a4c3b95.json",
+      "sha256": "3048c074217434180f1540fc1d1718281ad2b120f052eeb9ff680b019c544357"
+    },
+    "independent_export_validation": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_EXPORT_VALIDATION.json",
+      "sha256": "9dd4c2239884e57d95059c533be3e849ce382fcb46aacedf79212363c76879e3",
+      "size_bytes": 2513
+    },
+    "nsys_capture": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_NSYS_RECEIPT.json",
+      "sha256": "f7ea1be9f22c2344e8f1a8384db38b5d4bab6a80183dd9ea0ce39d3aaa1879e8",
+      "size_bytes": 4337
+    },
+    "profile_runner": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/llama_S2_TEXT_census_nsys_formal_2a4c3b95-7357-432d-ad17-e95709752be8/CENSUS_PROFILED_NATIVE_RECEIPT.json",
+      "sha256": "cd33449a5b14b9dd4758af9869f6bb90e266ace98afdbb2649e260190f8edeee",
+      "size_bytes": 4980
+    }
+  },
+  "remote_nsys_version_receipt": {
+    "path": "REMOTE_NSYS_VERSION_RECEIPT.json",
+    "sha256": "beb3868a6d42d799e9767c0f88f76b405e7885054c3caaec611f183b9d3613e8"
+  },
+  "schema_version": "C16_G_P1_NATIVE_EVENT_V1",
+  "scientific_eligible_for_timing": true,
+  "terminal_status": "COMPLETE"
+}

@@ -1,0 +1,134 @@
+{
+  "event_id": "C16_G_QWEN05_S1_CODE_2ec7d963",
+  "event_type": "P1_CLEAN_NATIVE_NSYS_REPORT",
+  "export_command_config_sha256": "291091713e94e280806e8cc1f4fc85ce4b6b5ba8371f7d878d3d5d43445bdce1",
+  "export_config": {
+    "consumer_action": "P_LOCAL_EXPORT_REQUIRED_BEFORE_FORMAL_POSTPROCESS",
+    "literal_export_command": "NOT_RECORDED_OR_RUN_BY_THIS_PUBLICATION_CLOSEOUT",
+    "status": "NOT_MATERIALIZED_BY_G"
+  },
+  "identity": {
+    "code_commit": "3f02eef6e0d00ea654821be8539bb82f463e87e5",
+    "deployment_id": "c16_qwen25_05b_native_reference",
+    "dtype": "float16",
+    "implementation_key": "TRANSFORMERS_CAUSAL_LM",
+    "input_hash": "fd7cd54612d072f0832e32cab751ab3fd2c8d9e5588f349910eb0ab3db2758ff",
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "package_commit": "4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63",
+    "package_id": "C16_GPU_PACKAGE_P1",
+    "package_manifest_sha256": "d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84",
+    "quantization": "NONE",
+    "run_id": "2ec7d963-228d-4c8a-bcfa-60c895f13b88",
+    "runtime_source_commit": "3f02eef6e0d00ea654821be8539bb82f463e87e5",
+    "scenario_id": "S1",
+    "tokenizer_revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+  },
+  "producer": {
+    "branch": "hrl/vm-c16-g-autodl-wave1-v0",
+    "event_binding_manifest_path": "EVENT_BINDING_MANIFEST.json",
+    "event_binding_manifest_sha256": "cfedb9a45632f72ab01f9ea2497036cebea10d5f9b05cab77decac413decbd5e",
+    "full_g_producer_commit": "3f02eef6e0d00ea654821be8539bb82f463e87e5",
+    "publication_materializer_source_anchor": "307ad12335745153e8b320ba3ef131d0f451cf06"
+  },
+  "profile_command_config_sha256": "8edab270b37ae9daf3ef05a17fe547536f984dfe60b7fce2e6310e01b6a7ad7e",
+  "profile_config": {
+    "capture_range": "none",
+    "literal_command": [
+      "nsys",
+      "profile",
+      "--force-overwrite=true",
+      "--trace=cuda,nvtx,osrt",
+      "-o",
+      "/root/autodl-tmp/c16/runs/qwen05_s1_code_g1_2ec7d963-228d-4c8a-bcfa-60c895f13b88/CENSUS_QWEN05_S1",
+      "/root/autodl-tmp/c16/env/bin/python",
+      "util/vm_tlb/c16/lane_g/runtime_native_runner.py",
+      "--mode",
+      "baseline",
+      "--receipt",
+      "/root/autodl-tmp/c16/runs/qwen05_s1_code_g1_2ec7d963-228d-4c8a-bcfa-60c895f13b88/QWEN05_S1_PROFILED_NATIVE_RECEIPT.json",
+      "--binding-receipt",
+      "/root/autodl-tmp/c16/runs/qwen05_s1_code_g1_2ec7d963-228d-4c8a-bcfa-60c895f13b88/FROZEN_BINDING.json",
+      "--execute-native",
+      "--adapter",
+      "qwen25_05b",
+      "--implementation-key",
+      "TRANSFORMERS_CAUSAL_LM",
+      "--dtype",
+      "float16",
+      "--quantization",
+      "NONE",
+      "--run-id",
+      "2ec7d963-228d-4c8a-bcfa-60c895f13b88",
+      "--warmups",
+      "2",
+      "--measures",
+      "3",
+      "--budget-ledger",
+      "/root/autodl-tmp/c16/ledger/EXECUTION_BUDGET_LEDGER.json",
+      "--budget-owned-by-wrapper",
+      "--parent-lease-receipt",
+      "/root/autodl-tmp/c16/runs/qwen05_s1_code_g1_2ec7d963-228d-4c8a-bcfa-60c895f13b88/PARENT_LEASE_START.json"
+    ],
+    "profiler_mode": "NSYS_QWEN05_S1_CENSUS_PARENT_LEASED",
+    "target_identity_fields": {
+      "block": "PROFILED_DISCOVERY_PENDING",
+      "context": "PRIMARY_CUDA_CONTEXT",
+      "correlation_id": "PROFILED_DISCOVERY_PENDING",
+      "decode_step_bin": "ALL_DECODE_STEPS",
+      "deployment_id": "c16_qwen25_05b_native_reference",
+      "device": "cuda:0",
+      "dtype_key": "float16",
+      "grid": "PROFILED_DISCOVERY_PENDING",
+      "implementation_key": "TRANSFORMERS_CAUSAL_LM",
+      "kernel_name": "NSYS_FULL_QWEN05_S1_CODE_CENSUS_REGION",
+      "layer_id": "UNKNOWN_PRE_CENSUS",
+      "operator_class": "UNKNOWN_PRE_CENSUS",
+      "phase": "FULL_FORWARD",
+      "run_id": "2ec7d963-228d-4c8a-bcfa-60c895f13b88",
+      "scenario_id": "S1",
+      "semantic_evidence": "NSYS_BOUNDED_FULL_CENSUS_PRE_PARSE",
+      "shape_key": "B1_T256_D16",
+      "stream": "PROFILED_DISCOVERY_PENDING"
+    },
+    "tool": "nsys"
+  },
+  "publication_scope": "PROVENANCE_ONLY_NO_RAW_REGENERATION_NO_NEW_GPU_RUN",
+  "raw_profile": {
+    "dual_endpoint_transfer_receipt": {
+      "path": "transfer_receipts/C16_G_QWEN05_S1_CODE_2ec7d963.json",
+      "sha256": "63754d9e48b8639a75650722f6174aef9717f1d1cfe80c2a21bdad377d8da68e"
+    },
+    "local_destination_path": "/workspace/c16_exchange/autodl_wave1/returned/qwen05_g1/CENSUS_QWEN05_S1.nsys-rep",
+    "local_sha256": "ee4ef6c4554a20b3e25f6943f9f8de444939c829994ebc98a3f8f52a809e1b9c",
+    "local_size_bytes": 12021164,
+    "remote_endpoint_state": "REMOTE_PRESENT_RECHECKED_READ_ONLY_AT_CLOSEOUT",
+    "remote_logical_path": "/root/autodl-tmp/c16/runs/qwen05_s1_code_g1_2ec7d963-228d-4c8a-bcfa-60c895f13b88/CENSUS_QWEN05_S1.nsys-rep",
+    "remote_sha256": "ee4ef6c4554a20b3e25f6943f9f8de444939c829994ebc98a3f8f52a809e1b9c",
+    "remote_size_bytes": 12021164
+  },
+  "receipts": {
+    "export_validation_binding": {
+      "path": "validation_bindings/C16_G_QWEN05_S1_CODE_2ec7d963.json",
+      "sha256": "ae683fedb465b9706cb5f95e3087e1ee6d0778636e96d33481daa470eaa0b1cf"
+    },
+    "independent_export_validation": null,
+    "nsys_capture": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/qwen05_g1/QWEN05_S1_NSYS_RECEIPT.json",
+      "sha256": "801f88eb86b07ce335532ef9f9a40f971faf7970a5a6adf02913f56a4643fdf4",
+      "size_bytes": 4305
+    },
+    "profile_runner": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/qwen05_g1/QWEN05_S1_PROFILED_NATIVE_RECEIPT.json",
+      "sha256": "2955cdd69d8d64760341bb19a300e115e3be4fb436c5ded07d9f45730cb836e6",
+      "size_bytes": 5303
+    }
+  },
+  "remote_nsys_version_receipt": {
+    "path": "REMOTE_NSYS_VERSION_RECEIPT.json",
+    "sha256": "beb3868a6d42d799e9767c0f88f76b405e7885054c3caaec611f183b9d3613e8"
+  },
+  "schema_version": "C16_G_P1_NATIVE_EVENT_V1",
+  "scientific_eligible_for_timing": true,
+  "terminal_status": "COMPLETE"
+}

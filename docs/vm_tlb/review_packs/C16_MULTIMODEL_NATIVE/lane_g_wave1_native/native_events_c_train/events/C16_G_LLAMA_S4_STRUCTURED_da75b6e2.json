@@ -1,0 +1,134 @@
+{
+  "event_id": "C16_G_LLAMA_S4_STRUCTURED_da75b6e2",
+  "event_type": "P1_CLEAN_NATIVE_NSYS_REPORT",
+  "export_command_config_sha256": "291091713e94e280806e8cc1f4fc85ce4b6b5ba8371f7d878d3d5d43445bdce1",
+  "export_config": {
+    "consumer_action": "P_LOCAL_EXPORT_REQUIRED_BEFORE_FORMAL_POSTPROCESS",
+    "literal_export_command": "NOT_RECORDED_OR_RUN_BY_THIS_PUBLICATION_CLOSEOUT",
+    "status": "NOT_MATERIALIZED_BY_G"
+  },
+  "identity": {
+    "code_commit": "3f02eef6e0d00ea654821be8539bb82f463e87e5",
+    "deployment_id": "c16_llama32_1b_frozen_compatible",
+    "dtype": "float16",
+    "implementation_key": "TRANSFORMERS_CAUSAL_LM",
+    "input_hash": "0e9ddcb8a03cfed41c2501eb15f761b76a8e8fe376b09a1fb0977c81b58ca765",
+    "model_id": "meta-llama/Llama-3.2-1B",
+    "model_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "package_commit": "20fb38e6ca629f1a93db7939248bd1a03790724c",
+    "package_id": "C16_GPU_PACKAGE_P0",
+    "package_manifest_sha256": "ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f",
+    "quantization": "NONE",
+    "run_id": "da75b6e2-5f58-4f6c-9cc8-131180013dfa",
+    "runtime_source_commit": "3f02eef6e0d00ea654821be8539bb82f463e87e5",
+    "scenario_id": "S4",
+    "tokenizer_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08"
+  },
+  "producer": {
+    "branch": "hrl/vm-c16-g-autodl-wave1-v0",
+    "event_binding_manifest_path": "EVENT_BINDING_MANIFEST.json",
+    "event_binding_manifest_sha256": "cfedb9a45632f72ab01f9ea2497036cebea10d5f9b05cab77decac413decbd5e",
+    "full_g_producer_commit": "3f02eef6e0d00ea654821be8539bb82f463e87e5",
+    "publication_materializer_source_anchor": "307ad12335745153e8b320ba3ef131d0f451cf06"
+  },
+  "profile_command_config_sha256": "cc7fe6faf62329d80a5297d87bfa658ed17646e342625b8b6dcdb24ceb4148da",
+  "profile_config": {
+    "capture_range": "none",
+    "literal_command": [
+      "nsys",
+      "profile",
+      "--force-overwrite=true",
+      "--trace=cuda,nvtx,osrt",
+      "-o",
+      "/root/autodl-tmp/c16/runs/llama_s4_structured_g1_da75b6e2-5f58-4f6c-9cc8-131180013dfa/CENSUS_LLAMA_S4",
+      "/root/autodl-tmp/c16/env/bin/python",
+      "util/vm_tlb/c16/lane_g/runtime_native_runner.py",
+      "--mode",
+      "baseline",
+      "--receipt",
+      "/root/autodl-tmp/c16/runs/llama_s4_structured_g1_da75b6e2-5f58-4f6c-9cc8-131180013dfa/LLAMA_S4_PROFILED_NATIVE_RECEIPT.json",
+      "--binding-receipt",
+      "/root/autodl-tmp/c16/runs/llama_s4_structured_g1_da75b6e2-5f58-4f6c-9cc8-131180013dfa/FROZEN_BINDING.json",
+      "--execute-native",
+      "--adapter",
+      "llama32_1b",
+      "--implementation-key",
+      "TRANSFORMERS_CAUSAL_LM",
+      "--dtype",
+      "float16",
+      "--quantization",
+      "NONE",
+      "--run-id",
+      "da75b6e2-5f58-4f6c-9cc8-131180013dfa",
+      "--warmups",
+      "2",
+      "--measures",
+      "3",
+      "--budget-ledger",
+      "/root/autodl-tmp/c16/ledger/EXECUTION_BUDGET_LEDGER.json",
+      "--budget-owned-by-wrapper",
+      "--parent-lease-receipt",
+      "/root/autodl-tmp/c16/runs/llama_s4_structured_g1_da75b6e2-5f58-4f6c-9cc8-131180013dfa/PARENT_LEASE_START.json"
+    ],
+    "profiler_mode": "NSYS_LLAMA_S4_CENSUS_PARENT_LEASED",
+    "target_identity_fields": {
+      "block": "PROFILED_DISCOVERY_PENDING",
+      "context": "PRIMARY_CUDA_CONTEXT",
+      "correlation_id": "PROFILED_DISCOVERY_PENDING",
+      "decode_step_bin": "ALL_DECODE_STEPS",
+      "deployment_id": "c16_llama32_1b_frozen_compatible",
+      "device": "cuda:0",
+      "dtype_key": "float16",
+      "grid": "PROFILED_DISCOVERY_PENDING",
+      "implementation_key": "TRANSFORMERS_CAUSAL_LM",
+      "kernel_name": "NSYS_FULL_LLAMA_S4_STRUCTURED_CENSUS_REGION",
+      "layer_id": "UNKNOWN_PRE_CENSUS",
+      "operator_class": "UNKNOWN_PRE_CENSUS",
+      "phase": "FULL_FORWARD",
+      "run_id": "da75b6e2-5f58-4f6c-9cc8-131180013dfa",
+      "scenario_id": "S4",
+      "semantic_evidence": "NSYS_BOUNDED_FULL_CENSUS_PRE_PARSE",
+      "shape_key": "B4_T2048_D16",
+      "stream": "PROFILED_DISCOVERY_PENDING"
+    },
+    "tool": "nsys"
+  },
+  "publication_scope": "PROVENANCE_ONLY_NO_RAW_REGENERATION_NO_NEW_GPU_RUN",
+  "raw_profile": {
+    "dual_endpoint_transfer_receipt": {
+      "path": "transfer_receipts/C16_G_LLAMA_S4_STRUCTURED_da75b6e2.json",
+      "sha256": "5d07aaf2d1dcae52786e09a09244f1572b611795f3dfeef590e313d89671630f"
+    },
+    "local_destination_path": "/workspace/c16_exchange/autodl_wave1/returned/llama_s4_g1/CENSUS_LLAMA_S4.nsys-rep",
+    "local_sha256": "75439f7496302b13a1a99561eca12698e1ab6c7e4aad813b82afcc977eac60e3",
+    "local_size_bytes": 8920722,
+    "remote_endpoint_state": "REMOTE_PRESENT_RECHECKED_READ_ONLY_AT_CLOSEOUT",
+    "remote_logical_path": "/root/autodl-tmp/c16/runs/llama_s4_structured_g1_da75b6e2-5f58-4f6c-9cc8-131180013dfa/CENSUS_LLAMA_S4.nsys-rep",
+    "remote_sha256": "75439f7496302b13a1a99561eca12698e1ab6c7e4aad813b82afcc977eac60e3",
+    "remote_size_bytes": 8920722
+  },
+  "receipts": {
+    "export_validation_binding": {
+      "path": "validation_bindings/C16_G_LLAMA_S4_STRUCTURED_da75b6e2.json",
+      "sha256": "f29e6792c77405df89a6ee0ffa3d7ba1d99d7930f8b2ce607f915268d4304bf3"
+    },
+    "independent_export_validation": null,
+    "nsys_capture": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/llama_s4_g1/LLAMA_S4_NSYS_RECEIPT.json",
+      "sha256": "d9344830338086d4d286cdcce87009495f8edaff3fc25dd3b56ed6771f7e0ebe",
+      "size_bytes": 4340
+    },
+    "profile_runner": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/llama_s4_g1/LLAMA_S4_PROFILED_NATIVE_RECEIPT.json",
+      "sha256": "63596adca4c8786876443f60331c66fe5c0d557632d25f0258ac54efb398f4b4",
+      "size_bytes": 5079
+    }
+  },
+  "remote_nsys_version_receipt": {
+    "path": "REMOTE_NSYS_VERSION_RECEIPT.json",
+    "sha256": "beb3868a6d42d799e9767c0f88f76b405e7885054c3caaec611f183b9d3613e8"
+  },
+  "schema_version": "C16_G_P1_NATIVE_EVENT_V1",
+  "scientific_eligible_for_timing": true,
+  "terminal_status": "COMPLETE"
+}

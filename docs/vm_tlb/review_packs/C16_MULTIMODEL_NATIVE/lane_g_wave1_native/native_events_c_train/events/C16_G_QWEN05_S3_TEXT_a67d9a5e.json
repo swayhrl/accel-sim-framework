@@ -1,0 +1,162 @@
+{
+  "event_id": "C16_G_QWEN05_S3_TEXT_a67d9a5e",
+  "event_type": "P1_CLEAN_NATIVE_NSYS_REPORT",
+  "export_command_config_sha256": "55d466a0b89ba2afb2199cd7987309071f2fd88dba8a5c0e2bc96cb3d986ea02",
+  "export_config": {
+    "literal_export_command": "NOT_RECORDED_IN_LEGACY_VALIDATION_RECEIPT",
+    "status": "G1_EXPORT_VALIDATED_PASS",
+    "validation_evidence": {
+      "cuda_kernel_count": 87480,
+      "cuda_runtime_correlation_join_count": 87480,
+      "distinct_stream_count": 1,
+      "named_kernel_count": 87480,
+      "nvtx_kernel_overlap_count": 170900,
+      "parent_lease_receipt": "/root/autodl-tmp/c16/runs/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_PARENT_LEASE_START.json",
+      "required_nvtx_range_counts": {
+        "C16_NATIVE_FULL_FORWARD": 5,
+        "C16_PHASE_DECODE": 5,
+        "C16_PHASE_PREFILL": 5
+      },
+      "run_package_identity_consistent": true
+    },
+    "validation_inputs": {
+      "binding_receipt_sha256": "985491e597f80ee5414c3c897ddeaf644debf0685389c750f256a8cb66b0cdea",
+      "profile_receipt_sha256": "43f60aab195bdb23bbe27b551a6e3ace1db138f5a0b390112487dd6d94cf4c2a",
+      "raw_profile_path": "/root/autodl-tmp/c16/runs/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_G1.nsys-rep",
+      "raw_profile_sha256": "80c7dcf4c99b7e8e7f9741a990e5429aa84895d2e6a7790d1a0a82facafdc08b",
+      "runner_receipt_sha256": "dbdebdf8f19c05798610306fc282255273981283b889757e7bade460883d901b",
+      "sqlite_path": "/root/autodl-tmp/c16/runs/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_G1.sqlite",
+      "sqlite_sha256": "15633bca861be13f0c00e6d498b3b6ce79d6fd3a289329935193cfe0eea40dc2"
+    },
+    "validation_schema_version": "C16_G_G1_EXPORT_VALIDATION_V1",
+    "validation_stage_id": "C16-1.4"
+  },
+  "identity": {
+    "code_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "deployment_id": "c16_qwen25_05b_native_reference",
+    "dtype": "float16",
+    "implementation_key": "TRANSFORMERS_CAUSAL_LM_EAGER",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "package_commit": "4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63",
+    "package_id": "C16_GPU_PACKAGE_P1",
+    "package_manifest_sha256": "d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84",
+    "quantization": "NONE",
+    "run_id": "a67d9a5e-049a-401f-bdbe-6281e89b7351",
+    "runtime_source_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "scenario_id": "S3",
+    "tokenizer_revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+  },
+  "producer": {
+    "branch": "hrl/vm-c16-g-autodl-wave1-v0",
+    "event_binding_manifest_path": "EVENT_BINDING_MANIFEST.json",
+    "event_binding_manifest_sha256": "cfedb9a45632f72ab01f9ea2497036cebea10d5f9b05cab77decac413decbd5e",
+    "full_g_producer_commit": "ae560163ff0462077e766bb737536b4a0f57339c",
+    "publication_materializer_source_anchor": "307ad12335745153e8b320ba3ef131d0f451cf06"
+  },
+  "profile_command_config_sha256": "8e3d81f6f53aa3eb79986dc0ae10590f4f579c8fae269571ba0c11934287f2c0",
+  "profile_config": {
+    "capture_range": "none",
+    "literal_command": [
+      "nsys",
+      "profile",
+      "--force-overwrite=true",
+      "--trace=cuda,nvtx,osrt",
+      "-o",
+      "/root/autodl-tmp/c16/runs/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_G1.nsys-rep",
+      "/root/autodl-tmp/c16/env/bin/python",
+      "/root/autodl-tmp/c16/code_runtime_3f02eef6/util/vm_tlb/c16/lane_g/runtime_native_runner.py",
+      "--mode",
+      "baseline",
+      "--execute-native",
+      "--receipt",
+      "/root/autodl-tmp/c16/runs/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_G1_CHILD_RECEIPT.json",
+      "--binding-receipt",
+      "/root/autodl-tmp/c16/runs/P1/p1_s3_text_baseline_4b9ee92d-8828-47cd-a043-902278c8feb3/P1_S3_BINDING.json",
+      "--adapter",
+      "qwen25_05b",
+      "--implementation-key",
+      "TRANSFORMERS_CAUSAL_LM_EAGER",
+      "--dtype",
+      "float16",
+      "--quantization",
+      "NONE",
+      "--run-id",
+      "a67d9a5e-049a-401f-bdbe-6281e89b7351",
+      "--warmups",
+      "2",
+      "--measures",
+      "3",
+      "--budget-ledger",
+      "/root/autodl-tmp/c16/ledger/EXECUTION_BUDGET_LEDGER.json",
+      "--budget-owned-by-wrapper",
+      "--parent-lease-receipt",
+      "/root/autodl-tmp/c16/runs/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_PARENT_LEASE_START.json"
+    ],
+    "profiler_mode": "NSYS_LIGHTWEIGHT_CENSUS_PARENT_LEASED",
+    "target_identity_fields": {
+      "block": "PROFILED_DISCOVERY_PENDING",
+      "context": "PRIMARY_CUDA_CONTEXT",
+      "correlation_id": "PROFILED_DISCOVERY_PENDING",
+      "decode_step_bin": "ALL_DECODE_STEPS",
+      "deployment_id": "c16_qwen25_05b_native_reference",
+      "device": "cuda:0",
+      "dtype_key": "float16",
+      "grid": "PROFILED_DISCOVERY_PENDING",
+      "implementation_key": "TRANSFORMERS_CAUSAL_LM_EAGER",
+      "kernel_name": "NSYS_FULL_FROZEN_SCENARIO_CENSUS_REGION",
+      "layer_id": "UNKNOWN_PRE_CENSUS",
+      "operator_class": "UNKNOWN_PRE_CENSUS",
+      "phase": "FULL_FORWARD",
+      "run_id": "a67d9a5e-049a-401f-bdbe-6281e89b7351",
+      "scenario_id": "S3",
+      "semantic_evidence": "NSYS_BOUNDED_FULL_CENSUS_PRE_PARSE",
+      "shape_key": "B1_T8192_D16",
+      "stream": "PROFILED_DISCOVERY_PENDING"
+    },
+    "tool": "nsys"
+  },
+  "publication_scope": "PROVENANCE_ONLY_NO_RAW_REGENERATION_NO_NEW_GPU_RUN",
+  "raw_profile": {
+    "dual_endpoint_transfer_receipt": {
+      "path": "transfer_receipts/C16_G_QWEN05_S3_TEXT_a67d9a5e.json",
+      "sha256": "0e5df96578da31c9c0656577cc253e7476c9af6c2a6abeef72230a3f3883710e"
+    },
+    "local_destination_path": "/workspace/c16_exchange/autodl_wave1/returned/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_G1.nsys-rep",
+    "local_sha256": "80c7dcf4c99b7e8e7f9741a990e5429aa84895d2e6a7790d1a0a82facafdc08b",
+    "local_size_bytes": 12063570,
+    "remote_endpoint_state": "REMOTE_RECLAIMED_AFTER_LOCAL_SHA_CLOSURE",
+    "remote_logical_path": "/root/autodl-tmp/c16/runs/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_G1.nsys-rep",
+    "remote_sha256": "80c7dcf4c99b7e8e7f9741a990e5429aa84895d2e6a7790d1a0a82facafdc08b",
+    "remote_size_bytes": 12063570
+  },
+  "receipts": {
+    "export_validation_binding": {
+      "path": "validation_bindings/C16_G_QWEN05_S3_TEXT_a67d9a5e.json",
+      "sha256": "7a217d03397f5f769e091497ff0621b5469f7e701122d92f37ebd9029582ddab"
+    },
+    "independent_export_validation": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_EXPORT_VALIDATION.json",
+      "sha256": "732f4fb8d96173100e0e845e161200e13284b1d78641383146b30d127d13a1e7",
+      "size_bytes": 2374
+    },
+    "nsys_capture": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_NSYS_RECEIPT.json",
+      "sha256": "43f60aab195bdb23bbe27b551a6e3ace1db138f5a0b390112487dd6d94cf4c2a",
+      "size_bytes": 4479
+    },
+    "profile_runner": {
+      "path": "/workspace/c16_exchange/autodl_wave1/returned/P1/p1_s3_text_g1_a67d9a5e-049a-401f-bdbe-6281e89b7351/P1_S3_G1_CHILD_RECEIPT.json",
+      "sha256": "dbdebdf8f19c05798610306fc282255273981283b889757e7bade460883d901b",
+      "size_bytes": 5594
+    }
+  },
+  "remote_nsys_version_receipt": {
+    "path": "REMOTE_NSYS_VERSION_RECEIPT.json",
+    "sha256": "beb3868a6d42d799e9767c0f88f76b405e7885054c3caaec611f183b9d3613e8"
+  },
+  "schema_version": "C16_G_P1_NATIVE_EVENT_V1",
+  "scientific_eligible_for_timing": true,
+  "terminal_status": "COMPLETE"
+}

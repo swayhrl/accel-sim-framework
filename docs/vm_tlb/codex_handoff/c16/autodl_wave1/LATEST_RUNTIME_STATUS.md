@@ -1,6 +1,6 @@
 # C16-G Wave-1 runtime status
 
-Status: `C16_G_AUTODL_WAVE1_RUNTIME_ACTIVE`  
+Status: `C16_G_NATIVE_EVENT_PUBLICATION_READY_FOR_P`
 Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 `9938b59ab80e6d1c77cc1efa6f6980e4cdfac5bc`.
 
@@ -11,6 +11,7 @@ Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 | Formal standalone runtime source commit | `3f02eef6e0d00ea654821be8539bb82f463e87e5` |
 | Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
 | Current G publication head before this checkpoint | `ae560163ff0462077e766bb737536b4a0f57339c` |
+| Native-event publication implementation anchor | `307ad12335745153e8b320ba3ef131d0f451cf06` |
 | P3 AWQ native runtime source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
 | Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load: `fuse_layers=false`, Accelerate-compatible explicit root device map `{"": 0}`, no offload, exact frozen sequence length.  CUDA OOM has an explicit `SKIPPED_RESOURCE` ledger/receipt path with no shape substitution.  It does not alter completed P0/P1 scientific receipts. |
 | P3 AWQ remote source deployment | AutoDL `code_runtime_3f02eef6` is at `ae560163…` on `c16-runtime-ae560163`; hash-verified source bundle SHA256 is `d3711c21d7fa406f734ac252b1bd1513b64a21c5ec92e388cf7f2a0f2ab14689`.  All 16 remote no-GPU focused tests passed before P3 S2 G1.  The target builder permits a preceding baseline from `a54e25ab…` only after proving that its four profiled execution paths are byte-identical to `ae560163…`; it does not waive source identity for the G1 run. |
@@ -96,6 +97,40 @@ baseline, census, profiler, NCU, or NVBit methods.
 
 ## Raw-artifact index and next queue
 
+## C-train clean native event publication for Lane P
+
+The fixed P1-event release is
+[`native_events_c_train/PUBLISH_MANIFEST.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/native_events_c_train/PUBLISH_MANIFEST.json),
+whose SHA256 is `ade888dab5aac6aa3090df7e7aec9395b6f5a1699ca56e02461f19d95d2d1ebc`.
+It covers eight clean C-train candidate reports: Llama S1/S2/S3/S4 and
+Qwen0.5 S1/S2/S3/S4. Its machine-readable
+[`C16_G_NATIVE_EVENT_MANIFEST.tsv`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/native_events_c_train/C16_G_NATIVE_EVENT_MANIFEST.tsv)
+binds each event to its actual profile-run source commit, package commit and
+manifest hash, identity, profile command/config digest, remote/local report
+paths, size/SHA256, unique transfer receipt, fixed remote Nsight-version
+receipt, terminal status, and G1/export-validation evidence.
+
+The event publisher implementation is anchored at `307ad123…`; this is a
+publication-only implementation anchor, not a replacement for a profile's
+`producer_full_commit`. Each event retains its actual runtime source commit
+(`12e9f16d…`, `3f02eef6…`, or `ae560163…`) in the table and event JSON. The
+final handoff HEAD is the commit that publishes this status and manifest, not
+any of those historic producer commits.
+
+Four reports have an existing independent G export-validation receipt (Llama
+S1/S2 and Qwen0.5 S3/S4). The earlier Llama S3/S4 and Qwen0.5 S1/S2 captures
+remain clean `COMPLETE`/hash-closed native reports, but their historical G
+directories did not retain a separate independent export-validation receipt.
+Their per-event validation-binding receipt states
+`G1_EXPORT_VALIDATION_NOT_MATERIALIZED_BY_G` and explicitly requires P's
+already-qualified local Nsight export before formal postprocess; this closeout
+does not invent an export PASS or regenerate any raw artifact.
+
+The four still-retained remote reports were read only for size/SHA confirmation
+at closeout. The other four had already been reclaimed after prior local SHA
+closure; their transfer receipts preserve that historical state and do not
+pretend a new remote hash was possible.
+
 The returned `.nsys-rep` artifacts, including the retained semantic diagnostic
 raw, are indexed by immutable
 path/size/SHA in [RAW_ARTIFACT_INDEX.tsv](RAW_ARTIFACT_INDEX.tsv).  They are not
@@ -158,7 +193,10 @@ G2/G3 while keeping the hash-closed native evidence available to Lane P/C.
 
 ## Known capability / analysis boundaries
 
-- G2/G3 have no frozen target and cannot gate G0/G1.
+- `C16_GPU_PACKAGE_P2` raw remains `SKIPPED_RESOURCE`: its fixed S0 CUDA OOM
+  has no shape, context, batch, CPU-offload, or fallback substitution.
+- G2/G3 are `BLOCKED_PENDING_C_FIXED_TARGET`; no target is inferred from a
+  catalog, historic selector, kernel name, or utilization gap.
 - Existing nsys raw is retained losslessly outside Git.  Remote export is not the
   default catalog path; raw -> remote SHA -> local transfer -> local SHA -> local
   export is the policy path.
