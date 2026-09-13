@@ -53,7 +53,7 @@ def main() -> None:
         raise ContractError("existing-asset receipt refuses to overwrite retained evidence")
     try:
         args.destination.resolve().relative_to(args.bulk_root.resolve() / "models" / args.model_key)
-        destination_is_bound = args.destination.resolve().parent.name == args.model_key
+        destination_is_bound = args.destination.resolve().parent.name == args.model_key and args.destination.resolve().name == args.revision
     except ValueError:
         destination_is_bound = False
     if len(args.revision) != 40 or not destination_is_bound or args.bulk_root.resolve() != Path("/root/share/c16_recovery_v3"):
