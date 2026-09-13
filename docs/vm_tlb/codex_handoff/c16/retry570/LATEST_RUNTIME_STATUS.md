@@ -153,6 +153,17 @@ diagnostic because it self-referenced; V2 excludes manifests and verifies all
 measurement marker was armed.  Its next gate is a separate runtime/resource
 admission after the ongoing bulk-root asset copy has finished.
 
+Qwen2.5-7B-AWQ P3 non-model inputs are also locally materialized from the
+fixed A@`168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` package authority and its
+manifest SHA256 `704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c`.
+The 49 input/receipt payloads are SHA-closed at
+`/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_7B_AWQ_MODEL_INPUT_RECEIPT.json`
+(SHA256 `7e7280815a2a3203d6e9f4cdad0e8e198a5c4efddf15ab78e109fb8f5d2a3c8b`).
+The 5.2-GiB exact AWQ model remains singly stored under the bulk root; no
+weights were duplicated or transferred to the GPU node, and no model/GPU
+operation occurred.  Remote transfer and resource admission remain separate
+future gates.
+
 ## Final post-Llama multi-model dataset publication
 
 The authoritative compact publication is
