@@ -2,6 +2,18 @@
 
 Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
 
+The NVBit-native static-index pass is closed in
+[`retry570_nvbit_native_static_map`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit_native_static_map/).
+It does **not** establish an index: `348` remains only
+`HISTORICAL_CANDIDATE_ORDINAL`, and `34` only `SASS_TEXT_LINE_COUNTER`.
+The direct `nvbit_get_instrs()` map-only Llama S0 run reached model load but
+timed out at 180 seconds without forward completion, target-function launch,
+or `LLAMA_INDEXSELECT_NVBIT_STATIC_MAP.tsv`. Thus no authoritative NVBit
+static index or memory-instruction target exists; exact-memory/C16 tracing,
+Qwen, and C frozen targets remain forbidden. This is not a zero-record NO-GO
+or a model/NVBit incompatibility claim. All retained diagnostic artifacts are
+locally hash-closed and `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0`.
+
 The post-resize node consumed the exact minimal immutable P0/Llama
 package subset.  P0 commit
 `20fb38e6ca629f1a93db7939248bd1a03790724c` and package manifest SHA256
