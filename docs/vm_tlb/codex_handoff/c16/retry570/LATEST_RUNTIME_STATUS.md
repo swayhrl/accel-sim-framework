@@ -2,6 +2,40 @@
 
 Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
 
+## One-shot NVBit long-watch closeout
+
+The retained microreproducer closeout remains valid and its existing 6+6
+bounded NVBit windows were not rerun. The new compact checkpoint is
+[`retry570_long_watch_diagnostic`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_long_watch_diagnostic/),
+whose `PUBLISH_MANIFEST.json` SHA256 is
+`e5a2488994a1abd82b1ebb87792ad6b662a28b23aa34fa87547708c19cccac9d`.
+The runtime harness actually used is fixed at
+`d8021532adfd94b4196785475f5c3914a3f51c2e`; its existing NVBit1.8 map-only
+tool remains fixed at source `f08af62e4bb77559617bd14d5df9a13d2e236873`
+and SHA256
+`ae4e4e632a4afad0d5dda4b7f7aac2b460135784676765350945137a722cb5c0`.
+
+The no-NVBit control completed the same finite index-select microreproducer
+and observed first CUDA-kernel completion at `2.820031002163887` seconds.
+It was followed by exactly one NVBit map-only long-watch, durably reserved at
+300 seconds with 5-second sampling. That process reached
+`FIRST_CUDA_KERNEL_SUBMISSION_BEGIN` but ended after about 2.87 seconds,
+before a first completed CUDA kernel, because the NVBit-side resolver emitted
+`ERROR: /usr/local/cuda-12.4/bin/nvdisasm not found on PATH!!!`. The executable
+was independently observed on the node; this evidence establishes only a
+tool-startup/path-resolution configuration failure. It did not reach the
+300-second discriminator. Accordingly the closeout state is
+`NVBIT_LONG_WATCH_DIAGNOSTIC_INCONCLUSIVE_TOOL_STARTUP_CONFIGURATION_FAILURE`:
+it does **not** establish either
+`NVBIT_PYTORCH_PRE_FIRST_KERNEL_STALL_CONFIRMED` or
+`NVBIT_PYTORCH_EXTREME_STARTUP_OVERHEAD`.
+
+The one-shot authorization is closed, so a second long-watch is forbidden.
+No trace, static map, model, Qwen, Llama, frozen C target, timing result, or
+scientific capture was produced. All small retained payloads and the ledger
+are SHA-closed locally; `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0` and
+`ACTIVE_GPU_PROCESS_COUNT=0`.
+
 ## Current microreproducer closeout
 
 The newest Retry570 checkpoint is
