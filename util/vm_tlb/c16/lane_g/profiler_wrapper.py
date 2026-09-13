@@ -70,8 +70,8 @@ def parse_args(tool: str) -> argparse.Namespace:
         parser.error("--ncu-launch-skip must be non-negative")
     if tool == "nvbit" and args.parent_lease_receipt is not None:
         parser.error("NVBit has no wrapper-owned child-runner lease contract")
-    if args.diagnostic_only and tool != "nsys":
-        parser.error("--diagnostic-only is reserved for direct-semantic Nsight Systems evidence")
+    if args.diagnostic_only and tool not in {"nsys", "nvbit"}:
+        parser.error("--diagnostic-only is reserved for non-timing Nsight/NVBit evidence")
     return args
 
 
@@ -299,7 +299,15 @@ def main(tool: str) -> None:
                         command, args.raw_dir, args.nvbit_tool, args.target_json,
                         max_raw_bytes=budget.max_raw_bytes, max_seconds=budget.max_elapsed_seconds,
                     )
-                    budget.finish(elapsed_seconds=elapsed, raw_bytes=bytes_written, terminal_status=terminal_status)
+                    scientific = terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"} and not args.diagnostic_only
+                    budget.finish(
+                        elapsed_seconds=elapsed, raw_bytes=bytes_written, terminal_status=terminal_status,
+                        evidence_classification="SCIENTIFIC" if scientific else "NON_SCIENTIFIC_DIAGNOSTIC",
+                        diagnostic_reason=None if scientific else (
+                            "NVBIT_FIXTURE_DIAGNOSTIC" if args.diagnostic_only and terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"}
+                            else f"NVBIT_{terminal_status}"
+                        ),
+                    )
                 else:
                     parent, token = write_parent_lease_start(args.parent_lease_receipt, target, tool, budget)
                     environment = dict(os.environ)

@@ -9,7 +9,7 @@ from types import SimpleNamespace
 LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
-from profiler_wrapper import plan_command  # noqa: E402
+from profiler_wrapper import parse_args, plan_command  # noqa: E402
 
 
 class NcuTargetFilterTests(unittest.TestCase):
@@ -31,6 +31,21 @@ class NcuTargetFilterTests(unittest.TestCase):
         self.assertEqual(command[command.index("--launch-count") + 1], "1")
         self.assertEqual(command[command.index("--replay-mode") + 1], "kernel")
         self.assertEqual(command[command.index("--target-processes") + 1], "application-only")
+
+    def test_nvbit_fixture_can_be_explicitly_non_scientific(self) -> None:
+        previous = sys.argv
+        try:
+            sys.argv = [
+                "nvbit_wrapper.py", "--execute", "--diagnostic-only",
+                "--receipt", "/tmp/receipt.json", "--target-json", "/tmp/target.json",
+                "--output", "/tmp/output", "--nvbit-tool", "/tmp/tool.so", "--raw-dir", "/tmp/raw",
+                "--budget-ledger", "/tmp/ledger.json", "--", "echo", "fixture",
+            ]
+            args = parse_args("nvbit")
+        finally:
+            sys.argv = previous
+        self.assertTrue(args.diagnostic_only)
+        self.assertEqual(args.command, ["echo", "fixture"])
 
 
 if __name__ == "__main__":
