@@ -1,8 +1,8 @@
 # C16-G Retry570 runtime status
 
-Status: `P0_MINIMAL_LLAMA_HASH_CLOSED_READY_FOR_MODEL_NVBIT_QUALIFICATION`.
+Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_NO_GO`.
 
-The post-resize node has now consumed the exact minimal immutable P0/Llama
+The post-resize node consumed the exact minimal immutable P0/Llama
 package subset.  P0 commit
 `20fb38e6ca629f1a93db7939248bd1a03790724c` and package manifest SHA256
 `ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f`
@@ -11,11 +11,21 @@ The frozen M1 S0/TEXT binding is exact B1/T128/decode4 and has no tokenizer
 execution or context resize.  All subsequent Llama diagnostic forwards bind
 runtime source commit `40faa7e933b881c1a48593f8eb03c59910b3ba75`.
 
-No Qwen payload has been transferred.  The next queued GPU operation is the
-single Llama S0 baseline (then, only if it exits normally, official NVBit1.8
-`mem_trace` and the C16 NVBit1.8 tracer).  These are
-`MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC` only, never native timing or C target
-results.
+The Llama S0 baseline passed, but both the official NVBit1.8 `mem_trace` and
+the C16 tracer failed to materialize model-level kernel/trace evidence.  The
+complete hash-closed closeout is in
+[`retry570_llama_model_no_go`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_llama_model_no_go/).
+This is `MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC` only, never native timing or a
+C target result.  The exact failure boundary is model CUDA launch/NVBit
+callback materialization on Llama S0, not a claim that driver 570 alone is
+causal.
+
+No Qwen0.5, Qwen7-AWQ, or raw-Qwen payload has been transferred; they are
+not authorized to run after this Llama NO-GO.  All C `SELECTOR_R/B48` frozen
+targets remain unexecuted, with no target/shape/context/dtype/backend/offload
+or kernel-name substitution.  `NVBIT_STORAGE_ESTIMATE.json` is correctly
+`NOT_APPLICABLE_NO_REAL_MODEL_TRACE`; separately, both local receiver mounts
+remain below the 100 GiB formal-campaign gate.
 
 The new-node observed identity is bound by
 [`C16_RETRY570_NODE_IDENTITY_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570/C16_RETRY570_NODE_IDENTITY_RECEIPT.json).

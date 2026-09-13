@@ -1,0 +1,62 @@
+{
+  "schema_version": "C16_G_RETRY570_LLAMA_MODEL_NVBIT_QUALIFICATION_PUBLICATION_V1",
+  "status": "NVBIT_RETRY570_LLAMA_MODEL_CANARY_NO_GO",
+  "scientific_eligible": false,
+  "scope": "MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC_ONLY_NOT_FOR_NATIVE_TIMING_OR_C_TARGET",
+  "runtime_code_commit": "c4597507d50d4ebce67ef0efc6ea50dcdea1183c",
+  "source_runtime_receipt": {
+    "logical_path": "/root/autodl-tmp/c16_retry570/runtime/LLAMA_MODEL_NVBIT_QUALIFICATION_RECEIPT.json",
+    "sha256": "bda2437e16125ffa1616cb4b6bf11ac712ac1afbabbfd5b9968f2a3714cc5c56"
+  },
+  "identity": {
+    "deployment_id": "c16_llama32_1b_frozen_compatible",
+    "model_id": "meta-llama/Llama-3.2-1B",
+    "model_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "tokenizer_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "scenario_id": "S0",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "dtype": "float16",
+    "quantization": "NONE",
+    "implementation_key": "TRANSFORMERS_CAUSAL_LM_EAGER",
+    "attention_backend": "sdpa",
+    "compile_state": "EAGER_UNCOMPILED",
+    "cpu_offload": "FORBIDDEN"
+  },
+  "package": {
+    "id": "C16_GPU_PACKAGE_P0",
+    "commit": "20fb38e6ca629f1a93db7939248bd1a03790724c",
+    "manifest_sha256": "ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f"
+  },
+  "baseline": {
+    "run_id": "26667d24-9380-4a74-92c3-11c330d4c224",
+    "terminal_status": "COMPLETE",
+    "output_checksum": "c5f81e7f7d848bf7d317b15bb2d71471ff3572454fb96f78d877c58ada7f6d65",
+    "peak_allocated_bytes": 2515285504,
+    "receipt_sha256": "22dd4cf3f5c4b19f27c6c787489e71815e34c48d17635bcc721033687e84c83e"
+  },
+  "nvbit_18": {
+    "archive_sha256": "72a2b827f9531dcb86b6be13844f267640fb440929d92944177029da6da2b9e1",
+    "official_mem_trace_sha256": "531257e9cbc54017a3f908c4280e631a017da3c4f3de5d4413855b16eeb7eae0",
+    "c16_tracer_sha256": "b0c0c75ec3afddc1b06f0d92396967c295cbf31d1dd91075fdf28ea0f05af0b5"
+  },
+  "diagnostic_attempts": [
+    {"run_id": "a372f8ed-dc8a-4f8b-9216-a752c0714813", "tool": "OFFICIAL_MEM_TRACE", "terminal_status": "FAILED_PRE_MODEL_FORWARD", "reason": "OLD_GUARD_READ_LD_PRELOAD_AFTER_DYNAMIC_LOADER_CONSUMPTION", "actual_trace_bytes": 0},
+    {"run_id": "2fe61bc7-bb97-48b3-b939-9f2e978daee1", "tool": "OFFICIAL_MEM_TRACE", "instruction_interval": "[0,1)", "terminal_status": "FAILED_OR_ABORTED", "reason": "NO_MEMTRACE_GRID_LAUNCH_OR_MEMORY_RECORD_MARKER", "retained_log_bytes": 829},
+    {"run_id": "a1fdcdbd-8fe6-432f-bc87-354db1009b24", "tool": "OFFICIAL_MEM_TRACE", "instruction_interval": "[0,8)", "terminal_status": "FAILED_OR_ABORTED", "reason": "NO_MEMTRACE_GRID_LAUNCH_OR_MEMORY_RECORD_MARKER", "retained_log_bytes": 829},
+    {"run_id": "70acaf28-e83d-430d-a0e0-cf8c492777a1", "tool": "C16_MEMORY_TRACER", "instruction_interval": "[0,8)", "dynamic_kernel_range": "1", "terminal_status": "FAILED_OR_ABORTED", "reason": "NO_C16_TRACE_XZ_OR_KERNEL_CATALOG", "retained_log_bytes": 2195}
+  ],
+  "conclusion": {
+    "minimal_pytorch_nvbit18_qualification": "PREEXISTING_PASS",
+    "model_level_real_memory_or_c16_trace": false,
+    "failure_boundary": "MODEL_LEVEL_CUDA_LAUNCH_OR_NVBIT_CALLBACK_MATERIALIZATION_ON_LLAMA_S0",
+    "qwen_promotions_authorized": false,
+    "frozen_c_target_execution_authorized": false,
+    "no_kernel_name_or_target_substitution": true
+  },
+  "ledger": {
+    "logical_path": "/root/autodl-tmp/c16_retry570/runtime/EXECUTION_BUDGET_LEDGER.json",
+    "sha256": "580d6f9917f956d4f840a62d7520469059ba1ad3c0e377c1ce00956f48431e37",
+    "all_failed_profile_attempts_classified": "NON_SCIENTIFIC_DIAGNOSTIC"
+  },
+  "remote_only_required_artifact_count": 0
+}
