@@ -1,6 +1,50 @@
 # C16-G Retry570 runtime status
 
-Status: `NVBIT_CORE_MODULE_BOOKKEEPING_PATHOLOGY_CONFIRMED`.
+Status: `NVBIT_RETRY570_V175_ENGINEERING_UNBLOCK_QUALIFIED`.
+
+## Current NVBit engineering-unblock qualification
+
+The compact publication is
+[`lane_g_retry570_engineering_unblock`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_engineering_unblock/),
+with `PUBLISH_MANIFEST.json` SHA256
+`9b343570d58b060eec4009d20ea81f638081c3001e88220079c91cca365b8f87`.
+The publication-generator implementation anchor is
+`7f3a7a9861e816751cd388003ac00b5e8a62af3e`; the final publication/handoff
+commit is distinct and reported after this checkpoint is committed.
+
+The one authorized NVBit 1.8 EMPTY+EAGER first-use qualification did not reach
+`READY` within its 60-second target cap. Its target/remote/local walls were
+`60.660996 / 60.755267 / 61.171210` seconds. It stopped during first GPU input
+preparation, so `process_to_ready_s`, `round1_s`, and `round2_s` do not exist;
+one-time versus repeated behavior is not determined for NVBit 1.8. The attempt
+remains in the budget ledger as `NON_SCIENTIFIC_DIAGNOSTIC`. Runtime source
+`9a12ff1aec0410f6795b68c7df1710c3d5610fec` produced the window; later commit
+`f56b33e501366b01ffc7d60252de8ce2044202c7` only corrected the invalid ledger
+classification spelling and did not rerun it.
+
+The version differential held the RTX3090, driver `570.124.04`, CUDA 12.4,
+PyTorch `2.5.1+cu124`, `libtorch_cuda.so`, and tiny workload fixed. NVBit 1.7.5
+passed official `instr_count_bb + vectoradd`, then completed the EMPTY exact
+reproducer in `5.677317` seconds. Although the harness requested LAZY, NVBit
+1.7.5 reported and the CUDA API confirmed EAGER; this vendor behavior is
+preserved as a caveat. The independent NVBit 1.8 EAGER result still failed to
+reach READY, so the classification is `NVBIT_VERSION_SENSITIVE_CORE_PATH`.
+
+Finally, the normal Lane G C16 tracer rebuilt against exact NVBit 1.7.5
+completed one EAGER C2 tensor-fill first-kernel smoke. Submission/completion
+were `5.630197 / 5.872201` seconds; target/remote/local walls were
+`6.655896 / 6.759123 / 7.177605` seconds. A no-match range kept tracing
+inactive and an independent scan found zero `.trace`/`.trace.xz` files.
+
+The recommended unblock is therefore to pin NVBit 1.7.5 archive/core/tool
+hashes, perform a bounded EAGER zero-trace prewarm outside
+`MEASUREMENT_ACTIVE`, emit `READY` only after identity, terminal, zero-trace,
+and process-cleanup checks, and create the formal measurement gate afterward.
+This is engineering qualification only: no model, Llama, Qwen, C target,
+trace, scientific capture, 300-second watch, or 6+6 rerun was performed or is
+newly authorized. All 25 retained diagnostic payloads plus the final ledger
+are locally SHA-closed; `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0`,
+`ACTIVE_GPU_PROCESS_COUNT=0`, and `ACTIVE_DIAGNOSTIC_PROCESS_COUNT=0`.
 
 ## Current NVBit callback-bookkeeping root cause
 
