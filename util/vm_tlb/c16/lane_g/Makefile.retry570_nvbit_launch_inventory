@@ -2,6 +2,8 @@ NVBIT_HOME ?=
 NVCC ?= nvcc
 ARCH ?= sm_86
 OUT ?= retry570_nvbit_launch_inventory_tool.so
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+SOURCE := $(MAKEFILE_DIR)retry570_nvbit_launch_inventory_tool.cu
 
 ifeq ($(strip $(NVBIT_HOME)),)
 $(error NVBIT_HOME must identify the hash-closed NVBit release root)
@@ -9,5 +11,5 @@ endif
 
 all: $(OUT)
 
-$(OUT): retry570_nvbit_launch_inventory_tool.cu $(NVBIT_HOME)/core/libnvbit.a
+$(OUT): $(SOURCE) $(NVBIT_HOME)/core/libnvbit.a
 	$(NVCC) -std=c++17 -D_FORCE_INLINES -Xcompiler -fPIC -arch=$(ARCH) -O3 -I$(NVBIT_HOME)/core $< -L$(NVBIT_HOME)/core -Xlinker --whole-archive -lnvbit -Xlinker --no-whole-archive -L/usr/local/cuda-12.4/lib64 -lcuda -lcudart_static -ldl -lrt -lpthread -shared -o $@
