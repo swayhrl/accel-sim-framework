@@ -71,6 +71,7 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
         self.assertIn("_GLIBCXX_USE_CXX11_ABI=0", BUILD)
         self.assertIn("thread apply all bt full", SOURCE)
         self.assertIn("$c16_elf_module_map->_M_h._M_element_count", SOURCE)
+        self.assertIn("(NvbitElfModuleMap*) &elfModuleHashMap", SOURCE)
         self.assertIn('"-p", str(pid)', SOURCE)
         self.assertIn('"maps": _run_text_safe', SOURCE)
 

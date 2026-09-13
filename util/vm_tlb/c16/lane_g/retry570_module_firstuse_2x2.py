@@ -200,7 +200,7 @@ def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_el
                 # `elfModuleHashMap` is a vendor object with no vendor DWARF.
                 # The null, static type anchor supplies only a type for this
                 # address cast; it is never evaluated by the callback.
-                "-ex", "set $c16_elf_module_map = (typeof(c16_debug_elf_module_map_layout)*) &elfModuleHashMap",
+                "-ex", "set $c16_elf_module_map = (NvbitElfModuleMap*) &elfModuleHashMap",
                 "-ex", "p $c16_elf_module_map->_M_h._M_element_count",
                 "-ex", "p $c16_elf_module_map->_M_h._M_bucket_count",
                 "-ex", "p $c16_elf_module_map->_M_h._M_rehash_policy._M_max_load_factor",
