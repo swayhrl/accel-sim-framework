@@ -54,6 +54,13 @@ def trace_files(root: Path) -> list[Path]:
     return sorted(item for item in root.rglob("*") if item.is_file() and item.name.endswith((".trace", ".trace.xz")))
 
 
+def trace_tree_bytes(root: Path) -> int:
+    """Account all retained trace-side payloads even after child validation fails."""
+    if not root.is_dir():
+        return 0
+    return sum(item.stat().st_size for item in root.rglob("*") if item.is_file())
+
+
 def write_event(path: Path, event: str, **fields: Any) -> None:
     row = {"schema_version": SCHEMA, "event": event, "ts_ns": time.monotonic_ns(), **fields}
     atomic_json(path, row)
@@ -328,8 +335,13 @@ def parent(args: argparse.Namespace) -> int:
         if process.poll() is None: cleanup = kill_group(process); terminal = "BOUNDED_TIMEOUT"
         elif process.returncode == 0: terminal = "COMPLETE"
         elapsed = time.monotonic() - started
+        # A child can fail during its schema/record validation after the
+        # tracer has already materialized headers, stats, or trace files.
+        # Those diagnostic payloads remain subject to the hard raw-byte
+        # ceiling and must be represented in the parent-owned lease rather
+        # than silently accounted as zero.
+        raw_bytes = trace_tree_bytes(args.trace_root)
         traces = parse_traces(args.trace_root, target) if terminal == "COMPLETE" else []
-        raw_bytes = sum(item["size_bytes"] for item in traces)
         if raw_bytes > lease.max_raw_bytes: raise ContractError("formal trace exceeded hard NVBit raw budget")
         lease.finish(elapsed_seconds=elapsed, raw_bytes=raw_bytes, terminal_status=terminal, evidence_classification="SCIENTIFIC" if terminal == "COMPLETE" else "NON_SCIENTIFIC_DIAGNOSTIC", diagnostic_reason=None if terminal == "COMPLETE" else "MULTIMODEL_FORMAL_CAPTURE_TIMEOUT_OR_FAILURE")
     if parent_receipt is not None:

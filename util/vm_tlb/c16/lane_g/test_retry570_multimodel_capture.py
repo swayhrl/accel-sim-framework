@@ -22,6 +22,13 @@ class MultimodelFormalCaptureTests(unittest.TestCase):
         for token in ("C16_EXACT_ROOT_FUNCTION_ONLY", "C16_USE_NVBIT_STATIC_INDEX", "INSTR_BEGIN", "DYNAMIC_KERNEL_RANGE", "index != 101", "index == 34"):
             self.assertIn(token, SOURCE)
 
+    def test_parent_accounts_retained_trace_payload_when_child_validation_fails(self) -> None:
+        self.assertIn("def trace_tree_bytes", SOURCE)
+        self.assertIn("raw_bytes = trace_tree_bytes(args.trace_root)", SOURCE)
+        # There is a child-side parser occurrence earlier in the source; the
+        # parent accounting sequence is the final one.
+        self.assertLess(SOURCE.index("raw_bytes = trace_tree_bytes(args.trace_root)"), SOURCE.rindex("traces = parse_traces(args.trace_root, target)"))
+
     def test_decode_target_is_independent_from_largeindex_prefill_target(self) -> None:
         for token in ("TARGET_ROLES", "DECODE_INDEX_TARGET", "indexSelectSmallIndex", "index != 17", "every actual frozen decode forward"):
             self.assertIn(token, SOURCE)
