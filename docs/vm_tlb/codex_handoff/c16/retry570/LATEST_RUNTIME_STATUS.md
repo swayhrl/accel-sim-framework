@@ -11,7 +11,12 @@ Qwen2.5-7B-AWQ, Qwen3-8B, DeepSeek-V2-Lite, and exact-identity GLM.  The
 separate user-managed Qwen3-30B-A3B download is
 `EXCLUDED_BY_USER_CURRENT_CAMPAIGN` and is neither inspected nor counted.
 
-Current Recovery-V3 source checkpoint: `9839a4692d392b83989f0861dfc4ab99a4063f8a`.
+Current Recovery-V3 local publication source checkpoint:
+`03c29dd6c81c2d43cc5c7b257a94900c06352df3`.  The GPU runtime workspace that
+produced the newly materialized frozen binding is
+`9ee736709e8557bee3ec4accb7a11a8958f1ef5d`; a later formal run will bind its
+actual runtime source explicitly rather than inferring it from this
+publication checkpoint.
 The local bulk root is `/root/share/c16_recovery_v3`; recovery payloads are
 not staged in `/workspace` or the constrained root filesystem.
 
@@ -48,13 +53,26 @@ guessed from an unrelated local cache ref.
   `bc5c8bb7fc019654b995a471f6f25045fca07ccfa355f0ffdeb0e189959454d5` and
   the returned frozen token list SHA256 is
   `5ec815bc65ee841e1eb41736c74bc8c2b3bcc44edaec730b16e1c7f406a59b30`.
-- Qwen2.5-7B raw transfer and Qwen3-8B exact-revision local fetch are in
-  progress outside any measurement window.  Neither partial transfer nor
-  partial fetch is a scientific asset or a runnable model gate.
+- Qwen2.5-7B raw at immutable revision
+  `a09a35458c702b33eeacc393d103063234e8bc28` is now remote-to-local
+  dual-endpoint SHA-closed and its 62-payload immutable P2 package verifier
+  passed.  Its S0/TEXT/B1/T128/Decode4 frozen binding was derived solely from
+  the A@`168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d` receipt: token receipt
+  SHA256 `47686a0239b496ad096cb25fa326e081d9fbadb2b589b6116e4a852dd50f4ffe`,
+  derived token list SHA256
+  `5ec815bc65ee841e1eb41736c74bc8c2b3bcc44edaec730b16e1c7f406a59b30`, and
+  binding SHA256 `a539709d3bfe7a5c051f6e91e89b6bbf1ff877e70fb61aefed8f2ad5f5882f21`.
+  The compact consumer receipt is
+  [`R2_QWEN2P5_7B_RAW_PACKAGE_BINDING_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/R2_QWEN2P5_7B_RAW_PACKAGE_BINDING_RECEIPT.json).
+  This is an R2 provenance closure only: no Qwen7 raw model execution,
+  baseline, census, target selection, or trace was run.
+- Qwen3-8B exact-revision fetch remains in progress under `/root/share` and
+  is outside every measurement window; it is not yet a closed runnable asset.
 
-The next authorized GPU work is Qwen0.5 R3 only after the compact R2
-publication and model/input/runtime binding are frozen.  No Qwen3-30B-A3B,
-model baseline, census, or trace has been started by this checkpoint.
+The next authorized GPU work is Qwen0.5 R3 after this compact R2 publication
+and a fresh formal-window preflight.  Qwen7 raw remains at R2 until its own
+runtime preflight/resource admission passes.  No Qwen3-30B-A3B, model
+baseline, census, or trace has been started by this checkpoint.
 
 ## Final post-Llama multi-model dataset publication
 

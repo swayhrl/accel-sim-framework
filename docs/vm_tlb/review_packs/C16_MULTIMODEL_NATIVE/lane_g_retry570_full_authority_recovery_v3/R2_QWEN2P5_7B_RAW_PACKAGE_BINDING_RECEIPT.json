@@ -1,0 +1,51 @@
+{
+  "schema_version": "C16_G_RECOVERY_V3_R2_PACKAGE_BINDING_V1",
+  "status": "R2_PACKAGE_INPUT_MODEL_AND_RUNTIME_BINDING_HASH_CLOSED",
+  "scientific_eligible": false,
+  "purpose": "Immutable P2 raw-Qwen package materialization and frozen S0 input binding; no model execution, baseline, census, or capture occurred.",
+  "authority": {
+    "package_id": "C16_GPU_PACKAGE_P2",
+    "package_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "package_manifest_sha256": "c937590dd4ea2b4f6407db7d8b077ed263af3cbc14562ef34142aa834b133f26",
+    "deployment_id": "c16_qwen25_7b_raw_reference",
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28"
+  },
+  "model_transfer_closure": {
+    "source_asset_receipt": "/root/share/c16_recovery_v3/receipts/R1_QWEN2P5_7B_RAW_ASSET_RECEIPT.json",
+    "remote_manifest": "/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_7B_RAW_REMOTE_MANIFEST.json",
+    "remote_manifest_sha256": "41e1f8923dcf5d04eb8d8fd18bd30fc6cb5ccf06d05bd163398e2a5dc5118119",
+    "dual_endpoint_receipt": "/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_7B_RAW_DUAL_ENDPOINT_TRANSFER_RECEIPT.json",
+    "dual_endpoint_receipt_sha256": "8e78a9f24544062dc3f1b2c043836dcf64671574bb885779a378bc4b75396f8f",
+    "status": "DUAL_ENDPOINT_SIZE_SHA256_CLOSED"
+  },
+  "remote_package": {
+    "path": "/root/autodl-tmp/c16_retry570/recovery_v3_packages/qwen2p5_7b_raw_p2_v1",
+    "model_symlink": "models/c16_qwen25_7b_raw_reference",
+    "model_target": "/root/autodl-tmp/c16_retry570/recovery_v3_assets/qwen2p5_7b_instruct_raw/a09a35458c702b33eeacc393d103063234e8bc28",
+    "immutable_package_verify_receipt": "/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_7B_RAW_RUNTIME_BINDING/R2_QWEN2P5_7B_RAW_PACKAGE_VERIFY_RECEIPT.json",
+    "immutable_package_verify_receipt_sha256": "b75256d985e5125e778c36e228dc6995fbe1eb8ce80a7b9c171822625faa0d94",
+    "verified_payload_count": 62
+  },
+  "frozen_input_binding": {
+    "scenario_id": "S0",
+    "input_class": "TEXT",
+    "batch_size": 1,
+    "prefill_tokens": 128,
+    "decode_tokens": 4,
+    "token_receipt_source_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+    "token_receipt_sha256": "47686a0239b496ad096cb25fa326e081d9fbadb2b589b6116e4a852dd50f4ffe",
+    "derived_token_ids_sha256": "5ec815bc65ee841e1eb41736c74bc8c2b3bcc44edaec730b16e1c7f406a59b30",
+    "binding_receipt": "/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_7B_RAW_RUNTIME_BINDING/S0_TEXT_BINDING.json",
+    "binding_receipt_sha256": "a539709d3bfe7a5c051f6e91e89b6bbf1ff877e70fb61aefed8f2ad5f5882f21",
+    "status": "FROZEN_RUNTIME_BINDING_READY"
+  },
+  "producer_provenance": {
+    "runtime_binding_tool_source_commit": "9ee736709e8557bee3ec4accb7a11a8958f1ef5d",
+    "publication_source_checkpoint_before_this_receipt": "03c29dd6c81c2d43cc5c7b257a94900c06352df3"
+  },
+  "runtime_quiescence": {
+    "measurement_active": false,
+    "active_gpu_compute_processes": 0
+  },
+  "next_gate": "R2 runtime preflight and resource admission before any R3 raw-Qwen execution"
+}
