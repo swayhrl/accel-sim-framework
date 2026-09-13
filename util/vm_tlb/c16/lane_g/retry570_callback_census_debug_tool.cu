@@ -27,6 +27,10 @@ using NvbitElfModuleMap = std::unordered_map<std::string, std::vector<Function*>
 // here is essential: ordinary C++ linkage would silently declare a distinct
 // ABI-tagged symbol, which is unsuitable for debugger-only inspection.
 extern "C" NvbitElfModuleMap elfModuleHashMap;
+// Retain the full C++ type in DWARF without taking the vendor object's address
+// or evaluating it at runtime.  GDB uses this null pointer solely to cast the
+// real vendor-core symbol at a stopped-process snapshot.
+__attribute__((used)) static NvbitElfModuleMap* const c16_debug_elf_module_map_type = nullptr;
 
 static std::atomic<unsigned long long> callback_sequence{0};
 

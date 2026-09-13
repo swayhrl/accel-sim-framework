@@ -197,10 +197,16 @@ def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_el
             # evaluated by the callback itself.
             command.extend((
                 "-ex", "thread apply all bt full", "-ex", "info sharedlibrary",
-                "-ex", "p elfModuleHashMap.size()", "-ex", "p elfModuleHashMap.bucket_count()",
-                "-ex", "p elfModuleHashMap.load_factor()", "-ex", "p elfModuleHashMap.begin()->first",
-                "-ex", "p elfModuleHashMap.begin()->first.size()",
-                "-ex", "p elfModuleHashMap.begin()->second.size()",
+                # `elfModuleHashMap` is a vendor object with no vendor DWARF.
+                # The null, static type anchor supplies only a type for this
+                # address cast; it is never evaluated by the callback.
+                "-ex", "set $c16_elf_module_map = (typeof(c16_debug_elf_module_map_type)) &elfModuleHashMap",
+                "-ex", "p $c16_elf_module_map->_M_h._M_element_count",
+                "-ex", "p $c16_elf_module_map->_M_h._M_bucket_count",
+                "-ex", "p $c16_elf_module_map->_M_h._M_rehash_policy._M_max_load_factor",
+                "-ex", "p $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.first",
+                "-ex", "p $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.first.size()",
+                "-ex", "p $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.second._M_impl._M_finish - $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.second._M_impl._M_start",
             ))
         else:
             command.extend(("-ex", "thread apply all bt"))
