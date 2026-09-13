@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -320,7 +321,7 @@ def main() -> None:
     group.add_argument("--validate", action="store_true")
     args = parser.parse_args()
     if args.write:
-        if args.raw_base is None or not valid_sha256(args.producer_implementation_commit or ""):
+        if args.raw_base is None or re.fullmatch(r"[0-9a-f]{40}", args.producer_implementation_commit or "") is None:
             raise ContractError("write requires raw base and exact producer implementation commit")
         write(args.directory, args.raw_base, args.producer_implementation_commit,
               (args.p1_local_ssh_wall_s, args.official_local_ssh_wall_s,

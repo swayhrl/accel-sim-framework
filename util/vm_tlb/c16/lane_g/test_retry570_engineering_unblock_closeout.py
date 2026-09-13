@@ -20,6 +20,7 @@ class EngineeringUnblockCloseoutTests(unittest.TestCase):
     def test_manifest_validates_materialization_size_sha_and_duplicates(self) -> None:
         for required in ("payload.is_file()", "payload.stat().st_size", "sha256_file(payload)", "path in seen"):
             self.assertIn(required, SOURCE)
+        self.assertIn('re.fullmatch(r"[0-9a-f]{40}"', SOURCE)
 
     def test_no_model_or_capture_execution_is_present(self) -> None:
         for forbidden in ("AutoModelForCausalLM", "AutoAWQ", "nvbit_insert_call", "subprocess.Popen", "CUDA_INJECTION64_PATH"):
