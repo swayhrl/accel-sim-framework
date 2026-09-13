@@ -43,19 +43,25 @@ HEAVY_TAIL_FRACTION = 0.01
 RARE_IMPLEMENTATION_N = 2
 STRATA_VERSION = "C16_STRATA_PHASE_OPERATOR_IMPLEMENTATION_SHAPEBUCKET_DTYPE_V2"
 SELECTOR_VERSION = "C16_SELECTOR_V2_R_PROBABILITY_M_MEDOID"
-P_READY_STATUS = "C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION"
+P_READY_STATUS = "C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED"
 P_MANIFEST_SCHEMA = "C16_P_NATIVE_CATALOG_FOR_C_V1"
 P_TRAIN_COHORT = "TRAIN_TUNE"
 P_AWQ_COHORT = "PROSPECTIVE_QWEN7_AWQ"
+CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION = "CAPABILITY_LIMITED_TRAIN_ROSTER_V1"
+G_RESOURCE_ADMISSION_COMMIT = "b5e48f7a69d3bc3a978660a99e53907ef5072b6e"
+G_RESOURCE_ADMISSION_PATH = "docs/vm_tlb/codex_handoff/c16/autodl_wave1/P2_RAW_S0_RESOURCE_ADMISSION.json"
+QWEN7_RAW_DEPLOYMENT_ID = "c16_qwen25_7b_raw_reference"
 P_REQUIRED_PAYLOAD_KINDS = (
     "KERNEL_CATALOG", "KERNEL_SEMANTIC_MAP", "SEMANTIC_COVERAGE",
     "NATIVE_BASELINE", "RUNTIME_IMPLEMENTATION_AUDIT", "RUN_JOIN_AUDIT",
-    "PROFILE_REPORT_INDEX", "DEPLOYMENT_ROSTER",
+    "PROFILE_REPORT_INDEX", "DEPLOYMENT_ROSTER", "RESOURCE_ADMISSION",
+)
+P_SELECTOR_CONSUMED_PAYLOAD_KINDS = (
+    "KERNEL_CATALOG", "PROFILE_REPORT_INDEX", "DEPLOYMENT_ROSTER", "RESOURCE_ADMISSION",
 )
 P_TRAIN_ROSTER = {
     "TRAIN_LLAMA": "TUNING",
     "TRAIN_QWEN0_5": "TUNING",
-    "TRAIN_QWEN7_RAW": "TUNING",
 }
 P_AWQ_ROSTER = {"PROSPECTIVE_QWEN7_AWQ": "PROSPECTIVE_HOLDOUT"}
 P_DIRECT_SEMANTIC_EVIDENCE = {"DIRECT_RUNTIME_NVTX", "DIRECT_MODULE_ID", "UNKNOWN"}
@@ -689,7 +695,7 @@ def write_strata_definition(out: Path) -> None:
     })
 
 
-def write_preflight(out: Path, native_catalog_status: str = "PENDING_COMMITTED_WAVE1_CATALOG") -> None:
+def write_preflight(out: Path, native_catalog_status: str = "PENDING_CAPABILITY_LIMITED_P_CATALOG") -> None:
     write_json(out / "ENV_PREFLIGHT.json", {
         "schema_version": "C16_LANE_C_PREFLIGHT_V2", "lane": "C", "branch": "hrl/vm-c16-c-sampling-v2-v0",
         "starting_head": PLANNING_SHA, "head_at_generation": current_head(), "planning_sha": PLANNING_SHA, "new_simulator_replay": 0,
@@ -702,12 +708,23 @@ def write_protocol(out: Path, state: str, native_receipt: dict[str, Any] | None 
     payload: dict[str, Any] = {
         "schema_version": "C16_PROSPECTIVE_FREEZE_PROTOCOL_V2", "state": state, "planning_sha": PLANNING_SHA, "selector_version": SELECTOR_VERSION,
         "selector_code_sha256": code_sha(), "strata_version": STRATA_VERSION, "seed": PRIMARY_SEED, "budgets": list(BUDGETS),
-        "tuning_roles": ["TUNING"], "holdout_roles": ["PROSPECTIVE_HOLDOUT", "STRUCTURAL_HOLDOUT"], "split_rule": "deployment identity rule frozen in source; AWQ and Qwen3/MoE/DeepSeek are holdouts",
+        "tuning_roles": ["TUNING"], "holdout_roles": ["PROSPECTIVE_HOLDOUT", "STRUCTURAL_HOLDOUT"],
+        "split_rule": "CAPABILITY_LIMITED_TRAIN_ROSTER_V1: direct roster only; Qwen2.5-7B raw is RESOURCE_UNAVAILABLE_ON_RTX3090 and Qwen2.5-7B AWQ is the sole prospective holdout",
+        "capability_limited_train_roster_version": CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION,
+        "original_train_roster": ["Llama3.2-1B", "Qwen2.5-0.5B", "Qwen2.5-7B raw"],
+        "effective_train_roster": ["Llama3.2-1B", "Qwen2.5-0.5B"],
+        "unavailable_train_deployment": {"deployment_id": QWEN7_RAW_DEPLOYMENT_ID, "reason": "RESOURCE_UNAVAILABLE_ON_RTX3090"},
+        "prospective_holdout_roster": ["Qwen2.5-7B AWQ"],
+        "expected_p_ready_status": P_READY_STATUS,
+        "capability_limited_scope": "DEGRADED_FROM_ORIGINAL_3_DEPLOYMENT_TRAIN_ROSTER_NOT_FULL_PROTOCOL_COMPLETION",
         "thresholds": THRESHOLDS, "read_holdout_target_metrics_after": "selector SHA, strata, seed, budgets, deployment split and thresholds are committed",
         "candidate_outcomes_used_for_selection": False, "medoid_ci": "FORBIDDEN", "new_simulator_replay": 0, "new_gpu_execution": 0,
     }
     if native_receipt:
         payload["native_catalog_receipt"] = native_receipt
+    amendment = out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"
+    if amendment.is_file():
+        payload["capability_limited_train_roster_sha256"] = sha256_file(amendment)
     write_json(out / "PROSPECTIVE_PROTOCOL.json", payload)
 
 
@@ -715,19 +732,67 @@ def write_holdout_schema(out: Path) -> None:
     atomic_text(out / "HOLDOUT_INPUT_SCHEMA.md", "# Frozen holdout metric input contract\n\nAfter `--freeze-native`, a G/H producer may publish a small, manifest-listed TSV.  C consumes it only with `--consume-holdout --producer-commit <sha> --manifest-path <path> --payload-path <path>`.  Required columns are `deployment_id`, `scenario_id`, `phase`, `unit_id`, `metric`, `metric_kind`, `evidence_tier`, `target_identity_status`, and `ground_truth_scope`. `metric_kind` is one of `ADDITIVE`, `RATE`, `STRUCTURAL`, or `MECHANISM_RESPONSE`.\n\n`ADDITIVE` and `MECHANISM_RESPONSE` require `value`. `RATE` requires independent `numerator` and `denominator`; C recomputes the ratio after weighting. `STRUCTURAL` is never extrapolated with N_s/n_s. `target_identity_status` must be `EXACT`; `ground_truth_scope=FULL_FROZEN_UNIVERSE` is required before error qualification against a population truth. Mechanism response additionally needs `high_fidelity_truth=TRUE` and a common `effect_fraction_of_reference`; it is `INCONCLUSIVE` / `NOT_QUALIFIED` if the interval crosses zero, effect is below the frozen 2% fraction, or the resolution cannot distinguish it.\n")
 
 
+def capability_limited_train_roster_payload() -> dict[str, Any]:
+    """Build the sole permitted amendment from the hash-closed raw OOM receipt."""
+    source_text = git_text(G_RESOURCE_ADMISSION_COMMIT, G_RESOURCE_ADMISSION_PATH)
+    source = json.loads(source_text)
+    identity = source.get("identity", {})
+    constraints = source.get("constraints", {})
+    if (source.get("schema_version") != "C16_G_RESOURCE_ADMISSION_V1" or source.get("status") != "SKIPPED_RESOURCE"
+            or identity.get("deployment_id") != QWEN7_RAW_DEPLOYMENT_ID or identity.get("scenario_id") != "S0"
+            or source.get("reason") != "CUDA_OOM_RESOURCE_ADMISSION_NO_CPU_OFFLOAD_OR_SHAPE_SUBSTITUTION"
+            or constraints.get("cpu_offload_forbidden") is not True
+            or constraints.get("frozen_context_batch_decode_unchanged") is not True
+            or constraints.get("timing_result_emitted") is not False):
+        die("resource-admission source does not prove the permitted capability-limited amendment")
+    return {
+        "schema_version": CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION,
+        "status": "CAPABILITY_LIMITED_DEGRADED_FROM_ORIGINAL_3_DEPLOYMENT_TRAIN_ROSTER",
+        "scientific_scope": "NOT_FULL_ORIGINAL_TRAIN_ROSTER_COMPLETION",
+        "original_train_tune": [
+            {"model": "Llama3.2-1B", "c16_cohort": "TRAIN_LLAMA", "split_role": "TUNING"},
+            {"model": "Qwen2.5-0.5B", "c16_cohort": "TRAIN_QWEN0_5", "split_role": "TUNING"},
+            {"model": "Qwen2.5-7B raw", "deployment_id": QWEN7_RAW_DEPLOYMENT_ID, "c16_cohort": "TRAIN_QWEN7_RAW", "split_role": "TUNING"},
+        ],
+        "effective_train_tune": [
+            {"model": "Llama3.2-1B", "c16_cohort": "TRAIN_LLAMA", "split_role": "TUNING"},
+            {"model": "Qwen2.5-0.5B", "c16_cohort": "TRAIN_QWEN0_5", "split_role": "TUNING"},
+        ],
+        "unavailable": [{
+            "model": "Qwen2.5-7B raw", "deployment_id": QWEN7_RAW_DEPLOYMENT_ID,
+            "reason": "RESOURCE_UNAVAILABLE_ON_RTX3090", "status": "SKIPPED_RESOURCE",
+            "scenario_id": "S0", "input_class": "TEXT", "timing_result_emitted": False,
+            "forbidden_substitutions": ["CPU_OFFLOAD", "SHAPE_SUBSTITUTION", "CONTEXT_BATCH_DECODE_CHANGE"],
+        }],
+        "prospective_holdout": [{"model": "Qwen2.5-7B AWQ", "c16_cohort": "PROSPECTIVE_QWEN7_AWQ", "split_role": "PROSPECTIVE_HOLDOUT", "outcomes_read": False}],
+        "resource_admission_source": {
+            "commit": G_RESOURCE_ADMISSION_COMMIT, "path": G_RESOURCE_ADMISSION_PATH,
+            "blob_id": git_blob(G_RESOURCE_ADMISSION_COMMIT, G_RESOURCE_ADMISSION_PATH),
+            "sha256": sha256_bytes(source_text.encode()), "receipt_closure": source["receipt_closure"],
+            "allowed_fields_consumed": ["schema_version", "status", "identity.deployment_id", "identity.scenario_id", "reason", "constraints"],
+        },
+        "forbidden_amendment_inputs": ["AWQ_TIMING", "AWQ_COUNTER", "AWQ_LAUNCH", "AWQ_SEMANTIC", "AWQ_HEAVY_TAIL", "NCU_OUTCOME", "NVBIT_OUTCOME"],
+        "p_admission_status_required": P_READY_STATUS,
+    }
+
+
+def write_capability_limited_train_roster(out: Path) -> None:
+    write_json(out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json", capability_limited_train_roster_payload())
+
+
 def write_p_event_consumption_contract(out: Path) -> None:
     """Document the small, immutable interface P must publish for this lane."""
     atomic_text(out / "P_EVENT_CONSUMPTION_CONTRACT.md", """# C16-P → C event-consumption contract
 
-Lane C polls P's published branch but never reads its worktree, exchange directory, live partial report, or an ordinary milestone.  The sole admission event is manifest `status: C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION` at an exact 40-character P commit.
+Lane C polls P's published branch but never reads its worktree, exchange directory, live partial report, or an ordinary milestone.  The sole admission event is manifest `status: C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED` at an exact 40-character P commit.  It is a capability-limited amendment, not completion of the original three-deployment train protocol.
 
-The ready manifest must use `schema_version: C16_P_NATIVE_CATALOG_FOR_C_V1`, set `p_commit` to that exact commit, and contain `hash_closure.status: HASH_CLOSED`, exact source producer commit SHA(s), and SHA-256 raw-artifact receipt(s).  Every `files[]` entry has `cohort`, `kind`, relative/absolute committed `path`, and content SHA-256.  Each cohort has exactly one of these kinds: `KERNEL_CATALOG`, `KERNEL_SEMANTIC_MAP`, `SEMANTIC_COVERAGE`, `NATIVE_BASELINE`, `RUNTIME_IMPLEMENTATION_AUDIT`, `RUN_JOIN_AUDIT`, `PROFILE_REPORT_INDEX`, and `DEPLOYMENT_ROSTER`.
+The ready manifest must use `schema_version: C16_P_NATIVE_CATALOG_FOR_C_V1`, set `p_commit` to that exact commit, bind `capability_limited_train_roster_version: CAPABILITY_LIMITED_TRAIN_ROSTER_V1` and the committed C amendment SHA, and contain `hash_closure.status: HASH_CLOSED`, exact source producer commit SHA(s), and SHA-256 raw-artifact receipt(s).  Every `files[]` entry has `cohort`, `kind`, relative/absolute committed `path`, and content SHA-256.  Each cohort has exactly one of these kinds: `KERNEL_CATALOG`, `KERNEL_SEMANTIC_MAP`, `SEMANTIC_COVERAGE`, `NATIVE_BASELINE`, `RUNTIME_IMPLEMENTATION_AUDIT`, `RUN_JOIN_AUDIT`, `PROFILE_REPORT_INDEX`, `DEPLOYMENT_ROSTER`, and `RESOURCE_ADMISSION`.
 
-P must publish physically separate cohorts.  `TRAIN_TUNE` contains only the direct roster identities `TRAIN_LLAMA`, `TRAIN_QWEN0_5`, and `TRAIN_QWEN7_RAW`, all `c16_split_role=TUNING`.  `PROSPECTIVE_QWEN7_AWQ` contains exactly direct roster identity `PROSPECTIVE_QWEN7_AWQ`, `c16_split_role=PROSPECTIVE_HOLDOUT`.  The latter payload content is not read until the train source SHA, strata, thresholds, seed, and 12/24/48 plans are frozen and those exact freeze artifacts are committed at C's `HEAD`.
+P must publish physically separate cohorts.  `TRAIN_TUNE` contains only the direct roster identities `TRAIN_LLAMA` and `TRAIN_QWEN0_5`, both `c16_split_role=TUNING`.  `c16_qwen25_7b_raw_reference` must not appear in any C selector or target input: its S0 resource admission is fixed as `RESOURCE_UNAVAILABLE_ON_RTX3090`.  `PROSPECTIVE_QWEN7_AWQ` contains exactly direct roster identity `PROSPECTIVE_QWEN7_AWQ`, `c16_split_role=PROSPECTIVE_HOLDOUT`.  The latter payload content is not read until the train source SHA, strata, thresholds, seed, and 12/24/48 plans are frozen and those exact freeze artifacts are committed at C's `HEAD`.
 
-`DEPLOYMENT_ROSTER` must contain `deployment_id`, `c16_cohort`, and `c16_split_role`; it replaces name guessing for the raw/AWQ split.  `PROFILE_REPORT_INDEX` bridges one `run_id` to one `profile_report_id`.  The catalog carries the C16 minimum fields and only `DIRECT_RUNTIME_NVTX`, `DIRECT_MODULE_ID`, or `UNKNOWN` semantic evidence.  An `UNKNOWN` semantic field is retained as an explicit stratum.  Kernel-name semantic inference is forbidden.
+`DEPLOYMENT_ROSTER` must contain `deployment_id`, `c16_cohort`, and `c16_split_role`; it replaces name guessing for the raw/AWQ split.  `PROFILE_REPORT_INDEX` bridges one `run_id` to one `profile_report_id`.  `RESOURCE_ADMISSION` must have one `ADMITTED` row per catalog deployment/scenario before it can enter a target plan.  The catalog carries the C16 minimum fields and only `DIRECT_RUNTIME_NVTX`, `DIRECT_MODULE_ID`, or `UNKNOWN` semantic evidence.  An `UNKNOWN` semantic field is retained as an explicit stratum.  Kernel-name semantic inference is forbidden.
 
-The cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome columns.  C reads no such result at either admission stage.  After AWQ application it publishes only a request-only Selector-R B48 target plan (at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  This does not authorize a GPU capture.
+The cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome columns.  C reads no such result at either admission stage; listed baseline/semantic/heavy-tail payload hashes are closure-only and their bodies are not selector inputs.  After AWQ application it publishes separate request-only Selector-R B48 NCU and NVBit target plans (each at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  This does not authorize a GPU capture.
 """)
 
 
@@ -822,17 +887,17 @@ def qualification_rows() -> list[dict[str, str]]:
 
 
 def stage_status(native_ready: bool) -> list[dict[str, str]]:
-    ready = "COMPLETE" if native_ready else "PENDING_COMMITTED_WAVE1_CATALOG"
+    ready = "COMPLETE" if native_ready else "PENDING_CAPABILITY_LIMITED_P_CATALOG"
     return [
         {"stage_id": "C16-0.8", "execution_status": "COMPLETE", "scientific_status": "PASS", "evidence": "offline selector/estimator fixtures and conservation control"},
-        {"stage_id": "C16-2.5", "execution_status": "COMPLETE_HISTORICAL_ORACLE_ONLY", "scientific_status": "NOT_NATIVE", "evidence": "certainty implementation; native fact table pending G"},
+        {"stage_id": "C16-2.5", "execution_status": "COMPLETE_HISTORICAL_ORACLE_ONLY", "scientific_status": "NOT_NATIVE", "evidence": "certainty implementation; native fact table pending capability-limited P"},
         {"stage_id": "C16-3.1", "execution_status": "COMPLETE", "scientific_status": "PASS", "evidence": "five-field deterministic strata schema"},
         {"stage_id": "C16-3.2", "execution_status": "COMPLETE", "scientific_status": "PASS", "evidence": "separate Selector-R / Selector-M outputs"},
         {"stage_id": "C16-3.3", "execution_status": "COMPLETE", "scientific_status": "PASS", "evidence": "certainty + N_s/n_s and ratio reconstruction"},
         {"stage_id": "C16-3.4", "execution_status": "COMPLETE", "scientific_status": "PASS", "evidence": "frozen 12/24/48 allocation and capture-cost fields"},
         {"stage_id": "C16-3.5", "execution_status": "COMPLETE", "scientific_status": "RETROSPECTIVE_ORACLE_CALIBRATION", "evidence": "C12/C13 mode=0 only"},
-        {"stage_id": "C16-3.6", "execution_status": ready, "scientific_status": "PENDING" if not native_ready else "FROZEN_BEFORE_HOLDOUT", "evidence": "prospective protocol"},
-        {"stage_id": "C16-4.2", "execution_status": "PENDING_COMMITTED_WAVE1_CATALOG", "scientific_status": "PENDING", "evidence": "no native target identity exists yet"},
+        {"stage_id": "C16-3.6", "execution_status": ready, "scientific_status": "CAPABILITY_LIMITED_PENDING" if not native_ready else "FROZEN_BEFORE_HOLDOUT", "evidence": "resource-admission-only protocol amendment; prospective protocol"},
+        {"stage_id": "C16-4.2", "execution_status": "PENDING_CAPABILITY_LIMITED_P_CATALOG", "scientific_status": "PENDING", "evidence": "no admitted native target identity exists yet"},
         {"stage_id": "C16-6.1", "execution_status": "PARTIAL", "scientific_status": "METRIC_BY_METRIC_BOUNDARY_PUBLISHED", "evidence": "no global PASS"},
     ]
 
@@ -865,10 +930,16 @@ def write_target_plan(out: Path, plan_rows: list[dict[str, Any]], historical_onl
 def write_manifest(out: Path, status: str, native_catalog: bool) -> None:
     files = [{"path": path.name, "sha256": sha256_file(path), "size_bytes": path.stat().st_size}
              for path in sorted(out.iterdir()) if path.is_file() and path.name != "PUBLISH_MANIFEST.json"]
-    write_json(out / "PUBLISH_MANIFEST.json", {"schema_version": "C16_LANE_C_PUBLISH_V2", "lane": "C", "planning_sha": PLANNING_SHA,
-                                                "producer_commit": current_head(), "selector_code_sha256": code_sha(), "strata_version": STRATA_VERSION,
-                                                "status": status, "historical_scope": "RETROSPECTIVE_ORACLE_CALIBRATION_ONLY", "native_catalog_consumed": native_catalog,
-                                                "new_simulator_replay": 0, "new_gpu_execution": 0, "files": files})
+    payload: dict[str, Any] = {"schema_version": "C16_LANE_C_PUBLISH_V2", "lane": "C", "planning_sha": PLANNING_SHA,
+                               "producer_commit": current_head(), "selector_code_sha256": code_sha(), "strata_version": STRATA_VERSION,
+                               "status": status, "historical_scope": "RETROSPECTIVE_ORACLE_CALIBRATION_ONLY", "native_catalog_consumed": native_catalog,
+                               "new_simulator_replay": 0, "new_gpu_execution": 0, "files": files}
+    amendment = out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"
+    if amendment.is_file():
+        payload["capability_limited_train_roster_version"] = CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION
+        payload["capability_limited_train_roster_sha256"] = sha256_file(amendment)
+        payload["original_train_roster_complete"] = False
+    write_json(out / "PUBLISH_MANIFEST.json", payload)
 
 
 def prepare_historical(out: Path) -> None:
@@ -878,6 +949,7 @@ def prepare_historical(out: Path) -> None:
     receipts = input_receipts()
     write_preflight(out)
     write_strata_definition(out)
+    write_capability_limited_train_roster(out)
     write_tsv(out / "CONSUMED_INPUTS.tsv", ["input_id", "revision", "path", "blob_id", "sha256", "role", "consumption", "evidence_tier"], receipts)
     all_plan_rows: list[dict[str, Any]] = []
     all_budget_rows: list[dict[str, Any]] = []
@@ -901,10 +973,10 @@ def prepare_historical(out: Path) -> None:
     write_tsv(out / "RATIO_RECONSTRUCTION.tsv", ["plan_id", "identity", "phase", "rate", "numerator_metric", "denominator_metric", "weighted_numerator", "weighted_denominator", "ratio_estimate", "ratio_exact", "ci_low", "ci_high", "variance_status", "method", "evidence_tier"], ratios)
     write_tsv(out / "HISTORICAL_STRUCTURAL_OBSERVATIONS.tsv", ["plan_id", "phase", "stratum_id", "object_class", "address_domain", "page_bucket_bytes", "sampled_units", "sample_observed_unique_pages", "population_union_estimate", "line_observation", "method", "status", "evidence_tier"], historical_structural_observations(all_plan_rows))
     write_target_plan(out, all_plan_rows, historical_only=True)
-    write_protocol(out, "OFFLINE_PROTOCOL_FROZEN_AWAITING_COMMITTED_WAVE1_CATALOG")
+    write_protocol(out, "OFFLINE_CAPABILITY_LIMITED_PROTOCOL_FROZEN_AWAITING_P_CATALOG")
     write_holdout_schema(out)
     write_p_event_consumption_contract(out)
-    write_tsv(out / "HOLDOUT_RESULTS.tsv", ["plan_id", "producer_commit", "producer_payload_sha256", "universe_id", "deployment_id", "scenario_id", "phase", "metric", "metric_kind", "sample_complete", "complete_population", "target_identity_status", "evidence_tier", "effect_fraction_of_reference", "estimate", "exact", "absolute_error", "relative_error", "ci_low", "ci_high", "variance_status", "qualification_status", "scientific_verdict"], [{"plan_id": "NA", "producer_commit": "NA", "metric": "NA", "qualification_status": "UNAVAILABLE", "scientific_verdict": "PENDING_COMMITTED_WAVE1_CATALOG_AND_POST_FREEZE_HOLDOUT"}])
+    write_tsv(out / "HOLDOUT_RESULTS.tsv", ["plan_id", "producer_commit", "producer_payload_sha256", "universe_id", "deployment_id", "scenario_id", "phase", "metric", "metric_kind", "sample_complete", "complete_population", "target_identity_status", "evidence_tier", "effect_fraction_of_reference", "estimate", "exact", "absolute_error", "relative_error", "ci_low", "ci_high", "variance_status", "qualification_status", "scientific_verdict"], [{"plan_id": "NA", "producer_commit": "NA", "metric": "NA", "qualification_status": "UNAVAILABLE", "scientific_verdict": "PENDING_CAPABILITY_LIMITED_P_CATALOG_AND_POST_FREEZE_AWQ_HOLDOUT"}])
     write_tsv(out / "SAMPLER_QUALIFICATION.tsv", ["metric", "evidence_required", "status", "reason", "boundary"], qualification_rows())
     write_tsv(out / "STAGE_STATUS.tsv", ["stage_id", "execution_status", "scientific_status", "evidence"], stage_status(False))
     write_tsv(out / "TEST_RESULTS.tsv", ["test_id", "status", "scope"], [
@@ -917,18 +989,18 @@ def prepare_historical(out: Path) -> None:
         {"test_id": "C16-T07", "status": "PASS", "scope": "no new simulator/GPU execution"},
     ])
     atomic_text(out / "HISTORICAL_ORACLE_SCOPE.md", "# Historical scope\n\nC12/C13 are exclusively `RETROSPECTIVE_ORACLE_CALIBRATION`.  Their operator labels, shape absence, per-kernel outcomes and any SimVA page information are not cheap native selector fields.  C13 `mode=1` entries are rejected before evaluation.  No result in this pack is a blind native holdout or a prospective mechanism claim.\n")
-    atomic_text(out / "README.md", "# C16 Lane C review pack\n\nRead `FINAL_REPORT.md`, `ENV_PREFLIGHT.json`, `STRATA_DEFINITION.json`, `PROSPECTIVE_PROTOCOL.json`, `P_EVENT_CONSUMPTION_CONTRACT.md`, and `SAMPLER_QUALIFICATION.tsv` first.  `SELECTOR_R_PLAN.tsv` and `SELECTOR_M_PLAN.tsv` are alternative, intentionally separate plans.  Historical tables are `RETROSPECTIVE_ORACLE_CALIBRATION` only.  P is consumed only through the exact-status, exact-commit, hash-closed train→freeze→AWQ route implemented by `c16_sampling_v2.py --freeze-p-train` then `--apply-p-awq-holdout`; live partial data are never read.\n")
-    atomic_text(out / "FINAL_REPORT.md", "# C16 Lane C — Sampling V2 checkpoint\n\nStatus: `C16_C_SAMPLING_V2_READY_FOR_REVIEW` for offline implementation and retrospective oracle calibration; prospective qualification is pending a committed P-ready native catalog.  The selector has fixed Phase × Operator × Implementation × ShapeBucket × DType strata, certainty-unit weight 1, separately published probability (`Selector-R`) and medoid (`Selector-M`) plans, and 12/24/48 per deployment/scenario/phase alternative budgets.\n\nC12/C13 are read-only `RETROSPECTIVE_ORACLE_CALIBRATION`; C13 mode=1 is rejected.  Historical operator fields are oracle-only.  `HISTORICAL_STRUCTURAL_OBSERVATIONS.tsv` reports only sampled modeled-SimVA page sets by stratum; no page/line union is extrapolated with N/n.  No GPU, native profiler, trace capture, or simulator replay was started.\n\nP may be admitted only at `C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION` with exact commit/hash closure.  C first consumes only the direct Llama/Qwen0.5/Qwen7-raw train roster, audits schema/join, freezes source SHA plus strata/threshold/seed/budget rules and all 12/24/48 plans, then separately unseals Qwen7-AWQ cheap catalog.  It reads no NCU/NVBit outcome, treats UNKNOWN semantic fields as explicit strata, and publishes a bounded request-only target plan immediately after AWQ application.  Qualification remains metric-by-metric; there is no overall PASS.\n")
+    atomic_text(out / "README.md", "# C16 Lane C review pack\n\nRead `FINAL_REPORT.md`, `CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json`, `ENV_PREFLIGHT.json`, `STRATA_DEFINITION.json`, `PROSPECTIVE_PROTOCOL.json`, `P_EVENT_CONSUMPTION_CONTRACT.md`, and `SAMPLER_QUALIFICATION.tsv` first.  `SELECTOR_R_PLAN.tsv` and `SELECTOR_M_PLAN.tsv` are alternative, intentionally separate plans.  Historical tables are `RETROSPECTIVE_ORACLE_CALIBRATION` only.  C is explicitly capability-limited from the original three-deployment train roster: Llama3.2-1B and Qwen2.5-0.5B remain train/tune; Qwen2.5-7B raw is resource-unavailable on RTX3090; Qwen2.5-7B AWQ is sealed prospective holdout.  P is consumed only through the exact-status, exact-commit, hash-closed train→commit freeze→AWQ route implemented by `c16_sampling_v2.py --freeze-p-train` then `--apply-p-awq-holdout`; live partial data are never read.\n")
+    atomic_text(out / "FINAL_REPORT.md", "# C16 Lane C — Sampling V2 checkpoint\n\nStatus: `C16_C_SAMPLING_V2_CAPABILITY_LIMITED_READY_FOR_REVIEW` for offline implementation and retrospective oracle calibration; prospective qualification is pending a committed capability-limited P-ready native catalog.  This is a degradation from, not completion of, the original Llama3.2-1B + Qwen2.5-0.5B + Qwen2.5-7B-raw train roster.  The only amendment input is the hash-closed Qwen2.5-7B raw S0 resource admission: CUDA OOM / `SKIPPED_RESOURCE`, no CPU offload, shape substitution, or scenario rewrite, and no timing result.\n\nThe effective train/tune roster is Llama3.2-1B and Qwen2.5-0.5B.  Qwen2.5-7B raw is explicitly `RESOURCE_UNAVAILABLE_ON_RTX3090`; it cannot enter a selector catalog or target plan.  Qwen2.5-7B AWQ remains a sealed prospective holdout and no timing/counter/launch/semantic/heavy-tail outcome is read before the frozen train selector commit.  The selector retains fixed Phase × Operator × Implementation × ShapeBucket × DType strata, explicit UNKNOWN fields, certainty-unit weight 1, independently reconstructed ratios, separate Selector-R/Selector-M plans, and fixed 12/24/48 budgets.\n\nP may be admitted only at `C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED` with exact commit/hash closure and this amendment's SHA binding.  C first consumes only the effective direct train roster, audits schema/join/resource admission, freezes source SHA plus strata/certainty/threshold/seed/budget/estimator/input hashes, commits it, then separately unseals Qwen7-AWQ cheap catalog.  It applies the frozen selector without post-hoc edits, reads no NCU/NVBit outcome, and immediately publishes separate bounded B48 NCU and NVBit request-only target plans containing only admitted identities.  Qualification remains metric-by-metric; there is no overall PASS.\n")
     requests = [
-        {"request_id": "C16-T3-1", "request": "Wave-1 manifest-bound native census holdout for Qwen2.5-7B-AWQ", "go_no_go": "only after frozen selector plan and identity receipt", "requires_new_authorization": "true"},
-        {"request_id": "C16-T3-2", "request": "one Qwen3/MoE structural holdout with semantic catalog closure", "go_no_go": "only after frozen split; no selector mutation", "requires_new_authorization": "true"},
-        {"request_id": "C16-T3-3", "request": "bounded matched NCU/NVBit targets from committed Selector-M plan", "go_no_go": "only after G second-pass identity validation and capture cap", "requires_new_authorization": "true"},
+        {"request_id": "C16-T3-1", "request": "capability-limited P-ready catalog for Llama3.2-1B and Qwen2.5-0.5B train/tune", "go_no_go": "only at exact CAPABILITY_LIMITED P manifest closure", "requires_new_authorization": "true"},
+        {"request_id": "C16-T3-2", "request": "sealed Qwen2.5-7B-AWQ cheap catalog after committed train selector freeze", "go_no_go": "no AWQ outcome read before C train freeze commit", "requires_new_authorization": "true"},
+        {"request_id": "C16-T3-3", "request": "separate bounded B48 NCU and NVBit requests for admitted AWQ identities", "go_no_go": "only after fixed G target-plan commit; no Qwen7 raw target", "requires_new_authorization": "true"},
     ]
     write_tsv(out / "NEXT_HIGH_FIDELITY_REQUESTS.tsv", ["request_id", "request", "go_no_go", "requires_new_authorization"], requests)
     bytes_read = sum(len(git_text(row["revision"], row["path"]).encode()) for row in receipts)
     artifact_bytes = sum(path.stat().st_size for path in out.iterdir() if path.is_file())
     write_cost(out, started, bytes_read, artifact_bytes)
-    write_manifest(out, "C16_C_SAMPLING_V2_READY_FOR_REVIEW", native_catalog=False)
+    write_manifest(out, "C16_C_SAMPLING_V2_CAPABILITY_LIMITED_READY_FOR_REVIEW", native_catalog=False)
 
 
 def manifest_entry_path(manifest_path: str, entry_path: str) -> str:
@@ -951,6 +1023,10 @@ def p_manifest_entries(manifest: dict[str, Any], cohort: str) -> dict[str, dict[
         die(f"P manifest schema must be {P_MANIFEST_SCHEMA}")
     if manifest.get("status") != P_READY_STATUS:
         die(f"P manifest status must be {P_READY_STATUS}; live/provisional P data are forbidden")
+    if manifest.get("capability_limited_train_roster_version") != CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION:
+        die("P manifest does not bind CAPABILITY_LIMITED_TRAIN_ROSTER_V1")
+    if manifest.get("unavailable_deployment_ids") != [QWEN7_RAW_DEPLOYMENT_ID]:
+        die("P manifest does not preserve the sole Qwen2.5-7B raw resource-unavailable identity")
     closure = manifest.get("hash_closure")
     if not isinstance(closure, dict) or closure.get("status") != "HASH_CLOSED":
         die("P ready manifest lacks HASH_CLOSED hash_closure")
@@ -983,9 +1059,13 @@ def p_read_payloads(commit: str, manifest_path: str, cohort: str) -> tuple[dict[
     entries = p_manifest_entries(manifest, cohort)
     payloads: dict[str, str] = {}
     dependencies: list[dict[str, str]] = []
+    declared_dependencies: list[dict[str, str]] = []
     for kind in P_REQUIRED_PAYLOAD_KINDS:
         entry = entries[kind]
         path = manifest_entry_path(manifest_path, str(entry["path"]))
+        declared_dependencies.append({"kind": kind, "path": path, "sha256": str(entry["sha256"])})
+        if kind not in P_SELECTOR_CONSUMED_PAYLOAD_KINDS:
+            continue
         content = git_text(commit, path)
         digest = sha256_bytes(content.encode())
         if digest != entry["sha256"]:
@@ -1001,12 +1081,18 @@ def p_read_payloads(commit: str, manifest_path: str, cohort: str) -> tuple[dict[
         "cohort": cohort,
         "hash_closure": manifest["hash_closure"],
         "validated_dependencies": dependencies,
+        "manifest_declared_dependencies": declared_dependencies,
+        "manifest_listed_not_read": [kind for kind in P_REQUIRED_PAYLOAD_KINDS if kind not in P_SELECTOR_CONSUMED_PAYLOAD_KINDS],
+        "capability_limited_train_roster_version": manifest["capability_limited_train_roster_version"],
+        "c_protocol_amendment_sha256": manifest.get("c_protocol_amendment_sha256", ""),
+        "unavailable_deployment_ids": manifest["unavailable_deployment_ids"],
     }
     return payloads, receipt
 
 
 def p_validate_catalog_and_roster(catalog_rows: list[dict[str, str]], roster_rows: list[dict[str, str]],
-                                  profile_rows: list[dict[str, str]], cohort: str) -> tuple[dict[str, str], dict[str, str]]:
+                                  profile_rows: list[dict[str, str]], resource_rows: list[dict[str, str]],
+                                  cohort: str) -> tuple[dict[str, str], dict[str, str]]:
     """Audit schema/join cardinality before any selector source freeze.
 
     This is deliberately stricter than the generic native route.  P provides a
@@ -1053,6 +1139,14 @@ def p_validate_catalog_and_roster(catalog_rows: list[dict[str, str]], roster_row
         if not run_id or not report_id or run_id in report_by_run:
             die("P PROFILE_REPORT_INDEX has incomplete or ambiguous run/report identity")
         report_by_run[run_id] = report_id
+    if not resource_rows or not {"deployment_id", "scenario_id", "admission_status"}.issubset(resource_rows[0]):
+        die("P RESOURCE_ADMISSION must include deployment_id,scenario_id,admission_status")
+    admitted_pairs: set[tuple[str, str]] = set()
+    for row in resource_rows:
+        pair = (row.get("deployment_id", ""), row.get("scenario_id", ""))
+        if not all(pair) or pair in admitted_pairs or row.get("admission_status") != "ADMITTED":
+            die("P RESOURCE_ADMISSION has missing, duplicate, or non-ADMITTED catalog identity")
+        admitted_pairs.add(pair)
     physical_keys: set[tuple[str, str, str, str, str, str]] = set()
     catalog_deployments: set[str] = set()
     unknown_semantic_rows = 0
@@ -1061,6 +1155,10 @@ def p_validate_catalog_and_roster(catalog_rows: list[dict[str, str]], roster_row
         if any(row.get(field, "") == "" for field in required_catalog):
             die("P KERNEL_CATALOG has an empty required field")
         deployment = row["deployment_id"]
+        if (deployment, row["scenario_id"]) not in admitted_pairs:
+            die("P catalog deployment/scenario lacks a direct ADMITTED resource receipt")
+        if deployment == QWEN7_RAW_DEPLOYMENT_ID:
+            die("RESOURCE_UNAVAILABLE Qwen2.5-7B raw may not enter a selector catalog")
         catalog_deployments.add(deployment)
         roster = roster_by_deployment.get(deployment)
         if roster is None:
@@ -1096,6 +1194,7 @@ def p_validate_catalog_and_roster(catalog_rows: list[dict[str, str]], roster_row
         "physical_launch_identities": str(len(physical_keys)),
         "roster_deployments": str(len(roster_by_deployment)),
         "profile_runs": str(len(report_by_run)),
+        "resource_admitted_deployment_scenarios": str(len(admitted_pairs)),
         "unknown_semantic_rows": str(unknown_semantic_rows),
         "direct_semantic_rows": str(direct_semantic_rows),
         "unknown_policy": "EXPLICIT_STRATUM_NO_KERNEL_NAME_HEURISTIC",
@@ -1110,7 +1209,8 @@ def p_catalog_input(commit: str, manifest_path: str, cohort: str) -> tuple[list[
     rows = tsv_rows(payloads["KERNEL_CATALOG"])
     roster = tsv_rows(payloads["DEPLOYMENT_ROSTER"])
     profile = tsv_rows(payloads["PROFILE_REPORT_INDEX"])
-    audit, roles = p_validate_catalog_and_roster(rows, roster, profile, cohort)
+    resource = tsv_rows(payloads["RESOURCE_ADMISSION"])
+    audit, roles = p_validate_catalog_and_roster(rows, roster, profile, resource, cohort)
     profile_by_run = {row["run_id"]: row["profile_report_id"] for row in profile}
     # Carry P's mandatory report bridge into every C target.  This is a
     # one-to-one enrichment after the cardinality audit, not a row-multiplying
@@ -1118,6 +1218,19 @@ def p_catalog_input(commit: str, manifest_path: str, cohort: str) -> tuple[list[
     for row in rows:
         row["profile_report_id"] = profile_by_run[row["run_id"]]
     return rows, receipt, audit, roles
+
+
+def verify_capability_limited_amendment_binding(out: Path, receipt: dict[str, Any]) -> None:
+    """Require P to bind C's committed resource-only amendment before freeze."""
+    amendment = out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"
+    if not amendment.is_file():
+        die("CAPABILITY_LIMITED_TRAIN_ROSTER_V1 must be committed before P train consumption")
+    if receipt.get("capability_limited_train_roster_version") != CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION:
+        die("P receipt has the wrong capability-limited train roster version")
+    if receipt.get("c_protocol_amendment_sha256") != sha256_file(amendment):
+        die("P manifest does not bind the exact committed C capability-limited amendment")
+    if receipt.get("unavailable_deployment_ids") != [QWEN7_RAW_DEPLOYMENT_ID]:
+        die("P receipt changes the frozen Qwen2.5-7B raw unavailability declaration")
 
 
 def verify_native_catalog_admission(commit: str, manifest_path: str, manifest: dict[str, Any]) -> list[dict[str, str]]:
@@ -1267,6 +1380,7 @@ def freeze_p_train(out: Path, commit: str, manifest_path: str) -> None:
     if not (out / "PUBLISH_MANIFEST.json").is_file():
         die("run --prepare-historical before a P train/tune selector freeze")
     rows, receipt, audit, roles = p_catalog_input(commit, manifest_path, P_TRAIN_COHORT)
+    verify_capability_limited_amendment_binding(out, receipt)
     if set(roles.values()) != {"TUNING"}:
         die("P train/tune catalog may not contain a holdout deployment")
     units = annotate_certainty(canonicalize_catalog(rows, "NATIVE_PROFILED", historical_oracle=False))
@@ -1280,7 +1394,12 @@ def freeze_p_train(out: Path, commit: str, manifest_path: str) -> None:
         "state": "SOURCE_SHA_FROZEN_BEFORE_AWQ_UNSEAL",
         "selector_code_sha256": code_sha(), "selector_version": SELECTOR_VERSION,
         "selector_source_commit": current_head(), "producer_p_commit": commit,
-        "selector_inputs": "TRAIN_TUNE_NATIVE_CHEAP_CATALOG_ONLY", "kernel_name_heuristic": "FORBIDDEN",
+        "selector_inputs": "CAPABILITY_LIMITED_TRAIN_TUNE_NATIVE_CHEAP_CATALOG_ONLY", "kernel_name_heuristic": "FORBIDDEN",
+        "capability_limited_train_roster_version": CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION,
+        "capability_limited_amendment_sha256": sha256_file(out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"),
+        "resource_unavailable_excluded_deployment": QWEN7_RAW_DEPLOYMENT_ID,
+        "train_input_hashes": {item["kind"]: item["sha256"] for item in receipt["validated_dependencies"]},
+        "manifest_declared_not_read_hashes": {item["kind"]: item["sha256"] for item in receipt["manifest_declared_dependencies"] if item["kind"] in receipt["manifest_listed_not_read"]},
     })
     write_preflight(out, "P_FORMAL_TRAIN_TUNE_CATALOG_CONSUMED_AWQ_NOT_READ")
     write_protocol(out, "P_TRAIN_SELECTOR_RULES_AND_12_24_48_PLANS_FROZEN_AWAITING_AWQ_CHEAP_CATALOG", receipt)
@@ -1299,10 +1418,13 @@ def assert_p_train_freeze(out: Path) -> dict[str, Any]:
     source = json.loads((out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json").read_text())
     if source.get("selector_code_sha256") != code_sha() or protocol.get("selector_code_sha256") != code_sha():
         die("selector source SHA changed after train/tune freeze; AWQ unseal is forbidden")
+    amendment = out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"
+    if source.get("capability_limited_amendment_sha256") != sha256_file(amendment):
+        die("train freeze source does not bind the capability-limited roster amendment")
     required = [out / f"P_TRAIN_TUNE_{suffix}" for suffix in ("SELECTOR_R_PLAN.tsv", "SELECTOR_M_PLAN.tsv", "SAMPLE_BUDGETS.tsv")]
     if any(not path.is_file() for path in required):
         die("P train/tune 12/24/48 plan bundle is incomplete")
-    frozen_paths = [out / "P_TRAIN_TUNE_CATALOG_RECEIPT.json", out / "P_TRAIN_TUNE_SCHEMA_JOIN_AUDIT.json",
+    frozen_paths = [amendment, out / "P_TRAIN_TUNE_CATALOG_RECEIPT.json", out / "P_TRAIN_TUNE_SCHEMA_JOIN_AUDIT.json",
                     out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json", protocol_path, *required]
     head = current_head()
     for path in frozen_paths:
@@ -1314,19 +1436,21 @@ def assert_p_train_freeze(out: Path) -> dict[str, Any]:
 
 
 def write_p_awq_target_plan(out: Path, plans: list[dict[str, Any]], units: list[dict[str, Any]], receipt: dict[str, Any]) -> None:
-    """Publish a bounded, request-only Selector-R capture list for G.
+    """Publish bounded, request-only Selector-R NCU and NVBit lists for G.
 
     B12/B24/B48 are alternative frozen plans.  The sole execution candidate is
     B48 Selector-R, capped at 48 units per universe; medoids stay in their own
     plan and are explicitly not a concurrent capture set.
     """
     by_unit = {row["unit_id"]: row for row in units}
-    fields = ["target_plan_id", "selector_kind", "selector_code_sha256", "budget", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "run_id", "profile_report_id", "device", "context", "stream", "correlation_id", "launch_ordinal", "semantic_key_json", "selection_role", "selection_reason", "estimated_capture_cost_ns", "target_status", "capture_cap_per_universe", "identity_validation_required", "p_manifest_sha256", "p_catalog_sha256", "forbidden_input_confirmation"]
+    fields = ["capture_modality", "target_plan_id", "selector_kind", "selector_code_sha256", "budget", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "run_id", "profile_report_id", "device", "context", "stream", "correlation_id", "launch_ordinal", "semantic_key_json", "selection_role", "selection_reason", "estimated_capture_cost_ns", "target_status", "capture_cap_per_universe", "identity_validation_required", "p_manifest_sha256", "p_catalog_sha256", "forbidden_input_confirmation"]
     rows: list[dict[str, Any]] = []
     for plan in plans:
         if plan["selector_kind"] != "SELECTOR_R" or "_B48_" not in plan["plan_id"] or plan["plan_status"] != "FROZEN_READY":
             continue
         unit = by_unit[plan["unit_id"]]
+        if plan["deployment_id"] == QWEN7_RAW_DEPLOYMENT_ID:
+            die("RESOURCE_UNAVAILABLE Qwen2.5-7B raw may not appear in an NCU/NVBit target plan")
         rows.append({"target_plan_id": plan["plan_id"], "selector_kind": plan["selector_kind"], "selector_code_sha256": plan["selector_code_sha256"], "budget": 48,
                      "deployment_id": plan["deployment_id"], "scenario_id": plan["scenario_id"], "phase": plan["phase"],
                      "stratum_id": plan["stratum_id"], "unit_id": plan["unit_id"], "run_id": unit["run_id"], "profile_report_id": unit["profile_report_id"],
@@ -1342,8 +1466,9 @@ def write_p_awq_target_plan(out: Path, plans: list[dict[str, Any]], units: list[
     counts = Counter(row["target_plan_id"] for row in rows)
     if any(count > 48 for count in counts.values()):
         die("bounded G target plan exceeds frozen 48-unit per-universe cap")
-    write_tsv(out / "P_AWQ_G_BOUNDED_TARGET_PLAN.tsv", fields, rows)
-    atomic_text(out / "P_AWQ_G_TARGET_PLAN_README.md", "# Bounded G target plan\n\nThis is a request-only, exact-identity `Selector-R` B48 plan from the already-frozen source SHA.  It contains at most 48 units per deployment/scenario/phase universe.  `Selector-M` remains in `P_AWQ_SELECTOR_M_PLAN.tsv` as a non-concurrent deterministic medoid alternative.  G must revalidate the report-scoped composite identity before any authorized second pass.  No NCU/NVBit result, trace outcome, speedup, miss, or candidate mechanism metric was read by C.\n")
+    for modality in ("NCU", "NVBIT"):
+        write_tsv(out / f"P_AWQ_G_{modality}_TARGET_PLAN.tsv", fields, [{"capture_modality": modality} | row for row in rows])
+    atomic_text(out / "P_AWQ_G_TARGET_PLAN_README.md", "# Bounded G target plans\n\nThese are separate request-only, exact-identity `Selector-R` B48 NCU and NVBit plans from the already-frozen source SHA.  Each contains at most 48 units per deployment/scenario/phase universe and only direct `ADMITTED` resource identities.  `c16_qwen25_7b_raw_reference` is excluded as `RESOURCE_UNAVAILABLE_ON_RTX3090`.  `Selector-M` remains in `P_AWQ_SELECTOR_M_PLAN.tsv` as a non-concurrent deterministic medoid alternative.  G must revalidate the report-scoped composite identity before any authorized second pass.  No NCU/NVBit result, trace outcome, speedup, miss, or candidate mechanism metric was read by C.\n")
 
 
 def apply_p_awq_holdout(out: Path, commit: str, manifest_path: str) -> None:
@@ -1351,6 +1476,7 @@ def apply_p_awq_holdout(out: Path, commit: str, manifest_path: str) -> None:
     require_out(out)
     protocol = assert_p_train_freeze(out)
     rows, receipt, audit, roles = p_catalog_input(commit, manifest_path, P_AWQ_COHORT)
+    verify_capability_limited_amendment_binding(out, receipt)
     if set(roles.values()) != {"PROSPECTIVE_HOLDOUT"}:
         die("P AWQ catalog must contain only the direct prospective holdout identity")
     units = annotate_certainty(canonicalize_catalog(rows, "NATIVE_PROFILED", historical_oracle=False))
@@ -1360,7 +1486,7 @@ def apply_p_awq_holdout(out: Path, commit: str, manifest_path: str) -> None:
     write_p_awq_target_plan(out, plans, units, receipt)
     protocol["state"] = "P_AWQ_CHEAP_CATALOG_APPLIED_FROZEN_TARGET_PLAN_PUBLISHED"
     protocol["awq_cheap_catalog_receipt"] = receipt
-    protocol["g_target_plan"] = "P_AWQ_G_BOUNDED_TARGET_PLAN.tsv"
+    protocol["g_target_plans"] = ["P_AWQ_G_NCU_TARGET_PLAN.tsv", "P_AWQ_G_NVBIT_TARGET_PLAN.tsv"]
     protocol["ncu_nvbit_outcomes_consumed"] = False
     write_json(out / "PROSPECTIVE_PROTOCOL.json", protocol)
     write_preflight(out, "P_FORMAL_TRAIN_AND_AWQ_CHEAP_CATALOGS_CONSUMED_NO_OUTCOMES")

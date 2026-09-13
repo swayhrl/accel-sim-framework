@@ -1,0 +1,88 @@
+{
+  "effective_train_tune": [
+    {
+      "c16_cohort": "TRAIN_LLAMA",
+      "model": "Llama3.2-1B",
+      "split_role": "TUNING"
+    },
+    {
+      "c16_cohort": "TRAIN_QWEN0_5",
+      "model": "Qwen2.5-0.5B",
+      "split_role": "TUNING"
+    }
+  ],
+  "forbidden_amendment_inputs": [
+    "AWQ_TIMING",
+    "AWQ_COUNTER",
+    "AWQ_LAUNCH",
+    "AWQ_SEMANTIC",
+    "AWQ_HEAVY_TAIL",
+    "NCU_OUTCOME",
+    "NVBIT_OUTCOME"
+  ],
+  "original_train_tune": [
+    {
+      "c16_cohort": "TRAIN_LLAMA",
+      "model": "Llama3.2-1B",
+      "split_role": "TUNING"
+    },
+    {
+      "c16_cohort": "TRAIN_QWEN0_5",
+      "model": "Qwen2.5-0.5B",
+      "split_role": "TUNING"
+    },
+    {
+      "c16_cohort": "TRAIN_QWEN7_RAW",
+      "deployment_id": "c16_qwen25_7b_raw_reference",
+      "model": "Qwen2.5-7B raw",
+      "split_role": "TUNING"
+    }
+  ],
+  "p_admission_status_required": "C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED",
+  "prospective_holdout": [
+    {
+      "c16_cohort": "PROSPECTIVE_QWEN7_AWQ",
+      "model": "Qwen2.5-7B AWQ",
+      "outcomes_read": false,
+      "split_role": "PROSPECTIVE_HOLDOUT"
+    }
+  ],
+  "resource_admission_source": {
+    "allowed_fields_consumed": [
+      "schema_version",
+      "status",
+      "identity.deployment_id",
+      "identity.scenario_id",
+      "reason",
+      "constraints"
+    ],
+    "blob_id": "59236fd192eef6677c621fa98cc43bcc4e13f9da",
+    "commit": "b5e48f7a69d3bc3a978660a99e53907ef5072b6e",
+    "path": "docs/vm_tlb/codex_handoff/c16/autodl_wave1/P2_RAW_S0_RESOURCE_ADMISSION.json",
+    "receipt_closure": {
+      "binding_sha256": "2580140ff48cca56e8515ece18d6cc0eaae11db7904106505012f1b4e6951e99",
+      "preflight_sha256": "d9aeaf5cfd140f47989c53032ab387e59569c5b3b5211b01cb5ae9d16d35d5b2",
+      "resource_admission_sha256": "71120c0e677832155a7ec21b7cb1f6d561d9a0a7664ce065698afa26e025431f"
+    },
+    "sha256": "a087caf9def8834621befdd9c1762c0f1da60c94112ce4c8ab6c72c14641156c"
+  },
+  "schema_version": "CAPABILITY_LIMITED_TRAIN_ROSTER_V1",
+  "scientific_scope": "NOT_FULL_ORIGINAL_TRAIN_ROSTER_COMPLETION",
+  "status": "CAPABILITY_LIMITED_DEGRADED_FROM_ORIGINAL_3_DEPLOYMENT_TRAIN_ROSTER",
+  "unavailable": [
+    {
+      "deployment_id": "c16_qwen25_7b_raw_reference",
+      "forbidden_substitutions": [
+        "CPU_OFFLOAD",
+        "SHAPE_SUBSTITUTION",
+        "CONTEXT_BATCH_DECODE_CHANGE"
+      ],
+      "input_class": "TEXT",
+      "model": "Qwen2.5-7B raw",
+      "reason": "RESOURCE_UNAVAILABLE_ON_RTX3090",
+      "scenario_id": "S0",
+      "status": "SKIPPED_RESOURCE",
+      "timing_result_emitted": false
+    }
+  ]
+}

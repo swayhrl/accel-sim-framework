@@ -71,6 +71,14 @@ assert MODULE.split_role("Qwen2.5-7B-Instruct-AWQ") == "PROSPECTIVE_HOLDOUT"
 assert MODULE.split_role("Qwen3-30B-A3B-MoE") == "STRUCTURAL_HOLDOUT"
 assert MODULE.split_role("unknown-deployment") == "UNASSIGNED_EXCLUDED"
 
+amendment = MODULE.capability_limited_train_roster_payload()
+assert amendment["schema_version"] == MODULE.CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION
+assert amendment["scientific_scope"] == "NOT_FULL_ORIGINAL_TRAIN_ROSTER_COMPLETION"
+assert [row["model"] for row in amendment["effective_train_tune"]] == ["Llama3.2-1B", "Qwen2.5-0.5B"]
+assert amendment["unavailable"][0]["reason"] == "RESOURCE_UNAVAILABLE_ON_RTX3090"
+assert amendment["unavailable"][0]["timing_result_emitted"] is False
+assert amendment["prospective_holdout"][0]["outcomes_read"] is False
+
 # P admission has a direct deployment roster, not a model-name or kernel-name
 # guess.  UNKNOWN semantic coverage remains an ordinary explicit stratum.
 p_catalog = [{
@@ -82,28 +90,37 @@ p_catalog = [{
     "semantic_evidence": "UNKNOWN", "mapping_status": "UNKNOWN",
 }]
 p_roster = [{"deployment_id": "opaque-deployment-id", "c16_cohort": "TRAIN_LLAMA", "c16_split_role": "TUNING"},
-            {"deployment_id": "opaque-qwen05", "c16_cohort": "TRAIN_QWEN0_5", "c16_split_role": "TUNING"},
-            {"deployment_id": "opaque-qwen7", "c16_cohort": "TRAIN_QWEN7_RAW", "c16_split_role": "TUNING"}]
+            {"deployment_id": "opaque-qwen05", "c16_cohort": "TRAIN_QWEN0_5", "c16_split_role": "TUNING"}]
 p_catalog += [{**p_catalog[0], "run_id": "p-run-qwen05", "deployment_id": "opaque-qwen05", "correlation_id": "10"},
-              {**p_catalog[0], "run_id": "p-run-qwen7", "deployment_id": "opaque-qwen7", "correlation_id": "11"}]
+]
 p_profiles = [{"run_id": "p-run", "profile_report_id": "sha256:report"},
-              {"run_id": "p-run-qwen05", "profile_report_id": "sha256:report-qwen05"},
-              {"run_id": "p-run-qwen7", "profile_report_id": "sha256:report-qwen7"}]
-p_audit, p_roles = MODULE.p_validate_catalog_and_roster(p_catalog, p_roster, p_profiles, MODULE.P_TRAIN_COHORT)
-assert p_audit["unknown_semantic_rows"] == "3"
+              {"run_id": "p-run-qwen05", "profile_report_id": "sha256:report-qwen05"}]
+p_resource = [{"deployment_id": "opaque-deployment-id", "scenario_id": "S1", "admission_status": "ADMITTED"},
+              {"deployment_id": "opaque-qwen05", "scenario_id": "S1", "admission_status": "ADMITTED"}]
+p_audit, p_roles = MODULE.p_validate_catalog_and_roster(p_catalog, p_roster, p_profiles, p_resource, MODULE.P_TRAIN_COHORT)
+assert p_audit["unknown_semantic_rows"] == "2"
 assert p_audit["unknown_policy"] == "EXPLICIT_STRATUM_NO_KERNEL_NAME_HEURISTIC"
+assert p_audit["resource_admitted_deployment_scenarios"] == "2"
 assert p_roles["opaque-deployment-id"] == "TUNING"
 p_units = MODULE.annotate_certainty(MODULE.canonicalize_catalog(p_catalog, "NATIVE_PROFILED"))
 assert p_units[0]["operator_class"] == "UNKNOWN_OPERATOR"
 assert "SPECIAL_KV_MANAGEMENT" not in p_units[0]["certainty_reason"]
 try:
-    MODULE.p_validate_catalog_and_roster([{**p_catalog[0], "candidate_speedup": "999"}], p_roster, p_profiles, MODULE.P_TRAIN_COHORT)
+    MODULE.p_validate_catalog_and_roster([{**p_catalog[0], "candidate_speedup": "999"}], p_roster, p_profiles, p_resource, MODULE.P_TRAIN_COHORT)
     raise AssertionError("P outcome fields must be rejected before selection")
 except RuntimeError as exc:
     assert "forbidden outcome" in str(exc)
+try:
+    MODULE.p_validate_catalog_and_roster(p_catalog, p_roster, p_profiles,
+                                         [{**p_resource[0], "admission_status": "SKIPPED_RESOURCE"}], MODULE.P_TRAIN_COHORT)
+    raise AssertionError("non-admitted resource identity must not enter a targetable catalog")
+except RuntimeError as exc:
+    assert "RESOURCE_ADMISSION" in str(exc)
 
 p_manifest = {
     "schema_version": MODULE.P_MANIFEST_SCHEMA, "status": MODULE.P_READY_STATUS,
+    "capability_limited_train_roster_version": MODULE.CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION,
+    "unavailable_deployment_ids": [MODULE.QWEN7_RAW_DEPLOYMENT_ID],
     "hash_closure": {"status": "HASH_CLOSED", "producer_commits": ["a" * 40], "raw_artifacts": [{"sha256": "b" * 64}]},
     "files": [{"cohort": MODULE.P_TRAIN_COHORT, "kind": kind, "path": f"train/{kind}.tsv", "sha256": "c" * 64}
               for kind in MODULE.P_REQUIRED_PAYLOAD_KINDS],
