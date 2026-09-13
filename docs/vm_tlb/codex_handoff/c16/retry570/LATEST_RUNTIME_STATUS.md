@@ -1,6 +1,49 @@
 # C16-G Retry570 runtime status
 
-Status: `NVBIT_RETRY570_V175_ENGINEERING_UNBLOCK_QUALIFIED`.
+Status: `NVBIT_RETRY570_NVBIT175_MINIMAL_CAPTURE_QUALIFIED_STOP_FOR_REVIEW`.
+
+## NVBit 1.7.5 Q0/Q1/Q2 capture qualification — stop for review
+
+The new compact, non-scientific capture-qualification publication is
+[`lane_g_retry570_nvbit175_capture_qualification`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_capture_qualification/),
+with `PUBLISH_MANIFEST.json` SHA256
+`f60b57cfc1ef172bd8c66ac16c7fede9208b530745f0948e6693095f6306d196`.
+The actual Q1 runtime/capture code anchor is
+`8440c04512ef372480aa71a077bacfa7e55e8eb2`; the distinct publication validator
+anchor is `31be238c49a4a31c19e8cb238655877ba8e5ee2e`.
+
+The frozen known-good profile remains RTX3090/SM86, driver `570.124.04`, CUDA
+12.4 (`nvcc 12.4.131`, `nvdisasm 12.4.127`), PyTorch `2.5.1+cu124`, exact
+`libtorch_cuda.so` SHA256
+`761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a`,
+NVBit 1.7.5, and `CUDA_MODULE_LOADING=EAGER`. The machine-readable profile
+and diagnostics-only preflight remain at
+[`NVBIT_LANE_G_RTX3090_CUDA124_KNOWN_GOOD.json`](../../../runtime_profiles/NVBIT_LANE_G_RTX3090_CUDA124_KNOWN_GOOD.json)
+and `retry570_nvbit175_preflight.py`; the preflight receipt is
+`CAPTURE_ALLOWED=YES` and its SHA256 is
+`c2e859b0a13ad807a9c5163590a12cc6793124fd85039fe2f4d64ff8d7e8029e`.
+
+Q0 prewarm/runtime readiness passed with the original Lane G tracer and no
+matching dynamic range: `LANE_G_RUNTIME_READY`, output checksum
+`8c62c08fcc833f223182df024f4ed698c8e3fc93daf8e259c14d35e8899e665c`, and
+`PREWARM_TRACE_COUNT=0`. It directly froze kernel id 6 and the full mangled
+`indexSelectLargeIndex` identity. Two independent Q1 processes then armed
+`MEASUREMENT_ACTIVE` only after READY, each captured exactly that kernel, and
+each produced one 481,651-byte trace with 7,360 parseable records and 192
+address-bearing `LDG.E` records. Q1 target/remote walls were
+`6.890535 / 7.027329` and `6.775636 / 6.878313` seconds; local SSH wall was
+observed at approximately `7.5 / 7.4` seconds respectively. Both raw trees
+are remote-to-local SHA closed, no GPU process remains, and the marker is
+absent after cleanup.
+
+Q2 validates required schema/version headers, exact function/kernel binding,
+instruction rows, address-bearing memory records, and a final-newline
+truncation guard. The trace format does not provide record timestamps or a
+global sequence field, so the publication correctly uses the parent-controlled
+zero-before-arm and ordered READY/CAPTURE lifecycle proof rather than claiming
+per-record timestamp ordering. This is `NOT_NATIVE_TIMING` and
+`NOT_SCIENTIFIC_CAPTURE`; it authorizes nothing further. Stop for user/ChatGPT
+review before any Llama/Qwen/full-model/C-target activity.
 
 ## Current NVBit engineering-unblock qualification
 
