@@ -368,6 +368,7 @@ def main() -> None:
     identity = runtime_identity(binding, args, code_commit)
     capture = args.mode != "BASELINE"
     operation = "NVBIT" if capture else "MODEL_QUALIFICATION_BASELINE"
+    MeasurementActive.assert_available(args.budget_ledger)
     with BudgetLease(args.budget_ledger, identity, operation, capture=capture) as lease:
         with MeasurementActive(args.budget_ledger, identity, operation):
             try:

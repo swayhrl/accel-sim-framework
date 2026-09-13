@@ -287,6 +287,20 @@ class MeasurementActive:
         self.path = ledger_path.parent.parent / "control" / "MEASUREMENT_ACTIVE"
         self.marker_id = ""
 
+    @classmethod
+    def assert_available(cls, ledger_path: Path) -> None:
+        """Fail before acquiring a capture lease when a marker already exists.
+
+        A pre-existing marker means no new GPU operation can run.  Checking it
+        before ``BudgetLease`` prevents a zero-GPU, preflight-only rejection
+        from consuming an NVBit capture-window entry through ``__exit__``.
+        ``__enter__`` retains the same check to close the race with another
+        local launcher.
+        """
+        path = ledger_path.parent.parent / "control" / "MEASUREMENT_ACTIVE"
+        if path.exists():
+            raise ContractError(f"formal GPU operation is blocked by an existing measurement marker: {path}")
+
     def __enter__(self) -> "MeasurementActive":
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if self.path.exists():
@@ -343,6 +357,48 @@ def mark_existing_entry_diagnostic(ledger_path: Path, *, run_id: str, reason: st
                 raise ContractError("refusing to relabel an explicit scientific ledger entry")
             entry["evidence_classification"] = "NON_SCIENTIFIC_DIAGNOSTIC"
             entry["diagnostic_reason"] = reason
+            atomic_json(ledger_path, ledger)
+            return entry
+        finally:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
+
+
+def reclassify_pre_forward_nvbit_entry(ledger_path: Path, *, run_id: str, reason: str) -> dict[str, Any]:
+    """Preserve, but stop counting, a proven no-GPU NVBit preflight failure.
+
+    This is deliberately narrower than a generic ledger editor.  It accepts
+    only a non-scientific ``NVBIT`` entry with zero profiler raw, a failed
+    terminal state, and at most five seconds elapsed.  The original operation
+    is retained in the entry; no elapsed/raw usage is erased.  It is intended
+    for loader/marker rejection before a model CUDA forward, not for a failed
+    capture or a way to extend a capture budget.
+    """
+    if not run_id or not reason:
+        raise ContractError("pre-forward reclassification requires run ID and reason")
+    lock_path = ledger_path.with_name(ledger_path.name + ".lock")
+    with lock_path.open("a+", encoding="utf-8") as lock_handle:
+        try:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise ContractError("cannot reclassify a ledger while a C16 operation is active") from exc
+        try:
+            ledger = _load(ledger_path)
+            matches = [entry for entry in ledger["entries"] if entry.get("run_id") == run_id]
+            if len(matches) != 1:
+                raise ContractError("pre-forward reclassification requires exactly one entry")
+            entry = matches[0]
+            if entry.get("operation_kind") != "NVBIT":
+                raise ContractError("pre-forward reclassification accepts only an NVBIT entry")
+            if entry.get("evidence_classification") != "NON_SCIENTIFIC_DIAGNOSTIC":
+                raise ContractError("refusing to reclassify a non-diagnostic NVBIT entry")
+            if entry.get("raw_bytes") != 0 or float(entry.get("elapsed_seconds", -1)) > 5:
+                raise ContractError("pre-forward reclassification refuses a capture-like entry")
+            if entry.get("terminal_status") not in {"FAILED_OR_ABORTED", "FAILED_PRE_MODEL_FORWARD"}:
+                raise ContractError("pre-forward reclassification requires a failed terminal state")
+            entry["original_operation_kind"] = entry["operation_kind"]
+            entry["operation_kind"] = "NVBIT_PRE_FORWARD_ENVIRONMENT_FAILURE"
+            entry["diagnostic_reason"] = reason
+            entry["pre_forward_reclassification"] = "ZERO_GPU_FORWARD_ZERO_PROFILER_RAW_PRESERVED"
             atomic_json(ledger_path, ledger)
             return entry
         finally:

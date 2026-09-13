@@ -18,7 +18,7 @@ LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
 from c16_native_common import ContractError  # noqa: E402
-from execution_budget import BudgetLease, MEASUREMENT_ACTIVE_SCHEMA, MeasurementActive, initialize_ledger, mark_existing_entry_diagnostic  # noqa: E402
+from execution_budget import BudgetLease, MEASUREMENT_ACTIVE_SCHEMA, MeasurementActive, initialize_ledger, mark_existing_entry_diagnostic, reclassify_pre_forward_nvbit_entry  # noqa: E402
 from runtime_native_runner import wrapper_measurement_marker, wrapper_owned_budget  # noqa: E402
 
 
@@ -95,6 +95,27 @@ class ParentLeaseTests(unittest.TestCase):
             self.assertEqual(entry["raw_bytes"], 0)
             self.assertEqual(entry["evidence_classification"], "NON_SCIENTIFIC_DIAGNOSTIC")
             self.assertEqual(entry["diagnostic_reason"], "REANNOTATED_UNIT_TEST")
+
+    def test_pre_forward_reclassification_preserves_entry_but_not_capture_kind(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "ledger.json"
+            initialize_ledger(ledger, instance_start_unix=time.time(), start_source="UNIT_TEST", instance_receipt_path=Path("unit-receipt.json"))
+            with BudgetLease(ledger, IDENTITY, "NVBIT", capture=True) as budget:
+                budget.finish(elapsed_seconds=0.25, raw_bytes=0, terminal_status="FAILED_OR_ABORTED", evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC", diagnostic_reason="UNIT_TEST_PRE_FORWARD")
+            entry = reclassify_pre_forward_nvbit_entry(ledger, run_id=IDENTITY["run_id"], reason="PROVEN_ZERO_GPU_PRE_FORWARD")
+            self.assertEqual(entry["operation_kind"], "NVBIT_PRE_FORWARD_ENVIRONMENT_FAILURE")
+            self.assertEqual(entry["original_operation_kind"], "NVBIT")
+            self.assertEqual(entry["elapsed_seconds"], 0.25)
+            self.assertEqual(entry["raw_bytes"], 0)
+
+    def test_marker_preflight_fails_before_capture_lease(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "ledger" / "ledger.json"
+            marker = ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE"
+            marker.parent.mkdir(parents=True)
+            marker.write_text("stale-marker", encoding="utf-8")
+            with self.assertRaises(ContractError):
+                MeasurementActive.assert_available(ledger)
 
     def test_measurement_marker_is_exclusive_and_cleans_up(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
