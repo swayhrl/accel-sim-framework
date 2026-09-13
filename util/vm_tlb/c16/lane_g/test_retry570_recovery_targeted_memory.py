@@ -48,7 +48,7 @@ class RecoveryTargetedMemoryTests(unittest.TestCase):
 
     def test_parent_contract_has_one_recovery_lease_and_external_group_cleanup(self) -> None:
         source = (LANE / "retry570_recovery_targeted_memory.py").read_text(encoding="utf-8")
-        for token in ("RecoveryBudgetLease", "write_parent_lease_start", "wrapper-owned", "start_new_session=True", "kill_group(process)", "NON_SCIENTIFIC_DIAGNOSTIC"):
+        for token in ("RecoveryBudgetLease", "write_parent_lease_start", "wrapper-owned", "start_new_session=True", "kill_group(process)", "NON_SCIENTIFIC_DIAGNOSTIC", "write_stage(args.stage, \"PARENT_START\"", "PARENT_STDOUT_RECEIPT"):
             self.assertIn(token, source)
         self.assertNotIn("from execution_budget import BudgetLease", source)
 

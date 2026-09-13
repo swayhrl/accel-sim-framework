@@ -49,6 +49,10 @@ def raw_tree_bytes(root: Path) -> int:
     return sum(path.stat().st_size for path in root.rglob("*") if path.is_file()) if root.is_dir() else 0
 
 
+def write_stage(path: Path, event: str, **fields: Any) -> None:
+    atomic_json(path, {"schema_version": SCHEMA, "event": event, "ts_ns": time.monotonic_ns(), **fields})
+
+
 def identity(binding: dict[str, Any], args: argparse.Namespace) -> dict[str, str]:
     return {
         "deployment_id": args.recovery_deployment_id,
@@ -194,6 +198,7 @@ def main() -> None:
     for path in outputs:
         path.parent.mkdir(parents=True, exist_ok=True)
     args.raw_dir.mkdir(parents=True)
+    write_stage(args.stage, "PARENT_START", identity=ident, target_cap_seconds=args.target_cap_seconds)
     map_path = args.raw_dir / "NVBIT_TARGETED_STATIC_MAP.tsv"
     stdout_raw = args.raw_dir / "targeted_tool_stdout.log"
     started = time.monotonic(); process: subprocess.Popen[str] | None = None
@@ -219,6 +224,8 @@ def main() -> None:
         })
         with stdout_raw.open("w", encoding="utf-8") as out, args.stderr.open("w", encoding="utf-8") as err:
             with MeasurementActive(args.recovery_ledger, ident, "NVBIT_RECOVERY_TARGETED_MEMORY_DIAGNOSTIC") as marker:
+                write_stage(args.stage, "CHILD_LAUNCHED", measurement_marker=str(marker.path),
+                            parent_lease_id=parent["parent_lease_id"])
                 process = subprocess.Popen(child_command(args, raw_dir=args.raw_dir, stdout_path=stdout_raw, static_map=map_path),
                                            stdout=out, stderr=err, text=True, env=environment, start_new_session=True)
                 while process.poll() is None and time.monotonic() - started < args.target_cap_seconds:
@@ -238,6 +245,12 @@ def main() -> None:
     closeout = write_parent_lease_closeout(args.parent_lease_receipt, parent, terminal_status=terminal,
                                            elapsed_seconds=time.monotonic() - started,
                                            returncode=None if process is None else process.returncode)
+    parent_stdout = {
+        "schema_version": SCHEMA, "event": "PARENT_STDOUT_RECEIPT",
+        "child_stdout_path": str(stdout_raw),
+        "child_stdout_sha256": sha256_file(stdout_raw) if stdout_raw.is_file() else None,
+    }
+    atomic_json(args.stdout, parent_stdout)
     result: dict[str, Any] = {
         "schema_version": SCHEMA, "status": "COMPLETE" if terminal == "COMPLETE" else terminal,
         "scientific_eligible_for_timing": False, "diagnostic_only_not_for_formal_trace": True,
@@ -250,6 +263,7 @@ def main() -> None:
         "parent_lease_start": {"path": str(args.parent_lease_receipt), "sha256": sha256_file(args.parent_lease_receipt)},
         "parent_lease_closeout": {"path": str(closeout), "sha256": sha256_file(closeout)},
         "raw": {"path": str(args.raw_dir), "bytes": raw_tree_bytes(args.raw_dir)},
+        "parent_stdout_receipt": {"path": str(args.stdout), "sha256": sha256_file(args.stdout)},
         "stderr": {"path": str(args.stderr), "sha256": sha256_file(args.stderr)},
     }
     if terminal == "COMPLETE":
@@ -261,6 +275,7 @@ def main() -> None:
         result["child_receipt"] = str(args.child_receipt) if args.child_receipt.is_file() else None
         result["stdout"] = {"path": str(stdout_raw), "sha256": sha256_file(stdout_raw)} if stdout_raw.is_file() else None
     atomic_json(args.receipt, result)
+    write_stage(args.stage, "TERMINAL", terminal_status=terminal, raw_bytes=result["raw"]["bytes"])
     print(f"C16_RECOVERY_TARGETED_MEMORY_DIAGNOSTIC {result['status']} {args.receipt}")
     if terminal != "COMPLETE":
         raise SystemExit(2)
