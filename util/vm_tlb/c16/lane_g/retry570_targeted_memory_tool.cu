@@ -243,6 +243,11 @@ void nvbit_at_ctx_init(CUcontext context) {
 }
 
 void nvbit_tool_init(CUcontext context) {
+    // Map-only discovery calls nvbit_get_instrs but never inserts a device
+    // callback.  It therefore needs no managed record allocation at context
+    // initialization; avoiding it keeps the pre-first-kernel path free of
+    // CUDA allocation and follows NVBit 1.8's context-init constraint.
+    if (!trace_enabled) return;
     pthread_mutex_lock(&mutex);
     auto found = contexts.find(context);
     if (found == contexts.end() || found->second->record != nullptr) {
