@@ -1,6 +1,41 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_NVBIT175_MULTIMODEL_RECOVERY_V2_LLAMA_COMPLETE_NEXT_MODEL_INVENTORY`.
+Status: `C16_NVBIT175_POST_LLAMA_MULTIMODEL_DATASET_COMPLETE_WITH_BLOCKED_MODELS`.
+
+## Final post-Llama multi-model dataset publication
+
+The authoritative compact publication is
+[`lane_g_retry570_nvbit175_post_llama_multimodel_dataset`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_post_llama_multimodel_dataset/).
+Its manifest SHA256 is
+`9b202d9dbf88816d24ec85332038e5e9df6e64b44e11aba304855d9b4ee80f51`.
+The publisher implementation anchor is `9bef6df1770b13cd3c6fb28dd71018a284244371`;
+the following handoff commit is publication provenance, not a change to its
+producer logic.
+
+Llama remains the accepted reference dataset from
+`2e955e007bcabcd3ec24a5f9d24768d27caaee27`, with source manifest
+`0d8aeb74729a06e2188359cca2eb18c3884ea5b108723d6966778a161c4aaacc`.
+It has retained, remote-to-local SHA-closed target memory traces totaling
+16,319,706 bytes. `LARGE_INDEX_PREFILL_TARGET` and the independently mapped
+`DECODE_INDEX_TARGET` remain distinct; the LargeIndex decode zero is
+`STRUCTURAL_ZERO_TARGET_NOT_LAUNCHED`, not a claim of no decode memory access.
+
+Phase A recovered exact immutable identities for Qwen-0.5 and Qwen-7B-AWQ,
+but no matching local assets existed and the same-session authorized upstream
+route was `NETWORK_UNREACHABLE`; both are
+`BLOCKED_ASSET_UNAVAILABLE_AFTER_AUTHORITATIVE_SEARCH`, not substituted
+captures. DeepSeek and GLM are each
+`BLOCKED_IDENTITY_UNRESOLVED_REQUIRES_USER`: the retained C15 static candidate
+is not a C16 runnable identity, and generic `GLM` is not an exact model
+identity. No Qwen, DeepSeek, or GLM model run or trace was emitted.
+
+`DOWNSTREAM_CONSUMER_VALIDATION.json` validates the C16 requirement as
+`PHASE_TARGETED_MEMORY`; the unrelated M4 `kernelslist.g`/Accel-Sim path is
+explicitly excluded. The final remote quiescence audit reports
+`ACTIVE_GPU_PROCESS_COUNT=0`, `ACTIVE_DIAGNOSTIC_PROCESS_COUNT=0`,
+`MEASUREMENT_ACTIVE=false`, and `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0`.
+
+Historical recovery-v2 checkpoint: `C16_NVBIT175_MULTIMODEL_RECOVERY_V2_LLAMA_COMPLETE_NEXT_MODEL_INVENTORY`.
 
 ## Active recovery-v2 checkpoint — Llama complete
 

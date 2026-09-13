@@ -1,0 +1,78 @@
+{
+  "authorized_roots": [
+    "/root/autodl-tmp",
+    "/root/autodl-fs",
+    "/root/.cache/huggingface",
+    "/workspace",
+    "/data"
+  ],
+  "matching_metadata": [],
+  "metadata_only": true,
+  "models": [
+    {
+      "identity": {
+        "exact_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+        "expected_model_bytes": 999586347,
+        "package_commit": "4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63",
+        "package_id": "C16_GPU_PACKAGE_P1",
+        "package_manifest_sha256": "d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84",
+        "payload_count": 7,
+        "payload_manifest_sha256": "84c5932b24e35ce1c47f1de142125ade49b1084c62163d99bcda0ae4b1bdc83d",
+        "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+      },
+      "model_key": "qwen_0p5",
+      "reason": "Exact P1 identity recovered; no matching local config/asset; same-session upstream route is unavailable.",
+      "status": "IDENTITY_RECOVERED_ASSET_MISSING"
+    },
+    {
+      "identity": {
+        "exact_model_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+        "expected_model_bytes": 5582381128,
+        "package_commit": "168c97148ef2bbfaf9bbe199414b0e7a5fc3ed1d",
+        "package_id": "C16_GPU_PACKAGE_P3",
+        "package_manifest_sha256": "704dc320a131e31a6d9fd11a8ac623318777c832b0b699241c5bf3f1c8beda1c",
+        "payload_count": 9,
+        "payload_manifest_sha256": "afb0414ef9ae6b28accb7e166cb21f6f69c128defffabe4da10ac6876367455b",
+        "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641"
+      },
+      "model_key": "qwen_7b_awq",
+      "reason": "Exact P3 AWQ identity recovered; no matching local config/asset; retained exact config fetch failed at NETWORK_UNREACHABLE.",
+      "status": "IDENTITY_RECOVERED_ASSET_MISSING"
+    },
+    {
+      "identity": {
+        "authoritative_static_candidate": "deepseek-ai/DeepSeek-V2-Lite@604d5664dddd88a0433dbae533b7fe9472482de0",
+        "evidence": "C15 static-only model registry",
+        "reason": "No C16 exact tokenizer/input/runtime package establishes a runnable DeepSeek deployment.",
+        "status": "BLOCKED_IDENTITY_UNRESOLVED_REQUIRES_USER"
+      },
+      "model_key": "deepseek",
+      "reason": "No C16 exact tokenizer/input/runtime package establishes a runnable DeepSeek deployment.",
+      "status": "BLOCKED_IDENTITY_UNRESOLVED_REQUIRES_USER"
+    },
+    {
+      "identity": {
+        "exact_model_id": "UNRESOLVED",
+        "reason": "No authoritative project model ID plus revision/content manifest was found; generic GLM is not an identity.",
+        "status": "BLOCKED_IDENTITY_UNRESOLVED_REQUIRES_USER"
+      },
+      "model_key": "glm",
+      "reason": "No authoritative project model ID plus revision/content manifest was found; generic GLM is not an identity.",
+      "status": "BLOCKED_IDENTITY_UNRESOLVED_REQUIRES_USER"
+    }
+  ],
+  "no_gpu_or_model_execution": true,
+  "p3_fetch_failure": {
+    "network_error_confirmed": true,
+    "path": "/root/autodl-tmp/c16_retry570/recovery_v2_assets/qwen_7b_awq_p3_168c9714/attempt.stderr",
+    "sha256": "f9df5ccf703fb9b14affd939baf865fc929176e567af203b8e24940f5b767e68"
+  },
+  "schema_version": "C16_G_RETRY570_POST_LLAMA_PHASE_A_INVENTORY_V1",
+  "scientific_eligible": false,
+  "status": "PHASE_A_IDENTITY_ASSET_RECOVERY_COMPLETE_WITH_BLOCKERS",
+  "upstream_reachability": {
+    "exception_type": "URLError",
+    "message": "<urlopen error [Errno 101] Network is unreachable>",
+    "status": "NETWORK_UNREACHABLE"
+  }
+}
