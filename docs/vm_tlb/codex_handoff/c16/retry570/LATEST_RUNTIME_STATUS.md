@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R3_QWEN7_RAW_S1_G1_SHA_CLOSED`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R5_QWEN7_RAW_S1_PREFILL_STATIC_TARGET_SHA_CLOSED`.
 
 ## Active Recovery-V3 asset and runtime checkpoint
 
@@ -11,9 +11,11 @@ Qwen2.5-7B-AWQ, Qwen3-8B, DeepSeek-V2-Lite, and exact-identity GLM.  The
 separate user-managed Qwen3-30B-A3B download is
 `EXCLUDED_BY_USER_CURRENT_CAMPAIGN` and is neither inspected nor counted.
 
-Current Recovery-V3 local publication source checkpoint:
-`b4b4029055565a48f3af1f1cfa07a71a7f4e26f4`.  The GPU runtime workspace that
-produced retained runtime evidence is
+Current Recovery-V3 local runtime source checkpoint:
+`1f1b0692c6a894f842d9e095b237415315e4172d`.  This commit fail-closes
+generic non-S0 qualification unless it is explicitly requested with an
+immutable non-S0 binding.  The GPU runtime workspace that produced the
+retained baseline/G1 evidence was
 `44981e72c39b317529ee98995dfd478283830623`; a later formal run will bind its
 actual runtime source explicitly rather than inferring it from this
 publication checkpoint.
@@ -201,9 +203,46 @@ The immutable remote artifact manifest is SHA256
 `7cbcbc500222e78c03c18ff7d5c39fea56f67ec02fabe1a9d2156e67d97be1ac`; its
 dual-endpoint transfer receipt is SHA256
 `a7adfc5decc530cc53bb20292f9eb652fd46ca0b1a6a300071c7ee72cbaf98c1`.
-There is no remote-only required G1 artifact for this row.  Local postprocess
-and R4 target freeze remain pending; no NVBit target selection or capture has
-been started.
+There is no remote-only required G1 artifact for this row.
+
+### Qwen2.5-7B raw Recovery-V3 S1 R4/R5 Prefill milestone
+
+Local postprocess closed the complete 97,720-row census without dropping the
+kernel population.  R4 froze exactly two phase rows in
+`RECOVERY_V3_QWEN2P5_7B_RAW_S1_G1_V1` (target-plan SHA256
+`6c38f45569413d2a4fa65b743e925ec9a28fc703537d65dd64642932ea0a2b35`): the
+Prefill structural ordinal is 46 and Decode structural ordinal is 1218.  The
+names and geometry are provenance keys only; they are not a target-selection
+substitute.
+
+R5 then ran one non-scientific direct NVBit launch inventory under runtime
+source `1f1b0692c6a894f842d9e095b237415315e4172d`.  The retained 12,809,379
+byte inventory is remote/local SHA-closed at
+`/root/share/c16_recovery_v3/raw/qwen2p5_7b_raw/S1_CODE/r5_launch_inventory/launch_inventory.tsv`
+(SHA256 `51e75050727c6789966037f77154a997b6f773676aa2cf706163364c66e0c40c`).
+Its direct-function binding receipt SHA256 is
+`ec7abbddfbc4c0adb71dd05715fb4e517eefe985efea69692a3d58764333af2e` and
+binds the Prefill CUTLASS function and Decode BF16 GEMM function through
+exact loaded NVBit identities plus the frozen grid/block provenance.  It
+does not use a kernel-name-only match and it emitted no trace.
+
+The Prefill exact function subsequently completed an NVBit-native static map
+with 5,288 instructions.  The map is remote/local SHA-closed at
+`/root/share/c16_recovery_v3/raw/qwen2p5_7b_raw/S1_CODE/r5_static_map_prefill/PREFILL_STATIC_MAP.tsv`
+(SHA256 `437e31c9a76d65ebce1eaa8dd8b802bd836f367befdf87417c3eb92d15eec125`).
+The direct target receipt SHA256
+`116c3ea2997ced9ca1469688789f85ba40de5e08f1e655f9988840ca9118171c`
+selects `LDG.E.64`, GLOBAL, NVBit static index 29, vector ordinal 29, and
+offset 464.  This is direct `nvbit_get_instrs` evidence: neither historical
+ordinal 348 nor SASS text-line 34 was used.  The map-only diagnostic has no
+instruction insertion, no memory trace, and is not timing/scientific data.
+
+Decode has not yet received its own exact static map, and **no formal R6
+capture has started**.  The raw-Qwen7 legacy ledger retains both R5
+diagnostic entries rather than hiding them; only four of its six historical
+NVBit windows remain.  A later capture is therefore conditional on an exact
+Decode map, a resource/storage gate, and explicit budget-consistent
+authorization; it must not reset or bypass that ledger.
 
 ## Final post-Llama multi-model dataset publication
 
