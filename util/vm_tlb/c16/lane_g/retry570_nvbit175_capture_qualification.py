@@ -155,6 +155,17 @@ def parent(args: argparse.Namespace) -> int:
         raise ContractError("Q1 requires Q0 runtime-ready receipt and frozen target plan")
     if args.mode == "Q1" and (not isinstance(args.target, dict) or not isinstance(args.target.get("kernel_id"), int) or not isinstance(args.target.get("function"), str)):
         raise ContractError("Q1 requires an exact Q0 target object")
+    if args.mode == "Q1":
+        q0 = json.loads(args.q0_receipt.read_text(encoding="utf-8"))
+        plan = json.loads(args.target_plan.read_text(encoding="utf-8"))
+        if q0.get("status") != "LANE_G_RUNTIME_READY" or q0.get("scientific_eligible") is not False:
+            raise ContractError("Q1 requires a non-scientific LANE_G_RUNTIME_READY Q0 receipt")
+        if q0.get("prewarm_trace_count") != 0 or q0.get("measurement_active_created") is not False:
+            raise ContractError("Q1 rejects a Q0 receipt with prewarm trace or measurement activity")
+        if plan.get("status") != "Q0_FROZEN_EXACT_TARGET_PLAN" or plan.get("scientific_eligible") is not False or plan.get("target") != args.target:
+            raise ContractError("Q1 target must exactly equal the frozen non-scientific Q0 plan")
+        if args.arm_path.exists():
+            raise ContractError("Q1 arm path must be absent before parent creates it")
     for path in (args.receipt, args.stage, args.child_receipt, args.stdout, args.stderr):
         if path.exists(): raise ContractError(f"refusing to overwrite payload: {path}")
         path.parent.mkdir(parents=True, exist_ok=True)

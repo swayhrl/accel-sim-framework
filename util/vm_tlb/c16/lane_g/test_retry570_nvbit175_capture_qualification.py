@@ -15,7 +15,11 @@ class Nvbit175CaptureQualificationTests(unittest.TestCase):
         for forbidden in ("AutoModelForCausalLM", "AutoAWQ", "Llama", "Qwen"):
             self.assertNotIn(forbidden, SOURCE)
     def test_trace_validation_requires_direct_q0_identity(self) -> None:
-        for token in ("indexSelectLargeIndex", "len(matches) != 1", "traces[0][\"kernel_id\"]", "traces[0][\"kernel_name\"]"):
+        for token in ("indexSelectLargeIndex", "len(matches) != 1", "traces[0][\"kernel_id\"]", "traces[0][\"kernel_name\"]", "plan.get(\"target\") != args.target"):
+            self.assertIn(token, SOURCE)
+
+    def test_q1_requires_clean_q0_and_fresh_arm(self) -> None:
+        for token in ("Q1 requires a non-scientific LANE_G_RUNTIME_READY Q0 receipt", "Q1 rejects a Q0 receipt with prewarm trace or measurement activity", "Q1 arm path must be absent before parent creates it"):
             self.assertIn(token, SOURCE)
 
 if __name__ == "__main__": unittest.main()
