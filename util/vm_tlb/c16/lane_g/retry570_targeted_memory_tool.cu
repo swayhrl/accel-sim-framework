@@ -22,31 +22,11 @@
 #include "nvbit.h"
 #include "nvbit_tool.h"
 #include "utils/utils.h"
+#include "retry570_targeted_memory_common.h"
 
-struct TargetRecord {
-    unsigned int claimed;
-    unsigned int present;
-    unsigned long long address;
-    unsigned long long launch_id;
-    unsigned int static_index;
-};
-
-extern "C" __device__ __noinline__ void capture_target_memory(
+extern "C" __device__ void capture_target_memory(
     int predicate, uint64_t address, uint64_t launch_id, uint32_t static_index,
-    uint64_t record_address) {
-    if (!predicate) return;
-    unsigned int active = __ballot_sync(__activemask(), 1);
-    unsigned int lane = threadIdx.x & 31;
-    if (lane != static_cast<unsigned int>(__ffs(active) - 1)) return;
-    TargetRecord* record = reinterpret_cast<TargetRecord*>(record_address);
-    if (record->claimed == 0 && atomicCAS(&record->claimed, 0U, 1U) == 0U) {
-        record->address = address;
-        record->launch_id = launch_id;
-        record->static_index = static_index;
-        record->present = 1;
-        __threadfence_system();
-    }
-}
+    uint64_t record_address);
 
 struct ContextState {
     TargetRecord* record = nullptr;
