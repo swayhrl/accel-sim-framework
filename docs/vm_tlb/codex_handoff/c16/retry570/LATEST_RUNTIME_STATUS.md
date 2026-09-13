@@ -1,6 +1,43 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_NVBIT175_MULTIMODEL_TRACE_CAMPAIGN_COMPLETE_WITH_BLOCKED_MODELS`.
+Status: `C16_NVBIT175_MULTIMODEL_RECOVERY_V2_LLAMA_COMPLETE_NEXT_MODEL_INVENTORY`.
+
+## Active recovery-v2 checkpoint — Llama complete
+
+The prior `COMPLETE_WITH_BLOCKED_MODELS` campaign is preserved below as
+historical closeout; it is superseded for the new recovery-v2 namespace, not
+rewritten. The new consumable Llama S0--S6 pack is
+[`lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b/).
+Its manifest SHA256 is
+`0d8aeb74729a06e2188359cca2eb18c3884ea5b108723d6966778a161c4aaacc`;
+the publication producer implementation anchor is
+`01d688227d828468421d6eb4d12f89808206027c`.
+
+`LARGE_INDEX_PREFILL_TARGET` remains the exact full-mangled Llama
+`indexSelectLargeIndex`, NVBit static `[101,102)`, `LDG.E.U16`, with static
+text-line 34 forbidden and historical candidate 348 not reused. It has 8,192
+address-bearing records in each S3/S4 prefill capture and in S5 Prefill.
+Its zero counts through logical Decode1--4 are explicitly
+`STRUCTURAL_ZERO_TARGET_NOT_LAUNCHED`: the exact LargeIndex function is absent
+from the decode kernel census, not evidence that decode lacks memory access.
+
+The bounded no-NVBit decode census directly found the same shape-dependent
+`indexSelectSmallIndex` dispatch in every actual cache-correct decode forward
+(logical Decode2--4; Decode1 is the frozen prefill-derived greedy token and
+has no separate CUDA forward). A separate NVBit 1.7.5 native map selected
+`DECODE_INDEX_TARGET` static `[17,18)`, `LDG.E`; the complete-decode capture
+then recorded 64 address-bearing rows in each of Decode2, Decode3, and
+Decode4 with the frozen output checksum unchanged. The six retained raw
+traces are remote-to-local SHA closed and remain outside Git. The immutable
+legacy ledger still hashes to
+`7a109337471d98fe50d1be353995b398b3ebee0a8e0504a692843f04736f248d`;
+recovery-v2 used its independent eight-window namespace and did not rewrite
+the historical rows.
+
+Next queued work is metadata-only exact identity/asset recovery for Qwen-0.5,
+Qwen-7B-AWQ, DeepSeek, and GLM. No model variant will be guessed or
+substituted; a model whose exact identity/asset cannot be recovered will get a
+separate `BLOCKED_ASSET_UNAVAILABLE` receipt while the next model continues.
 
 ## Final NVBit 1.7.5 multi-model campaign closeout
 
