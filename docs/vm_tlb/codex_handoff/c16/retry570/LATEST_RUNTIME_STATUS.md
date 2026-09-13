@@ -1,6 +1,48 @@
 # C16-G Retry570 runtime status
 
-Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
+Status: `NVBIT_CORE_MODULE_BOOKKEEPING_PATHOLOGY_CONFIRMED`.
+
+## Current NVBit callback-bookkeeping root cause
+
+The current compact publication is
+[`lane_g_retry570_callback_bookkeeping_root_cause`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_callback_bookkeeping_root_cause/),
+with `PUBLISH_MANIFEST.json` SHA256
+`8886a28deb2c6353f88ea393064a480e8a29c0541c691f1e2e1cd2aa725fe8cb`.
+Its diagnostic runtime producer is
+`e27ce12addcea5b9da27b4fa02f0f6e6a462be09`; the governing read-only root-cause
+handoff is `43c50becb8b3bc41673f77f5674bf15308954440`.
+
+`RAW = HANG`; `EMPTY = HANG`. The true RAW callback retained only a fixed,
+preallocated POD ring: 196 events, zero drops, maximum callback depth one,
+zero reentrancy, and a final `cuLibraryGetModule` entry decoded offline.
+The EMPTY callback contains only `return;`. Its bounded GDB snapshot is
+`std::_Hash_bytes -> elfModuleHashMap::operator[] -> Nvbit::module_loaded ->
+nvbitToolsCallbackFunc`. Ownership is therefore NVBit 1.8 precompiled core,
+not the RAW census and not the Lane G targeted-memory tool. The vendor archive
+is `core/libnvbit.a` SHA256
+`db221829106673bcd69d1e05766136f80e2df4497fb8415d8c2f298b96c302f7`;
+`Nvbit::module_loaded` is in `nvbit_imp.o` and `elfModuleHashMap` in
+`tools_shared_readelf_caches.o`. It provides no DWARF source line, so no
+private-STL layout or invented FILE:LINE is claimed.
+
+Per-run wall accounting is explicit: TRUE RAW target/remote/local wall is
+`25.302602 / 25.416366 / 27.138402` seconds; EMPTY is
+`25.317044 / 25.423447 / 25.933204` seconds. Both use a 25-second externally
+supervised target child process group, 32-second remote transaction cap, and
+40-second local SSH cap; both received TERM and exited in the two-second grace
+without KILL. All retained diagnostic payloads are locally SHA-closed,
+`REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0`, and
+`ACTIVE_GPU_PROCESS_COUNT=0`.
+
+This confirms the core bookkeeping path, but does **not** establish whether
+its first-use cost is finite/one-time or repeated: the exact operation never
+returned within the permitted cap, and historical EAGER moved work before the
+exact marker without completing under its short cap. `MEASUREMENT_ACTIVE`
+prewarm and all formal capture remain unqualified. The historical Llama
+scientific state remains
+`NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
+No model/Llama/Qwen, C target, trace, scientific capture, 300-second watch, or
+historical 6+6 re-run is authorized by this checkpoint.
 
 ## Exact historical-target discovery boundary
 
