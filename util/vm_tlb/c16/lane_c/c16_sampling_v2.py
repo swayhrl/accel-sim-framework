@@ -78,6 +78,7 @@ P_CHECKPOINT_TRAIN_ROSTER = {
 }
 P_AWQ_ROSTER = {"PROSPECTIVE_QWEN7_AWQ": "PROSPECTIVE_HOLDOUT"}
 P_DIRECT_SEMANTIC_EVIDENCE = {"DIRECT_RUNTIME_NVTX", "DIRECT_MODULE_ID", "UNKNOWN"}
+P_CHECKPOINT_PHYSICAL_ONLY_SEMANTIC = "NSYS_NVTX_PHASE_ONLY_NO_DIRECT_OPERATOR_LAYER_EVIDENCE"
 P_FORBIDDEN_OUTCOME_COLUMNS = re.compile(
     r"(^|_)(candidate|speedup|miss|ncu|nvbit|trace|address|page|line|cache|tlb|counter|mechanism|outcome)($|_)",
     re.IGNORECASE,
@@ -1196,6 +1197,18 @@ def p_checkpoint_train_input(commit: str, manifest_path: str, artifact_root: Pat
         die("P checkpoint profile index lacks deployment/scenario/status identity")
     if any(row.get("status") != "C16_G_HASH_CLOSED_P1 / CAPABILITY_LIMITED" for row in profile_rows):
         die("P checkpoint profile index contains a non-closed native run")
+    # P1's checkpoint declares every launch semantically unknown.  Its raw
+    # physical catalog encodes that fact with the explicit, phase-only NSYS
+    # marker below.  Normalize only that exact marker into C's canonical
+    # UNKNOWN stratum; a mixed or novel marker fails closed, and no kernel name
+    # is examined during this normalization.
+    observed_evidence = {row.get("semantic_evidence", "") for row in catalog_rows}
+    if manifest["semantic_coverage"].get("unknown_launch_fraction") == 1:
+        if observed_evidence != {P_CHECKPOINT_PHYSICAL_ONLY_SEMANTIC}:
+            die("P checkpoint claims all-UNKNOWN semantics but catalog has a mixed/unknown evidence encoding")
+        for row in catalog_rows:
+            row["physical_semantic_evidence"] = row["semantic_evidence"]
+            row["semantic_evidence"] = "UNKNOWN"
     roster_rows = [
         {"deployment_id": deployment, "c16_cohort": cohort, "c16_split_role": role}
         for deployment, (cohort, role) in sorted(P_CHECKPOINT_TRAIN_ROSTER.items())
@@ -1243,6 +1256,8 @@ def p_checkpoint_train_input(commit: str, manifest_path: str, artifact_root: Pat
         "resource_admission_basis": "HASH_CLOSED_P1_NATIVE_CATALOG_UNIQUE_PROFILE_BRIDGE",
         "semantic_map_rows": str(len(semantic_rows)), "semantic_coverage_rows": str(len(coverage_rows)),
         "raw_index_rows": str(len(raw_index_rows)), "awq_outcomes_read": "FALSE",
+        "semantic_normalization": "P1_PHASE_ONLY_PHYSICAL_MARKER_TO_EXPLICIT_UNKNOWN_STRATUM",
+        "physical_semantic_evidence_values": ",".join(sorted(observed_evidence)),
     })
     return catalog_rows, receipt, audit, roles
 
