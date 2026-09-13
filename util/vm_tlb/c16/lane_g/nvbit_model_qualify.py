@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -33,6 +34,10 @@ from runtime_native_runner import (
 
 
 MODES = {"BASELINE", "OFFICIAL_MEM_TRACE", "C16_MEMORY_TRACER"}
+TRACE_CONFIGURATION_ENVIRONMENT = (
+    "INSTR_BEGIN", "INSTR_END", "DYNAMIC_KERNEL_RANGE", "ACTIVE_FROM_START",
+    "TERMINATE_UPON_LIMIT", "TRACE_FILE_COMPRESS", "TOOL_COMPRESS", "TRACES_FOLDER",
+)
 
 
 def git_head() -> str:
@@ -63,6 +68,61 @@ def validate_tool_contract(mode: str, tool_path: Path | None, tool_sha256: str |
     if preload != str(tool_path):
         raise ContractError("LD_PRELOAD does not exactly bind the declared NVBit tool")
     return {"mode": mode, "tool_path": str(tool_path), "tool_sha256": tool_sha256, "ld_preload": preload}
+
+
+def trace_evidence(
+    *,
+    raw_dir: Path,
+    mode: str,
+    trace_glob: str | None,
+    trace_marker: str | None,
+    kernel_catalog_glob: str | None,
+) -> dict[str, Any]:
+    """Close real trace evidence without treating a launcher banner as data.
+
+    This check is intentionally specific to diagnostic qualification.  It
+    proves that the requested tool emitted a materialized payload, but makes
+    no kernel-name, timing, or frozen-C-target claim.
+    """
+    if mode == "BASELINE":
+        if trace_glob is not None or trace_marker is not None or kernel_catalog_glob is not None:
+            raise ContractError("baseline qualification cannot declare NVBit trace evidence")
+        return {"required": False, "records": [], "kernel_catalogs": [], "configuration": {}}
+    if not trace_glob:
+        raise ContractError("profile qualification requires --trace-evidence-glob")
+    if Path(trace_glob).is_absolute() or ".." in Path(trace_glob).parts:
+        raise ContractError("trace evidence glob must be a safe raw-directory-relative path")
+    matches = sorted(path for path in raw_dir.glob(trace_glob) if path.is_file() and path.stat().st_size > 0)
+    if not matches:
+        raise ContractError("profile qualification emitted no nonzero declared trace evidence")
+    records = [
+        {"path": str(path.relative_to(raw_dir)), "size_bytes": path.stat().st_size, "sha256": sha256_file(path)}
+        for path in matches
+    ]
+    if trace_marker is not None:
+        try:
+            marker = re.compile(trace_marker)
+        except re.error as exc:
+            raise ContractError("trace evidence marker is not a valid regular expression") from exc
+        if not any(marker.search(path.read_text(encoding="utf-8", errors="replace")) for path in matches):
+            raise ContractError("profile qualification trace lacks the required real-record marker")
+    catalogs: list[dict[str, Any]] = []
+    if kernel_catalog_glob is not None:
+        if Path(kernel_catalog_glob).is_absolute() or ".." in Path(kernel_catalog_glob).parts:
+            raise ContractError("kernel catalog glob must be a safe raw-directory-relative path")
+        catalog_paths = sorted(path for path in raw_dir.glob(kernel_catalog_glob) if path.is_file() and path.stat().st_size > 0)
+        if not catalog_paths:
+            raise ContractError("C16 tracer qualification emitted no nonzero kernel catalog")
+        catalogs = [
+            {"path": str(path.relative_to(raw_dir)), "size_bytes": path.stat().st_size, "sha256": sha256_file(path)}
+            for path in catalog_paths
+        ]
+    return {
+        "required": True,
+        "records": records,
+        "kernel_catalogs": catalogs,
+        "configuration": {name: os.environ.get(name, "UNSET") for name in TRACE_CONFIGURATION_ENVIRONMENT},
+    }
 
 
 def output_checksum(logits: Any) -> tuple[str, list[int]]:
@@ -143,6 +203,13 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, tool: dict[str, s
     if args.expected_output_checksum is not None and checksum != args.expected_output_checksum:
         raise ContractError("model output checksum differs from the frozen baseline qualification")
     properties = torch.cuda.get_device_properties(0)
+    evidence = trace_evidence(
+        raw_dir=args.raw_dir,
+        mode=args.mode,
+        trace_glob=args.trace_evidence_glob,
+        trace_marker=args.trace_evidence_marker,
+        kernel_catalog_glob=args.kernel_catalog_glob,
+    )
     return {
         "schema_version": "C16_G_MODEL_NVBIT_QUALIFICATION_V1",
         "status": "MODEL_NVBIT_QUALIFICATION_FORWARD_COMPLETE",
@@ -184,6 +251,7 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, tool: dict[str, s
             "peak_allocated_bytes": torch.cuda.max_memory_allocated(),
             "peak_reserved_bytes": torch.cuda.max_memory_reserved(),
             "raw_bytes_observed_before_receipt": raw_tree_bytes(args.raw_dir),
+            "trace_evidence": evidence,
             "terminal_status": "COMPLETE",
         },
     }
@@ -198,6 +266,9 @@ def main() -> None:
     parser.add_argument("--mode", choices=sorted(MODES), required=True)
     parser.add_argument("--tool-path", type=Path)
     parser.add_argument("--tool-sha256")
+    parser.add_argument("--trace-evidence-glob")
+    parser.add_argument("--trace-evidence-marker")
+    parser.add_argument("--kernel-catalog-glob")
     parser.add_argument("--adapter", required=True)
     parser.add_argument("--implementation-key", required=True)
     parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True)

@@ -13,7 +13,7 @@ LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
 from c16_native_common import ContractError  # noqa: E402
-from nvbit_model_qualify import output_checksum, validate_tool_contract  # noqa: E402
+from nvbit_model_qualify import output_checksum, trace_evidence, validate_tool_contract  # noqa: E402
 
 
 class FakeTokens:
@@ -64,6 +64,38 @@ class ModelQualificationTests(unittest.TestCase):
         checksum, values = output_checksum(FakeLogits())
         self.assertEqual(values, [7])
         self.assertEqual(checksum, hashlib.sha256(b"[7]").hexdigest())
+
+    def test_profile_requires_real_declared_evidence_and_c16_catalog(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "stdout.log").write_text("MEMTRACE: CTX - grid_launch_id 3\n", encoding="utf-8")
+            result = trace_evidence(
+                raw_dir=root, mode="OFFICIAL_MEM_TRACE", trace_glob="stdout.log",
+                trace_marker=r"grid_launch_id", kernel_catalog_glob=None,
+            )
+            self.assertTrue(result["required"])
+            with self.assertRaises(ContractError):
+                trace_evidence(
+                    raw_dir=root, mode="C16_MEMORY_TRACER", trace_glob="traces/*.trace.xz",
+                    trace_marker=None, kernel_catalog_glob="traces/kernelslist*",
+                )
+            traces = root / "traces"
+            traces.mkdir()
+            (traces / "kernel-1.trace.xz").write_bytes(b"nonzero compressed trace")
+            (traces / "kernelslist_ctx_0x1").write_text("kernel id, kernel name\n1,test\n", encoding="utf-8")
+            result = trace_evidence(
+                raw_dir=root, mode="C16_MEMORY_TRACER", trace_glob="traces/*.trace.xz",
+                trace_marker=None, kernel_catalog_glob="traces/kernelslist*",
+            )
+            self.assertEqual(len(result["kernel_catalogs"]), 1)
+
+    def test_baseline_cannot_claim_trace_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(ContractError):
+                trace_evidence(
+                    raw_dir=Path(directory), mode="BASELINE", trace_glob="stdout.log",
+                    trace_marker=None, kernel_catalog_glob=None,
+                )
 
 
 if __name__ == "__main__":
