@@ -106,6 +106,40 @@ by aggregate phase duration.  Both rows retain
 keys, never a substitute for an exact live NVBit function identity or static
 instruction range.
 
+### Recovery-V3 R5 Qwen0 closeout and V9 asset correction
+
+The current R5 publication is
+[`r5_qwen0_budget_closeout`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/r5_qwen0_budget_closeout/)
+at artifact checkpoint `4d16bafc41412039a0a60a9bd481dcfc408498c2`.
+Its manifest SHA256 is
+`ac5c749d9a6473720d52446a4b0ff6aeb2462b063baecf658e3971761d659ca7`.
+The implementation anchor is `2c951d8c71fe7e0271332d1d2a724951c42a92d0`;
+the runtime code that produced the retained Qwen0 evidence remains
+`44981e72c39b317529ee98995dfd478283830623`.
+
+Qwen0 S0 now has direct NVBit identity bindings and independent direct GLOBAL
+memory-static targets for both PREFILL and DECODE.  The retained old-tracer
+run `8c93675b-bd5c-497f-9371-a7bbd5e1a3d2` is explicitly a
+`NON_SCIENTIFIC_DIAGNOSTIC`, not a trace result: its old binary predated the
+exact-root/static-index ROI contract.  Its 1,016 retained payloads are
+remote-to-local SHA-closed through the independent manifest.  The corrected
+tracer binary is provenance-checked but **not executed**.  The fixed ledger
+SHA256 `2d2d1cb6da7b09547d7689f7910656038d4f52aaf4f5c041c16f563b479340e1`
+proves all six permitted Qwen0 NVBit windows are already consumed.  Therefore
+the only valid current outcome is
+`QWEN0_S0_G3_CAPABILITY_LIMITED_BUDGET_EXHAUSTED`; no budget reset, target or
+range substitution, new raw, or scientific capture claim is permitted.
+
+V9 asset consolidation V2 is stored outside Git under
+`/root/share/c16_recovery_v3/receipts/ASSET_CONSOLIDATION_RECEIPT_V2.json`
+(SHA256 `3a175867fe8bd7c5a72a1db905dda32e11f178ba1b94e34ce1959356b4d4f116`).
+Qwen3-8B is now `ALREADY_UNDER_BULK_ROOT` with full payload size/SHA closure.
+The separate Qwen3-30B-A3B user-managed tree remains
+`EXCLUDED_BY_USER_CURRENT_CAMPAIGN`: it was not inspected, moved, validated,
+or counted.  The retained exact P0 Llama source is being copied
+non-destructively into the fixed bulk root; it is not registered as closed
+until its destination file-count/bytes/SHA closure completes.
+
 ## Final post-Llama multi-model dataset publication
 
 The authoritative compact publication is
