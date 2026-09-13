@@ -1,0 +1,3 @@
+# Bounded G target plans
+
+These are separate request-only, exact-identity `Selector-R` B48 NCU and NVBit plans from the already-frozen selector source SHA.  Each plan contains at most 48 units per deployment/scenario/phase universe and only direct `ADMITTED` AWQ S1/S2 identities.  `c16_qwen25_7b_raw_reference` remains excluded as `RESOURCE_UNAVAILABLE_ON_RTX3090`; AWQ S3/S4 are `SKIPPED_RESOURCE` and have not been substituted.  `Selector-M` is explicitly deferred in `P_AWQ_SELECTOR_M_DEFERRED.md` and was not recomputed.  No NCU/NVBit result, trace outcome, speedup, miss, or candidate mechanism metric was read by C.

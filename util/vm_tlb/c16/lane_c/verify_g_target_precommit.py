@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import io
 import json
 from pathlib import Path
 
@@ -33,7 +34,11 @@ def die(message: str) -> None:
 
 
 def rows(path: Path) -> list[dict[str, str]]:
-    return list(csv.DictReader(path.read_text(), delimiter="\t"))
+    # ``DictReader`` accepts an iterable.  A bare string is an iterable of
+    # characters, which would make a valid TSV look like one-row-per-byte and
+    # falsely reject every real target plan.  Keep this gate independent from
+    # selector code while feeding it a proper text stream.
+    return list(csv.DictReader(io.StringIO(path.read_text()), delimiter="\t"))
 
 
 def verify(out: Path) -> None:
