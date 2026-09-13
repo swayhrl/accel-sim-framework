@@ -59,6 +59,7 @@ P_REQUIRED_PAYLOAD_KINDS = (
 P_SELECTOR_CONSUMED_PAYLOAD_KINDS = (
     "KERNEL_CATALOG", "PROFILE_REPORT_INDEX", "DEPLOYMENT_ROSTER", "RESOURCE_ADMISSION",
 )
+P_TRAIN_VERIFIED_PAYLOAD_KINDS = P_SELECTOR_CONSUMED_PAYLOAD_KINDS + ("KERNEL_SEMANTIC_MAP",)
 P_TRAIN_ROSTER = {
     "TRAIN_LLAMA": "TUNING",
     "TRAIN_QWEN0_5": "TUNING",
@@ -786,13 +787,13 @@ def write_p_event_consumption_contract(out: Path) -> None:
 
 Lane C polls P's published branch but never reads its worktree, exchange directory, live partial report, or an ordinary milestone.  The sole admission event is manifest `status: C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED` at an exact 40-character P commit.  It is a capability-limited amendment, not completion of the original three-deployment train protocol.
 
-The ready manifest must use `schema_version: C16_P_NATIVE_CATALOG_FOR_C_V1`, set `p_commit` to that exact commit, bind `capability_limited_train_roster_version: CAPABILITY_LIMITED_TRAIN_ROSTER_V1` and the committed C amendment SHA, and contain `hash_closure.status: HASH_CLOSED`, exact source producer commit SHA(s), and SHA-256 raw-artifact receipt(s).  Every `files[]` entry has `cohort`, `kind`, relative/absolute committed `path`, and content SHA-256.  Each cohort has exactly one of these kinds: `KERNEL_CATALOG`, `KERNEL_SEMANTIC_MAP`, `SEMANTIC_COVERAGE`, `NATIVE_BASELINE`, `RUNTIME_IMPLEMENTATION_AUDIT`, `RUN_JOIN_AUDIT`, `PROFILE_REPORT_INDEX`, `DEPLOYMENT_ROSTER`, and `RESOURCE_ADMISSION`.
+The ready manifest must use `schema_version: C16_P_NATIVE_CATALOG_FOR_C_V1`, set `p_commit` to that exact commit, bind `capability_limited_train_roster_version: CAPABILITY_LIMITED_TRAIN_ROSTER_V1` and the committed C amendment SHA, and contain `hash_closure.status: HASH_CLOSED`, exact source producer commit SHA(s), and raw-artifact `path`, nonnegative `size_bytes`, and SHA-256 receipt(s).  Every `files[]` entry has `cohort`, `kind`, relative/absolute committed `path`, and content SHA-256.  Each cohort has exactly one of these kinds: `KERNEL_CATALOG`, `KERNEL_SEMANTIC_MAP`, `SEMANTIC_COVERAGE`, `NATIVE_BASELINE`, `RUNTIME_IMPLEMENTATION_AUDIT`, `RUN_JOIN_AUDIT`, `PROFILE_REPORT_INDEX`, `DEPLOYMENT_ROSTER`, and `RESOURCE_ADMISSION`.
 
 P must publish physically separate cohorts.  `TRAIN_TUNE` contains only the direct roster identities `TRAIN_LLAMA` and `TRAIN_QWEN0_5`, both `c16_split_role=TUNING`.  `c16_qwen25_7b_raw_reference` must not appear in any C selector or target input: its S0 resource admission is fixed as `RESOURCE_UNAVAILABLE_ON_RTX3090`.  `PROSPECTIVE_QWEN7_AWQ` contains exactly direct roster identity `PROSPECTIVE_QWEN7_AWQ`, `c16_split_role=PROSPECTIVE_HOLDOUT`.  The latter payload content is not read until the train source SHA, strata, thresholds, seed, and 12/24/48 plans are frozen and those exact freeze artifacts are committed at C's `HEAD`.
 
 `DEPLOYMENT_ROSTER` must contain `deployment_id`, `c16_cohort`, and `c16_split_role`; it replaces name guessing for the raw/AWQ split.  `PROFILE_REPORT_INDEX` bridges one `run_id` to one `profile_report_id`.  `RESOURCE_ADMISSION` must have one `ADMITTED` row per catalog deployment/scenario before it can enter a target plan.  The catalog carries the C16 minimum fields and only `DIRECT_RUNTIME_NVTX`, `DIRECT_MODULE_ID`, or `UNKNOWN` semantic evidence.  An `UNKNOWN` semantic field is retained as an explicit stratum.  Kernel-name semantic inference is forbidden.
 
-The cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome columns.  C reads no such result at either admission stage; listed baseline/semantic/heavy-tail payload hashes are closure-only and their bodies are not selector inputs.  After AWQ application it publishes separate request-only Selector-R B48 NCU and NVBit target plans (each at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  This does not authorize a GPU capture.
+The cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome columns.  C verifies raw receipt closure plus train catalog and train semantic-map content hashes, but semantic fields never become kernel-name heuristics.  Baseline/heavy-tail bodies remain outside selector inputs; AWQ semantic/timing/launch/heavy-tail bodies remain sealed until the committed train freeze and are not used to alter selection.  After AWQ application it publishes separate request-only Selector-R B48 NCU and NVBit target plans (each at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  This does not authorize a GPU capture.
 """)
 
 
@@ -1034,7 +1035,10 @@ def p_manifest_entries(manifest: dict[str, Any], cohort: str) -> dict[str, dict[
     raw_artifacts = closure.get("raw_artifacts")
     if not isinstance(commits, list) or not commits or not all(isinstance(item, str) and re.fullmatch(r"[0-9a-f]{40}", item) for item in commits):
         die("P hash_closure must name exact source producer commit SHA(s)")
-    if not isinstance(raw_artifacts, list) or not raw_artifacts or any(not isinstance(item, dict) or not re.fullmatch(r"[0-9a-f]{64}", str(item.get("sha256", ""))) for item in raw_artifacts):
+    if not isinstance(raw_artifacts, list) or not raw_artifacts or any(
+            not isinstance(item, dict) or not isinstance(item.get("path"), str) or not item["path"]
+            or not isinstance(item.get("size_bytes"), int) or item["size_bytes"] < 0
+            or not re.fullmatch(r"[0-9a-f]{64}", str(item.get("sha256", ""))) for item in raw_artifacts):
         die("P hash_closure must include SHA-256-closed raw artifact receipt(s)")
     entries: dict[str, dict[str, Any]] = {}
     for kind in P_REQUIRED_PAYLOAD_KINDS:
@@ -1060,11 +1064,12 @@ def p_read_payloads(commit: str, manifest_path: str, cohort: str) -> tuple[dict[
     payloads: dict[str, str] = {}
     dependencies: list[dict[str, str]] = []
     declared_dependencies: list[dict[str, str]] = []
+    consumed_kinds = P_TRAIN_VERIFIED_PAYLOAD_KINDS if cohort == P_TRAIN_COHORT else P_SELECTOR_CONSUMED_PAYLOAD_KINDS
     for kind in P_REQUIRED_PAYLOAD_KINDS:
         entry = entries[kind]
         path = manifest_entry_path(manifest_path, str(entry["path"]))
         declared_dependencies.append({"kind": kind, "path": path, "sha256": str(entry["sha256"])})
-        if kind not in P_SELECTOR_CONSUMED_PAYLOAD_KINDS:
+        if kind not in consumed_kinds:
             continue
         content = git_text(commit, path)
         digest = sha256_bytes(content.encode())
@@ -1082,7 +1087,7 @@ def p_read_payloads(commit: str, manifest_path: str, cohort: str) -> tuple[dict[
         "hash_closure": manifest["hash_closure"],
         "validated_dependencies": dependencies,
         "manifest_declared_dependencies": declared_dependencies,
-        "manifest_listed_not_read": [kind for kind in P_REQUIRED_PAYLOAD_KINDS if kind not in P_SELECTOR_CONSUMED_PAYLOAD_KINDS],
+        "manifest_listed_not_read": [kind for kind in P_REQUIRED_PAYLOAD_KINDS if kind not in consumed_kinds],
         "capability_limited_train_roster_version": manifest["capability_limited_train_roster_version"],
         "c_protocol_amendment_sha256": manifest.get("c_protocol_amendment_sha256", ""),
         "unavailable_deployment_ids": manifest["unavailable_deployment_ids"],

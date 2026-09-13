@@ -121,7 +121,7 @@ p_manifest = {
     "schema_version": MODULE.P_MANIFEST_SCHEMA, "status": MODULE.P_READY_STATUS,
     "capability_limited_train_roster_version": MODULE.CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION,
     "unavailable_deployment_ids": [MODULE.QWEN7_RAW_DEPLOYMENT_ID],
-    "hash_closure": {"status": "HASH_CLOSED", "producer_commits": ["a" * 40], "raw_artifacts": [{"sha256": "b" * 64}]},
+    "hash_closure": {"status": "HASH_CLOSED", "producer_commits": ["a" * 40], "raw_artifacts": [{"path": "raw/report.nsys-rep", "size_bytes": 1, "sha256": "b" * 64}]},
     "files": [{"cohort": MODULE.P_TRAIN_COHORT, "kind": kind, "path": f"train/{kind}.tsv", "sha256": "c" * 64}
               for kind in MODULE.P_REQUIRED_PAYLOAD_KINDS],
 }
