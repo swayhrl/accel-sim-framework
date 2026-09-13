@@ -25,6 +25,7 @@ from execution_budget import BudgetLease, MeasurementActive
 from model_adapters import resolve_adapter
 from runtime_native_runner import (
     assert_cuda_residency,
+    decode_once,
     dtype_for,
     load_binding,
     load_token_ids,
@@ -303,15 +304,12 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, tool: dict[str, s
         raise ContractError("model attention backend is unresolved")
     if args.expected_attention_backend is not None and attention != args.expected_attention_backend:
         raise ContractError("model attention backend differs from the frozen baseline qualification")
-    torch.cuda.synchronize()
-    torch.cuda.nvtx.range_push("C16_MODEL_NVBIT_QUALIFICATION")
-    try:
-        with torch.inference_mode():
-            output = model(input_ids=prompt, use_cache=False)
-    finally:
-        torch.cuda.nvtx.range_pop()
-    torch.cuda.synchronize()
-    checksum, terminal_tokens = output_checksum(output.logits)
+    # Use the same full prefill + cache-correct Decode4 workload as the
+    # frozen native S0 baseline.  A single use_cache=False forward is a
+    # different operation and cannot be compared to that baseline checksum.
+    _duration_ms, checksum = decode_once(
+        model, prompt, int(binding["scenario"]["decode_tokens"]), torch,
+    )
     if args.expected_output_checksum is not None and checksum != args.expected_output_checksum:
         raise ContractError("model output checksum differs from the frozen baseline qualification")
     properties = torch.cuda.get_device_properties(0)
@@ -357,7 +355,8 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, tool: dict[str, s
             "cpu_offload_forbidden": True,
             "parameter_dtype_set": sorted(parameter_dtypes),
             "output_checksum": checksum,
-            "terminal_token_ids": terminal_tokens,
+            "terminal_token_ids": "DERIVED_BY_FROZEN_CACHE_CORRECT_DECODE_ONCE",
+            "cache_correct_decode": True,
             "expected_output_checksum_matched": args.expected_output_checksum is not None,
             "expected_attention_backend_matched": args.expected_attention_backend is not None,
             "nvtx_model_range_emitted": True,

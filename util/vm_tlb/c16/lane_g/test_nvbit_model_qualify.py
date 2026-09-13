@@ -66,6 +66,12 @@ class ModelQualificationTests(unittest.TestCase):
         self.assertEqual(values, [7])
         self.assertEqual(checksum, hashlib.sha256(b"[7]").hexdigest())
 
+    def test_qualification_uses_frozen_cache_correct_decode_workload(self) -> None:
+        source = (LANE / "nvbit_model_qualify.py").read_text(encoding="utf-8")
+        self.assertIn("decode_once(", source)
+        self.assertIn("cache_correct_decode", source)
+        self.assertNotIn("model(input_ids=prompt, use_cache=False)", source)
+
     def test_profile_requires_real_declared_evidence_and_c16_catalog(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
