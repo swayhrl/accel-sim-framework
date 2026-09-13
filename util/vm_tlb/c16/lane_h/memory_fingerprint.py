@@ -14,6 +14,7 @@ import csv
 import hashlib
 import json
 import lzma
+import re
 import statistics
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -39,7 +40,14 @@ CAPTURE_ADDRESS_DOMAINS = frozenset({"GPU_VA_OBSERVED", "MIXED_MEMORY_SPACE_OBSE
 ORDER_MODELS = frozenset({"SET_ONLY", "LOCAL_STREAM_ORDER", "SYNTHETIC_INTERLEAVING_PROXY"})
 CAPTURE_STATUSES = frozenset({"COMPLETE", "BOUNDED_PARTIAL"})
 TERMINAL_STATUSES = frozenset({"COMPLETE", "PARTIAL_TERMINAL"})
-TRACE_FORMATS = frozenset({"TRACEG", "RAW_CTA", "RAW_CTA_CORE", "RAW_CTA_LINEINFO", "RAW_CTA_CORE_LINEINFO"})
+# ``RAW_CTA_NVBIT18`` is deliberately separate from the historical raw-CTA
+# label.  Its per-record layout is the same as RAW_CTA, but the enclosing file
+# must identify itself as an NVBit 1.8 / Accel-Sim tracer trace before it is
+# admitted.  A filename or a caller assertion is not version evidence.
+TRACE_FORMATS = frozenset({
+    "TRACEG", "RAW_CTA", "RAW_CTA_NVBIT18", "RAW_CTA_CORE",
+    "RAW_CTA_LINEINFO", "RAW_CTA_CORE_LINEINFO",
+})
 ACCESS_KINDS = frozenset({"READ", "WRITE", "ATOMIC", "UNKNOWN"})
 TEMPORAL_STATUSES = frozenset({"BOUND", "UNPROVEN"})
 
@@ -149,6 +157,7 @@ def _prefix_width(trace_format: str) -> int:
     widths = {
         "TRACEG": 0,
         "RAW_CTA": 4,
+        "RAW_CTA_NVBIT18": 4,
         "RAW_CTA_CORE": 6,
         "RAW_CTA_LINEINFO": 5,
         "RAW_CTA_CORE_LINEINFO": 7,
@@ -161,6 +170,51 @@ def _prefix_width(trace_format: str) -> int:
 def is_metadata_line(line: str) -> bool:
     stripped = line.strip()
     return not stripped or stripped.startswith(("#", "-")) or stripped.startswith(("thread block =", "warp =", "insts ="))
+
+
+_TRACE_HEADER_RE = re.compile(r"^-(?P<key>[^=]+?)\s*=\s*(?P<value>.*?)\s*$")
+
+
+def trace_file_metadata(path: Path) -> dict[str, str]:
+    """Read immutable tracer metadata without treating it as a record.
+
+    The C16 NVBit 1.8 full tracer writes headers such as ``-nvbit version =
+    1.8`` before CTA-prefixed records.  Keep that identity separate from the
+    record decoder: an identical row layout alone must not silently promote an
+    unversioned capture to the qualified NVBit 1.8 path.
+    """
+    metadata: dict[str, str] = {}
+    with _open_text(path) as source:
+        for raw in source:
+            stripped = raw.strip()
+            if not stripped:
+                continue
+            matched = _TRACE_HEADER_RE.match(stripped)
+            if matched:
+                metadata[matched.group("key").strip().lower()] = matched.group("value").strip()
+                continue
+            if stripped.startswith("#"):
+                continue
+            break
+    return metadata
+
+
+def validate_trace_format_metadata(path: Path, trace_format: str) -> dict[str, str]:
+    """Validate header-level format identity and return parsed metadata.
+
+    Legacy formats deliberately retain their old behavior.  Only the explicit
+    NVBit 1.8 format requires a version assertion, which lets existing 1.7.6
+    tests and historical RAW_CTA manifests remain usable.
+    """
+    metadata = trace_file_metadata(path)
+    if trace_format == "RAW_CTA_NVBIT18":
+        if metadata.get("nvbit version") != "1.8":
+            raise TraceParseError(
+                f"RAW_CTA_NVBIT18 requires header '-nvbit version = 1.8'; got {metadata.get('nvbit version')!r}"
+            )
+        if not metadata.get("accelsim tracer version"):
+            raise TraceParseError("RAW_CTA_NVBIT18 requires an accelsim tracer version header")
+    return metadata
 
 
 def parse_trace_record(line: str, source_record: int, trace_format: str = "TRACEG") -> MemoryEvent | None:
@@ -588,6 +642,10 @@ def fingerprint_entry(
             f"object-map SHA256 mismatch for window {entry.window_ordinal}: "
             f"expected {entry.object_map_sha256}, got {object_map.source_sha256}"
         )
+    try:
+        validate_trace_format_metadata(entry.trace_path, entry.trace_format)
+    except TraceParseError as error:
+        raise TraceParseError(f"{entry.trace_path}: {error}") from error
     object_map_cutoff = (
         object_map.resolve_snapshot(entry.object_map_snapshot_id, entry.object_map_event_ordinal_cutoff)
         if entry.object_map_temporal_status == "BOUND"

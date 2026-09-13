@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import lzma
 import shutil
 import subprocess
 import sys
@@ -21,6 +22,7 @@ from util.vm_tlb.c16.lane_h.memory_fingerprint import (  # noqa: E402
     load_manifest,
     parse_trace_record,
     reuse_rows,
+    validate_trace_format_metadata,
 )
 from util.vm_tlb.c16.lane_h.runtime_object_map_v2 import RuntimeObjectMapV2, sha256_file  # noqa: E402
 
@@ -95,6 +97,30 @@ class MemoryFingerprintTest(unittest.TestCase):
         raw = parse_trace_record("0 0 0 3 0100 00000001 0 LDG.E.32 0 4 0 0x10 0", 4, "RAW_CTA")
         self.assertEqual(raw.cta, (0, 0, 0))
         self.assertEqual(raw.warp_in_cta, 3)
+
+    def test_nvbit18_raw_cta_metadata_is_version_bound_without_regressing_legacy_raw_cta(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            trace = Path(temporary) / "nvbit18.trace.xz"
+            with lzma.open(trace, "wt", encoding="utf-8") as output:
+                output.write("-nvbit version = 1.8\n")
+                output.write("-accelsim tracer version = 5\n")
+                output.write("0 0 0 3 0100 00000005 0 LDG.E.32 0 4 0 0x7f 0x80 0\n")
+            metadata = validate_trace_format_metadata(trace, "RAW_CTA_NVBIT18")
+            self.assertEqual(metadata["nvbit version"], "1.8")
+            event = parse_trace_record(
+                "0 0 0 3 0100 00000005 0 LDG.E.32 0 4 0 0x7f 0x80 0", 3, "RAW_CTA_NVBIT18"
+            )
+            assert event is not None
+            self.assertEqual((event.cta, event.warp_in_cta, event.width), ((0, 0, 0), 3, 4))
+            # Historical raw CTA parsing is intentionally not made version-dependent.
+            self.assertEqual(
+                parse_trace_record("0 0 0 3 0100 00000001 0 LDG.E.32 0 4 0 0x10 0", 4, "RAW_CTA").width,
+                4,
+            )
+            bad = Path(temporary) / "not18.trace"
+            bad.write_text("-nvbit version = 1.7.6\n-accelsim tracer version = 5\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "requires header"):
+                validate_trace_format_metadata(bad, "RAW_CTA_NVBIT18")
 
     def test_complete_and_partial_capture_boundaries(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
