@@ -100,7 +100,10 @@ def plan_command(tool: str, args: argparse.Namespace) -> list[str]:
             command.extend(("--capture-range=nvtx", "--capture-range-end=stop"))
         return [*command, "-o", output, *args.command]
     if tool == "ncu":
-        command = ["ncu", "--target-processes", "application", "--replay-mode", "kernel", "--metrics", ",".join(metric_names(args.metrics_file))]
+        # Nsight Compute 2024.1 accepts ``application-only`` (not the
+        # historical ``application`` spelling).  Keep the profiler scoped to
+        # the launched runner and never broaden it to descendant processes.
+        command = ["ncu", "--target-processes", "application-only", "--replay-mode", "kernel", "--metrics", ",".join(metric_names(args.metrics_file))]
         if args.ncu_kernel_id:
             command.extend(("--kernel-name-base", args.ncu_kernel_name_base, "--kernel-id", args.ncu_kernel_id, "--launch-count", str(args.ncu_launch_count)))
         return [*command, "--export", output, *args.command]

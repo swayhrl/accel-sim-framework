@@ -27,6 +27,7 @@ class NcuTargetFilterTests(unittest.TestCase):
         self.assertEqual(command[command.index("--kernel-id") + 1], "::regex:^unit\\(kernel\\)$:17")
         self.assertEqual(command[command.index("--launch-count") + 1], "1")
         self.assertEqual(command[command.index("--replay-mode") + 1], "kernel")
+        self.assertEqual(command[command.index("--target-processes") + 1], "application-only")
 
 
 if __name__ == "__main__":
