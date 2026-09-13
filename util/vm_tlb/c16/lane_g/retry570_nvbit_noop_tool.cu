@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+#include "nvbit.h"
 #include "nvbit_tool.h"
 
 void nvbit_at_init() {
