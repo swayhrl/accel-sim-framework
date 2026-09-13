@@ -131,6 +131,8 @@ def validate_tool(args: argparse.Namespace) -> dict[str, str]:
         raise ContractError("microreproducer NVBit tool path/SHA is not closed")
     if os.environ.get("C16_NVBIT_LD_PRELOAD_DECLARATION") != str(args.tool_path):
         raise ContractError("microreproducer preload declaration does not bind the exact NVBit tool")
+    if args.probe_only:
+        return {"path": str(args.tool_path), "sha256": args.tool_sha256, "mode": "OFFICIAL_TOOL_LAUNCH_DISCOVERY_ONLY"}
     if os.environ.get("C16_NVBIT_TARGET_FUNCTION_MANGLED") != args.exact_mangled_function:
         raise ContractError("NVBit mapper function environment differs from the requested exact identity")
     if os.environ.get("C16_NVBIT_STATIC_MAP_PATH") != str(args.static_map):
@@ -148,16 +150,17 @@ def write_failure(args: argparse.Namespace, *, message: str, identity: dict[str,
         "message": message,
         "exact_mangled_function_required": args.exact_mangled_function,
         "runtime_identity": identity,
-        "static_map_path": str(args.static_map),
-        "static_map_materialized": args.static_map.is_file() and args.static_map.stat().st_size > 0,
+        "static_map_path": str(args.static_map) if args.static_map is not None else "NOT_APPLICABLE_PROBE_ONLY",
+        "static_map_materialized": args.static_map is not None and args.static_map.is_file() and args.static_map.stat().st_size > 0,
     })
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--receipt", type=Path, required=True)
-    parser.add_argument("--static-map", type=Path, required=True)
-    parser.add_argument("--target-receipt", type=Path, required=True)
+    parser.add_argument("--static-map", type=Path)
+    parser.add_argument("--target-receipt", type=Path)
+    parser.add_argument("--probe-only", action="store_true")
     parser.add_argument("--budget-ledger", type=Path, required=True)
     parser.add_argument("--tool-path", type=Path, required=True)
     parser.add_argument("--tool-sha256", required=True)
@@ -180,9 +183,12 @@ def main() -> None:
         parser.error("--run-id must be a canonical UUID")
     if args.runtime_code_commit != git_head():
         raise ContractError("declared runtime code commit differs from this source checkout")
-    args.static_map.parent.mkdir(parents=True, exist_ok=True)
-    if args.static_map.exists():
-        raise ContractError("microreproducer refuses to overwrite a pre-existing NVBit-native map")
+    if not args.probe_only and (args.static_map is None or args.target_receipt is None):
+        parser.error("map mode requires --static-map and --target-receipt")
+    if args.static_map is not None:
+        args.static_map.parent.mkdir(parents=True, exist_ok=True)
+        if args.static_map.exists():
+            raise ContractError("microreproducer refuses to overwrite a pre-existing NVBit-native map")
     identity: dict[str, str] | None = None
     lease_identity = {
         "deployment_id": DIAGNOSTIC_DEPLOYMENT,
@@ -197,6 +203,27 @@ def main() -> None:
                 tool = validate_tool(args)
                 torch, identity = assert_runtime_identity(args)
                 completed = run_candidates(torch)
+                if args.probe_only:
+                    receipt = {
+                        "schema_version": SCHEMA,
+                        "status": "MICROREPRODUCER_LAUNCH_DISCOVERY_COMPLETE_NOT_EQUIVALENCE",
+                        "scientific_eligible": False,
+                        "diagnostic_only": True,
+                        "exact_mangled_function_not_inferred": args.exact_mangled_function,
+                        "runtime_identity": identity,
+                        "tool": tool,
+                        "candidate_search": {"bounded": True, "candidates": completed},
+                        "terminal_status": "COMPLETE",
+                    }
+                    lease.finish(
+                        elapsed_seconds=lease.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE",
+                        evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
+                        diagnostic_reason="OFFICIAL_NVBIT_LAUNCH_DISCOVERY_ONLY_NOT_STATIC_MAP",
+                    )
+                    atomic_json(args.receipt, receipt)
+                    print(f"PASS indexSelect launch-discovery microreproducer: {args.receipt}")
+                    return
+                assert args.static_map is not None and args.target_receipt is not None
                 instructions = read_native_map(args.static_map, args.exact_mangled_function)
                 target = target_receipt(args.static_map, args.exact_mangled_function)
                 if target["function"]["libtorch_cuda_sha256"] != args.expected_libtorch_cuda_sha256:
@@ -227,7 +254,7 @@ def main() -> None:
                     diagnostic_reason="EXACT_INDEXSELECT_NVBIT_STATIC_MAP_DIAGNOSTIC_ONLY",
                 )
             except Exception as exc:
-                raw_bytes = args.static_map.stat().st_size if args.static_map.is_file() else 0
+                raw_bytes = args.static_map.stat().st_size if args.static_map is not None and args.static_map.is_file() else 0
                 write_failure(args, message=str(exc), identity=identity)
                 lease.finish(
                     elapsed_seconds=lease.elapsed_seconds(), raw_bytes=raw_bytes, terminal_status="FAILED_OR_ABORTED",
