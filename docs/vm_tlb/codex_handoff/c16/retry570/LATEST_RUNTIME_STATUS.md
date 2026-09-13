@@ -140,6 +140,19 @@ or counted.  The retained exact P0 Llama source is being copied
 non-destructively into the fixed bulk root; it is not registered as closed
 until its destination file-count/bytes/SHA closure completes.
 
+Qwen2.5-7B raw now also has the six non-S0 immutable frozen bindings
+materialized and remote-to-local SHA-closed: S1/CODE, S2/TEXT, S2/CODE,
+S2/STRUCTURED, S3/TEXT, and S4/STRUCTURED.  The compact local receipt is
+`/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_7B_RAW_ALL_SCENARIO_BINDINGS_RECEIPT.json`
+(SHA256 `e3313161185d8fd109533058248224337099a65a0e3beb7ffa4b87fac9dfc29a`)
+and the V2 remote/local payload manifest SHA256 is
+`867bbe043d71c40a7af818579830cd257306fbd9d4783455e39a53f1f69af8fd`.
+The first checksum-manifest attempt was retained as a non-scientific setup
+diagnostic because it self-referenced; V2 excludes manifests and verifies all
+12 binding/token payloads.  No model was loaded, no GPU was used, and no
+measurement marker was armed.  Its next gate is a separate runtime/resource
+admission after the ongoing bulk-root asset copy has finished.
+
 ## Final post-Llama multi-model dataset publication
 
 The authoritative compact publication is
