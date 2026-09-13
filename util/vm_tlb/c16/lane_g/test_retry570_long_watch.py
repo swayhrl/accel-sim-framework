@@ -19,6 +19,7 @@ from retry570_long_watch import (  # noqa: E402
     classify_timeout,
     nvdisasm_environment_contract,
     reserve_long_watch,
+    timeout_status,
     validate_mode,
 )
 
@@ -67,6 +68,10 @@ class Retry570LongWatchTests(unittest.TestCase):
         self.assertEqual(
             classify_timeout(busy, [{"stage": "PROCESS_START"}, {"stage": "CUDA_AVAILABLE_CONFIRMED"}]),
             "NVBIT_PYTORCH_EXTREME_STARTUP_OVERHEAD",
+        )
+        self.assertEqual(
+            timeout_status("NVBIT_PATH_SMOKE", busy, [{"stage": "PROCESS_START"}]),
+            "NVBIT_PATH_SMOKE_TIMEOUT_BEFORE_FIRST_KERNEL",
         )
 
 

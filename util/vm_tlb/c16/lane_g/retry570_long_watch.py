@@ -163,6 +163,13 @@ def classify_timeout(samples: list[dict[str, Any]], stages: list[dict[str, Any]]
     return "NVBIT_PYTORCH_PRE_FIRST_KERNEL_STALL_CONFIRMED"
 
 
+def timeout_status(mode: str, samples: list[dict[str, Any]], stages: list[dict[str, Any]]) -> str:
+    """Keep a 60-second path gate from claiming a 300-second diagnosis."""
+    if mode == "NVBIT_PATH_SMOKE":
+        return "NVBIT_PATH_SMOKE_TIMEOUT_BEFORE_FIRST_KERNEL"
+    return classify_timeout(samples, stages)
+
+
 def reserve_long_watch(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -429,7 +436,7 @@ def parent_main(args: argparse.Namespace) -> int:
             child_exit_code = process.returncode if process is not None else None
             tool_evidence_seen = bool(args.tool_evidence_marker and _tail_contains(args.stdout_path, (args.tool_evidence_marker,)))
             if timed_out and first_kernel_elapsed is None:
-                status = classify_timeout(samples, stages)
+                status = timeout_status(args.mode, samples, stages)
                 terminal_status = "BOUNDED_TIMEOUT_NO_FIRST_KERNEL"
             elif timed_out:
                 status = "NVBIT_LONG_WATCH_FIRST_KERNEL_OBSERVED_BUT_CHILD_DID_NOT_COMPLETE"
