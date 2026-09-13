@@ -27,10 +27,13 @@ Overall: **PASS**
 | CLAIM_required_claim_id_set | PASS | required register coverage |
 | CLAIM_artifact_claim_references | PASS | explicit figure/workload claim-id mapping; no NLP inference |
 | CLAIM_paper_section_traceability | PASS | paper prose references scoped claim groups |
-| NEGATIVE_N01_FAST12_ORDER | PASS | core validation failures: ['A01_FAST12_ORDER: order is derived from pinned FAST12 source; aggregate is excluded'] |
-| NEGATIVE_N02_PRIMARY_OBSERVER_CONTAMINATION | PASS | core validation failures: ['A02_PRIMARY_CELLS_AND_GM: cycles and GM are recomputed from pinned integers; diagnostic rows are rejected'] |
-| NEGATIVE_N03_PHYSICAL_16P5_NUMERIC | PASS | core validation failures: ['A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY: output rows equal pinned Lane-A table; numeric plot membership is row_kind=NUMERIC_ACCEPTED_POINT; BICG/GESUMMV 16.5 nonnumeric and Btree 16.5 numeric verified'] |
-| NEGATIVE_N04_OO_DUPLICATE_PROXY | PASS | core validation failures: ['A05_D5_QUALIFIED_PAIRS: D5 exact OO metric required; proxy substitution is rejected'] |
-| NEGATIVE_N05_INVENTED_D4_40KIB | PASS | core validation failures: ['A03_D4_CARTESIAN_AND_DENOMINATOR: exact D4 cartesian coverage and source observer_sample_sm_cycles field'] |
-| NEGATIVE_N06_PAYLOAD_RELABEL_DRAM | PASS | core validation failures: ['A05_D5_QUALIFIED_PAIRS: D5 exact OO metric required; proxy substitution is rejected'] |
-| DETERMINISM_EXECUTION | PASS | two isolated core builds; build exit codes=0/0; validation exit codes=0/0; recursive SHA-256 plus byte-size comparison |
+| NEGATIVE_N01_FAST12_ORDER | PASS | core validation failures: ['A01_FAST12_ORDER: order is derived from pinned FAST12 source; aggregate is excluded', "ValueError('coverage/sensitivity audit artifact differs from recomputed result: E_COVERAGE_SENSITIVITY_AUDIT.tsv')"] |
+| NEGATIVE_N02_PRIMARY_OBSERVER_CONTAMINATION | PASS | core validation failures: ['A02_PRIMARY_CELLS_AND_GM: cycles and GM are recomputed from pinned integers; diagnostic rows are rejected', "ValueError('coverage/sensitivity audit artifact differs from recomputed result: E_COVERAGE_SENSITIVITY_AUDIT.tsv')"] |
+| NEGATIVE_N03_PHYSICAL_16P5_NUMERIC | PASS | core validation failures: ['A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY: output rows equal pinned Lane-A table; numeric plot membership is row_kind=NUMERIC_ACCEPTED_POINT; BICG/GESUMMV 16.5 nonnumeric and Btree 16.5 numeric verified', "ValueError('coverage/sensitivity audit artifact differs from recomputed result: E_COVERAGE_SENSITIVITY_AUDIT.tsv')"] |
+| NEGATIVE_N04_OO_DUPLICATE_PROXY | PASS | core validation failures: ['A05_D5_QUALIFIED_PAIRS: D5 exact OO metric required; proxy substitution is rejected', "ValueError('coverage/sensitivity audit artifact differs from recomputed result: E_COVERAGE_SENSITIVITY_AUDIT.tsv')"] |
+| NEGATIVE_N05_INVENTED_D4_40KIB | PASS | core validation failures: ['A03_D4_CARTESIAN_AND_DENOMINATOR: exact D4 cartesian coverage and source observer_sample_sm_cycles field', "ValueError('coverage/sensitivity audit artifact differs from recomputed result: E_COVERAGE_SENSITIVITY_AUDIT.tsv')"] |
+| NEGATIVE_N06_PAYLOAD_RELABEL_DRAM | PASS | core validation failures: ['A05_D5_QUALIFIED_PAIRS: D5 exact OO metric required; proxy substitution is rejected', "ValueError('coverage/sensitivity audit artifact differs from recomputed result: E_COVERAGE_SENSITIVITY_AUDIT.tsv')"] |
+| CORE_DETERMINISM_EXECUTION | PASS | two isolated core builds; build exit codes=0/0; validation exit codes=0/0; recursive SHA-256 plus byte-size comparison |
+| FINAL_PACKAGE_DETERMINISM_EXECUTION | PASS | two isolated complete final-package builds (record included); recursive SHA-256 plus byte-size comparison; both final validators executed |
+| VALIDATOR_READONLY_VALIDATE_CORE | PASS | ordinary strict invocation; recursive relative-path SHA-256 plus byte-size map before/after; validator output: LANE_E_CORE_VALIDATION_PASS |
+| VALIDATOR_READONLY_VALIDATE | PASS | ordinary strict invocation; recursive relative-path SHA-256 plus byte-size map before/after; validator output: LANE_E_FINAL_VALIDATION_PASS |

@@ -820,7 +820,8 @@ def core_audit(package: Path, inputs: Path):
     return rows
 
 
-def machine_figure_checks(package: Path):
+def compute_machine_figure_checks(package: Path):
+    """Compute the machine-readable figure audit without changing ``package``."""
     rows=[]
     for n in range(1,10):
         fid=f"F{n:02d}"; svg=package/f"figures/{fid}.svg"; png=package/f"figures/{fid}.png"; pdf=package/f"figures/{fid}.pdf"; detail=[]; ok=True
@@ -831,11 +832,15 @@ def machine_figure_checks(package: Path):
         except Exception as exc:
             ok=False; detail.append(repr(exc))
         rows.append({"figure_id":fid,"machine_status":"PASS" if ok else "FAIL","checks":"; ".join(detail),"scope":"machine existence/XML/raster/PDF checks only; not a visual review"})
-    tsv_write(package/"E_MACHINE_FIGURE_CHECKS.tsv",rows)
     return rows
 
 
-def claim_audit(package: Path):
+def write_machine_figure_checks(package: Path, rows):
+    tsv_write(package/"E_MACHINE_FIGURE_CHECKS.tsv",rows)
+
+
+def compute_claim_audit(package: Path):
+    """Compute the claim audit without changing ``package``."""
     claims=tsv_read(package/"E_CLAIM_EVIDENCE_REGISTER.tsv"); ids={r['claim_id'] for r in claims}; rows=[]
     rows.append({"audit_id":"required_claim_id_set","expected":"|".join(REQUIRED_CLAIM_IDS),"observed":"|".join(sorted(ids)),"status":"PASS" if ids==set(REQUIRED_CLAIM_IDS) else "FAIL","detail":"required register coverage"})
     refs=[]
@@ -846,14 +851,30 @@ def claim_audit(package: Path):
     prose=(package/"PAPER_RESULTS_ANALYSIS.md").read_text(encoding='utf-8')
     prose_ok=all(x in prose for x in ("C01", "C18", "C24", "C25", "C26", "C27"))
     rows.append({"audit_id":"paper_section_traceability","expected":"core claim IDs named in paper sections","observed":"present" if prose_ok else "missing","status":"PASS" if prose_ok else "FAIL","detail":"paper prose references scoped claim groups"})
-    tsv_write(package/"E_CLAIM_AUDIT.tsv",rows)
     return rows
+
+
+def write_claim_audit(package: Path, rows):
+    tsv_write(package/"E_CLAIM_AUDIT.tsv",rows)
+
+
+def _require_exact_audit_artifact(package: Path, filename: str, expected, status_field: str, label: str):
+    """Verify a build-produced audit artifact from a read-only validator path."""
+    artifact=package/filename
+    if not artifact.exists():
+        raise ValueError(f"missing {label} artifact: {filename}")
+    observed=tsv_read(artifact)
+    if observed != expected:
+        raise ValueError(f"{label} artifact differs from recomputed result: {filename}")
+    if not _all_pass(observed,status_field):
+        raise ValueError(f"{label} artifact has non-PASS row: {filename}")
 
 
 def write_core_audits(inputs: Path, package: Path):
     audit=core_audit(package,inputs); tsv_write(package/"E_COVERAGE_SENSITIVITY_AUDIT.tsv",audit)
     write_coverage_and_metric_dictionary(inputs,package,audit)
-    figures=machine_figure_checks(package); claims=claim_audit(package)
+    figures=compute_machine_figure_checks(package); write_machine_figure_checks(package,figures)
+    claims=compute_claim_audit(package); write_claim_audit(package,claims)
     return audit, figures, claims
 
 
@@ -883,26 +904,69 @@ def _all_pass(rows, field="status"):
 def validate_core(package: Path, inputs: Path):
     errors=[]
     try:
-        audit=core_audit(package,inputs); errors += [f"{r['check_id']}: {r['detail']}" for r in audit if r['status']!='PASS']
-        figures=machine_figure_checks(package); errors += [f"machine {r['figure_id']}: {r['checks']}" for r in figures if r['machine_status']!='PASS']
-        claims=claim_audit(package); errors += [f"claim {r['audit_id']}: {r['observed']}" for r in claims if r['status']!='PASS']
+        audit=core_audit(package,inputs)
+        errors += [f"{r['check_id']}: {r['detail']}" for r in audit if r['status']!='PASS']
+        try: _require_exact_audit_artifact(package,"E_COVERAGE_SENSITIVITY_AUDIT.tsv",audit,"status","coverage/sensitivity audit")
+        except Exception as exc: errors.append(repr(exc))
+        figures=compute_machine_figure_checks(package)
+        errors += [f"machine {r['figure_id']}: {r['checks']}" for r in figures if r['machine_status']!='PASS']
+        try: _require_exact_audit_artifact(package,"E_MACHINE_FIGURE_CHECKS.tsv",figures,"machine_status","machine-figure audit")
+        except Exception as exc: errors.append(repr(exc))
+        claims=compute_claim_audit(package)
+        errors += [f"claim {r['audit_id']}: {r['observed']}" for r in claims if r['status']!='PASS']
+        try: _require_exact_audit_artifact(package,"E_CLAIM_AUDIT.tsv",claims,"status","claim audit")
+        except Exception as exc: errors.append(repr(exc))
     except Exception as exc:
         errors.append(repr(exc))
     return errors
 
 
+def _require_execution_record(rows, name: str):
+    if len(rows)!=1:
+        raise ValueError(f"{name} must contain exactly one row")
+    row=rows[0]
+    try:
+        compared=int(row['compared_file_count']); mismatch=int(row['mismatch_count'])
+    except (KeyError, ValueError) as exc:
+        raise ValueError(f"{name} lacks numeric comparison fields") from exc
+    if row.get('status')!='PASS' or compared<=0 or mismatch!=0:
+        raise ValueError(f"{name} is missing, non-PASS, empty, or has mismatches")
+    return row
+
+
+def _load_validator_readonly_records(qa_dir: Path, required: bool):
+    path=qa_dir/"E_VALIDATOR_READONLY_EXECUTION.tsv"
+    if not path.exists():
+        if required: raise ValueError("validator read-only execution record is missing")
+        return []
+    rows=tsv_read(path)
+    expected={"--validate-core", "--validate"}
+    if len(rows)!=2 or {r.get('validator') for r in rows} != expected:
+        raise ValueError("validator read-only record must contain exactly --validate-core and --validate rows")
+    for row in rows:
+        try:
+            before=int(row['before_file_count']); after=int(row['after_file_count']); mismatch=int(row['mismatch_count']); exit_code=int(row['exit_code'])
+        except (KeyError, ValueError) as exc:
+            raise ValueError("validator read-only record lacks required numeric fields") from exc
+        if row.get('status')!='PASS' or before<=0 or before!=after or mismatch!=0 or exit_code!=0:
+            raise ValueError(f"validator read-only record has failed row: {row.get('validator')}")
+    return rows
+
+
 def _load_qa_records(qa_dir: Path, package: Path):
     negative=tsv_read(qa_dir/"E_NEGATIVE_FIXTURE_RESULTS.tsv")
     visual=tsv_read(qa_dir/"E_VISUAL_REVIEW.tsv")
-    determinism=tsv_read(qa_dir/"E_DETERMINISM_EXECUTION.tsv")
+    core_determinism=tsv_read(qa_dir/"E_DETERMINISM_EXECUTION.tsv")
+    final_determinism=tsv_read(qa_dir/"E_FINAL_PACKAGE_DETERMINISM_EXECUTION.tsv")
     if len(negative)!=6 or not _all_pass(negative): raise ValueError("negative fixture record is missing or has non-PASS result")
     if len(visual)!=9 or [r['figure_id'] for r in visual] != [f"F{i:02d}" for i in range(1,10)] or not _all_pass(visual, "review_status"):
         raise ValueError("explicit nine-figure visual review is missing or non-PASS")
     for r in visual:
         for key,suffix in (("svg_sha256",'.svg'),("png_sha256",'.png'),("pdf_sha256",'.pdf')):
             if r[key] != sha256(package/f"figures/{r['figure_id']}{suffix}"): raise ValueError(f"visual record hash mismatch: {r['figure_id']} {key}")
-    if len(determinism)!=1 or determinism[0].get('status')!='PASS': raise ValueError("measured determinism record is missing or non-PASS")
-    return negative,visual,determinism
+    _require_execution_record(core_determinism,"core determinism record")
+    _require_execution_record(final_determinism,"final-package determinism record")
+    return negative,visual,core_determinism,final_determinism
 
 
 def build_provenance(package: Path, inputs: Path):
@@ -926,13 +990,15 @@ def write_visual_qa(package: Path, visual_rows):
     (package/"E_VISUAL_QA.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
 
 
-def write_validation_report(package: Path, audit, machine, claims, negative, determinism):
+def write_validation_report(package: Path, audit, machine, claims, negative, core_determinism, final_determinism, validator_readonly):
     rows=[]
     rows += [(r['check_id'],r['status'],r['detail']) for r in audit]
     rows += [("MACHINE_"+r['figure_id'],r['machine_status'],r['checks']) for r in machine]
     rows += [("CLAIM_"+r['audit_id'],r['status'],r['detail']) for r in claims]
     rows += [("NEGATIVE_"+r['fixture_id'],r['status'],r['observed_result']) for r in negative]
-    rows += [("DETERMINISM_EXECUTION",determinism[0]['status'],determinism[0]['detail'])]
+    rows += [("CORE_DETERMINISM_EXECUTION",core_determinism[0]['status'],core_determinism[0]['detail'])]
+    rows += [("FINAL_PACKAGE_DETERMINISM_EXECUTION",final_determinism[0]['status'],final_determinism[0]['detail'])]
+    rows += [("VALIDATOR_READONLY_"+r['validator'].lstrip('-').replace('-','_').upper(),r['status'],r['detail']) for r in validator_readonly]
     overall=all(status=='PASS' for _,status,_ in rows)
     lines=["# Lane-E validation report", "", f"Overall: **{'PASS' if overall else 'FAIL'}**", "", "| Check | Status | Measured evidence |", "|---|---|---|"]
     lines += [f"| {a} | {b} | {c} |" for a,b,c in rows]
@@ -940,8 +1006,9 @@ def write_validation_report(package: Path, audit, machine, claims, negative, det
     return overall
 
 
-def build_checklist(package: Path, audit, machine, claims, negative, visual, determinism):
-    pass_audit={r['check_id']:r['status']=='PASS' for r in audit}; pass_machine=_all_pass(machine,'machine_status'); pass_claims=_all_pass(claims); pass_negative=_all_pass(negative); pass_visual=_all_pass(visual,'review_status'); pass_det=_all_pass(determinism)
+def build_checklist(package: Path, audit, machine, claims, negative, visual, core_determinism, final_determinism, validator_readonly):
+    pass_audit={r['check_id']:r['status']=='PASS' for r in audit}; pass_machine=_all_pass(machine,'machine_status'); pass_claims=_all_pass(claims); pass_negative=_all_pass(negative); pass_visual=_all_pass(visual,'review_status')
+    pass_core_determinism=_all_pass(core_determinism); pass_final_determinism=_all_pass(final_determinism); pass_validator_readonly=_all_pass(validator_readonly)
     stages=[
         ("E0.1","E0","ownership_and_freeze",pass_audit.get('A00_PINNED_INPUTS',False),"E_EXECUTION_INVENTORY.tsv","core input audit"),
         ("E0.2","E0","source_import",pass_audit.get('A00_PINNED_INPUTS',False),"E_INPUT_MANIFEST.tsv","source-bound manifest audit"),
@@ -953,10 +1020,10 @@ def build_checklist(package: Path, audit, machine, claims, negative, visual, det
         ("E1.4","E1","duplicates",pass_audit.get('A05_D5_QUALIFIED_PAIRS',False),"tables/E_DUPLICATE_IO_OO.tsv","qualified D5 audit"),
         ("E1.5","E1","actual_figures",pass_audit.get('A09_FIGURE_IDENTITY',False) and pass_machine,"FIGURE_INDEX.tsv; E_MACHINE_FIGURE_CHECKS.tsv","unique figure and machine checks"),
         ("E1.6","E1","writing",pass_audit.get('A10_RICH_WORKLOAD_EXPLANATIONS',False) and pass_claims,"WORKLOAD_EXPLANATIONS.tsv; E_CLAIM_AUDIT.tsv","rich workload and claim audit"),
-        ("E2.1","E2","automated_acceptance",pass_negative and _all_pass(audit) and pass_claims,"E_VALIDATION_REPORT.md; qa/E_NEGATIVE_FIXTURE_RESULTS.tsv","actual core/negative/claim checks"),
+        ("E2.1","E2","automated_acceptance",pass_negative and _all_pass(audit) and pass_claims and pass_validator_readonly,"E_VALIDATION_REPORT.md; qa/E_NEGATIVE_FIXTURE_RESULTS.tsv; qa/E_VALIDATOR_READONLY_EXECUTION.tsv","actual core/negative/claim/read-only checks"),
         ("E2.2","E2","visual_QA",pass_visual,"E_VISUAL_QA.md; qa/E_VISUAL_REVIEW.tsv","explicit nine-figure visual record"),
-        ("E2.3","E2","reproduction_package",pass_det,"rebuild_reports/DETERMINISM_COMPARISON.md; E_BUILD_PROVENANCE.tsv","measured isolated-core comparison"),
-        ("E2.4","E2","final_closeout",all((pass_negative,pass_visual,pass_det,_all_pass(audit),pass_machine,pass_claims)),"LANE_E_FINAL.md; E_VALIDATION_REPORT.md","all independent mandatory checks"),
+        ("E2.3","E2","reproduction_package",pass_core_determinism and pass_final_determinism and pass_validator_readonly,"rebuild_reports/DETERMINISM_COMPARISON.md; qa/E_DETERMINISM_EXECUTION.tsv; qa/E_FINAL_PACKAGE_DETERMINISM_EXECUTION.tsv; qa/E_VALIDATOR_READONLY_EXECUTION.tsv; E_BUILD_PROVENANCE.tsv","isolated core determinism; complete final-package determinism; read-only validator regression"),
+        ("E2.4","E2","final_closeout",all((pass_negative,pass_visual,pass_core_determinism,pass_final_determinism,pass_validator_readonly,_all_pass(audit),pass_machine,pass_claims)),"LANE_E_FINAL.md; E_VALIDATION_REPORT.md","all independent mandatory checks"),
     ]
     out=[]
     for cid,stage,purpose,ok,evidence,command in stages:
@@ -965,7 +1032,7 @@ def build_checklist(package: Path, audit, machine, claims, negative, visual, det
     return out
 
 
-def final_docs(package: Path, determinism):
+def final_docs(package: Path, core_determinism, final_determinism, validator_readonly):
     (package/"REPRODUCE.md").write_text("""# Reproduce the Lane-E review pack
 
 No simulator, trace capture, GPU, raw SIM_HOST directory, or active Codex session is required. Python 3 and Pillow are required; exact build/font provenance is in `E_BUILD_PROVENANCE.tsv`.
@@ -973,11 +1040,14 @@ No simulator, trace capture, GPU, raw SIM_HOST directory, or active Codex sessio
 ```bash
 python3 util/dtc_l1/build_post_fast64_lane_e.py --build-core --inputs docs/dtc_l1/post_fast64/lane_e/inputs --output /tmp/lane-e-core
 python3 util/dtc_l1/build_post_fast64_lane_e.py --validate-core --inputs docs/dtc_l1/post_fast64/lane_e/inputs --output /tmp/lane-e-core
+python3 util/dtc_l1/run_post_fast64_lane_e_qa.py --builder util/dtc_l1/build_post_fast64_lane_e.py --inputs docs/dtc_l1/post_fast64/lane_e/inputs --qa-dir docs/dtc_l1/post_fast64/lane_e/qa_records --negative --claim-audit --core-determinism
+python3 util/dtc_l1/run_post_fast64_lane_e_qa.py --builder util/dtc_l1/build_post_fast64_lane_e.py --inputs docs/dtc_l1/post_fast64/lane_e/inputs --qa-dir docs/dtc_l1/post_fast64/lane_e/qa_records --validator-readonly --final-package docs/dtc_l1/post_fast64/review_packs/POST_FAST64_FINAL
+python3 util/dtc_l1/run_post_fast64_lane_e_qa.py --builder util/dtc_l1/build_post_fast64_lane_e.py --inputs docs/dtc_l1/post_fast64/lane_e/inputs --qa-dir docs/dtc_l1/post_fast64/lane_e/qa_records --final-determinism
 python3 util/dtc_l1/build_post_fast64_lane_e.py --build --inputs docs/dtc_l1/post_fast64/lane_e/inputs --qa-dir docs/dtc_l1/post_fast64/lane_e/qa_records --output /tmp/lane-e-final
 python3 util/dtc_l1/build_post_fast64_lane_e.py --validate --inputs docs/dtc_l1/post_fast64/lane_e/inputs --output /tmp/lane-e-final
 ```
 
-The final command consumes frozen compact inputs and explicit QA records only; it never launches a simulator.
+The formal build consumes frozen compact inputs and executed QA records only; it refuses a missing/non-PASS core determinism, final-package determinism, or validator-read-only record. It never launches a simulator.
 """,encoding="utf-8")
     (package/"LIMITATIONS_AND_OPEN_QUESTIONS.md").write_text("""# Limitations and open questions
 
@@ -988,25 +1058,35 @@ The final command consumes frozen compact inputs and explicit QA records only; i
 - D4 covers BICG, GESUMMV, and Btree only.
 - Lower-request payload is not DRAM, total memory/interconnect traffic, or recoverable performance.
 """,encoding="utf-8")
-    det=determinism[0]
+    core=core_determinism[0]; final=final_determinism[0]
     reports=package/"rebuild_reports"; reports.mkdir(exist_ok=True)
-    (reports/"DETERMINISM_COMPARISON.md").write_text(f"""# Measured isolated core determinism comparison
+    (reports/"DETERMINISM_COMPARISON.md").write_text(f"""# Measured determinism and validator-read-only comparison
 
-Status: **{det['status']}**
+Both records are copied from executed QA-runner outputs, never generated as claimed build steps.
 
-This record is copied from the executed QA runner result `qa/E_DETERMINISM_EXECUTION.tsv`, not generated as a claimed build step.
+## Isolated core package
 
-- Compared files: {det['compared_file_count']}
-- SHA-256/byte mismatches: {det['mismatch_count']}
-- Detail: {det['detail']}
+- Status: **{core['status']}**
+- Compared files: {core['compared_file_count']}
+- SHA-256/byte mismatches: {core['mismatch_count']}
+- Detail: {core['detail']}
 
-The comparison is performed on the deterministic build core before this report is materialized, avoiding self-reference. Formal package tree comparison is independently executed during closeout and recorded outside the generator command log.
+## Complete formal final package
+
+- Status: **{final['status']}**
+- Compared files: {final['compared_file_count']}
+- SHA-256/byte mismatches: {final['mismatch_count']}
+- Detail: {final['detail']}
+
+## Validator mutation regression
+
+`qa/E_VALIDATOR_READONLY_EXECUTION.tsv` records separate before/after path/SHA-256/byte maps for `--validate-core` and `--validate`; both are mandatory closeout gates.
 """,encoding="utf-8")
     (package/"LANE_E_FINAL.md").write_text(f"""# Lane E final closeout
 
 Status: **POST_FAST64_PAPER_ANALYSIS_AND_MECHANISM_EXPLORATION_READY_FOR_REVIEW**
 
-This package is generated only after independent data audits, executed negative fixtures, explicit visual-review records, and measured isolated determinism records all pass. It uses frozen FAST64 `{FAST64}`, A `{A}`, B `{B}`, C `{C}`, D history `{D_FINAL}`, and selected D revision `{D_REV}`.
+This package is generated only after independent data audits, executed negative fixtures, explicit visual-review records, isolated-core determinism, complete-final-package determinism, and validator-read-only records all pass. It uses frozen FAST64 `{FAST64}`, A `{A}`, B `{B}`, C `{C}`, D history `{D_FINAL}`, and selected D revision `{D_REV}`.
 
 The artifact QA repair does not alter accepted scientific inputs, primary results, Core, observer semantics, configuration, or simulator state.
 """,encoding="utf-8")
@@ -1022,19 +1102,21 @@ def manifest(package: Path):
 
 def build_final(inputs: Path, qa_dir: Path, output: Path):
     audit,machine,claims=build_core(inputs,output)
-    negative,visual,determinism=_load_qa_records(qa_dir,output)
+    negative,visual,core_determinism,final_determinism=_load_qa_records(qa_dir,output)
+    validator_readonly=_load_validator_readonly_records(qa_dir,required=True)
     qa_out=output/"qa"; shutil.copytree(qa_dir,qa_out)
     build_provenance(output,inputs); write_visual_qa(output,visual)
-    overall=write_validation_report(output,audit,machine,claims,negative,determinism)
-    checklist=build_checklist(output,audit,machine,claims,negative,visual,determinism)
+    overall=write_validation_report(output,audit,machine,claims,negative,core_determinism,final_determinism,validator_readonly)
+    checklist=build_checklist(output,audit,machine,claims,negative,visual,core_determinism,final_determinism,validator_readonly)
     if not overall or not _all_pass(checklist): raise AssertionError("mandatory Lane-E result map is not all PASS")
-    final_docs(output,determinism); manifest(output)
+    final_docs(output,core_determinism,final_determinism,validator_readonly); manifest(output)
 
 
-def validate_package(package: Path, inputs: Path):
+def validate_package(package: Path, inputs: Path, require_validator_readonly: bool=True):
     errors=validate_core(package,inputs)
     try:
-        qa=package/"qa"; negative,visual,determinism=_load_qa_records(qa,package)
+        qa=package/"qa"; negative,visual,core_determinism,final_determinism=_load_qa_records(qa,package)
+        validator_readonly=_load_validator_readonly_records(qa,required=require_validator_readonly)
         if not (package/"E_BUILD_PROVENANCE.tsv").exists(): errors.append("missing build provenance")
         if not (package/"E_VISUAL_QA.md").exists(): errors.append("missing visual QA derived from record")
         checklist=tsv_read(package/"LANE_E_ACCEPTANCE_CHECKLIST.tsv")
@@ -1056,7 +1138,10 @@ def main():
     ap.add_argument("--qa-dir",type=Path)
     ap.add_argument("--build-core",action="store_true"); ap.add_argument("--validate-core",action="store_true")
     ap.add_argument("--build",action="store_true"); ap.add_argument("--validate",action="store_true")
+    ap.add_argument("--allow-missing-validator-readonly",action="store_true",help="QA-runner bootstrap only; never permits a formal final build")
     args=ap.parse_args()
+    if args.allow_missing_validator_readonly and (not args.validate or args.build):
+        ap.error("--allow-missing-validator-readonly is limited to the QA-runner bootstrap validation path")
     if args.import_git:
         if not args.repo: ap.error("--import-git requires --repo")
         import_git(args.repo,args.inputs)
@@ -1076,7 +1161,7 @@ def main():
         print("LANE_E_FINAL_BUILD_PASS")
     if args.validate:
         if not args.output: ap.error("--validate requires --output")
-        errors=validate_package(args.output,args.inputs)
+        errors=validate_package(args.output,args.inputs,require_validator_readonly=not args.allow_missing_validator_readonly)
         if errors: raise SystemExit("final validation failures: "+repr(errors))
         print("LANE_E_FINAL_VALIDATION_PASS")
     if not (args.import_git or args.build_core or args.validate_core or args.build or args.validate): ap.error("select an action")

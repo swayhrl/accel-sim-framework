@@ -66,31 +66,37 @@ def negative_fixtures(builder: Path, inputs: Path, qa_dir: Path):
         (
             "N01_FAST12_ORDER",
             "Swap ATAX and BICG rows in E_PRIMARY_PERFORMANCE.tsv.",
+            "A01_FAST12_ORDER",
             lambda root: mutate_tsv(root / "tables/E_PRIMARY_PERFORMANCE.tsv", lambda data: data.__setitem__(slice(0, 2), [data[1], data[0]])),
         ),
         (
             "N02_PRIMARY_OBSERVER_CONTAMINATION",
             "Relabel one primary FAST12 row as NEW_DIAGNOSTIC_TELEMETRY.",
+            "A02_PRIMARY_CELLS_AND_GM",
             lambda root: mutate_tsv(root / "tables/E_PRIMARY_PERFORMANCE.tsv", lambda data: data[0].__setitem__("evidence_class", "NEW_DIAGNOSTIC_TELEMETRY")),
         ),
         (
             "N03_PHYSICAL_16P5_NUMERIC",
             "Turn BICG/IO 16.5 KiB nonnumeric boundary into a numeric point.",
+            "A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY",
             lambda root: mutate_tsv(root / "tables/E_SENS_PHYSICAL.tsv", _make_bicg_16p5_numeric),
         ),
         (
             "N04_OO_DUPLICATE_PROXY",
             "Replace qualified OO duplicate evidence source with new-miss proxy label.",
+            "A05_D5_QUALIFIED_PAIRS",
             lambda root: mutate_tsv(root / "tables/E_DUPLICATE_IO_OO.tsv", _make_oo_proxy),
         ),
         (
             "N05_INVENTED_D4_40KIB",
             "Append an invented 40 KiB D4 observer row.",
+            "A03_D4_CARTESIAN_AND_DENOMINATOR",
             lambda root: _append_invented_d4(root / "tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv"),
         ),
         (
             "N06_PAYLOAD_RELABEL_DRAM",
             "Relabel source-proven lower-request payload as DRAM traffic.",
+            "A05_D5_QUALIFIED_PAIRS",
             lambda root: mutate_tsv(root / "tables/E_DUPLICATE_IO_OO.tsv", lambda data: data[0].__setitem__("payload_scope", "DRAM traffic")),
         ),
     ]
@@ -99,17 +105,17 @@ def negative_fixtures(builder: Path, inputs: Path, qa_dir: Path):
         temp = Path(temp)
         core = temp / "core"
         build_core(builder, inputs, core)
-        for fixture_id, description, mutation in fixture_specs:
+        for fixture_id, description, expected_check, mutation in fixture_specs:
             candidate = temp / fixture_id
             shutil.copytree(core, candidate)
             mutation(candidate)
             result = validate_core(builder, inputs, candidate)
-            rejected = result.returncode != 0
+            rejected = result.returncode != 0 and expected_check in result.stdout
             records.append({
                 "fixture_id": fixture_id,
                 "exact_mutation": description,
                 "validator_invoked": "build_post_fast64_lane_e.py --validate-core",
-                "expected_result": "REJECT_NONZERO",
+                "expected_result": "REJECT_NONZERO_WITH_"+expected_check,
                 "observed_exit_code": result.returncode,
                 "observed_result": compact_output(result),
                 "status": "PASS" if rejected else "FAIL",
@@ -150,6 +156,46 @@ def compare_trees(left: Path, right: Path):
     names = sorted(set(first) | set(second))
     mismatch = [name for name in names if first.get(name) != second.get(name)]
     return len(names), mismatch
+
+
+def validator_readonly(builder: Path, inputs: Path, qa_dir: Path, final_package: Path, bootstrap_final: bool):
+    """Prove each validator leaves its target tree byte-for-byte unchanged.
+
+    The optional bootstrap flag is limited to the one historical package that
+    predates this new record.  Every post-hardening final package is tested
+    again with the ordinary strict ``--validate`` invocation.
+    """
+    records=[]
+    with tempfile.TemporaryDirectory(prefix="lane-e-readonly-core-") as temp:
+        core=Path(temp)/"core"
+        build_core(builder,inputs,core)
+        records.append(_readonly_result(builder,inputs,core,"--validate-core",False))
+    if not final_package.is_dir():
+        raise ValueError("--final-package must name an existing complete package")
+    records.append(_readonly_result(builder,inputs,final_package,"--validate",bootstrap_final))
+    write(qa_dir/"E_VALIDATOR_READONLY_EXECUTION.tsv",records)
+    if not all(r["status"]=="PASS" for r in records):
+        raise SystemExit("validator read-only regression failed")
+
+
+def _readonly_result(builder: Path, inputs: Path, package: Path, validator: str, bootstrap_final: bool):
+    before=file_map(package)
+    extra=("--allow-missing-validator-readonly",) if bootstrap_final and validator=="--validate" else ()
+    result=invoke(builder,validator,"--inputs",inputs,"--output",package,*extra)
+    after=file_map(package)
+    names=sorted(set(before)|set(after))
+    mismatch=[name for name in names if before.get(name)!=after.get(name)]
+    status="PASS" if result.returncode==0 and not mismatch else "FAIL"
+    mode="bootstrap compatibility invocation" if extra else "ordinary strict invocation"
+    return {
+        "validator":validator,
+        "before_file_count":len(before),
+        "after_file_count":len(after),
+        "mismatch_count":len(mismatch),
+        "exit_code":result.returncode,
+        "status":status,
+        "detail":f"{mode}; recursive relative-path SHA-256 plus byte-size map before/after; validator output: {compact_output(result)}",
+    }
 
 
 def core_determinism(builder: Path, inputs: Path, qa_dir: Path):
@@ -226,6 +272,9 @@ def main():
     parser.add_argument("--core-determinism", action="store_true")
     parser.add_argument("--claim-audit", action="store_true")
     parser.add_argument("--final-determinism", action="store_true")
+    parser.add_argument("--validator-readonly", action="store_true")
+    parser.add_argument("--final-package", type=Path)
+    parser.add_argument("--bootstrap-final-readonly", action="store_true")
     args = parser.parse_args()
     args.qa_dir.mkdir(parents=True, exist_ok=True)
     if args.negative:
@@ -234,9 +283,15 @@ def main():
         core_determinism(args.builder, args.inputs, args.qa_dir)
     if args.claim_audit:
         claim_audit_execution(args.builder, args.inputs, args.qa_dir)
+    if args.validator_readonly:
+        if not args.final_package:
+            parser.error("--validator-readonly requires --final-package")
+        validator_readonly(args.builder,args.inputs,args.qa_dir,args.final_package,args.bootstrap_final_readonly)
     if args.final_determinism:
         final_determinism(args.builder, args.inputs, args.qa_dir)
-    if not any((args.negative, args.core_determinism, args.claim_audit, args.final_determinism)):
+    if args.bootstrap_final_readonly and not args.validator_readonly:
+        parser.error("--bootstrap-final-readonly requires --validator-readonly")
+    if not any((args.negative, args.core_determinism, args.claim_audit, args.final_determinism, args.validator_readonly)):
         parser.error("select at least one QA execution")
 
 

@@ -1,11 +1,21 @@
-# Measured isolated core determinism comparison
+# Measured determinism and validator-read-only comparison
 
-Status: **PASS**
+Both records are copied from executed QA-runner outputs, never generated as claimed build steps.
 
-This record is copied from the executed QA runner result `qa/E_DETERMINISM_EXECUTION.tsv`, not generated as a claimed build step.
+## Isolated core package
 
+- Status: **PASS**
 - Compared files: 98
 - SHA-256/byte mismatches: 0
 - Detail: two isolated core builds; build exit codes=0/0; validation exit codes=0/0; recursive SHA-256 plus byte-size comparison
 
-The comparison is performed on the deterministic build core before this report is materialized, avoiding self-reference. Formal package tree comparison is independently executed during closeout and recorded outside the generator command log.
+## Complete formal final package
+
+- Status: **PASS**
+- Compared files: 113
+- SHA-256/byte mismatches: 0
+- Detail: two isolated complete final-package builds (record included); recursive SHA-256 plus byte-size comparison; both final validators executed
+
+## Validator mutation regression
+
+`qa/E_VALIDATOR_READONLY_EXECUTION.tsv` records separate before/after path/SHA-256/byte maps for `--validate-core` and `--validate`; both are mandatory closeout gates.
