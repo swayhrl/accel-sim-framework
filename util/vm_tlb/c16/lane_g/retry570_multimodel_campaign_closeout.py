@@ -72,7 +72,11 @@ def validate_manifest(directory: Path, manifest: dict[str, Any]) -> dict[str, An
 
 def build(args: argparse.Namespace) -> None:
     if args.producer_code_commit != git_head(): raise ContractError("producer code commit differs from checked-out source")
-    if args.output.exists(): raise ContractError("campaign output pack already exists; refusing overwrite")
+    if args.output.exists():
+        expected_existing = {"C0_REMOTE_ASSET_INVENTORY.json", "C0_CAMPAIGN_LEDGER.json"}
+        observed_existing = {item.name for item in args.output.iterdir()}
+        if observed_existing != expected_existing:
+            raise ContractError("campaign output pack has unexpected payloads; refusing overwrite")
     inventory, c0ledger, s1, s2, target, ledger = map(read, (args.inventory, args.c0_ledger, args.s1, args.s2, args.target, args.remote_ledger))
     roster = inventory.get("roster")
     if not isinstance(roster, list) or [row.get("model_key") for row in roster] != list(ROSTER): raise ContractError("C0 roster does not equal the frozen five-model campaign")
@@ -81,10 +85,13 @@ def build(args: argparse.Namespace) -> None:
         raise ContractError("Llama C0/S1/S2 evidence is incomplete")
     if target.get("target_instruction", {}).get("nvbit_static_index") != 101 or 34 not in target.get("excluded_static_indices", []): raise ContractError("Llama target does not preserve static-index evidence and 34 exclusion")
     exhaustion = ledger_exhaustion(ledger, llama["exact_identity"]["package_id"].replace("C16_GPU_PACKAGE_P0", "c16_llama32_1b_frozen_compatible"))
-    args.output.mkdir(parents=True)
+    args.output.mkdir(parents=True, exist_ok=True)
     # Copy C0 authoritative inputs so the final manifest is self-contained.
     for source, name in ((args.inventory, "C0_REMOTE_ASSET_INVENTORY.json"), (args.c0_ledger, "C0_CAMPAIGN_LEDGER.json")):
-        (args.output / name).write_bytes(source.read_bytes())
+        destination = args.output / name
+        if destination.exists() and destination.read_bytes() != source.read_bytes():
+            raise ContractError("pre-existing C0 payload differs from its authoritative source")
+        if not destination.exists(): destination.write_bytes(source.read_bytes())
     llama_closeout = {"schema_version": SCHEMA, "model_key": "llama_3p2_1b", "status": "BLOCKED_RUNTIME_WITH_FROZEN_CONTRACT", "scientific_eligible": False,
         "reason": "NVBIT_WINDOW_BUDGET_EXHAUSTED_BY_RETAINED_HISTORICAL_DIAGNOSTIC_WINDOWS_NO_RESET_OR_RECLASSIFICATION_ALLOWED", "exact_identity": llama["exact_identity"],
         "workload": "S0/B1/T128/Decode4/TEXT", "s1": {"path": str(args.s1), "sha256": sha256_file(args.s1), "status": s1["status"], "output_checksum": s1["workload"]["output_checksum"]},
