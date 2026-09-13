@@ -88,7 +88,7 @@ def observe(raw: Path) -> dict[str, Any]:
     target = plan.get("target")
     if (q0_receipt.get("status") != "LANE_G_RUNTIME_READY" or q0_receipt.get("scientific_eligible") is not False or
             q0_receipt.get("capture_traces") != [] or q0_receipt.get("prewarm_trace_count") != 0 or
-            q0_receipt.get("measurement_active_created") is not False or q0_receipt.get("output_sha256") != EXPECTED_OUTPUT or
+            q0_receipt.get("measurement_active_created") is not False or q0_receipt.get("child_receipt", {}).get("output_sha256") != EXPECTED_OUTPUT or
             plan.get("status") != "Q0_FROZEN_EXACT_TARGET_PLAN" or not isinstance(target, dict) or target.get("kernel_id") != 6 or
             not isinstance(target.get("function"), str) or EXPECTED_FUNCTION_FRAGMENT not in target["function"]):
         raise ContractError("Q0 runtime-ready/target binding differs")
