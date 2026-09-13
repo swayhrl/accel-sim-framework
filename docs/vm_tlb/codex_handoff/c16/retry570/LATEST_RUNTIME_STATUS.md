@@ -1,6 +1,40 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_NVBIT175_POST_LLAMA_MULTIMODEL_DATASET_COMPLETE_WITH_BLOCKED_MODELS`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R2_IN_PROGRESS`.
+
+## Active Recovery-V3 asset and runtime checkpoint
+
+The prior post-Llama closeout below is retained historical evidence; it is not
+the authority for the active Recovery-V3 campaign.  Recovery-V3 scope is the
+v9 roster: Llama S1--S4, Qwen2.5-0.5B, Qwen2.5-7B raw,
+Qwen2.5-7B-AWQ, Qwen3-8B, DeepSeek-V2-Lite, and exact-identity GLM.  The
+separate user-managed Qwen3-30B-A3B download is
+`EXCLUDED_BY_USER_CURRENT_CAMPAIGN` and is neither inspected nor counted.
+
+Current runtime source checkpoint: `9ee736709e8557bee3ec4accb7a11a8958f1ef5d`.
+The local bulk root is `/root/share/c16_recovery_v3`; recovery payloads are
+not staged in `/workspace` or the constrained root filesystem.
+
+- Qwen2.5-0.5B-Instruct at
+  `Qwen/Qwen2.5-0.5B-Instruct@7ae557604adf67be50417f59c2c2f167def9a775`
+  is local hash-closed, its immutable P1 input contract is hash-closed, and
+  the seven model payloads are remote-to-local dual-endpoint SHA-closed.
+  The transfer receipt is
+  `/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_0P5B_DUAL_ENDPOINT_TRANSFER_RECEIPT.json`
+  (SHA256 `b69ae26b6de4bf81bd8e15fb1601ffbc52d3d1bd8d3e163ec5d329244bbe77f8`).
+- Its non-model R2 runtime preflight passed with `CAPTURE_ALLOWED=YES`,
+  RTX3090/SM86, driver 570.124.04, CUDA 12.4, PyTorch 2.5.1+cu124, NVBit
+  1.7.5, EAGER loading, child `nvdisasm`, zero stale GPU compute processes,
+  and no `MEASUREMENT_ACTIVE` marker.  It did not load a model or emit trace.
+  Preflight SHA256:
+  `c2e859b0a13ad807a9c5163590a12cc6793124fd85039fe2f4d64ff8d7e8029e`.
+- Qwen2.5-7B raw transfer and Qwen3-8B exact-revision local fetch are in
+  progress outside any measurement window.  Neither partial transfer nor
+  partial fetch is a scientific asset or a runnable model gate.
+
+The next authorized GPU work is Qwen0.5 R3 only after the compact R2
+publication and model/input/runtime binding are frozen.  No Qwen3-30B-A3B,
+model baseline, census, or trace has been started by this checkpoint.
 
 ## Final post-Llama multi-model dataset publication
 
