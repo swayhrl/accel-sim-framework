@@ -36,3 +36,16 @@ def test_qwen3_partial_bulk_destination_is_explicitly_in_progress(tmp_path: Path
     row = module.asset_row("qwen3_8b", "x", root, receipts)
     assert row["status"] == "EXACT_FETCH_IN_PROGRESS"
     assert row["hash_closure"] == "PENDING"
+
+
+def test_qwen3_closed_receipt_is_registered_as_bulk_root_asset(tmp_path: Path):
+    root, receipts = tmp_path / "bulk", tmp_path / "receipts"
+    (root / "models/qwen3_8b/revision").mkdir(parents=True)
+    receipts.mkdir()
+    (receipts / "R1_QWEN3_8B_ASSET_RECEIPT.json").write_text(
+        '{"payloads":[{"size_bytes":17}],"destination":"/root/share/c16_recovery_v3/models/qwen3_8b/revision","all_payloads_size_sha256_closed":true}',
+        encoding="utf-8",
+    )
+    row = module.asset_row("qwen3_8b", "x", root, receipts)
+    assert row["status"] == "ALREADY_UNDER_BULK_ROOT"
+    assert row["destination_bytes"] == "17"

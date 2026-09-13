@@ -22,7 +22,7 @@ ROWS = (
     ("deepseek_v2_lite", "deepseek-ai/DeepSeek-V2-Lite@604d5664dddd88a0433dbae533b7fe9472482de0"),
     ("glm_extension", "UNRESOLVED"),
 )
-RECEIPT_STEMS = {"qwen2p5_0p5b_instruct": "R1_QWEN2P5_0P5B_ASSET_RECEIPT.json", "qwen2p5_7b_instruct_raw": "R1_QWEN2P5_7B_RAW_ASSET_RECEIPT.json", "qwen2p5_7b_instruct_awq": "R1_QWEN2P5_7B_AWQ_ASSET_RECEIPT.json"}
+RECEIPT_STEMS = {"qwen2p5_0p5b_instruct": "R1_QWEN2P5_0P5B_ASSET_RECEIPT.json", "qwen2p5_7b_instruct_raw": "R1_QWEN2P5_7B_RAW_ASSET_RECEIPT.json", "qwen2p5_7b_instruct_awq": "R1_QWEN2P5_7B_AWQ_ASSET_RECEIPT.json", "qwen3_8b": "R1_QWEN3_8B_ASSET_RECEIPT.json"}
 
 
 def load(path: Path) -> dict[str, Any]:
