@@ -16,7 +16,7 @@ it binds the exact C publish manifest, selector-source freeze, G target policy,
 and separate NCU/NVBit B48 target-plan digests.  It confirms only P3 AWQ S1/S2
 are admitted; P3 S3/S4 and P2 raw remain excluded without substitution.
 
-G2 is now closed as `G2_CAPABILITY_LIMITED_COUNTER_PERMISSION`.  The RTX3090
+G2 is now closed as `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`.  The RTX3090
 has Nsight Compute 2024.1.1 and the committed five-metric compact set, but the
 sole C-plan first-row canary executed as root and received
 `ERR_NVGPUCTRPERM`.  It produced no `.ncu-rep`, so it cannot prove a unique
@@ -24,7 +24,8 @@ structural/ordinal reproduction; the target is conservatively
 `TARGET_IDENTITY_NOT_REPRODUCIBLE`, not substituted.  The exact three-session
 ledger/transfer closure is in
 [G2_NCU_CAPABILITY_LIMITED_RECEIPT.json](G2_NCU_CAPABILITY_LIMITED_RECEIPT.json).
-All 288 C-fixed NCU rows are capability-limited; no second NCU row is chosen.
+The actual canary is retained as attempted/no-report; each remaining 287
+C-fixed NCU rows is `NOT_EXECUTED_CAPABILITY_LIMITED`, with no second NCU row.
 
 NVBit preparation may now proceed independently in bounded windows.  No
 target row will be added, reshaped, or substituted.
@@ -37,7 +38,7 @@ target row will be added, reshaped, or substituted.
 | Direct-semantic runtime source commit | `b241fecfe5cd78bc2cdbb733e3a437d68b741c89` |
 | Current G publication head before this checkpoint | `ae560163ff0462077e766bb737536b4a0f57339c` |
 | Current G2 NCU runtime source commit | `ea80c2042093d97728e7c4646e7eb1dae90f1186` |
-| G2 NCU disposition | `G2_CAPABILITY_LIMITED_COUNTER_PERMISSION`; NCU permission failure is not timing or counter evidence. |
+| G2 NCU disposition | `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`; the 287 remaining C rows are `NOT_EXECUTED_CAPABILITY_LIMITED`. |
 | Native-event publication implementation anchor | `307ad12335745153e8b320ba3ef131d0f451cf06` |
 | P3 AWQ native runtime source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
 | Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load: `fuse_layers=false`, Accelerate-compatible explicit root device map `{"": 0}`, no offload, exact frozen sequence length.  CUDA OOM has an explicit `SKIPPED_RESOURCE` ledger/receipt path with no shape substitution.  It does not alter completed P0/P1 scientific receipts. |
@@ -101,7 +102,7 @@ consumer coverage, receipt, and external hash index are in
 |---|---|---|---|---|---|
 | Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Not in C fixed NCU plan | Pending fixed NVBit plan | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
 | Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1, S2, S3/TEXT (`a67d9a5e-049a-401f-bdbe-6281e89b7351`), and S4/STRUCTURED (`bf2bf219-1836-4a4c-8d9d-c6acc2b940f1`) | Not in C fixed NCU plan | Pending fixed NVBit plan | S3/S4 standalone baselines and full-range G1 passed independent CUDA/correlation/NVTX export validation; both raw `.nsys-rep` artifacts are hash-closed in `RAW_ARTIFACT_INDEX.tsv`. |
-| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`), S2/CODE (`bedbd6bd-f51e-4246-89e9-c0e59c74e0e7`), S2/STRUCTURED (`0db40447-a201-452d-a48d-be8116d71aee`); S3/TEXT and S4/STRUCTURED `SKIPPED_RESOURCE` | `CAPABILITY_LIMITED_COUNTER_PERMISSION`; no `.ncu-rep`, no target substitution | Pending fixed NVBit plan | S2 direct-semantic diagnostics passed separately.  Both dense-Qwen S3 `B1/T8192/D16` and S4 `B4/T2048/D16` are explicit CUDA-OOM resource results with no CPU/offload/shape substitution; see [P3_AWQ_S3_RESOURCE_ADMISSION.json](P3_AWQ_S3_RESOURCE_ADMISSION.json) and [P3_AWQ_S4_RESOURCE_ADMISSION.json](P3_AWQ_S4_RESOURCE_ADMISSION.json). |
+| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`), S2/CODE (`bedbd6bd-f51e-4246-89e9-c0e59c74e0e7`), S2/STRUCTURED (`0db40447-a201-452d-a48d-be8116d71aee`); S3/TEXT and S4/STRUCTURED `SKIPPED_RESOURCE` | `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`; 287 remaining rows `NOT_EXECUTED_CAPABILITY_LIMITED`, no target substitution | Pending fixed NVBit plan | S2 direct-semantic diagnostics passed separately.  Both dense-Qwen S3 `B1/T8192/D16` and S4 `B4/T2048/D16` are explicit CUDA-OOM resource results with no CPU/offload/shape substitution; see [P3_AWQ_S3_RESOURCE_ADMISSION.json](P3_AWQ_S3_RESOURCE_ADMISSION.json) and [P3_AWQ_S4_RESOURCE_ADMISSION.json](P3_AWQ_S4_RESOURCE_ADMISSION.json). |
 | Qwen2.5-7B raw P2 | `SKIPPED_RESOURCE`: S0/TEXT (`4c4a6f27-c5db-4145-972c-3c1b52647a48`) | Not admitted: no baseline/census after S0 CUDA OOM | Not in C fixed NCU plan | Pending fixed NVBit plan | Exact frozen S0 raw standalone load reached CUDA resource admission and failed closed without CPU offload or shape substitution; see [P2_RAW_S0_RESOURCE_ADMISSION.json](P2_RAW_S0_RESOURCE_ADMISSION.json). |
 
 The first malformed Qwen S1 Nsight invocation (`baa55265-4b7b-4dd8-aed6-6fcc6abca148`)
@@ -247,9 +248,10 @@ open for an inferred or replacement target.
 
 - `C16_GPU_PACKAGE_P2` raw remains `SKIPPED_RESOURCE`: its fixed S0 CUDA OOM
   has no shape, context, batch, CPU-offload, or fallback substitution.
-- G2 is `G2_CAPABILITY_LIMITED_COUNTER_PERMISSION`: the only C first-row
-  canary had no NCU output after `ERR_NVGPUCTRPERM`; all NCU plan rows stop
-  without a replacement target.  G3 remains bounded to C's already-fixed
+- G2 is `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`: the only C
+  first-row canary had no NCU output after `ERR_NVGPUCTRPERM`; the remaining
+  287 rows are `NOT_EXECUTED_CAPABILITY_LIMITED`, without a replacement
+  target.  G3 remains bounded to C's already-fixed
   NVBit rows and may become `CAPABILITY_LIMITED` independently.
 - Existing nsys raw is retained losslessly outside Git.  Remote export is not the
   default catalog path; raw -> remote SHA -> local transfer -> local SHA -> local

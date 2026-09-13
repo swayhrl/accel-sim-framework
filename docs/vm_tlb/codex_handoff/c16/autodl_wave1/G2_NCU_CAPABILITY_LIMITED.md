@@ -12,8 +12,10 @@ five-metric compact set, but NCU reported `ERR_NVGPUCTRPERM`.  It produced no
 `.ncu-rep` and therefore cannot prove a unique actual structural reproduction.
 Its target identity status is consequently
 `TARGET_IDENTITY_NOT_REPRODUCIBLE`, caused by counter permission rather than
-by a guessed mismatch.  G2 is `G2_CAPABILITY_LIMITED_COUNTER_PERMISSION` for
-all C-fixed NCU universes.  No further NCU target was selected.
+by a guessed mismatch.  G2 is
+`G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`.  The actual canary is
+retained as attempted/no-report and each remaining one of the 287 C-fixed NCU
+rows is `NOT_EXECUTED_CAPABILITY_LIMITED`.  No further NCU target was selected.
 
 The two prior zero-output CLI diagnostics and the final failed canary are all
 retained as `NON_SCIENTIFIC_DIAGNOSTIC` ledger evidence.  The final child
