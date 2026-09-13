@@ -2,6 +2,38 @@
 
 Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
 
+## Current microreproducer closeout
+
+The newest Retry570 checkpoint is
+[`retry570_microreproducer_discriminator`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_microreproducer_discriminator/).
+Its fixed `PUBLISH_MANIFEST.json` SHA256 is
+`87ed9580ebad311a6bd553cd07fec8ed53d462b783d6728aa61815cf8736efb0`.
+The publication-generator source commit is
+`c1325a324ef94f2b5dcc0399ff507dce86f60c2a`; the actual final NVBit
+diagnostic producer is distinctly anchored at
+`f08af62e4bb77559617bd14d5df9a13d2e236873`.
+
+It used no full Llama model to discover a static map. A finite exact
+`torch.index_select` microreproducer matched the observed RTX3090,
+driver `570.124.04`, PyTorch `2.5.1+cu124`, and
+`libtorch_cuda.so` SHA256
+`761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a`.
+The complete Llama candidate mangled identity was required, never a short
+name. Under correct `CUDA_INJECTION64_PATH`, both the optimized mapper and a
+final lifecycle-free exact-map tool bounded out before the first micro CUDA
+kernel. The latter had no context/tool-init hook, CUDA allocation,
+instrumentation, or mapper cache. Consequently neither a static map nor an
+authoritative NVBit instruction index exists. This is a narrow
+NVBit/PyTorch callback-path limitation for the setup, not a causal driver or
+model-incompatibility claim.
+
+Both the P0 Llama deployment and the isolated microreproducer have exactly
+six accounted NVBit windows; no additional NVBit diagnostic, Llama, Qwen, C16
+tracer, or C frozen-target operation is authorized on this node. The retained
+raw/ledger/marker evidence is locally SHA-closed:
+`REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0`,
+`ACTIVE_GPU_PROCESS_COUNT=0`. The state remains `INCONCLUSIVE`, not NO-GO.
+
 The NVBit-native static-index pass is closed in
 [`retry570_nvbit_native_static_map`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit_native_static_map/).
 It does **not** establish an index: `348` remains only
