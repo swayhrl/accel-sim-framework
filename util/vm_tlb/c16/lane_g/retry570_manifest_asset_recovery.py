@@ -31,10 +31,20 @@ def git_bytes(commit: str, path: str) -> bytes:
 
 
 def model_rows(commit: str, package_id: str, expected_manifest_sha256: str) -> tuple[dict[str, str], list[dict[str, Any]], str]:
-    path = f"docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_a/packages/{package_id}/{package_id}_MANIFEST.tsv"
-    content = git_bytes(commit, path)
-    if hashlib.sha256(content).hexdigest() != expected_manifest_sha256:
+    root = f"docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_a/packages/{package_id}"
+    authority_path = f"{root}/{package_id}_MANIFEST.json"
+    authority_bytes = git_bytes(commit, authority_path)
+    if hashlib.sha256(authority_bytes).hexdigest() != expected_manifest_sha256:
         raise ContractError("immutable package manifest SHA256 differs from declared authority")
+    try:
+        authority = json.loads(authority_bytes)
+        tsv = next(row for row in authority["payloads"] if row["path"] == "C16_GPU_PACKAGE_MANIFEST.tsv")
+    except (KeyError, StopIteration, TypeError, json.JSONDecodeError) as exc:
+        raise ContractError("immutable package authority lacks its model-payload TSV") from exc
+    path = f"{root}/{tsv['path']}"
+    content = git_bytes(commit, path)
+    if len(content) != tsv.get("size_bytes") or hashlib.sha256(content).hexdigest() != tsv.get("sha256"):
+        raise ContractError("immutable package payload TSV differs from its authority row")
     rows: list[dict[str, Any]] = []
     identities: set[str] = set()
     for line in content.decode("utf-8").splitlines():
@@ -50,7 +60,7 @@ def model_rows(commit: str, package_id: str, expected_manifest_sha256: str) -> t
         raise ContractError("manifest model/tokenizer identity is incomplete or inconsistent")
     if len({row["filename"] for row in rows}) != len(rows):
         raise ContractError("manifest model payload filenames are not unique")
-    return match.groupdict(), rows, path
+    return match.groupdict(), rows, authority_path
 
 
 def main() -> None:
