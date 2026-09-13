@@ -17,7 +17,8 @@ that matrix.
 
 1. Fetch the Lane G commit and the pinned runtime profile.
 2. Materialize the exact NVBit archive/core/tool; verify every SHA256.
-3. Invoke `retry570_nvbit175_preflight.py`. It verifies actual GPU/driver,
+3. Invoke `retry570_nvbit175_preflight.py` with both the absolute `--nvdisasm`
+   and absolute `--nsys` executable. It verifies actual GPU/driver,
    CUDA tools, child `PATH`, `NVDISASM`, PyTorch/libtorch, tool identity,
    existing smoke receipts, stale processes, and measurement marker state.
 4. Run native PyTorch, official NVBit, exact EMPTY, then original Lane G

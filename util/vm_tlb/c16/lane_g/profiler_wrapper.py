@@ -46,6 +46,8 @@ def parse_args(tool: str) -> argparse.Namespace:
     parser.add_argument("--parent-lease-receipt", type=Path)
     parser.add_argument("--profile-overhead-threshold", type=float, default=0.10)
     parser.add_argument("--nsys-capture-range", choices=("nvtx", "none"), default="nvtx")
+    parser.add_argument("--nsys-path", type=Path,
+                        help="Absolute Nsight Systems executable for a hash-addressable profile harness")
     parser.add_argument("--diagnostic-only", action="store_true")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
@@ -70,6 +72,8 @@ def parse_args(tool: str) -> argparse.Namespace:
         parser.error("--ncu-launch-skip must be non-negative")
     if args.diagnostic_only and tool not in {"nsys", "nvbit"}:
         parser.error("--diagnostic-only is reserved for non-timing Nsight/NVBit evidence")
+    if args.nsys_path is not None and tool != "nsys":
+        parser.error("--nsys-path is valid only for an nsys operation")
     return args
 
 
@@ -97,7 +101,8 @@ def metric_names(path: Path) -> list[str]:
 def plan_command(tool: str, args: argparse.Namespace) -> list[str]:
     output = str(args.output)
     if tool == "nsys":
-        command = ["nsys", "profile", "--force-overwrite=true", "--trace=cuda,nvtx,osrt"]
+        executable = str(args.nsys_path) if args.nsys_path is not None else "nsys"
+        command = [executable, "profile", "--force-overwrite=true", "--trace=cuda,nvtx,osrt"]
         if args.nsys_capture_range == "nvtx":
             command.extend(("--capture-range=nvtx", "--capture-range-end=stop"))
         return [*command, "-o", output, *args.command]
@@ -293,7 +298,10 @@ def main(tool: str) -> None:
         atomic_json(args.receipt, receipt)
         print(f"PASS C16 {tool} offline dry-run: {args.receipt}")
         return
-    if tool != "nvbit" and shutil.which(TOOL_EXECUTABLE[tool]) is None:
+    if tool == "nsys" and args.nsys_path is not None:
+        if not args.nsys_path.is_file() or not os.access(args.nsys_path, os.X_OK):
+            raise ContractError("configured absolute nsys executable is unavailable")
+    elif tool != "nvbit" and shutil.which(TOOL_EXECUTABLE[tool]) is None:
         raise ContractError(f"required {tool} executable is unavailable")
     if tool == "nvbit" and not args.nvbit_tool.is_file():
         raise ContractError("NVBit injection tool is unavailable")

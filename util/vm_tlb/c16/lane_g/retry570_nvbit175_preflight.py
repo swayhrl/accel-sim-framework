@@ -63,6 +63,7 @@ def main() -> None:
     parser.add_argument("--nvbit-release-root", type=Path, required=True)
     parser.add_argument("--lane-tool", type=Path, required=True)
     parser.add_argument("--nvdisasm", type=Path, required=True)
+    parser.add_argument("--nsys", type=Path, required=True)
     parser.add_argument("--budget-ledger", type=Path, required=True)
     parser.add_argument("--official-receipt", type=Path)
     parser.add_argument("--empty-receipt", type=Path)
@@ -79,6 +80,7 @@ def main() -> None:
     identity = runtime_identity(args.python)
     nvcc = text([str(args.nvdisasm.parent / "nvcc"), "--version"])
     nvdisasm_version = text([str(args.nvdisasm), "--version"])
+    nsys_version = text([str(args.nsys), "--version"])
     child = nvdisasm_environment_contract(args.nvdisasm, os.environ.get("PATH", ""))
     measurement = args.budget_ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE"
     profile_match = (
@@ -98,13 +100,14 @@ def main() -> None:
         "CUDA_VERSION": cuda["toolkit"], "DRIVER": parts[2] if len(parts) == 4 else "UNAVAILABLE",
         "PYTORCH": identity["torch"], "NVBIT_VERSION": nvbit["version"],
         "NVDISASM_PATH": "PASS" if args.nvdisasm.is_file() and cuda["nvdisasm_absolute_path"] == str(args.nvdisasm) and cuda["nvdisasm"] in nvdisasm_version else "FAIL",
+        "NSYS_PATH": "PASS" if args.nsys.is_file() and os.access(args.nsys, os.X_OK) and "NVIDIA Nsight Systems version" in nsys_version else "FAIL",
         "CHILD_PATH": "PASS" if str(args.nvdisasm.parent) in child["PATH"].split(":") and child["NVDISASM"] == "nvdisasm" else "FAIL",
         "CUDA_MODULE_LOADING": os.environ.get("CUDA_MODULE_LOADING", "UNSET"),
         "OFFICIAL_NVBIT_SMOKE": official, "EXACT_EMPTY_SMOKE": empty, "LANE_G_FIRST_KERNEL_SMOKE": lane,
         "STALE_GPU_PROCESS": "ABSENT" if no_stale_gpu else "PRESENT", "MEASUREMENT_ACTIVE": "PRESENT" if measurement.exists() else "ABSENT",
-        "child_environment": child, "observed": {"nvidia_smi": smi, "nvcc": nvcc, "nvdisasm": nvdisasm_version, "torch": identity},
+        "child_environment": child, "observed": {"nvidia_smi": smi, "nvcc": nvcc, "nvdisasm": nvdisasm_version, "nsys": nsys_version, "torch": identity},
     }
-    required = (profile_match, output["NVDISASM_PATH"] == "PASS", output["CHILD_PATH"] == "PASS", os.environ.get("CUDA_MODULE_LOADING") == "EAGER",
+    required = (profile_match, output["NVDISASM_PATH"] == "PASS", output["NSYS_PATH"] == "PASS", output["CHILD_PATH"] == "PASS", os.environ.get("CUDA_MODULE_LOADING") == "EAGER",
                 official == "PASS", empty == "PASS", lane == "PASS", no_stale_gpu, not measurement.exists())
     output["CAPTURE_ALLOWED"] = "YES" if all(required) else "NO"
     atomic_json(args.output, output)
