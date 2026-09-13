@@ -253,7 +253,10 @@ def runtime_identity(binding: dict[str, Any], args: argparse.Namespace, code_com
         "model_id": binding["model_id"],
         "model_revision": binding["model_revision"],
         "tokenizer_revision": binding["tokenizer_revision"],
-        "deployment_id": binding["deployment_id"],
+        # A Recovery V3 parent uses its separately authorized namespace for
+        # the one parent-owned lease, while this binding still records the
+        # original immutable package deployment below in the receipt.
+        "deployment_id": args.runtime_deployment_id or binding["deployment_id"],
         "implementation_key": args.implementation_key,
         "dtype": args.dtype,
         "quantization": args.quantization,
@@ -398,6 +401,8 @@ def main() -> None:
     parser.add_argument("--runtime-code-commit", required=True)
     parser.add_argument("--parent-lease-receipt", type=Path,
                         help="active wrapper lease; child verifies it and never acquires a second lease")
+    parser.add_argument("--runtime-deployment-id",
+                        help="parent-authorized Recovery namespace; forbidden for standalone qualification")
     parser.add_argument("--recovery-v3-generic", action="store_true",
                         help="admit a non-S0 frozen Recovery-V3 binding; never changes its shape or identity")
     args = parser.parse_args()
@@ -408,6 +413,8 @@ def main() -> None:
         parser.error("--run-id must be a canonical UUID")
     if args.expected_output_checksum is not None and (len(args.expected_output_checksum) != 64 or any(char not in "0123456789abcdef" for char in args.expected_output_checksum)):
         parser.error("--expected-output-checksum must be a lowercase SHA256")
+    if args.runtime_deployment_id is not None and args.parent_lease_receipt is None:
+        parser.error("--runtime-deployment-id requires an active --parent-lease-receipt")
     code_commit = git_head()
     if args.runtime_code_commit != code_commit:
         raise ContractError("declared runtime code commit differs from the checked-out source")

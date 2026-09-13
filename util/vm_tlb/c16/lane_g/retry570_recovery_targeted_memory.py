@@ -150,6 +150,7 @@ def child_command(args: argparse.Namespace, *, raw_dir: Path, stdout_path: Path,
         "--expected-attention-backend", args.expected_attention_backend,
         "--runtime-code-commit", args.runtime_code_commit, "--recovery-v3-generic",
         "--parent-lease-receipt", str(args.parent_lease_receipt),
+        "--runtime-deployment-id", args.recovery_deployment_id,
     ]
 
 

@@ -84,6 +84,8 @@ class ModelQualificationTests(unittest.TestCase):
         self.assertIn("lease, parent = wrapper_owned_budget(args, identity)", source)
         self.assertIn("marker = wrapper_measurement_marker(args, identity)", source)
         self.assertIn('"child_acquired_second_lease": False', source)
+        self.assertIn('parser.add_argument("--runtime-deployment-id"', source)
+        self.assertIn('"deployment_id": args.runtime_deployment_id or binding["deployment_id"]', source)
 
     def test_profile_requires_real_declared_evidence_and_c16_catalog(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
