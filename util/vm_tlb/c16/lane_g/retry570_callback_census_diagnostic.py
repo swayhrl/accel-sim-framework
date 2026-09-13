@@ -58,7 +58,7 @@ def _module_loading_mode() -> dict[str, Any]:
         function.restype = ctypes.c_int
         mode = ctypes.c_int(-1)
         result = int(function(ctypes.byref(mode)))
-        names = {0: "CU_MODULE_EAGER_LOADING", 1: "CU_MODULE_LAZY_LOADING"}
+        names = {1: "CU_MODULE_EAGER_LOADING", 2: "CU_MODULE_LAZY_LOADING"}
         return {"cu_result": result, "mode_value": mode.value, "mode_name": names.get(mode.value, "UNKNOWN")}
     except (AttributeError, OSError) as exc:
         return {"query_error": f"{type(exc).__name__}: {exc}"}
@@ -194,8 +194,9 @@ def _parse_app(line: str) -> dict[str, Any] | None:
 
 
 def analyze(stdout: Path) -> dict[str, Any]:
+    text = stdout.read_text(encoding="utf-8", errors="replace")
     callbacks, app = [], []
-    for line in stdout.read_text(encoding="utf-8", errors="replace").splitlines():
+    for line in text.splitlines():
         callback, application = _parse_callback(line), _parse_app(line)
         if callback is not None:
             callbacks.append(callback)
@@ -217,7 +218,10 @@ def analyze(stdout: Path) -> dict[str, Any]:
     unmatched = [row for values in pending.values() for row in values]
     launches = [row for row in post if row["is_exit"] == 0 and (row["callback"].startswith("cuLaunch") or row["callback"].startswith("cuGraphLaunch"))]
     unhandled_launches = sorted({row["callback"] for row in launches if row["callback"] not in CURRENT_MATCHER_LAUNCH_APIS})
-    if unmatched:
+    tool_ready = "C16_CALLBACK_CENSUS_TOOL_READY mode=CALLBACK_CENSUS_ONLY" in text
+    if not tool_ready:
+        classification = "HARNESS_FAIL_CLOSED_NVBIT_TOOL_NOT_LOADED"
+    elif unmatched:
         classification = f"CUDA_DRIVER_API_STALL_IDENTIFIED:{unmatched[-1]['callback']}"
     elif not post:
         classification = "HOST_SIDE_OR_NVBIT_PRE_CALLBACK_INTERNAL_STALL"
@@ -227,7 +231,7 @@ def analyze(stdout: Path) -> dict[str, Any]:
         classification = "LAUNCH_CALLBACK_VISIBLE_NO_FUNCTION_IDENTITY_IN_CENSUS"
     else:
         classification = "HOST_SIDE_CALLBACK_ACTIVITY_WITHOUT_POST_SUBMISSION_LAUNCH"
-    return {"application_events": app, "submission_ts_ns": submission["ts_ns"], "callback_count_total": len(callbacks), "post_submission_callbacks": post, "post_submission_launch_entries": launches, "unmatched_driver_entries": unmatched, "completed_driver_calls": completed, "current_matcher_launch_apis": sorted(CURRENT_MATCHER_LAUNCH_APIS), "unhandled_launch_api_names": unhandled_launches, "classification": classification}
+    return {"tool_ready": tool_ready, "application_events": app, "submission_ts_ns": submission["ts_ns"], "callback_count_total": len(callbacks), "post_submission_callbacks": post, "post_submission_launch_entries": launches, "unmatched_driver_entries": unmatched, "completed_driver_calls": completed, "current_matcher_launch_apis": sorted(CURRENT_MATCHER_LAUNCH_APIS), "unhandled_launch_api_names": unhandled_launches, "classification": classification}
 
 
 def _validate(args: argparse.Namespace) -> None:
