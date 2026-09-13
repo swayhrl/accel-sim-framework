@@ -29,6 +29,17 @@ diagnostic report, but its strict clean↔diagnostic structural mapping produced
 no uniquely eligible clean launch; it does not change the clean catalog. P
 used no kernel-name inference, timestamp matching, or bare local-ID join.
 
+P subsequently consumed the previously queued, hash-closed Qwen0.5 S2 P2
+diagnostic at G commit `f7d1c2cb4d41b26472893a7d23466402c8e92e70` after the
+clean P1 catalog became available. Local export qualification and direct-map
+reproduction passed. Of 70,224 diagnostic kernels, 33,184 are direct within
+that diagnostic report; clean reconciliation still has zero unique candidates:
+173,901 are structurally ambiguous and 1,659 have no candidate. All 175,560
+clean S2 launches remain explicit `UNKNOWN`. Its compact
+[P2 receipt](../../../review_packs/C16_P_NATIVE_POSTPROCESS/P2_QWEN05_S2_SEMANTIC_RECEIPT.json)
+binds the map, coverage, audit, raw, and contract hashes. This confirms rather
+than changes the capability-limited C checkpoint's UNKNOWN-only semantics.
+
 Capability boundary: Llama and Qwen0.5 are train-available. Qwen7 raw is
 `SKIPPED_RESOURCE / RESOURCE_UNAVAILABLE_ON_RTX3090` and has no P native rows.
 Qwen7 AWQ remains `HOLDOUT_PENDING_FREEZE`; P exposes no AWQ timing, launch,
