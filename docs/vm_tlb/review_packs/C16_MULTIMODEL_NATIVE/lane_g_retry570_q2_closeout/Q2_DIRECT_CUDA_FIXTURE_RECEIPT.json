@@ -1,0 +1,26 @@
+{
+  "schema_version": "C16_G_RETRY570_Q2_DIRECT_CUDA_FIXTURE_V1",
+  "status": "PASS_COMPATIBILITY_DIAGNOSTIC_ONLY",
+  "scientific_eligible": false,
+  "fixture": {
+    "source_commit": "d67d2aea7b6e4e17b2e095633700720da13135ce",
+    "source_path": "util/vm_tlb/c16/lane_g/retry570_cuda_fixture.cu",
+    "source_sha256": "652c0010b9bc4d579d82f631244cdd59e8b2105a1b20475f1a6716f6fb2faf94",
+    "remote_binary_sha256": "c9556a35f58a8796ae24734c90860cc4a6850abd8726620458f42987bde8a792"
+  },
+  "runs": {
+    "baseline": {"exit_code": 0, "kernel_observed": "add_one", "terminal_state": "PASS"},
+    "official_instr_count": {"exit_code": 0, "kernel_observed": true, "terminal_state": "PASS"},
+    "c16_memory_tracer": {"exit_code": 0, "kernel_observed": true, "terminal_state": "PASS"}
+  },
+  "direct_trace": {
+    "trace_path": "/root/autodl-tmp/c16_retry570/q2_nvbit_fixture/custom_raw/traces/kernel-1-ctx_0x55b067e25c60.trace.xz",
+    "trace_bytes": 5372,
+    "trace_sha256": "979781dbc09fe1983c8f6c09e58cef189f471908a343779ac8fbbae7d148d92f",
+    "postprocessed_trace_bytes": 1124,
+    "postprocessed_trace_sha256": "3884de97c97db7fb1e14cd4a706bef69b42433ec28dd3b3e0abf3a8e0d27aca2",
+    "kernel_list_sha256": "7f030412ae62b0ffcadbfbb3378ed4fe2943a5aa23c1b99d7fa20c003222d8d8",
+    "direct_observations": ["NVBit 1.7.6", "SM86 binary", "CUDA stream id 0", "active mask ffffffff", "global 4-byte memory operations"]
+  },
+  "limit_guard": {"elapsed_seconds_below": 120, "raw_bytes_below": 4294967296}
+}
