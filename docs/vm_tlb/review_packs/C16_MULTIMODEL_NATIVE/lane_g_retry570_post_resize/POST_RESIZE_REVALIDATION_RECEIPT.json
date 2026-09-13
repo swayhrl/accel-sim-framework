@@ -1,0 +1,42 @@
+{
+  "schema_version": "C16_G_RETRY570_POST_RESIZE_REVALIDATION_V1",
+  "status": "C16_RETRY570_POST_RESIZE_REVALIDATED",
+  "scientific_eligible": false,
+  "scope": "POST_RESIZE_IDENTITY_AND_SINGLE_ELEMENTWISE_C16_NVBIT18_SANITY_ONLY",
+  "source_checkpoint": "99c868ddbfcd90559129fc00f7d02e00df537e51",
+  "node": {
+    "gpu_model": "NVIDIA GeForce RTX 3090",
+    "gpu_uuid": "GPU-0c257cc7-45dd-5533-5435-7f42e7008e0e",
+    "compute_capability": "8.6",
+    "driver": "570.124.04",
+    "cuda_toolkit": "12.4.131",
+    "torch": "2.5.1+cu124",
+    "torch_cuda": "12.4",
+    "remote_data_disk_total_bytes": 214748364800,
+    "remote_data_disk_available_bytes": 198796951552
+  },
+  "nvbit_18": {
+    "archive_sha256": "72a2b827f9531dcb86b6be13844f267640fb440929d92944177029da6da2b9e1",
+    "instr_count_bb_sha256": "9751365928a740e86ae421f09ed0f9b0ba38eafa19ee0ac424ae5fd1fead114d",
+    "instr_count_sha256": "0ca58b0665ecd090fa826bd125ff60c2a65410b7336383b53bd06465b41808f4",
+    "mem_trace_sha256": "531257e9cbc54017a3f908c4280e631a017da3c4f3de5d4413855b16eeb7eae0",
+    "c16_tracer_sha256": "b0c0c75ec3afddc1b06f0d92396967c295cbf31d1dd91075fdf28ea0f05af0b5"
+  },
+  "storage_gate": {
+    "minimum_available_bytes": 107374182400,
+    "status": "PASS"
+  },
+  "single_sanity": {
+    "workload": "PyTorch CUDA elementwise",
+    "timeout_seconds": 15,
+    "exit_code": 0,
+    "elapsed_seconds": 2,
+    "terminal_state": "NORMAL_EXIT",
+    "nonzero_c16_trace": true,
+    "trace_bytes": 174872,
+    "trace_sha256": "52642c3a5ca546e8365f4892717612c427c74f75461fdbedbeb55714d04e34e3"
+  },
+  "formal_target_execution": false,
+  "model_payload_transferred": false,
+  "next_stage": "MODEL_NVBIT_QUALIFICATION_M1_LLAMA"
+}

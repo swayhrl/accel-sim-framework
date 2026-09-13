@@ -1,14 +1,15 @@
 # C16-G Retry570 runtime status
 
-Status: `NVBIT_RETRY570_MEMORY_TRACE_PATH_QUALIFIED_WAITING_USER_STORAGE_DECISION`.
+Status: `C16_RETRY570_POST_RESIZE_REVALIDATED`.
 
 The new-node observed identity is bound by
 [`C16_RETRY570_NODE_IDENTITY_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570/C16_RETRY570_NODE_IDENTITY_RECEIPT.json).
 It is an RTX3090 / SM86 node with actual driver `570.124.04`; this is an
-observed receipt, not a marketplace claim.  Its 50 GiB remote data disk is
-below the 100 GiB formal-capture storage gate, so exact frozen C targets remain
-blocked regardless of qualification outcome.  No C target has been read as an
-execution choice, altered, or substituted.
+observed receipt, not a marketplace claim.  Following resize/restart, the
+remote disk is 200 GiB total with 198,796,951,552 bytes available, passing the
+100 GiB formal-capture storage gate.  The new GPU UUID is recorded in the
+post-resize receipt.  No C target has been read as an execution choice,
+altered, or substituted.
 
 Q1's sole tiny NCU permission canary reached the diagnostic CUDA fixture as
 root but returned `ERR_NVGPUCTRPERM`, emitted no counter result and produced no
@@ -37,9 +38,9 @@ both workloads.  The resulting state is
 target compatibility.
 
 No model payload was transferred, and no Llama, Qwen0.5, Qwen7-AWQ, G2
-target, or G3 target was launched.  The node must remain idle pending an
-explicit user decision to expand storage: 37,780,586,496 available remote
-bytes remains below the 100 GiB frozen-target gate.
+target, or G3 target was launched.  Exactly one post-resize PyTorch
+elementwise+C16-NVBit1.8 sanity exited normally and produced nonzero trace;
+the complete prior 1.7.6/1.8 matrix was deliberately not repeated.
 
 The full compact evidence and dual-endpoint diagnostic raw closure are in
 [`retry570_q2_closeout`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_q2_closeout/).
@@ -58,6 +59,11 @@ Its dual-endpoint transfer closure is
 `NVBIT_COMPATIBILITY_TRANSFER_RECEIPT.json`; it has no remote-only required
 artifact and the node has no active GPU process.  Its fixed publish manifest
 SHA256 is `46189eb85b716ba39c73406613d88852d33bda461965d9dc77f02abe904fc8fa`.
+
+The current post-resize checkpoint is
+[`lane_g_retry570_post_resize`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_post_resize/),
+manifest SHA256 `c262464c9ee9757905b295bb177d5da6f1ce3ab8b2bb9c4a550e7b9dde0349a2`.
+The next permitted stage is M1 Llama model-level NVBit qualification.
 
 The only eventual G2/G3 authority was immutable C commit
 `d55075b7752380d6bd22328547db21a5e24eeed2`, `SELECTOR_R/B48`.  Qwen7 raw,
