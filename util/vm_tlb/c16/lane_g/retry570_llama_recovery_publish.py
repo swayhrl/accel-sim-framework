@@ -118,7 +118,7 @@ def main() -> None:
         raise ContractError("LargeIndex structural-zero decode receipt is incomplete")
     small_rows = trace_list(s5small)
     small_capture = s5small["child"]["capture"]
-    if s5small.get("status") != "FORMAL_CAPTURE_COMPLETE" or small_capture["output_checksum"] != large_decode["output_checksum"] or small_capture["target_receipt"]["target_role"] != "DECODE_INDEX_TARGET":
+    if s5small.get("status") != "FORMAL_CAPTURE_COMPLETE" or small_capture["output_checksum"] != large_decode["output_checksum"] or s5small["child"]["target_receipt"]["target_role"] != "DECODE_INDEX_TARGET":
         raise ContractError("SmallIndex decode capture identity/role closure differs")
     if any(small_capture["phase_trace_summary"][f"DECODE{i}"]["record_count"] <= 0 for i in range(2, 5)):
         raise ContractError("SmallIndex decode capture lacks one of the actual decode forwards")
