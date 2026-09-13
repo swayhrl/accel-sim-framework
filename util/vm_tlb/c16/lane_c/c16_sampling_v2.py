@@ -1738,16 +1738,27 @@ def write_p_plan_bundle(out: Path, prefix: str, units: list[dict[str, Any]], rol
         atomic_text(out / f"{prefix}_SELECTOR_M_DEFERRED.md", "# Selector-M deferred\n\n`SELECTOR_M_AUXILIARY_DEFERRED_NONBLOCKING`: the representative medoid alternative is not a G2/G3 target-publication prerequisite.  The fixed operational primary is `SELECTOR_R` B48.  Reason: `COMPUTATIONAL_CRITICAL_PATH / PAID_GPU_IDLE_AVOIDANCE`.  No AWQ, NCU, NVBit, candidate performance, or candidate counter outcome was read.\n")
     write_tsv(out / f"{prefix}_SAMPLE_BUDGETS.tsv", ["plan_id", "selector_kind", "universe_id", "budget", "certainty_units", "remaining_after_certainty", "stratum_id", "N_s", "n_s", "count_mass", "duration_mass_ns", "variation_proxy_mass", "variation_proxy_source", "allocation_score", "random_audit_target", "random_audit_actual", "estimated_capture_cost_ns", "status"], all_budgets)
     write_tsv(out / f"{prefix}_CERTAINTY_UNITS.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "launch_ordinal", "N_s", "certainty_weight", "reason", "duration_ns", "evidence_tier", "capture_authorization"], deduplicate_certainty(all_certainty))
-    membership = []
+    # The hash-closed catalog remains the full population frame.  Publishing a
+    # second 700k-row membership copy would make the fixed Git target both
+    # needlessly huge and harder for G to consume.  A per-stratum materialized
+    # summary preserves the complete N_s frame and five-dimensional definition;
+    # exact selected launch identities are already in the R plan itself.
+    stale_membership = out / f"{prefix}_STRATA_MEMBERSHIP.tsv"
+    if stale_membership.exists():
+        die(f"stale full membership copy must be isolated before compact publication: {stale_membership.name}")
+    strata: dict[tuple[str, str], dict[str, Any]] = {}
     for unit in units:
-        membership.append({"universe_id": unit["universe_id"], "deployment_id": unit["deployment_id"], "scenario_id": unit["scenario_id"], "phase": unit["phase"],
-                           "stratum_id": unit["stratum_id"], "unit_id": unit["unit_id"], "run_id": unit["run_id"], "profile_report_id": unit["profile_report_id"],
-                           "device": unit["device"], "context": unit["context"], "stream": unit["stream"], "correlation_id": unit["correlation_id"],
-                           "launch_ordinal": unit["launch_ordinal"], "N_s": unit["N_s"], "certainty": "TRUE" if unit["certainty"] else "FALSE",
-                           "certainty_reason": unit["certainty_reason"], "operator_class": unit["operator_class"], "implementation_key": unit["implementation_key"],
-                           "shape_bucket": unit["shape_bucket"], "dtype_key": unit["dtype_key"], "split_role": roles[unit["deployment_id"]],
-                           "source_cohort": cohort, "evidence_tier": unit["evidence_tier"]})
-    write_tsv(out / f"{prefix}_STRATA_MEMBERSHIP.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "run_id", "profile_report_id", "device", "context", "stream", "correlation_id", "launch_ordinal", "N_s", "certainty", "certainty_reason", "operator_class", "implementation_key", "shape_bucket", "dtype_key", "split_role", "source_cohort", "evidence_tier"], membership)
+        key = (unit["universe_id"], unit["stratum_id"])
+        if key not in strata:
+            strata[key] = {"universe_id": unit["universe_id"], "deployment_id": unit["deployment_id"], "scenario_id": unit["scenario_id"],
+                            "phase": unit["phase"], "stratum_id": unit["stratum_id"], "N_s": unit["N_s"],
+                            "operator_class": unit["operator_class"], "implementation_key": unit["implementation_key"],
+                            "shape_bucket": unit["shape_bucket"], "dtype_key": unit["dtype_key"], "split_role": roles[unit["deployment_id"]],
+                            "source_cohort": cohort, "evidence_tier": unit["evidence_tier"], "certainty_units": 0}
+        if unit["certainty"]:
+            strata[key]["certainty_units"] += 1
+    write_tsv(out / f"{prefix}_STRATA_SUMMARY.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "N_s", "certainty_units", "operator_class", "implementation_key", "shape_bucket", "dtype_key", "split_role", "source_cohort", "evidence_tier"],
+              [strata[key] for key in sorted(strata)])
     return all_plans
 
 
