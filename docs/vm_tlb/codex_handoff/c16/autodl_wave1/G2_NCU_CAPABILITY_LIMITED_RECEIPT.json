@@ -1,0 +1,87 @@
+{
+  "schema_version": "C16_G2_NCU_CAPABILITY_LIMITED_V1",
+  "status": "G2_CAPABILITY_LIMITED_COUNTER_PERMISSION",
+  "terminal_scope": "ALL_C_FIXED_NCU_TARGET_UNIVERSES",
+  "scientific_eligible_for_ncu_counters": false,
+  "c_fixed_authority": {
+    "commit": "d55075b7752380d6bd22328547db21a5e24eeed2",
+    "publish_manifest_sha256": "c172ebf38d65f3b09caa9b16ab83632985aeb33afeab5eebfef57b7446f9c439",
+    "selector_freeze_sha256": "3096c9ea5d1d09e4935a8d765bc1dc36a8d4ff35f4174c7ef42846259aee95c7",
+    "g_target_policy_sha256": "9f35e7b0809fdfb24352c46b7e43547238d9f0b1615dd39bbe3df934b2d2a3ad",
+    "ncu_target_plan_sha256": "45b20a8e5383277a5170e32ff41b8de2ed2ca8777300b7ab6ab80a256d050693",
+    "ncu_target_rows": 288,
+    "selector": "SELECTOR_R",
+    "budget": "B48"
+  },
+  "runtime_source_commit": "ea80c2042093d97728e7c4646e7eb1dae90f1186",
+  "ncu_platform": {
+    "path": "/opt/nvidia/nsight-compute/2024.1.1/ncu",
+    "version": "2024.1.1.0 (build 33998838) (public-release)",
+    "gpu_uuid": "GPU-6975486d-bcb7-deec-7ff8-29734254ceb1",
+    "driver_version": "595.58.03",
+    "effective_uid": 0,
+    "rm_profiling_admin_only": true,
+    "compact_metric_set_receipt": "G2_METRIC_SET_RECEIPT.json",
+    "compact_metric_set_sha256": "1aa58732d3c7141402b36e3d3ad1d7164458af7cb1e71d34e4b141652646acac"
+  },
+  "first_c_target_only": {
+    "target_plan_id": "C16_V2_R_B48_c16_qwen25_7b_awq_S1_DECODE",
+    "unit_id": "launch:56a853d1-ef7f-4653-8cd8-cc7defde5689:cuda:0:CUDA_CONTEXT_1:CUDA_STREAM_7:CUDA_CORRELATION_1000606:79554",
+    "source_phase": "DECODE",
+    "source_structural_key": "demangled_kernel_name + source_same_name_invocation_4284 + grid_7x1x1 + block_128x1x1",
+    "target_selection_path": "../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/fixed_target_execution/G2_NCU_FIRST_TARGET_SELECTION.json",
+    "target_selection_sha256": "b6cc722b336a57c4eb40aaaa69627ed9d5e670cbedb1b693f38472624eb9b12b",
+    "kernel_name_only_forbidden": true,
+    "nearest_or_adjacent_substitution_forbidden": true,
+    "target_identity_status": "TARGET_IDENTITY_NOT_REPRODUCIBLE",
+    "target_identity_reason": "NO_NCU_PROFILE_OUTPUT_AFTER_ERR_NVGPUCTRPERM; no substitution was attempted"
+  },
+  "canary_sessions": [
+    {
+      "run_id": "94e4df07-b741-425f-865f-3144ae60670e",
+      "runtime_source_commit": "6e512398aacaa2d5de225cd4cc42bd7fbbc4757e",
+      "classification": "NON_SCIENTIFIC_DIAGNOSTIC",
+      "terminal_status": "FAILED_PRELAUNCH",
+      "reason": "NCU_2024_1_INVALID_TARGET_PROCESSES_VALUE_APPLICATION",
+      "output_bytes": 0
+    },
+    {
+      "run_id": "a0ae8add-aa8e-4f71-8c8e-9e2c9ca57608",
+      "runtime_source_commit": "628102238f7a31e99eb0a906e13b250c49e79a72",
+      "classification": "NON_SCIENTIFIC_DIAGNOSTIC",
+      "terminal_status": "FAILED_PRELAUNCH",
+      "reason": "NCU_KERNEL_ID_REJECTS_CPP_DOUBLE_COLON_REGEX",
+      "output_bytes": 0
+    },
+    {
+      "run_id": "379638f8-1d3a-4a95-8f0e-2c1288c281ec",
+      "runtime_source_commit": "ea80c2042093d97728e7c4646e7eb1dae90f1186",
+      "classification": "NON_SCIENTIFIC_DIAGNOSTIC",
+      "terminal_status": "G2_CAPABILITY_LIMITED_COUNTER_PERMISSION",
+      "reason": "ERR_NVGPUCTRPERM",
+      "ncu_output_bytes": 0,
+      "child_native_receipt_retained_only": true,
+      "child_native_receipt_not_eligible_for_baseline_census_or_ncu_counter_catalog": true
+    }
+  ],
+  "ledger": {
+    "all_canary_entries_retained": true,
+    "evidence_classification": "NON_SCIENTIFIC_DIAGNOSTIC",
+    "double_counting_prevented_by_parent_child_lease": true
+  },
+  "target_row_disposition": {
+    "all_288_ncu_plan_rows": "CAPABILITY_LIMITED_COUNTER_PERMISSION",
+    "no_target_rows_modified": true,
+    "no_second_target_selected": true,
+    "no_shape_context_or_offload_fallback": true
+  },
+  "transfer_closure": {
+    "named_transfer_receipt": "G2_NCU_DIAGNOSTIC_TRANSFER_RECEIPT.json",
+    "diagnostic_artifact_index": "G2_NCU_DIAGNOSTIC_ARTIFACT_INDEX.tsv",
+    "diagnostic_artifact_index_sha256": "a9b4c674d285ebbb9b68c79bd016310a7aab6bd4e622dd9b46bb0245b0a7f9f2",
+    "dual_endpoint_files": 20,
+    "all_remote_size_sha256_match_local": true,
+    "ncu_raw_profile_count": 0,
+    "remote_only_required_artifact_count": 0
+  }
+}
