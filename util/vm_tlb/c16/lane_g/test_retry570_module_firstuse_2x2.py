@@ -63,12 +63,13 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
             self.assertEqual(native["timeline"]["cuLibraryLoadData"], "NOT_OBSERVABLE_WITHOUT_NVBIT_CALLBACK_STREAM")
 
     def test_debug_variant_declares_vendor_map_only_for_gdb_type_information(self) -> None:
-        self.assertIn("extern NvbitElfModuleMap elfModuleHashMap", DEBUG_TOOL)
+        self.assertIn('extern "C" NvbitElfModuleMap elfModuleHashMap', DEBUG_TOOL)
         self.assertIn("neither reads nor writes it", DEBUG_TOOL)
         self.assertNotIn("c16_debug_elf_module_map", DEBUG_TOOL)
         self.assertIn("-Xcompiler=-g,-Og", BUILD)
         self.assertIn("thread apply all bt full", SOURCE)
         self.assertIn("elfModuleHashMap.size()", SOURCE)
+        self.assertIn('"-p", str(pid)', SOURCE)
         self.assertIn('"maps": _run_text_safe', SOURCE)
 
     def test_raw_callback_body_has_only_fixed_pod_ring_operations(self) -> None:

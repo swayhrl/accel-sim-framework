@@ -188,7 +188,9 @@ def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_el
         **gpu_snapshot(pid),
     }
     if with_gdb:
-        command = ["gdb", "-q", "-batch", "-ex", "set pagination off", "-ex", "set print elements 2"]
+        # Attach before queuing expressions: gdb otherwise accepts the
+        # commands but evaluates them before an inferior is selected.
+        command = ["gdb", "-q", "-batch", "-p", str(pid), "-ex", "set pagination off", "-ex", "set print elements 2"]
         if map_inspection:
             # The debug census tool only declares this external vendor-core
             # object so gdb has its true C++ type.  No inferior expression is
@@ -197,11 +199,11 @@ def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_el
                 "-ex", "thread apply all bt full", "-ex", "info sharedlibrary",
                 "-ex", "p elfModuleHashMap.size()", "-ex", "p elfModuleHashMap.bucket_count()",
                 "-ex", "p elfModuleHashMap.load_factor()", "-ex", "p elfModuleHashMap.begin()->first",
+                "-ex", "p elfModuleHashMap.begin()->first.size()",
                 "-ex", "p elfModuleHashMap.begin()->second.size()",
             ))
         else:
             command.extend(("-ex", "thread apply all bt"))
-        command.extend(("-p", str(pid)))
         record["native_backtrace"] = _run_text_safe(command)
         record["native_backtrace"]["diagnostic_perturbation"] = True
     path = output / f"snapshot_{ordinal:02d}.json"

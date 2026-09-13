@@ -23,7 +23,10 @@ __attribute__((used)) static NvbitLinkAnchor const c16_nvbit_link_anchor = &nvbi
 // only for debug type information; this tool neither reads nor writes it.
 class Function;
 using NvbitElfModuleMap = std::unordered_map<std::string, std::vector<Function*>>;
-extern NvbitElfModuleMap elfModuleHashMap;
+// NVBit exports this vendor-core object with C linkage.  Keeping that linkage
+// here is essential: ordinary C++ linkage would silently declare a distinct
+// ABI-tagged symbol, which is unsuitable for debugger-only inspection.
+extern "C" NvbitElfModuleMap elfModuleHashMap;
 
 static std::atomic<unsigned long long> callback_sequence{0};
 
