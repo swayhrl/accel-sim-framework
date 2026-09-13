@@ -53,6 +53,12 @@ guessed from an unrelated local cache ref.
   `bc5c8bb7fc019654b995a471f6f25045fca07ccfa355f0ffdeb0e189959454d5` and
   the returned frozen token list SHA256 is
   `5ec815bc65ee841e1eb41736c74bc8c2b3bcc44edaec730b16e1c7f406a59b30`.
+- All Qwen0 frozen runtime bindings are now materialized from existing P1
+  receipts and locally SHA-closed: S0/TEXT, S1/CODE, S2/TEXT+CODE+STRUCTURED,
+  S3/TEXT, and S4/STRUCTURED.  The seven binding hashes and 14 returned
+  compact files are indexed in
+  [`R2_QWEN2P5_0P5B_ALL_SCENARIO_BINDINGS_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/R2_QWEN2P5_0P5B_ALL_SCENARIO_BINDINGS_RECEIPT.json).
+  This remains preparation-only and used no GPU model work.
 - Qwen2.5-7B raw at immutable revision
   `a09a35458c702b33eeacc393d103063234e8bc28` is now remote-to-local
   dual-endpoint SHA-closed and its 62-payload immutable P2 package verifier
