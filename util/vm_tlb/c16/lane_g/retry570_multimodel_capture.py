@@ -41,6 +41,7 @@ from runtime_native_runner import (
 
 SCHEMA = "C16_G_RETRY570_MULTIMODEL_FORMAL_CAPTURE_V1"
 MODES = ("S3_NARROW_PREFILL", "S4_REPRO_PREFILL", "S5_COMPLETE_PREFILL", "S5_COMPLETE_DECODE")
+TARGET_ROLES = ("LARGE_INDEX_PREFILL", "DECODE_INDEX_TARGET")
 EXPECTED_CHECKSUM = "2c9e006bcd155e56a28d2c9948a31cf2d5bc60e8bb2b5f5af0e1cae35215383f"
 TERM_GRACE_S = 5
 
@@ -75,7 +76,7 @@ def identity(binding: dict[str, Any], args: argparse.Namespace) -> dict[str, str
     }
 
 
-def require_contract(binding: dict[str, Any], target: dict[str, Any]) -> None:
+def require_contract(binding: dict[str, Any], target: dict[str, Any], target_role: str) -> None:
     scenario = binding["scenario"]
     if (binding["model_id"], binding["model_revision"], scenario["scenario_id"], scenario["batch_size"], scenario["prefill_tokens"], scenario["decode_tokens"]) != (
         "meta-llama/Llama-3.2-1B", "4e20de362430cd3b72f300e6b0f18e50e7166e08", "S0", 1, 128, 4,
@@ -87,10 +88,18 @@ def require_contract(binding: dict[str, Any], target: dict[str, Any]) -> None:
         index = int(instruction["nvbit_static_index"])
     except (KeyError, TypeError, ValueError) as exc:
         raise ContractError("closed target receipt is malformed") from exc
-    if index != 101 or instruction.get("opcode") != "LDG.E.U16" or function.get("mangled_name", "").startswith("_ZN2at6native") is False:
-        raise ContractError("formal Llama capture target differs from the S2 direct NVBit map")
-    if 34 not in target.get("excluded_static_indices", []) or index == 34:
-        raise ContractError("historical SASS text line 34 must remain excluded from formal static-index capture")
+    if target_role == "LARGE_INDEX_PREFILL":
+        if index != 101 or instruction.get("opcode") != "LDG.E.U16" or "indexSelectLargeIndex" not in function.get("mangled_name", ""):
+            raise ContractError("formal Llama prefill target differs from the S2 direct NVBit map")
+        if 34 not in target.get("excluded_static_indices", []) or index == 34:
+            raise ContractError("historical SASS text line 34 must remain excluded from formal static-index capture")
+    elif target_role == "DECODE_INDEX_TARGET":
+        # This is an independently profiled/map-selected shape-dependent
+        # decode target.  It must never silently reuse LargeIndex/[101,102).
+        if index != 17 or instruction.get("opcode") != "LDG.E" or "indexSelectSmallIndex" not in function.get("mangled_name", ""):
+            raise ContractError("decode target differs from the direct SmallIndex NVBit map")
+    else:
+        raise ContractError("unknown formal Llama capture target role")
 
 
 def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool, trace_root: Path | None = None) -> tuple[str, int, dict[str, list[str]]]:
@@ -180,7 +189,9 @@ def child(args: argparse.Namespace) -> int:
     if os.environ.get("CUDA_MODULE_LOADING") != "EAGER" or os.environ.get("ACTIVE_FROM_START") != "0":
         raise ContractError("formal capture requires EAGER plus profiler-owned ACTIVE_FROM_START=0")
     binding = load_binding(args.binding, canary=True)
-    target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target)
+    target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target, args.target_role)
+    if args.target_role == "DECODE_INDEX_TARGET" and capture_phase(args.mode) != "DECODE":
+        raise ContractError("decode-side target may only be captured in the complete decode workload")
     ident = identity(binding, args)
     _budget, parent = wrapper_owned_budget(args, ident)
     write_event(args.stage, "PROCESS_START", identity=ident, parent_lease_id=parent["parent_lease_id"])
@@ -221,9 +232,12 @@ def child(args: argparse.Namespace) -> int:
     # at least one direct address-bearing record.
     if capture_phase(args.mode) == "PREFILL" and not traces:
         raise ContractError("prefill target capture emitted no exact target trace")
+    if args.target_role == "DECODE_INDEX_TARGET":
+        if any(phase_summary[f"DECODE{i}"]["record_count"] <= 0 for i in range(2, 5)):
+            raise ContractError("decode-side target did not produce records in every actual frozen decode forward")
     atomic_json(args.child_receipt, {"schema_version": SCHEMA, "status": "FORMAL_CAPTURE_COMPLETE", "scientific_eligible": True,
         "identity": ident, "parent_lease": {"start_receipt": str(args.parent_lease_receipt), "sha256": sha256_file(args.parent_lease_receipt), "parent_lease_id": parent["parent_lease_id"], "child_acquired_second_lease": False},
-        "binding_sha256": sha256_file(args.binding), "target_receipt": {"path": str(args.target_receipt), "sha256": sha256_file(args.target_receipt), "function": target["function"]["mangled_name"], "static_index": target["target_instruction"]["nvbit_static_index"], "opcode": target["target_instruction"]["opcode"]},
+        "binding_sha256": sha256_file(args.binding), "target_receipt": {"path": str(args.target_receipt), "sha256": sha256_file(args.target_receipt), "target_role": args.target_role, "function": target["function"]["mangled_name"], "static_index": target["target_instruction"]["nvbit_static_index"], "opcode": target["target_instruction"]["opcode"]},
         "runtime": {"gpu_name": torch.cuda.get_device_properties(0).name, "gpu_uuid": subprocess.check_output(["nvidia-smi", "--query-gpu=uuid", "--format=csv,noheader"], text=True).strip(), "driver": smi_driver_version(), "torch": torch.__version__, "torch_cuda": torch.version.cuda, "attention_backend": attention, "loader": loader, "all_cuda_devices": sorted(devices), "parameter_dtypes": sorted(dtypes)},
         "capture": {"mode": args.mode, "phase": capture_phase(args.mode), "decode_steps_executed": decode_steps, "logical_decode_coverage": {"DECODE1": "PREFILL_DERIVED_GREEDY_TOKEN_NO_SEPARATE_CUDA_FORWARD", "DECODE2": "C16_DECODE_STEP_1", "DECODE3": "C16_DECODE_STEP_2", "DECODE4": "C16_DECODE_STEP_3"}, "prewarm_trace_count": 0, "trace_file_count": len(traces), "traces": traces, "phase_trace_summary": phase_summary, "output_checksum": checksum, "measurement_marker_observed": str(marker), "terminal_status": "COMPLETE"}})
     write_event(args.stage, "TERMINAL_COMPLETE", trace_file_count=len(traces))
@@ -242,7 +256,7 @@ def kill_group(process: subprocess.Popen[str]) -> dict[str, Any]:
 
 
 def child_command(args: argparse.Namespace) -> list[str]:
-    command = [sys.executable, str(Path(__file__).resolve()), "--child", "--mode", args.mode, "--binding", str(args.binding), "--target-receipt", str(args.target_receipt), "--receipt", str(args.receipt), "--stage", str(args.stage), "--child-receipt", str(args.child_receipt), "--trace-root", str(args.trace_root), "--budget-ledger", str(args.budget_ledger), "--parent-lease-receipt", str(args.parent_lease_receipt), "--arm-path", str(args.arm_path), "--adapter", args.adapter, "--implementation-key", args.implementation_key, "--dtype", args.dtype, "--quantization", args.quantization, "--run-id", args.run_id, "--runtime-code-commit", args.runtime_code_commit, "--expected-attention-backend", args.expected_attention_backend, "--arm-wait-seconds", str(args.arm_wait_seconds)]
+    command = [sys.executable, str(Path(__file__).resolve()), "--child", "--mode", args.mode, "--target-role", args.target_role, "--binding", str(args.binding), "--target-receipt", str(args.target_receipt), "--receipt", str(args.receipt), "--stage", str(args.stage), "--child-receipt", str(args.child_receipt), "--trace-root", str(args.trace_root), "--budget-ledger", str(args.budget_ledger), "--parent-lease-receipt", str(args.parent_lease_receipt), "--arm-path", str(args.arm_path), "--adapter", args.adapter, "--implementation-key", args.implementation_key, "--dtype", args.dtype, "--quantization", args.quantization, "--run-id", args.run_id, "--runtime-code-commit", args.runtime_code_commit, "--expected-attention-backend", args.expected_attention_backend, "--arm-wait-seconds", str(args.arm_wait_seconds)]
     if args.recovery_deployment_id: command.extend(("--recovery-deployment-id", args.recovery_deployment_id))
     return command
 
@@ -253,7 +267,9 @@ def parent(args: argparse.Namespace) -> int:
     if any(path.exists() for path in (args.receipt, args.stage, args.child_receipt, args.stdout, args.stderr, args.parent_lease_receipt, args.arm_path)) or args.trace_root.exists():
         raise ContractError("formal capture refuses to overwrite a retained payload")
     if sha256_file(args.tool) != args.tool_sha256 or not args.nvdisasm.is_file(): raise ContractError("formal tool/nvdisasm closure differs")
-    binding = load_binding(args.binding, canary=True); target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target)
+    binding = load_binding(args.binding, canary=True); target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target, args.target_role)
+    if args.target_role == "DECODE_INDEX_TARGET" and capture_phase(args.mode) != "DECODE":
+        raise ContractError("decode-side target may only be captured in the complete decode workload")
     ident = identity(binding, args); MeasurementActive.assert_available(args.budget_ledger)
     if args.recovery_ledger is not None:
         if args.recovery_ledger != args.budget_ledger or args.recovery_historical_ledger is None or not args.recovery_historical_sha256 or not args.recovery_deployment_id:
@@ -304,7 +320,7 @@ def parent(args: argparse.Namespace) -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--child", action="store_true"); parser.add_argument("--mode", choices=MODES, required=True)
+    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--child", action="store_true"); parser.add_argument("--mode", choices=MODES, required=True); parser.add_argument("--target-role", choices=TARGET_ROLES, default="LARGE_INDEX_PREFILL")
     for name in ("binding", "target_receipt", "receipt", "stage", "child_receipt", "trace_root", "budget_ledger", "parent_lease_receipt", "arm_path", "stdout", "stderr", "tool", "nvdisasm"): parser.add_argument("--" + name.replace("_", "-"), type=Path)
     parser.add_argument("--tool-sha256"); parser.add_argument("--adapter", required=True); parser.add_argument("--implementation-key", required=True); parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True); parser.add_argument("--quantization", required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True); parser.add_argument("--expected-attention-backend", required=True); parser.add_argument("--arm-wait-seconds", type=int, default=60); parser.add_argument("--target-cap-seconds", type=int, default=600)
     parser.add_argument("--recovery-ledger", type=Path); parser.add_argument("--recovery-historical-ledger", type=Path); parser.add_argument("--recovery-historical-sha256"); parser.add_argument("--recovery-deployment-id")

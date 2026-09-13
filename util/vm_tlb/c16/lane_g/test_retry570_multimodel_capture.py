@@ -22,6 +22,10 @@ class MultimodelFormalCaptureTests(unittest.TestCase):
         for token in ("C16_EXACT_ROOT_FUNCTION_ONLY", "C16_USE_NVBIT_STATIC_INDEX", "INSTR_BEGIN", "DYNAMIC_KERNEL_RANGE", "index != 101", "index == 34"):
             self.assertIn(token, SOURCE)
 
+    def test_decode_target_is_independent_from_largeindex_prefill_target(self) -> None:
+        for token in ("TARGET_ROLES", "DECODE_INDEX_TARGET", "indexSelectSmallIndex", "index != 17", "every actual frozen decode forward"):
+            self.assertIn(token, SOURCE)
+
     def test_frozen_workload_executes_all_decode_steps(self) -> None:
         for token in ("range(1, 4)", "len(generated) != 4", "S5_COMPLETE_DECODE", "phase_trace_summary", "logical_decode_coverage", "DECODE4", "cudaProfilerStart failed for DECODE"):
             self.assertIn(token, SOURCE)
