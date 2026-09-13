@@ -41,6 +41,8 @@ PROGRESS_RECEIPT = Path(
     "/workspace/c16_assets/c16-a/download_logs/"
     "C16_QWEN3_30B_A3B_PROGRESS.json"
 )
+RUNTIME_ROOT = PROGRESS_RECEIPT.parent
+IMMUTABLE_RECEIPT_ROOT = RUNTIME_ROOT / "immutable_verified_receipts" / DEPLOYMENT_ID
 
 
 class DiskPause(RuntimeError):
@@ -92,6 +94,48 @@ def frozen_shards(manifest: Path) -> list[dict[str, str]]:
     return shards
 
 
+def immutable_receipt_path(row: dict[str, str]) -> Path:
+    return IMMUTABLE_RECEIPT_ROOT / f"{row['asset_path']}.json"
+
+
+def receipt_matches(row: dict[str, str], final: Path) -> bool:
+    value = immutable_receipt_path(row)
+    try:
+        item = json.loads(value.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return (
+        item.get("status") == "IMMUTABLE_VERIFIED"
+        and item.get("source_revision") == REVISION
+        and item.get("asset_path") == row["asset_path"]
+        and item.get("expected_size_bytes") == int(row["size_bytes"])
+        and item.get("local_path") == str(final)
+        and final.is_file()
+        and final.stat().st_size == int(row["size_bytes"])
+    )
+
+
+def write_immutable_receipt(row: dict[str, str], final: Path, sha256: str) -> None:
+    atomic_json(
+        immutable_receipt_path(row),
+        {
+            "schema_version": "C16_IMMUTABLE_VERIFIED_CHECKPOINT_RECEIPT_V1",
+            "status": "IMMUTABLE_VERIFIED",
+            "verified_at_utc": now(),
+            "verification_method": "complete_byte_count_then_single_whole_file_sha256",
+            "deployment_id": DEPLOYMENT_ID,
+            "source_repo": MODEL_ID,
+            "source_revision": REVISION,
+            "tokenizer_revision": REVISION,
+            "asset_path": row["asset_path"],
+            "local_path": str(final),
+            "expected_size_bytes": int(row["size_bytes"]),
+            "sha256": sha256,
+            "execution_boundary": "CPU_DISK_HASH_ONLY_NO_GPU_PROFILER_NVBIT_SIMULATOR_SASS_OR_FULL_ROI",
+        },
+    )
+
+
 def receipt(shards: list[dict[str, str]], state: str, detail: str) -> None:
     verified: list[dict[str, str | int]] = []
     incomplete: list[dict[str, str | int]] = []
@@ -99,18 +143,17 @@ def receipt(shards: list[dict[str, str]], state: str, detail: str) -> None:
         final = MODEL_ROOT / row["asset_path"]
         temporary = final.with_name(final.name + ".incomplete")
         expected_size = int(row["size_bytes"])
-        if final.is_file() and final.stat().st_size == expected_size:
-            actual_sha256 = sha256_file(final)
-            if actual_sha256 == row["sha256"]:
-                verified.append(
-                    {
-                        "asset_path": row["asset_path"],
-                        "size_bytes": expected_size,
-                        "sha256": actual_sha256,
-                        "local_path": str(final),
-                    }
-                )
-                continue
+        if receipt_matches(row, final):
+            verified.append(
+                {
+                    "asset_path": row["asset_path"],
+                    "size_bytes": expected_size,
+                    "sha256": row["sha256"],
+                    "local_path": str(final),
+                    "immutable_receipt_path": str(immutable_receipt_path(row)),
+                }
+            )
+            continue
         if temporary.is_file():
             incomplete.append(
                 {
@@ -141,6 +184,7 @@ def receipt(shards: list[dict[str, str]], state: str, detail: str) -> None:
             "verified_shard_total_bytes": sum(int(row["size_bytes"]) for row in verified),
             "verified_shards": verified,
             "incomplete_files_are_not_assets": True,
+            "immutable_receipt_rule": "previously closed shards are consumed by receipt+stat without rereading whole-file SHA-256",
             "incomplete_shards": incomplete,
         },
     )
@@ -148,6 +192,8 @@ def receipt(shards: list[dict[str, str]], state: str, detail: str) -> None:
 
 def verify_existing(row: dict[str, str]) -> bool:
     final = MODEL_ROOT / row["asset_path"]
+    if receipt_matches(row, final):
+        return True
     if not final.exists():
         return False
     expected_size = int(row["size_bytes"])
@@ -156,6 +202,7 @@ def verify_existing(row: dict[str, str]) -> bool:
     actual_sha256 = sha256_file(final)
     if actual_sha256 != row["sha256"]:
         raise RuntimeError(f"refusing to replace SHA-mismatched final path: {final}")
+    write_immutable_receipt(row, final, actual_sha256)
     return True
 
 
@@ -197,15 +244,30 @@ def download_one(row: dict[str, str]) -> None:
         receipt(frozen_shards(MANIFEST), "REJECTED_SHA256_MISMATCH", row["asset_path"])
         raise RuntimeError(f"whole-file SHA-256 mismatch; temporary remains unaccepted: {temporary}")
     os.replace(temporary, final)
+    write_immutable_receipt(row, final, actual_sha256)
 
 
 def main() -> int:
+    global MODEL_ROOT, PROGRESS_RECEIPT, RUNTIME_ROOT, IMMUTABLE_RECEIPT_ROOT
     parser = argparse.ArgumentParser()
     parser.add_argument("--check-start-guard", action="store_true")
     parser.add_argument("--run", action="store_true")
+    parser.add_argument("--model-root", type=Path, default=MODEL_ROOT)
+    parser.add_argument("--runtime-root", type=Path, default=RUNTIME_ROOT)
     args = parser.parse_args()
     if args.check_start_guard == args.run:
         parser.error("choose exactly one of --check-start-guard or --run")
+    MODEL_ROOT = args.model_root.resolve()
+    RUNTIME_ROOT = args.runtime_root.resolve()
+    PROGRESS_RECEIPT = RUNTIME_ROOT / "status" / "C16_QWEN3_30B_A3B_PROGRESS.json"
+    IMMUTABLE_RECEIPT_ROOT = RUNTIME_ROOT / "immutable_verified_receipts" / DEPLOYMENT_ID
+    MODEL_ROOT.mkdir(parents=True, exist_ok=True)
+    (RUNTIME_ROOT / "pids").mkdir(parents=True, exist_ok=True)
+    (RUNTIME_ROOT / "pids" / "c16_qwen3_30b_downloader.pid").write_text(f"{os.getpid()}\n", encoding="utf-8")
+    atomic_json(
+        RUNTIME_ROOT / "status" / "C16_QWEN3_30B_A3B_WORKER.json",
+        {"started_at_utc": now(), "pid": os.getpid(), "exact_command": sys.argv, "model_root": str(MODEL_ROOT), "runtime_root": str(RUNTIME_ROOT)},
+    )
     shards = frozen_shards(MANIFEST)
     available = free_bytes()
     if available < MIN_START_FREE_BYTES:
