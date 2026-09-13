@@ -79,6 +79,14 @@ class NvbitNativeStaticMapTests(unittest.TestCase):
             with self.assertRaises(ContractError):
                 target_receipt(path, MANGLED)
 
+    def test_explicit_exclusion_preserves_direct_map_selection(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "map.tsv"
+            write_map(path, [row(34, 0, 0, "LDG.E", "GLOBAL"), row(101, 1, 16, "LDG.E.U16", "GLOBAL")])
+            payload = target_receipt(path, MANGLED, excluded_static_indices={34})
+        self.assertEqual(payload["target_instruction"]["nvbit_static_index"], 101)
+        self.assertEqual(payload["excluded_static_indices"], [34])
+
 
 if __name__ == "__main__":
     unittest.main()

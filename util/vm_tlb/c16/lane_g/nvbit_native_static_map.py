@@ -139,18 +139,20 @@ def read_native_map(path: Path, expected_mangled_name: str) -> list[NativeInstru
     return mapped
 
 
-def select_memory_instruction(instructions: Iterable[NativeInstruction]) -> NativeInstruction:
+def select_memory_instruction(instructions: Iterable[NativeInstruction], *, excluded_static_indices: set[int] | None = None) -> NativeInstruction:
     """Choose deterministically from directly reported GLOBAL LDG/STG/ATOM rows."""
-    candidates = [instruction for instruction in instructions if instruction.is_targetable_global_memory()]
+    excluded = excluded_static_indices or set()
+    candidates = [instruction for instruction in instructions if instruction.is_targetable_global_memory() and instruction.nvbit_static_index not in excluded]
     if not candidates:
         raise ContractError("NVBit-native map has no directly evidenced GLOBAL LDG/STG/ATOM instruction")
     priority = {"LDG": 0, "STG": 1, "ATOM": 2}
     return min(candidates, key=lambda item: (priority[next(prefix for prefix in MEMORY_OPCODE_PREFIXES if item.opcode.startswith(prefix))], item.nvbit_static_index))
 
 
-def target_receipt(map_path: Path, expected_mangled_name: str) -> dict[str, object]:
+def target_receipt(map_path: Path, expected_mangled_name: str, *, excluded_static_indices: set[int] | None = None) -> dict[str, object]:
     instructions = read_native_map(map_path, expected_mangled_name)
-    target = select_memory_instruction(instructions)
+    excluded = excluded_static_indices or set()
+    target = select_memory_instruction(instructions, excluded_static_indices=excluded)
     return {
         "schema_version": "C16_G_RETRY570_NVBIT_NATIVE_MEMORY_TARGET_V1",
         "status": "NVBIT_NATIVE_STATIC_INDEX_SELECTED",
@@ -180,6 +182,7 @@ def target_receipt(map_path: Path, expected_mangled_name: str) -> dict[str, obje
             "348": "HISTORICAL_CANDIDATE_ORDINAL_NOT_USED_AS_NVBIT_INDEX",
             "34": "SASS_TEXT_LINE_COUNTER_NOT_USED_AS_NVBIT_INDEX",
         },
+        "excluded_static_indices": sorted(excluded),
     }
 
 
@@ -188,8 +191,11 @@ def main() -> None:
     parser.add_argument("--map", type=Path, required=True)
     parser.add_argument("--exact-mangled-function", required=True)
     parser.add_argument("--target-receipt", type=Path, required=True)
+    parser.add_argument("--exclude-static-index", type=int, action="append", default=[])
     args = parser.parse_args()
-    atomic_json(args.target_receipt, target_receipt(args.map, args.exact_mangled_function))
+    if any(index < 0 for index in args.exclude_static_index):
+        parser.error("--exclude-static-index must be nonnegative")
+    atomic_json(args.target_receipt, target_receipt(args.map, args.exact_mangled_function, excluded_static_indices=set(args.exclude_static_index)))
     print(f"PASS NVBit-native static target: {args.target_receipt}")
 
 
