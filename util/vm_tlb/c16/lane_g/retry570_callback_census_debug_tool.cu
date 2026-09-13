@@ -21,6 +21,7 @@ __attribute__((used)) static NvbitLinkAnchor const c16_nvbit_link_anchor = &nvbi
 // This map is defined by NVBit's precompiled core (its archive retains the
 // string ``nvbit.cpp`` but no DWARF source lines).  The declaration exists
 // only for debug type information; this tool neither reads nor writes it.
+class Function;
 using NvbitElfModuleMap = std::unordered_map<std::string, std::vector<Function*>>;
 extern NvbitElfModuleMap elfModuleHashMap;
 __attribute__((used)) static NvbitElfModuleMap* const c16_debug_elf_module_map = &elfModuleHashMap;
