@@ -32,3 +32,9 @@ def test_inside_bulk_root(tmp_path: Path):
     root = tmp_path / "bulk"; root.mkdir()
     assert module.inside(root / "models" / "m", root)
     assert not module.inside(tmp_path / "elsewhere", root)
+
+
+def test_fetch_source_declares_resume_as_explicit_opt_in():
+    source = PATH.read_text(encoding="utf-8")
+    assert "--resume-partial" in source
+    assert "without --resume-partial" in source

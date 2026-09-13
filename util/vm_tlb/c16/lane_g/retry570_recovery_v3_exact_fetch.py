@@ -91,11 +91,17 @@ def main() -> None:
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--receipt", type=Path, required=True)
     parser.add_argument("--allow-network", action="store_true", required=True)
+    parser.add_argument("--resume-partial", action="store_true",
+                        help="resume only an unqualified local_dir from this exact immutable fetch")
     args = parser.parse_args()
     if not valid_sha256(args.expected_config_sha256) or len(args.revision) != 40:
         raise ContractError("exact fetch requires SHA256 config and 40-hex immutable revision")
-    if args.destination.exists() or args.receipt.exists():
-        raise ContractError("exact fetch refuses to overwrite retained destination or receipt")
+    if args.receipt.exists():
+        raise ContractError("exact fetch refuses to overwrite a retained receipt")
+    if args.destination.exists() and not args.resume_partial:
+        raise ContractError("exact fetch refuses to overwrite an existing destination without --resume-partial")
+    if args.resume_partial and not args.destination.is_dir():
+        raise ContractError("--resume-partial requires the retained unqualified local_dir")
     if not inside(args.destination, args.bulk_root) or not inside(args.receipt, args.bulk_root):
         raise ContractError("Recovery-V3 asset payloads and receipts must be below the declared bulk root")
     args.destination.mkdir(parents=True)
