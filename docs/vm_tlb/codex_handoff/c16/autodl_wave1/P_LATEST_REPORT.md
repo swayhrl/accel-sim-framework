@@ -88,3 +88,21 @@ batch, or offload substitution and create zero rows.
 P now runs a separate bounded C selector-freeze observer alongside the G event
 watcher. The observer is read-only and records only a new immutable C head and
 candidate freeze closure; it cannot apply a selector or consume an AWQ payload.
+
+## G3 NVBit terminal auxiliary check
+
+Status: `C16_P_P3_NVBIT_AUXILIARY_CAPABILITY_LIMITED_NO_MODEL_TRACE`.
+
+P consumed only the hash/schema/transport metadata at G commit
+`0d1af3d353a11c48f3b666c8ae28c32652f39c89`. The [auxiliary receipt](../../../review_packs/C16_P_NATIVE_POSTPROCESS/P3_NVBIT_CANARY_AUXILIARY_RECEIPT.json)
+has SHA-256 `586d23cc7a6a348e5394d3ca2c5e0551b1824e26fdea0c07e3bfc9261c78dcb0`.
+All five immutable publication payloads passed size/SHA closure, with zero
+remote-only required artifacts. The sole fixed model target failed before a
+model trace/header existed: model raw-trace files and bytes are both zero;
+remaining targets are explicitly `NOT_EXECUTED_CAPABILITY_LIMITED`, without
+target/shape/context/offload substitution.
+
+P did not read a trace payload, infer operator/layer semantics, or perform a
+memory fingerprint. There is no Lane-H real-model-trace input in this terminal
+package. P remains ready to perform transport/hash/schema-only validation if a
+future actual tiny NVBit model-trace canary is published.
