@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -63,24 +64,45 @@ def model_rows(commit: str, package_id: str, expected_manifest_sha256: str) -> t
     return match.groupdict(), rows, authority_path
 
 
+def copy_from_closed_source(source_dir: Path, destination: Path, rows: list[dict[str, Any]]) -> None:
+    """Verify then copy an existing package without mutating its source."""
+    if not source_dir.is_dir():
+        raise ContractError("local asset reuse source directory is absent")
+    for row in rows:
+        source = source_dir / row["filename"]
+        if not source.is_file() or source.stat().st_size != row["size_bytes"] or sha256_file(source) != row["sha256"]:
+            raise ContractError(f"existing source fails immutable size/SHA closure: {row['filename']}")
+    for row in rows:
+        shutil.copy2(source_dir / row["filename"], destination / row["filename"])
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--package-commit", required=True); parser.add_argument("--package-id", required=True); parser.add_argument("--package-manifest-sha256", required=True)
-    parser.add_argument("--destination", type=Path, required=True); parser.add_argument("--receipt", type=Path, required=True); parser.add_argument("--allow-network", action="store_true")
+    parser.add_argument("--destination", type=Path, required=True); parser.add_argument("--receipt", type=Path, required=True)
+    acquisition = parser.add_mutually_exclusive_group(required=True)
+    acquisition.add_argument("--allow-network", action="store_true")
+    acquisition.add_argument("--copy-from", type=Path)
     args = parser.parse_args()
-    if not args.allow_network:
-        raise ContractError("network retrieval requires explicit --allow-network after identity closure")
     if args.destination.exists() or args.receipt.exists():
         raise ContractError("asset recovery refuses to overwrite a retained package/receipt")
     identity, rows, manifest_path = model_rows(args.package_commit, args.package_id, args.package_manifest_sha256)
-    try:
-        from huggingface_hub import hf_hub_download
-    except ImportError as exc:
-        raise ContractError("hash-closed runtime lacks huggingface_hub for authorized asset retrieval") from exc
     args.destination.mkdir(parents=True)
     try:
-        for row in rows:
-            hf_hub_download(repo_id=identity["model"], filename=row["filename"], revision=identity["revision"], local_dir=str(args.destination), local_dir_use_symlinks=False)
+        if args.copy_from is not None:
+            # Never move, relink, or delete an existing source package. Verify
+            # every immutable file first, then make an independent bulk-root
+            # copy and close its SHA256 again.
+            copy_from_closed_source(args.copy_from, args.destination, rows)
+            acquisition_source: dict[str, Any] = {"kind": "NONDESTRUCTIVE_LOCAL_COPY", "source_directory": str(args.copy_from), "source_files_size_sha256_closed": True}
+        else:
+            try:
+                from huggingface_hub import hf_hub_download
+            except ImportError as exc:
+                raise ContractError("hash-closed runtime lacks huggingface_hub for authorized asset retrieval") from exc
+            for row in rows:
+                hf_hub_download(repo_id=identity["model"], filename=row["filename"], revision=identity["revision"], local_dir=str(args.destination), local_dir_use_symlinks=False)
+            acquisition_source = {"kind": "EXACT_IMMUTABLE_NETWORK_FETCH", "network_retrieval_authorized_after_exact_identity_closure": True}
         closed: list[dict[str, Any]] = []
         for row in rows:
             path = args.destination / row["filename"]
@@ -91,7 +113,7 @@ def main() -> None:
         # Retain the dedicated partial directory as diagnostic evidence; it is
         # never repurposed as a qualified asset package.
         raise
-    atomic_json(args.receipt, {"schema_version": SCHEMA, "status": "HASH_CLOSED_PACKAGE_RECOVERED", "scientific_eligible": False, "network_retrieval_authorized_after_exact_identity_closure": True, "package": {"id": args.package_id, "commit": args.package_commit, "manifest_path": manifest_path, "manifest_sha256": args.package_manifest_sha256}, "identity": identity, "payloads": closed, "destination": str(args.destination), "all_payloads_size_sha256_closed": True})
+    atomic_json(args.receipt, {"schema_version": SCHEMA, "status": "HASH_CLOSED_PACKAGE_RECOVERED", "scientific_eligible": False, "acquisition_source": acquisition_source, "package": {"id": args.package_id, "commit": args.package_commit, "manifest_path": manifest_path, "manifest_sha256": args.package_manifest_sha256}, "identity": identity, "payloads": closed, "destination": str(args.destination), "all_payloads_size_sha256_closed": True})
     print("PASS HASH_CLOSED_PACKAGE_RECOVERED")
 
 
