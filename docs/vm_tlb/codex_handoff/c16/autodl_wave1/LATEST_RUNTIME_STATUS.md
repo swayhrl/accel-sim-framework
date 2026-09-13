@@ -1,6 +1,6 @@
 # C16-G Wave-1 runtime status
 
-Status: `C16_G_NATIVE_EVENT_PUBLICATION_READY_FOR_P`
+Status: `C16_AUTODL_SAFE_TO_POWER_OFF`
 Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 `9938b59ab80e6d1c77cc1efa6f6980e4cdfac5bc`.
 
@@ -130,6 +130,32 @@ The four still-retained remote reports were read only for size/SHA confirmation
 at closeout. The other four had already been reclaimed after prior local SHA
 closure; their transfer receipts preserve that historical state and do not
 pretend a new remote hash was possible.
+
+## AutoDL power-off gate
+
+`C16_AUTODL_SAFE_TO_POWER_OFF` is now published in
+[AUTODL_POWER_OFF_GATE_RECEIPT.json](AUTODL_POWER_OFF_GATE_RECEIPT.json).
+All 14 scientifically required or diagnostically retained raw artifacts have
+local size/SHA closure; all 10 still-present remote `.nsys-rep` copies also
+match those local SHA-closed identities. `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT`
+is `0`, `GPU_PENDING_AUTHORIZED_WORK` is `0`, and
+`ACTIVE_GPU_PROCESS_COUNT` is `0`. The eight remote SQLite exports are
+explicitly non-required, reproducible validation derivatives, not unique raw
+inputs.
+
+The event publish checkpoint `e3d49cea…` (manifest SHA256
+`ade888dab5aac6aa3090df7e7aec9395b6f5a1699ca56e02461f19d95d2d1ebc`)
+is confirmed pushed. It includes all event, transfer, validation and fixed
+remote-Nsight-version receipts.
+
+The read-only C remote recheck at `72a3b3f85b1a6a59ec9120527138d2c46a2680cf`
+found `native_catalog_consumed=false` and only historical
+`PENDING_NATIVE_CATALOG` / `NOT_A_NATIVE_CAPTURE_TARGET` rows in its
+hash-closed NVBit target plan. It is not a legal fixed G2/G3 target, so G2/G3
+remain `BLOCKED_PENDING_C_FIXED_TARGET` and no GPU work is authorized. The
+final handoff HEAD is the commit that contains this gate receipt; it is distinct
+from both the event publisher implementation anchor and the historic runtime
+producer commits.
 
 The returned `.nsys-rep` artifacts, including the retained semantic diagnostic
 raw, are indexed by immutable
