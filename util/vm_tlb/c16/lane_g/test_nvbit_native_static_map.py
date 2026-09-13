@@ -23,8 +23,10 @@ def row(index: int, ordinal: int, offset: int, opcode: str, space: str, *, mangl
         "instruction_offset": str(offset), "opcode": opcode, "memory_space": space,
         "is_load": "1" if opcode.startswith("LDG") else "0",
         "is_store": "1" if opcode.startswith("STG") else "0",
+        "has_mref": "1" if opcode.startswith(("LDG", "STG", "ATOM")) else "0",
         "sass": f"{opcode} R0, [R2]", "function_full_name": "indexSelectLargeIndex",
         "function_mangled_name": mangled, "function_address": "0x1234",
+        "libtorch_cuda_sha256": "a" * 64,
     }
 
 
@@ -58,6 +60,24 @@ class NvbitNativeStaticMapTests(unittest.TestCase):
             write_map(path, [row(3, 1, 0, "LDG.E", "GLOBAL")])
             with self.assertRaises(ContractError):
                 read_native_map(path, MANGLED)
+
+    def test_rejects_map_without_closed_libtorch_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "map.tsv"
+            malformed = row(3, 0, 0, "LDG.E", "GLOBAL")
+            malformed["libtorch_cuda_sha256"] = "not-a-sha"
+            write_map(path, [malformed])
+            with self.assertRaises(ContractError):
+                read_native_map(path, MANGLED)
+
+    def test_does_not_select_global_opcode_without_nvbit_mref(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "map.tsv"
+            non_mref = row(3, 0, 0, "LDG.E", "GLOBAL")
+            non_mref["has_mref"] = "0"
+            write_map(path, [non_mref])
+            with self.assertRaises(ContractError):
+                target_receipt(path, MANGLED)
 
 
 if __name__ == "__main__":

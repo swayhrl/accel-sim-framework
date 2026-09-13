@@ -98,6 +98,20 @@ class ModelQualificationTests(unittest.TestCase):
                     trace_marker=None, kernel_catalog_glob=None,
                 )
 
+    def test_noop_control_closes_tool_identity_without_trace_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = trace_evidence(
+                raw_dir=root, mode="NVBIT_NOOP_CONTROL", trace_glob=None,
+                trace_marker=None, kernel_catalog_glob=None,
+            )
+            self.assertFalse(result["required"])
+            with self.assertRaises(ContractError):
+                trace_evidence(
+                    raw_dir=root, mode="NVBIT_NOOP_CONTROL", trace_glob="stdout.log",
+                    trace_marker=None, kernel_catalog_glob=None,
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

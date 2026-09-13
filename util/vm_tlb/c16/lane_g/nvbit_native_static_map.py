@@ -26,10 +26,12 @@ MAP_FIELDS = (
     "memory_space",
     "is_load",
     "is_store",
+    "has_mref",
     "sass",
     "function_full_name",
     "function_mangled_name",
     "function_address",
+    "libtorch_cuda_sha256",
 )
 MEMORY_OPCODE_PREFIXES = ("LDG", "STG", "ATOM")
 
@@ -43,15 +45,18 @@ class NativeInstruction:
     memory_space: str
     is_load: bool
     is_store: bool
+    has_mref: bool
     sass: str
     function_full_name: str
     function_mangled_name: str
     function_address: str
+    libtorch_cuda_sha256: str
 
     def is_targetable_global_memory(self) -> bool:
         return (
             self.memory_space == "GLOBAL"
             and self.opcode.startswith(MEMORY_OPCODE_PREFIXES)
+            and self.has_mref
             and bool(self.sass.strip())
         )
 
@@ -89,6 +94,7 @@ def read_native_map(path: Path, expected_mangled_name: str) -> list[NativeInstru
     indices: set[int] = set()
     vector_ordinals: set[int] = set()
     addresses: set[str] = set()
+    code_object_hashes: set[str] = set()
     for row in rows:
         if set(row) != set(MAP_FIELDS) or any(row[field] is None for field in MAP_FIELDS):
             raise ContractError("NVBit-native map row is malformed")
@@ -102,23 +108,32 @@ def read_native_map(path: Path, expected_mangled_name: str) -> list[NativeInstru
             memory_space=row["memory_space"],
             is_load=_as_bool(row["is_load"], "is_load"),
             is_store=_as_bool(row["is_store"], "is_store"),
+            has_mref=_as_bool(row["has_mref"], "has_mref"),
             sass=row["sass"],
             function_full_name=row["function_full_name"],
             function_mangled_name=row["function_mangled_name"],
             function_address=row["function_address"],
+            libtorch_cuda_sha256=row["libtorch_cuda_sha256"],
         )
         if not instruction.opcode or not instruction.sass or not instruction.function_full_name:
             raise ContractError("NVBit-native map lacks direct instruction/function evidence")
         if not instruction.function_address:
             raise ContractError("NVBit-native map lacks the loaded function address")
+        if len(instruction.libtorch_cuda_sha256) != 64 or any(
+            character not in "0123456789abcdef" for character in instruction.libtorch_cuda_sha256
+        ):
+            raise ContractError("NVBit-native map lacks an exact libtorch_cuda SHA256")
         if instruction.nvbit_static_index in indices or instruction.vector_ordinal in vector_ordinals:
             raise ContractError("NVBit-native map has duplicate static/vector indices")
         indices.add(instruction.nvbit_static_index)
         vector_ordinals.add(instruction.vector_ordinal)
         addresses.add(instruction.function_address)
+        code_object_hashes.add(instruction.libtorch_cuda_sha256)
         mapped.append(instruction)
     if len(addresses) != 1:
         raise ContractError("NVBit-native map spans multiple loaded function addresses")
+    if len(code_object_hashes) != 1:
+        raise ContractError("NVBit-native map spans multiple libtorch_cuda code identities")
     if sorted(vector_ordinals) != list(range(len(mapped))):
         raise ContractError("NVBit-native map vector ordinals are not contiguous from zero")
     return mapped
@@ -148,6 +163,7 @@ def target_receipt(map_path: Path, expected_mangled_name: str) -> dict[str, obje
             "mangled_name": target.function_mangled_name,
             "loaded_function_address": target.function_address,
             "static_instruction_count": len(instructions),
+            "libtorch_cuda_sha256": target.libtorch_cuda_sha256,
         },
         "target_instruction": {
             "nvbit_static_index": target.nvbit_static_index,
@@ -157,6 +173,7 @@ def target_receipt(map_path: Path, expected_mangled_name: str) -> dict[str, obje
             "memory_space": target.memory_space,
             "is_load": target.is_load,
             "is_store": target.is_store,
+            "has_mref": target.has_mref,
             "sass": target.sass,
         },
         "historical_candidates": {

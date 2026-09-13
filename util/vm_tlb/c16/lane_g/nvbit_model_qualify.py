@@ -39,6 +39,7 @@ MODES = {
     "C16_MEMORY_TRACER",
     "NVBIT_STATIC_MAP",
     "TARGETED_MEMORY_TRACE",
+    "NVBIT_NOOP_CONTROL",
 }
 TRACE_CONFIGURATION_ENVIRONMENT = (
     "INSTR_BEGIN", "INSTR_END", "DYNAMIC_KERNEL_RANGE", "ACTIVE_FROM_START",
@@ -109,6 +110,18 @@ def trace_evidence(
         if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, target_instruction_receipt)):
             raise ContractError("baseline qualification cannot declare NVBit trace evidence")
         return {"required": False, "records": [], "kernel_catalogs": [], "configuration": {}}
+    if mode == "NVBIT_NOOP_CONTROL":
+        if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, target_instruction_receipt)):
+            raise ContractError("NVBit-NOOP control cannot declare trace, map, or target evidence")
+        # A NOOP tool intentionally has no data payload.  Its terminal marker
+        # is retained by the external bounded launcher with stdout/stderr; the
+        # receipt closes the tool identity and frozen model/output binding.
+        return {
+            "required": False,
+            "records": [],
+            "kernel_catalogs": [],
+            "configuration": {name: os.environ.get(name, "UNSET") for name in TRACE_CONFIGURATION_ENVIRONMENT},
+        }
     if mode == "NVBIT_STATIC_MAP":
         if trace_glob is not None or trace_marker is not None or kernel_catalog_glob is not None or target_instruction_receipt is not None:
             raise ContractError("NVBit-static-map mode accepts only a native static-map payload")

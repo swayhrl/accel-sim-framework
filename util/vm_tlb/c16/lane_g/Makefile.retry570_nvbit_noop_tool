@@ -1,0 +1,24 @@
+NVBIT_HOME ?=
+NVCC ?= nvcc
+ARCH ?= sm_86
+OUT ?= retry570_nvbit_noop_tool.so
+
+ifeq ($(strip $(NVBIT_HOME)),)
+$(error NVBIT_HOME must identify the hash-closed NVBit 1.8 release root)
+endif
+
+NVCC_LIB = -L $(subst bin/nvcc,lib64,$(shell which $(NVCC) | tr -s /))
+INCLUDES = -I$(NVBIT_HOME)/core
+LIBS = -L$(NVBIT_HOME)/core -lnvbit $(NVCC_LIB) -lcuda -lcudart_static -ldl -lrt -lpthread
+OBJECTS = retry570_nvbit_noop_tool.o
+
+all: $(OUT)
+
+$(OUT): $(OBJECTS) $(NVBIT_HOME)/core/libnvbit.a
+	$(NVCC) -arch=$(ARCH) -O3 $(OBJECTS) $(LIBS) -shared -o $@
+
+retry570_nvbit_noop_tool.o: retry570_nvbit_noop_tool.cu
+	$(NVCC) -std=c++17 -D_FORCE_INLINES -Xcompiler -fPIC -arch=$(ARCH) -O3 $(INCLUDES) -c $< -o $@
+
+clean:
+	rm -f $(OUT) $(OBJECTS)

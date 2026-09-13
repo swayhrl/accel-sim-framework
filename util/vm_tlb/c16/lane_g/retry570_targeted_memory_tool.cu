@@ -5,6 +5,9 @@
 // supplied) instruments one directly evidenced GLOBAL LDG/STG/ATOM Instr*.
 
 #include <assert.h>
+#include <atomic>
+#include <cctype>
+#include <cstring>
 #include <pthread.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -16,7 +19,6 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 #include "nvbit.h"
@@ -37,11 +39,20 @@ struct ContextState {
 };
 
 static pthread_mutex_t mutex;
-static bool skip_callback = false;
+// ``mutex`` protects the only slow/side-effecting path: target-function map
+// construction and instrumentation.  It is deliberately *not* acquired for
+// generic CUDA API callbacks or cache-confirmed non-target launches.
+static std::atomic<bool> skip_callback{false};
 static std::unordered_map<CUcontext, ContextState*> contexts;
-static std::unordered_set<CUfunction> instrumented_functions;
+enum class FunctionClassification { TARGET, NON_TARGET };
+// A separate reader/writer lock protects cache construction.  A CUDA launch
+// that is already known not to be the exact function takes only a shared,
+// O(1) lookup and returns; non-launch callbacks take no lock at all.
+static pthread_rwlock_t classification_lock;
+static std::unordered_map<CUfunction, FunctionClassification> function_classification;
 static std::string target_function_mangled;
 static std::string map_path;
+static std::string code_object_sha256;
 static bool trace_enabled = false;
 static uint32_t target_static_index = 0;
 
@@ -54,6 +65,19 @@ static void require_environment() {
     }
     target_function_mangled = function;
     map_path = path;
+    const char* code_object = getenv("C16_NVBIT_CODE_OBJECT_SHA256");
+    if (code_object == nullptr || strlen(code_object) != 64) {
+        fprintf(stderr, "C16_TARGETED_NVBIT_CONFIG_ERROR missing libtorch_cuda SHA256\n");
+        abort();
+    }
+    for (size_t index = 0; index < 64; ++index) {
+        if (!(isdigit(static_cast<unsigned char>(code_object[index])) ||
+              (code_object[index] >= 'a' && code_object[index] <= 'f'))) {
+            fprintf(stderr, "C16_TARGETED_NVBIT_CONFIG_ERROR malformed libtorch_cuda SHA256\n");
+            abort();
+        }
+    }
+    code_object_sha256 = code_object;
     const char* index = getenv("C16_NVBIT_TARGET_INSTR_INDEX");
     if (index != nullptr && index[0] != '\0') {
         char* end = nullptr;
@@ -75,22 +99,46 @@ static std::string tsv_escape(const char* value) {
     return escaped;
 }
 
-static bool exact_target_function(CUcontext context, CUfunction function) {
-    return target_function_mangled == std::string(nvbit_get_func_name(context, function, true));
+static FunctionClassification classify_function(CUcontext context, CUfunction function) {
+    // Cache hits do not do a mangled-name lookup and do not touch the target
+    // instrumentation mutex.  The rwlock is needed because NVBit may dispatch
+    // callbacks concurrently while an unseen CUfunction is being classified.
+    pthread_rwlock_rdlock(&classification_lock);
+    auto cached = function_classification.find(function);
+    if (cached != function_classification.end()) {
+        FunctionClassification result = cached->second;
+        pthread_rwlock_unlock(&classification_lock);
+        return result;
+    }
+    pthread_rwlock_unlock(&classification_lock);
+
+    // One new CUfunction performs at most one direct, full-mangled lookup.
+    const std::string observed = nvbit_get_func_name(context, function, true);
+    const FunctionClassification computed = observed == target_function_mangled
+        ? FunctionClassification::TARGET : FunctionClassification::NON_TARGET;
+    pthread_rwlock_wrlock(&classification_lock);
+    auto inserted = function_classification.emplace(function, computed);
+    FunctionClassification result = inserted.first->second;
+    pthread_rwlock_unlock(&classification_lock);
+    return result;
 }
 
 static const char* memory_space_name(InstrType::MemorySpace space) {
     return InstrType::MemorySpaceStr[static_cast<int>(space)];
 }
 
-static bool direct_global_memory_instruction(Instr* instruction) {
-    std::string opcode(instruction->getOpcode());
-    bool recognised = opcode.rfind("LDG", 0) == 0 || opcode.rfind("STG", 0) == 0 || opcode.rfind("ATOM", 0) == 0;
-    if (!recognised || instruction->getMemorySpace() != InstrType::MemorySpace::GLOBAL) return false;
+static bool has_memory_reference_operand(Instr* instruction) {
     for (int index = 0; index < instruction->getNumOperands(); ++index) {
         if (instruction->getOperand(index)->type == InstrType::OperandType::MREF) return true;
     }
     return false;
+}
+
+static bool direct_global_memory_instruction(Instr* instruction) {
+    std::string opcode(instruction->getOpcode());
+    bool recognised = opcode.rfind("LDG", 0) == 0 || opcode.rfind("STG", 0) == 0 || opcode.rfind("ATOM", 0) == 0;
+    if (!recognised || instruction->getMemorySpace() != InstrType::MemorySpace::GLOBAL) return false;
+    return has_memory_reference_operand(instruction);
 }
 
 static void emit_native_map(CUcontext context, CUfunction function, ContextState* state) {
@@ -102,7 +150,7 @@ static void emit_native_map(CUcontext context, CUfunction function, ContextState
         fprintf(stderr, "C16_NVBIT_STATIC_MAP_ERROR unable to create map\n");
         return;
     }
-    output << "nvbit_static_index\tvector_ordinal\tinstruction_offset\topcode\tmemory_space\tis_load\tis_store\tsass\tfunction_full_name\tfunction_mangled_name\tfunction_address\n";
+    output << "nvbit_static_index\tvector_ordinal\tinstruction_offset\topcode\tmemory_space\tis_load\tis_store\thas_mref\tsass\tfunction_full_name\tfunction_mangled_name\tfunction_address\tlibtorch_cuda_sha256\n";
     const std::string full_name = tsv_escape(nvbit_get_func_name(context, function));
     const std::string mangled_name = tsv_escape(nvbit_get_func_name(context, function, true));
     std::ostringstream address;
@@ -113,8 +161,9 @@ static void emit_native_map(CUcontext context, CUfunction function, ContextState
                << tsv_escape(instruction->getOpcode()) << '\t'
                << memory_space_name(instruction->getMemorySpace()) << '\t'
                << (instruction->isLoad() ? 1 : 0) << '\t' << (instruction->isStore() ? 1 : 0) << '\t'
+               << (has_memory_reference_operand(instruction) ? 1 : 0) << '\t'
                << tsv_escape(instruction->getSass()) << '\t' << full_name << '\t' << mangled_name << '\t'
-               << address.str() << '\n';
+               << address.str() << '\t' << code_object_sha256 << '\n';
     }
     output.close();
     if (!output.good() || rename(temporary.c_str(), map_path.c_str()) != 0) {
@@ -181,6 +230,7 @@ void nvbit_at_init() {
     pthread_mutexattr_init(&attributes);
     pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&mutex, &attributes);
+    pthread_rwlock_init(&classification_lock, nullptr);
     printf("C16_NVBIT_TARGETED_TOOL_READY trace_enabled=%d exact_function=%s\n", trace_enabled ? 1 : 0, target_function_mangled.c_str());
     fflush(stdout);
 }
@@ -207,17 +257,21 @@ void nvbit_tool_init(CUcontext context) {
 
 void nvbit_at_cuda_event(CUcontext context, int is_exit, nvbit_api_cuda_t callback,
                          const char*, void* parameters, CUresult*) {
-    pthread_mutex_lock(&mutex);
-    if (skip_callback || contexts.find(context) == contexts.end()) {
-        pthread_mutex_unlock(&mutex);
-        return;
-    }
+    if (skip_callback.load(std::memory_order_relaxed)) return;
     CUfunction function = nullptr;
-    if (!extract_launch_function(callback, parameters, &function) || function == nullptr || !exact_target_function(context, function)) {
+    // Non-launch callbacks never acquire the target mutex or ask NVBit for a
+    // function name.  This is the fast-path boundary for full-model runs.
+    if (!extract_launch_function(callback, parameters, &function) || function == nullptr) return;
+    if (classify_function(context, function) != FunctionClassification::TARGET) return;
+
+    // Only the one exact, full-mangled target reaches instrumentation state.
+    pthread_mutex_lock(&mutex);
+    auto found = contexts.find(context);
+    if (found == contexts.end()) {
         pthread_mutex_unlock(&mutex);
         return;
     }
-    ContextState* state = contexts[context];
+    ContextState* state = found->second;
     if (!is_exit) {
         emit_native_map(context, function, state);
         instrument_exact_instruction(context, function, state);
@@ -236,9 +290,9 @@ void nvbit_at_cuda_event(CUcontext context, int is_exit, nvbit_api_cuda_t callba
             fflush(stdout);
         }
     } else if (trace_enabled && state->target_instrumented) {
-        skip_callback = true;
+        skip_callback.store(true, std::memory_order_relaxed);
         CUDA_SAFECALL(cudaDeviceSynchronize());
-        skip_callback = false;
+        skip_callback.store(false, std::memory_order_relaxed);
         printf("C16_TARGETED_NVBIT_MEMORY_RECORD function_mangled=%s present=%u address=0x%llx launch_id=%llu nvbit_static_index=%u\n",
                nvbit_get_func_name(context, function, true), state->record->present,
                state->record->address, state->record->launch_id, state->record->static_index);
