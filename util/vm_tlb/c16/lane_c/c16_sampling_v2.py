@@ -396,12 +396,23 @@ def medoid_select(group: list[dict[str, Any]], n: int) -> list[dict[str, Any]]:
     vectors = feature_vectors(ordered)
     centroid = [statistics.fmean(vector[index] for vector in vectors.values()) for index in range(len(next(iter(vectors.values()))))]
     chosen = [min(ordered, key=lambda item: (squared_distance(vectors[item["unit_id"]], centroid), item["unit_id"]))]
+    # Maintain each candidate's nearest chosen distance.  Recomputing that
+    # minimum from all prior medoids made a legitimate full-census stratum
+    # accidentally quadratic in its requested medoid count.
+    nearest = {item["unit_id"]: squared_distance(vectors[item["unit_id"]], vectors[chosen[0]["unit_id"]]) for item in ordered}
     while len(chosen) < n:
         candidates = [item for item in ordered if item not in chosen]
-        chosen.append(max(candidates, key=lambda item: (min(squared_distance(vectors[item["unit_id"]], vectors[picked["unit_id"]]) for picked in chosen),
-                                                          item["unit_id"])))
+        picked = max(candidates, key=lambda item: (nearest[item["unit_id"]], item["unit_id"]))
+        chosen.append(picked)
+        for candidate in candidates:
+            key = candidate["unit_id"]
+            nearest[key] = min(nearest[key], squared_distance(vectors[key], vectors[picked["unit_id"]]))
     # One deterministic assignment/medoid refinement makes the representatives
-    # genuine medoids without importing a numerical package.
+    # genuine medoids without importing a numerical package.  For squared
+    # Euclidean distance, the member minimizing sum ||x-y||^2 is exactly the
+    # actual member nearest to the cluster centroid.  This preserves the
+    # medoid definition while avoiding an O(cluster_size^2) pairwise loop on a
+    # 722k-launch native stratum.
     for _ in range(3):
         clusters: dict[str, list[dict[str, Any]]] = {item["unit_id"]: [] for item in chosen}
         for item in ordered:
@@ -417,7 +428,9 @@ def medoid_select(group: list[dict[str, Any]], n: int) -> list[dict[str, Any]]:
             if not members:
                 refined.append(owner)
             else:
-                refined.append(min(members, key=lambda candidate: (sum(squared_distance(vectors[candidate["unit_id"]], vectors[other["unit_id"]]) for other in members),
+                member_centroid = [statistics.fmean(vectors[member["unit_id"]][index] for member in members)
+                                   for index in range(len(next(iter(vectors.values()))))]
+                refined.append(min(members, key=lambda candidate: (squared_distance(vectors[candidate["unit_id"]], member_centroid),
                                                                      candidate["unit_id"])))
         if {item["unit_id"] for item in refined} == {item["unit_id"] for item in chosen}:
             break
