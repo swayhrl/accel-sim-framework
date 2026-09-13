@@ -12,27 +12,34 @@ separate user-managed Qwen3-30B-A3B download is
 `EXCLUDED_BY_USER_CURRENT_CAMPAIGN` and is neither inspected nor counted.
 
 Current Recovery-V3 local publication source checkpoint:
-`03c29dd6c81c2d43cc5c7b257a94900c06352df3`.  The GPU runtime workspace that
-produced the newly materialized frozen binding is
-`9ee736709e8557bee3ec4accb7a11a8958f1ef5d`; a later formal run will bind its
+`b61e3981b573666caf760a1ffe8c29718d69225d`.  The GPU runtime workspace that
+produced retained runtime evidence is
+`44981e72c39b317529ee98995dfd478283830623`; a later formal run will bind its
 actual runtime source explicitly rather than inferring it from this
 publication checkpoint.
 The local bulk root is `/root/share/c16_recovery_v3`; recovery payloads are
 not staged in `/workspace` or the constrained root filesystem.
 
-The V9 source inventory is materialized as
-`/root/share/c16_recovery_v3/receipts/ASSET_CONSOLIDATION_RECEIPT.json`
-(SHA256 `823e14cdd7f2108c2a2979405644c9bc82320147753ee4ee937470af1d3e8e4d`).
-It records only non-destructive source use: Qwen0.5 is already under the
-bulk root; Qwen7 raw and AWQ were independently source-to-destination
-SHA-closed; Qwen3-8B is an in-progress exact fetch rather than a closed
-asset; and the user-managed Qwen3-30B-A3B path was not inspected.  The
-retained remote P0 Llama package is an exact 2,480,783,284-byte source but
-has not yet been copied back to the bulk root, deliberately avoiding a second
-large transfer while P2 is active.  DeepSeek's local C16 candidate is only
+The authoritative V9 source inventory is now
+`/root/share/c16_recovery_v3/receipts/ASSET_CONSOLIDATION_RECEIPT_V3.json`
+(SHA256 `e616de31b1a6ea54dcf7a20452331bf2cc50b91dba49a2d112d5523425f7c886`).
+It records only non-destructive source use: Llama P0 is source-to-destination
+file-count/bytes/SHA-closed under the bulk root; Qwen0.5 and Qwen3-8B are
+already hash-closed under that root; Qwen7 raw and AWQ are independently
+source-to-destination SHA-closed.  The user-managed Qwen3-30B-A3B path was
+not inspected and remains excluded.  DeepSeek's local C16 candidate is only
 metadata/tokenizer material, not a complete model; its exact runtime-input
 closure remains required.  GLM remains identity-unresolved rather than being
 guessed from an unrelated local cache ref.
+
+The Llama asset receipt is
+`/root/share/c16_recovery_v3/receipts/R1_LLAMA3P2_1B_ASSET_RECEIPT.json`
+(SHA256 `7694c95442cc7ff1d3fc8ed1104d5c0d6a50c3a17f779f402ef90669edeb7b47`):
+all six model/tokenizer/config payloads total 2,480,783,094 bytes and match
+the retained P0 source receipt.  This changes storage/provenance only.  It
+does not reopen the separate immutable legacy NVBit ledger: Llama's six
+historical NVBit windows remain consumed, so no new Llama G3 capture is
+authorized through that ledger.
 
 - Qwen2.5-0.5B-Instruct at
   `Qwen/Qwen2.5-0.5B-Instruct@7ae557604adf67be50417f59c2c2f167def9a775`
@@ -72,8 +79,9 @@ guessed from an unrelated local cache ref.
   [`R2_QWEN2P5_7B_RAW_PACKAGE_BINDING_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/R2_QWEN2P5_7B_RAW_PACKAGE_BINDING_RECEIPT.json).
   This is an R2 provenance closure only: no Qwen7 raw model execution,
   baseline, census, target selection, or trace was run.
-- Qwen3-8B exact-revision fetch remains in progress under `/root/share` and
-  is outside every measurement window; it is not yet a closed runnable asset.
+- Qwen3-8B exact-revision payloads are fully hash-closed under `/root/share`.
+  It remains outside every measurement window until its separate C16 runtime
+  input and resource-admission contracts are closed.
 
 The next authorized GPU work is Qwen0.5 R3 after this compact R2 publication
 and a fresh formal-window preflight.  Qwen7 raw remains at R2 until its own
@@ -136,9 +144,9 @@ V9 asset consolidation V2 is stored outside Git under
 Qwen3-8B is now `ALREADY_UNDER_BULK_ROOT` with full payload size/SHA closure.
 The separate Qwen3-30B-A3B user-managed tree remains
 `EXCLUDED_BY_USER_CURRENT_CAMPAIGN`: it was not inspected, moved, validated,
-or counted.  The retained exact P0 Llama source is being copied
-non-destructively into the fixed bulk root; it is not registered as closed
-until its destination file-count/bytes/SHA closure completes.
+or counted.  The retained exact P0 Llama source was copied non-destructively
+into the fixed bulk root and is now registered only after destination
+file-count/bytes/SHA closure completed.
 
 Qwen2.5-7B raw now also has the six non-S0 immutable frozen bindings
 materialized and remote-to-local SHA-closed: S1/CODE, S2/TEXT, S2/CODE,
