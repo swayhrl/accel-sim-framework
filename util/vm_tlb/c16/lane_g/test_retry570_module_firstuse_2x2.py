@@ -65,6 +65,7 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
     def test_debug_variant_declares_vendor_map_only_for_gdb_type_information(self) -> None:
         self.assertIn("extern NvbitElfModuleMap elfModuleHashMap", DEBUG_TOOL)
         self.assertIn("neither reads nor writes it", DEBUG_TOOL)
+        self.assertNotIn("c16_debug_elf_module_map", DEBUG_TOOL)
         self.assertIn("-Xcompiler=-g,-Og", BUILD)
         self.assertIn("thread apply all bt full", SOURCE)
         self.assertIn("elfModuleHashMap.size()", SOURCE)

@@ -24,7 +24,6 @@ __attribute__((used)) static NvbitLinkAnchor const c16_nvbit_link_anchor = &nvbi
 class Function;
 using NvbitElfModuleMap = std::unordered_map<std::string, std::vector<Function*>>;
 extern NvbitElfModuleMap elfModuleHashMap;
-__attribute__((used)) static NvbitElfModuleMap* const c16_debug_elf_module_map = &elfModuleHashMap;
 
 static std::atomic<unsigned long long> callback_sequence{0};
 
