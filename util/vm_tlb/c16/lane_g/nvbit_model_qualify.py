@@ -38,6 +38,7 @@ MODES = {
     "OFFICIAL_MEM_TRACE",
     "C16_MEMORY_TRACER",
     "NVBIT_STATIC_MAP",
+    "NVBIT_LAUNCH_INVENTORY",
     "TARGETED_MEMORY_TRACE",
     "NVBIT_NOOP_CONTROL",
 }
@@ -46,6 +47,7 @@ TRACE_CONFIGURATION_ENVIRONMENT = (
     "TERMINATE_UPON_LIMIT", "TRACE_FILE_COMPRESS", "TOOL_COMPRESS", "TRACES_FOLDER",
     "C16_NVBIT_TARGET_FUNCTION_MANGLED", "C16_NVBIT_TARGET_INSTR_INDEX",
     "C16_NVBIT_STATIC_MAP_PATH",
+    "C16_NVBIT_LAUNCH_INVENTORY_PATH",
 )
 
 
@@ -98,6 +100,7 @@ def trace_evidence(
     trace_marker: str | None,
     kernel_catalog_glob: str | None,
     static_map_path: Path | None = None,
+    launch_inventory_path: Path | None = None,
     target_instruction_receipt: Path | None = None,
 ) -> dict[str, Any]:
     """Close real trace evidence without treating a launcher banner as data.
@@ -107,11 +110,11 @@ def trace_evidence(
     no kernel-name, timing, or frozen-C-target claim.
     """
     if mode == "BASELINE":
-        if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, target_instruction_receipt)):
+        if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, launch_inventory_path, target_instruction_receipt)):
             raise ContractError("baseline qualification cannot declare NVBit trace evidence")
         return {"required": False, "records": [], "kernel_catalogs": [], "configuration": {}}
     if mode == "NVBIT_NOOP_CONTROL":
-        if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, target_instruction_receipt)):
+        if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, launch_inventory_path, target_instruction_receipt)):
             raise ContractError("NVBit-NOOP control cannot declare trace, map, or target evidence")
         # A NOOP tool intentionally has no data payload.  Its terminal marker
         # is retained by the external bounded launcher with stdout/stderr; the
@@ -123,7 +126,7 @@ def trace_evidence(
             "configuration": {name: os.environ.get(name, "UNSET") for name in TRACE_CONFIGURATION_ENVIRONMENT},
         }
     if mode == "NVBIT_STATIC_MAP":
-        if trace_glob is not None or trace_marker is not None or kernel_catalog_glob is not None or target_instruction_receipt is not None:
+        if trace_glob is not None or trace_marker is not None or kernel_catalog_glob is not None or launch_inventory_path is not None or target_instruction_receipt is not None:
             raise ContractError("NVBit-static-map mode accepts only a native static-map payload")
         if static_map_path is None or not static_map_path.is_file() or static_map_path.stat().st_size == 0:
             raise ContractError("NVBit-static-map mode emitted no nonzero native static-map payload")
@@ -137,6 +140,31 @@ def trace_evidence(
                 "path": str(static_map_path.relative_to(raw_dir)),
                 "size_bytes": static_map_path.stat().st_size,
                 "sha256": sha256_file(static_map_path),
+            }],
+            "kernel_catalogs": [],
+            "configuration": {name: os.environ.get(name, "UNSET") for name in TRACE_CONFIGURATION_ENVIRONMENT},
+        }
+    if mode == "NVBIT_LAUNCH_INVENTORY":
+        if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, target_instruction_receipt)):
+            raise ContractError("NVBit-launch-inventory mode accepts only its direct launch inventory payload")
+        if launch_inventory_path is None or not launch_inventory_path.is_file() or launch_inventory_path.stat().st_size == 0:
+            raise ContractError("NVBit-launch-inventory mode emitted no nonzero direct launch inventory")
+        try:
+            launch_inventory_path.resolve().relative_to(raw_dir.resolve())
+        except ValueError as exc:
+            raise ContractError("NVBit launch inventory must be inside the declared raw directory") from exc
+        if os.environ.get("C16_NVBIT_LAUNCH_INVENTORY_PATH") != str(launch_inventory_path):
+            raise ContractError("NVBit launch inventory environment path differs from its declared payload")
+        lines = launch_inventory_path.read_text(encoding="utf-8", errors="strict").splitlines()
+        if len(lines) < 2 or not lines[0].startswith("global_launch_ordinal\tfunction_full_name\tfunction_mangled_name"):
+            raise ContractError("NVBit launch inventory lacks a direct function-identity header and records")
+        return {
+            "required": True,
+            "records": [{
+                "path": str(launch_inventory_path.relative_to(raw_dir)),
+                "size_bytes": launch_inventory_path.stat().st_size,
+                "sha256": sha256_file(launch_inventory_path),
+                "record_count": len(lines) - 1,
             }],
             "kernel_catalogs": [],
             "configuration": {name: os.environ.get(name, "UNSET") for name in TRACE_CONFIGURATION_ENVIRONMENT},
@@ -294,6 +322,7 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, tool: dict[str, s
         trace_marker=args.trace_evidence_marker,
         kernel_catalog_glob=args.kernel_catalog_glob,
         static_map_path=args.static_map_path,
+        launch_inventory_path=args.launch_inventory_path,
         target_instruction_receipt=args.target_instruction_receipt,
     )
     return {
@@ -356,6 +385,7 @@ def main() -> None:
     parser.add_argument("--trace-evidence-marker")
     parser.add_argument("--kernel-catalog-glob")
     parser.add_argument("--static-map-path", type=Path)
+    parser.add_argument("--launch-inventory-path", type=Path)
     parser.add_argument("--target-instruction-receipt", type=Path)
     parser.add_argument("--adapter", required=True)
     parser.add_argument("--implementation-key", required=True)

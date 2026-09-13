@@ -112,6 +112,32 @@ class ModelQualificationTests(unittest.TestCase):
                     trace_marker=None, kernel_catalog_glob=None,
                 )
 
+    def test_launch_inventory_requires_direct_in_raw_payload_and_matching_environment(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory = root / "launch_inventory.tsv"
+            inventory.write_text(
+                "global_launch_ordinal\tfunction_full_name\tfunction_mangled_name\n"
+                "1\texact full\texact mangled\n",
+                encoding="utf-8",
+            )
+            previous = os.environ.get("C16_NVBIT_LAUNCH_INVENTORY_PATH")
+            self.addCleanup(
+                lambda: os.environ.pop("C16_NVBIT_LAUNCH_INVENTORY_PATH", None)
+                if previous is None else os.environ.__setitem__("C16_NVBIT_LAUNCH_INVENTORY_PATH", previous)
+            )
+            os.environ["C16_NVBIT_LAUNCH_INVENTORY_PATH"] = str(inventory)
+            result = trace_evidence(
+                raw_dir=root, mode="NVBIT_LAUNCH_INVENTORY", trace_glob=None,
+                trace_marker=None, kernel_catalog_glob=None, launch_inventory_path=inventory,
+            )
+            self.assertEqual(result["records"][0]["record_count"], 1)
+            with self.assertRaises(ContractError):
+                trace_evidence(
+                    raw_dir=root, mode="NVBIT_LAUNCH_INVENTORY", trace_glob="unexpected",
+                    trace_marker=None, kernel_catalog_glob=None, launch_inventory_path=inventory,
+                )
+
 
 if __name__ == "__main__":
     unittest.main()
