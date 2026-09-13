@@ -56,6 +56,11 @@ def main() -> None:
         materialized.append(validate_payload(row, destination))
     metadata_root = args.output_root / "package_metadata"
     for name, data in metadata.items(): atomic_bytes(metadata_root / name, data)
+    # validate_metadata has already SHA-verified this package authority, but
+    # intentionally returns generic metadata separately.  The downstream
+    # frozen-binding contract needs the unique package JSON at the same root.
+    atomic_bytes(metadata_root / identity["package_manifest"],
+                 git_blob(args.package_commit, f"{args.package_dir}/{identity['package_manifest']}"))
     atomic_json(args.receipt, {"schema_version": SCHEMA, "status": "MODEL_AND_INPUT_CONTRACT_HASH_CLOSED",
                                "scientific_eligible": False, "package": {"id": identity["package_id"], "commit": args.package_commit,
                                "manifest_sha256": args.package_manifest_sha256, "package_dir": args.package_dir},

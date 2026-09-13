@@ -13,5 +13,6 @@ def test_package_inputs_never_duplicate_model_weights():
 def test_package_inputs_reuses_fixed_package_validator():
     assert "validate_metadata(args.package_commit, args.package_dir, args.package_manifest_sha256)" in SOURCE
     assert "git_blob(args.package_commit" in SOURCE
+    assert 'metadata_root / identity["package_manifest"]' in SOURCE
     assert 'package_contract["model_revision"]' in SOURCE
     assert "asset receipt revision differs from fixed package identity" in SOURCE
