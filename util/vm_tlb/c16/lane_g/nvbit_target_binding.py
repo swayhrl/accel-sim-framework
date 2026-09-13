@@ -178,8 +178,8 @@ def bind(arguments: argparse.Namespace) -> dict[str, Any]:
         "semantic_evidence": "C_FIXED_SELECTOR_R_B48_STRUCTURAL_ORDINAL_REPLAY_PENDING_ACTUAL_NVBIT_TRACE",
         "identity": identity, "runtime": runtime,
     }
-    if tuple(target) != TARGET_FIELDS:
-        raise ContractError("generated target does not satisfy frozen target field order")
+    if any(field not in target for field in TARGET_FIELDS) or not isinstance(target["identity"], dict) or not isinstance(target["runtime"], dict):
+        raise ContractError("generated target does not satisfy the profiler target identity contract")
     receipt = {
         "schema_version": "C16_G3_NVBIT_TARGET_BINDING_V1",
         "status": "TARGET_IDENTITY_STRUCTURAL_ORDINAL_REPLAY_PENDING_ACTUAL_NVBIT_TRACE",

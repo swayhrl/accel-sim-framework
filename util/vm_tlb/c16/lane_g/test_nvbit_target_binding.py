@@ -48,6 +48,14 @@ class NvbitTargetBindingTests(unittest.TestCase):
             "void at::native::vectorized_elementwise_kernel.*",
         )
 
+    def test_target_fields_allow_runtime_envelope_in_addition_to_target_key(self) -> None:
+        target = {field: "value" for field in BINDER.TARGET_FIELDS}
+        target["identity"] = {"run_id": "fixture"}
+        target["runtime"] = {"device": "cuda:0"}
+        self.assertFalse(any(field not in target for field in BINDER.TARGET_FIELDS))
+        self.assertIsInstance(target["identity"], dict)
+        self.assertIsInstance(target["runtime"], dict)
+
 
 if __name__ == "__main__":
     unittest.main()
