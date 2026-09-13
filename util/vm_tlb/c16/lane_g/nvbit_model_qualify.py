@@ -394,6 +394,8 @@ def main() -> None:
     parser.add_argument("--expected-output-checksum")
     parser.add_argument("--expected-attention-backend")
     parser.add_argument("--runtime-code-commit", required=True)
+    parser.add_argument("--recovery-v3-generic", action="store_true",
+                        help="admit a non-S0 frozen Recovery-V3 binding; never changes its shape or identity")
     args = parser.parse_args()
     try:
         if str(uuid.UUID(args.run_id)) != args.run_id:
@@ -405,7 +407,12 @@ def main() -> None:
     code_commit = git_head()
     if args.runtime_code_commit != code_commit:
         raise ContractError("declared runtime code commit differs from the checked-out source")
-    binding = load_binding(args.binding_receipt, canary=True)
+    # Historic qualification is intentionally S0-only.  Recovery-V3 must
+    # explicitly opt into a non-S0 immutable binding; it never obtains that
+    # authority merely by choosing another mode or adapter.
+    binding = load_binding(args.binding_receipt, canary=not args.recovery_v3_generic)
+    if args.recovery_v3_generic and binding["scenario"]["scenario_id"] == "S0":
+        raise ContractError("Recovery-V3 generic qualification is reserved for non-S0 frozen scenario bindings")
     args.raw_dir.mkdir(parents=True, exist_ok=True)
     identity = runtime_identity(binding, args, code_commit)
     capture = args.mode != "BASELINE"

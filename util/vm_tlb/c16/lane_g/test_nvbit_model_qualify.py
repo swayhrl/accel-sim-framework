@@ -72,6 +72,12 @@ class ModelQualificationTests(unittest.TestCase):
         self.assertIn("cache_correct_decode", source)
         self.assertNotIn("model(input_ids=prompt, use_cache=False)", source)
 
+    def test_non_s0_recovery_requires_an_explicit_generic_gate(self) -> None:
+        source = (LANE / "nvbit_model_qualify.py").read_text(encoding="utf-8")
+        self.assertIn('parser.add_argument("--recovery-v3-generic", action="store_true"', source)
+        self.assertIn('load_binding(args.binding_receipt, canary=not args.recovery_v3_generic)', source)
+        self.assertIn('Recovery-V3 generic qualification is reserved for non-S0 frozen scenario bindings', source)
+
     def test_profile_requires_real_declared_evidence_and_c16_catalog(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
