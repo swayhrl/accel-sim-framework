@@ -14,6 +14,7 @@ from c16_native_common import ContractError, atomic_json
 
 SCHEMA = "C16_G_RETRY570_FULL_AUTHORITY_RECOVERY_V3_R0"
 HANDOFF_COMMIT = "919e0cfca2017dfa5c85cbfe15aac5b8244e08f1"
+V9_HANDOFF_COMMIT = "d9f2f7c331380acfec35f16e78fd3c47a47b94f2"
 BASE_CHECKPOINT = "2c52c7aa79e5dc131ffefa29bedf5b0018fcdac3"
 LLAMA_CHECKPOINT = "2e955e007bcabcd3ec24a5f9d24768d27caaee27"
 MIN_BULK_FREE_BYTES = 80 * 1024**3
@@ -66,9 +67,14 @@ def storage_receipt(bulk: Path) -> dict[str, Any]:
             "large_payload_policy": {"workspace": "COMPACT_METADATA_ONLY", "root_cache": "FORBIDDEN_FOR_RECOVERY_V3_LARGE_PAYLOADS", "bulk_root": "REQUIRED"}}
 
 
-def authority_rows() -> list[dict[str, str]]:
+def authority_rows(*, v9: bool = False) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for deployment, authority, wave, identity, scenarios in DEPLOYMENTS:
+        if v9 and deployment == "qwen3_30b_a3b":
+            rows.append({"deployment": deployment, "authority_role": authority, "wave": str(wave), "exact_identity": "USER_MANAGED_DOWNLOAD_UNDER_/root/share/huangrulin",
+                         "scenario": "NOT_APPLICABLE", "batch": "NA", "requested_input_tokens": "NA", "decode_steps": "NA", "scenario_role": "EXCLUDED_BY_USER_CURRENT_CAMPAIGN",
+                         "r0_status": "EXCLUDED_BY_USER_CURRENT_CAMPAIGN", "accepted_source_commit": "NA"})
+            continue
         for scenario in scenarios:
             batch, tokens, decode, role = SCENARIOS[scenario]
             state = "INHERITED_COMPLETE" if deployment == "llama_3p2_1b" and scenario == "S0" else "PENDING_R1_EXACT_IDENTITY_AND_ASSET"
@@ -78,11 +84,11 @@ def authority_rows() -> list[dict[str, str]]:
     return rows
 
 
-def write_matrix(path: Path) -> None:
+def write_matrix(path: Path, *, v9: bool) -> None:
     if path.exists():
         raise ContractError("R0 matrix refuses to overwrite retained evidence")
     path.parent.mkdir(parents=True, exist_ok=True)
-    rows = authority_rows()
+    rows = authority_rows(v9=v9)
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]), delimiter="\t")
         writer.writeheader(); writer.writerows(rows)
@@ -93,13 +99,14 @@ def main() -> None:
     parser.add_argument("--bulk-root", type=Path, required=True)
     parser.add_argument("--storage-receipt", type=Path, required=True)
     parser.add_argument("--authority-matrix", type=Path, required=True)
+    parser.add_argument("--v9", action="store_true", help="apply the user-authorized Qwen3-30B-A3B scope exclusion")
     args = parser.parse_args()
     if args.storage_receipt.exists():
         raise ContractError("storage receipt refuses to overwrite retained evidence")
     receipt = storage_receipt(args.bulk_root)
-    receipt.update({"handoff_commit": HANDOFF_COMMIT, "base_checkpoint": BASE_CHECKPOINT, "accepted_llama_s0_checkpoint": LLAMA_CHECKPOINT, "authority_row_count": len(authority_rows())})
+    receipt.update({"handoff_commit": V9_HANDOFF_COMMIT if args.v9 else HANDOFF_COMMIT, "base_checkpoint": BASE_CHECKPOINT, "accepted_llama_s0_checkpoint": LLAMA_CHECKPOINT, "authority_row_count": len(authority_rows(v9=args.v9)), "qwen3_30b_a3b_status": "EXCLUDED_BY_USER_CURRENT_CAMPAIGN" if args.v9 else "IN_SCOPE"})
     atomic_json(args.storage_receipt, receipt)
-    write_matrix(args.authority_matrix)
+    write_matrix(args.authority_matrix, v9=args.v9)
     print("PASS R0_AUTHORITY_AND_LOCAL_BULK_STORAGE")
 
 

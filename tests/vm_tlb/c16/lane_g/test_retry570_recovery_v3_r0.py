@@ -25,3 +25,10 @@ def test_qwen_raw_and_awq_are_distinct_deployments():
     raw = {row["exact_identity"] for row in rows if row["deployment"] == "qwen2p5_7b_instruct_raw"}
     awq = {row["exact_identity"] for row in rows if row["deployment"] == "qwen2p5_7b_instruct_awq"}
     assert raw != awq
+
+
+def test_v9_keeps_qwen3_30b_out_of_completion_scenarios():
+    rows = [row for row in module.authority_rows(v9=True) if row["deployment"] == "qwen3_30b_a3b"]
+    assert len(rows) == 1
+    assert rows[0]["r0_status"] == "EXCLUDED_BY_USER_CURRENT_CAMPAIGN"
+    assert rows[0]["scenario"] == "NOT_APPLICABLE"
