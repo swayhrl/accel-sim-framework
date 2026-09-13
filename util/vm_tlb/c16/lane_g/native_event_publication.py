@@ -13,7 +13,6 @@ import csv
 import hashlib
 import json
 import os
-import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -155,6 +154,8 @@ def source_events(spec_path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]
     spec = read_json(spec_path)
     if spec.get("schema_version") != "C16_G_NATIVE_EVENT_PUBLICATION_SOURCES_V1":
         raise ContractError("unsupported native-event source specification")
+    producer_branch = ensure_text(spec.get("producer_branch"), "producer_branch")
+    publication_source_anchor = ensure_text(spec.get("publication_source_anchor"), "publication_source_anchor")
     events = spec.get("events")
     if not isinstance(events, list) or not events:
         raise ContractError("source specification needs nonempty events")
@@ -198,7 +199,8 @@ def source_events(spec_path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]
             "source": event, "event_id": event_id, "profile_path": profile_path, "nsys_path": nsys_path,
             "profile": profile, "nsys": nsys, "identity": identity, "raw": raw, "local_raw": local_raw,
             "package": package, "validation": validation, "validation_path": validation_path,
-            "validation_status": validation_status,
+            "validation_status": validation_status, "producer_branch": producer_branch,
+            "publication_source_anchor": publication_source_anchor,
         })
     return spec, checked
 
@@ -309,9 +311,9 @@ def event_document(item: dict[str, Any], *, binding_rel: str, binding_sha: str, 
         "event_type": "P1_CLEAN_NATIVE_NSYS_REPORT",
         "event_id": item["event_id"],
         "producer": {
-            "branch": item["source"].get("producer_branch"),
+            "branch": item["producer_branch"],
             "full_g_producer_commit": identity["code_commit"],
-            "publication_materializer_source_anchor": item["source"].get("publication_source_anchor"),
+            "publication_materializer_source_anchor": item["publication_source_anchor"],
             "event_binding_manifest_path": binding_rel,
             "event_binding_manifest_sha256": binding_sha,
         },
@@ -505,6 +507,19 @@ def validate_publication(root: Path, spec_path: Path | None = None) -> list[dict
                 raise ContractError(f"event {row['event_id']} references missing publication receipt {rel}")
         if row["independent_export_validation_receipt_path"]:
             ensure_sha(row["independent_export_validation_receipt_sha256"], f"event {row['event_id']}.independent_export_validation")
+        event_document = root / "events" / f"{row['event_id']}.json"
+        document = read_json(event_document)
+        producer, identity, raw = document.get("producer"), document.get("identity"), document.get("raw_profile")
+        if not isinstance(producer, dict) or not isinstance(identity, dict) or not isinstance(raw, dict):
+            raise ContractError(f"event {row['event_id']} has malformed event document")
+        if producer.get("branch") != row["producer_branch"] or producer.get("full_g_producer_commit") != row["producer_full_commit"]:
+            raise ContractError(f"event {row['event_id']} producer document/table mismatch")
+        if producer.get("event_binding_manifest_sha256") != row["event_binding_manifest_sha256"]:
+            raise ContractError(f"event {row['event_id']} binding-manifest SHA mismatch")
+        if identity.get("run_id") != row["profile_run_id"] or identity.get("package_manifest_sha256") != row["package_manifest_sha256"]:
+            raise ContractError(f"event {row['event_id']} identity document/table mismatch")
+        if raw.get("local_sha256") != row["local_nsys_rep_sha256"] or raw.get("remote_sha256") != row["remote_nsys_rep_sha256"]:
+            raise ContractError(f"event {row['event_id']} raw SHA document/table mismatch")
     if spec_path is not None:
         source_events(spec_path)
     return entries
