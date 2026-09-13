@@ -153,7 +153,10 @@ def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, targe
                 process.wait()
             break
         time.sleep(1)
-    return process.returncode or 0, status, output_bytes(raw_dir), time.monotonic() - started
+    returncode = process.returncode or 0
+    if status == "COMPLETE" and returncode != 0:
+        status = "FAILED"
+    return returncode, status, output_bytes(raw_dir), time.monotonic() - started
 
 
 def run_command_guarded(command: list[str], max_seconds: float, environment: dict[str, str] | None = None, command_log: Path | None = None) -> tuple[int, str, float]:

@@ -9,7 +9,7 @@ from types import SimpleNamespace
 LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
-from profiler_wrapper import parse_args, plan_command  # noqa: E402
+from profiler_wrapper import parse_args, plan_command, run_nvbit_guarded  # noqa: E402
 
 
 class NcuTargetFilterTests(unittest.TestCase):
@@ -46,6 +46,22 @@ class NcuTargetFilterTests(unittest.TestCase):
             sys.argv = previous
         self.assertTrue(args.diagnostic_only)
         self.assertEqual(args.command, ["echo", "fixture"])
+
+    def test_nvbit_nonzero_child_is_not_complete(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / "target.json"
+            tool = root / "tool.so"
+            target.write_text("{}", encoding="utf-8")
+            tool.write_text("fixture", encoding="utf-8")
+            returncode, status, _bytes, _elapsed = run_nvbit_guarded(
+                [sys.executable, "-c", "raise SystemExit(7)"], root / "raw", tool, target,
+                max_raw_bytes=1024, max_seconds=10,
+            )
+        self.assertEqual(returncode, 7)
+        self.assertEqual(status, "FAILED")
 
 
 if __name__ == "__main__":
