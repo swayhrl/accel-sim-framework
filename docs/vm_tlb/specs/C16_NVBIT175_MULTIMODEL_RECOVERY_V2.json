@@ -1,0 +1,91 @@
+{
+  "schema_version": "c16-nvbit175-multimodel-recovery-v2",
+  "base_checkpoint": "556ab6ca39425cf1c7642db6f1327594309071b3",
+  "campaign_id": "c16_nvbit175_multimodel_recovery_v2",
+  "execution_order": [
+    "llama_3p2_1b",
+    "qwen_0p5",
+    "qwen_7b_awq",
+    "deepseek",
+    "glm"
+  ],
+  "runtime_lock": {
+    "gpu": "RTX3090",
+    "compute_capability": "SM86",
+    "driver": "570.124.04",
+    "cuda_toolkit": "12.4",
+    "pytorch": "2.5.1+cu124",
+    "nvbit": "1.7.5",
+    "effective_cuda_module_loading": "EAGER"
+  },
+  "budget_policy": {
+    "historical_ledger_rows_immutable": true,
+    "historical_llama_deployment": "c16_llama32_1b_frozen_compatible",
+    "new_scoped_deployments_required": true,
+    "max_nvbit_capture_windows_per_model_after_s2": 8,
+    "capture_windows_are_campaign_scoped": true
+  },
+  "llama_recovery": {
+    "reuse_if_hash_valid": ["S0", "S1", "S2"],
+    "resume_at": "S3",
+    "model_id": "meta-llama/Llama-3.2-1B",
+    "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "workload": "S0/B1/T128/Decode4/TEXT",
+    "target_function": "RECOVER_EXACT_FULL_MANGLED_IDENTITY_FROM_PRIOR_CLOSEOUT",
+    "static_range": [101, 102],
+    "opcode": "LDG.E.U16",
+    "historical_34_forbidden": true,
+    "historical_348_not_reused": true,
+    "required_phase_coverage": ["prefill", "decode1", "decode2", "decode3", "decode4"]
+  },
+  "asset_recovery_policy": {
+    "broad_metadata_roots": [
+      "/root/autodl-tmp",
+      "/root/autodl-fs",
+      "/root/.cache/huggingface",
+      "$HF_HOME",
+      "$TRANSFORMERS_CACHE",
+      "$HUGGINGFACE_HUB_CACHE",
+      "/workspace",
+      "/data"
+    ],
+    "search_repo_and_git_history": true,
+    "shell_history_forbidden": true,
+    "network_download_allowed_only_after_exact_identity_recovered": true,
+    "authoritative_exact_revision_required_for_download": true,
+    "variant_guessing_forbidden": true,
+    "silent_substitution_forbidden": true,
+    "dedicated_hash_closed_download_path_required": true
+  },
+  "models": {
+    "qwen_0p5": {
+      "deployment_id": "c16_nvbit175_recovery_qwen_0p5_v1",
+      "identity": "RECOVER_FROM_AUTHORITATIVE_PROJECT_EVIDENCE",
+      "status_initial": "RECOVERY_REQUIRED"
+    },
+    "qwen_7b_awq": {
+      "deployment_id": "c16_nvbit175_recovery_qwen_7b_awq_v1",
+      "identity": "RECOVER_FROM_AUTHORITATIVE_PROJECT_EVIDENCE",
+      "status_initial": "RECOVERY_REQUIRED"
+    },
+    "deepseek": {
+      "deployment_id": "c16_nvbit175_recovery_deepseek_v1",
+      "identity": "RECOVER_FROM_AUTHORITATIVE_PROJECT_EVIDENCE",
+      "status_initial": "RECOVERY_REQUIRED"
+    },
+    "glm": {
+      "deployment_id": "c16_nvbit175_recovery_glm_v1",
+      "identity": "RECOVER_FROM_AUTHORITATIVE_PROJECT_EVIDENCE",
+      "status_initial": "RECOVERY_REQUIRED"
+    }
+  },
+  "terminal_block_states": [
+    "BLOCKED_IDENTITY_UNRESOLVED_REQUIRES_USER",
+    "BLOCKED_ASSET_FETCH_AUTH_REQUIRED",
+    "BLOCKED_ASSET_FETCH_FAILED",
+    "BLOCKED_RUNTIME_WITH_FROZEN_IDENTITY",
+    "BLOCKED_TARGET_NOT_REQUALIFIED",
+    "BLOCKED_STORAGE_SAFETY",
+    "BLOCKED_GLOBAL_MEASUREMENT_INVARIANT"
+  ]
+}
