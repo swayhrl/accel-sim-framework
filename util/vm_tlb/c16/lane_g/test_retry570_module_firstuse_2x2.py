@@ -72,6 +72,7 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
         self.assertIn("thread apply all bt full", SOURCE)
         self.assertIn("$c16_elf_module_map->_M_h._M_element_count", SOURCE)
         self.assertIn("(NvbitElfModuleMap*) &elfModuleHashMap", SOURCE)
+        self.assertIn('"frame 1", "-ex", "info registers rdi rsi"', SOURCE)
         self.assertIn('"-p", str(pid)', SOURCE)
         self.assertIn('"maps": _run_text_safe', SOURCE)
 

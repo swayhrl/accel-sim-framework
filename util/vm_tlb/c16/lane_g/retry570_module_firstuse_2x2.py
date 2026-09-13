@@ -207,6 +207,13 @@ def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_el
                 "-ex", "p $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.first",
                 "-ex", "p $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.first.size()",
                 "-ex", "p $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.second._M_impl._M_finish - $c16_elf_module_map->_M_h._M_before_begin._M_nxt->_M_v.second._M_impl._M_start",
+                # The vendor core lacks argument DWARF.  At frame 1 (the
+                # observed `operator[]` caller of `_Hash_bytes`) rsi is its
+                # const std::string& key under the matched legacy ABI.  These
+                # commands only read stopped-process memory.
+                "-ex", "frame 1", "-ex", "info registers rdi rsi",
+                "-ex", "x/s *((char**)$rsi)",
+                "-ex", "p *(unsigned long long*)(*((char**)$rsi) - 24)",
             ))
         else:
             command.extend(("-ex", "thread apply all bt"))
