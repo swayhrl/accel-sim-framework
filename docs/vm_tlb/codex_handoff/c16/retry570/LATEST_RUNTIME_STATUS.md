@@ -1,6 +1,21 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_RETRY570_POST_RESIZE_REVALIDATED`.
+Status: `P0_MINIMAL_LLAMA_HASH_CLOSED_READY_FOR_MODEL_NVBIT_QUALIFICATION`.
+
+The post-resize node has now consumed the exact minimal immutable P0/Llama
+package subset.  P0 commit
+`20fb38e6ca629f1a93db7939248bd1a03790724c` and package manifest SHA256
+`ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f`
+are closed in [`retry570_p0_llama`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_p0_llama/).
+The frozen M1 S0/TEXT binding is exact B1/T128/decode4 and has no tokenizer
+execution or context resize.  All subsequent Llama diagnostic forwards bind
+runtime source commit `40faa7e933b881c1a48593f8eb03c59910b3ba75`.
+
+No Qwen payload has been transferred.  The next queued GPU operation is the
+single Llama S0 baseline (then, only if it exits normally, official NVBit1.8
+`mem_trace` and the C16 NVBit1.8 tracer).  These are
+`MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC` only, never native timing or C target
+results.
 
 The new-node observed identity is bound by
 [`C16_RETRY570_NODE_IDENTITY_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570/C16_RETRY570_NODE_IDENTITY_RECEIPT.json).
