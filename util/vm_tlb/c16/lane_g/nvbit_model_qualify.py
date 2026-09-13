@@ -31,6 +31,8 @@ from runtime_native_runner import (
     load_token_ids,
     load_runtime_model,
     smi_driver_version,
+    wrapper_measurement_marker,
+    wrapper_owned_budget,
 )
 
 
@@ -394,6 +396,8 @@ def main() -> None:
     parser.add_argument("--expected-output-checksum")
     parser.add_argument("--expected-attention-backend")
     parser.add_argument("--runtime-code-commit", required=True)
+    parser.add_argument("--parent-lease-receipt", type=Path,
+                        help="active wrapper lease; child verifies it and never acquires a second lease")
     parser.add_argument("--recovery-v3-generic", action="store_true",
                         help="admit a non-S0 frozen Recovery-V3 binding; never changes its shape or identity")
     args = parser.parse_args()
@@ -417,31 +421,57 @@ def main() -> None:
     identity = runtime_identity(binding, args, code_commit)
     capture = args.mode != "BASELINE"
     operation = "NVBIT" if capture else "MODEL_QUALIFICATION_BASELINE"
-    MeasurementActive.assert_available(args.budget_ledger)
-    with BudgetLease(args.budget_ledger, identity, operation, capture=capture) as lease:
-        with MeasurementActive(args.budget_ledger, identity, operation):
-            try:
-                tool = validate_tool_contract(
-                    args.mode, args.tool_path, args.tool_sha256,
-                    os.environ.get("C16_NVBIT_LD_PRELOAD_DECLARATION"),
-                )
-                receipt = execute(binding, args, tool, code_commit)
-                raw_bytes = raw_tree_bytes(args.raw_dir)
-                if capture and raw_bytes > lease.max_raw_bytes:
-                    raise ContractError("diagnostic model trace exceeds the active NVBit raw-byte ceiling")
-                lease.finish(
-                    elapsed_seconds=lease.elapsed_seconds(), raw_bytes=raw_bytes if capture else 0,
-                    terminal_status="COMPLETE", evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
-                    diagnostic_reason="MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC_ONLY",
-                )
-            except Exception:
-                raw_bytes = raw_tree_bytes(args.raw_dir)
-                lease.finish(
-                    elapsed_seconds=lease.elapsed_seconds(), raw_bytes=raw_bytes if capture else 0,
-                    terminal_status="FAILED_OR_ABORTED", evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
-                    diagnostic_reason="MODEL_NVBIT_QUALIFICATION_FAILURE",
-                )
-                raise
+    if args.parent_lease_receipt is not None:
+        # A profile wrapper may own the sole lease.  The receipt, nonce and
+        # advisory lock are all verified by wrapper_owned_budget; this is not
+        # an environment-only escape hatch for a standalone child.
+        lease, parent = wrapper_owned_budget(args, identity)
+        marker = wrapper_measurement_marker(args, identity)
+        try:
+            tool = validate_tool_contract(
+                args.mode, args.tool_path, args.tool_sha256,
+                os.environ.get("C16_NVBIT_LD_PRELOAD_DECLARATION"),
+            )
+            receipt = execute(binding, args, tool, code_commit)
+            if lease.expired():
+                raise ContractError("wrapper-owned diagnostic exceeded its active parent lease wall-time ceiling")
+            receipt["parent_lease"] = {
+                "start_receipt": str(args.parent_lease_receipt),
+                "sha256": sha256_file(args.parent_lease_receipt),
+                "parent_lease_id": parent["parent_lease_id"],
+                "child_acquired_second_lease": False,
+                "measurement_marker": str(marker),
+            }
+        except Exception:
+            # The parent owns the terminal ledger entry and raw-byte account.
+            # Do not manufacture a second child lease during failure cleanup.
+            raise
+    else:
+        MeasurementActive.assert_available(args.budget_ledger)
+        with BudgetLease(args.budget_ledger, identity, operation, capture=capture) as lease:
+            with MeasurementActive(args.budget_ledger, identity, operation):
+                try:
+                    tool = validate_tool_contract(
+                        args.mode, args.tool_path, args.tool_sha256,
+                        os.environ.get("C16_NVBIT_LD_PRELOAD_DECLARATION"),
+                    )
+                    receipt = execute(binding, args, tool, code_commit)
+                    raw_bytes = raw_tree_bytes(args.raw_dir)
+                    if capture and raw_bytes > lease.max_raw_bytes:
+                        raise ContractError("diagnostic model trace exceeds the active NVBit raw-byte ceiling")
+                    lease.finish(
+                        elapsed_seconds=lease.elapsed_seconds(), raw_bytes=raw_bytes if capture else 0,
+                        terminal_status="COMPLETE", evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
+                        diagnostic_reason="MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC_ONLY",
+                    )
+                except Exception:
+                    raw_bytes = raw_tree_bytes(args.raw_dir)
+                    lease.finish(
+                        elapsed_seconds=lease.elapsed_seconds(), raw_bytes=raw_bytes if capture else 0,
+                        terminal_status="FAILED_OR_ABORTED", evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
+                        diagnostic_reason="MODEL_NVBIT_QUALIFICATION_FAILURE",
+                    )
+                    raise
     atomic_json(args.receipt, receipt)
     print(f"PASS C16 model NVBit qualification: {args.receipt}")
 

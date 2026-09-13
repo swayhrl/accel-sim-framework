@@ -78,6 +78,13 @@ class ModelQualificationTests(unittest.TestCase):
         self.assertIn('load_binding(args.binding_receipt, canary=not args.recovery_v3_generic)', source)
         self.assertIn('Recovery-V3 generic qualification is reserved for non-S0 frozen scenario bindings', source)
 
+    def test_wrapper_owned_child_proves_parent_and_does_not_open_second_lease(self) -> None:
+        source = (LANE / "nvbit_model_qualify.py").read_text(encoding="utf-8")
+        self.assertIn('parser.add_argument("--parent-lease-receipt", type=Path', source)
+        self.assertIn("lease, parent = wrapper_owned_budget(args, identity)", source)
+        self.assertIn("marker = wrapper_measurement_marker(args, identity)", source)
+        self.assertIn('"child_acquired_second_lease": False', source)
+
     def test_profile_requires_real_declared_evidence_and_c16_catalog(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
