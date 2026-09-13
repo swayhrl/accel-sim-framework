@@ -94,8 +94,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.output_dir.exists():
         raise ContractError("closeout refuses to overwrite a retained publication")
-    if not valid_sha256(args.producer_code_commit):
-        raise ContractError("producer code commit must be an exact SHA256 Git object")
+    if len(args.producer_code_commit) != 40 or any(char not in "0123456789abcdef" for char in args.producer_code_commit):
+        raise ContractError("producer code commit must be an exact 40-hex Git object")
 
     llama_manifest, llama_manifest_sha = validate_manifest(args.llama_pack)
     llama_raw = load_json(args.llama_pack / "RAW_ARTIFACT_INDEX.json")
