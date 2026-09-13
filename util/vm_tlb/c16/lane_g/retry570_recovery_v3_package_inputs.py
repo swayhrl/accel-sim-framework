@@ -38,7 +38,13 @@ def main() -> None:
         raise ContractError("separate model asset has not completed immutable SHA256 closure")
     identity, metadata, package_rows = validate_metadata(args.package_commit, args.package_dir, args.package_manifest_sha256)
     model_identity = model.get("identity", {})
-    if model_identity.get("revision") != identity.get("model_revision"):
+    try:
+        package_contract = json.loads(metadata[identity["package_manifest"]])
+        package_revision = package_contract["model_revision"]
+        package_deployment = package_contract["deployment_id"]
+    except (KeyError, TypeError, json.JSONDecodeError) as exc:
+        raise ContractError("fixed package manifest lacks model revision/deployment identity") from exc
+    if model_identity.get("revision") != package_revision:
         raise ContractError("asset receipt revision differs from fixed package identity")
     args.output_root.mkdir(parents=True)
     materialized: list[dict[str, Any]] = []
@@ -53,6 +59,7 @@ def main() -> None:
     atomic_json(args.receipt, {"schema_version": SCHEMA, "status": "MODEL_AND_INPUT_CONTRACT_HASH_CLOSED",
                                "scientific_eligible": False, "package": {"id": identity["package_id"], "commit": args.package_commit,
                                "manifest_sha256": args.package_manifest_sha256, "package_dir": args.package_dir},
+                               "deployment_id": package_deployment,
                                "model_asset_receipt": {"path": str(args.model_asset_receipt), "sha256": sha256_file(args.model_asset_receipt)},
                                "model_identity": model_identity, "input_root": str(args.output_root),
                                "non_model_payload_count": len(materialized), "non_model_payloads": materialized,
