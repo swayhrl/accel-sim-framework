@@ -1,0 +1,109 @@
+{
+  "schema_version": "c16-full-authority-recovery-v3-matrix-v1",
+  "base_checkpoint": "2c52c7aa79e5dc131ffefa29bedf5b0018fcdac3",
+  "accepted_llama_s0_checkpoint": "2e955e007bcabcd3ec24a5f9d24768d27caaee27",
+  "runtime_default": {
+    "gpu": "RTX3090",
+    "compute_capability": "SM86",
+    "driver": "570.124.04",
+    "cuda": "12.4",
+    "pytorch": "2.5.1+cu124",
+    "nvbit": "1.7.5",
+    "effective_module_loading": "EAGER"
+  },
+  "scenarios": {
+    "S0": {"batch": 1, "input_tokens": 128, "decode_steps": 4, "role": "CANARY_ONLY"},
+    "S1": {"batch": 1, "input_tokens": 256, "decode_steps": 16, "role": "REQUIRED"},
+    "S2": {"batch": 1, "input_tokens": 2048, "decode_steps": 32, "role": "REQUIRED"},
+    "S3": {"batch": 1, "input_tokens": 8192, "decode_steps": 16, "role": "REQUIRED_DENSE_IF_FITS"},
+    "S4": {"batch": 4, "input_tokens": 2048, "decode_steps": 16, "role": "REQUIRED_DENSE_IF_FITS"}
+  },
+  "deployments": [
+    {
+      "key": "llama_3p2_1b",
+      "authority": "C16_AUTHORITATIVE",
+      "wave": 1,
+      "model_label": "Llama-3.2-1B",
+      "exact_identity": "meta-llama/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08",
+      "required_scenarios": ["S0", "S1", "S2", "S3", "S4"],
+      "inherited_complete": ["S0"],
+      "notes": "S0 target-qualified checkpoint inherited; do not rerun solely for symmetry."
+    },
+    {
+      "key": "qwen2p5_0p5b_instruct",
+      "authority": "C16_AUTHORITATIVE",
+      "wave": 1,
+      "model_label": "Qwen2.5-0.5B-Instruct",
+      "exact_identity": "Qwen/Qwen2.5-0.5B-Instruct@7ae557604adf67be50417f59c2c2f167def9a775",
+      "required_scenarios": ["S0", "S1", "S2", "S3", "S4"],
+      "inherited_complete": []
+    },
+    {
+      "key": "qwen2p5_7b_instruct_raw",
+      "authority": "C16_AUTHORITATIVE",
+      "wave": 1,
+      "model_label": "Qwen2.5-7B-Instruct raw",
+      "exact_identity": "RECOVER_EXACT_REVISION_FROM_C16_AUTHORITY",
+      "required_scenarios": ["S0", "S1", "S2", "S3", "S4"],
+      "inherited_complete": []
+    },
+    {
+      "key": "qwen2p5_7b_instruct_awq",
+      "authority": "C16_AUTHORITATIVE",
+      "wave": 1,
+      "model_label": "Qwen2.5-7B-Instruct-AWQ",
+      "exact_identity": "Qwen/Qwen2.5-7B-Instruct-AWQ@b25037543e9394b818fdfca67ab2a00ecc7dd641",
+      "required_scenarios": ["S0", "S1", "S2", "S3", "S4"],
+      "inherited_complete": []
+    },
+    {
+      "key": "qwen3_8b",
+      "authority": "C16_AUTHORITATIVE",
+      "wave": 2,
+      "model_label": "Qwen3-8B",
+      "exact_identity": "RECOVER_EXACT_REVISION_FROM_C16_AUTHORITY",
+      "required_scenarios": ["S0", "S1", "S2", "S3", "S4"],
+      "inherited_complete": []
+    },
+    {
+      "key": "qwen3_30b_a3b",
+      "authority": "C16_AUTHORITATIVE",
+      "wave": 2,
+      "model_label": "Qwen3-30B-A3B",
+      "exact_identity": "RECOVER_EXACT_REVISION_FROM_C16_AUTHORITY",
+      "required_scenarios": ["S1", "S2"],
+      "optional_if_stable": ["S0", "S3", "S4"],
+      "inherited_complete": []
+    },
+    {
+      "key": "deepseek_v2_lite",
+      "authority": "C16_AUTHORITATIVE",
+      "wave": 2,
+      "model_label": "DeepSeek-V2-Lite",
+      "exact_identity": "VERIFY_CANDIDATE_deepseek-ai/DeepSeek-V2-Lite@604d5664dddd88a0433dbae533b7fe9472482de0",
+      "required_scenarios": ["S1", "S2"],
+      "optional_if_stable": ["S0", "S3", "S4"],
+      "inherited_complete": []
+    },
+    {
+      "key": "glm_extension",
+      "authority": "USER_EXTENSION",
+      "wave": 3,
+      "model_label": "GLM historical project target",
+      "exact_identity": "RECOVER_FROM_PRIOR_PROJECT_TRACE_AND_METADATA",
+      "required_scenarios": ["S0", "S1", "S2"],
+      "optional_if_stable": ["S3", "S4"],
+      "inherited_complete": []
+    }
+  ],
+  "capture_policy": {
+    "one_gpu_capture_process": true,
+    "max_bytes_per_window": 4294967296,
+    "max_minutes_per_window": 20,
+    "rolling_copyback_required": true,
+    "raw_trace_in_git": false,
+    "remote_local_sha_closure_required": true,
+    "phase_specific_targets_allowed": true,
+    "cross_model_static_range_reuse_forbidden": true
+  }
+}
