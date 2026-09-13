@@ -21,6 +21,7 @@
 
 #include "nvbit.h"
 #include "nvbit_tool.h"
+#include "utils/utils.h"
 
 struct TargetRecord {
     unsigned int claimed;
