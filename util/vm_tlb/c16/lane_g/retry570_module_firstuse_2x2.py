@@ -355,9 +355,13 @@ def parent_main(args: argparse.Namespace) -> int:
                     remaining = list(SNAPSHOT_OFFSETS_SECONDS)
                     while process.poll() is None:
                         stage = _read_stage(args.stage_path)
-                        if stage and stage.get("event") in {"EXACT_TARGET_SUBMISSION_BEGIN", "BEFORE_TORCH_ARANGE_INDEX"}:
-                            if anchor_seen_at is None or stage["event"] == "EXACT_TARGET_SUBMISSION_BEGIN":
-                                anchor_seen_at, anchor_event = time.monotonic(), str(stage["event"])
+                        if stage and stage.get("event") == "EXACT_TARGET_SUBMISSION_BEGIN" and anchor_event != "EXACT_TARGET_SUBMISSION_BEGIN":
+                            # stage.json is intentionally the latest marker.  Once the
+                            # exact boundary is observed, do not reset its clock on
+                            # every polling iteration or snapshots never become due.
+                            anchor_seen_at, anchor_event = time.monotonic(), "EXACT_TARGET_SUBMISSION_BEGIN"
+                        elif stage and stage.get("event") == "BEFORE_TORCH_ARANGE_INDEX" and anchor_seen_at is None:
+                            anchor_seen_at, anchor_event = time.monotonic(), "BEFORE_TORCH_ARANGE_INDEX"
                         if anchor_seen_at is not None and remaining and time.monotonic() - anchor_seen_at >= remaining[0]:
                             ordinal = remaining.pop(0)
                             snapshots.append(_snapshot(process.pid, ordinal, args.snapshot_dir, anchor_event, time.monotonic() - anchor_seen_at, args.gdb_snapshots))

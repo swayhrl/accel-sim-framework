@@ -37,6 +37,8 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
             self.assertIn(marker, SOURCE)
         self.assertIn("PR_SET_PTRACER", SOURCE)
         self.assertIn("PTRACE_ATTACH_AUTHORIZED", SOURCE)
+        self.assertIn('anchor_event != "EXACT_TARGET_SUBMISSION_BEGIN"', SOURCE)
+        self.assertIn("do not reset its clock", SOURCE)
 
     def test_callback_timeline_pairs_library_calls_and_keeps_native_unobservable(self) -> None:
         with TemporaryDirectory() as temporary:
