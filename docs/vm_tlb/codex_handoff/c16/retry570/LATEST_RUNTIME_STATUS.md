@@ -98,6 +98,14 @@ The compact source/receipt/raw index is
 Two pre-census nsys setup attempts remain in the budget ledger as
 `NON_SCIENTIFIC` failures and are not included in the baseline or catalog.
 
+R4 is now frozen as `RECOVERY_V3_QWEN0_S0_G1_V1` (plan SHA256
+`96702cc3608c56c64e3b3ac1d81d28b241f8b10aa20a998f5adb911706702cb3`).
+It carries separate Prefill and Decode structural candidates selected solely
+by aggregate phase duration.  Both rows retain
+`PENDING_R5_NVBIT_NATIVE_MAP`: their nsys names/geometry are only second-pass
+keys, never a substitute for an exact live NVBit function identity or static
+instruction range.
+
 ## Final post-Llama multi-model dataset publication
 
 The authoritative compact publication is

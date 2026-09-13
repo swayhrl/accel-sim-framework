@@ -1,0 +1,35 @@
+{
+  "schema_version": "C16_G_RECOVERY_V3_R4_PUBLICATION_V1",
+  "status": "RECOVERY_V3_TARGET_PLAN_FROZEN_PENDING_R5",
+  "scientific_eligible": false,
+  "planner_source_commit": "5abe2ce50a0fdfb64896429527d0ae5249cfbc22",
+  "plan_id": "RECOVERY_V3_QWEN0_S0_G1_V1",
+  "plan_path": "/root/share/c16_recovery_v3/receipts/R4_QWEN2P5_0P5B_S0_TARGET_PLAN_V1/TARGET_PLAN.tsv",
+  "plan_sha256": "96702cc3608c56c64e3b3ac1d81d28b241f8b10aa20a998f5adb911706702cb3",
+  "plan_receipt_sha256": "9534de48b3242772ff5769537c996b23b81b6e7b6629ef24b6c3025d0ba33187",
+  "source_catalog_sha256": "7d9643ae8e60d56c2b7b74677b992a21431febda54474390476182870497e2f5",
+  "phase_targets": [
+    {
+      "phase": "PREFILL",
+      "kernel_name": "ampere_fp16_s16816gemm_fp16_128x64_ldg8_f2f_stages_32x6_tn",
+      "grid": "38x2x1",
+      "block": "128x1x1",
+      "aggregate_duration_ns": 5292571,
+      "source_launch_ordinal": 46
+    },
+    {
+      "phase": "DECODE",
+      "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_f16_s161616gemm_f16_32x32_128x2_tn_align8>(T1::Params)",
+      "grid": "8x19x1",
+      "block": "128x1x1",
+      "aggregate_duration_ns": 9714952,
+      "source_launch_ordinal": 1055
+    }
+  ],
+  "static_identity": {
+    "nvbit_exact_function_identity": "PENDING_R5_NVBIT_NATIVE_MAP",
+    "nvbit_static_instruction_range": "PENDING_R5_NVBIT_NATIVE_MAP",
+    "cross_model_static_range_reuse": "FORBIDDEN",
+    "kernel_name_only_capture": "FORBIDDEN"
+  }
+}
