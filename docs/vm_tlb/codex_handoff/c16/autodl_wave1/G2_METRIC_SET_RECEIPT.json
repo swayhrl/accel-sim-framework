@@ -1,0 +1,43 @@
+{
+  "schema_version": "C16_G2_NCU_METRIC_SET_V1",
+  "status": "C16_G2_METRIC_SET_FROZEN_READY_FOR_FIRST_C_TARGET_CANARY",
+  "target_authority": {
+    "c_fixed_commit": "d55075b7752380d6bd22328547db21a5e24eeed2",
+    "c_ncu_target_plan_sha256": "45b20a8e5383277a5170e32ff41b8de2ed2ca8777300b7ab6ab80a256d050693",
+    "selector": "SELECTOR_R",
+    "budget": "B48"
+  },
+  "observed_platform": {
+    "observed_at_utc": "2026-09-13T03:28:55Z",
+    "gpu_uuid": "GPU-6975486d-bcb7-deec-7ff8-29734254ceb1",
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "driver_version": "595.58.03",
+    "ncu_path": "/opt/nvidia/nsight-compute/2024.1.1/ncu",
+    "ncu_version": "2024.1.1.0 build 33998838",
+    "metric_query_chip": "GA102",
+    "rm_profiling_admin_only": true,
+    "permission_resolution": "PENDING_FIRST_C_TARGET_NCU_CANARY_AS_ROOT"
+  },
+  "metric_set": {
+    "path": "docs/vm_tlb/codex_handoff/c16/autodl_wave1/G2_NCU_COMPACT_METRICS.txt",
+    "sha256": "1aa58732d3c7141402b36e3d3ad1d7164458af7cb1e71d34e4b141652646acac",
+    "metrics": [
+      "sm__cycles_elapsed.avg",
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+      "dram__bytes_read.sum",
+      "dram__bytes_write.sum",
+      "smsp__inst_executed.sum"
+    ],
+    "metric_query_available": true,
+    "compact_only": true,
+    "section_set_full_forbidden": true
+  },
+  "execution_constraints": {
+    "target_rows_must_be_consumed_in_file_order_for_canary": true,
+    "first_target_canary_only": true,
+    "structural_ordinal_reproduction_must_be_unique": true,
+    "kernel_name_only_matching_forbidden": true,
+    "nearest_or_adjacent_launch_substitution_forbidden": true,
+    "measurement_window_exclusive": true
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": "C16_G_FIXED_TARGET_CONSUMPTION_V1",
+  "status": "C16_G_FIXED_TARGET_CONSUMPTION_PASS",
+  "consumer_lane": "G",
+  "c_fixed_commit": "d55075b7752380d6bd22328547db21a5e24eeed2",
+  "c_status": "C16_C_FIXED_G2_G3_TARGET_READY",
+  "c_publish_manifest": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_c/PUBLISH_MANIFEST.json",
+    "sha256": "c172ebf38d65f3b09caa9b16ab83632985aeb33afeab5eebfef57b7446f9c439",
+    "payload_count": 48,
+    "duplicate_path_count": 0,
+    "existence_size_sha256_failures": 0
+  },
+  "selector_freeze": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_c/P_TRAIN_SELECTOR_SOURCE_FREEZE.json",
+    "sha256": "3096c9ea5d1d09e4935a8d765bc1dc36a8d4ff35f4174c7ef42846259aee95c7",
+    "state": "SOURCE_SHA_FROZEN_BEFORE_AWQ_UNSEAL"
+  },
+  "g_target_policy": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_c/G_TARGET_SELECTION_POLICY_V1.json",
+    "sha256": "9f35e7b0809fdfb24352c46b7e43547238d9f0b1615dd39bbe3df934b2d2a3ad",
+    "primary_selector": "SELECTOR_R",
+    "primary_budget": "B48"
+  },
+  "ncu_target_plan": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_c/P_AWQ_G_NCU_TARGET_PLAN.tsv",
+    "sha256": "45b20a8e5383277a5170e32ff41b8de2ed2ca8777300b7ab6ab80a256d050693",
+    "row_count": 288,
+    "universe_count": 6
+  },
+  "nvbit_target_plan": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_c/P_AWQ_G_NVBIT_TARGET_PLAN.tsv",
+    "sha256": "e9dab7c27d726c991a5525cc8a266fb3369c315b1f691c0b11e9cbf0e5acb78a",
+    "row_count": 288,
+    "universe_count": 6
+  },
+  "resource_admission": {
+    "admitted_deployment_id": "c16_qwen25_7b_awq",
+    "admitted_scenarios": ["S1", "S2"],
+    "skipped_scenarios": ["S3", "S4"],
+    "excluded_deployment_id": "c16_qwen25_7b_raw_reference",
+    "no_shape_or_offload_substitution": true
+  },
+  "plan_row_immutability": {
+    "target_rows_modified": false,
+    "outcome_inputs_read_by_c": false,
+    "all_rows_request_only_frozen_primary_selector_r": true
+  }
+}

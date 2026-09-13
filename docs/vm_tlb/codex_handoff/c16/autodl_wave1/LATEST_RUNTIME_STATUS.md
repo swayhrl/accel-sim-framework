@@ -1,8 +1,31 @@
 # C16-G Wave-1 runtime status
 
-Status: `C16_AUTODL_SAFE_TO_POWER_OFF`
+Status: `C16_G_FIXED_TARGET_EXECUTION`
 Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 `9938b59ab80e6d1c77cc1efa6f6980e4cdfac5bc`.
+
+## Fixed C G2/G3 target execution
+
+Lane C has now formally published the fixed target authority at
+`d55075b7752380d6bd22328547db21a5e24eeed2`
+(`C16_C_FIXED_G2_G3_TARGET_READY`).  G independently verified every one of
+the 48 C manifest payloads by existence, byte count, and SHA256, with zero
+failures and zero duplicate paths.  The immutable consumption record is
+[C16_G_FIXED_TARGET_CONSUMPTION_RECEIPT.json](C16_G_FIXED_TARGET_CONSUMPTION_RECEIPT.json):
+it binds the exact C publish manifest, selector-source freeze, G target policy,
+and separate NCU/NVBit B48 target-plan digests.  It confirms only P3 AWQ S1/S2
+are admitted; P3 S3/S4 and P2 raw remain excluded without substitution.
+
+G2 is the active critical path.  The RTX3090 has Nsight Compute 2024.1.1,
+and the five-metric compact set is frozen in
+[G2_METRIC_SET_RECEIPT.json](G2_METRIC_SET_RECEIPT.json).  The driver has
+`RmProfilingAdminOnly=1`; the first C-plan target, executed as root, is the
+sole permission and exact-identity canary.  It must prove one unique
+structural/ordinal reproduction of the C source composite identity.  A
+kernel-name-only, nearest, or adjacent-launch match is not admissible.
+
+NVBit preparation may occur only between NCU measurement windows and cannot
+delay NCU.  No target row will be added, reshaped, or substituted.
 
 ## Runtime anchors
 
