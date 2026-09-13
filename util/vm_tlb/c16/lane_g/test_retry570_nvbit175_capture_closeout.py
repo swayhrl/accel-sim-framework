@@ -10,7 +10,7 @@ class CaptureCloseoutTests(unittest.TestCase):
             self.assertIn(token, SOURCE)
 
     def test_checks_schema_memory_and_lifecycle_without_claiming_timestamps(self) -> None:
-        for token in ("#traces format", "LDG|STG|ATOM", "lifecycle events are absent or unordered", "NOT_APPLICABLE_TRACE_FORMAT_HAS_NO_TIMESTAMP"):
+        for token in ("#traces format", "LDG|STG|ATOM", "len(line.split()) < 11", "lifecycle events are absent or unordered", "NOT_APPLICABLE_TRACE_FORMAT_HAS_NO_TIMESTAMP"):
             self.assertIn(token, SOURCE)
 
     def test_manifest_is_materialized_and_no_models_are_named_as_inputs(self) -> None:

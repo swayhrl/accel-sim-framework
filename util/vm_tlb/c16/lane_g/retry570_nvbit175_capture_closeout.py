@@ -54,7 +54,9 @@ def parse_trace(path: Path, target: dict[str, Any]) -> dict[str, Any]:
         raise ContractError("trace target identity differs from Q0 frozen target")
     if headers["-nvbit version"] != "1.7.5" or headers["-accelsim tracer version"] != "5":
         raise ContractError("trace tool/version header differs")
-    malformed = [line for line in rows if len(line.split()) < 12]
+    # A valid terminal EXIT has 11 fields; address-bearing memory rows are
+    # checked separately below rather than imposing their wider layout on EXIT.
+    malformed = [line for line in rows if len(line.split()) < 11]
     memory_rows = [line for line in rows if re.search(r"\b(?:LDG|STG|ATOM)[.A-Z0-9_]*\b", line) and re.search(r"\b0x[0-9a-fA-F]+\b", line)]
     if malformed or not memory_rows:
         raise ContractError("trace lacks complete instruction/memory-operation fields")
