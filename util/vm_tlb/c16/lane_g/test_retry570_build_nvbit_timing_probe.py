@@ -14,7 +14,7 @@ class BuildTimingProbeTests(unittest.TestCase):
         self.assertIn("tools/instr_count_bb/Makefile", SOURCE)
         self.assertIn("inject_funcs.cu", SOURCE)
         self.assertIn("NVBIT_PATH=\"${release_root}/core\"", SOURCE)
-        self.assertIn("ARCH=86", SOURCE)
+        self.assertIn("ARCH=sm_86", SOURCE)
 
     def test_refuses_overwrite_and_emits_tool_hash(self) -> None:
         self.assertIn("refusing to overwrite output directory", SOURCE)

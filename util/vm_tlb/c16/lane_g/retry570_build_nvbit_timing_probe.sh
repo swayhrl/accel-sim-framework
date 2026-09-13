@@ -25,7 +25,7 @@ cp "${makefile_source}" "${output_directory}/Makefile"
 
 # NVBit's stock Makefile has a special `inject_funcs.o` rule.  Preserve that
 # rule by using the filename it recognizes, and bind the absolute frozen core.
-PATH="/usr/local/cuda-12.4/bin:${PATH}" make -C "${output_directory}" NVBIT_PATH="${release_root}/core" ARCH=86
+PATH="/usr/local/cuda-12.4/bin:${PATH}" make -C "${output_directory}" NVBIT_PATH="${release_root}/core" ARCH=sm_86
 tool_path="${output_directory}/$(basename "${output_directory}").so"
 [[ -f "${tool_path}" ]] || { echo "expected tool was not built: ${tool_path}" >&2; exit 2; }
 sha256sum "${tool_path}"
