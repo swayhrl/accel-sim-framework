@@ -29,6 +29,7 @@ SCHEMA = "C16_G_RETRY570_NVBIT_OFFICIAL_VECTORADD_SMOKE_V1"
 WALL_LIMIT_SECONDS = 60
 DEPLOYMENT = "c16_retry570_nvbit_official_vectoradd_smoke"
 REQUIRED_MARKERS = ("NVBit (NVidia Binary Instrumentation Tool", "kernel 0 -", "Final sum =")
+ALLOWED_NVBIT_VERSIONS = frozenset({"1.8", "1.7.5", "1.7.7.3"})
 
 
 def official_evidence(stdout: str) -> dict[str, bool]:
@@ -61,9 +62,12 @@ def main() -> None:
     parser.add_argument("--stderr", type=Path, required=True)
     parser.add_argument("--runtime-code-commit", required=True)
     parser.add_argument("--run-id", required=True)
+    parser.add_argument("--nvbit-version", default="1.8")
     args = parser.parse_args()
     if args.runtime_code_commit != git_head():
         raise ContractError("declared runtime code commit differs from this source checkout")
+    if args.nvbit_version not in ALLOWED_NVBIT_VERSIONS:
+        raise ContractError("NVBit version is outside the frozen version-differential matrix")
     if not args.vectoradd.is_file() or not os.access(args.vectoradd, os.X_OK):
         raise ContractError("official NVBit smoke requires a built executable vectoradd test app")
     if not args.tool.is_file() or not valid_sha256(args.tool_sha256) or sha256_file(args.tool) != args.tool_sha256:
@@ -80,8 +84,8 @@ def main() -> None:
     identity = {
         "deployment_id": DEPLOYMENT,
         "run_id": args.run_id,
-        "scenario_id": "NVBIT_1_8_OFFICIAL_VECTORADD",
-        "implementation_key": "NVBIT_1_8_OFFICIAL_INSTR_COUNT_BB",
+        "scenario_id": f"NVBIT_{args.nvbit_version}_OFFICIAL_VECTORADD",
+        "implementation_key": f"NVBIT_{args.nvbit_version}_OFFICIAL_INSTR_COUNT_BB",
     }
     MeasurementActive.assert_available(args.budget_ledger)
     started = time.monotonic()
@@ -118,7 +122,7 @@ def main() -> None:
             lease.finish(
                 elapsed_seconds=elapsed, raw_bytes=0, terminal_status=terminal_status,
                 evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
-                diagnostic_reason="NVBIT_1_8_OFFICIAL_VECTORADD_INSTRUMENTATION_SMOKE_NO_TRACE_CAPTURE",
+                diagnostic_reason=f"NVBIT_{args.nvbit_version}_OFFICIAL_VECTORADD_INSTRUMENTATION_SMOKE_NO_TRACE_CAPTURE",
             )
         receipt: dict[str, Any] = {
             "schema_version": SCHEMA,
@@ -128,9 +132,10 @@ def main() -> None:
             "not_for_trace": True,
             "not_for_c_target": True,
             "runtime_code_commit": args.runtime_code_commit,
+            "nvbit_version": args.nvbit_version,
             "run_id": args.run_id,
             "wall_limit_seconds": WALL_LIMIT_SECONDS,
-            "tool": {"path": str(args.tool), "sha256": args.tool_sha256, "kind": "NVBIT_1_8_OFFICIAL_INSTR_COUNT_BB"},
+            "tool": {"path": str(args.tool), "sha256": args.tool_sha256, "kind": f"NVBIT_{args.nvbit_version}_OFFICIAL_INSTR_COUNT_BB"},
             "nvdisasm_environment_contract": contract,
             "vectoradd": str(args.vectoradd),
             "returncode": returncode,

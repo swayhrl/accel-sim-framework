@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
-from retry570_module_firstuse_2x2 import EXACT_CANDIDATE, WALL_LIMIT_SECONDS, analyze  # noqa: E402
+from retry570_module_firstuse_2x2 import ALLOWED_NVBIT_VERSIONS, EXACT_CANDIDATE, WALL_LIMIT_SECONDS, analyze  # noqa: E402
 
 
 SOURCE = (LANE / "retry570_module_firstuse_2x2.py").read_text(encoding="utf-8")
@@ -21,6 +21,10 @@ BUILD = (LANE / "retry570_build_callback_tool_variant.sh").read_text(encoding="u
 
 
 class ModuleFirstUse2x2Tests(unittest.TestCase):
+    def test_version_differential_is_explicit_and_bounded(self) -> None:
+        self.assertEqual(ALLOWED_NVBIT_VERSIONS, {"1.8", "1.7.5", "1.7.7.3"})
+        self.assertIn('result.add_argument("--nvbit-version", default="1.8")', SOURCE)
+
     def test_callback_only_contract_forbids_discovery_insertion_enable_sync_trace_and_capture(self) -> None:
         self.assertIn("NVBIT_CALLBACK_CENSUS_ONLY", SOURCE)
         self.assertIn("CALLBACK_CENSUS_ONLY", SOURCE)

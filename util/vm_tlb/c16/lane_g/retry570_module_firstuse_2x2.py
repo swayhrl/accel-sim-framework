@@ -46,6 +46,7 @@ EXACT_CANDIDATE = {
 }
 MODES = frozenset({"NATIVE", "NVBIT_CALLBACK_CENSUS_ONLY", "NVBIT_CALLBACK_CENSUS_RAW", "NVBIT_EMPTY_CALLBACK_TOOL"})
 LOADING = frozenset({"LAZY", "EAGER"})
+ALLOWED_NVBIT_VERSIONS = frozenset({"1.8", "1.7.5", "1.7.7.3"})
 
 
 def _now_ns() -> int:
@@ -341,6 +342,8 @@ def _validate(args: argparse.Namespace) -> None:
         raise ContractError("declared runtime code commit differs from this checkout")
     if args.mode not in MODES or args.cuda_module_loading not in LOADING or args.wall_limit_seconds != WALL_LIMIT_SECONDS:
         raise ContractError("2x2 requires fixed native/callback-only mode, LAZY/EAGER, and 25-second cap")
+    if args.nvbit_version not in ALLOWED_NVBIT_VERSIONS:
+        raise ContractError("NVBit version is outside the frozen version-differential matrix")
     if args.mode != "NATIVE":
         if args.tool_path is None or not args.tool_path.is_file() or not valid_sha256(args.tool_sha256 or "") or sha256_file(args.tool_path) != args.tool_sha256:
             raise ContractError("injected callback mode requires a materialized hash-closed tool")
@@ -442,6 +445,7 @@ def parent_main(args: argparse.Namespace) -> int:
             "not_for_c_target": True,
             "not_for_native_timing": True,
             "runtime_code_commit": args.runtime_code_commit,
+            "nvbit_version": args.nvbit_version,
             "run_id": args.run_id,
             "mode": args.mode,
             "cuda_module_loading_requested": args.cuda_module_loading,
@@ -499,6 +503,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--expected-gpu-uuid")
     result.add_argument("--runtime-code-commit")
     result.add_argument("--run-id")
+    result.add_argument("--nvbit-version", default="1.8")
     return result
 
 
