@@ -295,7 +295,8 @@ def parent(args: argparse.Namespace) -> int:
         if args.recovery_ledger != args.budget_ledger or args.recovery_historical_ledger is None or not args.recovery_historical_sha256 or not args.recovery_deployment_id:
             raise ContractError("recovery capture requires one new ledger plus immutable historical-ledger proof")
         initialize_recovery_budget(recovery_ledger=args.recovery_ledger, historical_ledger=args.recovery_historical_ledger,
-                                   expected_historical_sha256=args.recovery_historical_sha256, deployment_id=args.recovery_deployment_id)
+                                   expected_historical_sha256=args.recovery_historical_sha256, deployment_id=args.recovery_deployment_id,
+                                   historical_archive=args.recovery_historical_archive)
         Lease: Any = RecoveryBudgetLease
     else:
         Lease = BudgetLease
@@ -343,7 +344,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--child", action="store_true"); parser.add_argument("--mode", choices=MODES, required=True); parser.add_argument("--target-role", choices=TARGET_ROLES, default="LARGE_INDEX_PREFILL")
     for name in ("binding", "target_receipt", "receipt", "stage", "child_receipt", "trace_root", "budget_ledger", "parent_lease_receipt", "arm_path", "stdout", "stderr", "tool", "nvdisasm"): parser.add_argument("--" + name.replace("_", "-"), type=Path)
     parser.add_argument("--tool-sha256"); parser.add_argument("--adapter", required=True); parser.add_argument("--implementation-key", required=True); parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True); parser.add_argument("--quantization", required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True); parser.add_argument("--expected-attention-backend", required=True); parser.add_argument("--expected-output-checksum"); parser.add_argument("--recovery-v3-generic", action="store_true"); parser.add_argument("--direct-function-binding", type=Path); parser.add_argument("--arm-wait-seconds", type=int, default=60); parser.add_argument("--target-cap-seconds", type=int, default=600)
-    parser.add_argument("--recovery-ledger", type=Path); parser.add_argument("--recovery-historical-ledger", type=Path); parser.add_argument("--recovery-historical-sha256"); parser.add_argument("--recovery-deployment-id")
+    parser.add_argument("--recovery-ledger", type=Path); parser.add_argument("--recovery-historical-ledger", type=Path); parser.add_argument("--recovery-historical-archive", type=Path); parser.add_argument("--recovery-historical-sha256"); parser.add_argument("--recovery-deployment-id")
     args = parser.parse_args()
     try:
         if str(uuid.UUID(args.run_id)) != args.run_id: raise ValueError

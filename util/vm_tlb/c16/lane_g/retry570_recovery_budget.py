@@ -34,12 +34,68 @@ def _read(path: Path) -> dict[str, Any]:
     return value
 
 
-def initialize(*, recovery_ledger: Path, historical_ledger: Path, expected_historical_sha256: str, deployment_id: str) -> dict[str, Any]:
-    """Initialize once while proving the historical ledger's exact bytes persist."""
+def _historical_lineage(*, historical_ledger: Path, expected_historical_sha256: str,
+                        historical_archive: Path | None) -> dict[str, Any]:
+    """Prove either an exact live historical ledger or an append-only successor.
+
+    Recovery V2 was deliberately created against an immutable historical
+    snapshot.  The live legacy ledger can subsequently receive new (and
+    independently retained) entries.  A new recovery capture may continue
+    only when a byte-exact archive proves the original snapshot and the live
+    ledger is demonstrably an append-only successor.  Merely passing a new
+    hash, or a lookalike archive, is not an acceptable bridge.
+    """
+    if not historical_ledger.is_file():
+        raise ContractError("historical ledger is absent")
+    live_sha = sha256_file(historical_ledger)
+    if live_sha == expected_historical_sha256:
+        return {
+            "mode": "LIVE_HISTORICAL_LEDGER_EXACT",
+            "live_path": str(historical_ledger),
+            "live_sha256": live_sha,
+            "archive_path": None,
+            "archive_sha256": None,
+        }
+    if historical_archive is None or not historical_archive.is_file():
+        raise ContractError("historical ledger changed; exact archive is required for append-only recovery proof")
+    archive_sha = sha256_file(historical_archive)
+    if archive_sha != expected_historical_sha256:
+        raise ContractError("historical archive SHA256 differs from the recovery ledger's immutable binding")
+    try:
+        archived = json.loads(historical_archive.read_text(encoding="utf-8"))
+        live = json.loads(historical_ledger.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractError("historical archive/live ledger JSON cannot be read") from exc
+    if not isinstance(archived, dict) or not isinstance(live, dict):
+        raise ContractError("historical archive/live ledger must be JSON objects")
+    if archived.get("schema_version") != live.get("schema_version") or archived.get("limits") != live.get("limits"):
+        raise ContractError("live legacy ledger differs in schema or limits from the immutable historical snapshot")
+    archived_entries, live_entries = archived.get("entries"), live.get("entries")
+    if not isinstance(archived_entries, list) or not isinstance(live_entries, list):
+        raise ContractError("historical archive/live ledger lacks entry lists")
+    if len(live_entries) < len(archived_entries) or live_entries[:len(archived_entries)] != archived_entries:
+        raise ContractError("live legacy ledger is not an append-only successor of the immutable historical snapshot")
+    return {
+        "mode": "ARCHIVE_EXACT_LIVE_APPEND_ONLY",
+        "live_path": str(historical_ledger),
+        "live_sha256": live_sha,
+        "archive_path": str(historical_archive),
+        "archive_sha256": archive_sha,
+        "archived_entry_count": len(archived_entries),
+        "live_entry_count": len(live_entries),
+    }
+
+
+def initialize(*, recovery_ledger: Path, historical_ledger: Path, expected_historical_sha256: str,
+               deployment_id: str, historical_archive: Path | None = None) -> dict[str, Any]:
+    """Initialize once while proving immutable-history or append-only lineage."""
     if not deployment_id.startswith("c16_nvbit175_recovery_"):
         raise ContractError("recovery deployment must use the new authorized namespace")
-    if not historical_ledger.is_file() or sha256_file(historical_ledger) != expected_historical_sha256:
-        raise ContractError("historical ledger is missing or differs before recovery initialization")
+    lineage = _historical_lineage(
+        historical_ledger=historical_ledger,
+        expected_historical_sha256=expected_historical_sha256,
+        historical_archive=historical_archive,
+    )
     legacy_before = historical_ledger.read_bytes()
     lock_path = recovery_ledger.with_name(recovery_ledger.name + ".lock")
     recovery_ledger.parent.mkdir(parents=True, exist_ok=True)
@@ -56,8 +112,16 @@ def initialize(*, recovery_ledger: Path, historical_ledger: Path, expected_histo
                      "limits": {"max_nvbit_capture_windows_per_deployment": MAX_WINDOWS_PER_DEPLOYMENT, "max_window_seconds": MAX_WINDOW_SECONDS, "max_window_raw_bytes": MAX_WINDOW_RAW_BYTES, "max_total_raw_bytes": MAX_TOTAL_RAW_BYTES},
                      "authorized_deployments": [deployment_id], "entries": []}
             atomic_json(recovery_ledger, value)
-        if historical_ledger.read_bytes() != legacy_before or sha256_file(historical_ledger) != expected_historical_sha256:
-            raise ContractError("historical ledger changed during recovery initialization")
+        if historical_ledger.read_bytes() != legacy_before:
+            raise ContractError("live historical ledger changed during recovery initialization")
+        # Re-run the exact/append-only proof after creating or reopening the
+        # recovery ledger so a concurrent rewrite cannot be mistaken for a
+        # legitimate history extension.
+        _historical_lineage(
+            historical_ledger=historical_ledger,
+            expected_historical_sha256=expected_historical_sha256,
+            historical_archive=historical_archive,
+        )
         return value
 
 
