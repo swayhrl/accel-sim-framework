@@ -33,10 +33,18 @@ from runtime_native_runner import (
 )
 
 
-MODES = {"BASELINE", "OFFICIAL_MEM_TRACE", "C16_MEMORY_TRACER"}
+MODES = {
+    "BASELINE",
+    "OFFICIAL_MEM_TRACE",
+    "C16_MEMORY_TRACER",
+    "NVBIT_STATIC_MAP",
+    "TARGETED_MEMORY_TRACE",
+}
 TRACE_CONFIGURATION_ENVIRONMENT = (
     "INSTR_BEGIN", "INSTR_END", "DYNAMIC_KERNEL_RANGE", "ACTIVE_FROM_START",
     "TERMINATE_UPON_LIMIT", "TRACE_FILE_COMPRESS", "TOOL_COMPRESS", "TRACES_FOLDER",
+    "C16_NVBIT_TARGET_FUNCTION_MANGLED", "C16_NVBIT_TARGET_INSTR_INDEX",
+    "C16_NVBIT_STATIC_MAP_PATH",
 )
 
 
@@ -88,6 +96,8 @@ def trace_evidence(
     trace_glob: str | None,
     trace_marker: str | None,
     kernel_catalog_glob: str | None,
+    static_map_path: Path | None = None,
+    target_instruction_receipt: Path | None = None,
 ) -> dict[str, Any]:
     """Close real trace evidence without treating a launcher banner as data.
 
@@ -96,9 +106,28 @@ def trace_evidence(
     no kernel-name, timing, or frozen-C-target claim.
     """
     if mode == "BASELINE":
-        if trace_glob is not None or trace_marker is not None or kernel_catalog_glob is not None:
+        if any(value is not None for value in (trace_glob, trace_marker, kernel_catalog_glob, static_map_path, target_instruction_receipt)):
             raise ContractError("baseline qualification cannot declare NVBit trace evidence")
         return {"required": False, "records": [], "kernel_catalogs": [], "configuration": {}}
+    if mode == "NVBIT_STATIC_MAP":
+        if trace_glob is not None or trace_marker is not None or kernel_catalog_glob is not None or target_instruction_receipt is not None:
+            raise ContractError("NVBit-static-map mode accepts only a native static-map payload")
+        if static_map_path is None or not static_map_path.is_file() or static_map_path.stat().st_size == 0:
+            raise ContractError("NVBit-static-map mode emitted no nonzero native static-map payload")
+        try:
+            static_map_path.resolve().relative_to(raw_dir.resolve())
+        except ValueError as exc:
+            raise ContractError("NVBit-static-map payload must be inside the declared raw directory") from exc
+        return {
+            "required": True,
+            "records": [{
+                "path": str(static_map_path.relative_to(raw_dir)),
+                "size_bytes": static_map_path.stat().st_size,
+                "sha256": sha256_file(static_map_path),
+            }],
+            "kernel_catalogs": [],
+            "configuration": {name: os.environ.get(name, "UNSET") for name in TRACE_CONFIGURATION_ENVIRONMENT},
+        }
     if not trace_glob:
         raise ContractError("profile qualification requires --trace-evidence-glob")
     if Path(trace_glob).is_absolute() or ".." in Path(trace_glob).parts:
@@ -128,10 +157,41 @@ def trace_evidence(
             {"path": str(path.relative_to(raw_dir)), "size_bytes": path.stat().st_size, "sha256": sha256_file(path)}
             for path in catalog_paths
         ]
+    static_map: dict[str, Any] | None = None
+    if static_map_path is not None:
+        if not static_map_path.is_file() or static_map_path.stat().st_size == 0:
+            raise ContractError("declared NVBit-native static map is absent or empty")
+        static_map = {
+            "path": str(static_map_path),
+            "size_bytes": static_map_path.stat().st_size,
+            "sha256": sha256_file(static_map_path),
+        }
+    target_binding: dict[str, Any] | None = None
+    if mode == "TARGETED_MEMORY_TRACE":
+        if static_map is None or target_instruction_receipt is None or not target_instruction_receipt.is_file():
+            raise ContractError("targeted-memory mode requires its closed native map and target receipt")
+        try:
+            target = json.loads(target_instruction_receipt.read_text(encoding="utf-8"))
+            target_index = int(target["target_instruction"]["nvbit_static_index"])
+            target_mangled = str(target["function"]["mangled_name"])
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise ContractError("targeted-memory target receipt is malformed") from exc
+        if os.environ.get("C16_NVBIT_TARGET_INSTR_INDEX") != str(target_index):
+            raise ContractError("NVBit environment target index differs from the closed target receipt")
+        if os.environ.get("C16_NVBIT_TARGET_FUNCTION_MANGLED") != target_mangled:
+            raise ContractError("NVBit environment function identity differs from the closed target receipt")
+        target_binding = {
+            "path": str(target_instruction_receipt),
+            "sha256": sha256_file(target_instruction_receipt),
+            "nvbit_static_index": target_index,
+            "function_mangled_name": target_mangled,
+        }
     return {
         "required": True,
         "records": records,
         "kernel_catalogs": catalogs,
+        "native_static_map": static_map,
+        "target_instruction_binding": target_binding,
         "configuration": {name: os.environ.get(name, "UNSET") for name in TRACE_CONFIGURATION_ENVIRONMENT},
     }
 
@@ -220,6 +280,8 @@ def execute(binding: dict[str, Any], args: argparse.Namespace, tool: dict[str, s
         trace_glob=args.trace_evidence_glob,
         trace_marker=args.trace_evidence_marker,
         kernel_catalog_glob=args.kernel_catalog_glob,
+        static_map_path=args.static_map_path,
+        target_instruction_receipt=args.target_instruction_receipt,
     )
     return {
         "schema_version": "C16_G_MODEL_NVBIT_QUALIFICATION_V1",
@@ -280,6 +342,8 @@ def main() -> None:
     parser.add_argument("--trace-evidence-glob")
     parser.add_argument("--trace-evidence-marker")
     parser.add_argument("--kernel-catalog-glob")
+    parser.add_argument("--static-map-path", type=Path)
+    parser.add_argument("--target-instruction-receipt", type=Path)
     parser.add_argument("--adapter", required=True)
     parser.add_argument("--implementation-key", required=True)
     parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True)
