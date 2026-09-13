@@ -72,6 +72,10 @@ int active_from_start = 1;
 int lineinfo = 0;
 /* used to select region of interest when active from start is 0 */
 bool active_region = true;
+/* Formal Route-E capture intersects a parent-owned profiler ROI with the
+ * frozen exact kernel selector. */
+int exact_root_function_only = 0;
+int use_nvbit_static_index = 0;
 
 /* Should we terminate the program once we are done tracing? */
 int terminate_after_limit_number_of_kernels_reached = 0;
@@ -95,6 +99,7 @@ std::unordered_map<CUcontext, std::string> ctx_stats_location;
 std::unordered_map<CUcontext, int> ctx_kernelid;
 std::unordered_map<CUcontext, FILE *> ctx_resultsFile;
 std::unordered_map<CUcontext, std::string> ctx_current_kernel_name;
+std::unordered_map<CUcontext, bool> ctx_trace_this_kernel;
 
 std::string kernel_ranges = "";
 
@@ -249,8 +254,14 @@ void nvbit_at_init() {
   GET_VAR_INT(
       active_from_start, "ACTIVE_FROM_START", 1,
       "Start instruction tracing from start or wait for cuProfilerStart "
-      "and cuProfilerStop. If set to 0, DYNAMIC_KERNEL_RANGE options have no "
-      "effect");
+      "and cuProfilerStop. DYNAMIC_KERNEL_RANGE is always intersected with "
+      "the active region.");
+  GET_VAR_INT(exact_root_function_only, "C16_EXACT_ROOT_FUNCTION_ONLY", 0,
+              "Instrument only the launched root CUfunction, not related "
+              "functions.");
+  GET_VAR_INT(use_nvbit_static_index, "C16_USE_NVBIT_STATIC_INDEX", 0,
+              "Interpret INSTR_BEGIN/INSTR_END as NVBit Instr::getIdx values "
+              "instead of the legacy filtered enumeration counter.");
   GET_VAR_INT(verbose, "TOOL_VERBOSE", 0, "Enable verbosity inside the tool");
   GET_VAR_INT(enable_compress, "TOOL_COMPRESS", 1, "Enable traces compression");
   GET_VAR_INT(print_core_id, "TOOL_TRACE_CORE", 0,
@@ -298,11 +309,15 @@ std::unordered_set<CUfunction> already_instrumented;
 /* instrument each memory instruction adding a call to the above instrumentation
  * function */
 void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
-  std::vector<CUfunction> related_functions =
-      nvbit_get_related_functions(ctx, func);
-
-  /* add kernel itself to the related function vector */
-  related_functions.push_back(func);
+  std::vector<CUfunction> related_functions;
+  if (exact_root_function_only) {
+    /* The Route-E static-map receipt names this root function, not callees. */
+    related_functions.push_back(func);
+  } else {
+    related_functions = nvbit_get_related_functions(ctx, func);
+    /* add kernel itself to the related function vector */
+    related_functions.push_back(func);
+  }
 
   /* iterate on function */
   for (auto f : related_functions) {
@@ -331,7 +346,10 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
         continue;
       }
 
-      if (cnt < instr_begin_interval || cnt >= instr_end_interval) {
+      uint32_t selection_index =
+          use_nvbit_static_index ? (uint32_t)instr->getIdx() : cnt;
+      if (selection_index < instr_begin_interval ||
+          selection_index >= instr_end_interval) {
         cnt++;
         continue;
       }
@@ -475,15 +493,31 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
     assert(cudaGetLastError() == cudaSuccess);
   }
 
-  // Mark if the kernel should be traced
+  // The selector is always required.  For ACTIVE_FROM_START=0 it is
+  // intersected with the parent-owned profiler region; this keeps model
+  // prewarm outside both the trace payload and instrumentation work.
   std::string func_name = std::string(nvbit_get_func_name(ctx, func, true));
-  if (active_from_start && should_trace_kernel(ctx_kernelid[ctx], func_name))
-    active_region = true;
+  bool kernel_matches_selector =
+      should_trace_kernel(ctx_kernelid[ctx], func_name);
+  if (active_from_start)
+    active_region = kernel_matches_selector;
+  bool trace_this_kernel = active_region && kernel_matches_selector;
+  ctx_trace_this_kernel[ctx] = trace_this_kernel;
 
   // Terminate tracing if the limit number of kernels is reached
   if (terminate_after_limit_number_of_kernels_reached && g_max_kernel_id != 0 &&
       ctx_kernelid[ctx] > g_max_kernel_id) {
     exit(0);
+  }
+
+  if (!trace_this_kernel) {
+    /* No NVBit discovery, insertion, metadata, or receive-thread work for
+     * prewarm/unselected kernels.  The ordinal still advances so optional
+     * numeric selector ranges retain their documented meaning. */
+    stop_report = true;
+    ctx_kernelid[ctx]++;
+    ctx_current_kernel_name[ctx] = func_name;
+    return;
   }
 
   // Get launch config for this kernel
@@ -524,14 +558,9 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
   // Instrument the kernel if needed
   instrument_function_if_needed(ctx, func);
 
-  // Enable or disable tracing based on the active region
-  if (active_region) {
-    nvbit_enable_instrumented(ctx, func, true);
-    stop_report = false;
-  } else {
-    nvbit_enable_instrumented(ctx, func, false);
-    stop_report = true;
-  }
+  // This function passed both the ROI and exact-selector gates.
+  nvbit_enable_instrumented(ctx, func, true);
+  stop_report = false;
 
   // Create the trace file per kernel
   char buffer[2048];
@@ -609,6 +638,10 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
 }
 
 static void leave_kernel_launch(CUcontext ctx, CUfunction func) {
+  if (!ctx_trace_this_kernel[ctx]) {
+    return;
+  }
+
   /* make sure current kernel is completed */
   cudaDeviceSynchronize();
   cudaError_t err = cudaGetLastError();
@@ -658,9 +691,6 @@ static void leave_kernel_launch(CUcontext ctx, CUfunction func) {
     }
   }
 
-  std::string func_name = std::string(nvbit_get_func_name(ctx, func, true));
-  if (active_from_start && !should_trace_kernel(ctx_kernelid[ctx], func_name))
-    active_region = false;
 }
 
 void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
