@@ -22,6 +22,8 @@ class FirstUseCompletionTests(unittest.TestCase):
         self.assertIn("os.killpg(process.pid, signal.SIGKILL)", SOURCE)
         self.assertIn("MeasurementActive.assert_available", SOURCE)
         self.assertNotIn("with MeasurementActive(", SOURCE)
+        self.assertIn('evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC"', SOURCE)
+        self.assertNotIn("NON_SCIENTIFIC_ENGINEERING_QUALIFICATION", SOURCE)
 
     def test_forbidden_diagnostic_mechanisms_absent(self) -> None:
         for forbidden in ("gdb", "perf record", "nvbit_get_instrs", "nvbit_insert_call", "trace.xz"):

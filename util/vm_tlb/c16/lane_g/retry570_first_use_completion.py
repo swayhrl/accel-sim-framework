@@ -190,7 +190,7 @@ def parent_main(args: argparse.Namespace) -> int:
         elapsed = time.monotonic() - started
         terminal = "BOUNDED_TIMEOUT" if timed_out else "COMPLETE" if process.returncode == 0 else "FAILED_OR_ABORTED"
         lease.finish(elapsed_seconds=elapsed, raw_bytes=0, terminal_status=terminal,
-                     evidence_classification="NON_SCIENTIFIC_ENGINEERING_QUALIFICATION",
+                     evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
                      diagnostic_reason="NVBIT_1_8_EMPTY_EAGER_FIRST_USE_AND_TWO_IDENTICAL_EXACT_OPERATIONS")
     events = parsed_events(args.stdout_path)
     child = json.loads(args.child_receipt.read_text(encoding="utf-8")) if args.child_receipt.is_file() else None
