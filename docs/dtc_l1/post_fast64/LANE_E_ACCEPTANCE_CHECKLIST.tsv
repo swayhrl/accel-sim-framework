@@ -1,15 +1,15 @@
-check_id	stage	purpose	minimum_evidence	validation	planned_status	completion_evidence
-E0.1	E0	ownership_and_freeze	execution_ownership_protected_inventory	safe_worktree_no_destructive_actions_no_simulation	PASS	review_packs/POST_FAST64_FINAL/E_EXECUTION_INVENTORY.tsv
-E0.2	E0	source_import	E_INPUT_MANIFEST.tsv	pinned_commit_blob_SHA256_matches	PASS	review_packs/POST_FAST64_FINAL/E_INPUT_MANIFEST.tsv (45 blob/SHA-bound snapshots)
-E0.3	E0	coverage_identity_units	E_COVERAGE_AND_IDENTITY.tsv;E_METRIC_DICTIONARY.tsv	exact_membership_lineages_and_denominators	PASS	review_packs/POST_FAST64_FINAL/E_COVERAGE_AND_IDENTITY.tsv; E_METRIC_DICTIONARY.tsv
-E0.4	E0	interpretation_reconciliation	E_INTERPRETATION_RECONCILIATION.tsv;E_CLAIM_EVIDENCE_REGISTER.tsv	latest_D_scope_no_silent_rewrite	PASS	review_packs/POST_FAST64_FINAL/E_INTERPRETATION_RECONCILIATION.tsv; E_CLAIM_EVIDENCE_REGISTER.tsv
-E1.1	E1	primary_and_mechanisms	primary_pressure_io_oo_tables	integer_ratios_exact_GM_nonexclusive_rules	PASS	review_packs/POST_FAST64_FINAL/tables/E_PRIMARY_PERFORMANCE.tsv; E_BASE_PRESSURE.tsv; E_IO_OO_MECHANISM.tsv
-E1.2	E1	three_sensitivities	logical_physical_pib_boundary_tables	accepted_cells_references_no_numeric_deadlocks	PASS	review_packs/POST_FAST64_FINAL/tables/E_SENS_LOGICAL.tsv; E_SENS_PHYSICAL.tsv; E_SENS_PIB.tsv
-E1.3	E1	pool_observer	physical_observer_synthesis.tsv;pressure_denominator_comparison.tsv	18_cells_raw_unchanged_active_SM_scope	PASS	review_packs/POST_FAST64_FINAL/tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv; E_PRESSURE_DENOMINATOR_COMPARISON.tsv
-E1.4	E1	duplicates	duplicate_io_oo.tsv;duplicate_payload_ratios.tsv	12_pairs_24_modes_integer_ratios_payload_scope	PASS	review_packs/POST_FAST64_FINAL/tables/E_DUPLICATE_IO_OO.tsv; E_DUPLICATE_PAYLOAD_RATIOS.tsv
-E1.5	E1	actual_figures	F01_F09_and_FIGURE_INDEX.md	real_assets_data_source_caption_mapping	PASS	review_packs/POST_FAST64_FINAL/figures/F01-F09.{svg,pdf,png}; FIGURE_INDEX.md
-E1.6	E1	writing	PAPER_RESULTS_ANALYSIS.md;WORKLOAD_EXPLANATIONS.tsv	12_workloads_scoped_claims	PASS	review_packs/POST_FAST64_FINAL/PAPER_RESULTS_ANALYSIS.md; WORKLOAD_EXPLANATIONS.tsv
-E2.1	E2	automated_acceptance	tests_negative_fixtures_claim_audit	all_required_numeric_hash_scope_checks	PASS	review_packs/POST_FAST64_FINAL/E_VALIDATION_REPORT.md
-E2.2	E2	visual_QA	E_VISUAL_QA.md	all_figures_rendered_inspected_repaired	PASS	review_packs/POST_FAST64_FINAL/E_VISUAL_QA.md
-E2.3	E2	reproduction_package	rebuild_reports_REPRODUCE_output_manifest	deterministic_portable_compact_only_rebuild	PASS	review_packs/POST_FAST64_FINAL/REPRODUCE.md; rebuild_reports/DETERMINISM_COMPARISON.md; E_OUTPUT_MANIFEST.tsv
-E2.4	E2	final_push	completed_checklist_LANE_E_FINAL_remote_SHA	all_mandatory_checks_zero_simulation_immutable_sources	PASS	review_packs/POST_FAST64_FINAL/LANE_E_FINAL.md; remote SHA recorded after push
+check_id	stage	purpose	status	evidence_path	check_lineage
+E0.1	E0	ownership_and_freeze	PASS	review_packs/POST_FAST64_FINAL/E_EXECUTION_INVENTORY.tsv	actual core input audit
+E0.2	E0	source_import	PASS	review_packs/POST_FAST64_FINAL/E_INPUT_MANIFEST.tsv	actual source-bound manifest audit (46 pinned snapshots)
+E0.3	E0	coverage_identity_units	PASS	review_packs/POST_FAST64_FINAL/E_COVERAGE_AND_IDENTITY.tsv	actual data-driven coverage audit
+E0.4	E0	interpretation_reconciliation	PASS	review_packs/POST_FAST64_FINAL/E_INTERPRETATION_RECONCILIATION.tsv; review_packs/POST_FAST64_FINAL/E_CLAIM_EVIDENCE_REGISTER.tsv	actual claim audit
+E1.1	E1	primary_and_mechanisms	PASS	review_packs/POST_FAST64_FINAL/tables/E_PRIMARY_PERFORMANCE.tsv; review_packs/POST_FAST64_FINAL/tables/E_IO_OO_MECHANISM.tsv	integer-cycle audit
+E1.2	E1	three_sensitivities	PASS	review_packs/POST_FAST64_FINAL/E_COVERAGE_SENSITIVITY_AUDIT.tsv	source membership and row-kind audit
+E1.3	E1	pool_observer	PASS	review_packs/POST_FAST64_FINAL/tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv	D4 cartesian and denominator audit
+E1.4	E1	duplicates	PASS	review_packs/POST_FAST64_FINAL/tables/E_DUPLICATE_IO_OO.tsv	qualified D5 audit
+E1.5	E1	actual_figures	PASS	review_packs/POST_FAST64_FINAL/FIGURE_INDEX.tsv; review_packs/POST_FAST64_FINAL/E_MACHINE_FIGURE_CHECKS.tsv	unique figures and machine checks
+E1.6	E1	writing	PASS	review_packs/POST_FAST64_FINAL/WORKLOAD_EXPLANATIONS.tsv; review_packs/POST_FAST64_FINAL/E_CLAIM_AUDIT.tsv	rich workload and claim audit
+E2.1	E2	automated_acceptance	PASS	review_packs/POST_FAST64_FINAL/E_VALIDATION_REPORT.md; review_packs/POST_FAST64_FINAL/qa/E_NEGATIVE_FIXTURE_RESULTS.tsv	actual core, negative-fixture, and claim checks
+E2.2	E2	visual_QA	PASS	review_packs/POST_FAST64_FINAL/E_VISUAL_QA.md; review_packs/POST_FAST64_FINAL/qa/E_VISUAL_REVIEW.tsv	explicit nine-figure human review record
+E2.3	E2	reproduction_package	PASS	review_packs/POST_FAST64_FINAL/rebuild_reports/DETERMINISM_COMPARISON.md; review_packs/POST_FAST64_FINAL/E_BUILD_PROVENANCE.tsv	actual isolated core SHA-256 and byte comparison
+E2.4	E2	final_closeout	PASS	review_packs/POST_FAST64_FINAL/LANE_E_FINAL.md; review_packs/POST_FAST64_FINAL/E_VALIDATION_REPORT.md	all independent mandatory results pass

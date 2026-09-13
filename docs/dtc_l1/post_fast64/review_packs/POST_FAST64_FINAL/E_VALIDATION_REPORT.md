@@ -2,18 +2,35 @@
 
 Overall: **PASS**
 
-| Check | Status | Evidence |
+| Check | Status | Measured evidence |
 |---|---|---|
-| pinned source hash and snapshot integrity | PASS | manifest plus SHA-256 rechecked |
-| exact FAST12 / 36 primary cell membership | PASS | 12 workloads and Base/IO/OO only |
-| integer performance and GM arithmetic | PASS | recomputed from accepted cycles |
-| Stage6 membership and deadlock boundary | PASS | D4=18; nonnumeric BICG/GESUMMV 16.5 retained; Btree numeric |
-| D5 duplicate arithmetic and 7/3/2 classification | PASS | D/L and D/(L-D) recomputed from integers |
-| metric-denominator scope | PASS | observer sampled active-SM cycles never replaced with 64*global cycles |
-| claim/evidence boundary | PASS | D6 selected revision; no L2 dominance/duplicate-performance proof |
-| negative fixture: wrong FAST12 membership | PASS | validator requires exact ordered 12 source rows |
-| negative fixture: observer in GM | PASS | primary is read solely from FAST12 summary |
-| negative fixture: numeric deadlock | PASS | requires NONNUMERIC for four BICG/GESUMMV 16.5 rows |
-| negative fixture: OO proxy | PASS | requires qualified D5 exact OO duplicate fields |
-| negative fixture: invented 40 KiB observer | PASS | requires D4 exact 24/32/48 membership |
-| negative fixture: payload relabeled DRAM | PASS | scope string explicitly rejects DRAM/total-link terminology |
+| A00_PINNED_INPUTS | PASS | manifest SHA-256 and pinned commit/path closure match |
+| A01_FAST12_ORDER | PASS | order is derived from pinned FAST12 source; aggregate is excluded |
+| A02_PRIMARY_CELLS_AND_GM | PASS | cycles and GM are recomputed from pinned integers; diagnostic rows are rejected |
+| A03_D4_CARTESIAN_AND_DENOMINATOR | PASS | exact D4 cartesian coverage and source observer_sample_sm_cycles field |
+| A04_D4_LAUNCH_REUSE | PASS | counts computed from pinned rows, not a handwritten observed phrase |
+| A05_D5_QUALIFIED_PAIRS | PASS | D5 exact OO metric required; proxy substitution is rejected |
+| A06_LOGICAL_MEMBERSHIP | PASS | output rows equal pinned Lane-A table; numeric plot membership is row_kind=NUMERIC_ACCEPTED_POINT |
+| A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY | PASS | output rows equal pinned Lane-A table; numeric plot membership is row_kind=NUMERIC_ACCEPTED_POINT; BICG/GESUMMV 16.5 nonnumeric and Btree 16.5 numeric verified |
+| A08_PIB_MEMBERSHIP | PASS | output rows equal pinned Lane-A table; numeric plot membership is row_kind=NUMERIC_ACCEPTED_POINT |
+| A09_FIGURE_IDENTITY | PASS | F07 duplicate index/stale series path is prohibited |
+| A10_RICH_WORKLOAD_EXPLANATIONS | PASS | Lane-A performance/pressure/HOL/reclaim/traffic/caveat fields are retained per workload |
+| MACHINE_F01 | PASS | SVG XML parsed; PNG=1500x900; PDF signature |
+| MACHINE_F02 | PASS | SVG XML parsed; PNG=1500x900; PDF signature |
+| MACHINE_F03 | PASS | SVG XML parsed; PNG=1500x900; PDF signature |
+| MACHINE_F04 | PASS | SVG XML parsed; PNG=1500x900; PDF signature |
+| MACHINE_F05 | PASS | SVG XML parsed; PNG=1500x900; PDF signature |
+| MACHINE_F06 | PASS | SVG XML parsed; PNG=1500x900; PDF signature |
+| MACHINE_F07 | PASS | SVG XML parsed; PNG=1800x1160; PDF signature |
+| MACHINE_F08 | PASS | SVG XML parsed; PNG=1500x900; PDF signature |
+| MACHINE_F09 | PASS | SVG XML parsed; PNG=1600x1492; PDF signature |
+| CLAIM_required_claim_id_set | PASS | required register coverage |
+| CLAIM_artifact_claim_references | PASS | explicit figure/workload claim-id mapping; no NLP inference |
+| CLAIM_paper_section_traceability | PASS | paper prose references scoped claim groups |
+| NEGATIVE_N01_FAST12_ORDER | PASS | core validation failures: ['A01_FAST12_ORDER: order is derived from pinned FAST12 source; aggregate is excluded'] |
+| NEGATIVE_N02_PRIMARY_OBSERVER_CONTAMINATION | PASS | core validation failures: ['A02_PRIMARY_CELLS_AND_GM: cycles and GM are recomputed from pinned integers; diagnostic rows are rejected'] |
+| NEGATIVE_N03_PHYSICAL_16P5_NUMERIC | PASS | core validation failures: ['A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY: output rows equal pinned Lane-A table; numeric plot membership is row_kind=NUMERIC_ACCEPTED_POINT; BICG/GESUMMV 16.5 nonnumeric and Btree 16.5 numeric verified'] |
+| NEGATIVE_N04_OO_DUPLICATE_PROXY | PASS | core validation failures: ['A05_D5_QUALIFIED_PAIRS: D5 exact OO metric required; proxy substitution is rejected'] |
+| NEGATIVE_N05_INVENTED_D4_40KIB | PASS | core validation failures: ['A03_D4_CARTESIAN_AND_DENOMINATOR: exact D4 cartesian coverage and source observer_sample_sm_cycles field'] |
+| NEGATIVE_N06_PAYLOAD_RELABEL_DRAM | PASS | core validation failures: ['A05_D5_QUALIFIED_PAIRS: D5 exact OO metric required; proxy substitution is rejected'] |
+| DETERMINISM_EXECUTION | PASS | two isolated core builds; build exit codes=0/0; validation exit codes=0/0; recursive SHA-256 plus byte-size comparison |

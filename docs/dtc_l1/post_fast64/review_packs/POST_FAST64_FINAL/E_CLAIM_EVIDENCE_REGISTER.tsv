@@ -1,7 +1,30 @@
-claim	evidence_class	evidence	limitation
-primary IO/OO performance	ACCEPTED_FAST64_EVIDENCE	FAST64 primary integer cycles	exact 12-member GM only
-physical capacity changes end-to-end behavior	MEASURED_CORRELATION	D4 controlled 24/32/48 KiB sweep	controlled sensitivity; does not identify internal mediator
-pending Tag eviction produces IO duplicate reallocation	SOURCE_PROVEN	Lane C source semantics	applies to counter event; no inferred performance benefit
-L2 is dominant bottleneck	INSUFFICIENT	D6 selected revision	must not be stated as proven
-duplicate feedback is secondary cause of slowdown	INSUFFICIENT	D6 selected revision	must not be stated as proven
-OO universally removes duplicates	NOT_SUPPORTED	D5 qualified 12-workload comparison	7 lower, 3 higher, 2 both zero
+claim_id	claim_text	evidence_class	source_artifact	supported_scope	forbidden_overclaim
+C01_PRIMARY_FAST12_GM	IO/OO GM is recomputed only from the exact 12 accepted FAST12 integer-cycle rows.	ACCEPTED_FAST64_EVIDENCE	FAST64_FINAL/FAST12_summary.tsv	all 12 primary workloads	Do not enter diagnostic observer rows into GM.
+C02_IO_REGRESSIONS	ATAX, BICG, and GESUMMV retain IO regressions while OO is faster than Base.	ACCEPTED_FAST64_EVIDENCE	FAST64_FINAL/FAST12_summary.tsv	ATAX,BICG,GESUMMV	Do not hide negative IO rows.
+C03_GAUSSIAN_MODEST_BENEFIT	Gaussian has an approximately 1.108x modest benefit in paper-facing wording.	EXISTING_DATA_DERIVED_ANALYSIS	Lane A paper_primary_performance.tsv	Gaussian	Do not call the accepted benefit no benefit.
+C04_PRESSURE_NONEXCLUSIVE	Base pressure counters are separate nonexclusive accumulated exposure counters.	ACCEPTED_FAST64_EVIDENCE	Lane A paper_base_pressure_raw.tsv	all FAST12 workloads	Do not stack them into a causal 100% breakdown.
+C05_IO_HOL_SCOPE	IO HOL exposure is hol_ready_younger_cycles/(64*io_cycles).	EXISTING_DATA_DERIVED_ANALYSIS	Lane A paper_io_oo_mechanism.tsv	all FAST12 IO rows	Not an exclusive stall probability or causal share.
+C06_OO_RETIRE_SCOPE	OO out-of-order-retire fraction is ooo_retires/retire_count.	EXISTING_DATA_DERIVED_ANALYSIS	Lane A paper_io_oo_mechanism.tsv	all FAST12 OO rows	Not exclusive causal attribution.
+C07_LOGICAL_SENSITIVITY	Logical-capacity curves use accepted same-mode normalized points.	EXISTING_DATA_DERIVED_ANALYSIS	Lane A paper_sens_logical.tsv	BICG,GESUMMV,Btree	No universal optimum.
+C08_PHYSICAL_SENSITIVITY	Physical-pool curves retain only accepted numeric points and explicit boundaries.	EXISTING_DATA_DERIVED_ANALYSIS	Lane A paper_sens_physical.tsv	BICG,GESUMMV,Btree	No universal optimum or invented observer point.
+C09_PIB_SENSITIVITY	PIB curves use accepted same-mode normalized points.	EXISTING_DATA_DERIVED_ANALYSIS	Lane A paper_sens_pib.tsv	BICG,GESUMMV,Btree	No area/PPA optimum claim.
+C10_PHYSICAL_16P5_BOUNDARY	BICG/GESUMMV 16.5-KiB physical cases are nonnumeric boundaries; Btree 16.5-KiB remains numeric.	ACCEPTED_FAST64_EVIDENCE	FAST64_FINAL/fast64_6_expected_deadlocks.tsv; Lane A paper_sens_physical.tsv	physical 16.5 KiB	Never plot BICG/GESUMMV boundary as numeric performance.
+C11_D4_CONTROLLED_CAPACITY	D4 deliberately controls 24/32/48-KiB capacity and measures workload-specific end-to-end sensitivity.	MEASURED_CORRELATION	D revision D4,D6	BICG,GESUMMV,Btree only	It does not identify internal mediators.
+C12_POOL_FULL_EXPOSURE	At 48 KiB pool-full active-SM-cycle exposure can fall strongly for BICG/GESUMMV.	MEASURED_CORRELATION	D revision D4,D6	BICG,GESUMMV D4	Distinct from accumulated no-free burden.
+C13_NO_FREE_DENOMINATORS	No-free/instruction, no-free/active-SM-cycle, and pool-full time are distinct quantities.	EXISTING_DATA_DERIVED_ANALYSIS	D revision D4	IO no-free; D4	Never substitute 64*global cycles for observer_sample_sm_cycles.
+C14_OCCUPANCY_TO_INFLIGHT	Occupancy/pool-full and lower inflight co-vary in D4.	MEASURED_CORRELATION	D revision D6	D4 only	Internal arrow is not isolated causal evidence.
+C15_INFLIGHT_TO_L2	Inflight and L2 miss/reservation pressure co-vary in D4.	MEASURED_CORRELATION	D revision D6	D4 only	Not independently intervened on.
+C16_L2_TO_LIFETIME	L2 pressure and alloc-to-ready lifetime co-vary in D4.	MEASURED_CORRELATION	D revision D6	D4 only	No L2-dominant causal proof.
+C17_LIFETIME_TO_PENDING_TAG	Pending lifetime to pending Tag eviction remains insufficiently identified.	INSUFFICIENT	D revision D6	D4 mechanism chain	Do not fill this gap with pending-hit totals.
+C18_PENDING_TAG_TO_DUPLICATE	Pending Tag eviction followed by same-line pre-response reallocation increments the duplicate lower-request counter.	SOURCE_PROVEN	Lane C DUPLICATE_MISS_SOURCE_SEMANTICS.md	IO counter semantics	Does not prove event frequency or performance effect.
+C19_DUPLICATE_TO_PERFORMANCE	Duplicate lower traffic to performance is not supported as an isolated effect.	NOT_SUPPORTED	D revision D6	D4/D5 interpretation	No recoverable-performance estimate.
+C20_OO_LIFECYCLE	OO immediate/deferred/final-ref reclaim lifecycle is source-proven observer semantics.	SOURCE_PROVEN	Lane D observer counter semantics	OO lifecycle	Does not establish a performance-causal arrow.
+C21_FINAL_RECLAIM_PERFORMANCE	Final reclaim/concurrency to performance remains bounded rather than causal.	INSUFFICIENT	D revision D6	OO D4	Do not infer performance from reclaim counts.
+C22_LARGER_POOL_TRANSFER	A universal larger-pool-to-downstream-pressure-transfer story is not supported.	NOT_SUPPORTED	Lane B handoff; D revision	physical sweeps	Keep workload/mode-specific nonmonotonicity.
+C23_L2_AND_DUPLICATE_INSUFFICIENT	L2 dominance and duplicate-secondary-feedback remain insufficient.	INSUFFICIENT	D revision D6	integrated interpretation	Never promote either to a root cause.
+C24_D5_7_3_2	Qualified D5 exact duplicate shares yield 7 OO-lower, 3 OO-higher, and 2 both-zero workloads.	NEW_DIAGNOSTIC_TELEMETRY	D revision D5_IO_OO_DUPLICATE_COMPARISON.tsv	12 IO/OO pairs	OO does not universally remove duplicates.
+C25_PAYLOAD_SCOPE	duplicate*128 B is lower-request payload only.	SOURCE_PROVEN	Lane C duplicate semantics; D5	duplicate payload	Never label it DRAM, total-link, total-memory traffic, or recoverable performance.
+C26_D4_WORKLOAD_SCOPE	D4 capacity findings apply only to BICG, GESUMMV, and Btree.	NEW_DIAGNOSTIC_TELEMETRY	D revision D4	three D4 workloads	Do not project D4 to the other nine workloads.
+C27_DIAGNOSTIC_NOT_PRIMARY	Observer evidence is diagnostic and never enters the FAST12 primary GM.	NEW_DIAGNOSTIC_TELEMETRY	D4/D5 provenance	all observer evidence	Do not relabel as primary FAST64.
+C28_REPAIR_ZERO_SIMULATION	This bounded Lane-E repair runs no simulation or scientific/Core change.	SOURCE_PROVEN	Lane E execution inventory	repair scope	No new scientific evidence is created.
+C29_BTREE_ABSOLUTE_SCALE	Btree can be OO-higher by ratio while both duplicate shares are tiny in absolute scale.	NEW_DIAGNOSTIC_TELEMETRY	D5 comparison	Btree	Do not interpret the ratio without absolute shares.

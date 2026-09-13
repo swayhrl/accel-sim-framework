@@ -85,6 +85,7 @@ IMPORTS = {
     ]),
     "D_revision": (D_REV, "NEW_DIAGNOSTIC_TELEMETRY", "selected reviewed D4/D5/D6/D7 interpretation", [
         "docs/dtc_l1/post_fast64/LANE_D_ANALYSIS_REVISION.md",
+        "docs/dtc_l1/post_fast64/LANE_D_OBSERVER_COUNTER_SEMANTICS.md",
         "docs/dtc_l1/post_fast64/LANE_D_OBSERVER_FINAL.md",
         "docs/dtc_l1/post_fast64/generated/D4_OBSERVER_PHYSICAL_TELEMETRY.tsv",
         "docs/dtc_l1/post_fast64/generated/D5_DUPLICATE_TRAFFIC_INFLATION.tsv",
@@ -97,6 +98,21 @@ IMPORTS = {
 
 WORKLOAD_ORDER = ["ATAX", "BICG", "GESUMMV", "GEMM", "2DConvolution", "Btree", "DWT2D", "Gaussian", "Hotspot1", "LUD", "MRI-Q", "NN"]
 COLORS = ["#355C7D", "#C06C84", "#6C8EAD", "#F8B195", "#5B8E7D", "#8D6E63"]
+
+# The claim IDs below are intentionally explicit: a paper-facing result may
+# point to one or more of these IDs, but never to an unnamed implication.
+REQUIRED_CLAIM_IDS = (
+    "C01_PRIMARY_FAST12_GM", "C02_IO_REGRESSIONS", "C03_GAUSSIAN_MODEST_BENEFIT",
+    "C04_PRESSURE_NONEXCLUSIVE", "C05_IO_HOL_SCOPE", "C06_OO_RETIRE_SCOPE",
+    "C07_LOGICAL_SENSITIVITY", "C08_PHYSICAL_SENSITIVITY", "C09_PIB_SENSITIVITY",
+    "C10_PHYSICAL_16P5_BOUNDARY", "C11_D4_CONTROLLED_CAPACITY", "C12_POOL_FULL_EXPOSURE",
+    "C13_NO_FREE_DENOMINATORS", "C14_OCCUPANCY_TO_INFLIGHT", "C15_INFLIGHT_TO_L2",
+    "C16_L2_TO_LIFETIME", "C17_LIFETIME_TO_PENDING_TAG", "C18_PENDING_TAG_TO_DUPLICATE",
+    "C19_DUPLICATE_TO_PERFORMANCE", "C20_OO_LIFECYCLE", "C21_FINAL_RECLAIM_PERFORMANCE",
+    "C22_LARGER_POOL_TRANSFER", "C23_L2_AND_DUPLICATE_INSUFFICIENT",
+    "C24_D5_7_3_2", "C25_PAYLOAD_SCOPE", "C26_D4_WORKLOAD_SCOPE",
+    "C27_DIAGNOSTIC_NOT_PRIMARY", "C28_REPAIR_ZERO_SIMULATION", "C29_BTREE_ABSOLUTE_SCALE",
+)
 
 
 def sha256(p: Path) -> str:
@@ -272,9 +288,9 @@ def build_duplicates(inputs: Path, tables: Path):
         assert int(ir["io_lower_created"]) == int(dr["io_lower_created"])
         assert int(ir["io_duplicate_after_eviction"]) == int(dr["io_duplicate_after_eviction"])
         vals = []
-        for mode, lower_key, dup_key, source, klass in [
-            ("IO", "io_lower_created", "io_duplicate_after_eviction", "Lane_C_accepted_IO", "ACCEPTED_FAST64_EVIDENCE"),
-            ("OO", "oo_lower_created", "oo_duplicate_after_eviction", "Lane_D_qualified_observer", "NEW_DIAGNOSTIC_TELEMETRY"),
+        for mode, lower_key, dup_key, source, klass, qualification in [
+            ("IO", "io_lower_created", "io_duplicate_after_eviction", "Lane_C_accepted_IO", "ACCEPTED_FAST64_EVIDENCE", dr["io_evidence_status"]),
+            ("OO", "oo_lower_created", "oo_duplicate_after_eviction", "Lane_D_qualified_observer", "NEW_DIAGNOSTIC_TELEMETRY", dr["oo_evidence_status"]),
         ]:
             lower_created, dup = int(dr[lower_key]), int(dr[dup_key])
             share = dec_ratio(dup, lower_created)
@@ -282,7 +298,9 @@ def build_duplicates(inputs: Path, tables: Path):
             out.append({"workload":workload,"mode":mode,"lower_created":lower_created,"duplicate_after_eviction":dup,
                         "duplicate_share_of_lower":share,"duplicate_traffic_inflation":inflation,"duplicate_payload_bytes":dup*128,
                         "payload_scope":"SOURCE_PROVEN_128B_LOWER_REQUEST_PAYLOAD_ONLY_NOT_DRAM_OR_TOTAL_LINK_TRAFFIC",
-                        "evidence_source":source,"evidence_class":klass,"ratio_formula":"D/L; payload inflation D/(L-D)"})
+                        "evidence_source":source,"qualified_evidence_status":qualification,
+                        "source_row_kind":dr["oo_source_row_kind"],"evidence_class":klass,
+                        "ratio_formula":"D/L; payload inflation D/(L-D)"})
             vals.append((share, dup))
         io_share, oo_share = (d(x[0]) for x in vals)
         if vals[0][1] == vals[1][1] == 0:
@@ -291,24 +309,24 @@ def build_duplicates(inputs: Path, tables: Path):
             disposition="OO_LOWER"; lower += 1
         else:
             disposition="OO_HIGHER"; higher += 1
-        comparison.append({"workload":workload,"io_duplicate_share_of_lower":vals[0][0],"oo_duplicate_share_of_lower":vals[1][0],"io_duplicate_payload_bytes":vals[0][1]*128,"oo_duplicate_payload_bytes":vals[1][1]*128,"OO_vs_IO_share_disposition":disposition,"scope":"descriptive; no performance recovery inferred"})
+        comparison.append({"workload":workload,"io_duplicate_count":vals[0][1],"oo_duplicate_count":vals[1][1],"io_duplicate_share_of_lower":vals[0][0],"oo_duplicate_share_of_lower":vals[1][0],"io_duplicate_payload_bytes":vals[0][1]*128,"oo_duplicate_payload_bytes":vals[1][1]*128,"OO_vs_IO_share_disposition":disposition,"scope":"descriptive; no performance recovery inferred"})
     assert (lower,higher,zeros)==(7,3,2), (lower,higher,zeros)
     tsv_write(tables / "E_DUPLICATE_IO_OO.tsv", out)
     tsv_write(tables / "E_DUPLICATE_PAYLOAD_RATIOS.tsv", comparison)
     return out, comparison
 
 
-def build_coverage(inputs: Path, out: Path):
-    rows=[
-        {"identity":"FAST12_workloads","expected":"12","observed":"12","status":"PASS","source":"FAST64/FAST12_summary.tsv"},
-        {"identity":"primary_Base_IO_OO_cells","expected":"36","observed":"36","status":"PASS","source":"FAST64/FAST12_summary.tsv"},
-        {"identity":"D4_observer_cells","expected":"18","observed":"18","status":"PASS","source":"D_revision/D4_OBSERVER_PHYSICAL_TELEMETRY.tsv"},
-        {"identity":"D5_workload_rows","expected":"12","observed":"12","status":"PASS","source":"D_revision/D5_IO_OO_DUPLICATE_COMPARISON.tsv"},
-        {"identity":"D4_observer_launch_accounting","expected":"29 launches + 1 exact Btree reuse","observed":"29 launches + 1 exact Btree reuse","status":"PASS","source":"D_revision/D7_ORDERED_PREEXISTING_STAT_AUDIT.tsv"},
-        {"identity":"observer_active_SM_denominator","expected":"observer_sample_sm_cycles; never 64*global_cycles","observed":"preserved source denominator","status":"PASS","source":"D_revision/D4_OBSERVER_PHYSICAL_TELEMETRY.tsv"},
-        {"identity":"D4_capacity_membership","expected":"24,32,48 KiB only","observed":"24,32,48 KiB only","status":"PASS","source":"D_revision/D4_OBSERVER_PHYSICAL_TELEMETRY.tsv"},
-    ]
-    tsv_write(out / "E_COVERAGE_AND_IDENTITY.tsv", rows)
+def write_coverage_and_metric_dictionary(inputs: Path, package: Path, audit_rows):
+    """Emit coverage from the real audit values, never embedded observations."""
+    coverage_ids = {
+        "A01_FAST12_ORDER", "A02_PRIMARY_CELLS_AND_GM", "A03_D4_CARTESIAN_AND_DENOMINATOR",
+        "A04_D4_LAUNCH_REUSE", "A05_D5_QUALIFIED_PAIRS", "A06_LOGICAL_MEMBERSHIP",
+        "A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY", "A08_PIB_MEMBERSHIP",
+    }
+    rows = [{"identity": r["check_id"], "expected": r["expected"], "observed": r["observed"],
+             "status": r["status"], "source": r["evidence_path"], "detail": r["detail"]}
+            for r in audit_rows if r["check_id"] in coverage_ids]
+    tsv_write(package / "E_COVERAGE_AND_IDENTITY.tsv", rows)
     dictionary=[
         ("speedup_mode","Base_cycles/mode_cycles","x","accepted integer cycles","primary performance"),
         ("IO_HOL_SM_CYCLE_FRACTION","io_hol_ready_younger_cycles/(64*io_cycles)","fraction","64 SMs times global IO cycles","not an exclusive stall probability"),
@@ -320,7 +338,7 @@ def build_coverage(inputs: Path, out: Path):
         ("duplicate_traffic_inflation","duplicate/(lower_created-duplicate)","descriptive ratio","nonduplicate lower requests","not recoverable performance"),
         ("duplicate_payload_bytes","duplicate*128","B","source-proven request payload","not DRAM/total-link traffic"),
     ]
-    tsv_write(out / "E_METRIC_DICTIONARY.tsv", [dict(zip(["metric","formula","unit","denominator_or_granularity","boundary"],x)) for x in dictionary])
+    tsv_write(package / "E_METRIC_DICTIONARY.tsv", [dict(zip(["metric","formula","unit","denominator_or_granularity","boundary"],x)) for x in dictionary])
 
 
 def build_reconciliation(out: Path):
@@ -333,15 +351,39 @@ def build_reconciliation(out: Path):
         {"topic":"Lane B historical chain","historical_source":"B","selected_source":"D6 revision","resolution":"controlled capacity sensitivity is retained while internal mediator arrows remain non-isolated.","status":"RECONCILED"},
     ]
     tsv_write(out / "E_INTERPRETATION_RECONCILIATION.tsv", rows)
-    claims=[
-        ("primary IO/OO performance", "ACCEPTED_FAST64_EVIDENCE", "FAST64 primary integer cycles", "exact 12-member GM only"),
-        ("physical capacity changes end-to-end behavior", "MEASURED_CORRELATION", "D4 controlled 24/32/48 KiB sweep", "controlled sensitivity; does not identify internal mediator"),
-        ("pending Tag eviction produces IO duplicate reallocation", "SOURCE_PROVEN", "Lane C source semantics", "applies to counter event; no inferred performance benefit"),
-        ("L2 is dominant bottleneck", "INSUFFICIENT", "D6 selected revision", "must not be stated as proven"),
-        ("duplicate feedback is secondary cause of slowdown", "INSUFFICIENT", "D6 selected revision", "must not be stated as proven"),
-        ("OO universally removes duplicates", "NOT_SUPPORTED", "D5 qualified 12-workload comparison", "7 lower, 3 higher, 2 both zero"),
+    claims = [
+        ("C01_PRIMARY_FAST12_GM", "IO/OO GM is recomputed only from the exact 12 accepted FAST12 integer-cycle rows.", "ACCEPTED_FAST64_EVIDENCE", "FAST64_FINAL/FAST12_summary.tsv", "all 12 primary workloads", "Do not enter diagnostic observer rows into GM."),
+        ("C02_IO_REGRESSIONS", "ATAX, BICG, and GESUMMV retain IO regressions while OO is faster than Base.", "ACCEPTED_FAST64_EVIDENCE", "FAST64_FINAL/FAST12_summary.tsv", "ATAX,BICG,GESUMMV", "Do not hide negative IO rows."),
+        ("C03_GAUSSIAN_MODEST_BENEFIT", "Gaussian has an approximately 1.108x modest benefit in paper-facing wording.", "EXISTING_DATA_DERIVED_ANALYSIS", "Lane A paper_primary_performance.tsv", "Gaussian", "Do not call the accepted benefit no benefit."),
+        ("C04_PRESSURE_NONEXCLUSIVE", "Base pressure counters are separate nonexclusive accumulated exposure counters.", "ACCEPTED_FAST64_EVIDENCE", "Lane A paper_base_pressure_raw.tsv", "all FAST12 workloads", "Do not stack them into a causal 100% breakdown."),
+        ("C05_IO_HOL_SCOPE", "IO HOL exposure is hol_ready_younger_cycles/(64*io_cycles).", "EXISTING_DATA_DERIVED_ANALYSIS", "Lane A paper_io_oo_mechanism.tsv", "all FAST12 IO rows", "Not an exclusive stall probability or causal share."),
+        ("C06_OO_RETIRE_SCOPE", "OO out-of-order-retire fraction is ooo_retires/retire_count.", "EXISTING_DATA_DERIVED_ANALYSIS", "Lane A paper_io_oo_mechanism.tsv", "all FAST12 OO rows", "Not exclusive causal attribution."),
+        ("C07_LOGICAL_SENSITIVITY", "Logical-capacity curves use accepted same-mode normalized points.", "EXISTING_DATA_DERIVED_ANALYSIS", "Lane A paper_sens_logical.tsv", "BICG,GESUMMV,Btree", "No universal optimum."),
+        ("C08_PHYSICAL_SENSITIVITY", "Physical-pool curves retain only accepted numeric points and explicit boundaries.", "EXISTING_DATA_DERIVED_ANALYSIS", "Lane A paper_sens_physical.tsv", "BICG,GESUMMV,Btree", "No universal optimum or invented observer point."),
+        ("C09_PIB_SENSITIVITY", "PIB curves use accepted same-mode normalized points.", "EXISTING_DATA_DERIVED_ANALYSIS", "Lane A paper_sens_pib.tsv", "BICG,GESUMMV,Btree", "No area/PPA optimum claim."),
+        ("C10_PHYSICAL_16P5_BOUNDARY", "BICG/GESUMMV 16.5-KiB physical cases are nonnumeric boundaries; Btree 16.5-KiB remains numeric.", "ACCEPTED_FAST64_EVIDENCE", "FAST64_FINAL/fast64_6_expected_deadlocks.tsv; Lane A paper_sens_physical.tsv", "physical 16.5 KiB", "Never plot BICG/GESUMMV boundary as numeric performance."),
+        ("C11_D4_CONTROLLED_CAPACITY", "D4 deliberately controls 24/32/48-KiB capacity and measures workload-specific end-to-end sensitivity.", "MEASURED_CORRELATION", "D revision D4,D6", "BICG,GESUMMV,Btree only", "It does not identify internal mediators."),
+        ("C12_POOL_FULL_EXPOSURE", "At 48 KiB pool-full active-SM-cycle exposure can fall strongly for BICG/GESUMMV.", "MEASURED_CORRELATION", "D revision D4,D6", "BICG,GESUMMV D4", "Distinct from accumulated no-free burden."),
+        ("C13_NO_FREE_DENOMINATORS", "No-free/instruction, no-free/active-SM-cycle, and pool-full time are distinct quantities.", "EXISTING_DATA_DERIVED_ANALYSIS", "D revision D4", "IO no-free; D4", "Never substitute 64*global cycles for observer_sample_sm_cycles."),
+        ("C14_OCCUPANCY_TO_INFLIGHT", "Occupancy/pool-full and lower inflight co-vary in D4.", "MEASURED_CORRELATION", "D revision D6", "D4 only", "Internal arrow is not isolated causal evidence."),
+        ("C15_INFLIGHT_TO_L2", "Inflight and L2 miss/reservation pressure co-vary in D4.", "MEASURED_CORRELATION", "D revision D6", "D4 only", "Not independently intervened on."),
+        ("C16_L2_TO_LIFETIME", "L2 pressure and alloc-to-ready lifetime co-vary in D4.", "MEASURED_CORRELATION", "D revision D6", "D4 only", "No L2-dominant causal proof."),
+        ("C17_LIFETIME_TO_PENDING_TAG", "Pending lifetime to pending Tag eviction remains insufficiently identified.", "INSUFFICIENT", "D revision D6", "D4 mechanism chain", "Do not fill this gap with pending-hit totals."),
+        ("C18_PENDING_TAG_TO_DUPLICATE", "Pending Tag eviction followed by same-line pre-response reallocation increments the duplicate lower-request counter.", "SOURCE_PROVEN", "Lane C DUPLICATE_MISS_SOURCE_SEMANTICS.md", "IO counter semantics", "Does not prove event frequency or performance effect."),
+        ("C19_DUPLICATE_TO_PERFORMANCE", "Duplicate lower traffic to performance is not supported as an isolated effect.", "NOT_SUPPORTED", "D revision D6", "D4/D5 interpretation", "No recoverable-performance estimate."),
+        ("C20_OO_LIFECYCLE", "OO immediate/deferred/final-ref reclaim lifecycle is source-proven observer semantics.", "SOURCE_PROVEN", "Lane D observer counter semantics", "OO lifecycle", "Does not establish a performance-causal arrow."),
+        ("C21_FINAL_RECLAIM_PERFORMANCE", "Final reclaim/concurrency to performance remains bounded rather than causal.", "INSUFFICIENT", "D revision D6", "OO D4", "Do not infer performance from reclaim counts."),
+        ("C22_LARGER_POOL_TRANSFER", "A universal larger-pool-to-downstream-pressure-transfer story is not supported.", "NOT_SUPPORTED", "Lane B handoff; D revision", "physical sweeps", "Keep workload/mode-specific nonmonotonicity."),
+        ("C23_L2_AND_DUPLICATE_INSUFFICIENT", "L2 dominance and duplicate-secondary-feedback remain insufficient.", "INSUFFICIENT", "D revision D6", "integrated interpretation", "Never promote either to a root cause."),
+        ("C24_D5_7_3_2", "Qualified D5 exact duplicate shares yield 7 OO-lower, 3 OO-higher, and 2 both-zero workloads.", "NEW_DIAGNOSTIC_TELEMETRY", "D revision D5_IO_OO_DUPLICATE_COMPARISON.tsv", "12 IO/OO pairs", "OO does not universally remove duplicates."),
+        ("C25_PAYLOAD_SCOPE", "duplicate*128 B is lower-request payload only.", "SOURCE_PROVEN", "Lane C duplicate semantics; D5", "duplicate payload", "Never label it DRAM, total-link, total-memory traffic, or recoverable performance."),
+        ("C26_D4_WORKLOAD_SCOPE", "D4 capacity findings apply only to BICG, GESUMMV, and Btree.", "NEW_DIAGNOSTIC_TELEMETRY", "D revision D4", "three D4 workloads", "Do not project D4 to the other nine workloads."),
+        ("C27_DIAGNOSTIC_NOT_PRIMARY", "Observer evidence is diagnostic and never enters the FAST12 primary GM.", "NEW_DIAGNOSTIC_TELEMETRY", "D4/D5 provenance", "all observer evidence", "Do not relabel as primary FAST64."),
+        ("C28_REPAIR_ZERO_SIMULATION", "This bounded Lane-E repair runs no simulation or scientific/Core change.", "SOURCE_PROVEN", "Lane E execution inventory", "repair scope", "No new scientific evidence is created."),
+        ("C29_BTREE_ABSOLUTE_SCALE", "Btree can be OO-higher by ratio while both duplicate shares are tiny in absolute scale.", "NEW_DIAGNOSTIC_TELEMETRY", "D5 comparison", "Btree", "Do not interpret the ratio without absolute shares."),
     ]
-    tsv_write(out / "E_CLAIM_EVIDENCE_REGISTER.tsv", [dict(zip(["claim","evidence_class","evidence","limitation"],x)) for x in claims])
+    fields = ["claim_id", "claim_text", "evidence_class", "source_artifact", "supported_scope", "forbidden_overclaim"]
+    tsv_write(out / "E_CLAIM_EVIDENCE_REGISTER.tsv", [dict(zip(fields, row)) for row in claims], fields)
 
 
 def esc(s): return html.escape(str(s), quote=True)
@@ -410,7 +452,10 @@ def svg_heatmap(title,rowlabels,collabels,values,footnote="",log_color=False):
 
 def svg_matrix(title, rows, footnote=""):
     # columns: arrow, verdict, scope; colors convey evidence classification.
-    w,h=1600,900; parts=svg_start(title,w,h); x=[50,620,850,1110]; widths=[570,220,260,430]
+    # D6 currently has sixteen evidence rows.  Give every source row its
+    # fixed-height cell plus a bottom note; a 900-pixel canvas would silently
+    # crop the last seven rows in PNG/PDF review previews.
+    w,h=1600,max(900, 122 + len(rows)*82 + 58); parts=svg_start(title,w,h); x=[50,620,850,1110]; widths=[570,220,260,430]
     headers=["Mechanism link", "Evidence level", "Scope", "Boundary"]
     for i,hdr in enumerate(headers): parts += [f'<rect x="{x[i]}" y="85" width="{widths[i]}" height="36" fill="#34495E"/>',svg_text(x[i]+8,109,hdr,12,"start","bold","white")]
     cmap={"SOURCE_PROVEN":"#B8E0C8","MEASURED_CORRELATION":"#C9DAF0","NOT_SUPPORTED":"#F6D6AD","INSUFFICIENT":"#E7C3D9"}
@@ -429,7 +474,7 @@ def svg_matrix(title, rows, footnote=""):
             lines.append(line)
             for k,line in enumerate(lines[:4]): parts.append(svg_text(x[i]+7,y+19+k*16,line,10,"start","bold" if i==1 else "normal"))
         y +=82
-    parts.append(svg_text(w/2,850,footnote,11,"middle","normal","#566573")); return svg_end(parts)
+    parts.append(svg_text(w/2,h-28,footnote,11,"middle","normal","#566573")); return svg_end(parts)
 
 
 def svg_observer_panels(rows):
@@ -598,7 +643,6 @@ def build_figures(tables: Path, figures: Path):
         if fid=="F05": note="16.5-KiB BICG/GESUMMV markers are nonnumeric resource boundaries; Btree 16.5 stays numeric."
         add(fid,title, f"Accepted Stage6 {title.lower()} with same-mode normalization. {note} No universal optimum is inferred.",[f"tables/E_SENS_{short}.tsv"],svg_lines(f"{fid}. {title}",series,"Speedup vs same-mode reference",note,[str(p).rstrip('0').rstrip('.') for p in points]),["Accepted Stage6 points only.",note,"Curves are workload- and mode-specific, not universal optimum claims."])
     d4=tsv_read(tables/"E_PHYSICAL_OBSERVER_SYNTHESIS.tsv")
-    add("F07","Physical-pool observer diagnosis", "Diagnostic observer sweep at 24/32/48 KiB. The chart shows physical-full active-SM-cycle fraction; the linked table also retains occupancy lines/fraction, inflight, alloc-to-ready, L2 rates, cycles, and both IO no-free denominators.", ["tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv","tables/E_PRESSURE_DENOMINATOR_COMPARISON.tsv"],svg_lines("F07. Physical-pool observer: full-time exposure",series,"Physical-full active-SM-cycle fraction","D4 diagnostic evidence; controlled capacity sensitivity, internal mediators not isolated.",["24 KiB","32 KiB","48 KiB"]),["D4: 18 cells, 3 workloads × 3 capacities × 2 modes.","Denominator is observer sampled active-SM cycles; never 64 × global cycles.","At 48 KiB exposure can fall while runtime/no-free burden need not improve."])
     add("F07","Physical-pool observer diagnosis", "Ten-panel diagnostic observer sweep at 24/32/48 KiB: cycles, allocated lines, occupancy fraction, pool-full active-SM-cycle fraction, inflight requests, alloc-to-ready average, L2 rates, and both IO no-free denominators. Capacity is controlled; internal mediators remain non-isolated.", ["tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv","tables/E_PRESSURE_DENOMINATOR_COMPARISON.tsv"],svg_observer_panels(d4),["D4: 18 cells, 3 workloads × 3 capacities × 2 modes.","Ten panels retain occupancy, full-time, inflight, lifetime, L2, cycle, and both no-free scopes.","All time integrals use observer sampled active-SM cycles; internal mediator arrows are not isolated."])
     dup=tsv_read(tables/"E_DUPLICATE_IO_OO.tsv")
     by=defaultdict(dict)
@@ -608,26 +652,79 @@ def build_figures(tables: Path, figures: Path):
     # Tables' grandparent varies in build dirs; caller writes a materialized D6 copy below.
     arrows=tsv_read(tables/"E_D6_ARROW_CLASSIFICATION.tsv")
     add("F09","Integrated evidence and boundary matrix", "Evidence levels for the physical-pool mechanism chain. A controlled capacity intervention establishes workload-specific sensitivity, while the internal arrows remain non-isolated unless source-proven or explicitly bounded.", ["tables/E_D6_ARROW_CLASSIFICATION.tsv","E_CLAIM_EVIDENCE_REGISTER.tsv"],svg_matrix("F09. Integrated evidence and boundary matrix",arrows,"Do not infer a single root cause. Source-proven, measured, insufficient, and not-supported results are distinct."),["Evidence levels are source-proven, measured correlation, insufficient, or not supported.","Capacity is controlled; internal mediator arrows remain non-isolated.","L2 dominance and duplicate-secondary-feedback remain insufficient."])
+    assert [row["figure_id"] for row in docs] == [f"F{i:02d}" for i in range(1,10)]
+    figure_claims = {
+        "F01":"C01_PRIMARY_FAST12_GM,C02_IO_REGRESSIONS,C03_GAUSSIAN_MODEST_BENEFIT,C27_DIAGNOSTIC_NOT_PRIMARY",
+        "F02":"C04_PRESSURE_NONEXCLUSIVE", "F03":"C05_IO_HOL_SCOPE,C06_OO_RETIRE_SCOPE",
+        "F04":"C07_LOGICAL_SENSITIVITY", "F05":"C08_PHYSICAL_SENSITIVITY,C10_PHYSICAL_16P5_BOUNDARY",
+        "F06":"C09_PIB_SENSITIVITY", "F07":"C11_D4_CONTROLLED_CAPACITY,C12_POOL_FULL_EXPOSURE,C13_NO_FREE_DENOMINATORS,C26_D4_WORKLOAD_SCOPE",
+        "F08":"C24_D5_7_3_2,C25_PAYLOAD_SCOPE,C29_BTREE_ABSOLUTE_SCALE",
+        "F09":"C14_OCCUPANCY_TO_INFLIGHT,C15_INFLIGHT_TO_L2,C16_L2_TO_LIFETIME,C17_LIFETIME_TO_PENDING_TAG,C18_PENDING_TAG_TO_DUPLICATE,C19_DUPLICATE_TO_PERFORMANCE,C22_LARGER_POOL_TRANSFER,C23_L2_AND_DUPLICATE_INSUFFICIENT",
+    }
+    for row in docs:
+        row["claim_ids"] = figure_claims[row["figure_id"]]
     tsv_write(figures.parent/"FIGURE_INDEX.tsv",docs)
     md=["# Figure index and captions", "", "All captions are English. Every plot is rebuilt from the compact Lane-E snapshots; observer evidence is diagnostic and is never part of the FAST12 GM.", ""]
     for r in docs: md += [f"## {r['figure_id']} — {r['title']}","",r['caption'],"",f"Source mapping: `{r['plot_ready_table']}`. Assets: `{r['assets']}`.",""]
     (figures.parent/"FIGURE_INDEX.md").write_text("\n".join(md),encoding="utf-8")
 
 
-def build_writing(tables: Path, out: Path):
-    p={r['workload']:r for r in tsv_read(tables/"E_PRIMARY_PERFORMANCE.tsv") if r['aggregate']=='NO'}
-    m={r['workload']:r for r in tsv_read(tables/"E_IO_OO_MECHANISM.tsv")}
-    dup=defaultdict(dict)
-    for r in tsv_read(tables/"E_DUPLICATE_IO_OO.tsv"): dup[r['workload']][r['mode']]=r
+def build_writing(inputs: Path, tables: Path, out: Path):
+    """Preserve the rich pinned Lane-A explanation row and add C/D facts."""
+    lane_a = {r["workload"]: r for r in tsv_read(snapshot(inputs, "A", "docs/dtc_l1/post_fast64/generated/paper_workload_explanations.tsv"))}
+    assert set(lane_a) == set(WORKLOAD_ORDER) and len(lane_a) == 12
+    primary={r['workload']:r for r in tsv_read(tables/"E_PRIMARY_PERFORMANCE.tsv") if r['aggregate']=='NO'}
+    mechanism={r['workload']:r for r in tsv_read(tables/"E_IO_OO_MECHANISM.tsv")}
+    duplicates=defaultdict(dict)
+    for r in tsv_read(tables/"E_DUPLICATE_IO_OO.tsv"):
+        duplicates[r['workload']][r['mode']]=r
+    compare={r['workload']:r for r in tsv_read(tables/"E_DUPLICATE_PAYLOAD_RATIOS.tsv")}
+    d4=defaultdict(list)
+    for r in tsv_read(tables/"E_PHYSICAL_OBSERVER_SYNTHESIS.tsv"):
+        d4[r['workload']].append(r)
     workload=[]
     for w in WORKLOAD_ORDER:
-        io,oo=p[w]['speedup_IO_base_over_IO'],p[w]['speedup_OO_base_over_OO']
-        di,do=dup[w]['IO']['duplicate_share_of_lower'],dup[w]['OO']['duplicate_share_of_lower']
-        caveat="Physical-sweep observer conclusions are not projected to this workload." if w not in {"BICG","GESUMMV","Btree"} else "D4 is a controlled capacity sensitivity, but its internal mediator arrows are not isolated."
-        workload.append({"workload":w,"primary_IO_speedup":io,"primary_OO_speedup":oo,"io_HOL_active_SM_cycle_fraction":m[w]['io_hol_sm_cycle_fraction'],"oo_OOO_retire_fraction":m[w]['oo_ooo_retire_fraction'],"io_duplicate_share":di,"oo_duplicate_share":do,"strongest_supported_interpretation":"Measured performance/telemetry association; source semantics only where the counter path is explicitly proven.","caveat":caveat,"evidence_scope":"FAST64 primary + Lane C IO + qualified Lane D OO duplicate; D4 only for BICG/GESUMMV/Btree"})
+        a=dict(lane_a[w]); io=duplicates[w]['IO']; oo=duplicates[w]['OO']; claims=["C01_PRIMARY_FAST12_GM","C04_PRESSURE_NONEXCLUSIVE","C05_IO_HOL_SCOPE","C06_OO_RETIRE_SCOPE","C18_PENDING_TAG_TO_DUPLICATE","C19_DUPLICATE_TO_PERFORMANCE","C24_D5_7_3_2","C25_PAYLOAD_SCOPE","C27_DIAGNOSTIC_NOT_PRIMARY"]
+        if w in {"ATAX","BICG","GESUMMV"}: claims.append("C02_IO_REGRESSIONS")
+        if w == "Gaussian": claims.append("C03_GAUSSIAN_MODEST_BENEFIT")
+        if w == "Btree": claims.append("C29_BTREE_ABSOLUTE_SCALE")
+        row={**a,
+             "primary_IO_speedup_recomputed":primary[w]['speedup_IO_base_over_IO'],
+             "primary_OO_speedup_recomputed":primary[w]['speedup_OO_base_over_OO'],
+             "IO_HOL_active_SM_cycle_fraction":mechanism[w]['io_hol_sm_cycle_fraction'],
+             "OO_OOO_retire_fraction":mechanism[w]['oo_ooo_retire_fraction'],
+             "io_duplicate_count_exact":io['duplicate_after_eviction'], "io_duplicate_share_exact":io['duplicate_share_of_lower'],
+             "oo_duplicate_count_exact":oo['duplicate_after_eviction'], "oo_duplicate_share_exact":oo['duplicate_share_of_lower'],
+             "duplicate_direction":compare[w]['OO_vs_IO_share_disposition'],
+             "duplicate_scope":"IO accepted Lane-C exact counter; OO qualified Lane-D exact observer counter; descriptive only.",
+             "source_proven_duplicate_semantics":"C18_PENDING_TAG_TO_DUPLICATE; C25_PAYLOAD_SCOPE",
+             "d4_scope":"NOT_COVERED_BY_D4", "d4_capacity_observation":"NOT_COVERED_BY_D4; do not project BICG/GESUMMV/Btree capacity results here.",
+             "paper_safe_interpretation":a['strongest_supported_interpretation'],
+             "forbidden_overclaim":"Do not infer a unique performance cause or recoverable duplicate-performance benefit.",
+             "source_lineage":f"Lane A {A}; Lane C {C}; D revision {D_REV}", "claim_ids":",".join(claims)}
+        if w == "Gaussian":
+            row['paper_safe_interpretation'] = a['strongest_supported_interpretation'] + " Paper-facing wording: approximately 1.108x modest benefit, not no benefit."
+        if w in d4:
+            cells=sorted(d4[w], key=lambda r:(r['mode'],int(r['physical_pool_kib'])))
+            io_cells=[r for r in cells if r['mode']=='IO']
+            row['d4_scope']="D4_CONTROLLED_24_32_48_KIB"
+            row['d4_capacity_observation']=("Controlled D4 capacity sensitivity: IO cycles " + " -> ".join(r['cycles'] for r in io_cells) +
+                "; IO pool-full active-SM fraction " + " -> ".join(r['physical_full_sample_fraction'] for r in io_cells) +
+                ". Internal mediators are not isolated.")
+            row['claim_ids'] += ",C11_D4_CONTROLLED_CAPACITY,C12_POOL_FULL_EXPOSURE,C13_NO_FREE_DENOMINATORS,C26_D4_WORKLOAD_SCOPE"
+        workload.append(row)
     tsv_write(out/"WORKLOAD_EXPLANATIONS.tsv",workload)
-    dups=tsv_read(tables/"E_DUPLICATE_PAYLOAD_RATIOS.tsv")
-    lines=["# POST-FAST64 paper results analysis", "", "## 范围与证据边界", "", "本分析的主性能结果严格来自冻结的 FAST64 提交 `18a68dcccd795f1b6cda75504e9450d00c9cee02`。后 FAST64 的 Lane-D 观察者数据是诊断证据，绝不进入 FAST12 几何平均。所有数字和图均由随包的紧凑快照重建；没有启动仿真、采集 trace 或改动 Core。", "", "## 主性能", "", "用 12 个未四舍五入的整数周期比值重算，IO 的 GM 为 **1.326143376x**，OO 的 GM 为 **1.592062402x**。这一聚合不能掩盖反例：ATAX、BICG、GESUMMV 的 IO 分别为 0.993065x、0.942017x、0.925562x；OO 仍在这些工作负载中恢复到更快状态。Gaussian 的约 1.108x 收益应表述为温和收益，而非“无收益”。", "", "## 结构压力与 IO→OO 证据", "", "PIB 满、真实 cacheline/all-lines-reserved、Tag-bank 冲突、MSHR entry/merge 满和下游队列事件均为非互斥的累计计数，不能堆叠成 100% 因果分解。IO HOL 使用 `hol_ready_younger_cycles/(64×IO cycles)`，OO 乱序退休使用 `ooo_retires/retire_count`；二者保留精确分母，提供机制相关证据而非唯一因果归因。", "", "## 容量敏感性与观察者诊断", "", "逻辑 Tag、物理池和 PIB 三类 Stage6 曲线仅使用接受的单元，并采用同模式归一化。BICG/GESUMMV 的 16.5-KiB 是非数值资源死锁边界；Btree 16.5-KiB 是保留的数值结果，二者不可混同。D4 对 24/32/48 KiB 的容量做了控制改变，因此它支持“容量改变会产生工作负载相关的端到端敏感性”。它不单独识别 occupancy→inflight→L2→pending lifetime→pending Tag eviction→duplicate→performance 的内部中介箭头。", "", "在 BICG/GESUMMV 中，48 KiB 时 physical-full 的活跃 SM 周期暴露可大幅下降；但 IO 的 no-free/instruction 以及端到端周期未必随之改善。这与解除前端容量约束后出现瓶颈迁移相一致，但不证明 L2 是主导瓶颈。observer_sample_sm_cycles 与 `64×global cycles` 不是同一量，故未互换。", "", "## 重复下游请求", "", "Lane-C 源码语义证明：IO duplicate-after-eviction 只在仍 pending 的线失去 Tag、同一线在旧响应完成前再次成功分配并创建新 lower 请求时递增；响应后的再访问不计数。每个事件对应一个 128-B lower-request payload；它不能称为 DRAM、总内存或总链路流量，也不能被转换成可回收性能。", "", "FAST12 的完整分布反驳了无条件“局部性使重复请求罕见”的说法：LUD、GEMM、2DConvolution、Gaussian 分别超过 5%，其中 2DConvolution 为 42.220%，Gaussian 为 50.200%。展示分箱只是呈现手段，不是“罕见”的科学定义。OO 的精确计数来自限定的 Lane-D 观察者：7 个工作负载的 OO share 更低、3 个更高、2 个均为零；因此 OO 的性能优势不能归结为普遍消除重复请求。", "", "## 局限与开放问题", "", "Tag eviction 总数与 pending-hit 总数都不足以单独解释高重复请求；相关不等于因果。物理池的 D4 控制敏感性仅覆盖 BICG、GESUMMV、Btree，不能外推到其他九项工作负载。当前证据不足以证明 L2 为主导瓶颈，或证明 duplicate traffic 是较大物理池变慢的次级反馈。", "", "## 12 workload explanations", "", "下表的逐工作负载字段和证据范围见 `WORKLOAD_EXPLANATIONS.tsv`；它包含恰好 12 行并保留每项性能、HOL/退休、IO/OO duplicate 及边界。"]
+    lines=[
+        "# POST-FAST64 paper results analysis", "", "## 范围与证据边界（C01, C27, C28）", "",
+        "主性能严格来自冻结 FAST64；Lane-D 观察者证据仅作诊断，绝不进入 FAST12 GM。本 Lane-E repair 只做快照、表格、图形和 QA，不启动仿真或修改科学源。", "",
+        "## 主性能与机制证据（C01–C06）", "",
+        "12 个未四舍五入整数周期比值给出 IO GM 1.326143376x、OO GM 1.592062402x。ATAX、BICG、GESUMMV 的 IO 回归被完整保留；Gaussian 的约 1.108x 应表述为温和收益。Base pressure、IO HOL 和 OO retire/reclaim 是按各自分母定义的非互斥测量证据，不能拼成唯一因果解释。", "",
+        "## 敏感性与 D4（C07–C17, C22–C23, C26）", "",
+        "逻辑/物理/PIB 均只使用接受的同模式归一化单元。BICG/GESUMMV 16.5 KiB 是非数值资源边界，Btree 16.5 KiB 保持数值。D4 是容量的受控敏感性，覆盖仅限 BICG/GESUMMV/Btree；其内部 occupancy、inflight、L2、lifetime 和 pending-Tag 箭头仍是相关或不足，不能称为 L2 主导。", "",
+        "## 重复请求（C18–C21, C24–C25, C29）", "",
+        "IO pending-Tag eviction→pre-response same-line reallocation 的计数语义由源码证明；duplicate×128 B 仅为 lower-request payload。D5 的限定 OO 计数给出 7 个更低、3 个更高、2 个均为零；这不支持“OO 普遍消除重复”或由重复消除解释 OO 性能。Btree 的 OO/IO 比值较大仍须结合两边极小的绝对 duplicate share 解读。", "",
+        "## 12-workload explanations", "", "`WORKLOAD_EXPLANATIONS.tsv` 保留了每个 Lane-A 的 performance behavior、pressure、HOL、retire/reclaim、traffic、interpretation 与 caveat，并逐项追加 C/D 的精确 duplicate 和 D4 范围。"
+    ]
     (out/"PAPER_RESULTS_ANALYSIS.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
 
 
@@ -636,24 +733,131 @@ def copy_d6(inputs: Path, tables: Path):
     tsv_write(tables/"E_D6_ARROW_CLASSIFICATION.tsv",rows)
 
 
-def build_checklist(out: Path, status="PASS"):
-    stages=["E0.1","E0.2","E0.3","E0.4","E1.1","E1.2","E1.3","E1.4","E1.5","E1.6","E2.1","E2.2","E2.3","E2.4"]
-    evidence=["E_EXECUTION_INVENTORY.tsv","E_INPUT_MANIFEST.tsv","E_COVERAGE_AND_IDENTITY.tsv; E_METRIC_DICTIONARY.tsv","E_INTERPRETATION_RECONCILIATION.tsv; E_CLAIM_EVIDENCE_REGISTER.tsv","tables/E_PRIMARY_PERFORMANCE.tsv; E_BASE_PRESSURE.tsv; E_IO_OO_MECHANISM.tsv","tables/E_SENS_LOGICAL.tsv; E_SENS_PHYSICAL.tsv; E_SENS_PIB.tsv","tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv; E_PRESSURE_DENOMINATOR_COMPARISON.tsv","tables/E_DUPLICATE_IO_OO.tsv; E_DUPLICATE_PAYLOAD_RATIOS.tsv","figures/F01-F09 SVG/PDF/PNG; FIGURE_INDEX.md","PAPER_RESULTS_ANALYSIS.md; WORKLOAD_EXPLANATIONS.tsv","E_VALIDATION_REPORT.md","E_VISUAL_QA.md","REPRODUCE.md; E_OUTPUT_MANIFEST.tsv; rebuild_reports","LANE_E_FINAL.md; remote SHA"]
-    tsv_write(out/"LANE_E_ACCEPTANCE_CHECKLIST.tsv",[{"check_id":s,"stage":s.split('.')[0],"planned_status":status,"concrete_evidence":evidence[i]} for i,s in enumerate(stages)])
-
-
 def build_execution_inventory(out: Path):
     rows=[
-        {"item":"worktree","value":"dedicated Lane-E integration worktree from remote planning checkpoint 1c3741c","status":"PASS"},
-        {"item":"frozen_FAST64","value":FAST64,"status":"PASS"},
-        {"item":"pinned_inputs","value":f"A={A}; B={B}; C={C}; D_FINAL={D_FINAL}; D_REVISION={D_REV}","status":"PASS"},
-        {"item":"simulation_activity","value":"zero Lane-E simulator, trace, Core, observer, or M5 actions; analysis/import/plot only","status":"PASS"},
-        {"item":"protected_evidence","value":"input snapshots are copied source-bound; originals were not edited","status":"PASS"},
+        {"item":"worktree_scope","value":"dedicated Lane-E bounded repair worktree","status":"DECLARED_SCOPE"},
+        {"item":"frozen_FAST64","value":FAST64,"status":"PINNED"},
+        {"item":"pinned_inputs","value":f"A={A}; B={B}; C={C}; D_FINAL={D_FINAL}; D_REVISION={D_REV}","status":"PINNED"},
+        {"item":"simulation_activity","value":"Lane-E builder/QA has no simulator/trace/GPU/Core invocation path","status":"SOURCE_AUDITED_SCOPE"},
+        {"item":"protected_evidence","value":"input snapshots are source-bound and validated against manifest hashes","status":"SOURCE_AUDITED_SCOPE"},
     ]
     tsv_write(out/"E_EXECUTION_INVENTORY.tsv",rows)
 
 
-def build_all(inputs: Path, output: Path):
+def _audit_row(check_id, expected, observed, condition, evidence_path, detail):
+    return {"check_id":check_id, "expected":str(expected), "observed":str(observed),
+            "status":"PASS" if condition else "FAIL", "evidence_path":evidence_path, "detail":detail}
+
+
+def _source_sensitivity(inputs, short):
+    return tsv_read(snapshot(inputs, "A", "docs/dtc_l1/post_fast64/generated/paper_sens_" + short + ".tsv"))
+
+
+def core_audit(package: Path, inputs: Path):
+    """Independent, data-driven audit of a built core package."""
+    rows=[]
+    try:
+        validate_inputs(inputs); input_ok=True; input_detail="manifest SHA-256 and pinned commit/path closure match"
+    except Exception as exc:
+        input_ok=False; input_detail=repr(exc)
+    rows.append(_audit_row("A00_PINNED_INPUTS", "exact manifest closure", "validated" if input_ok else "rejected", input_ok, "E_INPUT_MANIFEST.tsv", input_detail))
+
+    source_primary=tsv_read(snapshot(inputs,"fast64","docs/dtc_l1/fast64/review_packs/FAST64_FINAL/FAST12_summary.tsv"))
+    source_by={r['workload']:r for r in source_primary if r['workload']!='GM-FAST12'}
+    primary=tsv_read(package/"tables/E_PRIMARY_PERFORMANCE.tsv")
+    actual_order=[r['workload'] for r in primary[:-1]] if len(primary)==13 else []
+    rows.append(_audit_row("A01_FAST12_ORDER", "|".join(WORKLOAD_ORDER), "|".join(actual_order), actual_order==WORKLOAD_ORDER and set(source_by)==set(WORKLOAD_ORDER), "tables/E_PRIMARY_PERFORMANCE.tsv", "order is derived from pinned FAST12 source; aggregate is excluded"))
+    primary_ok=len(primary)==13 and primary[-1].get('workload')=='GM-FAST12'
+    if primary_ok:
+        for r in primary[:-1]:
+            s=source_by.get(r['workload']); primary_ok &= bool(s) and all(str(r[k])==str(s[k]) for k in ('instructions','base_cycles','io_cycles','oo_cycles')) and r['aggregate']=='NO' and r['evidence_class']=='ACCEPTED_FAST64_EVIDENCE'
+        io_prod=Decimal(1); oo_prod=Decimal(1)
+        for s in (source_by[w] for w in WORKLOAD_ORDER):
+            io_prod*=d(s['base_cycles'])/d(s['io_cycles']); oo_prod*=d(s['base_cycles'])/d(s['oo_cycles'])
+        gm_io=io_prod**(Decimal(1)/Decimal(12)); gm_oo=oo_prod**(Decimal(1)/Decimal(12))
+        primary_ok &= primary[-1]['speedup_IO_base_over_IO']==f"{gm_io:.12f}" and primary[-1]['speedup_OO_base_over_OO']==f"{gm_oo:.12f}"
+    rows.append(_audit_row("A02_PRIMARY_CELLS_AND_GM", "12 workloads x Base/IO/OO = 36; integer GM", f"{max(0,len(primary)-1)} workloads x 3; rows={len(primary)}", primary_ok, "tables/E_PRIMARY_PERFORMANCE.tsv", "cycles and GM are recomputed from pinned integers; diagnostic rows are rejected"))
+
+    d4_source=tsv_read(snapshot(inputs,"D_revision","docs/dtc_l1/post_fast64/generated/D4_OBSERVER_PHYSICAL_TELEMETRY.tsv")); d4=tsv_read(package/"tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv")
+    expected_d4={(w,str(p),m) for w in ('BICG','GESUMMV','Btree') for p in (24,32,48) for m in ('IO','OO')}; observed_d4={(r['workload'],r['physical_pool_kib'],r['mode']) for r in d4}
+    denom_ok=all(int(r['observer_sample_sm_cycles'])>0 for r in d4) and all('64*global' not in r.get('observer_sample_sm_cycles','') for r in d4)
+    rows.append(_audit_row("A03_D4_CARTESIAN_AND_DENOMINATOR", sorted(expected_d4), sorted(observed_d4), len(d4)==len(expected_d4) and observed_d4==expected_d4 and d4==d4_source and denom_ok, "tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv", "exact D4 cartesian coverage and source observer_sample_sm_cycles field"))
+    index=tsv_read(snapshot(inputs,"D_final","docs/dtc_l1/post_fast64/generated/D4_D5_OBSERVER_RAW_RUN_INDEX.tsv")); d7=tsv_read(snapshot(inputs,"D_revision","docs/dtc_l1/post_fast64/generated/D7_ORDERED_PREEXISTING_STAT_AUDIT.tsv"))
+    exp_new=sum(r['source_row_kind']=='NEW_DIAGNOSTIC_RUN' for r in index); exp_reuse=sum(r['source_row_kind']=='D3B_EXACT_REUSE' for r in index)
+    obs_new=sum(r['source_row_kind']=='NEW_DIAGNOSTIC_RUN' for r in d7); obs_reuse=sum(r['source_row_kind']=='D3B_EXACT_REUSE' for r in d7)
+    rows.append(_audit_row("A04_D4_LAUNCH_REUSE", f"new={exp_new}; reuse={exp_reuse}", f"new={obs_new}; reuse={obs_reuse}", (exp_new,exp_reuse)==(obs_new,obs_reuse)==(29,1) and len(index)==len(d7)==30, "inputs/D_final/.../D4_D5_OBSERVER_RAW_RUN_INDEX.tsv; inputs/D_revision/.../D7_ORDERED_PREEXISTING_STAT_AUDIT.tsv", "counts computed from pinned rows, not a handwritten observed phrase"))
+
+    d5=tsv_read(snapshot(inputs,"D_revision","docs/dtc_l1/post_fast64/generated/D5_IO_OO_DUPLICATE_COMPARISON.tsv")); dup=tsv_read(package/"tables/E_DUPLICATE_IO_OO.tsv"); comp=tsv_read(package/"tables/E_DUPLICATE_PAYLOAD_RATIOS.tsv")
+    by_d5={r['workload']:r for r in d5}; by_dup={(r['workload'],r['mode']):r for r in dup}
+    d5_ok=set(by_d5)==set(WORKLOAD_ORDER) and len(dup)==24 and len(comp)==12
+    for w in WORKLOAD_ORDER:
+        if w not in by_d5 or (w,'OO') not in by_dup or (w,'IO') not in by_dup: d5_ok=False; continue
+        d5_ok &= by_dup[(w,'OO')]['evidence_source']=='Lane_D_qualified_observer' and by_dup[(w,'OO')]['qualified_evidence_status']==by_d5[w]['oo_evidence_status']
+        d5_ok &= by_dup[(w,'OO')]['duplicate_after_eviction']==by_d5[w]['oo_duplicate_after_eviction'] and by_dup[(w,'IO')]['duplicate_after_eviction']==by_d5[w]['io_duplicate_after_eviction']
+    d5_ok &= all(r['payload_scope'] == 'SOURCE_PROVEN_128B_LOWER_REQUEST_PAYLOAD_ONLY_NOT_DRAM_OR_TOTAL_LINK_TRAFFIC' for r in dup)
+    directions=[r['OO_vs_IO_share_disposition'] for r in comp]; d5_ok &= [directions.count(x) for x in ('OO_LOWER','OO_HIGHER','BOTH_ZERO')]==[7,3,2]
+    rows.append(_audit_row("A05_D5_QUALIFIED_PAIRS", "12 pairs; OO qualifier exact; lower/higher/zero=7/3/2", f"pairs={len(comp)}; lower/higher/zero={directions.count('OO_LOWER')}/{directions.count('OO_HIGHER')}/{directions.count('BOTH_ZERO')}", d5_ok, "tables/E_DUPLICATE_IO_OO.tsv; tables/E_DUPLICATE_PAYLOAD_RATIOS.tsv", "D5 exact OO metric required; proxy substitution is rejected"))
+
+    for short, cid in (("logical","A06_LOGICAL_MEMBERSHIP"),("physical","A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY"),("pib","A08_PIB_MEMBERSHIP")):
+        source=_source_sensitivity(inputs,short); actual=tsv_read(package/f"tables/E_SENS_{short.upper()}.tsv")
+        detail="output rows equal pinned Lane-A table; numeric plot membership is row_kind=NUMERIC_ACCEPTED_POINT"
+        ok=actual==source and bool(source)
+        if short=='physical':
+            dead={(r['workload'],r['mode'],r['requested_point']) for r in actual if r['row_kind']=='NONNUMERIC_BOUNDARY_MARKER'}
+            btree=[r for r in actual if r['workload']=='Btree' and r['requested_point']=='16.5']
+            ok &= dead=={(w,m,'16.5') for w in ('BICG','GESUMMV') for m in ('IO','OO')} and len(btree)==2 and all(r['row_kind']=='NUMERIC_ACCEPTED_POINT' for r in btree)
+            detail += "; BICG/GESUMMV 16.5 nonnumeric and Btree 16.5 numeric verified"
+        rows.append(_audit_row(cid, f"pinned rows={len(source)}", f"output rows={len(actual)}; numeric={sum(r['row_kind']=='NUMERIC_ACCEPTED_POINT' for r in actual)}", ok, f"tables/E_SENS_{short.upper()}.tsv", detail))
+
+    figures=tsv_read(package/"FIGURE_INDEX.tsv"); ids=[r['figure_id'] for r in figures]; figure_ok=ids==[f"F{i:02d}" for i in range(1,10)] and len(set(ids))==9
+    for fid in ids:
+        figure_ok &= all((package/f"figures/{fid}{suffix}").exists() for suffix in ('.svg','.pdf','.png'))
+    md=(package/'FIGURE_INDEX.md').read_text(encoding='utf-8'); figure_ok &= all(md.count(f"## F{i:02d} —")==1 for i in range(1,10))
+    rows.append(_audit_row("A09_FIGURE_IDENTITY", "unique ordered F01..F09 with three assets and one heading each", f"ids={','.join(ids)}", figure_ok, "FIGURE_INDEX.tsv; FIGURE_INDEX.md; figures/", "F07 duplicate index/stale series path is prohibited"))
+    workload=tsv_read(package/"WORKLOAD_EXPLANATIONS.tsv"); rich={"performance_behavior","base_pressure_signature_raw","io_hol_evidence","oo_retire_reclaim_evidence","traffic_contrast","caveat_or_alternative","io_duplicate_count_exact","oo_duplicate_count_exact","duplicate_direction","d4_scope","source_lineage"}
+    workload_ok=len(workload)==12 and [r['workload'] for r in workload]==WORKLOAD_ORDER and all(rich<=set(r) and r['performance_behavior'] for r in workload)
+    rows.append(_audit_row("A10_RICH_WORKLOAD_EXPLANATIONS", "12 Lane-A-rich rows plus C/D fields", f"rows={len(workload)}; fields={len(workload[0]) if workload else 0}", workload_ok, "WORKLOAD_EXPLANATIONS.tsv", "Lane-A performance/pressure/HOL/reclaim/traffic/caveat fields are retained per workload"))
+    return rows
+
+
+def machine_figure_checks(package: Path):
+    rows=[]
+    for n in range(1,10):
+        fid=f"F{n:02d}"; svg=package/f"figures/{fid}.svg"; png=package/f"figures/{fid}.png"; pdf=package/f"figures/{fid}.pdf"; detail=[]; ok=True
+        try:
+            ET.fromstring(svg.read_text(encoding='utf-8')); detail.append("SVG XML parsed")
+            im=Image.open(png); im.load(); ok &= im.width>=1400 and im.height>=850; detail.append(f"PNG={im.width}x{im.height}")
+            ok &= pdf.read_bytes().startswith(b'%PDF'); detail.append("PDF signature")
+        except Exception as exc:
+            ok=False; detail.append(repr(exc))
+        rows.append({"figure_id":fid,"machine_status":"PASS" if ok else "FAIL","checks":"; ".join(detail),"scope":"machine existence/XML/raster/PDF checks only; not a visual review"})
+    tsv_write(package/"E_MACHINE_FIGURE_CHECKS.tsv",rows)
+    return rows
+
+
+def claim_audit(package: Path):
+    claims=tsv_read(package/"E_CLAIM_EVIDENCE_REGISTER.tsv"); ids={r['claim_id'] for r in claims}; rows=[]
+    rows.append({"audit_id":"required_claim_id_set","expected":"|".join(REQUIRED_CLAIM_IDS),"observed":"|".join(sorted(ids)),"status":"PASS" if ids==set(REQUIRED_CLAIM_IDS) else "FAIL","detail":"required register coverage"})
+    refs=[]
+    for source, path, field in (("figure",package/"FIGURE_INDEX.tsv","claim_ids"),("workload",package/"WORKLOAD_EXPLANATIONS.tsv","claim_ids")):
+        for r in tsv_read(path): refs.extend((source,x) for x in r[field].split(',') if x)
+    unknown=sorted({x for _,x in refs if x not in ids})
+    rows.append({"audit_id":"artifact_claim_references","expected":"all figure/workload IDs registered","observed":"unknown="+",".join(unknown) if unknown else "unknown=NONE","status":"PASS" if not unknown else "FAIL","detail":"explicit figure/workload claim-id mapping; no NLP inference"})
+    prose=(package/"PAPER_RESULTS_ANALYSIS.md").read_text(encoding='utf-8')
+    prose_ok=all(x in prose for x in ("C01", "C18", "C24", "C25", "C26", "C27"))
+    rows.append({"audit_id":"paper_section_traceability","expected":"core claim IDs named in paper sections","observed":"present" if prose_ok else "missing","status":"PASS" if prose_ok else "FAIL","detail":"paper prose references scoped claim groups"})
+    tsv_write(package/"E_CLAIM_AUDIT.tsv",rows)
+    return rows
+
+
+def write_core_audits(inputs: Path, package: Path):
+    audit=core_audit(package,inputs); tsv_write(package/"E_COVERAGE_SENSITIVITY_AUDIT.tsv",audit)
+    write_coverage_and_metric_dictionary(inputs,package,audit)
+    figures=machine_figure_checks(package); claims=claim_audit(package)
+    return audit, figures, claims
+
+
+def build_core(inputs: Path, output: Path):
     validate_inputs(inputs)
     if output.exists():
         # The caller supplies a dedicated output directory; only Lane-E build
@@ -666,68 +870,146 @@ def build_all(inputs: Path, output: Path):
     shutil.copytree(inputs, output / "inputs")
     copy_text(inputs.parent / "E_INPUT_MANIFEST.tsv", output / "E_INPUT_MANIFEST.tsv")
     tables=output/"tables"; figures=output/"figures"; tables.mkdir(); figures.mkdir()
-    build_execution_inventory(output); build_coverage(inputs,output); build_reconciliation(output); build_checklist(output,"IN_PROGRESS")
+    build_execution_inventory(output); build_reconciliation(output)
     build_primary(inputs,tables); build_pressure_and_mechanism(inputs,tables); build_sensitivities(inputs,tables); build_observer(inputs,tables); build_duplicates(inputs,tables); copy_d6(inputs,tables)
-    build_figures(tables,figures); build_writing(tables,output)
-    build_checklist(output,"PASS")
+    build_figures(tables,figures); build_writing(inputs,tables,output)
+    return write_core_audits(inputs,output)
 
 
-def validate_package(package: Path, inputs: Path):
+def _all_pass(rows, field="status"):
+    return bool(rows) and all(r[field]=="PASS" for r in rows)
+
+
+def validate_core(package: Path, inputs: Path):
     errors=[]
     try:
-        validate_inputs(inputs)
-        p=tsv_read(package/"tables/E_PRIMARY_PERFORMANCE.tsv")
-        assert len(p)==13 and p[-1]["workload"]=="GM-FAST12"
-        assert p[-1]["speedup_IO_base_over_IO"]=="1.326143376158"
-        assert p[-1]["speedup_OO_base_over_OO"]=="1.592062401603"
-        assert len(tsv_read(package/"tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv"))==18
-        dups=tsv_read(package/"tables/E_DUPLICATE_IO_OO.tsv"); assert len(dups)==24
-        assert all("DRAM" not in r["payload_scope"] or "NOT_DRAM" in r["payload_scope"] for r in dups)
-        cmp=tsv_read(package/"tables/E_DUPLICATE_PAYLOAD_RATIOS.tsv"); assert [sum(r['OO_vs_IO_share_disposition']==x for r in cmp) for x in ["OO_LOWER","OO_HIGHER","BOTH_ZERO"]]==[7,3,2]
-        for n in range(1,10):
-            b=package/f"figures/F{n:02d}"; assert all(b.with_suffix(s).exists() and b.with_suffix(s).stat().st_size>100 for s in (".svg",".pdf",".png"))
-        assert len(tsv_read(package/"WORKLOAD_EXPLANATIONS.tsv"))==12
-        assert all(r["planned_status"]=="PASS" for r in tsv_read(package/"LANE_E_ACCEPTANCE_CHECKLIST.tsv"))
-    except Exception as e:
-        errors.append(str(e))
+        audit=core_audit(package,inputs); errors += [f"{r['check_id']}: {r['detail']}" for r in audit if r['status']!='PASS']
+        figures=machine_figure_checks(package); errors += [f"machine {r['figure_id']}: {r['checks']}" for r in figures if r['machine_status']!='PASS']
+        claims=claim_audit(package); errors += [f"claim {r['audit_id']}: {r['observed']}" for r in claims if r['status']!='PASS']
+    except Exception as exc:
+        errors.append(repr(exc))
     return errors
 
 
-def build_validation_report(package: Path, inputs: Path):
-    errors=validate_package(package,inputs)
-    tests=[
-        ("pinned source hash and snapshot integrity","PASS" if not errors else "FAIL","manifest plus SHA-256 rechecked"),
-        ("exact FAST12 / 36 primary cell membership","PASS","12 workloads and Base/IO/OO only"),
-        ("integer performance and GM arithmetic","PASS","recomputed from accepted cycles"),
-        ("Stage6 membership and deadlock boundary","PASS","D4=18; nonnumeric BICG/GESUMMV 16.5 retained; Btree numeric"),
-        ("D5 duplicate arithmetic and 7/3/2 classification","PASS","D/L and D/(L-D) recomputed from integers"),
-        ("metric-denominator scope","PASS","observer sampled active-SM cycles never replaced with 64*global cycles"),
-        ("claim/evidence boundary","PASS","D6 selected revision; no L2 dominance/duplicate-performance proof"),
-        ("negative fixture: wrong FAST12 membership","PASS","validator requires exact ordered 12 source rows"),
-        ("negative fixture: observer in GM","PASS","primary is read solely from FAST12 summary"),
-        ("negative fixture: numeric deadlock","PASS","requires NONNUMERIC for four BICG/GESUMMV 16.5 rows"),
-        ("negative fixture: OO proxy","PASS","requires qualified D5 exact OO duplicate fields"),
-        ("negative fixture: invented 40 KiB observer","PASS","requires D4 exact 24/32/48 membership"),
-        ("negative fixture: payload relabeled DRAM","PASS","scope string explicitly rejects DRAM/total-link terminology"),
+def _load_qa_records(qa_dir: Path, package: Path):
+    negative=tsv_read(qa_dir/"E_NEGATIVE_FIXTURE_RESULTS.tsv")
+    visual=tsv_read(qa_dir/"E_VISUAL_REVIEW.tsv")
+    determinism=tsv_read(qa_dir/"E_DETERMINISM_EXECUTION.tsv")
+    if len(negative)!=6 or not _all_pass(negative): raise ValueError("negative fixture record is missing or has non-PASS result")
+    if len(visual)!=9 or [r['figure_id'] for r in visual] != [f"F{i:02d}" for i in range(1,10)] or not _all_pass(visual, "review_status"):
+        raise ValueError("explicit nine-figure visual review is missing or non-PASS")
+    for r in visual:
+        for key,suffix in (("svg_sha256",'.svg'),("png_sha256",'.png'),("pdf_sha256",'.pdf')):
+            if r[key] != sha256(package/f"figures/{r['figure_id']}{suffix}"): raise ValueError(f"visual record hash mismatch: {r['figure_id']} {key}")
+    if len(determinism)!=1 or determinism[0].get('status')!='PASS': raise ValueError("measured determinism record is missing or non-PASS")
+    return negative,visual,determinism
+
+
+def build_provenance(package: Path, inputs: Path):
+    import platform
+    builder=Path(__file__).resolve(); font_paths=[Path('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'),Path('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf')]
+    rows=[
+        {"component":"python","value":sys.version.replace('\n',' '),"sha256_or_version":sys.implementation.name,"scope":"actual builder runtime"},
+        {"component":"Pillow","value":Image.__version__,"sha256_or_version":Image.__file__,"scope":"actual SVG raster/PDF renderer dependency"},
+        {"component":"builder","value":str(builder),"sha256_or_version":sha256(builder),"scope":"Lane-E builder source"},
+        {"component":"input_manifest","value":"E_INPUT_MANIFEST.tsv","sha256_or_version":sha256(inputs.parent/'E_INPUT_MANIFEST.tsv'),"scope":"pinned compact dependency closure"},
+        {"component":"platform","value":platform.platform(),"sha256_or_version":platform.machine(),"scope":"interpret renderer reproducibility"},
     ]
-    lines=["# Lane-E validation report", "", f"Overall: **{'PASS' if not errors else 'FAIL'}**", "", "| Check | Status | Evidence |", "|---|---|---|"]
-    lines += [f"| {a} | {b} | {c} |" for a,b,c in tests]
-    if errors: lines += ["", "Errors:", "", *[f"- {e}" for e in errors]]
-    (package/"E_VALIDATION_REPORT.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
-    if errors: raise AssertionError(errors)
+    for p in font_paths:
+        rows.append({"component":"font","value":str(p) if p.exists() else "FALLBACK_PIL_DEFAULT", "sha256_or_version":sha256(p) if p.exists() else "NOT_PRESENT", "scope":"actual DejaVu font selection/fallback"})
+    tsv_write(package/"E_BUILD_PROVENANCE.tsv",rows)
 
 
-def visual_qa(package: Path):
-    rows=[]
-    for n in range(1,10):
-        fid=f"F{n:02d}"; png=package/f"figures/{fid}.png"; svg=package/f"figures/{fid}.svg"; pdf=package/f"figures/{fid}.pdf"
-        im=Image.open(png); im.load(); assert im.size in {(1500,900),(1600,900),(1800,1160)}
-        assert svg.read_text(encoding="utf-8").startswith("<svg") and pdf.read_bytes().startswith(b"%PDF")
-        rows.append((fid,"PASS",f"Rendered PNG opened at {im.size[0]}x{im.size[1]}; SVG/XML and PDF signatures verified; inspected actual bars/lines/cells, title, labels, unit/scope notes, and legibility.","No clipping/overlap repair required after deterministic generation."))
-    lines=["# Lane-E visual QA", "", "Every F01–F09 was rendered to its PNG preview and inspected at intended reading size. The checks below supplement (rather than replace) actual visual inspection.", "", "| Figure | Status | Inspection | Fix history |", "|---|---|---|---|"]
-    lines += [f"| {' | '.join(x)} |" for x in rows]
-    lines += ["", "Visual scope: F05 retains nonnumeric boundary wording; F07 labels active-SM-cycle scope; F08 labels lower-request payload scope; F09 uses evidence-level cells rather than causal arrows."]
+def write_visual_qa(package: Path, visual_rows):
+    lines=["# Lane-E visual QA", "", "This report is derived from the explicit agent visual-review record in `qa/E_VISUAL_REVIEW.tsv`. Machine signature/dimension checks are separately recorded in `E_MACHINE_FIGURE_CHECKS.tsv`; the builder does not assert human inspection.", "", "| Figure | Status | Findings | Repair / re-review |", "|---|---|---|---|"]
+    for r in visual_rows: lines.append(f"| {r['figure_id']} | {r['review_status']} | {r['findings']} | {r['repair_history']} |")
     (package/"E_VISUAL_QA.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+
+
+def write_validation_report(package: Path, audit, machine, claims, negative, determinism):
+    rows=[]
+    rows += [(r['check_id'],r['status'],r['detail']) for r in audit]
+    rows += [("MACHINE_"+r['figure_id'],r['machine_status'],r['checks']) for r in machine]
+    rows += [("CLAIM_"+r['audit_id'],r['status'],r['detail']) for r in claims]
+    rows += [("NEGATIVE_"+r['fixture_id'],r['status'],r['observed_result']) for r in negative]
+    rows += [("DETERMINISM_EXECUTION",determinism[0]['status'],determinism[0]['detail'])]
+    overall=all(status=='PASS' for _,status,_ in rows)
+    lines=["# Lane-E validation report", "", f"Overall: **{'PASS' if overall else 'FAIL'}**", "", "| Check | Status | Measured evidence |", "|---|---|---|"]
+    lines += [f"| {a} | {b} | {c} |" for a,b,c in rows]
+    (package/"E_VALIDATION_REPORT.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+    return overall
+
+
+def build_checklist(package: Path, audit, machine, claims, negative, visual, determinism):
+    pass_audit={r['check_id']:r['status']=='PASS' for r in audit}; pass_machine=_all_pass(machine,'machine_status'); pass_claims=_all_pass(claims); pass_negative=_all_pass(negative); pass_visual=_all_pass(visual,'review_status'); pass_det=_all_pass(determinism)
+    stages=[
+        ("E0.1","E0","ownership_and_freeze",pass_audit.get('A00_PINNED_INPUTS',False),"E_EXECUTION_INVENTORY.tsv","core input audit"),
+        ("E0.2","E0","source_import",pass_audit.get('A00_PINNED_INPUTS',False),"E_INPUT_MANIFEST.tsv","source-bound manifest audit"),
+        ("E0.3","E0","coverage_identity_units",all(pass_audit.get(x,False) for x in ('A01_FAST12_ORDER','A02_PRIMARY_CELLS_AND_GM','A03_D4_CARTESIAN_AND_DENOMINATOR','A04_D4_LAUNCH_REUSE')),"E_COVERAGE_AND_IDENTITY.tsv","data-driven coverage audit"),
+        ("E0.4","E0","interpretation_reconciliation",pass_claims,"E_INTERPRETATION_RECONCILIATION.tsv; E_CLAIM_EVIDENCE_REGISTER.tsv","claim audit"),
+        ("E1.1","E1","primary_and_mechanisms",all(pass_audit.get(x,False) for x in ('A01_FAST12_ORDER','A02_PRIMARY_CELLS_AND_GM')),"tables/E_PRIMARY_PERFORMANCE.tsv; tables/E_IO_OO_MECHANISM.tsv","integer-cycle audit"),
+        ("E1.2","E1","three_sensitivities",all(pass_audit.get(x,False) for x in ('A06_LOGICAL_MEMBERSHIP','A07_PHYSICAL_MEMBERSHIP_AND_BOUNDARY','A08_PIB_MEMBERSHIP')),"E_COVERAGE_SENSITIVITY_AUDIT.tsv","source membership/row-kind audit"),
+        ("E1.3","E1","pool_observer",pass_audit.get('A03_D4_CARTESIAN_AND_DENOMINATOR',False),"tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv","D4 cartesian/denominator audit"),
+        ("E1.4","E1","duplicates",pass_audit.get('A05_D5_QUALIFIED_PAIRS',False),"tables/E_DUPLICATE_IO_OO.tsv","qualified D5 audit"),
+        ("E1.5","E1","actual_figures",pass_audit.get('A09_FIGURE_IDENTITY',False) and pass_machine,"FIGURE_INDEX.tsv; E_MACHINE_FIGURE_CHECKS.tsv","unique figure and machine checks"),
+        ("E1.6","E1","writing",pass_audit.get('A10_RICH_WORKLOAD_EXPLANATIONS',False) and pass_claims,"WORKLOAD_EXPLANATIONS.tsv; E_CLAIM_AUDIT.tsv","rich workload and claim audit"),
+        ("E2.1","E2","automated_acceptance",pass_negative and _all_pass(audit) and pass_claims,"E_VALIDATION_REPORT.md; qa/E_NEGATIVE_FIXTURE_RESULTS.tsv","actual core/negative/claim checks"),
+        ("E2.2","E2","visual_QA",pass_visual,"E_VISUAL_QA.md; qa/E_VISUAL_REVIEW.tsv","explicit nine-figure visual record"),
+        ("E2.3","E2","reproduction_package",pass_det,"rebuild_reports/DETERMINISM_COMPARISON.md; E_BUILD_PROVENANCE.tsv","measured isolated-core comparison"),
+        ("E2.4","E2","final_closeout",all((pass_negative,pass_visual,pass_det,_all_pass(audit),pass_machine,pass_claims)),"LANE_E_FINAL.md; E_VALIDATION_REPORT.md","all independent mandatory checks"),
+    ]
+    out=[]
+    for cid,stage,purpose,ok,evidence,command in stages:
+        out.append({"check_id":cid,"stage":stage,"purpose":purpose,"status":"PASS" if ok else "NOT_RUN_OR_FAIL","evidence_path":evidence,"check_lineage":command})
+    tsv_write(package/"LANE_E_ACCEPTANCE_CHECKLIST.tsv",out)
+    return out
+
+
+def final_docs(package: Path, determinism):
+    (package/"REPRODUCE.md").write_text("""# Reproduce the Lane-E review pack
+
+No simulator, trace capture, GPU, raw SIM_HOST directory, or active Codex session is required. Python 3 and Pillow are required; exact build/font provenance is in `E_BUILD_PROVENANCE.tsv`.
+
+```bash
+python3 util/dtc_l1/build_post_fast64_lane_e.py --build-core --inputs docs/dtc_l1/post_fast64/lane_e/inputs --output /tmp/lane-e-core
+python3 util/dtc_l1/build_post_fast64_lane_e.py --validate-core --inputs docs/dtc_l1/post_fast64/lane_e/inputs --output /tmp/lane-e-core
+python3 util/dtc_l1/build_post_fast64_lane_e.py --build --inputs docs/dtc_l1/post_fast64/lane_e/inputs --qa-dir docs/dtc_l1/post_fast64/lane_e/qa_records --output /tmp/lane-e-final
+python3 util/dtc_l1/build_post_fast64_lane_e.py --validate --inputs docs/dtc_l1/post_fast64/lane_e/inputs --output /tmp/lane-e-final
+```
+
+The final command consumes frozen compact inputs and explicit QA records only; it never launches a simulator.
+""",encoding="utf-8")
+    (package/"LIMITATIONS_AND_OPEN_QUESTIONS.md").write_text("""# Limitations and open questions
+
+- FAST64 is immutable primary evidence; observer data is diagnostic only.
+- D4 controlled capacity sensitivity does not causally identify its internal mediators.
+- L2 dominance and duplicate-secondary feedback remain insufficient.
+- IO duplicate semantics are source-proven; OO counts are qualified observer evidence, never a new-miss proxy.
+- D4 covers BICG, GESUMMV, and Btree only.
+- Lower-request payload is not DRAM, total memory/interconnect traffic, or recoverable performance.
+""",encoding="utf-8")
+    det=determinism[0]
+    reports=package/"rebuild_reports"; reports.mkdir(exist_ok=True)
+    (reports/"DETERMINISM_COMPARISON.md").write_text(f"""# Measured isolated core determinism comparison
+
+Status: **{det['status']}**
+
+This record is copied from the executed QA runner result `qa/E_DETERMINISM_EXECUTION.tsv`, not generated as a claimed build step.
+
+- Compared files: {det['compared_file_count']}
+- SHA-256/byte mismatches: {det['mismatch_count']}
+- Detail: {det['detail']}
+
+The comparison is performed on the deterministic build core before this report is materialized, avoiding self-reference. Formal package tree comparison is independently executed during closeout and recorded outside the generator command log.
+""",encoding="utf-8")
+    (package/"LANE_E_FINAL.md").write_text(f"""# Lane E final closeout
+
+Status: **POST_FAST64_PAPER_ANALYSIS_AND_MECHANISM_EXPLORATION_READY_FOR_REVIEW**
+
+This package is generated only after independent data audits, executed negative fixtures, explicit visual-review records, and measured isolated determinism records all pass. It uses frozen FAST64 `{FAST64}`, A `{A}`, B `{B}`, C `{C}`, D history `{D_FINAL}`, and selected D revision `{D_REV}`.
+
+The artifact QA repair does not alter accepted scientific inputs, primary results, Core, observer semantics, configuration, or simulator state.
+""",encoding="utf-8")
 
 
 def manifest(package: Path):
@@ -738,74 +1020,66 @@ def manifest(package: Path):
     tsv_write(package/"E_OUTPUT_MANIFEST.tsv",rows)
 
 
-def final_docs(package: Path):
-    (package/"REPRODUCE.md").write_text("""# Reproduce the Lane-E review pack
+def build_final(inputs: Path, qa_dir: Path, output: Path):
+    audit,machine,claims=build_core(inputs,output)
+    negative,visual,determinism=_load_qa_records(qa_dir,output)
+    qa_out=output/"qa"; shutil.copytree(qa_dir,qa_out)
+    build_provenance(output,inputs); write_visual_qa(output,visual)
+    overall=write_validation_report(output,audit,machine,claims,negative,determinism)
+    checklist=build_checklist(output,audit,machine,claims,negative,visual,determinism)
+    if not overall or not _all_pass(checklist): raise AssertionError("mandatory Lane-E result map is not all PASS")
+    final_docs(output,determinism); manifest(output)
 
-No simulator, trace capture, GPU, raw SIM_HOST directory, or active Codex session is required.
 
-From the repository root, use the committed compact snapshots:
-
-```bash
-python3 util/dtc_l1/build_post_fast64_lane_e.py --build \\
-  --inputs docs/dtc_l1/post_fast64/lane_e/inputs \\
-  --output /tmp/post-fast64-lane-e-rebuild
-python3 util/dtc_l1/build_post_fast64_lane_e.py --validate \\
-  --inputs docs/dtc_l1/post_fast64/lane_e/inputs \\
-  --output /tmp/post-fast64-lane-e-rebuild
-```
-
-The command writes only the supplied output directory.  The committed `review_packs/POST_FAST64_FINAL/` is built from the same snapshots.  `--import-git` is a one-time maintainer import mechanism and is not part of ordinary reproduction.
-""",encoding="utf-8")
-    (package/"LIMITATIONS_AND_OPEN_QUESTIONS.md").write_text("""# Limitations and open questions
-
-- FAST64 is immutable primary evidence; observer data is diagnostic only.
-- The D4 capacity intervention supports workload-specific end-to-end sensitivity, not causal identification of its internal mediators.
-- Current data do not prove that L2 is the dominant bottleneck, nor that duplicate traffic is a secondary performance feedback.
-- IO duplicate semantics are source-proven. OO counts are qualified observer evidence, not a proxy inferred from new misses.
-- D4 covers BICG, GESUMMV, and Btree only; its capacity observations must not be projected onto the other nine workloads.
-- Lower-request payload is not DRAM, total memory, total interconnect traffic, or recoverable performance.
-""",encoding="utf-8")
-    (package/"LANE_E_FINAL.md").write_text(f"""# Lane E final closeout
-
-Status: **POST_FAST64_PAPER_ANALYSIS_AND_MECHANISM_EXPLORATION_READY_FOR_REVIEW**
-
-This package completes E0.1–E2.4. It uses frozen FAST64 `{FAST64}`, pinned Lane-A `{A}`, Lane-B `{B}`, Lane-C `{C}`, Lane-D experiment history `{D_FINAL}`, and selected Lane-D interpretation `{D_REV}`. The compact source snapshots, numerical validation report, nine rendered figures, visual-QA record, deterministic rebuild instructions, and completed checklist are included.
-
-Lane E launched zero simulators and made zero Core/observer/config scientific changes. FAST64 and all pinned lane inputs are snapshot-bound and unchanged.
-""",encoding="utf-8")
-    reports=package/"rebuild_reports"; reports.mkdir(exist_ok=True)
-    (reports/"DETERMINISM_COMPARISON.md").write_text("""# Isolated deterministic rebuild comparison
-
-Status: **PASS**
-
-E2.3 ran the canonical build twice with the same committed compact inputs and two isolated output directories:
-
-```text
-/tmp/post-fast64-lane-e-rebuild-a
-/tmp/post-fast64-lane-e-rebuild-b
-```
-
-`diff -qr` was empty across the complete package, including TSV/Markdown, SVG, PNG, deterministic PDF, compact input snapshots, and manifests. The canonical review-pack build was then compared against rebuild A with the same empty result. The PDF exporter intentionally avoids timestamp metadata; the SVG assets are deterministic vector figures.
-""",encoding="utf-8")
+def validate_package(package: Path, inputs: Path):
+    errors=validate_core(package,inputs)
+    try:
+        qa=package/"qa"; negative,visual,determinism=_load_qa_records(qa,package)
+        if not (package/"E_BUILD_PROVENANCE.tsv").exists(): errors.append("missing build provenance")
+        if not (package/"E_VISUAL_QA.md").exists(): errors.append("missing visual QA derived from record")
+        checklist=tsv_read(package/"LANE_E_ACCEPTANCE_CHECKLIST.tsv")
+        if len(checklist)!=14 or not _all_pass(checklist): errors.append("checklist has a non-PASS row")
+        manifest_rows=tsv_read(package/"E_OUTPUT_MANIFEST.tsv") if (package/"E_OUTPUT_MANIFEST.tsv").exists() else []
+        if manifest_rows:
+            for r in manifest_rows:
+                p=package/r['path']
+                if not p.exists() or sha256(p)!=r['sha256']: errors.append("output manifest mismatch: "+r['path'])
+    except Exception as exc:
+        errors.append(repr(exc))
+    return errors
 
 
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--import-git",action="store_true"); ap.add_argument("--repo",type=Path)
     ap.add_argument("--inputs",type=Path,required=True); ap.add_argument("--output",type=Path)
+    ap.add_argument("--qa-dir",type=Path)
+    ap.add_argument("--build-core",action="store_true"); ap.add_argument("--validate-core",action="store_true")
     ap.add_argument("--build",action="store_true"); ap.add_argument("--validate",action="store_true")
     args=ap.parse_args()
     if args.import_git:
         if not args.repo: ap.error("--import-git requires --repo")
         import_git(args.repo,args.inputs)
+    if args.build_core:
+        if not args.output: ap.error("--build-core requires --output")
+        audit,machine,claims=build_core(args.inputs,args.output)
+        if not (_all_pass(audit) and _all_pass(machine,'machine_status') and _all_pass(claims)): raise SystemExit("core build audit failed")
+        print("LANE_E_CORE_BUILD_PASS")
+    if args.validate_core:
+        if not args.output: ap.error("--validate-core requires --output")
+        errors=validate_core(args.output,args.inputs)
+        if errors: raise SystemExit("core validation failures: "+repr(errors))
+        print("LANE_E_CORE_VALIDATION_PASS")
     if args.build:
-        if not args.output: ap.error("--build requires --output")
-        build_all(args.inputs,args.output); build_validation_report(args.output,args.inputs); visual_qa(args.output); final_docs(args.output); manifest(args.output)
+        if not args.output or not args.qa_dir: ap.error("--build requires --output and --qa-dir")
+        build_final(args.inputs,args.qa_dir,args.output)
+        print("LANE_E_FINAL_BUILD_PASS")
     if args.validate:
         if not args.output: ap.error("--validate requires --output")
         errors=validate_package(args.output,args.inputs)
-        if errors: raise SystemExit("validation failures: "+repr(errors))
-        print("LANE_E_VALIDATION_PASS")
-    if not (args.import_git or args.build or args.validate): ap.error("select --import-git, --build, and/or --validate")
+        if errors: raise SystemExit("final validation failures: "+repr(errors))
+        print("LANE_E_FINAL_VALIDATION_PASS")
+    if not (args.import_git or args.build_core or args.validate_core or args.build or args.validate): ap.error("select an action")
+
 
 if __name__ == "__main__": main()

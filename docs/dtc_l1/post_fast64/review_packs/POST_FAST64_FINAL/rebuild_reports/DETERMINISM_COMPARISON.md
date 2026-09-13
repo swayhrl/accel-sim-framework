@@ -1,12 +1,11 @@
-# Isolated deterministic rebuild comparison
+# Measured isolated core determinism comparison
 
 Status: **PASS**
 
-E2.3 ran the canonical build twice with the same committed compact inputs and two isolated output directories:
+This record is copied from the executed QA runner result `qa/E_DETERMINISM_EXECUTION.tsv`, not generated as a claimed build step.
 
-```text
-/tmp/post-fast64-lane-e-rebuild-a
-/tmp/post-fast64-lane-e-rebuild-b
-```
+- Compared files: 98
+- SHA-256/byte mismatches: 0
+- Detail: two isolated core builds; build exit codes=0/0; validation exit codes=0/0; recursive SHA-256 plus byte-size comparison
 
-`diff -qr` was empty across the complete package, including TSV/Markdown, SVG, PNG, deterministic PDF, compact input snapshots, and manifests. The canonical review-pack build was then compared against rebuild A with the same empty result. The PDF exporter intentionally avoids timestamp metadata; the SVG assets are deterministic vector figures.
+The comparison is performed on the deterministic build core before this report is materialized, avoiding self-reference. Formal package tree comparison is independently executed during closeout and recorded outside the generator command log.

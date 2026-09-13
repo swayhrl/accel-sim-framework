@@ -40,12 +40,6 @@ Source mapping: `tables/E_SENS_PIB.tsv`. Assets: `figures/F06.svg; figures/F06.p
 
 ## F07 — Physical-pool observer diagnosis
 
-Diagnostic observer sweep at 24/32/48 KiB. The chart shows physical-full active-SM-cycle fraction; the linked table also retains occupancy lines/fraction, inflight, alloc-to-ready, L2 rates, cycles, and both IO no-free denominators.
-
-Source mapping: `tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv, tables/E_PRESSURE_DENOMINATOR_COMPARISON.tsv`. Assets: `figures/F07.svg; figures/F07.pdf; figures/F07.png`.
-
-## F07 — Physical-pool observer diagnosis
-
 Ten-panel diagnostic observer sweep at 24/32/48 KiB: cycles, allocated lines, occupancy fraction, pool-full active-SM-cycle fraction, inflight requests, alloc-to-ready average, L2 rates, and both IO no-free denominators. Capacity is controlled; internal mediators remain non-isolated.
 
 Source mapping: `tables/E_PHYSICAL_OBSERVER_SYNTHESIS.tsv, tables/E_PRESSURE_DENOMINATOR_COMPARISON.tsv`. Assets: `figures/F07.svg; figures/F07.pdf; figures/F07.png`.
