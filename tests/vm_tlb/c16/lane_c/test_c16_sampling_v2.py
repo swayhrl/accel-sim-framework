@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """No-GPU contract tests for C16 Sampling V2."""
 import importlib.util
+import json
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -105,6 +107,17 @@ assert p_roles["opaque-deployment-id"] == "TUNING"
 p_units = MODULE.annotate_certainty(MODULE.canonicalize_catalog(p_catalog, "NATIVE_PROFILED"))
 assert p_units[0]["operator_class"] == "UNKNOWN_OPERATOR"
 assert "SPECIAL_KV_MANAGEMENT" not in p_units[0]["certainty_reason"]
+with tempfile.TemporaryDirectory() as temporary:
+    temporary_path = Path(temporary)
+    MODULE.write_g_target_selection_policy(temporary_path)
+    policy = json.loads((temporary_path / "G_TARGET_SELECTION_POLICY_V1.json").read_text())
+    assert policy["PRIMARY_G_TARGET_SELECTOR"] == "SELECTOR_R"
+    assert policy["PRIMARY_G_TARGET_BUDGET"] == "B48"
+    assert policy["SELECTOR_M_ROLE"] == "AUXILIARY_REPRESENTATIVE_PLAN_NONBLOCKING"
+    r_only = MODULE.write_p_plan_bundle(temporary_path, "R_ONLY", p_units, p_roles, MODULE.P_TRAIN_COHORT, selectors=("R",))
+    assert r_only and {row["selector_kind"] for row in r_only} == {"SELECTOR_R"}
+    assert (temporary_path / "R_ONLY_SELECTOR_M_DEFERRED.md").is_file()
+    assert not (temporary_path / "R_ONLY_SELECTOR_M_PLAN.tsv").exists()
 try:
     MODULE.p_validate_catalog_and_roster([{**p_catalog[0], "candidate_speedup": "999"}], p_roster, p_profiles, p_resource, MODULE.P_TRAIN_COHORT)
     raise AssertionError("P outcome fields must be rejected before selection")

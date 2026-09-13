@@ -44,6 +44,10 @@ HEAVY_TAIL_FRACTION = 0.01
 RARE_IMPLEMENTATION_N = 2
 STRATA_VERSION = "C16_STRATA_PHASE_OPERATOR_IMPLEMENTATION_SHAPEBUCKET_DTYPE_V2"
 SELECTOR_VERSION = "C16_SELECTOR_V2_R_PROBABILITY_M_MEDOID"
+G_TARGET_SELECTION_POLICY_VERSION = "G_TARGET_SELECTION_POLICY_V1"
+PRIMARY_G_TARGET_SELECTOR = "SELECTOR_R"
+PRIMARY_G_TARGET_BUDGET = 48
+SELECTOR_M_ROLE = "AUXILIARY_REPRESENTATIVE_PLAN_NONBLOCKING"
 P_READY_STATUS = "C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED"
 # P's first capability-limited publication is intentionally a checkpoint, not
 # the later per-cohort manifest sketched by the original C-side contract.  It
@@ -747,6 +751,9 @@ def write_protocol(out: Path, state: str, native_receipt: dict[str, Any] | None 
         "thresholds": THRESHOLDS, "read_holdout_target_metrics_after": "selector SHA, strata, seed, budgets, deployment split and thresholds are committed",
         "candidate_outcomes_used_for_selection": False, "medoid_ci": "FORBIDDEN", "new_simulator_replay": 0, "new_gpu_execution": 0,
     }
+    policy = out / "G_TARGET_SELECTION_POLICY_V1.json"
+    if policy.is_file():
+        payload["g_target_selection_policy_sha256"] = sha256_file(policy)
     if native_receipt:
         payload["native_catalog_receipt"] = native_receipt
     amendment = out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"
@@ -805,6 +812,27 @@ def capability_limited_train_roster_payload() -> dict[str, Any]:
 
 def write_capability_limited_train_roster(out: Path) -> None:
     write_json(out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json", capability_limited_train_roster_payload())
+
+
+def write_g_target_selection_policy(out: Path) -> None:
+    """Freeze the operational priority before AWQ or second-pass outcomes exist."""
+    write_json(out / "G_TARGET_SELECTION_POLICY_V1.json", {
+        "schema_version": G_TARGET_SELECTION_POLICY_VERSION,
+        "status": "PRE_OUTCOME_OPERATIONAL_POLICY_FROZEN",
+        "PRIMARY_G_TARGET_SELECTOR": PRIMARY_G_TARGET_SELECTOR,
+        "PRIMARY_G_TARGET_BUDGET": f"B{PRIMARY_G_TARGET_BUDGET}",
+        "SELECTOR_M_ROLE": SELECTOR_M_ROLE,
+        "SELECTOR_M_STATUS": "SELECTOR_M_AUXILIARY_DEFERRED_NONBLOCKING",
+        "sole_operational_reason": "COMPUTATIONAL_CRITICAL_PATH / PAID_GPU_IDLE_AVOIDANCE",
+        "forbidden_policy_inputs": [
+            "AWQ_OUTCOME", "NCU_OUTCOME", "NVBIT_OUTCOME", "CANDIDATE_PERFORMANCE", "CANDIDATE_COUNTER",
+        ],
+        "invariants": {
+            "seed": PRIMARY_SEED, "budgets": list(BUDGETS), "primary_selector_probability_design": True,
+            "post_hoc_sample_edit": "FORBIDDEN", "selector_m_may_not_block_g2_g3": True,
+            "new_simulator_replay": 0, "new_gpu_execution": 0,
+        },
+    })
 
 
 def write_p_event_consumption_contract(out: Path) -> None:
@@ -969,6 +997,70 @@ def write_manifest(out: Path, status: str, native_catalog: bool) -> None:
     write_json(out / "PUBLISH_MANIFEST.json", payload)
 
 
+def verify_fixed_g_target_publication(out: Path) -> None:
+    """Verify the final target handoff against the *committed* C tree.
+
+    This deliberately runs after the target commit, not while files are merely
+    present in a worktree.  It prevents a G notification for a manifest that
+    names ignored/interrupted outputs, missing receipts, or pending targets.
+    """
+    require_out(out)
+    manifest_path = out / "PUBLISH_MANIFEST.json"
+    if not manifest_path.is_file():
+        die("final G target publication lacks PUBLISH_MANIFEST.json")
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get("status") != "C16_C_P_AWQ_FROZEN_TARGET_PLAN_READY_FOR_G" or manifest.get("native_catalog_consumed") is not True:
+        die("final G target publication is not a native AWQ target-ready manifest")
+    head = current_head()
+    relative_manifest = str(manifest_path.relative_to(ROOT))
+    if git_text(head, relative_manifest) != manifest_path.read_text():
+        die("PUBLISH_MANIFEST is not materialized at the fixed current Git tree")
+    seen: set[str] = set()
+    for entry in manifest.get("files", []):
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str) or entry["path"] in seen:
+            die("PUBLISH_MANIFEST has an invalid or duplicate payload entry")
+        seen.add(entry["path"])
+        path = out / entry["path"]
+        if not path.is_file() or path.stat().st_size != entry.get("size_bytes") or sha256_file(path) != entry.get("sha256"):
+            die(f"PUBLISH_MANIFEST payload is absent or hash/size-mismatched: {entry['path']}")
+        relative = str(path.relative_to(ROOT))
+        committed = git_text(head, relative)
+        if len(committed.encode()) != path.stat().st_size or sha256_bytes(committed.encode()) != sha256_file(path):
+            die(f"PUBLISH_MANIFEST payload is not materialized at fixed Git tree: {entry['path']}")
+    required = {
+        "G_TARGET_SELECTION_POLICY_V1.json", "P_TRAIN_SELECTOR_SOURCE_FREEZE.json",
+        "P_TRAIN_TUNE_CATALOG_RECEIPT.json", "P_AWQ_CHEAP_CATALOG_RECEIPT.json",
+        "P_AWQ_G_NCU_TARGET_PLAN.tsv", "P_AWQ_G_NVBIT_TARGET_PLAN.tsv",
+    }
+    missing = sorted(required - seen)
+    if missing:
+        die(f"final G target publication lacks materialized payload(s): {','.join(missing)}")
+    policy = json.loads((out / "G_TARGET_SELECTION_POLICY_V1.json").read_text())
+    source = json.loads((out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json").read_text())
+    if (policy.get("schema_version") != G_TARGET_SELECTION_POLICY_VERSION
+            or policy.get("PRIMARY_G_TARGET_SELECTOR") != PRIMARY_G_TARGET_SELECTOR
+            or policy.get("PRIMARY_G_TARGET_BUDGET") != f"B{PRIMARY_G_TARGET_BUDGET}"
+            or policy.get("SELECTOR_M_ROLE") != SELECTOR_M_ROLE
+            or policy.get("sole_operational_reason") != "COMPUTATIONAL_CRITICAL_PATH / PAID_GPU_IDLE_AVOIDANCE"
+            or source.get("g_target_selection_policy_sha256") != sha256_file(out / "G_TARGET_SELECTION_POLICY_V1.json")):
+        die("final G target policy/source-freeze binding is absent or changed")
+    if source.get("selector_code_sha256") != code_sha():
+        die("final G target source-freeze SHA differs from current committed selector implementation")
+    if not json.loads((out / "P_AWQ_CHEAP_CATALOG_RECEIPT.json").read_text()).get("validated_dependencies"):
+        die("final G target publication lacks an AWQ holdout application receipt")
+    for modality in ("NCU", "NVBIT"):
+        rows = tsv_rows((out / f"P_AWQ_G_{modality}_TARGET_PLAN.tsv").read_text())
+        if not rows:
+            die(f"final G {modality} target plan is empty")
+        for row in rows:
+            if (row.get("capture_modality") != modality or row.get("selector_kind") != PRIMARY_G_TARGET_SELECTOR
+                    or row.get("budget") != str(PRIMARY_G_TARGET_BUDGET) or row.get("deployment_id") == QWEN7_RAW_DEPLOYMENT_ID
+                    or row.get("target_status") == "PENDING_NATIVE_CATALOG"):
+                die(f"final G {modality} target plan violates frozen R/B48/resource policy")
+    if any("PENDING_NATIVE_CATALOG" in (out / name).read_text() for name in ("P_AWQ_G_NCU_TARGET_PLAN.tsv", "P_AWQ_G_NVBIT_TARGET_PLAN.tsv")):
+        die("final G target plans still contain PENDING_NATIVE_CATALOG")
+
+
 def prepare_historical(out: Path) -> None:
     started = time.time()
     out.mkdir(parents=True, exist_ok=True)
@@ -977,6 +1069,7 @@ def prepare_historical(out: Path) -> None:
     write_preflight(out)
     write_strata_definition(out)
     write_capability_limited_train_roster(out)
+    write_g_target_selection_policy(out)
     write_tsv(out / "CONSUMED_INPUTS.tsv", ["input_id", "revision", "path", "blob_id", "sha256", "role", "consumption", "evidence_tier"], receipts)
     all_plan_rows: list[dict[str, Any]] = []
     all_budget_rows: list[dict[str, Any]] = []
@@ -1615,15 +1708,18 @@ P_PLAN_FIELDS = [
 ]
 
 
-def write_p_plan_bundle(out: Path, prefix: str, units: list[dict[str, Any]], roles: dict[str, str], cohort: str) -> list[dict[str, Any]]:
-    """Write all frozen 12/24/48 alternatives for one P cohort."""
+def write_p_plan_bundle(out: Path, prefix: str, units: list[dict[str, Any]], roles: dict[str, str], cohort: str,
+                        selectors: tuple[str, ...] = ("R",)) -> list[dict[str, Any]]:
+    """Write frozen alternatives, with Selector-R permitted to unblock G alone."""
+    if not selectors or any(selector not in {"R", "M"} for selector in selectors):
+        die("P selector bundle must declare a nonempty R/M selector set")
     all_plans: list[dict[str, Any]] = []
     all_budgets: list[dict[str, Any]] = []
     all_certainty: list[dict[str, Any]] = []
     for universe in sorted({row["universe_id"] for row in units}):
         scope = [row for row in units if row["universe_id"] == universe]
         for budget in BUDGETS:
-            for selector in ("R", "M"):
+            for selector in selectors:
                 plans, budgets, certainty = build_plan(scope, budget, selector, PRIMARY_SEED)
                 for row in plans:
                     row["split_role"] = roles[row["deployment_id"]]
@@ -1633,7 +1729,13 @@ def write_p_plan_bundle(out: Path, prefix: str, units: list[dict[str, Any]], rol
                 all_certainty.extend(certainty)
     write_tsv(out / f"{prefix}_SAMPLE_PLANS.tsv", P_PLAN_FIELDS, all_plans)
     write_tsv(out / f"{prefix}_SELECTOR_R_PLAN.tsv", P_PLAN_FIELDS, [row for row in all_plans if row["selector_kind"] == "SELECTOR_R"])
-    write_tsv(out / f"{prefix}_SELECTOR_M_PLAN.tsv", P_PLAN_FIELDS, [row for row in all_plans if row["selector_kind"] == "SELECTOR_M"])
+    if "M" in selectors:
+        write_tsv(out / f"{prefix}_SELECTOR_M_PLAN.tsv", P_PLAN_FIELDS, [row for row in all_plans if row["selector_kind"] == "SELECTOR_M"])
+    else:
+        stale_medoid = out / f"{prefix}_SELECTOR_M_PLAN.tsv"
+        if stale_medoid.exists():
+            die(f"stale uncommitted Selector-M output must be isolated before R-only publication: {stale_medoid.name}")
+        atomic_text(out / f"{prefix}_SELECTOR_M_DEFERRED.md", "# Selector-M deferred\n\n`SELECTOR_M_AUXILIARY_DEFERRED_NONBLOCKING`: the representative medoid alternative is not a G2/G3 target-publication prerequisite.  The fixed operational primary is `SELECTOR_R` B48.  Reason: `COMPUTATIONAL_CRITICAL_PATH / PAID_GPU_IDLE_AVOIDANCE`.  No AWQ, NCU, NVBit, candidate performance, or candidate counter outcome was read.\n")
     write_tsv(out / f"{prefix}_SAMPLE_BUDGETS.tsv", ["plan_id", "selector_kind", "universe_id", "budget", "certainty_units", "remaining_after_certainty", "stratum_id", "N_s", "n_s", "count_mass", "duration_mass_ns", "variation_proxy_mass", "variation_proxy_source", "allocation_score", "random_audit_target", "random_audit_actual", "estimated_capture_cost_ns", "status"], all_budgets)
     write_tsv(out / f"{prefix}_CERTAINTY_UNITS.tsv", ["universe_id", "deployment_id", "scenario_id", "phase", "stratum_id", "unit_id", "launch_ordinal", "N_s", "certainty_weight", "reason", "duration_ns", "evidence_tier", "capture_authorization"], deduplicate_certainty(all_certainty))
     membership = []
@@ -1674,6 +1776,10 @@ def freeze_p_train(out: Path, commit: str, manifest_path: str, artifact_root: Pa
         "capability_limited_amendment_sha256": sha256_file(out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"),
         "capability_limited_amendment_binding": receipt.get("amendment_binding", "P_MANIFEST_DIRECT_C_AMENDMENT_SHA256"),
         "resource_unavailable_excluded_deployment": QWEN7_RAW_DEPLOYMENT_ID,
+        "g_target_selection_policy_sha256": sha256_file(out / "G_TARGET_SELECTION_POLICY_V1.json"),
+        "primary_g_target_selector": PRIMARY_G_TARGET_SELECTOR,
+        "primary_g_target_budget": f"B{PRIMARY_G_TARGET_BUDGET}",
+        "selector_m_status": "SELECTOR_M_AUXILIARY_DEFERRED_NONBLOCKING",
         "train_input_hashes": {item["kind"]: item["sha256"] for item in receipt["validated_dependencies"]},
         "manifest_declared_not_read_hashes": {
             item["kind"]: item["sha256"] for item in receipt["manifest_declared_dependencies"]
@@ -1686,7 +1792,7 @@ def freeze_p_train(out: Path, commit: str, manifest_path: str, artifact_root: Pa
     })
     write_preflight(out, "P_FORMAL_TRAIN_TUNE_CATALOG_CONSUMED_AWQ_NOT_READ")
     write_protocol(out, "P_TRAIN_SELECTOR_RULES_AND_12_24_48_PLANS_FROZEN_AWAITING_AWQ_CHEAP_CATALOG", receipt)
-    write_p_plan_bundle(out, "P_TRAIN_TUNE", units, roles, P_TRAIN_COHORT)
+    write_p_plan_bundle(out, "P_TRAIN_TUNE", units, roles, P_TRAIN_COHORT, selectors=("R",))
     atomic_text(out / "P_AWQ_UNSEAL_GATE.md", "# P AWQ cheap-catalog unseal gate\n\n`Qwen7 AWQ` catalog payloads are not read during train/tune freeze.  Only `--apply-p-awq-holdout` after `P_TRAIN_SELECTOR_RULES_AND_12_24_48_PLANS_FROZEN_AWAITING_AWQ_CHEAP_CATALOG` may read the manifest-listed `PROSPECTIVE_QWEN7_AWQ` cheap catalog.  NCU/NVBit outcomes remain outside this gate.\n")
     write_manifest(out, "C16_C_TRAIN_SELECTOR_FROZEN_AWAITING_P_AWQ_CHEAP_CATALOG", native_catalog=True)
 
@@ -1704,11 +1810,14 @@ def assert_p_train_freeze(out: Path) -> dict[str, Any]:
     amendment = out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"
     if source.get("capability_limited_amendment_sha256") != sha256_file(amendment):
         die("train freeze source does not bind the capability-limited roster amendment")
-    required = [out / f"P_TRAIN_TUNE_{suffix}" for suffix in ("SELECTOR_R_PLAN.tsv", "SELECTOR_M_PLAN.tsv", "SAMPLE_BUDGETS.tsv")]
+    policy = out / "G_TARGET_SELECTION_POLICY_V1.json"
+    if not policy.is_file() or json.loads(policy.read_text()).get("PRIMARY_G_TARGET_SELECTOR") != PRIMARY_G_TARGET_SELECTOR:
+        die("pre-outcome G target selection policy is absent or changes the frozen primary selector")
+    required = [out / f"P_TRAIN_TUNE_{suffix}" for suffix in ("SELECTOR_R_PLAN.tsv", "SAMPLE_BUDGETS.tsv")]
     if any(not path.is_file() for path in required):
         die("P train/tune 12/24/48 plan bundle is incomplete")
     frozen_paths = [amendment, out / "P_TRAIN_TUNE_CATALOG_RECEIPT.json", out / "P_TRAIN_TUNE_SCHEMA_JOIN_AUDIT.json",
-                    out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json", protocol_path, *required]
+                    out / "P_TRAIN_SELECTOR_SOURCE_FREEZE.json", policy, protocol_path, *required]
     head = current_head()
     for path in frozen_paths:
         relative = str(path.relative_to(ROOT))
@@ -1765,7 +1874,7 @@ def apply_p_awq_holdout(out: Path, commit: str, manifest_path: str) -> None:
     units = annotate_certainty(canonicalize_catalog(rows, "NATIVE_PROFILED", historical_oracle=False))
     write_json(out / "P_AWQ_CHEAP_CATALOG_RECEIPT.json", receipt)
     write_json(out / "P_AWQ_SCHEMA_JOIN_AUDIT.json", audit)
-    plans = write_p_plan_bundle(out, "P_AWQ", units, roles, P_AWQ_COHORT)
+    plans = write_p_plan_bundle(out, "P_AWQ", units, roles, P_AWQ_COHORT, selectors=("R",))
     write_p_awq_target_plan(out, plans, units, receipt)
     protocol["state"] = "P_AWQ_CHEAP_CATALOG_APPLIED_FROZEN_TARGET_PLAN_PUBLISHED"
     protocol["awq_cheap_catalog_receipt"] = receipt
@@ -1950,6 +2059,7 @@ def main() -> None:
     modes.add_argument("--freeze-native", action="store_true")
     modes.add_argument("--freeze-p-train", action="store_true")
     modes.add_argument("--apply-p-awq-holdout", action="store_true")
+    modes.add_argument("--verify-fixed-g-target-publication", action="store_true")
     modes.add_argument("--consume-holdout", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=OUT)
     parser.add_argument("--producer-commit")
@@ -1977,6 +2087,9 @@ def main() -> None:
             die("--apply-p-awq-holdout requires --producer-commit --manifest-path")
         apply_p_awq_holdout(out, args.producer_commit, args.manifest_path)
         print(f"PASS C16 Sampling V2 P AWQ cheap-catalog target plan: {out}")
+    elif args.verify_fixed_g_target_publication:
+        verify_fixed_g_target_publication(out)
+        print(f"PASS C16 Sampling V2 fixed G2/G3 target publication: {out}")
     else:
         if not all((args.producer_commit, args.manifest_path, args.payload_path)):
             die("--consume-holdout requires --producer-commit --manifest-path --payload-path")
