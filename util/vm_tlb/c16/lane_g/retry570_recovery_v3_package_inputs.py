@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from c16_native_common import ContractError, atomic_json, sha256_file
-from runtime_package_transfer import atomic_bytes, payload_bytes, validate_metadata, validate_payload
+from runtime_package_transfer import atomic_bytes, git_blob, payload_bytes, validate_metadata, validate_payload
 
 
 SCHEMA = "C16_G_RETRY570_RECOVERY_V3_PACKAGE_INPUTS_V1"
@@ -39,7 +39,7 @@ def main() -> None:
     identity, metadata, package_rows = validate_metadata(args.package_commit, args.package_dir, args.package_manifest_sha256)
     model_identity = model.get("identity", {})
     try:
-        package_contract = json.loads(metadata[identity["package_manifest"]])
+        package_contract = json.loads(git_blob(args.package_commit, f"{args.package_dir}/{identity['package_manifest']}"))
         package_revision = package_contract["model_revision"]
         package_deployment = package_contract["deployment_id"]
     except (KeyError, TypeError, json.JSONDecodeError) as exc:
