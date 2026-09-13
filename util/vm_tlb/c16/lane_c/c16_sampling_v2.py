@@ -1662,7 +1662,14 @@ def freeze_p_train(out: Path, commit: str, manifest_path: str, artifact_root: Pa
         "capability_limited_amendment_binding": receipt.get("amendment_binding", "P_MANIFEST_DIRECT_C_AMENDMENT_SHA256"),
         "resource_unavailable_excluded_deployment": QWEN7_RAW_DEPLOYMENT_ID,
         "train_input_hashes": {item["kind"]: item["sha256"] for item in receipt["validated_dependencies"]},
-        "manifest_declared_not_read_hashes": {item["kind"]: item["sha256"] for item in receipt["manifest_declared_dependencies"] if item["kind"] in receipt["manifest_listed_not_read"]},
+        "manifest_declared_not_read_hashes": {
+            item["kind"]: item["sha256"] for item in receipt["manifest_declared_dependencies"]
+            if item["kind"] in receipt["manifest_listed_not_read"] and "sha256" in item
+        },
+        "manifest_declared_not_read_status": {
+            item["kind"]: item["status"] for item in receipt["manifest_declared_dependencies"]
+            if item["kind"] in receipt["manifest_listed_not_read"] and "status" in item
+        },
     })
     write_preflight(out, "P_FORMAL_TRAIN_TUNE_CATALOG_CONSUMED_AWQ_NOT_READ")
     write_protocol(out, "P_TRAIN_SELECTOR_RULES_AND_12_24_48_PLANS_FROZEN_AWAITING_AWQ_CHEAP_CATALOG", receipt)
