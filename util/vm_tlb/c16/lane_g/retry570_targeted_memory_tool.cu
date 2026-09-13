@@ -188,9 +188,20 @@ void nvbit_at_init() {
 void nvbit_at_ctx_init(CUcontext context) {
     pthread_mutex_lock(&mutex);
     ContextState* state = new ContextState();
-    CUDA_SAFECALL(cudaMallocManaged(&state->record, sizeof(TargetRecord)));
-    CUDA_SAFECALL(cudaMemset(state->record, 0, sizeof(TargetRecord)));
     contexts[context] = state;
+    pthread_mutex_unlock(&mutex);
+}
+
+void nvbit_tool_init(CUcontext context) {
+    pthread_mutex_lock(&mutex);
+    auto found = contexts.find(context);
+    if (found == contexts.end() || found->second->record != nullptr) {
+        pthread_mutex_unlock(&mutex);
+        return;
+    }
+    // NVBit 1.8 explicitly forbids CUDA allocation from nvbit_at_ctx_init.
+    CUDA_SAFECALL(cudaMallocManaged(&found->second->record, sizeof(TargetRecord)));
+    CUDA_SAFECALL(cudaMemset(found->second->record, 0, sizeof(TargetRecord)));
     pthread_mutex_unlock(&mutex);
 }
 
@@ -211,6 +222,11 @@ void nvbit_at_cuda_event(CUcontext context, int is_exit, nvbit_api_cuda_t callba
         emit_native_map(context, function, state);
         instrument_exact_instruction(context, function, state);
         if (trace_enabled && state->target_instrumented) {
+            if (state->record == nullptr) {
+                fprintf(stderr, "C16_TARGETED_NVBIT_RUNTIME_ERROR missing tool-init record allocation\n");
+                pthread_mutex_unlock(&mutex);
+                return;
+            }
             CUDA_SAFECALL(cudaMemset(state->record, 0, sizeof(TargetRecord)));
             nvbit_set_at_launch(context, function, state->target_launch_count);
             nvbit_enable_instrumented(context, function, true);
@@ -243,7 +259,7 @@ void nvbit_at_ctx_term(CUcontext context) {
            state->map_emitted ? 1 : 0, state->target_instrumented ? 1 : 0,
            state->target_instruction_found ? 1 : 0, state->target_launch_count);
     fflush(stdout);
-    CUDA_SAFECALL(cudaFree(state->record));
+    if (state->record != nullptr) CUDA_SAFECALL(cudaFree(state->record));
     delete state;
     contexts.erase(found);
     pthread_mutex_unlock(&mutex);
