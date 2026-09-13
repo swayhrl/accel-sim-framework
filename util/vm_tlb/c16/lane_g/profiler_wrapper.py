@@ -68,8 +68,6 @@ def parse_args(tool: str) -> argparse.Namespace:
         parser.error("real frozen NCU execution requires exactly one kernel filter and --command-log")
     if args.ncu_launch_skip < 0:
         parser.error("--ncu-launch-skip must be non-negative")
-    if tool == "nvbit" and args.parent_lease_receipt is not None:
-        parser.error("NVBit has no wrapper-owned child-runner lease contract")
     if args.diagnostic_only and tool not in {"nsys", "nvbit"}:
         parser.error("--diagnostic-only is reserved for non-timing Nsight/NVBit evidence")
     return args
@@ -132,10 +130,20 @@ def output_bytes(path: Path) -> int:
     return total
 
 
-def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, target_json: Path, *, max_raw_bytes: int, max_seconds: float) -> tuple[int, str, int, float]:
+def run_nvbit_guarded(
+    command: list[str], raw_dir: Path, nvbit_tool: Path, target_json: Path, *,
+    max_raw_bytes: int, max_seconds: float, environment: dict[str, str] | None = None,
+) -> tuple[int, str, int, float]:
+    """Run one bounded NVBit session, preserving an optional parent lease env.
+
+    Fixtures have no child C16 runner and simply use the wrapper lease.  A
+    model command gets the immutable token-bound parent lease environment so
+    ``runtime_native_runner`` proves it is under this same lease instead of
+    acquiring (or bypassing) another one.
+    """
     raw_dir.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
-    environment = dict(os.environ)
+    environment = dict(os.environ) if environment is None else dict(environment)
     environment["CUDA_INJECTION64_PATH"] = str(nvbit_tool)
     environment["C16_NVBIT_TARGET_FILTER_JSON"] = str(target_json)
     process = subprocess.Popen(command, env=environment)
@@ -298,9 +306,17 @@ def main(tool: str) -> None:
                 args.measurement_active_marker = active.path
                 args.measurement_active_guard = True
                 if tool == "nvbit":
+                    environment = None
+                    if args.parent_lease_receipt is not None:
+                        parent, token = write_parent_lease_start(args.parent_lease_receipt, target, tool, budget)
+                        environment = dict(os.environ)
+                        environment["C16_G_PARENT_LEASE_RECEIPT"] = str(args.parent_lease_receipt)
+                        environment["C16_G_PARENT_LEASE_TOKEN"] = token
+                        environment["C16_G_MEASUREMENT_ACTIVE_MARKER"] = str(active.path)
                     returncode, terminal_status, bytes_written, elapsed = run_nvbit_guarded(
                         command, args.raw_dir, args.nvbit_tool, args.target_json,
                         max_raw_bytes=budget.max_raw_bytes, max_seconds=budget.max_elapsed_seconds,
+                        environment=environment,
                     )
                     scientific = terminal_status in {"COMPLETE", "BOUNDED_PARTIAL"} and not args.diagnostic_only
                     budget.finish(

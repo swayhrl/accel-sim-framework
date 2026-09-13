@@ -47,6 +47,38 @@ class NcuTargetFilterTests(unittest.TestCase):
         self.assertTrue(args.diagnostic_only)
         self.assertEqual(args.command, ["echo", "fixture"])
 
+    def test_nvbit_model_command_can_receive_a_parent_lease_proof(self) -> None:
+        previous = sys.argv
+        try:
+            sys.argv = [
+                "nvbit_wrapper.py", "--execute",
+                "--receipt", "/tmp/receipt.json", "--target-json", "/tmp/target.json",
+                "--output", "/tmp/output", "--nvbit-tool", "/tmp/tool.so", "--raw-dir", "/tmp/raw",
+                "--budget-ledger", "/tmp/ledger.json", "--parent-lease-receipt", "/tmp/parent.json",
+                "--", "python", "runtime_native_runner.py", "--budget-owned-by-wrapper",
+            ]
+            args = parse_args("nvbit")
+        finally:
+            sys.argv = previous
+        self.assertEqual(args.parent_lease_receipt, Path("/tmp/parent.json"))
+
+    def test_nvbit_preserves_parent_lease_environment_for_child(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / "target.json"
+            tool = root / "tool.so"
+            target.write_text("{}", encoding="utf-8")
+            tool.write_text("fixture", encoding="utf-8")
+            returncode, status, _bytes, _elapsed = run_nvbit_guarded(
+                [sys.executable, "-c", "import os; assert os.environ['C16_G_PARENT_LEASE_TOKEN'] == 'unit-token'"],
+                root / "raw", tool, target, max_raw_bytes=1024, max_seconds=10,
+                environment={"C16_G_PARENT_LEASE_TOKEN": "unit-token"},
+            )
+        self.assertEqual(returncode, 0)
+        self.assertEqual(status, "COMPLETE")
+
     def test_nvbit_nonzero_child_is_not_complete(self) -> None:
         import tempfile
 
