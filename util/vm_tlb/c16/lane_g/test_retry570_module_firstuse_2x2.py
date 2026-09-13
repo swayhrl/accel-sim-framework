@@ -76,6 +76,13 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
         self.assertIn('"-p", str(pid)', SOURCE)
         self.assertIn('"maps": _run_text_safe', SOURCE)
 
+    def test_target_watchdog_is_external_to_the_dedicated_child_group(self) -> None:
+        self.assertIn("os.killpg(process.pid, signal.SIGTERM)", SOURCE)
+        self.assertIn("process.wait(timeout=2)", SOURCE)
+        self.assertIn("os.killpg(process.pid, signal.SIGKILL)", SOURCE)
+        self.assertIn('"target_hard_budget_s": args.wall_limit_seconds', SOURCE)
+        self.assertIn('"target_group_cleanup": cleanup', SOURCE)
+
     def test_raw_callback_body_has_only_fixed_pod_ring_operations(self) -> None:
         body = RAW_TOOL[RAW_TOOL.index("void nvbit_at_cuda_event"):RAW_TOOL.index("void nvbit_at_term")]
         for forbidden in (

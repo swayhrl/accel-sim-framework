@@ -224,18 +224,24 @@ def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_el
     return {"path": str(path), "sha256": sha256_file(path), "anchor_event": anchor_event, "anchor_elapsed_seconds": anchor_elapsed_seconds}
 
 
-def _kill_process_group(process: subprocess.Popen[str]) -> None:
+def _kill_process_group(process: subprocess.Popen[str]) -> dict[str, Any]:
+    """External supervisor cleanup for the dedicated child process group."""
+    result: dict[str, Any] = {"required": False, "term_sent": False, "kill_sent": False, "grace_seconds": 2}
     if process.poll() is not None:
-        return
+        return result
     try:
         os.killpg(process.pid, signal.SIGTERM)
     except ProcessLookupError:
-        return
+        return result
+    result["required"] = True
+    result["term_sent"] = True
     try:
-        process.wait(timeout=5)
+        process.wait(timeout=2)
     except subprocess.TimeoutExpired:
         os.killpg(process.pid, signal.SIGKILL)
-        process.wait(timeout=5)
+        result["kill_sent"] = True
+        process.wait(timeout=2)
+    return result
 
 
 def _read_stage(path: Path) -> dict[str, Any] | None:
@@ -367,6 +373,7 @@ def parent_main(args: argparse.Namespace) -> int:
     }
     MeasurementActive.assert_available(args.budget_ledger)
     started, timed_out, snapshots, process = time.monotonic(), False, [], None
+    cleanup: dict[str, Any] = {"required": False, "term_sent": False, "kill_sent": False, "grace_seconds": 2}
     try:
         with BudgetLease(args.budget_ledger, identity, "NVBIT_MODULE_FIRST_USE_2X2_DIAGNOSTIC", capture=False) as lease:
             with MeasurementActive(args.budget_ledger, identity, "NVBIT_MODULE_FIRST_USE_2X2_DIAGNOSTIC"):
@@ -407,11 +414,11 @@ def parent_main(args: argparse.Namespace) -> int:
                             snapshots.append(_snapshot(process.pid, ordinal, args.snapshot_dir, anchor_event, time.monotonic() - anchor_seen_at, args.gdb_snapshots, args.gdb_map_inspection))
                         if time.monotonic() - started >= args.wall_limit_seconds:
                             timed_out = True
-                            _kill_process_group(process)
+                            cleanup = _kill_process_group(process)
                             break
                         time.sleep(0.05)
                     if process.poll() is None:
-                        _kill_process_group(process)
+                        cleanup = _kill_process_group(process)
             elapsed = time.monotonic() - started
             child_exit = process.returncode if process is not None else None
             analysis = analyze(args.stdout_path, args.mode)
@@ -438,6 +445,9 @@ def parent_main(args: argparse.Namespace) -> int:
             "run_id": args.run_id,
             "mode": args.mode,
             "cuda_module_loading_requested": args.cuda_module_loading,
+            "target_hard_budget_s": args.wall_limit_seconds,
+            "target_wall_s": elapsed,
+            "target_group_cleanup": cleanup,
             "wall_limit_seconds": args.wall_limit_seconds,
             "exact_candidate": EXACT_CANDIDATE,
             "tool": {"path": str(args.tool_path), "sha256": args.tool_sha256} if args.mode != "NATIVE" else "NOT_INJECTED",
