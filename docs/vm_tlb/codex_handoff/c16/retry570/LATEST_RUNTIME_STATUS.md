@@ -2,6 +2,40 @@
 
 Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
 
+## Current bounded PyTorch/NVBit first-kernel isolation
+
+The current non-scientific diagnostic checkpoint is
+[`lane_g_retry570_pytorch_stage_diagnostic`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_pytorch_stage_diagnostic/),
+with fixed `PUBLISH_MANIFEST.json` SHA256
+`7b803deecea24e273f3c368081174a27910e7bfd94f503232c8e61cd4129a553`.
+Its status is `NVBIT_PYTORCH_FIRST_KERNEL_STAGE_DIAGNOSTIC_COMPLETE`; its
+runtime producer source is
+`982135c3a7d946f4d4be8705239d4b332802330b` and the diagnostic-only NVBit
+timing-probe tool is hash-closed at
+`07ba183f1f27f231af249ad6f2329a70b84d3de75e0bff8974696e5b8c59b845`.
+
+It ran C0 CUDA initialization, C1 allocation, C2 tensor fill, C3 elementwise
+add, and C4 small GEMM as ten independent native/NVBit processes. All completed
+under their fixed 60-second limits, produced no trace, and are not scientific
+timing or C-target evidence. C2/C3 had one related function and about 0.23 s
+of `nvbit_get_instrs()` discovery. C4's first CUTLASS GEMM launch expanded to
+89 related functions (88 enumerated), 66,032 total static instructions and
+19.969523 s of instruction discovery; insertion/enable/synchronization then
+completed, with the full C4 probe ending at 20.041227 s and child completion
+at 23.064094 s. The retained five-second snapshots show advancing discovery
+markers and `do_wait`/futex wait states, not a fixed mutex deadlock; node policy
+denied symbolized `/proc/.../stack` reads.
+
+This localizes the minimal-PyTorch boundary to related-function/static-
+instruction discovery expansion (B), rather than establishing A, C, or D. It
+does not reopen the already-closed 300-second watch and does not authorize
+Llama, Qwen, a trace, or any C frozen target. A separately authorized future
+longer diagnostic could be technically useful only with an exact bounded
+function/related-function scope. All 75 retained payloads (772,515 bytes) have
+remote-to-local size/SHA closure, tree SHA256
+`d411d972d08fe9d5f255e2dec84251cfd74c9a70da6bb29faa90f7ea5b73aaaa`;
+`REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0` and `ACTIVE_GPU_PROCESS_COUNT=0`.
+
 ## NVBit nvdisasm path-repair gate
 
 The new closeout is

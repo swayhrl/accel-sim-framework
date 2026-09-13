@@ -1,0 +1,92 @@
+{
+  "classification": {
+    "A_legitimate_extreme_first_instrumentation_latency": "NOT_SUPPORTED_BY_C2_OR_C3; C4_COMPLETED_WITHIN_60_SECONDS",
+    "B_instrumentation_size_explosion": "SUPPORTED_FOR_C4_RELATED_FUNCTION_DISCOVERY",
+    "C_nvbit_pytorch_compatibility_issue": "NOT_SUPPORTED_BY_MINIMAL_PYTORCH_C2_C4_COMPLETION",
+    "D_synchronization_deadlock": "NOT_SUPPORTED_BY_COMPLETION_AND_PROGRESSING_GET_INSTRS_MARKERS"
+  },
+  "environment": {
+    "cuda": "12.4",
+    "driver": "570.124.04",
+    "gpu": "NVIDIA GeForce RTX 3090 / SM86",
+    "libtorch_cuda_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a",
+    "torch": "2.5.1+cu124"
+  },
+  "first_problematic_kernel": {
+    "function": "_ZN7cutlass7Kernel2I65cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_32x1_nn_align8EEvNT_6ParamsE",
+    "testcase": "C4_SMALL_GEMM_LIBRARY_KERNEL"
+  },
+  "long_watch": {
+    "authorized_by_this_diagnostic": false,
+    "requested_by_this_diagnostic": false,
+    "technical_readiness": "LONGER_WATCH_MAY_BE_WORTH_REQUESTING_ONLY_FOR_A_FRESH_EXPLICITLY_AUTHORIZED_EXACT_FUNCTION_OR_RELATED_FUNCTION_BOUNDED_DIAGNOSTIC; EXISTING_ONE_SHOT_LONG_WATCH_REMAINS_CLOSED"
+  },
+  "nvbit_timing_probe_sha256": "07ba183f1f27f231af249ad6f2329a70b84d3de75e0bff8974696e5b8c59b845",
+  "raw_artifact_index": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_pytorch_stage_diagnostic/RAW_ARTIFACT_INDEX.json",
+    "sha256": "531886855e1ce4e1c52960927758dacbb8acfc3e5eb2c3b57d3677168440c2ab"
+  },
+  "runtime_source_commit": "982135c3a7d946f4d4be8705239d4b332802330b",
+  "schema_version": "C16_G_RETRY570_PYTORCH_STAGE_CLOSEOUT_V1",
+  "scientific_eligible": false,
+  "scope": "PYTORCH_C0_TO_C4_NVBIT_INSTRUMENTATION_ISOLATION_ONLY_NOT_TRACE_NOT_MODEL_NOT_C_TARGET_NOT_TIMING",
+  "stack_snapshot_evidence": {
+    "C4_snapshot_count": 5,
+    "kernel_stack_access": "DENIED_BY_NODE_PERMISSION_POLICY; WCHAN_AND_SYSCALL_RETAINED",
+    "main_thread_wchan": "do_wait",
+    "marker_progress": "GET_INSTRS_BEGIN_END_ADVANCED_DURING_SNAPSHOTS",
+    "process_cpu_percent_samples": [
+      97.8,
+      53.8,
+      37.2,
+      28.5
+    ]
+  },
+  "status": "NVBIT_PYTORCH_FIRST_KERNEL_STAGE_DIAGNOSTIC_COMPLETE",
+  "terminal_state": "PYTORCH_NVBIT_FIRST_KERNEL_BOUNDARY_LOCALIZED_NO_MODEL_OR_C_TARGET_AUTHORIZATION",
+  "test_matrix": {
+    "independent_processes": 10,
+    "native_completed": 5,
+    "nvbit_completed": 5,
+    "raw_trace_bytes": 0,
+    "timeout_count": 0,
+    "trace_generated": false
+  },
+  "timing_boundary": {
+    "C2": {
+      "enable_seconds": 8.6e-05,
+      "enumerated_function_count": 1,
+      "first_problematic_kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_11FillFunctorIfEENS_6detail5ArrayIPcLi1EEEEEviT0_T1_",
+      "full_probe_seconds": 0.238263,
+      "insertion_seconds": 3e-06,
+      "instruction_discovery_seconds": 0.232126,
+      "launch_return_to_sync_complete_seconds": 0.006003,
+      "related_function_count": 1,
+      "total_static_instruction_count": 56
+    },
+    "C3": {
+      "enable_seconds": 0.000236,
+      "enumerated_function_count": 1,
+      "first_problematic_kernel": "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_21CUDAFunctorOnSelf_addIfEENS_6detail5ArrayIPcLi2EEEEEviT0_T1_",
+      "full_probe_seconds": 0.239395,
+      "insertion_seconds": 1e-05,
+      "instruction_discovery_seconds": 0.23103,
+      "launch_return_to_sync_complete_seconds": 0.008026,
+      "related_function_count": 1,
+      "total_static_instruction_count": 96
+    },
+    "C4": {
+      "enable_seconds": 0.059192,
+      "enumerated_function_count": 88,
+      "first_problematic_kernel": "_ZN7cutlass7Kernel2I65cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_32x1_nn_align8EEvNT_6ParamsE",
+      "full_probe_seconds": 20.041227,
+      "insertion_seconds": 3e-06,
+      "instruction_discovery_seconds": 19.969523,
+      "launch_return_to_sync_complete_seconds": 0.006221,
+      "related_function_count": 89,
+      "total_static_instruction_count": 66032
+    },
+    "slowest_specific_stage": "NVBIT_GET_INSTRS_RELATED_FUNCTION_DISCOVERY",
+    "slowest_specific_stage_seconds": 19.969523
+  }
+}
