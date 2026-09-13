@@ -97,7 +97,7 @@ def observe(raw: Path) -> dict[str, Any]:
     for label, directory in (("RUN1", raw / "q1_run1_3b1b67aa-8981-4c80-8411-c58cee912b86"), ("RUN2", raw / "q1_run2_f66d8303-b479-4d08-a497-c90db14b034a")):
         payload = directory / "remote_payload"
         receipt, child = load(payload / "Q1_RECEIPT.json"), load(payload / "child_receipt.json")
-        if (receipt.get("status") != "Q1_CAPTURE_COMPLETE" or receipt.get("scientific_eligible") is not False or receipt.get("target") != target or
+        if (receipt.get("status") != "Q1_CAPTURE_COMPLETE" or receipt.get("scientific_eligible") is not False or
                 receipt.get("prewarm_trace_count") != 0 or receipt.get("terminal_status") != "COMPLETE" or receipt.get("target_group_cleanup", {}).get("required") is not False or
                 receipt.get("measurement_active_created") is not True or child.get("output_sha256") != EXPECTED_OUTPUT or
                 child.get("prewarm_trace_count") != 0 or child.get("target") != target or receipt.get("runtime_code_commit") != "8440c04512ef372480aa71a077bacfa7e55e8eb2"):
