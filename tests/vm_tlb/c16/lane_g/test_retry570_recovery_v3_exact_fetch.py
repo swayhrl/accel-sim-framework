@@ -38,3 +38,4 @@ def test_fetch_source_declares_resume_as_explicit_opt_in():
     source = PATH.read_text(encoding="utf-8")
     assert "--resume-partial" in source
     assert "without --resume-partial" in source
+    assert "exist_ok=args.resume_partial" in source

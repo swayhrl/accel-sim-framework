@@ -104,7 +104,7 @@ def main() -> None:
         raise ContractError("--resume-partial requires the retained unqualified local_dir")
     if not inside(args.destination, args.bulk_root) or not inside(args.receipt, args.bulk_root):
         raise ContractError("Recovery-V3 asset payloads and receipts must be below the declared bulk root")
-    args.destination.mkdir(parents=True)
+    args.destination.mkdir(parents=True, exist_ok=args.resume_partial)
     returned_revision, expected, closed = fetch(args.model_id, args.revision, args.expected_config_sha256, args.destination)
     receipt = {
         "schema_version": SCHEMA,
