@@ -2,6 +2,40 @@
 
 Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
 
+## NVBit nvdisasm path-repair gate
+
+The new closeout is
+[`retry570_nvdisasm_path_repair`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvdisasm_path_repair/),
+with fixed `PUBLISH_MANIFEST.json` SHA256
+`c9b4daf8a2f8bd2a8c54d2ddd27c3ec2ed6ca625c3c8d2393436e9aec2665f59`.
+Its result is
+`NVBIT_NVDISASM_PATH_CONTRACT_FIXED_RUNTIME_SMOKE_NOT_QUALIFIED`.
+
+This was a harness configuration defect, not a missing CUDA component:
+`/usr/local/cuda-12.4/bin/nvdisasm` exists and is version 12.4.127, while
+the original child PATH omitted `/usr/local/cuda-12.4/bin`. NVBit 1.8 requires
+`nvdisasm` to be discoverable through PATH. The fixed source contract verifies
+the absolute path, prefixes that exact directory into every injected child
+PATH, records the absolute provenance, and sets `NVDISASM=nvdisasm`; it does
+not depend on a transient shell export. The repair source is
+`b76fb566144bb7ca4f7c4356337b36bc0fa65903`; the fixed smoke runtime is
+`26a24b07f922df259dcc6823d1915c69b6f0f02a`.
+
+Gate A (`nvdisasm --version`) and Gate B (NVBit 1.8 official
+`instr_count_bb` plus vectoradd) passed. Gate C, the Lane G PyTorch
+first-kernel smoke with the same environment contract and official tool,
+passed the old `nvdisasm not found on PATH` boundary and reached
+`FIRST_CUDA_KERNEL_SUBMISSION_BEGIN`, but did not complete a first CUDA kernel
+or emit the official kernel marker within its fixed 60 seconds. It produced no
+trace or scientific data. Its raw historic `EXTREME_STARTUP_OVERHEAD` label is
+retained but normalized by `c9b0be4435b31f389d34854a937a6dff2e42eb1d` as a
+60-second path-smoke timeout—not a 300-second long-watch diagnosis.
+
+Accordingly, formal long-watch reapplication is **not qualified**. No
+long-watch, model, C target, trace, scientific capture, or 6+6-window rerun
+is authorized from this checkpoint. The remote has no active GPU process or
+measurement marker, and all retained smoke payloads are locally SHA-closed.
+
 ## One-shot NVBit long-watch closeout
 
 The retained microreproducer closeout remains valid and its existing 6+6

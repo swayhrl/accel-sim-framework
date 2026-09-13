@@ -1,0 +1,64 @@
+{
+  "c_gate_boundary": {
+    "first_cuda_kernel_completion": "NOT_OBSERVED_WITHIN_60_SECONDS",
+    "first_cuda_kernel_submission": "OBSERVED",
+    "historical_raw_receipt_status": "NVBIT_PYTORCH_EXTREME_STARTUP_OVERHEAD",
+    "normalized_interpretation": "60_SECOND_PATH_SMOKE_TIMEOUT_NOT_A_300_SECOND_STARTUP_DIAGNOSIS",
+    "nvbit_banner": "OBSERVED",
+    "official_instrumentation_kernel_marker": "NOT_OBSERVED",
+    "old_nvdisasm_not_found_on_path_error": "ABSENT"
+  },
+  "formal_long_watch_reapplication": "NOT_QUALIFIED",
+  "gates": {
+    "A_nvdisasm_version": "PASS",
+    "B_official_vectoradd_instruction_count": "PASS",
+    "C_lane_g_runtime_first_kernel": "FAIL_TIMEOUT_BEFORE_FIRST_KERNEL_NO_OFFICIAL_KERNEL_MARKER"
+  },
+  "path_contract_runtime_source_commit": "26a24b07f922df259dcc6823d1915c69b6f0f02a",
+  "post_run_timeout_normalization_source_commit": "c9b0be4435b31f389d34854a937a6dff2e42eb1d",
+  "prohibited_next_steps": [
+    "300s_long_watch",
+    "6_plus_6_window_rerun",
+    "Llama",
+    "Qwen",
+    "C_target",
+    "trace",
+    "scientific_capture"
+  ],
+  "raw_artifact_index": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvdisasm_path_repair/RAW_ARTIFACT_INDEX.json",
+    "sha256": "5932ec786dd573003b94725ecba85705cf95ae86729cbe448128cfa34811c6a5"
+  },
+  "repair": {
+    "absolute_nvdisasm": "/usr/local/cuda-12.4/bin/nvdisasm",
+    "child_path_prefix": "/usr/local/cuda-12.4/bin",
+    "not_a_shell_only_export": true,
+    "nvbit_command_value": "nvdisasm"
+  },
+  "root_cause": "CUDA_12_4_NVDISASM_INSTALLED_BUT_ABSENT_FROM_HARNESS_CHILD_PATH",
+  "schema_version": "C16_G_RETRY570_NVDISASM_PATH_REPAIR_CLOSEOUT_V1",
+  "scientific_eligible": false,
+  "scope": "TOOL_STARTUP_REPAIR_AND_SMOKE_ONLY_NOT_LONG_WATCH_NOT_MODEL_NOT_TRACE_NOT_C_TARGET",
+  "status": "NVBIT_NVDISASM_PATH_CONTRACT_FIXED_RUNTIME_SMOKE_NOT_QUALIFIED",
+  "terminal_state": "PATH_FAILURE_CLOSED_SEPARATE_PYTORCH_NVBIT_FIRST_KERNEL_GATE_REMAINS_BLOCKED",
+  "version_matrix": {
+    "cuda_toolkit": "12.4 (nvcc 12.4.131; nvdisasm 12.4.127)",
+    "driver": "570.124.04",
+    "gpu": "NVIDIA GeForce RTX 3090 / SM86",
+    "nvbit": {
+      "archive_sha256": "72a2b827f9531dcb86b6be13844f267640fb440929d92944177029da6da2b9e1",
+      "official_instr_count_bb_sha256": "9751365928a740e86ae421f09ed0f9b0ba38eafa19ee0ac424ae5fd1fead114d",
+      "version": "1.8"
+    },
+    "nvbit_documented_requirements": "Linux/x86_64, SM 3.5..12.1, CUDA >=12.0, driver <=575.xx, nvdisasm in PATH",
+    "torch": {
+      "driver_version": "570.124.04",
+      "gpu_name": "NVIDIA GeForce RTX 3090",
+      "gpu_uuid": "GPU-0c257cc7-45dd-5533-5435-7f42e7008e0e",
+      "libtorch_cuda_path": "/root/autodl-tmp/c16_retry570/venv_cp310_cu124_final/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so",
+      "libtorch_cuda_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a",
+      "torch_cuda": "12.4",
+      "torch_version": "2.5.1+cu124"
+    }
+  }
+}
