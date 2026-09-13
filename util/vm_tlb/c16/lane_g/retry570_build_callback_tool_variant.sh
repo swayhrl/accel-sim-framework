@@ -13,7 +13,9 @@ source_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 [[ -d "${release_root}/core" ]] || { echo "missing NVBit core" >&2; exit 2; }
 [[ ! -e "${output_path}" ]] || { echo "refusing to overwrite tool: ${output_path}" >&2; exit 2; }
 case "${variant}" in
-  debug) source_path="${source_directory}/retry570_callback_census_debug_tool.cu"; flags=(-g -Og) ;;
+  # nvcc 12.4 parses a bare -g as one of its own numeric switches.  Pass the
+  # requested host debug/optimization pair directly to GCC instead.
+  debug) source_path="${source_directory}/retry570_callback_census_debug_tool.cu"; flags=(-Xcompiler=-g,-Og) ;;
   raw) source_path="${source_directory}/retry570_callback_census_raw_tool.cu"; flags=(-O2) ;;
   empty) source_path="${source_directory}/retry570_empty_callback_dispatch_tool.cu"; flags=(-O2) ;;
   *) echo "unknown variant: ${variant}" >&2; exit 2 ;;
