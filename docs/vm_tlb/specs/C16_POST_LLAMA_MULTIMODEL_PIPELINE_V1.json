@@ -1,0 +1,52 @@
+{
+  "schema_version": "c16-post-llama-multimodel-pipeline-v1",
+  "entry_condition": "LLAMA_S6_PUBLISHED_ON_ACTIVE_BRANCH",
+  "runtime_lock": {
+    "gpu": "RTX3090",
+    "compute_capability": "SM86",
+    "driver": "570.124.04",
+    "cuda": "12.4",
+    "pytorch": "2.5.1+cu124",
+    "nvbit": "1.7.5",
+    "effective_module_loading": "EAGER"
+  },
+  "models": [
+    {
+      "model_key": "qwen_0p5",
+      "exact_identity": "RECOVER_BEFORE_RUN",
+      "phase_handoff": "PHASE_B_QWEN_0P5_CAPTURE_HANDOFF.md"
+    },
+    {
+      "model_key": "qwen_7b_awq",
+      "exact_identity": "RECOVER_BEFORE_RUN",
+      "phase_handoff": "PHASE_C_QWEN_7B_AWQ_CAPTURE_HANDOFF.md"
+    },
+    {
+      "model_key": "deepseek",
+      "exact_identity": "RECOVER_BEFORE_RUN",
+      "phase_handoff": "PHASE_D_DEEPSEEK_CAPTURE_HANDOFF.md"
+    },
+    {
+      "model_key": "glm",
+      "exact_identity": "RECOVER_BEFORE_RUN",
+      "phase_handoff": "PHASE_E_GLM_CAPTURE_HANDOFF.md"
+    }
+  ],
+  "per_model_stages": ["S0", "S1", "S2", "S3", "S4", "S5", "S6"],
+  "phase_target_policy": {
+    "separate_prefill_decode_targets_allowed": true,
+    "cross_model_static_range_reuse_forbidden": true,
+    "structural_zero_requires_kernel_census": true,
+    "zero_records_do_not_mean_zero_memory_traffic": true,
+    "downstream_consumer_scope_check_required_before_S5": true
+  },
+  "asset_recovery": {
+    "authoritative_identity_required_before_download": true,
+    "exact_revision_only": true,
+    "substitution_forbidden": true,
+    "gated_access_block_state": "BLOCKED_ASSET_FETCH_AUTH_REQUIRED"
+  },
+  "final_stage": "PHASE_F_CROSS_MODEL_DATASET_CLOSEOUT",
+  "raw_trace_in_git": false,
+  "remote_local_sha_closure_required": true
+}
