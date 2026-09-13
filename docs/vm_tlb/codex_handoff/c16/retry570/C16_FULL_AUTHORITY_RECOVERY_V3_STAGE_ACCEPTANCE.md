@@ -2,6 +2,8 @@
 
 This document defines objective exit criteria for every recovery-v3 stage. A stage is not complete because a command exited 0; it is complete only when its evidence contract is satisfied.
 
+The local/control-host large-data placement contract is defined in `C16_RECOVERY_V3_LOCAL_STORAGE_LAYOUT.md`. Large campaign data must use `/root/share/c16_recovery_v3`; `/workspace` remains for code and compact Git metadata.
+
 ## R0 — Authority / matrix reconciliation
 
 ### Required work
@@ -43,12 +45,30 @@ asset byte count
 per-file manifest
 ```
 
+Before any large local fetch, complete the local storage preflight from `C16_RECOVERY_V3_LOCAL_STORAGE_LAYOUT.md` and create:
+
+```text
+/root/share/c16_recovery_v3/models
+/root/share/c16_recovery_v3/hf-cache
+/root/share/c16_recovery_v3/staging
+/root/share/c16_recovery_v3/raw
+/root/share/c16_recovery_v3/receipts
+```
+
 ### PASS criteria
 
 One of:
 
 - `IDENTITY_AND_ASSET_LOCAL_HASH_CLOSED`
 - `IDENTITY_RECOVERED_READY_FOR_EXACT_FETCH`
+
+and:
+
+```text
+LOCAL_BULK_ROOT=/root/share/c16_recovery_v3
+LOCAL_BULK_WRITABLE=PASS
+LOCAL_BULK_FILESYSTEM_SEPARATE_FROM_CONSTRAINED_ROOT=PASS
+```
 
 For `READY_FOR_EXACT_FETCH`, Codex must continue to fetch/transfer; it is not a terminal blocker.
 
@@ -57,10 +77,10 @@ For `READY_FOR_EXACT_FETCH`, Codex must continue to fetch/transfer; it is not a 
 1. repo current metadata;
 2. git history;
 3. retained package manifests/receipts;
-4. bounded local/control-host asset roots;
+4. bounded local/control-host asset roots including `/root/share/c16_recovery_v3`;
 5. bounded GPU-host roots;
 6. authoritative upstream metadata;
-7. network-capable local-host exact-revision fetch + transfer.
+7. network-capable local-host exact-revision fetch under `/root/share/c16_recovery_v3` + transfer.
 
 ### Nonrecoverable terminal exceptions
 
@@ -75,6 +95,7 @@ These are allowed only with a receipt listing every source searched and the exac
 
 ### Required work
 
+- Keep local model/cache/staging files under `/root/share/c16_recovery_v3`.
 - Copy exact assets from local/control host to GPU host if not already present.
 - Rehash all required files on both sides.
 - Validate known-good runtime/toolchain.
@@ -92,13 +113,17 @@ GPU_IDENTITY=PASS
 STALE_GPU_PROCESSES=0
 MEASUREMENT_ACTIVE=ABSENT
 CAPTURE_ALLOWED=YES
+LOCAL_BULK_ROOT=/root/share/c16_recovery_v3
+LOCAL_BULK_WRITABLE=PASS
+ROOT_FS_NOT_USED_FOR_LARGE_ASSET_STAGING=PASS
 ```
 
 ### Recovery
 
-- GPU-host upstream network failure must trigger local-host exact fetch + rsync, not a blocker.
+- GPU-host upstream network failure must trigger local-host exact fetch under `/root/share` + rsync, not a blocker.
 - PATH/runtime problems use the hardened preflight/bootstrap and focused tests.
-- Disk pressure triggers local copyback/remote cleanup of already-closed artifacts.
+- Disk pressure triggers rolling local copyback/remote cleanup of already-closed artifacts.
+- Local root-disk pressure must never trigger a fallback large download/copy into `/workspace`; repair placement/cache settings instead.
 
 ---
 
@@ -205,7 +230,7 @@ Capture every frozen target-plan row required for the deployment/scenario over t
 - expected launched targets have records;
 - output/checksum unchanged;
 - parser/schema/truncation guards pass;
-- storage estimate and free-space gate passed before start.
+- storage estimate and free-space gate passed before start, including projected local copyback capacity under `/root/share`.
 
 ### Partial bound handling
 
@@ -220,7 +245,7 @@ If bound hits, retain `BOUNDED_PARTIAL`, copy it back and keep going. Retry only
 After each successful/partial raw capture or large profiler/census payload:
 
 1. remote size + SHA256;
-2. transfer to local/control host;
+2. transfer to local/control host under `/root/share/c16_recovery_v3`;
 3. local size + SHA256;
 4. equality check;
 5. append local raw-artifact index;
@@ -230,12 +255,16 @@ After each successful/partial raw capture or large profiler/census payload:
 
 - `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0` for the row;
 - every required raw/large payload has local path, remote SHA, local SHA, equality=true;
+- every large required local path resolves under `/root/share/c16_recovery_v3`;
 - local artifact root is durable and indexed;
-- raw traces are outside Git.
+- raw traces are outside Git;
+- `ROOT_FS_LARGE_PAYLOAD_LEAK_COUNT=0` for newly generated recovery-v3 payloads.
 
 ### Mandatory behavior
 
 Do not defer all copyback until the end. Use rolling copyback so network/disk problems surface early and remote space remains available.
+
+Do not use `/workspace`, `/tmp`, or `/root/.cache` as overflow storage for large recovery-v3 data.
 
 ---
 
@@ -257,7 +286,7 @@ Pack contains or links:
 - static map/target receipts;
 - canary/repro matrix;
 - formal capture summary;
-- raw-artifact local/remote SHA index;
+- raw-artifact local/remote SHA index with `/root/share` local paths;
 - cleanup receipt;
 - limitations / resource skips.
 
@@ -311,6 +340,10 @@ limitation
 ### PASS criteria
 
 - all successful raw files are locally SHA closed;
+- all required large local raw paths resolve under `/root/share/c16_recovery_v3`;
+- `ALL_REQUIRED_RAW_UNDER_LOCAL_BULK_ROOT=true`;
+- `ROOT_FS_LARGE_PAYLOAD_LEAK_COUNT=0`;
+- final report records `/root/share` and root-filesystem free bytes;
 - no blocked/skipped row is represented as zero-valued scientific data;
 - Llama inherited S0 and newly generated S1–S4 rows are distinguished;
 - Qwen raw vs AWQ remain separate deployment identities;
@@ -318,6 +351,7 @@ limitation
 - final manifest validation passes;
 - GPU and diagnostic process counts are zero;
 - `MEASUREMENT_ACTIVE` absent;
+- `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0`;
 - active branch pushed;
 - final report lists every required model/scenario with COMPLETE / BOUNDED_PARTIAL / SKIPPED_RESOURCE / true user-action exception.
 
