@@ -4,10 +4,11 @@
 This program is intentionally narrower than the six-plus-six bounded NVBit
 windows it follows.  Its child executes the unchanged finite index_select
 microreproducer candidate set, while the parent owns one *non-capture* budget
-lease and samples the child every five seconds.  The injected map-only tool
-does not instrument instructions, allocate CUDA memory, or own a CUDA-context
-lifecycle.  The PyTorch workload necessarily allocates its tiny tensors; that
-is the first-CUDA-kernel boundary the experiment is designed to observe.
+lease and samples the child every five seconds.  The long-watch mode uses the
+map-only tool; the distinct path-smoke mode permits only a compact official
+instruction-count tool.  Neither produces a trace or scientific capture. The
+PyTorch workload necessarily allocates its tiny tensors; that is the
+first-CUDA-kernel boundary the experiment is designed to observe.
 
 It is not a trace capture, C target, timing result, or static-map authority.
 """
@@ -38,6 +39,7 @@ SCHEMA = "C16_G_RETRY570_NVBIT_LONG_WATCH_V1"
 LONG_WATCH_SECONDS = 300
 SAMPLE_SECONDS = 5
 BASELINE_SECONDS = 60
+PATH_SMOKE_SECONDS = 60
 DIAGNOSTIC_DEPLOYMENT = "c16_retry570_indexselect_microreproducer_long_watch"
 STAGE_CUDA_READY = "CUDA_AVAILABLE_CONFIRMED"
 STAGE_FIRST_KERNEL_COMPLETED = "FIRST_CUDA_KERNEL_COMPLETED"
@@ -98,6 +100,26 @@ def gpu_snapshot(pid: int) -> dict[str, Any]:
     }
 
 
+def nvdisasm_environment_contract(nvdisasm: Path, inherited_path: str) -> dict[str, str]:
+    """Close NVBit's documented ``nvdisasm in PATH`` requirement per child.
+
+    NVBit 1.8 resolves the configured ``NVDISASM`` command through PATH.  An
+    absolute value in ``NVDISASM`` alone is therefore not a durable contract.
+    Keep the verified absolute path as provenance while passing its basename
+    only after prefixing the exact parent directory to the child PATH.
+    """
+    if not nvdisasm.is_absolute() or not nvdisasm.is_file() or not os.access(nvdisasm, os.X_OK):
+        raise ContractError("NVBit harness requires an executable absolute --nvdisasm path")
+    tool_directory = str(nvdisasm.parent)
+    components = [item for item in inherited_path.split(os.pathsep) if item and item != tool_directory]
+    return {
+        "NVDISASM": nvdisasm.name,
+        "PATH": os.pathsep.join([tool_directory, *components]),
+        "C16_NVBIT_NVDISASM_ABSOLUTE_PATH": str(nvdisasm),
+        "C16_NVBIT_NVDISASM_PATH_PREFIX": tool_directory,
+    }
+
+
 def validate_mode(mode: str, wall_limit_seconds: int, sample_seconds: int, authorization_receipt: Path | None) -> None:
     if sample_seconds != SAMPLE_SECONDS:
         raise ContractError(f"long-watch sampling must be exactly {SAMPLE_SECONDS} seconds")
@@ -111,8 +133,13 @@ def validate_mode(mode: str, wall_limit_seconds: int, sample_seconds: int, autho
             raise ContractError(f"baseline wall limit must be exactly {BASELINE_SECONDS} seconds")
         if authorization_receipt is not None:
             raise ContractError("baseline must not create or consume the NVBit one-shot authorization")
+    elif mode == "NVBIT_PATH_SMOKE":
+        if wall_limit_seconds != PATH_SMOKE_SECONDS:
+            raise ContractError(f"NVBit path smoke wall limit must be exactly {PATH_SMOKE_SECONDS} seconds")
+        if authorization_receipt is not None:
+            raise ContractError("NVBit path smoke must not create or consume the long-watch authorization")
     else:
-        raise ContractError("long-watch mode must be BASELINE or NVBIT_LONG_WATCH")
+        raise ContractError("long-watch mode must be BASELINE, NVBIT_LONG_WATCH, or NVBIT_PATH_SMOKE")
 
 
 def classify_timeout(samples: list[dict[str, Any]], stages: list[dict[str, Any]]) -> str:
@@ -270,13 +297,19 @@ def parent_main(args: argparse.Namespace) -> int:
         raise ContractError("declared runtime code commit differs from this source checkout")
     if not valid_sha256(args.expected_libtorch_cuda_sha256):
         raise ContractError("expected libtorch CUDA SHA must be lowercase SHA256")
-    if args.mode == "NVBIT_LONG_WATCH":
+    if args.mode in {"NVBIT_LONG_WATCH", "NVBIT_PATH_SMOKE"}:
         if args.tool_path is None or args.tool_sha256 is None or not args.tool_path.is_file():
-            raise ContractError("NVBit long-watch requires a materialized exact map-only tool")
+            raise ContractError("NVBit operation requires a materialized hash-closed tool")
         if not valid_sha256(args.tool_sha256) or sha256_file(args.tool_path) != args.tool_sha256:
-            raise ContractError("NVBit long-watch map-only tool path/SHA is not closed")
-        if not args.exact_mangled_function or args.static_map_path is None or not args.nvdisasm:
+            raise ContractError("NVBit operation tool path/SHA is not closed")
+        if not args.nvdisasm:
+            raise ContractError("NVBit operation lacks an nvdisasm contract input")
+        if args.mode == "NVBIT_LONG_WATCH" and (not args.exact_mangled_function or args.static_map_path is None):
             raise ContractError("NVBit long-watch lacks exact mapper identity/configuration")
+        if args.mode == "NVBIT_PATH_SMOKE" and not args.tool_evidence_marker:
+            raise ContractError("NVBit path smoke requires an exact official-tool evidence marker")
+        if args.mode == "NVBIT_PATH_SMOKE" and args.smoke_tool_kind != "NVBIT_1_8_OFFICIAL_INSTR_COUNT_BB":
+            raise ContractError("NVBit path smoke permits only NVBit 1.8 official instr_count_bb")
     elif args.tool_path is not None or args.tool_sha256 is not None:
         raise ContractError("baseline must execute without an NVBit tool declaration")
     for path in (args.receipt, args.samples_path, args.stage_path, args.child_receipt, args.stdout_path, args.stderr_path):
@@ -292,8 +325,8 @@ def parent_main(args: argparse.Namespace) -> int:
     identity = {
         "deployment_id": DIAGNOSTIC_DEPLOYMENT,
         "run_id": args.run_id,
-        "scenario_id": "INDEXSELECT_EXACT_FUNCTION_LONG_WATCH",
-        "implementation_key": "TORCH_INDEX_SELECT_MICROREPRODUCER_MAP_ONLY",
+        "scenario_id": "INDEXSELECT_EXACT_FUNCTION_NVBIT_PATH_SMOKE" if args.mode == "NVBIT_PATH_SMOKE" else "INDEXSELECT_EXACT_FUNCTION_LONG_WATCH",
+        "implementation_key": "TORCH_INDEX_SELECT_MICROREPRODUCER_OFFICIAL_INSTRUMENTATION_SMOKE" if args.mode == "NVBIT_PATH_SMOKE" else "TORCH_INDEX_SELECT_MICROREPRODUCER_MAP_ONLY",
     }
     MeasurementActive.assert_available(args.budget_ledger)
     authorization: dict[str, Any] | None = None
@@ -319,25 +352,32 @@ def parent_main(args: argparse.Namespace) -> int:
     timed_out = False
     first_kernel_elapsed: float | None = None
     try:
-        with BudgetLease(args.budget_ledger, identity, "NVBIT_LONG_WATCH_DIAGNOSTIC", capture=False) as lease:
-            with MeasurementActive(args.budget_ledger, identity, "NVBIT_LONG_WATCH_DIAGNOSTIC"):
+        operation_kind = "NVBIT_PATH_SMOKE_DIAGNOSTIC" if args.mode == "NVBIT_PATH_SMOKE" else "NVBIT_LONG_WATCH_DIAGNOSTIC"
+        with BudgetLease(args.budget_ledger, identity, operation_kind, capture=False) as lease:
+            with MeasurementActive(args.budget_ledger, identity, operation_kind):
                 environment = os.environ.copy()
                 environment.pop("LD_PRELOAD", None)
                 environment.pop("CUDA_INJECTION64_PATH", None)
                 for name in tuple(environment):
                     if name.startswith("C16_NVBIT_"):
                         environment.pop(name)
-                if args.mode == "NVBIT_LONG_WATCH":
+                nvdisasm_contract: dict[str, str] | None = None
+                if args.mode in {"NVBIT_LONG_WATCH", "NVBIT_PATH_SMOKE"}:
                     assert args.tool_path is not None and args.tool_sha256 is not None
-                    assert args.static_map_path is not None
+                    assert args.nvdisasm is not None
+                    nvdisasm_contract = nvdisasm_environment_contract(Path(args.nvdisasm), environment.get("PATH", ""))
                     environment.update({
                         "CUDA_INJECTION64_PATH": str(args.tool_path),
                         "C16_NVBIT_LD_PRELOAD_DECLARATION": str(args.tool_path),
-                        "C16_NVBIT_TARGET_FUNCTION_MANGLED": args.exact_mangled_function,
-                        "C16_NVBIT_STATIC_MAP_PATH": str(args.static_map_path),
-                        "C16_NVBIT_CODE_OBJECT_SHA256": args.expected_libtorch_cuda_sha256,
-                        "NVDISASM": args.nvdisasm,
                     })
+                    environment.update(nvdisasm_contract)
+                    if args.mode == "NVBIT_LONG_WATCH":
+                        assert args.static_map_path is not None
+                        environment.update({
+                            "C16_NVBIT_TARGET_FUNCTION_MANGLED": args.exact_mangled_function,
+                            "C16_NVBIT_STATIC_MAP_PATH": str(args.static_map_path),
+                            "C16_NVBIT_CODE_OBJECT_SHA256": args.expected_libtorch_cuda_sha256,
+                        })
                 with args.stdout_path.open("w", encoding="utf-8") as stdout, args.stderr_path.open("w", encoding="utf-8") as stderr:
                     process = subprocess.Popen(
                         _child_command(args), stdout=stdout, stderr=stderr, text=True, env=environment, start_new_session=True,
@@ -359,9 +399,9 @@ def parent_main(args: argparse.Namespace) -> int:
                                     STAGE_CUDA_READY, "FIRST_CUDA_KERNEL_SUBMISSION_BEGIN", STAGE_FIRST_KERNEL_COMPLETED, "CHILD_COMPLETE",
                                 },
                                 "first_cuda_kernel_completed": first_kernel_elapsed is not None,
-                                "callback_or_map_markers": _tail_contains(
-                                    args.stdout_path, ("C16_EXACT_MAP_ONLY_TOOL_READY", "C16_EXACT_MAP_ONLY_COMPLETE", "C16_EXACT_MAP_ONLY_TERMINAL"),
-                                ),
+                                "callback_or_map_markers": _tail_contains(args.stdout_path, tuple(marker for marker in (
+                                    "C16_EXACT_MAP_ONLY_TOOL_READY", "C16_EXACT_MAP_ONLY_COMPLETE", "C16_EXACT_MAP_ONLY_TERMINAL", args.tool_evidence_marker,
+                                ) if marker)),
                                 **gpu_snapshot(process.pid),
                             }
                             samples.append(sample)
@@ -387,6 +427,7 @@ def parent_main(args: argparse.Namespace) -> int:
                     first_kernel_elapsed = float(child_first_kernel)
             elapsed = _now() - started
             child_exit_code = process.returncode if process is not None else None
+            tool_evidence_seen = bool(args.tool_evidence_marker and _tail_contains(args.stdout_path, (args.tool_evidence_marker,)))
             if timed_out and first_kernel_elapsed is None:
                 status = classify_timeout(samples, stages)
                 terminal_status = "BOUNDED_TIMEOUT_NO_FIRST_KERNEL"
@@ -394,17 +435,30 @@ def parent_main(args: argparse.Namespace) -> int:
                 status = "NVBIT_LONG_WATCH_FIRST_KERNEL_OBSERVED_BUT_CHILD_DID_NOT_COMPLETE"
                 terminal_status = "BOUNDED_TIMEOUT_AFTER_FIRST_KERNEL"
             elif child_exit_code == 0 and first_kernel_elapsed is not None:
-                status = "BASELINE_FIRST_CUDA_KERNEL_OBSERVED" if args.mode == "BASELINE" else "NVBIT_LONG_WATCH_FIRST_CUDA_KERNEL_OBSERVED"
-                terminal_status = "COMPLETE"
+                if args.mode == "BASELINE":
+                    status = "BASELINE_FIRST_CUDA_KERNEL_OBSERVED"
+                    terminal_status = "COMPLETE"
+                elif args.mode == "NVBIT_PATH_SMOKE" and tool_evidence_seen:
+                    status = "NVBIT_PATH_SMOKE_FIRST_KERNEL_AND_TOOL_EVIDENCE_OBSERVED"
+                    terminal_status = "COMPLETE"
+                elif args.mode == "NVBIT_PATH_SMOKE":
+                    status = "NVBIT_PATH_SMOKE_TOOL_EVIDENCE_NOT_OBSERVED"
+                    terminal_status = "FAILED_OR_ABORTED"
+                else:
+                    status = "NVBIT_LONG_WATCH_FIRST_CUDA_KERNEL_OBSERVED"
+                    terminal_status = "COMPLETE"
             else:
-                status = "BASELINE_CHILD_FAILED_BEFORE_FIRST_KERNEL" if args.mode == "BASELINE" else "NVBIT_LONG_WATCH_CHILD_FAILED_BEFORE_FIRST_KERNEL"
+                status = (
+                    "BASELINE_CHILD_FAILED_BEFORE_FIRST_KERNEL" if args.mode == "BASELINE" else
+                    ("NVBIT_PATH_SMOKE_CHILD_FAILED_BEFORE_FIRST_KERNEL" if args.mode == "NVBIT_PATH_SMOKE" else "NVBIT_LONG_WATCH_CHILD_FAILED_BEFORE_FIRST_KERNEL")
+                )
                 terminal_status = "FAILED_OR_ABORTED"
             lease.finish(
                 elapsed_seconds=elapsed,
                 raw_bytes=0,
                 terminal_status=terminal_status,
                 evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC",
-                diagnostic_reason="ONE_SHOT_300_SECOND_WATCHDOG_DISCRIMINATOR_NO_TRACE_CAPTURE",
+                diagnostic_reason=("NVBIT_PATH_PROPAGATION_SMOKE_NO_TRACE_CAPTURE" if args.mode == "NVBIT_PATH_SMOKE" else "ONE_SHOT_300_SECOND_WATCHDOG_DISCRIMINATOR_NO_TRACE_CAPTURE"),
             )
         receipt = {
             "schema_version": SCHEMA,
@@ -420,11 +474,14 @@ def parent_main(args: argparse.Namespace) -> int:
             "sample_seconds": args.sample_seconds,
             "same_microreproducer_candidates": list(CANDIDATES),
             "nvbit_tool": None if args.mode == "BASELINE" else {"path": str(args.tool_path), "sha256": args.tool_sha256},
-            "map_only_tool_constraints": {
-                "instruction_instrumentation": False,
-                "tool_cuda_allocation": False,
-                "tool_context_or_lifecycle_logic": False,
-            },
+            "nvdisasm_environment_contract": nvdisasm_contract,
+            "required_tool_evidence_marker": args.tool_evidence_marker,
+            "tool_evidence_marker_observed": tool_evidence_seen if args.mode == "NVBIT_PATH_SMOKE" else None,
+            "tool_contract": (
+                {"type": "MAP_ONLY_NO_INSTRUMENTATION", "tool_cuda_allocation": False, "tool_context_or_lifecycle_logic": False}
+                if args.mode == "NVBIT_LONG_WATCH" else
+                ({"type": args.smoke_tool_kind, "trace_generated": False} if args.mode == "NVBIT_PATH_SMOKE" else None)
+            ),
             "first_cuda_kernel_completed_elapsed_seconds": first_kernel_elapsed,
             "child_exit_code": child_exit_code,
             "terminal_status": terminal_status,
@@ -477,7 +534,7 @@ def parent_main(args: argparse.Namespace) -> int:
 def parser() -> argparse.ArgumentParser:
     argument_parser = argparse.ArgumentParser(description=__doc__)
     argument_parser.add_argument("--child", action="store_true")
-    argument_parser.add_argument("--mode", choices=("BASELINE", "NVBIT_LONG_WATCH"))
+    argument_parser.add_argument("--mode", choices=("BASELINE", "NVBIT_LONG_WATCH", "NVBIT_PATH_SMOKE"))
     argument_parser.add_argument("--receipt", type=Path)
     argument_parser.add_argument("--samples-path", type=Path)
     argument_parser.add_argument("--stage-path", type=Path, required=True)
@@ -493,6 +550,8 @@ def parser() -> argparse.ArgumentParser:
     argument_parser.add_argument("--exact-mangled-function")
     argument_parser.add_argument("--static-map-path", type=Path)
     argument_parser.add_argument("--nvdisasm")
+    argument_parser.add_argument("--tool-evidence-marker")
+    argument_parser.add_argument("--smoke-tool-kind")
     argument_parser.add_argument("--expected-torch-version", required=True)
     argument_parser.add_argument("--expected-torch-cuda", required=True)
     argument_parser.add_argument("--expected-libtorch-cuda-sha256", required=True)

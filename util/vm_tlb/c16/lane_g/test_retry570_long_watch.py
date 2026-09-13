@@ -14,8 +14,10 @@ from c16_native_common import ContractError  # noqa: E402
 from retry570_long_watch import (  # noqa: E402
     BASELINE_SECONDS,
     LONG_WATCH_SECONDS,
+    PATH_SMOKE_SECONDS,
     SAMPLE_SECONDS,
     classify_timeout,
+    nvdisasm_environment_contract,
     reserve_long_watch,
     validate_mode,
 )
@@ -31,6 +33,22 @@ class Retry570LongWatchTests(unittest.TestCase):
             with self.assertRaises(ContractError):
                 validate_mode("BASELINE", BASELINE_SECONDS, SAMPLE_SECONDS, authorization)
             validate_mode("BASELINE", BASELINE_SECONDS, SAMPLE_SECONDS, None)
+            validate_mode("NVBIT_PATH_SMOKE", PATH_SMOKE_SECONDS, SAMPLE_SECONDS, None)
+            with self.assertRaises(ContractError):
+                validate_mode("NVBIT_PATH_SMOKE", LONG_WATCH_SECONDS, SAMPLE_SECONDS, None)
+
+    def test_nvdisasm_contract_requires_absolute_executable_and_prefixes_child_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            binary = Path(temporary) / "cuda-bin" / "nvdisasm"
+            binary.parent.mkdir()
+            binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            binary.chmod(0o755)
+            contract = nvdisasm_environment_contract(binary, "/usr/bin:/bin")
+            self.assertEqual(contract["NVDISASM"], "nvdisasm")
+            self.assertEqual(contract["C16_NVBIT_NVDISASM_ABSOLUTE_PATH"], str(binary))
+            self.assertEqual(contract["PATH"].split(":")[0], str(binary.parent))
+            with self.assertRaises(ContractError):
+                nvdisasm_environment_contract(Path("nvdisasm"), "/usr/bin")
 
     def test_one_shot_reservation_refuses_a_second_long_watch(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
