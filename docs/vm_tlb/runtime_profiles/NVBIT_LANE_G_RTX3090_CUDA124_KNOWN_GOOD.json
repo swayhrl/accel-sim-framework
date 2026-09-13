@@ -1,0 +1,35 @@
+{
+  "schema_version": "C16_G_NVBIT_RUNTIME_PROFILE_V1",
+  "profile_id": "NVBIT_LANE_G_RTX3090_CUDA124_KNOWN_GOOD",
+  "profile_status": "KNOWN_GOOD_FOR_MINIMAL_LANE_G_FIRST_KERNEL",
+  "scope": "RTX3090_SM86_DRIVER570_CUDA124_TORCH251_NVBIT175_ONLY",
+  "gpu": {"name": "NVIDIA GeForce RTX 3090", "compute_capability": "8.6", "architecture": "SM86"},
+  "driver_version": "570.124.04",
+  "cuda": {"toolkit": "12.4", "nvcc": "12.4.131", "nvdisasm": "12.4.127", "nvdisasm_absolute_path": "/usr/local/cuda-12.4/bin/nvdisasm"},
+  "pytorch": {"version": "2.5.1+cu124", "cuda": "12.4", "libtorch_cuda_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a"},
+  "nvbit": {
+    "version": "1.7.5",
+    "archive_url": "https://github.com/NVlabs/NVBit/releases/download/v1.7.5/nvbit-Linux-x86_64-1.7.5.tar.bz2",
+    "archive_sha256": "e2290da5e35a43fc4c74917dd08e1d41ece3e21bfca6fd7c6dc590c9c8385328",
+    "core_libnvbit_sha256": "562348c32b88bf3e5b32d1895202893adb79f32b896e3cac56b29a306de40a12",
+    "cuda_module_loading": "EAGER"
+  },
+  "lane_g_tracer": {
+    "source_commit": "ac4f678a815954e4ddb22c15d9a8d3841fca86a3",
+    "source_sha256": "414bdeebebf807a1134a53079ed0b7eee47e7fb3eda72250da25b445f5876ab4",
+    "binary_sha256": "9e059b6a5b17a74e597169e365ad05d1e82517decad9974868b2b8a195132ae5"
+  },
+  "validation": {
+    "official_instr_count_bb_sha256": "fc19c2254a7f6978fe543a826070edeed391b344ca174804719714d2bc8912a3",
+    "empty_callback_sha256": "0610336515903df3e329d53c1c709ac0bd9eacc98b470aba5e8ed58e074047a5",
+    "first_kernel_trace_file_count": 0,
+    "publication_manifest_sha256": "9b343570d58b060eec4009d20ea81f638081c3001e88220079c91cca365b8f87"
+  },
+  "known_bad_for_this_lane": {
+    "nvbit_version": "1.8",
+    "classification": "NVBIT_CORE_MODULE_BOOKKEEPING_PATHOLOGY_CONFIRMED",
+    "hot_path": "std::_Hash_bytes -> elfModuleHashMap::operator[] -> Nvbit::module_loaded -> nvbitToolsCallbackFunc",
+    "scope": "SAME_RTX3090_DRIVER570_CUDA124_TORCH251_EXACT_PYTORCH_FIRST_USE_PATH_ONLY",
+    "root_cause_manifest_sha256": "8886a28deb2c6353f88ea393064a480e8a29c0541c691f1e2e1cd2aa725fe8cb"
+  }
+}
