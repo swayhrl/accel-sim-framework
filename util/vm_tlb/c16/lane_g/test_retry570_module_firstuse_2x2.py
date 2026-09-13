@@ -65,9 +65,10 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
     def test_debug_variant_declares_vendor_map_only_for_gdb_type_information(self) -> None:
         self.assertIn('extern "C" NvbitElfModuleMap elfModuleHashMap', DEBUG_TOOL)
         self.assertIn("neither reads nor writes it", DEBUG_TOOL)
-        self.assertIn("c16_debug_elf_module_map_type", DEBUG_TOOL)
-        self.assertIn("without taking the vendor object's address", DEBUG_TOOL)
+        self.assertIn("c16_debug_elf_module_map_layout", DEBUG_TOOL)
+        self.assertIn("without taking the vendor object's", DEBUG_TOOL)
         self.assertIn("-Xcompiler=-g,-Og", BUILD)
+        self.assertIn("_GLIBCXX_USE_CXX11_ABI=0", BUILD)
         self.assertIn("thread apply all bt full", SOURCE)
         self.assertIn("$c16_elf_module_map->_M_h._M_element_count", SOURCE)
         self.assertIn('"-p", str(pid)', SOURCE)

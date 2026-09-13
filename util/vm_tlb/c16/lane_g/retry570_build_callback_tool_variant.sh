@@ -15,7 +15,10 @@ source_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 case "${variant}" in
   # nvcc 12.4 parses a bare -g as one of its own numeric switches.  Pass the
   # requested host debug/optimization pair directly to GCC instead.
-  debug) source_path="${source_directory}/retry570_callback_census_debug_tool.cu"; flags=(-Xcompiler=-g,-Og) ;;
+  # The NVBit 1.8 core map uses the legacy libstdc++ string ABI.  Match that
+  # ABI in the debugger-only declaration so gdb never interprets its layout
+  # as the ABI-tagged C++11 string variant.
+  debug) source_path="${source_directory}/retry570_callback_census_debug_tool.cu"; flags=(-Xcompiler=-g,-Og -Xcompiler=-D_GLIBCXX_USE_CXX11_ABI=0) ;;
   raw) source_path="${source_directory}/retry570_callback_census_raw_tool.cu"; flags=(-O2) ;;
   empty) source_path="${source_directory}/retry570_empty_callback_dispatch_tool.cu"; flags=(-O2) ;;
   *) echo "unknown variant: ${variant}" >&2; exit 2 ;;
