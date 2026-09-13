@@ -58,6 +58,16 @@ static void event(const char* stage, CUcontext context, CUfunction function,
     fflush(stdout);
 }
 
+static void pre_target_lookup_event(const char* stage, CUfunction function, const char* observed_name, uint64_t elapsed_us) {
+    // Do not call nvbit_get_func_name() while recording the BEGIN marker: the
+    // lookup itself is the precisely scoped operation under observation.
+    printf("C16_EXACT_DISCOVERY ts_us=%llu stage=%s launch=%llu function_mangled=%s function_handle=0x%llx index=-1 related_function_count=-1 unique_handle_count=-1 unique_name_count=-1 static_instruction_count=-1 cumulative_us=0 elapsed_us=%llu\n",
+           static_cast<unsigned long long>(monotonic_us()), stage,
+           target_launches.load(std::memory_order_relaxed), observed_name == nullptr ? "UNRESOLVED" : observed_name, function_handle(function),
+           static_cast<unsigned long long>(elapsed_us));
+    fflush(stdout);
+}
+
 static bool extract_launch_function(nvbit_api_cuda_t callback, void* parameters, CUfunction* function) {
     switch (callback) {
         case API_CUDA_cuLaunch:
@@ -166,7 +176,17 @@ void nvbit_at_cuda_event(CUcontext context, int is_exit, nvbit_api_cuda_t callba
     if (is_exit) return;
     CUfunction function = nullptr;
     if (!extract_launch_function(callback, parameters, &function) || function == nullptr) return;
-    if (exact_target_mangled != std::string(mangled_name(context, function))) return;
+    // The historic exact mapper was silent while checking every new CUDA
+    // launch name.  This boundary is intentionally outside the target-only
+    // discovery stages: if it stalls, related-function/get_instrs cannot be
+    // blamed. Print before asking NVBit for a name so a bounded timeout still
+    // retains the exact opaque CUfunction handle that was being classified.
+    pre_target_lookup_event("PRE_TARGET_NAME_LOOKUP_BEGIN", function, nullptr, 0);
+    const uint64_t lookup_begin = monotonic_us();
+    const std::string observed_mangled = mangled_name(context, function);
+    const uint64_t lookup_elapsed = monotonic_us() - lookup_begin;
+    pre_target_lookup_event("PRE_TARGET_NAME_LOOKUP_END", function, observed_mangled.c_str(), lookup_elapsed);
+    if (exact_target_mangled != observed_mangled) return;
     const unsigned long long launch = target_launches.fetch_add(1, std::memory_order_relaxed);
     if (discovery_complete.load(std::memory_order_acquire)) {
         event("TARGET_REUSE_CALLBACK", context, function, static_cast<long>(launch), -1, -1, -1, -1, 0, 0);
