@@ -1,0 +1,60 @@
+{
+  "schema_version": "C16_P_NATIVE_CATALOG_C_CHECKPOINT_V1",
+  "status": "C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED",
+  "consumer_instruction": "Pin the Git commit containing this checkpoint and the exact P materialization commit below. The large artifacts remain outside Git and must be verified against the listed hashes before use.",
+  "p_catalog_materialization_commit": "184f1480a9795d5aa12509f32c8f1e7f5fc42f69",
+  "p_materialization_receipt": {
+    "path": "docs/vm_tlb/review_packs/C16_P_NATIVE_POSTPROCESS/P1_NATIVE_EVENT_PUBLICATION_POSTPROCESS_RECEIPT.json",
+    "sha256": "c9a07986f25843e8dce30970a1a0570a41cc4e06a3723983f6e1e5aff1b099cf"
+  },
+  "status_scope": "Native physical-launch catalog only. REAL_NATIVE_SCHEMA_SANITY / PROVISIONAL / COVERAGE_LIMITED; this checkpoint is not a cross-lane scientific conclusion.",
+  "train_available": [
+    {"deployment": "Llama", "catalog_rows": 286480},
+    {"deployment": "Qwen0.5", "catalog_rows": 436320}
+  ],
+  "train_unavailable": {
+    "deployment": "Qwen7 raw",
+    "status": "SKIPPED_RESOURCE / RESOURCE_UNAVAILABLE_ON_RTX3090",
+    "native_rows_created": 0
+  },
+  "holdout_sealed": {
+    "deployment": "Qwen7 AWQ",
+    "status": "HOLDOUT_PENDING_FREEZE",
+    "c_outcome_disclosure": "FORBIDDEN"
+  },
+  "g_provenance": {
+    "publication_commit": "e3d49cea82a5730ccc4d796219acd6ff68aa65a0",
+    "publication_manifest_sha256": "ade888dab5aac6aa3090df7e7aec9395b6f5a1699ca56e02461f19d95d2d1ebc",
+    "producer_commits": [
+      "12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2",
+      "3f02eef6e0d00ea654821be8539bb82f463e87e5",
+      "ae560163ff0462077e766bb737536b4a0f57339c"
+    ],
+    "closed_event_count": 8,
+    "p1_closure_audit_sha256": "fa7a16a4c919c2de4096bc549faf6c0a7a10c51e20b05118dace2ee1b920a2ca"
+  },
+  "artifacts": {
+    "outside_git_root": "artifacts/c16_p_native_postprocess/p1_native_events_e3d49cea",
+    "kernel_catalog_tsv_sha256": "1d6577b1bfa11f14b3079bddbb0a8e461a461e72a345871fba32a5d090a36a85",
+    "kernel_catalog_tsv_gzip_sha256": "f31378a17c61bd0bd14708baebcfa687ce4e17428d5c0f4b0658cb1bf3e2b40f",
+    "kernel_semantic_map_sha256": "bdcc42cb60f60e2b9741ddd0fb723a8dcfe257019e05bcf98144601296f1f6a3",
+    "semantic_coverage_sha256": "ecea9bb269dc8ee9d426be011ed72ba1c218d4d8c639e78641c51ac3f0673eb3",
+    "run_join_audit_sha256": "22199df6ab5fcae3ba8cc75d186ea08be6768ed793bf206f0980d950dc77fdf6",
+    "raw_index_sha256": "626cc8907fd643d099f1a0a4f5a9a270d8303b6fbc8250a087bb32a3fff7a43f"
+  },
+  "semantic_coverage": {
+    "status": "COVERAGE_LIMITED",
+    "unknown_launch_fraction": 1.0,
+    "unknown_is_explicit_stratum": true,
+    "kernel_name_heuristic": "FORBIDDEN",
+    "cross_run_absolute_timestamp_join": "FORBIDDEN",
+    "cross_run_bare_stream_or_correlation_join": "FORBIDDEN",
+    "zero_or_multiple_structural_candidates": "UNKNOWN"
+  },
+  "join_key_contract": {
+    "sha256": "41a84737c2380e51c43e90d8915fd4aa2c462090a1238da22511efe22babfa54",
+    "required_fields_present": true,
+    "duplicate_physical_launch_keys": 0,
+    "audit_status": "PASS"
+  }
+}

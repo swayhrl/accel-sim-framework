@@ -2,137 +2,39 @@
 
 Status: `C16_P_EVENT_DRIVEN_NATIVE_POSTPROCESS_ACTIVE`.
 
-Current fixed P baseline before this event: `70a8191ef264d91db561115e25e57da953420f94`.
-P now holds an active eight-hour event-driven local CPU role. It polls the G
-remote branch only for a changed remote HEAD, consumes only hash-closed P1/P2/P3
-events, commits/pushes each completed model/scenario batch, and never creates an
-empty commit during a quiet interval.
+P consumed only G's frozen, hash-closed native-event publication at
+`e3d49cea82a5730ccc4d796219acd6ff68aa65a0`. Its publication manifest SHA-256
+is `ade888dab5aac6aa3090df7e7aec9395b6f5a1699ca56e02461f19d95d2d1ebc`.
+All eight Llama/Qwen0.5 clean reports passed producer/event/receipt/transfer
+closure, local Nsight export (2024.2.3), and the report-scoped physical launch
+join audit.
 
-P initially found two formal, SHA-bound Llama reports:
+P committed the materialized catalog as
+`184f1480a9795d5aa12509f32c8f1e7f5fc42f69`. The C-facing immutable checkpoint
+is [C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED.json](../../../review_packs/C16_P_NATIVE_POSTPROCESS/C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED.json).
+It binds the exact P and G commits, raw/profile/catalog closure, semantic-map
+and coverage hashes, and the frozen JOIN_KEY_CONTRACT SHA.
 
-- S1 CODE run `eee03ffd-714e-4c66-beb0-1acd6ed45f79`, raw SHA
-  `0aff1fd0c2155527955dab34aaa605135ae9cc103e307ed1353a1cde8eb87364`;
-- S2 TEXT run `2a4c3b95-7357-432d-ad17-e95709752be8`, raw SHA
-  `5a602bf2aec7700c5f3efb742ccd86fdc59bb37f17cdb228dae01ab0d6042bf0`.
+The retained physical population is 722,800 launches: 286,480 Llama and
+436,320 Qwen0.5. The uncompressed catalog is 583,919,960 bytes; the
+deterministic gzip is 22,689,209 bytes. Both are raw-outside-Git and hash
+indexed. Required C join keys are complete, and the composite physical key has
+zero duplicates. Report-local stream and correlation IDs collide across runs,
+so bare stream/correlation IDs and cross-run timestamps remain forbidden.
 
-Both match the relevant `CENSUS_EXPORT_VALIDATION.json` raw-profile SHA, and
-their remote-export SQLite SHA bindings also matched locally. Local Nsight
-2022.4.2 cannot read the reports; P installed a compatible local 2024.2.3 CLI.
-Paired S1 remote-versus-local qualification passed: shared schemas, 56,720
-kernel rows, stream `{7}`, 56,720 CUDA correlation joins, 113,397 NVTX overlap
-rows, and all 5/5/5 required NVTX ranges match. The frozen qualification is
-`LOCAL_NSYS_EXPORT_QUALIFIED_FOR_CURRENT_TOOL_PAIR`; local export is P default
-until a material tool/schema/command/consumed-field change requires recheck.
+Semantic coverage is `COVERAGE_LIMITED`: all 722,800 catalog launches are an
+explicit `UNKNOWN` semantic stratum. The prior Llama S2 direct-semantic P2
+event was verified and remains available as direct evidence inside its
+diagnostic report, but its strict clean↔diagnostic structural mapping produced
+no uniquely eligible clean launch; it does not change the clean catalog. P
+used no kernel-name inference, timestamp matching, or bare local-ID join.
 
-P locally exported both reports and retained the complete 169,920 launch
-population (S1 56,720; S2 113,200). The 134,253,922-byte TSV and deterministic
-5,110,532-byte gzip are raw-outside-Git with SHA-indexed manifests. Operator
-and layer stay `UNKNOWN`; semantic mapped launch and GPU-time coverage are
-intentionally 0.0, while UNKNOWN duration is explicitly retained.
+Capability boundary: Llama and Qwen0.5 are train-available. Qwen7 raw is
+`SKIPPED_RESOURCE / RESOURCE_UNAVAILABLE_ON_RTX3090` and has no P native rows.
+Qwen7 AWQ remains `HOLDOUT_PENDING_FREEZE`; P exposes no AWQ timing, launch,
+heavy-tail, or semantic outcome to C.
 
-Lane-C's required catalog fields and composite join identity are available:
-zero empty required fields and zero duplicate
-`run_id+device+context+stream+correlation_id+launch_ordinal` units. The
-event-driven join audit additionally found 4,501 correlation-ID collisions and
-the same stream (`CUDA_STREAM_7`) across reports, so P prohibits unscoped
-stream/correlation joins. Baseline repeats are separate scenario measurements,
-not multiplied launch populations.
-
-## Llama S2 P2 event consumed
-
-G subsequently committed the passing Llama S2 direct-semantic diagnostic at
-`64f9ea0f00c2a97eedb4cc21d3d38e2b294be736`. P verified its producer manifest,
-receipts, raw report, remote SQLite, and G direct map hashes; locally re-exported
-the frozen `.nsys-rep`; and independently reproduced all 45,280 diagnostic map
-rows with zero mismatches. The P2 outputs are committed as compact receipts;
-large maps remain outside Git.
-
-P's clean↔diagnostic map retains all 113,200 clean S2 launches, but its strict
-report-scoped structural join produced 111,223 multi-candidate rows and 1,977
-zero-candidate rows. All clean rows therefore remain `UNKNOWN`, with
-`COVERAGE_LIMITED` status. This result is intentional: no timestamp,
-correlation, stream, duration, launch-ordinal, or kernel-name semantic guess was
-used across reports. See `P2_LLAMA_S2_DIRECT_SEMANTIC_POSTPROCESS.md` and
-`P2_LLAMA_S2_SEMANTIC_RECEIPT.json`.
-
-## Requested G closeout metadata and next event
-
-No C join column is missing. Before C consumes a catalog, please commit:
-
-1. the G formal native producer checkpoint and hash manifest;
-2. a transfer receipt recording remote and local path/size/SHA for each raw
-   report (the current remote profile receipt's output SHA is `NA`); and
-3. direct mapping evidence only if non-`UNKNOWN` operator/layer or runtime-KV
-   layout labels are desired.
-
-[P_TO_G_SCHEMA_REQUEST.md](../../../review_packs/C16_P_NATIVE_POSTPROCESS/P_TO_G_SCHEMA_REQUEST.md)
-states the exact missing P1 metadata. P has consumed the
-G P2 diagnostic producer checkpoint above, but no C-consumable multi-model
-native-catalog checkpoint exists yet. The initial clean-profile receipts record
-runtime code commit `12e9f16d1e503d3b4bfeba0fa08e0d350669f0e2`.
-
-The next expected event is a hash-closed P1/P2/P3 receipt. P prioritizes
-Qwen0.5, Qwen7 raw, then Qwen7 AWQ. AWQ output will remain
-`HOLDOUT_PENDING_FREEZE` and will not be supplied to C before C publishes its
-selector-freeze SHA. A deployment explicitly declared `BLOCKED` or
-`SKIPPED_RESOURCE` is logged and skipped without ending P's event loop.
-
-## P3 AWQ holdout seal (not a C input)
-
-P has sealed four immutable Qwen2.5-7B-AWQ holdout native-report inputs at G
-commits `57e2cd850b69d939492412382bd6e540283e7055` and
-`c9f948382b1312c43457d41122c5b17a4f29a877`, and
-`a7776a8cfa529889e4fe5dfb81685d556e3fa96d`, and
-`96595ba314a3ff450e7c9dd610b2a886f592e336`. For each, raw report and locally
-available receipt hashes verified; P performed local export, full catalog,
-raw/profile indexing, and a report-scoped join audit entirely outside Git. The
-sealed result is `PIPELINE_DIAGNOSTIC_ONLY / HOLDOUT_PENDING_FREEZE`; it is not
-scientifically eligible and is explicitly `C_FORBIDDEN_HOLDOUT_PENDING_SELECTOR_FREEZE`.
-
-The compact [S1 seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S1_G1_SEAL.json)
-and [S2/TEXT seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_TEXT_G1_SEAL.json)
-and [S2/CODE seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_CODE_G1_SEAL.json)
-and [S2/STRUCTURED seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_STRUCTURED_G1_SEAL.json)
-contain only identity, policy, contract gaps, and artifact hashes. They
-intentionally contain no AWQ timing, memory, output, launch-population,
-heavy-tail, or semantic-coverage outcome metric. They cannot influence C
-strata, thresholds, or selector construction before C publishes its
-selector-freeze SHA.
-
-G then published a hash-closed S2 direct-semantic diagnostic at
-`d473906f83d9a94060f4092e703ac9dd3c05c77e`. P verified its producer commit,
-receipts, diagnostic raw-report SHA, remote/local export qualification, and
-report identities; it ran the frozen P2 structural merge while keeping all
-zero- or multi-candidate cross-report cases `UNKNOWN`. The resulting
-[S2 direct-semantic holdout seal](../../../review_packs/C16_P_NATIVE_POSTPROCESS/HOLDOUT_P3_AWQ_S2_DIRECT_SEMANTIC_SEAL.json)
-contains only policy, identities, closure hashes, and join safeguards. It adds
-no AWQ outcome information to any C-visible input and remains
-`C_FORBIDDEN_HOLDOUT_PENDING_SELECTOR_FREEZE` until a selector-freeze SHA is
-published.
-
-G's current checkpoint still omits the immutable remote `nsys --version` and a
-separately named raw-transfer receipt binding remote/local path, size, and SHA.
-P has therefore retained the local output as diagnostic-only, rather than
-upgrading it to a C-consumable native event. These are the next requested G
-metadata fields; no rerun or model/scenario substitution is requested.
-
-## Current event-monitor ledger
-
-The monitor is bootstrapped at G head
-`9a20ee3b9c98bfe2a3e42da16e61dae2521a0423` and checks only the remote ref
-during quiet intervals. Its first post-bootstrap action is therefore reserved
-for a new immutable head. The already published Qwen0.5 P2 diagnostic at
-`f7d1c2cb4d41b26472893a7d23466402c8e92e70` is hash-closed as a diagnostic,
-but P has not consumed a clean Qwen P1 catalog: the committed raw index binds
-the two report SHA-256 values, while P's P1 contract still lacks an immutable
-producer manifest binding the associated profile/NSYS/binding/validation receipt
-hashes. It remains `P1_INPUT_NOT_HASH_CLOSED` for clean↔diagnostic reconciliation,
-not an authorization to infer or manufacture clean labels.
-
-The prior P3 package-transfer state is superseded by the sealed AWQ holdout
-handling above. P remains available for future hash-closed P1/P2/P3 events and
-does not expose holdout outcomes while waiting for those events.
-
-Read the P review-pack `README.md`, `JOIN_KEY_CONTRACT.md`,
-`EVENT_INPUT_CONTRACT.md`, and `LOCAL_NSYS_EXPORT_QUALIFICATION.md` for the
-full contracts, qualification, and local raw-index paths.
+P remains in local-CPU-only event-driven mode. It polls the G remote branch at
+bounded intervals, performs no GPU work, makes no empty commits during quiet
+intervals, and will consume only a subsequent exact commit plus closed
+manifest/hash event.
