@@ -43,8 +43,10 @@ def identity(binding: dict[str, Any], args: argparse.Namespace) -> dict[str, str
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=("S1_NO_TRACE", "S2_STATIC_MAP"), required=True)
     parser.add_argument("--binding", type=Path, required=True); parser.add_argument("--receipt", type=Path, required=True); parser.add_argument("--stage", type=Path, required=True); parser.add_argument("--trace-root", type=Path, required=True); parser.add_argument("--budget-ledger", type=Path, required=True)
     parser.add_argument("--adapter", required=True); parser.add_argument("--implementation-key", required=True); parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True); parser.add_argument("--quantization", required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True); parser.add_argument("--expected-attention-backend")
+    parser.add_argument("--target-function"); parser.add_argument("--static-map", type=Path)
     args = parser.parse_args()
     try:
         if str(uuid.UUID(args.run_id)) != args.run_id: raise ValueError
@@ -54,6 +56,11 @@ def main() -> None:
         raise ContractError("S1 requires EAGER and the frozen impossible no-trace range")
     if args.trace_root.exists() or args.receipt.exists() or args.stage.exists(): raise ContractError("S1 refuses to overwrite a prior payload")
     if not args.binding.is_file(): raise ContractError("frozen binding receipt absent")
+    if args.mode == "S2_STATIC_MAP":
+        if not args.target_function or args.static_map is None or args.static_map.exists():
+            raise ContractError("S2 requires a fresh static-map path and exact full target function")
+        if os.environ.get("C16_NVBIT_TARGET_FUNCTION_MANGLED") != args.target_function or os.environ.get("C16_NVBIT_STATIC_MAP_PATH") != str(args.static_map):
+            raise ContractError("S2 mapper environment does not exactly bind the target/map path")
     binding = load_binding(args.binding, canary=True)
     if (binding["scenario"]["scenario_id"], binding["scenario"]["batch_size"], binding["scenario"]["prefill_tokens"], binding["scenario"]["decode_tokens"]) != ("S0", 1, 128, 4):
         raise ContractError("campaign S1 requires frozen Llama S0/B1/T128/decode4")
@@ -87,6 +94,11 @@ def main() -> None:
                        "binding_sha256": sha256_file(args.binding), "runtime": {"gpu_name": torch.cuda.get_device_properties(0).name, "gpu_uuid": subprocess.check_output(["nvidia-smi", "--query-gpu=uuid", "--format=csv,noheader"], text=True).strip(), "driver": smi_driver_version(), "torch": torch.__version__, "torch_cuda": torch.version.cuda, "attention_backend": attention, "loader": loader},
                        "workload": {"prefill_tokens": 128, "decode_steps": 4, "output_checksum": checksum, "duration_ms": duration_ms, "all_cuda_devices": sorted(devices), "parameter_dtypes": sorted(dtypes)},
                        "prewarm_trace_count": 0, "trace_file_count": 0, "measurement_active_created": False, "terminal_status": "COMPLETE"}
+            if args.mode == "S2_STATIC_MAP":
+                if not args.static_map.is_file() or args.static_map.stat().st_size == 0:
+                    raise ContractError("S2 exact-function mapper emitted no static map")
+                receipt["static_map"] = {"path": str(args.static_map), "sha256": sha256_file(args.static_map), "size_bytes": args.static_map.stat().st_size, "target_function": args.target_function}
+                receipt["status"] = "S2_FULL_MODEL_STATIC_MAP_PASS"
             lease.finish(elapsed_seconds=lease.elapsed_seconds(), raw_bytes=0, terminal_status="COMPLETE", evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC", diagnostic_reason="MULTIMODEL_S1_FULL_MODEL_NO_TRACE_RUNTIME_PREWARM")
             atomic_json(args.receipt, receipt); stage(args.stage, "TERMINAL_COMPLETE")
         except Exception:

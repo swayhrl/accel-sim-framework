@@ -13,6 +13,10 @@ class MultimodelWorkerTests(unittest.TestCase):
         for token in ("NO_TRACE_RANGE", "MeasurementActive.assert_available", "S1 no-trace workload emitted a trace", "measurement_active_created\": False"):
             self.assertIn(token, SOURCE)
 
+    def test_s2_requires_an_exact_function_and_fresh_nvbit_native_map(self) -> None:
+        for token in ("S2_STATIC_MAP", "C16_NVBIT_TARGET_FUNCTION_MANGLED", "S2 exact-function mapper emitted no static map"):
+            self.assertIn(token, SOURCE)
+
     def test_no_cpu_or_identity_fallback(self) -> None:
         for token in ("refusing CPU fallback", "assert_cuda_residency", "runtime source commit differs"):
             self.assertIn(token, SOURCE)
