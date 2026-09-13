@@ -2,22 +2,17 @@ NVBIT_HOME ?=
 NVCC ?= nvcc
 ARCH ?= sm_86
 OUT ?= retry570_exact_map_only_tool.so
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+SOURCE := $(MAKEFILE_DIR)retry570_exact_map_only_tool.cu
 
 ifeq ($(strip $(NVBIT_HOME)),)
-$(error NVBIT_HOME must identify the hash-closed NVBit 1.8 release root)
+$(error NVBIT_HOME must identify the hash-closed NVBit release root)
 endif
-
-NVCC_LIB = -L $(subst bin/nvcc,lib64,$(shell which $(NVCC) | tr -s /))
-INCLUDES = -I$(NVBIT_HOME)/core
-LIBS = -L$(NVBIT_HOME)/core -lnvbit $(NVCC_LIB) -lcuda -lcudart_static -ldl -lrt -lpthread
 
 all: $(OUT)
 
-$(OUT): retry570_exact_map_only_tool.o $(NVBIT_HOME)/core/libnvbit.a
-	$(NVCC) -arch=$(ARCH) -O3 retry570_exact_map_only_tool.o $(LIBS) -shared -o $@
-
-retry570_exact_map_only_tool.o: retry570_exact_map_only_tool.cu
-	$(NVCC) -std=c++17 -D_FORCE_INLINES -Xcompiler -fPIC -arch=$(ARCH) -O3 $(INCLUDES) -c $< -o $@
+$(OUT): $(SOURCE) $(NVBIT_HOME)/core/libnvbit.a
+	$(NVCC) -std=c++17 -D_FORCE_INLINES -Xcompiler -fPIC -arch=$(ARCH) -O3 -I$(NVBIT_HOME)/core $< -L$(NVBIT_HOME)/core -Xlinker --whole-archive -lnvbit -Xlinker --no-whole-archive -L/usr/local/cuda-12.4/lib64 -lcuda -lcudart_static -ldl -lrt -lpthread -shared -o $@
 
 clean:
-	rm -f $(OUT) retry570_exact_map_only_tool.o
+	rm -f $(OUT)

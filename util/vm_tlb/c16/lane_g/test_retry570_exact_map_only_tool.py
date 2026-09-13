@@ -26,6 +26,13 @@ class ExactMapOnlyToolTests(unittest.TestCase):
         self.assertIn("libtorch_cuda_sha256", emit)
         self.assertIn("has_mref", emit)
 
+    def test_launch_callback_uses_the_nvbit_parameter_layout_for_each_launch_abi(self) -> None:
+        source = SOURCE.read_text(encoding="utf-8")
+        extract = source[source.index("static bool extract_launch_function"):source.index("static void emit_map")]
+        self.assertIn("static_cast<cuLaunch_params*>(parameters)->f", extract)
+        self.assertIn("static_cast<cuLaunchKernel_params*>(parameters)->f", extract)
+        self.assertIn("static_cast<cuLaunchKernelEx_params*>(parameters)->f", extract)
+
 
 if __name__ == "__main__":
     unittest.main()

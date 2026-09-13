@@ -1,4 +1,4 @@
-// Minimal Retry570 NVBit 1.8 exact-function static-map discriminator.
+// Minimal Retry570 exact-function static-map discriminator.
 //
 // This deliberately omits nvbit_at_ctx_init, nvbit_tool_init, CUDA memory
 // allocation, instrumentation, launch filtering, and all target-mapper cache
@@ -66,20 +66,25 @@ static const char* memory_space_name(InstrType::MemorySpace space) {
 }
 
 static bool extract_launch_function(nvbit_api_cuda_t callback, void* parameters, CUfunction* function) {
-    if (callback == API_CUDA_cuLaunchKernelEx_ptsz || callback == API_CUDA_cuLaunchKernelEx) {
-        *function = static_cast<cuLaunchKernelEx_params*>(parameters)->f;
-        return true;
+    switch (callback) {
+        case API_CUDA_cuLaunch:
+        case API_CUDA_cuLaunchGrid:
+        case API_CUDA_cuLaunchGridAsync:
+            *function = static_cast<cuLaunch_params*>(parameters)->f;
+            return true;
+        case API_CUDA_cuLaunchKernel_ptsz:
+        case API_CUDA_cuLaunchKernel:
+        case API_CUDA_cuLaunchCooperativeKernel:
+        case API_CUDA_cuLaunchCooperativeKernel_ptsz:
+            *function = static_cast<cuLaunchKernel_params*>(parameters)->f;
+            return true;
+        case API_CUDA_cuLaunchKernelEx:
+        case API_CUDA_cuLaunchKernelEx_ptsz:
+            *function = static_cast<cuLaunchKernelEx_params*>(parameters)->f;
+            return true;
+        default:
+            return false;
     }
-    if (callback == API_CUDA_cuLaunch || callback == API_CUDA_cuLaunchKernel_ptsz
-        || callback == API_CUDA_cuLaunchGrid || callback == API_CUDA_cuLaunchGridAsync
-        || callback == API_CUDA_cuLaunchKernel || callback == API_CUDA_cuLaunchCooperativeKernel
-        || callback == API_CUDA_cuLaunchCooperativeKernel_ptsz) {
-        // NVBit's own v1.8 tools use the cuLaunchKernel layout for this
-        // driver-launch family; retain the same ABI treatment here.
-        *function = static_cast<cuLaunchKernel_params*>(parameters)->f;
-        return true;
-    }
-    return false;
 }
 
 static void emit_map(CUcontext context, CUfunction function) {
