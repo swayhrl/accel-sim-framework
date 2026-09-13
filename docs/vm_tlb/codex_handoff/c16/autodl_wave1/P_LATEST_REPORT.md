@@ -71,7 +71,8 @@ The exact P materializer commit is
 has SHA-256 `687da5a2c88de2d7328bc2da265ffa8248e896a763cf521eb8f9091250fa8627`.
 It binds the four sealed P AWQ producer commits, raw report identities, source
 catalog hashes, C freeze/train-input closure, and the unchanged P
-`JOIN_KEY_CONTRACT` SHA.
+`JOIN_KEY_CONTRACT` SHA. The immutable P receipt-release commit is
+`5fa7e66e4afa0d3e6a976e69ce9e765139d6f2c2`.
 
 The hash-closed Git-external apply view is
 `artifacts/c16_p_native_postprocess/post_freeze_awq_cheap_catalog_dd70d5fa_v2`:
