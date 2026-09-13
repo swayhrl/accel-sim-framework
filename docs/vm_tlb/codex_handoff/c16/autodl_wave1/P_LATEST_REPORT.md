@@ -106,3 +106,22 @@ P did not read a trace payload, infer operator/layer semantics, or perform a
 memory fingerprint. There is no Lane-H real-model-trace input in this terminal
 package. P remains ready to perform transport/hash/schema-only validation if a
 future actual tiny NVBit model-trace canary is published.
+
+## G NVBit compatibility diagnostic auxiliary check
+
+Status: `C16_P_P3_NVBIT_COMPATIBILITY_AUXILIARY_NO_MODEL_TRACE`.
+
+P consumed the new G compatibility publication only after its exact producer
+commit `73850d93a4c97537976d799759b9440112eadea9` and immutable manifest,
+validation, environment, and transfer receipts closed. The new
+[auxiliary receipt](../../../review_packs/C16_P_NATIVE_POSTPROCESS/P3_NVBIT_COMPATIBILITY_AUXILIARY_RECEIPT.json)
+has SHA-256 `7037f57fbaab9f20300e4d4169adada9f77e4150d3994921416fbb23f5d90b0e`.
+It verifies all five committed publication payloads by size/SHA and confirms
+the 40-file remote/local compact-log bundle SHA is identical, with no
+remote-only artifact.
+
+This is explicitly a diagnostic-only compatibility result, not a scientific
+target outcome. It has zero raw model-trace files and bytes. P did not open
+the compact diagnostic logs, parse a trace, infer semantics, or construct a
+memory fingerprint; no Lane-H trace input is available. The receipt records
+only transport/hash/schema closure and keeps all scientific status unchanged.
