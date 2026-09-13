@@ -40,8 +40,15 @@ def asset_row(key: str, identity: str, root: Path, receipt_root: Path) -> dict[s
     if receipt_path is not None and receipt_path.is_file():
         receipt = load(receipt_path); payloads = receipt.get("payloads", [])
         total = sum(int(row["size_bytes"]) for row in payloads)
-        source = receipt.get("acquisition_source", {}).get("source_directory", "NETWORK_EXACT_REVISION")
-        return {"model_key": key, "exact_identity_revision": identity, "source_paths": str(source), "destination_path": str(receipt.get("destination")), "migration_method": receipt.get("acquisition_source", {}).get("kind", "UNKNOWN"), "source_bytes": str(total), "destination_bytes": str(total), "hash_closure": "SOURCE_AND_DESTINATION_FILE_SHA256_PASS" if receipt.get("all_payloads_size_sha256_closed") else "FAIL", "old_duplicate_removed": "NO", "status": "EXISTING_ASSET_CONSOLIDATED" if source != "NETWORK_EXACT_REVISION" else "ALREADY_UNDER_BULK_ROOT"}
+        acquisition = receipt.get("acquisition_source", {})
+        # The already-running Qwen0.5 fetch was deliberately allowed to
+        # finish under the earlier receipt schema. Its destination and P1
+        # immutable closure prove a direct bulk-root exact fetch, not a copy.
+        if not acquisition and key == "qwen2p5_0p5b_instruct":
+            source, method = "NETWORK_EXACT_REVISION", "EXACT_IMMUTABLE_NETWORK_FETCH"
+        else:
+            source, method = acquisition.get("source_directory", "NETWORK_EXACT_REVISION"), acquisition.get("kind", "EXACT_IMMUTABLE_NETWORK_FETCH")
+        return {"model_key": key, "exact_identity_revision": identity, "source_paths": str(source), "destination_path": str(receipt.get("destination")), "migration_method": method, "source_bytes": str(total), "destination_bytes": str(total), "hash_closure": "SOURCE_AND_DESTINATION_FILE_SHA256_PASS" if receipt.get("all_payloads_size_sha256_closed") else "FAIL", "old_duplicate_removed": "NO", "status": "EXISTING_ASSET_CONSOLIDATED" if source != "NETWORK_EXACT_REVISION" else "ALREADY_UNDER_BULK_ROOT"}
     if key == "qwen2p5_0p5b_instruct" and dests:
         return {"model_key": key, "exact_identity_revision": identity, "source_paths": "HUGGINGFACE_EXACT_FETCH_TO_BULK_ROOT", "destination_path": str(dests[0]), "migration_method": "NETWORK_FETCH_ALREADY_WRITING_TO_BULK_ROOT", "source_bytes": "IN_PROGRESS", "destination_bytes": "IN_PROGRESS", "hash_closure": "PENDING", "old_duplicate_removed": "NO", "status": "EXACT_FETCH_IN_PROGRESS"}
     return {"model_key": key, "exact_identity_revision": identity, "source_paths": "METADATA_ONLY_OR_NO_COMPLETE_EXACT_ASSET", "destination_path": "NONE", "migration_method": "NONE", "source_bytes": "NA", "destination_bytes": "NA", "hash_closure": "NOT_CLOSED", "old_duplicate_removed": "NO", "status": "EXACT_ASSET_NOT_FOUND_CONTINUE_RECOVERY"}

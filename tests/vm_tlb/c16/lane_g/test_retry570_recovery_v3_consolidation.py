@@ -19,3 +19,11 @@ def test_user_excluded_qwen3_30b_is_not_a_blocker_or_skip(tmp_path: Path):
 def test_glm_remains_unresolved_without_variant_guess(tmp_path: Path):
     row = module.asset_row("glm_extension", "UNRESOLVED", tmp_path, tmp_path)
     assert row["status"] == "IDENTITY_NOT_YET_RESOLVED"
+
+
+def test_legacy_p1_network_receipt_is_not_mislabeled_as_local_copy(tmp_path: Path):
+    root, receipts = tmp_path / "bulk", tmp_path / "receipts"; (root / "models/qwen2p5_0p5b_instruct/rev").mkdir(parents=True); receipts.mkdir()
+    (receipts / "R1_QWEN2P5_0P5B_ASSET_RECEIPT.json").write_text('{"payloads":[],"destination":"/root/share/c16_recovery_v3/models/qwen2p5_0p5b_instruct/rev","all_payloads_size_sha256_closed":true}', encoding="utf-8")
+    row = module.asset_row("qwen2p5_0p5b_instruct", "x", root, receipts)
+    assert row["status"] == "ALREADY_UNDER_BULK_ROOT"
+    assert row["migration_method"] == "EXACT_IMMUTABLE_NETWORK_FETCH"
