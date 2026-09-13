@@ -1,6 +1,7 @@
 NVBIT_HOME ?=
 NVCC ?= nvcc
-ARCH ?= all
+# Retry570 is an RTX3090 (SM86); CUDA 12.4 requires the ``sm_`` spelling.
+ARCH ?= sm_86
 OUT ?= retry570_targeted_memory_tool.so
 
 ifeq ($(strip $(NVBIT_HOME)),)
