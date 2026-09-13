@@ -10,6 +10,12 @@ SOURCE = Path(__file__).with_name("retry570_targeted_memory_tool.cu")
 
 
 class TargetedMapperSourceTests(unittest.TestCase):
+    def test_makefile_preserves_relocatable_device_code_for_mref_helper(self) -> None:
+        makefile = Path(__file__).with_name("Makefile.retry570_targeted_memory_tool").read_text(encoding="utf-8")
+        target = makefile.index("retry570_targeted_memory_tool.o:")
+        body = makefile[target:makefile.index("retry570_targeted_memory_inject.o:", target)]
+        self.assertIn("-dc", body)
+
     def test_map_only_tool_init_does_not_allocate_cuda_memory(self) -> None:
         source = SOURCE.read_text(encoding="utf-8")
         begin = source.index("void nvbit_tool_init")

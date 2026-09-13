@@ -5,7 +5,7 @@ ARCH ?= sm_86
 OUT ?= retry570_targeted_memory_tool.so
 
 ifeq ($(strip $(NVBIT_HOME)),)
-$(error NVBIT_HOME must identify the hash-closed NVBit 1.8 release root)
+$(error NVBIT_HOME must identify the hash-closed NVBit release root)
 endif
 
 NVCC_LIB = -L $(subst bin/nvcc,lib64,$(shell which $(NVCC) | tr -s /))
@@ -20,7 +20,10 @@ $(OUT): $(OBJECTS) $(NVBIT_HOME)/core/libnvbit.a
 	$(NVCC) -arch=$(ARCH) -O3 $(OBJECTS) $(LIBS) -shared -o $@
 
 retry570_targeted_memory_tool.o: retry570_targeted_memory_tool.cu retry570_targeted_memory_common.h
-	$(NVCC) -std=c++17 -D_FORCE_INLINES -Xcompiler -fPIC -arch=$(ARCH) -O3 $(INCLUDES) -c $< -o $@
+	# Follow NVBit's official memory-tool link contract: retain relocatable
+	# device code in the host/tool object so mref helper resolution reaches the
+	# device linker rather than relying on a host-visible ELF symbol alone.
+	$(NVCC) -std=c++17 -D_FORCE_INLINES -dc -Xcompiler -fPIC -arch=$(ARCH) -O3 $(INCLUDES) -c $< -o $@
 
 retry570_targeted_memory_inject.o: retry570_targeted_memory_inject.cu retry570_targeted_memory_common.h
 	$(NVCC) -Xptxas -astoolspatch --keep-device-functions -Xcompiler -fPIC -arch=$(ARCH) -O3 -c $< -o $@

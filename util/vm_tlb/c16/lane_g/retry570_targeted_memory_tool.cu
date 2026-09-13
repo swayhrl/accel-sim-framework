@@ -1,4 +1,4 @@
-// Diagnostic-only NVBit 1.8 mapper and one-record exact-memory tracer.
+// Diagnostic-only NVBit-native mapper and one-record exact-memory tracer.
 //
 // This is intentionally not an Accel-Sim trace producer.  It maps a function
 // through NVBit's own Instr vector, then (only when an exact getIdx target is
