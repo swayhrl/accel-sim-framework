@@ -34,6 +34,10 @@ def parse_args(tool: str) -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--metrics-file", type=Path)
+    parser.add_argument("--ncu-kernel-id")
+    parser.add_argument("--ncu-kernel-name-base", choices=("function", "demangled", "mangled"), default="demangled")
+    parser.add_argument("--ncu-launch-count", type=int, default=1)
+    parser.add_argument("--command-log", type=Path)
     parser.add_argument("--nvbit-tool", type=Path)
     parser.add_argument("--raw-dir", type=Path)
     parser.add_argument("--budget-ledger", type=Path)
@@ -50,12 +54,16 @@ def parse_args(tool: str) -> argparse.Namespace:
     args.command = args.command[1:]
     if tool == "ncu" and args.metrics_file is None:
         parser.error("NCU requires a frozen --metrics-file")
+    if tool == "ncu" and args.ncu_launch_count != 1:
+        parser.error("C16 frozen NCU targets require exactly one matched launch per invocation")
     if tool == "nvbit" and (args.nvbit_tool is None or args.raw_dir is None):
         parser.error("NVBit requires --nvbit-tool and --raw-dir")
     if args.execute and args.budget_ledger is None:
         parser.error("real C16 profiler execution requires one shared --budget-ledger")
     if args.execute and tool != "nvbit" and args.parent_lease_receipt is None:
         parser.error("real nsys/ncu execution requires an explicit immutable --parent-lease-receipt for its child runner")
+    if args.execute and tool == "ncu" and (not args.ncu_kernel_id or args.command_log is None):
+        parser.error("real frozen NCU execution requires --ncu-kernel-id and --command-log")
     if tool == "nvbit" and args.parent_lease_receipt is not None:
         parser.error("NVBit has no wrapper-owned child-runner lease contract")
     if args.diagnostic_only and tool != "nsys":
@@ -92,7 +100,10 @@ def plan_command(tool: str, args: argparse.Namespace) -> list[str]:
             command.extend(("--capture-range=nvtx", "--capture-range-end=stop"))
         return [*command, "-o", output, *args.command]
     if tool == "ncu":
-        return ["ncu", "--target-processes", "application", "--replay-mode", "application", "--metrics", ",".join(metric_names(args.metrics_file)), "--export", output, *args.command]
+        command = ["ncu", "--target-processes", "application", "--replay-mode", "kernel", "--metrics", ",".join(metric_names(args.metrics_file))]
+        if args.ncu_kernel_id:
+            command.extend(("--kernel-name-base", args.ncu_kernel_name_base, "--kernel-id", args.ncu_kernel_id, "--launch-count", str(args.ncu_launch_count)))
+        return [*command, "--export", output, *args.command]
     return list(args.command)
 
 
@@ -131,21 +142,29 @@ def run_nvbit_guarded(command: list[str], raw_dir: Path, nvbit_tool: Path, targe
     return process.returncode or 0, status, output_bytes(raw_dir), time.monotonic() - started
 
 
-def run_command_guarded(command: list[str], max_seconds: float, environment: dict[str, str] | None = None) -> tuple[int, str, float]:
+def run_command_guarded(command: list[str], max_seconds: float, environment: dict[str, str] | None = None, command_log: Path | None = None) -> tuple[int, str, float]:
     started = time.monotonic()
-    process = subprocess.Popen(command, env=environment)
-    status = "COMPLETE"
-    while process.poll() is None:
-        if time.monotonic() - started >= max_seconds:
-            status = "BOUNDED_PARTIAL"
-            process.terminate()
-            try:
-                process.wait(timeout=30)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
-            break
-        time.sleep(0.25)
+    log_handle = None
+    try:
+        if command_log is not None:
+            command_log.parent.mkdir(parents=True, exist_ok=True)
+            log_handle = command_log.open("w", encoding="utf-8")
+        process = subprocess.Popen(command, env=environment, stdout=log_handle, stderr=subprocess.STDOUT if log_handle is not None else None)
+        status = "COMPLETE"
+        while process.poll() is None:
+            if time.monotonic() - started >= max_seconds:
+                status = "BOUNDED_PARTIAL"
+                process.terminate()
+                try:
+                    process.wait(timeout=30)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+                break
+            time.sleep(0.25)
+    finally:
+        if log_handle is not None:
+            log_handle.close()
     if status == "COMPLETE" and process.returncode not in (0, None):
         status = "FAILED"
     return process.returncode or 0, status, time.monotonic() - started
@@ -212,6 +231,9 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
             "execution_budget_ledger": str(args.budget_ledger) if args.budget_ledger is not None else "NA",
             "parent_lease_start_receipt": str(args.parent_lease_receipt) if args.parent_lease_receipt is not None else "NA",
             "parent_lease_closeout_receipt": str(getattr(args, "parent_lease_closeout", "NA")),
+            "ncu_kernel_id": args.ncu_kernel_id if tool == "ncu" else "NA",
+            "ncu_kernel_name_base": args.ncu_kernel_name_base if tool == "ncu" else "NA",
+            "ncu_launch_count": args.ncu_launch_count if tool == "ncu" else "NA",
             "measurement_active_marker": str(getattr(args, "measurement_active_marker", "NA")),
             "measurement_active_guard": getattr(args, "measurement_active_guard", False),
             "semantic_diagnostic_only": args.diagnostic_only,
@@ -225,6 +247,8 @@ def wrapper_receipt(tool: str, args: argparse.Namespace, target: dict[str, Any],
             "output_path": str(args.output),
             "output_bytes": bytes_written,
             "output_sha256": sha256_file(args.output) if args.output.is_file() else "NA",
+            "command_log_path": str(args.command_log) if args.command_log is not None else "NA",
+            "command_log_sha256": sha256_file(args.command_log) if args.command_log is not None and args.command_log.is_file() else "NA",
         },
     }
     if native:
@@ -266,7 +290,9 @@ def main(tool: str) -> None:
                     environment["C16_G_PARENT_LEASE_RECEIPT"] = str(args.parent_lease_receipt)
                     environment["C16_G_PARENT_LEASE_TOKEN"] = token
                     environment["C16_G_MEASUREMENT_ACTIVE_MARKER"] = str(active.path)
-                    returncode, terminal_status, elapsed = run_command_guarded(command, budget.max_elapsed_seconds, environment)
+                    returncode, terminal_status, elapsed = run_command_guarded(
+                        command, budget.max_elapsed_seconds, environment, args.command_log,
+                    )
                     bytes_written = output_bytes(args.output)
                     if tool == "nsys" and terminal_status == "COMPLETE" and returncode == 0 and bytes_written == 0:
                         terminal_status = "FAILED_EMPTY_PROFILE"

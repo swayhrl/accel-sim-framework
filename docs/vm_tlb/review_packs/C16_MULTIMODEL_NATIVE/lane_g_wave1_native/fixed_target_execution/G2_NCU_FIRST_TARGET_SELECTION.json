@@ -1,0 +1,47 @@
+{
+  "schema_version": "C16_G2_NCU_SOURCE_STRUCTURAL_SELECTION_V1",
+  "status": "C16_G2_FIRST_TARGET_CANARY_READY",
+  "selection_order": 1,
+  "c_fixed_commit": "d55075b7752380d6bd22328547db21a5e24eeed2",
+  "c_ncu_target_plan": {
+    "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_c/P_AWQ_G_NCU_TARGET_PLAN.tsv",
+    "sha256": "45b20a8e5383277a5170e32ff41b8de2ed2ca8777300b7ab6ab80a256d050693",
+    "target_plan_id": "C16_V2_R_B48_c16_qwen25_7b_awq_S1_DECODE",
+    "unit_id": "launch:56a853d1-ef7f-4653-8cd8-cc7defde5689:cuda:0:CUDA_CONTEXT_1:CUDA_STREAM_7:CUDA_CORRELATION_1000606:79554"
+  },
+  "source_report": {
+    "run_id": "56a853d1-ef7f-4653-8cd8-cc7defde5689",
+    "profile_report_sha256": "2fdd40f719f04e781724fb2238f390ae4e681ec12471c90fefc12b49ec5b9c46",
+    "deployment_id": "c16_qwen25_7b_awq",
+    "scenario_id": "S1",
+    "phase": "DECODE",
+    "device": "cuda:0",
+    "context": "CUDA_CONTEXT_1",
+    "stream": "CUDA_STREAM_7",
+    "correlation_id": "CUDA_CORRELATION_1000606",
+    "launch_ordinal": 79554
+  },
+  "source_catalog": {
+    "logical_path": "artifacts/c16_p_native_postprocess/post_freeze_awq_cheap_catalog_dd70d5fa_final/P_AWQ_CHEAP_KERNEL_CATALOG.tsv",
+    "sha256": "08945621f63a86eb67cec28cc031c45403af483f4320428cb922699c095f82f5",
+    "join_key": "run_id+device+context+stream+correlation_id+launch_ordinal",
+    "kernel_name": "void at::native::vectorized_elementwise_kernel<(int)4, at::native::BinaryFunctor<c10::Half, c10::Half, c10::Half, at::native::binary_internal::MulFunctor<float>>, at::detail::Array<char *, (int)3>>(int, T2, T3)",
+    "grid": "7x1x1",
+    "block": "128x1x1",
+    "kernel_name_invocation_in_source_run": 4284
+  },
+  "ncu_filter": {
+    "kernel_name_base": "demangled",
+    "kernel_id": "::regex:^void\\ at::native::vectorized_elementwise_kernel<\\(int\\)4,\\ at::native::BinaryFunctor<c10::Half,\\ c10::Half,\\ c10::Half,\\ at::native::binary_internal::MulFunctor<float>>,\\ at::detail::Array<char\\ \\*,\\ \\(int\\)3>>\\(int,\\ T2,\\ T3\\)$:4284",
+    "launch_count": 1
+  },
+  "reproduction_contract": {
+    "same_frozen_package_input_and_runtime_required": true,
+    "same_phase_required": true,
+    "source_composite_join_required": true,
+    "structural_key": "demangled_kernel_name+same_name_invocation+grid+block",
+    "kernel_name_only_forbidden": true,
+    "nearest_or_adjacent_launch_substitution_forbidden": true,
+    "nonunique_match_status": "TARGET_IDENTITY_NOT_REPRODUCIBLE"
+  }
+}
