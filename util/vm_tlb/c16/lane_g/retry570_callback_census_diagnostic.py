@@ -69,10 +69,16 @@ def _module_loading_mode() -> dict[str, Any]:
 
 def _one_operation(torch: Any, stage_path: Path, round_id: int) -> str:
     _app_event(stage_path, "ROUND_BEGIN", round_id=round_id, candidate=EXACT_CANDIDATE)
+    _app_event(stage_path, "BEFORE_TORCH_MANUAL_SEED", round_id=round_id)
     torch.manual_seed(570)
+    _app_event(stage_path, "AFTER_TORCH_MANUAL_SEED", round_id=round_id)
     shape = EXACT_CANDIDATE["shape"]
+    _app_event(stage_path, "BEFORE_TORCH_ARANGE_INDEX", round_id=round_id)
     indices = (torch.arange(EXACT_CANDIDATE["index_count"], device="cuda:0", dtype=torch.int64) * 17) % shape[0]
+    _app_event(stage_path, "AFTER_TORCH_ARANGE_INDEX", round_id=round_id)
+    _app_event(stage_path, "BEFORE_TORCH_RANDN_SOURCE", round_id=round_id)
     source = torch.randn(shape, device="cuda:0", dtype=torch.float16)
+    _app_event(stage_path, "AFTER_TORCH_RANDN_SOURCE", round_id=round_id)
     _app_event(stage_path, "BEFORE_EXACT_OPERATION", round_id=round_id)
     # This marker is directly before Python's torch.index_select call.  It is
     # deliberately an application-operation boundary, not a CUDA launch proof.
@@ -127,14 +133,14 @@ def _run_text_safe(command: list[str]) -> dict[str, Any]:
         return {"command": command, "returncode": "UNAVAILABLE", "output": f"{type(exc).__name__}: {exc}"}
 
 
-def _process_snapshot(pid: int, ordinal: int, output: Path, submission_elapsed_seconds: float) -> dict[str, Any]:
+def _process_snapshot(pid: int, ordinal: int, output: Path, operation_anchor_event: str, operation_anchor_elapsed_seconds: float) -> dict[str, Any]:
     tools = {
         "threads": ["ps", "-L", "-p", str(pid), "-o", "pid,tid,stat,pcpu,etime,wchan:32,comm"],
         "pstree": ["pstree", "-ap", str(pid)],
         "nvdisasm": ["pgrep", "-af", "nvdisasm"],
         "process_filter": ["ps", "-eo", "pid,ppid,stat,pcpu,etime,wchan:32,args"],
     }
-    record = {"schema_version": SCHEMA, "ordinal": ordinal, "submission_elapsed_seconds": submission_elapsed_seconds, "pid": pid, "commands": {key: _run_text_safe(command) for key, command in tools.items()}, **gpu_snapshot(pid)}
+    record = {"schema_version": SCHEMA, "ordinal": ordinal, "operation_anchor_event": operation_anchor_event, "operation_anchor_elapsed_seconds": operation_anchor_elapsed_seconds, "pid": pid, "commands": {key: _run_text_safe(command) for key, command in tools.items()}, **gpu_snapshot(pid)}
     record["commands"]["process_filter"]["output"] = "\n".join(line for line in str(record["commands"]["process_filter"]["output"]).splitlines() if any(token in line for token in ("nvdisasm", "python", "nvbit")))
     if ordinal == 5:
         if shutil.which("gdb"):
@@ -144,7 +150,7 @@ def _process_snapshot(pid: int, ordinal: int, output: Path, submission_elapsed_s
             record["native_backtrace"] = {"status": "UNAVAILABLE_GDB_NOT_INSTALLED", "diagnostic_perturbation": False}
     path = output / f"snapshot_{ordinal:02d}.json"
     atomic_json(path, record)
-    return {"path": str(path), "sha256": sha256_file(path), "submission_elapsed_seconds": submission_elapsed_seconds}
+    return {"path": str(path), "sha256": sha256_file(path), "operation_anchor_event": operation_anchor_event, "operation_anchor_elapsed_seconds": operation_anchor_elapsed_seconds}
 
 
 def _kill_process_group(process: subprocess.Popen[str]) -> None:
@@ -206,9 +212,7 @@ def analyze(stdout: Path) -> dict[str, Any]:
         if application is not None:
             app.append(application)
     submission = next((row for row in app if row["event"] == "EXACT_TARGET_SUBMISSION_BEGIN"), None)
-    if submission is None:
-        raise ContractError("application never emitted EXACT_TARGET_SUBMISSION_BEGIN")
-    post = [row for row in callbacks if row["ts_ns"] >= submission["ts_ns"]]
+    post = [row for row in callbacks if submission is not None and row["ts_ns"] >= submission["ts_ns"]]
     pending: dict[tuple[int, str], list[dict[str, Any]]] = {}
     completed: list[dict[str, Any]] = []
     for row in post:
@@ -222,7 +226,9 @@ def analyze(stdout: Path) -> dict[str, Any]:
     launches = [row for row in post if row["is_exit"] == 0 and (row["callback"].startswith("cuLaunch") or row["callback"].startswith("cuGraphLaunch"))]
     unhandled_launches = sorted({row["callback"] for row in launches if row["callback"] not in CURRENT_MATCHER_LAUNCH_APIS})
     tool_ready = "C16_CALLBACK_CENSUS_TOOL_READY mode=CALLBACK_CENSUS_ONLY" in text
-    if not tool_ready:
+    if submission is None:
+        classification = "PRE_SUBMISSION_HOST_OPERATION_STALL_AFTER:" + (app[-1]["event"] if app else "NO_APP_EVENT")
+    elif not tool_ready:
         classification = "HARNESS_FAIL_CLOSED_NVBIT_TOOL_NOT_LOADED"
     elif unmatched:
         classification = f"CUDA_DRIVER_API_STALL_IDENTIFIED:{unmatched[-1]['callback']}"
@@ -234,7 +240,7 @@ def analyze(stdout: Path) -> dict[str, Any]:
         classification = "LAUNCH_CALLBACK_VISIBLE_NO_FUNCTION_IDENTITY_IN_CENSUS"
     else:
         classification = "HOST_SIDE_CALLBACK_ACTIVITY_WITHOUT_POST_SUBMISSION_LAUNCH"
-    return {"tool_ready": tool_ready, "application_events": app, "submission_ts_ns": submission["ts_ns"], "callback_count_total": len(callbacks), "post_submission_callbacks": post, "post_submission_launch_entries": launches, "unmatched_driver_entries": unmatched, "completed_driver_calls": completed, "current_matcher_launch_apis": sorted(CURRENT_MATCHER_LAUNCH_APIS), "unhandled_launch_api_names": unhandled_launches, "classification": classification}
+    return {"tool_ready": tool_ready, "application_events": app, "submission_ts_ns": submission["ts_ns"] if submission is not None else None, "callback_count_total": len(callbacks), "post_submission_callbacks": post, "post_submission_launch_entries": launches, "unmatched_driver_entries": unmatched, "completed_driver_calls": completed, "current_matcher_launch_apis": sorted(CURRENT_MATCHER_LAUNCH_APIS), "unhandled_launch_api_names": unhandled_launches, "classification": classification}
 
 
 def _validate(args: argparse.Namespace) -> None:
@@ -280,15 +286,18 @@ def parent_main(args: argparse.Namespace) -> int:
                 args.snapshot_dir.mkdir(parents=True)
                 with args.stdout_path.open("w", encoding="utf-8") as stdout, args.stderr_path.open("w", encoding="utf-8") as stderr:
                     process = subprocess.Popen(_child_command(args), stdout=stdout, stderr=stderr, text=True, env=environment, start_new_session=True)
-                    submission_seen_at: float | None = None
+                    operation_anchor_seen_at: float | None = None
+                    operation_anchor_event: str | None = None
                     remaining = list(SNAPSHOT_OFFSETS_SECONDS)
                     while process.poll() is None:
                         stage = _read_stage(args.stage_path)
-                        if submission_seen_at is None and stage and stage.get("event") == "EXACT_TARGET_SUBMISSION_BEGIN":
-                            submission_seen_at = time.monotonic()
-                        if submission_seen_at is not None and remaining and time.monotonic() - submission_seen_at >= remaining[0]:
+                        if stage and stage.get("event") == "EXACT_TARGET_SUBMISSION_BEGIN":
+                            operation_anchor_seen_at, operation_anchor_event = time.monotonic(), "EXACT_TARGET_SUBMISSION_BEGIN"
+                        elif operation_anchor_seen_at is None and stage and stage.get("event") == "ROUND_BEGIN":
+                            operation_anchor_seen_at, operation_anchor_event = time.monotonic(), "ROUND_BEGIN_PRE_SUBMISSION"
+                        if operation_anchor_seen_at is not None and remaining and time.monotonic() - operation_anchor_seen_at >= remaining[0]:
                             offset = remaining.pop(0)
-                            snapshots.append(_process_snapshot(process.pid, offset, args.snapshot_dir, time.monotonic() - submission_seen_at))
+                            snapshots.append(_process_snapshot(process.pid, offset, args.snapshot_dir, str(operation_anchor_event), time.monotonic() - operation_anchor_seen_at))
                         if time.monotonic() - started >= args.wall_limit_seconds:
                             timed_out = True
                             _kill_process_group(process)

@@ -29,10 +29,11 @@ class CallbackCensusTests(unittest.TestCase):
     def test_application_marker_is_directly_before_torch_index_select_and_not_claimed_as_launch(self) -> None:
         self.assertIn('_app_event(stage_path, "EXACT_TARGET_SUBMISSION_BEGIN", round_id=round_id)\n    output = torch.index_select', RUNNER)
         self.assertIn("application-operation boundary, not a CUDA launch proof", RUNNER)
-        for fragment in ("BEFORE_EXACT_OPERATION", "EXACT_OPERATION_RETURN", "BEFORE_SYNC", "AFTER_SYNC", "cuModuleGetLoadingMode"):
+        for fragment in ("BEFORE_TORCH_ARANGE_INDEX", "AFTER_TORCH_ARANGE_INDEX", "BEFORE_TORCH_RANDN_SOURCE", "AFTER_TORCH_RANDN_SOURCE", "BEFORE_EXACT_OPERATION", "EXACT_OPERATION_RETURN", "BEFORE_SYNC", "AFTER_SYNC", "cuModuleGetLoadingMode"):
             self.assertIn(fragment, RUNNER)
         self.assertIn("WALL_LIMIT_SECONDS = 25", RUNNER)
         self.assertIn("if ordinal == 5:", RUNNER)
+        self.assertIn('"ROUND_BEGIN_PRE_SUBMISSION"', RUNNER)
 
     def test_current_matcher_audit_lists_missing_legacy_async_variant(self) -> None:
         self.assertIn("cuLaunchGridAsync", "".join(CURRENT_MATCHER_LAUNCH_APIS) + " cuLaunchGridAsync")
@@ -55,6 +56,17 @@ class CallbackCensusTests(unittest.TestCase):
             log = Path(temporary) / "stdout.log"
             log.write_text("C16_CALLBACK_CENSUS_APP ts_ns=100 event=EXACT_TARGET_SUBMISSION_BEGIN\n", encoding="utf-8")
             self.assertEqual(analyze(log)["classification"], "HARNESS_FAIL_CLOSED_NVBIT_TOOL_NOT_LOADED")
+
+    def test_analyzer_preserves_a_precise_pre_submission_host_boundary(self) -> None:
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as temporary:
+            log = Path(temporary) / "stdout.log"
+            log.write_text("\n".join((
+                "C16_CALLBACK_CENSUS_TOOL_READY mode=CALLBACK_CENSUS_ONLY introspection=0 instrumentation=0 trace=0",
+                "C16_CALLBACK_CENSUS_APP ts_ns=100 event=ROUND_BEGIN",
+                "C16_CALLBACK_CENSUS_APP ts_ns=101 event=BEFORE_TORCH_RANDN_SOURCE",
+            )) + "\n", encoding="utf-8")
+            self.assertEqual(analyze(log)["classification"], "PRE_SUBMISSION_HOST_OPERATION_STALL_AFTER:BEFORE_TORCH_RANDN_SOURCE")
 
 
 if __name__ == "__main__":
