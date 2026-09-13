@@ -42,7 +42,24 @@ def derived(row: dict[str, str]) -> dict[str, str]:
             int(no_free), instructions, "NA_ZERO_INSTRUCTION_DENOMINATOR"
         )
     )
-    return {
+    observer_samples = int(row["observer_sample_sm_cycles"])
+    no_free_per_active_sm_cycle = (
+        "NA_NOT_REPORTED_IN_WHOLE_LINE_OO_COMPACT"
+        if no_free == "NA_NOT_REPORTED_IN_WHOLE_LINE_OO_COMPACT"
+        else ratio(
+            int(no_free), observer_samples, "NA_ZERO_OBSERVER_SAMPLE_DENOMINATOR"
+        )
+    )
+    no_free_per_1k_active_sm_cycles = (
+        "NA_NOT_REPORTED_IN_WHOLE_LINE_OO_COMPACT"
+        if no_free == "NA_NOT_REPORTED_IN_WHOLE_LINE_OO_COMPACT"
+        else ratio(
+            int(no_free) * 1000,
+            observer_samples,
+            "NA_ZERO_OBSERVER_SAMPLE_DENOMINATOR",
+        )
+    )
+    result = {
         "duplicate_share_of_lower": ratio(
             duplicate, lower, "NA_ZERO_LOWER_CREATED_DENOMINATOR"
         ),
@@ -90,15 +107,24 @@ def derived(row: dict[str, str]) -> dict[str, str]:
             int(row["cycles"]), instructions, "NA_ZERO_INSTRUCTION_DENOMINATOR"
         ),
     }
+    if row["wave"] == "D4":
+        result.update(
+            {
+                "no_free_events_per_active_sm_cycle": no_free_per_active_sm_cycle,
+                "no_free_events_per_1k_active_sm_cycles": no_free_per_1k_active_sm_cycles,
+            }
+        )
+    return result
 
 
-def write_tsv(path: pathlib.Path, rows: list[dict[str, str]]) -> None:
-    if path.exists():
+def write_tsv(path: pathlib.Path, rows: list[dict[str, str]], overwrite: bool) -> None:
+    if path.exists() and not overwrite:
         raise ValueError(f"refusing to overwrite output: {path}")
     if not rows:
         raise ValueError(f"refusing to write empty output: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    mode = "w" if overwrite else "x"
+    with path.open(mode, encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]), delimiter="\t", lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
@@ -112,6 +138,7 @@ def main() -> int:
     parser.add_argument("--output-d4", type=pathlib.Path, required=True)
     parser.add_argument("--output-d5", type=pathlib.Path, required=True)
     parser.add_argument("--output-index", type=pathlib.Path, required=True)
+    parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
     try:
         plan = read_tsv(args.plan)
@@ -230,9 +257,9 @@ def main() -> int:
         d4.sort(key=lambda r: (r["workload"], int(r["physical_pool_kib"]), r["mode"]))
         d5.sort(key=lambda r: r["workload"])
         index.sort(key=lambda r: (r["wave"], r["workload"], r["mode"]))
-        write_tsv(args.output_d4, d4)
-        write_tsv(args.output_d5, d5)
-        write_tsv(args.output_index, index)
+        write_tsv(args.output_d4, d4, args.overwrite)
+        write_tsv(args.output_d5, d5, args.overwrite)
+        write_tsv(args.output_index, index, args.overwrite)
         print("POST_FAST64_OBSERVER_WAVE_MATERIALIZE_PASS\tD4=18\tD5=12")
         return 0
     except (OSError, ValueError, KeyError) as error:
