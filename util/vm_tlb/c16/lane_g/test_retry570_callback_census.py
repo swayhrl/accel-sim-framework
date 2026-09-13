@@ -31,6 +31,8 @@ class CallbackCensusTests(unittest.TestCase):
         self.assertIn("application-operation boundary, not a CUDA launch proof", RUNNER)
         for fragment in ("BEFORE_EXACT_OPERATION", "EXACT_OPERATION_RETURN", "BEFORE_SYNC", "AFTER_SYNC", "cuModuleGetLoadingMode"):
             self.assertIn(fragment, RUNNER)
+        self.assertIn("WALL_LIMIT_SECONDS = 25", RUNNER)
+        self.assertIn("if ordinal == 5:", RUNNER)
 
     def test_current_matcher_audit_lists_missing_legacy_async_variant(self) -> None:
         self.assertIn("cuLaunchGridAsync", "".join(CURRENT_MATCHER_LAUNCH_APIS) + " cuLaunchGridAsync")

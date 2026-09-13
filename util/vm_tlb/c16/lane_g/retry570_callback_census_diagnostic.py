@@ -29,7 +29,10 @@ from retry570_long_watch import _run_text, gpu_snapshot, nvdisasm_environment_co
 
 
 SCHEMA = "C16_G_RETRY570_CALLBACK_CENSUS_DIAGNOSTIC_V1"
-WALL_LIMIT_SECONDS = 30
+# Keep a five-second teardown margin below the 30-second diagnostic ceiling so
+# the parent can terminate, hash its compact receipt, and release its budget
+# lease even when the external launcher has a 30-second response limit.
+WALL_LIMIT_SECONDS = 25
 SNAPSHOT_OFFSETS_SECONDS = (2, 5, 10)
 EXACT_CANDIDATE = {"candidate_id": "R2_D0_I64_A", "shape": (64, 32), "dim": 0, "index_dtype": "int64", "index_count": 64}
 CURRENT_MATCHER_LAUNCH_APIS = frozenset({
@@ -133,7 +136,7 @@ def _process_snapshot(pid: int, ordinal: int, output: Path, submission_elapsed_s
     }
     record = {"schema_version": SCHEMA, "ordinal": ordinal, "submission_elapsed_seconds": submission_elapsed_seconds, "pid": pid, "commands": {key: _run_text_safe(command) for key, command in tools.items()}, **gpu_snapshot(pid)}
     record["commands"]["process_filter"]["output"] = "\n".join(line for line in str(record["commands"]["process_filter"]["output"]).splitlines() if any(token in line for token in ("nvdisasm", "python", "nvbit")))
-    if ordinal == 1:
+    if ordinal == 5:
         if shutil.which("gdb"):
             record["native_backtrace"] = _run_text_safe(["gdb", "-q", "-batch", "-ex", "set pagination off", "-ex", "thread apply all bt", "-p", str(pid)])
             record["native_backtrace"]["diagnostic_perturbation"] = True
