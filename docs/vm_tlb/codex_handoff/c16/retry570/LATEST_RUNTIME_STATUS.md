@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R2_IN_PROGRESS`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R3_QWEN7_RAW_S1_G1_SHA_CLOSED`.
 
 ## Active Recovery-V3 asset and runtime checkpoint
 
@@ -12,7 +12,7 @@ separate user-managed Qwen3-30B-A3B download is
 `EXCLUDED_BY_USER_CURRENT_CAMPAIGN` and is neither inspected nor counted.
 
 Current Recovery-V3 local publication source checkpoint:
-`b61e3981b573666caf760a1ffe8c29718d69225d`.  The GPU runtime workspace that
+`b4b4029055565a48f3af1f1cfa07a71a7f4e26f4`.  The GPU runtime workspace that
 produced retained runtime evidence is
 `44981e72c39b317529ee98995dfd478283830623`; a later formal run will bind its
 actual runtime source explicitly rather than inferring it from this
@@ -171,6 +171,39 @@ The 5.2-GiB exact AWQ model remains singly stored under the bulk root; no
 weights were duplicated or transferred to the GPU node, and no model/GPU
 operation occurred.  Remote transfer and resource admission remain separate
 future gates.
+
+### Qwen2.5-7B raw Recovery-V3 S1 native/G1 milestone
+
+The prior R2-only statement for raw Qwen7 is superseded for the exact
+`S1/CODE/B1/T256/Decode16` binding only.  R2 runtime preflight now passes
+with `CAPTURE_ALLOWED=YES` (receipt
+`/root/share/c16_recovery_v3/receipts/R2_QWEN2P5_7B_RAW_RUNTIME_PREFLIGHT.json`,
+SHA256 `55c270814161f9de9f5234439e0663377582d1d6f49af7c90a0404246273d464).
+The node is the fixed RTX3090/SM86, driver 570.124.04, CUDA 12.4,
+PyTorch 2.5.1+cu124, NVBit 1.7.5, EAGER runtime profile; no stale GPU process
+or measurement marker was present.
+
+The fresh, unprofiled baseline completed under runtime source
+`44981e72c39b317529ee98995dfd478283830623`: all parameters and inputs were
+CUDA-resident, raw `bfloat16`, `TRANSFORMERS_CONFIG:sdpa`, no CPU offload,
+and the three retained checksum-stable measures had median 407.462449 ms.
+The first nsys invocation using `--capture-range=nvtx` is retained in the
+ledger as `NSYS_FAILED_EMPTY_PROFILE`: that runner's NVTX push/pop ranges did
+not arm Nsight's capture-range mode, so it emitted no report and is not a
+census result.  The independently identified replacement run used the same
+frozen binding with default nsys tracing and retained the NVTX phase ranges
+for offline phase attribution.  Its nonempty report is 14,550,782 bytes,
+remote/local SHA256
+`24d6c5401a3f6fbdb754811d2dc5e4d392545ea73acfe8d9fc662f979f889af6`, and
+is closed at
+`/root/share/c16_recovery_v3/raw/qwen2p5_7b_raw/S1_CODE/nsys_census_full/S1_CENSUS.nsys-rep`.
+The immutable remote artifact manifest is SHA256
+`7cbcbc500222e78c03c18ff7d5c39fea56f67ec02fabe1a9d2156e67d97be1ac`; its
+dual-endpoint transfer receipt is SHA256
+`a7adfc5decc530cc53bb20292f9eb652fd46ca0b1a6a300071c7ee72cbaf98c1`.
+There is no remote-only required G1 artifact for this row.  Local postprocess
+and R4 target freeze remain pending; no NVBit target selection or capture has
+been started.
 
 ## Final post-Llama multi-model dataset publication
 
