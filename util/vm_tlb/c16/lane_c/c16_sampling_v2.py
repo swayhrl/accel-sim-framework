@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import hashlib
 import io
 import json
@@ -44,7 +45,14 @@ RARE_IMPLEMENTATION_N = 2
 STRATA_VERSION = "C16_STRATA_PHASE_OPERATOR_IMPLEMENTATION_SHAPEBUCKET_DTYPE_V2"
 SELECTOR_VERSION = "C16_SELECTOR_V2_R_PROBABILITY_M_MEDOID"
 P_READY_STATUS = "C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED"
+# P's first capability-limited publication is intentionally a checkpoint, not
+# the later per-cohort manifest sketched by the original C-side contract.  It
+# pins a Git publication commit plus a separately hash-closed, outside-Git
+# physical catalog.  C supports both formats, but never silently downgrades
+# the validation required for either one.
 P_MANIFEST_SCHEMA = "C16_P_NATIVE_CATALOG_FOR_C_V1"
+P_CHECKPOINT_SCHEMA = "C16_P_NATIVE_CATALOG_C_CHECKPOINT_V1"
+P_CHECKPOINT_POSTPROCESS_SCHEMA = "C16_P_P1_PUBLICATION_POSTPROCESS_V1"
 P_TRAIN_COHORT = "TRAIN_TUNE"
 P_AWQ_COHORT = "PROSPECTIVE_QWEN7_AWQ"
 CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION = "CAPABILITY_LIMITED_TRAIN_ROSTER_V1"
@@ -63,6 +71,10 @@ P_TRAIN_VERIFIED_PAYLOAD_KINDS = P_SELECTOR_CONSUMED_PAYLOAD_KINDS + ("KERNEL_SE
 P_TRAIN_ROSTER = {
     "TRAIN_LLAMA": "TUNING",
     "TRAIN_QWEN0_5": "TUNING",
+}
+P_CHECKPOINT_TRAIN_ROSTER = {
+    "c16_llama32_1b_frozen_compatible": ("TRAIN_LLAMA", "TUNING"),
+    "c16_qwen25_05b_native_reference": ("TRAIN_QWEN0_5", "TUNING"),
 }
 P_AWQ_ROSTER = {"PROSPECTIVE_QWEN7_AWQ": "PROSPECTIVE_HOLDOUT"}
 P_DIRECT_SEMANTIC_EVIDENCE = {"DIRECT_RUNTIME_NVTX", "DIRECT_MODULE_ID", "UNKNOWN"}
@@ -785,15 +797,15 @@ def write_p_event_consumption_contract(out: Path) -> None:
     """Document the small, immutable interface P must publish for this lane."""
     atomic_text(out / "P_EVENT_CONSUMPTION_CONTRACT.md", """# C16-P → C event-consumption contract
 
-Lane C polls P's published branch but never reads its worktree, exchange directory, live partial report, or an ordinary milestone.  The sole admission event is manifest `status: C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED` at an exact 40-character P commit.  It is a capability-limited amendment, not completion of the original three-deployment train protocol.
+The sole admission event is a published P Git checkpoint with exact status `C16_P_NATIVE_CATALOG_READY_FOR_C_CONSUMPTION_CAPABILITY_LIMITED`.  It is a capability-limited amendment, never completion of the original three-deployment train roster.  Ordinary P milestones and live partial exports are not selector inputs.
 
-The ready manifest must use `schema_version: C16_P_NATIVE_CATALOG_FOR_C_V1`, set `p_commit` to that exact commit, bind `capability_limited_train_roster_version: CAPABILITY_LIMITED_TRAIN_ROSTER_V1` and the committed C amendment SHA, and contain `hash_closure.status: HASH_CLOSED`, exact source producer commit SHA(s), and raw-artifact `path`, nonnegative `size_bytes`, and SHA-256 receipt(s).  Every `files[]` entry has `cohort`, `kind`, relative/absolute committed `path`, and content SHA-256.  Each cohort has exactly one of these kinds: `KERNEL_CATALOG`, `KERNEL_SEMANTIC_MAP`, `SEMANTIC_COVERAGE`, `NATIVE_BASELINE`, `RUNTIME_IMPLEMENTATION_AUDIT`, `RUN_JOIN_AUDIT`, `PROFILE_REPORT_INDEX`, `DEPLOYMENT_ROSTER`, and `RESOURCE_ADMISSION`.
+The published P1 checkpoint is `C16_P_NATIVE_CATALOG_C_CHECKPOINT_V1`.  C pins its exact publication commit and its exact `p_catalog_materialization_commit`; it verifies the committed materialization-receipt SHA, the declared outside-Git artifact-root basename, catalog compressed and uncompressed hashes/sizes, semantic-map, coverage, run-join, profile-index, raw-index, postprocess-manifest, and P1 closure-audit hashes.  This is an explicit hash-closed external-artifact interface, not an implicit worktree read.
 
-P must publish physically separate cohorts.  `TRAIN_TUNE` contains only the direct roster identities `TRAIN_LLAMA` and `TRAIN_QWEN0_5`, both `c16_split_role=TUNING`.  `c16_qwen25_7b_raw_reference` must not appear in any C selector or target input: its S0 resource admission is fixed as `RESOURCE_UNAVAILABLE_ON_RTX3090`.  `PROSPECTIVE_QWEN7_AWQ` contains exactly direct roster identity `PROSPECTIVE_QWEN7_AWQ`, `c16_split_role=PROSPECTIVE_HOLDOUT`.  The latter payload content is not read until the train source SHA, strata, thresholds, seed, and 12/24/48 plans are frozen and those exact freeze artifacts are committed at C's `HEAD`.
+P1 admits only `c16_llama32_1b_frozen_compatible` and `c16_qwen25_05b_native_reference`, each through a unique hash-closed run-to-profile bridge across S1--S4.  These are the only rows from which C constructs `ADMITTED` deployment/scenario evidence.  `c16_qwen25_7b_raw_reference` remains `RESOURCE_UNAVAILABLE_ON_RTX3090` and cannot enter selector or target input.  The raw fact plus C's committed resource-only amendment form the documented capability binding; P1 does not purport to author C's amendment-file SHA.
 
-`DEPLOYMENT_ROSTER` must contain `deployment_id`, `c16_cohort`, and `c16_split_role`; it replaces name guessing for the raw/AWQ split.  `PROFILE_REPORT_INDEX` bridges one `run_id` to one `profile_report_id`.  `RESOURCE_ADMISSION` must have one `ADMITTED` row per catalog deployment/scenario before it can enter a target plan.  The catalog carries the C16 minimum fields and only `DIRECT_RUNTIME_NVTX`, `DIRECT_MODULE_ID`, or `UNKNOWN` semantic evidence.  An `UNKNOWN` semantic field is retained as an explicit stratum.  Kernel-name semantic inference is forbidden.
+`UNKNOWN` semantic fields are retained as explicit strata.  Kernel-name semantic inference is forbidden.  The P1 checkpoint has `Qwen7 AWQ` as `HOLDOUT_PENDING_FREEZE` with outcome disclosure forbidden; C does not read its timing, launch, semantic, heavy-tail, NCU, or NVBit content before the train selector source SHA, strata, seed, thresholds, estimator, and 12/24/48 plans are committed at C `HEAD`.  A later separate formal AWQ publication is required before any frozen-selector holdout application.
 
-The cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome columns.  C verifies raw receipt closure plus train catalog and train semantic-map content hashes, but semantic fields never become kernel-name heuristics.  Baseline/heavy-tail bodies remain outside selector inputs; AWQ semantic/timing/launch/heavy-tail bodies remain sealed until the committed train freeze and are not used to alter selection.  After AWQ application it publishes separate request-only Selector-R B48 NCU and NVBit target plans (each at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  This does not authorize a GPU capture.
+The train cheap catalog must not contain NCU/NVBit/trace/address/page/line/cache/TLB/counter/speedup/miss/candidate/mechanism/outcome fields.  Heavy-tail bodies remain declared but unread selector inputs.  After an authorized AWQ application, C will publish separate request-only Selector-R B48 NCU and NVBit target plans (at most 48 units per universe); Selector-M remains a non-concurrent medoid alternative.  No GPU capture is authorized by this document.
 """)
 
 
@@ -1018,6 +1030,223 @@ def require_exact_commit(commit: str) -> None:
         die("P consumption commit is not an exact locally resolvable commit SHA")
 
 
+def require_sha256(value: Any, what: str) -> str:
+    value = str(value or "")
+    if not re.fullmatch(r"[0-9a-f]{64}", value):
+        die(f"{what} must be a SHA-256")
+    return value
+
+
+def p_checkpoint_contract_metadata(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Validate P's published, capability-limited checkpoint envelope.
+
+    This validates only publication metadata: it deliberately does not open an
+    AWQ catalog, a timing table, a counter, or a heavy-tail body.  The separate
+    train reader below opens just the declared train cheap-catalog inputs after
+    this gate succeeds.
+    """
+    if manifest.get("schema_version") != P_CHECKPOINT_SCHEMA:
+        die(f"P checkpoint schema must be {P_CHECKPOINT_SCHEMA}")
+    if manifest.get("status") != P_READY_STATUS:
+        die(f"P checkpoint status must be {P_READY_STATUS}; live/provisional P data are forbidden")
+    materialization = str(manifest.get("p_catalog_materialization_commit", ""))
+    if not re.fullmatch(r"[0-9a-f]{40}", materialization):
+        die("P checkpoint lacks an exact materialization commit")
+    receipt = manifest.get("p_materialization_receipt")
+    if not isinstance(receipt, dict) or not isinstance(receipt.get("path"), str) or not receipt["path"]:
+        die("P checkpoint lacks its committed materialization receipt path")
+    require_sha256(receipt.get("sha256"), "P materialization receipt")
+
+    available = manifest.get("train_available")
+    if not isinstance(available, list) or {
+        (row.get("deployment"), row.get("catalog_rows")) for row in available if isinstance(row, dict)
+    } != {("Llama", 286480), ("Qwen0.5", 436320)}:
+        die("P checkpoint train_available must be exactly the capability-limited Llama/Qwen0.5 roster")
+    unavailable = manifest.get("train_unavailable")
+    if not isinstance(unavailable, dict) or unavailable.get("deployment") != "Qwen7 raw" \
+            or unavailable.get("status") != "SKIPPED_RESOURCE / RESOURCE_UNAVAILABLE_ON_RTX3090" \
+            or unavailable.get("native_rows_created") != 0:
+        die("P checkpoint does not preserve the Qwen7 raw resource-unavailable boundary")
+    sealed = manifest.get("holdout_sealed")
+    if not isinstance(sealed, dict) or sealed.get("deployment") != "Qwen7 AWQ" \
+            or sealed.get("status") != "HOLDOUT_PENDING_FREEZE" \
+            or sealed.get("c_outcome_disclosure") != "FORBIDDEN":
+        die("P checkpoint does not keep AWQ outcomes sealed before C selector freeze")
+    semantic = manifest.get("semantic_coverage")
+    if not isinstance(semantic, dict) or semantic.get("unknown_is_explicit_stratum") is not True \
+            or semantic.get("kernel_name_heuristic") != "FORBIDDEN":
+        die("P checkpoint does not preserve UNKNOWN as an explicit no-heuristic stratum")
+    join = manifest.get("join_key_contract")
+    if not isinstance(join, dict) or join.get("required_fields_present") is not True \
+            or join.get("duplicate_physical_launch_keys") != 0 or join.get("audit_status") != "PASS":
+        die("P checkpoint lacks a passing no-duplication physical join contract")
+    require_sha256(join.get("sha256"), "P checkpoint join-key contract")
+    artifacts = manifest.get("artifacts")
+    provenance = manifest.get("g_provenance")
+    if not isinstance(artifacts, dict) or not isinstance(provenance, dict):
+        die("P checkpoint lacks artifact or provenance closure metadata")
+    root = artifacts.get("outside_git_root")
+    if not isinstance(root, str) or not root:
+        die("P checkpoint lacks a declared outside-Git artifact root")
+    for key in ("kernel_catalog_tsv_gzip_sha256", "kernel_semantic_map_sha256", "semantic_coverage_sha256",
+                "run_join_audit_sha256", "raw_index_sha256"):
+        require_sha256(artifacts.get(key), f"P checkpoint artifacts.{key}")
+    for key in ("publication_commit",):
+        if not re.fullmatch(r"[0-9a-f]{40}", str(provenance.get(key, ""))):
+            die(f"P checkpoint provenance.{key} must be an exact commit")
+    for key in ("publication_manifest_sha256", "p1_closure_audit_sha256"):
+        require_sha256(provenance.get(key), f"P checkpoint provenance.{key}")
+    if provenance.get("closed_event_count") != 8:
+        die("P checkpoint must bind exactly the eight closed P1 native events")
+    return {
+        "materialization_commit": materialization, "materialization_receipt": receipt,
+        "artifact_root": root, "artifacts": artifacts,
+        "g_provenance": provenance, "join_contract": join,
+    }
+
+
+def external_artifact(root: Path, relative: str) -> Path:
+    """Resolve a named checkpoint artifact without permitting a path escape."""
+    candidate = (root / relative).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError:
+        die("outside-Git artifact path escapes its declared root")
+    if not candidate.is_file():
+        die(f"missing hash-closed P checkpoint artifact: {relative}")
+    return candidate
+
+
+def checkpoint_external_bytes(root: Path, relative: str, expected_sha256: str) -> bytes:
+    path = external_artifact(root, relative)
+    content = path.read_bytes()
+    if sha256_bytes(content) != expected_sha256:
+        die(f"P checkpoint artifact SHA mismatch: {relative}")
+    return content
+
+
+def p_checkpoint_train_input(commit: str, manifest_path: str, artifact_root: Path) -> tuple[list[dict[str, str]], dict[str, Any], dict[str, str], dict[str, str]]:
+    """Consume only the declared, hash-closed P1 train catalog.
+
+    The published checkpoint is the authorization boundary.  The artifact root
+    contains no holdout files in this P1 release; its basename and every read
+    byte are independently bound by the checkpoint before a selector sees it.
+    """
+    require_exact_commit(commit)
+    manifest_text = git_text(commit, manifest_path)
+    manifest = json.loads(manifest_text)
+    metadata = p_checkpoint_contract_metadata(manifest)
+    materialization = metadata["materialization_commit"]
+    require_exact_commit(materialization)
+    ancestor = subprocess.run(["git", "-C", str(ROOT), "merge-base", "--is-ancestor", materialization, commit], check=False)
+    if ancestor.returncode:
+        die("P checkpoint materialization commit is not an ancestor of its publication commit")
+    receipt_path = str(metadata["materialization_receipt"]["path"])
+    receipt_text = git_text(commit, receipt_path)
+    if sha256_bytes(receipt_text.encode()) != metadata["materialization_receipt"]["sha256"]:
+        die("P checkpoint materialization receipt hash mismatch")
+    receipt_doc = json.loads(receipt_text)
+    if receipt_doc.get("schema_version") != "C16_P_P1_NATIVE_EVENT_POSTPROCESS_RECEIPT_V1" or receipt_doc.get("status") != P_READY_STATUS:
+        die("P checkpoint materialization receipt is not the formal capability-limited P1 publication")
+
+    root = artifact_root.resolve()
+    if not root.is_dir() or root.name != Path(metadata["artifact_root"]).name:
+        die("external P artifact root does not match the formal checkpoint declaration")
+    physical = receipt_doc.get("physical_catalog")
+    if not isinstance(physical, dict):
+        die("P checkpoint materialization receipt lacks physical-catalog closure metadata")
+    catalog_meta = physical.get("catalog_tsv")
+    if not isinstance(catalog_meta, dict) or not isinstance(catalog_meta.get("size_bytes"), int) or catalog_meta["size_bytes"] <= 0:
+        die("P checkpoint catalog byte-size is absent or invalid")
+    require_sha256(catalog_meta.get("sha256"), "P checkpoint physical catalog")
+    require_sha256(physical.get("profile_report_index_sha256"), "P checkpoint profile-report index")
+    require_sha256(physical.get("raw_index_sha256"), "P checkpoint raw index")
+    artifacts, provenance = metadata["artifacts"], metadata["g_provenance"]
+    gzip_catalog = checkpoint_external_bytes(root, "KERNEL_CATALOG.tsv.gz", artifacts["kernel_catalog_tsv_gzip_sha256"])
+    try:
+        catalog_bytes = gzip.decompress(gzip_catalog)
+    except OSError as exc:
+        die(f"P checkpoint catalog gzip cannot be decoded: {exc}")
+    if len(catalog_bytes) != catalog_meta["size_bytes"] or sha256_bytes(catalog_bytes) != catalog_meta["sha256"]:
+        die("P checkpoint decompressed catalog size/SHA does not match the publication receipt")
+    semantic_bytes = checkpoint_external_bytes(root, "KERNEL_SEMANTIC_MAP.tsv", artifacts["kernel_semantic_map_sha256"])
+    coverage_bytes = checkpoint_external_bytes(root, "SEMANTIC_COVERAGE.tsv", artifacts["semantic_coverage_sha256"])
+    join_bytes = checkpoint_external_bytes(root, "RUN_JOIN_AUDIT.json", artifacts["run_join_audit_sha256"])
+    profile_bytes = checkpoint_external_bytes(root, "PROFILE_REPORT_INDEX.tsv", physical["profile_report_index_sha256"])
+    raw_index_bytes = checkpoint_external_bytes(root, "RAW_INDEX.tsv", artifacts["raw_index_sha256"])
+    postprocess_bytes = checkpoint_external_bytes(root, "POSTPROCESS_MANIFEST.json", receipt_doc["local_export"]["postprocess_manifest_sha256"])
+    closure_audit = external_artifact(root, "P1_CLOSURE_AUDIT.json")
+    if sha256_file(closure_audit) != provenance["p1_closure_audit_sha256"]:
+        die("P checkpoint P1 closure-audit SHA mismatch")
+    postprocess = json.loads(postprocess_bytes.decode())
+    if postprocess.get("schema_version") != P_CHECKPOINT_POSTPROCESS_SCHEMA or postprocess.get("status") != P_READY_STATUS:
+        die("P checkpoint postprocess manifest is not a formal capability-limited release")
+    join_audit = json.loads(join_bytes.decode())
+    if (join_audit.get("status") or join_audit.get("audit_status")) != "PASS":
+        die("P checkpoint run-join audit is not PASS")
+
+    catalog_rows = tsv_rows(catalog_bytes.decode())
+    semantic_rows = tsv_rows(semantic_bytes.decode())
+    coverage_rows = tsv_rows(coverage_bytes.decode())
+    profile_rows = tsv_rows(profile_bytes.decode())
+    raw_index_rows = tsv_rows(raw_index_bytes.decode())
+    if not semantic_rows or not coverage_rows or not raw_index_rows:
+        die("P checkpoint is missing a nonempty semantic coverage or raw-index receipt")
+    if not {"run_id", "deployment_id", "scenario_id", "status"}.issubset(profile_rows[0]):
+        die("P checkpoint profile index lacks deployment/scenario/status identity")
+    if any(row.get("status") != "C16_G_HASH_CLOSED_P1 / CAPABILITY_LIMITED" for row in profile_rows):
+        die("P checkpoint profile index contains a non-closed native run")
+    roster_rows = [
+        {"deployment_id": deployment, "c16_cohort": cohort, "c16_split_role": role}
+        for deployment, (cohort, role) in sorted(P_CHECKPOINT_TRAIN_ROSTER.items())
+    ]
+    pairs = sorted({(row.get("deployment_id", ""), row.get("scenario_id", "")) for row in catalog_rows})
+    resource_rows = [
+        {"deployment_id": deployment, "scenario_id": scenario, "admission_status": "ADMITTED",
+         "admission_basis": "HASH_CLOSED_P1_NATIVE_CATALOG_UNIQUE_PROFILE_BRIDGE"}
+        for deployment, scenario in pairs
+    ]
+    audit, roles = p_validate_catalog_and_roster(catalog_rows, roster_rows, profile_rows, resource_rows, P_TRAIN_COHORT)
+    profile_by_run = {row["run_id"]: row["profile_report_id"] for row in profile_rows}
+    for row in catalog_rows:
+        row["profile_report_id"] = profile_by_run[row["run_id"]]
+    dependencies = [
+        {"kind": "KERNEL_CATALOG", "path": "KERNEL_CATALOG.tsv.gz", "sha256": artifacts["kernel_catalog_tsv_gzip_sha256"], "size_bytes": len(gzip_catalog), "content_sha256": catalog_meta["sha256"]},
+        {"kind": "KERNEL_SEMANTIC_MAP", "path": "KERNEL_SEMANTIC_MAP.tsv", "sha256": artifacts["kernel_semantic_map_sha256"], "size_bytes": len(semantic_bytes)},
+        {"kind": "SEMANTIC_COVERAGE", "path": "SEMANTIC_COVERAGE.tsv", "sha256": artifacts["semantic_coverage_sha256"], "size_bytes": len(coverage_bytes)},
+        {"kind": "RUN_JOIN_AUDIT", "path": "RUN_JOIN_AUDIT.json", "sha256": artifacts["run_join_audit_sha256"], "size_bytes": len(join_bytes)},
+        {"kind": "PROFILE_REPORT_INDEX", "path": "PROFILE_REPORT_INDEX.tsv", "sha256": physical["profile_report_index_sha256"], "size_bytes": len(profile_bytes)},
+        {"kind": "RAW_INDEX", "path": "RAW_INDEX.tsv", "sha256": artifacts["raw_index_sha256"], "size_bytes": len(raw_index_bytes)},
+        {"kind": "POSTPROCESS_MANIFEST", "path": "POSTPROCESS_MANIFEST.json", "sha256": receipt_doc["local_export"]["postprocess_manifest_sha256"], "size_bytes": len(postprocess_bytes)},
+        {"kind": "P1_CLOSURE_AUDIT", "path": "P1_CLOSURE_AUDIT.json", "sha256": provenance["p1_closure_audit_sha256"], "size_bytes": closure_audit.stat().st_size},
+    ]
+    receipt = {
+        "producer_commit": commit, "manifest_path": manifest_path, "manifest_blob": git_blob(commit, manifest_path),
+        "manifest_sha256": sha256_bytes(manifest_text.encode()), "manifest_schema": P_CHECKPOINT_SCHEMA,
+        "producer_status": manifest["status"], "cohort": P_TRAIN_COHORT,
+        "p_catalog_materialization_commit": materialization, "p_materialization_receipt_path": receipt_path,
+        "p_materialization_receipt_sha256": metadata["materialization_receipt"]["sha256"],
+        "outside_git_root_declared": metadata["artifact_root"], "validated_dependencies": dependencies,
+        "manifest_declared_dependencies": [
+            {"kind": "HEAVY_TAIL_KERNELS", "sha256": physical.get("heavy_tail_sha256", "")},
+            {"kind": "AWQ_HOLDOUT", "status": manifest["holdout_sealed"]["status"]},
+        ],
+        "manifest_listed_not_read": ["HEAVY_TAIL_KERNELS", "AWQ_HOLDOUT"],
+        "capability_limited_train_roster_version": CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION,
+        "unavailable_deployment_ids": [QWEN7_RAW_DEPLOYMENT_ID],
+        "amendment_binding": "P_CHECKPOINT_CAPABILITY_FACTS_PLUS_LOCAL_COMMITTED_RESOURCE_ONLY_AMENDMENT",
+        "awq_outcomes_read": False,
+    }
+    audit.update({
+        "checkpoint_schema": P_CHECKPOINT_SCHEMA, "checkpoint_commit": commit,
+        "materialization_commit": materialization, "external_artifact_hashes": "PASS",
+        "resource_admission_basis": "HASH_CLOSED_P1_NATIVE_CATALOG_UNIQUE_PROFILE_BRIDGE",
+        "semantic_map_rows": str(len(semantic_rows)), "semantic_coverage_rows": str(len(coverage_rows)),
+        "raw_index_rows": str(len(raw_index_rows)), "awq_outcomes_read": "FALSE",
+    })
+    return catalog_rows, receipt, audit, roles
+
+
 def p_manifest_entries(manifest: dict[str, Any], cohort: str) -> dict[str, dict[str, Any]]:
     """Validate the formal P handoff without reading another cohort's payload."""
     if manifest.get("schema_version") != P_MANIFEST_SCHEMA:
@@ -1208,8 +1437,15 @@ def p_validate_catalog_and_roster(catalog_rows: list[dict[str, str]], roster_row
     return audit, {deployment: row["c16_split_role"] for deployment, row in roster_by_deployment.items()}
 
 
-def p_catalog_input(commit: str, manifest_path: str, cohort: str) -> tuple[list[dict[str, str]], dict[str, Any], dict[str, str], dict[str, str]]:
-    """Admit a complete P cohort; no P worktree/live path is ever read."""
+def p_catalog_input(commit: str, manifest_path: str, cohort: str, artifact_root: Path | None = None) -> tuple[list[dict[str, str]], dict[str, Any], dict[str, str], dict[str, str]]:
+    """Admit one formally published P cohort, never a live/partial export."""
+    manifest = json.loads(git_text(commit, manifest_path))
+    if manifest.get("schema_version") == P_CHECKPOINT_SCHEMA:
+        if cohort != P_TRAIN_COHORT:
+            die("the P1 checkpoint has no authorized AWQ cohort; AWQ remains sealed until a later formal publication")
+        if artifact_root is None:
+            die("P1 checkpoint train consumption requires its explicitly supplied hash-closed artifact root")
+        return p_checkpoint_train_input(commit, manifest_path, artifact_root)
     payloads, receipt = p_read_payloads(commit, manifest_path, cohort)
     rows = tsv_rows(payloads["KERNEL_CATALOG"])
     roster = tsv_rows(payloads["DEPLOYMENT_ROSTER"])
@@ -1232,7 +1468,13 @@ def verify_capability_limited_amendment_binding(out: Path, receipt: dict[str, An
         die("CAPABILITY_LIMITED_TRAIN_ROSTER_V1 must be committed before P train consumption")
     if receipt.get("capability_limited_train_roster_version") != CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION:
         die("P receipt has the wrong capability-limited train roster version")
-    if receipt.get("c_protocol_amendment_sha256") != sha256_file(amendment):
+    if receipt.get("amendment_binding") == "P_CHECKPOINT_CAPABILITY_FACTS_PLUS_LOCAL_COMMITTED_RESOURCE_ONLY_AMENDMENT":
+        # P's published checkpoint predates the per-cohort manifest extension,
+        # so it cannot claim a C-file SHA it did not author.  It does bind the
+        # same resource-only raw exclusion and exact two-deployment train
+        # boundary; C records this non-substituting binding mode explicitly.
+        pass
+    elif receipt.get("c_protocol_amendment_sha256") != sha256_file(amendment):
         die("P manifest does not bind the exact committed C capability-limited amendment")
     if receipt.get("unavailable_deployment_ids") != [QWEN7_RAW_DEPLOYMENT_ID]:
         die("P receipt changes the frozen Qwen2.5-7B raw unavailability declaration")
@@ -1379,12 +1621,12 @@ def write_p_plan_bundle(out: Path, prefix: str, units: list[dict[str, Any]], rol
     return all_plans
 
 
-def freeze_p_train(out: Path, commit: str, manifest_path: str) -> None:
+def freeze_p_train(out: Path, commit: str, manifest_path: str, artifact_root: Path | None = None) -> None:
     """Stages 1--5: consume only P train/tune, audit, then freeze source/rules/plans."""
     require_out(out)
     if not (out / "PUBLISH_MANIFEST.json").is_file():
         die("run --prepare-historical before a P train/tune selector freeze")
-    rows, receipt, audit, roles = p_catalog_input(commit, manifest_path, P_TRAIN_COHORT)
+    rows, receipt, audit, roles = p_catalog_input(commit, manifest_path, P_TRAIN_COHORT, artifact_root)
     verify_capability_limited_amendment_binding(out, receipt)
     if set(roles.values()) != {"TUNING"}:
         die("P train/tune catalog may not contain a holdout deployment")
@@ -1402,6 +1644,7 @@ def freeze_p_train(out: Path, commit: str, manifest_path: str) -> None:
         "selector_inputs": "CAPABILITY_LIMITED_TRAIN_TUNE_NATIVE_CHEAP_CATALOG_ONLY", "kernel_name_heuristic": "FORBIDDEN",
         "capability_limited_train_roster_version": CAPABILITY_LIMITED_TRAIN_ROSTER_VERSION,
         "capability_limited_amendment_sha256": sha256_file(out / "CAPABILITY_LIMITED_TRAIN_ROSTER_V1.json"),
+        "capability_limited_amendment_binding": receipt.get("amendment_binding", "P_MANIFEST_DIRECT_C_AMENDMENT_SHA256"),
         "resource_unavailable_excluded_deployment": QWEN7_RAW_DEPLOYMENT_ID,
         "train_input_hashes": {item["kind"]: item["sha256"] for item in receipt["validated_dependencies"]},
         "manifest_declared_not_read_hashes": {item["kind"]: item["sha256"] for item in receipt["manifest_declared_dependencies"] if item["kind"] in receipt["manifest_listed_not_read"]},
@@ -1677,6 +1920,7 @@ def main() -> None:
     parser.add_argument("--producer-commit")
     parser.add_argument("--manifest-path")
     parser.add_argument("--catalog-path")
+    parser.add_argument("--artifact-root", type=Path)
     parser.add_argument("--payload-path")
     args = parser.parse_args()
     out = require_out(args.output_dir)
@@ -1691,7 +1935,7 @@ def main() -> None:
     elif args.freeze_p_train:
         if not all((args.producer_commit, args.manifest_path)):
             die("--freeze-p-train requires --producer-commit --manifest-path")
-        freeze_p_train(out, args.producer_commit, args.manifest_path)
+        freeze_p_train(out, args.producer_commit, args.manifest_path, args.artifact_root)
         print(f"PASS C16 Sampling V2 P train/tune selector freeze: {out}")
     elif args.apply_p_awq_holdout:
         if not all((args.producer_commit, args.manifest_path)):
