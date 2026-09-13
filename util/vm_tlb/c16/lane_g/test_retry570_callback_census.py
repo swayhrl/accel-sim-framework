@@ -33,7 +33,8 @@ class CallbackCensusTests(unittest.TestCase):
             self.assertIn(fragment, RUNNER)
         self.assertIn("WALL_LIMIT_SECONDS = 25", RUNNER)
         self.assertIn("if ordinal == 5:", RUNNER)
-        self.assertIn('"ROUND_BEGIN_PRE_SUBMISSION"', RUNNER)
+        self.assertIn("OPERATION_ANCHOR_EVENTS", RUNNER)
+        self.assertIn('str(stage["event"]) + "_PRE_SUBMISSION"', RUNNER)
 
     def test_current_matcher_audit_lists_missing_legacy_async_variant(self) -> None:
         self.assertIn("cuLaunchGridAsync", "".join(CURRENT_MATCHER_LAUNCH_APIS) + " cuLaunchGridAsync")

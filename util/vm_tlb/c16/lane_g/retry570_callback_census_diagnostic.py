@@ -35,6 +35,11 @@ SCHEMA = "C16_G_RETRY570_CALLBACK_CENSUS_DIAGNOSTIC_V1"
 WALL_LIMIT_SECONDS = 25
 SNAPSHOT_OFFSETS_SECONDS = (2, 5, 10)
 EXACT_CANDIDATE = {"candidate_id": "R2_D0_I64_A", "shape": (64, 32), "dim": 0, "index_dtype": "int64", "index_count": 64}
+OPERATION_ANCHOR_EVENTS = frozenset({
+    "ROUND_BEGIN", "BEFORE_TORCH_MANUAL_SEED", "AFTER_TORCH_MANUAL_SEED",
+    "BEFORE_TORCH_ARANGE_INDEX", "AFTER_TORCH_ARANGE_INDEX",
+    "BEFORE_TORCH_RANDN_SOURCE", "AFTER_TORCH_RANDN_SOURCE",
+})
 CURRENT_MATCHER_LAUNCH_APIS = frozenset({
     "cuLaunch", "cuLaunchGrid", "cuLaunchKernel", "cuLaunchKernel_ptsz",
     "cuLaunchCooperativeKernel", "cuLaunchCooperativeKernel_ptsz",
@@ -293,8 +298,8 @@ def parent_main(args: argparse.Namespace) -> int:
                         stage = _read_stage(args.stage_path)
                         if stage and stage.get("event") == "EXACT_TARGET_SUBMISSION_BEGIN":
                             operation_anchor_seen_at, operation_anchor_event = time.monotonic(), "EXACT_TARGET_SUBMISSION_BEGIN"
-                        elif operation_anchor_seen_at is None and stage and stage.get("event") == "ROUND_BEGIN":
-                            operation_anchor_seen_at, operation_anchor_event = time.monotonic(), "ROUND_BEGIN_PRE_SUBMISSION"
+                        elif operation_anchor_seen_at is None and stage and stage.get("event") in OPERATION_ANCHOR_EVENTS:
+                            operation_anchor_seen_at, operation_anchor_event = time.monotonic(), str(stage["event"]) + "_PRE_SUBMISSION"
                         if operation_anchor_seen_at is not None and remaining and time.monotonic() - operation_anchor_seen_at >= remaining[0]:
                             offset = remaining.pop(0)
                             snapshots.append(_process_snapshot(process.pid, offset, args.snapshot_dir, str(operation_anchor_event), time.monotonic() - operation_anchor_seen_at))
