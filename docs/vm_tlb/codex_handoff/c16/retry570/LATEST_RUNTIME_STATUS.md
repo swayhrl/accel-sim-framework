@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_NO_GO`.
+Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
 
 The post-resize node consumed the exact minimal immutable P0/Llama
 package subset.  P0 commit
@@ -8,24 +8,33 @@ package subset.  P0 commit
 `ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f`
 are closed in [`retry570_p0_llama`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_p0_llama/).
 The frozen M1 S0/TEXT binding is exact B1/T128/decode4 and has no tokenizer
-execution or context resize.  All subsequent Llama diagnostic forwards bind
-runtime source commit `40faa7e933b881c1a48593f8eb03c59910b3ba75`.
+execution or context resize. The disambiguation run binds runtime source
+commit `48c330fbda219db12146ea96ed2d08230c3e8b08`; its historical producer
+code anchor is `c4597507d50d4ebce67ef0efc6ea50dcdea1183c`.
 
-The Llama S0 baseline passed, but both the official NVBit1.8 `mem_trace` and
-the C16 tracer failed to materialize model-level kernel/trace evidence.  The
-complete hash-closed closeout is in
-[`retry570_llama_model_no_go`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_llama_model_no_go/).
-This is `MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC` only, never native timing or a
-C target result.  The exact failure boundary is model CUDA launch/NVBit
-callback materialization on Llama S0, not a claim that driver 570 alone is
-causal.
+The `48c330fb` no-go package remains a valid historical publication/provenance
+checkpoint, but its scientific inference is superseded: its valid official
+intervals `[0,1)` and `[0,8)` did not prove that a memory instruction was
+covered. The new hash-closed package is
+[`retry570_llama_model_disambiguation`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_llama_model_disambiguation/).
+It used the identical Llama identity to obtain a real NVTX-contained kernel:
+`indexSelectLargeIndex`, nsys grid ID `1`. The required frozen contract is
+`LDG.E` at static ordinal `348`, `INSTR_BEGIN=348`, `INSTR_END=351`. An
+already-completed historical attempt instead bound `[34,35)` because `34` was
+an SM86 SASS-text instruction-line counter. There is no established
+equivalence between `34` and the authoritative `348`; that attempt is retained
+only as `UNQUALIFIED_ORDINAL_34_ATTEMPT`, not as a test of the frozen contract.
+It also timed out at its 180 s guard before proving a target launch, memory
+record, or model-forward completion. Therefore this is
+`MODEL_NVBIT_QUALIFICATION_DIAGNOSTIC` only, never native timing or a C target
+result; it is neither a disambiguated zero-record NO-GO nor a model-NVBit
+incompatibility claim. The C16 tracer was not run.
 
-No Qwen0.5, Qwen7-AWQ, or raw-Qwen payload has been transferred; they are
-not authorized to run after this Llama NO-GO.  All C `SELECTOR_R/B48` frozen
-targets remain unexecuted, with no target/shape/context/dtype/backend/offload
-or kernel-name substitution.  `NVBIT_STORAGE_ESTIMATE.json` is correctly
-`NOT_APPLICABLE_NO_REAL_MODEL_TRACE`; separately, both local receiver mounts
-remain below the 100 GiB formal-campaign gate.
+No Qwen0.5, Qwen7-AWQ, or raw-Qwen payload has been transferred, and no C
+`SELECTOR_R/B48` frozen target has been read or executed. No target/shape/
+context/dtype/backend/offload or kernel-name substitution occurred.
+`NVBIT_STORAGE_ESTIMATE.json` remains `NOT_APPLICABLE_NO_REAL_MODEL_TRACE`;
+both local receiver mounts remain below the 100 GiB formal-campaign gate.
 
 The new-node observed identity is bound by
 [`C16_RETRY570_NODE_IDENTITY_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570/C16_RETRY570_NODE_IDENTITY_RECEIPT.json).

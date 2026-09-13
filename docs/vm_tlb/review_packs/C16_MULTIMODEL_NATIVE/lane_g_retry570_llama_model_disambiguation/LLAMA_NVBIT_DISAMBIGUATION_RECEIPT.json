@@ -1,0 +1,97 @@
+{
+  "schema_version": "C16_G_RETRY570_LLAMA_NVBIT_DISAMBIGUATION_V1",
+  "status": "NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED",
+  "substatus": "FAIL_CLOSED_ORDINAL_CONTRACT_CONFLICT",
+  "scientific_eligible": false,
+  "scope": "NVBIT_COMPATIBILITY_DIAGNOSTIC_ONLY_NOT_FOR_NATIVE_TIMING_OR_C_TARGET",
+  "historical_closeout": {
+    "commit": "48c330fbda219db12146ea96ed2d08230c3e8b08",
+    "publication_directory": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_llama_model_no_go",
+    "publication_manifest_sha256": "d062c1e1968ae3a776e1de0e932f55f941245de7083b83c83a9d69c75618e0cb",
+    "retained": true,
+    "superseded_scientific_inference": "NO_GO_NOT_DISAMBIGUATED_BY_PREVIOUS_STATIC_INTERVALS"
+  },
+  "frozen_baseline_binding": {
+    "p0_package_commit": "20fb38e6ca629f1a93db7939248bd1a03790724c",
+    "p0_package_manifest_sha256": "ac59f0d2aca95021c686948d7244ce50375530bbe983c8508ca5f6954e80230f",
+    "binding_sha256": "cd291122a69c5d9f11d4070bba165d00a95f8217f8aac84452f9200f64eeb8cd",
+    "deployment_id": "c16_llama32_1b_frozen_compatible",
+    "scenario_id": "S0",
+    "input_class": "TEXT",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "batch_size": 1,
+    "prefill_tokens": 128,
+    "decode_tokens": 4,
+    "dtype": "float16",
+    "attention_backend": "sdpa",
+    "compile_state": "EAGER_UNCOMPILED",
+    "cpu_offload": false,
+    "expected_output_checksum": "c5f81e7f7d848bf7d317b15bb2d71471ff3572454fb96f78d877c58ada7f6d65"
+  },
+  "producer_provenance": {
+    "runtime_source_commit": "48c330fbda219db12146ea96ed2d08230c3e8b08",
+    "baseline_runtime_code_anchor": "c4597507d50d4ebce67ef0efc6ea50dcdea1183c",
+    "producer_code_path": "util/vm_tlb/c16/lane_g/nvbit_model_qualify.py",
+    "producer_code_sha256": "e7f46e69f3fbc8481b423670fa349c593171a08a15ac9621d050f34389b23721"
+  },
+  "candidate_kernel": {
+    "source_run_id": "a17ed97a-de58-4f7d-8c7b-f7053383ea3a",
+    "source_nsys_report_sha256": "5e9d8312f8fafee5c310be9981938495b39889e4c4139a4fcdfd7fd31cb26c0b",
+    "source_nsys_sqlite_sha256": "764f482ae730a36059fbbd860e9d8accf704200caf80a9c116e0b2b6ec3ce731",
+    "source_nsys_qualification_receipt_sha256": "2f29c06fe45d56c12b7547f245cecddc7d4857c8646a888bf45349d9e3669293",
+    "kernel_short_name": "indexSelectLargeIndex",
+    "nsys_grid_id": 1,
+    "correlation_id": 2545,
+    "stream_id": 7,
+    "sm": "sm_86",
+    "torch_libtorch_cuda_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a",
+    "sass_sha256": "8b9d5df9a2ea1128cd1c02a8154540afed15c29a2887a64473fccdc21d85261e"
+  },
+  "required_frozen_contract": {
+    "candidate_kernel": "indexSelectLargeIndex",
+    "candidate_grid_id": 1,
+    "target_global_memory_instruction": "LDG.E",
+    "static_instruction_ordinal": 348,
+    "instr_begin": 348,
+    "instr_end": 351
+  },
+  "observed_unqualified_ordinal_34_attempt": {
+    "run_id": "61d22555-f722-4da3-bc89-6cc47728961e",
+    "tool": "NVBit_1.8_official_mem_trace",
+    "tool_sha256": "531257e9cbc54017a3f908c4280e631a017da3c4f3de5d4413855b16eeb7eae0",
+    "source_of_ordinal_34": "SM86_SASS_TEXT_INSTRUCTION_LINE_COUNTER",
+    "observed_instruction": "LDG.E",
+    "observed_static_instruction_ordinal": 34,
+    "instruction_range": "[34,35)",
+    "requested_dynamic_kernel_constraint": "1@exact_candidate_mangled_name",
+    "official_tool_dynamic_filter_implemented": false,
+    "acceptance_requires_expected_grid_launch_id": 0,
+    "wall_limit_seconds": 180,
+    "raw_limit_bytes_at_most": 4294967296,
+    "exit_code": 124,
+    "terminal_status": "BOUNDED_TIMEOUT_PRE_FORWARD",
+    "memory_record_present": false,
+    "target_kernel_launch_proven_in_this_nvbit_run": false,
+    "model_forward_proven": false,
+    "accepted_as_final_contract_test": false,
+    "timeout_reconciliation_sha256": "f8e290f6b2bf25146bebc49e875f66d8a30cc4d5100ac169459d6f1abda9300f"
+  },
+  "ordinal_contract_validation": {
+    "status": "FAIL_CLOSED_ORDINAL_CONTRACT_CONFLICT",
+    "source_of_required_ordinal_348": "USER_SUPPLIED_FROZEN_HARD_CONSTRAINT",
+    "required_static_instruction_ordinal": 348,
+    "observed_static_instruction_ordinal": 34,
+    "target_equals_observed": false,
+    "equivalence_proven": false,
+    "mixed_ordinal_interpretation_prohibited": true,
+    "result": "THE_ORDINAL_34_ATTEMPT_CANNOT_ESTABLISH_COVERAGE_OR_ZERO_RECORD_BEHAVIOR_FOR_ORDINAL_348"
+  },
+  "conclusion": {
+    "official_memtrace_pass": false,
+    "disambiguated_zero_record_no_go": false,
+    "c16_tracer_same_range_authorized": false,
+    "c16_tracer_same_range_executed": false,
+    "qwen_or_c_frozen_target_authorized": false,
+    "reason": "NO_EXECUTED_OFFICIAL_ATTEMPT_MATCHED_THE_REQUIRED_348_TO_351_CONTRACT; THE_ORDINAL_34_TIMEOUT_NEITHER_PROVED_TARGET_LAUNCH_NOR_COVERED_ZERO_RECORD"
+  }
+}
