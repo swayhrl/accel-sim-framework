@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R5_QWEN7_RAW_S1_PREFILL_STATIC_TARGET_SHA_CLOSED`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R5_QWEN7_RAW_S1_PHASE_STATIC_TARGETS_SHA_CLOSED`.
 
 ## Active Recovery-V3 asset and runtime checkpoint
 
@@ -237,12 +237,36 @@ offset 464.  This is direct `nvbit_get_instrs` evidence: neither historical
 ordinal 348 nor SASS text-line 34 was used.  The map-only diagnostic has no
 instruction insertion, no memory trace, and is not timing/scientific data.
 
-Decode has not yet received its own exact static map, and **no formal R6
-capture has started**.  The raw-Qwen7 legacy ledger retains both R5
-diagnostic entries rather than hiding them; only four of its six historical
-NVBit windows remain.  A later capture is therefore conditional on an exact
-Decode map, a resource/storage gate, and explicit budget-consistent
-authorization; it must not reset or bypass that ledger.
+Decode now has its own exact NVBit-native static map: 704 instructions,
+map SHA256 `3d9e6e70e0c2d6e583a62b5de4670439b664cc7fffe8d4a85a9cdeecef5108a7`,
+and direct target receipt SHA256
+`17fb1ae199c800f5eef5954a27f49a31f4a9e7c50d56b73bb0f2ef02c27eb9d6`.
+It selects GLOBAL `LDG.E.LTC128B.CONSTANT`, NVBit static index 45, vector
+ordinal 45, and offset 720. This is independent direct `nvbit_get_instrs`
+evidence and is not a reuse of Prefill's index 29. Both phase maps retained
+the identical frozen output checksum/backend and were map-only diagnostics,
+with no instruction insertion or trace payload.
+
+Two failed Decode-map configuration attempts are retained rather than erased:
+the first omitted the tool-required `C16_NVBIT_CODE_OBJECT_SHA256` and ended
+in the tool's pre-forward abort; its stale active-measurement marker was moved
+intact into the run only after the recorded PID was absent, then its zero-byte
+failure was reconciled through a single exclusive legacy ledger lease. The
+next attempt used a nonexistent adapter name and was normally ledgered as a
+zero-byte `MODEL_NVBIT_QUALIFICATION_FAILURE`. Their closeout receipt SHA256
+is `e0f5589d327a7cfcd3181961c1e3989e163a4423bdf1920f0558d76b5eff63d6`;
+`MEASUREMENT_ACTIVE` is absent and no GPU compute process remains.
+
+The raw-Qwen7 legacy diagnostic ledger is now exactly 5/6 NVBit rows, all
+retained; it is not reset or bypassed. Formal Recovery-V3 capture is instead
+gated through the pre-existing explicitly authorized Recovery ledger, with
+the original 70-entry legacy snapshot SHA256
+`7a109337471d98fe50d1be353995b398b3ebee0a8e0504a692843f04736f248d` and
+the current 87-entry live ledger proven append-only. The code path enforcing
+that bridge is runtime source `1fc4b44c29df7842d22c66902c34ef0e9c3d1057`.
+No formal R6 capture has started: it remains conditional on the two closed
+phase targets, formal storage/prewarm gates, and a parent-owned Recovery
+lease.
 
 ## Final post-Llama multi-model dataset publication
 
