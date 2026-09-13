@@ -2,6 +2,46 @@
 
 Status: `NVBIT_RETRY570_LLAMA_MODEL_CANARY_INCONCLUSIVE_FILTERING_NOT_DISAMBIGUATED`.
 
+## Exact historical-target discovery boundary
+
+The current exact-target closeout is
+[`lane_g_retry570_exact_discovery_boundary`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_exact_discovery_boundary/),
+with fixed `PUBLISH_MANIFEST.json` SHA256
+`4e0113742fa7a4b0fd409822c71e67c584e213f28edfaa967df4065a696c33f2`.
+Its status is
+`NVBIT_RETRY570_EXACT_TARGET_DISCOVERY_INCONCLUSIVE_PRE_LAUNCH_CALLBACK_BOUNDARY`.
+The two actual diagnostic runtime producer commits are distinctly pinned at
+`245fac983faf8188044b4ce6926488972fcac0f6` (initial discovery-only tool) and
+`845cff8256391e2d8cd0919afc3a3581353ca126` (pre-target-name-lookup boundary
+tool); the final publication/handoff commit is reported separately when this
+closeout is committed.
+
+Both hash-closed 60-second exact R2_D0_I64_A replays reached
+`EXACT_TARGET_SUBMISSION_BEGIN` but never emitted the NVBit target launch
+callback. The second replay proved that four preceding CUDA launch-name
+lookups completed in at most 1 microsecond each, while the exact target did
+not even emit `PRE_TARGET_NAME_LOOKUP_BEGIN`. Its twelve post-submission
+snapshots retained a CUDA-attached, CPU-active process (104--156% CPU), 0% GPU
+utilization, no `nvdisasm` child, and non-destructive state/wchan/syscall
+evidence; node policy denied kernel-stack symbolization. Consequently, this
+is a pre-target-callback boundary, **not** evidence for related-function graph
+expansion, a pathological function, duplicate `get_instrs`,
+`get_related_functions`, or insertion/enable/launch work in that exact target.
+
+The C4 GEMM result (89 related functions, 88 enumerated, 66,032 static
+instructions, 19.969523 s cumulative `nvbit_get_instrs`) remains an independent
+general reference only; it must not be assigned to this index-select kernel.
+No per-function discovery distribution, static-instruction count, duplicate
+test, or same-process reuse test exists for the target because its callback was
+never entered. The next smallest experiment is not authorized: it would be a
+bounded exact-input **no-op** NVBit launch-callback-arrival probe, with no name
+lookup, discovery, instrumentation, trace, model, or C target. The Llama state
+therefore remains `INCONCLUSIVE`, not NO-GO; no Llama/Qwen, trace, scientific
+capture, C target, 300-second watch, or historical 6+6-window rerun was run.
+All 38 retained raw payloads have remote-to-local existence/size/SHA closure;
+`REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0` and
+`ACTIVE_GPU_PROCESS_COUNT=0`.
+
 ## Current bounded PyTorch/NVBit first-kernel isolation
 
 The current non-scientific diagnostic checkpoint is
