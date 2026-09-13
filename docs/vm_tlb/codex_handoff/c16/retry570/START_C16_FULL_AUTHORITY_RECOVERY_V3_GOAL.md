@@ -11,7 +11,7 @@ Do not stop at ordinary engineering problems. Diagnose, repair, rerun the smalle
 ## Read-only handoff branch
 
 ```text
-hrl/vm-c16-g-retry570-chatgpt-handoff-v7
+hrl/vm-c16-g-retry570-chatgpt-handoff-v8
 ```
 
 ## Active partial checkpoint
@@ -27,12 +27,34 @@ hrl/vm-c16-g-retry570-chatgpt-handoff-v7
 manifest: 0d8aeb74729a06e2188359cca2eb18c3884ea5b108723d6966778a161c4aaacc
 ```
 
+## Local/control-host storage placement — mandatory
+
+The local root filesystem has only about 65 GiB free. `/root/share` has about 494 GiB free at authorization time.
+
+Therefore all **large** recovery-v3 local data must use:
+
+```text
+LOCAL_BULK_ROOT=/root/share/c16_recovery_v3
+LOCAL_RAW_ROOT=/root/share/c16_recovery_v3/raw
+LOCAL_MODEL_ROOT=/root/share/c16_recovery_v3/models
+LOCAL_HF_CACHE_ROOT=/root/share/c16_recovery_v3/hf-cache
+LOCAL_TRANSFER_STAGING=/root/share/c16_recovery_v3/staging
+LOCAL_BULK_RECEIPTS=/root/share/c16_recovery_v3/receipts
+```
+
+`/workspace` remains for Git/code/compact metadata only.
+
+Do not place model weights, raw traces, large profiler databases, large archives, or transfer staging under `/workspace`, `/root/.cache`, `/tmp`, or another root-filesystem-backed path when `/root/share` is available.
+
+Before any model download or remote copyback, verify `/root/share` filesystem identity, free bytes and writability using `C16_RECOVERY_V3_LOCAL_STORAGE_LAYOUT.md`.
+
 ## Read in this order
 
 ```text
 docs/vm_tlb/codex_handoff/c16/retry570/C16_FULL_AUTHORITY_RECOVERY_V3_MASTER_HANDOFF.md
 docs/vm_tlb/codex_handoff/c16/retry570/C16_FULL_AUTHORITY_RECOVERY_V3_STAGE_ACCEPTANCE.md
 docs/vm_tlb/specs/C16_FULL_AUTHORITY_RECOVERY_V3_MATRIX.json
+docs/vm_tlb/codex_handoff/c16/retry570/C16_RECOVERY_V3_LOCAL_STORAGE_LAYOUT.md
 docs/vm_tlb/codex_handoff/c16/retry570/C16_RECOVERY_V3_ASSET_TRANSFER_HANDOFF.md
 docs/vm_tlb/codex_handoff/c16/retry570/C16_RECOVERY_V3_NATIVE_CENSUS_TARGET_PLAN_HANDOFF.md
 docs/vm_tlb/codex_handoff/c16/retry570/C16_RECOVERY_V3_CAPTURE_COPYBACK_HANDOFF.md
@@ -42,13 +64,13 @@ docs/vm_tlb/codex_handoff/c16/retry570/C16_RECOVERY_V3_FINAL_DATASET_CLOSEOUT_HA
 Fetch/read without checkout/reset/merge:
 
 ```bash
-git fetch origin hrl/vm-c16-g-retry570-chatgpt-handoff-v7
+git fetch origin hrl/vm-c16-g-retry570-chatgpt-handoff-v8
 ```
 
 Then use:
 
 ```bash
-git show origin/hrl/vm-c16-g-retry570-chatgpt-handoff-v7:<path>
+git show origin/hrl/vm-c16-g-retry570-chatgpt-handoff-v8:<path>
 ```
 
 for every file above.
@@ -63,7 +85,7 @@ R0 authority/matrix reconciliation
  -> R4 target-plan freeze
  -> R5 NVBit map/canary/repro
  -> R6 formal bounded capture
- -> R7 immediate local copyback/SHA closure
+ -> R7 immediate local copyback/SHA closure under /root/share
  -> R8 per-deployment publication
  -> repeat all rows
  -> R9 final cross-model dataset closeout
@@ -143,11 +165,14 @@ Do not stop.
 
 Use the network-capable local/control host to:
 
-1. download the exact immutable model revision;
-2. build file/size/SHA manifest;
-3. transfer via the existing SSH/rsync workflow;
-4. rehash on GPU server;
-5. continue R2/R3.
+1. set local model/cache/staging roots under `/root/share/c16_recovery_v3`;
+2. download the exact immutable model revision;
+3. build file/size/SHA manifest;
+4. transfer via the existing SSH/rsync workflow;
+5. rehash on GPU server;
+6. continue R2/R3.
+
+Never allow an implicit download cache under `/root/.cache/huggingface` to consume the local root disk.
 
 ### If package/runtime fails
 
@@ -163,7 +188,11 @@ First prove whether the selected target launched. Requalify phase-specific targe
 
 ### If remote disk pressure appears
 
-Immediately copy already-complete raw data back locally, verify SHA, index it, then delete only the verified remote copy to free space. Continue.
+Immediately copy already-complete raw data back to `/root/share/c16_recovery_v3/raw`, verify SHA, index it, then delete only the verified remote copy to free space. Continue.
+
+### If local root disk pressure appears
+
+Do not use `/workspace` or `/tmp` as overflow for large payloads. Verify/cache-route large data into `/root/share/c16_recovery_v3`, remove only duplicate/staging data that already has a final hash-closed copy, and continue.
 
 ### If a model OOMs
 
@@ -171,7 +200,7 @@ Try all identity-preserving remedies first. Never silently change batch/context/
 
 ## Do not interrupt the user for normal issues
 
-Do not ask the user after each failed command, download, build, timeout, or target mismatch.
+Do not ask the user after each failed command, download, build, timeout, target mismatch, or recoverable storage-placement issue.
 
 Use Goal-mode problem solving:
 
@@ -194,13 +223,13 @@ Even then, continue every independent row first and report the exact action need
 
 ## Copyback is mandatory
 
-This Goal is not complete while required raw artifacts exist only on the GPU server.
+This Goal is not complete while required raw artifacts exist only on the GPU server or while large required local payloads are stranded on the constrained root filesystem.
 
 For every successful/partial raw trace or required large census payload:
 
 ```text
 remote SHA
- -> local/control-host copy
+ -> local/control-host copy under /root/share/c16_recovery_v3
  -> local SHA
  -> equality PASS
  -> local artifact index
@@ -210,10 +239,12 @@ Use rolling copyback throughout the campaign, not one giant end-of-run copy.
 
 Raw traces must not enter Git.
 
-Final required invariant:
+Final required invariants:
 
 ```text
 REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0
+ALL_REQUIRED_RAW_UNDER_LOCAL_BULK_ROOT=true
+ROOT_FS_LARGE_PAYLOAD_LEAK_COUNT=0
 ```
 
 ## Frozen runtime
@@ -266,7 +297,7 @@ If true external exceptions remain:
 C16_FULL_AUTHORITY_RECOVERY_V3_DATASET_COMPLETE_WITH_EXTERNAL_EXCEPTIONS
 ```
 
-Do not use generic `BLOCKED_MODELS` for a fixable network/download/build/transfer problem.
+Do not use generic `BLOCKED_MODELS` for a fixable network/download/build/transfer/storage-placement problem.
 
 ## Final response must lead with
 
@@ -285,6 +316,11 @@ TOTAL_USER_ACTION_EXCEPTIONS=
 ALL_SUCCESSFUL_RAW_LOCAL_SHA_CLOSED=
 REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=
 TOTAL_LOCAL_RAW_BYTES=
+LOCAL_BULK_ROOT=/root/share/c16_recovery_v3
+LOCAL_BULK_FREE_BYTES_FINAL=
+ROOT_FS_FREE_BYTES_FINAL=
+ALL_REQUIRED_RAW_UNDER_LOCAL_BULK_ROOT=
+ROOT_FS_LARGE_PAYLOAD_LEAK_COUNT=
 ACTIVE_GPU_PROCESS_COUNT=
 ACTIVE_DIAGNOSTIC_PROCESS_COUNT=
 MEASUREMENT_ACTIVE_AFTER_CAMPAIGN=
@@ -306,4 +342,4 @@ local raw bytes/path/SHA closure
 resource skip or external exception if any
 ```
 
-Do not finish the Goal until the R9 final dataset pack is committed/pushed and all required successful raw artifacts are locally present and SHA closed.
+Do not finish the Goal until the R9 final dataset pack is committed/pushed, all required successful raw artifacts are locally present under `/root/share/c16_recovery_v3` and SHA closed, and no new large recovery-v3 payload leaked onto the constrained root filesystem.
