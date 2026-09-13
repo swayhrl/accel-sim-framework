@@ -11,9 +11,23 @@ Qwen2.5-7B-AWQ, Qwen3-8B, DeepSeek-V2-Lite, and exact-identity GLM.  The
 separate user-managed Qwen3-30B-A3B download is
 `EXCLUDED_BY_USER_CURRENT_CAMPAIGN` and is neither inspected nor counted.
 
-Current Recovery-V3 source checkpoint: `b88c4e7f5471da675f17835975beed39da196c6c`.
+Current Recovery-V3 source checkpoint: `9839a4692d392b83989f0861dfc4ab99a4063f8a`.
 The local bulk root is `/root/share/c16_recovery_v3`; recovery payloads are
 not staged in `/workspace` or the constrained root filesystem.
+
+The V9 source inventory is materialized as
+`/root/share/c16_recovery_v3/receipts/ASSET_CONSOLIDATION_RECEIPT.json`
+(SHA256 `823e14cdd7f2108c2a2979405644c9bc82320147753ee4ee937470af1d3e8e4d`).
+It records only non-destructive source use: Qwen0.5 is already under the
+bulk root; Qwen7 raw and AWQ were independently source-to-destination
+SHA-closed; Qwen3-8B is an in-progress exact fetch rather than a closed
+asset; and the user-managed Qwen3-30B-A3B path was not inspected.  The
+retained remote P0 Llama package is an exact 2,480,783,284-byte source but
+has not yet been copied back to the bulk root, deliberately avoiding a second
+large transfer while P2 is active.  DeepSeek's local C16 candidate is only
+metadata/tokenizer material, not a complete model; its exact runtime-input
+closure remains required.  GLM remains identity-unresolved rather than being
+guessed from an unrelated local cache ref.
 
 - Qwen2.5-0.5B-Instruct at
   `Qwen/Qwen2.5-0.5B-Instruct@7ae557604adf67be50417f59c2c2f167def9a775`
