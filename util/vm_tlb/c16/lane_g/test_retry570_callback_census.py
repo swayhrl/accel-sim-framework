@@ -23,7 +23,7 @@ class CallbackCensusTests(unittest.TestCase):
             self.assertIn(fragment, TOOL)
         for forbidden in ("nvbit_get_related_functions", "nvbit_get_instrs", "nvbit_insert_call", "nvbit_enable_instrumented", "cudaDeviceSynchronize"):
             self.assertNotIn(forbidden, TOOL)
-        self.assertIn("-Wl,--whole-archive -lnvbit -Wl,--no-whole-archive", BUILD)
+        self.assertIn("-Xlinker --whole-archive -lnvbit -Xlinker --no-whole-archive", BUILD)
 
     def test_application_marker_is_directly_before_torch_index_select_and_not_claimed_as_launch(self) -> None:
         self.assertIn('_app_event(stage_path, "EXACT_TARGET_SUBMISSION_BEGIN", round_id=round_id)\n    output = torch.index_select', RUNNER)
