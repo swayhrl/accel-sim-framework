@@ -1,0 +1,59 @@
+{
+  "schema_version": "C16_G_RECOVERY_V3_QWEN7_RAW_PREFILL_DIRECT_MEMORY_CLOSEOUT_V1",
+  "status": "QWEN7_RAW_S1_PREFILL_DIRECT_MEMORY_CAPABILITY_LIMITED_TWO_EXACT_TARGETS_ZERO",
+  "scientific_eligible": false,
+  "scientific_capture_result": "NONE",
+  "conclusion": "Two independently selected NVBit-native GLOBAL MREF instructions in the same exact, launched Prefill function reached the direct callback 56 times each but emitted no address-bearing record. This is a target-path capability limitation for validated Prefill direct-memory capture, not evidence that the model has no memory traffic and not a performance result. No filter widening, kernel-name substitution, shape change, offload, or blind static-index scan is authorized by this closeout.",
+  "identity": {
+    "deployment_id": "c16_nvbit175_recovery_qwen2p5_7b_raw_v1",
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "scenario_id": "S1",
+    "phase": "PREFILL",
+    "input_sha256": "fd7cd54612d072f0832e32cab751ab3fd2c8d9e5588f349910eb0ab3db2758ff",
+    "dtype": "bfloat16",
+    "backend": "sdpa",
+    "quantization": "NONE",
+    "cpu_offload": false
+  },
+  "exact_function": {
+    "mangled_name": "_ZN7cutlass7Kernel2I68cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_128x256_32x3_tn_align8EEvNT_6ParamsE",
+    "libtorch_cuda_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a",
+    "launches_per_target": 56
+  },
+  "validated_targets": [
+    {
+      "label": "V1_LOAD",
+      "static_index": 29,
+      "opcode": "LDG.E.64",
+      "memory_space": "GLOBAL",
+      "target_receipt_sha256": "116c3ea2997ced9ca1469688789f85ba40de5e08f1e655f9988840ca9118171c",
+      "diagnostic_receipt": "/root/share/c16_recovery_v3/raw/qwen2p5_7b_raw/S1_CODE/r5_prefill_direct_memory_discriminator_zero_direct_record/TARGETED_MEMORY_RECEIPT.json",
+      "diagnostic_receipt_sha256": "a800ec1074be7216be1b95d888e75ed3c19b130104bbaa2bd7c8b4a3184fad49",
+      "transfer_receipt_sha256": "01480f583f5070c2b468a6ab08b92dd36a34eaaaac3c10e664237ea7ead0d998",
+      "memory_record_present": false
+    },
+    {
+      "label": "V2_STORE",
+      "static_index": 3033,
+      "opcode": "STG.E.STRONG.GPU",
+      "memory_space": "GLOBAL",
+      "target_receipt_sha256": "ffbc21856cbf6f54d62d80fdb7a9016ce864466d31ca97842f4ac9d93f3b4809",
+      "diagnostic_receipt": "/root/share/c16_recovery_v3/raw/qwen2p5_7b_raw/S1_CODE/r5_prefill_direct_memory_discriminator_v4_target_v2_zero_direct_record/TARGETED_MEMORY_RECEIPT.json",
+      "diagnostic_receipt_sha256": "c5114a5bde399cb64f87fcd4f5090c8bc61d45455f2eb4fca91e6aacdac42acc",
+      "transfer_receipt_sha256": "ae21b73ac21f4894a940c5196a71d8267e69a864bd5eb28c2e637b35142cb9a6",
+      "memory_record_present": false
+    }
+  ],
+  "raw_storage": {
+    "bulk_root": "/root/share/c16_recovery_v3",
+    "all_retained_trees_remote_local_sha_closed": true,
+    "remote_only_required_artifact_count_after_closeout": 0
+  },
+  "producer_implementation_commit": "c24ae81b258c5ead3f2f783106ba3e75210f4722",
+  "runtime_commits": {
+    "v1_direct_target": "847b98751a4f990459bd485ea82651b7df9771f8",
+    "v2_direct_target": "c24ae81b258c5ead3f2f783106ba3e75210f4722"
+  },
+  "next_authorized_action": "Continue independent Recovery-V3 rows; do not treat this Prefill-only target-path limitation as a global model or campaign failure."
+}

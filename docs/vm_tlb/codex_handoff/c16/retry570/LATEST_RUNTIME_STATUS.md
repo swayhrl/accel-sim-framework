@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_R5_QWEN7_RAW_S1_PHASE_STATIC_TARGETS_SHA_CLOSED`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_QWEN7_RAW_S1_PREFILL_DIRECT_MEMORY_CAPABILITY_LIMITED_TWO_EXACT_TARGETS_ZERO`.
 
 ## Active Recovery-V3 asset and runtime checkpoint
 
@@ -12,7 +12,9 @@ separate user-managed Qwen3-30B-A3B download is
 `EXCLUDED_BY_USER_CURRENT_CAMPAIGN` and is neither inspected nor counted.
 
 Current Recovery-V3 local runtime source checkpoint:
-`1f1b0692c6a894f842d9e095b237415315e4172d`.  This commit fail-closes
+`c24ae81b258c5ead3f2f783106ba3e75210f4722`.  This commit adds the
+deterministic post-zero static-target selector without widening or rewriting
+the prior target.  It fail-closes
 generic non-S0 qualification unless it is explicitly requested with an
 immutable non-S0 binding.  The GPU runtime workspace that produced the
 retained baseline/G1 evidence was
@@ -21,6 +23,31 @@ actual runtime source explicitly rather than inferring it from this
 publication checkpoint.
 The local bulk root is `/root/share/c16_recovery_v3`; recovery payloads are
 not staged in `/workspace` or the constrained root filesystem.
+
+### Qwen2.5-7B raw S1 Prefill direct-memory discriminator closeout
+
+The two authorized, non-scientific direct-memory discriminators have now
+closed with complete remote-to-local tree SHA equality. Both used the same
+exact, live CUTLASS Prefill function, immutable S1/CODE input, `bfloat16`,
+`sdpa`, and checksum-stable runtime. The original direct GLOBAL load
+(`LDG.E.64`, NVBit static index 29) and the independently selected direct
+GLOBAL store (`STG.E.STRONG.GPU`, NVBit static index 3033) each proved 56 exact
+function launches and 56 direct callback invocations, yet each emitted zero
+address-bearing records. The V2 selector is not a widened V1 filter: it was
+selected from the hash-closed NVBit-native map after the V1 zero result.
+
+This precise, phase-target result is
+`QWEN7_RAW_S1_PREFILL_DIRECT_MEMORY_CAPABILITY_LIMITED_TWO_EXACT_TARGETS_ZERO`.
+It is neither a timing result nor proof that Decode or the model has no memory
+traffic. It forbids blind static-index scanning, target substitution,
+kernel-name matching, shape/dtype/backend change, or CPU offload. The compact
+publication is
+[`R5_QWEN2P5_7B_RAW_S1_PREFILL_DIRECT_MEMORY_CLOSEOUT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/R5_QWEN2P5_7B_RAW_S1_PREFILL_DIRECT_MEMORY_CLOSEOUT.json).
+Both raw diagnostic trees remain exclusively under
+`/root/share/c16_recovery_v3`; their independent transfer receipts prove
+`REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT=0`. Independent Recovery-V3 rows may
+continue without treating this Prefill-only target-path limitation as a
+campaign-wide blocker.
 
 The authoritative V9 source inventory is now
 `/root/share/c16_recovery_v3/receipts/ASSET_CONSOLIDATION_RECEIPT_V3.json`
