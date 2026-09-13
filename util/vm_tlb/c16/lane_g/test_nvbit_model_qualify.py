@@ -55,6 +55,7 @@ class ModelQualificationTests(unittest.TestCase):
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
             closed = validate_tool_contract("OFFICIAL_MEM_TRACE", path, digest, str(path))
             self.assertEqual(closed["tool_sha256"], digest)
+            self.assertEqual(closed["ld_preload_launch_declaration"], str(path))
             with self.assertRaises(ContractError):
                 validate_tool_contract("OFFICIAL_MEM_TRACE", path, digest, "/wrong/tool.so")
             with self.assertRaises(ContractError):

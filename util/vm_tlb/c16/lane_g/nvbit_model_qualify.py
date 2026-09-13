@@ -53,21 +53,32 @@ def raw_tree_bytes(root: Path) -> int:
     return sum(path.stat().st_size for path in root.rglob("*") if path.is_file())
 
 
-def validate_tool_contract(mode: str, tool_path: Path | None, tool_sha256: str | None, preload: str | None) -> dict[str, str]:
-    """Make injection identity exact; a baseline cannot silently preload code."""
+def validate_tool_contract(mode: str, tool_path: Path | None, tool_sha256: str | None, preload_declaration: str | None) -> dict[str, str]:
+    """Make injection identity exact; a baseline cannot silently preload code.
+
+    The ELF dynamic loader may remove ``LD_PRELOAD`` before Python begins.  A
+    profile launcher must therefore carry an exact, non-loader declaration in
+    ``C16_NVBIT_LD_PRELOAD_DECLARATION`` as well as setting ``LD_PRELOAD`` at
+    exec time.  The declared path/hash and tool-emitted raw evidence are all
+    required; the declaration is not a substitute for either one.
+    """
     if mode not in MODES:
         raise ContractError("unknown model qualification mode")
     if mode == "BASELINE":
-        if tool_path is not None or tool_sha256 is not None or preload:
+        if tool_path is not None or tool_sha256 is not None or preload_declaration:
             raise ContractError("baseline qualification must not name or preload an NVBit tool")
-        return {"mode": mode, "tool_path": "NA", "tool_sha256": "NA", "ld_preload": "NA"}
+        return {"mode": mode, "tool_path": "NA", "tool_sha256": "NA", "ld_preload_launch_declaration": "NA"}
     if tool_path is None or tool_sha256 is None:
         raise ContractError("NVBit qualification requires an exact tool path and SHA256")
     if not tool_path.is_file() or sha256_file(tool_path) != tool_sha256:
         raise ContractError("NVBit tool path/SHA256 is not closed")
-    if preload != str(tool_path):
-        raise ContractError("LD_PRELOAD does not exactly bind the declared NVBit tool")
-    return {"mode": mode, "tool_path": str(tool_path), "tool_sha256": tool_sha256, "ld_preload": preload}
+    if preload_declaration != str(tool_path):
+        raise ContractError("preload launch declaration does not exactly bind the declared NVBit tool")
+    return {
+        "mode": mode, "tool_path": str(tool_path), "tool_sha256": tool_sha256,
+        "ld_preload_launch_declaration": preload_declaration,
+        "ld_preload_visible_after_loader": os.environ.get("LD_PRELOAD", "UNSET_AFTER_DYNAMIC_LOADER"),
+    }
 
 
 def trace_evidence(
@@ -289,7 +300,6 @@ def main() -> None:
     if args.runtime_code_commit != code_commit:
         raise ContractError("declared runtime code commit differs from the checked-out source")
     binding = load_binding(args.binding_receipt, canary=True)
-    tool = validate_tool_contract(args.mode, args.tool_path, args.tool_sha256, os.environ.get("LD_PRELOAD"))
     args.raw_dir.mkdir(parents=True, exist_ok=True)
     identity = runtime_identity(binding, args, code_commit)
     capture = args.mode != "BASELINE"
@@ -297,6 +307,10 @@ def main() -> None:
     with BudgetLease(args.budget_ledger, identity, operation, capture=capture) as lease:
         with MeasurementActive(args.budget_ledger, identity, operation):
             try:
+                tool = validate_tool_contract(
+                    args.mode, args.tool_path, args.tool_sha256,
+                    os.environ.get("C16_NVBIT_LD_PRELOAD_DECLARATION"),
+                )
                 receipt = execute(binding, args, tool, code_commit)
                 raw_bytes = raw_tree_bytes(args.raw_dir)
                 if capture and raw_bytes > lease.max_raw_bytes:
