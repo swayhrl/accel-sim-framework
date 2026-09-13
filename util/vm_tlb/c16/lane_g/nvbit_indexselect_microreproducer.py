@@ -31,13 +31,13 @@ DIAGNOSTIC_DEPLOYMENT = "c16_retry570_indexselect_microreproducer"
 # only varying inputs, and every candidate is printed before execution so the
 # resulting map is never attributed to an unrecorded workload.
 CANDIDATES: tuple[dict[str, object], ...] = (
-    {"candidate_id": "R2_D0_I64", "shape": (8192, 128), "dim": 0, "index_dtype": "int64"},
-    {"candidate_id": "R2_D1_I64", "shape": (128, 8192), "dim": 1, "index_dtype": "int64"},
-    {"candidate_id": "R2_D0_I32", "shape": (8192, 128), "dim": 0, "index_dtype": "int32"},
-    {"candidate_id": "R2_D1_I32", "shape": (128, 8192), "dim": 1, "index_dtype": "int32"},
-    {"candidate_id": "R3_D0_I64", "shape": (512, 32, 16), "dim": 0, "index_dtype": "int64"},
-    {"candidate_id": "R3_D1_I64", "shape": (32, 512, 16), "dim": 1, "index_dtype": "int64"},
-    {"candidate_id": "R3_D2_I64", "shape": (32, 16, 512), "dim": 2, "index_dtype": "int64"},
+    # The exact target's ABI uses long indices, two post-reduction TensorInfo
+    # dimensions, and 32-bit tensor offsets. ``numIndices=32`` forces
+    # PyTorch's indexSelectLargeIndex branch (>16) without spending an
+    # official-BB diagnostic's 60-second ceiling on a large RNG workload.
+    {"candidate_id": "R2_D0_I64_A", "shape": (64, 32), "dim": 0, "index_dtype": "int64"},
+    {"candidate_id": "R2_D0_I64_B", "shape": (33, 64), "dim": 0, "index_dtype": "int64"},
+    {"candidate_id": "R3_D0_I64", "shape": (32, 16, 8), "dim": 0, "index_dtype": "int64"},
 )
 
 

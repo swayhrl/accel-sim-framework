@@ -405,6 +405,73 @@ def reclassify_pre_forward_nvbit_entry(ledger_path: Path, *, run_id: str, reason
             fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
 
 
+def reconcile_external_bounded_capture(
+    ledger_path: Path,
+    *,
+    identity: dict[str, Any],
+    elapsed_seconds: float,
+    raw_bytes: int,
+    terminal_status: str,
+    diagnostic_reason: str,
+    external_exit_code: int,
+) -> dict[str, Any]:
+    """Preserve one bounded NVBit capture killed before its lease could close.
+
+    A process terminated by the outer wall-clock guard cannot execute its
+    ``BudgetLease.__exit__``. This narrow reconciliation appends one explicit
+    diagnostic row with the observed resource use. It cannot alter an existing
+    row, cannot record success, and refuses to exceed the ordinary NVBit
+    window/deployment/raw limits.
+    """
+    if (not isinstance(identity.get("deployment_id"), str) or not identity["deployment_id"]
+            or not isinstance(identity.get("run_id"), str) or not identity["run_id"]):
+        raise ContractError("external bounded-capture reconciliation lacks deployment/run identity")
+    if not (0 < elapsed_seconds <= MAX_NVBIT_WINDOW_SECONDS) or raw_bytes < 0 or raw_bytes > MAX_NVBIT_WINDOW_BYTES:
+        raise ContractError("external bounded-capture reconciliation exceeds a per-window hard limit")
+    if terminal_status not in {"BOUNDED_TIMEOUT_EXTERNAL", "KILLED_EXTERNAL"}:
+        raise ContractError("external bounded-capture reconciliation requires an external terminal state")
+    if not diagnostic_reason or not isinstance(external_exit_code, int):
+        raise ContractError("external bounded-capture reconciliation lacks failure provenance")
+    lock_path = ledger_path.with_name(ledger_path.name + ".lock")
+    with lock_path.open("a+", encoding="utf-8") as lock_handle:
+        try:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise ContractError("cannot reconcile a capture while a C16 operation is active") from exc
+        try:
+            ledger = _load(ledger_path)
+            if any(entry.get("run_id") == identity["run_id"] for entry in ledger["entries"]):
+                raise ContractError("external bounded-capture run is already represented in the ledger")
+            deployment_windows = sum(
+                entry.get("operation_kind") == "NVBIT" and entry.get("deployment_id") == identity["deployment_id"]
+                for entry in ledger["entries"]
+            )
+            if deployment_windows >= MAX_NVBIT_WINDOWS_PER_DEPLOYMENT:
+                raise ContractError("external bounded-capture reconciliation would exceed deployment NVBIT windows")
+            _elapsed, raw_used = _totals(ledger)
+            if raw_used + raw_bytes > MAX_NVBIT_TOTAL_RAW_BYTES:
+                raise ContractError("external bounded-capture reconciliation would exceed total NVBIT raw budget")
+            entry = {
+                "operation_kind": "NVBIT",
+                "deployment_id": identity["deployment_id"],
+                "run_id": identity["run_id"],
+                "elapsed_seconds": elapsed_seconds,
+                "raw_bytes": raw_bytes,
+                "terminal_status": terminal_status,
+                "max_elapsed_seconds_at_start": MAX_NVBIT_WINDOW_SECONDS,
+                "max_raw_bytes_at_start": MAX_NVBIT_WINDOW_BYTES,
+                "evidence_classification": "NON_SCIENTIFIC_DIAGNOSTIC",
+                "diagnostic_reason": diagnostic_reason,
+                "external_exit_code": external_exit_code,
+                "reconciliation": "PROCESS_TERMINATED_BEFORE_BUDGETLEASE_CLEANUP_RESOURCE_USE_PRESERVED",
+            }
+            ledger["entries"].append(entry)
+            atomic_json(ledger_path, ledger)
+            return entry
+        finally:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
+
+
 def ledger_markdown() -> str:
     return """# C16 Lane G execution-budget guard
 
