@@ -1,0 +1,46 @@
+{
+  "schema_version": "C16_G3_NVBIT_FIXTURE_QUALIFICATION_V1",
+  "status": "C16_G3_NVBIT_FIXTURE_PASS",
+  "scientific_eligible_for_timing": false,
+  "purpose": "TOOL_CAPABILITY_DIAGNOSTIC_ONLY_NOT_A_MODEL_FINGERPRINT",
+  "platform": {
+    "gpu_uuid": "GPU-6975486d-bcb7-deec-7ff8-29734254ceb1",
+    "driver_version": "595.58.03",
+    "cuda_version": "12.4",
+    "architecture": "sm_86"
+  },
+  "tool": {
+    "nvbit_version": "1.7.6",
+    "release_archive_sha256": "dba61708b702ff4562343716bb8b38a2d14aae5991b9719aece097afe505467f",
+    "tool_sha256": "627c2ffe6fb129697af5cb6c9856895011b335262810c8f6e6115baec92572b2",
+    "bootstrap_receipt_local_path": "/workspace/worktrees/accel-sim-vm-c16-g-runtime/artifacts/c16_g_autodl/nvbit_bootstrap/C16_G3_NVBIT_BOOTSTRAP_RECEIPT.json",
+    "bootstrap_receipt_sha256": "9ea5b74278c7479fc3e5ab4896a7db6e50f28e612dddd158f4c34c1074bbb092"
+  },
+  "prior_diagnostic": {
+    "run_id": "73097e66-3ea9-426b-a55d-af7853524170",
+    "classification": "NON_SCIENTIFIC_DIAGNOSTIC",
+    "result": "NO_RAW_NVDISASM_NOT_ON_PATH",
+    "retained_in_transfer_index": true
+  },
+  "successful_fixture": {
+    "run_id": "5b9d3c9f-7296-479a-9f40-7e9d1a1dd9ee",
+    "target": "tiny CUDA vector-add B1/N256",
+    "wrapper_terminal_status": "COMPLETE",
+    "raw_bytes": 957,
+    "raw_trace_sha256": "dd1ebd8e412f08e546357150dd9f4f3234c60401f529cde06082f25fac03bf20",
+    "validations": {
+      "instrumentation_loaded": true,
+      "terminal_instruction_observed": true,
+      "active_mask_observed": "ffffffff",
+      "memory_space": "GLOBAL",
+      "memory_width_bytes": 4,
+      "load_store_evidence": ["LDG.E", "STG.E"],
+      "grid": "1x1x1",
+      "block": "256x1x1",
+      "postprocessor_completed": true,
+      "window_raw_bytes_within_4GiB": true,
+      "window_elapsed_seconds_within_20min": true
+    }
+  },
+  "conclusion": "NVBit instrumentation and bounded trace closure work for the direct CUDA fixture; this result neither qualifies a model target nor supplies native timing."
+}

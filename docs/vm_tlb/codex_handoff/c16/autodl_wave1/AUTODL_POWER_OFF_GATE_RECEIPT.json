@@ -1,53 +1,57 @@
 {
-  "schema_version": "C16_G_AUTODL_POWER_OFF_GATE_V1",
-  "status": "C16_AUTODL_SAFE_TO_POWER_OFF",
-  "scope": "POST_PUBLICATION_PROVENANCE_CLOSEOUT_ONLY",
+  "schema_version": "C16_G_AUTODL_POWER_OFF_GATE_V2",
+  "status": "C16_AUTODL_FINAL_G2_G3_COMPLETE_SAFE_TO_POWER_OFF",
+  "scope": "POST_FIXED_C_TARGET_G2_G3_CLOSEOUT",
   "power_action_taken": "NONE_USER_MAY_POWER_OFF_INSTANCE",
   "checks": {
     "active_gpu_process_count": 0,
-    "active_gpu_process_evidence": "nvidia-smi compute-app query returned no rows; no nsys/ncu/NVBit/native-runner/rsync/scp process was present.",
+    "active_gpu_process_evidence": "Post-G3-closeout nvidia-smi compute-app query returned no rows; no native runner, NCU, NVBit, nsys, scp, or rsync task remained.",
     "gpu_pending_authorized_work": 0,
     "measurement_active_markers": {
       "/root/autodl-tmp/c16/MEASUREMENT_ACTIVE": "ABSENT",
       "/root/autodl-tmp/c16/control/MEASUREMENT_ACTIVE": "ABSENT"
     },
     "remote_only_required_artifact_count": 0,
+    "fixed_c_target_authority": {
+      "commit": "d55075b7752380d6bd22328547db21a5e24eeed2",
+      "publish_manifest_sha256": "c172ebf38d65f3b09caa9b16ab83632985aeb33afeab5eebfef57b7446f9c439",
+      "selector_freeze_sha256": "3096c9ea5d1d09e4935a8d765bc1dc36a8d4ff35f4174c7ef42846259aee95c7",
+      "ncu_target_plan_sha256": "45b20a8e5383277a5170e32ff41b8de2ed2ca8777300b7ab6ab80a256d050693",
+      "nvbit_target_plan_sha256": "e9dab7c27d726c991a5525cc8a266fb3369c315b1f691c0b11e9cbf0e5acb78a"
+    },
+    "g2": {
+      "status": "G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION",
+      "closeout_receipt": "G2_NCU_CAPABILITY_LIMITED_RECEIPT.json",
+      "remaining_rows": "NOT_EXECUTED_CAPABILITY_LIMITED",
+      "remote_only_required_artifact_count": 0
+    },
+    "g3": {
+      "status": "G3_CAPABILITY_LIMITED",
+      "closeout_manifest": {
+        "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/fixed_target_execution/g3_nvbit/PUBLISH_MANIFEST.json",
+        "sha256": "0987535e425854ab59344345fda914f46fea75b2a593001d394662ef63c3c3e3"
+      },
+      "first_target_disposition": "ATTEMPTED_CAPABILITY_LIMITED_NO_MODEL_NVBIT_TRACE",
+      "remaining_rows": "NOT_EXECUTED_CAPABILITY_LIMITED",
+      "fixture_raw_local_sha_closed": true,
+      "model_raw_trace_count": 0,
+      "remote_only_required_artifact_count": 0
+    },
     "raw_artifact_index": {
       "path": "docs/vm_tlb/codex_handoff/c16/autodl_wave1/RAW_ARTIFACT_INDEX.tsv",
-      "sha256": "e19a7073a6a3cffd86c84d9924e7ba8b6a970430653fc9684d890e139f41eb6b",
-      "indexed_artifact_count": 14,
-      "local_size_sha256_closed_count": 14,
+      "sha256": "a47c8d00b61c0272da4d6cc71bb8c4e9378b27e15c0d3b1e38100feefbf4a0a9",
+      "indexed_artifact_count": 16,
+      "local_size_sha256_closed_count": 16,
       "local_size_sha256_failure_count": 0,
-      "remote_nsys_rep_count": 10,
-      "remote_nsys_rep_size_sha256_matches_closed_local_index_count": 10,
-      "remote_nsys_rep_unmapped_or_mismatched_count": 0
+      "g3_fixture_raw_count": 2,
+      "g3_model_raw_count": 0
     },
-    "remote_only_nonrequired_derived_export_count": 8,
-    "remote_only_nonrequired_derived_export_reason": "The eight remote SQLite files are disposable validation/export derivatives. Every required clean or semantic input is the hash-closed local .nsys-rep in RAW_ARTIFACT_INDEX.tsv; Lane P is locally qualified to export from those reports. No SQLite is a unique retained scientific or diagnostic input.",
-    "event_publication": {
-      "producer_implementation_anchor": "307ad12335745153e8b320ba3ef131d0f451cf06",
-      "publication_checkpoint_commit": "e3d49cea82a5730ccc4d796219acd6ff68aa65a0",
-      "remote_branch_ref_confirmed": "e3d49cea82a5730ccc4d796219acd6ff68aa65a0",
-      "event_publish_manifest": {
-        "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/native_events_c_train/PUBLISH_MANIFEST.json",
-        "sha256": "ade888dab5aac6aa3090df7e7aec9395b6f5a1699ca56e02461f19d95d2d1ebc"
-      },
-      "publication_validation_receipt_sha256": "269de6df82afa5b24b8a7d4d64bd97147b29eb41d96fe6b0930395a0b2bd4686",
-      "remote_nsys_version_receipt_sha256": "beb3868a6d42d799e9767c0f88f76b405e7885054c3caaec611f183b9d3613e8",
-      "event_count": 8,
-      "dual_endpoint_transfer_receipt_count": 8,
-      "all_publication_event_transfer_and_nsys_version_receipts_committed_and_pushed": true
-    },
-    "lane_c_target_plan_recheck": {
-      "remote_branch": "hrl/vm-c16-c-sampling-v2-v0",
-      "remote_head": "72a3b3f85b1a6a59ec9120527138d2c46a2680cf",
-      "publish_manifest_sha256": "e4273224086f5cbd73c4e2981fed484be3f59ba93538fae00cdd305c97765cd0",
-      "nvbit_target_plan_sha256": "ad08e14332aebcbf414cf4779328cd6136cf2fd465966bc2d2d0312833319ad5",
-      "native_catalog_consumed": false,
-      "target_status": "PENDING_NATIVE_CATALOG",
-      "target_identity_status": "NOT_A_NATIVE_CAPTURE_TARGET",
-      "legal_fixed_g2_g3_target_available": false,
-      "result": "G2_G3_BLOCKED_PENDING_C_FIXED_TARGET"
+    "publication": {
+      "g2_published_and_pushed": true,
+      "g3_payload_manifest_validation": "PASS",
+      "g3_dual_endpoint_diagnostic_artifacts": 22,
+      "g3_raw_payloads_committed": false,
+      "all_required_event_transfer_and_nsys_version_receipts_previously_committed": true
     }
   }
 }

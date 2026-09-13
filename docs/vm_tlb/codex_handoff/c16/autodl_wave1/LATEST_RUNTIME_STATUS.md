@@ -1,6 +1,6 @@
 # C16-G Wave-1 runtime status
 
-Status: `C16_G_FIXED_TARGET_EXECUTION`
+Status: `C16_AUTODL_FINAL_G2_G3_COMPLETE_SAFE_TO_POWER_OFF`
 Publication policy: `REMOTE_CHECKPOINT_POLICY.md` at read-only handoff commit
 `9938b59ab80e6d1c77cc1efa6f6980e4cdfac5bc`.
 
@@ -27,8 +27,21 @@ ledger/transfer closure is in
 The actual canary is retained as attempted/no-report; each remaining 287
 C-fixed NCU rows is `NOT_EXECUTED_CAPABILITY_LIMITED`, with no second NCU row.
 
-NVBit preparation may now proceed independently in bounded windows.  No
-target row will be added, reshaped, or substituted.
+G3 is now closed as `G3_CAPABILITY_LIMITED`.  NVBit 1.7.6 was hash-closed and
+passed the tiny direct CUDA fixture (injection, terminal state, active mask,
+4-byte global load/store, postprocess, and bounded raw window).  The first
+file-order C AWQ target was then uniquely bound by the full P composite key,
+global ordinal 79554, implementation family, exact source kernel text, and
+7x1x1 / 128x1x1 geometry—not a kernel-name-only match.  The model process
+aborted with `SIGABRT` before child preflight or raw trace emission.  Its
+parent/child single lease and diagnostic ledger closed correctly, but no actual
+trace can prove identity.  The attempted row is
+`ATTEMPTED_CAPABILITY_LIMITED_NO_MODEL_NVBIT_TRACE`; the other 287 rows are
+`NOT_EXECUTED_CAPABILITY_LIMITED`, with no ordinal, target, shape, backend,
+dtype, package, or deployment substitution.  See
+[`g3_nvbit`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_wave1_native/fixed_target_execution/g3_nvbit/).
+There is no real model NVBit canary for Lane H; the fixture raw is explicitly
+not a model trace.
 
 ## Runtime anchors
 
@@ -39,6 +52,8 @@ target row will be added, reshaped, or substituted.
 | Current G publication head before this checkpoint | `ae560163ff0462077e766bb737536b4a0f57339c` |
 | Current G2 NCU runtime source commit | `ea80c2042093d97728e7c4646e7eb1dae90f1186` |
 | G2 NCU disposition | `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`; the 287 remaining C rows are `NOT_EXECUTED_CAPABILITY_LIMITED`. |
+| G3 NVBit runtime source commit | `f7d2142c6f2a6a8ef37a13b65e14911ded75c856` |
+| G3 NVBit disposition | `G3_CAPABILITY_LIMITED`; fixture PASS is diagnostic-only, and the sole fixed AWQ model canary terminated `SIGABRT` with zero raw files. |
 | Native-event publication implementation anchor | `307ad12335745153e8b320ba3ef131d0f451cf06` |
 | P3 AWQ native runtime source commit | `a54e25ab3e86f88530c53436b99294b62fb5ef70` |
 | Meaning of P3 AWQ source commit | Focused-test-passed explicit `AutoAWQ.from_quantized` load: `fuse_layers=false`, Accelerate-compatible explicit root device map `{"": 0}`, no offload, exact frozen sequence length.  CUDA OOM has an explicit `SKIPPED_RESOURCE` ledger/receipt path with no shape substitution.  It does not alter completed P0/P1 scientific receipts. |
@@ -100,10 +115,10 @@ consumer coverage, receipt, and external hash index are in
 
 | Deployment / group | G0 | G1 | G2 | G3 | Latest completed formal group |
 |---|---|---|---|---|---|
-| Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Not in C fixed NCU plan | Pending fixed NVBit plan | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
-| Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1, S2, S3/TEXT (`a67d9a5e-049a-401f-bdbe-6281e89b7351`), and S4/STRUCTURED (`bf2bf219-1836-4a4c-8d9d-c6acc2b940f1`) | Not in C fixed NCU plan | Pending fixed NVBit plan | S3/S4 standalone baselines and full-range G1 passed independent CUDA/correlation/NVTX export validation; both raw `.nsys-rep` artifacts are hash-closed in `RAW_ARTIFACT_INDEX.tsv`. |
-| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`), S2/CODE (`bedbd6bd-f51e-4246-89e9-c0e59c74e0e7`), S2/STRUCTURED (`0db40447-a201-452d-a48d-be8116d71aee`); S3/TEXT and S4/STRUCTURED `SKIPPED_RESOURCE` | `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`; 287 remaining rows `NOT_EXECUTED_CAPABILITY_LIMITED`, no target substitution | Pending fixed NVBit plan | S2 direct-semantic diagnostics passed separately.  Both dense-Qwen S3 `B1/T8192/D16` and S4 `B4/T2048/D16` are explicit CUDA-OOM resource results with no CPU/offload/shape substitution; see [P3_AWQ_S3_RESOURCE_ADMISSION.json](P3_AWQ_S3_RESOURCE_ADMISSION.json) and [P3_AWQ_S4_RESOURCE_ADMISSION.json](P3_AWQ_S4_RESOURCE_ADMISSION.json). |
-| Qwen2.5-7B raw P2 | `SKIPPED_RESOURCE`: S0/TEXT (`4c4a6f27-c5db-4145-972c-3c1b52647a48`) | Not admitted: no baseline/census after S0 CUDA OOM | Not in C fixed NCU plan | Pending fixed NVBit plan | Exact frozen S0 raw standalone load reached CUDA resource admission and failed closed without CPU offload or shape substitution; see [P2_RAW_S0_RESOURCE_ADMISSION.json](P2_RAW_S0_RESOURCE_ADMISSION.json). |
+| Llama 3.2-1B P0 | PASS | PASS: S0/S1/S2, then S3/S4 bounded full-range Nsight census | Not in C fixed NCU plan | Not in C fixed NVBit plan | S4 standalone baseline plus G1 (`da75b6e2-5f58-4f6c-9cc8-131180013dfa`) |
+| Qwen2.5-0.5B P1 | PASS (`67dea9e7-29f9-488a-b70d-e345508f3f79`) | PASS: S1, S2, S3/TEXT (`a67d9a5e-049a-401f-bdbe-6281e89b7351`), and S4/STRUCTURED (`bf2bf219-1836-4a4c-8d9d-c6acc2b940f1`) | Not in C fixed NCU plan | Not in C fixed NVBit plan | S3/S4 standalone baselines and full-range G1 passed independent CUDA/correlation/NVTX export validation; both raw `.nsys-rep` artifacts are hash-closed in `RAW_ARTIFACT_INDEX.tsv`. |
+| Qwen2.5-7B AWQ P3 | PASS (`fc4f33e7-3c49-4ef8-aa74-e503b08c389e`) | PASS: S1/CODE (`56a853d1-ef7f-4653-8cd8-cc7defde5689`), S2/TEXT (`ee52fecb-7bff-4918-bfa4-f0c65838ed5f`), S2/CODE (`bedbd6bd-f51e-4246-89e9-c0e59c74e0e7`), S2/STRUCTURED (`0db40447-a201-452d-a48d-be8116d71aee`); S3/TEXT and S4/STRUCTURED `SKIPPED_RESOURCE` | `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`; 287 remaining rows `NOT_EXECUTED_CAPABILITY_LIMITED`, no target substitution | `G3_CAPABILITY_LIMITED`; fixed first AWQ model canary `c19ada55-25e7-4917-abd6-0e0a2e3f618f` aborted pre-trace, remaining 287 rows `NOT_EXECUTED_CAPABILITY_LIMITED` | S2 direct-semantic diagnostics passed separately.  Both dense-Qwen S3 `B1/T8192/D16` and S4 `B4/T2048/D16` are explicit CUDA-OOM resource results with no CPU/offload/shape substitution; see [P3_AWQ_S3_RESOURCE_ADMISSION.json](P3_AWQ_S3_RESOURCE_ADMISSION.json) and [P3_AWQ_S4_RESOURCE_ADMISSION.json](P3_AWQ_S4_RESOURCE_ADMISSION.json). |
+| Qwen2.5-7B raw P2 | `SKIPPED_RESOURCE`: S0/TEXT (`4c4a6f27-c5db-4145-972c-3c1b52647a48`) | Not admitted: no baseline/census after S0 CUDA OOM | Not in C fixed NCU plan | Not in C fixed NVBit plan | Exact frozen S0 raw standalone load reached CUDA resource admission and failed closed without CPU offload or shape substitution; see [P2_RAW_S0_RESOURCE_ADMISSION.json](P2_RAW_S0_RESOURCE_ADMISSION.json). |
 
 The first malformed Qwen S1 Nsight invocation (`baa55265-4b7b-4dd8-aed6-6fcc6abca148`)
 has a retained ledger entry marked `NON_SCIENTIFIC_DIAGNOSTIC`; it has no raw
@@ -161,9 +176,9 @@ pretend a new remote hash was possible.
 
 ## AutoDL power-off gate
 
-`C16_AUTODL_SAFE_TO_POWER_OFF` is now published in
+`C16_AUTODL_FINAL_G2_G3_COMPLETE_SAFE_TO_POWER_OFF` is now published in
 [AUTODL_POWER_OFF_GATE_RECEIPT.json](AUTODL_POWER_OFF_GATE_RECEIPT.json).
-All 14 scientifically required or diagnostically retained raw artifacts have
+All 16 scientifically required or diagnostically retained raw artifacts have
 local size/SHA closure; all 10 still-present remote `.nsys-rep` copies also
 match those local SHA-closed identities. `REMOTE_ONLY_REQUIRED_ARTIFACT_COUNT`
 is `0`, `GPU_PENDING_AUTHORIZED_WORK` is `0`, and
@@ -176,14 +191,12 @@ The event publish checkpoint `e3d49cea…` (manifest SHA256
 is confirmed pushed. It includes all event, transfer, validation and fixed
 remote-Nsight-version receipts.
 
-The read-only C remote recheck at `72a3b3f85b1a6a59ec9120527138d2c46a2680cf`
-found `native_catalog_consumed=false` and only historical
-`PENDING_NATIVE_CATALOG` / `NOT_A_NATIVE_CAPTURE_TARGET` rows in its
-hash-closed NVBit target plan. It is not a legal fixed G2/G3 target, so G2/G3
-remain `BLOCKED_PENDING_C_FIXED_TARGET` and no GPU work is authorized. The
-final handoff HEAD is the commit that contains this gate receipt; it is distinct
-from both the event publisher implementation anchor and the historic runtime
-producer commits.
+The earlier watch-only C recheck is superseded by C fixed authority
+`d55075b7752380d6bd22328547db21a5e24eeed2`.  G2 and G3 were both processed
+under that authority and are now capability-limited without target expansion.
+The final handoff HEAD is the commit that publishes this completed gate; it is
+distinct from both the event publisher implementation anchor and historic
+runtime producer commits.
 
 The returned `.nsys-rep` artifacts, including the retained semantic diagnostic
 raw, are indexed by immutable
@@ -238,11 +251,10 @@ frozen S0/TEXT G0 is `SKIPPED_RESOURCE` on CUDA OOM; no P2 baseline or G1 is
 admitted without changing the frozen scenario, which is prohibited.  Lane P's
 local semantic merge is not a prerequisite for other independently admitted work.
 
-P1's remaining frozen S3/TEXT and S4/STRUCTURED groups are now closed through
-standalone baseline plus validated G1.  The next GPU task is a bounded NVBit
-tool/fixture capability check for the now-fixed C plan.  G2 is already
-capability-limited by direct NCU counter-permission evidence; it is not held
-open for an inferred or replacement target.
+P1's remaining frozen S3/TEXT and S4/STRUCTURED groups are closed through
+standalone baseline plus validated G1.  There is no next authorized GPU task:
+G2 is closed on direct counter-permission evidence and G3 is closed on the
+fixed-model NVBit runtime-tool abort after its fixture qualification.
 
 ## Known capability / analysis boundaries
 
@@ -251,8 +263,9 @@ open for an inferred or replacement target.
 - G2 is `G2_NCU_CAPABILITY_LIMITED_PERF_COUNTER_PERMISSION`: the only C
   first-row canary had no NCU output after `ERR_NVGPUCTRPERM`; the remaining
   287 rows are `NOT_EXECUTED_CAPABILITY_LIMITED`, without a replacement
-  target.  G3 remains bounded to C's already-fixed
-  NVBit rows and may become `CAPABILITY_LIMITED` independently.
+  target.  G3 is `G3_CAPABILITY_LIMITED`: the fixed first P3 AWQ target
+  emitted no model trace after an NVBit/PyTorch-AWQ `SIGABRT`; all remaining
+  rows are `NOT_EXECUTED_CAPABILITY_LIMITED`.
 - Existing nsys raw is retained losslessly outside Git.  Remote export is not the
   default catalog path; raw -> remote SHA -> local transfer -> local SHA -> local
   export is the policy path.
