@@ -21,8 +21,9 @@ class CallbackCensusTests(unittest.TestCase):
     def test_tool_logs_all_callbacks_without_nvbit_introspection_or_instrumentation(self) -> None:
         for fragment in ("nvbit_at_cuda_event", "is_exit", "cbid", "event_name", "std::fflush(stdout)", "CALLBACK_CENSUS_ONLY"):
             self.assertIn(fragment, TOOL)
-        for forbidden in ("nvbit_get_related_functions", "nvbit_get_instrs", "nvbit_insert_call", "nvbit_enable_instrumented", "cudaDeviceSynchronize"):
+        for forbidden in ("nvbit_get_related_functions", "nvbit_get_instrs", "nvbit_insert_call", "nvbit_enable_instrumented", "cudaDeviceSynchronize", "nvbit_get_func_name("):
             self.assertNotIn(forbidden, TOOL)
+        self.assertIn("c16_nvbit_link_anchor = &nvbit_get_func_name", TOOL)
         self.assertIn("-Xlinker --whole-archive -lnvbit -Xlinker --no-whole-archive", BUILD)
 
     def test_application_marker_is_directly_before_torch_index_select_and_not_claimed_as_launch(self) -> None:

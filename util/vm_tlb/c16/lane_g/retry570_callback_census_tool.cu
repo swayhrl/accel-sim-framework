@@ -14,6 +14,13 @@
 #include "nvbit.h"
 #include "nvbit_tool.h"
 
+// A no-op callback-only tool does not otherwise reference libnvbit.a, which
+// lets NVCC omit NVBit's driver-callback dispatcher.  Keep this link anchor
+// emitted, but never invoke it: the census path performs no function-name,
+// related-function, instruction, or instrumentation API call.
+using NvbitLinkAnchor = const char* (*)(CUcontext, CUfunction, bool);
+__attribute__((used)) static NvbitLinkAnchor const c16_nvbit_link_anchor = &nvbit_get_func_name;
+
 static std::atomic<unsigned long long> callback_sequence{0};
 
 static uint64_t monotonic_ns() {
