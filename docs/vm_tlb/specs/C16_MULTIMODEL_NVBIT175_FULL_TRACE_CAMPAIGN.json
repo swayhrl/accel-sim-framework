@@ -1,0 +1,80 @@
+{
+  "schema_version": "c16-multimodel-nvbit175-full-trace-campaign-v1",
+  "base_checkpoint": "d001a349156c51aa6de15f30b9aedaa70f534442",
+  "runtime_lock": {
+    "gpu": "RTX3090",
+    "compute_capability": "SM86",
+    "driver": "570.124.04",
+    "cuda_toolkit": "12.4",
+    "pytorch": "2.5.1+cu124",
+    "nvbit": "1.7.5",
+    "effective_cuda_module_loading": "EAGER"
+  },
+  "capture_contract": {
+    "prewarm_outside_measurement": true,
+    "raw_trace_in_git": false,
+    "remote_to_local_sha_closure_required": true,
+    "per_model_static_range_requalification_required": true,
+    "required_phase_attribution": ["prefill", "decode"],
+    "default_existing_c16_workload_if_authoritatively_bound": {
+      "batch": 1,
+      "input_tokens": 128,
+      "decode_steps": 4
+    }
+  },
+  "models": [
+    {
+      "model_key": "llama_3p2_1b",
+      "roster_label": "Llama-3.2-1B",
+      "priority": 1,
+      "identity_source": "existing_retry570_frozen_contract",
+      "exact_identity": "RECOVER_AND_VERIFY_FROM_EXISTING_RETRY570_ARTIFACTS",
+      "asset_policy": "no_download_no_substitution",
+      "required": true
+    },
+    {
+      "model_key": "qwen_0p5",
+      "roster_label": "Qwen 0.5-class existing campaign target",
+      "priority": 2,
+      "identity_source": "existing_project_or_local_assets",
+      "exact_identity": "UNRESOLVED_MUST_FREEZE_BEFORE_RUN",
+      "asset_policy": "no_download_no_substitution",
+      "required": true
+    },
+    {
+      "model_key": "qwen_7b_awq",
+      "roster_label": "Qwen 7B AWQ existing campaign target",
+      "priority": 3,
+      "identity_source": "existing_project_or_local_assets",
+      "exact_identity": "UNRESOLVED_MUST_FREEZE_BEFORE_RUN",
+      "asset_policy": "no_download_no_substitution",
+      "required": true
+    },
+    {
+      "model_key": "deepseek",
+      "roster_label": "DeepSeek required AI-trace target",
+      "priority": 4,
+      "identity_source": "authoritative_prior_project_context_and_local_assets",
+      "exact_identity": "UNRESOLVED_MUST_FREEZE_BEFORE_RUN",
+      "asset_policy": "no_download_no_substitution_no_variant_guessing",
+      "required": true
+    },
+    {
+      "model_key": "glm",
+      "roster_label": "GLM required AI-trace target",
+      "priority": 5,
+      "identity_source": "authoritative_prior_project_context_and_local_assets",
+      "exact_identity": "UNRESOLVED_MUST_FREEZE_BEFORE_RUN",
+      "asset_policy": "no_download_no_substitution_no_variant_guessing",
+      "required": true
+    }
+  ],
+  "acceptable_terminal_states": [
+    "COMPLETE",
+    "BLOCKED_ASSET_UNAVAILABLE",
+    "BLOCKED_IDENTITY_NOT_FROZEN",
+    "BLOCKED_RUNTIME_WITH_FROZEN_CONTRACT",
+    "BLOCKED_TARGET_NOT_REQUALIFIED",
+    "BLOCKED_STORAGE_SAFETY"
+  ]
+}
