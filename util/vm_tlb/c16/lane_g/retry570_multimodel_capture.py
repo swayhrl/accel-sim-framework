@@ -27,6 +27,7 @@ from c16_native_common import ContractError, atomic_json, canonical_json, repo_r
 from execution_budget import BudgetLease, MeasurementActive
 from model_adapters import resolve_adapter
 from profiler_wrapper import write_parent_lease_closeout, write_parent_lease_start
+from retry570_recovery_budget import RecoveryBudgetLease, initialize as initialize_recovery_budget
 from retry570_long_watch import nvdisasm_environment_contract
 from runtime_native_runner import (
     assert_cuda_residency,
@@ -66,7 +67,7 @@ def capture_phase(mode: str) -> str:
 
 def identity(binding: dict[str, Any], args: argparse.Namespace) -> dict[str, str]:
     return {
-        "deployment_id": binding["deployment_id"], "model_id": binding["model_id"],
+        "deployment_id": args.recovery_deployment_id or binding["deployment_id"], "model_id": binding["model_id"],
         "model_revision": binding["model_revision"], "tokenizer_revision": binding["tokenizer_revision"],
         "scenario_id": binding["scenario"]["scenario_id"], "input_hash": binding["input"]["raw_input_sha256"],
         "implementation_key": args.implementation_key, "dtype": args.dtype,
@@ -225,7 +226,9 @@ def kill_group(process: subprocess.Popen[str]) -> dict[str, Any]:
 
 
 def child_command(args: argparse.Namespace) -> list[str]:
-    return [sys.executable, str(Path(__file__).resolve()), "--child", "--mode", args.mode, "--binding", str(args.binding), "--target-receipt", str(args.target_receipt), "--receipt", str(args.receipt), "--stage", str(args.stage), "--child-receipt", str(args.child_receipt), "--trace-root", str(args.trace_root), "--budget-ledger", str(args.budget_ledger), "--parent-lease-receipt", str(args.parent_lease_receipt), "--arm-path", str(args.arm_path), "--adapter", args.adapter, "--implementation-key", args.implementation_key, "--dtype", args.dtype, "--quantization", args.quantization, "--run-id", args.run_id, "--runtime-code-commit", args.runtime_code_commit, "--expected-attention-backend", args.expected_attention_backend, "--arm-wait-seconds", str(args.arm_wait_seconds)]
+    command = [sys.executable, str(Path(__file__).resolve()), "--child", "--mode", args.mode, "--binding", str(args.binding), "--target-receipt", str(args.target_receipt), "--receipt", str(args.receipt), "--stage", str(args.stage), "--child-receipt", str(args.child_receipt), "--trace-root", str(args.trace_root), "--budget-ledger", str(args.budget_ledger), "--parent-lease-receipt", str(args.parent_lease_receipt), "--arm-path", str(args.arm_path), "--adapter", args.adapter, "--implementation-key", args.implementation_key, "--dtype", args.dtype, "--quantization", args.quantization, "--run-id", args.run_id, "--runtime-code-commit", args.runtime_code_commit, "--expected-attention-backend", args.expected_attention_backend, "--arm-wait-seconds", str(args.arm_wait_seconds)]
+    if args.recovery_deployment_id: command.extend(("--recovery-deployment-id", args.recovery_deployment_id))
+    return command
 
 
 def parent(args: argparse.Namespace) -> int:
@@ -236,10 +239,18 @@ def parent(args: argparse.Namespace) -> int:
     if sha256_file(args.tool) != args.tool_sha256 or not args.nvdisasm.is_file(): raise ContractError("formal tool/nvdisasm closure differs")
     binding = load_binding(args.binding, canary=True); target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target)
     ident = identity(binding, args); MeasurementActive.assert_available(args.budget_ledger)
+    if args.recovery_ledger is not None:
+        if args.recovery_ledger != args.budget_ledger or args.recovery_historical_ledger is None or not args.recovery_historical_sha256 or not args.recovery_deployment_id:
+            raise ContractError("recovery capture requires one new ledger plus immutable historical-ledger proof")
+        initialize_recovery_budget(recovery_ledger=args.recovery_ledger, historical_ledger=args.recovery_historical_ledger,
+                                   expected_historical_sha256=args.recovery_historical_sha256, deployment_id=args.recovery_deployment_id)
+        Lease: Any = RecoveryBudgetLease
+    else:
+        Lease = BudgetLease
     for path in (args.receipt, args.stage, args.child_receipt, args.stdout, args.stderr, args.parent_lease_receipt, args.arm_path): path.parent.mkdir(parents=True, exist_ok=True)
     args.trace_root.mkdir(parents=True)
     started = time.monotonic(); process: subprocess.Popen[str] | None = None; parent_receipt: dict[str, Any] | None = None; terminal = "FAILED_OR_ABORTED"; cleanup = {"required": False}; raw_bytes = 0
-    with BudgetLease(args.budget_ledger, ident, "NVBIT", capture=True) as lease:
+    with Lease(args.budget_ledger, ident, "NVBIT", capture=True) as lease:
         if lease.max_elapsed_seconds < args.target_cap_seconds: raise ContractError("remaining NVBit budget cannot cover frozen capture cap")
         parent_receipt, token = write_parent_lease_start(args.parent_lease_receipt, {"identity": ident}, "nvbit", lease)
         env = os.environ.copy(); env.pop("LD_PRELOAD", None); env.update(nvdisasm_environment_contract(args.nvdisasm, env.get("PATH", "")))
@@ -279,6 +290,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--child", action="store_true"); parser.add_argument("--mode", choices=MODES, required=True)
     for name in ("binding", "target_receipt", "receipt", "stage", "child_receipt", "trace_root", "budget_ledger", "parent_lease_receipt", "arm_path", "stdout", "stderr", "tool", "nvdisasm"): parser.add_argument("--" + name.replace("_", "-"), type=Path)
     parser.add_argument("--tool-sha256"); parser.add_argument("--adapter", required=True); parser.add_argument("--implementation-key", required=True); parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True); parser.add_argument("--quantization", required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True); parser.add_argument("--expected-attention-backend", required=True); parser.add_argument("--arm-wait-seconds", type=int, default=60); parser.add_argument("--target-cap-seconds", type=int, default=600)
+    parser.add_argument("--recovery-ledger", type=Path); parser.add_argument("--recovery-historical-ledger", type=Path); parser.add_argument("--recovery-historical-sha256"); parser.add_argument("--recovery-deployment-id")
     args = parser.parse_args()
     try:
         if str(uuid.UUID(args.run_id)) != args.run_id: raise ValueError

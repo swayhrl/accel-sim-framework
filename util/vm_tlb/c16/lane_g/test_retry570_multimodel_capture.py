@@ -9,7 +9,7 @@ SOURCE = (Path(__file__).parent / "retry570_multimodel_capture.py").read_text(en
 
 class MultimodelFormalCaptureTests(unittest.TestCase):
     def test_parent_is_the_only_budget_lease_owner(self) -> None:
-        self.assertEqual(SOURCE.count("with BudgetLease("), 1)
+        self.assertEqual(SOURCE.count("with Lease("), 1)
         for token in ("write_parent_lease_start", "wrapper_owned_budget(args, ident)", "child_acquired_second_lease\": False"):
             self.assertIn(token, SOURCE)
 
