@@ -41,7 +41,7 @@ from runtime_native_runner import (
 
 SCHEMA = "C16_G_RETRY570_MULTIMODEL_FORMAL_CAPTURE_V1"
 MODES = ("S3_NARROW_PREFILL", "S4_REPRO_PREFILL", "S5_COMPLETE_PREFILL", "S5_COMPLETE_DECODE")
-TARGET_ROLES = ("LARGE_INDEX_PREFILL", "DECODE_INDEX_TARGET")
+TARGET_ROLES = ("LARGE_INDEX_PREFILL", "DECODE_INDEX_TARGET", "RECOVERY_PREFILL", "RECOVERY_DECODE")
 EXPECTED_CHECKSUM = "2c9e006bcd155e56a28d2c9948a31cf2d5bc60e8bb2b5f5af0e1cae35215383f"
 TERM_GRACE_S = 5
 
@@ -76,9 +76,10 @@ def identity(binding: dict[str, Any], args: argparse.Namespace) -> dict[str, str
     }
 
 
-def require_contract(binding: dict[str, Any], target: dict[str, Any], target_role: str) -> None:
+def require_contract(binding: dict[str, Any], target: dict[str, Any], target_role: str, *, recovery_v3_generic: bool,
+                     direct_function_binding: Path | None = None) -> None:
     scenario = binding["scenario"]
-    if (binding["model_id"], binding["model_revision"], scenario["scenario_id"], scenario["batch_size"], scenario["prefill_tokens"], scenario["decode_tokens"]) != (
+    if not recovery_v3_generic and (binding["model_id"], binding["model_revision"], scenario["scenario_id"], scenario["batch_size"], scenario["prefill_tokens"], scenario["decode_tokens"]) != (
         "meta-llama/Llama-3.2-1B", "4e20de362430cd3b72f300e6b0f18e50e7166e08", "S0", 1, 128, 4,
     ):
         raise ContractError("formal capture refuses a non-frozen Llama S0/B1/T128/decode4 contract")
@@ -88,7 +89,21 @@ def require_contract(binding: dict[str, Any], target: dict[str, Any], target_rol
         index = int(instruction["nvbit_static_index"])
     except (KeyError, TypeError, ValueError) as exc:
         raise ContractError("closed target receipt is malformed") from exc
-    if target_role == "LARGE_INDEX_PREFILL":
+    if recovery_v3_generic:
+        if target_role not in {"RECOVERY_PREFILL", "RECOVERY_DECODE"} or direct_function_binding is None or not direct_function_binding.is_file():
+            raise ContractError("Recovery V3 capture requires an exact phase role and direct-function binding receipt")
+        direct = json.loads(direct_function_binding.read_text(encoding="utf-8"))
+        if direct.get("status") != "DIRECT_FUNCTION_BINDING_READY_FOR_STATIC_MAP":
+            raise ContractError("Recovery V3 direct-function binding is not closed for static-map capture")
+        phase = "PREFILL" if target_role == "RECOVERY_PREFILL" else "DECODE"
+        rows = [row for row in direct.get("bindings", []) if row.get("phase") == phase]
+        if len(rows) != 1 or rows[0].get("direct_function_mangled_name") != function.get("mangled_name"):
+            raise ContractError("Recovery V3 map target does not exactly match the phase direct-function binding")
+        if rows[0].get("deployment_id") != binding["deployment_id"] or rows[0].get("scenario_id") != scenario["scenario_id"]:
+            raise ContractError("Recovery V3 direct-function binding identity differs from capture binding")
+        if int(instruction.get("nvbit_static_index", -1)) != index or not instruction.get("opcode") or instruction.get("memory_space") != "GLOBAL" or not instruction.get("has_mref"):
+            raise ContractError("Recovery V3 target lacks a directly selected GLOBAL memory instruction")
+    elif target_role == "LARGE_INDEX_PREFILL":
         if index != 101 or instruction.get("opcode") != "LDG.E.U16" or "indexSelectLargeIndex" not in function.get("mangled_name", ""):
             raise ContractError("formal Llama prefill target differs from the S2 direct NVBit map")
         if 34 not in target.get("excluded_static_indices", []) or index == 34:
@@ -102,16 +117,16 @@ def require_contract(binding: dict[str, Any], target: dict[str, Any], target_rol
         raise ContractError("unknown formal Llama capture target role")
 
 
-def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool, trace_root: Path | None = None) -> tuple[str, int, dict[str, list[str]]]:
-    """Execute the frozen complete S0 workload, capturing only one phase.
+def run_full(model: Any, prompt: Any, torch: Any, *, decode_tokens: int, phase: str, capture: bool, trace_root: Path | None = None) -> tuple[str, int, dict[str, list[str]]]:
+    """Execute the frozen complete workload, capturing only one phase.
 
     Decode capture necessarily computes the causal prefill outside the ROI to
-    establish its scenario-local KV state.  It then captures all four frozen
-    decode steps; no scenario state survives this function.
+    establish its scenario-local KV state.  It then captures every remaining
+    cache-correct decode forward; no scenario state survives this function.
     """
     cudart = torch.cuda.cudart()
     generated: list[int] = []
-    phase_files: dict[str, list[str]] = {"PREFILL": [], "DECODE1": [], "DECODE2": [], "DECODE3": [], "DECODE4": []}
+    phase_files: dict[str, list[str]] = {"PREFILL": [], **{f"DECODE{step}": [] for step in range(1, decode_tokens + 1)}}
     with torch.inference_mode():
         torch.cuda.nvtx.range_push("C16_NATIVE_FULL_FORWARD")
         try:
@@ -132,7 +147,7 @@ def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool, 
             generated.extend(current_ids.detach().to("cpu").flatten().tolist())
             torch.cuda.nvtx.range_push("C16_PHASE_DECODE")
             try:
-                for step in range(1, 4):
+                for step in range(1, decode_tokens):
                     torch.cuda.nvtx.range_push(f"C16_DECODE_STEP_{step}")
                     try:
                         if phase == "DECODE" and capture:
@@ -159,9 +174,9 @@ def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool, 
                 torch.cuda.nvtx.range_pop()
         finally:
             torch.cuda.nvtx.range_pop()
-    if len(generated) != 4:
-        raise ContractError("frozen decode did not execute all four required generated tokens")
-    return hashlib.sha256(canonical_json(generated).encode("utf-8")).hexdigest(), 4, phase_files
+    if len(generated) != decode_tokens:
+        raise ContractError("frozen decode did not execute the required generated-token count")
+    return hashlib.sha256(canonical_json(generated).encode("utf-8")).hexdigest(), decode_tokens, phase_files
 
 
 def parse_traces(root: Path, target: dict[str, Any]) -> list[dict[str, Any]]:
@@ -188,9 +203,9 @@ def child(args: argparse.Namespace) -> int:
     if args.runtime_code_commit != git_head(): raise ContractError("child source commit differs from parent-bound commit")
     if os.environ.get("CUDA_MODULE_LOADING") != "EAGER" or os.environ.get("ACTIVE_FROM_START") != "0":
         raise ContractError("formal capture requires EAGER plus profiler-owned ACTIVE_FROM_START=0")
-    binding = load_binding(args.binding, canary=True)
-    target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target, args.target_role)
-    if args.target_role == "DECODE_INDEX_TARGET" and capture_phase(args.mode) != "DECODE":
+    binding = load_binding(args.binding, canary=not args.recovery_v3_generic)
+    target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target, args.target_role, recovery_v3_generic=args.recovery_v3_generic, direct_function_binding=args.direct_function_binding)
+    if args.target_role in {"DECODE_INDEX_TARGET", "RECOVERY_DECODE"} and capture_phase(args.mode) != "DECODE":
         raise ContractError("decode-side target may only be captured in the complete decode workload")
     ident = identity(binding, args)
     _budget, parent = wrapper_owned_budget(args, ident)
@@ -199,14 +214,16 @@ def child(args: argparse.Namespace) -> int:
     if not torch.cuda.is_available(): raise ContractError("CUDA unavailable; refusing CPU fallback")
     torch.cuda.init(); write_event(args.stage, "RUNTIME_INIT_COMPLETE")
     adapter = resolve_adapter(args.adapter, args.dtype, args.quantization)
-    model, loader = load_runtime_model(adapter, Path(binding["model_path"]), torch, args.dtype, required_sequence_length=132)
+    required_sequence_length = int(binding["scenario"]["prefill_tokens"]) + int(binding["scenario"]["decode_tokens"])
+    model, loader = load_runtime_model(adapter, Path(binding["model_path"]), torch, args.dtype, required_sequence_length=required_sequence_length)
     devices, dtypes = assert_cuda_residency(model, require_raw_dtype=args.dtype)
     attention = str(getattr(model.config, "_attn_implementation", "UNRESOLVED"))
     if attention != args.expected_attention_backend: raise ContractError("attention backend differs from frozen S1/S2 evidence")
     prompt = torch.tensor([load_token_ids(binding)], device="cuda:0", dtype=torch.long)
     torch.cuda.synchronize(); write_event(args.stage, "PREWARM_BEGIN")
-    checksum, decode_steps, _prewarm_phase_files = run_full(model, prompt, torch, phase=capture_phase(args.mode), capture=False)
-    if checksum != EXPECTED_CHECKSUM: raise ContractError("no-trace prewarm checksum differs from frozen Llama S1/S2")
+    checksum, decode_steps, _prewarm_phase_files = run_full(model, prompt, torch, decode_tokens=int(binding["scenario"]["decode_tokens"]), phase=capture_phase(args.mode), capture=False)
+    expected_checksum = args.expected_output_checksum or EXPECTED_CHECKSUM
+    if checksum != expected_checksum: raise ContractError("no-trace prewarm checksum differs from frozen runtime binding")
     if trace_files(args.trace_root): raise ContractError("prewarm emitted formal trace before parent arm")
     write_event(args.stage, "LANE_G_RUNTIME_READY", prewarm_trace_count=0, output_checksum=checksum)
     deadline = time.monotonic() + args.arm_wait_seconds
@@ -219,8 +236,8 @@ def child(args: argparse.Namespace) -> int:
     marker = wrapper_measurement_marker(args, ident)
     if trace_files(args.trace_root): raise ContractError("formal trace exists before CAPTURE_BEGIN")
     write_event(args.stage, "CAPTURE_BEGIN", capture_phase=capture_phase(args.mode), marker=str(marker))
-    checksum, decode_steps, phase_files = run_full(model, prompt, torch, phase=capture_phase(args.mode), capture=True, trace_root=args.trace_root)
-    if checksum != EXPECTED_CHECKSUM: raise ContractError("captured workload checksum differs from frozen Llama binding")
+    checksum, decode_steps, phase_files = run_full(model, prompt, torch, decode_tokens=int(binding["scenario"]["decode_tokens"]), phase=capture_phase(args.mode), capture=True, trace_root=args.trace_root)
+    if checksum != expected_checksum: raise ContractError("captured workload checksum differs from frozen runtime binding")
     write_event(args.stage, "CAPTURE_END", output_checksum=checksum, decode_steps=decode_steps)
     traces = parse_traces(args.trace_root, target)
     by_path = {item["path"]: item for item in traces}
@@ -232,14 +249,14 @@ def child(args: argparse.Namespace) -> int:
     # at least one direct address-bearing record.
     if capture_phase(args.mode) == "PREFILL" and not traces:
         raise ContractError("prefill target capture emitted no exact target trace")
-    if args.target_role == "DECODE_INDEX_TARGET":
-        if any(phase_summary[f"DECODE{i}"]["record_count"] <= 0 for i in range(2, 5)):
+    if args.target_role in {"DECODE_INDEX_TARGET", "RECOVERY_DECODE"}:
+        if any(phase_summary[f"DECODE{i}"]["record_count"] <= 0 for i in range(2, decode_steps + 1)):
             raise ContractError("decode-side target did not produce records in every actual frozen decode forward")
     atomic_json(args.child_receipt, {"schema_version": SCHEMA, "status": "FORMAL_CAPTURE_COMPLETE", "scientific_eligible": True,
         "identity": ident, "parent_lease": {"start_receipt": str(args.parent_lease_receipt), "sha256": sha256_file(args.parent_lease_receipt), "parent_lease_id": parent["parent_lease_id"], "child_acquired_second_lease": False},
         "binding_sha256": sha256_file(args.binding), "target_receipt": {"path": str(args.target_receipt), "sha256": sha256_file(args.target_receipt), "target_role": args.target_role, "function": target["function"]["mangled_name"], "static_index": target["target_instruction"]["nvbit_static_index"], "opcode": target["target_instruction"]["opcode"]},
         "runtime": {"gpu_name": torch.cuda.get_device_properties(0).name, "gpu_uuid": subprocess.check_output(["nvidia-smi", "--query-gpu=uuid", "--format=csv,noheader"], text=True).strip(), "driver": smi_driver_version(), "torch": torch.__version__, "torch_cuda": torch.version.cuda, "attention_backend": attention, "loader": loader, "all_cuda_devices": sorted(devices), "parameter_dtypes": sorted(dtypes)},
-        "capture": {"mode": args.mode, "phase": capture_phase(args.mode), "decode_steps_executed": decode_steps, "logical_decode_coverage": {"DECODE1": "PREFILL_DERIVED_GREEDY_TOKEN_NO_SEPARATE_CUDA_FORWARD", "DECODE2": "C16_DECODE_STEP_1", "DECODE3": "C16_DECODE_STEP_2", "DECODE4": "C16_DECODE_STEP_3"}, "prewarm_trace_count": 0, "trace_file_count": len(traces), "traces": traces, "phase_trace_summary": phase_summary, "output_checksum": checksum, "measurement_marker_observed": str(marker), "terminal_status": "COMPLETE"}})
+        "capture": {"mode": args.mode, "phase": capture_phase(args.mode), "decode_steps_executed": decode_steps, "logical_decode_coverage": {"DECODE1": "PREFILL_DERIVED_GREEDY_TOKEN_NO_SEPARATE_CUDA_FORWARD", **{f"DECODE{i}": f"C16_DECODE_STEP_{i - 1}" for i in range(2, decode_steps + 1)}}, "prewarm_trace_count": 0, "trace_file_count": len(traces), "traces": traces, "phase_trace_summary": phase_summary, "output_checksum": checksum, "measurement_marker_observed": str(marker), "terminal_status": "COMPLETE"}})
     write_event(args.stage, "TERMINAL_COMPLETE", trace_file_count=len(traces))
     del model, prompt; gc.collect()
     return 0
@@ -258,6 +275,9 @@ def kill_group(process: subprocess.Popen[str]) -> dict[str, Any]:
 def child_command(args: argparse.Namespace) -> list[str]:
     command = [sys.executable, str(Path(__file__).resolve()), "--child", "--mode", args.mode, "--target-role", args.target_role, "--binding", str(args.binding), "--target-receipt", str(args.target_receipt), "--receipt", str(args.receipt), "--stage", str(args.stage), "--child-receipt", str(args.child_receipt), "--trace-root", str(args.trace_root), "--budget-ledger", str(args.budget_ledger), "--parent-lease-receipt", str(args.parent_lease_receipt), "--arm-path", str(args.arm_path), "--adapter", args.adapter, "--implementation-key", args.implementation_key, "--dtype", args.dtype, "--quantization", args.quantization, "--run-id", args.run_id, "--runtime-code-commit", args.runtime_code_commit, "--expected-attention-backend", args.expected_attention_backend, "--arm-wait-seconds", str(args.arm_wait_seconds)]
     if args.recovery_deployment_id: command.extend(("--recovery-deployment-id", args.recovery_deployment_id))
+    if args.expected_output_checksum: command.extend(("--expected-output-checksum", args.expected_output_checksum))
+    if args.recovery_v3_generic:
+        command.extend(("--recovery-v3-generic", "--direct-function-binding", str(args.direct_function_binding)))
     return command
 
 
@@ -267,8 +287,8 @@ def parent(args: argparse.Namespace) -> int:
     if any(path.exists() for path in (args.receipt, args.stage, args.child_receipt, args.stdout, args.stderr, args.parent_lease_receipt, args.arm_path)) or args.trace_root.exists():
         raise ContractError("formal capture refuses to overwrite a retained payload")
     if sha256_file(args.tool) != args.tool_sha256 or not args.nvdisasm.is_file(): raise ContractError("formal tool/nvdisasm closure differs")
-    binding = load_binding(args.binding, canary=True); target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target, args.target_role)
-    if args.target_role == "DECODE_INDEX_TARGET" and capture_phase(args.mode) != "DECODE":
+    binding = load_binding(args.binding, canary=not args.recovery_v3_generic); target = json.loads(args.target_receipt.read_text(encoding="utf-8")); require_contract(binding, target, args.target_role, recovery_v3_generic=args.recovery_v3_generic, direct_function_binding=args.direct_function_binding)
+    if args.target_role in {"DECODE_INDEX_TARGET", "RECOVERY_DECODE"} and capture_phase(args.mode) != "DECODE":
         raise ContractError("decode-side target may only be captured in the complete decode workload")
     ident = identity(binding, args); MeasurementActive.assert_available(args.budget_ledger)
     if args.recovery_ledger is not None:
@@ -322,7 +342,7 @@ def parent(args: argparse.Namespace) -> int:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--child", action="store_true"); parser.add_argument("--mode", choices=MODES, required=True); parser.add_argument("--target-role", choices=TARGET_ROLES, default="LARGE_INDEX_PREFILL")
     for name in ("binding", "target_receipt", "receipt", "stage", "child_receipt", "trace_root", "budget_ledger", "parent_lease_receipt", "arm_path", "stdout", "stderr", "tool", "nvdisasm"): parser.add_argument("--" + name.replace("_", "-"), type=Path)
-    parser.add_argument("--tool-sha256"); parser.add_argument("--adapter", required=True); parser.add_argument("--implementation-key", required=True); parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True); parser.add_argument("--quantization", required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True); parser.add_argument("--expected-attention-backend", required=True); parser.add_argument("--arm-wait-seconds", type=int, default=60); parser.add_argument("--target-cap-seconds", type=int, default=600)
+    parser.add_argument("--tool-sha256"); parser.add_argument("--adapter", required=True); parser.add_argument("--implementation-key", required=True); parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True); parser.add_argument("--quantization", required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True); parser.add_argument("--expected-attention-backend", required=True); parser.add_argument("--expected-output-checksum"); parser.add_argument("--recovery-v3-generic", action="store_true"); parser.add_argument("--direct-function-binding", type=Path); parser.add_argument("--arm-wait-seconds", type=int, default=60); parser.add_argument("--target-cap-seconds", type=int, default=600)
     parser.add_argument("--recovery-ledger", type=Path); parser.add_argument("--recovery-historical-ledger", type=Path); parser.add_argument("--recovery-historical-sha256"); parser.add_argument("--recovery-deployment-id")
     args = parser.parse_args()
     try:
@@ -330,6 +350,8 @@ def main() -> None:
     except ValueError: parser.error("--run-id must be canonical UUID")
     required = (args.binding, args.target_receipt, args.receipt, args.stage, args.child_receipt, args.trace_root, args.budget_ledger, args.parent_lease_receipt, args.arm_path)
     if any(value is None for value in required): parser.error("capture paths are required")
+    if args.recovery_v3_generic and (args.direct_function_binding is None or not args.expected_output_checksum): parser.error("Recovery V3 capture requires --direct-function-binding and --expected-output-checksum")
+    if not args.recovery_v3_generic and args.target_role in {"RECOVERY_PREFILL", "RECOVERY_DECODE"}: parser.error("Recovery target role requires --recovery-v3-generic")
     if args.child: raise SystemExit(child(args))
     if args.stdout is None or args.stderr is None or args.tool is None or args.nvdisasm is None or not args.tool_sha256: parser.error("parent requires tool, nvdisasm, stdout/stderr, and tool SHA")
     raise SystemExit(parent(args))

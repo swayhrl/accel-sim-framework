@@ -27,7 +27,11 @@ class MultimodelFormalCaptureTests(unittest.TestCase):
             self.assertIn(token, SOURCE)
 
     def test_frozen_workload_executes_all_decode_steps(self) -> None:
-        for token in ("range(1, 4)", "len(generated) != 4", "S5_COMPLETE_DECODE", "phase_trace_summary", "logical_decode_coverage", "DECODE4", "cudaProfilerStart failed for DECODE"):
+        for token in ("range(1, decode_tokens)", "len(generated) != decode_tokens", "S5_COMPLETE_DECODE", "phase_trace_summary", "logical_decode_coverage", "decode_tokens + 1", "cudaProfilerStart failed for DECODE"):
+            self.assertIn(token, SOURCE)
+
+    def test_recovery_v3_path_requires_direct_phase_binding_and_checksum(self) -> None:
+        for token in ("--recovery-v3-generic", "--direct-function-binding", "RECOVERY_PREFILL", "RECOVERY_DECODE", "DIRECT_FUNCTION_BINDING_READY_FOR_STATIC_MAP", "--expected-output-checksum"):
             self.assertIn(token, SOURCE)
 
     def test_formal_capture_has_external_process_group_cleanup(self) -> None:
