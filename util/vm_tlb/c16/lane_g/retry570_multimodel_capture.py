@@ -93,7 +93,7 @@ def require_contract(binding: dict[str, Any], target: dict[str, Any]) -> None:
         raise ContractError("historical SASS text line 34 must remain excluded from formal static-index capture")
 
 
-def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool) -> tuple[str, int]:
+def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool, trace_root: Path | None = None) -> tuple[str, int, dict[str, list[str]]]:
     """Execute the frozen complete S0 workload, capturing only one phase.
 
     Decode capture necessarily computes the causal prefill outside the ROI to
@@ -102,17 +102,20 @@ def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool) 
     """
     cudart = torch.cuda.cudart()
     generated: list[int] = []
+    phase_files: dict[str, list[str]] = {"PREFILL": [], "DECODE1": [], "DECODE2": [], "DECODE3": [], "DECODE4": []}
     with torch.inference_mode():
         torch.cuda.nvtx.range_push("C16_NATIVE_FULL_FORWARD")
         try:
             torch.cuda.nvtx.range_push("C16_PHASE_PREFILL")
             try:
                 if phase == "PREFILL" and capture:
+                    before = {str(path) for path in trace_files(trace_root)} if trace_root is not None else set()
                     if cudart.cudaProfilerStart() != 0: raise ContractError("cudaProfilerStart failed for PREFILL")
                 output = model(input_ids=prompt, use_cache=True)
                 torch.cuda.synchronize()
                 if phase == "PREFILL" and capture:
                     if cudart.cudaProfilerStop() != 0: raise ContractError("cudaProfilerStop failed for PREFILL")
+                    phase_files["PREFILL"] = [str(path) for path in trace_files(trace_root) if str(path) not in before] if trace_root is not None else []
             finally:
                 torch.cuda.nvtx.range_pop()
             past_key_values = output.past_key_values
@@ -120,27 +123,36 @@ def run_full(model: Any, prompt: Any, torch: Any, *, phase: str, capture: bool) 
             generated.extend(current_ids.detach().to("cpu").flatten().tolist())
             torch.cuda.nvtx.range_push("C16_PHASE_DECODE")
             try:
-                if phase == "DECODE" and capture:
-                    if cudart.cudaProfilerStart() != 0: raise ContractError("cudaProfilerStart failed for DECODE")
                 for step in range(1, 4):
                     torch.cuda.nvtx.range_push(f"C16_DECODE_STEP_{step}")
                     try:
+                        if phase == "DECODE" and capture:
+                            before = {str(path) for path in trace_files(trace_root)} if trace_root is not None else set()
+                            if cudart.cudaProfilerStart() != 0: raise ContractError(f"cudaProfilerStart failed for DECODE{step}")
                         output = model(input_ids=current_ids, past_key_values=past_key_values, use_cache=True)
+                        torch.cuda.synchronize()
+                        if phase == "DECODE" and capture:
+                            if cudart.cudaProfilerStop() != 0: raise ContractError(f"cudaProfilerStop failed for DECODE{step}")
+                            # The frozen decode_once contract emits its first
+                            # greedy token from PREFILL, then runs three
+                            # cache-correct CUDA decode forwards.  Preserve
+                            # that workload: logical Decode2..4 map to these
+                            # three forwards, while logical Decode1 is the
+                            # prefill-derived token and has no separate CUDA
+                            # launch window to trace.
+                            phase_files[f"DECODE{step + 1}"] = [str(path) for path in trace_files(trace_root) if str(path) not in before] if trace_root is not None else []
                     finally:
                         torch.cuda.nvtx.range_pop()
                     past_key_values = output.past_key_values
                     current_ids = output.logits[:, -1, :].argmax(dim=-1, keepdim=True)
                     generated.extend(current_ids.detach().to("cpu").flatten().tolist())
-                torch.cuda.synchronize()
-                if phase == "DECODE" and capture:
-                    if cudart.cudaProfilerStop() != 0: raise ContractError("cudaProfilerStop failed for DECODE")
             finally:
                 torch.cuda.nvtx.range_pop()
         finally:
             torch.cuda.nvtx.range_pop()
     if len(generated) != 4:
         raise ContractError("frozen decode did not execute all four required generated tokens")
-    return hashlib.sha256(canonical_json(generated).encode("utf-8")).hexdigest(), 4
+    return hashlib.sha256(canonical_json(generated).encode("utf-8")).hexdigest(), 4, phase_files
 
 
 def parse_traces(root: Path, target: dict[str, Any]) -> list[dict[str, Any]]:
@@ -182,7 +194,7 @@ def child(args: argparse.Namespace) -> int:
     if attention != args.expected_attention_backend: raise ContractError("attention backend differs from frozen S1/S2 evidence")
     prompt = torch.tensor([load_token_ids(binding)], device="cuda:0", dtype=torch.long)
     torch.cuda.synchronize(); write_event(args.stage, "PREWARM_BEGIN")
-    checksum, decode_steps = run_full(model, prompt, torch, phase=capture_phase(args.mode), capture=False)
+    checksum, decode_steps, _prewarm_phase_files = run_full(model, prompt, torch, phase=capture_phase(args.mode), capture=False)
     if checksum != EXPECTED_CHECKSUM: raise ContractError("no-trace prewarm checksum differs from frozen Llama S1/S2")
     if trace_files(args.trace_root): raise ContractError("prewarm emitted formal trace before parent arm")
     write_event(args.stage, "LANE_G_RUNTIME_READY", prewarm_trace_count=0, output_checksum=checksum)
@@ -196,10 +208,14 @@ def child(args: argparse.Namespace) -> int:
     marker = wrapper_measurement_marker(args, ident)
     if trace_files(args.trace_root): raise ContractError("formal trace exists before CAPTURE_BEGIN")
     write_event(args.stage, "CAPTURE_BEGIN", capture_phase=capture_phase(args.mode), marker=str(marker))
-    checksum, decode_steps = run_full(model, prompt, torch, phase=capture_phase(args.mode), capture=True)
+    checksum, decode_steps, phase_files = run_full(model, prompt, torch, phase=capture_phase(args.mode), capture=True, trace_root=args.trace_root)
     if checksum != EXPECTED_CHECKSUM: raise ContractError("captured workload checksum differs from frozen Llama binding")
     write_event(args.stage, "CAPTURE_END", output_checksum=checksum, decode_steps=decode_steps)
     traces = parse_traces(args.trace_root, target)
+    by_path = {item["path"]: item for item in traces}
+    phase_summary = {name: {"trace_file_count": len(paths), "record_count": sum(by_path[path]["record_count"] for path in paths), "address_record_count": sum(by_path[path]["address_record_count"] for path in paths)} for name, paths in phase_files.items()}
+    if len({path for paths in phase_files.values() for path in paths}) != len(traces):
+        raise ContractError("formal phase sidecar does not uniquely account for each captured target trace")
     # Decode has an explicit zero-occurrence outcome when the exact target is
     # absent from all four executed decode steps.  Prefill/canary must observe
     # at least one direct address-bearing record.
@@ -209,7 +225,7 @@ def child(args: argparse.Namespace) -> int:
         "identity": ident, "parent_lease": {"start_receipt": str(args.parent_lease_receipt), "sha256": sha256_file(args.parent_lease_receipt), "parent_lease_id": parent["parent_lease_id"], "child_acquired_second_lease": False},
         "binding_sha256": sha256_file(args.binding), "target_receipt": {"path": str(args.target_receipt), "sha256": sha256_file(args.target_receipt), "function": target["function"]["mangled_name"], "static_index": target["target_instruction"]["nvbit_static_index"], "opcode": target["target_instruction"]["opcode"]},
         "runtime": {"gpu_name": torch.cuda.get_device_properties(0).name, "gpu_uuid": subprocess.check_output(["nvidia-smi", "--query-gpu=uuid", "--format=csv,noheader"], text=True).strip(), "driver": smi_driver_version(), "torch": torch.__version__, "torch_cuda": torch.version.cuda, "attention_backend": attention, "loader": loader, "all_cuda_devices": sorted(devices), "parameter_dtypes": sorted(dtypes)},
-        "capture": {"mode": args.mode, "phase": capture_phase(args.mode), "decode_steps_executed": decode_steps, "prewarm_trace_count": 0, "trace_file_count": len(traces), "traces": traces, "output_checksum": checksum, "measurement_marker_observed": str(marker), "terminal_status": "COMPLETE"}})
+        "capture": {"mode": args.mode, "phase": capture_phase(args.mode), "decode_steps_executed": decode_steps, "logical_decode_coverage": {"DECODE1": "PREFILL_DERIVED_GREEDY_TOKEN_NO_SEPARATE_CUDA_FORWARD", "DECODE2": "C16_DECODE_STEP_1", "DECODE3": "C16_DECODE_STEP_2", "DECODE4": "C16_DECODE_STEP_3"}, "prewarm_trace_count": 0, "trace_file_count": len(traces), "traces": traces, "phase_trace_summary": phase_summary, "output_checksum": checksum, "measurement_marker_observed": str(marker), "terminal_status": "COMPLETE"}})
     write_event(args.stage, "TERMINAL_COMPLETE", trace_file_count=len(traces))
     del model, prompt; gc.collect()
     return 0
