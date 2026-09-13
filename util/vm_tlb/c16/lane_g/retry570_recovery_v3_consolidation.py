@@ -49,7 +49,12 @@ def asset_row(key: str, identity: str, root: Path, receipt_root: Path) -> dict[s
         else:
             source, method = acquisition.get("source_directory", "NETWORK_EXACT_REVISION"), acquisition.get("kind", "EXACT_IMMUTABLE_NETWORK_FETCH")
         return {"model_key": key, "exact_identity_revision": identity, "source_paths": str(source), "destination_path": str(receipt.get("destination")), "migration_method": method, "source_bytes": str(total), "destination_bytes": str(total), "hash_closure": "SOURCE_AND_DESTINATION_FILE_SHA256_PASS" if receipt.get("all_payloads_size_sha256_closed") else "FAIL", "old_duplicate_removed": "NO", "status": "EXISTING_ASSET_CONSOLIDATED" if source != "NETWORK_EXACT_REVISION" else "ALREADY_UNDER_BULK_ROOT"}
-    if key == "qwen2p5_0p5b_instruct" and dests:
+    # A destination directory without its immutable payload receipt is never
+    # evidence of a closed model.  The two network acquisitions authorized by
+    # V9 may, however, already be materializing directly under the bulk root.
+    # Preserve that live state explicitly instead of collapsing it into
+    # "not found" while the non-destructive fetch is still in progress.
+    if key in {"qwen2p5_0p5b_instruct", "qwen3_8b"} and dests:
         return {"model_key": key, "exact_identity_revision": identity, "source_paths": "HUGGINGFACE_EXACT_FETCH_TO_BULK_ROOT", "destination_path": str(dests[0]), "migration_method": "NETWORK_FETCH_ALREADY_WRITING_TO_BULK_ROOT", "source_bytes": "IN_PROGRESS", "destination_bytes": "IN_PROGRESS", "hash_closure": "PENDING", "old_duplicate_removed": "NO", "status": "EXACT_FETCH_IN_PROGRESS"}
     return {"model_key": key, "exact_identity_revision": identity, "source_paths": "METADATA_ONLY_OR_NO_COMPLETE_EXACT_ASSET", "destination_path": "NONE", "migration_method": "NONE", "source_bytes": "NA", "destination_bytes": "NA", "hash_closure": "NOT_CLOSED", "old_duplicate_removed": "NO", "status": "EXACT_ASSET_NOT_FOUND_CONTINUE_RECOVERY"}
 

@@ -27,3 +27,12 @@ def test_legacy_p1_network_receipt_is_not_mislabeled_as_local_copy(tmp_path: Pat
     row = module.asset_row("qwen2p5_0p5b_instruct", "x", root, receipts)
     assert row["status"] == "ALREADY_UNDER_BULK_ROOT"
     assert row["migration_method"] == "EXACT_IMMUTABLE_NETWORK_FETCH"
+
+
+def test_qwen3_partial_bulk_destination_is_explicitly_in_progress(tmp_path: Path):
+    root, receipts = tmp_path / "bulk", tmp_path / "receipts"
+    (root / "models/qwen3_8b/revision").mkdir(parents=True)
+    receipts.mkdir()
+    row = module.asset_row("qwen3_8b", "x", root, receipts)
+    assert row["status"] == "EXACT_FETCH_IN_PROGRESS"
+    assert row["hash_closure"] == "PENDING"
