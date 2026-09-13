@@ -51,7 +51,12 @@ def main() -> None:
     args = parser.parse_args()
     if args.output.exists():
         raise ContractError("existing-asset receipt refuses to overwrite retained evidence")
-    if len(args.revision) != 40 or args.destination.resolve().parent.name != args.model_key or args.bulk_root.resolve() != Path("/root/share/c16_recovery_v3"):
+    try:
+        args.destination.resolve().relative_to(args.bulk_root.resolve() / "models" / args.model_key)
+        destination_is_bound = args.destination.resolve().parent.name == args.model_key
+    except ValueError:
+        destination_is_bound = False
+    if len(args.revision) != 40 or not destination_is_bound or args.bulk_root.resolve() != Path("/root/share/c16_recovery_v3"):
         raise ContractError("existing-asset copy must target its fixed Recovery-V3 bulk-root identity directory")
     if not args.destination.is_dir():
         raise ContractError("destination does not exist after non-destructive copy")
