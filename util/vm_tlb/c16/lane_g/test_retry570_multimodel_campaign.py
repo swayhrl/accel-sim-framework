@@ -10,7 +10,7 @@ class CampaignInventoryTests(unittest.TestCase):
             self.assertIn(token, SOURCE)
 
     def test_inventory_is_metadata_only(self) -> None:
-        for token in ("torch_imported\": False", "weights_loaded\": False", "network_download\": False", "gpu_work\": False"):
+        for token in ("repo_root()", "torch_imported\": False", "weights_loaded\": False", "network_download\": False", "gpu_work\": False"):
             self.assertIn(token, SOURCE)
 
     def test_lama_requires_exact_p0_and_s0_binding(self) -> None:

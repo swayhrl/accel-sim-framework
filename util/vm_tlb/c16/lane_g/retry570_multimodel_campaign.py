@@ -14,7 +14,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from c16_native_common import ContractError, atomic_json, canonical_json, sha256_file
+from c16_native_common import ContractError, atomic_json, canonical_json, repo_root, sha256_file
 
 SCHEMA = "C16_G_RETRY570_MULTIMODEL_CAMPAIGN_V1"
 ROSTER = (
@@ -33,7 +33,7 @@ LLAMA_REVISION = "4e20de362430cd3b72f300e6b0f18e50e7166e08"
 
 
 def git_head() -> str:
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    return subprocess.check_output(["git", "-C", str(repo_root()), "rev-parse", "HEAD"], text=True).strip()
 
 
 def read_json(path: Path) -> dict[str, Any]:
