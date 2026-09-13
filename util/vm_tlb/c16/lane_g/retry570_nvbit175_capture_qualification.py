@@ -140,7 +140,9 @@ def child_command(args: argparse.Namespace) -> list[str]:
               "--expected-libtorch-cuda-sha256", args.expected_libtorch_cuda_sha256, "--expected-gpu-name", args.expected_gpu_name,
               "--expected-driver", args.expected_driver]
     if args.expected_gpu_uuid: result.extend(("--expected-gpu-uuid", args.expected_gpu_uuid))
-    if args.mode == "Q1": result.extend(("--arm-path", str(args.arm_path), "--arm-wait-seconds", str(args.arm_wait_seconds), "--target", args.target))
+    if args.mode == "Q1":
+        result.extend(("--arm-path", str(args.arm_path), "--arm-wait-seconds", str(args.arm_wait_seconds), "--target",
+                       json.dumps(args.target, sort_keys=True, separators=(",", ":"))))
     return result
 
 

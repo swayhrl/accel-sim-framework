@@ -22,4 +22,7 @@ class Nvbit175CaptureQualificationTests(unittest.TestCase):
         for token in ("Q1 requires a non-scientific LANE_G_RUNTIME_READY Q0 receipt", "Q1 rejects a Q0 receipt with prewarm trace or measurement activity", "Q1 arm path must be absent before parent creates it"):
             self.assertIn(token, SOURCE)
 
+    def test_child_receives_serialized_target_not_a_python_dict(self) -> None:
+        self.assertIn('json.dumps(args.target, sort_keys=True, separators=(",", ":"))', SOURCE)
+
 if __name__ == "__main__": unittest.main()
