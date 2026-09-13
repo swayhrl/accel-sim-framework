@@ -44,7 +44,7 @@ EXACT_CANDIDATE = {
     "index_dtype": "int64",
     "index_count": 64,
 }
-MODES = frozenset({"NATIVE", "NVBIT_CALLBACK_CENSUS_ONLY"})
+MODES = frozenset({"NATIVE", "NVBIT_CALLBACK_CENSUS_ONLY", "NVBIT_CALLBACK_CENSUS_RAW", "NVBIT_EMPTY_CALLBACK_TOOL"})
 LOADING = frozenset({"LAZY", "EAGER"})
 
 
@@ -167,11 +167,12 @@ def _run_text_safe(command: list[str], timeout_seconds: int = 6) -> dict[str, An
         return {"command": command, "returncode": "UNAVAILABLE", "output": f"{type(exc).__name__}: {exc}"}
 
 
-def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_elapsed_seconds: float, with_gdb: bool) -> dict[str, Any]:
+def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_elapsed_seconds: float, with_gdb: bool, map_inspection: bool) -> dict[str, Any]:
     commands = {
         "threads": _run_text_safe(["ps", "-L", "-p", str(pid), "-o", "pid,tid,stat,pcpu,etime,wchan:32,comm"]),
         "pstree": _run_text_safe(["pstree", "-ap", str(pid)]),
         "processes": _run_text_safe(["ps", "-eo", "pid,ppid,stat,pcpu,etime,wchan:32,args"]),
+        "maps": _run_text_safe(["cat", f"/proc/{pid}/maps"]),
     }
     commands["processes"]["output"] = "\n".join(
         line for line in str(commands["processes"]["output"]).splitlines()
@@ -187,9 +188,21 @@ def _snapshot(pid: int, ordinal: int, output: Path, anchor_event: str, anchor_el
         **gpu_snapshot(pid),
     }
     if with_gdb:
-        record["native_backtrace"] = _run_text_safe([
-            "gdb", "-q", "-batch", "-ex", "set pagination off", "-ex", "thread apply all bt", "-p", str(pid),
-        ])
+        command = ["gdb", "-q", "-batch", "-ex", "set pagination off", "-ex", "set print elements 2"]
+        if map_inspection:
+            # The debug census tool only declares this external vendor-core
+            # object so gdb has its true C++ type.  No inferior expression is
+            # evaluated by the callback itself.
+            command.extend((
+                "-ex", "thread apply all bt full", "-ex", "info sharedlibrary",
+                "-ex", "p elfModuleHashMap.size()", "-ex", "p elfModuleHashMap.bucket_count()",
+                "-ex", "p elfModuleHashMap.load_factor()", "-ex", "p elfModuleHashMap.begin()->first",
+                "-ex", "p elfModuleHashMap.begin()->second.size()",
+            ))
+        else:
+            command.extend(("-ex", "thread apply all bt"))
+        command.extend(("-p", str(pid)))
+        record["native_backtrace"] = _run_text_safe(command)
         record["native_backtrace"]["diagnostic_perturbation"] = True
     path = output / f"snapshot_{ordinal:02d}.json"
     atomic_json(path, record)
@@ -270,7 +283,10 @@ def analyze(stdout_path: Path, mode: str) -> dict[str, Any]:
     launches = [item for item in post if item["is_exit"] == 0 and (item["callback"].startswith("cuLaunch") or item["callback"].startswith("cuGraphLaunch"))]
     return {
         "mode": mode,
-        "tool_ready": "C16_CALLBACK_CENSUS_TOOL_READY mode=CALLBACK_CENSUS_ONLY" in text,
+        "tool_ready": any(marker in text for marker in (
+            "C16_CALLBACK_CENSUS_TOOL_READY mode=CALLBACK_CENSUS_ONLY",
+            "C16_CALLBACK_CENSUS_RAW_TOOL_READY", "C16_EMPTY_CALLBACK_TOOL_READY",
+        )),
         "app_events": app,
         "callback_count": len(callbacks),
         "post_submission_callbacks": post,
@@ -304,9 +320,15 @@ def _validate(args: argparse.Namespace) -> None:
         raise ContractError("declared runtime code commit differs from this checkout")
     if args.mode not in MODES or args.cuda_module_loading not in LOADING or args.wall_limit_seconds != WALL_LIMIT_SECONDS:
         raise ContractError("2x2 requires fixed native/callback-only mode, LAZY/EAGER, and 25-second cap")
-    if args.mode == "NVBIT_CALLBACK_CENSUS_ONLY":
+    if args.mode != "NATIVE":
         if args.tool_path is None or not args.tool_path.is_file() or not valid_sha256(args.tool_sha256 or "") or sha256_file(args.tool_path) != args.tool_sha256:
-            raise ContractError("callback-only mode requires a materialized hash-closed tool")
+            raise ContractError("injected callback mode requires a materialized hash-closed tool")
+    if args.mode == "NVBIT_CALLBACK_CENSUS_RAW":
+        if args.raw_event_path is None:
+            raise ContractError("raw callback census requires a fixed event-buffer path")
+        if args.raw_event_path.exists():
+            raise ContractError("raw callback census refuses to overwrite its event buffer")
+        args.raw_event_path.parent.mkdir(parents=True, exist_ok=True)
     if not valid_sha256(args.expected_libtorch_cuda_sha256) or not args.nvdisasm:
         raise ContractError("2x2 lacks runtime identity or nvdisasm environment contract")
     for path in (args.receipt, args.stdout_path, args.stderr_path, args.stage_path, args.child_receipt, args.analysis_path, args.snapshot_dir):
@@ -341,12 +363,15 @@ def parent_main(args: argparse.Namespace) -> int:
                         environment.pop(key)
                 environment.update(nvdisasm_environment_contract(Path(args.nvdisasm), environment.get("PATH", "")))
                 environment["CUDA_MODULE_LOADING"] = args.cuda_module_loading
-                if args.mode == "NVBIT_CALLBACK_CENSUS_ONLY":
+                if args.mode != "NATIVE":
                     environment.update({
                         "CUDA_INJECTION64_PATH": str(args.tool_path),
                         "C16_NVBIT_LD_PRELOAD_DECLARATION": str(args.tool_path),
-                        "CALLBACK_CENSUS_ONLY": "1",
                     })
+                if args.mode == "NVBIT_CALLBACK_CENSUS_ONLY":
+                    environment["CALLBACK_CENSUS_ONLY"] = "1"
+                elif args.mode == "NVBIT_CALLBACK_CENSUS_RAW":
+                    environment["C16_CALLBACK_CENSUS_RAW_PATH"] = str(args.raw_event_path)
                 args.snapshot_dir.mkdir(parents=True)
                 with args.stdout_path.open("w", encoding="utf-8") as stdout, args.stderr_path.open("w", encoding="utf-8") as stderr:
                     process = subprocess.Popen(_child_command(args), stdout=stdout, stderr=stderr, text=True, env=environment, start_new_session=True)
@@ -364,7 +389,7 @@ def parent_main(args: argparse.Namespace) -> int:
                             anchor_seen_at, anchor_event = time.monotonic(), "BEFORE_TORCH_ARANGE_INDEX"
                         if anchor_seen_at is not None and remaining and time.monotonic() - anchor_seen_at >= remaining[0]:
                             ordinal = remaining.pop(0)
-                            snapshots.append(_snapshot(process.pid, ordinal, args.snapshot_dir, anchor_event, time.monotonic() - anchor_seen_at, args.gdb_snapshots))
+                            snapshots.append(_snapshot(process.pid, ordinal, args.snapshot_dir, anchor_event, time.monotonic() - anchor_seen_at, args.gdb_snapshots, args.gdb_map_inspection))
                         if time.monotonic() - started >= args.wall_limit_seconds:
                             timed_out = True
                             _kill_process_group(process)
@@ -409,6 +434,10 @@ def parent_main(args: argparse.Namespace) -> int:
             "stderr": {"path": str(args.stderr_path), "sha256": sha256_file(args.stderr_path)},
             "raw_trace_bytes": 0,
             "trace_generated": False,
+            "raw_callback_event_buffer": (
+                {"path": str(args.raw_event_path), "bytes": args.raw_event_path.stat().st_size, "sha256": sha256_file(args.raw_event_path)}
+                if args.raw_event_path is not None and args.raw_event_path.is_file() else "NOT_MATERIALIZED"
+            ),
         })
         return 0 if terminal == "COMPLETE" else 2
     except Exception:
@@ -431,9 +460,11 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--mode", required=True)
     result.add_argument("--cuda-module-loading", required=True)
     result.add_argument("--gdb-snapshots", action="store_true")
+    result.add_argument("--gdb-map-inspection", action="store_true")
     result.add_argument("--wall-limit-seconds", type=int, default=WALL_LIMIT_SECONDS)
     result.add_argument("--tool-path", type=Path)
     result.add_argument("--tool-sha256")
+    result.add_argument("--raw-event-path", type=Path)
     result.add_argument("--nvdisasm")
     result.add_argument("--expected-torch-version", required=True)
     result.add_argument("--expected-torch-cuda", required=True)

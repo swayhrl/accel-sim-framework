@@ -14,6 +14,10 @@ from retry570_module_firstuse_2x2 import EXACT_CANDIDATE, WALL_LIMIT_SECONDS, an
 
 
 SOURCE = (LANE / "retry570_module_firstuse_2x2.py").read_text(encoding="utf-8")
+RAW_TOOL = (LANE / "retry570_callback_census_raw_tool.cu").read_text(encoding="utf-8")
+EMPTY_TOOL = (LANE / "retry570_empty_callback_dispatch_tool.cu").read_text(encoding="utf-8")
+DEBUG_TOOL = (LANE / "retry570_callback_census_debug_tool.cu").read_text(encoding="utf-8")
+BUILD = (LANE / "retry570_build_callback_tool_variant.sh").read_text(encoding="utf-8")
 
 
 class ModuleFirstUse2x2Tests(unittest.TestCase):
@@ -57,6 +61,30 @@ class ModuleFirstUse2x2Tests(unittest.TestCase):
             self.assertIsNone(analysis["timeline"]["cuLibraryGetModule"][0]["exit_ts_ns"])
             native = analyze(log, "NATIVE")
             self.assertEqual(native["timeline"]["cuLibraryLoadData"], "NOT_OBSERVABLE_WITHOUT_NVBIT_CALLBACK_STREAM")
+
+    def test_debug_variant_declares_vendor_map_only_for_gdb_type_information(self) -> None:
+        self.assertIn("extern NvbitElfModuleMap elfModuleHashMap", DEBUG_TOOL)
+        self.assertIn("neither reads nor writes it", DEBUG_TOOL)
+        self.assertIn("-g -Og", BUILD)
+        self.assertIn("thread apply all bt full", SOURCE)
+        self.assertIn("elfModuleHashMap.size()", SOURCE)
+        self.assertIn('"maps": _run_text_safe', SOURCE)
+
+    def test_raw_callback_body_has_only_fixed_pod_ring_operations(self) -> None:
+        body = RAW_TOOL[RAW_TOOL.index("void nvbit_at_cuda_event"):RAW_TOOL.index("void nvbit_at_term")]
+        for forbidden in (
+            "std::string", "std::vector", "std::unordered_map", "new", "delete", "malloc", "free",
+            "printf", "fprintf", "nvbit_get_", "nvbit_insert", "nvbit_enable", "synchronize",
+        ):
+            self.assertNotIn(forbidden, body)
+        for required in ("RawEvent", "events[sequence]", "callback_depth", "reentrant_callback_count"):
+            self.assertIn(required, body)
+
+    def test_empty_callback_returns_without_user_bookkeeping(self) -> None:
+        body = EMPTY_TOOL[EMPTY_TOOL.index("void nvbit_at_cuda_event"):EMPTY_TOOL.index("void nvbit_at_term")]
+        self.assertIn("return;", body)
+        self.assertNotIn("nvbit_get_", body)
+        self.assertNotIn("std::", body)
 
 
 if __name__ == "__main__":
