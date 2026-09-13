@@ -78,7 +78,25 @@ guessed from an unrelated local cache ref.
 The next authorized GPU work is Qwen0.5 R3 after this compact R2 publication
 and a fresh formal-window preflight.  Qwen7 raw remains at R2 until its own
 runtime preflight/resource admission passes.  No Qwen3-30B-A3B, model
-baseline, census, or trace has been started by this checkpoint.
+baseline, census, or trace was started by the preceding R2 checkpoint.
+
+### Qwen0 Recovery-V3 R3/G1 milestone
+
+Qwen2.5-0.5B S0/TEXT has now completed a fresh unprofiled native baseline and
+an independently validated G1 lightweight nsys census under runtime source
+`a5f1d51247fded1d8e96abc67a98b9f3556f9e7e`.  The profile was kept separate
+from baseline timing.  Its `.nsys-rep` (5,072,640 bytes) and SQLite export
+(13,729,792 bytes) are retained only under `/root/share/c16_recovery_v3` and
+each passed remote-to-local SHA equality.  The catalog has 21,180 phase-linked
+kernel-launch rows; operator/layer remains conservatively `UNKNOWN`.
+
+The local control host's nsys 2022.4.2 cannot export a 2024.1.1 report, so the
+first bounded SQLite export used the remote 2024.1.1 tool after measurement
+ended, then immediately returned it hash-closed; no large TSV was produced.
+The compact source/receipt/raw index is
+[`R3_QWEN2P5_0P5B_S0_NATIVE_G1_RECEIPT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/R3_QWEN2P5_0P5B_S0_NATIVE_G1_RECEIPT.json).
+Two pre-census nsys setup attempts remain in the budget ledger as
+`NON_SCIENTIFIC` failures and are not included in the baseline or catalog.
 
 ## Final post-Llama multi-model dataset publication
 

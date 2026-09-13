@@ -1,0 +1,48 @@
+{
+  "schema_version": "C16_G_RECOVERY_V3_R3_G1_PUBLICATION_V1",
+  "status": "COMPLETE_LIGHTWEIGHT_NSYS_CENSUS",
+  "scientific_eligible": true,
+  "identity": {
+    "deployment_id": "c16_qwen25_05b_native_reference",
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "scenario_id": "S0",
+    "input_class": "TEXT",
+    "batch_size": 1,
+    "prefill_tokens": 128,
+    "decode_tokens": 4,
+    "runtime_source_commit": "a5f1d51247fded1d8e96abc67a98b9f3556f9e7e"
+  },
+  "native_baseline": {
+    "run_id": "0bf17b4c-4d5d-48a1-96a3-734acd803d94",
+    "receipt_path": "/root/share/c16_recovery_v3/receipts/R3_QWEN2P5_0P5B_S0_0bf17b4c-4d5d-48a1-96a3-734acd803d94/QWEN0_S0_NATIVE_RECEIPT.json",
+    "receipt_sha256": "b2f88f6fa7fa548961a96decd99ab04c02873461a384f3dd29797dad393933ba",
+    "profiler_mode": "UNPROFILED",
+    "terminal_status": "COMPLETE"
+  },
+  "g1_profile": {
+    "run_id": "9b5a6c8d-42d4-4ef2-bd6c-30dca6e6488a",
+    "nsys_version": "2024.1.1.0",
+    "nsys_capture_range": "none",
+    "profile_receipt_sha256": "0255a004e6d3f9a2dcc11e292ca28ce9b497ec26b2b1a4f3cab17c4a27e08fa6",
+    "runner_receipt_sha256": "fd310c6e231dc2fd3c82510ddbf28b5a66570ef266e954d0c870e631efc8d61d",
+    "export_validation_sha256": "339f781a7aad12f2a8cf986b7bc7a90a3ed32f526bdd28e7bcb7961cbaa70946",
+    "raw_profile": {"local_path":"/root/share/c16_recovery_v3/raw/qwen2p5_0p5b_instruct/S0/FULL_FORWARD/9b5a6c8d-42d4-4ef2-bd6c-30dca6e6488a/QWEN0_S0_G1.nsys-rep","size_bytes":5072640,"sha256":"0a986f84662e4d943c7ad9ee78294e39933754440e4ed6620916318c2b088834"},
+    "sqlite": {"local_path":"/root/share/c16_recovery_v3/raw/qwen2p5_0p5b_instruct/S0/FULL_FORWARD/9b5a6c8d-42d4-4ef2-bd6c-30dca6e6488a/QWEN0_S0_G1.sqlite","size_bytes":13729792,"sha256":"baa0fd8e33f10e2709a4c61e6daac1f42798c093e82910c222a11c6cc98e66e3"},
+    "remote_local_sha256_equal": true
+  },
+  "census": {
+    "local_catalog_root": "/root/share/c16_recovery_v3/receipts/R3_QWEN2P5_0P5B_S0_G1_CENSUS",
+    "census_receipt_sha256": "e51e7e860fab80c8350b3c109d071ed35ba161330e251ef0b4450226959d8ce4",
+    "kernel_launch_rows": 21180,
+    "semantic_rows": 57,
+    "heavy_tail_rows": 5,
+    "kernel_catalog_sha256": "7d9643ae8e60d56c2b7b74677b992a21431febda54474390476182870497e2f5",
+    "operator_layer_status": "UNKNOWN_OPERATOR_LAYER_CONSERVATIVE"
+  },
+  "diagnostic_attempts_retained": [
+    {"run_id":"1cfe4408-0b79-4bfe-967d-a04ce1e2c58b","status":"FAILED_NONSCIENTIFIC","reason":"extra application delimiter reached nsys; child was not started"},
+    {"run_id":"cf04c38c-5d37-4bd4-89de-2c222034e213","status":"FAILED_NONSCIENTIFIC","reason":"nsys temporary report could not be materialized because output directory was absent"}
+  ],
+  "next_gate": "R4 recovery-v3 phase-specific target-plan freeze from this hash-closed native census"
+}
