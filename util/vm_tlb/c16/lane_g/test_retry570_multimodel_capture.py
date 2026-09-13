@@ -15,7 +15,7 @@ class MultimodelFormalCaptureTests(unittest.TestCase):
 
     def test_capture_is_after_ready_and_live_measurement_marker(self) -> None:
         self.assertLess(SOURCE.index('"LANE_G_RUNTIME_READY"'), SOURCE.index("with MeasurementActive"))
-        for token in ("wrapper_measurement_marker(args, ident)", '"CAPTURE_BEGIN"', '"CAPTURE_END"', "prewarm emitted formal trace"):
+        for token in ("wrapper_measurement_marker(args, ident)", "C16_G_MEASUREMENT_ACTIVE_MARKER", '"CAPTURE_BEGIN"', '"CAPTURE_END"', "prewarm emitted formal trace"):
             self.assertIn(token, SOURCE)
 
     def test_lifecycle_uses_exact_root_and_nvbit_static_index(self) -> None:
