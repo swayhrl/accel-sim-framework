@@ -1,0 +1,132 @@
+{
+  "schema_version": "C16_4080_MIGRATION_SOURCE_RECEIPT_V1",
+  "goal": "C16_4080_MIGRATION_SOURCE_FREEZE",
+  "generated_from_authority_branch": "hrl/vm-c16-g-retry570-v0",
+  "authority_branch_commit": "a58d4479842f4b259cfbf3799ed9327d39cde2c7",
+  "scope": "CPU-only source freeze; no GPU process was launched and no Recovery-V3 scientific asset was modified.",
+  "evidence_policy": "Only Git objects, committed receipts, and hash-closed runtime evidence are used. A value absent from those sources is UNKNOWN.",
+  "success_boundary": {
+    "classification": "KNOWN_GOOD_REQUIRED",
+    "statement": "The final hash-closed successful NVBit model collection available in the authority branch is the Llama Recovery-V2 S5 result, not a Recovery-V3 R5 result.",
+    "status": "S5_FULL_WORKLOAD_CAPTURE_PASS",
+    "model": "meta-llama/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "workload": "S0/B1/T128/Decode4/TEXT",
+    "manifest_sha256": "0d8aeb74729a06e2188359cca2eb18c3884ea5b108723d6966778a161c4aaacc",
+    "summary_sha256": "185d4239487224fded9f191b3d54b764778b7b8bbcee67b4a838c4905e3110a6",
+    "raw_index_sha256": "e212bf105a4a3e2dba0c3cbddbcb7b7a8812eee8cfd3d6612314b52489baf426",
+    "recovery_v3_boundary": "Recovery-V3 has no later accepted nonzero-address model capture in this source branch; its R5 Qwen0 is PREDICATED_OFF_TARGET and Qwen7 Prefill is CAPABILITY_LIMITED_TWO_EXACT_TARGETS_ZERO. They are not success substitutes."
+  },
+  "provenance": {
+    "publication_producer_commit": "01d688227d828468421d6eb4d12f89808206027c",
+    "publication_producer_source": "util/vm_tlb/c16/lane_g/retry570_llama_recovery_publish.py",
+    "publication_producer_git_blob": "88f80ef80a1ed43ffa33dc8cb1f39b0c04cfce03",
+    "prefill_runtime_commit": "1819b0a0062be6fe97f1207d94cd1bc91545e107",
+    "prefill_runtime_source": "util/vm_tlb/c16/lane_g/retry570_multimodel_capture.py",
+    "prefill_runtime_git_blob": "968a658d6e70b128183ac369161d3e81feb46318",
+    "decode_runtime_commit": "78234a4bf155c2002bb61486081b49b964b86b4e",
+    "decode_runtime_source": "util/vm_tlb/c16/lane_g/retry570_multimodel_capture.py",
+    "decode_runtime_git_blob": "0fc731ee6387880b1ebf0bc27480373a0565298d",
+    "runtime_source_binding_basis": "The S5 raw evidence paths include llama_s5_prefill_1819b0a0 and llama_s5_decode_smallindex_78234a4; both full Git commits and source blobs exist in the authority repository.",
+    "c16_tracer": {
+      "classification": "KNOWN_GOOD_REQUIRED",
+      "source_commit": "ac4f678a815954e4ddb22c15d9a8d3841fca86a3",
+      "source_sha256": "414bdeebebf807a1134a53079ed0b7eee47e7fb3eda72250da25b445f5876ab4",
+      "binary_sha256": "9e059b6a5b17a74e597169e365ad05d1e82517decad9974868b2b8a195132ae5",
+      "model_run_binding": "The known-good runtime profile binds this tool tuple. The final S5 raw receipt independently records NVBit 1.7.5 but does not repeat a per-run tool SHA; therefore do not claim a stronger per-run binary binding than this profile closure."
+    },
+    "bridge_runtime": {
+      "classification": "KNOWN_GOOD_REQUIRED",
+      "prefill": "1819b0a0062be6fe97f1207d94cd1bc91545e107 / 968a658d6e70b128183ac369161d3e81feb46318",
+      "decode": "78234a4bf155c2002bb61486081b49b964b86b4e / 0fc731ee6387880b1ebf0bc27480373a0565298d"
+    }
+  },
+  "nvbit": {
+    "classification": "KNOWN_GOOD_REQUIRED",
+    "version": "1.7.5",
+    "release_url": "https://github.com/NVlabs/NVBit/releases/download/v1.7.5/nvbit-Linux-x86_64-1.7.5.tar.bz2",
+    "archive_sha256": "e2290da5e35a43fc4c74917dd08e1d41ece3e21bfca6fd7c6dc590c9c8385328",
+    "core_libnvbit_a_sha256": "562348c32b88bf3e5b32d1895202893adb79f32b896e3cac56b29a306de40a12",
+    "official_instr_count_bb_sha256": "fc19c2254a7f6978fe543a826070edeed391b344ca174804719714d2bc8912a3"
+  },
+  "software_environment": {
+    "classification": "KNOWN_GOOD_REQUIRED",
+    "host_driver": "570.124.04",
+    "cuda_toolkit": "12.4",
+    "nvcc": "12.4.131 (/usr/local/cuda-12.4/bin/nvcc)",
+    "nvdisasm": "12.4.127 (/usr/local/cuda-12.4/bin/nvdisasm)",
+    "cpython": {"version": "3.10.12", "source_sha256": "a43cd383f3999a6f4a7db2062b2fc9594fefa73e175b3aedafa295a51a7bb65c"},
+    "torch": "2.5.1+cu124",
+    "libtorch_cuda_so_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a",
+    "transformers": "4.46.3",
+    "autoawq": "0.2.7.post3",
+    "wheelhouse": {"wheel_count": 66, "manifest_path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g/WHEELHOUSE_MANIFEST.tsv", "manifest_sha256": "ebae0934de68b36e08da5db0e6bfdc47880620205e8bf6d8c8afe8906abc2d2d", "requirements_sha256": "8085caecebf1e641cb6ab1f2c0e2d8e8cfd5007fd8236b6c10771b223052fa82"}
+  },
+  "environment_contract": {
+    "CUDA_MODULE_LOADING": {"value": "EAGER", "classification": "KNOWN_GOOD_REQUIRED"},
+    "PATH": {"value": "/usr/local/cuda-12.4/bin must precede inherited PATH for child processes", "classification": "KNOWN_GOOD_REQUIRED"},
+    "LD_LIBRARY_PATH": {"value": "UNKNOWN", "reason": "No final successful model receipt records LD_LIBRARY_PATH; do not invent or inherit it as a closure value."},
+    "CUDA_VISIBLE_DEVICES": {"value": "UNKNOWN", "reason": "The final receipt records cuda:0 but no CUDA_VISIBLE_DEVICES value or ordinal-to-UUID mapping policy. On 4080 bind a single selected UUID to logical cuda:0 and record the exact mapping before canary."},
+    "NVBit": {
+      "CUDA_INJECTION64_PATH": "set to the SHA-verified tracer .so",
+      "C16_NVBIT_LD_PRELOAD_DECLARATION": "set to the same SHA-verified tracer .so",
+      "USER_DEFINED_FOLDERS": "1",
+      "TRACES_FOLDER": "fresh per-window directory",
+      "TOOL_COMPRESS": "0",
+      "TRACE_FILE_COMPRESS": "0",
+      "ACTIVE_FROM_START": "0 for formal model capture; profiler owns the ROI",
+      "DYNAMIC_KERNEL_RANGE": "exact frozen kernel/range only; UNKNOWN for a new 4080 model binary until remapped"
+    }
+  },
+  "build_commands": {
+    "cpython_runtime_historical_exact_command": "UNKNOWN",
+    "cpython_runtime_reason": "The receipts hash the CPython source and record the prefix and repaired packages, but do not retain configure/make/install argv. Do not label a reconstructed command historical.",
+    "nvbit_1_7_5_historical_exact_command": "UNKNOWN",
+    "nvbit_1_7_5_reason": "The archive/core/tool hashes are closed, but the 1.7.5 extraction/build argv is not retained in the final model evidence.",
+    "c16_tracer_historical_exact_command": "UNKNOWN",
+    "c16_tracer_reason": "The known-good tool source/binary hashes are closed; its exact final-model build argv is not retained.",
+    "source_defined_diagnostic_only_command": "make -f util/vm_tlb/c16/lane_g/Makefile.retry570_targeted_memory_tool NVBIT_HOME=<verified-release-root> NVCC=/usr/local/cuda-12.4/bin/nvcc ARCH=sm_86 OUT=<fresh-tool.so>",
+    "command_status": "DIAGNOSTIC_ONLY; this Makefile command is source-defined but is not evidence of the final successful S5 tracer build."
+  },
+  "bounded_prewarm": {
+    "classification": "KNOWN_GOOD_REQUIRED",
+    "sequence": [
+      "Set CUDA_MODULE_LOADING=EAGER before process start and verify every hash/identity.",
+      "Start a fresh process with capture disabled, ACTIVE_FROM_START=0, and a fresh trace directory.",
+      "Run the exact model/runtime no-trace prewarm outside MEASUREMENT_ACTIVE; verify checksum and zero trace payloads.",
+      "Require normal child exit, first-kernel completion, no surviving child/GPU process, and MEASUREMENT_ACTIVE absent; only then write READY.",
+      "After READY, parent creates the budget lease and MEASUREMENT_ACTIVE, verifies no pre-arm trace, writes immutable arm identity, then permits the one capture window.",
+      "On timeout/nonzero exit, terminate the process group (SIGTERM; 2 s grace; SIGKILL only if needed), retain evidence, and do not reuse the directory."
+    ],
+    "hard_gate": "A prewarm trace, nonzero process count, missing READY, stale marker, or identity/hash mismatch blocks measurement."
+  },
+  "raw_trace_closure": {
+    "classification": "KNOWN_GOOD_REQUIRED",
+    "remote_root": "/root/autodl-tmp/c16_retry570/raw/recovery_v2",
+    "local_root_pattern": "artifacts/c16_g_retry570/recovery_v2/<run>/remote_payload/traces",
+    "raw_trace_count": 6,
+    "total_raw_trace_bytes": 16319706,
+    "strategy": "Remote SHA256 and size are recorded first; copy to a distinct local path; calculate local SHA256 and size; require equality for every payload; publish the index/receipt; keep raw payloads out of Git. Do not delete remote evidence until remote_only_required_artifact_count is zero and the closure receipt is validated.",
+    "traces": [
+      {"stage": "S3_PREFILL", "size_bytes": 5397471, "sha256": "73d3a0fc78f0ca885682a25a2c3910f67c690c7120273330da9ef5fc9294eddf"},
+      {"stage": "S4_PREFILL", "size_bytes": 5397471, "sha256": "05f5c56df7efce3978d01d46fa7ada52bd0f606842d1b352db497a404c25e4e6"},
+      {"stage": "S5_PREFILL", "size_bytes": 5397471, "sha256": "0d375cb72bfa46d0e81b61e466a8e1375468bf14a5faa52627bbb2ea34f71c2d"},
+      {"stage": "S5_DECODE2", "size_bytes": 42431, "sha256": "eeed142fe57bc9d471e9005c4eed18d34682bd7f1bf864867b40b8397b9a2572"},
+      {"stage": "S5_DECODE3", "size_bytes": 42431, "sha256": "7f6b87af8e5f1b02c12f0e7b9f54849294df49dba02e7bbeb9af461060b83a85"},
+      {"stage": "S5_DECODE4", "size_bytes": 42431, "sha256": "2bd751511b380944992840e77f2478af211e4c91f8010427870a178dc3345f95"}
+    ]
+  },
+  "negative_controls": [
+    {"item": "NVBit 1.7.6", "classification": "SUPERSEDED", "result": "Timed out before workload kernel for instr_count_bb and memory tracing on elementwise/GEMM; no trace."},
+    {"item": "NVBit 1.8", "classification": "DIAGNOSTIC_ONLY", "result": "Small elementwise/GEMM tools passed, but later exact first-use EMPTY qualification hung before READY within 60 s. It is not a replacement for 1.7.5 model capture."},
+    {"item": "LAZY", "classification": "SUPERSEDED", "result": "1.7.5 requested LAZY but vendor core/query reported EAGER; 1.7.5 model protocol therefore requires EAGER."},
+    {"item": "instr_count versus instr_count_bb", "classification": "DIAGNOSTIC_ONLY", "result": "1.8 elementwise/GEMM observed both granularities; 1.7.6 instr_count_bb timed out. Neither is model-capture equivalence evidence."},
+    {"item": "Retry571 / Retry585", "classification": "DIAGNOSTIC_ONLY", "result": "UNKNOWN in the authority branch: no hash-closed receipt was located. They must not be used to override this closure."}
+  ],
+  "source_evidence": [
+    {"path": "docs/vm_tlb/runtime_profiles/NVBIT_LANE_G_RTX3090_CUDA124_KNOWN_GOOD.json", "sha256": "f85e2d0cb509aeca58f73cadb6384e4841801396499a3a46258563394d65dbd7"},
+    {"path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b/S5_FULL_WORKLOAD_SUMMARY.json", "sha256": "185d4239487224fded9f191b3d54b764778b7b8bbcee67b4a838c4905e3110a6"},
+    {"path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b/RAW_ARTIFACT_INDEX.json", "sha256": "e212bf105a4a3e2dba0c3cbddbcb7b7a8812eee8cfd3d6612314b52489baf426"},
+    {"path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_engineering_unblock/NVBIT_ENGINEERING_UNBLOCK_RECEIPT.json", "sha256": "269888f802b0ab5c32acec5e6308ba3e3a856b9d5fc3a2a0f59bcb9b5bfa6a5f"},
+    {"path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g/WHEELHOUSE_MANIFEST.tsv", "sha256": "ebae0934de68b36e08da5db0e6bfdc47880620205e8bf6d8c8afe8906abc2d2d"}
+  ]
+}
