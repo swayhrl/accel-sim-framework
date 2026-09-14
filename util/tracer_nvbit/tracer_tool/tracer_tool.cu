@@ -48,7 +48,7 @@ static int get_attr_with_kernel_fallback(CUfunction func,
 }
 
 /* Channel used to communicate from GPU to CPU receiving thread */
-#define CHANNEL_SIZE (1l << 20)
+#define CHANNEL_SIZE (1l << 26)  // 64 MiB: bounded complete single-launch formal windows
 static __managed__ ChannelDev channel_dev;
 static ChannelHost channel_host;
 
@@ -407,6 +407,12 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
         else if (op->type == InstrType::OperandType::IMM_UINT64) {
           imm_value = instr->getOperand(i)->u.imm_uint64.value;
         }
+      }
+
+      // Formal capture retains all and only direct GLOBAL MREFs in the exact root launch.
+      if (num_mref == 0 || instr->getMemorySpace() != InstrType::MemorySpace::GLOBAL) {
+        cnt++;
+        continue;
       }
 
       do {
