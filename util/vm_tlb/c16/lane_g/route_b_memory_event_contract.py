@@ -30,6 +30,10 @@ class WhitelistRow:
     access_kind: str
     width_bytes: int
     mref_ordinal: int
+    # The Route-B producer supports a distinct event stream for each MREF
+    # operand.  A selected multi-MREF instruction is lawful only when this
+    # count and the ordinal are explicit in the frozen static-map row.
+    mref_count: int = 1
 
 
 def validate_whitelist(rows: Iterable[WhitelistRow]) -> tuple[WhitelistRow, ...]:
@@ -37,12 +41,14 @@ def validate_whitelist(rows: Iterable[WhitelistRow]) -> tuple[WhitelistRow, ...]
     result = tuple(rows)
     if not result:
         raise RouteBContractError("Route-B whitelist must contain at least one GLOBAL+MREF instruction")
-    indices = [row.static_index for row in result]
-    if indices != sorted(indices) or len(indices) != len(set(indices)):
-        raise RouteBContractError("Route-B whitelist static indices must be sorted and unique")
+    keys = [(row.static_index, row.mref_ordinal) for row in result]
+    if keys != sorted(keys) or len(keys) != len(set(keys)):
+        raise RouteBContractError("Route-B whitelist (static-index, MREF-ordinal) keys must be sorted and unique")
     for row in result:
-        if row.static_index < 0 or row.mref_ordinal < 0 or row.width_bytes <= 0:
+        if row.static_index < 0 or row.mref_ordinal < 0 or row.width_bytes <= 0 or row.mref_count <= 0:
             raise RouteBContractError("Route-B whitelist has an invalid static index, MREF ordinal, or width")
+        if row.mref_ordinal >= row.mref_count:
+            raise RouteBContractError("Route-B whitelist MREF ordinal is outside the explicit static-map MREF count")
         if row.memory_space != MEMORY_SPACE or not row.has_mref:
             raise RouteBContractError("Route-B whitelist may contain only GLOBAL && has_mref rows")
         if row.access_kind not in ACCESS_KINDS:
@@ -61,7 +67,7 @@ def validate_event(event: dict[str, Any], whitelist: tuple[WhitelistRow, ...], *
     required = {
         "observed_event_sequence", "sequence_label", "kernel_launch_id", "function_mangled_name",
         "cta", "warp_id", "static_index", "instruction_offset", "opcode", "mref_ordinal",
-        "access_kind", "width_bytes", "memory_space", "active_mask", "predicate_mask",
+        "access_kind", "width_bytes", "memory_space", "active_mask", "predicate_mask", "is_predicated",
         "active_lane_ids", "gpu_va_by_active_lane",
     }
     missing = sorted(required.difference(event))
@@ -81,12 +87,19 @@ def validate_event(event: dict[str, Any], whitelist: tuple[WhitelistRow, ...], *
         raise RouteBContractError("Route-B event memory space/access kind differs from static whitelist")
     if event["opcode"] != row.opcode or event["width_bytes"] != row.width_bytes:
         raise RouteBContractError("Route-B event opcode/width differs from static whitelist")
-    active_lanes = _mask_lanes(event["active_mask"])
-    predicate_lanes = _mask_lanes(event["predicate_mask"])
+    active_mask = event["active_mask"]
+    predicate_mask = event["predicate_mask"]
+    active_lanes = _mask_lanes(active_mask)
+    predicate_lanes = _mask_lanes(predicate_mask)
+    if not isinstance(event["is_predicated"], bool):
+        raise RouteBContractError("Route-B predicate-presence marker is not boolean")
+    if not event["is_predicated"] and predicate_mask != active_mask:
+        raise RouteBContractError("Route-B non-predicated instruction must set predicate mask equal to active mask")
+    executing_lanes = _mask_lanes(active_mask & predicate_mask)
     lane_ids = event["active_lane_ids"]
     addresses = event["gpu_va_by_active_lane"]
-    if lane_ids != active_lanes or not isinstance(addresses, list) or len(addresses) != len(active_lanes):
-        raise RouteBContractError("Route-B event active-mask popcount/lane/address serialization differs")
+    if lane_ids != executing_lanes or not isinstance(addresses, list) or len(addresses) != len(executing_lanes):
+        raise RouteBContractError("Route-B event executing-mask popcount/lane/address serialization differs")
     if any(not isinstance(address, int) or address <= 0 for address in addresses):
         raise RouteBContractError("Route-B event contains a non-GPU-VA address")
     if not set(predicate_lanes).issubset(active_lanes):
