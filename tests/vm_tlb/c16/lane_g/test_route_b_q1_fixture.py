@@ -25,6 +25,11 @@ def map_row(index: int, opcode: str, load: int, store: int, *, function: str = Q
 
 
 class RouteBQ1FixtureTests(unittest.TestCase):
+    def test_fixture_writes_exact_runtime_owner_receipt(self):
+        source = (LANE / "fixtures/route_b_q1_tiny.cu").read_text(encoding="utf-8")
+        self.assertIn("C16_ROUTE_B_Q1_OWNER_RECEIPT_PATH", source)
+        self.assertIn("dladdr", source)
+
     def test_exact_map_freezes_all_global_mrefs_and_sha_closes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); static_map, code = root / "map.tsv", root / "fixture.bin"

@@ -29,6 +29,7 @@ static std::string target_mangled;
 static std::string output_path;
 static std::string fatbin_registry_path;
 static std::string culibrary_registry_path;
+static std::string q1_owner_receipt_path;
 static std::map<std::string, std::string> manifest_sha;
 static std::map<CUlibrary, Owner> library_owners;
 static std::map<CUmodule, Owner> module_owners;
@@ -92,7 +93,23 @@ static void require_environment() {
     target_mangled = function; output_path = path; fatbin_registry_path = registry;
     const char* culibrary = getenv("C16_NVBIT_CULIBRARY_OWNER_REGISTRY_PATH");
     if (culibrary != nullptr) culibrary_registry_path = culibrary;
+    const char* q1_owner = getenv("C16_NVBIT_Q1_EXACT_OWNER_RECEIPT_PATH");
+    if (q1_owner != nullptr) q1_owner_receipt_path = q1_owner;
     load_manifest(manifest);
+}
+static bool owner_from_q1_exact_owner_receipt(Owner* owner) {
+    if (q1_owner_receipt_path.empty()) return false;
+    std::ifstream input(q1_owner_receipt_path); std::string line;
+    if (!std::getline(input, line)) return false;
+    const size_t tab = line.find('\t');
+    if (tab == std::string::npos || line.find('\t', tab + 1) != std::string::npos) return false;
+    // This is not a generic spelling matcher.  Q1's fixture reports the DSO
+    // for precisely its frozen exported host CUDA symbol, while this tool has
+    // already matched the same exact runtime CUfunction and CUmodule.
+    if (line.substr(0, tab) != target_mangled) return false;
+    Owner candidate = owner_from_path(line.substr(tab + 1).c_str(), "q1_fixture_dladdr_exact_host_symbol");
+    if (!candidate.path.empty() && valid_sha(candidate.sha256)) { *owner = candidate; return true; }
+    return false;
 }
 static bool owner_from_culibrary_registry(CUmodule module, Owner* owner) {
     if (culibrary_registry_path.empty()) return false;
@@ -169,6 +186,7 @@ static bool owner_for_function(CUfunction function, Owner* owner) {
     std::lock_guard<std::mutex> guard(ownership_mutex);
     auto found = module_owners.find(module);
     if (found == module_owners.end()) {
+        if (owner_from_q1_exact_owner_receipt(owner)) return true;
         if (owner_from_culibrary_registry(module, owner)) return true;
         if (owner_from_fatbin_registry(owner)) return true;
         terminal_unresolved(module, "module_owner_not_observed"); return false;

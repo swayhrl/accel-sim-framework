@@ -7,6 +7,8 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
+#include <dlfcn.h>
 #include <vector>
 
 extern "C" __global__ void c16_route_b_q1_global_ldst_predicate(
@@ -19,6 +21,20 @@ extern "C" __global__ void c16_route_b_q1_global_ldst_predicate(
     }
 }
 
+static void write_exact_owner_receipt() {
+    const char* output = getenv("C16_ROUTE_B_Q1_OWNER_RECEIPT_PATH");
+    if (output == nullptr || output[0] == '\0') return;
+    Dl_info info{};
+    if (dladdr(reinterpret_cast<const void*>(&c16_route_b_q1_global_ldst_predicate), &info) == 0 ||
+        info.dli_fname == nullptr || info.dli_fname[0] == '\0') {
+        std::fprintf(stderr, "C16_ROUTE_B_Q1_OWNER_RECEIPT_FAIL dladdr\n"); std::exit(2);
+    }
+    FILE* file = std::fopen(output, "w");
+    if (file == nullptr) { std::fprintf(stderr, "C16_ROUTE_B_Q1_OWNER_RECEIPT_FAIL open\n"); std::exit(2); }
+    std::fprintf(file, "c16_route_b_q1_global_ldst_predicate\t%s\n", info.dli_fname);
+    std::fclose(file);
+}
+
 static uint64_t checksum(const std::vector<uint32_t>& values) {
     uint64_t result = 0;
     for (uint32_t value : values) result = (result * 0x100000001b3ULL) ^ value;
@@ -26,6 +42,7 @@ static uint64_t checksum(const std::vector<uint32_t>& values) {
 }
 
 int main() {
+    write_exact_owner_receipt();
     constexpr uint32_t count = 257;
     constexpr uint32_t block = 64;
     std::vector<uint32_t> input(count), output(count, 0);

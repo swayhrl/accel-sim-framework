@@ -20,7 +20,8 @@ class RouteBV2StaticMapTest(unittest.TestCase):
         source = (LANE / "retry570_route_b_v2_static_map_tool.cu").read_text(encoding="utf-8")
         for token in ("cuFuncGetModule", "API_CUDA_cuLibraryLoadData", "API_CUDA_cuLibraryGetModule",
                       "API_CUDA_cuModuleLoadData", "API_CUDA_cuModuleLoadDataEx",
-                      "C16_NVBIT_CODE_OBJECT_MANIFEST", "code_object_path", "code_object_sha256"):
+                      "C16_NVBIT_CODE_OBJECT_MANIFEST", "C16_NVBIT_Q1_EXACT_OWNER_RECEIPT_PATH",
+                      "q1_fixture_dladdr_exact_host_symbol", "code_object_path", "code_object_sha256"):
             self.assertIn(token, source)
         self.assertNotIn("C16_NVBIT_CODE_OBJECT_SHA256", source)
 
