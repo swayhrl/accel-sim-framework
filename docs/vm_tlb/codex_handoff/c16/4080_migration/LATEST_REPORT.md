@@ -1,17 +1,17 @@
-# C16 RTX4080 U4-U9 R2 execution report
+# C16 RTX4080 U4-U9 R3 execution report
 
-Status: `STOP_U4_LIVE_PAYLOAD_ABSENT_RETRANSFER_REQUIRED`.
+Status: `STOP_U5_MISSING_FROZEN_INPUT_BINDING`.
 
-- Coordination base: `hrl/c16-4080-chatgpt-handoff-u4-resume-v1@8efc6f61b653fa9f4c6ea33251b74c584035bb51`.
-- Execution branch: `hrl/c16-4080-u4-u9-r2`.
-- Live check at `2026-09-14T12:16:33Z`: incoming revision directory existed (`inode=6315033`) but had link count 2, hence no entries/payload files.
-- Source receipt exists: `/data/c16/models/.provenance/R1_LLAMA3P2_1B_ASSET_RECEIPT.json`, SHA256 `7694c95442cc7ff1d3fc8ed1104d5c0d6a50c3a17f779f402ef90669edeb7b47`.
-- The receipt names six exact payloads totalling `2480783094` bytes, but no live destination byte exists to compare.
-- U4/U5/U6/U7/U9: not executed. U8.5 remains reviewed PASS from `c14dae68`.
+- Execution branch: `hrl/c16-4080-u4-u9-r3` from R2 `57b42ebbf54e0750aed96aea06ab42e6c63507ae`.
+- U4: `U4_LOCAL_ASSET_EXACT_CLOSURE_PASS`; importer receipt `/data/c16/results/C16_U4_IMPORT_RETRY_20260914T123950Z.json`, SHA256 `5b1aed870cd03d50a0da5f6721ab639d56ca0f3a1c3782a9fed9cf8e3dc84a3b`.
+- Promotion: `/data/c16/models/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08` with six exact payloads.
+- U5: blocked. The required frozen S0/B1/T128/Decode4/TEXT input/token receipt and derived token IDs are absent locally; their historical hashes are known but payloads are unavailable.
+- U6/U7/U9: not executed because U5 cannot run without substituting/re-tokenizing the frozen input.
+- U8.5: remains PASS from reviewed R1 evidence.
 - Root required: `NO`.
 
-Required external action: re-transfer the six payload files into the exact incoming revision directory without overwriting the source receipt. Then resume U4 with the supplied receipt.
+Required external artifact: the small frozen input/token binding package containing the payload whose SHA256 values are `bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208`, `0b5a86fdee44452e74e5d80e8043ebd97054fbbe29a6232a4f5cf5d06568c7dd`, `f9cf1ea6dca7956c740b3aa0af59acadd17be014df2aaffb75d240383502e3a7`, and `fc712eb0a158f0fe62231f7826feec3eaabfea51906ca6b1588a55ee81ae3624`.
 
-Review entry: `docs/vm_tlb/review_packs/C16_4080_U4_U9_R2/README.md`.
+Review entry: `docs/vm_tlb/review_packs/C16_4080_U4_U9_R3/README.md`.
 
 `NOT_READY`.

@@ -24,7 +24,7 @@ def payload_manifest(receipt: dict) -> dict:
     entries = receipt.get("payloads", receipt.get("files", []))
     result = {}
     for entry in entries:
-        name = entry.get("path", entry.get("filename"))
+        name = entry.get("filename") or Path(str(entry.get("path", ""))).name
         size = entry.get("size", entry.get("size_bytes"))
         sha = entry.get("sha256")
         if name is not None and size is not None and sha:
@@ -48,8 +48,10 @@ def validate(incoming: Path, authority: Path, source_receipt: Path | None) -> di
     else:
         try:
             p = json.loads(source_receipt.read_text())
-            source_model = p.get("model_id", p.get("model"))
-            if source_model != MODEL or p.get("revision") != REVISION:
+            identity = p.get("identity", {})
+            source_model = p.get("model_id", p.get("model", identity.get("model_id")))
+            source_revision = p.get("revision", identity.get("revision"))
+            if source_model != MODEL or source_revision != REVISION:
                 result["errors"].append("source receipt model_id/revision mismatch")
             expected_payloads = payload_manifest(p)
             if not expected_payloads:
@@ -92,7 +94,7 @@ def validate(incoming: Path, authority: Path, source_receipt: Path | None) -> di
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--incoming", type=Path, default=Path("/data/c16/models/.incoming/Llama-3.2-1B"))
+    parser.add_argument("--incoming", type=Path, default=Path(f"/data/c16/models/.incoming/Llama-3.2-1B/{REVISION}"))
     parser.add_argument("--authority", type=Path, required=True)
     parser.add_argument("--source-receipt", type=Path)
     parser.add_argument("--output", type=Path, required=True)
@@ -102,7 +104,7 @@ def main() -> int:
         raise SystemExit("refusing to overwrite output")
     result = validate(args.incoming, args.authority, args.source_receipt)
     if args.promote:
-        destination = args.incoming.parent.parent / f"Llama-3.2-1B@{REVISION}"
+        destination = args.incoming.parents[2] / f"Llama-3.2-1B@{REVISION}"
         if result["status"] != "U4_LOCAL_ASSET_EXACT_CLOSURE_PASS":
             result["errors"].append("promotion refused: validation not closed")
         elif destination.exists():
