@@ -1,5 +1,6 @@
 import datetime,hashlib,json,os,re,secrets,shutil
 from pathlib import Path
+from receiver_common import rename_noreplace
 STATUSES={'FORMAL','MECHANISM_ONLY','DIAGNOSTIC','PRE_FIX','OBSOLETE','INVALID'}
 TOP=['schema_version','run_id','created_at_utc','scientific_status','producer','git','model','input','scenario','runtime','capture','artifacts']
 def sha(path):
@@ -29,6 +30,18 @@ def atomic_json(path,obj):
  try:os.write(fd,data);os.fsync(fd)
  finally:os.close(fd)
  os.replace(tmp,path)
+def atomic_text(path,text):
+ path=Path(path);tmp=path.with_name(path.name+'.tmp');fd=os.open(tmp,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+ try:
+  os.write(fd,text.encode());os.fsync(fd)
+ finally:os.close(fd)
+ os.replace(tmp,path)
+def fsync_dir(path):
+ try:
+  fd=os.open(path,os.O_RDONLY|os.O_DIRECTORY)
+  try:os.fsync(fd)
+  finally:os.close(fd)
+ except OSError:pass
 def finalize(staging,ready,manifest_path,run):
  s=Path(staging);r=Path(ready);m=json.loads(Path(manifest_path).read_text());validate_manifest(m)
  if m['run_id']!=run or s.name!=run or (s/'CAPTURING').exists():raise ValueError('run/state')
@@ -37,7 +50,7 @@ def finalize(staging,ready,manifest_path,run):
  if not obs:raise ValueError('missing artifact')
  dest=r/run
  if dest.exists():raise FileExistsError('collision')
- m['artifacts']=obs;atomic_json(s/'RUN_MANIFEST.json',m);ms=sha(s/'RUN_MANIFEST.json');close={'schema_version':1,'run_id':run,'manifest_sha256':ms,'file_count':len(obs),'total_bytes':sum(x['size_bytes'] for x in obs),'closed_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()};atomic_json(s/'LOCAL_CLOSE_RECEIPT.json',close);(s/'READY').write_text('READY\n');shutil.move(s,dest);return dest,close
+ m['artifacts']=obs;atomic_json(s/'RUN_MANIFEST.json',m);ms=sha(s/'RUN_MANIFEST.json');close={'schema_version':1,'run_id':run,'manifest_sha256':ms,'file_count':len(obs),'total_bytes':sum(x['size_bytes'] for x in obs),'closed_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()};atomic_json(s/'LOCAL_CLOSE_RECEIPT.json',close);atomic_text(s/'READY','READY\n');fsync_dir(s);method=rename_noreplace(s,dest);fsync_dir(r);close['promotion_method']=method;return dest,close
 def publish_argv(alias,destroot,run,source):
  if alias!='hrl174new' or not re.fullmatch(r'C16R_[A-Za-z0-9_.-]+',run) or '..' in destroot:raise ValueError('unsafe')
  dest=destroot.rstrip('/')+'/inbox/'+run+'.partial/'
@@ -52,6 +65,6 @@ def validate_ack(a,run,manifest_sha,dest,file_count,total_bytes):
 def transition(ready,transferred,run):
  s=Path(ready)/run;d=Path(transferred)/run
  if not s.is_dir() or d.exists(): raise ValueError('transition')
- shutil.move(s,d)
+ rename_noreplace(s,d)
  return d
 def cleanup(root):return {'mode':'REPORT_ONLY','files':inventory(root),'deleted':False}
