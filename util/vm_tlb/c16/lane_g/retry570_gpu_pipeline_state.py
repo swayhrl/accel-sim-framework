@@ -71,6 +71,8 @@ def refresh_state(control: Path, args: argparse.Namespace) -> Path:
                 "next_gpu_job": args.next_gpu_job,
                 "measurement_active": args.measurement_active,
                 "active_gpu_process_count": args.active_gpu_process_count,
+                "gpu_idle_seconds": args.gpu_idle_seconds,
+                "remote_data_free_bytes": args.remote_data_free_bytes,
                 "transfer_slot_granted": args.transfer_slot_granted,
             }
             atomic_json(path, value)
@@ -123,6 +125,8 @@ def main() -> None:
     state.add_argument("--next-gpu-job", required=True)
     state.add_argument("--measurement-active", choices=("true", "false"), required=True)
     state.add_argument("--active-gpu-process-count", type=int, required=True)
+    state.add_argument("--gpu-idle-seconds", type=float, required=True)
+    state.add_argument("--remote-data-free-bytes", type=int, required=True)
     state.add_argument("--transfer-slot-granted", choices=("true", "false"), required=True)
     ready = sub.add_parser("copyback-ready")
     ready.add_argument("--control-root", type=Path, required=True)
@@ -132,7 +136,8 @@ def main() -> None:
     ready.add_argument("--remote-sha256", required=True)
     args = parser.parse_args()
     if args.command == "state":
-        if args.gpu_ready_queue_count < 0 or args.active_gpu_process_count < 0:
+        if (args.gpu_ready_queue_count < 0 or args.active_gpu_process_count < 0
+                or args.gpu_idle_seconds < 0 or args.remote_data_free_bytes < 0):
             raise SystemExit("counts must be non-negative")
         args.measurement_active = args.measurement_active == "true"
         args.transfer_slot_granted = args.transfer_slot_granted == "true"

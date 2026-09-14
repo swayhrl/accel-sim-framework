@@ -20,8 +20,10 @@ class PipelineStateTests(unittest.TestCase):
             root = Path(directory)
             state = argparse.Namespace(git_head="a" * 40, gpu_active_job="none", gpu_ready_queue_count=2,
                                        next_gpu_job="qwen0/S3/decode", measurement_active=False,
-                                       active_gpu_process_count=0, transfer_slot_granted=True)
+                                       active_gpu_process_count=0, gpu_idle_seconds=0.0,
+                                       remote_data_free_bytes=100, transfer_slot_granted=True)
             refresh_state(root, state)
+            self.assertIn('"remote_data_free_bytes": 100', (root / "GPU_PIPELINE_STATE.json").read_text(encoding="utf-8"))
             raw = root / "raw.bin"; raw.write_bytes(b"closed")
             args = argparse.Namespace(run_id="r", model="Qwen0", scenario="S3", stage="R5",
                                       remote_path=str(raw), bytes=raw.stat().st_size, remote_sha256=sha256_file(raw))
