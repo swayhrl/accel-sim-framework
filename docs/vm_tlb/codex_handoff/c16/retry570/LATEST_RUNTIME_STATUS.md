@@ -17,6 +17,10 @@ queue.
   `FAILED_CLOSED/CODE_OBJECT_IDENTITY_UNRESOLVED`.  Map identity is
   function-level and carries each V2 request's actual `phase_observations`;
   no map is synthetically labelled `PREFILL`.
+- All 34 `MAPPED_EXACT` static-map payloads were independently re-hashed on
+  the remote node and appended to the shared `COPYBACK_QUEUE` as
+  `COPYBACK_READY`.  Lane B may transfer them only while
+  `MEASUREMENT_ACTIVE=absent`; their raw map payloads remain out of Git.
 - Route-B address capture remains blocked on Lane-C's selected-function
   manifest and Q0/Q1/Q2 device-producer gates.  This is not a global GPU-idle
   reason: if Q1 is not ready, the next job must be a campaign-scoped fallback
