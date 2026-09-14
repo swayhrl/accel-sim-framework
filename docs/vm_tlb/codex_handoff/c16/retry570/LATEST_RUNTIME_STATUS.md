@@ -26,6 +26,15 @@ section is provenance only and cannot create a second GPU queue.
   (Prefill) and `indexSelectSmallIndex` (Decode), freeze all exact
   `GLOBAL && has_mref` pairs, and retain remote SHA/manifest closure before
   any return to CUTLASS owner resolution.
+- `ROUTE_B_Q2_DYNAMIC_ADDRESS=PARTIALLY_CLOSED`: both frozen anchors now have
+  fresh actual-owner maps, all three `GLOBAL+MREF` rows per anchor frozen, and
+  remote-SHA-closed nonzero-address LANE_EVENT streams.  Prefill retained
+  786,432 events / 729,983,913 bytes; Decode retained 18,432 events /
+  16,863,304 bytes; both parsers observed one COMPLETE terminal with zero
+  overflow/drop.  The outstanding fail-closed item is only the absent
+  materialized `C16_ROUTE_A_BRIDGE_REFERENCE_V1`, so neither row is described
+  as Route-A-bridge PASS.  Compact remote manifest:
+  `ROUTE_B_Q2_REMOTE_ARTIFACT_MANIFEST.json`.
 - The pre-existing shared Recovery-V3 campaign ledger’s bound historical SHA
   (`a37775a6…`) is no longer materialized on this node, so it is fail-closed
   for new work.  Q2 and subsequent primary-Llama Route-B work use the new,
