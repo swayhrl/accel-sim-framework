@@ -18,6 +18,15 @@ The initial adapter-name setup failure is retained as a non-scientific
 pre-model-load attempt.  It did not alter the model, input, target, or the
 terminal predicate-off conclusion.
 
+The retained S3 PREFILL map has now passed actual-code-object closure against
+`/root/autodl-tmp/c16_retry570/venv_cp310_cu124_final/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so`
+(`761b14ac…ccb6a`), plus nonempty/exact-mangled/exact-code-SHA/unique-static-index
+semantic validation (4,312 instructions; validation SHA256
+`6e8f521933bcca52ba84498223631c94e2e1e2d18ad2180fbfe686bea1b07820`).
+It remains `PENDING_R4_SOURCE_TO_R5_IDENTITY_JOIN`, not an accepted map PASS:
+the retained R4 source catalog payload is currently unavailable, and a shared
+ordinal alone is explicitly forbidden as a substitute join.
+
 `Qwen2.5-0.5B-Instruct / S4_STRUCTURED / R3_NATIVE_BASELINE_AND_G1_CENSUS` is
 `PASS_COPYBACK_READY`: 431.503 ms native median, complete 17.522 s G1 census,
 and a retained 12,869,674-byte remote report with SHA256
