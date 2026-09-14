@@ -19,6 +19,7 @@ class RouteBV2StaticMapTest(unittest.TestCase):
     def test_v2_source_resolves_owner_at_runtime_not_from_libtorch_env(self):
         source = (LANE / "retry570_route_b_v2_static_map_tool.cu").read_text(encoding="utf-8")
         for token in ("cuFuncGetModule", "API_CUDA_cuLibraryLoadData", "API_CUDA_cuLibraryGetModule",
+                      "API_CUDA_cuModuleLoadData", "API_CUDA_cuModuleLoadDataEx",
                       "C16_NVBIT_CODE_OBJECT_MANIFEST", "code_object_path", "code_object_sha256"):
             self.assertIn(token, source)
         self.assertNotIn("C16_NVBIT_CODE_OBJECT_SHA256", source)

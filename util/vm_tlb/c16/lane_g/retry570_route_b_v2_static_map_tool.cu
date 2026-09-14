@@ -179,10 +179,30 @@ static void observe_library_callback(int is_exit, nvbit_api_cuda_t callback, voi
     }
 }
 
+// PyTorch extension and ATen kernels commonly arrive through cuModuleLoadData
+// rather than the CUDA 12 cuLibrary API.  Treat both loader families as
+// ownership evidence; neither path is inferred from a caller-provided DSO.
+static void observe_module_load_callback(int is_exit, nvbit_api_cuda_t callback, void* parameters) {
+    std::lock_guard<std::mutex> guard(ownership_mutex);
+    if (callback == API_CUDA_cuModuleLoadData || callback == API_CUDA_cuModuleLoadDataEx || callback == API_CUDA_cuModuleLoadFatBinary) {
+        CUmodule* module = nullptr; const void* image = nullptr;
+        if (callback == API_CUDA_cuModuleLoadData) { auto* p = static_cast<cuModuleLoadData_params*>(parameters); module = p->module; image = p->image; }
+        else if (callback == API_CUDA_cuModuleLoadDataEx) { auto* p = static_cast<cuModuleLoadDataEx_params*>(parameters); module = p->module; image = p->image; }
+        else { auto* p = static_cast<cuModuleLoadFatBinary_params*>(parameters); module = p->module; image = p->fatCubin; }
+        if (!is_exit) { Dl_info info{}; if (image != nullptr && dladdr(image, &info) != 0) pending_loads[parameters] = owner_from_path(info.dli_fname, "cuModuleLoadData_dladdr"); }
+        else if (module != nullptr) { auto it = pending_loads.find(parameters); if (it != pending_loads.end()) { module_owners[*module] = it->second; pending_loads.erase(it); } }
+    } else if (callback == API_CUDA_cuModuleLoad) {
+        auto* p = static_cast<cuModuleLoad_params*>(parameters);
+        if (!is_exit) pending_loads[parameters] = owner_from_path(p->fname, "cuModuleLoad_file");
+        else if (p->module != nullptr) { auto it = pending_loads.find(parameters); if (it != pending_loads.end()) { module_owners[*p->module] = it->second; pending_loads.erase(it); } }
+    }
+}
+
 void nvbit_at_init() { require_environment(); printf("C16_ROUTE_B_V2_MAP_TOOL_READY manifest_entries=%zu\n", manifest_sha.size()); fflush(stdout); }
 
 void nvbit_at_cuda_event(CUcontext context, int is_exit, nvbit_api_cuda_t callback, const char*, void* parameters, CUresult*) {
     if (callback == API_CUDA_cuLibraryLoadData || callback == API_CUDA_cuLibraryLoadFromFile || callback == API_CUDA_cuLibraryGetModule) { observe_library_callback(is_exit, callback, parameters); return; }
+    if (callback == API_CUDA_cuModuleLoad || callback == API_CUDA_cuModuleLoadData || callback == API_CUDA_cuModuleLoadDataEx || callback == API_CUDA_cuModuleLoadFatBinary) { observe_module_load_callback(is_exit, callback, parameters); return; }
     if (is_exit || map_emitted.load() || owner_unresolved.load()) return;
     CUfunction function = nullptr;
     if (!extract_launch_function(callback, parameters, &function) || function == nullptr) return;
