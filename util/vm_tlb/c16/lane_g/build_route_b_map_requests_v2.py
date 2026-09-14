@@ -28,11 +28,21 @@ def main() -> None:
         by_phase: dict[str, dict[str, object]] = {}
         for phase in sorted({row["phase"] for row in members}):
             phase_rows = [row for row in members if row["phase"] == phase]
-            geometries = sorted({(row["grid"], row["block"], row["shape_key"], row["dtype_key"]) for row in phase_rows})
+            geometry_groups: dict[tuple[str, str, str, str], dict[str, int]] = {}
+            for row in phase_rows:
+                key = (row["grid"], row["block"], row["shape_key"], row["dtype_key"])
+                aggregate = geometry_groups.setdefault(key, {"launch_count": 0, "duration_ns": 0})
+                aggregate["launch_count"] += 1
+                aggregate["duration_ns"] += int(row["duration_ns"])
+            geometries = sorted(geometry_groups.items())
             by_phase[phase] = {
                 "launch_count": len(phase_rows),
                 "phase_duration_ns": sum(int(row["duration_ns"]) for row in phase_rows),
-                "geometries": [{"grid": grid, "block": block, "shape_key": shape, "dtype_key": dtype} for grid, block, shape, dtype in geometries],
+                "geometries": [
+                    {"grid": grid, "block": block, "shape_key": shape, "dtype_key": dtype,
+                     "launch_count": aggregate["launch_count"], "duration_ns": aggregate["duration_ns"]}
+                    for (grid, block, shape, dtype), aggregate in geometries
+                ],
             }
         total = sum(int(row["duration_ns"]) for row in members)
         request_id = "LLAMA_S0_G1_V2_" + sha256(function.encode()).hexdigest()[:16]

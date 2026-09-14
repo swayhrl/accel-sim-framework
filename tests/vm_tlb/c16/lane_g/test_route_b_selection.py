@@ -1,62 +1,32 @@
 #!/usr/bin/env python3
-"""CPU-only fixtures for Route-B map-summary selection."""
+"""CPU fixtures for V2 full-census Route-B selection."""
 from __future__ import annotations
-
-import sys
-import unittest
+import sys, unittest
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(ROOT / "util" / "vm_tlb" / "c16" / "lane_g"))
-
-from route_b_selection import RouteBSelectionError, freeze_final_selection
-
-
-SHA_A = "a" * 64
-SHA_B = "b" * 64
-
-
-def request(request_id: str, phase: str, duration: int, grid: str = "2x1x1"):
-    return {"request_id": request_id, "phase": phase, "exact_full_function": "full::" + request_id,
-            "known_mangled_name": "MAP_DISCOVERY_REQUIRED", "grid": grid, "block": "64x1x1",
-            "shape_key": "B1_T128_D4", "dtype_key": "float16", "launch_count": 2,
-            "phase_duration_ns": duration, "source_catalog_sha": SHA_A}
-
-
-def summary(row, count: int, **updates):
-    value = {"request_id": row["request_id"], "status": "MAPPED_EXACT", "exact_full_function": row["exact_full_function"],
-             "grid": row["grid"], "block": row["block"], "shape_key": row["shape_key"], "dtype_key": row["dtype_key"],
-             "function_mangled_name": "_Z" + row["request_id"], "static_map_sha256": SHA_A,
-             "code_object_sha256": SHA_B, "static_global_mref_count": count}
-    value.update(updates)
-    return value
-
-
-class RouteBSelectionTests(unittest.TestCase):
-    def test_duration_union_proxy_is_deterministic(self):
-        a, b, c = request("a", "PREFILL", 70), request("b", "PREFILL", 20), request("c", "PREFILL", 10)
-        result = freeze_final_selection({"requests": [a, b, c]}, [summary(a, 1), summary(b, 50), summary(c, 1)])
-        phase = result["phases"]["PREFILL"]
-        self.assertEqual(["a", "b", "c"], phase["duration_prefix_request_ids"])
-        self.assertEqual(["b"], phase["memory_proxy_prefix_request_ids"])
-        self.assertEqual(["a", "b", "c"], phase["final_request_ids"])
-        self.assertEqual(0.9615384615384616, phase["memory_proxy_prefix_fraction"])
-
-    def test_failed_closed_candidate_is_never_substituted(self):
-        a, b = request("a", "DECODE", 80), request("b", "DECODE", 20)
-        result = freeze_final_selection({"requests": [a, b]}, [summary(a, 1), {"request_id": "b", "status": "FAILED_CLOSED", "failure_reason": "exact function absent"}])
-        self.assertEqual(["a"], result["final_request_ids"])
-        self.assertEqual("b", result["map_failures_closed"][0]["request_id"])
-
-    def test_missing_map_identity_or_outcome_data_fails_closed(self):
-        a = request("a", "PREFILL", 1)
-        with self.assertRaises(RouteBSelectionError):
-            freeze_final_selection({"requests": [a]}, [summary(a, 1, function_mangled_name="")])
-        with self.assertRaises(RouteBSelectionError):
-            freeze_final_selection({"requests": [a]}, [summary(a, 1, gpu_va=0x1000)])
-        with self.assertRaises(RouteBSelectionError):
-            freeze_final_selection({"requests": [a]}, [])
-
-
-if __name__ == "__main__":
-    unittest.main()
+ROOT=Path(__file__).resolve().parents[4]; sys.path.insert(0,str(ROOT/'util'/'vm_tlb'/'c16'/'lane_g'))
+from route_b_selection import RouteBSelectionError, freeze_final_selection_v2
+SHA="a"*64
+def req(i,duration,launch=1,grid="1x1x1"):
+ return {"request_id":i,"exact_full_function":"f"+i,"known_mangled_name":"MAP_DISCOVERY_REQUIRED","code_object_sha256":"MAP_DISCOVERY_REQUIRED","source_catalog_sha":SHA,"phase_observations":{"PREFILL":{"launch_count":launch,"phase_duration_ns":duration,"geometries":[{"grid":grid,"block":"32x1x1","shape_key":"S","dtype_key":"D","launch_count":launch,"duration_ns":duration}]}}}
+def mapped(row,count):
+ return {"request_id":row["request_id"],"terminal_status":"MAPPED_EXACT","exact_full_function":row["exact_full_function"],"function_mangled_name":"_Z"+row["request_id"],"static_global_mref_count":count,"static_map_sha256":SHA,"code_object_sha256":SHA}
+class V2Selection(unittest.TestCase):
+ def test_real_duration_prefix_and_geometry_proxy(self):
+  a,b,c=req("a",70,1),req("b",20,100),req("c",10,1)
+  out=freeze_final_selection_v2({"schema_version":"C16_ROUTE_B_MAP_REQUESTS_V2","requests":[a,b,c]},[mapped(a,1),mapped(b,1),mapped(c,1)])
+  phase=out["phases"]["PREFILL"]
+  self.assertEqual(["a"],phase["duration_prefix_request_ids"])
+  self.assertEqual(["b"],phase["memory_proxy_prefix_request_ids"])
+  self.assertEqual(.7,phase["duration_prefix_coverage"])
+  self.assertGreaterEqual(phase["memory_proxy_coverage"],.8)
+ def test_failed_map_keeps_full_duration_denominator_and_blocks_proxy_proof(self):
+  a,b=req("a",70),req("b",30)
+  out=freeze_final_selection_v2({"schema_version":"C16_ROUTE_B_MAP_REQUESTS_V2","requests":[a,b]},[mapped(a,1),{"request_id":"b","terminal_status":"FAILED_CLOSED","exact_full_function":"fb","failure_reason":"owner unresolved"}])
+  phase=out["phases"]["PREFILL"]
+  self.assertEqual(100,phase["full_frozen_duration_denominator_ns"])
+  self.assertEqual("NOT_PROVABLE_FAILED_CLOSED",phase["memory_proxy_coverage_status"])
+ def test_unresolved_or_address_result_is_rejected(self):
+  a=req("a",1)
+  with self.assertRaises(RouteBSelectionError): freeze_final_selection_v2({"schema_version":"C16_ROUTE_B_MAP_REQUESTS_V2","requests":[a]},[])
+  with self.assertRaises(RouteBSelectionError): freeze_final_selection_v2({"schema_version":"C16_ROUTE_B_MAP_REQUESTS_V2","requests":[a]},[mapped(a,1)|{"gpu_va":1}])
+if __name__=='__main__': unittest.main()
