@@ -3,7 +3,7 @@
 from __future__ import annotations
 import argparse, os, subprocess, time, uuid
 from pathlib import Path
-from c16_native_common import ContractError, atomic_json, sha256_file
+from c16_native_common import ContractError, atomic_json, repo_root, sha256_file
 from execution_budget import MeasurementActive
 from profiler_wrapper import write_parent_lease_closeout, write_parent_lease_start
 from retry570_recovery_v3_campaign_budget import RecoveryV3CampaignLease, initialize
@@ -22,7 +22,7 @@ def main() -> None:
  if not a.nsys.is_file() or not os.access(a.nsys,os.X_OK): raise ContractError('absolute nsys missing')
  if str(uuid.UUID(a.run_id)) != a.run_id: raise ContractError('run id must be UUID')
  binding=load_binding(a.binding,canary=False)
- ident={'deployment_id':binding['deployment_id'],'model_id':binding['model_id'],'model_revision':binding['model_revision'],'tokenizer_revision':binding['tokenizer_revision'],'scenario_id':binding['scenario']['scenario_id'],'input_hash':binding['input']['raw_input_sha256'],'implementation_key':a.implementation_key,'dtype':a.dtype,'quantization':a.quantization,'run_id':a.run_id,'code_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()}
+ ident={'deployment_id':binding['deployment_id'],'model_id':binding['model_id'],'model_revision':binding['model_revision'],'tokenizer_revision':binding['tokenizer_revision'],'scenario_id':binding['scenario']['scenario_id'],'input_hash':binding['input']['raw_input_sha256'],'implementation_key':a.implementation_key,'dtype':a.dtype,'quantization':a.quantization,'run_id':a.run_id,'code_commit':subprocess.check_output(['git','-C',str(repo_root()),'rev-parse','HEAD'],text=True).strip()}
  initialize(ledger_path=a.campaign_ledger,historical_ledger=a.historical_ledger,expected_historical_sha256=a.historical_sha256,identity=ident,budget_scope=a.budget_scope)
  MeasurementActive.assert_available(a.campaign_ledger); started=time.monotonic(); parent=None; rc=None
  with RecoveryV3CampaignLease(a.campaign_ledger,ident,'NSYS',capture=False,budget_scope=a.budget_scope) as lease:

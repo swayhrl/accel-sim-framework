@@ -9,4 +9,6 @@ class G1Contract(unittest.TestCase):
  def test_nsys_is_real_and_history_is_bound(self):
   for s in ('--trace=cuda,nvtx,osrt','--historical-sha256','historical_ledger','nsys-rep'):
    self.assertIn(s,SOURCE)
+ def test_code_commit_is_independent_of_launch_cwd(self):
+  self.assertIn("['git','-C',str(repo_root()),'rev-parse','HEAD']",SOURCE)
 if __name__=='__main__': unittest.main()
