@@ -10,10 +10,12 @@ try:
     from .catalog import catalog_entry_from_manifest, write_catalog_entry
     from .rebuild_catalog_snapshot import rebuild
     from .receiver_common import AdmissionError, load_json, rename_noreplace, sha256_file, utc_now
+    from .quarantine import quarantine_bundle
 except ImportError:
     from catalog import catalog_entry_from_manifest, write_catalog_entry
     from rebuild_catalog_snapshot import rebuild
     from receiver_common import AdmissionError, load_json, rename_noreplace, sha256_file, utc_now
+    from quarantine import quarantine_bundle
 
 
 def admit(root: Path, verification_receipt: Path) -> dict:
@@ -31,13 +33,22 @@ def admit(root: Path, verification_receipt: Path) -> dict:
     if sha256_file(manifest_path) != receipt.get("source_manifest_sha256"):
         raise AdmissionError("manifest changed after verification")
     manifest = load_json(manifest_path)
+    catalog_candidate = root / "catalog" / "entries" / f"{run_id}.json"
+    if catalog_candidate.exists():
+        raise AdmissionError("immutable catalog entry already exists")
     rename_noreplace(partial, raw)
     try:
         entry = catalog_entry_from_manifest(manifest, raw, receipt["source_manifest_sha256"])
         catalog_path, catalog_sha = write_catalog_entry(root, entry)
         snapshot = rebuild(root)
     except Exception as exc:
-        raise AdmissionError(f"raw promoted but catalog closure failed; do not ACK: {exc}") from exc
+        # This object was never ACKed or catalog-admitted; keep it inspectable
+        # outside raw rather than leaving an ambiguous raw object.
+        try:
+            quarantine_bundle(root, raw, run_id, f"post-promote catalog closure failure: {exc}")
+        except Exception as quarantine_error:
+            raise AdmissionError(f"raw promoted, catalog closure failed, and quarantine failed; do not ACK: {exc}; {quarantine_error}") from exc
+        raise AdmissionError(f"catalog closure failed; unadmitted bundle quarantined; do not ACK: {exc}") from exc
     return {
         "schema_version": 1,
         "run_id": run_id,

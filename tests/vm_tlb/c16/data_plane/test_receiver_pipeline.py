@@ -9,6 +9,7 @@ from pathlib import Path
 from util.vm_tlb.c16.data_plane.admit_capture import admit
 from util.vm_tlb.c16.data_plane.receiver_common import AdmissionError, sha256_file
 from util.vm_tlb.c16.data_plane.rebuild_catalog_snapshot import rebuild
+from util.vm_tlb.c16.data_plane.quarantine import quarantine_bundle
 from util.vm_tlb.c16.data_plane.verify_capture import verify_partial
 from util.vm_tlb.c16.data_plane.write_transfer_ack import write_ack
 
@@ -77,6 +78,16 @@ class ReceiverPipelineTest(unittest.TestCase):
         (bundle / "payload.bin").write_bytes(b"mutated")
         with self.assertRaises(AdmissionError):
             verify_partial(self.root, RUN_ID)
+        self.assertFalse((self.root / "raw" / RUN_ID).exists())
+
+    def test_corruption_can_be_quarantined_without_ack(self):
+        bundle = self.make_partial()
+        (bundle / "payload.bin").write_bytes(b"mutated")
+        with self.assertRaises(AdmissionError) as caught:
+            verify_partial(self.root, RUN_ID)
+        quarantined = quarantine_bundle(self.root, bundle, RUN_ID, str(caught.exception))
+        self.assertTrue((quarantined / "QUARANTINE_RECEIPT.json").is_file())
+        self.assertFalse((self.root / "inbox" / f"{RUN_ID}.partial").exists())
         self.assertFalse((self.root / "raw" / RUN_ID).exists())
 
     def test_existing_raw_refuses_no_overwrite(self):
