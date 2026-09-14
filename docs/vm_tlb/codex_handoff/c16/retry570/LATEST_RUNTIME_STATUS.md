@@ -26,6 +26,14 @@ section is provenance only and cannot create a second GPU queue.
   (Prefill) and `indexSelectSmallIndex` (Decode), freeze all exact
   `GLOBAL && has_mref` pairs, and retain remote SHA/manifest closure before
   any return to CUTLASS owner resolution.
+- The pre-existing shared Recovery-V3 campaign ledger’s bound historical SHA
+  (`a37775a6…`) is no longer materialized on this node, so it is fail-closed
+  for new work.  Q2 and subsequent primary-Llama Route-B work use the new,
+  independently initialized `RECOVERY_V3_LLAMA_PRIMARY_CAMPAIGN_BUDGET_LEDGER_V1`
+  namespace, bound to the immutable local snapshot
+  `EXECUTION_BUDGET_LEDGER_933e4020….json`; the old ledger and every retained
+  historical row are unchanged.  Compact provenance:
+  `LLAMA_PRIMARY_CAMPAIGN_LEDGER_REBIND_RECEIPT.json`.
 
 ## Historical authority — Route B V2 (superseded for scheduling)
 
