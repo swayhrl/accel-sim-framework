@@ -44,8 +44,13 @@ The fixed identity in every accepted/generated receipt is:
      --terminal TERMINAL.json --metadata METADATA.json --output CANARY.json
    python3 util/vm_tlb/c16/lane_g/llama_route_formal_support.py formal-capture \
      --whitelists REPRESENTATIVE_WHITELISTS.json --raw-jsonl RAW.jsonl \
-     --terminal TERMINAL.json --metadata METADATA.json --output FORMAL_CAPTURE.json
+     --terminal TERMINAL.json --metadata METADATA.json --partitions FORMAL_PARTITIONS.json \
+     --partition-id P0 --output FORMAL_CAPTURE.json
    ```
+
+For a formal partition, each event must be in that partition; the validator
+uses the exact function mangle in addition to `(static_index,mref_ordinal)`,
+so equal static indices in separate exact functions are never conflated.
 
 ## Route-C and closeout
 

@@ -44,6 +44,8 @@ class LlamaRouteFormalSupportTests(unittest.TestCase):
             metadata = root / "metadata.json"; metadata.write_text(json.dumps({"identity": PRIMARY_IDENTITY, "raw_schema": "C16_ROUTE_B_LANE_EVENT_V1", "capture_duration_seconds": 1, "serialized_raw_bytes": raw.stat().st_size, "raw_byte_cap": MAX_RAW_BYTES}))
             output = root / "canary.json"; validate_capture(whitelists, raw, terminal, metadata, output, "ROUTEB_CANARY")
             self.assertEqual("PASS_ROUTEB_CANARY", json.loads(output.read_text())["status"])
+            formal = root / "formal.json"; validate_capture(whitelists, raw, terminal, metadata, formal, "ROUTEB_FORMAL_CAPTURE", partitions, "P0")
+            self.assertEqual("P0", json.loads(formal.read_text())["formal_partition_id"])
 
     def test_partition_and_route_c_fail_closed_on_missing_coverage_authority(self):
         with tempfile.TemporaryDirectory() as temporary:

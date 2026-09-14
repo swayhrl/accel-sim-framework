@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from route_b_memory_event_contract import RouteBContractError, WhitelistRow, validate_stream, validate_whitelist
+from route_b_memory_event_contract import RouteBContractError, WhitelistRow, validate_event, validate_terminal, validate_whitelist
 
 
 MAX_RAW_BYTES = 4 * 1024**3
@@ -134,20 +134,28 @@ def freeze_whitelists(selection: Path, index: Path, output: Path) -> None:
     atomic_write(output, result)
 
 
-def units_from_manifest(document: dict[str, Any]) -> dict[str, WhitelistRow]:
+def function_whitelists(document: dict[str, Any]) -> dict[str, tuple[str, tuple[WhitelistRow, ...]]]:
     if document.get("schema_version") != "C16_ROUTE_B_REPRESENTATIVE_WHITELISTS_V1" or document.get("status") != "FROZEN_PRE_OUTCOME_ALL_GLOBAL_MREF":
         fail("requires frozen representative whitelists")
-    require_identity(document.get("identity")); units: dict[str, WhitelistRow] = {}
+    require_identity(document.get("identity")); functions: dict[str, tuple[str, tuple[WhitelistRow, ...]]] = {}
     for function in document.get("functions", []):
         request_id = function.get("request_id") if isinstance(function, dict) else None
-        if not isinstance(request_id, str): fail("whitelist function lacks request ID")
+        mangled = function.get("exact_function_mangled_name") if isinstance(function, dict) else None
+        if not isinstance(request_id, str) or not isinstance(mangled, str) or not mangled: fail("whitelist function lacks exact identity")
         rows = [WhitelistRow(**row) for row in function.get("whitelist", [])]
-        validate_whitelist(rows)
+        if mangled in functions: fail("whitelist manifest duplicates exact function")
+        functions[mangled] = (request_id, validate_whitelist(rows))
+    if not functions: fail("whitelist manifest is empty")
+    return functions
+
+
+def units_from_manifest(document: dict[str, Any]) -> dict[str, WhitelistRow]:
+    units: dict[str, WhitelistRow] = {}
+    for _, (request_id, rows) in function_whitelists(document).items():
         for row in rows:
             key = f"{request_id}:{row.static_index}:{row.mref_ordinal}"
             if key in units: fail("whitelist unit duplicates")
             units[key] = row
-    if not units: fail("whitelist manifest is empty")
     return units
 
 
@@ -185,11 +193,46 @@ def load_events(path: Path) -> list[dict[str, Any]]:
     return events
 
 
-def validate_capture(whitelists: Path, raw: Path, terminal: Path, metadata: Path, output: Path, kind: str) -> None:
-    unit_map = units_from_manifest(load_json(whitelists)); rows = list(unit_map.values())
-    # A formal capture may cover a partition, so its whitelist is a subset of
-    # the frozen representative universe; event validation still permits only
-    # rows in that frozen universe.
+def partition_units(whitelists: Path, partitions: Path, partition_id: str) -> set[str]:
+    document = load_json(partitions)
+    if document.get("schema_version") != "C16_ROUTE_B_FORMAL_PARTITIONS_V1" or document.get("status") != "FROZEN_PRE_OUTCOME_PARTITIONS":
+        fail("requires frozen formal Route-B partitions")
+    if document.get("whitelist_manifest_sha256") != digest(whitelists): fail("partition manifest is not bound to this whitelist")
+    matches = [item for item in document.get("partitions", []) if isinstance(item, dict) and item.get("partition_id") == partition_id]
+    if len(matches) != 1 or not isinstance(matches[0].get("unit_ids"), list) or not matches[0]["unit_ids"]: fail("formal capture partition is missing or empty")
+    units = set(matches[0]["unit_ids"])
+    if len(units) != len(matches[0]["unit_ids"]): fail("formal capture partition repeats a unit")
+    if not units.issubset(units_from_manifest(load_json(whitelists))): fail("formal capture partition has an unknown unit")
+    return units
+
+
+def validate_multi_function_stream(events: list[dict[str, Any]], functions: dict[str, tuple[str, tuple[WhitelistRow, ...]]], terminal: dict[str, Any], allowed_units: set[str] | None) -> int:
+    previous: int | None = None; count = 0
+    instances: dict[tuple[int, int], tuple[tuple[Any, ...], set[int], int]] = {}
+    for event in events:
+        mangled = event.get("function_mangled_name")
+        if not isinstance(mangled, str) or mangled not in functions: fail("raw event function is outside frozen representative whitelist")
+        request_id, rows = functions[mangled]
+        previous = validate_event(event, rows, previous_sequence=previous)
+        unit_id = f"{request_id}:{event['static_index']}:{event['mref_ordinal']}"
+        if allowed_units is not None and unit_id not in allowed_units: fail("raw event is outside the requested formal partition")
+        scope = (event["kernel_launch_id"], event["warp_instruction_instance_id"])
+        signature = (mangled, event["kernel_launch_id"], tuple(event["cta"]), event["warp_id"], event["static_index"], event["mref_ordinal"], event["instruction_offset"], event["opcode"], event["access_kind"], event["width_bytes"], event["active_mask"], event["predicate_mask"], event["predicate_semantics"])
+        expected = event["active_mask"] & event["predicate_mask"]
+        if scope not in instances: instances[scope] = (signature, set(), expected)
+        known, lanes, known_expected = instances[scope]
+        if known != signature or known_expected != expected or event["lane_id"] in lanes: fail("raw event has inconsistent/repeated launch-scoped warp instance")
+        lanes.add(event["lane_id"]); count += 1
+    for _, (_, lanes, expected) in instances.items():
+        if lanes != {lane for lane in range(32) if expected & (1 << lane)}: fail("raw event misses an executing lane")
+    validate_terminal(terminal, count)
+    return count
+
+
+def validate_capture(whitelists: Path, raw: Path, terminal: Path, metadata: Path, output: Path, kind: str, partitions: Path | None = None, partition_id: str | None = None) -> None:
+    functions = function_whitelists(load_json(whitelists))
+    if (partitions is None) != (partition_id is None): fail("formal capture requires both partition manifest and partition ID")
+    allowed_units = partition_units(whitelists, partitions, partition_id) if partitions is not None and partition_id is not None else None
     events, terminal_doc, meta = load_events(raw), load_json(terminal), load_json(metadata)
     if not isinstance(terminal_doc, dict) or not isinstance(meta, dict): fail("terminal/metadata are malformed")
     require_identity(meta.get("identity"))
@@ -200,11 +243,12 @@ def validate_capture(whitelists: Path, raw: Path, terminal: Path, metadata: Path
     bytes_on_disk = raw.stat().st_size
     if bytes_on_disk > MAX_RAW_BYTES or meta.get("serialized_raw_bytes") != bytes_on_disk or meta.get("raw_byte_cap") != MAX_RAW_BYTES:
         fail("actual serialized raw bytes are not within the frozen cap")
-    count = validate_stream(events, rows, terminal_doc)
+    count = validate_multi_function_stream(events, functions, terminal_doc, allowed_units)
     result = {"schema_version": "C16_ROUTE_B_CAPTURE_VALIDATION_V1", "status": f"PASS_{kind}", "identity": PRIMARY_IDENTITY,
               "raw_jsonl_sha256": digest(raw), "terminal_sha256": digest(terminal), "whitelist_manifest_sha256": digest(whitelists),
               "metadata_sha256": digest(metadata), "actual_serialized_raw_bytes": bytes_on_disk, "lane_event_count": count,
-              "terminal_event_count": terminal_doc["event_count"], "capture_duration_seconds": meta["capture_duration_seconds"]}
+              "terminal_event_count": terminal_doc["event_count"], "capture_duration_seconds": meta["capture_duration_seconds"],
+              "formal_partition_id": partition_id}
     atomic_write(output, result)
 
 
@@ -254,12 +298,13 @@ def main() -> None:
     p = sub.add_parser("freeze-partitions"); p.add_argument("--whitelists", type=Path, required=True); p.add_argument("--assignments", type=Path, required=True); p.add_argument("--output", type=Path, required=True)
     for name, kind in (("validate-canary", "ROUTEB_CANARY"), ("formal-capture", "ROUTEB_FORMAL_CAPTURE")):
         p = sub.add_parser(name); p.set_defaults(kind=kind); p.add_argument("--whitelists", type=Path, required=True); p.add_argument("--raw-jsonl", type=Path, required=True); p.add_argument("--terminal", type=Path, required=True); p.add_argument("--metadata", type=Path, required=True); p.add_argument("--output", type=Path, required=True)
+        if name == "formal-capture": p.add_argument("--partitions", type=Path); p.add_argument("--partition-id")
     p = sub.add_parser("analyze-route-c"); p.add_argument("--full-census", type=Path, required=True); p.add_argument("--route-c-reference", type=Path, required=True); p.add_argument("--output", type=Path, required=True)
     p = sub.add_parser("closeout"); p.add_argument("--inputs", type=Path, required=True); p.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "freeze-whitelists": freeze_whitelists(args.selection, args.map_index, args.output)
     elif args.command == "freeze-partitions": freeze_partitions(args.whitelists, args.assignments, args.output)
-    elif args.command in {"validate-canary", "formal-capture"}: validate_capture(args.whitelists, args.raw_jsonl, args.terminal, args.metadata, args.output, args.kind)
+    elif args.command in {"validate-canary", "formal-capture"}: validate_capture(args.whitelists, args.raw_jsonl, args.terminal, args.metadata, args.output, args.kind, getattr(args, "partitions", None), getattr(args, "partition_id", None))
     elif args.command == "analyze-route-c": analyze_route_c(args.full_census, args.route_c_reference, args.output)
     else: closeout(args.inputs, args.output)
 
