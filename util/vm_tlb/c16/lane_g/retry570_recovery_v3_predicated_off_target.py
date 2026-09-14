@@ -63,7 +63,8 @@ def predicate_off_proof(forensic: dict[str, Any]) -> dict[str, int]:
     and its true-predicate count is exactly zero; this is not an address-zero
     fallback and never changes the frozen V1 target.
     """
-    if forensic.get("classification") != "PREDICATED_OFF_TARGET":
+    classification = forensic.get("classification", forensic.get("status"))
+    if classification != "PREDICATED_OFF_TARGET":
         raise ContractError("forensic evidence is not a predicate-off proof")
     evidence = forensic.get("evidence")
     if isinstance(evidence, dict):

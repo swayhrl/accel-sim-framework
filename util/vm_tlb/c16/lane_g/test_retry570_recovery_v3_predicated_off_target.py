@@ -39,6 +39,10 @@ class PredicatedOffReplacementTests(unittest.TestCase):
             },
         })
         self.assertEqual(proof["predicate_true_count"], 0)
+        self.assertEqual(predicate_off_proof({
+            "status": "PREDICATED_OFF_TARGET",
+            "evidence": {"exact_function_launch_count": 1, "callback_count": 1, "predicate_true_count": 0},
+        })["callback_count"], 1)
         with self.assertRaises(Exception):
             predicate_off_proof({
                 "classification": "PREDICATED_OFF_TARGET",
