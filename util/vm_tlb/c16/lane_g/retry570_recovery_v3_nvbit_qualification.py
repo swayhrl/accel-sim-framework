@@ -96,6 +96,7 @@ def main() -> None:
     parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True)
     parser.add_argument("--expected-output-checksum", required=True); parser.add_argument("--expected-attention-backend", required=True)
     parser.add_argument("--target-function")
+    parser.add_argument("--code-object-sha256")
     parser.add_argument("--target-cap-seconds", type=int, default=180)
     args = parser.parse_args()
     try:
@@ -129,8 +130,11 @@ def main() -> None:
                     "C16_G_PARENT_LEASE_TOKEN": token, "C16_G_MEASUREMENT_ACTIVE_MARKER": str(args.campaign_ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE")})
         if inventory is not None: env["C16_NVBIT_LAUNCH_INVENTORY_PATH"] = str(inventory)
         if static_map is not None:
-            if not args.target_function: raise ContractError("static-map mode requires exact --target-function")
-            env.update({"C16_NVBIT_TARGET_FUNCTION_MANGLED": args.target_function, "C16_NVBIT_STATIC_MAP_PATH": str(static_map)})
+            if not args.target_function or not args.code_object_sha256 or len(args.code_object_sha256) != 64:
+                raise ContractError("static-map mode requires exact function and code-object SHA256")
+            env.update({"C16_NVBIT_TARGET_FUNCTION_MANGLED": args.target_function,
+                        "C16_NVBIT_STATIC_MAP_PATH": str(static_map),
+                        "C16_NVBIT_CODE_OBJECT_SHA256": args.code_object_sha256})
         with args.stdout.open("w", encoding="utf-8") as out, args.stderr.open("w", encoding="utf-8") as err:
             with MeasurementActive(args.campaign_ledger, ident, "NVBIT_RECOVERY_V3_QUALIFICATION"):
                 process = subprocess.Popen(child_command(args, inventory, static_map), stdout=out, stderr=err, text=True, env=env, start_new_session=True)

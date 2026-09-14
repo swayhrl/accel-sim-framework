@@ -16,6 +16,10 @@ class RecoveryV3QualificationContractTest(unittest.TestCase):
         self.assertIn("scientific_eligible_for_timing\": False", SOURCE)
         self.assertIn("RECOVERY_V3_DIRECT_NVBIT_IDENTITY_QUALIFICATION_NOT_FOR_TIMING", SOURCE)
 
+    def test_static_map_closes_the_loaded_code_object(self):
+        self.assertIn("--code-object-sha256", SOURCE)
+        self.assertIn("C16_NVBIT_CODE_OBJECT_SHA256", SOURCE)
+
 
 if __name__ == "__main__":
     unittest.main()
