@@ -14,6 +14,6 @@ Execution results belong in:
 
 `docs/vm_tlb/codex_handoff/c16/4080_migration/LATEST_REPORT.md`
 
-Detailed review evidence belongs in:
+Detailed review evidence for the authorized resume stage belongs in:
 
-`docs/vm_tlb/review_packs/C16_4080_U4_U9_R1/`
+`docs/vm_tlb/review_packs/C16_4080_U4_U9_R2/`
