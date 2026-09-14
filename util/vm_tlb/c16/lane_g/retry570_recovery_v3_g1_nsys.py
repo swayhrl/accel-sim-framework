@@ -19,6 +19,10 @@ def main() -> None:
  p.add_argument('--dtype',required=True); p.add_argument('--quantization',required=True)
  a=p.parse_args()
  if any(x.exists() for x in (a.receipt,a.runner_receipt,a.parent_lease,a.output)): raise ContractError('G1 refuses retained-output overwrite')
+ # Nsight falls back to /tmp when its requested output parent is absent.  That
+ # breaks the remote-artifact identity contract even if the child workload
+ # completed, so materialize the declared raw parent before the formal window.
+ a.output.parent.mkdir(parents=True, exist_ok=True)
  if not a.nsys.is_file() or not os.access(a.nsys,os.X_OK): raise ContractError('absolute nsys missing')
  if str(uuid.UUID(a.run_id)) != a.run_id: raise ContractError('run id must be UUID')
  binding=load_binding(a.binding,canary=False)
