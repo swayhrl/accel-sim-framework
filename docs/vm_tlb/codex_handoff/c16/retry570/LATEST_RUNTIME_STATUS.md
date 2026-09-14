@@ -2,6 +2,37 @@
 
 Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_ROUTE_B_V2_SELECTION_PENDING`.
 
+## Live authority — Route B V2
+
+This section supersedes every scheduler statement below it.  Historical prose
+is retained for provenance only and must not be used to create a second GPU
+queue.
+
+- `GPU_ACTIVE_JOB=none`; `MEASUREMENT_ACTIVE=absent`;
+  `ACTIVE_GPU_PROCESS_COUNT=0`.
+- `GPU_READY_QUEUE_COUNT=0`: this is a real Route-B admission gate, not an
+  idle-transfer or publication delay.  The single-PC targeted-memory tool is
+  not an all-GLOBAL+MREF producer, so no Route-B address capture is lawful
+  until the selected-function manifest and Q0/Q1/Q2 producer gates close.
+- Exact Llama S0 G1 remains the only Llama Route-B selection authority
+  (`KERNEL_CATALOG.tsv` SHA256
+  `4c316b387e1730f03f3214b0b0aa67c6a8d9aa57a4ebbbd3f231f85b5b8eed21`).
+- Map-only discovery completed with the frozen `libtorch_cuda.so` SHA256
+  `761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a` for
+  real census functions: Prefill CUTLASS (`33d188cd…e5161`), ampere GEMM
+  (`6cc5114b…7f13`), XMMA (`8b3eaa66…4149`), and flash (`bc26fa1a…5d60`);
+  Decode CUTLASS (`28f9f67c…386d`), ampere GEMM (`cd9ff57b…02ef`), GEMV
+  (`e70ddbc9…ef8a`), GEMVX (`10d8445c…bf6c`), flash (`aaf880d2…a815`), and
+  CatArray (`0da566a2…d9e4`).  All are `NVBIT_STATIC_MAP`, no-insertion,
+  no-address diagnostics, and are remote-SHA-closed `COPYBACK_READY`.
+- The new CPU-only Route-B Q0 event contract is in progress.  It rejects
+  non-GLOBAL/non-MREF whitelist rows, mask/lane/address disagreement,
+  unsupported access kinds, unlabelled ordering, and nonzero overflow/drop;
+  it does not claim Q1/Q2 or capture qualification.
+- `NEXT_GPU_JOB=ROUTE_B_SELECTION_MANIFEST_CPU`; once the manifest is frozen,
+  the next GPU action is producer Q1 tiny-CUDA qualification, never a
+  single-index Route-A substitution.
+
 ## Latest independently reviewable checkpoint
 
 `Qwen0 / S3_TEXT / R5 / PREFILL / target V2` is
