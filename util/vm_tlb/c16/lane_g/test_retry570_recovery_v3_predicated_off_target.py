@@ -9,7 +9,7 @@ from pathlib import Path
 LANE = Path(__file__).resolve().parent
 sys.path.insert(0, str(LANE))
 
-from retry570_recovery_v3_predicated_off_target import select  # noqa: E402
+from retry570_recovery_v3_predicated_off_target import predicate_off_proof, select  # noqa: E402
 
 
 class PredicatedOffReplacementTests(unittest.TestCase):
@@ -28,6 +28,26 @@ class PredicatedOffReplacementTests(unittest.TestCase):
         source = (LANE / "retry570_recovery_v3_predicated_off_target.py").read_text(encoding="utf-8")
         for token in ("EARLIEST_UNPREDICATED_DIRECT_GLOBAL_MREF_IN_SAME_EXACT_FUNCTION_AFTER_PREDICATE_OFF_PROOF", "WIDEN_PRIOR_RANGE", "KERNEL_NAME_ONLY_SUBSTITUTION", "STATIC_ORDINAL_REUSE"):
             self.assertIn(token, source)
+
+    def test_accepts_only_launched_direct_predicate_off_evidence(self) -> None:
+        proof = predicate_off_proof({
+            "classification": "PREDICATED_OFF_TARGET",
+            "evidence": {
+                "exact_function_launch_count": 24,
+                "callback_count": 2_752_512,
+                "predicate_true_count": 0,
+            },
+        })
+        self.assertEqual(proof["predicate_true_count"], 0)
+        with self.assertRaises(Exception):
+            predicate_off_proof({
+                "classification": "PREDICATED_OFF_TARGET",
+                "evidence": {
+                    "exact_function_launch_count": 24,
+                    "callback_count": 2_752_512,
+                    "predicate_true_count": 1,
+                },
+            })
 
 
 if __name__ == "__main__":

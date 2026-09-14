@@ -54,18 +54,57 @@ def select(map_path: Path, *, function: str, lib_sha: str, prior_index: int) -> 
     }
 
 
+def predicate_off_proof(forensic: dict[str, Any]) -> dict[str, int]:
+    """Normalize either retained forensic schema without weakening its proof.
+
+    The original parser-level receipt contains predicate-mask row totals.  The
+    approved S3 V1 closeout instead carries direct callback counters.  Both
+    forms are admissible only when the exact instruction launched/callbacked
+    and its true-predicate count is exactly zero; this is not an address-zero
+    fallback and never changes the frozen V1 target.
+    """
+    if forensic.get("classification") != "PREDICATED_OFF_TARGET":
+        raise ContractError("forensic evidence is not a predicate-off proof")
+    evidence = forensic.get("evidence")
+    if isinstance(evidence, dict):
+        launches = int(evidence.get("exact_function_launch_count", 0))
+        callbacks = int(evidence.get("callback_count", 0))
+        predicate_true = int(evidence.get("predicate_true_count", -1))
+        if launches <= 0 or callbacks <= 0 or predicate_true != 0:
+            raise ContractError("direct forensic counters do not prove a launched predicate-off target")
+        return {
+            "exact_function_launch_count": launches,
+            "callback_count": callbacks,
+            "predicate_true_count": predicate_true,
+        }
+    predicate_nonzero = int(forensic.get("predicate_mask_nonzero_rows", -1))
+    predicate_zero = int(forensic.get("predicate_mask_zero_rows", 0))
+    if predicate_nonzero != 0 or predicate_zero <= 0:
+        raise ContractError("parser forensic rows do not prove a predicate-off target")
+    return {
+        "exact_function_launch_count": 0,
+        "callback_count": 0,
+        "predicate_true_count": predicate_nonzero,
+        "predicate_mask_zero_rows": predicate_zero,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--map", type=Path, required=True)
     parser.add_argument("--prior-target", type=Path, required=True)
     parser.add_argument("--forensics", type=Path, required=True)
+    parser.add_argument("--replacement-id", required=True,
+                        help="immutable new target identifier, e.g. S3_PREFILL_TARGET_V2")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         raise SystemExit("FAIL predicated-off target: refuses to overwrite frozen target")
     prior, forensic = load(args.prior_target), load(args.forensics)
-    if forensic.get("classification") != "PREDICATED_OFF_TARGET":
-        raise SystemExit("FAIL predicated-off target: forensic evidence is not a predicate-off proof")
+    try:
+        proof = predicate_off_proof(forensic)
+    except (ContractError, TypeError, ValueError) as exc:
+        raise SystemExit(f"FAIL predicated-off target: {exc}") from exc
     try:
         function = prior["function"]
         instruction = prior["target_instruction"]
@@ -78,6 +117,7 @@ def main() -> None:
     value = {
         "schema_version": SCHEMA,
         "status": "PREDICATED_OFF_TARGET_REPLACEMENT_SELECTED",
+        "target_plan_id": args.replacement_id,
         "scientific_eligible": False,
         "selection_basis": "EARLIEST_UNPREDICATED_DIRECT_GLOBAL_MREF_IN_SAME_EXACT_FUNCTION_AFTER_PREDICATE_OFF_PROOF",
         "function": function,
@@ -85,8 +125,7 @@ def main() -> None:
         "range_contract": {"instr_begin": target["nvbit_static_index"], "instr_end_exclusive": target["nvbit_static_index"] + 1},
         "prior_target": {"path": str(args.prior_target), "sha256": sha256_file(args.prior_target), "static_index": prior_index},
         "predicate_off_forensics": {"path": str(args.forensics), "sha256": sha256_file(args.forensics),
-                                      "predicate_mask_nonzero_rows": forensic["predicate_mask_nonzero_rows"],
-                                      "predicate_mask_zero_rows": forensic["predicate_mask_zero_rows"]},
+                                      "proof": proof},
         "map": {"path": str(args.map), "sha256": sha256_file(args.map)},
         "forbidden": ["WIDEN_PRIOR_RANGE", "KERNEL_NAME_ONLY_SUBSTITUTION", "PERFORMANCE_OUTCOME_SELECTION", "STATIC_ORDINAL_REUSE"],
     }
