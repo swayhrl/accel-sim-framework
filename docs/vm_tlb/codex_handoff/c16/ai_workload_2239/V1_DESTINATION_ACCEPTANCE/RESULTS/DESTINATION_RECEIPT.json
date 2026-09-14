@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "stage": "C16_AI_WORKLOAD_2239_V1_DESTINATION_ACCEPTANCE",
+  "observed_at_utc": "2026-09-14T14:43:07Z",
+  "git": {
+    "branch": "hrl/c16-ai-workload-2239-destination-acceptance-v1",
+    "head": "9add956570217abae55f75eda653e9cfeaa27bc3",
+    "worktree_clean_before_v1_results": true,
+    "worktree": "/root/workspace/accel-sim-framework"
+  },
+  "authority_boundaries": {
+    "rtx4080": {"branch": "hrl/c16-4080-u5-u9-r5-clean", "commit": "b75f26674a09705659e770ab2134351414aa3c93", "status": "READY_FOR_MULTIMODEL_REVIEW", "r4": "MECHANISM_ONLY_NON_AUTHORITATIVE"},
+    "rtx3090": {"branch": "hrl/vm-c16-g-3090-campaign-closeout-v0", "commit": "649af1b9d65a774d4aa8c32a15f9b6f4da0dd4d9", "separate_from_rtx4080": true}
+  },
+  "admissions": {
+    "storage": "STORAGE_ADMISSION_PASS",
+    "model": "EXACT_ASSET_ADMISSION_PASS",
+    "frozen_input": "PARTIAL_PRESENT",
+    "runtime": "NEW_DESTINATION_RUNTIME_NON_EQUIVALENT_TO_R5",
+    "nvbit": "REBUILD_OR_VERIFY_REQUIRED",
+    "ncu": "REBUILD_OR_VERIFY_REQUIRED",
+    "gpu_diagnostic": "GPU_DIAGNOSTIC_NOT_RUN_GPU_NOT_VISIBLE"
+  },
+  "operations_not_performed": [
+    "bulk source-to-destination migration",
+    "RTX3090 recovery-root copy",
+    "Llama workload rerun",
+    "NVBit trace capture",
+    "NCU profiling",
+    "tokenizer regeneration",
+    "model download or update",
+    "process kill, reset, or profiler attachment"
+  ]
+}

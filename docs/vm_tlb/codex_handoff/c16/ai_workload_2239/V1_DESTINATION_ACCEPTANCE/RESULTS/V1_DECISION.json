@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "stage": "C16_AI_WORKLOAD_2239_V1_DESTINATION_ACCEPTANCE",
+  "decided_at_utc": "2026-09-14T14:43:07Z",
+  "decision": "DESTINATION_BLOCKED_MODEL_OR_INPUT_IDENTITY",
+  "rationale": "The exact required Llama model is present and hash-closed, and external storage is admitted. However, destination-visible files do not contain the exact Llama frozen-input payload and binding receipts necessary to verify the required four-hash contract without tokenizer regeneration.",
+  "gate_status": {
+    "storage": "STORAGE_ADMISSION_PASS",
+    "model": "EXACT_ASSET_ADMISSION_PASS",
+    "frozen_input": "PARTIAL_PRESENT",
+    "runtime": "NEW_DESTINATION_RUNTIME_NON_EQUIVALENT_TO_R5",
+    "nvbit": "REBUILD_OR_VERIFY_REQUIRED",
+    "ncu": "REBUILD_OR_VERIFY_REQUIRED",
+    "gpu_diagnostic": "GPU_DIAGNOSTIC_NOT_RUN_GPU_NOT_VISIBLE"
+  },
+  "next_authorized_action": "Locate and hash-verify the existing frozen Llama input bundle and its binding receipts; do not regenerate it. Then separately establish a new destination runtime/toolchain receipt before any bounded canary.",
+  "prohibited_actions_preserved": true,
+  "storage_import_authorized": false,
+  "bounded_canary_authorized": false
+}

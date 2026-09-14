@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "stage": "C16_AI_WORKLOAD_2239_V1_DESTINATION_ACCEPTANCE",
+  "observed_at_utc": "2026-09-14T14:43:07Z",
+  "status": "STORAGE_ADMISSION_PASS",
+  "selected_external_ai_root": "/root/share/mnt164/huangrulin/c16_ai_workload_2239",
+  "selected_mount": {
+    "mount_path": "/root/share/mnt164",
+    "filesystem": "fuse.sshfs",
+    "capacity_bytes": 168306982981632,
+    "free_bytes": 78641325916160,
+    "docker_access": "read-write as current container user (root)",
+    "mount_source": "intentionally omitted: not needed for scientific reproducibility"
+  },
+  "selection_rationale": "This is the only inspected destination-visible external mount with substantial free capacity (about 71.5 TiB) and verified write access. The container overlay and /root/data have only about 12.7 GiB free; /root/share has about 266.6 GiB free and is not selected as the long-term AI data plane.",
+  "scratch_test": {
+    "parent": "/root/share/mnt164/huangrulin",
+    "new_temporary_directory": ".c16_v1_destination_acceptance_scratch_<pid>",
+    "file_size_bytes": 50,
+    "sha256_written": "7b56ddbda26a26c6d5b06f295a906ee50686159bb0ce1487e039ea47f9213945",
+    "sha256_read_back": "7b56ddbda26a26c6d5b06f295a906ee50686159bb0ce1487e039ea47f9213945",
+    "result": "PASS",
+    "test_file_removed": true,
+    "scratch_directory_removed": true
+  },
+  "planned_namespace_only": [
+    "models/",
+    "inputs/",
+    "runtime/",
+    "tools/",
+    "raw/rtx4080/",
+    "raw/rtx3090_history/",
+    "profiler/ncu/",
+    "profiler/nsys/",
+    "manifests/",
+    "analysis/",
+    "scratch/"
+  ],
+  "migration_performed": false
+}

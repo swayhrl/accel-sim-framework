@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-14T14:43:07Z",
+  "status": "PARTIAL_PRESENT",
+  "required_contract": {
+    "raw_text_sha256": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "token_receipt_sha256": "0b5a86fdee44452e74e5d80e8043ebd97054fbbe29a6232a4f5cf5d06568c7dd",
+    "canonical_target_token_ids_sha256": "f9cf1ea6dca7956c740b3aa0af59acadd17be014df2aaffb75d240383502e3a7",
+    "derived_token_ids_sha256": "fc712eb0a158f0fe62231f7826feec3eaabfea51906ca6b1588a55ee81ae3624"
+  },
+  "required_identity": {
+    "scenario_id": "S0",
+    "batch_size": 1,
+    "prefill_tokens": 128,
+    "decode_tokens": 4,
+    "input_class": "TEXT",
+    "model_id": "meta-llama/Llama-3.2-1B",
+    "model_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08"
+  },
+  "observed": [
+    {
+      "role": "raw text candidate only",
+      "path": "/root/share/c16_recovery_v3/staging/qwen2p5_7b_raw_p2_inputs_v1/a_assets/inputs/TEXT.txt",
+      "size_bytes": 203,
+      "sha256": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+      "result": "RAW_HASH_MATCH_ONLY_NOT_A_LLAMA_BINDING"
+    },
+    {
+      "role": "nearby non-Llama token receipt candidate",
+      "path": "/root/share/c16_recovery_v3/staging/qwen2p5_7b_raw_p2_inputs_v1/a_assets/TOKEN_RECEIPTS/c16_qwen25_7b_raw_reference/TEXT_T128.json",
+      "size_bytes": 1990,
+      "sha256": "47686a0239b496ad096cb25fa326e081d9fbadb2b589b6116e4a852dd50f4ffe",
+      "result": "REJECTED_HASH_AND_MODEL_BINDING_MISMATCH"
+    }
+  ],
+  "absent_required_files": [
+    "C16_FIND_AND_TRANSFER_LLAMA_S5_FROZEN_INPUT_BINDING_RECEIPT.json",
+    "LLAMA_S0_TEXT_BINDING_RECEIPT.json",
+    "LLAMA_S0_TEXT_TOKEN_IDS.json",
+    "the exact Llama TEXT_T128.json payload"
+  ],
+  "tokenizer_invoked": false,
+  "conclusion": "The four-hash contract cannot be closed from destination-visible files. Historical receipts naming expected hashes are not a substitute for the actual frozen payload and binding receipt."
+}

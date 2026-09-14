@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-14T14:43:07Z",
+  "status": "EXACT_ASSET_ADMISSION_PASS",
+  "identity": {
+    "model_id": "meta-llama/Llama-3.2-1B",
+    "required_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08"
+  },
+  "actual_model_path": "/root/share/c16_recovery_v3/models/llama_3p2_1b/4e20de362430cd3b72f300e6b0f18e50e7166e08",
+  "binding_receipt": {
+    "path": "/root/share/c16_recovery_v3/receipts/R1_LLAMA3P2_1B_ASSET_RECEIPT.json",
+    "sha256": "7694c95442cc7ff1d3fc8ed1104d5c0d6a50c3a17f779f402ef90669edeb7b47",
+    "identity_matches_required": true,
+    "declares_all_payloads_size_sha256_closed": true,
+    "scientific_eligible_in_historical_receipt": false
+  },
+  "validation_method": "Existing C16 local-asset admission logic was reviewed; the immutable receipt payload manifest was independently rehashed at the actual path. No download, update, model load, or tokenizer invocation occurred.",
+  "payload_validation": [
+    {"filename": "config.json", "size_bytes": 843, "sha256": "bfb5d39c327ee5c3a65e3574596ff30b052a445cfc59a25bdf3b4c0c5a44f4d2", "result": "PASS"},
+    {"filename": "generation_config.json", "size_bytes": 185, "sha256": "da81b0dd4001a8e19fb5840d2b524f6957f44ddde6f5c3fe32b1f36cef5205bf", "result": "PASS"},
+    {"filename": "model.safetensors", "size_bytes": 2471645608, "sha256": "68a2e4be76fa709455a60272fba8e512c02d81c46e6c671cc9449e374fd6809a", "result": "PASS"},
+    {"filename": "special_tokens_map.json", "size_bytes": 301, "sha256": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535", "result": "PASS"},
+    {"filename": "tokenizer.json", "size_bytes": 9085657, "sha256": "79e3e522635f3171300913bb421464a87de6222182a0570b9b2ccba2a964b2b4", "result": "PASS"},
+    {"filename": "tokenizer_config.json", "size_bytes": 50500, "sha256": "8004530facf809ac432114de2a4dcc65fcb632da5ec16d666091aeb6a2ee444a", "result": "PASS"}
+  ],
+  "total_payload_bytes": 2480783094,
+  "authority_boundary": "This proves only local exact model identity. It neither promotes the /root/share/c16_recovery_v3 historical RTX3090 root into RTX4080 authority nor supplies a future workload measurement receipt."
+}
