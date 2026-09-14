@@ -1,0 +1,14 @@
+property	s5_prefill	s5_decode2	s5_decode3	s5_decode4	comparison_rule	interpretation
+selected_function	indexSelectLargeIndex	indexSelectSmallIndex	indexSelectSmallIndex	indexSelectSmallIndex	identity_only	phase-dependent selected target; not a common static instruction
+static_range	[101,102)	[17,18)	[17,18)	[17,18)	identity_only	formal target binding
+opcode	LDG.E.U16	LDG.E	LDG.E	LDG.E	identity_only	prefill lanes request 2 bytes; decode lanes request 4 bytes
+record_count	8192	64	64	64	structural_count_only	selected-target execution count differs by phase
+address_record_count	262144	2048	2048	2048	structural_count_only	all captures observe 32 active lanes per request
+unique_exact_gpu_va_count	71680	1	1	1	count_only;no_cross_phase_VA_set_or_Jaccard	decode is fully concentrated within each capture; no absolute VA comparison is asserted
+unique_128b_line_count	1120	1	1	1	count_only;no_cross_phase_VA_set_or_Jaccard	observed footprint count differs by phase
+unique_4k_va_bucket_count	35	1	1	1	count_only;no_cross_phase_VA_set_or_Jaccard	observed bucket count differs by phase
+unique_64k_va_bucket_count	35	1	1	1	count_only;no_cross_phase_VA_set_or_Jaccard	observed bucket count differs by phase
+unique_2m_va_bucket_count	19	1	1	1	count_only;no_cross_phase_VA_set_or_Jaccard	observed bucket count differs by phase
+mean_128b_blocks_per_request	1.0	1.0	1.0	1.0	structural_per_request_only	one observed 128B block per selected request
+contiguous_lane_pair_fraction	1.0	0.0	0.0	0.0	structural_per_request_only	prefill lanes are width-contiguous; decode lanes repeat one observed address
+covered_128b_block_requested_byte_proxy	0.5	1.0	1.0	1.0	structural_per_request_only	proxy is not cache-line transfer or utilization

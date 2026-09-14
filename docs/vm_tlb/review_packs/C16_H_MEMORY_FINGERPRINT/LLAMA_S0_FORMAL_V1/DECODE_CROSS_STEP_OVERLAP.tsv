@@ -1,0 +1,29 @@
+comparison	left_capture_id	middle_capture_id	right_capture_id	granularity	intersection	union	jaccard	left_containment	middle_containment	right_containment	order_model	interpretation
+PAIRWISE	s5_decode2		s5_decode3	EXACT_GPU_VA	0	2	0.0	0.0		0.0	SET_ONLY	absolute GPU VA differs
+PAIRWISE	s5_decode2		s5_decode3	32B_BLOCK	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 32B block
+PAIRWISE	s5_decode2		s5_decode3	64B_BLOCK	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 64B block
+PAIRWISE	s5_decode2		s5_decode3	128B_LINE	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 128B line
+PAIRWISE	s5_decode2		s5_decode3	4K_VA_BUCKET	1	1	1.0	1.0		1.0	SET_ONLY	same observed 4KiB bucket
+PAIRWISE	s5_decode2		s5_decode3	64K_VA_BUCKET	1	1	1.0	1.0		1.0	SET_ONLY	same observed 64KiB bucket
+PAIRWISE	s5_decode2		s5_decode3	2M_VA_BUCKET	1	1	1.0	1.0		1.0	SET_ONLY	same observed 2MiB bucket
+PAIRWISE	s5_decode2		s5_decode4	EXACT_GPU_VA	0	2	0.0	0.0		0.0	SET_ONLY	absolute GPU VA differs
+PAIRWISE	s5_decode2		s5_decode4	32B_BLOCK	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 32B block
+PAIRWISE	s5_decode2		s5_decode4	64B_BLOCK	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 64B block
+PAIRWISE	s5_decode2		s5_decode4	128B_LINE	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 128B line
+PAIRWISE	s5_decode2		s5_decode4	4K_VA_BUCKET	0	2	0.0	0.0		0.0	SET_ONLY	different observed 4KiB buckets
+PAIRWISE	s5_decode2		s5_decode4	64K_VA_BUCKET	0	2	0.0	0.0		0.0	SET_ONLY	different observed 64KiB buckets
+PAIRWISE	s5_decode2		s5_decode4	2M_VA_BUCKET	1	1	1.0	1.0		1.0	SET_ONLY	same observed 2MiB bucket
+PAIRWISE	s5_decode3		s5_decode4	EXACT_GPU_VA	0	2	0.0	0.0		0.0	SET_ONLY	absolute GPU VA differs
+PAIRWISE	s5_decode3		s5_decode4	32B_BLOCK	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 32B block
+PAIRWISE	s5_decode3		s5_decode4	64B_BLOCK	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 64B block
+PAIRWISE	s5_decode3		s5_decode4	128B_LINE	0	2	0.0	0.0		0.0	SET_ONLY	no common observed 128B line
+PAIRWISE	s5_decode3		s5_decode4	4K_VA_BUCKET	0	2	0.0	0.0		0.0	SET_ONLY	different observed 4KiB buckets
+PAIRWISE	s5_decode3		s5_decode4	64K_VA_BUCKET	0	2	0.0	0.0		0.0	SET_ONLY	different observed 64KiB buckets
+PAIRWISE	s5_decode3		s5_decode4	2M_VA_BUCKET	1	1	1.0	1.0		1.0	SET_ONLY	same observed 2MiB bucket
+THREE_WAY	s5_decode2	s5_decode3	s5_decode4	EXACT_GPU_VA	0	3	0.0	0.0	0.0	0.0	SET_ONLY	no common observed GPU VA
+THREE_WAY	s5_decode2	s5_decode3	s5_decode4	32B_BLOCK	0	3	0.0	0.0	0.0	0.0	SET_ONLY	no common observed 32B block
+THREE_WAY	s5_decode2	s5_decode3	s5_decode4	64B_BLOCK	0	3	0.0	0.0	0.0	0.0	SET_ONLY	no common observed 64B block
+THREE_WAY	s5_decode2	s5_decode3	s5_decode4	128B_LINE	0	3	0.0	0.0	0.0	0.0	SET_ONLY	no common observed 128B line
+THREE_WAY	s5_decode2	s5_decode3	s5_decode4	4K_VA_BUCKET	0	2	0.0	0.0	0.0	0.0	SET_ONLY	Decode2/3 share one bucket; Decode4 differs
+THREE_WAY	s5_decode2	s5_decode3	s5_decode4	64K_VA_BUCKET	0	2	0.0	0.0	0.0	0.0	SET_ONLY	Decode2/3 share one bucket; Decode4 differs
+THREE_WAY	s5_decode2	s5_decode3	s5_decode4	2M_VA_BUCKET	1	1	1.0	1.0	1.0	1.0	SET_ONLY	all three share the observed 2MiB bucket

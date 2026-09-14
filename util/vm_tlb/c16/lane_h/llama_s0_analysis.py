@@ -51,8 +51,19 @@ def _open_text(path: Path):
     return lzma.open(path, "rt", encoding="utf-8", errors="strict") if path.suffix == ".xz" else path.open("rt", encoding="utf-8")
 
 
-def _pc(raw: str) -> int:
-    token = raw.split(maxsplit=1)[0]
+def _pc(raw: str, trace_format: str) -> int:
+    """Extract the PC without confusing an optional RAW_CTA prefix for it."""
+    prefix_widths = {
+        "TRACEG": 0,
+        "RAW_CTA": 4,
+        "RAW_CTA_CORE": 6,
+        "RAW_CTA_LINEINFO": 5,
+        "RAW_CTA_CORE_LINEINFO": 7,
+    }
+    try:
+        token = raw.split()[prefix_widths[trace_format]]
+    except (KeyError, IndexError) as error:
+        raise TraceParseError(f"missing or unsupported trace-format PC: {trace_format!r}") from error
     try:
         return int(token, 16)
     except ValueError as error:
@@ -69,7 +80,13 @@ def _repeated_fraction(counter: Counter[int]) -> float:
     return sum(value for value in counter.values() if value > 1) / total if total else 0.0
 
 
-def analyze_trace(trace_path: Path, target_pc: int, expected_kernel_substring: str) -> tuple[dict[str, Any], dict[str, set[int]]]:
+def analyze_trace(
+    trace_path: Path,
+    target_pc: int,
+    expected_kernel_substring: str,
+    trace_format: str = "TRACEG",
+    expected_opcode: str | None = None,
+) -> tuple[dict[str, Any], dict[str, set[int]]]:
     """Analyze one selected static instruction without relying on record order."""
     kernel_identity = ""
     addresses: set[int] = set()
@@ -96,13 +113,18 @@ def analyze_trace(trace_path: Path, target_pc: int, expected_kernel_substring: s
             if raw.startswith("-kernel name ="):
                 kernel_identity = raw.split("=", 1)[1].strip()
                 continue
-            if is_metadata_line(raw) or _pc(raw) != target_pc:
+            if is_metadata_line(raw) or _pc(raw, trace_format) != target_pc:
                 continue
-            event = parse_trace_record(raw, source_record, "TRACEG")
+            event = parse_trace_record(raw, source_record, trace_format)
             if event is None:
                 continue
             if event.memory_space != "GLOBAL":
                 raise TraceParseError(f"{trace_path}:{source_record}: selected target is not explicit GLOBAL memory")
+            if expected_opcode is not None and event.opcode != expected_opcode:
+                raise TraceParseError(
+                    f"{trace_path}:{source_record}: selected target opcode {event.opcode!r} "
+                    f"does not match expected {expected_opcode!r}"
+                )
             record_count += 1
             active_lanes.append(len(event.lanes))
             lane_addresses = [lane.address for lane in event.lanes]
@@ -171,6 +193,8 @@ def analyze_trace(trace_path: Path, target_pc: int, expected_kernel_substring: s
     }
     return summary, {
         "exact_address": addresses,
+        "32b_block": blocks_32,
+        "64b_block": blocks_64,
         "128b_line": lines,
         "4k_va_bucket": pages_4k,
         "64k_va_bucket": pages_64k,
@@ -183,7 +207,7 @@ def overlap_rows(results: dict[str, dict[str, set[int]]]) -> list[dict[str, Any]
     identifiers = list(results)
     for index, left_id in enumerate(identifiers):
         for right_id in identifiers[index + 1:]:
-            for granularity in ("exact_address", "128b_line", "4k_va_bucket", "64k_va_bucket", "2m_va_bucket"):
+            for granularity in ("exact_address", "32b_block", "64b_block", "128b_line", "4k_va_bucket", "64k_va_bucket", "2m_va_bucket"):
                 left, right = results[left_id][granularity], results[right_id][granularity]
                 intersection = len(left & right)
                 union = len(left | right)
@@ -198,6 +222,36 @@ def overlap_rows(results: dict[str, dict[str, set[int]]]) -> list[dict[str, Any]
                     "right_containment": intersection / len(right) if right else 0.0,
                     "order_model": "SET_ONLY",
                 })
+    return rows
+
+
+def three_way_overlap_row(
+    results: dict[str, dict[str, set[int]]],
+    left_id: str,
+    middle_id: str,
+    right_id: str,
+) -> list[dict[str, Any]]:
+    """Return explicit three-way set relations; no trace ordering is implied."""
+    rows: list[dict[str, Any]] = []
+    for granularity in ("exact_address", "32b_block", "64b_block", "128b_line", "4k_va_bucket", "64k_va_bucket", "2m_va_bucket"):
+        left = results[left_id][granularity]
+        middle = results[middle_id][granularity]
+        right = results[right_id][granularity]
+        intersection = len(left & middle & right)
+        union = len(left | middle | right)
+        rows.append({
+            "left_capture_id": left_id,
+            "middle_capture_id": middle_id,
+            "right_capture_id": right_id,
+            "granularity": granularity,
+            "intersection": intersection,
+            "union": union,
+            "jaccard": intersection / union if union else 0.0,
+            "left_containment": intersection / len(left) if left else 0.0,
+            "middle_containment": intersection / len(middle) if middle else 0.0,
+            "right_containment": intersection / len(right) if right else 0.0,
+            "order_model": "SET_ONLY",
+        })
     return rows
 
 
@@ -222,7 +276,13 @@ def main() -> int:
     for raw in payload["entries"]:
         capture_id = raw["capture_id"]
         target_pc = int(raw["target_pc"], 0)
-        summary, capture_sets = analyze_trace(Path(raw["trace_path"]), target_pc, raw["expected_kernel_substring"])
+        summary, capture_sets = analyze_trace(
+            Path(raw["trace_path"]),
+            target_pc,
+            raw["expected_kernel_substring"],
+            raw.get("trace_format", "TRACEG"),
+            raw.get("expected_opcode"),
+        )
         summary.update({"capture_id": capture_id, "trace_path": raw["trace_path"], "target_pc": f"0x{target_pc:04x}"})
         summaries.append(summary)
         sets[capture_id] = capture_sets

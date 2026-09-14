@@ -25,11 +25,12 @@
 
 | Command | Result |
 |---|---|
-| `python3 -m unittest discover -s tests/vm_tlb/c16/lane_h -p 'test_*.py' -v` | PASS: 10 directed tests |
+| `python3 -m unittest discover -s tests/vm_tlb/c16/lane_h -p 'test_*.py' -v` | PASS: 13 directed tests, including RAW_CTA prefix/active-mask and 32B/64B three-way-overlap fixtures |
 | `python3 util/vm_tlb/c16/lane_h/runtime_object_map_v2.py --object-map tests/vm_tlb/c16/lane_h/fixtures/object_map_v2.json --output /tmp/c16-h-object-map-audit.json` | PASS: 7 storage-generation records |
 | Review TSV header equivalence against `FINGERPRINT_COLUMNS`, `VALIDATION_COLUMNS`, and `REUSE_COLUMNS` | PASS |
 | `python3 -m py_compile util/vm_tlb/c16/lane_h/*.py tests/vm_tlb/c16/lane_h/test_*.py` | PASS |
 | `git diff --check` | PASS |
+| Recovery-V2 six-raw RAW_CTA canary | PASS: 3×8192 Prefill and 3×64 Decode target records; 21 pairwise and 7 three-way Decode set rows |
 
 ## Raw-log index and open issues
 
@@ -46,3 +47,24 @@ capture, but not C16 S0 B1/T128/Decode4 provenance.  The pack consequently
 uses `EXPLORATORY_HISTORICAL_CAPTURE`, `UNKNOWN_RUNTIME`, and `SET_ONLY` only.
 It records absent Decode2/3/4 as `NOT_AVAILABLE`; it does not backfill or
 promote the results to this pack's formal canonical tables.
+
+## Llama S0 formal Recovery-V2 addition
+
+`LLAMA_S0_FORMAL_V1/` consumes the immutable Recovery-V2 publication at
+`2e955e007bcabcd3ec24a5f9d24768d27caaee27`. Its committed
+`PUBLISH_MANIFEST.json` has SHA256
+`0d8aeb74729a06e2188359cca2eb18c3884ea5b108723d6966778a161c4aaacc`.
+The six raw payloads are intentionally external to Git but are copied without
+deleting producer sources to `/root/share/c16_recovery_v3/.../formal/`; source
+and destination SHA256/size receipts are in `FORMAL_RAW_INDEX.tsv`.
+
+The existing parser already decodes the frozen `RAW_CTA` record grammar. The
+Llama selected-PC analyzer now consumes an explicit trace format so that its
+CTA/warp prefix cannot be mistaken for a PC, validates the expected opcode,
+and emits 32B/64B plus three-way set-overlap relations. A synthetic RAW_CTA
+fixture covers active-mask lane reconstruction and target-PC selection.
+
+No raw trace is committed. Formal admission applies only to the six selected
+targets and their stated structural metrics. Object attribution remains
+`UNKNOWN_RUNTIME`, and the pack makes no physical address, temporal reuse,
+TLB, cache, or whole-model claim.

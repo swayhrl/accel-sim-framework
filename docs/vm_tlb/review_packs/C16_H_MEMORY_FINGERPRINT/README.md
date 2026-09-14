@@ -1,6 +1,6 @@
 # C16 H — Memory Fingerprint Review Pack
 
-Status: `C16_H_LLAMA_S0_EXPLORATORY_FINGERPRINT_V1_READY_FOR_REVIEW`. Formal dynamic C16-4.5 through C16-5.5 findings remain deliberately `PENDING_G_COMMITTED_CAPTURE`; the new Llama pack is explicitly historical/exploratory and is not a formal C16 scientific row.
+Status: `C16_H_LLAMA_S0_FORMAL_FINGERPRINT_V1_READY_FOR_REVIEW`. `LLAMA_S0_FORMAL_V1/` contains a Recovery-V2 SHA-closed, formally admitted selected-target Llama S0 analysis. The earlier `LLAMA_S0_V1/` remains historical/exploratory and is not rewritten or promoted. C16-5.1 through C16-5.5 remain pending their separate evidence requirements.
 
 This is the sole entry point for review.
 
@@ -59,3 +59,4 @@ No live G directory is a scientific input. A missing hash, wrong target identity
 - `MEMORY_FINGERPRINTS.tsv`, `FINGERPRINT_VALIDATION.tsv`, `REUSE_AND_OVERLAP.tsv` — versioned schemas intentionally empty until qualified G capture arrives.
 - `C16_H_STATUS.tsv` — gate ledger and external dependency.
 - `LLAMA_S0_V1/` — SHA-indexed historical Llama selected-PC analysis, admission decision, scope audit, and downstream capture-scope decision.  Read its `README.md` and `CAPTURE_ADMISSION.tsv` before interpreting any metric.
+- `LLAMA_S0_FORMAL_V1/` — Recovery-V2 formal selected-target raw provenance, capture admission, structural fingerprints, Decode2/3/4 overlap, independent-process Prefill reproducibility, and scope boundaries. Read its `README.md` and `TRACE_SCOPE_AUDIT.md` before interpreting any metric.
