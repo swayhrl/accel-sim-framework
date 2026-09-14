@@ -98,15 +98,20 @@ static bool owner_from_culibrary_registry(CUmodule module, Owner* owner) {
     if (culibrary_registry_path.empty()) return false;
     std::ifstream input(culibrary_registry_path); std::string line;
     std::ostringstream expected; expected << reinterpret_cast<void*>(module);
-    std::string library_code_owner;
+    // A module may only inherit the DSO recorded for the same actual
+    // CUlibrary handle.  A process can load many libraries during one model
+    // forward; using the last observed path would be a provenance bypass.
+    std::map<std::string, std::string> owners_by_library;
     while (std::getline(input, line)) {
         std::vector<std::string> fields; size_t begin = 0, tab = 0;
         while ((tab = line.find('\t', begin)) != std::string::npos) { fields.push_back(line.substr(begin, tab - begin)); begin = tab + 1; }
         fields.push_back(line.substr(begin));
         if (fields.size() != 6) continue;
-        if (fields[0] == "CULIBRARY_LOAD_DATA" && fields[5] == "0" && fields[3] != "UNRESOLVED" && fields[4] == fields[3]) library_code_owner = fields[4];
-        if (fields[0] == "CULIBRARY_GET_MODULE" && fields[2] == expected.str() && fields[5] == "0" && !library_code_owner.empty()) {
-            Owner candidate = owner_from_path(library_code_owner.c_str(), "cuLibraryLoadData_code_and_caller_dladdr");
+        if (fields[0] == "CULIBRARY_LOAD_DATA" && fields[5] == "0" && fields[3] != "UNRESOLVED" && fields[4] == fields[3]) owners_by_library[fields[1]] = fields[4];
+        if (fields[0] == "CULIBRARY_GET_MODULE" && fields[2] == expected.str() && fields[5] == "0") {
+            auto owner_it = owners_by_library.find(fields[1]);
+            if (owner_it == owners_by_library.end()) continue;
+            Owner candidate = owner_from_path(owner_it->second.c_str(), "cuLibraryLoadData_code_and_caller_dladdr");
             if (!candidate.path.empty() && valid_sha(candidate.sha256)) { *owner = candidate; return true; }
         }
     }
