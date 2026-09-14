@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_S3_R6_PREFILL_READY`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_S3_R6_PREFILL_COMPLETE`.
 
 ## Latest independently reviewable checkpoint
 
@@ -20,9 +20,17 @@ Prefill has 4 exact canonical-function/phase/grid/block occurrence rows
 and Decode has 183 equivalent source rows (`QWEN0_S3_DECODE_V1_JOIN.json`,
 SHA256 `57fdbd641f045f73b827bb335b95366ba3e971d80114f630a2491587a5e8ff01`).
 The join uses only explicit phase, exact ABI-normalised full function identity,
-geometry, and source occurrence/correlation evidence. Prefill is therefore
-admitted to its first formal R6 capture; Decode remains a closed
+geometry, and source occurrence/correlation evidence. Prefill therefore
+completed its first formal R6 capture; Decode remains a closed
 `PREDICATED_OFF_TARGET` path and is not widened or rescanned.
+
+`Qwen0 / S3_TEXT / PREFILL / R6` is `FORMAL_CAPTURE_COMPLETE`: it retained
+24 exact `flash_fwd_kernel` traces, 86,016 address-bearing records, checksum
+`7118ad8a…0375b8`, prewarm trace count 0, zero measurement-window residue,
+and 56,977,834 raw bytes. Remote raw remains SHA-closed and is published as
+per-file `COPYBACK_READY`; the compact tree manifest SHA256 is
+`041b7c08260413e2363292cbec2516dd4bb1ce62602b1d3cc615c300b000bf97`.
+The next GPU task is `Llama/S0/G1_CAMPAIGN_CENSUS`.
 
 The initial adapter-name setup failure is retained as a non-scientific
 pre-model-load attempt.  It did not alter the model, input, target, or the
