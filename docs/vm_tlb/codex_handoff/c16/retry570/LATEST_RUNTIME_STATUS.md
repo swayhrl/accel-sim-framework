@@ -4,6 +4,12 @@ Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_ADDRESS_ZERO_ROOT
 
 ## Latest independently reviewable checkpoint
 
+`Qwen2.5-0.5B-Instruct / S4_STRUCTURED / R3_NATIVE_BASELINE_AND_G1_CENSUS` is
+`PASS_COPYBACK_READY`: 431.503 ms native median, complete 17.522 s G1 census,
+and a retained 12,869,674-byte remote report with SHA256
+`6a3d09fa4ad2ee7c794a65050a9e99a68c2d49382b829371d6d8544ae83bf964`.
+Lane B owns local copyback/SHA closure.  Its formal window is closed.
+
 `Qwen2.5-0.5B-Instruct / S3_TEXT / R3_NATIVE_BASELINE_AND_G1_CENSUS` is
 `PASS_COPYBACK_READY`.  The frozen float16/sdpa/eager baseline completed with
 475.763 ms median and 3,725,007,360 peak allocated bytes; its G1 nsys census
@@ -14,8 +20,8 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[Qwen0/S4_STRUCTURED R3, Qwen7-raw remaining frozen R3 rows, Llama S1]`;
-`NEXT_GPU_JOB=Qwen0/S4_STRUCTURED R3 native baseline`; unresolved Qwen0/S0
+`GPU_READY_QUEUE=[Qwen0/S3_TEXT R4-R5, Qwen7-raw S2 R4-R5, Qwen7-raw remaining R3 rows, Llama S1]`;
+`NEXT_GPU_JOB=Qwen0/S3_TEXT R4 target-plan freeze`; unresolved Qwen0/S0
 Prefill remains the separately closed `STATIC_INDEX_FILTER_OR_DYNAMIC_EXECUTION_NOT_REPRODUCED` branch.
 
 ## Current execution authority — v11 Qwen0 forensic / v10 pipeline
