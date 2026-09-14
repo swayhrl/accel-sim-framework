@@ -39,6 +39,13 @@ GEOMETRY_PROFILES = {
 }
 EXPECTED_BASE_CONFIG_SHA = "1a016e3cac65376330a92dd3fcf037d5fdcab5e7d295920be568e04600dd1cde"
 EXPECTED_TRACE_CONFIG_SHA = "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+EXPECTED_PRIMARY_OVERLAY_SHA = "92496d3664f24539df8ec4d17fe717b526a8eb5a1a391ef4a2db86e9a3ba44f4"
+EXPECTED_CM5_OVERLAY_SHA = "f365018a72901d8d8aeda2088382014b9ddd5369b614da7101680cf6a63f9b93"
+STAGE_BINDINGS = {
+    "CM2": ("TC80_S32_W20", EXPECTED_PRIMARY_OVERLAY_SHA),
+    "CM3": ("TC80_S32_W20", EXPECTED_PRIMARY_OVERLAY_SHA),
+    "CM5": ("CM5_S128_W5", EXPECTED_CM5_OVERLAY_SHA),
+}
 
 
 def utc_now() -> str:
@@ -174,6 +181,19 @@ def authority_row(path: Path, workload: str) -> dict[str, str]:
     return found[0]
 
 
+def require_stage_binding(stage: str, geometry_profile: str, overlay_sha256: str) -> None:
+    """Reject a stage/profile/hash mix before any immutable attempt is made."""
+    expected = STAGE_BINDINGS.get(stage)
+    if expected is None:
+        raise RuntimeError(f"unknown TC80 stage binding: {stage}")
+    expected_profile, expected_overlay = expected
+    if (geometry_profile, overlay_sha256) != expected:
+        raise RuntimeError(
+            f"stage binding preflight failed for {stage}: expected profile/hash="
+            f"{expected_profile}/{expected_overlay}; got {geometry_profile}/{overlay_sha256}"
+        )
+
+
 def resolve_config(args: argparse.Namespace) -> None:
     resolved: dict[str, tuple[str, str]] = {}
     for config_name in (args.base_config, args.overlay, args.trace_config):
@@ -190,6 +210,7 @@ def resolve_config(args: argparse.Namespace) -> None:
 
 
 def run_tc80(args: argparse.Namespace) -> None:
+    require_stage_binding(args.stage, args.geometry_profile, args.overlay_sha256)
     authority = authority_row(Path(args.authority), args.workload)
     profile = GEOMETRY_PROFILES[args.geometry_profile]
     # The simulator runs from a fresh attempt directory; all config paths must
@@ -274,6 +295,15 @@ def validate_tc80(args: argparse.Namespace) -> None:
     stdout = (run_dir / "simulator.stdout").read_text(encoding="utf-8", errors="replace")
     stderr = (run_dir / "simulator.stderr").read_text(encoding="utf-8", errors="replace")
     checks: dict[str, bool] = {}
+    expected_binding = STAGE_BINDINGS.get(manifest.get("stage", ""))
+    checks["stage_profile_binding"] = (
+        expected_binding is not None and args.geometry_profile == expected_binding[0] and
+        manifest.get("geometry") == GEOMETRY_PROFILES[expected_binding[0]]["geometry"]
+    )
+    checks["stage_overlay_binding"] = (
+        expected_binding is not None and args.overlay_sha256 == expected_binding[1] and
+        manifest.get("overlay_config_sha256") == expected_binding[1]
+    )
     checks["workload_identity"] = manifest.get("workload") == authority["workload"]
     checks["attempt_unique"] = bool(manifest.get("attempt_uuid")) and manifest.get("attempt_uuid") == terminal.get("attempt_uuid")
     checks["natural_exit"] = terminal.get("simulator_exit_status") == "0"
