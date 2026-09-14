@@ -1,0 +1,83 @@
+{
+  "schema_version": "C16_ROUTE_B_CUTLASS_OWNER_CLOSURE_V122",
+  "status": "FAILED_CLOSED_CODE_OBJECT_IDENTITY_UNRESOLVED",
+  "scientific_eligible_for_timing": false,
+  "decision": "Neither unresolved CUTLASS function is admissible for representative selection. No candidate DSO was inferred from spelling, geometry, or a default libtorch association.",
+  "runtime": {
+    "producer_commit": "8eed307e67a38e8910912d79a0d68ef17f4a1a6d",
+    "gpu": "RTX3090/SM86",
+    "driver": "570.124.04",
+    "cuda": "12.4",
+    "pytorch": "2.5.1+cu124",
+    "nvbit": "1.7.5",
+    "cuda_module_loading": "EAGER"
+  },
+  "actual_owner_observers": {
+    "fatbin_registration": {
+      "path": "/root/autodl-tmp/c16_retry570/route_b_q1_ac36cbdc/q2/prefill_41731679/retry570_fatbin_owner_preload.so",
+      "sha256": "40963492e5f82ae3242f5a546432ae4c31f2f2071d571ba8729403bfa52f3a6b"
+    },
+    "culibrary_module_chain": {
+      "path": "/root/autodl-tmp/c16_retry570/nvbit/route_b_v122_culibrary_511a203b/retry570_culibrary_owner_preload.so",
+      "sha256": "8cf09fb94f3e8353ef7d12fac469e173103fa1e922b09141dec7742a6bfa4c2b",
+      "required_relation": "cuLibraryLoadData -> cuLibraryGetModule -> target CUmodule"
+    },
+    "nvbit_static_mapper": {
+      "path": "/root/autodl-tmp/c16_retry570/nvbit/route_b_v122_culibrary_511a203b/retry570_route_b_v2_static_map_tool.so",
+      "sha256": "24e063786b695901c7a853ba3cd53be494632dab363e125e6b669965bfe5a436"
+    }
+  },
+  "bounded_rechecks": [
+    {
+      "phase_observation": "PREFILL",
+      "function_mangled_name": "_ZN7cutlass7Kernel2I66cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x128_32x5_tn_align8EEvNT_6ParamsE",
+      "run_id": "89d3eb7c-3b5f-44f0-bf2e-9df8cd969b87",
+      "status": "FAILED_CLOSED_CODE_OBJECT_IDENTITY_UNRESOLVED",
+      "target_wall_seconds": 16.96537008881569,
+      "terminal_reason": "module_owner_not_observed",
+      "culibrary_owner_registry": "ABSENT_NO_OBSERVED_CULIBRARY_MODULE_CHAIN",
+      "parent_receipt": {
+        "path": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/llama32_1b/S0/route_b_v122_cutlass_owner_prefill/89d3eb7c-3b5f-44f0-bf2e-9df8cd969b87/PARENT_RECEIPT.json",
+        "bytes": 1785,
+        "sha256": "25f0b3575393bcc273f5175c4907c52e057de5d878667e94c3e6dd403ed18870"
+      },
+      "stderr": {
+        "bytes": 810,
+        "sha256": "b8a687a08ef29c263c9534759223c282b3958846c56521be9d601f9e0179db44"
+      },
+      "fatbin_registry": {
+        "bytes": 6533127,
+        "sha256": "338c920864b204f7062ef7962924cb754b4e76eeef127c5d7671f547a8c9a382"
+      }
+    },
+    {
+      "phase_observation": "DECODE",
+      "function_mangled_name": "_ZN7cutlass7Kernel2I66cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x1_tn_align8EEvNT_6ParamsE",
+      "run_id": "f69bc1a7-55df-47fb-ad46-e0f79b7bb944",
+      "status": "FAILED_CLOSED_CODE_OBJECT_IDENTITY_UNRESOLVED",
+      "target_wall_seconds": 17.55788991600275,
+      "terminal_reason": "module_owner_not_observed",
+      "culibrary_owner_registry": "ABSENT_NO_OBSERVED_CULIBRARY_MODULE_CHAIN",
+      "parent_receipt": {
+        "path": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/llama32_1b/S0/route_b_v122_cutlass_owner_decode/f69bc1a7-55df-47fb-ad46-e0f79b7bb944/PARENT_RECEIPT.json",
+        "bytes": 1782,
+        "sha256": "9d0ca628c709f65682cd018b259835f2cedc6d2a333e04c2cfe18d57723702f7"
+      },
+      "stderr": {
+        "bytes": 810,
+        "sha256": "368972b908ace7e4dfa33c0de5f502dfade1ee11fa46d5261f052f25b10ce8a0"
+      },
+      "fatbin_registry": {
+        "bytes": 6533127,
+        "sha256": "338c920864b204f7062ef7962924cb754b4e76eeef127c5d7671f547a8c9a382"
+      }
+    }
+  ],
+  "selection_disposition": "BLOCKED_PENDING_APPROVED_REVISED_COVERAGE_CONTRACT",
+  "prohibited_followups": [
+    "default_libtorch_cuda_owner_assignment",
+    "kernel_name_only_owner_inference",
+    "additional_identical_owner_calibration",
+    "coverage_denominator_shrinkage"
+  ]
+}

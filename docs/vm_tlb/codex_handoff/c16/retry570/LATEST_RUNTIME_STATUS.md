@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_PRIMARY_LLAMA_Q1_PASS_Q2_PENDING`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_LLAMA_Q2_DYNAMIC_CLOSED_SELECTION_BLOCKED_SHUTDOWN_HARVEST_READY`.
 
 ## V12.3 live authority — primary Llama completion
 
@@ -43,6 +43,23 @@ section is provenance only and cannot create a second GPU queue.
   `EXECUTION_BUDGET_LEDGER_933e4020….json`; the old ledger and every retained
   historical row are unchanged.  Compact provenance:
   `LLAMA_PRIMARY_CAMPAIGN_LEDGER_REBIND_RECEIPT.json`.
+- `CUTLASS_ACTUAL_OWNER_CLOSURE_V122=FAILED_CLOSED`: one additional bounded
+  V12.2 direct-observer window was completed for each of the unresolved
+  Prefill and Decode CUTLASS functions.  Both reached the exact function but
+  produced `module_owner_not_observed`; the new cuLibrary
+  `LoadData -> GetModule` registry was absent, so no actual module-to-DSO
+  chain exists to hash-close.  This is not a default `libtorch_cuda.so`
+  assignment and neither function is admissible for selection.  Compact
+  evidence: `ROUTE_B_CUTLASS_OWNER_CLOSURE_V122.json`.
+- `ROUTE_B_FINAL_SELECTION=BLOCKED_PENDING_APPROVED_REVISED_COVERAGE_CONTRACT`.
+  The separate external `C16_ROUTE_A_BRIDGE_REFERENCE_V1` is also not
+  materialized.  Consequently no Route-B representative canary/formal
+  capture or Route-C coverage capture is authorized.  The control state is
+  idle and safe for handoff: `MEASUREMENT_ACTIVE=absent`,
+  `ACTIVE_GPU_PROCESS_COUNT=0`, `transfer_slot_granted=true`.  Retained
+  Llama Q1/Q2 raw artifacts are enumerated in
+  `LLAMA_RENTAL_SHUTDOWN_MANIFEST.json` as `COPYBACK_READY`; no sole remote
+  copy was deleted.
 
 ## Historical authority — Route B V2 (superseded for scheduling)
 
