@@ -28,6 +28,7 @@ from execution_budget import BudgetLease, MeasurementActive
 from model_adapters import resolve_adapter
 from profiler_wrapper import write_parent_lease_closeout, write_parent_lease_start
 from retry570_recovery_budget import RecoveryBudgetLease, initialize as initialize_recovery_budget
+from retry570_recovery_v3_campaign_budget import RecoveryV3CampaignLease, initialize as initialize_recovery_v3_campaign_budget
 from retry570_long_watch import nvdisasm_environment_contract
 from runtime_native_runner import (
     assert_cuda_residency,
@@ -298,7 +299,20 @@ def parent(args: argparse.Namespace) -> int:
     if args.target_role in {"DECODE_INDEX_TARGET", "RECOVERY_DECODE"} and capture_phase(args.mode) != "DECODE":
         raise ContractError("decode-side target may only be captured in the complete decode workload")
     ident = identity(binding, args); MeasurementActive.assert_available(args.budget_ledger)
-    if args.recovery_ledger is not None:
+    if args.recovery_ledger is not None and args.recovery_v3_campaign_ledger is not None:
+        raise ContractError("legacy recovery and Recovery-V3 campaign ledgers are mutually exclusive")
+    if args.recovery_v3_campaign_ledger is not None:
+        if (args.recovery_v3_campaign_ledger != args.budget_ledger or args.recovery_v3_historical_ledger is None
+                or not args.recovery_v3_historical_sha256 or not args.recovery_v3_budget_scope):
+            raise ContractError("Recovery-V3 campaign capture requires one fresh ledger, immutable history proof, and exact budget scope")
+        initialize_recovery_v3_campaign_budget(
+            ledger_path=args.recovery_v3_campaign_ledger, historical_ledger=args.recovery_v3_historical_ledger,
+            expected_historical_sha256=args.recovery_v3_historical_sha256, identity=ident,
+            budget_scope=args.recovery_v3_budget_scope,
+        )
+        Lease: Any = lambda path, identity, operation_kind, *, capture: RecoveryV3CampaignLease(
+            path, identity, operation_kind, capture=capture, budget_scope=args.recovery_v3_budget_scope)
+    elif args.recovery_ledger is not None:
         if args.recovery_ledger != args.budget_ledger or args.recovery_historical_ledger is None or not args.recovery_historical_sha256 or not args.recovery_deployment_id:
             raise ContractError("recovery capture requires one new ledger plus immutable historical-ledger proof")
         initialize_recovery_budget(recovery_ledger=args.recovery_ledger, historical_ledger=args.recovery_historical_ledger,
@@ -357,6 +371,7 @@ def main() -> None:
     for name in ("binding", "target_receipt", "receipt", "stage", "child_receipt", "trace_root", "budget_ledger", "parent_lease_receipt", "arm_path", "stdout", "stderr", "tool", "nvdisasm"): parser.add_argument("--" + name.replace("_", "-"), type=Path)
     parser.add_argument("--tool-sha256"); parser.add_argument("--adapter", required=True); parser.add_argument("--implementation-key", required=True); parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True); parser.add_argument("--quantization", required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--runtime-code-commit", required=True); parser.add_argument("--expected-attention-backend", required=True); parser.add_argument("--expected-output-checksum"); parser.add_argument("--recovery-v3-generic", action="store_true"); parser.add_argument("--direct-function-binding", type=Path); parser.add_argument("--arm-wait-seconds", type=int, default=60); parser.add_argument("--target-cap-seconds", type=int, default=600)
     parser.add_argument("--recovery-ledger", type=Path); parser.add_argument("--recovery-historical-ledger", type=Path); parser.add_argument("--recovery-historical-archive", type=Path); parser.add_argument("--recovery-historical-sha256"); parser.add_argument("--recovery-deployment-id")
+    parser.add_argument("--recovery-v3-campaign-ledger", type=Path); parser.add_argument("--recovery-v3-historical-ledger", type=Path); parser.add_argument("--recovery-v3-historical-sha256"); parser.add_argument("--recovery-v3-budget-scope")
     args = parser.parse_args()
     try:
         if str(uuid.UUID(args.run_id)) != args.run_id: raise ValueError

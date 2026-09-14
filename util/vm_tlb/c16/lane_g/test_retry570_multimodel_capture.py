@@ -45,6 +45,10 @@ class MultimodelFormalCaptureTests(unittest.TestCase):
         for token in ("start_new_session=True", "os.killpg(process.pid, signal.SIGTERM)", "os.killpg(process.pid, signal.SIGKILL)"):
             self.assertIn(token, SOURCE)
 
+    def test_recovery_v3_campaign_ledger_is_separate_from_legacy_history(self) -> None:
+        for token in ("RecoveryV3CampaignLease", "initialize_recovery_v3_campaign_budget", "--recovery-v3-campaign-ledger", "--recovery-v3-budget-scope", "mutually exclusive"):
+            self.assertIn(token, SOURCE)
+
 
 if __name__ == "__main__":
     unittest.main()
