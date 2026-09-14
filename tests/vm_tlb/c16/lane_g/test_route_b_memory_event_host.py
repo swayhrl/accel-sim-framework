@@ -79,7 +79,7 @@ class RouteBMemoryEventHostTests(unittest.TestCase):
     def test_host_tool_has_required_lifecycle_and_lane_schema(self):
         source = (LANE / "route_b_memory_event_tool.cu").read_text(encoding="utf-8")
         for token in ("load_whitelist", "nvbit_add_call_arg_mref_addr64", "cudaMalloc", "cudaMemset", "cudaMemcpy",
-                      "append_readback", "emit_terminal", "host_output_cap_bytes", "events_already_serialized", "terminal_json", "warp_instruction_instance_id", "ROUTE_B_LANE_EVENT"):
+                      "append_readback", "emit_terminal", "host_output_cap_bytes", "actual_output_bytes", "stat(output_jsonl.c_str()", "events_already_serialized", "terminal_json", "warp_instruction_instance_id", "ROUTE_B_LANE_EVENT"):
             self.assertIn(token, source)
         self.assertNotIn("gpu_va_by_address_lane", source)
 

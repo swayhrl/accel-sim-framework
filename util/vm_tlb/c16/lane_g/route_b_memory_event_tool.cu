@@ -3,6 +3,7 @@
 // It never reconstructs a dynamic warp instruction from adjacent atomic slots.
 
 #include <atomic>
+#include <cerrno>
 #include <cctype>
 #include <cstddef>
 #include <cstdlib>
@@ -12,6 +13,7 @@
 #include <pthread.h>
 #include <sstream>
 #include <string>
+#include <sys/stat.h>
 #include <unordered_map>
 #include <vector>
 
@@ -163,6 +165,12 @@ static std::string json_escape(const std::string& value) {
     std::string out; for (char c : value) { if (c == '"' || c == '\\') out += '\\'; out += c; } return out;
 }
 static const char* access_name(uint32_t code) { return code == kRead ? "READ" : code == kWrite ? "WRITE" : code == kAtomic ? "ATOMIC" : "INVALID"; }
+static uint64_t actual_output_bytes() {
+    struct stat state{};
+    if (stat(output_jsonl.c_str(), &state) == 0) return static_cast<uint64_t>(state.st_size);
+    if (errno == ENOENT) return 0;
+    fprintf(stderr, "C16_ROUTE_B_LANE_EVENT_RUNTIME_ERROR output stat\n"); abort();
+}
 static std::string event_json(const RouteBLaneEvent& e, const WhitelistEntry& entry, const ContextState* state) {
     std::ostringstream out;
     // e.observed_callback_sequence is local to a launch.  The base is the
@@ -210,7 +218,7 @@ static void append_readback(ContextState* state) {
     const uint64_t candidate_events = state->events_already_serialized + lines.size();
     const std::string terminal = terminal_json(candidate_overflow == 0 && candidate_drop == 0,
                                                candidate_overflow, candidate_drop, candidate_events);
-    if (state->total_raw_bytes + line_bytes + terminal.size() > host_output_cap_bytes) {
+    if (actual_output_bytes() + line_bytes + terminal.size() > host_output_cap_bytes) {
         // Nothing from this launch is emitted.  Record an explicit closed
         // failure; emit_terminal will only write if its real JSON fits.
         state->total_overflow = candidate_overflow + 1;
@@ -226,13 +234,16 @@ static void append_readback(ContextState* state) {
     state->total_overflow = candidate_overflow;
     state->total_drop = candidate_drop;
     out.close();
+    if (actual_output_bytes() > host_output_cap_bytes) {
+        fprintf(stderr, "C16_ROUTE_B_LANE_EVENT_RUNTIME_ERROR actual output byte cap\n"); abort();
+    }
 }
 static void emit_terminal(ContextState* state) {
     if (state->terminal_written || !state->instrumented) return;
     const bool complete = state->total_overflow == 0 && state->total_drop == 0;
     const std::string terminal = terminal_json(complete, state->total_overflow, state->total_drop,
                                                state->events_already_serialized);
-    if (state->total_raw_bytes + terminal.size() > host_output_cap_bytes) {
+    if (actual_output_bytes() + terminal.size() > host_output_cap_bytes) {
         // Never present a partial/truncated raw file as a successful stream.
         fprintf(stderr, "C16_ROUTE_B_LANE_EVENT_RUNTIME_ERROR terminal exceeds actual raw byte cap\n");
         return;
@@ -240,7 +251,11 @@ static void emit_terminal(ContextState* state) {
     std::ofstream out(output_jsonl, std::ios::out | std::ios::app);
     if (!out.good()) { fprintf(stderr, "C16_ROUTE_B_LANE_EVENT_RUNTIME_ERROR terminal output open\n"); abort(); }
     out << terminal;
-    out.close(); state->terminal_written = true;
+    out.close();
+    if (actual_output_bytes() > host_output_cap_bytes) {
+        fprintf(stderr, "C16_ROUTE_B_LANE_EVENT_RUNTIME_ERROR actual terminal byte cap\n"); abort();
+    }
+    state->terminal_written = true;
 }
 }  // namespace
 
