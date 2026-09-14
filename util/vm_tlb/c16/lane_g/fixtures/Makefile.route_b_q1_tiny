@@ -1,0 +1,11 @@
+NVCC ?= nvcc
+ARCH ?= sm_86
+OUT ?= route_b_q1_tiny
+
+all: $(OUT)
+
+$(OUT): route_b_q1_tiny.cu
+	$(NVCC) -std=c++14 -O2 -arch=$(ARCH) $< -o $@
+
+clean:
+	rm -f $(OUT)
