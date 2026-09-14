@@ -1,3 +1,5 @@
 # Changed files
 
-R6.1 rewrites only repository-readable documentation and manifest/hash summaries. No raw model, input, NCU report, NVBit trace, wheel, or scientific code artifact is committed.
+R6.1 established repository-readable artifact provenance without rerunning any scientific workload. This follow-up audit amendment adds the frozen NCU executable SHA, expands U7/U9 provenance, and records non-blocking repository replay-transcript limitations explicitly.
+
+No raw model, input, `.ncu-rep`, NVBit trace, wheel, or scientific workload output is committed.
