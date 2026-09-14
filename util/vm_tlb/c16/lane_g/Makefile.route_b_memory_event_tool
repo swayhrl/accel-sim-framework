@@ -3,9 +3,14 @@ ARCH ?= sm_86
 NVBIT_HOME ?= /opt/nvbit-1.7.5
 OUT ?= route_b_memory_event_tool.so
 
+# libnvbit.a retains CUDA driver entry points.  A shared object with those
+# symbols unresolved is silently skipped by CUDA injection on this platform,
+# so bind the runtime NVCC's lib64 directory and libcuda explicitly.
+NVCC_LIB = -L $(subst bin/nvcc,lib64,$(shell which $(NVCC) | tr -s /))
+
 all: $(OUT)
 $(OUT): route_b_memory_event_tool.o route_b_memory_event_inject.o $(NVBIT_HOME)/core/libnvbit.a
-	$(NVCC) -shared -o $@ $^ -lpthread -ldl
+	$(NVCC) -shared -o $@ $^ $(NVCC_LIB) -lcuda -lpthread -ldl -lrt
 route_b_memory_event_tool.o: route_b_memory_event_tool.cu route_b_memory_event_common.h
 	$(NVCC) -Xcompiler -fPIC -arch=$(ARCH) -O3 -I$(NVBIT_HOME)/core -I$(NVBIT_HOME)/core/utils -c $< -o $@
 route_b_memory_event_inject.o: route_b_memory_event_inject.cu route_b_memory_event_common.h

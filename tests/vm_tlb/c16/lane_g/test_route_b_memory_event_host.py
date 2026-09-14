@@ -83,6 +83,12 @@ class RouteBMemoryEventHostTests(unittest.TestCase):
             self.assertIn(token, source)
         self.assertNotIn("gpu_va_by_address_lane", source)
 
+    def test_tool_makefile_binds_cuda_driver_symbols_for_injection(self):
+        makefile = (LANE / "Makefile.route_b_memory_event_tool").read_text(encoding="utf-8")
+        self.assertIn("NVCC_LIB", makefile)
+        self.assertIn("-lcuda", makefile)
+        self.assertIn("-lrt", makefile)
+
 
 if __name__ == "__main__":
     unittest.main()
