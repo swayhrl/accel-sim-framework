@@ -69,6 +69,9 @@ def write_json_new(path: Path, value: dict[str, Any]) -> None:
 
 
 def validate_manifest(manifest: dict[str, Any]) -> None:
+    unknown = set(manifest) - MANIFEST_FIELDS
+    if unknown:
+        raise AdmissionError("unknown manifest fields: " + ",".join(sorted(unknown)))
     missing = MANIFEST_FIELDS - set(manifest)
     if missing:
         raise AdmissionError("missing manifest fields: " + ",".join(sorted(missing)))
@@ -85,18 +88,33 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
     for field in ("repository", "commit"):
         if not manifest["git"].get(field):
             raise AdmissionError(f"git.{field} missing")
+    if not isinstance(manifest["git"].get("dirty"), bool):
+        raise AdmissionError("git.dirty must be boolean")
     for field in ("model_id", "revision", "asset_receipt_sha256"):
         if not manifest["model"].get(field):
             raise AdmissionError(f"model.{field} missing")
+    if not re.fullmatch(r"[a-f0-9]{64}", manifest["model"]["asset_receipt_sha256"]):
+        raise AdmissionError("model.asset_receipt_sha256 invalid")
     for field in ("binding_id", "authority_status", "receipt_sha256", "token_ids_sha256_or_semantic_hash"):
         if not manifest["input"].get(field):
             raise AdmissionError(f"input.{field} missing")
+    for field in ("receipt_sha256", "token_ids_sha256_or_semantic_hash"):
+        if not re.fullmatch(r"[a-f0-9]{64}", manifest["input"][field]):
+            raise AdmissionError(f"input.{field} invalid")
     for field in ("batch", "prefill_tokens", "decode_tokens", "input_class", "phase"):
         if field not in manifest["scenario"]:
             raise AdmissionError(f"scenario.{field} missing")
+    for field in ("batch", "prefill_tokens", "decode_tokens"):
+        if not isinstance(manifest["scenario"][field], int) or manifest["scenario"][field] < 0:
+            raise AdmissionError(f"scenario.{field} invalid")
+    for field in ("python", "torch", "transformers", "dtype", "attention_backend"):
+        if not manifest["runtime"].get(field):
+            raise AdmissionError(f"runtime.{field} missing")
     for field in ("instrument", "tool_version", "target", "exact_argv"):
         if field not in manifest["capture"]:
             raise AdmissionError(f"capture.{field} missing")
+    if not isinstance(manifest["capture"]["exact_argv"], list) or not all(isinstance(item, str) for item in manifest["capture"]["exact_argv"]):
+        raise AdmissionError("capture.exact_argv must be a string list")
     artifacts = manifest["artifacts"]
     if not isinstance(artifacts, list) or not artifacts:
         raise AdmissionError("non-empty artifacts list required")

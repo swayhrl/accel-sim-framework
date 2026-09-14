@@ -1,6 +1,9 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": [
-    "schema_version"
-  ]
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "source_manifest_sha256", "destination_manifest_or_verification_sha256", "file_count", "total_bytes", "destination_raw_path", "verified_at_utc", "verification_status", "catalog_entry_sha256"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1}, "run_id": {"type": "string", "pattern": "^C16R_"}, "source_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "destination_manifest_or_verification_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "file_count": {"type": "integer", "minimum": 1}, "total_bytes": {"type": "integer", "minimum": 0}, "destination_raw_path": {"type": "string", "minLength": 1}, "verified_at_utc": {"type": "string"}, "verification_status": {"const": "PASS"}, "catalog_entry_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
 }
