@@ -1,0 +1,95 @@
+{
+  "schema_version": "C16_GLOBAL_SCIENTIFIC_COPYBACK_RECONCILIATION_V1",
+  "reconciliation_status": "PASS_ALL_DISCOVERED_SCIENTIFIC_ARTIFACTS_CLASSIFIED",
+  "authority": {
+    "active_scientific_commit": "ef0d89b1ce297518f86c51cddce190abd47e7364",
+    "p1_approval_commit": "c1cf391aacadb84d1416c4cbadf4301a57c57ef8",
+    "handoff_branch": "hrl/vm-c16-g-retry570-chatgpt-handoff-v12"
+  },
+  "discovery_sources": [
+    {
+      "source": "post-restart consolidated COPYBACK_QUEUE snapshot",
+      "record_file": "docs/vm_tlb/codex_handoff/c16/retry570/v12/P2_FINAL_COPYBACK_QUEUE_RECONCILIATION_RECORDS_V1.json",
+      "record_file_sha256": "be6b4ae5d1c1dc3f26eaa6485b7adc97eaf40e05ffbe4cf36808b74bc42a6d5c",
+      "queue_identity_count": 97,
+      "classification": "EXHAUSTIVELY_CLASSIFIED_BY_RECORD"
+    },
+    {
+      "source": "P0/P1 post-restart recovery receipt and Route-B V2 map reconciliation",
+      "p1_discovered": 62,
+      "p1_local_sha_closed": 62,
+      "map_total": 34,
+      "map_local_sha_closed": 34,
+      "classification": "LOCAL_SHA_CLOSED",
+      "receipt_paths": [
+        "docs/vm_tlb/codex_handoff/c16/retry570/v12/POST_RESTART_RECOVERY_RECEIPT_V1.json",
+        "docs/vm_tlb/codex_handoff/c16/retry570/v12/ROUTE_B_V2_STATIC_MAP_RECONCILIATION_RECEIPT_V1.json"
+      ]
+    }
+  ],
+  "compact_git_authority_crosschecks": [
+    {
+      "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/qwen0_s3_r6_prefill/RAW_ARTIFACT_MANIFEST.json",
+      "frozen_scientific_artifact_count": 26,
+      "all_frozen_sha256_present_in_local_raw_index": true,
+      "classification": "LOCAL_SHA_CLOSED"
+    },
+    {
+      "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/qwen0_s3_r5_predicated_off/QWEN0_S3_PREFILL_R5_REMOTE_ARTIFACT_MANIFEST.json",
+      "frozen_scientific_artifact_count": 2,
+      "all_frozen_sha256_present_in_local_raw_index": true,
+      "classification": "LOCAL_SHA_CLOSED"
+    },
+    {
+      "path": "docs/vm_tlb/review_packs/C16_H_MEMORY_FINGERPRINT/ROUTE_B_CAPTURE_CONTRACT_V1/ROUTE_B_Q2_REMOTE_ARTIFACT_MANIFEST.json",
+      "frozen_scientific_artifact_count": 6,
+      "all_frozen_sha256_present_in_local_raw_index": true,
+      "classification": "LOCAL_SHA_CLOSED"
+    },
+    {
+      "paths": [
+        "docs/vm_tlb/review_packs/C16_H_MEMORY_FINGERPRINT/ROUTE_B_CAPTURE_CONTRACT_V1/llama_s0_g1_campaign/G1_PROFILE_RECEIPT.json",
+        "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/qwen0_s3_campaign_g1/G1_PROFILE_RECEIPT.json"
+      ],
+      "profile_report_sha256_present_in_local_raw_index": true,
+      "classification": "LOCAL_SHA_CLOSED"
+    }
+  ],
+  "classification_counts": {
+    "LOCAL_SHA_CLOSED": 96,
+    "DUPLICATE_OF_LOCAL_SHA_CLOSED_ARTIFACT": 1,
+    "COMPACT_GIT_ONLY_NO_REMOTE_RAW_REQUIRED": 0,
+    "EXPLICITLY_REPLACEABLE_NOT_REQUIRED_FOR_SCIENTIFIC_RECOVERY": 0,
+    "FAILED_CLOSED_reason": 0
+  },
+  "p2_final": {
+    "p2_final_discovered": 97,
+    "p2_final_local_sha_closed": 96,
+    "p2_final_duplicate_of_closed": 1,
+    "p2_final_failed": 0,
+    "scientific_remote_only_required": 0,
+    "remote_deletion_count": 0,
+    "copy_method_for_new_transfers": "rsync --partial --append-verify under non-blocking GPU I/O exclusion lock",
+    "result": "PASS"
+  },
+  "endpoint_evidence": {
+    "remote_hostname": "autodl-container-ef4341a089-c1fe0992",
+    "remote_machine_identity": "6a355044367944a68e78a5afc1663ef8",
+    "remote_data_mount_source": "/dev/nvme0n1[/docker/volumes/autodl-container-ef4341a089-c1fe0992-storage/_data]",
+    "remote_filesystem_type": "xfs",
+    "remote_filesystem_identity": "1030000000000",
+    "local_destination_hostname": "huangrulin-174",
+    "local_destination_root": "/root/share/c16_recovery_v3",
+    "local_mount_source": "/dev/md127",
+    "local_filesystem_type": "ext4",
+    "local_device_or_filesystem_identity": "a6a1e5862645de4f",
+    "endpoint_independence_status": "INDEPENDENT_SELF_OWNED_OR_SEPARATE_PERSISTENT_ENDPOINT",
+    "evidence": "Distinct hostnames, machine identity, mount source, filesystem type, and filesystem identity were observed. No external configured destination or credentials were assumed or invented."
+  },
+  "remote_state_at_reconciliation": {
+    "measurement_active": "absent",
+    "gpu_io_lock_probe": "available_then_immediately_released",
+    "remote_data_free_bytes": 171693662208,
+    "remote_deletion_count": 0
+  }
+}
