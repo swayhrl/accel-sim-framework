@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "C16 Pipeline V1 immutable per-run catalog entry",
+  "description": "A multi-file run is authoritative through RUN_MANIFEST.json artifacts[] and raw_manifest_sha256; it has no single raw_sha256 surrogate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "model", "revision", "scenario", "phase", "instrument", "target", "producer_host", "producer_commit", "model_binding", "input_binding", "raw_path", "raw_bytes", "raw_manifest_sha256", "transfer_status", "parse_status", "feature_status", "scientific_status", "legacy"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "model": {"type": "string", "minLength": 1},
+    "revision": {"type": "string", "minLength": 1},
+    "scenario": {"type": "string", "minLength": 1},
+    "phase": {"type": "string", "minLength": 1},
+    "instrument": {"type": "string", "minLength": 1},
+    "target": {"type": "string", "minLength": 1},
+    "producer_host": {"type": "string", "minLength": 1},
+    "producer_commit": {"type": "string", "minLength": 1},
+    "model_binding": {"type": "object"},
+    "input_binding": {"type": "object"},
+    "raw_path": {"type": "string", "minLength": 1},
+    "raw_bytes": {"type": "integer", "minimum": 0},
+    "raw_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "transfer_status": {"type": "string", "minLength": 1},
+    "parse_status": {"type": "string", "minLength": 1},
+    "feature_status": {"type": "string", "minLength": 1},
+    "scientific_status": {"type": "string", "minLength": 1},
+    "legacy": {"type": "boolean"}
+  },
+  "storage_contract": {
+    "entry_path": "catalog/entries/<RUN_ID>.json",
+    "entry_mutability": "immutable after admission",
+    "run_authority": "RUN_MANIFEST.json artifacts[] plus raw_manifest_sha256",
+    "snapshot_path": "catalog/snapshots/",
+    "snapshot_rule": "deterministic snapshots; not concurrent append logs"
+  },
+  "seed_only": false
+}
