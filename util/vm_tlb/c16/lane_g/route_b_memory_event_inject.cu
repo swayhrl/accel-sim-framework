@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include "nvbit_tool.h"
 #include "route_b_memory_event_common.h"
 
 // CUDA exposes the 64-bit atomic overload as unsigned long long*. On this
