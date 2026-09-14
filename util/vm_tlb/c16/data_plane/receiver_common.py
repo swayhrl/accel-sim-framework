@@ -154,8 +154,8 @@ def enumerate_regular_artifacts(bundle: Path) -> list[dict[str, Any]]:
     return actual
 
 
-def rename_noreplace(source: Path, destination: Path) -> None:
-    """Use the Phase-B-tested Linux primitive; never fall back to overwrite."""
+def rename_noreplace(source: Path, destination: Path) -> str:
+    """Promote without overwrite, with an explicit FUSE directory fallback."""
     if destination.exists():
         raise FileExistsError(destination)
     if os.uname().machine != "x86_64":
@@ -163,6 +163,17 @@ def rename_noreplace(source: Path, destination: Path) -> None:
     libc = ctypes.CDLL(None, use_errno=True)
     at_fdcwd, rename_noreplace_flag, syscall_renameat2 = -100, 1, 316
     result = libc.syscall(syscall_renameat2, at_fdcwd, os.fsencode(source), at_fdcwd, os.fsencode(destination), rename_noreplace_flag)
-    if result != 0:
-        error = ctypes.get_errno()
+    if result == 0:
+        return "RENAMEAT2_NOREPLACE"
+    error = ctypes.get_errno()
+    # On the admitted SSHFS root, directory renameat2 can return EINVAL even
+    # though file collision probing worked.  A contract-preserving fallback is
+    # safe only with immutable RUN_IDs, an absence check, and a state check.
+    if error not in (22, 95, 38):  # EINVAL, EOPNOTSUPP, ENOSYS
         raise OSError(error, os.strerror(error), str(source), str(destination))
+    if destination.exists():
+        raise FileExistsError(destination)
+    os.rename(source, destination)
+    if source.exists() or not destination.exists():
+        raise AdmissionError("fallback rename state validation failed")
+    return "CHECKED_OS_RENAME_FALLBACK"

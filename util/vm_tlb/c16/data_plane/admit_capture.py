@@ -36,7 +36,7 @@ def admit(root: Path, verification_receipt: Path) -> dict:
     catalog_candidate = root / "catalog" / "entries" / f"{run_id}.json"
     if catalog_candidate.exists():
         raise AdmissionError("immutable catalog entry already exists")
-    rename_noreplace(partial, raw)
+    promotion_method = rename_noreplace(partial, raw)
     try:
         entry = catalog_entry_from_manifest(manifest, raw, receipt["source_manifest_sha256"])
         catalog_path, catalog_sha = write_catalog_entry(root, entry)
@@ -61,6 +61,7 @@ def admit(root: Path, verification_receipt: Path) -> dict:
         "catalog_entry_path": str(catalog_path),
         "catalog_entry_sha256": catalog_sha,
         "catalog_snapshot_path": str(snapshot),
+        "promotion_method": promotion_method,
     }
 
 
