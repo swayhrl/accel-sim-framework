@@ -83,10 +83,16 @@ class RouteBMemoryEventHostTests(unittest.TestCase):
             self.assertIn(token, source)
         self.assertNotIn("gpu_va_by_address_lane", source)
 
+    def test_device_inject_includes_nvbit_mref_address_helper(self):
+        source = (LANE / "route_b_memory_event_inject.cu").read_text(encoding="utf-8")
+        self.assertIn('#include "nvbit_tool.h"', source)
+
     def test_tool_makefile_binds_cuda_driver_symbols_for_injection(self):
         makefile = (LANE / "Makefile.route_b_memory_event_tool").read_text(encoding="utf-8")
         self.assertIn("NVCC_LIB", makefile)
         self.assertIn("-lcuda", makefile)
+        self.assertIn("-lcudart_static", makefile)
+        self.assertIn("-I$(NVBIT_HOME)/core", makefile)
         self.assertIn("-lrt", makefile)
 
 
