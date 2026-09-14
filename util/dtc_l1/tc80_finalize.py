@@ -114,6 +114,19 @@ def git_diff_clean(root: Path, start: str, paths: list[str]) -> bool:
     return git(root, "diff", "--quiet", start, "--", *paths).returncode == 0
 
 
+def git_changed_paths_since(root: Path, start: str) -> list[str]:
+    """Return tracked paths changed from the frozen branch point through HEAD.
+
+    CM0--CM5 are deliberately checkpointed as they become independently
+    auditable.  CM6 must therefore prove that the frozen start is an ancestor
+    and audit the complete committed range, rather than incorrectly requiring
+    an evidence-building branch to remain byte-for-byte at its start commit.
+    """
+    result = git(root, "diff", "--name-only", "-z", start, "HEAD")
+    require(result.returncode == 0, f"cannot inspect committed TC80 range: {result.stderr.strip()}")
+    return [path for path in result.stdout.split("\0") if path]
+
+
 def root_paths(root: Path) -> dict[str, Path]:
     tc80 = root / "docs/dtc_l1/iscas2027/tc80"
     return {
@@ -224,18 +237,19 @@ def audit(root: Path) -> tuple[list[dict[str, object]], dict[str, object]]:
              row.get("disposition") == "ACCEPTED_STRICT_PASS_DIAGNOSTIC" for row in cm5_rows),
          "the three predeclared alternate-geometry rows are strict diagnostics and excluded from every primary GM", str(paths["cm5"].relative_to(root)))
 
-    head = git(root, "rev-parse", "HEAD")
-    gate("start_head", head.returncode == 0 and head.stdout.strip() == START_COMMIT, "CM6 was built from the expected TC80 branch start commit plus bounded uncommitted TC80 artifacts", "git rev-parse HEAD")
+    ancestry = git(root, "merge-base", "--is-ancestor", START_COMMIT, "HEAD")
+    gate("start_commit_ancestry", ancestry.returncode == 0,
+         "the frozen TC80 start commit is an ancestor of the audited branch state", "git merge-base --is-ancestor START HEAD")
     frozen_paths = ["docs/dtc_l1/post_fast64", "configs/dtc_l1/fast64"]
     gate("frozen_fast64_lane_e_unchanged", git_diff_clean(root, START_COMMIT, frozen_paths),
          "no tracked change versus start commit under frozen post-FAST64/Lane-E evidence or FAST64 config", "git diff --quiet START -- frozen paths")
     source_paths = ["src", "gpu-simulator", "configs/dtc_l1/fast64", "docs/dtc_l1/post_fast64"]
     gate("no_core_simulator_or_frozen_science_change", git_diff_clean(root, START_COMMIT, source_paths),
          "no tracked Core, simulator, FAST64 config, or frozen science path changed", "git diff --quiet START -- source/frozen paths")
-    changes = git_paths(root)
+    changes = git_changed_paths_since(root, START_COMMIT) + git_paths(root)
     allowed = ("docs/dtc_l1/iscas2027/tc80/", "util/dtc_l1/tc80_campaign.py", "util/dtc_l1/tc80_evidence.py", "util/dtc_l1/tc80_finalize.py")
     gate("bounded_git_scope", all(path.startswith(allowed) for path in changes),
-         "all working-tree changes are within the TC80 documentation/controller/evidence scope", "git status --porcelain=v1")
+         "all committed and working-tree changes since the frozen start are within the TC80 documentation/controller/evidence scope", "git diff START..HEAD; git status --porcelain=v1")
 
     return rows, {"gms": ratios, "authority": authority, "primary_cycles": primary_cycles}
 
