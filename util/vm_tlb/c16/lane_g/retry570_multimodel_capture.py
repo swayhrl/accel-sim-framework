@@ -343,7 +343,10 @@ def parent(args: argparse.Namespace) -> int:
         target_function = target["function"]["mangled_name"]
         target_index = str(target["target_instruction"]["nvbit_static_index"])
         marker_path = args.budget_ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE"
-        env.update({"CUDA_MODULE_LOADING": "EAGER", "CUDA_INJECTION64_PATH": str(args.tool), "C16_NVBIT_LD_PRELOAD_DECLARATION": str(args.tool), "C16_G_PARENT_LEASE_RECEIPT": str(args.parent_lease_receipt), "C16_G_PARENT_LEASE_TOKEN": token, "C16_G_MEASUREMENT_ACTIVE_MARKER": str(marker_path), "USER_DEFINED_FOLDERS": "1", "TRACES_FOLDER": str(args.trace_root.parent), "TOOL_COMPRESS": "0", "TRACE_FILE_COMPRESS": "0", "ACTIVE_FROM_START": "0", "DYNAMIC_KERNEL_RANGE": f"0-@^{target_function}$", "INSTR_BEGIN": target_index, "INSTR_END": str(int(target_index) + 1), "C16_EXACT_ROOT_FUNCTION_ONLY": "1", "C16_USE_NVBIT_STATIC_INDEX": "1"})
+        # The tracer creates its own ``traces/`` child below TRACES_FOLDER.
+        # Bind that parent to the retained raw root so discovery, parsing and
+        # raw-byte accounting observe the same payload tree.
+        env.update({"CUDA_MODULE_LOADING": "EAGER", "CUDA_INJECTION64_PATH": str(args.tool), "C16_NVBIT_LD_PRELOAD_DECLARATION": str(args.tool), "C16_G_PARENT_LEASE_RECEIPT": str(args.parent_lease_receipt), "C16_G_PARENT_LEASE_TOKEN": token, "C16_G_MEASUREMENT_ACTIVE_MARKER": str(marker_path), "USER_DEFINED_FOLDERS": "1", "TRACES_FOLDER": str(args.trace_root), "TOOL_COMPRESS": "0", "TRACE_FILE_COMPRESS": "0", "ACTIVE_FROM_START": "0", "DYNAMIC_KERNEL_RANGE": f"0-@^{target_function}$", "INSTR_BEGIN": target_index, "INSTR_END": str(int(target_index) + 1), "C16_EXACT_ROOT_FUNCTION_ONLY": "1", "C16_USE_NVBIT_STATIC_INDEX": "1"})
         with args.stdout.open("w") as out, args.stderr.open("w") as err:
             process = subprocess.Popen(child_command(args), stdout=out, stderr=err, text=True, env=env, start_new_session=True)
             armed = False

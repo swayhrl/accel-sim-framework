@@ -53,6 +53,9 @@ class MultimodelFormalCaptureTests(unittest.TestCase):
         self.assertIn("def canonical_attention_backend", SOURCE)
         self.assertIn("canonical_attention_backend(args.expected_attention_backend)", SOURCE)
 
+    def test_tracer_output_root_is_the_parser_and_raw_accounting_root(self) -> None:
+        self.assertIn('"TRACES_FOLDER": str(args.trace_root)', SOURCE)
+
 
 if __name__ == "__main__":
     unittest.main()
