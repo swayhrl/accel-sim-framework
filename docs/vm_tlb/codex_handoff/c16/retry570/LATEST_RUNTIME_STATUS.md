@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_S3_R6_PREFILL_COMPLETE`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_ROUTE_B_V2_SELECTION_PENDING`.
 
 ## Latest independently reviewable checkpoint
 
@@ -30,7 +30,18 @@ completed its first formal R6 capture; Decode remains a closed
 and 56,977,834 raw bytes. Remote raw remains SHA-closed and is published as
 per-file `COPYBACK_READY`; the compact tree manifest SHA256 is
 `041b7c08260413e2363292cbec2516dd4bb1ce62602b1d3cc615c300b000bf97`.
-The next GPU task is `Llama/S0/G1_CAMPAIGN_CENSUS`.
+The next GPU task is the Route B selection/canary sequence once the exact
+Llama S0 catalog has been frozen.
+
+`Llama-3.2-1B / S0 / B1-T128-Decode4 / campaign G1` is complete on the
+current RTX3090 under the Recovery-V3 campaign ledger. The real profile is
+3,989,185 bytes (`74f15aef…73f87`), its SQLite export is 10,936,320 bytes
+(`c075b64b…9f030`), and the independent export validation is PASS
+(`3bb32354…1ecaf`). The phase-linked catalog SHA256 is
+`4c316b387e1730f03f3214b0b0aa67c6a8d9aa57a4ebbbd3f231f85b5b8eed21`.
+Both raw `.nsys-rep` and SQLite are remote-SHA-closed and `COPYBACK_READY`.
+This exact S0 catalog, not historical Llama S1/S2 data, is now the sole Route
+B representative-selection authority.
 
 The initial adapter-name setup failure is retained as a non-scientific
 pre-model-load attempt.  It did not alter the model, input, target, or the
