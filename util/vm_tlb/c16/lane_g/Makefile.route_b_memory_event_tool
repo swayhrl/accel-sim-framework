@@ -13,10 +13,10 @@ NVCC_LIB = -L $(subst bin/nvcc,lib64,$(shell which $(NVCC) | tr -s /))
 
 all: $(OUT)
 $(OUT): route_b_memory_event_tool.o route_b_memory_event_inject.o $(NVBIT_HOME)/core/libnvbit.a
-	$(NVCC) -shared -o $@ $^ $(NVCC_LIB) -lcuda -lcudart_static -lpthread -ldl -lrt
+	$(NVCC) -arch=$(ARCH) -O3 route_b_memory_event_inject.o route_b_memory_event_tool.o -L$(NVBIT_HOME)/core -lnvbit $(NVCC_LIB) -lcuda -lcudart_static -lpthread -ldl -lrt -shared -o $@
 route_b_memory_event_tool.o: route_b_memory_event_tool.cu route_b_memory_event_common.h
-	$(NVCC) -dc -Xcompiler -fPIC -arch=$(ARCH) -O3 -I$(NVBIT_HOME)/core -I$(NVBIT_HOME)/core/utils -c $< -o $@
+	$(NVCC) -dc -c -std=c++11 -I$(NVBIT_HOME)/core -I$(NVBIT_HOME)/core/utils -Xptxas -cloning=no -Xcompiler -Wall -arch=$(ARCH) -O3 -Xcompiler -fPIC $< -o $@
 route_b_memory_event_inject.o: route_b_memory_event_inject.cu route_b_memory_event_common.h
-	$(NVCC) -I$(NVBIT_HOME)/core -Xptxas -astoolspatch --keep-device-functions -Xcompiler -fPIC -arch=$(ARCH) -O3 -c $< -o $@
+	$(NVCC) -I$(NVBIT_HOME)/core -Xptxas -astoolspatch --keep-device-functions -arch=$(ARCH) -Xcompiler -Wall -Xcompiler -fPIC -c $< -o $@
 clean:
 	rm -f $(OUT) *.o

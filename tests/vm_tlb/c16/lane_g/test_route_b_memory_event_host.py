@@ -95,6 +95,8 @@ class RouteBMemoryEventHostTests(unittest.TestCase):
         self.assertIn("-lcudart_static", makefile)
         self.assertIn("-I$(NVBIT_HOME)/core", makefile)
         self.assertIn("-dc", makefile)
+        self.assertIn("-Xptxas -cloning=no", makefile)
+        self.assertIn("route_b_memory_event_inject.o route_b_memory_event_tool.o", makefile)
         self.assertIn("-lrt", makefile)
 
 
