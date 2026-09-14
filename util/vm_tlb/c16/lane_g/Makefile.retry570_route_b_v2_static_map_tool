@@ -1,0 +1,23 @@
+NVBIT_HOME ?=
+NVCC ?= nvcc
+ARCH ?= sm_86
+OUT ?= retry570_route_b_v2_static_map_tool.so
+
+ifeq ($(strip $(NVBIT_HOME)),)
+$(error NVBIT_HOME must identify the hash-closed NVBit 1.7.5 release root)
+endif
+
+NVCC_LIB = -L $(subst bin/nvcc,lib64,$(shell which $(NVCC) | tr -s /))
+INCLUDES = -I$(NVBIT_HOME)/core
+LIBS = -L$(NVBIT_HOME)/core -lnvbit $(NVCC_LIB) -lcuda -ldl -lrt -lpthread
+
+all: $(OUT)
+
+$(OUT): retry570_route_b_v2_static_map_tool.o $(NVBIT_HOME)/core/libnvbit.a
+	$(NVCC) -arch=$(ARCH) -O3 $< $(LIBS) -shared -o $@
+
+retry570_route_b_v2_static_map_tool.o: retry570_route_b_v2_static_map_tool.cu
+	$(NVCC) -std=c++17 -Xcompiler -fPIC -arch=$(ARCH) -O3 $(INCLUDES) -c $< -o $@
+
+clean:
+	rm -f $(OUT) retry570_route_b_v2_static_map_tool.o

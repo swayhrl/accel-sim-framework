@@ -32,7 +32,7 @@ from runtime_native_runner import load_binding
 
 
 SCHEMA = "C16_G_RECOVERY_V3_NVBIT_QUALIFICATION_V1"
-MODES = ("NVBIT_LAUNCH_INVENTORY", "NVBIT_STATIC_MAP", "TARGETED_MEMORY_DISCRIMINATOR")
+MODES = ("NVBIT_LAUNCH_INVENTORY", "NVBIT_STATIC_MAP", "NVBIT_STATIC_MAP_V2", "TARGETED_MEMORY_DISCRIMINATOR")
 TERM_GRACE_S = 5
 
 
@@ -86,6 +86,78 @@ def validate_static_map(path: Path, *, function: str, code_object_sha256: str) -
             "static_index_unique": True}
 
 
+V2_STATIC_MAP_COLUMNS = (
+    "nvbit_static_index", "vector_ordinal", "instruction_offset", "opcode", "memory_space",
+    "is_load", "is_store", "has_mref", "mref_count", "sass", "function_full_name",
+    "function_mangled_name", "function_address", "code_object_path", "code_object_sha256",
+)
+
+
+def load_code_object_manifest(path: Path) -> dict[str, str]:
+    """Close every permitted owner before map-only execution starts.
+
+    The V2 mapper discovers which one owns the CUfunction.  It never receives
+    a caller-selected owner; this manifest is merely a finite, hash-closed set
+    of actual files eligible for a later exact ownership match.
+    """
+    if not path.is_file() or path.stat().st_size == 0:
+        raise ContractError("V2 code-object manifest is absent or empty")
+    records: dict[str, str] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw or raw.startswith("#"):
+            continue
+        try:
+            raw_path, expected = raw.rsplit("\t", 1)
+        except ValueError as exc:
+            raise ContractError("V2 code-object manifest row is malformed") from exc
+        target = Path(raw_path).resolve()
+        if str(target) in records or len(expected) != 64 or any(c not in "0123456789abcdef" for c in expected):
+            raise ContractError("V2 code-object manifest has duplicate path or malformed SHA256")
+        if not target.is_file() or sha256_file(target) != expected:
+            raise ContractError("V2 code-object manifest does not close an actual owner file")
+        records[str(target)] = expected
+    if not records:
+        raise ContractError("V2 code-object manifest has no closed owner files")
+    return records
+
+
+def validate_static_map_v2(path: Path, *, function: str, manifest: dict[str, str]) -> dict[str, Any]:
+    """Validate V2 semantic identity plus the mapper-discovered owner."""
+    if not path.is_file() or path.stat().st_size == 0:
+        raise ContractError("V2 native static map is absent or empty")
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle, delimiter="\t")
+        if reader.fieldnames != list(V2_STATIC_MAP_COLUMNS):
+            raise ContractError("V2 native static map schema differs")
+        rows = list(reader)
+    if not rows:
+        raise ContractError("V2 native static map has no static instructions")
+    indices: list[int] = []
+    owners: set[tuple[str, str]] = set()
+    for row in rows:
+        if row["function_mangled_name"] != function:
+            raise ContractError("V2 native static map function identity differs")
+        owner_path = str(Path(row["code_object_path"]).resolve())
+        owner_sha = row["code_object_sha256"]
+        if manifest.get(owner_path) != owner_sha:
+            raise ContractError("V2 native static map owner is not a closed actual code object")
+        try:
+            index, mrefs = int(row["nvbit_static_index"]), int(row["mref_count"])
+        except ValueError as exc:
+            raise ContractError("V2 native static map has unparsable static/MREF count") from exc
+        if index < 0 or mrefs < 0:
+            raise ContractError("V2 native static map has negative static/MREF count")
+        if int(row["has_mref"]) not in (0, 1) or (int(row["has_mref"]) == 0) != (mrefs == 0):
+            raise ContractError("V2 native static map MREF semantics differ")
+        indices.append(index); owners.add((owner_path, owner_sha))
+    if len(indices) != len(set(indices)) or len(owners) != 1:
+        raise ContractError("V2 native static map repeats an index or mixes owners")
+    owner_path, owner_sha = next(iter(owners))
+    return {"path": str(path), "sha256": sha256_file(path), "static_instruction_count": len(rows),
+            "function_mangled_name": function, "code_object_path": owner_path,
+            "code_object_sha256": owner_sha, "static_index_unique": True}
+
+
 def kill_group(process: subprocess.Popen[str]) -> dict[str, bool | int]:
     result: dict[str, bool | int] = {"required": False, "term_sent": False, "kill_sent": False, "grace_s": TERM_GRACE_S}
     if process.poll() is None:
@@ -112,7 +184,8 @@ def child_command(args: argparse.Namespace, inventory: Path | None, static_map: 
     command = [sys.executable, str(Path(__file__).with_name("nvbit_model_qualify.py")),
                "--receipt", str(args.child_receipt), "--binding-receipt", str(args.binding),
                "--raw-dir", str(args.raw_dir), "--budget-ledger", str(args.campaign_ledger),
-               "--mode", "TARGETED_MEMORY_TRACE" if args.mode == "TARGETED_MEMORY_DISCRIMINATOR" else args.mode,
+               "--mode", "TARGETED_MEMORY_TRACE" if args.mode == "TARGETED_MEMORY_DISCRIMINATOR" else
+               ("NVBIT_STATIC_MAP" if args.mode == "NVBIT_STATIC_MAP_V2" else args.mode),
                "--tool-path", str(args.tool), "--tool-sha256", args.tool_sha256,
                "--adapter", args.adapter, "--implementation-key", args.implementation_key,
                "--dtype", args.dtype, "--quantization", args.quantization, "--run-id", args.run_id,
@@ -206,6 +279,8 @@ def main() -> None:
     parser.add_argument("--code-object-path", type=Path)
     parser.add_argument("--target-receipt", type=Path)
     parser.add_argument("--direct-function-binding", type=Path)
+    parser.add_argument("--code-object-manifest", type=Path,
+                        help="V2 map-only manifest of permitted actual code-object files and SHA256s")
     parser.add_argument("--route-b-llama-s0", action="store_true",
                         help="allow only the frozen H Route-B Llama S0 inventory/map diagnostic")
     parser.add_argument("--target-cap-seconds", type=int, default=180)
@@ -223,7 +298,7 @@ def main() -> None:
     binding = load_binding(args.binding, canary=False)
     if binding["scenario"]["scenario_id"] == "S0":
         allowed = (
-            args.route_b_llama_s0 and args.mode in {"NVBIT_LAUNCH_INVENTORY", "NVBIT_STATIC_MAP"}
+            args.route_b_llama_s0 and args.mode in {"NVBIT_LAUNCH_INVENTORY", "NVBIT_STATIC_MAP", "NVBIT_STATIC_MAP_V2"}
             and binding.get("model_id") == "meta-llama/Llama-3.2-1B"
             and binding.get("model_revision") == "4e20de362430cd3b72f300e6b0f18e50e7166e08"
             and binding["scenario"].get("batch_size") == 1
@@ -254,17 +329,24 @@ def main() -> None:
             raise ContractError("declared code-object SHA differs from closed target receipt")
         args.target_function, args.code_object_sha256 = target_function, target_code_sha
     code_object: dict[str, str] | None = None
+    v2_manifest: dict[str, str] | None = None
     if args.mode in ("NVBIT_STATIC_MAP", "TARGETED_MEMORY_DISCRIMINATOR"):
         if not args.target_function or not args.code_object_sha256 or args.code_object_path is None:
             raise ContractError("static-map mode requires exact function, expected SHA256, and actual code-object path")
         code_object = verify_code_object(args.code_object_path, args.code_object_sha256)
+    elif args.mode == "NVBIT_STATIC_MAP_V2":
+        if not args.target_function or args.code_object_manifest is None:
+            raise ContractError("V2 static-map mode requires exact function and a closed owner manifest")
+        if args.code_object_path is not None or args.code_object_sha256 is not None:
+            raise ContractError("V2 static-map mode forbids caller-selected code-object identity")
+        v2_manifest = load_code_object_manifest(args.code_object_manifest)
     initialize(ledger_path=args.campaign_ledger, historical_ledger=args.historical_ledger,
                expected_historical_sha256=args.historical_ledger_sha256, identity=ident, budget_scope=args.budget_scope)
     MeasurementActive.assert_available(args.campaign_ledger)
     for path in (args.receipt, args.child_receipt, args.parent_lease_receipt, args.stdout, args.stderr): path.parent.mkdir(parents=True, exist_ok=True)
     args.raw_dir.mkdir(parents=True)
     inventory = args.raw_dir / "DIRECT_LAUNCH_INVENTORY.tsv" if args.mode == "NVBIT_LAUNCH_INVENTORY" else None
-    static_map = args.raw_dir / ("NVBIT_TARGETED_STATIC_MAP.tsv" if args.mode == "TARGETED_MEMORY_DISCRIMINATOR" else "EXACT_FUNCTION_STATIC_MAP.tsv") if args.mode in ("NVBIT_STATIC_MAP", "TARGETED_MEMORY_DISCRIMINATOR") else None
+    static_map = args.raw_dir / ("NVBIT_TARGETED_STATIC_MAP.tsv" if args.mode == "TARGETED_MEMORY_DISCRIMINATOR" else "EXACT_FUNCTION_STATIC_MAP.tsv") if args.mode in ("NVBIT_STATIC_MAP", "NVBIT_STATIC_MAP_V2", "TARGETED_MEMORY_DISCRIMINATOR") else None
     target_log = args.raw_dir / "targeted_tool_stdout.log" if args.mode == "TARGETED_MEMORY_DISCRIMINATOR" else None
     started = time.monotonic(); process: subprocess.Popen[str] | None = None; parent: dict[str, Any] | None = None; cleanup: dict[str, bool | int] = {"required": False}; terminal = "FAILED_OR_ABORTED"
     with RecoveryV3CampaignLease(args.campaign_ledger, ident, "NVBIT", capture=True, budget_scope=args.budget_scope) as lease:
@@ -276,11 +358,18 @@ def main() -> None:
                     "C16_G_PARENT_LEASE_TOKEN": token, "C16_G_MEASUREMENT_ACTIVE_MARKER": str(args.campaign_ledger.parent.parent / "control" / "MEASUREMENT_ACTIVE")})
         if inventory is not None: env["C16_NVBIT_LAUNCH_INVENTORY_PATH"] = str(inventory)
         if static_map is not None:
-            if not args.target_function or not args.code_object_sha256 or len(args.code_object_sha256) != 64:
-                raise ContractError("static-map mode requires exact function and code-object SHA256")
+            if not args.target_function:
+                raise ContractError("static-map mode requires exact function")
             env.update({"C16_NVBIT_TARGET_FUNCTION_MANGLED": args.target_function,
-                        "C16_NVBIT_STATIC_MAP_PATH": str(static_map),
-                        "C16_NVBIT_CODE_OBJECT_SHA256": args.code_object_sha256})
+                        "C16_NVBIT_STATIC_MAP_PATH": str(static_map)})
+            if args.mode == "NVBIT_STATIC_MAP_V2":
+                if args.code_object_manifest is None:
+                    raise ContractError("V2 static-map owner manifest is absent")
+                env["C16_NVBIT_CODE_OBJECT_MANIFEST"] = str(args.code_object_manifest)
+            else:
+                if not args.code_object_sha256 or len(args.code_object_sha256) != 64:
+                    raise ContractError("static-map mode requires exact function and code-object SHA256")
+                env["C16_NVBIT_CODE_OBJECT_SHA256"] = args.code_object_sha256
             if args.mode == "TARGETED_MEMORY_DISCRIMINATOR":
                 if target is None:
                     raise ContractError("targeted-memory target state is absent")
@@ -320,8 +409,11 @@ def main() -> None:
     if code_object is not None:
         result["code_object"] = code_object
     if static_map is not None and terminal == "COMPLETE":
-        result["validated_static_map"] = validate_static_map(
-            static_map, function=str(args.target_function), code_object_sha256=str(args.code_object_sha256))
+        result["validated_static_map"] = (
+            validate_static_map_v2(static_map, function=str(args.target_function), manifest=v2_manifest)
+            if args.mode == "NVBIT_STATIC_MAP_V2" and v2_manifest is not None
+            else validate_static_map(static_map, function=str(args.target_function), code_object_sha256=str(args.code_object_sha256))
+        )
     if args.mode == "TARGETED_MEMORY_DISCRIMINATOR":
         if target is None or target_log is None:
             raise ContractError("internal targeted-memory discriminator state is absent")
