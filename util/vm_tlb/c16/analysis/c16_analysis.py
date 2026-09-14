@@ -231,6 +231,30 @@ def verify_manifest(raw_dir: Path, manifest_sha: str) -> dict[str, Any]:
     return payload
 
 
+def rebuild_indexes(root: Path) -> dict[str, Path]:
+    """Deterministically rebuild small discovery indexes from hash-closed receipts."""
+    feature_root = root / "derived" / "features"
+    rows = []
+    for receipt_path in sorted(feature_root.glob("*/DERIVED_RECEIPT.json")):
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        outputs = {Path(item["path"]).name: item for item in receipt["outputs"]}
+        rows.append({"source_id": receipt["source_id"], "source_sha256": receipt["source_sha256"],
+            "parser_git_commit": receipt["parser_git_commit"], "receipt_path": str(receipt_path),
+            "receipt_sha256": sha256(receipt_path), "parsed_path": outputs.get("memory_access.jsonl", {}).get("path", ""),
+            "parsed_sha256": outputs.get("memory_access.jsonl", {}).get("sha256", ""),
+            "feature_path": outputs.get("fingerprint.json", {}).get("path", ""),
+            "feature_sha256": outputs.get("fingerprint.json", {}).get("sha256", "")})
+    parse_index, feature_index = root / "derived" / "PARSE_INDEX.tsv", root / "derived" / "FEATURE_INDEX.tsv"
+    parse_index.parent.mkdir(parents=True, exist_ok=True)
+    with parse_index.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["source_id", "source_sha256", "parser_git_commit", "parsed_path", "parsed_sha256", "receipt_path", "receipt_sha256"], delimiter="\t")
+        writer.writeheader(); writer.writerows([{key: row[key] for key in writer.fieldnames} for row in rows])
+    with feature_index.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["source_id", "source_sha256", "feature_path", "feature_sha256", "receipt_path", "receipt_sha256"], delimiter="\t")
+        writer.writeheader(); writer.writerows([{key: row[key] for key in writer.fieldnames} for row in rows])
+    return {"parse_index": parse_index, "feature_index": feature_index}
+
+
 def analyze_catalog_run(root: Path, run_id: str, raw_rel: str, parser_commit: str, argv: list[str]) -> dict[str, Any]:
     entry_path = root / "catalog" / "entries" / f"{run_id}.json"
     if not entry_path.is_file():
@@ -246,7 +270,8 @@ def analyze_catalog_run(root: Path, run_id: str, raw_rel: str, parser_commit: st
     dump_json(features, {**stats, "source_run_id": run_id, "raw_manifest_sha256": entry["raw_manifest_sha256"], "scientific_status": entry["scientific_status"]})
     receipt = out_base / "features" / run_id / "DERIVED_RECEIPT.json"
     write_receipt(run_id, raw, [parsed, features], receipt, parser_commit, argv)
-    return {"run_id": run_id, "manifest_schema": manifest.get("schema_version"), "receipt": str(receipt), **stats}
+    indexes = rebuild_indexes(root)
+    return {"run_id": run_id, "manifest_schema": manifest.get("schema_version"), "receipt": str(receipt), "indexes": {key: str(value) for key, value in indexes.items()}, **stats}
 
 
 def main() -> int:
@@ -258,6 +283,8 @@ def main() -> int:
     ncu = commands.add_parser("ncu-csv")
     ncu.add_argument("--input", type=Path, required=True); ncu.add_argument("--source-id", required=True)
     ncu.add_argument("--output", type=Path, required=True); ncu.add_argument("--classification", required=True); ncu.add_argument("--ncu-version", required=True)
+    index = commands.add_parser("rebuild-index")
+    index.add_argument("--root", type=Path, required=True)
     run = commands.add_parser("analyze-run")
     run.add_argument("--root", type=Path, required=True); run.add_argument("--run-id", required=True); run.add_argument("--raw-rel", required=True); run.add_argument("--parser-commit", required=True)
     args = parser.parse_args()
@@ -269,9 +296,12 @@ def main() -> int:
             dump_json(features, stats)
             receipt = args.root / "derived" / "features" / args.source_id / "DERIVED_RECEIPT.json"
             write_receipt(args.source_id, args.input, [parsed, features], receipt, args.parser_commit, os.sys.argv)
-            print(json.dumps({"receipt": str(receipt), **stats}, sort_keys=True))
+            indexes = rebuild_indexes(args.root)
+            print(json.dumps({"receipt": str(receipt), "indexes": {key: str(value) for key, value in indexes.items()}, **stats}, sort_keys=True))
         elif args.command == "ncu-csv":
             print(json.dumps({"rows": normalize_ncu_csv(args.input, args.source_id, args.output, args.classification, args.ncu_version)}))
+        elif args.command == "rebuild-index":
+            print(json.dumps({key: str(value) for key, value in rebuild_indexes(args.root).items()}, sort_keys=True))
         else:
             print(json.dumps(analyze_catalog_run(args.root, args.run_id, args.raw_rel, args.parser_commit, os.sys.argv), sort_keys=True))
     except AnalysisError as exc:
