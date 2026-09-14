@@ -1,0 +1,7 @@
+kind	path	sha256	role
+frozen_B16_base_config	configs/dtc_l1/fast64/FAST64_BASE.config	1a016e3cac65376330a92dd3fcf037d5fdcab5e7d295920be568e04600dd1cde	Read-only parent configuration.
+TC80_canonical_overlay	docs/dtc_l1/iscas2027/tc80/config/TC80_CAPACITY_MATCHED_OVERLAY.config	92496d3664f24539df8ec4d17fe717b526a8eb5a1a391ef4a2db86e9a3ba44f4	Only TC80 configuration artifact; applied after frozen B16 config.
+TC80_resolved_effective_config	docs/dtc_l1/iscas2027/tc80/config/TC80_RESOLVED_EFFECTIVE_CONFIG.tsv	3548d21653e72e87231f2cd24dd2b038b7689b0cef680026f2eab9e8e4741065	Canonical final-option map from frozen B16 config, TC80 overlay, then frozen trace config.
+trace_config	gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config	19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e	Frozen FAST64 trace parser configuration.
+formal_runtime	/tmp/dtc-fast64-zero-access-formal-95ccdb7a/accel-sim.out	462d105cf28efe98a8a20131fd671f3d28ad374a3e4b5448a597df702cc4dbc9	Frozen Core95 release runtime; no rebuild.
+TC80_controller	util/dtc_l1/tc80_campaign.py	0ac1f4792272eef1e4ecc92578466672a8816682de4bf8ec29169d3bc210e2a1	Fail-closed immutable-attempt runner, input-authority builder, and strict validator; corrected to resolve config paths before entering an isolated attempt directory.

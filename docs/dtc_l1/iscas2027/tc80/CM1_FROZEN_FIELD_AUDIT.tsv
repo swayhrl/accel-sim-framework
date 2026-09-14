@@ -1,0 +1,17 @@
+field	b16_resolved_value	tc80_resolved_value	result	evidence
+mode_selector	PAPER_BASE (1)	PAPER_BASE (1)	PASS	Inherited frozen base config; overlay contains no mode selector.
+line_bytes	128	128	PASS	All three TC80 L1 strings retain :128:.
+searchable_lines	128	640	PASS	32x4 versus selected 32x20 conventional Tag/Data geometry.
+effective_traditional_mshr	32	32	PASS	PAPER_BASE override from -gpgpu_dtc_l1_mshr_entries remains inherited at 32.
+base_pib_entries	8	8	PASS	Inherited -gpgpu_dtc_l1_pib_entries 8.
+l1_hit_latency_cycles	20	20	PASS	Inherited -gpgpu_l1_latency 20.
+l1_banks	4	4	PASS	Inherited -gpgpu_l1_banks 4.
+l1_data_port_width_bytes	32	32	PASS	Trailing dl1 port token remains 32.
+replacement_policy	L	L	PASS	All TC80 strings retain LRU token L.
+write_policy	T	T	PASS	All TC80 strings retain write-through token T.
+allocation_policy	m	m	PASS	All TC80 strings retain on-miss token m.
+write_allocation_policy	L	L	PASS	All TC80 strings retain lazy-fetch-on-read token L.
+L1_miss_queue	16	16	PASS	All TC80 strings retain queue token 16.
+L1_result_fifo	0	0	PASS	All TC80 strings retain result-FIFO token 0.
+GPU_shell	FAST64 64x1	FAST64 64x1	PASS	Overlay has no shell, scheduler, clock, memory, L2, DRAM, or trace option.
+DTC_IO_OO_physical_lifetime	inactive in PAPER_BASE	inactive in PAPER_BASE	PASS	Overlay retains mode 1; it does not select modes 2/3.

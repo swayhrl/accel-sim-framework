@@ -1,0 +1,5 @@
+field	b16_resolved_value	tc80_resolved_value	classification	source_justification	check
+-gpgpu_cache:dl1	S:32:128:4,L:T:m:L:L,A:512:8,16:0,32	S:32:128:20,L:T:m:L:L,A:512:8,16:0,32	REQUIRED_TC80_CAPACITY_GEOMETRY	Searchable L1D lines are m_nset*m_assoc; selected 32x20 preserves B16 set mapping and all trailing policy/queue/port tokens.	PASS
+-gpgpu_cache:dl1PrefL1	S:32:128:4,L:T:m:L:L,A:512:8,16:0,32	S:32:128:20,L:T:m:L:L,A:512:8,16:0,32	REQUIRED_TC80_CAPACITY_GEOMETRY	Kernel cache preference can select this L1D string; it must represent the same canonical TC80 capacity.	PASS
+-gpgpu_cache:dl1PrefShared	S:32:128:4,L:T:m:L:L,A:512:8,16:0,32	S:32:128:20,L:T:m:L:L,A:512:8,16:0,32	REQUIRED_TC80_CAPACITY_GEOMETRY	Kernel cache preference can select this L1D string; it must represent the same canonical TC80 capacity.	PASS
+-gpgpu_unified_l1d_size	128	80	DERIVED_FROM_REQUIRED_GEOMETRY	The source asserts unified-L1 size is divisible by configured capacity; 128 does not divide 80 and 80 gives multiplier one.	PASS

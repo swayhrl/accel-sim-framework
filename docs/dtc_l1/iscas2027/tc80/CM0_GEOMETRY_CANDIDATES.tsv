@@ -1,0 +1,9 @@
+candidate_id	sets	ways	line_bytes	total_lines	total_bytes	exact_80k	set_count_power_of_two	set_indexing_legal	ways_legal	replacement_legal	config_only	bank_mapping_unchanged	l1_latency_unchanged	preserves_b16_set_count	selected	reason
+TC80_S1_W640	1	640	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	Linear `& (nset-1)` indexing is source-correct for one set and the way loop is unconstrained, but it changes the B16 32-set mapping unnecessarily.
+TC80_S2_W320	2	320	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	Legal power-of-two linear indexing and unconstrained way scan, but does not preserve B16's 32-set mapping.
+TC80_S4_W160	4	160	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	Legal power-of-two linear indexing and unconstrained way scan, but does not preserve B16's 32-set mapping.
+TC80_S8_W80	8	80	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	Legal power-of-two linear indexing and unconstrained way scan, but does not preserve B16's 32-set mapping.
+TC80_S16_W40	16	40	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	Legal power-of-two linear indexing and unconstrained way scan, but does not preserve B16's 32-set mapping.
+TC80_S32_W20	32	20	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	YES	YES	Selected by fixed precedence: exact 640 lines, config-only, preserves B16's 32 linear sets and 128-B line, leaves four-bank mapping/32-B port/20-cycle latency and LRU/write-through/on-miss policy unchanged.
+TC80_S64_W10	64	10	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	Legal power-of-two linear indexing and unconstrained way scan, but changes B16's 32-set mapping.
+TC80_S128_W5	128	5	128	640	81920	YES	YES	YES	YES	YES	YES	YES	YES	NO	NO	Legal power-of-two linear indexing and unconstrained way scan, but changes B16's 32-set mapping.
