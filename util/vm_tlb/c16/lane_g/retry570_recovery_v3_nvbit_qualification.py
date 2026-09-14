@@ -188,6 +188,7 @@ def targeted_memory_evidence(path: Path, target: dict[str, Any]) -> dict[str, An
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=MODES, required=True)
+    parser.add_argument("--phase", choices=("PREFILL", "DECODE"), required=True)
     for name in ("binding", "campaign_ledger", "historical_ledger", "tool", "nvdisasm", "receipt", "child_receipt", "parent_lease_receipt", "stdout", "stderr", "raw_dir"):
         parser.add_argument("--" + name.replace("_", "-"), type=Path, required=True)
     parser.add_argument("--historical-ledger-sha256", required=True)
@@ -227,7 +228,7 @@ def main() -> None:
             target = json.loads(args.target_receipt.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise ContractError("targeted-memory target receipt is unreadable") from exc
-        require_contract(binding, target, "RECOVERY_PREFILL", recovery_v3_generic=True,
+        require_contract(binding, target, "RECOVERY_PREFILL" if args.phase == "PREFILL" else "RECOVERY_DECODE", recovery_v3_generic=True,
                          direct_function_binding=args.direct_function_binding)
         target_function = str(target["function"]["mangled_name"])
         target_code_sha = str(target["function"]["libtorch_cuda_sha256"])
@@ -294,6 +295,7 @@ def main() -> None:
     result = {"schema_version": SCHEMA, "status": "COMPLETE" if terminal == "COMPLETE" else terminal,
               "scientific_eligible_for_timing": False, "child_acquired_second_lease": False,
               "identity": ident, "mode": args.mode,
+              "phase": args.phase,
               "budget_scope": args.budget_scope, "target_cap_seconds": args.target_cap_seconds,
               "target_wall_seconds": time.monotonic() - started, "cleanup": cleanup,
               "parent_lease_closeout": {"path": str(closeout), "sha256": sha256_file(closeout)},

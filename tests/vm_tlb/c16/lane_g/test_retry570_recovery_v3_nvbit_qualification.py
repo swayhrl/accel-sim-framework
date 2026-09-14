@@ -37,6 +37,10 @@ class RecoveryV3QualificationContractTest(unittest.TestCase):
                       "COMPLETE_PREDICATED_OFF_TARGET", "COMPLETE_ZERO_ADDRESS_MREF"):
             self.assertIn(token, SOURCE)
 
+    def test_phase_is_explicit_and_selects_its_own_recovery_authority(self):
+        self.assertIn('parser.add_argument("--phase", choices=("PREFILL", "DECODE"), required=True)', SOURCE)
+        self.assertIn('"RECOVERY_PREFILL" if args.phase == "PREFILL" else "RECOVERY_DECODE"', SOURCE)
+
     def test_predicate_false_zeroed_device_record_remains_bound_to_host_target(self):
         target = {"function": {"mangled_name": "_Zexact"}, "target_instruction": {"nvbit_static_index": 8}}
         line = ("C16_TARGETED_NVBIT_FUNCTION_LAUNCH function_mangled=_Zexact launch_id=0 nvbit_static_index=8\n"
