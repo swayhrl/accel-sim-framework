@@ -25,7 +25,7 @@ def event(row: WhitelistRow):
             "function_mangled_name": "_Zexact", "cta": [0, 0, 0], "warp_id": 0, "static_index": row.static_index,
             "instruction_offset": 4, "opcode": row.opcode, "mref_ordinal": row.mref_ordinal,
             "access_kind": row.access_kind, "width_bytes": row.width_bytes, "memory_space": "GLOBAL",
-            "active_mask": 3, "predicate_mask": 1, "is_predicated": True, "active_lane_ids": [0], "gpu_va_by_active_lane": [0x1000]}
+            "active_mask": 3, "predicate_mask": 1, "is_predicated": True, "address_lane_ids": [0], "gpu_va_by_address_lane": [0x1000]}
 
 
 class RouteBProducerQ0Tests(unittest.TestCase):

@@ -68,7 +68,7 @@ def validate_event(event: dict[str, Any], whitelist: tuple[WhitelistRow, ...], *
         "observed_event_sequence", "sequence_label", "kernel_launch_id", "function_mangled_name",
         "cta", "warp_id", "static_index", "instruction_offset", "opcode", "mref_ordinal",
         "access_kind", "width_bytes", "memory_space", "active_mask", "predicate_mask", "is_predicated",
-        "active_lane_ids", "gpu_va_by_active_lane",
+        "address_lane_ids", "gpu_va_by_address_lane",
     }
     missing = sorted(required.difference(event))
     if missing:
@@ -96,8 +96,8 @@ def validate_event(event: dict[str, Any], whitelist: tuple[WhitelistRow, ...], *
     if not event["is_predicated"] and predicate_mask != active_mask:
         raise RouteBContractError("Route-B non-predicated instruction must set predicate mask equal to active mask")
     executing_lanes = _mask_lanes(active_mask & predicate_mask)
-    lane_ids = event["active_lane_ids"]
-    addresses = event["gpu_va_by_active_lane"]
+    lane_ids = event["address_lane_ids"]
+    addresses = event["gpu_va_by_address_lane"]
     if lane_ids != executing_lanes or not isinstance(addresses, list) or len(addresses) != len(executing_lanes):
         raise RouteBContractError("Route-B event executing-mask popcount/lane/address serialization differs")
     if any(not isinstance(address, int) or address <= 0 for address in addresses):
