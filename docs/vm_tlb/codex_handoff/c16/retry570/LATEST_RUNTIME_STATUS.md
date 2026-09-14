@@ -1,17 +1,22 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_ADDRESS_ZERO_ROOT_CAUSE`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_S3_PREDICATE_CLOSEOUT`.
 
 ## Latest independently reviewable checkpoint
 
-`Qwen0 / S3_TEXT / R4` is frozen as `RECOVERY_V3_QWEN0_S3_TEXT_G1_V1` from a
-hash-closed, independently validated 87,480-launch G1 catalog.  It has one
-PREFILL and one DECODE structural row, but neither receives a static range
-until its own direct NVBit-native map is produced.  Next GPU work is R5 map
-and bounded canary, not further Qwen0 R3 expansion.
+`Qwen0 / S3_TEXT / R5 / PREFILL` is closed as `PREDICATED_OFF_TARGET`.
+The direct NVBit-native map selected exact full `pytorch_flash::flash_fwd_kernel`
+static index 8 (`@P2 LDG.E`, GLOBAL MREF); the immutable S3 forward launched
+that exact function 24 times and reached 2,752,512 target callbacks, but
+`predicate_true_count=0` and `nonzero_mref_count=0`.  This is neither a tracer
+failure nor an address-zero/MREF capability conclusion, and it is not admitted
+to R6.  The raw map/log are remote SHA-closed and `COPYBACK_READY` for Lane B;
+the compact forensics SHA256 is
+`62d9c607b17e5e311756beee679e16921516614a1c5bda75733f0c174be83205`.
 
-The next R5 inventory/map parent uses the Recovery-V3 campaign ledger and a
-token-bound child lease proof; it does not reopen the historical ledger.
+The initial adapter-name setup failure is retained as a non-scientific
+pre-model-load attempt.  It did not alter the model, input, target, or the
+terminal predicate-off conclusion.
 
 `Qwen2.5-0.5B-Instruct / S4_STRUCTURED / R3_NATIVE_BASELINE_AND_G1_CENSUS` is
 `PASS_COPYBACK_READY`: 431.503 ms native median, complete 17.522 s G1 census,
@@ -29,8 +34,9 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[Qwen0/S3_TEXT R5 map+canary, Qwen7-raw S2 R4-R5, Qwen7-raw remaining R3 rows, Llama S1]`;
-`NEXT_GPU_JOB=Qwen0/S3_TEXT R5 NVBit native static-map`; unresolved Qwen0/S0
+`GPU_READY_QUEUE=[Qwen0/S1_CODE R4-R5, Qwen7-raw S2 R4-R5, Llama S1]`;
+`NEXT_GPU_JOB=Qwen0/S1_CODE R4 phase-specific target plan`.  Qwen0/S3 does
+not receive target substitution or a widened range.  Unresolved Qwen0/S0
 Prefill remains the separately closed `STATIC_INDEX_FILTER_OR_DYNAMIC_EXECUTION_NOT_REPRODUCED` branch.
 
 ## Current execution authority — v11 Qwen0 forensic / v10 pipeline
