@@ -1,9 +1,14 @@
 """Focused static contract checks for the Recovery-V3 NVBit qualification parent."""
 from pathlib import Path
+import sys
+import tempfile
 import unittest
 
 
 SOURCE = (Path(__file__).resolve().parents[4] / "util/vm_tlb/c16/lane_g/retry570_recovery_v3_nvbit_qualification.py").read_text(encoding="utf-8")
+LANE = Path(__file__).resolve().parents[4] / "util/vm_tlb/c16/lane_g"
+sys.path.insert(0, str(LANE))
+from retry570_recovery_v3_nvbit_qualification import targeted_memory_evidence  # noqa: E402
 
 
 class RecoveryV3QualificationContractTest(unittest.TestCase):
@@ -25,6 +30,19 @@ class RecoveryV3QualificationContractTest(unittest.TestCase):
                       "nonzero_mref_count", "COMPLETE_VALID_ADDRESS_BEARING",
                       "COMPLETE_PREDICATED_OFF_TARGET", "COMPLETE_ZERO_ADDRESS_MREF"):
             self.assertIn(token, SOURCE)
+
+    def test_predicate_false_zeroed_device_record_remains_bound_to_host_target(self):
+        target = {"function": {"mangled_name": "_Zexact"}, "target_instruction": {"nvbit_static_index": 8}}
+        line = ("C16_TARGETED_NVBIT_FUNCTION_LAUNCH function_mangled=_Zexact launch_id=0 nvbit_static_index=8\n"
+                "C16_TARGETED_NVBIT_MEMORY_RECORD function_mangled=_Zexact present=0 address=0x0 launch_id=0 "
+                "nvbit_static_index=0 callback_count=9 predicate_true_count=0 active_lane_count=0 "
+                "nonzero_mref_count=0 zero_mref_count=0\n")
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "tool.log"; path.write_text(line, encoding="utf-8")
+            evidence = targeted_memory_evidence(path, target)
+        self.assertEqual(evidence["exact_function_launch_count"], 1)
+        self.assertEqual(evidence["predicate_true_count"], 0)
+        self.assertEqual(evidence["observed_record_static_indices"], [0])
 
 
 if __name__ == "__main__":

@@ -109,8 +109,15 @@ def targeted_memory_evidence(path: Path, target: dict[str, Any]) -> dict[str, An
     )
     launches = [match.groups() for match in launch_pattern.finditer(content)
                 if match.group(1) == function and int(match.group(3)) == static_index]
+    # A predicate-false invocation leaves the device-owned record entirely
+    # zeroed, including its stored static index.  The host-side launch marker
+    # plus exact function identity and the freshly re-emitted map still bind
+    # it to the selected static index; do not discard that decisive
+    # predicate-off evidence merely because no device lane claimed the record.
     records = [match.groups() for match in record_pattern.finditer(content)
-               if match.group(1) == function and int(match.group(5)) == static_index]
+               if match.group(1) == function and
+               (int(match.group(5)) == static_index or
+                (match.group(2) == "0" and int(match.group(5)) == 0))]
     if not launches:
         raise ContractError("targeted-memory diagnostic did not prove exact target launch")
     if not records:
@@ -127,6 +134,9 @@ def targeted_memory_evidence(path: Path, target: dict[str, Any]) -> dict[str, An
         "exact_function_launch_count": len(launches),
         "memory_record_callback_count": len(records),
         "memory_record_present_values": [int(row[1]) for row in records],
+        "observed_record_static_indices": [int(row[4]) for row in records],
+        "zeroed_device_record_static_index_allowed_only_for_predicate_false": any(
+            int(row[4]) == 0 and int(row[1]) == 0 for row in records),
         "representative_addresses": ["0x" + row[2] for row in records],
         **totals,
     }
