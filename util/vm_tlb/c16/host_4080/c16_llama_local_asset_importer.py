@@ -20,7 +20,19 @@ def digest(path: Path) -> str:
     return h.hexdigest()
 
 
-def validate(incoming: Path, authority: Path) -> dict:
+def payload_manifest(receipt: dict) -> dict:
+    entries = receipt.get("payloads", receipt.get("files", []))
+    result = {}
+    for entry in entries:
+        name = entry.get("path", entry.get("filename"))
+        size = entry.get("size", entry.get("size_bytes"))
+        sha = entry.get("sha256")
+        if name is not None and size is not None and sha:
+            result[str(name)] = {"size": int(size), "sha256": str(sha)}
+    return result
+
+
+def validate(incoming: Path, authority: Path, source_receipt: Path | None) -> dict:
     result = {"status": "U4_LOCAL_ASSET_IMPORT_FAIL", "incoming": str(incoming), "errors": []}
     if not incoming.is_dir():
         result["errors"].append("incoming directory is absent")
@@ -28,16 +40,22 @@ def validate(incoming: Path, authority: Path) -> dict:
     authority_data = json.loads(authority.read_text())
     if authority_data["success_boundary"]["model"] != f"{MODEL}@{REVISION}":
         result["errors"].append("repository authority model/revision drift")
-    provenance = incoming / "C16_ASSET_PROVENANCE.json"
-    if not provenance.is_file():
-        result["errors"].append("missing required C16_ASSET_PROVENANCE.json")
+    expected_payloads = {}
+    if source_receipt is None:
+        result["errors"].append("missing authoritative --source-receipt")
+    elif not source_receipt.is_file():
+        result["errors"].append("specified source receipt is absent")
     else:
         try:
-            p = json.loads(provenance.read_text())
-            if p.get("model_id") != MODEL or p.get("revision") != REVISION:
-                result["errors"].append("provenance model_id/revision mismatch")
+            p = json.loads(source_receipt.read_text())
+            source_model = p.get("model_id", p.get("model"))
+            if source_model != MODEL or p.get("revision") != REVISION:
+                result["errors"].append("source receipt model_id/revision mismatch")
+            expected_payloads = payload_manifest(p)
+            if not expected_payloads:
+                result["errors"].append("source receipt has no parseable payload size/SHA manifest")
         except (OSError, json.JSONDecodeError) as exc:
-            result["errors"].append(f"invalid provenance: {exc}")
+            result["errors"].append(f"invalid source receipt: {exc}")
     inventory = []
     symlinks = []
     for path in sorted(incoming.rglob("*")):
@@ -46,6 +64,7 @@ def validate(incoming: Path, authority: Path) -> dict:
         elif path.is_file() and path.name != "C16_ASSET_VALIDATION.json":
             inventory.append({"path": str(path.relative_to(incoming)), "size": path.stat().st_size, "sha256": digest(path)})
     result["inventory"] = inventory
+    result["source_receipt"] = str(source_receipt) if source_receipt else None
     result["symlinks"] = symlinks
     if symlinks:
         result["errors"].append("symlinks require explicit review; no promotion")
@@ -63,6 +82,9 @@ def validate(incoming: Path, authority: Path) -> dict:
                 json.loads(candidate.read_text())
             except (OSError, json.JSONDecodeError) as exc:
                 result["errors"].append(f"invalid {name}: {exc}")
+    observed = {entry["path"]: {"size": entry["size"], "sha256": entry["sha256"]} for entry in inventory}
+    if expected_payloads and observed != expected_payloads:
+        result["errors"].append("incoming payload manifest differs from authoritative source receipt")
     if not result["errors"]:
         result["status"] = "U4_LOCAL_ASSET_EXACT_CLOSURE_PASS"
     return result
@@ -72,12 +94,13 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--incoming", type=Path, default=Path("/data/c16/models/.incoming/Llama-3.2-1B"))
     parser.add_argument("--authority", type=Path, required=True)
+    parser.add_argument("--source-receipt", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--promote", action="store_true")
     args = parser.parse_args()
     if args.output.exists():
         raise SystemExit("refusing to overwrite output")
-    result = validate(args.incoming, args.authority)
+    result = validate(args.incoming, args.authority, args.source_receipt)
     if args.promote:
         destination = args.incoming.parent.parent / f"Llama-3.2-1B@{REVISION}"
         if result["status"] != "U4_LOCAL_ASSET_EXACT_CLOSURE_PASS":

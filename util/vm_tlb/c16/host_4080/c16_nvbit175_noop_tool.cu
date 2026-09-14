@@ -9,6 +9,11 @@ void nvbit_at_init() {
   std::fflush(stdout);
 }
 
+void nvbit_at_ctx_init(CUcontext ctx) {
+  // Link and exercise a non-instrumenting NVBit API without inspecting functions.
+  (void)nvbit_get_sm_family(ctx);
+}
+
 void nvbit_at_cuda_event(CUcontext, int, nvbit_api_cuda_t, const char*, void*, CUresult*) {
   // Deliberately no function matching, instruction enumeration, or instrumentation.
 }
