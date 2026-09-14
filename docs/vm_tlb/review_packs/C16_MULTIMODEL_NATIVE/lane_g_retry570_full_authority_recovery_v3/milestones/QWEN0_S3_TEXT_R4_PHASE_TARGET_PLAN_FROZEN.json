@@ -1,0 +1,37 @@
+{
+  "schema_version": "C16_G_RECOVERY_V3_R4_PHASE_TARGET_PUBLICATION_V1",
+  "campaign_id": "c16_full_authority_recovery_v3",
+  "stage": "R4_PHASE_SPECIFIC_TARGET_PLAN",
+  "status": "RECOVERY_V3_TARGET_PLAN_FROZEN_PENDING_R5",
+  "scientific_eligible": false,
+  "identity": {
+    "deployment_id": "c16_qwen25_05b_native_reference",
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "scenario_id": "S3",
+    "scenario_label": "S3_TEXT",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "runtime_source_commit": "2deb60af60bae849cec1b018b05091f70c9319ae"
+  },
+  "g1_source": {
+    "run_id": "219ccf74-5f57-4b3a-8da1-a44cb7be5b69",
+    "raw_profile_sha256": "246dbce102b43849365903bbedf71b81f73db92b3f5d75f5f387fd933e349782",
+    "export_validation_sha256": "68d7d0518854fb92080121a32eb9b31b7646583f829d09096af0eba09b51d19c",
+    "export_validation_status": "G1_EXPORT_VALIDATED_PASS",
+    "kernel_catalog_sha256": "a42a530ad456859072e5192d5dad2c9a9c8588754bfcf3d7eeee73a561bd8f7a",
+    "kernel_catalog_rows": 87480
+  },
+  "target_plan": {
+    "plan_id": "RECOVERY_V3_QWEN0_S3_TEXT_G1_V1",
+    "remote_tsv_path": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/219ccf74-5f57-4b3a-8da1-a44cb7be5b69/r4_phase_catalog/QWEN0_S3_R4_PHASE_TARGET_PLAN.tsv",
+    "tsv_sha256": "f9f5425f10676e36a52d45b1f1235b184424e7ac0e0ed9a9bab964e6b108c2c7",
+    "receipt_sha256": "b7cef7b7030b9708f18c529d18d165233f087117415690c1e2e69dd23eee3efc",
+    "selection_reason": "MAX_AGGREGATE_PHASE_GPU_DURATION_PRE_OUTCOME",
+    "rows": [
+      {"phase": "PREFILL", "source_launch_ordinal": 35, "grid": "64x1x14", "block": "128x1x1", "launch_count": 20, "aggregate_duration_ns": 39346079, "nvbit_status": "PENDING_R5_NVBIT_NATIVE_MAP"},
+      {"phase": "DECODE", "source_launch_ordinal": 1020, "grid": "1x11x14", "block": "128x1x1", "launch_count": 1800, "aggregate_duration_ns": 89176829, "nvbit_status": "PENDING_R5_NVBIT_NATIVE_MAP"}
+    ]
+  },
+  "prohibitions": ["no_kernel_name_only_capture", "no_cross_model_static_range", "no_static_range_before_nvbit_native_map"],
+  "window_closeout": {"measurement_active_after": false, "active_gpu_process_count": 0, "raw_payloads_committed": false}
+}

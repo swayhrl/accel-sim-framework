@@ -4,6 +4,12 @@ Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_ADDRESS_ZERO_ROOT
 
 ## Latest independently reviewable checkpoint
 
+`Qwen0 / S3_TEXT / R4` is frozen as `RECOVERY_V3_QWEN0_S3_TEXT_G1_V1` from a
+hash-closed, independently validated 87,480-launch G1 catalog.  It has one
+PREFILL and one DECODE structural row, but neither receives a static range
+until its own direct NVBit-native map is produced.  Next GPU work is R5 map
+and bounded canary, not further Qwen0 R3 expansion.
+
 `Qwen2.5-0.5B-Instruct / S4_STRUCTURED / R3_NATIVE_BASELINE_AND_G1_CENSUS` is
 `PASS_COPYBACK_READY`: 431.503 ms native median, complete 17.522 s G1 census,
 and a retained 12,869,674-byte remote report with SHA256
@@ -20,8 +26,8 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[Qwen0/S3_TEXT R4-R5, Qwen7-raw S2 R4-R5, Qwen7-raw remaining R3 rows, Llama S1]`;
-`NEXT_GPU_JOB=Qwen0/S3_TEXT R4 target-plan freeze`; unresolved Qwen0/S0
+`GPU_READY_QUEUE=[Qwen0/S3_TEXT R5 map+canary, Qwen7-raw S2 R4-R5, Qwen7-raw remaining R3 rows, Llama S1]`;
+`NEXT_GPU_JOB=Qwen0/S3_TEXT R5 NVBit native static-map`; unresolved Qwen0/S0
 Prefill remains the separately closed `STATIC_INDEX_FILTER_OR_DYNAMIC_EXECUTION_NOT_REPRODUCED` branch.
 
 ## Current execution authority — v11 Qwen0 forensic / v10 pipeline
