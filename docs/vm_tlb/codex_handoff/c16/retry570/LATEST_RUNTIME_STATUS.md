@@ -1,6 +1,54 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_QWEN7_RAW_S1_PREFILL_DIRECT_MEMORY_CAPABILITY_LIMITED_TWO_EXACT_TARGETS_ZERO`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_ADDRESS_ZERO_ROOT_CAUSE`.
+
+## Current execution authority — v11 Qwen0 forensic / v10 pipeline
+
+Current runtime source checkpoint: `2deb60af60bae849cec1b018b05091f70c9319ae`.
+It adds only predicate-aware offline accounting and deterministic target-plan
+materialization; the runtime model path is unchanged.  The code was focused-
+test-passed and pushed before the resulting plan was used.
+
+Qwen0 S0/PREFILL original corrected-tracer raw is retained and dual-SHA
+closed.  Its D1 forensic receipt reports 72 trace files / 21,312 rows, exact
+static index 45 and `LDG.E.LTC128B.CONSTANT`, 21,312 inferred active rows,
+zero predicate-true rows, and zero address lanes counted under the required
+predicate-true-only rule.  The correct classification is
+`PREDICATED_OFF_TARGET`, not an address capture failure.  The immutable-map
+replacement is static index 86 (`LDG.E.LTC128B.64.CONSTANT`, `[86,87)`) in
+the same exact function.  Its one bounded canary completed checksum/backend
+and measurement-window gates but emitted 72 header-only target traces with
+zero dynamic rows.  It is retained as
+`STATIC_INDEX_FILTER_OR_DYNAMIC_EXECUTION_NOT_REPRODUCED`, not as a second
+MREF capability result; no further index scan or repeat is authorized without
+new direct mapper evidence.  The independent prior repro remains retained;
+no raw evidence was overwritten.
+
+Pipeline progress independent of that Qwen0 root-cause branch:
+
+- Qwen2.5-0.5B S1/CODE G1 nsys census is `COMPLETE`; its `.nsys-rep` is
+  12,705,409 bytes and remote/local SHA256 is
+  `810b990adcd5187bf0c9e64806b5d4ba646e8caadff6e45625f49cfa6e093a5d`.
+- Qwen2.5-7B raw S2/TEXT native baseline and G1 census are `COMPLETE` for
+  B1/T2048/Decode32, raw bf16/sdpa/eager.  The `.nsys-rep` is 26,180,948
+  bytes and remote/local SHA256 is
+  `c89efab03c9facf43c135445c6e3e62c5669f1ae9d12eefbbf156af1b9ce23cd`.
+- Qwen2.5-7B raw S2/CODE native baseline and G1 census are `COMPLETE` under
+  the same frozen runtime dimensions.  The `.nsys-rep` is 26,262,392 bytes
+  and remote/local SHA256 is
+  `b04aafcd746295414f053d8053da3863400ffa82519589738b5879f5307c9061`.
+
+All three completed profiles used an exclusive remote
+`GPU_IO_EXCLUSION.lock`; post-window checks found
+`MEASUREMENT_ACTIVE=absent` and `ACTIVE_GPU_PROCESS_COUNT=0`.  Raw reports
+remain exclusively under `/root/share/c16_recovery_v3`, never Git.
+
+`GPU_READY_QUEUE_COUNT=3` (Qwen7 S2/STRUCTURED, Qwen7 S3/TEXT, Qwen0
+S1/CODE follow-up).  `GPU_ACTIVE_JOB=none`; `GPU_UTILIZATION_STATE=between
+exclusive windows`; `REMOTE_TRANSFER_JOB=Qwen7-AWQ model`; its rsync has
+naturally completed but package-wide payload SHA closure is still pending;
+`NEXT_GPU_JOB=Qwen7 raw S2/STRUCTURED native baseline`; `WHY_GPU_IDLE=only
+post-profile SHA/publication boundary, not unrelated model transfer`.
 
 ## Active Recovery-V3 asset and runtime checkpoint
 
