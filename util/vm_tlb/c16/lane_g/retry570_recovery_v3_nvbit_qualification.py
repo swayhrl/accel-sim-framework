@@ -88,7 +88,7 @@ def validate_static_map(path: Path, *, function: str, code_object_sha256: str) -
 
 V2_STATIC_MAP_COLUMNS = (
     "nvbit_static_index", "vector_ordinal", "instruction_offset", "opcode", "memory_space",
-    "is_load", "is_store", "has_mref", "mref_count", "sass", "function_full_name",
+    "is_load", "is_store", "has_mref", "mref_count", "width_bytes", "sass", "function_full_name",
     "function_mangled_name", "function_address", "code_object_path", "code_object_sha256",
 )
 
@@ -142,13 +142,15 @@ def validate_static_map_v2(path: Path, *, function: str, manifest: dict[str, str
         if manifest.get(owner_path) != owner_sha:
             raise ContractError("V2 native static map owner is not a closed actual code object")
         try:
-            index, mrefs = int(row["nvbit_static_index"]), int(row["mref_count"])
+            index, mrefs, width = int(row["nvbit_static_index"]), int(row["mref_count"]), int(row["width_bytes"])
         except ValueError as exc:
             raise ContractError("V2 native static map has unparsable static/MREF count") from exc
-        if index < 0 or mrefs < 0:
-            raise ContractError("V2 native static map has negative static/MREF count")
+        if index < 0 or mrefs < 0 or width < 0:
+            raise ContractError("V2 native static map has negative static/MREF count/width")
         if int(row["has_mref"]) not in (0, 1) or (int(row["has_mref"]) == 0) != (mrefs == 0):
             raise ContractError("V2 native static map MREF semantics differ")
+        if mrefs and width == 0:
+            raise ContractError("V2 native static map has a zero-width memory reference")
         indices.append(index); owners.add((owner_path, owner_sha))
     if len(indices) != len(set(indices)) or len(owners) != 1:
         raise ContractError("V2 native static map repeats an index or mixes owners")
