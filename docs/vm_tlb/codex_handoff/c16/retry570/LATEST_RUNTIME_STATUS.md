@@ -69,6 +69,11 @@ single shared `COPYBACK_QUEUE` as `COPYBACK_READY`; Lane B owns copyback.  The
 next GPU task is the one permitted independent repro using this unchanged V2
 plan; Decode remains queued immediately afterwards.
 
+The independent repro also returned `COMPLETE_VALID_ADDRESS_BEARING` under
+the same frozen model/input/backend/target range: all 24 exact launches again
+reported predicate-true, nonzero-MREF records.  Its raw map/log are likewise
+`COPYBACK_READY`; next GPU work is now `Qwen0/S3_TEXT/DECODE_R5_STATIC_MAP`.
+
 The fixed authority audit is
 [`RECOVERY_V3_G1_AUTHORITY_AUDIT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/g1_authority_audit/RECOVERY_V3_G1_AUTHORITY_AUDIT.json)
 (`604fb22d3f57c665e7096d499e491440bf6e7a259b4db3cc1e5ff337e20bf307`).
