@@ -34,10 +34,15 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[Qwen0/S1_CODE R4-R5, Qwen7-raw S2 R4-R5, Llama S1]`;
-`NEXT_GPU_JOB=Qwen0/S1_CODE R4 phase-specific target plan`.  Qwen0/S3 does
-not receive target substitution or a widened range.  Unresolved Qwen0/S0
-Prefill remains the separately closed `STATIC_INDEX_FILTER_OR_DYNAMIC_EXECUTION_NOT_REPRODUCED` branch.
+`GPU_READY_QUEUE=[]`; `GPU_ACTIVE_JOB=none`; `NEXT_GPU_JOB=none`.  A current
+audit found that Qwen0/S1's historical G1 receipt is a retained dry-run
+failure with no `.nsys-rep`, so it is not lawful R4 input; Qwen7 raw S2 has
+native baselines but likewise no current validated G1 catalog under the
+Recovery-V3 namespace.  The immediate non-GPU task is to restore a
+campaign-scoped native/G1 parent contract without reopening the historical
+ledger.  Qwen0/S3 does not receive target substitution or a widened range.
+Unresolved Qwen0/S0 Prefill remains the separately closed
+`STATIC_INDEX_FILTER_OR_DYNAMIC_EXECUTION_NOT_REPRODUCED` branch.
 
 ## Current execution authority — v11 Qwen0 forensic / v10 pipeline
 
