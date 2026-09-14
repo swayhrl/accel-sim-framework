@@ -43,9 +43,9 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[Qwen0/S3_TEXT/PREFILL_R5_V2_INDEPENDENT_REPRO,
-Qwen0/S3_TEXT/DECODE_R5]`; `GPU_ACTIVE_JOB=none`;
-`NEXT_GPU_JOB=Qwen0/S3_TEXT/PREFILL_R5_V2 independent repro`.
+`GPU_READY_QUEUE=[Qwen0/S3_TEXT/DECODE_R5_TARGETED_DISCRIMINATOR]`;
+`GPU_ACTIVE_JOB=none`; `NEXT_GPU_JOB=Qwen0/S3_TEXT/DECODE_R5 targeted
+discriminator`.
 
 The immutable `S3/PREFILL/target-v1` index-8 result is closed only as
 `PREDICATED_OFF_TARGET`; it is never to be rerun, widened, or rewritten.
@@ -73,6 +73,13 @@ The independent repro also returned `COMPLETE_VALID_ADDRESS_BEARING` under
 the same frozen model/input/backend/target range: all 24 exact launches again
 reported predicate-true, nonzero-MREF records.  Its raw map/log are likewise
 `COPYBACK_READY`; next GPU work is now `Qwen0/S3_TEXT/DECODE_R5_STATIC_MAP`.
+
+Decode has its own exact split-KV function map (4,768 unique static
+instructions, SHA256 `7271d4e8…f805fb`) and an independently frozen
+`S3_DECODE_TARGET_V1`: unpredicated `STG.E`, static `[169,170)`, with its own
+phase/function/grid/block identity. It explicitly forbids both nsys↔NVBit
+ordinal equality and cross-phase reuse. The next GPU task is its one bounded
+Decode discriminator.
 
 The fixed authority audit is
 [`RECOVERY_V3_G1_AUTHORITY_AUDIT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/g1_authority_audit/RECOVERY_V3_G1_AUTHORITY_AUDIT.json)

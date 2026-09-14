@@ -1,0 +1,103 @@
+{
+  "artifacts": {
+    "peak_allocated_bytes": 3725007360,
+    "peak_reserved_bytes": 3974103040,
+    "raw_bytes_observed_before_receipt": 3122550,
+    "terminal_status": "COMPLETE",
+    "trace_evidence": {
+      "configuration": {
+        "ACTIVE_FROM_START": "UNSET",
+        "C16_NVBIT_LAUNCH_INVENTORY_PATH": "UNSET",
+        "C16_NVBIT_STATIC_MAP_PATH": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/r5_static_map_decode/5c97f080-70cf-4a3f-bc69-b624f279e66d/raw/EXACT_FUNCTION_STATIC_MAP.tsv",
+        "C16_NVBIT_TARGET_FUNCTION_MANGLED": "_ZN13pytorch_flash24flash_fwd_splitkv_kernelINS_23Flash_fwd_kernel_traitsILi64ELi64ELi256ELi4ELb0ELb0EN7cutlass6half_tENS_19Flash_kernel_traitsILi64ELi64ELi256ELi4ES3_EEEELb0ELb0ELb0ELb0ELb1ELb1ELb0EEEvNS_16Flash_fwd_paramsE",
+        "C16_NVBIT_TARGET_INSTR_INDEX": "UNSET",
+        "DYNAMIC_KERNEL_RANGE": "UNSET",
+        "INSTR_BEGIN": "UNSET",
+        "INSTR_END": "UNSET",
+        "TERMINATE_UPON_LIMIT": "UNSET",
+        "TOOL_COMPRESS": "UNSET",
+        "TRACES_FOLDER": "UNSET",
+        "TRACE_FILE_COMPRESS": "UNSET"
+      },
+      "kernel_catalogs": [],
+      "records": [
+        {
+          "path": "EXACT_FUNCTION_STATIC_MAP.tsv",
+          "sha256": "7271d4e8f9e073c7b4d757c640ddce066d5d0e4f15f670d06e3871a961f805fb",
+          "size_bytes": 3122550
+        }
+      ],
+      "required": true
+    }
+  },
+  "binding": {
+    "package_fixed_commit": "4e73a1d0f435ba4d1dae1a9e749b8b82e54b7f63",
+    "package_id": "C16_GPU_PACKAGE_P1",
+    "package_manifest_sha256": "d8ac3ca44c4344b9a5fa752ba5a6549c007e901b26b426c9713b4d7e8749eb84",
+    "receipt": "/root/autodl-tmp/c16_retry570/recovery_v3_packages/qwen2p5_0p5b_p1_v2/runtime/S3_TEXT_BINDING.json",
+    "sha256": "87a31254d519d8b8ed690c3990d273da6eb39c616247cf39b0c19a2830b1c2c7",
+    "token_receipt_sha256": "4795f7012e3ce0e1b7b1c157925a57d89c8965f713360aaa2216a7ec3ff43b1f",
+    "wheelhouse_manifest_sha256": "ebae0934de68b36e08da5db0e6bfdc47880620205e8bf6d8c8afe8906abc2d2d"
+  },
+  "checks": {
+    "cache_correct_decode": true,
+    "cpu_offload_forbidden": true,
+    "expected_attention_backend_matched": true,
+    "expected_output_checksum_matched": true,
+    "input_all_cuda": true,
+    "model_all_cuda": true,
+    "nvtx_model_range_emitted": true,
+    "output_checksum": "7118ad8a37e37132a9e3b768cb411a34355577b93d7ef741b0365409fb0375b8",
+    "parameter_dtype_set": [
+      "float16"
+    ],
+    "terminal_token_ids": "DERIVED_BY_FROZEN_CACHE_CORRECT_DECODE_ONCE"
+  },
+  "identity": {
+    "code_commit": "49ba181d1548859a80db1800e8fb283ffb9f768e",
+    "deployment_id": "c16_qwen25_05b_native_reference",
+    "dtype": "float16",
+    "implementation_key": "TRANSFORMERS_CAUSAL_LM",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "quantization": "NONE",
+    "run_id": "5c97f080-70cf-4a3f-bc69-b624f279e66d",
+    "scenario_id": "S3",
+    "tokenizer_revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+  },
+  "parent_lease": {
+    "child_acquired_second_lease": false,
+    "measurement_marker": "/root/autodl-tmp/c16_retry570/control/MEASUREMENT_ACTIVE",
+    "parent_lease_id": "904a4576-31f0-4e2a-b3fa-ce783e0165aa",
+    "sha256": "744342ce551e0c29383ce7e9a17adaeea52357307057de5cb88bb1713ee622dd",
+    "start_receipt": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/r5_static_map_decode/5c97f080-70cf-4a3f-bc69-b624f279e66d/PARENT_LEASE.json"
+  },
+  "runtime": {
+    "adapter_load_evidence": {
+      "adapter_loader": "TRANSFORMERS_CAUSAL_LM",
+      "cpu_offload_forbidden": true,
+      "quantization_implementation": "NONE_TRANSFORMERS_LOCAL_FILES_ONLY",
+      "requested_dtype": "float16",
+      "required_sequence_length": 8208
+    },
+    "attention_backend": "sdpa",
+    "compile_state": "EAGER_UNCOMPILED",
+    "device": "cuda:0",
+    "driver_version": "570.124.04",
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "gpu_uuid": "GPU-0c257cc7-45dd-5533-5435-7f42e7008e0e",
+    "torch_cuda": "12.4",
+    "torch_version": "2.5.1+cu124"
+  },
+  "schema_version": "C16_G_MODEL_NVBIT_QUALIFICATION_V1",
+  "scientific_eligible": false,
+  "status": "MODEL_NVBIT_QUALIFICATION_FORWARD_COMPLETE",
+  "tool": {
+    "ld_preload_launch_declaration": "/root/autodl-tmp/c16_retry570/nvbit/recovery_v3_qwen0_s3_r5_counter_b879d2b8/retry570_targeted_memory_tool_nvbit175_counter.so",
+    "ld_preload_visible_after_loader": "UNSET_AFTER_DYNAMIC_LOADER",
+    "mode": "NVBIT_STATIC_MAP",
+    "tool_path": "/root/autodl-tmp/c16_retry570/nvbit/recovery_v3_qwen0_s3_r5_counter_b879d2b8/retry570_targeted_memory_tool_nvbit175_counter.so",
+    "tool_sha256": "27df128b72f4741b47c7a05bba7e36e8a13cf1bccc0356ca0c2be36d8239d571"
+  }
+}
