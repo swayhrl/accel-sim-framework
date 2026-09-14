@@ -1,3 +1,3 @@
-# Pipeline V1 producer 109 R1
+# Producer 109 R2
 
-PRODUCER_SCHEMA_PASS; synthetic local tests PASS; no remote mutation, source deletion, GPU workload rerun, or contact with 174-new. Ready for integration round.
+PRODUCER_R2_PASS. Strict schemas/CLIs and T1-T13 passed locally. No remote/GPU/scientific mutation. Ready for cross-node integration review.
