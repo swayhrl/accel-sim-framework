@@ -1,8 +1,33 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_ROUTE_B_V2_MAP_TERMINAL_PENDING_C_Q1_OR_FALLBACK_G1`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_PRIMARY_LLAMA_Q1_PASS_Q2_PENDING`.
 
-## Live authority — Route B V2
+## V12.3 live authority — primary Llama completion
+
+This section is the sole current execution authority; every later historical
+section is provenance only and cannot create a second GPU queue.
+
+- `ROUTE_B_Q1=PASS` on RTX3090/SM86 with NVBit 1.7.5, CUDA 12.4, and
+  PyTorch 2.5.1+cu124.  The frozen tiny fixture executed the exact direct
+  GLOBAL load/store function twice (launch IDs 0 and 1), emitted 692 valid
+  nonzero-GPU-VA LANE_EVENTs, and closed with one COMPLETE terminal,
+  `overflow_count=0`, `drop_count=0`, and matching `event_count=692`.
+  The 502,744-byte raw JSONL is remote-SHA-closed
+  (`420ab3b009bcf20975bde9a38d3792f84882ee4977f8254464bdf8ca07fb1a0b`)
+  and `COPYBACK_READY`; it is not committed to Git.  Compact authority:
+  `ROUTE_B_Q1_RESULT.json`.
+- `MEASUREMENT_ACTIVE=absent`, `ACTIVE_GPU_PROCESS_COUNT=0`, and therefore
+  `transfer_slot_granted=true` after Q1 cleanup.  During the Q1 measurement
+  it was explicitly `false`.
+- `PRIMARY_MODEL=Llama-3.2-1B`, `PRIMARY_SCENARIO=S0/B1/T128/Decode4`.
+  `NEXT_GPU_JOB=ROUTE_B_Q2_PREFILL_BRIDGE`; Q2 Prefill then Q2 Decode
+  preempt CUTLASS owner work, selection, and every non-Llama campaign row.
+- Q2 must use fresh actual-owner static maps for `indexSelectLargeIndex`
+  (Prefill) and `indexSelectSmallIndex` (Decode), freeze all exact
+  `GLOBAL && has_mref` pairs, and retain remote SHA/manifest closure before
+  any return to CUTLASS owner resolution.
+
+## Historical authority — Route B V2 (superseded for scheduling)
 
 This section supersedes every scheduler statement below it.  Historical prose
 is retained for provenance only and must not be used to create a second GPU
