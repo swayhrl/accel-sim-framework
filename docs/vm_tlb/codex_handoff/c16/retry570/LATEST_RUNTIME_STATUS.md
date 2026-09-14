@@ -91,6 +91,11 @@ join is absent, and an nsys ordinal is forbidden as a substitute. The next
 authorized engineering task is the campaign-scoped G1 parent contract needed
 to regenerate a validated phase-linked catalog without rewriting history.
 
+That contract has now produced a real S3 campaign G1 profile, SQLite export,
+independent validation, and phase-linked catalog.  The report and SQLite are
+remote-SHA closed in `COPYBACK_READY`; the compact catalog is published for
+the pending source-to-NVBit identity join.
+
 The fixed authority audit is
 [`RECOVERY_V3_G1_AUTHORITY_AUDIT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/g1_authority_audit/RECOVERY_V3_G1_AUTHORITY_AUDIT.json)
 (`604fb22d3f57c665e7096d499e491440bf6e7a259b4db3cc1e5ff337e20bf307`).

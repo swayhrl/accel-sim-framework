@@ -1,0 +1,66 @@
+{
+  "artifacts": {
+    "elapsed_seconds": 15.803204976022243,
+    "output_bytes": 12543297,
+    "output_path": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/g1_campaign/a03feaea-081e-4f90-b9c8-1331f9b85ee8/QWEN0_S3_G1",
+    "output_sha256": "eec808769cc83ea7b8b8016da48829a209b578fbf1588c6c36c22b4f57d85dbd",
+    "terminal_status": "COMPLETE"
+  },
+  "checks": {
+    "campaign_namespace": "/root/autodl-tmp/c16_retry570/runtime/RECOVERY_V3_CAMPAIGN_BUDGET_LEDGER_HISTORY_SNAPSHOT_V2.json",
+    "child_acquired_second_lease": false,
+    "command": [
+      "/opt/nvidia/nsight-compute/2024.1.1/host/target-linux-x64/nsys",
+      "profile",
+      "--force-overwrite=true",
+      "--trace=cuda,nvtx,osrt",
+      "-o",
+      "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/g1_campaign/a03feaea-081e-4f90-b9c8-1331f9b85ee8/QWEN0_S3_G1",
+      "/root/autodl-tmp/c16_retry570/venv_cp310_cu124_final/bin/python",
+      "/root/autodl-tmp/c16_retry570/framework_v3/util/vm_tlb/c16/lane_g/runtime_native_runner.py",
+      "--mode",
+      "baseline",
+      "--receipt",
+      "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/g1_campaign/a03feaea-081e-4f90-b9c8-1331f9b85ee8/G1_RUNNER_RECEIPT.json",
+      "--binding-receipt",
+      "/root/autodl-tmp/c16_retry570/recovery_v3_packages/qwen2p5_0p5b_p1_v2/runtime/S3_TEXT_BINDING.json",
+      "--execute-native",
+      "--adapter",
+      "qwen25_05b",
+      "--implementation-key",
+      "TRANSFORMERS_CAUSAL_LM",
+      "--dtype",
+      "float16",
+      "--quantization",
+      "NONE",
+      "--run-id",
+      "a03feaea-081e-4f90-b9c8-1331f9b85ee8",
+      "--budget-ledger",
+      "/root/autodl-tmp/c16_retry570/runtime/RECOVERY_V3_CAMPAIGN_BUDGET_LEDGER_HISTORY_SNAPSHOT_V2.json",
+      "--budget-owned-by-wrapper",
+      "--parent-lease-receipt",
+      "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/g1_campaign/a03feaea-081e-4f90-b9c8-1331f9b85ee8/PARENT_LEASE.json"
+    ],
+    "parent_lease_closeout": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/g1_campaign/a03feaea-081e-4f90-b9c8-1331f9b85ee8/PARENT_LEASE.json.closeout.json",
+    "parent_lease_receipt": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/g1_campaign/a03feaea-081e-4f90-b9c8-1331f9b85ee8/PARENT_LEASE.json"
+  },
+  "execution_mode": "NATIVE_GPU",
+  "identity": {
+    "code_commit": "fbef733435b4f377fd50bb080e7aa9fbcd8ee995",
+    "deployment_id": "c16_qwen25_05b_native_reference",
+    "dtype": "float16",
+    "implementation_key": "TRANSFORMERS_CAUSAL_LM",
+    "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "quantization": "NONE",
+    "run_id": "a03feaea-081e-4f90-b9c8-1331f9b85ee8",
+    "scenario_id": "S3",
+    "tokenizer_revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+  },
+  "runtime": {
+    "profiler_mode": "NSYS_LIGHTWEIGHT_CENSUS_PARENT_LEASED"
+  },
+  "schema_version": "C16_G_RECOVERY_V3_G1_NSYS_V1",
+  "scientific_eligible": true
+}
