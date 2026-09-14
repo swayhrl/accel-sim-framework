@@ -102,7 +102,11 @@ def main() -> None:
         terminal = "COMPLETE"; elapsed = time.monotonic() - started
         lease.finish(elapsed_seconds=elapsed, raw_bytes=a.raw.stat().st_size, terminal_status=terminal,
                      evidence_classification="NON_SCIENTIFIC_DIAGNOSTIC", diagnostic_reason="ROUTE_B_Q2_DYNAMIC_ADDRESS_QUALIFICATION")
-        close = write_parent_lease_closeout(a.parent_lease, lease, terminal_status=terminal, elapsed_seconds=elapsed, raw_bytes=a.raw.stat().st_size)
+        # Keep the immutable start receipt and publish a separate closeout;
+        # profiler_wrapper deliberately accepts the parent receipt object and
+        # child return code, not a budget object/raw-byte argument.
+        close = write_parent_lease_closeout(a.parent_lease, parent, terminal_status=terminal,
+                                            elapsed_seconds=elapsed, returncode=child.returncode)
     atomic_json(a.receipt, {"schema_version": "C16_ROUTE_B_Q2_DYNAMIC_CAPTURE_V1", "status": terminal,
         "scientific_eligible_for_timing": False, "scientific_eligible_for_dynamic_address_evidence": terminal == "COMPLETE",
         "identity": identity, "producer_manifest": {"path": str(a.producer_manifest), "sha256": sha256_file(a.producer_manifest)},
