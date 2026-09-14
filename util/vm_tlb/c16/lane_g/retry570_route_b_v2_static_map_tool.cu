@@ -189,14 +189,18 @@ static void emit_map(CUcontext context, CUfunction function, const Owner& owner)
     const std::string temporary = output_path + ".tmp." + std::to_string(getpid());
     std::ofstream out(temporary, std::ios::out | std::ios::trunc);
     if (!out.good()) { fprintf(stderr, "C16_ROUTE_B_V2_MAP_ERROR open\n"); return; }
-    out << "nvbit_static_index\tvector_ordinal\tinstruction_offset\topcode\tmemory_space\tis_load\tis_store\thas_mref\tmref_count\tsass\tfunction_full_name\tfunction_mangled_name\tfunction_address\tcode_object_path\tcode_object_sha256\n";
+    // Instr::getSize() is also the width passed by the existing Route-B
+    // device producer for a memory operand.  Persist it in the exact static
+    // map so Q2 can freeze a checked all-GLOBAL+MREF whitelist rather than
+    // inventing a width from opcode spelling.
+    out << "nvbit_static_index\tvector_ordinal\tinstruction_offset\topcode\tmemory_space\tis_load\tis_store\thas_mref\tmref_count\twidth_bytes\tsass\tfunction_full_name\tfunction_mangled_name\tfunction_address\tcode_object_path\tcode_object_sha256\n";
     for (size_t ordinal = 0; ordinal < instructions.size(); ++ordinal) {
         Instr* instruction = instructions[ordinal]; const int mrefs = mref_count(instruction);
         out << instruction->getIdx() << '\t' << ordinal << '\t' << instruction->getOffset() << '\t'
             << escape_tsv(instruction->getOpcode()) << '\t'
             << InstrType::MemorySpaceStr[static_cast<int>(instruction->getMemorySpace())] << '\t'
             << (instruction->isLoad() ? 1 : 0) << '\t' << (instruction->isStore() ? 1 : 0) << '\t'
-            << (mrefs > 0 ? 1 : 0) << '\t' << mrefs << '\t' << escape_tsv(instruction->getSass()) << '\t'
+            << (mrefs > 0 ? 1 : 0) << '\t' << mrefs << '\t' << instruction->getSize() << '\t' << escape_tsv(instruction->getSass()) << '\t'
             << full << '\t' << mangled << '\t' << addr.str() << '\t' << owner.path << '\t' << owner.sha256 << '\n';
     }
     out.close();
