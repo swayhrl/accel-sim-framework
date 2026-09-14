@@ -2,131 +2,179 @@
 
 ## Status
 
-AUTHORIZED after the exact frozen input/token binding package is available locally.
+AUTHORIZED **only after the ongoing bulk model transfer to `/data/c16` has completed or been explicitly stopped**.
 
-Execute from this coordination branch using a fresh execution branch/worktree. Do not modify ChatGPT-owned handoff files.
+Create a fresh execution branch/worktree from this coordination branch. Do not modify ChatGPT-owned handoff files.
+
+Recommended execution branch:
+
+`hrl/c16-4080-u5-u9-r5-clean`
 
 ## Objective
 
-Resume from reviewed R3 execution:
+R4 at:
 
-`hrl/c16-4080-u4-u9-r3@920ab69ca4e59c60fd091e58b8d672f0923283d2`
+`hrl/c16-4080-u5-u9-r4@d6702b62717a7f6621dd4e3ca73747075113f0b0`
 
-U4 is already PASS. Do not repeat model admission unless a focused integrity recheck is needed.
+is accepted as an end-to-end **mechanism qualification**, but not as authoritative scientific measurement because large model assets were concurrently being copied into `/data/c16`.
 
-Primary work:
+Perform one clean isolated rerun of the frozen Llama path:
 
-1. verify the externally supplied frozen S0/B1/T128/Decode4/TEXT input/token binding;
-2. complete U5 native baseline;
-3. complete U6 RTX4080-local kernel census;
-4. complete U7 bounded Llama NCU capture;
-5. complete U9 address-bearing NVBit canary;
-6. STOP.
+1. isolation/preflight gate;
+2. deterministic frozen-input re-admission check;
+3. corrected U5 native reference measurement;
+4. fresh R5-local U6 census;
+5. provenance-complete U7 NCU capture;
+6. provenance-complete U9 NVBit canary using the already-selected semantic/static target;
+7. STOP.
 
-## Reviewed prerequisites
+Do not enter multi-model characterization in this stage.
 
-- U4: `U4_LOCAL_ASSET_EXACT_CLOSURE_PASS`.
-- Formal model path: `/data/c16/models/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08`.
-- U4 receipt SHA256: `5b1aed870cd03d50a0da5f6721ab639d56ca0f3a1c3782a9fed9cf8e3dc84a3b`.
-- U8.5: `U8_5_C16_CUSTOM_TOOL_CLOSURE_PASS` from reviewed R1 evidence.
-- NCU N0/N1: PASS.
-- U0-U3 userspace runtime: PASS.
+## Reviewed immutable prerequisites
 
-## Frozen U5 semantic identity
+### Model
 
-Required semantic contract:
+`meta-llama/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08`
+
+Formal path:
+
+`/data/c16/models/Llama-3.2-1B@4e20de362430cd3b72f300e6b0f18e50e7166e08`
+
+U4 receipt SHA256:
+
+`5b1aed870cd03d50a0da5f6721ab639d56ca0f3a1c3782a9fed9cf8e3dc84a3b`
+
+### Frozen input
 
 `S0 / B1 / T128 / Decode4 / TEXT`
 
-Do not reconstruct it from a prompt or tokenizer.
+Package:
 
-Do not re-tokenize.
+`/data/c16/inputs/.incoming/llama_3p2_1b/S0_B1_T128_Decode4_TEXT/`
 
-Do not substitute a semantically equivalent prompt.
+Transfer receipt SHA256:
 
-Do not infer token IDs from historical hashes.
+`5eff72842b2e87c79d2070b9085215e5bfca0e98c25e91155aec04aa12d6fe0d`
 
-The exact source-side package must bind the historical frozen input/token payloads and derived token IDs.
+Historical identities:
 
-Reviewed R3 evidence names four required SHA256 identities:
+- raw TEXT: `bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208`
+- token authority receipt: `0b5a86fdee44452e74e5d80e8043ebd97054fbbe29a6232a4f5cf5d06568c7dd`
+- canonical compact-JSON SHA256 of 128 authoritative IDs: `f9cf1ea6dca7956c740b3aa0af59acadd17be014df2aaffb75d240383502e3a7`
+- derived token-ID payload: `fc712eb0a158f0fe62231f7826feec3eaabfea51906ca6b1588a55ee81ae3624`
 
-- `bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208`
-- `0b5a86fdee44452e74e5d80e8043ebd97054fbbe29a6232a4f5cf5d06568c7dd`
-- `f9cf1ea6dca7956c740b3aa0af59acadd17be014df2aaffb75d240383502e3a7`
-- `fc712eb0a158f0fe62231f7826feec3eaabfea51906ca6b1588a55ee81ae3624`
+No tokenizer may be invoked to reconstruct the frozen IDs.
 
-## Stage A — admit frozen input/token binding
+### Platform/runtime
 
-When the CPU/source server package arrives, first perform a live userspace-only admission:
+- GPU UUID: `GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59`
+- driver: `580.178.04`
+- NCU: `/opt/nvidia/nsight-compute/2025.1.1/ncu`, version `2025.1.1.0`
+- Python: CPython 3.10.12
+- torch: `2.5.1+cu124`
+- `libtorch_cuda.so` SHA256: `761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a`
+- U8.5 custom NVBit lifecycle closure remains reviewed PASS.
 
-1. inventory every supplied file;
-2. record source provenance/receipt path;
-3. recompute every payload SHA256;
-4. bind the exact four historical hashes to their actual filenames/semantic roles;
-5. verify exact S0/B1/T128/Decode4/TEXT identity;
-6. verify derived token IDs are supplied as authoritative payload, not regenerated;
-7. reject missing/extra/unbound payloads;
-8. write a hash-closed RTX4080-side admission receipt.
+## Stage 0 — mandatory isolation gate
 
-If any required historical identity cannot be bound to actual bytes, STOP fail-closed.
+Do not start U5 until the bulk asset copy is finished/stopped.
 
-## Stage B — U5 native Llama baseline
+Create a hash-closed preflight receipt containing at minimum:
 
-Begin only after Stage A PASS.
+- UTC timestamp;
+- GPU UUID, driver, kernel, NCU version, Python/torch identity;
+- `nvidia-smi` compute-process inventory showing no unrelated compute process;
+- process inventory for bulk writers/downloaders (`rsync`, `scp`, `sftp`, `rclone`, `curl`, `wget`, `aria2`, known C16 model-sync processes);
+- inventory of `/data/c16/models/.transfer` and any `.partial` asset path;
+- evidence that no transfer file is changing during a short two-snapshot observation window;
+- no residual NCU/NVBit/model process from a prior run.
 
-Use:
+If an active bulk writer into `/data/c16` is found, STOP without measuring.
 
-- exact formal model path from U4;
-- exact frozen input/token binding from Stage A;
-- Recovery-V2-S5 S0/B1/T128/Decode4/TEXT semantics;
-- exact dtype and attention backend from the historical authority;
-- CUDA-only residency;
-- no offload/substitution;
-- deterministic/frozen output checksum policy from the authority.
+Do not use root, drop caches, tune clocks/power, or mutate host configuration.
 
-No NCU or NVBit in U5.
+## Stage 1 — harden the U5 runner before formal measurement
 
-Record native wall time only as a platform reference. Do not treat timing as cross-platform-equivalent performance evidence.
+The R4 runner is not accepted unchanged.
 
-## Stage C — U6 RTX4080-local kernel census
+Required fixes:
 
-Begin only after U5 PASS.
+1. Replace all scientific `assert` gates with explicit fail-closed checks that cannot disappear under `python -O`.
+2. Bind the exact formal model path to the reviewed U4 importer receipt. The result receipt must record the U4 receipt path/SHA and verify its model/revision/promoted-path identity before model execution.
+3. Keep generated-token collection on GPU during the timed region. Do not call `.cpu()`/`.tolist()` for each decode step inside timing. Synchronize the endpoint first, then copy generated IDs to host and hash them outside the timed region.
+4. Record exact dtype/backend/residency/environment and output checksum in every measured sample.
+5. Preserve semantic inference behavior: B1, 128 frozen input IDs, exactly 4 greedy decode tokens, float16, SDPA, CUDA-only, no offload/substitution.
 
-Build a new census from the actual RTX4080 runtime/code objects.
+Do not change model, input, dtype, backend, decode policy or semantic workload to improve timing.
 
-Freeze target authority before U7/U9.
+## Stage 2 — clean U5 native reference
 
-Never reuse RTX3090 launch IDs, ordinals, static instruction indices/ranges or `DYNAMIC_KERNEL_RANGE` as RTX4080 authority.
+Re-run the frozen-input admission first; it is deterministic and cheap.
 
-## Stage D — U7 bounded Llama NCU capture
+For timing:
 
-Use only the qualified NCU 2025.1.1 executable.
+- load the model before the timed section;
+- perform one untimed warmup execution of the exact same semantic contract;
+- require the warmup checksum to equal the frozen historical checksum;
+- perform 5 measured repetitions in the same process/runtime state;
+- synchronize CUDA immediately before and after each timed inference;
+- copy generated IDs to CPU only after the end synchronization;
+- require every repetition to produce the same frozen checksum;
+- report all five durations plus median/min/max (and CV if convenient), not just one selected run.
 
-Select a compact memory-characterization metric set from metrics actually supported on RTX4080; do not use `--set full`.
+Native timing remains a platform reference, not cross-platform-equivalent performance evidence.
 
-Freeze before capture:
+## Stage 3 — fresh R5-local U6 census and frozen canary target
 
-- metric manifest/hash;
-- U6-bound target/window;
-- exact argv;
-- exact model/input/runtime identity;
-- timeout and cleanup policy.
+Regenerate the RTX4080-local live function/code-object/address mapping. Never reuse R4 absolute addresses, ordinals or launch IDs.
 
-Run NCU alone, never co-load NVBit. Store `.ncu-rep` under `/data/c16/ncu`, reopen/export with the same NCU, hash-close report/export/argv/target identity, and keep raw report out of Git.
+The canary target itself is already selected and must not be changed post hoc:
 
-## Stage E — U9 Llama NVBit address-bearing canary
+- semantic function: `indexSelectLargeIndex` (record exact mangled name from R5 live code object);
+- expected static instruction index: `101`;
+- expected opcode: `LDG.E.U16`.
 
-Prerequisites:
+Build the fresh SASS/static map and verify that static index 101 still matches the expected instruction under the frozen runtime/code object.
 
-- Stage A input binding PASS;
-- U5 PASS;
-- U6 target authority frozen;
-- reviewed U8.5 lifecycle PASS remains bound to the exact custom tool closure used by U9.
+If it does not match, STOP fail-closed. Do not pick a different instruction to obtain nonzero data.
+
+Freeze and hash a R5 target-contract receipt before U7/U9 formal captures.
+
+## Stage 4 — provenance-complete U7 NCU capture
+
+Run NCU alone; NVBit must not be loaded.
+
+Before formal profiling, recover the exact R4 metric list/argv from local R4 evidence if possible. If R4 did not preserve a reconstructable metric manifest, create a compact memory-oriented metric manifest from metrics supported on this RTX4080 **before** the formal profile, record why R4 provenance was insufficient, and freeze/hash the new manifest. Never use `--set full`.
+
+The U7 receipt/review pack must bind:
+
+- exact NCU executable path/version/SHA256;
+- exact metric manifest and SHA256;
+- exact argv in execution order;
+- exact R5 target contract and SHA256;
+- model U4 receipt SHA;
+- frozen-input admission receipt SHA;
+- runtime identity;
+- timeout/cleanup policy;
+- raw `.ncu-rep` absolute path, size, SHA256;
+- reopened/export output absolute path, size, SHA256;
+- NCU pass/replay count if reported;
+- clean process termination.
+
+Profile the frozen `indexSelectLargeIndex` target only. Do not select a different kernel based on R5 metric values.
+
+Keep `.ncu-rep` and large exports out of Git; commit only receipts/manifests/hashes and concise summaries.
+
+## Stage 5 — provenance-complete U9 NVBit canary
+
+NCU must be fully terminated before U9.
+
+Use the R5 target contract frozen in Stage 3. Regenerate process-local absolute mappings as required; do not expect absolute addresses to equal R4.
 
 Required sequence:
 
-1. map actual RTX4080 live function/code object;
-2. build SASS/static memory-instruction map;
+1. live function/code-object mapping;
+2. verify static index 101 / `LDG.E.U16` against the frozen contract;
 3. no-match prewarm with READY proof;
 4. immutable arm/target binding;
 5. one bounded target capture;
@@ -134,38 +182,41 @@ Required sequence:
 
 PASS requires:
 
-- exact target launch observed;
+- exact frozen target launch observed;
 - address-bearing rows > 0;
 - complete schema/final newline;
-- expected function/static binding;
-- checksum-stable output;
-- clean exit;
-- raw trace size/SHA closure.
+- expected function/static-instruction binding;
+- frozen model output checksum stable;
+- clean exit/TERMINAL;
+- raw trace/stdout size and SHA256 closure.
 
-Do not broaden or reselect targets after freeze merely to obtain nonzero records.
+Do not require R5 absolute addresses or trace counts to match R4. Do not broaden/reselect the target after freeze.
 
-## Concurrent bulk asset transfer policy
+## Stage 6 — R4 vs R5 comparison
 
-The CPU server may copy other model assets to RTX4080 while this Goal is waiting for the U5 input package.
+R4 quantitative values are contaminated and remain non-authoritative.
 
-Before U5/U7/U9 timing/profiling/capture begins, ensure any large background rsync into `/data/c16` is complete or paused and record a clean process/storage-I/O state. Do not run formal model measurements concurrently with bulk model migration.
+After R5 closes, compare only as a diagnostic:
 
-## Allowed scope
+- output checksum equality;
+- target semantic/static identity equality;
+- U5 timing R4 vs clean R5 (label R4 contaminated);
+- U7 metric values R4 vs R5 when comparable;
+- U9 structural counts/trace size R4 vs R5 when comparable.
 
-Userspace work as `huangrulin` under the repo and `/data/c16`, including input/model validation, CUDA/NCU/NVBit work, bounded GPU experiments, receipts/manifests/hashes, ordinary user-owned downloads/copies, commit/push.
+Do not average R4 and R5 together and do not promote R4 measurements into the final dataset.
 
-## Forbidden scope
+## Multi-model state — informational only
 
-Do not:
+109 already contains 21 exact historical Qwen frozen bindings transferred from the CPU source lane:
 
-- use sudo or privilege escalation;
-- mutate driver, host CUDA, kernel, modprobe, systemd, Docker daemon, network/proxy/DNS, mounts or storage layout;
-- substitute model/revision/dtype/context/batch/backend/input/token binding;
-- use CPU offload;
-- re-tokenize to recreate the frozen token IDs;
-- reuse RTX3090 target identities as RTX4080 authority;
-- co-load NCU and NVBit in one formal run;
-- commit weights, `.ncu-rep`, raw NVBit traces, wheel payloads, frozen input payloads, or large build artifacts.
+- Qwen2.5-0.5B-Instruct: 7;
+- Qwen2.5-7B-Instruct raw: 7;
+- Qwen2.5-7B-Instruct-AWQ: 7.
+
+Qwen3-8B and DeepSeek-V2-Lite have no historical frozen binding and remain `NO_HISTORICAL_FROZEN_BINDING`.
+
+Do not use these in this R5 Llama rerun and do not start multi-model characterization.
 
 ## Required handoff output
 
@@ -173,29 +224,45 @@ Update:
 
 `docs/vm_tlb/codex_handoff/c16/4080_migration/LATEST_REPORT.md`
 
-Create/update:
+Create:
 
-`docs/vm_tlb/review_packs/C16_4080_U5_U9_R4/`
+`docs/vm_tlb/review_packs/C16_4080_U5_U9_R5_CLEAN/`
 
-Include at minimum `README.md`, `MANIFEST.json`, `SOURCE_ANCHORS.md`, `COMMIT_HISTORY.md`, `CHANGED_FILES.md`, `VALIDATION_SUMMARY.md`, `OPEN_ISSUES.md`, and `SHA256SUMS`.
+At minimum include:
 
-`LATEST_REPORT.md` must state final branch/commit; input-binding/U5/U6/U7/U8.5/U9 status; blockers; important raw artifact paths+SHA; and `READY_FOR_NEXT_STAGE` or `NOT_READY`.
+- `README.md`
+- `MANIFEST.json`
+- `SOURCE_ANCHORS.md`
+- `COMMIT_HISTORY.md`
+- `CHANGED_FILES.md`
+- `VALIDATION_SUMMARY.md`
+- `OPEN_ISSUES.md`
+- `SHA256SUMS`
+- isolation/preflight receipt or its concise hash-closed summary
+- U5 repetition summary with exact receipt paths/hashes
+- U6/R5 target contract summary/hash
+- U7 metric/argv/raw/export manifest with hashes
+- U9 target/trace manifest with hashes
+
+`LATEST_REPORT.md` must explicitly say that R4 is mechanism-only/non-authoritative due to concurrent bulk model transfer, and state whether R5 is `READY_FOR_MULTIMODEL_REVIEW` or `NOT_READY`.
 
 ## Git requirements
 
-- Fresh branch/worktree from this coordination branch.
-- Do not rewrite ChatGPT-owned handoff files.
-- Explicit-path staging; no `git add .` / `git add -A`.
-- Raw artifacts stay out of Git.
-- Run focused tests, `git diff --check`, clean-status and remote-head verification before report.
+- fresh branch/worktree from this coordination branch;
+- do not modify ChatGPT-owned handoff files;
+- explicit-path staging only; no `git add .` / `git add -A`;
+- raw NCU/NVBit/model/input payloads stay out of Git;
+- run focused tests, `git diff --check`, clean-status and remote-head verification before STOP.
 
 ## STOP conditions
 
-STOP when:
+STOP if:
 
-1. the exact frozen input/token package is absent or cannot bind the four historical SHA identities;
-2. a genuine host/root mutation becomes unavoidable;
-3. scientific identity cannot be closed without substitution/re-tokenization;
-4. U9 completes.
+1. any bulk writer into `/data/c16` remains active at formal measurement time;
+2. scientific model/input/runtime identity fails closure;
+3. R5 static index 101 no longer maps to expected `LDG.E.U16` under the frozen code object;
+4. NCU metric/argv provenance cannot be frozen before capture;
+5. a genuine root/host mutation becomes unavoidable;
+6. U9 completes.
 
-Do not proceed to multi-model formal characterization in this stage.
+No root/host mutation is expected.
