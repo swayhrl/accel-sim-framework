@@ -1,3 +1,3 @@
-# R5 evidence provenance closeout
-R5 artifacts rehashed in place; no workload rerun.
-R4 quantitative data remains mechanism-only/non-authoritative.
+# Changed files
+
+R6.1 rewrites only repository-readable documentation and manifest/hash summaries. No raw model, input, NCU report, NVBit trace, wheel, or scientific code artifact is committed.
