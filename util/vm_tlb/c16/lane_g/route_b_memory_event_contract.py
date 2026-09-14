@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed Route-B all-GLOBAL+MREF memory-event contract.
+"""Fail-closed Route-B all-GLOBAL+MREF LANE_EVENT contract.
 
 This is the CPU-side half of the versioned NVBit 1.7.5 producer.  The device
 tool is required to emit these fields; this module deliberately refuses to
@@ -19,6 +19,9 @@ class RouteBContractError(ValueError):
 ACCESS_KINDS = frozenset(("READ", "WRITE", "ATOMIC"))
 MEMORY_SPACE = "GLOBAL"
 OBSERVED_ORDER = "OBSERVED_CALLBACK_ORDER"
+LANE_EVENT = "LANE_EVENT"
+RAW_SCHEMA = "C16_ROUTE_B_LANE_EVENT_V1"
+PREDICATE_SEMANTICS = "GUARD_PREDICATE_MASK"
 
 
 @dataclass(frozen=True)
@@ -67,8 +70,8 @@ def validate_event(event: dict[str, Any], whitelist: tuple[WhitelistRow, ...], *
     required = {
         "observed_event_sequence", "sequence_label", "kernel_launch_id", "function_mangled_name",
         "cta", "warp_id", "static_index", "instruction_offset", "opcode", "mref_ordinal",
-        "access_kind", "width_bytes", "memory_space", "active_mask", "predicate_mask", "is_predicated",
-        "address_lane_ids", "gpu_va_by_address_lane",
+        "access_kind", "width_bytes", "memory_space", "active_mask", "predicate_mask", "predicate_semantics",
+        "record_kind", "raw_schema", "warp_instruction_instance_id", "lane_id", "gpu_va",
     }
     missing = sorted(required.difference(event))
     if missing:
@@ -78,6 +81,10 @@ def validate_event(event: dict[str, Any], whitelist: tuple[WhitelistRow, ...], *
         raise RouteBContractError("Route-B event sequence is not strictly monotonic")
     if event["sequence_label"] != OBSERVED_ORDER:
         raise RouteBContractError("Route-B event order must be labelled OBSERVED_CALLBACK_ORDER")
+    if event["record_kind"] != LANE_EVENT or event["raw_schema"] != RAW_SCHEMA:
+        raise RouteBContractError("Route-B raw event is not the versioned LANE_EVENT schema")
+    if not isinstance(event["warp_instruction_instance_id"], int) or event["warp_instruction_instance_id"] < 0:
+        raise RouteBContractError("Route-B LANE_EVENT lacks a nonnegative explicit warp instruction instance id")
     allowed = {(row.static_index, row.mref_ordinal): row for row in whitelist}
     key = (event["static_index"], event["mref_ordinal"])
     row = allowed.get(key)
@@ -91,17 +98,14 @@ def validate_event(event: dict[str, Any], whitelist: tuple[WhitelistRow, ...], *
     predicate_mask = event["predicate_mask"]
     active_lanes = _mask_lanes(active_mask)
     predicate_lanes = _mask_lanes(predicate_mask)
-    if not isinstance(event["is_predicated"], bool):
-        raise RouteBContractError("Route-B predicate-presence marker is not boolean")
-    if not event["is_predicated"] and predicate_mask != active_mask:
-        raise RouteBContractError("Route-B non-predicated instruction must set predicate mask equal to active mask")
+    if event["predicate_semantics"] != PREDICATE_SEMANTICS:
+        raise RouteBContractError("Route-B predicate semantics are not explicit guard-mask semantics")
     executing_lanes = _mask_lanes(active_mask & predicate_mask)
-    lane_ids = event["address_lane_ids"]
-    addresses = event["gpu_va_by_address_lane"]
-    if lane_ids != executing_lanes or not isinstance(addresses, list) or len(addresses) != len(executing_lanes):
-        raise RouteBContractError("Route-B event executing-mask popcount/lane/address serialization differs")
-    if any(not isinstance(address, int) or address <= 0 for address in addresses):
-        raise RouteBContractError("Route-B event contains a non-GPU-VA address")
+    lane = event["lane_id"]
+    if not isinstance(lane, int) or lane not in executing_lanes:
+        raise RouteBContractError("Route-B LANE_EVENT lane is not an executing lane")
+    if not isinstance(event["gpu_va"], int) or event["gpu_va"] <= 0:
+        raise RouteBContractError("Route-B LANE_EVENT contains a non-GPU-VA address")
     if not set(predicate_lanes).issubset(active_lanes):
         raise RouteBContractError("Route-B predicate mask names inactive lanes")
     cta = event["cta"]
@@ -120,11 +124,35 @@ def validate_terminal(terminal: dict[str, Any]) -> None:
 
 
 def validate_stream(events: Iterable[dict[str, Any]], whitelist: Iterable[WhitelistRow], terminal: dict[str, Any]) -> int:
+    """Validate independent lane records without using adjacent order as grouping.
+
+    Each dynamic warp instruction is grouped only by its explicit producer
+    supplied ``warp_instruction_instance_id``.  This deliberately permits
+    interleaving in OBSERVED_CALLBACK_ORDER while still rejecting a missing or
+    duplicate executing lane in every instance.
+    """
     frozen = validate_whitelist(whitelist)
     previous: int | None = None
     count = 0
+    instances: dict[int, tuple[tuple[Any, ...], set[int], int]] = {}
     for event in events:
         previous = validate_event(event, frozen, previous_sequence=previous)
+        instance = event["warp_instruction_instance_id"]
+        signature = (event["kernel_launch_id"], tuple(event["cta"]), event["warp_id"], event["static_index"],
+                     event["mref_ordinal"], event["instruction_offset"], event["opcode"], event["access_kind"],
+                     event["width_bytes"], event["active_mask"], event["predicate_mask"], event["predicate_semantics"])
+        expected = event["active_mask"] & event["predicate_mask"]
+        if instance not in instances:
+            instances[instance] = (signature, set(), expected)
+        known_signature, lanes, known_expected = instances[instance]
+        if signature != known_signature or expected != known_expected:
+            raise RouteBContractError("Route-B LANE_EVENT instance identity is internally inconsistent")
+        if event["lane_id"] in lanes:
+            raise RouteBContractError("Route-B LANE_EVENT instance repeats an executing lane")
+        lanes.add(event["lane_id"])
         count += 1
+    for _, (_, lanes, expected) in instances.items():
+        if lanes != set(_mask_lanes(expected)):
+            raise RouteBContractError("Route-B LANE_EVENT instance is missing an executing lane")
     validate_terminal(terminal)
     return count

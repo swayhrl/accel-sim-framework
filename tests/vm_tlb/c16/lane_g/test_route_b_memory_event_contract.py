@@ -20,8 +20,9 @@ def event(**updates):
         "observed_event_sequence": 1, "sequence_label": "OBSERVED_CALLBACK_ORDER", "kernel_launch_id": 3,
         "function_mangled_name": "_Zexact", "cta": [0, 0, 0], "warp_id": 0, "static_index": 7,
         "instruction_offset": 16, "opcode": "LDG.E.64", "mref_ordinal": 0, "access_kind": "READ",
-        "width_bytes": 8, "memory_space": "GLOBAL", "active_mask": 0b101, "predicate_mask": 0b001, "is_predicated": True,
-        "address_lane_ids": [0], "gpu_va_by_address_lane": [0x1000],
+        "width_bytes": 8, "memory_space": "GLOBAL", "active_mask": 0b101, "predicate_mask": 0b001, "predicate_semantics": "GUARD_PREDICATE_MASK",
+        "record_kind": "LANE_EVENT", "raw_schema": "C16_ROUTE_B_LANE_EVENT_V1",
+        "warp_instruction_instance_id": 9, "lane_id": 0, "gpu_va": 0x1000,
     }
     value.update(updates)
     return value
@@ -38,7 +39,7 @@ class RouteBMemoryEventContractTests(unittest.TestCase):
             validate_whitelist([WhitelistRow(8, "LD", "GLOBAL", True, "READ", 4, 0), ROW])
 
     def test_mask_address_mref_and_terminal_fail_closed(self):
-        for updates in ({"address_lane_ids": [2]}, {"gpu_va_by_address_lane": [0, 0]}, {"mref_ordinal": 1}):
+        for updates in ({"lane_id": 2}, {"gpu_va": 0}, {"mref_ordinal": 1}):
             with self.assertRaises(RouteBContractError):
                 validate_stream([event(**updates)], [ROW], {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0})
         with self.assertRaises(RouteBContractError):
@@ -47,12 +48,31 @@ class RouteBMemoryEventContractTests(unittest.TestCase):
     def test_sequence_is_observed_not_hardware_order(self):
         with self.assertRaises(RouteBContractError):
             validate_stream([event(sequence_label="HARDWARE_GLOBAL_ORDER")], [ROW], {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0})
+        with self.assertRaises(RouteBContractError):
+            validate_stream([event(predicate_semantics="STATIC_PREDICATE_GUESSED")], [ROW],
+                            {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0})
 
-    def test_address_lanes_are_exactly_predicate_true_executing_lanes(self):
+    def test_lane_event_is_exactly_one_predicate_true_executing_lane(self):
         self.assertEqual(1, validate_stream([event()], [ROW], {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0}))
         with self.assertRaises(RouteBContractError):
-            validate_stream([event(address_lane_ids=[0, 2], gpu_va_by_address_lane=[0x1000, 0x1010])], [ROW], {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0})
-        self.assertEqual(1, validate_stream([event(predicate_mask=0b101, is_predicated=False, address_lane_ids=[0, 2], gpu_va_by_address_lane=[0x1000, 0x1010])], [ROW], {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0}))
+            validate_stream([event(lane_id=2)], [ROW], {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0})
+        events = [event(predicate_mask=0b101, lane_id=0, gpu_va=0x1000),
+                  event(observed_event_sequence=2, predicate_mask=0b101, lane_id=2, gpu_va=0x1010)]
+        self.assertEqual(2, validate_stream(events, [ROW], {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0}))
+
+    def test_instance_id_not_adjacent_sequence_groups_lanes(self):
+        first_lane0 = event(predicate_mask=0b101, lane_id=0, warp_instruction_instance_id=4)
+        second = event(observed_event_sequence=2, predicate_mask=0b101, lane_id=0,
+                       warp_instruction_instance_id=5, gpu_va=0x2000)
+        first_lane2 = event(observed_event_sequence=3, predicate_mask=0b101, lane_id=2,
+                            warp_instruction_instance_id=4, gpu_va=0x1010)
+        second_lane2 = event(observed_event_sequence=4, predicate_mask=0b101, lane_id=2,
+                             warp_instruction_instance_id=5, gpu_va=0x2010)
+        self.assertEqual(4, validate_stream([first_lane0, second, first_lane2, second_lane2], [ROW],
+                                            {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0}))
+        with self.assertRaises(RouteBContractError):
+            validate_stream([first_lane0, first_lane2, first_lane2], [ROW],
+                            {"terminal_status": "COMPLETE", "overflow_count": 0, "drop_count": 0})
 
     def test_multi_mref_is_explicitly_keyed_and_bounded(self):
         second = WhitelistRow(7, "LDG.E.64", "GLOBAL", True, "READ", 8, 1, 2)
