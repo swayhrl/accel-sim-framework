@@ -1,0 +1,74 @@
+{
+  "direct_nvbit_function": {
+    "block": "128x1x1",
+    "canonical_full_name": "voidpytorch_flash::flash_fwd_kernel<pytorch_flash::Flash_fwd_kernel_traits<64,128,128,4,false,false,cutlass::half_t,pytorch_flash::Flash_kernel_traits<64,128,128,4,cutlass::half_t>>,false,true,false,false,true,true,false>(pytorch_flash::Flash_fwd_params)",
+    "deployment_id": "c16_qwen25_05b_native_reference",
+    "full_name": "void pytorch_flash::flash_fwd_kernel<pytorch_flash::Flash_fwd_kernel_traits<64, 128, 128, 4, false, false, cutlass::half_t, pytorch_flash::Flash_kernel_traits<64, 128, 128, 4, cutlass::half_t> >, false, true, false, false, true, true, false>(pytorch_flash::Flash_fwd_params)",
+    "grid": "64x1x14",
+    "mangled_name": "_ZN13pytorch_flash16flash_fwd_kernelINS_23Flash_fwd_kernel_traitsILi64ELi128ELi128ELi4ELb0ELb0EN7cutlass6half_tENS_19Flash_kernel_traitsILi64ELi128ELi128ELi4ES3_EEEELb0ELb1ELb0ELb0ELb1ELb1ELb0EEEvNS_16Flash_fwd_paramsE",
+    "scenario_id": "S3"
+  },
+  "frozen_target": {
+    "nvbit_static_index": 4125,
+    "opcode": "STG.E.128",
+    "range": [
+      4125,
+      4126
+    ],
+    "target_plan_id": "S3_PREFILL_TARGET_V2"
+  },
+  "inputs": {
+    "binding": {
+      "path": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/r5_launch_inventory/7b8ed2f5-f6c2-4567-9b37-2efb4bb292e4/QWEN0_S3_DIRECT_FUNCTION_BINDING.json",
+      "sha256": "51e0642cb06f49dec3dc0d90888cbd524d84aea951fcd96d178ebf7f1aa86b76"
+    },
+    "target_plan": {
+      "path": "/root/autodl-tmp/c16_retry570/recovery_v3_runs/qwen2p5_0p5b/S3_TEXT/r5_static_map_prefill/f21bce0f-f038-4eaa-ae55-69f4a5f956a9/QWEN0_S3_PREFILL_TARGET_V2.json",
+      "sha256": "e8da35b57dc33e15c357abd834608bc9181dfd2ecccb92ed9edb8c781ce79806"
+    }
+  },
+  "join_contract": {
+    "canonical_function_rendering_rule": "REMOVE_(int)_TOKENS;_(bool)0_TO_false;_(bool)1_TO_true;_REMOVE_WHITESPACE",
+    "forbidden": [
+      "NSYS_SOURCE_LAUNCH_ORDINAL_EQUALS_NVBIT_STATIC_INDEX",
+      "CROSS_RUN_ABSOLUTE_TIMESTAMP_JOIN",
+      "KERNEL_NAME_ONLY_MATCH"
+    ],
+    "keys": [
+      "phase",
+      "canonical_full_function_identity",
+      "grid",
+      "block",
+      "source_occurrence_and_correlation_evidence"
+    ]
+  },
+  "phase": "PREFILL",
+  "schema_version": "C16_G_RECOVERY_V3_R4_SOURCE_TO_R5_NVBIT_IDENTITY_JOIN_V1",
+  "scientific_eligible_for_timing": false,
+  "source_catalog_evidence": {
+    "geometry": {
+      "block": "128x1x1",
+      "grid": "64x1x14"
+    },
+    "launch_ordinals_retained_as_source_evidence_only": [
+      "35",
+      "75",
+      "115",
+      "155"
+    ],
+    "matching_row_count": 4,
+    "occurrence_count_by_correlation": {
+      "CUDA_CORRELATION_6445": 1,
+      "CUDA_CORRELATION_7104": 1,
+      "CUDA_CORRELATION_7743": 1,
+      "CUDA_CORRELATION_8382": 1
+    },
+    "path": "/root/autodl-tmp/c16_retry570/framework_v3/docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/qwen0_s3_campaign_g1/KERNEL_CATALOG.tsv",
+    "sha256": "ead38b70a2396a8faefd1e3ecb2a75c2a7f4ad53597e674818fad1e9e66d3ae3",
+    "source_function_full_name_examples": [
+      "void pytorch_flash::flash_fwd_kernel<pytorch_flash::Flash_fwd_kernel_traits<(int)64, (int)128, (int)128, (int)4, (bool)0, (bool)0, cutlass::half_t, pytorch_flash::Flash_kernel_traits<(int)64, (int)128, (int)128, (int)4, cutlass::half_t>>, (bool)0, (bool)1, (bool)0, (bool)0, (bool)1, (bool)1, (bool)0>(pytorch_flash::Flash_fwd_params)"
+    ],
+    "unique_correlation_count": 4
+  },
+  "status": "R4_SOURCE_TO_R5_NVBIT_IDENTITY_JOIN_CLOSED"
+}

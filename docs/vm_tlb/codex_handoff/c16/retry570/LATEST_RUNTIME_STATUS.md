@@ -1,18 +1,28 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_S3_PREDICATE_CLOSEOUT`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_PIPELINED_QWEN0_S3_R6_PREFILL_READY`.
 
 ## Latest independently reviewable checkpoint
 
-`Qwen0 / S3_TEXT / R5 / PREFILL` is closed as `PREDICATED_OFF_TARGET`.
-The direct NVBit-native map selected exact full `pytorch_flash::flash_fwd_kernel`
-static index 8 (`@P2 LDG.E`, GLOBAL MREF); the immutable S3 forward launched
-that exact function 24 times and reached 2,752,512 target callbacks, but
-`predicate_true_count=0` and `nonzero_mref_count=0`.  This is neither a tracer
-failure nor an address-zero/MREF capability conclusion, and it is not admitted
-to R6.  The raw map/log are remote SHA-closed and `COPYBACK_READY` for Lane B;
-the compact forensics SHA256 is
-`62d9c607b17e5e311756beee679e16921516614a1c5bda75733f0c174be83205`.
+`Qwen0 / S3_TEXT / R5 / PREFILL / target V2` is
+`COMPLETE_VALID_ADDRESS_BEARING`, including its one permitted independent
+reproduction. The exact frozen `flash_fwd_kernel`, `STG.E.128`, static range
+`[4125,4126)` observed 24 exact launches and 2,752,512 predicate-true,
+active-lane, nonzero-MREF records (zero-MREF count 0) in each successful
+bounded run. The immutable V1 index-8 result remains separately closed as
+`PREDICATED_OFF_TARGET`; it was neither changed nor rerun.
+
+The required new campaign G1 catalog now closes the source-to-R5 identity
+join for both phase rows without ordinal or cross-run timestamp equality:
+Prefill has 4 exact canonical-function/phase/grid/block occurrence rows
+(`QWEN0_S3_PREFILL_V2_JOIN.json`, SHA256
+`681ca239e37f3e6b386a429ad0db3af32786d42515b7cab0d41a95f44714e992`),
+and Decode has 183 equivalent source rows (`QWEN0_S3_DECODE_V1_JOIN.json`,
+SHA256 `57fdbd641f045f73b827bb335b95366ba3e971d80114f630a2491587a5e8ff01`).
+The join uses only explicit phase, exact ABI-normalised full function identity,
+geometry, and source occurrence/correlation evidence. Prefill is therefore
+admitted to its first formal R6 capture; Decode remains a closed
+`PREDICATED_OFF_TARGET` path and is not widened or rescanned.
 
 The initial adapter-name setup failure is retained as a non-scientific
 pre-model-load attempt.  It did not alter the model, input, target, or the
@@ -43,9 +53,9 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[Qwen0/S3_TEXT/DECODE_R5_TARGETED_DISCRIMINATOR]`;
-`GPU_ACTIVE_JOB=none`; `NEXT_GPU_JOB=Qwen0/S3_TEXT/DECODE_R5 targeted
-discriminator`.
+`GPU_READY_QUEUE=[Qwen0/S3_TEXT/PREFILL_R6_FORMAL_CAPTURE]`;
+`GPU_ACTIVE_JOB=none`; `NEXT_GPU_JOB=Qwen0/S3_TEXT/PREFILL_R6 formal
+capture`. Copyback remains asynchronous through the shared queue.
 
 The immutable `S3/PREFILL/target-v1` index-8 result is closed only as
 `PREDICATED_OFF_TARGET`; it is never to be rerun, widened, or rewritten.
