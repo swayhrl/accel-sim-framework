@@ -121,6 +121,8 @@ def child_command(args: argparse.Namespace, inventory: Path | None, static_map: 
                "--runtime-code-commit", args.runtime_code_commit, "--recovery-v3-generic",
                "--parent-lease-receipt", str(args.parent_lease_receipt),
                "--runtime-deployment-id", args.recovery_deployment_id]
+    if args.route_b_llama_s0:
+        command.append("--route-b-llama-s0")
     if inventory is not None:
         command.extend(("--launch-inventory-path", str(inventory)))
     if static_map is not None and target_log is None:

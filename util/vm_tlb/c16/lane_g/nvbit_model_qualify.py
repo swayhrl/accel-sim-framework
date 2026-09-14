@@ -405,6 +405,8 @@ def main() -> None:
                         help="parent-authorized Recovery namespace; forbidden for standalone qualification")
     parser.add_argument("--recovery-v3-generic", action="store_true",
                         help="admit a non-S0 frozen Recovery-V3 binding; never changes its shape or identity")
+    parser.add_argument("--route-b-llama-s0", action="store_true",
+                        help="allow only the frozen Route-B Llama S0 diagnostic via a parent campaign lease")
     args = parser.parse_args()
     try:
         if str(uuid.UUID(args.run_id)) != args.run_id:
@@ -423,7 +425,15 @@ def main() -> None:
     # authority merely by choosing another mode or adapter.
     binding = load_binding(args.binding_receipt, canary=not args.recovery_v3_generic)
     if args.recovery_v3_generic and binding["scenario"]["scenario_id"] == "S0":
-        raise ContractError("Recovery-V3 generic qualification is reserved for non-S0 frozen scenario bindings")
+        allowed = (args.route_b_llama_s0 and binding.get("model_id") == "meta-llama/Llama-3.2-1B"
+                   and binding.get("model_revision") == "4e20de362430cd3b72f300e6b0f18e50e7166e08"
+                   and binding["scenario"].get("batch_size") == 1
+                   and binding["scenario"].get("prefill_tokens") == 128
+                   and binding["scenario"].get("decode_tokens") == 4)
+        if not allowed:
+            raise ContractError("Recovery-V3 generic qualification is reserved for non-S0 frozen scenario bindings")
+    elif args.route_b_llama_s0:
+        raise ContractError("Route-B Llama S0 override cannot target a non-S0 binding")
     args.raw_dir.mkdir(parents=True, exist_ok=True)
     identity = runtime_identity(binding, args, code_commit)
     capture = args.mode != "BASELINE"

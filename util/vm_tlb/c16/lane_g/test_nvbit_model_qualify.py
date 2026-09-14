@@ -77,6 +77,8 @@ class ModelQualificationTests(unittest.TestCase):
         self.assertIn('parser.add_argument("--recovery-v3-generic", action="store_true"', source)
         self.assertIn('load_binding(args.binding_receipt, canary=not args.recovery_v3_generic)', source)
         self.assertIn('Recovery-V3 generic qualification is reserved for non-S0 frozen scenario bindings', source)
+        self.assertIn('parser.add_argument("--route-b-llama-s0", action="store_true"', source)
+        self.assertIn('binding.get("model_id") == "meta-llama/Llama-3.2-1B"', source)
 
     def test_wrapper_owned_child_proves_parent_and_does_not_open_second_lease(self) -> None:
         source = (LANE / "nvbit_model_qualify.py").read_text(encoding="utf-8")
