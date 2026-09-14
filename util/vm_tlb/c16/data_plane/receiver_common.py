@@ -14,7 +14,9 @@ from typing import Any
 STATUSES = {"FORMAL", "MECHANISM_ONLY", "DIAGNOSTIC", "PRE_FIX", "OBSOLETE", "INVALID"}
 RUN_ID_RE = re.compile(r"^C16R_[a-z0-9-]+_[a-z0-9-]+_[a-z0-9-]+_[a-z0-9-]+_[a-z0-9-]+_\d{8}T\d{6}Z_[a-f0-9]{12}$")
 MANIFEST_FIELDS = {"schema_version", "run_id", "created_at_utc", "scientific_status", "producer", "git", "model", "input", "scenario", "runtime", "capture", "artifacts"}
-META_FILENAMES = {"RUN_MANIFEST.json", "READY"}
+# These are transport/control-plane records, not scientific artifact payloads.
+# R2 producer writes its local closure receipt before READY promotion.
+META_FILENAMES = {"RUN_MANIFEST.json", "LOCAL_CLOSE_RECEIPT.json", "READY"}
 
 
 class AdmissionError(ValueError):

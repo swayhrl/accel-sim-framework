@@ -49,6 +49,7 @@ class ReceiverPipelineTest(unittest.TestCase):
         bundle.mkdir()
         (bundle / "payload.bin").write_bytes(payload)
         (bundle / "RUN_MANIFEST.json").write_text(json.dumps(manifest_for(RUN_ID, payload), sort_keys=True) + "\n")
+        (bundle / "LOCAL_CLOSE_RECEIPT.json").write_text('{"producer_local_only": true}\n')
         (bundle / "READY").write_text("READY\n")
         return bundle
 
