@@ -56,6 +56,9 @@ def main() -> None:
     p.add_argument("--tool-sha256", required=True)
     p.add_argument("--fatbin-owner-preload", type=Path, required=True)
     p.add_argument("--fatbin-owner-preload-sha256", required=True)
+    p.add_argument("--culibrary-owner-preload", type=Path,
+                   help="V12.2 bounded actual cuLibrary/module owner observer")
+    p.add_argument("--culibrary-owner-preload-sha256")
     p.add_argument("--runtime-code-commit", required=True)
     p.add_argument("--expected-output-checksum", required=True)
     p.add_argument("--expected-attention-backend", required=True)
@@ -64,6 +67,8 @@ def main() -> None:
                    help="exact mangled function with an already V2 owner-closed map")
     p.add_argument("--max-functions", type=int, default=0)
     args = p.parse_args()
+    if (args.culibrary_owner_preload is None) != (args.culibrary_owner_preload_sha256 is None):
+        raise ValueError("cuLibrary owner preload path/SHA must be supplied together")
     functions = inventory_functions(args.inventory)
     functions = [item for item in functions if item not in set(args.skip_function)]
     if args.max_functions:
@@ -93,6 +98,9 @@ def main() -> None:
                    "--fatbin-owner-preload", str(args.fatbin_owner_preload),
                    "--fatbin-owner-preload-sha256", args.fatbin_owner_preload_sha256,
                    "--route-b-llama-s0", "--target-cap-seconds", "120"]
+        if args.culibrary_owner_preload is not None:
+            command.extend(("--culibrary-owner-preload", str(args.culibrary_owner_preload),
+                            "--culibrary-owner-preload-sha256", args.culibrary_owner_preload_sha256))
         run.mkdir(parents=True, exist_ok=False)
         completed = subprocess.run(command, text=True, capture_output=True, check=False)
         receipt = run / "PARENT_RECEIPT.json"

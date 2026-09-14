@@ -24,6 +24,7 @@ class RouteBV2MapBatchTest(unittest.TestCase):
         self.assertIn('"transfer_slot_granted": active == "none"', source)
         self.assertIn('"--phase", "FUNCTION"', source)
         self.assertIn('"--fatbin-owner-preload"', source)
+        self.assertIn('"--culibrary-owner-preload"', source)
 
 
 if __name__ == "__main__":
