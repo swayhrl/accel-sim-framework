@@ -81,6 +81,16 @@ phase/function/grid/block identity. It explicitly forbids both nsys↔NVBit
 ordinal equality and cross-phase reuse. The next GPU task is its one bounded
 Decode discriminator.
 
+That one Decode discriminator closed as `PREDICATED_OFF_TARGET`: the exact
+function launched 360 times and completed 360 target callbacks, but
+`predicate_true_count=active_lane_count=nonzero_mref_count=0`. The immutable
+Decode V1 range will not be widened, rescanned, or called a tracer failure.
+Its raw map/log are `COPYBACK_READY`. No formal R6 capture is admitted yet:
+the retained R4 source catalog needed for the required source-to-NVBit identity
+join is absent, and an nsys ordinal is forbidden as a substitute. The next
+authorized engineering task is the campaign-scoped G1 parent contract needed
+to regenerate a validated phase-linked catalog without rewriting history.
+
 The fixed authority audit is
 [`RECOVERY_V3_G1_AUTHORITY_AUDIT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/g1_authority_audit/RECOVERY_V3_G1_AUTHORITY_AUDIT.json)
 (`604fb22d3f57c665e7096d499e491440bf6e7a259b4db3cc1e5ff337e20bf307`).
