@@ -11,6 +11,7 @@ It is never a timing or formal-trace producer.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import signal
@@ -41,6 +42,48 @@ def git_head() -> str:
 
 def tree_bytes(root: Path) -> int:
     return sum(item.stat().st_size for item in root.rglob("*") if item.is_file()) if root.is_dir() else 0
+
+
+def verify_code_object(path: Path, expected_sha256: str) -> dict[str, str]:
+    """Bind the declared loaded CUDA code object to its actual local file."""
+    if not path.is_file():
+        raise ContractError("declared libtorch CUDA code-object path is absent")
+    actual = sha256_file(path)
+    if actual != expected_sha256:
+        raise ContractError("actual libtorch CUDA code-object SHA256 differs from frozen expected SHA256")
+    return {"path": str(path), "sha256": actual}
+
+
+def validate_static_map(path: Path, *, function: str, code_object_sha256: str) -> dict[str, Any]:
+    """Validate native-map semantics; a nonempty file alone is not evidence."""
+    required = ("nvbit_static_index", "vector_ordinal", "instruction_offset", "opcode", "memory_space",
+                "is_load", "is_store", "has_mref", "sass", "function_full_name",
+                "function_mangled_name", "function_address", "libtorch_cuda_sha256")
+    if not path.is_file() or path.stat().st_size == 0:
+        raise ContractError("NVBit native static map is absent or empty")
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle, delimiter="\t")
+        if reader.fieldnames != list(required):
+            raise ContractError("NVBit native static map schema differs")
+        rows = list(reader)
+    if not rows:
+        raise ContractError("NVBit native static map has no static instruction rows")
+    indices: list[int] = []
+    for row in rows:
+        if row["function_mangled_name"] != function or row["libtorch_cuda_sha256"] != code_object_sha256:
+            raise ContractError("NVBit native static map function/code-object binding differs")
+        try:
+            index = int(row["nvbit_static_index"])
+        except ValueError as exc:
+            raise ContractError("NVBit native static map contains an unparsable static index") from exc
+        if index < 0:
+            raise ContractError("NVBit native static map contains a negative static index")
+        indices.append(index)
+    if len(indices) != len(set(indices)):
+        raise ContractError("NVBit native static map repeats a static index")
+    return {"path": str(path), "sha256": sha256_file(path), "static_instruction_count": len(rows),
+            "function_mangled_name": function, "libtorch_cuda_sha256": code_object_sha256,
+            "static_index_unique": True}
 
 
 def kill_group(process: subprocess.Popen[str]) -> dict[str, bool | int]:
@@ -157,6 +200,7 @@ def main() -> None:
     parser.add_argument("--expected-output-checksum", required=True); parser.add_argument("--expected-attention-backend", required=True)
     parser.add_argument("--target-function")
     parser.add_argument("--code-object-sha256")
+    parser.add_argument("--code-object-path", type=Path)
     parser.add_argument("--target-receipt", type=Path)
     parser.add_argument("--direct-function-binding", type=Path)
     parser.add_argument("--target-cap-seconds", type=int, default=180)
@@ -192,6 +236,11 @@ def main() -> None:
         if args.code_object_sha256 and args.code_object_sha256 != target_code_sha:
             raise ContractError("declared code-object SHA differs from closed target receipt")
         args.target_function, args.code_object_sha256 = target_function, target_code_sha
+    code_object: dict[str, str] | None = None
+    if args.mode in ("NVBIT_STATIC_MAP", "TARGETED_MEMORY_DISCRIMINATOR"):
+        if not args.target_function or not args.code_object_sha256 or args.code_object_path is None:
+            raise ContractError("static-map mode requires exact function, expected SHA256, and actual code-object path")
+        code_object = verify_code_object(args.code_object_path, args.code_object_sha256)
     initialize(ledger_path=args.campaign_ledger, historical_ledger=args.historical_ledger,
                expected_historical_sha256=args.historical_ledger_sha256, identity=ident, budget_scope=args.budget_scope)
     MeasurementActive.assert_available(args.campaign_ledger)
@@ -250,6 +299,11 @@ def main() -> None:
               "parent_lease_closeout": {"path": str(closeout), "sha256": sha256_file(closeout)},
               "payload": {"path": str(payload), "exists": payload.is_file(), "bytes": payload.stat().st_size if payload.is_file() else 0, "sha256": sha256_file(payload) if payload.is_file() else "NA"},
               "raw_bytes": tree_bytes(args.raw_dir), "stdout_sha256": sha256_file(args.stdout), "stderr_sha256": sha256_file(args.stderr)}
+    if code_object is not None:
+        result["code_object"] = code_object
+    if static_map is not None and terminal == "COMPLETE":
+        result["validated_static_map"] = validate_static_map(
+            static_map, function=str(args.target_function), code_object_sha256=str(args.code_object_sha256))
     if args.mode == "TARGETED_MEMORY_DISCRIMINATOR":
         if target is None or target_log is None:
             raise ContractError("internal targeted-memory discriminator state is absent")

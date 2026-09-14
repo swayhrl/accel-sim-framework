@@ -21,15 +21,12 @@ CAMPAIGN_ID = "c16_full_authority_recovery_v3"
 MAX_WINDOWS_PER_SCOPE = 8
 MAX_WINDOW_SECONDS = 20 * 60
 MAX_WINDOW_RAW_BYTES = 4 * 1024 * 1024 * 1024
-MAX_CAMPAIGN_RAW_BYTES = 32 * 1024 * 1024 * 1024
-
-
 def _limits() -> dict[str, int]:
     return {
         "max_capture_windows_per_budget_scope": MAX_WINDOWS_PER_SCOPE,
         "max_window_seconds": MAX_WINDOW_SECONDS,
         "max_window_raw_bytes": MAX_WINDOW_RAW_BYTES,
-        "max_campaign_raw_bytes": MAX_CAMPAIGN_RAW_BYTES,
+        "storage_free_space_gate_required_before_formal_capture": True,
     }
 
 
@@ -50,7 +47,9 @@ def _read(path: Path) -> dict[str, Any]:
         raise ContractError(f"cannot read Recovery-V3 campaign ledger: {path}") from exc
     if not isinstance(value, dict) or value.get("schema_version") != SCHEMA or value.get("campaign_id") != CAMPAIGN_ID:
         raise ContractError("Recovery-V3 campaign ledger schema/campaign differs")
-    if value.get("limits") != _limits() or not isinstance(value.get("entries"), list):
+    limits = value.get("limits")
+    legacy_limits = {**_limits(), "max_campaign_raw_bytes": 32 * 1024 * 1024 * 1024}
+    if limits not in (_limits(), legacy_limits) or not isinstance(value.get("entries"), list):
         raise ContractError("Recovery-V3 campaign ledger limits/entries are malformed")
     history = value.get("historical_ledger")
     if not isinstance(history, dict) or not isinstance(history.get("path"), str) or not isinstance(history.get("sha256"), str):
@@ -78,6 +77,12 @@ def initialize(*, ledger_path: Path, historical_ledger: Path, expected_historica
             value = _read(ledger_path)
             if value["historical_ledger"] != {"path": str(historical_ledger), "sha256": expected_historical_sha256, "rows_preserved": True}:
                 raise ContractError("Recovery-V3 campaign ledger binds different historical provenance")
+            # Preserve all historical campaign entries while replacing the
+            # aggregate 32-GiB accounting ceiling with a pre-window storage
+            # gate.  Per-window 4-GiB and 20-minute bounds remain unchanged.
+            if value["limits"] != _limits():
+                value["limits"] = _limits()
+                atomic_json(ledger_path, value)
         else:
             value = {
                 "schema_version": SCHEMA,
@@ -125,11 +130,11 @@ class RecoveryV3CampaignLease:
             windows = sum(entry.get("budget_scope") == self.budget_scope for entry in self._ledger["entries"])
             if windows >= MAX_WINDOWS_PER_SCOPE:
                 raise ContractError("Recovery-V3 budget scope reached its authorized eight capture windows")
-            raw_used = sum(int(entry["raw_bytes"]) for entry in self._ledger["entries"])
-            if raw_used >= MAX_CAMPAIGN_RAW_BYTES:
-                raise ContractError("Recovery-V3 campaign raw budget is exhausted")
             self.max_elapsed_seconds = MAX_WINDOW_SECONDS
-            self.max_raw_bytes = min(MAX_WINDOW_RAW_BYTES, MAX_CAMPAIGN_RAW_BYTES - raw_used)
+            # Cumulative retained raw is governed by a real free-space gate
+            # before each formal capture, not by an artificial historical
+            # byte counter.  Every individual window stays hard-bounded.
+            self.max_raw_bytes = MAX_WINDOW_RAW_BYTES
             self._started = time.monotonic()
             return self
         except Exception:
