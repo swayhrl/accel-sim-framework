@@ -21,6 +21,12 @@ queue.
   manifest and Q0/Q1/Q2 device-producer gates.  This is not a global GPU-idle
   reason: if Q1 is not ready, the next job must be a campaign-scoped fallback
   G1 row with a valid frozen identity and no already-complete G1 rerun.
+- The four V12 fallback G1 rows are already terminal under the campaign
+  namespace and are therefore not rerun: `Qwen0/S1_CODE`, and
+  `Qwen7-raw/S2_{TEXT,CODE,STRUCTURED}`.  No other Llama S1--S4 binding is
+  materialized on this node.  Thus the live queue is empty pending a new
+  Lane-C Q1 handoff or another independently frozen campaign row; CPU-side
+  producer work is not represented as a GPU job.
 - Exact Llama S0 G1 remains the only Llama Route-B selection authority
   (`KERNEL_CATALOG.tsv` SHA256
   `4c316b387e1730f03f3214b0b0aa67c6a8d9aa57a4ebbbd3f231f85b5b8eed21`).
