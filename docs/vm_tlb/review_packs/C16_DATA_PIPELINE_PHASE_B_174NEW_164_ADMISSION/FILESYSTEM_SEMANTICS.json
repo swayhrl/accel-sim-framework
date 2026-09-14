@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-14T14:43:07Z",
+  "filesystem": "fuse.sshfs",
+  "scope": "Synthetic Phase B fixtures under the canonical root only; this is not an assertion that SSHFS is local ext4.",
+  "semantics": {
+    "small_write_close_reopen_hash": {"status": "SUPPORTED", "size_bytes": 493, "sha256": "e2042806df406e9fa702a9c66f03c0b3b8ebd9a6100397a51534c3566674bbbb"},
+    "small_file_fsync": {"status": "SUPPORTED"},
+    "medium_write_close_reopen_hash": {"status": "SUPPORTED", "size_bytes": 67108864, "sha256": "281e519df3077b557c6b03f5da83c4e8d397219259615dd7c3308f89cae8f2a6", "written_directly_to_remote_root": true},
+    "medium_file_fsync": {"status": "SUPPORTED"},
+    "same_mount_rename_visibility_after_reopen": {"status": "SUPPORTED"},
+    "collision_detection": {"status": "SUPPORTED", "method": "open(O_CREAT|O_EXCL)", "observed": "EEXIST"},
+    "directory_fsync": {"status": "SUPPORTED"},
+    "renameat2_rename_noreplace": {"status": "SUPPORTED", "observed": "EEXIST with existing destination"},
+    "fixture_cleanup": {"status": "SUPPORTED"}
+  },
+  "phase_c_protocol_requirements": [
+    "Use immutable RUN_IDs.",
+    "Write only a fresh .partial object in inbox/ and close/fsync it before hashing.",
+    "Verify destination size and SHA256 after reopen before admission.",
+    "Use renameat2(RENAME_NOREPLACE) where available; fail closed on EEXIST rather than overwrite.",
+    "Create immutable catalog/entries/<RUN_ID>.json records; deterministic catalog snapshots are not concurrent append logs.",
+    "Keep source evidence after transfer acknowledgement; copy success is not deletion authority."
+  ],
+  "limitations": [],
+  "decision_basis": "All Phase B required write, reopen, hash, rename, collision and cleanup semantics were observed to work."
+}

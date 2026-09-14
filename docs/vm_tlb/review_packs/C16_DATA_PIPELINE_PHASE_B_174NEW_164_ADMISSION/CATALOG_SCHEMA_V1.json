@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "C16 immutable per-run catalog entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "model", "revision", "scenario", "phase", "instrument", "target", "producer_host", "producer_commit", "model_binding", "input_binding", "raw_path", "raw_bytes", "raw_sha256", "transfer_status", "parse_status", "feature_status", "scientific_status"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "model": {"type": "string", "minLength": 1},
+    "revision": {"type": "string", "minLength": 1},
+    "scenario": {"type": "string", "minLength": 1},
+    "phase": {"type": "string", "minLength": 1},
+    "instrument": {"type": "string", "minLength": 1},
+    "target": {"type": "string", "minLength": 1},
+    "producer_host": {"type": "string", "minLength": 1},
+    "producer_commit": {"type": "string", "minLength": 1},
+    "model_binding": {"type": "object"},
+    "input_binding": {"type": "object"},
+    "raw_path": {"type": "string", "minLength": 1},
+    "raw_bytes": {"type": "integer", "minimum": 0},
+    "raw_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "transfer_status": {"type": "string", "minLength": 1},
+    "parse_status": {"type": "string", "minLength": 1},
+    "feature_status": {"type": "string", "minLength": 1},
+    "scientific_status": {"type": "string", "minLength": 1}
+  },
+  "storage_contract": {
+    "entry_path": "catalog/entries/<RUN_ID>.json",
+    "entry_mutability": "immutable after admission",
+    "snapshot_path": "catalog/snapshots/",
+    "snapshot_rule": "deterministic snapshots; not concurrent append logs"
+  },
+  "seed_only": true,
+  "scientific_entries_registered": 0
+}

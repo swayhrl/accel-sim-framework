@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "stage": "C16_DATA_PIPELINE_PHASE_B_174NEW_164_ADMISSION",
+  "observed_at_utc": "2026-09-14T14:43:07Z",
+  "decision": "DATA_ROOT_ADMISSION_PASS",
+  "execution_identity": {
+    "hostname": "huangrulin-sshfs-174",
+    "user": "root",
+    "uid": 0,
+    "execution_branch": "hrl/c16-data-pipeline-phase-b-174new-v1",
+    "coordination_base_commit": "38fb81d1d9e4bbbec7b61e5402cdd1863a2c38ae"
+  },
+  "mount": {
+    "resolved_mount_path": "/root/share/mnt164",
+    "filesystem": "fuse.sshfs",
+    "mount_options": ["rw", "nosuid", "nodev", "relatime", "user_id=0", "group_id=0", "allow_other"],
+    "capacity_bytes": 168306982981632,
+    "used_bytes": 83124927610880,
+    "available_bytes": 76732999168000,
+    "used_inodes": 43806522,
+    "available_inodes": 2534635718
+  },
+  "root_preflight": {
+    "canonical_root": "/root/share/mnt164/huangrulin/c16_ai_workload",
+    "canonical_root_state_before_creation": "ABSENT",
+    "legacy_candidate_root": "/root/share/mnt164/huangrulin/c16_ai_workload_2239",
+    "legacy_candidate_state": "ABSENT",
+    "existing_non_fixture_conflict": false,
+    "canonical_root_after_creation": {"owner_uid": 1011, "owner_gid": 1011, "mode_octal": "0777"}
+  },
+  "namespace_inventory": [
+    "inbox/",
+    "raw/",
+    "provenance/",
+    "parsed/",
+    "features/",
+    "datasets/",
+    "catalog/",
+    "catalog/entries/",
+    "catalog/snapshots/",
+    "catalog/CATALOG_SCHEMA_V1.json",
+    "reports/",
+    "quarantine/",
+    "legacy/",
+    "tmp/"
+  ],
+  "catalog_schema_seed": {
+    "repository_path": "docs/vm_tlb/review_packs/C16_DATA_PIPELINE_PHASE_B_174NEW_164_ADMISSION/CATALOG_SCHEMA_V1.json",
+    "data_root_path": "/root/share/mnt164/huangrulin/c16_ai_workload/catalog/CATALOG_SCHEMA_V1.json",
+    "sha256": "1286e0536191037e6ba861be562e88a5d0f8387eddacf7c27c676d065ecde265",
+    "byte_identical_after_install": true,
+    "scientific_entries_registered": 0
+  },
+  "synthetic_fixture_canary": {
+    "fixture_run_id": "phase_b_fixture_fba7bde6f98a4e6a87f41478460a2a53",
+    "local_bulk_staging_used": false,
+    "small": {
+      "size_bytes": 493,
+      "sha256": "e2042806df406e9fa702a9c66f03c0b3b8ebd9a6100397a51534c3566674bbbb",
+      "file_fsync": "PASS",
+      "reopen_hash": "PASS",
+      "same_root_rename": "PASS",
+      "destination_visible_after_reopen": true,
+      "collision_detection": "open(O_CREAT|O_EXCL) returned EEXIST"
+    },
+    "medium": {
+      "size_bytes": 67108864,
+      "sha256": "281e519df3077b557c6b03f5da83c4e8d397219259615dd7c3308f89cae8f2a6",
+      "file_fsync": "PASS",
+      "reopen_hash": "PASS",
+      "same_root_rename": "PASS",
+      "destination_visible_after_reopen": true
+    },
+    "cleanup": "PASS"
+  },
+  "scope_assertions": {
+    "scientific_payload_transferred": false,
+    "node109_contacted": false,
+    "r5_imported": false,
+    "rtx3090_imported": false,
+    "phase_c_started": false
+  }
+}
