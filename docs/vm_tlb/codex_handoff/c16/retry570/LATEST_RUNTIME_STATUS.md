@@ -10,6 +10,9 @@ PREFILL and one DECODE structural row, but neither receives a static range
 until its own direct NVBit-native map is produced.  Next GPU work is R5 map
 and bounded canary, not further Qwen0 R3 expansion.
 
+The next R5 inventory/map parent uses the Recovery-V3 campaign ledger and a
+token-bound child lease proof; it does not reopen the historical ledger.
+
 `Qwen2.5-0.5B-Instruct / S4_STRUCTURED / R3_NATIVE_BASELINE_AND_G1_CENSUS` is
 `PASS_COPYBACK_READY`: 431.503 ms native median, complete 17.522 s G1 census,
 and a retained 12,869,674-byte remote report with SHA256
