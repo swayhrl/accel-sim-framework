@@ -68,3 +68,19 @@ No raw trace is committed. Formal admission applies only to the six selected
 targets and their stated structural metrics. Object attribution remains
 `UNKNOWN_RUNTIME`, and the pack makes no physical address, temporal reuse,
 TLB, cache, or whole-model claim.
+
+## Route B representative-kernel capture contract addition
+
+`ROUTE_B_CAPTURE_CONTRACT_V1/` is an offline-only contract derived from the
+formal Recovery-V2 Llama pack and the repository's native/nsys evidence. It
+does not run a GPU workload, create a trace, or replay Accel-Sim. The evidence
+audit keeps S1/S2 native catalog rows out of S0 selection because their shape
+and decode identity differ, and records the resulting zero S0 duration-mass
+selections instead of inventing representatives. The two exact Llama static
+maps nevertheless establish three direct GLOBAL+MREF rows in each bridge
+function and calibrate a bounded raw-size model.
+
+The contract preserves the memory-only observer `NO_GO`; its proposed
+multi-static per-lane producer is a future minimal-delta design that requires
+separate qualification. Its GPU handoff is deliberately
+`PREPARED_NOT_AUTHORIZED_TO_RUN`.

@@ -60,3 +60,4 @@ No live G directory is a scientific input. A missing hash, wrong target identity
 - `C16_H_STATUS.tsv` — gate ledger and external dependency.
 - `LLAMA_S0_V1/` — SHA-indexed historical Llama selected-PC analysis, admission decision, scope audit, and downstream capture-scope decision.  Read its `README.md` and `CAPTURE_ADMISSION.tsv` before interpreting any metric.
 - `LLAMA_S0_FORMAL_V1/` — Recovery-V2 formal selected-target raw provenance, capture admission, structural fingerprints, Decode2/3/4 overlap, independent-process Prefill reproducibility, and scope boundaries. Read its `README.md` and `TRACE_SCOPE_AUDIT.md` before interpreting any metric.
+- `ROUTE_B_CAPTURE_CONTRACT_V1/` — offline-only representative-kernel capture contract. It records the exact-S0 census gap, all-GLOBAL-MREF schema, safe tracer boundary, budget model, canary, Route-C coverage tier, and a handoff explicitly marked not authorized to run.
