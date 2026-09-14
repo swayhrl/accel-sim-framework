@@ -62,6 +62,27 @@ class RecoveryV3CampaignBudgetTests(unittest.TestCase):
                 self.assertEqual(lease.max_raw_bytes, 4 * 1024 * 1024 * 1024)
                 lease.finish(elapsed_seconds=0, raw_bytes=0, terminal_status="COMPLETE")
 
+    def test_original_v10_limits_without_storage_gate_migrate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); historical = root / "legacy.json"; historical.write_text("{}", encoding="utf-8")
+            sha = hashlib.sha256(historical.read_bytes()).hexdigest(); ledger = root / "v3.json"
+            original_v10 = {"max_capture_windows_per_budget_scope": 8, "max_window_seconds": 1200,
+                            "max_window_raw_bytes": 4 * 1024 * 1024 * 1024,
+                            "max_campaign_raw_bytes": 32 * 1024 * 1024 * 1024}
+            entry = {"operation_kind": "NVBIT", "campaign_id": CAMPAIGN_ID, "budget_scope": SCOPE,
+                     "deployment_id": IDENTITY["deployment_id"], "scenario_id": "S0", "run_id": "prior",
+                     "elapsed_seconds": 1, "raw_bytes": 0, "terminal_status": "FAILED_OR_ABORTED",
+                     "evidence_classification": "NON_SCIENTIFIC_DIAGNOSTIC"}
+            ledger.write_text(json.dumps({"schema_version": "C16_G_RECOVERY_V3_CAMPAIGN_BUDGET_V1", "campaign_id": CAMPAIGN_ID,
+                                            "authorization": "RECOVERY_V3_GPU_PIPELINE_SCHEDULING_DELTA_V10",
+                                            "historical_ledger": {"path": str(historical), "sha256": sha, "rows_preserved": True},
+                                            "limits": original_v10, "entries": [entry]}), encoding="utf-8")
+            initialize(ledger_path=ledger, historical_ledger=historical, expected_historical_sha256=sha,
+                       identity=IDENTITY, budget_scope=SCOPE)
+            migrated = json.loads(ledger.read_text())
+            self.assertEqual(migrated["entries"], [entry])
+            self.assertEqual(migrated["limits"], _limits())
+
 
 if __name__ == "__main__":
     unittest.main()

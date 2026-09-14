@@ -48,8 +48,18 @@ def _read(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict) or value.get("schema_version") != SCHEMA or value.get("campaign_id") != CAMPAIGN_ID:
         raise ContractError("Recovery-V3 campaign ledger schema/campaign differs")
     limits = value.get("limits")
+    # V10 wrote the original aggregate cap before the free-space gate existed.
+    # It is historical campaign metadata, not scientific evidence; admit it
+    # solely so ``initialize`` can atomically preserve entries while migrating
+    # the limits to the current per-window/storage-gate contract.
+    legacy_v10_limits = {
+        "max_capture_windows_per_budget_scope": MAX_WINDOWS_PER_SCOPE,
+        "max_window_seconds": MAX_WINDOW_SECONDS,
+        "max_window_raw_bytes": MAX_WINDOW_RAW_BYTES,
+        "max_campaign_raw_bytes": 32 * 1024 * 1024 * 1024,
+    }
     legacy_limits = {**_limits(), "max_campaign_raw_bytes": 32 * 1024 * 1024 * 1024}
-    if limits not in (_limits(), legacy_limits) or not isinstance(value.get("entries"), list):
+    if limits not in (_limits(), legacy_limits, legacy_v10_limits) or not isinstance(value.get("entries"), list):
         raise ContractError("Recovery-V3 campaign ledger limits/entries are malformed")
     history = value.get("historical_ledger")
     if not isinstance(history, dict) or not isinstance(history.get("path"), str) or not isinstance(history.get("sha256"), str):
