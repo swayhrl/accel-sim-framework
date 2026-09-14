@@ -43,10 +43,9 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[Qwen0/S3_TEXT/PREFILL_R5_V2,
+`GPU_READY_QUEUE=[Qwen0/S3_TEXT/PREFILL_R5_V2_INDEPENDENT_REPRO,
 Qwen0/S3_TEXT/DECODE_R5]`; `GPU_ACTIVE_JOB=none`;
-`NEXT_GPU_JOB=Qwen0/S3_TEXT/PREFILL_R5_V2 bounded discriminator after its
-immutable V2 target checkpoint`.
+`NEXT_GPU_JOB=Qwen0/S3_TEXT/PREFILL_R5_V2 independent repro`.
 
 The immutable `S3/PREFILL/target-v1` index-8 result is closed only as
 `PREDICATED_OFF_TARGET`; it is never to be rerun, widened, or rewritten.
@@ -58,6 +57,17 @@ the earliest unpredicated direct GLOBAL MREF in the same hash-closed exact
 function is `STG.E.128` at static range `[4125,4126)`.  This is a new,
 immutable target-plan version and not a V1 modification.  One bounded V2
 discriminator is authorized; no third target scan is authorized after it.
+
+That sole V2 discriminator has completed as
+`COMPLETE_VALID_ADDRESS_BEARING`: its exact function launched 24 times;
+`callback_count=predicate_true_count=active_lane_count=nonzero_mref_count`
+was `2,752,512`, `zero_mref_count=0`, and every returned record carried static
+index 4125.  It ran for 8.071 seconds under the campaign-scoped snapshot-bound
+lease, with immutable `STG.E.128 [4125,4126)` and frozen output/backend
+closure.  Its two raw payloads are remote-SHA closed and appended to the
+single shared `COPYBACK_QUEUE` as `COPYBACK_READY`; Lane B owns copyback.  The
+next GPU task is the one permitted independent repro using this unchanged V2
+plan; Decode remains queued immediately afterwards.
 
 The fixed authority audit is
 [`RECOVERY_V3_G1_AUTHORITY_AUDIT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/g1_authority_audit/RECOVERY_V3_G1_AUTHORITY_AUDIT.json)
