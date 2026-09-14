@@ -285,6 +285,9 @@ def main() -> None:
     parser.add_argument("--fatbin-owner-preload", type=Path,
                         help="V2-only hash-closed CUDA runtime registration owner observer")
     parser.add_argument("--fatbin-owner-preload-sha256")
+    parser.add_argument("--culibrary-owner-preload", type=Path,
+                        help="optional bounded V12.2 cuLibrary/module actual-owner observer")
+    parser.add_argument("--culibrary-owner-preload-sha256")
     parser.add_argument("--route-b-llama-s0", action="store_true",
                         help="allow only the frozen H Route-B Llama S0 inventory/map diagnostic")
     parser.add_argument("--target-cap-seconds", type=int, default=180)
@@ -350,6 +353,11 @@ def main() -> None:
                 not args.fatbin_owner_preload_sha256 or
                 sha256_file(args.fatbin_owner_preload) != args.fatbin_owner_preload_sha256):
             raise ContractError("V2 static-map mode requires a hash-closed fatbin owner preload")
+        if (args.culibrary_owner_preload is None) != (args.culibrary_owner_preload_sha256 is None):
+            raise ContractError("cuLibrary owner preload path/SHA must be supplied together")
+        if args.culibrary_owner_preload is not None and (not args.culibrary_owner_preload.is_file() or
+                sha256_file(args.culibrary_owner_preload) != args.culibrary_owner_preload_sha256):
+            raise ContractError("cuLibrary owner preload is not hash-closed")
     initialize(ledger_path=args.campaign_ledger, historical_ledger=args.historical_ledger,
                expected_historical_sha256=args.historical_ledger_sha256, identity=ident, budget_scope=args.budget_scope)
     MeasurementActive.assert_available(args.campaign_ledger)
@@ -379,6 +387,9 @@ def main() -> None:
                 registry = args.raw_dir / "FATBIN_OWNER_REGISTRY.tsv"
                 env["C16_NVBIT_FATBIN_OWNER_REGISTRY_PATH"] = str(registry)
                 env["LD_PRELOAD"] = str(args.fatbin_owner_preload)
+                if args.culibrary_owner_preload is not None:
+                    env["C16_NVBIT_CULIBRARY_OWNER_REGISTRY_PATH"] = str(args.raw_dir / "CULIBRARY_OWNER_REGISTRY.tsv")
+                    env["LD_PRELOAD"] = str(args.culibrary_owner_preload) + ":" + env["LD_PRELOAD"]
             else:
                 if not args.code_object_sha256 or len(args.code_object_sha256) != 64:
                     raise ContractError("static-map mode requires exact function and code-object SHA256")

@@ -28,6 +28,7 @@ struct Owner { std::string path; std::string sha256; std::string source; };
 static std::string target_mangled;
 static std::string output_path;
 static std::string fatbin_registry_path;
+static std::string culibrary_registry_path;
 static std::map<std::string, std::string> manifest_sha;
 static std::map<CUlibrary, Owner> library_owners;
 static std::map<CUmodule, Owner> module_owners;
@@ -88,7 +89,28 @@ static void require_environment() {
     if (function == nullptr || function[0] == '\0' || path == nullptr || path[0] == '\0' || manifest == nullptr || manifest[0] == '\0' || registry == nullptr || registry[0] == '\0') {
         fprintf(stderr, "C16_ROUTE_B_V2_CONFIG_ERROR missing function/map/code-object manifest\n"); abort();
     }
-    target_mangled = function; output_path = path; fatbin_registry_path = registry; load_manifest(manifest);
+    target_mangled = function; output_path = path; fatbin_registry_path = registry;
+    const char* culibrary = getenv("C16_NVBIT_CULIBRARY_OWNER_REGISTRY_PATH");
+    if (culibrary != nullptr) culibrary_registry_path = culibrary;
+    load_manifest(manifest);
+}
+static bool owner_from_culibrary_registry(CUmodule module, Owner* owner) {
+    if (culibrary_registry_path.empty()) return false;
+    std::ifstream input(culibrary_registry_path); std::string line;
+    std::ostringstream expected; expected << reinterpret_cast<void*>(module);
+    std::string library_code_owner;
+    while (std::getline(input, line)) {
+        std::vector<std::string> fields; size_t begin = 0, tab = 0;
+        while ((tab = line.find('\t', begin)) != std::string::npos) { fields.push_back(line.substr(begin, tab - begin)); begin = tab + 1; }
+        fields.push_back(line.substr(begin));
+        if (fields.size() != 6) continue;
+        if (fields[0] == "CULIBRARY_LOAD_DATA" && fields[5] == "0" && fields[3] != "UNRESOLVED" && fields[4] == fields[3]) library_code_owner = fields[4];
+        if (fields[0] == "CULIBRARY_GET_MODULE" && fields[2] == expected.str() && fields[5] == "0" && !library_code_owner.empty()) {
+            Owner candidate = owner_from_path(library_code_owner.c_str(), "cuLibraryLoadData_code_and_caller_dladdr");
+            if (!candidate.path.empty() && valid_sha(candidate.sha256)) { *owner = candidate; return true; }
+        }
+    }
+    return false;
 }
 
 static bool owner_from_fatbin_registry(Owner* owner) {
@@ -142,6 +164,7 @@ static bool owner_for_function(CUfunction function, Owner* owner) {
     std::lock_guard<std::mutex> guard(ownership_mutex);
     auto found = module_owners.find(module);
     if (found == module_owners.end()) {
+        if (owner_from_culibrary_registry(module, owner)) return true;
         if (owner_from_fatbin_registry(owner)) return true;
         terminal_unresolved(module, "module_owner_not_observed"); return false;
     }

@@ -1,0 +1,6 @@
+CXX ?= g++
+CUDA_HOME ?= /usr/local/cuda-12.4
+OUT ?= retry570_culibrary_owner_preload.so
+all: $(OUT)
+$(OUT): retry570_culibrary_owner_preload.cpp
+	$(CXX) -std=c++17 -O2 -fPIC -shared -I$(CUDA_HOME)/include $< -ldl -o $@
