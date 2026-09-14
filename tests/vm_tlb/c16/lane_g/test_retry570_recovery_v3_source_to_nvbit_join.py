@@ -35,6 +35,13 @@ class SourceToNvbitJoinTest(unittest.TestCase):
         self.assertIn("NSYS_SOURCE_LAUNCH_ORDINAL_EQUALS_NVBIT_STATIC_INDEX", JOIN.FORBIDDEN)
         self.assertIn("CROSS_RUN_ABSOLUTE_TIMESTAMP_JOIN", JOIN.FORBIDDEN)
 
+    def test_legacy_v2_requires_exact_function_even_without_phase_field(self) -> None:
+        direct = {"direct_function_mangled_name": "_Zexact"}
+        target = {"status": "PREDICATED_OFF_TARGET_REPLACEMENT_SELECTED", "function": {"mangled_name": "_Zwrong"},
+                  "target_instruction": {"nvbit_static_index": 3}, "range_contract": {"instr_begin": 3, "instr_end_exclusive": 4}}
+        with self.assertRaises(JOIN.ContractError):
+            JOIN.target_for_phase(target, direct, "PREFILL")
+
 
 if __name__ == "__main__":
     unittest.main()

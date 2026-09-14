@@ -53,8 +53,17 @@ def binding_for_phase(binding: dict[str, Any], phase: str) -> dict[str, Any]:
 
 
 def target_for_phase(target: dict[str, Any], direct: dict[str, Any], phase: str) -> dict[str, Any]:
-    if target.get("phase") != phase or target.get("status") != "PHASE_DIRECT_MEMORY_TARGET_FROZEN":
-        raise ContractError("target plan is not a frozen plan for requested phase")
+    status = target.get("status")
+    if status == "PHASE_DIRECT_MEMORY_TARGET_FROZEN":
+        if target.get("phase") != phase:
+            raise ContractError("target plan phase differs from requested phase")
+    elif status == "PREDICATED_OFF_TARGET_REPLACEMENT_SELECTED":
+        # V2 predates the explicit --phase field.  Its exact function identity
+        # below is therefore the authority; callers must still supply phase.
+        if target.get("phase") not in (None, phase):
+            raise ContractError("legacy V2 target phase differs from requested phase")
+    else:
+        raise ContractError("target plan is not a frozen requested-phase plan")
     function = target.get("function")
     if not isinstance(function, dict) or function.get("mangled_name") != direct["direct_function_mangled_name"]:
         raise ContractError("target plan and direct function binding disagree")
