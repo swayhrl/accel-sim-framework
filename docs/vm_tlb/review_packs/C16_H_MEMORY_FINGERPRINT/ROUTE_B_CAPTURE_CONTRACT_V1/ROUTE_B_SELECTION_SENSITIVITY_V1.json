@@ -1,0 +1,53 @@
+{
+  "frozen_catalog": {
+    "path": "/root/share/c16_recovery_v3/raw/llama32_1b/S0/G1_CAMPAIGN/a843ad4a-eba5-472a-ad75-a75f18f050ca/catalog/KERNEL_CATALOG.tsv",
+    "sha256": "4c316b387e1730f03f3214b0b0aa67c6a8d9aa57a4ebbbd3f231f85b5b8eed21"
+  },
+  "phases": {
+    "DECODE": {
+      "current_duration_prefix_ge_70_percent": "BLOCKED: required CUTLASS row is FAILED_CLOSED; frozen denominator retained",
+      "failed_cutlass_duration_share": 0.281187036757711,
+      "failed_cutlass_rows": [
+        {
+          "duration_ns": 20575062,
+          "exact_full_function": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x1_tn_align8>(T1::Params)",
+          "failure_reason": "CODE_OBJECT_IDENTITY_UNRESOLVED",
+          "request_id": "LLAMA_S0_G1_V2_944c439ce7856ba1"
+        }
+      ],
+      "full_frozen_duration_denominator_ns": 73172157,
+      "mapped_exact_lower_bound_duration_coverage": 0.718812963242289,
+      "mapped_exact_request_duration_ns": 52597095,
+      "mapped_only_mathematical_upper_bound_duration_coverage": 0.718812963242289,
+      "memory_opportunity_proxy_ge_80_percent": "UNRESOLVED: failed CUTLASS rows have no admissible static MREF map; no MREF count is invented",
+      "unknown_due_to_failed_rows": [
+        "GLOBAL+MREF instruction counts",
+        "memory-opportunity proxy contribution",
+        "admissible dynamic target eligibility"
+      ]
+    },
+    "PREFILL": {
+      "current_duration_prefix_ge_70_percent": "BLOCKED: required CUTLASS row is FAILED_CLOSED; frozen denominator retained",
+      "failed_cutlass_duration_share": 0.38175234005442943,
+      "failed_cutlass_rows": [
+        {
+          "duration_ns": 13488636,
+          "exact_full_function": "void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x128_32x5_tn_align8>(T1::Params)",
+          "failure_reason": "CODE_OBJECT_IDENTITY_UNRESOLVED",
+          "request_id": "LLAMA_S0_G1_V2_b7ce44b72eb0e85e"
+        }
+      ],
+      "full_frozen_duration_denominator_ns": 35333473,
+      "mapped_exact_lower_bound_duration_coverage": 0.6182476599455706,
+      "mapped_exact_request_duration_ns": 21844837,
+      "mapped_only_mathematical_upper_bound_duration_coverage": 0.6182476599455706,
+      "memory_opportunity_proxy_ge_80_percent": "UNRESOLVED: failed CUTLASS rows have no admissible static MREF map; no MREF count is invented",
+      "unknown_due_to_failed_rows": [
+        "GLOBAL+MREF instruction counts",
+        "memory-opportunity proxy contribution",
+        "admissible dynamic target eligibility"
+      ]
+    }
+  },
+  "schema_version": "ROUTE_B_SELECTION_SENSITIVITY_V1"
+}
