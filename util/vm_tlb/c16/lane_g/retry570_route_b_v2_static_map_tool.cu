@@ -113,10 +113,12 @@ static bool global_mref(Instr* instruction) {
     return instruction->getMemorySpace() == InstrType::MemorySpace::GLOBAL && mref_count(instruction) > 0;
 }
 
-static void terminal_unresolved(CUmodule module, const char* reason) {
+static void terminal_unresolved(CUmodule module, const char* reason, const Owner* observed = nullptr) {
     if (owner_unresolved.exchange(true)) return;
-    fprintf(stderr, "C16_ROUTE_B_V2_CODE_OBJECT_IDENTITY_UNRESOLVED function_mangled=%s module=%p reason=%s\n",
-            target_mangled.c_str(), reinterpret_cast<void*>(module), reason);
+    fprintf(stderr, "C16_ROUTE_B_V2_CODE_OBJECT_IDENTITY_UNRESOLVED function_mangled=%s module=%p reason=%s owner_path=%s owner_source=%s\n",
+            target_mangled.c_str(), reinterpret_cast<void*>(module), reason,
+            observed == nullptr ? "UNOBSERVED" : observed->path.c_str(),
+            observed == nullptr ? "UNOBSERVED" : observed->source.c_str());
     fflush(stderr);
 }
 
@@ -127,7 +129,7 @@ static bool owner_for_function(CUfunction function, Owner* owner) {
     std::lock_guard<std::mutex> guard(ownership_mutex);
     auto found = module_owners.find(module);
     if (found == module_owners.end()) { terminal_unresolved(module, "module_owner_not_observed"); return false; }
-    if (found->second.path.empty() || !valid_sha(found->second.sha256)) { terminal_unresolved(module, "owner_path_or_manifest_sha_missing"); return false; }
+    if (found->second.path.empty() || !valid_sha(found->second.sha256)) { terminal_unresolved(module, "owner_path_or_manifest_sha_missing", &found->second); return false; }
     *owner = found->second; return true;
 }
 
