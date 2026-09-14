@@ -52,8 +52,14 @@ def main() -> None:
         raise ContractError("Q2 tool/static-map/code-object identity is not closed")
     if a.raw.exists() or a.receipt.exists() or a.child_receipt.exists():
         raise ContractError("Q2 refuses to overwrite retained evidence")
-    identity = {"deployment_id": "c16_llama32_1b_frozen_compatible", "scenario_id": "S0", "run_id": a.run_id,
-                "phase": a.phase, "function_mangled_name": a.function, "code_commit": a.runtime_code_commit}
+    # This must be byte-for-byte the identity recomputed by the child
+    # ``nvbit_model_qualify`` wrapper.  Phase/function are capture metadata,
+    # not lease identity: adding them would make a genuine parent lease look
+    # like a budget bypass to the child verifier.
+    identity = {"deployment_id": "c16_llama32_1b_frozen_compatible", "model_id": "meta-llama/Llama-3.2-1B",
+                "model_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08", "tokenizer_revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+                "implementation_key": "TRANSFORMERS_CAUSAL_LM", "dtype": "float16", "quantization": "NONE", "scenario_id": "S0",
+                "input_hash": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208", "run_id": a.run_id, "code_commit": a.runtime_code_commit}
     initialize(ledger_path=a.campaign_ledger, historical_ledger=a.historical_ledger,
                expected_historical_sha256=a.historical_sha256, identity=identity, budget_scope=a.budget_scope)
     MeasurementActive.assert_available(a.campaign_ledger)
