@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "status": "PASS_WITH_PREEXISTING_KERNEL_BOOT_SELECTION",
+  "source_authority": {
+    "branch": "hrl/c16-4080-host-protection-rollback-guard",
+    "commit": "42353a6aa9c12ac8d6f1def65b1f97dbeace6933"
+  },
+  "execution_branch": "hrl/c16-4080-phase-b1-closeout-ncu-n1",
+  "administrator_audit_interface": {
+    "path": "/home/huangrulin/C16_B1_ROOT_RECEIPT_AUDIT_20260914T092621Z.txt",
+    "sha256": "10d68dabf152e5f04117eea09cd3c35139092a144eb0f091be80e4572287451f",
+    "sha256_verified": true
+  },
+  "data_root": {
+    "status": "PASS",
+    "path": "/data/c16",
+    "mount_source": "/dev/nvme0n1p2",
+    "filesystem": "ext4",
+    "filesystem_uuid": "b126b69a-3b55-443e-a282-4207be2a1022",
+    "owner": "huangrulin:huangrulin",
+    "mode": "0750",
+    "children": ["models", "wheelhouse", "cache", "ncu", "nvbit_raw", "nvbit_compressed", "results", "env"],
+    "destructive_storage_change": "NO_EVIDENCE_OF_CHANGE"
+  },
+  "ncu_permission": {
+    "status": "PASS",
+    "modprobe_path": "/etc/modprobe.d/c16-nvidia-profiling.conf",
+    "modprobe_sha256": "82e888430290632fb6a5941f545a22ab31cffcc56268b57a211526698a1471ad",
+    "loaded_prechange": "RmProfilingAdminOnly: 1",
+    "loaded_postreboot": "RmProfilingAdminOnly: 0",
+    "initramfs_execution_evidence": "C16_B1_NCU_PROFILING_20260914T084151Z/UPDATE_INITRAMFS.log"
+  },
+  "toolkit": {
+    "status": "PASS",
+    "version": "1.20.0-1",
+    "installed_packages": ["libnvidia-container1", "libnvidia-container-tools", "nvidia-container-toolkit-base", "nvidia-container-toolkit"],
+    "nvidia_runtime_registered": true,
+    "docker_asset_deletion": "NO_EVIDENCE_OF_DELETION",
+    "gpu_passthrough_canary": "USER_CONFIRMED"
+  },
+  "kernel_investigation": {
+    "classification": "PREEXISTING_KERNEL_BOOT_SELECTION",
+    "phase_a_running_kernel": "7.0.0-28-generic",
+    "current_running_kernel": "7.0.0-31-generic",
+    "kernel_31_dpkg_install_window": "2026-09-05T06:48:22-06:49:17+08:00",
+    "kernel_31_precedes_b1": true,
+    "b1_kernel_package_install_evidence": "NONE",
+    "running_nvidia_driver": "580.178.04",
+    "driver_loaded_on_kernel_31": true
+  },
+  "forbidden_action_audit": {
+    "driver_change": "NO_EVIDENCE_OF_CHANGE",
+    "cuda_host_change": "NO_EVIDENCE_OF_CHANGE",
+    "destructive_storage_change": "NO_EVIDENCE_OF_CHANGE",
+    "docker_asset_deletion": "NO_EVIDENCE_OF_DELETION",
+    "network_configuration_change": "NO_EVIDENCE_OF_PROHIBITED_CHANGE",
+    "unauthorized_privilege_escalation": "NO_EVIDENCE_OF_CHANGE"
+  },
+  "unknowns": [
+    "No standalone hash-closed Docker GPU-passthrough-canary artifact is exposed through the supplied administrator audit interface.",
+    "The reason for the 2026-09-05 normal package update is UNKNOWN."
+  ]
+}

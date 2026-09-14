@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "NCU_N1_HARDWARE_COUNTER_CANARY_PASS",
+  "profile_invocation_count": 1,
+  "research_user": "huangrulin",
+  "fixture": {
+    "source_path": "util/vm_tlb/c16/host_4080/ncu_n1_vector_add.cu",
+    "source_sha256": "eeb35a0fd71429fef59aff7643a73fafc97c426dff452cd02974893e89c6a2d0",
+    "binary_path": "/data/c16/ncu/canary/C16_NCU_N1_20260914T094300Z/c16_ncu_vector_add",
+    "binary_sha256": "870e8a73373f8676eb01b337e2d0916a0e77c12b658fc197734d9fbd72e0e093",
+    "native_status": "PASS",
+    "native_checksum": "25288758001664",
+    "kernel": "c16_vector_add_kernel"
+  },
+  "metric": {
+    "name": "sm__cycles_elapsed.avg",
+    "query_observation": "AD103 query listed Counter/cycle",
+    "value": "32375.236842",
+    "unit": "cycle",
+    "metric_file_sha256": "44b2a484b6305b73b1dc587c58bd35255bcb01dbe2940584c7bc14678fe25680"
+  },
+  "environment": {
+    "gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "driver": "580.178.04",
+    "kernel": "7.0.0-31-generic",
+    "cuda": "/usr/local/cuda-12.8",
+    "ncu_path": "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+    "ncu_version": "2025.1.1.0",
+    "ncu_sha256": "a44ff2c735c4dcf66c78f3f430155805d6a0b1f74f26331f98ecec03bfbf3f1a"
+  },
+  "raw_artifacts_outside_git": {
+    "report_path": "/data/c16/ncu/C16_NCU_N1_vector_add_20260914T094300Z.ncu-rep",
+    "report_sha256": "d2e97a920a998d76f14902d21e3d71b6e23d11ad00cf2eed797b4b0758e07102",
+    "csv_path": "/data/c16/ncu/canary/C16_NCU_N1_20260914T094300Z/report_raw.csv",
+    "csv_sha256": "372ee15d20bc6ac44a5178b23e7cbc350d8890e10f354689c76ac87ffcb56d17"
+  },
+  "cleanup": {"pre_profile_compute_processes": "EMPTY", "post_profile_compute_processes": "EMPTY", "post_profile_ncu_processes": "EMPTY"}
+}
