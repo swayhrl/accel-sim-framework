@@ -30,6 +30,15 @@ class TargetedMapperSourceTests(unittest.TestCase):
         self.assertLess(body.index("if (!extract_launch_function"), body.index("pthread_mutex_lock(&mutex)"))
         self.assertIn("classify_function(context, function) != FunctionClassification::TARGET) return", body)
 
+    def test_targeted_memory_evidence_distinguishes_predicate_and_mref_zero(self) -> None:
+        source = SOURCE.read_text(encoding="utf-8")
+        inject = Path(__file__).with_name("retry570_targeted_memory_inject.cu").read_text(encoding="utf-8")
+        for token in ("predicate_true_count", "nonzero_mref_count", "zero_mref_count"):
+            self.assertIn(token, source)
+            self.assertIn(token, inject)
+        self.assertIn("if (!predicate) return;", inject)
+        self.assertIn("if (address == 0)", inject)
+
 
 if __name__ == "__main__":
     unittest.main()

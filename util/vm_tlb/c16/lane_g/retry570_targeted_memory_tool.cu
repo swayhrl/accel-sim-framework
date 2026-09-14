@@ -298,9 +298,12 @@ void nvbit_at_cuda_event(CUcontext context, int is_exit, nvbit_api_cuda_t callba
         skip_callback.store(true, std::memory_order_relaxed);
         CUDA_SAFECALL(cudaDeviceSynchronize());
         skip_callback.store(false, std::memory_order_relaxed);
-        printf("C16_TARGETED_NVBIT_MEMORY_RECORD function_mangled=%s present=%u address=0x%llx launch_id=%llu nvbit_static_index=%u\n",
+        printf("C16_TARGETED_NVBIT_MEMORY_RECORD function_mangled=%s present=%u address=0x%llx launch_id=%llu nvbit_static_index=%u callback_count=%llu predicate_true_count=%llu active_lane_count=%llu nonzero_mref_count=%llu zero_mref_count=%llu\n",
                nvbit_get_func_name(context, function, true), state->record->present,
-               state->record->address, state->record->launch_id, state->record->static_index);
+               state->record->address, state->record->launch_id, state->record->static_index,
+               state->record->callback_count, state->record->predicate_true_count,
+               state->record->active_lane_count, state->record->nonzero_mref_count,
+               state->record->zero_mref_count);
         fflush(stdout);
     }
     pthread_mutex_unlock(&mutex);
