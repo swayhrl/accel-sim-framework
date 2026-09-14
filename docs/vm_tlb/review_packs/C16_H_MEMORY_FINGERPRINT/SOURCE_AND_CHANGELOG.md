@@ -36,3 +36,13 @@
 There are no raw GPU traces, NCU reports, or model artifacts in this local pack. G-owned raw inputs must remain external and be indexed by its fixed commit, manifest SHA256, trace SHA256, receipt, size, and terminal status before H consumes them.
 
 Open dependency: a real G committed capture and matching direct runtime object-map receipt are required before emitting any scientific `MEMORY_FINGERPRINTS.tsv` data rows, cross-window dynamic conclusions, or C16-5 claims.
+
+## Llama S0 V1 exploratory addition
+
+`LLAMA_S0_V1/` indexes two retained M4A Llama NVBit 1.7.6 TRACEG inputs by
+raw SHA and analyzes explicitly selected GLOBAL `LDG.E.U16` PCs.  The raw
+headers and historical workload manifests establish a real B8/T64/TP4 Llama
+capture, but not C16 S0 B1/T128/Decode4 provenance.  The pack consequently
+uses `EXPLORATORY_HISTORICAL_CAPTURE`, `UNKNOWN_RUNTIME`, and `SET_ONLY` only.
+It records absent Decode2/3/4 as `NOT_AVAILABLE`; it does not backfill or
+promote the results to this pack's formal canonical tables.

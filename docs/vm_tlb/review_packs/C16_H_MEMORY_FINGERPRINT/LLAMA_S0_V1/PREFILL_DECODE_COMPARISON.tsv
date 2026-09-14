@@ -1,0 +1,15 @@
+metric	prefill_value	decode1_value	prefill_to_decode1_ratio	interpretation
+selected_memory_records	32768	512	64	Selected-PC event count; historical B8/T64, not C16 B1/T128.
+active_lane_address_records	1048576	16384	64	All selected requests have 32 active lanes.
+requested_bytes	2097152	32768	64	Exact lane-request bytes (32 lanes x 2B width); not cache-transfer bytes.
+unique_exact_gpu_va	131072	2048	64	Observed GPU VA structural footprint.
+unique_128B_lines	2048	32	64	Observed 128B address-line structural metric.
+unique_4KiB_va_buckets	64	32	2	GPU-VA bucket count; not hardware TLB misses/page mappings.
+unique_64KiB_va_buckets	5	1	5	GPU-VA bucket count; not a hardware page-size claim.
+unique_2MiB_va_buckets	1	1	1	Structural GPU-VA bucket count only.
+mean_128B_blocks_per_request	1	1	1	Both selected streams place the 32 active 2B lanes in one 128B block per request.
+contiguous_lane_pair_fraction	1	1	1	Same-request lane spatial adjacency at the observed 2B width; not temporal reuse.
+top1_line_access_fraction	0.00048828125	0.03125	0.015625	Decode1 has a far more concentrated selected-line access distribution.
+top5_line_access_fraction	0.00244140625	0.15625	0.015625	Set-frequency concentration only.
+top1_4KiB_page_access_fraction	0.015625	1	0.015625	Decode1 selected target fits in one observed 4KiB bucket; this is not a TLB-miss conclusion.
+repeated_exact_address_fraction	1	1	1	Every observed selected address repeats within its capture; no chronological reuse metric is claimed.

@@ -1,6 +1,6 @@
 # C16 H — Memory Fingerprint Review Pack
 
-Status: `C16_H_OFFLINE_PREP_READY_FOR_FINAL_REVIEW`. Dynamic C16-4.5 through C16-5.5 findings remain deliberately `PENDING_G_COMMITTED_CAPTURE`, not inferred from fixtures.
+Status: `C16_H_LLAMA_S0_EXPLORATORY_FINGERPRINT_V1_READY_FOR_REVIEW`. Formal dynamic C16-4.5 through C16-5.5 findings remain deliberately `PENDING_G_COMMITTED_CAPTURE`; the new Llama pack is explicitly historical/exploratory and is not a formal C16 scientific row.
 
 This is the sole entry point for review.
 
@@ -58,3 +58,4 @@ No live G directory is a scientific input. A missing hash, wrong target identity
 - `PUBLISH_MANIFEST.json` and `TEST_RECEIPT.json` — hash-bound pre-G publication closure.
 - `MEMORY_FINGERPRINTS.tsv`, `FINGERPRINT_VALIDATION.tsv`, `REUSE_AND_OVERLAP.tsv` — versioned schemas intentionally empty until qualified G capture arrives.
 - `C16_H_STATUS.tsv` — gate ledger and external dependency.
+- `LLAMA_S0_V1/` — SHA-indexed historical Llama selected-PC analysis, admission decision, scope audit, and downstream capture-scope decision.  Read its `README.md` and `CAPTURE_ADMISSION.tsv` before interpreting any metric.
