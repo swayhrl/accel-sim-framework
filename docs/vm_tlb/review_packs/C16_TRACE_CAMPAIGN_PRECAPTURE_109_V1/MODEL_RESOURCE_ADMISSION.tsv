@@ -1,0 +1,7 @@
+deployment_id	model_id	revision	payload_bytes	historical_binding_status	admission	evidence_or_reason
+llama32_1b_fp16_sdpa	meta-llama/Llama-3.2-1B	4e20de362430cd3b72f300e6b0f18e50e7166e08	2471645608	S0_ONLY_FROZEN_INPUT	ADMITTED_4080	S0 FP16/SDPA load+Prefill PASS; S0 is CANARY_ONLY
+qwen25_05b_fp16_sdpa	Qwen/Qwen2.5-0.5B-Instruct	7ae557604adf67be50417f59c2c2f167def9a775	999587268	7 HISTORICAL BINDINGS	ADMITTED_4080	S0 PASS; S2_TEXT NSYS PASS
+qwen25_7b_awq_autoawq_unfused	Qwen/Qwen2.5-7B-Instruct-AWQ	b25037543e9394b818fdfca67ab2a00ecc7dd641	5582381128	7 HISTORICAL BINDINGS	ADMITTED_4080	S0 PASS; S2 NSYS PASS; actual AutoAWQ unfused because awq_ext absent
+qwen25_7b_raw_fp16_sdpa	Qwen/Qwen2.5-7B-Instruct	a09a35458c702b33eeacc393d103063234e8bc28	15242788168	7 HISTORICAL BINDINGS	NOT_ADMITTED_MEMORY	S0 PASS; exact S2_TEXT OOM, needed 74 MiB; no retry
+qwen3_8b_unbound	Qwen/Qwen3-8B	b968826d9c46dd6066d109eabc6255188de91218	16680581491	NO_HISTORICAL_FROZEN_BINDING	UNKNOWN_NOT_ATTEMPTED	no token creation
+deepseek_v2_lite_unbound	DeepSeek-V2-Lite	604d5664dddd88a0433dbae533b7fe9472482de0	31418838087	NO_HISTORICAL_FROZEN_BINDING	UNKNOWN_NOT_ATTEMPTED	no token creation
