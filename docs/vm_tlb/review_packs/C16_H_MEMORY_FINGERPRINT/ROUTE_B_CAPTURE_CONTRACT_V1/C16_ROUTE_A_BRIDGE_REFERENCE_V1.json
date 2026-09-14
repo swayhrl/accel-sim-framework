@@ -1,0 +1,161 @@
+{
+  "derivation_rule": "This document was frozen from historical Route-A review-pack targets and formal raw-trace fingerprints only. Route-B Q2 inputs were not an input to this reference.",
+  "phase_comparison_rule": "Compare exact function identity, selected instruction identity, predicate-true executing-lane/request cardinalities, and address bucket cardinalities. Absolute GPU virtual address equality and cross-phase VA-set comparison are prohibited.",
+  "phases": {
+    "DECODE": {
+      "exact_function_mangled_name": "_ZN2at6native44_GLOBAL__N__50c743a2_11_Indexing_cu_89862edb21indexSelectSmallIndexIN3c104HalfEljLi2ELi2ELin2EEEvNS_4cuda6detail10TensorInfoIT_T1_EENS7_IKS8_S9_EENS7_IKT0_S9_EEiiS9_l",
+      "historical_capture_ids": [
+        "s5_decode2",
+        "s5_decode3",
+        "s5_decode4"
+      ],
+      "historical_capture_signatures": [
+        {
+          "executing_lane_cardinality_histogram": {
+            "32": 64
+          },
+          "selected_event_count": 2048,
+          "selected_request_count": 64,
+          "unique_128b_line_count": 1,
+          "unique_2m_va_bucket_count": 1,
+          "unique_32b_block_count": 1,
+          "unique_4k_va_bucket_count": 1,
+          "unique_64b_block_count": 1,
+          "unique_64k_va_bucket_count": 1,
+          "unique_exact_gpu_va_count": 1
+        },
+        {
+          "executing_lane_cardinality_histogram": {
+            "32": 64
+          },
+          "selected_event_count": 2048,
+          "selected_request_count": 64,
+          "unique_128b_line_count": 1,
+          "unique_2m_va_bucket_count": 1,
+          "unique_32b_block_count": 1,
+          "unique_4k_va_bucket_count": 1,
+          "unique_64b_block_count": 1,
+          "unique_64k_va_bucket_count": 1,
+          "unique_exact_gpu_va_count": 1
+        },
+        {
+          "executing_lane_cardinality_histogram": {
+            "32": 64
+          },
+          "selected_event_count": 2048,
+          "selected_request_count": 64,
+          "unique_128b_line_count": 1,
+          "unique_2m_va_bucket_count": 1,
+          "unique_32b_block_count": 1,
+          "unique_4k_va_bucket_count": 1,
+          "unique_64b_block_count": 1,
+          "unique_64k_va_bucket_count": 1,
+          "unique_exact_gpu_va_count": 1
+        }
+      ],
+      "historical_trace_scope": "S5 decode captures 2-4; the three signatures are a multiset, not an assertion that Route-B launch IDs equal historical decode-step labels.",
+      "selected_instruction": {
+        "code_object_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a",
+        "has_mref": 1,
+        "instruction_offset": 272,
+        "is_load": 1,
+        "is_store": 0,
+        "memory_space": "GLOBAL",
+        "mref_count": 1,
+        "opcode": "LDG.E",
+        "width_bytes": 4
+      },
+      "selected_mref_ordinal": 0,
+      "selected_static_index": 17
+    },
+    "PREFILL": {
+      "exact_function_mangled_name": "_ZN2at6native44_GLOBAL__N__50c743a2_11_Indexing_cu_89862edb21indexSelectLargeIndexIN3c104HalfEljLi2ELi2ELin2ELb1EEEvNS_4cuda6detail10TensorInfoIT_T1_EENS7_IKS8_S9_EENS7_IKT0_S9_EEiiS9_S9_l",
+      "historical_capture_ids": [
+        "s5_prefill"
+      ],
+      "historical_capture_signatures": [
+        {
+          "executing_lane_cardinality_histogram": {
+            "32": 8192
+          },
+          "selected_event_count": 262144,
+          "selected_request_count": 8192,
+          "unique_128b_line_count": 1120,
+          "unique_2m_va_bucket_count": 19,
+          "unique_32b_block_count": 4480,
+          "unique_4k_va_bucket_count": 35,
+          "unique_64b_block_count": 2240,
+          "unique_64k_va_bucket_count": 35,
+          "unique_exact_gpu_va_count": 71680
+        }
+      ],
+      "historical_trace_scope": "S5 prefill selected target only; Route-A is not a whole-phase memory working-set claim.",
+      "selected_instruction": {
+        "code_object_sha256": "761b14acafb8b02011e32d11bd437b63cca3fe882b9c4a02c89fd01d738ccb6a",
+        "has_mref": 1,
+        "instruction_offset": 1616,
+        "is_load": 1,
+        "is_store": 0,
+        "memory_space": "GLOBAL",
+        "mref_count": 1,
+        "opcode": "LDG.E.U16",
+        "width_bytes": 2
+      },
+      "selected_mref_ordinal": 0,
+      "selected_static_index": 101
+    }
+  },
+  "route_a_limitations": "Selected representative instructions only; SET_ONLY ordering; no whole-phase working-set, physical-mapping, cache, TLB, or global-timeline claim.",
+  "schema_version": "C16_ROUTE_A_BRIDGE_REFERENCE_V1",
+  "source_receipts": [
+    {
+      "git_blob": "d5304c5879e7c92dd537276337ba28e4082389ec",
+      "git_commit": "2e955e007bcabcd3ec24a5f9d24768d27caaee27",
+      "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b/LARGE_INDEX_PREFILL_TARGET.json",
+      "role": "historical Prefill exact-function and static-index authority"
+    },
+    {
+      "git_blob": "02503cc44d68ea9b93e9f4ae3c1b55474ceff724",
+      "git_commit": "2e955e007bcabcd3ec24a5f9d24768d27caaee27",
+      "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b/DECODE_INDEX_TARGET.json",
+      "role": "historical Decode exact-function and static-index authority"
+    },
+    {
+      "git_blob": "5f5440c45db68ee8e7b6c8cf0c5b8fce3dd2757c",
+      "git_commit": "2e955e007bcabcd3ec24a5f9d24768d27caaee27",
+      "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b/RAW_ARTIFACT_INDEX.json",
+      "role": "historical raw trace identities and source SHA256 values"
+    },
+    {
+      "git_blob": "610ae71d9d0bfcac60028ae02c057d929b54edfd",
+      "git_commit": "2e955e007bcabcd3ec24a5f9d24768d27caaee27",
+      "path": "docs/vm_tlb/review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_nvbit175_recovery_v2/llama_3p2_1b/S5_FULL_WORKLOAD_SUMMARY.json",
+      "role": "historical selected-target capture scope"
+    },
+    {
+      "git_blob": "8fd66510ae17003585eddc74a4594790d7e1b0c3",
+      "git_commit": "0d48495b",
+      "path": "docs/vm_tlb/review_packs/C16_H_MEMORY_FINGERPRINT/LLAMA_S0_FORMAL_V1/FORMAL_RAW_INDEX.tsv",
+      "role": "historical raw-to-/root/share SHA256 and size verification"
+    },
+    {
+      "git_blob": "a1e700cdf51725498beb8cb966e5d386dae4f22d",
+      "git_commit": "0d48495b",
+      "path": "docs/vm_tlb/review_packs/C16_H_MEMORY_FINGERPRINT/LLAMA_S0_FORMAL_V1/MEMORY_FINGERPRINTS.tsv",
+      "role": "historical selected-PC lane and address-footprint cardinalities"
+    },
+    {
+      "git_blob": "4c6a0a12e2d0e00dd29395f42236a0fdc801a252",
+      "git_commit": "0d48495b",
+      "path": "docs/vm_tlb/review_packs/C16_H_MEMORY_FINGERPRINT/LLAMA_S0_FORMAL_V1/PREFILL_DECODE_COMPARISON.tsv",
+      "role": "historical prohibition on cross-phase or absolute-VA comparison"
+    },
+    {
+      "git_blob": "bb26ca0da43b6ba00f60280c5419efc2b65a3ea2",
+      "git_commit": "41875639c3638e4f4b8360e2542c09dfea14fa23",
+      "path": "docs/vm_tlb/review_packs/C16_H_MEMORY_FINGERPRINT/ROUTE_B_CAPTURE_CONTRACT_V1/ROUTE_A_LIMITATION_AUDIT.md",
+      "role": "published Route-A scope and limitations"
+    }
+  ],
+  "status": "FROZEN_HISTORICAL_ROUTE_A_REFERENCE_PASS"
+}
