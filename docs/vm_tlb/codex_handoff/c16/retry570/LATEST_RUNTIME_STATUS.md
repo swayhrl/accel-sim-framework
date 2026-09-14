@@ -51,9 +51,13 @@ immutable V2 target checkpoint`.
 The immutable `S3/PREFILL/target-v1` index-8 result is closed only as
 `PREDICATED_OFF_TARGET`; it is never to be rerun, widened, or rewritten.
 It does not close S3, Prefill research, or the separately phase-authorized
-Decode row.  One deterministic V2 candidate may be frozen from the same
-hash-closed exact-function map: the earliest unpredicated direct GLOBAL MREF.
-No third target scan is authorized after that bounded V2 result.
+Decode row.  The one permitted replacement is now frozen as
+[`S3_PREFILL_TARGET_V2`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/qwen0_s3_prefill_target_v2/QWEN0_S3_PREFILL_TARGET_V2.json)
+(`e8da35b57dc33e15c357abd834608bc9181dfd2ecccb92ed9edb8c781ce79806`):
+the earliest unpredicated direct GLOBAL MREF in the same hash-closed exact
+function is `STG.E.128` at static range `[4125,4126)`.  This is a new,
+immutable target-plan version and not a V1 modification.  One bounded V2
+discriminator is authorized; no third target scan is authorized after it.
 
 The fixed authority audit is
 [`RECOVERY_V3_G1_AUTHORITY_AUDIT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/g1_authority_audit/RECOVERY_V3_G1_AUTHORITY_AUDIT.json)
