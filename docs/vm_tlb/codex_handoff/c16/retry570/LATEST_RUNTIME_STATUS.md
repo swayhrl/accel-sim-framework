@@ -43,17 +43,39 @@ formal window is closed (`MEASUREMENT_ACTIVE=absent`, GPU-process count 0).
 The compact review receipt is
 [`QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/QWEN0_S3_TEXT_R3_CENSUS_COMPLETE.json).
 
-`GPU_READY_QUEUE=[]`; `GPU_ACTIVE_JOB=none`; `NEXT_GPU_JOB=none`.  A current
-audit found that Qwen0/S1's historical G1 receipt is a retained dry-run
-failure with no `.nsys-rep`, so it is not lawful R4 input; Qwen7 raw S2 has
-native baselines but likewise no current validated G1 catalog under the
-Recovery-V3 namespace.  The immediate non-GPU task is to restore a
-campaign-scoped native/G1 parent contract without reopening the historical
-ledger.  Qwen0/S3 does not receive target substitution or a widened range.
+`GPU_READY_QUEUE=[Qwen0/S3_TEXT/PREFILL_R5_V2,
+Qwen0/S3_TEXT/DECODE_R5]`; `GPU_ACTIVE_JOB=none`;
+`NEXT_GPU_JOB=Qwen0/S3_TEXT/PREFILL_R5_V2 bounded discriminator after its
+immutable V2 target checkpoint`.
+
+The immutable `S3/PREFILL/target-v1` index-8 result is closed only as
+`PREDICATED_OFF_TARGET`; it is never to be rerun, widened, or rewritten.
+It does not close S3, Prefill research, or the separately phase-authorized
+Decode row.  One deterministic V2 candidate may be frozen from the same
+hash-closed exact-function map: the earliest unpredicated direct GLOBAL MREF.
+No third target scan is authorized after that bounded V2 result.
+
+The fixed authority audit is
+[`RECOVERY_V3_G1_AUTHORITY_AUDIT.json`](../../../review_packs/C16_MULTIMODEL_NATIVE/lane_g_retry570_full_authority_recovery_v3/milestones/g1_authority_audit/RECOVERY_V3_G1_AUTHORITY_AUDIT.json)
+(`604fb22d3f57c665e7096d499e491440bf6e7a259b4db3cc1e5ff337e20bf307`).
+It makes Qwen0/S1_CODE and Qwen7 raw S2/{TEXT,CODE,STRUCTURED} historical G1
+claims `SUPERSEDED_NON_AUTHORITATIVE_REQUIRES_CAMPAIGN_G1`: the retained
+baseline may be reused only after frozen-identity comparison, while a new
+campaign-scoped parent-lease G1 must produce a real `.nsys-rep`, export, and
+validated phase-linked catalog.  The historical ledger is immutable.
+
 Unresolved Qwen0/S0 Prefill remains the separately closed
 `STATIC_INDEX_FILTER_OR_DYNAMIC_EXECUTION_NOT_REPRODUCED` branch.
 
-## Current execution authority — v11 Qwen0 forensic / v10 pipeline
+## Superseded historical narrative — non-authoritative
+
+All historical claims of `Qwen0 S1 G1 COMPLETE`, `Qwen7 raw S2 G1 COMPLETE`,
+and the old `GPU_READY_QUEUE_COUNT=3` below are retained solely as provenance.
+They are explicitly `SUPERSEDED_NON_AUTHORITATIVE`; the live authority is the
+latest checkpoint above and the fixed G1 audit.  They must not be scheduled or
+consumed as Recovery-V3 G1 inputs.
+
+## Current execution authority — v11 Qwen0 forensic / v10 pipeline (historical provenance only)
 
 Current runtime source checkpoint: `2deb60af60bae849cec1b018b05091f70c9319ae`.
 It adds only predicate-aware offline accounting and deterministic target-plan
