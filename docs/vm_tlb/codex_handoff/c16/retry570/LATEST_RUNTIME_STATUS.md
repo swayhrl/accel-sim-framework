@@ -61,6 +61,16 @@ metadata/tokenizer material, not a complete model; its exact runtime-input
 closure remains required.  GLM remains identity-unresolved rather than being
 guessed from an unrelated local cache ref.
 
+Asset consolidation V4 supersedes V3 for DeepSeek: the complete exact
+`deepseek-ai/DeepSeek-V2-Lite@604d5664dddd88a0433dbae533b7fe9472482de0`
+source was non-destructively copied into the bulk root and independently
+source/destination SHA-closed across 15 payloads / 31,418,838,087 bytes.
+Its V4 inventory row is `EXISTING_ASSET_CONSOLIDATED`; the retained source was
+not deleted.  The V4 JSON SHA256 is
+`9fd97183fe94c2223ce7bdf67bed5278287096a2522c5b82803b852e47874f7a`.
+Qwen3-30B-A3B remains uninspected and
+`EXCLUDED_BY_USER_CURRENT_CAMPAIGN`; GLM remains identity-unresolved.
+
 The Llama asset receipt is
 `/root/share/c16_recovery_v3/receipts/R1_LLAMA3P2_1B_ASSET_RECEIPT.json`
 (SHA256 `7694c95442cc7ff1d3fc8ed1104d5c0d6a50c3a17f779f402ef90669edeb7b47`):
