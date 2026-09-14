@@ -1,0 +1,14 @@
+NVCC ?= nvcc
+ARCH ?= sm_86
+NVBIT_HOME ?= /opt/nvbit-1.7.5
+OUT ?= route_b_memory_event_tool.so
+
+all: $(OUT)
+$(OUT): route_b_memory_event_tool.o route_b_memory_event_inject.o $(NVBIT_HOME)/core/libnvbit.a
+	$(NVCC) -shared -o $@ $^ -lpthread -ldl
+route_b_memory_event_tool.o: route_b_memory_event_tool.cu route_b_memory_event_common.h
+	$(NVCC) -Xcompiler -fPIC -arch=$(ARCH) -O3 -I$(NVBIT_HOME)/core -I$(NVBIT_HOME)/core/utils -c $< -o $@
+route_b_memory_event_inject.o: route_b_memory_event_inject.cu route_b_memory_event_common.h
+	$(NVCC) -Xptxas -astoolspatch --keep-device-functions -Xcompiler -fPIC -arch=$(ARCH) -O3 -c $< -o $@
+clean:
+	rm -f $(OUT) *.o
