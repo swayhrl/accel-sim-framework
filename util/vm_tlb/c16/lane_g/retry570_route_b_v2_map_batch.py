@@ -54,6 +54,8 @@ def main() -> None:
         p.add_argument("--" + name.replace("_", "-"), type=Path, required=True)
     p.add_argument("--historical-ledger-sha256", required=True)
     p.add_argument("--tool-sha256", required=True)
+    p.add_argument("--fatbin-owner-preload", type=Path, required=True)
+    p.add_argument("--fatbin-owner-preload-sha256", required=True)
     p.add_argument("--runtime-code-commit", required=True)
     p.add_argument("--expected-output-checksum", required=True)
     p.add_argument("--expected-attention-backend", required=True)
@@ -88,6 +90,8 @@ def main() -> None:
                    "--expected-output-checksum", args.expected_output_checksum,
                    "--expected-attention-backend", args.expected_attention_backend,
                    "--target-function", function, "--code-object-manifest", str(manifest),
+                   "--fatbin-owner-preload", str(args.fatbin_owner_preload),
+                   "--fatbin-owner-preload-sha256", args.fatbin_owner_preload_sha256,
                    "--route-b-llama-s0", "--target-cap-seconds", "120"]
         run.mkdir(parents=True, exist_ok=False)
         completed = subprocess.run(command, text=True, capture_output=True, check=False)

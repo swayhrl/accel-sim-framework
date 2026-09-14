@@ -23,6 +23,7 @@ class RouteBV2MapBatchTest(unittest.TestCase):
         source = (LANE / "retry570_route_b_v2_map_batch.py").read_text(encoding="utf-8")
         self.assertIn('"transfer_slot_granted": active == "none"', source)
         self.assertIn('"--phase", "FUNCTION"', source)
+        self.assertIn('"--fatbin-owner-preload"', source)
 
 
 if __name__ == "__main__":
