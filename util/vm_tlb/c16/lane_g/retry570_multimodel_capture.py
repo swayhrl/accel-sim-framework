@@ -74,6 +74,17 @@ def capture_phase(mode: str) -> str:
     return "DECODE" if mode == "S5_COMPLETE_DECODE" else "PREFILL"
 
 
+def canonical_attention_backend(value: str) -> str:
+    """Compare the receipt spelling and the raw Transformers config spelling.
+
+    Runtime receipts deliberately expose the source as ``TRANSFORMERS_CONFIG``
+    while ``model.config._attn_implementation`` contains just ``sdpa``.  This
+    is representation normalization, not a backend fallback or selection.
+    """
+    prefix = "TRANSFORMERS_CONFIG:"
+    return value if value.startswith(prefix) else prefix + value
+
+
 def identity(binding: dict[str, Any], args: argparse.Namespace) -> dict[str, str]:
     return {
         "deployment_id": args.recovery_deployment_id or binding["deployment_id"], "model_id": binding["model_id"],
@@ -225,8 +236,9 @@ def child(args: argparse.Namespace) -> int:
     required_sequence_length = int(binding["scenario"]["prefill_tokens"]) + int(binding["scenario"]["decode_tokens"])
     model, loader = load_runtime_model(adapter, Path(binding["model_path"]), torch, args.dtype, required_sequence_length=required_sequence_length)
     devices, dtypes = assert_cuda_residency(model, require_raw_dtype=args.dtype)
-    attention = str(getattr(model.config, "_attn_implementation", "UNRESOLVED"))
-    if attention != args.expected_attention_backend: raise ContractError("attention backend differs from frozen S1/S2 evidence")
+    attention = canonical_attention_backend(str(getattr(model.config, "_attn_implementation", "UNRESOLVED")))
+    if attention != canonical_attention_backend(args.expected_attention_backend):
+        raise ContractError("attention backend differs from frozen S1/S2 evidence")
     prompt = torch.tensor([load_token_ids(binding)], device="cuda:0", dtype=torch.long)
     torch.cuda.synchronize(); write_event(args.stage, "PREWARM_BEGIN")
     checksum, decode_steps, _prewarm_phase_files = run_full(model, prompt, torch, decode_tokens=int(binding["scenario"]["decode_tokens"]), phase=capture_phase(args.mode), capture=False)

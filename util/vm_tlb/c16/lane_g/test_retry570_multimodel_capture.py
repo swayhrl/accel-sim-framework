@@ -49,6 +49,10 @@ class MultimodelFormalCaptureTests(unittest.TestCase):
         for token in ("RecoveryV3CampaignLease", "initialize_recovery_v3_campaign_budget", "--recovery-v3-campaign-ledger", "--recovery-v3-budget-scope", "mutually exclusive"):
             self.assertIn(token, SOURCE)
 
+    def test_attention_backend_comparison_normalizes_receipt_and_config_spellings(self) -> None:
+        self.assertIn("def canonical_attention_backend", SOURCE)
+        self.assertIn("canonical_attention_backend(args.expected_attention_backend)", SOURCE)
+
 
 if __name__ == "__main__":
     unittest.main()
