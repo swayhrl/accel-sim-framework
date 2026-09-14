@@ -90,6 +90,12 @@ class RouteBMemoryEventContractTests(unittest.TestCase):
         with self.assertRaises(RouteBContractError):
             validate_whitelist([WhitelistRow(7, "LDG.E.64", "GLOBAL", True, "READ", 8, 2, 2)])
 
+    def test_device_u64_atomics_use_the_cuda_intrinsic_abi_adapter(self):
+        source = (ROOT / "util" / "vm_tlb" / "c16" / "lane_g" / "route_b_memory_event_inject.cu").read_text(encoding="utf-8")
+        self.assertIn("route_b_atomic_add_u64", source)
+        self.assertIn("reinterpret_cast<unsigned long long*>(address)", source)
+        self.assertNotIn("atomicAdd(&buffer->", source)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,16 @@
 #include <stdint.h>
 #include "route_b_memory_event_common.h"
 
+// CUDA exposes the 64-bit atomic overload as unsigned long long*. On this
+// Linux ABI uint64_t is unsigned long, so adapt only at the intrinsic boundary
+// while preserving the Route-B wire/layout contract as uint64_t.
+static __device__ __forceinline__ uint64_t route_b_atomic_add_u64(
+    uint64_t* address, uint64_t value) {
+    return static_cast<uint64_t>(atomicAdd(
+        reinterpret_cast<unsigned long long*>(address),
+        static_cast<unsigned long long>(value)));
+}
+
 // One callback invocation produces one explicit LANE_EVENT, never a
 // whole-warp address array.  The explicit instance id below prevents the host
 // parser from guessing dynamic warp-instruction boundaries from adjacent atomic
@@ -19,12 +29,12 @@ extern "C" __device__ __noinline__ void route_b_append_memory_event(
     const int leader_lane = __ffs(executing) - 1;
     uint64_t instance = 0;
     if (static_cast<int>(lane) == leader_lane) {
-        instance = atomicAdd(&buffer->next_warp_instruction_instance, 1ULL);
+        instance = route_b_atomic_add_u64(&buffer->next_warp_instruction_instance, 1);
     }
     instance = __shfl_sync(executing, instance, leader_lane);
-    if (address == 0) { atomicAdd(&buffer->drop_count, 1ULL); return; }
-    const uint64_t slot = atomicAdd(&buffer->next_sequence, 1ULL);
-    if (slot >= buffer->capacity) { atomicAdd(&buffer->overflow_count, 1ULL); return; }
+    if (address == 0) { route_b_atomic_add_u64(&buffer->drop_count, 1); return; }
+    const uint64_t slot = route_b_atomic_add_u64(&buffer->next_sequence, 1);
+    if (slot >= buffer->capacity) { route_b_atomic_add_u64(&buffer->overflow_count, 1); return; }
     RouteBLaneEvent* event = &buffer->records[slot];
     event->observed_callback_sequence = slot;
     event->warp_instruction_instance_id = instance;
