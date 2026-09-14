@@ -55,9 +55,12 @@ def main() -> None:
     p.add_argument("--expected-output-checksum", required=True)
     p.add_argument("--expected-attention-backend", required=True)
     p.add_argument("--candidate-root", type=Path, action="append", required=True)
+    p.add_argument("--skip-function", action="append", default=[],
+                   help="exact mangled function with an already V2 owner-closed map")
     p.add_argument("--max-functions", type=int, default=0)
     args = p.parse_args()
     functions = inventory_functions(args.inventory)
+    functions = [item for item in functions if item not in set(args.skip_function)]
     if args.max_functions:
         functions = functions[:args.max_functions]
     manifest = args.output_root / "CODE_OBJECT_MANIFEST.tsv"
