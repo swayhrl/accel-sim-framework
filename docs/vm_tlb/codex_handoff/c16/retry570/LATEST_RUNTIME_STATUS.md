@@ -1,6 +1,6 @@
 # C16-G Retry570 runtime status
 
-Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_ROUTE_B_V2_SELECTION_PENDING`.
+Status: `C16_FULL_AUTHORITY_RECOVERY_V3_ACTIVE_ROUTE_B_V2_MAP_TERMINAL_PENDING_C_Q1_OR_FALLBACK_G1`.
 
 ## Live authority — Route B V2
 
@@ -9,11 +9,18 @@ is retained for provenance only and must not be used to create a second GPU
 queue.
 
 - `GPU_ACTIVE_JOB=none`; `MEASUREMENT_ACTIVE=absent`;
-  `ACTIVE_GPU_PROCESS_COUNT=0`.
-- `GPU_READY_QUEUE_COUNT=0`: this is a real Route-B admission gate, not an
-  idle-transfer or publication delay.  The single-PC targeted-memory tool is
-  not an all-GLOBAL+MREF producer, so no Route-B address capture is lawful
-  until the selected-function manifest and Q0/Q1/Q2 producer gates close.
+  `ACTIVE_GPU_PROCESS_COUNT=0`; consequently the shared control contract may
+  set `transfer_slot_granted=true` only in this state.  Every active map or
+  measurement window set it to `false`.
+- `ROUTE_B_MAP_RESULTS_V2` is terminal and published: 34 of 36 V2 exact
+  functions are `MAPPED_EXACT`; two CUTLASS functions are
+  `FAILED_CLOSED/CODE_OBJECT_IDENTITY_UNRESOLVED`.  Map identity is
+  function-level and carries each V2 request's actual `phase_observations`;
+  no map is synthetically labelled `PREFILL`.
+- Route-B address capture remains blocked on Lane-C's selected-function
+  manifest and Q0/Q1/Q2 device-producer gates.  This is not a global GPU-idle
+  reason: if Q1 is not ready, the next job must be a campaign-scoped fallback
+  G1 row with a valid frozen identity and no already-complete G1 rerun.
 - Exact Llama S0 G1 remains the only Llama Route-B selection authority
   (`KERNEL_CATALOG.tsv` SHA256
   `4c316b387e1730f03f3214b0b0aa67c6a8d9aa57a4ebbbd3f231f85b5b8eed21`).
