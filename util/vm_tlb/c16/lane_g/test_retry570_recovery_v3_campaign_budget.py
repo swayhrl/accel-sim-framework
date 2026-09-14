@@ -39,6 +39,17 @@ class RecoveryV3CampaignBudgetTests(unittest.TestCase):
                            expected_historical_sha256=hashlib.sha256(historical.read_bytes()).hexdigest(),
                            identity=IDENTITY, budget_scope="wrong/S0/PREFILL")
 
+    def test_nsys_is_campaign_scoped_but_not_nvbit_capture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); historical = root / "legacy.json"; historical.write_text("{}", encoding="utf-8")
+            ledger = root / "v3.json"; sha = hashlib.sha256(historical.read_bytes()).hexdigest()
+            initialize(ledger_path=ledger, historical_ledger=historical, expected_historical_sha256=sha,
+                       identity=IDENTITY, budget_scope=SCOPE)
+            with RecoveryV3CampaignLease(ledger, IDENTITY, "NSYS", capture=False, budget_scope=SCOPE) as lease:
+                lease.finish(elapsed_seconds=0, raw_bytes=0, terminal_status="COMPLETE")
+            with self.assertRaisesRegex(Exception, "NSYS census"):
+                RecoveryV3CampaignLease(ledger, IDENTITY, "NSYS", capture=True, budget_scope=SCOPE)
+
     def test_legacy_aggregate_cap_migrates_without_rewriting_entries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); historical = root / "legacy.json"; historical.write_text("{}", encoding="utf-8")

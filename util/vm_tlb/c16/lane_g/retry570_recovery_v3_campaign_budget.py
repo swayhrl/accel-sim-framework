@@ -109,11 +109,15 @@ def initialize(*, ledger_path: Path, historical_ledger: Path, expected_historica
 
 
 class RecoveryV3CampaignLease:
-    """One exclusive capture lease in the fresh campaign/scenario namespace."""
+    """One exclusive bounded GPU-operation lease in the fresh namespace."""
     def __init__(self, ledger_path: Path, identity: dict[str, Any], operation_kind: str, *, capture: bool,
                  budget_scope: str) -> None:
-        if not capture or operation_kind != "NVBIT":
-            raise ContractError("Recovery-V3 campaign namespace permits bounded NVBIT capture only")
+        if operation_kind not in {"NVBIT", "NSYS"}:
+            raise ContractError("Recovery-V3 campaign namespace permits only bounded NVBIT or NSYS operations")
+        if operation_kind == "NVBIT" and not capture:
+            raise ContractError("Recovery-V3 NVBIT operation must be marked as capture")
+        if operation_kind == "NSYS" and capture:
+            raise ContractError("Recovery-V3 NSYS census must not claim a raw NVBIT capture lease")
         _scope_for(identity, budget_scope)
         self.ledger_path = ledger_path
         self.identity = identity
