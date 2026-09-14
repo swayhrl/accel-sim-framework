@@ -73,8 +73,12 @@ python3 util/vm_tlb/c16/lane_g/route_b_q1_fixture.py \
   --whitelist-tsv "$Q1_ROOT/whitelist.tsv" | tee "$Q1_ROOT/whitelist_receipt.json"
 
 make -C util/vm_tlb/c16/lane_g -f Makefile.route_b_memory_event_tool \
-  NVBIT_HOME="$NVBIT_HOME" ARCH=sm_86 OUT="$Q1_ROOT/route_b_memory_event_tool.so"
+  NVBIT_HOME="$NVBIT_HOME" ARCH=all OUT="$Q1_ROOT/route_b_memory_event_tool.so"
 ```
+
+The fixture executable is frozen at `sm_86`.  The NVBit producer must instead
+use `ARCH=all`, matching the official NVBit 1.7.5 tool build so the loader's
+`gen_mref_addr` helper remains available in the injected fatbin.
 
 Before the capture run, call `write_verified_producer_manifest` with the
 fixture executable SHA, exact static-map SHA, Q1 whitelist SHA, and cap

@@ -1,5 +1,8 @@
 NVCC ?= nvcc
-ARCH ?= sm_86
+# NVBit's generated helper module must carry the compatible device variants
+# used by its loader.  The captured fixture remains frozen at sm_86; this only
+# controls the producer tool fatbin and follows NVBit's official tool build.
+ARCH ?= all
 NVBIT_HOME ?= /opt/nvbit-1.7.5
 OUT ?= route_b_memory_event_tool.so
 
