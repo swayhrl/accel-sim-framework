@@ -23,6 +23,7 @@ ROWS = (
     ("glm_extension", "UNRESOLVED"),
 )
 RECEIPT_STEMS = {"llama_3p2_1b": "R1_LLAMA3P2_1B_ASSET_RECEIPT.json", "qwen2p5_0p5b_instruct": "R1_QWEN2P5_0P5B_ASSET_RECEIPT.json", "qwen2p5_7b_instruct_raw": "R1_QWEN2P5_7B_RAW_ASSET_RECEIPT.json", "qwen2p5_7b_instruct_awq": "R1_QWEN2P5_7B_AWQ_ASSET_RECEIPT.json", "qwen3_8b": "R1_QWEN3_8B_ASSET_RECEIPT.json"}
+DEEPSEEK_DUAL_RECEIPT = "R1_DEEPSEEK_V2_LITE_ASSET_CONSOLIDATION/R1_DEEPSEEK_V2_LITE_ASSET_RECEIPT.json"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -35,6 +36,19 @@ def asset_row(key: str, identity: str, root: Path, receipt_root: Path) -> dict[s
         return {"model_key": key, "exact_identity_revision": identity, "source_paths": "NOT_INSPECTED_BY_USER_SCOPE", "destination_path": "NOT_APPLICABLE", "migration_method": "NONE", "source_bytes": "NA", "destination_bytes": "NA", "hash_closure": "NOT_APPLICABLE", "old_duplicate_removed": "NO", "status": "EXCLUDED_BY_USER_CURRENT_CAMPAIGN"}
     if key == "glm_extension":
         return {"model_key": key, "exact_identity_revision": identity, "source_paths": "NONE", "destination_path": "NONE", "migration_method": "NONE", "source_bytes": "NA", "destination_bytes": "NA", "hash_closure": "NOT_APPLICABLE", "old_duplicate_removed": "NO", "status": "IDENTITY_NOT_YET_RESOLVED"}
+    if key == "deepseek_v2_lite":
+        dual_path = receipt_root / DEEPSEEK_DUAL_RECEIPT
+        if dual_path.is_file():
+            dual = load(dual_path)
+            if dual.get("status") != "SOURCE_AND_DESTINATION_FILE_SHA256_PASS":
+                raise ContractError("DeepSeek dual endpoint receipt is not hash-closed")
+            source_manifest = load(Path(str(dual["source_manifest"]["path"])))
+            destination_manifest = load(Path(str(dual["destination_manifest"]["path"])))
+            return {"model_key": key, "exact_identity_revision": identity,
+                    "source_paths": str(source_manifest["root"]), "destination_path": str(destination_manifest["root"]),
+                    "migration_method": "NONDESTRUCTIVE_LOCAL_COPY", "source_bytes": str(dual["payload_bytes"]),
+                    "destination_bytes": str(dual["payload_bytes"]), "hash_closure": "SOURCE_AND_DESTINATION_FILE_SHA256_PASS",
+                    "old_duplicate_removed": "NO", "status": "EXISTING_ASSET_CONSOLIDATED"}
     dests = list(root.joinpath("models", key).glob("*"))
     receipt_path = receipt_root / RECEIPT_STEMS[key] if key in RECEIPT_STEMS else None
     if receipt_path is not None and receipt_path.is_file():
