@@ -1,0 +1,5 @@
+CXX ?= g++
+OUT ?= retry570_fatbin_owner_preload.so
+all: $(OUT)
+$(OUT): retry570_fatbin_owner_preload.cpp
+	$(CXX) -std=c++17 -O2 -fPIC -shared $< -ldl -o $@

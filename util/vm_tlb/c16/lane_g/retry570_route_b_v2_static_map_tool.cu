@@ -27,6 +27,7 @@ struct Owner { std::string path; std::string sha256; std::string source; };
 
 static std::string target_mangled;
 static std::string output_path;
+static std::string fatbin_registry_path;
 static std::map<std::string, std::string> manifest_sha;
 static std::map<CUlibrary, Owner> library_owners;
 static std::map<CUmodule, Owner> module_owners;
@@ -83,10 +84,22 @@ static void require_environment() {
     const char* function = getenv("C16_NVBIT_TARGET_FUNCTION_MANGLED");
     const char* path = getenv("C16_NVBIT_STATIC_MAP_PATH");
     const char* manifest = getenv("C16_NVBIT_CODE_OBJECT_MANIFEST");
-    if (function == nullptr || function[0] == '\0' || path == nullptr || path[0] == '\0' || manifest == nullptr || manifest[0] == '\0') {
+    const char* registry = getenv("C16_NVBIT_FATBIN_OWNER_REGISTRY_PATH");
+    if (function == nullptr || function[0] == '\0' || path == nullptr || path[0] == '\0' || manifest == nullptr || manifest[0] == '\0' || registry == nullptr || registry[0] == '\0') {
         fprintf(stderr, "C16_ROUTE_B_V2_CONFIG_ERROR missing function/map/code-object manifest\n"); abort();
     }
-    target_mangled = function; output_path = path; load_manifest(manifest);
+    target_mangled = function; output_path = path; fatbin_registry_path = registry; load_manifest(manifest);
+}
+
+static bool owner_from_fatbin_registry(Owner* owner) {
+    std::ifstream input(fatbin_registry_path); std::string line;
+    while (std::getline(input, line)) {
+        const size_t tab = line.find('\t');
+        if (tab == std::string::npos || line.substr(0, tab) != target_mangled) continue;
+        Owner candidate = owner_from_path(line.substr(tab + 1).c_str(), "cudaRegisterFunction_host_stub");
+        if (!candidate.path.empty() && valid_sha(candidate.sha256)) { *owner = candidate; return true; }
+    }
+    return false;
 }
 
 static bool extract_launch_function(nvbit_api_cuda_t callback, void* parameters, CUfunction* function) {
@@ -128,8 +141,14 @@ static bool owner_for_function(CUfunction function, Owner* owner) {
     if (result != CUDA_SUCCESS || module == nullptr) { terminal_unresolved(module, "cuFuncGetModule_failed"); return false; }
     std::lock_guard<std::mutex> guard(ownership_mutex);
     auto found = module_owners.find(module);
-    if (found == module_owners.end()) { terminal_unresolved(module, "module_owner_not_observed"); return false; }
-    if (found->second.path.empty() || !valid_sha(found->second.sha256)) { terminal_unresolved(module, "owner_path_or_manifest_sha_missing", &found->second); return false; }
+    if (found == module_owners.end()) {
+        if (owner_from_fatbin_registry(owner)) return true;
+        terminal_unresolved(module, "module_owner_not_observed"); return false;
+    }
+    if (found->second.path.empty() || !valid_sha(found->second.sha256)) {
+        if (owner_from_fatbin_registry(owner)) return true;
+        terminal_unresolved(module, "owner_path_or_manifest_sha_missing", &found->second); return false;
+    }
     *owner = found->second; return true;
 }
 

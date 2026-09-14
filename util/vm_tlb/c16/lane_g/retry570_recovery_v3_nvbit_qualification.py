@@ -281,6 +281,9 @@ def main() -> None:
     parser.add_argument("--direct-function-binding", type=Path)
     parser.add_argument("--code-object-manifest", type=Path,
                         help="V2 map-only manifest of permitted actual code-object files and SHA256s")
+    parser.add_argument("--fatbin-owner-preload", type=Path,
+                        help="V2-only hash-closed CUDA runtime registration owner observer")
+    parser.add_argument("--fatbin-owner-preload-sha256")
     parser.add_argument("--route-b-llama-s0", action="store_true",
                         help="allow only the frozen H Route-B Llama S0 inventory/map diagnostic")
     parser.add_argument("--target-cap-seconds", type=int, default=180)
@@ -340,6 +343,10 @@ def main() -> None:
         if args.code_object_path is not None or args.code_object_sha256 is not None:
             raise ContractError("V2 static-map mode forbids caller-selected code-object identity")
         v2_manifest = load_code_object_manifest(args.code_object_manifest)
+        if (args.fatbin_owner_preload is None or not args.fatbin_owner_preload.is_file() or
+                not args.fatbin_owner_preload_sha256 or
+                sha256_file(args.fatbin_owner_preload) != args.fatbin_owner_preload_sha256):
+            raise ContractError("V2 static-map mode requires a hash-closed fatbin owner preload")
     initialize(ledger_path=args.campaign_ledger, historical_ledger=args.historical_ledger,
                expected_historical_sha256=args.historical_ledger_sha256, identity=ident, budget_scope=args.budget_scope)
     MeasurementActive.assert_available(args.campaign_ledger)
@@ -366,6 +373,9 @@ def main() -> None:
                 if args.code_object_manifest is None:
                     raise ContractError("V2 static-map owner manifest is absent")
                 env["C16_NVBIT_CODE_OBJECT_MANIFEST"] = str(args.code_object_manifest)
+                registry = args.raw_dir / "FATBIN_OWNER_REGISTRY.tsv"
+                env["C16_NVBIT_FATBIN_OWNER_REGISTRY_PATH"] = str(registry)
+                env["LD_PRELOAD"] = str(args.fatbin_owner_preload)
             else:
                 if not args.code_object_sha256 or len(args.code_object_sha256) != 64:
                     raise ContractError("static-map mode requires exact function and code-object SHA256")
