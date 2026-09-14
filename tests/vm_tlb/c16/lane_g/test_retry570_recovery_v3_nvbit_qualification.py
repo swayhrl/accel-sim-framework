@@ -26,6 +26,8 @@ class RecoveryV3QualificationContractTest(unittest.TestCase):
         self.assertIn('"TARGETED_MEMORY_DISCRIMINATOR"', SOURCE)
         self.assertIn("scientific_eligible_for_timing\": False", SOURCE)
         self.assertIn("RECOVERY_V3_DIRECT_NVBIT_IDENTITY_QUALIFICATION_NOT_FOR_TIMING", SOURCE)
+        self.assertIn("--route-b-llama-s0", SOURCE)
+        self.assertIn("S0 requires the explicit frozen Route-B Llama inventory/static-map contract", SOURCE)
 
     def test_static_map_closes_the_loaded_code_object(self):
         self.assertIn("--code-object-sha256", SOURCE)

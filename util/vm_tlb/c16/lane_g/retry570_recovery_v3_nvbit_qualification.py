@@ -204,6 +204,8 @@ def main() -> None:
     parser.add_argument("--code-object-path", type=Path)
     parser.add_argument("--target-receipt", type=Path)
     parser.add_argument("--direct-function-binding", type=Path)
+    parser.add_argument("--route-b-llama-s0", action="store_true",
+                        help="allow only the frozen H Route-B Llama S0 inventory/map diagnostic")
     parser.add_argument("--target-cap-seconds", type=int, default=180)
     args = parser.parse_args()
     try:
@@ -217,7 +219,19 @@ def main() -> None:
     if any(path.exists() for path in (args.receipt, args.child_receipt, args.parent_lease_receipt, args.stdout, args.stderr)) or args.raw_dir.exists():
         raise ContractError("qualification refuses to overwrite retained evidence")
     binding = load_binding(args.binding, canary=False)
-    if binding["scenario"]["scenario_id"] == "S0": raise ContractError("this generic Recovery-V3 runner is reserved for non-S0 bindings")
+    if binding["scenario"]["scenario_id"] == "S0":
+        allowed = (
+            args.route_b_llama_s0 and args.mode in {"NVBIT_LAUNCH_INVENTORY", "NVBIT_STATIC_MAP"}
+            and binding.get("model_id") == "meta-llama/Llama-3.2-1B"
+            and binding.get("model_revision") == "4e20de362430cd3b72f300e6b0f18e50e7166e08"
+            and binding["scenario"].get("batch_size") == 1
+            and binding["scenario"].get("prefill_tokens") == 128
+            and binding["scenario"].get("decode_tokens") == 4
+        )
+        if not allowed:
+            raise ContractError("S0 requires the explicit frozen Route-B Llama inventory/static-map contract")
+    elif args.route_b_llama_s0:
+        raise ContractError("Route-B Llama S0 override cannot target a non-S0 binding")
     ident = identity(binding, args)
     if args.recovery_deployment_id != ident["deployment_id"]: raise ContractError("recovery deployment identity differs from frozen binding")
     target: dict[str, Any] | None = None
