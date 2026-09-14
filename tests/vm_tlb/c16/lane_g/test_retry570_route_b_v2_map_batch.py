@@ -19,6 +19,11 @@ class RouteBV2MapBatchTest(unittest.TestCase):
                 writer.writeheader(); writer.writerow({"function_mangled_name": "_Zb"}); writer.writerow({"function_mangled_name": "_Za"}); writer.writerow({"function_mangled_name": "_Za"})
             self.assertEqual(inventory_functions(path), ["_Za", "_Zb"])
 
+    def test_active_map_window_denies_transfer_slot_and_is_function_level(self):
+        source = (LANE / "retry570_route_b_v2_map_batch.py").read_text(encoding="utf-8")
+        self.assertIn('"transfer_slot_granted": active == "none"', source)
+        self.assertIn('"--phase", "FUNCTION"', source)
+
 
 if __name__ == "__main__":
     unittest.main()

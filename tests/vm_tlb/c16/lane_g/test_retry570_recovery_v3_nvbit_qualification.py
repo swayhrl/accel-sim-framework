@@ -41,7 +41,7 @@ class RecoveryV3QualificationContractTest(unittest.TestCase):
             self.assertIn(token, SOURCE)
 
     def test_phase_is_explicit_and_selects_its_own_recovery_authority(self):
-        self.assertIn('parser.add_argument("--phase", choices=("PREFILL", "DECODE"), required=True)', SOURCE)
+        self.assertIn('parser.add_argument("--phase", choices=("PREFILL", "DECODE", "FUNCTION"), required=True,', SOURCE)
         self.assertIn('"RECOVERY_PREFILL" if args.phase == "PREFILL" else "RECOVERY_DECODE"', SOURCE)
 
     def test_predicate_false_zeroed_device_record_remains_bound_to_host_target(self):

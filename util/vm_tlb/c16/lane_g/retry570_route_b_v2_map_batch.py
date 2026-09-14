@@ -42,7 +42,10 @@ def state(path: Path, *, active: str, remaining: int, next_job: str) -> None:
                        "gpu_active_job": active, "gpu_ready_queue_count": remaining,
                        "next_gpu_job": next_job, "measurement_active": active != "none",
                        "active_gpu_process_count": 1 if active != "none" else 0,
-                       "transfer_slot_granted": True})
+                       # Copyback may resume only after the map/measurement
+                       # window is closed.  It must never contend for host IO
+                       # or remote disk bandwidth with an active GPU window.
+                       "transfer_slot_granted": active == "none"})
 
 
 def main() -> None:
@@ -71,7 +74,7 @@ def main() -> None:
         digest = sha256(function.encode()).hexdigest()[:16]
         state(args.control_state, active=f"Route-B/V2_MAP/{digest}", remaining=len(functions) - ordinal,
               next_job=function)
-        command = [str(args.python), str(args.runner), "--mode", "NVBIT_STATIC_MAP_V2", "--phase", "PREFILL",
+        command = [str(args.python), str(args.runner), "--mode", "NVBIT_STATIC_MAP_V2", "--phase", "FUNCTION",
                    "--binding", str(args.binding), "--campaign-ledger", str(args.campaign_ledger),
                    "--historical-ledger", str(args.historical_ledger), "--historical-ledger-sha256", args.historical_ledger_sha256,
                    "--tool", str(args.tool), "--tool-sha256", args.tool_sha256, "--nvdisasm", str(args.nvdisasm),

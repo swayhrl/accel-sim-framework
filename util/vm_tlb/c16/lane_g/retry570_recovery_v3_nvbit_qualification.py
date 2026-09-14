@@ -263,7 +263,8 @@ def targeted_memory_evidence(path: Path, target: dict[str, Any]) -> dict[str, An
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=MODES, required=True)
-    parser.add_argument("--phase", choices=("PREFILL", "DECODE"), required=True)
+    parser.add_argument("--phase", choices=("PREFILL", "DECODE", "FUNCTION"), required=True,
+                        help="FUNCTION is function-level V2 static-map evidence, never a phase claim")
     for name in ("binding", "campaign_ledger", "historical_ledger", "tool", "nvdisasm", "receipt", "child_receipt", "parent_lease_receipt", "stdout", "stderr", "raw_dir"):
         parser.add_argument("--" + name.replace("_", "-"), type=Path, required=True)
     parser.add_argument("--historical-ledger-sha256", required=True)
@@ -322,6 +323,8 @@ def main() -> None:
             target = json.loads(args.target_receipt.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise ContractError("targeted-memory target receipt is unreadable") from exc
+        if args.phase == "FUNCTION":
+            raise ContractError("function-level phase is invalid for targeted-memory discrimination")
         require_contract(binding, target, "RECOVERY_PREFILL" if args.phase == "PREFILL" else "RECOVERY_DECODE", recovery_v3_generic=True,
                          direct_function_binding=args.direct_function_binding)
         target_function = str(target["function"]["mangled_name"])
