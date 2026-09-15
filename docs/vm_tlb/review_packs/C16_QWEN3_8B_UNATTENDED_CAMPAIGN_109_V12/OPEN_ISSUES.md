@@ -1,1 +1,1 @@
-Required exact V2 S2 payload is unavailable to node109 through the approved source path due permission denial. Capacity was not evaluated as a blocker.
+V13 resolved input transport. Required Qwen3 runtime class/API is absent from the approved Transformers 4.46.3 environment. This required S2 environment gate is blocked without package substitution.

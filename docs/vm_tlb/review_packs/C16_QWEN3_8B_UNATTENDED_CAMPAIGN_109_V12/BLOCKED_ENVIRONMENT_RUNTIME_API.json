@@ -1,0 +1,21 @@
+{
+  "schema": "C16_CAMPAIGN_BLOCKED_V1",
+  "stage": "ENVIRONMENT_PREFLIGHT",
+  "gate": "QWEN3_RUNTIME_CLASS_API_AVAILABLE_IN_ACCEPTED_ENVIRONMENT",
+  "status": "BLOCKED",
+  "attempted_methods": [
+    "verified accepted transformers 4.46.3",
+    "checked transformers.models.qwen3 local API"
+  ],
+  "evidence": [
+    "/data/c16/v12_executor_integrity.json",
+    "accepted environment lacks transformers/models/qwen3"
+  ],
+  "unblock": "provide a hash-bound approved Qwen3-compatible runtime environment/wheel set; no network/latest substitution",
+  "forbidden_shortcuts": [
+    "network package install",
+    "transformers upgrade without authority",
+    "model class substitution",
+    "precision/backend substitution"
+  ]
+}
