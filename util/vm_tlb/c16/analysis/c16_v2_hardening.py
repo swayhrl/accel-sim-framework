@@ -69,6 +69,15 @@ def load_accepted() -> dict[str, dict[str, str]]:
     return by_target
 
 
+def load_prior_access_counts() -> dict[str, dict[str, int]]:
+    table = ACCEPTED_PACK / "LOGICAL_TARGET_FINGERPRINT.tsv"
+    rows = list(csv.DictReader(table.open(encoding="utf-8"), delimiter="\t"))
+    by_target = {row["target"]: json.loads(row["access_counts"]) for row in rows}
+    if set(by_target) != set(TARGETS):
+        raise HardeningError("accepted logical-fingerprint table lacks a target")
+    return by_target
+
+
 def verified_raw_dir(run_id: str, accepted: dict[str, str]) -> tuple[Path, dict[str, Any], set[str]]:
     entry_path = RAW_ROOT / "catalog" / "entries" / f"{run_id}.json"
     entry = json.loads(entry_path.read_text(encoding="utf-8"))
@@ -181,7 +190,7 @@ def audit_target(target: str, run_id: str, accepted: dict[str, str]) -> dict[str
         row = maps[index]
         kind = static_access_kind(row)
         width = validated_static_width_bytes(row)
-        width_status = f"WIDTH_EXACT_FROM_VALIDATED_STATIC_DECODER_{width}B" if width is not None else "WIDTH_UNKNOWN"
+        width_status = "WIDTH_EXACT_FROM_VALIDATED_STATIC_DECODER" if width is not None else "WIDTH_UNKNOWN"
         status = "EXECUTED_SHARD" if record_count else "ZERO_EXECUTION_PROVEN"
         executed += int(bool(record_count)); zero += int(not record_count)
         addresses = [int(event["address"]) for event in events]
@@ -233,7 +242,15 @@ def run(output: Path, parser_commit: str) -> None:
     if output.exists():
         raise HardeningError(f"output already exists: {output}")
     accepted = load_accepted()
+    prior_access = load_prior_access_counts()
     result = {target: audit_target(target, run_id, accepted[target]) for target, run_id in TARGETS.items()}
+    for target in TARGETS:
+        observed = json.loads(result[target]["aggregate"]["access_counts"])
+        prior = prior_access[target]
+        if observed != prior:
+            raise HardeningError(f"static access join changes accepted access counts: {target}")
+        result[target]["aggregate"]["accepted_prior_access_counts"] = json.dumps(prior, sort_keys=True)
+        result[target]["aggregate"]["access_count_comparison"] = "MATCH_ACCEPTED_DERIVED_ACCESS_COUNTS"
     q2_rows = q2_regressions()
     if any(row["result"] != "PASS" for row in q2_rows):
         raise HardeningError("RTX3090 Q2 exact regression failed")
