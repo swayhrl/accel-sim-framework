@@ -1,0 +1,14 @@
+metric	value	unit	threshold_or_policy	status	detail
+snapshot_utc	2026-09-15T18:30:45Z	UTC	post-5-minute-ceiling-4-gate	RECORDED	Read-only coordination snapshot.
+wave_a_simulator_processes	4	count	ceiling=4	PASS_AT_CEILING	PIDs 1216181,1216182,1216183,1216184; all nice +5 and CPU-progressing.
+wave_a_namespaces	74dc890b;3e900347;c8275446;7afad40f	attempt UUIDs	immutable per row	RECORDED	B16-N/TC80-N x GESUMMV/ATAX under persistent tmux controller.
+average_cpu	66.45	percent	<=85 percent for 4-to-8 gate	PASS	mpstat one-second sample.
+load_average	366.32/365.12/376.18	load1/load5/load15	load1<460 and load5 stable-or-falling	PASS	/proc/loadavg; five-minute load remains below one-minute load.
+memory_available	91989744	KiB	>=98883013 KiB (25 percent of MemTotal)	HOLD	Exact /proc/meminfo result is below gate.
+swap_free	32	KiB	no active swap churn	RECORDED	Occupancy alone is not a churn conclusion.
+memory_psi	avg10=0.00 avg60=0.00 avg300=0.00	percent	no severe PSI	PASS	/proc/pressure/memory.
+iowait	0.03	percent	<10 percent	PASS	mpstat one-second sample.
+io_psi	avg10=0.00 avg60=0.16 avg300=0.54	percent	no severe PSI	PASS	/proc/pressure/io.
+workspace_available	74751143936	bytes	>=55 GiB	PASS	df -B1 /workspace.
+cm5_interaction	NONE	status	read-only external campaign	PASS	No CM5 process, worktree, controller, signal, priority, or namespace was used; prior PID numbers were absent and are not treated as current health evidence.
+gate_decision	HOLD_AT_4	status	all 4-to-8 predicates required	PASS_FAIL_CLOSED	Only the exact available-memory predicate fails; existing healthy attempts continue and no new Wave-A simulator launches.
