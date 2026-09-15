@@ -21,6 +21,7 @@ SCHEMA = "C16_ANALYSIS_V1"
 LOGICAL_TARGET_SCHEMA = "C16_LOGICAL_TARGET_MANIFEST_V1"
 V2_SHARD_SCHEMA = "C16_V2_SHARD_BINDING_V1"
 COMPACT_BINARY_READY_HOOK = "NODE109_COMPACT_BINARY_FORMAT_SPEC_REQUIRED"
+V2_IDENTITY_FIELDS = {"model_id", "input_binding_sha256", "scenario_id", "target_function", "code_object_sha256", "launch_selector", "static_mref_set_sha256"}
 OBJECT_CLASSES = {"WEIGHT", "QUANT_METADATA", "KV_CACHE", "ACTIVATION", "UNKNOWN_RUNTIME"}
 OBJECT_PRIORITY = {"WEIGHT": 0, "QUANT_METADATA": 1, "KV_CACHE": 2, "ACTIVATION": 3}
 
@@ -240,6 +241,12 @@ def _canonical(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"))
 
 
+def decode_compact_binary(source: Path, format_spec: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    """Explicit fail-closed hook until node109 supplies a hash-bound record layout."""
+    del source, format_spec
+    raise AnalysisError(COMPACT_BINARY_READY_HOOK)
+
+
 def _counter_add(destination: Counter, values: dict[str, int]) -> None:
     destination.update({key: int(value) for key, value in values.items()})
 
@@ -321,6 +328,8 @@ def analyze_logical_target(root: Path, logical_manifest_path: Path, parser_commi
     logical_id, identity, children = logical.get("logical_target_id"), logical.get("target_identity"), logical.get("child_shards")
     if not isinstance(logical_id, str) or not isinstance(identity, dict) or not isinstance(children, list) or not children:
         raise AnalysisError("logical target requires id, target identity, and child shards")
+    if set(identity) != V2_IDENTITY_FIELDS or not isinstance(identity["launch_selector"], dict):
+        raise AnalysisError("logical target target_identity is incomplete")
     expected_runs = logical.get("expected_child_run_ids", [child.get("run_id") for child in children])
     if not isinstance(expected_runs, list) or any(not isinstance(value, str) for value in expected_runs) or len(expected_runs) != len(set(expected_runs)):
         raise AnalysisError("expected_child_run_ids must be a unique string list")

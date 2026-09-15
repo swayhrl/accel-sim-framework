@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from c16_analysis import AnalysisError, LOGICAL_TARGET_SCHEMA, V2_SHARD_SCHEMA, analyze_catalog_run, analyze_logical_target, fingerprint, normalize_record, object_join, parse_route_b
+from c16_analysis import AnalysisError, COMPACT_BINARY_READY_HOOK, LOGICAL_TARGET_SCHEMA, V2_SHARD_SCHEMA, analyze_catalog_run, analyze_logical_target, decode_compact_binary, fingerprint, normalize_record, object_join, parse_route_b
 
 
 def raw(address=4095, width=2, kind="READ", mask=3):
@@ -127,6 +127,10 @@ class C16AnalysisTests(unittest.TestCase):
             raw_manifest["v2_shard_binding"]["static_mref_set_sha256"] = "mref-sha"; manifest.write_text(json.dumps(raw_manifest), encoding="utf-8"); entry_data["raw_manifest_sha256"] = hashlib.sha256(manifest.read_bytes()).hexdigest(); entry.write_text(json.dumps(entry_data), encoding="utf-8")
             data = json.loads(logical.read_text(encoding="utf-8")); data["expected_child_run_ids"] = ["A", "B"]; logical.write_text(json.dumps(data), encoding="utf-8")
             self.assertEqual(analyze_logical_target(root, logical, "test", [])["shard_status"], "PARTIAL_SHARDS_PRESENT")
+
+    def test_compact_binary_without_frozen_spec_fails_closed(self):
+        with self.assertRaisesRegex(AnalysisError, COMPACT_BINARY_READY_HOOK):
+            decode_compact_binary(Path("absent.bin"))
 
     def test_mref_complete_set_and_missing_shard_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
