@@ -77,11 +77,16 @@ def run(args: argparse.Namespace) -> None:
     base, overlay, trace_config = (Path(args.base_config).resolve(),
                                    Path(args.overlay).resolve(),
                                    Path(args.trace_config).resolve())
-    runtime, trace = Path(authority["runtime_path"]), Path(authority["trace_list"])
+    if bool(args.simulator) != bool(args.core_source_head):
+        raise RuntimeError("a repaired SG1 runtime requires both --simulator and --core-source-head")
+    runtime = Path(args.simulator) if args.simulator else Path(authority["runtime_path"])
+    core_source_head = args.core_source_head or authority["run_core_sha"]
+    trace = Path(authority["trace_list"])
     required_file(base, BASE_SHA, "base config")
     required_file(trace_config, TRACE_SHA, "trace config")
     required_file(overlay, variant["overlay_sha256"], "variant overlay")
-    required_file(runtime, authority["runtime_sha256"], "runtime")
+    if not runtime.is_file():
+        raise RuntimeError(f"runtime identity preflight failed: {runtime}")
     required_file(trace, authority["trace_list_sha256"], "trace list")
 
     attempt_uuid = str(uuid.uuid4())
@@ -106,8 +111,8 @@ def run(args: argparse.Namespace) -> None:
         "immutable_runner_path": str(immutable_runner),
         "runner_sha256": sha256(immutable_runner),
         "simulator": str(runtime),
-        "simulator_sha256": authority["runtime_sha256"],
-        "core_source_head": authority["run_core_sha"],
+        "simulator_sha256": sha256(runtime),
+        "core_source_head": core_source_head,
         "base_config": str(base),
         "base_config_sha256": sha256(base),
         "overlay_config": str(overlay),
@@ -152,6 +157,10 @@ def validate(args: argparse.Namespace) -> None:
     variant = VARIANTS[args.variant]
     authority = authority_row(Path(args.authority), args.workload)
     run_dir = Path(args.run_dir)
+    if bool(args.expected_runtime_sha) != bool(args.expected_core_source_head):
+        raise RuntimeError("validation requires both repaired-runtime identity arguments or neither")
+    expected_runtime_sha = args.expected_runtime_sha or authority["runtime_sha256"]
+    expected_core_source_head = args.expected_core_source_head or authority["run_core_sha"]
     manifest, terminal = read_kv(run_dir / "RUN_MANIFEST.tsv"), read_kv(run_dir / "RUN_TERMINAL.tsv")
     stdout = (run_dir / "simulator.stdout").read_text(encoding="utf-8", errors="replace")
     stderr = (run_dir / "simulator.stderr").read_text(encoding="utf-8", errors="replace")
@@ -160,8 +169,8 @@ def validate(args: argparse.Namespace) -> None:
         "natural_exit": terminal.get("simulator_exit_status") == "0",
         "workload_identity": manifest.get("workload") == args.workload,
         "variant_identity": manifest.get("variant") == args.variant,
-        "runtime_identity": manifest.get("simulator_sha256") == authority["runtime_sha256"],
-        "core_identity": manifest.get("core_source_head") == authority["run_core_sha"],
+        "runtime_identity": manifest.get("simulator_sha256") == expected_runtime_sha,
+        "core_identity": manifest.get("core_source_head") == expected_core_source_head,
         "trace_identity": manifest.get("trace_list_sha256") == authority["trace_list_sha256"],
         "base_config_identity": manifest.get("base_config_sha256") == BASE_SHA,
         "trace_config_identity": manifest.get("trace_config_sha256") == TRACE_SHA,
@@ -215,10 +224,14 @@ def main() -> None:
             item.add_argument("--base-config", required=True)
             item.add_argument("--overlay", required=True)
             item.add_argument("--trace-config", required=True)
+            item.add_argument("--simulator")
+            item.add_argument("--core-source-head")
             item.set_defaults(handler=run)
         else:
             item.add_argument("--run-dir", required=True)
             item.add_argument("--output")
+            item.add_argument("--expected-runtime-sha")
+            item.add_argument("--expected-core-source-head")
             item.set_defaults(handler=validate)
     args = parser.parse_args()
     args.handler(args)
