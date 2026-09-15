@@ -1,10 +1,10 @@
-# AWMA Simulation Analysis — Planning Handoff
+# AWMA Simulation Analysis — Execution Handoff
 
-Status: **PLANNED / NOT ACTIVE while the current Qwen Decode/analysis Goal is running on 174-new.**
+Status: **ACTIVE / may run in parallel with the ongoing Native Characterization and Qwen Decode/analysis work.**
 
 Project: **AI Workload Memory Analysis (AWMA)**.
 
-This directory freezes the Simulation Analysis mainline so it can start immediately when 174-new is free, without disturbing the parallel Native Characterization line.
+This directory defines the Simulation Analysis mainline and its first executable foundation Goal. It is intentionally separated from the Native Characterization worktree so both lines can progress concurrently.
 
 ## Scope
 
@@ -42,15 +42,39 @@ Do not merge the scientific meanings of the two evidence planes.
 4. `SIMULATOR_INPUT_AND_CAPTURE_PLAN.md`
 5. `SIMULATION_METRICS_AND_DATA_MODEL.md`
 6. `EXECUTION_ROADMAP.md`
-7. `CODEX_NEXT_STAGE_174NEW_SIMULATION_FOUNDATION.md`
+7. `PARALLEL_EXECUTION_AND_AUTONOMOUS_RECOVERY.md`
 8. `ACCEPTANCE_AND_REVIEW_REQUIREMENTS.md`
+9. `CODEX_NEXT_STAGE_174NEW_SIMULATION_FOUNDATION.md`
 
-## Important execution boundary
+## Execution boundary
 
-The executable Goal in this directory is **prepared but not active yet**.
+A new Codex window on 174-new may start this work **now**, even while another 174-new worktree is running Qwen Decode/native analysis, provided that:
 
-Do not interrupt an existing Qwen Decode/analysis Goal merely to start this work. Once that Goal closes, this Simulation Analysis stage is intended to run as a large CPU/filesystem/toolchain-focused round on 174-new, while 109 may continue Native Characterization independently.
+- a fresh Git worktree/branch is used;
+- current Native/Qwen worktrees and processes are not modified, cleaned, killed, restarted or repurposed;
+- build/hash/simulation work uses bounded resources;
+- node164 writes stay in the authorized AWMA simulation/catalog/provenance namespaces;
+- this foundation Goal uses no 109 GPU and starts no production simulator sweep.
+
+## Goal-mode behavior
+
+This is a solve-and-continue Goal. Recoverable engineering blockers should be diagnosed and fixed inline, regression-tested, recorded, and execution should continue.
+
+Do not stop merely because of:
+
+```text
+missing path
+stale legacy path
+missing helper binary
+first build failure
+missing default nvcc/tool path
+user-space dependency gap
+small parser/schema plumbing mismatch
+fixture/catalog issue with unambiguous intended semantics
+```
+
+Escalate only when continuing would change workload identity, trace semantics, simulator architectural semantics, scientific status/claim scope, accepted raw authority, or require an unsafe/destructive operation.
 
 ## Naming
 
-Existing `C16` paths, manifests, receipts and run IDs remain historical/compatibility identifiers. New planning and future evidence should use the AWMA project terminology. No cosmetic mass rename is authorized.
+Existing `C16` paths, manifests, receipts and run IDs remain historical/compatibility identifiers. New planning and future evidence use AWMA terminology. No cosmetic mass rename is authorized.
