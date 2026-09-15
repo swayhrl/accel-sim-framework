@@ -5,8 +5,9 @@ Status: `FINAL`.
 Read in this order:
 1. `FINAL_AUTHORITY_BINDING.json`
 2. `FINAL_SCOPE.md`
-3. `QWEN3_UNATTENDED_STAGE_CONTRACT_DRAFT.json` as the detailed 14-stage execution specification, with `FINAL_SCOPE.md` overriding any draft/pending authority wording.
-4. node109 V11 failure-mode catalog and decision policy.
+3. `FINAL_STAGE_OVERRIDES.json`
+4. `QWEN3_UNATTENDED_STAGE_CONTRACT_DRAFT.json` as the detailed 14-stage execution specification. The three FINAL files override any draft/pending wording.
+5. node109 V11 failure-mode catalog and decision policy.
 
 Base producer framework: `d7f5ad2c06831193113401b688711be80058cd00`.
 Suggested execution branch: `hrl/c16-qwen3-8b-unattended-campaign-109-v12`.
