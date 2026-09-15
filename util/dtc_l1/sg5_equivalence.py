@@ -54,15 +54,17 @@ def run(args: argparse.Namespace) -> None:
     enabled = int(args.observer) == 1
     root = Path(args.runs_root).resolve()
     attempt = str(uuid.uuid4())
-    out = root / f"sg5_equivalence_{args.variant}_{args.workload}_{'ON' if enabled else 'OFF'}_{attempt}"
+    prefix = "sg5_g6_observer" if args.stage == "SG5.4" else "sg5_equivalence"
+    out = root / f"{prefix}_{args.variant}_{args.workload}_{'ON' if enabled else 'OFF'}_{attempt}"
     out.mkdir(parents=True, exist_ok=False)
     overlay = out / "sg5_observer_overlay.config"
     overlay.write_text(f"-gpgpu_l1_lower_traffic_observer {int(enabled)}\n")
     runner = out / "immutable_sg5_equivalence.py"
     shutil.copy2(Path(__file__), runner)
     runner.chmod(0o555)
-    manifest = {"schema": "SG5_EQUIVALENCE_ATTEMPT_V1", "attempt_uuid": attempt,
-                "lane": "SG5", "stage": "SG5.3", "workload": args.workload,
+    manifest = {"schema": "SG5_G6_OBSERVER_ATTEMPT_V1" if args.stage == "SG5.4"
+                          else "SG5_EQUIVALENCE_ATTEMPT_V1", "attempt_uuid": attempt,
+                "lane": "SG5", "stage": args.stage, "workload": args.workload,
                 "variant": args.variant, "observer": int(enabled), "launch_utc": stamp(),
                 "core_source_head": args.core_source_head,
                 "simulator": simulator, "simulator_sha256": digest(simulator),
@@ -165,6 +167,55 @@ def validate(args: argparse.Namespace) -> None:
     if result["status"] != "PASS": raise SystemExit(1)
 
 
+def validate_run(args: argparse.Namespace) -> None:
+    """Fail closed for one diagnostic SG5.4 observer attempt.
+
+    SG5.4 rows intentionally have no OFF peer: they are diagnostic telemetry
+    samples, not an observer-equivalence test.  This validator therefore
+    checks immutable input identity, natural termination, and that the
+    complete source-defined observer report was emitted.  It does not infer
+    any performance result from the counters.
+    """
+    run_dir = Path(args.run_dir)
+    manifest, terminal = kv(run_dir / "RUN_MANIFEST.tsv"), kv(run_dir / "RUN_TERMINAL.tsv")
+    stdout = (run_dir / "simulator.stdout").read_text(encoding="utf-8", errors="replace")
+    reported = set(re.findall(r"^(SG5_[A-Za-z0-9_]+)\s*=", stdout, re.M))
+    required = {
+        "SG5_l1_lower_traffic_observer",
+        "SG5_conventional_lower_read_transactions",
+        "SG5_conventional_lower_read_payload_bytes",
+        "SG5_dtc_io_lower_transactions",
+        "SG5_dtc_io_lower_payload_bytes",
+        "SG5_dtc_oo_lower_transactions",
+        "SG5_dtc_oo_lower_payload_bytes",
+        "SG5_dtc_sector_lower_transactions",
+        "SG5_dtc_sector_lower_payload_bytes",
+    }
+    checks = {
+        "stage_identity": manifest.get("stage") == "SG5.4",
+        "natural_exit": terminal.get("simulator_exit_status") == "0",
+        "observer_enabled": manifest.get("observer") == "1" and
+                            "SG5_l1_lower_traffic_observer = 1" in stdout,
+        "all_observer_counters_reported": required <= reported,
+        "cycles_present": bool(re.search(r"^gpu_tot_sim_cycle\s*=", stdout, re.M)),
+        "instructions_present": bool(re.search(r"^gpu_tot_sim_insn\s*=", stdout, re.M)),
+    }
+    if args.expected_core_source_head:
+        checks["core_source_identity"] = manifest.get("core_source_head") == args.expected_core_source_head
+    if args.expected_config_chain_sha256:
+        checks["config_chain_identity"] = manifest.get("config_chain_sha256") == args.expected_config_chain_sha256
+    result = {
+        "schema": "SG5_G6_OBSERVER_VALIDATION_V1",
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "run_dir": str(run_dir), "checks": checks,
+        "reported_observer_counters": sorted(reported), "validation_utc": stamp(),
+    }
+    target = Path(args.output) if args.output else run_dir / "SG5_G6_VALIDATION.json"
+    target.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(result, sort_keys=True))
+    if result["status"] != "PASS": raise SystemExit(1)
+
+
 parser = argparse.ArgumentParser()
 subs = parser.add_subparsers(dest="command", required=True)
 p = subs.add_parser("run")
@@ -173,8 +224,12 @@ for name in ("simulator", "config", "trace", "trace_config", "runs_root", "workl
                    action="append" if name == "config" else None)
 p.add_argument("--observer", choices=("0", "1"), required=True)
 p.add_argument("--core-source-head", required=True)
+p.add_argument("--stage", choices=("SG5.3", "SG5.4"), default="SG5.3")
 p.set_defaults(func=run)
 p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--output")
 p.add_argument("--expected-core-source-head"); p.add_argument("--expected-config-chain-sha256")
 p.add_argument("--normal-variant", choices=("B16-N", "TC80-N")); p.set_defaults(func=validate)
+p = subs.add_parser("validate-run"); p.add_argument("--run-dir", required=True); p.add_argument("--output")
+p.add_argument("--expected-core-source-head"); p.add_argument("--expected-config-chain-sha256")
+p.set_defaults(func=validate_run)
 args = parser.parse_args(); args.func(args)
