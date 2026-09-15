@@ -37,5 +37,7 @@ def main():
  payload={"schema_version":"AWMA_SIM_FOUNDATION_V1","stage":"S0","status":"AWMA_SIMULATION_FOUNDATION_PASS_RUNTIME_BLOCKED","source_base":BASE,"review_pack":str(PACK)}
  for c in ("SIM_INPUTS","SIM_BASELINES","SIM_RUNS","SIM_EVIDENCE"): put(a.node_root/"catalog/awma/snapshots"/(c+".json"),json.dumps({**payload,"category":c},sort_keys=True)+"\n")
  put(a.node_root/"provenance/awma/simulation/AWMA_SIMULATION_FOUNDATION_174NEW_V1.json",json.dumps(payload,sort_keys=True)+"\n")
+ node_meta=[a.node_root/"catalog/awma/snapshots"/(c+".json") for c in ("SIM_INPUTS","SIM_BASELINES","SIM_RUNS","SIM_EVIDENCE")]+[a.node_root/"provenance/awma/simulation/AWMA_SIMULATION_FOUNDATION_174NEW_V1.json"]
+ put(a.node_root/"provenance/awma/simulation/AWMA_SIMULATION_FOUNDATION_174NEW_V1.SHA256SUMS","\n".join(hashlib.sha256(p.read_bytes()).hexdigest()+"  "+str(p.relative_to(a.node_root)) for p in node_meta)+"\n")
  sums=[hashlib.sha256(p.read_bytes()).hexdigest()+"  "+p.name for p in sorted(PACK.iterdir()) if p.name!="SHA256SUMS"]; put(PACK/"SHA256SUMS","\n".join(sums)+"\n")
 if __name__=="__main__":main()
