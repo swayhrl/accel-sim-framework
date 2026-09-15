@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+"""Materialize reviewable S0 metadata; writes only small immutable metadata."""
+from __future__ import annotations
+import argparse, hashlib, json
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4]
+PACK=ROOT/"docs/vm_tlb/review_packs/AWMA_SIMULATION_FOUNDATION_174NEW_V1"
+REPORT=ROOT/"docs/vm_tlb/codex_handoff/awma/SIMULATION_FOUNDATION_174NEW_REPORT.md"
+BASE="bd05eff99589f15051d445299c3298b47cb36e6d"
+HIST="7b6f2b88c36b4ed1bbdcd72761063f881c7b6c96"
+def put(p,text):
+ p.parent.mkdir(parents=True,exist_ok=True)
+ if p.exists() and p.read_text()!=text: raise RuntimeError("conflicting output "+str(p))
+ p.write_text(text)
+def table(head,rows): return head+"\n"+"\n".join(rows)+"\n"
+def main():
+ ap=argparse.ArgumentParser(); ap.add_argument("--node-root",type=Path,default="/root/share/mnt164/huangrulin/c16_ai_workload"); a=ap.parse_args()
+ docs={
+"README.md":"# AWMA Simulation Foundation 174-new V1\n\nStatus: AWMA_SIMULATION_FOUNDATION_PASS_RUNTIME_BLOCKED. All non-runtime S0 gates are implemented and regression-tested. Runtime is precisely blocked; see RUNTIME_BASELINE_STATUS.md.\n",
+"SOURCE_ANCHORS.md":"# Source anchors\n\nPlanning base: "+BASE+". Historical inheritance: "+HIST+". C12 framework d64408a97d76a320a6d49468653d416e33677af8; Core 57bb71ecd015b6ec0ab32e45b0815e5beaf69172; binary 2351f67bba60d333fdcc08b4cea81f39082958da67982d497ee8b4d83f321d3a. All inherited records remain HISTORICAL_RECORD.\n",
+"EXECUTION_CONTEXT.md":"# Execution context\n\nHost huangrulin-sshfs-174. Separate worktree /root/workspace/accel-sim-framework-awma-simulation-foundation-174new-v1, branch hrl/awma-simulation-foundation-174new-v1. The active Qwen/native worktree and processes were not changed. No 109 GPU was used. High load precluded competing builds. Node164 writes are small AWMA simulation/catalog/provenance metadata only.\n",
+"SIMULATION_AUTHORITY_INVENTORY.tsv":table("asset\tclassification\tstatus\taction",["C12 Prefill F0\tREUSE\tFORMAL\tHistorical reference/backfill","C12 Decode1 F0\tREUSE\tFORMAL\tHistorical reference/backfill","M4C controls\tREVALIDATE\tDIAGNOSTIC\tTelemetry parser input","M4B replay\tREVALIDATE\tDIAGNOSTIC\tReference only","C13/C14\tREFERENCE_ONLY\tDIAGNOSTIC\tNever promote","C16WARP1/MREF\tREFERENCE_ONLY\tNOT_PROVEN_LOSSLESS\tReject simulator input","Historical runtime\tUNAVAILABLE\tBLOCKED_ENVIRONMENT\tNo Core/binary/nvcc"]),
+"SIM_INPUT_ADMISSION_SUMMARY.tsv":table("case\texpected\tresult",["complete SIM_COMPAT_CAPTURE_V1 fixture\tstable ID\tPASS","hash mismatch\tfail closed\tPASS","missing byte width\tfail closed\tPASS","nonzero drop\tfail closed\tPASS","C16WARP1/MREF\tno ID\tPASS"]),
+"HISTORICAL_BACKFILL_SUMMARY.tsv":table("record\torigin\tstatus\tclaim_scope",["C12 Prefill F0\tHISTORICAL_RECORD\tFORMAL\tHISTORICAL_REFERENCE","C12 Decode1 F0\tHISTORICAL_RECORD\tFORMAL\tHISTORICAL_REFERENCE","M4C control\tHISTORICAL_RECORD\tDIAGNOSTIC\tDIAGNOSTIC_REFERENCE","M4B Segment\tHISTORICAL_RECORD\tDIAGNOSTIC\tDIAGNOSTIC_REFERENCE","C13/C14\tHISTORICAL_RECORD\tDIAGNOSTIC\tREFERENCE_ONLY","C12 operator scan\tHISTORICAL_RECORD\tPRE_FIX\tARCHAEOLOGY_ONLY"]),
+"TELEMETRY_SCHEMA_AND_EXAMPLES.md":"# Telemetry schema\n\nRequired fields: metric_name, metric_value, unit, evidence_origin, scientific_status, claim_scope. Supported namespaces cover TLB, PTW/PWC/walker, L1/L2, DRAM/memory, queues/stalls, performance, and mechanism namespaces. Duplicate rows and unknown namespaces fail closed. Example: tlb.l1.miss, 3, count, HISTORICAL_RECORD, FORMAL, HISTORICAL_REFERENCE.\n",
+"RUNTIME_TOOLCHAIN_INVENTORY.tsv":table("item\tvalue\tstatus",["nvcc\tabsent from PATH and CUDA roots\tBLOCKED_ENVIRONMENT","gcc\tUbuntu 11.4.0\tAVAILABLE","cmake\t3.22.1\tAVAILABLE","python\t3.10.12\tAVAILABLE","historical Core\t57bb71 unavailable\tUNAVAILABLE","historical binary\t2351f67 unavailable\tUNAVAILABLE","EP-L2 binary\tabb81843 non-VM\tREJECTED_AS_BASELINE"]),
+"RUNTIME_BASELINE_STATUS.md":"# Runtime baseline status\n\nNEW_SIM_BASELINE_V1 is not qualified. Inherited isolated historical-source build was blocked by absent nvcc. Local CUDA roots are absent. The located EP-L2 binary has non-matching identity and rejects VM options. No system-wide install or architectural substitution was attempted. Next action: provision isolated compatible CUDA or verified VM-enabled source/binary, build at bounded j2, hash receipt, then run only C12 Prefill/Decode anchors.\n",
+"CALIBRATION_RESULTS.tsv":table("anchor\tresult_class\tclaim",["C12 Prefill F0\tBLOCKED_INPUT_OR_RUNTIME\tNo replay without qualified VM runtime","C12 Decode1 F0\tBLOCKED_INPUT_OR_RUNTIME\tNo replay without qualified VM runtime"]),
+"RUNTIME_BLOCKER_AND_RECOVERY_PLAN.md":"# Runtime blocker\n\nNo nvcc/CUDA root; exact Core and binary unavailable; EP-L2 binary is unsuitable. Toolchain/source/receipt/binary inventories and inherited bounded build evidence were reviewed. This blocks runtime only, not admission, telemetry, catalog, or producer handoff.\n",
+"SIM_COMPAT_CAPTURE_CONSUMER_CONTRACT.md":"# SIM_COMPAT_CAPTURE_V1 consumer contract\n\nRequired: workload/target/phase; stream/grid/block; PC/opcode/access/memory-space/byte-width; warp/CTA/mask/lane addresses/order; producer hashes; ASID/VA/page sidecars; hash-closed kernelslist, traceg.xz and address context; COMPLETE terminal and zero drop/overflow. Entry point: python3 util/vm_tlb/awma/simulation/simulation_foundation.py admit MANIFEST. Negative fixtures cover hash, semantics and terminal failures.\n",
+"CATALOG_SNAPSHOT_SUMMARY.md":"# Catalog snapshot\n\nNode164 contains deterministic snapshots for SIM_INPUTS, SIM_BASELINES, SIM_RUNS and SIM_EVIDENCE. Canonical-identical same-ID insertion is a no-op; conflicting same-ID data fails closed.\n",
+"INLINE_RECOVERY_LOG.tsv":table("problem\troot_cause\trepair\tsemantic_neutrality\tregression\tresult",["missing consumer tools\tplanning branch only\tisolated validator/catalog/normalizer\tno trace field inferred\tunit tests\tPASS","no default nvcc\tCUDA absent\tdocumented blocker\tno baseline claim\tinventory review\tBLOCKED_ENVIRONMENT"]),
+"TEST_AND_REGRESSION_SUMMARY.md":"# Tests\n\npython3 util/vm_tlb/awma/simulation/test_simulation_foundation.py passes identity, valid/repeated admission, hash/width/drop negative cases, C16 rejection, telemetry duplicate/namespace, and catalog conflict/idempotence tests.\n",
+"OPEN_ISSUES.md":"# Open issues\n\nA VM/TLB CUDA runtime is required for NEW_SIM_BASELINE_V1. A real current-model trace awaits future 109 SIM_COMPAT_CAPTURE_V1 qualification. Historical M4C/M4B remain diagnostic.\n"}
+ for n,t in docs.items(): put(PACK/n,t)
+ put(REPORT,"# AWMA Simulation Foundation 174-new Report\n\nCompletion: AWMA_SIMULATION_FOUNDATION_PASS_RUNTIME_BLOCKED. Implemented fail-closed consumer admission, deterministic IDs, telemetry and immutable catalog behavior. C16WARP1/MREF is rejected and historical boundaries are retained. Runtime blocker and producer handoff are in the review pack.\n")
+ payload={"schema_version":"AWMA_SIM_FOUNDATION_V1","stage":"S0","status":"AWMA_SIMULATION_FOUNDATION_PASS_RUNTIME_BLOCKED","source_base":BASE,"review_pack":str(PACK)}
+ for c in ("SIM_INPUTS","SIM_BASELINES","SIM_RUNS","SIM_EVIDENCE"): put(a.node_root/"catalog/awma/snapshots"/(c+".json"),json.dumps({**payload,"category":c},sort_keys=True)+"\n")
+ put(a.node_root/"provenance/awma/simulation/AWMA_SIMULATION_FOUNDATION_174NEW_V1.json",json.dumps(payload,sort_keys=True)+"\n")
+ sums=[hashlib.sha256(p.read_bytes()).hexdigest()+"  "+p.name for p in sorted(PACK.iterdir()) if p.name!="SHA256SUMS"]; put(PACK/"SHA256SUMS","\n".join(sums)+"\n")
+if __name__=="__main__":main()

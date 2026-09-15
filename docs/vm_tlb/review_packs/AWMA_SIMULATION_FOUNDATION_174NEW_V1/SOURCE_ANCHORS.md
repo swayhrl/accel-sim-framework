@@ -1,0 +1,3 @@
+# Source anchors
+
+Planning base: bd05eff99589f15051d445299c3298b47cb36e6d. Historical inheritance: 7b6f2b88c36b4ed1bbdcd72761063f881c7b6c96. C12 framework d64408a97d76a320a6d49468653d416e33677af8; Core 57bb71ecd015b6ec0ab32e45b0815e5beaf69172; binary 2351f67bba60d333fdcc08b4cea81f39082958da67982d497ee8b4d83f321d3a. All inherited records remain HISTORICAL_RECORD.
