@@ -1,0 +1,6 @@
+stage	status	blocking_reason	evidence
+d0_config_feasibility	PASS	NONE	SG1_CONFIG_FEASIBILITY.tsv;SG1_RESOLVED_CONFIG_ISOLATION.tsv;config/SG1_B16_N_OVERLAY.config;config/SG1_TC80_N_OVERLAY.config
+d1_smoke	RUNNING	HOST_GATE_NO_NEW_SIMULATOR_LAUNCH	Wave-A bootstrap host snapshot records nonzero swap and constrained memory/filesystem headroom.
+d2_g6	NOT_STARTED	PREREQUISITE_D1_STRICT_PASS	G6 launch order is GESUMMV,BICG,ATAX,then remaining workloads after resource admission.
+d3_fast12	NOT_STARTED	PREREQUISITE_D2_STRICT_PASS	Promotion follows valid G6 unless a scientific-model blocker is recorded.
+d4_analysis	NOT_STARTED	PREREQUISITE_D3_STRICT_PASS	Ratios will be regenerated from integer cycles only.

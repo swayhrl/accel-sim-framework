@@ -1,0 +1,9 @@
+gate	status	evidence	value_or_constraint	interpretation
+core_identity	PASS	/workspace/repos/gpgpu-sim_distribution@95ccdb7a056f2d53f740d90869785cac6d4ee0f5:src/gpgpu-sim/gpu-cache.h#555-603;object=f270808bb0d2cf6e0c6a77fa2f8c7185073b812c	N maps to NORMAL and S maps to SECTOR	Source-proven parser behavior for frozen Core95 conventional path.
+atom_granularity	PASS	/workspace/repos/gpgpu-sim_distribution@95ccdb7a056f2d53f740d90869785cac6d4ee0f5:src/gpgpu-sim/gpu-cache.h#688-692,#821-828;object=f270808bb0d2cf6e0c6a77fa2f8c7185073b812c	SECTOR atom=32 B; NORMAL atom=128 B; MSHR masks atom	S-to-N deliberately changes MSHR/request atom granularity.
+normal_tag_array_path	PASS	/workspace/repos/gpgpu-sim_distribution@95ccdb7a056f2d53f740d90869785cac6d4ee0f5:src/gpgpu-sim/gpu-cache.cc#189-201;object=351b4d89f587897b4113730db7f534189b652687	NORMAL selects line_cache_block; SECTOR selects sector_cache_block	No Core source change is required.
+sector_model_constraint	PASS	gpu-simulator/gpgpu-sim4.md#52-64	S uses fixed 32-B sectors and four per 128-B line	Confirms frozen conventional sector behavior.
+b16_n_geometry	PASS	SG1_B16_N_RESOLVED_CONFIG.tsv	N:32:128:4 = 16 KiB	Only the three type tokens differ from B16-S.
+tc80_n_geometry	PASS	SG1_TC80_N_RESOLVED_CONFIG.tsv	N:32:128:20 = 80 KiB; unified companion=80	Only the three type tokens differ from TC80-S.
+source_modification_required	PASS	Core95 object identities above	NO	SG1.0 is config-only.
+host_execution_gate	NOT_APPLICABLE	../../host/HOST_SNAPSHOT_WAVE_A_BOOTSTRAP_20260915T075111Z.tsv	swap_nonzero; memory_available_below_35_percent; filesystem_constrained	Static PASS does not authorize simulation.
