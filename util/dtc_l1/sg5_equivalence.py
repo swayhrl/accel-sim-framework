@@ -59,7 +59,8 @@ def run(args: argparse.Namespace) -> None:
     out.mkdir(parents=True, exist_ok=False)
     overlay = out / "sg5_observer_overlay.config"
     overlay.write_text(f"-gpgpu_l1_lower_traffic_observer {int(enabled)}\n")
-    runner = out / "immutable_sg5_equivalence.py"
+    runner = out / ("immutable_sg5_g6_observer.py" if args.stage == "SG5.4"
+                    else "immutable_sg5_equivalence.py")
     shutil.copy2(Path(__file__), runner)
     runner.chmod(0o555)
     manifest = {"schema": "SG5_G6_OBSERVER_ATTEMPT_V1" if args.stage == "SG5.4"
