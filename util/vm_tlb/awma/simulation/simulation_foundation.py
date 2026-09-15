@@ -5,7 +5,7 @@ import argparse, hashlib, json, lzma, sys
 from pathlib import Path
 
 SCHEMA_VERSION = "AWMA_SIM_FOUNDATION_V1"
-SEMANTICS = ("pc", "opcode", "access_kind", "memory_space", "byte_width", "warp_id", "cta_id", "active_mask", "lane_addresses", "event_order")
+SEMANTICS = ("pc", "opcode", "access_kind", "memory_space", "byte_width", "warp_id", "cta_id", "active_mask", "lane_addresses", "event_order", "sync_control")
 FIELDS = ("workload_id", "target_id", "phase", "stream_context", "grid", "block", "trace_schema", "producer_source_sha256", "producer_binary_sha256", "address_context_sidecar", "asid_epoch", "va_width", "page_policy")
 PREFIXES = ("tlb.", "ptw.", "pwc.", "walker.", "l1d.", "l2.", "dram.", "memory.", "queue.", "stall.", "performance.", "segment.", "selective.", "subentry.", "cache_variant.")
 SCHEMAS={"SIM_INPUT":FIELDS,"SIM_BASELINE":("framework_sha","core_sha","binary_sha256","config_sha256","telemetry_schema"),"SIM_RUN":("sim_input_id","sim_baseline_id","config_sha256","execution_status"),"SIM_TELEMETRY_ROW":("metric_name","metric_value","unit","evidence_origin","scientific_status","claim_scope"),"SIM_COMPARISON_ROW":("baseline_sim_run_id","mechanism_sim_run_id","metric_name","metric_value","unit","claim_scope")}

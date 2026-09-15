@@ -18,6 +18,8 @@ class TestFoundation(unittest.TestCase):
    with self.assertRaises(s.ContractError):s.validate_bundle(p)
    p=fixture(Path(t)); m=json.loads(p.read_text()); del m["instruction_semantics"]["byte_width"]; p.write_text(json.dumps(m))
    with self.assertRaises(s.ContractError):s.validate_bundle(p)
+   p=fixture(Path(t)); m=json.loads(p.read_text()); del m["instruction_semantics"]["sync_control"]; p.write_text(json.dumps(m))
+   with self.assertRaises(s.ContractError):s.validate_bundle(p)
    p=fixture(Path(t)); m=json.loads(p.read_text()); m["terminal"]["drop_count"]=1; p.write_text(json.dumps(m))
    with self.assertRaises(s.ContractError):s.validate_bundle(p)
  def test_c16_telemetry_catalog(self):
