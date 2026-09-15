@@ -25,6 +25,17 @@ def digest(path: Path) -> str:
     return h.hexdigest()
 
 
+def config_chain_digest(configs: tuple[Path, ...]) -> str:
+    """Bind both order and bytes of a simulator -config chain."""
+    h = hashlib.sha256()
+    for config in configs:
+        h.update(str(config).encode("utf-8"))
+        h.update(b"\0")
+        h.update(digest(config).encode("ascii"))
+        h.update(b"\n")
+    return h.hexdigest()
+
+
 def kv(path: Path) -> dict[str, str]:
     return dict(line.split("\t", 1) for line in path.read_text().splitlines() if "\t" in line)
 
@@ -34,9 +45,10 @@ def write(path: Path, data: dict[str, object]) -> None:
 
 
 def run(args: argparse.Namespace) -> None:
-    simulator, config, trace, trace_config = map(lambda p: Path(p).resolve(),
-                                                   (args.simulator, args.config, args.trace, args.trace_config))
-    for item in (simulator, config, trace, trace_config):
+    simulator, trace, trace_config = map(lambda p: Path(p).resolve(),
+                                         (args.simulator, args.trace, args.trace_config))
+    configs = tuple(Path(p).resolve() for p in args.config)
+    for item in (simulator, *configs, trace, trace_config):
         if not item.is_file():
             raise RuntimeError(f"required input missing: {item}")
     enabled = int(args.observer) == 1
@@ -53,7 +65,11 @@ def run(args: argparse.Namespace) -> None:
                 "lane": "SG5", "stage": "SG5.3", "workload": args.workload,
                 "variant": args.variant, "observer": int(enabled), "launch_utc": stamp(),
                 "simulator": simulator, "simulator_sha256": digest(simulator),
-                "config": config, "config_sha256": digest(config), "trace": trace,
+                # Keep the original single-config fields for existing evidence,
+                # and bind every ordered config when an overlay is required.
+                "config": configs[0], "config_sha256": digest(configs[0]),
+                "config_chain": ";".join(map(str, configs)),
+                "config_chain_sha256": config_chain_digest(configs), "trace": trace,
                 "trace_sha256": digest(trace), "trace_config": trace_config,
                 "trace_config_sha256": digest(trace_config), "overlay": overlay,
                 "overlay_sha256": digest(overlay), "immutable_runner": runner,
@@ -61,8 +77,11 @@ def run(args: argparse.Namespace) -> None:
     write(out / "RUN_MANIFEST.tsv", manifest)
     write(out / "RUN_START.tsv", manifest)
     with (out / "simulator.stdout").open("wb") as stdout, (out / "simulator.stderr").open("wb") as stderr:
-        status = subprocess.run([str(simulator), "-trace", str(trace), "-config", str(config),
-                                 "-config", str(trace_config), "-config", str(overlay)], cwd=out,
+        command = [str(simulator), "-trace", str(trace)]
+        for config in configs:
+            command.extend(("-config", str(config)))
+        command.extend(("-config", str(trace_config), "-config", str(overlay)))
+        status = subprocess.run(command, cwd=out,
                                 stdout=stdout, stderr=stderr, check=False).returncode
     terminal = {"attempt_uuid": attempt, "terminal_utc": stamp(), "simulator_exit_status": status,
                 "stdout_sha256": digest(out / "simulator.stdout"),
@@ -94,11 +113,13 @@ def validate(args: argparse.Namespace) -> None:
     ot, nt = kv(off / "RUN_TERMINAL.tsv"), kv(on / "RUN_TERMINAL.tsv")
     out_off, out_on = (off / "simulator.stdout").read_text(errors="replace"), (on / "simulator.stdout").read_text(errors="replace")
     a, b = metrics(off / "simulator.stdout"), metrics(on / "simulator.stdout")
-    identity = ("workload", "variant", "simulator_sha256", "config_sha256", "trace_sha256", "trace_config_sha256")
+    identity = ("workload", "variant", "simulator_sha256", "trace_sha256", "trace_config_sha256")
+    config_identity = om.get("config_chain_sha256", om.get("config_sha256")) == \
+                      nm.get("config_chain_sha256", nm.get("config_sha256"))
     checks = {"off_natural_exit": ot.get("simulator_exit_status") == "0",
               "on_natural_exit": nt.get("simulator_exit_status") == "0",
               "off_identity": om.get("observer") == "0", "on_identity": nm.get("observer") == "1",
-              "common_identity": all(om.get(k) == nm.get(k) for k in identity),
+              "common_identity": all(om.get(k) == nm.get(k) for k in identity) and config_identity,
               "off_has_no_sg5": "SG5_l1_lower_traffic_observer" not in out_off,
               "on_has_sg5": "SG5_l1_lower_traffic_observer = 1" in out_on,
               "metric_keyset": set(a) == set(b), "metric_values": a == b,
@@ -118,7 +139,8 @@ parser = argparse.ArgumentParser()
 subs = parser.add_subparsers(dest="command", required=True)
 p = subs.add_parser("run")
 for name in ("simulator", "config", "trace", "trace_config", "runs_root", "workload", "variant"):
-    p.add_argument(f"--{name.replace('_', '-')}", required=True)
+    p.add_argument(f"--{name.replace('_', '-')}", required=True,
+                   action="append" if name == "config" else None)
 p.add_argument("--observer", choices=("0", "1"), required=True); p.set_defaults(func=run)
 p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--output"); p.set_defaults(func=validate)
 args = parser.parse_args(); args.func(args)
