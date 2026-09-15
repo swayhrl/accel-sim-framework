@@ -1,0 +1,14 @@
+config_or_manifest	role	format	inputs	outputs_or_effect	path_or_host_assumption	classification	status
+configs/vm_tlb/M4C_CONFIG_LEDGER.tsv	M4C authority ledger	TSV	base/trace/overlay identities	declares 49-bit, 64KB, 32/768 TLB, 16 walkers, 4-level PTW	Core paths are external checkout	REUSE	VERIFIED_CODE
+configs/vm_tlb/M4C_GENERIC_M3_LLM_BASELINE.config	M4C generic baseline	key/value config	SM86 base + trace config	VM mode 2; 64KB; 49-bit; real PTW/PWC	no hard-coded host path	REUSE	VERIFIED_CODE
+configs/vm_tlb/M4C_CONTROL_VM_DISABLED.config	control	key/value config	SM86 base + trace config	VM-disabled control	no hard-coded host path	REUSE	VERIFIED_CODE
+configs/vm_tlb/M4C_CONTROL_VM_IDEAL_IDENTITY.config	control	key/value config	SM86 base + trace config	ideal identity control	no hard-coded host path	REUSE	VERIFIED_CODE
+configs/vm_tlb/M4C_PAPER_PLATFORM_SHELL_NO_SUBENTRY.config	paper shell	key/value config	SM86 base + trace config	paper geometry without subentry	no hard-coded host path	REVALIDATE	VERIFIED_CODE
+configs/vm_tlb/M4B_SPECULATIVE_SUBENTRY16.config	reference subentry	key/value config	SM86 geometry	REFERENCE_APPROX_SUBENTRY_16	paper semantics unresolved	REVALIDATE	MODELING_DECISION
+configs/vm_tlb/M4B_SPECULATIVE_SUBENTRY16_WEIGHT_SEGMENT.config	Segment candidate	key/value config	SM86 geometry + segment map	parallel Segment/L1 and suppression settings	segment map appended at launch	REVALIDATE	MODELING_DECISION
+configs/vm_tlb/c5_configs/C11_C5_PREFILL_*.config	C11/C12 prefill arms	key/value configs	registration + trace list	F0/F1/F2/F5/F7/F8/F9 variants	legacy /workspace trace roots	REFERENCE_ONLY	UNKNOWN
+configs/vm_tlb/c5_configs/C11_C5_DECODE1_*.config	C11/C12 decode1 arms	key/value configs	registration + trace list	F0/F1/F2/F5/F7/F8/F9 variants	legacy /workspace trace roots	REFERENCE_ONLY	UNKNOWN
+configs/vm_tlb/c5_trace_manifests/C11_C5_*_TRACE.tsv	trace identity manifest	TSV	archive/list paths	SHA256 and source list	all source paths point to /workspace	REVALIDATE	UNKNOWN
+configs/vm_tlb/c5_registrations/C11_C5_*_REGISTRATION.tsv	Segment registration	TSV	allocation sidecar/object map	ASID/epoch/descriptor	modeled PA policy and historical archive path	REVALIDATE	UNKNOWN
+configs/vm_tlb/object_maps/*	object attribution	TSV	allocation metadata	Weight/KV/UNKNOWN ranges	must be checked for global start ordering	REVALIDATE	UNKNOWN
+configs/vm_tlb/segment_maps/*	segment descriptors	TSV	Weight sidecar	base/limit/offset rows	must bind exact trace/object identity	REVALIDATE	UNKNOWN

@@ -1,0 +1,10 @@
+entrypoint	stage	input_format	output_format	current_state	classification	compatibility_gap
+util/vm_tlb/run_m4c_replay.sh	trace replay + simulator invocation	kernelslist.g lines naming .traceg.xz; trace directory; profile	isolated run dir, concatenated config, RUN_MANIFEST.tsv, simulator stdout	code-level current; not executed here	REUSE	C16 JSONL/binary shards are not .traceg.xz
+util/vm_tlb/c12_c5_replay.py	C12 arm replay/validation	C11 matrix/commands + immutable trace list	validated arm TSV/JSON and summaries	legacy hard-coded roots and old SHA constants	REVALIDATE	old Core/framework/binary identities
+util/vm_tlb/c12_c5_scheduler.py	bounded scheduling	matrix/commands/resource TSV	state/resource TSV	legacy orchestration	REFERENCE_ONLY	requires historical /workspace layout
+util/vm_tlb/c12_c5_finalize.py	finalize/post-processing	terminal arm outputs + raw logs	comparison/provenance/report TSV/MD	legacy finalizer	REFERENCE_ONLY	cannot consume modern catalog directly
+util/vm_tlb/analyze_m4c_trace_locality.py	offline Segment/Selective-style locality	.traceg.xz plus object map	page/cache-line footprint TSV + work DB	current offline analyzer; no run	REUSE after conversion	decoder expects traceg grammar and object ranges
+util/vm_tlb/c12_cache_behavior_checkpoint.py	Cache analysis	C12 log lines with m4c telemetry	cache checkpoint TSV + findings MD	current historical extractor; offline	REVALIDATE	requires raw C12 logs and old telemetry names
+util/vm_tlb/export_m4c_telemetry.py	TLB/PTW/cache/DRAM extraction	RUN_MANIFEST.tsv + simulator stdout	structured KERNEL/WINDOW/L1D/L2/queue/DRAM/cross-layer TSVs	current	REUSE	needs modern simulator log with required telemetry
+util/vm_tlb/summarize_m4c_runs.py	finalize multi-run	run dirs with kernelslist.g/log	summary TSV	current	REUSE	cannot summarize JSONL alone
+util/vm_tlb/c11_c5_artifact_tool.py	artifact/provenance validation	manifests and paths	receipts/manifests	legacy helper	REFERENCE_ONLY	historical path assumptions
