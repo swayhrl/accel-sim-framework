@@ -1,0 +1,36 @@
+{
+  "accepted_operand_index": 1,
+  "accepted_operand_role": "GLOBAL_SOURCE",
+  "decision_basis": "NVBit reports two MREF operands; exact SASS operand order resolves role. Address magnitudes are corroborative only, not the decision basis.",
+  "evidence": {
+    "operand_0": {
+      "interpretation": "SASS first address operand [R204] is shared destination",
+      "overflow": 0,
+      "records": 2432,
+      "same_process_address_context_sha256": "961ba4d2e58629b2546e200162c611c20d59b3637fd9cdbf970e7fee947003d6",
+      "trace": "/data/c16/results/C16_V5_LDGSTS/operand_canary/op0/trace.bin"
+    },
+    "operand_1": {
+      "interpretation": "SASS second address operand [R4.64] is global source",
+      "overflow": 0,
+      "records": 2432,
+      "same_process_address_context_sha256": "475672444da4164a338377a482d73e41f00249d3a785f3dcc06c806f15f71e8e",
+      "trace": "/data/c16/results/C16_V5_LDGSTS/operand_canary/op1/trace.bin"
+    }
+  },
+  "prohibitions": [
+    "No object map from another CUDA process classifies an absolute VA",
+    "No cross-process absolute-VA merge"
+  ],
+  "rejected_operand_index": 0,
+  "rejected_operand_role": "SHARED_DESTINATION",
+  "representative_static_identity": {
+    "memory_space": "GLOBAL_TO_SHARED",
+    "mref_count": 2,
+    "opcode": "LDGSTS.E.BYPASS.LTC128B.128",
+    "sass": "LDGSTS.E.BYPASS.LTC128B.128 [R204], [R4.64], P0 ;",
+    "static_index": 216
+  },
+  "schema_version": "C16_V5_LDGSTS_OPERAND_QUALIFICATION_V1",
+  "status": "PASS"
+}
