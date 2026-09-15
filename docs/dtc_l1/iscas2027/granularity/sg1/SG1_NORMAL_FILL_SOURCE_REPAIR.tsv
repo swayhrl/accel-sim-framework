@@ -10,3 +10,8 @@ final_repaired_runtime	/tmp/dtc-sg1-normal-fill-6ea5b782-r2/accel-sim.out; sha25
 request_granularity	unchanged: NORMAL lower atom remains 128 B; S remains 32 B	SOURCE_PROVEN	cache_config get_atom_sz; no config change
 frozen_inputs	trace lists, traces, FAST64 configs, accepted B16-S/IO/OO evidence	UNCHANGED	SG1 runner identity preflight
 acceptance_boundary	no failed Pair 1 row is accepted; retry requires new UUID, repaired runtime SHA, natural exit, and strict validation	REQUIRED	SG1_NORMAL_IMMUTABLE_ATTEMPT_V1
+btree_pair2_failure	B16-N e3e928b3-bb07-4df6-9785-b0fadb064244; TC80-N 19c034cf-d417-4b1a-a9a6-801f77daa2b6	PRESERVED_FAILED	both natural exit 1 at tag_array::access assertion m_config.m_cache_type == SECTOR
+btree_root_cause	NORMAL write-through lazy-fetch-on-read reuses SECTOR_MISS as its same-Tag unreadable-data probe outcome, but tag_array::access asserted and sector-cast it	SOURCE_PROVEN	gpu-cache.cc probe lines 271-282; access line 377; config N:32:128:{4,20},L:T:m:L:L
+btree_repair_scope	for NORMAL SECTOR_MISS, retain its allocated Tag and issue the configured whole-line atom without sector allocation; reconcile dirty count when an ON_MISS fill clears MODIFIED	MINIMAL	gpgpu-sim dedicated SG1 Core commit b838fb6f58a90c6519b65bfaf4c680a3fbf83753
+btree_repaired_runtime	/tmp/dtc-sg1-normal-fill-6ea5b782-r2/accel-sim.out; sha256=f26dcb8831c2331c7580999d73441803118f4c624c4e46ebcff18902ee13f8fd	BUILD_PASS	incremental CMake Release trace build after b838fb6f
+btree_requalification	new immutable Btree Pair 2 UUIDs required; no failed row is replaced or accepted	REQUIRED	SG1_NORMAL_IMMUTABLE_ATTEMPT_V1
