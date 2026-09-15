@@ -1,0 +1,538 @@
+{
+  "schema": "C16_QWEN3_UNATTENDED_STAGE_CONTRACT_DRAFT_V1",
+  "status": "DRAFT_PENDING_174NEW_V12_AUTHORITY",
+  "base_framework_head": "d7f5ad2c06831193113401b688711be80058cd00",
+  "model": {
+    "model_id": "Qwen/Qwen3-8B",
+    "exact_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "dtype": "BF16"
+  },
+  "global_rules": {
+    "formal_admission_concurrency": 1,
+    "no_framework_only_pass": true,
+    "immutable_attempt_receipts": true,
+    "contiguous_hash_valid_resume_chain": true,
+    "bounded_fallbacks_only": true,
+    "no_semantic_substitution": true,
+    "no_cross_process_absolute_va_claim": true,
+    "no_cross_shard_global_chronology_claim": true
+  },
+  "pending_authority_fields": [
+    "174new_v12_head",
+    "authorization_sha256",
+    "v2_validation_sha256",
+    "qwen3_s2_canonical_sequence_sha256",
+    "qwen3_s2_payload_sha256",
+    "execution_mode_authorization",
+    "target_policy",
+    "s3_policy"
+  ],
+  "executor_bootstrap_gates": [
+    {
+      "gate": "EX01_NO_FRAMEWORK_ONLY_PASS",
+      "requirement": "Scientific stages cannot PASS with FRAMEWORK_ONLY, PLAN_ONLY or DRY_RUN output modes."
+    },
+    {
+      "gate": "EX02_CONTIGUOUS_RECEIPT_CHAIN",
+      "requirement": "Resume validates every completed stage in order, including dependency receipt hashes and semantic input digests."
+    },
+    {
+      "gate": "EX03_IMMUTABLE_ATTEMPTS",
+      "requirement": "A retry creates a new attempt namespace; existing terminal receipts are never replaced."
+    },
+    {
+      "gate": "EX04_AUTHORIZED_SKIP_ONLY",
+      "requirement": "SKIPPED is terminal-success only when the bound campaign contract explicitly declares the stage not applicable."
+    },
+    {
+      "gate": "EX05_SIGNAL_SAFE",
+      "requirement": "Interruption cannot create a false PASS; partial outputs remain partial and are revalidated on resume."
+    },
+    {
+      "gate": "EX06_STAGE_INPUT_DIGEST",
+      "requirement": "Semantic input changes invalidate downstream stage instances."
+    },
+    {
+      "gate": "EX07_NO_BLIND_RETRY",
+      "requirement": "Each fallback class has a finite attempt budget and then BLOCKED."
+    }
+  ],
+  "v11_failure_mode_gates": [
+    "FM01_ADMISSION_SERIALITY",
+    "FM02_HASH_SEMANTICS",
+    "FM03_SEMANTIC_BINDING",
+    "FM04_REPLAY_SIGNATURE",
+    "FM05_FRESH_STATIC_SET",
+    "FM06_LDGSTS_CLASSIFICATION",
+    "FM07_CONTEXT_ATTRIBUTION",
+    "FM08_NCU_UNIT",
+    "FM09_CAPACITY_STRATEGY",
+    "FM10_EXECUTABLE_VALIDATION"
+  ],
+  "stages": [
+    {
+      "index": 1,
+      "name": "ASSET_AUTHORITY",
+      "required_inputs": [
+        "exact Qwen3 revision",
+        "local checkpoint/config/tokenizer asset manifests",
+        "final 174-new authorization"
+      ],
+      "actions": [
+        "Verify exact revision and all required local asset hashes without network substitution.",
+        "Verify architecture/config identity against accepted Qwen3 static authority.",
+        "Bind authorization SHA into the campaign semantic input digest."
+      ],
+      "pass_gates": [
+        "revision exact match",
+        "required assets present and hash-valid",
+        "authorization present, PASS-derived and hash-valid"
+      ],
+      "blocked_on": [
+        "revision mismatch",
+        "missing/corrupt asset",
+        "authorization missing or mismatched"
+      ],
+      "outputs": [
+        "ASSET_AUTHORITY receipt",
+        "asset manifest snapshot"
+      ],
+      "invalidation_keys": [
+        "model revision",
+        "asset hashes",
+        "authorization SHA"
+      ]
+    },
+    {
+      "index": 2,
+      "name": "ENVIRONMENT_PREFLIGHT",
+      "required_inputs": [
+        "asset authority PASS",
+        "node109 GPU/toolchain environment"
+      ],
+      "actions": [
+        "Record GPU UUID/name/compute capability, driver, CUDA, Python, torch, transformers and profiler/tool identities.",
+        "Prove exact Qwen3 runtime class/API availability using the local hash-closed environment.",
+        "Check disk/free-space budget and writable staging paths.",
+        "Check process lock, GPU exclusivity policy and global formal-admission lock availability.",
+        "Select only the execution mode permitted by the final authorization."
+      ],
+      "pass_gates": [
+        "runtime class/API usable",
+        "toolchain identities recorded",
+        "capacity/storage preflight satisfied for the authorized mode",
+        "locks functional"
+      ],
+      "blocked_on": [
+        "runtime dependency would require unapproved network/latest-package substitution",
+        "precision/backend/model substitution required",
+        "insufficient staging storage for bounded campaign",
+        "lock failure"
+      ],
+      "outputs": [
+        "ENVIRONMENT_RECEIPT.json",
+        "EXECUTION_MODE.json"
+      ],
+      "invalidation_keys": [
+        "runtime/tool versions and hashes",
+        "GPU identity",
+        "execution mode"
+      ]
+    },
+    {
+      "index": 3,
+      "name": "INPUT_AUTHORITY",
+      "required_inputs": [
+        "validated V2 authority",
+        "S2 scenario binding"
+      ],
+      "actions": [
+        "Verify the exact Qwen3 S2 payload token-for-token against the final V2 authority.",
+        "Keep payload/file SHA and canonical token-sequence SHA as distinct typed fields.",
+        "Record batch/context/decode metadata and tokenizer authority."
+      ],
+      "pass_gates": [
+        "exact token count",
+        "exact token IDs",
+        "canonical sequence SHA match",
+        "payload SHA match",
+        "scenario metadata match"
+      ],
+      "blocked_on": [
+        "any token/hash/scenario mismatch"
+      ],
+      "outputs": [
+        "INPUT_AUTHORITY_RECEIPT.json"
+      ],
+      "invalidation_keys": [
+        "canonical sequence SHA",
+        "payload SHA",
+        "scenario metadata"
+      ]
+    },
+    {
+      "index": 4,
+      "name": "NATIVE_SMOKE",
+      "required_inputs": [
+        "environment PASS",
+        "input PASS",
+        "authorized execution mode"
+      ],
+      "actions": [
+        "If full-resident native mode is authorized, execute a bounded exact smoke under that mode.",
+        "If full-resident native mode is explicitly not applicable and exact streamed-layer mode is authorized, record policy-authorized SKIPPED for native smoke and execute a bounded streamed-execution smoke as evidence.",
+        "Do not silently change precision/backend/model."
+      ],
+      "pass_gates": [
+        "authorized mode executes without semantic substitution",
+        "output is finite and runtime metadata is captured"
+      ],
+      "blocked_on": [
+        "authorized mode cannot execute",
+        "only workaround requires semantic substitution"
+      ],
+      "outputs": [
+        "NATIVE_SMOKE receipt or authorized-SKIPPED receipt",
+        "streamed smoke receipt when applicable"
+      ],
+      "invalidation_keys": [
+        "execution mode",
+        "runtime identity"
+      ]
+    },
+    {
+      "index": 5,
+      "name": "KERNEL_CENSUS",
+      "required_inputs": [
+        "authorized execution mode ready",
+        "S2 input authority"
+      ],
+      "actions": [
+        "Run bounded application execution with semantic NVTX/module ranges and profiler evidence sufficient to classify actual kernel implementations.",
+        "Produce kernel census by phase, semantic role/range, kernel signature, launch count, duration mass and shape where directly observable.",
+        "Classify implementation families before any formal target selection."
+      ],
+      "pass_gates": [
+        "census complete for the authorized bounded S2 window",
+        "semantic range evidence and profiler artifacts hash-closed",
+        "no target inferred from launch order"
+      ],
+      "blocked_on": [
+        "semantic ranges cannot be correlated after bounded methods",
+        "profiler/runtime evidence incomplete for candidate classification"
+      ],
+      "fallback_budget": {
+        "semantic_correlation_methods": 2
+      },
+      "outputs": [
+        "KERNEL_CENSUS.tsv",
+        "IMPLEMENTATION_CLASSES.tsv",
+        "profiler artifact manifest"
+      ],
+      "invalidation_keys": [
+        "runtime identity",
+        "input authority",
+        "semantic instrumentation hash"
+      ]
+    },
+    {
+      "index": 6,
+      "name": "SEMANTIC_TARGET_SELECTION",
+      "required_inputs": [
+        "kernel census PASS",
+        "final target policy from 174-new authorization"
+      ],
+      "actions": [
+        "Generate a mechanical candidate table from observed semantic roles and implementations.",
+        "Bind selected target IDs to exact layer/role/phase/decode step/shape/kernel implementation evidence.",
+        "Prefer the authorized lineage-continuity MLP anchor and optionally one materially distinct attention/KV target only when evidence supports it."
+      ],
+      "pass_gates": [
+        "every selected target is losslessly semantically bound",
+        "candidate-table SHA and authorization SHA are bound",
+        "selected target count is within authorization"
+      ],
+      "blocked_on": [
+        "semantic binding ambiguous after bounded methods",
+        "authorization does not bind the observed candidate table",
+        "selected target requires guess/substitution"
+      ],
+      "fallback_budget": {
+        "semantic_binding_methods": 2
+      },
+      "outputs": [
+        "SEMANTIC_CANDIDATES.tsv",
+        "TARGET_SELECTION.json"
+      ],
+      "invalidation_keys": [
+        "candidate table SHA",
+        "authorization SHA",
+        "target semantic identity"
+      ]
+    },
+    {
+      "index": 7,
+      "name": "SELECTIVE_STATE_CAPTURE",
+      "required_inputs": [
+        "target selection PASS",
+        "authorized execution mode"
+      ],
+      "actions": [
+        "Capture or reconstruct exact incoming hidden state, position/attention state, layer-local KV state, exact BF16 target-layer weights and any other directly required runtime state.",
+        "For streamed mode, run the exact model semantics through preceding layers/state transitions; do not synthesize hidden state.",
+        "Hash-close every captured tensor/state descriptor and execution identity."
+      ],
+      "pass_gates": [
+        "all replay-contract state components present",
+        "exact model/revision/weights preserved",
+        "no synthetic or approximate state"
+      ],
+      "blocked_on": [
+        "exact state cannot be reconstructed",
+        "capture requires precision/backend/model substitution"
+      ],
+      "outputs": [
+        "per-target STATE_CAPTURE_MANIFEST.json",
+        "state artifact hashes"
+      ],
+      "invalidation_keys": [
+        "target identity",
+        "state hashes",
+        "runtime identity"
+      ]
+    },
+    {
+      "index": 8,
+      "name": "REPLAY_EQUIVALENCE",
+      "required_inputs": [
+        "exact state capture PASS"
+      ],
+      "actions": [
+        "Establish deterministic same-method repeatability before setting any non-bitwise tolerance.",
+        "Run dedicated semantic replay from the captured exact state.",
+        "Compare target outputs using bitwise equality when repeatability is bitwise; otherwise use a pre-frozen tolerance derived from same-method repeatability rather than post-hoc tuning."
+      ],
+      "pass_gates": [
+        "replay output meets predeclared equivalence criterion"
+      ],
+      "blocked_on": [
+        "replay output mismatch",
+        "equivalence threshold cannot be justified independently"
+      ],
+      "outputs": [
+        "per-target REPLAY_EQUIVALENCE.json"
+      ],
+      "invalidation_keys": [
+        "state hashes",
+        "replay implementation hash",
+        "equivalence policy"
+      ]
+    },
+    {
+      "index": 9,
+      "name": "IN_CONTEXT_SIGNATURE_GATE",
+      "required_inputs": [
+        "replay equivalence PASS",
+        "in-context semantic evidence"
+      ],
+      "actions": [
+        "Compare scoped in-context and replay kernel signatures for the selected semantic target.",
+        "Method A uses the proven synchronized semantic-range/signature approach.",
+        "At most one bounded fallback may adjust the isolation mechanism without changing target semantics.",
+        "Do not accept output equivalence alone."
+      ],
+      "pass_gates": [
+        "kernel implementation/signature equivalence proven for the formalized target path"
+      ],
+      "blocked_on": [
+        "signature mismatch after bounded methods",
+        "target isolation remains ambiguous"
+      ],
+      "fallback_budget": {
+        "signature_isolation_methods": 2
+      },
+      "outputs": [
+        "per-target IN_CONTEXT_SIGNATURE_GATE.json"
+      ],
+      "invalidation_keys": [
+        "in-context signature",
+        "replay signature",
+        "target implementation identity"
+      ]
+    },
+    {
+      "index": 10,
+      "name": "FRESH_STATIC_PATH_AUDIT",
+      "required_inputs": [
+        "signature gate PASS",
+        "exact target kernel implementation"
+      ],
+      "actions": [
+        "Disassemble/audit the exact Qwen3 target implementation; never inherit Qwen2 static PCs/counts.",
+        "Enumerate direct GLOBAL MREF, LDGSTS GLOBAL_SOURCE and any other address-bearing path classes.",
+        "Treat LDGDEPBAR as control-only.",
+        "Build fresh static sets and prove complete executed/zero partition for every instrumented address path.",
+        "If an uninstrumented special address path appears, stop before formal capture."
+      ],
+      "pass_gates": [
+        "fresh SASS/static-set hashes recorded",
+        "all address-bearing path classes covered",
+        "executed plus zero-execution-proven equals complete static set"
+      ],
+      "blocked_on": [
+        "unknown address-bearing path",
+        "incomplete static closure",
+        "static implementation changed after audit"
+      ],
+      "outputs": [
+        "per-target STATIC_PATH_AUDIT.tsv/json",
+        "static set manifests"
+      ],
+      "invalidation_keys": [
+        "kernel implementation hash",
+        "SASS hash",
+        "static set SHA",
+        "instrumentation build hash"
+      ]
+    },
+    {
+      "index": 11,
+      "name": "FORMAL_CAPTURE",
+      "required_inputs": [
+        "fresh static audit PASS",
+        "authorization binding",
+        "formal admission lock not yet needed for local capture"
+      ],
+      "actions": [
+        "Capture the selected target under the exact qualified replay/in-context mode with same-process address context.",
+        "Use deterministic shard identities and .partial-to-final publication.",
+        "Make shard-level capture resumable: completed hash-valid shards are not repeated after interruption.",
+        "Verify terminal records, static-PC membership, zero/nonzero path closure and drop/overflow counters.",
+        "Promote object roles only from direct same-process storage/range identity; otherwise UNKNOWN_RUNTIME."
+      ],
+      "pass_gates": [
+        "all required shards complete and hash-valid",
+        "drop=0 and overflow=0",
+        "static-path coverage matches qualified set",
+        "same-process context receipt present"
+      ],
+      "blocked_on": [
+        "drop/overflow nonzero",
+        "unexpected static PC/path",
+        "capture/runtime identity drift",
+        "required context absent"
+      ],
+      "outputs": [
+        "per-target FORMAL_CAPTURE_MANIFEST.json",
+        "local-close verification",
+        "formal raw artifacts"
+      ],
+      "invalidation_keys": [
+        "static set SHA",
+        "capture tool hash",
+        "target/runtime/input identity"
+      ]
+    },
+    {
+      "index": 12,
+      "name": "FORMAL_ADMISSION_ACK",
+      "required_inputs": [
+        "formal capture PASS"
+      ],
+      "actions": [
+        "Acquire the global formal-admission lock.",
+        "Verify catalog preconditions and admit exactly one target/run at a time.",
+        "Wait using the bounded existing ACK policy.",
+        "Release/advance only after an accepted ACK is hash-bound to the admitted run.",
+        "Do not start a second target admission while ACK is unresolved."
+      ],
+      "pass_gates": [
+        "serial admission proven",
+        "accepted Pipeline ACK present and hash-bound"
+      ],
+      "blocked_on": [
+        "lock collision",
+        "catalog verification failure",
+        "ACK timeout/failure"
+      ],
+      "outputs": [
+        "per-target PIPELINE_ACK.json",
+        "admission receipt"
+      ],
+      "invalidation_keys": [
+        "formal capture manifest SHA",
+        "catalog generation/receipt identity",
+        "ACK SHA"
+      ]
+    },
+    {
+      "index": 13,
+      "name": "NCU_PROFILE",
+      "required_inputs": [
+        "qualified target semantic/signature evidence",
+        "formal ACK for the corresponding target"
+      ],
+      "actions": [
+        "Collect bounded application-context NCU for the exact semantic target/qualified implementation.",
+        "At minimum preserve the accepted comparable traffic metric family when available: l1tex__t_bytes, lts__t_bytes, dram__bytes.",
+        "Export numeric values together with original metric names, units, cache-control/replay mode and report hashes.",
+        "Do not infer unit conversion or whole-model temporal behavior."
+      ],
+      "pass_gates": [
+        "report hash-closed",
+        "numeric export exists",
+        "metric names/units/modes explicit"
+      ],
+      "blocked_on": [
+        "target implementation changed",
+        "report corrupt",
+        "required metric semantics unavailable for intended comparison"
+      ],
+      "outputs": [
+        "per-target NCU report manifest",
+        "per-target NCU_METRICS.tsv"
+      ],
+      "invalidation_keys": [
+        "target implementation identity",
+        "NCU version",
+        "metric set",
+        "cache-control/replay mode"
+      ]
+    },
+    {
+      "index": 14,
+      "name": "REVIEW_PACK_CLOSE",
+      "required_inputs": [
+        "all required S2 target stages terminal",
+        "S3 continuation decision"
+      ],
+      "actions": [
+        "Compute compact per-target memory fingerprints from formally accepted evidence without inventing chronology.",
+        "Record S3 as RUN, SKIPPED_BY_POLICY, NOT_MATERIALLY_INFORMATIVE, INFEASIBLE_UNDER_AUTHORIZED_MODE or BLOCKED with evidence.",
+        "If S3 is authorized and selected, execute it through a separate hash-bound scenario campaign using the same gates before final closure.",
+        "Run executable review-pack validators and negative tests.",
+        "Generate SHA256SUMS and final scoped scientific claims."
+      ],
+      "pass_gates": [
+        "required artifacts present and hash-valid",
+        "no unresolved required gate",
+        "decision wording respects evidence scope",
+        "review-pack validator PASS"
+      ],
+      "blocked_on": [
+        "missing required artifact",
+        "hash mismatch",
+        "review-pack validator failure"
+      ],
+      "outputs": [
+        "FINAL_DECISION.json",
+        "OPEN_ISSUES.md",
+        "SHA256SUMS",
+        "compact memory fingerprints"
+      ],
+      "invalidation_keys": [
+        "all required upstream receipt hashes"
+      ]
+    }
+  ]
+}
