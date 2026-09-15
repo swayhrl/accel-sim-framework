@@ -213,16 +213,14 @@ def q2_regressions() -> list[dict[str, Any]]:
         "RTX3090_Q2_PREFILL": {"file": "q2_prefill_raw.jsonl", "lane_events": 786432, "READ": 524288, "WRITE": 262144, "unique_exact_va": 333952, "unique_128b_lines": 5224, "unique_4k_pages": 164, "unique_2m_pages": 20},
         "RTX3090_Q2_DECODE": {"file": "q2_decode_raw.jsonl", "lane_events": 18432, "READ": 12288, "WRITE": 6144, "unique_exact_va": 12291, "unique_128b_lines": 195, "unique_4k_pages": 9, "unique_2m_pages": 7},
     }
-    from c16_analysis import fingerprint, normalize_record, parse_route_b  # noqa: E402
+    from c16_analysis import parse_route_b  # noqa: E402
     rows = []
     fixture_root = RAW_ROOT / "legacy" / "rtx3090_minimal_compare"
     for name, wanted in expected.items():
         source = fixture_root / wanted["file"]
         with tempfile.TemporaryDirectory() as directory:
             parsed = Path(directory) / "parsed.jsonl"
-            parse_route_b(source, name, parsed)
-            records = (normalize_record(json.loads(line), name) for line in parsed.read_text(encoding="utf-8").splitlines())
-            stats = fingerprint(records)
+            stats = parse_route_b(source, name, parsed)
         observed = {"lane_events": stats["lane_events"], "READ": stats["access_counts"].get("READ", 0), "WRITE": stats["access_counts"].get("WRITE", 0), "unique_exact_va": stats["unique_exact_va"], "unique_128b_lines": stats["unique_128b_lines"], "unique_4k_pages": stats["unique_4k_pages"], "unique_2m_pages": stats["unique_2m_pages"]}
         for metric, value in wanted.items():
             if metric == "file":
