@@ -1,3 +1,5 @@
 # AWMA NEW_SIM_BASELINE 174-new V1
 
-Status: AWMA_SIM_RUNTIME_RECOVERY_BLOCKED_EXTERNAL_DEPENDENCY. No C12 or other admitted historical traceg.xz payload/list is readable from 174-new shared or node164 AWMA namespaces; no trace semantics were fabricated.
+Status: NEW_SIM_BASELINE_V1_QUALIFIED for HASH_BOUND_FIXED_WINDOW_10000.
+
+Formal C12 Prefill/Decode lists and payloads are recovered under hash closure. Exact historical source pair rebuilt under isolated CUDA 12.4 completed both F0 bounded replays with nonzero telemetry. Historical binary identity and full-ROI numerical equivalence remain unsupported.
