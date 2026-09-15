@@ -73,10 +73,19 @@ def run(args: argparse.Namespace) -> None:
     print(out)
 
 
+NON_SCIENTIFIC_STDOUT_FIELDS = {
+    # Host-wallclock formatting, an uninitialised diagnostic pointer, and a
+    # NaN/Inf report are not simulator scientific counters. They vary even in
+    # an unchanged run and cannot be used to assess an observer-only change.
+    "Bank_Level_Parallism_Col", "gpgpu_silicon_slowdown", "gpu_total_sim_rate",
+    "gpgpu_simulation_rate", "gpgpu_simulation_time", "n_ref",
+}
+
+
 def metrics(path: Path) -> dict[str, str]:
     text = path.read_text(encoding="utf-8", errors="replace")
     return {name: value for name, value in re.findall(r"^([A-Za-z][A-Za-z0-9_]*)\s*=\s*([^\n]+)$", text, re.M)
-            if not name.startswith("SG5_")}
+            if not name.startswith("SG5_") and name not in NON_SCIENTIFIC_STDOUT_FIELDS}
 
 
 def validate(args: argparse.Namespace) -> None:
