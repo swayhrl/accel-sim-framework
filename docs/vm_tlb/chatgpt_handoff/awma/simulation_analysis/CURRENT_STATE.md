@@ -9,6 +9,25 @@ AWMA has one shared identity/catalog/storage architecture and two evidence plane
 
 This document tracks only the Simulation Analysis plane.
 
+## Execution status
+
+Simulation Analysis foundation is now **ACTIVE and allowed to run in parallel** with the ongoing Native Characterization/Qwen Decode work.
+
+Parallel execution is safe only with strict isolation:
+
+```text
+109 / RTX4080
+  Native capture / profiling / C16WARP1
+
+174-new worktree A
+  active Qwen Decode/native analysis
+
+174-new worktree B
+  AWMA Simulation Foundation
+```
+
+The simulation Goal must not mutate or disturb the Native worktree/processes and must use bounded CPU/I/O resources.
+
 ## Historical inheritance already complete
 
 174-new/node164 has already inherited the usable C12–C15 simulation research assets.
@@ -37,18 +56,13 @@ Core:      57bb71ecd015b6ec0ab32e45b0815e5beaf69172
 Binary:    2351f67bba60d333fdcc08b4cea81f39082958da67982d497ee8b4d83f321d3a
 ```
 
-But on 174-new:
+But exact historical Core/binary availability is not guaranteed on 174-new, and the current environment has not yet qualified a maintainable runtime baseline.
 
-- exact historical Core object is unavailable;
-- exact historical binary is unavailable;
-- the current environment does not yet provide a qualified build/runtime baseline;
-- earlier reconstruction found no usable exact-replay path.
-
-Therefore the future mainline is **not** to make all future work depend on exact C12 binary reproduction. Historical C12 is a calibration/reference anchor for a new maintainable baseline.
+The mainline therefore does not require exact resurrection of the historical binary. C12 is a calibration/reference anchor for a new maintainable baseline.
 
 ## Current simulator-facing software authority
 
-Existing reusable or revalidatable entry points include:
+Reusable or revalidatable entry points include:
 
 ```text
 util/vm_tlb/run_m4c_replay.sh
@@ -61,7 +75,7 @@ configs/vm_tlb/M4B_*.config
 configs/vm_tlb/c5_*
 ```
 
-These are not automatically qualified for the future baseline merely because the files exist.
+File existence is not runtime qualification; the Simulation Foundation Goal must revalidate the executable path.
 
 ## Current C16WARP1 input boundary
 
@@ -77,18 +91,37 @@ C16WARP1 / MREF_SHARDED_COMPLETE_SET
 
 Do not synthesize cross-MREF order, missing opcode/access width, synchronization or coalescing semantics.
 
-## What is still missing
+## Current missing pieces
 
 The Simulation Analysis mainline still needs:
 
-1. `NEW_SIM_BASELINE_V1`: a maintainable, hash-bound simulator runtime on 174-new.
-2. bounded historical calibration against archived traceg/outputs.
-3. a canonical simulation input admission/catalog path.
-4. a normalized simulation telemetry/dataset path.
-5. `SIM_COMPAT_CAPTURE_V1`: a producer contract and later 109 capture implementation that creates true simulator-consumable input.
-6. first current-model simulation inputs and baseline runs.
-7. only after baseline qualification: architecture mechanism experiments.
+1. fail-closed simulation input admission and stable `SIM_INPUT_ID`;
+2. normalized Simulation Evidence telemetry/dataset layer;
+3. `NEW_SIM_BASELINE_V1`: a maintainable, hash-bound simulator runtime on 174-new;
+4. bounded calibration against archived historical traceg/outputs;
+5. a machine-checkable `SIM_COMPAT_CAPTURE_V1` consumer contract;
+6. later, 109 producer implementation/capture qualification;
+7. first current-model baseline simulation;
+8. only after baseline qualification: architecture opportunity/mechanism experiments.
+
+## Immediate active Goal
+
+Execute:
+
+```text
+docs/vm_tlb/chatgpt_handoff/awma/simulation_analysis/
+CODEX_NEXT_STAGE_174NEW_SIMULATION_FOUNDATION.md
+```
+
+with:
+
+```text
+PARALLEL_EXECUTION_AND_AUTONOMOUS_RECOVERY.md
+ACCEPTANCE_AND_REVIEW_REQUIREMENTS.md
+```
+
+as mandatory operating/acceptance policy.
 
 ## Parallelism rule
 
-This line should be advanced primarily on 174-new and node164 without using the 4080 until a simulator-compatible capture canary is actually required. That lets 109 continue Native Characterization in parallel.
+The current foundation stage uses no 109 GPU. It should advance consumer/runtime/catalog/telemetry infrastructure while 109 continues Native Characterization. Later, only the producer-side `SIM_COMPAT_CAPTURE_V1` canary will require the 4080.
