@@ -1,0 +1,18 @@
+metric	value	unit	trickle_interpretation	evidence
+timestamp_utc	2026-09-15T09:22:06Z	UTC	pre_pair1_retry_snapshot	free -h; vmstat 1 5; /proc/pressure/memory; df; iostat; read-only ps
+wave_a_resource_mode	TRICKLE	status	PASS_FOR_PAIR1_RETRY	2026-09-15 resource policy update
+memory_available	109	GiB	PASS_above_10_percent	free -h
+memory_available_fraction	0.2891	fraction	PASS_above_10_percent	109 GiB / 377 GiB
+swap_used	2.0	GiB	ALLOWED_WITH_MONITORING	free -h
+vmstat_si_samples	0,0,0,0,0	KiB_per_s	NO_MAJOR_CHURN	vmstat 1 5
+vmstat_so_samples	0,0,0,0,0	KiB_per_s	NO_MAJOR_CHURN	vmstat 1 5
+memory_psi_some_avg10	0.00	percent	PASS_NO_PRESSURE	/proc/pressure/memory
+memory_psi_full_avg10	0.00	percent	PASS_NO_PRESSURE	/proc/pressure/memory
+iowait_samples	0,0,0,0,0	percent	PASS_below_20_percent	vmstat 1 5
+iostat_cpu_iowait_max	0.06	percent	PASS_below_20_percent	iostat -xz 1 5
+workspace_available	71	GiB	PASS_above_35_GiB	df -h /workspace
+workspace_inode_use	7	percent	PASS_healthy	df -i /workspace
+wave_a_simulator_processes	0	count	PASS_within_two_process_ceiling	read-only ps
+cm5_controller_pid	262066	pid	READ_ONLY_HEALTHY	read-only ps
+cm5_simulator_pid	262080	pid	READ_ONLY_HEALTHY	read-only ps: R, 99.4 percent CPU, 2338816 KiB RSS
+pair1_retry_admission	PASS	status	LAUNCH_REPAIRED_B16_N_NN_AND_TC80_N_NN	all TRICKLE fail-closed conditions pass; previous UUIDs are preserved failures
