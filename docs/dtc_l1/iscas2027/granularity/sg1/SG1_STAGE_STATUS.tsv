@@ -1,6 +1,6 @@
 stage	status	blocking_reason	evidence
 d0_config_feasibility	PASS	NONE	SG1_CONFIG_FEASIBILITY.tsv;SG1_RESOLVED_CONFIG_ISOLATION.tsv;config/SG1_B16_N_OVERLAY.config;config/SG1_TC80_N_OVERLAY.config
-d1_smoke	SOURCE_REPAIR_AND_REQUALIFICATION	NORMAL_FILL_OWNER_ASSERTION	Pair 1 B16-N/NN and TC80-N/NN failed naturally with preserved UUIDs; dedicated Core repair 6ea5b782 is building. Requalification uses new UUIDs and the repaired runtime identity.
+d1_smoke	PAIR1_PASS_PAIR2_READY	NONE	NN B16-N and TC80-N passed strict validation after dedicated Core d772de2d repair. Four prior UUIDs remain preserved failures; Btree Pair 2 may launch only after its fresh TRICKLE snapshot.
 d2_g6	NOT_STARTED	PREREQUISITE_D1_STRICT_PASS	G6 launch order is GESUMMV,BICG,ATAX,then remaining workloads after resource admission.
 d3_fast12	NOT_STARTED	PREREQUISITE_D2_STRICT_PASS	Promotion follows valid G6 unless a scientific-model blocker is recorded.
 d4_analysis	NOT_STARTED	PREREQUISITE_D3_STRICT_PASS	Ratios will be regenerated from integer cycles only.
