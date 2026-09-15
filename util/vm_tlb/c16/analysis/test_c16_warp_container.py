@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from c16_warp_container import HEADER, MAGIC, RECORD, WarpError, decode_c16warp1
+from c16_warp_container import HEADER, MAGIC, RECORD, WarpError, decode_c16warp1, static_access_kind, validated_static_width_bytes
 
 
 class C16WarpTests(unittest.TestCase):
@@ -66,6 +66,26 @@ class C16WarpTests(unittest.TestCase):
             path = self.make_binary(directory)
             path.write_bytes(path.read_bytes()[:-1])
             with self.assertRaises(WarpError): decode_c16warp1(path, 7, 0)
+
+    def test_static_access_kind_keeps_known_load_and_store_distinct(self):
+        load = {"opcode": "LDG.E", "is_load": "1", "is_store": "0", "sass": "LDG.E R0, [R2] ;"}
+        store = {"opcode": "STG.E", "is_load": "0", "is_store": "1", "sass": "STG.E [R2], R0 ;"}
+        self.assertEqual(static_access_kind(load), "READ")
+        self.assertEqual(static_access_kind(store), "WRITE")
+        self.assertNotEqual(static_access_kind(load), static_access_kind(store))
+
+    def test_static_access_kind_never_defaults_ambiguous_metadata(self):
+        self.assertEqual(static_access_kind({"opcode": "LDG.E", "is_load": "0", "is_store": "0"}), "UNKNOWN_ACCESS_KIND")
+        self.assertEqual(static_access_kind({"opcode": "STG.E", "is_load": "1", "is_store": "1"}), "UNKNOWN_ACCESS_KIND")
+        self.assertEqual(static_access_kind({"opcode": "ATOM.E", "is_load": "1", "is_store": "1"}), "ATOMIC")
+
+    def test_width_requires_validated_matching_static_sass_mnemonic(self):
+        exact = {"opcode": "STG.E.128", "sass": "@P1 STG.E.128 [R2], R8 ;"}
+        mismatch = {"opcode": "STG.E.128", "sass": "STG.E.64 [R2], R8 ;"}
+        bare = {"opcode": "STG.E", "sass": "STG.E [R2], R8 ;"}
+        self.assertEqual(validated_static_width_bytes(exact), 16)
+        self.assertIsNone(validated_static_width_bytes(mismatch))
+        self.assertIsNone(validated_static_width_bytes(bare))
 
 
 if __name__ == "__main__": unittest.main()

@@ -18,6 +18,8 @@ RECORD = struct.Struct("<6I32Q")
 MAGIC = b"C16WARP1"
 FORMAT_SPEC = "C16WARP1:<8sIIQQQ|<6I32Q"
 TERMINAL = re.compile(r"C16_WARP_TERMINAL static=(\d+) occurrence=(\d+) records=(\d+) overflow=(\d+)")
+SASS_MNEMONIC = re.compile(r"^\s*(?:@!?P\d+\s+)?([A-Z][A-Z0-9]*(?:\.[A-Z0-9_]+)*)\s+")
+WIDTH_OPCODE = re.compile(r"^(?:LDG|STG|ATOM)(?:\.[A-Z0-9_]+)*\.(8|16|32|64|128)$")
 
 
 class WarpError(RuntimeError):
@@ -94,6 +96,43 @@ def static_map(path: Path, selected: set[int]) -> dict[int, dict[str, str]]:
     return rows
 
 
+def static_access_kind(row: dict[str, str]) -> str:
+    """Return an access kind only when the hash-bound static row proves it.
+
+    ``is_load``/``is_store`` are emitted from NVBit's instruction metadata.  A
+    static map can also contain an atomic instruction, for which neither a
+    load nor a store classification is an adequate replacement.  Any malformed
+    or contradictory row remains unknown rather than inheriting a default.
+    """
+    load, store, opcode = row.get("is_load"), row.get("is_store"), row.get("opcode", "")
+    if load not in {"0", "1"} or store not in {"0", "1"}:
+        return "UNKNOWN_ACCESS_KIND"
+    if opcode.startswith("ATOM"):
+        return "ATOMIC"
+    if (load, store) == ("1", "0"):
+        return "READ"
+    if (load, store) == ("0", "1"):
+        return "WRITE"
+    return "UNKNOWN_ACCESS_KIND"
+
+
+def validated_static_width_bytes(row: dict[str, str]) -> int | None:
+    """Decode an explicit SASS width only after cross-checking the static row.
+
+    C16WARP1 has no width field.  This deliberately narrow decoder accepts
+    only the exact width-bearing LDG/STG/ATOM mnemonic from the static map and
+    requires that it is the actual SASS mnemonic (after an optional predicate).
+    A bare opcode such as ``STG.E`` is not assigned an architecture-default
+    width, and a friendly but mismatched opcode spelling is rejected.
+    """
+    opcode = row.get("opcode", "")
+    match = WIDTH_OPCODE.fullmatch(opcode)
+    sass_match = SASS_MNEMONIC.match(row.get("sass", ""))
+    if not match or not sass_match or sass_match.group(1) != opcode:
+        return None
+    return int(match.group(1)) // 8
+
+
 def object_ranges(path: Path) -> list[tuple[int, int, str]]:
     data = json.loads(path.read_text(encoding="utf-8")); ranges = []
     for item in data.get("ranges", []):
@@ -147,13 +186,14 @@ def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expect
             executed.add(index); status = "EXECUTED_SHARD"; all_events.extend(events)
         for event in events:
             event["object_class"] = classify(event["address"], ranges)
-            event["is_load"] = maps[index]["is_load"] == "1"; event["is_store"] = maps[index]["is_store"] == "1"
-            event["opcode"] = maps[index]["opcode"]; event["width_bytes"] = None
+            event["access_kind"] = static_access_kind(maps[index])
+            event["opcode"] = maps[index]["opcode"]
+            event["width_bytes"] = validated_static_width_bytes(maps[index])
         per_shard.append({**decoded, "classification": status, "terminal_log_sha256": sha256(log), "object_attribution": dict(Counter(event.get("object_class", "UNKNOWN_RUNTIME") for event in events))})
     if executed | zero != set(selected) or executed & zero:
         raise WarpError("executed/zero classification is not exact static-set coverage")
     addresses = {event["address"] for event in all_events}; pages4k = {value >> 12 for value in addresses}; pages64k = {value >> 16 for value in addresses}; pages2m = {value >> 21 for value in addresses}; lines = {value >> 7 for value in addresses}
-    access = Counter("READ" if event["is_load"] else "WRITE" if event["is_store"] else "UNKNOWN" for event in all_events)
+    access = Counter(event["access_kind"] for event in all_events)
     objects = Counter(event["object_class"] for event in all_events)
     parsed = root / "derived" / "parsed" / run_id / "c16warp1_active_lane_events.jsonl"; parsed.parent.mkdir(parents=True, exist_ok=True)
     with parsed.open("w", encoding="utf-8") as handle:
@@ -161,7 +201,7 @@ def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expect
     fingerprint = {"source_run_id": run_id, "source_raw_manifest_sha256": expected_manifest_sha, "static_mref_set_sha256": expected_static_set_sha, "computed_static_mref_set_sha256": computed_static_set_sha, "frozen_static_mref_count": expected_count,
         "executed_shards": len(executed), "zero_execution_proven_shards": len(zero), "total_warp_records": sum(item["records_written"] for item in per_shard), "overflow_total": sum(item["overflow"] for item in per_shard),
         "active_lane_address_events": len(all_events), "unique_exact_va": len(addresses), "unique_4k_pages": len(pages4k), "unique_64k_pages": len(pages64k), "unique_2m_pages": len(pages2m), "unique_128b_lines": len(lines),
-        "access_counts": dict(access), "width_bytes_status": "UNKNOWN_NOT_REPRESENTED_IN_C16WARP1_OR_STATIC_MAP", "object_attribution": dict(objects), "per_mref": per_shard,
+        "access_counts": dict(access), "width_bytes_status": "STATIC_SASS_VALIDATED_WHERE_EXPLICIT_ELSE_UNKNOWN", "object_attribution": dict(objects), "per_mref": per_shard,
         "aggregate_order_label": "CROSS_SHARD_ORDER_PROHIBITED", "cross_shard_reuse_distance": "UNSUPPORTED", "global_hardware_order": "UNSUPPORTED"}
     feature = root / "derived" / "features" / run_id / "c16warp1_logical_fingerprint.json"; dump(feature, fingerprint)
     receipt = feature.parent / "C16WARP1_DERIVED_RECEIPT.json"; dump(receipt, {"source_run_id": run_id, "source_raw_manifest_sha256": expected_manifest_sha, "producer_commit": producer_commit, "parser_commit": parser_commit,
