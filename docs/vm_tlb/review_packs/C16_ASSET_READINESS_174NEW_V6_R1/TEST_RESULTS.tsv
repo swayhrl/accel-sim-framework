@@ -1,0 +1,15 @@
+test	result	evidence
+checkpoint index exact tensor resolution	PASS	339 indexed tensors matched header metadata
+first/middle/last selective resolution	PASS	layers 0, 14, 27; dry-run/header-only
+duplicate tensor mapping fails closed	PASS	unit test
+missing tensor mapping fails closed	PASS	unit test
+safetensors dtype/shape metadata deterministic	PASS	unit test plus raw7B headers
+per-layer byte accounting deterministic	PASS	unit test and repeated artifact hashes
+embedding/lm_head tying only when proven	PASS	config tie_word_embeddings=false
+raw7B S2 authority join exact	PASS	S2_TEXT B1/T2048/D32 token SHA matches authority
+no tokenizer/retokenization code path	PASS	no AutoTokenizer/from_pretrained/tokenize invocation in asset helpers
+Qwen3/DeepSeek no-historical-binding preserved	PASS	two explicit derived rows
+model/input index row order deterministic	PASS	sorted generation and repeated hashes
+capture-path audit mutation	PASS	read-only inspection only
+AutoAWQ receipt/archive SHA mismatch fails closed	PASS	recorded SHA exact-match validation rejects a mismatch
+repeated core outputs byte-identical	PASS	inventory/residency/model/input hashes repeated unchanged

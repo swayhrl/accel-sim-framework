@@ -1,0 +1,64 @@
+{
+  "SM89_arch_flag_or_expected_arch_configuration": "COMPUTE_CAPABILITIES must include 89; setup default includes 75,80,86,87,89,90 and v2 uses 80,86,89,90",
+  "archive_path": "NO_SEPARATE_ARCHIVE_FILE_EXPOSED; acquisition receipt is canonical archive authority",
+  "archive_sha256": "49304506a87ef74c3a3dd07ddc839d796c25432d2cdd721e1b968977fa78f398",
+  "build_system_files": [
+    "setup.py",
+    ".github/workflows/build.yaml"
+  ],
+  "expected_python_import_name": [
+    "awq_ext",
+    "awq_v2_ext",
+    "exl_ext",
+    "exlv2_ext"
+  ],
+  "expected_wheel_or_so_outputs": [
+    "autoawq_kernels wheel",
+    "awq_ext*.so",
+    "awq_v2_ext*.so",
+    "exl_ext*.so",
+    "exlv2_ext*.so"
+  ],
+  "extension_source_files": [
+    "awq_ext/exllama/cuda_buffers.cu",
+    "awq_ext/exllama/cuda_func/column_remap.cu",
+    "awq_ext/exllama/cuda_func/q4_matmul.cu",
+    "awq_ext/exllama/cuda_func/q4_matrix.cu",
+    "awq_ext/exllamav2/cuda/q_gemm.cu",
+    "awq_ext/exllamav2/cuda/q_matrix.cu",
+    "awq_ext/layernorm/layernorm.cu",
+    "awq_ext/position_embedding/pos_encoding_kernels.cu",
+    "awq_ext/quantization/gemm_cuda_gen.cu",
+    "awq_ext/quantization/gemv_cuda.cu",
+    "awq_ext/quantization_new/gemm/gemm_cuda.cu",
+    "awq_ext/quantization_new/gemv/gemv_cuda.cu",
+    "awq_ext/vllm/activation.cu",
+    "awq_ext/vllm/moe_alig_block.cu",
+    "awq_ext/vllm/topk_softmax_kernels.cu",
+    "awq_ext/pybind_awq.cpp",
+    "awq_ext/pybind_awq_v2.cpp"
+  ],
+  "known_compile_dependencies": [
+    "Python >=3.8",
+    "setuptools",
+    "PyTorch with torch.utils.cpp_extension",
+    "CUDA toolkit/nvcc",
+    "C++17 compiler",
+    "OpenMP/libgomp"
+  ],
+  "notes_on_isolated_environment": "Build only in a fresh node109 isolated environment; do not install into accepted Qwen0/Llama environments; no CUDA build performed on node174-new.",
+  "pytorch_cuda_abi_inputs_that_node109_must_freeze": [
+    "python version",
+    "torch.__version__",
+    "torch.version.cuda",
+    "CUDA toolkit/nvcc version",
+    "CXX/host compiler version and libstdc++ ABI",
+    "COMPUTE_CAPABILITIES=89",
+    "GPU driver/runtime"
+  ],
+  "source_commit_or_tag": "c7b0e88c327694c715b0a758d9ce8fd414a1fa21",
+  "source_identity": "https://github.com/casper-hansen/AutoAWQ_kernels.git",
+  "source_receipt_archive_relationship": "RECEIPT_ARCHIVE_SHA_PRESENT_AND_SOURCE_COMMIT_MATCHES_CANONICAL_TREE",
+  "source_receipt_path": "/root/share/mnt164/huangrulin/c16_ai_workload/assets/sources/autoawq_kernels/SOURCE_ACQUISITION_RECEIPT.json",
+  "source_receipt_sha256": "b516755eef07780ef0f567b29966552b831fa2315248e7234773451b2b6a3f20"
+}
