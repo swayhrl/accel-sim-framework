@@ -1,0 +1,1 @@
+Hard scoped gap: accepted AWQ Decode fused GEMM cannot be losslessly bound to a unique WQLinear module from NVTX/NSYS. A raw semantic target was independently streamed and Mode A/B matched bitwise, but cannot be claimed as a paired formal target without that AWQ anchor. No raw formal bundle was produced or admitted.
