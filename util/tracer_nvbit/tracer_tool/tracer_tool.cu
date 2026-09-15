@@ -76,6 +76,8 @@ bool active_region = true;
  * frozen exact kernel selector. */
 int exact_root_function_only = 0;
 int use_nvbit_static_index = 0;
+int c16_cta_begin = 0;
+int c16_cta_end = INT_MAX;
 
 /* Should we terminate the program once we are done tracing? */
 int terminate_after_limit_number_of_kernels_reached = 0;
@@ -262,6 +264,8 @@ void nvbit_at_init() {
   GET_VAR_INT(use_nvbit_static_index, "C16_USE_NVBIT_STATIC_INDEX", 0,
               "Interpret INSTR_BEGIN/INSTR_END as NVBit Instr::getIdx values "
               "instead of the legacy filtered enumeration counter.");
+  GET_VAR_INT(c16_cta_begin, "C16_CTA_BEGIN", 0, "Inclusive CTA-x shard bound.");
+  GET_VAR_INT(c16_cta_end, "C16_CTA_END", INT_MAX, "Exclusive CTA-x shard bound.");
   GET_VAR_INT(verbose, "TOOL_VERBOSE", 0, "Enable verbosity inside the tool");
   GET_VAR_INT(enable_compress, "TOOL_COMPRESS", 1, "Enable traces compression");
   GET_VAR_INT(print_core_id, "TOOL_TRACE_CORE", 0,
@@ -463,6 +467,8 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
         nvbit_add_call_arg_const_val64(
             instr, (uint64_t)&reported_dynamic_instr_counter);
         nvbit_add_call_arg_const_val64(instr, (uint64_t)&stop_report);
+        nvbit_add_call_arg_const_val32(instr, c16_cta_begin);
+        nvbit_add_call_arg_const_val32(instr, c16_cta_end);
         /* Add Source code line number for current instr */
         nvbit_add_call_arg_const_val32(instr, (int)line_num);
         /* Add instruction index for current instr (spinlock detection) */
