@@ -3,7 +3,9 @@
 This branch is coordination-only.  No Wave-A simulator has been launched and
 no Wave-A scientific result is accepted.  The static checkpoints below passed
 their own validators.  The current host gate continues to block new simulator
-launches while preserving every pre-existing attempt.
+launches: the fresh resume snapshot has 51 GiB rather than the required 60 GB
+available workspace and 19.36% rather than the required 20% available memory.
+Every pre-existing attempt is preserved.
 
 | Lane | Branch | Current state | Accepted artifact |
 |---|---|---|---|
