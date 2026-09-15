@@ -1,0 +1,39 @@
+{
+  "schema": "C16_QWEN3_UNATTENDED_STAGE_OVERRIDES_V1",
+  "status": "FINAL",
+  "authority": {
+    "v12_result_head": "79d3899a1279210c008e0caff2950958e7f06dba",
+    "v12_policy_head": "59ccffbe260b20086bc4b68205393db696dd0e0b",
+    "authorization_sha256": "b6c2b5551271de3a9edc270df9218ce48fd1492dc73819c160e4f438f1abf7b9",
+    "v2_validation_sha256": "1f62abb9b6ffa4f93901c51eb2160a4fea6c0c7117402a943ee77732b7bd26e9"
+  },
+  "scenario": {
+    "s2": "S2_TEXT_B1_T2048_D32",
+    "s2_required": true,
+    "s3": "S3_TEXT_B1_T8192_D16",
+    "s3_conditional_after_s2": true
+  },
+  "execution": {
+    "safe_default": "EXACT_SEMANTIC_LAYER_STREAMING_REPLAY",
+    "native_full_resident": "optional only after exact BF16 feasibility proof",
+    "capacity_failure_alone": "switch mode, not BLOCKED"
+  },
+  "targets": {
+    "mlp_decode_anchor": "preferred and required for baseline only when a lossless candidate exists",
+    "attention_kv": "optional, maximum one, only if materially distinct and losslessly bindable",
+    "launch_order_binding": "forbidden"
+  },
+  "address_context": {
+    "required_for_object_role_promotion": true,
+    "missing_context_effect": "retain UNKNOWN_RUNTIME",
+    "missing_context_is_global_campaign_blocker": false
+  },
+  "asset_staging": {
+    "exact_local_assets_preferred": true,
+    "node164_exact_copy_allowed": "only via existing approved transfer path with complete post-copy hash verification",
+    "network_redownload_fallback": false
+  },
+  "scoped_pass": {
+    "cannot_cover_required_s2_gate_failure": true
+  }
+}
