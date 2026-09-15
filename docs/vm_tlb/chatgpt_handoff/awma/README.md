@@ -17,6 +17,30 @@ Chinese description: **AI负载访存分析与体系结构模拟**.
 7. `CODEX_NEXT_STAGE_174NEW_AWMA_UNIFIED_FOUNDATION.md`
 8. `NEXT_WAVE_PLAN.md`
 
+## Simulation Analysis mainline
+
+The dedicated Simulation Analysis plan is under:
+
+```text
+simulation_analysis/
+```
+
+Start with:
+
+```text
+simulation_analysis/README.md
+simulation_analysis/CURRENT_STATE.md
+simulation_analysis/EXECUTION_ROADMAP.md
+```
+
+The prepared executable specification is:
+
+```text
+simulation_analysis/CODEX_NEXT_STAGE_174NEW_SIMULATION_FOUNDATION.md
+```
+
+It is currently **planned, not active** while the existing Qwen Decode/analysis Goal is running on 174-new. Do not interrupt that Goal merely to start Simulation Analysis. Once activated, Simulation Analysis should advance mainly on 174-new/node164 without consuming 109 GPU time until simulator-compatible capture qualification is actually needed, allowing Native Characterization to continue independently.
+
 ## Ownership
 
 The files in this directory are ChatGPT-owned coordination specifications. Codex should not silently redefine them. If implementation discovers a mismatch, preserve evidence, document the mismatch in the Codex report/review pack, and use the narrowest safe adaptation consistent with these contracts.
