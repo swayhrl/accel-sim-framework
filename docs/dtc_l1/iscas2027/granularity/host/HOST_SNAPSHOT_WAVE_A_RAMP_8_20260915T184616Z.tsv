@@ -1,0 +1,14 @@
+metric	value	unit	threshold_or_policy	status	detail
+snapshot_utc	2026-09-15T18:46:16Z	UTC	post-five-minute-ceiling-4-gate	RECORDED	Read-only coordination snapshot immediately before Group-B launch.
+wave_a_simulator_processes	8	count	ceiling=8	PASS_AT_CEILING	Four Group-A and four Group-B SG1 G6 processes; every process was nice +5 and CPU-progressing.
+wave_a_namespaces	74dc890b;3e900347;c8275446;7afad40f;69354e29;c190f2f8;8c13864b;56af7336	attempt UUID prefixes	immutable per row	RECORDED	Group A=GESUMMV/ATAX, Group B=2DConvolution/Gaussian; B16-N and TC80-N each.
+average_cpu	66.25	percent	<=85 percent for 4-to-8 gate	PASS	mpstat one-second two-sample average: user 64.62 + nice 1.63.
+load_average	354.21/362.84/367.70	load1/load5/load15	load1<460 and load5 stable-or-falling	PASS	/proc/loadavg; load1 remains below load5.
+memory_available	119142932	KiB	>=98883013 KiB (25 percent of MemTotal)	PASS	Exact /proc/meminfo result.
+swap_activity	0/0	KiB-per-second in/out	no active swap churn	PASS	vmstat two samples report si=0 and so=0; occupancy is not treated as churn.
+memory_psi	avg10=0.00 avg60=0.00 avg300=0.00	percent	no severe PSI	PASS	/proc/pressure/memory.
+iowait	0.11	percent	<10 percent	PASS	mpstat one-second two-sample average.
+io_psi	avg10=0.30 avg60=0.56 avg300=0.35	percent	no severe PSI	PASS	/proc/pressure/io.
+workspace_available	74088185856	bytes	>=55 GiB	PASS	df -B1 /workspace.
+cm5_interaction	NONE	status	read-only external campaign	PASS	No CM5 process, worktree, controller, signal, priority, or namespace was used; this snapshot deliberately makes no unverified CM5 health-PID assertion.
+gate_decision	RAMP_TO_8	status	all 4-to-8 predicates required	PASS	Five-minute ceiling-4 observation elapsed; every measurable predicate passes and Group B was launched through a separate persistent tmux controller.
