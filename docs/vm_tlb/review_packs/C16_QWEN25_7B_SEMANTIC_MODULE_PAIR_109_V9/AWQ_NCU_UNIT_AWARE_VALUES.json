@@ -1,0 +1,24 @@
+[
+  {
+    "target": "PREFILL_AWQ_DEQUANT",
+    "kernel_name": "dequantize_weights(int *, __half *, int *, __half *, int, int, int)",
+    "l1tex_t_bytes_sum": "0.219972",
+    "lts_t_bytes_sum": "164.000480",
+    "dram_bytes_sum": "32.189056",
+    "grid": "(56, 448, 1)",
+    "block": "(8, 8, 1)",
+    "report_csv": "/data/c16/v8_awq_dequant_ncu.csv",
+    "match_count": 196
+  },
+  {
+    "target": "DECODE_FUSED_GEMM",
+    "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+    "l1tex_t_bytes_sum": "8.859648",
+    "lts_t_bytes_sum": "7.877984",
+    "dram_bytes_sum": "8.092544",
+    "grid": "(224, 1, 1)",
+    "block": "(32, 2, 1)",
+    "report_csv": "/data/c16/v8_awq_gemm_ncu.csv",
+    "match_count": 6272
+  }
+]

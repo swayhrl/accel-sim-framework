@@ -1,0 +1,1 @@
+Scoped blocker: output equivalence closes for both exact module objects, but raw in-context decode kernel signature was not losslessly isolated from the layer replay. Therefore the paired kernel-signature and complete-set formal gates are not satisfied. No formal bundles or ACKs were fabricated.
