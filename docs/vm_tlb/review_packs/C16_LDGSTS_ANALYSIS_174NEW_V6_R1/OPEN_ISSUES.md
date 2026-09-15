@@ -1,0 +1,2 @@
+- `git fetch origin --prune` timed out because github.com:443 was unreachable before analysis. Cached coordination ref independently matched the requested SHA.
+- Object-relative comparison is intentionally withheld unless a common lossless same-process semantic identity can be demonstrated.
