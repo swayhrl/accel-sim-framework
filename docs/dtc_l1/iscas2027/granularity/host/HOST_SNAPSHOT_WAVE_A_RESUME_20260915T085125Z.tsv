@@ -1,0 +1,18 @@
+metric	value	unit	gate_interpretation	evidence
+timestamp_utc	2026-09-15T08:51:25Z	UTC	fresh_snapshot	free -h; vmstat 1 10; df; iostat; read-only ps
+host_logical_cpus	512	count	informational	nproc
+load_1m	717	processes	informational	uptime
+memory_available	68	GiB	FAIL_below_20_percent	free -h
+memory_available_fraction	0.1804	fraction	FAIL_below_20_percent_using_377_GiB_total	free -h
+swap_used	2.0	GiB	FAIL_with_active_swap	free -h and vmstat 1 10
+vmstat_si_samples	0,72,268,0,0,0,80,16,16,4	KiB_per_s	FAIL_sustained_swap_in	vmstat 1 10
+vmstat_so_samples	0,336,0,0,376,0,0,0,0,0	KiB_per_s	FAIL_sustained_swap_out	vmstat 1 10
+iowait_samples	0,0,0,0,0,0,0,0,0,0	percent	PASS_below_10_percent	vmstat 1 10
+iostat_cpu_iowait_max	0.16	percent	PASS_below_10_percent	iostat -xz 1 5
+workspace_available	71	GiB	PASS_at_least_60_GB_low_pressure_threshold	df -h /workspace
+workspace_inode_free	219672033	count	PASS_healthy	df -i /workspace
+workspace_inode_use	7	percent	PASS_healthy	df -i /workspace
+cm5_controller_pid	262066	pid	READ_ONLY_HEALTHY	TC80 CM5 controller observed read-only
+cm5_simulator_pid	262080	pid	READ_ONLY_HEALTHY	TC80 CM5 BICG simulator observed running at 99.4 percent CPU
+cm5_terminal_watcher_pid	263138	pid	READ_ONLY_HEALTHY	TC80 CM5 watcher observed read-only
+wave_a_resource_gate	FAIL_LOW_PRESSURE_MEMORY_AND_ACTIVE_SWAP_THRESHOLD	status	NO_NEW_WAVE_A_SIMULATORS	workspace and iowait satisfy limits, but available memory is below 20 percent and both swap-in and swap-out recur in the ten-second sample
