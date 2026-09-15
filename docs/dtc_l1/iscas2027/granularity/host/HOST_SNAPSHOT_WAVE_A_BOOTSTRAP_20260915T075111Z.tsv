@@ -1,0 +1,12 @@
+metric	value	unit	threshold_or_policy	status	detail
+snapshot_utc	2026-09-15T07:51:11Z	UTC	bootstrap-before-any-lane-simulator	RECORDED	Coordination-only snapshot from the Wave-A master worktree.
+logical_cpus	512	logical CPUs	initial_ceiling=192; hard_maximum=384	RECORDED	The campaign must retain at least 64 logical CPUs uncommitted.
+load_average_1m	740.81	load	stable-host-required-before-scale-up	RECORDED	Observed from /proc/loadavg; this does not by itself authorize a launch.
+load_average_5m	747.48	load	stable-host-required-before-scale-up	RECORDED	Observed from /proc/loadavg.
+load_average_15m	754.78	load	stable-host-required-before-scale-up	RECORDED	Observed from /proc/loadavg.
+memory_total	405024821248	bytes	available_must_exceed_35_percent_for-scale-up; 20_percent_hard_floor	RECORDED	Observed from /proc/meminfo.
+memory_available	82259001344	bytes	available_must_exceed_35_percent_for-scale-up; 20_percent_hard_floor	NO_NEW_SIMULATOR_LAUNCH	20.31 percent available is below the 35 percent scale-up condition and close to the 20 percent hard floor.
+swap_used	2147405824	bytes	swap_used_must_equal_0	NO_NEW_SIMULATOR_LAUNCH	Contract forbids new simulator work while swap is nonzero.
+filesystem_workspace_available	33654456320	bytes	preserve-running-attempts; avoid-filesystem-pressure	NO_NEW_SIMULATOR_LAUNCH	Root filesystem reports 100 percent use with only 33.65 GB available.
+iowait	0.00	percent	iowait_less_than_10_percent_for-scale-up; 20_percent_hard_floor	RECORDED	Second iostat CPU sample; iowait alone does not override swap/memory/disk gates.
+initial_worker_ceiling	0	simulator processes	contract_nominal_initial_ceiling=192	NO_NEW_SIMULATOR_LAUNCH	No Wave-A simulator was launched because the mandatory resource gates fail.
