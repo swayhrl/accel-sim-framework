@@ -1,1 +1,1 @@
-V13 resolved input transport. Required Qwen3 runtime class/API is absent from the approved Transformers 4.46.3 environment. This required S2 environment gate is blocked without package substitution.
+Prior BLOCKED attempts remain immutable history. V14 runtime bootstrap was limited to pinned Python wheels. S3 is conditional and not run without an authorization-selected material target.
