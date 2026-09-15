@@ -92,7 +92,7 @@ def run(args: argparse.Namespace) -> None:
     attempt_uuid = str(uuid.uuid4())
     root = Path(args.runs_root)
     safe_workload = re.sub(r"[^A-Za-z0-9._-]+", "_", args.workload)
-    run_dir = root / f"sg1_smoke_{args.variant}_{safe_workload}_{attempt_uuid}"
+    run_dir = root / f"sg1_{args.stage.lower()}_{args.variant}_{safe_workload}_{attempt_uuid}"
     if run_dir.exists():
         raise RuntimeError(f"refusing to reuse immutable attempt {run_dir}")
     run_dir.mkdir(parents=True)
@@ -103,7 +103,7 @@ def run(args: argparse.Namespace) -> None:
         "runner_schema": "SG1_NORMAL_IMMUTABLE_ATTEMPT_V1",
         "attempt_uuid": attempt_uuid,
         "lane": "SG1",
-        "stage": "SMOKE",
+        "stage": args.stage,
         "variant": args.variant,
         "workload": args.workload,
         "ordinal": authority["ordinal"],
@@ -226,6 +226,8 @@ def main() -> None:
             item.add_argument("--trace-config", required=True)
             item.add_argument("--simulator")
             item.add_argument("--core-source-head")
+            item.add_argument("--stage", choices=("SMOKE", "G6", "FAST12"), default="SMOKE",
+                              help="immutable attempt classification; defaults to SMOKE")
             item.set_defaults(handler=run)
         else:
             item.add_argument("--run-dir", required=True)
