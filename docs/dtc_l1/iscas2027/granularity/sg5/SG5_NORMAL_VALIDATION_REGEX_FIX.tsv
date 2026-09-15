@@ -1,0 +1,10 @@
+item	value	status	evidence
+scope	NORMAL-only SG5 validator echo predicates	SOURCE_CORRECT	No simulator Core, configuration, trace, scientific metric, or observer counter semantics changed.
+failed_pair	B16-N/NN OFF=362636f7-e631-4f6c-8873-e4ddd95a09af ON=6fe8e5fd-1a36-40f4-a3fe-80119837cdbf	PRESERVED_NOT_ACCEPTED	Both natural exits are retained with their original immutable manifests and stdout hashes.
+initial_result	FAIL	EXPECTED_VALIDATOR_DEFECT	The pair had equal cycles/instructions and all 163 pre-existing metric values, but normal echo predicates falsely rejected it.
+root_cause	Raw regex used double-backslash s tokens	SOURCE_PROVEN	`r"...\\s+"` matches a literal backslash plus s in Python regex, not whitespace; simulator config echoes contain whitespace padding.
+resolved_config	B16-N N:32:128:4 cache; PAPER_BASE; PIB=8; MSHR=32	SOURCE_AND_OUTPUT_PROVEN	Both immutable stdout files and a direct resolved-config audit show the required values.
+fix	Replace literal-backslash tokens with raw-regex whitespace tokens	MINIMAL_VALIDATOR_FIX	Only `util/dtc_l1/sg5_equivalence.py` NORMAL echo predicates changed.
+same_pair_revalidation	PASS; cycles=6957; instructions=1284872; checked_metrics=163	STRICT_PASS	Current validator, expected Core397 and ordered config-chain SHA-256 568456e3bc07ae87357331181d2d11a5ca96b8f8474f6adaebfdaeec48e1196f.
+frozen_regression	B16-S/Btree PASS; checked_metrics=167	PASS	Existing accepted immutable pair revalidated with output directed to /tmp/SG5_B16S_BTREE_VALIDATION_AFTER_NORMAL_REGEX_FIX.json.
+acceptance_boundary	Remaining B16-N Btree and TC80-N NN/Btree are still required	NOT_FINAL	No failed or accepted attempt was overwritten or rerun.

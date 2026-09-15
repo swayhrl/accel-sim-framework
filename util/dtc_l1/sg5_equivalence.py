@@ -126,19 +126,19 @@ def validate(args: argparse.Namespace) -> None:
         expected = normal[args.normal_variant]
         for prefix, text in (("off", out_off), ("on", out_on)):
             normal_checks[f"{prefix}_normal_dl1_echo"] = all(
-                re.search(rf"^-gpgpu_cache:{name}\\s+{re.escape(expected)}\\s+#", text, re.M)
+                re.search(rf"^-gpgpu_cache:{name}\s+{re.escape(expected)}\s+#", text, re.M)
                 for name in ("dl1", "dl1PrefL1", "dl1PrefShared"))
             normal_checks[f"{prefix}_paper_base_mode"] = bool(
-                re.search(r"^-gpgpu_dtc_l1_mode\\s+1\\s+#", text, re.M)) and \
+                re.search(r"^-gpgpu_dtc_l1_mode\s+1\s+#", text, re.M)) and \
                 "DTC_L1_mode = PAPER_BASE" in text
             normal_checks[f"{prefix}_pib_mshr_identity"] = bool(
-                re.search(r"^-gpgpu_dtc_l1_pib_entries\\s+8\\s+#", text, re.M)) and bool(
-                re.search(r"^-gpgpu_dtc_l1_mshr_entries\\s+32\\s+#", text, re.M))
+                re.search(r"^-gpgpu_dtc_l1_pib_entries\s+8\s+#", text, re.M)) and bool(
+                re.search(r"^-gpgpu_dtc_l1_mshr_entries\s+32\s+#", text, re.M))
         if args.normal_variant == "TC80-N":
             normal_checks["off_unified_capacity_echo"] = bool(
-                re.search(r"^-gpgpu_unified_l1d_size\\s+80\\s+#", out_off, re.M))
+                re.search(r"^-gpgpu_unified_l1d_size\s+80\s+#", out_off, re.M))
             normal_checks["on_unified_capacity_echo"] = bool(
-                re.search(r"^-gpgpu_unified_l1d_size\\s+80\\s+#", out_on, re.M))
+                re.search(r"^-gpgpu_unified_l1d_size\s+80\s+#", out_on, re.M))
     checks = {"off_natural_exit": ot.get("simulator_exit_status") == "0",
               "on_natural_exit": nt.get("simulator_exit_status") == "0",
               "off_identity": om.get("observer") == "0", "on_identity": nm.get("observer") == "1",
