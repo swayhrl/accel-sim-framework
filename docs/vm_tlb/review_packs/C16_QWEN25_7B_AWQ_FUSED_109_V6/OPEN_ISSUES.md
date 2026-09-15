@@ -1,0 +1,1 @@
+The earlier prefill-labelled GEMM bundle is transport-accepted but phase-mislabeled; it is excluded from all coverage conclusions. Correctly labelled Prefill and Decode bundles above are the sole formal V6 evidence. No cross-replay VA merge, ordering, or reuse-distance claim.
