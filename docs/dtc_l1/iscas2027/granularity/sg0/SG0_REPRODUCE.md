@@ -7,7 +7,16 @@ python3 util/dtc_l1/validate_sg0_static.py \
   --core-repo /workspace/repos/gpgpu-sim_distribution
 ```
 
-The SG0.3 gate is intentionally fail-closed.  Supply the original dissertation
-Chapter 4 (with stable provenance) before attempting to classify its lower
-transaction granularity.  The local RTL audit is recorded separately and is
-not substituted for the unavailable primary document.
+The Chapter-4 primary source is pinned in `SG0_DISSERTATION_PROVENANCE.tsv`.
+Its direct-review anchors are machine-checked without inferring a transaction
+rule from the word “cacheline”:
+
+```sh
+python3 util/dtc_l1/validate_sg0_dissertation.py \
+  --pdf '/workspace/worktrees/accel-sim-decoupled-l2/docs/reference/赵皓宇 博士论文.pdf'
+```
+
+The direct result is that Chapter 4 specifies duplicate-miss behavior and a
+128-B cacheline context, but does **not** specify whole-line or sector lower
+transactions. The local RTL audit remains separate and is not used to fill
+that primary-source gap.
