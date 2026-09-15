@@ -8,6 +8,7 @@ import hashlib
 import json
 import re
 import struct
+import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
@@ -108,7 +109,7 @@ def classify(address: int, ranges: list[tuple[int, int, str]]) -> str:
     return matches[0] if len(matches) == 1 else "UNKNOWN_RUNTIME"
 
 
-def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expected_static_set_sha: str, expected_count: int, parser_commit: str, producer_commit: str) -> dict[str, Any]:
+def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expected_static_set_sha: str, expected_count: int, parser_commit: str, producer_commit: str, parser_argv: list[str] | None = None) -> dict[str, Any]:
     entry_path = root / "catalog" / "entries" / f"{run_id}.json"
     if not entry_path.is_file():
         raise WarpError("catalog entry absent")
@@ -164,6 +165,7 @@ def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expect
         "aggregate_order_label": "CROSS_SHARD_ORDER_PROHIBITED", "cross_shard_reuse_distance": "UNSUPPORTED", "global_hardware_order": "UNSUPPORTED"}
     feature = root / "derived" / "features" / run_id / "c16warp1_logical_fingerprint.json"; dump(feature, fingerprint)
     receipt = feature.parent / "C16WARP1_DERIVED_RECEIPT.json"; dump(receipt, {"source_run_id": run_id, "source_raw_manifest_sha256": expected_manifest_sha, "producer_commit": producer_commit, "parser_commit": parser_commit,
+        "parser_argv": parser_argv or [], "parser_config": {"container_mode": "SINGLE_CONTAINER_RUN", "decoder_format_spec": FORMAT_SPEC, "active_mask": "SET_BITS_ONLY_INACTIVE_LANES_NOT_EMITTED", "static_set_coverage": "EXACT_EXECUTED_OR_ZERO_EXECUTION_PROVEN", "aggregate_order_label": "CROSS_SHARD_ORDER_PROHIBITED"},
         "decoder_format_spec": FORMAT_SPEC, "decoder_source_sha256": sha256(Path(__file__)), "outputs": [{"path": str(path), "size_bytes": path.stat().st_size, "sha256": sha256(path)} for path in [parsed, feature]]})
     return {"fingerprint": fingerprint, "receipt": str(receipt), "parsed": str(parsed)}
 
@@ -171,7 +173,7 @@ def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expect
 def main() -> int:
     parser = argparse.ArgumentParser(); parser.add_argument("--root", type=Path, required=True); parser.add_argument("--run-id", required=True); parser.add_argument("--manifest-sha", required=True); parser.add_argument("--static-set-sha", required=True); parser.add_argument("--static-count", type=int, required=True); parser.add_argument("--parser-commit", required=True); parser.add_argument("--producer-commit", required=True)
     args = parser.parse_args()
-    try: print(json.dumps(ingest_container(args.root, args.run_id, args.manifest_sha, args.static_set_sha, args.static_count, args.parser_commit, args.producer_commit), sort_keys=True))
+    try: print(json.dumps(ingest_container(args.root, args.run_id, args.manifest_sha, args.static_set_sha, args.static_count, args.parser_commit, args.producer_commit, sys.argv[1:]), sort_keys=True))
     except WarpError as error: parser.exit(2, f"C16WARP1 ingest failed closed: {error}\n")
     return 0
 
