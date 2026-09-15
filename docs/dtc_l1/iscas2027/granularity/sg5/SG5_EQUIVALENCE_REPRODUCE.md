@@ -1,8 +1,8 @@
 # SG5 runtime-equivalence receipts
 
-`SG5_EQUIVALENCE.tsv` is a compact index to twelve immutable, natural-exit
-attempts under `/workspace/wave-a-sg5-runs`. It records six accepted SG5.3
-pairs: B16-S NN/Btree, TC80-S NN, IO NN, and OO NN/Btree. The TC80-S
+`SG5_EQUIVALENCE.tsv` is a compact index to fourteen immutable, natural-exit
+attempts under `/workspace/wave-a-sg5-runs`. It records seven accepted SG5.3
+pairs: B16-S NN/Btree, TC80-S NN, IO NN/Btree, and OO NN/Btree. The TC80-S
 receipt binds the ordered `FAST64_BASE.config` plus frozen
 `TC80_CAPACITY_MATCHED_OVERLAY.config` chain as one SHA-256 identity.
 
@@ -32,7 +32,6 @@ python3 util/dtc_l1/sg5_equivalence.py validate \
   --on-dir /workspace/wave-a-sg5-runs/sg5_equivalence_B16-S_Btree_ON_0f9fc7ec-5be0-41ee-b594-9c0e23a07e23
 ```
 
-The six listed rows do **not** prove SG5.3 for every supported mode, and do
-not authorize SG5.4. TC80-S Btree and IO Btree are still active; NORMAL modes
-remain gated on SG1 identities. No G6 observer row is represented by this
-file.
+The seven listed rows do **not** prove SG5.3 for every supported mode, and do
+not authorize SG5.4. TC80-S Btree is still active; NORMAL modes remain gated
+on SG1 identities. No G6 observer row is represented by this file.
