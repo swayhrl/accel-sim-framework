@@ -1,0 +1,9 @@
+item	value	status	evidence
+affected_path	B16-N and TC80-N conventional NORMAL-cache MSHR-merge path	SOURCE_AUDITED	baseline_cache::send_read_request in src/gpgpu-sim/gpu-cache.cc
+pre_repair_core	b838fb6f58a90c6519b65bfaf4c680a3fbf83753	SOURCE_AUDITED	Dedicated SG1 Core contains NORMAL fragmented-fill, lazy-fetch same-Tag, and deferred-invalidation repairs but not the MSHR merge pre-probe.
+required_existing_fix	6587238c60214d99491f4048e28ce8a3458c1509	SOURCE_AUDITED	Frozen 2DConvolution conventional-MSHR path identifies this commit as the tag-identity-across-MSHR-merge repair; its source delta probes before tag-array mutation and returns when the root Tag is absent.
+ancestry_relation	both descendants of 95ccdb7a056f2d53f740d90869785cac6d4ee0f5; neither is ancestor of the other	SOURCE_AUDITED	git merge-base and --is-ancestor checks in the isolated SG1 Core worktree
+repair_scope	apply the existing 6587238c 12-line baseline_cache MSHR merge pre-probe onto the dedicated SG1 NORMAL Core	MINIMAL_SOURCE_CORRECT	No cache geometry, policy, trace, observer, DTC IO/OO behavior, or frozen evidence is changed.
+sg1_core_commit	cac1ea8e7020ffcd739fc800f7d7107d216a8bb6	COMMITTED_AND_PUSHED	Dedicated branch hrl/iscas2027-dtc-sg1-wholeline-core-v0; one file changed: src/gpgpu-sim/gpu-cache.cc.
+runtime_status	BUILD_IN_PROGRESS	NOT_YET_RUN	A separate /tmp build directory is used; the active B16-N/TC80-N GESUMMV/ATAX attempts retain their immutable b838 runtime identity.
+acceptance_boundary	No row using cac1ea8e is accepted until a fresh immutable UUID naturally exits and SG1 strict validation passes.	REQUIRED	SG1_NORMAL_IMMUTABLE_ATTEMPT_V1
