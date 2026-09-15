@@ -1,0 +1,1 @@
+LDGSTS special global-to-shared paths are statically present but current direct-MREF tool cannot address-capture them; all accepted evidence is direct-GLOBAL-MREF scope only. AWQ source unavailable; raw7B true-capacity deferred.
