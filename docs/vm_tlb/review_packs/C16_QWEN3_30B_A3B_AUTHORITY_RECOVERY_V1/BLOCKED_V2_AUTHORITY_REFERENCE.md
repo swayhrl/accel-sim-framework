@@ -1,0 +1,1 @@
+Blocked V2 authority evidence: branch `hrl/c16-qwen3-30b-asset-archive-exec-v2`, commit `6c98e6f70c7eb6240c90e49cf84875e56b9aaa9f`. The frozen 16 shard hashes were re-used and independently rehashed during this final archive verification.
