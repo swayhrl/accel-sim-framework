@@ -1,0 +1,14 @@
+test	result	evidence
+selected-layer dry-run exact byte accounting	PASS	raw7B dry-run reports dtype, shape, exact bytes, and total selected parameter bytes
+missing/duplicate/shape-dtype fail-close	PASS	helper unit tests plus metadata offset-byte validation
+no correctness-critical assert dependence	PASS	asset helper source uses explicit InventoryError/RuntimeError fail-closed paths
+deterministic layer/expert byte accounting	PASS	metadata-only generator deterministic ordering
+Qwen3/DeepSeek historical-status preservation	PASS	both remain NO_HISTORICAL_FROZEN_BINDING in two-axis index
+accepted 21 Qwen2.5 bindings unchanged	PASS	no Qwen2.5 binding files were edited or regenerated
+Llama adopted S0 authority unchanged	PASS	recorded as UNCHANGED_ACCEPTED_AUTHORITY only
+source text gap fails closed	PASS	no reverse decoding or replacement source/token payload generation
+prospective binding generation gate	PASS	not entered because common source authority/policy is absent
+no network tokenizer/model access	PASS	no transformers/tokenizer import or network operation in V7 generator
+AutoAWQ nested C++ inventory	PASS	required exllama/exllamav2 nested C++ files present
+AutoAWQ HEAD/tree/clean evidence	PASS	HEAD, HEAD^{tree}, and clean worktree recorded
+repeated compact outputs deterministic	PASS	repeated generation preserves byte-identical core outputs

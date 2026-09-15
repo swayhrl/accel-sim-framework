@@ -79,11 +79,19 @@ def select_layer(model_dir,layer_id,validate_headers=True):
  headers={};result=[]
  for name in names:
   shard=mapping[name]
-  if validate_headers:
-   if shard not in headers:headers[shard]=safetensors_header(model_dir/shard)
-   if name not in headers[shard]:raise InventoryError(f"mapped tensor absent from selected shard header: {name}")
-  result.append({"tensor_name":name,"source_shard":shard})
- return {"decoder_layer_id":layer_id,"dry_run":True,"tensor_count":len(result),"source_shards":sorted(set(mapping[n] for n in names)),"tensors":result}
+  if shard not in headers:headers[shard]=safetensors_header(model_dir/shard)
+  meta=headers[shard].get(name)
+  if not isinstance(meta,dict):raise InventoryError(f"mapped tensor absent from selected shard header: {name}")
+  dtype,shape,offsets=meta.get("dtype"),meta.get("shape"),meta.get("data_offsets")
+  if dtype not in DTYPE_BYTES or not isinstance(shape,list) or not isinstance(offsets,list) or len(offsets)!=2:raise InventoryError(f"malformed selected tensor metadata: {name}")
+  exact_bytes=offsets[1]-offsets[0]
+  numel=1
+  for dim in shape:
+   if not isinstance(dim,int) or dim<0:raise InventoryError(f"invalid selected tensor shape: {name}")
+   numel*=dim
+  if exact_bytes<0 or exact_bytes!=numel*DTYPE_BYTES[dtype]:raise InventoryError(f"selected tensor dtype/shape/offset mismatch: {name}")
+  result.append({"tensor_name":name,"source_shard":shard,"dtype":dtype,"shape":"x".join(map(str,shape)),"exact_tensor_bytes":exact_bytes})
+ return {"decoder_layer_id":layer_id,"dry_run":True,"tensor_count":len(result),"source_shards":sorted(set(mapping[n] for n in names)),"total_selected_parameter_bytes":sum(t["exact_tensor_bytes"] for t in result),"tensors":result}
 class HeaderTests(unittest.TestCase):
  def test_header_deterministic(self):
   with tempfile.TemporaryDirectory() as d:
