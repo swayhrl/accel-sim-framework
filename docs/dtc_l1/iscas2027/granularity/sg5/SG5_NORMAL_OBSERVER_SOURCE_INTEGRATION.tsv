@@ -1,0 +1,10 @@
+item	value	status	evidence
+scope	B16-N and TC80-N SG5.3 OFF/ON equivalence prerequisite	SOURCE_AUDITED	The original SG5 observer Core fa9a6bdb descends directly from 95ccdb7a and lacks the dedicated NORMAL-cache correctness repairs required by SG1.
+observer_base	fa9a6bdbe774fb2b3ff6faf9ab0c688c2da9e1e5	PRESERVED	Default-off observer implementation and its fixture are unchanged.
+normal_repair_series	6ea5b7824d8d53709777699864456084def81f2c;d772de2d31ccc1b0c7f9a7954034fda116ae64d1;b838fb6f58a90c6519b65bfaf4c680a3fbf83753;cac1ea8e7020ffcd739fc800f7d7107d216a8bb6	SOURCE_CORRECT	Existing SG1 source-correct repairs: fragmented NORMAL fill reconciliation, L1-only scope, lazy-fetch same-Tag handling, and MSHR merge Tag identity.
+integrated_observer_core	397cc9799cb3ead9aafeef656aac600a792f2d79	COMMITTED_AND_PUSHED	Dedicated branch hrl/iscas2027-dtc-sg5-lower-traffic-v0; cherry-picks apply cleanly and alter only gpu-cache.cc/gpu-cache.h through the existing repair series.
+observer_source_validator	PASS	PASS	python3 util/dtc_l1/validate_sg5_implementation.py --observer-core /workspace/worktrees/gpgpu-sim-iscas2027-sg5-observer
+directed_lower_traffic_fixture	PASS	PASS	ctest lower-traffic observer fixture passed after integration: sector32=1/32B, normal128=1/128B, DTC IO=1/128B, pending=0, duplicate=+1/+128B, and terminal completion closure.
+full_directed_suite	4_of_4_PASS	PASS	dtc_l1_m1_common_test; dtc_l1_bad_generation_test; dtc_l1_completion_accounting_test; dtc_l1_lower_traffic_observer_test.
+runtime_status	/tmp/dtc-sg5-observer-normal397-r3/accel-sim.out	BUILD_IN_PROGRESS_NOT_RUN	Fresh isolated trace-enabled CMake build; no trace-driven simulator row has been launched by this integration.
+acceptance_boundary	No B16-N/TC80-N observer row is accepted until both fresh immutable OFF/ON UUIDs naturally exit and SG5 strict equivalence validation passes.	REQUIRED	Observer rows remain diagnostic and cannot replace SG1 primary performance rows.
