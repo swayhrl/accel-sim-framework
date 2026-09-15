@@ -376,8 +376,10 @@ def emit_cm4(args: argparse.Namespace) -> None:
     comparison_path = out_dir / "CM4_CAPACITY_MATCHED_COMPARISON.tsv"
     plot_path = out_dir / "CM4_PAPER_PLOT_READY.tsv"
     tsv_write(comparison_path, list(comparison[0]), comparison)
-    plot_rows = [row for row in comparison if not row["workload"].startswith("GM_")]
-    tsv_write(plot_path, ["workload", "tc80_over_b16", "io_over_b16", "oo_over_b16", "io_over_tc80", "oo_over_tc80"], plot_rows)
+    plot_fields = ["workload", "tc80_over_b16", "io_over_b16", "oo_over_b16", "io_over_tc80", "oo_over_tc80"]
+    plot_rows = [{field: row[field] for field in plot_fields} for row in comparison
+                 if not row["workload"].startswith("GM_")]
+    tsv_write(plot_path, plot_fields, plot_rows)
     analysis_path = out_dir / "CM4_CAPACITY_MATCHED_ANALYSIS.md"
     write_text(analysis_path, "# TC80 capacity-matched fairness analysis\n\n"
                "All ratios are regenerated from the exact 12 integer-cycle rows in CM3; displayed values are rounded only after the calculation. "
