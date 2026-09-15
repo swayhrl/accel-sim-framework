@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
+import hashlib
+import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from c16_warp_container import HEADER, MAGIC, RECORD, WarpError, decode_c16warp1, static_access_kind, validated_static_width_bytes
+from c16_warp_container import HEADER, MAGIC, RECORD, WarpError, decode_c16warp1, ingest_container, sha256, static_access_kind, validated_static_width_bytes
 
 
 class C16WarpTests(unittest.TestCase):
@@ -86,6 +88,44 @@ class C16WarpTests(unittest.TestCase):
         self.assertEqual(validated_static_width_bytes(exact), 16)
         self.assertIsNone(validated_static_width_bytes(mismatch))
         self.assertIsNone(validated_static_width_bytes(bare))
+
+    def test_generic_ingest_keeps_replay_union_diagnostic_and_object_join_disabled(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); run_id = "C16R_generic"; raw = root / "raw" / run_id; shards_dir = raw / "raw_shards"
+            shards_dir.mkdir(parents=True)
+            selected = [7, 8]; shard_rows = []
+            for index, address in [(7, 0x1000), (8, 0x2000)]:
+                payload = HEADER.pack(MAGIC, index, 0, 1, 0, 1) + RECORD.pack(index, 1, 0, 0, 0, 0, address, *([999] * 31))
+                binary = shards_dir / f"mref_{index}.bin"; binary.write_bytes(payload)
+                log = shards_dir / f"mref_{index}.stdout.log"; log.write_text(f"C16_WARP_TERMINAL static={index} occurrence=0 records=1 overflow=0\n", encoding="utf-8")
+                shard_rows.append({"static_index": index, "occurrence": 0, "records": 1, "overflow": 0, "file": binary.name, "bytes": binary.stat().st_size, "sha256": sha256(binary)})
+            logical = {"schema_version": "C16_V2_MREF_SHARDED_COMPLETE_SET_V1", "static_global_mref_set": selected, "shards": shard_rows}
+            (raw / "WARP_SHARD_MANIFEST.json").write_text(json.dumps(logical), encoding="utf-8")
+            static_header = "nvbit_static_index\topcode\tis_load\tis_store\thas_mref\tsass\tmemory_space\n"
+            static_rows = "7\tSTG.E\t0\t1\t1\tSTG.E [R2], R0 ;\tGLOBAL\n8\tSTG.E\t0\t1\t1\tSTG.E [R2], R0 ;\tGLOBAL\n"
+            (raw / "STATIC_MREF_MAP.tsv").write_text(static_header + static_rows, encoding="utf-8")
+            # Deliberately matching container-level ranges must not be used for
+            # per-replay attribution without same-process context evidence.
+            (raw / "OBJECT_MAP.json").write_text(json.dumps({"ranges": [{"address_start_hex": "0x1000", "address_end_hex": "0x3000", "class": "WEIGHT"}]}), encoding="utf-8")
+            artifacts = []
+            for path in sorted(raw.rglob("*")):
+                if path.is_file():
+                    artifacts.append({"relative_path": str(path.relative_to(raw)), "size_bytes": path.stat().st_size, "sha256": sha256(path)})
+            manifest = raw / "RUN_MANIFEST.json"; manifest.write_text(json.dumps({"artifacts": artifacts}), encoding="utf-8")
+            manifest_sha = sha256(manifest); entries = root / "catalog" / "entries"; entries.mkdir(parents=True)
+            (entries / f"{run_id}.json").write_text(json.dumps({"raw_path": str(raw), "raw_manifest_sha256": manifest_sha}), encoding="utf-8")
+            static_sha = hashlib.sha256(json.dumps(selected, separators=(",", ":")).encode()).hexdigest()
+            result = ingest_container(root, run_id, manifest_sha, static_sha, 2, "parser", "producer", ["test"])
+            fingerprint = result["fingerprint"]
+            self.assertEqual(fingerprint["absolute_va_aggregate_semantics"], "REPLAY_UNION_DIAGNOSTIC")
+            self.assertEqual(fingerprint["cross_shard_object_union"], "UNSUPPORTED")
+            self.assertEqual(fingerprint["object_attribution"], {"UNKNOWN_RUNTIME": 2})
+            receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
+            self.assertIn("created_at_utc", receipt)
+            self.assertEqual(receipt["parser_config"]["cross_shard_absolute_va"], "REPLAY_UNION_DIAGNOSTIC")
+            for item in receipt["outputs"]:
+                path = Path(item["path"])
+                self.assertEqual((path.stat().st_size, sha256(path)), (item["size_bytes"], item["sha256"]))
 
 
 if __name__ == "__main__": unittest.main()

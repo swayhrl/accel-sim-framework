@@ -10,6 +10,7 @@ import re
 import struct
 import sys
 from collections import Counter, defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +38,10 @@ def sha256(path: Path) -> str:
 def dump(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def verify_container(raw_dir: Path, expected_manifest_sha: str) -> dict[str, Any]:
@@ -168,7 +173,7 @@ def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expect
     computed_static_set_sha = hashlib.sha256(json.dumps(selected, separators=(",", ":")).encode("utf-8")).hexdigest()
     if computed_static_set_sha != expected_static_set_sha:
         raise WarpError("frozen static MREF-set SHA mismatch")
-    maps = static_map(raw_dir / "STATIC_MREF_MAP.tsv", set(selected)); ranges = object_ranges(raw_dir / "OBJECT_MAP.json")
+    maps = static_map(raw_dir / "STATIC_MREF_MAP.tsv", set(selected))
     executed, zero, per_shard, all_events = set(), set(), [], []
     for shard in sorted(shards, key=lambda item: item["static_index"]):
         index, occurrence, count, overflow = shard["static_index"], shard["occurrence"], shard["records"], shard["overflow"]
@@ -185,7 +190,10 @@ def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expect
         else:
             executed.add(index); status = "EXECUTED_SHARD"; all_events.extend(events)
         for event in events:
-            event["object_class"] = classify(event["address"], ranges)
+            # A generic V2 container has only a container-level object map and
+            # no proof that it was captured in each MREF replay process.  Do
+            # not join replay-local absolute VAs to that map.
+            event["object_class"] = "UNKNOWN_RUNTIME"
             event["access_kind"] = static_access_kind(maps[index])
             event["opcode"] = maps[index]["opcode"]
             event["width_bytes"] = validated_static_width_bytes(maps[index])
@@ -201,11 +209,11 @@ def ingest_container(root: Path, run_id: str, expected_manifest_sha: str, expect
     fingerprint = {"source_run_id": run_id, "source_raw_manifest_sha256": expected_manifest_sha, "static_mref_set_sha256": expected_static_set_sha, "computed_static_mref_set_sha256": computed_static_set_sha, "frozen_static_mref_count": expected_count,
         "executed_shards": len(executed), "zero_execution_proven_shards": len(zero), "total_warp_records": sum(item["records_written"] for item in per_shard), "overflow_total": sum(item["overflow"] for item in per_shard),
         "active_lane_address_events": len(all_events), "unique_exact_va": len(addresses), "unique_4k_pages": len(pages4k), "unique_64k_pages": len(pages64k), "unique_2m_pages": len(pages2m), "unique_128b_lines": len(lines),
-        "access_counts": dict(access), "width_bytes_status": "STATIC_SASS_VALIDATED_WHERE_EXPLICIT_ELSE_UNKNOWN", "object_attribution": dict(objects), "per_mref": per_shard,
-        "aggregate_order_label": "CROSS_SHARD_ORDER_PROHIBITED", "cross_shard_reuse_distance": "UNSUPPORTED", "global_hardware_order": "UNSUPPORTED"}
+        "access_counts": dict(access), "width_bytes_status": "STATIC_SASS_VALIDATED_WHERE_EXPLICIT_ELSE_UNKNOWN", "object_attribution": dict(objects), "object_attribution_status": "UNKNOWN_RUNTIME_ONLY_NO_PER_SHARD_SAME_PROCESS_CONTEXT", "cross_shard_object_union": "UNSUPPORTED", "per_mref": per_shard,
+        "absolute_va_aggregate_semantics": "REPLAY_UNION_DIAGNOSTIC", "physical_whole_launch_footprint": "UNSUPPORTED_NO_SHARED_ADDRESS_SPACE_PROOF", "aggregate_order_label": "CROSS_SHARD_ORDER_PROHIBITED", "cross_shard_reuse_distance": "UNSUPPORTED", "global_hardware_order": "UNSUPPORTED"}
     feature = root / "derived" / "features" / run_id / "c16warp1_logical_fingerprint.json"; dump(feature, fingerprint)
     receipt = feature.parent / "C16WARP1_DERIVED_RECEIPT.json"; dump(receipt, {"source_run_id": run_id, "source_raw_manifest_sha256": expected_manifest_sha, "producer_commit": producer_commit, "parser_commit": parser_commit,
-        "parser_argv": parser_argv or [], "parser_config": {"container_mode": "SINGLE_CONTAINER_RUN", "decoder_format_spec": FORMAT_SPEC, "active_mask": "SET_BITS_ONLY_INACTIVE_LANES_NOT_EMITTED", "static_set_coverage": "EXACT_EXECUTED_OR_ZERO_EXECUTION_PROVEN", "aggregate_order_label": "CROSS_SHARD_ORDER_PROHIBITED"},
+        "parser_argv": parser_argv or [], "parser_config": {"container_mode": "SINGLE_CONTAINER_RUN", "decoder_format_spec": FORMAT_SPEC, "active_mask": "SET_BITS_ONLY_INACTIVE_LANES_NOT_EMITTED", "static_set_coverage": "EXACT_EXECUTED_OR_ZERO_EXECUTION_PROVEN", "cross_shard_absolute_va": "REPLAY_UNION_DIAGNOSTIC", "cross_shard_object_union": "UNSUPPORTED", "aggregate_order_label": "CROSS_SHARD_ORDER_PROHIBITED"}, "created_at_utc": utc_now(),
         "decoder_format_spec": FORMAT_SPEC, "decoder_source_sha256": sha256(Path(__file__)), "outputs": [{"path": str(path), "size_bytes": path.stat().st_size, "sha256": sha256(path)} for path in [parsed, feature]]})
     return {"fingerprint": fingerprint, "receipt": str(receipt), "parsed": str(parsed)}
 

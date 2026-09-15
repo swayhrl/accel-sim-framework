@@ -91,6 +91,11 @@ class C16AnalysisTests(unittest.TestCase):
             self.assertEqual(result["lane_events"], 1)
             self.assertTrue((root / "derived" / "PARSE_INDEX.tsv").is_file())
             self.assertTrue((root / "derived" / "FEATURE_INDEX.tsv").is_file())
+            receipt = json.loads((root / "derived" / "features" / run_id / "DERIVED_RECEIPT.json").read_text(encoding="utf-8"))
+            self.assertIn("parser_config", receipt)
+            for item in receipt["outputs"]:
+                path = Path(item["path"])
+                self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), item["sha256"])
 
     def test_cta_shard_union_and_order_prohibition(self):
         with tempfile.TemporaryDirectory() as directory:

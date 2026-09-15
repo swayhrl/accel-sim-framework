@@ -17,6 +17,7 @@ import shutil
 import sys
 import tempfile
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -56,6 +57,10 @@ def tsv(path: Path, fields: list[str], rows: list[dict[str, Any]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=fields, delimiter="\t", lineterminator="\n", extrasaction="raise")
         writer.writeheader()
         writer.writerows(rows)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def load_accepted() -> dict[str, dict[str, str]]:
@@ -279,7 +284,8 @@ def run(output: Path, parser_commit: str) -> None:
     accepted_rows = [{"target": target, "run_id": TARGETS[target], "accepted_run_manifest_sha256": accepted[target]["catalog_raw_manifest_sha256"], "accepted_static_set_sha256": accepted[target]["static_set_sha256"], "accepted_static_count": accepted[target]["static_count"], "rehash_result": "PASS", "raw_static_map_sha256": result[target]["static_map_sha"]} for target in TARGETS]
     tsv(output / "ACCEPTED_INPUTS.tsv", list(accepted_rows[0]), accepted_rows)
     source = Path(__file__).resolve()
-    receipt = {"schema_version": 1, "mode": "CPU_ONLY", "raw_mutation": False, "accepted_ingest_review_pack": str(ACCEPTED_PACK), "accepted_producer_commit": "fd2cb24a73d5bb0d5bfadde19438db9ebc2552df", "parser_commit": parser_commit, "parser_source": str(source), "parser_source_sha256": source_sha(source), "c16warp_container_source_sha256": source_sha(source.parent / "c16_warp_container.py"), "raw_root": str(RAW_ROOT), "raw_run_manifest_closure": "PASS", "c16warp1_decoder_integrity": "PASS", "mref_executed_zero_closure": "PASS_170_STATIC_ROWS", "rtx3090_q2_exact_regression": "PASS", "outputs": ["ACCESS_KIND_AUDIT.tsv", "WIDTH_AUDIT.tsv", "ADDRESS_SPACE_AUDIT.tsv", "PER_SHARD_FINGERPRINT.tsv", "AGGREGATE_SEMANTICS.tsv", "OBJECT_ATTRIBUTION_AUDIT.tsv", "REGRESSION_RESULTS.tsv"]}
+    output_names = ["ACCESS_KIND_AUDIT.tsv", "WIDTH_AUDIT.tsv", "ADDRESS_SPACE_AUDIT.tsv", "PER_SHARD_FINGERPRINT.tsv", "AGGREGATE_SEMANTICS.tsv", "OBJECT_ATTRIBUTION_AUDIT.tsv", "REGRESSION_RESULTS.tsv"]
+    receipt = {"schema_version": 1, "created_at_utc": utc_now(), "mode": "CPU_ONLY", "raw_mutation": False, "accepted_ingest_review_pack": str(ACCEPTED_PACK), "accepted_producer_commit": "fd2cb24a73d5bb0d5bfadde19438db9ebc2552df", "parser_commit": parser_commit, "parser_cli": sys.argv, "parser_config": {"access_kind": "STATIC_ROW_ONLY", "width": "VALIDATED_EXPLICIT_SASS_ONLY", "cross_replay_va": "REPLAY_UNION_DIAGNOSTIC", "object_join": "DISABLED_NO_PER_SHARD_SAME_PROCESS_CONTEXT"}, "parser_source": str(source), "parser_source_sha256": source_sha(source), "c16warp_container_source_sha256": source_sha(source.parent / "c16_warp_container.py"), "raw_root": str(RAW_ROOT), "raw_run_manifest_closure": "PASS", "c16warp1_decoder_integrity": "PASS", "mref_executed_zero_closure": "PASS_170_STATIC_ROWS", "rtx3090_q2_exact_regression": "PASS", "outputs": [{"path": str((output / name).resolve()), "size_bytes": (output / name).stat().st_size, "sha256": sha256(output / name)} for name in output_names]}
     (output / "DERIVED_RECEIPT.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     decision = {"schema_version": 1, "decision": "C16_V2_ANALYSIS_HARDENING_PASS", "accepted_transport_and_closure_evidence": "PRESERVED", "access_kind_audit": "PASS_STATIC_EXACT_JOIN", "width_audit": "PASS_EXPLICIT_STATIC_SASS_ONLY_UNKNOWN_PRESERVED", "address_space_audit": "PASS_SEPARATE_REPLAY_ADDRESS_SPACE", "object_attribution": "PASS_UNKNOWN_RUNTIME_RETAINED", "cross_shard_absolute_va": "REPLAY_UNION_DIAGNOSTIC_NOT_PHYSICAL_WHOLE_LAUNCH", "unsupported_claims": ["CROSS_SHARD_ORDER", "CROSS_SHARD_REUSE_DISTANCE", "GLOBAL_HARDWARE_ORDER", "CROSS_SHARD_OBJECT_UNION", "PHYSICAL_WHOLE_LAUNCH_ABSOLUTE_VA_FOOTPRINT"], "raw_mutation": False, "gpu_workload": "NOT_RUN"}
     (output / "FINAL_DECISION.json").write_text(json.dumps(decision, indent=2, sort_keys=True) + "\n", encoding="utf-8")

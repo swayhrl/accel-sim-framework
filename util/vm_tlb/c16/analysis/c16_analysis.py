@@ -189,7 +189,7 @@ def parse_route_b(source: Path, source_id: str, parsed_path: Path) -> dict[str, 
     return fingerprint(records())
 
 
-def write_receipt(source_id: str, source: Path, outputs: list[Path], receipt_path: Path, parser_commit: str, argv: list[str]) -> None:
+def write_receipt(source_id: str, source: Path, outputs: list[Path], receipt_path: Path, parser_commit: str, argv: list[str], parser_config: dict[str, Any] | None = None) -> None:
     dump_json(receipt_path, {
         "schema_version": SCHEMA,
         "source_id": source_id,
@@ -197,6 +197,7 @@ def write_receipt(source_id: str, source: Path, outputs: list[Path], receipt_pat
         "source_sha256": sha256(source),
         "parser_git_commit": parser_commit,
         "parser_argv": argv,
+        "parser_config": parser_config or {"raw_schema": "C16_ROUTE_B_LANE_EVENT_V1", "record_kind": "LANE_EVENT", "terminal_required_when_present": "COMPLETE_ZERO_OVERFLOW_ZERO_DROP"},
         "created_at_utc": utc_now(),
         "outputs": [{"path": str(p), "size_bytes": p.stat().st_size, "sha256": sha256(p)} for p in outputs],
     })
@@ -413,7 +414,7 @@ def analyze_logical_target(root: Path, logical_manifest_path: Path, parser_commi
     receipt_path = output_dir / "LOGICAL_TARGET_RECEIPT.json"
     dump_json(receipt_path, {"schema_version": SCHEMA, "logical_target_id": logical_id, "formal_evidence_class": evidence_class,
         "source_logical_manifest_path": str(logical_manifest_path), "source_logical_manifest_sha256": sha256(logical_manifest_path),
-        "parser_git_commit": parser_commit, "parser_argv": argv, "created_at_utc": utc_now(),
+        "parser_git_commit": parser_commit, "parser_argv": argv, "parser_config": {"formal_evidence_class": evidence_class, "merge_semantics": aggregate["merge_semantics"], "cross_shard_order": "PROHIBITED"}, "created_at_utc": utc_now(),
         "merge_semantics": aggregate["merge_semantics"], "unsupported_claims": ["CROSS_SHARD_ORDER", "CROSS_SHARD_REUSE_DISTANCE", "GLOBAL_HARDWARE_ORDER"],
         "outputs": [{"path": str(path), "size_bytes": path.stat().st_size, "sha256": sha256(path)} for path in [aggregate_path, child_index_path]]})
     rebuild_indexes(root)
