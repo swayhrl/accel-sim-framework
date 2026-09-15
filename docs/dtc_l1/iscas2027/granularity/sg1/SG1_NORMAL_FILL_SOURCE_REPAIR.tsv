@@ -4,6 +4,9 @@ failure_signature	baseline_cache::fill m_extra_mf_fields owner assertion	SOURCE_
 root_cause	NORMAL 128-B lower request is returned as L2 sector fragments while the prior fill path reconciled original owner only for SECTOR_ASSOC	SOURCE_PROVEN	gpu-cache.h extra_mf_fields comment; gpu-cache.cc fill source
 repair_scope	fragment reconciliation when and only when get_original_mf is non-null; preserve direct unsplit fill path	MINIMAL	gpgpu-sim core commit 6ea5b7824d8d53709777699864456084def81f2c
 repaired_runtime	/tmp/dtc-sg1-normal-fill-6ea5b782-r2/accel-sim.out; sha256=3ae2650d8361798cd81c38be75a67e9c47969c7415ca5d7af70cc208af99f797; bytes=4576688	BUILD_PASS	CMake Release trace build with GPGPUSIM_ROOT dedicated SG1 Core; cmake --build --target accel-sim.out --parallel 2
+first_repair_result	B16-N/NN and TC80-N/NN retries 5709531d-f729-4a12-a1a8-a62cefaf171b and 32319d82-8987-4c93-9c6f-42e0a2f5f670 failed at L2 baseline_cache::fill owner lookup	PRESERVED_FAILED	L2 original_mf points to an L1 owner and must not be looked up in the L2 map
+final_repair_scope	apply split-response reconciliation only for m_level == L1_GPU_CACHE	MINIMAL	d772de2d31ccc1b0c7f9a7954034fda116ae64d1
+final_repaired_runtime	/tmp/dtc-sg1-normal-fill-6ea5b782-r2/accel-sim.out; sha256=600a8671be93b9da384d9997f5ce40398ae895573ba192666a2a5d482a94c9e2	BUILD_PASS	incremental CMake Release trace build after d772de2d
 request_granularity	unchanged: NORMAL lower atom remains 128 B; S remains 32 B	SOURCE_PROVEN	cache_config get_atom_sz; no config change
 frozen_inputs	trace lists, traces, FAST64 configs, accepted B16-S/IO/OO evidence	UNCHANGED	SG1 runner identity preflight
 acceptance_boundary	no failed Pair 1 row is accepted; retry requires new UUID, repaired runtime SHA, natural exit, and strict validation	REQUIRED	SG1_NORMAL_IMMUTABLE_ATTEMPT_V1
