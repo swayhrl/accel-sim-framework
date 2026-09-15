@@ -1,0 +1,11 @@
+failure_id	stage	symptom	root_cause	evidence_that_exposed_it	incorrect_shortcut_to_forbid	reusable_detection_gate	bounded_fix_or_fallback	stop_condition	generalizable_to_next_lineage
+FM01	FORMAL_ADMISSION_ACK	catalog .partial collision	concurrent admission	V5 recovery	parallel admission	global admission lock=1	serial verify/admit/ACK	BLOCKED ACK
+FM02	INPUT_AUTHORITY	hash ambiguity	file vs canonical token hash	V8 pair input	interchange hashes	record both semantics	canonicalize documented serialization	BLOCKED input	YES
+FM03	SEMANTIC_TARGET_SELECTION	function target ambiguous	launch order	V8/V9	infer module by order	NVTX wrapper+signature gate	one fallback then BLOCKED	BLOCKED semantic	YES
+FM04	REPLAY_EQUIVALENCE	output alone insufficient	kernel signature missing	V9/V10	formalize after output only	in-context/replay signature gate	BLOCKED after two methods	BLOCKED signature	YES
+FM05	FRESH_STATIC_PATH_AUDIT	stale static counts	kernel implementation changed	V10	reuse old SASS set	fresh exact static map	invalidate/downstream re-audit	BLOCKED audit	YES
+FM06	FRESH_STATIC_PATH_AUDIT	LDGSTS conflation	shared dest vs global source	V5	treat LDGSTS as direct	operand-1 source audit; LDGDEPBAR control	BLOCKED path	BLOCKED path	YES
+FM07	FORMAL_CAPTURE	missing object attribution	cross-process VA	V3/V5	merge VAs	same-process context; UNKNOWN_RUNTIME	BLOCKED attribution	YES
+FM08	NCU_PROFILE	unit ambiguity	display scaling	V7-V10	label display values bytes	preserve value/unit	non-comparable NCU	YES
+FM09	SELECTIVE_STATE_CAPTURE	capacity pressure	full raw model residency	V8	offload/substitute	selective layer streaming	BLOCKED state	YES
+FM10	REVIEW_PACK_CLOSE	hardcoded validation	manual PASS rows	V10	static PASS file	execute comparator negative tests	FAIL test	YES

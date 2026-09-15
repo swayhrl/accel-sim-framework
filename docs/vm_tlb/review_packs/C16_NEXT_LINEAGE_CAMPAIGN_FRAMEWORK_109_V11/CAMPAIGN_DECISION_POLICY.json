@@ -1,0 +1,37 @@
+{
+  "formal_admission_concurrency": 1,
+  "rules": [
+    {
+      "if": "semantic binding unresolved after two methods",
+      "then": "BLOCKED"
+    },
+    {
+      "if": "replay mismatch or signature mismatch",
+      "then": "BLOCKED"
+    },
+    {
+      "if": "static path changes",
+      "then": "invalidate audit"
+    },
+    {
+      "if": "overflow/drop nonzero",
+      "then": "reject formal"
+    },
+    {
+      "if": "context absent",
+      "then": "UNKNOWN_RUNTIME"
+    },
+    {
+      "if": "ACK absent",
+      "then": "no next admission"
+    },
+    {
+      "if": "NCU unit unresolved",
+      "then": "retain display value"
+    },
+    {
+      "if": "model/input hash changes",
+      "then": "invalidate downstream"
+    }
+  ]
+}
