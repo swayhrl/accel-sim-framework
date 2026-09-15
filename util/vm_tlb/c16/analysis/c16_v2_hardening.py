@@ -195,7 +195,8 @@ def audit_target(target: str, run_id: str, accepted: dict[str, str]) -> dict[str
         executed += int(bool(record_count)); zero += int(not record_count)
         addresses = [int(event["address"]) for event in events]
         all_addresses.extend(addresses)
-        access_events[kind] += len(addresses)
+        if addresses:
+            access_events[kind] += len(addresses)
         starts = bucket_summary(addresses, None)
         exact = bucket_summary(addresses, width) if width is not None else {"unique_4k_pages": 0, "unique_128b_lines": 0}
         if width is None:
@@ -245,8 +246,8 @@ def run(output: Path, parser_commit: str) -> None:
     prior_access = load_prior_access_counts()
     result = {target: audit_target(target, run_id, accepted[target]) for target, run_id in TARGETS.items()}
     for target in TARGETS:
-        observed = json.loads(result[target]["aggregate"]["access_counts"])
-        prior = prior_access[target]
+        observed = {kind: count for kind, count in json.loads(result[target]["aggregate"]["access_counts"]).items() if count}
+        prior = {kind: count for kind, count in prior_access[target].items() if count}
         if observed != prior:
             raise HardeningError(f"static access join changes accepted access counts: {target}")
         result[target]["aggregate"]["accepted_prior_access_counts"] = json.dumps(prior, sort_keys=True)
