@@ -1,6 +1,6 @@
 lane	stage	status	accepted_commit	review_pack_sha256	notes
-SG0	bootstrap	RUNNING	NONE	NONE	Static source/dissertation/RTL audit may proceed; no simulator is required by contract.
-SG1	bootstrap	RUNNING	NONE	NONE	Config/resolved-diff audit may proceed; simulator launch is prohibited by the recorded host gates.
-SG4A	bootstrap	RUNNING	NONE	NONE	One-dimensional config and reusable-row audit may proceed; simulator launch is prohibited by the recorded host gates.
-SG5	bootstrap	RUNNING	NONE	NONE	Observer source design may proceed; build/fixture and simulator launch remain subject to host gates.
-HOST	new_simulator_launch	BLOCKED_REQUIRES_RESEARCHER_DECISION	NONE	NONE	This coordination record uses a non-lane scheduler state: swap is nonzero, memory available is below 35 percent, and filesystem headroom is constrained. Preserve all running attempts and do not launch Wave-A simulators.
+SG0	SG0.0-SG0.2	PASS	000901b2f13ea344fd3830fa9bbffe1fd9d9dae5	NONE	Core95 conventional/DTC source audit passed; SG0.3 is blocked solely because the original Chapter 4 primary document is unavailable.
+SG1	SG1.0	PASS	d3c52a4f61c0e0ca0443353237c9e0439bd94409	NONE	B16-N and TC80-N resolved configs prove only S-to-N changes; all smoke and campaign execution remains host-gated.
+SG4A	SG4A.0	PASS	6a069003992ca702fb53cefd5785c68547690971	NONE	32/64 frozen and new 80-KiB logical geometry prove only logical_sets changes; upstream per-row pending classification precludes silent reuse.
+SG5	SG5.0	PASS	d652270628603d35d9837321c00dbb89ade1c443	NONE	Observer event/byte semantics and OFF boundary are source-anchored; implementation/fixtures are host-gated.
+HOST	new_simulator_launch	BLOCKED_HOST_RESOURCE_GATE	NONE	NONE	2026-09-15T08:09:51Z: swap used 2,147,049,472 B, MemAvailable 93,752,160 KiB (23.7%), filesystem free 33,122,824,192 B and 100% use; preserve existing attempts and launch no Wave-A simulator.
