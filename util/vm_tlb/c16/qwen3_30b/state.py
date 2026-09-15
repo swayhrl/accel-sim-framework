@@ -14,7 +14,10 @@ def freeze(bundle, manifest, artifacts):
  os.rename(partial,bundle)
 def validate(bundle, revision, layer):
  m=json.loads((Path(bundle)/'manifest.json').read_text())
- if m['model_revision']!=revision or m['layer_id']!=layer: raise ValueError('identity mismatch')
+ required={'schema_version','model_id','model_revision','runtime_identity','input_binding_sha','scenario','phase','layer_id','source_semantic_run_receipt_sha','artifacts'}
+ if not required<=set(m) or m['model_revision']!=revision or m['layer_id']!=layer or m['phase'] not in ('PREFILL','DECODE'): raise ValueError('identity mismatch')
+ names=[a['name'] for a in m['artifacts']]
+ if len(names)!=len(set(names)) or any('/' in n or n.startswith('.') for n in names):raise ValueError('artifact names')
  for a in m['artifacts']:
   if digest(Path(bundle)/a['name'])!=a['sha256']:raise ValueError('sha mismatch')
  return m

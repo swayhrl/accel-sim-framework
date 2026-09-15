@@ -6,8 +6,6 @@ def sha(p):
   for b in iter(lambda:f.read(1<<20),b''):h.update(b)
  return h.hexdigest()
 def verify(source,dest):
- s=sorted(p for p in Path(source).rglob('*') if p.is_file());d=Path(dest)
- for p in s:
-  q=d/p.relative_to(source)
-  if not q.is_file() or p.stat().st_size!=q.stat().st_size or sha(p)!=sha(q):return False
- return True
+ s={p.relative_to(source):p for p in Path(source).rglob('*') if p.is_file()};d={p.relative_to(dest):p for p in Path(dest).rglob('*') if p.is_file()}
+ if set(s)!=set(d):return False
+ return all(p.stat().st_size==d[r].stat().st_size and sha(p)==sha(d[r]) for r,p in s.items())
