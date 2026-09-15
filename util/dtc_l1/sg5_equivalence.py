@@ -64,6 +64,7 @@ def run(args: argparse.Namespace) -> None:
     manifest = {"schema": "SG5_EQUIVALENCE_ATTEMPT_V1", "attempt_uuid": attempt,
                 "lane": "SG5", "stage": "SG5.3", "workload": args.workload,
                 "variant": args.variant, "observer": int(enabled), "launch_utc": stamp(),
+                "core_source_head": args.core_source_head,
                 "simulator": simulator, "simulator_sha256": digest(simulator),
                 # Keep the original single-config fields for existing evidence,
                 # and bind every ordered config when an overlay is required.
@@ -116,6 +117,28 @@ def validate(args: argparse.Namespace) -> None:
     identity = ("workload", "variant", "simulator_sha256", "trace_sha256", "trace_config_sha256")
     config_identity = om.get("config_chain_sha256", om.get("config_sha256")) == \
                       nm.get("config_chain_sha256", nm.get("config_sha256"))
+    normal = {
+        "B16-N": "N:32:128:4,L:T:m:L:L,A:512:8,16:0,32",
+        "TC80-N": "N:32:128:20,L:T:m:L:L,A:512:8,16:0,32",
+    }
+    normal_checks = {}
+    if args.normal_variant:
+        expected = normal[args.normal_variant]
+        for prefix, text in (("off", out_off), ("on", out_on)):
+            normal_checks[f"{prefix}_normal_dl1_echo"] = all(
+                re.search(rf"^-gpgpu_cache:{name}\\s+{re.escape(expected)}\\s+#", text, re.M)
+                for name in ("dl1", "dl1PrefL1", "dl1PrefShared"))
+            normal_checks[f"{prefix}_paper_base_mode"] = bool(
+                re.search(r"^-gpgpu_dtc_l1_mode\\s+1\\s+#", text, re.M)) and \
+                "DTC_L1_mode = PAPER_BASE" in text
+            normal_checks[f"{prefix}_pib_mshr_identity"] = bool(
+                re.search(r"^-gpgpu_dtc_l1_pib_entries\\s+8\\s+#", text, re.M)) and bool(
+                re.search(r"^-gpgpu_dtc_l1_mshr_entries\\s+32\\s+#", text, re.M))
+        if args.normal_variant == "TC80-N":
+            normal_checks["off_unified_capacity_echo"] = bool(
+                re.search(r"^-gpgpu_unified_l1d_size\\s+80\\s+#", out_off, re.M))
+            normal_checks["on_unified_capacity_echo"] = bool(
+                re.search(r"^-gpgpu_unified_l1d_size\\s+80\\s+#", out_on, re.M))
     checks = {"off_natural_exit": ot.get("simulator_exit_status") == "0",
               "on_natural_exit": nt.get("simulator_exit_status") == "0",
               "off_identity": om.get("observer") == "0", "on_identity": nm.get("observer") == "1",
@@ -125,6 +148,13 @@ def validate(args: argparse.Namespace) -> None:
               "metric_keyset": set(a) == set(b), "metric_values": a == b,
               "cycles_present": "gpu_tot_sim_cycle" in a,
               "instructions_present": "gpu_tot_sim_insn" in a}
+    if args.expected_core_source_head:
+        checks["core_source_identity"] = om.get("core_source_head") == args.expected_core_source_head and \
+                                         nm.get("core_source_head") == args.expected_core_source_head
+    if args.expected_config_chain_sha256:
+        checks["config_chain_identity"] = om.get("config_chain_sha256") == args.expected_config_chain_sha256 and \
+                                          nm.get("config_chain_sha256") == args.expected_config_chain_sha256
+    checks.update(normal_checks)
     result = {"schema": "SG5_EQUIVALENCE_VALIDATION_V1", "status": "PASS" if all(checks.values()) else "FAIL",
               "off_dir": str(off), "on_dir": str(on), "cycles": a.get("gpu_tot_sim_cycle"),
               "instructions": a.get("gpu_tot_sim_insn"), "checked_metric_count": len(a), "checks": checks,
@@ -141,6 +171,10 @@ p = subs.add_parser("run")
 for name in ("simulator", "config", "trace", "trace_config", "runs_root", "workload", "variant"):
     p.add_argument(f"--{name.replace('_', '-')}", required=True,
                    action="append" if name == "config" else None)
-p.add_argument("--observer", choices=("0", "1"), required=True); p.set_defaults(func=run)
-p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--output"); p.set_defaults(func=validate)
+p.add_argument("--observer", choices=("0", "1"), required=True)
+p.add_argument("--core-source-head", required=True)
+p.set_defaults(func=run)
+p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--output")
+p.add_argument("--expected-core-source-head"); p.add_argument("--expected-config-chain-sha256")
+p.add_argument("--normal-variant", choices=("B16-N", "TC80-N")); p.set_defaults(func=validate)
 args = parser.parse_args(); args.func(args)
