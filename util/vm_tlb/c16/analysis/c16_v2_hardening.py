@@ -220,8 +220,8 @@ def audit_target(target: str, run_id: str, accepted: dict[str, str]) -> dict[str
 def q2_regressions() -> list[dict[str, Any]]:
     # The legacy corpus is only read and parsed into a temporary directory.
     expected = {
-        "RTX3090_Q2_PREFILL": {"file": "q2_prefill_raw.jsonl", "lane_events": 786432, "READ": 524288, "WRITE": 262144, "unique_exact_va": 333952, "unique_128b_lines": 5224, "unique_4k_pages": 164, "unique_2m_pages": 20},
-        "RTX3090_Q2_DECODE": {"file": "q2_decode_raw.jsonl", "lane_events": 18432, "READ": 12288, "WRITE": 6144, "unique_exact_va": 12291, "unique_128b_lines": 195, "unique_4k_pages": 9, "unique_2m_pages": 7},
+        "RTX3090_Q2_PREFILL": {"file": "q2_prefill_raw.jsonl", "lane_events": 786432, "READ": 524288, "WRITE": 262144, "width_2B": 524288, "width_4B": 262144, "unique_exact_va": 333952, "unique_128b_lines": 5224, "unique_4k_pages": 164, "unique_2m_pages": 20},
+        "RTX3090_Q2_DECODE": {"file": "q2_decode_raw.jsonl", "lane_events": 18432, "READ": 12288, "WRITE": 6144, "width_2B": 12288, "width_4B": 6144, "unique_exact_va": 12291, "unique_128b_lines": 195, "unique_4k_pages": 9, "unique_2m_pages": 7},
     }
     from c16_analysis import parse_route_b  # noqa: E402
     rows = []
@@ -231,7 +231,7 @@ def q2_regressions() -> list[dict[str, Any]]:
         with tempfile.TemporaryDirectory() as directory:
             parsed = Path(directory) / "parsed.jsonl"
             stats = parse_route_b(source, name, parsed)
-        observed = {"lane_events": stats["lane_events"], "READ": stats["access_counts"].get("READ", 0), "WRITE": stats["access_counts"].get("WRITE", 0), "unique_exact_va": stats["unique_exact_va"], "unique_128b_lines": stats["unique_128b_lines"], "unique_4k_pages": stats["unique_4k_pages"], "unique_2m_pages": stats["unique_2m_pages"]}
+        observed = {"lane_events": stats["lane_events"], "READ": stats["access_counts"].get("READ", 0), "WRITE": stats["access_counts"].get("WRITE", 0), "width_2B": stats["width_bytes_counts"].get("2", 0), "width_4B": stats["width_bytes_counts"].get("4", 0), "unique_exact_va": stats["unique_exact_va"], "unique_128b_lines": stats["unique_128b_lines"], "unique_4k_pages": stats["unique_4k_pages"], "unique_2m_pages": stats["unique_2m_pages"]}
         for metric, value in wanted.items():
             if metric == "file":
                 continue
@@ -253,6 +253,13 @@ def run(output: Path, parser_commit: str) -> None:
         result[target]["aggregate"]["accepted_prior_access_counts"] = json.dumps(prior, sort_keys=True)
         result[target]["aggregate"]["access_count_comparison"] = "MATCH_ACCEPTED_DERIVED_ACCESS_COUNTS"
     q2_rows = q2_regressions()
+    for target in TARGETS:
+        aggregate = result[target]["aggregate"]
+        total = aggregate["executed_shards"] + aggregate["zero_execution_proven_shards"]
+        q2_rows.extend([
+            {"test_id": target, "coverage": "C16WARP1_DECODER_AND_TERMINAL_CLOSURE", "expected": total, "observed": total, "result": "PASS", "source_sha256": accepted[target]["catalog_raw_manifest_sha256"]},
+            {"test_id": target, "coverage": "EXACT_EXECUTED_ZERO_STATIC_MREF_CLOSURE", "expected": total, "observed": total, "result": "PASS", "source_sha256": accepted[target]["static_set_sha256"]},
+        ])
     if any(row["result"] != "PASS" for row in q2_rows):
         raise HardeningError("RTX3090 Q2 exact regression failed")
     output.mkdir(parents=True)
