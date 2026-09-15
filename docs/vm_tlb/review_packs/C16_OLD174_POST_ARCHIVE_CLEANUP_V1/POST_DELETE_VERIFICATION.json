@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "goal": "C16_OLD174_POST_ARCHIVE_CLEANUP_V1",
+  "accepted_archive_authority": {
+    "branch": "hrl/c16-old174-recovery-archive-to-164-v1",
+    "commit": "0012b7c7a44899d303a1bc7919eb8cd3566e083d",
+    "review_pack": "docs/vm_tlb/review_packs/C16_OLD174_RECOVERY_ARCHIVE_TO_164_V1"
+  },
+  "pre_delete_canonical_recheck": {
+    "result": "PASS",
+    "models": 6,
+    "checks": [
+      "six archived status rows are PASS",
+      "canonical directories readable",
+      "receipt SHA256 equals accepted review-pack value",
+      "no canonical .partial directory",
+      "current canonical payload set/size/SHA256 equals DESTINATION_INVENTORY.tsv",
+      "historical non-model snapshot intact"
+    ]
+  },
+  "authorized_deletion": {
+    "scope": "/root/share/c16_recovery_v3/models/<six listed revision directories only>",
+    "models_deleted": 6,
+    "bytes_freed": 72404849236,
+    "all_authorized_revision_directories_absent": true
+  },
+  "retained_old174_paths": {
+    "receipts": "EXISTS",
+    "inputs": "EXISTS",
+    "raw": "EXISTS",
+    "staging": "EXISTS",
+    "hf-cache": "EXISTS",
+    "transfer_109_receipts": "EXISTS",
+    "unknown_qwen3_30b_material": "OUT_OF_SCOPE_NOT_DELETED"
+  },
+  "post_delete_canonical_recheck": {
+    "result": "PASS",
+    "models": 6,
+    "method": "independent full current canonical payload set/size/SHA256 rehash against DESTINATION_INVENTORY.tsv plus receipt/path/.partial/snapshot checks"
+  },
+  "remaining_c16_recovery_v3_bytes_du_sb": 2414448587,
+  "node109": "read-only redundancy/provisioning observation; not deletion authority",
+  "final_status": "OLD174_MODEL_PAYLOAD_CLEANUP_PASS"
+}
