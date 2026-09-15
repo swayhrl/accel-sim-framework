@@ -1,0 +1,10 @@
+field	value	status	evidence
+observer_core_commit	afe978ea241dace3e2a762c2e3e64818bb9ca81e	PASS	git rev-parse in dedicated observer Core worktree
+framework_frontend_commit	18a68dcccd795f1b6cda75504e9450d00c9cee02	READ_ONLY	frozen FAST64 framework used only to supply CMake frontend and existing pybind11 dependency
+framework_frontend_path	/workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator	READ_ONLY	CMake -S source; no files modified
+observer_core_path	/workspace/worktrees/gpgpu-sim-iscas2027-sg5-observer	DEDICATED	GPGPUSIM_ROOT for build
+build_directory	/tmp/dtc-sg5-observer-build-afe978ea-r2	ISOLATED	new temporary build directory after the local SG5 framework checkout lacked pybind11
+build_command	ACCELSIM_CONFIG=release CUDA_INSTALL_PATH=/usr/local/cuda-11.8 GPGPUSIM_ROOT=/workspace/worktrees/gpgpu-sim-iscas2027-sg5-observer cmake -S /workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator -B /tmp/dtc-sg5-observer-build-afe978ea-r2 -DCMAKE_BUILD_TYPE=Release; cmake --build /tmp/dtc-sg5-observer-build-afe978ea-r2 --target accel-sim.out --parallel 2	PASS	CMake configure and target build exit 0
+runtime_path	/tmp/dtc-sg5-observer-build-afe978ea-r2/accel-sim.out	BUILD_PASS	no simulator launch
+runtime_sha256	2bfe6a7ab5b120fd1a681e26517e5119b64ac6230f6b8641661fcd661e4d8135	BUILD_PASS	sha256sum after link
+runtime_fixtures	0	NOT_RUN	TRICKLE policy permits fixtures after independent resource admission; observer G6 remains prohibited
