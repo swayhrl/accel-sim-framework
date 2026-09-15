@@ -1,0 +1,21 @@
+{
+  "schema": "C16_CAMPAIGN_BLOCKED_V1",
+  "stage": "INPUT_AUTHORITY",
+  "gate": "REQUIRED_V2_S2_PAYLOAD_READABLE_AND_HASH_VALID",
+  "status": "BLOCKED",
+  "attempted_methods": [
+    "local V2 payload search",
+    "approved node164 source inspection"
+  ],
+  "evidence": [
+    "node109 local V2 payload absent",
+    "node164 source path permission denied"
+  ],
+  "unblock": "174-new must grant readable approved-transfer access to exact V2 payload plus source SHA/receipt; then restart from INPUT_AUTHORITY",
+  "forbidden_shortcuts": [
+    "V1 fallback",
+    "retokenization",
+    "source-text reconstruction",
+    "configuration substitution"
+  ]
+}
