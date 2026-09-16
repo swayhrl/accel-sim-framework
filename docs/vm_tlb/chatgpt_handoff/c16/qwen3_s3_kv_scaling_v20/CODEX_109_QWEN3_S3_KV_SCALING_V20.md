@@ -1,327 +1,298 @@
 # C16 Qwen3 S3 KV context-scaling campaign — node109 V20
 
-## Execution mode
+## Execution mode and host contract
 
-Execute this task in **GOAL MODE**. This is one autonomous producer Goal. Do not stop after setup, state capture, replay preparation, static audit, or partial formal capture while downstream stages remain executable.
+Execute this task in **GOAL MODE** on **node109**, using the same producer environment/workflow as the previous successful Qwen3 producer campaigns.
 
-The scientific objective is to compare the **same semantic target** across Qwen3 S2 and S3:
+This is a node109 GPU-producer task. Scientific execution and Git work must use the node109 Linux Framework repository/worktree, e.g.:
+
+`/home/huangrulin/workspace/accel-sim-framework`
+
+or a node109 worktree created from it.
+
+**Do not use the local Windows mirror such as `D:\repo\accel-sim-framework` for this scientific implementation branch.**
+
+Do not install/configure `gh`, do not switch authentication mechanisms, and do not import the 174-new Git transport procedure. Node109 should keep its existing Git authentication/remote behavior that was already used successfully by prior producer Goals.
+
+Do not stop after setup, state capture, replay preparation, static audit, S2 recapture, or partial formal capture while downstream stages remain executable.
+
+Suggested implementation branch:
+
+`hrl/c16-qwen3-s3-kv-scaling-109-v20`
+
+## Scientific objective
+
+Establish a clean apples-to-apples context-scaling comparison for the exact same Qwen3 semantic path:
 
 `layer0.self_attn.repeat_kv(K)`
 
-Evidence class remains strictly:
+Evidence class:
 
 `KV_STORAGE_DIRECT_READ`
 
-Do not relabel QK/AV as direct KV-cache reads. QK/AV remain `KV_DERIVED_ATTENTION_CORE_READ` only when backed by the established typed dataflow.
+Compare:
+
+- S2_TEXT B1/T2048 first decode
+- S3_TEXT B1/T8192 first decode
+
+using the **same isolated replay and same full-scope capture method on both sides**.
+
+This V20 deliberately does **not** depend on retrieving the V19R1 implementation branch or its literal scope classification. V19/V19R1 remain historical audit evidence only. To remove all residual baseline ambiguity, V20 always creates a fresh canonical full-scope S2 baseline before S3.
+
+Do not relabel QK/AV as direct KV-cache reads. QK/AV remain derived-buffer evidence only.
 
 ## Immutable authorities
 
-Model:
+Model/runtime:
 
 - `Qwen/Qwen3-8B`
 - revision `b968826d9c46dd6066d109eabc6255188de91218`
 - BF16
 - eager attention
+- pinned Transformers 4.51.0 runtime already used by accepted Qwen3 evidence
 
-S2 accepted producer authority:
+Canonical V2 inputs:
 
-- producer HEAD `5d29ad8babe47226cbd25180a6db133e9526b6cf`
-- run `C16R_qwen3-8b_s2-text_decode_nvbit-warp-mref-shard_v18r2-k-repeat_20260916T040000Z_ee18ee18ee18`
-- target `layer0.self_attn.repeat_kv(K)`
-- V18R2 source manifest SHA256 `3a189ae86864e723a7fc0b8fd739db8c3fe3befa33800ee2c444e799f0ad75b8`
-- V18R2 catalog SHA256 `a043d78b0069f1acd24d5fdc2fc75ccac32b1e1aa3fa1da55a137e26f24b19ad`
+S2_TEXT:
 
-S2 independent consumer authority:
+- B1/T2048/D32
+- payload SHA256 `5913c573054d23a444477394a60f3f280311325e81175663b4ae2abd5ef6aafb`
 
-- V19 HEAD `925ab0507abb50ebbe4b177d98d9bf3809d1bcd7`
-- independently recomputed 160 static MREF, 8 executed, 152 zero, 2048 active-lane events for the accepted V18R2 raw
+S3_TEXT:
 
-V19R1 scope-audit branch:
-
-`hrl/c16-qwen3-kv-scope-audit-174new-v19r1`
-
-Canonical repository:
-
-`https://github.com/swayhrl/accel-sim-framework.git`
-
-The 174-new transport was independently closed using existing GitHub CLI + HTTPS credentials with the hard condition:
-
-`LOCAL == git ls-remote SHA == authenticated gh api SHA`
-
-Do not alter authentication mechanisms merely to run this Goal.
-
-S3 canonical V2 input:
-
-- scenario `S3_TEXT`
-- B1 / T8192 / D16
+- B1/T8192/D16
 - payload SHA256 `4acf772ccf5596edb0a2589624b5fd0e61da447024ca23bf944118dc948c36c2`
-- validated by the same V2 canonical-input authority used for Qwen3 S2
 
-No model/revision/precision/backend/input substitution is permitted.
+Prior accepted semantic/dataflow authority:
 
-## Stage 0 — import the literal V19R1 scope result
+- Qwen3 V18R2 producer HEAD `5d29ad8babe47226cbd25180a6db133e9526b6cf`
+- semantic target `layer0.self_attn.repeat_kv(K)`
+- proven typed chain: `KV_POST_UPDATE_K -> KV_DERIVED_REPEAT_K`
+- source/destination non-aliasing
+- QK consumes K-derived repeat buffer, not original K storage
 
-Before any GPU work, fetch/read the exact V19R1 review pack from the canonical repository. Use bounded retrieval only:
+V18R2/V19 dynamic totals are not used as the canonical S2 scaling baseline in V20. V20 creates a fresh S2 full-scope baseline with an unambiguous isolated replay.
 
-1. normal Git fetch of the exact implementation ref;
-2. if command stdout is unreliable, redirect to files;
-3. if needed, use authenticated `gh api` against `repos/swayhrl/accel-sim-framework`.
+## Stage 1 — generate exact S2 and S3 K-post states
 
-Do not search for alternative Qwen3 runs.
-
-Read the literal scope classification from the V19R1 review pack (`KV_SCOPE_AUDIT.json`, `FINAL_DECISION.json`, `NEXT_STEP_AUTHORIZATION.json`, or the exact equivalent artifact produced by V19R1).
-
-Record the literal value in the V20 review pack.
-
-Allowed branches:
-
-### A. `FULL_SCOPE_VALIDATED`
-
-Use the accepted V18R2 S2 run as the full-scope S2 baseline. Do **not** re-admit a duplicate S2 run.
-
-Proceed directly to S3.
-
-### B. `SCOPED_CAPTURE_ONLY`
-
-The V18R2 semantic/object proof remains useful, but its dynamic event totals are slice-local. Before S3, repair S2 capture scope in this same V20 Goal using the exact same semantic target and a minimal isolated replay described below. Admit the corrected S2 run, wait for positive ACK, then continue automatically to S3.
-
-### C. `WRONG_OCCURRENCE` or `BLOCKED_INSUFFICIENT_EVIDENCE`
-
-Treat the accepted V18R2 formal dynamic scope as unsuitable for context scaling. Perform the same bounded isolated S2 recapture correction below. Do not mutate/delete the old accepted run; preserve it as typed historical evidence. After corrected S2 ACK, continue to S3.
-
-Do not stop after Stage 0 unless the literal V19R1 result truly cannot be recovered after the bounded Git/gh methods above.
-
-## Stage 1 — establish a capture method that is unambiguously full-scope
-
-For every new formal capture in V20, avoid the V18R2 ambiguity by using a **minimal dedicated K-post replay process**.
-
-### 1.1 Exact K-post state
-
-For S2 repair when required, recover the exact qualified S2 first-decode K-post tensor from the accepted exact state/replay chain.
-
-For S3, generate the exact first-decode state from the canonical S3 payload using the already-authorized exact semantic layer-streaming method:
+For both S2 and S3, use the already-authorized exact semantic layer-streaming method:
 
 checkpoint -> selective exact loader -> all 36 true decoder layers -> true KV cache -> true next token -> layer0 first decode -> exact post-update K
 
-No synthetic hidden states, lower precision, alternate backend, or fake KV may be used.
+No synthetic hidden state, lower precision, backend substitution, fake KV, or model/input substitution.
 
-Expected semantic shapes:
+Expected K-post shapes:
 
-- S2 post-update K: `[1,8,2049,128]`
-- S3 post-update K: `[1,8,8193,128]`
-- repeat output expands KV heads 8 -> 32
+- S2: `[1,8,2049,128]`
+- S3: `[1,8,8193,128]`
 
-Persist exact state hashes and tensor shape/dtype/stride/storage metadata.
+Persist scenario-specific CPU K-post tensors and receipts containing at least:
 
-### 1.2 Isolated replay
+- input authority SHA
+- model revision/runtime
+- decode token/position
+- shape/dtype/stride
+- tensor SHA256
+- storage size
 
-Create a fresh process whose scientific operation is only:
+## Stage 2 — canonical isolated repeat-K replay
+
+For **each scenario independently**, launch a fresh process whose target CUDA work is only:
 
 1. load the exact frozen CPU K-post tensor;
 2. transfer it to CUDA;
-3. call pinned Transformers 4.51.0 `repeat_kv(K, num_key_value_groups)` exactly once under the target NVTX range;
-4. synchronize and emit output/hash metadata.
+3. call pinned `repeat_kv(K, num_key_value_groups)` exactly once under a unique NVTX range;
+4. synchronize;
+5. emit source/output hashes and storage metadata.
 
-Avoid executing another instance of the same CUDA direct-copy function before the target call.
+Avoid another invocation of the same direct-copy CUDA function before the target call in that process.
 
-The isolated replay must prove:
+Require:
 
-- source is the exact K-post tensor for that scenario;
-- repeat output is bitwise equal to the corresponding in-context/instrumented repeat output;
+- source tensor hash equals the frozen exact K-post state;
+- output is bitwise equal to the corresponding in-context/instrumented repeat result;
 - source/destination are non-aliasing;
-- kernel function/grid/block signature matches the in-context semantic target for the same scenario.
+- source range is typed `KV_POST_UPDATE_K`;
+- output range is typed `KV_DERIVED_REPEAT_K`;
+- in-context and isolated target signatures are semantically equivalent for the same scenario.
 
-### 1.3 Clean capture environment
+Record kernel function/grid/block for S2 and S3. Grid size is expected to scale with context length and need not match.
 
-Before every formal shard subprocess explicitly remove any inherited scope filters, including at least:
+## Stage 3 — clean full-scope capture environment
+
+Before every formal shard subprocess construct a clean environment and explicitly remove inherited scope filters.
+
+At minimum unset/remove:
 
 - `C16_CTA_BEGIN`
 - `C16_CTA_END`
+- any equivalent inherited CTA/block range selector
 
-and any equivalent inherited CTA/block range selector.
+Do not inherit an old C16 capture scope accidentally through `os.environ.copy()` without sanitizing it.
 
-Set the required function/static selector explicitly. Do not rely on a shell's inherited C16 capture state.
+Use a fresh per-scenario capture root.
 
-Use a fresh per-run output root.
+Bind to the exact isolated target function/occurrence. Because the isolated process executes the target direct-copy function only once, occurrence ambiguity must be eliminated by construction rather than inferred from launch order.
 
-## Stage 2 — S3 semantic and signature qualification
+## Stage 4 — fresh static/global-address-path audit
 
-Using S3 B1/T8192 first decode:
+For the isolated repeat-K target:
 
-1. prove exact S3 input SHA and model/revision/runtime;
-2. prove the true first-decode K-post state;
-3. prove `repeat_kv(K)` dataflow:
-   `KV_POST_UPDATE_K -> KV_DERIVED_REPEAT_K`;
-4. preserve QK/AV only as reads of the proven derived repeat buffers;
-5. establish in-context vs isolated-replay signature equivalence;
-6. record S3 kernel grid/block and compare descriptively against S2.
-
-Do not require the S3 grid to equal S2; context scaling is expected to change launch extent.
-
-## Stage 3 — fresh static/global-address-path audit
-
-For the actual S3 isolated repeat-K function:
-
-- obtain fresh SM89 SASS/static map or prove exact binary/function identity and regenerate the target static set;
+- obtain fresh SM89 SASS/static map, or prove exact binary/function identity before reusing a static set;
 - audit direct GLOBAL MREF;
-- independently audit LDGSTS / GLOBAL_TO_SHARED;
+- independently audit LDGSTS/GLOBAL_TO_SHARED;
 - audit other address-bearing special paths;
-- do not count pure control/memory-control instructions as address-bearing accesses.
+- exclude pure control/memory-control instructions from address-bearing evidence.
 
-Freeze the complete static MREF set before formal capture.
+Freeze the complete target static set before formal capture.
 
-If the function is binary-identical to S2, record that fact and compare static-set SHA, but do not silently assume identity.
+If S2/S3 use the same binary function and static set, record SHA equality explicitly; do not assume it silently.
 
-## Stage 4 — complete formal capture
+## Stage 5 — full-scope S2 formal baseline
 
-Capture every frozen static MREF shard for the exact isolated repeat-K replay.
+Capture the complete frozen static MREF set for the **canonical isolated S2 repeat-K replay**.
 
 Requirements:
 
 - `FORMAL_ADMISSION_CONCURRENCY=1`;
 - expected shard count == present shard count;
-- every shard terminal closed;
-- drop total == 0;
-- overflow total == 0;
-- every shard has same-process `ADDRESS_CONTEXT`;
-- executed vs `ZERO_EXECUTION_PROVEN` classification is explicit;
-- exact semantic target identity is recorded.
+- all shards terminal closed;
+- drop total 0;
+- overflow total 0;
+- each shard has same-process `ADDRESS_CONTEXT`;
+- explicit executed vs `ZERO_EXECUTION_PROVEN` classification;
+- sufficient trace capacity for the entire launch.
 
-Capacity must be large enough for full S3 launch coverage. Do not silently keep a capacity that truncates the larger S3 grid.
+### Mandatory full-scope gate before admission
 
-### Full-scope post-capture gate
+Independently decode all executed C16WARP1 shards and record:
 
-Independently decode the new traces before admission.
+- records/events;
+- unique CTA coordinates;
+- CTA x min/max;
+- warp IDs;
+- active-address min/max;
+- membership in that replay's `KV_POST_UPDATE_K` and `KV_DERIVED_REPEAT_K` ranges.
 
-For all executed shards record CTA coverage and object membership. At minimum require:
+For the K-source-read evidence, require:
 
-- no inherited CTA slicing evidence;
-- union of CTA coordinates for the K-source-read dynamic evidence is consistent with the entire target grid, including expected lower/upper CTA extent;
-- active source-read addresses losslessly join the same-process `KV_POST_UPDATE_K` range;
-- no evidence that function occurrence selected a different launch.
+- dynamic addresses losslessly join `KV_POST_UPDATE_K`;
+- no inherited CTA slicing;
+- CTA coverage is consistent with the full isolated target launch, including lower and upper launch extent where the relevant static instruction executes;
+- no evidence of wrong function occurrence.
 
-If evidence shows only a CTA subset, STOP before admission with a typed blocker; do not call it full-scope.
+Do not infer full scope from event count alone.
 
-## Stage 5 — Pipeline admission
+If the gate fails due a correctable capture configuration error, correct it within this Goal and recapture S2. Do not proceed to S3 admission using a partial S2 baseline.
 
-If Stage 0 required corrected S2 recapture:
+When S2 passes, close the formal bundle, perform the single serial Pipeline admission, and wait for positive verification/catalog/ACK before starting the S3 formal admission.
 
-1. close corrected S2 formal bundle;
-2. admit exactly one S2 run;
-3. wait for positive receiver verification/catalog/ACK;
-4. only then begin/admit S3.
+Do not modify/delete V18R2 or any older accepted catalog entry.
 
-Never have two formal admissions in flight.
+## Stage 6 — full-scope S3 formal capture
 
-For S3:
+Using the exact same sanitized isolated-replay methodology, capture the S3 target.
 
-- transfer to node164;
-- verify destination artifacts/hashes;
-- perform serial admission;
-- wait for positive ACK;
-- preserve catalog entry path/SHA, source manifest SHA and verification SHA.
+Requirements are identical to S2, including the full-scope CTA/object-membership gate.
 
-Do not modify/delete previous accepted raw/catalog entries.
+Capacity must be sized for the larger S3 launch; do not reuse a limit that can truncate S3.
 
-## Stage 6 — NCU
+Only after S2 ACK is positive may S3 be admitted. Keep `FORMAL_ADMISSION_CONCURRENCY=1` throughout.
 
-Preserve a bounded NCU report for the exact S3 isolated replay.
+Transfer/verify/admit S3 and wait for positive receiver ACK.
 
-Record metric values only when explicit values and units are available. Preserve native-unit uncertainty and the known cache-control warning if present. Do not infer bytes from ambiguous display units and do not use uncontrolled-cache NCU as a strong cross-scenario cache-effect claim.
+## Stage 7 — NCU
 
-## Stage 7 — S2 -> S3 context-scaling comparison
+Preserve bounded NCU reports for canonical isolated S2 and S3 replays when feasible.
 
-Only compare against a **full-scope S2 baseline**:
+Record numeric metrics only when explicit values and units are available. Preserve any uncontrolled-cache warning. Do not infer bytes from ambiguous units and do not claim cache/TLB causality from NCU differences alone.
 
-- accepted V18R2 if V19R1 says `FULL_SCOPE_VALIDATED`;
-- otherwise the corrected S2 V20 run.
+NCU gaps do not invalidate an otherwise hash-closed trace scaling comparison; type the gap explicitly.
 
-Use the same validated C16WARP1 methodology on both sides.
+## Stage 8 — S2 -> S3 context-scaling analysis
 
-Compare at least:
+Use only the two fresh V20 full-scope captures.
+
+Compare:
 
 - semantic target identity;
-- K-post / repeat tensor shapes;
+- K-post and repeat tensor shapes;
 - kernel function/grid/block;
-- static MREF set size and SHA;
+- static MREF set size/SHA;
 - executed/zero partition;
 - total active-lane events;
 - per-executed-shard event distribution;
-- per-shard 4K/64K/2M page distributions;
-- per-shard 128B line distributions;
-- same-process KV_POST_UPDATE_K membership;
+- per-shard 4K/64K/2M pages;
+- per-shard 128B lines;
+- same-process `KV_POST_UPDATE_K` membership;
 - formal completeness/drop/overflow;
 - typed NCU comparability.
 
-Safe cross-scenario statements:
+Safe claims:
 
-- event-count ratios for the same full-scope semantic/static target;
-- per-shard footprint-count scaling;
-- launch-dimension scaling.
+- same-target event-count scaling;
+- launch-dimension scaling;
+- per-shard footprint-count scaling.
 
 Forbidden:
 
-- cross-process absolute VA comparison;
+- cross-process absolute-VA comparison;
 - cross-replay VA union;
-- invented cross-shard chronology;
-- reuse distance reconstructed from independent shards;
-- cache/TLB causality from event-count scaling alone.
+- cross-shard/global chronology reconstruction;
+- reuse-distance inference from independent shards;
+- cache/TLB causality from event scaling alone.
 
-## Stage 8 — review pack and decision
+## Stage 9 — review pack
 
-Create a hash-closed V20 review pack under:
+Create:
 
 `docs/vm_tlb/review_packs/C16_QWEN3_S3_KV_SCALING_109_V20/`
 
-It must include at least:
+Include at minimum:
 
-- imported V19R1 scope decision;
-- S2 baseline authority (accepted or corrected);
-- S3 canonical input/state receipt;
-- S3 dataflow/replay/signature evidence;
-- fresh static/path audit;
-- S3 formal shard/manifest summary;
-- full-scope CTA/object-membership audit;
-- Pipeline admission/ACK evidence;
+- S2/S3 input/state receipts;
+- isolated-replay equivalence/signature receipts;
+- clean-environment/capture-scope receipt;
+- static/path audit;
+- S2 formal summary + CTA/object full-scope audit + Pipeline ACK;
+- S3 formal summary + CTA/object full-scope audit + Pipeline ACK;
 - NCU typed evidence;
 - S2-vs-S3 comparison;
 - `FINAL_DECISION`;
 - `OPEN_ISSUES`;
 - `SHA256SUMS`.
 
-A PASS must be scoped to the exact `repeat_kv(K)` KV-storage materialization path. Do not promote this single target to a claim about all Attention/KV behavior.
+A PASS is scoped only to `layer0.self_attn.repeat_kv(K)` as `KV_STORAGE_DIRECT_READ` materialization behavior.
 
-## Stage 9 — Git transport closure
+## Stage 10 — node109 Git closure
 
-Use the node's existing Git authentication mechanism; do not change it unless genuinely broken.
+Use the **existing node109 Git authentication mechanism exactly as before**. Do not install/configure `gh` and do not switch to SSH/HTTPS merely for this Goal.
 
-Suggested implementation branch:
+Commit the scientific artifacts on the implementation branch:
 
 `hrl/c16-qwen3-s3-kv-scaling-109-v20`
 
-After all scientific artifacts are committed and the working tree is clean:
+Push using the same node109 remote workflow already proven by prior producer campaigns.
 
-1. push actual `HEAD:refs/heads/hrl/c16-qwen3-s3-kv-scaling-109-v20`;
-2. verify the canonical repository identity is `swayhrl/accel-sim-framework`;
-3. verify final SHA through canonical `git ls-remote`;
-4. when authenticated `gh api` is available, verify the same branch SHA through GitHub API;
-5. success requires nonempty remote SHA and exact equality with final local HEAD.
+Verify the pushed branch/HEAD using the mechanisms available on node109. Do not require `gh api` if `gh` is not installed on node109.
 
-Do not ask the user to perform routine Git closure manually.
+Do not ask the user to perform routine commit/push work manually.
 
 ## Stop conditions
 
-Fail closed only for a real blocker such as:
+Fail closed only for a real scientific/execution blocker, e.g.:
 
-- canonical input/model hash mismatch;
-- exact S3 state cannot be produced without prohibited substitution;
-- replay/signature mismatch;
+- model/input/revision hash mismatch;
+- exact S2/S3 K-post state cannot be generated without prohibited substitution;
+- isolated replay/output/signature mismatch;
 - static/address-path closure failure;
-- full-scope gate proves slicing/wrong occurrence that cannot be corrected by the bounded isolated method;
+- full-scope gate cannot be satisfied after bounded correction;
 - drop/overflow;
 - Pipeline rejection/negative verification;
 - terminal artifact corruption.
 
-On a blocker, preserve all valid evidence, hash-close a typed partial review pack, commit/push it, verify canonical remote HEAD, and STOP.
+Do **not** fail closed because the V19R1 implementation branch is unavailable to node109; V20 no longer depends on it.
 
-Otherwise continue automatically through the entire V20 Goal and STOP only after final remote verification.
+On a blocker, preserve all valid evidence, hash-close a typed partial review pack, commit/push it from node109, and STOP.
+
+Otherwise continue autonomously through S2 baseline recapture, S3 capture, scaling analysis, review-pack closure, and Git push, then STOP.
