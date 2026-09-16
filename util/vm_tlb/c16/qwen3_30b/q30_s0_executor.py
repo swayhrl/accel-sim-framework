@@ -64,8 +64,16 @@ class Q30:
   m=self.model.model.layers[i]; torch.cuda.reset_peak_memory_stats(); before={'allocated':torch.cuda.memory_allocated(),'reserved':torch.cuda.memory_reserved()}; rec=self.on(m,'model.layers.%d.'%i)
   hooks=[]
   if self.nvtx_components:
-   def enter(tag): return lambda mod,args: torch.cuda.nvtx.range_push(tag)
-   def leave(tag): return lambda mod,args,out: torch.cuda.nvtx.range_pop()
+   def enter(tag):
+    def f(mod,args):
+     torch.cuda.nvtx.range_push(tag)
+     return None
+    return f
+   def leave(tag):
+    def f(mod,args,out):
+     torch.cuda.nvtx.range_pop()
+     return None
+    return f
    hooks=[m.self_attn.register_forward_pre_hook(enter('Q30_COMPONENT_SELF_ATTN')),m.self_attn.register_forward_hook(leave('Q30_COMPONENT_SELF_ATTN')),m.mlp.register_forward_pre_hook(enter('Q30_COMPONENT_MLP')),m.mlp.register_forward_hook(leave('Q30_COMPONENT_MLP'))]
   try:
    out=m(h,**k); torch.cuda.synchronize(); result=(out[0],out[-1],rec,before,{'allocated':torch.cuda.max_memory_allocated(),'reserved':torch.cuda.max_memory_reserved()})
