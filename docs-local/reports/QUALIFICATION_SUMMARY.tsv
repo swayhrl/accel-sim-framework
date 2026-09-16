@@ -1,13 +1,11 @@
-test	status	rc	elapsed	log	note
-clean_build	PASS	0	N/A	/root/workspace/offline-sim-v1/logs/build-latest.log	bundle-local CUDA 12.4 clean build
-sass_qv100_bfs	PASS	0	11s	/root/workspace/offline-sim-v1/logs/sass-bfs-latest.log	official QV100 Rodinia BFS
-ptx_fast	PASS	0	N/A	/root/workspace/offline-sim-v1/logs/ptx-local-latest.log	QV100-PTX local launcher
-local_launcher	PASS	0	N/A	/root/workspace/offline-sim-v1/logs/ptx-local-latest.log	run_simulations.py -l local
-monitor	PASS	0	N/A	/root/workspace/offline-sim-v1/logs/monitor-ptx-latest.log	minimal monitor
-get_stats	PASS	0	N/A	/root/workspace/offline-sim-v1/logs/stats-ptx-latest.log	stats extraction
-python_offline_setup	PASS	0	N/A	/root/workspace/offline-sim-v1/logs/setup-core-latest.log	--no-index venv
-package	PASS	0	N/A	/root/workspace/offline-sim-v1/logs/package-core-latest.log	rc1 tar
-fresh_extract_setup	PASS	0	N/A	/root/workspace/offline-sim-v1/verify-rc1/logs/fresh-setup-latest.log	fresh unpack
-fresh_extract_build	PASS	0	N/A	/root/workspace/offline-sim-v1/verify-rc1/logs/fresh-build-latest.log	fresh clean build
-fresh_extract_sass	PASS	0	N/A	/root/workspace/offline-sim-v1/verify-rc1/logs/fresh-sass-bfs-latest.log	fresh BFS SASS
-fresh_extract_ptx	PASS	0	N/A	/root/workspace/offline-sim-v1/verify-rc1/logs/fresh-ptx-local-latest.log	fresh QV100 PTX
+test	status	rc	elapsed	benchmark_input	config	log	note
+clean_build	PASS	0	N/A	clean	CUDA12.4	/root/workspace/offline-sim-v1/logs/build-latest.log	accel-sim.out
+sass_qv100_bfs	PASS	0	11s	rodinia BFS graph4096	QV100-SASS	/root/workspace/offline-sim-v1/logs/smoke-sass-latest.log	official trace
+ptx_bfs	PASS	0	N/A	bfs-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-bfs-latest.log	local launcher+monitor+stats
+ptx_hotspot	PASS	0	N/A	hotspot-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-hotspot-latest.log	local launcher+monitor+stats
+ptx_backprop	PASS	0	N/A	backprop-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-backprop-latest.log	local launcher+monitor+stats
+ptx_kmeans	PASS	0	N/A	kmeans-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-kmeans-latest.log	local launcher+monitor+stats
+local_launcher	PASS	0	N/A	four PTX cases	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-*-latest.log
+monitor	PASS	0	N/A	four PTX cases	QV100-PTX	/root/workspace/offline-sim-v1/logs/monitor-*-latest.log
+get_stats	PASS	0	N/A	four PTX cases	QV100-PTX	/root/workspace/offline-sim-v1/logs/stats-*-latest.log
+python_offline_setup	PASS	0	N/A	empty venv	wheelhouse	/root/workspace/offline-sim-v1/logs/final-python-setup-latest.log

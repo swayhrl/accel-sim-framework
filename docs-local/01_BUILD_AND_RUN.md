@@ -1,7 +1,7 @@
 # Build and run
 
 ```bash
-export OFFLINE_BUNDLE_ROOT=/root/workspace/offline-sim-v1
+export OFFLINE_BUNDLE_ROOT=<bundle-root>
 ./offline/doctor.sh
 ./offline/setup.sh
 CUDA_INSTALL_PATH="$OFFLINE_BUNDLE_ROOT/toolchain/cuda-12.4" JOBS=1 ./offline/build.sh
