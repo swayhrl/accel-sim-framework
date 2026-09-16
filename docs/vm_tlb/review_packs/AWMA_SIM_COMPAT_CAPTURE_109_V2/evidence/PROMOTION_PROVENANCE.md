@@ -1,0 +1,1 @@
+R3 was originally named canary only; its actual exact workload, target, natural completion, terminal, address policy, and hotfix admission satisfy the formal producer contract. Promoted without GPU recapture.

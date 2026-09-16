@@ -1,0 +1,158 @@
+{
+  "artifacts": [
+    {
+      "relative_path": "PROMOTION_PROVENANCE.md",
+      "sha256": "dd9971ab6a0826d7d09959f26c3a3bafcabc32eed9020eac1ea092e65569e625",
+      "size_bytes": 209
+    },
+    {
+      "relative_path": "authority/C16_FROZEN_INPUT_BINDING_TRANSFER_RECEIPT.json",
+      "sha256": "3076a96415e22aa05bac1fe649a5ebc795e338c558d216ff71a989d9c3b61b1a",
+      "size_bytes": 3609
+    },
+    {
+      "relative_path": "authority/R1_QWEN2P5_0P5B_ASSET_RECEIPT.json",
+      "sha256": "5826854914423c10ee53719361ed0dab6d0b10693cf0e2ff301931669c73e30f",
+      "size_bytes": 3457
+    },
+    {
+      "relative_path": "receipts/DISK_GUARD.txt",
+      "sha256": "3e0490898025a4e03aaabbc48a6096df9d40cd3ca46283ef795d92a4cbf08042",
+      "size_bytes": 117
+    },
+    {
+      "relative_path": "receipts/HOTFIX_VALIDATOR.returncode",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "size_bytes": 2
+    },
+    {
+      "relative_path": "receipts/HOTFIX_VALIDATOR.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "relative_path": "receipts/HOTFIX_VALIDATOR.stdout",
+      "sha256": "2be5cb8f244887884929c3c4849b35c629c0d855a528978e2812b5d1b9a7ee1c",
+      "size_bytes": 1557
+    },
+    {
+      "relative_path": "receipts/HOTFIX_VALIDATOR_BINARY_SHA256SUMS",
+      "sha256": "8b33c0679e190dcb6d2bae69a2a0f3d00f70ddc71a7ccf02628446eb63be1275",
+      "size_bytes": 191
+    },
+    {
+      "relative_path": "receipts/HOTFIX_VALIDATOR_SOURCE_SHA256SUMS",
+      "sha256": "9cb0cd3aec4e240837d01d8ba74a01f12fe6b1e5f8b7af174ad278d078d51dce",
+      "size_bytes": 365
+    },
+    {
+      "relative_path": "receipts/R3_LIFECYCLE.log",
+      "sha256": "fe2dcf483e1c12ac8d3bea8360e712c612a1dde846b6d927afca947bf5bcfd44",
+      "size_bytes": 647
+    },
+    {
+      "relative_path": "receipts/R3_PROMOTION_COMPLETENESS.txt",
+      "sha256": "489a2203c4fc05902cfe56c00aeca32a268e363a8c877440608dd22eb12c8e95",
+      "size_bytes": 165
+    },
+    {
+      "relative_path": "sidecars/ADDRESS_CONTEXT.json",
+      "sha256": "24b3e89b19534dbf9d7e9dc81f2a916fc4e079a35e6de37b042309c1375656ca",
+      "size_bytes": 414
+    },
+    {
+      "relative_path": "sidecars/BUILD_RUNTIME_RECEIPT.json",
+      "sha256": "f1b3a72f0131c265dd843f2c9f90fd2acbba04d23f79e5e59e4ec801967629e9",
+      "size_bytes": 743
+    },
+    {
+      "relative_path": "sidecars/R3_PROMOTION_AUDIT.json",
+      "sha256": "36bf09b8b8a9cb7b2dc7f247c5bdd4027322d985c976b9f1cf15480968724082",
+      "size_bytes": 527
+    },
+    {
+      "relative_path": "sidecars/TARGET_IDENTITY.json",
+      "sha256": "ac78e9bf4f4a92c506d31bd805f0421ec02a7915d6c828268cf271fb5886ce84",
+      "size_bytes": 500
+    },
+    {
+      "relative_path": "sidecars/TERMINAL_RECEIPT.json",
+      "sha256": "6e6e483e1dbf44bc522f9d0e8b980397df85a6cf1c8d8048360e350caa1cce72",
+      "size_bytes": 519
+    },
+    {
+      "relative_path": "traces/kernel-34-ctx_0x5dd0a1addd30.trace.xz",
+      "sha256": "69feec5602a14d5749356137e06535c804967f25613d49086e214cbc890cce3e",
+      "size_bytes": 107532400
+    },
+    {
+      "relative_path": "traces/kernel-34-ctx_0x5dd0a1addd30.traceg.xz",
+      "sha256": "be4215cc353070af1843852589a26eaa9d650abfa230086502f078cf96f261f0",
+      "size_bytes": 13807016
+    },
+    {
+      "relative_path": "traces/kernelslist",
+      "sha256": "674a9c8c0c37027523a91fdcdefa1e690f20012afdb6d05f66e0031837e75602",
+      "size_bytes": 38
+    },
+    {
+      "relative_path": "traces/kernelslist.g",
+      "sha256": "1611b5389de5a1ca6d8de2d567557537503b5a2996a973eacd56a8dbf7593e2e",
+      "size_bytes": 39
+    }
+  ],
+  "capture": {
+    "exact_argv": [
+      "CUDA_INJECTION64_PATH=/data/c16/awma/simcompat-v2/route_b/bin/route_b_live_raw.so",
+      "ROUTE_B_FUNCTION_REGEX=^void pytorch_flash::flash_fwd_kernel.*",
+      "ROUTE_B_FUNCTION_OCCURRENCE=0",
+      "/data/c16/env/c16-py310/bin/python",
+      "/home/huangrulin/workspace/worktrees/accel-sim-awma-terminal-v2/util/vm_tlb/awma/simulation/q05_s2_exact_driver.py"
+    ],
+    "instrument": "AWMA_ROUTE_B_NVBIT1771_SIM_NATIVE",
+    "target": "Q05_PREFILL_ATTN_FLASH; function-occurrence=0",
+    "tool_identity_sha256_if_applicable": "113ac2eac68f96dabce7d8c5a16a631401895a95052de0fe66185f2dedc26f91",
+    "tool_version": "NVBit 1.7.7.1"
+  },
+  "created_at_utc": "2026-09-16T17:06:52.657402+00:00",
+  "git": {
+    "commit": "e46193b94dd969a988126fc9fa5545da08b26d18",
+    "dirty": false,
+    "repository": "accel-sim-framework"
+  },
+  "input": {
+    "authority_status": "PASS_HASH_CLOSED_EXACT_FROZEN_BINDING",
+    "binding_id": "S2_TEXT",
+    "receipt_sha256": "3076a96415e22aa05bac1fe649a5ebc795e338c558d216ff71a989d9c3b61b1a",
+    "token_ids_sha256_or_semantic_hash": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9"
+  },
+  "model": {
+    "asset_receipt_sha256": "5826854914423c10ee53719361ed0dab6d0b10693cf0e2ff301931669c73e30f",
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+  },
+  "producer": {
+    "cuda": "12.8",
+    "driver": "580.178.04",
+    "gpu_name": "NVIDIA GeForce RTX 4080",
+    "gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "hostname": "PC"
+  },
+  "run_id": "C16R_qwen25-05b_s2-text_prefill_awma-routeb-sim_q05-prefill-attn-flash_20260917T163000Z_e46193b94dd9",
+  "runtime": {
+    "attention_backend": "sdpa",
+    "dtype": "float16",
+    "python": "/data/c16/env/c16-py310/bin/python",
+    "torch": "2.5.1+cu124",
+    "transformers": "4.46.3"
+  },
+  "scenario": {
+    "batch": 1,
+    "decode_tokens": 32,
+    "input_class": "TEXT",
+    "phase": "PREFILL",
+    "prefill_tokens": 2048
+  },
+  "schema_version": 1,
+  "scientific_status": "FORMAL"
+}

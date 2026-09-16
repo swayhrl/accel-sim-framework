@@ -1,0 +1,1 @@
+R3 carried a historical canary label only. Its exact frozen workload, target function occurrence 0, full Decode32 natural completion, device/channel terminal, zero loss, mode2=0 policy, canonical postprocess, and hotfix validation satisfy the formal producer contract; it was promoted without GPU recapture.
