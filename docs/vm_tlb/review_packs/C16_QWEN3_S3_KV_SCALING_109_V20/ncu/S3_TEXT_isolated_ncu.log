@@ -1,0 +1,7 @@
+==WARNING== Note: Running with uncontrolled GPU caches. Profiling results may be inconsistent.
+==PROF== Connected to process 429848 (/data/c16/env/cpython-3.10.12/bin/python3.10)
+==PROF== Profiling "elementwise_kernel" - 0: Application replay pass 1
+{"non_alias": true, "nvtx_range": "C16_V20_S3_TEXT_ISOLATED_REPEAT_K", "output": {"dtype": "torch.bfloat16", "ptr": "0x787c7c000000", "sha256": "658114a44673a8019519bbb6b1139ad9d5c50f110be7112ac176372c12219f8f", "shape": [1, 32, 8193, 128], "storage_bytes": 67117056, "storage_ptr": "0x787c7c000000", "stride": [33558528, 1048704, 128, 1]}, "repeat_output_bitwise_equals_in_context": true, "scenario": "S3_TEXT", "schema_version": 1, "source": {"dtype": "torch.bfloat16", "ptr": "0x787c90e00000", "sha256": "49cfbaba1e49006db602ef56ccfca8b90a27251759101896fedceaccb6a2a7ff", "shape": [1, 8, 8193, 128], "storage_bytes": 16779264, "storage_ptr": "0x787c90e00000", "stride": [8389632, 1048704, 128, 1]}, "source_hash_matches_frozen_kpost": true, "status": "PASS", "typed_chain": "KV_POST_UPDATE_K -> KV_DERIVED_REPEAT_K"}
+==PROF== Disconnected from process 429848
+==PROF== Creating report from application replay data: 0%...100%
+==PROF== Report: /data/c16/qwen3_runtime_v14/v20/S3_TEXT_isolated_ncu.ncu-rep

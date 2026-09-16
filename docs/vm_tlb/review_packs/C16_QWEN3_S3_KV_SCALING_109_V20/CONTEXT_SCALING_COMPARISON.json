@@ -1,0 +1,112 @@
+{
+  "S2": {
+    "active_lane_events": 16785408,
+    "executed_shards": 8,
+    "full_scope_gate": "PASS",
+    "grid_x": 16392,
+    "k_post": {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        1,
+        8,
+        2049,
+        128
+      ],
+      "storage_bytes": 4196352,
+      "stride": [
+        2098176,
+        262272,
+        128,
+        1
+      ],
+      "tensor_sha256": "1650e852dfcfd46b9df7797b4b45a41b27568e04b50da2f55bbe65e3fccfc502"
+    },
+    "pages": {
+      "aggregate_unique_128b_lines": 262272,
+      "aggregate_unique_2m_pages": 48,
+      "aggregate_unique_4k_pages": 20492,
+      "aggregate_unique_64k_pages": 1288
+    },
+    "repeat_k": {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        1,
+        32,
+        2049,
+        128
+      ],
+      "storage_bytes": 16785408,
+      "stride": [
+        8392704,
+        262272,
+        128,
+        1
+      ],
+      "tensor_sha256": "719fc12c231b79c4113347109207e316c9243d536d011bbdd2279f9a9cfa1dcb"
+    },
+    "static_mref_count": 8,
+    "zero_shards": 0
+  },
+  "S3": {
+    "active_lane_events": 67117056,
+    "executed_shards": 8,
+    "full_scope_gate": "PASS",
+    "grid_x": 65544,
+    "k_post": {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        1,
+        8,
+        8193,
+        128
+      ],
+      "storage_bytes": 16779264,
+      "stride": [
+        8389632,
+        1048704,
+        128,
+        1
+      ],
+      "tensor_sha256": "49cfbaba1e49006db602ef56ccfca8b90a27251759101896fedceaccb6a2a7ff"
+    },
+    "pages": {
+      "aggregate_unique_128b_lines": 1048704,
+      "aggregate_unique_2m_pages": 168,
+      "aggregate_unique_4k_pages": 81932,
+      "aggregate_unique_64k_pages": 5128
+    },
+    "repeat_k": {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        1,
+        32,
+        8193,
+        128
+      ],
+      "storage_bytes": 67117056,
+      "stride": [
+        33558528,
+        1048704,
+        128,
+        1
+      ],
+      "tensor_sha256": "658114a44673a8019519bbb6b1139ad9d5c50f110be7112ac176372c12219f8f"
+    },
+    "static_mref_count": 8,
+    "zero_shards": 0
+  },
+  "comparison_scope": "same isolated layer0.self_attn.repeat_kv(K) KV_STORAGE_DIRECT_READ target; fresh V20 full-scope captures only",
+  "forbidden": [
+    "cross-process absolute VA comparison",
+    "cross-replay VA union",
+    "cross-shard chronology",
+    "reuse-distance inference",
+    "cache/TLB causality from event scaling"
+  ],
+  "ratios": {
+    "active_lane_events_s3_over_s2": 3.998535871156662,
+    "grid_x_s3_over_s2": 3.998535871156662
+  },
+  "safe_claims_only": true,
+  "schema_version": 1
+}

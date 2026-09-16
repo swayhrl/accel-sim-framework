@@ -1,0 +1,12 @@
+------------- NVBit (NVidia Binary Instrumentation Tool v1.7.5) Loaded --------------
+NVBit core environment variables (mostly for nvbit-devs):
+ACK_CTX_INIT_LIMITATION = 0 - if set, no warning will be printed for nvbit_at_ctx_init()
+            NVDISASM = nvdisasm - override default nvdisasm found in PATH
+            NOBANNER = 0 - if set, does not print this banner
+       NO_EAGER_LOAD = 0 - eager module loading is turned on by NVBit to prevent potential NVBit tool deadlock, turn it off if you want to use the lazy module loading feature
+---------------------------------------------------------------------------------
+C16_V20_STATIC_DISCOVERY_READY matcher=direct_copy_kernel_cuda+BFloat16+elementwise_kernel
+WARNING: Do not call CUDA memory allocation in nvbit_at_ctx_init(). It will cause deadlocks. Do them in nvbit_tool_init(). If you encounter deadlocks, remove CUDA API calls to debug.
+C16_V20_STATIC_DISCOVERY_COMPLETE function_mangled=_ZN2at6native18elementwise_kernelILi128ELi4EZNS0_22gpu_kernel_impl_nocastIZZZNS0_23direct_copy_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE1_clEvENKUlvE10_clEvEUlN3c108BFloat16EE_EEvS4_RKT_EUliE_EEviT1_ static_instruction_count=968 map=/data/c16/qwen3_runtime_v14/v20/V20_repeatk_static.tsv
+{"non_alias": true, "nvtx_range": "C16_V20_S2_TEXT_ISOLATED_REPEAT_K", "output": {"dtype": "torch.bfloat16", "ptr": "0x70528c000000", "sha256": "719fc12c231b79c4113347109207e316c9243d536d011bbdd2279f9a9cfa1dcb", "shape": [1, 32, 2049, 128], "storage_bytes": 16785408, "storage_ptr": "0x70528c000000", "stride": [8392704, 262272, 128, 1]}, "repeat_output_bitwise_equals_in_context": true, "scenario": "S2_TEXT", "schema_version": 1, "source": {"dtype": "torch.bfloat16", "ptr": "0x70528e200000", "sha256": "1650e852dfcfd46b9df7797b4b45a41b27568e04b50da2f55bbe65e3fccfc502", "shape": [1, 8, 2049, 128], "storage_bytes": 4196352, "storage_ptr": "0x70528e200000", "stride": [2098176, 262272, 128, 1]}, "source_hash_matches_frozen_kpost": true, "status": "PASS", "typed_chain": "KV_POST_UPDATE_K -> KV_DERIVED_REPEAT_K"}
+C16_V20_STATIC_DISCOVERY_TERMINAL map_emitted=1
