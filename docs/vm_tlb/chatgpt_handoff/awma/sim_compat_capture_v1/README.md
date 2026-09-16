@@ -1,6 +1,6 @@
 # AWMA SIM_COMPAT_CAPTURE_V1 — Coordination Handoff
 
-Status: **READY TO ACTIVATE**.
+Status: **ACTIVATED IN TWO STEPS**.
 
 Base authority:
 
@@ -12,9 +12,37 @@ qualification scope: HASH_BOUND_FIXED_WINDOW_10000
 
 This stage connects the already-qualified Simulation Analysis consumer/runtime on 174-new to a **new, simulator-native capture path on node109**. It does not convert C16WARP1 into traceg and does not change the Native Characterization evidence plane.
 
+## Current activation sequence
+
+Because node109 may be occupied by another formal GPU task, do **not** hold a 174-new Codex window waiting for it.
+
+Use this sequence:
+
+```text
+STEP 1 — now, 174-new only
+  CODEX_GOAL_174NEW_CONSUMER_PREP_V1.md
+  -> complete all producer-independent preparation
+  -> stop at 174NEW_SIM_CONSUMER_READY_FOR_INPUT_V1
+
+STEP 2 — later, when node109 is free
+  CODEX_GOAL_109_SIM_COMPAT_CAPTURE_V1.md
+  -> qualify simulator-native tracer/capture
+  -> publish formal READY producer bundle
+
+STEP 3 — after producer READY
+  CODEX_GOAL_174NEW_FIRST_CURRENT_MODEL_SIM.md
+  -> admit bundle
+  -> issue SIM_INPUT_ID
+  -> run NEW_SIM_BASELINE_V1 10k replay
+  -> repeat/determinism
+  -> SIM_RUN_ID + Simulation Evidence
+```
+
+The same 174-new working branch may be resumed after Step 1 if its state is clean and review-pack checkpoint is committed/pushed; otherwise use a continuation branch rooted at that accepted prep commit.
+
 ## Main objective
 
-In one coordinated wave, complete as much as possible of:
+End-to-end target state remains:
 
 ```text
 109 / RTX4080
@@ -43,19 +71,24 @@ for that exact target. It must not start mechanism sweeps.
 ## Parallelism and resource boundary
 
 - Native Characterization and Simulation Analysis remain separate scientific evidence planes.
-- 174-new consumer preparation can run in parallel with Native work.
+- 174-new consumer preparation can run independently of Native work.
 - 109 formal simulator capture **must acquire** `/data/c16/locks/c16_gpu_campaign.lock` and must not overlap another formal GPU capture on the RTX4080.
 - Never kill/restart another active capture merely to obtain the GPU.
-- Waiting for the GPU lock is not a scientific blocker; complete CPU/code preparation first and continue when admitted.
+- A busy 109 is not a blocker for the 174-new consumer-preparation checkpoint; simply defer Step 2.
 
 ## Read order
 
-1. `BASELINE_REVIEW_AND_COMPATIBILITY_NOTES.md`
-2. `PRODUCER_CAPTURE_CONTRACT.md`
-3. `ACCEPTANCE_REQUIREMENTS.md`
-4. node-specific executable Goal:
-   - `CODEX_GOAL_109_SIM_COMPAT_CAPTURE_V1.md`
-   - `CODEX_GOAL_174NEW_FIRST_CURRENT_MODEL_SIM.md`
+For the new 174-new prep window, read:
+
+1. `CODEX_GOAL_174NEW_CONSUMER_PREP_V1.md` — self-contained execution context and Goal.
+2. `BASELINE_REVIEW_AND_COMPATIBILITY_NOTES.md`
+3. `PRODUCER_CAPTURE_CONTRACT.md`
+4. `ACCEPTANCE_REQUIREMENTS.md`
+
+Later node-specific executable Goals:
+
+- node109: `CODEX_GOAL_109_SIM_COMPAT_CAPTURE_V1.md`
+- 174-new producer-dependent continuation: `CODEX_GOAL_174NEW_FIRST_CURRENT_MODEL_SIM.md`
 
 ## Frozen scientific boundaries
 
