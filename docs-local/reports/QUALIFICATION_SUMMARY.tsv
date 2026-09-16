@@ -1,11 +1,17 @@
 test	status	rc	elapsed	benchmark_input	config	log	note
 clean_build	PASS	0	N/A	clean	CUDA12.4	/root/workspace/offline-sim-v1/logs/build-latest.log	accel-sim.out
-sass_qv100_bfs	PASS	0	11s	rodinia BFS graph4096	QV100-SASS	/root/workspace/offline-sim-v1/logs/smoke-sass-latest.log	official trace
-ptx_bfs	PASS	0	N/A	bfs-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-bfs-latest.log	local launcher+monitor+stats
-ptx_hotspot	PASS	0	N/A	hotspot-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-hotspot-latest.log	local launcher+monitor+stats
-ptx_backprop	PASS	0	N/A	backprop-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-backprop-latest.log	local launcher+monitor+stats
-ptx_kmeans	PASS	0	N/A	kmeans-rodinia-2.0-ft	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-kmeans-latest.log	local launcher+monitor+stats
-local_launcher	PASS	0	N/A	four PTX cases	QV100-PTX	/root/workspace/offline-sim-v1/logs/ptx-*-latest.log
+sass_qv100_bfs	PASS	0	N/A	official BFS trace	QV100-SASS	N/A	fresh release gate
+ptx_bfs	PASS	0	N/A	bfs-rodinia-2.0-ft	QV100-PTX	N/A	pre-release development qualification
+ptx_hotspot	PASS	0	N/A	hotspot-rodinia-2.0-ft	QV100-PTX	N/A	pre-release development qualification
+ptx_backprop	PASS	0	N/A	backprop-rodinia-2.0-ft	QV100-PTX	N/A	pre-release development qualification
+ptx_kmeans	PASS	0	N/A	kmeans-rodinia-2.0-ft	QV100-PTX	N/A	pre-release development qualification
+local_launcher	PASS	0	N/A	four PTX cases	QV100-PTX	N/A	pre-release development qualification
+fresh_doctor	PASS	0	N/A	fresh extraction	V1	N/A	fresh release gate
+fresh_setup	PASS	0	N/A	fresh extraction	V1	N/A	fresh release gate
+fresh_build	PASS	0	N/A	fresh extraction	V1	N/A	fresh release gate
+fresh_sass_qv100_bfs	PASS	0	N/A	fresh extraction	QV100-SASS	N/A	fresh release gate
+fresh_ptx_tiny_bfs	PASS	0	N/A	synthetic tiny BFS smoke input	QV100-PTX	N/A	actual child output validated
+fresh_get_stats	PASS	0	N/A	fresh extraction	QV100-PTX	N/A	fresh release gate
 monitor_func_test	KNOWN_LIMITATION	N/A	N/A	local procman	QV100-PTX	N/A	local procman output-name matching
 get_stats	PASS	0	N/A	four PTX cases	QV100-PTX	/root/workspace/offline-sim-v1/logs/stats-*-latest.log
 python_offline_setup	PASS	0	N/A	empty venv	wheelhouse	/root/workspace/offline-sim-v1/logs/final-python-setup-latest.log
