@@ -34,7 +34,7 @@ def cache_layer(c,i):
  return {'key':tinfo(c.key_cache[i]),'value':tinfo(c.value_cache[i])} if len(c.key_cache)>i and c.key_cache[i].numel() else None
 
 class Q30:
- def __init__(self,root):
+ def __init__(self,root,nvtx_components=False):
   self.root=Path(root); self.config=AutoConfig.from_pretrained(self.root,local_files_only=True)
   with torch.device('meta'): self.model=Qwen3MoeForCausalLM(self.config)
   self.model=self.model.to(dtype=torch.bfloat16); self.model.eval()
@@ -44,6 +44,7 @@ class Q30:
   self.wmap=json.loads((self.root/'model.safetensors.index.json').read_text())['weight_map']
   if len(self.wmap)!=18867 or set(self.wmap)!=set(self.model.state_dict()): raise RuntimeError('canonical model/index closure invalid')
   self.mat=Materializer(self.root,self.wmap)
+  self.nvtx_components=nvtx_components
  def names(self,p): return sorted(n for n in self.wmap if n.startswith(p))
  def on(self,m,p):
   r=self.mat.inject(m,self.names(p),p); m.to('cuda'); return r
@@ -61,9 +62,16 @@ class Q30:
   return {'attention_mask':causal,'position_ids':pi,'past_key_value':c,'output_attentions':False,'output_router_logits':True,'use_cache':True,'cache_position':cp,'position_embeddings':pe}
  def layer(self,i,h,k):
   m=self.model.model.layers[i]; torch.cuda.reset_peak_memory_stats(); before={'allocated':torch.cuda.memory_allocated(),'reserved':torch.cuda.memory_reserved()}; rec=self.on(m,'model.layers.%d.'%i)
+  hooks=[]
+  if self.nvtx_components:
+   def enter(tag): return lambda mod,args: torch.cuda.nvtx.range_push(tag)
+   def leave(tag): return lambda mod,args,out: torch.cuda.nvtx.range_pop()
+   hooks=[m.self_attn.register_forward_pre_hook(enter('Q30_COMPONENT_SELF_ATTN')),m.self_attn.register_forward_hook(leave('Q30_COMPONENT_SELF_ATTN')),m.mlp.register_forward_pre_hook(enter('Q30_COMPONENT_MLP')),m.mlp.register_forward_hook(leave('Q30_COMPONENT_MLP'))]
   try:
    out=m(h,**k); torch.cuda.synchronize(); result=(out[0],out[-1],rec,before,{'allocated':torch.cuda.max_memory_allocated(),'reserved':torch.cuda.max_memory_reserved()})
-  finally: self.off(m)
+  finally:
+   for hnd in hooks: hnd.remove()
+   self.off(m)
   post={'allocated':torch.cuda.memory_allocated(),'reserved':torch.cuda.memory_reserved()}; return (*result,post)
 
 def boundary(h,k):
@@ -83,7 +91,7 @@ def stream(a):
  run=Path(a.run_dir); sem=run/'semantic'; states=run/'target_states';
  if (sem/'SEMANTIC_RUN_RECEIPT.json').exists() or (states/'TARGET_LAYER_STATE_INDEX.json').exists(): raise FileExistsError(run)
  for d in (sem,states,run/'replay',run/'logs',run/'receipts'): d.mkdir(parents=True,exist_ok=True)
- q=Q30(a.model_root); c=DynamicCache(); layer_rows=[]; router_rows=[]; captures={}; decode=[]; start=time.time()
+ q=Q30(a.model_root,a.nvtx_components); c=DynamicCache(); layer_rows=[]; router_rows=[]; captures={}; decode=[]; start=time.time()
  def phase(name,tid,step=None):
   h=q.embed(tid); prior=c.get_seq_length(); cp=torch.arange(prior,prior+h.shape[1],device='cuda'); am=torch.ones((1,prior+h.shape[1]),device='cuda',dtype=torch.long); k=q.kwargs(h,am,c,cp)
   for i in range(48):
@@ -114,7 +122,7 @@ def stream(a):
  print(json.dumps({'status':'Q30_TARGET_LAYER_STATE_PASS','run_dir':str(run),'semantic_receipt_sha256':srsha,'target_state_index_sha256':fsha(states/'TARGET_LAYER_STATE_INDEX.json'),'prefill_next_token_id':prefill_token,'decode_next_token_ids':[x['next_token_id'] for x in decode]},sort_keys=True))
 
 def replay(a):
- bundle=Path(a.bundle); m=validate(bundle,REV,LAYER); call=load_blob(bundle/'call_boundary.pt'); source=load_blob(bundle/'source_oracle.pt'); q=Q30(a.model_root)
+ bundle=Path(a.bundle); m=validate(bundle,REV,LAYER); call=load_blob(bundle/'call_boundary.pt'); source=load_blob(bundle/'source_oracle.pt'); q=Q30(a.model_root,a.nvtx_components)
  with torch.inference_mode():
   h=call['hidden_states'].to('cuda'); out,rl,mat,before,peak,post=q.layer(LAYER,h,thaw(call)); out=out.cpu(); rl=rl.cpu()
  out_eq=torch.equal(out,source['output']); router_eq=torch.equal(rl,source['router_logits']); rs=router(rl); rs_eq=rs==source['router']
@@ -123,6 +131,6 @@ def replay(a):
  if res['status']!='PASS': sys.exit(2)
 
 def main():
- p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('stream','replay'),required=True); p.add_argument('--model-root',required=True); p.add_argument('--run-dir'); p.add_argument('--tokens'); p.add_argument('--receipt'); p.add_argument('--bundle'); p.add_argument('--copy-sha'); p.add_argument('--runtime-sha'); p.add_argument('--git-commit'); p.add_argument('--deployment')
+ p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('stream','replay'),required=True); p.add_argument('--model-root',required=True); p.add_argument('--run-dir'); p.add_argument('--tokens'); p.add_argument('--receipt'); p.add_argument('--bundle'); p.add_argument('--copy-sha'); p.add_argument('--runtime-sha'); p.add_argument('--git-commit'); p.add_argument('--deployment'); p.add_argument('--nvtx-components',action='store_true')
  a=p.parse_args(); stream(a) if a.mode=='stream' else replay(a)
 if __name__=='__main__': main()
