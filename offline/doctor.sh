@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-root="$(cd "$(dirname "$0")/.." && pwd)"; bundle="${OFFLINE_BUNDLE_ROOT:-$(cd "$root/.." && pwd)}"; out="${1:-$root/docs-local/reports/ENVIRONMENT.json}"
+repo="$(cd "$(dirname "$0")/.." && pwd)"; bundle="${OFFLINE_BUNDLE_ROOT:-$(cd "$repo/.." && pwd)}"; out="${1:-$repo/docs-local/reports/ENVIRONMENT.md}"
+cuda="${CUDA_INSTALL_PATH:-$bundle/toolchain/cuda-12.4}"; bison="$bundle/toolchain/bison-3.8.2/bin/bison"; flex="$bundle/toolchain/flex-2.6.4/bin/flex"
 mkdir -p "$(dirname "$out")"
-python3 - "$root" "$bundle" "$out" <<'PY'
-import json, os, platform, shutil, subprocess, sys
-root,bundle,out=sys.argv[1:]
-def cmd(x):
- try:return subprocess.check_output(x,text=True,stderr=subprocess.STDOUT).splitlines()[0]
- except Exception as e:return f"MISSING: {e}"
-cuda=[x for x in [os.environ.get('CUDA_INSTALL_PATH',''),os.path.join(bundle,'toolchain/cuda-12.4'),'/usr/local/cuda','/usr/local/cuda-11.5','/usr/local/cuda-12.4','/usr/local/cuda-12.8'] if x and os.path.exists(x)]
-d={'os':platform.platform(),'machine':platform.machine(),'tools':{x:cmd([x,'--version']) for x in ['gcc','g++','cmake','make','python3','git','bison','flex']},'cuda_toolkits':cuda,'status':{'cuda':'PASS' if any(os.path.exists(os.path.join(x,'bin/nvcc')) for x in cuda) else 'FAIL','bison':'PASS' if shutil.which('bison') else 'FAIL','flex':'PASS' if shutil.which('flex') else 'FAIL'},'system_libraries':cmd(['ldconfig','-p']),'repo_root':root,'bundle_root':bundle}
-open(out,'w').write(json.dumps(d,indent=2,sort_keys=True)+'\n')
-PY
-echo "Wrote $out"
+{ echo '# Offline-Sim environment'; echo; printf '| component | status | value |\n|---|---|---|\n'; for item in "CUDA|$cuda/bin/nvcc" "Bison|$bison" "Flex|$flex" "Python|$(command -v python3)" "CMake|$(command -v cmake)"; do n=${item%%|*}; p=${item#*|}; if test -x "$p"; then printf '| %s | PASS | `%s` |\n' "$n" "$p"; else printf '| %s | FAIL | `%s` |\n' "$n" "$p"; fi; done; } > "$out"

@@ -1,18 +1,9 @@
-# Environment report
-{
-  "cuda_toolkits": [],
-  "machine": "x86_64",
-  "os": "Linux-6.8.0-45-generic-x86_64-with-glibc2.35",
-  "root": "/root/workspace/offline-sim-v1/accel-sim-framework",
-  "system_libraries": "185 libs found in cache `/etc/ld.so.cache'",
-  "tools": {
-    "bison": "MISSING: [Errno 2] No such file or directory: 'bison'",
-    "cmake": "cmake version 3.22.1",
-    "flex": "MISSING: [Errno 2] No such file or directory: 'flex'",
-    "g++": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
-    "gcc": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
-    "git": "git version 2.34.1",
-    "make": "GNU Make 4.3",
-    "python3": "Python 3.10.12"
-  }
-}
+# Offline-Sim environment
+
+| component | status | value |
+|---|---|---|
+| CUDA | PASS | `/root/workspace/offline-sim-v1/toolchain/cuda-12.4/bin/nvcc` |
+| Bison | PASS | `/root/workspace/offline-sim-v1/toolchain/bison-3.8.2/bin/bison` |
+| Flex | PASS | `/root/workspace/offline-sim-v1/toolchain/flex-2.6.4/bin/flex` |
+| Python | PASS | `/usr/bin/python3` |
+| CMake | PASS | `/usr/bin/cmake` |
