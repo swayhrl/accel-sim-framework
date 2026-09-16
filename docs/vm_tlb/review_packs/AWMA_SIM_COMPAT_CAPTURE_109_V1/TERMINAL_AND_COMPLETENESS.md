@@ -1,0 +1,1 @@
+FAIL-CLOSED: native receiver did not clear recv_thread_receiving after flush_channel. Three bounded recoveries: driver link repair; single-function selector; atomic completion flag. No COMPLETE receipt, no drop/overflow evidence, no READY.

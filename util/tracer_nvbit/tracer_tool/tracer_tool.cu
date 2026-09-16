@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <atomic>
 #include <bitset>
 #include <fstream>
 #include <iostream>
@@ -55,7 +56,7 @@ static ChannelHost channel_host;
 /* receiving thread and its control variables */
 pthread_t recv_thread;
 volatile bool recv_thread_started = false;
-volatile bool recv_thread_receiving = false;
+std::atomic<bool> recv_thread_receiving{false};
 
 /* skip flag used to avoid re-entry on the nvbit_callback when issuing
  * flush_channel kernel call */
