@@ -1,10 +1,18 @@
 # AWMA node109 resume after 174 LDGDEPBAR validator hotfix
 
-Execute only after 174-new reports:
+174-new has now formally reported:
 
 `174NEW_SIM_CONSUMER_LDGDEPBAR_VALIDATOR_HOTFIX_PASS`
 
-and provides the exact hotfix commit SHA.
+Accepted hotfix implementation:
+
+- branch: `hrl/awma-sim-consumer-validator-ldgdepbar-174new-v1`
+- commit: `fb5d0bebee421a0153661239e1f7c2bc088d5c9e`
+- accepted consumer base retained: `25aa29862239a408099639ae9d5f1a0ea4fee1e1`
+- hotfix validator source SHA256: `dfc42e9225aa5d7a0e87fc1be8c433580c1bb687deb677c687ec70470187394c`
+- authoritative frozen `gpu-simulator/trace-parser/trace_parser.cc` SHA256 remains `9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28`
+
+The hotfix is narrow: exact `LDGDEPBAR` is classified as addressless control; `LDG.E.32 width=0` and `LDGSTS width=0` still fail. Producer bytes, simulator source/binary, Q05 identity, and SIM_BASELINE_ID are unchanged.
 
 Producer checkpoint to resume:
 
@@ -15,29 +23,49 @@ Producer checkpoint to resume:
 - terminal: COMPLETE
 - drop=0 / overflow=0
 - address mode 2 count = 0
+- canonical raw -> postprocess -> traceg completed
 - GPU lock is currently free
 
 ## Step 1 — CPU-only real-trace admission cross-check
 
 Before any new GPU run:
 
-1. fetch the exact 174 validator-hotfix commit;
-2. build `traceg_grammar_smoke` from that exact committed source against the same repository authoritative `trace_parser.cc` used by the consumer hotfix;
-3. hash-close validator source and binary;
+1. fetch exact hotfix commit `fb5d0bebee421a0153661239e1f7c2bc088d5c9e`;
+2. build `traceg_grammar_smoke` from that exact committed source against the unchanged repository-authoritative `trace_parser.cc`;
+3. verify source SHA256s above and hash-close the locally built validator binary;
 4. run it against the existing Q05 R3 `.traceg.xz` artifact from checkpoint `e46193b94dd969a988126fc9fa5545da08b26d18`;
-5. preserve stdout/stderr/returncode and parser receipt.
+5. preserve command/stdout/stderr/returncode and parser receipt;
+6. verify the whole real trace returns `TRACEG_GRAMMAR_PASS`, including the 16,128 `LDGDEPBAR` records;
+7. run/retain the relevant negative regressions proving real memory records remain strict.
 
-PASS requires the entire real Q05 trace to return `TRACEG_GRAMMAR_PASS`. Do not special-case or skip `LDGDEPBAR` records outside the committed validator rule.
+Do not special-case records outside the committed validator rule. If another exact semantic false positive appears, stop for source-backed review; do not mutate producer bytes to satisfy lexical heuristics.
 
-If this cross-check reveals another exact false-positive semantic classification, stop for review with the exact opcode/source-backed semantics; do not mutate producer data to satisfy a lexical heuristic.
+## Step 2 — prefer promotion of the already-complete R3 trace
 
-## Step 2 — producer formalization
+Do not automatically recapture Q05 merely because the run was originally called a canary.
 
-If the existing Q05 R3 real trace passes the committed hotfix validator, continue immediately in solve-and-continue mode.
+First compare the actual R3 capture command/environment/selector/runtime/output policy against the frozen formal producer contract. R3 may be promoted to the formal producer artifact if and only if all of the following are true and are documented with evidence:
 
-The producer source/binary already used for R3 remains authoritative unless a new producer-side defect is discovered. The consumer validator hotfix alone does not require changing producer trace bytes.
+- exact frozen workload identity and token/input authority were used;
+- exact semantic function + occurrence 0 binding was resolved for that run;
+- there was no instruction-count, record-count, time, CTA, warp, kernel-body, or output truncation specific to canary/debug operation;
+- tracer source/binary and Route-B address policy are the intended formal producer implementation;
+- target ran to natural workload completion;
+- terminal COMPLETE is device/channel-derived;
+- drop_count=0 and overflow_count=0;
+- address mode 2 count=0 under the accepted frozen-baseline compatibility policy;
+- canonical raw -> existing post-traces-processing -> traceg path was used;
+- the exact hotfix validator passes the complete R3 trace;
+- kernelslist/trace members and all required context/launch/address identities are recoverable and hash-closeable;
+- no artifact was modified after capture except deterministic canonical post-processing already admitted by contract.
 
-Run the formal exact Q05 capture under the frozen workload/target identity:
+If every item holds, **do not rerun the GPU capture**. Materialize R3 as the formal producer bundle by creating the formal terminal receipt, manifest, hash roots, source/build/binary/runtime receipts, accepted READY publication, final review pack/report, and provenance statement that the previously named canary was promoted because its actual execution satisfied the formal capture contract.
+
+The original label `canary` alone is not a scientific reason to discard an otherwise contract-identical, naturally complete trace.
+
+## Step 3 — recapture only if R3 is not formally promotable
+
+If any canary-only execution difference is found, run exactly one formal capture under the frozen identity:
 
 - model: `Qwen/Qwen2.5-0.5B-Instruct`
 - revision: `7ae557604adf67be50417f59c2c2f167def9a775`
@@ -53,7 +81,7 @@ Run the formal exact Q05 capture under the frozen workload/target identity:
 
 Re-resolve semantic/function/occurrence binding at run time; a historical numeric kernel ID is not authority.
 
-Formal PASS requires:
+Whether promoted R3 or one necessary recapture is used, formal PASS requires:
 
 - natural workload completion;
 - target terminal COMPLETE derived from device/channel receiver closure;
