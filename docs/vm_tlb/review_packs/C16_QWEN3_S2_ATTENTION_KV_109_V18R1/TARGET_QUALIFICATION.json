@@ -1,0 +1,10 @@
+{
+  "status": "BLOCKED_KV_TARGET_QUALIFICATION",
+  "candidate_scope": "layer0.self_attn first decode",
+  "forbidden_candidates": "q/k/v/o GEMV projections",
+  "bounded_methods": [
+    "synchronized module NVTX/NSYS range",
+    "same-process pre-attention KV ranges"
+  ],
+  "reason": "multiple kernels remain semantically mixed and no lossless K/V address attribution to a non-projection core operation"
+}
