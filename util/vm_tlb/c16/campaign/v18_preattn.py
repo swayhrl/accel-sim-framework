@@ -15,10 +15,11 @@ with torch.inference_mode():
   l=layer(i);x=l(x,position_ids=p,past_key_value=cache,use_cache=True,cache_position=torch.arange(len(ids),device='cuda'),position_embeddings=rot(x,p))[0];del l;torch.cuda.empty_cache();gc.collect()
  norm=Qwen3RMSNorm(c.hidden_size,eps=c.rms_norm_eps).to(dtype=torch.bfloat16);norm.weight.data.copy_(ten('model.norm.weight'));norm=norm.cuda();head=torch.nn.Linear(c.hidden_size,c.vocab_size,bias=False,dtype=torch.bfloat16);head.weight.data.copy_(ten('lm_head.weight'));head=head.cuda();nxt=head(norm(x)[:,-1,:]).argmax(-1,keepdim=True);del norm,head;torch.cuda.empty_cache();l=layer(0);cap={}
 def pre(_m,args,kwargs):
+ torch.cuda.synchronize();torch.cuda.nvtx.range_push('C16_V18R1_QWEN3_FIRST_DECODE_LAYER0_SELF_ATTN')
  cap['in']=kwargs['hidden_states'].detach().cpu().clone()
  cap['attention_mask']=kwargs.get('attention_mask').detach().cpu().clone() if kwargs.get('attention_mask') is not None else None
  return None
-def hk(_m,inp,out):cap['out']=out[0].detach().cpu().clone() if isinstance(out,tuple) else out.detach().cpu().clone();return None
+def hk(_m,inp,out):torch.cuda.synchronize();cap['out']=out[0].detach().cpu().clone() if isinstance(out,tuple) else out.detach().cpu().clone();torch.cuda.nvtx.range_pop();return None
 h0=l.self_attn.register_forward_pre_hook(pre,with_kwargs=True);h=l.self_attn.register_forward_hook(hk)
 with torch.inference_mode():
  dx=emb(nxt);dp=torch.tensor([[len(ids)]],device='cuda');l(dx,position_ids=dp,past_key_value=cache,use_cache=True,cache_position=torch.tensor([len(ids)],device='cuda'),position_embeddings=rot(dx,dp))[0]
