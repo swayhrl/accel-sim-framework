@@ -1,0 +1,7 @@
+offline-v1-bfs-smoke:
+    exec_dir: "$GPUAPPS_ROOT/bin/$CUDA_VERSION/release/"
+    data_dirs: "$ACCELSIM_ROOT/offline/testdata/bfs-smoke/"
+    execs:
+        - bfs-rodinia-2.0-ft:
+            - args: ./data/graph4096.txt ./data/graph4096-result.txt
+              accel-sim-mem: 1G
