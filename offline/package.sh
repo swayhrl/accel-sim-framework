@@ -10,6 +10,10 @@ test "$(git -C "$repo" rev-parse offline-sim-v1.0^{})" = "$(git -C "$repo" rev-p
 test -f "$bundle/$gpu_app_collection/src/setup_environment"
 test -d "$bundle/$gpu_app_collection/4.2"
 test -d "$bundle/cache/apps/gpu-app-collection/bin/12.4/release"
+test -x "$bundle/toolchain/cuda-12.4/bin/nvcc"
+test -x "$bundle/toolchain/cuda-12.4/bin/ptxas"
+test -x "$bundle/toolchain/cuda-12.4/bin/cuobjdump"
+test -x "$bundle/cache/apps/gpu-app-collection/bin/12.4/release/bfs-rodinia-2.0-ft"
 git -C "$repo" bundle create "$bundle/cache/git/framework-offline-sim-v1.0.bundle" project/offline-sim offline-sim-v1.0
 git -C "$repo/gpu-simulator/gpgpu-sim" bundle create "$bundle/cache/git/gpgpu-sim-project-offline-sim.bundle" project/offline-sim
 sha256sum "$bundle/cache/git/framework-offline-sim-v1.0.bundle" "$bundle/cache/git/gpgpu-sim-project-offline-sim.bundle" > "$bundle/cache/git/RELEASE_BUNDLES.SHA256"
