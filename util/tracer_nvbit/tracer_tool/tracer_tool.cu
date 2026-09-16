@@ -32,6 +32,7 @@
 
 /* contains definition of the inst_trace_t structure */
 #include "common.h"
+#include "tool_func/flush_channel.c"
 
 #define TRACER_VERSION "5"
 
@@ -50,13 +51,9 @@ static int get_attr_with_kernel_fallback(CUfunction func,
 
 /* Channel used to communicate from GPU to CPU receiving thread */
 #define CHANNEL_SIZE (1l << 20)
-static __managed__ ChannelDev channel_dev;
-static ChannelHost channel_host;
-
-/* receiving thread and its control variables */
-pthread_t recv_thread;
-volatile bool recv_thread_started = false;
-std::atomic<bool> recv_thread_receiving{false};
+enum class ReceiverLifecycle { INIT, WORKING, STOP, FINISHED };
+struct CtxTraceState { ChannelDev* channel_dev = nullptr; ChannelHost channel_host; CUmodule flush_module = nullptr; CUfunction flush_function = nullptr; std::atomic<ReceiverLifecycle> lifecycle{ReceiverLifecycle::INIT}; std::atomic<unsigned long long> armed_seq{0}; std::atomic<unsigned long long> completed_seq{0}; };
+static std::unordered_map<CUcontext, CtxTraceState*> ctx_trace_state;
 
 /* skip flag used to avoid re-entry on the nvbit_callback when issuing
  * flush_channel kernel call */
@@ -452,7 +449,7 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
         nvbit_add_call_arg_const_val64(instr, imm_value);
 
         /* add pointer to channel_dev and other counters*/
-        nvbit_add_call_arg_const_val64(instr, (uint64_t)&channel_dev);
+        nvbit_add_call_arg_const_val64(instr, (uint64_t)ctx_trace_state.at(ctx)->channel_dev);
         nvbit_add_call_arg_const_val64(instr,
                                        (uint64_t)&total_dynamic_instr_counter);
         nvbit_add_call_arg_const_val64(
@@ -471,21 +468,11 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
   }
 }
 
-__global__ void flush_channel() {
-  /* push memory access with negative cta id to communicate the kernel is
-   * completed */
-  inst_trace_t ma;
-  ma.cta_id_x = -1;
-  channel_dev.push(&ma, sizeof(inst_trace_t));
-
-  /* flush channel */
-  channel_dev.flush();
-}
-
 static void enter_kernel_launch(CUcontext ctx, CUfunction func,
                                 nvbit_api_cuda_t cbid, void *params,
                                 bool stream_capture = false,
                                 bool build_graph = false) {
+  CtxTraceState* state = ctx_trace_state.at(ctx);
   // no need to sync during stream capture or manual graph build, since no
   // kernel is actually launched.
   if (!stream_capture && !build_graph) {
@@ -556,6 +543,7 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
   int binary_version =
       get_attr_with_kernel_fallback(func, CU_FUNC_ATTRIBUTE_BINARY_VERSION);
 
+  state->armed_seq.fetch_add(1, std::memory_order_release);
   // Instrument the kernel if needed
   instrument_function_if_needed(ctx, func);
 
@@ -635,10 +623,10 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
   ctx_kernelid[ctx]++;
   ctx_current_kernel_name[ctx] =
       std::string(nvbit_get_func_name(ctx, func, true));
-  recv_thread_receiving = true;
 }
 
 static void leave_kernel_launch(CUcontext ctx, CUfunction func) {
+  CtxTraceState* state = ctx_trace_state.at(ctx);
   if (!ctx_trace_this_kernel[ctx]) {
     return;
   }
@@ -657,18 +645,17 @@ static void leave_kernel_launch(CUcontext ctx, CUfunction func) {
 
   /* issue flush of channel so we are sure all the memory accesses
    * have been pushed */
-  flush_channel<<<1, 1>>>();
+  void* flush_args[] = {&state->channel_dev};
+  nvbit_launch_kernel(ctx, state->flush_function, 1, 1, 1, 1, 1, 1, 0, nullptr, flush_args, nullptr);
   cudaDeviceSynchronize();
-  assert(cudaGetLastError() == cudaSuccess);
+    assert(cudaGetLastError() == cudaSuccess);
 
   /* unset the skip flag */
   skip_flag = false;
 
   /* wait here until the receiving thread has not finished with the
    * current kernel */
-  while (recv_thread_receiving) {
-    pthread_yield();
-  }
+  while (state->completed_seq.load(std::memory_order_acquire) != state->armed_seq.load(std::memory_order_acquire)) { pthread_yield(); }
 
   unsigned total_insts_per_kernel =
       total_dynamic_instr_counter - old_total_insts;
@@ -835,13 +822,15 @@ void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
       cuGraphLaunch_params *p = (cuGraphLaunch_params *)params;
 
       CUDA_SAFECALL(cudaStreamSynchronize(p->hStream));
-      assert(cudaGetLastError() == cudaSuccess);
+    assert(cudaGetLastError() == cudaSuccess);
       /* push a flush channel kernel */
       skip_flag = true;
-      flush_channel<<<1, 1, 0, p->hStream>>>();
+      CtxTraceState* graph_state = ctx_trace_state.at(ctx);
+      void* graph_flush_args[] = {&graph_state->channel_dev};
+      nvbit_launch_kernel(ctx, graph_state->flush_function, 1, 1, 1, 1, 1, 1, 0, p->hStream, graph_flush_args, nullptr);
       CUDA_SAFECALL(cudaStreamSynchronize(p->hStream));
       skip_flag = false;
-      assert(cudaGetLastError() == cudaSuccess);
+    assert(cudaGetLastError() == cudaSuccess);
     }
 
   } break;
@@ -1009,10 +998,10 @@ void *recv_thread_fun(void *args) {
   // encountered (clear the counter)
   std::map<warp_key_t, counter_t> warp_counter_map;
 
-  while (recv_thread_started) {
+  CtxTraceState* state = ctx_trace_state.at(ctx);
+  while (state->lifecycle.load(std::memory_order_acquire) == ReceiverLifecycle::WORKING) {
     uint32_t num_recv_bytes = 0;
-    if (recv_thread_receiving &&
-        (num_recv_bytes = channel_host.recv(recv_buffer, CHANNEL_SIZE)) > 0) {
+    if (state->completed_seq.load(std::memory_order_acquire) < state->armed_seq.load(std::memory_order_acquire) && (num_recv_bytes = state->channel_host.recv(recv_buffer, CHANNEL_SIZE)) > 0) {
       uint32_t num_processed_bytes = 0;
       while (num_processed_bytes < num_recv_bytes) {
         inst_trace_t *ma = (inst_trace_t *)&recv_buffer[num_processed_bytes];
@@ -1020,7 +1009,7 @@ void *recv_thread_fun(void *args) {
         /* when we get this cta_id_x it means the kernel has completed
          */
         if (ma->cta_id_x == -1) {
-          recv_thread_receiving = false;
+          state->completed_seq.store(state->armed_seq.load(std::memory_order_acquire), std::memory_order_release);
           if (enable_spinlock_fast_forward) {
             // Clear the counter map for all warps as we are starting a new
             // kernel
@@ -1161,25 +1150,35 @@ void *recv_thread_fun(void *args) {
     }
   }
   free(recv_buffer);
-
+  state->lifecycle.store(ReceiverLifecycle::FINISHED, std::memory_order_release);
   return NULL;
 }
 
 void nvbit_tool_init(CUcontext ctx) {
+  CtxTraceState* state = ctx_trace_state.at(ctx);
   ctx_current_kernel_name[ctx] = "";
-  recv_thread_started = true;
-  channel_host.init(0, CHANNEL_SIZE, &channel_dev, NULL);
-  pthread_create(&recv_thread, NULL, recv_thread_fun, ctx);
+  nvbit_load_tool_module(ctx, (const void*)flush_channel_bin, &state->flush_module);
+  nvbit_find_function_by_name(ctx, state->flush_module, "flush_channel", &state->flush_function);
+  CUDA_SAFECALL(cudaMallocManaged(&state->channel_dev, sizeof(ChannelDev)));
+  state->lifecycle.store(ReceiverLifecycle::WORKING, std::memory_order_release);
+  state->channel_host.init(0, CHANNEL_SIZE, state->channel_dev, recv_thread_fun, ctx);
+  nvbit_set_tool_pthread(state->channel_host.get_thread());
 }
 
 void nvbit_at_ctx_term(CUcontext ctx) {
-  if (recv_thread_started) {
-    recv_thread_started = false;
-    pthread_join(recv_thread, NULL);
-  }
+  skip_flag = true;
+  CtxTraceState* state = ctx_trace_state.at(ctx);
+  state->lifecycle.store(ReceiverLifecycle::STOP, std::memory_order_release);
+  while (state->lifecycle.load(std::memory_order_acquire) != ReceiverLifecycle::FINISHED) pthread_yield();
+  state->channel_host.destroy(false);
+  CUDA_SAFECALL(cudaFree(state->channel_dev));
+  ctx_trace_state.erase(ctx);
+  delete state;
+  skip_flag = false;
 }
 
 void nvbit_at_ctx_init(CUcontext ctx) {
+  CtxTraceState* state = new CtxTraceState; ctx_trace_state[ctx] = state;
   // Everytime we init a context, add the foldername and kernelid to the set
   char buffer[2048];
   sprintf(buffer, "kernelslist_ctx_0x%lx", ctx);
