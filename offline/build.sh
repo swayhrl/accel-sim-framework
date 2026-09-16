@@ -7,15 +7,17 @@ printf 'repo=%s\nbundle=%s\n' "$root" "$bundle" > "$bundle/logs/build-bootstrap.
 log="$bundle/logs/build-$(date -u +%Y%m%dT%H%M%SZ).log"
 rc="${log%.log}.rc"
 set +e
-{
+( 
   source "$root/offline/env.sh"
   : "${CUDA_INSTALL_PATH:?Set CUDA_INSTALL_PATH to an installed compatible toolkit}"
   test -x "$CUDA_INSTALL_PATH/bin/nvcc"
+  set +u
   source "$root/gpu-simulator/setup_environment.sh"
+  set -u
   cmake -S "$root/gpu-simulator" -B "$root/gpu-simulator/build/release" -DCMAKE_BUILD_TYPE=Release
-  cmake --build "$root/gpu-simulator/build/release" -j"${JOBS:-$(nproc)}"
+  cmake --build "$root/gpu-simulator/build/release" -j"${JOBS:-4}"
   cmake --install "$root/gpu-simulator/build/release"
-} >"$log" 2>&1
+) >"$log" 2>&1
 status=$?
 set -e
 printf '%s\n' "$status" >"$rc"
