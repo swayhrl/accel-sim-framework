@@ -5,7 +5,7 @@ from pathlib import Path
 
 import torch
 from transformers import AutoConfig, DynamicCache
-from transformers.models.qwen3_moe.modeling_qwen3_moe import Qwen3MoeForCausalLM
+from transformers.models.qwen3_moe.modeling_qwen3_moe import Qwen3MoeForCausalLM, Qwen3MoeRotaryEmbedding
 from util.vm_tlb.c16.qwen3_30b.materializer import Materializer
 from util.vm_tlb.c16.qwen3_30b.state import freeze, validate
 
@@ -38,6 +38,9 @@ class Q30:
   self.root=Path(root); self.config=AutoConfig.from_pretrained(self.root,local_files_only=True)
   with torch.device('meta'): self.model=Qwen3MoeForCausalLM(self.config)
   self.model=self.model.to(dtype=torch.bfloat16); self.model.eval()
+  # inv_freq is a non-persistent runtime buffer rather than an archived weight.
+  # Recreate it through the exact installed official module, not a local RoPE formula.
+  self.model.model.rotary_emb=Qwen3MoeRotaryEmbedding(self.config, device='cuda')
   self.wmap=json.loads((self.root/'model.safetensors.index.json').read_text())['weight_map']
   if len(self.wmap)!=18867 or set(self.wmap)!=set(self.model.state_dict()): raise RuntimeError('canonical model/index closure invalid')
   self.mat=Materializer(self.root,self.wmap)
