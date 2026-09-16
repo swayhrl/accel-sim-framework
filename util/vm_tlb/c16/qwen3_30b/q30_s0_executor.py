@@ -96,9 +96,9 @@ def diag(actual,expected):
  a=actual.float(); b=expected.float(); d=(a-b).abs(); neq=actual.ne(expected); idx=neq.nonzero(); return {'differing_elements':int(neq.sum()),'max_abs':float(d.max()),'max_rel':float((d/(b.abs()+1e-30)).max()),'first_mismatch':idx[0].tolist() if len(idx) else None}
 
 def stream(a):
- if fsha(a.tokens)!=TOKEN_SHA or fsha(a.receipt)!=RECEIPT_SHA: raise RuntimeError('S0 authority SHA mismatch')
+ if fsha(a.tokens)!=a.input_token_sha or fsha(a.receipt)!=a.input_receipt_sha: raise RuntimeError('frozen input authority SHA mismatch')
  ids=json.loads(Path(a.tokens).read_text());
- if len(ids)!=128: raise RuntimeError('S0 context must be exactly 128')
+ if len(ids)!=a.context: raise RuntimeError('frozen input context mismatch')
  run=Path(a.run_dir); sem=run/'semantic'; states=run/'target_states';
  if (sem/'SEMANTIC_RUN_RECEIPT.json').exists() or (states/'TARGET_LAYER_STATE_INDEX.json').exists(): raise FileExistsError(run)
  for d in (sem,states,run/'replay',run/'logs',run/'receipts'): d.mkdir(parents=True,exist_ok=True)
@@ -106,7 +106,7 @@ def stream(a):
  def phase(name,tid,step=None):
   h=q.embed(tid); prior=c.get_seq_length(); cp=torch.arange(prior,prior+h.shape[1],device='cuda'); am=torch.ones((1,prior+h.shape[1]),device='cuda',dtype=torch.long); k=q.kwargs(h,am,c,cp)
   for i in range(48):
-   key=('prefill' if name=='PREFILL' else 'decode3') if i==LAYER and (name=='PREFILL' or step==3) else None
+   key=('prefill' if name=='PREFILL' else 'decode3') if i==LAYER and (name=='PREFILL' or step==a.target_decode_step) else None
    if key: b=boundary(h,k)
    out,rl,mat,before,peak,post=q.layer(i,h,k); rs=router(rl); cs=cache_layer(c,i)
    layer_rows.append({'phase':name,'decode_step':step,'layer_id':i,'input':tinfo(h),'output':tinfo(out),'materialized_tensor_count':mat['tensor_count'],'weight_bytes':mat['bytes'],'cache':cs,'gpu_before':before,'gpu_peak':peak,'gpu_post_release':post})
@@ -116,15 +116,15 @@ def stream(a):
   return q.next_token(h)
  with torch.inference_mode():
   nxt=phase('PREFILL',torch.tensor([ids],device='cuda',dtype=torch.long)); prefill_token=nxt
-  for st in range(4):
+  for st in range(a.decode_steps):
    current=nxt; nxt=phase('DECODE',torch.tensor([[current]],device='cuda',dtype=torch.long),st); decode.append({'decode_step':st,'input_token_id':current,'next_token_id':nxt})
  if set(captures)!={'prefill','decode3'}: raise RuntimeError('fixed target capture missing')
- receipt={'schema_version':'Q30_S0_SEMANTIC_STREAM_V1','status':'Q30_SEMANTIC_STREAMING_S0_PASS','run_id':run.name,'scenario':'Q30_S0_TEXT','batch':1,'context':128,'decode_forwards':4,'decode_numbering':'zero-based; decode_step 0 is first forward after Prefill','prefill_next_token_id':prefill_token,'decode':decode,'model_id':MODEL_ID,'model_revision':REV,'working_copy_receipt_sha':a.copy_sha,'runtime_authority_sha':a.runtime_sha,'input_token_ids_sha':TOKEN_SHA,'input_receipt_sha':RECEIPT_SHA,'git_execution_commit':a.git_commit,'deployment_identity':a.deployment,'layers':layer_rows,'router':router_rows,'elapsed_seconds':time.time()-start}
+ receipt={'schema_version':'Q30_SEMANTIC_STREAM_V2','status':a.semantic_status,'prefill_gate':a.prefill_gate,'decode_gate':a.decode_gate,'run_id':run.name,'scenario':a.scenario,'parent_binding':a.parent_binding,'batch':1,'context':a.context,'decode_forwards':a.decode_steps,'decode_numbering':'zero-based; decode_step 0 is first forward after Prefill','prefill_next_token_id':prefill_token,'decode':decode,'model_id':MODEL_ID,'model_revision':REV,'working_copy_receipt_sha':a.copy_sha,'runtime_authority_sha':a.runtime_sha,'input_token_ids_sha':a.input_token_sha,'input_receipt_sha':a.input_receipt_sha,'git_execution_commit':a.git_commit,'deployment_identity':a.deployment,'layers':layer_rows,'router':router_rows,'elapsed_seconds':time.time()-start}
  (sem/'SEMANTIC_RUN_RECEIPT.json').write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n'); srsha=fsha(sem/'SEMANTIC_RUN_RECEIPT.json')
  index=[]
  for key,cap in captures.items():
-  phase_name='PREFILL' if key=='prefill' else 'DECODE'; step=None if key=='prefill' else 3; bundle=states/key
-  manifest={'model_id':MODEL_ID,'model_revision':REV,'runtime_identity':a.runtime_sha,'working_copy_receipt_sha':a.copy_sha,'input_binding_sha':RECEIPT_SHA,'scenario':'Q30_S0_TEXT_B1_T128_D4','phase':phase_name,'layer_id':LAYER,'decode_step':step,'source_semantic_run_receipt_sha':srsha,'git_execution_commit':a.git_commit,'deployment_identity':a.deployment,'forward_tensor_contract':contract(cap['call']),'source_router_summary':cap['source']['router']}
+  phase_name='PREFILL' if key=='prefill' else 'DECODE'; step=None if key=='prefill' else a.target_decode_step; bundle=states/key
+  manifest={'model_id':MODEL_ID,'model_revision':REV,'runtime_identity':a.runtime_sha,'working_copy_receipt_sha':a.copy_sha,'input_binding_sha':a.input_receipt_sha,'scenario':a.scenario,'parent_binding':a.parent_binding,'phase':phase_name,'layer_id':LAYER,'decode_step':step,'source_semantic_run_receipt_sha':srsha,'git_execution_commit':a.git_commit,'deployment_identity':a.deployment,'forward_tensor_contract':contract(cap['call']),'source_router_summary':cap['source']['router']}
   freeze(bundle,manifest,{'call_boundary.pt':serial(cap['call']),'source_oracle.pt':serial(cap['source'])}); m=validate(bundle,REV,LAYER)
   arts=[]
   for x in m['artifacts']: arts.append(x)
@@ -142,6 +142,6 @@ def replay(a):
  if res['status']!='PASS': sys.exit(2)
 
 def main():
- p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('stream','replay'),required=True); p.add_argument('--model-root',required=True); p.add_argument('--run-dir'); p.add_argument('--tokens'); p.add_argument('--receipt'); p.add_argument('--bundle'); p.add_argument('--copy-sha'); p.add_argument('--runtime-sha'); p.add_argument('--git-commit'); p.add_argument('--deployment'); p.add_argument('--nvtx-components',action='store_true')
+ p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('stream','replay'),required=True); p.add_argument('--model-root',required=True); p.add_argument('--run-dir'); p.add_argument('--tokens'); p.add_argument('--receipt'); p.add_argument('--bundle'); p.add_argument('--copy-sha'); p.add_argument('--runtime-sha'); p.add_argument('--git-commit'); p.add_argument('--deployment'); p.add_argument('--nvtx-components',action='store_true'); p.add_argument('--input-token-sha',default=TOKEN_SHA); p.add_argument('--input-receipt-sha',default=RECEIPT_SHA); p.add_argument('--context',type=int,default=128); p.add_argument('--decode-steps',type=int,default=4); p.add_argument('--target-decode-step',type=int,default=3); p.add_argument('--scenario',default='Q30_S0_TEXT'); p.add_argument('--parent-binding',default='Q30_S0_TEXT B1/T128/D4'); p.add_argument('--semantic-status',default='Q30_SEMANTIC_STREAMING_S0_PASS'); p.add_argument('--prefill-gate',default='Q30_S0_PREFILL_STREAMING_PASS'); p.add_argument('--decode-gate',default='Q30_S0_DECODE_PREFIX_D4_PASS')
  a=p.parse_args(); stream(a) if a.mode=='stream' else replay(a)
 if __name__=='__main__': main()
