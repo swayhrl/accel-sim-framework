@@ -5,7 +5,7 @@ bundle="${OFFLINE_BUNDLE_ROOT:-$(cd "$repo/.." && pwd)}"
 out="${1:-$bundle/dist/accel-sim-offline-v1.0.tar.gz}"
 mkdir -p "$bundle/dist" "$bundle/cache/git"
 test "$(git -C "$repo" branch --show-current)" = project/offline-sim
-test "$(git -C "$repo" rev-parse offline-sim-v1.0)" = "$(git -C "$repo" rev-parse HEAD)"
+test "$(git -C "$repo" rev-parse offline-sim-v1.0^{})" = "$(git -C "$repo" rev-parse HEAD)"
 git -C "$repo" bundle create "$bundle/cache/git/framework-offline-sim-v1.0.bundle" project/offline-sim offline-sim-v1.0
 git -C "$repo/gpu-simulator/gpgpu-sim" bundle create "$bundle/cache/git/gpgpu-sim-project-offline-sim.bundle" project/offline-sim
 sha256sum "$bundle/cache/git/framework-offline-sim-v1.0.bundle" "$bundle/cache/git/gpgpu-sim-project-offline-sim.bundle" > "$bundle/cache/git/RELEASE_BUNDLES.SHA256"
