@@ -1,0 +1,218 @@
+{
+  "status": "PASS",
+  "bitwise_equal": true,
+  "max_abs": 0.0,
+  "cache_after": 2049,
+  "events": [
+    {
+      "op": "PREEXISTING_KV_STORAGE",
+      "K": {
+        "name": "K_pre",
+        "shape": [
+          1,
+          8,
+          2048,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          2097152,
+          262144,
+          128,
+          1
+        ],
+        "ptr": "0x7bbd8d400000",
+        "storage_ptr": "0x7bbd8d400000",
+        "storage_bytes": 4194304
+      },
+      "V": {
+        "name": "V_pre",
+        "shape": [
+          1,
+          8,
+          2048,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          2097152,
+          262144,
+          128,
+          1
+        ],
+        "ptr": "0x7bbe40000000",
+        "storage_ptr": "0x7bbe40000000",
+        "storage_bytes": 4194304
+      }
+    },
+    {
+      "op": "POST_UPDATE_KV_STORAGE",
+      "K": {
+        "name": "K_post",
+        "shape": [
+          1,
+          8,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          2098176,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbe40c20000",
+        "storage_ptr": "0x7bbe40c20000",
+        "storage_bytes": 4196352
+      },
+      "V": {
+        "name": "V_post",
+        "shape": [
+          1,
+          8,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          2098176,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbd7e000000",
+        "storage_ptr": "0x7bbd7e000000",
+        "storage_bytes": 4196352
+      }
+    },
+    {
+      "op": "KV_DERIVED_REPEAT_BUFFER_K",
+      "source": {
+        "name": "K_post",
+        "shape": [
+          1,
+          8,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          2098176,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbe40c20000",
+        "storage_ptr": "0x7bbe40c20000",
+        "storage_bytes": 4196352
+      },
+      "derived": {
+        "name": "K_repeat",
+        "shape": [
+          1,
+          32,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          8392704,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbd7f400000",
+        "storage_ptr": "0x7bbd7f400000",
+        "storage_bytes": 16785408
+      },
+      "alias": false
+    },
+    {
+      "op": "KV_DERIVED_REPEAT_BUFFER_V",
+      "source": {
+        "name": "V_post",
+        "shape": [
+          1,
+          8,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          2098176,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbd7e000000",
+        "storage_ptr": "0x7bbd7e000000",
+        "storage_bytes": 4196352
+      },
+      "derived": {
+        "name": "V_repeat",
+        "shape": [
+          1,
+          32,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          8392704,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbd80600000",
+        "storage_ptr": "0x7bbd80600000",
+        "storage_bytes": 16785408
+      },
+      "alias": false
+    },
+    {
+      "op": "ATTENTION_CORE_OPERAND_QK",
+      "K_operand": {
+        "name": "K_repeat",
+        "shape": [
+          1,
+          32,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          8392704,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbd7f400000",
+        "storage_ptr": "0x7bbd7f400000",
+        "storage_bytes": 16785408
+      }
+    },
+    {
+      "op": "ATTENTION_CORE_OPERAND_AV",
+      "V_operand": {
+        "name": "V_repeat",
+        "shape": [
+          1,
+          32,
+          2049,
+          128
+        ],
+        "dtype": "torch.bfloat16",
+        "stride": [
+          8392704,
+          262272,
+          128,
+          1
+        ],
+        "ptr": "0x7bbd80600000",
+        "storage_ptr": "0x7bbd80600000",
+        "storage_bytes": 16785408
+      }
+    }
+  ]
+}
