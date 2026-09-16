@@ -1,0 +1,49 @@
+{
+  "mla": {
+    "dataflow": "MLA: q projection; compressed kv latent; kv_a/kv_b expansion; RoPE/nope split; attention uses reconstructed K/V",
+    "formal_targets": [
+      "mla_kv_latent_read",
+      "mla_kv_b_expand",
+      "attention_output_projection"
+    ],
+    "not_ordinary_mha": true
+  },
+  "model": {
+    "architecture": [
+      "DeepseekV2ForCausalLM"
+    ],
+    "asset_bytes": 31418842074,
+    "capacity_mode": "EXACT_SEMANTIC_LAYER_STREAMING_REPLAY",
+    "config_sha256": "f346286b0f1c8b044252fd54cb4fa78b9fab6472a6e8bebb9edfe03d414ea03d",
+    "cpu_only": true,
+    "model_id": "deepseek-ai/DeepSeek-V2-Lite",
+    "native_full_resident": "PRECHECK_REQUIRED",
+    "revision": "604d5664dddd88a0433dbae533b7fe9472482de0"
+  },
+  "moe": {
+    "dataflow": "MoE router logits -> top-k natural routing -> selected expert MLPs -> weighted combine",
+    "formal_targets": [
+      "router_topk_natural_routing",
+      "selected_expert_down_proj",
+      "moe_combine"
+    ],
+    "not_dense_mlp": true,
+    "routing": "NATURAL_ROUTING_REQUIRED"
+  },
+  "producer_host": "node109",
+  "runtime_api": {
+    "must_capture": "runtime/backend/version, MLA and MoE routing observables",
+    "no_gpu_by_consumer": true
+  },
+  "scenarios": [
+    "S2",
+    "S3"
+  ],
+  "stop_conditions": [
+    "input_hash_mismatch",
+    "revision_mismatch",
+    "non-natural_moe_routing",
+    "overflow_drop",
+    "semantic_target_mismatch"
+  ]
+}
