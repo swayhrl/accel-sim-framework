@@ -75,6 +75,9 @@ class Q30:
      return None
     return f
    hooks=[m.self_attn.register_forward_pre_hook(enter('Q30_COMPONENT_SELF_ATTN')),m.self_attn.register_forward_hook(leave('Q30_COMPONENT_SELF_ATTN')),m.mlp.register_forward_pre_hook(enter('Q30_COMPONENT_MLP')),m.mlp.register_forward_hook(leave('Q30_COMPONENT_MLP'))]
+   hooks += [m.mlp.gate.register_forward_pre_hook(enter('Q30_COMPONENT_ROUTER_GATE')),m.mlp.gate.register_forward_hook(leave('Q30_COMPONENT_ROUTER_GATE'))]
+   for expert in m.mlp.experts:
+    hooks += [expert.register_forward_pre_hook(enter('Q30_COMPONENT_EXPERT')),expert.register_forward_hook(leave('Q30_COMPONENT_EXPERT'))]
   try:
    out=m(h,**k); torch.cuda.synchronize(); result=(out[0],out[-1],rec,before,{'allocated':torch.cuda.max_memory_allocated(),'reserved':torch.cuda.max_memory_reserved()})
   finally:
