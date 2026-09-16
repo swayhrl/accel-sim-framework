@@ -68,8 +68,15 @@ bool starts_with(const std::string &value, const std::string &prefix) {
   return value.rfind(prefix, 0) == 0;
 }
 
+// Ampere ISA defines LDGDEPBAR as ALU_OP. trace-driven uses it to group
+// preceding LDGSTS operations, so its trace record has no memory payload.
+bool addressless_control_opcode(const std::string &opcode) {
+  return base_opcode(opcode) == "LDGDEPBAR";
+}
+
 std::string access_kind(const std::string &opcode) {
   const std::string base = base_opcode(opcode);
+  if (addressless_control_opcode(opcode)) return "";
   if (base.find("ATOM") != std::string::npos || starts_with(base, "RED"))
     return "ATOMIC";
   if (starts_with(base, "LD") || starts_with(base, "TEX") ||

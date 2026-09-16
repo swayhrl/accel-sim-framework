@@ -1,0 +1,15 @@
+# Grammar-smoke build receipt
+
+Command executed from the repository root:
+
+```bash
+util/vm_tlb/awma/simulation/build_traceg_grammar_smoke.sh /tmp/awma-ldgdepbar-validator.n0vfkN/traceg_grammar_smoke
+```
+
+Source SHA256:
+
+- `dfc42e9225aa5d7a0e87fc1be8c433580c1bb687deb677c687ec70470187394c` `util/vm_tlb/awma/simulation/traceg_grammar_smoke.cc`
+- `9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28` `gpu-simulator/trace-parser/trace_parser.cc`
+- `cec4bbdc53817a11bea41fcf9d99a53a5ec958ce248b0ab1c85e0d55c0b0bec8` compiled `traceg_grammar_smoke`
+
+The build links the repository-authoritative frozen `trace_parser.cc`; no simulator source or binary was changed.

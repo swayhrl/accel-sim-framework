@@ -44,6 +44,24 @@ insts = 4
 """
 
 
+LDGDEPBAR_TRACE = VALID_TRACE.replace(
+    b"insts = 4\n", b"insts = 5\n"
+).replace(
+    b"0020 ffffffff 0 BAR.SYNC 0 0 0\n",
+    b"0020 ffffffff 0 LDGDEPBAR 0 0 0\n"
+    b"0030 ffffffff 0 BAR.SYNC 0 0 0\n",
+).replace(
+    b"0030 ffffffff 0 EXIT 0 0 0\n",
+    b"0040 ffffffff 0 EXIT 0 0 0\n",
+)
+
+LDG_WIDTH_ZERO_TRACE = VALID_TRACE.replace(b"R2 4 1 1000 4 0", b"R2 0 0")
+LDGSTS_WIDTH_ZERO_TRACE = VALID_TRACE.replace(
+    b"0000 ffffffff 1 R1 LDG.E.32 1 R2 4 1 1000 4 0",
+    b"0000 ffffffff 0 LDGSTS 1 R2 0 0",
+)
+MISSING_MEMORY_ADDRESS_TRACE = VALID_TRACE.replace(b"R2 4 1 1000 4 0", b"R2 4 1 1000")
+
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -119,6 +137,38 @@ class TestFoundation(unittest.TestCase):
 
     def admitted(self, path):
         return foundation.validate_bundle(path, self.parser)
+
+    def compiled_smoke(self, trace):
+        with tempfile.TemporaryDirectory() as temp:
+            trace_path = Path(temp) / "fixture.traceg.xz"
+            trace_path.write_bytes(lzma.compress(trace))
+            return subprocess.run(
+                [str(self.parser), str(trace_path)], text=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False,
+            )
+
+    def test_ldgdepbar_width_zero_without_address_passes_compiled(self):
+        result = self.compiled_smoke(LDGDEPBAR_TRACE)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('"LDGDEPBAR":1', result.stdout)
+    def test_address_bearing_ldg_width_zero_rejected_compiled(self):
+        result = self.compiled_smoke(LDG_WIDTH_ZERO_TRACE)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("memory opcode has zero/missing width: LDG.E.32", result.stderr)
+
+    def test_ldgsts_width_zero_rejected_compiled(self):
+        result = self.compiled_smoke(LDGSTS_WIDTH_ZERO_TRACE)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("memory opcode has zero/missing width: LDGSTS", result.stderr)
+
+    def test_valid_memory_record_passes_compiled(self):
+        result = self.compiled_smoke(VALID_TRACE)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_missing_memory_address_rejected_compiled(self):
+        result = self.compiled_smoke(MISSING_MEMORY_ADDRESS_TRACE)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing stride", result.stderr)
 
     def test_valid_real_grammar_and_stable_id(self):
         with tempfile.TemporaryDirectory() as temp:
