@@ -75,23 +75,6 @@ inline bool base_stride(const uint64_t* addresses, const std::bitset<32>& mask,
   return constant;
 }
 
-inline void base_delta(const uint64_t* addresses, const std::bitset<32>& mask,
-                       uint64_t& base, std::vector<long long>& deltas) {
-  bool first_found = false;
-  uint64_t previous = 0;
-  for (int lane = 0; lane < 32; ++lane) {
-    if (!mask.test(lane)) continue;
-    if (!first_found) {
-      base = addresses[lane];
-      previous = addresses[lane];
-      first_found = true;
-    } else {
-      deltas.push_back(static_cast<long long>(addresses[lane] - previous));
-      previous = addresses[lane];
-    }
-  }
-}
-
 inline std::optional<std::string> format(const inst_trace_t& packet,
                                          const std::map<int, std::string>& opcodes,
                                          bool lineinfo = false,
@@ -129,14 +112,13 @@ inline std::optional<std::string> format(const inst_trace_t& packet,
     line << opcode_width_bytes(opcode) << ' ';
     uint64_t base = 0;
     int stride = 0;
-    std::vector<long long> deltas;
     if (compress && base_stride(packet.addrs, mask, base, stride)) {
       line << "1 0x" << std::hex << base << std::dec << ' ' << stride << ' ';
-    } else if (compress) {
-      base_delta(packet.addrs, mask, base, deltas);
-      line << "2 0x" << std::hex << base << std::dec << ' ';
-      for (long long delta : deltas) line << delta << ' ';
     } else {
+      /* V2 producer compatibility policy: list every effective lane address
+       * when base+stride cannot represent the packet.  Never emit legacy
+       * base_delta mode 2, whose N-1 producer contract is incompatible with
+       * the frozen consumer's N-delta reader. */
       line << "0 ";
       for (int lane = 0; lane < 32; ++lane) {
         if (mask.test(lane)) line << "0x" << std::hex << packet.addrs[lane] << std::dec << ' ';

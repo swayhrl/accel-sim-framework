@@ -1,0 +1,31 @@
+-kernel name = r1_formatter_frozen_regression
+-kernel id = 1
+-grid dim = (1,1,1)
+-block dim = (32,1,1)
+-shmem = 0
+-nregs = 8
+-binary version = 89
+-cuda stream id = 0
+-shmem base_addr = 0x0
+-local mem base_addr = 0x0
+-nvbit version = 1.7.7.1
+-accelsim tracer version = 5
+-enable lineinfo = 0
+
+#traces format = [line_num] PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [addresscompress?] [mem_addresses] immediate
+
+
+
+#BEGIN_TB
+
+thread block = 0,0,0
+
+warp = 0
+insts = 5
+0080 00000003 1 R9 IMAD.MOV.U32 1 R4 0 7
+0080 00000003 0 ULDC.64 0 0 0
+0080 00000003 0 LDG.E.32 0 4 1 0x100 4 17
+0080 00000005 0 STG.E.32 0 4 0 0x100 0x140 0
+0080 0000000b 0 LDG.E.32 0 4 0 0x200 0x208 0x250 -7
+
+#END_TB
