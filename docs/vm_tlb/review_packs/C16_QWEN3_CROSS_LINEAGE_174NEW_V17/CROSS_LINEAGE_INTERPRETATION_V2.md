@@ -1,0 +1,1 @@
+CROSS_LINEAGE_MATCHED_SEMANTIC_OPERATOR_COMPARISON. Per-shard distributions are proven; VA, chronology, reuse and NCU are not comparable. Dynamic differences are lineage/shape-associated observations, not causal claims.
