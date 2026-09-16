@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AWMA_SIM_CONSUMER_V2/SIM_BASELINE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "sim_baseline_id", "framework_sha", "core_sha",
+    "binary_sha256", "toolchain_receipt_sha256", "base_config_sha256",
+    "vm_overlay_sha256", "telemetry_exporter_sha256", "normalizer_sha256",
+    "runtime_wrapper_sha256", "accepted_base_config_sha256s",
+    "fixed_window_cycles", "qualification_scope"
+  ],
+  "properties": {
+    "schema_version": {"const": "AWMA_SIM_CONSUMER_V2"},
+    "sim_baseline_id": {"type": "string", "pattern": "^SIM_BASELINE_[0-9a-f]{64}$"},
+    "framework_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "core_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "binary_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "toolchain_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "base_config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "vm_overlay_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "telemetry_exporter_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "normalizer_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "runtime_wrapper_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "accepted_base_config_sha256s": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+    },
+    "fixed_window_cycles": {"const": 10000},
+    "qualification_scope": {"const": "HASH_BOUND_FIXED_WINDOW_10000"}
+  }
+}

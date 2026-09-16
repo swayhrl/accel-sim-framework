@@ -1,3 +1,10 @@
 # Source anchors
 
-Framework tree 09cc2f029022c660a3f827af9abded0fb34bdb41. VM Core source archive commit 5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d. Non-VM 7be87f53 was rejected because it rejects gpgpu_vm_mode.
+Qualified bounded-replay source authority:
+
+- Framework commit: `d64408a97d76a320a6d49468653d416e33677af8`
+- Core commit: `57bb71ecd015b6ec0ab32e45b0815e5beaf69172`
+
+The earlier Framework tree `09cc2f...` and VM Core `5ba17a...` receipts describe
+precursor recovery attempts, not the final qualified source pair. Non-VM Core
+`7be87f...` remains rejected because it does not accept `gpgpu_vm_mode`.

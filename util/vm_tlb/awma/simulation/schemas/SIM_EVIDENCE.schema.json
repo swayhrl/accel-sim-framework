@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AWMA_SIM_CONSUMER_V2/SIM_EVIDENCE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "sim_evidence_id", "sim_run_id", "sim_input_id",
+    "sim_baseline_id", "raw_log_sha256", "normalized_telemetry_sha256",
+    "claim_scope", "scientific_status"
+  ],
+  "properties": {
+    "schema_version": {"const": "AWMA_SIM_CONSUMER_V2"},
+    "sim_evidence_id": {"type": "string", "pattern": "^SIM_EVIDENCE_[0-9a-f]{64}$"},
+    "sim_run_id": {"type": "string", "pattern": "^SIM_RUN_[0-9a-f]{64}$"},
+    "sim_input_id": {"type": "string", "pattern": "^SIM_INPUT_[0-9a-f]{64}$"},
+    "sim_baseline_id": {"type": "string", "pattern": "^SIM_BASELINE_[0-9a-f]{64}$"},
+    "raw_log_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "normalized_telemetry_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "claim_scope": {"type": "string", "minLength": 1},
+    "scientific_status": {"enum": ["FORMAL", "DIAGNOSTIC", "REJECTED"]}
+  }
+}

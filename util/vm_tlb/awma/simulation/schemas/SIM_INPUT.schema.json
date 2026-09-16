@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AWMA_SIM_CONSUMER_V2/SIM_INPUT",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "sim_input_id", "producer_bundle_hash_root",
+    "trace_member_hash_root", "kernelslist_sha256",
+    "producer_terminal_receipt_sha256", "workload_id", "model_id",
+    "model_revision", "input_binding_sha256", "scenario_id", "backend",
+    "dtype", "runtime_identity", "phase", "target_id", "target_launch",
+    "stream_context", "grid", "block", "trace_schema",
+    "trace_grammar_version", "producer_source_sha256",
+    "producer_binary_sha256", "tracer_version", "tracer_build_sha256",
+    "address_context_sha256", "asid_epoch", "va_width", "page_policy"
+  ],
+  "properties": {
+    "schema_version": {"const": "AWMA_SIM_CONSUMER_V2"},
+    "sim_input_id": {"type": "string", "pattern": "^SIM_INPUT_[0-9a-f]{64}$"},
+    "producer_bundle_hash_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "trace_member_hash_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "kernelslist_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "producer_terminal_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "workload_id": {"type": "string", "minLength": 1},
+    "model_id": {"type": "string", "minLength": 1},
+    "model_revision": {"type": "string", "minLength": 1},
+    "input_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scenario_id": {"type": "string", "minLength": 1},
+    "backend": {"type": "string", "minLength": 1},
+    "dtype": {"type": "string", "minLength": 1},
+    "runtime_identity": {"type": "string", "minLength": 1},
+    "phase": {"enum": ["PREFILL", "DECODE"]},
+    "target_id": {"type": "string", "minLength": 1},
+    "target_launch": {"type": "string", "minLength": 1},
+    "stream_context": {"type": "string", "minLength": 1},
+    "grid": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "block": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "trace_schema": {"const": "SIM_COMPAT_CAPTURE_V1"},
+    "tracer_version": {"type": "string", "minLength": 1},
+    "tracer_build_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "trace_grammar_version": {"type": "string", "minLength": 1},
+    "producer_source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "producer_binary_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "address_context_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asid_epoch": {"type": ["string", "integer"]},
+    "va_width": {"type": "integer", "minimum": 1},
+    "page_policy": {"type": "string", "minLength": 1}
+  }
+}

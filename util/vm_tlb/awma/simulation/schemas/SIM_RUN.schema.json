@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AWMA_SIM_CONSUMER_V2/SIM_RUN",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "sim_run_id", "sim_input_id", "sim_baseline_id",
+    "config_sha256", "overlay_sha256", "runtime_command_sha256",
+    "runtime_environment_sha256", "fixed_window_cycles", "raw_log_sha256",
+    "normalized_telemetry_sha256", "execution_status"
+  ],
+  "properties": {
+    "schema_version": {"const": "AWMA_SIM_CONSUMER_V2"},
+    "sim_run_id": {"type": "string", "pattern": "^SIM_RUN_[0-9a-f]{64}$"},
+    "sim_input_id": {"type": "string", "pattern": "^SIM_INPUT_[0-9a-f]{64}$"},
+    "sim_baseline_id": {"type": "string", "pattern": "^SIM_BASELINE_[0-9a-f]{64}$"},
+    "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "overlay_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "runtime_command_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "runtime_environment_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "fixed_window_cycles": {"const": 10000},
+    "raw_log_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "normalized_telemetry_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "execution_status": {
+      "enum": ["EXPECTED_FIXED_WINDOW_BOUNDARY", "NORMAL_COMPLETION", "PARSER_ABORT", "SIMULATOR_ASSERT_OR_FATAL", "EXTERNAL_RUNTIME_FAILURE"]
+    }
+  }
+}
