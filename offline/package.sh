@@ -9,6 +9,7 @@ test "$(git -C "$repo" branch --show-current)" = project/offline-sim
 test "$(git -C "$repo" rev-parse offline-sim-v1.0^{})" = "$(git -C "$repo" rev-parse HEAD)"
 test -f "$bundle/$gpu_app_collection/src/setup_environment"
 test -d "$bundle/$gpu_app_collection/4.2"
+test -d "$bundle/cache/apps/gpu-app-collection/bin/12.4/release"
 git -C "$repo" bundle create "$bundle/cache/git/framework-offline-sim-v1.0.bundle" project/offline-sim offline-sim-v1.0
 git -C "$repo/gpu-simulator/gpgpu-sim" bundle create "$bundle/cache/git/gpgpu-sim-project-offline-sim.bundle" project/offline-sim
 sha256sum "$bundle/cache/git/framework-offline-sim-v1.0.bundle" "$bundle/cache/git/gpgpu-sim-project-offline-sim.bundle" > "$bundle/cache/git/RELEASE_BUNDLES.SHA256"
