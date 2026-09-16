@@ -1,0 +1,7 @@
+==WARNING== Note: Running with uncontrolled GPU caches. Profiling results may be inconsistent.
+==PROF== Connected to process 522632 (/data/c16/env/cpython-3.10.12/bin/python3.10)
+==PROF== Profiling "Kernel2" - 0: Application replay pass 1
+{"expected_output_sha256": "18d627a754ec097f4fff5c2f8b2e0bc125375981cf737edc78c99086a2f294cf", "input": {"dtype": "torch.bfloat16", "ptr": "0x75be40e00000", "sha256": "0156eb3f917f2c946315b8e9bdae5349fbc27ef8f2c8fa933b0c304ab4d612a2", "shape": [1, 1, 512], "storage_bytes": 1024, "storage_ptr": "0x75be40e00000", "stride": [512, 512, 1]}, "max_abs": 0.0, "nvtx_range": "C16_V23R1_MLA_KV_B_EXPAND_REPLAY", "output": {"dtype": "torch.bfloat16", "ptr": "0x75be40e00400", "sha256": "18d627a754ec097f4fff5c2f8b2e0bc125375981cf737edc78c99086a2f294cf", "shape": [1, 1, 4096], "storage_bytes": 8192, "storage_ptr": "0x75be40e00400", "stride": [4096, 4096, 1]}, "output_bitwise_equal": true, "schema_version": 1, "selected_expert_id": null, "semantic_role": "layer0.self_attn.kv_b_proj", "status": "PASS", "target": "MLA", "weight": {"dtype": "torch.bfloat16", "ptr": "0x75be44400000", "sha256": "14e6eaac3dc46045290760bb87197bb425ede7e0e6c307d4ecbc7cafdd8f9a43", "shape": [4096, 512], "storage_bytes": 4194304, "storage_ptr": "0x75be44400000", "stride": [512, 1]}}
+==PROF== Disconnected from process 522632
+==PROF== Creating report from application replay data: 0%...100%
+==PROF== Report: /data/c16/deepseek_v23r1/MLA_ncu.ncu-rep

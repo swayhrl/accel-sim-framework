@@ -1,0 +1,13 @@
+check	tier	expected_or_authority	actual	status	notes
+model_revision	A	604d5664dddd88a0433dbae533b7fe9472482de0	604d5664dddd88a0433dbae533b7fe9472482de0	PASS	exact revision
+relative_file_set	A	source manifest 15 paths	local 15 paths	PASS	source==destination==local
+per_file_size_sha256	A	source/destination manifests	local full rehash	PASS	exact file authority
+config_sha256	A	f346286b0f1c8b044252fd54cb4fa78b9fab6472a6e8bebb9edfe03d414ea03d	f346286b0f1c8b044252fd54cb4fa78b9fab6472a6e8bebb9edfe03d414ea03d	PASS	config
+custom_modeling_source_sha256	A	source/local manifest	7d8e5221095286eea991137760893fd7ba52727c0b4ebf48ec09e8bc56b45b9c	PASS	remote custom code identity
+safetensors_index_and_shards	A	manifest identity	4 shards and index	PASS	required shards
+input_payload_sha256	A	2ca11cff95f13bcdd0efcb3f5b2d6c0b8f7e30c9e67492d6b291362c09ff6935	2ca11cff95f13bcdd0efcb3f5b2d6c0b8f7e30c9e67492d6b291362c09ff6935	PASS	copied frozen bytes
+canonical_token_matrix_sha256	A	14009279ed85b3de1f2510df84a3a8b2ba7a0d35f00c79d250d8e0e47cff63df	14009279ed85b3de1f2510df84a3a8b2ba7a0d35f00c79d250d8e0e47cff63df	PASS	JSON token_ids matrix separators comma/colon
+no_retokenization	A	frozen payload	no tokenizer invoked	PASS	V23 copied authority bytes
+runtime_versions	B	pinned before deployment	python=3.10.12 torch=2.5.1+cu124 transformers=4.51.0	RECORDED	must remain fixed during execution
+aggregate_asset_bytes	C	historical V22 scalar 31418842074	31418838087	DRIFT_RECORDED	not an identity gate
+v1_v2_authority_label	C	V22 generic V2 label	V8 exact V1 source ref	DRIFT_RECORDED	exact source+payload controls V23R1

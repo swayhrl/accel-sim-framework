@@ -1,0 +1,12 @@
+------------- NVBit (NVidia Binary Instrumentation Tool v1.7.5) Loaded --------------
+NVBit core environment variables (mostly for nvbit-devs):
+ACK_CTX_INIT_LIMITATION = 0 - if set, no warning will be printed for nvbit_at_ctx_init()
+            NVDISASM = nvdisasm - override default nvdisasm found in PATH
+            NOBANNER = 0 - if set, does not print this banner
+       NO_EAGER_LOAD = 0 - eager module loading is turned on by NVBit to prevent potential NVBit tool deadlock, turn it off if you want to use the lazy module loading feature
+---------------------------------------------------------------------------------
+C16_V23R1_STATIC_DISCOVERY_READY match=internal::gemvx::kernel
+WARNING: Do not call CUDA memory allocation in nvbit_at_ctx_init(). It will cause deadlocks. Do them in nvbit_tool_init(). If you encounter deadlocks, remove CUDA API calls to debug.
+C16_V23R1_STATIC_DISCOVERY_COMPLETE function_mangled=_ZN8internal5gemvx6kernelIii13__nv_bfloat16S2_S2_fLb0ELb1ELb1ELb0ELi6ELb0E18cublasGemvParamsExIi30cublasGemvTensorStridedBatchedIKS2_ES6_S4_IS2_EfEEENSt9enable_ifIXntT5_EvE4typeET11_ static_instruction_count=1096 map=/data/c16/deepseek_v23r1/MOE_static.tsv
+{"expected_output_sha256": "dc02687fe130b2244458f4046b17eb77032b723c52dfc90998d94285be2378a7", "input": {"dtype": "torch.bfloat16", "ptr": "0x70fa69600000", "sha256": "dcaf1df3ba6a921bf098c639395d1668cfe5d603cc988e6be79acd7e9468e097", "shape": [1, 1408], "storage_bytes": 2816, "storage_ptr": "0x70fa69600000", "stride": [1408, 1]}, "max_abs": 0.0, "nvtx_range": "C16_V23R1_MOE_EXPERT_DOWN_REPLAY", "output": {"dtype": "torch.bfloat16", "ptr": "0x70fa69600c00", "sha256": "dc02687fe130b2244458f4046b17eb77032b723c52dfc90998d94285be2378a7", "shape": [1, 2048], "storage_bytes": 4096, "storage_ptr": "0x70fa69600c00", "stride": [2048, 1]}, "output_bitwise_equal": true, "schema_version": 1, "selected_expert_id": 4, "semantic_role": "layer1.mlp.experts.4.down_proj", "status": "PASS", "target": "MOE", "weight": {"dtype": "torch.bfloat16", "ptr": "0x70fa68200000", "sha256": "ffd1e554abb5be5977cb34b47c3a5566eeb7d444296835f05b47dd1a1000b3d2", "shape": [2048, 1408], "storage_bytes": 5767168, "storage_ptr": "0x70fa68200000", "stride": [1408, 1]}}
+C16_V23R1_STATIC_DISCOVERY_TERMINAL map_emitted=1

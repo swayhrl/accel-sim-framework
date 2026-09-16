@@ -1,0 +1,36 @@
+{
+  "alias": "input/output non-aliasing by distinct replay storage pointers",
+  "dataflow": "HIDDEN -> kv_a_proj -> kv_a_layernorm latent -> kv_b_proj expanded qk_nope/value representation; not labeled persistent KV cache",
+  "evidence_class": "KV_B_EXPANSION_LATENT_READ",
+  "input": {
+    "bytes": 1024,
+    "dtype": "torch.bfloat16",
+    "sha256": "0156eb3f917f2c946315b8e9bdae5349fbc27ef8f2c8fa933b0c304ab4d612a2",
+    "shape": [
+      1,
+      1,
+      512
+    ],
+    "stride": [
+      512,
+      512,
+      1
+    ]
+  },
+  "output": {
+    "bytes": 8192,
+    "dtype": "torch.bfloat16",
+    "sha256": "18d627a754ec097f4fff5c2f8b2e0bc125375981cf737edc78c99086a2f294cf",
+    "shape": [
+      1,
+      1,
+      4096
+    ],
+    "stride": [
+      4096,
+      4096,
+      1
+    ]
+  },
+  "target": "layer0.self_attn.kv_b_proj"
+}
