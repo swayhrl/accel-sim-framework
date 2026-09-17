@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import re
@@ -44,9 +45,26 @@ def write(path: Path, data: dict[str, object]) -> None:
     path.write_text("".join(f"{k}\t{v}\n" for k, v in data.items()))
 
 
+def authority_row(path: Path, workload: str) -> dict[str, str]:
+    with path.open(encoding="utf-8", newline="") as stream:
+        rows = [row for row in csv.DictReader(stream, delimiter="\t")
+                if row["workload"] == workload]
+    if len(rows) != 1:
+        raise RuntimeError(f"authority must contain exactly one {workload} row")
+    return rows[0]
+
+
 def run(args: argparse.Namespace) -> None:
     simulator, trace, trace_config = map(lambda p: Path(p).resolve(),
                                          (args.simulator, args.trace, args.trace_config))
+    allowed_workloads = {"NN", "Btree"} if args.stage == "SG5.3" else {
+        "ATAX", "BICG", "GESUMMV", "Btree", "2DConvolution", "Gaussian"}
+    allowed_variants = {"B16-S", "TC80-S", "B16-N", "TC80-N", "IO", "OO"}
+    if args.workload not in allowed_workloads or args.variant not in allowed_variants:
+        raise RuntimeError("workload/variant is outside the predeclared SG5 stage matrix")
+    source = authority_row(Path(args.authority), args.workload)
+    if digest(trace) != source["trace_list_sha256"]:
+        raise RuntimeError("trace identity does not match the frozen FAST12 authority")
     configs = tuple(Path(p).resolve() for p in args.config)
     for item in (simulator, *configs, trace, trace_config):
         if not item.is_file():
@@ -74,7 +92,9 @@ def run(args: argparse.Namespace) -> None:
                 "config": configs[0], "config_sha256": digest(configs[0]),
                 "config_chain": ";".join(map(str, configs)),
                 "config_chain_sha256": config_chain_digest(configs), "trace": trace,
-                "trace_sha256": digest(trace), "trace_config": trace_config,
+                "trace_sha256": digest(trace), "authority": Path(args.authority).resolve(),
+                "authority_trace_sha256": source["trace_list_sha256"],
+                "expected_instructions": source["instructions"], "trace_config": trace_config,
                 "trace_config_sha256": digest(trace_config), "overlay": overlay,
                 "overlay_sha256": digest(overlay), "immutable_runner": runner,
                 "immutable_runner_sha256": digest(runner)}
@@ -117,7 +137,7 @@ def validate(args: argparse.Namespace) -> None:
     ot, nt = kv(off / "RUN_TERMINAL.tsv"), kv(on / "RUN_TERMINAL.tsv")
     out_off, out_on = (off / "simulator.stdout").read_text(errors="replace"), (on / "simulator.stdout").read_text(errors="replace")
     a, b = metrics(off / "simulator.stdout"), metrics(on / "simulator.stdout")
-    identity = ("workload", "variant", "simulator_sha256", "trace_sha256", "trace_config_sha256")
+    identity = ("workload", "variant", "simulator_sha256", "trace_sha256", "authority_trace_sha256", "trace_config_sha256")
     config_identity = om.get("config_chain_sha256", om.get("config_sha256")) == \
                       nm.get("config_chain_sha256", nm.get("config_sha256"))
     normal = {
@@ -150,7 +170,9 @@ def validate(args: argparse.Namespace) -> None:
               "on_has_sg5": "SG5_l1_lower_traffic_observer = 1" in out_on,
               "metric_keyset": set(a) == set(b), "metric_values": a == b,
               "cycles_present": "gpu_tot_sim_cycle" in a,
-              "instructions_present": "gpu_tot_sim_insn" in a}
+              "instructions_present": "gpu_tot_sim_insn" in a,
+              "authority_instruction_identity": a.get("gpu_tot_sim_insn") == om.get("expected_instructions") and
+                                              b.get("gpu_tot_sim_insn") == nm.get("expected_instructions")}
     if args.expected_core_source_head:
         checks["core_source_identity"] = om.get("core_source_head") == args.expected_core_source_head and \
                                          nm.get("core_source_head") == args.expected_core_source_head
@@ -223,6 +245,7 @@ p = subs.add_parser("run")
 for name in ("simulator", "config", "trace", "trace_config", "runs_root", "workload", "variant"):
     p.add_argument(f"--{name.replace('_', '-')}", required=True,
                    action="append" if name == "config" else None)
+p.add_argument("--authority", required=True)
 p.add_argument("--observer", choices=("0", "1"), required=True)
 p.add_argument("--core-source-head", required=True)
 p.add_argument("--stage", choices=("SG5.3", "SG5.4"), default="SG5.3")
