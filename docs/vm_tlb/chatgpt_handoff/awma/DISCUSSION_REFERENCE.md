@@ -1,232 +1,267 @@
-# AWMA Discussion Reference — storage governance, GPU side lane, and consumer audit
+# AWMA Discussion Reference — Q05 Context Warmup Sensitivity V1
 
 Date: 2026-09-17
 
-## 1. Scientific state after Q05 translation timeline closure
+## 1. Why the next mainline is initial-state/context sensitivity
 
-The Q05 timeline stage has completed with timing-neutral diagnostic telemetry.
+The project has already proven that the complete selected Q05 FlashAttention kernel is highly sensitive to the modeled translation path when replayed in isolation.
 
-The diagnostic run preserved the accepted R0 10k science exactly while exposing the actual translation key:
+That result is useful, but it leaves one important realism question open:
+
+> In the original frozen full-model run, predecessor kernels may have already touched some of the same virtual pages or related page-table prefixes before Q05 begins. If Q05 is replayed alone, those predecessor-created TLB/PWC/data-cache states are lost.
+
+Therefore the current isolated R0/I0 gap may combine:
+
+```text
+intrinsic Q05 translation demand
++
+selected-kernel initial-state effect
+```
+
+Before proposing a TLB/PTW mechanism, these effects must be separated.
+
+This stage therefore studies context/warmup methodology, not a mechanism.
+
+## 2. What the previous Q05 timeline established
+
+The timeline stage preserved the accepted R0 10k result and exposed the real simulator translation key:
 
 `{asid, vpn, page_size}`
 
-Observed timeline facts:
+Observed:
 
 ```text
-10k:
-19 keys / 19 fills / 106 merges / 8,730 post-fill REQUEST invocations
-
-50k:
-104 keys / 104 fills / 374 merges / 474,414 post-fill REQUEST invocations
-
-full natural R0:
-885,681 cycles
-224 CTA
-240 keys / 240 fills / 393 merges
-8,747,322 post-fill REQUEST invocations
-max waiter depth = 35
+10k:  19 keys / 19 fills / 106 merges
+50k: 104 keys / 104 fills / 374 merges
+full: 240 keys / 240 fills / 393 merges
 ```
 
-The result remains `MIXED`.
+This pattern is important:
 
-What is now supported:
+- strong same-key fanout is front-loaded;
+- approximately 95% of merge events have occurred by 50k;
+- but only about 43% of final translation keys have appeared by 50k;
+- new translation demand therefore continues after the strongest fanout phase.
 
-- burst fanout before fill is real;
-- substantial activity continues after fill;
-- the behavior is not explained by a simple TLB-capacity/thrashing story.
+So the current behavior is neither a simple one-time cold front nor a pure capacity-thrashing story.
 
-What is still deliberately not claimed:
+However, `first seen in isolated Q05` is not equivalent to `first touched in the full application`.
 
-- `REQUEST` is not memory-instruction coverage;
-- post-fill L1/L2 outcome was not directly logged;
-- no mechanism speedup follows from the timeline alone.
+A Q05 page that appears late in the isolated kernel may still have been touched by an earlier native kernel before Q05 starts.
 
-Therefore the timeline stage is complete, but it does not authorize automatic TLB/PTW mechanism experiments.
+## 3. Why predecessor page overlap is useful but not sufficient
 
-## 2. Why storage governance is now an infrastructure priority
+Node109 will measure predecessor/Q05 address overlap in one exact frozen native execution.
 
-AWMA already produces large artifacts:
+If a Q05 page was touched earlier, that establishes a warm-state opportunity.
 
-- model weights;
-- NSYS inventories;
-- Native/NVBit traces;
-- simulator-native trace bundles;
-- full simulator raw output;
-- cycle-keyed diagnostic timelines;
-- future cross-model derived datasets.
+It does NOT prove:
 
-The long-term node role is:
+- that the translation still resides in the hardware TLB;
+- that a data-cache line is still resident;
+- that the same SM holds the private state;
+- that a prior page-table walk leaves the same intermediate state in the real GPU;
+- that the simulator should be initialized by simply preloading that translation.
+
+Intervening kernels can evict or perturb state.
+
+Therefore the native study reports `PREDECESSOR_PAGE_OVERLAP_OPPORTUNITY`, not a measured TLB hit rate.
+
+## 4. Why the predecessor sequence must stay contiguous
+
+Suppose the real program order is:
 
 ```text
-109 = GPU producer
-174-new = simulator / analysis
-164 = durable large-data authority
+producer A
+-> large unrelated kernel
+-> producer B
+-> Q05
 ```
 
-The accepted Q05 simulator-native trace, full Q05 simulation raw evidence and the new translation-timeline raw evidence are examples of data that should remain durable on node164 rather than depending on 174 local disk.
+If a warmup replay keeps only A and B because they overlap Q05 pages, it creates an unrealistically favorable initial state by omitting the unrelated kernel that may evict cache/TLB entries.
 
-Existing accepted historical paths are provenance and are not mass-moved merely for neatness.
+Thus future warmup uses continuous predecessor windows ending immediately before Q05.
 
-## 3. Why producer-side qualification alone is not enough
+Page overlap helps decide how long the continuous prefix should be; it does not justify skipping interior launches.
 
-Node109 is responsible for finalizing and publishing producer data, but node174-new is the long-term consumer/simulator.
+## 5. Same-run address identity is mandatory
 
-If only node109 validates the data plane, the project could still miss consumer-side failures such as:
+The historical Q05 trace and a new predecessor trace cannot be concatenated purely because their absolute virtual addresses look similar if they come from independent processes/runs.
 
-- an admitted path that is visible only through producer-local assumptions;
-- stale `.partial` state mistaken for durable data;
-- catalog entries that point back to 109 staging instead of node164 authority;
-- accepted large artifacts that exist only on 174 local disk;
-- mount/permission/read-back differences seen from the simulator node;
-- ambiguous ACK or retention state.
+Allocator state, CUDA context and object placement may differ.
 
-Therefore storage closure has two complementary views:
+A future scientifically faithful context bundle must close a same-run or formally remapped address identity across the ordered predecessor sequence and Q05.
+
+The current V1 stage therefore stops before expensive predecessor simulator-native capture. First it determines:
+
+1. the real native predecessor sequence/page overlap;
+2. the simulator's kernel-boundary state semantics;
+3. the exact address/context contract needed by the next capture stage.
+
+## 6. Why node109 and node174-new run in parallel
+
+### node109
+
+Answers the native-program question:
+
+> What actually executes before Q05, and which Q05 pages were touched before Q05 in the same frozen run?
+
+It may use a lightweight Native/memory-only observer because page-set context does not require a full instruction trace.
+
+The observer must retain per-kernel identity and same-run addresses.
+
+### node174-new
+
+Answers the simulation-method question:
+
+> If multiple kernels are replayed sequentially, what simulator state persists, what resets, and how can Q05 statistics be measured without clearing the state being studied?
+
+This requires source audit before any warmup experiment.
+
+## 7. Kernel-boundary state is component-specific
+
+Do not use a generic phrase such as `the cache is warm`.
+
+The next 174 audit separates:
 
 ```text
-Track C / 109
-producer finalize -> publish -> destination receipt -> ACK
-
-Track D / 174-new
-independent durable-consumer read-back -> provenance/catalog audit
+L1 data cache
+shared L2 data cache
+L1 TLB
+L2 TLB
+PWC
+translation MSHR/PWQ/walkers
+memory queues/interconnect
+replacement metadata
 ```
 
-This is not duplicate work. It is producer/consumer separation of trust.
+A component may:
 
-## 4. Required storage data-plane closure
+- persist;
+- be reset;
+- drain outstanding requests but preserve resident metadata;
+- not be modeled;
+- remain unknown.
 
-Producer-side Track C first performs a deterministic 1-2 GiB canary:
+Simulator behavior must be derived from source, not assumed from GPU intuition.
+
+Hardware behavior and simulator behavior are also separate claims.
+
+## 8. Why statistics must use snapshots/deltas
+
+A common warmup methodology is conceptually:
 
 ```text
-109 local source
- -> transport via hrl174new
- -> node164 .partial
- -> resume
- -> size closure
- -> SHA256 closure
- -> promotion/rename
- -> read-back hash
- -> ACK
+run warmup/prefix
+-> preserve state
+-> start measurement
+-> run target
+-> stop measurement
 ```
 
-Success marker:
+The dangerous step is `start measurement`.
 
-`AWMA_164_DATA_PLANE_QUALIFIED_V1`
+An existing simulator `init()` or stats-reset routine may reset more than counters. If called at Q05 entry it could destroy the warm state we wanted to study.
 
-Track D independently verifies the admitted result from 174-new and audits existing durable AWMA artifacts. It should reuse accepted hash ledgers where appropriate rather than recursively rehashing unrelated terabytes.
+Therefore node174 first audits all initialization/reset code and prefers counter snapshots/deltas around Q05.
 
-No accepted scientific artifact is deleted in either track.
+If a new diagnostic snapshot path is needed, it must be disabled by default and timing/functionality neutral.
 
-## 5. Why node174 should not become the data disk
+## 9. Why self-warm Q05->Q05 is allowed only as plumbing
 
-174-new should contain:
-
-- source/worktrees;
-- simulator binaries;
-- small Python environments;
-- small indexes/summaries;
-- bounded scratch.
-
-Node164 should contain:
-
-- simulator-native traces;
-- NVBit/NSYS/NCU raw;
-- full simulation raw;
-- cycle timelines;
-- large parsed/features/datasets;
-- durable manifests/receipts/catalogs.
-
-A large file on 174 local disk is a working copy only, never the sole authority.
-
-## 6. Why node109 may now use the idle RTX4080
-
-Target selection is complete and accepted.
-
-Authorized candidates are:
+A two-kernel diagnostic:
 
 ```text
-PREFILL_GEMM_PRIMARY_1
-DECODE_GEMV_PRIMARY_1
-DECODE_FLASH_PRIMARY_1
-DECODE_FLASH_PRIMARY_2
+Q05 #1 -> Q05 #2
 ```
 
-These represent missing execution families relative to Q05 and were selected by exact implementation, launch shape, recurrence and GPU-time contribution.
+is useful to test:
 
-The selected primary Prefill GEMM covers 38.10% of total Prefill GPU time. The selected primary Decode GEMV covers 20.22% of total Decode GPU time. Decode Flash contains two materially distinct shapes and both are retained.
+- whether state persists across a kernel boundary;
+- whether target-only deltas can be measured;
+- whether a framework reset accidentally clears TLB/cache state.
 
-The reference NSYS launch number is only a navigation aid. Every producer capture must re-close:
+But it is not a model-context experiment.
+
+The real predecessor kernels have different memory behavior and can both prewarm and evict Q05 state.
+
+Therefore all such outputs must be labeled:
+
+`SELF_WARM_DIAGNOSTIC_ONLY`.
+
+## 10. Native timing and NCU role
+
+Node109 should establish normal-context Q05 timing stability across repeated exact full-application runs.
+
+A targeted NCU comparison may be used only as a secondary data-cache sensitivity check when the installed tool can reliably target Q05.
+
+Important boundary:
+
+- profiler cache-control settings concern the documented profiler/cache handling;
+- they must not be described as a proven TLB flush/preserve operation without explicit evidence;
+- failure to obtain a clean NCU comparison does not block the main page-overlap study.
+
+The core native evidence remains same-run predecessor page overlap plus exact launch order.
+
+## 11. Prefix candidates
+
+The native track will compute nested continuous prefixes ending immediately before Q05:
 
 ```text
-frozen workload
-+ phase
-+ exact function
-+ grid/block
-+ deterministic occurrence
-+ decode step when applicable
+P1, P2, P4, P8, P16, P32 when available, PFULL
 ```
 
-A candidate that fails identity requalification is skipped rather than guessed.
+For each it will report the fraction of Q05 pages that had any prior touch.
 
-## 7. Why storage qualification precedes new capture
-
-The project should not intentionally create new large raw data before proving where it will be durably stored.
-
-Track C is therefore strictly sequential:
+The final expensive simulator prefix set will be smaller, normally no more than four conditions such as:
 
 ```text
-Phase A
-storage governance / data-plane canary / catalog
-
-PASS:
-AWMA_164_DATA_PLANE_QUALIFIED_V1
-
-then Phase B
-bounded selected-kernel simulator-native producer capture
+ISOLATED_Q05
+SHORT_PREFIX
+MEDIUM_PREFIX
+FULL_AVAILABLE_PREFIX
 ```
 
-Track D can run in parallel from 174-new because most of its audit is read-only. If the producer canary is not yet available, it completes all independent mount/inventory/catalog work and records only that final canary verification is pending.
+But these final boundaries are chosen only after seeing the actual native overlap curve and simulator feasibility report.
 
-## 8. Capture side-lane guardrails
+## 12. Carry-forward 240 vs 228 issue
 
-GPU idle time is not a reason to generate unbounded traces.
-
-Each selected target follows:
+Previous evidence contains:
 
 ```text
-identity requalification
- -> bounded capture canary
- -> size/time guard
- -> whole-kernel capture only when feasible
- -> durable publish to node164
+228 unique offline 64KiB VPN
+240 simulator translation keys
 ```
 
-Current bounds:
+This mismatch cannot be ignored when joining native page sets to simulator translation behavior.
 
-```text
-8 GiB per target
-30 minutes per capture attempt
-32 GiB aggregate new durable raw
-```
+Node174 must reconcile or safely classify the difference before the next scientific warm-prefix replay.
 
-A guard-triggered partial capture is diagnostic only and is never admitted as a complete simulation input.
+Possible causes must be demonstrated from source/evidence, not guessed.
 
-The side lane uses the accepted simulator-native producer and preserves terminal/drop/overflow/formatter/grammar contracts. It does not substitute C16WARP1 for a whole-kernel simulator trace.
+## 13. Mainline priority
 
-## 9. Current STOP boundary
+The current M1/M2 stage has priority over side work.
 
-Neither Track C nor Track D may automatically start:
+While node109 is performing Q05 native context characterization, do not start:
 
-- TLB/PTW/cache mechanisms;
-- latency/walker/capacity/page-size/Segment sweeps;
-- NCU or C16WARP1 campaigns;
+- LDC.U8 grammar repair;
 - Qwen3/DeepSeek campaigns;
-- SIM_INPUT admission or Accel-Sim replay of newly captured candidates;
-- deletion or physical reorganization of accepted durable evidence.
+- unrelated NCU work;
+- additional selected-kernel capture;
+- cleanup tasks.
 
-After producer-side storage/capture and consumer-side storage audit both close, ChatGPT should jointly review:
+Side work resumes only when the mainline explicitly releases the resource.
 
-1. Q05 dynamic translation behavior;
-2. which complementary target bundles were successfully captured;
-3. whether node164 storage/provenance is independently closed from both producer and consumer views.
+## 14. Decision after this V1 stage
 
-Only then should the next simulation/admission/mechanism stage be issued.
+After both reports return, ChatGPT should decide:
+
+1. which continuous predecessor windows are scientifically useful;
+2. whether the current simulator can preserve the intended state without semantic changes;
+3. what same-run simulator-native context bundle must be captured;
+4. whether real prefix+Q05 replay is ready or blocked by kernel-boundary/address-context semantics.
+
+Only after that should the project capture predecessor simulator-native traces and run the first warm-context Q05 comparison.
+
+No TLB/PTW mechanism sweep begins in this V1 stage.
