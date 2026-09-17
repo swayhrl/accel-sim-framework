@@ -1,6 +1,6 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE**
+Status: **ACTIVE — TRACK A ONLY; TRACK B COMPLETE/ACCEPTED**
 
 Stage:
 
@@ -8,7 +8,7 @@ Stage:
 AWMA_Q05_TRANSLATION_TIMELINE_CLOSURE_AND_KERNEL_TARGET_SELECTION_V1
 ```
 
-This is a two-track parallel pre-mechanism stage.
+This is a two-track parallel pre-mechanism stage. Track B on node109 has completed and is accepted within scope. Track A on 174-new remains active. Do not restart Track B unless ChatGPT issues a new stage.
 
 ## Objective
 
@@ -16,6 +16,8 @@ Before any new TLB/PTW mechanism experiment:
 
 1. close the missing cycle/key translation timeline for the complete Q05 kernel with timing-neutral diagnostic telemetry;
 2. use the accepted full S2 kernel-call inventory to select the next representative kernel candidates, without capturing them yet.
+
+Objective 2 is now complete. Objective 1 remains open.
 
 ## Coordination branch
 
@@ -31,11 +33,11 @@ docs/vm_tlb/chatgpt_handoff/awma/DISCUSSION_REFERENCE.md
 docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
 ```
 
-Then execute exactly one node-specific specification.
+Then execute only an ACTIVE node-specific specification.
 
 ## Accepted previous results
 
-### 174-new
+### 174-new previous stage
 
 ```text
 branch = hrl/awma-q05-full-translation-174new-v1
@@ -43,7 +45,7 @@ HEAD   = 6415d3f1
 status = AWMA_Q05_FULL_KERNEL_TRANSLATION_BEHAVIOR_V1_COMPLETE_WITH_SCOPE
 ```
 
-### 109
+### 109 census
 
 ```text
 branch = hrl/awma-qwen25-s2-census-109-v1
@@ -51,7 +53,7 @@ HEAD   = 678d7b491d4788369ca0c22717453b20846ab195
 status = AWMA_QWEN25_S2_KERNEL_CENSUS_V1_COMPLETE_WITH_SCOPE
 ```
 
-## Track A — 174-new
+## Track A — 174-new — ACTIVE
 
 Node:
 
@@ -80,36 +82,79 @@ Expected completion marker:
 AWMA_Q05_TRANSLATION_TIMELINE_CLOSURE_V1_COMPLETE_WITH_SCOPE
 ```
 
-## Track B — 109
+## Track B — 109 — COMPLETE / ACCEPTED
 
-Node:
-
-```text
-109 / RTX4080
-```
-
-This track is **offline only**. Do not consume GPU for profiling/capture.
-
-Execute:
+Accepted result:
 
 ```text
-docs/vm_tlb/chatgpt_handoff/awma/
-CODEX_NEXT_STAGE_109_KERNEL_TARGET_SELECTION_V1.md
+branch = hrl/awma-kernel-target-selection-109-v1
+HEAD   = e90fd76d3704df4a367bb04de09aee42d0cab803
+status = AWMA_KERNEL_TARGET_SELECTION_V1_COMPLETE_WITH_SCOPE
 ```
 
-Recommended execution branch:
+ChatGPT review disposition:
 
 ```text
-hrl/awma-kernel-target-selection-109-v1
+PASS_WITHIN_SCOPE
 ```
 
-Create it from the previous 109 census commit `678d7b491d4788369ca0c22717453b20846ab195`, after first reading the ChatGPT coordination branch.
+No GPU profiling or capture ran in this stage.
 
-Expected completion marker:
+Accepted `CANDIDATE_ONLY_NOT_CAPTURED` targets:
 
 ```text
-AWMA_KERNEL_TARGET_SELECTION_V1_COMPLETE_WITH_SCOPE
+PREFILL_GEMM_PRIMARY_1
+  exact family: CUBLAS_GEMM / CUTLASS Kernel2
+  grid/block: 128,3,1 / 256,1,1
+  reference launch: 285
+  phase-function-shape occurrence: 12
+  recurrence count: 20
+  share: 57.31% of Prefill GEMM-family GPU time
+         38.10% of total Prefill GPU time
+
+DECODE_GEMV_PRIMARY_1
+  exact family: CUBLAS_GEMV / internal::gemvx int6
+  grid/block: 1216,1,1 / 16,4,1
+  reference launch: 1244
+  phase-function-shape occurrence: 10
+  recurrence count: 1,536 across 32 decode steps
+  share: 40.64% of Decode GEMV-family GPU time
+         20.22% of total Decode GPU time
+
+DECODE_FLASH_PRIMARY_1
+  exact implementation: flash_fwd_splitkv_kernel
+  grid/block: 1,9,14 / 128,1,1
+  reference launch: 1748
+  recurrence count: 768 across 32 decode steps
+  share: 82.10% of Decode Flash GPU time
+         8.10% of total Decode GPU time
+
+DECODE_FLASH_PRIMARY_2
+  exact implementation: flash_fwd_splitkv_combine_kernel
+  grid/block: 2,1,1 / 128,1,1
+  reference launch: 1018
+  recurrence count: 768 across 32 decode steps
+  share: 17.90% of Decode Flash GPU time
+         1.77% of total Decode GPU time
 ```
+
+Important identity rule for any future capture:
+
+> `reference_launch_index` is only a navigation aid from the accepted census. Scientific target identity must close on frozen workload + phase + exact kernel function + grid/block + deterministic occurrence. Do not treat a dynamic launch number by itself as a stable identity across reruns.
+
+Additional accepted boundary:
+
+```text
+NATIVE PREFILL_HEAVY_GEMM exact alignment = NATIVE_TARGET_MATCH_NOT_PROVEN
+```
+
+Duration or family similarity alone must not be used to claim the old Native heavy-GEMM target is identical to `PREFILL_GEMM_PRIMARY_1`.
+
+Selection caveat for later broad Decode coverage:
+
+The selected `DECODE_GEMV_PRIMARY_1` is the high-frequency primary GEMV subfamily. Another GEMV shape (`grid=18992,1,1 / block=8,8,1`) occurs only once per decode step (32 total) but contributes about 21.5% of Decode GEMV-family GPU time because each invocation is roughly 409 us. It remains a secondary candidate if later work aims to cover Decode runtime comprehensively rather than only the dominant recurring shape.
+
+Track B is now frozen. Do not capture any candidate until ChatGPT reviews Track A and issues a new capture stage.
 
 ## Shared frozen workload
 
@@ -159,7 +204,7 @@ Stop for scientific review only if a task would require changing:
 
 ## Explicitly forbidden scope
 
-Neither track may start:
+The remaining active Track A may not start:
 
 - L2-TLB lookup-latency sweep;
 - PTW fixed-latency experiment;
@@ -172,7 +217,7 @@ Neither track may start:
 - new cache mechanism;
 - new simulator-native selected-kernel capture.
 
-Track B additionally must not run NSYS/NCU/NVBit/C16WARP1 or any other GPU profiling/capture in this stage.
+Node109 must remain idle for this stage unless ChatGPT explicitly issues a new instruction.
 
 ## Deliverables
 
@@ -194,7 +239,7 @@ Large raw telemetry remains on node164 with path/hash manifests.
 
 ## Global STOP boundary
 
-For each track:
+For Track A:
 
 ```text
 finish required analysis
@@ -208,4 +253,4 @@ finish required analysis
 → STOP
 ```
 
-After both tracks complete, ChatGPT must review them together before any new capture or mechanism experiment starts.
+After Track A completes, ChatGPT must review Track A together with the now-accepted Track B before any new capture or mechanism experiment starts.
