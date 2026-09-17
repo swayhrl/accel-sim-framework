@@ -137,7 +137,8 @@ def validate(args: argparse.Namespace) -> None:
     ot, nt = kv(off / "RUN_TERMINAL.tsv"), kv(on / "RUN_TERMINAL.tsv")
     out_off, out_on = (off / "simulator.stdout").read_text(errors="replace"), (on / "simulator.stdout").read_text(errors="replace")
     a, b = metrics(off / "simulator.stdout"), metrics(on / "simulator.stdout")
-    identity = ("workload", "variant", "simulator_sha256", "trace_sha256", "authority_trace_sha256", "trace_config_sha256")
+    source = authority_row(Path(args.authority), om.get("workload", ""))
+    identity = ("workload", "variant", "simulator_sha256", "trace_sha256", "trace_config_sha256")
     config_identity = om.get("config_chain_sha256", om.get("config_sha256")) == \
                       nm.get("config_chain_sha256", nm.get("config_sha256"))
     normal = {
@@ -171,8 +172,10 @@ def validate(args: argparse.Namespace) -> None:
               "metric_keyset": set(a) == set(b), "metric_values": a == b,
               "cycles_present": "gpu_tot_sim_cycle" in a,
               "instructions_present": "gpu_tot_sim_insn" in a,
-              "authority_instruction_identity": a.get("gpu_tot_sim_insn") == om.get("expected_instructions") and
-                                              b.get("gpu_tot_sim_insn") == nm.get("expected_instructions")}
+              "authority_trace_identity": om.get("trace_sha256") == source["trace_list_sha256"] and
+                                          nm.get("trace_sha256") == source["trace_list_sha256"],
+              "authority_instruction_identity": a.get("gpu_tot_sim_insn") == source["instructions"] and
+                                              b.get("gpu_tot_sim_insn") == source["instructions"]}
     if args.expected_core_source_head:
         checks["core_source_identity"] = om.get("core_source_head") == args.expected_core_source_head and \
                                          nm.get("core_source_head") == args.expected_core_source_head
@@ -250,7 +253,7 @@ p.add_argument("--observer", choices=("0", "1"), required=True)
 p.add_argument("--core-source-head", required=True)
 p.add_argument("--stage", choices=("SG5.3", "SG5.4"), default="SG5.3")
 p.set_defaults(func=run)
-p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--output")
+p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--authority", required=True); p.add_argument("--output")
 p.add_argument("--expected-core-source-head"); p.add_argument("--expected-config-chain-sha256")
 p.add_argument("--normal-variant", choices=("B16-N", "TC80-N")); p.set_defaults(func=validate)
 p = subs.add_parser("validate-run"); p.add_argument("--run-dir", required=True); p.add_argument("--output")

@@ -32,7 +32,8 @@ The exact Btree check was:
 ```sh
 python3 util/dtc_l1/sg5_equivalence.py validate \
   --off-dir /workspace/wave-a-sg5-runs/sg5_equivalence_B16-S_Btree_OFF_88d7a040-44d3-4b2c-bf05-c88fd2115cde \
-  --on-dir /workspace/wave-a-sg5-runs/sg5_equivalence_B16-S_Btree_ON_0f9fc7ec-5be0-41ee-b594-9c0e23a07e23
+  --on-dir /workspace/wave-a-sg5-runs/sg5_equivalence_B16-S_Btree_ON_0f9fc7ec-5be0-41ee-b594-9c0e23a07e23 \
+  --authority docs/dtc_l1/iscas2027/tc80/TC80_WORKLOAD_AUTHORITY.tsv
 ```
 
 The twelve listed rows prove the frozen B16-S/TC80-S/IO/OO subset and both
