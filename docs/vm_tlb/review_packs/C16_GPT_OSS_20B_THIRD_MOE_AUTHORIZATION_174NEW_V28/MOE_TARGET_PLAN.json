@@ -1,0 +1,27 @@
+{
+  "hierarchy": [
+    {
+      "rank": 1,
+      "requires": "clean dynamic expert-specific weight/input/output attribution",
+      "target": "natural selected-expert true down path"
+    },
+    {
+      "rank": 2,
+      "requires": "lossless selected-expert/group attribution",
+      "target": "native grouped/fused expert-down"
+    },
+    {
+      "rank": 3,
+      "requires": "explicitly narrower evidence class",
+      "target": "broader routed-expert weight consumption"
+    }
+  ],
+  "router_receipt_required": [
+    "layer/decode state",
+    "router logits shape/hash",
+    "natural top-4 IDs",
+    "route weights",
+    "selected expert/group mapping"
+  ],
+  "selected_target": "UNRESOLVED_UNTIL_NODE109_NATIVE_RUNTIME; do not pretend packed tensor is single-expert"
+}

@@ -1,0 +1,43 @@
+{
+  "deployment_specific": [
+    "MXFP4 layout/runtime kernels",
+    "capacity/backend"
+  ],
+  "descriptive_comparable": [
+    "semantic family after target qualification",
+    "per-target event/page/line distributions with scope labels"
+  ],
+  "lineages": [
+    {
+      "experts": "128 top-8",
+      "implementation": "per-expert gemvx",
+      "model": "Qwen3-30B-A3B",
+      "scope": "Layer24 Expert21 Decode3",
+      "weight_format": "BF16",
+      "width": "768->2048"
+    },
+    {
+      "experts": "64 top-6 + 2 shared",
+      "implementation": "per-expert gemvx",
+      "model": "DeepSeek-V2-Lite",
+      "scope": "Layer1 Expert4 selected S2",
+      "weight_format": "BF16",
+      "width": "1408->2048"
+    },
+    {
+      "experts": "32 top-4",
+      "implementation": "packed/grouped/fused unresolved",
+      "model": "gpt-oss-20b",
+      "scope": "future natural top-4 native S2",
+      "weight_format": "MXFP4 blocks + UE8 scales",
+      "width": "2880->2880 (config)"
+    }
+  ],
+  "normalization_required": [
+    "dimensions",
+    "precision/layout",
+    "grouping granularity"
+  ],
+  "prohibited": "No broad common conclusion until independent gpt-oss formal raw is consumed and all three support it.",
+  "result": "AUTHORIZED_CONTRACT_NOT_THREE_LINEAGE_RESULT"
+}

@@ -1,0 +1,13 @@
+{
+  "device_memory_bytes": 17179869184,
+  "fallback": "exact layer-local or streaming replay only when native MXFP4, native target backend, top-4 and packed expert semantics are preserved",
+  "forbidden": [
+    "BF16 dequantization for comparison",
+    "requantization",
+    "expert/top-k changes",
+    "replacement kernels"
+  ],
+  "native_checkpoint_bytes": 13761316904,
+  "preferred": "native full-resident only if node109 precheck proves native MXFP4 checkpoint/runtime fits without semantic change",
+  "stop_if": "no native MXFP4 path or no capacity-safe semantics-preserving path"
+}

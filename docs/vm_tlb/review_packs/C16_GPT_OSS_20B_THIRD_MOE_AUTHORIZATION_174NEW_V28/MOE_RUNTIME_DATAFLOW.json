@@ -1,0 +1,15 @@
+{
+  "dataflow": [
+    "hidden",
+    "BF16 router logits",
+    "natural top-4 IDs and weights receipt",
+    "token/expert dispatch or grouping",
+    "packed MXFP4 gate_up_proj blocks/scales",
+    "activation",
+    "packed MXFP4 down_proj blocks/scales",
+    "route-weighted combine"
+  ],
+  "known_static_binding": "index contains one packed experts.down_proj_blocks/scales tensor per layer",
+  "representative_layer_policy": "select a natural runtime layer after bring-up; no fixed expert ID",
+  "unknown_until_native_runtime": "per-expert module visibility versus grouped/fused kernel; sorting/index buffers; dynamic selected-expert attribution"
+}
