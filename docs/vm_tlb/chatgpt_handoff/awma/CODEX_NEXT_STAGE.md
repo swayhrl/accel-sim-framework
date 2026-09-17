@@ -1,151 +1,93 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE — TRACK C + TRACK D**
+Status: **ACTIVE MAINLINE — M1 + M2**
 
-Coordination stage:
+Stage:
 
-```text
-AWMA_STORAGE_GOVERNANCE_AND_GPU_CAPTURE_SIDELANE_V1
-```
-
-Previous tracks:
-
-```text
-Track A — 174-new Q05 translation timeline closure
-COMPLETE / report received
-
-Track B — 109 target selection
-COMPLETE / ACCEPTED
-```
-
-Current active tracks:
-
-```text
-Track C — 109 producer-side storage governance + bounded GPU capture side lane
-Track D — 174-new independent node164 storage consumer audit
-```
+`AWMA_Q05_CONTEXT_WARMUP_SENSITIVITY_V1`
 
 ## Coordination branch
 
-`hrl/awma-storage-governance-gpu-sidelane-handoff-v1`
+`hrl/awma-q05-context-warmup-handoff-v1`
 
-All Codex instances must read:
+All Codex instances must fetch this branch and read, in order:
 
 ```text
 docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
 docs/vm_tlb/chatgpt_handoff/awma/DISCUSSION_REFERENCE.md
-docs/vm_tlb/chatgpt_handoff/awma/STORAGE_GOVERNANCE_POLICY_V1.md
+docs/vm_tlb/chatgpt_handoff/awma/Q05_CONTEXT_WARMUP_EXPERIMENT_CONTRACT_V1.md
 docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
 ```
 
-Then execute only the active node-specific specification.
+Then execute only the node-specific ACTIVE mainline specification.
 
 ---
 
-## Track C — node109 — ACTIVE
+## Mainline M1 — node109 / RTX4080 — ACTIVE
 
 Execute:
 
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_109_STORAGE_GOVERNANCE_AND_GPU_SIDELANE_V1.md`
+`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_109_Q05_NATIVE_CONTEXT_CHARACTERIZATION_V1.md`
 
-Parent authority:
-
-```text
-hrl/awma-kernel-target-selection-109-v1
-e90fd76d3704df4a367bb04de09aee42d0cab803
-```
-
-Strict sequence:
+Recommended execution parent/branch:
 
 ```text
-Phase A
-storage governance + producer-side node164 data-plane qualification
-
-required gate:
-AWMA_164_DATA_PLANE_QUALIFIED_V1
-
-then only if PASS:
-
-Phase B
-bounded simulator-native producer capture side lane
+parent = c17df93f9c44aa35d2942ae696bc2bd2a30b3643
+branch = hrl/awma-q05-native-context-109-v1
 ```
 
-Authorized candidates only:
+Objective:
 
-```text
-PREFILL_GEMM_PRIMARY_1
-DECODE_GEMV_PRIMARY_1
-DECODE_FLASH_PRIMARY_1
-DECODE_FLASH_PRIMARY_2
-```
+- recover exact native predecessor launch sequence before Q05;
+- observe predecessor/Q05 page sets in one exact execution context;
+- quantify page-overlap opportunity and temporal distance;
+- measure normal-context Q05 timing stability;
+- optionally measure data-cache-sensitive NCU differences with explicit caveats;
+- recommend bounded continuous predecessor prefixes for the next simulation stage.
 
-Scientific identity must re-close on frozen workload + phase + exact function + grid/block + deterministic occurrence (+ decode step where applicable). Reference global launch indexes are navigation aids only.
-
-Track C may produce producer-qualified durable bundles on node164. It may not create SIM_INPUT IDs or run simulation.
+This track owns the RTX4080 while ACTIVE.
 
 Expected completion:
 
-`AWMA_STORAGE_GOVERNANCE_GPU_SIDELANE_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_NATIVE_CONTEXT_CHARACTERIZATION_109_V1_COMPLETE_WITH_SCOPE`
 
 ---
 
-## Track D — 174-new — ACTIVE
+## Mainline M2 — node174-new — ACTIVE
 
 Execute:
 
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_STORAGE_CONSUMER_AUDIT_V1.md`
+`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_Q05_WARM_REPLAY_FEASIBILITY_V1.md`
 
-Purpose:
+Preferred execution parent:
 
-independently audit node164 as the durable consumer/simulator-side authority rather than trusting only producer-side publication state.
+```text
+hrl/awma-q05-translation-timeline-174new-v1
+reported completion commit = 6319020c
+```
 
-This is read-mostly. It must not modify simulator science or duplicate GPU capture.
+Codex must first verify that the reported parent branch/commit is remotely resolvable. Do not silently replace provenance if it is not.
 
-Required areas:
+Recommended branch:
 
-- node164 mount/capacity/permissions from 174-new;
-- durable inventory of accepted Q05 trace, natural/full simulation raw, translation-timeline raw and S2 census data;
-- independent consumer rehash/receipt verification;
-- producer canary/ACK read-back verification when Track C Phase A becomes available;
-- deterministic catalog consumption from 174-new;
-- orphan partial/local-only/duplicate-authority/cleanup-candidate detection;
-- no deletion or mass move.
+`hrl/awma-q05-warm-replay-feasibility-174new-v1`
+
+Objective:
+
+- source-audit all relevant state persistence/reset across kernel boundaries;
+- reconcile 240 simulator keys vs 228 offline 64KiB pages;
+- design Q05-only measurement by state-preserving counter deltas;
+- qualify warm-state observability;
+- use Q05->Q05 only as a self-warm plumbing diagnostic when safe;
+- define the exact future same-run predecessor context-bundle contract.
 
 Expected completion:
 
-`AWMA_174NEW_STORAGE_CONSUMER_AUDIT_V1_COMPLETE_WITH_SCOPE`
-
-If producer Phase A is not yet complete, Track D must finish all independent work and may close as:
-
-`AWMA_174NEW_STORAGE_CONSUMER_AUDIT_V1_WAITING_FOR_PRODUCER_CANARY`
-
-Do not invent missing producer receipts.
+`AWMA_Q05_WARM_REPLAY_FEASIBILITY_174NEW_V1_COMPLETE_WITH_SCOPE`
 
 ---
 
-## Storage authority
-
-Durable root:
-
-`/root/share/mnt164/huangrulin/c16_ai_workload/`
-
-Roles:
-
-```text
-109 = producer / short-lived staging
-174-new = simulator / analysis / independent durable consumer
-164 = durable large-data authority
-```
-
-Existing accepted durable paths are provenance and must not be mass-moved.
-
-New producer captures must pass partial/resume/size/SHA/admission/ACK closure before durable status.
-
-No accepted scientific data may be deleted in this stage.
-
----
-
-## Shared frozen workload
+## Frozen workload
 
 ```text
 model      = Qwen/Qwen2.5-0.5B-Instruct
@@ -157,40 +99,95 @@ prefill    = 2048
 decode     = 32
 dtype      = FP16
 backend    = SDPA
+
+target     = Q05_PREFILL_ATTN_FLASH
+function occurrence = 0
 ```
 
-Current accepted Q05 SIM_INPUT/baseline/run/evidence identities remain read-only.
+Existing Q05 SIM_INPUT/SIM_BASELINE/SIM_RUN/SIM_EVIDENCE remain read-only.
 
 ---
 
-## Explicitly forbidden scope
+## Mainline priority policy
 
-Neither active track may automatically start:
+The mainline has first claim on node109 GPU and node174-new.
 
-- TLB/PTW/cache mechanisms;
-- L2-TLB latency/PTW/walker/capacity/page-size sweeps;
+While M1 is ACTIVE:
+
+```text
+NO LDC.U8 repair side lane
+NO Qwen3/DeepSeek side campaign
+NO unrelated NCU campaign
+NO additional opportunistic selected-kernel capture
+NO cleanup work that could interfere with mainline
+```
+
+A side task may run only after the active mainline explicitly releases the required resource and must be preemptible at a safe checkpoint.
+
+The mainline must never wait for a side task.
+
+---
+
+## Existing side/support state
+
+Accepted producer assets already durable on node164:
+
+```text
+PREFILL_GEMM_PRIMARY_1
+DECODE_GEMV_PRIMARY_1
+```
+
+Decode Flash capture remains blocked at a real `LDC.U8` trace-grammar semantic gap. That repair is deferred.
+
+Producer-side node164 data plane is qualified.
+
+174 storage consumer/local-space audits are support closeouts and do not supersede the current mainline.
+
+---
+
+## Explicitly forbidden in this V1 stage
+
+Do not automatically start:
+
+- simulator-native predecessor-prefix capture campaign;
+- new predecessor-prefix SIM_INPUT admission;
+- scientific warm-prefix Q05 replay;
+- L2-TLB lookup-latency sweep;
+- PTW fixed-latency experiment;
+- walker/count/capacity/page-size sweep;
 - Segment;
-- NCU campaigns;
-- C16WARP1 campaigns;
-- Qwen3/DeepSeek campaigns;
-- secondary long-duration Decode GEMV capture;
-- SIM_INPUT admission or Accel-Sim replay of new Track C bundles;
-- deletion or reorganization of accepted node164 evidence.
+- early outstanding-translation/coalescing mechanism;
+- new cache/TLB mechanism.
+
+The only new GPU profiling authorized is what M1 explicitly requires for Q05 context characterization.
+
+---
 
 ## Execution policy
 
-Routine engineering/storage/index/Git problems are solve-and-continue.
+Routine engineering issues are solve-and-continue:
 
-Stop for review only for:
+- source navigation;
+- observer/parser work;
+- exact target filtering;
+- data-plane publication;
+- Python analysis;
+- build/log formatting;
+- diagnostic output volume;
+- Git/worktree handling.
 
-- scientific identity conflict;
-- provenance contradiction;
-- destructive storage risk;
-- inability to prove destination integrity;
-- need to weaken trace semantics;
-- collision with another formal GPU campaign.
+Stop for scientific review if continuing would require:
 
-Each active track independently:
+- changing frozen workload identity;
+- guessing Q05 identity;
+- claiming page overlap equals TLB residency;
+- stitching independent address spaces as same-run context;
+- changing simulator TLB/cache/PTW timing/functionality;
+- resetting warm state at the Q05 measurement boundary;
+- weakening trace grammar or fabricating address/width fields;
+- launching the real expensive predecessor capture/replay stage before both M1 and M2 are reviewed.
+
+Each track independently:
 
 ```text
 finish scope
@@ -204,4 +201,4 @@ finish scope
 -> STOP
 ```
 
-After Track C and Track D complete, return both reports to ChatGPT. Do not auto-start the next simulation or mechanism stage.
+After M1 and M2 complete, return both reports to ChatGPT. Do not auto-start the next stage.
