@@ -1,0 +1,1 @@
+ATTENTION_CORE: pytorch_flash::flash substring. ROPE/NORM/COPY_LAYOUT/ELEMENTWISE only for explicit implementation-name substrings. GEMM/GEMV and any uncertain operator are UNKNOWN. No transformer layer or Q/K/V/operator role is inferred from launch order.
