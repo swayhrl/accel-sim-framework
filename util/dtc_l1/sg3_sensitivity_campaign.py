@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 TRACE_CONFIG_SHA = "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+OBSERVER_ON_NAME = "SG3_DOWNSTREAM_OBSERVER_ON.config"
+OBSERVER_ON_SHA = "916dd5cf98b57bb99a20ac11871a670b00db293ce7c336f0f88ee8b75469fad2"
 OVERLAYS = {
     ("capacity", "half"): ("SG3_L2_CAPACITY_HALF.config", "c4a714603a0433af5730156122b8742972e65044648b700b5ad9d553bfad7f5b", "S:128:128:8,L:B:m:L:L,A:192:4,32:0,32"),
     ("capacity", "base"): (None, None, "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"),
@@ -50,8 +52,10 @@ def run(a):
     if sha(tc)!=TRACE_CONFIG_SHA or sha(trace)!=src["trace_list_sha256"] or not runtime.is_file(): raise RuntimeError("trace/runtime preflight failed")
     ident=str(uuid.uuid4()); rd=Path(a.runs_root)/f"sg3_{a.dimension}_{a.point}_{a.mode}_{a.workload}_{ident}"
     rd.mkdir(parents=True); frozen=rd/"immutable_sg3_sensitivity_campaign.py"; shutil.copy2(__file__,frozen); frozen.chmod(0o555)
-    chain=[base]+([overlay] if overlay else [])+[tc]
-    m={"schema":"SG3_SENSITIVITY_ATTEMPT_V1","attempt_uuid":ident,"lane":"SG3","stage":f"SG3.{2 if a.dimension=='capacity' else 3 if a.dimension=='mshr' else 4}","dimension":a.dimension,"point":a.point,"expected_field":expected,"workload":a.workload,"mode":a.mode,"launch_utc":now(),"immutable_runner":str(frozen),"runner_sha256":sha(frozen),"simulator":str(runtime),"simulator_sha256":sha(runtime),"core_source_head":a.core_source_head,"config_chain":"|".join(map(str,chain)),"config_chain_sha256":"|".join(sha(x) for x in chain),"trace_list":str(trace),"trace_list_sha256":sha(trace),"expected_instructions":src["instructions"]}
+    observer=repo/"docs/dtc_l1/iscas2027/granularity/sg3/config"/OBSERVER_ON_NAME
+    if sha(observer)!=OBSERVER_ON_SHA: raise RuntimeError("observer-on overlay hash preflight failed")
+    chain=[base]+([overlay] if overlay else [])+[tc,observer]
+    m={"schema":"SG3_SENSITIVITY_ATTEMPT_V2","attempt_uuid":ident,"lane":"SG3","stage":f"SG3.{2 if a.dimension=='capacity' else 3 if a.dimension=='mshr' else 4}","dimension":a.dimension,"point":a.point,"expected_field":expected,"workload":a.workload,"mode":a.mode,"observer":"1","launch_utc":now(),"immutable_runner":str(frozen),"runner_sha256":sha(frozen),"simulator":str(runtime),"simulator_sha256":sha(runtime),"core_source_head":a.core_source_head,"config_chain":"|".join(map(str,chain)),"config_chain_sha256":"|".join(sha(x) for x in chain),"trace_list":str(trace),"trace_list_sha256":sha(trace),"expected_instructions":src["instructions"]}
     kv(rd/"RUN_MANIFEST.tsv",m); kv(rd/"RUN_START.tsv",m)
     cmd=[str(runtime),"-trace",str(trace)]+sum((["-config",str(x)] for x in chain),[])
     with (rd/"simulator.stdout").open("wb") as o,(rd/"simulator.stderr").open("wb") as e: code=subprocess.run(cmd,cwd=rd,stdout=o,stderr=e).returncode
@@ -62,15 +66,17 @@ def run(a):
 def validate(a):
     rd=Path(a.run_dir); m,t=readkv(rd/"RUN_MANIFEST.tsv"),readkv(rd/"RUN_TERMINAL.tsv"); out=(rd/"simulator.stdout").read_text(errors="replace"); err=(rd/"simulator.stderr").read_text(errors="replace"); src=authority(a.authority,a.workload)
     key=(a.dimension,a.point); expected=OVERLAYS[key][2]; mode_n="2" if a.mode=="IO" else "3"; pre="io" if a.mode=="IO" else "oo"
-    checks={"uuid":m.get("attempt_uuid")==t.get("attempt_uuid"),"natural_exit":t.get("simulator_exit_status")=="0","workload":m.get("workload")==a.workload,"mode":m.get("mode")==a.mode,"trace":m.get("trace_list_sha256")==src["trace_list_sha256"],"mode_echo":bool(re.search(rf"^-gpgpu_dtc_l1_mode\s+{mode_n}\s+#",out,re.M)),"error_scan":not bool(re.search(r"assertion failed|fatal error|deadlock detected|segmentation fault|core dumped",out+err,re.I))}
+    checks={"uuid":m.get("attempt_uuid")==t.get("attempt_uuid"),"natural_exit":t.get("simulator_exit_status")=="0","workload":m.get("workload")==a.workload,"mode":m.get("mode")==a.mode,"observer_manifest":m.get("observer")=="1","trace":m.get("trace_list_sha256")==src["trace_list_sha256"],"mode_echo":bool(re.search(rf"^-gpgpu_dtc_l1_mode\s+{mode_n}\s+#",out,re.M)),"observer_echo":bool(re.search(r"^-gpgpu_sg3_downstream_observer\s+1\s+#",out,re.M)),"error_scan":not bool(re.search(r"assertion failed|fatal error|deadlock detected|segmentation fault|core dumped",out+err,re.I))}
     if a.dimension=="cap": checks["sweep_echo"]=bool(re.search(rf"^-gpgpu_dtc_l1_lower_outstanding_cap\s+{expected}\s+#",out,re.M))
     else: checks["sweep_echo"]=bool(re.search(rf"^-gpgpu_cache:dl2\s+{re.escape(expected)}\s+#",out,re.M))
     vals={}
     try:
-        for n in ["gpu_tot_sim_cycle","gpu_tot_sim_insn",f"DTC_L1_{pre}_lower_created",f"DTC_L1_{pre}_lower_responses","DTC_L1_lower_credit_acquired","DTC_L1_lower_credit_released","DTC_L1_lower_outstanding"]: vals[n]=metric(out,n)
+        required=["gpu_tot_sim_cycle","gpu_tot_sim_insn",f"DTC_L1_{pre}_lower_created",f"DTC_L1_{pre}_lower_responses","DTC_L1_lower_credit_acquired","DTC_L1_lower_credit_released","DTC_L1_lower_outstanding","SG3_dtc_core_tick_samples","SG3_dtc_lower_outstanding_integral","SG3_l2_bank_tick_samples","SG3_l2_mshr_occupancy_integral","SG3_l2_miss_queue_occupancy_integral","SG3_lower_lifetime_completed","SG3_lower_lifetime_sum_cycles","SG3_lower_lifetime_max_cycles","SG3_lower_lifetime_unmatched_completions","SG3_lower_lifetime_live_records"]
+        for n in required: vals[n]=metric(out,n)
         checks["instruction_identity"]=vals["gpu_tot_sim_insn"]==int(src["instructions"]); checks["drain"]=vals[f"DTC_L1_{pre}_lower_created"]==vals[f"DTC_L1_{pre}_lower_responses"] and vals["DTC_L1_lower_credit_acquired"]==vals["DTC_L1_lower_credit_released"] and vals["DTC_L1_lower_outstanding"]==0
-    except RuntimeError: checks["instruction_identity"]=checks["drain"]=False
-    r={"schema":"SG3_SENSITIVITY_STRICT_VALIDATION_V1","status":"PASS" if all(checks.values()) else "FAIL","workload":a.workload,"mode":a.mode,"dimension":a.dimension,"point":a.point,"run_dir":str(rd),"metrics":vals,"checks":checks,"validation_utc":now()}; target=Path(a.output) if a.output else rd/"VALIDATION.json"; target.write_text(json.dumps(r,indent=2,sort_keys=True)+"\n"); print(json.dumps(r,sort_keys=True));
+        checks["observer_terminal_closure"]=vals["SG3_lower_lifetime_unmatched_completions"]==0 and vals["SG3_lower_lifetime_live_records"]==0
+    except RuntimeError: checks["instruction_identity"]=checks["drain"]=checks["observer_terminal_closure"]=False
+    r={"schema":"SG3_SENSITIVITY_STRICT_VALIDATION_V2","status":"PASS" if all(checks.values()) else "FAIL","workload":a.workload,"mode":a.mode,"dimension":a.dimension,"point":a.point,"run_dir":str(rd),"metrics":vals,"checks":checks,"validation_utc":now()}; target=Path(a.output) if a.output else rd/"VALIDATION.json"; target.write_text(json.dumps(r,indent=2,sort_keys=True)+"\n"); print(json.dumps(r,sort_keys=True));
     if r["status"]!="PASS": raise SystemExit(1)
 def main():
     p=argparse.ArgumentParser(); ss=p.add_subparsers(dest="cmd",required=True)
