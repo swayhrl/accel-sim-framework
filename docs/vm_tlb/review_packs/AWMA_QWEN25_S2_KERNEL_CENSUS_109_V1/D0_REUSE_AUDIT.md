@@ -1,0 +1,1 @@
+Existing qwen05 S2 NSYS evidence was not reused as final census authority: it exposed only a Prefill range and a single Decode STEP=1 NVTX range with no hash-closed frozen Decode32 driver receipt. The new capture has one Prefill and 32 explicit Decode step ranges, and exact frozen-driver output.

@@ -1,0 +1,6 @@
+Coordination branch head: 282b54db2de80bfb694df51517629ef538ff952c.
+Previous producer anchor: 5143b4e10aaf2fc47bb60492155d2464b0b726fd.
+New NSYS driver SHA256: 824f88b975580288a6a68b6997aa4ce5a611e241c42fd347fc2f59e933faab6c.
+NSYS report SHA256: 3e234eb92b1ae8f8296ad8c85fbb7dea2ddea1a019b989bca2967a036547f626.
+SQLite export SHA256: 17d9551472a4b8d090a6aa9437ff9a74d90f336ae1ab15189ed108da1041734d.
+Node164 durable root: /root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/qwen25_s2_kernel_census_20260917T101100Z.
