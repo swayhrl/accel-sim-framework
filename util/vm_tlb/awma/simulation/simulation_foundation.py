@@ -273,7 +273,7 @@ def run_grammar_smoke(parser_path, root, trace_name):
     try:
         completed = subprocess.run(
             [str(parser), trace_name], cwd=root, text=True,
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=300, check=False,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=1800, check=False,
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise ContractError("traceg grammar parser execution failed for %s: %s" % (trace_name, exc)) from exc

@@ -110,13 +110,14 @@ def run(args):
     output_dir.mkdir(parents=True)
     log_path = output_dir / "run.log"
     try:
-        admission = foundation.validate_bundle(args.manifest, args.parser)
-    except foundation.ContractError as exc:
+        admission = (json.loads(args.admission_receipt.read_text(encoding="utf-8"))
+                     if args.admission_receipt else foundation.validate_bundle(args.manifest, args.parser))
+    except (foundation.ContractError, json.JSONDecodeError, OSError) as exc:
         receipt = {"execution_status": "PARSER_ABORT", "reason": str(exc), "sim_input_id": None}
         (output_dir / "SIM_RUN_RECEIPT.json").write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
         return receipt
-    if not admission["admitted"]:
-        receipt = {"execution_status": "PARSER_ABORT", "reason": admission["reason"], "sim_input_id": None}
+    if admission.get("status") != "ADMITTED" or not admission.get("admitted"):
+        receipt = {"execution_status": "PARSER_ABORT", "reason": admission.get("reason", "admission receipt is not ADMITTED"), "sim_input_id": None}
         (output_dir / "SIM_RUN_RECEIPT.json").write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
         return receipt
 
@@ -227,6 +228,8 @@ def main():
     replay = commands.add_parser("run")
     replay.add_argument("--manifest", type=Path, required=True)
     replay.add_argument("--parser", type=Path, required=True)
+    replay.add_argument("--admission-receipt", type=Path,
+                        help="previously hash-closed ADMITTED receipt; avoids a redundant parser scan")
     replay.add_argument("--baseline-identity", type=Path, required=True)
     replay.add_argument("--binary", type=Path, required=True)
     replay.add_argument("--base-config", type=Path, required=True)

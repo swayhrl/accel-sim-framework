@@ -1,0 +1,9 @@
+# M4C/M4B bounded memory telemetry schema
+
+Schema: `M4C_MEMORY_TELEMETRY_V1`.  The simulator emits ROI-per-run, per-kernel, and deterministic L1D-access-attempt-window aggregate records. It never emits a formal per-access log. `m4c_telemetry` is L1D; `m4c_telemetry_l2` is L2; `m4c_telemetry_dram*` is DRAM; `m4c_telemetry_l2_replacement` is incoming-to-victim attribution; and `m4c_telemetry_cross_*` is the sparse translation-to-cache matrix.
+
+Frontend records expose memory instructions, active-lane references, coalesced transactions, requested/transaction bytes, sector population, and load/store/atomic class.  Sparse matrix omissions are zero. Every TSV repeats the provenance columns bound to this run manifest.
+
+`KERNEL_MEMORY_STATS.tsv` and `WINDOW_MEMORY_STATS.tsv` retain the simulator record type plus its ordered payload; the typed layer-specific tables provide named columns for L1D, L2, queue, replacement, and cross-layer records.  `FIXED_WINDOW` is formally named `L1D_ACCESS_ATTEMPT_WINDOW`: it advances in `record_l1()`, is a deterministic bounded aggregate, and is never an access sequence.  It is not an exact unique-coalesced-transaction window and must not be used to compute exact transactions-per-memory-instruction.  Per-kernel frontend instruction/transaction records retain their existing meaning.
+
+Translation source is exact only for application transactions that passed the shader-side admission point: VM_DISABLED, IDEAL_IDENTITY, L1_TLB_HIT, L2_TLB_HIT, or PTW.  In mode-2 profiles, the simulator asserts that such an application transaction is never UNOBSERVED.  A sparse cross-layer row tagged UNOBSERVED instead denotes cache-internal store/write-allocate traffic for which no application translation source exists; it must be reported separately and must not be relabeled or counted as translated application traffic.

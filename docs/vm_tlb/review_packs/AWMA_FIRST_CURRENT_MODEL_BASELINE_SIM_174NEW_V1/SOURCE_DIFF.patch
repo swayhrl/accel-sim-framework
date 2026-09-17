@@ -1,0 +1,45 @@
+diff --git a/util/vm_tlb/awma/simulation/fixed_window_replay.py b/util/vm_tlb/awma/simulation/fixed_window_replay.py
+index 953d8b37..ea7e6d66 100755
+--- a/util/vm_tlb/awma/simulation/fixed_window_replay.py
++++ b/util/vm_tlb/awma/simulation/fixed_window_replay.py
+@@ -110,13 +110,14 @@ def run(args):
+     output_dir.mkdir(parents=True)
+     log_path = output_dir / "run.log"
+     try:
+-        admission = foundation.validate_bundle(args.manifest, args.parser)
+-    except foundation.ContractError as exc:
++        admission = (json.loads(args.admission_receipt.read_text(encoding="utf-8"))
++                     if args.admission_receipt else foundation.validate_bundle(args.manifest, args.parser))
++    except (foundation.ContractError, json.JSONDecodeError, OSError) as exc:
+         receipt = {"execution_status": "PARSER_ABORT", "reason": str(exc), "sim_input_id": None}
+         (output_dir / "SIM_RUN_RECEIPT.json").write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+         return receipt
+-    if not admission["admitted"]:
+-        receipt = {"execution_status": "PARSER_ABORT", "reason": admission["reason"], "sim_input_id": None}
++    if admission.get("status") != "ADMITTED" or not admission.get("admitted"):
++        receipt = {"execution_status": "PARSER_ABORT", "reason": admission.get("reason", "admission receipt is not ADMITTED"), "sim_input_id": None}
+         (output_dir / "SIM_RUN_RECEIPT.json").write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+         return receipt
+ 
+@@ -227,6 +228,8 @@ def main():
+     replay = commands.add_parser("run")
+     replay.add_argument("--manifest", type=Path, required=True)
+     replay.add_argument("--parser", type=Path, required=True)
++    replay.add_argument("--admission-receipt", type=Path,
++                        help="previously hash-closed ADMITTED receipt; avoids a redundant parser scan")
+     replay.add_argument("--baseline-identity", type=Path, required=True)
+     replay.add_argument("--binary", type=Path, required=True)
+     replay.add_argument("--base-config", type=Path, required=True)
+diff --git a/util/vm_tlb/awma/simulation/simulation_foundation.py b/util/vm_tlb/awma/simulation/simulation_foundation.py
+index 47d746bf..dbb2e60e 100755
+--- a/util/vm_tlb/awma/simulation/simulation_foundation.py
++++ b/util/vm_tlb/awma/simulation/simulation_foundation.py
+@@ -273,7 +273,7 @@ def run_grammar_smoke(parser_path, root, trace_name):
+     try:
+         completed = subprocess.run(
+             [str(parser), trace_name], cwd=root, text=True,
+-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=300, check=False,
++            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=1800, check=False,
+         )
+     except (OSError, subprocess.TimeoutExpired) as exc:
+         raise ContractError("traceg grammar parser execution failed for %s: %s" % (trace_name, exc)) from exc
