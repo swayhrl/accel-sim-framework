@@ -10,6 +10,13 @@ the pinned ordered config-chain identity, `gpu_tot_sim_cycle` and
 strict check is `sg5_equivalence.py validate-run`; it does not infer any
 unreported lower-traffic metric.
 
-The first two rows are B16-S/GESUMMV and TC80-S/GESUMMV.  They were launched
-only after all twelve SG5.3 OFF/ON pairs passed, in distinct immutable UUID
-directories under `/workspace/wave-a-sg5-runs`, and remain diagnostic-only.
+The current partial checkpoint indexes five GESUMMV variants: B16-S, TC80-S,
+B16-N, TC80-N, and IO. They were launched only after all twelve SG5.3 OFF/ON
+pairs passed, in distinct immutable UUID directories under
+`/workspace/wave-a-sg5-runs`, and remain diagnostic-only.
+
+For a diagnostic `validate-run`, the expected config identity is the ordered
+`config_chain_sha256`, not the single-file `config_sha256`. B16-S preserves an
+original FAIL caused by passing the latter as the former; its distinct named
+revalidation receipt and both hashes are recorded in
+`SG5_G6_VALIDATION_RECONCILIATION.tsv`. No simulator run was repeated.
