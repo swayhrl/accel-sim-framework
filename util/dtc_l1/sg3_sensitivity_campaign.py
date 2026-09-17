@@ -39,6 +39,13 @@ def metric(s,n):
     m=re.findall(rf"^{re.escape(n)}\s*=\s*(\d+)\s*$",s,re.M)
     if not m: raise RuntimeError(f"missing {n}")
     return int(m[-1])
+def real_metric(s,n):
+    m=re.findall(rf"^{re.escape(n)}\s*=\s*(\d+(?:\.\d+)?)\s*$",s,re.M)
+    if not m: raise RuntimeError(f"missing {n}")
+    return float(m[-1])
+def l2_fail_reason(s,reason):
+    terminal_block=s.rsplit("L2_total_cache_reservation_fail_breakdown:\n",1)[-1]
+    return sum(int(v) for v in re.findall(rf"^\s*L2_cache_stats_fail_breakdown\[[^]]+\]\[{re.escape(reason)}\]\s*=\s*(\d+)\s*$",terminal_block,re.M))
 
 def run(a):
     key=(a.dimension,a.point)
@@ -71,11 +78,15 @@ def validate(a):
     else: checks["sweep_echo"]=bool(re.search(rf"^-gpgpu_cache:dl2\s+{re.escape(expected)}\s+#",out,re.M))
     vals={}
     try:
-        required=["gpu_tot_sim_cycle","gpu_tot_sim_insn",f"DTC_L1_{pre}_lower_created",f"DTC_L1_{pre}_lower_responses","DTC_L1_lower_credit_acquired","DTC_L1_lower_credit_released","DTC_L1_lower_outstanding","SG3_dtc_core_tick_samples","SG3_dtc_lower_outstanding_integral","SG3_l2_bank_tick_samples","SG3_l2_mshr_occupancy_integral","SG3_l2_miss_queue_occupancy_integral","SG3_lower_lifetime_completed","SG3_lower_lifetime_sum_cycles","SG3_lower_lifetime_max_cycles","SG3_lower_lifetime_unmatched_completions","SG3_lower_lifetime_live_records"]
+        required=["gpu_tot_sim_cycle","gpu_tot_sim_insn",f"DTC_L1_{pre}_lower_created",f"DTC_L1_{pre}_lower_responses","DTC_L1_lower_credit_acquired","DTC_L1_lower_credit_released","DTC_L1_lower_outstanding","L2_total_cache_accesses","L2_total_cache_misses","L2_total_cache_pending_hits","L2_total_cache_reservation_fails","SG3_dtc_core_tick_samples","SG3_dtc_lower_outstanding_integral","SG3_l2_bank_tick_samples","SG3_l2_mshr_occupancy_integral","SG3_l2_miss_queue_occupancy_integral","SG3_lower_lifetime_completed","SG3_lower_lifetime_sum_cycles","SG3_lower_lifetime_max_cycles","SG3_lower_lifetime_unmatched_completions","SG3_lower_lifetime_live_records"]
         for n in required: vals[n]=metric(out,n)
+        for n in ["L2_cache_data_port_util","L2_cache_fill_port_util"]: vals[n]=real_metric(out,n)
+        reasons=["LINE_ALLOC_FAIL","MISS_QUEUE_FULL","MSHR_ENRTY_FAIL","MSHR_MERGE_ENRTY_FAIL","MSHR_RW_PENDING"]
+        for reason in reasons: vals[f"L2_fail_{reason}"]=l2_fail_reason(out,reason)
         checks["instruction_identity"]=vals["gpu_tot_sim_insn"]==int(src["instructions"]); checks["drain"]=vals[f"DTC_L1_{pre}_lower_created"]==vals[f"DTC_L1_{pre}_lower_responses"] and vals["DTC_L1_lower_credit_acquired"]==vals["DTC_L1_lower_credit_released"] and vals["DTC_L1_lower_outstanding"]==0
         checks["observer_terminal_closure"]=vals["SG3_lower_lifetime_unmatched_completions"]==0 and vals["SG3_lower_lifetime_live_records"]==0
-    except RuntimeError: checks["instruction_identity"]=checks["drain"]=checks["observer_terminal_closure"]=False
+        checks["l2_terminal_consistency"]=vals["L2_total_cache_misses"]<=vals["L2_total_cache_accesses"] and vals["L2_total_cache_reservation_fails"]==sum(vals[f"L2_fail_{reason}"] for reason in reasons)
+    except RuntimeError: checks["instruction_identity"]=checks["drain"]=checks["observer_terminal_closure"]=checks["l2_terminal_consistency"]=False
     r={"schema":"SG3_SENSITIVITY_STRICT_VALIDATION_V2","status":"PASS" if all(checks.values()) else "FAIL","workload":a.workload,"mode":a.mode,"dimension":a.dimension,"point":a.point,"run_dir":str(rd),"metrics":vals,"checks":checks,"validation_utc":now()}; target=Path(a.output) if a.output else rd/"VALIDATION.json"; target.write_text(json.dumps(r,indent=2,sort_keys=True)+"\n"); print(json.dumps(r,sort_keys=True));
     if r["status"]!="PASS": raise SystemExit(1)
 def main():
