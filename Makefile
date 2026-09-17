@@ -1,5 +1,7 @@
+# Layout: derive the repository and its enclosing offline bundle; callers may override BUNDLE_ROOT.
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
+# Toolchain: use only the bundle-local CUDA and Python by default.
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 BUNDLE_ROOT ?= $(abspath $(REPO_ROOT)/..)
 CUDA_INSTALL_PATH ?= $(BUNDLE_ROOT)/toolchain/cuda-12.4
@@ -11,13 +13,15 @@ NAME ?= manual-ptx
 TRACE ?=
 GPU_CONFIG ?= $(REPO_ROOT)/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM7_QV100/gpgpusim.config
 TRACE_CONFIG ?= $(REPO_ROOT)/gpu-simulator/configs/tested-cfgs/SM7_QV100/trace.config
+# Environment: export paths consumed by existing offline scripts.
 export OFFLINE_BUNDLE_ROOT := $(BUNDLE_ROOT)
 export CUDA_INSTALL_PATH := $(CUDA_INSTALL_PATH)
+# Build / validation / manual simulation / results / release targets are thin wrappers around validated tools.
 .PHONY: help info doctor setup build clean-build rebuild smoke-sass quick receipts ptx sass stats package verify-package
 help:
 	@printf '%s\n' 'Offline-Sim V1 commands' '' 'Environment: doctor setup' 'Build: build [JOBS=4] clean-build rebuild' 'Validation: smoke-sass quick receipts' 'Manual: ptx [BENCH=... CONFIG=... NAME=...] | sass TRACE=...' 'Results: stats NAME=...' 'Release: package verify-package' '' 'Variables: JOBS CUDA_INSTALL_PATH PYTHON BENCH CONFIG NAME TRACE GPU_CONFIG TRACE_CONFIG'
 info:
-	@echo "repo root: $(REPO_ROOT)"; echo "bundle root: $(BUNDLE_ROOT)"; printf 'Framework branch: '; git -C '$(REPO_ROOT)' branch --show-current; printf 'Framework HEAD: '; git -C '$(REPO_ROOT)' rev-parse HEAD; printf 'GPGPU-Sim branch: '; git -C '$(REPO_ROOT)/gpu-simulator/gpgpu-sim' branch --show-current; printf 'GPGPU-Sim HEAD: '; git -C '$(REPO_ROOT)/gpu-simulator/gpgpu-sim' rev-parse HEAD; echo "CUDA path: $(CUDA_INSTALL_PATH)"; for tool in nvcc ptxas cuobjdump; do path="$(CUDA_INSTALL_PATH)/bin/$$tool"; if test -x "$$path"; then echo "$$tool: $$path"; "$$path" --version | sed -n '4p'; else echo "$$tool: NOT FOUND"; fi; done; if test -x '$(PYTHON)'; then echo "Python: $(PYTHON)"; '$(PYTHON)' --version; else echo 'Python: NOT FOUND'; fi
+	@echo "repo root: $(REPO_ROOT)"; echo "bundle root: $(BUNDLE_ROOT)"; for spec in "Framework|$(REPO_ROOT)|$(BUNDLE_ROOT)/cache/git/framework-offline-sim-v1.0.bundle" "GPGPU-Sim|$(REPO_ROOT)/gpu-simulator/gpgpu-sim|$(BUNDLE_ROOT)/cache/git/gpgpu-sim-project-offline-sim.bundle"; do IFS='|' read -r label repo bundle <<< "$$spec"; if test -d "$$repo/.git"; then printf "$$label branch: "; git -C "$$repo" branch --show-current; printf "$$label HEAD: "; git -C "$$repo" rev-parse HEAD; elif test -f "$$bundle"; then echo "$$label release refs:"; git bundle list-heads "$$bundle"; else echo "$$label: UNKNOWN"; fi; done; echo "CUDA path: $(CUDA_INSTALL_PATH)"; for tool in nvcc ptxas cuobjdump; do path="$(CUDA_INSTALL_PATH)/bin/$$tool"; if test -x "$$path"; then echo "$$tool: $$path"; "$$path" --version | sed -n '4p'; else echo "$$tool: NOT FOUND"; fi; done; if test -x '$(PYTHON)'; then echo "Python: $(PYTHON)"; '$(PYTHON)' --version; else echo 'Python: NOT FOUND'; fi
 doctor:
 	@'$(REPO_ROOT)/offline/doctor.sh'
 setup:
