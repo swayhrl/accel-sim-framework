@@ -1,0 +1,9 @@
+stage	status	accepted_runs	active_runs	failed_runs	evidence_or_gate	detail
+SG3.0	PASS	0	0	0	SG3_L2_CONFIG_FIELD_MAP.tsv; SG3_TELEMETRY_INVENTORY.tsv	Current FAST64 L2 geometry, MSHR/queue resources, cap scope, and existing terminal counters are source-mapped; no causal result is claimed.
+SG3.1a	SOURCE_IMPLEMENTED_BUILD_AND_FIXTURE_PASS	0	0	0	SG3_DOWNSTREAM_OBSERVER_CLOSURE.tsv; Core 9b6bd33f	Dedicated default-off downstream observer has source diff closure, an isolated full runtime build, and five deterministic source fixtures; runtime OFF/ON evidence has not started.
+SG3.1b	NOT_STARTED	0	0	0	sg3_observer_equivalence.py	Requires four fresh immutable OFF/ON pairs: IO and OO on NN and Btree, exact cycle/instruction and pre-existing-counter equality, and ON terminal lifetime closure.
+SG3.2	NOT_STARTED	0	0	0	PREREQUISITE_SG3_1B	Capacity-only sweep: G4_DOWNSTREAM x IO/OO x 0.5x/1x/2x legal geometry frozen before results.
+SG3.3	NOT_STARTED	0	0	0	PREREQUISITE_SG3_1B	One-dimensional L2 MSHR resource sweep first; miss-queue sweep only if source/observed evidence warrants it.
+SG3.4	NOT_STARTED	0	0	0	PREREQUISITE_SG3_1B	Common predeclared global DTC lower-outstanding-cap grid 512/1024/2048/4096/8192 across G4_DOWNSTREAM x IO/OO.
+SG3.5	NOT_TRIGGERED_PENDING_SG3_2_TO_4	0	0	0	CONDITIONAL_SERVICE_GATE	Service sensitivity is not run unless capacity/concurrency/cap sweeps fail to distinguish the limiting resource.
+FINAL	NOT_READY	0	0	0	SG3_DOWNSTREAM_BOTTLENECK_LOCALIZATION_PASS	Requires qualified telemetry, required sweeps, conditional service decision, and bounded decision matrix.
