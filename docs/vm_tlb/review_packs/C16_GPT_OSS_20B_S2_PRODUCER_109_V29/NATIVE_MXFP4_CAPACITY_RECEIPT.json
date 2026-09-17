@@ -1,0 +1,28 @@
+{
+  "campaign": "C16_GPT_OSS_20B_S2_PRODUCER_109_V29",
+  "coordination_head": "89abe974de9d275d564c8acbff58f6fa6a1a48d0",
+  "disposition": "Do not load model, run S2, route, replay, profile, capture, or admit.",
+  "full_resident_capacity": "NOT_ATTEMPTED; 13,761,316,904-byte native checkpoint subset plus non-expert state cannot be admitted before semantic gate closure",
+  "layer_local_or_streaming_capacity": "REJECTED; no native SM89 MXFP4 backend exists",
+  "model_id": "openai/gpt-oss-20b",
+  "native_checkpoint_representation": {
+    "expert_storage": "packed MXFP4 blocks plus UE8 scales",
+    "no_bf16_dequantization_permitted": true,
+    "quantization_method": "mxfp4"
+  },
+  "observed_gate": {
+    "gpu_compute_capability": [
+      8,
+      9
+    ],
+    "native_backend_hardware_requirement": "compute capability >= 9.0",
+    "quantizer_behavior_without_triton_kernels": "pre-quantized model defaults to BF16 dequantization",
+    "triton_kernels_installed": false,
+    "triton_version": "3.3.1"
+  },
+  "revision": "6cee5e81ee83917806bbde320786a8fb61efebee",
+  "schema_version": 1,
+  "stage": "0_runtime_capacity_gate",
+  "status": "FAIL_CLOSED_NATIVE_MXFP4_UNAVAILABLE_ON_SM89",
+  "typed_blocker": "C16_GPT_OSS_20B_V29_NATIVE_MXFP4_SM89_UNSUPPORTED"
+}
