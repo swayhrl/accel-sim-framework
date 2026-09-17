@@ -1,0 +1,1 @@
+AWMA_KERNEL_TARGET_SELECTION_V1_COMPLETE_WITH_SCOPE. Offline-only selection from accepted node164 census; all descriptors are CANDIDATE_ONLY_NOT_CAPTURED.

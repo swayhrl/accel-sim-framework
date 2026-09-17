@@ -1,0 +1,1 @@
+NATIVE_TARGET_MATCH_NOT_PROVEN: this offline stage found no accepted Native PREFILL_HEAVY_GEMM manifest with exact function + grid + block + phase occurrence fields that can be joined to the selected census candidate. Duration or family similarity alone is not treated as proof.

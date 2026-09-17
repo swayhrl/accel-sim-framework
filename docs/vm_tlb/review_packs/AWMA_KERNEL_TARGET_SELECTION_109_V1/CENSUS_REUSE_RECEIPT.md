@@ -1,0 +1,3 @@
+inventory_path=/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/qwen25_s2_kernel_census_20260917T101100Z/analysis/ALL_KERNEL_LAUNCHES.tsv
+inventory_sha256=7825697aa23647daee6a38ac4436029c5746fe29a468d303520d3884f2b4abef
+workload_nvtx_identity=PASS
