@@ -4,12 +4,12 @@ Date: 2026-09-17
 
 ## Coordination status
 
-Current stage is now split into three logical tracks:
+Current execution tracks:
 
 ```text
 Track A — 174-new
 Q05 translation timeline closure
-ACTIVE
+COMPLETE / report received
 
 Track B — 109
 kernel target selection
@@ -17,84 +17,119 @@ COMPLETE / ACCEPTED
 
 Track C — 109
 storage governance + bounded GPU capture side lane
-ACTIVE by new ChatGPT authorization
+ACTIVE
+
+Track D — 174-new
+independent node164 storage consumer audit
+ACTIVE
 ```
 
-Track C supersedes the previous temporary instruction that node109 must remain idle while Track A runs. The reason is that Track B has now closed deterministic candidate identities and the RTX4080 is idle; storage governance is first made safe, then only those already-accepted candidates may be captured.
+Track C and Track D are intentionally complementary:
 
-## Accepted Track B result
+- 109 proves producer-side finalize/publish/ACK and then may use the RTX4080 for bounded selected-kernel captures;
+- 174-new independently proves that node164 can be consumed as a durable authority without relying on 109 local paths or 174 local disk.
+
+## Track A completion facts
+
+Reported completion marker:
+
+`AWMA_Q05_TRANSLATION_TIMELINE_CLOSURE_V1_COMPLETE_WITH_SCOPE`
+
+Execution branch reported by Codex:
+
+`hrl/awma-q05-translation-timeline-174new-v1`
+
+Key diagnostic-neutrality facts:
 
 ```text
-branch = hrl/awma-kernel-target-selection-109-v1
-HEAD   = e90fd76d3704df4a367bb04de09aee42d0cab803
-status = AWMA_KERNEL_TARGET_SELECTION_V1_COMPLETE_WITH_SCOPE
-review = PASS_WITHIN_SCOPE
+R0 10k matches accepted science:
+cycle = 10,000
+gpu_sim_insn = 1,084,480
+issued CTA = 70
+L1 = 930 / 805 / 125
+L2 = 125 / 0 / 125
+MSHR = 19 alloc / 106 merge / 0 full / HWM 16
+walk = 19 / 19
+max waiter depth = 35
+requester latency total = 164,955
 ```
 
-Accepted candidates remain `CANDIDATE_ONLY_NOT_CAPTURED` until Track C requalifies them in a fresh exact run:
+Diagnostic translation key is:
+
+`{asid, vpn, page_size}`
+
+Timeline summary:
+
+```text
+10k:
+19 keys / 19 fills / 106 merges / 8,730 post-fill REQUEST invocations
+
+50k:
+104 keys / 104 fills / 374 merges / 474,414 post-fill REQUEST invocations
+
+full natural R0:
+885,681 cycles
+224 CTA
+240 simulator keys / 240 fills / 393 merges
+8,747,322 post-fill REQUEST invocations
+max waiter depth = 35
+```
+
+Scientific classification remains:
+
+`MIXED`
+
+Supported:
+
+- clear pre-fill burst fanout exists;
+- substantial post-fill activity continues across the kernel;
+- the evidence does not support a simple TLB-capacity/thrashing explanation.
+
+Important boundary:
+
+`REQUEST` is a simulator invocation/retry unit, not memory-instruction coverage. Post-fill L1/L2 outcome was not directly logged and remains unavailable.
+
+No TLB/PTW mechanism or latency/capacity/page-size/Segment experiment has been authorized by this completion alone.
+
+## Track B accepted target-selection result
+
+Accepted branch/commit:
+
+```text
+hrl/awma-kernel-target-selection-109-v1
+e90fd76d3704df4a367bb04de09aee42d0cab803
+```
+
+Authorized Track C candidates only:
 
 ```text
 PREFILL_GEMM_PRIMARY_1
-  CUBLAS_GEMM / CUTLASS Kernel2
+  CUTLASS Kernel2
   grid/block = 128,3,1 / 256,1,1
   phase/function/shape occurrence = 12
-  reference launch = 285 (navigation only)
-  57.31% Prefill GEMM-family time
-  38.10% total Prefill GPU time
 
 DECODE_GEMV_PRIMARY_1
-  CUBLAS_GEMV / internal::gemvx int6
+  internal::gemvx int6
   grid/block = 1216,1,1 / 16,4,1
   decode step = 1
   phase/function/shape occurrence = 10
-  reference launch = 1244 (navigation only)
-  1,536 recurrences across 32 decode steps
-  40.64% Decode GEMV-family time
-  20.22% total Decode GPU time
 
 DECODE_FLASH_PRIMARY_1
   flash_fwd_splitkv_kernel
   grid/block = 1,9,14 / 128,1,1
   decode step = 1
   occurrence = 17
-  reference launch = 1748 (navigation only)
-  82.10% Decode Flash time
 
 DECODE_FLASH_PRIMARY_2
   flash_fwd_splitkv_combine_kernel
   grid/block = 2,1,1 / 128,1,1
   decode step = 1
   occurrence = 0
-  reference launch = 1018 (navigation only)
-  17.90% Decode Flash time
 ```
 
-The old Native `PREFILL_HEAVY_GEMM` exact identity remains:
+Reference global launch numbers are navigation aids only and may not be used as scientific identity.
 
-```text
-NATIVE_TARGET_MATCH_NOT_PROVEN
-```
-
-A secondary Decode GEMV shape `grid=18992,1,1 / block=8,8,1` remains backlog-only; it is not authorized for capture in Track C.
-
-## Track A remains active and unchanged
-
-174-new continues:
-
-```text
-AWMA_Q05_TRANSLATION_TIMELINE_CLOSURE_V1
-```
-
-using the existing node-specific specification.
-
-It must still close:
-
-- first-touch / pre-fill / post-fill attribution;
-- cycle-keyed translation-key events;
-- warm-after-fill behavior;
-- same-unit 10k/50k/full coverage where source semantics allow.
-
-Track C must not modify or depend on Track A's simulator worktree.
+The old Native `PREFILL_HEAVY_GEMM` exact alignment remains `NATIVE_TARGET_MATCH_NOT_PROVEN`.
 
 ## Frozen workload identity
 
@@ -110,7 +145,7 @@ dtype      = FP16
 backend    = SDPA
 ```
 
-Current accepted Q05 simulation target remains:
+Current accepted Q05 target remains:
 
 ```text
 Q05_PREFILL_ATTN_FLASH
@@ -118,7 +153,7 @@ function occurrence = 0
 pytorch_flash::flash_fwd_kernel<...>
 ```
 
-## Frozen simulation identities
+Frozen Simulation IDs remain read-only:
 
 ```text
 SIM_INPUT_0ab4e2fe2195d3b7d7da4ee9df6017cbec5c063fcc8110374e1a753f87177634
@@ -127,126 +162,73 @@ SIM_RUN_92a553b0d69a9f41c5e20a8650366c53f7fed31c29c7462947d3af03c6f136f1
 SIM_EVIDENCE_c8b4175d33f8bed7def2984489eadbdbcdfaffbfcb6a7daef33c8beb18e80959
 ```
 
-Accepted source anchors:
+## Storage authority
 
-```text
-Framework execution source = d64408a97d76a320a6d49468653d416e33677af8
-Core                       = 57bb71ecd015b6ec0ab32e45b0815e5beaf69172
-Simulator binary SHA256    = 34deedd99e85e52fb309852de2ecc5fecd9471436a33a5e77d40bc038a2c31c4
-Producer                    = 5143b4e10aaf2fc47bb60492155d2464b0b726fd
-Validator hotfix            = fb5d0bebee421a0153661239e1f7c2bc088d5c9e
-Characterization anchor     = bb92e5a1559dd7e2b2520e9a7a4937262664512c
-```
+Durable large-data owner:
 
-## Accepted Q05 bounded/full facts
+`/root/share/mnt164/huangrulin/c16_ai_workload/`
 
-```text
-R0 10k gpu_sim_insn = 1,084,480 completed active thread-instructions
-I0 10k              = 1,697,696 (+56.55%)
-R0 50k              = 11,587,872
-I0 50k              = 20,458,400 (+76.55%)
-
-125 miss requesters = 19 translation allocations + 106 merges
-max waiter depth = 35
-```
-
-P2 and M8 did not yield measurable 10k progress gain.
-
-Complete Q05 structure:
-
-```text
-224 CTA
-896 warps
-13,361,600 warp-instruction records
-971,824 memory-instruction records
-29,564,416 lane-address events
-228 unique offline 64 KiB VPN
-R0 natural completion = 885,681 cycles
-```
-
-The trace-file order remains `STRUCTURAL_TRACE_ORDER_ONLY`.
-
-## Storage authority decision
-
-The durable large-data owner is node164.
-
-```text
-node164 root:
-/root/share/mnt164/huangrulin/c16_ai_workload/
-```
-
-Roles are frozen as:
+Frozen roles:
 
 ```text
 109 = GPU producer + short-lived local staging
-174-new = analysis/simulator, not durable large-data storage
+174-new = simulator / analysis / independent durable-consumer audit
 164 = durable large-data authority
 ```
 
-Large artifacts including simulator-native traces, NSYS/NCU reports, NVBit raw, simulation raw, cycle timelines and large derived datasets belong on node164.
+Large artifacts must not depend on 174-new local disk for long-term retention.
 
-Existing accepted durable paths are provenance and must not be mass-moved for cleanliness.
+Existing accepted paths must not be mass-moved for cleanliness.
 
-Before new large side-lane captures are published, Track C must close:
+### Track C — 109
 
-```text
-AWMA_164_DATA_PLANE_QUALIFIED_V1
-```
+Strict order:
 
-using a 1-2 GiB partial/resume/size/SHA/rename/read-back canary.
+1. storage governance + 1-2 GiB producer-side data-plane canary;
+2. reach `AWMA_164_DATA_PLANE_QUALIFIED_V1`;
+3. only then perform bounded producer captures of the four authorized candidates;
+4. publish producer-qualified durable bundles to node164;
+5. no SIM_INPUT admission or simulation.
 
-No accepted scientific artifact may be deleted during this governance stage.
+### Track D — 174-new
 
-## Node roles now
+Execute the independent read-side audit:
 
-### 174-new
+`CODEX_NEXT_STAGE_174NEW_STORAGE_CONSUMER_AUDIT_V1.md`
 
-Continue Track A only.
+Required goals:
 
-### 109 / RTX4080
+- audit node164 mount/capacity/permissions from 174-new;
+- independently inventory accepted Q05 trace, simulation raw, translation timeline raw and S2 census inventory;
+- independently verify producer canary receipt/ACK when available;
+- verify durable catalog is consumable without producer-local paths;
+- identify orphan partials / local-only large artifacts / duplicate authority / cleanup candidates;
+- no deletion or mass move.
 
-Execute Track C in strict sequence:
-
-```text
-Phase A: storage governance / data-plane qualification
-then, only after PASS,
-Phase B: bounded simulator-native producer captures of the four accepted candidates
-```
-
-Track C may produce producer-qualified durable bundles only. It may not create new SIM_INPUT IDs or run simulation.
-
-### node164
-
-Own all new large Track C raw artifacts after durable publication and independent destination verification.
-
-## Immediate execution order
+## Immediate execution
 
 Parallel:
 
 ```text
-174-new:
-CODEX_NEXT_STAGE_174NEW_Q05_TRANSLATION_TIMELINE_CLOSURE_V1.md
-
 109:
 CODEX_NEXT_STAGE_109_STORAGE_GOVERNANCE_AND_GPU_SIDELANE_V1.md
+
+174-new:
+CODEX_NEXT_STAGE_174NEW_STORAGE_CONSUMER_AUDIT_V1.md
 ```
 
-Read storage policy:
+Read policy:
 
-```text
-STORAGE_GOVERNANCE_POLICY_V1.md
-```
+`STORAGE_GOVERNANCE_POLICY_V1.md`
 
 ## Global STOP boundaries
 
-Neither active track may automatically start:
+Neither track may automatically start:
 
-- new TLB/PTW mechanisms;
+- new TLB/PTW/cache mechanisms;
 - L2-TLB latency/PTW/walker/capacity/page-size sweeps;
 - Segment;
-- NCU campaigns;
-- C16WARP1 campaigns;
+- NCU/C16WARP1 campaigns;
 - Qwen3/DeepSeek campaigns;
-- admission or simulation of new Track C captures.
-
-Track C is authorized only for the four selected Qwen2.5 candidate producer captures after storage qualification.
+- SIM_INPUT admission or simulation of Track C captures;
+- deletion or physical reorganization of accepted durable data.
