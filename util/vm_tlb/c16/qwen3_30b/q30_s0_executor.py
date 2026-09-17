@@ -76,10 +76,12 @@ class Q30:
    for expert_id,expert in enumerate(m.mlp.experts):
     if hasattr(expert,'down_proj'):
      def down_pre(mod,args,eid=expert_id):
+      if args[0].numel()==0: return None
       semantic['down_proj_events'].append({'expert_id':eid,'input':gpu_info(args[0]),'weight':gpu_info(mod.weight)})
       if self.nvtx_components: torch.cuda.nvtx.range_push(f'Q30_NATURAL_EXPERT_{eid}_DOWN_PROJ')
       return None
      def down_post(mod,args,out,eid=expert_id):
+      if args[0].numel()==0: return None
       for event in reversed(semantic['down_proj_events']):
        if event['expert_id']==eid and 'output' not in event: event['output']=gpu_info(out); break
       if self.nvtx_components: torch.cuda.nvtx.range_pop()
