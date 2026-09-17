@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import re
@@ -43,6 +44,15 @@ def read_tsv(path: Path) -> dict[str, str]:
     return dict(line.split("\t", 1) for line in path.read_text().splitlines() if "\t" in line)
 
 
+def authority_row(path: Path, workload: str) -> dict[str, str]:
+    with path.open(encoding="utf-8", newline="") as stream:
+        rows = [row for row in csv.DictReader(stream, delimiter="\t")
+                if row["workload"] == workload]
+    if len(rows) != 1:
+        raise RuntimeError(f"authority must contain exactly one {workload} row")
+    return rows[0]
+
+
 def metrics(path: Path) -> dict[str, str]:
     text = path.read_text(encoding="utf-8", errors="replace")
     ignored = {
@@ -60,6 +70,11 @@ def metrics(path: Path) -> dict[str, str]:
 def run(args: argparse.Namespace) -> None:
     simulator, trace, trace_config = map(Path.resolve,
                                          map(Path, (args.simulator, args.trace, args.trace_config)))
+    if args.workload not in {"NN", "Btree"} or args.mode not in {"IO", "OO"}:
+        raise RuntimeError("SG3.1 equivalence is frozen to NN/Btree and IO/OO")
+    source = authority_row(Path(args.authority), args.workload)
+    if digest(trace) != source["trace_list_sha256"]:
+        raise RuntimeError("trace identity does not match the frozen FAST12 authority")
     configs = tuple(Path(item).resolve() for item in args.config)
     for item in (simulator, trace, trace_config, *configs):
         if not item.is_file():
@@ -83,6 +98,8 @@ def run(args: argparse.Namespace) -> None:
         "config_chain": ";".join(map(str, configs)),
         "config_chain_sha256": chain_digest(configs),
         "trace": trace, "trace_sha256": digest(trace),
+        "authority": Path(args.authority).resolve(), "authority_trace_sha256": source["trace_list_sha256"],
+        "expected_instructions": source["instructions"],
         "trace_config": trace_config, "trace_config_sha256": digest(trace_config),
         "overlay": overlay, "overlay_sha256": digest(overlay),
         "immutable_runner": immutable_runner,
@@ -117,7 +134,7 @@ def validate(args: argparse.Namespace) -> None:
     on_text = (on / "simulator.stdout").read_text(encoding="utf-8", errors="replace")
     off_metrics, on_metrics = metrics(off / "simulator.stdout"), metrics(on / "simulator.stdout")
     identity_keys = ("workload", "mode", "simulator_sha256", "config_chain_sha256",
-                     "trace_sha256", "trace_config_sha256", "core_source_head")
+                     "trace_sha256", "authority_trace_sha256", "trace_config_sha256", "core_source_head")
     required_on = {
         "SG3_downstream_observer", "SG3_dtc_core_tick_samples",
         "SG3_dtc_lower_outstanding_integral", "SG3_l2_bank_tick_samples",
@@ -140,6 +157,9 @@ def validate(args: argparse.Namespace) -> None:
         "preexisting_metric_values": off_metrics == on_metrics,
         "cycles_present": "gpu_tot_sim_cycle" in off_metrics,
         "instructions_present": "gpu_tot_sim_insn" in off_metrics,
+        "authority_instruction_identity": (
+            off_metrics.get("gpu_tot_sim_insn") == off_manifest.get("expected_instructions") and
+            on_metrics.get("gpu_tot_sim_insn") == on_manifest.get("expected_instructions")),
         "terminal_lifetime_closure": (
             re.search(r"^SG3_lower_lifetime_unmatched_completions = 0$", on_text, re.M) is not None and
             re.search(r"^SG3_lower_lifetime_live_records = 0$", on_text, re.M) is not None),
@@ -166,6 +186,7 @@ run_parser = subparsers.add_parser("run")
 for name in ("simulator", "trace", "trace_config", "runs_root", "workload", "mode"):
     run_parser.add_argument(f"--{name.replace('_', '-')}", required=True)
 run_parser.add_argument("--config", required=True, action="append")
+run_parser.add_argument("--authority", required=True)
 run_parser.add_argument("--observer", choices=("0", "1"), required=True)
 run_parser.add_argument("--core-source-head", required=True)
 run_parser.set_defaults(func=run)
