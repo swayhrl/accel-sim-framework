@@ -4,30 +4,26 @@ Date: 2026-09-17
 
 ## Coordination status
 
-Current execution tracks:
+Current tracks:
 
 ```text
-Track A — 174-new
-Q05 translation timeline closure
+Track A — 174-new Q05 translation timeline closure
 COMPLETE / report received
 
-Track B — 109
-kernel target selection
+Track B — 109 kernel target selection
 COMPLETE / ACCEPTED
 
-Track C — 109
-storage governance + bounded GPU capture side lane
+Track C — 109 producer storage governance + bounded GPU capture side lane
 ACTIVE
 
-Track D — 174-new
-independent node164 storage consumer audit
+Track D — 174-new independent node164 storage consumer audit
+WAITING_FOR_PRODUCER_CANARY
+
+Track E — 174-new local-storage read-only inventory / cleanup-candidate audit
 ACTIVE
 ```
 
-Track C and Track D are intentionally complementary:
-
-- 109 proves producer-side finalize/publish/ACK and then may use the RTX4080 for bounded selected-kernel captures;
-- 174-new independently proves that node164 can be consumed as a durable authority without relying on 109 local paths or 174 local disk.
+Track E is intentionally read-only and independent of Track C progress. It exists to quantify 174-new local/host-backed storage usage and produce a safe cleanup candidate list. It does **not** authorize deletion.
 
 ## Track A completion facts
 
@@ -35,14 +31,13 @@ Reported completion marker:
 
 `AWMA_Q05_TRANSLATION_TIMELINE_CLOSURE_V1_COMPLETE_WITH_SCOPE`
 
-Execution branch reported by Codex:
+Reported branch:
 
 `hrl/awma-q05-translation-timeline-174new-v1`
 
-Key diagnostic-neutrality facts:
+Diagnostic R0 10k preserved accepted science:
 
 ```text
-R0 10k matches accepted science:
 cycle = 10,000
 gpu_sim_insn = 1,084,480
 issued CTA = 70
@@ -54,7 +49,7 @@ max waiter depth = 35
 requester latency total = 164,955
 ```
 
-Diagnostic translation key is:
+Actual diagnostic translation key:
 
 `{asid, vpn, page_size}`
 
@@ -75,21 +70,18 @@ full natural R0:
 max waiter depth = 35
 ```
 
-Scientific classification remains:
-
-`MIXED`
+Scientific classification remains `MIXED`.
 
 Supported:
 
-- clear pre-fill burst fanout exists;
-- substantial post-fill activity continues across the kernel;
-- the evidence does not support a simple TLB-capacity/thrashing explanation.
+- strong pre-fill burst fanout exists;
+- new translation keys continue beyond the early window;
+- substantial post-fill activity exists;
+- current evidence does not support simple TLB-capacity/thrashing.
 
 Important boundary:
 
-`REQUEST` is a simulator invocation/retry unit, not memory-instruction coverage. Post-fill L1/L2 outcome was not directly logged and remains unavailable.
-
-No TLB/PTW mechanism or latency/capacity/page-size/Segment experiment has been authorized by this completion alone.
+`REQUEST` is a simulator invocation/retry unit, not memory-instruction coverage. Post-fill L1/L2 outcome was not directly logged and remains unavailable. No mechanism experiment is authorized by the timeline result alone.
 
 ## Track B accepted target-selection result
 
@@ -106,13 +98,13 @@ Authorized Track C candidates only:
 PREFILL_GEMM_PRIMARY_1
   CUTLASS Kernel2
   grid/block = 128,3,1 / 256,1,1
-  phase/function/shape occurrence = 12
+  occurrence = 12
 
 DECODE_GEMV_PRIMARY_1
   internal::gemvx int6
   grid/block = 1216,1,1 / 16,4,1
   decode step = 1
-  phase/function/shape occurrence = 10
+  occurrence = 10
 
 DECODE_FLASH_PRIMARY_1
   flash_fwd_splitkv_kernel
@@ -127,9 +119,7 @@ DECODE_FLASH_PRIMARY_2
   occurrence = 0
 ```
 
-Reference global launch numbers are navigation aids only and may not be used as scientific identity.
-
-The old Native `PREFILL_HEAVY_GEMM` exact alignment remains `NATIVE_TARGET_MATCH_NOT_PROVEN`.
+Reference global launch numbers are navigation aids only. The old Native `PREFILL_HEAVY_GEMM` alignment remains `NATIVE_TARGET_MATCH_NOT_PROVEN`.
 
 ## Frozen workload identity
 
@@ -145,7 +135,7 @@ dtype      = FP16
 backend    = SDPA
 ```
 
-Current accepted Q05 target remains:
+Accepted Q05 target:
 
 ```text
 Q05_PREFILL_ATTN_FLASH
@@ -172,38 +162,55 @@ Frozen roles:
 
 ```text
 109 = GPU producer + short-lived local staging
-174-new = simulator / analysis / independent durable-consumer audit
+174-new = simulator / analysis / worktree host, not durable large-data authority
 164 = durable large-data authority
 ```
 
-Large artifacts must not depend on 174-new local disk for long-term retention.
+Large accepted artifacts must not depend on 174-new local disk for long-term retention.
 
-Existing accepted paths must not be mass-moved for cleanliness.
+## Track C — node109
 
-### Track C — 109
+Continue existing producer-side storage governance and bounded selected-kernel capture goal.
 
-Strict order:
+Strict gate:
 
-1. storage governance + 1-2 GiB producer-side data-plane canary;
-2. reach `AWMA_164_DATA_PLANE_QUALIFIED_V1`;
-3. only then perform bounded producer captures of the four authorized candidates;
-4. publish producer-qualified durable bundles to node164;
-5. no SIM_INPUT admission or simulation.
+```text
+storage data-plane qualification
+-> AWMA_164_DATA_PLANE_QUALIFIED_V1
+-> only then bounded captures
+```
 
-### Track D — 174-new
+No SIM_INPUT admission or simulation is authorized.
 
-Execute the independent read-side audit:
+## Track D — 174-new durable-consumer audit
 
-`CODEX_NEXT_STAGE_174NEW_STORAGE_CONSUMER_AUDIT_V1.md`
+Reported status:
 
-Required goals:
+`AWMA_174NEW_STORAGE_CONSUMER_AUDIT_V1_WAITING_FOR_PRODUCER_CANARY`
 
-- audit node164 mount/capacity/permissions from 174-new;
-- independently inventory accepted Q05 trace, simulation raw, translation timeline raw and S2 census inventory;
-- independently verify producer canary receipt/ACK when available;
-- verify durable catalog is consumable without producer-local paths;
-- identify orphan partials / local-only large artifacts / duplicate authority / cleanup candidates;
-- no deletion or mass move.
+The independent existing-data audit is complete. It verified mount/capacity/permissions, indexed accepted Q05 simulator-native trace/natural simulation raw/translation timeline raw, rehashed key Q05 provenance artifacts, and found no need to move/delete accepted evidence.
+
+Track D must remain stopped until Track C producer canary receipt/ACK becomes visible. Then only a small delta consumer verification is needed; do not rerun the full audit.
+
+## Track E — 174-new local storage audit
+
+Execute:
+
+`CODEX_NEXT_STAGE_174NEW_LOCAL_STORAGE_AUDIT_V1.md`
+
+Purpose:
+
+- establish mount/filesystem topology;
+- measure local/host-backed storage without counting node164;
+- identify largest directories/files and worktree/build/cache footprint;
+- determine whether accepted AWMA data has local duplicate working copies;
+- classify cleanup candidates by evidence and risk;
+- estimate conservative and upper-bound reclaimable bytes;
+- perform **no deletion, move, prune, compression, or worktree cleanup**.
+
+Expected completion:
+
+`AWMA_174NEW_LOCAL_STORAGE_AUDIT_V1_COMPLETE_WITH_SCOPE`
 
 ## Immediate execution
 
@@ -211,24 +218,20 @@ Parallel:
 
 ```text
 109:
-CODEX_NEXT_STAGE_109_STORAGE_GOVERNANCE_AND_GPU_SIDELANE_V1.md
+continue CODEX_NEXT_STAGE_109_STORAGE_GOVERNANCE_AND_GPU_SIDELANE_V1.md
 
 174-new:
-CODEX_NEXT_STAGE_174NEW_STORAGE_CONSUMER_AUDIT_V1.md
+execute CODEX_NEXT_STAGE_174NEW_LOCAL_STORAGE_AUDIT_V1.md
 ```
 
-Read policy:
-
-`STORAGE_GOVERNANCE_POLICY_V1.md`
+Track D remains waiting for producer canary.
 
 ## Global STOP boundaries
 
-Neither track may automatically start:
+Current tracks may not automatically start:
 
 - new TLB/PTW/cache mechanisms;
-- L2-TLB latency/PTW/walker/capacity/page-size sweeps;
-- Segment;
-- NCU/C16WARP1 campaigns;
-- Qwen3/DeepSeek campaigns;
+- latency/PTW/walker/capacity/page-size/Segment sweeps;
+- NCU/C16WARP1 or Qwen3/DeepSeek campaigns beyond current Track C authorization;
 - SIM_INPUT admission or simulation of Track C captures;
-- deletion or physical reorganization of accepted durable data.
+- deletion, pruning, cleanup, mass move, compression, or physical reorganization of accepted/local scientific data.
