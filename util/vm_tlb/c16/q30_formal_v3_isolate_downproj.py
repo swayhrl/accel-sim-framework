@@ -19,9 +19,13 @@ def capture(a):
 def replay(a):
  p=Path(a.artifact);d=torch.load(p,map_location='cpu',weights_only=True);q=Q30(a.model_root);m=q.model.model.layers[LAYER];q.on(m,'model.layers.24.')
  try:
-  with torch.inference_mode():o=m.mlp.experts[21].down_proj(d['input'].to('cuda')).cpu()
+  with torch.inference_mode():
+   inp=d['input'].to('cuda');mod=m.mlp.experts[21].down_proj;gpu=mod(inp);o=gpu.cpu()
+   if a.address_context:
+    qctx={'input':{'ptr':hex(inp.data_ptr()),'bytes':inp.numel()*inp.element_size(),'shape':list(inp.shape),'dtype':str(inp.dtype)},'weight':{'ptr':hex(mod.weight.data_ptr()),'bytes':mod.weight.numel()*mod.weight.element_size(),'shape':list(mod.weight.shape),'dtype':str(mod.weight.dtype)},'output':{'ptr':hex(gpu.data_ptr()),'bytes':gpu.numel()*gpu.element_size(),'shape':list(gpu.shape),'dtype':str(gpu.dtype)}}
+    Path(a.address_context).write_text(json.dumps(qctx,sort_keys=True,indent=2)+'\n')
  finally:q.off(m)
  print(json.dumps({'status':'PASS' if torch.equal(o,d['in_context_output']) else 'FAIL','input':tinfo(d['input']),'output':tinfo(o),'expected':tinfo(d['in_context_output']),'bitwise':torch.equal(o,d['in_context_output'])}))
 def main():
- p=argparse.ArgumentParser();p.add_argument('--mode',choices=('capture','replay'),required=True);p.add_argument('--model-root',required=True);p.add_argument('--bundle');p.add_argument('--out');p.add_argument('--artifact');a=p.parse_args();capture(a) if a.mode=='capture' else replay(a)
+ p=argparse.ArgumentParser();p.add_argument('--mode',choices=('capture','replay'),required=True);p.add_argument('--model-root',required=True);p.add_argument('--bundle');p.add_argument('--out');p.add_argument('--artifact');p.add_argument('--address-context');a=p.parse_args();capture(a) if a.mode=='capture' else replay(a)
 if __name__=='__main__':main()
