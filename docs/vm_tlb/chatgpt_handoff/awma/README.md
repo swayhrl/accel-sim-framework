@@ -4,56 +4,84 @@ Official project name: **AI Workload Memory Analysis** (`AWMA`).
 
 Chinese description: **AI负载访存分析与体系结构模拟**.
 
-`C16` is retained as a historical campaign/namespace identifier. Existing Git paths, run IDs, receipts, manifests, node164 paths, and review packs that contain `C16` are not renamed merely for cosmetics.
-
-## Read order
-
-1. `PROJECT_CHARTER.md`
-2. `CURRENT_STATE.md`
-3. `PROCESS_AND_EXECUTION_RULES.md`
-4. `UNIFIED_ANALYSIS_ARCHITECTURE.md`
-5. `IDENTITY_AND_EVIDENCE_CONTRACT.md`
-6. `STORAGE_AND_CATALOG_CONTRACT.md`
-7. `CODEX_NEXT_STAGE_174NEW_AWMA_UNIFIED_FOUNDATION.md`
-8. `NEXT_WAVE_PLAN.md`
-
-## Simulation Analysis mainline
-
-The dedicated Simulation Analysis plan is under:
-
-```text
-simulation_analysis/
-```
-
-Start with:
-
-```text
-simulation_analysis/README.md
-simulation_analysis/CURRENT_STATE.md
-simulation_analysis/EXECUTION_ROADMAP.md
-```
-
-The prepared executable specification is:
-
-```text
-simulation_analysis/CODEX_NEXT_STAGE_174NEW_SIMULATION_FOUNDATION.md
-```
-
-It is currently **planned, not active** while the existing Qwen Decode/analysis Goal is running on 174-new. Do not interrupt that Goal merely to start Simulation Analysis. Once activated, Simulation Analysis should advance mainly on 174-new/node164 without consuming 109 GPU time until simulator-compatible capture qualification is actually needed, allowing Native Characterization to continue independently.
+`C16` remains a historical campaign/namespace identifier. Existing run IDs, receipts, manifests, node164 paths and review packs are not renamed merely for cosmetics.
 
 ## Ownership
 
-The files in this directory are ChatGPT-owned coordination specifications. Codex should not silently redefine them. If implementation discovers a mismatch, preserve evidence, document the mismatch in the Codex report/review pack, and use the narrowest safe adaptation consistent with these contracts.
+```text
+chatgpt_handoff/  = ChatGPT-owned research coordination and execution specification
+codex_handoff/    = Codex-owned execution reports
+review_packs/     = Codex-generated review evidence
+```
 
-Codex owns execution reports under `docs/vm_tlb/codex_handoff/awma/` and review evidence under `docs/vm_tlb/review_packs/`.
+Codex must not silently redefine files in `chatgpt_handoff/`. If execution discovers a mismatch, preserve evidence, document it in the Codex report/review pack, and make only the narrowest safe adaptation consistent with the written scientific contract.
 
-## Purpose of this stage
+## Current canonical read order
 
-This handoff starts the transition from the historical `C16` campaign namespace to a long-lived AWMA architecture without destructive renaming. The immediate objective is to establish one shared identity/catalog foundation for two evidence planes:
+For the active stage, Codex should read:
+
+```text
+1. CURRENT_STATE.md
+2. DISCUSSION_REFERENCE.md
+3. CODEX_NEXT_STAGE.md
+4. the node-specific CODEX_NEXT_STAGE file selected by CODEX_NEXT_STAGE.md
+```
+
+Long-lived project contracts remain authoritative where applicable:
+
+```text
+PROJECT_CHARTER.md
+PROCESS_AND_EXECUTION_RULES.md
+IDENTITY_AND_EVIDENCE_CONTRACT.md
+STORAGE_AND_CATALOG_CONTRACT.md
+UNIFIED_ANALYSIS_ARCHITECTURE.md
+```
+
+Older `CODEX_NEXT_STAGE_*` files and `NEXT_WAVE_PLAN.md` are historical stage specifications unless the current `CODEX_NEXT_STAGE.md` explicitly reactivates them.
+
+## Active stage
+
+Current stage:
+
+```text
+AWMA_Q05_REPRESENTATIVENESS_AND_TRANSLATION_BEHAVIOR_V1
+```
+
+It has two parallel tracks:
+
+```text
+174-new:
+CODEX_NEXT_STAGE_174NEW_Q05_FULL_TRANSLATION_BEHAVIOR_V1.md
+
+109 / RTX4080:
+CODEX_NEXT_STAGE_109_QWEN25_S2_KERNEL_CENSUS_V1.md
+```
+
+The stage is **pre-mechanism characterization**. Its purpose is to clarify the complete Q05 translation behavior and Q05's representativeness within the frozen Qwen2.5 workload before any new TLB/PTW mechanism experiment is authorized.
+
+## Evidence planes
+
+AWMA keeps two primary evidence planes distinct:
 
 - **Native Evidence**: real-GPU NSYS/NCU/NVBit/C16WARP1 observations.
-- **Simulation Evidence**: simulator-compatible trace + Accel-Sim/GPGPU-Sim results.
+- **Simulation Evidence**: simulator-compatible trace plus Accel-Sim/GPGPU-Sim results.
 
-A third **Cross-view** layer joins the two only when identity/provenance is sufficient.
+A Cross-view conclusion is allowed only when identity and provenance are sufficient. Native C16WARP1/MREF evidence must not be silently converted into a simulator-compatible trace claim.
 
-This stage is intentionally CPU/filesystem-only. It must not start new GPU capture or a production simulator campaign.
+## Codex completion rule
+
+Every active track must:
+
+```text
+execute only its allowed scope
+produce a stage-specific report
+produce an independently reviewable review pack
+record raw-data indexes/hashes instead of committing large raw logs
+commit
+push
+verify remote state
+finish with a clean worktree
+STOP at the written boundary
+```
+
+ChatGPT reviews the Codex reports and review packs before issuing the next scientific stage.
