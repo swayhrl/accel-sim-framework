@@ -57,7 +57,7 @@ def authority_row(path: Path, workload: str) -> dict[str, str]:
 def run(args: argparse.Namespace) -> None:
     simulator, trace, trace_config = map(lambda p: Path(p).resolve(),
                                          (args.simulator, args.trace, args.trace_config))
-    allowed_workloads = {"NN", "Btree"} if args.stage == "SG5.3" else {
+    allowed_workloads = {"NN", "Btree"} if args.stage in {"SG5.3", "SG5.C1"} else {
         "ATAX", "BICG", "GESUMMV", "Btree", "2DConvolution", "Gaussian"}
     allowed_variants = {"B16-S", "TC80-S", "B16-N", "TC80-N", "IO", "OO"}
     if args.workload not in allowed_workloads or args.variant not in allowed_variants:
@@ -72,16 +72,16 @@ def run(args: argparse.Namespace) -> None:
     enabled = int(args.observer) == 1
     root = Path(args.runs_root).resolve()
     attempt = str(uuid.uuid4())
-    prefix = "sg5_g6_observer" if args.stage == "SG5.4" else "sg5_equivalence"
+    prefix = "sg5_g6_observer" if args.stage in {"SG5.4", "SG5.C2"} else "sg5_equivalence"
     out = root / f"{prefix}_{args.variant}_{args.workload}_{'ON' if enabled else 'OFF'}_{attempt}"
     out.mkdir(parents=True, exist_ok=False)
     overlay = out / "sg5_observer_overlay.config"
     overlay.write_text(f"-gpgpu_l1_lower_traffic_observer {int(enabled)}\n")
-    runner = out / ("immutable_sg5_g6_observer.py" if args.stage == "SG5.4"
+    runner = out / ("immutable_sg5_g6_observer.py" if args.stage in {"SG5.4", "SG5.C2"}
                     else "immutable_sg5_equivalence.py")
     shutil.copy2(Path(__file__), runner)
     runner.chmod(0o555)
-    manifest = {"schema": "SG5_G6_OBSERVER_ATTEMPT_V1" if args.stage == "SG5.4"
+    manifest = {"schema": "SG5_G6_OBSERVER_ATTEMPT_V1" if args.stage in {"SG5.4", "SG5.C2"}
                           else "SG5_EQUIVALENCE_ATTEMPT_V1", "attempt_uuid": attempt,
                 "lane": "SG5", "stage": args.stage, "workload": args.workload,
                 "variant": args.variant, "observer": int(enabled), "launch_utc": stamp(),
@@ -218,7 +218,7 @@ def validate_run(args: argparse.Namespace) -> None:
         "SG5_dtc_sector_lower_payload_bytes",
     }
     checks = {
-        "stage_identity": manifest.get("stage") == "SG5.4",
+        "stage_identity": manifest.get("stage") in {"SG5.4", "SG5.C2"},
         "natural_exit": terminal.get("simulator_exit_status") == "0",
         "observer_enabled": manifest.get("observer") == "1" and
                             "SG5_l1_lower_traffic_observer = 1" in stdout,
@@ -251,7 +251,7 @@ for name in ("simulator", "config", "trace", "trace_config", "runs_root", "workl
 p.add_argument("--authority", required=True)
 p.add_argument("--observer", choices=("0", "1"), required=True)
 p.add_argument("--core-source-head", required=True)
-p.add_argument("--stage", choices=("SG5.3", "SG5.4"), default="SG5.3")
+p.add_argument("--stage", choices=("SG5.3", "SG5.4", "SG5.C1", "SG5.C2"), default="SG5.3")
 p.set_defaults(func=run)
 p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--authority", required=True); p.add_argument("--output")
 p.add_argument("--expected-core-source-head"); p.add_argument("--expected-config-chain-sha256")
