@@ -1,0 +1,19 @@
+{
+  "attention_heads": 16,
+  "checkpoint_dtype": "bfloat16",
+  "checkpoint_format": "native BF16 safetensors",
+  "expected_dispatch": "must inspect native runtime: per-expert/grouped/fused classification is a producer receipt, not assumed",
+  "expert_intermediate": 1024,
+  "expert_mlp": "gate_proj + up_proj with SiLU then down_proj, subject to exact node109 code receipt",
+  "experts": 64,
+  "experts_per_token": 8,
+  "hidden_size": 2048,
+  "kv_heads": 16,
+  "layers": 16,
+  "max_positions": 4096,
+  "model_class": "OlmoeForCausalLM",
+  "model_type": "olmoe",
+  "result": "PASS",
+  "router": "Olmoe sparse MoE router; natural top-8 required and norm_topk_prob=false",
+  "runtime": "pin Transformers implementation compatible with 4.47.1 config and CUDA PyTorch; record exact version/backend on node109"
+}

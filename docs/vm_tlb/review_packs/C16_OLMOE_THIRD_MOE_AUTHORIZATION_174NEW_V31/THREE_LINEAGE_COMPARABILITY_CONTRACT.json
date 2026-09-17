@@ -1,0 +1,39 @@
+{
+  "descriptive_comparable": [
+    "qualified MoE family target and per-target event/page/line distributions"
+  ],
+  "lineages": [
+    {
+      "experts": "128/top-8",
+      "model": "Qwen3-30B-A3B",
+      "precision": "BF16",
+      "scope": "Layer24 Expert21 Decode3",
+      "width": "768->2048"
+    },
+    {
+      "experts": "64/top-6 + 2 shared",
+      "model": "DeepSeek-V2-Lite",
+      "precision": "BF16",
+      "scope": "Layer1 Expert4 selected S2",
+      "width": "1408->2048"
+    },
+    {
+      "experts": "64/top-8",
+      "model": "OLMoE-1B-7B-0125-Instruct",
+      "precision": "BF16",
+      "scope": "future natural S2 top-8",
+      "width": "2048->2048 via expert intermediate 1024"
+    }
+  ],
+  "normalization": [
+    "dimensions",
+    "top-k",
+    "dispatch granularity"
+  ],
+  "not_authorized": [
+    "three-lineage common claim",
+    "routing population claim",
+    "cache/TLB causality"
+  ],
+  "result": "AUTHORIZED_CONTRACT_NOT_COMMON_RESULT"
+}

@@ -1,0 +1,17 @@
+{
+  "fallback": "layer-local or streaming exact BF16 replay only if same native OLMoE semantics, top-8, dtype and target backend are preserved",
+  "forbidden": [
+    "quantization change",
+    "dtype conversion",
+    "expert/top-k change",
+    "replacement model/runtime semantics"
+  ],
+  "native_checkpoint_bytes": 13838721960,
+  "node": "109 RTX4080 16GB",
+  "preferred": "full-resident native BF16 only if node109 precheck proves allocation/runtime fit",
+  "stop_conditions": [
+    "no exact OLMoE runtime",
+    "capacity cannot preserve native BF16 execution",
+    "no target attribution"
+  ]
+}

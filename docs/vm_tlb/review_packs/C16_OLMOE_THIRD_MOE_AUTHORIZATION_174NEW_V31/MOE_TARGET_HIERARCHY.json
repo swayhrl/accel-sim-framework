@@ -1,0 +1,20 @@
+{
+  "ranked_targets": [
+    {
+      "rank": 1,
+      "requires": "lossless native expert-specific attribution",
+      "target": "natural selected-expert down_proj"
+    },
+    {
+      "rank": 2,
+      "requires": "lossless selected expert/group attribution",
+      "target": "native grouped/fused expert-down"
+    },
+    {
+      "rank": 3,
+      "requires": "explicit narrower scope",
+      "target": "routed-expert weight consumption"
+    }
+  ],
+  "rule": "do not call grouped/fused target single expert without dynamic evidence"
+}

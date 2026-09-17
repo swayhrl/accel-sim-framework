@@ -1,0 +1,21 @@
+{
+  "dataflow": [
+    "hidden",
+    "router logits",
+    "natural top-8 IDs and weights",
+    "dispatch/grouping",
+    "expert gate_proj/up_proj",
+    "SiLU",
+    "expert down_proj",
+    "route-weighted combine"
+  ],
+  "implementation_receipt_required": "per-expert versus grouped/fused actual native path",
+  "no_fixed_expert_id": true,
+  "router_receipt_required": [
+    "layer/decode state",
+    "logits shape/SHA",
+    "top-8 IDs",
+    "weights",
+    "selected expert/group mapping"
+  ]
+}
