@@ -1,0 +1,14 @@
+field	value	status	evidence
+canonical_normal_parent	6582b9d171330d88b17e8d5294c97704229e3823	FROZEN	SG1_CANONICAL_NORMAL_CORE_CLOSURE.tsv on the SG1 lane; five audited NORMAL correctness repairs and no observer code
+canonical_observer_core	1406840bc2000c9f5292f6db64fa84e115568b0c	BUILD_AND_FIXTURE_PASS	Dedicated branch hrl/iscas2027-dtc-sg5-canonical-observer-core-v0; exactly canonical Normal parent plus existing default-off observer series
+observer_series	2b093a53;bdd9b1e3;66924e55;3b188a18;9822d8d2;1406840b	SOURCE_CLOSED	OO duplicate observer; lifetime counters; lifetime alignment; occupancy sampling; lower-traffic observer; deterministic fixture
+nonobserver_diff_vs_canonical	NONE	SOURCE_PROVEN	git diff 6582b9d..1406840b changes only observer counters/default-off registration/reporting and source fixtures; no cache geometry scheduler L2/DRAM or DTC admission/Tag/replacement/queue/retire semantics change
+observer_default	-gpgpu_l1_lower_traffic_observer 0	SOURCE_PROVEN	option registration gpu-sim.cc:419-421 and guard in observe_l1_lower_read after request construction
+source_placement_validator	PASS	PASS	python3 util/dtc_l1/validate_sg5_implementation.py --observer-core /workspace/worktrees/gpgpu-sim-iscas2027-sg5-canonical-observer
+directed_fixture_suite	4_of_4_PASS	PASS	ctest --test-dir /tmp/dtc-sg5-canonical-observer-unit-1406840b --output-on-failure; m1 common, stale generation, completion accounting, lower-traffic observer
+fixture_semantics	sector32=1/32B;normal128=1/128B;dtc_io128=1/128B;pending=0;duplicate=+1/+128B;terminal closure	PASS	production storage-only fixture; no accel-sim.out run
+runtime_path	/tmp/dtc-sg5-canonical-observer-1406840b-r1/accel-sim.out	BUILD_PASS_NOT_RUN	fresh isolated Release trace-enabled build with GPGPUSIM_ROOT set to canonical observer Core
+runtime_sha256	7d3e80859e482d3a7029e4300a87a61c71c09485d6cfd2c7c0dd97aa02fd89a7	BUILD_PASS	sha256sum after natural CMake build completion
+runtime_bytes	4585272	BUILD_PASS	stat -c %s runtime
+runtime_equivalence_gate	12 fresh OFF/ON pairs across B16-S TC80-S B16-N TC80-N IO OO x NN/Btree	NOT_STARTED	old SG5.3 rows remain historical and cannot close canonical observer gate
+G6_gate	36 fresh ON diagnostic rows after canonical OFF/ON gate	NOT_STARTED	new canonical observer matrix is diagnostic only and must match primary cycles/instructions where exact identity applies
