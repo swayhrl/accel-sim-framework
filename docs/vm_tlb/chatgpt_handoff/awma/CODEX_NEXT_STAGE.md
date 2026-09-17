@@ -1,35 +1,12 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE — TRACK C + TRACK D**
+Status: **ACTIVE — TRACK C + TRACK E; TRACK D WAITING**
 
-Coordination stage:
+Coordination branch:
 
-```text
-AWMA_STORAGE_GOVERNANCE_AND_GPU_CAPTURE_SIDELANE_V1
-```
+`hrl/awma-174-local-storage-audit-handoff-v1`
 
-Previous tracks:
-
-```text
-Track A — 174-new Q05 translation timeline closure
-COMPLETE / report received
-
-Track B — 109 target selection
-COMPLETE / ACCEPTED
-```
-
-Current active tracks:
-
-```text
-Track C — 109 producer-side storage governance + bounded GPU capture side lane
-Track D — 174-new independent node164 storage consumer audit
-```
-
-## Coordination branch
-
-`hrl/awma-storage-governance-gpu-sidelane-handoff-v1`
-
-All Codex instances must read:
+Read first:
 
 ```text
 docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
@@ -40,37 +17,41 @@ docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
 
 Then execute only the active node-specific specification.
 
----
+## Track A — Q05 translation timeline — COMPLETE
 
-## Track C — node109 — ACTIVE
+Reported status:
 
-Execute:
+`AWMA_Q05_TRANSLATION_TIMELINE_CLOSURE_V1_COMPLETE_WITH_SCOPE`
 
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_109_STORAGE_GOVERNANCE_AND_GPU_SIDELANE_V1.md`
+Do not restart it in this coordination stage.
 
-Parent authority:
+## Track B — node109 target selection — COMPLETE / ACCEPTED
+
+Accepted parent:
 
 ```text
 hrl/awma-kernel-target-selection-109-v1
 e90fd76d3704df4a367bb04de09aee42d0cab803
 ```
 
-Strict sequence:
+Its candidate identities are the only new simulator-native targets authorized for Track C.
+
+## Track C — node109 producer storage governance + GPU side lane — ACTIVE
+
+Continue the existing specification:
+
+`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_109_STORAGE_GOVERNANCE_AND_GPU_SIDELANE_V1.md`
+
+Strict order remains:
 
 ```text
-Phase A
-storage governance + producer-side node164 data-plane qualification
-
-required gate:
-AWMA_164_DATA_PLANE_QUALIFIED_V1
-
-then only if PASS:
-
-Phase B
-bounded simulator-native producer capture side lane
+Phase A: storage data-plane qualification
+required gate: AWMA_164_DATA_PLANE_QUALIFIED_V1
+then only if PASS
+Phase B: bounded producer captures
 ```
 
-Authorized candidates only:
+Authorized target set only:
 
 ```text
 PREFILL_GEMM_PRIMARY_1
@@ -79,116 +60,90 @@ DECODE_FLASH_PRIMARY_1
 DECODE_FLASH_PRIMARY_2
 ```
 
-Scientific identity must re-close on frozen workload + phase + exact function + grid/block + deterministic occurrence (+ decode step where applicable). Reference global launch indexes are navigation aids only.
+Track C may create producer-qualified durable bundles on node164. It may not create SIM_INPUT IDs or run Accel-Sim.
 
-Track C may produce producer-qualified durable bundles on node164. It may not create SIM_INPUT IDs or run simulation.
+## Track D — 174-new durable-consumer audit — WAITING
 
-Expected completion:
-
-`AWMA_STORAGE_GOVERNANCE_GPU_SIDELANE_V1_COMPLETE_WITH_SCOPE`
-
----
-
-## Track D — 174-new — ACTIVE
-
-Execute:
-
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_STORAGE_CONSUMER_AUDIT_V1.md`
-
-Purpose:
-
-independently audit node164 as the durable consumer/simulator-side authority rather than trusting only producer-side publication state.
-
-This is read-mostly. It must not modify simulator science or duplicate GPU capture.
-
-Required areas:
-
-- node164 mount/capacity/permissions from 174-new;
-- durable inventory of accepted Q05 trace, natural/full simulation raw, translation-timeline raw and S2 census data;
-- independent consumer rehash/receipt verification;
-- producer canary/ACK read-back verification when Track C Phase A becomes available;
-- deterministic catalog consumption from 174-new;
-- orphan partial/local-only/duplicate-authority/cleanup-candidate detection;
-- no deletion or mass move.
-
-Expected completion:
-
-`AWMA_174NEW_STORAGE_CONSUMER_AUDIT_V1_COMPLETE_WITH_SCOPE`
-
-If producer Phase A is not yet complete, Track D must finish all independent work and may close as:
+Reported status:
 
 `AWMA_174NEW_STORAGE_CONSUMER_AUDIT_V1_WAITING_FOR_PRODUCER_CANARY`
 
-Do not invent missing producer receipts.
+Its independent existing-data audit is complete. Do not rerun it.
 
----
-
-## Storage authority
-
-Durable root:
-
-`/root/share/mnt164/huangrulin/c16_ai_workload/`
-
-Roles:
+When Track C producer canary receipt/ACK becomes visible, Track D needs only a small delta verification from 174-new:
 
 ```text
-109 = producer / short-lived staging
-174-new = simulator / analysis / independent durable consumer
+independent size/SHA read-back
++ receipt/ACK comparison
++ partial/final promotion check
++ catalog path check
+```
+
+Until then Track D stays stopped.
+
+## Track E — 174-new local storage audit — ACTIVE
+
+Execute:
+
+`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_LOCAL_STORAGE_AUDIT_V1.md`
+
+Purpose:
+
+- inventory actual local/host-backed storage usage from 174-new;
+- exclude node164 remote durable storage from local totals;
+- identify dominant directories/files/worktrees/builds/caches;
+- determine whether local duplicates of accepted node164 data exist;
+- classify cleanup candidates and estimate reclaimable bytes;
+- perform no deletion or cleanup.
+
+Recommended execution branch:
+
+`hrl/awma-local-storage-audit-174new-v1`
+
+This stage is read-only inventory. It must not alter Track C/D worktrees or any scientific result.
+
+Expected completion:
+
+`AWMA_174NEW_LOCAL_STORAGE_AUDIT_V1_COMPLETE_WITH_SCOPE`
+
+## Storage roles
+
+```text
+109 = producer / short-lived local staging
+174-new = simulator / analysis / worktree host
 164 = durable large-data authority
 ```
 
-Existing accepted durable paths are provenance and must not be mass-moved.
+Node164 root:
 
-New producer captures must pass partial/resume/size/SHA/admission/ACK closure before durable status.
+`/root/share/mnt164/huangrulin/c16_ai_workload/`
 
-No accepted scientific data may be deleted in this stage.
-
----
-
-## Shared frozen workload
-
-```text
-model      = Qwen/Qwen2.5-0.5B-Instruct
-revision   = 7ae557604adf67be50417f59c2c2f167def9a775
-scenario   = S2_TEXT
-batch      = 1
-input      = frozen TEXT binding
-prefill    = 2048
-decode     = 32
-dtype      = FP16
-backend    = SDPA
-```
-
-Current accepted Q05 SIM_INPUT/baseline/run/evidence identities remain read-only.
-
----
+Existing accepted durable paths are provenance and must not be reorganized for cleanliness.
 
 ## Explicitly forbidden scope
 
-Neither active track may automatically start:
+Current tracks may not automatically start:
 
-- TLB/PTW/cache mechanisms;
-- L2-TLB latency/PTW/walker/capacity/page-size sweeps;
-- Segment;
-- NCU campaigns;
-- C16WARP1 campaigns;
-- Qwen3/DeepSeek campaigns;
-- secondary long-duration Decode GEMV capture;
+- new TLB/PTW/cache mechanisms;
+- L2-TLB latency/PTW/walker/capacity/page-size/Segment sweeps;
+- NCU/C16WARP1/Qwen3/DeepSeek campaigns outside Track C authorization;
 - SIM_INPUT admission or Accel-Sim replay of new Track C bundles;
-- deletion or reorganization of accepted node164 evidence.
+- deletion or reorganization of accepted node164 evidence;
+- deletion/move/compression/pruning of 174-new local paths;
+- `git clean`, `git gc`, `git prune`, `git worktree remove` or package/cache purge in Track E.
 
 ## Execution policy
 
-Routine engineering/storage/index/Git problems are solve-and-continue.
+Routine read-only inventory, parser, path, Git, and reporting problems are solve-and-continue.
 
-Stop for review only for:
+Stop for review on:
 
-- scientific identity conflict;
 - provenance contradiction;
-- destructive storage risk;
-- inability to prove destination integrity;
-- need to weaken trace semantics;
-- collision with another formal GPU campaign.
+- destructive-storage risk;
+- local-only accepted scientific authority;
+- dirty worktree with significant uncommitted scientific data;
+- inability to distinguish node164 remote storage from local/host-backed storage;
+- scientific identity conflict.
 
 Each active track independently:
 
@@ -204,4 +159,4 @@ finish scope
 -> STOP
 ```
 
-After Track C and Track D complete, return both reports to ChatGPT. Do not auto-start the next simulation or mechanism stage.
+Track E must STOP before any actual cleanup. ChatGPT will review the candidate list first.
