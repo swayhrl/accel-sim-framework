@@ -1,0 +1,14 @@
+{
+  "current_append_positions": 1,
+  "derived_paths": [
+    "kv_b expansion is prior V23R1 DERIVED_BUFFER_READ/KV_B_EXPANSION_LATENT_READ"
+  ],
+  "direct_read_claim": "NO_CLEAN_SINGLE_OBJECT_DIRECT_READ: QK operand contains both persistent prefix and current append",
+  "persistent_prefix_positions": 2048,
+  "qk_class": "MIXED_PERSISTENT_CACHE_CONSUMER",
+  "typed_graph": [
+    "cache_before key/value -> cache.update -> cache_after key/value",
+    "cache_after key -> QK matmul key_transposed operand",
+    "cache_after value -> AV matmul value operand"
+  ]
+}

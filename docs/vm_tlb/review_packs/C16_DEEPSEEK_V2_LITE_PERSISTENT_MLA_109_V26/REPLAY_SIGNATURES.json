@@ -1,0 +1,106 @@
+{
+  "qk_replay": {
+    "current_component": "position 2048 appended before consumer",
+    "evidence_class": "MIXED_PERSISTENT_CACHE_CONSUMER",
+    "expected_sha256": "ea29559dde67068874d59838ef31c5ea849d32b7c570229a547d8d7bd3d1b4b8",
+    "key_cache_after": {
+      "dtype": "torch.bfloat16",
+      "ptr": "0x7a1195000000",
+      "sha256": "8d7d81834ad25a21fc5b28a0cf9b8aad4d49d29a72632f8c2ea97f04bfb9fd78",
+      "shape": [
+        1,
+        16,
+        2049,
+        192
+      ],
+      "storage_bytes": 12589056,
+      "storage_ptr": "0x7a1195000000",
+      "stride": [
+        6294528,
+        393408,
+        192,
+        1
+      ]
+    },
+    "max_abs": 0.0,
+    "output": {
+      "dtype": "torch.bfloat16",
+      "ptr": "0x7a1194e01800",
+      "sha256": "ea29559dde67068874d59838ef31c5ea849d32b7c570229a547d8d7bd3d1b4b8",
+      "shape": [
+        1,
+        16,
+        1,
+        2049
+      ],
+      "storage_bytes": 65568,
+      "storage_ptr": "0x7a1194e01800",
+      "stride": [
+        32784,
+        2049,
+        2049,
+        1
+      ]
+    },
+    "output_bitwise_equal": true,
+    "persistent_component": "DynamicCache.key_cache[0] prefix positions 0..2047",
+    "persistent_fraction_by_sequence_positions": 0.9995119570522206,
+    "query": {
+      "dtype": "torch.bfloat16",
+      "ptr": "0x7a1194e00000",
+      "sha256": "4696cf3369e3d25c16cc34606f58110b1f5805e4cebb3fe7d64c123c5fe36f27",
+      "shape": [
+        1,
+        16,
+        1,
+        192
+      ],
+      "storage_bytes": 6144,
+      "storage_ptr": "0x7a1194e00000",
+      "stride": [
+        3072,
+        192,
+        192,
+        1
+      ]
+    },
+    "runtime_softmax_scale": 0.1147213867929261,
+    "status": "PASS",
+    "target": "layer0.self_attn.QK_matmul"
+  },
+  "signature": {
+    "equivalent": true,
+    "in_context": [
+      {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "count": 1,
+        "function": "void gemv2T_kernel_val<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (int)128, (int)16, (int)2, (int)2, (bool)0, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13, T6, T6)",
+        "grid": [
+          257,
+          1,
+          16
+        ]
+      }
+    ],
+    "replay": [
+      {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "count": 1,
+        "function": "void gemv2T_kernel_val<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (int)128, (int)16, (int)2, (int)2, (bool)0, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13, T6, T6)",
+        "grid": [
+          257,
+          1,
+          16
+        ]
+      }
+    ]
+  }
+}

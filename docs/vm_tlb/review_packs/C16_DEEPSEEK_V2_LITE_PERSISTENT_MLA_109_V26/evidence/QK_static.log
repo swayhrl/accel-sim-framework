@@ -1,0 +1,12 @@
+------------- NVBit (NVidia Binary Instrumentation Tool v1.7.5) Loaded --------------
+NVBit core environment variables (mostly for nvbit-devs):
+ACK_CTX_INIT_LIMITATION = 0 - if set, no warning will be printed for nvbit_at_ctx_init()
+            NVDISASM = nvdisasm - override default nvdisasm found in PATH
+            NOBANNER = 0 - if set, does not print this banner
+       NO_EAGER_LOAD = 0 - eager module loading is turned on by NVBit to prevent potential NVBit tool deadlock, turn it off if you want to use the lazy module loading feature
+---------------------------------------------------------------------------------
+C16_V23R1_STATIC_DISCOVERY_READY match=gemv2T_kernel_val
+WARNING: Do not call CUDA memory allocation in nvbit_at_ctx_init(). It will cause deadlocks. Do them in nvbit_tool_init(). If you encounter deadlocks, remove CUDA API calls to debug.
+C16_V23R1_STATIC_DISCOVERY_COMPLETE function_mangled=_Z17gemv2T_kernel_valIii13__nv_bfloat16S0_S0_fLi128ELi16ELi2ELi2ELb0ELb0E18cublasGemvParamsExIi30cublasGemvTensorStridedBatchedIKS0_ES4_S2_IS0_EfEEvT11_T4_S8_ static_instruction_count=272 map=/data/c16/deepseek_v26/QK_static.tsv
+{"current_component": "position 2048 appended before consumer", "evidence_class": "MIXED_PERSISTENT_CACHE_CONSUMER", "expected_sha256": "ea29559dde67068874d59838ef31c5ea849d32b7c570229a547d8d7bd3d1b4b8", "key_cache_after": {"dtype": "torch.bfloat16", "ptr": "0x7344b4400000", "sha256": "8d7d81834ad25a21fc5b28a0cf9b8aad4d49d29a72632f8c2ea97f04bfb9fd78", "shape": [1, 16, 2049, 192], "storage_bytes": 12589056, "storage_ptr": "0x7344b4400000", "stride": [6294528, 393408, 192, 1]}, "max_abs": 0.0, "output": {"dtype": "torch.bfloat16", "ptr": "0x7344b4201800", "sha256": "ea29559dde67068874d59838ef31c5ea849d32b7c570229a547d8d7bd3d1b4b8", "shape": [1, 16, 1, 2049], "storage_bytes": 65568, "storage_ptr": "0x7344b4201800", "stride": [32784, 2049, 2049, 1]}, "output_bitwise_equal": true, "persistent_component": "DynamicCache.key_cache[0] prefix positions 0..2047", "persistent_fraction_by_sequence_positions": 0.9995119570522206, "query": {"dtype": "torch.bfloat16", "ptr": "0x7344b4200000", "sha256": "4696cf3369e3d25c16cc34606f58110b1f5805e4cebb3fe7d64c123c5fe36f27", "shape": [1, 16, 1, 192], "storage_bytes": 6144, "storage_ptr": "0x7344b4200000", "stride": [3072, 192, 192, 1]}, "runtime_softmax_scale": 0.1147213867929261, "status": "PASS", "target": "layer0.self_attn.QK_matmul"}
+C16_V23R1_STATIC_DISCOVERY_TERMINAL map_emitted=1
