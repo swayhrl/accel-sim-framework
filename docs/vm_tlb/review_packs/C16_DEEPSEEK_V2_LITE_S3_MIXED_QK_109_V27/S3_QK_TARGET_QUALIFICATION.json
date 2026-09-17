@@ -1,0 +1,172 @@
+{
+  "current_positions": 1,
+  "evidence_class": "MIXED_PERSISTENT_CACHE_CONSUMER",
+  "persistent_positions": 8192,
+  "replay": {
+    "current_component": "position 8192 appended before consumer",
+    "evidence_class": "MIXED_PERSISTENT_CACHE_CONSUMER",
+    "expected_sha256": "12521c78bca6497d172ab9e0f8b54b73fed7d29605731cc8da8dc584773c7d92",
+    "key_cache_after": {
+      "dtype": "torch.bfloat16",
+      "ptr": "0x756306000000",
+      "sha256": "23abf6241923da470a53202b13dc698c017795d160be74a8541675177aa22552",
+      "shape": [
+        1,
+        16,
+        8193,
+        192
+      ],
+      "storage_bytes": 50337792,
+      "storage_ptr": "0x756306000000",
+      "stride": [
+        25168896,
+        1573056,
+        192,
+        1
+      ]
+    },
+    "max_abs": 0.0,
+    "output": {
+      "dtype": "torch.bfloat16",
+      "ptr": "0x756318e01800",
+      "sha256": "12521c78bca6497d172ab9e0f8b54b73fed7d29605731cc8da8dc584773c7d92",
+      "shape": [
+        1,
+        16,
+        1,
+        8193
+      ],
+      "storage_bytes": 262176,
+      "storage_ptr": "0x756318e01800",
+      "stride": [
+        131088,
+        8193,
+        8193,
+        1
+      ]
+    },
+    "output_bitwise_equal": true,
+    "persistent_component": "DynamicCache.key_cache[0] prefix positions 0..8191",
+    "persistent_fraction_by_sequence_positions": 0.9998779445868424,
+    "query": {
+      "dtype": "torch.bfloat16",
+      "ptr": "0x756318e00000",
+      "sha256": "2d473f0aaabe72eca0f51d2d1e779b5c979667172d987f0c0781c9321362b4cb",
+      "shape": [
+        1,
+        16,
+        1,
+        192
+      ],
+      "storage_bytes": 6144,
+      "storage_ptr": "0x756318e00000",
+      "stride": [
+        3072,
+        192,
+        192,
+        1
+      ]
+    },
+    "runtime_softmax_scale": 0.1147213867929261,
+    "status": "PASS",
+    "target": "layer0.self_attn.QK_matmul"
+  },
+  "signature": {
+    "asynchronous_non_target_in_context": [
+      {
+        "block": [
+          512,
+          1,
+          1
+        ],
+        "count": 1,
+        "function": "void at::native::<unnamed>::CatArrayBatchedCopy<at::native::<unnamed>::OpaqueType<(unsigned int)2>, unsigned int, (int)4, (int)64, (int)64>(T1 *, at::native::<unnamed>::CatArrInputTensorMetadata<T1, T2, T4, T5>, at::native::<unnamed>::TensorSizeStride<T2, (unsigned int)4>, int, T2)",
+        "grid": [
+          152,
+          2,
+          1
+        ]
+      }
+    ],
+    "equivalent": true,
+    "in_context": [
+      {
+        "block": [
+          8,
+          8,
+          1
+        ],
+        "count": 1,
+        "function": "std::enable_if<T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)1, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "grid": [
+          1025,
+          1,
+          16
+        ]
+      },
+      {
+        "block": [
+          512,
+          1,
+          1
+        ],
+        "count": 1,
+        "function": "void at::native::<unnamed>::CatArrayBatchedCopy<at::native::<unnamed>::OpaqueType<(unsigned int)2>, unsigned int, (int)4, (int)64, (int)64>(T1 *, at::native::<unnamed>::CatArrInputTensorMetadata<T1, T2, T4, T5>, at::native::<unnamed>::TensorSizeStride<T2, (unsigned int)4>, int, T2)",
+        "grid": [
+          152,
+          2,
+          1
+        ]
+      }
+    ],
+    "replay": [
+      {
+        "block": [
+          8,
+          8,
+          1
+        ],
+        "count": 1,
+        "function": "std::enable_if<T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)1, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "grid": [
+          1025,
+          1,
+          16
+        ]
+      }
+    ],
+    "target_gemv_in_context": [
+      {
+        "block": [
+          8,
+          8,
+          1
+        ],
+        "count": 1,
+        "function": "std::enable_if<T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)1, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "grid": [
+          1025,
+          1,
+          16
+        ]
+      }
+    ],
+    "target_gemv_replay": [
+      {
+        "block": [
+          8,
+          8,
+          1
+        ],
+        "count": 1,
+        "function": "std::enable_if<T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)1, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "grid": [
+          1025,
+          1,
+          16
+        ]
+      }
+    ]
+  },
+  "target": "layer0.self_attn.QK_matmul"
+}

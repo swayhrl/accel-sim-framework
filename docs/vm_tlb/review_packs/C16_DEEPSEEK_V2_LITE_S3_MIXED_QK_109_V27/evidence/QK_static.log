@@ -1,0 +1,12 @@
+------------- NVBit (NVidia Binary Instrumentation Tool v1.7.5) Loaded --------------
+NVBit core environment variables (mostly for nvbit-devs):
+ACK_CTX_INIT_LIMITATION = 0 - if set, no warning will be printed for nvbit_at_ctx_init()
+            NVDISASM = nvdisasm - override default nvdisasm found in PATH
+            NOBANNER = 0 - if set, does not print this banner
+       NO_EAGER_LOAD = 0 - eager module loading is turned on by NVBit to prevent potential NVBit tool deadlock, turn it off if you want to use the lazy module loading feature
+---------------------------------------------------------------------------------
+C16_V23R1_STATIC_DISCOVERY_READY match=internal::gemvx::kernel
+WARNING: Do not call CUDA memory allocation in nvbit_at_ctx_init(). It will cause deadlocks. Do them in nvbit_tool_init(). If you encounter deadlocks, remove CUDA API calls to debug.
+C16_V23R1_STATIC_DISCOVERY_COMPLETE function_mangled=_ZN8internal5gemvx6kernelIii13__nv_bfloat16S2_S2_fLb1ELb1ELb1ELb0ELi6ELb0E18cublasGemvParamsExIi30cublasGemvTensorStridedBatchedIKS2_ES6_S4_IS2_EfEEENSt9enable_ifIXT5_EvE4typeET11_ static_instruction_count=1200 map=/data/c16/deepseek_v27/QK_static.tsv
+{"current_component": "position 8192 appended before consumer", "evidence_class": "MIXED_PERSISTENT_CACHE_CONSUMER", "expected_sha256": "12521c78bca6497d172ab9e0f8b54b73fed7d29605731cc8da8dc584773c7d92", "key_cache_after": {"dtype": "torch.bfloat16", "ptr": "0x71d2ba000000", "sha256": "23abf6241923da470a53202b13dc698c017795d160be74a8541675177aa22552", "shape": [1, 16, 8193, 192], "storage_bytes": 50337792, "storage_ptr": "0x71d2ba000000", "stride": [25168896, 1573056, 192, 1]}, "max_abs": 0.0, "output": {"dtype": "torch.bfloat16", "ptr": "0x71d2be201800", "sha256": "12521c78bca6497d172ab9e0f8b54b73fed7d29605731cc8da8dc584773c7d92", "shape": [1, 16, 1, 8193], "storage_bytes": 262176, "storage_ptr": "0x71d2be201800", "stride": [131088, 8193, 8193, 1]}, "output_bitwise_equal": true, "persistent_component": "DynamicCache.key_cache[0] prefix positions 0..8191", "persistent_fraction_by_sequence_positions": 0.9998779445868424, "query": {"dtype": "torch.bfloat16", "ptr": "0x71d2be200000", "sha256": "2d473f0aaabe72eca0f51d2d1e779b5c979667172d987f0c0781c9321362b4cb", "shape": [1, 16, 1, 192], "storage_bytes": 6144, "storage_ptr": "0x71d2be200000", "stride": [3072, 192, 192, 1]}, "runtime_softmax_scale": 0.1147213867929261, "status": "PASS", "target": "layer0.self_attn.QK_matmul"}
+C16_V23R1_STATIC_DISCOVERY_TERMINAL map_emitted=1
