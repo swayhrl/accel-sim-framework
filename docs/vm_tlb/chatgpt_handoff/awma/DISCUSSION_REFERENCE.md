@@ -1,232 +1,154 @@
-# AWMA Discussion Reference — storage governance, GPU side lane, and consumer audit
+# AWMA Discussion Reference — storage governance, GPU side lane, consumer audit, and 174 local storage inventory
 
 Date: 2026-09-17
 
 ## 1. Scientific state after Q05 translation timeline closure
 
-The Q05 timeline stage has completed with timing-neutral diagnostic telemetry.
-
-The diagnostic run preserved the accepted R0 10k science exactly while exposing the actual translation key:
-
-`{asid, vpn, page_size}`
+The Q05 timeline stage completed with timing-neutral diagnostic telemetry. The actual translation key is `{asid, vpn, page_size}`.
 
 Observed timeline facts:
 
 ```text
-10k:
-19 keys / 19 fills / 106 merges / 8,730 post-fill REQUEST invocations
-
-50k:
-104 keys / 104 fills / 374 merges / 474,414 post-fill REQUEST invocations
-
-full natural R0:
-885,681 cycles
-224 CTA
-240 keys / 240 fills / 393 merges
-8,747,322 post-fill REQUEST invocations
-max waiter depth = 35
+10k:  19 keys / 19 fills / 106 merges / 8,730 post-fill REQUEST invocations
+50k: 104 keys / 104 fills / 374 merges / 474,414 post-fill REQUEST invocations
+full: 240 keys / 240 fills / 393 merges / 8,747,322 post-fill REQUEST invocations
+full natural R0 = 885,681 cycles / 224 CTA
 ```
 
 The result remains `MIXED`.
 
-What is now supported:
+Supported:
 
 - burst fanout before fill is real;
-- substantial activity continues after fill;
-- the behavior is not explained by a simple TLB-capacity/thrashing story.
+- new translation keys continue well beyond the earliest window;
+- substantial post-fill activity exists;
+- a simple TLB-capacity/thrashing explanation is not supported.
 
-What is still deliberately not claimed:
+Still not claimed:
 
 - `REQUEST` is not memory-instruction coverage;
 - post-fill L1/L2 outcome was not directly logged;
 - no mechanism speedup follows from the timeline alone.
 
-Therefore the timeline stage is complete, but it does not authorize automatic TLB/PTW mechanism experiments.
+The main scientific line remains paused before mechanism testing while infrastructure and evidence preparation proceed in parallel.
 
-## 2. Why storage governance is now an infrastructure priority
+## 2. Storage role
 
-AWMA already produces large artifacts:
-
-- model weights;
-- NSYS inventories;
-- Native/NVBit traces;
-- simulator-native trace bundles;
-- full simulator raw output;
-- cycle-keyed diagnostic timelines;
-- future cross-model derived datasets.
-
-The long-term node role is:
+AWMA's long-term storage topology is:
 
 ```text
-109 = GPU producer
-174-new = simulator / analysis
+109 = GPU producer / short-lived staging
+174-new = simulator / analysis / worktree host
 164 = durable large-data authority
 ```
 
-The accepted Q05 simulator-native trace, full Q05 simulation raw evidence and the new translation-timeline raw evidence are examples of data that should remain durable on node164 rather than depending on 174 local disk.
+Large artifacts such as model assets, simulator-native traces, NVBit/NSYS/NCU raw, full simulation raw, cycle timelines and large derived datasets belong on node164.
 
-Existing accepted historical paths are provenance and are not mass-moved merely for neatness.
+Existing accepted historical paths are provenance and are not mass-moved for neatness.
 
-## 3. Why producer-side qualification alone is not enough
+## 3. Producer/consumer storage closure
 
-Node109 is responsible for finalizing and publishing producer data, but node174-new is the long-term consumer/simulator.
+Node109 Track C proves producer-side finalize/publish/ACK and then performs bounded selected-kernel captures.
 
-If only node109 validates the data plane, the project could still miss consumer-side failures such as:
+Node174-new Track D independently proves consumer-side read-back/provenance/catalog consistency.
 
-- an admitted path that is visible only through producer-local assumptions;
-- stale `.partial` state mistaken for durable data;
-- catalog entries that point back to 109 staging instead of node164 authority;
-- accepted large artifacts that exist only on 174 local disk;
-- mount/permission/read-back differences seen from the simulator node;
-- ambiguous ACK or retention state.
+Track D has completed its independent existing-data work and is now correctly waiting for the Track C producer canary receipt/ACK rather than inventing one.
 
-Therefore storage closure has two complementary views:
+When that receipt appears, Track D needs only a delta closeout, not a repeat full audit.
 
-```text
-Track C / 109
-producer finalize -> publish -> destination receipt -> ACK
+## 4. Why local 174 storage still needs a separate audit
 
-Track D / 174-new
-independent durable-consumer read-back -> provenance/catalog audit
-```
+The durable-consumer audit answered a different question:
 
-This is not duplicate work. It is producer/consumer separation of trust.
+> Are accepted AWMA large artifacts durably available from node164 without depending on 174-local authority?
 
-## 4. Required storage data-plane closure
+It did **not** fully answer:
 
-Producer-side Track C first performs a deterministic 1-2 GiB canary:
+> What is physically consuming the nearly full local/host-backed filesystems visible from 174-new, and how much can later be safely reclaimed?
 
-```text
-109 local source
- -> transport via hrl174new
- -> node164 .partial
- -> resume
- -> size closure
- -> SHA256 closure
- -> promotion/rename
- -> read-back hash
- -> ACK
-```
+These must be separated because `no local-only authority` does not imply `no large local working copies`.
 
-Success marker:
+174-new may still contain large:
 
-`AWMA_164_DATA_PLANE_QUALIFIED_V1`
+- historical simulation outputs;
+- build trees and binaries;
+- Git worktrees;
+- caches;
+- temporary logs/raw copies;
+- data belonging to other research lines sharing host-backed mounts.
 
-Track D independently verifies the admitted result from 174-new and audits existing durable AWMA artifacts. It should reuse accepted hash ledgers where appropriate rather than recursively rehashing unrelated terabytes.
+Therefore Track E is a read-only capacity and retention-semantics audit.
 
-No accepted scientific artifact is deleted in either track.
+## 5. Why Track E must understand mount topology first
 
-## 5. Why node174 should not become the data disk
+Paths such as `/`, `/root/data`, `/root/share`, and `/root/share/mnt164` may refer to different or overlapping physical filesystems.
 
-174-new should contain:
+A naïve recursive `du /root` could:
 
-- source/worktrees;
-- simulator binaries;
-- small Python environments;
-- small indexes/summaries;
-- bounded scratch.
+- count node164 remote durable data as local usage;
+- double-count bind mounts;
+- traverse other remote filesystems;
+- produce a misleading reclaimable-space estimate.
 
-Node164 should contain:
+Therefore Track E must first establish filesystem/mount identity and use one-filesystem inventory semantics (`du -x`, `find -xdev`, or equivalent) before drawing capacity conclusions.
 
-- simulator-native traces;
-- NVBit/NSYS/NCU raw;
-- full simulation raw;
-- cycle timelines;
-- large parsed/features/datasets;
-- durable manifests/receipts/catalogs.
+## 6. Cleanup classification discipline
 
-A large file on 174 local disk is a working copy only, never the sole authority.
+Track E must classify rather than delete.
 
-## 6. Why node109 may now use the idle RTX4080
-
-Target selection is complete and accepted.
-
-Authorized candidates are:
+Important statuses include:
 
 ```text
-PREFILL_GEMM_PRIMARY_1
-DECODE_GEMV_PRIMARY_1
-DECODE_FLASH_PRIMARY_1
-DECODE_FLASH_PRIMARY_2
+KEEP_ACTIVE
+KEEP_REPRODUCIBILITY
+KEEP_SHARED_OTHER_PROJECT
+WORKING_COPY
+CACHE_REGENERABLE
+BUILD_REGENERABLE
+DUPLICATE_VERIFIED_ON_164
+SAFE_CANDIDATE_AFTER_ACK
+UNKNOWN_REVIEW_REQUIRED
+DO_NOT_TOUCH
 ```
 
-These represent missing execution families relative to Q05 and were selected by exact implementation, launch shape, recurrence and GPU-time contribution.
+A local file is not safe merely because a similar filename exists on node164. A verified duplicate requires artifact/provenance identity, durable path, size/hash/manifest closure, and no local-only uncommitted metadata.
 
-The selected primary Prefill GEMM covers 38.10% of total Prefill GPU time. The selected primary Decode GEMV covers 20.22% of total Decode GPU time. Decode Flash contains two materially distinct shapes and both are retained.
+Similarly, an old worktree is not disposable merely because its branch is old. Dirty worktrees and worktrees tied to other active research lines must be protected.
 
-The reference NSYS launch number is only a navigation aid. Every producer capture must re-close:
+## 7. Why no deletion is allowed yet
+
+This audit is intentionally read-only because a storage cleanup command can destroy more provenance than a failed experiment.
+
+No deletion, `git clean`, `git gc`, worktree removal, cache purge, compression/replacement, or mass move is authorized.
+
+The audit should instead produce:
 
 ```text
-frozen workload
-+ phase
-+ exact function
-+ grid/block
-+ deterministic occurrence
-+ decode step when applicable
+what occupies space
+what is definitely keep
+what is high-confidence cleanup candidate
+what is unknown
+conservative reclaimable bytes
+upper-bound reclaimable bytes
 ```
 
-A candidate that fails identity requalification is skipped rather than guessed.
+Only after ChatGPT reviews that list should a separate cleanup stage be issued.
 
-## 7. Why storage qualification precedes new capture
+## 8. Current GPU side lane remains independent
 
-The project should not intentionally create new large raw data before proving where it will be durably stored.
+Node109 Track C is already active and may continue its storage-qualified bounded simulator-native capture of the four accepted Qwen2.5 targets.
 
-Track C is therefore strictly sequential:
+Track E must not interfere with GPU work, Track C storage publication, or Track D's waiting state.
 
-```text
-Phase A
-storage governance / data-plane canary / catalog
+## 9. Current scientific STOP boundary
 
-PASS:
-AWMA_164_DATA_PLANE_QUALIFIED_V1
+Do not use this infrastructure window to drift into mechanism experiments.
 
-then Phase B
-bounded selected-kernel simulator-native producer capture
-```
+Not yet authorized:
 
-Track D can run in parallel from 174-new because most of its audit is read-only. If the producer canary is not yet available, it completes all independent mount/inventory/catalog work and records only that final canary verification is pending.
+- L2-TLB latency/PTW/walker/capacity/page-size/Segment sweeps;
+- new TLB/cache mechanisms;
+- SIM_INPUT admission or simulation of new Track C captures;
+- arbitrary NCU/C16WARP1/Qwen3/DeepSeek campaigns beyond current Track C authorization.
 
-## 8. Capture side-lane guardrails
-
-GPU idle time is not a reason to generate unbounded traces.
-
-Each selected target follows:
-
-```text
-identity requalification
- -> bounded capture canary
- -> size/time guard
- -> whole-kernel capture only when feasible
- -> durable publish to node164
-```
-
-Current bounds:
-
-```text
-8 GiB per target
-30 minutes per capture attempt
-32 GiB aggregate new durable raw
-```
-
-A guard-triggered partial capture is diagnostic only and is never admitted as a complete simulation input.
-
-The side lane uses the accepted simulator-native producer and preserves terminal/drop/overflow/formatter/grammar contracts. It does not substitute C16WARP1 for a whole-kernel simulator trace.
-
-## 9. Current STOP boundary
-
-Neither Track C nor Track D may automatically start:
-
-- TLB/PTW/cache mechanisms;
-- latency/walker/capacity/page-size/Segment sweeps;
-- NCU or C16WARP1 campaigns;
-- Qwen3/DeepSeek campaigns;
-- SIM_INPUT admission or Accel-Sim replay of newly captured candidates;
-- deletion or physical reorganization of accepted durable evidence.
-
-After producer-side storage/capture and consumer-side storage audit both close, ChatGPT should jointly review:
-
-1. Q05 dynamic translation behavior;
-2. which complementary target bundles were successfully captured;
-3. whether node164 storage/provenance is independently closed from both producer and consumer views.
-
-Only then should the next simulation/admission/mechanism stage be issued.
+After Track E returns its storage inventory and Track C continues, the conversation returns to the Q05 scientific main line.
