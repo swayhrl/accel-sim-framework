@@ -6,9 +6,10 @@ OFF peer and must not be used as a primary performance result.
 
 Every accepted row requires natural exit, the exact observer-Core397 identity,
 the pinned ordered config-chain identity, `gpu_tot_sim_cycle` and
-`gpu_tot_sim_insn`, and all nine source-defined `SG5_*` report fields.  The
-strict check is `sg5_equivalence.py validate-run`; it does not infer any
-unreported lower-traffic metric.
+`gpu_tot_sim_insn`, exact frozen-authority trace and instruction identity, and
+all nine source-defined `SG5_*` report fields.  The strict check is
+`sg5_equivalence.py validate-run --authority TC80_WORKLOAD_AUTHORITY.tsv`; it
+does not infer any unreported lower-traffic metric.
 
 The current partial checkpoint indexes five GESUMMV variants: B16-S, TC80-S,
 B16-N, TC80-N, and IO. They were launched only after all twelve SG5.3 OFF/ON

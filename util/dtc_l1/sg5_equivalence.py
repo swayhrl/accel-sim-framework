@@ -205,6 +205,8 @@ def validate_run(args: argparse.Namespace) -> None:
     run_dir = Path(args.run_dir)
     manifest, terminal = kv(run_dir / "RUN_MANIFEST.tsv"), kv(run_dir / "RUN_TERMINAL.tsv")
     stdout = (run_dir / "simulator.stdout").read_text(encoding="utf-8", errors="replace")
+    source = authority_row(Path(args.authority), manifest.get("workload", ""))
+    observed = metrics(run_dir / "simulator.stdout")
     reported = set(re.findall(r"^(SG5_[A-Za-z0-9_]+)\s*=", stdout, re.M))
     required = {
         "SG5_l1_lower_traffic_observer",
@@ -225,6 +227,12 @@ def validate_run(args: argparse.Namespace) -> None:
         "all_observer_counters_reported": required <= reported,
         "cycles_present": bool(re.search(r"^gpu_tot_sim_cycle\s*=", stdout, re.M)),
         "instructions_present": bool(re.search(r"^gpu_tot_sim_insn\s*=", stdout, re.M)),
+        # The immutable V1 manifest supplies the observed trace digest.  The
+        # newer runner additionally records authority_trace_sha256 and
+        # expected_instructions, but validation derives the binding directly
+        # from the frozen authority so that it can fail closed for both schemas.
+        "authority_trace_identity": manifest.get("trace_sha256") == source["trace_list_sha256"],
+        "authority_instruction_identity": observed.get("gpu_tot_sim_insn") == source["instructions"],
     }
     if args.expected_core_source_head:
         checks["core_source_identity"] = manifest.get("core_source_head") == args.expected_core_source_head
@@ -234,6 +242,9 @@ def validate_run(args: argparse.Namespace) -> None:
         "schema": "SG5_G6_OBSERVER_VALIDATION_V1",
         "status": "PASS" if all(checks.values()) else "FAIL",
         "run_dir": str(run_dir), "checks": checks,
+        "authority_workload": source["workload"],
+        "authority_expected_instructions": source["instructions"],
+        "reported_instructions": observed.get("gpu_tot_sim_insn"),
         "reported_observer_counters": sorted(reported), "validation_utc": stamp(),
     }
     target = Path(args.output) if args.output else run_dir / "SG5_G6_VALIDATION.json"
@@ -256,7 +267,7 @@ p.set_defaults(func=run)
 p = subs.add_parser("validate"); p.add_argument("--off-dir", required=True); p.add_argument("--on-dir", required=True); p.add_argument("--authority", required=True); p.add_argument("--output")
 p.add_argument("--expected-core-source-head"); p.add_argument("--expected-config-chain-sha256")
 p.add_argument("--normal-variant", choices=("B16-N", "TC80-N")); p.set_defaults(func=validate)
-p = subs.add_parser("validate-run"); p.add_argument("--run-dir", required=True); p.add_argument("--output")
+p = subs.add_parser("validate-run"); p.add_argument("--run-dir", required=True); p.add_argument("--authority", required=True); p.add_argument("--output")
 p.add_argument("--expected-core-source-head"); p.add_argument("--expected-config-chain-sha256")
 p.set_defaults(func=validate_run)
 args = parser.parse_args(); args.func(args)
