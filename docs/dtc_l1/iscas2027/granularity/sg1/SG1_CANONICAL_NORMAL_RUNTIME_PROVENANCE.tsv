@@ -1,8 +1,8 @@
 field	value	status	evidence
 canonical_normal_core_commit	6582b9d171330d88b17e8d5294c97704229e3823	FROZEN_FOR_D2B	clean five-commit descendant of 95ccdb7a056f2d53f740d90869785cac6d4ee0f5
-canonical_normal_runtime_path	/tmp/dtc-sg1-canonical-core6582b9d1-r2/accel-sim.out	BUILD_PASS	fresh isolated CMake build directory; no performance row has been run with this runtime yet
+canonical_normal_runtime_path	/tmp/dtc-sg1-canonical-core6582b9d1-r2/accel-sim.out	IN_USE_D2B_SMOKE	fresh isolated CMake build; five D2B canonical smoke rows now strictly pass with this exact runtime and one BICG row remains live
 canonical_normal_runtime_sha256	4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9	BUILD_PASS	sha256sum of completed accel-sim.out
 canonical_normal_runtime_bytes	4576688	BUILD_PASS	stat -c %s of completed accel-sim.out
 build_command	cmake -S /workspace/worktrees/accel-sim-decoupled-l1-fast64/gpu-simulator -B /tmp/dtc-sg1-canonical-core6582b9d1-r2 -DCMAKE_BUILD_TYPE=Release -DGPGPUSIM_ENABLE_TRACE=ON -DGPGPUSIM_BUILD_DTC_L1_TESTS=OFF; cmake --build target accel-sim.out parallel 2	BUILD_PASS	GPGPUSIM_ROOT=/workspace/worktrees/gpgpu-sim-iscas2027-sg1-canonical; ACCELSIM_CONFIG=release; CUDA_INSTALL_PATH=/usr/local/cuda-11.8; nice +5
 failed_clean_build_attempt	/tmp/dtc-sg1-canonical-core6582b9d1-r1	PRESERVED_NONSCIENTIFIC_FAILURE	framework-local gpu-simulator checkout lacks extern/pybind11; no simulator launched and r1 remains untouched
-acceptance_boundary	no D2B result is accepted until a new immutable UUID uses this exact Core/runtime, naturally terminates, and passes strict validation	REQUIRED	SG1 canonical requalification contract
+acceptance_boundary	each D2B result is accepted only after its immutable UUID uses this exact Core/runtime, naturally terminates, and passes strict validation	REQUIRED	SG1 canonical requalification contract; five strict-pass rows are indexed in SG1_CANONICAL_SMOKE.tsv
