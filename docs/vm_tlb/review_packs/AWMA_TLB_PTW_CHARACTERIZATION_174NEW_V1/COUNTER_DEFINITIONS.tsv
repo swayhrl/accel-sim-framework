@@ -1,0 +1,7 @@
+field	source	unit	scope	increment_condition	interpretation_limit
+gpu_sim_insn	shader.cc completed instruction accounting	active thread-instructions	fixed window	completed active lanes	primary progress; not warp instructions
+gpu_sim_cycle	gpu simulator cycle counter	cycles	fixed window	each simulated cycle	termination window
+vm_l2_tlb_port_stalls	vm_translation statistics	requester events	translation	denied L2 TLB lookup service	not GPU stall percent
+vm_translation_mshr_allocations	vm_translation statistics	entries	translation	new translation MSHR allocated	not total misses
+vm_translation_mshr_merges	vm_translation statistics	requester merges	translation	requester joins outstanding translation	not distinct PTE count
+vm_pte_requests/vm_pte_responses	vm_translation statistics	requests/responses	PTW	PTE backend traffic	not necessarily DRAM 1:1

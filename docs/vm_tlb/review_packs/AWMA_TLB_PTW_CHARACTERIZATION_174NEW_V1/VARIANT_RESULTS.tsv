@@ -1,0 +1,7 @@
+profile	repeats	window	status	changed_options	progress_active_thread_instructions	progress_vs_R0	TLB_response	MSHR_response	PTW/PTE_response	shared_L2_response	termination	coverage_limit
+R0_RESEARCH_CONTROL	2	10000	PASS	object disabled; segment disabled; exact L2	1084480	0.00%	125 L2 misses; 5828 port denials	19 alloc;106 merge	70 req/70 resp	baseline	EXPECTED_FIXED_WINDOW_BOUNDARY	prefix differs across profiles
+I0_IDEAL_TRANSLATION	2	10000	PASS	vm_mode 2->1	1697696	56.55%	functional path removed	removed	removed	data mapping identity preserved	EXPECTED_FIXED_WINDOW_BOUNDARY	diagnostic not implementable mechanism
+P2_L2_TLB_PORTS_2	2	10000	PASS	l2_tlb_ports 1->2	1084448	-0.00%	2391 port denials	unchanged	unchanged	unchanged	EXPECTED_FIXED_WINDOW_BOUNDARY	weak progress response
+M8_L2_MERGE_8	2	10000	PASS	L2 A:192:4->A:192:8	1084448	-0.00%	6051 port denials	unchanged	unchanged	shared L2 merge sensitivity	EXPECTED_FIXED_WINDOW_BOUNDARY	weak progress response
+R0_RESEARCH_CONTROL	2	50000	PASS	window only	11587872	0.00%	see raw telemetry	see raw telemetry	see raw telemetry	see raw telemetry	EXPECTED_FIXED_WINDOW_BOUNDARY	fixed-window prefix
+I0_IDEAL_TRANSLATION	2	50000	PASS	vm_mode 2->1; window only	20458400	76.55%	functional path removed	removed	removed	data mapping identity preserved	EXPECTED_FIXED_WINDOW_BOUNDARY	diagnostic sensitivity
