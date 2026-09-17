@@ -1,243 +1,232 @@
-# AWMA Discussion Reference — storage governance and GPU side lane
+# AWMA Discussion Reference — storage governance, GPU side lane, and consumer audit
 
 Date: 2026-09-17
 
-## 1. Why storage governance is now the first infrastructure task
+## 1. Scientific state after Q05 translation timeline closure
+
+The Q05 timeline stage has completed with timing-neutral diagnostic telemetry.
+
+The diagnostic run preserved the accepted R0 10k science exactly while exposing the actual translation key:
+
+`{asid, vpn, page_size}`
+
+Observed timeline facts:
+
+```text
+10k:
+19 keys / 19 fills / 106 merges / 8,730 post-fill REQUEST invocations
+
+50k:
+104 keys / 104 fills / 374 merges / 474,414 post-fill REQUEST invocations
+
+full natural R0:
+885,681 cycles
+224 CTA
+240 keys / 240 fills / 393 merges
+8,747,322 post-fill REQUEST invocations
+max waiter depth = 35
+```
+
+The result remains `MIXED`.
+
+What is now supported:
+
+- burst fanout before fill is real;
+- substantial activity continues after fill;
+- the behavior is not explained by a simple TLB-capacity/thrashing story.
+
+What is still deliberately not claimed:
+
+- `REQUEST` is not memory-instruction coverage;
+- post-fill L1/L2 outcome was not directly logged;
+- no mechanism speedup follows from the timeline alone.
+
+Therefore the timeline stage is complete, but it does not authorize automatic TLB/PTW mechanism experiments.
+
+## 2. Why storage governance is now an infrastructure priority
 
 AWMA already produces large artifacts:
 
 - model weights;
-- full NSYS inventories;
+- NSYS inventories;
 - Native/NVBit traces;
 - simulator-native trace bundles;
-- full natural-completion simulator output;
-- future cycle-keyed translation timelines.
+- full simulator raw output;
+- cycle-keyed diagnostic timelines;
+- future cross-model derived datasets.
 
-The project role model has always been:
+The long-term node role is:
 
 ```text
 109 = GPU producer
 174-new = simulator / analysis
-164 = durable large-data storage
+164 = durable large-data authority
 ```
 
-The current accepted Q05 simulator-native trace is already durable on node164, and the complete natural-completion Q05 simulator evidence is also stored on node164. Therefore the correct long-term direction is not to expand 174-new local storage usage, but to formalize a reliable producer-to-164 data plane and a catalog/retention policy.
+The accepted Q05 simulator-native trace, full Q05 simulation raw evidence and the new translation-timeline raw evidence are examples of data that should remain durable on node164 rather than depending on 174 local disk.
 
-The new storage-governance stage does not move accepted historical data simply to make the directory tree prettier. Historical durable paths are provenance.
+Existing accepted historical paths are provenance and are not mass-moved merely for neatness.
 
-The first required closure is a 1-2 GiB synthetic canary proving:
+## 3. Why producer-side qualification alone is not enough
+
+Node109 is responsible for finalizing and publishing producer data, but node174-new is the long-term consumer/simulator.
+
+If only node109 validates the data plane, the project could still miss consumer-side failures such as:
+
+- an admitted path that is visible only through producer-local assumptions;
+- stale `.partial` state mistaken for durable data;
+- catalog entries that point back to 109 staging instead of node164 authority;
+- accepted large artifacts that exist only on 174 local disk;
+- mount/permission/read-back differences seen from the simulator node;
+- ambiguous ACK or retention state.
+
+Therefore storage closure has two complementary views:
+
+```text
+Track C / 109
+producer finalize -> publish -> destination receipt -> ACK
+
+Track D / 174-new
+independent durable-consumer read-back -> provenance/catalog audit
+```
+
+This is not duplicate work. It is producer/consumer separation of trust.
+
+## 4. Required storage data-plane closure
+
+Producer-side Track C first performs a deterministic 1-2 GiB canary:
 
 ```text
 109 local source
- -> hrl174new transport path
+ -> transport via hrl174new
  -> node164 .partial
  -> resume
  -> size closure
  -> SHA256 closure
  -> promotion/rename
  -> read-back hash
- -> cleanup only after verification
+ -> ACK
 ```
 
-This closes the difference between “small scratch writes work” and “large formal captures can be safely published”.
+Success marker:
 
-## 2. Why node174 should not become the data disk
+`AWMA_164_DATA_PLANE_QUALIFIED_V1`
 
-174-new is the long-term analysis/simulation node, but large-data authority on its local filesystem is undesirable because:
+Track D independently verifies the admitted result from 174-new and audits existing durable AWMA artifacts. It should reuse accepted hash ledgers where appropriate rather than recursively rehashing unrelated terabytes.
 
-- simulator-native traces can grow rapidly;
-- multiple full simulator runs can accumulate large logs/timelines;
-- future multi-model Native campaigns will produce much more raw data;
-- 164 is already the project’s large durable namespace.
+No accepted scientific artifact is deleted in either track.
 
-Therefore:
+## 5. Why node174 should not become the data disk
+
+174-new should contain:
+
+- source/worktrees;
+- simulator binaries;
+- small Python environments;
+- small indexes/summaries;
+- bounded scratch.
+
+Node164 should contain:
+
+- simulator-native traces;
+- NVBit/NSYS/NCU raw;
+- full simulation raw;
+- cycle timelines;
+- large parsed/features/datasets;
+- durable manifests/receipts/catalogs.
+
+A large file on 174 local disk is a working copy only, never the sole authority.
+
+## 6. Why node109 may now use the idle RTX4080
+
+Target selection is complete and accepted.
+
+Authorized candidates are:
 
 ```text
-174 local disk = code / worktree / small scratch / small summaries
-164 = large durable raw + derived authority
+PREFILL_GEMM_PRIMARY_1
+DECODE_GEMV_PRIMARY_1
+DECODE_FLASH_PRIMARY_1
+DECODE_FLASH_PRIMARY_2
 ```
 
-A large temporary 174 copy is always a working copy, never the only authoritative copy.
+These represent missing execution families relative to Q05 and were selected by exact implementation, launch shape, recurrence and GPU-time contribution.
 
-## 3. Why 109 no longer needs to remain idle
+The selected primary Prefill GEMM covers 38.10% of total Prefill GPU time. The selected primary Decode GEMV covers 20.22% of total Decode GPU time. Decode Flash contains two materially distinct shapes and both are retained.
 
-The previous coordination stage intentionally kept node109 idle while candidate selection was incomplete.
-
-That condition has changed.
-
-Accepted target-selection result:
+The reference NSYS launch number is only a navigation aid. Every producer capture must re-close:
 
 ```text
-branch = hrl/awma-kernel-target-selection-109-v1
-HEAD   = e90fd76d3704df4a367bb04de09aee42d0cab803
-status = PASS_WITHIN_SCOPE
+frozen workload
++ phase
++ exact function
++ grid/block
++ deterministic occurrence
++ decode step when applicable
 ```
 
-The selected targets are not arbitrary launches. They were selected from the exact frozen S2 census by implementation family, launch shape, recurrence and GPU-time contribution.
+A candidate that fails identity requalification is skipped rather than guessed.
 
-The important selected coverage is:
+## 7. Why storage qualification precedes new capture
 
-```text
-Prefill primary GEMM:
-  57.31% Prefill GEMM-family time
-  38.10% total Prefill GPU time
+The project should not intentionally create new large raw data before proving where it will be durably stored.
 
-Decode primary GEMV:
-  40.64% Decode GEMV-family time
-  20.22% total Decode GPU time
-
-Decode Flash splitkv:
-  82.10% Decode Flash time
-
-Decode Flash splitkv-combine:
-  17.90% Decode Flash time
-```
-
-Q05 remains representative only for one Prefill FlashAttention family. The selected targets therefore add exactly the missing execution families that future cross-kernel TLB/cache analysis will need.
-
-## 4. Why capture can proceed before the 174-new Q05 timeline finishes
-
-The 174-new active task asks a different question:
-
-> For the already accepted Q05 trace, is the observed translation pressure mainly cold first-touch, pre-fill fanout, or persistent post-fill behavior?
-
-The new 109 side lane does not need that answer in order to create producer-qualified input bundles for already selected complementary kernel families.
-
-Capturing these targets now does not commit the project to a particular TLB mechanism. It only prepares future simulation/native evidence so the next scientific round does not wait for GPU production.
-
-The side lane is therefore useful pipeline overlap:
-
-```text
-174-new: Q05 translation timeline analysis
-||
-109: storage qualification -> complementary target capture
-```
-
-The scientific decision about how to use the new captures remains deferred until ChatGPT reviews Track A and Track C together.
-
-## 5. Why storage qualification must precede new formal capture
-
-The project should not deliberately create new large traces before proving where and how they will be durably stored.
-
-Thus the new 109 goal is sequential:
+Track C is therefore strictly sequential:
 
 ```text
 Phase A
 storage governance / data-plane canary / catalog
 
-PASS gate:
+PASS:
 AWMA_164_DATA_PLANE_QUALIFIED_V1
 
-Phase B
-bounded selected-kernel simulator-native capture
+then Phase B
+bounded selected-kernel simulator-native producer capture
 ```
 
-If storage qualification fails, the GPU capture phase does not start.
+Track D can run in parallel from 174-new because most of its audit is read-only. If the producer canary is not yet available, it completes all independent mount/inventory/catalog work and records only that final canary verification is pending.
 
-## 6. Identity discipline for the new target captures
+## 8. Capture side-lane guardrails
 
-The target-selection review pack records `reference_launch_index`, but that value is not a stable scientific identity across reruns.
+GPU idle time is not a reason to generate unbounded traces.
 
-Each new capture must re-close identity using:
-
-```text
-frozen workload
-+ phase
-+ decode step where applicable
-+ exact kernel function
-+ grid/block
-+ deterministic occurrence within phase/function/shape
-```
-
-Accepted candidate identities from the target-selection pack are:
-
-```text
-PREFILL_GEMM_PRIMARY_1
-  occurrence 12
-  grid/block 128,3,1 / 256,1,1
-
-DECODE_GEMV_PRIMARY_1
-  decode step 1
-  occurrence 10
-  grid/block 1216,1,1 / 16,4,1
-
-DECODE_FLASH_PRIMARY_1
-  decode step 1
-  occurrence 17
-  grid/block 1,9,14 / 128,1,1
-
-DECODE_FLASH_PRIMARY_2
-  decode step 1
-  occurrence 0
-  grid/block 2,1,1 / 128,1,1
-```
-
-A candidate whose identity does not re-close is skipped rather than guessed.
-
-## 7. Why the capture side lane is bounded
-
-A full instruction trace can be much larger than an NSYS inventory. GPU idle time is not a reason to create unbounded raw data.
-
-Each candidate therefore receives:
+Each selected target follows:
 
 ```text
 identity requalification
  -> bounded capture canary
  -> size/time guard
- -> whole-kernel capture only if feasible
+ -> whole-kernel capture only when feasible
+ -> durable publish to node164
 ```
 
-Current guard:
+Current bounds:
 
 ```text
-8 GiB durable bundle per target
+8 GiB per target
 30 minutes per capture attempt
 32 GiB aggregate new durable raw
 ```
 
-A guard-triggered partial capture is diagnostic only and is never admitted as a complete trace.
+A guard-triggered partial capture is diagnostic only and is never admitted as a complete simulation input.
 
-## 8. Why the side lane uses the accepted simulator-native producer
+The side lane uses the accepted simulator-native producer and preserves terminal/drop/overflow/formatter/grammar contracts. It does not substitute C16WARP1 for a whole-kernel simulator trace.
 
-The current objective is future Accel-Sim-ready selected-kernel input, not another Native-only memory sample.
+## 9. Current STOP boundary
 
-Therefore the side lane uses the accepted simulator-native producer authority and must preserve:
+Neither Track C nor Track D may automatically start:
 
-```text
-terminal COMPLETE
-drop = 0
-overflow = 0
-mode-2/base_delta = 0
-strict formatter/grammar closure
-```
+- TLB/PTW/cache mechanisms;
+- latency/walker/capacity/page-size/Segment sweeps;
+- NCU or C16WARP1 campaigns;
+- Qwen3/DeepSeek campaigns;
+- SIM_INPUT admission or Accel-Sim replay of newly captured candidates;
+- deletion or physical reorganization of accepted durable evidence.
 
-It must not substitute C16WARP1 for whole-kernel simulation input.
+After producer-side storage/capture and consumer-side storage audit both close, ChatGPT should jointly review:
 
-If a new kernel reveals a genuinely new SASS semantic/trace-contract issue, the correct outcome is a scientific review stop, not fake address/width/immediate fields or relaxed validation.
+1. Q05 dynamic translation behavior;
+2. which complementary target bundles were successfully captured;
+3. whether node164 storage/provenance is independently closed from both producer and consumer views.
 
-## 9. Why no new NCU/Qwen3/DeepSeek campaign starts yet
-
-There are several valuable future GPU tasks, including:
-
-- secondary long-duration Decode GEMV shape;
-- Qwen3-30B S2 target requalification;
-- DeepSeek-V2-Lite MLA/MoE target work;
-- selected-kernel NCU.
-
-However, the current four Qwen2.5 targets are the most direct continuation of the accepted current-model simulation line and are likely to be consumed soonest.
-
-This stage therefore stops after their bounded producer capture attempts. Other GPU work remains backlog and requires a new handoff.
-
-## 10. Scientific boundary
-
-Track C produces data assets; it does not produce new TLB mechanism conclusions.
-
-After Track A and Track C complete, ChatGPT should jointly review:
-
-```text
-Q05 dynamic cold/warm/fanout behavior
-+
-which complementary target bundles were successfully captured
-```
-
-Then decide the next analysis matrix and whether new SIM_INPUT admission should begin.
+Only then should the next simulation/admission/mechanism stage be issued.
