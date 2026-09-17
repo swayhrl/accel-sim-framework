@@ -1,0 +1,1 @@
+Columns: artifact_id, scientific_status, artifact_type, model, revision, scenario_phase_target, producer_node, source_path, durable_path, size_or_hash, git_reference, retention_class. Existing accepted paths are indexed without relocation.
