@@ -1,0 +1,51 @@
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/vm_translation.cc	2026-09-08 06:32:52.000000000 +0000
++++ .awma_runtime/diagnostic/core/src/gpgpu-sim/vm_translation.cc	2026-09-17 11:20:44.115561837 +0000
+@@ -3,12 +3,24 @@
+ #include <assert.h>
+ #include <errno.h>
+ #include <stdlib.h>
++#include <stdio.h>
+ 
+ #include <fstream>
+ #include <sstream>
+ 
+ namespace vm_translation {
+ 
++// Diagnostic-only timeline sink. It is disabled unless AWMA_TRANSLATION_TIMELINE_PATH is nonempty.
++static FILE *awma_timeline_file() {
++  static FILE *file = 0; static bool attempted = false;
++  if (!attempted) { attempted = true; const char *path = getenv("AWMA_TRANSLATION_TIMELINE_PATH"); if (path && *path) file = fopen(path, "a"); }
++  return file;
++}
++static void awma_timeline_event(const char *type, uint64_t cycle, const translation_key &key, unsigned sid, uint64_t uid, size_t depth) {
++  FILE *file = awma_timeline_file(); if (!file) return;
++  fprintf(file, "%llu\t%s\t%u\t%llu\t%llu\t%u\t%llu\t%llu\n", (unsigned long long)cycle, type, key.asid, (unsigned long long)key.vpn, (unsigned long long)key.page_size, sid, (unsigned long long)uid, (unsigned long long)depth);
++}
++
+ const char *segment_registration_status_name(segment_registration_status status) {
+   switch (status) {
+     case SEGMENT_REGISTRATION_DISABLED:
+@@ -2053,6 +2065,7 @@
+     existing->waiters.push_back(waiter(sid, waiter_uid, entry, l1_launch,
+                                        l1_complete, l2_issued, l2_launch,
+                                        l2_complete, cycle, lookup->object));
++    awma_timeline_event("MSHR_MERGE", cycle, key, sid, waiter_uid, existing->waiters.size());
+     ++m_stats.mshr_merges;
+     if (m_stats.object_attribution_enabled)
+       ++m_stats.object[lookup->object].mshr_merges;
+@@ -2169,6 +2182,7 @@
+   if (m_translation_generations.find(asid) == m_translation_generations.end())
+     m_translation_generations[asid] = 1;
+   const object_class object = m_object_map.classify(sim_va, request_bytes);
++  awma_timeline_event("REQUEST", cycle, key, sid, waiter_uid, 0);
+   lookup_operation *inflight = find_lookup(sid, waiter_uid, key);
+   if (inflight != 0) {
+     if (inflight->generation != translation_generation(asid)) {
+@@ -2319,6 +2333,7 @@
+       const waiter &entry_waiter = m_mshrs[index].waiters[waiter_index];
+       assert(entry_waiter.sid < m_l1s.size());
+       m_l1s[entry_waiter.sid].fill(key, ppn, cycle, entry_waiter.object);
++      awma_timeline_event("TRANSLATION_RESOLVED_OR_FILL", cycle, key, entry_waiter.sid, entry_waiter.uid, 0);
+       note_requester_completion(
+           entry_waiter.entry_cycle, entry_waiter.l1_launch_cycle,
+           entry_waiter.l1_complete_cycle, entry_waiter.l2_issued,
