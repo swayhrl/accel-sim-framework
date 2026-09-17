@@ -4,27 +4,38 @@ Date: 2026-09-17
 
 ## Coordination status
 
-AWMA has moved past the simulator-compatible capture bring-up and the first bounded TLB/PTW characterization round. The current scientific stage is:
+The first Q05 representativeness/full-kernel clarification round is complete on both nodes.
+
+Accepted execution results:
 
 ```text
-Q05 representativeness + full-kernel translation-behavior clarification
+109 census branch:
+hrl/awma-qwen25-s2-census-109-v1
+HEAD = 678d7b491d4788369ca0c22717453b20846ab195
+status = AWMA_QWEN25_S2_KERNEL_CENSUS_V1_COMPLETE_WITH_SCOPE
+
+174-new full-Q05 branch:
+hrl/awma-q05-full-translation-174new-v1
+HEAD = 6415d3f1
+status = AWMA_Q05_FULL_KERNEL_TRANSLATION_BEHAVIOR_V1_COMPLETE_WITH_SCOPE
 ```
 
-This stage is deliberately **pre-mechanism**. Its job is to determine whether the currently observed translation sensitivity is mainly a cold-start/first-touch effect, a streaming/low-reuse effect, a same-page outstanding-translation fanout effect, or a mixture; and to determine how representative Q05 is within the full Qwen2.5 workload.
-
-The accepted characterization anchor is:
+Review disposition:
 
 ```text
-bb92e5a1559dd7e2b2520e9a7a4937262664512c
+109 = ACCEPTED
+174-new = ACCEPTED_WITH_REQUIRED_FOLLOWUP
 ```
 
-Result:
+The 174-new stage correctly preserved evidence boundaries, but the central first-touch/fill/post-fill question remains unresolved because the frozen simulator telemetry does not carry cycle-keyed translation-key associations. This is now the highest-priority scientific gap.
+
+The next stage is therefore:
 
 ```text
-AWMA_TLB_PTW_CHARACTERIZATION_V1_COMPLETE_WITH_SCOPE
-OPPORTUNITY_PRESENT
-scope = FIXED_WINDOW_PROGRESS_SENSITIVITY
+AWMA_Q05_TRANSLATION_TIMELINE_CLOSURE_AND_KERNEL_TARGET_SELECTION_V1
 ```
+
+It remains pre-mechanism.
 
 ## Frozen workload identity
 
@@ -40,8 +51,6 @@ dtype      = FP16
 backend    = SDPA
 ```
 
-`S2_TEXT` is only an AWMA internal name for the above test configuration. It is not a standard LLM term.
-
 Current Simulation target:
 
 ```text
@@ -49,17 +58,6 @@ Q05_PREFILL_ATTN_FLASH
 function occurrence = 0
 kernel = pytorch_flash::flash_fwd_kernel<...>
 ```
-
-The simulator-native producer captured the complete selected Q05 CUDA kernel, not only a 10k/50k prefix:
-
-```text
-raw records = 13,490,624
-capture completion = COMPLETE
-drop = 0
-overflow = 0
-```
-
-The 10k and 50k values used in the characterization round are simulator-cycle stop windows applied while replaying this complete kernel trace.
 
 ## Frozen Simulation identities
 
@@ -80,201 +78,230 @@ Producer                    = 5143b4e10aaf2fc47bb60492155d2464b0b726fd
 Validator hotfix            = fb5d0bebee421a0153661239e1f7c2bc088d5c9e
 ```
 
-## Accepted F0 translation configuration
-
-Effective runtime baseline:
-
-- functional VM mode 2;
-- 64 KiB base page;
-- 49-bit VA;
-- L1 TLB: 32 entries, 32-way, 1 port, 10-cycle lookup;
-- exact L2 TLB: 768 entries, 16-way, 48 sets, 1 port, 80-cycle lookup;
-- translation MSHR: 32 entries;
-- PWQ: 32;
-- walkers: 16;
-- real PTE L2/DRAM page-walk mode;
-- four page-table levels;
-- PWC: 128 entries, 1 cycle;
-- Segment disabled.
-
-Use the effective runtime configuration after fair-arm selection. Do not infer effective settings only from historical raw config text.
-
-## Completed characterization results
-
-### R0 baseline, 10k cycles
+Accepted bounded characterization anchor:
 
 ```text
-gpu_sim_cycle                    = 10,000
-gpu_sim_insn                     = 1,084,480 completed active thread-instructions
-gpu_tot_issued_cta               = 70
-translation lookup requests      = 930
-L1 TLB accesses/hits/misses      = 930 / 805 / 125
-L2 TLB accesses/hits/misses      = 125 / 0 / 125
-L2 TLB port-denial events        = 5,828
-translation MSHR alloc/merge     = 19 / 106
-translation MSHR full            = 0
-translation MSHR HWM             = 16 / 32
-walk starts/completions          = 19 / 19
-PTE requests/responses           = 70 / 70
-PTE L2-only / DRAM               = 48 / 22
-requester latency total          = 164,955
-requester MSHR-wait component    = 144,303
-max waiter depth                 = 35
+bb92e5a1559dd7e2b2520e9a7a4937262664512c
 ```
 
-Important accounting identity:
+## Accepted bounded characterization facts
+
+R0 10k:
 
 ```text
-125 L1/L2 miss requesters = 19 new translation allocations + 106 merges
+gpu_sim_insn                  = 1,084,480 completed active thread-instructions
+translation lookups           = 930
+L1 TLB                         = 930 access / 805 hit / 125 miss
+L2 TLB                         = 125 access / 0 hit / 125 miss
+translation MSHR              = 19 alloc / 106 merge / 0 full
+translation MSHR HWM          = 16 / 32
+walks                          = 19 start / 19 complete
+max waiter depth              = 35
+requester latency total       = 164,955
+requester MSHR-wait component = 144,303
 ```
 
-Thus the 125 misses are not evidence for 125 independent page walks.
-
-### Counterfactual variants
-
-At 10k cycles:
+Accounting identity:
 
 ```text
-R0 = 1,084,480
-I0 = 1,697,696  (+56.55%)
-P2 = 1,084,448  (~0%)
-M8 = 1,084,448  (~0%)
+125 miss requesters = 19 new outstanding translations + 106 merges
 ```
 
-At 50k cycles:
+Counterfactual progress:
 
 ```text
-R0 = 11,587,872
-I0 = 20,458,400 (+76.55%)
+10k: R0 1,084,480 ; I0 1,697,696 (+56.55%)
+50k: R0 11,587,872 ; I0 20,458,400 (+76.55%)
 ```
 
-Interpretation boundaries:
+P2 and M8 showed essentially no 10k progress gain, so L2-TLB port throughput and shared-L2 per-entry merge capacity are downgraded as dominant single causes. I0 remains only aggregate translation-path sensitivity, not a realizable speedup.
 
-- I0 is ideal identity translation: it removes the functional translation path; it is not merely 100% L1-TLB hit and is not a realizable hardware speedup claim.
-- The +56.55% and +76.55% values are fixed-cycle progress/IPC sensitivity values, not complete-kernel speedups.
-- P2 shows that reducing L2-TLB port-denial events alone does not improve same-window progress; this downgrades L2-TLB port throughput as the dominant single bottleneck but does not test L2-TLB lookup latency.
-- M8 changes shared-L2 per-entry merge capacity from 4 to 8; its near-zero progress effect does not test translation-MSHR capacity.
-- translation-MSHR capacity itself is not currently indicated as saturated: 32 entries, HWM 16, full 0.
-- L2-TLB 0 hits in the 10k window must not yet be interpreted as steady-state streaming or capacity thrashing.
+## New accepted result: complete Q05 structure
 
-## Current scientific hypothesis boundary
-
-The strongest current structural signal is:
+The accepted simulator-native trace covers the complete selected Q05 kernel, not the full model.
 
 ```text
-small number of outstanding translations
-        x
-high same-translation requester fanout
-        x
-long translation-completion latency
+CTA                               = 224
+warps                             = 896
+warp-instruction records          = 13,361,600
+memory-instruction records        = 971,824
+lane-address events               = 29,564,416
+unique offline 64 KiB VPN         = 228
 ```
 
-However, the current evidence does **not** distinguish cleanly between:
+Trace-file order is:
 
-1. cold first-touch at the beginning of an isolated kernel replay;
-2. streaming / low translation reuse;
-3. many requesters arriving before a translation fill and therefore repeatedly observing a miss;
-4. persistent post-fill reuse;
-5. a mixture of the above.
+```text
+STRUCTURAL_TRACE_ORDER_ONLY
+```
 
-This ambiguity must be resolved before mechanism design.
+It must not be used as a cross-CTA simulator-cycle timeline.
 
-## Trace availability boundary
+Natural R0 completion:
 
-Do not say that the complete Qwen2.5 run is already available as an Accel-Sim trace.
+```text
+cycles                            = 885,681
+issued CTA                        = 224 / 224
+completed active thread-insns     = 368,696,302
+```
 
-Current distinction:
+10k and 50k each have:
 
-- full-run NSYS/kernel metadata: lightweight real-GPU execution catalog, when available;
-- Native C16WARP1/MREF traces: selected native targets, suitable for scoped address/page/cache-line analysis, but not losslessly convertible post hoc into simulator traceg;
-- simulator-native whole-kernel trace: formally accepted for the selected Q05 target.
+```text
+issued CTA = 70 / 224 = 31.25%
+```
 
-The simulator-compatible capture pipeline is now technically established, so new selected kernels can be captured by reusing the mature pipeline, subject to per-kernel validation. This does not mean every kernel in the model has already been captured.
+This does not mean the kernel is 31.25% complete. The frozen telemetry did not provide valid cycle-keyed warp-instruction, memory-reference, or unique-page coverage for those windows.
 
-## Node roles for the current stage
+Current Q05 classification:
+
+```text
+MIXED
+per-translation first-touch/fill/post-fill attribution = INCONCLUSIVE
+```
+
+Supported statement:
+
+> There is strong outstanding-translation fanout in the early bounded window, while the full structural page footprint is highly skewed. The current evidence does not justify calling the behavior pure streaming or capacity thrashing.
+
+Unsupported until next stage:
+
+- exact first-touch fraction by cycle window;
+- requests-before-fill fraction per translation key;
+- post-fill L1/L2 hit rate by key;
+- post-fill revisit interval;
+- cycle-keyed unique-page growth;
+- stable warm-after-fill classification.
+
+## New accepted result: full S2 kernel-call inventory
+
+One exact frozen lightweight NSYS CUDA/NVTX run produced the complete kernel-call inventory.
+
+```text
+total CUDA kernel activities     = 34,677
+inside explicit inference ranges = 34,072
+Prefill launches                  = 408
+Decode launches                   = 33,664
+Decode launches per step          = 1,052 x 32
+```
+
+Q05 representativeness:
+
+```text
+Prefill PYTORCH_FLASH_FWD launches = 10
+all 10 launch shape                = grid 16,1,14 / block 128,1,1
+Q05 duration                       = 159,969 ns
+same-family median                 = 154,112.5 ns
+same-family range                  = 146,976 .. 159,969 ns
+```
+
+Accepted classification:
+
+```text
+same Prefill FlashAttention family = REPRESENTATIVE_WITHIN_SAME_FLASH_FAMILY
+broader Attention                  = PARTIALLY_REPRESENTATIVE
+whole frozen run                   = SPECIAL_CASE
+Decode                             = NOT ASSUMED REPRESENTATIVE
+layer mapping                      = NOT PROVEN
+```
+
+Important GPU-time structure:
+
+### Prefill
+
+```text
+CUBLAS_GEMM      70 launches   66.48% Prefill GPU time
+PYTORCH_FLASH_FWD 10 launches  14.31% Prefill GPU time
+```
+
+The remaining time is split among elementwise/copy/reduction/other families. Thus Q05 is important but does not represent the dominant Prefill compute family.
+
+### Decode total
+
+```text
+CUBLAS_GEMV       5,408 launches  49.76% Decode GPU time
+PYTORCH_FLASH_FWD 1,536 launches   9.87% Decode GPU time
+```
+
+Decode FlashAttention uses different launch shapes from Prefill Q05, so Q05 must not be extrapolated to Decode.
+
+The previous semantic category `UNKNOWN` mainly reflected lack of high-level operator-role mapping; implementation-family classification already identifies CUBLAS_GEMM/GEMV. Do not describe these as scientifically unknown kernels.
+
+## Current scientific decision
+
+Two things are now clear.
+
+First, Q05 is a valid representative target for one repeated Prefill FlashAttention implementation class, so finishing its translation-behavior diagnosis remains scientifically useful.
+
+Second, a general AI-workload/TLB claim cannot rest on Q05 alone. Before broad mechanism claims, the target set must eventually include at least representative non-Flash families, especially:
+
+- dominant Prefill CUBLAS_GEMM;
+- dominant Decode CUBLAS_GEMV;
+- likely one Decode FlashAttention target because Prefill Q05 does not represent Decode Flash shapes.
+
+The next stage selects these candidates but does not yet capture them.
+
+## Node roles for the next stage
 
 ### 174-new / port 2239
 
-Owner of Simulation-plane analysis.
+Execute diagnostic-only translation timeline closure.
 
-Current task:
+Goals:
 
-```text
-AWMA_Q05_FULL_KERNEL_TRANSLATION_BEHAVIOR_V1
-```
-
-Responsibilities:
-
-- analyze the complete Q05 simulator-native trace;
-- establish 10k/50k/full-kernel coverage metrics;
-- obtain cycle-ordered VPN/translation behavior from the simulator;
-- separate first-touch, pre-fill fanout, post-fill reuse and streaming behavior;
-- run one R0 natural-completion replay only if required and practical;
-- do not start a new translation mechanism experiment.
+- add timing-neutral, disabled-by-default cycle/key telemetry;
+- pass a strict R0 10k neutrality/equivalence gate;
+- obtain first-touch, pre-fill fanout, fill, post-fill hit/revisit behavior;
+- obtain valid 10k/50k/full coverage for warp-instruction, memory-instruction, and unique translated pages when same-unit closure can be proven;
+- rerun R0 10k, 50k and natural completion only as required by the spec;
+- do not test mechanisms.
 
 ### 109 / RTX4080
 
-Owner of Native producer/capture.
+GPU remains idle for this stage.
 
-Current task:
+Perform offline target selection from the accepted census:
 
-```text
-AWMA_QWEN25_S2_KERNEL_CENSUS_V1
-```
-
-Responsibilities:
-
-- first reuse existing accepted NSYS/kernel-catalog evidence if sufficient;
-- otherwise run only one lightweight full-scenario kernel-call inventory for the frozen workload;
-- classify kernel launches by phase, semantic family and exact implementation where evidence supports it;
-- quantify launch-count share and GPU-time share;
-- determine how common/typical Q05's FlashAttention implementation is.
-
-This stage does **not** authorize NCU, NVBit memory trace, new simulator-native kernel traces, or broad recapture on 109.
+- group Prefill CUBLAS_GEMM by exact implementation + launch shape;
+- group Decode CUBLAS_GEMV by exact implementation + launch shape;
+- summarize Decode FlashAttention shape/family variants;
+- select deterministic representative occurrences for possible later simulator-native capture;
+- check whether existing Native heavy-GEMM targets align with one selected census target;
+- do not capture new traces yet.
 
 ### node164
 
-Durable storage owner for large raw/derived artifacts.
-
-Keep large timelines, NSYS reports and full diagnostic logs on node164. Git contains code, compact summaries, manifests, hashes and review evidence only.
-
-## Current open questions
-
-1. Where exactly do 10k and 50k sit within the complete Q05 kernel by CTA, warp-instruction, memory-reference and unique-page coverage?
-2. Are most unique 64 KiB pages introduced near the kernel beginning or continuously throughout execution?
-3. Of the current L2 misses, how many occur before the corresponding translation has filled?
-4. After fill, are those pages repeatedly reused and hit in L1/L2 TLB, or rarely revisited?
-5. What is the full-kernel distribution of translation fanout and waiter depth?
-6. How many CUDA kernel launches occur in the complete frozen Qwen2.5 scenario, and which semantic/implementation families dominate by launch count and GPU time?
-7. How many times does the same `flash_fwd` implementation appear during Prefill, and is Q05 occurrence 0 typical of that family?
+Durable storage remains the owner for large raw telemetry and full launch inventories.
 
 ## Immediate execution order
 
-Run the following two tracks in parallel from this coordination state:
+Run the next two tracks in parallel:
 
 ```text
 174-new:
-CODEX_NEXT_STAGE_174NEW_Q05_FULL_TRANSLATION_BEHAVIOR_V1.md
+CODEX_NEXT_STAGE_174NEW_Q05_TRANSLATION_TIMELINE_CLOSURE_V1.md
 
 109:
-CODEX_NEXT_STAGE_109_QWEN25_S2_KERNEL_CENSUS_V1.md
+CODEX_NEXT_STAGE_109_KERNEL_TARGET_SELECTION_V1.md
 ```
 
-The canonical dispatcher is:
+Canonical dispatcher:
 
 ```text
 CODEX_NEXT_STAGE.md
 ```
 
-After both tracks finish, stop and return their reports/review packs to ChatGPT for a new scientific decision.
+## Global STOP boundary
 
 Do not automatically start:
 
-- L2-TLB latency sweep;
+- L2-TLB lookup-latency sweep;
 - PTW fixed-latency experiment;
 - walker-count sweep;
 - TLB-capacity sweep;
 - page-size sweep;
 - Segment;
-- early-outstanding-detection mechanism;
-- new selected-kernel simulator-native capture.
+- early outstanding-translation detection;
+- any new simulator-native kernel capture.
+
+After both tracks finish, return reports/review packs to ChatGPT for the next scientific decision.
