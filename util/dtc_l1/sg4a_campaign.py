@@ -31,6 +31,10 @@ POINTS = {
     (80, "IO"): ("configs/dtc_l1/fast64/FAST64_IO.config", "d4a2d9d0088946b950370b922a8d8e34422bbca9bac26f109b3977fe02a7f621", "docs/dtc_l1/iscas2027/granularity/sg4a/config/SG4A_LOGICAL80_IO_OVERLAY.config", 160),
     (80, "OO"): ("configs/dtc_l1/fast64/FAST64_OO.config", "546c68f96d47f4650703ccfbc925bd789f923501d5607a77e79ca4845f234caa", "docs/dtc_l1/iscas2027/granularity/sg4a/config/SG4A_LOGICAL80_OO_OVERLAY.config", 160),
 }
+OVERLAY_SHA = {
+    (80, "IO"): "894bdff37ec5f0b097a3c67356b2e7df53006a261e068b52e5f582b7ceb6540f",
+    (80, "OO"): "2dccf5e73be141f11ad08d673fe7cd97fc6884bd26b49f1f3523c9a3671ad3bd",
+}
 
 
 def now():
@@ -75,8 +79,8 @@ def point_paths(repo, kib, mode):
     config = (repo / config_rel).resolve()
     overlay = (repo / overlay_rel).resolve() if overlay_rel else None
     require(config, config_sha, "point config")
-    if overlay and not overlay.is_file():
-        raise RuntimeError(f"80-KiB overlay missing: {overlay}")
+    if overlay:
+        require(overlay, OVERLAY_SHA[(kib, mode)], "80-KiB overlay")
     return config, overlay, sets
 
 
