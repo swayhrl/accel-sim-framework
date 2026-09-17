@@ -34,7 +34,7 @@ def cache_layer(c,i):
  return {'key':tinfo(c.key_cache[i]),'value':tinfo(c.value_cache[i])} if len(c.key_cache)>i and c.key_cache[i].numel() else None
 
 class Q30:
- def __init__(self,root,nvtx_components=False):
+ def __init__(self,root,nvtx_components=False,expert_capture_path=None):
   self.root=Path(root); self.config=AutoConfig.from_pretrained(self.root,local_files_only=True)
   with torch.device('meta'): self.model=Qwen3MoeForCausalLM(self.config)
   self.model=self.model.to(dtype=torch.bfloat16); self.model.eval()
@@ -45,6 +45,7 @@ class Q30:
   if len(self.wmap)!=18867 or set(self.wmap)!=set(self.model.state_dict()): raise RuntimeError('canonical model/index closure invalid')
   self.mat=Materializer(self.root,self.wmap)
   self.nvtx_components=nvtx_components
+  self.expert_capture_path=Path(expert_capture_path) if expert_capture_path else None
  def names(self,p): return sorted(n for n in self.wmap if n.startswith(p))
  def on(self,m,p):
   r=self.mat.inject(m,self.names(p),p); m.to('cuda'); return r
@@ -63,6 +64,25 @@ class Q30:
  def layer(self,i,h,k):
   m=self.model.model.layers[i]; torch.cuda.reset_peak_memory_stats(); before={'allocated':torch.cuda.memory_allocated(),'reserved':torch.cuda.memory_reserved()}; rec=self.on(m,'model.layers.%d.'%i)
   hooks=[]
+  semantic={'layer_id':i,'gate':None,'down_proj_events':[]}
+  def gpu_info(t):
+   return {**tinfo(t),'device':str(t.device),'data_ptr':int(t.data_ptr()),'nbytes':t.numel()*t.element_size()}
+  if self.expert_capture_path is not None and i==LAYER:
+   def gate_capture(mod,args,out):
+    logits=out.detach(); weights,selected=torch.topk(torch.softmax(logits.float(),dim=-1),m.mlp.top_k,dim=-1)
+    semantic['gate']={'input':gpu_info(args[0]),'logits':gpu_info(logits),'selected_expert_ids':selected.cpu().tolist(),'routing_weights':weights.cpu().tolist(),'selected_expert_ids_sha256':tsha(selected),'routing_weights_sha256':tsha(weights)}
+    return None
+   hooks.append(m.mlp.gate.register_forward_hook(gate_capture))
+   for expert_id,expert in enumerate(m.mlp.experts):
+    if hasattr(expert,'down_proj'):
+     def down_pre(mod,args,eid=expert_id):
+      semantic['down_proj_events'].append({'expert_id':eid,'input':gpu_info(args[0]),'weight':gpu_info(mod.weight)})
+      return None
+     def down_post(mod,args,out,eid=expert_id):
+      for event in reversed(semantic['down_proj_events']):
+       if event['expert_id']==eid and 'output' not in event: event['output']=gpu_info(out); break
+      return None
+     hooks += [expert.down_proj.register_forward_pre_hook(down_pre),expert.down_proj.register_forward_hook(down_post)]
   if self.nvtx_components:
    def enter(tag):
     def f(mod,args):
@@ -74,7 +94,7 @@ class Q30:
      torch.cuda.nvtx.range_pop()
      return None
     return f
-   hooks=[m.self_attn.register_forward_pre_hook(enter('Q30_COMPONENT_SELF_ATTN')),m.self_attn.register_forward_hook(leave('Q30_COMPONENT_SELF_ATTN')),m.mlp.register_forward_pre_hook(enter('Q30_COMPONENT_MLP')),m.mlp.register_forward_hook(leave('Q30_COMPONENT_MLP'))]
+   hooks += [m.self_attn.register_forward_pre_hook(enter('Q30_COMPONENT_SELF_ATTN')),m.self_attn.register_forward_hook(leave('Q30_COMPONENT_SELF_ATTN')),m.mlp.register_forward_pre_hook(enter('Q30_COMPONENT_MLP')),m.mlp.register_forward_hook(leave('Q30_COMPONENT_MLP'))]
    hooks += [m.mlp.gate.register_forward_pre_hook(enter('Q30_COMPONENT_ROUTER_GATE')),m.mlp.gate.register_forward_hook(leave('Q30_COMPONENT_ROUTER_GATE'))]
    for expert in m.mlp.experts:
     hooks += [expert.register_forward_pre_hook(enter('Q30_COMPONENT_EXPERT')),expert.register_forward_hook(leave('Q30_COMPONENT_EXPERT'))]
@@ -83,6 +103,9 @@ class Q30:
   finally:
    for hnd in hooks: hnd.remove()
    self.off(m)
+  if self.expert_capture_path is not None and i==LAYER:
+   if self.expert_capture_path.exists(): raise FileExistsError(self.expert_capture_path)
+   partial=Path(str(self.expert_capture_path)+'.partial');partial.parent.mkdir(parents=True,exist_ok=True);partial.write_text(json.dumps(semantic,sort_keys=True,indent=2)+'\n');os.replace(partial,self.expert_capture_path)
   post={'allocated':torch.cuda.memory_allocated(),'reserved':torch.cuda.memory_reserved()}; return (*result,post)
 
 def boundary(h,k):
@@ -102,7 +125,7 @@ def stream(a):
  run=Path(a.run_dir); sem=run/'semantic'; states=run/'target_states';
  if (sem/'SEMANTIC_RUN_RECEIPT.json').exists() or (states/'TARGET_LAYER_STATE_INDEX.json').exists(): raise FileExistsError(run)
  for d in (sem,states,run/'replay',run/'logs',run/'receipts'): d.mkdir(parents=True,exist_ok=True)
- q=Q30(a.model_root,a.nvtx_components); c=DynamicCache(); layer_rows=[]; router_rows=[]; captures={}; decode=[]; start=time.time()
+ q=Q30(a.model_root,a.nvtx_components,a.expert_capture_receipt); c=DynamicCache(); layer_rows=[]; router_rows=[]; captures={}; decode=[]; start=time.time()
  def phase(name,tid,step=None):
   h=q.embed(tid); prior=c.get_seq_length(); cp=torch.arange(prior,prior+h.shape[1],device='cuda'); am=torch.ones((1,prior+h.shape[1]),device='cuda',dtype=torch.long); k=q.kwargs(h,am,c,cp)
   for i in range(48):
@@ -133,7 +156,7 @@ def stream(a):
  print(json.dumps({'status':'Q30_TARGET_LAYER_STATE_PASS','run_dir':str(run),'semantic_receipt_sha256':srsha,'target_state_index_sha256':fsha(states/'TARGET_LAYER_STATE_INDEX.json'),'prefill_next_token_id':prefill_token,'decode_next_token_ids':[x['next_token_id'] for x in decode]},sort_keys=True))
 
 def replay(a):
- bundle=Path(a.bundle); m=validate(bundle,REV,LAYER); call=load_blob(bundle/'call_boundary.pt'); source=load_blob(bundle/'source_oracle.pt'); q=Q30(a.model_root,a.nvtx_components)
+ bundle=Path(a.bundle); m=validate(bundle,REV,LAYER); call=load_blob(bundle/'call_boundary.pt'); source=load_blob(bundle/'source_oracle.pt'); q=Q30(a.model_root,a.nvtx_components,a.expert_capture_receipt)
  with torch.inference_mode():
   h=call['hidden_states'].to('cuda'); out,rl,mat,before,peak,post=q.layer(LAYER,h,thaw(call)); out=out.cpu(); rl=rl.cpu()
  out_eq=torch.equal(out,source['output']); router_eq=torch.equal(rl,source['router_logits']); rs=router(rl); rs_eq=rs==source['router']
@@ -142,6 +165,6 @@ def replay(a):
  if res['status']!='PASS': sys.exit(2)
 
 def main():
- p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('stream','replay'),required=True); p.add_argument('--model-root',required=True); p.add_argument('--run-dir'); p.add_argument('--tokens'); p.add_argument('--receipt'); p.add_argument('--bundle'); p.add_argument('--copy-sha'); p.add_argument('--runtime-sha'); p.add_argument('--git-commit'); p.add_argument('--deployment'); p.add_argument('--nvtx-components',action='store_true'); p.add_argument('--input-token-sha',default=TOKEN_SHA); p.add_argument('--input-receipt-sha',default=RECEIPT_SHA); p.add_argument('--context',type=int,default=128); p.add_argument('--decode-steps',type=int,default=4); p.add_argument('--target-decode-step',type=int,default=3); p.add_argument('--scenario',default='Q30_S0_TEXT'); p.add_argument('--parent-binding',default='Q30_S0_TEXT B1/T128/D4'); p.add_argument('--semantic-status',default='Q30_SEMANTIC_STREAMING_S0_PASS'); p.add_argument('--prefill-gate',default='Q30_S0_PREFILL_STREAMING_PASS'); p.add_argument('--decode-gate',default='Q30_S0_DECODE_PREFIX_D4_PASS')
+ p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('stream','replay'),required=True); p.add_argument('--model-root',required=True); p.add_argument('--run-dir'); p.add_argument('--tokens'); p.add_argument('--receipt'); p.add_argument('--bundle'); p.add_argument('--copy-sha'); p.add_argument('--runtime-sha'); p.add_argument('--git-commit'); p.add_argument('--deployment'); p.add_argument('--nvtx-components',action='store_true'); p.add_argument('--expert-capture-receipt'); p.add_argument('--input-token-sha',default=TOKEN_SHA); p.add_argument('--input-receipt-sha',default=RECEIPT_SHA); p.add_argument('--context',type=int,default=128); p.add_argument('--decode-steps',type=int,default=4); p.add_argument('--target-decode-step',type=int,default=3); p.add_argument('--scenario',default='Q30_S0_TEXT'); p.add_argument('--parent-binding',default='Q30_S0_TEXT B1/T128/D4'); p.add_argument('--semantic-status',default='Q30_SEMANTIC_STREAMING_S0_PASS'); p.add_argument('--prefill-gate',default='Q30_S0_PREFILL_STREAMING_PASS'); p.add_argument('--decode-gate',default='Q30_S0_DECODE_PREFIX_D4_PASS')
  a=p.parse_args(); stream(a) if a.mode=='stream' else replay(a)
 if __name__=='__main__': main()
