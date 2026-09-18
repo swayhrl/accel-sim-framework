@@ -8,6 +8,8 @@ Date: 2026-09-18
 
 Mainline priority remains frozen: node109 RTX4080 and node174-new serve the active mainline first. Side work may run only when the mainline does not need the resource and must never delay the mainline.
 
+Execution-efficiency policy is also frozen: small, correctness-neutral issues with an obvious safe fix are folded into the next real mainline handoff or corrected directly in ChatGPT-owned coordination material. They do **not** get a standalone Codex round merely for bookkeeping. A separate Codex stage is reserved for work that needs execution/evidence, changes scientific semantics/provenance, or carries nontrivial engineering risk.
+
 ## Previous context-warmup stage review
 
 ### 174-new feasibility — ACCEPTED WITH SCOPE
@@ -81,7 +83,7 @@ ACTIVE
 
 M4 — 174-new
 Q05 warm-prefix replay preparation / execution
-ACTIVE, may WAIT for M3 bundle
+WAITING_FOR_CONTEXT_BUNDLE after completed preparation
 ```
 
 ### M3 — 109
@@ -105,7 +107,13 @@ Use accepted Route-B producer semantics and minimally extend only the selection/
 
 ### M4 — 174-new
 
-Execute:
+Preparation has already closed as:
+
+`AWMA_Q05_WARM_PREFIX_REPLAY_174NEW_V1_WAITING_FOR_CONTEXT_BUNDLE`
+
+Do not dispatch a standalone round for minor documentation-only semantic cleanup. The known F0 wording cleanup will be folded into the next M4 resume after the 109 context bundle arrives.
+
+Resume under:
 
 `CODEX_NEXT_STAGE_174NEW_Q05_WARM_PREFIX_REPLAY_V1.md`
 
@@ -170,7 +178,13 @@ validator hotfix            = fb5d0bebee421a0153661239e1f7c2bc088d5c9e
 
 node164 remains the durable authority.
 
-109 local data is staging only. 174 local data is working/simulation state only.
+Model-asset placement is asymmetric by design:
+
+- node164 remains the authoritative copy for all model assets and receipts;
+- node109 may retain local **replica copies of currently active capture models** for repeated GPU capture convenience. These replicas are non-authoritative, hash-verifiable, and may be cleaned later if space is needed;
+- node174-new should not retain model-weight replicas. It should consume authoritative assets from node164 as needed and keep only simulator/source/small working state locally.
+
+109 may also keep capture staging/working data until durable publication is closed. 174 local data remains working/simulation state only.
 
 The new context bundle is formal only after per-member closure, bundle hash closure, destination verify/admit and ACK.
 
