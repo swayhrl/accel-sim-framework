@@ -1,67 +1,67 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE MAINLINE — 174 CONTEXT-EFFECT DECOMPOSITION**
+Status: **ACTIVE MAINLINE — 174 CONTEXTUAL LOOKUP-PATH DECOMPOSITION**
 
 Stage:
 
-`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1`
+`AWMA_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_174NEW_V1`
 
 Coordination branch:
 
-`hrl/awma-q05-context-effect-decomposition-handoff-v1`
+`hrl/awma-q05-contextual-lookup-decomposition-handoff-v1`
 
 ## node174-new — ACTIVE MAINLINE
 
 Execute:
 
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_Q05_CONTEXT_EFFECT_DECOMPOSITION_V1.md`
+`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_V1.md`
 
 Execution parent:
 
 ```text
-hrl/awma-q05-contextual-warm-prefix-replay-174new-v1
-2640c4368aea1dc44eb6c34fdc9bb5f738ec3fb2
+hrl/awma-q05-context-effect-decomposition-174new-v1
+b24edffd7a90fc6417b95c6d4198f5c40dcf0b35
 ```
 
 Recommended branch:
 
-`hrl/awma-q05-context-effect-decomposition-174new-v1`
+`hrl/awma-q05-contextual-lookup-decomposition-174new-v1`
 
-Primary sequence:
+Required order:
 
-1. mine existing natural contextual logs for non-translation memory/pipeline differences;
-2. source-audit a Q05-only ideal-identity translation bypass;
-3. implement it disabled by default;
-4. pass P8/P34 R0 neutrality controls;
-5. run P2/P8/P34 Q05-only ideal-translation counterfactuals;
-6. optionally produce isolated full-kernel Q05-I0;
-7. only if useful and source-safe, run bounded P8/P34 target-boundary L2-data-state diagnostic;
-8. quantify residual contextual translation sensitivity;
-9. assess P8 as screening-prefix candidate vs P34 realism reference;
-10. STOP before any mechanism.
+1. close same-trace formal-isolated baseline addendum;
+2. audit accepted 10-cycle L1 / 80-cycle L2 lookup service semantics;
+3. implement disabled-by-default exact-Q05 target-only latency override;
+4. P8/P34 neutrality controls + P34 prior-I0 reproduction;
+5. P34 full L1/L2 latency matrix;
+6. P8 reduced matrix;
+7. compare zero-lookup path against I0;
+8. optional force-L1-hit diagnostic only if zero/zero leaves >3% residual;
+9. assess P8 screening equivalence;
+10. STOP before architecture mechanism design.
 
 Success marker:
 
-`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_174NEW_V1_COMPLETE_WITH_SCOPE`
 
 ## node109
 
-The independently authorized unattended capture side goal may continue.
+No AWMA task is active on node109.
 
-It remains subordinate and must yield if the active mainline later requests GPU resources.
+The previous unattended side campaign is closed and the RTX4080 is released for user work.
 
-No new 109 instructions are introduced by this mainline handoff.
+## Forbidden
 
-## Explicitly forbidden
+Do not start:
 
-No new architecture mechanism:
+- TLB capacity/port mechanism sweeps;
+- PTW/PWC mechanisms;
+- page-size or segmentation;
+- translation prefetch/speculation;
+- cache redesign.
 
-- no TLB latency/capacity/ports/walker sweep;
-- no PTW/PWC optimization;
-- no page-size/segmentation;
-- no translation prefetch/speculation;
-- no cache redesign.
+This is a bounded diagnostic latency decomposition only.
 
-Routine source navigation, parser/log extraction, diagnostic plumbing, deterministic controls and node164 storage are solve-and-continue.
+Routine source/build/runner/telemetry/storage engineering is solve-and-continue.
 
 Finish report -> review pack -> hashes -> commit -> push -> remote verify -> clean -> STOP.
