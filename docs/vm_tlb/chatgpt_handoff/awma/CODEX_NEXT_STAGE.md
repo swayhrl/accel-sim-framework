@@ -59,7 +59,7 @@ Expected complete marker:
 
 ---
 
-## M4 — node174-new — ACTIVE MAINLINE / dependency on M3
+## M4 — node174-new — WAITING_FOR_CONTEXT_BUNDLE
 
 Execute:
 
@@ -76,11 +76,7 @@ Recommended branch:
 
 `hrl/awma-q05-warm-prefix-replay-174new-v1`
 
-Before bundle arrival:
-
-- close actual F0 L1/L2 data-cache, L1/L2 TLB, PWC and drained-state semantics separately;
-- prepare ordered context-bundle consumer;
-- prepare target-only monotonic-delta replay tooling.
+Before bundle arrival, M4 preparation has already completed and closed cleanly as WAITING. Do **not** launch another Codex round solely to polish small wording/classification details. Fold those known, correctness-neutral edits into the next M4 resume when the formal M3 bundle is available.
 
 After M3 durable+ACK:
 
@@ -130,6 +126,8 @@ Do not automatically start:
 - deletion/reorganization of accepted node164 evidence.
 
 ## Execution policy
+
+Efficiency rule: do not spawn a standalone Codex stage for a correctness-neutral micro-fix whose safe resolution is already known. Fold it into the next substantive handoff/resume or let ChatGPT update coordination material directly.
 
 Routine engineering is solve-and-continue.
 
