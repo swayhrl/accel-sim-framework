@@ -160,3 +160,48 @@ Existing isolated and contextual identities remain immutable.
 ## STOP boundary
 
 No TLB/PTW/cache mechanism starts automatically after decomposition. Return the causal result to ChatGPT for review.
+
+
+## 109 unattended side-lane closeout — ACCEPTED
+
+Execution:
+
+```text
+hrl/awma-109-unattended-capture-campaign-v1
+8f49ba3b9228b5f8a9163e961225ffd415107734
+```
+
+Decision:
+
+`AWMA_109_UNATTENDED_CAPTURE_CAMPAIGN_V1_COMPLETE_WITH_SCOPE`
+
+Reason:
+
+`USER_EARLY_CLOSE_AFTER_P2C_TO_RELEASE_NODE109`
+
+Accepted producer outputs:
+
+- 16 immutable node164-ACKed bundles;
+- Decode Flash Primary-1 historical raw promoted after the exact-LDC validator repair;
+- Decode Flash Primary-2 step1 captured and admitted;
+- Prefill Flash occurrences 2/4/6/9 captured and admitted;
+- Prefill GEMM Primary occurrences 0/4/8/16/19 captured and admitted;
+- Decode GEMV Primary steps 4/8/16/24/32 captured and admitted.
+
+The attempted P2D Step-4 canary had no terminal closure when early-close arrived and was correctly not admitted. P2D/P2E/P3 and later optional work are explicitly skipped, not inferred.
+
+Node109 GPU is now released for user work:
+
+```text
+no campaign GPU process
+GPU lock available
+RTX4080 idle baseline observed
+```
+
+Small structural side-lane observation only:
+
+- captured Prefill Flash occurrences 2/4/6/9 have identical record/memory/address-footprint counts in the campaign summary;
+- captured Prefill GEMM Primary occurrences 0/4/8/16/19 likewise match structurally;
+- Decode GEMV Primary steps 4/8/16/24/32 are structurally nearly identical, with the reported 64 KiB page count unchanged at 135 and only a one-page 4 KiB difference at step4 versus later sampled steps.
+
+These are trace-structure/footprint observations, not simulator-performance equivalence claims.
