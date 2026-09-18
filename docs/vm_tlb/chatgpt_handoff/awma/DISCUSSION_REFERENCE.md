@@ -1,208 +1,143 @@
-# AWMA Discussion Reference — Contiguous Prefix Warm Replay
+# AWMA Discussion Reference — Real Contextual Warm-Prefix Replay
 
 Date: 2026-09-18
 
-## 1. What changed after the first context-warmup stage
+## 1. The context-realism question can now be tested directly
 
-The isolated Q05 study is no longer the only evidence about initial state.
+The project now has a formally admitted same-run simulator-native sequence for all 34 real Prefill predecessors plus Q05.
 
-174-new has now proved a methodological fact inside the accepted simulator: sequential dispatch in one simulator instance can retain translation state across kernels while Q05-only counters are measured by deltas.
-
-The self-warm diagnostic produced:
+This removes the largest previous realism uncertainty:
 
 ```text
-first Q05  = 885,681 cycles
-second Q05 = 821,426 cycles
-
-second-Q05 L2 TLB:
-2,922 accesses
-2,922 hits
-0 misses
-
-new walks  = 0
-new merges = 0
+independent isolated Q05
+vs
+real same-run predecessor history -> Q05
 ```
 
-Therefore an isolated-kernel start state can materially differ from a warm sequential state in the simulator.
+The context bundle is hash-closed and durable on node164.
 
-This self-warm result is not a model-context result. Running Q05 twice gives Q05 an artificially favorable copy of its own working set.
+## 2. The LDC.U8 blocker is closed without inventing trace data
 
-Also, the cycle reduction cannot be labeled a translation-only gain because F0 kernel boundaries may preserve state outside the translation hierarchy, especially shared L2 data-cache state. The next stage separates those counters.
+The real P34 capture exposed `LDC.U8` as width-zero/no-dynamic-address.
 
-## 2. What node109 established despite the observer stop
+The recovery did not write `width=1`.
 
-The native-context stage did not produce valid page sets, but it did close a highly useful structural fact:
+Instead, accepted source showed a pre-existing contract:
 
-Q05 is the first Prefill FlashAttention target at navigation launch 34 and has exactly 34 contiguous Prefill predecessor launches.
+- producer ignores constant operands without NVBit MREF;
+- serialized LDC can therefore have width 0/no address;
+- trace parser creates no memadd payload for width 0;
+- trace-driven handles `OP_LDC` through its existing constant-space approximation with hardcoded `data_size=4`.
 
-The accepted sequence is fully enumerated in:
+The strict validator was corrected only for exact `LDC`.
 
-`Q05_PREDECESSOR_SEQUENCE.tsv`
+This is a validator/contract alignment, not a claim that LDC.U8 is accurately modeled as a one-byte constant-memory transaction.
 
-This changes the cost/benefit tradeoff.
+## 3. Why the producer page-overlap curve is scientifically interesting
 
-The original plan used a lightweight page observer to choose how far back to trace. But the full prefix is only 34 launches. A formal context replay ultimately needs complete instruction/memory traces for those predecessor kernels anyway.
-
-Therefore repairing a second, lightweight observer first would duplicate work.
-
-## 3. Why the next capture is the complete same-run prefix
-
-The scientifically clean input is:
+The same-run broad trace-address overlap rises in a highly structured way:
 
 ```text
-launch0
-launch1
-...
-launch33
-Q05 launch34
+~25%  by P1
+~49%  by P2
+no increase at P4
+~99%  by P8
+very small increments after P8
 ```
 
-all from one frozen workload execution and one CUDA context.
+This suggests that Q05's address working set is heavily related to very recent predecessor activity.
 
-That single capture provides simultaneously:
+But it does not yet prove TLB warmth.
 
-- the exact real predecessor ordering;
-- same-run absolute address identity;
-- per-kernel full simulator-native replay input;
-- offline 4KiB/64KiB page sets;
-- page-overlap curves for P1/P2/P4/P8/P16/P34;
-- the data needed for actual contextual replay.
+A page may have been touched but evicted from the TLB before Q05. Conversely, a page-table prefix may remain useful even when the exact page translation is not resident.
 
-No independent-run trace stitching is needed.
+## 4. Why P4/P16/P34 must still be simulated
 
-## 4. Why a suffix-prefix matrix is used
+P4 has the same broad overlap as P2, and P16/P34 add very little overlap beyond P8.
 
-The relevant history for Q05 is the continuous suffix immediately before it.
+It would be tempting to drop these rows.
 
-Rows are:
+Do not.
+
+The extra predecessor kernels may introduce **pollution/eviction** without adding overlapping Q05 pages. Therefore:
 
 ```text
-P1  = only the immediate predecessor
-P2  = last 2 predecessors
-P4  = last 4
-P8  = last 8
-P16 = last 16
-P34 = all 34
+same overlap != same target-entry microarchitectural state
 ```
 
-Interior kernels are never skipped.
+Comparing P2 vs P4 and P8 vs P16/P34 directly tests this effect.
 
-This lets us ask whether Q05's initial state converges with a short recent history or depends on the full Prefill setup.
+## 5. Translation-relevant page scope must be recomputed
 
-## 5. Two different overlap domains must remain separate
+The producer distance table includes low-address pages such as `0x0`.
 
-Native/trace page overlap uses addresses grouped into 4KiB or 64KiB pages.
-
-Simulator translation identity is:
-
-`{asid, vpn, page_size}`
-
-The historical 228 offline 64KiB VPN versus 240 simulator-key mismatch is not forcibly reconciled.
-
-The next stage uses page overlap as an opportunity/trend measure and simulator first-touch outcomes/walk counts as the actual modeled translation evidence.
-
-## 6. What warm replay will and will not tell us
-
-Warm-prefix replay can answer:
-
-- whether the isolated Q05 replay overstates walk/miss demand;
-- how quickly real predecessor history warms translation state;
-- how much Q05 total modeled execution changes;
-- whether a short contiguous prefix is enough for future Q05 studies.
-
-It cannot by itself prove that RTX4080 hardware preserves exactly the same TLB/PWC/cache state across kernels as the simulator.
-
-That hardware question remains separate.
-
-## 7. Why F0 state semantics need a V1.1 closure
-
-The feasibility pack compressed several components too aggressively.
-
-Before interpreting real warm-prefix cycles, 174-new must state separately:
+The accepted VM hook in `ldst_unit::memory_cycle()` applies translation only to:
 
 ```text
-L1 data cache
-L2 data cache
-L1 TLB
-L2 TLB
-PWC
-translation in-flight state
+global_space
+local_space
+param_space_local
 ```
 
-For each, report whether the actual F0 configuration resets, flushes, drains, or preserves it.
+Shared, constant and other non-VM paths must not be used to motivate TLB overlap.
 
-In particular:
+Therefore 174 will recompute 4KiB/64KiB overlap from the admitted bundle using the simulator's actual trace-driven memory-space resolution.
 
-- F0 L1 data-cache flushing is already observed as enabled;
-- L2 data-cache behavior must be closed for the actual config, not left merely CONFIG_DEPENDENT;
-- L1 and L2 TLB persistence must not be merged into one unsupported row.
+The producer tables remain valid as broad same-run trace-address overlap; they are not overwritten.
 
-## 8. How the producer is extended safely
+## 6. F0 context semantics that matter
 
-The accepted Route-B producer currently assumes one selected kernel.
-
-Its trusted lifecycle already has the pieces we want:
+The contextual experiment intentionally keeps the accepted F0 behavior unchanged:
 
 ```text
-one per-context channel
-one receiver thread
-selected kernel executes
-flush channel
-receiver drains
-raw sink closes atomically
+L1 data cache: flushed at kernel completion
+L2 data cache: not flushed by F0; may persist
+L2 TLB: persistence directly demonstrated by self-warm
+L1 TLB: persistent by source lifetime unless an explicit translation flush occurs
+PWC: persistent by source lifetime, runtime residency not directly dumped
+MSHR/PWQ/walkers: drained at clean kernel completion
 ```
 
-The multi-kernel extension should keep the context/channel/receiver alive and re-arm only the per-member writer/counters after each member closes.
+Therefore a contextual Q05 cycle change is initially a **combined modeled context effect**.
 
-It must not destroy/recreate the channel inside callback teardown.
+Translation and L2-data-cache counters must be compared before assigning cause.
 
-The record formatter and grammar stay unchanged.
+## 7. What result would change the research direction
 
-Default one-target behavior must pass regression before formal prefix capture.
+Three broad outcomes are possible:
 
-## 9. Interpretation after warm-prefix results
+### A. Translation cost collapses under real context
 
-If longer prefixes remove most Q05 walks and materially change cycles, isolated-Q05 mechanism studies may need a contextual baseline.
+If P1/P2/P8 sharply reduce Q05 walks/TLB misses and the contextual baseline becomes much faster, isolated-Q05 translation opportunity was materially cold-start amplified.
 
-If translation counters remain similar despite real predecessor history, the isolated result becomes much stronger.
+Future mechanism work must use an accepted contextual prefix.
 
-If cycles change but translation counters do not, data-cache/context effects become the more likely explanation.
+### B. Translation remains expensive despite high predecessor overlap
 
-If both move, the result is mixed and any later translation-specific mechanism must be evaluated under the accepted contextual baseline.
+Then the isolated result is substantially strengthened: real predecessor history does not remove the modeled translation bottleneck.
 
-No mechanism starts automatically from any of these outcomes.
+The next mechanism decomposition can proceed with stronger motivation.
 
+### C. Cycles change mainly with L2 data cache, not translation
 
-## 10. Execution-efficiency and active-model locality policy
+Then initial-state realism matters, but the main effect is data-cache context rather than TLB/PTW.
 
-Do not create a standalone Codex round for a small issue when all of the following hold:
+The translation research claim must be narrowed accordingly.
 
-- it does not change scientific correctness or claim boundaries;
-- the safe correction is already known;
-- it does not require a new experiment or expensive verification;
-- it can be folded into the next real handoff or corrected directly in ChatGPT-owned coordination text.
+## 8. Why first-key outcomes are valuable
 
-This applies to the current 174 waiting-state wording cleanup: it will be folded into the next warm-prefix resume rather than dispatched alone.
+If timing-neutral telemetry can identify the first Q05 outcome per simulator key `{asid,vpn,page_size}`, we can distinguish:
 
-Model assets remain authoritative on node164, but node109 is intentionally allowed to cache local replicas of models that are actively being captured. Repeated GPU tracing benefits from local access and node109 currently has sufficient space. These copies are explicitly non-authoritative and disposable after hash-verified authority remains on node164.
+- key already warm in L1;
+- key warm only in L2;
+- key requiring a new walk.
 
-Node174-new should not cache model-weight replicas. Its local storage is reserved for source/worktrees, simulator binaries, bounded scratch and small evidence. This keeps the consumer node lean while the producer node retains the data locality useful for repeated capture.
+That is much stronger evidence than raw page-set overlap.
 
+It is optional only when implementing it would risk timing/semantic neutrality; aggregate TLB/walk counters remain mandatory.
 
-## 11. Why LDC.U8 is now a validator-contract issue, not a width-inference task
+## 9. Mainline handoff
 
-The P34 execution itself succeeded: all 35 raw members terminally closed in one CUDA context with zero drop/overflow. Formal admission stopped only when the strict validator saw member-2 `LDC.U8` serialized with width 0.
+Node174 now owns the active mainline.
 
-Accepted source explains that representation:
-
-- Route-B operand collection explicitly ignores constant operands and only marks a packet as memory when NVBit exposes an MREF.
-- The raw formatter only derives `.U8 -> 1 byte` when `packet.is_mem` is true; it does not manufacture memory payload for an ignored constant operand.
-- Ampere opcode mapping explicitly says current Accel-Sim ignores constant loads in opcode classification: `LDC -> OP_LDC, ALU_OP`.
-- The trace parser creates dynamic memory-address payload only when serialized width >0.
-- Trace-driven execution then handles `OP_LDC` specially as a constant-space load with pre-existing hardcoded `data_size=4`.
-
-Therefore writing width=1 into the trace would change the frozen producer/parser contract and falsely claim an address-bearing dynamic payload. The narrow recovery is to align the strict validator with the existing implicit LDC representation while documenting the simulator's pre-existing constant-load approximation.
-
-The previous Decode-Flash LDC.U8 stop and this unrelated Prefill member-2 stop demonstrate the same reusable semantic gap.
-
-The 35-member raw capture should be reused after validator repair; recapturing the GPU is unnecessary unless raw integrity/provenance fails.
+Node109 GPU is released and may run only separately authorized preemptible side work. No side work may delay a new mainline GPU requirement.
