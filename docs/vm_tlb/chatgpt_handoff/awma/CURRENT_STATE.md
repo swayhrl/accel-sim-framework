@@ -4,160 +4,147 @@ Date: 2026-09-18
 
 ## Coordination stage
 
-`AWMA_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_174NEW_V1`
+`AWMA_Q05_LOOKUP_MODEL_VALIDITY_CLOSURE_174NEW_V1`
 
 Node174-new remains the active scientific mainline.
 
-Node109 unattended side lane is closed and GPU is released for user work.
+Node109 has no AWMA task and remains released for user work.
 
-## Accepted context-effect decomposition
+## Accepted lookup-path decomposition
 
 Execution:
 
 ```text
-hrl/awma-q05-context-effect-decomposition-174new-v1
-b24edffd7a90fc6417b95c6d4198f5c40dcf0b35
+hrl/awma-q05-contextual-lookup-decomposition-174new-v1
+07d8c3cdd414b0a881264df341685e864fed2761
 ```
 
 Status:
 
-`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_174NEW_V1_COMPLETE_WITH_SCOPE`
 
-Target-only Q05 I0 results:
-
-```text
-context            R0 cycles   Q05-I0 cycles   sensitivity
-FORMAL_ISOLATED       864552          670682      -22.42%
-P2                    848511          701244      -17.36%
-P8                    835145          664241      -20.46%
-P34                   871835          674121      -22.68%
-```
-
-The target-only diagnostic is accepted:
-
-- every predecessor remains natural F0/R0;
-- only exact Q05 bypasses TLB/MSHR/PTW/PWC/PTE;
-- natural identity-compatible SimVA->SimPA is preserved;
-- P8/P34 disabled controls reproduce accepted natural metrics exactly;
-- no TLB/PTW/cache mechanism was run.
-
-## Critical same-trace baseline correction
-
-Direct contextual cycle comparisons must use:
-
-`FORMAL_ISOLATED_R0 = 864552 cycles`
-
-because it uses the same admitted context-bundle member34 trace identity as P2/P8/P34.
-
-The older:
-
-`885681 cycles`
-
-isolated result remains a valid historical standalone-Q05 result but comes from the earlier standalone capture/input identity. It must not be used as the primary same-trace cycle denominator.
-
-Correct same-trace natural comparisons:
+P34 target-only matrix:
 
 ```text
-P2  vs formal isolated: -1.86%
-P8  vs formal isolated: -3.40%
-P34 vs formal isolated: +0.84%
+L1/L2    cycles      delta vs 10/80
+10/80    871835      0
+ 5/80    778598     -93237
+ 2/80    771796    -100039
+ 0/80    748102    -123733
+10/40    904750     +32915
+10/0     878836      +7001
+ 0/0     657110    -214725
+I0       674121    -197714
 ```
 
-Formal isolated -> P34:
+P8 shows the same strong direction for L1 shortening.
+
+## What is accepted
+
+- target L1 lookup timing has a strong effect on modeled Q05 cycles;
+- P8 and P34 diagnostic-disabled controls reproduce;
+- P34 prior target-I0 reproduces;
+- L2-only latency perturbation is non-monotonic;
+- zero/zero and I0 are not equivalent;
+- no architecture mechanism has been evaluated.
+
+## Critical interpretation boundary
+
+The previous matrix is **not a pure additive lookup-latency subtraction**.
+
+The accepted controller performs the actual TLB `probe()` only when the configured lookup service interval completes.
+
+Therefore changing lookup latency also changes **when the evolving TLB state is sampled**.
+
+Observed evidence:
 
 ```text
-walks:       240 -> 15
-L2-TLB miss: 731 -> 249
-cycles:      864552 -> 871835
+P34 L1 launches
+10/80 = 776915
+5/80  = 779016
+2/80  = 786997
+0/80  = 865036
+
+P34 L2 misses
+10/80 = 249
+5/80  = 306
+2/80  = 307
+0/80  = 308
+
+P34 L2 misses under L2-only changes
+80 cycles = 249
+40 cycles = 277
+ 0 cycles = 304
 ```
 
-Therefore full real predecessor history removes almost all modeled walks and most L2-TLB misses, but its total inherited context slightly worsens Q05 cycles relative to the same-trace isolated control.
+Thus faster service can cause a lookup to probe before a concurrent fill that the slower lookup would have observed.
 
-This supersedes the earlier cross-capture cycle-delta interpretation; historical evidence itself is not rewritten.
+This timing/fill-order coupling must be characterized before mechanism interpretation.
 
-## Why the next stage targets lookup service
+## Lookup-latency provenance concern
 
-P34 natural Q05:
+Accepted core history introduces:
 
 ```text
-L1 accesses = 776915
-L1 hits     = 773501
-L1 misses   = 3414
-L1 hit rate = ~99.56%
-
-L2 accesses = 3414
-L2 hits     = 3165
-L2 misses   = 249
-walk starts = 15
+L1 lookup latency = 10
+L2 lookup latency = 80
 ```
 
-Accepted modeled lookup latencies:
+in:
+
+`swayhrl/gpgpu-sim @ 5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
+
+with source descriptions:
 
 ```text
-L1 TLB = 10 cycles
-L2 TLB = 80 cycles
-PWC    = 1 cycle
+generic M3 L1 TLB lookup service cycles
+generic M3 L2 TLB lookup service cycles
 ```
 
-Requester-latency composition:
+Until a direct project calibration receipt is found, these values must be treated as model parameters, not RTX4080 hardware facts.
+
+## Same-trace baseline remains frozen
 
 ```text
-L1 service  = 7,769,150 requester-cycles
-L2 service  =   273,120
-MSHR wait   =   434,431
-L2 queue    =       681
-total       = 8,477,382
+FORMAL_ISOLATED_R0 = 864552
+P2_R0              = 848511
+P8_R0              = 835145
+P34_R0             = 871835
 ```
 
-The L1-service term is ~91.65% of the summed requester-latency composition.
-
-These are not exposed GPU cycles, so they cannot predict speedup directly. They motivate a target-only latency decomposition.
+Historical standalone isolated 885681 remains cross-capture evidence only.
 
 ## Active mainline
 
 Execute:
 
-`CODEX_NEXT_STAGE_174NEW_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_V1.md`
+`CODEX_NEXT_STAGE_174NEW_Q05_LOOKUP_MODEL_VALIDITY_V1.md`
 
-Core idea:
+Goals:
 
-```text
-prefix = natural R0
-Q05 only:
-  vary L1 lookup latency
-  vary L2 lookup latency
-  preserve capacity/ports/state/mapping
-```
+1. close 10/80 provenance;
+2. mine invocation/retry accounting from existing logs;
+3. prove probe-time coupling from source;
+4. add read-only launch-vs-completion residency telemetry;
+5. rerun only the bounded existing lookup points;
+6. classify the lookup-sensitivity result;
+7. prepare, but do not execute, a future RTX4080 native TLB calibration plan.
 
-P34 is the realism reference and receives the full matrix.
+## No mechanism policy
 
-P8 is the screening candidate and receives a reduced matrix.
+No faster-TLB/PTW/cache mechanism is authorized until lookup-model validity closes.
 
-## Baseline policy
+## Node109
 
-Until this stage returns:
-
-- P34 = realism reference;
-- P8 = screening-prefix candidate;
-- formal isolated member34 = same-trace isolated control;
-- historical standalone isolated Q05 = historical cross-capture reference;
-- no architecture mechanism is yet authorized.
-
-## 109 side-lane status
-
-Accepted closeout:
+Accepted unattended side-lane closeout remains:
 
 ```text
 hrl/awma-109-unattended-capture-campaign-v1
 8f49ba3b9228b5f8a9163e961225ffd415107734
 ```
 
-Decision:
-
-`AWMA_109_UNATTENDED_CAPTURE_CAMPAIGN_V1_COMPLETE_WITH_SCOPE`
-
-16 immutable node164-ACKed bundles were produced. Node109 GPU is released.
+Node109 GPU remains released.
 
 ## STOP boundary
 
-Return lookup-path decomposition results to ChatGPT before any TLB/PTW/cache mechanism design or sweep.
+Return model-validity evidence to ChatGPT before any architecture mechanism or RTX4080 calibration campaign.
