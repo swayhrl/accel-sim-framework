@@ -1,150 +1,138 @@
 # AWMA Current State
 
-Date: 2026-09-18
+Date: 2026-09-19
 
 ## Coordination stage
 
-`AWMA_Q05_LOOKUP_MODEL_VALIDITY_CLOSURE_174NEW_V1`
+`AWMA_Q05_LOOKUP_STREAM_IDENTITY_CLOSURE_174NEW_V1`
 
 Node174-new remains the active scientific mainline.
 
-Node109 has no AWMA task and remains released for user work.
+Node109 is executing the independent V2.1 10-hour side campaign under its own GPU-lock wait/active-window policy.
 
-## Accepted lookup-path decomposition
+## Accepted lookup-model validity closure
 
 Execution:
 
 ```text
-hrl/awma-q05-contextual-lookup-decomposition-174new-v1
-07d8c3cdd414b0a881264df341685e864fed2761
+hrl/awma-q05-lookup-model-validity-174new-v1
+9bbfad6ce1add1a6292f8177de7d92e71a3572d4
 ```
 
 Status:
 
-`AWMA_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_174NEW_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_LOOKUP_MODEL_VALIDITY_CLOSURE_174NEW_V1_COMPLETE_WITH_SCOPE`
 
-P34 target-only matrix:
+Key accepted conclusions:
 
-```text
-L1/L2    cycles      delta vs 10/80
-10/80    871835      0
- 5/80    778598     -93237
- 2/80    771796    -100039
- 0/80    748102    -123733
-10/40    904750     +32915
-10/0     878836      +7001
- 0/0     657110    -214725
-I0       674121    -197714
-```
+- L1/L2 lookup latencies 10/80 are `GENERIC_MODEL_ASSUMPTION`, not RTX4080/Ada hardware calibration;
+- read-only fill-race telemetry is neutral;
+- all bounded points have `LAUNCH_MISS -> COMPLETE_HIT = 0`;
+- previous lookup-stream variation is not explained by fill-during-service residency races;
+- result classification:
+  `LOOKUP_TIMING_COUPLED_NEEDS_MODEL_CALIBRATION`;
+- no architecture mechanism was evaluated.
 
-P8 shows the same strong direction for L1 shortening.
+## Accepted invocation evidence
 
-## What is accepted
-
-- target L1 lookup timing has a strong effect on modeled Q05 cycles;
-- P8 and P34 diagnostic-disabled controls reproduce;
-- P34 prior target-I0 reproduces;
-- L2-only latency perturbation is non-monotonic;
-- zero/zero and I0 are not equivalent;
-- no architecture mechanism has been evaluated.
-
-## Critical interpretation boundary
-
-The previous matrix is **not a pure additive lookup-latency subtraction**.
-
-The accepted controller performs the actual TLB `probe()` only when the configured lookup service interval completes.
-
-Therefore changing lookup latency also changes **when the evolving TLB state is sampled**.
-
-Observed evidence:
+P34:
 
 ```text
-P34 L1 launches
-10/80 = 776915
-5/80  = 779016
-2/80  = 786997
-0/80  = 865036
-
-P34 L2 misses
-10/80 = 249
-5/80  = 306
-2/80  = 307
-0/80  = 308
-
-P34 L2 misses under L2-only changes
-80 cycles = 249
-40 cycles = 277
- 0 cycles = 304
+point    cycles    lookup launches
+10/80    871835    776915
+ 5/80    778598    779016
+ 0/80    748102    865036
+ 0/0     657110    872241
 ```
 
-Thus faster service can cause a lookup to probe before a concurrent fill that the slower lookup would have observed.
+Q05 instruction/CTA totals remain unchanged.
 
-This timing/fill-order coupling must be characterized before mechanism interpretation.
+`vm_requests` is retry/function-invocation telemetry, not unique translation work.
 
-## Lookup-latency provenance concern
-
-Accepted core history introduces:
+At natural P34:
 
 ```text
-L1 lookup latency = 10
-L2 lookup latency = 80
+vm_requests                     9,254,048
+lookup admissions/completions     776,915
+inflight bypass invocations      7,266,036
+pending waiter bypass              434,431
 ```
 
-in:
+Lower lookup latency sharply reduces retry/inflight invocation counts but increases the number of completed lookup requesters/accesses.
 
-`swayhrl/gpgpu-sim @ 5ba17a1ba88b8e8ec0f9505a7e684c81df8f0b7d`
+The cause of the latter increase remains unresolved.
 
-with source descriptions:
+## Source fact: no post-READY retranslation of one mem_access_t
 
-```text
-generic M3 L1 TLB lookup service cycles
-generic M3 L2 TLB lookup service cycles
-```
+Accepted source:
 
-Until a direct project calibration receipt is found, these values must be treated as model parameters, not RTX4080 hardware facts.
+`ldst_unit::memory_cycle()`
 
-## Same-trace baseline remains frozen
+only enters translation when:
 
-```text
-FORMAL_ISOLATED_R0 = 864552
-P2_R0              = 848511
-P8_R0              = 835145
-P34_R0             = 871835
-```
+`!access.vm_translation_applied()`
 
-Historical standalone isolated 885681 remains cross-capture evidence only.
+and on READY:
+
+`access.set_sim_pa(...)`
+
+sets:
+
+`m_vm_translation_applied = true`
+
+Therefore downstream cache/interconnect backpressure does not cause the same `mem_access_t` to re-enter translation after READY.
+
+This removes one possible explanation for the changing lookup count.
+
+## Current hypothesis to test, not accepted conclusion
+
+Global/local/param-local instructions create `mem_access_t` objects during access generation/coalescing.
+
+Local-memory timing addresses are mapped by:
+
+`shader_core_ctx::translate_local_memaddr()`
+
+using runtime SM/CTA/thread placement before coalescing.
+
+Therefore translation timing may indirectly change CTA/SM execution placement/order and thus local-memory coalescing/access-object identity.
+
+Q05 has substantial local-memory activity, so this is worth testing.
+
+No claim is made until per-space/per-PC/per-SM conservation closes.
 
 ## Active mainline
 
 Execute:
 
-`CODEX_NEXT_STAGE_174NEW_Q05_LOOKUP_MODEL_VALIDITY_V1.md`
+`CODEX_NEXT_STAGE_174NEW_Q05_LOOKUP_STREAM_IDENTITY_V1.md`
 
-Goals:
+Goal:
 
-1. close 10/80 provenance;
-2. mine invocation/retry accounting from existing logs;
-3. prove probe-time coupling from source;
-4. add read-only launch-vs-completion residency telemetry;
-5. rerun only the bounded existing lookup points;
-6. classify the lookup-sensitivity result;
-7. prepare, but do not execute, a future RTX4080 native TLB calibration plan.
+- prove access UID translation invariants;
+- add read-only per-space/per-PC/per-SM access-generation telemetry;
+- compare P34 10/80, 5/80, 0/80, 0/0 and a minimal P8 pair;
+- attribute lookup-count changes to generated access-object identity;
+- optionally use an existing source-safe fixed-placement diagnostic if and only if needed.
 
-## No mechanism policy
+No architecture mechanism.
 
-No faster-TLB/PTW/cache mechanism is authorized until lookup-model validity closes.
+## Same-trace/baseline policy
 
-## Node109
+- P34 = final realism reference;
+- P8 = screening prefix;
+- formal isolated member34 = same-trace isolated control;
+- historical standalone isolated remains cross-capture evidence only.
 
-Accepted unattended side-lane closeout remains:
+## Native calibration status
 
-```text
-hrl/awma-109-unattended-capture-campaign-v1
-8f49ba3b9228b5f8a9163e961225ffd415107734
-```
+Formal RTX4080 lookup calibration is still absent.
 
-Node109 GPU remains released.
+Node109 V2.1 is allowed to collect `RECONNAISSANCE_ONLY` native TLB surfaces, not to overwrite simulator 10/80.
+
+174 should not use unreviewed 109 recon output during this stage.
 
 ## STOP boundary
 
-Return model-validity evidence to ChatGPT before any architecture mechanism or RTX4080 calibration campaign.
+After lookup-stream identity closure, STOP for ChatGPT review.
+
+Do not begin a TLB/PTW/cache architecture mechanism automatically.
