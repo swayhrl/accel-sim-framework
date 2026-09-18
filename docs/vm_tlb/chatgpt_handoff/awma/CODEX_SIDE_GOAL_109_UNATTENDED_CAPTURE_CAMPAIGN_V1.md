@@ -99,9 +99,11 @@ Use the already-qualified resumable partial -> verify -> admit -> ACK data plane
 
 Hard global wallclock:
 
-`5h30m`
+`10h30m`
 
-Reserve the last 20 minutes for final receipts, hashes, push and cleanup. Do not start a new GPU capture after the finalization reserve begins.
+This expanded V1.1 queue is intentionally about twice the original campaign size.
+
+Reserve the last 30 minutes for final receipts, hashes, push and cleanup. Do not start a new GPU capture after the finalization reserve begins.
 
 Per-target guards:
 
@@ -112,7 +114,7 @@ max compressed target bundle              = 8 GiB
 
 Campaign aggregate new capture guard:
 
-`32 GiB`
+`64 GiB`
 
 Before each GPU target:
 
@@ -124,7 +126,38 @@ Before each GPU target:
 
 Do not kill unrelated processes or bypass a valid lock.
 
-If the lock remains unavailable for 15 minutes, close the campaign with a resource-blocked receipt rather than waiting indefinitely.
+## 4A. W0 — Initial GPU-lock wait and CPU-only preparation
+
+The GPU lock is expected to be occupied when this goal starts.
+
+Do **not** fail after 15 minutes.
+
+Initial wait policy:
+
+```text
+poll interval          = 5 min
+maximum initial wait   = 4 h
+lock bypass            = forbidden
+kill lock owner        = forbidden
+busy-loop polling      = forbidden
+```
+
+While the lock is held, make useful progress without touching the GPU:
+
+1. run P0 historical `DECODE_FLASH_PRIMARY_1` promotion/validation if its existing raw is intact;
+2. build the full target queue from the accepted census;
+3. close exact function/shape/step identities for every planned target;
+4. pre-create target receipts/manifests and selector arguments;
+5. perform P6 model-asset / 109-replica inventory;
+6. prepare capture wrappers and node164 publication destinations;
+7. run CPU-only validator/postprocess/unit tests;
+8. record the observed lock holder PID/command/first-seen/last-seen in `GPU_LOCK_WAIT_RECEIPT.tsv`.
+
+As soon as the lock becomes available, acquire it using the normal mechanism and begin the highest-priority pending GPU target.
+
+If the lock is still unavailable after 4 h, finish all CPU-only preparation, close as `BLOCKED_GPU_LOCK_TIMEOUT_AFTER_PREP`, commit/push/clean, and STOP.
+
+After GPU work has begun, if a later target finds the lock occupied by another legitimate task, wait up to 45 minutes using the same 5-minute polling rule before quarantining that target as `DEFERRED_LOCK_BUSY` and moving to CPU-only/finalization work. Never bypass or kill the owner.
 
 ## 5. Failure policy: target-local quarantine vs global stop
 
@@ -253,10 +286,12 @@ Q05 family has 10 Prefill occurrences with the same accepted Q05 shape.
 
 Q05 occurrence 0 is already accepted.
 
-Capture:
+Capture the following stratified depth points:
 
 ```text
+PREFILL_FLASH_OCC2
 PREFILL_FLASH_OCC4
+PREFILL_FLASH_OCC6
 PREFILL_FLASH_OCC9
 ```
 
@@ -266,7 +301,7 @@ Identity must match the exact Q05 flash_fwd function family and:
 grid  = 16,1,14
 block = 128,1,1
 phase = PREFILL
-family occurrence = 4 or 9
+family occurrence = 2, 4, 6 or 9
 ```
 
 These targets test within-family/layer-depth address-footprint variation.
@@ -275,10 +310,13 @@ These targets test within-family/layer-depth address-footprint variation.
 
 Accepted `PREFILL_GEMM_PRIMARY_1` exact function/shape has 20 recurrences. Existing durable capture is occurrence 12.
 
-Capture the earliest and latest matching occurrences:
+Capture a stratified set spanning the 20 accepted recurrences:
 
 ```text
 PREFILL_GEMM_PRIMARY_OCC0
+PREFILL_GEMM_PRIMARY_OCC4
+PREFILL_GEMM_PRIMARY_OCC8
+PREFILL_GEMM_PRIMARY_OCC16
 PREFILL_GEMM_PRIMARY_OCC19
 ```
 
@@ -302,7 +340,10 @@ Existing durable asset covers step 1.
 From the accepted full census, prove the same exact function/shape identity in later steps and capture:
 
 ```text
+DECODE_GEMV_PRIMARY_STEP4
+DECODE_GEMV_PRIMARY_STEP8
 DECODE_GEMV_PRIMARY_STEP16
+DECODE_GEMV_PRIMARY_STEP24
 DECODE_GEMV_PRIMARY_STEP32
 ```
 
@@ -315,7 +356,10 @@ Existing historical Primary 1 is step 1.
 Capture same exact function/shape at:
 
 ```text
+DECODE_FLASH_PRIMARY_1_STEP4
+DECODE_FLASH_PRIMARY_1_STEP8
 DECODE_FLASH_PRIMARY_1_STEP16
+DECODE_FLASH_PRIMARY_1_STEP24
 DECODE_FLASH_PRIMARY_1_STEP32
 ```
 
@@ -326,15 +370,18 @@ Require exact splitkv function + grid `1,9,14` + block `128,1,1`.
 After P1 closes step 1, capture same exact splitkv-combine function/shape at:
 
 ```text
+DECODE_FLASH_PRIMARY_2_STEP4
+DECODE_FLASH_PRIMARY_2_STEP8
 DECODE_FLASH_PRIMARY_2_STEP16
+DECODE_FLASH_PRIMARY_2_STEP24
 DECODE_FLASH_PRIMARY_2_STEP32
 ```
 
 Require exact function + grid `2,1,1` + block `128,1,1`.
 
-## 9. P3 — Optional secondary Decode GEMV family
+## 9. P3 — Secondary Decode GEMV family
 
-Run only after all P0-P2 targets are either durable or quarantined and at least 70 minutes remain before the finalization reserve.
+Run after all P0-P2 high-priority targets are either durable or quarantined and at least 100 minutes remain before the finalization reserve.
 
 The previous selection review identified a secondary Decode GEMV shape approximately:
 
@@ -355,14 +402,53 @@ First use the accepted census to identify exactly:
 - recurrence consistency across all 32 steps;
 - time share.
 
-If exact identity closes, create:
+If exact identity closes, create a five-point decode-step series:
 
 ```text
 DECODE_GEMV_SECONDARY_STEP1
+DECODE_GEMV_SECONDARY_STEP8
+DECODE_GEMV_SECONDARY_STEP16
+DECODE_GEMV_SECONDARY_STEP24
 DECODE_GEMV_SECONDARY_STEP32
 ```
 
 If identity does not close unambiguously, record `SKIPPED_IDENTITY_NOT_CLOSED` and continue.
+
+### P3B — Complete Prefill Flash family, time permitting
+
+After the stratified Prefill Flash targets in P2A are durable/quarantined, and if at least 80 minutes remain, complete the remaining same-family occurrences so the project has all ten Prefill Flash occurrences represented.
+
+Existing/stratified coverage before P3B is expected to include occurrence 0 plus 2/4/6/9.
+
+Capture remaining exact-family occurrences:
+
+```text
+PREFILL_FLASH_OCC1
+PREFILL_FLASH_OCC3
+PREFILL_FLASH_OCC5
+PREFILL_FLASH_OCC7
+PREFILL_FLASH_OCC8
+```
+
+Require exact same function family + grid `16,1,14` + block `128,1,1`.
+
+If a supposedly same-family occurrence has different exact function semantics or shape, quarantine that occurrence rather than broadening the family definition.
+
+### P3C — Extended Prefill GEMM depth, time permitting
+
+If at least 70 minutes remain after P3B/secondary-GEMV work, add five more exact recurrences from the same accepted Primary GEMM function/shape:
+
+```text
+PREFILL_GEMM_PRIMARY_OCC2
+PREFILL_GEMM_PRIMARY_OCC6
+PREFILL_GEMM_PRIMARY_OCC10
+PREFILL_GEMM_PRIMARY_OCC14
+PREFILL_GEMM_PRIMARY_OCC18
+```
+
+Together with the existing occurrence12 asset and P2B, this gives a denser depth sample without attempting all 20 recurrences.
+
+Do not substitute a neighboring GEMM family.
 
 ## 10. P4 — Offline per-capture footprint summaries
 
@@ -392,7 +478,7 @@ If at least 35 minutes remain, run a lightweight fresh native timing/census stab
 
 No NCU.
 
-Perform 5 runs maximum.
+Perform 8 runs maximum.
 
 Track at least:
 
@@ -459,7 +545,11 @@ Only if all of the following are true:
 Then a short NSYS launch census may be run, in priority order:
 
 1. Llama-3.2-1B;
-2. DeepSeek-V2-Lite only if an exact existing runnable identity is already closed.
+2. DeepSeek-V2-Lite only if an exact existing runnable identity is already closed;
+3. gpt-oss-20b only if a complete local/164 asset and an already-proven 4080 runtime recipe exist;
+4. Gemma-3-12B only under the same already-proven-runtime rule.
+
+At most two cross-model censuses may run in this goal.
 
 This optional census is `RECONNAISSANCE_ONLY`.
 
@@ -491,6 +581,7 @@ At minimum:
 README.md
 SOURCE_ANCHORS.md
 CAMPAIGN_QUEUE.tsv
+GPU_LOCK_WAIT_RECEIPT.tsv
 TARGET_STATUS.tsv
 TARGET_IDENTITY_RECEIPTS/
 TRANSFER_ACKS/
@@ -512,7 +603,7 @@ even if some target-local items are quarantined/skipped, provided the campaign i
 
 ## 15. End-of-goal behavior
 
-At wallclock/queue completion:
+At wallclock/queue completion, lock-timeout completion, or mainline preemption:
 
 1. do not start another capture;
 2. finalize every completed target receipt;
