@@ -1,193 +1,149 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE MAINLINE — M1 + M2**
+Status: **ACTIVE MAINLINE — M3 + M4**
 
 Stage:
 
-`AWMA_Q05_CONTEXT_WARMUP_SENSITIVITY_V1`
+`AWMA_Q05_CONTIGUOUS_PREFIX_WARM_REPLAY_V1`
 
-## Coordination branch
+Coordination branch:
 
-`hrl/awma-q05-context-warmup-handoff-v1`
+`hrl/awma-q05-contiguous-prefix-warm-replay-handoff-v1`
 
-All Codex instances must fetch this branch and read, in order:
+All Codex instances read in order:
 
 ```text
 docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
 docs/vm_tlb/chatgpt_handoff/awma/DISCUSSION_REFERENCE.md
-docs/vm_tlb/chatgpt_handoff/awma/Q05_CONTEXT_WARMUP_EXPERIMENT_CONTRACT_V1.md
+docs/vm_tlb/chatgpt_handoff/awma/Q05_CONTIGUOUS_PREFIX_CAPTURE_CONTRACT_V1.md
 docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
 ```
 
-Then execute only the node-specific ACTIVE mainline specification.
+Then execute only the relevant node-specific stage.
 
 ---
 
-## Mainline M1 — node109 / RTX4080 — ACTIVE
+## M3 — node109 / RTX4080 — ACTIVE MAINLINE
 
 Execute:
 
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_109_Q05_NATIVE_CONTEXT_CHARACTERIZATION_V1.md`
+`CODEX_NEXT_STAGE_109_Q05_CONTIGUOUS_PREFIX_CAPTURE_V1.md`
 
-Recommended execution parent/branch:
-
-```text
-parent = c17df93f9c44aa35d2942ae696bc2bd2a30b3643
-branch = hrl/awma-q05-native-context-109-v1
-```
-
-Objective:
-
-- recover exact native predecessor launch sequence before Q05;
-- observe predecessor/Q05 page sets in one exact execution context;
-- quantify page-overlap opportunity and temporal distance;
-- measure normal-context Q05 timing stability;
-- optionally measure data-cache-sensitive NCU differences with explicit caveats;
-- recommend bounded continuous predecessor prefixes for the next simulation stage.
-
-This track owns the RTX4080 while ACTIVE.
-
-Expected completion:
-
-`AWMA_Q05_NATIVE_CONTEXT_CHARACTERIZATION_109_V1_COMPLETE_WITH_SCOPE`
-
----
-
-## Mainline M2 — node174-new — ACTIVE
-
-Execute:
-
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_Q05_WARM_REPLAY_FEASIBILITY_V1.md`
-
-Preferred execution parent:
+Execution parent:
 
 ```text
-hrl/awma-q05-translation-timeline-174new-v1
-reported completion commit = 6319020c
+hrl/awma-q05-native-context-109-v1
+64a2e51943a6737b84132bc7daa5f4d7c74f8099
 ```
-
-Codex must first verify that the reported parent branch/commit is remotely resolvable. Do not silently replace provenance if it is not.
 
 Recommended branch:
 
-`hrl/awma-q05-warm-replay-feasibility-174new-v1`
+`hrl/awma-q05-contiguous-prefix-capture-109-v1`
 
 Objective:
 
-- source-audit all relevant state persistence/reset across kernel boundaries;
-- reconcile 240 simulator keys vs 228 offline 64KiB pages;
-- design Q05-only measurement by state-preserving counter deltas;
-- qualify warm-state observability;
-- use Q05->Q05 only as a self-warm plumbing diagnostic when safe;
-- define the exact future same-run predecessor context-bundle contract.
+- minimally extend accepted Route-B single-target producer for same-run multi-member capture;
+- regression one-target Q05;
+- prove a two-member launches33..34 canary;
+- capture formal launches0..34 context bundle;
+- derive P1/P2/P4/P8/P16/P34 page-overlap tables offline;
+- publish bundle to node164 with verify/admit/ACK.
 
-Expected completion:
+This track owns the RTX4080 while ACTIVE.
 
-`AWMA_Q05_WARM_REPLAY_FEASIBILITY_174NEW_V1_COMPLETE_WITH_SCOPE`
+Do not repair the old lightweight page observer as the main path.
+
+Expected complete marker:
+
+`AWMA_Q05_CONTIGUOUS_PREFIX_CAPTURE_109_V1_COMPLETE_WITH_SCOPE`
 
 ---
 
-## Frozen workload
+## M4 — node174-new — ACTIVE MAINLINE / dependency on M3
+
+Execute:
+
+`CODEX_NEXT_STAGE_174NEW_Q05_WARM_PREFIX_REPLAY_V1.md`
+
+Execution parent:
 
 ```text
-model      = Qwen/Qwen2.5-0.5B-Instruct
-revision   = 7ae557604adf67be50417f59c2c2f167def9a775
-scenario   = S2_TEXT
-batch      = 1
-input      = frozen TEXT binding
-prefill    = 2048
-decode     = 32
-dtype      = FP16
-backend    = SDPA
-
-target     = Q05_PREFILL_ATTN_FLASH
-function occurrence = 0
+hrl/awma-q05-warm-replay-feasibility-174new-v1
+e2fa35f045e0b4f977a964d9c92974c9f6d3e240
 ```
 
-Existing Q05 SIM_INPUT/SIM_BASELINE/SIM_RUN/SIM_EVIDENCE remain read-only.
+Recommended branch:
+
+`hrl/awma-q05-warm-prefix-replay-174new-v1`
+
+Before bundle arrival:
+
+- close actual F0 L1/L2 data-cache, L1/L2 TLB, PWC and drained-state semantics separately;
+- prepare ordered context-bundle consumer;
+- prepare target-only monotonic-delta replay tooling.
+
+After M3 durable+ACK:
+
+- independently verify all 35 members/order/context;
+- create a new context-input identity;
+- run fresh-process P1/P2/P4/P8/P16/P34 + Q05 rows;
+- report Q05-only translation and data-cache counters.
+
+If M3 is not yet available after preparation, close cleanly as:
+
+`AWMA_Q05_WARM_PREFIX_REPLAY_174NEW_V1_WAITING_FOR_CONTEXT_BUNDLE`
+
+Expected final marker:
+
+`AWMA_Q05_WARM_PREFIX_REPLAY_174NEW_V1_COMPLETE_WITH_SCOPE`
 
 ---
 
-## Mainline priority policy
+## Mainline priority
 
-The mainline has first claim on node109 GPU and node174-new.
+No side task may delay M3/M4.
 
-While M1 is ACTIVE:
+While M3 needs the GPU:
 
-```text
-NO LDC.U8 repair side lane
-NO Qwen3/DeepSeek side campaign
-NO unrelated NCU campaign
-NO additional opportunistic selected-kernel capture
-NO cleanup work that could interfere with mainline
-```
+- no LDC.U8 side repair;
+- no Qwen3/DeepSeek;
+- no unrelated NCU;
+- no extra selected-kernel campaign.
 
-A side task may run only after the active mainline explicitly releases the required resource and must be preemptible at a safe checkpoint.
+When M3 releases the GPU, side work still requires explicit authorization; do not auto-start it.
 
-The mainline must never wait for a side task.
+## Frozen science
 
----
+The Qwen2.5-0.5B S2_TEXT/Q05 identity and existing isolated SIM_INPUT/baseline/run/evidence remain immutable.
 
-## Existing side/support state
+The new context bundle/context-input is a new identity and must never overwrite the historical isolated-Q05 identity.
 
-Accepted producer assets already durable on node164:
-
-```text
-PREFILL_GEMM_PRIMARY_1
-DECODE_GEMV_PRIMARY_1
-```
-
-Decode Flash capture remains blocked at a real `LDC.U8` trace-grammar semantic gap. That repair is deferred.
-
-Producer-side node164 data plane is qualified.
-
-174 storage consumer/local-space audits are support closeouts and do not supersede the current mainline.
-
----
-
-## Explicitly forbidden in this V1 stage
+## Explicitly forbidden
 
 Do not automatically start:
 
-- simulator-native predecessor-prefix capture campaign;
-- new predecessor-prefix SIM_INPUT admission;
-- scientific warm-prefix Q05 replay;
-- L2-TLB lookup-latency sweep;
-- PTW fixed-latency experiment;
-- walker/count/capacity/page-size sweep;
+- TLB/PTW/cache mechanism design;
+- latency/capacity/walker/page-size sweeps;
 - Segment;
-- early outstanding-translation/coalescing mechanism;
-- new cache/TLB mechanism.
-
-The only new GPU profiling authorized is what M1 explicitly requires for Q05 context characterization.
-
----
+- target-only I0 warm-context mechanism experiment;
+- full-model new campaigns;
+- deletion/reorganization of accepted node164 evidence.
 
 ## Execution policy
 
-Routine engineering issues are solve-and-continue:
+Routine engineering is solve-and-continue.
 
-- source navigation;
-- observer/parser work;
-- exact target filtering;
-- data-plane publication;
-- Python analysis;
-- build/log formatting;
-- diagnostic output volume;
-- Git/worktree handling.
+Stop for scientific review on:
 
-Stop for scientific review if continuing would require:
+- sequence/address-context contradiction;
+- unsupported interior trace grammar;
+- trace semantic weakening;
+- F0 state-semantic change;
+- missing interior predecessor;
+- resource guard partial capture;
+- inability to separate Q05 statistics without reset.
 
-- changing frozen workload identity;
-- guessing Q05 identity;
-- claiming page overlap equals TLB residency;
-- stitching independent address spaces as same-run context;
-- changing simulator TLB/cache/PTW timing/functionality;
-- resetting warm state at the Q05 measurement boundary;
-- weakening trace grammar or fabricating address/width fields;
-- launching the real expensive predecessor capture/replay stage before both M1 and M2 are reviewed.
-
-Each track independently:
+Each track:
 
 ```text
 finish scope
@@ -200,5 +156,3 @@ finish scope
 -> clean worktree
 -> STOP
 ```
-
-After M1 and M2 complete, return both reports to ChatGPT. Do not auto-start the next stage.
