@@ -1,134 +1,109 @@
-# AWMA Discussion Reference — Lookup Model Validity
+# AWMA Discussion Reference — Lookup Stream Identity
 
-Date: 2026-09-18
+Date: 2026-09-19
 
-## 1. The lookup matrix is scientifically useful, but not yet a mechanism result
+## 1. What the previous stage ruled out
 
-The prior stage found a very large cycle response to reducing the modeled L1 TLB lookup latency.
+The simple fill-race explanation is not supported.
 
-That is important evidence of simulator sensitivity.
+Across every bounded point:
 
-It is not yet evidence that a real RTX4080 can gain the same amount from a faster TLB.
+`launch miss -> completion hit = 0`
 
-Two issues must be closed first:
+So the changing L1/L2 hit/miss counts are not caused by a lookup launching before a fill and then becoming a hit during its own modeled service interval.
 
-1. the model's lookup latency changes the time at which TLB residency is observed;
-2. the baseline 10/80 cycle values may be generic project timing assumptions rather than hardware-calibrated values.
+## 2. What still changes
 
-## 2. Why L2 gets worse when made faster
-
-The current controller does not determine hit/miss at launch and then delay only the response.
-
-Instead:
+Despite fixed Q05 instruction and CTA totals:
 
 ```text
-launch at cycle t
-wait configured latency
-probe TLB state at t + latency
+P34 lookup completions
+10/80 = 776915
+5/80  = 779016
+0/80  = 865036
+0/0   = 872241
 ```
 
-Suppose another request fills the same translation at t+30.
+This is a large structural change in the translation requester stream.
 
-Then an 80-cycle lookup can probe at t+80 and hit.
+It must be explained before lookup latency sensitivity can be interpreted cleanly.
 
-A 0- or 40-cycle lookup can probe before the fill and miss.
+## 3. Retry invocation counts are not the same issue
 
-Therefore:
+`vm_requests` drops dramatically as lookup latency falls because the pipeline polls/retries pending translation work.
+
+That part is expected.
+
+But `lookup launches/completions` count newly admitted/completed requester work.
+
+Their increase requires a different explanation.
+
+## 4. One mem_access_t does not retranslate after READY
+
+The access object latches translated state:
+
+`set_sim_pa() -> m_vm_translation_applied=true`
+
+Therefore ordinary downstream cache/interconnect stalls do not send that same access object back through translation.
+
+The changing count must arise before or at access-object creation/admission.
+
+## 5. Why local memory is a plausible simulator-specific coupling
+
+Local memory lane addresses are transformed into timing addresses using runtime SM/CTA/thread placement before coalescing.
+
+Then coalescing generates `mem_access_t` objects.
+
+Changing translation timing can change CTA progress and SM availability, which may change placement/order.
+
+If different local mappings alter 32B/64B/128B segment grouping, the same trace instruction/lane stream can yield a different number of coalesced timing transactions.
+
+This is plausible from source but not yet demonstrated.
+
+## 6. The next stage measures the right unit
+
+The next stage counts:
 
 ```text
-shorter lookup latency
-!=
-same hit/miss stream with fewer waiting cycles
+trace/dynamic memory instruction
+-> active lanes
+-> generated coalesced mem_access_t objects
+-> unique access UID
+-> translation lookup launch
+-> translation READY
 ```
 
-This directly explains why L2 misses increase when L2 latency is shortened.
-
-It may also contribute to the changing L1 request stream.
-
-## 3. Why zero/zero can beat I0
-
-I0 bypasses the TLB hierarchy entirely.
-
-Zero/zero still executes the normal translation state machine, port/arbitration/fill/retry logic, but all lookup service intervals are zero.
-
-Those two paths create different timing/order in the lower memory system.
-
-Therefore 0/0 being 17011 cycles faster than I0 is not evidence that a real zero-cycle TLB is better than no translation.
-
-It is evidence that the full simulator is timing-coupled and that counterfactual paths can perturb cache/memory scheduling differently.
-
-## 4. The 10-cycle L1 value needs provenance
-
-The source history that introduced the lookup timing calls 10 and 80:
+split by:
 
 ```text
-generic M3 ... lookup service cycles
+GLOBAL
+LOCAL
+PARAM_LOCAL
+PC
+SM
+CTA
 ```
 
-That wording matters.
+This lets conservation identify exactly where the requester-count delta enters.
 
-If there is no separate calibration receipt, the correct claim is:
+## 7. Why this is useful even if 109 native reconnaissance is running
 
-> Q05 is highly sensitive to the lookup timing parameter in the accepted model.
+109 asks a hardware-side question:
 
-The incorrect claim would be:
+> what latency/reach structures can be observed on RTX4080?
 
-> RTX4080 spends ten hardware cycles on every L1 TLB hit and a five-cycle design therefore gives the measured speedup.
+174 asks a simulator-semantics question:
 
-The next stage searches the project evidence before deciding which statement is supportable.
+> why does this accepted model change its translation requester stream when lookup timing changes?
 
-## 5. What read-only fill-race telemetry will tell us
+Both are required before quantitative mechanism claims and can proceed independently.
 
-For every lookup, observe TLB residency at launch without touching state, then compare with the real probe at service completion.
+## 8. No mechanism yet
 
-The important transition is:
+The project is deliberately resisting a premature "fast TLB" proposal.
 
-`launch miss -> completion hit`
+A mechanism is only justified after:
 
-This directly counts lookups whose result benefits from a translation fill arriving during the modeled service interval.
-
-If this class is common, the lookup-latency sweep is strongly coupled to fill timing.
-
-## 6. Invocation accounting also matters
-
-The simulator repeatedly calls translation while a request is pending.
-
-Existing source distinguishes:
-
-- new lookup;
-- in-flight lookup bypass/retry;
-- existing MSHR waiter bypass;
-- ready/completion retry.
-
-These are not independent memory transactions.
-
-The next stage must reconcile these units before interpreting changing lookup counts.
-
-## 7. Global versus local memory may matter
-
-Q05 contains both global and substantial local-memory activity.
-
-Local memory is mapped into the global timing address space using SM/thread placement.
-
-If lookup timing changes CTA/warp timing enough to change local-memory transaction behavior, some lookup-count variation may come from this path.
-
-The next stage therefore asks for per-space translation accounting rather than treating every VM request as homogeneous.
-
-## 8. Calibration should be a separate future GPU task
-
-Published GPU microbenchmark work is useful for methodology and for showing that TLB hierarchy/reach can be reverse-engineered, but older architectures and end-to-end memory plateaus do not directly calibrate Ada/RTX4080 pure lookup latency.
-
-Therefore the current stage only writes an RTX4080 calibration plan.
-
-A future user-approved 109 run can execute it without mixing that hardware-calibration work into simulator-model debugging.
-
-## 9. Decision gate after this stage
-
-Only after model validity closes should the project choose among:
-
-- keep the current model for qualitative screening only;
-- calibrate lookup timing on RTX4080 before quantitative claims;
-- revise lookup timing semantics;
-- proceed to a mechanism study with a parameter envelope rather than one assumed latency.
-
-No mechanism is chosen yet.
+1. simulator stream semantics are understood;
+2. native latency/reach evidence is reviewed;
+3. the calibrated or bounded model still shows an opportunity.
