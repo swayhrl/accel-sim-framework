@@ -1,0 +1,7 @@
+component	effective_F0_state	evidence	interpretation
+L1_data_cache	FLUSH_AT_KERNEL_COMPLETION	F0 -gpgpu_flush_l1_cache 1; gpu-sim.cc completion branch	does not persist into next member
+L2_data_cache	PERSISTS_BY_F0	no F0 override; source default -gpgpu_flush_l2_cache 0	may affect contextual cycles
+L1_TLB	PERSISTS_BY_SOURCE_NOT_DIRECTLY_RUNTIME_DUMPED	translation controller lifetime; no normal kernel-boundary flush invocation	no claim of directly dumped residency
+L2_TLB	PERSISTS_RUNTIME_DEMONSTRATED	accepted self-warm Q05#2 has 2922/2922 L2 hits and no new walks	persistence under unchanged F0 demonstrated
+PWC	PERSISTS_BY_SOURCE_PENDING_DIRECT_RUNTIME_OBSERVABILITY	controller lifetime/no normal boundary flush	do not call measured residency
+translation_MSHR_PWQ_walkers	QUIESCENT_AT_CLEAN_COMPLETION	clean completion counters and controller quiescent invariants	in-flight work not carried as active work
