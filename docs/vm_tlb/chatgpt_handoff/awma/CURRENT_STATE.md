@@ -4,139 +4,138 @@ Date: 2026-09-18
 
 ## Coordination stage
 
-`AWMA_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_V1`
+`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1`
 
-Mainline priority remains frozen: node174-new now owns the active scientific mainline. Node109 RTX4080 is currently released by mainline and may run only explicitly authorized, preemptible side work that cannot delay the contextual replay.
+Node174-new owns the active scientific mainline.
 
-Execution-efficiency policy remains frozen: correctness-neutral micro-fixes with an obvious safe resolution are folded into the next substantive handoff instead of creating standalone Codex rounds.
+Node109 remains on the separately authorized unattended capture side lane and must not delay any future mainline GPU requirement.
 
-## 109 contiguous-context result — ACCEPTED
+## Accepted contextual replay result
 
 Execution:
 
 ```text
-hrl/awma-q05-prefix-ldc-recovery-109-v1
-c6733012c13099c6a86f506fd8c61e351791159e
+hrl/awma-q05-contextual-warm-prefix-replay-174new-v1
+2640c4368aea1dc44eb6c34fdc9bb5f738ec3fb2
 ```
 
 Status:
 
-`AWMA_Q05_PREFIX_LDC_U8_SEMANTIC_RECOVERY_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_174NEW_V1_COMPLETE_WITH_SCOPE`
 
-### LDC semantic recovery
+Formal 35-member context bundle independently rehashed/validated on 174. All six fresh-process rows completed naturally under unchanged F0.
 
-The strict validator now accepts only exact base opcode `LDC` in the frozen width-zero/no-dynamic-address representation.
-
-Boundaries:
-
-- no raw/traceg rewrite;
-- no producer change;
-- no trace-parser change;
-- no trace-driven change;
-- no simulator-config change;
-- no fabricated width/address;
-- `ULDC` and other `LD*` are not covered;
-- frozen simulator still uses its existing `OP_LDC data_size=4` constant-load approximation.
-
-22 compiled consumer/grammar tests passed.
-
-### Formal same-run context bundle
-
-Existing P34 raw was promoted without recapture.
+### Main Q05 result
 
 ```text
-35 / 35 members PASS
-launches 0..34
-same CUDA context = ctx_0x5b5ba0bd1a60
-terminal drop=0 / overflow=0 for every member
+row       cycles    L2-TLB miss   walks
+isolated  885681    633           240
+P1        895312    510           184
+P2        848511    415           128
+P4        872569    450           128
+P8        835145    292            16
+P16       862623    241            16
+P34       871835    249            15
 ```
 
-Formal durable bundle:
+Full-context P34 vs isolated:
 
 ```text
-run_id =
-C16R_qwen-qwen2-5-0-5b-instruct_s2-text_prefill_awma-route-b-nvbit1771-sim-native-contiguous-prefix_q05-contiguous-prefix_20260918T022749Z_1fea2d955d1c
-
-durable path =
-/root/share/mnt164/huangrulin/c16_ai_workload/raw/C16R_qwen-qwen2-5-0-5b-instruct_s2-text_prefill_awma-route-b-nvbit1771-sim-native-contiguous-prefix_q05-contiguous-prefix_20260918T022749Z_1fea2d955d1c
-
-manifest SHA256 =
-5dc4f8d3fc802e6af66ab76f33adfeb31b335d44511ec792404c7210ca04d64e
-
-file_count = 114
-total_bytes = 390072942
-producer-side destination verification/ACK = PASS
+cycles      -1.56%
+walks       -93.75%
+L2-TLB miss -60.66%
+PWC misses  70 -> 3
+PTE req     310 -> 18
 ```
 
-## Producer page-overlap evidence
+Interpretation:
 
-Broad same-run trace-address overlap reported by node109:
+- isolated replay substantially inflates cold PTW/walk activity;
+- real predecessor history makes Q05 translation state mostly warm;
+- removing most walks does **not** translate into a proportional total-cycle reduction;
+- longer prefix history can worsen total cycles even while translation metrics improve.
 
-### 4 KiB
+The strongest natural contrast is P8 -> P16:
 
 ```text
-P1   24.724%
-P2   49.448%
-P4   49.448%
-P8   98.896%
-P16  99.227%
-P34  99.338%
+walks                         16 -> 16
+L2-TLB misses                292 -> 241
+translation requester latency 8466455 -> 8371120
+L2 data misses           1183770 -> 1181047
+cycles                    835145 -> 862623
 ```
 
-### 64 KiB
+Therefore a non-translation context effect is definitely present.
+
+## F0 state semantics
+
+Accepted:
 
 ```text
-P1   24.670%
-P2   49.339%
-P4   49.339%
-P8   98.678%
-P16  99.119%
-P34  99.559%
+L1 data cache  = flushed at kernel completion
+L2 data cache  = persists under F0
+L1 TLB         = persists by source lifetime
+L2 TLB         = persistence runtime-demonstrated
+PWC            = persists by source lifetime; direct residency not dumped
+MSHR/PWQ/walkers = quiescent at clean kernel completion
 ```
 
-This is already strong evidence that most Q05 address-page overlap is created by a very recent predecessor window, especially by P8.
+## Page-overlap result
 
-However, these producer tables remain **broad trace-address overlap**, not final translation-relevant overlap. The predecessor-distance table contains low pages such as `0x0`, so the 174 contextual replay must recompute overlap using the accepted simulator's real VM-entry address-space semantics before using it to explain TLB behavior.
+174 recomputed translation-relevant overlap using the actual VM-entry address spaces.
 
-Do not call these percentages hardware TLB residency.
-
-## 174 current state
-
-Accepted waiting parent:
+64 KiB Q05 coverage:
 
 ```text
-hrl/awma-q05-warm-prefix-replay-174new-v1
-5b9d708087e8ff485f03fd561a15e08baea8ad3a
-AWMA_Q05_WARM_PREFIX_REPLAY_174NEW_V1_WAITING_FOR_CONTEXT_BUNDLE
+P1  24.67%
+P2  49.34%
+P4  49.34%
+P8  98.68%
+P16 98.68%
+P34 99.12%
 ```
 
-The required formal context bundle is now available.
+Page overlap is not TLB residency.
 
-174 resumes as:
+P4/P16/P34 remain scientifically necessary despite little/no extra coverage because they test pollution/history.
 
-`AWMA_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_174NEW_V1`
+## Mainline question now
+
+The project must no longer ask only:
+
+> How many walks disappear under real context?
+
+It now asks:
+
+> After realistic prefix warmup, how much Q05 performance sensitivity remains attributable to the modeled translation path itself?
+
+This is required before choosing any TLB/PTW mechanism.
+
+## Active mainline
 
 Execute:
 
-`CODEX_RESUME_174NEW_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_V1.md`
+`CODEX_NEXT_STAGE_174NEW_Q05_CONTEXT_EFFECT_DECOMPOSITION_V1.md`
 
-## Contextual replay matrix
-
-Each row starts from a fresh simulator process:
+Core experiment:
 
 ```text
-ISOLATED_Q05 = accepted historical anchor
-P1  = member 33 -> Q05
-P2  = members 32..33 -> Q05
-P4  = members 30..33 -> Q05
-P8  = members 26..33 -> Q05
-P16 = members 18..33 -> Q05
-P34 = members 0..33  -> Q05
+natural R0 prefix
+-> preserve context state
+-> Q05 only: ideal-identity translation bypass
+-> compare target Q05 cycles/counters
 ```
 
-Within a row, accepted F0 state persists naturally across predecessor dispatches. Q05-only metrics are before/after counter deltas; no target-entry reset is allowed.
+Run at least P2/P8/P34 Q05-only ideal-translation counterfactuals after neutrality gates.
 
-P4/P16/P34 remain scientifically useful even where page coverage barely changes because extra non-overlapping predecessors can perturb/evict existing warm state.
+Do not globally run the prefix under I0.
+
+## Baseline policy until next review
+
+- P34 = realism reference.
+- P8 = screening-prefix candidate only.
+- isolated Q05 = historical diagnostic/reference, not sole future mechanism baseline.
+- no new mechanism is authorized yet.
 
 ## Frozen workload
 
@@ -145,19 +144,19 @@ Qwen/Qwen2.5-0.5B-Instruct
 revision 7ae557604adf67be50417f59c2c2f167def9a775
 S2_TEXT / B1 / Prefill2048 / Decode32 / FP16 / SDPA
 Q05_PREFILL_ATTN_FLASH
-function occurrence 0
+occurrence 0
 ```
 
-Historical isolated Q05 SIM_INPUT/SIM_BASELINE/SIM_RUN/SIM_EVIDENCE remain immutable.
+Existing isolated and contextual identities remain immutable.
 
 ## Storage
 
 164 remains durable authority.
 
-109 may retain active-model replicas for capture convenience.
+174 local disk is source/worktree/bounded scratch only.
 
-174 must not retain model-weight replicas or large context/simulation raw locally; large replay output belongs on node164.
+109 may retain active-model replicas and continue its separately authorized unattended producer campaign.
 
 ## STOP boundary
 
-No new TLB/PTW/cache mechanism, latency/capacity/page-size/walker/Segment experiment starts automatically from contextual replay. Return the completed contextual results to ChatGPT for scientific review.
+No TLB/PTW/cache mechanism starts automatically after decomposition. Return the causal result to ChatGPT for review.
