@@ -171,3 +171,19 @@ If cycles change but translation counters do not, data-cache/context effects bec
 If both move, the result is mixed and any later translation-specific mechanism must be evaluated under the accepted contextual baseline.
 
 No mechanism starts automatically from any of these outcomes.
+
+
+## 10. Execution-efficiency and active-model locality policy
+
+Do not create a standalone Codex round for a small issue when all of the following hold:
+
+- it does not change scientific correctness or claim boundaries;
+- the safe correction is already known;
+- it does not require a new experiment or expensive verification;
+- it can be folded into the next real handoff or corrected directly in ChatGPT-owned coordination text.
+
+This applies to the current 174 waiting-state wording cleanup: it will be folded into the next warm-prefix resume rather than dispatched alone.
+
+Model assets remain authoritative on node164, but node109 is intentionally allowed to cache local replicas of models that are actively being captured. Repeated GPU tracing benefits from local access and node109 currently has sufficient space. These copies are explicitly non-authoritative and disposable after hash-verified authority remains on node164.
+
+Node174-new should not cache model-weight replicas. Its local storage is reserved for source/worktrees, simulator binaries, bounded scratch and small evidence. This keeps the consumer node lean while the producer node retains the data locality useful for repeated capture.
