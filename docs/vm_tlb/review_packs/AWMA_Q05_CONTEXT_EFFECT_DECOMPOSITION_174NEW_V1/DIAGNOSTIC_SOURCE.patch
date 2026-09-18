@@ -1,0 +1,34 @@
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/shader.cc	2026-09-08 06:32:52.000000000 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-context-effect-decomposition-174new-v1/.awma_runtime/context_i0_diagnostic/src/gpgpu-sim/src/gpgpu-sim/shader.cc	2026-09-18 08:32:11.399429163 +0000
+@@ -2440,7 +2440,30 @@
+                            m_core->get_kernel(),
+                            m_config->gpgpu_vm_page_size);
+     ++m_stats->vm_requests;
+-    if (m_config->gpgpu_vm_mode == 0) {
++    // Disabled by default. The runner supplies a decimal exact launch uid only
++    // for the target member; predecessor processes receive no such environment.
++    const char *target_i0_text = getenv("GPGPUSIM_VM_TARGET_I0_KERNEL_UID");
++    const unsigned target_i0_uid =
++        target_i0_text == NULL ? 0 : unsigned(strtoul(target_i0_text, NULL, 10));
++    const bool target_i0 = target_i0_uid != 0 &&
++        m_core->get_kernel() != NULL &&
++        m_core->get_kernel()->get_uid() == target_i0_uid;
++    if (target_i0) {
++      // Q05-only diagnostic: preserve natural F0 for every predecessor, but
++      // route this exact target launch through the accepted mode-1 identity
++      // SimVA->SimPA operation.  No TLB/PWC/MSHR/PTW call is made here; the
++      // lower data-cache/memory path receives the same identity-compatible PA.
++      assert(m_config->gpgpu_vm_mode == 2);
++      assert(vm_core::valid_page_size(m_config->gpgpu_vm_page_size));
++      assert(!vm_core::transaction_crosses_page(
++          access.get_sim_va(), access.get_size(),
++          m_config->gpgpu_vm_page_size));
++      access.set_sim_pa(vm_core::identity_translate(
++          access.get_sim_va(), m_config->gpgpu_vm_page_size));
++      ++m_stats->vm_ideal_translations;
++      ++m_stats->vm_identity_equal;
++      translation_outcome = vm_translation::TRANSLATION_SOURCE_IDEAL_IDENTITY;
++    } else if (m_config->gpgpu_vm_mode == 0) {
+       ++m_stats->vm_disabled_bypasses;
+       access.bypass_vm_translation();
+       translation_outcome = vm_translation::TRANSLATION_SOURCE_DISABLED;
