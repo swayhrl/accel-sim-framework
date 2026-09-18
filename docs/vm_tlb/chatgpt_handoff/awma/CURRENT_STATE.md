@@ -1,79 +1,153 @@
 # AWMA Current State
 
-Date: 2026-09-17
+Date: 2026-09-18
 
-## Coordination status
+## Coordination stage
 
-AWMA is now entering the next MAINLINE stage:
+`AWMA_Q05_CONTIGUOUS_PREFIX_WARM_REPLAY_V1`
 
-`AWMA_Q05_CONTEXT_WARMUP_SENSITIVITY_V1`
+Mainline priority remains frozen: node109 RTX4080 and node174-new serve the active mainline first. Side work may run only when the mainline does not need the resource and must never delay the mainline.
 
-The project priority rule is frozen:
+## Previous context-warmup stage review
 
-> Mainline always has first claim on node109 RTX4080 and node174-new. Side work may run only when the active mainline does not need the resource and must never make the mainline wait.
+### 174-new feasibility — ACCEPTED WITH SCOPE
 
-Current mainline tracks:
+Execution:
 
 ```text
-Track M1 — node109 / RTX4080
-Q05 native predecessor-context characterization
-ACTIVE
-
-Track M2 — node174-new
-Q05 warm-replay feasibility / kernel-boundary state audit
-ACTIVE
+hrl/awma-q05-warm-replay-feasibility-174new-v1
+e2fa35f045e0b4f977a964d9c92974c9f6d3e240
 ```
 
-The two tracks are complementary:
+Key result:
 
-- M1 determines what real predecessor execution exists before Q05 and which Q05 pages were previously touched in the same frozen native execution context;
-- M2 determines whether/how the simulator can preserve TLB/PWC/cache state across sequential kernels and measure Q05 without resetting the warm state.
+`WARM_REPLAY_READY_WITH_DIAGNOSTIC_COUNTER_BOUNDARY_ONLY`
 
-No new TLB/PTW mechanism experiment is authorized yet.
+Self-warm diagnostic in one simulator instance:
 
----
+```text
+Q05 #1 = 885,681 cycles
+Q05 #2 = 821,426 cycles
+Q05 #2 L2 TLB = 2,922 access / 2,922 hit / 0 miss
+Q05 #2 new walks = 0
+Q05 #2 new translation-MSHR merges = 0
+```
 
-## Why this is now the mainline question
+This proves modeled translation state survives sequential kernel dispatch and Q05-only deltas are feasible without resetting at target entry.
 
-The accepted Q05 trace is a complete whole-kernel simulator-native trace, but current simulation replays Q05 as an isolated selected kernel.
+Claim boundary: the cycle reduction is a combined modeled warm-state effect. It is NOT yet attributable solely to TLB/translation because data-cache state may also persist. The next stage must close L1/L2 TLB and L1/L2 data-cache semantics separately.
 
-Therefore previous results establish isolated-state sensitivity, not yet full-application-context sensitivity.
+### 109 native context — VALID REVIEW STOP
 
-The next question is:
+Execution:
 
-> How much of the observed Q05 translation/cache behavior is intrinsic to Q05, and how much is caused by losing predecessor-created state when Q05 is replayed alone?
+```text
+hrl/awma-q05-native-context-109-v1
+64a2e51943a6737b84132bc7daa5f4d7c74f8099
+```
 
-This distinction is required before using Q05 to motivate a real TLB/PTW mechanism.
+Accepted output:
 
-Shared experiment contract:
+- frozen workload/Q05 identity closed;
+- exact contiguous Q05 predecessor sequence closed;
+- Q05 is Prefill launch 34;
+- there are exactly 34 contiguous Prefill predecessors, launches 0..33.
 
-`Q05_CONTEXT_WARMUP_EXPERIMENT_CONTRACT_V1.md`
+The attempted lightweight page observer is REJECTED:
 
----
+- stock sync: channel backpressure;
+- stock async: real dependency stall;
+- callback prefix teardown: process abort/no natural terminal;
+- R6: sidecar emitted but process aborted; predecessor sets not proven.
 
-## Frozen workload identity
+No page-overlap or hardware-TLB claim is accepted from those attempts.
+
+## Mainline pivot
+
+Do not spend another mainline stage repairing the lightweight observer.
+
+Because the full real Q05 prefix is only 34 predecessor launches and the eventual warm replay requires full predecessor traces anyway, node109 now captures one bounded **same-run contiguous simulator-native context bundle** for launches 0..34.
+
+Offline page-overlap is derived from that formal bundle.
+
+Node174-new then replays real predecessor suffixes before Q05 under unchanged F0 semantics.
+
+## Active tracks
+
+```text
+M3 — 109 / RTX4080
+Q05 same-run contiguous prefix capture
+ACTIVE
+
+M4 — 174-new
+Q05 warm-prefix replay preparation / execution
+ACTIVE, may WAIT for M3 bundle
+```
+
+### M3 — 109
+
+Execute:
+
+`CODEX_NEXT_STAGE_109_Q05_CONTIGUOUS_PREFIX_CAPTURE_V1.md`
+
+Target formal context:
+
+```text
+launches 0..33 = all contiguous real predecessors
+launch 34       = exact Q05
+one frozen execution
+one CUDA context
+35 members exactly
+no interior omission
+```
+
+Use accepted Route-B producer semantics and minimally extend only the selection/writer lifecycle needed for multiple sequential members. Trace record grammar remains frozen.
+
+### M4 — 174-new
+
+Execute:
+
+`CODEX_NEXT_STAGE_174NEW_Q05_WARM_PREFIX_REPLAY_V1.md`
+
+First close actual F0 boundary semantics separately for:
+
+- L1 data cache;
+- L2 data cache;
+- L1 TLB;
+- L2 TLB;
+- PWC;
+- drained translation in-flight state.
+
+Then, after M3 bundle is durable+ACK, replay:
+
+```text
+ISOLATED_Q05
+P1  + Q05
+P2  + Q05
+P4  + Q05
+P8  + Q05
+P16 + Q05
+P34 + Q05
+```
+
+Each warm row starts fresh and preserves state only within that row.
+
+## Frozen workload
 
 ```text
 model      = Qwen/Qwen2.5-0.5B-Instruct
 revision   = 7ae557604adf67be50417f59c2c2f167def9a775
 scenario   = S2_TEXT
 batch      = 1
-input      = frozen TEXT binding
-prefill    = 2048 tokens
-decode     = 32 tokens
+prefill    = 2048
+decode     = 32
 dtype      = FP16
 backend    = SDPA
+target     = Q05_PREFILL_ATTN_FLASH
+occurrence = 0
 ```
 
-Current accepted Q05 target:
-
-```text
-Q05_PREFILL_ATTN_FLASH
-function occurrence = 0
-kernel = pytorch_flash::flash_fwd_kernel<...>
-```
-
-Frozen Simulation IDs remain read-only:
+Existing isolated-Q05 identities remain read-only:
 
 ```text
 SIM_INPUT_0ab4e2fe2195d3b7d7da4ee9df6017cbec5c063fcc8110374e1a753f87177634
@@ -82,269 +156,35 @@ SIM_RUN_92a553b0d69a9f41c5e20a8650366c53f7fed31c29c7462947d3af03c6f136f1
 SIM_EVIDENCE_c8b4175d33f8bed7def2984489eadbdbcdfaffbfcb6a7daef33c8beb18e80959
 ```
 
-Accepted simulator/source anchors remain:
+Accepted core/producer anchors remain:
 
 ```text
-Framework execution source = d64408a97d76a320a6d49468653d416e33677af8
-Core                       = 57bb71ecd015b6ec0ab32e45b0815e5beaf69172
+framework execution source = d64408a97d76a320a6d49468653d416e33677af8
+core                       = 57bb71ecd015b6ec0ab32e45b0815e5beaf69172
 qualified binary SHA256    = 34deedd99e85e52fb309852de2ecc5fecd9471436a33a5e77d40bc038a2c31c4
 producer                    = 5143b4e10aaf2fc47bb60492155d2464b0b726fd
 validator hotfix            = fb5d0bebee421a0153661239e1f7c2bc088d5c9e
-characterization anchor     = bb92e5a1559dd7e2b2520e9a7a4937262664512c
 ```
 
----
+## Storage
 
-## Accepted isolated-Q05 characterization
+node164 remains the durable authority.
 
-R0 10k:
+109 local data is staging only. 174 local data is working/simulation state only.
 
-```text
-gpu_sim_insn = 1,084,480 completed active thread-instructions
-L1 TLB       = 930 access / 805 hit / 125 miss
-L2 TLB       = 125 access / 0 hit / 125 miss
-MSHR         = 19 alloc / 106 merge / 0 full / HWM 16
-walks        = 19 start / 19 complete
-max waiter   = 35
-```
+The new context bundle is formal only after per-member closure, bundle hash closure, destination verify/admit and ACK.
 
-Counterfactual ideal-identity sensitivity:
+## Deferred side work
 
-```text
-10k: R0 1,084,480 ; I0 1,697,696 (+56.55%)
-50k: R0 11,587,872 ; I0 20,458,400 (+76.55%)
-```
+Still deferred while mainline uses the resource:
 
-P2 and M8 did not produce measurable 10k progress gain, so L2-TLB port throughput and shared-L2 per-entry merge capacity are downgraded as dominant single causes.
-
-These are fixed-window isolated selected-kernel sensitivity results, not full-model speedup claims.
-
----
-
-## Complete Q05 structure and timeline
-
-Whole selected Q05 trace:
-
-```text
-224 CTA
-896 warps
-13,361,600 warp-instruction records
-971,824 memory-instruction records
-29,564,416 lane-address events
-228 unique offline 64KiB VPN
-```
-
-Trace file order remains:
-
-`STRUCTURAL_TRACE_ORDER_ONLY`
-
-Natural isolated R0 completion:
-
-```text
-885,681 cycles
-224 issued CTA
-368,696,302 completed active thread-instructions
-```
-
-Diagnostic timeline result:
-
-```text
-translation key = {asid, vpn, page_size}
-
-10k:
-19 keys / 19 fills / 106 merges / 8,730 post-fill REQUEST invocations
-
-50k:
-104 keys / 104 fills / 374 merges / 474,414 post-fill REQUEST invocations
-
-full:
-240 simulator keys / 240 fills / 393 merges
-8,747,322 post-fill REQUEST invocations
-max waiter depth = 35
-```
-
-Current interpretation:
-
-`MIXED`
-
-Supported:
-
-- strong pre-fill burst fanout exists;
-- about 95% of observed merge events occur by 50k while more than half of final translation keys still appear after 50k;
-- new translation demand therefore continues after fanout has largely diminished;
-- current evidence does not support a simple TLB-capacity/thrashing story.
-
-Boundary:
-
-`REQUEST` is a simulator invocation/retry unit, not an independent memory instruction or TLB lookup count.
-
-Carry-forward caveats:
-
-- post-fill per-key L1/L2 outcome remains unavailable from the previous timeline logging;
-- 240 simulator translation keys vs 228 offline 64KiB VPN must be reconciled before native page sets are joined to simulator keys.
-
-The 174-new V1 warm-replay feasibility track explicitly carries the 240-vs-228 reconciliation task.
-
----
-
-## Accepted full S2 kernel census / Q05 representativeness
-
-Exact frozen run:
-
-```text
-34,677 total CUDA kernel activities
-34,072 inside explicit inference ranges
-408 Prefill launches
-33,664 Decode launches
-```
-
-Q05 belongs to 10 same-shape Prefill FlashAttention launches and is:
-
-`REPRESENTATIVE_WITHIN_SAME_FLASH_FAMILY`
-
-but only partially representative of broader Attention and not representative of the whole model.
-
-Important execution families:
-
-```text
-Prefill CUBLAS_GEMM      = 66.48% Prefill GPU time
-Prefill FlashAttention   = 14.31%
-Decode CUBLAS_GEMV       = 49.76% Decode GPU time
-Decode FlashAttention    = 9.87%
-```
-
----
-
-## Complementary producer assets already captured
-
-Node109 side-lane result has closed two additional producer-qualified whole-target bundles on node164:
-
-```text
-PREFILL_GEMM_PRIMARY_1
-  PRODUCER_CAPTURE_COMPLETE_DURABLE
-  12,043,648 raw records
-  terminal COMPLETE / drop=0 / overflow=0 / mode2=0
-
-DECODE_GEMV_PRIMARY_1
-  PRODUCER_CAPTURE_COMPLETE_DURABLE
-  1,515,136 raw records
-  terminal COMPLETE / drop=0 / overflow=0 / mode2=0
-```
-
-They are durable producer assets only. They are not yet SIM_INPUTs and are not part of the current warmup experiment.
-
-Decode Flash status:
-
-```text
-DECODE_FLASH_PRIMARY_1
-  CAPTURE_CONTRACT_BLOCKED
-  real LDC.U8 record rejected by frozen grammar because width is missing/zero
-
-DECODE_FLASH_PRIMARY_2
-  NOT_STARTED_DUE_TO_FAIL_CLOSED_STOP
-```
-
-The LDC.U8 grammar issue is deferred. Do not repair it during the current mainline unless ChatGPT explicitly creates a separate task while the mainline does not need the GPU.
-
----
-
-## Storage / node roles
-
-Durable large-data owner:
-
-`/root/share/mnt164/huangrulin/c16_ai_workload/`
-
-Roles:
-
-```text
-109 = GPU producer / native characterization
-174-new = simulator / analysis
-164 = durable large-data authority
-```
-
-Producer-side data-plane qualification reached:
-
-`AWMA_164_DATA_PLANE_QUALIFIED_V1`
-
-The previous 174 consumer audit independently confirmed that accepted AWMA raw is not uniquely dependent on 174 local disk; its final producer-canary delta verification may be completed later when mainline resources are idle.
-
-174 local-storage audit also completed read-only: no large local-only accepted AWMA authority was found; no cleanup action is currently worth interrupting mainline work.
-
----
-
-## Mainline Track M1 — node109 / RTX4080 — ACTIVE
-
-Execute:
-
-`CODEX_NEXT_STAGE_109_Q05_NATIVE_CONTEXT_CHARACTERIZATION_V1.md`
-
-Goals:
-
-- establish exact Q05 predecessor launch sequence;
-- capture a bounded SAME-RUN lightweight memory/page context through Q05;
-- compute predecessor page-overlap opportunity and last-touch distance;
-- establish normal-context Q05 timing stability;
-- optionally test data-cache-sensitive NCU conditions without claiming TLB flush/preservation;
-- recommend a bounded set of continuous predecessor prefix windows for later simulator-native capture.
-
-No simulator-native predecessor capture campaign in this V1 stage.
-
-Expected completion:
-
-`AWMA_Q05_NATIVE_CONTEXT_CHARACTERIZATION_109_V1_COMPLETE_WITH_SCOPE`
-
----
-
-## Mainline Track M2 — 174-new — ACTIVE
-
-Execute:
-
-`CODEX_NEXT_STAGE_174NEW_Q05_WARM_REPLAY_FEASIBILITY_V1.md`
-
-Goals:
-
-- source-audit what state persists/resets across kernels;
-- reconcile 240 simulator keys vs 228 offline pages;
-- define a Q05-only measurement boundary that does not clear warm state;
-- qualify state observability;
-- run self-warm diagnostics only as plumbing evidence when source semantics allow;
-- define the exact future predecessor context-bundle contract.
-
-No real predecessor warm-prefix science in this V1 stage.
-
-Expected completion:
-
-`AWMA_Q05_WARM_REPLAY_FEASIBILITY_174NEW_V1_COMPLETE_WITH_SCOPE`
-
----
-
-## Mainline priority rule
-
-While M1 is ACTIVE, node109 RTX4080 is reserved for the mainline.
-
-Do not start:
-
-- LDC.U8 repair side lane;
-- Qwen3 / DeepSeek work;
-- NCU campaigns unrelated to Q05 context sensitivity;
-- additional selected-kernel capture;
+- Decode Flash `LDC.U8` trace semantic repair;
+- Qwen3/DeepSeek campaigns;
+- complementary GEMM/GEMV replay;
+- NCU side campaigns;
 - cleanup work;
-- other opportunistic GPU tasks.
+- new mechanisms.
 
-A side task can resume only after the active mainline explicitly releases the GPU.
+## STOP boundary
 
----
-
-## Global STOP boundary
-
-This stage may not automatically begin:
-
-- real predecessor simulator-native capture campaign;
-- SIM_INPUT admission of a predecessor context bundle;
-- scientific prefix+Q05 warm replay;
-- L2-TLB latency/PTW/walker/capacity/page-size sweeps;
-- Segment;
-- early outstanding-translation mechanism;
-- new cache/TLB mechanism.
-
-After M1 and M2 complete, return both reports/review packs to ChatGPT. ChatGPT will select the actual continuous prefix matrix and issue the next mainline capture/replay stage.
+No TLB/PTW/cache mechanism, latency/capacity/page-size/Segment experiment may start automatically after warm-prefix results. Return the results to ChatGPT for scientific review.
