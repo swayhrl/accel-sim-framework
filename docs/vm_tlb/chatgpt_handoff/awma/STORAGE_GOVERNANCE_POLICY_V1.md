@@ -10,7 +10,7 @@ AWMA uses three distinct node roles:
 
 ```text
 109 / RTX4080
-  = GPU producer and short-lived local staging
+  = GPU producer, capture staging, and active-model replica cache
 
 174-new
   = simulator / analysis / coordinator
@@ -55,6 +55,17 @@ Git / local worktrees may contain only:
 174-new may use local scratch only for small or temporary working files. Any large temporary working copy is non-authoritative and may be cleaned after node164 hash closure.
 
 109 may stage raw data locally while the GPU tool is running. A producer-side local copy must not be deleted merely because a transfer command returned success.
+
+### Active model replicas
+
+Model assets and receipts remain authoritative on node164. In addition, node109 may retain local replica copies of **currently active capture models** to avoid repeated network/storage reads during GPU capture. These replicas:
+
+- are convenience copies only, never scientific authority;
+- must correspond to a hash/provenance-closed node164 asset;
+- may remain on node109 while that model is active in the capture program;
+- may be deleted later without data-loss risk once the node164 authority is verified.
+
+Node174-new should not retain model-weight replicas. It should use node164 as the model-asset authority and keep its local disk focused on source/worktrees, simulator binaries, bounded scratch and small evidence.
 
 ## 3. Existing accepted paths are immutable provenance
 
