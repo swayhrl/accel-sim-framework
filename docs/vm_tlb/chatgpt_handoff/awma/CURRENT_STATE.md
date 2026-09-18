@@ -4,167 +4,148 @@ Date: 2026-09-18
 
 ## Coordination stage
 
-`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1`
+`AWMA_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_174NEW_V1`
 
-Node174-new owns the active scientific mainline.
+Node174-new remains the active scientific mainline.
 
-Node109 remains on the separately authorized unattended capture side lane and must not delay any future mainline GPU requirement.
+Node109 unattended side lane is closed and GPU is released for user work.
 
-## Accepted contextual replay result
+## Accepted context-effect decomposition
 
 Execution:
 
 ```text
-hrl/awma-q05-contextual-warm-prefix-replay-174new-v1
-2640c4368aea1dc44eb6c34fdc9bb5f738ec3fb2
+hrl/awma-q05-context-effect-decomposition-174new-v1
+b24edffd7a90fc6417b95c6d4198f5c40dcf0b35
 ```
 
 Status:
 
-`AWMA_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_174NEW_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1_COMPLETE_WITH_SCOPE`
 
-Formal 35-member context bundle independently rehashed/validated on 174. All six fresh-process rows completed naturally under unchanged F0.
-
-### Main Q05 result
+Target-only Q05 I0 results:
 
 ```text
-row       cycles    L2-TLB miss   walks
-isolated  885681    633           240
-P1        895312    510           184
-P2        848511    415           128
-P4        872569    450           128
-P8        835145    292            16
-P16       862623    241            16
-P34       871835    249            15
+context            R0 cycles   Q05-I0 cycles   sensitivity
+FORMAL_ISOLATED       864552          670682      -22.42%
+P2                    848511          701244      -17.36%
+P8                    835145          664241      -20.46%
+P34                   871835          674121      -22.68%
 ```
 
-Full-context P34 vs isolated:
+The target-only diagnostic is accepted:
+
+- every predecessor remains natural F0/R0;
+- only exact Q05 bypasses TLB/MSHR/PTW/PWC/PTE;
+- natural identity-compatible SimVA->SimPA is preserved;
+- P8/P34 disabled controls reproduce accepted natural metrics exactly;
+- no TLB/PTW/cache mechanism was run.
+
+## Critical same-trace baseline correction
+
+Direct contextual cycle comparisons must use:
+
+`FORMAL_ISOLATED_R0 = 864552 cycles`
+
+because it uses the same admitted context-bundle member34 trace identity as P2/P8/P34.
+
+The older:
+
+`885681 cycles`
+
+isolated result remains a valid historical standalone-Q05 result but comes from the earlier standalone capture/input identity. It must not be used as the primary same-trace cycle denominator.
+
+Correct same-trace natural comparisons:
 
 ```text
-cycles      -1.56%
-walks       -93.75%
-L2-TLB miss -60.66%
-PWC misses  70 -> 3
-PTE req     310 -> 18
+P2  vs formal isolated: -1.86%
+P8  vs formal isolated: -3.40%
+P34 vs formal isolated: +0.84%
 ```
 
-Interpretation:
-
-- isolated replay substantially inflates cold PTW/walk activity;
-- real predecessor history makes Q05 translation state mostly warm;
-- removing most walks does **not** translate into a proportional total-cycle reduction;
-- longer prefix history can worsen total cycles even while translation metrics improve.
-
-The strongest natural contrast is P8 -> P16:
+Formal isolated -> P34:
 
 ```text
-walks                         16 -> 16
-L2-TLB misses                292 -> 241
-translation requester latency 8466455 -> 8371120
-L2 data misses           1183770 -> 1181047
-cycles                    835145 -> 862623
+walks:       240 -> 15
+L2-TLB miss: 731 -> 249
+cycles:      864552 -> 871835
 ```
 
-Therefore a non-translation context effect is definitely present.
+Therefore full real predecessor history removes almost all modeled walks and most L2-TLB misses, but its total inherited context slightly worsens Q05 cycles relative to the same-trace isolated control.
 
-## F0 state semantics
+This supersedes the earlier cross-capture cycle-delta interpretation; historical evidence itself is not rewritten.
 
-Accepted:
+## Why the next stage targets lookup service
+
+P34 natural Q05:
 
 ```text
-L1 data cache  = flushed at kernel completion
-L2 data cache  = persists under F0
-L1 TLB         = persists by source lifetime
-L2 TLB         = persistence runtime-demonstrated
-PWC            = persists by source lifetime; direct residency not dumped
-MSHR/PWQ/walkers = quiescent at clean kernel completion
+L1 accesses = 776915
+L1 hits     = 773501
+L1 misses   = 3414
+L1 hit rate = ~99.56%
+
+L2 accesses = 3414
+L2 hits     = 3165
+L2 misses   = 249
+walk starts = 15
 ```
 
-## Page-overlap result
-
-174 recomputed translation-relevant overlap using the actual VM-entry address spaces.
-
-64 KiB Q05 coverage:
+Accepted modeled lookup latencies:
 
 ```text
-P1  24.67%
-P2  49.34%
-P4  49.34%
-P8  98.68%
-P16 98.68%
-P34 99.12%
+L1 TLB = 10 cycles
+L2 TLB = 80 cycles
+PWC    = 1 cycle
 ```
 
-Page overlap is not TLB residency.
+Requester-latency composition:
 
-P4/P16/P34 remain scientifically necessary despite little/no extra coverage because they test pollution/history.
+```text
+L1 service  = 7,769,150 requester-cycles
+L2 service  =   273,120
+MSHR wait   =   434,431
+L2 queue    =       681
+total       = 8,477,382
+```
 
-## Mainline question now
+The L1-service term is ~91.65% of the summed requester-latency composition.
 
-The project must no longer ask only:
-
-> How many walks disappear under real context?
-
-It now asks:
-
-> After realistic prefix warmup, how much Q05 performance sensitivity remains attributable to the modeled translation path itself?
-
-This is required before choosing any TLB/PTW mechanism.
+These are not exposed GPU cycles, so they cannot predict speedup directly. They motivate a target-only latency decomposition.
 
 ## Active mainline
 
 Execute:
 
-`CODEX_NEXT_STAGE_174NEW_Q05_CONTEXT_EFFECT_DECOMPOSITION_V1.md`
+`CODEX_NEXT_STAGE_174NEW_Q05_CONTEXTUAL_LOOKUP_PATH_DECOMPOSITION_V1.md`
 
-Core experiment:
-
-```text
-natural R0 prefix
--> preserve context state
--> Q05 only: ideal-identity translation bypass
--> compare target Q05 cycles/counters
-```
-
-Run at least P2/P8/P34 Q05-only ideal-translation counterfactuals after neutrality gates.
-
-Do not globally run the prefix under I0.
-
-## Baseline policy until next review
-
-- P34 = realism reference.
-- P8 = screening-prefix candidate only.
-- isolated Q05 = historical diagnostic/reference, not sole future mechanism baseline.
-- no new mechanism is authorized yet.
-
-## Frozen workload
+Core idea:
 
 ```text
-Qwen/Qwen2.5-0.5B-Instruct
-revision 7ae557604adf67be50417f59c2c2f167def9a775
-S2_TEXT / B1 / Prefill2048 / Decode32 / FP16 / SDPA
-Q05_PREFILL_ATTN_FLASH
-occurrence 0
+prefix = natural R0
+Q05 only:
+  vary L1 lookup latency
+  vary L2 lookup latency
+  preserve capacity/ports/state/mapping
 ```
 
-Existing isolated and contextual identities remain immutable.
+P34 is the realism reference and receives the full matrix.
 
-## Storage
+P8 is the screening candidate and receives a reduced matrix.
 
-164 remains durable authority.
+## Baseline policy
 
-174 local disk is source/worktree/bounded scratch only.
+Until this stage returns:
 
-109 may retain active-model replicas and continue its separately authorized unattended producer campaign.
+- P34 = realism reference;
+- P8 = screening-prefix candidate;
+- formal isolated member34 = same-trace isolated control;
+- historical standalone isolated Q05 = historical cross-capture reference;
+- no architecture mechanism is yet authorized.
 
-## STOP boundary
+## 109 side-lane status
 
-No TLB/PTW/cache mechanism starts automatically after decomposition. Return the causal result to ChatGPT for review.
-
-
-## 109 unattended side-lane closeout — ACCEPTED
-
-Execution:
+Accepted closeout:
 
 ```text
 hrl/awma-109-unattended-capture-campaign-v1
@@ -175,33 +156,8 @@ Decision:
 
 `AWMA_109_UNATTENDED_CAPTURE_CAMPAIGN_V1_COMPLETE_WITH_SCOPE`
 
-Reason:
+16 immutable node164-ACKed bundles were produced. Node109 GPU is released.
 
-`USER_EARLY_CLOSE_AFTER_P2C_TO_RELEASE_NODE109`
+## STOP boundary
 
-Accepted producer outputs:
-
-- 16 immutable node164-ACKed bundles;
-- Decode Flash Primary-1 historical raw promoted after the exact-LDC validator repair;
-- Decode Flash Primary-2 step1 captured and admitted;
-- Prefill Flash occurrences 2/4/6/9 captured and admitted;
-- Prefill GEMM Primary occurrences 0/4/8/16/19 captured and admitted;
-- Decode GEMV Primary steps 4/8/16/24/32 captured and admitted.
-
-The attempted P2D Step-4 canary had no terminal closure when early-close arrived and was correctly not admitted. P2D/P2E/P3 and later optional work are explicitly skipped, not inferred.
-
-Node109 GPU is now released for user work:
-
-```text
-no campaign GPU process
-GPU lock available
-RTX4080 idle baseline observed
-```
-
-Small structural side-lane observation only:
-
-- captured Prefill Flash occurrences 2/4/6/9 have identical record/memory/address-footprint counts in the campaign summary;
-- captured Prefill GEMM Primary occurrences 0/4/8/16/19 likewise match structurally;
-- Decode GEMV Primary steps 4/8/16/24/32 are structurally nearly identical, with the reported 64 KiB page count unchanged at 135 and only a one-page 4 KiB difference at step4 versus later sampled steps.
-
-These are trace-structure/footprint observations, not simulator-performance equivalence claims.
+Return lookup-path decomposition results to ChatGPT before any TLB/PTW/cache mechanism design or sweep.
