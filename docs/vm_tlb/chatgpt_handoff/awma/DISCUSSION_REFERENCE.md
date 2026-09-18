@@ -187,3 +187,22 @@ This applies to the current 174 waiting-state wording cleanup: it will be folded
 Model assets remain authoritative on node164, but node109 is intentionally allowed to cache local replicas of models that are actively being captured. Repeated GPU tracing benefits from local access and node109 currently has sufficient space. These copies are explicitly non-authoritative and disposable after hash-verified authority remains on node164.
 
 Node174-new should not cache model-weight replicas. Its local storage is reserved for source/worktrees, simulator binaries, bounded scratch and small evidence. This keeps the consumer node lean while the producer node retains the data locality useful for repeated capture.
+
+
+## 11. Why LDC.U8 is now a validator-contract issue, not a width-inference task
+
+The P34 execution itself succeeded: all 35 raw members terminally closed in one CUDA context with zero drop/overflow. Formal admission stopped only when the strict validator saw member-2 `LDC.U8` serialized with width 0.
+
+Accepted source explains that representation:
+
+- Route-B operand collection explicitly ignores constant operands and only marks a packet as memory when NVBit exposes an MREF.
+- The raw formatter only derives `.U8 -> 1 byte` when `packet.is_mem` is true; it does not manufacture memory payload for an ignored constant operand.
+- Ampere opcode mapping explicitly says current Accel-Sim ignores constant loads in opcode classification: `LDC -> OP_LDC, ALU_OP`.
+- The trace parser creates dynamic memory-address payload only when serialized width >0.
+- Trace-driven execution then handles `OP_LDC` specially as a constant-space load with pre-existing hardcoded `data_size=4`.
+
+Therefore writing width=1 into the trace would change the frozen producer/parser contract and falsely claim an address-bearing dynamic payload. The narrow recovery is to align the strict validator with the existing implicit LDC representation while documenting the simulator's pre-existing constant-load approximation.
+
+The previous Decode-Flash LDC.U8 stop and this unrelated Prefill member-2 stop demonstrate the same reusable semantic gap.
+
+The 35-member raw capture should be reused after validator repair; recapturing the GPU is unnecessary unless raw integrity/provenance fails.
