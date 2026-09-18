@@ -1,143 +1,142 @@
-# AWMA Discussion Reference — Real Contextual Warm-Prefix Replay
+# AWMA Discussion Reference — Context Effect Decomposition
 
 Date: 2026-09-18
 
-## 1. The context-realism question can now be tested directly
+## 1. The contextual experiment changes the TLB/PTW story
 
-The project now has a formally admitted same-run simulator-native sequence for all 34 real Prefill predecessors plus Q05.
+The original isolated Q05 replay showed large translation sensitivity and 240 natural walks.
 
-This removes the largest previous realism uncertainty:
-
-```text
-independent isolated Q05
-vs
-real same-run predecessor history -> Q05
-```
-
-The context bundle is hash-closed and durable on node164.
-
-## 2. The LDC.U8 blocker is closed without inventing trace data
-
-The real P34 capture exposed `LDC.U8` as width-zero/no-dynamic-address.
-
-The recovery did not write `width=1`.
-
-Instead, accepted source showed a pre-existing contract:
-
-- producer ignores constant operands without NVBit MREF;
-- serialized LDC can therefore have width 0/no address;
-- trace parser creates no memadd payload for width 0;
-- trace-driven handles `OP_LDC` through its existing constant-space approximation with hardcoded `data_size=4`.
-
-The strict validator was corrected only for exact `LDC`.
-
-This is a validator/contract alignment, not a claim that LDC.U8 is accurately modeled as a one-byte constant-memory transaction.
-
-## 3. Why the producer page-overlap curve is scientifically interesting
-
-The same-run broad trace-address overlap rises in a highly structured way:
+The full real predecessor history changes that picture:
 
 ```text
-~25%  by P1
-~49%  by P2
-no increase at P4
-~99%  by P8
-very small increments after P8
+isolated walks = 240
+P34 walks      = 15
 ```
 
-This suggests that Q05's address working set is heavily related to very recent predecessor activity.
+That is a 93.75% reduction in modeled walk starts.
 
-But it does not yet prove TLB warmth.
+Yet total Q05 cycles improve only 1.56%.
 
-A page may have been touched but evicted from the TLB before Q05. Conversely, a page-table prefix may remain useful even when the exact page translation is not resident.
-
-## 4. Why P4/P16/P34 must still be simulated
-
-P4 has the same broad overlap as P2, and P16/P34 add very little overlap beyond P8.
-
-It would be tempting to drop these rows.
-
-Do not.
-
-The extra predecessor kernels may introduce **pollution/eviction** without adding overlapping Q05 pages. Therefore:
+Therefore the project must separate:
 
 ```text
-same overlap != same target-entry microarchitectural state
+cold-start translation activity
+from
+remaining translation performance sensitivity
+from
+non-translation predecessor-state effects
 ```
 
-Comparing P2 vs P4 and P8 vs P16/P34 directly tests this effect.
+These are different questions.
 
-## 5. Translation-relevant page scope must be recomputed
+## 2. What is now strongly supported
 
-The producer distance table includes low-address pages such as `0x0`.
+Real predecessor context matters.
 
-The accepted VM hook in `ldst_unit::memory_cycle()` applies translation only to:
+It converts most Q05 L2-TLB misses/walk demand into warm-state hits:
 
 ```text
-global_space
-local_space
-param_space_local
+L2-TLB miss: 633 -> 249
+walks:       240 -> 15
+PWC misses:   70 -> 3
+PTE req:     310 -> 18
 ```
 
-Shared, constant and other non-VM paths must not be used to motivate TLB overlap.
+So a mechanism whose motivation is primarily "Q05 launches cold and repeatedly walks pages" would be over-motivated by isolated replay.
 
-Therefore 174 will recompute 4KiB/64KiB overlap from the admitted bundle using the simulator's actual trace-driven memory-space resolution.
+## 3. Why total cycles remain non-monotonic
 
-The producer tables remain valid as broad same-run trace-address overlap; they are not overwritten.
+P8 is faster than P16/P34 even though its translation counters are not better.
 
-## 6. F0 context semantics that matter
-
-The contextual experiment intentionally keeps the accepted F0 behavior unchanged:
+Most clearly:
 
 ```text
-L1 data cache: flushed at kernel completion
-L2 data cache: not flushed by F0; may persist
-L2 TLB: persistence directly demonstrated by self-warm
-L1 TLB: persistent by source lifetime unless an explicit translation flush occurs
-PWC: persistent by source lifetime, runtime residency not directly dumped
-MSHR/PWQ/walkers: drained at clean kernel completion
+P8:
+cycles 835145
+walks 16
+L2-TLB miss 292
+
+P16:
+cycles 862623
+walks 16
+L2-TLB miss 241
 ```
 
-Therefore a contextual Q05 cycle change is initially a **combined modeled context effect**.
+The translation requester-latency sum is also lower in P16, and aggregate L2 data misses are lower.
 
-Translation and L2-data-cache counters must be compared before assigning cause.
+So the P8/P16 cycle gap cannot reasonably be described as "more TLB/PTW overhead".
 
-## 7. What result would change the research direction
+Some other inherited state/history is affecting execution.
 
-Three broad outcomes are possible:
+The next stage first mines existing memory-system/pipeline counters rather than immediately adding new mechanisms.
 
-### A. Translation cost collapses under real context
+## 4. Why Q05-only ideal translation is the right next counterfactual
 
-If P1/P2/P8 sharply reduce Q05 walks/TLB misses and the contextual baseline becomes much faster, isolated-Q05 translation opportunity was materially cold-start amplified.
+Running the entire prefix under I0 would be scientifically wrong for this purpose.
 
-Future mechanism work must use an accepted contextual prefix.
+It would change:
 
-### B. Translation remains expensive despite high predecessor overlap
+- predecessor timing;
+- predecessor TLB/PTE traffic;
+- persistent cache state;
+- potentially lower-memory temporal behavior.
 
-Then the isolated result is substantially strengthened: real predecessor history does not remove the modeled translation bottleneck.
+Then Q05 would start from a different context.
 
-The next mechanism decomposition can proceed with stronger motivation.
+Instead:
 
-### C. Cycles change mainly with L2 data cache, not translation
+```text
+prefix = natural R0
+Q05    = ideal translation only
+```
 
-Then initial-state realism matters, but the main effect is data-cache context rather than TLB/PTW.
+This preserves the realistic predecessor-created cache/memory context and asks a direct causal question:
 
-The translation research claim must be narrowed accordingly.
+> If Q05's translation path disappeared at target entry, how much faster would Q05 itself become?
 
-## 8. Why first-key outcomes are valuable
+That is the relevant upper-bound diagnostic before designing a translation mechanism.
 
-If timing-neutral telemetry can identify the first Q05 outcome per simulator key `{asid,vpn,page_size}`, we can distinguish:
+## 5. Why P2, P8 and P34 are chosen
 
-- key already warm in L1;
-- key warm only in L2;
-- key requiring a new walk.
+P2 represents a partially warmed translation state.
 
-That is much stronger evidence than raw page-set overlap.
+P8 is the first prefix where translation-relevant page coverage is near saturated and walks collapse to 16.
 
-It is optional only when implementing it would risk timing/semantic neutrality; aggregate TLB/walk counters remain mandatory.
+P34 is the full real-context reference.
 
-## 9. Mainline handoff
+Comparing target-only I0 across these three points tests whether residual translation sensitivity changes as context becomes realistic.
 
-Node174 now owns the active mainline.
+## 6. P8 is not automatically the baseline
 
-Node109 GPU is released and may run only separately authorized preemptible side work. No side work may delay a new mainline GPU requirement.
+P8 has the lowest observed cycles, but that alone is not a reason to promote it.
+
+P34 contains the complete real predecessor history.
+
+P8 may become a useful **screening** prefix only if the next target-only ideal-translation experiment shows that its translation sensitivity is representative of P34.
+
+Any final mechanism claim would still need P34 validation unless a later methodology stage justifies otherwise.
+
+## 7. PTW may no longer be the dominant mechanism target
+
+Under P34, only 15 walks remain.
+
+If Q05-only ideal translation gives only a small additional speedup, PTW/PWC-focused mechanisms should be strongly downgraded for this workload/context.
+
+If a substantial ideal gap remains despite only 15 walks, the residual modeled cost likely comes from the lookup/service path rather than walk frequency alone.
+
+That would motivate a different mechanism decomposition.
+
+## 8. Non-translation context need not be fully solved before the translation decision
+
+The project should distinguish two questions:
+
+1. what causes P8/P16/P34 total-cycle differences?
+2. how much Q05 translation-path cost remains under P34?
+
+Question 2 can be answered directly with Q05-only ideal translation even if question 1 is not fully attributed to one exact L2/DRAM structure.
+
+Therefore the next stage prioritizes the target-only counterfactual and treats L2-boundary ablation as optional, source-safe diagnostics only.
+
+## 9. No mechanism yet
+
+Do not start L2-TLB latency, PTW, capacity, page-size, Segment or prefetch experiments until the contextual target-only ideal result is reviewed.
