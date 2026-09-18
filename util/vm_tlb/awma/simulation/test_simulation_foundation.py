@@ -60,6 +60,10 @@ LDGSTS_WIDTH_ZERO_TRACE = VALID_TRACE.replace(
     b"0000 ffffffff 1 R1 LDG.E.32 1 R2 4 1 1000 4 0",
     b"0000 ffffffff 0 LDGSTS 1 R2 0 0",
 )
+LDC_WIDTH_ZERO_TRACE = VALID_TRACE.replace(
+    b"LDG.E.32 1 R2 4 1 1000 4 0",
+    b"LDC.U8 1 R2 0 0",
+)
 MISSING_MEMORY_ADDRESS_TRACE = VALID_TRACE.replace(b"R2 4 1 1000 4 0", b"R2 4 1 1000")
 
 def digest(path):
@@ -160,6 +164,11 @@ class TestFoundation(unittest.TestCase):
         result = self.compiled_smoke(LDGSTS_WIDTH_ZERO_TRACE)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("memory opcode has zero/missing width: LDGSTS", result.stderr)
+
+    def test_implicit_ldc_width_zero_without_address_passes_compiled(self):
+        result = self.compiled_smoke(LDC_WIDTH_ZERO_TRACE)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('"LDC.U8":1', result.stdout)
 
     def test_valid_memory_record_passes_compiled(self):
         result = self.compiled_smoke(VALID_TRACE)
@@ -366,7 +375,7 @@ class TestFoundation(unittest.TestCase):
                 output_dir=root / "run", manifest=manifest, parser=self.parser,
                 baseline_identity=baseline_path, binary=binary, base_config=base_config,
                 overlay=overlay, env=[], timeout_seconds=10, telemetry_exporter=exporter,
-                trace_policy="FULL_RANK0",
+                trace_policy="FULL_RANK0", admission_receipt=None,
             )
             receipt = replay.run(args)
             self.assertEqual(receipt["execution_status"], "EXPECTED_FIXED_WINDOW_BOUNDARY")

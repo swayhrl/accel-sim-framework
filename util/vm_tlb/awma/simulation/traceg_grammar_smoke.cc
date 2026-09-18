@@ -74,6 +74,14 @@ bool addressless_control_opcode(const std::string &opcode) {
   return base_opcode(opcode) == "LDGDEPBAR";
 }
 
+// Accepted Ampere parsing classifies LDC as OP_LDC/ALU_OP and trace-driven
+// supplies its pre-existing implicit constant-load approximation without a
+// serialized dynamic address payload.  This exception is deliberately exact:
+// it does not make other LD* opcodes, including ULDC, addressless.
+bool implicit_constant_load_opcode(const std::string &opcode) {
+  return base_opcode(opcode) == "LDC";
+}
+
 std::string access_kind(const std::string &opcode) {
   const std::string base = base_opcode(opcode);
   if (addressless_control_opcode(opcode)) return "";
@@ -154,7 +162,7 @@ void parse_instruction(const std::string &line, Receipt &receipt) {
 
   const unsigned width = static_cast<unsigned>(number(take(parts, index, "memory width"), 10, "memory width"));
   const std::string access = access_kind(opcode);
-  if (width == 0 && !access.empty())
+  if (width == 0 && !access.empty() && !implicit_constant_load_opcode(opcode))
     throw std::runtime_error("memory opcode has zero/missing width: " + opcode);
   if (width > 0) {
     if (access.empty()) throw std::runtime_error("memory width lacks access semantics: " + opcode);
