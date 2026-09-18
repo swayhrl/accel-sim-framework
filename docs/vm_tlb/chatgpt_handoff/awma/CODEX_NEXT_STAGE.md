@@ -1,81 +1,67 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE MAINLINE — 174 CONTEXTUAL REPLAY**
+Status: **ACTIVE MAINLINE — 174 CONTEXT-EFFECT DECOMPOSITION**
 
 Stage:
 
-`AWMA_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_174NEW_V1`
+`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1`
 
 Coordination branch:
 
-`hrl/awma-q05-contextual-replay-handoff-v1`
+`hrl/awma-q05-context-effect-decomposition-handoff-v1`
 
 ## node174-new — ACTIVE MAINLINE
 
 Execute:
 
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_RESUME_174NEW_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_V1.md`
+`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_Q05_CONTEXT_EFFECT_DECOMPOSITION_V1.md`
 
 Execution parent:
 
 ```text
-hrl/awma-q05-warm-prefix-replay-174new-v1
-5b9d708087e8ff485f03fd561a15e08baea8ad3a
+hrl/awma-q05-contextual-warm-prefix-replay-174new-v1
+2640c4368aea1dc44eb6c34fdc9bb5f738ec3fb2
 ```
 
 Recommended branch:
 
-`hrl/awma-q05-contextual-warm-prefix-replay-174new-v1`
+`hrl/awma-q05-context-effect-decomposition-174new-v1`
 
-Formal producer authority:
+Primary sequence:
 
-```text
-hrl/awma-q05-prefix-ldc-recovery-109-v1
-c6733012c13099c6a86f506fd8c61e351791159e
-```
-
-Durable bundle:
-
-`/root/share/mnt164/huangrulin/c16_ai_workload/raw/C16R_qwen-qwen2-5-0-5b-instruct_s2-text_prefill_awma-route-b-nvbit1771-sim-native-contiguous-prefix_q05-contiguous-prefix_20260918T022749Z_1fea2d955d1c`
-
-Expected execution:
-
-1. independent 174 consumer/hash/order/context validation;
-2. bring forward only the narrow exact-LDC validator semantic patch;
-3. fold F0 boundary wording/state cleanup into this run;
-4. recompute translation-relevant page overlap using actual VM-entry spaces;
-5. create new context-input identities;
-6. run P1/P2/P4/P8/P16/P34 contextual rows from fresh simulator processes;
-7. collect Q05-only translation + L2-data-cache deltas;
-8. compare contextual rows with accepted isolated Q05;
-9. report and STOP before any mechanism experiment.
+1. mine existing natural contextual logs for non-translation memory/pipeline differences;
+2. source-audit a Q05-only ideal-identity translation bypass;
+3. implement it disabled by default;
+4. pass P8/P34 R0 neutrality controls;
+5. run P2/P8/P34 Q05-only ideal-translation counterfactuals;
+6. optionally produce isolated full-kernel Q05-I0;
+7. only if useful and source-safe, run bounded P8/P34 target-boundary L2-data-state diagnostic;
+8. quantify residual contextual translation sensitivity;
+9. assess P8 as screening-prefix candidate vs P34 realism reference;
+10. STOP before any mechanism.
 
 Success marker:
 
-`AWMA_Q05_CONTEXTUAL_WARM_PREFIX_REPLAY_174NEW_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_CONTEXT_EFFECT_DECOMPOSITION_174NEW_V1_COMPLETE_WITH_SCOPE`
 
 ## node109
 
-Mainline GPU requirement is currently released.
+The independently authorized unattended capture side goal may continue.
 
-No mainline GPU task is active while 174 runs.
+It remains subordinate and must yield if the active mainline later requests GPU resources.
 
-Side work may run only if separately authorized, is preemptible, and cannot delay a future mainline GPU request.
-
-Do not auto-start unrelated model campaigns or cleanup from this handoff.
+No new 109 instructions are introduced by this mainline handoff.
 
 ## Explicitly forbidden
 
-Do not automatically start:
+No new architecture mechanism:
 
-- new TLB/PTW/cache mechanisms;
-- I0 contextual mechanism sweeps;
-- latency/capacity/page-size/walker sweeps;
-- Segment;
-- changing F0 cache/TLB persistence semantics;
-- rewriting the formal 109 context bundle;
-- forcing broad trace-page overlap to equal TLB residency.
+- no TLB latency/capacity/ports/walker sweep;
+- no PTW/PWC optimization;
+- no page-size/segmentation;
+- no translation prefetch/speculation;
+- no cache redesign.
 
-Routine parser/driver/index/telemetry engineering is solve-and-continue when scientific semantics stay unchanged.
+Routine source navigation, parser/log extraction, diagnostic plumbing, deterministic controls and node164 storage are solve-and-continue.
 
 Finish report -> review pack -> hashes -> commit -> push -> remote verify -> clean -> STOP.
