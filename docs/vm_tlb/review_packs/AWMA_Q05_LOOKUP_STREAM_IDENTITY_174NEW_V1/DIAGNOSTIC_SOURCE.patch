@@ -1,0 +1,354 @@
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/shader.cc	2026-09-08 06:32:52.000000000 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-lookup-stream-identity-174new-v1/.awma_runtime/lookup_stream_identity/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/shader.cc	2026-09-18 17:01:10.111610029 +0000
+@@ -677,6 +677,7 @@
+                                  int cta_size, kernel_info_t &kernel) {
+   address_type start_pc = next_pc(start_thread);
+   unsigned kernel_id = kernel.get_uid();
++  vm_translation::stream_note_cta_assignment(kernel_id, m_sid, cta_id, ctaid);
+   if (m_config->model == POST_DOMINATOR) {
+     unsigned start_warp = start_thread / m_config->warp_size;
+     unsigned warp_per_cta = cta_size / m_config->warp_size;
+@@ -2433,6 +2434,15 @@
+ 
+   mem_stage_stall_type stall_cond = NO_RC_FAIL;
+   mem_access_t &access = inst.accessq_back();
++  if (m_core->get_kernel() != NULL) {
++    const unsigned stream_space = inst.space.get_type() == global_space ? 0U :
++        (inst.space.get_type() == local_space ? 1U : 2U);
++    const unsigned stream_kind = inst.isatomic() ? 2U : (inst.is_store() ? 1U : 0U);
++    vm_translation::stream_observe_access(
++        m_core->get_kernel()->get_uid(), access.get_uid(), inst.get_uid(),
++        inst.pc, stream_space, access.get_size(), inst.active_count(),
++        stream_kind, m_sid, m_core->get_warp_cta_id(inst.warp_id()));
++  }
+   if (!access.vm_translation_applied()) {
+     vm_translation::translation_source translation_outcome =
+         vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
+@@ -2440,7 +2450,23 @@
+                            m_core->get_kernel(),
+                            m_config->gpgpu_vm_page_size);
+     ++m_stats->vm_requests;
+-    if (m_config->gpgpu_vm_mode == 0) {
++    const char *target_i0_text = getenv("GPGPUSIM_VM_TARGET_I0_KERNEL_UID");
++    const unsigned target_i0_uid =
++        target_i0_text == NULL ? 0 : unsigned(strtoul(target_i0_text, NULL, 10));
++    const bool target_i0 = target_i0_uid != 0 &&
++        m_core->get_kernel() != NULL &&
++        m_core->get_kernel()->get_uid() == target_i0_uid;
++    if (target_i0) {
++      assert(m_config->gpgpu_vm_mode == 2);
++      assert(vm_core::valid_page_size(m_config->gpgpu_vm_page_size));
++      assert(!vm_core::transaction_crosses_page(
++          access.get_sim_va(), access.get_size(), m_config->gpgpu_vm_page_size));
++      access.set_sim_pa(vm_core::identity_translate(
++          access.get_sim_va(), m_config->gpgpu_vm_page_size));
++      ++m_stats->vm_ideal_translations;
++      ++m_stats->vm_identity_equal;
++      translation_outcome = vm_translation::TRANSLATION_SOURCE_IDEAL_IDENTITY;
++    } else if (m_config->gpgpu_vm_mode == 0) {
+       ++m_stats->vm_disabled_bypasses;
+       access.bypass_vm_translation();
+       translation_outcome = vm_translation::TRANSLATION_SOURCE_DISABLED;
+@@ -2469,6 +2495,23 @@
+               ? vm_translation::TRANSLATION_ACCESS_ATOMIC
+               : (inst.is_store() ? vm_translation::TRANSLATION_ACCESS_WRITE
+                                  : vm_translation::TRANSLATION_ACCESS_READ);
++      const char *lookup_uid_text =
++          getenv("GPGPUSIM_VM_TARGET_LOOKUP_KERNEL_UID");
++      const unsigned lookup_uid = lookup_uid_text == NULL
++          ? 0 : unsigned(strtoul(lookup_uid_text, NULL, 10));
++      if (lookup_uid != 0 && m_core->get_kernel() != NULL &&
++          m_core->get_kernel()->get_uid() == lookup_uid) {
++        const char *l1_text = getenv("GPGPUSIM_VM_TARGET_LOOKUP_L1_LATENCY");
++        const char *l2_text = getenv("GPGPUSIM_VM_TARGET_LOOKUP_L2_LATENCY");
++        assert(l1_text != NULL && l2_text != NULL);
++        vm_translation::enable_target_lookup_latency_override(
++            m_gpu->vm_translation(), unsigned(strtoul(l1_text, NULL, 10)),
++            unsigned(strtoul(l2_text, NULL, 10)));
++      }
++      const char *race_uid_text = getenv("GPGPUSIM_VM_FILL_RACE_KERNEL_UID");
++      const unsigned race_uid = race_uid_text == NULL ? 0 : unsigned(strtoul(race_uid_text, NULL, 10));
++      if (race_uid != 0 && m_core->get_kernel() != NULL && m_core->get_kernel()->get_uid() == race_uid)
++        vm_translation::enable_target_fill_race_telemetry(m_gpu->vm_translation());
+       const vm_translation::lookup_result result =
+           m_gpu->vm_translation()->translate(
+               m_sid, 0, access.get_sim_va(), access.get_size(),
+@@ -2486,6 +2529,7 @@
+       }
+       assert(translation_outcome !=
+              vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
++      vm_translation::stream_note_ready(access.get_uid());
+       access.set_sim_pa(static_cast<new_addr_type>(translated_pa));
+       ++m_stats->vm_ideal_translations;
+       // The accepted M1 baseline is identity-like, but C10 registered
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/vm_translation.h	2026-09-08 06:32:52.000000000 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-lookup-stream-identity-174new-v1/.awma_runtime/lookup_stream_identity/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/vm_translation.h	2026-09-18 17:01:10.107610279 +0000
+@@ -382,6 +382,7 @@
+  public:
+   explicit set_associative_tlb(const tlb_config &config = tlb_config());
+   bool probe(const translation_key &key, uint64_t cycle, uint64_t *ppn);
++  bool peek(const translation_key &key) const;
+   tlb_fill_result fill(const translation_key &key, uint64_t ppn,
+                        uint64_t cycle,
+                        object_class object = OBJECT_UNKNOWN);
+@@ -1080,6 +1081,23 @@
+   unsigned m_physical_f5_pwc_ports_used;
+ };
+ 
++void enable_target_lookup_latency_override(translation_controller *controller,
++                                           unsigned l1_latency,
++                                           unsigned l2_latency);
++void enable_target_fill_race_telemetry(translation_controller *controller);
++
++// Target-kernel stream instrumentation. Disabled unless the environment names
++// the exact kernel UID; it only aggregates observations in external tables.
++void stream_observe_access(unsigned kernel_uid, uint64_t access_uid,
++                           uint64_t inst_uid, uint64_t pc, unsigned space,
++                           unsigned bytes, unsigned active_lanes,
++                           unsigned access_kind, unsigned sid, unsigned cta_slot);
++void stream_note_lookup_launch(uint64_t access_uid);
++void stream_note_ready(uint64_t access_uid);
++void stream_note_cta_assignment(unsigned kernel_uid, unsigned sid,
++                                unsigned cta_slot, unsigned logical_cta);
++void stream_print_stats(FILE *fout);
++
+ }  // namespace vm_translation
+ 
+ #endif
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/vm_translation.cc	2026-09-08 06:32:52.000000000 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-lookup-stream-identity-174new-v1/.awma_runtime/lookup_stream_identity/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/vm_translation.cc	2026-09-18 17:53:01.696720289 +0000
+@@ -6,8 +6,115 @@
+ 
+ #include <fstream>
+ #include <sstream>
++#include <unordered_map>
+ 
+ namespace vm_translation {
++namespace {
++struct target_lookup_override { unsigned l1, l2; bool telemetry; uint64_t race[4]; std::map<uint64_t,bool> launch; };
++std::map<const translation_controller *, target_lookup_override>
++    g_target_lookup_overrides;
++unsigned effective_l1_latency(const translation_controller *controller,
++                              unsigned natural) {
++  std::map<const translation_controller *, target_lookup_override>::const_iterator it =
++      g_target_lookup_overrides.find(controller);
++  return it == g_target_lookup_overrides.end() ? natural : it->second.l1;
++}
++unsigned effective_l2_latency(const translation_controller *controller,
++                              unsigned natural) {
++  std::map<const translation_controller *, target_lookup_override>::const_iterator it =
++      g_target_lookup_overrides.find(controller);
++  return it == g_target_lookup_overrides.end() ? natural : it->second.l2;
++}
++}  // namespace
++
++namespace {
++struct stream_space_stats {
++  uint64_t dynamic_insts, active_lanes, accesses, bytes, tx32, tx64, tx128;
++  uint64_t loads, stores, atomics;
++  stream_space_stats() : dynamic_insts(0), active_lanes(0), accesses(0), bytes(0), tx32(0), tx64(0), tx128(0), loads(0), stores(0), atomics(0) {}
++};
++struct stream_pc_stats {
++  stream_space_stats total; uint64_t min_accesses, max_accesses;
++  stream_pc_stats() : min_accesses(~uint64_t(0)), max_accesses(0) {}
++};
++struct stream_uid_state { uint64_t inst, pc; unsigned space, sid, cta, bytes, lanes, kind, launches, ready; bool seen; stream_uid_state() : inst(0), pc(0), space(0), sid(0), cta(0), bytes(0), lanes(0), kind(0), launches(0), ready(0), seen(false) {} };
++struct stream_inst_state { unsigned space; uint64_t pc, accesses; unsigned lanes; stream_inst_state() : space(0), pc(0), accesses(0), lanes(0) {} };
++struct stream_sm_stats { uint64_t global_accesses, local_accesses, param_local_accesses; std::set<unsigned> slots; std::vector<unsigned> logical_ctas; stream_sm_stats() : global_accesses(0), local_accesses(0), param_local_accesses(0) {} };
++struct stream_state { bool enabled; unsigned target; std::unordered_map<uint64_t,stream_uid_state> uids; std::unordered_map<uint64_t,stream_inst_state> insts; stream_space_stats spaces[3]; std::map<uint64_t,stream_pc_stats> pcs; std::map<unsigned,stream_sm_stats> sms; stream_state() : enabled(false), target(0) {} };
++stream_state g_stream;
++bool stream_match(unsigned kernel_uid) {
++  const char *text = getenv("GPGPUSIM_VM_STREAM_KERNEL_UID");
++  if (text == NULL || text[0] == '\0') return false;
++  const unsigned requested = unsigned(strtoul(text, NULL, 10));
++  if (requested == 0 || requested != kernel_uid) return false;
++  g_stream.enabled = true; g_stream.target = requested; return true;
++}
++unsigned stream_index(unsigned space) { return space < 3 ? space : 0; }
++const char *stream_space_name(unsigned space) { return space == 0 ? "GLOBAL" : (space == 1 ? "LOCAL" : "PARAM_LOCAL"); }
++void stream_add_access(stream_space_stats &s, unsigned bytes, unsigned kind) {
++  ++s.accesses; s.bytes += bytes; if (bytes == 32) ++s.tx32; else if (bytes == 64) ++s.tx64; else if (bytes == 128) ++s.tx128;
++  if (kind == 2) ++s.atomics; else if (kind == 1) ++s.stores; else ++s.loads;
++}
++}
++
++void stream_observe_access(unsigned kernel_uid, uint64_t access_uid,
++                           uint64_t inst_uid, uint64_t pc, unsigned space,
++                           unsigned bytes, unsigned active_lanes,
++                           unsigned access_kind, unsigned sid, unsigned cta_slot) {
++  if (!stream_match(kernel_uid)) return;
++  const unsigned i = stream_index(space);
++  stream_uid_state &u = g_stream.uids[access_uid];
++  if (!u.seen) {
++    u.seen = true; u.inst = inst_uid; u.pc = pc; u.space = i; u.sid = sid; u.cta = cta_slot; u.bytes = bytes; u.lanes = active_lanes; u.kind = access_kind;
++    stream_add_access(g_stream.spaces[i], bytes, access_kind);
++    stream_pc_stats &p = g_stream.pcs[pc]; stream_add_access(p.total, bytes, access_kind);
++    stream_sm_stats &sm = g_stream.sms[sid]; sm.slots.insert(cta_slot); if (i == 0) ++sm.global_accesses; else if (i == 1) ++sm.local_accesses; else ++sm.param_local_accesses;
++  }
++  stream_inst_state &in = g_stream.insts[inst_uid];
++  if (in.accesses == 0) { in.space = i; in.pc = pc; in.lanes = active_lanes; ++g_stream.spaces[i].dynamic_insts; g_stream.spaces[i].active_lanes += active_lanes; ++g_stream.pcs[pc].total.dynamic_insts; g_stream.pcs[pc].total.active_lanes += active_lanes; }
++  ++in.accesses;
++}
++void stream_note_lookup_launch(uint64_t access_uid) { std::unordered_map<uint64_t,stream_uid_state>::iterator it=g_stream.uids.find(access_uid); if (g_stream.enabled && it != g_stream.uids.end()) ++it->second.launches; }
++void stream_note_ready(uint64_t access_uid) { std::unordered_map<uint64_t,stream_uid_state>::iterator it=g_stream.uids.find(access_uid); if (g_stream.enabled && it != g_stream.uids.end()) ++it->second.ready; }
++void stream_note_cta_assignment(unsigned kernel_uid, unsigned sid, unsigned cta_slot, unsigned logical_cta) { if (!stream_match(kernel_uid)) return; stream_sm_stats &sm=g_stream.sms[sid]; sm.slots.insert(cta_slot); sm.logical_ctas.push_back(logical_cta); }
++void stream_print_stats(FILE *fout) {
++  if (!g_stream.enabled) return;
++  uint64_t one=0, multi=0, post_ready=0, total_launch=0, total_ready=0;
++  for (std::unordered_map<uint64_t,stream_uid_state>::const_iterator it=g_stream.uids.begin(); it!=g_stream.uids.end(); ++it) { total_launch+=it->second.launches; total_ready+=it->second.ready; if (it->second.launches==1) ++one; if (it->second.launches>1) ++multi; if (it->second.ready>1) ++post_ready; }
++  fprintf(fout,"AWMA_STREAM_UID target_uid=%u unique_access_uids=%llu launch_once=%llu launch_gt1_before_ready=%llu post_ready_retranslation=%llu lookup_launches=%llu ready_completions=%llu\n",g_stream.target,(unsigned long long)g_stream.uids.size(),(unsigned long long)one,(unsigned long long)multi,(unsigned long long)post_ready,(unsigned long long)total_launch,(unsigned long long)total_ready);
++  for(unsigned i=0;i<3;++i) { const stream_space_stats &x=g_stream.spaces[i]; fprintf(fout,"AWMA_STREAM_SPACE space=%s dynamic_insts=%llu active_lanes=%llu generated_accesses=%llu unique_access_uids=%llu bytes=%llu tx32=%llu tx64=%llu tx128=%llu loads=%llu stores=%llu atomics=%llu\n",stream_space_name(i),(unsigned long long)x.dynamic_insts,(unsigned long long)x.active_lanes,(unsigned long long)x.accesses,(unsigned long long)x.accesses,(unsigned long long)x.bytes,(unsigned long long)x.tx32,(unsigned long long)x.tx64,(unsigned long long)x.tx128,(unsigned long long)x.loads,(unsigned long long)x.stores,(unsigned long long)x.atomics); }
++  for(std::unordered_map<uint64_t,stream_inst_state>::const_iterator it=g_stream.insts.begin();it!=g_stream.insts.end();++it) { stream_pc_stats &p=g_stream.pcs[it->second.pc]; if(it->second.accesses<p.min_accesses)p.min_accesses=it->second.accesses; if(it->second.accesses>p.max_accesses)p.max_accesses=it->second.accesses; }
++  for(std::map<uint64_t,stream_pc_stats>::const_iterator it=g_stream.pcs.begin();it!=g_stream.pcs.end();++it) { const stream_pc_stats &p=it->second; fprintf(fout,"AWMA_STREAM_PC pc=0x%llx dynamic_insts=%llu active_lanes=%llu generated_accesses=%llu min_accesses_per_inst=%llu max_accesses_per_inst=%llu mean_accesses_per_inst=%.9f tx32=%llu tx64=%llu tx128=%llu\n",(unsigned long long)it->first,(unsigned long long)p.total.dynamic_insts,(unsigned long long)p.total.active_lanes,(unsigned long long)p.total.accesses,(unsigned long long)(p.min_accesses==~uint64_t(0)?0:p.min_accesses),(unsigned long long)p.max_accesses,p.total.dynamic_insts?double(p.total.accesses)/double(p.total.dynamic_insts):0.0,(unsigned long long)p.total.tx32,(unsigned long long)p.total.tx64,(unsigned long long)p.total.tx128); }
++  for(std::map<unsigned,stream_sm_stats>::const_iterator it=g_stream.sms.begin();it!=g_stream.sms.end();++it) { const stream_sm_stats &sm=it->second; fprintf(fout,"AWMA_STREAM_SM sid=%u cta_assignments=%llu distinct_cta_slots=%llu global_accesses=%llu local_accesses=%llu param_local_accesses=%llu cta_logical_sequence=",it->first,(unsigned long long)sm.logical_ctas.size(),(unsigned long long)sm.slots.size(),(unsigned long long)sm.global_accesses,(unsigned long long)sm.local_accesses,(unsigned long long)sm.param_local_accesses); for(size_t j=0;j<sm.logical_ctas.size();++j) fprintf(fout,"%s%u",j?",":"",sm.logical_ctas[j]); fprintf(fout,"\n"); }
++}
++
++void enable_target_lookup_latency_override(translation_controller *controller,
++                                           unsigned l1_latency,
++                                           unsigned l2_latency) {
++  assert(controller != NULL);
++  std::map<const translation_controller *, target_lookup_override>::iterator it =
++      g_target_lookup_overrides.find(controller);
++  if (it != g_target_lookup_overrides.end()) {
++    assert(it->second.l1 == l1_latency && it->second.l2 == l2_latency);
++    return;
++  }
++  assert(controller->quiescent_invariants_hold());
++  g_target_lookup_overrides[controller] = target_lookup_override{l1_latency, l2_latency, false, {0,0,0,0}, std::map<uint64_t,bool>()};
++}
++
++void enable_target_fill_race_telemetry(translation_controller *controller) {
++  assert(controller != NULL);
++  std::map<const translation_controller *, target_lookup_override>::iterator it =
++      g_target_lookup_overrides.find(controller);
++  if (it == g_target_lookup_overrides.end()) {
++    const translation_config &config = controller->config();
++    g_target_lookup_overrides[controller] = target_lookup_override{
++        config.l1_lookup_latency, config.l2_lookup_latency, true, {0,0,0,0},
++        std::map<uint64_t,bool>()};
++  } else {
++    it->second.telemetry = true;
++  }
++}
+ 
+ const char *segment_registration_status_name(segment_registration_status status) {
+   switch (status) {
+@@ -695,6 +802,13 @@
+   return true;
+ }
+ 
++bool set_associative_tlb::peek(const translation_key &key) const {
++  const unsigned begin = set_for(key) * m_config.assoc;
++  for (unsigned way = 0; way < m_config.assoc; ++way)
++    if (m_entries[begin + way].valid && m_entries[begin + way].key == key) return true;
++  return false;
++}
++
+ bool set_associative_tlb::probe(const translation_key &key, uint64_t cycle,
+                                 uint64_t *ppn) {
+   (void)cycle;
+@@ -1844,10 +1958,15 @@
+             else
+               ++m_stats.segment_raw_l1_misses;
+           }
+-          m_stats.l1_lookup_service_cycles += m_config.l1_lookup_latency;
++          m_stats.l1_lookup_service_cycles += effective_l1_latency(this, m_config.l1_lookup_latency);
+           lookup.l1_complete_cycle = cycle;
+           lookup.l1_completed = true;
+           lookup.l1_hit = hit;
++          std::map<const translation_controller *, target_lookup_override>::iterator telemetry = g_target_lookup_overrides.find(this);
++          if (telemetry != g_target_lookup_overrides.end() && telemetry->second.telemetry) {
++            std::map<uint64_t,bool>::iterator launch = telemetry->second.launch.find(lookup.uid);
++            if (launch != telemetry->second.launch.end()) { ++telemetry->second.race[(launch->second ? 2U : 0U) + (hit ? 1U : 0U)]; telemetry->second.launch.erase(launch); }
++          }
+           lookup.l1_ppn = ppn;
+           changed = true;
+         }
+@@ -1984,7 +2103,7 @@
+         lookup.l2_issued = true;
+         lookup.l2_launch_cycle = cycle;
+         lookup.stage = LOOKUP_L2_SERVICE;
+-        lookup.ready_cycle = cycle + m_config.l2_lookup_latency;
++        lookup.ready_cycle = cycle + effective_l2_latency(this, m_config.l2_lookup_latency);
+         progress = true;
+         ++index;
+         continue;
+@@ -2001,7 +2120,7 @@
+           else
+             ++m_stats.object[lookup.object].l2_misses;
+         }
+-        m_stats.l2_lookup_service_cycles += m_config.l2_lookup_latency;
++        m_stats.l2_lookup_service_cycles += effective_l2_latency(this, m_config.l2_lookup_latency);
+         lookup.l2_complete_cycle = cycle;
+         if (hit) {
+           m_l1s[lookup.sid].fill(lookup.key, ppn, cycle, lookup.object);
+@@ -2232,6 +2351,7 @@
+     return L1_PORT_STALL;
+   }
+   ++m_stats.l1_lookup_launches;
++  stream_note_lookup_launch(waiter_uid);
+   if (m_stats.object_attribution_enabled)
+     ++m_stats.object[object].l1_lookup_launches;
+   note_object_requester(object, key);
+@@ -2239,8 +2359,11 @@
+   // retains the accepted L1 delivery probe/source handoff but must not begin a
+   // second Segment lookup for the same requester.
+   const bool launch_segment = attempt_segment;
++  std::map<const translation_controller *, target_lookup_override>::iterator telemetry = g_target_lookup_overrides.find(this);
++  if (telemetry != g_target_lookup_overrides.end() && telemetry->second.telemetry)
++    telemetry->second.launch[waiter_uid] = m_l1s[sid].peek(key);
+   m_lookups.push_back(lookup_operation(
+-      sid, waiter_uid, key, cycle, cycle + m_config.l1_lookup_latency, sim_va,
++      sid, waiter_uid, key, cycle + 0, cycle + effective_l1_latency(this, m_config.l1_lookup_latency), sim_va,
+       request_bytes, translation_generation(asid), object, access, launch_segment,
+       launch_segment ? cycle + m_config.segment.lookup_latency : cycle));
+   if (launch_segment) {
+@@ -2254,7 +2377,7 @@
+   // Preserve the accepted zero-latency diagnostic behavior without making the
+   // non-zero model poll or re-probe.  service_lookups() completes only stages
+   // whose modeled service interval ends at this cycle.
+-  if (m_config.l1_lookup_latency == 0) service_lookups(cycle);
++  if (effective_l1_latency(this, m_config.l1_lookup_latency) == 0) service_lookups(cycle);
+   inflight = find_lookup(sid, waiter_uid, key);
+   if (inflight != 0 && inflight->stage == LOOKUP_READY)
+     return translate(sid, asid, sim_va, request_bytes, cycle, waiter_uid,
+@@ -2262,7 +2385,7 @@
+   // Legacy zero-latency diagnostics historically surface MSHR/PWQ fullness
+   // synchronously.  Preserve that contract without allowing the non-zero
+   // service path to re-probe either TLB while a handoff is stalled.
+-  if (m_config.l1_lookup_latency == 0 && inflight != 0 &&
++  if (effective_l1_latency(this, m_config.l1_lookup_latency) == 0 && inflight != 0 &&
+       inflight->stage == LOOKUP_MSHR_HANDOFF) {
+     const lookup_result result =
+         m_mshrs.size() >= m_config.mshr_entries ? MSHR_FULL : PWQ_FULL;
+@@ -2713,6 +2836,12 @@
+           (unsigned long long)m_stats.pending_waiter_bypasses);
+   fprintf(fout, "vm_translation_lookup_inflight_bypasses = %llu\n",
+           (unsigned long long)m_stats.lookup_inflight_bypasses);
++  std::map<const translation_controller *, target_lookup_override>::const_iterator telemetry = g_target_lookup_overrides.find(this);
++  const uint64_t *race = telemetry == g_target_lookup_overrides.end() ? 0 : telemetry->second.race;
++  fprintf(fout, "vm_fill_race_l1_launch_miss_complete_miss = %llu\n", (unsigned long long)(race ? race[0] : 0));
++  fprintf(fout, "vm_fill_race_l1_launch_miss_complete_hit = %llu\n", (unsigned long long)(race ? race[1] : 0));
++  fprintf(fout, "vm_fill_race_l1_launch_hit_complete_miss = %llu\n", (unsigned long long)(race ? race[2] : 0));
++  fprintf(fout, "vm_fill_race_l1_launch_hit_complete_hit = %llu\n", (unsigned long long)(race ? race[3] : 0));
+   fprintf(fout, "vm_l1_tlb_lookup_latency_cycles = %u\n",
+           m_config.l1_lookup_latency);
+   fprintf(fout, "vm_l1_tlb_lookup_launches = %llu\n",
+@@ -3117,6 +3246,7 @@
+   }
+   fprintf(fout, "vm_object_attribution_conservation_pass = %u\n",
+           object_attribution_conserves() ? 1U : 0U);
++  stream_print_stats(fout);
+ }
+ 
+ }  // namespace vm_translation
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/shader.h	2026-09-08 06:32:52.000000000 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-lookup-stream-identity-174new-v1/.awma_runtime/lookup_stream_identity/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/gpgpu-sim/shader.h	2026-09-18 17:01:10.109610154 +0000
+@@ -2150,6 +2150,7 @@
+   }
+   kernel_info_t *get_kernel() { return m_kernel; }
+   unsigned get_sid() const { return m_sid; }
++  unsigned get_warp_cta_id(unsigned warp_id) const { return m_warp[warp_id]->get_cta_id(); }
+ 
+   // used by functional simulation:
+   // modifiers
