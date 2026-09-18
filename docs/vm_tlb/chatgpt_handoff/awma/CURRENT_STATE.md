@@ -77,33 +77,30 @@ Node174-new then replays real predecessor suffixes before Q05 under unchanged F0
 ## Active tracks
 
 ```text
-M3 — 109 / RTX4080
-Q05 same-run contiguous prefix capture
-ACTIVE
+M3R — 109 / RTX4080
+Q05 P34 LDC.U8 semantic recovery + existing-raw promotion
+ACTIVE MAINLINE
 
 M4 — 174-new
-Q05 warm-prefix replay preparation / execution
-WAITING_FOR_CONTEXT_BUNDLE after completed preparation
+Q05 warm-prefix replay
+WAITING_FOR_CONTEXT_BUNDLE
 ```
 
-### M3 — 109
+### M3R — 109
+
+The first contiguous-prefix run closed R1 and R2 and captured all 35/35 same-context raw members, but formal admission stopped at member 2 because the frozen strict validator rejected `LDC.U8` with width 0.
+
+This is now a mainline blocker, not deferred side work.
 
 Execute:
 
-`CODEX_NEXT_STAGE_109_Q05_CONTIGUOUS_PREFIX_CAPTURE_V1.md`
+`CODEX_RESUME_109_Q05_PREFIX_LDC_U8_RECOVERY_V1.md`
 
-Target formal context:
+Existing P34 evidence already contains all 35 terminally closed raw members in one CUDA context. The recovery path must first reuse that raw execution offline.
 
-```text
-launches 0..33 = all contiguous real predecessors
-launch 34       = exact Q05
-one frozen execution
-one CUDA context
-35 members exactly
-no interior omission
-```
+Source-backed diagnosis to verify: the producer intentionally omits dynamic payload for constant operands; frozen Accel-Sim accepts `LDC` through an implicit constant-load path. Therefore do not fabricate width/address. Repair only the strict validator classification for exact `LDC`, regression-test it, validate all 35 members, then perform page-overlap analysis and node164 publication.
 
-Use accepted Route-B producer semantics and minimally extend only the selection/writer lifecycle needed for multiple sequential members. Trace record grammar remains frozen.
+GPU recapture is fallback-only if existing raw integrity/provenance cannot be closed.
 
 ### M4 — 174-new
 
@@ -192,7 +189,7 @@ The new context bundle is formal only after per-member closure, bundle hash clos
 
 Still deferred while mainline uses the resource:
 
-- Decode Flash `LDC.U8` trace semantic repair;
+- Decode Flash follow-on capture after the shared LDC semantic issue is closed;
 - Qwen3/DeepSeek campaigns;
 - complementary GEMM/GEMV replay;
 - NCU side campaigns;
