@@ -1,3 +1,5 @@
+> **V2.1 ACTIVE OVERRIDE (2026-09-19):** before executing this file, read and apply `CODEX_SIDE_GOAL_109_TEN_HOUR_V2_1_LOCK_WAIT_EXPANDED_OVERRIDE.md`. The override changes lock-wait semantics, starts the 10h active budget only after lock acquisition, reorders the queue by scientific value, and approximately doubles the target backlog. Where the two files differ, V2.1 wins.
+
 # CODEX SIDE GOAL — 109 Ten-Hour Capture + Native TLB Recon Campaign V2
 
 Date: 2026-09-19
