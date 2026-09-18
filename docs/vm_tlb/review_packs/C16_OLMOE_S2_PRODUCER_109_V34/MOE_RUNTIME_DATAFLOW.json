@@ -1,0 +1,13 @@
+{
+  "backend": "torch.nn.Linear BF16 on CUDA",
+  "campaign": "C16_OLMOE_S2_PRODUCER_109_V34",
+  "coordination_head": "b165c82185d54de3a3abeb70e69a7ed8b2f23a17",
+  "dataflow": "hidden -> gate -> softmax -> natural top-8 -> expert mask -> experts[expert_id] -> gate_proj/up_proj -> SiLU -> down_proj -> route weighted index_add combine",
+  "formal_admission_concurrency": 1,
+  "implementation": "OlmoeSparseMoeBlock loops 64 ModuleList experts; selected tokens gathered by expert_mask",
+  "model_id": "allenai/OLMoE-1B-7B-0125-Instruct",
+  "revision": "b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e",
+  "schema_version": 1,
+  "source_identity": "transformers/models/olmoe/modeling_olmoe.py sha256 413888fc3be7e037727586f25900b629cc5dbc06b227a4f0d42c67cacb597bc7",
+  "status": "PASS_OBSERVED_NATIVE_BF16_PER_EXPERT_PATH"
+}
