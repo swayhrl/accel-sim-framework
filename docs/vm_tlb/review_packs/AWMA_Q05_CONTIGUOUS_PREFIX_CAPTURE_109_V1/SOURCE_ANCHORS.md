@@ -1,0 +1,2 @@
+producer_authority=5143b4e10aaf2fc47bb60492155d2464b0b726fd
+coordination=f515fd5a58ca75d2ec75f1eefcf85d8416b379e8
