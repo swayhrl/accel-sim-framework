@@ -4,125 +4,135 @@ Date: 2026-09-19
 
 ## Coordination stage
 
-`AWMA_Q05_GLOBAL_ACCESS_DETERMINISM_CLOSURE_174NEW_V1`
+`AWMA_VM_PER_ACCESS_COVERAGE_REPAIR_174NEW_V1`
 
 Node174-new remains the active scientific mainline.
 
-Node109 is independently running the V2.1 ten-hour side campaign.
+Node109 V2.1 campaign is complete and released.
 
-## Accepted lookup-stream identity closure
+## Latest accepted 174 result
 
 Execution:
 
 ```text
-hrl/awma-q05-lookup-stream-identity-174new-v1
-42f7c134ac9f2d1b0d789ba455a7cea76703ab56
+hrl/awma-q05-global-access-determinism-174new-v1
+be82faf264e93396b4b7d4fd72078c7e4491e3e4
 ```
 
 Status:
 
-`AWMA_Q05_LOOKUP_STREAM_IDENTITY_CLOSURE_174NEW_V1_COMPLETE_WITH_SCOPE`
+`AWMA_Q05_GLOBAL_ACCESS_DETERMINISM_CLOSURE_174NEW_V1_COMPLETE_WITH_SCOPE`
 
-Accepted facts:
+Accepted conclusion:
 
-- P34/P8 natural controls reproduce exactly;
-- all rows have `post_ready_retranslation=0`;
-- LOCAL and PARAM_LOCAL generated-access counts are invariant;
-- the access-stream delta is entirely GLOBAL;
-- aggregate GLOBAL dynamic memory instructions and active lanes are invariant;
-- no architecture mechanism was evaluated.
+`PREVIOUS_STREAM_TELEMETRY_ARTIFACT`
 
-P34:
+Canonical generation-time comparison:
 
 ```text
-point      cycles   GLOBAL generated accesses
-10/80      871835   549754
-5/80       778598   551798
-0/80       748102   637816
-0/0        657110   644990
+140672 GLOBAL trace instructions
+10/80 vs 0/80:
+INPUT_SAME_OUTPUT_SAME for every canonical instruction
+generation-time GLOBAL access delta = 0
 ```
 
-All P34 rows:
+Thus the formal trace/coalescing stream is deterministic.
+
+## New correctness issue exposed by the same stage
+
+Generation-to-VM conservation fails:
 
 ```text
-GLOBAL dynamic_insts = 139776
-GLOBAL active_lanes  = 4386816
-LOCAL generated      = 226912
+generation-time GLOBAL accesses = 2182656
+
+legacy VM unique/READY:
+P34 10/80 = 776666
+P34 0/80  = 864728
 ```
 
-The previous stage classified:
+Approximate legacy GLOBAL coverage relative to generation:
 
-`LOOKUP_STREAM_DELTA_EXPLAINED_BY_OTHER_ACCESS_GENERATION`
+```text
+10/80 ~= 35.6%
+0/80  ~= 39.6%
+```
 
-This is an intermediate classification only; the cause of GLOBAL access-generation variation remains unresolved.
+This is not yet the full GLOBAL+LOCAL eligible-coverage denominator.
 
-## Important source audit after closeout
+Source audit identifies a concrete path:
 
-The previous telemetry counts unique access UIDs at the VM boundary, so the delta is not a simple retry double-count.
+`ldst_unit::memory_cycle()`
 
-Accepted source also guarantees that after translation READY:
+translates only current `accessq_back()`, after which positive-latency L1D and bypass-L1D paths may pop multiple further access-queue entries without independently checking/applying VM translation.
 
-`mem_access_t::set_sim_pa()`
+Therefore prior Q05 translation timing may under-cover coalesced accesses.
 
-sets:
+The current identity-like mapping can hide functional-address error while still skipping TLB/PTW timing/state.
 
-`m_vm_translation_applied=true`
+## Scientific status of prior translation results
 
-so downstream cache/interconnect backpressure does not retranslate the same access object.
+Do not delete historical evidence.
 
-Trace-driven GLOBAL semantics are expected to be deterministic:
+Until repair qualification:
 
-- trace parser provides active mask and lane addresses;
-- `trace_warp_inst_t::parse_from_trace_struct()` copies them;
-- GLOBAL addresses are not rewritten by `checkExecutionStatusAndUpdate()`;
-- `generate_mem_accesses()` uses fixed coalescing rules.
+`LEGACY_VM_UNDERCOVERAGE_BASELINE_PENDING_REQUALIFICATION`
 
-Therefore the remaining GLOBAL access-count change is a simulator identity/determinism question that must close before mechanism work.
+applies to Q05 results dependent on modeled VM timing.
+
+Producer traces, native census, structural footprint and Decode Flash capture evidence remain independent of this issue.
+
+## node109 V2.1 final
+
+Execution:
+
+```text
+hrl/awma-109-ten-hour-capture-native-recon-v2
+8a9d96ceb00e36ebdfa3d56cc277f965fffa649c
+```
+
+Status:
+
+`AWMA_109_TEN_HOUR_CAPTURE_AND_NATIVE_RECON_V2_COMPLETE_WITH_SCOPE`
+
+Accepted side-lane observations:
+
+- Decode Flash Primary-1/2 temporal and requested 2D capture coverage complete;
+- Primary-1 memory traffic/footprint changes only modestly through Decode32 and is highly stable across within-step occurrence;
+- Primary-2 is structurally tiny and highly invariant;
+- native default pointer-chase knees are strongly data-cache-policy confounded;
+- targeted `cg` surface is largely flat across location count at each tested stride;
+- no clean pure-TLB latency calibration was obtained;
+- simulator 10/80 remain generic model assumptions.
+
+Node109 is released.
 
 ## Active mainline
 
 Execute:
 
-`CODEX_NEXT_STAGE_174NEW_Q05_GLOBAL_ACCESS_DETERMINISM_V1.md`
+`CODEX_NEXT_STAGE_174NEW_VM_PER_ACCESS_COVERAGE_REPAIR_V1.md`
 
-Primary goal:
+Goals:
 
-> Join the same dynamic GLOBAL trace instructions across P34 10/80 and 0/80 by a timing-independent canonical trace identity and determine whether the difference enters before coalescing, inside coalescing/access generation, or after generation.
+1. directly prove untranslated downstream L1D/ICNT admissions in the legacy runtime;
+2. build a surgical per-access VM coverage repair;
+3. require every VM-eligible access to translate exactly once before downstream admission;
+4. run unit/synthetic qualification;
+5. run minimal real P34 legacy vs repaired comparison;
+6. stop for scientific review before any broad rebaseline.
 
-Canonical identity should derive from the trace:
+## Baseline policy
 
-```text
-trace TB coordinates
-+ trace warp id
-+ trace instruction ordinal
-```
+No architecture mechanism is authorized.
 
-not runtime `inst_uid`.
+Do not silently replace accepted historical result packs.
 
-The stage first mines existing per-PC logs, then uses generation-time fingerprints and only the minimum 10/80 vs 0/80 rerun.
+If repair qualifies and changes the P34 scientific result, emit:
 
-## Model-validity policy
+`STOP_FOR_SCIENTIFIC_REVIEW`
 
-Still frozen:
-
-- L1/L2 10/80 = generic model assumptions;
-- lookup timing is simulator-coupled;
-- quantitative RTX4080 claims require native calibration;
-- P34 = realism reference;
-- P8 = screening-only.
-
-## Node109 status
-
-109 V2.1 side campaign remains independent.
-
-It may collect `RECONNAISSANCE_ONLY` native TLB surfaces and workload assets.
-
-174 must not consume unreviewed 109 results during this determinism stage.
+and return a minimal requalification plan.
 
 ## STOP boundary
 
-If a simulator correctness defect is proven and fixing it would change accepted Q05 scientific results, STOP_FOR_SCIENTIFIC_REVIEW.
-
-Do not silently repair the scientific baseline.
-
-No TLB/PTW/cache mechanism starts automatically.
+Finish repair qualification, push/verify/clean, then STOP.
