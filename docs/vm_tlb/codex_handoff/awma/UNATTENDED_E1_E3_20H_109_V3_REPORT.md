@@ -1,0 +1,2 @@
+AWMA_109_20H_UNATTENDED_E1_E3_CHARACTERIZATION_V3_COMPLETE_WITH_SCOPE
+Threshold M1023/M1024 accepted; remaining tasks explicitly gated/stopped without substitution.
