@@ -1,0 +1,122 @@
+[
+  {
+    "role": "q_proj",
+    "shape": "M256",
+    "input_shape": [
+      1,
+      256,
+      3584
+    ],
+    "input_stride": [
+      7340032,
+      3584,
+      1
+    ],
+    "output_shape": [
+      1,
+      256,
+      3584
+    ],
+    "output_dtype": "torch.float16",
+    "path": "GEMM_QUANTIZED",
+    "samples_ms": [
+      0.11468800157308578,
+      0.1619199961423874,
+      0.13443200290203094,
+      0.13199999928474426,
+      0.13209599256515503
+    ],
+    "median_ms": 0.13209599256515503,
+    "output_sha": "7967932b29299c247e1b2e93ddf8d84bc106cd0eaed32d37409e8f9309d2cf23"
+  },
+  {
+    "role": "q_proj",
+    "shape": "M1",
+    "input_shape": [
+      1,
+      1,
+      3584
+    ],
+    "input_stride": [
+      7340032,
+      3584,
+      1
+    ],
+    "output_shape": [
+      1,
+      1,
+      3584
+    ],
+    "output_dtype": "torch.float16",
+    "path": "GEMM_QUANTIZED",
+    "samples_ms": [
+      0.03891199827194214,
+      0.035840000957250595,
+      0.035679999738931656,
+      0.03379200026392937,
+      0.03280000016093254
+    ],
+    "median_ms": 0.035679999738931656,
+    "output_sha": "52958fa358b98e4693d646b8c1e5cc27d3efbfe625e11b1e47d5d2d3c0ba880f"
+  },
+  {
+    "role": "down_proj",
+    "shape": "M256",
+    "input_shape": [
+      1,
+      256,
+      18944
+    ],
+    "input_stride": [
+      38797312,
+      18944,
+      1
+    ],
+    "output_shape": [
+      1,
+      256,
+      3584
+    ],
+    "output_dtype": "torch.float16",
+    "path": "GEMM_QUANTIZED",
+    "samples_ms": [
+      0.4578559994697571,
+      0.47206398844718933,
+      0.47308799624443054,
+      0.47206398844718933,
+      0.4708479940891266
+    ],
+    "median_ms": 0.47206398844718933,
+    "output_sha": "aeebcc939c2958f627a6d6bdfe95318e9015c93be461e570f751aa2c8bf28fc1"
+  },
+  {
+    "role": "down_proj",
+    "shape": "M1",
+    "input_shape": [
+      1,
+      1,
+      18944
+    ],
+    "input_stride": [
+      38797312,
+      18944,
+      1
+    ],
+    "output_shape": [
+      1,
+      1,
+      3584
+    ],
+    "output_dtype": "torch.float16",
+    "path": "GEMM_QUANTIZED",
+    "samples_ms": [
+      0.048128001391887665,
+      0.061055999249219894,
+      0.06099199876189232,
+      0.06099199876189232,
+      0.060416001826524734
+    ],
+    "median_ms": 0.06099199876189232,
+    "output_sha": "c1e47994d51ce9fdaff18e461af4e6ed1ea5ef175253b757c689e5a2b1a1e7c9"
+  }
+]
