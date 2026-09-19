@@ -1,0 +1,1 @@
+Accepted Q30 Prefill state was audited. No materialized, provenance-bound direct experts-call harness matching the accepted runtime boundary was available without implementing a new hook; E3 P/U not executed.

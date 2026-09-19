@@ -1,0 +1,1 @@
+Calibration reloads 1-3 and holdouts 4-5 are bitwise deterministic for direct saved M256 pools; frozen contract is BITWISE_EQUAL. It does not apply to a natural full-sequence hook output sliced to M256, which fails direct replay.
