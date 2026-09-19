@@ -1,193 +1,192 @@
-# AWMA Discussion Reference — Q05 representativeness and translation behavior
+# AWMA Discussion Reference — Post-Repair Requalification + 20h Pipeline
 
-Date: 2026-09-17
+Date: 2026-09-19
 
-## Why this stage exists
+## 1. Why the project state changed
 
-The first TLB/PTW characterization round established strong fixed-window sensitivity to removing the functional translation path, but it did not yet establish the root cause. In particular, the current 10k baseline has 125 L1/L2 TLB miss requesters, but only 19 new translation allocations and 106 merges. The maximum waiter depth is 35, and most accumulated requester-level translation latency is recorded in MSHR wait.
+The global-access-determinism stage had already shown that Q05 generation-time GLOBAL access creation was stable while
+legacy VM READY coverage was not. The dedicated repair qualification now directly proves that legacy downstream admission
+allowed VM-eligible accesses to bypass the modeled translation gate.
 
-Therefore the current evidence is more specific than “TLB hit rate is low”, but less specific than “PTW is the bottleneck”. The scientific question now is whether the observed behavior is mainly caused by cold first-touch, low-reuse streaming, outstanding-translation fanout, long completion latency, or a mixture.
-
-## Terminology used in this handoff
-
-### S2_TEXT
-
-`S2_TEXT` is an AWMA-internal scenario label, not a standard LLM concept. In the current project it means the frozen text-inference configuration:
+Accepted repair evidence:
 
 ```text
-batch = 1
-Prefill = 2048 tokens
-Decode = 32 tokens
-input type = TEXT
-dtype = FP16
-backend = SDPA
+legacy P34:
+downstream admissions = 3,090,304
+translated            =   776,666
+untranslated          = 2,313,638
+unobserved            = 2,313,638
+
+repaired P34:
+downstream admissions = 3,090,304
+translated            = 3,090,304
+untranslated          = 0
+unobserved            = 0
+post-ready retranslation = 0
 ```
 
-### capture completion / terminal status
+Target completion cycles changed:
 
-When historical notes say `terminal = COMPLETE`, the intended meaning is simply:
+`871835 -> 1619068`
 
-> the trace-collection run ended with the expected completion marker.
+with unchanged completed instruction count.
 
-For this Q05 producer capture, `drop=0` and `overflow=0` additionally show that the producer did not report dropped trace records or buffer overflow.
+Therefore old translation-dependent timing conclusions cannot be used as the baseline for mechanism design.
 
-### trace bundle
+## 2. What the repair does and does not mean
 
-A “bundle” means one self-consistent trace input package: the trace data plus its kernel metadata, configuration, receipts, manifests and hashes. It is not a special execution concept.
+The repair requires the exact current `accessq_back()` to have accepted VM translation before L1D/ICNT admission.
 
-### kernel census
+If untranslated:
+- it stays queued;
+- existing COAL_STALL semantics apply;
+- the next normal memory-cycle invocation uses the existing VM translation helper.
 
-A “kernel census” means a lightweight inventory of every CUDA kernel launch in one complete model run. It records launch metadata such as kernel name, phase, launch shape and duration. It is not a complete SASS trace of every kernel.
+This restores the modeled VM gate. It is not a new architecture mechanism.
 
-### VPN
+The performance change caused by restoring the gate is expected and must not be described as a new stall mechanism
+invented by the repair.
 
-VPN means virtual page number. For the current 64 KiB base-page experiment, addresses belonging to the same 64 KiB virtual page share the same VPN, subject to the simulator's actual translation key semantics such as ASID/epoch/page-size.
+## 3. Why one more telemetry-scoping step is mandatory
 
-## What was actually captured
+The repair proof counters are target-kernel gated, but not every auxiliary simulator statistic is.
 
-Do not describe the current simulator input as a complete Qwen2.5 inference trace.
+The compact repair impact matrix reports `walk_starts=499`, while historical contextual analysis used a different
+P34 target-only walk count.
 
-The accepted simulator-native input is the complete selected Q05 CUDA kernel:
+This strongly indicates different accumulation scopes (for example full prefix versus target delta), but the next stage
+must prove that directly.
 
-```text
-Q05_PREFILL_ATTN_FLASH
-function occurrence = 0
-pytorch_flash::flash_fwd_kernel<...>
-```
+Hence:
+- the coverage defect/repair decision is accepted;
+- auxiliary translation-count interpretation is not accepted until target-boundary deltas close;
+- old and new telemetry must be compared only at the same scope.
 
-The 10k and 50k experiments are cycle-limited replays of that complete selected-kernel input.
+## 4. Requalification philosophy
 
-Other Native traces and full-run metadata exist under the broader AWMA/C16 workflow, but Native C16WARP1/MREF evidence must not be post-hoc converted and claimed as a lossless Accel-Sim trace.
+Do not rerun the whole historical matrix.
 
-The simulator-compatible producer pipeline is now operational, so additional selected kernels can later be captured by reusing the qualified path. This stage deliberately does not authorize new selected-kernel capture because target selection should first be informed by the full workload kernel inventory.
+The minimum repaired question is:
 
-## Why the current L2-TLB 0-hit observation is not enough
+> Under correct per-access VM coverage, how much target translation sensitivity remains in isolated and contextual Q05?
 
-In the 10k R0 window:
+Use:
+- same-source formal isolated R0/I0;
+- P34 repaired natural R0;
+- P34 repaired Q05-only I0;
+- P8 repaired natural R0;
+- target-scoped translation/timeline sanity.
 
-```text
-L1 misses               = 125
-L2 accesses             = 125
-L2 hits                 = 0
-L2 misses               = 125
-translation allocations = 19
-translation merges      = 106
-```
+P34 Q05-only I0 must keep all predecessor kernels on repaired natural R0.
 
-The identity
+The old P1/P2/P4/P16 matrix and old mechanism-like diagnostics are not automatically replayed.
 
-```text
-125 = 19 + 106
-```
+## 5. Claim boundaries after repair
 
-shows that many miss requesters are joining an already-outstanding translation instead of starting independent walks.
+Still valid unless separately contradicted:
+- producer/raw trace identity;
+- Q05 semantic identity;
+- contiguous prefix identity;
+- native kernel census;
+- native page/line structural evidence;
+- 109 V1/V2.1 capture integrity;
+- lookup-latency provenance: 10/80 are generic simulator assumptions, not RTX4080 facts;
+- generation-time GLOBAL determinism.
 
-Consequently, an L2 lookup can miss because the corresponding translation has not yet completed/fill occurred, even when many requesters are asking for the same page. This is different from capacity thrashing and different from a purely streaming workload.
+Pending requalification:
+- isolated R0/I0 quantitative sensitivity;
+- contextual R0/I0 quantitative sensitivity;
+- P8/P34 translation timing interpretation;
+- translation timeline/retry quantitative interpretation;
+- lookup-latency quantitative sensitivity;
+- any translation opportunity magnitude.
 
-The current L2 TLB also has 768 entries, while the offline full-trace footprint is on the order of only a few hundred 64 KiB pages. That makes a simple “capacity is obviously too small” narrative especially inappropriate without further evidence.
+Retired as a scientific count source:
+- legacy VM-boundary stream telemetry that was already shown to be an artifact.
 
-## Why P2 does not establish that L2 lookup is irrelevant
+## 6. Why 109 now studies workload questions in parallel
 
-P2 changes L2-TLB port count from 1 to 2. It strongly reduces port-denial/retry events but produces essentially no 10k progress improvement.
+The repaired simulator baseline must be requalified, but 109 can still produce native evidence that does not depend on the
+legacy VM timing path.
 
-This causally downgrades **L2-TLB port throughput/queueing** as the dominant single bottleneck.
+The literature audit supports three research-design questions:
 
-It does not change the configured L2-TLB lookup service latency. Therefore it does not establish that L2 lookup latency itself is irrelevant.
+### E2
+Execution-history sensitivity.
+This maps to the repaired Q05 mainline and stays primarily on 174.
 
-## Why I0 is not “100% L1 hit”
+### E1
+Shape x low-bit implementation.
+This maps to Qwen2.5-7B raw/AWQ on 109.
 
-I0 uses ideal identity translation. It bypasses the functional translation path rather than simulating a 100%-hit 10-cycle L1 TLB. It therefore removes more than TLB misses: it also removes TLB lookup delays, translation-MSHR/walker/PTW behavior and PTE memory traffic.
+### E3
+Natural vs controlled MoE routing.
+This is conditional and maps first to Qwen3-30B-A3B exact state/replay.
 
-Thus the +56.55% (10k) and +76.55% (50k) values are aggregate translation-path fixed-window progress sensitivity, not the speedup of a realizable perfect-L1-TLB mechanism and not full-kernel speedup.
+The point is not to add models for coverage.
+The point is to build controlled contrasts that separate competing explanations.
 
-## Why full-Q05 VPN analysis is required
+## 7. 109 E1 interpretation
 
-The next analysis must distinguish at least four behaviors.
+Core matrix:
 
-### Cold first-touch
+`{down_proj,q_proj} x {M1,M256} x {raw,AWQ}`
 
-A page misses on its first access, fills, and subsequent accesses mostly hit.
+M is GEMM token-row count, not automatically Prefill/Decode identity.
 
-### Streaming / low reuse
+Required distinctions:
+- raw/AWQ semantic comparability;
+- actual dtype differences;
+- dequantization/layout/kernel-path differences;
+- uninstrumented timing versus NCU resource diagnosis.
 
-New pages continue to appear throughout execution and many are rarely revisited.
+No-effect is a valid result.
 
-### Burst fanout before fill
+## 8. 109 E3 interpretation
 
-A page first misses, one translation becomes outstanding, and many requesters arrive before that translation completes. These requesters can repeatedly traverse part of the lookup path and then merge.
+The first useful routing comparison is not arbitrary uniform-versus-natural over all experts.
 
-### Persistent post-fill reuse
+Use:
+- N natural;
+- P histogram-preserving permutation;
+- U-active balancing within the naturally active expert set.
 
-A page continues to receive meaningful traffic after translation fill and later benefits from TLB residency.
+This separates token ordering and load distribution while avoiding an unnecessary active-working-set change in the first
+diagnostic.
 
-The real workload may be `MIXED`; the analysis must not force one label.
+Synthetic routing must remain labeled synthetic.
 
-## Why the analysis must cover the complete Q05 kernel
+## 9. Opportunity work
 
-The present 10k and 50k values are cycle windows. To interpret them, establish where they sit in the complete selected kernel using comparable coverage measures rather than dividing unlike counters.
+After mandatory work, remaining time may be used for:
+- long-context then batch extension of current Qwen0.5B;
+- same-quantized-weight execution decomposition;
+- NCU protocol sensitivity;
+- Llama raw shape holdout;
+- on 174, cross-family evidence synthesis and at most one non-Attention repaired R0/I0 isolated screen.
 
-Required coverage axes:
+These are bounded opportunities, not a requirement to keep hardware busy at all costs.
 
-1. CTA issued and CTA completed;
-2. warp-instruction trace progress using a proven same-unit numerator/denominator;
-3. memory-reference trace progress using a proven same-unit numerator/denominator;
-4. unique 64 KiB page coverage.
+## 10. Literature-method lessons carried into this stage
 
-The page-coverage metric is particularly important. If most full-kernel pages have already first-touched by 10k, the observed translation pressure can be front-loaded cold behavior. If unique pages continue to grow throughout the kernel, a streaming interpretation becomes more plausible.
+The literature audit established several rules now adopted as project policy:
+- real GPU, local detailed simulation, and whole-system estimation may legitimately coexist if evidence levels are explicit;
+- model names alone do not define a controlled experiment;
+- proxy inputs and natural execution must be labeled separately;
+- representative kernels require validation by target metric;
+- state checkpoints do not imply restored microarchitectural state;
+- profiler replay/cache policy is part of measurement semantics.
 
-## Why the full workload kernel inventory is required
+## 11. Still forbidden
 
-Q05 is scientifically useful only if its representativeness is understood.
+No architecture mechanism until repaired VM correctness and minimum baseline requalification close.
 
-The full B1/T2048/Decode32 run should therefore be inventoried at lightweight kernel-launch level. For each semantic/exact family, report both:
+Do not start:
+- TLB capacity/port mechanisms;
+- PTW/PWC mechanisms;
+- segmentation/page-size mechanisms;
+- translation prefetch/speculation;
+- cache redesign;
+- broad simulator sweep.
 
-- launch-count share;
-- accumulated GPU-time share.
-
-These are different notions of frequency/importance. A tiny kernel may launch many times yet consume little GPU time; a large GEMM or attention kernel may launch fewer times but dominate runtime.
-
-Attention should be analyzed at two levels:
-
-1. semantic family such as projection, attention core, output projection, RoPE/layout/auxiliary work;
-2. exact CUDA implementation and launch shape.
-
-Do not infer Q/K/V identity or Transformer layer purely from mangled kernel names or launch order. Use reliable NVTX/runtime/operator evidence if available; otherwise mark fields `UNKNOWN`.
-
-## Why the two tracks run on different nodes
-
-### 174-new
-
-The complete accepted Q05 simulator-native trace and accepted simulator characterization live on the Simulation plane. 174-new is therefore the correct owner for full-Q05 VPN/translation analysis and any diagnostic-only simulator instrumentation.
-
-### 109 / RTX4080
-
-The full-model kernel inventory is a Native execution question. Existing accepted NSYS/catalog data should be reused first; only if they are insufficient should 109 run one lightweight NSYS capture of the frozen scenario.
-
-No NCU, NVBit memory trace or simulator-native detailed capture is required for this inventory.
-
-## Rejected next steps for now
-
-Do not yet start:
-
-- L2-TLB latency sweep;
-- PTW fixed-latency mode;
-- walker-count sweep;
-- translation-MSHR capacity sweep;
-- TLB-capacity sweep;
-- page-size sweep;
-- Segment experiments;
-- early-outstanding-translation detection mechanism;
-- broad capture of additional kernels.
-
-Those may become appropriate after the current stage clarifies whether Q05 pressure is cold, streaming, fanout-dominated or mixed, and whether Q05 is representative enough to justify mechanism work.
-
-## Expected decision after both tracks
-
-After the two Codex tracks complete, ChatGPT should review both reports and decide among paths such as:
-
-- if Q05 is cold/front-loaded and post-fill reuse is strong: investigate cold-translation completion/fanout mitigation rather than TLB capacity;
-- if unique pages continue to stream and reuse is weak: investigate translation reach/page-size/streaming behavior;
-- if post-fill reuse is high but latency remains exposed: decompose lookup service latency versus PTW/PTE completion latency;
-- if Q05 is not representative: select a small set of additional high-value kernels using launch count, GPU-time share and address-translation characteristics before mechanism design.
-
-No mechanism conclusion is predetermined by this handoff.
+The 20h campaign is characterization/requalification, not mechanism design.
