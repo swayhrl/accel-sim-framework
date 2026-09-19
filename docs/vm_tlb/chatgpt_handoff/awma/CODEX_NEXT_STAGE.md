@@ -1,201 +1,118 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE**
+Status: ACTIVE AFTER USER LAUNCH
 
 Stage:
 
-```text
-AWMA_Q05_REPRESENTATIVENESS_AND_TRANSLATION_BEHAVIOR_V1
-```
+`AWMA_20H_REPAIRED_REQUALIFICATION_AND_NATIVE_WORKLOAD_PIPELINE_V1`
 
-This is a two-track parallel characterization stage. It is not a new TLB/PTW mechanism stage.
+Coordination branch:
 
-## Objective
+`hrl/awma-20h-unattended-pipeline-handoff-v1`
 
-Resolve two questions before any further architecture sweep or mechanism design:
+## Scientific decision entering this stage
 
-1. Inside the complete Q05 FlashAttention kernel, determine whether the observed translation pressure is cold-first-touch, streaming/low-reuse, outstanding-translation fanout, persistent post-fill reuse, or a mixture; also locate the existing 10k/50k windows within the complete kernel.
-2. Across the complete frozen Qwen2.5 B1/T2048/Decode32 run, determine how frequent and representative the Q05 FlashAttention implementation is relative to all kernels and Attention-related kernels.
+Repair authority:
 
-## Coordination branch
+`hrl/awma-vm-per-access-coverage-repair-174new-v1 @ 3f7bc0cd3cb3667b38fa0dd803ac034e19b493d6`
 
-ChatGPT handoff branch:
+Decision:
 
-```text
-hrl/awma-q05-representativeness-handoff-v1
-```
+`PER_ACCESS_VM_COVERAGE_DEFECT_CONFIRMED_REPAIR_QUALIFIED_FOR_REQUALIFICATION`
 
-Base scientific characterization anchor:
+`MATERIAL_SCIENTIFIC_CHANGE_REQUIRES_MINIMAL_REBASELINE`
 
-```text
-bb92e5a1559dd7e2b2520e9a7a4937262664512c
-```
+The repaired runtime is accepted for requalification only.
+It is not yet the final research baseline.
 
-Codex must first fetch the coordination branch and read, in order:
+## Read in order
 
-```text
-docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
-docs/vm_tlb/chatgpt_handoff/awma/DISCUSSION_REFERENCE.md
-docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
-```
-
-Then select exactly one node-specific specification below.
+1. `CURRENT_STATE.md`
+2. `DISCUSSION_REFERENCE.md`
+3. `REPAIR_REVIEW_DECISION_2026-09-19.md`
+4. `PIPELINE_ACCEPTANCE_CONTRACT_20H_V1.md`
+5. `PIPELINE_SCHEDULER_POLICY_20H_V1.md`
+6. this dispatcher
+7. exactly one node-specific Goal below
 
 ## Track A — 174-new
 
-Node role:
+Node:
 
-```text
-174-new / port 2239
-Simulation-plane analysis owner
-```
+`174-new / Simulation + analysis`
 
 Execute:
 
-```text
-docs/vm_tlb/chatgpt_handoff/awma/
-CODEX_NEXT_STAGE_174NEW_Q05_FULL_TRANSLATION_BEHAVIOR_V1.md
-```
+`CODEX_NEXT_STAGE_174NEW_20H_POST_REPAIR_PIPELINE_V1.md`
 
-Expected completion marker:
+Suggested execution branch:
 
-```text
-AWMA_Q05_FULL_KERNEL_TRANSLATION_BEHAVIOR_V1_COMPLETE_WITH_SCOPE
-```
+`hrl/awma-repaired-vm-requalification-20h-174new-v1`
 
-Codex execution branch recommendation:
-
-```text
-hrl/awma-q05-full-translation-174new-v1
-```
-
-Create the execution branch/worktree from the coordination branch. Do not modify the frozen accepted characterization worktree.
+Primary work:
+- rebuild/freeze repaired runtime and binary SHA;
+- reconcile target-scoped telemetry;
+- isolated/P8/P34 repaired Q05 requalification;
+- cross-family existing-evidence analysis;
+- conditional one non-Attention repaired R0/I0 screen.
 
 ## Track B — 109 / RTX4080
 
-Node role:
+Node:
 
-```text
-109 / RTX4080
-Native producer / real-GPU workload owner
-```
+`109 / native GPU producer`
 
 Execute:
 
-```text
-docs/vm_tlb/chatgpt_handoff/awma/
-CODEX_NEXT_STAGE_109_QWEN25_S2_KERNEL_CENSUS_V1.md
-```
+`CODEX_NEXT_STAGE_109_20H_NATIVE_PIPELINE_V1.md`
 
-Expected completion marker:
+Suggested execution branch:
 
-```text
-AWMA_QWEN25_S2_KERNEL_CENSUS_V1_COMPLETE_WITH_SCOPE
-```
+`hrl/awma-109-native-workload-pipeline-20h-v1`
 
-Codex execution branch recommendation:
+Primary work:
+- close selected existing-family native resource evidence;
+- E1 Qwen2.5-7B raw/AWQ shape x implementation;
+- conditional E3 Q30 natural/P/U-active routing;
+- bounded opportunity queue;
+- optional detailed capture only if selector trigger passes.
 
-```text
-hrl/awma-qwen25-s2-census-109-v1
-```
+## Solve-and-continue
 
-Create the execution branch/worktree from the coordination branch. Do not modify the frozen simulator-native producer worktree.
+Routine engineering problems are solved locally and execution continues.
 
-## Shared frozen workload
+A scientific problem freezes only the affected task when independent authorized tasks remain.
 
-```text
-model      = Qwen/Qwen2.5-0.5B-Instruct
-revision   = 7ae557604adf67be50417f59c2c2f167def9a775
-batch      = 1
-input      = TEXT
-prefill    = 2048 tokens
-decode     = 32 tokens
-dtype      = FP16
-backend    = SDPA
-scenario   = S2_TEXT  # internal AWMA label only
-```
+Stop a full lane only for a shared scientific/source/authority defect or unsafe resource ownership.
 
-Q05 target:
+## Time
 
-```text
-Q05_PREFILL_ATTN_FLASH
-function occurrence = 0
-pytorch_flash::flash_fwd_kernel<...>
-```
+Each lane records its actual start time and uses:
+- deadline = start + 20 hours
+- no new scientific target in final 2 hours
 
-## Shared execution policy
+Do not extend automatically.
 
-Routine engineering issues are `solve-and-continue`:
+## Storage
 
-- paths;
-- parsers;
-- scripts;
-- build plumbing;
-- log formats;
-- Python dependencies;
-- Git transport;
-- large-file indexing;
-- NSYS export/parsing;
-- demangling;
-- diagnostic telemetry plumbing that is proven timing-neutral.
+node164 remains durable large-data authority.
 
-Stop for scientific review only if execution would require changing one of:
+Use:
+`staging -> ready -> .partial -> size/SHA verify -> no-overwrite admit -> receipt/ACK`
 
-- frozen workload identity;
-- Q05 target identity;
-- accepted SIM_INPUT identity;
-- translation/TLB/PTW timing or functional semantics;
-- accepted scientific counter semantics;
-- evidence classification/provenance contract;
-- a stated stop boundary in the node-specific spec.
+## Explicitly forbidden
 
-## Explicitly forbidden scope
+No:
+- new TLB/PTW/PWC/cache architecture mechanism;
+- capacity/port/page-size/prefetch/speculation sweep;
+- lookup-latency calibration from native pointer chase;
+- broad model download/bring-up;
+- automatic full historical replay.
 
-Neither track may automatically enter:
+## Completion
 
-- L2-TLB latency sweep;
-- PTW fixed-latency experiment;
-- walker-count sweep;
-- TLB-capacity sweep;
-- translation-MSHR-capacity sweep;
-- page-size sweep;
-- Segment experiments;
-- early-outstanding-translation mechanism;
-- new cache mechanism;
-- broad new simulator-native capture campaign.
+Each lane independently:
 
-Track B additionally must not run NCU/NVBit/full SASS tracing unless the node-specific specification is later revised by ChatGPT.
+report -> review pack -> hashes -> commit -> push -> remote verify -> clean worktree -> release owned lock -> STOP.
 
-## Deliverable ownership
-
-`chatgpt_handoff/` is ChatGPT-owned. Codex must not rewrite the task definition.
-
-Codex owns:
-
-```text
-docs/vm_tlb/codex_handoff/awma/<stage-specific-report>.md
-docs/vm_tlb/review_packs/<stage-specific-pack>/
-```
-
-Because the two tracks run in parallel branches, each must produce a stage-specific report rather than assuming a shared `LATEST_REPORT.md` can be edited without conflict.
-
-Large raw data remains on node164 and is referenced through manifests/hashes, not committed directly to Git.
-
-## Global STOP boundary
-
-When a track reaches its completion marker:
-
-```text
-report
-review pack
-hashes
-commit
-push
-remote verification
-clean worktree
-STOP
-```
-
-Do not continue to the next experiment.
-
-After both tracks finish, ChatGPT must review both reports together and issue the next scientific stage.
+Do not automatically enter a new scientific stage after completion.
