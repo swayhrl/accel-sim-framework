@@ -2,64 +2,37 @@
 
 Date: 2026-09-19
 
-## Main decision
+## 1. Accepted repaired VM baseline
 
-The VM per-access coverage defect is confirmed and the surgical repair is qualified for requalification.
+The legacy per-access coverage defect is closed.
 
-Accepted repair authority:
+Correctness repair authority:
 
 `hrl/awma-vm-per-access-coverage-repair-174new-v1`
 
 `3f7bc0cd3cb3667b38fa0dd803ac034e19b493d6`
 
-Parent:
+Repaired requalification authority:
 
-`be82faf264e93396b4b7d4fd72078c7e4491e3e4`
+`hrl/awma-repaired-vm-requalification-20h-174new-v1`
 
-ChatGPT scientific review:
+`a7110f789a2bc6761d8885a2ca5628b4acf50f69`
 
-`PER_ACCESS_VM_COVERAGE_DEFECT_CONFIRMED_REPAIR_QUALIFIED_FOR_REQUALIFICATION`
+Accepted status:
 
-`MATERIAL_SCIENTIFIC_CHANGE_REQUIRES_MINIMAL_REBASELINE`
+`REPAIRED_VM_PER_ACCESS_BASELINE_ACCEPTED_FOR_MODEL_RELATIVE_CHARACTERIZATION`
 
-The repaired runtime is not yet the final research baseline.
+Hardware timing status:
 
-## Direct defect proof
+`NOT_HARDWARE_CALIBRATED`
 
-Legacy P34 target-scoped downstream coverage:
+Architecture mechanism:
 
-- admissions = 3,090,304
-- translated = 776,666
-- untranslated = 2,313,638
-- unobserved = 2,313,638
+`NOT_AUTHORIZED`
 
-Repaired P34:
+## 2. Repaired Q05 core results
 
-- admissions = 3,090,304
-- translated = 3,090,304
-- untranslated = 0
-- unobserved = 0
-- post-ready retranslation = 0
-
-P34 target cycles:
-
-`871,835 -> 1,619,068`
-
-gpu_sim_insn:
-
-`368,696,302 -> 368,696,302`
-
-This is a material change. All old translation-dependent Q05 quantitative results remain historical legacy evidence pending repaired requalification.
-
-## Scope caveat
-
-The core coverage proof is target-kernel gated and accepted.
-
-Some compact impact metrics are not yet proven target-only. The impact matrix reports walk_starts=499, while historical P34 target-only analysis used a different count. The next 174 stage must establish target-boundary deltas before auxiliary telemetry is compared.
-
-Do not state that repaired Q05 has 499 target walks.
-
-## Frozen workload
+Frozen target:
 
 ```text
 model      = Qwen/Qwen2.5-0.5B-Instruct
@@ -73,81 +46,221 @@ backend    = SDPA
 target     = Q05_PREFILL_ATTN_FLASH
 ```
 
-Producer / Q05 identity / contiguous prefix / contextual replay / 109 V2.1 / lookup provenance / global-access determinism remain frozen.
+Accepted repaired cycles:
 
-## 109 accepted anchors
+```text
+formal isolated R0       = 1,654,548
+formal isolated I0       =   674,179
+P34 repaired R0          = 1,619,068
+P34 Q05-only I0          =   758,082
+P8 repaired R0           = 1,675,884
+```
 
-Selected producer campaign:
+All completed targets:
 
-`8f49ba3b9228b5f8a9163e961225ffd415107734`
+```text
+downstream admissions = 3,090,304
+translated admissions = 3,090,304
+untranslated          = 0
+unobserved            = 0
+```
 
-Contains accepted node164 bundles for Prefill Flash, Prefill GEMM Primary, and Decode GEMV Primary representatives.
+The old translation-dependent quantitative baseline is retired as current evidence.
 
-V2.1 final:
+## 3. Context conclusion
 
-`8a9d96ceb00e36ebdfa3d56cc277f965fffa649c`
+Real predecessor history does not remove the large modeled translation sensitivity.
 
-Contains Decode Flash temporal/2D coverage and RTX4080 native TLB reconnaissance.
+Descriptive comparisons:
 
-109 currently has no active AWMA task until the new 20h Goal is launched.
+- isolated R0 -> I0 target-cycle reduction: ~59.25%;
+- P34 R0 -> Q05-only I0 reduction: ~53.18%;
+- P34 R0 is ~2.14% faster than isolated R0;
+- P8 R0 is ~1.29% slower than isolated R0.
 
-## New coordinated stage
+Therefore the immediate question is no longer whether the old result was mostly isolated cold-start.
 
-`AWMA_20H_REPAIRED_REQUALIFICATION_AND_NATIVE_WORKLOAD_PIPELINE_V1`
+## 4. Repaired P34 target-delta translation structure
+
+Accepted target-scoped delta:
+
+```text
+translation lookup requests = 3,090,412
+
+L1 hits   = 3,087,016
+L1 misses =     3,396
+
+L2 hits   = 3,288
+L2 misses =   108
+
+MSHR allocations = 15
+MSHR merges      = 93
+walk starts      = 15
+
+PWC accesses = 45
+PWC hits     = 42
+PWC misses   = 3
+
+PTE requests       = 18
+PTE DRAM responses = 10
+```
+
+Requester-cycle accumulation:
+
+```text
+L1 lookup service       = 30,904,120
+L2 lookup service       =    271,680
+MSHR wait               =     87,178
+total requester latency = 31,263,812
+```
+
+Requester cycles are not identical to exposed GPU stall cycles.
+
+However, under the current model, the dominant accumulated requester-latency component is the configured per-access L1 lookup service, not page walks.
+
+## 5. Lookup-latency provenance
+
+Current configuration:
+
+```text
+L1 lookup latency = 10 cycles
+L2 lookup latency = 80 cycles
+```
+
+These remain generic simulator assumptions.
+
+109 native reconnaissance did not calibrate them to RTX4080 hardware.
+
+Therefore architecture mechanism design remains blocked until the repaired lookup/hit-path model sensitivity is characterized.
+
+## 6. 174 packaging gap
+
+The scientific runs/review data are accepted.
+
+Two provenance artifacts are missing from the final Git branch:
+
+- `REPAIRED_VM_REQUALIFICATION_20H_174NEW_V1_REPORT.md`
+- `REPAIRED_RUNTIME_AUTHORITY.json`
+
+The next 174 Goal first closes these from existing authority without rerunning science where possible.
+
+## 7. 109 previous closure
+
+Accepted branch:
+
+`hrl/awma-109-native-workload-pipeline-20h-v1`
+
+`a271a0e57d3cb61ee878e686e6e517082a9f97df`
+
+Status:
+
+`ACCEPTED_WITH_SCOPE`
+
+E1:
+
+`VALID_FAIL_CLOSED_STOP`
+
+Reason:
+no pre-existing hash-bound raw/AWQ activation/module-replay authority was found.
+
+E3 was skipped only because the prior scheduling contract incorrectly made E1 closure a gate.
+
+This dependency is removed in the new stage.
+
+## 8. E1 historical authorities
+
+Common raw/AWQ S2 token authority:
+
+`e1d210d662ece6975648d04f628eb3f9e938117f`
+
+```text
+token_count = 2048
+token SHA256 = 0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9
+```
+
+Raw revision:
+
+`a09a35458c702b33eeacc393d103063234e8bc28`
+
+AWQ revision:
+
+`b25037543e9394b818fdfca67ab2a00ecc7dd641`
+
+AWQ working runtime authority:
+
+`2a05cadcbcc0e0b477b83d28aabe0c0aee270150`
+
+Historical V8 proved raw replay and common token input but left AWQ module semantic binding unresolved.
+
+The new E1 Goal solves this by binding directly to Python module objects and producing fresh activation authority.
+
+## 9. Q30 E3 authority
+
+Accepted S2/T2048 exact state/replay:
+
+`ee67225edc8fc5868de585d38e0391cbeb755d9f`
+
+This already records natural routing/state and exact layer replay.
+
+E3 is scientifically independent of E1.
+
+## 10. New coordinated stage
+
+`AWMA_REPAIRED_HIT_PATH_AND_E1_AUTHORITY_V1`
 
 Coordination branch:
 
-`hrl/awma-20h-unattended-pipeline-handoff-v1`
-
-Two solve-and-continue Goal lanes:
+`hrl/awma-hitpath-e1-authority-handoff-v1`
 
 ### 174-new
 
-1. materialize/freeze repaired runtime and binary SHA;
-2. reconcile target-scoped telemetry;
-3. minimal repaired Q05 requalification:
-   - isolated R0/I0
-   - P34 R0/Q05-only I0
-   - P8 R0
-   - target timeline sanity
-4. cross-family existing-evidence analysis;
-5. optional one non-Attention repaired R0/I0 isolated screen.
+Stage:
+
+`AWMA_REPAIRED_HIT_PATH_MODEL_VALIDITY_174NEW_V1`
+
+Work:
+
+1. provenance closeout;
+2. repaired P34 lookup-latency envelope;
+3. source/model hit-path semantics audit;
+4. conditional Prefill GEMM non-Attention hit-path screen.
 
 ### 109
 
-1. close missing native resource characterization for selected existing families;
-2. E1 Qwen2.5-7B raw/AWQ shape x implementation matrix;
-3. conditional E3 Q30 natural/P/U-active MoE diagnostic;
-4. opportunity queue:
-   - long-context/batch extension;
-   - same-quantized-weight execution decomposition;
-   - profiler protocol sensitivity;
-   - Llama raw shape holdout;
-5. optional bounded detailed capture if selector trigger passes.
+Stage:
 
-## Time policy
+`AWMA_E1_AUTHORITY_AND_MOE_DIAGNOSTICS_109_V1`
 
-Each lane records actual start and uses a 20-hour deadline.
-No new scientific target begins in the final 2 hours.
+Work:
 
-## Architecture mechanism
+1. rebind exact model/token/runtime authority;
+2. produce raw/AWQ live module activation authority;
+3. fresh module replay equivalence;
+4. E1 M1/M256 shape/implementation diagnostics;
+5. independent Q30 N/P/U-active MoE routing diagnostic;
+6. bounded profiling/decomposition only after local gates pass.
 
-`NOT AUTHORIZED`
+## 11. Frozen old stages
 
-No TLB/PTW/PWC/cache mechanism, capacity/port/page-size/prefetch/speculation sweep is allowed in this stage.
+Do not redo or rewrite:
 
-## Durable storage
+- producer qualification;
+- Q05 identity;
+- contiguous prefix capture;
+- contextual replay;
+- 109 V2.1 capture/native recon;
+- generation-time global-access determinism;
+- VM coverage defect proof;
+- repaired Q05 requalification.
 
-node164 remains large-data/model authority.
+## 12. Forbidden
 
-109 may retain active model replicas.
-174-new remains source/simulator/analysis only with bounded local scratch.
+No architecture mechanism in this stage:
 
-## Execution documents
+- no TLB capacity/port redesign;
+- no PTW/PWC mechanism;
+- no page-size/segmentation;
+- no prefetch/speculation;
+- no cache mechanism.
 
-Read:
-- REPAIR_REVIEW_DECISION_2026-09-19.md
-- PIPELINE_ACCEPTANCE_CONTRACT_20H_V1.md
-- PIPELINE_SCHEDULER_POLICY_20H_V1.md
-- CODEX_NEXT_STAGE.md
-- node-specific Goal file
+Lookup-latency changes on 174 are model-validity diagnostics only.
