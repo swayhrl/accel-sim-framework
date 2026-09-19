@@ -1,3 +1,5 @@
+> **POST-CHECKPOINT PRIORITY REFINEMENT:** After Checkpoint 1 and after the current native timing-stability phase, read `CODEX_SIDE_GOAL_109_V2_1_POST_CHECKPOINT_PRIORITY_OVERRIDE.md`. If its time gate is satisfied, the targeted cache-controlled `cg` reconnaissance takes priority over lower-value cross-model census. Final-pack packaging corrections in that file are mandatory.
+
 > **MID-CAMPAIGN CHECKPOINT 1 REQUESTED:** At the next target-safe boundary, before launching another GPU target, execute `CODEX_SIDE_GOAL_109_V2_1_MIDCAMPAIGN_CHECKPOINT_1.md`, push/remote-verify the checkpoint, then automatically resume this same V2.1 queue. The checkpoint does not reset the active 10h timer and does not close the campaign.
 
 # CODEX SIDE GOAL OVERRIDE — 109 Ten-Hour V2.1 Lock-Wait + Expanded High-Value Queue
