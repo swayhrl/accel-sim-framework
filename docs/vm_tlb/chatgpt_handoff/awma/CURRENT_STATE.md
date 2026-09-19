@@ -1,280 +1,153 @@
 # AWMA Current State
 
-Date: 2026-09-17
+Date: 2026-09-19
 
-## Coordination status
+## Main decision
 
-AWMA has moved past the simulator-compatible capture bring-up and the first bounded TLB/PTW characterization round. The current scientific stage is:
+The VM per-access coverage defect is confirmed and the surgical repair is qualified for requalification.
 
-```text
-Q05 representativeness + full-kernel translation-behavior clarification
-```
+Accepted repair authority:
 
-This stage is deliberately **pre-mechanism**. Its job is to determine whether the currently observed translation sensitivity is mainly a cold-start/first-touch effect, a streaming/low-reuse effect, a same-page outstanding-translation fanout effect, or a mixture; and to determine how representative Q05 is within the full Qwen2.5 workload.
+`hrl/awma-vm-per-access-coverage-repair-174new-v1`
 
-The accepted characterization anchor is:
+`3f7bc0cd3cb3667b38fa0dd803ac034e19b493d6`
 
-```text
-bb92e5a1559dd7e2b2520e9a7a4937262664512c
-```
+Parent:
 
-Result:
+`be82faf264e93396b4b7d4fd72078c7e4491e3e4`
 
-```text
-AWMA_TLB_PTW_CHARACTERIZATION_V1_COMPLETE_WITH_SCOPE
-OPPORTUNITY_PRESENT
-scope = FIXED_WINDOW_PROGRESS_SENSITIVITY
-```
+ChatGPT scientific review:
 
-## Frozen workload identity
+`PER_ACCESS_VM_COVERAGE_DEFECT_CONFIRMED_REPAIR_QUALIFIED_FOR_REQUALIFICATION`
+
+`MATERIAL_SCIENTIFIC_CHANGE_REQUIRES_MINIMAL_REBASELINE`
+
+The repaired runtime is not yet the final research baseline.
+
+## Direct defect proof
+
+Legacy P34 target-scoped downstream coverage:
+
+- admissions = 3,090,304
+- translated = 776,666
+- untranslated = 2,313,638
+- unobserved = 2,313,638
+
+Repaired P34:
+
+- admissions = 3,090,304
+- translated = 3,090,304
+- untranslated = 0
+- unobserved = 0
+- post-ready retranslation = 0
+
+P34 target cycles:
+
+`871,835 -> 1,619,068`
+
+gpu_sim_insn:
+
+`368,696,302 -> 368,696,302`
+
+This is a material change. All old translation-dependent Q05 quantitative results remain historical legacy evidence pending repaired requalification.
+
+## Scope caveat
+
+The core coverage proof is target-kernel gated and accepted.
+
+Some compact impact metrics are not yet proven target-only. The impact matrix reports walk_starts=499, while historical P34 target-only analysis used a different count. The next 174 stage must establish target-boundary deltas before auxiliary telemetry is compared.
+
+Do not state that repaired Q05 has 499 target walks.
+
+## Frozen workload
 
 ```text
 model      = Qwen/Qwen2.5-0.5B-Instruct
 revision   = 7ae557604adf67be50417f59c2c2f167def9a775
-scenario   = S2_TEXT  # AWMA internal scenario label
+scenario   = S2_TEXT
 batch      = 1
-input      = TEXT
-prefill    = 2048 tokens
-decode     = 32 tokens
+prefill    = 2048
+decode     = 32
 dtype      = FP16
 backend    = SDPA
+target     = Q05_PREFILL_ATTN_FLASH
 ```
 
-`S2_TEXT` is only an AWMA internal name for the above test configuration. It is not a standard LLM term.
-
-Current Simulation target:
-
-```text
-Q05_PREFILL_ATTN_FLASH
-function occurrence = 0
-kernel = pytorch_flash::flash_fwd_kernel<...>
-```
-
-The simulator-native producer captured the complete selected Q05 CUDA kernel, not only a 10k/50k prefix:
-
-```text
-raw records = 13,490,624
-capture completion = COMPLETE
-drop = 0
-overflow = 0
-```
-
-The 10k and 50k values used in the characterization round are simulator-cycle stop windows applied while replaying this complete kernel trace.
-
-## Frozen Simulation identities
-
-```text
-SIM_INPUT_0ab4e2fe2195d3b7d7da4ee9df6017cbec5c063fcc8110374e1a753f87177634
-SIM_BASELINE_6305c065f2c4913448b0cb61a85d5003030c5917cd37d6a346fd3f42939d5964
-SIM_RUN_92a553b0d69a9f41c5e20a8650366c53f7fed31c29c7462947d3af03c6f136f1
-SIM_EVIDENCE_c8b4175d33f8bed7def2984489eadbdbcdfaffbfcb6a7daef33c8beb18e80959
-```
-
-Accepted source anchors:
-
-```text
-Framework execution source = d64408a97d76a320a6d49468653d416e33677af8
-Core                       = 57bb71ecd015b6ec0ab32e45b0815e5beaf69172
-Simulator binary SHA256    = 34deedd99e85e52fb309852de2ecc5fecd9471436a33a5e77d40bc038a2c31c4
-Producer                    = 5143b4e10aaf2fc47bb60492155d2464b0b726fd
-Validator hotfix            = fb5d0bebee421a0153661239e1f7c2bc088d5c9e
-```
-
-## Accepted F0 translation configuration
-
-Effective runtime baseline:
-
-- functional VM mode 2;
-- 64 KiB base page;
-- 49-bit VA;
-- L1 TLB: 32 entries, 32-way, 1 port, 10-cycle lookup;
-- exact L2 TLB: 768 entries, 16-way, 48 sets, 1 port, 80-cycle lookup;
-- translation MSHR: 32 entries;
-- PWQ: 32;
-- walkers: 16;
-- real PTE L2/DRAM page-walk mode;
-- four page-table levels;
-- PWC: 128 entries, 1 cycle;
-- Segment disabled.
+Producer / Q05 identity / contiguous prefix / contextual replay / 109 V2.1 / lookup provenance / global-access determinism remain frozen.
 
-Use the effective runtime configuration after fair-arm selection. Do not infer effective settings only from historical raw config text.
+## 109 accepted anchors
 
-## Completed characterization results
+Selected producer campaign:
 
-### R0 baseline, 10k cycles
+`8f49ba3b9228b5f8a9163e961225ffd415107734`
 
-```text
-gpu_sim_cycle                    = 10,000
-gpu_sim_insn                     = 1,084,480 completed active thread-instructions
-gpu_tot_issued_cta               = 70
-translation lookup requests      = 930
-L1 TLB accesses/hits/misses      = 930 / 805 / 125
-L2 TLB accesses/hits/misses      = 125 / 0 / 125
-L2 TLB port-denial events        = 5,828
-translation MSHR alloc/merge     = 19 / 106
-translation MSHR full            = 0
-translation MSHR HWM             = 16 / 32
-walk starts/completions          = 19 / 19
-PTE requests/responses           = 70 / 70
-PTE L2-only / DRAM               = 48 / 22
-requester latency total          = 164,955
-requester MSHR-wait component    = 144,303
-max waiter depth                 = 35
-```
+Contains accepted node164 bundles for Prefill Flash, Prefill GEMM Primary, and Decode GEMV Primary representatives.
 
-Important accounting identity:
+V2.1 final:
 
-```text
-125 L1/L2 miss requesters = 19 new translation allocations + 106 merges
-```
+`8a9d96ceb00e36ebdfa3d56cc277f965fffa649c`
 
-Thus the 125 misses are not evidence for 125 independent page walks.
+Contains Decode Flash temporal/2D coverage and RTX4080 native TLB reconnaissance.
 
-### Counterfactual variants
+109 currently has no active AWMA task until the new 20h Goal is launched.
 
-At 10k cycles:
+## New coordinated stage
 
-```text
-R0 = 1,084,480
-I0 = 1,697,696  (+56.55%)
-P2 = 1,084,448  (~0%)
-M8 = 1,084,448  (~0%)
-```
+`AWMA_20H_REPAIRED_REQUALIFICATION_AND_NATIVE_WORKLOAD_PIPELINE_V1`
 
-At 50k cycles:
+Coordination branch:
 
-```text
-R0 = 11,587,872
-I0 = 20,458,400 (+76.55%)
-```
+`hrl/awma-20h-unattended-pipeline-handoff-v1`
 
-Interpretation boundaries:
+Two solve-and-continue Goal lanes:
 
-- I0 is ideal identity translation: it removes the functional translation path; it is not merely 100% L1-TLB hit and is not a realizable hardware speedup claim.
-- The +56.55% and +76.55% values are fixed-cycle progress/IPC sensitivity values, not complete-kernel speedups.
-- P2 shows that reducing L2-TLB port-denial events alone does not improve same-window progress; this downgrades L2-TLB port throughput as the dominant single bottleneck but does not test L2-TLB lookup latency.
-- M8 changes shared-L2 per-entry merge capacity from 4 to 8; its near-zero progress effect does not test translation-MSHR capacity.
-- translation-MSHR capacity itself is not currently indicated as saturated: 32 entries, HWM 16, full 0.
-- L2-TLB 0 hits in the 10k window must not yet be interpreted as steady-state streaming or capacity thrashing.
+### 174-new
 
-## Current scientific hypothesis boundary
+1. materialize/freeze repaired runtime and binary SHA;
+2. reconcile target-scoped telemetry;
+3. minimal repaired Q05 requalification:
+   - isolated R0/I0
+   - P34 R0/Q05-only I0
+   - P8 R0
+   - target timeline sanity
+4. cross-family existing-evidence analysis;
+5. optional one non-Attention repaired R0/I0 isolated screen.
 
-The strongest current structural signal is:
+### 109
 
-```text
-small number of outstanding translations
-        x
-high same-translation requester fanout
-        x
-long translation-completion latency
-```
+1. close missing native resource characterization for selected existing families;
+2. E1 Qwen2.5-7B raw/AWQ shape x implementation matrix;
+3. conditional E3 Q30 natural/P/U-active MoE diagnostic;
+4. opportunity queue:
+   - long-context/batch extension;
+   - same-quantized-weight execution decomposition;
+   - profiler protocol sensitivity;
+   - Llama raw shape holdout;
+5. optional bounded detailed capture if selector trigger passes.
 
-However, the current evidence does **not** distinguish cleanly between:
+## Time policy
 
-1. cold first-touch at the beginning of an isolated kernel replay;
-2. streaming / low translation reuse;
-3. many requesters arriving before a translation fill and therefore repeatedly observing a miss;
-4. persistent post-fill reuse;
-5. a mixture of the above.
+Each lane records actual start and uses a 20-hour deadline.
+No new scientific target begins in the final 2 hours.
 
-This ambiguity must be resolved before mechanism design.
+## Architecture mechanism
 
-## Trace availability boundary
+`NOT AUTHORIZED`
 
-Do not say that the complete Qwen2.5 run is already available as an Accel-Sim trace.
+No TLB/PTW/PWC/cache mechanism, capacity/port/page-size/prefetch/speculation sweep is allowed in this stage.
 
-Current distinction:
+## Durable storage
 
-- full-run NSYS/kernel metadata: lightweight real-GPU execution catalog, when available;
-- Native C16WARP1/MREF traces: selected native targets, suitable for scoped address/page/cache-line analysis, but not losslessly convertible post hoc into simulator traceg;
-- simulator-native whole-kernel trace: formally accepted for the selected Q05 target.
+node164 remains large-data/model authority.
 
-The simulator-compatible capture pipeline is now technically established, so new selected kernels can be captured by reusing the mature pipeline, subject to per-kernel validation. This does not mean every kernel in the model has already been captured.
+109 may retain active model replicas.
+174-new remains source/simulator/analysis only with bounded local scratch.
 
-## Node roles for the current stage
+## Execution documents
 
-### 174-new / port 2239
-
-Owner of Simulation-plane analysis.
-
-Current task:
-
-```text
-AWMA_Q05_FULL_KERNEL_TRANSLATION_BEHAVIOR_V1
-```
-
-Responsibilities:
-
-- analyze the complete Q05 simulator-native trace;
-- establish 10k/50k/full-kernel coverage metrics;
-- obtain cycle-ordered VPN/translation behavior from the simulator;
-- separate first-touch, pre-fill fanout, post-fill reuse and streaming behavior;
-- run one R0 natural-completion replay only if required and practical;
-- do not start a new translation mechanism experiment.
-
-### 109 / RTX4080
-
-Owner of Native producer/capture.
-
-Current task:
-
-```text
-AWMA_QWEN25_S2_KERNEL_CENSUS_V1
-```
-
-Responsibilities:
-
-- first reuse existing accepted NSYS/kernel-catalog evidence if sufficient;
-- otherwise run only one lightweight full-scenario kernel-call inventory for the frozen workload;
-- classify kernel launches by phase, semantic family and exact implementation where evidence supports it;
-- quantify launch-count share and GPU-time share;
-- determine how common/typical Q05's FlashAttention implementation is.
-
-This stage does **not** authorize NCU, NVBit memory trace, new simulator-native kernel traces, or broad recapture on 109.
-
-### node164
-
-Durable storage owner for large raw/derived artifacts.
-
-Keep large timelines, NSYS reports and full diagnostic logs on node164. Git contains code, compact summaries, manifests, hashes and review evidence only.
-
-## Current open questions
-
-1. Where exactly do 10k and 50k sit within the complete Q05 kernel by CTA, warp-instruction, memory-reference and unique-page coverage?
-2. Are most unique 64 KiB pages introduced near the kernel beginning or continuously throughout execution?
-3. Of the current L2 misses, how many occur before the corresponding translation has filled?
-4. After fill, are those pages repeatedly reused and hit in L1/L2 TLB, or rarely revisited?
-5. What is the full-kernel distribution of translation fanout and waiter depth?
-6. How many CUDA kernel launches occur in the complete frozen Qwen2.5 scenario, and which semantic/implementation families dominate by launch count and GPU time?
-7. How many times does the same `flash_fwd` implementation appear during Prefill, and is Q05 occurrence 0 typical of that family?
-
-## Immediate execution order
-
-Run the following two tracks in parallel from this coordination state:
-
-```text
-174-new:
-CODEX_NEXT_STAGE_174NEW_Q05_FULL_TRANSLATION_BEHAVIOR_V1.md
-
-109:
-CODEX_NEXT_STAGE_109_QWEN25_S2_KERNEL_CENSUS_V1.md
-```
-
-The canonical dispatcher is:
-
-```text
-CODEX_NEXT_STAGE.md
-```
-
-After both tracks finish, stop and return their reports/review packs to ChatGPT for a new scientific decision.
-
-Do not automatically start:
-
-- L2-TLB latency sweep;
-- PTW fixed-latency experiment;
-- walker-count sweep;
-- TLB-capacity sweep;
-- page-size sweep;
-- Segment;
-- early-outstanding-detection mechanism;
-- new selected-kernel simulator-native capture.
+Read:
+- REPAIR_REVIEW_DECISION_2026-09-19.md
+- PIPELINE_ACCEPTANCE_CONTRACT_20H_V1.md
+- PIPELINE_SCHEDULER_POLICY_20H_V1.md
+- CODEX_NEXT_STAGE.md
+- node-specific Goal file
