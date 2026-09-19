@@ -1,0 +1,103 @@
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/framework-47dde576/gpu-simulator/trace-driven/trace_driven.cc	2026-09-15 18:25:07.828017066 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-global-access-determinism-174new-v1/.awma_runtime/determinism/src/framework-47dde576/gpu-simulator/trace-driven/trace_driven.cc	2026-09-19 00:42:16.948752536 +0000
+@@ -56,11 +56,22 @@
+ #include "gpgpusim_entrypoint.h"
+ #include "option_parser.h"
+ #include "trace_driven.h"
++#include <map>
++#include <fstream>
++namespace { struct det_id { unsigned long long cta, ordinal; unsigned warp; }; std::map<std::pair<unsigned,unsigned>,det_id> g_det;
++static bool det_target(unsigned uid) { const char *e=getenv("GPGPUSIM_GLOBAL_DET_KERNEL_UID"); return e && unsigned(strtoul(e,0,10))==uid; }
++static void det_set(unsigned sid,unsigned warp,det_id x){ g_det[std::make_pair(sid,warp)]=x; }
++static bool det_get(unsigned sid,unsigned warp,det_id *x){ std::map<std::pair<unsigned,unsigned>,det_id>::iterator it=g_det.find(std::make_pair(sid,warp)); if(it==g_det.end())return false; *x=it->second; return true; }
++static void det_clear(unsigned sid,unsigned warp){g_det.erase(std::make_pair(sid,warp));}
++static unsigned long long det_mix(unsigned long long h,unsigned long long x){ return (h^x)*1099511628211ULL; }
++static void det_emit(const det_id &id,const warp_inst_t &inst){ const char *p=getenv("GPGPUSIM_GLOBAL_DET_LOG"); if(!p)return; unsigned long long in=1469598103934665603ULL,out=1469598103934665603ULL; for(unsigned i=0;i<inst.warp_size();++i) if(inst.active(i)){in=det_mix(in,i);in=det_mix(in,inst.get_addr(i));} unsigned n=inst.accessq_count(); for(unsigned i=0;i<n;++i){const mem_access_t &a=inst.accessq_at(i);out=det_mix(out,a.get_addr());out=det_mix(out,a.get_size());out=det_mix(out,a.get_warp_mask().to_ullong());} std::ofstream o(p,std::ios::app); o<<id.cta<<","<<id.warp<<","<<id.ordinal<<","<<std::hex<<inst.pc<<std::dec<<","<<inst.active_count()<<","<<in<<","<<n<<","<<out<<"\n"; }
++}
+ 
+ const trace_warp_inst_t *trace_shd_warp_t::get_next_trace_inst() {
+   if (trace_pc < warp_traces.size()) {
+     trace_warp_inst_t *new_inst =
+         new trace_warp_inst_t(get_shader()->get_config());
++    new_inst->set_canonical(m_det_cta, m_det_warp, trace_pc);
+     new_inst->parse_from_trace_struct(
+         warp_traces[trace_pc], m_kernel_info->OpcodeMap,
+         m_kernel_info->m_tconfig, m_kernel_info->m_kernel_trace_info);
+@@ -576,6 +587,8 @@
+   unsigned end_warp = end_thread / m_config->warp_size +
+                       ((end_thread % m_config->warp_size) ? 1 : 0);
+ 
++  for (unsigned i = start_warp; i < end_warp; ++i)
++    static_cast<trace_shd_warp_t *>(m_warp[i])->set_canonical_cta(ctaid, i-start_warp);
+   init_traces(start_warp, end_warp, kernel);
+ }
+ 
+@@ -653,7 +666,9 @@
+   }
+   // here, we generate memory acessess and set the status if thread (done?)
+   if (inst.is_load() || inst.is_store()) {
++    det_id id; const bool observed=get_kernel()!=NULL && det_target(get_kernel()->get_uid()) && inst.space.get_type()==global_space && det_get(m_sid,inst.warp_id(),&id);
+     inst.generate_mem_accesses();
++    if(observed) det_emit(id,inst);
+   }
+ }
+ 
+@@ -661,7 +676,10 @@
+                                        const warp_inst_t *pI,
+                                        const active_mask_t &active_mask,
+                                        unsigned warp_id, unsigned sch_id) {
++  const trace_warp_inst_t *trace_inst=static_cast<const trace_warp_inst_t *>(pI);
++  det_set(m_sid,warp_id,det_id{trace_inst->det_cta(),trace_inst->det_ordinal(),trace_inst->det_warp()});
+   shader_core_ctx::issue_warp(warp, pI, active_mask, warp_id, sch_id);
++  det_clear(m_sid,warp_id);
+ 
+   // delete warp_inst_t class here, it is not required anymore by gpgpu-sim
+   // after issue
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/framework-47dde576/gpu-simulator/trace-driven/trace_driven.h	2026-09-15 18:25:07.828017066 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-global-access-determinism-174new-v1/.awma_runtime/determinism/src/framework-47dde576/gpu-simulator/trace-driven/trace_driven.h	2026-09-19 00:42:16.949752549 +0000
+@@ -73,6 +73,11 @@
+     should_do_atomic = false;
+   }
+ 
++  void set_canonical(unsigned long long cta, unsigned warp, unsigned long long ordinal) { m_det_cta=cta; m_det_warp=warp; m_det_ordinal=ordinal; }
++  unsigned long long det_cta() const { return m_det_cta; }
++  unsigned det_warp() const { return m_det_warp; }
++  unsigned long long det_ordinal() const { return m_det_ordinal; }
++
+   bool parse_from_trace_struct(
+       const inst_trace_t &trace,
+       const std::unordered_map<std::string, OpcodeChar> *OpcodeMap,
+@@ -81,6 +86,7 @@
+ 
+  private:
+   unsigned m_opcode;
++  unsigned long long m_det_cta=0, m_det_ordinal=0; unsigned m_det_warp=0;
+ };
+ 
+ class trace_kernel_info_t : public kernel_info_t {
+@@ -153,6 +159,7 @@
+   address_type get_start_trace_pc();
+   virtual address_type get_pc();
+   virtual kernel_info_t *get_kernel_info() const { return m_kernel_info; }
++  void set_canonical_cta(unsigned long long cta, unsigned warp) { m_det_cta=cta; m_det_warp=warp; }
+   void set_kernel(trace_kernel_info_t *kernel_info) {
+     m_kernel_info = kernel_info;
+   }
+@@ -160,6 +167,7 @@
+  private:
+   unsigned trace_pc;
+   trace_kernel_info_t *m_kernel_info;
++  unsigned long long m_det_cta=0; unsigned m_det_warp=0;
+ };
+ 
+ class trace_gpgpu_sim : public gpgpu_sim {
+--- /root/workspace/awma_runtime_preserved_before_ldgdepbar_hotfix_174new_v1/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/abstract_hardware_model.h	2026-09-08 06:32:52.000000000 +0000
++++ /root/workspace/accel-sim-framework-awma-q05-global-access-determinism-174new-v1/.awma_runtime/determinism/src/gpgpu-sim-57bb71ecd015b6ec0ab32e45b0815e5beaf69172/src/abstract_hardware_model.h	2026-09-19 00:47:38.419179407 +0000
+@@ -1301,6 +1301,7 @@
+   bool accessq_empty() const { return m_accessq.empty(); }
+   unsigned accessq_count() const { return m_accessq.size(); }
+   mem_access_t &accessq_back() { return m_accessq.back(); }
++  const mem_access_t &accessq_at(unsigned i) const { assert(i < m_accessq.size()); std::list<mem_access_t>::const_iterator it=m_accessq.begin(); std::advance(it,i); return *it; }
+   void accessq_pop_back() { m_accessq.pop_back(); }
+ 
+   bool dispatch_delay() {
