@@ -4,115 +4,129 @@ Status: ACTIVE AFTER USER LAUNCH
 
 Stage:
 
-`AWMA_20H_REPAIRED_REQUALIFICATION_AND_NATIVE_WORKLOAD_PIPELINE_V1`
+`AWMA_REPAIRED_HIT_PATH_AND_E1_AUTHORITY_V1`
 
 Coordination branch:
 
-`hrl/awma-20h-unattended-pipeline-handoff-v1`
+`hrl/awma-hitpath-e1-authority-handoff-v1`
 
-## Scientific decision entering this stage
+## Scientific state
 
-Repair authority:
+Accepted repaired requalification:
 
-`hrl/awma-vm-per-access-coverage-repair-174new-v1 @ 3f7bc0cd3cb3667b38fa0dd803ac034e19b493d6`
+`hrl/awma-repaired-vm-requalification-20h-174new-v1 @ a7110f789a2bc6761d8885a2ca5628b4acf50f69`
 
-Decision:
+Accepted 109 scoped closure:
 
-`PER_ACCESS_VM_COVERAGE_DEFECT_CONFIRMED_REPAIR_QUALIFIED_FOR_REQUALIFICATION`
+`hrl/awma-109-native-workload-pipeline-20h-v1 @ a271a0e57d3cb61ee878e686e6e517082a9f97df`
 
-`MATERIAL_SCIENTIFIC_CHANGE_REQUIRES_MINIMAL_REBASELINE`
+Mainline decision:
 
-The repaired runtime is accepted for requalification only.
-It is not yet the final research baseline.
+`REPAIRED_VM_PER_ACCESS_BASELINE_ACCEPTED_FOR_MODEL_RELATIVE_CHARACTERIZATION`
+
+Timing provenance:
+
+`NOT_HARDWARE_CALIBRATED`
+
+Architecture mechanism:
+
+`NOT_AUTHORIZED`
 
 ## Read in order
 
 1. `CURRENT_STATE.md`
 2. `DISCUSSION_REFERENCE.md`
-3. `REPAIR_REVIEW_DECISION_2026-09-19.md`
-4. `PIPELINE_ACCEPTANCE_CONTRACT_20H_V1.md`
-5. `PIPELINE_SCHEDULER_POLICY_20H_V1.md`
-6. this dispatcher
-7. exactly one node-specific Goal below
+3. `POST_PIPELINE_REVIEW_DECISION_2026-09-19.md`
+4. `NEXT_STAGE_ACCEPTANCE_CONTRACT_V1.md`
+5. this dispatcher
+6. exactly one node-specific Goal
 
 ## Track A — 174-new
 
-Node:
-
-`174-new / Simulation + analysis`
-
 Execute:
 
-`CODEX_NEXT_STAGE_174NEW_20H_POST_REPAIR_PIPELINE_V1.md`
+`CODEX_NEXT_STAGE_174NEW_REPAIRED_HIT_PATH_MODEL_VALIDITY_V1.md`
 
-Suggested execution branch:
+Suggested branch:
 
-`hrl/awma-repaired-vm-requalification-20h-174new-v1`
+`hrl/awma-repaired-hitpath-validity-174new-v1`
 
-Primary work:
-- rebuild/freeze repaired runtime and binary SHA;
-- reconcile target-scoped telemetry;
-- isolated/P8/P34 repaired Q05 requalification;
-- cross-family existing-evidence analysis;
-- conditional one non-Attention repaired R0/I0 screen.
+Goal:
+
+- close missing provenance artifacts without rerunning science where possible;
+- run repaired P34 target-only lookup-latency envelope;
+- audit hit-path model semantics;
+- conditionally screen Prefill GEMM 10/80 vs 0/80.
+
+Completion marker:
+
+`AWMA_REPAIRED_HIT_PATH_MODEL_VALIDITY_174NEW_V1_COMPLETE_WITH_SCOPE`
 
 ## Track B — 109 / RTX4080
 
-Node:
-
-`109 / native GPU producer`
-
 Execute:
 
-`CODEX_NEXT_STAGE_109_20H_NATIVE_PIPELINE_V1.md`
+`CODEX_NEXT_STAGE_109_E1_AUTHORITY_AND_MOE_DIAGNOSTICS_V1.md`
 
-Suggested execution branch:
+Suggested branch:
 
-`hrl/awma-109-native-workload-pipeline-20h-v1`
+`hrl/awma-e1-authority-moe-109-v1`
 
-Primary work:
-- close selected existing-family native resource evidence;
-- E1 Qwen2.5-7B raw/AWQ shape x implementation;
-- conditional E3 Q30 natural/P/U-active routing;
-- bounded opportunity queue;
-- optional detailed capture only if selector trigger passes.
+Goal:
 
-## Solve-and-continue
+- recover exact common raw/AWQ S2 input/model/runtime authority;
+- produce live q_proj/down_proj activation authority;
+- close fresh module replay equivalence;
+- run E1 M1/M256 deployment diagnostics;
+- run Q30 E3 N/P/U-active independently of E1;
+- use module-replay/NVTX selector canaries for any profiling.
 
-Routine engineering problems are solved locally and execution continues.
+Completion marker:
 
-A scientific problem freezes only the affected task when independent authorized tasks remain.
+`AWMA_E1_AUTHORITY_AND_MOE_DIAGNOSTICS_109_V1_COMPLETE_WITH_SCOPE`
 
-Stop a full lane only for a shared scientific/source/authority defect or unsafe resource ownership.
+## Solve-and-continue policy
 
-## Time
+Routine engineering problems:
+solve locally and continue.
 
-Each lane records its actual start time and uses:
-- deadline = start + 20 hours
-- no new scientific target in final 2 hours
+Scientific task-local problem:
+freeze that task, preserve evidence, continue independent authorized tasks.
 
-Do not extend automatically.
+A full lane stops only for shared source/model/authority corruption or unsafe resource ownership.
+
+## GPU scheduling
+
+109 owns one exclusive GPU lock:
+
+`/data/c16/locks/c16_gpu_campaign.lock`
+
+E1 and E3 are scientifically independent but physically serial.
 
 ## Storage
 
 node164 remains durable large-data authority.
 
-Use:
-`staging -> ready -> .partial -> size/SHA verify -> no-overwrite admit -> receipt/ACK`
+Use immutable admission with size/hash verification and ACK.
 
 ## Explicitly forbidden
 
 No:
-- new TLB/PTW/PWC/cache architecture mechanism;
-- capacity/port/page-size/prefetch/speculation sweep;
-- lookup-latency calibration from native pointer chase;
-- broad model download/bring-up;
-- automatic full historical replay.
+
+- TLB capacity/port redesign;
+- PTW/PWC mechanism;
+- page-size/segmentation mechanism;
+- translation prefetch/speculation;
+- cache mechanism;
+- new model download/substitution;
+- broad detailed trace campaign.
+
+174 lookup-latency variants are model-validity diagnostics only.
 
 ## Completion
 
 Each lane independently:
 
-report -> review pack -> hashes -> commit -> push -> remote verify -> clean worktree -> release owned lock -> STOP.
+report -> review pack -> hashes -> node164 ACK where needed -> commit -> push -> remote verify -> clean -> release owned lock -> STOP.
 
-Do not automatically enter a new scientific stage after completion.
+Do not automatically enter a mechanism stage.
