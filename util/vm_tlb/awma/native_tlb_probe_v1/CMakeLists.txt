@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(awma_native_tlb_probe LANGUAGES CUDA CXX)
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_ARCHITECTURES 89)
+add_executable(awma_native_tlb_probe native_tlb_probe.cu)
+target_compile_options(awma_native_tlb_probe PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-O3>)

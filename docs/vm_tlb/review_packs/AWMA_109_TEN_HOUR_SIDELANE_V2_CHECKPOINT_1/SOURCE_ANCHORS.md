@@ -1,0 +1,2 @@
+coordination: hrl/awma-109-ten-hour-sidelane-handoff-v2 @ 1869bc4bd203fcc9b68d8c013d445cec25ea1cb5
+checkpoint marker: AWMA_109_TEN_HOUR_SIDELANE_V2_CHECKPOINT_1_REMOTE_VERIFIED
