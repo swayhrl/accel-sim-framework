@@ -1,110 +1,123 @@
-# AWMA Discussion Reference — Global Access Determinism
+# AWMA Discussion Reference — Per-Access VM Coverage Gate
 
 Date: 2026-09-19
 
-## 1. The surprising result has moved upstream of translation
+## 1. The GLOBAL stream itself is deterministic
 
-The previous stage showed that shorter target lookup timing increases the number of GLOBAL `mem_access_t` objects reaching VM translation.
+The formal Q05 trace is not changing with lookup latency.
 
-This is not:
+Generation-time canonical comparison shows identical:
 
-- a post-READY retranslation effect;
-- a LOCAL-memory remapping effect;
-- a PARAM_LOCAL effect.
-
-Therefore the investigation must move to trace identity and access generation.
-
-## 2. Why this should normally be deterministic
-
-For a trace-driven GLOBAL memory instruction, the trace supplies:
-
-- PC;
+- trace instruction identity;
 - active mask;
-- per-lane memory addresses.
+- lane addresses;
+- coalesced transaction output.
 
-The trace-driven instruction copies those values directly.
+So the previous apparent GLOBAL stream variation was an observation artifact at the later VM boundary.
 
-GLOBAL addresses are not remapped based on SM/CTA placement.
+## 2. But the artifact exposed a real coverage mismatch
 
-The coalescer then deterministically groups those lane addresses into memory transactions under the fixed GPU coalescing configuration.
-
-So, for the same canonical trace instruction input:
-
-`same input -> same coalesced output`
-
-is the expected source contract.
-
-## 3. Aggregate equality is not enough
-
-The previous stage only established:
+The same qualification reports:
 
 ```text
-same total GLOBAL dynamic_insts
-same total active lanes
-different total GLOBAL generated accesses
+GLOBAL generation = 2,182,656 accesses
+VM translated/READY = ~0.78M to ~0.86M
 ```
 
-Those totals could hide one of several cases:
+This means the old VM observation point did not see every generated coalesced access.
 
-1. different trace instruction instances are being bound/executed;
-2. per-instruction active masks differ but totals happen to match;
-3. per-lane addresses differ;
-4. identical inputs somehow produce different coalescing outputs;
-5. access objects are regenerated/duplicated;
-6. the previous VM-boundary telemetry misses or reclassifies generation-time objects.
-
-The next stage distinguishes these explicitly.
-
-## 4. Runtime inst_uid cannot be the canonical join key
-
-Runtime instruction UID is assigned by issue order, which changes with timing.
-
-Cross-run comparison therefore needs a trace-native identity:
+Source inspection shows why this may be architectural-model undercoverage rather than only telemetry:
 
 ```text
-trace thread-block coordinates
-trace warp id
-trace instruction ordinal
+memory_cycle:
+  translate only current back access
+
+then:
+  L1D queue loop can pop several accesses
 ```
 
-The parser already reads these fields.
+Only the first access has necessarily been translated.
 
-That makes the comparison independent of CTA scheduling order and simulator timing.
+## 3. Why identity mapping hid the problem
 
-## 5. Generation-time instrumentation is stronger than memory-cycle observation
+For the accepted ordinary mapping:
 
-The prior telemetry first observes a `mem_access_t` when it reaches `memory_cycle()`.
+`SimPA == SimVA`
 
-The next stage records immediately around:
+An untranslated access still carries its original address into the lower cache path, so functional data addressing can appear correct.
 
-`generate_mem_accesses()`
+But it has skipped:
 
-This directly measures the coalescer input and output before cache/translation retry behavior.
+- L1 TLB lookup;
+- possible L2 TLB;
+- MSHR;
+- PTW/PWC/PTE;
+- translation latency.
 
-Then it checks conservation from generation to VM boundary.
+Therefore translation characterization can be materially wrong even when application completion and data-cache addressing look normal.
 
-## 6. Why this is now a correctness gate
+## 4. Why lookup-latency sensitivity must be requalified
 
-If identical canonical trace input produces different GLOBAL coalesced output under different TLB latency:
+Legacy P34:
 
-- that is not an architecture opportunity;
-- it is a simulator state-coupling/correctness issue.
+```text
+10/80 translated fraction relative to GLOBAL generation ~=35.6%
+0/80  translated fraction relative to GLOBAL generation ~=39.6%
+```
 
-If canonical inputs themselves differ:
+Changing lookup latency changes how often the pipeline returns to `memory_cycle()` before the downstream multi-pop path drains the queue.
 
-- the trace instance/binding or execution stream is timing dependent;
-- that also must be understood before mechanism evaluation.
+That can change the fraction of accesses that actually pay translation.
 
-Either way, the project should not optimize the TLB against a stream whose identity is not closed.
+This is a much stronger explanation for the previous lookup-sensitivity coupling than fill races or changing coalescing.
 
-## 7. Interaction with node109
+Until repaired, the measured 10->5/0 speedups cannot be interpreted as a clean lookup-latency opportunity.
 
-109's native reconnaissance remains useful, but it answers a different question.
+## 5. The repair is correctness, not a mechanism
 
-109:
-> what native translation-related timing/reach knees can be observed on RTX4080?
+The repair does not make the TLB faster or larger.
 
-174:
-> is the simulator feeding the same GLOBAL memory transaction stream when only lookup timing changes?
+It only enforces:
 
-Both are necessary; neither substitutes for the other.
+> every VM-eligible coalesced access must finish exactly one translation before it is admitted downstream.
+
+This may naturally reduce effective memory-issue throughput under a one-port TLB. That is part of the currently modeled translation architecture, not an added optimization.
+
+## 6. Why we do not immediately replay everything
+
+First qualify the repair on:
+
+- synthetic multi-access cases;
+- P34 natural;
+- optionally repaired target-I0 if exact semantics remain clean.
+
+Only then decide the minimum historical results worth replaying.
+
+Older P1/P2/P4/P16 context rows and mechanism-like diagnostics should not be rerun automatically.
+
+## 7. node109 result in context
+
+The native RTX4080 reconnaissance did not yield a clean pure-TLB latency value.
+
+The `cg` targeted surface is mostly flat in location count:
+
+- around 293 cycles/load at 4KiB stride;
+- around 293-300 at 64KiB;
+- around 298-302 at 256KiB;
+- around 303 at 2MiB.
+
+These are end-to-end dependent global-load measurements, not pure TLB lookup latencies.
+
+So native evidence does not justify patching simulator 10/80 at this point.
+
+## 8. Research direction after repair
+
+If the repaired model still shows substantial contextual translation sensitivity, the next step should broaden from Q05 to the representative kernel families already captured:
+
+- Prefill GEMM Primary;
+- Prefill Flash;
+- Decode GEMV Primary;
+- Decode Flash Primary-1;
+- Primary-2 only as a tiny structural control.
+
+But that expansion must wait until per-access translation coverage is correct.
