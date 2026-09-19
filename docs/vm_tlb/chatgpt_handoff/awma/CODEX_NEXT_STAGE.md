@@ -1,66 +1,68 @@
 # CODEX_NEXT_STAGE
 
-Status: **ACTIVE MAINLINE — 174 GLOBAL ACCESS DETERMINISM CLOSURE**
+Status: **ACTIVE MAINLINE — VM PER-ACCESS COVERAGE REPAIR QUALIFICATION**
 
 Stage:
 
-`AWMA_Q05_GLOBAL_ACCESS_DETERMINISM_CLOSURE_174NEW_V1`
+`AWMA_VM_PER_ACCESS_COVERAGE_REPAIR_174NEW_V1`
 
 Coordination branch:
 
-`hrl/awma-q05-global-access-determinism-handoff-v1`
+`hrl/awma-vm-per-access-coverage-repair-handoff-v1`
 
 ## node174-new — ACTIVE MAINLINE
 
 Execute:
 
-`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_Q05_GLOBAL_ACCESS_DETERMINISM_V1.md`
+`docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174NEW_VM_PER_ACCESS_COVERAGE_REPAIR_V1.md`
 
 Execution parent:
 
 ```text
-hrl/awma-q05-lookup-stream-identity-174new-v1
-42f7c134ac9f2d1b0d789ba455a7cea76703ab56
+hrl/awma-q05-global-access-determinism-174new-v1
+be82faf264e93396b4b7d4fd72078c7e4491e3e4
 ```
 
 Recommended branch:
 
-`hrl/awma-q05-global-access-determinism-174new-v1`
+`hrl/awma-vm-per-access-coverage-repair-174new-v1`
 
-Required order:
+Required sequence:
 
-1. mine existing per-PC dynamic-inst/active-lane/access counts;
-2. freeze trace->GLOBAL coalescing source contract;
-3. create timing-independent canonical trace instruction identity;
-4. instrument pre-coalescing input + post-coalescing output at generation time;
-5. close generation-to-VM UID conservation;
-6. exact P34 10/80 neutrality control;
-7. run only P34 0/80 as the primary comparison;
-8. canonical cross-run diff and delta conservation;
-9. add 5/80 only if scientifically needed;
-10. classify the source of GLOBAL stream variation;
-11. STOP.
+1. freeze prior translation-dependent results as legacy-undercoverage pending requalification;
+2. directly count untranslated L1D/ICNT admissions in the legacy runtime;
+3. prove source path;
+4. implement isolated surgical per-access translation gate;
+5. unit/synthetic regression;
+6. enforce zero untranslated downstream admissions;
+7. reproduce legacy P34;
+8. run repaired P34 natural;
+9. repaired target-I0 only if exact per-access semantics are clean;
+10. produce minimal requalification plan;
+11. STOP_FOR_SCIENTIFIC_REVIEW if repaired result materially changes claims.
 
 Success marker:
 
-`AWMA_Q05_GLOBAL_ACCESS_DETERMINISM_CLOSURE_174NEW_V1_COMPLETE_WITH_SCOPE`
+`AWMA_VM_PER_ACCESS_COVERAGE_REPAIR_174NEW_V1_COMPLETE_WITH_SCOPE`
 
 ## node109
 
-Independent V2.1 side campaign continues.
+No active AWMA task.
 
-Do not use or alter its in-progress results.
+Final V2.1 evidence is frozen at:
+
+`8a9d96ceb00e36ebdfa3d56cc277f965fffa649c`
+
+Do not start another GPU campaign.
 
 ## Forbidden
 
-No architecture mechanism or new parameter sweep:
+No TLB/PTW/cache architecture mechanism.
 
-- no faster-TLB design;
-- no TLB capacity/port change;
-- no PTW/PWC mechanism;
-- no page-size/segmentation;
-- no cache redesign.
+No broad historical replay.
 
-If a scientific simulator defect is proven, diagnose and STOP rather than silently repairing the accepted baseline.
+No silent baseline replacement.
+
+Routine source/build/test/telemetry/storage engineering is solve-and-continue.
 
 Finish report -> review pack -> hashes -> commit -> push -> remote verify -> clean -> STOP.
