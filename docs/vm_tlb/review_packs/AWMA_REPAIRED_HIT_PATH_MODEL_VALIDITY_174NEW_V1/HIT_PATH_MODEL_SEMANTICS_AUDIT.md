@@ -1,0 +1,3 @@
+# Hit-path model semantics audit
+
+`ldst_unit::memory_cycle()` invokes the functional translation path for each repaired-gated coalesced access before L1D/ICNT admission. `translation_controller::translate()` accepts a lookup through the configured single L1 port; pending accesses remain in the access queue under the existing COAL_STALL path. A launched lookup completes after configured effective L1 service (and L2 service when needed); ready translation is applied once to the same access. Repaired coverage makes this occur for roughly 3.09M target accesses. Target-only override changes service timing in the controller map, not capacity/ports or architectural policy. These are simulator-model semantics, not validated RTX4080 behavior.
