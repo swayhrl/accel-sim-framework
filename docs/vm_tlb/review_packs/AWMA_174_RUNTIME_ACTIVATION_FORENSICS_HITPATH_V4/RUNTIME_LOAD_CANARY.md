@@ -1,0 +1,1 @@
+Canary: LD_DEBUG=libs + ldd + strace file/process (where available) executed with the above executable/LD_LIBRARY_PATH. Loaded core authority is frozen in LOADED_CORE_ARTIFACT_AUTHORITY.json. Repair/override strings were found in the exact loaded core ELF.
