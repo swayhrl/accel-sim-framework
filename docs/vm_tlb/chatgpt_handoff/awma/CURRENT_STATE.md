@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`MAINLINE_RESET_TO_CROSS_TARGET_VALIDATION_AND_CROSSVIEW`
+`ASYMMETRIC_MAINLINE_RELEASE`
 
 ## 1. Project mission
 
@@ -32,8 +32,6 @@ A strong side-lane result does not automatically become the AWMA mainline.
 
 ## 2. Frozen mainline workload
 
-Primary workload identity:
-
 ```text
 model      = Qwen/Qwen2.5-0.5B-Instruct
 revision   = 7ae557604adf67be50417f59c2c2f167def9a775
@@ -45,23 +43,13 @@ dtype      = FP16
 backend    = SDPA
 ```
 
-## 3. Current mainline scientific question
+## 3. Current mainline question
 
-The next mainline question is no longer:
-
-> can Q05 show translation sensitivity?
-
-That has been established inside the accepted simulator model.
-
-The current question is:
-
-> Is the large repaired translation hit-path sensitivity a robust property across representative AI kernel families, or is it specific to Q05 / the current simulator timing semantics?
+> Is the large repaired translation hit-path sensitivity a robust property across representative AI kernel families, or is it specific to Q05 / current simulator timing semantics?
 
 This must be answered before any TLB/PTW mechanism design.
 
-## 4. Q05 repaired-model status
-
-The accepted repaired per-access contract requires every VM-eligible downstream admission to have completed translation.
+## 4. Q05 repaired-model anchor
 
 Repair authority:
 
@@ -81,175 +69,194 @@ untranslated                = 0
 unobserved                  = 0
 ```
 
-The repaired Q05 model exhibits:
+These are simulator-model results, not RTX4080 hardware-latency claims.
 
-- very high L1-TLB hit rate;
-- very few actual walks under contextual P34;
-- large R0 -> I0 sensitivity;
-- strong sensitivity to modeled L1 lookup service latency.
+## 5. P0 gate status
 
-These are **simulator-model results**, not RTX4080 hardware latency claims.
+### 109 — CLOSED
 
-## 5. 174 V4 status
+Verified pause branch:
 
-Execution branch:
+`hrl/awma-109-moe-causal-closure-scale-20h-v1`
 
-`hrl/awma-174-runtime-load-forensics-hitpath-v4`
+Remote HEAD:
 
-Remote execution HEAD:
+`0e32ac01b0237d94b39e45b288263e87e1960ccf`
 
-`c8657cf637c5b54a0f40135248ff1eabcfd66696`
+The remote pause commit contains:
 
-The runtime-load issue was solved and the repaired core was qualified.
+- `PAUSED_STATE.json`;
+- frozen 10-block x 22-condition C2 schedule;
+- degree-realization authority;
+- admitted-condition index;
+- SHA256SUMS.
 
-The user reports that all six repaired lookup points and zero-science provenance reconstruction have completed.
+107 completed C2 conditions are retained as candidate evidence.
 
-However, as of this coordination update, the remote publication ref:
+The MoE campaign status is:
+
+`PAUSED_FOR_AWMA_MAINLINE`
+
+109 GPU/lock is released.
+
+Therefore:
+
+`109_MAINLINE_RELEASED`
+
+### 174 — BLOCKED ON STORAGE
+
+Independent GitHub verification shows:
 
 `hrl/awma-174-hitpath-v4-provenance-closeout-exec`
 
-still resolves to the old execution HEAD `c8657cf...` rather than a new commit containing the reconstructed matrix/envelope closure.
+still points to:
 
-Therefore current status is:
+`c8657cf637c5b54a0f40135248ff1eabcfd66696`
 
-`SCIENCE_EXECUTED / REMOTE_PUBLICATION_BLOCKING_CLOSEOUT`
+and the remote commit tree does not contain the reconstructed V4 final report/matrix/envelope/receipts.
 
-No simulation rerun is authorized for this publication gap.
+The publication reconstruction is now blocked because:
 
-The permanent 174 publication rule is:
+```text
+/root/share/mnt164/huangrulin
+-> Transport endpoint is not connected
 
-`docs/vm_tlb/chatgpt_handoff/awma/174_MANDATORY_REMOTE_PUBLICATION_CONTRACT.md`
+10.208.130.164
+-> network reachable
 
-## 6. Next representative target set
+direct SSH
+-> no usable credential / authentication rejected
+```
 
-The next Simulation subset is intentionally small and question-driven.
+No local reachable Git commit contains the complete reconstructed closure tree.
+
+Therefore:
+
+`174_MAINLINE_BLOCKED_ON_NODE164_STORAGE_RECOVERY`
+
+No new 174 simulation may start.
+
+The active 174 task is now infrastructure-only:
+
+`AWMA_174_NODE164_MOUNT_RECOVERY_V1`
+
+followed by:
+
+`AWMA_174_V4_REMOTE_PUBLICATION_REPAIR_V2`
+
+## 6. Asymmetric mainline release
+
+The 109 Native track does NOT scientifically depend on the missing 174 publication files.
+
+Therefore node109 must not remain idle merely because 174 storage is blocked.
+
+Current parallel schedule:
+
+```text
+109:
+  start AWMA_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1 now
+
+174:
+  recover /root/share/mnt164
+  -> recover immutable V4 closure evidence
+  -> publish V4 closeout correctly
+  -> only then start Simulation cross-target stage
+```
+
+Cross-view synthesis still waits for both scientific tracks.
+
+## 7. Frozen target set
 
 ### T0 — Attention anchor
 
 `Q05_PREFILL_ATTN_FLASH`
 
-Existing repaired/contextual anchor.
-
 ### T1 — Prefill GEMM
 
 `PREFILL_GEMM_PRIMARY_OCC0`
 
-Accepted producer bundle under producer authority:
+Producer authority:
 
 `8f49ba3b9228b5f8a9163e961225ffd415107734`
 
-Reported producer properties include:
+Frozen producer descriptors:
 
 - raw records: 12,043,648
 - memory instruction records: 2,298,240
 - effective lane addresses: 70,352,896
-- 64 KiB VM-entry pages: 495
-
-No recapture is authorized by default.
+- 4 KiB pages: 7,906
+- 64 KiB pages: 495
 
 ### T2 — Decode GEMV
 
 `DECODE_GEMV_PRIMARY_STEP16`
 
-Same accepted producer authority:
+Same producer authority.
 
-`8f49ba3b9228b5f8a9163e961225ffd415107734`
-
-Reported producer properties include:
+Frozen descriptors:
 
 - raw records: 1,515,136
 - memory instruction records: 318,592
 - effective lane addresses: 9,022,720
-- 64 KiB VM-entry pages: 135
+- 4 KiB pages: 2,132
+- 64 KiB pages: 135
 
-Step16 is selected before new simulation as a middle decode step from the already accepted stable primary GEMV family.
+No result-driven target substitution.
 
-No result-driven target substitution is allowed.
-
-## 7. New mainline stage
+## 8. 109 Native mainline
 
 Stage:
 
-`AWMA_CROSS_TARGET_HITPATH_VALIDITY_AND_NATIVE_CROSSVIEW_V1`
-
-Two tracks execute in parallel only after prerequisites close.
-
-### Track A — 174-new
-
-Role:
-
-`Simulation Evidence Plane`
+`AWMA_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1`
 
 Goal:
 
-- reuse repaired runtime;
-- admit T1/T2 exact simulator inputs;
-- run a minimal hit-path validity matrix;
-- compare target classes without designing a mechanism.
+for T0/T1/T2, reuse existing evidence first and close only missing:
 
-Minimum per new target:
-
-```text
-repaired natural 10/80
-target-only 0/80
-target-only 0/0 when admitted safely
-target-I0 only if the exact existing diagnostic contract transfers cleanly
-```
-
-Classification:
-
-`REPAIRED_ISOLATED_SCREEN`
-
-unless same-run predecessor context is separately available and qualified.
-
-### Track B — 109 / RTX4080
-
-Role:
-
-`Native Evidence Plane`
-
-Goal:
-
-For exact T0/T1/T2 targets, reuse existing evidence first and add only bounded missing native evidence:
-
-- exact kernel identity / occurrence / decode step;
-- native CUDA timing;
-- lightweight NCU resource/traffic evidence where exact selector is proven;
-- accepted Route-B page/line/memory-record footprint;
-- CTA/warp/kernel shape;
+- exact target identity;
+- native timing;
+- Route-B footprint;
+- bounded exact-selector NCU traffic/resource evidence;
 - implementation fingerprint.
 
-No new broad NVBit or SASS trace campaign.
+No MoE/AWQ continuation.
 
-## 8. Cross-view objective
+## 9. 174 Simulation mainline — pending storage recovery
 
-Create one aligned table with relation:
+Stage:
+
+`AWMA_174_CROSS_TARGET_REPAIRED_HITPATH_VALIDITY_V1`
+
+May start ONLY after:
+
+1. node164 immutable V4 closure is readable;
+2. V4 publication V2 is remotely closed;
+3. remote commit tree contains the required report/matrix/envelope/receipts.
+
+Then T1/T2 receive minimal repaired hit-path screens.
+
+## 10. Cross-view objective
+
+Join T0/T1/T2 using:
 
 `EXACT_WORKLOAD_TARGET`
 
-for T0/T1/T2.
+and compare only aligned descriptors:
 
-Valid comparisons include:
-
-- target identity;
-- phase/operator family;
+- operator family;
 - CTA/warp shape;
 - memory-reference density;
 - native page footprint;
 - native traffic/resource regime;
 - simulated translation request density;
 - simulated TLB hit/miss/walk behavior;
-- simulated sensitivity to L1 lookup timing.
+- simulated L1 lookup sensitivity.
 
-Do NOT directly equate:
+Do not equate native CUDA time with simulator cycles, or NCU cache controls with TLB state.
 
-- NCU cache controls with TLB flush;
-- native wall/CUDA timing with simulator cycles;
-- native L2 counter definitions with simulator L2 counters unless definitions are explicitly aligned.
+## 11. Decision gate
 
-## 9. Decision gate after dual-track stage
-
-The mainline must classify the repaired simulator behavior into one of:
+After both tracks close, classify:
 
 ```text
 HITPATH_SENSITIVITY_SYSTEMATIC_ACROSS_KERNEL_CLASSES
@@ -259,96 +266,51 @@ SIMULATOR_HITPATH_MODEL_REQUIRES_SEMANTIC_RECALIBRATION
 INSUFFICIENT_CROSS_TARGET_EVIDENCE
 ```
 
-Only after this decision may a TLB/PTW mechanism stage be proposed.
+Only after this may a TLB/PTW mechanism stage be considered.
 
-## 10. Candidate side lanes
+## 12. Candidate side lanes
 
-### MoE routing-skew candidate
+### Q30 MoE routing-skew
 
 Accepted anchor:
 
-`hrl/awma-109-moe-routing-skew-20h-v1 @ ed645f3aec0fe4623e1895dee2754ece0ab063f1`
+`ed645f3aec0fe4623e1895dee2754ece0ab063f1`
+
+Paused continuation:
+
+`0e32ac01b0237d94b39e45b288263e87e1960ccf`
 
 Status:
 
 `HIGH_VALUE_RESEARCH_CANDIDATE / SIDE_LANE_FROZEN`
 
-The subsequently launched MoE causal-closure campaign is now:
+### Raw/AWQ implementation policy
 
-`PAUSE_REQUESTED_FOR_MAINLINE_PREEMPTION`
-
-Any already-completed C2 condition/block is retained as partial evidence.
-
-It must not continue consuming the RTX4080 after the smallest safe checkpoint.
-
-### Raw/AWQ implementation candidate
-
-Accepted evidence includes:
-
-- shape-specific replay/oracle correction;
-- M1023/M1024 implementation transition;
-- A/B/C same-weight decomposition;
-- isolated NCU evidence.
+Accepted evidence includes shape transition, same-weight A/B/C decomposition, and isolated NCU evidence.
 
 Status:
 
 `HIGH_VALUE_RESEARCH_CANDIDATE / SIDE_LANE_FROZEN`
 
-No additional AWQ work is currently mainline.
+No side lane may consume mainline resources without explicit reactivation.
 
-## 11. Node priority
-
-### 174-new
-
-1. close remote publication of V4;
-2. Track A cross-target repaired hit-path validation;
-3. Cross-view analysis support;
-4. no new mechanism until review.
-
-### 109 / RTX4080
-
-1. pause MoE causal-closure at a clean checkpoint;
-2. release GPU lock;
-3. Track B exact-target native Cross-view;
-4. side lanes remain frozen unless explicitly reactivated.
-
-### node164
-
-Durable raw/receipt authority.
-
-## 12. Immediate order
+## 13. Immediate execution
 
 ```text
-P0
-  109: safely pause MoE causal-closure campaign
-  174: finish V4 remote publication
+109 NOW:
+  CODEX_NEXT_STAGE_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1.md
 
-P1
-  174: T1 Prefill GEMM repaired hit-path screen
-  109: T0/T1/T2 exact-target native evidence closure
+174 NOW:
+  CODEX_RECOVER_174_NODE164_MOUNT_V1.md
 
-P2
-  174: T2 Decode GEMV repaired hit-path screen
+174 AFTER MOUNT PASS:
+  CODEX_REPAIR_174_V4_REMOTE_PUBLICATION_V2.md
 
-P3
-  Cross-view synthesis + ChatGPT scientific review
+174 AFTER PUBLICATION PASS:
+  CODEX_NEXT_STAGE_174_CROSS_TARGET_HITPATH_VALIDITY_V1.md
 
-STOP before mechanism design
+AFTER BOTH SCIENTIFIC TRACKS:
+  STOP -> ChatGPT Cross-view review
 ```
 
-## 13. Global boundaries
-
-Do not automatically start:
-
-- TLB capacity sweep;
-- walker/PTW mechanism;
-- PWC mechanism;
-- Segment/page-size mechanism;
-- cache mechanism;
-- MoE scheduling mechanism;
-- AWQ kernel optimization;
-- new model download.
-
-Routine engineering problems remain solve-and-continue.
-
-Scientific identity/semantics changes require review.
+No architecture mechanism is authorized.
