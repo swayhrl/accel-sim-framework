@@ -6,7 +6,7 @@ Date: 2026-09-20
 
 Stage:
 
-`AWMA_174_MINIMAL_REQUALIFIED_CROSS_TARGET_HITPATH_V2`
+`AWMA_174_VM_MAP_SEMANTICS_AND_CROSS_TARGET_ADMISSION_V3`
 
 Coordination branch:
 
@@ -33,43 +33,43 @@ No new 109 GPU task.
 
 MoE/AWQ candidate side lanes remain frozen.
 
-## 3. 174-new — SCIENTIFIC REQUALIFICATION READY
+## 3. 174-new — VM MAP SEMANTICS / ADMISSION READY
 
-node164 access is restored.
+Accepted V2 execution:
 
-Review commit:
+`hrl/awma-174-minimal-requalified-cross-target-hitpath-v2 @ f34b53597ab7d9175f8286dde67f4313462aabb5`
 
-`46de0c35e2c26fdabd9fc691370bedf0cc5974f5`
+T0 is requalified and remote-published:
 
-establishes that the old six-point V4 lookup matrix is incomplete and not admissible.
+```text
+10/80 = 1,654,548
+0/80  =   711,464
+0/0   =   745,880
+```
 
-Do NOT continue V4 publication repair.
+T1/T2 are `TARGET_NOT_ADMITTED` because their producer bundles lack target-specific VM object/segment map bindings.
 
 Execute now:
 
-`CODEX_NEXT_STAGE_174_MINIMAL_REQUALIFIED_CROSS_TARGET_V2.md`
+`CODEX_NEXT_STAGE_174_VM_MAP_SEMANTICS_CROSS_TARGET_V3.md`
 
-This Goal is explicitly authorized to run a minimal scientific requalification.
+This stage first audits whether the map contents are functionally relevant under the exact repaired F0 runtime.
 
-Target set:
+If a source-safe neutral compatibility view is proven, run the T0 neutral-map equivalence gate and then only T1/T2 `10/80` + `0/80`.
 
-```text
-T0 Q05_PREFILL_ATTN_FLASH
-T1 PREFILL_GEMM_PRIMARY_OCC0
-T2 DECODE_GEMV_PRIMARY_STEP16
-```
+If target-specific allocation metadata is functionally required, STOP and report the exact metadata contract. Do not automatically recapture on 109.
 
-Common matrix:
+## 4. V2 interpretation boundary
 
-```text
-10/80
-0/80
-0/0
-```
+T0 shows very large modeled L1 hit-path sensitivity despite an approximately 99.89% L1-TLB hit rate.
 
-T0 fresh 10/80 control must exactly reproduce the accepted isolated repaired R0 authority before T0 latency diagnostics or T1/T2 proceed.
+`0/0` is slower than `0/80`; therefore zeroing L2 lookup is non-additive and is not the primary cross-target metric.
 
-## 4. Historical V4 treatment
+Primary cross-target metric:
+
+`10/80 -> 0/80`
+
+## 5. Historical V4 treatment
 
 The V4 runtime-load forensic qualification remains valid.
 
@@ -79,7 +79,7 @@ The six historical V4 lookup-latency points are:
 
 Do not reconstruct or republish them as a complete scientific matrix.
 
-## 5. Shared scientific objective
+## 6. Shared scientific objective
 
 Determine whether repaired simulator translation hit-path sensitivity:
 
@@ -88,7 +88,7 @@ Determine whether repaired simulator translation hit-path sensitivity:
 - is target-dependent;
 - or indicates simulator hit-path semantic recalibration is required.
 
-## 6. Cross-view
+## 7. Cross-view
 
 Both scientific tracks follow:
 
@@ -96,7 +96,7 @@ Both scientific tracks follow:
 
 Cross-view synthesis waits for both tracks.
 
-## 7. 174 publication rule
+## 8. 174 publication rule
 
 The new V2 requalification result must follow:
 
@@ -106,7 +106,7 @@ A local-only result is not complete.
 
 The obsolete V4 full-matrix publication is no longer a prerequisite.
 
-## 8. Global boundaries
+## 9. Global boundaries
 
 Do not automatically start:
 
