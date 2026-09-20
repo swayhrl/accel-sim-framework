@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`109_NATIVE_TRACK_COMPLETE_174_REQUALIFICATION_READY`
+`109_NATIVE_TRACK_COMPLETE_174_MAP_ADMISSION_AUDIT_READY`
 
 ## 1. Project mission
 
@@ -123,11 +123,17 @@ and the old full-matrix publication path is:
 
 The accepted repaired runtime, isolated R0/I0 authority, contextual repaired R0/I0 anchors, and V4 runtime-load forensic qualification remain valid.
 
+The V2 minimal requalification has now completed and is accepted with scope:
+
+`hrl/awma-174-minimal-requalified-cross-target-hitpath-v2 @ f34b53597ab7d9175f8286dde67f4313462aabb5`
+
+T0 isolated repaired 10/80 exactly reproduced the accepted authority; 0/80 and 0/0 both completed with full per-access coverage.
+
+T1/T2 were not admitted because their producer bundles do not contain target-specific VM map bindings.
+
 The new active 174 stage is:
 
-`AWMA_174_MINIMAL_REQUALIFIED_CROSS_TARGET_HITPATH_V2`
-
-It runs only the minimum common isolated matrix required by the mainline.
+`AWMA_174_VM_MAP_SEMANTICS_AND_CROSS_TARGET_ADMISSION_V3`
 
 ## 6. Mainline schedule
 
@@ -141,11 +147,11 @@ Current schedule:
   remain GPU-idle; do not resume MoE/AWQ side lanes
 
 174:
-  run minimal repaired scientific requalification
-  -> T0 isolated 10/80 control + 0/80 + 0/0
-  -> T1 Prefill GEMM 10/80 + 0/80 + 0/0
-  -> T2 Decode GEMV 10/80 + 0/80 + 0/0
-  -> remote publication
+  audit exact VM map functional semantics
+  -> decide whether a neutral compatibility view is source-safe
+  -> T0 neutral-map 10/80 equivalence gate
+  -> if PASS: T1/T2 10/80 + 0/80 only
+  -> if map metadata is functionally required: STOP and request exact metadata
 ```
 
 Cross-view synthesis waits only for this 174 scientific track.
@@ -214,21 +220,34 @@ No further 109 GPU work is required for the current mainline decision.
 
 MoE/AWQ side lanes remain frozen.
 
-## 9. 174 Simulation mainline — READY
+## 9. 174 Simulation mainline — MAP ADMISSION AUDIT READY
 
-Stage:
+Accepted V2:
 
-`AWMA_174_MINIMAL_REQUALIFIED_CROSS_TARGET_HITPATH_V2`
+`f34b53597ab7d9175f8286dde67f4313462aabb5`
 
-Scientific decision:
+Accepted T0:
 
-- do not reconstruct the old six-point V4 matrix;
-- use accepted isolated repaired R0/I0 authority as T0 external anchors;
-- fresh T0 10/80 must exactly reproduce accepted isolated repaired R0 before diagnostics;
-- run only T0/T1/T2 common points 10/80, 0/80, 0/0;
-- require terminal and complete per-access coverage on every admitted point.
+```text
+10/80 = 1,654,548
+0/80  =   711,464
+0/0   =   745,880
+I0    =   674,179 external accepted reference
+```
 
-Historical V4 runtime-load forensic qualification remains valid.
+T0 has ~99.8907% L1-TLB hit rate, yet 10/80 -> 0/80 removes 56.9995% of R0 cycles and explains 96.1968% of the R0->I0 gap.
+
+0/0 is 34,416 cycles slower than 0/80, so L2-zero behavior is non-additive and will not be used as the primary cross-target metric.
+
+T1/T2 remain `TARGET_NOT_ADMITTED` only because the consumer contract lacks target-specific VM object/segment map bindings.
+
+Next stage:
+
+`AWMA_174_VM_MAP_SEMANTICS_AND_CROSS_TARGET_ADMISSION_V3`
+
+Primary metric after admission:
+
+`10/80 -> 0/80`
 
 ## 10. Cross-view objective
 
@@ -296,7 +315,7 @@ No side lane may consume mainline resources without explicit reactivation.
   no new GPU task; hold accepted Native result at 2122eccc...
 
 174 NOW:
-  CODEX_NEXT_STAGE_174_MINIMAL_REQUALIFIED_CROSS_TARGET_V2.md
+  CODEX_NEXT_STAGE_174_VM_MAP_SEMANTICS_CROSS_TARGET_V3.md
 
 AFTER 174 SCIENTIFIC TRACK:
   STOP -> ChatGPT Cross-view review
