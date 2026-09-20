@@ -1,0 +1,6 @@
+consumer	source_location	VA_PA	TLB	PTW_PWC_PTE	MSHR	cache_memory	segment_result	telemetry_only	evidence
+object_class	vm_translation.h:157-163	NO	NO	NO	NO	NO	NO	YES	comment states object class is not translation_key/timing
+object_map_classify	vm_translation.cc:2171	NO	NO	NO	NO	NO	conditional	YES	classification enters lookup object field
+segment_descriptor	vm_translation.cc:1863-1890	YES	YES	YES	YES	YES	YES	NO	segment_active invokes descriptor translate; segment hit assigns ppn/source
+segment_config	vm_translation.h:302-312; 517-543	YES	YES	YES	YES	YES	YES	NO	enabled map_path is translation configuration
+map_loaded	shader.h:1679-1684	conditional	conditional	conditional	conditional	conditional	YES	NO	C3 explicit parallel lookup state machine
