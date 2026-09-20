@@ -6,7 +6,7 @@ Date: 2026-09-20
 
 Stage:
 
-`AWMA_ASYMMETRIC_CROSS_TARGET_MAINLINE_V1`
+`AWMA_174_MINIMAL_REQUALIFIED_CROSS_TARGET_HITPATH_V2`
 
 Coordination branch:
 
@@ -23,17 +23,33 @@ docs/vm_tlb/chatgpt_handoff/awma/MAINLINE_GATE_UPDATE_2026-09-20.md
 docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
 ```
 
-## 2. node109 — RELEASED NOW
+## 2. node109 — COMPLETE_WITH_SCOPE
 
-Verified pause:
+Accepted Native execution:
 
-`hrl/awma-109-moe-causal-closure-scale-20h-v1 @ 0e32ac01b0237d94b39e45b288263e87e1960ccf`
+`hrl/awma-109-exact-target-native-crossview-v1 @ 2122eccc7aed61d05b114075e1c3126c4308e64b`
 
-The MoE candidate side lane is paused and published.
+No new 109 GPU task.
+
+MoE/AWQ candidate side lanes remain frozen.
+
+## 3. 174-new — SCIENTIFIC REQUALIFICATION READY
+
+node164 access is restored.
+
+Review commit:
+
+`46de0c35e2c26fdabd9fc691370bedf0cc5974f5`
+
+establishes that the old six-point V4 lookup matrix is incomplete and not admissible.
+
+Do NOT continue V4 publication repair.
 
 Execute now:
 
-`CODEX_NEXT_STAGE_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1.md`
+`CODEX_NEXT_STAGE_174_MINIMAL_REQUALIFIED_CROSS_TARGET_V2.md`
+
+This Goal is explicitly authorized to run a minimal scientific requalification.
 
 Target set:
 
@@ -43,49 +59,25 @@ T1 PREFILL_GEMM_PRIMARY_OCC0
 T2 DECODE_GEMV_PRIMARY_STEP16
 ```
 
-Do not wait for 174 storage recovery.
+Common matrix:
 
-No MoE/AWQ continuation.
+```text
+10/80
+0/80
+0/0
+```
 
-## 3. 174-new — INFRASTRUCTURE RECOVERY FIRST
+T0 fresh 10/80 control must exactly reproduce the accepted isolated repaired R0 authority before T0 latency diagnostics or T1/T2 proceed.
 
-Current blocker:
+## 4. Historical V4 treatment
 
-`/root/share/mnt164 -> Transport endpoint is not connected`
+The V4 runtime-load forensic qualification remains valid.
 
-Execute now:
+The six historical V4 lookup-latency points are:
 
-`CODEX_RECOVER_174_NODE164_MOUNT_V1.md`
+`PARTIAL_NOT_ADMITTED / SUPERSEDED`
 
-This is infrastructure-only.
-
-No simulation.
-
-If mount recovery PASS:
-
-immediately continue:
-
-`CODEX_REPAIR_174_V4_REMOTE_PUBLICATION_V2.md`
-
-Only after:
-
-`AWMA_174_V4_REMOTE_PUBLICATION_CLOSED_VERIFIED_V2`
-
-may 174 execute:
-
-`CODEX_NEXT_STAGE_174_CROSS_TARGET_HITPATH_VALIDITY_V1.md`
-
-## 4. If node164 recovery requires external credentials
-
-Return:
-
-`BLOCKED_EXTERNAL_NODE164_CREDENTIAL_OR_MOUNT_AUTHORITY_REQUIRED`
-
-with the exact non-secret mount/account/config requirement.
-
-Do not repeatedly re-audit publication while storage remains unavailable.
-
-109 continues independently.
+Do not reconstruct or republish them as a complete scientific matrix.
 
 ## 5. Shared scientific objective
 
@@ -106,11 +98,13 @@ Cross-view synthesis waits for both tracks.
 
 ## 7. 174 publication rule
 
-Every 174 result must follow:
+The new V2 requalification result must follow:
 
 `174_MANDATORY_REMOTE_PUBLICATION_CONTRACT.md`
 
 A local-only result is not complete.
+
+The obsolete V4 full-matrix publication is no longer a prerequisite.
 
 ## 8. Global boundaries
 
