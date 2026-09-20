@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`109_NATIVE_TRACK_COMPLETE_174_STORAGE_BLOCKED`
+`109_NATIVE_TRACK_COMPLETE_174_REQUALIFICATION_READY`
 
 ## 1. Project mission
 
@@ -103,68 +103,52 @@ Therefore:
 
 `109_MAINLINE_RELEASED`
 
-### 174 — BLOCKED ON STORAGE
+### 174 — STORAGE RECOVERED; SCIENTIFIC REQUALIFICATION REQUIRED
 
-Independent GitHub verification shows:
+node164 access is restored and the immutable V4 durable root is readable.
 
-`hrl/awma-174-hitpath-v4-provenance-closeout-exec`
+Independent review commit:
 
-still points to:
+`46de0c35e2c26fdabd9fc691370bedf0cc5974f5`
 
-`c8657cf637c5b54a0f40135248ff1eabcfd66696`
+establishes that the V4 repaired 10/80 qualification is complete, but all six historical lookup-matrix launches lack terminal and per-access coverage markers.
 
-and the remote commit tree does not contain the reconstructed V4 final report/matrix/envelope/receipts.
+Therefore the six historical lookup points are:
 
-The publication reconstruction is now blocked because:
+`V4_LOOKUP_MATRIX_PARTIAL_NOT_ADMITTED`
 
-```text
-/root/share/mnt164/huangrulin
--> Transport endpoint is not connected
+and the old full-matrix publication path is:
 
-10.208.130.164
--> network reachable
+`V4_FULL_MATRIX_PUBLICATION_SUPERSEDED`
 
-direct SSH
--> no usable credential / authentication rejected
-```
+The accepted repaired runtime, isolated R0/I0 authority, contextual repaired R0/I0 anchors, and V4 runtime-load forensic qualification remain valid.
 
-No local reachable Git commit contains the complete reconstructed closure tree.
+The new active 174 stage is:
 
-Therefore:
+`AWMA_174_MINIMAL_REQUALIFIED_CROSS_TARGET_HITPATH_V2`
 
-`174_MAINLINE_BLOCKED_ON_NODE164_STORAGE_RECOVERY`
+It runs only the minimum common isolated matrix required by the mainline.
 
-No new 174 simulation may start.
+## 6. Mainline schedule
 
-The active 174 task is now infrastructure-only:
-
-`AWMA_174_NODE164_MOUNT_RECOVERY_V1`
-
-followed by:
-
-`AWMA_174_V4_REMOTE_PUBLICATION_REPAIR_V2`
-
-## 6. Asymmetric mainline release
-
-The 109 Native track does NOT scientifically depend on the missing 174 publication files.
-
-Therefore node109 must not remain idle merely because 174 storage is blocked.
+109 Native Cross-view is complete and accepted with scope.
 
 Current schedule:
 
 ```text
 109:
-  Native Cross-view track COMPLETE_WITH_SCOPE
+  COMPLETE_WITH_SCOPE
   remain GPU-idle; do not resume MoE/AWQ side lanes
 
 174:
-  recover /root/share/mnt164
-  -> recover immutable V4 closure evidence
-  -> publish V4 closeout correctly
-  -> only then start Simulation cross-target stage
+  run minimal repaired scientific requalification
+  -> T0 isolated 10/80 control + 0/80 + 0/0
+  -> T1 Prefill GEMM 10/80 + 0/80 + 0/0
+  -> T2 Decode GEMV 10/80 + 0/80 + 0/0
+  -> remote publication
 ```
 
-Cross-view synthesis still waits for the 174 Simulation track.
+Cross-view synthesis waits only for this 174 scientific track.
 
 ## 7. Frozen target set
 
@@ -230,19 +214,21 @@ No further 109 GPU work is required for the current mainline decision.
 
 MoE/AWQ side lanes remain frozen.
 
-## 9. 174 Simulation mainline — pending storage recovery
+## 9. 174 Simulation mainline — READY
 
 Stage:
 
-`AWMA_174_CROSS_TARGET_REPAIRED_HITPATH_VALIDITY_V1`
+`AWMA_174_MINIMAL_REQUALIFIED_CROSS_TARGET_HITPATH_V2`
 
-May start ONLY after:
+Scientific decision:
 
-1. node164 immutable V4 closure is readable;
-2. V4 publication V2 is remotely closed;
-3. remote commit tree contains the required report/matrix/envelope/receipts.
+- do not reconstruct the old six-point V4 matrix;
+- use accepted isolated repaired R0/I0 authority as T0 external anchors;
+- fresh T0 10/80 must exactly reproduce accepted isolated repaired R0 before diagnostics;
+- run only T0/T1/T2 common points 10/80, 0/80, 0/0;
+- require terminal and complete per-access coverage on every admitted point.
 
-Then T1/T2 receive minimal repaired hit-path screens.
+Historical V4 runtime-load forensic qualification remains valid.
 
 ## 10. Cross-view objective
 
@@ -307,16 +293,10 @@ No side lane may consume mainline resources without explicit reactivation.
 
 ```text
 109 NOW:
-  no new GPU task; hold mainline result at 2122eccc...
+  no new GPU task; hold accepted Native result at 2122eccc...
 
 174 NOW:
-  CODEX_RECOVER_174_NODE164_MOUNT_V1.md
-
-174 AFTER MOUNT PASS:
-  CODEX_REPAIR_174_V4_REMOTE_PUBLICATION_V2.md
-
-174 AFTER PUBLICATION PASS:
-  CODEX_NEXT_STAGE_174_CROSS_TARGET_HITPATH_VALIDITY_V1.md
+  CODEX_NEXT_STAGE_174_MINIMAL_REQUALIFIED_CROSS_TARGET_V2.md
 
 AFTER 174 SCIENTIFIC TRACK:
   STOP -> ChatGPT Cross-view review
