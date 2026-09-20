@@ -6,7 +6,7 @@ Date: 2026-09-20
 
 Stage:
 
-`AWMA_MAINLINE_RESET_AND_CROSS_TARGET_VALIDITY_V1`
+`AWMA_ASYMMETRIC_CROSS_TARGET_MAINLINE_V1`
 
 Coordination branch:
 
@@ -19,50 +19,21 @@ docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
 docs/vm_tlb/chatgpt_handoff/awma/EXECUTION_PRIORITY_POLICY_V2.md
 docs/vm_tlb/chatgpt_handoff/awma/CANDIDATE_SIDE_LANES.md
 docs/vm_tlb/chatgpt_handoff/awma/CROSSVIEW_JOIN_CONTRACT_V1.md
+docs/vm_tlb/chatgpt_handoff/awma/MAINLINE_GATE_UPDATE_2026-09-20.md
 docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
 ```
 
-## 2. P0 prerequisites — must close before new mainline science
+## 2. node109 — RELEASED NOW
 
-### node109
+Verified pause:
 
-The currently running MoE causal-closure campaign is a candidate side lane.
+`hrl/awma-109-moe-causal-closure-scale-20h-v1 @ 0e32ac01b0237d94b39e45b288263e87e1960ccf`
 
-Execute:
+The MoE candidate side lane is paused and published.
 
-`CODEX_PAUSE_109_MOE_CAUSAL_FOR_MAINLINE.md`
+Execute now:
 
-Required result:
-
-`AWMA_109_MOE_CAUSAL_CLOSURE_PAUSED_FOR_MAINLINE`
-
-Do not discard completed C2 evidence.
-
-Do not continue the side lane merely to use its 20h allocation.
-
-### 174-new
-
-Close the V4 remote-publication blocker.
-
-Execute:
-
-`CODEX_CLOSE_174_V4_REMOTE_PUBLICATION.md`
-
-Required result:
-
-`AWMA_174_V4_REMOTE_PUBLICATION_CLOSED`
-
-No simulation rerun.
-
-## 3. P1/P2 dual-track mainline
-
-Only after both P0 prerequisites close.
-
-### Track A — 174-new / Simulation Evidence Plane
-
-Execute:
-
-`CODEX_NEXT_STAGE_174_CROSS_TARGET_HITPATH_VALIDITY_V1.md`
+`CODEX_NEXT_STAGE_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1.md`
 
 Target set:
 
@@ -72,108 +43,83 @@ T1 PREFILL_GEMM_PRIMARY_OCC0
 T2 DECODE_GEMV_PRIMARY_STEP16
 ```
 
-Objective:
-
-test repaired hit-path model validity across Attention / Prefill GEMM / Decode GEMV.
-
-No mechanism design.
-
-### Track B — 109 / Native Evidence Plane
-
-Execute:
-
-`CODEX_NEXT_STAGE_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1.md`
-
-Same exact target set.
-
-Objective:
-
-close native timing/resource/footprint evidence for later Cross-view.
+Do not wait for 174 storage recovery.
 
 No MoE/AWQ continuation.
 
-## 4. Shared workload
+## 3. 174-new — INFRASTRUCTURE RECOVERY FIRST
 
-```text
-model      = Qwen/Qwen2.5-0.5B-Instruct
-revision   = 7ae557604adf67be50417f59c2c2f167def9a775
-scenario   = S2_TEXT
-batch      = 1
-prefill    = 2048
-decode     = 32
-dtype      = FP16
-backend    = SDPA
-```
+Current blocker:
 
-## 5. Mainline scientific objective
+`/root/share/mnt164 -> Transport endpoint is not connected`
 
-Determine whether the repaired simulator's large translation hit-path sensitivity:
+Execute now:
 
-- persists across representative kernel classes;
-- is dominated by Attention;
+`CODEX_RECOVER_174_NODE164_MOUNT_V1.md`
+
+This is infrastructure-only.
+
+No simulation.
+
+If mount recovery PASS:
+
+immediately continue:
+
+`CODEX_REPAIR_174_V4_REMOTE_PUBLICATION_V2.md`
+
+Only after:
+
+`AWMA_174_V4_REMOTE_PUBLICATION_CLOSED_VERIFIED_V2`
+
+may 174 execute:
+
+`CODEX_NEXT_STAGE_174_CROSS_TARGET_HITPATH_VALIDITY_V1.md`
+
+## 4. If node164 recovery requires external credentials
+
+Return:
+
+`BLOCKED_EXTERNAL_NODE164_CREDENTIAL_OR_MOUNT_AUTHORITY_REQUIRED`
+
+with the exact non-secret mount/account/config requirement.
+
+Do not repeatedly re-audit publication while storage remains unavailable.
+
+109 continues independently.
+
+## 5. Shared scientific objective
+
+Determine whether repaired simulator translation hit-path sensitivity:
+
+- persists across Attention / Prefill GEMM / Decode GEMV;
+- is Attention-dominant;
 - is target-dependent;
-- or indicates a simulator hit-path semantic/calibration issue.
+- or indicates simulator hit-path semantic recalibration is required.
 
-## 6. Cross-view rule
+## 6. Cross-view
 
-Both tracks must follow:
+Both scientific tracks follow:
 
 `CROSSVIEW_JOIN_CONTRACT_V1.md`
 
-Native and Simulation evidence remain separate classes.
+Cross-view synthesis waits for both tracks.
 
-No direct equivalence between hardware timing/counters and simulator cycles/lookup latencies is allowed without an explicit aligned definition.
+## 7. 174 publication rule
 
-## 7. Candidate side lanes
-
-Frozen:
-
-- Q30 MoE routing-skew;
-- MoE causal-closure partial campaign after pause;
-- raw/AWQ implementation-policy work.
-
-See:
-
-`CANDIDATE_SIDE_LANES.md`
-
-They may not consume mainline resources unless explicitly reactivated.
-
-## 8. Engineering policy
-
-Routine engineering issues are solve-and-continue.
-
-Examples:
-
-- paths;
-- parsers;
-- build;
-- selectors;
-- NCU metric discovery;
-- trace admission;
-- receipts;
-- Git publication.
-
-Scientific review is required for:
-
-- target/model/input identity changes;
-- simulator semantic changes;
-- evidence-class changes;
-- mechanism authorization.
-
-## 9. 174 remote publication
-
-Every 174 Goal must follow:
+Every 174 result must follow:
 
 `174_MANDATORY_REMOTE_PUBLICATION_CONTRACT.md`
 
 A local-only result is not complete.
 
-## 10. Global STOP boundary
+## 8. Global boundaries
 
-After Track A and Track B both complete:
+Do not automatically start:
 
-- stop;
-- return both reports/review packs to ChatGPT;
-- do not automatically launch Cross-view conclusions or architecture mechanisms.
+- TLB/PTW/cache mechanisms;
+- TLB capacity/page-size/walker/PWC sweeps;
+- MoE mechanism;
+- AWQ optimization;
+- new model download.
 
-ChatGPT will issue the next scientific decision.
+After both scientific tracks complete, STOP and return to ChatGPT.
