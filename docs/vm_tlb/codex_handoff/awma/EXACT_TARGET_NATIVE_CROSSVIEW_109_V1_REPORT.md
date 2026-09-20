@@ -1,0 +1,2 @@
+AWMA_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1_COMPLETE_WITH_SCOPE
+Exact workload target export constructed from accepted native/Route-B evidence; unsupported compact timing/resource fields explicitly unavailable.
