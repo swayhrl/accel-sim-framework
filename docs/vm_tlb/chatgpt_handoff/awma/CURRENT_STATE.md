@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`109_NATIVE_TRACK_COMPLETE_174_MAP_ADMISSION_AUDIT_READY`
+`109_NATIVE_TRACK_COMPLETE_174_F0_RUNTIME_STATE_CLOSURE_READY`
 
 ## 1. Project mission
 
@@ -131,9 +131,17 @@ T0 isolated repaired 10/80 exactly reproduced the accepted authority; 0/80 and 0
 
 T1/T2 were not admitted because their producer bundles do not contain target-specific VM map bindings.
 
+The V3 source/config audit has completed and is remote-published:
+
+`hrl/awma-174-vm-map-semantics-cross-target-v3 @ b3310731956d0f731da47bb324cc22d661002dfc`
+
+V3 correctly proved Segment descriptors are functionally capable, but its final `TARGET_SPECIFIC_VM_METADATA_REQUIRED` conclusion is not yet admitted because it did not close the post-parse F0 runtime state.
+
+Existing accepted repaired F0 telemetry shows `vm_weight_segmentation_enabled=0` and zero Segment lookup/hit/suppression activity despite a loaded descriptor path.
+
 The new active 174 stage is:
 
-`AWMA_174_VM_MAP_SEMANTICS_AND_CROSS_TARGET_ADMISSION_V3`
+`AWMA_174_EXACT_F0_SEGMENT_STATE_CLOSURE_V3R1`
 
 ## 6. Mainline schedule
 
@@ -147,11 +155,10 @@ Current schedule:
   remain GPU-idle; do not resume MoE/AWQ side lanes
 
 174:
-  audit exact VM map functional semantics
-  -> decide whether a neutral compatibility view is source-safe
-  -> T0 neutral-map 10/80 equivalence gate
-  -> if PASS: T1/T2 10/80 + 0/80 only
-  -> if map metadata is functionally required: STOP and request exact metadata
+  zero-science audit exact V2 T0 post-parse Segment runtime state
+  -> if Segment disabled and all Segment activity zero: reuse exact T0 map assets as model-generic dormant F0 compatibility assets
+  -> T1/T2 10/80 + 0/80 only with Segment-dormancy hard gate
+  -> if any T0 Segment participation is nonzero: stop and only then consider new 109 metadata/trace capture
 ```
 
 Cross-view synthesis waits only for this 174 scientific track.
@@ -220,7 +227,7 @@ No further 109 GPU work is required for the current mainline decision.
 
 MoE/AWQ side lanes remain frozen.
 
-## 9. 174 Simulation mainline — MAP ADMISSION AUDIT READY
+## 9. 174 Simulation mainline — EXACT F0 RUNTIME-STATE CLOSURE READY
 
 Accepted V2:
 
@@ -241,11 +248,19 @@ T0 has ~99.8907% L1-TLB hit rate, yet 10/80 -> 0/80 removes 56.9995% of R0 cycle
 
 T1/T2 remain `TARGET_NOT_ADMITTED` only because the consumer contract lacks target-specific VM object/segment map bindings.
 
+V3 review:
+
+`b3310731956d0f731da47bb324cc22d661002dfc`
+
+Important correction: V3 read parsed/effective `weight_segmentation_enable=1`, but historical fair-arm F0 semantics disable Segment after parsing. Accepted repaired F0 telemetry already reports Segment disabled and zero Segment lookup/hit/suppression counters.
+
+Exact V2 compatibility assets are whole-VA views rather than target-precise allocation maps. Therefore no node109 recapture is authorized until exact V2 T0 runtime Segment participation is checked from immutable logs.
+
 Next stage:
 
-`AWMA_174_VM_MAP_SEMANTICS_AND_CROSS_TARGET_ADMISSION_V3`
+`AWMA_174_EXACT_F0_SEGMENT_STATE_CLOSURE_V3R1`
 
-Primary metric after admission:
+Primary metric after admission remains:
 
 `10/80 -> 0/80`
 
@@ -315,7 +330,7 @@ No side lane may consume mainline resources without explicit reactivation.
   no new GPU task; hold accepted Native result at 2122eccc...
 
 174 NOW:
-  CODEX_NEXT_STAGE_174_VM_MAP_SEMANTICS_CROSS_TARGET_V3.md
+  CODEX_NEXT_STAGE_174_EXACT_F0_SEGMENT_STATE_V3R1.md
 
 AFTER 174 SCIENTIFIC TRACK:
   STOP -> ChatGPT Cross-view review
