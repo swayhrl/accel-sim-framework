@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`ASYMMETRIC_MAINLINE_RELEASE`
+`109_NATIVE_TRACK_COMPLETE_174_STORAGE_BLOCKED`
 
 ## 1. Project mission
 
@@ -150,11 +150,12 @@ The 109 Native track does NOT scientifically depend on the missing 174 publicati
 
 Therefore node109 must not remain idle merely because 174 storage is blocked.
 
-Current parallel schedule:
+Current schedule:
 
 ```text
 109:
-  start AWMA_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1 now
+  Native Cross-view track COMPLETE_WITH_SCOPE
+  remain GPU-idle; do not resume MoE/AWQ side lanes
 
 174:
   recover /root/share/mnt164
@@ -163,7 +164,7 @@ Current parallel schedule:
   -> only then start Simulation cross-target stage
 ```
 
-Cross-view synthesis still waits for both scientific tracks.
+Cross-view synthesis still waits for the 174 Simulation track.
 
 ## 7. Frozen target set
 
@@ -203,23 +204,31 @@ Frozen descriptors:
 
 No result-driven target substitution.
 
-## 8. 109 Native mainline
+## 8. 109 Native mainline — COMPLETE_WITH_SCOPE
 
-Stage:
+Execution branch:
 
-`AWMA_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1`
+`hrl/awma-109-exact-target-native-crossview-v1`
 
-Goal:
+Remote HEAD:
 
-for T0/T1/T2, reuse existing evidence first and close only missing:
+`2122eccc7aed61d05b114075e1c3126c4308e64b`
 
-- exact target identity;
-- native timing;
-- Route-B footprint;
-- bounded exact-selector NCU traffic/resource evidence;
-- implementation fingerprint.
+Accepted status:
 
-No MoE/AWQ continuation.
+`AWMA_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1_ACCEPTED_WITH_SCOPE`
+
+Accepted T0/T1/T2 exact-target identity export is remote-bound.
+
+T1/T2 Route-B footprint descriptors are complete for the current join.
+
+Compact exact-target native timing is explicitly unavailable for T0/T1/T2, and exact NCU selector/resource evidence is unavailable for T1/T2. These missing fields are not backfilled from another evidence class.
+
+T0 comparable Native footprint fields also remain unavailable in this export; existing Q05 simulator-native trace structure must not be silently imported into the Native evidence plane.
+
+No further 109 GPU work is required for the current mainline decision.
+
+MoE/AWQ side lanes remain frozen.
 
 ## 9. 174 Simulation mainline — pending storage recovery
 
@@ -298,7 +307,7 @@ No side lane may consume mainline resources without explicit reactivation.
 
 ```text
 109 NOW:
-  CODEX_NEXT_STAGE_109_EXACT_TARGET_NATIVE_CROSSVIEW_V1.md
+  no new GPU task; hold mainline result at 2122eccc...
 
 174 NOW:
   CODEX_RECOVER_174_NODE164_MOUNT_V1.md
@@ -309,7 +318,7 @@ No side lane may consume mainline resources without explicit reactivation.
 174 AFTER PUBLICATION PASS:
   CODEX_NEXT_STAGE_174_CROSS_TARGET_HITPATH_VALIDITY_V1.md
 
-AFTER BOTH SCIENTIFIC TRACKS:
+AFTER 174 SCIENTIFIC TRACK:
   STOP -> ChatGPT Cross-view review
 ```
 
