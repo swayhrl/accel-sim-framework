@@ -6,7 +6,7 @@ Date: 2026-09-20
 
 Stage:
 
-`AWMA_174_VM_MAP_SEMANTICS_AND_CROSS_TARGET_ADMISSION_V3`
+`AWMA_174_EXACT_F0_SEGMENT_STATE_CLOSURE_V3R1`
 
 Coordination branch:
 
@@ -33,39 +33,48 @@ No new 109 GPU task.
 
 MoE/AWQ candidate side lanes remain frozen.
 
-## 3. 174-new — VM MAP SEMANTICS / ADMISSION READY
+## 3. 174-new — EXACT F0 RUNTIME-STATE CLOSURE READY
 
 Accepted V2 execution:
 
 `hrl/awma-174-minimal-requalified-cross-target-hitpath-v2 @ f34b53597ab7d9175f8286dde67f4313462aabb5`
 
-T0 is requalified and remote-published:
+V3 source/config audit:
+
+`hrl/awma-174-vm-map-semantics-cross-target-v3 @ b3310731956d0f731da47bb324cc22d661002dfc`
+
+V3 correctly proved an active Segment descriptor can affect functional translation, but it did not close the post-parse F0 runtime state.
+
+Accepted repaired F0 evidence already reports:
 
 ```text
-10/80 = 1,654,548
-0/80  =   711,464
-0/0   =   745,880
+vm_weight_segmentation_enabled = 0
+segment lookup attempts = 0
+segment hits = 0
+segment suppression counters = 0
 ```
 
-T1/T2 are `TARGET_NOT_ADMITTED` because their producer bundles lack target-specific VM object/segment map bindings.
+Therefore do NOT authorize node109 recapture yet.
 
 Execute now:
 
-`CODEX_NEXT_STAGE_174_VM_MAP_SEMANTICS_CROSS_TARGET_V3.md`
+`CODEX_NEXT_STAGE_174_EXACT_F0_SEGMENT_STATE_V3R1.md`
 
-This stage first audits whether the map contents are functionally relevant under the exact repaired F0 runtime.
+Phase A is zero-science: inspect exact V2 T0 immutable logs and fair-arm post-parse source state.
 
-If a source-safe neutral compatibility view is proven, run the T0 neutral-map equivalence gate and then only T1/T2 `10/80` + `0/80`.
+If exact V2 T0 confirms Segment functionally dormant, reuse the exact accepted T0 compatibility assets as model-generic dormant F0 configuration and admit T1/T2 with a hard zero-Segment-activity gate.
 
-If target-specific allocation metadata is functionally required, STOP and report the exact metadata contract. Do not automatically recapture on 109.
+Only if exact V2 T0 has nonzero Segment participation does `TARGET_SPECIFIC_VM_METADATA_REQUIRED` become confirmed.
 
-## 4. V2 interpretation boundary
+## 4. V3 correction boundary
 
-T0 shows very large modeled L1 hit-path sensitivity despite an approximately 99.89% L1-TLB hit rate.
+T0 still shows very large modeled L1 hit-path sensitivity despite an approximately 99.89% L1-TLB hit rate.
 
-`0/0` is slower than `0/80`; therefore zeroing L2 lookup is non-additive and is not the primary cross-target metric.
+V3's `TARGET_SPECIFIC_VM_METADATA_REQUIRED` is provisional until exact V2 T0 runtime Segment state is closed.
 
-Primary cross-target metric:
+The exact T0 compatibility-map SHA values correspond to whole-VA compatibility views, not target-precise runtime allocation maps.
+
+Primary cross-target metric remains:
 
 `10/80 -> 0/80`
 
