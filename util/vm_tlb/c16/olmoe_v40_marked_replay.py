@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exact expert58 replay with durable host-phase markers for NVBit V40."""
 import hashlib
+import json
 import os
 from pathlib import Path
 
@@ -34,6 +35,11 @@ mark("M0G_TARGET_READY")
 mark("M1_BEFORE_EXPERT58_CALL")
 with torch.inference_mode():
     output = model.model.layers[1].mlp.experts[58].down_proj(value)
+weight = model.model.layers[1].mlp.experts[58].down_proj.weight
+def descriptor(tensor, role):
+    return {"semantic_role": role, "ptr": hex(tensor.data_ptr()), "bytes": tensor.numel() * tensor.element_size(), "dtype": str(tensor.dtype), "shape": list(tensor.shape)}
+with (MARKERS.parent / "ADDRESS_CONTEXT.json").open("w", encoding="utf-8") as handle:
+    json.dump({"ranges": [descriptor(value, "EXPERT_DOWN_INPUT"), descriptor(weight, "EXPERT_DOWN_WEIGHT"), descriptor(output, "EXPERT_DOWN_OUTPUT")]}, handle, indent=2)
 mark("M2_AFTER_EXPERT58_CALL_RETURN")
 mark("M3_BEFORE_TORCH_CUDA_SYNCHRONIZE")
 torch.cuda.synchronize()

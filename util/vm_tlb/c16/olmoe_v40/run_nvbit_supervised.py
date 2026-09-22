@@ -57,14 +57,24 @@ def main():
     ap.add_argument("--timeout-seconds", type=int, default=90)
     ap.add_argument("--instr-begin", default="101")
     ap.add_argument("--instr-end", default="102")
+    ap.add_argument("--target-function-file", type=Path)
+    ap.add_argument("--selected-static", type=int)
+    ap.add_argument("--c16-output", type=Path)
     ap.add_argument("--root", type=Path, default=Path("/data/c16/olmoe_v40/supervised"))
     a = ap.parse_args(); root = a.root / a.tag; root.mkdir(parents=True, exist_ok=True)
     markers = root / "markers.log"
     env = os.environ.copy(); env.update({"PATH": "/usr/local/cuda-12.8/bin:" + env["PATH"], "NVDISASM": "nvdisasm", "INSTR_BEGIN": a.instr_begin, "INSTR_END": a.instr_end, "TOOL_VERBOSE": "0", "CUDA_INJECTION64_PATH": str(a.tool), "C16_V40_MARKER_FILE": str(markers)})
+    if a.target_function_file:
+        env["C16_P1_FUNCTION"] = a.target_function_file.read_text(encoding="utf-8").strip()
+    if a.selected_static is not None:
+        env["C16_P3_STATIC"] = str(a.selected_static)
+    if a.c16_output:
+        env["C16_P5_OUTPUT"] = str(a.c16_output)
+        env["C16_P5_OCCURRENCE"] = "0"
     argv = [PYTHON, REPLAY]
     stdout = (root / "stdout.log").open("w"); stderr = (root / "stderr.log").open("w")
     started = datetime.now(timezone.utc).isoformat(); proc = subprocess.Popen(argv, cwd=REPO, env=env, stdout=stdout, stderr=stderr, start_new_session=True)
-    receipt = {"tag": a.tag, "pid": proc.pid, "pgid": os.getpgid(proc.pid), "argv": argv, "nvbit_version": a.nvbit_version, "tool": str(a.tool), "start": started, "timeout_seconds": a.timeout_seconds, "env": {k: env[k] for k in ("CUDA_INJECTION64_PATH", "INSTR_BEGIN", "INSTR_END", "NVDISASM")}}
+    receipt = {"tag": a.tag, "pid": proc.pid, "pgid": os.getpgid(proc.pid), "argv": argv, "nvbit_version": a.nvbit_version, "tool": str(a.tool), "start": started, "timeout_seconds": a.timeout_seconds, "env": {k: env[k] for k in ("CUDA_INJECTION64_PATH", "INSTR_BEGIN", "INSTR_END", "NVDISASM", "C16_P1_FUNCTION", "C16_P3_STATIC") if k in env}}
     write(root / "SUPERVISOR_RECEIPT.json", json.dumps(receipt, indent=2) + "\n")
     deadline = time.monotonic() + a.timeout_seconds
     while proc.poll() is None and time.monotonic() < deadline: time.sleep(0.5)
