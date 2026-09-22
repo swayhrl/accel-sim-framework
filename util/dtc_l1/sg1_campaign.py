@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Immutable-attempt runner and strict validator for SG1 NORMAL controls."""
+"""Immutable-attempt runner and strict validator for SG1 same-Core controls."""
 from __future__ import annotations
 
 import argparse
@@ -17,6 +17,18 @@ from pathlib import Path
 BASE_SHA = "1a016e3cac65376330a92dd3fcf037d5fdcab5e7d295920be568e04600dd1cde"
 TRACE_SHA = "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
 VARIANTS = {
+    "B16-S": {
+        "overlay_sha256": None,
+        "dl1": "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32",
+        "geometry": "32x4x128=128_lines=16384_bytes",
+        "unified_l1d_size": None,
+    },
+    "TC80-S": {
+        "overlay_sha256": "92496d3664f24539df8ec4d17fe717b526a8eb5a1a391ef4a2db86e9a3ba44f4",
+        "dl1": "S:32:128:20,L:T:m:L:L,A:512:8,16:0,32",
+        "geometry": "32x20x128=640_lines=81920_bytes",
+        "unified_l1d_size": "80",
+    },
     "B16-N": {
         "overlay_sha256": "658a13634cfc4a05e03437ed9b9a3922f9a91c2fce5d16c7b37784cfb38ccda8",
         "dl1": "N:32:128:4,L:T:m:L:L,A:512:8,16:0,32",
@@ -74,9 +86,8 @@ def required_file(path: Path, expected_sha: str, label: str) -> None:
 def run(args: argparse.Namespace) -> None:
     variant = VARIANTS[args.variant]
     authority = authority_row(Path(args.authority), args.workload)
-    base, overlay, trace_config = (Path(args.base_config).resolve(),
-                                   Path(args.overlay).resolve(),
-                                   Path(args.trace_config).resolve())
+    base, trace_config = Path(args.base_config).resolve(), Path(args.trace_config).resolve()
+    overlay = Path(args.overlay).resolve() if args.overlay else None
     if bool(args.simulator) != bool(args.core_source_head):
         raise RuntimeError("a repaired SG1 runtime requires both --simulator and --core-source-head")
     runtime = Path(args.simulator) if args.simulator else Path(authority["runtime_path"])
@@ -84,7 +95,13 @@ def run(args: argparse.Namespace) -> None:
     trace = Path(authority["trace_list"])
     required_file(base, BASE_SHA, "base config")
     required_file(trace_config, TRACE_SHA, "trace config")
-    required_file(overlay, variant["overlay_sha256"], "variant overlay")
+    if variant["overlay_sha256"] is None:
+        if overlay is not None:
+            raise RuntimeError("B16-S is bound to FAST64_BASE.config alone; no overlay is legal")
+    else:
+        if overlay is None:
+            raise RuntimeError("this variant requires its frozen overlay")
+        required_file(overlay, variant["overlay_sha256"], "variant overlay")
     if not runtime.is_file():
         raise RuntimeError(f"runtime identity preflight failed: {runtime}")
     required_file(trace, authority["trace_list_sha256"], "trace list")
@@ -115,8 +132,8 @@ def run(args: argparse.Namespace) -> None:
         "core_source_head": core_source_head,
         "base_config": str(base),
         "base_config_sha256": sha256(base),
-        "overlay_config": str(overlay),
-        "overlay_config_sha256": sha256(overlay),
+        "overlay_config": str(overlay) if overlay else "NONE",
+        "overlay_config_sha256": sha256(overlay) if overlay else "NONE",
         "trace_config": str(trace_config),
         "trace_config_sha256": sha256(trace_config),
         "trace_list": str(trace),
@@ -129,8 +146,10 @@ def run(args: argparse.Namespace) -> None:
     }
     write_kv(run_dir / "RUN_MANIFEST.tsv", manifest)
     write_kv(run_dir / "RUN_START.tsv", manifest)
-    command = [str(runtime), "-trace", str(trace), "-config", str(base),
-               "-config", str(overlay), "-config", str(trace_config)]
+    command = [str(runtime), "-trace", str(trace), "-config", str(base)]
+    if overlay:
+        command += ["-config", str(overlay)]
+    command += ["-config", str(trace_config)]
     with (run_dir / "simulator.stdout").open("wb") as stdout, \
          (run_dir / "simulator.stderr").open("wb") as stderr:
         status = subprocess.run(command, cwd=run_dir, stdout=stdout, stderr=stderr,
@@ -174,7 +193,7 @@ def validate(args: argparse.Namespace) -> None:
         "trace_identity": manifest.get("trace_list_sha256") == authority["trace_list_sha256"],
         "base_config_identity": manifest.get("base_config_sha256") == BASE_SHA,
         "trace_config_identity": manifest.get("trace_config_sha256") == TRACE_SHA,
-        "overlay_identity": manifest.get("overlay_config_sha256") == variant["overlay_sha256"],
+        "overlay_identity": manifest.get("overlay_config_sha256") == (variant["overlay_sha256"] or "NONE"),
         "normal_dl1_echo": all(re.search(rf"^-gpgpu_cache:{name}\s+{re.escape(variant['dl1'])}\s+#", stdout, re.MULTILINE)
                                for name in ("dl1", "dl1PrefL1", "dl1PrefShared")),
         "paper_base_mode": bool(re.search(r"^-gpgpu_dtc_l1_mode\s+1\s+#", stdout, re.MULTILINE)) and "DTC_L1_mode = PAPER_BASE" in stdout,
@@ -222,7 +241,7 @@ def main() -> None:
         if command == "run":
             item.add_argument("--runs-root", required=True)
             item.add_argument("--base-config", required=True)
-            item.add_argument("--overlay", required=True)
+            item.add_argument("--overlay")
             item.add_argument("--trace-config", required=True)
             item.add_argument("--simulator")
             item.add_argument("--core-source-head")
