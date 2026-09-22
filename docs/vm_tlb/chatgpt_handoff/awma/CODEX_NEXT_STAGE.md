@@ -6,7 +6,7 @@ Date: 2026-09-20
 
 Stage:
 
-`AWMA_174_EXACT_F0_SEGMENT_STATE_CLOSURE_V3R1`
+`AWMA_TRANSLATION_HITPATH_SEMANTIC_ATTRIBUTION_V1`
 
 Coordination branch:
 
@@ -33,50 +33,43 @@ No new 109 GPU task.
 
 MoE/AWQ candidate side lanes remain frozen.
 
-## 3. 174-new — EXACT F0 RUNTIME-STATE CLOSURE READY
+## 3. 174-new — HIT-PATH SEMANTIC ATTRIBUTION READY
 
-Accepted V2 execution:
+Accepted V3R1 execution:
 
-`hrl/awma-174-minimal-requalified-cross-target-hitpath-v2 @ f34b53597ab7d9175f8286dde67f4313462aabb5`
+`hrl/awma-174-exact-f0-segment-state-v3r1 @ 7a4f2a419fe77c017cb9a9a5555b1551a2fc884c`
 
-V3 source/config audit:
-
-`hrl/awma-174-vm-map-semantics-cross-target-v3 @ b3310731956d0f731da47bb324cc22d661002dfc`
-
-V3 correctly proved an active Segment descriptor can affect functional translation, but it did not close the post-parse F0 runtime state.
-
-Accepted repaired F0 evidence already reports:
+Cross-target validity is now closed:
 
 ```text
-vm_weight_segmentation_enabled = 0
-segment lookup attempts = 0
-segment hits = 0
-segment suppression counters = 0
+T0 FlashAttention  56.9995%
+T1 Prefill GEMM    59.7989%
+T2 Decode GEMV     53.0990%
 ```
 
-Therefore do NOT authorize node109 recapture yet.
+All three targets have L1-TLB hit rates above 99.7%; F0 Segment is functionally dormant for all admitted runs.
+
+Primary classification:
+
+`HITPATH_SENSITIVITY_SYSTEMATIC_ACROSS_KERNEL_CLASSES`
 
 Execute now:
 
-`CODEX_NEXT_STAGE_174_EXACT_F0_SEGMENT_STATE_V3R1.md`
+`CODEX_NEXT_STAGE_174_HITPATH_SEMANTIC_ATTRIBUTION_V1.md`
 
-Phase A is zero-science: inspect exact V2 T0 immutable logs and fair-arm post-parse source state.
+First perform source-only critical-path audit and existing-counter decomposition. Add telemetry-only instrumentation only if existing evidence is insufficient.
 
-If exact V2 T0 confirms Segment functionally dormant, reuse the exact accepted T0 compatibility assets as model-generic dormant F0 configuration and admit T1/T2 with a hard zero-Segment-activity gate.
+Do not implement a new hit-path model in this stage.
 
-Only if exact V2 T0 has nonzero Segment participation does `TARGET_SPECIFIC_VM_METADATA_REQUIRED` become confirmed.
+## 4. Cross-view decision
 
-## 4. V3 correction boundary
+The large L1 hit-path sensitivity persists across Attention, Prefill GEMM, and Decode GEMV.
 
-T0 still shows very large modeled L1 hit-path sensitivity despite an approximately 99.89% L1-TLB hit rate.
+T0/T1 are clean anchors with invariant downstream admission counts. T2 is directionally consistent but has a nonlinear downstream-admission multiplicity change under 0/80 and must retain that caveat.
 
-V3's `TARGET_SPECIFIC_VM_METADATA_REQUIRED` is provisional until exact V2 T0 runtime Segment state is closed.
+Mainline consequence:
 
-The exact T0 compatibility-map SHA values correspond to whole-VA compatibility views, not target-precise runtime allocation maps.
-
-Primary cross-target metric remains:
-
-`10/80 -> 0/80`
+`SIMULATOR_HITPATH_MODEL_REQUIRES_SEMANTIC_RECALIBRATION_BEFORE_MECHANISM`
 
 ## 5. Historical V4 treatment
 
@@ -90,12 +83,7 @@ Do not reconstruct or republish them as a complete scientific matrix.
 
 ## 6. Shared scientific objective
 
-Determine whether repaired simulator translation hit-path sensitivity:
-
-- persists across Attention / Prefill GEMM / Decode GEMV;
-- is Attention-dominant;
-- is target-dependent;
-- or indicates simulator hit-path semantic recalibration is required.
+Determine which exact simulator semantics cause a 10-cycle L1 translation lookup to become a 53-60% total-cycle effect, including accessq blocking, COAL_STALL behavior, lookup overlap/throughput, and T2 admission multiplicity.
 
 ## 7. Cross-view
 
@@ -125,4 +113,4 @@ Do not automatically start:
 - AWQ optimization;
 - new model download.
 
-After both scientific tracks complete, STOP and return to ChatGPT.
+After semantic attribution completes, STOP and return to ChatGPT before implementing any recalibrated hit-path model.
