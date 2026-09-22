@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Build one Pipeline V1 staging bundle without mutating immutable raw evidence."""
-import hashlib,json,shutil,subprocess
+import hashlib,json,shutil,subprocess,sys
 from pathlib import Path
-from pipeline import run_id
 
 REPO=Path('/home/huangrulin/workspace/worktrees/accel-sim-c16-olmoe-v40-publish-109-v1')
+sys.path.insert(0,str(REPO/'util/vm_tlb/c16/data_plane'))
+from pipeline import run_id
 RAW=Path('/data/c16/olmoe_v40_publish_v1/re_audit'); AUTH=Path('/data/c16/olmoe_v40_publish_v1/selector_authority')
 STAGING_ROOT=Path('/data/c16/olmoe_v40_publish_v1/staging'); READY=Path('/data/c16/olmoe_v40_publish_v1/ready')
 ATTEMPTS=Path('/data/c16/olmoe_v40/typed_sweep/ATTEMPTS.jsonl')
