@@ -220,3 +220,33 @@ The repair is specified in:
 `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/MANIFEST_INPUT_BINDING_REPAIR_V1.md`
 
 Producer must build a new immutable bundle with a new RUN_ID and locally validate the Pipeline V1 manifest before republish. No GPU recapture is required. Receiver must verify the new RUN_ID from scratch.
+
+
+## Corrected producer bundle is now published
+
+Producer repair completed at:
+
+`hrl/c16-olmoe-v40-publish-109-v1@324ea11d18f20b48e2cd6de92c83b28ed44c79d1`
+
+New RUN_ID:
+
+`C16R_olmoe-1b-7b-0125-instruct_s2-t2048-d32_decode32_nvbit1771-c16warp1_expert58-down-proj-actual-a_20260922T100810Z_fc0f3cf67edf`
+
+New manifest SHA256:
+
+`8f3e5e338166a2ebc4da6b9a55986980d31227f3d0e383ca5a1f24d0d924f31b`
+
+Corrected accepted input binding:
+- token-ID compact-list SHA256 =
+  `5d05e7cb6f5f89dda4feff7aded76f27e9630b57d527526812accf9db329ecc5`
+- V34 input-authority receipt SHA256 =
+  `1773bcad6b2ebd6206f96be4b25c268dd316bad1978588530e550459f807e7fb`
+
+Producer reports:
+- shared Pipeline V1 validator PASS on staging and READY bundle;
+- 1,952 scientific artifact SHAs identical to the rejected bundle;
+- destination manifest read-back SHA matches;
+- positive_ack=false;
+- authority remains pending independent 174-new verify/recompute/admit/ACK.
+
+174-new should now verify this new RUN_ID from scratch and continue its existing V2 receiver Goal. The prior rejected RUN_ID remains failed/unadmitted and must not be reused as a PASS precursor.
