@@ -9,8 +9,9 @@ Do not attempt direct SSH to node164.
 ## Mandatory first reads
 
 1. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/CURRENT_STATE.md`
-2. this file
-3. current V40 review pack
+2. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/SELECTOR_AUTHORITY_REPAIR_V1.md`
+3. this file
+4. current V40 review pack
 4. existing data-plane implementation under `util/vm_tlb/c16/data_plane/`
 
 ## Starting Git facts
@@ -35,7 +36,7 @@ Tighten `v40_formalize_243.py` fail-closed checks:
 - zero FAILED_EXCLUDED;
 - executed/zero partition exactly covers all 243.
 
-Important: the historical frozen selector SHA may be a normalized selector identity rather than the literal TSV file byte SHA. Inspect V38 authority and reproduce the exact accepted hashing method. Do not compare unlike hash definitions and do not redefine the authority. Record both literal file SHA and frozen normalized identity if they are different.
+Important: do not block forever on the historical V38 normalized selector hash. Follow `SELECTOR_AUTHORITY_REPAIR_V1.md`. Perform the bounded recovery search for an exact historical producer. If none exists, preserve `9d2d...` as an opaque historical checksum and freeze the exact 243-row selector actually consumed by V40 using the explicit `C16_SELECTOR_CANONICAL_V1` repair. Do not guess or brute-force the old serialization, and do not claim the historical SHA was independently reproduced when it was not.
 
 Recompute from immutable attempts:
 - formal shard table
