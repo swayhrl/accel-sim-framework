@@ -10,7 +10,8 @@ Do not attempt direct SSH to node164.
 
 1. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/CURRENT_STATE.md`
 2. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/SELECTOR_AUTHORITY_REPAIR_V1.md`
-3. this file
+3. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/MANIFEST_INPUT_BINDING_REPAIR_V1.md`
+4. this file
 4. current V40 review pack
 4. existing data-plane implementation under `util/vm_tlb/c16/data_plane/`
 
@@ -163,3 +164,16 @@ Only stop earlier for:
 - frozen selector/all-static authority truly fails;
 - immutable raw evidence cannot close;
 - hrl174new transport itself is unavailable after ordinary engineering repair.
+
+
+## Addendum — first published bundle was rejected
+
+The first published V40 bundle was correctly rejected by 174-new because its Pipeline V1 manifest used the scenario label `S2_TEXT_B1_T2048_D32` in `input.token_ids_sha256_or_semantic_hash`.
+
+Do not mutate or reuse that finalized/rejected bundle or RUN_ID.
+
+Build a new immutable bundle with a new RUN_ID. Bind the accepted V34 token-ID authority:
+
+`input.token_ids_sha256_or_semantic_hash = 5d05e7cb6f5f89dda4feff7aded76f27e9630b57d527526812accf9db329ecc5`
+
+Follow `MANIFEST_INPUT_BINDING_REPAIR_V1.md` exactly. Locally run the shared Pipeline V1 manifest validator before finalizing/publishing the replacement bundle. This is packaging repair only; no GPU shard recapture is authorized.
