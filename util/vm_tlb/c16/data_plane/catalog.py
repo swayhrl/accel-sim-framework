@@ -43,8 +43,8 @@ def catalog_entry_from_manifest(manifest: dict[str, Any], raw_path: Path, manife
     }
 
 
-def write_catalog_entry(root: Path, entry: dict[str, Any]) -> tuple[Path, str]:
-    path = root / "catalog" / "entries" / f"{entry['run_id']}.json"
+def write_catalog_entry(root: Path, entry: dict[str, Any], *, catalog_root: Path | None = None) -> tuple[Path, str]:
+    path = (catalog_root if catalog_root is not None else root / "catalog") / "entries" / f"{entry['run_id']}.json"
     if path.exists():
         raise AdmissionError(f"immutable catalog entry already exists: {path}")
     write_json_new(path, entry)

@@ -18,29 +18,33 @@ except ImportError:
     from quarantine import quarantine_bundle
 
 
-def admit(root: Path, verification_receipt: Path) -> dict:
+def admit(root: Path, verification_receipt: Path, *, inbox_root: Path | None = None,
+          raw_root: Path | None = None, catalog_root: Path | None = None) -> dict:
     receipt = load_json(verification_receipt)
     if receipt.get("verification_status") != "PASS":
         raise AdmissionError("PASS verification receipt required")
     run_id = receipt.get("run_id")
     if not isinstance(run_id, str):
         raise AdmissionError("receipt missing RUN_ID")
-    partial = root / "inbox" / f"{run_id}.partial"
-    raw = root / "raw" / run_id
+    incoming = inbox_root if inbox_root is not None else root / "inbox"
+    raw_base = raw_root if raw_root is not None else root / "raw"
+    catalog_base = catalog_root if catalog_root is not None else root / "catalog"
+    partial = incoming / f"{run_id}.partial"
+    raw = raw_base / run_id
     manifest_path = partial / "RUN_MANIFEST.json"
     if not partial.is_dir() or raw.exists():
         raise AdmissionError("partial absent or immutable raw destination already exists")
     if sha256_file(manifest_path) != receipt.get("source_manifest_sha256"):
         raise AdmissionError("manifest changed after verification")
     manifest = load_json(manifest_path)
-    catalog_candidate = root / "catalog" / "entries" / f"{run_id}.json"
+    catalog_candidate = catalog_base / "entries" / f"{run_id}.json"
     if catalog_candidate.exists():
         raise AdmissionError("immutable catalog entry already exists")
     promotion_method = rename_noreplace(partial, raw)
     try:
         entry = catalog_entry_from_manifest(manifest, raw, receipt["source_manifest_sha256"])
-        catalog_path, catalog_sha = write_catalog_entry(root, entry)
-        snapshot = rebuild(root)
+        catalog_path, catalog_sha = write_catalog_entry(root, entry, catalog_root=catalog_base)
+        snapshot = rebuild(root, catalog_root=catalog_base)
     except Exception as exc:
         # This object was never ACKed or catalog-admitted; keep it inspectable
         # outside raw rather than leaving an ambiguous raw object.
@@ -68,11 +72,19 @@ def admit(root: Path, verification_receipt: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--inbox-root", type=Path)
+    parser.add_argument("--raw-root", type=Path)
+    parser.add_argument("--catalog-root", type=Path)
     parser.add_argument("--verification-receipt", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True, help="new receipt path; never overwritten")
     args = parser.parse_args()
     try:
-        result = admit(args.root, args.verification_receipt)
+        layout = (args.inbox_root, args.raw_root, args.catalog_root)
+        if any(item is not None for item in layout) and not all(item is not None for item in layout):
+            raise AdmissionError("inbox/raw/catalog roots must be supplied together")
+        result = admit(args.root, args.verification_receipt,
+                       inbox_root=args.inbox_root, raw_root=args.raw_root,
+                       catalog_root=args.catalog_root)
         if args.output.exists():
             raise AdmissionError(f"output exists: {args.output}")
         args.output.parent.mkdir(parents=True, exist_ok=True)
