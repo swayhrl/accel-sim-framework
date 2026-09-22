@@ -9,8 +9,9 @@ This is a CPU-side receiver/authority task. Do not rerun GPU capture.
 ## Mandatory first reads
 
 1. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/CURRENT_STATE.md`
-2. this file
-3. existing C16 data-plane implementation under `util/vm_tlb/c16/data_plane/`
+2. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/SELECTOR_AUTHORITY_REPAIR_V1.md`
+3. this file
+4. existing C16 data-plane implementation under `util/vm_tlb/c16/data_plane/`
 4. the producer final review pack and transferred bundle manifest
 
 ## Node roles
@@ -69,8 +70,12 @@ Frozen target:
 - frozen all-static identity `089d264460999f54f9279ccced4b4bab72483d0572e1d08d6797338ef76a9aa3`
 - frozen selector identity `9d2d414999e417200167664dc0b4c716f1dcfb72aaf505d89736e14dbedbcb33`
 
-Important:
-The frozen selector identity may use the historical normalized hashing method rather than raw TSV byte SHA. Reproduce the V38 accepted method exactly; do not redefine the authority.
+Important selector provenance rule:
+- preserve the historical V38 `9d2d...` checksum as historical evidence;
+- if producer recovered the exact historical serializer, independently reproduce it;
+- otherwise, do not pretend to reproduce it. Verify the producer's `SELECTOR_AUTHORITY_REPAIR_V1` receipt, literal raw-TSV SHA, committed canonicalizer source/SHA, and independently recompute `C16_SELECTOR_CANONICAL_V1` from the destination bundle;
+- require exact 243 selector membership equality with the formal shard set.
+The new canonical V1 hash is a provenance-repair authority and must not be mislabeled as the historical V38 hash.
 
 For all 243 shards independently require:
 - exact static membership;
