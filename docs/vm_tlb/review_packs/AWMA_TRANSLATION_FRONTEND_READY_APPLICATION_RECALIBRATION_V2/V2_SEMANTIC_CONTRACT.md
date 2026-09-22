@@ -1,0 +1,1 @@
+V2 consumes existing controller READY once for the exact resident mem_access_t and preserves downstream accessq order, L1D/ICNT, translation structures, exactly-once data effects, and Segment F0 dormancy. No new mechanism.
