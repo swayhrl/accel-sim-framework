@@ -49,7 +49,7 @@ Those results motivated the fairness work. Do not rewrite or relabel them.
 At this handoff creation time:
 
 - master coordination:
-  `hrl/iscas2027-dtc-granularity-fairness-v0@2c5e5d229f84574bb92c42884c5f5b87897cf8e8`
+  `hrl/iscas2027-dtc-granularity-fairness-v0` (must be a descendant of storage-relocation commit `1bae8f55b71ee71e2081dbab8baf1a1960b67e27` and include the efficiency-policy commit `a1c8f0de69b0a920a33c805758cf79caaab2f664`; always verify the actual remote HEAD at resume)
 - SG0 source/dissertation audit:
   `hrl/iscas2027-dtc-sg0-audit-v0@721a7676ce7f55c026233ea55d69b5561d6e08a6`
 - SG1 whole-line conventional controls:
@@ -63,27 +63,45 @@ At this handoff creation time:
 
 A new Codex must `git fetch origin` and verify actual heads. If any branch has advanced, use the newer remote state and record the delta rather than resetting it.
 
-## 3. Host/resource state at the last checkpoint
+## 3. Host/storage state and Git object-store relocation
 
-At 2026-09-22T07:29:54Z:
+At the terminal checkpoint (2026-09-22T07:29:54Z), Wave-A had zero live simulator children and the only active hard blocker was disk space.
 
-- Wave-A active simulator children: **0**
-- load1/load5/load15 ≈ 19.16 / 23.75 / 23.72
-- available memory ≈ 93.5%
-- memory PSI ≈ 0
-- iowait ≈ 0%
-- `/workspace` free ≈ **7.64 GiB**
+Storage remediation is now complete and recorded in:
 
-Therefore the only active hard blocker was disk space. The user is manually cleaning space.
+`docs/dtc_l1/iscas2027/granularity/host/GIT_OBJECT_STORE_RELOCATION_20260922.md`
 
-No new simulator may be launched until a fresh post-cleanup resource snapshot is recorded.
+commit:
 
-Recommended gate:
+`1bae8f55b71ee71e2081dbab8baf1a1960b67e27`
+
+Key facts:
+
+- 139 stale `objects/pack/tmp_pack_*` files were removed after quiescence and Git-connectivity checks;
+- about 43.7 GiB was recovered;
+- `/workspace` now has about **54.1 GB (~50.4 GiB)** available at the user's latest report;
+- the common Git object store is now:
+  `/workspace/repos/accel-sim-framework/.git/objects -> /root/share/accel-sim-framework-object-store/objects`;
+- post-migration `git fsck --connectivity-only --no-dangling`, HEAD resolution, worktree status reads, and push/write verification passed;
+- the relocation changed repository-storage infrastructure only, not simulator science.
+
+The new object-store target makes `/root/share` a Git-availability dependency. At every new-Codex bootstrap and before pack-intensive Git work, verify:
+
+- the symlink resolves to the expected `/root/share` target;
+- `/root/share` is mounted/accessible;
+- free space is healthy on both `/workspace` and `/root/share`;
+- normal Git object resolution succeeds.
+
+No new simulator may be launched until a fresh post-cleanup host/resource snapshot is recorded.
+
+Recommended disk gate:
 
 - >= 60 GiB free: normal rolling execution may resume;
-- 45–60 GiB: low-pressure rolling mode; do not increase concurrency;
+- 45–60 GiB: low-pressure rolling mode; batch size must be justified by projected run-directory growth;
 - 35–45 GiB: validators/source work only; avoid new long runs;
 - < 35 GiB: hard stop for new simulations.
+
+At the current ~50.4 GiB, perform R0 first, then estimate median/high-percentile run-directory growth from comparable completed attempts before choosing the first heavy batch.
 
 Never automatically delete accepted/frozen evidence. Never use `swapoff`, `drop_caches`, or destructive cleanup as part of this Goal.
 
@@ -515,3 +533,25 @@ Before any new simulation, report:
 7. proposed initial heavy-simulator ceiling.
 
 Only then proceed automatically if all gates pass.
+
+
+## 15. Experimental-efficiency and elapsed-time policy
+
+The authoritative efficiency policy is:
+
+`docs/dtc_l1/iscas2027/handoffs/DTC_EXPERIMENTAL_EFFICIENCY_POLICY_2026-09-22.md`
+
+It must be read together with this handoff before new simulation launches.
+
+Key resume changes:
+
+- do not fill matrices merely because they were enumerated;
+- reuse exact accepted evidence and validate terminal rows instead of rerunning;
+- once a gate passes, batch the remaining independent rows rather than splitting them into many review rounds;
+- share SG3 default baselines across capacity/MSHR/cap dimensions;
+- use the staged SG3 V2 design: 56-row decisive coarse screen first, conditional refinement only when the claim remains unresolved;
+- do not automatically expand SG4A to the pre-enumerated 72-cell FAST12 matrix; first close a fixed G4 characterization and expand only under the predeclared triggers in the efficiency policy;
+- estimate disk/time cost before every large batch;
+- stop a sensitivity campaign when its scientific question is answered.
+
+No efficiency shortcut may weaken Core/runtime identity, validation, negative-result retention, or claim boundaries.
