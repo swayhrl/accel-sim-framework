@@ -1,0 +1,3 @@
+# E3 interpretation
+
+N and U body medians differ by less than the observed run-to-run CV, so balanced routing is an adequate proxy for this fixed Q30 Layer24/S2/T2048 backend and these lightweight metrics. P is bitwise-equivalent to N after inverse permutation and has comparable timing, so no ordering effect is established here. H is substantially faster with only eight active experts, but it is an intentionally extreme synthetic hot-set result and is not evidence of a natural-routing bottleneck. `SEMANTIC_ACTIVE_WEIGHT_CAPACITY` is semantic parameter capacity, not observed traffic or page/line footprint.
