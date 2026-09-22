@@ -1,0 +1,8 @@
+question	answer	source_evidence
+accessq_progress	one back entry selected for translate/admission	shader.cc:2435,2539
+untranslated_behavior	COAL_STALL; no downstream admission	shader.cc:2479-2481,2576-2578
+multiple_inflight	controller supports lookup operations/inflight; not equivalent to parallel downstream admissions	vm_translation.cc:2171-2330
+l1_port	one configured port per controller resource	effective.config gpgpu_vm_l1_tlb_ports=1
+positive_latency	ready after modeled service interval	vm_translation.cc lookup ready-cycle construction
+zero_latency	same-cycle service/retry path changes ordering	vm_translation.cc zero-latency service branch
+coverage_hook	counts downstream admission attempt at accessq back, not unique logical access	shader.cc repaired vm_cov_note call sites at downstream allocation

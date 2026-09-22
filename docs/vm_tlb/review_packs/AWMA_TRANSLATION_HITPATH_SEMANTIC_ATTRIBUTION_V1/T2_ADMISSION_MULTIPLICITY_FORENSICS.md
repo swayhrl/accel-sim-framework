@@ -1,0 +1,3 @@
+# T2 admission multiplicity
+
+T2 has identical instructions (43357696) and CTA (1216), while L1 lookups change only 317. Yet coverage admissions change 411008 -> 476907. Unique and translated-unique remain 411008 in both points, so the 65899 increment is repeated downstream admission of existing access UIDs. `vm_cov_note` is called at downstream accessq_back admission after translation gate, so it counts admission attempts/re-admissions, not a unique logical access. Positive/zero lookup timing changes retry/admission order; this is source-backed zero-latency retry ordering nonlinearity, not new dynamic instructions.

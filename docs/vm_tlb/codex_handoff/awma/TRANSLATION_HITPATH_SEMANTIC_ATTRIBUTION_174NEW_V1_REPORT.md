@@ -1,0 +1,3 @@
+# Translation Hit-Path Semantic Attribution 174 V1
+
+Classification: `MIXED_MODEL_EFFECT`, consisting of `SERIALIZED_PRE_ADMISSION_LOOKUP_WAIT_DOMINANT`, `ACCESSQ_HEAD_OF_LINE_TRANSLATION_BLOCKING_DOMINANT`, and `ZERO_LATENCY_RETRY_ORDERING_NONLINEARITY`. Source shows accessq_back-only pre-admission translation gating and COAL_STALL; existing T2 accounting proves 65,899 repeated admissions at 0/80 with unchanged unique logical access UIDs. No new simulation, instrumentation, hit-path model, or architecture mechanism was implemented. Candidate semantic recalibration options are proposal-only pending ChatGPT review.
