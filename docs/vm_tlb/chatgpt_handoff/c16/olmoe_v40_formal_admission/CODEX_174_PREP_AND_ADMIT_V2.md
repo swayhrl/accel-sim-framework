@@ -38,7 +38,8 @@ Read completely:
 
 1. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/CURRENT_STATE.md`
 2. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/SELECTOR_AUTHORITY_REPAIR_V1.md`
-3. this file
+3. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/MANIFEST_INPUT_BINDING_REPAIR_V1.md`
+4. this file
 4. `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/CODEX_174_ADMIT_V1.md`
 5. current V38/V39/V40 review packs relevant to OLMoE
 6. current C16 data-plane implementation under `util/vm_tlb/c16/data_plane/`
@@ -619,3 +620,27 @@ parallel preflight
 → STOP or bounded wait
 
 Do not idle before completing the dependency-free preflight work.
+
+
+# Addendum — rejected first RUN_ID and corrected republish
+
+The first received RUN_ID:
+
+`C16R_olmoe-1b-7b-0125-instruct_s2-t2048-d32_decode32_nvbit1771-c16warp1_expert58-down-proj-actual-a_20260922T092141Z_50f32755c1ba`
+
+was correctly fail-closed because the manifest used a non-SHA scenario label in `input.token_ids_sha256_or_semantic_hash`.
+
+Failure commit:
+`f37684ba863b8c66aa95ee40205df69233e159ff`
+
+Do not retry verification on that same manifest expecting PASS.
+
+The accepted V34 frozen token-ID compact-list SHA is:
+
+`5d05e7cb6f5f89dda4feff7aded76f27e9630b57d527526812accf9db329ecc5`
+
+Producer must publish a **new RUN_ID** with a corrected immutable manifest.
+
+Receiver may quarantine the rejected unadmitted partial using the existing Pipeline V1 quarantine mechanism, preserving the failure reason/receipt. Never promote/delete it silently.
+
+When the replacement partial arrives, verify it from scratch. Require the corrected token-ID SHA above and continue the normal independent selector/scientific recompute only after manifest/schema/artifact verification PASS.
