@@ -1,0 +1,6 @@
+question,comparison,observed_native_cycles_per_load,interpretation
+dependent_working_set,4K_16_to_1024_to_4096_to_16384_to_32768_locations,"52.0;155.5;282.5;427.5;644.5 medians","dependent latency exposure rises with footprint; behavioral only"
+concurrency_hiding,M1_4K_1024_1warp_vs_M2_4K_1024_16warps,166.0_vs_110.0_median,"33.7 percent lower per-warp median at 16 warps; aggregate throughput not inferred from per-warp clock64 alone"
+spacing,4K_1024_vs_64K_1024_1warp,155.5_vs_165.5_CORE_median,"small spacing difference in this control; neither spacing labels hardware TLB page size"
+cache_control,4K_1024_default_vs_cg,155.5_vs_293.0_median,"cg materially changes realized memory hierarchy regime; do not merge curves"
+final_classification,NATIVE_CONCURRENCY_HIDING_SUPPORTED,CPU_only_durable_analysis,"behavioral support only; no TLB capacity or latency asserted"

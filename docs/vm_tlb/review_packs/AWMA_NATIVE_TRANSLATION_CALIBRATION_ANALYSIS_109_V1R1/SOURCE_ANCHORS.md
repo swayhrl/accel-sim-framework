@@ -1,0 +1,1 @@
+Capture branch `724ca2b583495c87d9cfb59e277caf81fcecec1d`; review authority `6793a6584fa11dbdc8cb0039145aa5ec4d0a2fda`; durable bundle `/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/native_translation_calibration_109_v1_20260922T101218Z` (76-member SHA verification).
