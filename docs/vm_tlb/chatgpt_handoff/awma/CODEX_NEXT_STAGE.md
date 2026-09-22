@@ -2,11 +2,11 @@
 
 Status: **ACTIVE**
 
-Date: 2026-09-20
+Date: 2026-09-22
 
 Stage:
 
-`AWMA_TRANSLATION_FRONTEND_PIPELINING_RECALIBRATION_V1`
+`AWMA_TRANSLATION_FRONTEND_READY_APPLICATION_RECALIBRATION_V2`
 
 Coordination branch:
 
@@ -17,102 +17,66 @@ Coordination branch:
 ```text
 docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
 docs/vm_tlb/chatgpt_handoff/awma/EXECUTION_PRIORITY_POLICY_V5.md
-docs/vm_tlb/chatgpt_handoff/awma/CANDIDATE_SIDE_LANES.md
-docs/vm_tlb/chatgpt_handoff/awma/CROSSVIEW_JOIN_CONTRACT_V1.md
-docs/vm_tlb/chatgpt_handoff/awma/MAINLINE_GATE_UPDATE_2026-09-20.md
-docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE.md
+docs/vm_tlb/chatgpt_handoff/awma/REVIEW_174_TRANSLATION_FRONTEND_PIPELINING_V1_2026-09-22.md
+docs/vm_tlb/chatgpt_handoff/awma/CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_READY_APPLICATION_V2.md
 ```
 
-## 2. node109 — COMPLETE_WITH_SCOPE
+## 2. Accepted V1 diagnostic
 
-Accepted Native execution:
+Execution authority:
 
-`hrl/awma-109-exact-target-native-crossview-v1 @ 2122eccc7aed61d05b114075e1c3126c4308e64b`
+`hrl/awma-174-translation-frontend-pipelining-v1 @ ad6f38878bc1e7c268b17e65fdb3793a3899a84d`
 
-No new 109 GPU task.
+ChatGPT review classification:
 
-MoE/AWQ candidate side lanes remain frozen.
+`SERIAL_ACCESSQ_FRONTEND_AMPLIFICATION_PARTIAL`
 
-## 3. 174-new — TRANSLATION FRONTEND RECALIBRATION READY
-
-Accepted attribution execution:
-
-`hrl/awma-174-hitpath-semantic-attribution-v1 @ f79aaa1d22d2a22912e8b71dc832bdbf31a899f7`
-
-Accepted classification:
-
-`MIXED_MODEL_EFFECT`
-
-with:
+Independent recomputation:
 
 ```text
-SERIALIZED_PRE_ADMISSION_LOOKUP_WAIT_DOMINANT
-ACCESSQ_HEAD_OF_LINE_TRANSLATION_BLOCKING_DOMINANT
-ZERO_LATENCY_RETRY_ORDERING_NONLINEARITY
+Legacy sensitivity -> V1 sensitivity
+
+T0 56.9995% ->  8.3593%
+T1 59.7989% ->  5.1787%
+T2 53.0990% -> 35.7182%
 ```
 
-T2's extra 65,899 coverage admissions at 0/80 are repeated admission attempts with the same 411,008 unique logical UIDs.
+V1 strongly confirms launch-serialization amplification for T0/T1 and materially reduces it for T2, but T2 retains substantial residual sensitivity.
 
-Execute now:
+V1 remains diagnostic and is not promoted to baseline.
 
-`CODEX_CONTINUE_174_CANONICAL_T0_INPUT_RECOVERY_V1.md`
+## 3. 174-new next execution
 
-This continuation remains within `AWMA_TRANSLATION_FRONTEND_PIPELINING_RECALIBRATION_V1`; it first recovers a clean standard top-level build, then resumes the original frontend-pipelining Goal.
+Execute:
 
-First repair telemetry semantics without changing timing, then implement an opt-in single-axis pipelined accessq translation-launch candidate. Keep probe-at-completion and all PTW/MSHR semantics unchanged in V1.
+`CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_READY_APPLICATION_V2.md`
 
-Do not promote the candidate to baseline in this stage.
+Scientific question:
 
-## 4. Cross-view decision
+> Does serial application of already-READY translations at the accessq head explain the remaining V1 residual, especially T2?
 
-The large L1 hit-path sensitivity persists across Attention, Prefill GEMM, and Decode GEMV.
+Keep V1 lookup-launch overlap. Allow the exact resident queue entry to receive its own READY PA/outcome before it reaches the head, while preserving downstream order and all accepted TLB/PTW/cache/data-path semantics.
 
-T0/T1 are clean anchors with invariant downstream admission counts. T2 is directionally consistent but has a nonlinear downstream-admission multiplicity change under 0/80 and must retain that caveat.
+Run the six V2 candidate points with maximum safe parallelism after directed/regression gates.
 
-Mainline consequence:
+## 4. 109 state
 
-`SIMULATOR_HITPATH_MODEL_REQUIRES_SEMANTIC_RECALIBRATION_BEFORE_MECHANISM`
+109 remains mainline idle.
 
-## 5. Historical V4 treatment
+Do not resume MoE/AWQ/OLMoE side lanes unless explicitly reactivated.
 
-The V4 runtime-load forensic qualification remains valid.
+## 5. Global boundaries
 
-The six historical V4 lookup-latency points are:
+Do not start:
 
-`PARTIAL_NOT_ADMITTED / SUPERSEDED`
+- TLB/PTW/cache architecture mechanisms;
+- page-size/capacity/walker/PWC sweeps;
+- new model downloads;
+- baseline promotion;
+- hardware-accuracy claims.
 
-Do not reconstruct or republish them as a complete scientific matrix.
+After V2 frontend semantic closure:
 
-## 6. Shared scientific objective
+STOP -> ChatGPT review.
 
-Test whether separating translation lookup latency from accessq launch serialization removes most of the legacy 53-60% sensitivity while preserving per-access translation correctness and all downstream functional invariants.
-
-## 7. Cross-view
-
-Both scientific tracks follow:
-
-`CROSSVIEW_JOIN_CONTRACT_V1.md`
-
-Cross-view synthesis waits for both tracks.
-
-## 8. 174 publication rule
-
-The new V2 requalification result must follow:
-
-`174_MANDATORY_REMOTE_PUBLICATION_CONTRACT.md`
-
-A local-only result is not complete.
-
-The obsolete V4 full-matrix publication is no longer a prerequisite.
-
-## 9. Global boundaries
-
-Do not automatically start:
-
-- TLB/PTW/cache mechanisms;
-- TLB capacity/page-size/walker/PWC sweeps;
-- MoE mechanism;
-- AWQ optimization;
-- new model download.
-
-After diagnostic frontend recalibration completes, STOP and return to ChatGPT before promoting any candidate semantics to the accepted baseline.
+External/reference/native calibration remains required before any candidate can replace the accepted baseline.
