@@ -3,16 +3,14 @@
 #include "utils/channel.hpp"
 #include "p4_c16_packet.h"
 
-__managed__ unsigned long long c16_p5_producer_sequence = 0;
-__managed__ uint32_t c16_p5_selected_static = UINT32_MAX;
-
 // P4 preserves the official helper ABI: pred, static identity, MREF address,
 // launch value, ChannelDev pointer.  No global progress wait is introduced.
 extern "C" __device__ __noinline__ void instrument_mem(int pred, int static_index,
-                                                       uint64_t addr,
+                                                       int selected_static, uint64_t addr,
                                                        uint64_t sequence_base,
-                                                       uint64_t pchannel_dev) {
-    if ((uint32_t)static_index != c16_p5_selected_static) return;
+                                                       uint64_t pchannel_dev,
+                                                       uint64_t sequence_counter_ptr) {
+    if ((uint32_t)static_index != (uint32_t)selected_static) return;
     if (!pred) return;
     const unsigned mask = __ballot_sync(__activemask(), 1);
     const unsigned lane = get_laneid();
@@ -26,7 +24,8 @@ extern "C" __device__ __noinline__ void instrument_mem(int pred, int static_inde
     packet.record.cta_z = cta.z;
     packet.record.warp = get_warpid();
     // P5 integrity token.  There is deliberately no sequence-order wait.
-    packet.sequence = atomicAdd(&c16_p5_producer_sequence, 1ULL);
-    if (lane == (unsigned)(__ffs(mask) - 1))
+    if (lane == (unsigned)(__ffs(mask) - 1)) {
+        packet.sequence = atomicAdd((unsigned long long*)sequence_counter_ptr, 1ULL);
         ((ChannelDev*)pchannel_dev)->push(&packet, sizeof(packet));
+    }
 }

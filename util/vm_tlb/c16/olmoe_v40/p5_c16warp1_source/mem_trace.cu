@@ -67,11 +67,11 @@
 #include "common.h"
 #include "p4_c16_packet.h"
 
-extern __managed__ uint32_t c16_p5_selected_static;
-extern __managed__ unsigned long long c16_p5_producer_sequence;
+__device__ __managed__ unsigned long long c16_p5_producer_sequence = 0;
 static std::string c16_p5_output;
 static uint32_t c16_p5_static = UINT32_MAX;
 static uint32_t c16_p5_occurrence = 0;
+static uint32_t c16_target_launch_count = 0;
 
 #define HEX(x)                                                            \
     "0x" << std::setfill('0') << std::setw(16) << std::hex << (uint64_t)x \
@@ -189,13 +189,8 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
     assert(ctx_state_map.find(ctx) != ctx_state_map.end());
     CTXstate* ctx_state = ctx_state_map[ctx];
 
-    /* Get related functions of the kernel (device function that can be
-     * called by the kernel) */
-    std::vector<CUfunction> related_functions =
-        nvbit_get_related_functions(ctx, func);
-
-    /* add kernel itself to the related function vector */
-    related_functions.push_back(func);
+    /* V38 static identity is scoped to the exact selected CUfunction only. */
+    std::vector<CUfunction> related_functions = {func};
 
     /* iterate on function */
     for (auto f : related_functions) {
@@ -225,6 +220,7 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
                 continue;
             }
             if (verbose) {
+                printf("C16_STATIC_DEBUG cnt=%u idx=%u opcode=%s\n", cnt, instr->getIdx(), instr->getOpcode());
                 instr->printDecoded();
             }
 
@@ -250,7 +246,8 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
                     nvbit_add_call_arg_guard_pred_val(instr);
                     // P2: retain the official packet/helper but carry static
                     // instruction identity in its existing 32-bit metadata slot.
-                    nvbit_add_call_arg_const_val32(instr, instr->getIdx());
+                    nvbit_add_call_arg_const_val32(instr, cnt);
+                    nvbit_add_call_arg_const_val32(instr, c16_p5_static);
                     /* memory reference 64 bit address */
                     nvbit_add_call_arg_mref_addr64(instr, mref_idx);
                     /* add "space" for kernel function pointer that will be set
@@ -260,6 +257,8 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
                     /* add pointer to channel_dev*/
                     nvbit_add_call_arg_const_val64(
                         instr, (uint64_t)ctx_state->channel_dev);
+                    nvbit_add_call_arg_const_val64(
+                        instr, (uint64_t)&c16_p5_producer_sequence);
                     mref_idx++;
                 }
             }
@@ -292,6 +291,13 @@ static void enter_kernel_launch(CUcontext ctx, CUfunction func,
             return;
         }
     }
+    const uint32_t observed_occurrence = c16_target_launch_count++;
+    if (observed_occurrence != c16_p5_occurrence) {
+        printf("C16_TARGET_OCCURRENCE observed=%u action=SKIP\n", observed_occurrence);
+        nvbit_enable_instrumented(ctx, func, false);
+        return;
+    }
+    printf("C16_TARGET_OCCURRENCE observed=%u action=SELECT\n", observed_occurrence);
     /* instrument */
     instrument_function_if_needed(ctx, func);
 
@@ -560,7 +566,7 @@ void nvbit_tool_init(CUcontext ctx) {
     assert(ctx_state_map.find(ctx) != ctx_state_map.end());
     init_context_state(ctx);
     c16_p5_producer_sequence = 0;
-    c16_p5_selected_static = c16_p5_static;
+    c16_target_launch_count = 0;
     pthread_mutex_unlock(&mutex);
 }
 
@@ -588,6 +594,8 @@ static void c16_p5_finalize(CTXstate* state) {
            (unsigned long long)records);
     printf("C16_WARP_TERMINAL static=%u occurrence=%u records=%llu overflow=0\n",
            c16_p5_static, c16_p5_occurrence, (unsigned long long)records);
+    printf("C16_TARGET_OCCURRENCE_COUNT selected=%u observed=%u\n",
+           c16_p5_occurrence, c16_target_launch_count);
     fflush(stdout);
 }
 

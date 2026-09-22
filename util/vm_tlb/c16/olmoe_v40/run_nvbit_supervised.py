@@ -101,6 +101,7 @@ def main():
     ap.add_argument("--selected-static", type=int)
     ap.add_argument("--c16-output", type=Path)
     ap.add_argument("--occurrence", type=int, default=0)
+    ap.add_argument("--tool-verbose", default="0")
     ap.add_argument("--attempt", type=int)
     ap.add_argument("--root", type=Path, default=Path("/data/c16/olmoe_v40/supervised"))
     a = ap.parse_args()
@@ -109,7 +110,7 @@ def main():
     trace = root / (a.c16_output.name if a.c16_output else "trace.bin")
     env = os.environ.copy()
     env.update({"PATH": "/usr/local/cuda-12.8/bin:" + env["PATH"], "NVDISASM": "nvdisasm",
-                "INSTR_BEGIN": a.instr_begin, "INSTR_END": a.instr_end, "TOOL_VERBOSE": "0",
+                "INSTR_BEGIN": a.instr_begin, "INSTR_END": a.instr_end, "TOOL_VERBOSE": a.tool_verbose,
                 "CUDA_INJECTION64_PATH": str(a.tool), "C16_V40_MARKER_FILE": str(markers),
                 "C16_P5_OUTPUT": str(trace), "C16_P5_OCCURRENCE": str(a.occurrence)})
     function_sha = None
