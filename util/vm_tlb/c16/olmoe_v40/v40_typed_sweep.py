@@ -76,7 +76,7 @@ def main():
             continue
         tag = f'static_{static}'
         command = [sys.executable, str(SUP), '--tag', tag, '--tool', TOOL,
-                   '--nvbit-version', '1.7.7.1-p5', '--instr-begin', '0', '--instr-end', '1096',
+                   '--nvbit-version', '1.7.7.1-p5', '--nvbit-root', '/data/c16/env/nvbit-1.7.7.1', '--instr-begin', '0', '--instr-end', '1096',
                    '--target-function-file', str(FUNCTION), '--selected-static', str(static),
                    '--c16-output', 'trace.bin', '--timeout-seconds', '180']
         run = subprocess.run(command, cwd=REPO, text=True, capture_output=True)
