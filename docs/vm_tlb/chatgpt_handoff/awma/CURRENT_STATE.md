@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`HITPATH_ATTRIBUTION_CLOSED_FRONTEND_RECALIBRATION_READY`
+`HITPATH_ATTRIBUTION_CLOSED_FRONTEND_RECALIBRATION_BUILD_RECOVERY`
 
 ## 1. Project mission
 
@@ -189,8 +189,9 @@ Current schedule:
   remain GPU-idle; do not resume MoE/AWQ side lanes
 
 174:
-  repair coverage telemetry semantics without timing changes
-  -> implement opt-in diagnostic pipelined accessq translation launch
+  recover clean candidate-private top-level build using accepted CUDA 12.4.131 toolchain
+  -> repair coverage telemetry semantics without timing changes
+  -> implement/compile opt-in diagnostic pipelined accessq translation launch
   -> directed latency/throughput separation tests
   -> run T0/T1/T2 candidate 10/80 + 0/80 with maximal safe parallelism
   -> compare residual hit-path sensitivity
@@ -382,7 +383,7 @@ No side lane may consume mainline resources without explicit reactivation.
   no new GPU task; hold accepted Native result at 2122eccc...
 
 174 NOW:
-  CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_PIPELINING_V1.md
+  CODEX_CONTINUE_174_TRANSLATION_FRONTEND_CLEAN_BUILD_RECOVERY_V1.md
 
 AFTER 174 SCIENTIFIC TRACK:
   STOP -> ChatGPT Cross-view review
