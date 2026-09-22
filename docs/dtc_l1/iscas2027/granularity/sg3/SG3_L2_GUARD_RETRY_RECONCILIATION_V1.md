@@ -18,4 +18,7 @@ V3 records the inferred residual as
 `L2_fail_merge_tag_identity_guard_retry_inferred`.  It accepts a nonzero
 residual only for exact Core `9b6bd33`, requires it be nonnegative, preserves
 all five source-defined reason values, and classifies it as non-resource
-diagnostic telemetry.  No Core/runtime/config/trace change and no rerun occur.
+diagnostic telemetry.  The 319 events are never included in an L2 resource
+bottleneck total, ranking, dimension trigger, or paper-facing resource
+attribution; only the five source-defined resource reasons participate in
+those analyses.  No Core/runtime/config/trace change and no rerun occur.
