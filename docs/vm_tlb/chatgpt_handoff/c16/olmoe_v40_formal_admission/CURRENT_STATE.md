@@ -196,3 +196,27 @@ This includes:
 Final transport verification, scientific recompute from the real raw bundle, immutable admission, catalog, and positive ACK still require the producer's published `.partial` bundle.
 
 If the bundle is absent after preflight, 174-new should close as `READY_FOR_BUNDLE`, not as a failure.
+
+
+## First bundle rejected by Pipeline V1 input-binding validation
+
+174-new correctly failed closed on the first published bundle because:
+
+`input.token_ids_sha256_or_semantic_hash = "S2_TEXT_B1_T2048_D32"`
+
+was not a lowercase 64-hex SHA256.
+
+Failure commit:
+`f37684ba863b8c66aa95ee40205df69233e159ff`
+
+No scientific recompute, raw promotion, catalog entry, or ACK occurred.
+
+The accepted V34 frozen 2048-token compact-list SHA is:
+
+`5d05e7cb6f5f89dda4feff7aded76f27e9630b57d527526812accf9db329ecc5`
+
+The repair is specified in:
+
+`docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/MANIFEST_INPUT_BINDING_REPAIR_V1.md`
+
+Producer must build a new immutable bundle with a new RUN_ID and locally validate the Pipeline V1 manifest before republish. No GPU recapture is required. Receiver must verify the new RUN_ID from scratch.
