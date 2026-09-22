@@ -16,7 +16,7 @@ Coordination branch:
 
 ```text
 docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
-docs/vm_tlb/chatgpt_handoff/awma/EXECUTION_PRIORITY_POLICY_V3.md
+docs/vm_tlb/chatgpt_handoff/awma/EXECUTION_PRIORITY_POLICY_V4.md
 docs/vm_tlb/chatgpt_handoff/awma/CANDIDATE_SIDE_LANES.md
 docs/vm_tlb/chatgpt_handoff/awma/CROSSVIEW_JOIN_CONTRACT_V1.md
 docs/vm_tlb/chatgpt_handoff/awma/MAINLINE_GATE_UPDATE_2026-09-20.md
@@ -55,7 +55,9 @@ T2's extra 65,899 coverage admissions at 0/80 are repeated admission attempts wi
 
 Execute now:
 
-`CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_PIPELINING_V1.md`
+`CODEX_CONTINUE_174_TRANSLATION_FRONTEND_CLEAN_BUILD_RECOVERY_V1.md`
+
+This continuation remains within `AWMA_TRANSLATION_FRONTEND_PIPELINING_RECALIBRATION_V1`; it first recovers a clean standard top-level build, then resumes the original frontend-pipelining Goal.
 
 First repair telemetry semantics without changing timing, then implement an opt-in single-axis pipelined accessq translation-launch candidate. Keep probe-at-completion and all PTW/MSHR semantics unchanged in V1.
 
