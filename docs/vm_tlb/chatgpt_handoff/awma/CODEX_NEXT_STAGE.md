@@ -55,7 +55,7 @@ T2's extra 65,899 coverage admissions at 0/80 are repeated admission attempts wi
 
 Execute now:
 
-`CODEX_CONTINUE_174_TRANSLATION_FRONTEND_CLEAN_BUILD_RECOVERY_V1.md`
+`CODEX_CONTINUE_174_CANONICAL_T0_INPUT_RECOVERY_V1.md`
 
 This continuation remains within `AWMA_TRANSLATION_FRONTEND_PIPELINING_RECALIBRATION_V1`; it first recovers a clean standard top-level build, then resumes the original frontend-pipelining Goal.
 
