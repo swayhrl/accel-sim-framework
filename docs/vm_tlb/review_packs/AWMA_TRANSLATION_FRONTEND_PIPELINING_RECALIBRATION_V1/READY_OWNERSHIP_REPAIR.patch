@@ -1,0 +1,58 @@
+--- .awma_runtime/candidate/src/gpgpu-sim/src/gpgpu-sim/vm_translation.h	2026-09-22 04:08:44.224079479 +0000
++++ .awma_runtime/clean_candidate/src/gpgpu-sim/src/gpgpu-sim/vm_translation.h	2026-09-22 08:10:18.230687116 +0000
+@@ -793,7 +793,8 @@
+                           uint64_t *sim_pa,
+                           translation_source *source = 0,
+                           translation_access access =
+-                              TRANSLATION_ACCESS_READ);
++                              TRANSLATION_ACCESS_READ,
++                          bool consume_ready = true);
+   // Retained for the accepted M1-M3 directed tests.  Simulator callers pass
+   // the real coalesced transaction size through the overload above.
+   lookup_result translate(unsigned sid, unsigned asid, uint64_t sim_va,
+--- .awma_runtime/candidate/src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc	2026-09-22 04:08:44.225079500 +0000
++++ .awma_runtime/clean_candidate/src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc	2026-09-22 08:10:18.232687141 +0000
+@@ -2215,7 +2215,8 @@
+                                                 uint64_t waiter_uid,
+                                                 uint64_t *sim_pa,
+                                                 translation_source *source,
+-                                                translation_access access) {
++                                                translation_access access,
++                                                bool consume_ready) {
+   assert(sid < m_l1s.size());
+   if (source != 0) *source = TRANSLATION_SOURCE_UNOBSERVED;
+   translation_key key(asid, vm_core::vpn(sim_va, m_config.page_size),
+@@ -2241,6 +2242,12 @@
+       ++m_stats.lookup_inflight_bypasses;
+       return TRANSLATION_PENDING;
+     }
++    if (!consume_ready) {
++      *sim_pa = inflight->ppn * key.page_size +
++                vm_core::page_offset(sim_va, key.page_size);
++      if (source != 0) *source = inflight->source;
++      return READY;
++    }
+     const uint64_t ppn = inflight->ppn;
+     const translation_source completed_source = inflight->source;
+     note_requester_completion(
+@@ -2318,7 +2325,7 @@
+   inflight = find_lookup(sid, waiter_uid, key);
+   if (inflight != 0 && inflight->stage == LOOKUP_READY)
+     return translate(sid, asid, sim_va, request_bytes, cycle, waiter_uid,
+-                     sim_pa, source, access);
++                     sim_pa, source, access, consume_ready);
+   // Legacy zero-latency diagnostics historically surface MSHR/PWQ fullness
+   // synchronously.  Preserve that contract without allowing the non-zero
+   // service path to re-probe either TLB while a handoff is stalled.
+--- .awma_runtime/candidate/src/gpgpu-sim/src/gpgpu-sim/shader.cc	2026-09-22 04:10:18.575024382 +0000
++++ .awma_runtime/clean_candidate/src/gpgpu-sim/src/gpgpu-sim/shader.cc	2026-09-22 08:08:02.538065171 +0000
+@@ -2471,7 +2471,8 @@
+       m_gpu->vm_translation()->translate(
+           m_sid, 0, candidate.get_sim_va(), candidate.get_size(),
+           m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle,
+-          candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access);
++          candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access,
++          false);
+     }
+   }
+   mem_access_t &access = inst.accessq_back();
