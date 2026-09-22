@@ -1,3 +1,58 @@
+# AWMA Current State — 2026-09-22 Frontend V1 Reviewed / V2 Active
+
+Status:
+
+`FRONTEND_LAUNCH_SERIALIZATION_PARTIAL_CLOSURE_READY_APPLICATION_V2_ACTIVE`
+
+## 2026-09-22 authority override
+
+This section supersedes older "active stage" lines below while preserving all historical accepted/frozen details.
+
+Accepted V1 diagnostic execution:
+
+`hrl/awma-174-translation-frontend-pipelining-v1 @ ad6f38878bc1e7c268b17e65fdb3793a3899a84d`
+
+Independent ChatGPT review:
+
+`REVIEW_174_TRANSLATION_FRONTEND_PIPELINING_V1_2026-09-22.md`
+
+V1 classification:
+
+`SERIAL_ACCESSQ_FRONTEND_AMPLIFICATION_PARTIAL`
+
+Recomputed residual sensitivities:
+
+```text
+T0  8.3593%   (legacy 56.9995%)
+T1  5.1787%   (legacy 59.7989%)
+T2 35.7182%   (legacy 53.0990%)
+```
+
+Interpretation:
+
+- accessq translation-launch serialization is a dominant simulator amplification source for T0/T1;
+- it is material but incomplete for T2;
+- V1 is diagnostic only and is not the accepted baseline;
+- no RTX4080 hardware-latency claim is authorized.
+
+Current active stage:
+
+`AWMA_TRANSLATION_FRONTEND_READY_APPLICATION_RECALIBRATION_V2`
+
+Current 174 instruction:
+
+`CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_READY_APPLICATION_V2.md`
+
+Current question:
+
+> Does head-only application of an already-READY translation result create the remaining completion/admission HOL sensitivity, especially for T2?
+
+109 remains mainline idle. MoE/AWQ/OLMoE side lanes remain frozen.
+
+No TLB/PTW/cache architecture mechanism is authorized.
+
+---
+
 # AWMA Current State
 
 Date: 2026-09-20
