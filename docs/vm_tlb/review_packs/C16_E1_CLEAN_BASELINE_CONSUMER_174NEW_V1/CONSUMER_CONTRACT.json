@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "status": "PREPARED",
+  "input": "producer CORE_18_POINT_TIMING.tsv plus authority regeneration receipt",
+  "independent_metrics": ["min", "median", "max", "CV", "R_dtype=RAW_FP16/RAW_BF16", "R_awq=AWQ/RAW_FP16", "shape ratios", "I=log(R_awq_M256)-log(R_awq_M1)"],
+  "required_gates": ["authority regeneration PASS", "RAW_FP16/AWQ identical FP16 activation SHA", "dtype identity", "path fingerprint", "historical values separate"],
+  "materiality": "abs median effect >= 5% and strictly greater than combined ordinary pair CV",
+  "ncu_selection": "max abs(I) among roles with material AWQ effect",
+  "no_producer_scientific_values_before_evidence": true
+}
