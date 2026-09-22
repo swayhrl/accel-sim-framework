@@ -11,6 +11,8 @@ HEADER = struct.Struct("<8sIIQQQ")
 RECORD = struct.Struct("<6I32Q")
 TERMINAL = re.compile(r"C16_WARP_TERMINAL static=(\d+) occurrence=(\d+) records=(\d+) overflow=(\d+)")
 ACCOUNTING = re.compile(r"C16_P5_ACCOUNTING producer=(\d+) receiver=(\d+) serialized=(\d+) overflow=(\d+)")
+OCCURRENCE_SELECT = re.compile(r"C16_TARGET_OCCURRENCE observed=(\d+) action=SELECT")
+OCCURRENCE_COUNT = re.compile(r"C16_TARGET_OCCURRENCE_COUNT selected=(\d+) observed=(\d+)")
 
 
 def main():
@@ -37,8 +39,12 @@ def main():
         text = args.stdout.read_text(errors="replace")
         terminals = TERMINAL.findall(text)
         accounting = ACCOUNTING.findall(text)
+        selected = OCCURRENCE_SELECT.findall(text)
+        occurrence_counts = OCCURRENCE_COUNT.findall(text)
         if len(terminals) != 1 or len(accounting) != 1:
             raise ValueError("missing or non-unique terminal/accounting")
+        if selected != [str(args.occurrence)] or occurrence_counts != [(str(args.occurrence), str(args.occurrence + 1))]:
+            raise ValueError("target occurrence gate")
         ts, to, tr, tv = map(int, terminals[0])
         producer, receiver, serialized, ao = map(int, accounting[0])
         if (ts, to, tr, tv) != (static, occurrence, records, 0):
