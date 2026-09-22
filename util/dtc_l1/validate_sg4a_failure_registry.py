@@ -57,8 +57,16 @@ def main() -> None:
         text = (run / "simulator.stdout").read_text(encoding="utf-8", errors="replace")
         assert "GPGPU-Sim uArch: ERROR ** deadlock detected:" in text
         assert f"({row['deadlock_idle_cycles']} cycles ago)" in text
-        assert f"gpu_tot_sim_cycle = {row['cycles']}" in text
-        assert f"gpu_tot_sim_insn = {row['instructions']}" in text
+        # A deadlock can occur before the simulator emits its final aggregate
+        # statistics.  Preserve that absence as nonnumeric evidence rather
+        # than inventing a checkpoint value solely to fit the registry schema.
+        for field, metric in (("cycles", "gpu_tot_sim_cycle"),
+                              ("instructions", "gpu_tot_sim_insn")):
+            value = row[field]
+            if value == "N/A":
+                assert f"{metric} =" not in text
+            else:
+                assert f"{metric} = {value}" in text
         matched = [candidate for candidate in plan_rows if all(
             candidate[field] == row[field] for field in ("workload", "mode", "logical_kib"))]
         assert len(matched) == 1 and matched[0]["physical_pool_lines"] == "640"

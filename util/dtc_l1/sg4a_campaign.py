@@ -154,7 +154,11 @@ def validate(args):
                 f"DTC_L1_{prefix}_pending_hits", f"DTC_L1_{prefix}_tag_evictions",
                 "DTC_L1_lower_credit_acquired", "DTC_L1_lower_credit_released", "DTC_L1_lower_outstanding"]
     if args.mode == "IO":
-        required += ["DTC_L1_io_duplicate_after_eviction", "DTC_L1_io_pending_tag_evictions", "DTC_L1_io_physical_allocations"]
+        # Core95 emits physical-allocation, tag-eviction, and duplicate counters,
+        # but has no separately emitted pending-tag-eviction counter.  Requiring
+        # a nonexistent field makes otherwise complete immutable attempts fail
+        # before the actual drain and identity checks can be evaluated.
+        required += ["DTC_L1_io_duplicate_after_eviction", "DTC_L1_io_physical_allocations"]
     checks = {
         "uuid": manifest.get("attempt_uuid") == terminal.get("attempt_uuid") and bool(manifest.get("attempt_uuid")),
         "natural_exit": terminal.get("simulator_exit_status") == "0", "workload": manifest.get("workload") == args.workload,
