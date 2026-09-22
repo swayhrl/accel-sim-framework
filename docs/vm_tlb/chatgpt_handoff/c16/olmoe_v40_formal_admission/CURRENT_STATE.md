@@ -176,3 +176,23 @@ Therefore hardening item 1 above is superseded by:
 `docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/SELECTOR_AUTHORITY_REPAIR_V1.md`
 
 Do not guess/brute-force the old serialization. Perform the bounded recovery search described there; if no exact historical producer is found, freeze the exact 243-row selector actually consumed by V40 using the new explicit `C16_SELECTOR_CANONICAL_V1` authority. This is a provenance repair, not a scientific target/static-membership change, and does not authorize GPU recapture when the current 243 membership and shard closure remain exact.
+
+
+## Parallel 174-new execution is authorized now
+
+174-new does not need to wait for the producer bundle before starting.
+
+It may immediately perform all dependency-free receiver work described in:
+
+`docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/CODEX_174_PREP_AND_ADMIT_V2.md`
+
+This includes:
+- node164/data-plane preflight;
+- receiver-side historical selector-provenance search;
+- independent `C16_SELECTOR_CANONICAL_V1` verifier implementation/tests;
+- independent 243-shard recompute preparation;
+- review/admission/ACK scaffolding.
+
+Final transport verification, scientific recompute from the real raw bundle, immutable admission, catalog, and positive ACK still require the producer's published `.partial` bundle.
+
+If the bundle is absent after preflight, 174-new should close as `READY_FOR_BUNDLE`, not as a failure.
