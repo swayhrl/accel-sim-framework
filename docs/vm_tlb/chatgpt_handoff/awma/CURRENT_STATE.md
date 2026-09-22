@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`109_NATIVE_TRACK_COMPLETE_174_F0_RUNTIME_STATE_CLOSURE_READY`
+`CROSSVIEW_HITPATH_VALIDITY_CLOSED_SEMANTIC_ATTRIBUTION_READY`
 
 ## 1. Project mission
 
@@ -45,9 +45,19 @@ backend    = SDPA
 
 ## 3. Current mainline question
 
-> Is the large repaired translation hit-path sensitivity a robust property across representative AI kernel families, or is it specific to Q05 / current simulator timing semantics?
+Cross-target validity is now closed.
 
-This must be answered before any TLB/PTW mechanism design.
+Accepted classification:
+
+`HITPATH_SENSITIVITY_SYSTEMATIC_ACROSS_KERNEL_CLASSES`
+
+Mainline consequence:
+
+`SIMULATOR_HITPATH_MODEL_REQUIRES_SEMANTIC_RECALIBRATION_BEFORE_MECHANISM`
+
+The active question is now:
+
+> Which exact simulator hit-path semantics convert a 10-cycle L1 translation lookup into a 53-60% total-cycle effect, and what must be recalibrated before mechanism evaluation?
 
 ## 4. Q05 repaired-model anchor
 
@@ -139,9 +149,19 @@ V3 correctly proved Segment descriptors are functionally capable, but its final 
 
 Existing accepted repaired F0 telemetry shows `vm_weight_segmentation_enabled=0` and zero Segment lookup/hit/suppression activity despite a loaded descriptor path.
 
+V3R1 is complete and accepted:
+
+`hrl/awma-174-exact-f0-segment-state-v3r1 @ 7a4f2a419fe77c017cb9a9a5555b1551a2fc884c`
+
+It proves:
+
+`F0_SEGMENT_FUNCTIONALLY_DORMANT_CONFIRMED`
+
+and closes T1/T2 10/80 + 0/80 with terminal/full-coverage/zero-Segment activity.
+
 The new active 174 stage is:
 
-`AWMA_174_EXACT_F0_SEGMENT_STATE_CLOSURE_V3R1`
+`AWMA_TRANSLATION_HITPATH_SEMANTIC_ATTRIBUTION_V1`
 
 ## 6. Mainline schedule
 
@@ -155,10 +175,12 @@ Current schedule:
   remain GPU-idle; do not resume MoE/AWQ side lanes
 
 174:
-  zero-science audit exact V2 T0 post-parse Segment runtime state
-  -> if Segment disabled and all Segment activity zero: reuse exact T0 map assets as model-generic dormant F0 compatibility assets
-  -> T1/T2 10/80 + 0/80 only with Segment-dormancy hard gate
-  -> if any T0 Segment participation is nonzero: stop and only then consider new 109 metadata/trace capture
+  source-level hit-path critical-path audit
+  -> existing-accounting decomposition
+  -> T2 admission-multiplicity forensics
+  -> telemetry-only instrumentation only if existing evidence is insufficient
+  -> propose semantic recalibration candidates
+  -> STOP before implementing a new hit-path model
 ```
 
 Cross-view synthesis waits only for this 174 scientific track.
@@ -227,7 +249,7 @@ No further 109 GPU work is required for the current mainline decision.
 
 MoE/AWQ side lanes remain frozen.
 
-## 9. 174 Simulation mainline — EXACT F0 RUNTIME-STATE CLOSURE READY
+## 9. 174 Simulation mainline — CROSS-TARGET VALIDITY CLOSED
 
 Accepted V2:
 
@@ -256,13 +278,25 @@ Important correction: V3 read parsed/effective `weight_segmentation_enable=1`, b
 
 Exact V2 compatibility assets are whole-VA views rather than target-precise allocation maps. Therefore no node109 recapture is authorized until exact V2 T0 runtime Segment participation is checked from immutable logs.
 
+Accepted V3R1:
+
+`7a4f2a419fe77c017cb9a9a5555b1551a2fc884c`
+
+Cross-target result:
+
+```text
+T0 FlashAttention: 56.9995% reduction
+T1 Prefill GEMM:   59.7989% reduction
+T2 Decode GEMV:    53.0990% reduction
+```
+
+All three have L1-TLB hit rates above 99.7% and sparse walk activity.
+
+T2 has a nonlinear downstream-admission effect and is retained with that caveat; T0/T1 are the clean anchors.
+
 Next stage:
 
-`AWMA_174_EXACT_F0_SEGMENT_STATE_CLOSURE_V3R1`
-
-Primary metric after admission remains:
-
-`10/80 -> 0/80`
+`AWMA_TRANSLATION_HITPATH_SEMANTIC_ATTRIBUTION_V1`
 
 ## 10. Cross-view objective
 
@@ -283,19 +317,15 @@ and compare only aligned descriptors:
 
 Do not equate native CUDA time with simulator cycles, or NCU cache controls with TLB state.
 
-## 11. Decision gate
+## 11. Decision gate — CLOSED
 
-After both tracks close, classify:
+Accepted:
 
-```text
-HITPATH_SENSITIVITY_SYSTEMATIC_ACROSS_KERNEL_CLASSES
-HITPATH_SENSITIVITY_ATTENTION_DOMINANT
-HITPATH_SENSITIVITY_TARGET_DEPENDENT
-SIMULATOR_HITPATH_MODEL_REQUIRES_SEMANTIC_RECALIBRATION
-INSUFFICIENT_CROSS_TARGET_EVIDENCE
-```
+`HITPATH_SENSITIVITY_SYSTEMATIC_ACROSS_KERNEL_CLASSES`
 
-Only after this may a TLB/PTW mechanism stage be considered.
+Before any TLB/PTW mechanism stage:
+
+`SIMULATOR_HITPATH_MODEL_REQUIRES_SEMANTIC_RECALIBRATION_BEFORE_MECHANISM`
 
 ## 12. Candidate side lanes
 
@@ -330,7 +360,7 @@ No side lane may consume mainline resources without explicit reactivation.
   no new GPU task; hold accepted Native result at 2122eccc...
 
 174 NOW:
-  CODEX_NEXT_STAGE_174_EXACT_F0_SEGMENT_STATE_V3R1.md
+  CODEX_NEXT_STAGE_174_HITPATH_SEMANTIC_ATTRIBUTION_V1.md
 
 AFTER 174 SCIENTIFIC TRACK:
   STOP -> ChatGPT Cross-view review
