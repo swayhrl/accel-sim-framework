@@ -1,0 +1,6 @@
+schema	refinement_type	stage	workloads	modes	knob	values	row_count	launch_gate	followup_rule
+SG3_G4_OBSERVER_ON_PLAN_V3	pre-result efficiency refinement; preserves V1/V2 plans	A1_shared_baseline	BICG,GESUMMV,Btree,2DConvolution	IO,OO	default	base	8	immediate rolling	shared observer-ON default baselines
+SG3_G4_OBSERVER_ON_PLAN_V3	pre-result efficiency refinement; preserves V1/V2 plans	A2_difficult_coarse	BICG,GESUMMV	IO,OO	capacity	0.5x,2x	8	A1 row-local; no whole-batch barrier	use only dimensions that alter bottleneck classification for independent controls
+SG3_G4_OBSERVER_ON_PLAN_V3	pre-result efficiency refinement; preserves V1/V2 plans	A2_difficult_coarse	BICG,GESUMMV	IO,OO	MSHR	0.5x,4x	8	A1 row-local; no whole-batch barrier	conditional MSHR2x remains policy-controlled
+SG3_G4_OBSERVER_ON_PLAN_V3	pre-result efficiency refinement; preserves V1/V2 plans	A2_difficult_coarse	BICG,GESUMMV	IO,OO	cap	512,2048	8	A1 row-local; no whole-batch barrier	conditional cap1024/4096, queue, service rules unchanged
+SG3_G4_OBSERVER_ON_PLAN_V3	pre-result efficiency refinement; preserves V1/V2 plans	A3_independent_controls	Btree,2DConvolution	IO,OO	only classification-relevant dimension	conditional	0	BICG/GESUMMV classification trigger	never fill the old 56-row matrix merely for enumeration
