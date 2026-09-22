@@ -5,7 +5,7 @@ import struct
 from collections import Counter
 from pathlib import Path
 
-ROOT = Path('/data/c16/olmoe_v40/typed_sweep/formal_admission')
+ROOT = Path('/data/c16/olmoe_v40_publish_v1/re_audit')
 SHARDS = ROOT / 'FORMAL_243_SHARDS.jsonl'
 REC = struct.Struct('<6I32Q')
 
