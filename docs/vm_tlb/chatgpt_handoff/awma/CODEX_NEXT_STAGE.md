@@ -6,7 +6,7 @@ Date: 2026-09-20
 
 Stage:
 
-`AWMA_TRANSLATION_HITPATH_SEMANTIC_ATTRIBUTION_V1`
+`AWMA_TRANSLATION_FRONTEND_PIPELINING_RECALIBRATION_V1`
 
 Coordination branch:
 
@@ -33,33 +33,33 @@ No new 109 GPU task.
 
 MoE/AWQ candidate side lanes remain frozen.
 
-## 3. 174-new — HIT-PATH SEMANTIC ATTRIBUTION READY
+## 3. 174-new — TRANSLATION FRONTEND RECALIBRATION READY
 
-Accepted V3R1 execution:
+Accepted attribution execution:
 
-`hrl/awma-174-exact-f0-segment-state-v3r1 @ 7a4f2a419fe77c017cb9a9a5555b1551a2fc884c`
+`hrl/awma-174-hitpath-semantic-attribution-v1 @ f79aaa1d22d2a22912e8b71dc832bdbf31a899f7`
 
-Cross-target validity is now closed:
+Accepted classification:
+
+`MIXED_MODEL_EFFECT`
+
+with:
 
 ```text
-T0 FlashAttention  56.9995%
-T1 Prefill GEMM    59.7989%
-T2 Decode GEMV     53.0990%
+SERIALIZED_PRE_ADMISSION_LOOKUP_WAIT_DOMINANT
+ACCESSQ_HEAD_OF_LINE_TRANSLATION_BLOCKING_DOMINANT
+ZERO_LATENCY_RETRY_ORDERING_NONLINEARITY
 ```
 
-All three targets have L1-TLB hit rates above 99.7%; F0 Segment is functionally dormant for all admitted runs.
-
-Primary classification:
-
-`HITPATH_SENSITIVITY_SYSTEMATIC_ACROSS_KERNEL_CLASSES`
+T2's extra 65,899 coverage admissions at 0/80 are repeated admission attempts with the same 411,008 unique logical UIDs.
 
 Execute now:
 
-`CODEX_NEXT_STAGE_174_HITPATH_SEMANTIC_ATTRIBUTION_V1.md`
+`CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_PIPELINING_V1.md`
 
-First perform source-only critical-path audit and existing-counter decomposition. Add telemetry-only instrumentation only if existing evidence is insufficient.
+First repair telemetry semantics without changing timing, then implement an opt-in single-axis pipelined accessq translation-launch candidate. Keep probe-at-completion and all PTW/MSHR semantics unchanged in V1.
 
-Do not implement a new hit-path model in this stage.
+Do not promote the candidate to baseline in this stage.
 
 ## 4. Cross-view decision
 
@@ -83,7 +83,7 @@ Do not reconstruct or republish them as a complete scientific matrix.
 
 ## 6. Shared scientific objective
 
-Determine which exact simulator semantics cause a 10-cycle L1 translation lookup to become a 53-60% total-cycle effect, including accessq blocking, COAL_STALL behavior, lookup overlap/throughput, and T2 admission multiplicity.
+Test whether separating translation lookup latency from accessq launch serialization removes most of the legacy 53-60% sensitivity while preserving per-access translation correctness and all downstream functional invariants.
 
 ## 7. Cross-view
 
@@ -113,4 +113,4 @@ Do not automatically start:
 - AWQ optimization;
 - new model download.
 
-After semantic attribution completes, STOP and return to ChatGPT before implementing any recalibrated hit-path model.
+After diagnostic frontend recalibration completes, STOP and return to ChatGPT before promoting any candidate semantics to the accepted baseline.
