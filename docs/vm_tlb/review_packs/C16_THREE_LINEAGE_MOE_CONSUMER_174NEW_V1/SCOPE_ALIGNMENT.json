@@ -1,0 +1,50 @@
+{
+  "common": [
+    "accepted natural-routed BF16 expert down_proj",
+    "243 selected static paths",
+    "C16WARP1 raw evidence",
+    "per-shard-only locality definitions"
+  ],
+  "differences": {
+    "DEEPSEEK": {
+      "input_width": 1408,
+      "output_width": 2048,
+      "routing_topology": "top-6/64 routed + 2 shared",
+      "semantic_scope": "S2 selected decode Layer1 natural Expert4 down_proj",
+      "weight_bytes": 5767168,
+      "weight_shape": [
+        2048,
+        1408
+      ]
+    },
+    "OLMOE": {
+      "input_width": 1024,
+      "output_width": 2048,
+      "routing_topology": "top-8/64",
+      "semantic_scope": "S2_TEXT B1/T2048/D32 Layer1 decode32 natural Expert58 down_proj actual-JIT variant A",
+      "weight_bytes": 4194304,
+      "weight_shape": [
+        2048,
+        1024
+      ]
+    },
+    "Q30": {
+      "input_width": 768,
+      "output_width": 2048,
+      "routing_topology": "top-8/128",
+      "semantic_scope": "S2 Decode3 Layer24 natural Expert21 down_proj",
+      "weight_bytes": 3145728,
+      "weight_shape": [
+        2048,
+        768
+      ]
+    }
+  },
+  "prohibitions": [
+    "cross-shard absolute VA union",
+    "cross-shard chronology",
+    "reuse distance",
+    "cache/TLB causality"
+  ],
+  "status": "COMPARABLE_DESCRIPTIVE_ANCHORS"
+}

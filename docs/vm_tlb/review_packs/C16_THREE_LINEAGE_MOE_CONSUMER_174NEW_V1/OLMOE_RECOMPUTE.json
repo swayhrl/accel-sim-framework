@@ -1,0 +1,273 @@
+{
+  "SUM_OF_PER_SHARD_UNIQUES": {
+    "unique_128B_lines": 131168,
+    "unique_2M_pages": 193,
+    "unique_4K_pages": 65602,
+    "unique_64K_pages": 4161
+  },
+  "active_lane_events": 4196352,
+  "dtype": "BF16",
+  "dynamic_warp_records": 132096,
+  "executed_fraction": 0.5308641975308642,
+  "executed_shard_distributions": {
+    "active_lane_events": {
+      "max": 32768,
+      "median": 32768,
+      "min": 2048,
+      "p25": 32768,
+      "p75": 32768,
+      "p90": 32768
+    },
+    "density_128B": {
+      "max": 0.0625,
+      "median": 0.015625,
+      "min": 3.0517578125e-05,
+      "p25": 3.0517578125e-05,
+      "p75": 0.0625,
+      "p90": 0.0625
+    },
+    "density_2M": {
+      "max": 0.00048828125,
+      "median": 6.103515625e-05,
+      "min": 3.0517578125e-05,
+      "p25": 3.0517578125e-05,
+      "p75": 6.103515625e-05,
+      "p90": 6.103515625e-05
+    },
+    "density_4K": {
+      "max": 0.03125,
+      "median": 0.0009765625,
+      "min": 3.0517578125e-05,
+      "p25": 3.0517578125e-05,
+      "p75": 0.03125,
+      "p90": 0.03125
+    },
+    "density_64K": {
+      "max": 0.001953125,
+      "median": 0.00048828125,
+      "min": 3.0517578125e-05,
+      "p25": 3.0517578125e-05,
+      "p75": 0.001953125,
+      "p90": 0.001953125
+    },
+    "unique_128B_lines": {
+      "max": 2048,
+      "median": 32,
+      "min": 1,
+      "p25": 1,
+      "p75": 2048,
+      "p90": 2048
+    },
+    "unique_2M_pages": {
+      "max": 2,
+      "median": 1,
+      "min": 1,
+      "p25": 1,
+      "p75": 2,
+      "p90": 2
+    },
+    "unique_4K_pages": {
+      "max": 1024,
+      "median": 2,
+      "min": 1,
+      "p25": 1,
+      "p75": 1024,
+      "p90": 1024
+    },
+    "unique_64K_pages": {
+      "max": 64,
+      "median": 1,
+      "min": 1,
+      "p25": 1,
+      "p75": 64,
+      "p90": 64
+    }
+  },
+  "executed_static_count": 129,
+  "failed_excluded_count": 0,
+  "input_width": 1024,
+  "model": "OLMoE-1B-7B",
+  "output_width": 2048,
+  "prohibited_analyses": [
+    "cross-shard absolute VA union",
+    "cross-shard chronology",
+    "reuse distance",
+    "cache/TLB causality"
+  ],
+  "proven_zero_static_count": 114,
+  "quantile_definition": "nearest-rank: ceil(p*n)-1 on sorted executed-shard values",
+  "role_conditioned": {
+    "INPUT": {
+      "active_lane_events": {
+        "max": 32768,
+        "median": 32768,
+        "min": 32768,
+        "p25": 32768,
+        "p75": 32768,
+        "p90": 32768
+      },
+      "count": 64,
+      "unique_128B_lines": {
+        "max": 1,
+        "median": 1,
+        "min": 1,
+        "p25": 1,
+        "p75": 1,
+        "p90": 1
+      },
+      "unique_4K_pages": {
+        "max": 1,
+        "median": 1,
+        "min": 1,
+        "p25": 1,
+        "p75": 1,
+        "p90": 1
+      }
+    },
+    "MIXED": {
+      "active_lane_events": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "count": 0,
+      "unique_128B_lines": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "unique_4K_pages": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      }
+    },
+    "OTHER": {
+      "active_lane_events": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "count": 0,
+      "unique_128B_lines": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      },
+      "unique_4K_pages": {
+        "max": null,
+        "median": null,
+        "min": null,
+        "p25": null,
+        "p75": null,
+        "p90": null
+      }
+    },
+    "OUTPUT": {
+      "active_lane_events": {
+        "max": 2048,
+        "median": 2048,
+        "min": 2048,
+        "p25": 2048,
+        "p75": 2048,
+        "p90": 2048
+      },
+      "count": 1,
+      "unique_128B_lines": {
+        "max": 32,
+        "median": 32,
+        "min": 32,
+        "p25": 32,
+        "p75": 32,
+        "p90": 32
+      },
+      "unique_4K_pages": {
+        "max": 2,
+        "median": 2,
+        "min": 2,
+        "p25": 2,
+        "p75": 2,
+        "p90": 2
+      }
+    },
+    "WEIGHT": {
+      "active_lane_events": {
+        "max": 32768,
+        "median": 32768,
+        "min": 32768,
+        "p25": 32768,
+        "p75": 32768,
+        "p90": 32768
+      },
+      "count": 64,
+      "unique_128B_lines": {
+        "max": 2048,
+        "median": 2048,
+        "min": 2048,
+        "p25": 2048,
+        "p75": 2048,
+        "p90": 2048
+      },
+      "unique_4K_pages": {
+        "max": 1024,
+        "median": 1024,
+        "min": 1024,
+        "p25": 1024,
+        "p75": 1024,
+        "p90": 1024
+      }
+    }
+  },
+  "role_event_counts": {
+    "INPUT": 2097152,
+    "OUTPUT": 2048,
+    "WEIGHT": 2097152
+  },
+  "role_fractions": {
+    "INPUT": 0.4997559785261103,
+    "OTHER": 0.0,
+    "OUTPUT": 0.0004880429477794046,
+    "WEIGHT": 0.4997559785261103
+  },
+  "routing_topology": "top-8/64",
+  "run_id": "C16R_olmoe-1b-7b-0125-instruct_s2-t2048-d32_decode32_nvbit1771-c16warp1_expert58-down-proj-actual-a_20260922T100810Z_fc0f3cf67edf",
+  "schema_version": 1,
+  "selected_static_count": 243,
+  "semantic_scope": "S2_TEXT B1/T2048/D32 Layer1 decode32 natural Expert58 down_proj actual-JIT variant A",
+  "static_implementation": {
+    "all_static_rows": 243,
+    "function_evidence": [],
+    "opcode_counts": {
+      "LDG.E": 2,
+      "LDG.E.EF.U16": 119,
+      "LDG.E.U16": 1,
+      "LDG.E.U16.CONSTANT": 1,
+      "LDG.E.U16.STRONG.SM": 119,
+      "STG.E.U16": 1
+    },
+    "selected_path_class_count": 243,
+    "static_map_path": "/root/share/mnt164/huangrulin/c16_ai_workload/raw/C16R_olmoe-1b-7b-0125-instruct_s2-t2048-d32_decode32_nvbit1771-c16warp1_expert58-down-proj-actual-a_20260922T100810Z_fc0f3cf67edf/selector_authority/VARIANT_A_COMPLETE_STATIC_SELECTOR.tsv"
+  },
+  "status": "PASS",
+  "weight_bytes": 4194304,
+  "weight_input_fraction_delta": 0.0,
+  "weight_shape": [
+    2048,
+    1024
+  ]
+}

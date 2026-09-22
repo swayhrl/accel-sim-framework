@@ -1,0 +1,21 @@
+{
+  "DEEPSEEK": {
+    "durable_function": [
+      "std::enable_if<!(false), void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, false, true, true, false, 6, false, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float> >(cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>)"
+    ],
+    "relation": "internal cuBLAS BF16 gemvx template parameter 6"
+  },
+  "OLMOE": {
+    "durable_function": [],
+    "relation": "actual-JIT variant A; current raw selector lacks full gemvx template text"
+  },
+  "Q30": {
+    "durable_function": [
+      "std::enable_if<!(false), void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, false, true, true, false, 7, false, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float> >(cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16 const>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>)"
+    ],
+    "relation": "internal cuBLAS BF16 gemvx template parameter 7"
+  },
+  "deepseek_olmoe_exact_template_relation": "NOT_RECOMPUTABLE_FROM_CURRENT_RAW_SELECTOR",
+  "interpretation": "independent model lineages; runtime implementation-family coupling is possible and exact DeepSeek/OLMoE template identity is unresolved from current durable raw selector",
+  "shared_operator_semantics": "BF16 expert down_proj anchors"
+}

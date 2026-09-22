@@ -1,0 +1,43 @@
+{
+  "definitions": {
+    "L1": "lineage specific",
+    "T2": "two lineage only",
+    "T3": "three model lineages observed",
+    "U": "unresolved"
+  },
+  "patterns": [
+    {
+      "basis": "all three weight/input fractions are equal within each recompute; each is approximately one half",
+      "class": "T3",
+      "id": "weight_input_balance",
+      "threshold": "absolute weight-input fraction delta <= 0.001"
+    },
+    {
+      "basis": "all output fractions below 0.001",
+      "class": "T3",
+      "id": "output_smallness",
+      "threshold": "output fraction < 0.001"
+    },
+    {
+      "basis": "OTHER fraction exactly zero in all three",
+      "class": "T3",
+      "id": "other_zero",
+      "threshold": "OTHER == 0"
+    },
+    {
+      "basis": "243 selected paths in all three; not static-code equivalence",
+      "class": "T3",
+      "id": "selected_coverage"
+    },
+    {
+      "basis": "Q30 41/243 differs materially from DeepSeek 169/243 and OLMoE 129/243",
+      "class": "L1",
+      "id": "executed_fraction"
+    },
+    {
+      "basis": "Q30 durable template=7, DeepSeek durable template=6; OLMoE raw selector lacks full template text",
+      "class": "U",
+      "id": "implementation_coupling"
+    }
+  ]
+}
