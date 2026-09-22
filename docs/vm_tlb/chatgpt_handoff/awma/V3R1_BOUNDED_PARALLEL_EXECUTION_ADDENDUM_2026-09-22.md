@@ -1,4 +1,4 @@
-# AWMA 174 V3R1 Bounded Parallel Execution Addendum
+# AWMA 174 V3R1 Resource-Aware Parallel Execution Addendum
 
 Date: 2026-09-22
 
@@ -12,48 +12,75 @@ Coordination branch:
 
 ## Decision
 
-Bounded speculative parallelism is authorized.
+Dependency-first, resource-aware speculative parallelism is authorized.
+
+Do not serialize runs merely because their scientific admission is ordered.
 
 Current T1 `0/80` must continue uninterrupted.
 
-While T1 `0/80` is running, T2 `10/80` may start immediately in a separate process/run directory.
+Before launching more work, inspect:
 
-Maximum concurrent simulator processes for this stage:
+- physical/logical CPU topology;
+- current load and per-simulator CPU utilization;
+- available memory and swap pressure;
+- measured RSS of an existing simulator;
+- I/O wait and shared trace-read pressure;
+- free storage and node164 health;
+- existing simulator/process count.
 
-`2`
+Concurrency is resource-derived, not fixed at 1 or 2.
 
-Do not start T2 `0/80` until T2 `10/80` has passed its own terminal/coverage/Segment-dormancy gate.
+If resources safely support all remaining executable simulations, launch all of
+them.
+
+For the current state, once frozen T2 input/config assets already exist:
+
+- T1 `0/80`;
+- T2 `10/80`;
+- T2 `0/80`;
+
+have no input-data dependency on one another.
+
+Therefore T2 `10/80` and T2 `0/80` may both start while T1 `0/80`
+continues, if the resource audit passes.
 
 ## Scientific admission rule
 
-T2 `10/80` started before T1 `0/80` closes is labelled:
+Any downstream point started before its upstream scientific gates close is
+labelled:
 
-`SPECULATIVE_PRE_T1_GATE`
+`SPECULATIVE_PRE_GATE`
 
-Its execution is allowed, but it is not admitted into the scientific matrix until:
+Execution is allowed, but admission is delayed.
 
-1. T1 `0/80` passes terminal/full-coverage/Segment-dormancy gates; and
-2. T2 `10/80` itself passes the same gates.
+The T1 pair is admitted only after T1 `0/80` passes its own hard gate.
 
-If T1 `0/80` fails a scientific hard gate, any concurrently produced T2 result is quarantined and not admitted until ChatGPT review.
+The T2 pair is admitted only after both T2 `10/80` and T2 `0/80` pass their
+own hard gates.
+
+If an upstream or target-local gate fails, already-computed speculative results
+are quarantined and not admitted until ChatGPT review.
 
 ## Isolation requirements
 
-Parallel runs must use separate:
+Concurrent runs must use separate:
 
 - output directories;
 - effective-config copies;
 - stdout/stderr logs;
 - receipt files;
-- temporary directories where applicable.
+- temporary directories;
+- mutable checkpoint/state files.
 
 Shared producer traces and compatibility assets remain immutable/read-only.
 
 Do not mutate shared config/map files.
 
-If practical, inspect host CPU topology and pin the two simulator processes to disjoint CPU sets. CPU pinning is an engineering optimization only and must not alter simulator configuration.
+When useful, pin CPU-bound simulator processes to disjoint physical cores or
+CPU sets.
 
-Host wall time is not a scientific metric.
+Host wall time and CPU affinity are engineering controls, not scientific
+metrics.
 
 ## Hard gate remains unchanged
 
@@ -71,23 +98,29 @@ Every admitted run requires:
 
 Any nonzero Segment functional activity invalidates that run.
 
-## Recommended schedule
+## Continuous-refill schedule
 
 ```text
 NOW:
-  T1 0/80        running
-  T2 10/80       start in parallel
+  T1 0/80        continue
+  T2 10/80       start if resources permit
+  T2 0/80        also start if resources permit; SPECULATIVE_PRE_GATE
 
-WHEN T1 0/80 PASS:
-  admit T1 pair
-  continue waiting for T2 10/80 if still running
+AS EACH RUN FINISHES:
+  hard-gate it immediately
+  checkpoint/hash it immediately
+  preserve node164 copy
+  refill any free slot with remaining ready work
 
-WHEN T2 10/80 PASS:
-  start T2 0/80
+WHILE LONG RUNS CONTINUE:
+  generate already-available receipts/tables/checkpoints in parallel
+  do not wait idly for all simulation processes to finish
 
-AFTER T2 0/80 PASS:
+AFTER ALL REQUIRED RUNS PASS:
   derive cross-target metrics
-  report / review pack / node164 closure / remote publication
+  final report / review pack
+  node164 closure
+  commit / push / remote verify
 ```
 
 No additional science is authorized.
