@@ -219,6 +219,8 @@ reconstruct if deterministic; do not recapture a P1 trace merely because a wrapp
 
 Do not mark `ACCEPTED` unless payload identity and integrity are actually closed.
 
+Also reconcile the prior review-pack metadata inconsistency: `RAW_DATA_INDEX.tsv` still says `DURABLE_SHA256_VERIFY_PASS_44_MEMBERS` while the final durable ACK reports 76 verified members after adding four microtrace bundles. Correct this in V1R1 provenance without mutating historical V1 files.
+
 ## 6. Exact-target Native timing interpretation
 
 Carry forward the already captured values without rerun.
