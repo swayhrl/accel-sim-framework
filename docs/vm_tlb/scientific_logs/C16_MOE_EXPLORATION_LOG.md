@@ -839,3 +839,65 @@ E3必须保留同一执行上下文内真实的连续关系，例如：
 7. **Stop condition**：什么结果意味着不值得继续。
 
 这样本文件始终保留“科学推理链”，review pack继续保留“证据审计链”。
+
+
+---
+
+# 18. E3执行合同收紧（2026-09-22）
+
+## Question
+
+在Q30固定S2/T2048、Layer24、M=2048、E=128、top-k=8、dtype/backend不变时，仅改变routing组织，是否会改变整个MoE body的专家碎片化、dispatch/combine成本和active-expert语义weight working set？
+
+## Evidence basis
+
+本轮直接复用accepted Q30 exact-state/replay，不新增模型下载。
+
+正式设计：
+
+`docs/vm_tlb/chatgpt_handoff/c16/e3_routing_working_set_v1/E3_ROUTING_DIAGNOSTIC_DESIGN_V1.md`
+
+四个条件被正式定义为：
+
+- N：自然路由；
+- U：全128 experts严格均衡的synthetic routing；
+- H：固定自然top-8 hot experts的集中routing；
+- P：保持自然per-expert histogram并联合置换token/route的ordering diagnostic。
+
+所有条件固定16,384 assignments，每token保持8个不同expert IDs。
+
+## Important clarification / Superseded
+
+此前第12–14节把“连续调用中同expert重复出现的line/page重合”一起写进了E3候选问题。
+
+**这一点现在从E3第一轮中移出。**
+
+原因：
+
+- 当前E3是M=2048的单个MoE区域受控routing实验；
+- Decode跨step expert复用属于另一种时间维度；
+- 把它混进N/U/H/P会同时改变sequence和routing两个变量。
+
+因此第一轮E3只研究：
+
+- routing histogram / active expert set；
+- expert-group fragmentation；
+- semantic active-weight capacity；
+- whole-MoE-body native timing；
+- ordering/dispatch sensitivity。
+
+不在本轮声称或测量：
+
+- decode cross-step expert reuse；
+- cross-step line/page overlap；
+- reuse distance。
+
+如果E3证明routing组织本身值得深入，再单独设计连续decode sequence实验。
+
+## Stop condition
+
+本轮只做lightweight native diagnostic。
+
+如果N/U在主要指标上接近，则允许得到“该shape/backend下均匀代理足够”的负结果，并停止深采。
+
+只有N/U出现超出运行噪声、可复现的差异，或P揭示明确ordering effect，才提交下一轮deep memory capture供审查。
