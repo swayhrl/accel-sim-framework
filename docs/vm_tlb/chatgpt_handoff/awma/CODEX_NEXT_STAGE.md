@@ -16,7 +16,7 @@ Coordination branch:
 
 ```text
 docs/vm_tlb/chatgpt_handoff/awma/CURRENT_STATE.md
-docs/vm_tlb/chatgpt_handoff/awma/EXECUTION_PRIORITY_POLICY_V2.md
+docs/vm_tlb/chatgpt_handoff/awma/EXECUTION_PRIORITY_POLICY_V3.md
 docs/vm_tlb/chatgpt_handoff/awma/CANDIDATE_SIDE_LANES.md
 docs/vm_tlb/chatgpt_handoff/awma/CROSSVIEW_JOIN_CONTRACT_V1.md
 docs/vm_tlb/chatgpt_handoff/awma/MAINLINE_GATE_UPDATE_2026-09-20.md
