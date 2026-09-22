@@ -165,3 +165,14 @@ Allowed cross-model wording:
 
 Not allowed:
 `universal MoE law`
+
+
+## Selector authority provenance repair
+
+The historical V38 selector SHA `9d2d414999e417200167664dc0b4c716f1dcfb72aaf505d89736e14dbedbcb33` is retained as historical evidence, but its exact normalized serialization algorithm/full V38 selector were not durably committed. V39R2 historically reported reproducing the SHA, yet the producer/algorithm was also not durably retained.
+
+Therefore hardening item 1 above is superseded by:
+
+`docs/vm_tlb/chatgpt_handoff/c16/olmoe_v40_formal_admission/SELECTOR_AUTHORITY_REPAIR_V1.md`
+
+Do not guess/brute-force the old serialization. Perform the bounded recovery search described there; if no exact historical producer is found, freeze the exact 243-row selector actually consumed by V40 using the new explicit `C16_SELECTOR_CANONICAL_V1` authority. This is a provenance repair, not a scientific target/static-membership change, and does not authorize GPU recapture when the current 243 membership and shard closure remain exact.
