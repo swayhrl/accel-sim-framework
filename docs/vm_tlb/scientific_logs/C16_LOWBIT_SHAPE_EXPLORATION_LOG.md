@@ -156,3 +156,77 @@ A later deep memory diagnostic is justified only if:
 - holdout evidence supports it;
 - a concrete runtime-path/memory question remains.
 
+
+
+---
+
+# 8. Historical RAW authority recovery failed
+
+Bounded recovery commit:
+
+`hrl/c16-e1-qwen25-shape-lowbit-109-v1@5563c7bc9320f6699f351307b2895093d0658d97`
+
+Result:
+
+`HISTORICAL_MEASUREMENT_INPUT_AUTHORITY_NOT_REPRODUCIBLE`
+
+The known accepted V8 natural-M2048 path reproduces historical q_proj M1/M256 output SHAs but does not reproduce historical down_proj M1/M256 output SHAs.
+
+Targeted node109/node164 search found no durable missing RAW activation authority that closes all four historical RAW points.
+
+Therefore the old eight-point matrix is retained as:
+
+`HISTORICAL_DEPLOYMENT_MEASUREMENT_PROVENANCE_LIMITED`
+
+It remains useful as motivation, but is no longer the primary controlled E1 authority.
+
+No V8/V9/AWQ activation pool was promoted to replace the missing authority.
+
+---
+
+# 9. New clean-baseline question
+
+The E1 mainline now restarts under an explicit reproducible authority:
+
+> For the same canonical semantic activation, how do operator role, M shape, dense dtype, and deployed AWQ implementation interact?
+
+Primary matrix:
+
+`{q_proj,down_proj,up_proj} × {M1,M256} × {RAW_BF16,RAW_FP16,AWQ_FP16_INPUT}`
+
+New authority:
+
+`C16_E1_CANONICAL_RAW_ACTIVATION_V1`
+
+Source:
+- one reproducible RAW Layer0 natural S2_TEXT M2048 execution;
+- live module input capture for q_proj/down_proj/up_proj;
+- M256 = first 256 rows;
+- M1 = first row;
+- activation regeneration must reproduce identical SHA.
+
+RAW_FP16 and AWQ consume the exact same FP16 activation bytes.
+
+This improves the comparison relative to the historical natural-state matrix by controlling the semantic input directly.
+
+The comparison remains implementation-level, not pure quantization causality.
+
+---
+
+# 10. Pre-authorized execution strategy
+
+All currently foreseeable node109 E1 work is one Goal:
+
+1. freeze new canonical authority;
+2. run the 18-point native matrix;
+3. run CODE holdout if existing authority is available;
+4. run bounded M1023/M1024 AWQ transition diagnostic;
+5. if pre-registered materiality gates pass, automatically run a minimal NCU set;
+6. stop before NVBit/full address trace/mechanism design.
+
+174-new runs in parallel to:
+- audit the contract;
+- find reusable CODE/Llama assets;
+- prepare an independent consumer/comparator;
+- consume producer evidence if it is available by the time prep completes.
+
