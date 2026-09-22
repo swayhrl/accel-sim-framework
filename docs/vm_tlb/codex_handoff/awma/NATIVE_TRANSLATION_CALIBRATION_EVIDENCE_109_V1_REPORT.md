@@ -1,0 +1,3 @@
+# Native Translation Calibration Evidence 109 V1
+
+Five exact frozen-workload NSYS repetitions completed after two warmups. The three targets have fresh Native-ns timing in the review pack. NCU exposed no admissible direct translation metric. Its exact selector was proven only for T1; it is diagnostic only. A formal T0 Route-B capture completed with 13,490,624 raw records and zero drops/overflows; it is address evidence, not timing. The microbenchmark sweep separates dependent chains from multi-warp concurrency and includes 4 KiB/64 KiB behavioral spacing. No simulator was run and no translation mechanism is proposed.
