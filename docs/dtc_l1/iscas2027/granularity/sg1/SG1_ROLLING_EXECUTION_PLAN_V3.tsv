@@ -1,0 +1,5 @@
+schema	refinement_type	cohort	workloads	variants	action	evidence_status
+SG1_ROLLING_EXECUTION_PLAN_V3	pre-result efficiency refinement; preserves V1 plans	G6 exact reuse	BICG,Btree	B16-N,TC80-N	reuse after audit	canonical strict-PASS evidence
+SG1_ROLLING_EXECUTION_PLAN_V3	pre-result efficiency refinement; preserves V1 plans	G6 active/terminal	ATAX,GESUMMV,2DConvolution,Gaussian	B16-N,TC80-N	row-local strict validate	canonical final evidence only after all 12 G6 pass
+SG1_ROLLING_EXECUTION_PLAN_V3	pre-result efficiency refinement; preserves V1 plans	FAST12 provisional	GEMM,DWT2D,Hotspot1,LUD,NN,MRI-Q	B16-N,TC80-N	launch only in spare slots; long MRI-Q first	immutable provisional; promotion barred until G6 closure
+SG1_ROLLING_EXECUTION_PLAN_V3	pre-result efficiency refinement; preserves V1 plans	bounded same-Core sector controls	ATAX,BICG,GESUMMV,Btree,2DConvolution,Gaussian	B16-S,TC80-S	rolling after static closure; long rows early	necessary fairness evidence, never substitutes NORMAL G6
