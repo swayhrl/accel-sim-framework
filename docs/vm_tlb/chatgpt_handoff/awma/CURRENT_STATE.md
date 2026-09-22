@@ -4,7 +4,7 @@ Date: 2026-09-20
 
 Status:
 
-`CROSSVIEW_HITPATH_VALIDITY_CLOSED_SEMANTIC_ATTRIBUTION_READY`
+`HITPATH_ATTRIBUTION_CLOSED_FRONTEND_RECALIBRATION_READY`
 
 ## 1. Project mission
 
@@ -159,9 +159,23 @@ It proves:
 
 and closes T1/T2 10/80 + 0/80 with terminal/full-coverage/zero-Segment activity.
 
+The hit-path attribution stage is complete and accepted:
+
+`hrl/awma-174-hitpath-semantic-attribution-v1 @ f79aaa1d22d2a22912e8b71dc832bdbf31a899f7`
+
+Accepted attribution:
+
+`MIXED_MODEL_EFFECT`
+
+with source-supported dominant components:
+
+- `SERIALIZED_PRE_ADMISSION_LOOKUP_WAIT_DOMINANT`
+- `ACCESSQ_HEAD_OF_LINE_TRANSLATION_BLOCKING_DOMINANT`
+- `ZERO_LATENCY_RETRY_ORDERING_NONLINEARITY`
+
 The new active 174 stage is:
 
-`AWMA_TRANSLATION_HITPATH_SEMANTIC_ATTRIBUTION_V1`
+`AWMA_TRANSLATION_FRONTEND_PIPELINING_RECALIBRATION_V1`
 
 ## 6. Mainline schedule
 
@@ -175,12 +189,12 @@ Current schedule:
   remain GPU-idle; do not resume MoE/AWQ side lanes
 
 174:
-  source-level hit-path critical-path audit
-  -> existing-accounting decomposition
-  -> T2 admission-multiplicity forensics
-  -> telemetry-only instrumentation only if existing evidence is insufficient
-  -> propose semantic recalibration candidates
-  -> STOP before implementing a new hit-path model
+  repair coverage telemetry semantics without timing changes
+  -> implement opt-in diagnostic pipelined accessq translation launch
+  -> directed latency/throughput separation tests
+  -> run T0/T1/T2 candidate 10/80 + 0/80 with maximal safe parallelism
+  -> compare residual hit-path sensitivity
+  -> STOP before promoting candidate to baseline
 ```
 
 Cross-view synthesis waits only for this 174 scientific track.
@@ -294,9 +308,17 @@ All three have L1-TLB hit rates above 99.7% and sparse walk activity.
 
 T2 has a nonlinear downstream-admission effect and is retained with that caveat; T0/T1 are the clean anchors.
 
+Accepted attribution:
+
+`f79aaa1d22d2a22912e8b71dc832bdbf31a899f7`
+
+Source confirms `accessq_back()`-only translation/admission, non-READY `COAL_STALL`, and positive-latency pre-admission head-of-line blocking.
+
+T2's extra 65,899 historical `admissions` are repeated admission attempts with unchanged unique logical UIDs, not new accesses.
+
 Next stage:
 
-`AWMA_TRANSLATION_HITPATH_SEMANTIC_ATTRIBUTION_V1`
+`AWMA_TRANSLATION_FRONTEND_PIPELINING_RECALIBRATION_V1`
 
 ## 10. Cross-view objective
 
@@ -360,7 +382,7 @@ No side lane may consume mainline resources without explicit reactivation.
   no new GPU task; hold accepted Native result at 2122eccc...
 
 174 NOW:
-  CODEX_NEXT_STAGE_174_HITPATH_SEMANTIC_ATTRIBUTION_V1.md
+  CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_PIPELINING_V1.md
 
 AFTER 174 SCIENTIFIC TRACK:
   STOP -> ChatGPT Cross-view review
