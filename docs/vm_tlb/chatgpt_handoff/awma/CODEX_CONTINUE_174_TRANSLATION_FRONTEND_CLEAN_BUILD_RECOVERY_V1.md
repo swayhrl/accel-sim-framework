@@ -23,7 +23,7 @@ Coordination branch:
 Read first:
 
 1. `CURRENT_STATE.md`
-2. `EXECUTION_PRIORITY_POLICY_V4.md`
+2. `EXECUTION_PRIORITY_POLICY_V5.md`
 3. `REVIEW_174_HITPATH_ATTRIBUTION_V1_2026-09-22.md`
 4. `CODEX_NEXT_STAGE_174_TRANSLATION_FRONTEND_PIPELINING_V1.md`
 5. `TRANSLATION_FRONTEND_V1_CUDA_TOOLCHAIN_RECOVERY_ADDENDUM_2026-09-22.md`
@@ -212,7 +212,7 @@ run candidate:
 - T2 10/80;
 - T2 0/80.
 
-Follow `EXECUTION_PRIORITY_POLICY_V4.md`.
+Follow `EXECUTION_PRIORITY_POLICY_V5.md`.
 
 Perform dependency/resource audit and launch the maximum safe parallel set.
 Do not serialize independent points merely for admission ordering.
