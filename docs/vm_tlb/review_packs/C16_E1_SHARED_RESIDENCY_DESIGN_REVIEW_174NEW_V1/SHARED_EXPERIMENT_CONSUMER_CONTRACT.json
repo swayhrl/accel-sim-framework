@@ -24,7 +24,8 @@
   "multi_target_retained": "at least two selected targets material in the same shared condition",
   "natural_conditions": {
     "ROTATE_CONTROL_3": {
-      "persisting_allowed": false
+      "persisting_allowed": false,
+      "hit_ratio": 0.3333333333333333
     },
     "SETASIDE_ONLY": {},
     "SHARE2_L0": {
@@ -32,6 +33,9 @@
       "targets": [
         "L0_UP",
         "L0_DOWN"
+      ],
+      "normal_control_targets": [
+        "L14_UP"
       ]
     },
     "SHARE2_UP": {
@@ -39,6 +43,9 @@
       "targets": [
         "L0_UP",
         "L14_UP"
+      ],
+      "normal_control_targets": [
+        "L0_DOWN"
       ]
     },
     "SHARE3": {
@@ -47,12 +54,17 @@
         "L0_UP",
         "L14_UP",
         "L0_DOWN"
-      ]
+      ],
+      "normal_control_targets": []
     },
     "SINGLE_L0_UP": {
       "hit_ratio": 1,
       "targets": [
         "L0_UP"
+      ],
+      "normal_control_targets": [
+        "L0_DOWN",
+        "L14_UP"
       ]
     }
   },
@@ -108,5 +120,21 @@
   "status": "FROZEN_BEFORE_PRODUCER_FETCH",
   "runtime_actual_query_back_required_bytes": 37748736,
   "runtime_actual_query_back_policy": "Every fixed-full-budget shared/rotating condition must query back exactly the accepted runtime value 37,748,736 B for requested 33,947,648 B; drift is fail-closed.",
-  "hit_ratio_interpretation": "CUDA hitRatio is treated as a runtime access-policy hint for the tested shared policy. It is NOT interpreted as an exact deterministic fraction of protected lines/bytes or as an exact simulator quota split."
+  "hit_ratio_interpretation": "CUDA hitRatio is treated as a runtime access-policy hint for the tested shared policy. It is NOT interpreted as an exact deterministic fraction of protected lines/bytes or as an exact simulator quota split.",
+  "full_model_switch_schedule": {
+    "phases": [
+      "PREFILL",
+      "D0",
+      "D1",
+      "D2",
+      "D3"
+    ],
+    "target_order_per_phase": [
+      "L0_UP",
+      "L0_DOWN",
+      "L14_UP"
+    ],
+    "updates_per_rotating_condition": 15,
+    "policy": "All non-SETASIDE_ONLY rotating/shared conditions perform the same 15 update opportunities. Selected targets use PERSISTING; non-selected targets use NORMAL/NORMAL. This preserves API-update structure while varying only which targets persist."
+  }
 }
