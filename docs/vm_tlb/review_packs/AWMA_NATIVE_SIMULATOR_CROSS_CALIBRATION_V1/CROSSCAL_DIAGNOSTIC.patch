@@ -1,0 +1,233 @@
+--- /root/workspace/accel-sim-framework-awma-174-translation-frontend-pipelining-v1/.awma_runtime/candidate/src/gpgpu-sim/src/gpgpu-sim/shader.cc	2026-09-22 04:10:18.575024382 +0000
++++ /root/awma_native_simulator_cross_calibration_v1_runtime/c0_v2r1_src/gpgpu-sim/src/gpgpu-sim/shader.cc	2026-09-23 01:29:12.703892233 +0000
+@@ -799,6 +799,18 @@
+   fprintf(fout, "vm_identity_equal = %llu\n", vm_identity_equal);
+   fprintf(fout, "vm_translation_stall_cycles = %llu\n",
+           vm_translation_stall_cycles);
++  if (getenv("GPGPUSIM_READY_APPLICATION_DIAGNOSTICS") != NULL) {
++    fprintf(fout, "vm_ready_application_prelaunch_ready = %llu\n",
++            vm_ready_application_prelaunch_ready);
++    fprintf(fout, "vm_ready_application_prelaunch_applied = %llu\n",
++            vm_ready_application_prelaunch_applied);
++    fprintf(fout, "vm_ready_application_head_applied = %llu\n",
++            vm_ready_application_head_applied);
++    fprintf(fout, "vm_ready_application_duplicate_attempts = %llu\n",
++            vm_ready_application_duplicate_attempts);
++    fprintf(fout, "vm_ready_application_ready_unapplied_observations = %llu\n",
++            vm_ready_application_ready_unapplied_observations);
++  }
+   vm_cov_print(fout);
+
+   fprintf(fout, "gpgpu_n_intrawarp_mshr_merge = %d\n",
+@@ -1206,6 +1218,20 @@
+       m_warp[warp_id]->get_streamID());  // dynamic instruction information
+   m_stats->shader_cycle_distro[2 + (*pipe_reg)->active_count()]++;
+   func_exec_inst(**pipe_reg);
++  static const bool awma_crosscal_enabled = []() {
++    const char *value = std::getenv("GPGPUSIM_AWMA_CROSSCAL_DIAGNOSTICS");
++    return value != NULL && std::strtoul(value, NULL, 10) != 0;
++  }();
++  if (awma_crosscal_enabled &&
++      ((*pipe_reg)->pc == 0x240 || (*pipe_reg)->pc == 0x10b0)) {
++    fprintf(stdout,
++            "awma_crosscal_event kernel_uid=%u sid=%u warp=%u dynamic_warp=%u pc=0x%llx cycle=%llu\n",
++            get_kernel()->get_uid(), m_sid, warp_id,
++            m_warp[warp_id]->get_dynamic_warp_id(),
++            static_cast<unsigned long long>((*pipe_reg)->pc),
++            static_cast<unsigned long long>(m_gpu->gpu_tot_sim_cycle +
++                                            m_gpu->gpu_sim_cycle));
++  }
+
+   // Add LDGSTS instructions into a buffer
+   unsigned int ldgdepbar_id = m_warp[warp_id]->m_ldgdepbar_id;
+@@ -2443,11 +2469,50 @@
+   if (inst.accessq_empty()) return true;
+
+   mem_stage_stall_type stall_cond = NO_RC_FAIL;
++  const char *ready_application_text = getenv("GPGPUSIM_READY_APPLICATION_V2");
++  const bool ready_application_v2 = ready_application_text != NULL &&
++      unsigned(strtoul(ready_application_text, NULL, 10)) != 0;
++  const char *pipeline_text = getenv("GPGPUSIM_PIPELINED_ACCESSQ_TRANSLATION_LAUNCH");
++  const bool pipelined_launch = pipeline_text != NULL &&
++      unsigned(strtoul(pipeline_text, NULL, 10)) != 0;
++  assert(!ready_application_v2 || pipelined_launch);
++  const bool ready_application_diagnostics =
++      getenv("GPGPUSIM_READY_APPLICATION_DIAGNOSTICS") != NULL;
++  const auto apply_ready_translation = [&](mem_access_t &ready_access,
++                                           uint64_t ready_pa,
++                                           vm_translation::translation_source ready_outcome) {
++    assert(ready_outcome != vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
++    if (ready_access.vm_translation_applied()) {
++      if (ready_application_diagnostics)
++        ++m_stats->vm_ready_application_duplicate_attempts;
++      return;
++    }
++    assert(!ready_access.vm_translation_applied());
++    // This exact access will skip the head translation path, so preserve its
++    // frozen provenance/accounting before applying the controller result.
++    vm_provenance().record(m_config->gpgpu_vm_mode, inst, ready_access, m_sid,
++                           m_tpc, m_core->get_kernel(),
++                           m_config->gpgpu_vm_page_size);
++    ++m_stats->vm_requests;
++    ready_access.set_sim_pa(static_cast<new_addr_type>(ready_pa));
++    ++m_stats->vm_ideal_translations;
++    if (ready_access.get_sim_va() == ready_access.get_sim_pa())
++      ++m_stats->vm_identity_equal;
++    const vm_translation::object_class object = m_gpu->classify_vm_object(
++        ready_access.get_sim_va(), ready_access.get_size());
++    if (object == vm_translation::OBJECT_WEIGHT)
++      ready_access.set_telemetry_class(M4C_DATA_WEIGHT);
++    else if (object == vm_translation::OBJECT_KV_CACHE)
++      ready_access.set_telemetry_class(M4C_DATA_KV_CACHE);
++    else
++      ready_access.set_telemetry_class(M4C_DATA_UNKNOWN);
++    ready_access.set_translation_telemetry_outcome(ready_outcome);
++    if (ready_application_diagnostics)
++      ++m_stats->vm_ready_application_prelaunch_applied;
++  };
+   // Opt-in diagnostic: launch translation for resident coalesced accesses
+   // without consuming/reordering accessq or admitting any access downstream.
+   // Existing controller port/inflight/ready semantics remain authoritative.
+-  const char *pipeline_text = getenv("GPGPUSIM_PIPELINED_ACCESSQ_TRANSLATION_LAUNCH");
+-  const bool pipelined_launch = pipeline_text != NULL && unsigned(strtoul(pipeline_text, NULL, 10)) != 0;
+   if (pipelined_launch && m_config->gpgpu_vm_mode == 2 &&
+       m_gpu->vm_translation() != NULL) {
+     std::list<mem_access_t> &entries = inst.accessq_entries();
+@@ -2466,12 +2531,23 @@
+           inst.isatomic() ? vm_translation::TRANSLATION_ACCESS_ATOMIC :
+           (inst.is_store() ? vm_translation::TRANSLATION_ACCESS_WRITE :
+                              vm_translation::TRANSLATION_ACCESS_READ);
+-      // Do not set SimPA here: READY-to-admission still uses the legacy back
+-      // path below, preserving provenance, ordering and exactly-once effects.
+-      m_gpu->vm_translation()->translate(
++      // V1 observes READY only; V2 consumes it for this exact resident entry.
++      // Neither mode admits the access downstream during this prelaunch scan.
++      const vm_translation::lookup_result prelaunch_result =
++          m_gpu->vm_translation()->translate(
+           m_sid, 0, candidate.get_sim_va(), candidate.get_size(),
+           m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle,
+-          candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access);
++          candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access,
++          ready_application_v2);
++      if (prelaunch_result == vm_translation::READY) {
++        if (ready_application_diagnostics)
++          ++m_stats->vm_ready_application_prelaunch_ready;
++        if (ready_application_v2)
++          apply_ready_translation(candidate, ignored_pa, ignored_source);
++        else if (ready_application_diagnostics)
++          ++m_stats->vm_ready_application_ready_unapplied_observations;
++      }
++
+     }
+   }
+   mem_access_t &access = inst.accessq_back();
+@@ -2561,6 +2637,8 @@
+       }
+       assert(translation_outcome !=
+              vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
++      if (ready_application_diagnostics && ready_application_v2)
++        ++m_stats->vm_ready_application_head_applied;
+       access.set_sim_pa(static_cast<new_addr_type>(translated_pa));
+       ++m_stats->vm_ideal_translations;
+       // The accepted M1 baseline is identity-like, but C10 registered
+--- /root/workspace/accel-sim-framework-awma-174-translation-frontend-pipelining-v1/.awma_runtime/candidate/src/gpgpu-sim/src/gpgpu-sim/shader.h	2026-09-08 06:32:52.000000000 +0000
++++ /root/awma_native_simulator_cross_calibration_v1_runtime/c0_v2r1_src/gpgpu-sim/src/gpgpu-sim/shader.h	2026-09-23 00:57:06.463104448 +0000
+@@ -1836,6 +1836,11 @@
+   unsigned long long vm_ideal_translations;
+   unsigned long long vm_identity_equal;
+   unsigned long long vm_translation_stall_cycles;
++  unsigned long long vm_ready_application_prelaunch_ready;
++  unsigned long long vm_ready_application_prelaunch_applied;
++  unsigned long long vm_ready_application_head_applied;
++  unsigned long long vm_ready_application_duplicate_attempts;
++  unsigned long long vm_ready_application_ready_unapplied_observations;
+   int gpgpu_n_intrawarp_mshr_merge;
+   unsigned gpgpu_n_cmem_portconflict;
+   unsigned gpu_stall_shd_mem_breakdown[N_MEM_STAGE_ACCESS_TYPE]
+--- /root/workspace/accel-sim-framework-awma-174-translation-frontend-pipelining-v1/.awma_runtime/candidate/src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc	2026-09-22 04:08:44.225079500 +0000
++++ /root/awma_native_simulator_cross_calibration_v1_runtime/c0_v2r1_src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc	2026-09-23 00:53:31.399235006 +0000
+@@ -2215,7 +2215,8 @@
+                                                 uint64_t waiter_uid,
+                                                 uint64_t *sim_pa,
+                                                 translation_source *source,
+-                                                translation_access access) {
++                                                translation_access access,
++                                                bool consume_ready) {
+   assert(sid < m_l1s.size());
+   if (source != 0) *source = TRANSLATION_SOURCE_UNOBSERVED;
+   translation_key key(asid, vm_core::vpn(sim_va, m_config.page_size),
+@@ -2241,6 +2242,12 @@
+       ++m_stats.lookup_inflight_bypasses;
+       return TRANSLATION_PENDING;
+     }
++    if (!consume_ready) {
++      *sim_pa = inflight->ppn * key.page_size +
++                vm_core::page_offset(sim_va, key.page_size);
++      if (source != 0) *source = inflight->source;
++      return READY;
++    }
+     const uint64_t ppn = inflight->ppn;
+     const translation_source completed_source = inflight->source;
+     note_requester_completion(
+@@ -2318,7 +2325,7 @@
+   inflight = find_lookup(sid, waiter_uid, key);
+   if (inflight != 0 && inflight->stage == LOOKUP_READY)
+     return translate(sid, asid, sim_va, request_bytes, cycle, waiter_uid,
+-                     sim_pa, source, access);
++                     sim_pa, source, access, consume_ready);
+   // Legacy zero-latency diagnostics historically surface MSHR/PWQ fullness
+   // synchronously.  Preserve that contract without allowing the non-zero
+   // service path to re-probe either TLB while a handoff is stalled.
+@@ -2741,6 +2748,21 @@
+ }
+
+ void translation_controller::print_stats(FILE *fout) const {
++  if (getenv("GPGPUSIM_READY_APPLICATION_QUIESCENCE_DIAGNOSTICS") != NULL) {
++    unsigned long long ready_lookups = 0;
++    for (unsigned i = 0; i < m_lookups.size(); ++i)
++      if (m_lookups[i].stage == LOOKUP_READY) ++ready_lookups;
++    fprintf(fout, "vm_translation_lookup_entries = %llu\n",
++            static_cast<unsigned long long>(m_lookups.size()));
++    fprintf(fout, "vm_translation_lookup_ready = %llu\n", ready_lookups);
++    fprintf(fout, "vm_translation_mshrs_entries = %llu\n",
++            static_cast<unsigned long long>(m_mshrs.size()));
++    fprintf(fout, "vm_translation_pwq_entries_active = %llu\n",
++            static_cast<unsigned long long>(m_pwq.size()));
++    fprintf(fout, "vm_translation_active_walks = %u\n", active_walkers());
++    fprintf(fout, "vm_translation_quiescent_invariants_hold = %u\n",
++            quiescent_invariants_hold() ? 1U : 0U);
++  }
+   tlb_stats l1_total;
+   unsigned l1_occupancy = 0;
+   for (unsigned sid = 0; sid < m_l1s.size(); ++sid) {
+--- /root/workspace/accel-sim-framework-awma-174-translation-frontend-pipelining-v1/.awma_runtime/candidate/src/gpgpu-sim/src/gpgpu-sim/vm_translation.h	2026-09-22 04:08:44.224079479 +0000
++++ /root/awma_native_simulator_cross_calibration_v1_runtime/c0_v2r1_src/gpgpu-sim/src/gpgpu-sim/vm_translation.h	2026-09-23 00:53:31.398234989 +0000
+@@ -793,7 +793,8 @@
+                           uint64_t *sim_pa,
+                           translation_source *source = 0,
+                           translation_access access =
+-                              TRANSLATION_ACCESS_READ);
++                              TRANSLATION_ACCESS_READ,
++                          bool consume_ready = true);
+   // Retained for the accepted M1-M3 directed tests.  Simulator callers pass
+   // the real coalesced transaction size through the overload above.
+   lookup_result translate(unsigned sid, unsigned asid, uint64_t sim_va,
+diff --git a/gpu-simulator/trace-driven/trace_driven.cc b/gpu-simulator/trace-driven/trace_driven.cc
+index f27901c3..160e1719 100644
+--- a/gpu-simulator/trace-driven/trace_driven.cc
++++ b/gpu-simulator/trace-driven/trace_driven.cc
+@@ -102,8 +102,13 @@ trace_kernel_info_t::trace_kernel_info_t(dim3 gridDim, dim3 blockDim,
+   m_was_launched = false;
+
+   // resolve the binary version
++  const char *allow_sm89_text =
++      std::getenv("GPGPUSIM_AWMA_CROSSCAL_ALLOW_SM89");
++  const bool allow_sm89 = allow_sm89_text != NULL &&
++      std::strtoul(allow_sm89_text, NULL, 10) != 0;
+   if (kernel_trace_info->binary_verion == AMPERE_RTX_BINART_VERSION ||
+-      kernel_trace_info->binary_verion == AMPERE_A100_BINART_VERSION)
++      kernel_trace_info->binary_verion == AMPERE_A100_BINART_VERSION ||
++      (kernel_trace_info->binary_verion == 89 && allow_sm89))
+     OpcodeMap = &Ampere_OpcodeMap;
+   else if (kernel_trace_info->binary_verion == VOLTA_BINART_VERSION)
+     OpcodeMap = &Volta_OpcodeMap;

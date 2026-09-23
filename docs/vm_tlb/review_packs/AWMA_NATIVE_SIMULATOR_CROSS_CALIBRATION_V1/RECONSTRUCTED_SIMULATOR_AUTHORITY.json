@@ -1,0 +1,52 @@
+{
+  "base_source": "surviving V1 candidate plus accepted V2R1 repair",
+  "c0_binary_sha256": "88ac36b7a4451154a172d1e29983bf1bc79e9997c4c442a1df84a9715e6e2f57",
+  "c1_binary_sha256": "bd4ae00214f834f7c3fd7d49616b8ed834dc47eed0cc2e2118344ff0f763ac14",
+  "controller_regressions": [
+    {
+      "binary_sha256": "d71f71352324ada8813a45c0bd4300acf8e1b0d7a6f8a446bd38bb1d9ed285a1",
+      "log_sha256": "4547425aded443ec0b4b34b30928fa6b0982d176988468f5e965fa71e0baf03b",
+      "name": "vm_m3_g3_4b_tlb_timing_test",
+      "status": "PASS"
+    },
+    {
+      "binary_sha256": "a973dde2bef055991e7484cb180af3adea3e1964249ec2345e78a2e4143849b1",
+      "log_sha256": "dacef20aa6c8f1ee83b62ec5ef56b1536241eede8c25b6ddd323267a8e07df2f",
+      "name": "vm_m2_rf_pending_retry_test",
+      "status": "PASS"
+    },
+    {
+      "binary_sha256": "4694306492e312d94160fefa786cba7a896724311658c274f668f8948c48f643",
+      "log_sha256": "30f42f01ea34a0f1a7d077ff75b466167dd546708ab8e10d0d1014c25c80584a",
+      "name": "vm_c10b_runtime_validation_test",
+      "status": "PASS"
+    }
+  ],
+  "handoff_head": "871f6e7244400d703fdd825a40a16cfe7b0af494",
+  "repair_patch_sha256": "8ee67779c5f607564bb148ca072590808d8c7f400c5c49947a68567b36653280",
+  "source_sha256": {
+    "shader.cc": "c72fc5919587ace925639ebae74cc3a8bc200d44455f6e00d42ae387bd964f66",
+    "shader.h": "d8cde7f968ef040bdb68e91e357953831bf57f4d33aba7d0a4fe7fd24a54d510",
+    "trace_driven.cc": "f765d685124583f2fab47049a02fed008f1c1c4dcb652d257769d9f11af43407",
+    "vm_translation.cc": "46c39023c1ace52d8b8df5facf9b5f8ccd8bf90364be6dc38901e5743f677d32",
+    "vm_translation.h": "fda9fbc8c82d9d65f63bebbe3a305878e5f7a040720e549d594a4fe26766ce44"
+  },
+  "truth_table": {
+    "LEGACY": {
+      "pipelined": 0,
+      "ready_application": 0
+    },
+    "V1": {
+      "consume_ready": false,
+      "pipelined": 1,
+      "ready_application": 0
+    },
+    "V2R1": {
+      "consume_ready": true,
+      "pipelined": 1,
+      "ready_application": 1
+    }
+  },
+  "v1_authority": "ad6f38878bc1e7c268b17e65fdb3793a3899a84d",
+  "v2r1_authority": "dccc11f05aece7ee8ef07ffd0bec7ad83d8eb1f8"
+}
