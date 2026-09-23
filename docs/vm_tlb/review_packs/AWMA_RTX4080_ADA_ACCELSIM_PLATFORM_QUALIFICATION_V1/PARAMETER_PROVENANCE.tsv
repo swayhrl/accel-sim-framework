@@ -1,0 +1,20 @@
+parameter	value	provenance_class	authority	scope_note
+compute_capability	8.9	PUBLIC_RTX4080_SPEC	NVIDIA CUDA GPU table and RTX4080 product page	exact identity
+gpgpu_n_clusters	76	PUBLIC_RTX4080_SPEC	NVIDIA Ada whitepaper Appendix B: RTX4080 SMs=76	one cluster/core per SM
+gpgpu_n_cores_per_cluster	1	UPSTREAM_ADA_SCAFFOLD	dc56ca74 RTX4060 Ada scaffold	standard trace-driven topology
+gpgpu_unified_l1d_size	128 KiB/SM	PUBLIC_RTX4080_SPEC	NVIDIA Ada whitepaper: Ada SM 128KB L1/shared	capacity authority
+gpgpu_cache_dl2	64 MiB total; S:2048:128:16	PUBLIC_RTX4080_SPEC	NVIDIA Ada whitepaper RTX4080 L2=65536KB	geometry maps public capacity onto scaffold
+gpgpu_n_mem	8	PUBLIC_RTX4080_SPEC	NVIDIA Ada whitepaper: eight 32-bit controllers	memory channel count
+gpgpu_dram_buswidth	4 bytes	PUBLIC_RTX4080_SPEC	eight 32-bit controllers / 256-bit total	per-channel width
+gpgpu_clock_domains	2505:2505:2505:5600 MHz	PUBLIC_RTX4080_SPEC	2505MHz boost; 22.4Gbps GDDR6X /4 command clock	ICNT/L2 equal-core ratio inherited from Ada scaffold
+memory_bandwidth_class	716.8 GB/s	PUBLIC_RTX4080_SPEC	NVIDIA Ada whitepaper Appendix B	8*4B*16 burst*5600MHz/4
+gpgpu_shader_registers	65536	PUBLIC_RTX4080_SPEC	19456KB total register file / 76 SM / 4-byte register	also matches Ada scaffold
+pipeline_and_fu_topology	Ada scaffold values	UPSTREAM_ADA_SCAFFOLD	dc56ca74	not claimed as exact RTX4080 issue-port topology
+instruction_latencies	Ada scaffold values	UPSTREAM_ADA_SCAFFOLD	0c840b27 trace config and dc56ca74 base config	subset support only
+scheduler	lrr; 4 schedulers	UPSTREAM_ADA_SCAFFOLD	dc56ca74	ASSUMED_LOW_SENSITIVITY for platform anchors
+l1_latency	32 cycles	BOUNDED_CALIBRATION	P_L1 dedicated calibration anchor; pass1	39->32
+l2_rop_latency	0 cycles	BOUNDED_CALIBRATION	P_L2 dedicated calibration anchor; pass1	187->0 removes scaffold fixed overcount; modeled L2 path remains
+dram_latency	190 cycles	BOUNDED_CALIBRATION	P_DRAM dedicated calibration anchor; pass2	254->190
+dram_timing_tuple	scaffold tuple unchanged	UPSTREAM_ADA_SCAFFOLD	dc56ca74	no undocumented knob sweep
+interconnect	built-in local xbar	ASSUMED_LOW_SENSITIVITY	dc56ca74 scaffold	not claimed as exact RTX4080 NoC
+vm_mode_during_platform_qualification	0	NEAREST_VALIDATED_INHERITANCE	existing VM-disabled base path	no TLB/PTW parameter used for calibration

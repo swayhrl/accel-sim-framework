@@ -1,0 +1,4 @@
+pass	parameter	old_value	new_value	justification	evidence_anchor	effect
+TUNING_PASS_1	gpgpu_l1_latency	39	32	reduce steady-state L1-class excess only	P_L1	61.328125 -> 54.341797 cycles/load; Native 52
+TUNING_PASS_1	gpgpu_l2_rop_latency	187	0	remove fixed Ada-scaffold L2/ROP overcount while retaining modeled L2 path	P_L2	256.945312 -> 63.324219 cycles/load; Native 52
+TUNING_PASS_2	dram_latency	254	190	reduce remaining DRAM-class fixed latency excess	P_DRAM	217.857422 -> 182.857422 cycles/load; Native 154
