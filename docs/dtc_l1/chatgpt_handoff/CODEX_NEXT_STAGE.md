@@ -2,172 +2,334 @@
 
 ## Status
 
-**ACTIVE — CONTINUE PAPER COMPUTE; PREPARE/EXECUTE EXTENDED-20; GRAPHICS RESEARCH CLOSED SOURCE-BACKED-UNAVAILABLE**
+**ACTIVE — BOUNDED DOWNSTREAM HEADROOM; UNATTENDED SOLVE-AND-CONTINUE**
 
-Current scheduling authority:
+Do not restart the current scientific program and do not reset any branch.
 
-- `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
-- `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
+This file is the executable specification for the next unattended ~20-hour window.
 
-M1-M4 remain closed PASS. M5.0A is PASS. M5-T005/R5DV is CLOSED. Current
-Paper-10 work is M5.0BT exact trace capture and qualification.
+## Objective
 
-## Active compute branches owned by this window
+Determine whether a source-supported downstream resource enlargement can recover DTC performance **while keeping the default DTC lower-outstanding cap at 8192**.
 
-Core:
+This stage is not a new broad sweep.
 
-`hrl/decoupled-l1-m5-v0`
+## Source anchors
 
-Framework:
+Before work:
 
-`hrl/decoupled-l1-exp-m5-v0`
+1. `git fetch origin`.
+2. Verify actual remote heads.
+3. Use newer remote state if any branch advanced; record the delta, never reset.
 
-Do not modify validated M1-M4 branches or the frozen graphics-research branch.
+Review anchors at coordination time:
 
-## Mandatory read order after integrating latest docs
+- SG1: `e909f90a`
+- SG3: `4f6e136e`
+- SG4A: `42735258`
+- SG5: `f4077f46`
 
-1. Framework `AGENTS.md`
-2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
-3. `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
-4. `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
-5. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
-6. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
-7. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-8. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
-9. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
-10. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
-11. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-12. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
-13. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
-14. this file
-15. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
-16. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-17. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
-18. Core `AGENTS.md` and `docs/dtc_l1/DTC_L1_SPEC.md`
+Read:
 
-Graphics M5.7/M5.8 handoffs remain evidence inputs for final M5.12 but are not active work for this compute window.
+1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
+2. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+3. this file
+4. SG3 source/config/telemetry audit files on the downstream branch.
 
-## Immediate work — M5.0BT
+## Worktree / branch isolation
 
-Do not redo R5DV. Q1 is reopened only because an exact Paper trace is now
-authorized: `TRACE_CAPTURE_AUTHORIZED`,
-`TRACE_FORMAL_PATH_QUALIFICATION_PENDING`. The five cap-256 live jobs are now
-preserved `RESEARCHER_ABORTED_SUPERSEDED_CAP256`; do not revive or reuse them.
-Use `m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`, its Paper-10 TSV contract,
-and its V100 capture script. Q2/Q3 remain frozen at 80 SM/cap 10240. M5.0C is
-prohibited until exact capture and Base/IO/OO trace qualification PASS.
+Execution/evidence branch:
 
-M5.0BT-A is complete: use the dedicated sm70, source-pinned, resumable V100
-controller. On V100 access run BICG `--pilot-only`, validate its storage gate,
-transfer/qualify its immutable bundle, then continue the single-goal contract.
+`hrl/iscas2027-dtc-sg3-downstream-localization-v0`
 
-The last committed M5.0B checkpoint is historical only: five earlier Base
-members completed under obsolete cap-256 and five subsequently-progressing
-members were research-authorizedly terminated as superseded. Do not claim any
-of those as formal cap-10240 performance.
+Use an isolated SG3 worktree.
 
-## Paper compute sequence
+Treat:
 
-Continue automatically:
+- SG1,
+- SG4A,
+- SG5,
+- frozen FAST64/Lane-E/TC80 evidence
 
-`M5.0BT -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+as read-only inputs for this stage.
 
-Use existing stage acceptance/handoff contracts.
+Do not modify ChatGPT-owned files in `docs/dtc_l1/chatgpt_handoff/`.
 
-## Extended-20 sequence owned by this compute window
+## Phase A — mandatory zero-simulation telemetry table
 
-Selection is already reviewed/approved. Do not rerun the 52-candidate selection.
+**Do not launch a simulator before Phase A is complete and committed.**
 
-Approved final portfolio is authoritative in:
+From accepted SG3 BICG rows, build a paper-facing table for IO and OO at exactly:
 
-- `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-- `docs/dtc_l1/m5/extended20/EXTENDED20_APPROVED.tsv`
+- default
+- L2 capacity 2x
+- L2 MSHR entries 4x
+- DTC cap 2048
+- DTC cap 512
 
-### M5.E1
+Required metrics:
 
-Source/build/input/output/PTX formalization of all approved 20 may begin opportunistically when host CPU/RAM/disk/I/O conditions permit and when it does not disturb active Paper jobs.
+- cycles
+- instructions
+- DTC lower outstanding average
+- DTC lower outstanding peak
+- lower-request average lifetime
+- lower-request maximum lifetime
+- L2 MSHR average occupancy
+- L2 miss-queue average occupancy
+- L2 total accesses
+- L2 total misses
+- L2 total pending hits
+- `MSHR_ENTRY_FAIL`
+- `MSHR_MERGE_ENTRY_FAIL`
+- `MISS_QUEUE_FULL`
+- `LINE_ALLOC_FAIL`
+- `MSHR_RW_PENDING`
+- data-port utilization
+- fill-port utilization
+- classified resource reservation-failure total
 
-Do not force large source materialization/builds merely to keep E1 busy while Paper-10 jobs are already resource-heavy. It is acceptable to defer expensive checkout/build work until the host has safe headroom, while continuing source-object/provenance audit that does not interfere with the active batch.
+### Required formulas
 
-Do not launch the 60 formal runs before M5.2.
+Preserve raw counters and show exact formulas for derived values:
 
-Use the review correction:
+- avg DTC outstanding = outstanding integral / core tick samples
+- avg L2 MSHR occupancy per bank = MSHR occupancy integral / L2-bank tick samples
+- avg miss-queue occupancy per bank = queue occupancy integral / L2-bank tick samples
+- avg lower lifetime = lifetime sum / completed lower requests
+- cycle change = row cycles / same-mode default cycles - 1
 
-- `BlackScholes` = `Black-Scholes option pricing`, not assumed Monte Carlo.
+Do not infer missing fields.
 
-### M5.E2
+### Resource-failure boundary
 
-After M5.2 PASS, verify E1 identities against the frozen M5.2 Core/Framework/config/parser/metric anchor, then launch:
+Merge-tag identity-guard retries are non-resource telemetry.
 
-`20 workloads x {PAPER_BASE,PAPER_IO,PAPER_OO} = 60 primary runs`.
+Exclude them from:
 
-Execute through `M5_PARALLEL_BATCH_POLICY.md`:
+- resource totals
+- rankings
+- percentages
+- bottleneck attribution
 
-- dynamic measured-safe worker pool;
-- isolated output directories;
-- resumable job registry;
-- mix workload/mode/heavy classes;
-- do not run one workload triplet at a time unnecessarily;
-- keep unrelated jobs progressing while an isolated issue is diagnosed when scientifically safe.
+Do not treat aggregate reservation fail as a resource total unless the exact source-defined reconciliation is explicit.
 
-Paper M5.3/M5.4/M5.5/M5.6 and Extended E2/E3 are allowed to overlap in wall-clock time after M5.2.
+### Phase-A deliverables
 
-### M5.E3
+Commit/push:
 
-Produce causal/generalization synthesis, `GM-EXTENDED20` and `GM-ALL-COMPUTE30`. Preserve weak/negative results. Blanket parameter sweeps across all 20 are not required; use targeted diagnostic follow-ups only for specific causal ambiguity.
+- `docs/dtc_l1/iscas2027/granularity/sg3/SG3_BICG_DOWNSTREAM_TELEMETRY_HEADROOM_TABLE_V1.tsv`
+- `docs/dtc_l1/iscas2027/granularity/sg3/SG3_BICG_DOWNSTREAM_HEADROOM_INTERPRETATION_V1.md`
 
-## Compute freeze
+The interpretation must label statements as:
 
-M5.6 PASS alone is not the compute-freeze boundary.
+- SOURCE_PROVEN
+- MEASURED
+- CORRELATION
+- INTERVENTION_SUPPORTED
+- NOT_SUPPORTED / INSUFFICIENT
 
-If Paper M5.6 finishes before Extended E3, use status:
+## Phase B — predeclared trigger tree
 
-`M5_PAPER10_READY_WAITING_FOR_EXTENDED20`
+Only the following experiment families may be launched.
 
-Create `M5.COMPUTE_FREEZE` only after:
+### Path Q — miss-queue headroom
 
-- Paper M5.6 PASS;
-- Extended M5.E3 PASS;
-- no unresolved correctness/fidelity issue;
-- both active compute branches pushed/clean.
+Trigger only if Phase A shows a coherent queue-pressure pattern:
 
-Then emit `docs/dtc_l1/m5/handoffs/M5_COMPUTE_FREEZE.md` with exact Core/Framework freeze SHAs.
+- nontrivial `MISS_QUEUE_FULL` and/or high average miss-queue occupancy;
+- pressure decreases consistently from default -> cap2048 -> cap512;
+- lower-request lifetime and cycles improve in the same direction.
 
-## Graphics coordination — closed under current evidence
+If triggered, test only:
 
-Independent graphics research closed at:
+**L2 miss queue 32 -> 128 entries per bank**
 
-`hrl/decoupled-l1-exp-m5-graphics-research-v0@ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`
+Rows:
 
-Accepted terminal state:
+- BICG IO
+- BICG OO
+- GESUMMV IO
+- GESUMMV OO
 
-`GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
+Hold fixed:
 
-Do not:
+- DTC cap = 8192
+- L2 capacity = default
+- L2 MSHR = default
+- L2 port width = default
+- all other scientific identity
 
-- reopen graphics research without genuinely new source-backed/original artifacts;
-- create graphics integration branches after compute freeze under current evidence;
-- modify Core for graphics;
-- run M5.9/M5.10/M5.11;
-- emit graphics performance bars, `GM-GRAPHICS`, or `GM-ALL-PAPER`;
-- use a memory proxy as formal paper reproduction.
+Total: 4 rows.
 
-After `M5.COMPUTE_FREEZE`, proceed directly to M5.12 negative-evidence synthesis and include the accepted M5.7/M5.8 handoffs/commit in the final review pack.
+Do not run queue=64 in this stage.
 
-## Problem behavior
+### Path P — L2 port headroom
 
-Ordinary workload/build/PTX/assertion/parser/counter/timeout/performance problems remain resolve-in-goal. Reproduce -> classify -> repair/reconstruct -> regress -> invalidate stale data -> continue.
+Trigger only if queue is not the dominant coherent pattern but data/fill-port utilization is near saturation and cap reduction consistently relieves utilization/lifetime with performance.
 
-A weak or negative DTC result is evidence, not a stop condition.
+If triggered, test only:
 
-## Pause conditions
+**L2 data/fill port 32 -> 64 B/cache-cycle**
 
-Pause only for a genuine researcher-decision boundary, for example:
+Rows:
 
-- required change to frozen DTC/M0-M4 architecture semantics;
-- irreducible experiment-meaning ambiguity;
-- an approved Extended workload becomes unusable and substitution choice cannot be resolved using pre-performance alternate rules;
-- a cross-track finding requires changing a frozen common metric/config definition;
-- final M5 review state after M5.12.
+- BICG IO
+- BICG OO
+- GESUMMV IO
+- GESUMMV OO
 
-Do not stop merely at Paper M5.6 or Extended E3; their join produces compute freeze, then M5.12 closes the current graphics-unavailable path.
+Hold fixed:
+
+- DTC cap = 8192
+- L2 capacity = default
+- L2 MSHR = default
+- miss queue = default
+- all other scientific identity
+
+Total: 4 rows.
+
+Do not run 128-B port in this stage.
+
+### Path Q+P
+
+If both Q and P independently satisfy their trigger, run both one-dimensional tests.
+
+Only after both one-dimensional families strictly pass and both materially improve performance but remain incomplete may one combined upper-bound be run:
+
+- miss queue = 128
+- data/fill port = 64 B/cache-cycle
+- DTC cap = 8192
+
+Rows:
+
+- BICG IO/OO
+- GESUMMV IO/OO
+
+Total: 4 additional rows.
+
+### Path STOP
+
+If neither Q nor P has a coherent source-supported trigger:
+
+- launch no new downstream simulation;
+- record status `NO_SINGLE_ADDITIONAL_L2_RESOURCE_ISOLATED`;
+- do not cascade to another resource family.
+
+## Explicitly forbidden scope
+
+Do NOT launch:
+
+- additional L2 capacity points
+- additional L2 MSHR points
+- cap=1024 or cap=4096
+- queue=64
+- 128-B L2 port
+- ROP-latency sweep
+- DRAM latency/bandwidth sweep
+- NoC sweep
+- extra logical-Tag experiments
+- FAST12 sensitivity sweeps
+- synthetic infinite-L2 configuration
+- new adaptive-admission mechanism
+
+Do not retry the SG5 GESUMMV/IO observer a third time.
+
+## Acceptance requirements for every authorized new row
+
+- fresh UUID
+- immutable run directory
+- exact Core commit
+- exact runtime SHA
+- exact ordered config-chain SHA
+- exact trace identity
+- START receipt
+- terminal receipt
+- strict validation receipt
+- terminal drain / observer closure checks
+
+Preserve all failures. Never overwrite an attempt.
+
+A validator invocation/input error may use same-output named revalidation, preserving the original FAIL receipt.
+
+## Interpretation
+
+The question is:
+
+> Can downstream headroom recover performance under the original cap=8192?
+
+Paper-interesting positive evidence requires:
+
+- material cycle improvement;
+- targeted resource pressure moves in the expected direction;
+- lower-request lifetime changes coherently;
+- exact identity and validation pass.
+
+Do not impose a new arbitrary numeric threshold.
+
+If targeted resource pressure changes but cycles do not materially improve, classify that resource as insufficient.
+
+Do not automatically search deeper resources afterward.
+
+## Resource policy
+
+The user authorizes aggressive compute use and will manage disk capacity.
+
+- Do not use old fixed free-space bands as automatic stop criteria.
+- Record free space and projected growth.
+- Stop only for actual filesystem exhaustion / I/O risk.
+- Never delete accepted/frozen evidence.
+- Keep at most two heavy GESUMMV simulator processes concurrently.
+- Lightweight work may use remaining safe workers.
+
+## Deliverables
+
+Create a review pack under:
+
+`docs/dtc_l1/review_packs/DOWNSTREAM_HEADROOM_<revision>/`
+
+with at minimum:
+
+- `README.md`
+- `SOURCE_ANCHORS.md`
+- `VALIDATION_SUMMARY.md`
+- `OPEN_ISSUES.md`
+- telemetry table
+- decision-tree trigger receipt
+- authorized run manifest/results if any
+- exact paper-safe claims
+- forbidden overclaims
+- raw-log index only, not large raw logs
+
+Update:
+
+`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+
+with the review-pack entry point, final branch SHA, status, conclusion, and remaining issues.
+
+## Allowed final status
+
+Use one of:
+
+- `DOWNSTREAM_QUEUE_HEADROOM_SUPPORTED`
+- `DOWNSTREAM_PORT_HEADROOM_SUPPORTED`
+- `DOWNSTREAM_QUEUE_AND_PORT_HEADROOM_SUPPORTED`
+- `DOWNSTREAM_HEADROOM_PARTIAL`
+- `NO_SINGLE_ADDITIONAL_L2_RESOURCE_ISOLATED`
+
+Do not generalize beyond BICG/GESUMMV.
+
+## STOP boundary
+
+Complete the telemetry gate, any triggered bounded headroom rows, review pack, Codex handoff, commit, and push.
+
+Then STOP.
+
+Stop earlier only if continuing would require changing:
+
+- scientific identity,
+- experiment definition,
+- DTC semantics,
+- frozen evidence,
+- claim boundary,
+- or introducing a new mechanism.
