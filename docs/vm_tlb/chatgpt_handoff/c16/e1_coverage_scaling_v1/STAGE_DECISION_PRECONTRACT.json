@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN_BEFORE_COVERAGE_PRODUCER",
+  "stable_decode_indices": [
+    1,
+    2,
+    3
+  ],
+  "local_materiality": {
+    "min_timing_benefit_fraction": 0.05,
+    "dispersion_rule": "benefit > hypot(CV_control,CV_intervention)"
+  },
+  "system_labels": {
+    "COVERAGE_SCALING_SYSTEM_RELEVANT": "N28 whole-decode benefit >=2% and > combined dispersion",
+    "COVERAGE_SCALING_POSITIVE_BUT_SUBTHRESHOLD": "0 < N28 whole-decode benefit <2% and > combined dispersion",
+    "COVERAGE_SCALING_LOCAL_BUT_NOT_SYSTEMIC": "N28 whole-decode benefit not materially positive, but >=50% selected N28 layers are MATERIAL_LOCAL",
+    "COVERAGE_SCALING_NOT_SUPPORTED": "N28 whole-decode benefit not materially positive and <50% selected N28 layers are MATERIAL_LOCAL",
+    "POLICY_SCALING_UNQUALIFIED": "policy/runtime/semantic identity does not close"
+  },
+  "fullhint_trigger": {
+    "n28_material_selected_fraction_min": 0.5,
+    "n28_whole_decode_benefit_fraction_max_exclusive": 0.02
+  },
+  "whole_decode_reference": "Matched CONTROL_S only",
+  "target_share_formula": "sum selected control up_proj timing / control decode-step timing, run-aligned",
+  "summed_local_saving_formula": "sum(control selected up_proj timing - intervention selected up_proj timing), run-aligned",
+  "realization_ratio_formula": "observed decode saving / summed local saving when denominator>0",
+  "ratio_clamping": false,
+  "no_simulator_auto_authorization": true
+}
