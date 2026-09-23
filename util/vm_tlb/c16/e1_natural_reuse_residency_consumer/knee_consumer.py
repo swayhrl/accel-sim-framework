@@ -494,9 +494,23 @@ def consume(contract: Mapping[str, Any], root: Path) -> dict[str, Any]:
                     "dram_exceeds_1MiB_and_10pct_packed": dram > MIB and dram > 0.10 * packed,
                 }
             )
-        dram_knee = next((row["dose_mib"] for row in dose_rows if row["dram_exceeds_1MiB_and_10pct_packed"]), None)
-        timing_knee = next((row["dose_mib"] for row in dose_rows if row["dose_mib"] > 0 and row["material_vs_0MiB"]), None)
+        dram_trigger = next((row["dose_mib"] for row in dose_rows if row["dram_exceeds_1MiB_and_10pct_packed"]), None)
+        timing_trigger = next((row["dose_mib"] for row in dose_rows if row["dose_mib"] > 0 and row["material_vs_0MiB"]), None)
         residual = DEVICE_L2_BYTES - packed
+        dose_values = [row["dose_mib"] for row in dose_rows]
+        def bracket_for(trigger):
+            if trigger is None:
+                return None
+            index = dose_values.index(trigger)
+            previous = dose_values[index - 1] if index > 0 else None
+            return {
+                "previous_tested_dose_mib": previous,
+                "first_tested_trigger_dose_mib": trigger,
+                "interpretation": (
+                    "true onset is not identified exactly; if the previous tested dose does not meet the gate, "
+                    "the onset lies somewhere after that tested dose and at or before the first tested trigger"
+                ),
+            }
         analyses.append(
             {
                 "role": role,
@@ -505,10 +519,20 @@ def consume(contract: Mapping[str, Any], root: Path) -> dict[str, Any]:
                 "nominal_residual_l2_bytes": residual,
                 "nominal_residual_l2_mib": residual / MIB,
                 "doses": dose_rows,
-                "first_dram_over_1MiB_and_10pct_packed_mib": dram_knee,
-                "first_material_timing_dose_mib": timing_knee,
-                "observed_dram_knee_minus_nominal_residual_l2_mib": (
-                    dram_knee - residual / MIB if dram_knee is not None else None
+                "first_tested_dram_trigger_mib": dram_trigger,
+                "dram_trigger_tested_bracket": bracket_for(dram_trigger),
+                "first_tested_material_timing_dose_mib": timing_trigger,
+                "timing_trigger_tested_bracket": bracket_for(timing_trigger),
+                "first_dram_over_1MiB_and_10pct_packed_mib": dram_trigger,
+                "first_material_timing_dose_mib": timing_trigger,
+                "observed_first_tested_dram_trigger_minus_nominal_residual_l2_mib": (
+                    dram_trigger - residual / MIB if dram_trigger is not None else None
+                ),
+                "legacy_observed_dram_knee_minus_nominal_residual_l2_mib": (
+                    dram_trigger - residual / MIB if dram_trigger is not None else None
+                ),
+                "wording_boundary": (
+                    "Report these as first tested trigger doses / tested brackets, not exact physical cache knees."
                 ),
             }
         )
@@ -524,8 +548,8 @@ def consume(contract: Mapping[str, Any], root: Path) -> dict[str, Any]:
         "roles": analyses,
         "timing_evidence_sha256": _sha256(timing_path),
         "scope": (
-            "descriptive nominal-capacity alignment; not an exact "
-            "effective-cache-capacity theorem"
+            "descriptive nominal-capacity alignment using first tested trigger doses and tested-dose brackets; "
+            "not an exact physical/effective-cache-capacity knee theorem"
         ),
     }
 
