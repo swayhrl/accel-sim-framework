@@ -1,0 +1,4 @@
+- Review authority: `hrl/awma-174-v2-ready-consumption-review-v1 @ 504baa5088f4b6794dff4af5634e4af639631ab3`
+- Pre-repair V2 authority: `hrl/awma-174-translation-frontend-ready-application-v2 @ 1a5f4dc49273c9640b981fb1b946d146dd15f21b`
+- Accepted V1 ownership authority: `hrl/awma-174-translation-frontend-pipelining-v1 @ ad6f38878bc1e7c268b17e65fdb3793a3899a84d`
+- V2R1 imports the accepted V1 `consume_ready` controller API and sets V1 prelaunch false / V2R1 prelaunch true.

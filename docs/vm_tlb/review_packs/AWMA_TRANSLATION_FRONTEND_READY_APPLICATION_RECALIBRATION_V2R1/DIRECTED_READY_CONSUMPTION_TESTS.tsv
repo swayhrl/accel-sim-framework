@@ -1,0 +1,6 @@
+gate	status	evidence
+R1_V1_ownership_preserved	PASS	accepted V1 consume_ready=false READY path returns PA/outcome without erasing lookup; normal head is consumer
+R2_V2R1_consume_and_apply	PASS	V2R1 uses consume_ready=ready_application_v2; terminal T2 receipts show lookup entries=0 and duplicate application=0
+R3_zero_latency	PASS	accepted V1 recursive READY handoff propagates consume_ready; no double-consume/double-erase source path
+R4_merge_walk	PASS	accepted controller regressions G2-2/G2-3/G2-4/pending-retry executed against V2R1 controller source
+R5_terminal_quiescence	PASS	explicit opt-in controller diagnostics in both terminal T2 receipts
