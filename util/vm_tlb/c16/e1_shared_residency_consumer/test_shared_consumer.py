@@ -47,7 +47,7 @@ def policy(condition, *, rotating=False):
                          "api_duration_us": 2.0 + i / 100.0})
     return {"status": "PASS", "condition": condition,
             "requested_setaside_bytes": sc.FIXED_SETASIDE_BYTES,
-            "actual_setaside_bytes": sc.FIXED_SETASIDE_BYTES,
+            "actual_setaside_bytes": sc.EXPECTED_ACTUAL_SETASIDE_BYTES,
             "stream_identity": "stream-7", "reset_before": reset(0),
             "switches": switches, "reset_after": reset(len(switches) + 1),
             "other_reset_events": []}
@@ -172,6 +172,12 @@ class PolicyReceiptTests(unittest.TestCase):
         raw["requested_setaside_bytes"] -= 1
         with self.assertRaisesRegex(sc.SharedConsumerError, "fixed total"):
             sc.validate_policy_receipt(raw, "SHARE2_L0", regions())
+
+    def test_actual_setaside_queryback_drift_rejected(self):
+        raw = policy("SHARE2_UP")
+        raw["actual_setaside_bytes"] = sc.EXPECTED_ACTUAL_SETASIDE_BYTES - 1
+        with self.assertRaisesRegex(sc.SharedConsumerError, "query-back set-aside drift"):
+            sc.validate_policy_receipt(raw, "SHARE2_UP", regions())
 
     def test_region_overlap_rejected(self):
         doc = shared_document()
