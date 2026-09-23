@@ -1,9 +1,557 @@
 {
-  "expected_branch": "hrl/c16-e1-residency-intervention-109-v1",
-  "fetch_attempts": 1,
-  "polling_performed": false,
-  "producer_summary_consumed": false,
-  "raw_BASE_SESSION_present": false,
-  "remote_error": "remote ref not found",
-  "status": "PRODUCER_BRANCH_ABSENT"
+  "authority": "DIRECT_RAW_BASE_SESSION_PROFILE_ONLY",
+  "producer_head": "22d1b98d7f0c213950654fc754be4e7388836de3",
+  "profile_count": 28,
+  "profiles": [
+    {
+      "base_sha256": "2ba25a2fd8c5bba00702c2ca3d42c48ae1a38de63c9d7c8d96075db476d6fb57",
+      "expected_pass_count": 1,
+      "input_sha256": "8617167912ed3cc89d5821b8621cde092374638a099965b4e1fe2a9fec4e6077",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "8138405fa621da78b51b5d050493a2140a5a5725a85519a8d91c61c2b8d0978a",
+      "profile_sha256": "41bd2fc5799af3eadec00693df9145d5ef76b139c85fbb3e4462822be979ede5",
+      "range_name": "C16_E1_RES_CODE_DOWN_PROJ_M1_AWQ_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "CODE_down_proj_M1_AWQ_FP16_INPUT",
+        "role": "down_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "a618c0573b3e26fdcf279f318d5bc1ffaa3729cb0365e65f04b3a29a0081d0df"
+    },
+    {
+      "base_sha256": "02b5b285fd87b7f14dba5c01f40ebcea561fa945bc2c81ff9eadf6d133bb9579",
+      "expected_pass_count": 1,
+      "input_sha256": "8617167912ed3cc89d5821b8621cde092374638a099965b4e1fe2a9fec4e6077",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "8138405fa621da78b51b5d050493a2140a5a5725a85519a8d91c61c2b8d0978a",
+      "profile_sha256": "ffff2314a98c181e7a0a61257c8297bdc52094f17281403e9bebf8919f6477f4",
+      "range_name": "C16_E1_RES_CODE_DOWN_PROJ_M1_AWQ_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "CODE_down_proj_M1_AWQ_FP16_INPUT",
+        "role": "down_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "a7cebbb590effef96b4f53d0c7532546b28d8778e9769917187789e164463bad"
+    },
+    {
+      "base_sha256": "b508083d44c298d428926af81ece7f10f37d43cca827f4e2c78c77fcbf5ea6c8",
+      "expected_pass_count": 1,
+      "input_sha256": "8617167912ed3cc89d5821b8621cde092374638a099965b4e1fe2a9fec4e6077",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "bfe831b628e7941de2a50222f0d9d6ed3f3dbb5e38a5861dc28276c00f156512",
+      "profile_sha256": "477b2df62863ceb8e02cfb530c1e2578e19ff61e38fdccf60f823b659497cd30",
+      "range_name": "C16_E1_RES_CODE_DOWN_PROJ_M1_RAW_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "CODE_down_proj_M1_RAW_FP16",
+        "role": "down_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "ca62aa5af53e872df89b662f2f7f35664b3249fd0f385b9587090f4130f14da2"
+    },
+    {
+      "base_sha256": "4088bc0dc3428b4a8fe75414a26e67ad419e0205f71a01f7cf0937e4b5ccbb45",
+      "expected_pass_count": 1,
+      "input_sha256": "8617167912ed3cc89d5821b8621cde092374638a099965b4e1fe2a9fec4e6077",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "bfe831b628e7941de2a50222f0d9d6ed3f3dbb5e38a5861dc28276c00f156512",
+      "profile_sha256": "fece9936aefa187878934fd7243431d7b4c23849b03170a589ff32eadedf7b57",
+      "range_name": "C16_E1_RES_CODE_DOWN_PROJ_M1_RAW_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "CODE_down_proj_M1_RAW_FP16",
+        "role": "down_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "91f10fddca8f5398d9702b11d6c8b56a166f83cc99d5f0d554d23fc84e48bb15"
+    },
+    {
+      "base_sha256": "3e85bced3bac0a4c797a5179e0049437e2fcc50032f3f05718cc8f884912de4d",
+      "expected_pass_count": 1,
+      "input_sha256": "e39ee4d42396f044115b2ec20734c5a0b7d41958c642ad264b1cbbe597aa2c59",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "ccfcd3eb82b4f60eabf13950b9739a6a2098ee23f6bbe347a12492520fc71689",
+      "profile_sha256": "635ea3348e0f69f6729cad352ed7aef84788f092001562be5a36b51503580fc2",
+      "range_name": "C16_E1_RES_TEXT_DOWN_PROJ_M1_AWQ_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_down_proj_M1_AWQ_FP16_INPUT",
+        "role": "down_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "fb51bafd6e2bfb30ec735ff065c9ef063445bda7951a47d0a670ef7c0cf9236e"
+    },
+    {
+      "base_sha256": "bd7d2f3a672cc517e530d5c5441500e2ecee4399fa26974c32c70fb6db43fee5",
+      "expected_pass_count": 1,
+      "input_sha256": "e39ee4d42396f044115b2ec20734c5a0b7d41958c642ad264b1cbbe597aa2c59",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "ccfcd3eb82b4f60eabf13950b9739a6a2098ee23f6bbe347a12492520fc71689",
+      "profile_sha256": "6c01fa47761f507b818b985fa909d34eca582cbd2bdf57005b6a06c9941918fb",
+      "range_name": "C16_E1_RES_TEXT_DOWN_PROJ_M1_AWQ_SPARSE_PAGE_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_down_proj_M1_AWQ_FP16_INPUT",
+        "role": "down_proj",
+        "state": "SPARSE_PAGE_PRESSURE"
+      },
+      "session_sha256": "3e7f05799ae93df472b3e5d88ad647aa46eaa1dc6eccf83829fd389dea8513bc"
+    },
+    {
+      "base_sha256": "05341bd6efc3c9b2086256f075116fb9d9a44157d79c67123ef98c4af02a7aa5",
+      "expected_pass_count": 1,
+      "input_sha256": "e39ee4d42396f044115b2ec20734c5a0b7d41958c642ad264b1cbbe597aa2c59",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "ccfcd3eb82b4f60eabf13950b9739a6a2098ee23f6bbe347a12492520fc71689",
+      "profile_sha256": "8a78492541d5babf3f0a9776af9497e472046ea987f59e164013a567b7eb9687",
+      "range_name": "C16_E1_RES_TEXT_DOWN_PROJ_M1_AWQ_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_down_proj_M1_AWQ_FP16_INPUT",
+        "role": "down_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "5f62d17f7b272284116834fc85df3dddd80b9ebbedaef830dc705a73c69202fc"
+    },
+    {
+      "base_sha256": "45a4a67845ba1c5773ff1c2f532549b86db26aa9e00d21362e0ef81e8884de23",
+      "expected_pass_count": 1,
+      "input_sha256": "e39ee4d42396f044115b2ec20734c5a0b7d41958c642ad264b1cbbe597aa2c59",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "d99ca2792b2e83587c6f2331e0754c6cba27c6998e0026308bafb546a10d942b",
+      "profile_sha256": "7ff22f2c33b6e6c77924e2c5d3f6051eed3dcee18e5b180c7c586f33a24fd9af",
+      "range_name": "C16_E1_RES_TEXT_DOWN_PROJ_M1_RAW_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_down_proj_M1_RAW_FP16",
+        "role": "down_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "77f96c49957a54cf0d7953ede804ea6e84da91744c7b94c1a696c22d4c50570f"
+    },
+    {
+      "base_sha256": "b6e0fa6fed7812ecfd83b9012b21db17778cdf5c8f6fca4bbcf8447335bfae4f",
+      "expected_pass_count": 1,
+      "input_sha256": "e39ee4d42396f044115b2ec20734c5a0b7d41958c642ad264b1cbbe597aa2c59",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "d99ca2792b2e83587c6f2331e0754c6cba27c6998e0026308bafb546a10d942b",
+      "profile_sha256": "4b6925f695056aaf067ce1c67369318888b5c9ef5a8486311de426de77e884a0",
+      "range_name": "C16_E1_RES_TEXT_DOWN_PROJ_M1_RAW_SPARSE_PAGE_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_down_proj_M1_RAW_FP16",
+        "role": "down_proj",
+        "state": "SPARSE_PAGE_PRESSURE"
+      },
+      "session_sha256": "8ea16ac458a699309aa49e1870e289723d31cd866f235cee6ba77a286eb90e45"
+    },
+    {
+      "base_sha256": "0b1a010be05c25ede00968bf7bec5abe86fa91652a871c2d741c5ca142062178",
+      "expected_pass_count": 1,
+      "input_sha256": "e39ee4d42396f044115b2ec20734c5a0b7d41958c642ad264b1cbbe597aa2c59",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "d99ca2792b2e83587c6f2331e0754c6cba27c6998e0026308bafb546a10d942b",
+      "profile_sha256": "c459ca712fb82d7074f455cf58dd2b52801fd6156e3f1b6ffc8db9ace32c3354",
+      "range_name": "C16_E1_RES_TEXT_DOWN_PROJ_M1_RAW_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_down_proj_M1_RAW_FP16",
+        "role": "down_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "e5f5e821700754f60ec48818ab9c363d1afc7839a2e457e5cd15a4ba73a98f69"
+    },
+    {
+      "base_sha256": "b4903e77c5cf45a02eac9995f4bd878f12b2f9bea327af51d8f7f7f52d8a9c95",
+      "expected_pass_count": 1,
+      "input_sha256": "9b29f29aea7fc1c13587cb809868624041a2c613c777710c880cfdef46608497",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+        "void at::vectorized_elementwise_kernel<4, at::CUDAFunctor_add<c10::Half>, detail::Array<char *, 3>>(int, T2, T3)"
+      ],
+      "output_sha256": "c28496ca7553e9708f87f196539b0d45f8f0a1ae532deddb97458d439403990c",
+      "profile_sha256": "b373a04723eaa1caf8e4ec59e6ad39fced392782a35509b07f73b9235ec8ce94",
+      "range_name": "C16_E1_RES_TEXT_Q_PROJ_M1_AWQ_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_q_proj_M1_AWQ_FP16_INPUT",
+        "role": "q_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "faa4aff132d968fb1ab7670f94bc9d3cdb75fe5fe2e9a249f0133e3b7a04fd6f"
+    },
+    {
+      "base_sha256": "4e85ee59f50d3c2e11e710d917ead7dcd145d9277f438e19f9b4605d95395956",
+      "expected_pass_count": 1,
+      "input_sha256": "9b29f29aea7fc1c13587cb809868624041a2c613c777710c880cfdef46608497",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+        "void at::vectorized_elementwise_kernel<4, at::CUDAFunctor_add<c10::Half>, detail::Array<char *, 3>>(int, T2, T3)"
+      ],
+      "output_sha256": "c28496ca7553e9708f87f196539b0d45f8f0a1ae532deddb97458d439403990c",
+      "profile_sha256": "dd197d3c561bf42900efd7f5bb57db03536baa03cd7670711cf02a1e44cc0a02",
+      "range_name": "C16_E1_RES_TEXT_Q_PROJ_M1_AWQ_SPARSE_PAGE_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_q_proj_M1_AWQ_FP16_INPUT",
+        "role": "q_proj",
+        "state": "SPARSE_PAGE_PRESSURE"
+      },
+      "session_sha256": "fd85b9647bab02cbad1f394fdc59c14fa6f106af433167a9bca24d2894800a66"
+    },
+    {
+      "base_sha256": "e2c65b174b3fbd686fe28ef39fdaf7856df9cb776c5da3907022a9039030cf46",
+      "expected_pass_count": 1,
+      "input_sha256": "9b29f29aea7fc1c13587cb809868624041a2c613c777710c880cfdef46608497",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+        "void at::vectorized_elementwise_kernel<4, at::CUDAFunctor_add<c10::Half>, detail::Array<char *, 3>>(int, T2, T3)"
+      ],
+      "output_sha256": "c28496ca7553e9708f87f196539b0d45f8f0a1ae532deddb97458d439403990c",
+      "profile_sha256": "8c3af01ef780bc20fe6fdf76d7eb4f31acc474cc4494fb06d300b9390d62c88e",
+      "range_name": "C16_E1_RES_TEXT_Q_PROJ_M1_AWQ_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_q_proj_M1_AWQ_FP16_INPUT",
+        "role": "q_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "4ac864e1e85abff6f324e410b0efa5b5b21506172c07077f6f6e3ad8e9e22f71"
+    },
+    {
+      "base_sha256": "cfa5e851fe06b91b65c591c32201ee9b255d9a317df5125c700c6e86921cb277",
+      "expected_pass_count": 1,
+      "input_sha256": "9b29f29aea7fc1c13587cb809868624041a2c613c777710c880cfdef46608497",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "44b6639ba96f86fc125bdef574cd4d734b854dc0268bfa11ba9d89aaa4c1857a",
+      "profile_sha256": "8e58f04f90d429fe9b3e340eb8e4a2c06e50bccea9fe8bedff2dca9f22fb6a91",
+      "range_name": "C16_E1_RES_TEXT_Q_PROJ_M1_RAW_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_q_proj_M1_RAW_FP16",
+        "role": "q_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "c41005ca9feae5e974647ed810b5eb37e79b67cb891800e2f4970b11c9de54be"
+    },
+    {
+      "base_sha256": "dc4aa79cdc966f73d9c14dd802ece62e9a1b8f5d66bb69f3f8719a217d0c3219",
+      "expected_pass_count": 1,
+      "input_sha256": "9b29f29aea7fc1c13587cb809868624041a2c613c777710c880cfdef46608497",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "44b6639ba96f86fc125bdef574cd4d734b854dc0268bfa11ba9d89aaa4c1857a",
+      "profile_sha256": "4a1b62cbdb83bd0103356d83b190dd5a491479d608071adc50ffa144f16acad6",
+      "range_name": "C16_E1_RES_TEXT_Q_PROJ_M1_RAW_SPARSE_PAGE_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_q_proj_M1_RAW_FP16",
+        "role": "q_proj",
+        "state": "SPARSE_PAGE_PRESSURE"
+      },
+      "session_sha256": "ca527e653faa19193e7fe91f2afe400d6f98c5cda421a03208fcced3c3163f63"
+    },
+    {
+      "base_sha256": "7412a16c44d5554e9ab4c6eebeaa75de7f9551b444218771a448021b327e6629",
+      "expected_pass_count": 1,
+      "input_sha256": "9b29f29aea7fc1c13587cb809868624041a2c613c777710c880cfdef46608497",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "44b6639ba96f86fc125bdef574cd4d734b854dc0268bfa11ba9d89aaa4c1857a",
+      "profile_sha256": "4629d043acb55f05a1c09f7e5d98e8130e8a9799a55af377b40c51f113ff777b",
+      "range_name": "C16_E1_RES_TEXT_Q_PROJ_M1_RAW_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_q_proj_M1_RAW_FP16",
+        "role": "q_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "0f74e0a4932cd44e7547fd3df89075baf6f413183a199262519ec9dc4b699e26"
+    },
+    {
+      "base_sha256": "b129b84aed0a8f8b725444816177cadbafecf2f0c82653ac7ff1acd0fd4c3257",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+      "profile_sha256": "f88a9533099e15b9a08307b2c9d2b53aad0e2bb3ba9820b2a78c561766896b06",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_AWQ_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_up_proj_M1_AWQ_FP16_INPUT",
+        "role": "up_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "abcdb68fd3f819fbe88d175abf994ad6fc7a1cb69d4b985d3a69a6105ff51bf3"
+    },
+    {
+      "base_sha256": "14cfe3c3b2ed4798ae26a0445459bdc9ca1cc2a6ee3a9784ca78d3e7d0e801dc",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+      "profile_sha256": "4b73e212bd43e54d31090e6e804ef1845eac528509006ef286a6ff0a1dd275e5",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_AWQ_DOSE64",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_up_proj_M1_AWQ_FP16_INPUT",
+        "role": "up_proj",
+        "state": "DOSE64"
+      },
+      "session_sha256": "5424022c4148b0580cbfa6b725adacc53be410e0581aac34220ec95af64ca7da"
+    },
+    {
+      "base_sha256": "5c9f016314d3c41e329a7228d6d0de72770eaaa6aaba75dfbba1902300de2d18",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+      "profile_sha256": "6017c1edcd737938434b82f429aeec97d307f4d28ee482d953623071d729244a",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_AWQ_SPARSE_PAGE_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_up_proj_M1_AWQ_FP16_INPUT",
+        "role": "up_proj",
+        "state": "SPARSE_PAGE_PRESSURE"
+      },
+      "session_sha256": "8da670d093d8bae14b99a610feb49c06ca31560246bf6d6627f9b59afa9ce763"
+    },
+    {
+      "base_sha256": "461878ec79bc0e20b582f82ad626db3d52e899d3c1e33e5d71d0f13607d284c5",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+      "profile_sha256": "53eece683abb52767d8fc0f2f2b5046bb660434794094934eb2bf0910fd77b4d",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_AWQ_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_up_proj_M1_AWQ_FP16_INPUT",
+        "role": "up_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "e4c32e2c96de9616d8aeeccc6b05eb763233bc1145a9615a168230c52b7bc0d7"
+    },
+    {
+      "base_sha256": "489664b588963bca6fcd6c247537a906b62b107e67240fd7fb8dcee3908d0acf",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "50d389317ff126f2aa1e18dbf36bbf17bd66ddac2753552fc73517c1b7c3d394",
+      "profile_sha256": "f252252b1e9d89d1b7ec698467d1cb53e1c2567c2bac81d7e89fd3ff9b3592cb",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_RAW_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_up_proj_M1_RAW_FP16",
+        "role": "up_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "41ca8a5f8b9c3e6e5975882814ce0b96f9171d61edbb970dd725d6d713c72e54"
+    },
+    {
+      "base_sha256": "a18301c127795d5ec1778e1da5964db2cbc9fcc954a3c3d73672b29e19534624",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "50d389317ff126f2aa1e18dbf36bbf17bd66ddac2753552fc73517c1b7c3d394",
+      "profile_sha256": "56fd97988fcfb029070dfed1e5ec7c343231d981bab84e6687c625bbc1b75dc8",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_RAW_DOSE64",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_up_proj_M1_RAW_FP16",
+        "role": "up_proj",
+        "state": "DOSE64"
+      },
+      "session_sha256": "c7b9f8b4784a7f2716b12d63c73fcaaa903d9c5b7a14488a4cf5c6d0970546ff"
+    },
+    {
+      "base_sha256": "c5756c2e82e5d5ac3e3b33dbafc8c82736ef6a3f47dc1be3c7c98a7d8f7aee0f",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "50d389317ff126f2aa1e18dbf36bbf17bd66ddac2753552fc73517c1b7c3d394",
+      "profile_sha256": "ebdc49c5e7faaba3dfbcecae40f59b0af825f1f97f4135d581c17d77c6beb941",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_RAW_SPARSE_PAGE_PRESSURE",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_up_proj_M1_RAW_FP16",
+        "role": "up_proj",
+        "state": "SPARSE_PAGE_PRESSURE"
+      },
+      "session_sha256": "2d566e0b194d72f35f64a35ff459bd59329d8446e54811e4809176a8e91e097b"
+    },
+    {
+      "base_sha256": "727f307c4c1ded9f23e630fd7b21a64fc010af6bfc1a0710207d9a301972cebe",
+      "expected_pass_count": 1,
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "output_sha256": "50d389317ff126f2aa1e18dbf36bbf17bd66ddac2753552fc73517c1b7c3d394",
+      "profile_sha256": "02ed0430cf6a2fd95e7aeb73b57e8f734d4e92a6c9b2bd1fed2555d3f659d261",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M1_RAW_WARM",
+      "semantic_identity": {
+        "M": 1,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_up_proj_M1_RAW_FP16",
+        "role": "up_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "be4440a4db66fddd105685c8646095b752e214976b4e238f277b988671e1a43c"
+    },
+    {
+      "base_sha256": "5e6c29772e7cff464710f96d3e52a13deeafddad19cc4d24434ea3123e76754a",
+      "expected_pass_count": 1,
+      "input_sha256": "eeae491edfdbee761de47aa6c4ea35b293bb2796227927778fa51c9e58ef1b41",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "59b56af85d0480542fa396a655f23179f879eccaa9ab32a7b98ba88e8cb33d50",
+      "profile_sha256": "2c2dc3a22e9db907863de1db0ce46cd198a5a3e8e709ac6a85412fd7af9c2eaa",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M256_AWQ_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 256,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_up_proj_M256_AWQ_FP16_INPUT",
+        "role": "up_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "ccef165b140e8c368155e11c8a2bc4cc9eb751b2a5f8fb76bd0305c06e987b8c"
+    },
+    {
+      "base_sha256": "dbf9078b75d9dc1528825127c73ad6ccb6376a66f80ebf3e16ca1298b4559562",
+      "expected_pass_count": 1,
+      "input_sha256": "eeae491edfdbee761de47aa6c4ea35b293bb2796227927778fa51c9e58ef1b41",
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "output_sha256": "59b56af85d0480542fa396a655f23179f879eccaa9ab32a7b98ba88e8cb33d50",
+      "profile_sha256": "1ece0a7ea7f86714d2468f4a8376aff1936293b941dd44d348f182e741a44372",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M256_AWQ_WARM",
+      "semantic_identity": {
+        "M": 256,
+        "implementation": "AWQ_FP16_INPUT",
+        "point": "TEXT_up_proj_M256_AWQ_FP16_INPUT",
+        "role": "up_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "1350f0e3bed0e0afe629b11bc1492129d36765ac190a6ae0d1dbc80620e1184a"
+    },
+    {
+      "base_sha256": "63f3977177a64a546d6bfc204782a1db9f2e1dd94b4c1e5bf7a84f34b198ef0b",
+      "expected_pass_count": 1,
+      "input_sha256": "eeae491edfdbee761de47aa6c4ea35b293bb2796227927778fa51c9e58ef1b41",
+      "kernel_names": [
+        "void Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_256x128_32x3_tn_align8>(Params)"
+      ],
+      "output_sha256": "01dbbf90e7d43b86ba49ce61805f11717b7ec9f28e67d7da0ff5f73065757413",
+      "profile_sha256": "d20ad852f248502f084ae8b923821188044eda537725aec48be83dde2858059e",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M256_RAW_DENSE_MEMORY_PRESSURE",
+      "semantic_identity": {
+        "M": 256,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_up_proj_M256_RAW_FP16",
+        "role": "up_proj",
+        "state": "DENSE_MEMORY_PRESSURE"
+      },
+      "session_sha256": "c07aad817a221146cf91026720a4d09fb6207f87a51991aa8fcb5acdb716ea61"
+    },
+    {
+      "base_sha256": "1f43329a0ffc6f7b7ac090333b4bf4b65a143422e50b8d43f8b75f2807fc7087",
+      "expected_pass_count": 1,
+      "input_sha256": "eeae491edfdbee761de47aa6c4ea35b293bb2796227927778fa51c9e58ef1b41",
+      "kernel_names": [
+        "void Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_256x128_32x3_tn_align8>(Params)"
+      ],
+      "output_sha256": "01dbbf90e7d43b86ba49ce61805f11717b7ec9f28e67d7da0ff5f73065757413",
+      "profile_sha256": "e06b1b0ccddf73cb689df1f1a6a139930d9bd27e6b341e6bea573239a9a7fef8",
+      "range_name": "C16_E1_RES_TEXT_UP_PROJ_M256_RAW_WARM",
+      "semantic_identity": {
+        "M": 256,
+        "implementation": "RAW_FP16",
+        "point": "TEXT_up_proj_M256_RAW_FP16",
+        "role": "up_proj",
+        "state": "WARM"
+      },
+      "session_sha256": "767865db482009ad5005bbf265262030bee759177f988cb50ff481532a6b948d"
+    }
+  ],
+  "status": "PASS"
 }

@@ -107,7 +107,7 @@ def _sha(value: Any, label: str) -> str:
 
 
 def _point_identity(row: Mapping[str, Any]) -> tuple[str, str, int, str]:
-    domain = _optional(row, ("domain", "input_domain", "workload"), "TEXT").upper()
+    domain = _optional(row, ("domain", "input_domain", "input_kind", "workload"), "TEXT").upper()
     role = str(_first(row, ("role", "operator_role"), "role")).strip()
     matrix_m = _integer(_first(row, ("M", "m"), "M"), "M")
     implementation = str(

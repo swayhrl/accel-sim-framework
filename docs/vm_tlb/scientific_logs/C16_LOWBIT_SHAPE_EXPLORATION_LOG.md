@@ -324,3 +324,7 @@ The stage also includes:
 - semantic NCU under application replay/cache-control none.
 
 No NVBit/full trace/mechanism is authorized before independent consumer closure.
+
+## E1 residency intervention independent consumer closure (174-new)
+
+Producer `22d1b98d7f0c213950654fc754be4e7388836de3` was consumed from raw timing rows and raw NCU BASE+SESSION+PROFILE triples. Independent gates: MATERIAL_TIMING_PERTURBATION=True, MATERIAL_DRAM_PERTURBATION=True, REVERSIBLE=False, DENSE_SPECIFIC=True; scoped label `RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED`. WARM_B/WARM_A≈0.9375000 is an over-recovery/baseline-drift gate failure, not persistent DENSE slowdown. No GPU work or mechanism authorization occurred on 174-new.

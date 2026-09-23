@@ -141,7 +141,7 @@ class RawNcuConsumerTests(unittest.TestCase):
             ("DENSE_MEMORY_PRESSURE", 200),
         ):
             base, session, profile_log = self.add_evidence(
-                state, kernels=[("1", TARGET_KERNEL, (value, value * 2, value * 3))]
+                state, kernels=[("1", TARGET_KERNEL, (value, value * 2, value * 3))], state=state
             )
             profiles.append(profile(state, base, session, profile_log))
         result = consume({"schema_version": 1, "profiles": profiles}, self.root)
@@ -167,6 +167,7 @@ class RawNcuConsumerTests(unittest.TestCase):
     def test_pressure_kernel_inside_target_range_fails(self):
         base, session, profile_log = self.add_evidence(
             "dense",
+            state="DENSE_MEMORY_PRESSURE",
             kernels=[
                 ("1", TARGET_KERNEL, (1, 2, 3)),
                 ("2", PRESSURE_KERNEL, (4, 5, 6)),

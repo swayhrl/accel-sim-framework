@@ -37,6 +37,7 @@ STATES = (
     "WARM",
     "SPARSE_PAGE_PRESSURE",
     "DENSE_MEMORY_PRESSURE",
+    "DOSE64",
 )
 ROLES = ("q_proj", "down_proj", "up_proj")
 IMPLEMENTATIONS = ("RAW_FP16", "AWQ_FP16_INPUT")
@@ -270,10 +271,10 @@ def _parse_spec(raw: dict, root: Path) -> dict:
 
 
 def _nvtx_exact(cell: str, target: str) -> bool:
-    # NCU emits a single push/pop range for this qualified selector.  A trailing
-    # slash is accepted because that is the selector spelling in SESSION.
-    return cell.strip().rstrip("/") == target
-
+    # NCU BASE encodes Push/Pop ranges as pid "<domain>:RANGE:...".
+    # Match an exact colon/slash-delimited token, never a substring prefix.
+    pattern = re.compile(r"(?:^|:)" + re.escape(target) + r"(?=:|/|$)")
+    return len(pattern.findall(cell.strip())) == 1
 
 def _read_base(spec: dict) -> tuple[list[dict], dict]:
     path = spec["base_path"]
