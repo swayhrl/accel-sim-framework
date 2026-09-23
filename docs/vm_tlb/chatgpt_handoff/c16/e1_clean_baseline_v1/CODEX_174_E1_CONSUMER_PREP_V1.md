@@ -19,6 +19,8 @@ Fetch and verify:
 
 Read completely:
 
+0. `docs/vm_tlb/chatgpt_handoff/c16/e1_clean_baseline_v1/FP16_CAST_BRIDGE_CONTRACT_V2.md`
+
 1. `docs/vm_tlb/chatgpt_handoff/c16/e1_clean_baseline_v1/CURRENT_STATE.md`
 2. `docs/vm_tlb/chatgpt_handoff/c16/e1_clean_baseline_v1/E1_CLEAN_BASELINE_DESIGN_V1.md`
 3. this file
