@@ -1,0 +1,75 @@
+{
+  "accessq_audit_binary_sha256": "338508a0878d868fe6f2732164d6f82b5b5cd947a0ed9b82f938c72d5795e6a5",
+  "architecture": {
+    "clock_domains_mhz": "1132:1132:1132:3500.5",
+    "clusters": 46,
+    "compute_capability_config": "8.6",
+    "cores_per_cluster": 1,
+    "l1d": "S:4:128:256,L:T:m:L:L,A:384:48,16:0,32",
+    "l1d_latency": 39,
+    "l2": "S:64:128:16,L:B:m:L:P,A:192:4,32:0,32",
+    "shader_core_pipeline": "1536:32"
+  },
+  "crosscal_v1_binary_sha256": "bd4ae00214f834f7c3fd7d49616b8ed834dc47eed0cc2e2118344ff0f763ac14",
+  "files": [
+    {
+      "path": "/root/awma_native_simulator_cross_calibration_v1_runtime/c0_v2r1_src/gpgpu-sim/configs/tested-cfgs/SM86_RTX3070/gpgpusim.config",
+      "role": "base_hardware",
+      "sha256": "f6b480d66fb04a948c04e1a5b65527600f3959ac561dcfa2de0b6632e864fe9c"
+    },
+    {
+      "path": "/root/workspace/accel-sim-framework-awma-174-native-simulator-cross-calibration-v1/gpu-simulator/configs/tested-cfgs/SM86_RTX3070/trace.config",
+      "role": "trace_platform",
+      "sha256": "a46fe47a14f3ca4116a35c5bf1dc156f4e861484b91278e8b3f6e09519bd7e5b"
+    },
+    {
+      "path": "/root/workspace/accel-sim-framework-awma-174-native-simulator-cross-calibration-v1/configs/vm_tlb/M4R_SM86_VM49_REALPTW.config",
+      "role": "10_80_vm_overlay",
+      "sha256": "85cd687d95f712b1f6a734805a5429f8268e6fb2f173f014b73e9c3079fc9ba4"
+    },
+    {
+      "path": "/root/awma_native_simulator_cross_calibration_v1_runtime/M4R_SM86_VM49_REALPTW_L1_0_L2_80.config",
+      "role": "0_80_vm_overlay",
+      "sha256": "a40fadd84a8bd64b684dfd9664a92fb6991bfa2c4c6e4c918ddcebd087002325"
+    }
+  ],
+  "semantic_switches": {
+    "LEGACY": {
+      "pipelined_launch": 0,
+      "ready_application": 0
+    },
+    "V1": {
+      "pipelined_launch": 1,
+      "ready_application": 0
+    },
+    "V2R1": {
+      "pipelined_launch": 1,
+      "ready_application": 1
+    }
+  },
+  "vm_0_80_delta": {
+    "l1_lookup_latency": 0,
+    "l2_lookup_latency": 80
+  },
+  "vm_10_80": {
+    "l1_assoc": 32,
+    "l1_entries": 32,
+    "l1_lookup_latency": 10,
+    "l1_ports": 1,
+    "l2_assoc": 16,
+    "l2_entries": 768,
+    "l2_lookup_latency": 80,
+    "l2_ports": 1,
+    "mode": 2,
+    "mshr_entries": 32,
+    "page_size": 65536,
+    "pt_levels": 4,
+    "ptw_mode": 1,
+    "pwc_entries": 128,
+    "pwc_lookup_latency": 1,
+    "pwc_mode": 1,
+    "pwq_entries": 32,
+    "va_bits": 49,
+    "walkers": 16
+  }
+}

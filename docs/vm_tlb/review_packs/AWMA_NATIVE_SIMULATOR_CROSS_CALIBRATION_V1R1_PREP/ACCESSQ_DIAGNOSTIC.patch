@@ -1,0 +1,56 @@
+--- /root/awma_native_simulator_cross_calibration_v1_runtime/c0_v2r1_src/gpgpu-sim/src/gpgpu-sim/shader.cc	2026-09-23 01:29:12.703892233 +0000
++++ /root/awma_crosscal_v1r1_prep_runtime/c1_src/gpgpu-sim/src/gpgpu-sim/shader.cc	2026-09-23 02:52:25.656172795 +0000
+@@ -40,6 +40,43 @@
+ #include "vm_core.h"
+ #include <float.h>
+ #include <limits.h>
++
++class awma_accessq_cardinality_recorder {
++ public:
++  awma_accessq_cardinality_recorder()
++      : m_enabled(parse_enable()), m_next_event_id(0) {}
++
++  void record(const warp_inst_t &inst, unsigned sid,
++              const kernel_info_t *kernel) {
++    if (!m_enabled || !inst.is_load() || !inst.space.is_global() ||
++        inst.active_count() == 0)
++      return;
++    fprintf(stdout,
++            "awma_accessq_cardinality_event event_id=%llu kernel_uid=%u "
++            "sid=%u warp=%u dynamic_warp=%u pc=0x%llx active_lanes=%u "
++            "accessq_entries=%u\n",
++            static_cast<unsigned long long>(m_next_event_id++),
++            kernel == NULL ? 0U : kernel->get_uid(), sid, inst.warp_id(),
++            inst.dynamic_warp_id(),
++            static_cast<unsigned long long>(inst.pc), inst.active_count(),
++            inst.accessq_count());
++  }
++
++ private:
++  static bool parse_enable() {
++    const char *value =
++        getenv("GPGPUSIM_AWMA_ACCESSQ_CARDINALITY_DIAGNOSTICS");
++    return value != NULL && strtoul(value, NULL, 10) != 0;
++  }
++
++  const bool m_enabled;
++  unsigned long long m_next_event_id;
++};
++
++static awma_accessq_cardinality_recorder &accessq_cardinality_diagnostics() {
++  static awma_accessq_cardinality_recorder recorder;
++  return recorder;
++}
+ #include <set>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -3083,6 +3120,9 @@
+   // record how many pending register writes/memory accesses there are for this
+   // instruction
+   assert(inst->empty() == false);
++  accessq_cardinality_diagnostics().record(*inst, m_sid,
++                                           m_core->get_kernel());
++
+   if (inst->is_load() and inst->space.get_type() != shared_space) {
+     unsigned warp_id = inst->warp_id();
+     unsigned n_accesses = inst->accessq_count();
