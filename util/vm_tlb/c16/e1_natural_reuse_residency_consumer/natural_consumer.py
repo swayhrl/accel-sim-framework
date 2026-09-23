@@ -445,10 +445,22 @@ def compare_natural_to_isolated(
             raise NaturalConsumerError(f"duplicate natural comparator occurrence: {identity!r}")
         seen.add(identity)
         ref_key = (identity[1], _text(raw.get("implementation"), "implementation"), _int(raw.get("M"), "M"))
-        if ref_key not in references:
-            raise NaturalConsumerError(f"missing isolated reference: {ref_key!r}")
-        ref = references[ref_key]
         row = {"layer_index": identity[0], "role": identity[1], "decode_index": identity[2], "implementation": ref_key[1], "M": ref_key[2]}
+        if ref_key not in references:
+            for dimension, natural_name in (("timing", "timing_ms"), ("dram", "dram_bytes")):
+                natural_raw = raw.get(natural_name)
+                natural = None if natural_raw in (None, "") else _finite(natural_raw, natural_name)
+                row[dimension] = {
+                    "natural": natural,
+                    "isolated_warm": None,
+                    "isolated_dense": None,
+                    "warm_fraction": None,
+                    "status": "NO_EXACT_ISOLATED_AUTHORITY",
+                    "outside_bracket": None,
+                }
+            comparisons.append(row)
+            continue
+        ref = references[ref_key]
         for dimension, natural_name, warm_name, dense_name in (
             ("timing", "timing_ms", "warm_timing_ms", "dense_timing_ms"),
             ("dram", "dram_bytes", "warm_dram_bytes", "dense_dram_bytes"),
