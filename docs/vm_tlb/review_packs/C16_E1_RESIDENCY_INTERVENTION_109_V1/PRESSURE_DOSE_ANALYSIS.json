@@ -1,0 +1,33 @@
+{
+  "conditional_64MiB_NCU_run": true,
+  "implementations": {
+    "AWQ_FP16_INPUT": {
+      "dose_over_0_ratios": {
+        "0": 1.0,
+        "128": 1.6368055442149427,
+        "16": 1.0430555593731876,
+        "256": 1.6416666922672578,
+        "32": 1.1999999838312057,
+        "64": 1.644444491154295
+      },
+      "material": true,
+      "max_cv": 0.025686269229837057,
+      "max_min_fractional_spread": 0.644444491154295
+    },
+    "RAW_FP16": {
+      "dose_over_0_ratios": {
+        "0": 1.0,
+        "128": 1.002726809701782,
+        "16": 1.0034843117087604,
+        "256": 1.0034843117087604,
+        "32": 1.0034843117087604,
+        "64": 1.0078775834994647
+      },
+      "material": false,
+      "max_cv": 0.0023167285463638236,
+      "max_min_fractional_spread": 0.007877583499464658
+    }
+  },
+  "material_rule": "max/min median spread >= 0.05 and greater than max per-dose CV",
+  "status": "PASS"
+}

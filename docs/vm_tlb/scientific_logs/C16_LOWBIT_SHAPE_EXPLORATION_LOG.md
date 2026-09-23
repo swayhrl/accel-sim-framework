@@ -233,3 +233,23 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Next question.** Resume independent consumer verification directly from V2 raw report hashes, session commands and base-unit exports. Any mechanism study requires a separate reviewed contract.
 
 **Stop condition.** Stop after bounded repair review/Git closure. NVBit, full address trace, cache/TLB mechanisms, shape sweeps and role reselection remain prohibited.
+
+---
+
+## E1 residency-intervention producer result — 2026-09-23
+
+**Question.** Does controlled pre-target memory pressure reversibly perturb the exact accepted RAW_FP16/AWQ semantic modules in the operator/shape pattern predicted by the warm-residency hypothesis?
+
+**Capacity census.** Actual frozen module state, not nominal geometry, gives: q_proj RAW=25,697,280 B and AWQ=6,680,576 B, both below the accepted 67,108,864 B L2; down_proj/up_proj RAW=135,790,592 B (>L2) and AWQ=35,273,728 B (<L2).
+
+**Intervention authority.** One initialized 256 MiB FP32 CUDA allocation was reused. SPARSE read `buffer[::1024]` (one FP32 per 4096 B, 65,536 elements); DENSE read all 67,108,864 elements. Pressure stayed outside target CUDA-event intervals and semantic NVTX ranges. Shared-buffer qualification measured DENSE/SPARSE requested-traffic ratios of 128.015 for L1/TEX, 105.875 for L2, and 74.393 for DRAM. SPARSE remains only a page-footprint-oriented control and does not exclude TLB effects.
+
+**Primary TEXT result.** For up_proj M1 AWQ, DENSE/WARM_A target timing was 1.53646, versus SPARSE/WARM_A 0.97656. Target DRAM was 80,000 B under WARM, 2,365,312 B after SPARSE, and 35,368,192 B after DENSE. RAW timing was essentially unchanged. Up_proj M256 AWQ DENSE/WARM_A was 0.99230, supporting a smaller shape-control effect.
+
+**Dose and input holdout.** Up_proj M1 AWQ timing ratios versus 0 MiB were 1.043, 1.200, 1.644, 1.637 and 1.642 at 16/32/64/128/256 MiB; RAW remained within 0.8%. The pre-authorized 64 MiB semantic NCU point reproduced high AWQ DRAM traffic. Accepted common CODE down_proj M1 directly reused input SHA `861716...`; AWQ DENSE/WARM_A timing was 1.43558, WARM_B/WARM_A was 0.98487, and DRAM rose from 26,752 B to 35,403,136 B. CODE RAW was essentially unchanged.
+
+**Pre-registered gates.** Primary up_proj M1 AWQ has `MATERIAL_TIMING_PERTURBATION=true`, `MATERIAL_DRAM_PERTURBATION=true`, and `DENSE_SPECIFIC=true`. Its WARM_B/WARM_A timing ratio is 0.93750, outside the strict 5% recovery tolerance, so `REVERSIBLE=false` even though down_proj/CODE controls recover.
+
+**Scoped conclusion.** `RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED`. The operator, shape, dose, traffic, and CODE controls are consistent with cache-line residency contributing to the M1 AWQ advantage, but the failed primary recovery gate prevents strong support. The result does not prove L2 is the unique cause, does not exclude TLB effects, and does not authorize a cache/TLB mechanism.
+
+**Next step.** Stop for independent consumer recomputation directly from raw timing samples and raw NCU BASE/SESSION/report receipts. No NVBit, full address trace, cache/TLB mechanism, new model, or shape sweep is authorized.

@@ -1,0 +1,49 @@
+{
+  "final_label": "RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED",
+  "predictions": {
+    "P1_M1_UP_DOWN_ASYMMETRIC_RESIDENCY": {
+      "assessment": "PARTIAL_PRIMARY_RECOVERY_GATE_FALSE",
+      "capacity_premise": true,
+      "up_AWQ_material_dram": true,
+      "up_AWQ_material_timing": true,
+      "up_RAW_dense_timing_material": false,
+      "up_primary_reversible": false
+    },
+    "P2_Q_PROJ_CONTROL": {
+      "assessment": "SUPPORTED_SMALLER_DIFFERENTIAL_THAN_UP_DOWN",
+      "both_states_below_l2": true,
+      "q_AWQ_dense_timing_material": false,
+      "q_RAW_dense_timing_material": false
+    },
+    "P3_SPARSE_VERSUS_DENSE": {
+      "assessment": "SUPPORTED",
+      "boundary": "SPARSE is page-footprint-oriented and does not fully exclude TLB effects",
+      "pressure_qualification_dense_larger": true,
+      "primary_dense_specific": true
+    },
+    "P4_M256_SHAPE_CONTROL": {
+      "M1_AWQ_dense_timing_ratio": 1.5364583064906088,
+      "M256_AWQ_dense_timing_ratio": 0.9922958707090348,
+      "assessment": "SUPPORTED_SMALLER_M256_RELATIVE_IMPACT"
+    }
+  },
+  "primary_up_proj_M1_AWQ_gates": {
+    "DENSE_SPECIFIC": true,
+    "MATERIAL_DRAM_PERTURBATION": true,
+    "MATERIAL_TIMING_PERTURBATION": true,
+    "REVERSIBLE": false
+  },
+  "primary_values": {
+    "dram_dense_bytes": 35368192.0,
+    "dram_dense_over_sparse": 14.952865414795173,
+    "dram_dense_over_warm": 442.1024,
+    "dram_sparse_bytes": 2365312.0,
+    "dram_warm_bytes": 80000.0,
+    "recovery_tolerance": 0.05,
+    "timing_dense_over_warm": 1.5364583064906088,
+    "timing_sparse_over_warm": 0.9765624739467673,
+    "timing_warm_b_over_warm_a": 0.9374999810521943
+  },
+  "scope": "tested pre-target cache/memory-state intervention only; not universal cache causality",
+  "status": "PASS"
+}

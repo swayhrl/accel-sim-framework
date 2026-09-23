@@ -1,0 +1,22 @@
+{
+  "allocation_bytes": 268435456,
+  "allocation_elements": 67108864,
+  "data_ptr": 123499133796352,
+  "dense_claim_boundary": "memory-pressure intervention; not a guaranteed hardware cache flush",
+  "dense_selected_elements": 67108864,
+  "device": "cuda:0",
+  "dtype": "torch.float32",
+  "initialized_before_target_modules": true,
+  "sparse_claim_boundary": "page-footprint-oriented control; does not fully exclude TLB effects",
+  "sparse_selected_elements": 65536,
+  "sparse_stride_bytes": 4096,
+  "sparse_stride_elements": 1024,
+  "states": {
+    "DENSE_MEMORY_PRESSURE": "two target warmups, synchronize, buffer.sum(), synchronize, target",
+    "SPARSE_PAGE_PRESSURE": "two target warmups, synchronize, buffer[::1024].sum(), synchronize, target",
+    "WARM": "two target warmups, synchronize, target",
+    "WARM_RECOVERY": "after DENSE, two target warmups, synchronize, target"
+  },
+  "target_nvtx_excludes_pressure": true,
+  "target_timing_excludes_pressure": true
+}

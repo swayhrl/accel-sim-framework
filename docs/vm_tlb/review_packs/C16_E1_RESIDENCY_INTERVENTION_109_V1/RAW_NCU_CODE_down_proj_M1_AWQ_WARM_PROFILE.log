@@ -1,0 +1,9 @@
+==WARNING== Note: Running with uncontrolled GPU caches. Profiling results may be inconsistent.
+==PROF== Connected to process 1234372 (/data/c16/env/cpython-3.10.12/bin/python3.10)
+Replacing layers...:   0%|          | 0/28 [00:00<?, ?it/s]Replacing layers...:  11%|█         | 3/28 [00:00<00:01, 20.58it/s]Replacing layers...:  21%|██▏       | 6/28 [00:00<00:01, 20.83it/s]Replacing layers...:  32%|███▏      | 9/28 [00:00<00:00, 20.91it/s]Replacing layers...:  43%|████▎     | 12/28 [00:00<00:00, 20.94it/s]Replacing layers...:  54%|█████▎    | 15/28 [00:00<00:00, 21.03it/s]Replacing layers...:  64%|██████▍   | 18/28 [00:00<00:00, 21.04it/s]Replacing layers...:  75%|███████▌  | 21/28 [00:01<00:00, 21.04it/s]Replacing layers...:  86%|████████▌ | 24/28 [00:01<00:00, 21.04it/s]Replacing layers...:  96%|█████████▋| 27/28 [00:01<00:00, 21.04it/s]Replacing layers...: 100%|██████████| 28/28 [00:01<00:00, 20.99it/s]
+==PROF== Profiling "gemm_forward_4bit_cuda_m16n12..." - 0: Application replay pass 1
+==PROF== Profiling "reduce_kernel" - 1: Application replay pass 1
+{"M": 1, "implementation": "AWQ_FP16_INPUT", "input_kind": "CODE", "input_sha256": "8617167912ed3cc89d5821b8621cde092374638a099965b4e1fe2a9fec4e6077", "module_class": "WQLinear_GEMM", "output_sha256": "8138405fa621da78b51b5d050493a2140a5a5725a85519a8d91c61c2b8d0978a", "pressure_buffer_bytes": 268435456, "pressure_buffer_ptr": 127023322234880, "pressure_ms": 0.0, "range": "C16_E1_RES_CODE_DOWN_PROJ_M1_AWQ_WARM", "role": "down_proj", "state": "WARM", "status": "PASS"}
+==PROF== Disconnected from process 1234372
+==PROF== Creating report from application replay data: 0%....100%
+==PROF== Report: /data/c16/e1_residency_intervention_v1/ncu/reports/CODE_down_proj_M1_AWQ_WARM.ncu-rep

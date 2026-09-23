@@ -1,0 +1,143 @@
+{
+  "materiality_rule": "abs(median ratio - 1) >= 0.05 and greater than hypot(CV_WARM_A,CV_state)",
+  "points": {
+    "down_proj:M1:AWQ_FP16_INPUT": {
+      "DENSE": {
+        "absolute_fractional_change": 0.4262295414381301,
+        "combined_dispersion": 0.017686415564494285,
+        "material_timing": true,
+        "ratio_to_WARM_A": 1.42622954143813
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.016393448489081752,
+        "combined_dispersion": 0.015755840591163067,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0163934484890818
+      },
+      "WARM_B_over_WARM_A": 0.9836065515109182,
+      "recovery_tolerance": 0.05,
+      "reversible": true
+    },
+    "down_proj:M1:RAW_FP16": {
+      "DENSE": {
+        "absolute_fractional_change": 0.0007491467179112643,
+        "combined_dispersion": 0.0032294870925692024,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0007491467179113
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.002097708491571426,
+        "combined_dispersion": 0.0030055462294795946,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0020977084915714
+      },
+      "WARM_B_over_WARM_A": 1.000299672641653,
+      "recovery_tolerance": 0.05,
+      "reversible": true
+    },
+    "q_proj:M1:AWQ_FP16_INPUT": {
+      "DENSE": {
+        "absolute_fractional_change": 0.02941177414700369,
+        "combined_dispersion": 0.3057089244324323,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0294117741470037
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.0018382492591095811,
+        "combined_dispersion": 0.3029480188848948,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0018382492591096
+      },
+      "WARM_B_over_WARM_A": 0.9402573270764379,
+      "recovery_tolerance": 0.30277331004440444,
+      "reversible": true
+    },
+    "q_proj:M1:RAW_FP16": {
+      "DENSE": {
+        "absolute_fractional_change": 0.0006376857346011011,
+        "combined_dispersion": 0.17067371614423443,
+        "material_timing": false,
+        "ratio_to_WARM_A": 0.9993623142653989
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.05931123258660964,
+        "combined_dispersion": 0.17539826207926507,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0593112325866096
+      },
+      "WARM_B_over_WARM_A": 0.9668367780662835,
+      "recovery_tolerance": 0.1701716472918534,
+      "reversible": true
+    },
+    "up_proj:M1:AWQ_FP16_INPUT": {
+      "DENSE": {
+        "absolute_fractional_change": 0.5364583064906088,
+        "combined_dispersion": 0.03001477392672453,
+        "material_timing": true,
+        "ratio_to_WARM_A": 1.5364583064906088
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.023437526053232682,
+        "combined_dispersion": 0.034394884779916375,
+        "material_timing": false,
+        "ratio_to_WARM_A": 0.9765624739467673
+      },
+      "WARM_B_over_WARM_A": 0.9374999810521943,
+      "recovery_tolerance": 0.05,
+      "reversible": false
+    },
+    "up_proj:M1:RAW_FP16": {
+      "DENSE": {
+        "absolute_fractional_change": 0.0019666968348488467,
+        "combined_dispersion": 0.002821170937317947,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0019666968348488
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.0021180191402991877,
+        "combined_dispersion": 0.0026737764704584076,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.0021180191402992
+      },
+      "WARM_B_over_WARM_A": 0.9972768325339012,
+      "recovery_tolerance": 0.05,
+      "reversible": true
+    },
+    "up_proj:M256:AWQ_FP16_INPUT": {
+      "DENSE": {
+        "absolute_fractional_change": 0.0077041292909652,
+        "combined_dispersion": 0.0036530633876754575,
+        "material_timing": false,
+        "ratio_to_WARM_A": 0.9922958707090348
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.000288885789662241,
+        "combined_dispersion": 0.0036477947532646206,
+        "material_timing": false,
+        "ratio_to_WARM_A": 0.9997111142103378
+      },
+      "WARM_B_over_WARM_A": 1.000914909636866,
+      "recovery_tolerance": 0.05,
+      "reversible": true
+    },
+    "up_proj:M256:RAW_FP16": {
+      "DENSE": {
+        "absolute_fractional_change": 0.0032359497388920744,
+        "combined_dispersion": 0.004211670549716093,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.003235949738892
+      },
+      "SPARSE": {
+        "absolute_fractional_change": 0.005917118493572016,
+        "combined_dispersion": 0.003622287447471139,
+        "material_timing": false,
+        "ratio_to_WARM_A": 1.005917118493572
+      },
+      "WARM_B_over_WARM_A": 1.0,
+      "recovery_tolerance": 0.05,
+      "reversible": true
+    }
+  },
+  "recovery_rule": "abs(WARM_B/WARM_A - 1) <= max(0.05,hypot(CV_WARM_A,CV_WARM_B))",
+  "status": "PASS"
+}
