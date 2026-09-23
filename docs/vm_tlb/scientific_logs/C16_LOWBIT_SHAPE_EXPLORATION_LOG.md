@@ -303,3 +303,19 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Whole decode and overhead.** Stable D1–D3 mean decode latency improves only 0.347% for SHARE2_UP and 0.381% for SHARE3 versus ROTATE_CONTROL_3; SHARE2_L0 is approximately flat/slightly worse. None reaches the registered 2% whole-decode threshold. ROTATE_CONTROL_3 itself changes stable decode by only approximately 0.028% versus SETASIDE_ONLY. Each update costs roughly 3.8 μs in the full-model harness, approximately 57 μs over 15 updates; raw per-update/per-run overhead is retained separately.
 
 **Stage label.** `SHARED_RESIDENCY_LOCAL_ONLY`. One fixed quota can retain multiple local qweight benefits, including all three targets under SHARE3, but this bounded configuration does not produce material full decode-step benefit. No NVBit, full address trace, Accel-Sim mutation, or mechanism simulation was started.
+
+---
+
+## E1 fixed-budget protected-coverage scaling producer result — 2026-09-24
+
+**Opportunity census.** Seven fresh no-persistence full-model runs close all 84 qweight-backed FFN projections and 336 D0–D3 occurrences. Stable run-aligned decode shares are gate_proj 14.76%, up_proj 16.84%, down_proj 15.78%, and all FFN projections 47.39%. Per-layer role timing is broadly uniform; each role's top four layers contribute approximately 14.4% of that role's total.
+
+**Frozen coverage curve.** Using the preregistered nested layer sets and one fixed requested/actual set-aside, selected target share grows from 0.591% at N1 through 1.189%, 2.370%, 4.751%, 8.318%, to 16.628% at N28. Every selected layer remains `MATERIAL_LOCAL`, while median per-layer benefit dilutes from 47.5% at N1 to approximately 25% from N14 through N28.
+
+**Run-aligned system accounting.** Whole stable-decode benefit is -0.056% at N1, then 0.331%, 0.558%, 0.689%, 0.760%, and 0.892% at N2/N4/N8/N14A/N28. N28 is positive beyond combined dispersion but remains below the frozen 2% gate. Median summed selected local saving grows to 0.567 ms at N28, while observed per-step decode saving is 0.123 ms and realization ratio falls to approximately 0.216. Formal authority uses same-run module and decode samples; no independent-median ratio substitutes are used.
+
+**Composition holdout.** N14A and N14B closely match: selected share 8.318% versus 8.303%, median local benefit 25.0% versus 24.94%, whole-decode benefit 0.760% versus 0.739%, and realization ratio 0.368 versus 0.356. The curve is not driven by one favorable half of layers.
+
+**Critical path and FULLHINT.** Bounded NCU shows GEMM duration/stall benefit persists at N28 even as L2-hit/miss and DRAM-read ratios dilute toward unity. The preregistered FULLHINT trigger fires because all N28 layers remain material while decode benefit is sub-2%. FULLHINT_N28 improves the curve by only 0.079 percentage points relative to FAIR_N28, below the 0.5-point extra-NCU trigger; over-subscribed intent does not materially change the result.
+
+**Stage label.** `COVERAGE_SCALING_POSITIVE_BUT_SUBTHRESHOLD`. Full up_proj coverage produces a real but sub-2% system effect. Because measured gate/down coverage expands total FFN opportunity from 16.84% to 47.39%, `EXPAND_OPERATOR_FAMILY_BEFORE_SIMULATOR` is the leading review candidate, not an automatic authorization. No simulator, NVBit capture, full trace, or mechanism implementation was run.
