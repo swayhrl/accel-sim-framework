@@ -253,3 +253,21 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Scoped conclusion.** `RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED`. The operator, shape, dose, traffic, and CODE controls are consistent with cache-line residency contributing to the M1 AWQ advantage, but the failed primary recovery gate prevents strong support. The result does not prove L2 is the unique cause, does not exclude TLB effects, and does not authorize a cache/TLB mechanism.
 
 **Next step.** Stop for independent consumer recomputation directly from raw timing samples and raw NCU BASE/SESSION/report receipts. No NVBit, full address trace, cache/TLB mechanism, new model, or shape sweep is authorized.
+
+---
+
+## E1 natural-reuse / residency causal-closure producer result — 2026-09-23
+
+**Refill dynamics.** After two warmups and accepted 256 MiB dense pressure, AWQ q/down/up all show packed-state-scale K1 DRAM followed by one-call refill: q_proj 6,775,552→66,304 B, down_proj 35,406,848→78,208 B, and up_proj 35,369,856→72,576 B at K1→K2. K6/K1 native timing is 0.858, 0.534, and 0.443 respectively. RAW down/up remain nearly flat at approximately 135.8 MB DRAM, with K6/K1 timing 0.962/0.966. RAW q_proj likewise remains near its 25.7 MB state footprint despite a first-call timing drop.
+
+**Capacity knees.** The first registered DRAM knees are q_proj=32 MiB and down/up=16 MiB. Nominal residual-L2 values are 57.63 MiB and 30.36 MiB, giving descriptive deltas of -25.63 MiB and -14.36 MiB. First material timing doses are q=32, down=24, and up=28 MiB. Capacity preserves coarse role ordering, but onset occurs materially earlier and post-knee responses are role-specific/non-monotonic; nominal capacity alone is insufficient.
+
+**Natural AWQ authority.** Seven independent full-model runs over the accepted 2048-token S2_TEXT prefix reproduce exactly the greedy D0–D3 sequence `[23578, 11, 323, 3950]` and all 12 occurrence input/output SHA bindings. Prefill is excluded. Target events are recorded without synchronizing inside the model loop.
+
+**Natural traffic and isolated proximity.** Layer0 up_proj natural DRAM is 49,655,552 B at D0, 49,922,944 B at D1, and 49,204,864 B at D3. These produce unclamped isolated warm fractions 1.405, 1.412, and 1.392: all lie beyond the isolated DENSE bracket. Timing fractions are also outside above DENSE (2.208 at D0 and approximately 1.398 at D1/D3). Layer0 down_proj DRAM is 37,038,720/36,648,832 B at D0/D3, slightly beyond DENSE (fractions 1.046/1.035), while timing remains inside the WARM–DENSE bracket (0.679/0.615).
+
+**Held-out and RAW controls.** Layer14 up_proj reproduces layer0's approximately 49 MB natural DRAM and D3 timing; layer0 D0 alone has an extra first-step cost. The optional accepted RAW BF16 full model cleanly fits without offload or backend/dtype changes. Seven RAW runs reproduce the same token sequence; layer0 up_proj D0/D3 stay flat at 0.2048 ms and D0 DRAM is 136,006,784 B.
+
+**Integrated answer.** `CASE_B_WITH_CASE_D_ROLE_DEPENDENCE`. Immediate isolated reuse repopulates compressed state, but the natural full-model interval makes AWQ layer0 up/down traffic dense-like or beyond the isolated dense bracket. Capacity matters, while role/kernel/access policy is also required to explain the observed knees and timing differences. Case A and Case C are not supported.
+
+**Boundary.** This is a natural-reuse/residency causal diagnostic, not authorization for a mechanism. No NVBit, full address trace, cache/TLB mechanism, or mechanism simulation was started. Independent consumer recomputation from raw timing and NCU evidence is required before any next-stage decision.

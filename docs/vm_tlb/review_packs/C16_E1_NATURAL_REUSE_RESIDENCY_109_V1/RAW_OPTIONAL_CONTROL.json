@@ -1,0 +1,75 @@
+{
+  "D0_ncu": {
+    "kernel_count": 1,
+    "kernel_names": [
+      "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)"
+    ],
+    "metrics": {
+      "dram__bytes.sum": 136006784.0,
+      "l1tex__t_bytes.sum": 272187392.0,
+      "lts__t_bytes.sum": 137199776.0
+    },
+    "profiler_command": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_RAW_NAT_L0_UP_D0/ --target-processes application-only --replay-mode application --cache-control none --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum --force-overwrite -o /data/c16/e1_natural_reuse_residency_v1/raw_optional/ncu/RAW_NAT_L0_UP_D0 /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_raw_natural_decode.py --run-index 100",
+    "replay_pass_count": 1,
+    "report_sha256": "4f56eef693f22eb5fb05bcf361aa1fc4bfdd88e911ef815df2b6dbb9aeac85a8",
+    "unit": "byte"
+  },
+  "comparison_boundary": "RAW natural control is BF16 full-model deployment; it is not substituted for isolated RAW_FP16 authority",
+  "fit_probe": {
+    "attempt_contract": {
+      "backend_change": false,
+      "device_map": null,
+      "dtype": "torch.bfloat16",
+      "offload": false,
+      "oom_workaround": false,
+      "package_change": false
+    },
+    "checkpoint_tensor_bytes": 15231233024,
+    "gpu_free_before_bytes": 16423714816,
+    "gpu_total_bytes": 16718168064,
+    "minimum_live_bytes_before_other_activations": 15971527680,
+    "prefill_kv_bytes": 117440512,
+    "prefill_logits_bytes": 622854144,
+    "status": "RAW_FULL_MODEL_NATURAL_CONTROL_FIT"
+  },
+  "generated_token_ids_D0_D3": [
+    23578,
+    11,
+    323,
+    3950
+  ],
+  "native_timing": {
+    "D0": {
+      "cv": 0.0021911577607564006,
+      "max_ms": 0.20582400262355804,
+      "median_ms": 0.20479999482631683,
+      "min_ms": 0.20479999482631683,
+      "samples_ms": [
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20528000593185425,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20582400262355804,
+        0.20582400262355804
+      ]
+    },
+    "D3": {
+      "cv": 0.0017615349552388697,
+      "max_ms": 0.20582400262355804,
+      "median_ms": 0.20479999482631683,
+      "min_ms": 0.20479999482631683,
+      "samples_ms": [
+        0.20582400262355804,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.2051839977502823,
+        0.20479999482631683
+      ]
+    }
+  },
+  "seven_fresh_process_runs_identical": true,
+  "status": "RAW_FULL_MODEL_NATURAL_CONTROL_RUN"
+}
