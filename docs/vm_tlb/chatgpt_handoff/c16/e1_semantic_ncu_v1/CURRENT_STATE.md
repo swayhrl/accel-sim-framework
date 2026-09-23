@@ -59,3 +59,30 @@ It still does not establish:
 - end-to-end model speedup.
 
 No NVBit/full-address trace/mechanism is authorized in this stage.
+
+
+---
+
+## 174-new consumer prep completed
+
+Parallel consumer/prep is complete at:
+
+`hrl/c16-e1-semantic-ncu-consumer-prep-174new-v1@92fa940cc7ca6e3e8eb7ca628e4d28634e05ac35`
+
+Closed prep facts:
+
+- semantic selector design audit PASS;
+- scientific unit fixed as one complete `up_proj` semantic module invocation;
+- AWQ multi-kernel module calls allowed;
+- additive byte/event metrics may be summed only inside the uniquely qualified range;
+- utilization/percentage metrics remain per-kernel;
+- ambiguous/missing semantic range fails closed;
+- parser/aggregator synthetic tests PASS;
+- selected points remain frozen to up_proj M1/M256 × RAW_FP16/AWQ;
+- no producer traffic/selector values were populated because producer branch was absent at the single fetch.
+
+174-new is now stopped at:
+
+`READY_FOR_E1_SEMANTIC_NCU_109`
+
+When node109 producer closes, resume the same 174-new consumer branch rather than rebuilding prep.
