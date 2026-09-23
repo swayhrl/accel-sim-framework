@@ -230,3 +230,35 @@ All currently foreseeable node109 E1 work is one Goal:
 - prepare an independent consumer/comparator;
 - consume producer evidence if it is available by the time prep completes.
 
+
+
+---
+
+## Next reviewed question — semantic NCU attribution
+
+The clean E1 producer/consumer pair is closed.
+
+Accepted independent result:
+
+- strongest interaction role: `up_proj`
+- M1 AWQ/RAW_FP16 ≈ 0.40024
+- M256 AWQ/RAW_FP16 ≈ 1.86876
+- abs(I) ≈ 1.54097
+- CODE down_proj holdout preserves the same qualitative small-M-fast / larger-M-slow direction
+- M1023/M1024 AWQ path switches from `GEMM_QUANTIZED` to `DEQUANTIZE_PLUS_TORCH_MATMUL`
+
+The current unresolved point is not whether timing interaction exists. It is:
+
+> what kernel set and L1/L2/DRAM traffic belong to one exact semantic up_proj invocation under RAW_FP16 and AWQ at M1/M256?
+
+The next stage therefore resolves semantic-module NCU attribution.
+
+Important scientific unit:
+
+`one exact semantic module invocation`
+
+not one arbitrarily selected GPU kernel.
+
+A multi-kernel AWQ module call is treated as one semantic range; additive traffic is summed only across kernels proven to belong to that range.
+
+No NVBit/full address trace/mechanism is authorized until this semantic NCU stage is reviewed.
