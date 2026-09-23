@@ -25,6 +25,7 @@ class SharedConsumerError(ValueError):
 
 
 FIXED_SETASIDE_BYTES = 33_947_648
+EXPECTED_ACTUAL_SETASIDE_BYTES = 37_748_736
 EXPECTED_REPS = 7
 ROTATING_REPS = 9
 CONDITIONS = (
@@ -175,7 +176,11 @@ def validate_policy_receipt(receipt: Mapping[str, Any], condition: str,
     requested = _integer(receipt.get("requested_setaside_bytes"), "requested_setaside_bytes", 1)
     actual = _integer(receipt.get("actual_setaside_bytes"), "actual_setaside_bytes", requested)
     if requested != FIXED_SETASIDE_BYTES:
-        raise SharedConsumerError("fixed total set-aside changed")
+        raise SharedConsumerError("fixed total requested set-aside changed")
+    if actual != EXPECTED_ACTUAL_SETASIDE_BYTES:
+        raise SharedConsumerError(
+            f"runtime query-back set-aside drift: expected {EXPECTED_ACTUAL_SETASIDE_BYTES}, got {actual}"
+        )
     stream = _text(receipt.get("stream_identity"), "stream_identity")
     switches = receipt.get("switches")
     if not isinstance(switches, list):
@@ -237,7 +242,9 @@ def validate_policy_receipt(receipt: Mapping[str, Any], condition: str,
         raise SharedConsumerError("reset is allowed only before and after condition")
     return {"status": "PASS", "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
             "condition": expected_condition, "requested_setaside_bytes": requested,
-            "actual_setaside_bytes": actual, "stream_identity": stream,
+            "actual_setaside_bytes": actual,
+            "runtime_query_back_matches_accepted_full_budget": True,
+            "stream_identity": stream,
             "reset_before": before, "switches": normalized, "reset_after": after,
             "api_switch_overhead": _stats(durations) if durations else None}
 
