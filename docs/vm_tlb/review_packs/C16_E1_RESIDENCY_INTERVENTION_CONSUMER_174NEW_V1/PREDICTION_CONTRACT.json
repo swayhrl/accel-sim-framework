@@ -1,0 +1,49 @@
+{
+  "P1": {
+    "applies": [
+      "down_proj",
+      "up_proj"
+    ],
+    "prediction": "DENSE perturbs AWQ timing/DRAM more than RAW and WARM_B recovers",
+    "premise": "AWQ<L2<RAW"
+  },
+  "P2": {
+    "applies": [
+      "q_proj"
+    ],
+    "prediction": "both may be warm-sensitive; differential smaller than down/up",
+    "premise": "RAW<L2 and AWQ<L2"
+  },
+  "P3": {
+    "prediction": "DENSE effect exceeds SPARSE if cache-line residency is major; sparse\u2248dense preserves page/translation/other plausibility"
+  },
+  "P4": {
+    "prediction": "up_proj M256 relative DENSE impact smaller than M1"
+  },
+  "monotonicity_is_pass_gate": false,
+  "resolution_provenance": {
+    "consumer_preregistered_resolution": [
+      "numeric DENSE_SPECIFIC rule",
+      "four-booleans to three-label truth table"
+    ],
+    "design_exact": [
+      "combined dispersion",
+      "timing materiality",
+      "DRAM materiality",
+      "recovery",
+      "P1-P4"
+    ],
+    "fail_closed": true
+  },
+  "rules": {
+    "DENSE_SPECIFIC": "timing and DRAM dense-specific both true",
+    "DENSE_SPECIFIC_DRAM": "DENSE>=2*SPARSE and DENSE-SPARSE>=1048576",
+    "DENSE_SPECIFIC_TIMING": "abs(D/W-1)-abs(S/W-1)>=0.05 and margin>sqrt(CV_warm^2+CV_sparse^2+CV_dense^2)",
+    "MATERIAL_DRAM_PERTURBATION": "DENSE_DRAM>=2*WARM_DRAM and DENSE_DRAM-WARM_DRAM>=1048576",
+    "MATERIAL_TIMING_PERTURBATION": "abs(DENSE/WARM_A-1)>=0.05 and effect>sqrt(CV_dense^2+CV_warm_a^2)",
+    "REVERSIBLE": "abs(WARM_B/WARM_A-1)<=max(0.05,sqrt(CV_warm_a^2+CV_warm_b^2))",
+    "combined_dispersion": "sqrt(cv_a^2+cv_b^2)",
+    "final_label": "STRONG iff all four booleans; PARTIAL iff timing or DRAM material but not STRONG; NOT_SUPPORTED iff neither timing nor DRAM material"
+  },
+  "status": "FROZEN_PRE_DATA"
+}

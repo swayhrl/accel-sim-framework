@@ -1,0 +1,33 @@
+{
+  "dense_label": "memory/cache pressure, not guaranteed cache flush",
+  "gpu_used_by_consumer": false,
+  "ncu_contract": {
+    "cache_control": "none",
+    "metrics": [
+      "l1tex__t_bytes.sum",
+      "lts__t_bytes.sum",
+      "dram__bytes.sum"
+    ],
+    "pressure_outside_target_range": true,
+    "producer_summary_tsv_authority": false,
+    "raw_BASE_SESSION_are_calculation_authority": true,
+    "replay_mode": "application",
+    "unit": "byte"
+  },
+  "pressure_allocation_bytes": 268435456,
+  "prohibited_claims": [
+    "TLB fully excluded",
+    "L2 sole cause",
+    "mechanism authorized",
+    "end-to-end speedup"
+  ],
+  "sparse_label": "page-footprint-oriented control, not TLB-only",
+  "states": {
+    "DENSE_MEMORY_PRESSURE": "same 256MiB allocation, full read, pressure outside target range/timing; not claimed cache flush",
+    "SPARSE_PAGE_PRESSURE": "same 256MiB allocation, 4096-byte stride, pressure outside target range/timing",
+    "WARM_A": "two target warmups, sync, target-only timing/profile",
+    "WARM_B": "two target warmups after DENSE, sync, target-only timing"
+  },
+  "status": "PASS",
+  "target_semantic_input_backend_invariant": true
+}
