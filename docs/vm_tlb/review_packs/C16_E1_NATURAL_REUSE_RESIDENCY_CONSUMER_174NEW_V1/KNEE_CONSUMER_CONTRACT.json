@@ -34,7 +34,7 @@
       64
     ]
   },
-  "dram_knee": "first dose with DRAM>1MiB and DRAM>10% packed state",
+  "dram_knee": "first TESTED dose with DRAM>1MiB and DRAM>10% packed state; not an exact physical knee",
   "exact_knee_equality_is_gate": false,
   "fail_closed": [
     "missing/duplicate dose",
@@ -55,13 +55,15 @@
     "q_proj": 57.62890625,
     "up_proj": 30.3603515625
   },
-  "reported_delta": "observed_dram_knee_mib - nominal_residual_l2_mib",
+  "reported_delta": "first_tested_dram_trigger_mib - nominal_residual_l2_mib; descriptive only",
   "role_state_bytes": {
     "down_proj": 35273728,
     "q_proj": 6680576,
     "up_proj": 35273728
   },
   "status": "FROZEN",
-  "timing_knee": "first dose material under 5% plus combined-dispersion rule",
-  "timing_repetitions": 7
+  "timing_knee": "first TESTED dose material under 5% plus combined-dispersion rule; not an exact onset",
+  "timing_repetitions": 7,
+  "tested_bracket_reporting": "For each first tested trigger, report the immediately previous tested dose and the trigger dose; the true onset is only bracketed by the tested grid.",
+  "wording_boundary": "Use first tested trigger / tested bracket. Do not call the sampled trigger an exact cache-capacity knee."
 }
