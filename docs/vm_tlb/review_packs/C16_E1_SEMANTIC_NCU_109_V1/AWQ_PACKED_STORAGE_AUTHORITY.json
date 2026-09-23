@@ -1,0 +1,43 @@
+{
+  "definition": "sum(numel * element_size) over exact accepted AWQ up_proj state_dict tensors",
+  "model_root": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641",
+  "module": "model.layers.0.mlp.up_proj",
+  "module_class": "WQLinear_GEMM",
+  "packed_weight_storage_bytes": 35273728,
+  "state_dict_tensors": [
+    {
+      "dtype": "torch.int32",
+      "element_count": 8486912,
+      "element_size_bytes": 4,
+      "name": "qweight",
+      "shape": [
+        3584,
+        2368
+      ],
+      "storage_bytes": 33947648
+    },
+    {
+      "dtype": "torch.int32",
+      "element_count": 66304,
+      "element_size_bytes": 4,
+      "name": "qzeros",
+      "shape": [
+        28,
+        2368
+      ],
+      "storage_bytes": 265216
+    },
+    {
+      "dtype": "torch.float16",
+      "element_count": 530432,
+      "element_size_bytes": 2,
+      "name": "scales",
+      "shape": [
+        28,
+        18944
+      ],
+      "storage_bytes": 1060864
+    }
+  ],
+  "status": "PASS"
+}

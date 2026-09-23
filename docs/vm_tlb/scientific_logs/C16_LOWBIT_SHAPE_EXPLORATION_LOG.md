@@ -175,3 +175,30 @@ A later deep memory diagnostic is justified only if:
 **Next question.** A future reviewed stage may establish a unique semantic NCU selector for the selected role.
 
 **Stop condition.** Stop after review/Git closure; do not launch NVBit, full address trace or TLB/cache mechanisms.
+
+---
+
+## E1 semantic-NCU result — 2026-09-23
+
+**Question.** For the frozen `up_proj` role, do the accepted M1/M256 RAW_FP16 and AWQ_FP16_INPUT semantic-module invocations show traffic interactions that can be measured without selecting a single representative kernel?
+
+**Evidence.** Four exact standalone replays consumed the accepted canonical FP16 activation bytes and reproduced all four clean-baseline output SHA256 values. Two warmups remained outside a single named NVTX push/pop range. With Nsight Compute CLI 2025.1.1.0, the qualified selector form was `--nvtx --nvtx-include <range>/`: each process contained one selected semantic range, RAW retained one kernel, and AWQ retained both its quantized GEMM and reduction kernels. L1/TEX, L2 and DRAM requested-byte counters had base unit `byte`; occupancy, SM throughput and tensor-cycle activity had unit `%` and were retained per kernel rather than summed.
+
+**Result.** Semantic-module byte sums were:
+
+| point | L1/TEX bytes | L2 bytes | DRAM bytes |
+|---|---:|---:|---:|
+| M1 RAW_FP16 | 272,187,392 | 137,179,776 | 137,814,656 |
+| M1 AWQ_FP16_INPUT | 47,284,224 | 41,677,408 | 35,665,664 |
+| M256 RAW_FP16 | 417,071,104 | 417,756,928 | 152,253,440 |
+| M256 AWQ_FP16_INPUT | 1,411,252,224 | 1,264,454,400 | 168,477,056 |
+
+At M1, AWQ/RAW was 0.174 for L1/TEX, 0.304 for L2 and 0.259 for DRAM, alongside the accepted timing ratio 0.400. At M256, AWQ/RAW was 3.384 for L1/TEX, 3.027 for L2 and 1.107 for DRAM, alongside the accepted timing ratio 1.869. The timing interaction ratio was 4.669; the corresponding traffic interaction ratios were 19.478, 9.963 and 4.276. All three byte families therefore changed in the same directional pattern as timing across the two shapes.
+
+**Interpretation.** The previously unresolved conditional-NCU step is now closed at the full semantic-module boundary. The data establish a descriptive association between shape-dependent deployed timing and requested traffic. They do not establish cache, TLB, quantization alone, or any other mechanism as causal. AWQ packed-storage normalization uses the exact accepted `up_proj` state-dict footprint of 35,273,728 bytes; dense RAW normalization uses 135,790,592 FP16 weight bytes.
+
+**Superseded.** The clean-baseline marker `NCU_SELECTOR_UNRESOLVED` is superseded only for these four frozen `up_proj` points by `SEMANTIC_MODULE_RANGE_QUALIFIED`. The clean activation, backend, timing, and role authorities are unchanged.
+
+**Next question.** Any mechanism-specific cache/TLB study requires a separately reviewed scientific contract; it is not inferred or started here.
+
+**Stop condition.** Stop after semantic-NCU review-pack and Git closure. NVBit, full address trace and TLB/cache mechanisms remain prohibited in this stage.
