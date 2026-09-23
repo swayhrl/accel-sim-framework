@@ -1,11 +1,14 @@
-# Scientific interpretation
+# Shared-residency independent consumer closure
 
-This publication closes the CPU-only shared-residency design review and independent consumer preparation. The shared-hardware producer ref was absent in the one-shot post-prep fetch window, so no shared-policy hardware outcome is assigned.
+Producer `1e701f013fc174b5b4df9febb5c33500f9ea586e` closes independently from raw evidence at `SHARED_RESIDENCY_LOCAL_ONLY`.
 
-The accepted upstream divergence remains unchanged: producer-scoped READY, strict-consumer precondition not supported, raw evidence match PASS, and methodological operationalization divergence. Project action remains `DESIGN_REVIEW_AUTHORIZED_WITH_TRAFFIC_CAVEAT`.
+- rotating policy qualification: PASS;
+- multi-target local retention: PASS;
+- stable whole-decode 2% materiality: FAIL, as preregistered;
+- 14-profile semantic NCU and 10-profile critical-path evidence: PASS;
+- up_proj duration response is concentrated in the quantized GEMM while reduction is nearly unchanged;
+- aggregate DRAM is not treated as a standalone critical-path proxy.
 
-The recommended first simulator study is `ORACLE_ELASTIC_QWEIGHT_RESIDENCY_V1` (M1 elastic protected quota). Oracle/software-region tagging separates replacement efficacy from classifier accuracy; M0 static partition is a stranding control and M2 priority insertion is deferred. This is a design recommendation only.
+The run-aligned SHARE3 audit gives median three-target share 1.7400% of stable decode, median summed local saving 0.4582% of decode, and unclamped median realization ratio 0.8852. The sub-0.5% whole-decode result is consistent with limited protected coverage; it is not evidence that local savings fail to realize systemically.
 
-Accepted Core static mapping shows address and access type reach L2, kernel UID and CTA ID do not, and PC is not reliable for sector-split child requests. Existing C16 artifacts do not contain the bounded inter-token address trace needed for the proposed L2 experiment. `BOUNDED_ADDITIONAL_TRACE_REQUIRED` records the minimum future evidence need but does not authorize capture.
-
-No GPU, NVBit, trace capture, simulator mutation, or mechanism simulation was performed or authorized.
+Prior producer/strict-consumer divergence and the traffic caveat remain frozen. No simulator implementation is authorized.

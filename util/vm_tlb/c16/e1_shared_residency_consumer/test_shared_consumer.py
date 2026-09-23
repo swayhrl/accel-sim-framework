@@ -198,6 +198,14 @@ class SharedRunTests(unittest.TestCase):
         self.assertEqual(len(out["timing_points"]), 72)
         self.assertEqual(len(out["decode_step_timing"]), 24)
 
+    def test_process_local_region_authority_passes(self):
+        doc = shared_document()
+        local = doc.pop("qweight_regions")
+        for block in doc["conditions"]:
+            for run in block["runs"]:
+                run["qweight_regions"] = copy.deepcopy(local)
+        self.assertEqual(sc.consume_shared_runs(doc)["fresh_process_count"], 42)
+
     def test_sha_drift_rejected(self):
         doc = shared_document()
         doc["conditions"][2]["runs"][1]["occurrences"][0]["input_sha256"] = "3" * 64
@@ -260,6 +268,19 @@ class RotatingQualificationTests(unittest.TestCase):
         self.assertEqual(out["status"], "PASS")
         self.assertGreater(out["persist_vs_control_timing_benefit_fraction"], .29)
 
+    def test_rotating_accepts_exact_a_b_region_authority_only(self):
+        doc = rotating_document()
+        doc["qweight_regions"].pop("L0_DOWN")
+        self.assertEqual(sc.consume_rotating_qualification(doc)["status"], "PASS")
+
+    def test_rotating_process_local_regions_pass(self):
+        doc = rotating_document()
+        local = doc.pop("qweight_regions")
+        for block in doc["conditions"]:
+            for run in block["runs"]:
+                run["qweight_regions"] = copy.deepcopy(local)
+        self.assertEqual(sc.consume_rotating_qualification(doc)["status"], "PASS")
+
     def test_rotating_wrong_order_rejected(self):
         doc = rotating_document()
         doc["conditions"][0]["runs"][0]["policy_receipt"]["switches"][1]["target"] = "L0_UP"
@@ -307,10 +328,11 @@ class NcuTests(unittest.TestCase):
             session.write_text("ncu --replay-mode application --cache-control none "
                                f"--nvtx-include {range_name}/ --metrics {','.join(sc.BASE_METRICS)}\n",
                                encoding="utf-8")
-            profile.write_text(json.dumps({"status": "PASS", "condition": condition,
-                                           "target": target, "decode_index": 3,
-                                           "range": range_name, "input_sha256": S1,
-                                           "output_sha256": S2}) + "\n", encoding="utf-8")
+            pass_row = {"status": "PASS", "condition": condition,
+                        "target": target, "decode_index": 3,
+                        "range": range_name, "input_sha256": S1,
+                        "output_sha256": S2}
+            profile.write_text((json.dumps(pass_row) + "\n") * 2, encoding="utf-8")
             receipt.write_text(json.dumps(policy(condition)), encoding="utf-8")
             profiles.append({"condition": condition, "target": target, "decode_index": 3,
                              "range_name": range_name, "input_sha256": S1, "output_sha256": S2,
@@ -323,6 +345,13 @@ class NcuTests(unittest.TestCase):
         out = sc.consume_shared_ncu(self.make_document(), self.root)
         self.assertEqual(out["profile_count"], 14)
         self.assertEqual(out["profiles"][0]["base"]["additive_metric_sums"]["dram__bytes.sum"], "330")
+
+    def test_profile_local_region_authority_passes(self):
+        doc = self.make_document()
+        local = doc.pop("qweight_regions")
+        for profile in doc["profiles"]:
+            profile["qweight_regions"] = copy.deepcopy(local)
+        self.assertEqual(sc.consume_shared_ncu(doc, self.root)["profile_count"], 14)
 
     def test_duplicate_semantic_point_rejected(self):
         doc = self.make_document()
@@ -351,17 +380,29 @@ class NcuTests(unittest.TestCase):
     def test_profile_identity_rejected(self):
         doc = self.make_document()
         path = self.root / doc["profiles"][0]["profile_path"]
-        row = json.loads(path.read_text())
-        row["output_sha256"] = "9" * 64
-        path.write_text(json.dumps(row))
+        rows = [json.loads(x) for x in path.read_text().splitlines()]
+        rows[0]["output_sha256"] = "9" * 64
+        path.write_text("\n".join(json.dumps(x) for x in rows) + "\n")
         with self.assertRaisesRegex(sc.SharedConsumerError, "semantic identity"):
             sc.consume_shared_ncu(doc, self.root)
 
-    def test_nonadditive_metric_rejected_here(self):
+    def test_profile_pass_count_must_match_replay_passes(self):
+        doc = self.make_document()
+        path = self.root / doc["profiles"][0]["profile_path"]
+        path.write_text(path.read_text().splitlines()[0] + "\n")
+        with self.assertRaisesRegex(sc.SharedConsumerError, "PASS receipt count"):
+            sc.consume_shared_ncu(doc, self.root)
+
+    def test_nonadditive_metric_is_not_semantically_summed_here(self):
         doc = self.make_document()
         doc["metrics"].append({"name": "stall.pct", "unit": "%", "additive": False})
-        with self.assertRaisesRegex(sc.SharedConsumerError, "additive"):
-            sc.consume_shared_ncu(doc, self.root)
+        for profile in doc["profiles"]:
+            session = self.root / profile["session_path"]
+            session.write_text(session.read_text().replace(
+                ",dram__bytes.sum", ",dram__bytes.sum,stall.pct"))
+        out = sc.consume_shared_ncu(doc, self.root)
+        self.assertEqual(out["nonadditive_metrics_delegated_to_critical_path_consumer"], ["stall.pct"])
+        self.assertNotIn("stall.pct", out["profiles"][0]["base"]["additive_metric_sums"])
 
     def test_analysis_classifies_end_to_end(self):
         native = sc.consume_shared_runs(shared_document())

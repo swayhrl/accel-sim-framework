@@ -97,6 +97,17 @@ class CriticalPathConsumerTests(unittest.TestCase):
         self.assertEqual([(row["kernel_name"], row["value"]) for row in stalls], [(GEMM, 40), (REDUCE, 10)])
         self.assertFalse(any(row["category"] == "LONG_SCOREBOARD_STALL" for row in dram))
 
+    def test_runtime_duration_ns_is_additive(self):
+        catalog = [{"category": "KERNEL_DURATION", "available": True,
+                    "metric_name": "gpu__time_duration.sum", "unit": "ns",
+                    "aggregation": "SEMANTIC_SUM"}]
+        path = self.write_base(
+            metrics=["gpu__time_duration.sum"], units=["", "", "", "ns"],
+            rows=[["1", GEMM, RANGE, "100"], ["2", REDUCE, RANGE, "25"]],
+        )
+        result = consume(self.document(path, catalog=catalog), self.root)
+        self.assertEqual(result["semantic_sums"][0]["value"], 125)
+
     def test_explicit_unavailable_category_does_not_require_or_invent_metric(self):
         catalog = [
             self.catalog[0],

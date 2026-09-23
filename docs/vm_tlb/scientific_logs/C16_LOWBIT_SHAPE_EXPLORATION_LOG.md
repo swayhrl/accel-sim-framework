@@ -508,3 +508,9 @@ Future simulator authority, if later authorized, remains:
 - Core `swayhrl/gpgpu-sim@57bb71e...`
 - RTX4080 `RTX4080_ADA_ACCELSIM_BASE_V1`
 - not an RTX3080/SM86 configuration.
+
+---
+
+## E1 shared closure and coverage-scaling consumer prep (174-new)
+
+Shared producer `1e701f013fc174b5b4df9febb5c33500f9ea586e` independently closes from raw evidence at `SHARED_RESIDENCY_LOCAL_ONLY`. Five real-artifact canaries, the exact 15-update schedule, rotating qualification, 42 native runs, 14 multi-pass NCU profiles, and critical-path metrics close. SHARE3 run-aligned median target share is about 1.74% and median realization ratio about 0.885, supporting limited protected coverage rather than failed realization of local savings. Coverage consumers freeze the 28-layer census, exact layer sets, run-aligned Amdahl accounting, N14 holdout, 16-profile NCU matrix, and FULLHINT trigger. Historical C12 evidence is qualitative motivation only. Future simulator authority is Core 57bb71e plus RTX4080 Ada config de9ee8f; SM86/RTX3080 is excluded. The coverage producer ref was absent in the one-shot fetch window, so status is `READY_FOR_E1_COVERAGE_SCALING_109`. No GPU/simulator/NVBit/trace/mechanism work was used.

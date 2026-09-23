@@ -115,23 +115,25 @@ def _sha_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _stats(values: Sequence[float]) -> dict[str, Any]:
+def _stats(values: Sequence[float], unit: str = "ms") -> dict[str, Any]:
     if not values:
         raise SharedConsumerError("empty timing samples")
     checked = [_finite(value, "timing", positive=True) for value in values]
     mean = statistics.fmean(checked)
-    return {"sample_count": len(checked), "samples_ms": checked, "min_ms": min(checked),
-            "median_ms": statistics.median(checked), "max_ms": max(checked),
-            "mean_ms": mean, "cv": statistics.pstdev(checked) / mean}
+    return {"sample_count": len(checked), f"samples_{unit}": checked,
+            f"min_{unit}": min(checked), f"median_{unit}": statistics.median(checked),
+            f"max_{unit}": max(checked), f"mean_{unit}": mean,
+            "cv": statistics.pstdev(checked) / mean}
 
 
-def _regions(document: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
+def _regions(document: Mapping[str, Any], required_targets: Sequence[str] = TARGETS) -> dict[str, dict[str, Any]]:
     raw = document.get("qweight_regions")
-    if not isinstance(raw, Mapping) or set(raw) != set(TARGETS):
-        raise SharedConsumerError("qweight_regions must contain exactly L0_UP/L14_UP/L0_DOWN")
+    required = tuple(required_targets)
+    if not isinstance(raw, Mapping) or not set(required).issubset(raw):
+        raise SharedConsumerError("qweight_regions missing required target")
     out: dict[str, dict[str, Any]] = {}
     spans = []
-    for target in TARGETS:
+    for target in required:
         item = raw[target]
         if not isinstance(item, Mapping):
             raise SharedConsumerError(f"invalid qweight region {target}")
@@ -253,7 +255,7 @@ def validate_policy_receipt(receipt: Mapping[str, Any], condition: str,
             "runtime_query_back_matches_accepted_full_budget": True,
             "stream_identity": stream,
             "reset_before": before, "switches": normalized, "reset_after": after,
-            "api_switch_overhead": _stats(durations) if durations else None}
+            "api_switch_overhead": _stats(durations, "us") if durations else None}
 
 
 def _authority(document: Mapping[str, Any]) -> tuple[str, tuple[int, ...], dict[tuple[int, str, int], dict[str, Any]]]:
@@ -305,7 +307,7 @@ def consume_shared_runs(document: Mapping[str, Any]) -> dict[str, Any]:
         raise SharedConsumerError("unsupported shared run schema")
     if _integer(document.get("fixed_setaside_bytes"), "fixed_setaside_bytes") != FIXED_SETASIDE_BYTES:
         raise SharedConsumerError("wrong fixed total set-aside")
-    regions = _regions(document)
+    document_regions = _regions(document) if isinstance(document.get("qweight_regions"), Mapping) else None
     prefix, tokens, authority = _authority(document)
     conditions = document.get("conditions")
     if not isinstance(conditions, list):
@@ -358,7 +360,10 @@ def consume_shared_runs(document: Mapping[str, Any]) -> dict[str, Any]:
                     raise SharedConsumerError("decode-step identity mismatch")
                 step_seen.add(d)
                 decode[(condition, d)].append(_finite(row.get("timing_ms"), "decode timing_ms", positive=True))
-            policy = validate_policy_receipt(run.get("policy_receipt"), condition, regions)
+            run_regions = _regions(run) if isinstance(run.get("qweight_regions"), Mapping) else document_regions
+            if run_regions is None:
+                raise SharedConsumerError("run lacks process-local qweight region authority")
+            policy = validate_policy_receipt(run.get("policy_receipt"), condition, run_regions)
             policies.append({"condition": condition, "rep": rep, "fresh_process_id": process, "validation": policy})
             for switch in policy["switches"]:
                 overhead[condition].append(switch["api_duration_us"])
@@ -368,7 +373,7 @@ def consume_shared_runs(document: Mapping[str, Any]) -> dict[str, Any]:
                    for key, values in sorted(timing.items())]
     decode_rows = [{"condition": key[0], "decode_index": key[1], "generated_token_id": tokens[key[1]],
                     "statistics": _stats(values)} for key, values in sorted(decode.items())]
-    overhead_rows = [{"condition": condition, "statistics": _stats(values)}
+    overhead_rows = [{"condition": condition, "statistics": _stats(values, "us")}
                      for condition, values in sorted(overhead.items()) if values]
     return {"status": "PASS", "authority": "RAW_7_FRESH_PROCESS_RUNS_AND_ORDERED_POLICY_RECEIPTS_ONLY",
             "fixed_setaside_bytes": FIXED_SETASIDE_BYTES, "fresh_process_count": len(process_ids),
@@ -381,7 +386,8 @@ def consume_rotating_qualification(document: Mapping[str, Any]) -> dict[str, Any
     """Validate the isolated A/B/A rotating qualification and its matched API control."""
     if document.get("schema_version") != 1:
         raise SharedConsumerError("unsupported rotating schema")
-    regions = _regions(document)
+    document_regions = (_regions(document, ("L0_UP", "L14_UP"))
+                        if isinstance(document.get("qweight_regions"), Mapping) else None)
     blocks = document.get("conditions")
     if not isinstance(blocks, list):
         raise SharedConsumerError("rotating conditions must be a list")
@@ -408,10 +414,14 @@ def consume_rotating_qualification(document: Mapping[str, Any]) -> dict[str, Any
             if identities[condition] != pair:
                 raise SharedConsumerError("rotating SHA drift")
             samples.append(_finite(run.get("target_timing_ms"), "target_timing_ms", positive=True))
-            policy = validate_policy_receipt(run.get("policy_receipt"), condition, regions, rotating=True)
+            run_regions = (_regions(run, ("L0_UP", "L14_UP"))
+                           if isinstance(run.get("qweight_regions"), Mapping) else document_regions)
+            if run_regions is None:
+                raise SharedConsumerError("rotating run lacks process-local A/B region authority")
+            policy = validate_policy_receipt(run.get("policy_receipt"), condition, run_regions, rotating=True)
             normalized.append(policy)
             overheads.extend(s["api_duration_us"] for s in policy["switches"])
-        results[condition] = {"timing": _stats(samples), "api_switch_overhead": _stats(overheads),
+        results[condition] = {"timing": _stats(samples), "api_switch_overhead": _stats(overheads, "us"),
                               "input_sha256": identities[condition][0], "output_sha256": identities[condition][1],
                               "policy_receipts": normalized}
     if set(results) != {"ROTATING_PERSIST", "ROTATING_CONTROL"} or len(set(identities.values())) != 1:
@@ -499,33 +509,58 @@ def _audit_profile(path: Path, spec: Mapping[str, Any]) -> dict[str, Any]:
             continue
         if isinstance(row, dict) and row.get("status") == "PASS":
             receipts.append(row)
-    if len(receipts) != 1:
-        raise SharedConsumerError("PROFILE requires exactly one PASS receipt")
-    row = receipts[0]
+    if len(receipts) != spec["expected_pass_count"]:
+        raise SharedConsumerError("PROFILE PASS receipt count does not match replay passes")
     expected = {key: spec[key] for key in ("condition", "target", "decode_index", "range_name",
                                                         "input_sha256", "output_sha256")}
-    observed = {"condition": row.get("condition"), "target": row.get("target"),
-                "decode_index": row.get("decode_index"), "range_name": row.get("range", row.get("range_name")),
-                "input_sha256": row.get("input_sha256"), "output_sha256": row.get("output_sha256")}
-    if observed != expected:
-        raise SharedConsumerError("PROFILE semantic identity mismatch")
-    return {"sha256": _sha_file(path), **expected}
+    replay_identity = None
+    for row in receipts:
+        if isinstance(row.get("occurrences"), list):
+            matches = [item for item in row["occurrences"]
+                       if item.get("range") == spec["range_name"]]
+            occurrence = matches[0] if len(matches) == 1 else {}
+            observed = {"condition": row.get("condition"), "target": occurrence.get("target"),
+                        "decode_index": occurrence.get("decode_index"), "range_name": occurrence.get("range"),
+                        "input_sha256": occurrence.get("input_sha256"), "output_sha256": occurrence.get("output_sha256")}
+            transitions = row.get("policy_transitions", [])
+            policy_signature = (
+                row.get("token_file_sha256"), tuple(row.get("generated_token_ids_D0_D3", [])),
+                row.get("policy_transition_count"), row.get("no_reset_between_transitions"),
+                tuple((item.get("phase"), item.get("target"), item.get("hit_ratio"),
+                       item.get("hit_property"), item.get("miss_property"), item.get("persisting"))
+                      for item in transitions),
+            )
+        else:
+            observed = {"condition": row.get("condition"), "target": row.get("target"),
+                        "decode_index": row.get("decode_index"), "range_name": row.get("range", row.get("range_name")),
+                        "input_sha256": row.get("input_sha256"), "output_sha256": row.get("output_sha256")}
+            policy_signature = tuple(sorted(observed.items()))
+        if observed != expected:
+            raise SharedConsumerError("PROFILE semantic identity mismatch")
+        if replay_identity is None:
+            replay_identity = policy_signature
+        elif replay_identity != policy_signature:
+            raise SharedConsumerError("PROFILE replay semantic/token/policy identity mismatch")
+    return {"sha256": _sha_file(path), "pass_receipt_count": len(receipts), **expected}
 
 
 def consume_shared_ncu(document: Mapping[str, Any], root: Path = Path(".")) -> dict[str, Any]:
     """Consume exact 14-point D3 NCU matrix from raw four-source evidence."""
     if document.get("schema_version") != 1:
         raise SharedConsumerError("unsupported shared NCU schema")
-    regions = _regions(document)
+    document_regions = _regions(document) if isinstance(document.get("qweight_regions"), Mapping) else None
     metric_rows = document.get("metrics")
     if not isinstance(metric_rows, list) or not metric_rows:
         raise SharedConsumerError("metrics contract must be nonempty")
     metrics = {}
+    session_metric_names = set()
     for row in metric_rows:
         name, unit = _text(row.get("name"), "metric.name"), _text(row.get("unit"), "metric.unit")
-        if name in metrics or not _boolean(row.get("additive"), "metric.additive"):
-            raise SharedConsumerError("semantic NCU accepts unique additive metrics only")
-        metrics[name] = unit
+        if name in session_metric_names:
+            raise SharedConsumerError("semantic NCU metric contract contains a duplicate")
+        session_metric_names.add(name)
+        if _boolean(row.get("additive"), "metric.additive"):
+            metrics[name] = unit
     if not set(BASE_METRICS).issubset(metrics):
         raise SharedConsumerError("semantic NCU missing required base metrics")
     profiles = document.get("profiles")
@@ -554,18 +589,24 @@ def consume_shared_ncu(document: Mapping[str, Any], root: Path = Path(".")) -> d
         if not all(path.is_file() for path in paths.values()):
             raise SharedConsumerError("missing raw NCU evidence")
         policy_raw = json.loads(paths["policy_receipt"].read_text(encoding="utf-8"))
-        policy = validate_policy_receipt(policy_raw, condition, regions)
+        profile_regions = (_regions(raw) if isinstance(raw.get("qweight_regions"), Mapping)
+                           else document_regions)
+        if profile_regions is None:
+            raise SharedConsumerError("NCU profile lacks process-local qweight region authority")
+        policy = validate_policy_receipt(policy_raw, condition, profile_regions)
         output.append({"condition": condition, "target": target, "decode_index": 3,
                        "range_name": spec["range_name"], "input_sha256": spec["input_sha256"],
                        "output_sha256": spec["output_sha256"],
-                       "session": _audit_session(paths["session"], spec, set(metrics)),
+                       "session": _audit_session(paths["session"], spec, session_metric_names),
                        "profile": _audit_profile(paths["profile"], spec),
                        "base": _read_ncu_base(paths["base"], spec, metrics),
                        "policy": policy, "policy_receipt_sha256": _sha_file(paths["policy_receipt"])})
     if seen != NCU_MATRIX:
         raise SharedConsumerError("shared NCU matrix mismatch")
     return {"status": "PASS", "authority": "DIRECT_RAW_BASE_SESSION_PROFILE_ORDERED_POLICY_RECEIPT_ONLY",
-            "profile_count": len(output), "metrics": metric_rows, "profiles": output}
+            "profile_count": len(output), "metrics": metric_rows,
+            "nonadditive_metrics_delegated_to_critical_path_consumer": sorted(session_metric_names-set(metrics)),
+            "profiles": output}
 
 
 def analyze_shared_policy(native: Mapping[str, Any], ncu: Mapping[str, Any]) -> dict[str, Any]:

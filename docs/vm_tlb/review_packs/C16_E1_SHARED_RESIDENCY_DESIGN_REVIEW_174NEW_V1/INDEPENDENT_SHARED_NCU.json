@@ -1,0 +1,3537 @@
+{
+  "authority": "DIRECT_RAW_BASE_SESSION_PROFILE_ORDERED_POLICY_RECEIPT_ONLY",
+  "metrics": [
+    {
+      "additive": true,
+      "name": "l1tex__t_bytes.sum",
+      "unit": "byte"
+    },
+    {
+      "additive": true,
+      "name": "lts__t_bytes.sum",
+      "unit": "byte"
+    },
+    {
+      "additive": true,
+      "name": "dram__bytes.sum",
+      "unit": "byte"
+    },
+    {
+      "additive": true,
+      "name": "gpu__time_duration.sum",
+      "unit": "ns"
+    },
+    {
+      "additive": true,
+      "name": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+      "unit": "sector"
+    },
+    {
+      "additive": true,
+      "name": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+      "unit": "sector"
+    },
+    {
+      "additive": true,
+      "name": "dram__bytes_read.sum",
+      "unit": "byte"
+    },
+    {
+      "additive": false,
+      "name": "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+      "unit": "%"
+    },
+    {
+      "additive": false,
+      "name": "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+      "unit": "%"
+    },
+    {
+      "additive": false,
+      "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+      "unit": "%"
+    }
+  ],
+  "nonadditive_metrics_delegated_to_critical_path_consumer": [
+    "sm__warps_active.avg.pct_of_peak_sustained_active",
+    "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+    "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct"
+  ],
+  "profile_count": 14,
+  "profiles": [
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "35477760",
+          "dram__bytes_read.sum": "35369472",
+          "gpu__time_duration.sum": "88160",
+          "l1tex__t_bytes.sum": "45932544",
+          "lts__t_bytes.sum": "41198688",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "157520",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "35407488",
+              "dram__bytes_read.sum": "35299200",
+              "gpu__time_duration.sum": "82912",
+              "l1tex__t_bytes.sum": "45846528",
+              "lts__t_bytes.sum": "40596800",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "155728",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "70272",
+              "dram__bytes_read.sum": "70272",
+              "gpu__time_duration.sum": "5248",
+              "l1tex__t_bytes.sum": "86016",
+              "lts__t_bytes.sum": "601888",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "1792",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "758cd2b5a432db8e98334e56f8b9aff05012e3a8adc4f5c4d92e838bc47341de"
+      },
+      "condition": "ROTATE_CONTROL_3",
+      "decode_index": 3,
+      "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+      "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.36362046597136877,
+          "max_us": 24.548,
+          "mean_us": 14.390133333333333,
+          "median_us": 12.736,
+          "min_us": 8.329,
+          "sample_count": 15,
+          "samples_us": [
+            21.405,
+            11.824,
+            12.736,
+            24.548,
+            10.484,
+            13.847,
+            21.252,
+            8.763,
+            13.919,
+            13.391,
+            8.329,
+            12.07,
+            11.982,
+            8.497,
+            22.805
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "ROTATE_CONTROL_3",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 21.405,
+            "base_pointer": 127547039809536,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.824,
+            "base_pointer": 127547174027264,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.736,
+            "base_pointer": 127545831849984,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 24.548,
+            "base_pointer": 127547039809536,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 10.484,
+            "base_pointer": 127547174027264,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.847,
+            "base_pointer": 127545831849984,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 21.252,
+            "base_pointer": 127547039809536,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.763,
+            "base_pointer": 127547174027264,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.919,
+            "base_pointer": 127545831849984,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.391,
+            "base_pointer": 127547039809536,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.329,
+            "base_pointer": 127547174027264,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.07,
+            "base_pointer": 127545831849984,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.982,
+            "base_pointer": 127547039809536,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.497,
+            "base_pointer": 127547174027264,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 22.805,
+            "base_pointer": 127545831849984,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": false
+          }
+        ]
+      },
+      "policy_receipt_sha256": "1839e0a0f1ee06f3a2224842a97de4a3f3f7a98fa76a56bf85c71ca1d2b2bde7",
+      "profile": {
+        "condition": "ROTATE_CONTROL_3",
+        "decode_index": 3,
+        "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+        "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_ROTATE_CONTROL_3_L0_DOWN_D3",
+        "sha256": "397d03c67ed006bda7399b6ee08082143e77c242466c527737da4a455d112863",
+        "target": "L0_DOWN"
+      },
+      "range_name": "C16_E1_SHARED_ROTATE_CONTROL_3_L0_DOWN_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "6fc1e1d84b03250ee6b7f2ef5f9c1456b326183960d1ca6030470b9bdaf33688"
+      },
+      "target": "L0_DOWN"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "46674560",
+          "dram__bytes_read.sum": "35281152",
+          "gpu__time_duration.sum": "82912",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41727808",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "156174",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "46673152",
+              "dram__bytes_read.sum": "35279744",
+              "gpu__time_duration.sum": "78432",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40742976",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "146702",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "1408",
+              "dram__bytes_read.sum": "1408",
+              "gpu__time_duration.sum": "4480",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "984832",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "64d6cf0870d106ddcfea5f98f17970e988af607866c4cb44babdda6abf25f35e"
+      },
+      "condition": "ROTATE_CONTROL_3",
+      "decode_index": 3,
+      "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+      "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.38515481655736783,
+          "max_us": 27.53,
+          "mean_us": 15.435066666666668,
+          "median_us": 13.756,
+          "min_us": 8.15,
+          "sample_count": 15,
+          "samples_us": [
+            22.057,
+            10.775,
+            12.313,
+            23.184,
+            9.684,
+            13.756,
+            22.88,
+            8.15,
+            20.302,
+            13.981,
+            8.209,
+            11.832,
+            11.84,
+            27.53,
+            15.033
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "ROTATE_CONTROL_3",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 22.057,
+            "base_pointer": 139698743803904,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 10.775,
+            "base_pointer": 139698878021632,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.313,
+            "base_pointer": 139697535844352,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 23.184,
+            "base_pointer": 139698743803904,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 9.684,
+            "base_pointer": 139698878021632,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.756,
+            "base_pointer": 139697535844352,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 22.88,
+            "base_pointer": 139698743803904,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.15,
+            "base_pointer": 139698878021632,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 20.302,
+            "base_pointer": 139697535844352,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.981,
+            "base_pointer": 139698743803904,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.209,
+            "base_pointer": 139698878021632,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.832,
+            "base_pointer": 139697535844352,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.84,
+            "base_pointer": 139698743803904,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 27.53,
+            "base_pointer": 139698878021632,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 15.033,
+            "base_pointer": 139697535844352,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": false
+          }
+        ]
+      },
+      "policy_receipt_sha256": "a5a6ad71cddee982cdba85ed59dd54bb884c0c34e496af318408c842a2df6d9d",
+      "profile": {
+        "condition": "ROTATE_CONTROL_3",
+        "decode_index": 3,
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_ROTATE_CONTROL_3_L0_UP_D3",
+        "sha256": "71e200e40ce3bd376a77a0256ff4d3db229abf18c5588a826a16fba2f7d77fca",
+        "target": "L0_UP"
+      },
+      "range_name": "C16_E1_SHARED_ROTATE_CONTROL_3_L0_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "6ac5f7508123f8042523bb5aa46bf50a1060a480ce78757b9a2cb8c3ac25fcb0"
+      },
+      "target": "L0_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "45942144",
+          "dram__bytes_read.sum": "35279872",
+          "gpu__time_duration.sum": "81312",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41720736",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "155992",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "45941248",
+              "dram__bytes_read.sum": "35278976",
+              "gpu__time_duration.sum": "76800",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40738432",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "146520",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "896",
+              "dram__bytes_read.sum": "896",
+              "gpu__time_duration.sum": "4512",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "982304",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "8c113be83335cbdd6fcd5c71cb60915c6f33c39488c6fd85bfd2ea41a1740eb3"
+      },
+      "condition": "ROTATE_CONTROL_3",
+      "decode_index": 3,
+      "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+      "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.3807527896979474,
+          "max_us": 25.332,
+          "mean_us": 14.201666666666666,
+          "median_us": 12.528,
+          "min_us": 8.199,
+          "sample_count": 15,
+          "samples_us": [
+            22.676,
+            11.259,
+            12.542,
+            25.332,
+            12.81,
+            16.835,
+            24.385,
+            8.588,
+            12.564,
+            12.373,
+            8.199,
+            12.528,
+            12.392,
+            8.227,
+            12.315
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "ROTATE_CONTROL_3",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 22.676,
+            "base_pointer": 136513857781760,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.259,
+            "base_pointer": 136513991999488,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.542,
+            "base_pointer": 136512649822208,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 25.332,
+            "base_pointer": 136513857781760,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.81,
+            "base_pointer": 136513991999488,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 16.835,
+            "base_pointer": 136512649822208,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 24.385,
+            "base_pointer": 136513857781760,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.588,
+            "base_pointer": 136513991999488,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.564,
+            "base_pointer": 136512649822208,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.373,
+            "base_pointer": 136513857781760,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.199,
+            "base_pointer": 136513991999488,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.528,
+            "base_pointer": 136512649822208,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.392,
+            "base_pointer": 136513857781760,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 8.227,
+            "base_pointer": 136513991999488,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.315,
+            "base_pointer": 136512649822208,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": false
+          }
+        ]
+      },
+      "policy_receipt_sha256": "b37c0a299e47dfa342cef3afef8421984e349be4b5f05a28fd2aa37fce8638ba",
+      "profile": {
+        "condition": "ROTATE_CONTROL_3",
+        "decode_index": 3,
+        "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+        "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_ROTATE_CONTROL_3_L14_UP_D3",
+        "sha256": "93d85a97e571ce7a3b2ee0db570676c1407d9d5b37c770e1cfec37c080c6ac43",
+        "target": "L14_UP"
+      },
+      "range_name": "C16_E1_SHARED_ROTATE_CONTROL_3_L14_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "8bdf80e67a943187246fa71d77d7c9a55da96b13978f7b92c87355cb5929d634"
+      },
+      "target": "L14_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "35504768",
+          "dram__bytes_read.sum": "35367936",
+          "gpu__time_duration.sum": "86784",
+          "l1tex__t_bytes.sum": "45932544",
+          "lts__t_bytes.sum": "41180064",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "157106",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "35434496",
+              "dram__bytes_read.sum": "35297664",
+              "gpu__time_duration.sum": "81792",
+              "l1tex__t_bytes.sum": "45846528",
+              "lts__t_bytes.sum": "40579232",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "155314",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "70272",
+              "dram__bytes_read.sum": "70272",
+              "gpu__time_duration.sum": "4992",
+              "l1tex__t_bytes.sum": "86016",
+              "lts__t_bytes.sum": "600832",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "1792",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "c99edb7b7ab79b8c8bbebd7f9e9496d18e0b80c4130a18738d06da9fc1041140"
+      },
+      "condition": "SETASIDE_ONLY",
+      "decode_index": 3,
+      "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+      "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": null,
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SETASIDE_ONLY",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 1,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": []
+      },
+      "policy_receipt_sha256": "16df68ca0646daa4436433d3d35db6e920c52225c35de6be3df092216e5dba8f",
+      "profile": {
+        "condition": "SETASIDE_ONLY",
+        "decode_index": 3,
+        "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+        "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SETASIDE_ONLY_L0_DOWN_D3",
+        "sha256": "20325379c15cb61f0a3acce22eef7a31795d7469036f736d249da57a6b800549",
+        "target": "L0_DOWN"
+      },
+      "range_name": "C16_E1_SHARED_SETASIDE_ONLY_L0_DOWN_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "552a21d30fd95cf9b67d2b724f12483d18f1961872928854c7d3bdf5e06be073"
+      },
+      "target": "L0_DOWN"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "46652672",
+          "dram__bytes_read.sum": "35280128",
+          "gpu__time_duration.sum": "82624",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41683712",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "154764",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "46652160",
+              "dram__bytes_read.sum": "35279616",
+              "gpu__time_duration.sum": "78176",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40700896",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "145292",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "512",
+              "dram__bytes_read.sum": "512",
+              "gpu__time_duration.sum": "4448",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "982816",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "05b63a6aead75da860fa150352285ba022072dd19ca9acae7c382528ea5c1263"
+      },
+      "condition": "SETASIDE_ONLY",
+      "decode_index": 3,
+      "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+      "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": null,
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SETASIDE_ONLY",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 1,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": []
+      },
+      "policy_receipt_sha256": "b9b13fb33ecac3a982bc76f2094704afd1cda3a7f1d8d570a7d8127d4982c541",
+      "profile": {
+        "condition": "SETASIDE_ONLY",
+        "decode_index": 3,
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SETASIDE_ONLY_L0_UP_D3",
+        "sha256": "c758fbf4dd24b319984dbd5ef082da5b6cb91461c814bab5aa86347519848efd",
+        "target": "L0_UP"
+      },
+      "range_name": "C16_E1_SHARED_SETASIDE_ONLY_L0_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "f7fe2d9e42c83c664f9346428874968c25342bf6f09ae629831318e31b56571a"
+      },
+      "target": "L0_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "45913088",
+          "dram__bytes_read.sum": "35280768",
+          "gpu__time_duration.sum": "81376",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41735584",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "156496",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "45912192",
+              "dram__bytes_read.sum": "35279872",
+              "gpu__time_duration.sum": "76800",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40753216",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "147024",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1102304"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "896",
+              "dram__bytes_read.sum": "896",
+              "gpu__time_duration.sum": "4576",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "982368",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "aab70864727f8188129ec2d5a10fdd78fd60ca50ecdf69742fc7ad274d10d52c"
+      },
+      "condition": "SETASIDE_ONLY",
+      "decode_index": 3,
+      "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+      "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": null,
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SETASIDE_ONLY",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 1,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": []
+      },
+      "policy_receipt_sha256": "50e1b74f392f0d0d31b6924b00c251fe98dff7e286514219f105dd53f443ac74",
+      "profile": {
+        "condition": "SETASIDE_ONLY",
+        "decode_index": 3,
+        "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+        "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SETASIDE_ONLY_L14_UP_D3",
+        "sha256": "4e3a97d28d613cd6d3c763564adbc9ac68189fc5d79309ada91a535eee4e3423",
+        "target": "L14_UP"
+      },
+      "range_name": "C16_E1_SHARED_SETASIDE_ONLY_L14_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "2e4cf7e6e346d57b1b463b9d883b17750223ac8fd6d1ad4fc5cbb69364ede4dc"
+      },
+      "target": "L14_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "27075584",
+          "dram__bytes_read.sum": "27075072",
+          "gpu__time_duration.sum": "83808",
+          "l1tex__t_bytes.sum": "45932544",
+          "lts__t_bytes.sum": "41180160",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "413974",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "845368"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "27075328",
+              "dram__bytes_read.sum": "27074816",
+              "gpu__time_duration.sum": "79360",
+              "l1tex__t_bytes.sum": "45846528",
+              "lts__t_bytes.sum": "40580064",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "412182",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "845368"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "256",
+              "dram__bytes_read.sum": "256",
+              "gpu__time_duration.sum": "4448",
+              "l1tex__t_bytes.sum": "86016",
+              "lts__t_bytes.sum": "600096",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "1792",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "6c2a8ba896eac8459a1e55bc32ca85f347022ae6ad7dbfd4f234b651a0612922"
+      },
+      "condition": "SHARE2_L0",
+      "decode_index": 3,
+      "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+      "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.4097739261666496,
+          "max_us": 26.781,
+          "mean_us": 14.862400000000001,
+          "median_us": 12.583,
+          "min_us": 8.051,
+          "sample_count": 15,
+          "samples_us": [
+            22.097,
+            11.341,
+            12.583,
+            26.781,
+            10.64,
+            15.234,
+            25.321,
+            8.38,
+            14.161,
+            13.429,
+            8.137,
+            12.299,
+            11.631,
+            8.051,
+            22.851
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SHARE2_L0",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 22.097,
+            "base_pointer": 137194341662720,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 11.341,
+            "base_pointer": 137194475880448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.583,
+            "base_pointer": 137193133703168,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 26.781,
+            "base_pointer": 137194341662720,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.64,
+            "base_pointer": 137194475880448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 15.234,
+            "base_pointer": 137193133703168,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 25.321,
+            "base_pointer": 137194341662720,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.38,
+            "base_pointer": 137194475880448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 14.161,
+            "base_pointer": 137193133703168,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.429,
+            "base_pointer": 137194341662720,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.137,
+            "base_pointer": 137194475880448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.299,
+            "base_pointer": 137193133703168,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.631,
+            "base_pointer": 137194341662720,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.051,
+            "base_pointer": 137194475880448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 22.851,
+            "base_pointer": 137193133703168,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": false
+          }
+        ]
+      },
+      "policy_receipt_sha256": "6dfca0619dbc1996fe3a0fdbe5c2a943b210adb3bb1ab210730cc95e7829f72c",
+      "profile": {
+        "condition": "SHARE2_L0",
+        "decode_index": 3,
+        "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+        "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SHARE2_L0_L0_DOWN_D3",
+        "sha256": "f4f683b26f7c0420e070d4ae4889fb6db7831abfb0eb05f2099efe507a9db160",
+        "target": "L0_DOWN"
+      },
+      "range_name": "C16_E1_SHARED_SHARE2_L0_L0_DOWN_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "d8d7966b7634fcc7969aea1a5972857cc70f39d76dfd8741f0fdb3112e41b7fc"
+      },
+      "target": "L0_DOWN"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "35251968",
+          "dram__bytes_read.sum": "35199232",
+          "gpu__time_duration.sum": "63840",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41720032",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "158728",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1099432"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "35251328",
+              "dram__bytes_read.sum": "35198592",
+              "gpu__time_duration.sum": "59424",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40735168",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "149256",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1099432"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "640",
+              "dram__bytes_read.sum": "640",
+              "gpu__time_duration.sum": "4416",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "984864",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "f2fd520ef023d019371c36b8083ac87d3675ff8fffa6a89a057ded68e39db381"
+      },
+      "condition": "SHARE2_L0",
+      "decode_index": 3,
+      "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+      "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.35673764728008767,
+          "max_us": 27.544,
+          "mean_us": 15.129999999999999,
+          "median_us": 12.813,
+          "min_us": 8.023,
+          "sample_count": 15,
+          "samples_us": [
+            21.294,
+            10.721,
+            12.813,
+            21.112,
+            10.594,
+            14.469,
+            20.463,
+            8.366,
+            19.111,
+            12.483,
+            8.023,
+            12.167,
+            12.5,
+            27.544,
+            15.29
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SHARE2_L0",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 21.294,
+            "base_pointer": 129028065329152,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.721,
+            "base_pointer": 129028199546880,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.813,
+            "base_pointer": 129026857369600,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 21.112,
+            "base_pointer": 129028065329152,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.594,
+            "base_pointer": 129028199546880,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 14.469,
+            "base_pointer": 129026857369600,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 20.463,
+            "base_pointer": 129028065329152,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.366,
+            "base_pointer": 129028199546880,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 19.111,
+            "base_pointer": 129026857369600,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.483,
+            "base_pointer": 129028065329152,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.023,
+            "base_pointer": 129028199546880,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.167,
+            "base_pointer": 129026857369600,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.5,
+            "base_pointer": 129028065329152,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 27.544,
+            "base_pointer": 129028199546880,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 15.29,
+            "base_pointer": 129026857369600,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": false
+          }
+        ]
+      },
+      "policy_receipt_sha256": "7dd559f1f1cc8da6d6423ea36b5e9dd6b710284b05bcc0493bfc2eab03e65a90",
+      "profile": {
+        "condition": "SHARE2_L0",
+        "decode_index": 3,
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SHARE2_L0_L0_UP_D3",
+        "sha256": "6d51ddbaca152eb681dd1fcb90be24c5b0cea41d34db5e7b9352cb21fda48733",
+        "target": "L0_UP"
+      },
+      "range_name": "C16_E1_SHARED_SHARE2_L0_L0_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "fe7046747249de2d15495e5d3ad95fb03a602976fca7774ede99be112b1fabb1"
+      },
+      "target": "L0_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "32751360",
+          "dram__bytes_read.sum": "32751360",
+          "gpu__time_duration.sum": "61056",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41690944",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "234488",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1022896"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "32750208",
+              "dram__bytes_read.sum": "32750208",
+              "gpu__time_duration.sum": "56672",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40708672",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "225016",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1022896"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "1152",
+              "dram__bytes_read.sum": "1152",
+              "gpu__time_duration.sum": "4384",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "982272",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "4f2464b1fb104b543cce73bfaac9da94c177b94f94f82ff3708cfc0a8a0b3486"
+      },
+      "condition": "SHARE2_UP",
+      "decode_index": 3,
+      "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+      "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.3863212421971833,
+          "max_us": 26.732,
+          "mean_us": 15.597,
+          "median_us": 12.852,
+          "min_us": 8.447,
+          "sample_count": 15,
+          "samples_us": [
+            26.234,
+            13.153,
+            15.626,
+            23.235,
+            10.226,
+            12.852,
+            23.406,
+            8.623,
+            12.654,
+            12.161,
+            8.447,
+            11.985,
+            12.166,
+            26.732,
+            16.455
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SHARE2_UP",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 26.234,
+            "base_pointer": 138767843196928,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 13.153,
+            "base_pointer": 138767977414656,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 15.626,
+            "base_pointer": 138766635237376,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 23.235,
+            "base_pointer": 138767843196928,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.226,
+            "base_pointer": 138767977414656,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.852,
+            "base_pointer": 138766635237376,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 23.406,
+            "base_pointer": 138767843196928,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.623,
+            "base_pointer": 138767977414656,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.654,
+            "base_pointer": 138766635237376,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.161,
+            "base_pointer": 138767843196928,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.447,
+            "base_pointer": 138767977414656,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.985,
+            "base_pointer": 138766635237376,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.166,
+            "base_pointer": 138767843196928,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 26.732,
+            "base_pointer": 138767977414656,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 16.455,
+            "base_pointer": 138766635237376,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": true
+          }
+        ]
+      },
+      "policy_receipt_sha256": "e3976398ce6e4979be44934836a514a901c12b99a6f0340a15aa09924df0ff7d",
+      "profile": {
+        "condition": "SHARE2_UP",
+        "decode_index": 3,
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SHARE2_UP_L0_UP_D3",
+        "sha256": "6701086dfb05f56f56761026b841f01d060651cff7d6b6f07709d4df2170a0c8",
+        "target": "L0_UP"
+      },
+      "range_name": "C16_E1_SHARED_SHARE2_UP_L0_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "224d068db00fa9e6e1cecc5869b784f97bdc6c93460481cb1cc01ac86e861aef"
+      },
+      "target": "L0_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "33313152",
+          "dram__bytes_read.sum": "33312896",
+          "gpu__time_duration.sum": "61056",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41718816",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "217532",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1040464"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "33312256",
+              "dram__bytes_read.sum": "33312000",
+              "gpu__time_duration.sum": "56512",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40732352",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "208060",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1040464"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "896",
+              "dram__bytes_read.sum": "896",
+              "gpu__time_duration.sum": "4544",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "986464",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "8bfc1d1e45596738dd8781aa339c03cd49755dd33cb40a57fd29396e727b20fc"
+      },
+      "condition": "SHARE2_UP",
+      "decode_index": 3,
+      "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+      "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.3459598236089386,
+          "max_us": 22.988,
+          "mean_us": 14.839599999999999,
+          "median_us": 13.218,
+          "min_us": 8.035,
+          "sample_count": 15,
+          "samples_us": [
+            22.988,
+            11.262,
+            13.302,
+            22.542,
+            13.218,
+            14.035,
+            21.274,
+            9.017,
+            21.342,
+            19.92,
+            8.122,
+            12.748,
+            12.526,
+            8.035,
+            12.263
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SHARE2_UP",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 22.988,
+            "base_pointer": 126905646841856,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 11.262,
+            "base_pointer": 126905781059584,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.302,
+            "base_pointer": 126904438882304,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 22.542,
+            "base_pointer": 126905646841856,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 13.218,
+            "base_pointer": 126905781059584,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 14.035,
+            "base_pointer": 126904438882304,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 21.274,
+            "base_pointer": 126905646841856,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 9.017,
+            "base_pointer": 126905781059584,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 21.342,
+            "base_pointer": 126904438882304,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 19.92,
+            "base_pointer": 126905646841856,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.122,
+            "base_pointer": 126905781059584,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.748,
+            "base_pointer": 126904438882304,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.526,
+            "base_pointer": 126905646841856,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.035,
+            "base_pointer": 126905781059584,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 0.5,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.263,
+            "base_pointer": 126904438882304,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.5,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": true
+          }
+        ]
+      },
+      "policy_receipt_sha256": "0312cc5c5a17434fbe3fba9849eb5abd6eb6151aa001baf5d3862b519c8282bf",
+      "profile": {
+        "condition": "SHARE2_UP",
+        "decode_index": 3,
+        "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+        "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SHARE2_UP_L14_UP_D3",
+        "sha256": "007d32b73e52d6f404fd21fe43b86f2d000f7e84672220416b0d1355aa688914",
+        "target": "L14_UP"
+      },
+      "range_name": "C16_E1_SHARED_SHARE2_UP_L14_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "0aab1471ce3da1b894e4b46b7f2afeccc6d54fb5ab4664f4891b322aeb1ef98c"
+      },
+      "target": "L14_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "31984640",
+          "dram__bytes_read.sum": "31984640",
+          "gpu__time_duration.sum": "85024",
+          "l1tex__t_bytes.sum": "45932544",
+          "lts__t_bytes.sum": "41172064",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "260558",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "998848"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "31984384",
+              "dram__bytes_read.sum": "31984384",
+              "gpu__time_duration.sum": "80544",
+              "l1tex__t_bytes.sum": "45846528",
+              "lts__t_bytes.sum": "40571808",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "258766",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "998848"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "256",
+              "dram__bytes_read.sum": "256",
+              "gpu__time_duration.sum": "4480",
+              "l1tex__t_bytes.sum": "86016",
+              "lts__t_bytes.sum": "600256",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "1792",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "76296fca99836cc08be3c237d2857d943db5800d21644ca5de1ffe7f52806e12"
+      },
+      "condition": "SHARE3",
+      "decode_index": 3,
+      "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+      "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.3758828139757313,
+          "max_us": 22.956,
+          "mean_us": 13.748866666666666,
+          "median_us": 12.11,
+          "min_us": 7.854,
+          "sample_count": 15,
+          "samples_us": [
+            21.476,
+            10.881,
+            12.755,
+            21.151,
+            10.418,
+            11.899,
+            21.935,
+            7.891,
+            12.538,
+            12.11,
+            8.078,
+            12.355,
+            11.936,
+            7.854,
+            22.956
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SHARE3",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 21.476,
+            "base_pointer": 140601458688000,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.881,
+            "base_pointer": 140601592905728,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.755,
+            "base_pointer": 140600250728448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 21.151,
+            "base_pointer": 140601458688000,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.418,
+            "base_pointer": 140601592905728,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 11.899,
+            "base_pointer": 140600250728448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 21.935,
+            "base_pointer": 140601458688000,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 7.891,
+            "base_pointer": 140601592905728,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.538,
+            "base_pointer": 140600250728448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.11,
+            "base_pointer": 140601458688000,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.078,
+            "base_pointer": 140601592905728,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.355,
+            "base_pointer": 140600250728448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 11.936,
+            "base_pointer": 140601458688000,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 7.854,
+            "base_pointer": 140601592905728,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 22.956,
+            "base_pointer": 140600250728448,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": true
+          }
+        ]
+      },
+      "policy_receipt_sha256": "de7161147927e4194bf4544e032f4c615bc35e1cdd1ddaa5ac73912393189048",
+      "profile": {
+        "condition": "SHARE3",
+        "decode_index": 3,
+        "input_sha256": "957ce18d03dcf95851592b34c608119b40e80ddccb115ba484f15e60f92e69e5",
+        "output_sha256": "edc30fd987ec937b10dc014ec39abf7faf615baf9b01d097462356f5b4887ded",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SHARE3_L0_DOWN_D3",
+        "sha256": "eb161f35a8bffc800c7bd0d2d828fdc2fe18ebecaecc8ec754f422735ec3c046",
+        "target": "L0_DOWN"
+      },
+      "range_name": "C16_E1_SHARED_SHARE3_L0_DOWN_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "9e4485508fada74aecf1af17e95710ee68c3af9927e19509045043d0e466ac70"
+      },
+      "target": "L0_DOWN"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "34610048",
+          "dram__bytes_read.sum": "34609280",
+          "gpu__time_duration.sum": "62720",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41696800",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "176438",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1081012"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "34609664",
+              "dram__bytes_read.sum": "34608896",
+              "gpu__time_duration.sum": "58304",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40713728",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "166966",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1081012"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "384",
+              "dram__bytes_read.sum": "384",
+              "gpu__time_duration.sum": "4416",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "983072",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "b19a3d85cfc4a8d7db2d645c6378d9af9c5ffc414ab301cc34cf2643690280ee"
+      },
+      "condition": "SHARE3",
+      "decode_index": 3,
+      "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+      "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.35077359765135374,
+          "max_us": 28.403,
+          "mean_us": 15.8596,
+          "median_us": 13.946,
+          "min_us": 8.126,
+          "sample_count": 15,
+          "samples_us": [
+            21.262,
+            10.821,
+            12.95,
+            22.785,
+            12.739,
+            17.334,
+            22.158,
+            8.977,
+            18.614,
+            13.946,
+            8.126,
+            12.37,
+            12.219,
+            28.403,
+            15.19
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SHARE3",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 21.262,
+            "base_pointer": 127521840431104,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.821,
+            "base_pointer": 127521974648832,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.95,
+            "base_pointer": 127520632471552,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 22.785,
+            "base_pointer": 127521840431104,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.739,
+            "base_pointer": 127521974648832,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 17.334,
+            "base_pointer": 127520632471552,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 22.158,
+            "base_pointer": 127521840431104,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.977,
+            "base_pointer": 127521974648832,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 18.614,
+            "base_pointer": 127520632471552,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 13.946,
+            "base_pointer": 127521840431104,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.126,
+            "base_pointer": 127521974648832,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.37,
+            "base_pointer": 127520632471552,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.219,
+            "base_pointer": 127521840431104,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 28.403,
+            "base_pointer": 127521974648832,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 15.19,
+            "base_pointer": 127520632471552,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": true
+          }
+        ]
+      },
+      "policy_receipt_sha256": "278f63c7172810f6977cfb11900532d805aa58feb24d4c3a653a8b87f7cfcd4c",
+      "profile": {
+        "condition": "SHARE3",
+        "decode_index": 3,
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SHARE3_L0_UP_D3",
+        "sha256": "85deec29dc61205cc92312190380b932e9f8ce960aa518ff3a6393e55c7ea0e0",
+        "target": "L0_UP"
+      },
+      "range_name": "C16_E1_SHARED_SHARE3_L0_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "3af5b025db7edf0ab4e2e9e917b3e4220a715829ca2d71cd9d2fc98d01db6d27"
+      },
+      "target": "L0_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "34668544",
+          "dram__bytes_read.sum": "34668544",
+          "gpu__time_duration.sum": "63360",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41693184",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "174518",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1082500"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "34667904",
+              "dram__bytes_read.sum": "34667904",
+              "gpu__time_duration.sum": "58656",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40708224",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "165046",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1082500"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "640",
+              "dram__bytes_read.sum": "640",
+              "gpu__time_duration.sum": "4704",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "984960",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "25f50bdfbf109cfbc38a6de49a75aece97fd5254c0e7fb14dcde29e3a1b7dc37"
+      },
+      "condition": "SHARE3",
+      "decode_index": 3,
+      "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+      "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.34687011903579484,
+          "max_us": 23.283,
+          "mean_us": 13.876399999999999,
+          "median_us": 12.51,
+          "min_us": 8.22,
+          "sample_count": 15,
+          "samples_us": [
+            22.447,
+            10.874,
+            12.82,
+            21.659,
+            12.491,
+            17.244,
+            23.283,
+            8.815,
+            13.216,
+            11.934,
+            8.224,
+            12.51,
+            11.762,
+            8.22,
+            12.647
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SHARE3",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 22.447,
+            "base_pointer": 133261024034816,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.874,
+            "base_pointer": 133261158252544,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.82,
+            "base_pointer": 133259816075264,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 21.659,
+            "base_pointer": 133261024034816,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.491,
+            "base_pointer": 133261158252544,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 17.244,
+            "base_pointer": 133259816075264,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 23.283,
+            "base_pointer": 133261024034816,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.815,
+            "base_pointer": 133261158252544,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 13.216,
+            "base_pointer": 133259816075264,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 11.934,
+            "base_pointer": 133261024034816,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.224,
+            "base_pointer": 133261158252544,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.51,
+            "base_pointer": 133259816075264,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 11.762,
+            "base_pointer": 133261024034816,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.22,
+            "base_pointer": 133261158252544,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 12.647,
+            "base_pointer": 133259816075264,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 0.3333333333333333,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": true
+          }
+        ]
+      },
+      "policy_receipt_sha256": "3397eea7b592be3833237a92cb403455b2a188f7e2f3143a54da75d68c49b40e",
+      "profile": {
+        "condition": "SHARE3",
+        "decode_index": 3,
+        "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+        "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SHARE3_L14_UP_D3",
+        "sha256": "9ad78a11684985a31f4c1933558bcf1b0640f98c0b166004738205a5e7ddb004",
+        "target": "L14_UP"
+      },
+      "range_name": "C16_E1_SHARED_SHARE3_L14_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "f9659b55302566dcf36a98887ed1fabde15a9fdc414b7f34666b5bbf1d27e3bd"
+      },
+      "target": "L14_UP"
+    },
+    {
+      "base": {
+        "additive_metric_sums": {
+          "dram__bytes.sum": "36297600",
+          "dram__bytes_read.sum": "34797056",
+          "gpu__time_duration.sum": "66624",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41693440",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "171792",
+          "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1086440"
+        },
+        "per_kernel": [
+          {
+            "id": "0",
+            "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+            "metrics": {
+              "dram__bytes.sum": "36297216",
+              "dram__bytes_read.sum": "34796672",
+              "gpu__time_duration.sum": "62176",
+              "l1tex__t_bytes.sum": "46829568",
+              "lts__t_bytes.sum": "40710560",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "162320",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "1086440"
+            }
+          },
+          {
+            "id": "1",
+            "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+            "metrics": {
+              "dram__bytes.sum": "384",
+              "dram__bytes_read.sum": "384",
+              "gpu__time_duration.sum": "4448",
+              "l1tex__t_bytes.sum": "454656",
+              "lts__t_bytes.sum": "982880",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": "9472",
+              "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": "0"
+            }
+          }
+        ],
+        "sha256": "17b62c36ccfa2aa779d0978309d94d1fb6cacaeb08d8197d4529b0edeef1f0fb"
+      },
+      "condition": "SINGLE_L0_UP",
+      "decode_index": 3,
+      "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+      "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+      "policy": {
+        "actual_setaside_bytes": 37748736,
+        "api_switch_overhead": {
+          "cv": 0.3735667573909226,
+          "max_us": 27.77,
+          "mean_us": 14.929866666666667,
+          "median_us": 13.127,
+          "min_us": 8.34,
+          "sample_count": 15,
+          "samples_us": [
+            21.546,
+            10.997,
+            13.127,
+            23.273,
+            10.199,
+            13.601,
+            21.47,
+            8.85,
+            13.483,
+            12.901,
+            8.34,
+            12.368,
+            11.967,
+            27.77,
+            14.056
+          ]
+        },
+        "authority": "RAW_ORDERED_POLICY_RECEIPT_ONLY",
+        "condition": "SINGLE_L0_UP",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "event_index": 16,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "reset_before": {
+          "event_index": 0,
+          "operation": "cudaCtxResetPersistingL2Cache",
+          "performed": true,
+          "status": "PASS"
+        },
+        "runtime_query_back_matches_accepted_full_budget": true,
+        "status": "PASS",
+        "stream_identity": "0",
+        "switches": [
+          {
+            "api_duration_us": 21.546,
+            "base_pointer": 140098746187776,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 1.0,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 1,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.997,
+            "base_pointer": 140098880405504,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 2,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.127,
+            "base_pointer": 140097538228224,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "PREFILL",
+            "sequence_index": 3,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 23.273,
+            "base_pointer": 140098746187776,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 1.0,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 4,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 10.199,
+            "base_pointer": 140098880405504,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 5,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.601,
+            "base_pointer": 140097538228224,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D0",
+            "sequence_index": 6,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 21.47,
+            "base_pointer": 140098746187776,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 1.0,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 7,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.85,
+            "base_pointer": 140098880405504,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 8,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 13.483,
+            "base_pointer": 140097538228224,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D1",
+            "sequence_index": 9,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.901,
+            "base_pointer": 140098746187776,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 1.0,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 10,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 8.34,
+            "base_pointer": 140098880405504,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 11,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 12.368,
+            "base_pointer": 140097538228224,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D2",
+            "sequence_index": 12,
+            "target": "L14_UP",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 11.967,
+            "base_pointer": 140098746187776,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 1.0,
+            "miss_prop": "STREAMING",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 13,
+            "target": "L0_UP",
+            "target_persisting": true
+          },
+          {
+            "api_duration_us": 27.77,
+            "base_pointer": 140098880405504,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 14,
+            "target": "L0_DOWN",
+            "target_persisting": false
+          },
+          {
+            "api_duration_us": 14.056,
+            "base_pointer": 140097538228224,
+            "hit_prop": "NORMAL",
+            "hit_ratio": 1.0,
+            "miss_prop": "NORMAL",
+            "num_bytes": 33947648,
+            "phase": "D3",
+            "sequence_index": 15,
+            "target": "L14_UP",
+            "target_persisting": false
+          }
+        ]
+      },
+      "policy_receipt_sha256": "cbca57dcf4947de41582b79c8beb0ffaa89992d577eebba3d444873819bb9f82",
+      "profile": {
+        "condition": "SINGLE_L0_UP",
+        "decode_index": 3,
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "pass_receipt_count": 3,
+        "range_name": "C16_E1_SHARED_SINGLE_L0_UP_L0_UP_D3",
+        "sha256": "eaafefb12798bb4417e539c5e206d316c542eee9acee68f58f85cc1add3389d9",
+        "target": "L0_UP"
+      },
+      "range_name": "C16_E1_SHARED_SINGLE_L0_UP_L0_UP_D3",
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "14fe7f6779915bbf83797d7632b4e3c89dece7cc1d9070316cc5f93b7b7e6d05"
+      },
+      "target": "L0_UP"
+    }
+  ],
+  "status": "PASS"
+}

@@ -23,6 +23,7 @@ class CriticalPathError(ValueError):
 
 
 ADDITIVE_CATEGORY_UNITS = {
+    "KERNEL_DURATION": {"ns"},
     "KERNEL_ELAPSED_CYCLES": {"cycle", "cycles"},
     "L2_READ_HIT_SECTORS": {"sector", "sectors"},
     "L2_READ_MISS_SECTORS": {"sector", "sectors"},
@@ -47,7 +48,7 @@ CATEGORY_POLICY = {
 KNOWN_CATEGORIES = frozenset(CATEGORY_POLICY)
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 RANGE_COLUMN = "NVTX Push/Pop_Range"
-IDENTITY_COLUMNS = ("ID", "Kernel Name", RANGE_COLUMN)
+IDENTITY_COLUMNS = ("ID", "Kernel Name")
 
 
 def _text(value: object, field: str) -> str:
@@ -231,7 +232,12 @@ def _read_base(
     if len(units) != len(header) or any(len(row) != len(header) for row in data):
         raise CriticalPathError(f"ragged BASE evidence: {path}")
 
-    required = [*IDENTITY_COLUMNS, *[metric["metric_name"] for metric in available]]
+    range_columns = [name for name in header if "Push/Pop_Range" in name]
+    if len(range_columns) != 1:
+        raise CriticalPathError(f"ambiguous/missing NVTX range column: {path}")
+    range_column = range_columns[0]
+    required = [*IDENTITY_COLUMNS, range_column,
+                *[metric["metric_name"] for metric in available]]
     missing = sorted(set(required) - set(header))
     if missing:
         raise CriticalPathError(
@@ -248,7 +254,7 @@ def _read_base(
             )
 
     selected = [
-        row for row in data if _nvtx_exact(row[index[RANGE_COLUMN]], profile["range_name"])
+        row for row in data if _nvtx_exact(row[index[range_column]], profile["range_name"])
     ]
     if not selected:
         raise CriticalPathError(

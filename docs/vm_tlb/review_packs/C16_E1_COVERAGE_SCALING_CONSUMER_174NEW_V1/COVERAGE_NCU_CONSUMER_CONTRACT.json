@@ -1,0 +1,36 @@
+{
+  "aggregation": "additive sum only; stall/utilization/occupancy per-kernel",
+  "authority": [
+    "runtime query/version",
+    "BASE",
+    "SESSION",
+    "PROFILE",
+    "complete policy history"
+  ],
+  "cache_control": "none",
+  "conditions": [
+    "CONTROL",
+    "FAIR"
+  ],
+  "decode_index": 3,
+  "matrix": {
+    "L0_UP": [
+      "N1",
+      "N8",
+      "N28"
+    ],
+    "L14_UP": [
+      "N2",
+      "N8",
+      "N28"
+    ],
+    "L27_UP": [
+      "N4",
+      "N28"
+    ]
+  },
+  "multi_pass": "PASS receipt count equals BASE profiler__replayer_passes",
+  "profile_count": 16,
+  "replay_mode": "application",
+  "status": "FROZEN_BEFORE_COVERAGE_PRODUCER"
+}
