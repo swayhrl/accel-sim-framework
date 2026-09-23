@@ -107,3 +107,38 @@ It only:
 - records that CUDA hitRatio is a policy hint, not an exact deterministic fraction of protected bytes/lines or a direct simulator quota mapping.
 
 174-new should remain at READY until the shared-hardware producer exists.
+
+
+---
+
+## Shared-hardware producer completed
+
+Producer:
+
+`hrl/c16-e1-shared-residency-feasibility-109-v1@1e701f013fc174b5b4df9febb5c33500f9ea586e`
+
+Producer stage label:
+
+`SHARED_RESIDENCY_LOCAL_ONLY`
+
+Key accepted producer observations pending independent consumer closure:
+
+- rotating A/B/A semantics qualified;
+- SHARE2_UP / SHARE2_L0 / SHARE3 all retain multiple material local target benefits;
+- stable D1-D3 whole-decode benefit remains below 0.5%, below the frozen 2% end-to-end gate;
+- up_proj critical-path benefit is concentrated in quantized GEMM;
+- aggregate DRAM is not a reliable standalone critical-path proxy.
+
+174-new prep remains:
+
+`hrl/c16-e1-shared-residency-design-review-174new-v1@547e9263a8d0c12bb34d96e27134a120b83fb6d0`
+
+Before raw producer consumption, fast-forward consumer hardening:
+
+`hrl/c16-e1-shared-residency-consumer-hardening-v2`
+
+and read:
+
+`docs/vm_tlb/chatgpt_handoff/c16/e1_shared_residency_mechanism_feasibility_v1/CONSUMER_RESUME_AUDIT_V3.md`
+
+No node109 rerun is requested.
