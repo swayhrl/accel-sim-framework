@@ -328,3 +328,34 @@ No NVBit/full trace/mechanism is authorized before independent consumer closure.
 ## E1 residency intervention independent consumer closure (174-new)
 
 Producer `22d1b98d7f0c213950654fc754be4e7388836de3` was consumed from raw timing rows and raw NCU BASE+SESSION+PROFILE triples. Independent gates: MATERIAL_TIMING_PERTURBATION=True, MATERIAL_DRAM_PERTURBATION=True, REVERSIBLE=False, DENSE_SPECIFIC=True; scoped label `RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED`. WARM_B/WARM_A≈0.9375000 is an over-recovery/baseline-drift gate failure, not persistent DENSE slowdown. No GPU work or mechanism authorization occurred on 174-new.
+
+
+---
+
+## Next reviewed question — natural reuse interval and refill dynamics
+
+The residency-intervention producer/consumer pair is independently closed at:
+
+- producer `22d1b98d7f0c213950654fc754be4e7388836de3`
+- consumer `5b11dd41e98044fcad76da4a906c7ba8609eb828`
+
+Scoped result:
+
+`RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED`
+
+Primary up_proj M1 AWQ:
+- dense pressure materially increases timing and DRAM;
+- sparse page-footprint pressure does not reproduce the same timing effect;
+- q_proj and M256 controls are much less sensitive;
+- CODE down_proj reproduces the dense AWQ effect;
+- the strict primary recovery gate is false only because WARM_B over-recovers and is ~6.25% faster than WARM_A.
+
+The next stage asks three stronger questions:
+
+1. Does a pressured AWQ target repopulate over immediate K1..K6 reuse?
+2. Does pressure-dose DRAM onset align descriptively with nominal residual L2 capacity across q/down/up?
+3. Does the isolated warm state survive the real full-model decode interval between consecutive uses of the same target module?
+
+The third question determines whether the observed residency benefit is already naturally captured by current hardware or whether realistic model interference evicts the compressed state before reuse.
+
+No residency mechanism is authorized before this natural-reuse stage and independent consumer closure.
