@@ -86,3 +86,30 @@ Closed prep facts:
 `READY_FOR_E1_SEMANTIC_NCU_109`
 
 When node109 producer closes, resume the same 174-new consumer branch rather than rebuilding prep.
+
+
+---
+
+## Consumer aggregator audit/hardening
+
+The original 174-new prep implementation at:
+
+`hrl/c16-e1-semantic-ncu-consumer-prep-174new-v1@92fa940cc7ca6e3e8eb7ca628e4d28634e05ac35`
+
+had correct high-level semantic aggregation intent but was reviewed and hardened before final producer consumption.
+
+Use the hardened consumer authority:
+
+`hrl/c16-e1-semantic-ncu-consumer-hardening-v1@396233ca250c20be834aa0c50d2504e6017953bc`
+
+Audit:
+
+`docs/vm_tlb/review_packs/C16_E1_SEMANTIC_NCU_CONSUMER_174NEW_V1/AGGREGATOR_AUDIT_V1.md`
+
+Important final-consumption rule:
+
+- the aggregator's normalized semantic CSV is not, by itself, sufficient provenance;
+- 174-new must independently normalize from, or verify every normalized row against, producer-preserved raw NCU export/range evidence;
+- exact metric names/units must be resolved from the installed node109 NCU evidence, not from preregistered aliases;
+- the hardened V2 aggregation contract supersedes the original hard-coded metric-name policy.
+
