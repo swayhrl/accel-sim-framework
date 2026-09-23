@@ -1,0 +1,849 @@
+{
+  "conditions": {
+    "ROTATE_NORMAL_CONTROL_A_B_A": {
+      "cpu_policy_update_ns": {
+        "cv": 0.5435731833213979,
+        "max": 6621,
+        "median": 1574,
+        "min": 1407,
+        "samples": [
+          3823,
+          6621,
+          1906,
+          1878,
+          1824,
+          1544,
+          2015,
+          2057,
+          1842,
+          1538,
+          1644,
+          1474,
+          1515,
+          1602,
+          1537,
+          1540,
+          1486,
+          1515,
+          1532,
+          1556,
+          1432,
+          1583,
+          1602,
+          1407,
+          1574,
+          1694,
+          1418
+        ]
+      },
+      "native_timing": {
+        "cv": 0.03158451514715482,
+        "max": 0.04095999896526337,
+        "median": 0.03788800165057182,
+        "min": 0.03788800165057182,
+        "samples": [
+          0.04095999896526337,
+          0.03788800165057182,
+          0.04095999896526337,
+          0.03788800165057182,
+          0.03891199827194214,
+          0.03788800165057182,
+          0.03891199827194214,
+          0.03788800165057182,
+          0.03788800165057182
+        ]
+      },
+      "ncu_per_kernel": [
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "l1tex__t_bytes.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 46829568.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "l1tex__t_bytes.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 454656.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "lts__t_bytes.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 40742656.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "lts__t_bytes.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 983552.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "dram__bytes.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 27185152.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "dram__bytes.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 70144.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "gpu__time_duration.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "ns",
+          "value": 48512.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "gpu__time_duration.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "ns",
+          "value": 4928.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 402174.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 9472.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 846540.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 0.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "dram__bytes_read.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 27106432.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "dram__bytes_read.sum",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 70144.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 43.8
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 7.29
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 7.41
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 0.34
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 32.4
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_NORMAL_CONTROL_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 8.32
+        }
+      ],
+      "ncu_semantic_sums": {
+        "dram__bytes.sum": 27255296.0,
+        "dram__bytes_read.sum": 27176576.0,
+        "gpu__time_duration.sum": 53440.0,
+        "l1tex__t_bytes.sum": 47284224.0,
+        "lts__t_bytes.sum": 41726208.0,
+        "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 411646.0,
+        "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 846540.0
+      },
+      "policy_receipt_example": {
+        "access_policy_window": null,
+        "actual_setaside_after_reset_bytes": 0,
+        "actual_setaside_bytes": 37748736,
+        "condition": "ROTATE_NORMAL_CONTROL_A_B_A",
+        "operations_after": [
+          {
+            "error_string": "no error",
+            "operation": "clear stream access-policy after condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "reset persisting L2 after condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "clear persisting-L2 limit after condition",
+            "status": 0
+          }
+        ],
+        "operations_before": [
+          {
+            "error_string": "no error",
+            "operation": "clear stream access-policy before condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "reset persisting L2 before condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "set persisting-L2 limit",
+            "status": 0
+          }
+        ],
+        "requested_setaside_bytes": 33947648,
+        "reset_after": true,
+        "reset_before": true,
+        "stream_value": 0
+      },
+      "replay_pass_count": 3,
+      "window_transitions_example": [
+        {
+          "base_ptr": 131216787374080,
+          "cpu_update_ns": 3823,
+          "hit_property": "cudaAccessPropertyNormal",
+          "hit_ratio": 0.5,
+          "label": "A_L0_UP_FIRST",
+          "miss_property": "cudaAccessPropertyNormal",
+          "num_bytes": 33947648,
+          "operation": {
+            "error_string": "no error",
+            "operation": "update access-policy window A_L0_UP_FIRST",
+            "status": 0
+          },
+          "persisting": false,
+          "stream_value": 0
+        },
+        {
+          "base_ptr": 131215579414528,
+          "cpu_update_ns": 6621,
+          "hit_property": "cudaAccessPropertyNormal",
+          "hit_ratio": 0.5,
+          "label": "B_L14_UP",
+          "miss_property": "cudaAccessPropertyNormal",
+          "num_bytes": 33947648,
+          "operation": {
+            "error_string": "no error",
+            "operation": "update access-policy window B_L14_UP",
+            "status": 0
+          },
+          "persisting": false,
+          "stream_value": 0
+        },
+        {
+          "base_ptr": 131216787374080,
+          "cpu_update_ns": 1906,
+          "hit_property": "cudaAccessPropertyNormal",
+          "hit_ratio": 0.5,
+          "label": "A_L0_UP_RETURN",
+          "miss_property": "cudaAccessPropertyNormal",
+          "num_bytes": 33947648,
+          "operation": {
+            "error_string": "no error",
+            "operation": "update access-policy window A_L0_UP_RETURN",
+            "status": 0
+          },
+          "persisting": false,
+          "stream_value": 0
+        }
+      ]
+    },
+    "ROTATE_PERSIST_A_B_A": {
+      "cpu_policy_update_ns": {
+        "cv": 0.7434214853696118,
+        "max": 9058,
+        "median": 1574,
+        "min": 1415,
+        "samples": [
+          3248,
+          9058,
+          1964,
+          1756,
+          1784,
+          1544,
+          1630,
+          1688,
+          1463,
+          1503,
+          1607,
+          1498,
+          1417,
+          1685,
+          1512,
+          1506,
+          1574,
+          1415,
+          1606,
+          1818,
+          1552,
+          1536,
+          1680,
+          1475,
+          1518,
+          1640,
+          1518
+        ]
+      },
+      "native_timing": {
+        "cv": 0.01147090300502948,
+        "max": 0.0382080003619194,
+        "median": 0.037728000432252884,
+        "min": 0.03686400130391121,
+        "samples": [
+          0.03686400130391121,
+          0.0382080003619194,
+          0.03776000067591667,
+          0.03686400130391121,
+          0.03788800165057182,
+          0.03759999945759773,
+          0.037728000432252884,
+          0.037728000432252884,
+          0.03788800165057182
+        ]
+      },
+      "ncu_per_kernel": [
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "l1tex__t_bytes.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 46829568.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "l1tex__t_bytes.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 454656.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "lts__t_bytes.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 40844160.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "lts__t_bytes.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 983392.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "dram__bytes.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 14925824.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "dram__bytes.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 256.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "gpu__time_duration.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "ns",
+          "value": 41376.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "gpu__time_duration.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "ns",
+          "value": 4320.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 791142.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 9472.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 459988.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "sector",
+          "value": 0.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "dram__bytes_read.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 14720768.0
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "dram__bytes_read.sum",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "byte",
+          "value": 256.0
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 28.52
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 8.89
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 8.73
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 0.41
+        },
+        {
+          "block_size": "(32, 2, 1)",
+          "family": "rotating",
+          "grid_size": "(1184, 1, 1)",
+          "kernel_index": 0,
+          "kernel_name": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "kernel_role": "GEMM",
+          "metric_name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 31.85
+        },
+        {
+          "block_size": "(32, 4, 1)",
+          "family": "rotating",
+          "grid_size": "(37, 1, 1)",
+          "kernel_index": 1,
+          "kernel_name": "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)",
+          "kernel_role": "REDUCTION",
+          "metric_name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+          "profile_id": "ROTATE_PERSIST_A_B_A",
+          "replay_pass_count": 3,
+          "unit": "%",
+          "value": 8.32
+        }
+      ],
+      "ncu_semantic_sums": {
+        "dram__bytes.sum": 14926080.0,
+        "dram__bytes_read.sum": 14721024.0,
+        "gpu__time_duration.sum": 45696.0,
+        "l1tex__t_bytes.sum": 47284224.0,
+        "lts__t_bytes.sum": 41827552.0,
+        "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 800614.0,
+        "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 459988.0
+      },
+      "policy_receipt_example": {
+        "access_policy_window": null,
+        "actual_setaside_after_reset_bytes": 0,
+        "actual_setaside_bytes": 37748736,
+        "condition": "ROTATE_PERSIST_A_B_A",
+        "operations_after": [
+          {
+            "error_string": "no error",
+            "operation": "clear stream access-policy after condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "reset persisting L2 after condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "clear persisting-L2 limit after condition",
+            "status": 0
+          }
+        ],
+        "operations_before": [
+          {
+            "error_string": "no error",
+            "operation": "clear stream access-policy before condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "reset persisting L2 before condition",
+            "status": 0
+          },
+          {
+            "error_string": "no error",
+            "operation": "set persisting-L2 limit",
+            "status": 0
+          }
+        ],
+        "requested_setaside_bytes": 33947648,
+        "reset_after": true,
+        "reset_before": true,
+        "stream_value": 0
+      },
+      "replay_pass_count": 3,
+      "window_transitions_example": [
+        {
+          "base_ptr": 126978694840320,
+          "cpu_update_ns": 3248,
+          "hit_property": "cudaAccessPropertyPersisting",
+          "hit_ratio": 0.5,
+          "label": "A_L0_UP_FIRST",
+          "miss_property": "cudaAccessPropertyStreaming",
+          "num_bytes": 33947648,
+          "operation": {
+            "error_string": "no error",
+            "operation": "update access-policy window A_L0_UP_FIRST",
+            "status": 0
+          },
+          "persisting": true,
+          "stream_value": 0
+        },
+        {
+          "base_ptr": 126977486880768,
+          "cpu_update_ns": 9058,
+          "hit_property": "cudaAccessPropertyPersisting",
+          "hit_ratio": 0.5,
+          "label": "B_L14_UP",
+          "miss_property": "cudaAccessPropertyStreaming",
+          "num_bytes": 33947648,
+          "operation": {
+            "error_string": "no error",
+            "operation": "update access-policy window B_L14_UP",
+            "status": 0
+          },
+          "persisting": true,
+          "stream_value": 0
+        },
+        {
+          "base_ptr": 126978694840320,
+          "cpu_update_ns": 1964,
+          "hit_property": "cudaAccessPropertyPersisting",
+          "hit_ratio": 0.5,
+          "label": "A_L0_UP_RETURN",
+          "miss_property": "cudaAccessPropertyStreaming",
+          "num_bytes": 33947648,
+          "operation": {
+            "error_string": "no error",
+            "operation": "update access-policy window A_L0_UP_RETURN",
+            "status": 0
+          },
+          "persisting": true,
+          "stream_value": 0
+        }
+      ]
+    }
+  },
+  "matched_control": "same A/B/A updates with cudaAccessPropertyNormal for hit and miss",
+  "no_reset_between_A_B_A": true,
+  "one_fixed_setaside": true,
+  "qualification_basis": "exact API receipts plus lower DRAM/misses and higher L2 hits after persistent A/B/A rotation",
+  "status": "PASS"
+}

@@ -1,0 +1,387 @@
+{
+  "answers": {
+    "dram_proxy": "Aggregate DRAM bytes are a poor critical-path proxy: DRAM-read bytes move little while duration/stall change, and aggregate DRAM is not target-specific.",
+    "l2_behavior": "Target up-proj persistence modestly increases TEX-read hits and reduces misses; matched unrelated persistence can reduce duration/stall without the same hit/miss change.",
+    "memory_stall": "Up-proj GEMM long-scoreboard falls with both target and unrelated persistence; down-proj remains nearly unchanged.",
+    "timing_change_kernel": "UP_PROJ changes are concentrated in GEMM; reduction duration is nearly unchanged. L0_DOWN native benefit is not reproduced by profiled kernel duration."
+  },
+  "claim_boundary": "controlled policy association only; no unique cache-causality claim",
+  "profiles": {
+    "L0_DOWN_D3": {
+      "conditions": {
+        "PERSIST_L0_DOWN": {
+          "GEMM": {
+            "dram__bytes.sum": 35088896.0,
+            "dram__bytes_read.sum": 35086976.0,
+            "gpu__time_duration.sum": 84192.0,
+            "l1tex__t_bytes.sum": 45846528.0,
+            "lts__t_bytes.sum": 40587744.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 162214.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1095680.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 11.92,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 4.16,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 38.98
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 70400.0,
+            "dram__bytes_read.sum": 70400.0,
+            "gpu__time_duration.sum": 5152.0,
+            "l1tex__t_bytes.sum": 86016.0,
+            "lts__t_bytes.sum": 600832.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 1792.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.33,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.32,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 6.76
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 35159296.0,
+            "dram__bytes_read.sum": 35157376.0,
+            "gpu__time_duration.sum": 89344.0,
+            "l1tex__t_bytes.sum": 45932544.0,
+            "lts__t_bytes.sum": 41188576.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 164006.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1095680.0
+          }
+        },
+        "PERSIST_L0_UP": {
+          "GEMM": {
+            "dram__bytes.sum": 35322880.0,
+            "dram__bytes_read.sum": 35295744.0,
+            "gpu__time_duration.sum": 83008.0,
+            "l1tex__t_bytes.sum": 45846528.0,
+            "lts__t_bytes.sum": 40577472.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 155542.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 11.91,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 4.12,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 39.2
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 70400.0,
+            "dram__bytes_read.sum": 70400.0,
+            "gpu__time_duration.sum": 5088.0,
+            "l1tex__t_bytes.sum": 86016.0,
+            "lts__t_bytes.sum": 600896.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 1792.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.33,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.32,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 6.89
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 35393280.0,
+            "dram__bytes_read.sum": 35366144.0,
+            "gpu__time_duration.sum": 88096.0,
+            "l1tex__t_bytes.sum": 45932544.0,
+            "lts__t_bytes.sum": 41178368.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 157334.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0
+          }
+        },
+        "SETASIDE_ONLY": {
+          "GEMM": {
+            "dram__bytes.sum": 35425920.0,
+            "dram__bytes_read.sum": 35295232.0,
+            "gpu__time_duration.sum": 81056.0,
+            "l1tex__t_bytes.sum": 45846528.0,
+            "lts__t_bytes.sum": 40573440.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 155426.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 11.92,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 4.15,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 39.13
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 70272.0,
+            "dram__bytes_read.sum": 70272.0,
+            "gpu__time_duration.sum": 5024.0,
+            "l1tex__t_bytes.sum": 86016.0,
+            "lts__t_bytes.sum": 600896.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 1792.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.33,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.32,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 6.84
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 35496192.0,
+            "dram__bytes_read.sum": 35365504.0,
+            "gpu__time_duration.sum": 86080.0,
+            "l1tex__t_bytes.sum": 45932544.0,
+            "lts__t_bytes.sum": 41174336.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 157218.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0
+          }
+        }
+      },
+      "matched_unrelated_vs_setaside": {
+        "aggregate_dram_ratio": 0.9971007594279409,
+        "dram_read_ratio": 1.0000180967306447,
+        "gemm_long_scoreboard_delta_pct_points": 0.07000000000000028,
+        "semantic_duration_ratio": 1.0234200743494424
+      },
+      "target_vs_setaside": {
+        "aggregate_dram_ratio": 0.9905089537491796,
+        "dram_read_ratio": 0.9941149431943626,
+        "gemm_duration_ratio": 1.0386893012238452,
+        "gemm_long_scoreboard_delta_pct_points": -0.15000000000000568,
+        "l2_hit_ratio": 1.043175717793128,
+        "l2_miss_ratio": 0.9939907684268586,
+        "reduction_duration_ratio": 1.0254777070063694,
+        "semantic_duration_ratio": 1.0379182156133828
+      }
+    },
+    "L0_UP_D3": {
+      "conditions": {
+        "PERSIST_L0_UP": {
+          "GEMM": {
+            "dram__bytes.sum": 36328448.0,
+            "dram__bytes_read.sum": 34765056.0,
+            "gpu__time_duration.sum": 63552.0,
+            "l1tex__t_bytes.sum": 46829568.0,
+            "lts__t_bytes.sum": 40732576.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 162706.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1085888.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 32.8,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 5.74,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 55.04
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 384.0,
+            "dram__bytes_read.sum": 384.0,
+            "gpu__time_duration.sum": 4448.0,
+            "l1tex__t_bytes.sum": 454656.0,
+            "lts__t_bytes.sum": 983008.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 9472.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.32,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.39,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 8.6
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 36328832.0,
+            "dram__bytes_read.sum": 34765440.0,
+            "gpu__time_duration.sum": 68000.0,
+            "l1tex__t_bytes.sum": 47284224.0,
+            "lts__t_bytes.sum": 41715584.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 172178.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1085888.0
+          }
+        },
+        "PERSIST_L14_UP": {
+          "GEMM": {
+            "dram__bytes.sum": 35447808.0,
+            "dram__bytes_read.sum": 35293440.0,
+            "gpu__time_duration.sum": 59936.0,
+            "l1tex__t_bytes.sum": 46829568.0,
+            "lts__t_bytes.sum": 40731616.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 146296.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102308.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 33.02,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 5.97,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 54.6
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 384.0,
+            "dram__bytes_read.sum": 384.0,
+            "gpu__time_duration.sum": 4384.0,
+            "l1tex__t_bytes.sum": 454656.0,
+            "lts__t_bytes.sum": 983104.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 9472.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.32,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.4,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 8.69
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 35448192.0,
+            "dram__bytes_read.sum": 35293824.0,
+            "gpu__time_duration.sum": 64320.0,
+            "l1tex__t_bytes.sum": 47284224.0,
+            "lts__t_bytes.sum": 41714720.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 155768.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102308.0
+          }
+        },
+        "SETASIDE_ONLY": {
+          "GEMM": {
+            "dram__bytes.sum": 46671232.0,
+            "dram__bytes_read.sum": 35279872.0,
+            "gpu__time_duration.sum": 78752.0,
+            "l1tex__t_bytes.sum": 46829568.0,
+            "lts__t_bytes.sum": 40671232.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 145902.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 33.55,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 4.55,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 61.06
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 512.0,
+            "dram__bytes_read.sum": 512.0,
+            "gpu__time_duration.sum": 4448.0,
+            "l1tex__t_bytes.sum": 454656.0,
+            "lts__t_bytes.sum": 982944.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 9472.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.32,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.39,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 8.56
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 46671744.0,
+            "dram__bytes_read.sum": 35280384.0,
+            "gpu__time_duration.sum": 83200.0,
+            "l1tex__t_bytes.sum": 47284224.0,
+            "lts__t_bytes.sum": 41654176.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 155374.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0
+          }
+        }
+      },
+      "matched_unrelated_vs_setaside": {
+        "aggregate_dram_ratio": 0.75952147834887,
+        "dram_read_ratio": 1.0003809482345771,
+        "gemm_long_scoreboard_delta_pct_points": -6.460000000000001,
+        "semantic_duration_ratio": 0.7730769230769231
+      },
+      "target_vs_setaside": {
+        "aggregate_dram_ratio": 0.7783902825658283,
+        "dram_read_ratio": 0.9854042404980626,
+        "gemm_duration_ratio": 0.806989028850061,
+        "gemm_long_scoreboard_delta_pct_points": -6.020000000000003,
+        "l2_hit_ratio": 1.1081519430535354,
+        "l2_miss_ratio": 0.9851075565361279,
+        "reduction_duration_ratio": 1.0,
+        "semantic_duration_ratio": 0.8173076923076923
+      }
+    },
+    "L14_UP_D3": {
+      "conditions": {
+        "PERSIST_L0_UP": {
+          "GEMM": {
+            "dram__bytes.sum": 35498624.0,
+            "dram__bytes_read.sum": 35290880.0,
+            "gpu__time_duration.sum": 60544.0,
+            "l1tex__t_bytes.sum": 46829568.0,
+            "lts__t_bytes.sum": 40715264.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 145854.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 32.91,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 5.9,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 54.65
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 1152.0,
+            "dram__bytes_read.sum": 1152.0,
+            "gpu__time_duration.sum": 4544.0,
+            "l1tex__t_bytes.sum": 454656.0,
+            "lts__t_bytes.sum": 982336.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 9472.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.32,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.39,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 8.42
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 35499776.0,
+            "dram__bytes_read.sum": 35292032.0,
+            "gpu__time_duration.sum": 65088.0,
+            "l1tex__t_bytes.sum": 47284224.0,
+            "lts__t_bytes.sum": 41697600.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 155326.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0
+          }
+        },
+        "PERSIST_L14_UP": {
+          "GEMM": {
+            "dram__bytes.sum": 36359040.0,
+            "dram__bytes_read.sum": 34698496.0,
+            "gpu__time_duration.sum": 62368.0,
+            "l1tex__t_bytes.sum": 46829568.0,
+            "lts__t_bytes.sum": 40755424.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 165526.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1083744.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 32.8,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 5.73,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 55.13
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 640.0,
+            "dram__bytes_read.sum": 640.0,
+            "gpu__time_duration.sum": 4480.0,
+            "l1tex__t_bytes.sum": 454656.0,
+            "lts__t_bytes.sum": 982240.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 9472.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.32,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.39,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 8.52
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 36359680.0,
+            "dram__bytes_read.sum": 34699136.0,
+            "gpu__time_duration.sum": 66848.0,
+            "l1tex__t_bytes.sum": 47284224.0,
+            "lts__t_bytes.sum": 41737664.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 174998.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1083744.0
+          }
+        },
+        "SETASIDE_ONLY": {
+          "GEMM": {
+            "dram__bytes.sum": 45812480.0,
+            "dram__bytes_read.sum": 35279872.0,
+            "gpu__time_duration.sum": 76096.0,
+            "l1tex__t_bytes.sum": 46829568.0,
+            "lts__t_bytes.sum": 40693568.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 146614.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 33.45,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 4.6,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 60.85
+          },
+          "REDUCTION": {
+            "dram__bytes.sum": 768.0,
+            "dram__bytes_read.sum": 768.0,
+            "gpu__time_duration.sum": 4480.0,
+            "l1tex__t_bytes.sum": 454656.0,
+            "lts__t_bytes.sum": 982816.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 9472.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 0.0,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.32,
+            "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active": 0.39,
+            "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct": 8.5
+          },
+          "semantic_sums": {
+            "dram__bytes.sum": 45813248.0,
+            "dram__bytes_read.sum": 35280640.0,
+            "gpu__time_duration.sum": 80576.0,
+            "l1tex__t_bytes.sum": 47284224.0,
+            "lts__t_bytes.sum": 41676384.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum": 156086.0,
+            "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum": 1102304.0
+          }
+        }
+      },
+      "matched_unrelated_vs_setaside": {
+        "aggregate_dram_ratio": 0.7748801394740665,
+        "dram_read_ratio": 1.0003228966367956,
+        "gemm_long_scoreboard_delta_pct_points": -6.200000000000003,
+        "semantic_duration_ratio": 0.8077839555202542
+      },
+      "target_vs_setaside": {
+        "aggregate_dram_ratio": 0.7936499066820147,
+        "dram_read_ratio": 0.9835177593150237,
+        "gemm_duration_ratio": 0.81959629941127,
+        "gemm_long_scoreboard_delta_pct_points": -5.719999999999999,
+        "l2_hit_ratio": 1.1211639737068027,
+        "l2_miss_ratio": 0.983162539553517,
+        "reduction_duration_ratio": 1.0,
+        "semantic_duration_ratio": 0.829626687847498
+      }
+    }
+  },
+  "status": "PASS"
+}

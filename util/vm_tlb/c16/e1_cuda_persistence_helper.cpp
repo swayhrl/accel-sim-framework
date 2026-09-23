@@ -63,6 +63,27 @@ int c16_set_access_policy(std::uintptr_t stream_value,
   return static_cast<int>(cudaStreamSetAttribute(stream, cudaStreamAttributeAccessPolicyWindow, &attribute));
 }
 
+int c16_set_access_policy_mode(std::uintptr_t stream_value,
+                               std::uintptr_t base_pointer,
+                               std::size_t num_bytes,
+                               float hit_ratio,
+                               int hit_mode,
+                               int miss_mode) {
+  auto decode_property = [](int mode) {
+    if (mode == 2) return cudaAccessPropertyPersisting;
+    if (mode == 1) return cudaAccessPropertyStreaming;
+    return cudaAccessPropertyNormal;
+  };
+  cudaStreamAttrValue attribute{};
+  attribute.accessPolicyWindow.base_ptr = reinterpret_cast<void*>(base_pointer);
+  attribute.accessPolicyWindow.num_bytes = num_bytes;
+  attribute.accessPolicyWindow.hitRatio = hit_ratio;
+  attribute.accessPolicyWindow.hitProp = decode_property(hit_mode);
+  attribute.accessPolicyWindow.missProp = decode_property(miss_mode);
+  auto stream = reinterpret_cast<cudaStream_t>(stream_value);
+  return static_cast<int>(cudaStreamSetAttribute(stream, cudaStreamAttributeAccessPolicyWindow, &attribute));
+}
+
 int c16_clear_access_policy(std::uintptr_t stream_value) {
   cudaStreamAttrValue attribute{};
   attribute.accessPolicyWindow.base_ptr = nullptr;

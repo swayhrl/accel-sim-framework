@@ -287,3 +287,19 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Budget sensitivity.** With the full qweight window retained and hitRatio scaled to budget, 8 MiB is non-material and 16 MiB is the first tested material timing budget. The tested 32 MiB and full-qweight conditions reach the same approximately 0.043008 ms L0 up D3 median. No tested budget meets the DRAM material gate; 16 MiB is a tested point, not an exact threshold.
 
 **Scoped state.** `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`. The extracted abstract requirement is selective line-level protection of a qweight-like address interval across the inter-token reuse lifetime, with bounded budget, interference resistance, and normal fallback for non-target data. Candidate identity sources remain open. No classifier, replacement algorithm, Accel-Sim mechanism, NVBit trace, full address trace, or cache/TLB simulation was implemented or started.
+
+---
+
+## E1 shared-residency mechanism-feasibility producer result — 2026-09-24
+
+**Frozen upstream divergence.** The prior producer state `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`, strict consumer state `TARGETED_PERSISTENCE_MECHANISM_PRECONDITION_NOT_SUPPORTED`, and `METHODOLOGICAL_OPERATIONALIZATION` divergence remain unchanged. This stage operates under `DESIGN_REVIEW_AUTHORIZED_WITH_TRAFFIC_CAVEAT`.
+
+**Critical path.** Installed NCU 2025.1.1 resolves duration, L2 TEX-read hit/miss sectors, DRAM-read bytes, long-scoreboard stall, LSU utilization and active-warps metrics. Up-proj policy duration changes occur in the quantized GEMM; reduction duration is nearly unchanged. Target persistence modestly improves L2 hit/miss behavior, but unrelated persistence can also reduce GEMM duration and long-scoreboard without the same hit/miss shift. DRAM-read bytes move much less than native timing or aggregate DRAM. L0 down's native benefit is not reproduced by profiled kernel duration/stall. Aggregate DRAM is therefore a poor standalone critical-path proxy.
+
+**Rotating-window qualification.** Under one fixed full-qweight set-aside, A=L0 up→B=L14 up→A was executed with hitRatio=0.5 and no intermediate reset. A matched control performed the same three updates using `cudaAccessPropertyNormal` for both hit and miss. Persistent rotation changes GEMM duration 48,512→41,376 ns, long-scoreboard 43.8%→28.5%, DRAM read approximately 27.1→14.7 MB, and materially improves L2 hit/miss sectors. Rotating semantics are qualified. Median host update cost is approximately 1.57 μs per call.
+
+**Fixed-budget sharing.** Every rotating condition uses one requested 33,947,648 B set-aside and 15 full-qweight window updates per full-model run. SHARE2_UP retains material D3 local benefits for L0 up (42.5%) and L14 up (43.0%). SHARE2_L0 retains L0 up (31.25%) and L0 down (10.96%). SHARE3 retains all three targets: 36.25%, 35.44%, and 5.48%. `MULTI_TARGET_RETAINED=true` for all three shared conditions.
+
+**Whole decode and overhead.** Stable D1–D3 mean decode latency improves only 0.347% for SHARE2_UP and 0.381% for SHARE3 versus ROTATE_CONTROL_3; SHARE2_L0 is approximately flat/slightly worse. None reaches the registered 2% whole-decode threshold. ROTATE_CONTROL_3 itself changes stable decode by only approximately 0.028% versus SETASIDE_ONLY. Each update costs roughly 3.8 μs in the full-model harness, approximately 57 μs over 15 updates; raw per-update/per-run overhead is retained separately.
+
+**Stage label.** `SHARED_RESIDENCY_LOCAL_ONLY`. One fixed quota can retain multiple local qweight benefits, including all three targets under SHARE3, but this bounded configuration does not produce material full decode-step benefit. No NVBit, full address trace, Accel-Sim mutation, or mechanism simulation was started.

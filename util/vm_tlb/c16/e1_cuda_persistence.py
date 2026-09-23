@@ -2,12 +2,13 @@
 """Audited ctypes wrapper for the locally compiled CUDA persistence helper."""
 
 import ctypes
+import time
 from pathlib import Path
 
 import torch
 
 
-LIBRARY = Path("/data/c16/e1_l2_persistence_intervention_v1/build/libc16_cuda_persistence.so")
+LIBRARY = Path("/data/c16/e1_shared_residency_feasibility_v1/build/libc16_cuda_persistence.so")
 
 
 class Capability(ctypes.Structure):
@@ -34,6 +35,8 @@ class PersistenceHelper:
         self.library.c16_reset_persisting_l2.restype = ctypes.c_int
         self.library.c16_set_access_policy.argtypes = [ctypes.c_uint64, ctypes.c_uint64, ctypes.c_size_t, ctypes.c_float, ctypes.c_int]
         self.library.c16_set_access_policy.restype = ctypes.c_int
+        self.library.c16_set_access_policy_mode.argtypes = [ctypes.c_uint64, ctypes.c_uint64, ctypes.c_size_t, ctypes.c_float, ctypes.c_int, ctypes.c_int]
+        self.library.c16_set_access_policy_mode.restype = ctypes.c_int
         self.library.c16_clear_access_policy.argtypes = [ctypes.c_uint64]
         self.library.c16_clear_access_policy.restype = ctypes.c_int
         self.library.c16_cuda_error_string.argtypes = [ctypes.c_int]
@@ -110,6 +113,31 @@ class PersistenceHelper:
         receipt["reset_after"] = True
         receipt["operations_after"] = operations
         return receipt
+
+    def update_access_policy(self, label, qweight, hit_ratio, persisting):
+        stream = self.stream_value()
+        pointer = int(qweight.data_ptr())
+        num_bytes = int(qweight.numel() * qweight.element_size())
+        hit_mode = 2 if persisting else 0
+        miss_mode = 1 if persisting else 0
+        started = time.perf_counter_ns()
+        status = self.library.c16_set_access_policy_mode(
+            stream, pointer, num_bytes, float(hit_ratio), hit_mode, miss_mode
+        )
+        ended = time.perf_counter_ns()
+        operation = self.checked(f"update access-policy window {label}", status)
+        return {
+            "label": label,
+            "stream_value": stream,
+            "base_ptr": pointer,
+            "num_bytes": num_bytes,
+            "hit_ratio": float(hit_ratio),
+            "hit_property": "cudaAccessPropertyPersisting" if persisting else "cudaAccessPropertyNormal",
+            "miss_property": "cudaAccessPropertyStreaming" if persisting else "cudaAccessPropertyNormal",
+            "persisting": bool(persisting),
+            "cpu_update_ns": ended - started,
+            "operation": operation,
+        }
 
 
 def qweight_region(module, tensor_name):

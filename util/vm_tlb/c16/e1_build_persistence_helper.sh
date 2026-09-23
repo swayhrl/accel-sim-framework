@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO=/home/huangrulin/workspace/worktrees/accel-sim-c16-e1-l2-persistence-intervention-109-v1
-OUT=/data/c16/e1_l2_persistence_intervention_v1/build
+REPO=/home/huangrulin/workspace/worktrees/accel-sim-c16-e1-shared-residency-feasibility-109-v1
+OUT=/data/c16/e1_shared_residency_feasibility_v1/build
 CUDA_ROOT=/usr/local/cuda-12.8
 
 mkdir -p "$OUT"
