@@ -467,3 +467,44 @@ No simulator implementation or full trace is authorized yet.
 ## E1 shared-residency design review and consumer prep (174-new)
 
 The upstream producer/strict-consumer divergence remains frozen and project action remains `DESIGN_REVIEW_AUTHORIZED_WITH_TRAFFIC_CAVEAT`. CPU-only prep implemented shared-policy and category-aware critical-path consumers. Static mapping of accepted Core `57bb71e` supports an address-based oracle tag but finds no kernel UID/CTA ID at L2 and no reliable PC on sector-split children. The recommended first mechanism is M1 elastic protected quota with oracle/software-region tagging; M0 is a static-partition control and M2 is deferred. Existing artifacts are insufficient for the natural reuse replacement experiment, so `BOUNDED_ADDITIONAL_TRACE_REQUIRED` specifies only a two-stable-decode minimum scope and does not authorize capture. The shared-hardware producer ref was absent in the one-shot fetch window; status is `READY_FOR_E1_SHARED_RESIDENCY_FEASIBILITY_109`.
+
+
+---
+
+## Next reviewed question — fixed-budget protected-coverage scaling
+
+Shared-residency hardware producer:
+
+`hrl/c16-e1-shared-residency-feasibility-109-v1@1e701f013fc174b5b4df9febb5c33500f9ea586e`
+
+Producer stage label:
+
+`SHARED_RESIDENCY_LOCAL_ONLY`
+
+The key project interpretation is more specific than the label alone:
+
+- the three SHARE3 targets occupy only about 1.74% of a stable decode step;
+- their local time saving corresponds to roughly 0.42-0.47% of decode;
+- the observed whole-decode saving captures roughly 79-89% of that local saving.
+
+Therefore the <0.5% whole-decode result is primarily coverage-limited in this bounded three-module experiment. It is not evidence that local savings fail to realize.
+
+The next stage holds the total persisting-L2 budget fixed and expands homogeneous up_proj coverage from one layer to all 28 layers.
+
+It measures:
+- actual FFN opportunity share;
+- selected target-share/Amdahl ceiling;
+- local-benefit dilution with coverage;
+- whole-decode realization;
+- layer-composition robustness;
+- bounded critical-path scaling;
+- a conditional over-subscribed FULLHINT control if the FAIR 1/N policy remains locally strong but sub-2% end-to-end.
+
+No simulator is run in this stage.
+
+Historical C12 operator-aware evidence is retained only as qualitative motivation that FFN/Attention Projection effects can be broad across layers; it is not quantitative authority for qweight persistence.
+
+Future simulator authority, if later authorized, remains:
+- Core `swayhrl/gpgpu-sim@57bb71e...`
+- RTX4080 `RTX4080_ADA_ACCELSIM_BASE_V1`
+- not an RTX3080/SM86 configuration.
