@@ -202,3 +202,34 @@ At M1, AWQ/RAW was 0.174 for L1/TEX, 0.304 for L2 and 0.259 for DRAM, alongside 
 **Next question.** Any mechanism-specific cache/TLB study requires a separately reviewed scientific contract; it is not inferred or started here.
 
 **Stop condition.** Stop after semantic-NCU review-pack and Git closure. NVBit, full address trace and TLB/cache mechanisms remain prohibited in this stage.
+
+---
+
+## E1 semantic-NCU cache-state repair — 2026-09-23
+
+**Question.** Does the frozen `up_proj` M1/M256 RAW_FP16-versus-AWQ traffic interaction persist when Nsight Compute uses application replay and preserves application-managed cache state with `--cache-control none`?
+
+**V1 audit.** The V1 selector and arithmetic remain correct and its values are unchanged. Its preserved session commands omit explicit application replay and `cache-control none`, while every selected kernel records seven replay passes. V1 traffic is therefore retained as `COLD_CACHE_KERNEL_REPLAY_DIAGNOSTIC`, not native/warmed semantic-module traffic.
+
+**V2 evidence.** Nsight Compute CLI 2025.1.1 accepted `--replay-mode application --cache-control none`. Each of the four application processes rebuilt the same accepted module state, executed two warmups outside its unique NVTX range, then executed exactly one selected semantic `up_proj` call. All canonical input and accepted output SHA256 gates passed. Every selected kernel records one application replay pass. RAW retained one complete target kernel; AWQ retained its complete quantized GEMM plus reduction sequence.
+
+**V2 semantic-module traffic.** Exact byte sums from raw base-unit exports were:
+
+| point | L1/TEX bytes | L2 bytes | DRAM bytes |
+|---|---:|---:|---:|
+| M1 RAW_FP16 | 272,187,392 | 137,167,040 | 138,156,416 |
+| M1 AWQ_FP16_INPUT | 47,284,224 | 41,898,912 | 640 |
+| M256 RAW_FP16 | 417,071,104 | 417,723,360 | 156,380,160 |
+| M256 AWQ_FP16_INPUT | 1,411,252,224 | 1,266,170,592 | 178,195,840 |
+
+M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M256 AWQ/RAW was 3.383721, 3.031122 and 1.139504 respectively. RAW M256/M1 scaling was 1.532294, 3.045363 and 1.131907; AWQ M256/M1 scaling was 29.846154, 30.219653 and 278431. Traffic shape-interaction ratios were 19.478086, 9.923171 and 245984.075367.
+
+**V1/V2 classification.** L1/TEX and L2 are `SAME_DIRECTION_SIMILAR_MAGNITUDE`. DRAM is `SAME_DIRECTION_DIFFERENT_MAGNITUDE`, driven by the V2 M1 AWQ value. No metric changes its qualitative M1 or M256 AWQ-versus-RAW direction. All three V2 traffic interactions retain the accepted native timing interaction direction.
+
+**Interpretation.** Semantic-module traffic is materially profiler-context-sensitive, especially M1 DRAM. This is a descriptive association under the registered V2 context; it does not demonstrate cache causality, TLB causality, or a specific mechanism opportunity.
+
+**Superseded.** Only the interpretation of V1 as final warmed semantic traffic is superseded. Its selector, raw counters and arithmetic are preserved without modification.
+
+**Next question.** Resume independent consumer verification directly from V2 raw report hashes, session commands and base-unit exports. Any mechanism study requires a separate reviewed contract.
+
+**Stop condition.** Stop after bounded repair review/Git closure. NVBit, full address trace, cache/TLB mechanisms, shape sweeps and role reselection remain prohibited.

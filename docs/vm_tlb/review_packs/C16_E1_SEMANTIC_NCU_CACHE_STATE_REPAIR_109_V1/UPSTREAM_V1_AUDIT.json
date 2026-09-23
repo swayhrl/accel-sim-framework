@@ -1,0 +1,61 @@
+{
+  "arithmetic_unchanged": true,
+  "cache_control_none_explicit": false,
+  "clean_e1_independent_consumer": "hrl/c16-e1-clean-baseline-consumer-prep-174new-v1@59ddb8ba2a33ef12b73bfc859f3a994e0b4ef4ca",
+  "clean_e1_producer": "hrl/c16-e1-clean-baseline-109-v1@8988d6108ff8bdca180a14cec2fe769df45b09f1",
+  "default_kernel_replay": true,
+  "interpretation": "COLD_CACHE_KERNEL_REPLAY_DIAGNOSTIC",
+  "points": [
+    {
+      "kernel_count": 1,
+      "point_id": "M1_RAW",
+      "profiler_command": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M1_RAW_FP16/ --target-processes application-only --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum,sm__warps_active.avg.pct_of_peak_sustained_active,sm__throughput.avg.pct_of_peak_sustained_elapsed,sm__pipe_tensor_cycles_active_v2.avg.pct_of_peak_sustained_elapsed --force-overwrite -o /data/c16/e1_semantic_ncu_v1/reports/M1_RAW /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 1 --impl RAW_FP16 ",
+      "replay_passes_per_selected_kernel": [
+        7
+      ]
+    },
+    {
+      "kernel_count": 2,
+      "point_id": "M1_AWQ",
+      "profiler_command": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M1_AWQ/ --target-processes application-only --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum,sm__warps_active.avg.pct_of_peak_sustained_active,sm__throughput.avg.pct_of_peak_sustained_elapsed,sm__pipe_tensor_cycles_active_v2.avg.pct_of_peak_sustained_elapsed --force-overwrite -o /data/c16/e1_semantic_ncu_v1/reports/M1_AWQ /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 1 --impl AWQ ",
+      "replay_passes_per_selected_kernel": [
+        7,
+        7
+      ]
+    },
+    {
+      "kernel_count": 1,
+      "point_id": "M256_RAW",
+      "profiler_command": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M256_RAW_FP16/ --target-processes application-only --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum,sm__warps_active.avg.pct_of_peak_sustained_active,sm__throughput.avg.pct_of_peak_sustained_elapsed,sm__pipe_tensor_cycles_active_v2.avg.pct_of_peak_sustained_elapsed --force-overwrite -o /data/c16/e1_semantic_ncu_v1/reports/M256_RAW /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 256 --impl RAW_FP16 ",
+      "replay_passes_per_selected_kernel": [
+        7
+      ]
+    },
+    {
+      "kernel_count": 2,
+      "point_id": "M256_AWQ",
+      "profiler_command": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M256_AWQ/ --target-processes application-only --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum,sm__warps_active.avg.pct_of_peak_sustained_active,sm__throughput.avg.pct_of_peak_sustained_elapsed,sm__pipe_tensor_cycles_active_v2.avg.pct_of_peak_sustained_elapsed --force-overwrite -o /data/c16/e1_semantic_ncu_v1/reports/M256_AWQ /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 256 --impl AWQ ",
+      "replay_passes_per_selected_kernel": [
+        7,
+        7
+      ]
+    }
+  ],
+  "producer": "hrl/c16-e1-semantic-ncu-109-v1@9ad003fff0d42b544d3a703eca4846364c13ccb6",
+  "raw_recomputed_ratios": {
+    "dram__bytes.sum": {
+      "M1_AWQ_over_RAW": 0.2587944202393104,
+      "M256_AWQ_over_RAW": 1.1065566466018764
+    },
+    "l1tex__t_bytes.sum": {
+      "M1_AWQ_over_RAW": 0.17371937639198218,
+      "M256_AWQ_over_RAW": 3.383720930232558
+    },
+    "lts__t_bytes.sum": {
+      "M1_AWQ_over_RAW": 0.3038159794050108,
+      "M256_AWQ_over_RAW": 3.026770629642317
+    }
+  },
+  "semantic_ncu_consumer_hardening": "hrl/c16-e1-semantic-ncu-consumer-hardening-v1@396233ca250c20be834aa0c50d2504e6017953bc",
+  "status": "PASS"
+}

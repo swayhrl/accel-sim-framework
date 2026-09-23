@@ -1,0 +1,40 @@
+{
+  "cache_control": "none",
+  "commands": {
+    "M1_AWQ": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M1_AWQ/ --target-processes application-only --replay-mode application --cache-control none --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum --force-overwrite -o /data/c16/e1_semantic_ncu_cache_state_repair_v1/reports/M1_AWQ /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 1 --impl AWQ ",
+    "M1_RAW": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M1_RAW_FP16/ --target-processes application-only --replay-mode application --cache-control none --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum --force-overwrite -o /data/c16/e1_semantic_ncu_cache_state_repair_v1/reports/M1_RAW /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 1 --impl RAW_FP16 ",
+    "M256_AWQ": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M256_AWQ/ --target-processes application-only --replay-mode application --cache-control none --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum --force-overwrite -o /data/c16/e1_semantic_ncu_cache_state_repair_v1/reports/M256_AWQ /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 256 --impl AWQ ",
+    "M256_RAW": "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu --nvtx --nvtx-include C16_E1_NCU_UP_M256_RAW_FP16/ --target-processes application-only --replay-mode application --cache-control none --metrics l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum --force-overwrite -o /data/c16/e1_semantic_ncu_cache_state_repair_v1/reports/M256_RAW /data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_semantic_ncu_replay.py --M 256 --impl RAW_FP16 "
+  },
+  "metric_unit": "byte",
+  "metrics": [
+    "l1tex__t_bytes.sum",
+    "lts__t_bytes.sum",
+    "dram__bytes.sum"
+  ],
+  "ncu_help_raw_source_sha256": "62f9c7e9473087aa5a9e8e0adadc4e80d17d948512cb2d98feea50e6cec57bab",
+  "ncu_version": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2025 NVIDIA Corporation\nVersion 2025.1.1.0 (build 35528883) (public-release)",
+  "replay_mode": "application",
+  "replay_pass_counts_per_selected_kernel": {
+    "M1_AWQ": [
+      1,
+      1
+    ],
+    "M1_RAW": [
+      1
+    ],
+    "M256_AWQ": [
+      1,
+      1
+    ],
+    "M256_RAW": [
+      1
+    ]
+  },
+  "replay_source": "util/vm_tlb/c16/e1_semantic_ncu_replay.py",
+  "replay_source_sha256": "fbcb8921f8938dcbfc77b60dd9309f5182d991f9a0d34c1e35defe3839293173",
+  "status": "PASS",
+  "target_semantic_invocations_per_application_pass": 1,
+  "unique_target_nvtx_ranges_per_process": 1,
+  "warmups_outside_nvtx_range": 2
+}
