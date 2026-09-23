@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Fail-closed consumer for residency-intervention raw NCU BASE/SESSION evidence.
+"""Fail-closed consumer for residency-intervention raw NCU BASE/SESSION/PROFILE evidence.
 
-The producer's semantic summary is deliberately not an input.  Each profile is
-bound by a consumer-owned point specification to one raw wide NCU CSV and its
-raw session transcript.  Intervention state is part of the semantic identity.
+The producer's semantic summary is deliberately not an input. Each profile is
+bound by a consumer-owned point specification to one raw wide NCU CSV, its raw
+session transcript, and the raw profiler log that carries the replay identity
+receipt. Intervention state is part of the semantic identity.
 """
 from __future__ import annotations
 
@@ -147,19 +148,53 @@ def _audit_session(path: Path, spec: dict) -> dict:
     if len(requested) != len(set(requested)) or set(requested) != set(METRICS):
         raise RawNcuError(f"SESSION metric set mismatch: {requested}")
 
-    for key in ("input_sha256", "output_sha256"):
-        observed = _session_hashes(text, key)
-        if observed != {spec[key]}:
-            raise RawNcuError(f"SESSION {key} mismatch or ambiguity: {sorted(observed)}")
-
     return {
         "sha256": _sha256(path),
         "replay_mode": "application",
         "cache_control": "none",
         "nvtx_range": spec["range_name"],
         "metrics": list(METRICS),
+    }
+
+
+def _audit_profile_log(path: Path, spec: dict) -> dict:
+    text = path.read_text(encoding="utf-8", errors="strict")
+    if not text.strip():
+        raise RawNcuError("empty PROFILE evidence")
+    receipts = []
+    for line in text.splitlines():
+        line = line.strip()
+        if not (line.startswith("{") and line.endswith("}")):
+            continue
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if value.get("status") == "PASS":
+            receipts.append(value)
+    if len(receipts) != 1:
+        raise RawNcuError(f"PROFILE must contain exactly one PASS replay receipt, got {len(receipts)}")
+    receipt = receipts[0]
+    expected = {
+        "role": spec["role"],
+        "M": spec["M"],
+        "implementation": spec["implementation"],
+        "state": spec["state"],
+        "range": spec["range_name"],
         "input_sha256": spec["input_sha256"],
         "output_sha256": spec["output_sha256"],
+    }
+    mismatches = {
+        key: {"expected": exp, "observed": receipt.get(key)}
+        for key, exp in expected.items()
+        if receipt.get(key) != exp
+    }
+    if mismatches:
+        raise RawNcuError("PROFILE replay identity mismatch: " + json.dumps(mismatches, sort_keys=True))
+    return {
+        "sha256": _sha256(path),
+        "status": "PASS",
+        **expected,
     }
 
 
@@ -191,10 +226,13 @@ def _parse_spec(raw: dict, root: Path) -> dict:
 
     base_path = root / _text(raw.get("base_path"), "base_path")
     session_path = root / _text(raw.get("session_path"), "session_path")
+    profile_path = root / _text(raw.get("profile_path"), "profile_path")
     if not base_path.is_file():
         raise RawNcuError(f"missing raw BASE evidence: {base_path}")
     if not session_path.is_file():
         raise RawNcuError(f"missing raw SESSION evidence: {session_path}")
+    if not profile_path.is_file():
+        raise RawNcuError(f"missing raw PROFILE evidence: {profile_path}")
 
     parsed = {
         "point": point,
@@ -218,6 +256,7 @@ def _parse_spec(raw: dict, root: Path) -> dict:
         "packed_weight_bytes": raw.get("packed_weight_bytes"),
         "base_path": base_path,
         "session_path": session_path,
+        "profile_path": profile_path,
     }
     if parsed["implementation"] == "AWQ_FP16_INPUT":
         parsed["packed_weight_bytes"] = _positive_int(
@@ -404,6 +443,7 @@ def consume(spec_document: dict, spec_root: Path = Path(".")) -> dict:
     normalized_rows = []
     for spec in specs:
         session = _audit_session(spec["session_path"], spec)
+        profile_log = _audit_profile_log(spec["profile_path"], spec)
         rows, base = _read_base(spec)
         normalized_rows.extend(rows)
         profiles.append(
@@ -419,6 +459,7 @@ def consume(spec_document: dict, spec_root: Path = Path(".")) -> dict:
                 "input_sha256": spec["input_sha256"],
                 "output_sha256": spec["output_sha256"],
                 "session": session,
+                "profile_log": profile_log,
                 **base,
             }
         )
@@ -471,7 +512,7 @@ def consume(spec_document: dict, spec_root: Path = Path(".")) -> dict:
 
     return {
         "status": "PASS",
-        "authority": "DIRECT_RAW_BASE_SESSION_ONLY",
+        "authority": "DIRECT_RAW_BASE_SESSION_PROFILE_ONLY",
         "semantic_identity_fields": [
             "point",
             "role",
