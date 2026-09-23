@@ -365,3 +365,41 @@ No residency mechanism is authorized before this natural-reuse stage and indepen
 ## E1 natural-reuse / residency independent consumer closure (174-new)
 
 Producer `ccfdc89d517766d12588ee131818efe341c7e17c` was consumed directly from raw timing and NCU BASE+SESSION+PROFILE evidence. The independent classification is `CASE_B_WITH_CASE_D_ROLE_DEPENDENCE`: AWQ shows clear immediate refill, natural layer-0 traffic is dense-like or beyond the isolated dense bracket, and capacity/role responses differ. Capacity observations are first tested triggers with tested brackets, not exact physical knees. Layer 14 remains `NO_EXACT_ISOLATED_AUTHORITY`; layer-0 isolated evidence was not borrowed. The optional RAW result is a BF16 full-model control, not isolated RAW_FP16 authority. No GPU, NVBit, full trace, cache/TLB mechanism, or mechanism simulation was used or authorized.
+
+
+---
+
+## Next reviewed question — targeted real-hardware L2 persistence
+
+The natural-reuse producer/consumer pair is independently closed:
+
+- producer: `ccfdc89d517766d12588ee131818efe341c7e17c`
+- consumer: `4f9242d177220721cb9e669aad5dd9e29f04407d`
+
+Accepted framing:
+
+`CASE_B_WITH_CASE_D_ROLE_DEPENDENCE`
+
+The key architectural observation is now:
+
+- immediate reuse rapidly repopulates AWQ q/down/up compressed state;
+- natural full-model token reuse does not preserve that state;
+- natural target DRAM becomes dense-like or exceeds the isolated dense bracket;
+- capacity alone is insufficient to explain all role behavior.
+
+Accepted RTX4080 raw device attributes also show:
+
+- L2 = 67,108,864 B
+- max persisting-L2 set-aside = 46,137,344 B
+- max access-policy window = 134,213,632 B
+
+The dominant up/down AWQ qweight tensor is 33,947,648 B, within the observed persisting-L2 and access-window limits.
+
+The next stage therefore performs a direct CUDA persisting-L2 policy intervention on exact qweight address ranges during the same natural full-model decode.
+
+The goal is to determine whether selectively preserving the target compressed weight region reduces natural target DRAM/timing relative to:
+- baseline;
+- set-aside-only;
+- matched unrelated-region persistence.
+
+This is a mechanism-precondition experiment only. No new cache mechanism, NVBit trace, or simulator implementation is authorized yet.
