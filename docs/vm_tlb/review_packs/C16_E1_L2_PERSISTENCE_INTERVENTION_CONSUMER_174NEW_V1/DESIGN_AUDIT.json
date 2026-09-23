@@ -1,0 +1,67 @@
+{
+  "accepted_capability_cross_checks": {
+    "l2_bytes": 67108864,
+    "max_access_policy_window_bytes": 134213632,
+    "max_persisting_l2_bytes": 46137344
+  },
+  "accepted_upstream_consumer": "4f9242d177220721cb9e669aad5dd9e29f04407d",
+  "allowed_final_states": [
+    "MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW",
+    "TARGETED_PERSISTENCE_TRAFFIC_ONLY",
+    "TARGETED_PERSISTENCE_MECHANISM_PRECONDITION_NOT_SUPPORTED",
+    "CUDA_PERSISTENCE_POLICY_UNQUALIFIED"
+  ],
+  "budget_sweep": {
+    "budgets": [
+      "8MiB",
+      "16MiB",
+      "24MiB",
+      "32MiB",
+      "FULL_QWEIGHT"
+    ],
+    "claim": "FIRST_TESTED_MATERIAL_BUDGET_ONLY",
+    "conditional": true,
+    "hit_ratio": "min(1,budget_bytes/qweight_bytes)",
+    "repetitions": 7,
+    "window": "FULL_QWEIGHT_UNCHANGED"
+  },
+  "dram_materiality": {
+    "minimum_absolute_reduction_bytes": 4194304,
+    "minimum_fractional_reduction": 0.2
+  },
+  "effect_denominator": "SETASIDE_ONLY",
+  "effects": [
+    "SETASIDE_ONLY_vs_BASELINE",
+    "PERSIST_TARGET_vs_SETASIDE_ONLY",
+    "PERSIST_OTHER_vs_SETASIDE_ONLY"
+  ],
+  "forbidden": [
+    "GPU_ON_174NEW",
+    "NVBIT",
+    "FULL_ADDRESS_TRACE",
+    "MECHANISM_IMPLEMENTATION",
+    "MECHANISM_SIMULATION"
+  ],
+  "handoff_head": "b2301f9ede7e4d4b6adcd3f08d4be169058f318f",
+  "natural_conditions": [
+    "BASELINE",
+    "SETASIDE_ONLY",
+    "PERSIST_L0_UP",
+    "PERSIST_L14_UP",
+    "PERSIST_L0_DOWN"
+  ],
+  "policy_granularity": "EXACT_CONTIGUOUS_QWEIGHT_STORAGE_ONLY",
+  "primary_occurrences": [
+    "L0_UP_D1",
+    "L0_UP_D3",
+    "L14_UP_D3",
+    "L0_DOWN_D3"
+  ],
+  "stage": "C16_E1_L2_PERSISTENCE_INTERVENTION_CONSUMER_174NEW_V1",
+  "status": "PASS",
+  "target_specific": "target-persist benefit must be materially larger than matched unrelated-persist effect for the same target",
+  "timing_materiality": {
+    "minimum_fractional_reduction": 0.05,
+    "must_exceed_combined_dispersion": true
+  }
+}

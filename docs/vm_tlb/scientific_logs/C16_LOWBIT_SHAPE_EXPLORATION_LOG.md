@@ -403,3 +403,9 @@ The goal is to determine whether selectively preserving the target compressed we
 - matched unrelated-region persistence.
 
 This is a mechanism-precondition experiment only. No new cache mechanism, NVBit trace, or simulator implementation is authorized yet.
+
+---
+
+## E1 targeted L2-persistence consumer prep (174-new)
+
+CPU-only independent consumer prep is complete on handoff `b2301f9ede7e4d4b6adcd3f08d4be169058f318f`. Policy receipts, isolated qualification, five natural conditions, raw four-source NCU closure, matched controls, materiality, conditional budget sensitivity, and four final-state labels are frozen and covered by 48 new tests. The producer ref was unavailable in the one-shot fetch window, so status is `READY_FOR_E1_L2_PERSISTENCE_INTERVENTION_109`; no scientific persistence result or mechanism authorization is asserted.

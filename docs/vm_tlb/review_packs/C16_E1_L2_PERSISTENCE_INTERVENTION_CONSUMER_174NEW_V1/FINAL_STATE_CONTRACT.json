@@ -1,0 +1,25 @@
+{
+  "no_mechanism_authorization": true,
+  "persist_other_denominator": "SETASIDE_ONLY",
+  "persist_target_denominator": "SETASIDE_ONLY",
+  "precedence": [
+    {
+      "label": "CUDA_PERSISTENCE_POLICY_UNQUALIFIED",
+      "when": "policy receipt or isolated engineering qualification does not close"
+    },
+    {
+      "label": "MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW",
+      "when": "at least one primary natural target has MATERIAL_TIMING_BENEFIT, MATERIAL_DRAM_BENEFIT, and TARGET_SPECIFIC support; requirement extraction also matches evidence"
+    },
+    {
+      "label": "TARGETED_PERSISTENCE_TRAFFIC_ONLY",
+      "when": "no target satisfies the ready rule, but at least one primary natural target has MATERIAL_DRAM_BENEFIT"
+    },
+    {
+      "label": "TARGETED_PERSISTENCE_MECHANISM_PRECONDITION_NOT_SUPPORTED",
+      "when": "policy is qualified but neither prior evidence rule holds (including timing-only without material DRAM)"
+    }
+  ],
+  "reservation_effect_is_separate": true,
+  "status": "FROZEN_BEFORE_PRODUCER_FETCH"
+}

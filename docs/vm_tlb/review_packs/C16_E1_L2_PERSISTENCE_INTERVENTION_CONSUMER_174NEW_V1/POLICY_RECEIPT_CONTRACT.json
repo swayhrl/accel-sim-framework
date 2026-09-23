@@ -1,0 +1,47 @@
+{
+  "baseline": "reset before/after; setaside disabled or zero; no persisting window",
+  "fail_closed": [
+    "missing capability",
+    "noncontiguous or ambiguous qweight",
+    "wrong condition",
+    "qweight/window mismatch",
+    "budget exceeds runtime maximum",
+    "window exceeds runtime maximum",
+    "missing reset",
+    "baseline persistence active",
+    "setaside-only target window active"
+  ],
+  "required_capability": [
+    "cuda_runtime_version",
+    "device_ordinal",
+    "device_name",
+    "l2_bytes",
+    "max_persisting_l2_bytes",
+    "max_access_policy_window_bytes"
+  ],
+  "required_policy": [
+    "condition",
+    "requested_setaside_bytes",
+    "actual_setaside_bytes",
+    "access_window_base_pointer",
+    "access_window_num_bytes",
+    "hit_ratio",
+    "hit_prop",
+    "miss_prop",
+    "stream_identity"
+  ],
+  "required_region": [
+    "target_label",
+    "qweight_pointer",
+    "qweight_bytes",
+    "qweight_contiguous",
+    "unambiguous_storage_interval"
+  ],
+  "required_reset": [
+    "reset_before",
+    "reset_after"
+  ],
+  "setaside_only": "same target-sized budget reserved; no target region persisting window; target policy normal/disabled",
+  "status": "FROZEN",
+  "target_persist": "exact qweight base and full qweight bytes; persisting hit; supported miss property; budget/window within queried maxima"
+}

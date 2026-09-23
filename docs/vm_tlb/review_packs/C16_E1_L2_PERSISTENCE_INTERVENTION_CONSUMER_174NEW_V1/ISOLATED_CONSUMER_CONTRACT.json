@@ -1,0 +1,44 @@
+{
+  "conditions": [
+    "ISO_BASELINE_DENSE",
+    "ISO_QWEIGHT_PERSIST_DENSE"
+  ],
+  "ncu_authority": [
+    "BASE.csv",
+    "SESSION.csv",
+    "PROFILE.log",
+    "policy receipt"
+  ],
+  "ncu_requirements": {
+    "cache_control": "none",
+    "exact_range": true,
+    "kernel_inventory": true,
+    "metrics": [
+      "l1tex__t_bytes.sum",
+      "lts__t_bytes.sum",
+      "dram__bytes.sum"
+    ],
+    "replay_mode": "application",
+    "replay_pass_count": true,
+    "unit": "byte"
+  },
+  "qualification_gate": "identity, policy receipt, exact qweight window, and NCU selector closure; no minimum performance effect",
+  "repetitions": 9,
+  "status": "FROZEN",
+  "target": {
+    "M": 1,
+    "domain": "TEXT",
+    "implementation": "AWQ_FP16_INPUT",
+    "layer_index": 0,
+    "pressure": "256MiB_DENSE_MEMORY_PRESSURE",
+    "role": "up_proj"
+  },
+  "timing_outputs": [
+    "median",
+    "min",
+    "max",
+    "mean",
+    "cv",
+    "persist_over_baseline"
+  ]
+}

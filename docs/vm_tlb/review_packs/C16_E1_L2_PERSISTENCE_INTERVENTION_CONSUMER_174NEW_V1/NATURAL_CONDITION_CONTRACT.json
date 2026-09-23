@@ -1,0 +1,58 @@
+{
+  "accepted_prefix_required": true,
+  "conditions": [
+    "BASELINE",
+    "SETASIDE_ONLY",
+    "PERSIST_L0_UP",
+    "PERSIST_L14_UP",
+    "PERSIST_L0_DOWN"
+  ],
+  "expected_tokens": [
+    23578,
+    11,
+    323,
+    3950
+  ],
+  "fresh_process_runs_per_condition": 7,
+  "identity_fields": [
+    "condition",
+    "run_index",
+    "accepted_prefix_sha256",
+    "generated_tokens",
+    "layer_index",
+    "role",
+    "decode_index",
+    "input_sha256",
+    "output_sha256",
+    "nvtx_range"
+  ],
+  "ncu_matrix": {
+    "L0_DOWN_D3": [
+      "BASELINE",
+      "SETASIDE_ONLY",
+      "PERSIST_L0_DOWN",
+      "PERSIST_L0_UP"
+    ],
+    "L0_UP_D1_D3": [
+      "BASELINE",
+      "SETASIDE_ONLY",
+      "PERSIST_L0_UP",
+      "PERSIST_L14_UP"
+    ],
+    "L14_UP_D3": [
+      "BASELINE",
+      "SETASIDE_ONLY",
+      "PERSIST_L14_UP",
+      "PERSIST_L0_UP"
+    ]
+  },
+  "ncu_max_profiles": 16,
+  "occurrences_per_run": 12,
+  "status": "FROZEN",
+  "summary_files_are_authority": false,
+  "timing": [
+    "all target occurrences",
+    "four decode steps",
+    "optional unambiguous prefill"
+  ]
+}
