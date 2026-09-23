@@ -145,6 +145,14 @@ A failure of any of these invariants blocks performance characterization.
 
 Prefer minimal semantic changes over large refactors.
 
+### 7.1 Execution efficiency
+
+Prefer the shortest correct execution path. Do not split commits, packaging, or verification into extra rounds when one coherent, reviewable change can satisfy the task.
+
+Plan the final artifact set before publishing, then generate, validate, commit, push, and fetch-back once whenever practical. Avoid redundant reruns, duplicate artifacts, repeated amend/force-push cycles, and checks that do not strengthen required evidence.
+
+Efficiency never overrides correctness, explicit acceptance criteria, evidence integrity, or required publication verification.
+
 Do not combine structural cleanup and new functional behavior in one commit unless unavoidable and documented.
 
 Do not add speculative safety behavior that changes the intended protocol. If an upstream contract is assumed, encode it as an assertion or validation check when practical.
