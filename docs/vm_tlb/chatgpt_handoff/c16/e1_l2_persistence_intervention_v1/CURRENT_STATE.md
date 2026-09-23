@@ -64,3 +64,91 @@ This is stronger than another pressure microbenchmark because the full 28-layer 
 This stage does **not** yet implement or simulate a new cache mechanism.
 
 No NVBit/full address trace is required.
+
+
+---
+
+## Producer completed; independent consumer must preserve a decision-rule divergence
+
+Producer completed at:
+
+`hrl/c16-e1-l2-persistence-intervention-109-v1@4c0e6b998528e425578cacf5912bbcc4ff3bfaf6`
+
+Producer-scoped final state:
+
+`MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`
+
+Producer evidence is internally consistent with:
+- qualified CUDA persisting-L2 API;
+- exact contiguous qweight windows;
+- strong isolated positive control;
+- strong, target-specific natural timing benefits;
+- no natural point crossing the preregistered 20% DRAM materiality gate;
+- budget sweep first tested material timing point at 16 MiB;
+- no automatic mechanism implementation.
+
+Consumer prep completed at:
+
+`hrl/c16-e1-l2-persistence-intervention-consumer-174new-v1@1fc087f09f24adfbb7a404c3c4d19861bfcdd96b`
+
+### Critical decision-rule divergence
+
+The producer and the pre-data consumer prep operationalized the ambiguous final-state wording differently.
+
+Producer rule:
+- `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW` if there is material timing support and target-specific support.
+
+Frozen consumer rule:
+- ready only if at least one same primary point has:
+  - MATERIAL_TIMING_BENEFIT
+  - MATERIAL_DRAM_BENEFIT
+  - TARGET_SPECIFIC
+
+The producer reports no primary point with MATERIAL_DRAM_BENEFIT.
+
+Therefore the independent consumer must **not** edit or weaken its frozen pre-data rule after seeing producer results.
+
+It must:
+1. compute its strict consumer final state exactly as frozen;
+2. preserve producer final state separately;
+3. emit an explicit `DECISION_RULE_DIVERGENCE` artifact;
+4. state that the divergence is methodological/operationalization, not a raw-evidence mismatch;
+5. defer project-level mechanism authorization to ChatGPT review.
+
+Do not silently harmonize the two labels.
+
+### Real-artifact policy-receipt packaging mismatch
+
+The producer raw policy authority is split across:
+- raw run / PROFILE PASS object:
+  - condition
+  - policy_receipt
+  - qweight_regions
+  - semantic/token identity
+- `RAW_CUDA_CAPABILITY_AND_CENSUS.json`:
+  - runtime/device capability
+  - accepted/runtime capability cross-check
+  - qweight census
+- low-level policy receipt:
+  - requested/actual set-aside
+  - stream value
+  - access-policy window
+  - reset flags
+  - operations_before/after
+
+The original synthetic consumer validator expected one already-rich receipt object.
+
+This is a consumer packaging issue, not a producer scientific failure.
+
+During resume, 174-new should build a deterministic normalized receipt from these raw authorities while preserving source SHA/provenance.
+
+Important:
+- do not invent a set-aside alignment rule;
+- runtime query-back `actual_setaside_bytes` is authority;
+- require `requested <= actual <= runtime max` where CUDA rounds upward, or exact requested==actual when observed;
+- record the observed rounding explicitly;
+- BASELINE and SETASIDE_ONLY do not need an invented target qweight window;
+- producer budget receipts use condition `BUDGET_L0_UP`; normalize this only as the bounded partial-budget L0_UP intervention after verifying budget/window/hitRatio identity;
+- all normalization must be deterministic from raw evidence and source SHAs.
+
+No node109 rerun is requested.
