@@ -461,3 +461,9 @@ The next stage therefore tests:
 4. which minimal L2 replacement/quota mechanism best matches the evidence.
 
 No simulator implementation or full trace is authorized yet.
+
+---
+
+## E1 shared-residency design review and consumer prep (174-new)
+
+The upstream producer/strict-consumer divergence remains frozen and project action remains `DESIGN_REVIEW_AUTHORIZED_WITH_TRAFFIC_CAVEAT`. CPU-only prep implemented shared-policy and category-aware critical-path consumers. Static mapping of accepted Core `57bb71e` supports an address-based oracle tag but finds no kernel UID/CTA ID at L2 and no reliable PC on sector-split children. The recommended first mechanism is M1 elastic protected quota with oracle/software-region tagging; M0 is a static-partition control and M2 is deferred. Existing artifacts are insufficient for the natural reuse replacement experiment, so `BOUNDED_ADDITIONAL_TRACE_REQUIRED` specifies only a two-stable-decode minimum scope and does not authorize capture. The shared-hardware producer ref was absent in the one-shot fetch window; status is `READY_FOR_E1_SHARED_RESIDENCY_FEASIBILITY_109`.

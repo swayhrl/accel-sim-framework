@@ -1,0 +1,109 @@
+{
+  "allowed_outcomes": [
+    "SHARED_RESIDENCY_END_TO_END_SUPPORTED",
+    "SHARED_RESIDENCY_LOCAL_ONLY",
+    "SHARED_RESIDENCY_SINGLE_TARGET_ONLY",
+    "ROTATING_WINDOW_POLICY_UNQUALIFIED",
+    "SHARED_RESIDENCY_NOT_SUPPORTED"
+  ],
+  "decode_materiality": ">=2% lower than ROTATE_CONTROL_3 and benefit > combined dispersion for stable D1-D3",
+  "fail_closed": [
+    "stale reset",
+    "wrong window",
+    "wrong hitRatio",
+    "missing switch",
+    "duplicate switch",
+    "target SHA drift",
+    "API-control persistence",
+    "nonfinite timing",
+    "missing or duplicate rep"
+  ],
+  "fixed_requested_setaside_bytes": 33947648,
+  "fresh_process_repetitions": 7,
+  "local_materiality": ">=5% lower than ROTATE_CONTROL_3 and benefit > combined dispersion",
+  "multi_target_retained": "at least two selected targets material in the same shared condition",
+  "natural_conditions": {
+    "ROTATE_CONTROL_3": {
+      "persisting_allowed": false
+    },
+    "SETASIDE_ONLY": {},
+    "SHARE2_L0": {
+      "hit_ratio": 0.5,
+      "targets": [
+        "L0_UP",
+        "L0_DOWN"
+      ]
+    },
+    "SHARE2_UP": {
+      "hit_ratio": 0.5,
+      "targets": [
+        "L0_UP",
+        "L14_UP"
+      ]
+    },
+    "SHARE3": {
+      "hit_ratio": 0.3333333333333333,
+      "targets": [
+        "L0_UP",
+        "L14_UP",
+        "L0_DOWN"
+      ]
+    },
+    "SINGLE_L0_UP": {
+      "hit_ratio": 1.0,
+      "targets": [
+        "L0_UP"
+      ]
+    }
+  },
+  "ncu_profile_matrix": {
+    "L0_DOWN_D3": [
+      "SETASIDE_ONLY",
+      "ROTATE_CONTROL_3",
+      "SHARE2_L0",
+      "SHARE3"
+    ],
+    "L0_UP_D3": [
+      "SETASIDE_ONLY",
+      "ROTATE_CONTROL_3",
+      "SINGLE_L0_UP",
+      "SHARE2_UP",
+      "SHARE2_L0",
+      "SHARE3"
+    ],
+    "L14_UP_D3": [
+      "SETASIDE_ONLY",
+      "ROTATE_CONTROL_3",
+      "SHARE2_UP",
+      "SHARE3"
+    ]
+  },
+  "qweight_bytes": 33947648,
+  "rotating_qualification": {
+    "in_run_reset_allowed": false,
+    "matched_api_control_required": true,
+    "sequence": [
+      "RESET",
+      "WINDOW_A_HITRATIO_0.5",
+      "A",
+      "A",
+      "WINDOW_B_HITRATIO_0.5",
+      "B",
+      "B",
+      "WINDOW_A_HITRATIO_0.5",
+      "MEASURE_A",
+      "RESET"
+    ]
+  },
+  "runtime_actual_query_back_crosscheck_bytes": 37748736,
+  "semantic_authority": [
+    "accepted_prefix",
+    "tokens_D0_D3",
+    "12 occurrence input/output SHA",
+    "exact switch order",
+    "target timing",
+    "decode-step timing",
+    "CPU switch overhead"
+  ],
+  "status": "FROZEN_BEFORE_PRODUCER_FETCH"
+}

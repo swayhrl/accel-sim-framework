@@ -1,0 +1,43 @@
+{
+  "categories": {
+    "ADDITIVE_BYTES": {
+      "aggregation": "semantic sum",
+      "unit_family": "bytes"
+    },
+    "ADDITIVE_CYCLES": {
+      "aggregation": "semantic sum only when category semantics declare additive",
+      "unit_family": "cycles"
+    },
+    "ADDITIVE_SECTORS": {
+      "aggregation": "semantic sum",
+      "unit_family": "sectors"
+    },
+    "OCCUPANCY_PERCENT": {
+      "aggregation": "per-kernel only",
+      "unit_family": "percent"
+    },
+    "STALL_PERCENT": {
+      "aggregation": "per-kernel only",
+      "unit_family": "percent"
+    },
+    "UTILIZATION_PERCENT": {
+      "aggregation": "per-kernel only",
+      "unit_family": "percent"
+    }
+  },
+  "fail_closed": [
+    "unknown category",
+    "unit mismatch",
+    "duplicate metric row",
+    "kernel inventory mismatch",
+    "claimed available metric missing",
+    "cross-condition unit drift"
+  ],
+  "kernel_model": [
+    "GEMM",
+    "reduction"
+  ],
+  "metric_names": "runtime-resolved with NCU query receipt",
+  "status": "FROZEN_BEFORE_PRODUCER_FETCH",
+  "unavailable_policy": "record unavailable with query evidence; do not invent substitute formula"
+}

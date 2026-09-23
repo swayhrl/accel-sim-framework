@@ -1,0 +1,21 @@
+{
+  "decision": "BOUNDED_ADDITIONAL_TRACE_REQUIRED",
+  "existing_trace_sufficient": false,
+  "reason": "The accepted C16 evidence contains native timing and semantic NCU aggregates, but no accepted instruction/address trace covering the full inter-token model traffic and exact qweight allocation intervals needed for an L2 replacement experiment.",
+  "minimum_capture_scope": {
+    "model": "accepted Qwen2.5-7B AWQ target",
+    "interval": "at least two consecutive stable decode iterations, beginning before the selected D2 target uses and ending after their D3 reuses",
+    "traffic": "all intervening model memory traffic, not target kernels alone",
+    "identity": [
+      "kernel and launch boundaries",
+      "data request addresses",
+      "exact L0-up, L14-up, and L0-down qweight intervals in a SHA-pinned sidecar",
+      "accepted prefix/token/occurrence identity"
+    ],
+    "pc": "capture/preserve only to keep later static-PC analysis possible; oracle-region tagging does not depend on PC"
+  },
+  "full_trace_required": false,
+  "capture_authorized": false,
+  "nvbit_authorized": false,
+  "first_identity_source": "ORACLE_SOFTWARE_REGION_TAG"
+}
