@@ -1,0 +1,4 @@
+cmake_minimum_required(VERSION 3.18)
+project(awma_native_accessq_probe LANGUAGES CUDA CXX)
+add_executable(awma_native_accessq_probe native_accessq_probe.cu)
+set_target_properties(awma_native_accessq_probe PROPERTIES CUDA_ARCHITECTURES 89 CUDA_STANDARD 17)

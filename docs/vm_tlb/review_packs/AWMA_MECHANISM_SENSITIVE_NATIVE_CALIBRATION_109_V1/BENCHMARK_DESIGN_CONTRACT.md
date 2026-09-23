@@ -1,0 +1,1 @@
+`fanout=K` partitions 32 active lanes into K groups. Each group accesses words in one aligned 128B line; groups are separated by 64KiB and share a warp-level dependent index via shuffle. The resulting single LDG exposes K trace-level coalescing lines without software serialization.
