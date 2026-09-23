@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "PRE_REGISTERED",
+  "preserve_exact_metric_names_and_units": true,
+  "group_keys": ["semantic_point", "range_name", "range_occurrence", "kernel_id", "kernel_name"],
+  "additive_metrics": {"dram__bytes.sum": "byte", "lts__bytes.sum": "byte"},
+  "non_additive_metrics": {"sm__throughput.avg.pct_of_peak_sustained_elapsed": "%"},
+  "additive_output": "SEMANTIC_MODULE_SUM",
+  "non_additive_output": "per-kernel only",
+  "normalizations": ["per_input_element", "per_output_element", "per_dense_weight_byte", "per_packed_weight_byte"],
+  "unsupported_or_unclassified_metric": "FAIL_CLOSED",
+  "unit_mismatch": "FAIL_CLOSED"
+}
