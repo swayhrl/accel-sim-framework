@@ -55,14 +55,13 @@ def write_base(path, target_range, kernels=None, omit_metric=None, bad_unit=None
         writer.writerows(rows)
 
 
-def write_session(path, target_range, input_sha=INPUT_SHA, output_sha=OUTPUT_SHA):
+def write_session(path, target_range):
     path.write_text(
         " ".join(
             (
                 "ncu --replay-mode application --cache-control none",
                 f"--nvtx-include {target_range}/",
                 "--metrics " + ",".join(METRICS),
-                f'{{"input_sha256": "{input_sha}", "output_sha256": "{output_sha}"}}',
             )
         )
         + "\n",
@@ -70,7 +69,31 @@ def write_session(path, target_range, input_sha=INPUT_SHA, output_sha=OUTPUT_SHA
     )
 
 
-def profile(state, base_name, session_name, target_range="TARGET_RANGE", expected=None):
+def write_profile_log(
+    path,
+    target_range,
+    *,
+    input_sha=INPUT_SHA,
+    output_sha=OUTPUT_SHA,
+    role="up_proj",
+    M=1,
+    implementation="RAW_FP16",
+    state="WARM",
+):
+    receipt = {
+        "status": "PASS",
+        "role": role,
+        "M": M,
+        "implementation": implementation,
+        "state": state,
+        "range": target_range,
+        "input_sha256": input_sha,
+        "output_sha256": output_sha,
+    }
+    path.write_text("==PROF== synthetic\n" + json.dumps(receipt) + "\n", encoding="utf-8")
+
+
+def profile(state, base_name, session_name, profile_name, target_range="TARGET_RANGE", expected=None):
     return {
         "point": "TEXT_UP_M1_RAW",
         "role": "up_proj",
@@ -89,6 +112,7 @@ def profile(state, base_name, session_name, target_range="TARGET_RANGE", expecte
         "packed_weight_bytes": None,
         "base_path": base_name,
         "session_path": session_name,
+        "profile_path": profile_name,
     }
 
 
@@ -100,12 +124,14 @@ class RawNcuConsumerTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
-    def add_evidence(self, stem, target="TARGET_RANGE", kernels=None, **kwargs):
+    def add_evidence(self, stem, target="TARGET_RANGE", kernels=None, state="WARM", **kwargs):
         base = self.root / f"{stem}_BASE.csv"
         session = self.root / f"{stem}_SESSION.csv"
+        profile_log = self.root / f"{stem}_PROFILE.log"
         write_base(base, target, kernels=kernels, **kwargs)
         write_session(session, target)
-        return base.name, session.name
+        write_profile_log(profile_log, target, state=state)
+        return base.name, session.name, profile_log.name
 
     def test_warm_sparse_dense_are_unique_semantic_identities_and_ratioed(self):
         profiles = []
@@ -114,13 +140,13 @@ class RawNcuConsumerTests(unittest.TestCase):
             ("SPARSE_PAGE_PRESSURE", 110),
             ("DENSE_MEMORY_PRESSURE", 200),
         ):
-            base, session = self.add_evidence(
+            base, session, profile_log = self.add_evidence(
                 state, kernels=[("1", TARGET_KERNEL, (value, value * 2, value * 3))]
             )
-            profiles.append(profile(state, base, session))
+            profiles.append(profile(state, base, session, profile_log))
         result = consume({"schema_version": 1, "profiles": profiles}, self.root)
         self.assertEqual(result["status"], "PASS")
-        self.assertEqual(result["authority"], "DIRECT_RAW_BASE_SESSION_ONLY")
+        self.assertEqual(result["authority"], "DIRECT_RAW_BASE_SESSION_PROFILE_ONLY")
         identities = [tuple(p["semantic_identity"].values()) for p in result["profiles"]]
         self.assertEqual(len(identities), len(set(identities)))
         dense_dram = next(
@@ -133,13 +159,13 @@ class RawNcuConsumerTests(unittest.TestCase):
         self.assertTrue(all("intervention_state" in row for row in result["normalized_rows"]))
 
     def test_duplicate_semantic_state_fails(self):
-        base, session = self.add_evidence("warm")
-        item = profile("WARM", base, session)
+        base, session, profile_log = self.add_evidence("warm")
+        item = profile("WARM", base, session, profile_log)
         with self.assertRaisesRegex(RawNcuError, "duplicate semantic intervention state"):
             consume({"schema_version": 1, "profiles": [item, dict(item)]}, self.root)
 
     def test_pressure_kernel_inside_target_range_fails(self):
-        base, session = self.add_evidence(
+        base, session, profile_log = self.add_evidence(
             "dense",
             kernels=[
                 ("1", TARGET_KERNEL, (1, 2, 3)),
@@ -158,49 +184,51 @@ class RawNcuConsumerTests(unittest.TestCase):
             consume({"schema_version": 1, "profiles": [item]}, self.root)
 
     def test_missing_metric_fails(self):
-        base, session = self.add_evidence("warm", omit_metric="dram__bytes.sum")
+        base, session, profile_log = self.add_evidence("warm", omit_metric="dram__bytes.sum")
         with self.assertRaisesRegex(RawNcuError, "missing required columns"):
             consume(
-                {"schema_version": 1, "profiles": [profile("WARM", base, session)]},
+                {"schema_version": 1, "profiles": [profile("WARM", base, session, profile_log)]},
                 self.root,
             )
 
     def test_unit_mismatch_fails(self):
-        base, session = self.add_evidence("warm", bad_unit="lts__t_bytes.sum")
+        base, session, profile_log = self.add_evidence("warm", bad_unit="lts__t_bytes.sum")
         with self.assertRaisesRegex(RawNcuError, "unit mismatch"):
             consume(
-                {"schema_version": 1, "profiles": [profile("WARM", base, session)]},
+                {"schema_version": 1, "profiles": [profile("WARM", base, session, profile_log)]},
                 self.root,
             )
 
-    def test_session_input_hash_mismatch_fails(self):
+    def test_profile_input_hash_mismatch_fails(self):
         base = self.root / "warm_BASE.csv"
         session = self.root / "warm_SESSION.csv"
+        profile_log = self.root / "warm_PROFILE.log"
         write_base(base, "TARGET_RANGE")
-        write_session(session, "TARGET_RANGE", input_sha="3" * 64)
-        with self.assertRaisesRegex(RawNcuError, "input_sha256 mismatch"):
+        write_session(session, "TARGET_RANGE")
+        write_profile_log(profile_log, "TARGET_RANGE", input_sha="3" * 64)
+        with self.assertRaisesRegex(RawNcuError, "PROFILE replay identity mismatch"):
             consume(
                 {
                     "schema_version": 1,
-                    "profiles": [profile("WARM", base.name, session.name)],
+                    "profiles": [profile("WARM", base.name, session.name, profile_log.name)],
                 },
                 self.root,
             )
 
     def test_session_not_application_replay_fails(self):
-        base, session = self.add_evidence("warm")
+        base, session, profile_log = self.add_evidence("warm")
         session_path = self.root / session
         session_path.write_text(
             session_path.read_text().replace("application", "kernel"), encoding="utf-8"
         )
         with self.assertRaisesRegex(RawNcuError, "replay mode"):
             consume(
-                {"schema_version": 1, "profiles": [profile("WARM", base, session)]},
+                {"schema_version": 1, "profiles": [profile("WARM", base, session, profile_log)]},
                 self.root,
             )
 
     def test_exact_target_range_required(self):
-        base, session = self.add_evidence("warm", target="TARGET_RANGE_EXTRA")
+        base, session, profile_log = self.add_evidence("warm", target="TARGET_RANGE_EXTRA")
         item = profile("WARM", base, session, target_range="TARGET_RANGE")
         # SESSION must bind the expected exact range before BASE selection can occur.
         with self.assertRaisesRegex(RawNcuError, "exact target range mismatch"):
