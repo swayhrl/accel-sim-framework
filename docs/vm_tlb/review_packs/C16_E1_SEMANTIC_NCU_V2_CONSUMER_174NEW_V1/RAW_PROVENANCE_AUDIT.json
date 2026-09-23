@@ -1,0 +1,59 @@
+{
+  "points": {
+    "M1_AWQ": {
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "process_id": "1220439",
+      "selected_kernel_count": 2,
+      "sha256": "fe5530367b1131ba26a7992595811beb8db0a03c13314f48a663be65b112e6d9",
+      "units": {
+        "dram__bytes.sum": "byte",
+        "l1tex__t_bytes.sum": "byte",
+        "lts__t_bytes.sum": "byte"
+      }
+    },
+    "M1_RAW": {
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __half, __half, __half, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<const __half>, cublasGemvTensorStridedBatched<__half>, float>>(T13)"
+      ],
+      "process_id": "1220354",
+      "selected_kernel_count": 1,
+      "sha256": "fee38501131d4483191914f6f65298704628ffb7db2cb480b90f501bfb4a5ad5",
+      "units": {
+        "dram__bytes.sum": "byte",
+        "l1tex__t_bytes.sum": "byte",
+        "lts__t_bytes.sum": "byte"
+      }
+    },
+    "M256_AWQ": {
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "process_id": "1220596",
+      "selected_kernel_count": 2,
+      "sha256": "d94b47db18027742699552e8089cec7030a3368958857ee7256de929ef5fdc27",
+      "units": {
+        "dram__bytes.sum": "byte",
+        "l1tex__t_bytes.sum": "byte",
+        "lts__t_bytes.sum": "byte"
+      }
+    },
+    "M256_RAW": {
+      "kernel_names": [
+        "void Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_256x128_32x3_tn_align8>(Params)"
+      ],
+      "process_id": "1220511",
+      "selected_kernel_count": 1,
+      "sha256": "2047414477d48de21cdb7c1ee79fedd3f64975fbdd87999364aa4d8ff186e28b",
+      "units": {
+        "dram__bytes.sum": "byte",
+        "l1tex__t_bytes.sum": "byte",
+        "lts__t_bytes.sum": "byte"
+      }
+    }
+  },
+  "status": "PASS"
+}

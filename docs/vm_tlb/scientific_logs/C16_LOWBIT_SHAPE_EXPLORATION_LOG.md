@@ -262,3 +262,26 @@ not one arbitrarily selected GPU kernel.
 A multi-kernel AWQ module call is treated as one semantic range; additive traffic is summed only across kernels proven to belong to that range.
 
 No NVBit/full address trace/mechanism is authorized until this semantic NCU stage is reviewed.
+
+---
+
+## Independent semantic-NCU V2 closure
+
+174-new independently recomputed the application-replay / cache-control-none
+semantic-module traffic directly from raw NCU BASE/SESSION/PROFILE evidence.
+
+- RAW points contain exactly one selected kernel; AWQ points contain the GEMM
+  plus reduction kernels within the unique semantic range.
+- All selected kernels report one application replay pass and byte units for
+  `l1tex__t_bytes.sum`, `lts__t_bytes.sum`, and `dram__bytes.sum`.
+- Independent semantic sums and RAW/AWQ/shape ratios exactly match producer V2.
+- V1 used default kernel replay, lacked explicit cache-control none, and used
+  seven replay passes per selected kernel.
+- V1/V2 L1/L2 ratios are same-direction and similar-magnitude. M1 DRAM remains
+  same-direction but changes magnitude materially under V2; M256 DRAM is similar.
+- AWQ packed state (35,273,728 B) is below device L2 (67,108,864 B), while RAW
+  FP16 dense weight (135,790,592 B) exceeds L2. Together with M1 AWQ DRAM=640 B,
+  this is consistent with a warm-cache capacity/residency hypothesis, not proof
+  of cache or TLB causality.
+
+No GPU, NVBit, full trace, or cache/TLB mechanism is authorized by this result.
