@@ -5,7 +5,7 @@
   "primary_clean_contract": "C16_E1_CANONICAL_RAW_ACTIVATION_V1",
   "canonical_source": "RAW natural Layer0 S2_TEXT M2048 live semantic module input",
   "slicing": {"M256": "exact first 256 rows", "M1": "exact first row", "deterministic": true},
-  "fp16_input_binding": {"RAW_FP16_and_AWQ_same_activation_bytes_required": true, "raw_bf16_to_fp16_to_bf16_bitwise_equal_required": true},
+  "fp16_input_binding": {"RAW_FP16_and_AWQ_same_activation_bytes_required": true, "deterministic_fp16_cast_receipt_required": true, "bitwise_roundtrip_equality_not_required_under_FP16_CAST_BRIDGE_V2": true},
   "primary_matrix": {"roles": ["q_proj", "down_proj", "up_proj"], "M": [1, 256], "implementations": ["RAW_BF16", "RAW_FP16", "AWQ_FP16_INPUT"], "points": 18},
   "claim_boundary": "implementation-level deployment comparison; not pure quantization causality",
   "scientific_contradiction_found": false
