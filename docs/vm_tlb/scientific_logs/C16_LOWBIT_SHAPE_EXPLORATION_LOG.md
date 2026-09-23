@@ -415,3 +415,49 @@ CPU-only independent consumer prep is complete on handoff `b2301f9ede7e4d4b6adcd
 ## E1 targeted L2-persistence independent consumer closure (174-new)
 
 Producer `4c0e6b998528e425578cacf5912bbcc4ff3bfaf6` was independently consumed from raw capability, per-run timing/policy, and BASE+SESSION+PROFILE+policy evidence. CUDA policy qualification and five real-artifact canaries pass. All four primary natural points have material target-specific timing benefit, but none crosses the frozen 20%+4MiB DRAM gate. The first tested timing-material budget is 16 MiB; it is not an exact threshold. Producer scoped state remains `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`; the frozen strict consumer state is `TARGETED_PERSISTENCE_MECHANISM_PRECONDITION_NOT_SUPPORTED`. The divergence is methodological operationalization, not a raw-data mismatch, and project authorization remains `REVIEW_REQUIRED`. No GPU/NVBit/full trace/mechanism work was used or authorized.
+
+
+---
+
+## Project review after targeted L2-persistence closure
+
+Producer:
+`4c0e6b998528e425578cacf5912bbcc4ff3bfaf6`
+
+Independent consumer:
+`1dcab9c8d932973399c5811dc817802bfb3b9dfe`
+
+Raw evidence:
+`PASS`
+
+Frozen decision-rule divergence remains:
+
+- producer scoped state:
+  `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`
+- strict consumer state:
+  `TARGETED_PERSISTENCE_MECHANISM_PRECONDITION_NOT_SUPPORTED`
+
+The divergence is methodological operationalization, not a data mismatch.
+
+Project-level action:
+
+`DESIGN_REVIEW_AUTHORIZED_WITH_TRAFFIC_CAVEAT`
+
+Reason:
+- all primary natural targets show material, target-specific timing benefit;
+- isolated policy efficacy is strong in both timing and DRAM;
+- producer mechanism-requirement dimensions are independently found descriptively supported;
+- the strict consumer READY gate fails only because no primary natural point crosses the frozen >=20% DRAM threshold.
+
+The traffic caveat remains binding:
+- aggregate target DRAM is not target-specific;
+- matched unrelated persistence may reduce DRAM equally or more;
+- mechanism review must not be framed as simply “reducing DRAM bytes.”
+
+The next stage therefore tests:
+1. which per-kernel L2/stall behavior explains the latency/traffic decoupling;
+2. whether one fixed persistence budget can be shared across multiple qweight regions;
+3. whether shared residency produces a whole-decode benefit;
+4. which minimal L2 replacement/quota mechanism best matches the evidence.
+
+No simulator implementation or full trace is authorized yet.
