@@ -197,6 +197,22 @@ write_tsv(PACK / 'AI_SEMANTIC_ANALYSIS.tsv', ['target', 'legacy_10_80', 'legacy_
     'legacy_sensitivity', 'v1_sensitivity', 'legacy_to_v1_improvement_10_80', 'zero_latency_relative_delta',
     'zero_latency_flag'], analysis_rows)
 
+zero_review = []
+for target in ('T0', 'T1'):
+    legacy_log = RUNTIME / f'ai_{target}_LEGACY_0_80/run.log'
+    v1_log = RUNTIME / f'ai_{target}_V1_0_80/run.log'
+    zero_review.append([
+        target, last(legacy_log, 'vm_translation_lookup_requests'),
+        last(v1_log, 'vm_translation_lookup_requests'),
+        last(v1_log, 'vm_ready_application_prelaunch_ready'),
+        last(v1_log, 'vm_ready_application_ready_unapplied_observations'),
+        f'{abs(cycles[(target, "V1", 0)] - cycles[(target, "LEGACY", 0)]) / cycles[(target, "LEGACY", 0)]:.9f}',
+        'V1_PRELAUNCH_READY_UNAPPLIED_ORDERING_RESIDUAL',
+    ])
+write_tsv(PACK / 'ZERO_LATENCY_DIVERGENCE_ANALYSIS.tsv',
+          ['target', 'legacy_lookup_requests', 'v1_lookup_requests', 'v1_prelaunch_ready',
+           'v1_ready_unapplied', 'zero_latency_relative_delta', 'attribution'], zero_review)
+
 controller_rows = []
 for name in ('vm_m3_g3_4b_tlb_timing_test', 'vm_m2_rf_pending_retry_test', 'vm_c10b_runtime_validation_test'):
     binary = RUNTIME / f'controller_regressions/{name}'
@@ -282,6 +298,7 @@ write(PACK / 'KNOWN_LIMITATIONS.md', '''# Known limitations
 - RTX4080 platform scope is `QUALIFIED_FOR_AWMA_MEMORY_TRANSLATION_STUDIES`, not universal cycle-accurate RTX4080 fidelity.
 - Matched H_STREAM/H_COMPUTE held-outs are small and launch-dominated; they do not independently establish full streaming/compute fidelity.
 - 10/80 is a model-relative research overlay, not a hardware TLB latency claim.
+- T0/T1 0/80 retain a scoped V1 prelaunch-ordering residual: V1 launches translations before head consumption and leaves READY results unapplied by design. This increases lookup activity without changing coverage or side effects.
 ''')
 write(PACK / 'PAPER_EVIDENCE_SUMMARY.md', f'''# Paper evidence summary
 
@@ -296,6 +313,8 @@ V1 has `V1_EXTERNAL_SEMANTIC_SUPPORT_PARTIAL`; V2R1 adds no external alignment b
 ## AI regression
 
 All 12 T0/T1/T2 Legacy/V1 x 10/80/0/80 points pass identity, coverage, Segment-dormancy, duplicate, and quiescence gates. V1 reduces lookup-latency sensitivity versus Legacy on every target. Zero-latency flags, if present, are reported in `AI_SEMANTIC_ANALYSIS.tsv` and do not hide correctness results.
+
+T0/T1 zero-latency flags are attributed to the frozen V1 prelaunch-ready-unapplied ordering path; exact lookup/READY counts are in `ZERO_LATENCY_DIVERGENCE_ANALYSIS.tsv`.
 
 ## Decision
 
@@ -346,6 +365,8 @@ Every point closes target identity, instructions/CTA, accepted unique UID, full 
 
 V1 reduces modeled lookup-latency amplification versus Legacy on all three AI targets. Exact sensitivities and zero-latency comparisons are in `AI_SEMANTIC_ANALYSIS.tsv`; material >2% zero-latency differences are explicitly flagged and scoped rather than hidden.
 
+The T0/T1 0/80 flags are explained by the frozen V1 prelaunch path issuing additional lookups while intentionally leaving READY results unapplied; full coverage, side-effect, Segment, and quiescence gates remain clean.
+
 The promoted named baseline is `AWMA_RTX4080_SIM_BASELINE_V1`: platform `RTX4080_ADA_ACCELSIM_BASE_V1`, primary model-relative 10/80 overlay, V1 pipeline launch enabled, ready-application V2 disabled. Legacy and 0/80 remain selectable controls; V2R1 is diagnostic-only. No source-wide unconditional default was introduced.
 
 Known scope remains `BASE_CONCURRENCY_MODEL_RESIDUAL` and `QUALIFIED_FOR_AWMA_MEMORY_TRANSLATION_STUDIES`.
@@ -358,7 +379,7 @@ required = ['README.md', 'SOURCE_ANCHORS.md', 'BASELINE_DEFINITION.md', 'AWMA_RT
             'baseline.env', 'AI_TRACE_AUTHORITY.tsv', 'AI_MATRIX_CONFIG_AUTHORITY.tsv', 'AI_PROMOTION_MATRIX.tsv',
             'AI_SEMANTIC_ANALYSIS.tsv', 'AI_CORRECTNESS_GATES.tsv', 'CONTROLLER_REGRESSION.tsv', 'KNOWN_LIMITATIONS.md',
             'PAPER_EVIDENCE_SUMMARY.md', 'RUN_RECEIPTS.json', 'RAW_DATA_INDEX.tsv', 'SHA256SUMS',
-            'vm_10_80.overlay', 'vm_0_80.overlay']
+            'ZERO_LATENCY_DIVERGENCE_ANALYSIS.tsv', 'vm_10_80.overlay', 'vm_0_80.overlay']
 for rel in required:
     path = PACK / rel
     if not path.is_file() or path.stat().st_size == 0:
