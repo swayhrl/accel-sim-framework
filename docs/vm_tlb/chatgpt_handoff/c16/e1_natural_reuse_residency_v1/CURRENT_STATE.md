@@ -81,3 +81,32 @@ This stage therefore combines:
 - one held-out layer validation.
 
 Still no NVBit/full address trace/mechanism work.
+
+
+---
+
+## Producer and consumer-prep completion
+
+Producer completed:
+
+`hrl/c16-e1-natural-reuse-residency-109-v1@ccfdc89d517766d12588ee131818efe341c7e17c`
+
+Producer framing:
+
+`CASE_B_WITH_CASE_D_ROLE_DEPENDENCE`
+
+Consumer prep completed and stopped READY:
+
+`hrl/c16-e1-natural-reuse-residency-consumer-174new-v1@bfe3dfdc384b1edd93469ce2adefe26f901ea1c6`
+
+Consumer hardening to apply before real evidence consumption:
+
+`hrl/c16-e1-natural-reuse-residency-consumer-hardening-v2@97c6852351eddcb258d5c50e18e9387a8c42c4a6`
+
+Read:
+
+`docs/vm_tlb/chatgpt_handoff/c16/e1_natural_reuse_residency_v1/CONSUMER_PRE_RESUME_AUDIT_V2.md`
+
+No node109 rerun is requested.
+
+The same 174-new consumer window should fast-forward the hardening branch, rerun tests, run real-artifact canaries, and then consume producer raw evidence directly.
