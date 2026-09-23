@@ -1,11 +1,18 @@
 # C16 E1 Targeted L2-Persistence Consumer 174-new V1
 
-Status: `READY_FOR_E1_L2_PERSISTENCE_INTERVENTION_109`.
+Independent CPU-only raw consumer closure is complete for producer `4c0e6b998528e425578cacf5912bbcc4ff3bfaf6`.
 
-CPU-only consumer prep is complete. Forty-eight new synthetic tests and eighty-seven accepted-upstream regressions pass.
+Start with:
 
-Implemented fail-closed consumers cover CUDA policy receipts, isolated 9-repetition timing, raw four-source NCU closure, five natural conditions × seven fresh processes, the frozen 16-profile NCU matrix, reservation/target/unrelated effects, materiality, conditional budget sensitivity, and the four allowed final states.
+1. `FINAL_DECISION.json`
+2. `DECISION_RULE_DIVERGENCE.json`
+3. `RAW_POLICY_NORMALIZATION_AUDIT.json`
+4. `INDEPENDENT_POLICY_EFFECTS.json`
+5. `INDEPENDENT_BUDGET_ANALYSIS.json`
+6. `SCIENTIFIC_INTERPRETATION.md`
 
-The producer ref was unavailable in the one-shot post-prep window. Producer-dependent output files are explicit `NOT_RUN_PRODUCER_UNAVAILABLE` receipts, not scientific results.
+Five real-artifact canaries pass. Raw capability/regions, isolated timing and four-source NCU, five natural conditions, the 16-profile natural NCU matrix, and all five tested budgets were independently consumed. Producer summaries were used only for final cross-check.
 
-Start review with `DESIGN_AUDIT.json`, then the three contract files, `CONSUMER_TESTS.tsv`, and `FINAL_DECISION.json`.
+Producer scoped state is `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`; the frozen strict consumer state is `TARGETED_PERSISTENCE_MECHANISM_PRECONDITION_NOT_SUPPORTED`. This is a methodological decision-rule divergence, not a raw-evidence mismatch. Project-level authorization is `REVIEW_REQUIRED`.
+
+No GPU, NVBit, full trace, mechanism implementation, or mechanism simulation was used or authorized by this consumer.

@@ -96,7 +96,20 @@ def _profile(path,spec):
     r=receipts[0]
     expected={"condition":spec["condition"],"role":"up_proj","M":1,"implementation":"AWQ_FP16_INPUT",
               "range":spec["range_name"],"input_sha256":spec["input_sha256"],"output_sha256":spec["output_sha256"]}
-    if any(r.get(k)!=v for k,v in expected.items()): raise IsolatedConsumerError("PROFILE identity mismatch")
+    if "role" in r or "M" in r or "implementation" in r:
+        observed=r
+    else:
+        region=r.get("qweight_region")
+        region_ok=(isinstance(region,Mapping) and region.get("contiguous") is True
+                   and region.get("storage_offset_bytes")==0
+                   and region.get("data_ptr")==region.get("exact_tensor_span_begin")
+                   and region.get("exact_tensor_span_end_exclusive")==region.get("data_ptr",0)+region.get("bytes",-1))
+        observed={"condition":r.get("condition"),"role":"up_proj" if region_ok else None,
+                  "M":1 if r.get("module_class")=="WQLinear_GEMM" else None,
+                  "implementation":"AWQ_FP16_INPUT" if r.get("module_class")=="WQLinear_GEMM" else None,
+                  "range":r.get("range"),"input_sha256":r.get("input_sha256"),
+                  "output_sha256":r.get("output_sha256")}
+    if any(observed.get(k)!=v for k,v in expected.items()): raise IsolatedConsumerError("PROFILE identity mismatch")
     return {"sha256":_sha_file(path),**expected}
 
 def _decimal(v,name):

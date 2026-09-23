@@ -1,6 +1,1414 @@
 {
-  "artifact": "INDEPENDENT_ISOLATED_ANALYSIS.json",
-  "calculation_authority_used": false,
-  "reason": "producer ref was not available in the one-shot post-prep fetch window",
-  "status": "NOT_RUN_PRODUCER_UNAVAILABLE"
+  "ncu": {
+    "authority": "DIRECT_RAW_BASE_SESSION_PROFILE_POLICY_RECEIPT_ONLY",
+    "persist_over_baseline_metric_effects": {
+      "dram__bytes.sum": {
+        "absolute_change": "-21743744",
+        "persist_over_baseline": 0.38521976729457325,
+        "ratio_status": "PASS"
+      },
+      "l1tex__t_bytes.sum": {
+        "absolute_change": "0",
+        "persist_over_baseline": 1.0,
+        "ratio_status": "PASS"
+      },
+      "lts__t_bytes.sum": {
+        "absolute_change": "155840",
+        "persist_over_baseline": 1.0037420663582857,
+        "ratio_status": "PASS"
+      }
+    },
+    "profiles": [
+      {
+        "base_sha256": "d80ef4a569576dcbf3cc00307a77c7b9230dcaaa54ff2e3e911e6c47e740fbc4",
+        "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+        "kernel_names": [
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+        ],
+        "metric_sums": {
+          "dram__bytes.sum": "35368320",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41645440"
+        },
+        "metric_unit": "byte",
+        "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+        "policy_receipt": {
+          "sha256": "8fc7f266ba1cbf248218d1c20e120abd2f0a3dd858327f5c9f624c7ba67f8b00",
+          "validation": {
+            "access_window": {
+              "base_pointer": 0,
+              "enabled": false,
+              "exact_qweight_interval": false,
+              "hit_prop": "NONE",
+              "hit_ratio": 0.0,
+              "miss_prop": "NONE",
+              "num_bytes": 0,
+              "stream_identity": "0"
+            },
+            "access_window_base_pointer": 0,
+            "access_window_num_bytes": 0,
+            "actual_setaside_bytes": 0,
+            "authority": "RAW_POLICY_RECEIPT_ONLY",
+            "capability": {
+              "cuda_runtime_version": "12040",
+              "device_name": "NVIDIA GeForce RTX 4080",
+              "device_ordinal": 0,
+              "l2_bytes": 67108864,
+              "matches_accepted_authority": true,
+              "max_access_policy_window_bytes": 134213632,
+              "max_persisting_l2_bytes": 46137344,
+              "persistence_supported": true
+            },
+            "condition": "ISO_BASELINE_DENSE",
+            "cuda_runtime_version": "12040",
+            "device_name": "NVIDIA GeForce RTX 4080",
+            "device_ordinal": 0,
+            "expected_budget_bytes": 0,
+            "hit_prop": "NONE",
+            "hit_ratio": 0.0,
+            "l2_bytes": 67108864,
+            "max_access_policy_window_bytes": 134213632,
+            "max_persisting_l2_bytes": 46137344,
+            "miss_prop": "NONE",
+            "policy_mode": "BASELINE",
+            "qweight": {
+              "bytes": 0,
+              "contiguous": null,
+              "pointer": 0,
+              "target": "L0_UP"
+            },
+            "qweight_bytes": 0,
+            "qweight_contiguous": null,
+            "qweight_pointer": 0,
+            "requested_setaside_bytes": 0,
+            "reset": {
+              "after": {
+                "executed": true,
+                "operation": "reset persisting L2 after condition",
+                "status": "PASS"
+              },
+              "before": {
+                "executed": true,
+                "operation": "reset persisting L2 before condition",
+                "status": "PASS"
+              }
+            },
+            "runtime_setaside_rounding_observed": false,
+            "setaside": {
+              "actual_bytes": 0,
+              "alignment_bytes": null,
+              "requested_bytes": 0,
+              "runtime_rounding_observed": false
+            },
+            "setaside_alignment_bytes": null,
+            "status": "PASS",
+            "stream_identity": "0",
+            "target": "L0_UP"
+          }
+        },
+        "profile_log": {
+          "M": 1,
+          "condition": "ISO_BASELINE_DENSE",
+          "implementation": "AWQ_FP16_INPUT",
+          "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+          "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+          "range": "C16_E1_L2P_ISO_BASELINE_DENSE",
+          "role": "up_proj",
+          "sha256": "f790fc8c5ce2700f1583c85ffbfc1670c3e4a8cbb55bf591291785a4fc0bf039"
+        },
+        "range_name": "C16_E1_L2P_ISO_BASELINE_DENSE",
+        "semantic_identity": {
+          "M": 1,
+          "condition": "ISO_BASELINE_DENSE",
+          "implementation": "AWQ_FP16_INPUT",
+          "role": "up_proj"
+        },
+        "session": {
+          "cache_control": "none",
+          "replay_mode": "application",
+          "sha256": "682b95a7ea113daa3ca95fc83a3458b8c5eaa6e067e7319563825912c658f4c2"
+        }
+      },
+      {
+        "base_sha256": "98bc6cef309d15c089dc13b78b251055434af071305b88650e77a885de0d9e3d",
+        "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+        "kernel_names": [
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+        ],
+        "metric_sums": {
+          "dram__bytes.sum": "13624576",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41801280"
+        },
+        "metric_unit": "byte",
+        "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+        "policy_receipt": {
+          "sha256": "dc5cdd16d63db699e308f75a2e678f3073b31beabd41e87b5e798fd29e05f8be",
+          "validation": {
+            "access_window": {
+              "base_pointer": 128941998211072,
+              "enabled": true,
+              "exact_qweight_interval": true,
+              "hit_prop": "PERSISTING",
+              "hit_ratio": 1.0,
+              "miss_prop": "STREAMING",
+              "num_bytes": 33947648,
+              "stream_identity": "0"
+            },
+            "access_window_base_pointer": 128941998211072,
+            "access_window_num_bytes": 33947648,
+            "actual_setaside_bytes": 37748736,
+            "authority": "RAW_POLICY_RECEIPT_ONLY",
+            "capability": {
+              "cuda_runtime_version": "12040",
+              "device_name": "NVIDIA GeForce RTX 4080",
+              "device_ordinal": 0,
+              "l2_bytes": 67108864,
+              "matches_accepted_authority": true,
+              "max_access_policy_window_bytes": 134213632,
+              "max_persisting_l2_bytes": 46137344,
+              "persistence_supported": true
+            },
+            "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+            "cuda_runtime_version": "12040",
+            "device_name": "NVIDIA GeForce RTX 4080",
+            "device_ordinal": 0,
+            "expected_budget_bytes": 33947648,
+            "hit_prop": "PERSISTING",
+            "hit_ratio": 1.0,
+            "l2_bytes": 67108864,
+            "max_access_policy_window_bytes": 134213632,
+            "max_persisting_l2_bytes": 46137344,
+            "miss_prop": "STREAMING",
+            "policy_mode": "TARGET_PERSIST",
+            "qweight": {
+              "bytes": 33947648,
+              "contiguous": true,
+              "pointer": 128941998211072,
+              "target": "L0_UP"
+            },
+            "qweight_bytes": 33947648,
+            "qweight_contiguous": true,
+            "qweight_pointer": 128941998211072,
+            "requested_setaside_bytes": 33947648,
+            "reset": {
+              "after": {
+                "executed": true,
+                "operation": "reset persisting L2 after condition",
+                "status": "PASS"
+              },
+              "before": {
+                "executed": true,
+                "operation": "reset persisting L2 before condition",
+                "status": "PASS"
+              }
+            },
+            "runtime_setaside_rounding_observed": true,
+            "setaside": {
+              "actual_bytes": 37748736,
+              "alignment_bytes": null,
+              "requested_bytes": 33947648,
+              "runtime_rounding_observed": true
+            },
+            "setaside_alignment_bytes": null,
+            "status": "PASS",
+            "stream_identity": "0",
+            "target": "L0_UP"
+          }
+        },
+        "profile_log": {
+          "M": 1,
+          "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+          "implementation": "AWQ_FP16_INPUT",
+          "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+          "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+          "range": "C16_E1_L2P_ISO_QWEIGHT_PERSIST_DENSE",
+          "role": "up_proj",
+          "sha256": "6664f7504370d5e312aed05583f5e75411609e7583f875b042f6d8bce28c5e84"
+        },
+        "range_name": "C16_E1_L2P_ISO_QWEIGHT_PERSIST_DENSE",
+        "semantic_identity": {
+          "M": 1,
+          "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+          "implementation": "AWQ_FP16_INPUT",
+          "role": "up_proj"
+        },
+        "session": {
+          "cache_control": "none",
+          "replay_mode": "application",
+          "sha256": "d3f6c5f4de4c58ac475e5d885774165bddeb64dc66346d4b43b88d6b8fb5d931"
+        }
+      }
+    ],
+    "status": "PASS"
+  },
+  "producer_head": "4c0e6b998528e425578cacf5912bbcc4ff3bfaf6",
+  "status": "PASS",
+  "timing": {
+    "authority": "RAW_PER_REPETITION_TIMING_ROWS_ONLY",
+    "conditions": {
+      "ISO_BASELINE_DENSE": {
+        "cv": 0.04514704460851546,
+        "max_ms": 0.0870399996638298,
+        "mean_ms": 0.07748266723420885,
+        "median_ms": 0.07654400169849396,
+        "min_ms": 0.07487999647855759,
+        "sample_count": 9,
+        "samples_ms": [
+          0.0870399996638298,
+          0.07753600180149078,
+          0.07654400169849396,
+          0.07487999647855759,
+          0.07552000135183334,
+          0.07660800218582153,
+          0.07577600330114365,
+          0.07782399654388428,
+          0.07561600208282471
+        ]
+      },
+      "ISO_QWEIGHT_PERSIST_DENSE": {
+        "cv": 0.02393327439333675,
+        "max_ms": 0.05193600058555603,
+        "mean_ms": 0.049312000887261495,
+        "median_ms": 0.049056001007556915,
+        "min_ms": 0.048128001391887665,
+        "sample_count": 9,
+        "samples_ms": [
+          0.050175998359918594,
+          0.05004800111055374,
+          0.048128001391887665,
+          0.049056001007556915,
+          0.049056001007556915,
+          0.05193600058555603,
+          0.048128001391887665,
+          0.04915200173854828,
+          0.048128001391887665
+        ]
+      }
+    },
+    "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+    "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+    "persist_over_baseline_timing_ratio": 0.6408862865674048,
+    "status": "PASS"
+  },
+  "timing_policy_normalizations": [
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 0,
+      "access_window_enabled": false,
+      "access_window_num_bytes": 0,
+      "actual_setaside_bytes": 0,
+      "condition": "ISO_BASELINE_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_ratio": 0.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "normalization_validation": {
+        "policy_mode": "BASELINE",
+        "runtime_setaside_rounding_observed": false,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": null,
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": false,
+      "raw_condition": "ISO_BASELINE_DENSE",
+      "raw_policy_receipt_sha256": "e1e6d299ebaa00086deb957a330c316a142edcddee3e23e58df61298d33b1660",
+      "requested_setaside_bytes": 0,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+      "runtime_setaside_rounding_observed": false,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "NONE",
+      "target_persisting_enabled": false
+    },
+    {
+      "access_window_base_pointer": 130891447795712,
+      "access_window_enabled": true,
+      "access_window_num_bytes": 33947648,
+      "actual_setaside_bytes": 37748736,
+      "condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "cuda_runtime_version": "12040",
+      "device_name": "NVIDIA GeForce RTX 4080",
+      "device_ordinal": 0,
+      "hit_prop": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "l2_bytes": 67108864,
+      "max_access_policy_window_bytes": 134213632,
+      "max_persisting_l2_bytes": 46137344,
+      "miss_prop": "cudaAccessPropertyStreaming",
+      "normalization_validation": {
+        "policy_mode": "TARGET_PERSIST",
+        "runtime_setaside_rounding_observed": true,
+        "status": "PASS"
+      },
+      "normalized_field_sources": {
+        "capability": "capability",
+        "policy_receipt": "carrier",
+        "qweight_region": "carrier",
+        "semantic_condition": "carrier"
+      },
+      "persistence_supported": true,
+      "policy_enabled": true,
+      "qweight": {
+        "bytes": 33947648,
+        "contiguous": true,
+        "pointer": 130891447795712,
+        "target": "L0_UP"
+      },
+      "raw_condition": "ISO_QWEIGHT_PERSIST_DENSE",
+      "raw_policy_receipt_sha256": "5ec6cc8a393844fa0124eeb6c7b6b9dbb9626fc2c9c8b10608ac3648670bf305",
+      "requested_setaside_bytes": 33947648,
+      "reset_after": {
+        "executed": true,
+        "operation": "reset persisting L2 after condition",
+        "status": "PASS"
+      },
+      "reset_before": {
+        "executed": true,
+        "operation": "reset persisting L2 before condition",
+        "status": "PASS"
+      },
+      "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+      "runtime_setaside_rounding_observed": true,
+      "source_provenance": [
+        {
+          "label": "capability",
+          "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+          "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+        },
+        {
+          "label": "carrier",
+          "path": "RAW_ISOLATED_NATIVE_RESULT.json",
+          "sha256": "bb9edfd6e57715b6b639d52b4b7f975e4a91e87bf8a356b7302b7128c6875336"
+        }
+      ],
+      "status": "PASS",
+      "stream_identity": "0",
+      "target": "L0_UP",
+      "target_persisting_enabled": true
+    }
+  ]
 }

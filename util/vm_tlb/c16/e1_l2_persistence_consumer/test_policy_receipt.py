@@ -122,6 +122,36 @@ class PolicyReceiptTests(unittest.TestCase):
         )
         self.assertEqual(result["actual_setaside_bytes"], value["actual_setaside_bytes"])
 
+    def test_runtime_query_back_rounding_without_invented_alignment(self) -> None:
+        value = receipt()
+        value["actual_setaside_bytes"] = 37_748_736
+        result = validate_policy_receipt(
+            value, "PERSIST_L0_UP", "L0_UP", QWEIGHT_BYTES
+        )
+        self.assertTrue(result["runtime_setaside_rounding_observed"])
+        self.assertIsNone(result["setaside_alignment_bytes"])
+        value["actual_setaside_bytes"] = QWEIGHT_BYTES - 1
+        self.assert_fails(
+            value,
+            expected_condition="PERSIST_L0_UP",
+            expected_target="L0_UP",
+            expected_budget_bytes=QWEIGHT_BYTES,
+        )
+
+    def test_baseline_and_setaside_need_no_invented_qweight_region(self) -> None:
+        baseline = receipt("BASELINE")
+        setaside = receipt("SETASIDE_ONLY")
+        for value in (baseline, setaside):
+            for key in ("qweight_pointer", "qweight_bytes", "qweight_contiguous"):
+                value.pop(key)
+        self.assertEqual(
+            validate_policy_receipt(baseline, "BASELINE")["qweight_pointer"], 0
+        )
+        result = validate_policy_receipt(
+            setaside, "SETASIDE_ONLY", expected_budget_bytes=QWEIGHT_BYTES
+        )
+        self.assertEqual(result["qweight_bytes"], 0)
+
     def test_nested_schema_aliases(self) -> None:
         flat = receipt()
         value = {

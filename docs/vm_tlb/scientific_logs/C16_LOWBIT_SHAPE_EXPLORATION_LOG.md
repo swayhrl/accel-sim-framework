@@ -409,3 +409,9 @@ This is a mechanism-precondition experiment only. No new cache mechanism, NVBit 
 ## E1 targeted L2-persistence consumer prep (174-new)
 
 CPU-only independent consumer prep is complete on handoff `b2301f9ede7e4d4b6adcd3f08d4be169058f318f`. Policy receipts, isolated qualification, five natural conditions, raw four-source NCU closure, matched controls, materiality, conditional budget sensitivity, and four final-state labels are frozen and covered by 48 new tests. The producer ref was unavailable in the one-shot fetch window, so status is `READY_FOR_E1_L2_PERSISTENCE_INTERVENTION_109`; no scientific persistence result or mechanism authorization is asserted.
+
+---
+
+## E1 targeted L2-persistence independent consumer closure (174-new)
+
+Producer `4c0e6b998528e425578cacf5912bbcc4ff3bfaf6` was independently consumed from raw capability, per-run timing/policy, and BASE+SESSION+PROFILE+policy evidence. CUDA policy qualification and five real-artifact canaries pass. All four primary natural points have material target-specific timing benefit, but none crosses the frozen 20%+4MiB DRAM gate. The first tested timing-material budget is 16 MiB; it is not an exact threshold. Producer scoped state remains `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`; the frozen strict consumer state is `TARGETED_PERSISTENCE_MECHANISM_PRECONDITION_NOT_SUPPORTED`. The divergence is methodological operationalization, not a raw-data mismatch, and project authorization remains `REVIEW_REQUIRED`. No GPU/NVBit/full trace/mechanism work was used or authorized.

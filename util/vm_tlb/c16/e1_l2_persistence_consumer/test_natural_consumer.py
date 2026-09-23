@@ -30,6 +30,11 @@ def authority():
     return result
 
 
+def condition_range(condition, item):
+    target = f"L{item['layer_index']}_{'UP' if item['role'] == 'up_proj' else 'DOWN'}"
+    return f"C16_E1_L2P_{condition}_{target}_D{item['decode_index']}"
+
+
 def policy(condition, budget=BUDGET, ratio=1.0):
     target = ("L0_UP" if condition.startswith("PERSIST_L0_UP") else
               {"PERSIST_L14_UP": "L14_UP", "PERSIST_L0_DOWN": "L0_DOWN"}.get(condition))
@@ -59,6 +64,7 @@ def natural_document():
             occurrences = []
             for item in auth:
                 row = dict(item)
+                row["range_name"] = condition_range(condition, item)
                 row["timing_ms"] = medians[condition] + rep * 0.001 + item["decode_index"] * 0.01
                 occurrences.append(row)
             runs.append({
@@ -140,6 +146,9 @@ class NaturalRunTests(unittest.TestCase):
         doc = natural_document(); doc["conditions"][0]["runs"][0]["occurrences"][0]["input_sha256"] = "f" * 64
         with self.assertRaisesRegex(NaturalPersistenceError, "SHA/identity mismatch"):
             consume_natural_runs(doc, policy_validator=fake_policy)
+        doc = natural_document(); doc["conditions"][0]["runs"][0]["occurrences"][0]["range_name"] = "WRONG"
+        with self.assertRaisesRegex(NaturalPersistenceError, "range mismatch"):
+            consume_natural_runs(doc, policy_validator=fake_policy)
 
     def test_decode_and_policy_mismatch_fail(self):
         doc = natural_document(); doc["conditions"][0]["runs"][0]["decode_steps"].pop()
@@ -161,7 +170,8 @@ class RawNcuTests(unittest.TestCase):
         auth = {(x["layer_index"], x["role"], x["decode_index"]): x for x in authority()}
         profiles = []
         for number, key in enumerate(sorted(NCU_MATRIX)):
-            condition, layer, role, decode = key; item = auth[(layer, role, decode)]
+            condition, layer, role, decode = key; item = dict(auth[(layer, role, decode)])
+            item["range_name"] = condition_range(condition, item)
             base, session, profile = [self.root / f"p{number}_{suffix}" for suffix in ("BASE.csv", "SESSION.csv", "PROFILE.log")]
             write_base(base, item["range_name"], 100_000_000 - number * 1_000_000)
             write_session(session, item["range_name"]); write_profile(profile, item, condition)
@@ -265,7 +275,9 @@ class BudgetTests(unittest.TestCase):
             runs = []
             timing = {8 * MIB: 9.8, 16 * MIB: 9.0, 24 * MIB: 8.5, 32 * MIB: 8.0, qweight: 7.9}[budget]
             for rep in range(7):
-                occurrence = dict(d3); occurrence["timing_ms"] = timing + rep * .001
+                occurrence = dict(d3)
+                occurrence["range_name"] = condition_range("BUDGET_L0_UP", occurrence)
+                occurrence["timing_ms"] = timing + rep * .001
                 runs.append({"rep": rep, "fresh_process_id": f"budget-{budget}-{rep}",
                              "prefix_token_sha256": PREFIX, "generated_token_ids": TOKENS,
                              "d3_occurrence": occurrence,
@@ -273,8 +285,9 @@ class BudgetTests(unittest.TestCase):
             base, session, profile = [self.root / f"b{number}_{suffix}" for suffix in ("BASE.csv", "SESSION.csv", "PROFILE.log")]
             dram = {8 * MIB: 95 * MIB, 16 * MIB: 75 * MIB, 24 * MIB: 65 * MIB,
                     32 * MIB: 55 * MIB, qweight: 50 * MIB}[budget]
-            write_base(base, d3["range_name"], dram); write_session(session, d3["range_name"])
-            write_profile(profile, d3, "PERSIST_L0_UP")
+            budget_d3 = dict(d3); budget_d3["range_name"] = condition_range("BUDGET_L0_UP", budget_d3)
+            write_base(base, budget_d3["range_name"], dram); write_session(session, budget_d3["range_name"])
+            write_profile(profile, budget_d3, "BUDGET_L0_UP")
             points.append({"budget_bytes": budget, "runs": runs,
                            "ncu_profile": {"base_path": base.name, "session_path": session.name,
                                            "profile_path": profile.name, "expected_kernel_names": ["target_kernel"],

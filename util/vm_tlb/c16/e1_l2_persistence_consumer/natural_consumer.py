@@ -139,6 +139,21 @@ def _identity(item: Mapping[str, Any]) -> dict:
     )}
 
 
+def _semantic_identity(item: Mapping[str, Any]) -> dict:
+    return {key: item[key] for key in (
+        "layer_index", "role", "decode_index", "M", "implementation",
+        "generated_token_id", "input_sha256", "output_sha256",
+    )}
+
+
+def _target_name(layer: int, role: str) -> str:
+    return f"L{layer}_{'UP' if role == 'up_proj' else 'DOWN'}"
+
+
+def _expected_range(condition: str, layer: int, role: str, decode: int) -> str:
+    return f"C16_E1_L2P_{condition}_{_target_name(layer, role)}_D{decode}"
+
+
 def _authority(document: Mapping[str, Any]) -> tuple[str, tuple[int, ...], dict]:
     prefix = _sha(document.get("accepted_prefix_sha256"), "accepted_prefix_sha256")
     tokens = _tokens(document.get("generated_token_ids"), "generated_token_ids")
@@ -261,8 +276,10 @@ def consume_natural_runs(document: Mapping[str, Any], root: Path = Path("."),
                 if key in seen:
                     raise NaturalPersistenceError(f"duplicate run occurrence: {key!r}")
                 seen.add(key)
-                if _identity(item) != authority[key]:
+                if _semantic_identity(item) != _semantic_identity(authority[key]):
                     raise NaturalPersistenceError(f"occurrence SHA/identity mismatch: {condition}/{key!r}")
+                if item["range_name"] != _expected_range(condition, *key):
+                    raise NaturalPersistenceError(f"occurrence range mismatch: {condition}/{key!r}")
                 points[(condition, *key)].append(item["timing_ms"])
             if seen != NATURAL_MATRIX:
                 raise NaturalPersistenceError(f"12-occurrence matrix mismatch in {condition}/rep{rep}")
@@ -394,7 +411,25 @@ def _profile_receipt(path: Path, expected: Mapping[str, Any], condition: str,
         "input_sha256": expected["input_sha256"], "output_sha256": expected["output_sha256"],
         "prefix_token_sha256": prefix, "generated_token_ids": list(tokens),
     }
-    mismatches = {key: (value, receipt.get(key)) for key, value in checks.items() if receipt.get(key) != value}
+    if isinstance(receipt.get("occurrences"), list):
+        matches = [item for item in receipt["occurrences"]
+                   if item.get("range") == expected["range_name"]]
+        observed = matches[0] if len(matches) == 1 else {}
+        real = {
+            "condition": receipt.get("condition"),
+            "layer_index": expected["layer_index"] if observed.get("target") == _target_name(expected["layer_index"], expected["role"]) else None,
+            "role": expected["role"] if observed.get("target") == _target_name(expected["layer_index"], expected["role"]) else None,
+            "decode_index": observed.get("decode_index"),
+            "M": 1 if observed.get("input_shape", [None, None])[:2] == [1, 1] else None,
+            "implementation": "AWQ_FP16_INPUT" if observed.get("module_class") == "WQLinear_GEMM" else None,
+            "generated_token_id": observed.get("token_id"), "range": observed.get("range"),
+            "input_sha256": observed.get("input_sha256"), "output_sha256": observed.get("output_sha256"),
+            "prefix_token_sha256": receipt.get("token_file_sha256"),
+            "generated_token_ids": receipt.get("generated_token_ids_D0_D3"),
+        }
+    else:
+        real = receipt
+    mismatches = {key: (value, real.get(key)) for key, value in checks.items() if real.get(key) != value}
     if mismatches:
         raise NaturalPersistenceError("PROFILE semantic identity mismatch: " + repr(mismatches))
     return {"sha256": _hash(path), "status": "PASS", **checks}
@@ -420,7 +455,7 @@ def consume_natural_ncu(document: Mapping[str, Any], root: Path = Path("."),
             raise NaturalPersistenceError(f"wrong/duplicate NCU semantic point: {key!r}")
         seen.add(key)
         expected = authority[key3]
-        for field in ("M", "implementation", "generated_token_id", "input_sha256", "output_sha256", "range_name"):
+        for field in ("M", "implementation", "generated_token_id", "input_sha256", "output_sha256"):
             observed = raw.get(field)
             if field in {"M", "generated_token_id"}:
                 observed = _int(observed, field)
@@ -430,6 +465,10 @@ def consume_natural_ncu(document: Mapping[str, Any], root: Path = Path("."),
                 observed = _text(observed, field)
             if observed != expected[field]:
                 raise NaturalPersistenceError(f"NCU {field} mismatch: {key!r}")
+        range_name = _text(raw.get("range_name"), "range_name")
+        if range_name != _expected_range(condition, *key3):
+            raise NaturalPersistenceError(f"NCU range identity mismatch: {key!r}")
+        profile_expected = {**expected, "range_name": range_name}
         names = raw.get("expected_kernel_names")
         if not isinstance(names, list) or not names or len(names) != len(set(names)):
             raise NaturalPersistenceError("invalid expected kernel inventory")
@@ -440,10 +479,10 @@ def consume_natural_ncu(document: Mapping[str, Any], root: Path = Path("."),
             raise NaturalPersistenceError("missing raw BASE/SESSION/PROFILE evidence")
         policy = _policy(raw.get("policy_receipt", raw.get("policy_receipt_path")), root, condition,
                          0 if condition == "BASELINE" else budget, policy_validator)
-        output.append({"condition": condition, "semantic_identity": expected,
-                       "session": _audit_session(paths["session"], expected["range_name"]),
-                       "profile": _profile_receipt(paths["profile"], expected, condition, prefix, tokens),
-                       "base": _read_base(paths["base"], expected["range_name"], names, passes),
+        output.append({"condition": condition, "semantic_identity": profile_expected,
+                       "session": _audit_session(paths["session"], range_name),
+                       "profile": _profile_receipt(paths["profile"], profile_expected, condition, prefix, tokens),
+                       "base": _read_base(paths["base"], range_name, names, passes),
                        "policy": policy})
     if seen != NCU_MATRIX:
         raise NaturalPersistenceError("natural NCU frozen matrix mismatch")
@@ -581,8 +620,10 @@ def consume_budget_sweep(document: Mapping[str, Any], root: Path = Path("."),
             if _tokens(run.get("generated_token_ids"), "generated_token_ids") != tokens:
                 raise NaturalPersistenceError("budget token sequence mismatch")
             occurrence = _occurrence(run.get("d3_occurrence"), require_timing=True)
-            if _identity(occurrence) != expected_identity:
+            if _semantic_identity(occurrence) != _semantic_identity(expected_identity):
                 raise NaturalPersistenceError("budget D3 occurrence identity mismatch")
+            if occurrence["range_name"] != _expected_range("BUDGET_L0_UP", 0, "up_proj", 3):
+                raise NaturalPersistenceError("budget D3 occurrence range mismatch")
             normalized = _budget_policy(run.get("policy_receipt", run.get("policy_receipt_path")),
                                         root, budget, policy_validator)
             if _int(normalized.get("access_window_num_bytes"), "access_window_num_bytes") != qweight:
@@ -609,10 +650,12 @@ def consume_budget_sweep(document: Mapping[str, Any], root: Path = Path("."),
         if not math.isclose(_finite(ncu_policy.get("hit_ratio"), "hit_ratio"), expected_ratio,
                             rel_tol=0.0, abs_tol=1e-12):
             raise NaturalPersistenceError("budget NCU hitRatio mismatch")
-        base = _read_base(paths["base"], expected_identity["range_name"], names,
+        budget_expected = {**expected_identity,
+                           "range_name": _expected_range("BUDGET_L0_UP", 0, "up_proj", 3)}
+        base = _read_base(paths["base"], budget_expected["range_name"], names,
                           _int(profile.get("expected_pass_count"), "expected_pass_count"))
-        _audit_session(paths["session"], expected_identity["range_name"])
-        _profile_receipt(paths["profile"], expected_identity, "PERSIST_L0_UP", prefix, tokens)
+        _audit_session(paths["session"], budget_expected["range_name"])
+        _profile_receipt(paths["profile"], budget_expected, "BUDGET_L0_UP", prefix, tokens)
         point_stats = _stats(samples)
         dram = float(Decimal(base["metric_sums"]["dram__bytes.sum"]))
         timing_benefit, dram_benefit = _benefit(reference_timing, point_stats["median_ms"]), _benefit(reference_dram, dram)

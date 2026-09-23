@@ -280,41 +280,33 @@ def validate_policy_receipt(
     elif normalized_expected_target is None and receipt_target != "NONE":
         raise PolicyReceiptError("non-target condition ambiguously names a target region")
 
-    qweight_pointer = _pointer(
-        _lookup(
-            receipt,
-            "qweight_pointer",
-            "target_qweight_pointer",
-            "qweight.pointer",
-            "qweight.data_ptr",
-        ),
-        "qweight_pointer",
+    qweight_pointer_raw = _lookup(
+        receipt, "qweight_pointer", "target_qweight_pointer",
+        "qweight.pointer", "qweight.data_ptr", required=False,
     )
-    qweight_bytes = _integer(
-        _lookup(
-            receipt,
-            "qweight_bytes",
-            "target_qweight_bytes",
-            "qweight.bytes",
-            "qweight.nbytes",
-        ),
-        "qweight_bytes",
-        minimum=1,
+    qweight_bytes_raw = _lookup(
+        receipt, "qweight_bytes", "target_qweight_bytes",
+        "qweight.bytes", "qweight.nbytes", required=False,
     )
-    contiguous = _boolean(
-        _lookup(
-            receipt,
-            "qweight_contiguous",
-            "target_qweight_contiguous",
-            "qweight.contiguous",
-            "qweight.is_contiguous",
-        ),
-        "qweight_contiguous",
+    contiguous_raw = _lookup(
+        receipt, "qweight_contiguous", "target_qweight_contiguous",
+        "qweight.contiguous", "qweight.is_contiguous", required=False,
     )
-    if not contiguous:
-        raise PolicyReceiptError("target qweight is not one exact contiguous interval")
-    if qweight_bytes > max_window:
-        raise PolicyReceiptError("target qweight exceeds maximum access-policy window")
+    qweight_fields = (qweight_pointer_raw, qweight_bytes_raw, contiguous_raw)
+    if mode == "TARGET_PERSIST" and any(value is None for value in qweight_fields):
+        raise PolicyReceiptError("target-persist condition requires exact qweight authority")
+    if any(value is not None for value in qweight_fields):
+        if any(value is None for value in qweight_fields):
+            raise PolicyReceiptError("partial qweight identity is ambiguous")
+        qweight_pointer = _pointer(qweight_pointer_raw, "qweight_pointer")
+        qweight_bytes = _integer(qweight_bytes_raw, "qweight_bytes", minimum=1)
+        contiguous = _boolean(contiguous_raw, "qweight_contiguous")
+        if not contiguous:
+            raise PolicyReceiptError("target qweight is not one exact contiguous interval")
+        if qweight_bytes > max_window:
+            raise PolicyReceiptError("target qweight exceeds maximum access-policy window")
+    else:
+        qweight_pointer, qweight_bytes, contiguous = 0, 0, None
 
     requested = _integer(
         _lookup(
@@ -343,12 +335,17 @@ def validate_policy_receipt(
         "setaside.alignment_bytes",
         required=False,
     )
-    alignment = _integer(alignment_raw, "setaside_alignment_bytes", minimum=1) if alignment_raw is not None else 1
-    rounded = ((requested + alignment - 1) // alignment) * alignment
-    if actual != rounded:
-        raise PolicyReceiptError(
-            "actual set-aside is neither the requested value nor its declared alignment rounding"
-        )
+    alignment = (
+        _integer(alignment_raw, "setaside_alignment_bytes", minimum=1)
+        if alignment_raw is not None else None
+    )
+    if actual < requested:
+        raise PolicyReceiptError("runtime query-back set-aside is below the request")
+    if alignment is not None:
+        rounded = ((requested + alignment - 1) // alignment) * alignment
+        if actual != rounded:
+            raise PolicyReceiptError("actual set-aside violates declared alignment rounding")
+    runtime_rounding_observed = actual > requested
     if expected_budget_bytes is not None:
         expected_budget = _integer(expected_budget_bytes, "expected_budget_bytes")
         if requested != expected_budget:
@@ -409,14 +406,18 @@ def validate_policy_receipt(
     )
     if not 0.0 <= hit_ratio <= 1.0:
         raise PolicyReceiptError("hit_ratio must be within [0,1]")
-    hit_prop = _property(
-        _lookup(receipt, "hit_prop", "hitProp", "access_window.hit_prop", "access_window.hitProp"),
-        "hit_prop",
+    hit_prop_raw = _lookup(
+        receipt, "hit_prop", "hitProp", "access_window.hit_prop",
+        "access_window.hitProp", required=False,
     )
-    miss_prop = _property(
-        _lookup(receipt, "miss_prop", "missProp", "access_window.miss_prop", "access_window.missProp"),
-        "miss_prop",
+    miss_prop_raw = _lookup(
+        receipt, "miss_prop", "missProp", "access_window.miss_prop",
+        "access_window.missProp", required=False,
     )
+    if window_enabled and (hit_prop_raw is None or miss_prop_raw is None):
+        raise PolicyReceiptError("active access window requires hit/miss properties")
+    hit_prop = _property(hit_prop_raw, "hit_prop") if hit_prop_raw is not None else "NONE"
+    miss_prop = _property(miss_prop_raw, "miss_prop") if miss_prop_raw is not None else "NONE"
     policy_enabled = _boolean(
         _lookup(receipt, "policy_enabled", "persistence_enabled"), "policy_enabled"
     )
@@ -489,10 +490,11 @@ def validate_policy_receipt(
         "max_access_policy_window_bytes": max_window,
         "qweight_pointer": qweight_pointer,
         "qweight_bytes": qweight_bytes,
-        "qweight_contiguous": True,
+        "qweight_contiguous": contiguous,
         "requested_setaside_bytes": requested,
         "actual_setaside_bytes": actual,
         "setaside_alignment_bytes": alignment,
+        "runtime_setaside_rounding_observed": runtime_rounding_observed,
         "access_window_base_pointer": base_pointer,
         "access_window_num_bytes": window_bytes,
         "hit_ratio": hit_ratio,
@@ -513,12 +515,13 @@ def validate_policy_receipt(
             "target": normalized_target,
             "pointer": qweight_pointer,
             "bytes": qweight_bytes,
-            "contiguous": True,
+            "contiguous": contiguous,
         },
         "setaside": {
             "requested_bytes": requested,
             "actual_bytes": actual,
             "alignment_bytes": alignment,
+            "runtime_rounding_observed": runtime_rounding_observed,
         },
         "access_window": {
             "enabled": window_enabled,

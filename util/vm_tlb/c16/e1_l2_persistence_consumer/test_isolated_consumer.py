@@ -67,6 +67,14 @@ class NcuTests(unittest.TestCase):
     def test_profile_sha_fails(self):
         p=self.root/self.profiles[0]['profile_path']; d=json.loads(p.read_text()); d['input_sha256']='c'*64; p.write_text(json.dumps(d))
         with self.assertRaises(IsolatedConsumerError): self.consume()
+    def test_real_split_profile_packaging(self):
+        p=self.root/self.profiles[0]['profile_path']; d=json.loads(p.read_text())
+        for key in ('role','M','implementation'): d.pop(key)
+        d['module_class']='WQLinear_GEMM'; d['qweight_region']={
+            'bytes':100,'contiguous':True,'data_ptr':1000,'storage_offset_bytes':0,
+            'exact_tensor_span_begin':1000,'exact_tensor_span_end_exclusive':1100}
+        p.write_text(json.dumps(d))
+        self.assertEqual(self.consume()['status'],'PASS')
     def test_policy_fails_closed(self):
         def bad(*args,**kwargs): raise ValueError('bad policy')
         with self.assertRaises(IsolatedConsumerError): self.consume(validator=bad)

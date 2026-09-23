@@ -1,0 +1,354 @@
+{
+  "canaries": [
+    {
+      "artifact": "RAW_NATIVE_SETASIDE_ONLY_run0.json",
+      "capability_sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344",
+      "carrier_sha256": "06ef179645abbeb893b695c0e1d7afa83eb0fac2721e2004cbe34c1d39701bf9",
+      "normalized_condition": "SETASIDE_ONLY",
+      "policy_mode": "SETASIDE_ONLY",
+      "semantic_condition": "SETASIDE_ONLY",
+      "status": "PASS"
+    },
+    {
+      "artifact": "RAW_NATIVE_PERSIST_L0_UP_run0.json",
+      "capability_sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344",
+      "carrier_sha256": "0f15587784e13ceab75aad9f0598592514cedb2f6d251520f6c79a1ad570f5dc",
+      "normalized_condition": "PERSIST_L0_UP",
+      "policy_mode": "TARGET_PERSIST",
+      "semantic_condition": "PERSIST_L0_UP",
+      "status": "PASS"
+    },
+    {
+      "artifact": "RAW_NATURAL_L0_UP_D3_PERSIST_L0_UP",
+      "base": {
+        "kernel_count": 2,
+        "kernel_names": [
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+        ],
+        "metric_sums": {
+          "dram__bytes.sum": "36587264",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41718752"
+        },
+        "process_id": "1297058",
+        "sha256": "add28d61b150dc33d555503a8f47d43f8698a01f9a5d79f9075b731486808645"
+      },
+      "normalized_policy": {
+        "access_window_base_pointer": 129476688084992,
+        "access_window_enabled": true,
+        "access_window_num_bytes": 33947648,
+        "actual_setaside_bytes": 37748736,
+        "condition": "PERSIST_L0_UP",
+        "cuda_runtime_version": "12040",
+        "device_name": "NVIDIA GeForce RTX 4080",
+        "device_ordinal": 0,
+        "hit_prop": "cudaAccessPropertyPersisting",
+        "hit_ratio": 1.0,
+        "l2_bytes": 67108864,
+        "max_access_policy_window_bytes": 134213632,
+        "max_persisting_l2_bytes": 46137344,
+        "miss_prop": "cudaAccessPropertyStreaming",
+        "normalization_validation": {
+          "policy_mode": "TARGET_PERSIST",
+          "runtime_setaside_rounding_observed": true,
+          "status": "PASS"
+        },
+        "normalized_field_sources": {
+          "capability": "capability",
+          "policy_receipt": "carrier",
+          "qweight_region": "carrier",
+          "semantic_condition": "carrier"
+        },
+        "persistence_supported": true,
+        "policy_enabled": true,
+        "qweight": {
+          "bytes": 33947648,
+          "contiguous": true,
+          "pointer": 129476688084992,
+          "target": "L0_UP"
+        },
+        "raw_condition": "PERSIST_L0_UP",
+        "raw_policy_receipt_sha256": "9293f69316dbcc082b7de9d21f544319fb1fab0c53e03649724e4a1a0994e947",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "executed": true,
+          "operation": "reset persisting L2 after condition",
+          "status": "PASS"
+        },
+        "reset_before": {
+          "executed": true,
+          "operation": "reset persisting L2 before condition",
+          "status": "PASS"
+        },
+        "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+        "runtime_setaside_rounding_observed": true,
+        "source_provenance": [
+          {
+            "label": "capability",
+            "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+            "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+          },
+          {
+            "label": "carrier",
+            "path": "RAW_NATURAL_L0_UP_D3_PERSIST_L0_UP_PROFILE.log",
+            "sha256": "d398be043c5e57611c390b1f9e458a07429ae931cf1c597382ff282ef67eaffa"
+          }
+        ],
+        "status": "PASS",
+        "stream_identity": "0",
+        "target": "L0_UP",
+        "target_persisting_enabled": true
+      },
+      "profile": {
+        "M": 1,
+        "condition": "PERSIST_L0_UP",
+        "decode_index": 3,
+        "generated_token_id": 3950,
+        "generated_token_ids": [
+          23578,
+          11,
+          323,
+          3950
+        ],
+        "implementation": "AWQ_FP16_INPUT",
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "layer_index": 0,
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "prefix_token_sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9",
+        "range": "C16_E1_L2P_PERSIST_L0_UP_L0_UP_D3",
+        "role": "up_proj",
+        "sha256": "d398be043c5e57611c390b1f9e458a07429ae931cf1c597382ff282ef67eaffa",
+        "status": "PASS"
+      },
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "0495657471878c475542ceda836ebe58ed886e56af5ffb091fe7916496c7f1ee"
+      },
+      "status": "PASS"
+    },
+    {
+      "artifact": "RAW_BUDGET_16MIB",
+      "base": {
+        "kernel_count": 2,
+        "kernel_names": [
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+        ],
+        "metric_sums": {
+          "dram__bytes.sum": "45903104",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41717920"
+        },
+        "process_id": "1299696",
+        "sha256": "1f0479a930eaa9152aa101f445519b21884fcd0946e123940ecced7317779078"
+      },
+      "normalized_policy": {
+        "access_window_base_pointer": 123987283673088,
+        "access_window_enabled": true,
+        "access_window_num_bytes": 33947648,
+        "actual_setaside_bytes": 16777216,
+        "condition": "PERSIST_L0_UP_BUDGET_16MIB",
+        "cuda_runtime_version": "12040",
+        "device_name": "NVIDIA GeForce RTX 4080",
+        "device_ordinal": 0,
+        "hit_prop": "cudaAccessPropertyPersisting",
+        "hit_ratio": 0.4942084942084942,
+        "l2_bytes": 67108864,
+        "max_access_policy_window_bytes": 134213632,
+        "max_persisting_l2_bytes": 46137344,
+        "miss_prop": "cudaAccessPropertyStreaming",
+        "normalization_validation": {
+          "policy_mode": "TARGET_PERSIST",
+          "runtime_setaside_rounding_observed": false,
+          "status": "PASS"
+        },
+        "normalized_field_sources": {
+          "capability": "capability",
+          "policy_receipt": "carrier",
+          "qweight_region": "carrier",
+          "semantic_condition": "carrier"
+        },
+        "persistence_supported": true,
+        "policy_enabled": true,
+        "qweight": {
+          "bytes": 33947648,
+          "contiguous": true,
+          "pointer": 123987283673088,
+          "target": "L0_UP"
+        },
+        "raw_condition": "BUDGET_L0_UP",
+        "raw_policy_receipt_sha256": "fcdadaca4878410d4887401e1b375f7e11d522a3a98950664276ae31be628785",
+        "requested_setaside_bytes": 16777216,
+        "reset_after": {
+          "executed": true,
+          "operation": "reset persisting L2 after condition",
+          "status": "PASS"
+        },
+        "reset_before": {
+          "executed": true,
+          "operation": "reset persisting L2 before condition",
+          "status": "PASS"
+        },
+        "rounding_interpretation": "REQUEST_EQUALS_RUNTIME_QUERY_BACK",
+        "runtime_setaside_rounding_observed": false,
+        "source_provenance": [
+          {
+            "label": "capability",
+            "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+            "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+          },
+          {
+            "label": "carrier",
+            "path": "RAW_BUDGET_16MIB_PROFILE.log",
+            "sha256": "e1cd481c6bb8a364ad50ea5b5a8d91871d85153ffc9492c9657de9289eae6ef2"
+          }
+        ],
+        "status": "PASS",
+        "stream_identity": "0",
+        "target": "L0_UP",
+        "target_persisting_enabled": true
+      },
+      "profile": {
+        "M": 1,
+        "condition": "BUDGET_L0_UP",
+        "decode_index": 3,
+        "generated_token_id": 3950,
+        "generated_token_ids": [
+          23578,
+          11,
+          323,
+          3950
+        ],
+        "implementation": "AWQ_FP16_INPUT",
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "layer_index": 0,
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "prefix_token_sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9",
+        "range": "C16_E1_L2P_BUDGET_L0_UP_L0_UP_D3",
+        "role": "up_proj",
+        "sha256": "e1cd481c6bb8a364ad50ea5b5a8d91871d85153ffc9492c9657de9289eae6ef2",
+        "status": "PASS"
+      },
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "a3174a70becc328563cfc04d5d7463f2bf2d320fc4994a489d631c796244590f"
+      },
+      "status": "PASS"
+    },
+    {
+      "artifact": "RAW_BUDGET_FULL",
+      "base": {
+        "kernel_count": 2,
+        "kernel_names": [
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+        ],
+        "metric_sums": {
+          "dram__bytes.sum": "36488832",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41713568"
+        },
+        "process_id": "1300786",
+        "sha256": "98c908a7c010803117042d37e8f741f939464e8f3650b9c01bf7448122f1d1cb"
+      },
+      "normalized_policy": {
+        "access_window_base_pointer": 128916731723776,
+        "access_window_enabled": true,
+        "access_window_num_bytes": 33947648,
+        "actual_setaside_bytes": 37748736,
+        "condition": "PERSIST_L0_UP_BUDGET_FULL",
+        "cuda_runtime_version": "12040",
+        "device_name": "NVIDIA GeForce RTX 4080",
+        "device_ordinal": 0,
+        "hit_prop": "cudaAccessPropertyPersisting",
+        "hit_ratio": 1.0,
+        "l2_bytes": 67108864,
+        "max_access_policy_window_bytes": 134213632,
+        "max_persisting_l2_bytes": 46137344,
+        "miss_prop": "cudaAccessPropertyStreaming",
+        "normalization_validation": {
+          "policy_mode": "TARGET_PERSIST",
+          "runtime_setaside_rounding_observed": true,
+          "status": "PASS"
+        },
+        "normalized_field_sources": {
+          "capability": "capability",
+          "policy_receipt": "carrier",
+          "qweight_region": "carrier",
+          "semantic_condition": "carrier"
+        },
+        "persistence_supported": true,
+        "policy_enabled": true,
+        "qweight": {
+          "bytes": 33947648,
+          "contiguous": true,
+          "pointer": 128916731723776,
+          "target": "L0_UP"
+        },
+        "raw_condition": "BUDGET_L0_UP",
+        "raw_policy_receipt_sha256": "6cd856b31d7ab1ba033daf748fd9cfc161574d1a94c05643297addaa30f28689",
+        "requested_setaside_bytes": 33947648,
+        "reset_after": {
+          "executed": true,
+          "operation": "reset persisting L2 after condition",
+          "status": "PASS"
+        },
+        "reset_before": {
+          "executed": true,
+          "operation": "reset persisting L2 before condition",
+          "status": "PASS"
+        },
+        "rounding_interpretation": "RUNTIME_SETASIDE_ROUNDING_OBSERVED_NO_GENERAL_ALIGNMENT_THEOREM",
+        "runtime_setaside_rounding_observed": true,
+        "source_provenance": [
+          {
+            "label": "capability",
+            "path": "RAW_CUDA_CAPABILITY_AND_CENSUS.json",
+            "sha256": "39a8f96be2c4d0907e5c922e5f0d244095a523d325cd0c16c0c2d8d1e191f344"
+          },
+          {
+            "label": "carrier",
+            "path": "RAW_BUDGET_FULL_PROFILE.log",
+            "sha256": "b613ca004771f472e2224f04f0eb91a5a0ef646c7613f6dabe1cc1a83203821f"
+          }
+        ],
+        "status": "PASS",
+        "stream_identity": "0",
+        "target": "L0_UP",
+        "target_persisting_enabled": true
+      },
+      "profile": {
+        "M": 1,
+        "condition": "BUDGET_L0_UP",
+        "decode_index": 3,
+        "generated_token_id": 3950,
+        "generated_token_ids": [
+          23578,
+          11,
+          323,
+          3950
+        ],
+        "implementation": "AWQ_FP16_INPUT",
+        "input_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "layer_index": 0,
+        "output_sha256": "abb444c62e12fec00485479cc7d40d69aa816d2965f7ba1af6f781a3ede0d142",
+        "prefix_token_sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9",
+        "range": "C16_E1_L2P_BUDGET_L0_UP_L0_UP_D3",
+        "role": "up_proj",
+        "sha256": "b613ca004771f472e2224f04f0eb91a5a0ef646c7613f6dabe1cc1a83203821f",
+        "status": "PASS"
+      },
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "5eaf6c50953237e7beef3e1f43681b11ab4c9e110dd3481f9473a7f4f9e6690c"
+      },
+      "status": "PASS"
+    }
+  ],
+  "canary_count": 5,
+  "status": "PASS"
+}

@@ -1,6 +1,124 @@
 {
-  "artifact": "INDEPENDENT_POLICY_EFFECTS.json",
-  "calculation_authority_used": false,
-  "reason": "producer ref was not available in the one-shot post-prep fetch window",
-  "status": "NOT_RUN_PRODUCER_UNAVAILABLE"
+  "comparison_reference": "SETASIDE_ONLY",
+  "effects": [
+    {
+      "DRAM_TARGET_SPECIFIC": false,
+      "MATERIAL_DRAM_BENEFIT": false,
+      "MATERIAL_TIMING_BENEFIT": true,
+      "TARGET_SPECIFIC": true,
+      "TIMING_TARGET_SPECIFIC": true,
+      "decode_index": 1,
+      "layer_index": 0,
+      "reservation_effect": {
+        "dram_benefit_fraction": 0.09328143842741873,
+        "timing_benefit_fraction": 0.04761906411781785
+      },
+      "role": "up_proj",
+      "target_condition": "PERSIST_L0_UP",
+      "target_persistence_effect": {
+        "dram_benefit_fraction": 0.1867194100052515,
+        "dram_reduction_bytes": 8374016.0,
+        "timing_benefit_fraction": 0.48749999545252637,
+        "timing_combined_dispersion": 0.013467220030342661
+      },
+      "unrelated_condition": "PERSIST_L14_UP",
+      "unrelated_persistence_effect": {
+        "dram_benefit_fraction": 0.2091296207502797,
+        "dram_reduction_bytes": 9379072.0,
+        "timing_benefit_fraction": 0.22499999090505277,
+        "timing_combined_dispersion": 0.009546559193141218
+      }
+    },
+    {
+      "DRAM_TARGET_SPECIFIC": false,
+      "MATERIAL_DRAM_BENEFIT": false,
+      "MATERIAL_TIMING_BENEFIT": true,
+      "TARGET_SPECIFIC": true,
+      "TIMING_TARGET_SPECIFIC": true,
+      "decode_index": 3,
+      "layer_index": 0,
+      "reservation_effect": {
+        "dram_benefit_fraction": 0.07468002834927981,
+        "timing_benefit_fraction": 0.05952383014727231
+      },
+      "role": "up_proj",
+      "target_condition": "PERSIST_L0_UP",
+      "target_persistence_effect": {
+        "dram_benefit_fraction": 0.19510141556587435,
+        "dram_reduction_bytes": 8868480.0,
+        "timing_benefit_fraction": 0.4683544187214263,
+        "timing_combined_dispersion": 0.010426317642584358
+      },
+      "unrelated_condition": "PERSIST_L14_UP",
+      "unrelated_persistence_effect": {
+        "dram_benefit_fraction": 0.22102201209158517,
+        "dram_reduction_bytes": 10046720.0,
+        "timing_benefit_fraction": 0.20253162808213948,
+        "timing_combined_dispersion": 0.010068205460838598
+      }
+    },
+    {
+      "DRAM_TARGET_SPECIFIC": false,
+      "MATERIAL_DRAM_BENEFIT": false,
+      "MATERIAL_TIMING_BENEFIT": true,
+      "TARGET_SPECIFIC": true,
+      "TIMING_TARGET_SPECIFIC": true,
+      "decode_index": 3,
+      "layer_index": 14,
+      "reservation_effect": {
+        "dram_benefit_fraction": 0.08504577505129514,
+        "timing_benefit_fraction": 0.05952383014727231
+      },
+      "role": "up_proj",
+      "target_condition": "PERSIST_L14_UP",
+      "target_persistence_effect": {
+        "dram_benefit_fraction": 0.19046643330772076,
+        "dram_reduction_bytes": 8566784.0,
+        "timing_benefit_fraction": 0.49367088374428525,
+        "timing_combined_dispersion": 0.016522137820815568
+      },
+      "unrelated_condition": "PERSIST_L0_UP",
+      "unrelated_persistence_effect": {
+        "dram_benefit_fraction": 0.21090526195964598,
+        "dram_reduction_bytes": 9486080.0,
+        "timing_benefit_fraction": 0.22784809310499843,
+        "timing_combined_dispersion": 0.007152561556007109
+      }
+    },
+    {
+      "DRAM_TARGET_SPECIFIC": false,
+      "MATERIAL_DRAM_BENEFIT": false,
+      "MATERIAL_TIMING_BENEFIT": true,
+      "TARGET_SPECIFIC": true,
+      "TIMING_TARGET_SPECIFIC": true,
+      "decode_index": 3,
+      "layer_index": 0,
+      "reservation_effect": {
+        "dram_benefit_fraction": 0.033108065565513045,
+        "timing_benefit_fraction": 0.06493499498573109
+      },
+      "role": "down_proj",
+      "target_condition": "PERSIST_L0_DOWN",
+      "target_persistence_effect": {
+        "dram_benefit_fraction": 0.004547477181215337,
+        "dram_reduction_bytes": 160896.0,
+        "timing_benefit_fraction": 0.1935764412585183,
+        "timing_combined_dispersion": 0.012776970389379411
+      },
+      "unrelated_condition": "PERSIST_L0_UP",
+      "unrelated_persistence_effect": {
+        "dram_benefit_fraction": 0.0002749469099223275,
+        "dram_reduction_bytes": 9728.0,
+        "timing_benefit_fraction": -0.026475692997042628,
+        "timing_combined_dispersion": 0.009852173268222837
+      }
+    }
+  ],
+  "materiality": {
+    "dram": ">=20% reduction and >=4MiB absolute",
+    "target_specific_dram": "target minus unrelated >=20pp and >=4MiB extra reduction",
+    "target_specific_timing": "target minus unrelated >=5pp and exceeds combined comparison dispersion",
+    "timing": ">=5% benefit and benefit > hypot(CV_setaside,CV_target)"
+  },
+  "status": "PASS"
 }
