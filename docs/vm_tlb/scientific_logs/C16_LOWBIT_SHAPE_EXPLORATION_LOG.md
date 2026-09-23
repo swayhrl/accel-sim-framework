@@ -156,3 +156,22 @@ A later deep memory diagnostic is justified only if:
 - holdout evidence supports it;
 - a concrete runtime-path/memory question remains.
 
+
+
+---
+
+## E1 clean-baseline result — 2026-09-23
+
+**Question.** How do operator role, M shape, dense dtype and frozen AWQ implementation interact under one canonical same-input authority?
+
+**Evidence.** Fresh-process RAW canonical activation regeneration passed for Layer0 q/down/up. The 18-point RAW_BF16/RAW_FP16/AWQ_FP16_INPUT matrix used byte-identical FP16 inputs for the latter pair. M1023/M1024 transition and common S2_CODE down_proj holdout completed. Historical eight-point evidence is retained separately as `HISTORICAL_DEPLOYMENT_MEASUREMENT_PROVENANCE_LIMITED`.
+
+**Result.** All three roles show material shape-dependent AWQ/RAW_FP16 interaction; up_proj has the largest registered abs(I). Finite FP16 rounding is explicitly audited. The NCU entry gate passed, but semantic kernel selection was not uniquely resolvable, so status is `NCU_SELECTOR_UNRESOLVED` and no traffic values are claimed.
+
+**Interpretation.** Low-bit deployment behavior is operator- and shape-dependent; it cannot be summarized as universally faster/slower or attributed purely to quantization. The clean comparison isolates identical activation bytes but still compares different weight representations and implementations.
+
+**Superseded.** The old eight-point RAW activation authority is not used for clean ratios.
+
+**Next question.** A future reviewed stage may establish a unique semantic NCU selector for the selected role.
+
+**Stop condition.** Stop after review/Git closure; do not launch NVBit, full address trace or TLB/cache mechanisms.

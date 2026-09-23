@@ -1,0 +1,175 @@
+{
+  "ncu_entry_gate": true,
+  "roles": {
+    "down_proj": {
+      "I": 0.9346534106366406,
+      "M": {
+        "1": {
+          "R_awq": 0.5010500375495227,
+          "R_dtype": 0.9625953405421316,
+          "combined_cv": 0.0922658042472369
+        },
+        "256": {
+          "R_awq": 1.2758391297366323,
+          "R_dtype": 0.979295420281752,
+          "combined_cv": 0.031439921348205856
+        }
+      },
+      "abs_I": 0.9346534106366406,
+      "material": true
+    },
+    "q_proj": {
+      "I": 0.2858604939249827,
+      "M": {
+        "1": {
+          "R_awq": 0.980125735145001,
+          "R_dtype": 0.895270372499773,
+          "combined_cv": 0.18951280151517938
+        },
+        "256": {
+          "R_awq": 1.304455979022235,
+          "R_dtype": 0.9814992728394517,
+          "combined_cv": 0.08360803517131035
+        }
+      },
+      "abs_I": 0.2858604939249827,
+      "material": true
+    },
+    "up_proj": {
+      "I": 1.5409711030367719,
+      "M": {
+        "1": {
+          "R_awq": 0.4002389918887601,
+          "R_dtype": 0.9735041266232193,
+          "combined_cv": 0.059139270653575486
+        },
+        "256": {
+          "R_awq": 1.868764789921065,
+          "R_dtype": 0.9891962088514697,
+          "combined_cv": 0.020089073775065726
+        }
+      },
+      "abs_I": 1.5409711030367719,
+      "material": true
+    }
+  },
+  "selected_role": "up_proj",
+  "status": "PASS",
+  "transition": {
+    "rows": [
+      {
+        "M": 1023,
+        "cv": 0.005069355199021549,
+        "implementation": "RAW_FP16",
+        "input_sha256": "0e726bcf36e3d7b8e832b8b434d7a9ad0a3c44289b04ff6834c76f47e32d1d6a",
+        "kernel_names": [
+          "Memset (Device)",
+          "aten::linear",
+          "aten::matmul",
+          "aten::mm",
+          "void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x256_32x3_tn_align8>(cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x256_32x3_tn_align8::Params)"
+        ],
+        "max_ms": 1.354329,
+        "median_ms": 1.337549,
+        "min_ms": 1.334501,
+        "module_class": "Linear",
+        "path": "TORCH_DENSE_LINEAR",
+        "samples_ms": [
+          1.345704,
+          1.339451,
+          1.335608,
+          1.354329,
+          1.334538,
+          1.337549,
+          1.334501
+        ]
+      },
+      {
+        "M": 1023,
+        "cv": 0.0019246961995055766,
+        "implementation": "AWQ_FP16_INPUT",
+        "input_sha256": "0e726bcf36e3d7b8e832b8b434d7a9ad0a3c44289b04ff6834c76f47e32d1d6a",
+        "kernel_names": [
+          "WQLinearMMFunction",
+          "aten::sum",
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half*, int*, __half*, int*, int, int, int, __half*)",
+          "void at::native::reduce_kernel<128, 4, at::native::ReduceOp<c10::Half, at::native::func_wrapper_t<c10::Half, at::native::sum_functor<c10::Half, float, c10::Half>::operator()(at::TensorIterator&)::{lambda(float, float)#1}>, unsigned int, c10::Half, 4> >(at::native::ReduceOp<c10::Half, at::native::func_wrapper_t<c10::Half, at::native::sum_functor<c10::Half, float, c10::Half>::operator()(at::TensorIterator&)::{lambda(float, float)#1}>, unsigned int, c10::Half, 4>)"
+        ],
+        "max_ms": 1.874358,
+        "median_ms": 1.872869,
+        "min_ms": 1.864852,
+        "module_class": "WQLinear_GEMM",
+        "path": "GEMM_QUANTIZED",
+        "samples_ms": [
+          1.873557,
+          1.872239,
+          1.864852,
+          1.874251,
+          1.874358,
+          1.86653,
+          1.872869
+        ],
+        "source_threshold_expression": "x.shape[0]*x.shape[1]>=1024",
+        "source_threshold_result": false
+      },
+      {
+        "M": 1024,
+        "cv": 0.0018226519552252895,
+        "implementation": "RAW_FP16",
+        "input_sha256": "09cf5c2002c7802187cd121c1286d031402c5087fb8487b9ae7a9ba638fff8ca",
+        "kernel_names": [
+          "Memset (Device)",
+          "aten::linear",
+          "aten::matmul",
+          "aten::mm",
+          "void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x256_32x3_tn_align8>(cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x256_32x3_tn_align8::Params)"
+        ],
+        "max_ms": 1.346636,
+        "median_ms": 1.341248,
+        "min_ms": 1.339309,
+        "module_class": "Linear",
+        "path": "TORCH_DENSE_LINEAR",
+        "samples_ms": [
+          1.346636,
+          1.343574,
+          1.339892,
+          1.341248,
+          1.339309,
+          1.341335,
+          1.339537
+        ]
+      },
+      {
+        "M": 1024,
+        "cv": 0.001125265454712647,
+        "implementation": "AWQ_FP16_INPUT",
+        "input_sha256": "09cf5c2002c7802187cd121c1286d031402c5087fb8487b9ae7a9ba638fff8ca",
+        "kernel_names": [
+          "WQLinearMMFunction",
+          "aten::bmm",
+          "aten::matmul",
+          "dequantize_weights(int*, __half*, int*, __half*, int, int, int)",
+          "void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x128_32x4_nn_align8>(cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x128_32x4_nn_align8::Params)"
+        ],
+        "max_ms": 1.784031,
+        "median_ms": 1.781394,
+        "min_ms": 1.777746,
+        "module_class": "WQLinear_GEMM",
+        "path": "DEQUANTIZE_PLUS_TORCH_MATMUL",
+        "samples_ms": [
+          1.784031,
+          1.782504,
+          1.781655,
+          1.779347,
+          1.781394,
+          1.777746,
+          1.779295
+        ],
+        "source_threshold_expression": "x.shape[0]*x.shape[1]>=1024",
+        "source_threshold_result": true
+      }
+    ],
+    "same_canonical_M2048_source_sha256": "e678e2f26b8c9142a1e91b7a7f0a615f17ed8ae2849889654ebe81872cfeb037",
+    "status": "PASS"
+  }
+}
