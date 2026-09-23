@@ -33,18 +33,21 @@ CONDITIONS = (
     "SHARE2_UP", "SHARE2_L0", "SHARE3",
 )
 TARGETS = ("L0_UP", "L14_UP", "L0_DOWN")
+SWITCH_ORDER_TARGETS = ("L0_UP", "L0_DOWN", "L14_UP")
+PHASES = ("PREFILL", "D0", "D1", "D2", "D3")
 TARGET_KEY = {"L0_UP": (0, "up_proj"), "L14_UP": (14, "up_proj"), "L0_DOWN": (0, "down_proj")}
 NATURAL_MATRIX = frozenset((layer, role, d) for layer, role in TARGET_KEY.values() for d in range(4))
-SWITCH_TARGETS = {
+FULL_SWITCH_SEQUENCE = tuple((phase, target) for phase in PHASES for target in SWITCH_ORDER_TARGETS)
+SELECTED_TARGETS = {
     "SETASIDE_ONLY": (),
-    "ROTATE_CONTROL_3": ("L0_UP", "L0_DOWN", "L14_UP") * 4,
-    "SINGLE_L0_UP": ("L0_UP",) * 4,
-    "SHARE2_UP": ("L0_UP", "L14_UP") * 4,
-    "SHARE2_L0": ("L0_UP", "L0_DOWN") * 4,
-    "SHARE3": ("L0_UP", "L0_DOWN", "L14_UP") * 4,
+    "ROTATE_CONTROL_3": (),
+    "SINGLE_L0_UP": ("L0_UP",),
+    "SHARE2_UP": ("L0_UP", "L14_UP"),
+    "SHARE2_L0": ("L0_UP", "L0_DOWN"),
+    "SHARE3": ("L0_UP", "L14_UP", "L0_DOWN"),
 }
 HIT_RATIO = {
-    "SETASIDE_ONLY": None, "ROTATE_CONTROL_3": 0.0, "SINGLE_L0_UP": 1.0,
+    "SETASIDE_ONLY": None, "ROTATE_CONTROL_3": 1.0 / 3.0, "SINGLE_L0_UP": 1.0,
     "SHARE2_UP": 0.5, "SHARE2_L0": 0.5, "SHARE3": 1.0 / 3.0,
 }
 NCU_MATRIX = frozenset(
@@ -186,23 +189,26 @@ def validate_policy_receipt(receipt: Mapping[str, Any], condition: str,
     if not isinstance(switches, list):
         raise SharedConsumerError("switches must be a list")
     if rotating:
-        expected_targets = ("L0_UP", "L14_UP", "L0_UP")
-        expected_ratio = 0.5 if expected_condition == "ROTATING_PERSIST" else 0.0
-        control = expected_condition == "ROTATING_CONTROL"
+        expected_sequence = ((None, "L0_UP"), (None, "L14_UP"), (None, "L0_UP"))
+        expected_ratio = 0.5
+        selected_targets = {"L0_UP", "L14_UP"} if expected_condition == "ROTATING_PERSIST" else set()
     else:
-        expected_targets = SWITCH_TARGETS[expected_condition]
+        expected_sequence = () if expected_condition == "SETASIDE_ONLY" else FULL_SWITCH_SEQUENCE
         expected_ratio = HIT_RATIO[expected_condition]
-        control = expected_condition in {"SETASIDE_ONLY", "ROTATE_CONTROL_3"}
-    if len(switches) != len(expected_targets):
+        selected_targets = set(SELECTED_TARGETS[expected_condition])
+    if len(switches) != len(expected_sequence):
         raise SharedConsumerError("missing/duplicate policy switch")
     before = _reset(receipt.get("reset_before"), "reset_before", 0)
     normalized = []
     durations = []
-    for index, (raw, target) in enumerate(zip(switches, expected_targets), 1):
+    for index, (raw, expected) in enumerate(zip(switches, expected_sequence), 1):
         if not isinstance(raw, Mapping):
             raise SharedConsumerError("invalid policy switch")
+        phase, target = expected
         if _integer(raw.get("sequence_index"), "switch.sequence_index") != index:
             raise SharedConsumerError("wrong/duplicate switch order")
+        if phase is not None and _text(raw.get("phase"), "switch.phase").upper() != phase:
+            raise SharedConsumerError("wrong switch phase/order")
         if _text(raw.get("target"), "switch.target").upper() != target:
             raise SharedConsumerError("wrong switch target/order")
         region = regions[target]
@@ -215,28 +221,29 @@ def validate_policy_receipt(receipt: Mapping[str, Any], condition: str,
         if _boolean(raw.get("reset_performed"), "switch.reset_performed"):
             raise SharedConsumerError("in-run switch performed forbidden reset")
         ratio = _finite(raw.get("hit_ratio"), "switch.hit_ratio")
-        if not math.isclose(ratio, float(expected_ratio), rel_tol=0.0, abs_tol=1e-12):
+        if expected_ratio is None or not math.isclose(ratio, float(expected_ratio), rel_tol=0.0, abs_tol=1e-12):
             raise SharedConsumerError("wrong switch hitRatio")
         hit_prop = _text(raw.get("hit_prop"), "switch.hit_prop").upper()
         miss_prop = _text(raw.get("miss_prop"), "switch.miss_prop").upper()
         persisting = _boolean(raw.get("target_persisting"), "switch.target_persisting")
-        if control:
+        should_persist = target in selected_targets
+        if not should_persist:
             if persisting or hit_prop == "PERSISTING":
-                raise SharedConsumerError("API control accidentally marks persistence")
+                raise SharedConsumerError("non-selected/API-control switch accidentally marks persistence")
             if hit_prop != "NORMAL" or miss_prop != "NORMAL":
-                raise SharedConsumerError("API control must use unambiguous NORMAL policy")
+                raise SharedConsumerError("non-selected/API-control switch must use unambiguous NORMAL policy")
         else:
             if not persisting or hit_prop != "PERSISTING" or miss_prop not in {"NORMAL", "STREAMING"}:
-                raise SharedConsumerError("shared switch lacks exact persisting policy")
+                raise SharedConsumerError("selected shared switch lacks exact persisting policy")
         duration = _finite(raw.get("api_duration_us"), "switch.api_duration_us")
         if duration < 0:
             raise SharedConsumerError("negative API switch duration")
         durations.append(duration)
-        normalized.append({"sequence_index": index, "target": target,
+        normalized.append({"sequence_index": index, "phase": phase, "target": target,
                            "base_pointer": region["pointer"], "num_bytes": region["bytes"],
                            "hit_ratio": ratio, "hit_prop": hit_prop, "miss_prop": miss_prop,
                            "target_persisting": persisting, "api_duration_us": duration})
-    after = _reset(receipt.get("reset_after"), "reset_after", len(expected_targets) + 1)
+    after = _reset(receipt.get("reset_after"), "reset_after", len(expected_sequence) + 1)
     other = receipt.get("other_reset_events", [])
     if not isinstance(other, list) or other:
         raise SharedConsumerError("reset is allowed only before and after condition")
