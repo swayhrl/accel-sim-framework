@@ -1,0 +1,846 @@
+--- a/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/vm_translation.h
+@@ -185,6 +185,29 @@
+   TRANSLATION_ACCESS_ATOMIC = 2
+ };
+
++// AWMA literature-guided mechanisms are runtime opt-in and mutually
++// exclusive.  NONE is the source/default behavior and must remain the frozen
++// V1 comparator.
++enum awma_translation_candidate_mode {
++  AWMA_TRANSLATION_CANDIDATE_NONE = 0,
++  AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE,
++  AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT
++};
++
++awma_translation_candidate_mode awma_candidate_mode();
++const char *awma_candidate_mode_name(awma_translation_candidate_mode mode);
++bool awma_mechanism_diagnostics_enabled();
++
++// A shared result is legal only when every translation identity component
++// available in this model agrees.  The caller still preserves one logical UID
++// and one downstream data effect per member.
++bool same_page_share_compatible(
++    unsigned owner_asid, uint64_t owner_va, uint64_t owner_bytes,
++    translation_access owner_access, uint64_t owner_generation,
++    unsigned member_asid, uint64_t member_va, uint64_t member_bytes,
++    translation_access member_access, uint64_t member_generation,
++    uint64_t page_size);
++
+ // A V2 registration may be architecturally rejected without being a malformed
+ // simulator configuration.  The result is machine-readable and, critically,
+ // has no live descriptor image.  It is distinct from a missing/unreadable
+@@ -370,6 +393,26 @@
+       : accesses(0), hits(0), misses(0), evictions(0), port_stalls(0) {}
+ };
+
++struct refill_protection_stats {
++  uint64_t history_inserts;
++  uint64_t history_resets;
++  uint64_t history_hits;
++  uint64_t pending_allocations;
++  uint64_t pending_merges;
++  uint64_t pending_drops;
++  uint64_t protected_refills;
++  uint64_t protected_hits;
++  uint64_t protected_victim_skips;
++  uint64_t all_protected_lru_fallbacks;
++  uint64_t timer_wrap_resets;
++  refill_protection_stats()
++      : history_inserts(0), history_resets(0), history_hits(0),
++        pending_allocations(0), pending_merges(0), pending_drops(0),
++        protected_refills(0), protected_hits(0),
++        protected_victim_skips(0), all_protected_lru_fallbacks(0),
++        timer_wrap_resets(0) {}
++};
++
+ struct tlb_fill_result {
+   bool evicted;
+   object_class victim_object;
+@@ -380,7 +423,8 @@
+
+ class set_associative_tlb {
+  public:
+-  explicit set_associative_tlb(const tlb_config &config = tlb_config());
++  explicit set_associative_tlb(const tlb_config &config = tlb_config(),
++                               bool is_shared_l2 = false);
+   bool probe(const translation_key &key, uint64_t cycle, uint64_t *ppn);
+   bool peek(const translation_key &key) const;
+   tlb_fill_result fill(const translation_key &key, uint64_t ppn,
+@@ -392,6 +436,13 @@
+   bool try_consume_port(uint64_t cycle);
+   unsigned occupancy() const;
+   const tlb_stats &stats() const { return m_stats; }
++  const refill_protection_stats &refill_stats() const {
++    return m_refill_stats;
++  }
++  unsigned candidate_pending() const { return m_pending_refills.size(); }
++  bool refill_protection_enabled() const {
++    return m_refill_protection_enabled;
++  }
+
+  private:
+   struct entry {
+@@ -400,14 +451,32 @@
+     uint64_t ppn;
+     uint64_t last_touch;
+     object_class object;
++    bool protection_valid;
++    uint32_t protection_start;
+     entry()
+         : valid(false), key(), ppn(0), last_touch(0),
+-          object(OBJECT_UNKNOWN) {}
++          object(OBJECT_UNKNOWN), protection_valid(false),
++          protection_start(0) {}
+   };
+   unsigned set_for(const translation_key &key) const;
++  uint64_t history_hash(const translation_key &key, uint64_t seed) const;
++  bool history_contains(const translation_key &key) const;
++  void history_insert(const translation_key &key);
++  void reset_candidate_metadata(bool count_history_reset);
++  bool pending_contains(const translation_key &key) const;
++  bool pending_remove(const translation_key &key);
++  void note_history_miss(const translation_key &key);
++  void refresh_protection_epoch(uint64_t cycle);
++  bool entry_protected(entry *candidate, uint64_t cycle);
+   tlb_config m_config;
+   std::vector<entry> m_entries;
+   tlb_stats m_stats;
++  bool m_refill_protection_enabled;
++  std::vector<unsigned char> m_history_filter;
++  unsigned m_history_insertions;
++  std::vector<translation_key> m_pending_refills;
++  uint64_t m_protection_epoch;
++  refill_protection_stats m_refill_stats;
+   uint64_t m_port_cycle;
+   unsigned m_ports_used;
+   uint64_t m_touch_clock;
+@@ -568,6 +637,8 @@
+   // intentionally do not contribute to L1/L2 TLB access or miss counters.
+   uint64_t pending_waiter_bypasses;
+   uint64_t lookup_inflight_bypasses;
++  uint64_t same_page_share_owner_ready;
++  uint64_t same_page_share_deliveries;
+   uint64_t l1_lookup_launches;
+   uint64_t l1_lookup_completions;
+   uint64_t l1_lookup_service_cycles;
+@@ -722,7 +793,8 @@
+   uint64_t l2_replacement_matrix[OBJECT_CLASS_COUNT][OBJECT_CLASS_COUNT];
+   translation_stats()
+       : lookup_requests(0), pending_waiter_bypasses(0),
+-        lookup_inflight_bypasses(0), l1_lookup_launches(0),
++        lookup_inflight_bypasses(0), same_page_share_owner_ready(0),
++        same_page_share_deliveries(0), l1_lookup_launches(0),
+         l1_lookup_completions(0), l1_lookup_service_cycles(0),
+         l2_lookup_launches(0), l2_lookup_completions(0),
+         l2_lookup_service_cycles(0), segment_lookup_attempts(0),
+@@ -824,6 +896,12 @@
+   const set_associative_tlb &l2() const { return m_l2; }
+   const subentry_tlb &l2_subentries() const { return m_l2_subentries; }
+   const translation_stats &stats() const { return m_stats; }
++  void note_same_page_share_owner_ready() {
++    ++m_stats.same_page_share_owner_ready;
++  }
++  void note_same_page_share_delivery() {
++    ++m_stats.same_page_share_deliveries;
++  }
+   // Deterministic privileged-control seam for C9's pinned epoch. No Segment
+   // descriptor is eligible until every local replica explicitly acknowledges
+   // the staged image; revoke similarly removes every image before reuse.
+--- a/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/vm_translation.cc
+@@ -3,11 +3,62 @@
+ #include <assert.h>
+ #include <errno.h>
+ #include <stdlib.h>
++#include <string.h>
+
+ #include <fstream>
+ #include <sstream>
+
+ namespace vm_translation {
++
++awma_translation_candidate_mode awma_candidate_mode() {
++  const char *text = getenv("GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
++  if (text == 0 || text[0] == '\0' || strcmp(text, "none") == 0)
++    return AWMA_TRANSLATION_CANDIDATE_NONE;
++  if (strcmp(text, "same_page_share") == 0)
++    return AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE;
++  if (strcmp(text, "refill_protect") == 0)
++    return AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT;
++  assert(false && "unknown GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
++  return AWMA_TRANSLATION_CANDIDATE_NONE;
++}
++
++const char *awma_candidate_mode_name(awma_translation_candidate_mode mode) {
++  switch (mode) {
++    case AWMA_TRANSLATION_CANDIDATE_NONE:
++      return "none";
++    case AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE:
++      return "same_page_share";
++    case AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT:
++      return "refill_protect";
++    default:
++      assert(false && "invalid AWMA translation candidate mode");
++      return "invalid";
++  }
++}
++
++bool awma_mechanism_diagnostics_enabled() {
++  const char *text = getenv("GPGPUSIM_AWMA_MECHANISM_DIAGNOSTICS");
++  return text != 0 && text[0] != '\0' && strtoul(text, 0, 10) != 0;
++}
++
++bool same_page_share_compatible(
++    unsigned owner_asid, uint64_t owner_va, uint64_t owner_bytes,
++    translation_access owner_access, uint64_t owner_generation,
++    unsigned member_asid, uint64_t member_va, uint64_t member_bytes,
++    translation_access member_access, uint64_t member_generation,
++    uint64_t page_size) {
++  if (!vm_core::valid_page_size(page_size) || owner_bytes == 0 ||
++      member_bytes == 0)
++    return false;
++  if (vm_core::transaction_crosses_page(owner_va, owner_bytes, page_size) ||
++      vm_core::transaction_crosses_page(member_va, member_bytes, page_size))
++    return false;
++  return owner_asid == member_asid && owner_access == member_access &&
++         owner_generation == member_generation &&
++         vm_core::vpn(owner_va, page_size) ==
++             vm_core::vpn(member_va, page_size);
++}
++
+ namespace {
+ struct target_lookup_override { unsigned l1, l2; bool telemetry; uint64_t race[4]; std::map<uint64_t,bool> launch; };
+ std::map<const translation_controller *, target_lookup_override>
+@@ -714,13 +765,131 @@
+   return entries == 120;
+ }
+
+-set_associative_tlb::set_associative_tlb(const tlb_config &config)
+-    : m_config(config), m_entries(), m_stats(), m_port_cycle(~0ULL),
++set_associative_tlb::set_associative_tlb(const tlb_config &config,
++                                         bool is_shared_l2)
++    : m_config(config), m_entries(), m_stats(),
++      m_refill_protection_enabled(
++          is_shared_l2 &&
++          awma_candidate_mode() == AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT),
++      m_history_filter(m_refill_protection_enabled ? 1024 : 0, 0),
++      m_history_insertions(0), m_pending_refills(),
++      m_protection_epoch(~0ULL), m_refill_stats(), m_port_cycle(~0ULL),
+       m_ports_used(0), m_touch_clock(0) {
+   assert(m_config.valid());
+   m_entries.resize(m_config.entries);
+ }
+
++uint64_t set_associative_tlb::history_hash(const translation_key &key,
++                                           uint64_t seed) const {
++  uint64_t value = key.vpn ^ (uint64_t(key.asid) << 32) ^ key.page_size ^ seed;
++  value ^= value >> 30;
++  value *= 0xbf58476d1ce4e5b9ULL;
++  value ^= value >> 27;
++  value *= 0x94d049bb133111ebULL;
++  value ^= value >> 31;
++  return value;
++}
++
++bool set_associative_tlb::history_contains(
++    const translation_key &key) const {
++  if (!m_refill_protection_enabled) return false;
++  static const uint64_t seeds[3] = {
++      0x9e3779b97f4a7c15ULL, 0xd1b54a32d192ed03ULL,
++      0x94d049bb133111ebULL};
++  for (unsigned hash = 0; hash < 3; ++hash) {
++    const unsigned bit = unsigned(history_hash(key, seeds[hash]) & 8191ULL);
++    if ((m_history_filter[bit >> 3] & (1U << (bit & 7))) == 0) return false;
++  }
++  return true;
++}
++
++void set_associative_tlb::history_insert(const translation_key &key) {
++  if (!m_refill_protection_enabled) return;
++  if (m_history_insertions == 1024) {
++    for (unsigned i = 0; i < m_history_filter.size(); ++i)
++      m_history_filter[i] = 0;
++    m_history_insertions = 0;
++    ++m_refill_stats.history_resets;
++  }
++  static const uint64_t seeds[3] = {
++      0x9e3779b97f4a7c15ULL, 0xd1b54a32d192ed03ULL,
++      0x94d049bb133111ebULL};
++  for (unsigned hash = 0; hash < 3; ++hash) {
++    const unsigned bit = unsigned(history_hash(key, seeds[hash]) & 8191ULL);
++    m_history_filter[bit >> 3] |= static_cast<unsigned char>(1U << (bit & 7));
++  }
++  ++m_history_insertions;
++  ++m_refill_stats.history_inserts;
++}
++
++void set_associative_tlb::reset_candidate_metadata(
++    bool count_history_reset) {
++  if (!m_refill_protection_enabled) return;
++  for (unsigned i = 0; i < m_history_filter.size(); ++i)
++    m_history_filter[i] = 0;
++  m_history_insertions = 0;
++  m_pending_refills.clear();
++  for (unsigned i = 0; i < m_entries.size(); ++i)
++    m_entries[i].protection_valid = false;
++  if (count_history_reset) ++m_refill_stats.history_resets;
++}
++
++bool set_associative_tlb::pending_contains(
++    const translation_key &key) const {
++  for (unsigned i = 0; i < m_pending_refills.size(); ++i)
++    if (m_pending_refills[i] == key) return true;
++  return false;
++}
++
++bool set_associative_tlb::pending_remove(const translation_key &key) {
++  for (unsigned i = 0; i < m_pending_refills.size(); ++i) {
++    if (!(m_pending_refills[i] == key)) continue;
++    m_pending_refills.erase(m_pending_refills.begin() + i);
++    return true;
++  }
++  return false;
++}
++
++void set_associative_tlb::note_history_miss(const translation_key &key) {
++  if (!m_refill_protection_enabled || !history_contains(key)) return;
++  ++m_refill_stats.history_hits;
++  if (pending_contains(key)) {
++    ++m_refill_stats.pending_merges;
++    return;
++  }
++  if (m_pending_refills.size() == 16) {
++    ++m_refill_stats.pending_drops;
++    return;
++  }
++  m_pending_refills.push_back(key);
++  ++m_refill_stats.pending_allocations;
++}
++
++void set_associative_tlb::refresh_protection_epoch(uint64_t cycle) {
++  if (!m_refill_protection_enabled) return;
++  const uint64_t epoch = cycle >> 20;
++  if (m_protection_epoch == ~0ULL) {
++    m_protection_epoch = epoch;
++    return;
++  }
++  if (epoch == m_protection_epoch) return;
++  for (unsigned i = 0; i < m_entries.size(); ++i)
++    m_entries[i].protection_valid = false;
++  m_protection_epoch = epoch;
++  ++m_refill_stats.timer_wrap_resets;
++}
++
++bool set_associative_tlb::entry_protected(entry *candidate,
++                                          uint64_t cycle) {
++  if (!m_refill_protection_enabled || !candidate->protection_valid)
++    return false;
++  const uint32_t low_cycle = static_cast<uint32_t>(cycle & 0xfffffULL);
++  const uint32_t elapsed = low_cycle - candidate->protection_start;
++  if (elapsed < 500000U) return true;
++  candidate->protection_valid = false;
++  return false;
++}
++
+ unsigned set_associative_tlb::set_for(const translation_key &key) const {
+   const uint64_t mixed = key.vpn ^ (uint64_t(key.asid) << 17) ^
+                          (key.page_size >> 12);
+@@ -749,7 +918,7 @@
+
+ bool set_associative_tlb::probe(const translation_key &key, uint64_t cycle,
+                                 uint64_t *ppn) {
+-  (void)cycle;
++  refresh_protection_epoch(cycle);
+   ++m_stats.accesses;
+   const unsigned begin = set_for(key) * m_config.assoc;
+   for (unsigned way = 0; way < m_config.assoc; ++way) {
+@@ -758,17 +927,22 @@
+       candidate.last_touch = ++m_touch_clock;
+       *ppn = candidate.ppn;
+       ++m_stats.hits;
++      if (entry_protected(&candidate, cycle))
++        ++m_refill_stats.protected_hits;
+       return true;
+     }
+   }
+   ++m_stats.misses;
++  note_history_miss(key);
+   return false;
+ }
+
+ tlb_fill_result set_associative_tlb::fill(const translation_key &key,
+                                           uint64_t ppn, uint64_t cycle,
+                                           object_class object) {
+-  (void)cycle;
++  refresh_protection_epoch(cycle);
++  const bool protect_refill = pending_remove(key);
++  if (protect_refill) ++m_refill_stats.protected_refills;
+   const unsigned begin = set_for(key) * m_config.assoc;
+   entry *victim = 0;
+   for (unsigned way = 0; way < m_config.assoc; ++way) {
+@@ -777,23 +951,47 @@
+       candidate.ppn = ppn;
+       candidate.last_touch = ++m_touch_clock;
+       candidate.object = object;
++      if (protect_refill) {
++        candidate.protection_valid = true;
++        candidate.protection_start =
++            static_cast<uint32_t>(cycle & 0xfffffULL);
++      }
+       return tlb_fill_result();
+     }
+     if (!candidate.valid && victim == 0) victim = &candidate;
+   }
+   if (victim == 0) {
+-    victim = &m_entries[begin];
+-    for (unsigned way = 1; way < m_config.assoc; ++way) {
++    entry *unprotected = 0;
++    for (unsigned way = 0; way < m_config.assoc; ++way) {
+       entry &candidate = m_entries[begin + way];
+-      if (candidate.last_touch < victim->last_touch) victim = &candidate;
++      if (entry_protected(&candidate, cycle)) {
++        ++m_refill_stats.protected_victim_skips;
++        continue;
++      }
++      if (unprotected == 0 || candidate.last_touch < unprotected->last_touch)
++        unprotected = &candidate;
++    }
++    if (unprotected != 0) {
++      victim = unprotected;
++    } else {
++      ++m_refill_stats.all_protected_lru_fallbacks;
++      victim = &m_entries[begin];
++      for (unsigned way = 1; way < m_config.assoc; ++way) {
++        entry &candidate = m_entries[begin + way];
++        if (candidate.last_touch < victim->last_touch) victim = &candidate;
++      }
+     }
+     ++m_stats.evictions;
+     const object_class victim_object = victim->object;
++    history_insert(victim->key);
+     victim->valid = true;
+     victim->key = key;
+     victim->ppn = ppn;
+     victim->last_touch = ++m_touch_clock;
+     victim->object = object;
++    victim->protection_valid = protect_refill;
++    victim->protection_start =
++        static_cast<uint32_t>(cycle & 0xfffffULL);
+     return tlb_fill_result(true, victim_object);
+   }
+   victim->valid = true;
+@@ -801,6 +999,8 @@
+   victim->ppn = ppn;
+   victim->last_touch = ++m_touch_clock;
+   victim->object = object;
++  victim->protection_valid = protect_refill;
++  victim->protection_start = static_cast<uint32_t>(cycle & 0xfffffULL);
+   return tlb_fill_result();
+ }
+
+@@ -810,6 +1010,7 @@
+     entry &candidate = m_entries[begin + way];
+     if (!candidate.valid || !(candidate.key == key)) continue;
+     candidate = entry();
++    reset_candidate_metadata(false);
+     return true;
+   }
+   return false;
+@@ -819,11 +1020,13 @@
+   for (unsigned index = 0; index < m_entries.size(); ++index)
+     if (m_entries[index].valid && m_entries[index].key.asid == asid)
+       m_entries[index] = entry();
++  reset_candidate_metadata(false);
+ }
+
+ void set_associative_tlb::flush_all() {
+   for (unsigned index = 0; index < m_entries.size(); ++index)
+     if (m_entries[index].valid) m_entries[index] = entry();
++  reset_candidate_metadata(false);
+ }
+
+ unsigned set_associative_tlb::occupancy() const {
+@@ -1253,7 +1456,7 @@
+
+ translation_controller::translation_controller(const translation_config &config)
+     : m_config(config), m_default_page_table(config.page_table),
+-      m_page_table(&m_default_page_table), m_l1s(), m_l2(config.l2),
++      m_page_table(&m_default_page_table), m_l1s(), m_l2(config.l2, true),
+       m_l2_subentries(config.l2), m_mshrs(),
+       m_lookups(), m_pwq(), m_active_walks(), m_pwc(),
+       m_physical_f5_pwc(), m_physical_f5_pwc_plru(),
+@@ -1287,7 +1490,7 @@
+ translation_controller::translation_controller(const translation_config &config,
+                                                page_table_backend *backend)
+     : m_config(config), m_default_page_table(config.page_table),
+-      m_page_table(backend), m_l1s(), m_l2(config.l2),
++      m_page_table(backend), m_l1s(), m_l2(config.l2, true),
+       m_l2_subentries(config.l2), m_mshrs(), m_lookups(),
+       m_pwq(), m_active_walks(), m_pwc(), m_physical_f5_pwc(),
+       m_physical_f5_pwc_plru(), m_object_map(config.object_map_path),
+@@ -2662,7 +2865,8 @@
+   // so cache-correlation can retain the PTW origin, but it does not represent
+   // an active TLB, MSHR, PWQ, or walker operation.  A controller is quiescent
+   // once those modeled resources are drained.
+-  return m_mshrs.empty() && m_lookups.empty() && invariants_hold();
++  return m_mshrs.empty() && m_lookups.empty() &&
++         m_l2.candidate_pending() == 0 && invariants_hold();
+ }
+
+ bool translation_controller::object_attribution_conserves() const {
+@@ -2748,6 +2952,39 @@
+ }
+
+ void translation_controller::print_stats(FILE *fout) const {
++  if (awma_mechanism_diagnostics_enabled()) {
++    const refill_protection_stats &refill = m_l2.refill_stats();
++    fprintf(fout, "vm_awma_candidate_mode = %s\n",
++            awma_candidate_mode_name(awma_candidate_mode()));
++    fprintf(fout, "vm_awma_same_page_share_owner_ready = %llu\n",
++            (unsigned long long)m_stats.same_page_share_owner_ready);
++    fprintf(fout, "vm_awma_same_page_share_deliveries = %llu\n",
++            (unsigned long long)m_stats.same_page_share_deliveries);
++    fprintf(fout, "vm_awma_refill_history_inserts = %llu\n",
++            (unsigned long long)refill.history_inserts);
++    fprintf(fout, "vm_awma_refill_history_resets = %llu\n",
++            (unsigned long long)refill.history_resets);
++    fprintf(fout, "vm_awma_refill_history_hits = %llu\n",
++            (unsigned long long)refill.history_hits);
++    fprintf(fout, "vm_awma_refill_pending_allocations = %llu\n",
++            (unsigned long long)refill.pending_allocations);
++    fprintf(fout, "vm_awma_refill_pending_merges = %llu\n",
++            (unsigned long long)refill.pending_merges);
++    fprintf(fout, "vm_awma_refill_pending_drops = %llu\n",
++            (unsigned long long)refill.pending_drops);
++    fprintf(fout, "vm_awma_refill_protected_refills = %llu\n",
++            (unsigned long long)refill.protected_refills);
++    fprintf(fout, "vm_awma_refill_protected_hits = %llu\n",
++            (unsigned long long)refill.protected_hits);
++    fprintf(fout, "vm_awma_refill_protected_victim_skips = %llu\n",
++            (unsigned long long)refill.protected_victim_skips);
++    fprintf(fout, "vm_awma_refill_all_protected_lru_fallbacks = %llu\n",
++            (unsigned long long)refill.all_protected_lru_fallbacks);
++    fprintf(fout, "vm_awma_refill_timer_wrap_resets = %llu\n",
++            (unsigned long long)refill.timer_wrap_resets);
++    fprintf(fout, "vm_awma_refill_pending_final = %u\n",
++            m_l2.candidate_pending());
++  }
+   if (getenv("GPGPUSIM_READY_APPLICATION_QUIESCENCE_DIAGNOSTICS") != NULL) {
+     unsigned long long ready_lookups = 0;
+     for (unsigned i = 0; i < m_lookups.size(); ++i)
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -2514,7 +2514,26 @@
+   const char *pipeline_text = getenv("GPGPUSIM_PIPELINED_ACCESSQ_TRANSLATION_LAUNCH");
+   const bool pipelined_launch = pipeline_text != NULL &&
+       unsigned(strtoul(pipeline_text, NULL, 10)) != 0;
++  const vm_translation::awma_translation_candidate_mode candidate_mode =
++      vm_translation::awma_candidate_mode();
++  const char *share_ablation_text =
++      getenv("GPGPUSIM_AWMA_SHARE_ABLATION");
++  const bool share_service_control =
++      share_ablation_text != NULL &&
++      strcmp(share_ablation_text, "service_control") == 0;
++  assert(share_ablation_text == NULL || share_ablation_text[0] == '\0' ||
++         strcmp(share_ablation_text, "none") == 0 ||
++         share_service_control);
++  assert(!share_service_control ||
++         candidate_mode ==
++             vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE);
+   assert(!ready_application_v2 || pipelined_launch);
++  assert(candidate_mode ==
++             vm_translation::AWMA_TRANSLATION_CANDIDATE_NONE ||
++         pipelined_launch);
++  assert(candidate_mode !=
++             vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE ||
++         !ready_application_v2);
+   const bool ready_application_diagnostics =
+       getenv("GPGPUSIM_READY_APPLICATION_DIAGNOSTICS") != NULL;
+   const auto apply_ready_translation = [&](mem_access_t &ready_access,
+@@ -2555,6 +2574,100 @@
+   if (pipelined_launch && m_config->gpgpu_vm_mode == 2 &&
+       m_gpu->vm_translation() != NULL) {
+     std::list<mem_access_t> &entries = inst.accessq_entries();
++    const vm_translation::translation_access candidate_access =
++        inst.isatomic() ? vm_translation::TRANSLATION_ACCESS_ATOMIC :
++        (inst.is_store() ? vm_translation::TRANSLATION_ACCESS_WRITE :
++                           vm_translation::TRANSLATION_ACCESS_READ);
++    const uint64_t now = m_core->get_gpu()->gpu_sim_cycle +
++                         m_core->get_gpu()->gpu_tot_sim_cycle;
++    if (candidate_mode ==
++        vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE) {
++      const uint64_t generation =
++          m_gpu->vm_translation()->translation_generation(0);
++      bool delivered_member = false;
++      // The front-most resident access is the owner for its page.  Since the
++      // accessq consumes from the back, the owner remains resident until all
++      // earlier members have received their result.  One member is notified
++      // per cycle; there is no instantaneous broadcast.
++      for (std::list<mem_access_t>::iterator owner = entries.begin();
++           owner != entries.end(); ++owner) {
++        if (vm_core::transaction_crosses_page(
++                owner->get_sim_va(), owner->get_size(),
++                m_config->gpgpu_vm_page_size))
++          continue;
++        bool earlier_equivalent = false;
++        for (std::list<mem_access_t>::iterator prior = entries.begin();
++             prior != owner; ++prior) {
++          if (vm_translation::same_page_share_compatible(
++                  0, prior->get_sim_va(), prior->get_size(), candidate_access,
++                  generation, 0, owner->get_sim_va(), owner->get_size(),
++                  candidate_access, generation,
++                  m_config->gpgpu_vm_page_size)) {
++            earlier_equivalent = true;
++            break;
++          }
++        }
++        if (earlier_equivalent) continue;
++        bool has_member = false;
++        std::list<mem_access_t>::iterator member = owner;
++        ++member;
++        for (; member != entries.end(); ++member) {
++          if (vm_translation::same_page_share_compatible(
++                  0, owner->get_sim_va(), owner->get_size(), candidate_access,
++                  generation, 0, member->get_sim_va(), member->get_size(),
++                  candidate_access, generation,
++                  m_config->gpgpu_vm_page_size)) {
++            has_member = true;
++            break;
++          }
++        }
++        if (!has_member) continue;
++        if (!owner->vm_translation_applied()) {
++          uint64_t owner_pa = 0;
++          vm_translation::translation_source owner_source =
++              vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++          const vm_translation::lookup_result owner_result =
++              m_gpu->vm_translation()->translate(
++                  m_sid, 0, owner->get_sim_va(), owner->get_size(), now,
++                  owner->get_uid(), &owner_pa, &owner_source,
++                  candidate_access, true);
++          if (owner_result == vm_translation::READY) {
++            apply_ready_translation(*owner, owner_pa, owner_source);
++            m_gpu->vm_translation()->note_same_page_share_owner_ready();
++          }
++        }
++        if (!owner->vm_translation_applied() || delivered_member ||
++            share_service_control)
++          continue;
++        member = owner;
++        ++member;
++        for (; member != entries.end(); ++member) {
++          if (member->vm_translation_applied()) continue;
++          if (!vm_translation::same_page_share_compatible(
++                  0, owner->get_sim_va(), owner->get_size(), candidate_access,
++                  generation, 0, member->get_sim_va(), member->get_size(),
++                  candidate_access, generation,
++                  m_config->gpgpu_vm_page_size))
++            continue;
++          const uint64_t member_pa =
++              (owner->get_sim_pa() / m_config->gpgpu_vm_page_size) *
++                  m_config->gpgpu_vm_page_size +
++              vm_core::page_offset(member->get_sim_va(),
++                                   m_config->gpgpu_vm_page_size);
++          apply_ready_translation(
++              *member, member_pa,
++              static_cast<vm_translation::translation_source>(
++                  owner->get_translation_telemetry_outcome()));
++          m_gpu->vm_translation()->note_same_page_share_delivery();
++          delivered_member = true;
++          break;
++        }
++      }
++    }
++
++    // Frozen V1/V2 behavior remains authoritative for singleton entries and
++    // for every non-sharing candidate.  Entries in an active share cohort do
++    // not issue independent physical translation services.
+     for (std::list<mem_access_t>::reverse_iterator it = entries.rbegin();
+          it != entries.rend(); ++it) {
+       mem_access_t &candidate = *it;
+@@ -2563,19 +2676,29 @@
+                                              candidate.get_size(),
+                                              m_config->gpgpu_vm_page_size))
+         continue;
++      if (candidate_mode ==
++          vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE) {
++        unsigned equivalent = 0;
++        const uint64_t generation =
++            m_gpu->vm_translation()->translation_generation(0);
++        for (std::list<mem_access_t>::iterator peer = entries.begin();
++             peer != entries.end(); ++peer)
++          if (vm_translation::same_page_share_compatible(
++                  0, candidate.get_sim_va(), candidate.get_size(),
++                  candidate_access, generation, 0, peer->get_sim_va(),
++                  peer->get_size(), candidate_access, generation,
++                  m_config->gpgpu_vm_page_size))
++            ++equivalent;
++        if (equivalent > 1) continue;
++      }
+       uint64_t ignored_pa = 0;
+       vm_translation::translation_source ignored_source =
+           vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
+-      const vm_translation::translation_access candidate_access =
+-          inst.isatomic() ? vm_translation::TRANSLATION_ACCESS_ATOMIC :
+-          (inst.is_store() ? vm_translation::TRANSLATION_ACCESS_WRITE :
+-                             vm_translation::TRANSLATION_ACCESS_READ);
+       // V1 observes READY only; V2 consumes it for this exact resident entry.
+       // Neither mode admits the access downstream during this prelaunch scan.
+       const vm_translation::lookup_result prelaunch_result =
+           m_gpu->vm_translation()->translate(
+-          m_sid, 0, candidate.get_sim_va(), candidate.get_size(),
+-          m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle,
++          m_sid, 0, candidate.get_sim_va(), candidate.get_size(), now,
+           candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access,
+           ready_application_v2);
+       if (prelaunch_result == vm_translation::READY) {
+@@ -2586,10 +2709,42 @@
+         else if (ready_application_diagnostics)
+           ++m_stats->vm_ready_application_ready_unapplied_observations;
+       }
+-
+     }
+   }
+   mem_access_t &access = inst.accessq_back();
++  if (candidate_mode ==
++          vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE &&
++      !access.vm_translation_applied()) {
++    unsigned equivalent = 0;
++    bool owner_applied = false;
++    const uint64_t generation =
++        m_gpu->vm_translation()->translation_generation(0);
++    const vm_translation::translation_access head_access =
++        inst.isatomic() ? vm_translation::TRANSLATION_ACCESS_ATOMIC :
++        (inst.is_store() ? vm_translation::TRANSLATION_ACCESS_WRITE :
++                           vm_translation::TRANSLATION_ACCESS_READ);
++    std::list<mem_access_t> &entries = inst.accessq_entries();
++    for (std::list<mem_access_t>::iterator peer = entries.begin();
++         peer != entries.end(); ++peer)
++      if (vm_translation::same_page_share_compatible(
++              0, access.get_sim_va(), access.get_size(), head_access,
++              generation, 0, peer->get_sim_va(), peer->get_size(),
++              head_access, generation, m_config->gpgpu_vm_page_size)) {
++        if (equivalent == 0) owner_applied = peer->vm_translation_applied();
++        ++equivalent;
++      }
++    if (equivalent > 1 && !(share_service_control && owner_applied)) {
++      // A cohort member must never launch an independent head-path lookup.
++      // It waits for the bounded owner/member delivery path above, otherwise
++      // its later shared application would strand the independent READY entry.
++      ++m_stats->vm_translation_stall_cycles;
++      stall_reason = COAL_STALL;
++      const bool iswrite = inst.is_store();
++      access_type = inst.space.is_local() ? (iswrite ? L_MEM_ST : L_MEM_LD)
++                                          : (iswrite ? G_MEM_ST : G_MEM_LD);
++      return false;
++    }
++  }
+   if (!access.vm_translation_applied()) {
+     vm_translation::translation_source translation_outcome =
+         vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
+--- /dev/null
++++ b/tests/awma_literature_mechanism_test.cc
+@@ -0,0 +1,102 @@
++#include <assert.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++
++#include "gpgpu-sim/vm_translation.h"
++
++static vm_translation::translation_key key(uint64_t vpn) {
++  return vm_translation::translation_key(0, vpn, 64ULL * 1024ULL);
++}
++
++int main() {
++  const uint64_t page = 64ULL * 1024ULL;
++
++  // C1 legality: same page/key/generation/permission is shareable.  Every
++  // incompatible identity component and a cross-page transaction rejects.
++  assert(vm_translation::same_page_share_compatible(
++      7, 3 * page + 32, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      7, 3 * page + 96, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      page));
++  assert(!vm_translation::same_page_share_compatible(
++      7, 3 * page, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      8, 3 * page + 64, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      page));
++  assert(!vm_translation::same_page_share_compatible(
++      7, 3 * page, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      7, 3 * page + 64, 32, vm_translation::TRANSLATION_ACCESS_WRITE, 9,
++      page));
++  assert(!vm_translation::same_page_share_compatible(
++      7, 3 * page, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      7, 3 * page + 64, 32, vm_translation::TRANSLATION_ACCESS_READ, 10,
++      page));
++  assert(!vm_translation::same_page_share_compatible(
++      7, 3 * page, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      7, 4 * page, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      page));
++  assert(!vm_translation::same_page_share_compatible(
++      7, 4 * page - 16, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      7, 3 * page, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
++      page));
++
++  // OFF is exact ordinary LRU and allocates no candidate state.
++  unsetenv("GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
++  vm_translation::set_associative_tlb off(
++      vm_translation::tlb_config(2, 2, 1), true);
++  uint64_t ppn = 0;
++  off.fill(key(1), 1, 0);
++  off.fill(key(2), 2, 1);
++  off.fill(key(3), 3, 2);
++  assert(!off.refill_protection_enabled());
++  assert(!off.probe(key(1), 3, &ppn));
++  assert(off.candidate_pending() == 0);
++  assert(off.refill_stats().history_inserts == 0);
++
++  // C2: an evicted key that misses again enters the bounded pending set; its
++  // refill is protected, a later hit is useful, and replacement skips it.
++  setenv("GPGPUSIM_AWMA_TRANSLATION_CANDIDATE", "refill_protect", 1);
++  vm_translation::set_associative_tlb protected_tlb(
++      vm_translation::tlb_config(2, 2, 1), true);
++  protected_tlb.fill(key(10), 10, 0);
++  protected_tlb.fill(key(11), 11, 1);
++  protected_tlb.fill(key(12), 12, 2);  // Evicts 10 and records history.
++  assert(!protected_tlb.probe(key(10), 3, &ppn));
++  assert(protected_tlb.candidate_pending() == 1);
++  protected_tlb.fill(key(10), 10, 4);
++  assert(protected_tlb.candidate_pending() == 0);
++  assert(protected_tlb.refill_stats().protected_refills == 1);
++  assert(protected_tlb.probe(key(10), 5, &ppn) && ppn == 10);
++  protected_tlb.fill(key(13), 13, 6);
++  assert(protected_tlb.probe(key(10), 7, &ppn));
++  assert(protected_tlb.refill_stats().protected_hits >= 2);
++  assert(protected_tlb.refill_stats().protected_victim_skips >= 1);
++
++  // A one-way set proves the all-protected fallback always makes progress.
++  vm_translation::set_associative_tlb fallback(
++      vm_translation::tlb_config(1, 1, 1), true);
++  fallback.fill(key(20), 20, 0);
++  fallback.fill(key(21), 21, 1);  // history contains 20
++  assert(!fallback.probe(key(20), 2, &ppn));
++  fallback.fill(key(20), 20, 3);  // protected refill
++  fallback.fill(key(22), 22, 4);  // must fall back to LRU, never pin/deadlock
++  assert(fallback.refill_stats().all_protected_lru_fallbacks == 1);
++  assert(fallback.candidate_pending() == 0);
++  assert(!fallback.probe(key(20), 5, &ppn));
++  assert(fallback.candidate_pending() == 1);
++  fallback.fill(key(20), 20, 6);
++  assert(fallback.candidate_pending() == 0);
++
++  // The 20-bit protection clock has an explicit wrap reset; no stale timer
++  // can become protected again after the counter wraps.
++  vm_translation::set_associative_tlb wrap(
++      vm_translation::tlb_config(1, 1, 1), true);
++  wrap.fill(key(30), 30, 0);
++  wrap.fill(key(31), 31, 1);
++  assert(!wrap.probe(key(30), 2, &ppn));
++  wrap.fill(key(30), 30, 3);
++  assert(wrap.probe(key(30), (1ULL << 20) + 3, &ppn));
++  assert(wrap.refill_stats().timer_wrap_resets == 1);
++
++  printf("awma_literature_mechanism_test PASS\n");
++  return 0;
++}
