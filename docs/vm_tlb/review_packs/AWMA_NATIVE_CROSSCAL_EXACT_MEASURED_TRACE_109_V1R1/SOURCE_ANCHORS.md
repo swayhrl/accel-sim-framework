@@ -1,0 +1,1 @@
+Microbenchmark source SHA `cec9492b3d6dfeedab3cfcc3659523eaa6afebb2c0158499ad8c423b20d70f07`; binary SHA `a9488afa190ba1e27e58f840b07f1db092177c5a097773ce6a8934262e37357f`; pair producer is a minimum selector extension supporting occurrence set `0,1` without benchmark semantic change.
