@@ -30,21 +30,25 @@ def reset(index):
 def policy(condition, *, rotating=False):
     rs = regions()
     if rotating:
-        targets = ("L0_UP", "L14_UP", "L0_UP")
-        ratio = 0.5 if condition == "ROTATING_PERSIST" else 0.0
-        control = condition == "ROTATING_CONTROL"
+        sequence = [(None, target) for target in ("L0_UP", "L14_UP", "L0_UP")]
+        ratio = 0.5
+        selected = {"L0_UP", "L14_UP"} if condition == "ROTATING_PERSIST" else set()
     else:
-        targets = sc.SWITCH_TARGETS[condition]
+        sequence = [] if condition == "SETASIDE_ONLY" else list(sc.FULL_SWITCH_SEQUENCE)
         ratio = sc.HIT_RATIO[condition]
-        control = condition in {"SETASIDE_ONLY", "ROTATE_CONTROL_3"}
+        selected = set(sc.SELECTED_TARGETS[condition])
     switches = []
-    for i, target in enumerate(targets, 1):
-        switches.append({"sequence_index": i, "target": target,
-                         "base_pointer": rs[target]["pointer"], "num_bytes": rs[target]["bytes"],
-                         "hit_ratio": ratio, "hit_prop": "NORMAL" if control else "PERSISTING",
-                         "miss_prop": "NORMAL", "target_persisting": not control,
-                         "stream_identity": "stream-7", "reset_performed": False,
-                         "api_duration_us": 2.0 + i / 100.0})
+    for i, (phase, target) in enumerate(sequence, 1):
+        persisting = target in selected
+        item = {"sequence_index": i, "target": target,
+                "base_pointer": rs[target]["pointer"], "num_bytes": rs[target]["bytes"],
+                "hit_ratio": ratio, "hit_prop": "PERSISTING" if persisting else "NORMAL",
+                "miss_prop": "NORMAL", "target_persisting": persisting,
+                "stream_identity": "stream-7", "reset_performed": False,
+                "api_duration_us": 2.0 + i / 100.0}
+        if phase is not None:
+            item["phase"] = phase
+        switches.append(item)
     return {"status": "PASS", "condition": condition,
             "requested_setaside_bytes": sc.FIXED_SETASIDE_BYTES,
             "actual_setaside_bytes": sc.EXPECTED_ACTUAL_SETASIDE_BYTES,
