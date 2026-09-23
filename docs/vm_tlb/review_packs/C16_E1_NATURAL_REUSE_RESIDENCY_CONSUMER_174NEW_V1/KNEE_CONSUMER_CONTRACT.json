@@ -1,0 +1,67 @@
+{
+  "device_l2_bytes": 67108864,
+  "dose_sets_mib": {
+    "down_proj": [
+      0,
+      16,
+      24,
+      28,
+      32,
+      36,
+      48,
+      64
+    ],
+    "q_proj": [
+      0,
+      32,
+      48,
+      56,
+      60,
+      64,
+      72,
+      96
+    ],
+    "up_proj": [
+      0,
+      16,
+      24,
+      28,
+      30,
+      32,
+      36,
+      40,
+      48,
+      64
+    ]
+  },
+  "dram_knee": "first dose with DRAM>1MiB and DRAM>10% packed state",
+  "exact_knee_equality_is_gate": false,
+  "fail_closed": [
+    "missing/duplicate dose",
+    "missing/duplicate rep",
+    "wrong role/implementation",
+    "prefix_bytes != dose*MiB",
+    "metric/unit mismatch",
+    "identity drift"
+  ],
+  "ncu_metric": "dram__bytes.sum",
+  "nominal_residual_l2_bytes": {
+    "down_proj": 31835136,
+    "q_proj": 60428288,
+    "up_proj": 31835136
+  },
+  "nominal_residual_l2_mib": {
+    "down_proj": 30.3603515625,
+    "q_proj": 57.62890625,
+    "up_proj": 30.3603515625
+  },
+  "reported_delta": "observed_dram_knee_mib - nominal_residual_l2_mib",
+  "role_state_bytes": {
+    "down_proj": 35273728,
+    "q_proj": 6680576,
+    "up_proj": 35273728
+  },
+  "status": "FROZEN",
+  "timing_knee": "first dose material under 5% plus combined-dispersion rule",
+  "timing_repetitions": 7
+}

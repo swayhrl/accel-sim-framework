@@ -1,0 +1,74 @@
+{
+  "accepted_prefix_sha_required": true,
+  "authority_fields": [
+    "prefix_sha256",
+    "generated_token_ids_D0_D3",
+    "fresh_process_token_replay",
+    "layer_index",
+    "role",
+    "decode_index",
+    "input_sha256",
+    "output_sha256",
+    "nvtx_range"
+  ],
+  "decode_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "fail_closed": [
+    "token sequence mismatch",
+    "missing/duplicate occurrence",
+    "SHA mismatch",
+    "wrong layer/role/index",
+    "target not M1",
+    "NCU range mismatch"
+  ],
+  "fresh_process_replay_required": true,
+  "model": "Qwen2.5-7B-Instruct AWQ accepted deployment",
+  "ncu_occurrences": [
+    "L0_UP_D0",
+    "L0_UP_D1",
+    "L0_UP_D3",
+    "L14_UP_D0",
+    "L14_UP_D3",
+    "L0_DOWN_D0",
+    "L0_DOWN_D3"
+  ],
+  "occurrences": [
+    {
+      "decode_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "layer": 0,
+      "role": "up_proj"
+    },
+    {
+      "decode_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "layer": 14,
+      "role": "up_proj"
+    },
+    {
+      "decode_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "layer": 0,
+      "role": "down_proj"
+    }
+  ],
+  "status": "FROZEN",
+  "timing_repetitions": 7,
+  "warm_fraction": "abs(natural-warm)/abs(dense-warm); denominator zero => undefined; never clamp"
+}

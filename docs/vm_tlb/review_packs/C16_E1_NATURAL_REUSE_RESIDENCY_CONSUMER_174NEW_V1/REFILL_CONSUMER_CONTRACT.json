@@ -1,0 +1,62 @@
+{
+  "M": 1,
+  "call_indices": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "fail_closed": [
+    "missing/duplicate K",
+    "missing/duplicate rep",
+    "input SHA drift",
+    "output SHA drift",
+    "nonfinite timing",
+    "wrong point matrix"
+  ],
+  "implementations": [
+    "RAW_FP16",
+    "AWQ_FP16_INPUT"
+  ],
+  "monotonicity_is_gate": false,
+  "ncu": {
+    "authority": [
+      "BASE.csv",
+      "SESSION.csv",
+      "PROFILE.log"
+    ],
+    "call_indices": [
+      1,
+      2,
+      4
+    ],
+    "identity_includes": "refill_call_index",
+    "metrics": [
+      "l1tex__t_bytes.sum",
+      "lts__t_bytes.sum",
+      "dram__bytes.sum"
+    ],
+    "ratios": [
+      "K2/K1",
+      "K4/K1"
+    ]
+  },
+  "repetitions": 9,
+  "roles": [
+    "q_proj",
+    "down_proj",
+    "up_proj"
+  ],
+  "status": "FROZEN",
+  "timing_outputs": [
+    "median",
+    "min",
+    "max",
+    "cv",
+    "Ki_over_K1",
+    "K1_to_K6_fractional_recovery",
+    "monotonicity_diagnostic"
+  ]
+}

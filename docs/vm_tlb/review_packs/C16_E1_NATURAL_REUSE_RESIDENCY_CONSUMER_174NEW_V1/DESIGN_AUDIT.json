@@ -1,0 +1,59 @@
+{
+  "accepted_consumer": "5b11dd41e98044fcad76da4a906c7ba8609eb828",
+  "accepted_hardening": "66f14280eb69cc6332b928c3ec045ac9074509b8",
+  "forbidden": [
+    "GPU on 174",
+    "NVBit",
+    "full address trace",
+    "cache/TLB mechanism",
+    "mechanism simulation",
+    "automatic mechanism authorization"
+  ],
+  "handoff_head": "e10f5dec901b5d3a5ddbe12d480716247eb3af87",
+  "knee": {
+    "M": 1,
+    "exact_knee_equality_is_gate": false,
+    "implementations": [
+      "AWQ_FP16_INPUT"
+    ],
+    "metric": "dram__bytes.sum",
+    "repetitions": 7
+  },
+  "natural": {
+    "accepted_prefix_required": true,
+    "cache_control": "none",
+    "decode_steps": 4,
+    "fresh_process_replay_required": true,
+    "ncu_occurrences": [
+      "L0_UP_D0",
+      "L0_UP_D1",
+      "L0_UP_D3",
+      "L14_UP_D0",
+      "L14_UP_D3",
+      "L0_DOWN_D0",
+      "L0_DOWN_D3"
+    ],
+    "replay_mode": "application",
+    "timing_occurrences": "layer0 up/down and layer14 up D0..D3"
+  },
+  "optional_raw_control_boundary": "do not engineer around OOM/offload/backend changes",
+  "refill": {
+    "calls": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "ncu_calls": [
+      1,
+      2,
+      4
+    ],
+    "points": "TEXT M1 q/down/up \u00d7 RAW_FP16/AWQ_FP16_INPUT",
+    "pressure_outside_target": true,
+    "repetitions": 9
+  },
+  "status": "PASS"
+}
