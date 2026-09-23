@@ -285,3 +285,42 @@ semantic-module traffic directly from raw NCU BASE/SESSION/PROFILE evidence.
   of cache or TLB causality.
 
 No GPU, NVBit, full trace, or cache/TLB mechanism is authorized by this result.
+
+
+---
+
+## Next reviewed question — controlled residency intervention
+
+The semantic-NCU V2 producer/consumer pair is closed.
+
+Accepted state:
+
+- up_proj M1 AWQ/RAW timing ≈ 0.400
+- up_proj M256 AWQ/RAW timing ≈ 1.869
+- application-replay/cache-control-none traffic:
+  - M1 AWQ/RAW L1=0.174, L2=0.305, DRAM≈4.63e-6
+  - M256 AWQ/RAW L1=3.384, L2=3.031, DRAM=1.140
+- AWQ up_proj packed state 35.27 MiB-equivalent bytes < 64 MiB L2
+- RAW FP16 up_proj dense weight 135.79 MB > L2
+
+Current interpretation remains:
+`CONSISTENT_WITH_WARM_CACHE_CAPACITY_RESIDENCY_HYPOTHESIS_NOT_CAUSAL_PROOF`
+
+The next stage holds the target operator/input/backend fixed and intervenes only on pre-target memory state using:
+
+- WARM
+- SPARSE_PAGE_PRESSURE
+- DENSE_MEMORY_PRESSURE
+- WARM_RECOVERY
+
+The same 256 MiB buffer is used for sparse and dense pressure. SPARSE touches one FP32 every 4 KiB across the full range; DENSE reads the full buffer.
+
+The stage also includes:
+- exact q/down/up capacity census;
+- M1 q/down/up operator controls;
+- up_proj M256 shape control;
+- bounded pressure-dose timing;
+- optional accepted CODE down_proj holdout;
+- semantic NCU under application replay/cache-control none.
+
+No NVBit/full trace/mechanism is authorized before independent consumer closure.
