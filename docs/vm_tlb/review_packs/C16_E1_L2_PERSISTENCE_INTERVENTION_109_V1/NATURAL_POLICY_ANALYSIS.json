@@ -1,0 +1,121 @@
+{
+  "any_material_dram": false,
+  "any_material_timing": true,
+  "any_target_specific": true,
+  "comparisons": {
+    "L0_DOWN_D3": {
+      "TARGET_SPECIFIC": true,
+      "TARGET_SPECIFIC_DRAM": false,
+      "TARGET_SPECIFIC_TIMING": true,
+      "matched_unrelated_condition": "PERSIST_L0_UP",
+      "matched_unrelated_persistence": {
+        "dram_benefit_fraction": 0.0002749469099223578,
+        "dram_over_SETASIDE": 0.9997250530900776,
+        "timing_benefit_fraction": -0.026475692997042666,
+        "timing_over_SETASIDE": 1.0264756929970427
+      },
+      "reservation_effect": {
+        "dram_SETASIDE_over_BASELINE": 0.966891934434487,
+        "timing_SETASIDE_over_BASELINE": 0.9350650050142689
+      },
+      "target_condition": "PERSIST_L0_DOWN",
+      "target_persistence": {
+        "MATERIAL_DRAM_BENEFIT": false,
+        "MATERIAL_TIMING_BENEFIT": true,
+        "combined_timing_dispersion": 0.012776970389379411,
+        "dram_absolute_reduction_bytes": 160896.0,
+        "dram_benefit_fraction": 0.004547477181215287,
+        "dram_over_SETASIDE": 0.9954525228187847,
+        "timing_benefit_fraction": 0.19357644125851825,
+        "timing_over_SETASIDE": 0.8064235587414817
+      }
+    },
+    "L0_UP_D1": {
+      "TARGET_SPECIFIC": true,
+      "TARGET_SPECIFIC_DRAM": false,
+      "TARGET_SPECIFIC_TIMING": true,
+      "matched_unrelated_condition": "PERSIST_L14_UP",
+      "matched_unrelated_persistence": {
+        "dram_benefit_fraction": 0.20912962075027974,
+        "dram_over_SETASIDE": 0.7908703792497203,
+        "timing_benefit_fraction": 0.22499999090505274,
+        "timing_over_SETASIDE": 0.7750000090949473
+      },
+      "reservation_effect": {
+        "dram_SETASIDE_over_BASELINE": 0.9067185615725812,
+        "timing_SETASIDE_over_BASELINE": 0.9523809358821822
+      },
+      "target_condition": "PERSIST_L0_UP",
+      "target_persistence": {
+        "MATERIAL_DRAM_BENEFIT": false,
+        "MATERIAL_TIMING_BENEFIT": true,
+        "combined_timing_dispersion": 0.013467220030342661,
+        "dram_absolute_reduction_bytes": 8374016.0,
+        "dram_benefit_fraction": 0.1867194100052515,
+        "dram_over_SETASIDE": 0.8132805899947485,
+        "timing_benefit_fraction": 0.4874999954525264,
+        "timing_over_SETASIDE": 0.5125000045474736
+      }
+    },
+    "L0_UP_D3": {
+      "TARGET_SPECIFIC": true,
+      "TARGET_SPECIFIC_DRAM": false,
+      "TARGET_SPECIFIC_TIMING": true,
+      "matched_unrelated_condition": "PERSIST_L14_UP",
+      "matched_unrelated_persistence": {
+        "dram_benefit_fraction": 0.22102201209158512,
+        "dram_over_SETASIDE": 0.7789779879084149,
+        "timing_benefit_fraction": 0.20253162808213954,
+        "timing_over_SETASIDE": 0.7974683719178605
+      },
+      "reservation_effect": {
+        "dram_SETASIDE_over_BASELINE": 0.9253199716507202,
+        "timing_SETASIDE_over_BASELINE": 0.9404761698527276
+      },
+      "target_condition": "PERSIST_L0_UP",
+      "target_persistence": {
+        "MATERIAL_DRAM_BENEFIT": false,
+        "MATERIAL_TIMING_BENEFIT": true,
+        "combined_timing_dispersion": 0.010426317642584358,
+        "dram_absolute_reduction_bytes": 8868480.0,
+        "dram_benefit_fraction": 0.19510141556587435,
+        "dram_over_SETASIDE": 0.8048985844341257,
+        "timing_benefit_fraction": 0.46835441872142636,
+        "timing_over_SETASIDE": 0.5316455812785736
+      }
+    },
+    "L14_UP_D3": {
+      "TARGET_SPECIFIC": true,
+      "TARGET_SPECIFIC_DRAM": false,
+      "TARGET_SPECIFIC_TIMING": true,
+      "matched_unrelated_condition": "PERSIST_L0_UP",
+      "matched_unrelated_persistence": {
+        "dram_benefit_fraction": 0.21090526195964598,
+        "dram_over_SETASIDE": 0.789094738040354,
+        "timing_benefit_fraction": 0.22784809310499843,
+        "timing_over_SETASIDE": 0.7721519068950016
+      },
+      "reservation_effect": {
+        "dram_SETASIDE_over_BASELINE": 0.9149542249487048,
+        "timing_SETASIDE_over_BASELINE": 0.9404761698527276
+      },
+      "target_condition": "PERSIST_L14_UP",
+      "target_persistence": {
+        "MATERIAL_DRAM_BENEFIT": false,
+        "MATERIAL_TIMING_BENEFIT": true,
+        "combined_timing_dispersion": 0.016522137820815568,
+        "dram_absolute_reduction_bytes": 8566784.0,
+        "dram_benefit_fraction": 0.19046643330772073,
+        "dram_over_SETASIDE": 0.8095335666922793,
+        "timing_benefit_fraction": 0.49367088374428525,
+        "timing_over_SETASIDE": 0.5063291162557148
+      }
+    }
+  },
+  "materiality": {
+    "dram": ">=20% lower and >=4MiB absolute",
+    "target_specific": "a material target effect exceeds matched-unrelated by >=5 percentage points timing or >=20 percentage points and 4MiB DRAM",
+    "timing": ">=5% lower than SETASIDE_ONLY and > combined CV"
+  },
+  "status": "PASS"
+}

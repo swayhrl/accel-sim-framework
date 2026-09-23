@@ -1,0 +1,23 @@
+{
+  "fallback_normal_policy": "all non-target data follows the normal policy; miss path used cudaAccessPropertyStreaming only for the hinted window",
+  "implementation_forbidden_here": true,
+  "interference_resistance": "protected target lines must resist unrelated full-model weight traffic between tokens",
+  "lifetime": "across the natural inter-token full-model reuse interval",
+  "line_address_granularity": "line-level protection within one exact contiguous qweight address interval",
+  "object_class": "compressed qweight-like weight region",
+  "potential_identity_sources": [
+    "software metadata/range hint",
+    "static load/instruction signature",
+    "learned/runtime reuse classification"
+  ],
+  "protection_budget": {
+    "boundary": "tested budgets only; not an exact hardware threshold",
+    "first_tested_material_budget": "16MIB",
+    "first_tested_requested_bytes": 16777216,
+    "full_qweight_bytes": 33947648,
+    "runtime_actual_full_budget_bytes": 37748736
+  },
+  "selectivity": "target-specific timing benefit exceeds matched unrelated-region persistence; not all model weights can be protected",
+  "status": "MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW",
+  "traffic_caveat": "natural target DRAM improvements did not consistently cross the preregistered 20% gate and matched-unrelated persistence sometimes reduced DRAM as much or more; mechanism review must preserve this caveat"
+}

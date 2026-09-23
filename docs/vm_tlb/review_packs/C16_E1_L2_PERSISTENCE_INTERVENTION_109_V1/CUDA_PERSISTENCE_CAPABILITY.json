@@ -1,0 +1,92 @@
+{
+  "accepted_historical_values": {
+    "l2_bytes": 67108864,
+    "max_access_policy_window_bytes": 134213632,
+    "max_persisting_l2_bytes": 46137344
+  },
+  "cuda_runtime_header": "/usr/local/cuda-12.8/include/cuda_runtime_api.h",
+  "cuda_runtime_header_sha256": "116852112153fef5797986694c112ee04be036d13dae19873f9d375e72061c8b",
+  "helper_library_sha256": "392f129628988f7b0f341f5d52d8b32037a491d2345ebc22b517923aebf29620",
+  "runtime_execution_authority": {
+    "device_name": "NVIDIA GeForce RTX 4080",
+    "device_ordinal": 0,
+    "driver_version": 13000,
+    "l2_bytes": 67108864,
+    "max_access_policy_window_bytes": 134213632,
+    "max_persisting_l2_bytes": 46137344,
+    "runtime_version": 12040
+  },
+  "runtime_matches_accepted": {
+    "l2_bytes": true,
+    "max_access_policy_window_bytes": true,
+    "max_persisting_l2_bytes": true
+  },
+  "setaside_rounding_observed": {
+    "actual_bytes": 37748736,
+    "requested_bytes": 33947648
+  },
+  "smoke_policy_receipt": {
+    "access_policy_window": {
+      "base_ptr": 127635153747968,
+      "hit_property": "cudaAccessPropertyPersisting",
+      "hit_ratio": 1.0,
+      "miss_property": "cudaAccessPropertyStreaming",
+      "num_bytes": 33947648
+    },
+    "actual_setaside_after_reset_bytes": 0,
+    "actual_setaside_bytes": 37748736,
+    "condition": "QUALIFICATION_SMOKE",
+    "operations_after": [
+      {
+        "error_string": "no error",
+        "operation": "clear stream access-policy after condition",
+        "status": 0
+      },
+      {
+        "error_string": "no error",
+        "operation": "reset persisting L2 after condition",
+        "status": 0
+      },
+      {
+        "error_string": "no error",
+        "operation": "clear persisting-L2 limit after condition",
+        "status": 0
+      }
+    ],
+    "operations_before": [
+      {
+        "error_string": "no error",
+        "operation": "clear stream access-policy before condition",
+        "status": 0
+      },
+      {
+        "error_string": "no error",
+        "operation": "reset persisting L2 before condition",
+        "status": 0
+      },
+      {
+        "error_string": "no error",
+        "operation": "set persisting-L2 limit",
+        "status": 0
+      },
+      {
+        "error_string": "no error",
+        "operation": "set stream access-policy window",
+        "status": 0
+      }
+    ],
+    "requested_setaside_bytes": 33947648,
+    "reset_after": true,
+    "reset_before": true,
+    "stream_value": 0
+  },
+  "status": "PASS",
+  "supported_api_path": {
+    "hit_property": "cudaAccessPropertyPersisting",
+    "miss_property": "cudaAccessPropertyStreaming",
+    "query_limit": "cudaDeviceGetLimit(cudaLimitPersistingL2CacheSize)",
+    "reset": "cudaCtxResetPersistingL2Cache",
+    "set_limit": "cudaDeviceSetLimit(cudaLimitPersistingL2CacheSize)",
+    "stream_window": "cudaStreamSetAttribute(cudaStreamAttributeAccessPolicyWindow)"
+  }
+}

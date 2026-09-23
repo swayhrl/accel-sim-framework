@@ -271,3 +271,19 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Integrated answer.** `CASE_B_WITH_CASE_D_ROLE_DEPENDENCE`. Immediate isolated reuse repopulates compressed state, but the natural full-model interval makes AWQ layer0 up/down traffic dense-like or beyond the isolated dense bracket. Capacity matters, while role/kernel/access policy is also required to explain the observed knees and timing differences. Case A and Case C are not supported.
 
 **Boundary.** This is a natural-reuse/residency causal diagnostic, not authorization for a mechanism. No NVBit, full address trace, cache/TLB mechanism, or mechanism simulation was started. Independent consumer recomputation from raw timing and NCU evidence is required before any next-stage decision.
+
+---
+
+## E1 targeted CUDA L2-persistence intervention producer result — 2026-09-23
+
+**Capability and exact regions.** Local CUDA headers/runtime successfully qualify `cudaDeviceSetLimit(cudaLimitPersistingL2CacheSize)`, `cudaStreamSetAttribute(cudaStreamAttributeAccessPolicyWindow)`, and `cudaCtxResetPersistingL2Cache`. Runtime device values reproduce L2=67,108,864 B, max persisting=46,137,344 B, and max window=134,213,632 B. Layer0/layer14 up_proj and layer0 down_proj qweight are each independent contiguous 33,947,648-byte tensors with storage offset 0. CUDA rounds that requested full set-aside to 37,748,736 B; all receipts preserve requested/actual values and reset before/after every condition.
+
+**Isolated qualification.** Under identical warmup→256 MiB dense pressure→target construction, qweight persistence changes median timing from 0.076544 to 0.049056 ms and target DRAM from 35,368,320 to 13,624,576 B. Selector, policy, backend and semantic identity all pass, so the CUDA policy itself is qualified.
+
+**Natural matched controls.** Relative to SETASIDE_ONLY, exact target persistence gives material target-specific timing benefits at all primary stable occurrences: L0 up D1=48.75%, L0 up D3=46.84%, L14 up D3=49.37%, and L0 down D3=19.36%. Matched unrelated persistence gives smaller timing benefits (or a slowdown for L0 down). Reservation effects, target persistence, and unrelated persistence remain separately reported.
+
+**Traffic caveat.** Natural target DRAM improvements do not cross the preregistered 20% threshold: L0 up D3 falls 19.51% (45,455,744→36,587,264 B), L14 up D3 falls 19.05%, and L0 down D3 falls 0.45%. Matched unrelated persistence sometimes reduces DRAM as much or more. Therefore target specificity is established on timing, not on the DRAM gate.
+
+**Budget sensitivity.** With the full qweight window retained and hitRatio scaled to budget, 8 MiB is non-material and 16 MiB is the first tested material timing budget. The tested 32 MiB and full-qweight conditions reach the same approximately 0.043008 ms L0 up D3 median. No tested budget meets the DRAM material gate; 16 MiB is a tested point, not an exact threshold.
+
+**Scoped state.** `MECHANISM_REQUIREMENTS_READY_FOR_DESIGN_REVIEW`. The extracted abstract requirement is selective line-level protection of a qweight-like address interval across the inter-token reuse lifetime, with bounded budget, interference resistance, and normal fallback for non-target data. Candidate identity sources remain open. No classifier, replacement algorithm, Accel-Sim mechanism, NVBit trace, full address trace, or cache/TLB simulation was implemented or started.
