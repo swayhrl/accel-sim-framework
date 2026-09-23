@@ -1,109 +1,184 @@
-# DTC-L1 Discussion Reference
+# DTC-L1 / ISCAS 2027 Discussion Reference
 
-## Research question
+Last update: 2026-09-24
 
-Reproduce the thesis Decoupled-Tag L1 design in Accel-Sim with enough fidelity to explain its performance mechanisms, then use the infrastructure for controlled extensions and modern-GPU studies.
+## 1. Research question for the current stage
 
-## Short conclusion
+DTC removes L1-side miss-concurrency constraints and exposes substantially more memory-level parallelism. Most workloads benefit, but BICG and GESUMMV improve dramatically when the DTC GPU-wide lower-outstanding cap is reduced.
 
-The reproduction should be **mechanism-faithful rather than gate-faithful**. We preserve the resource relationships that determine MLP, blocking, allocation pressure, and IO/OO completion, while parameterizing implementation details that are not themselves the research contribution.
+The current question is:
 
-## Why an explicit PIB matters
+> Is this simply a need to throttle DTC, or can a source-defined downstream resource be enlarged so the system can retain high DTC concurrency and recover performance?
 
-The thesis motivation attributes a large fraction of conventional L1 stalls to the small pending-instruction structure, with Tag/cacheline allocation and MSHR capacity as additional limits. Therefore an Accel-Sim reproduction cannot substitute an unrelated dispatch register and still claim the same mechanism. The simulator needs a bounded pending-instruction admission point that can propagate backpressure to the memory-instruction entrance.
+This distinction matters to the paper.
 
-## Why Tag and Physical Data stay decoupled
+## 2. What current evidence already rules out
 
-The logical Tag Array is a 16KB, 4-way, 32-set structure, while the physical Cacheline Array is 80KB. A valid logical Tag stores a physical-line identity. Tag-bank location does not imply Data-bank location.
+### Extra L2 MSHR entries are not the main BICG explanation
 
-For the first model, Tag-bank throughput is explicit because it is a visible pipeline resource; detailed Data-bank conflicts are not required. Physical allocation remains finite at four lines/cycle and retirement remains one instruction/cycle, preserving the dominant resource bounds without reintroducing an artificial Tag↔Data bank coupling.
+BICG receives little/no meaningful performance benefit from increasing L2 MSHR entries by 4x.
 
-## Why partial allocation/no rollback is frozen
+Therefore do not reopen MSHR sweeps.
 
-A top-level memory instruction can contain many divergent line requests. Allocation occurs over multiple cycles. If physical space runs out after some lines have already been allocated, those allocations remain held while the instruction waits for the rest.
+### L2 data capacity is only a partial explanation
 
-Under IO FIFO retirement this can form a circular resource dependency: the stalled instruction holds newly allocated lines, cannot complete, and the ordering/resource state can prevent the releases required to make further progress. We intentionally allow this behavior to emerge instead of adding an all-or-nothing allocator that would change the mechanism.
+Increasing L2 capacity helps BICG, especially OO, but the improvement is smaller than the effect of reducing DTC injection.
 
-## Why simulator coalescer width is 32 by default
+Therefore do not claim that the slowdown is simply “L2 is too small.”
 
-The original RTL processed only 16 threads/cycle largely for area/port constraints. The research simulator may process the full 32-thread warp/cycle as long as Baseline/IO/OO share the same front-end rule. A 16-thread/cycle knob remains available for fidelity/sensitivity.
+### Total lower work is not enough
 
-## IO vs OO distinction
+Comparable 128-B variants can create nearly equal lower-request counts/payload while having very different cycle counts.
 
-IO-DTC uses a FIFO pending-instruction queue and in-order retirement. Old physical lines displaced from the logical Tag space can be held and released safely according to FIFO progress.
+Therefore do not use total bytes/transactions as the root-cause explanation.
 
-OO-DTC allows a ready younger entry to retire before an older stalled entry. That requires explicit physical-line lifetime tracking plus pending-dependency wakeup state. A physical line is reclaimable only when it is no longer visible through a logical Tag and no live reference remains.
+### Low DTC cap is not a universal optimum
 
-## Ref Count interpretation
+cap=512 strongly helps BICG/GESUMMV but hurts Btree/2DConvolution.
 
-Frozen simulator semantics use **per-coalesced-128B-cacheline-reference** counting.
+Therefore the correct insight is a workload-dependent concurrency balance, not “512 is the right cap.”
 
-Multiple lanes that coalesce into one 128B line request contribute one reference. A fully divergent 32-thread warp may produce up to 32 distinct line references; with 128 OO PIB entries, a conservative upper bound is 4096 and a 13-bit counter matches the thesis sizing convention.
+## 3. Why a bounded downstream-headroom experiment is scientifically valuable
 
-This interpretation is preferable to per-thread counting because the functional pipeline operates on coalesced cacheline requests. It is also more faithful to the thesis examples in which a coalesced request increments the counter once.
+A strong positive headroom result would improve the paper story:
 
-## Sector extension decision
+> DTC exposes useful concurrency that the fixed downstream hierarchy cannot always absorb; enlarging the implicated resource can convert that concurrency into performance without throttling DTC.
 
-The primary paper reproduction remains whole-line 128B DTC.
+This is stronger than saying only:
 
-The modern extension does **not** change the renaming granularity:
+> DTC must be throttled.
 
-- one 128B logical line still maps to one 128B physical line;
-- line-level Tag visibility and Ref Count remain line-granular;
-- data readiness is split into 4×32B sectors;
-- sector INVALID/PENDING/VALID state and OO merge/wakeup are sector-granular;
-- `wait_cnt` counts not-ready sector dependencies.
+A null result is also informative:
 
-This keeps the original DTC concept intact while making it compatible with a sector-cache execution model.
+> The pressure is downstream, but no single tested L2 queue/port resource explains it, so the paper should keep the broader downstream-oversubscription interpretation.
 
-## Store, Atomic, Fence, and bypass
+Both outcomes are acceptable.
 
-They are not required to prove the read-path Tag-decoupling mechanism, so the first implementation can isolate reads. They are required before complete compute results are considered formal because Stores/Atomics participate in long-latency instruction lifecycles and therefore influence IO head-of-line blocking versus OO completion.
+## 4. Why not say “the bottleneck is L2” today
 
-Existing architectural L1 bypass behavior must remain correct from the beginning. Thesis policy-driven DTC bypass is a separate later optimization and should not be conflated with architectural bypass.
+Current evidence supports:
 
-## Whole-line paper mode vs modern mode
+- pressure moves beyond L1 for difficult workloads;
+- DTC injection is a strong intervention axis;
+- L2 capacity can matter;
+- L2 MSHR count is not sufficient to explain BICG.
 
-Keep two evidence categories:
+Current evidence does **not** isolate a unique physical root cause such as:
 
-1. **PAPER-WHOLE-LINE** — 128B line state/requests, intended to reproduce thesis mechanisms/figures.
-2. **MODERN-SECTOR** — 128B Tag/Physical mapping with 4×32B readiness, intended to evaluate the design on modern sector-cache assumptions.
+- miss queue,
+- data/fill port,
+- NoC,
+- ROP service,
+- DRAM service.
 
-Do not silently combine them into a single average.
+Therefore paper wording must stay at:
 
-## Baseline fairness
+> downstream oversubscription / shared memory-hierarchy pressure
 
-The baseline must have explicit 8-entry PIB behavior and 32-entry traditional MSHR behavior for the paper-style mechanism comparison. DTC defaults are IO PIB 256 and OO PIB 128.
+unless the new headroom experiment isolates one resource.
 
-A later publication-quality evaluation should also include equal-resource/equal-area comparisons so performance is not attributed solely to a larger physical storage budget.
+## 5. Source-supported candidate resources
 
-## Graphics scope
+Default modeled L2:
 
-Stock Accel-Sim is not a direct glmark2 graphics-pipeline simulator. Any graphics result without original LGPU/request traces should be labeled a calibrated graphics-memory proxy or shader-memory-stage study, not direct glmark2 FPS reproduction.
+- 40 banks.
+- 10 MiB aggregate data capacity.
+- 192 MSHR entries/bank.
+- 4-way MSHR merge limit.
+- 32-entry miss queue/bank.
+- 32-B/cache-cycle data/fill port/bank.
+- 200-cycle ROP delay.
 
-Calibration should target request/traffic/coalescing/miss/stall signatures, not target speedup.
+The most plausible remaining first-line candidates are:
 
-## Rejected shortcuts
+1. **miss queue**, if queue occupancy and `MISS_QUEUE_FULL` track cap sensitivity;
+2. **data/fill port service width**, if utilization is near saturation and tracks request lifetime/cycles.
 
-- making Tag Array globally fully associative;
-- binding a Tag bank to a Data bank;
-- unlimited/zero-cycle physical allocation;
-- unlimited OO retirement;
-- all-or-nothing allocation rollback that removes the IO resource cycle;
-- using traditional MSHR capacity as the DTC merge mechanism;
-- identifying fills only by a current logical Tag lookup after Tag eviction;
-- hard-coding paper default sizes into IO/OO implementation;
-- treating temporary Store/Atomic bypass bring-up as formal IO/OO evidence;
-- directly claiming glmark2 execution in stock Accel-Sim.
+The point of the telemetry gate is to avoid guessing.
 
-## Expected research outcome
+## 6. Required telemetry logic
 
-The infrastructure should let us separately answer:
+Use accepted BICG IO/OO rows only:
 
-- whether larger PIB alone explains the gain;
-- how much comes from Tag→Physical renaming;
-- how much traditional MSHR capacity ceases to matter;
-- how much OO completion removes IO head-of-line blocking;
-- when physical capacity becomes the new bottleneck;
-- where the bottleneck moves after DTC raises L1 MLP;
-- how the mechanism changes under modern sector behavior and different memory-system latency/bandwidth.
+- default;
+- capacity=2x;
+- MSHR=4x;
+- cap=2048;
+- cap=512.
+
+For each row compare:
+
+- cycles;
+- DTC outstanding average/peak;
+- lower-request average/max lifetime;
+- L2 MSHR average occupancy;
+- L2 miss-queue average occupancy;
+- L2 misses;
+- source-defined resource-failure reasons;
+- data/fill port utilization.
+
+The strongest evidence is a coherent chain:
+
+> targeted pressure high at default → pressure falls under cap reduction → lifetime falls → cycles improve.
+
+Do not convert correlation into causality unless the subsequent resource intervention supports it.
+
+## 7. Guard-retry boundary
+
+The known merge-tag identity-guard retry is non-resource diagnostic telemetry.
+
+It must not be included in:
+
+- L2 resource-pressure totals;
+- failure-reason rankings;
+- queue/MSHR attribution;
+- paper causal claims.
+
+Preserve original validator failures and reconciliations.
+
+## 8. Allowed next-step logic
+
+### Queue path
+
+If miss-queue pressure coherently tracks throttling, test 32 -> 128 entries/bank at default DTC cap.
+
+### Port path
+
+If queue is not the dominant pattern but data/fill port utilization coherently tracks throttling, test 32 -> 64 B/cache-cycle at default cap.
+
+### Both
+
+If both independently satisfy the predeclared trigger, run both one-dimensional tests. Only if both materially help but remain incomplete may a queue+port combined upper-bound be tested.
+
+### Neither
+
+Stop. Do not cascade into NoC/DRAM/ROP sweeps.
+
+## 9. Rejected alternatives for this window
+
+Do not spend the unattended window on:
+
+- more L2 capacity points;
+- more L2 MSHR points;
+- cap 1024/4096;
+- queue=64 midpoint;
+- 128-B port;
+- ROP/DRAM/NoC sweeps;
+- “infinite L2”;
+- new adaptive admission hardware;
+- full FAST12 sensitivity;
+- more logical-Tag experiments.
+
+These would either repeat already answered questions or expand the paper scope without a source-directed reason.
+
+## 10. Expected paper outcome
+
+Preferred strong outcome:
+
+> DTC removes L1-side concurrency constraints; BICG/GESUMMV oversubscribe a fixed downstream resource; increasing that resource at cap=8192 recovers meaningful performance, showing that DTC shifts the resource balance downstream.
+
+Conservative valid outcome:
+
+> DTC removes L1-side concurrency constraints; BICG/GESUMMV exhibit workload-specific downstream oversubscription, but no single tested L2 queue/port resource is sufficient to isolate the root cause.
+
+Do not broaden either conclusion beyond the tested workload scope.
