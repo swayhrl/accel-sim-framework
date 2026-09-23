@@ -81,3 +81,29 @@ The next stage combines:
 3. mechanism design review and simulator mapping.
 
 No full mechanism implementation is authorized in this stage.
+
+
+---
+
+## 174-new prep reviewed
+
+Accepted prep:
+
+`hrl/c16-e1-shared-residency-design-review-174new-v1@547e9263a8d0c12bb34d96e27134a120b83fb6d0`
+
+Consumer hardening to apply before real producer consumption:
+
+`hrl/c16-e1-shared-residency-consumer-hardening-v2`
+
+Read:
+
+`docs/vm_tlb/chatgpt_handoff/c16/e1_shared_residency_mechanism_feasibility_v1/CONSUMER_PREP_AUDIT_V2.md`
+
+Hardening does not change the producer experiment.
+
+It only:
+- freezes the already accepted full-budget runtime query-back at 37,748,736 B for all fixed-full-budget shared/rotating conditions;
+- makes query-back drift fail closed;
+- records that CUDA hitRatio is a policy hint, not an exact deterministic fraction of protected bytes/lines or a direct simulator quota mapping.
+
+174-new should remain at READY until the shared-hardware producer exists.
