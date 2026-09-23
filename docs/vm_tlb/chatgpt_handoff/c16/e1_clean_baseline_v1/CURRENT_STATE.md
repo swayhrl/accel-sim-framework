@@ -182,3 +182,50 @@ Still not automatically allowed:
 - end-to-end model speedup follows;
 - behavior generalizes to all low-bit models.
 
+
+
+---
+
+## Producer clean-baseline completed
+
+node109 completed the full clean-baseline Goal:
+
+`hrl/c16-e1-clean-baseline-109-v1@8988d6108ff8bdca180a14cec2fe769df45b09f1`
+
+Accepted producer-stage facts:
+
+- canonical q/down/up M2048 activations regenerate identically across fresh captures;
+- full 18-point matrix completed;
+- RAW_FP16 and AWQ_FP16_INPUT use byte-identical FP16 activation SHA for every role/shape;
+- RAW path: dense `Linear / TORCH_DENSE_LINEAR`;
+- AWQ path for M1/M256: frozen `WQLinear_GEMM / GEMM_QUANTIZED`;
+- CODE same-input down_proj holdout PASS;
+- M1023/M1024 down_proj transition diagnostic PASS;
+- NCU entry gate PASS;
+- deterministic selected role: `up_proj`, abs(I)=1.5409711030367719;
+- NCU semantic selector remained unresolved, therefore no traffic metric was fabricated;
+- no NVBit/full trace/mechanism work started.
+
+Key clean ratios from producer:
+
+- q_proj:
+  - M1 AWQ/RAW_FP16 = 0.980125735145001
+  - M256 AWQ/RAW_FP16 = 1.304455979022235
+  - abs(I)=0.2858604939249827
+
+- down_proj:
+  - M1 = 0.5010500375495227
+  - M256 = 1.2758391297366323
+  - abs(I)=0.9346534106366406
+
+- up_proj:
+  - M1 = 0.4002389918887601
+  - M256 = 1.868764789921065
+  - abs(I)=1.5409711030367719
+
+174-new consumer/prep authority already exists:
+
+`hrl/c16-e1-clean-baseline-consumer-prep-174new-v1@a458278a043e2848dea938337cb30096bd199b08`
+
+The next step is for that same 174-new consumer to fetch producer evidence and independently recompute/close the final consumer review.
+
