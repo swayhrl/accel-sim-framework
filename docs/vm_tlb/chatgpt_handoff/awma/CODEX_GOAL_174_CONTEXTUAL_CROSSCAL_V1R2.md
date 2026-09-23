@@ -1,3 +1,11 @@
+# SUPERSEDED — DO NOT EXECUTE
+
+This Goal was superseded on 2026-09-23 by the decision to qualify an RTX4080/Ada Accel-Sim base platform before any further Native↔simulator contextual cross-calibration.
+
+The preserved text below is historical planning only.
+
+---
+
 # CODEX 174 GOAL — Exact Contextual Native ↔ Simulator Cross-Calibration V1R2
 
 Date: 2026-09-23
