@@ -1,0 +1,1 @@
+Scale-match immutable bundle: 17 SHA256 members verified on node164. Platform provenance supersession: historical 47-member bookkeeping is superseded by canonical current 108-member manifest SHA `5dca0e6b5629db48c0f457928573816188fcbb6ca6c81326bcaadaeef05ab074`.
