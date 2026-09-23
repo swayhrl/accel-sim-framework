@@ -1,0 +1,272 @@
+# REVIEW — Native ↔ Simulator Cross-Calibration V1
+
+Date: 2026-09-23
+Owner: ChatGPT
+Status: ENGINEERING_ACCEPTED / EXACT_NATIVE_COMPARISON_REQUIRES_REQUALIFICATION
+
+## 1. Remote publication integrity
+
+Execution branch:
+
+`hrl/awma-174-native-simulator-cross-calibration-v1`
+
+Remote HEAD:
+
+`6f9c1df1a03bd9d26130b80be1c31f5957074630`
+
+The review pack contains 18 files listed by `SHA256SUMS` plus `SHA256SUMS` itself, i.e. 19 required files.
+
+ChatGPT independently re-hashed the exact remote content of all 18 listed files:
+
+`18 / 18 EXACT SHA256 MATCH`
+
+All 18 listed files are non-empty.
+
+Therefore publication/integrity is accepted.
+
+Telemetry-neutrality and 24/24 terminal completion are also supported by the published receipts.
+
+## 2. Accepted engineering findings
+
+The following are valid for the captured simulator trace population:
+
+- 24/24 matrix points terminal PASS;
+- Legacy / V1 / V2R1 give identical simulator results for M0–M3;
+- diagnostics OFF/ON neutrality PASS;
+- reconstructed controller regressions PASS;
+- the `CLOCK64_BRACKET_SIM_CYCLES_PER_DEPENDENT_STEP` observable is internally well-defined for the captured SASS bracket:
+  - start `CS2R` PC `0x240`;
+  - end `CS2R` PC `0x10b0`;
+  - 512 dependent steps inside each captured bracket;
+- captured warmup-trace population shows strong M0→M1 simulator working-set exposure;
+- captured warmup-trace population shows large M1→M2 per-chain slowdown.
+
+These are simulator facts for the selected traces.
+
+## 3. Critical identity mismatch: selected trace is the warmup kernel
+
+The cross-calibration pack states:
+
+- selector = `chase_occurrence_0`;
+- `warmup_batches = 2`;
+- `program_samples = 50`;
+- every selected one-warp trace has exactly 2 complete clock brackets per warp;
+- M2 has exactly 32 complete brackets = 16 warps × 2 brackets.
+
+The accepted Native probe source executes:
+
+```cpp
+if (warmup) {
+    chase<<<...>>>(..., steps, warmup, ...);
+    cudaDeviceSynchronize();
+}
+
+chase<<<...>>>(..., steps, samples, ...);
+cudaDeviceSynchronize();
+```
+
+Therefore when `warmup_batches=2`:
+
+- first `chase` launch = warmup kernel, 2 samples/warp;
+- second `chase` launch = measured kernel, 50 samples/warp.
+
+The selector `chase_occurrence_0`, together with the exactly-two captured brackets per warp, identifies the current M0/M1/M2/M3 simulator-native payloads as the **warmup kernel**, not the 50-sample measured kernel.
+
+This is a direct source/trace identity conclusion, not speculation.
+
+## 4. Native reference is the measured kernel, not the warmup kernel
+
+The Native V1R1/V1R2 timing summaries are derived from the host-visible output copied after the second:
+
+`chase(... samples=50 ...)`
+
+kernel.
+
+For the exact M1/M2 V1R2 pair:
+
+- M1 Native = 294.5 cycles/load median-of-medians;
+- M2 Native = 281.0 cycles/load median-of-medians;
+- relative = -4.5840%.
+
+Those values describe the 50-sample measured kernel after the warmup launch.
+
+They do not describe `chase_occurrence_0`.
+
+Therefore the current comparison:
+
+```text
+Simulator warmup occurrence0 M1→M2 = +86.5202%
+vs
+Native measured occurrence1 M1→M2 = -4.5840%
+```
+
+is **not an exact matched comparison**.
+
+The +86.5202% simulator number itself is valid for the selected trace population, but it cannot currently be used as evidence that the simulator contradicts the exact Native M1/M2 pair.
+
+## 5. Second identity gap: permutation seed is not closed
+
+The cross-calibration review pack records:
+
+`seed = NOT_RECORDED_IN_DURABLE_TRACE_RECEIPT`
+
+for M0–M3.
+
+Native V1R2 exact M1/M2 used:
+
+`seed = 102`
+
+The pointer-chain permutation changes with seed.
+
+Therefore exact M1/M2 address-sequence identity between the current simulator trace and Native V1R2 measurement is not established.
+
+This independently prevents an exact Native↔simulator claim even if the warmup/measurement occurrence mismatch were ignored.
+
+Do not assume the old microtrace capture used seed 102.
+
+## 6. Third calibration condition: warmup state/context
+
+The Native measured 50-sample kernel executes after the warmup `chase` in the same CUDA process and against the same allocation/address chain.
+
+Thus the measured Native kernel may inherit cache/TLB/memory-hierarchy state from the warmup launch.
+
+Replaying only the measured kernel in isolation with cold simulator state would still not be an exact execution-state match.
+
+A corrected calibration should preferentially replay:
+
+```text
+warmup chase occurrence0
+→ measured chase occurrence1
+```
+
+sequentially in one simulator execution/context, and collect the calibration observable only from occurrence1.
+
+If exact contextual replay cannot be implemented, the evidence class must explicitly state the state mismatch.
+
+## 7. Current microbenchmark is structurally weak for testing V1/V2R1
+
+The accepted Native probe source executes the dependent chain only on lane 0:
+
+```cpp
+int lane = threadIdx.x & 31;
+...
+if (lane || ...) return;
+```
+
+Therefore each dynamic dependent `LDG` is generated by one active lane.
+
+A one-lane memory instruction is expected to create only one coalesced memory transaction / one accessq entry.
+
+V1 and V2R1 primarily change the handling of **multiple resident accessq entries of one memory instruction**:
+
+- V1 overlaps translation launch across those entries;
+- V2R1 changes READY consume/apply ownership for those resident entries.
+
+If the microbenchmark's maximum accessq cardinality is 1, then Legacy/V1/V2R1 equality is expected by construction and the benchmark has no mechanism opportunity.
+
+The V1 pack does not currently publish accessq-cardinality telemetry.
+
+Therefore:
+
+- current equality across Legacy/V1/V2R1 is a valid observation;
+- it must NOT yet be interpreted as controlled evidence that V1 or V2R1 adds no Native-alignment benefit.
+
+Before any such claim, explicitly measure accessq entries per relevant memory instruction.
+
+If `max_accessq_entries == 1`, classify the current M0–M3 suite as:
+
+`MECHANISM_INACTIVE_CONTROL_SUITE`
+
+for V1/V2R1.
+
+## 8. SM89 compatibility scope
+
+The simulator patch adds:
+
+`GPGPUSIM_AWMA_CROSSCAL_ALLOW_SM89=1`
+
+which maps trace binary version 89 to the existing Ampere opcode map.
+
+This switch is opt-in, but it is a **trace-compatibility functional admission switch**, not purely observational telemetry.
+
+For the corrected cross-calibration, publish an opcode-compatibility audit:
+
+- every opcode appearing in the selected microtrace sequence;
+- how each opcode is decoded under the Ampere map;
+- whether any Ada-specific opcode/semantic is unsupported or approximated.
+
+Do not claim Ada architectural fidelity from the mapping.
+
+## 9. Current final classifications are not admitted as written
+
+The V1 report published:
+
+- `MIXED_NATIVE_SIMULATOR_ALIGNMENT`
+- `V1_NATIVE_ALIGNMENT_PARTIAL`
+- `V2R1_ADDS_NO_NATIVE_ALIGNMENT_BENEFIT`
+- `LEGACY_FRONTEND_AMPLIFICATION_EXTERNALLY_SUPPORTED=PARTIAL`
+
+The first three rely materially on treating the controlled M1/M2 comparison as matched and/or mechanism-sensitive.
+
+Because the current trace is the warmup occurrence, seed identity is unresolved, and mechanism opportunity is not demonstrated, these classifications are **not yet accepted as final cross-calibration conclusions**.
+
+Preserve the V1 run as:
+
+`CROSSCAL_V1_WARMUP_TRACE_SUPPORTING_ONLY`
+
+Do not delete or rerun it merely for provenance.
+
+No baseline promotion was issued; that restraint was correct.
+
+## 10. What remains valid scientifically
+
+Current V1 supports, with limited scope:
+
+1. the simulator can replay these SM89 microtraces deterministically under the opt-in compatibility path;
+2. telemetry is neutral;
+3. the captured warmup population shows strong simulator working-set sensitivity;
+4. a large multi-warp slowdown exists in the simulator for the captured warmup population;
+5. Legacy/V1/V2R1 are identical for this particular controlled trace suite.
+
+It does NOT yet establish:
+
+1. exact Native M1→M2 disagreement;
+2. external validation or invalidation of V1;
+3. external validation or invalidation of V2R1;
+4. baseline promotion readiness.
+
+## 11. Required next calibration repair
+
+Run a bounded V1R1 calibration repair, not a new architecture mechanism.
+
+### Native/trace side
+
+Recover or recapture exact traces using a fully closed command authority:
+
+- seed explicitly fixed;
+- warmup = 2;
+- samples = 50;
+- steps = 512;
+- exact stride/locations/warps/policy;
+- both warmup occurrence0 and measured occurrence1 identified;
+- exact Native timing measured in the same run;
+- durable receipts include full command and source/binary/GPU authority.
+
+Prefer exact seed 102 for the M1/M2 pair because it already has accepted Native V1R2 timing authority.
+
+### Simulator side
+
+Replay warmup occurrence0 then measured occurrence1 sequentially when possible, preserving simulator memory/translation state.
+
+Collect the Native-aligned observable only from occurrence1.
+
+Also add opt-in accessq-cardinality telemetry to establish whether each benchmark can exercise V1/V2R1.
+
+### Mechanism validation
+
+If M0–M3 are confirmed accessq-cardinality=1, do not use them to validate V1/V2R1.
+
+A later controlled mechanism-sensitive benchmark should deliberately create >1 coalesced accessq entry per warp memory instruction and then compare Native vs Legacy/V1/V2R1.
+
+That benchmark is a calibration workload, not a new TLB/PTW/cache mechanism.
+
