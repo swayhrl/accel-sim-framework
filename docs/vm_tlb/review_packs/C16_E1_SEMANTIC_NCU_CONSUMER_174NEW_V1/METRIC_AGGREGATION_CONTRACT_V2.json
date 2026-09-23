@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "status": "HARDENED_TEMPLATE_REQUIRES_RUNTIME_RESOLUTION",
+  "principle": "Exact metric names and units must be resolved from the installed NCU query/export used by node109; the consumer must not invent aliases.",
+  "metric_resolution": {
+    "producer_must_preserve": [
+      "installed NCU version",
+      "raw metric-availability/query output",
+      "exact metric names requested",
+      "exact units emitted",
+      "raw NCU export SHA256"
+    ],
+    "consumer_must_verify": [
+      "resolved metric name exists in raw producer availability evidence",
+      "unit exactly matches the raw export",
+      "semantic category is approved before aggregation",
+      "unknown or unsupported metrics fail closed"
+    ]
+  },
+  "approved_semantic_categories": {
+    "L1_TEX_requested_bytes": {
+      "aggregation": "additive",
+      "exact_metric_name": "RESOLVE_FROM_RUNTIME",
+      "required_unit": "RESOLVE_FROM_RUNTIME"
+    },
+    "L2_requested_bytes": {
+      "aggregation": "additive",
+      "exact_metric_name": "RESOLVE_FROM_RUNTIME",
+      "required_unit": "RESOLVE_FROM_RUNTIME"
+    },
+    "DRAM_bytes": {
+      "aggregation": "additive",
+      "exact_metric_name": "RESOLVE_FROM_RUNTIME",
+      "required_unit": "RESOLVE_FROM_RUNTIME"
+    },
+    "occupancy_or_active_warps": {
+      "aggregation": "non_additive_per_kernel",
+      "exact_metric_name": "OPTIONAL_RESOLVE_FROM_RUNTIME",
+      "required_unit": "RESOLVE_FROM_RUNTIME_IF_PRESENT"
+    },
+    "SM_tensor_math_utilization": {
+      "aggregation": "non_additive_per_kernel",
+      "exact_metric_name": "OPTIONAL_RESOLVE_FROM_RUNTIME",
+      "required_unit": "RESOLVE_FROM_RUNTIME_IF_PRESENT"
+    }
+  },
+  "normalized_csv_requirements": {
+    "scientific_unit": "one uniquely qualified semantic module range occurrence",
+    "kernel_id": "must uniquely identify one logical kernel launch inside that range",
+    "required_denominators": [
+      "input_elements",
+      "output_elements",
+      "dense_weight_bytes"
+    ],
+    "packed_weight_bytes": "optional for RAW; required for packed-weight normalization when claimed",
+    "no_partial_denominator_columns": true,
+    "nonfinite_metric_values": "FAIL_CLOSED",
+    "duplicate_kernel_metric_rows": "FAIL_CLOSED",
+    "kernel_id_name_conflict": "FAIL_CLOSED",
+    "missing_additive_metric_on_any_in_range_kernel": "FAIL_CLOSED",
+    "duplicate_or_ambiguous_range_occurrence": "FAIL_CLOSED"
+  },
+  "raw_provenance_requirement": "174-new must independently normalize from producer-preserved raw NCU export/range evidence, or independently verify every normalized row against that raw evidence. Producer-authored semantic labels alone are not sufficient.",
+  "additive_output": "SEMANTIC_MODULE_SUM",
+  "non_additive_output": "per-kernel only with coverage status",
+  "ratios": "Cross-point ratios require identical units; zero denominator is reported UNDEFINED_ZERO_DENOMINATOR, never inf/NaN."
+}
