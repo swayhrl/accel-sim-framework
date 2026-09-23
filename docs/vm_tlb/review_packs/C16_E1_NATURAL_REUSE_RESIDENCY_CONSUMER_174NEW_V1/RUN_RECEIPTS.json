@@ -1,27 +1,36 @@
 {
   "cpu_only": true,
-  "producer_dependent_outputs_absent": [
-    "INDEPENDENT_REFILL_ANALYSIS.json",
-    "INDEPENDENT_KNEE_ANALYSIS.json",
-    "INDEPENDENT_NATURAL_TIMING.json",
-    "INDEPENDENT_NATURAL_NCU.json",
-    "INDEPENDENT_NATURAL_VS_ISOLATED.json",
-    "OPTIONAL_RAW_CONTROL_CHECK.json",
-    "PRODUCER_MATCH_CHECK.json"
-  ],
-  "producer_fetch": {
-    "attempts": 1,
-    "branch": "hrl/c16-e1-natural-reuse-residency-109-v1",
-    "result": "REMOTE_REF_NOT_FOUND"
+  "full_trace_used": false,
+  "gpu_used": false,
+  "hardening": {
+    "branch": "hrl/c16-e1-natural-reuse-residency-consumer-hardening-v2",
+    "head": "97c6852351eddcb258d5c50e18e9387a8c42c4a6"
   },
-  "reason": "producer raw evidence unavailable",
+  "nvbit_used": false,
+  "producer": {
+    "branch": "hrl/c16-e1-natural-reuse-residency-109-v1",
+    "head": "ccfdc89d517766d12588ee131818efe341c7e17c"
+  },
+  "producer_fetch_attempts_after_prep": 1,
+  "raw_closure": {
+    "ncu_authority": "BASE+SESSION+PROFILE",
+    "producer_raw_files_hashed": 186,
+    "status": "PASS"
+  },
+  "real_artifact_canaries": {
+    "points": [
+      "refill up_proj M1 AWQ K1",
+      "knee up_proj 32MiB",
+      "natural layer0 up_proj D0",
+      "natural layer14 up_proj D3"
+    ],
+    "status": "PASS"
+  },
   "status": "PASS",
   "test_suites": {
-    "capacity_knee": 9,
     "hardened_aggregator_regressions": 16,
-    "natural": 14,
-    "refill": 15,
-    "residency_consumer_regressions": 32,
-    "total": 86
+    "natural_reuse": 39,
+    "residency_regressions": 32,
+    "total": 87
   }
 }

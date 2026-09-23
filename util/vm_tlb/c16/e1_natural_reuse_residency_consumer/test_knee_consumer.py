@@ -179,7 +179,7 @@ class IntegratedTests(unittest.TestCase):
             self.assertEqual(item["nominal_residual_l2_bytes"], residual)
             self.assertEqual(item["first_dram_over_1MiB_and_10pct_packed_mib"], DRAM_KNEES[role])
             self.assertEqual(item["first_material_timing_dose_mib"], TIMING_KNEES[role])
-            self.assertAlmostEqual(item["observed_dram_knee_minus_nominal_residual_l2_mib"],
+            self.assertAlmostEqual(item["observed_first_tested_dram_trigger_minus_nominal_residual_l2_mib"],
                                    DRAM_KNEES[role] - residual / MIB)
 
     def test_duplicate_missing_ncu_dose_fail(self):

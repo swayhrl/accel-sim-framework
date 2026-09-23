@@ -1,0 +1,119 @@
+{
+  "knee": {
+    "base": {
+      "expected_pass_count": 1,
+      "kernel_names": [
+        "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+        "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+      ],
+      "process_id": "1286362",
+      "sha256": "fd7a1641f040c59459a2d83b366de33939f25dee9be1b79d84bd495a048cddb3",
+      "target_kernel_count": 2
+    },
+    "dose_mib": 32,
+    "dram_bytes": 36340352,
+    "profile": {
+      "M": 1,
+      "dose_mib": 32,
+      "implementation": "AWQ_FP16_INPUT",
+      "input_sha256": "b3999f6fe161d47efdff4c7d88aa044e2cec3396f9c69fde63c53f2ba208f82e",
+      "output_sha256": "5618125fc9563f42860d5df37ae9b4b6569dfc4af1d995eeb7922d9f60b31d99",
+      "prefix_authority": "frozen dose_mib multiplied by MiB; PROFILE dose_mib exact",
+      "pressure_mode": "DENSE_PREFIX_READ",
+      "pressure_prefix_bytes": 33554432,
+      "range": "C16_E1_KNEE_UP_PROJ_32MIB",
+      "role": "up_proj",
+      "sha256": "bf48a4f00b4dd12f2164839281d82fce4012b9ac2bb0dc424e838b5d7122b1f7",
+      "status": "PASS"
+    },
+    "session": {
+      "cache_control": "none",
+      "metric": "dram__bytes.sum",
+      "range_name": "C16_E1_KNEE_UP_PROJ_32MIB",
+      "replay_mode": "application",
+      "sha256": "43700769d84e3bb7e5f78e2898e46b9674413c096ae5cd1cddcf51be6d1f5687"
+    }
+  },
+  "natural": {
+    "NAT_L0_UP_D0": {
+      "base": {
+        "kernel_count": 2,
+        "kernel_names": [
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+        ],
+        "metric_sums": {
+          "dram__bytes.sum": "49655552",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41735936"
+        },
+        "process_id": "1286718",
+        "sha256": "33b72225293d251a53df9c3b9730d0b3a167015d08409fcff11635164a208baa"
+      },
+      "profile": {
+        "M": 1,
+        "decode_index": 0,
+        "implementation": "AWQ_FP16_INPUT",
+        "input_sha256": "1241b8f94067b40d63d7946e485ab95746b0f01055ccf76f2646e7d9f7bf42ef",
+        "output_sha256": "858e096b29bd6b0ba94ee9aa1d980ceb45430073354ca232ecc3bba2ed948876",
+        "prefix_token_sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9",
+        "range": "C16_E1_NAT_L0_UP_D0",
+        "sha256": "e867f3302152b27249f56f96f9beec0142698db61c1f1db1f348ee9c313ad46a",
+        "status": "PASS",
+        "target": "L0_UP",
+        "token_id": 23578
+      },
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "951512e123635a98d5da843b86d9e664e9163110f23d24cd72820aa4df7890d2"
+      }
+    },
+    "NAT_L14_UP_D3": {
+      "base": {
+        "kernel_count": 2,
+        "kernel_names": [
+          "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+          "void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)"
+        ],
+        "metric_sums": {
+          "dram__bytes.sum": "49273600",
+          "l1tex__t_bytes.sum": "47284224",
+          "lts__t_bytes.sum": "41730400"
+        },
+        "process_id": "1287007",
+        "sha256": "2bf2afa4364b7de8e1be5b77bb4efcdd3f756186d2f6b07a1e268a55e75036d6"
+      },
+      "profile": {
+        "M": 1,
+        "decode_index": 3,
+        "implementation": "AWQ_FP16_INPUT",
+        "input_sha256": "fad24b505c70b2c4d5265fc0f028fbda7ab87338c131c47e6a534663615297e5",
+        "output_sha256": "1d4d06b3d59eb3dd8dc7907fd560d2c3bcc97efd037df072c8f534d199ea6eca",
+        "prefix_token_sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9",
+        "range": "C16_E1_NAT_L14_UP_D3",
+        "sha256": "cd4d59f71a38f82e8b713583b57f50abfc9e8029016442369baf74f5a39d881c",
+        "status": "PASS",
+        "target": "L14_UP",
+        "token_id": 3950
+      },
+      "session": {
+        "cache_control": "none",
+        "replay_mode": "application",
+        "sha256": "bbd666f7705d33426e75d21ad862951df1525c89c1dd4f4fc9aaa30c505d425a"
+      }
+    }
+  },
+  "refill": {
+    "profiles": 1,
+    "semantic_identity": {
+      "M": 1,
+      "domain": "TEXT",
+      "implementation": "AWQ_FP16_INPUT",
+      "point": "TEXT_up_proj_M1_AWQ",
+      "refill_call_index": 1,
+      "role": "up_proj"
+    }
+  },
+  "status": "PASS"
+}

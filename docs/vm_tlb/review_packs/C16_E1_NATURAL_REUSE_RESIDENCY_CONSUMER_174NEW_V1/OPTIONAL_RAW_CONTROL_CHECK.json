@@ -1,0 +1,74 @@
+{
+  "authority": "RAW_NATIVE_RUNS_PLUS_DIRECT_BASE_SESSION_PROFILE",
+  "comparison_boundary": "BF16 full-model deployment control; not substituted for isolated RAW_FP16 authority",
+  "fit_contract": {
+    "backend_change": false,
+    "dtype": "torch.bfloat16",
+    "offload": false,
+    "oom_workaround": false,
+    "package_change": false
+  },
+  "fresh_process_runs": 7,
+  "generated_token_ids": [
+    23578,
+    11,
+    323,
+    3950
+  ],
+  "native_timing": {
+    "D0": {
+      "cv": 0.0021911577607564006,
+      "max": 0.20582400262355804,
+      "mean": 0.20516114149774825,
+      "median": 0.20479999482631683,
+      "min": 0.20479999482631683,
+      "samples": [
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20528000593185425,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20582400262355804,
+        0.20582400262355804
+      ]
+    },
+    "D3": {
+      "cv": 0.0017615349552388697,
+      "max": 0.20582400262355804,
+      "mean": 0.20500113921506063,
+      "median": 0.20479999482631683,
+      "min": 0.20479999482631683,
+      "samples": [
+        0.20582400262355804,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.20479999482631683,
+        0.2051839977502823,
+        0.20479999482631683
+      ]
+    }
+  },
+  "ncu_D0": {
+    "base": {
+      "kernel_count": 1,
+      "kernel_names": [
+        "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)"
+      ],
+      "metric_sums": {
+        "dram__bytes.sum": "136006784",
+        "l1tex__t_bytes.sum": "272187392",
+        "lts__t_bytes.sum": "137199776"
+      },
+      "process_id": "1291027",
+      "sha256": "35e47d2f932f44d9f1274793670f79f57ed9cdb02bee313d835fcb8ee8921b1c"
+    },
+    "profile_sha256": "634d811ee78b0c99db7474a2a8a725b54aa536d3a226b95f9866612b096f86e2",
+    "session": {
+      "cache_control": "none",
+      "replay_mode": "application",
+      "sha256": "012c1f72c131bca729e2d8e588ee178b3924614105d2ed6acf566dbd5f37ca94"
+    }
+  },
+  "status": "PASS"
+}

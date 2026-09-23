@@ -1,9 +1,12 @@
 {
-  "authorized_next_action": "node109 producer publishes expected branch; future resume may fetch",
-  "full_trace_authorized": false,
-  "gpu_work_authorized": false,
-  "mechanism_work_authorized": false,
-  "nvbit_authorized": false,
-  "polling_authorized": false,
-  "status": "READY_FOR_E1_NATURAL_REUSE_RESIDENCY_109"
+  "authorized": false,
+  "prohibited": [
+    "GPU",
+    "NVBit",
+    "full address trace",
+    "cache/TLB mechanism",
+    "mechanism simulation"
+  ],
+  "reason": "Consumer closure complete; publication requires review before any further work.",
+  "status": "STOP_FOR_CHATGPT_REVIEW"
 }

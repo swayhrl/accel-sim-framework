@@ -359,3 +359,9 @@ The next stage asks three stronger questions:
 The third question determines whether the observed residency benefit is already naturally captured by current hardware or whether realistic model interference evicts the compressed state before reuse.
 
 No residency mechanism is authorized before this natural-reuse stage and independent consumer closure.
+
+---
+
+## E1 natural-reuse / residency independent consumer closure (174-new)
+
+Producer `ccfdc89d517766d12588ee131818efe341c7e17c` was consumed directly from raw timing and NCU BASE+SESSION+PROFILE evidence. The independent classification is `CASE_B_WITH_CASE_D_ROLE_DEPENDENCE`: AWQ shows clear immediate refill, natural layer-0 traffic is dense-like or beyond the isolated dense bracket, and capacity/role responses differ. Capacity observations are first tested triggers with tested brackets, not exact physical knees. Layer 14 remains `NO_EXACT_ISOLATED_AUTHORITY`; layer-0 isolated evidence was not borrowed. The optional RAW result is a BF16 full-model control, not isolated RAW_FP16 authority. No GPU, NVBit, full trace, cache/TLB mechanism, or mechanism simulation was used or authorized.

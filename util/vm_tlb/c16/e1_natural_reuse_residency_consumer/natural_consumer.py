@@ -295,6 +295,31 @@ def _audit_profile(path: Path, expected: Mapping[str, Any], authority: Mapping[s
     if len(receipts) != 1:
         raise NaturalConsumerError("PROFILE must contain exactly one PASS receipt")
     receipt = receipts[0]
+    if isinstance(receipt.get("occurrences"), list):
+        matches = [item for item in receipt["occurrences"] if item.get("range") == expected["range_name"]]
+        if len(matches) != 1:
+            raise NaturalConsumerError("PROFILE natural occurrence range is missing or ambiguous")
+        occurrence = matches[0]
+        target = f"L{expected['layer_index']}_{'UP' if expected['role']=='up_proj' else 'DOWN'}"
+        checks = {
+            "target": target, "decode_index": expected["decode_index"],
+            "token_id": expected["generated_token_id"], "range": expected["range_name"],
+            "input_sha256": expected["input_sha256"], "output_sha256": expected["output_sha256"],
+        }
+        mismatches = {key: (value, occurrence.get(key)) for key, value in checks.items() if occurrence.get(key) != value}
+        if receipt.get("token_file_sha256") != authority["accepted_prefix_sha256"]:
+            mismatches["prefix_token_sha256"] = (authority["accepted_prefix_sha256"], receipt.get("token_file_sha256"))
+        if receipt.get("generated_token_ids_D0_D3") != authority["generated_token_ids"]:
+            mismatches["generated_token_ids_D0_D3"] = (authority["generated_token_ids"], receipt.get("generated_token_ids_D0_D3"))
+        if occurrence.get("input_shape", [None, None])[:2] != [1, 1]:
+            mismatches["M"] = (1, occurrence.get("input_shape"))
+        if occurrence.get("module_class") != "WQLinear_GEMM":
+            mismatches["implementation"] = ("AWQ_FP16_INPUT/WQLinear_GEMM", occurrence.get("module_class"))
+        if mismatches:
+            raise NaturalConsumerError("PROFILE natural identity mismatch: " + repr(mismatches))
+        return {"sha256": _hash_file(path), "status": "PASS", **checks,
+                "prefix_token_sha256": authority["accepted_prefix_sha256"],
+                "implementation": expected["implementation"], "M": 1}
     checks = {
         "layer_index": expected["layer_index"], "role": expected["role"],
         "decode_index": expected["decode_index"], "M": 1,
@@ -309,7 +334,6 @@ def _audit_profile(path: Path, expected: Mapping[str, Any], authority: Mapping[s
     if mismatches:
         raise NaturalConsumerError("PROFILE natural identity mismatch: " + repr(mismatches))
     return {"sha256": _hash_file(path), **checks}
-
 
 def _read_base(path: Path, expected: Mapping[str, Any], expected_names: list[str], expected_passes: int) -> dict:
     with path.open(newline="", encoding="utf-8-sig") as stream:
@@ -446,7 +470,9 @@ def compare_natural_to_isolated(
         seen.add(identity)
         ref_key = (identity[1], _text(raw.get("implementation"), "implementation"), _int(raw.get("M"), "M"))
         row = {"layer_index": identity[0], "role": identity[1], "decode_index": identity[2], "implementation": ref_key[1], "M": ref_key[2]}
-        if ref_key not in references:
+        # Accepted isolated WARM/DENSE evidence is for layer 0 only.  A role
+        # match is not authority to project that reference onto another layer.
+        if identity[0] != 0 or ref_key not in references:
             for dimension, natural_name in (("timing", "timing_ms"), ("dram", "dram_bytes")):
                 natural_raw = raw.get(natural_name)
                 natural = None if natural_raw in (None, "") else _finite(natural_raw, natural_name)

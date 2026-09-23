@@ -156,6 +156,19 @@ class NaturalConsumerTests(unittest.TestCase):
         self.assertIsNone(got["dram"]["warm_fraction"])
         self.assertEqual(got["dram"]["status"], "UNDEFINED_ZERO_DENOMINATOR")
 
+    def test_layer14_does_not_borrow_layer0_isolated_authority(self):
+        natural = [{"layer_index": 14, "role": "up_proj", "decode_index": 0,
+                    "implementation": "AWQ_FP16_INPUT", "M": 1,
+                    "timing_ms": 4, "dram_bytes": 50}]
+        refs = [{"role": "up_proj", "implementation": "AWQ_FP16_INPUT", "M": 1,
+                 "warm_timing_ms": 1, "dense_timing_ms": 2,
+                 "warm_dram_bytes": 10, "dense_dram_bytes": 20}]
+        got = compare_natural_to_isolated(natural, refs)["comparisons"][0]
+        self.assertEqual(got["timing"]["status"], "NO_EXACT_ISOLATED_AUTHORITY")
+        self.assertEqual(got["dram"]["status"], "NO_EXACT_ISOLATED_AUTHORITY")
+        self.assertIsNone(got["timing"]["warm_fraction"])
+        self.assertIsNone(got["dram"]["warm_fraction"])
+
     def test_case_framing_keeps_effects_separate(self):
         result = frame_integrated_interpretation(
             refill_clear=True, natural_warm_like=False, role_dependent=True,

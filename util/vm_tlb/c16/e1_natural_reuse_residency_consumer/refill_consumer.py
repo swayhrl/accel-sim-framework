@@ -388,14 +388,20 @@ def _audit_profile(path: Path, spec: Mapping[str, Any]) -> dict[str, Any]:
         for key, expected_value in expected.items()
         if receipt.get(key) != expected_value
     }
+    raw_call = receipt.get("refill_call_index", receipt.get("selected_k"))
+    if receipt.get("refill_call_index") is not None and receipt.get("selected_k") is not None and receipt.get("refill_call_index") != receipt.get("selected_k"):
+        mismatches["refill_call_aliases"] = {
+            "refill_call_index": receipt.get("refill_call_index"),
+            "selected_k": receipt.get("selected_k"),
+        }
     try:
-        observed_call = _call_index(receipt.get("refill_call_index"))
+        observed_call = _call_index(raw_call)
     except RefillConsumerError:
         observed_call = None
     if observed_call != spec["refill_call_index"]:
         mismatches["refill_call_index"] = {
             "expected": spec["refill_call_index"],
-            "observed": receipt.get("refill_call_index"),
+            "observed": raw_call,
         }
     if mismatches:
         raise RefillConsumerError(

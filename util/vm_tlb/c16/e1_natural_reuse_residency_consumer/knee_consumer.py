@@ -278,9 +278,7 @@ def _audit_profile(path: Path, spec: Mapping[str, Any]) -> dict[str, Any]:
         "role": spec["role"],
         "M": M_VALUE,
         "implementation": IMPLEMENTATION,
-        "pressure_mode": PRESSURE_MODE,
         "dose_mib": spec["dose_mib"],
-        "pressure_prefix_bytes": spec["pressure_prefix_bytes"],
         "range": spec["range_name"],
         "input_sha256": spec["input_sha256"],
         "output_sha256": spec["output_sha256"],
@@ -290,9 +288,15 @@ def _audit_profile(path: Path, spec: Mapping[str, Any]) -> dict[str, Any]:
         for key, expected_value in expected.items()
         if receipt.get(key) != expected_value
     }
+    for key, expected_value in (("pressure_mode", PRESSURE_MODE), ("pressure_prefix_bytes", spec["pressure_prefix_bytes"])):
+        if receipt.get(key) is not None and receipt.get(key) != expected_value:
+            mismatch[key] = {"expected": expected_value, "observed": receipt.get(key)}
     if mismatch:
         raise KneeError("PROFILE identity mismatch: " + json.dumps(mismatch, sort_keys=True))
-    return {"sha256": _sha256(path), "status": "PASS", **expected}
+    return {"sha256": _sha256(path), "status": "PASS", **expected,
+            "pressure_mode": PRESSURE_MODE,
+            "pressure_prefix_bytes": spec["pressure_prefix_bytes"],
+            "prefix_authority": "frozen dose_mib multiplied by MiB; PROFILE dose_mib exact"}
 
 
 def _decimal(value: str, label: str) -> Decimal:
