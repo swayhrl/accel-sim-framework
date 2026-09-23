@@ -176,6 +176,7 @@ class RawNcuConsumerTests(unittest.TestCase):
             "DENSE_MEMORY_PRESSURE",
             base,
             session,
+            profile_log,
             expected=[TARGET_KERNEL, PRESSURE_KERNEL],
         )
         # Model producer inventory corruption while retaining independent pressure identity.
@@ -229,7 +230,7 @@ class RawNcuConsumerTests(unittest.TestCase):
 
     def test_exact_target_range_required(self):
         base, session, profile_log = self.add_evidence("warm", target="TARGET_RANGE_EXTRA")
-        item = profile("WARM", base, session, target_range="TARGET_RANGE")
+        item = profile("WARM", base, session, profile_log, target_range="TARGET_RANGE")
         # SESSION must bind the expected exact range before BASE selection can occur.
         with self.assertRaisesRegex(RawNcuError, "exact target range mismatch"):
             consume({"schema_version": 1, "profiles": [item]}, self.root)
