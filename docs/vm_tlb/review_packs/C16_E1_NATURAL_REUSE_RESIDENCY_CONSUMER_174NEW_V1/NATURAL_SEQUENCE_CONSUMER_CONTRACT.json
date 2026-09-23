@@ -70,5 +70,11 @@
   ],
   "status": "FROZEN",
   "timing_repetitions": 7,
-  "warm_fraction": "abs(natural-warm)/abs(dense-warm); denominator zero => undefined; never clamp"
+  "warm_fraction": "abs(natural-warm)/abs(dense-warm); denominator zero => undefined; never clamp",
+  "isolated_reference_policy": {
+    "layer0_up_proj": "exact isolated WARM/DENSE reference required when computing warm_fraction",
+    "layer0_down_proj": "exact isolated WARM/DENSE reference required when computing warm_fraction",
+    "layer14_up_proj": "no exact isolated layer14 authority exists in upstream evidence; report NO_EXACT_ISOLATED_AUTHORITY rather than borrowing layer0 or failing the natural consumer"
+  },
+  "cross_layer_validation": "Layer14 is a held-out natural behavior validation. Compare natural DRAM/timing patterns across layers descriptively; do not substitute layer0 isolated references for layer14."
 }
