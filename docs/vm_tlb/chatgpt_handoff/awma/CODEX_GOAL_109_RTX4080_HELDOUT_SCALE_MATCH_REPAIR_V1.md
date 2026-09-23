@@ -24,7 +24,27 @@ Accepted platform-anchor source authority:
 
 Purpose:
 
-repair only the Native held-out timing scale mismatch.
+repair only the Native held-out timing scale mismatch and close the existing platform-bundle member-count bookkeeping inconsistency.
+
+# 0. Provenance reconciliation before timing repair
+
+The prior node109 review pack contains a publication-count inconsistency:
+
+- `PLATFORM_ANCHOR_PUBLICATION_ACK.md` says the platform bundle was extended to **108** verified members;
+- the older `RUN_RECEIPTS.json` / `RAW_DATA_INDEX.tsv` still contain **47** for the platform bundle.
+
+This is a provenance bookkeeping inconsistency, not a scientific-data failure.
+
+Before new timing work:
+
+- inspect the current node164 bundle manifest directly;
+- determine the canonical current manifest member count and manifest SHA;
+- verify all current members;
+- record the supersession chain from the earlier 47-member state to the later extended state;
+- do not delete or rewrite the old frozen review pack.
+
+The new repair pack must publish one unambiguous current node164 manifest authority.
+
 
 Do NOT recapture platform traces.
 
