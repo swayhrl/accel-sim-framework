@@ -66,3 +66,62 @@ A secondary control asks whether a large-cache-line-footprint perturbation diffe
 This stage is one combined node109 Goal plus one parallel node174 consumer/prep Goal.
 
 No NVBit/full address trace/cache-TLB mechanism is authorized.
+
+
+---
+
+## Producer residency-intervention completed
+
+node109 producer:
+
+`hrl/c16-e1-residency-intervention-109-v1@22d1b98d7f0c213950654fc754be4e7388836de3`
+
+Producer closed:
+
+- exact q/down/up capacity census;
+- WARM/SPARSE/DENSE/WARM_B native intervention timing;
+- semantic NCU under application replay/cache-control none;
+- up_proj M1 pressure-dose timing and bounded 64 MiB NCU;
+- accepted CODE down_proj M1 holdout;
+- no NVBit/full trace/mechanism work.
+
+Producer scoped label:
+
+`RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED`
+
+Primary TEXT up_proj M1 AWQ producer gates:
+
+- MATERIAL_TIMING_PERTURBATION = true
+- MATERIAL_DRAM_PERTURBATION = true
+- DENSE_SPECIFIC = true
+- REVERSIBLE = false
+
+Important nuance:
+
+`WARM_B/WARM_A = 0.937499981...`
+
+The preregistered equality-style recovery gate therefore fails by the strict 5% rule, even though WARM_B is **faster**, not persistently dense-slow. Preserve the preregistered boolean/label exactly; discuss this only as interpretation nuance, not as a post-hoc relabel.
+
+Producer key observations:
+
+- up_proj M1 AWQ DENSE/WARM timing ≈ 1.53646
+- SPARSE/WARM ≈ 0.97656
+- DRAM WARM 80,000 B
+- DRAM SPARSE 2,365,312 B
+- DRAM DENSE 35,368,192 B
+- up_proj M256 AWQ DENSE/WARM ≈ 0.99230
+- up_proj M1 AWQ dose response rises to ≈1.64× by 64 MiB and then approximately plateaus
+- RAW dose response remains below 0.8%
+- CODE down_proj M1 AWQ reproduces dense timing/DRAM perturbation and passes the recovery gate
+
+Capacity census:
+
+- q_proj RAW_FP16 < L2 and AWQ < L2
+- down_proj RAW_FP16 > L2 and AWQ < L2
+- up_proj RAW_FP16 > L2 and AWQ < L2
+
+The existing 174-new prep branch is:
+
+`hrl/c16-e1-residency-intervention-consumer-174new-v1@1beae7f0ed9c1d3de3829a6ff75ff0317ac1f503`
+
+It should now resume and consume producer raw evidence directly.
