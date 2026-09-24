@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN_BEFORE_COST_BENEFIT_PRODUCER",
+  "stable_decode_indices": [
+    1,
+    2,
+    3
+  ],
+  "local_up_materiality": {
+    "min_timing_benefit_fraction": 0.05,
+    "dispersion_rule": "benefit > hypot(CV_control,CV_fair)"
+  },
+  "system_materiality": {
+    "min_whole_decode_benefit_fraction": 0.02,
+    "dispersion_rule": "benefit > hypot(CV_control,CV_fair)"
+  },
+  "decomposition_qualification": {
+    "max_abs_median_unexplained_residual_ms": 0.1
+  },
+  "localized_offset_rule": {
+    "min_fraction_of_negative_offset_assigned_to_directly_measured_non_up_categories": 0.8
+  },
+  "outcomes": [
+    "RESIDENCY_COST_DIAGNOSTIC_UNQUALIFIED",
+    "RESIDENCY_COST_AWARE_SYSTEM_RELEVANT",
+    "RESIDENCY_COST_AWARE_POSITIVE_SUBTHRESHOLD",
+    "RESIDENCY_OFFSET_LOCALIZED",
+    "RESIDENCY_SYSTEM_CASE_WEAK"
+  ],
+  "no_simulator_auto_authorization": true
+}
