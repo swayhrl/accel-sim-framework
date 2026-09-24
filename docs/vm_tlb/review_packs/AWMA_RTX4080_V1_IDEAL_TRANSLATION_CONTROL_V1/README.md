@@ -1,6 +1,6 @@
 # AWMA RTX4080/V1 ideal-translation control V1
 
-Status: `IN_PROGRESS_NO_FULL_KERNEL_RESULTS`.
+Status: `COMPLETE_INVALID_DIAGNOSTIC_SEMANTIC_GATE_FAILED`.
 
 This pack records only the RTX4080/V1 ideal-translation control authorized by
 `PARALLEL_REPRESENTATIVE_SUITE_V1.md`. It does not reuse historical R0/I0
@@ -30,11 +30,10 @@ are not resolved early. Default is off.
 - ON empty-trace startup returned zero with empty stderr;
 - the ideal-only T0/T1/T2 runner passes Python compilation.
 
-## Still required
+## V1 closeout
 
-No full-kernel point has been started. Before closing this stage, run T0/T1/T2
-only when host resources are safe, then prove instruction/CTA/UID/coverage,
-untranslated=0, unobserved=0, duplicate=0, terminal quiescence, and OFF V1
-scientific-signature identity. Reuse only accepted exact-identity 10/80 and
-0/80 comparator rows, then report `C_10_80`, `C_0_80`, `C_ideal`, `S_L1`, and
-`S_ALL`; do not call `S_ALL-S_L1` a PTW time fraction.
+T0/T1/T2 full-kernel points completed but are all
+`INVALID_DIAGNOSTIC`. V1 disabled the frozen prelaunch scan and thereby changed
+V1 frontend scheduling. Its results must not be used for scientific conclusions
+or as accepted ideal controls. V2 supersedes the investigation with the original
+prelaunch policy restored and a new UID-set semantic gate.
