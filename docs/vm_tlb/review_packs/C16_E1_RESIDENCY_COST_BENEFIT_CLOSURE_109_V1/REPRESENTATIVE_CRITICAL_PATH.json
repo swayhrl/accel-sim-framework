@@ -1,0 +1,38 @@
+{
+  "budgets": {
+    "B16": {
+      "self_attn": {
+        "aggregate_dram_ratio": 1.004919697835333,
+        "dram_read_ratio": 0.9982448955712865,
+        "duration_ratio": 1.0056572874795295,
+        "l2_hit_ratio": 0.9990120721388956,
+        "l2_miss_ratio": 1.0
+      },
+      "up_proj": {
+        "aggregate_dram_ratio": 0.7086100194824696,
+        "dram_read_ratio": 1.0000362810475063,
+        "duration_ratio": 0.7336276674025018,
+        "l2_hit_ratio": 0.9926440434693459,
+        "l2_miss_ratio": 1.0
+      }
+    },
+    "BFULL": {
+      "self_attn": {
+        "aggregate_dram_ratio": 1.0011079242809144,
+        "dram_read_ratio": 1.000019502047715,
+        "duration_ratio": 1.0013418816162218,
+        "l2_hit_ratio": 0.9993348789177302,
+        "l2_miss_ratio": 1.0
+      },
+      "up_proj": {
+        "aggregate_dram_ratio": 0.7567259837248479,
+        "dram_read_ratio": 1.0006820861678005,
+        "duration_ratio": 0.7727801473439317,
+        "l2_hit_ratio": 0.9930856885340887,
+        "l2_miss_ratio": 1.0000616889714633
+      }
+    }
+  },
+  "interpretation": "up_proj duration improves at both budgets; representative L0 self_attn duration/traffic changes are small and do not reproduce the large native 28-layer aggregate self-attn slowdown at full budget",
+  "status": "PASS"
+}

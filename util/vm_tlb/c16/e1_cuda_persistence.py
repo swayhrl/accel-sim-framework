@@ -8,7 +8,7 @@ from pathlib import Path
 import torch
 
 
-LIBRARY = Path("/data/c16/e1_operator_family_expansion_v1/build/libc16_cuda_persistence.so")
+LIBRARY = Path("/data/c16/e1_residency_cost_benefit_closure_v1/build/libc16_cuda_persistence.so")
 
 
 class Capability(ctypes.Structure):

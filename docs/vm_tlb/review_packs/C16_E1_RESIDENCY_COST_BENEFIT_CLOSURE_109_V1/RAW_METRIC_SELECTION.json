@@ -1,0 +1,98 @@
+{
+  "aggregation": {
+    "per_kernel_only": [
+      "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+      "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+      "sm__warps_active.avg.pct_of_peak_sustained_active"
+    ],
+    "semantic_sum": [
+      "l1tex__t_bytes.sum",
+      "lts__t_bytes.sum",
+      "dram__bytes.sum",
+      "gpu__time_duration.sum",
+      "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+      "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+      "dram__bytes_read.sum"
+    ]
+  },
+  "base_metrics": [
+    "l1tex__t_bytes.sum",
+    "lts__t_bytes.sum",
+    "dram__bytes.sum"
+  ],
+  "critical_metrics": [
+    {
+      "available": true,
+      "category": "kernel_duration",
+      "metric_name": "gpu__time_duration.sum",
+      "metric_type": "Counter",
+      "query_line": "gpu__time_duration.sum                                                      Counter         ns              equals to gpu__time_duration_measured_user if collectable, otherwise",
+      "unit": "ns"
+    },
+    {
+      "available": true,
+      "category": "l2_read_lookup_hit_sectors",
+      "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+      "metric_type": "Counter",
+      "query_line": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum                                                 Counter         sector          # of LTS sectors from unit TEX for reads that hit (This counter",
+      "unit": "sector"
+    },
+    {
+      "available": true,
+      "category": "l2_read_lookup_miss_sectors",
+      "metric_name": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+      "metric_type": "Counter",
+      "query_line": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum                                   Counter         sector          # of LTS sectors from unit TEX for reads that missed (This counter",
+      "unit": "sector"
+    },
+    {
+      "available": true,
+      "category": "dram_read_bytes",
+      "metric_name": "dram__bytes_read.sum",
+      "metric_type": "Counter",
+      "query_line": "dram__bytes_read.sum                                                        Counter         byte            # of bytes read from DRAM (This counter metric represents the sum",
+      "unit": "byte"
+    },
+    {
+      "available": true,
+      "category": "long_scoreboard_stall",
+      "metric_name": "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+      "metric_type": "Ratio",
+      "query_line": "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct                 Ratio           %               proportion of warps per cycle, waiting for a scoreboard dependency on",
+      "unit": "%"
+    },
+    {
+      "available": true,
+      "category": "lsu_memory_pipe_utilization",
+      "metric_name": "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+      "metric_type": "Counter",
+      "query_line": "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active                 Counter         %               # of warp instructions executed by lsu pipe (This counter metric",
+      "unit": "%"
+    },
+    {
+      "available": true,
+      "category": "active_warps_secondary",
+      "metric_name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+      "metric_type": "Counter",
+      "query_line": "sm__warps_active.avg.pct_of_peak_sustained_active                           Counter         %               cumulative # of warps in flight (This counter metric represents the",
+      "unit": "%"
+    }
+  ],
+  "ncu_version": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2025 NVIDIA Corporation\nVersion 2025.1.1.0 (build 35528883) (public-release)",
+  "profile_metric_list": [
+    "l1tex__t_bytes.sum",
+    "lts__t_bytes.sum",
+    "dram__bytes.sum",
+    "gpu__time_duration.sum",
+    "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+    "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+    "dram__bytes_read.sum",
+    "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+    "smsp__inst_executed_pipe_lsu.avg.pct_of_peak_sustained_active",
+    "sm__warps_active.avg.pct_of_peak_sustained_active"
+  ],
+  "query_command": "/usr/local/cuda-12.8/bin/ncu --query-metrics --query-metrics-mode all",
+  "query_line_count": 393383,
+  "query_receipt_path": "/data/c16/e1_residency_cost_benefit_closure_v1/metric_query/NCU_QUERY_METRICS_ALL.txt",
+  "status": "PASS"
+}

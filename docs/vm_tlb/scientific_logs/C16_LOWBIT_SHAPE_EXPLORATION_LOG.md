@@ -337,3 +337,17 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Representative NCU.** Up-proj GEMM duration/long-scoreboard benefit remains visible; gate shows a smaller profiled GEMM effect that does not reproduce as native MATERIAL_LOCAL; down changes little. L2 hit/miss and DRAM-read counters remain nearly flat across the representative role-only/GUD84 profiles, reinforcing the traffic caveat.
 
 **Stage label.** `OPERATOR_FAMILY_NOT_SUPPORTED`. Expanding fixed-budget protection across all FFN families does not yield a statistically material whole-decode effect, because gate/down lack direct local benefit and negative residual outside measured FFN accounting offsets much of the up_proj saving. `STOP_RESIDENCY_MECHANISM_SYSTEM_CASE_WEAK` is recorded only as the producer's review candidate; no trace or simulator work is authorized or run.
+
+---
+
+## E1 residency cost/benefit closure producer result — 2026-09-24
+
+**Top-level authority.** Seven no-policy fresh processes close 420 FFN child calls, 570 top-level/final calls, 336 child occurrences and 456 top-level occurrences. All layer `input_layernorm`, `self_attn`, `post_attention_layernorm`, and `mlp` modules plus final norm and lm_head are directly hookable. Runtime assertions prove top-level accounting ranges do not overlap; nested FFN children remain separate diagnostic timing and are never added to MLP top-level timing.
+
+**Budget matrix.** Requested/actual set-asides are 8/8 MiB, 16/16 MiB, 24/24 MiB, and 33,947,648/37,748,736 B for full. Every budget retains 28/28 `MATERIAL_LOCAL_UP`; direct up_proj savings rise from approximately 0.361, 0.364, 0.415 to 0.576 ms. No budget produces a whole-decode benefit beyond dispersion or reaches 2%.
+
+**Residual localization.** Top-level decomposition qualifies at every budget: median unexplained residual is -0.015, -0.025, +0.010, and +0.006 ms, all within the 0.10 ms closure threshold. At full budget, gate/down contribute approximately -0.177 ms, self_attn contributes approximately -0.534 ms, norm contributes +0.074 ms, and final stages are negligible. MLP top-level saving (~0.398 ms) closely matches total FFN-projection saving (~0.396 ms), so MLP internal work is not the main offset. More than 94% of the negative offset relative to direct up saving is assigned to measured non-up categories for every tested budget.
+
+**Representative NCU.** L0 up_proj duration improves at 16 MiB and full budget. L0 self_attn duration/traffic changes are small (approximately +0.6% duration at 16 MiB and +0.1% at full) and do not reproduce the large native aggregate slowdown across all 28 self-attention modules. The localization is therefore semantic aggregate evidence, not a unique per-kernel mechanism claim.
+
+**Stage label.** `RESIDENCY_OFFSET_LOCALIZED`. The system case remains non-positive, but the previous residual is no longer mostly unexplained: it localizes to measurable gate/down and especially self-attention cost at full budget. `REVISE_MECHANISM_AROUND_MEASURED_INTERFERENCE_COST` is recorded as the producer's review candidate, not an authorization. No simulator, NVBit, trace, or mechanism implementation was run.

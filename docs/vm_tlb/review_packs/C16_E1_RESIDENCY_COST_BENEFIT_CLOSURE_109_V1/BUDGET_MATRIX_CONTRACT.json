@@ -1,0 +1,30 @@
+{
+  "budgets": [
+    {
+      "name": "B8",
+      "requested_bytes": 8388608
+    },
+    {
+      "name": "B16",
+      "requested_bytes": 16777216
+    },
+    {
+      "name": "B24",
+      "requested_bytes": 25165824
+    },
+    {
+      "name": "BFULL",
+      "requested_bytes": 33947648
+    }
+  ],
+  "control_policy": "NORMAL/NORMAL nonpersisting",
+  "exact_full_qweight_window_each_update": true,
+  "fair_policy": "PERSISTING/STREAMING",
+  "hit_ratio_formula": "min(1.0, requested_budget_bytes / (28 * exact_up_proj_qweight_bytes))",
+  "no_post_data_budget_selection": true,
+  "protected_family": "all 28 up_proj qweight regions",
+  "reset_before_after_only": true,
+  "schema_version": 1,
+  "selected_module_count": 28,
+  "status": "FROZEN_BEFORE_COST_BENEFIT_PRODUCER"
+}

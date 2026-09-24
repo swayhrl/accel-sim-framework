@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 
-ROOT = Path("/data/c16/e1_operator_family_expansion_v1/metric_query")
+ROOT = Path("/data/c16/e1_residency_cost_benefit_closure_v1/metric_query")
 QUERY = ROOT / "NCU_QUERY_METRICS_ALL.txt"
 SELECTED = {
     "kernel_duration": "gpu__time_duration.sum",
