@@ -1,0 +1,171 @@
+--- a/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/vm_translation.h
+@@ -211,6 +211,9 @@
+ // Phase 1 is exactly one finite notification/application slot. Phase 2 adds
+ // exactly two slots as a causal diagnostic; no other value is accepted.
+ unsigned awma_share_delivery_slots();
++// Accepted C1 shares every legal cohort of size >=2. Fanout-aware discovery
++// adds exactly one fixed size-4 gate; no other threshold is accepted.
++unsigned awma_share_min_cohort_size();
+
+ // A shared result is legal only when every translation identity component
+ // available in this model agrees.  The caller still preserves one logical UID
+--- a/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/vm_translation.cc
+@@ -69,6 +69,17 @@
+   return static_cast<unsigned>(parsed);
+ }
+
++unsigned awma_share_min_cohort_size() {
++  const char *text = getenv("GPGPUSIM_AWMA_SHARE_MIN_COHORT_SIZE");
++  if (text == 0 || text[0] == '\0') return 2;
++  char *end = 0;
++  const unsigned long parsed = strtoul(text, &end, 10);
++  assert(end != text && *end == '\0');
++  assert((parsed == 2 || parsed == 4) &&
++         "fanout-aware discovery permits only accepted size 2 or fixed size 4");
++  return static_cast<unsigned>(parsed);
++}
++
+ bool same_page_share_compatible(
+     unsigned owner_asid, uint64_t owner_va, uint64_t owner_bytes,
+     translation_access owner_access, uint64_t owner_generation,
+@@ -3003,6 +3014,8 @@
+             (unsigned long long)m_stats.same_page_share_deliveries);
+     fprintf(fout, "vm_awma_same_page_share_delivery_slots = %u\n",
+             awma_share_delivery_slots());
++    fprintf(fout, "vm_awma_same_page_share_min_cohort_size = %u\n",
++            awma_share_min_cohort_size());
+     fprintf(fout, "vm_awma_same_page_share_delivery_backlog_cycles = %llu\n",
+             (unsigned long long)
+                 m_stats.same_page_share_delivery_backlog_cycles);
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -62,7 +62,7 @@
+         m_no_wait_fallback_wait_completions(0),
+         m_no_wait_fallback_wait_latency_total(0),
+         m_no_wait_fallback_wait_latency_max(0),
+-        m_cohort_size_max(0),
++        m_gated_cohorts(0), m_shared_cohorts(0), m_cohort_size_max(0),
+         m_admission_count_max(0), m_owner_attempt_max(0),
+         m_owner_service(), m_cohort_histogram(), m_wait_latency_histogram() {}
+
+@@ -100,8 +100,12 @@
+   }
+
+   void note_cohort(shader_core_ctx *core, unsigned owner_uid,
+-                   unsigned cohort_size) {
++                   unsigned cohort_size, bool shared) {
+     if (!enabled(core) || !m_cohort_owners.insert(owner_uid).second) return;
++    if (shared)
++      ++m_shared_cohorts;
++    else
++      ++m_gated_cohorts;
+     if (cohort_size > m_cohort_size_max) m_cohort_size_max = cohort_size;
+     unsigned bucket = cohort_size <= 2 ? 0 : cohort_size == 3 ? 1
+                       : cohort_size == 4 ? 2 : cohort_size <= 8 ? 3
+@@ -250,6 +254,10 @@
+     fprintf(fout, "awma_owner_wait_all_issue_latency_max = %llu\n",
+             (unsigned long long)m_all_issue_latency_max);
+     fprintf(fout, "awma_owner_wait_cohort_size_max = %u\n", m_cohort_size_max);
++    fprintf(fout, "awma_owner_wait_gated_cohorts = %llu\n",
++            (unsigned long long)m_gated_cohorts);
++    fprintf(fout, "awma_owner_wait_shared_cohorts = %llu\n",
++            (unsigned long long)m_shared_cohorts);
+     static const char *cohort_names[] = {"2", "3", "4", "5_8", "9_16",
+                                          "17_32"};
+     for (unsigned i = 0; i < 6; ++i)
+@@ -299,6 +307,8 @@
+   uint64_t m_no_wait_fallback_wait_completions;
+   uint64_t m_no_wait_fallback_wait_latency_total;
+   uint64_t m_no_wait_fallback_wait_latency_max;
++  uint64_t m_gated_cohorts;
++  uint64_t m_shared_cohorts;
+   unsigned m_cohort_size_max;
+   unsigned m_admission_count_max;
+   unsigned m_owner_attempt_max;
+@@ -2826,6 +2836,8 @@
+       vm_translation::awma_candidate_mode();
+   const unsigned share_delivery_slots =
+       vm_translation::awma_share_delivery_slots();
++  const unsigned share_min_cohort_size =
++      vm_translation::awma_share_min_cohort_size();
+   const char *share_ablation_text =
+       getenv("GPGPUSIM_AWMA_SHARE_ABLATION");
+   const bool share_service_control =
+@@ -2843,6 +2855,9 @@
+   assert(share_delivery_slots == 1 ||
+          candidate_mode ==
+              vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE);
++  assert(share_min_cohort_size == 2 ||
++         candidate_mode ==
++             vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE);
+   assert(!ready_application_v2 || pipelined_launch);
+   assert(candidate_mode ==
+              vm_translation::AWMA_TRANSLATION_CANDIDATE_NONE ||
+@@ -2941,7 +2956,10 @@
+             ++cohort_size;
+         }
+         if (cohort_size == 1) continue;
+-        g_owner_wait.note_cohort(m_core, owner->get_uid(), cohort_size);
++        const bool shared_cohort = cohort_size >= share_min_cohort_size;
++        g_owner_wait.note_cohort(m_core, owner->get_uid(), cohort_size,
++                                 shared_cohort);
++        if (!shared_cohort) continue;
+         if (!owner->vm_translation_applied()) {
+           member = owner;
+           ++member;
+@@ -3020,6 +3038,18 @@
+             }
+           }
+           if (earlier_equivalent) continue;
++          unsigned cohort_size = 1;
++          std::list<mem_access_t>::iterator cohort_member = owner;
++          ++cohort_member;
++          for (; cohort_member != entries.end(); ++cohort_member)
++            if (vm_translation::same_page_share_compatible(
++                    0, owner->get_sim_va(), owner->get_size(),
++                    candidate_access, generation, 0,
++                    cohort_member->get_sim_va(), cohort_member->get_size(),
++                    candidate_access, generation,
++                    m_config->gpgpu_vm_page_size))
++              ++cohort_size;
++          if (cohort_size < share_min_cohort_size) continue;
+           std::list<mem_access_t>::iterator member = owner;
+           ++member;
+           for (; member != entries.end(); ++member) {
+@@ -3070,7 +3100,7 @@
+                   peer->get_size(), candidate_access, generation,
+                   m_config->gpgpu_vm_page_size))
+             ++equivalent;
+-        if (equivalent > 1) continue;
++        if (equivalent >= share_min_cohort_size) continue;
+         }
+       }
+       uint64_t ignored_pa = 0;
+@@ -3119,7 +3149,8 @@
+         }
+         ++equivalent;
+       }
+-    if (equivalent > 1 && !access.awma_no_wait_share_fallback() &&
++    if (equivalent >= share_min_cohort_size &&
++        !access.awma_no_wait_share_fallback() &&
+         !(share_service_control && owner_applied)) {
+       if (ready_only_no_wait_control && !owner_applied &&
+           cohort_owner != &access) {
+--- a/tests/awma_literature_mechanism_test.cc
++++ b/tests/awma_literature_mechanism_test.cc
+@@ -28,6 +28,13 @@
+   setenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS", "1", 1);
+   assert(vm_translation::awma_share_delivery_slots() == 1);
+   unsetenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS");
++  unsetenv("GPGPUSIM_AWMA_SHARE_MIN_COHORT_SIZE");
++  assert(vm_translation::awma_share_min_cohort_size() == 2);
++  setenv("GPGPUSIM_AWMA_SHARE_MIN_COHORT_SIZE", "4", 1);
++  assert(vm_translation::awma_share_min_cohort_size() == 4);
++  setenv("GPGPUSIM_AWMA_SHARE_MIN_COHORT_SIZE", "2", 1);
++  assert(vm_translation::awma_share_min_cohort_size() == 2);
++  unsetenv("GPGPUSIM_AWMA_SHARE_MIN_COHORT_SIZE");
+
+   // C1 legality: same page/key/generation/permission is shareable.  Every
+   // incompatible identity component and a cross-page transaction rejects.
