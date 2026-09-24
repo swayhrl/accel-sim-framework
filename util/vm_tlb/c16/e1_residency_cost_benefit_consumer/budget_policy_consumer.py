@@ -29,13 +29,14 @@ EXPECTED_TOKENS = (23578, 11, 323, 3950)
 EXPECTED_REPS = 7
 EXPECTED_MODULE_CLASS = "WQLinear_GEMM"
 EXPECTED_IMPLEMENTATION = "AWQ_FP16_INPUT"
-UP_QWEIGHT_BYTES = 1_212_416
-FULL_UP28_BYTES = 33_947_648
+UP_QWEIGHT_BYTES = 33_947_648
+BFULL_REQUEST_BYTES = UP_QWEIGHT_BYTES
+TOTAL_UP28_QWEIGHT_BYTES = len(LAYERS) * UP_QWEIGHT_BYTES
 BUDGETS = {
     "B8": 8 * 1024 * 1024,
     "B16": 16 * 1024 * 1024,
     "B24": 24 * 1024 * 1024,
-    "BFULL": FULL_UP28_BYTES,
+    "BFULL": BFULL_REQUEST_BYTES,
 }
 CONDITIONS = tuple(
     f"{mode}_UP28_{budget}"
@@ -159,7 +160,7 @@ def _module_authority(rows: Any) -> dict[tuple[int, str], dict[str, Any]]:
     expected = {(layer, role) for layer in LAYERS for role in ROLES}
     if set(result) != expected:
         raise BudgetPolicyError("missing role/module from exact 84-module authority")
-    if sum(result[(layer, "up_proj")]["qweight_bytes"] for layer in LAYERS) != FULL_UP28_BYTES:
+    if sum(result[(layer, "up_proj")]["qweight_bytes"] for layer in LAYERS) != TOTAL_UP28_QWEIGHT_BYTES:
         raise BudgetPolicyError("all-28 up_proj qweight byte total drift")
     return result
 
@@ -321,7 +322,7 @@ def _validate_run_policy(
     switches = receipt.get("switches")
     if not isinstance(switches, list) or len(switches) != 28 * len(PHASES):
         raise BudgetPolicyError("missing/duplicate exact 140 policy updates")
-    ratio = min(1.0, requested / FULL_UP28_BYTES)
+    ratio = min(1.0, requested / TOTAL_UP28_QWEIGHT_BYTES)
     by_attachment: dict[tuple[str, int], Mapping[str, Any]] = {}
     durations: list[float] = []
     region_by_key: dict[tuple[int, str], dict[str, int | bool]] = {}
