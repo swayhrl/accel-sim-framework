@@ -1,0 +1,807 @@
+--- a/src/abstract_hardware_model.h
++++ b/src/abstract_hardware_model.h
+@@ -880,6 +880,12 @@
+     m_vm_translation_applied = true;
+   }
+   void bypass_vm_translation() { m_vm_translation_applied = true; }
++  bool awma_no_wait_share_fallback() const {
++    return m_awma_no_wait_share_fallback;
++  }
++  void mark_awma_no_wait_share_fallback() {
++    m_awma_no_wait_share_fallback = true;
++  }
+   unsigned get_size() const { return m_req_size; }
+   const active_mask_t &get_warp_mask() const { return m_warp_mask; }
+   bool is_write() const { return m_write; }
+@@ -957,6 +963,7 @@
+   new_addr_type m_sim_va;
+   new_addr_type m_sim_pa;
+   bool m_vm_translation_applied;
++  bool m_awma_no_wait_share_fallback;
+   bool m_write;
+   unsigned m_req_size;  // bytes
+   mem_access_type m_type;
+--- a/src/abstract_hardware_model.cc
++++ b/src/abstract_hardware_model.cc
+@@ -54,6 +54,7 @@
+   m_sim_va = 0;
+   m_sim_pa = 0;
+   m_vm_translation_applied = false;
++  m_awma_no_wait_share_fallback = false;
+   m_req_size = 0;
+ }
+
+--- a/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/vm_translation.h
+@@ -185,6 +185,17 @@
+   TRANSLATION_ACCESS_ATOMIC = 2
+ };
+
++// Observational requester path classification. This never changes the
++// architectural translation source carried downstream.
++enum request_service_class {
++  REQUEST_SERVICE_UNOBSERVED = 0,
++  REQUEST_SERVICE_L1_HIT,
++  REQUEST_SERVICE_L2_HIT,
++  REQUEST_SERVICE_MSHR_MERGE,
++  REQUEST_SERVICE_PTW,
++  REQUEST_SERVICE_CLASS_COUNT
++};
++
+ // AWMA literature-guided mechanisms are runtime opt-in and mutually
+ // exclusive.  NONE is the source/default behavior and must remain the frozen
+ // V1 comparator.
+@@ -877,7 +888,8 @@
+                           translation_source *source = 0,
+                           translation_access access =
+                               TRANSLATION_ACCESS_READ,
+-                          bool consume_ready = true);
++                          bool consume_ready = true,
++                          request_service_class *service_class = 0);
+   // Retained for the accepted M1-M3 directed tests.  Simulator callers pass
+   // the real coalesced transaction size through the overload above.
+   lookup_result translate(unsigned sid, unsigned asid, uint64_t sim_va,
+@@ -963,15 +975,16 @@
+     uint64_t l2_complete_cycle;
+     uint64_t mshr_join_cycle;
+     object_class object;
++    bool mshr_merged;
+     waiter(unsigned s, uint64_t u, uint64_t entry, uint64_t l1_launch,
+            uint64_t l1_complete, bool l2_issued, uint64_t l2_launch,
+            uint64_t l2_complete, uint64_t mshr_join,
+-           object_class object_classification)
++           object_class object_classification, bool merged)
+         : sid(s), uid(u), entry_cycle(entry), l1_launch_cycle(l1_launch),
+           l1_complete_cycle(l1_complete), l2_issued(l2_issued),
+           l2_launch_cycle(l2_launch),
+           l2_complete_cycle(l2_complete), mshr_join_cycle(mshr_join),
+-          object(object_classification) {}
++          object(object_classification), mshr_merged(merged) {}
+   };
+   struct mshr_entry {
+     translation_key key;
+@@ -1025,6 +1038,7 @@
+     bool l1_completed;
+     bool l1_hit;
+     uint64_t l1_ppn;
++    bool mshr_merged;
+     lookup_operation(unsigned s, uint64_t u, const translation_key &k,
+                      uint64_t entry, uint64_t ready,
+                      uint64_t va, uint64_t bytes, uint64_t captured_generation,
+@@ -1043,18 +1057,20 @@
+           segment_completed(!launch_segment), segment_hit(false),
+           segment_ppn(0), segment_fallback_reason(0),
+           segment_join_accounted(false), l1_completed(false), l1_hit(false),
+-          l1_ppn(0) {}
++          l1_ppn(0), mshr_merged(false) {}
+   };
+   struct completed_outcome {
+     translation_key key;
+     translation_source source;
+     uint64_t generation;
++    bool mshr_merged;
+     completed_outcome(const translation_key &completed_key = translation_key(),
+                       translation_source completed_source =
+                           TRANSLATION_SOURCE_UNOBSERVED,
+-                      uint64_t completed_generation = 0)
++                      uint64_t completed_generation = 0,
++                      bool merged = false)
+         : key(completed_key), source(completed_source),
+-          generation(completed_generation) {}
++          generation(completed_generation), mshr_merged(merged) {}
+   };
+   lookup_operation *find_lookup(unsigned sid, uint64_t uid,
+                                 const translation_key &key);
+--- a/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/vm_translation.cc
+@@ -41,6 +41,23 @@
+   return text != 0 && text[0] != '\0' && strtoul(text, 0, 10) != 0;
+ }
+
++namespace {
++request_service_class classify_request_service(translation_source source,
++                                               bool mshr_merged) {
++  if (mshr_merged) return REQUEST_SERVICE_MSHR_MERGE;
++  switch (source) {
++    case TRANSLATION_SOURCE_L1_TLB_HIT:
++      return REQUEST_SERVICE_L1_HIT;
++    case TRANSLATION_SOURCE_L2_TLB_HIT:
++      return REQUEST_SERVICE_L2_HIT;
++    case TRANSLATION_SOURCE_PTW:
++      return REQUEST_SERVICE_PTW;
++    default:
++      return REQUEST_SERVICE_UNOBSERVED;
++  }
++}
++}  // namespace
++
+ unsigned awma_share_delivery_slots() {
+   const char *text = getenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS");
+   if (text == 0 || text[0] == '\0') return 1;
+@@ -2323,7 +2340,8 @@
+     if (existing->has_waiter(waiter_uid)) return TRANSLATION_PENDING;
+     existing->waiters.push_back(waiter(sid, waiter_uid, entry, l1_launch,
+                                        l1_complete, l2_issued, l2_launch,
+-                                       l2_complete, cycle, lookup->object));
++                                       l2_complete, cycle, lookup->object,
++                                       true));
+     ++m_stats.mshr_merges;
+     if (m_stats.object_attribution_enabled)
+       ++m_stats.object[lookup->object].mshr_merges;
+@@ -2345,7 +2363,8 @@
+                                lookup->object));
+   m_mshrs.back().waiters.push_back(waiter(sid, waiter_uid, entry, l1_launch,
+                                          l1_complete, l2_issued, l2_launch,
+-                                         l2_complete, cycle, lookup->object));
++                                         l2_complete, cycle, lookup->object,
++                                         false));
+   m_pwq.push_back(key);
+   ++m_stats.mshr_allocations;
+   if (m_stats.object_attribution_enabled)
+@@ -2430,9 +2449,11 @@
+                                                 uint64_t *sim_pa,
+                                                 translation_source *source,
+                                                 translation_access access,
+-                                                bool consume_ready) {
++                                                bool consume_ready,
++                                                request_service_class *service_class) {
+   assert(sid < m_l1s.size());
+   if (source != 0) *source = TRANSLATION_SOURCE_UNOBSERVED;
++  if (service_class != 0) *service_class = REQUEST_SERVICE_UNOBSERVED;
+   translation_key key(asid, vm_core::vpn(sim_va, m_config.page_size),
+                       m_config.page_size);
+   // Register the ASID on first admission.  A later global shootdown must
+@@ -2460,10 +2481,14 @@
+       *sim_pa = inflight->ppn * key.page_size +
+                 vm_core::page_offset(sim_va, key.page_size);
+       if (source != 0) *source = inflight->source;
++      if (service_class != 0)
++        *service_class = classify_request_service(inflight->source,
++                                                  inflight->mshr_merged);
+       return READY;
+     }
+     const uint64_t ppn = inflight->ppn;
+     const translation_source completed_source = inflight->source;
++    const bool completed_merged = inflight->mshr_merged;
+     note_requester_completion(
+         inflight->entry_cycle, inflight->l1_launch_cycle,
+         inflight->l1_complete_cycle, inflight->l2_issued,
+@@ -2478,6 +2503,9 @@
+         ppn * key.page_size + vm_core::page_offset(sim_va, key.page_size);
+     ++m_stats.completed;
+     if (source != 0) *source = completed_source;
++    if (service_class != 0)
++      *service_class = classify_request_service(completed_source,
++                                                completed_merged);
+     return READY;
+   }
+   // A previously accepted MSHR waiter waits without competing for either
+@@ -2530,6 +2558,7 @@
+   }
+   if (has_completed_outcome) {
+     m_lookups.back().source = completed->second.source;
++    m_lookups.back().mshr_merged = completed->second.mshr_merged;
+     m_completed_outcomes.erase(completed);
+   }
+   // Preserve the accepted zero-latency diagnostic behavior without making the
+@@ -2539,7 +2568,7 @@
+   inflight = find_lookup(sid, waiter_uid, key);
+   if (inflight != 0 && inflight->stage == LOOKUP_READY)
+     return translate(sid, asid, sim_va, request_bytes, cycle, waiter_uid,
+-                     sim_pa, source, access, consume_ready);
++                     sim_pa, source, access, consume_ready, service_class);
+   // Legacy zero-latency diagnostics historically surface MSHR/PWQ fullness
+   // synchronously.  Preserve that contract without allowing the non-zero
+   // service path to re-probe either TLB while a handoff is stalled.
+@@ -2610,7 +2639,8 @@
+       // that its residency originated in a PTW, for later cache correlation.
+       m_completed_outcomes[entry_waiter.uid] =
+           completed_outcome(key, TRANSLATION_SOURCE_PTW,
+-                            m_mshrs[index].generation);
++                            m_mshrs[index].generation,
++                            entry_waiter.mshr_merged);
+       ++m_stats.waiter_wakeups;
+     }
+     const uint64_t waiter_depth = m_mshrs[index].waiters.size();
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -31,11 +31,319 @@
+ // POSSIBILITY OF SUCH DAMAGE.
+
+ #include "shader.h"
++#include "gpu-sim.h"
++#include "vm_translation.h"
++#include <map>
+ #include <set>
+-namespace { struct vm_cov { unsigned long long admissions=0, translated=0, untranslated=0, unobserved=0; std::set<unsigned> all, translated_uids, untranslated_uids; }; vm_cov g_vm_cov;
+-static bool vm_cov_enabled(shader_core_ctx *c) { const char *e=getenv("GPGPUSIM_VM_COVERAGE_KERNEL_UID"); return e && c->get_kernel()!=NULL && unsigned(strtoul(e,0,10))==c->get_kernel()->get_uid(); }
+-static void vm_cov_note(shader_core_ctx *c,const mem_access_t &a) { if(!vm_cov_enabled(c)) return; ++g_vm_cov.admissions; g_vm_cov.all.insert(a.get_uid()); if(a.vm_translation_applied()){++g_vm_cov.translated;g_vm_cov.translated_uids.insert(a.get_uid());}else{++g_vm_cov.untranslated;g_vm_cov.untranslated_uids.insert(a.get_uid());} if(a.get_translation_telemetry_outcome()==0)++g_vm_cov.unobserved; }
+-static void vm_cov_print(FILE *f) { if(g_vm_cov.admissions) fprintf(f,"AWMA_VM_COVERAGE admissions=%llu translated=%llu untranslated=%llu unobserved=%llu unique=%llu translated_unique=%llu untranslated_unique=%llu\n",g_vm_cov.admissions,g_vm_cov.translated,g_vm_cov.untranslated,g_vm_cov.unobserved,g_vm_cov.all.size(),g_vm_cov.translated_uids.size(),g_vm_cov.untranslated_uids.size()); }
++
++namespace {
++
++static bool vm_cov_enabled(shader_core_ctx *c) {
++  const char *e = getenv("GPGPUSIM_VM_COVERAGE_KERNEL_UID");
++  return e && c->get_kernel() != NULL &&
++         unsigned(strtoul(e, 0, 10)) == c->get_kernel()->get_uid();
++}
++
++static uint64_t vm_observation_cycle(shader_core_ctx *c) {
++  return c->get_gpu()->gpu_sim_cycle + c->get_gpu()->gpu_tot_sim_cycle;
++}
++
++class awma_owner_wait_recorder {
++ public:
++  awma_owner_wait_recorder()
++      : m_admission_total(0), m_first_issue_latency_total(0),
++        m_first_issue_latency_max(0), m_all_issue_latency_total(0),
++        m_all_issue_latency_max(0), m_owner_attempt_total(0),
++        m_member_owner_wait_cycles(0), m_member_wait_completions(0),
++        m_owner_member_wait_latency_total(0),
++        m_owner_member_wait_latency_max(0),
++        m_head_block_owner_not_ready_cycles(0),
++        m_head_block_owner_ready_cycles(0), m_no_wait_fallback_members(0),
++        m_no_wait_fallback_wait_completions(0),
++        m_no_wait_fallback_wait_latency_total(0),
++        m_no_wait_fallback_wait_latency_max(0),
++        m_cohort_size_max(0),
++        m_admission_count_max(0), m_owner_attempt_max(0),
++        m_owner_service(), m_cohort_histogram(), m_wait_latency_histogram() {}
++
++  bool enabled(shader_core_ctx *core) const {
++    const char *text = getenv("GPGPUSIM_AWMA_OWNER_WAIT_DIAGNOSTICS");
++    return text != NULL && strtoul(text, NULL, 10) != 0 &&
++           vm_cov_enabled(core);
++  }
++
++  void note_resident(shader_core_ctx *core, const mem_access_t &access,
++                     uint64_t cycle) {
++    if (!enabled(core)) return;
++    if (m_first_resident_cycle.find(access.get_uid()) ==
++        m_first_resident_cycle.end())
++      m_first_resident_cycle[access.get_uid()] = cycle;
++  }
++
++  void note_admission(shader_core_ctx *core, const mem_access_t &access,
++                      uint64_t cycle) {
++    if (!enabled(core)) return;
++    note_resident(core, access, cycle);
++    const unsigned uid = access.get_uid();
++    unsigned &count = m_admissions_by_uid[uid];
++    ++count;
++    ++m_admission_total;
++    if (count > m_admission_count_max) m_admission_count_max = count;
++    const uint64_t latency = cycle - m_first_resident_cycle[uid];
++    m_all_issue_latency_total += latency;
++    if (latency > m_all_issue_latency_max) m_all_issue_latency_max = latency;
++    if (count == 1) {
++      m_first_issue_latency_total += latency;
++      if (latency > m_first_issue_latency_max)
++        m_first_issue_latency_max = latency;
++    }
++  }
++
++  void note_cohort(shader_core_ctx *core, unsigned owner_uid,
++                   unsigned cohort_size) {
++    if (!enabled(core) || !m_cohort_owners.insert(owner_uid).second) return;
++    if (cohort_size > m_cohort_size_max) m_cohort_size_max = cohort_size;
++    unsigned bucket = cohort_size <= 2 ? 0 : cohort_size == 3 ? 1
++                      : cohort_size == 4 ? 2 : cohort_size <= 8 ? 3
++                      : cohort_size <= 16 ? 4 : 5;
++    ++m_cohort_histogram[bucket];
++  }
++
++  void note_owner_attempt(shader_core_ctx *core, unsigned owner_uid) {
++    if (!enabled(core)) return;
++    unsigned &count = m_owner_attempts_by_uid[owner_uid];
++    ++count;
++    ++m_owner_attempt_total;
++    if (count > m_owner_attempt_max) m_owner_attempt_max = count;
++  }
++
++  void note_owner_ready(shader_core_ctx *core,
++                        vm_translation::request_service_class service) {
++    if (!enabled(core)) return;
++    assert(service < vm_translation::REQUEST_SERVICE_CLASS_COUNT);
++    ++m_owner_service[service];
++  }
++
++  void note_member_owner_wait(shader_core_ctx *core, unsigned member_uid,
++                              uint64_t cycle, bool is_head) {
++    if (!enabled(core)) return;
++    if (m_member_wait_start.find(member_uid) == m_member_wait_start.end())
++      m_member_wait_start[member_uid] = cycle;
++    ++m_member_owner_wait_cycles;
++    if (is_head) ++m_head_block_owner_not_ready_cycles;
++  }
++
++  void note_member_ready_head_block(shader_core_ctx *core) {
++    if (enabled(core)) ++m_head_block_owner_ready_cycles;
++  }
++
++  void note_no_wait_fallback(shader_core_ctx *core, unsigned member_uid,
++                             uint64_t cycle) {
++    if (!enabled(core)) return;
++    ++m_no_wait_fallback_members;
++    std::map<unsigned, uint64_t>::iterator found =
++        m_member_wait_start.find(member_uid);
++    if (found == m_member_wait_start.end()) return;
++    const uint64_t latency = cycle - found->second;
++    m_member_wait_start.erase(found);
++    ++m_no_wait_fallback_wait_completions;
++    m_no_wait_fallback_wait_latency_total += latency;
++    if (latency > m_no_wait_fallback_wait_latency_max)
++      m_no_wait_fallback_wait_latency_max = latency;
++  }
++
++  void note_member_delivery(shader_core_ctx *core, unsigned member_uid,
++                            uint64_t cycle) {
++    if (!enabled(core)) return;
++    std::map<unsigned, uint64_t>::iterator found =
++        m_member_wait_start.find(member_uid);
++    if (found == m_member_wait_start.end()) return;
++    const uint64_t latency = cycle - found->second;
++    m_member_wait_start.erase(found);
++    ++m_member_wait_completions;
++    m_owner_member_wait_latency_total += latency;
++    if (latency > m_owner_member_wait_latency_max)
++      m_owner_member_wait_latency_max = latency;
++    const unsigned bucket = latency == 0 ? 0 : latency == 1 ? 1
++                            : latency <= 4 ? 2 : latency <= 9 ? 3 : 4;
++    ++m_wait_latency_histogram[bucket];
++  }
++
++  void print(FILE *fout) const {
++    if (m_admission_total == 0) return;
++    uint64_t repeated_admissions = 0;
++    uint64_t readmitted_uids = 0;
++    uint64_t admission_histogram[5] = {};
++    for (std::map<unsigned, unsigned>::const_iterator it =
++             m_admissions_by_uid.begin();
++         it != m_admissions_by_uid.end(); ++it) {
++      const unsigned count = it->second;
++      if (count > 1) {
++        repeated_admissions += count - 1;
++        ++readmitted_uids;
++      }
++      ++admission_histogram[count >= 5 ? 4 : count - 1];
++    }
++    uint64_t owner_retry_attempts = 0;
++    uint64_t retried_owner_uids = 0;
++    for (std::map<unsigned, unsigned>::const_iterator it =
++             m_owner_attempts_by_uid.begin();
++         it != m_owner_attempts_by_uid.end(); ++it)
++      if (it->second > 1) {
++        owner_retry_attempts += it->second - 1;
++        ++retried_owner_uids;
++      }
++    fprintf(fout, "awma_owner_wait_admissions = %llu\n",
++            (unsigned long long)m_admission_total);
++    fprintf(fout, "awma_owner_wait_unique_admitted_uids = %llu\n",
++            (unsigned long long)m_admissions_by_uid.size());
++    fprintf(fout, "awma_owner_wait_repeated_admissions = %llu\n",
++            (unsigned long long)repeated_admissions);
++    fprintf(fout, "awma_owner_wait_readmitted_uids = %llu\n",
++            (unsigned long long)readmitted_uids);
++    fprintf(fout, "awma_owner_wait_admission_count_max = %u\n",
++            m_admission_count_max);
++    for (unsigned i = 0; i < 5; ++i)
++      fprintf(fout, "awma_owner_wait_admission_hist_%s = %llu\n",
++              i == 0 ? "1" : i == 1 ? "2" : i == 2 ? "3"
++              : i == 3 ? "4" : "5_plus",
++              (unsigned long long)admission_histogram[i]);
++    fprintf(fout, "awma_owner_wait_owner_attempts = %llu\n",
++            (unsigned long long)m_owner_attempt_total);
++    fprintf(fout, "awma_owner_wait_owner_retry_attempts = %llu\n",
++            (unsigned long long)owner_retry_attempts);
++    fprintf(fout, "awma_owner_wait_retried_owner_uids = %llu\n",
++            (unsigned long long)retried_owner_uids);
++    fprintf(fout, "awma_owner_wait_owner_attempt_max = %u\n",
++            m_owner_attempt_max);
++    fprintf(fout, "awma_owner_wait_member_owner_wait_cycles = %llu\n",
++            (unsigned long long)m_member_owner_wait_cycles);
++    fprintf(fout, "awma_owner_wait_member_wait_completions = %llu\n",
++            (unsigned long long)m_member_wait_completions);
++    fprintf(fout, "awma_owner_wait_latency_total = %llu\n",
++            (unsigned long long)m_owner_member_wait_latency_total);
++    fprintf(fout, "awma_owner_wait_latency_max = %llu\n",
++            (unsigned long long)m_owner_member_wait_latency_max);
++    fprintf(fout, "awma_owner_wait_head_block_owner_not_ready_cycles = %llu\n",
++            (unsigned long long)m_head_block_owner_not_ready_cycles);
++    fprintf(fout, "awma_owner_wait_head_block_owner_ready_cycles = %llu\n",
++            (unsigned long long)m_head_block_owner_ready_cycles);
++    fprintf(fout, "awma_owner_wait_head_block_total_cycles = %llu\n",
++            (unsigned long long)(m_head_block_owner_not_ready_cycles +
++                                 m_head_block_owner_ready_cycles));
++    fprintf(fout, "awma_owner_wait_no_wait_fallback_members = %llu\n",
++            (unsigned long long)m_no_wait_fallback_members);
++    fprintf(fout, "awma_owner_wait_no_wait_fallback_wait_completions = %llu\n",
++            (unsigned long long)m_no_wait_fallback_wait_completions);
++    fprintf(fout, "awma_owner_wait_no_wait_fallback_wait_latency_total = %llu\n",
++            (unsigned long long)m_no_wait_fallback_wait_latency_total);
++    fprintf(fout, "awma_owner_wait_no_wait_fallback_wait_latency_max = %llu\n",
++            (unsigned long long)m_no_wait_fallback_wait_latency_max);
++    fprintf(fout, "awma_owner_wait_pending_members_final = %llu\n",
++            (unsigned long long)m_member_wait_start.size());
++    fprintf(fout, "awma_owner_wait_first_issue_latency_total = %llu\n",
++            (unsigned long long)m_first_issue_latency_total);
++    fprintf(fout, "awma_owner_wait_first_issue_latency_max = %llu\n",
++            (unsigned long long)m_first_issue_latency_max);
++    fprintf(fout, "awma_owner_wait_all_issue_latency_total = %llu\n",
++            (unsigned long long)m_all_issue_latency_total);
++    fprintf(fout, "awma_owner_wait_all_issue_latency_max = %llu\n",
++            (unsigned long long)m_all_issue_latency_max);
++    fprintf(fout, "awma_owner_wait_cohort_size_max = %u\n", m_cohort_size_max);
++    static const char *cohort_names[] = {"2", "3", "4", "5_8", "9_16",
++                                         "17_32"};
++    for (unsigned i = 0; i < 6; ++i)
++      fprintf(fout, "awma_owner_wait_cohort_hist_%s = %llu\n",
++              cohort_names[i], (unsigned long long)m_cohort_histogram[i]);
++    static const char *latency_names[] = {"0", "1", "2_4", "5_9",
++                                          "10_plus"};
++    for (unsigned i = 0; i < 5; ++i)
++      fprintf(fout, "awma_owner_wait_latency_hist_%s = %llu\n",
++              latency_names[i], (unsigned long long)m_wait_latency_histogram[i]);
++    fprintf(fout, "awma_owner_wait_owner_service_l1 = %llu\n",
++            (unsigned long long)
++                m_owner_service[vm_translation::REQUEST_SERVICE_L1_HIT]);
++    fprintf(fout, "awma_owner_wait_owner_service_l2 = %llu\n",
++            (unsigned long long)
++                m_owner_service[vm_translation::REQUEST_SERVICE_L2_HIT]);
++    fprintf(fout, "awma_owner_wait_owner_service_mshr_merge = %llu\n",
++            (unsigned long long)
++                m_owner_service[vm_translation::REQUEST_SERVICE_MSHR_MERGE]);
++    fprintf(fout, "awma_owner_wait_owner_service_ptw = %llu\n",
++            (unsigned long long)
++                m_owner_service[vm_translation::REQUEST_SERVICE_PTW]);
++    fprintf(fout, "awma_owner_wait_owner_service_unobserved = %llu\n",
++            (unsigned long long)
++                m_owner_service[vm_translation::REQUEST_SERVICE_UNOBSERVED]);
++  }
++
++ private:
++  std::map<unsigned, uint64_t> m_first_resident_cycle;
++  std::map<unsigned, unsigned> m_admissions_by_uid;
++  std::map<unsigned, unsigned> m_owner_attempts_by_uid;
++  std::map<unsigned, uint64_t> m_member_wait_start;
++  std::set<unsigned> m_cohort_owners;
++  uint64_t m_admission_total;
++  uint64_t m_first_issue_latency_total;
++  uint64_t m_first_issue_latency_max;
++  uint64_t m_all_issue_latency_total;
++  uint64_t m_all_issue_latency_max;
++  uint64_t m_owner_attempt_total;
++  uint64_t m_member_owner_wait_cycles;
++  uint64_t m_member_wait_completions;
++  uint64_t m_owner_member_wait_latency_total;
++  uint64_t m_owner_member_wait_latency_max;
++  uint64_t m_head_block_owner_not_ready_cycles;
++  uint64_t m_head_block_owner_ready_cycles;
++  uint64_t m_no_wait_fallback_members;
++  uint64_t m_no_wait_fallback_wait_completions;
++  uint64_t m_no_wait_fallback_wait_latency_total;
++  uint64_t m_no_wait_fallback_wait_latency_max;
++  unsigned m_cohort_size_max;
++  unsigned m_admission_count_max;
++  unsigned m_owner_attempt_max;
++  uint64_t m_owner_service[vm_translation::REQUEST_SERVICE_CLASS_COUNT];
++  uint64_t m_cohort_histogram[6];
++  uint64_t m_wait_latency_histogram[5];
++};
++
++awma_owner_wait_recorder g_owner_wait;
++
++struct vm_cov {
++  unsigned long long admissions = 0, translated = 0, untranslated = 0,
++                     unobserved = 0;
++  std::set<unsigned> all, translated_uids, untranslated_uids;
++};
++vm_cov g_vm_cov;
++
++static void vm_cov_note(shader_core_ctx *c, const mem_access_t &a) {
++  if (!vm_cov_enabled(c)) return;
++  ++g_vm_cov.admissions;
++  g_vm_cov.all.insert(a.get_uid());
++  if (a.vm_translation_applied()) {
++    ++g_vm_cov.translated;
++    g_vm_cov.translated_uids.insert(a.get_uid());
++  } else {
++    ++g_vm_cov.untranslated;
++    g_vm_cov.untranslated_uids.insert(a.get_uid());
++  }
++  if (a.get_translation_telemetry_outcome() == 0) ++g_vm_cov.unobserved;
++  g_owner_wait.note_admission(c, a, vm_observation_cycle(c));
++}
++
++static void vm_cov_print(FILE *f) {
++  if (g_vm_cov.admissions)
++    fprintf(f,
++            "AWMA_VM_COVERAGE admissions=%llu translated=%llu "
++            "untranslated=%llu unobserved=%llu unique=%llu "
++            "translated_unique=%llu untranslated_unique=%llu\n",
++            g_vm_cov.admissions, g_vm_cov.translated, g_vm_cov.untranslated,
++            g_vm_cov.unobserved,
++            (unsigned long long)g_vm_cov.all.size(),
++            (unsigned long long)g_vm_cov.translated_uids.size(),
++            (unsigned long long)g_vm_cov.untranslated_uids.size());
++  g_owner_wait.print(f);
++}
+ }
+ #include "vm_core.h"
+ #include <float.h>
+@@ -2523,10 +2831,13 @@
+   const bool share_service_control =
+       share_ablation_text != NULL &&
+       strcmp(share_ablation_text, "service_control") == 0;
++  const bool ready_only_no_wait_control =
++      share_ablation_text != NULL &&
++      strcmp(share_ablation_text, "ready_only_no_wait") == 0;
+   assert(share_ablation_text == NULL || share_ablation_text[0] == '\0' ||
+          strcmp(share_ablation_text, "none") == 0 ||
+-         share_service_control);
+-  assert(!share_service_control ||
++         share_service_control || ready_only_no_wait_control);
++  assert((!share_service_control && !ready_only_no_wait_control) ||
+          candidate_mode ==
+              vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE);
+   assert(share_delivery_slots == 1 ||
+@@ -2585,11 +2896,15 @@
+                            vm_translation::TRANSLATION_ACCESS_READ);
+     const uint64_t now = m_core->get_gpu()->gpu_sim_cycle +
+                          m_core->get_gpu()->gpu_tot_sim_cycle;
++    for (std::list<mem_access_t>::iterator observed = entries.begin();
++         observed != entries.end(); ++observed)
++      g_owner_wait.note_resident(m_core, *observed, now);
+     if (candidate_mode ==
+         vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE) {
+       const uint64_t generation =
+           m_gpu->vm_translation()->translation_generation(0);
+       unsigned delivered_members = 0;
++      mem_access_t *head_access = &entries.back();
+       // The front-most resident access is the owner for its page.  Since the
+       // accessq consumes from the back, the owner remains resident until all
+       // earlier members have received their result.  The configured one or
+@@ -2614,7 +2929,7 @@
+           }
+         }
+         if (earlier_equivalent) continue;
+-        bool has_member = false;
++        unsigned cohort_size = 1;
+         std::list<mem_access_t>::iterator member = owner;
+         ++member;
+         for (; member != entries.end(); ++member) {
+@@ -2622,24 +2937,39 @@
+                   0, owner->get_sim_va(), owner->get_size(), candidate_access,
+                   generation, 0, member->get_sim_va(), member->get_size(),
+                   candidate_access, generation,
+-                  m_config->gpgpu_vm_page_size)) {
+-            has_member = true;
+-            break;
+-          }
++                  m_config->gpgpu_vm_page_size))
++            ++cohort_size;
+         }
+-        if (!has_member) continue;
++        if (cohort_size == 1) continue;
++        g_owner_wait.note_cohort(m_core, owner->get_uid(), cohort_size);
+         if (!owner->vm_translation_applied()) {
++          member = owner;
++          ++member;
++          for (; member != entries.end(); ++member)
++            if (!member->vm_translation_applied() &&
++                !member->awma_no_wait_share_fallback() &&
++                vm_translation::same_page_share_compatible(
++                    0, owner->get_sim_va(), owner->get_size(),
++                    candidate_access, generation, 0, member->get_sim_va(),
++                    member->get_size(), candidate_access, generation,
++                    m_config->gpgpu_vm_page_size))
++              g_owner_wait.note_member_owner_wait(
++                  m_core, member->get_uid(), now, &(*member) == head_access);
+           uint64_t owner_pa = 0;
+           vm_translation::translation_source owner_source =
+               vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++          vm_translation::request_service_class owner_service =
++              vm_translation::REQUEST_SERVICE_UNOBSERVED;
++          g_owner_wait.note_owner_attempt(m_core, owner->get_uid());
+           const vm_translation::lookup_result owner_result =
+               m_gpu->vm_translation()->translate(
+                   m_sid, 0, owner->get_sim_va(), owner->get_size(), now,
+                   owner->get_uid(), &owner_pa, &owner_source,
+-                  candidate_access, true);
++                  candidate_access, true, &owner_service);
+           if (owner_result == vm_translation::READY) {
+             apply_ready_translation(*owner, owner_pa, owner_source);
+             m_gpu->vm_translation()->note_same_page_share_owner_ready();
++            g_owner_wait.note_owner_ready(m_core, owner_service);
+           }
+         }
+         if (!owner->vm_translation_applied() ||
+@@ -2650,6 +2980,7 @@
+         ++member;
+         for (; member != entries.end(); ++member) {
+           if (member->vm_translation_applied()) continue;
++          if (member->awma_no_wait_share_fallback()) continue;
+           if (!vm_translation::same_page_share_compatible(
+                   0, owner->get_sim_va(), owner->get_size(), candidate_access,
+                   generation, 0, member->get_sim_va(), member->get_size(),
+@@ -2666,6 +2997,7 @@
+               static_cast<vm_translation::translation_source>(
+                   owner->get_translation_telemetry_outcome()));
+           m_gpu->vm_translation()->note_same_page_share_delivery();
++          g_owner_wait.note_member_delivery(m_core, member->get_uid(), now);
+           ++delivered_members;
+           if (delivered_members >= share_delivery_slots) break;
+         }
+@@ -2692,12 +3024,16 @@
+           ++member;
+           for (; member != entries.end(); ++member) {
+             if (member->vm_translation_applied()) continue;
++            if (member->awma_no_wait_share_fallback()) continue;
+             if (vm_translation::same_page_share_compatible(
+                     0, owner->get_sim_va(), owner->get_size(),
+                     candidate_access, generation, 0, member->get_sim_va(),
+                     member->get_size(), candidate_access, generation,
+-                    m_config->gpgpu_vm_page_size))
++                    m_config->gpgpu_vm_page_size)) {
+               ++delivery_backlog;
++              if (&(*member) == head_access)
++                g_owner_wait.note_member_ready_head_block(m_core);
++            }
+           }
+         }
+         m_gpu->vm_translation()->note_same_page_share_delivery_state(
+@@ -2718,6 +3054,11 @@
+         continue;
+       if (candidate_mode ==
+           vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE) {
++        if (ready_only_no_wait_control &&
++            candidate.awma_no_wait_share_fallback()) {
++          // The diagnostic control makes this member use the frozen baseline
++          // path and permanently excludes it from later shared completion.
++        } else {
+         unsigned equivalent = 0;
+         const uint64_t generation =
+             m_gpu->vm_translation()->translation_generation(0);
+@@ -2730,6 +3071,7 @@
+                   m_config->gpgpu_vm_page_size))
+             ++equivalent;
+         if (equivalent > 1) continue;
++        }
+       }
+       uint64_t ignored_pa = 0;
+       vm_translation::translation_source ignored_source =
+@@ -2757,6 +3099,7 @@
+       !access.vm_translation_applied()) {
+     unsigned equivalent = 0;
+     bool owner_applied = false;
++    mem_access_t *cohort_owner = NULL;
+     const uint64_t generation =
+         m_gpu->vm_translation()->translation_generation(0);
+     const vm_translation::translation_access head_access =
+@@ -2770,10 +3113,20 @@
+               0, access.get_sim_va(), access.get_size(), head_access,
+               generation, 0, peer->get_sim_va(), peer->get_size(),
+               head_access, generation, m_config->gpgpu_vm_page_size)) {
+-        if (equivalent == 0) owner_applied = peer->vm_translation_applied();
++        if (equivalent == 0) {
++          owner_applied = peer->vm_translation_applied();
++          cohort_owner = &(*peer);
++        }
+         ++equivalent;
+       }
+-    if (equivalent > 1 && !(share_service_control && owner_applied)) {
++    if (equivalent > 1 && !access.awma_no_wait_share_fallback() &&
++        !(share_service_control && owner_applied)) {
++      if (ready_only_no_wait_control && !owner_applied &&
++          cohort_owner != &access) {
++        access.mark_awma_no_wait_share_fallback();
++        g_owner_wait.note_no_wait_fallback(m_core, access.get_uid(),
++                                           vm_observation_cycle(m_core));
++      } else {
+       // A cohort member must never launch an independent head-path lookup.
+       // It waits for the bounded owner/member delivery path above, otherwise
+       // its later shared application would strand the independent READY entry.
+@@ -2783,6 +3136,7 @@
+       access_type = inst.space.is_local() ? (iswrite ? L_MEM_ST : L_MEM_LD)
+                                           : (iswrite ? G_MEM_ST : G_MEM_LD);
+       return false;
++      }
+     }
+   }
+   if (!access.vm_translation_applied()) {
+--- a/tests/awma_literature_mechanism_test.cc
++++ b/tests/awma_literature_mechanism_test.cc
+@@ -9,6 +9,15 @@
+   return vm_translation::translation_key(0, vpn, 64ULL * 1024ULL);
+ }
+
++static vm_translation::translation_config service_config() {
++  const uint64_t page = 64ULL * 1024ULL;
++  return vm_translation::translation_config(
++      1, page, vm_translation::tlb_config(4, 4, 1),
++      vm_translation::tlb_config(8, 8, 1), 8, 8, 1, 1,
++      vm_translation::page_table_config(), 0,
++      vm_translation::pwc_config(vm_translation::PWC_OFF, 0, 1), 1, 1);
++}
++
+ int main() {
+   const uint64_t page = 64ULL * 1024ULL;
+
+@@ -47,6 +56,57 @@
+       7, 3 * page, 32, vm_translation::TRANSLATION_ACCESS_READ, 9,
+       page));
+
++  // Requester-path telemetry distinguishes a walk owner, an outstanding-MSHR
++  // merger, and a later ordinary L1 hit without changing translation output.
++  unsetenv("GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
++  vm_translation::translation_controller service_vm(service_config());
++  uint64_t first_pa = 0;
++  uint64_t merged_pa = 0;
++  vm_translation::translation_source first_source =
++      vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++  vm_translation::translation_source merged_source =
++      vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++  vm_translation::request_service_class first_service =
++      vm_translation::REQUEST_SERVICE_UNOBSERVED;
++  vm_translation::request_service_class merged_service =
++      vm_translation::REQUEST_SERVICE_UNOBSERVED;
++  bool first_ready = false;
++  bool merged_ready = false;
++  for (uint64_t cycle = 0; cycle < 50 && (!first_ready || !merged_ready);
++       ++cycle) {
++    if (!first_ready)
++      first_ready = service_vm.translate(
++          0, 0, 40 * page + 1, 32, cycle, 1001, &first_pa, &first_source,
++          vm_translation::TRANSLATION_ACCESS_READ, true, &first_service) ==
++                    vm_translation::READY;
++    if (!merged_ready)
++      merged_ready = service_vm.translate(
++          0, 0, 40 * page + 2, 32, cycle, 1002, &merged_pa,
++          &merged_source, vm_translation::TRANSLATION_ACCESS_READ, true,
++          &merged_service) == vm_translation::READY;
++    service_vm.cycle(cycle);
++  }
++  assert(first_ready && merged_ready);
++  assert(first_pa == 40 * page + 1 && merged_pa == 40 * page + 2);
++  assert(first_service == vm_translation::REQUEST_SERVICE_PTW);
++  assert(merged_service == vm_translation::REQUEST_SERVICE_MSHR_MERGE);
++  uint64_t hit_pa = 0;
++  vm_translation::translation_source hit_source =
++      vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++  vm_translation::request_service_class hit_service =
++      vm_translation::REQUEST_SERVICE_UNOBSERVED;
++  bool hit_ready = false;
++  for (uint64_t cycle = 50; cycle < 60 && !hit_ready; ++cycle) {
++    hit_ready = service_vm.translate(
++        0, 0, 40 * page + 3, 32, cycle, 1003, &hit_pa, &hit_source,
++        vm_translation::TRANSLATION_ACCESS_READ, true, &hit_service) ==
++                vm_translation::READY;
++    service_vm.cycle(cycle);
++  }
++  assert(hit_ready && hit_pa == 40 * page + 3);
++  assert(hit_service == vm_translation::REQUEST_SERVICE_L1_HIT);
++  assert(service_vm.quiescent_invariants_hold());
++
+   // OFF is exact ordinary LRU and allocates no candidate state.
+   unsetenv("GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
+   vm_translation::set_associative_tlb off(
