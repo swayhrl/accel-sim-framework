@@ -2,17 +2,21 @@
 
 ## Status
 
-**ACTIVE — BOUNDED DOWNSTREAM HEADROOM; UNATTENDED SOLVE-AND-CONTINUE**
+**ACTIVE — BUFFERING × MEMORY-SERVICE INTERACTION; UNATTENDED SOLVE-AND-CONTINUE**
 
-Do not restart the current scientific program and do not reset any branch.
+Do not restart the scientific program and do not reset any branch.
 
-This file is the executable specification for the next unattended ~20-hour window.
+This specification supersedes the earlier rule that queue failure should immediately terminate downstream investigation. The accepted BICG/OO queue intervention changes the interpretation: queue capacity alone is insufficient, but a queue can be a buffering symptom of a slower downstream service path.
 
 ## Objective
 
-Determine whether a source-supported downstream resource enlargement can recover DTC performance **while keeping the default DTC lower-outstanding cap at 8192**.
+Determine whether DTC performance under the original high injection cap can be recovered by:
 
-This stage is not a new broad sweep.
+1. queue buffering headroom;
+2. one source-supported deeper memory-service headroom dimension;
+3. or their interaction.
+
+This remains a small bounded study, not a broad memory-system sweep.
 
 ## Source anchors
 
@@ -22,19 +26,19 @@ Before work:
 2. Verify actual remote heads.
 3. Use newer remote state if any branch advanced; record the delta, never reset.
 
-Review anchors at coordination time:
+Current review anchors:
 
 - SG1: `e909f90a`
-- SG3: `4f6e136e`
-- SG4A: `42735258`
+- SG3: `f1186336`
 - SG5: `f4077f46`
+- SG4A: use fetched latest remote read-only state.
 
 Read:
 
 1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 2. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
 3. this file
-4. SG3 source/config/telemetry audit files on the downstream branch.
+4. SG3 Phase-A telemetry, queue execution plan, partial queue snapshot, and source/config audit files.
 
 ## Worktree / branch isolation
 
@@ -42,181 +46,217 @@ Execution/evidence branch:
 
 `hrl/iscas2027-dtc-sg3-downstream-localization-v0`
 
-Use an isolated SG3 worktree.
+Use the existing isolated SG3 worktree.
 
-Treat:
+Treat SG1, SG4A, SG5, FAST64, Lane-E, and TC80 evidence as read-only.
 
-- SG1,
-- SG4A,
-- SG5,
-- frozen FAST64/Lane-E/TC80 evidence
+Do not modify files in `docs/dtc_l1/chatgpt_handoff/`.
 
-as read-only inputs for this stage.
+---
 
-Do not modify ChatGPT-owned files in `docs/dtc_l1/chatgpt_handoff/`.
+# Phase B — finish the already-authorized queue family
 
-## Phase A — mandatory zero-simulation telemetry table
+Do not stop or relaunch the already-running immutable attempts.
 
-**Do not launch a simulator before Phase A is complete and committed.**
+Current accepted partial row:
 
-From accepted SG3 BICG rows, build a paper-facing table for IO and OO at exactly:
+- BICG/OO queue=128: strict PASS
+  - `MISS_QUEUE_FULL` 43,594,150 -> 0
+  - cycles 47,231,655 -> 47,588,121 (+0.75%)
+  - average lower lifetime 5,612.70 -> 5,692.26
 
-- default
-- L2 capacity 2x
-- L2 MSHR entries 4x
-- DTC cap 2048
-- DTC cap 512
+Interpret this only as:
 
-Required metrics:
+> queue capacity alone is insufficient for BICG/OO.
+
+Do not interpret it as proof that queue pressure is irrelevant to a buffering × service interaction.
+
+Let these existing rows terminate naturally and strict-validate immediately:
+
+- BICG/IO queue=128
+- GESUMMV/IO queue=128
+- GESUMMV/OO queue=128
+
+No new queue point is authorized.
+
+---
+
+# Phase C0 — zero-simulation memory-side source + telemetry audit
+
+Run this analysis in parallel with the remaining Phase-B simulations.
+
+**Do not launch a new memory-side simulator row until C0 is committed.**
+
+## C0.1 Source-map the downstream path after the L2 miss queue
+
+Audit current source and resolved FAST64 configuration for:
+
+- memory-partition queues and admission;
+- interconnect-to-memory path;
+- DRAM scheduler queues;
+- DRAM request/return queues;
+- DRAM command/data path;
+- DRAM timing/latency fields;
+- memory bandwidth/service-width fields.
+
+Record exact parser/source semantics and scope.
+
+## C0.2 Extract existing accepted telemetry
+
+From accepted BICG IO/OO:
+
+- default cap=8192
+- cap=2048
+- cap=512
+
+extract any source-defined metrics that actually exist for:
+
+- memory-partition queue occupancy/full/stall;
+- DRAM scheduler queue occupancy/full/stall;
+- memory-fetch latency;
+- DRAM queueing latency;
+- DRAM service latency;
+- memory bandwidth / data utilization;
+- read/write command utilization/counts;
+- interconnect-to-memory or partition stalls;
+- DRAM bank activity/efficiency.
+
+If a metric is not emitted or cannot be reconstructed exactly, write `NOT_AVAILABLE`.
+
+Do not infer a counter from unrelated statistics.
+
+## C0.3 Select at most one memory-service headroom knob
+
+The selected knob must:
+
+1. have source-proven semantics;
+2. change one interpretable service-rate or service-latency dimension;
+3. leave DTC semantics unchanged;
+4. leave SM count, memory-channel count, L2-bank count, address mapping, trace identity, L2 capacity, L2 MSHR, and queue definition unchanged;
+5. have at least some source/telemetry reason to be relevant;
+6. be described as an idealized upper-bound headroom probe, not a production point.
+
+Do not choose another queue-capacity knob as the M dimension.
+
+Do not change multiple DRAM timing fields together.
+
+Do not use perfect/infinite memory.
+
+If no candidate satisfies all six rules, record:
+
+`NO_CLEAN_MEMORY_SERVICE_HEADROOM_KNOB`
+
+finish the queue family, build the review pack, and STOP without further simulation.
+
+## C0 deliverables
+
+Commit/push before any C1 run:
+
+- `SG3_MEMORY_SIDE_SOURCE_MAP_V1.tsv`
+- `SG3_BICG_MEMORY_SIDE_TELEMETRY_V1.tsv`
+- `SG3_MEMORY_SERVICE_KNOB_SELECTION_V1.md`
+
+The selection document must state:
+
+- selected knob and exact default/headroom values;
+- source semantics;
+- what it changes;
+- what it explicitly does not change;
+- supporting telemetry;
+- expected interpretation;
+- forbidden overclaims.
+
+---
+
+# Phase C1 — predeclared BICG queue × memory-service 2×2
+
+Only if C0 selects one valid memory-service knob.
+
+For each mode IO and OO define:
+
+- Q0M0 = queue32 + default memory service — existing accepted baseline
+- Q1M0 = queue128 + default memory service — current/accepted Phase-B row
+- Q0M1 = queue32 + selected memory-service headroom — NEW
+- Q1M1 = queue128 + selected memory-service headroom — NEW
+
+Thus at most **4 new BICG simulator rows** are authorized.
+
+## Rolling launch rule
+
+- Q0M1 for BICG IO/OO may launch immediately after C0 is committed.
+- Q1M1 for a mode may launch only after that mode's Q1M0 queue=128 row has strict PASS.
+- Do not wait for GESUMMV queue rows to finish before launching eligible BICG C1 rows.
+
+All C1 rows keep:
+
+- DTC cap = 8192
+- default L2 capacity
+- default L2 MSHR
+- same L2 atom/line geometry
+- same workload/trace identity
+- same observer semantics
+
+Only Q and the selected M dimension may differ according to the 2×2.
+
+## Required C1 analysis
+
+For each mode report:
 
 - cycles
-- instructions
-- DTC lower outstanding average
-- DTC lower outstanding peak
-- lower-request average lifetime
-- lower-request maximum lifetime
-- L2 MSHR average occupancy
-- L2 miss-queue average occupancy
-- L2 total accesses
-- L2 total misses
-- L2 total pending hits
-- `MSHR_ENTRY_FAIL`
-- `MSHR_MERGE_ENTRY_FAIL`
-- `MISS_QUEUE_FULL`
-- `LINE_ALLOC_FAIL`
-- `MSHR_RW_PENDING`
-- data-port utilization
-- fill-port utilization
-- classified resource reservation-failure total
+- cycle change vs Q0M0
+- lower-request average/max lifetime
+- queue-full / queue occupancy
+- selected memory-side pressure metric(s)
+- any other source-defined downstream stalls used in C0
 
-### Required formulas
+Explicitly evaluate:
 
-Preserve raw counters and show exact formulas for derived values:
+1. M-only effect: Q0M1 vs Q0M0
+2. Q-only effect: Q1M0 vs Q0M0
+3. Q+M effect: Q1M1 vs Q0M0
+4. interaction: whether Q1M1 provides additional recovery beyond the better single intervention
 
-- avg DTC outstanding = outstanding integral / core tick samples
-- avg L2 MSHR occupancy per bank = MSHR occupancy integral / L2-bank tick samples
-- avg miss-queue occupancy per bank = queue occupancy integral / L2-bank tick samples
-- avg lower lifetime = lifetime sum / completed lower requests
-- cycle change = row cycles / same-mode default cycles - 1
+No causal statement before strict PASS of the needed cells.
 
-Do not infer missing fields.
+---
 
-### Resource-failure boundary
+# Phase C2 — bounded GESUMMV independent validation
 
-Merge-tag identity-guard retries are non-resource telemetry.
+GESUMMV is not an automatic full 2×2.
 
-Exclude them from:
+Use a predeclared 5% paper-relevance gate, set **before** any C1 memory-headroom result:
 
-- resource totals
-- rankings
-- percentages
-- bottleneck attribution
+### Gate M — memory-service-alone validation
 
-Do not treat aggregate reservation fail as a resource total unless the exact source-defined reconciliation is explicit.
+If either BICG IO or OO Q0M1 reduces cycles by **>=5%** versus its Q0M0 baseline, with the selected service-pressure telemetry moving coherently, authorize:
 
-### Phase-A deliverables
+- GESUMMV IO Q0M1
+- GESUMMV OO Q0M1
 
-Commit/push:
+Total: 2 rows.
 
-- `docs/dtc_l1/iscas2027/granularity/sg3/SG3_BICG_DOWNSTREAM_TELEMETRY_HEADROOM_TABLE_V1.tsv`
-- `docs/dtc_l1/iscas2027/granularity/sg3/SG3_BICG_DOWNSTREAM_HEADROOM_INTERPRETATION_V1.md`
+### Gate I — interaction validation
 
-The interpretation must label statements as:
+If either BICG mode's Q1M1 provides an additional **>=5% cycle reduction relative to the better of Q0M1 and Q1M0**, with coherent telemetry, authorize in addition:
 
-- SOURCE_PROVEN
-- MEASURED
-- CORRELATION
-- INTERVENTION_SUPPORTED
-- NOT_SUPPORTED / INSUFFICIENT
+- GESUMMV IO Q1M1
+- GESUMMV OO Q1M1
 
-## Phase B — predeclared trigger tree
+Total: 2 additional rows.
 
-Only the following experiment families may be launched.
+Therefore C2 adds:
 
-### Path Q — miss-queue headroom
+- 0 rows if neither gate is met;
+- 2 rows for memory-service-alone validation;
+- at most 4 rows if a queue × memory interaction also merits validation.
 
-Trigger only if Phase A shows a coherent queue-pressure pattern:
+Use the same selected M knob/value. No new memory parameter values.
 
-- nontrivial `MISS_QUEUE_FULL` and/or high average miss-queue occupancy;
-- pressure decreases consistently from default -> cap2048 -> cap512;
-- lower-request lifetime and cycles improve in the same direction.
+Keep at most two heavy GESUMMV simulator processes concurrently.
 
-If triggered, test only:
+---
 
-**L2 miss queue 32 -> 128 entries per bank**
-
-Rows:
-
-- BICG IO
-- BICG OO
-- GESUMMV IO
-- GESUMMV OO
-
-Hold fixed:
-
-- DTC cap = 8192
-- L2 capacity = default
-- L2 MSHR = default
-- L2 port width = default
-- all other scientific identity
-
-Total: 4 rows.
-
-Do not run queue=64 in this stage.
-
-### Path P — L2 port headroom
-
-Trigger only if queue is not the dominant coherent pattern but data/fill-port utilization is near saturation and cap reduction consistently relieves utilization/lifetime with performance.
-
-If triggered, test only:
-
-**L2 data/fill port 32 -> 64 B/cache-cycle**
-
-Rows:
-
-- BICG IO
-- BICG OO
-- GESUMMV IO
-- GESUMMV OO
-
-Hold fixed:
-
-- DTC cap = 8192
-- L2 capacity = default
-- L2 MSHR = default
-- miss queue = default
-- all other scientific identity
-
-Total: 4 rows.
-
-Do not run 128-B port in this stage.
-
-### Path Q+P
-
-If both Q and P independently satisfy their trigger, run both one-dimensional tests.
-
-Only after both one-dimensional families strictly pass and both materially improve performance but remain incomplete may one combined upper-bound be run:
-
-- miss queue = 128
-- data/fill port = 64 B/cache-cycle
-- DTC cap = 8192
-
-Rows:
-
-- BICG IO/OO
-- GESUMMV IO/OO
-
-Total: 4 additional rows.
-
-### Path STOP
-
-If neither Q nor P has a coherent source-supported trigger:
-
-- launch no new downstream simulation;
-- record status `NO_SINGLE_ADDITIONAL_L2_RESOURCE_ISOLATED`;
-- do not cascade to another resource family.
-
-## Explicitly forbidden scope
+# Explicitly forbidden scope
 
 Do NOT launch:
 
@@ -224,18 +264,23 @@ Do NOT launch:
 - additional L2 MSHR points
 - cap=1024 or cap=4096
 - queue=64
-- 128-B L2 port
-- ROP-latency sweep
-- DRAM latency/bandwidth sweep
-- NoC sweep
+- L2 data/fill-port experiments unless C0 explicitly selects that exact port as the single M service dimension under its source/telemetry criteria
+- more than one memory-service knob
+- memory-channel-count changes
+- L2-bank-count changes
+- address-mapping changes
+- broad ROP / NoC / DRAM sweeps
+- multi-parameter DRAM timing sweeps
+- perfect/infinite memory
 - extra logical-Tag experiments
 - FAST12 sensitivity sweeps
-- synthetic infinite-L2 configuration
 - new adaptive-admission mechanism
 
 Do not retry the SG5 GESUMMV/IO observer a third time.
 
-## Acceptance requirements for every authorized new row
+---
+
+# Acceptance requirements for every new row
 
 - fresh UUID
 - immutable run directory
@@ -248,30 +293,27 @@ Do not retry the SG5 GESUMMV/IO observer a third time.
 - strict validation receipt
 - terminal drain / observer closure checks
 
-Preserve all failures. Never overwrite an attempt.
+Preserve every failure. Never overwrite an attempt.
 
 A validator invocation/input error may use same-output named revalidation, preserving the original FAIL receipt.
 
-## Interpretation
+---
 
-The question is:
+# Paper-safe decision classes
 
-> Can downstream headroom recover performance under the original cap=8192?
+At final closure choose the strongest supported bounded status:
 
-Paper-interesting positive evidence requires:
+- `MEMORY_SERVICE_HEADROOM_SUPPORTED`
+- `BUFFERING_MEMORY_SERVICE_INTERACTION_SUPPORTED`
+- `MEMORY_SERVICE_HEADROOM_PARTIAL`
+- `QUEUE_AND_SELECTED_MEMORY_SERVICE_INSUFFICIENT`
+- `NO_CLEAN_MEMORY_SERVICE_HEADROOM_KNOB`
 
-- material cycle improvement;
-- targeted resource pressure moves in the expected direction;
-- lower-request lifetime changes coherently;
-- exact identity and validation pass.
+Do not claim a unique global GPU bottleneck beyond tested BICG/GESUMMV evidence.
 
-Do not impose a new arbitrary numeric threshold.
+---
 
-If targeted resource pressure changes but cycles do not materially improve, classify that resource as insufficient.
-
-Do not automatically search deeper resources afterward.
-
-## Resource policy
+# Resource policy
 
 The user authorizes aggressive compute use and will manage disk capacity.
 
@@ -280,11 +322,13 @@ The user authorizes aggressive compute use and will manage disk capacity.
 - Stop only for actual filesystem exhaustion / I/O risk.
 - Never delete accepted/frozen evidence.
 - Keep at most two heavy GESUMMV simulator processes concurrently.
-- Lightweight work may use remaining safe workers.
+- Lightweight analysis and BICG rows may use remaining safe workers.
 
-## Deliverables
+---
 
-Create a review pack under:
+# Deliverables
+
+Create/update a review pack under:
 
 `docs/dtc_l1/review_packs/DOWNSTREAM_HEADROOM_<revision>/`
 
@@ -294,9 +338,13 @@ with at minimum:
 - `SOURCE_ANCHORS.md`
 - `VALIDATION_SUMMARY.md`
 - `OPEN_ISSUES.md`
-- telemetry table
-- decision-tree trigger receipt
-- authorized run manifest/results if any
+- Phase-A BICG telemetry
+- completed queue-family results
+- memory-side source map
+- memory-side telemetry table
+- M-knob selection receipt
+- BICG 2×2 results if executed
+- GESUMMV validation results if triggered
 - exact paper-safe claims
 - forbidden overclaims
 - raw-log index only, not large raw logs
@@ -305,31 +353,28 @@ Update:
 
 `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
 
-with the review-pack entry point, final branch SHA, status, conclusion, and remaining issues.
+with final branch SHA, status, review-pack entry point, evidence summary, and remaining issues.
 
-## Allowed final status
+---
 
-Use one of:
+# STOP boundary
 
-- `DOWNSTREAM_QUEUE_HEADROOM_SUPPORTED`
-- `DOWNSTREAM_PORT_HEADROOM_SUPPORTED`
-- `DOWNSTREAM_QUEUE_AND_PORT_HEADROOM_SUPPORTED`
-- `DOWNSTREAM_HEADROOM_PARTIAL`
-- `NO_SINGLE_ADDITIONAL_L2_RESOURCE_ISOLATED`
+Complete:
 
-Do not generalize beyond BICG/GESUMMV.
-
-## STOP boundary
-
-Complete the telemetry gate, any triggered bounded headroom rows, review pack, Codex handoff, commit, and push.
+1. remaining queue-family terminal disposition;
+2. C0 source/telemetry audit;
+3. any C1/C2 rows authorized by the predeclared gates;
+4. review pack;
+5. Codex handoff;
+6. commit and push.
 
 Then STOP.
 
 Stop earlier only if continuing would require changing:
 
-- scientific identity,
-- experiment definition,
-- DTC semantics,
-- frozen evidence,
-- claim boundary,
-- or introducing a new mechanism.
+- scientific identity;
+- DTC semantics;
+- frozen evidence;
+- the one-knob experiment definition after C0 registration;
+- claim boundary;
+- or introducing a new architecture mechanism.
