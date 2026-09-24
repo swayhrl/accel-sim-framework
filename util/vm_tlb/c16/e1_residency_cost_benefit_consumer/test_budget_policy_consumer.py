@@ -89,7 +89,7 @@ def reset():
 def run(condition, rep, process_number):
     mode, _, budget = condition.split("_", 2)
     requested = bp.BUDGETS[budget]
-    ratio = min(1.0, requested / bp.FULL_UP28_BYTES)
+    ratio = min(1.0, requested / bp.TOTAL_UP28_QWEIGHT_BYTES)
     calls, switches, durations = {}, [], []
     for phase in bp.PHASES:
         timeline, phase_calls = 1, []
@@ -195,12 +195,14 @@ class BudgetPolicyPassTests(unittest.TestCase):
         self.assertEqual(len(point["decode_step_ms"]), 4)
         self.assertEqual(len(point["policy_api_update_durations_us"]), 140)
 
-    def test_hit_ratio_is_budget_scaled_and_unclamped_only_at_one(self):
+    def test_hit_ratio_is_scaled_by_total_28_layer_qweight_footprint(self):
         by_budget = {}
         for point in self.result["run_aligned_points"]:
             by_budget.setdefault(point["budget_name"], point["hit_ratio"])
-        self.assertAlmostEqual(by_budget["B8"], bp.BUDGETS["B8"] / bp.FULL_UP28_BYTES)
-        self.assertEqual(by_budget["BFULL"], 1.0)
+        self.assertAlmostEqual(by_budget["B8"], bp.BUDGETS["B8"] / bp.TOTAL_UP28_QWEIGHT_BYTES)
+        self.assertAlmostEqual(by_budget["BFULL"], 1.0 / 28.0)
+        self.assertEqual(bp.UP_QWEIGHT_BYTES, 33_947_648)
+        self.assertEqual(bp.TOTAL_UP28_QWEIGHT_BYTES, 28 * 33_947_648)
 
 
 class BudgetPolicyAdversarialTests(unittest.TestCase):
