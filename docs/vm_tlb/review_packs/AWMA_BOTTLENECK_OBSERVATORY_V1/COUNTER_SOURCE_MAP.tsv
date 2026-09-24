@@ -1,0 +1,52 @@
+domain	metric	source file	source predicate/counter	semantic definition	already_existing	new_hook_required	level	status
+progress	cycles	src/gpgpu-sim/gpu-sim.cc	gpu_sim_cycle	Simulated cycles in the current kernel	YES	NO	1	AVAILABLE
+progress	instructions	src/gpgpu-sim/gpu-sim.cc	gpu_sim_insn	Committed active-lane instructions	YES	NO	1	AVAILABLE
+progress	IPC	analysis	gpu_sim_insn / gpu_sim_cycle	Committed active-lane instructions per simulated cycle	DERIVED	NO	1	AVAILABLE
+progress	CTA completion	src/gpgpu-sim/gpu-sim.cc	release_shader_resource_1block	CTA resource-release/completion observation	YES	YES	1	AVAILABLE
+progress	instruction progress quantiles	src/gpgpu-sim/shader.cc	warp_inst_complete active_count	Cycle of cumulative committed-instruction percentiles	PARTIAL	YES	1/3	AVAILABLE_BOUNDED_L1_EXACT_L3
+progress	CTA progress quantiles	src/gpgpu-sim/gpu-sim.cc	release_shader_resource_1block	Cycle of cumulative CTA-completion percentiles	PARTIAL	YES	1/3	AVAILABLE_BOUNDED_L1_EXACT_L3
+progress	kernel tail	bottleneck_observatory.cc	final_cycle - p99_cycle	Cycles after the p99 instruction/CTA completion milestone	NO	YES	1/3	AVAILABLE
+scheduler	legacy idle/control-hazard cycles	src/gpgpu-sim/shader.cc	shader_cycle_distro[0]	Scheduler cycle had no valid instruction; idle and control hazard are combined	YES	NO	1	AVAILABLE_COARSE
+scheduler	legacy scoreboard cycles	src/gpgpu-sim/shader.cc	shader_cycle_distro[1]	Valid instruction existed but all candidates failed Scoreboard::checkCollision	YES	NO	1	AVAILABLE
+scheduler	legacy pipeline-stall cycles	src/gpgpu-sim/shader.cc	shader_cycle_distro[2]	At least one scoreboard-ready instruction existed but none issued	YES	NO	1	AVAILABLE
+scheduler	issued	src/gpgpu-sim/shader.cc	issued_inst	Scheduler invocation issued at least one instruction	NO	YES	1	AVAILABLE
+scheduler	no_active_work	src/gpgpu-sim/shader.cc	active_warps == 0	No supervised non-functionally-complete warp	NO	YES	1	AVAILABLE
+scheduler	no_eligible_work	src/gpgpu-sim/shader.cc	active && !valid_inst after explicit classes	Active work exists but no valid instruction and no more specific supported predicate owns the cycle	NO	YES	1	AVAILABLE
+scheduler	dependency_scoreboard	src/gpgpu-sim/shader.cc	valid_inst && !ready_inst	Valid instruction exists but Scoreboard::checkCollision blocks readiness	PARTIAL	YES	1	AVAILABLE
+scheduler	memory-vs-compute dependency split	src/gpgpu-sim/scoreboard.cc	checkCollision	Scoreboard does not retain producer-domain provenance for a blocked operand	NO	NO	-	NOT_AVAILABLE
+scheduler	sync_barrier	src/gpgpu-sim/shader.cc	warp_waiting_at_barrier	At least one active supervised warp is waiting at a CTA barrier and no instruction issued	YES	YES	1	AVAILABLE
+scheduler	sync_membar	src/gpgpu-sim/shader.h	shd_warp_t::get_membar	At least one active supervised warp has the membar state and no instruction issued	YES	YES	1	AVAILABLE
+scheduler	frontend_starvation	src/gpgpu-sim/shader.h	shd_warp_t::ibuffer_empty	At least one active supervised warp has an empty instruction buffer and no instruction issued	YES	YES	1	AVAILABLE_COARSE
+scheduler	eligible_structural	src/gpgpu-sim/shader.cc	ready_inst && !issued_inst	A scoreboard-ready instruction exists but no configured output pipeline accepted issue	PARTIAL	YES	1	AVAILABLE
+scheduler	per-FU structural denial	src/gpgpu-sim/shader.cc	has_free predicates	Individual failed has_free results are not retained after mixed/dual-issue traversal	NO	NO	-	NOT_AVAILABLE
+scheduler	active warps	src/gpgpu-sim/shader.cc	!functional_done supervised warps	Mean/peak number of non-functionally-complete warps seen per scheduler invocation	PARTIAL	YES	1	AVAILABLE
+execution	ALU completions	src/gpgpu-sim/shader.cc	warp_inst_complete op_pipe==SP__OP	Completed warp instructions assigned to SP/ALU pipeline	PARTIAL	YES	1	AVAILABLE
+execution	SFU completions	src/gpgpu-sim/shader.cc	warp_inst_complete op_pipe==SFU__OP	Completed warp instructions assigned to SFU pipeline	PARTIAL	YES	1	AVAILABLE
+execution	Tensor completions	src/gpgpu-sim/shader.cc	warp_inst_complete op_pipe==TENSOR_CORE__OP	Completed warp instructions assigned to tensor pipeline	PARTIAL	YES	1	AVAILABLE
+execution	LDST completions	src/gpgpu-sim/shader.cc	warp_inst_complete op_pipe==MEM__OP	Completed warp instructions assigned to memory pipeline	PARTIAL	YES	1	AVAILABLE
+execution	other completions	src/gpgpu-sim/shader.cc	other op_pipe	Completed warp instructions not in ALU/SFU/Tensor/LDST classes	PARTIAL	YES	1	AVAILABLE
+execution	FU utilization	src/gpgpu-sim/shader.cc	m_num_sp_committed/m_num_sfu_committed/m_num_mem_committed	Existing committed-pipeline counts	YES	NO	1	AVAILABLE_EXISTING
+execution	operand/register bank stalls	src/gpgpu-sim/shader.cc	gpu_reg_bank_conflict_stalls	Aggregate operand-collector/register-bank conflict stalls	YES	NO	1	AVAILABLE_AGGREGATE_ONLY
+memory	LDST resource stall	src/gpgpu-sim/shader.cc	rc_fail==BK_CONF	LDST stage returned the existing resource/bank-conflict stall enum	YES	YES	1	AVAILABLE
+memory	LDST coalescing/translation wait	src/gpgpu-sim/shader.cc	rc_fail==COAL_STALL	LDST stage returned COAL_STALL; source does not separate all contributors	YES	YES	1	AVAILABLE_COARSE
+memory	LDST ICNT stall	src/gpgpu-sim/shader.cc	rc_fail==ICNT_RC_FAIL	LDST downstream interconnect admission predicate reported full	YES	YES	1	AVAILABLE
+memory	LDST data-port stall	src/gpgpu-sim/shader.cc	rc_fail==DATA_PORT_STALL	L1D data port was unavailable	YES	YES	1	AVAILABLE
+memory	L1D status	src/gpgpu-sim/shader.cc	cache->access cache_request_status	L1D HIT/HIT_RESERVED/MISS/RESERVATION_FAIL/OTHER observations	YES	YES	1	AVAILABLE
+memory	L1D reservation failures	src/gpgpu-sim/gpu-cache.cc	RESERVATION_FAIL	L1D rejected the current cache access due to existing cache-resource semantics	YES	YES	1	AVAILABLE
+memory	downstream admissions	src/gpgpu-sim/shader.cc	successful L1 latency queue/cache/ICNT admission	Coalesced data request accepted past the frozen downstream admission predicate	PARTIAL	YES	1	AVAILABLE
+memory	downstream bytes	src/abstract_hardware_model.h	mem_access_t::get_size	Bytes carried by successful downstream admissions	PARTIAL	YES	1	AVAILABLE
+memory	L2 status	src/gpgpu-sim/l2cache.cc	m_L2cache->access cache_request_status	L2 HIT/HIT_RESERVED/MISS/RESERVATION_FAIL/OTHER observations	YES	YES	1	AVAILABLE
+memory	L2 partition queues	src/gpgpu-sim/l2cache.cc	four fifo_pipeline get_length predicates	ICNT-to-L2/L2-to-DRAM/DRAM-to-L2/L2-to-ICNT occupancy samples	PARTIAL	YES	1/2	AVAILABLE
+memory	DRAM queue	src/gpgpu-sim/dram.cc	FRFCFS num_pending or FIFO mrqq get_length	Source scheduler queue occupancy sampled on each DRAM cycle	YES	YES	1/2	AVAILABLE
+memory	DRAM service/throughput	src/gpgpu-sim/dram.cc	n_cmd/n_req/bw_util/queue_avg	Existing per-channel command/request/bandwidth and average queue statistics	YES	NO	1	AVAILABLE_EXISTING
+memory	data DRAM completion boundary	src/gpgpu-sim/l2cache.cc	dram return accepted into dram_L2_queue	First/last application-data DRAM-return boundary; PTE classes excluded	PARTIAL	YES	3	AVAILABLE
+memory	unified outstanding requests	multiple cache/ICNT/partition/DRAM structures	No single source counter spans all live downstream structures without double counting	NO	NO	-	NOT_AVAILABLE
+memory	separate ICNT injection FIFO pressure	src/gpgpu-sim/icnt_wrapper.cc	backend-specific interconnect state	No accepted backend-independent occupancy counter at this source boundary	NO	NO	-	NOT_AVAILABLE
+translation	accepted VM telemetry	src/gpgpu-sim/vm_translation.cc	translation_stats print_stats	Lookup/TLB/MSHR/PWQ/walker/PWC/PTE/requester latency counters	YES	NO	1	AVAILABLE_EXISTING
+translation	READY release	src/gpgpu-sim/shader.cc	translate(...) == READY at frozen prelaunch/head points	Earliest READY observation per resident coalesced-access UID while memory domain is enabled	PARTIAL	YES	2/3	AVAILABLE
+translation	READY-to-admission latency	bottleneck_observatory.cc	UID READY map erased by successful admission	Cycles from earliest legal READY observation to successful downstream admission	NO	YES	3	AVAILABLE
+translation	not-ready observations	src/gpgpu-sim/shader.cc	translate(...) != READY	Legal translation calls that did not return READY	PARTIAL	YES	1/2	AVAILABLE
+sync	barrier waiting warps	src/gpgpu-sim/shader.cc	warp_waiting_at_barrier	Active supervised warps currently marked at CTA barrier	YES	YES	1/2	AVAILABLE
+sync	membar waiting warps	src/gpgpu-sim/shader.h	get_membar	Active supervised warps carrying memory-barrier state	YES	YES	1/2	AVAILABLE
+occupancy	active CTA count	src/gpgpu-sim/gpu-sim.cc	issue_block2core / release_shader_resource_1block	Global active CTA gauge updated at exact source-supported launch and completion boundaries	PARTIAL	YES	1/2	AVAILABLE
+occupancy	CTA admission limit	src/gpgpu-sim/shader.cc	shader_core_config::max_cta limited-by print	Static per-kernel CTA/core limit and limiting resource (threads/shmem/regs/CTA cap)	YES	NO	1	AVAILABLE_EXISTING

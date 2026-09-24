@@ -1,0 +1,6318 @@
+{
+  "cause_policy": "NO_AUTOMATIC_ROOT_CAUSE",
+  "runs": [
+    {
+      "coverage": {
+        "admissions": 1099,
+        "translated": 1099,
+        "translated_unique": 1099,
+        "unique": 1099,
+        "unobserved": 0,
+        "untranslated": 0,
+        "untranslated_unique": 0
+      },
+      "ctas": 2,
+      "cycles": 10480,
+      "diagnosis": {
+        "NOT_SUPPORTED": [],
+        "PRIMARY_OBSERVED_LOCATION": "NOT_MEMORY_DOMINATED:SCHEDULER_DEPENDENCY_SCOREBOARD",
+        "SECONDARY_OBSERVED_LOCATION": "MEMORY_PIPELINE_STALLS",
+        "SUPPORTED_MEDIATORS": [
+          "SCOREBOARD_DEPENDENCY",
+          "BARRIER_OR_MEMBAR_WAIT"
+        ],
+        "UNRESOLVED": [
+          "CAUSE_REQUIRES_CONTROLLED_EXPERIMENT_OR_MANUAL_DIRECTIONAL_ATTRIBUTION"
+        ],
+        "evidence": {
+          "cache_pressure": 0,
+          "dram_queue_mean": 0.04736522,
+          "memory_pressure": 24,
+          "memory_stalls": 4835,
+          "scheduler_dependency": 34927,
+          "scheduler_frontend": 430,
+          "scheduler_structural": 31,
+          "scheduler_sync": 2898
+        }
+      },
+      "instructions": 72908,
+      "level": 3,
+      "metrics": {
+        "execution.completed_alu": {
+          "cycle_peak": 4,
+          "domain": "execution",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "completed_alu",
+          "samples": 628,
+          "total": 628
+        },
+        "execution.completed_ldst": {
+          "cycle_peak": 2,
+          "domain": "execution",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "completed_ldst",
+          "samples": 188,
+          "total": 188
+        },
+        "execution.completed_other": {
+          "cycle_peak": 14,
+          "domain": "execution",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "completed_other",
+          "samples": 1688,
+          "total": 1688
+        },
+        "execution.completed_sfu": {
+          "cycle_peak": 2,
+          "domain": "execution",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "completed_sfu",
+          "samples": 30,
+          "total": 30
+        },
+        "execution.completed_tensor": {
+          "cycle_peak": 0,
+          "domain": "execution",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "completed_tensor",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.admission_bytes": {
+          "cycle_peak": 64,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 32.0,
+          "metric": "admission_bytes",
+          "samples": 1099,
+          "total": 35168
+        },
+        "memory.admissions": {
+          "cycle_peak": 2,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "admissions",
+          "samples": 1099,
+          "total": 1099
+        },
+        "memory.dram_completions": {
+          "cycle_peak": 5,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "dram_completions",
+          "samples": 1024,
+          "total": 1024
+        },
+        "memory.dram_queue_occupancy": {
+          "cycle_peak": 14,
+          "domain": "memory",
+          "kind": "gauge",
+          "mean": 0.04736522,
+          "metric": "dram_queue_occupancy",
+          "samples": 187416,
+          "total": 8877
+        },
+        "memory.dram_to_l2_occupancy": {
+          "cycle_peak": 1,
+          "domain": "memory",
+          "kind": "gauge",
+          "mean": 0.006142653,
+          "metric": "dram_to_l2_occupancy",
+          "samples": 167680,
+          "total": 1030
+        },
+        "memory.icnt_to_l2_occupancy": {
+          "cycle_peak": 1,
+          "domain": "memory",
+          "kind": "gauge",
+          "mean": 0.006589933,
+          "metric": "icnt_to_l2_occupancy",
+          "samples": 167680,
+          "total": 1105
+        },
+        "memory.l1_hit": {
+          "cycle_peak": 1,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "l1_hit",
+          "samples": 5,
+          "total": 5
+        },
+        "memory.l1_hit_reserved": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "l1_hit_reserved",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.l1_miss": {
+          "cycle_peak": 2,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "l1_miss",
+          "samples": 1094,
+          "total": 1094
+        },
+        "memory.l1_other": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "l1_other",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.l1_reservation_fail": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "l1_reservation_fail",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.l2_hit": {
+          "cycle_peak": 1,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "l2_hit",
+          "samples": 5,
+          "total": 5
+        },
+        "memory.l2_hit_reserved": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "l2_hit_reserved",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.l2_miss": {
+          "cycle_peak": 2,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "l2_miss",
+          "samples": 1100,
+          "total": 1100
+        },
+        "memory.l2_other": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "l2_other",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.l2_reservation_fail": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "l2_reservation_fail",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.l2_to_dram_occupancy": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "gauge",
+          "mean": 0.0,
+          "metric": "l2_to_dram_occupancy",
+          "samples": 167680,
+          "total": 0
+        },
+        "memory.l2_to_icnt_occupancy": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "gauge",
+          "mean": 0.0,
+          "metric": "l2_to_icnt_occupancy",
+          "samples": 167680,
+          "total": 0
+        },
+        "memory.ldst_coal_stall": {
+          "cycle_peak": 2,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "ldst_coal_stall",
+          "samples": 4811,
+          "total": 4811
+        },
+        "memory.ldst_data_port_stall": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "ldst_data_port_stall",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.ldst_icnt_stall": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "ldst_icnt_stall",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.ldst_other_stall": {
+          "cycle_peak": 0,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "ldst_other_stall",
+          "samples": 0,
+          "total": 0
+        },
+        "memory.ldst_resource_stall": {
+          "cycle_peak": 2,
+          "domain": "memory",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "ldst_resource_stall",
+          "samples": 24,
+          "total": 24
+        },
+        "progress.cta_completions": {
+          "cycle_peak": 1,
+          "domain": "progress",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "cta_completions",
+          "samples": 2,
+          "total": 2
+        },
+        "progress.instructions": {
+          "cycle_peak": 448,
+          "domain": "progress",
+          "kind": "event",
+          "mean": 28.771902131,
+          "metric": "instructions",
+          "samples": 2534,
+          "total": 72908
+        },
+        "scheduler.active_ctas": {
+          "cycle_peak": 2,
+          "domain": "scheduler",
+          "kind": "gauge",
+          "mean": 1.0,
+          "metric": "active_ctas",
+          "samples": 4,
+          "total": 4
+        },
+        "scheduler.active_warps": {
+          "cycle_peak": 1,
+          "domain": "scheduler",
+          "kind": "gauge",
+          "mean": 0.932389219,
+          "metric": "active_warps",
+          "samples": 43780,
+          "total": 40820
+        },
+        "scheduler.dependency_scoreboard": {
+          "cycle_peak": 8,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "dependency_scoreboard",
+          "samples": 34927,
+          "total": 34927
+        },
+        "scheduler.eligible_structural": {
+          "cycle_peak": 6,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "eligible_structural",
+          "samples": 31,
+          "total": 31
+        },
+        "scheduler.frontend_starvation": {
+          "cycle_peak": 8,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "frontend_starvation",
+          "samples": 430,
+          "total": 430
+        },
+        "scheduler.issued": {
+          "cycle_peak": 8,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "issued",
+          "samples": 2534,
+          "total": 2534
+        },
+        "scheduler.no_active_work": {
+          "cycle_peak": 6,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "no_active_work",
+          "samples": 2960,
+          "total": 2960
+        },
+        "scheduler.no_eligible_work": {
+          "cycle_peak": 0,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "no_eligible_work",
+          "samples": 0,
+          "total": 0
+        },
+        "scheduler.other": {
+          "cycle_peak": 0,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "other",
+          "samples": 0,
+          "total": 0
+        },
+        "scheduler.sync_barrier": {
+          "cycle_peak": 6,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "sync_barrier",
+          "samples": 2898,
+          "total": 2898
+        },
+        "scheduler.sync_membar": {
+          "cycle_peak": 0,
+          "domain": "scheduler",
+          "kind": "event",
+          "mean": 0.0,
+          "metric": "sync_membar",
+          "samples": 0,
+          "total": 0
+        },
+        "sync.barrier_waiting_warps": {
+          "cycle_peak": 1,
+          "domain": "sync",
+          "kind": "gauge",
+          "mean": 0.066194609,
+          "metric": "barrier_waiting_warps",
+          "samples": 43780,
+          "total": 2898
+        },
+        "sync.membar_waiting_warps": {
+          "cycle_peak": 0,
+          "domain": "sync",
+          "kind": "gauge",
+          "mean": 0.0,
+          "metric": "membar_waiting_warps",
+          "samples": 43780,
+          "total": 0
+        },
+        "translation.translation_not_ready": {
+          "cycle_peak": 2,
+          "domain": "translation",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "translation_not_ready",
+          "samples": 3795,
+          "total": 3795
+        },
+        "translation.translation_ready": {
+          "cycle_peak": 2,
+          "domain": "translation",
+          "kind": "event",
+          "mean": 1.0,
+          "metric": "translation_ready",
+          "samples": 1099,
+          "total": 1099
+        }
+      },
+      "path": "/root/awma_bottleneck_observatory_v1_runtime/runs/COMBINE/10_80/L3_directed_locked_deep/run.log",
+      "progress": {
+        "CTAS": {
+          "p25": 10466,
+          "p50": 10466,
+          "p75": 10479,
+          "p90": 10479,
+          "p99": 10479,
+          "tail": 1,
+          "total": 2
+        },
+        "INSTRUCTIONS": {
+          "p25": 6597,
+          "p50": 6896,
+          "p75": 9766,
+          "p90": 10237,
+          "p99": 10387,
+          "tail": 93,
+          "total": 72908
+        }
+      },
+      "ready_to_admission": {
+        "count": 1099,
+        "max": 0,
+        "mean": 0.0,
+        "missing": 0,
+        "outstanding": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "repeat_observations": 1099
+      },
+      "top_windows": [
+        {
+          "domain": "progress",
+          "end_cycle": 6879,
+          "metric": "instructions",
+          "rank": 1,
+          "start_cycle": 6848,
+          "value": 5408,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6911,
+          "metric": "instructions",
+          "rank": 2,
+          "start_cycle": 6880,
+          "value": 3072,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6719,
+          "metric": "instructions",
+          "rank": 3,
+          "start_cycle": 6688,
+          "value": 2742,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6591,
+          "metric": "instructions",
+          "rank": 4,
+          "start_cycle": 6560,
+          "value": 2560,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 5055,
+          "metric": "instructions",
+          "rank": 5,
+          "start_cycle": 5024,
+          "value": 2384,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6463,
+          "metric": "instructions",
+          "rank": 6,
+          "start_cycle": 6432,
+          "value": 2272,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 5023,
+          "metric": "instructions",
+          "rank": 7,
+          "start_cycle": 4992,
+          "value": 2048,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6559,
+          "metric": "instructions",
+          "rank": 8,
+          "start_cycle": 6528,
+          "value": 1952,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6911,
+          "metric": "instructions",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 10498,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6655,
+          "metric": "instructions",
+          "rank": 2,
+          "start_cycle": 6528,
+          "value": 7322,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 5119,
+          "metric": "instructions",
+          "rank": 3,
+          "start_cycle": 4992,
+          "value": 6984,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6783,
+          "metric": "instructions",
+          "rank": 4,
+          "start_cycle": 6656,
+          "value": 6346,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10239,
+          "metric": "instructions",
+          "rank": 5,
+          "start_cycle": 10112,
+          "value": 5792,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10367,
+          "metric": "instructions",
+          "rank": 6,
+          "start_cycle": 10240,
+          "value": 5792,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6527,
+          "metric": "instructions",
+          "rank": 7,
+          "start_cycle": 6400,
+          "value": 4960,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10111,
+          "metric": "instructions",
+          "rank": 8,
+          "start_cycle": 9984,
+          "value": 3776,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 7167,
+          "metric": "instructions",
+          "rank": 1,
+          "start_cycle": 6656,
+          "value": 16876,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 6655,
+          "metric": "instructions",
+          "rank": 2,
+          "start_cycle": 6144,
+          "value": 13816,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10239,
+          "metric": "instructions",
+          "rank": 3,
+          "start_cycle": 9728,
+          "value": 11840,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10751,
+          "metric": "instructions",
+          "rank": 4,
+          "start_cycle": 10240,
+          "value": 7168,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 5119,
+          "metric": "instructions",
+          "rank": 5,
+          "start_cycle": 4608,
+          "value": 6984,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 8703,
+          "metric": "instructions",
+          "rank": 6,
+          "start_cycle": 8192,
+          "value": 5152,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 8191,
+          "metric": "instructions",
+          "rank": 7,
+          "start_cycle": 7680,
+          "value": 4096,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 9215,
+          "metric": "instructions",
+          "rank": 8,
+          "start_cycle": 8704,
+          "value": 2944,
+          "width": 512
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10495,
+          "metric": "cta_completions",
+          "rank": 1,
+          "start_cycle": 10464,
+          "value": 2,
+          "width": 32
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10495,
+          "metric": "cta_completions",
+          "rank": 1,
+          "start_cycle": 10368,
+          "value": 2,
+          "width": 128
+        },
+        {
+          "domain": "progress",
+          "end_cycle": 10751,
+          "metric": "cta_completions",
+          "rank": 1,
+          "start_cycle": 10240,
+          "value": 2,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6879,
+          "metric": "issued",
+          "rank": 1,
+          "start_cycle": 6848,
+          "value": 169,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6847,
+          "metric": "issued",
+          "rank": 2,
+          "start_cycle": 6816,
+          "value": 127,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6591,
+          "metric": "issued",
+          "rank": 3,
+          "start_cycle": 6560,
+          "value": 91,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6719,
+          "metric": "issued",
+          "rank": 4,
+          "start_cycle": 6688,
+          "value": 91,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5023,
+          "metric": "issued",
+          "rank": 5,
+          "start_cycle": 4992,
+          "value": 80,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5055,
+          "metric": "issued",
+          "rank": 6,
+          "start_cycle": 5024,
+          "value": 76,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6751,
+          "metric": "issued",
+          "rank": 7,
+          "start_cycle": 6720,
+          "value": 73,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6559,
+          "metric": "issued",
+          "rank": 8,
+          "start_cycle": 6528,
+          "value": 68,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6911,
+          "metric": "issued",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 372,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6783,
+          "metric": "issued",
+          "rank": 2,
+          "start_cycle": 6656,
+          "value": 266,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "issued",
+          "rank": 3,
+          "start_cycle": 4992,
+          "value": 257,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6655,
+          "metric": "issued",
+          "rank": 4,
+          "start_cycle": 6528,
+          "value": 251,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10239,
+          "metric": "issued",
+          "rank": 5,
+          "start_cycle": 10112,
+          "value": 209,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10367,
+          "metric": "issued",
+          "rank": 6,
+          "start_cycle": 10240,
+          "value": 204,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6527,
+          "metric": "issued",
+          "rank": 7,
+          "start_cycle": 6400,
+          "value": 156,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10111,
+          "metric": "issued",
+          "rank": 8,
+          "start_cycle": 9984,
+          "value": 132,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7167,
+          "metric": "issued",
+          "rank": 1,
+          "start_cycle": 6656,
+          "value": 638,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6655,
+          "metric": "issued",
+          "rank": 2,
+          "start_cycle": 6144,
+          "value": 459,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10239,
+          "metric": "issued",
+          "rank": 3,
+          "start_cycle": 9728,
+          "value": 423,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "issued",
+          "rank": 4,
+          "start_cycle": 4608,
+          "value": 257,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10751,
+          "metric": "issued",
+          "rank": 5,
+          "start_cycle": 10240,
+          "value": 238,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8703,
+          "metric": "issued",
+          "rank": 6,
+          "start_cycle": 8192,
+          "value": 161,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8191,
+          "metric": "issued",
+          "rank": 7,
+          "start_cycle": 7680,
+          "value": 127,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 9215,
+          "metric": "issued",
+          "rank": 8,
+          "start_cycle": 8704,
+          "value": 98,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10463,
+          "metric": "no_active_work",
+          "rank": 1,
+          "start_cycle": 10432,
+          "value": 185,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10431,
+          "metric": "no_active_work",
+          "rank": 2,
+          "start_cycle": 10400,
+          "value": 134,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10399,
+          "metric": "no_active_work",
+          "rank": 3,
+          "start_cycle": 10368,
+          "value": 75,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10495,
+          "metric": "no_active_work",
+          "rank": 4,
+          "start_cycle": 10464,
+          "value": 57,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10367,
+          "metric": "no_active_work",
+          "rank": 5,
+          "start_cycle": 10336,
+          "value": 40,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7903,
+          "metric": "no_active_work",
+          "rank": 6,
+          "start_cycle": 7872,
+          "value": 32,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7935,
+          "metric": "no_active_work",
+          "rank": 7,
+          "start_cycle": 7904,
+          "value": 32,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7967,
+          "metric": "no_active_work",
+          "rank": 8,
+          "start_cycle": 7936,
+          "value": 32,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10495,
+          "metric": "no_active_work",
+          "rank": 1,
+          "start_cycle": 10368,
+          "value": 451,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10367,
+          "metric": "no_active_work",
+          "rank": 2,
+          "start_cycle": 10240,
+          "value": 136,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8063,
+          "metric": "no_active_work",
+          "rank": 3,
+          "start_cycle": 7936,
+          "value": 128,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8191,
+          "metric": "no_active_work",
+          "rank": 4,
+          "start_cycle": 8064,
+          "value": 128,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8319,
+          "metric": "no_active_work",
+          "rank": 5,
+          "start_cycle": 8192,
+          "value": 128,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8447,
+          "metric": "no_active_work",
+          "rank": 6,
+          "start_cycle": 8320,
+          "value": 128,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8575,
+          "metric": "no_active_work",
+          "rank": 7,
+          "start_cycle": 8448,
+          "value": 128,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8703,
+          "metric": "no_active_work",
+          "rank": 8,
+          "start_cycle": 8576,
+          "value": 128,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10751,
+          "metric": "no_active_work",
+          "rank": 1,
+          "start_cycle": 10240,
+          "value": 587,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8703,
+          "metric": "no_active_work",
+          "rank": 2,
+          "start_cycle": 8192,
+          "value": 512,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 9215,
+          "metric": "no_active_work",
+          "rank": 3,
+          "start_cycle": 8704,
+          "value": 512,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 9727,
+          "metric": "no_active_work",
+          "rank": 4,
+          "start_cycle": 9216,
+          "value": 512,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10239,
+          "metric": "no_active_work",
+          "rank": 5,
+          "start_cycle": 9728,
+          "value": 512,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8191,
+          "metric": "no_active_work",
+          "rank": 6,
+          "start_cycle": 7680,
+          "value": 325,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6943,
+          "metric": "dependency_scoreboard",
+          "rank": 1,
+          "start_cycle": 6912,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6975,
+          "metric": "dependency_scoreboard",
+          "rank": 2,
+          "start_cycle": 6944,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7007,
+          "metric": "dependency_scoreboard",
+          "rank": 3,
+          "start_cycle": 6976,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7039,
+          "metric": "dependency_scoreboard",
+          "rank": 4,
+          "start_cycle": 7008,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7071,
+          "metric": "dependency_scoreboard",
+          "rank": 5,
+          "start_cycle": 7040,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7103,
+          "metric": "dependency_scoreboard",
+          "rank": 6,
+          "start_cycle": 7072,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7135,
+          "metric": "dependency_scoreboard",
+          "rank": 7,
+          "start_cycle": 7104,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7167,
+          "metric": "dependency_scoreboard",
+          "rank": 8,
+          "start_cycle": 7136,
+          "value": 256,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7039,
+          "metric": "dependency_scoreboard",
+          "rank": 1,
+          "start_cycle": 6912,
+          "value": 1024,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7167,
+          "metric": "dependency_scoreboard",
+          "rank": 2,
+          "start_cycle": 7040,
+          "value": 1024,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7295,
+          "metric": "dependency_scoreboard",
+          "rank": 3,
+          "start_cycle": 7168,
+          "value": 1024,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7423,
+          "metric": "dependency_scoreboard",
+          "rank": 4,
+          "start_cycle": 7296,
+          "value": 1024,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7551,
+          "metric": "dependency_scoreboard",
+          "rank": 5,
+          "start_cycle": 7424,
+          "value": 1008,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7679,
+          "metric": "dependency_scoreboard",
+          "rank": 6,
+          "start_cycle": 7552,
+          "value": 988,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7807,
+          "metric": "dependency_scoreboard",
+          "rank": 7,
+          "start_cycle": 7680,
+          "value": 966,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7935,
+          "metric": "dependency_scoreboard",
+          "rank": 8,
+          "start_cycle": 7808,
+          "value": 935,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7679,
+          "metric": "dependency_scoreboard",
+          "rank": 1,
+          "start_cycle": 7168,
+          "value": 4044,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8191,
+          "metric": "dependency_scoreboard",
+          "rank": 2,
+          "start_cycle": 7680,
+          "value": 3637,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 9727,
+          "metric": "dependency_scoreboard",
+          "rank": 3,
+          "start_cycle": 9216,
+          "value": 3503,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 9215,
+          "metric": "dependency_scoreboard",
+          "rank": 4,
+          "start_cycle": 8704,
+          "value": 3486,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8703,
+          "metric": "dependency_scoreboard",
+          "rank": 5,
+          "start_cycle": 8192,
+          "value": 3423,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7167,
+          "metric": "dependency_scoreboard",
+          "rank": 6,
+          "start_cycle": 6656,
+          "value": 3270,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10239,
+          "metric": "dependency_scoreboard",
+          "rank": 7,
+          "start_cycle": 9728,
+          "value": 3161,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5631,
+          "metric": "dependency_scoreboard",
+          "rank": 8,
+          "start_cycle": 5120,
+          "value": 3072,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6367,
+          "metric": "sync_barrier",
+          "rank": 1,
+          "start_cycle": 6336,
+          "value": 113,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6399,
+          "metric": "sync_barrier",
+          "rank": 2,
+          "start_cycle": 6368,
+          "value": 86,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "sync_barrier",
+          "rank": 3,
+          "start_cycle": 5088,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5151,
+          "metric": "sync_barrier",
+          "rank": 4,
+          "start_cycle": 5120,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5183,
+          "metric": "sync_barrier",
+          "rank": 5,
+          "start_cycle": 5152,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5215,
+          "metric": "sync_barrier",
+          "rank": 6,
+          "start_cycle": 5184,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5247,
+          "metric": "sync_barrier",
+          "rank": 7,
+          "start_cycle": 5216,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5279,
+          "metric": "sync_barrier",
+          "rank": 8,
+          "start_cycle": 5248,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6399,
+          "metric": "sync_barrier",
+          "rank": 1,
+          "start_cycle": 6272,
+          "value": 327,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5247,
+          "metric": "sync_barrier",
+          "rank": 2,
+          "start_cycle": 5120,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5375,
+          "metric": "sync_barrier",
+          "rank": 3,
+          "start_cycle": 5248,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5503,
+          "metric": "sync_barrier",
+          "rank": 4,
+          "start_cycle": 5376,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5631,
+          "metric": "sync_barrier",
+          "rank": 5,
+          "start_cycle": 5504,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5759,
+          "metric": "sync_barrier",
+          "rank": 6,
+          "start_cycle": 5632,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5887,
+          "metric": "sync_barrier",
+          "rank": 7,
+          "start_cycle": 5760,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6015,
+          "metric": "sync_barrier",
+          "rank": 8,
+          "start_cycle": 5888,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5631,
+          "metric": "sync_barrier",
+          "rank": 1,
+          "start_cycle": 5120,
+          "value": 1024,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6143,
+          "metric": "sync_barrier",
+          "rank": 2,
+          "start_cycle": 5632,
+          "value": 1024,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6655,
+          "metric": "sync_barrier",
+          "rank": 3,
+          "start_cycle": 6144,
+          "value": 583,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7167,
+          "metric": "sync_barrier",
+          "rank": 4,
+          "start_cycle": 6656,
+          "value": 157,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "sync_barrier",
+          "rank": 5,
+          "start_cycle": 4608,
+          "value": 110,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10399,
+          "metric": "frontend_starvation",
+          "rank": 1,
+          "start_cycle": 10368,
+          "value": 105,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10431,
+          "metric": "frontend_starvation",
+          "rank": 2,
+          "start_cycle": 10400,
+          "value": 93,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10367,
+          "metric": "frontend_starvation",
+          "rank": 3,
+          "start_cycle": 10336,
+          "value": 86,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10463,
+          "metric": "frontend_starvation",
+          "rank": 4,
+          "start_cycle": 10432,
+          "value": 71,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10335,
+          "metric": "frontend_starvation",
+          "rank": 5,
+          "start_cycle": 10304,
+          "value": 36,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10495,
+          "metric": "frontend_starvation",
+          "rank": 6,
+          "start_cycle": 10464,
+          "value": 19,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5023,
+          "metric": "frontend_starvation",
+          "rank": 7,
+          "start_cycle": 4992,
+          "value": 10,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7871,
+          "metric": "frontend_starvation",
+          "rank": 8,
+          "start_cycle": 7840,
+          "value": 7,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10495,
+          "metric": "frontend_starvation",
+          "rank": 1,
+          "start_cycle": 10368,
+          "value": 288,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10367,
+          "metric": "frontend_starvation",
+          "rank": 2,
+          "start_cycle": 10240,
+          "value": 125,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "frontend_starvation",
+          "rank": 3,
+          "start_cycle": 4992,
+          "value": 10,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7935,
+          "metric": "frontend_starvation",
+          "rank": 4,
+          "start_cycle": 7808,
+          "value": 7,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 10751,
+          "metric": "frontend_starvation",
+          "rank": 1,
+          "start_cycle": 10240,
+          "value": 413,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "frontend_starvation",
+          "rank": 2,
+          "start_cycle": 4608,
+          "value": 10,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 8191,
+          "metric": "frontend_starvation",
+          "rank": 3,
+          "start_cycle": 7680,
+          "value": 7,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6879,
+          "metric": "eligible_structural",
+          "rank": 1,
+          "start_cycle": 6848,
+          "value": 22,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6911,
+          "metric": "eligible_structural",
+          "rank": 2,
+          "start_cycle": 6880,
+          "value": 9,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6911,
+          "metric": "eligible_structural",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 31,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7167,
+          "metric": "eligible_structural",
+          "rank": 1,
+          "start_cycle": 6656,
+          "value": 31,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5023,
+          "metric": "active_warps",
+          "rank": 1,
+          "start_cycle": 4992,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5055,
+          "metric": "active_warps",
+          "rank": 2,
+          "start_cycle": 5024,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5087,
+          "metric": "active_warps",
+          "rank": 3,
+          "start_cycle": 5056,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "active_warps",
+          "rank": 4,
+          "start_cycle": 5088,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5151,
+          "metric": "active_warps",
+          "rank": 5,
+          "start_cycle": 5120,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5183,
+          "metric": "active_warps",
+          "rank": 6,
+          "start_cycle": 5152,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5215,
+          "metric": "active_warps",
+          "rank": 7,
+          "start_cycle": 5184,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5247,
+          "metric": "active_warps",
+          "rank": 8,
+          "start_cycle": 5216,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "active_warps",
+          "rank": 1,
+          "start_cycle": 4992,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5247,
+          "metric": "active_warps",
+          "rank": 2,
+          "start_cycle": 5120,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5375,
+          "metric": "active_warps",
+          "rank": 3,
+          "start_cycle": 5248,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5503,
+          "metric": "active_warps",
+          "rank": 4,
+          "start_cycle": 5376,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5631,
+          "metric": "active_warps",
+          "rank": 5,
+          "start_cycle": 5504,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5759,
+          "metric": "active_warps",
+          "rank": 6,
+          "start_cycle": 5632,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5887,
+          "metric": "active_warps",
+          "rank": 7,
+          "start_cycle": 5760,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6015,
+          "metric": "active_warps",
+          "rank": 8,
+          "start_cycle": 5888,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "active_warps",
+          "rank": 1,
+          "start_cycle": 4608,
+          "value": 1,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5631,
+          "metric": "active_warps",
+          "rank": 2,
+          "start_cycle": 5120,
+          "value": 1,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6143,
+          "metric": "active_warps",
+          "rank": 3,
+          "start_cycle": 5632,
+          "value": 1,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 6655,
+          "metric": "active_warps",
+          "rank": 4,
+          "start_cycle": 6144,
+          "value": 1,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7167,
+          "metric": "active_warps",
+          "rank": 5,
+          "start_cycle": 6656,
+          "value": 1,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 7679,
+          "metric": "active_warps",
+          "rank": 6,
+          "start_cycle": 7168,
+          "value": 1,
+          "width": 512
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5023,
+          "metric": "active_ctas",
+          "rank": 1,
+          "start_cycle": 4992,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "active_ctas",
+          "rank": 1,
+          "start_cycle": 4992,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "scheduler",
+          "end_cycle": 5119,
+          "metric": "active_ctas",
+          "rank": 1,
+          "start_cycle": 4608,
+          "value": 1,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6591,
+          "metric": "completed_alu",
+          "rank": 1,
+          "start_cycle": 6560,
+          "value": 42,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6463,
+          "metric": "completed_alu",
+          "rank": 2,
+          "start_cycle": 6432,
+          "value": 39,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6495,
+          "metric": "completed_alu",
+          "rank": 3,
+          "start_cycle": 6464,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_alu",
+          "rank": 4,
+          "start_cycle": 6624,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6687,
+          "metric": "completed_alu",
+          "rank": 5,
+          "start_cycle": 6656,
+          "value": 33,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6719,
+          "metric": "completed_alu",
+          "rank": 6,
+          "start_cycle": 6688,
+          "value": 29,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6559,
+          "metric": "completed_alu",
+          "rank": 7,
+          "start_cycle": 6528,
+          "value": 27,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6623,
+          "metric": "completed_alu",
+          "rank": 8,
+          "start_cycle": 6592,
+          "value": 27,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_alu",
+          "rank": 1,
+          "start_cycle": 6528,
+          "value": 133,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6527,
+          "metric": "completed_alu",
+          "rank": 2,
+          "start_cycle": 6400,
+          "value": 96,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6783,
+          "metric": "completed_alu",
+          "rank": 3,
+          "start_cycle": 6656,
+          "value": 87,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7807,
+          "metric": "completed_alu",
+          "rank": 4,
+          "start_cycle": 7680,
+          "value": 37,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9215,
+          "metric": "completed_alu",
+          "rank": 5,
+          "start_cycle": 9088,
+          "value": 28,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10111,
+          "metric": "completed_alu",
+          "rank": 6,
+          "start_cycle": 9984,
+          "value": 27,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8063,
+          "metric": "completed_alu",
+          "rank": 7,
+          "start_cycle": 7936,
+          "value": 26,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8959,
+          "metric": "completed_alu",
+          "rank": 8,
+          "start_cycle": 8832,
+          "value": 26,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_alu",
+          "rank": 1,
+          "start_cycle": 6144,
+          "value": 229,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7167,
+          "metric": "completed_alu",
+          "rank": 2,
+          "start_cycle": 6656,
+          "value": 111,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8191,
+          "metric": "completed_alu",
+          "rank": 3,
+          "start_cycle": 7680,
+          "value": 69,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8703,
+          "metric": "completed_alu",
+          "rank": 4,
+          "start_cycle": 8192,
+          "value": 56,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9215,
+          "metric": "completed_alu",
+          "rank": 5,
+          "start_cycle": 8704,
+          "value": 56,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10239,
+          "metric": "completed_alu",
+          "rank": 6,
+          "start_cycle": 9728,
+          "value": 46,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9727,
+          "metric": "completed_alu",
+          "rank": 7,
+          "start_cycle": 9216,
+          "value": 38,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7679,
+          "metric": "completed_alu",
+          "rank": 8,
+          "start_cycle": 7168,
+          "value": 23,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6847,
+          "metric": "completed_sfu",
+          "rank": 1,
+          "start_cycle": 6816,
+          "value": 7,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6559,
+          "metric": "completed_sfu",
+          "rank": 2,
+          "start_cycle": 6528,
+          "value": 5,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10111,
+          "metric": "completed_sfu",
+          "rank": 3,
+          "start_cycle": 10080,
+          "value": 4,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10175,
+          "metric": "completed_sfu",
+          "rank": 4,
+          "start_cycle": 10144,
+          "value": 4,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6527,
+          "metric": "completed_sfu",
+          "rank": 5,
+          "start_cycle": 6496,
+          "value": 3,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10143,
+          "metric": "completed_sfu",
+          "rank": 6,
+          "start_cycle": 10112,
+          "value": 3,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10079,
+          "metric": "completed_sfu",
+          "rank": 7,
+          "start_cycle": 10048,
+          "value": 2,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6687,
+          "metric": "completed_sfu",
+          "rank": 8,
+          "start_cycle": 6656,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6911,
+          "metric": "completed_sfu",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 7,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10111,
+          "metric": "completed_sfu",
+          "rank": 2,
+          "start_cycle": 9984,
+          "value": 7,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10239,
+          "metric": "completed_sfu",
+          "rank": 3,
+          "start_cycle": 10112,
+          "value": 7,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_sfu",
+          "rank": 4,
+          "start_cycle": 6528,
+          "value": 5,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6527,
+          "metric": "completed_sfu",
+          "rank": 5,
+          "start_cycle": 6400,
+          "value": 3,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6783,
+          "metric": "completed_sfu",
+          "rank": 6,
+          "start_cycle": 6656,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10239,
+          "metric": "completed_sfu",
+          "rank": 1,
+          "start_cycle": 9728,
+          "value": 14,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_sfu",
+          "rank": 2,
+          "start_cycle": 6144,
+          "value": 8,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7167,
+          "metric": "completed_sfu",
+          "rank": 3,
+          "start_cycle": 6656,
+          "value": 8,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6367,
+          "metric": "completed_ldst",
+          "rank": 1,
+          "start_cycle": 6336,
+          "value": 8,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6431,
+          "metric": "completed_ldst",
+          "rank": 2,
+          "start_cycle": 6400,
+          "value": 8,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6847,
+          "metric": "completed_ldst",
+          "rank": 3,
+          "start_cycle": 6816,
+          "value": 7,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6783,
+          "metric": "completed_ldst",
+          "rank": 4,
+          "start_cycle": 6752,
+          "value": 5,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7487,
+          "metric": "completed_ldst",
+          "rank": 5,
+          "start_cycle": 7456,
+          "value": 5,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9503,
+          "metric": "completed_ldst",
+          "rank": 6,
+          "start_cycle": 9472,
+          "value": 5,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7519,
+          "metric": "completed_ldst",
+          "rank": 7,
+          "start_cycle": 7488,
+          "value": 4,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7711,
+          "metric": "completed_ldst",
+          "rank": 8,
+          "start_cycle": 7680,
+          "value": 4,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7807,
+          "metric": "completed_ldst",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 14,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6399,
+          "metric": "completed_ldst",
+          "rank": 2,
+          "start_cycle": 6272,
+          "value": 12,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7551,
+          "metric": "completed_ldst",
+          "rank": 3,
+          "start_cycle": 7424,
+          "value": 12,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8703,
+          "metric": "completed_ldst",
+          "rank": 4,
+          "start_cycle": 8576,
+          "value": 11,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8959,
+          "metric": "completed_ldst",
+          "rank": 5,
+          "start_cycle": 8832,
+          "value": 11,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8063,
+          "metric": "completed_ldst",
+          "rank": 6,
+          "start_cycle": 7936,
+          "value": 10,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9215,
+          "metric": "completed_ldst",
+          "rank": 7,
+          "start_cycle": 9088,
+          "value": 10,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6911,
+          "metric": "completed_ldst",
+          "rank": 8,
+          "start_cycle": 6784,
+          "value": 9,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8191,
+          "metric": "completed_ldst",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 31,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8703,
+          "metric": "completed_ldst",
+          "rank": 2,
+          "start_cycle": 8192,
+          "value": 28,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9215,
+          "metric": "completed_ldst",
+          "rank": 3,
+          "start_cycle": 8704,
+          "value": 24,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_ldst",
+          "rank": 4,
+          "start_cycle": 6144,
+          "value": 21,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9727,
+          "metric": "completed_ldst",
+          "rank": 5,
+          "start_cycle": 9216,
+          "value": 21,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7679,
+          "metric": "completed_ldst",
+          "rank": 6,
+          "start_cycle": 7168,
+          "value": 20,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10239,
+          "metric": "completed_ldst",
+          "rank": 7,
+          "start_cycle": 9728,
+          "value": 18,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7167,
+          "metric": "completed_ldst",
+          "rank": 8,
+          "start_cycle": 6656,
+          "value": 16,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6879,
+          "metric": "completed_other",
+          "rank": 1,
+          "start_cycle": 6848,
+          "value": 184,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6911,
+          "metric": "completed_other",
+          "rank": 2,
+          "start_cycle": 6880,
+          "value": 97,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 5055,
+          "metric": "completed_other",
+          "rank": 3,
+          "start_cycle": 5024,
+          "value": 80,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 5023,
+          "metric": "completed_other",
+          "rank": 4,
+          "start_cycle": 4992,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6719,
+          "metric": "completed_other",
+          "rank": 5,
+          "start_cycle": 6688,
+          "value": 63,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6751,
+          "metric": "completed_other",
+          "rank": 6,
+          "start_cycle": 6720,
+          "value": 63,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 5087,
+          "metric": "completed_other",
+          "rank": 7,
+          "start_cycle": 5056,
+          "value": 60,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10271,
+          "metric": "completed_other",
+          "rank": 8,
+          "start_cycle": 10240,
+          "value": 60,
+          "width": 32
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6911,
+          "metric": "completed_other",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 327,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 5119,
+          "metric": "completed_other",
+          "rank": 2,
+          "start_cycle": 4992,
+          "value": 249,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10367,
+          "metric": "completed_other",
+          "rank": 3,
+          "start_cycle": 10240,
+          "value": 207,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10239,
+          "metric": "completed_other",
+          "rank": 4,
+          "start_cycle": 10112,
+          "value": 202,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6783,
+          "metric": "completed_other",
+          "rank": 5,
+          "start_cycle": 6656,
+          "value": 168,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_other",
+          "rank": 6,
+          "start_cycle": 6528,
+          "value": 113,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10111,
+          "metric": "completed_other",
+          "rank": 7,
+          "start_cycle": 9984,
+          "value": 84,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9855,
+          "metric": "completed_other",
+          "rank": 8,
+          "start_cycle": 9728,
+          "value": 58,
+          "width": 128
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 7167,
+          "metric": "completed_other",
+          "rank": 1,
+          "start_cycle": 6656,
+          "value": 496,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10239,
+          "metric": "completed_other",
+          "rank": 2,
+          "start_cycle": 9728,
+          "value": 344,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 5119,
+          "metric": "completed_other",
+          "rank": 3,
+          "start_cycle": 4608,
+          "value": 249,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 10751,
+          "metric": "completed_other",
+          "rank": 4,
+          "start_cycle": 10240,
+          "value": 246,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 6655,
+          "metric": "completed_other",
+          "rank": 5,
+          "start_cycle": 6144,
+          "value": 199,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8703,
+          "metric": "completed_other",
+          "rank": 6,
+          "start_cycle": 8192,
+          "value": 77,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 8191,
+          "metric": "completed_other",
+          "rank": 7,
+          "start_cycle": 7680,
+          "value": 31,
+          "width": 512
+        },
+        {
+          "domain": "execution",
+          "end_cycle": 9727,
+          "metric": "completed_other",
+          "rank": 8,
+          "start_cycle": 9216,
+          "value": 21,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7455,
+          "metric": "admissions",
+          "rank": 1,
+          "start_cycle": 7424,
+          "value": 40,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8927,
+          "metric": "admissions",
+          "rank": 2,
+          "start_cycle": 8896,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "admissions",
+          "rank": 3,
+          "start_cycle": 9184,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8639,
+          "metric": "admissions",
+          "rank": 4,
+          "start_cycle": 8608,
+          "value": 36,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7775,
+          "metric": "admissions",
+          "rank": 5,
+          "start_cycle": 7744,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8063,
+          "metric": "admissions",
+          "rank": 6,
+          "start_cycle": 8032,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8319,
+          "metric": "admissions",
+          "rank": 7,
+          "start_cycle": 8288,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8351,
+          "metric": "admissions",
+          "rank": 8,
+          "start_cycle": 8320,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7807,
+          "metric": "admissions",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8959,
+          "metric": "admissions",
+          "rank": 2,
+          "start_cycle": 8832,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9855,
+          "metric": "admissions",
+          "rank": 3,
+          "start_cycle": 9728,
+          "value": 98,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "admissions",
+          "rank": 4,
+          "start_cycle": 8576,
+          "value": 95,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "admissions",
+          "rank": 5,
+          "start_cycle": 9088,
+          "value": 90,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8063,
+          "metric": "admissions",
+          "rank": 6,
+          "start_cycle": 7936,
+          "value": 84,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7551,
+          "metric": "admissions",
+          "rank": 7,
+          "start_cycle": 7424,
+          "value": 80,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9599,
+          "metric": "admissions",
+          "rank": 8,
+          "start_cycle": 9472,
+          "value": 64,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "admissions",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "admissions",
+          "rank": 2,
+          "start_cycle": 8192,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "admissions",
+          "rank": 3,
+          "start_cycle": 8704,
+          "value": 202,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9727,
+          "metric": "admissions",
+          "rank": 4,
+          "start_cycle": 9216,
+          "value": 148,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7679,
+          "metric": "admissions",
+          "rank": 5,
+          "start_cycle": 7168,
+          "value": 112,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10239,
+          "metric": "admissions",
+          "rank": 6,
+          "start_cycle": 9728,
+          "value": 98,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10751,
+          "metric": "admissions",
+          "rank": 7,
+          "start_cycle": 10240,
+          "value": 56,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6143,
+          "metric": "admissions",
+          "rank": 8,
+          "start_cycle": 5632,
+          "value": 28,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7455,
+          "metric": "admission_bytes",
+          "rank": 1,
+          "start_cycle": 7424,
+          "value": 1280,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8927,
+          "metric": "admission_bytes",
+          "rank": 2,
+          "start_cycle": 8896,
+          "value": 1184,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "admission_bytes",
+          "rank": 3,
+          "start_cycle": 9184,
+          "value": 1184,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8639,
+          "metric": "admission_bytes",
+          "rank": 4,
+          "start_cycle": 8608,
+          "value": 1152,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7775,
+          "metric": "admission_bytes",
+          "rank": 5,
+          "start_cycle": 7744,
+          "value": 1120,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8063,
+          "metric": "admission_bytes",
+          "rank": 6,
+          "start_cycle": 8032,
+          "value": 1120,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8319,
+          "metric": "admission_bytes",
+          "rank": 7,
+          "start_cycle": 8288,
+          "value": 1120,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8351,
+          "metric": "admission_bytes",
+          "rank": 8,
+          "start_cycle": 8320,
+          "value": 1120,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7807,
+          "metric": "admission_bytes",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 3584,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8959,
+          "metric": "admission_bytes",
+          "rank": 2,
+          "start_cycle": 8832,
+          "value": 3584,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9855,
+          "metric": "admission_bytes",
+          "rank": 3,
+          "start_cycle": 9728,
+          "value": 3136,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "admission_bytes",
+          "rank": 4,
+          "start_cycle": 8576,
+          "value": 3040,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "admission_bytes",
+          "rank": 5,
+          "start_cycle": 9088,
+          "value": 2880,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8063,
+          "metric": "admission_bytes",
+          "rank": 6,
+          "start_cycle": 7936,
+          "value": 2688,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7551,
+          "metric": "admission_bytes",
+          "rank": 7,
+          "start_cycle": 7424,
+          "value": 2560,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9599,
+          "metric": "admission_bytes",
+          "rank": 8,
+          "start_cycle": 9472,
+          "value": 2048,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "admission_bytes",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 7168,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "admission_bytes",
+          "rank": 2,
+          "start_cycle": 8192,
+          "value": 7168,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "admission_bytes",
+          "rank": 3,
+          "start_cycle": 8704,
+          "value": 6464,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9727,
+          "metric": "admission_bytes",
+          "rank": 4,
+          "start_cycle": 9216,
+          "value": 4736,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7679,
+          "metric": "admission_bytes",
+          "rank": 5,
+          "start_cycle": 7168,
+          "value": 3584,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10239,
+          "metric": "admission_bytes",
+          "rank": 6,
+          "start_cycle": 9728,
+          "value": 3136,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10751,
+          "metric": "admission_bytes",
+          "rank": 7,
+          "start_cycle": 10240,
+          "value": 1792,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6143,
+          "metric": "admission_bytes",
+          "rank": 8,
+          "start_cycle": 5632,
+          "value": 896,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6399,
+          "metric": "ldst_resource_stall",
+          "rank": 1,
+          "start_cycle": 6368,
+          "value": 10,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6847,
+          "metric": "ldst_resource_stall",
+          "rank": 2,
+          "start_cycle": 6816,
+          "value": 7,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6367,
+          "metric": "ldst_resource_stall",
+          "rank": 3,
+          "start_cycle": 6336,
+          "value": 3,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5055,
+          "metric": "ldst_resource_stall",
+          "rank": 4,
+          "start_cycle": 5024,
+          "value": 2,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6335,
+          "metric": "ldst_resource_stall",
+          "rank": 5,
+          "start_cycle": 6304,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6719,
+          "metric": "ldst_resource_stall",
+          "rank": 6,
+          "start_cycle": 6688,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6399,
+          "metric": "ldst_resource_stall",
+          "rank": 1,
+          "start_cycle": 6272,
+          "value": 14,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6911,
+          "metric": "ldst_resource_stall",
+          "rank": 2,
+          "start_cycle": 6784,
+          "value": 7,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5119,
+          "metric": "ldst_resource_stall",
+          "rank": 3,
+          "start_cycle": 4992,
+          "value": 2,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6783,
+          "metric": "ldst_resource_stall",
+          "rank": 4,
+          "start_cycle": 6656,
+          "value": 1,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6655,
+          "metric": "ldst_resource_stall",
+          "rank": 1,
+          "start_cycle": 6144,
+          "value": 14,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7167,
+          "metric": "ldst_resource_stall",
+          "rank": 2,
+          "start_cycle": 6656,
+          "value": 8,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5119,
+          "metric": "ldst_resource_stall",
+          "rank": 3,
+          "start_cycle": 4608,
+          "value": 2,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5151,
+          "metric": "ldst_coal_stall",
+          "rank": 1,
+          "start_cycle": 5120,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5183,
+          "metric": "ldst_coal_stall",
+          "rank": 2,
+          "start_cycle": 5152,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5215,
+          "metric": "ldst_coal_stall",
+          "rank": 3,
+          "start_cycle": 5184,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5247,
+          "metric": "ldst_coal_stall",
+          "rank": 4,
+          "start_cycle": 5216,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5279,
+          "metric": "ldst_coal_stall",
+          "rank": 5,
+          "start_cycle": 5248,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5311,
+          "metric": "ldst_coal_stall",
+          "rank": 6,
+          "start_cycle": 5280,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5343,
+          "metric": "ldst_coal_stall",
+          "rank": 7,
+          "start_cycle": 5312,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5375,
+          "metric": "ldst_coal_stall",
+          "rank": 8,
+          "start_cycle": 5344,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5247,
+          "metric": "ldst_coal_stall",
+          "rank": 1,
+          "start_cycle": 5120,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5375,
+          "metric": "ldst_coal_stall",
+          "rank": 2,
+          "start_cycle": 5248,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5503,
+          "metric": "ldst_coal_stall",
+          "rank": 3,
+          "start_cycle": 5376,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5631,
+          "metric": "ldst_coal_stall",
+          "rank": 4,
+          "start_cycle": 5504,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5759,
+          "metric": "ldst_coal_stall",
+          "rank": 5,
+          "start_cycle": 5632,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5887,
+          "metric": "ldst_coal_stall",
+          "rank": 6,
+          "start_cycle": 5760,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6015,
+          "metric": "ldst_coal_stall",
+          "rank": 7,
+          "start_cycle": 5888,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7039,
+          "metric": "ldst_coal_stall",
+          "rank": 8,
+          "start_cycle": 6912,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 5631,
+          "metric": "ldst_coal_stall",
+          "rank": 1,
+          "start_cycle": 5120,
+          "value": 1024,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6143,
+          "metric": "ldst_coal_stall",
+          "rank": 2,
+          "start_cycle": 5632,
+          "value": 942,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7167,
+          "metric": "ldst_coal_stall",
+          "rank": 3,
+          "start_cycle": 6656,
+          "value": 652,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7679,
+          "metric": "ldst_coal_stall",
+          "rank": 4,
+          "start_cycle": 7168,
+          "value": 615,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "ldst_coal_stall",
+          "rank": 5,
+          "start_cycle": 7680,
+          "value": 350,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "ldst_coal_stall",
+          "rank": 6,
+          "start_cycle": 8192,
+          "value": 350,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "ldst_coal_stall",
+          "rank": 7,
+          "start_cycle": 8704,
+          "value": 325,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9727,
+          "metric": "ldst_coal_stall",
+          "rank": 8,
+          "start_cycle": 9216,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6815,
+          "metric": "l1_hit",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 4,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6847,
+          "metric": "l1_hit",
+          "rank": 2,
+          "start_cycle": 6816,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6911,
+          "metric": "l1_hit",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 5,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7167,
+          "metric": "l1_hit",
+          "rank": 1,
+          "start_cycle": 6656,
+          "value": 5,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7487,
+          "metric": "l1_miss",
+          "rank": 1,
+          "start_cycle": 7456,
+          "value": 40,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8959,
+          "metric": "l1_miss",
+          "rank": 2,
+          "start_cycle": 8928,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9247,
+          "metric": "l1_miss",
+          "rank": 3,
+          "start_cycle": 9216,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8671,
+          "metric": "l1_miss",
+          "rank": 4,
+          "start_cycle": 8640,
+          "value": 36,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7807,
+          "metric": "l1_miss",
+          "rank": 5,
+          "start_cycle": 7776,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8095,
+          "metric": "l1_miss",
+          "rank": 6,
+          "start_cycle": 8064,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8351,
+          "metric": "l1_miss",
+          "rank": 7,
+          "start_cycle": 8320,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8383,
+          "metric": "l1_miss",
+          "rank": 8,
+          "start_cycle": 8352,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7551,
+          "metric": "l1_miss",
+          "rank": 1,
+          "start_cycle": 7424,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "l1_miss",
+          "rank": 2,
+          "start_cycle": 8576,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8447,
+          "metric": "l1_miss",
+          "rank": 3,
+          "start_cycle": 8320,
+          "value": 96,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9599,
+          "metric": "l1_miss",
+          "rank": 4,
+          "start_cycle": 9472,
+          "value": 96,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8959,
+          "metric": "l1_miss",
+          "rank": 5,
+          "start_cycle": 8832,
+          "value": 89,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9855,
+          "metric": "l1_miss",
+          "rank": 6,
+          "start_cycle": 9728,
+          "value": 84,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7807,
+          "metric": "l1_miss",
+          "rank": 7,
+          "start_cycle": 7680,
+          "value": 83,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "l1_miss",
+          "rank": 8,
+          "start_cycle": 8064,
+          "value": 63,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "l1_miss",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "l1_miss",
+          "rank": 2,
+          "start_cycle": 8192,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9727,
+          "metric": "l1_miss",
+          "rank": 3,
+          "start_cycle": 9216,
+          "value": 171,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "l1_miss",
+          "rank": 4,
+          "start_cycle": 8704,
+          "value": 165,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7679,
+          "metric": "l1_miss",
+          "rank": 5,
+          "start_cycle": 7168,
+          "value": 112,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10239,
+          "metric": "l1_miss",
+          "rank": 6,
+          "start_cycle": 9728,
+          "value": 112,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10751,
+          "metric": "l1_miss",
+          "rank": 7,
+          "start_cycle": 10240,
+          "value": 56,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6143,
+          "metric": "l1_miss",
+          "rank": 8,
+          "start_cycle": 5632,
+          "value": 28,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6815,
+          "metric": "l2_hit",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 4,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6847,
+          "metric": "l2_hit",
+          "rank": 2,
+          "start_cycle": 6816,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6911,
+          "metric": "l2_hit",
+          "rank": 1,
+          "start_cycle": 6784,
+          "value": 5,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7167,
+          "metric": "l2_hit",
+          "rank": 1,
+          "start_cycle": 6656,
+          "value": 5,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7519,
+          "metric": "l2_miss",
+          "rank": 1,
+          "start_cycle": 7488,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7775,
+          "metric": "l2_miss",
+          "rank": 2,
+          "start_cycle": 7744,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8959,
+          "metric": "l2_miss",
+          "rank": 3,
+          "start_cycle": 8928,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9247,
+          "metric": "l2_miss",
+          "rank": 4,
+          "start_cycle": 9216,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8063,
+          "metric": "l2_miss",
+          "rank": 5,
+          "start_cycle": 8032,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8671,
+          "metric": "l2_miss",
+          "rank": 6,
+          "start_cycle": 8640,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8383,
+          "metric": "l2_miss",
+          "rank": 7,
+          "start_cycle": 8352,
+          "value": 34,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7487,
+          "metric": "l2_miss",
+          "rank": 8,
+          "start_cycle": 7456,
+          "value": 33,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7551,
+          "metric": "l2_miss",
+          "rank": 1,
+          "start_cycle": 7424,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "l2_miss",
+          "rank": 2,
+          "start_cycle": 8576,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8447,
+          "metric": "l2_miss",
+          "rank": 3,
+          "start_cycle": 8320,
+          "value": 97,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9599,
+          "metric": "l2_miss",
+          "rank": 4,
+          "start_cycle": 9472,
+          "value": 96,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8959,
+          "metric": "l2_miss",
+          "rank": 5,
+          "start_cycle": 8832,
+          "value": 85,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7807,
+          "metric": "l2_miss",
+          "rank": 6,
+          "start_cycle": 7680,
+          "value": 80,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9855,
+          "metric": "l2_miss",
+          "rank": 7,
+          "start_cycle": 9728,
+          "value": 80,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "l2_miss",
+          "rank": 8,
+          "start_cycle": 8064,
+          "value": 64,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "l2_miss",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "l2_miss",
+          "rank": 2,
+          "start_cycle": 8192,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9727,
+          "metric": "l2_miss",
+          "rank": 3,
+          "start_cycle": 9216,
+          "value": 175,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "l2_miss",
+          "rank": 4,
+          "start_cycle": 8704,
+          "value": 161,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7679,
+          "metric": "l2_miss",
+          "rank": 5,
+          "start_cycle": 7168,
+          "value": 113,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10239,
+          "metric": "l2_miss",
+          "rank": 6,
+          "start_cycle": 9728,
+          "value": 112,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10751,
+          "metric": "l2_miss",
+          "rank": 7,
+          "start_cycle": 10240,
+          "value": 56,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6143,
+          "metric": "l2_miss",
+          "rank": 8,
+          "start_cycle": 5632,
+          "value": 27,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7679,
+          "metric": "dram_queue_occupancy",
+          "rank": 1,
+          "start_cycle": 7648,
+          "value": 2,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7647,
+          "metric": "dram_queue_occupancy",
+          "rank": 2,
+          "start_cycle": 7616,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9407,
+          "metric": "dram_queue_occupancy",
+          "rank": 3,
+          "start_cycle": 9376,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9439,
+          "metric": "dram_queue_occupancy",
+          "rank": 4,
+          "start_cycle": 9408,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9471,
+          "metric": "dram_queue_occupancy",
+          "rank": 5,
+          "start_cycle": 9440,
+          "value": 1,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7711,
+          "metric": "dram_completions",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 52,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9471,
+          "metric": "dram_completions",
+          "rank": 2,
+          "start_cycle": 9440,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8031,
+          "metric": "dram_completions",
+          "rank": 3,
+          "start_cycle": 8000,
+          "value": 36,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8895,
+          "metric": "dram_completions",
+          "rank": 4,
+          "start_cycle": 8864,
+          "value": 36,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9183,
+          "metric": "dram_completions",
+          "rank": 5,
+          "start_cycle": 9152,
+          "value": 36,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7999,
+          "metric": "dram_completions",
+          "rank": 6,
+          "start_cycle": 7968,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8319,
+          "metric": "dram_completions",
+          "rank": 7,
+          "start_cycle": 8288,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9119,
+          "metric": "dram_completions",
+          "rank": 8,
+          "start_cycle": 9088,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8063,
+          "metric": "dram_completions",
+          "rank": 1,
+          "start_cycle": 7936,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "dram_completions",
+          "rank": 2,
+          "start_cycle": 9088,
+          "value": 108,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8319,
+          "metric": "dram_completions",
+          "rank": 3,
+          "start_cycle": 8192,
+          "value": 98,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10111,
+          "metric": "dram_completions",
+          "rank": 4,
+          "start_cycle": 9984,
+          "value": 96,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9471,
+          "metric": "dram_completions",
+          "rank": 5,
+          "start_cycle": 9344,
+          "value": 91,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7807,
+          "metric": "dram_completions",
+          "rank": 6,
+          "start_cycle": 7680,
+          "value": 80,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8959,
+          "metric": "dram_completions",
+          "rank": 7,
+          "start_cycle": 8832,
+          "value": 77,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8575,
+          "metric": "dram_completions",
+          "rank": 8,
+          "start_cycle": 8448,
+          "value": 64,
+          "width": 128
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8703,
+          "metric": "dram_completions",
+          "rank": 1,
+          "start_cycle": 8192,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9215,
+          "metric": "dram_completions",
+          "rank": 2,
+          "start_cycle": 8704,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 8191,
+          "metric": "dram_completions",
+          "rank": 3,
+          "start_cycle": 7680,
+          "value": 192,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 9727,
+          "metric": "dram_completions",
+          "rank": 4,
+          "start_cycle": 9216,
+          "value": 168,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 10239,
+          "metric": "dram_completions",
+          "rank": 5,
+          "start_cycle": 9728,
+          "value": 168,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 7679,
+          "metric": "dram_completions",
+          "rank": 6,
+          "start_cycle": 7168,
+          "value": 32,
+          "width": 512
+        },
+        {
+          "domain": "memory",
+          "end_cycle": 6655,
+          "metric": "dram_completions",
+          "rank": 7,
+          "start_cycle": 6144,
+          "value": 16,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7455,
+          "metric": "translation_ready",
+          "rank": 1,
+          "start_cycle": 7424,
+          "value": 40,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8927,
+          "metric": "translation_ready",
+          "rank": 2,
+          "start_cycle": 8896,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9215,
+          "metric": "translation_ready",
+          "rank": 3,
+          "start_cycle": 9184,
+          "value": 37,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8639,
+          "metric": "translation_ready",
+          "rank": 4,
+          "start_cycle": 8608,
+          "value": 36,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7775,
+          "metric": "translation_ready",
+          "rank": 5,
+          "start_cycle": 7744,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8063,
+          "metric": "translation_ready",
+          "rank": 6,
+          "start_cycle": 8032,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8319,
+          "metric": "translation_ready",
+          "rank": 7,
+          "start_cycle": 8288,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8351,
+          "metric": "translation_ready",
+          "rank": 8,
+          "start_cycle": 8320,
+          "value": 35,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7807,
+          "metric": "translation_ready",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8959,
+          "metric": "translation_ready",
+          "rank": 2,
+          "start_cycle": 8832,
+          "value": 112,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9855,
+          "metric": "translation_ready",
+          "rank": 3,
+          "start_cycle": 9728,
+          "value": 98,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8703,
+          "metric": "translation_ready",
+          "rank": 4,
+          "start_cycle": 8576,
+          "value": 95,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9215,
+          "metric": "translation_ready",
+          "rank": 5,
+          "start_cycle": 9088,
+          "value": 90,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8063,
+          "metric": "translation_ready",
+          "rank": 6,
+          "start_cycle": 7936,
+          "value": 84,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7551,
+          "metric": "translation_ready",
+          "rank": 7,
+          "start_cycle": 7424,
+          "value": 80,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9599,
+          "metric": "translation_ready",
+          "rank": 8,
+          "start_cycle": 9472,
+          "value": 64,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8191,
+          "metric": "translation_ready",
+          "rank": 1,
+          "start_cycle": 7680,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8703,
+          "metric": "translation_ready",
+          "rank": 2,
+          "start_cycle": 8192,
+          "value": 224,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9215,
+          "metric": "translation_ready",
+          "rank": 3,
+          "start_cycle": 8704,
+          "value": 202,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9727,
+          "metric": "translation_ready",
+          "rank": 4,
+          "start_cycle": 9216,
+          "value": 148,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7679,
+          "metric": "translation_ready",
+          "rank": 5,
+          "start_cycle": 7168,
+          "value": 112,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 10239,
+          "metric": "translation_ready",
+          "rank": 6,
+          "start_cycle": 9728,
+          "value": 98,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 10751,
+          "metric": "translation_ready",
+          "rank": 7,
+          "start_cycle": 10240,
+          "value": 56,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 6143,
+          "metric": "translation_ready",
+          "rank": 8,
+          "start_cycle": 5632,
+          "value": 28,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5151,
+          "metric": "translation_not_ready",
+          "rank": 1,
+          "start_cycle": 5120,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5183,
+          "metric": "translation_not_ready",
+          "rank": 2,
+          "start_cycle": 5152,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5215,
+          "metric": "translation_not_ready",
+          "rank": 3,
+          "start_cycle": 5184,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5247,
+          "metric": "translation_not_ready",
+          "rank": 4,
+          "start_cycle": 5216,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5279,
+          "metric": "translation_not_ready",
+          "rank": 5,
+          "start_cycle": 5248,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5311,
+          "metric": "translation_not_ready",
+          "rank": 6,
+          "start_cycle": 5280,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5343,
+          "metric": "translation_not_ready",
+          "rank": 7,
+          "start_cycle": 5312,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5375,
+          "metric": "translation_not_ready",
+          "rank": 8,
+          "start_cycle": 5344,
+          "value": 64,
+          "width": 32
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5247,
+          "metric": "translation_not_ready",
+          "rank": 1,
+          "start_cycle": 5120,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5375,
+          "metric": "translation_not_ready",
+          "rank": 2,
+          "start_cycle": 5248,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5503,
+          "metric": "translation_not_ready",
+          "rank": 3,
+          "start_cycle": 5376,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5631,
+          "metric": "translation_not_ready",
+          "rank": 4,
+          "start_cycle": 5504,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5759,
+          "metric": "translation_not_ready",
+          "rank": 5,
+          "start_cycle": 5632,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5887,
+          "metric": "translation_not_ready",
+          "rank": 6,
+          "start_cycle": 5760,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 6015,
+          "metric": "translation_not_ready",
+          "rank": 7,
+          "start_cycle": 5888,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7039,
+          "metric": "translation_not_ready",
+          "rank": 8,
+          "start_cycle": 6912,
+          "value": 256,
+          "width": 128
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 5631,
+          "metric": "translation_not_ready",
+          "rank": 1,
+          "start_cycle": 5120,
+          "value": 1024,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 6143,
+          "metric": "translation_not_ready",
+          "rank": 2,
+          "start_cycle": 5632,
+          "value": 920,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7167,
+          "metric": "translation_not_ready",
+          "rank": 3,
+          "start_cycle": 6656,
+          "value": 652,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 7679,
+          "metric": "translation_not_ready",
+          "rank": 4,
+          "start_cycle": 7168,
+          "value": 510,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8191,
+          "metric": "translation_not_ready",
+          "rank": 5,
+          "start_cycle": 7680,
+          "value": 140,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 8703,
+          "metric": "translation_not_ready",
+          "rank": 6,
+          "start_cycle": 8192,
+          "value": 140,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9215,
+          "metric": "translation_not_ready",
+          "rank": 7,
+          "start_cycle": 8704,
+          "value": 135,
+          "width": 512
+        },
+        {
+          "domain": "translation",
+          "end_cycle": 9727,
+          "metric": "translation_not_ready",
+          "rank": 8,
+          "start_cycle": 9216,
+          "value": 85,
+          "width": 512
+        }
+      ],
+      "windows": [
+        {
+          "count": 328,
+          "domain": "progress",
+          "mean": 222.280487805,
+          "metric": "instructions",
+          "p50": 0,
+          "p95": 1408,
+          "p99": 2560,
+          "peak": 5408,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "progress",
+          "mean": 889.12195122,
+          "metric": "instructions",
+          "p50": 0,
+          "p95": 5792,
+          "p99": 10498,
+          "peak": 10498,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "progress",
+          "mean": 3471.80952381,
+          "metric": "instructions",
+          "p50": 0,
+          "p95": 13816,
+          "p99": 16876,
+          "peak": 16876,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "progress",
+          "mean": 0.006097561,
+          "metric": "cta_completions",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 2,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "progress",
+          "mean": 0.024390244,
+          "metric": "cta_completions",
+          "p50": 0,
+          "p95": 0,
+          "p99": 2,
+          "peak": 2,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "progress",
+          "mean": 0.095238095,
+          "metric": "cta_completions",
+          "p50": 0,
+          "p95": 0,
+          "p99": 2,
+          "peak": 2,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 7.725609756,
+          "metric": "issued",
+          "p50": 0,
+          "p95": 54,
+          "p99": 91,
+          "peak": 169,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 30.902439024,
+          "metric": "issued",
+          "p50": 0,
+          "p95": 209,
+          "p99": 372,
+          "peak": 372,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 120.666666667,
+          "metric": "issued",
+          "p50": 0,
+          "p95": 459,
+          "p99": 638,
+          "peak": 638,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 9.024390244,
+          "metric": "no_active_work",
+          "p50": 0,
+          "p95": 32,
+          "p99": 57,
+          "peak": 185,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 36.097560976,
+          "metric": "no_active_work",
+          "p50": 0,
+          "p95": 128,
+          "p99": 451,
+          "peak": 451,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 140.952380952,
+          "metric": "no_active_work",
+          "p50": 0,
+          "p95": 512,
+          "p99": 587,
+          "peak": 587,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "no_eligible_work",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "no_eligible_work",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "no_eligible_work",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 106.484756098,
+          "metric": "dependency_scoreboard",
+          "p50": 94,
+          "p95": 256,
+          "p99": 256,
+          "peak": 256,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 425.93902439,
+          "metric": "dependency_scoreboard",
+          "p50": 550,
+          "p95": 1008,
+          "p99": 1024,
+          "peak": 1024,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 1663.19047619,
+          "metric": "dependency_scoreboard",
+          "p50": 630,
+          "p95": 3637,
+          "p99": 4044,
+          "peak": 4044,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 8.835365854,
+          "metric": "sync_barrier",
+          "p50": 0,
+          "p95": 64,
+          "p99": 64,
+          "peak": 113,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 35.341463415,
+          "metric": "sync_barrier",
+          "p50": 0,
+          "p95": 256,
+          "p99": 327,
+          "peak": 327,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 138.0,
+          "metric": "sync_barrier",
+          "p50": 0,
+          "p95": 1024,
+          "p99": 1024,
+          "peak": 1024,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "sync_membar",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "sync_membar",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "sync_membar",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 1.31097561,
+          "metric": "frontend_starvation",
+          "p50": 0,
+          "p95": 0,
+          "p99": 71,
+          "peak": 105,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 5.243902439,
+          "metric": "frontend_starvation",
+          "p50": 0,
+          "p95": 0,
+          "p99": 288,
+          "peak": 288,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 20.476190476,
+          "metric": "frontend_starvation",
+          "p50": 0,
+          "p95": 10,
+          "p99": 413,
+          "peak": 413,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 0.094512195,
+          "metric": "eligible_structural",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 22,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 0.37804878,
+          "metric": "eligible_structural",
+          "p50": 0,
+          "p95": 0,
+          "p99": 31,
+          "peak": 31,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 1.476190476,
+          "metric": "eligible_structural",
+          "p50": 0,
+          "p95": 0,
+          "p99": 31,
+          "peak": 31,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 0.0,
+          "metric": "other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 0.271341463,
+          "metric": "active_warps",
+          "p50": 0,
+          "p95": 1,
+          "p99": 1,
+          "peak": 1,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 0.268292683,
+          "metric": "active_warps",
+          "p50": 0,
+          "p95": 1,
+          "p99": 1,
+          "peak": 1,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 0.285714286,
+          "metric": "active_warps",
+          "p50": 0,
+          "p95": 1,
+          "p99": 1,
+          "peak": 1,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "scheduler",
+          "mean": 0.00304878,
+          "metric": "active_ctas",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 1,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "scheduler",
+          "mean": 0.012195122,
+          "metric": "active_ctas",
+          "p50": 0,
+          "p95": 0,
+          "p99": 1,
+          "peak": 1,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "scheduler",
+          "mean": 0.047619048,
+          "metric": "active_ctas",
+          "p50": 0,
+          "p95": 0,
+          "p99": 1,
+          "peak": 1,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "execution",
+          "mean": 1.914634146,
+          "metric": "completed_alu",
+          "p50": 0,
+          "p95": 10,
+          "p99": 37,
+          "peak": 42,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "execution",
+          "mean": 7.658536585,
+          "metric": "completed_alu",
+          "p50": 0,
+          "p95": 28,
+          "p99": 133,
+          "peak": 133,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "execution",
+          "mean": 29.904761905,
+          "metric": "completed_alu",
+          "p50": 0,
+          "p95": 111,
+          "p99": 229,
+          "peak": 229,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "execution",
+          "mean": 0.091463415,
+          "metric": "completed_sfu",
+          "p50": 0,
+          "p95": 0,
+          "p99": 4,
+          "peak": 7,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "execution",
+          "mean": 0.365853659,
+          "metric": "completed_sfu",
+          "p50": 0,
+          "p95": 3,
+          "p99": 7,
+          "peak": 7,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "execution",
+          "mean": 1.428571429,
+          "metric": "completed_sfu",
+          "p50": 0,
+          "p95": 8,
+          "p99": 14,
+          "peak": 14,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "execution",
+          "mean": 0.0,
+          "metric": "completed_tensor",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "execution",
+          "mean": 0.0,
+          "metric": "completed_tensor",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "execution",
+          "mean": 0.0,
+          "metric": "completed_tensor",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "execution",
+          "mean": 0.573170732,
+          "metric": "completed_ldst",
+          "p50": 0,
+          "p95": 3,
+          "p99": 5,
+          "peak": 8,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "execution",
+          "mean": 2.292682927,
+          "metric": "completed_ldst",
+          "p50": 0,
+          "p95": 11,
+          "p99": 14,
+          "peak": 14,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "execution",
+          "mean": 8.952380952,
+          "metric": "completed_ldst",
+          "p50": 0,
+          "p95": 28,
+          "p99": 31,
+          "peak": 31,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "execution",
+          "mean": 5.146341463,
+          "metric": "completed_other",
+          "p50": 0,
+          "p95": 43,
+          "p99": 64,
+          "peak": 184,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "execution",
+          "mean": 20.585365854,
+          "metric": "completed_other",
+          "p50": 0,
+          "p95": 168,
+          "p99": 327,
+          "peak": 327,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "execution",
+          "mean": 80.380952381,
+          "metric": "completed_other",
+          "p50": 0,
+          "p95": 344,
+          "p99": 496,
+          "peak": 496,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 3.350609756,
+          "metric": "admissions",
+          "p50": 0,
+          "p95": 32,
+          "p99": 36,
+          "peak": 40,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 13.402439024,
+          "metric": "admissions",
+          "p50": 0,
+          "p95": 90,
+          "p99": 112,
+          "peak": 112,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 52.333333333,
+          "metric": "admissions",
+          "p50": 0,
+          "p95": 224,
+          "p99": 224,
+          "peak": 224,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 107.219512195,
+          "metric": "admission_bytes",
+          "p50": 0,
+          "p95": 1024,
+          "p99": 1152,
+          "peak": 1280,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 428.87804878,
+          "metric": "admission_bytes",
+          "p50": 0,
+          "p95": 2880,
+          "p99": 3584,
+          "peak": 3584,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 1674.666666667,
+          "metric": "admission_bytes",
+          "p50": 0,
+          "p95": 7168,
+          "p99": 7168,
+          "peak": 7168,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.073170732,
+          "metric": "ldst_resource_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 2,
+          "peak": 10,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.292682927,
+          "metric": "ldst_resource_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 14,
+          "peak": 14,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 1.142857143,
+          "metric": "ldst_resource_stall",
+          "p50": 0,
+          "p95": 8,
+          "p99": 14,
+          "peak": 14,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 14.667682927,
+          "metric": "ldst_coal_stall",
+          "p50": 0,
+          "p95": 64,
+          "p99": 64,
+          "peak": 64,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 58.670731707,
+          "metric": "ldst_coal_stall",
+          "p50": 0,
+          "p95": 256,
+          "p99": 256,
+          "peak": 256,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 229.095238095,
+          "metric": "ldst_coal_stall",
+          "p50": 59,
+          "p95": 942,
+          "p99": 1024,
+          "peak": 1024,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_icnt_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_icnt_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_icnt_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_data_port_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_data_port_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_data_port_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_other_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_other_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "ldst_other_stall",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.015243902,
+          "metric": "l1_hit",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 4,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.06097561,
+          "metric": "l1_hit",
+          "p50": 0,
+          "p95": 0,
+          "p99": 5,
+          "peak": 5,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.238095238,
+          "metric": "l1_hit",
+          "p50": 0,
+          "p95": 0,
+          "p99": 5,
+          "peak": 5,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_hit_reserved",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_hit_reserved",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_hit_reserved",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 3.335365854,
+          "metric": "l1_miss",
+          "p50": 0,
+          "p95": 32,
+          "p99": 36,
+          "peak": 40,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 13.341463415,
+          "metric": "l1_miss",
+          "p50": 0,
+          "p95": 89,
+          "p99": 112,
+          "peak": 112,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 52.095238095,
+          "metric": "l1_miss",
+          "p50": 0,
+          "p95": 224,
+          "p99": 224,
+          "peak": 224,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_reservation_fail",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_reservation_fail",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_reservation_fail",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l1_other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.015243902,
+          "metric": "l2_hit",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 4,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.06097561,
+          "metric": "l2_hit",
+          "p50": 0,
+          "p95": 0,
+          "p99": 5,
+          "peak": 5,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.238095238,
+          "metric": "l2_hit",
+          "p50": 0,
+          "p95": 0,
+          "p99": 5,
+          "peak": 5,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_hit_reserved",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_hit_reserved",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_hit_reserved",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 3.353658537,
+          "metric": "l2_miss",
+          "p50": 0,
+          "p95": 32,
+          "p99": 37,
+          "peak": 37,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 13.414634146,
+          "metric": "l2_miss",
+          "p50": 0,
+          "p95": 85,
+          "p99": 112,
+          "peak": 112,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 52.380952381,
+          "metric": "l2_miss",
+          "p50": 2,
+          "p95": 224,
+          "p99": 224,
+          "peak": 224,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_reservation_fail",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_reservation_fail",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_reservation_fail",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_other",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "icnt_to_l2_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "icnt_to_l2_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "icnt_to_l2_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_to_dram_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_to_dram_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_to_dram_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "dram_to_l2_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "dram_to_l2_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "dram_to_l2_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_to_icnt_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_to_icnt_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "l2_to_icnt_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 0.018292683,
+          "metric": "dram_queue_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 1,
+          "peak": 2,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "dram_queue_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 0.0,
+          "metric": "dram_queue_occupancy",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "memory",
+          "mean": 3.12195122,
+          "metric": "dram_completions",
+          "p50": 0,
+          "p95": 29,
+          "p99": 36,
+          "peak": 52,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "memory",
+          "mean": 12.487804878,
+          "metric": "dram_completions",
+          "p50": 0,
+          "p95": 91,
+          "p99": 112,
+          "peak": 112,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "memory",
+          "mean": 48.761904762,
+          "metric": "dram_completions",
+          "p50": 0,
+          "p95": 224,
+          "p99": 224,
+          "peak": 224,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "translation",
+          "mean": 3.350609756,
+          "metric": "translation_ready",
+          "p50": 0,
+          "p95": 32,
+          "p99": 36,
+          "peak": 40,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "translation",
+          "mean": 13.402439024,
+          "metric": "translation_ready",
+          "p50": 0,
+          "p95": 90,
+          "p99": 112,
+          "peak": 112,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "translation",
+          "mean": 52.333333333,
+          "metric": "translation_ready",
+          "p50": 0,
+          "p95": 224,
+          "p99": 224,
+          "peak": 224,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "translation",
+          "mean": 11.570121951,
+          "metric": "translation_not_ready",
+          "p50": 0,
+          "p95": 64,
+          "p99": 64,
+          "peak": 64,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "translation",
+          "mean": 46.280487805,
+          "metric": "translation_not_ready",
+          "p50": 0,
+          "p95": 256,
+          "p99": 256,
+          "peak": 256,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "translation",
+          "mean": 180.714285714,
+          "metric": "translation_not_ready",
+          "p50": 59,
+          "p95": 920,
+          "p99": 1024,
+          "peak": 1024,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "sync",
+          "mean": 0.0,
+          "metric": "barrier_waiting_warps",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "sync",
+          "mean": 0.0,
+          "metric": "barrier_waiting_warps",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "sync",
+          "mean": 0.0,
+          "metric": "barrier_waiting_warps",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        },
+        {
+          "count": 328,
+          "domain": "sync",
+          "mean": 0.0,
+          "metric": "membar_waiting_warps",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 328,
+          "width": 32
+        },
+        {
+          "count": 82,
+          "domain": "sync",
+          "mean": 0.0,
+          "metric": "membar_waiting_warps",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 82,
+          "width": 128
+        },
+        {
+          "count": 21,
+          "domain": "sync",
+          "mean": 0.0,
+          "metric": "membar_waiting_warps",
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "peak": 0,
+          "reservoir": 21,
+          "width": 512
+        }
+      ]
+    }
+  ],
+  "schema": "AWMA_BOTTLENECK_OBSERVATORY_ANALYSIS_V1"
+}

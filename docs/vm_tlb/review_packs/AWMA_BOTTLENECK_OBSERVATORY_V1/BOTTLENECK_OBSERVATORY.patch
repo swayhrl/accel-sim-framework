@@ -1,0 +1,1311 @@
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/src/gpgpu-sim/shader.cc
+index 1e8caaf..abdf415 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/shader.cc
+@@ -92,6 +92,7 @@ static awma_accessq_cardinality_recorder &accessq_cardinality_diagnostics() {
+ #include "../cuda-sim/ptx_sim.h"
+ #include "../statwrapper.h"
+ #include "addrdec.h"
++#include "bottleneck_observatory.h"
+ #include "dram.h"
+ #include "gpu-misc.h"
+ #include "gpu-sim.h"
+@@ -104,6 +105,17 @@ static awma_accessq_cardinality_recorder &accessq_cardinality_diagnostics() {
+ #include "traffic_breakdown.h"
+ #include "visualizer.h"
+ 
++static awma_observatory::cache_classification awma_cache_status(
++    enum cache_request_status status) {
++  switch (status) {
++    case HIT: return awma_observatory::CACHE_HIT;
++    case HIT_RESERVED: return awma_observatory::CACHE_HIT_RESERVED;
++    case MISS: return awma_observatory::CACHE_MISS;
++    case RESERVATION_FAIL: return awma_observatory::CACHE_RESERVATION_FAIL;
++    default: return awma_observatory::CACHE_OTHER;
++  }
++}
++
+ #define PRIORITIZE_MSHR_OVER_WB 1
+ #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+ #define MIN(a, b) (((a) < (b)) ? (a) : (b))
+@@ -1491,6 +1503,12 @@ void scheduler_unit::cycle() {
+   bool ready_inst = false;   // of the valid instructions, there was one not
+                              // waiting for pending register writes
+   bool issued_inst = false;  // of these we issued one
++  const bool observe_scheduler = awma_observatory::instance().enabled(
++      1, awma_observatory::DOMAIN_SCHEDULER | awma_observatory::DOMAIN_SYNC);
++  unsigned active_warps = 0;
++  unsigned barrier_waiting = 0;
++  unsigned membar_waiting = 0;
++  unsigned frontend_starved = 0;
+ 
+   order_warps();
+   for (std::vector<shd_warp_t *>::const_iterator iter =
+@@ -1503,6 +1521,12 @@ void scheduler_unit::cycle() {
+     SCHED_DPRINTF("Testing (warp_id %u, dynamic_warp_id %u)\n",
+                   (*iter)->get_warp_id(), (*iter)->get_dynamic_warp_id());
+     unsigned warp_id = (*iter)->get_warp_id();
++    if (observe_scheduler && !warp(warp_id).functional_done()) {
++      ++active_warps;
++      if (m_shader->warp_waiting_at_barrier(warp_id)) ++barrier_waiting;
++      if (warp(warp_id).get_membar()) ++membar_waiting;
++      if (warp(warp_id).ibuffer_empty()) ++frontend_starved;
++    }
+     unsigned checked = 0;
+     unsigned issued = 0;
+     exec_unit_type_t previous_issued_inst_exec_type = exec_unit_type_t::NONE;
+@@ -1790,6 +1814,31 @@ void scheduler_unit::cycle() {
+                                         // to memory)
+   else if (!issued_inst)
+     m_stats->shader_cycle_distro[2]++;  // pipeline stalled
++
++  if (observe_scheduler) {
++    awma_observatory::scheduler_classification classification =
++        awma_observatory::CLASS_OTHER;
++    if (issued_inst)
++      classification = awma_observatory::CLASS_ISSUED;
++    else if (active_warps == 0)
++      classification = awma_observatory::CLASS_NO_ACTIVE_WORK;
++    else if (valid_inst && !ready_inst)
++      classification = awma_observatory::CLASS_DEPENDENCY_SCOREBOARD;
++    else if (ready_inst)
++      classification = awma_observatory::CLASS_ELIGIBLE_STRUCTURAL;
++    else if (barrier_waiting != 0)
++      classification = awma_observatory::CLASS_SYNC_BARRIER;
++    else if (membar_waiting != 0)
++      classification = awma_observatory::CLASS_SYNC_MEMBAR;
++    else if (frontend_starved != 0)
++      classification = awma_observatory::CLASS_FRONTEND_STARVATION;
++    else
++      classification = awma_observatory::CLASS_NO_ELIGIBLE_WORK;
++    awma_observatory::instance().record_scheduler(
++        m_shader->get_gpu()->gpu_sim_cycle +
++            m_shader->get_gpu()->gpu_tot_sim_cycle,
++        classification, active_warps, barrier_waiting, membar_waiting);
++  }
+ }
+ 
+ void scheduler_unit::do_on_warp_issued(
+@@ -2151,6 +2200,23 @@ void shader_core_ctx::warp_inst_complete(const warp_inst_t &inst) {
+ 
+   m_stats->m_num_sim_winsn[m_sid]++;
+   m_gpu->gpu_sim_insn += inst.active_count();
++  if (awma_observatory::instance().enabled(
++          1, awma_observatory::DOMAIN_PROGRESS |
++                 awma_observatory::DOMAIN_EXECUTION)) {
++    awma_observatory::execution_classification execution =
++        awma_observatory::EXEC_OTHER;
++    if (inst.op_pipe == MEM__OP)
++      execution = awma_observatory::EXEC_LDST;
++    else if (inst.op_pipe == SFU__OP)
++      execution = awma_observatory::EXEC_SFU;
++    else if (inst.op_pipe == TENSOR_CORE__OP)
++      execution = awma_observatory::EXEC_TENSOR;
++    else if (inst.op_pipe == SP__OP)
++      execution = awma_observatory::EXEC_ALU;
++    awma_observatory::instance().record_instruction_completion(
++        m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle, inst.active_count(),
++        execution);
++  }
+   inst.completed(m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle);
+ }
+ 
+@@ -2325,6 +2391,11 @@ mem_stage_stall_type ldst_unit::process_memory_access_queue_l1cache(
+             m_core->inc_store_req(inst.warp_id());
+         }
+ 
++        awma_observatory::instance().record_memory_admission(
++            inst.accessq_back().get_uid(),
++            m_core->get_gpu()->gpu_sim_cycle +
++                m_core->get_gpu()->gpu_tot_sim_cycle,
++            inst.accessq_back().get_size());
+         inst.accessq_pop_back();
+       } else {
+         result = BK_CONF;
+@@ -2354,6 +2425,16 @@ mem_stage_stall_type ldst_unit::process_memory_access_queue_l1cache(
+     m4c_memory_telemetry_instance().record_l1(
+         mf->get_telemetry_class(), status, mf->get_access_size(), m_sid,
+         mf->get_translation_telemetry_outcome());
++    awma_observatory::instance().record_l1(
++        m_core->get_gpu()->gpu_sim_cycle +
++            m_core->get_gpu()->gpu_tot_sim_cycle,
++        awma_cache_status(status));
++    if (status != RESERVATION_FAIL)
++      awma_observatory::instance().record_memory_admission(
++          inst.accessq_back().get_uid(),
++          m_core->get_gpu()->gpu_sim_cycle +
++              m_core->get_gpu()->gpu_tot_sim_cycle,
++          inst.accessq_back().get_size());
+     mf->set_l1_telemetry_cache_status(status);
+     return process_cache_access(cache, mf->get_addr(), inst, events, mf,
+                                 status);
+@@ -2373,6 +2454,10 @@ void ldst_unit::L1_latency_queue_cycle() {
+       m4c_memory_telemetry_instance().record_l1(
+           mf_next->get_telemetry_class(), status, mf_next->get_access_size(),
+           m_sid, mf_next->get_translation_telemetry_outcome());
++      awma_observatory::instance().record_l1(
++          m_core->get_gpu()->gpu_sim_cycle +
++              m_core->get_gpu()->gpu_tot_sim_cycle,
++          awma_cache_status(status));
+       mf_next->set_l1_telemetry_cache_status(status);
+ 
+       bool write_sent = was_write_sent(events);
+@@ -2586,6 +2671,10 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+           candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access,
+           ready_application_v2);
+       if (prelaunch_result == vm_translation::READY) {
++        awma_observatory::instance().record_translation_ready(
++            candidate.get_uid(),
++            m_core->get_gpu()->gpu_sim_cycle +
++                m_core->get_gpu()->gpu_tot_sim_cycle);
+         if (ready_application_diagnostics)
+           ++m_stats->vm_ready_application_prelaunch_ready;
+         if (ready_application_v2)
+@@ -2674,6 +2763,9 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+               access.get_uid(),
+               &translated_pa, &translation_outcome, translation_access);
+       if (result != vm_translation::READY) {
++        awma_observatory::instance().record_translation_not_ready(
++            m_core->get_gpu()->gpu_sim_cycle +
++            m_core->get_gpu()->gpu_tot_sim_cycle);
+         ++m_stats->vm_translation_stall_cycles;
+         stall_reason = COAL_STALL;
+         const bool iswrite = inst.is_store();
+@@ -2681,6 +2773,9 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+                                             : (iswrite ? G_MEM_ST : G_MEM_LD);
+         return false;
+       }
++      awma_observatory::instance().record_translation_ready(
++          access.get_uid(), m_core->get_gpu()->gpu_sim_cycle +
++                                m_core->get_gpu()->gpu_tot_sim_cycle);
+       assert(translation_outcome !=
+              vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
+       if (ready_application_diagnostics && ready_application_v2)
+@@ -2760,6 +2855,11 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+                                   m_core->get_gpu()->gpu_sim_cycle +
+                                       m_core->get_gpu()->gpu_tot_sim_cycle);
+         m_icnt->push(mf);
++        awma_observatory::instance().record_memory_admission(
++            access.get_uid(),
++            m_core->get_gpu()->gpu_sim_cycle +
++                m_core->get_gpu()->gpu_tot_sim_cycle,
++            access.get_size());
+         inst.accessq_pop_back();
+         // inst.clear_active( access.get_warp_mask() );
+         if (inst.is_load()) {
+@@ -3380,6 +3480,20 @@ void ldst_unit::cycle() {
+     assert(rc_fail != NO_RC_FAIL);
+     m_stats->gpgpu_n_stall_shd_mem++;
+     m_stats->gpu_stall_shd_mem_breakdown[type][rc_fail]++;
++    awma_observatory::ldst_stall_classification observed_stall =
++        awma_observatory::LDST_OTHER_STALL;
++    if (rc_fail == BK_CONF)
++      observed_stall = awma_observatory::LDST_RESOURCE_STALL;
++    else if (rc_fail == COAL_STALL)
++      observed_stall = awma_observatory::LDST_COAL_STALL;
++    else if (rc_fail == ICNT_RC_FAIL)
++      observed_stall = awma_observatory::LDST_ICNT_STALL;
++    else if (rc_fail == DATA_PORT_STALL)
++      observed_stall = awma_observatory::LDST_DATA_PORT_STALL;
++    awma_observatory::instance().record_ldst_stall(
++        m_core->get_gpu()->gpu_sim_cycle +
++            m_core->get_gpu()->gpu_tot_sim_cycle,
++        observed_stall);
+     return;
+   }
+ 
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc
+index 852c844..379f25c 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc
+@@ -66,6 +66,7 @@
+ #include "../trace.h"
+ #include "mem_latency_stat.h"
+ #include "memory_telemetry.h"
++#include "bottleneck_observatory.h"
+ #include "power_stat.h"
+ #include "stats.h"
+ #include "visualizer.h"
+@@ -1097,6 +1098,7 @@ gpgpu_sim::gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx)
+   m4c_memory_telemetry_instance().configure(
+       m_shader_config->gpgpu_memory_telemetry_level,
+       m_shader_config->gpgpu_memory_telemetry_window_transactions);
++  awma_observatory::instance().configure();
+   if (m_shader_config->gpgpu_vm_mode == 2) {
+     vm_translation::translation_config vm_config(
+         m_shader_config->num_shader(), m_shader_config->gpgpu_vm_page_size,
+@@ -1367,6 +1369,7 @@ void gpgpu_sim::init() {
+   // run a CUDA grid on the GPU microarchitecture simulator
+   gpu_sim_cycle = 0;
+   m4c_memory_telemetry_instance().reset();
++  awma_observatory::instance().reset();
+   gpu_sim_insn = 0;
+   last_gpu_sim_insn = 0;
+   m_total_cta_launched = 0;
+@@ -1441,6 +1444,10 @@ void gpgpu_sim::print_stats(unsigned long long streamID) {
+   gpgpu_ctx->stats->ptx_file_line_stats_write_file();
+   gpu_print_stat(streamID);
+   if (m_vm_translation != NULL) m_vm_translation->print_stats(stdout);
++  awma_observatory::instance().print(
++      stdout, gpu_sim_cycle + gpu_tot_sim_cycle,
++      executed_kernel_name().c_str());
++  awma_observatory::instance().finish_kernel();
+   m4c_memory_telemetry_instance().print(stdout, executed_kernel_name().c_str());
+   m4c_memory_telemetry_instance().finish_kernel();
+ 
+@@ -1936,6 +1943,8 @@ bool shader_core_ctx::occupy_shader_resource_1block(kernel_info_t &k,
+ 
+ void shader_core_ctx::release_shader_resource_1block(unsigned hw_ctaid,
+                                                      kernel_info_t &k) {
++  awma_observatory::instance().record_cta_completion(
++      m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+   if (m_config->gpgpu_concurrent_kernel_sm) {
+     unsigned threads_per_cta = k.threads_per_cta();
+     const class function_info *kernel = k.entry();
+@@ -2090,6 +2099,8 @@ void shader_core_ctx::issue_block2core(kernel_info_t &kernel) {
+   // initialize the SIMT stacks and fetch hardware
+   init_warps(free_cta_hw_id, start_thread, end_thread, ctaid, cta_size, kernel);
+   m_n_active_cta++;
++  awma_observatory::instance().record_cta_launch(
++      m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+ 
+   shader_CTA_count_log(m_sid, 1);
+   SHADER_DPRINTF(LIVENESS,
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc
+index 9d74a99..dd37611 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc
+@@ -48,6 +48,7 @@
+ #include "mem_fetch.h"
+ #include "mem_latency_stat.h"
+ #include "memory_telemetry.h"
++#include "bottleneck_observatory.h"
+ #include "shader.h"
+ 
+ mem_fetch *partition_mf_allocator::alloc(new_addr_type addr,
+@@ -253,6 +254,9 @@ void memory_partition_unit::simple_dram_model_cycle() {
+           m_sub_partition[dest_spid]->set_done(mf_return);
+           delete mf_return;
+         } else {
++          awma_observatory::instance().record_dram_completion(
++              m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
++              mf_return->get_telemetry_class());
+           m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);
+           mf_return->set_status(
+               IN_PARTITION_DRAM_TO_L2_QUEUE,
+@@ -317,6 +321,9 @@ void memory_partition_unit::dram_cycle() {
+         m_sub_partition[dest_spid]->set_done(mf_return);
+         delete mf_return;
+       } else {
++        awma_observatory::instance().record_dram_completion(
++            m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
++            mf_return->get_telemetry_class());
+         m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);
+         mf_return->set_status(IN_PARTITION_DRAM_TO_L2_QUEUE,
+                               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+@@ -470,6 +477,11 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+   m4c_memory_telemetry_instance().record_l2_queue(
+       m_icnt_L2_queue->get_length(), m_L2_dram_queue->get_length(),
+       m_dram_L2_queue->get_length(), m_L2_icnt_queue->get_length(), m_id);
++  if (awma_observatory::instance().enabled(
++          1, awma_observatory::DOMAIN_MEMORY))
++    awma_observatory::instance().record_l2_queues(
++        cycle, m_icnt_L2_queue->get_length(), m_L2_dram_queue->get_length(),
++        m_dram_L2_queue->get_length(), m_L2_icnt_queue->get_length());
+   // L2 fill responses
+   if (!m_config->m_L2_config.disabled()) {
+     if (m_L2cache->access_ready() && !m_L2_icnt_queue->full()) {
+@@ -540,6 +552,18 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+             mf->get_telemetry_class(), status, mf->get_access_size(), m_id,
+             mf->get_translation_telemetry_outcome(),
+             mf->get_l1_telemetry_cache_status());
++        if (awma_observatory::instance().enabled(
++                1, awma_observatory::DOMAIN_MEMORY))
++          awma_observatory::instance().record_l2(
++              cycle, status == HIT
++                         ? awma_observatory::CACHE_HIT
++                         : (status == HIT_RESERVED
++                                ? awma_observatory::CACHE_HIT_RESERVED
++                                : (status == MISS
++                                       ? awma_observatory::CACHE_MISS
++                                       : (status == RESERVATION_FAIL
++                                              ? awma_observatory::CACHE_RESERVATION_FAIL
++                                              : awma_observatory::CACHE_OTHER))));
+         for (std::list<cache_event>::const_iterator event = events.begin();
+              event != events.end(); ++event) {
+           if (event->m_cache_event_type == EVICTION_OBSERVED)
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/dram.cc b/src/gpgpu-sim/src/gpgpu-sim/dram.cc
+index 80e20d7..ba1786c 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/dram.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/dram.cc
+@@ -32,6 +32,7 @@
+ 
+ #include "dram.h"
+ #include "dram_sched.h"
++#include "bottleneck_observatory.h"
+ #include "gpu-misc.h"
+ #include "gpu-sim.h"
+ #include "hashing.h"
+@@ -331,20 +332,26 @@ void dram_t::cycle() {
+       printf("Error: Unknown DRAM scheduler type\n");
+       assert(0);
+   }
++  unsigned observed_queue_occupancy = 0;
+   if (m_config->scheduler_type == DRAM_FRFCFS) {
+     unsigned nreqs = m_frfcfs_scheduler->num_pending();
++    observed_queue_occupancy = nreqs;
+     if (nreqs > max_mrqs) {
+       max_mrqs = nreqs;
+     }
+     ave_mrqs += nreqs;
+     ave_mrqs_partial += nreqs;
+   } else {
++    observed_queue_occupancy = mrqq->get_length();
+     if (mrqq->get_length() > max_mrqs) {
+       max_mrqs = mrqq->get_length();
+     }
+     ave_mrqs += mrqq->get_length();
+     ave_mrqs_partial += mrqq->get_length();
+   }
++  awma_observatory::instance().record_dram_queue(
++      m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
++      observed_queue_occupancy);
+ 
+   unsigned k = m_config->nbk;
+   bool issued = false;
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/bottleneck_observatory.h b/src/gpgpu-sim/src/gpgpu-sim/bottleneck_observatory.h
+new file mode 100644
+index 0000000..d39bc13
+--- /dev/null
++++ b/src/gpgpu-sim/src/gpgpu-sim/bottleneck_observatory.h
+@@ -0,0 +1,244 @@
++#ifndef GPGPU_SIM_AWMA_BOTTLENECK_OBSERVATORY_H
++#define GPGPU_SIM_AWMA_BOTTLENECK_OBSERVATORY_H
++
++#include <stdint.h>
++#include <stdio.h>
++
++#include <string>
++#include <unordered_map>
++#include <utility>
++#include <vector>
++
++namespace awma_observatory {
++
++enum domain {
++  DOMAIN_PROGRESS = 1U << 0,
++  DOMAIN_SCHEDULER = 1U << 1,
++  DOMAIN_EXECUTION = 1U << 2,
++  DOMAIN_MEMORY = 1U << 3,
++  DOMAIN_TRANSLATION = 1U << 4,
++  DOMAIN_SYNC = 1U << 5,
++  DOMAIN_ALL = (1U << 6) - 1
++};
++
++enum metric {
++  PROGRESS_INSTRUCTIONS = 0,
++  PROGRESS_CTA_COMPLETIONS,
++  SCHED_ISSUED,
++  SCHED_NO_ACTIVE_WORK,
++  SCHED_NO_ELIGIBLE_WORK,
++  SCHED_DEPENDENCY_SCOREBOARD,
++  SCHED_SYNC_BARRIER,
++  SCHED_SYNC_MEMBAR,
++  SCHED_FRONTEND_STARVATION,
++  SCHED_ELIGIBLE_STRUCTURAL,
++  SCHED_OTHER_METRIC,
++  OCCUPANCY_ACTIVE_WARPS,
++  OCCUPANCY_ACTIVE_CTAS,
++  EXEC_COMPLETED_ALU,
++  EXEC_COMPLETED_SFU,
++  EXEC_COMPLETED_TENSOR,
++  EXEC_COMPLETED_LDST,
++  EXEC_COMPLETED_OTHER,
++  MEMORY_ADMISSIONS,
++  MEMORY_ADMISSION_BYTES,
++  MEMORY_LDST_RESOURCE_STALL,
++  MEMORY_LDST_COAL_STALL,
++  MEMORY_LDST_ICNT_STALL,
++  MEMORY_LDST_DATA_PORT_STALL,
++  MEMORY_LDST_OTHER_STALL,
++  MEMORY_L1_HIT,
++  MEMORY_L1_HIT_RESERVED,
++  MEMORY_L1_MISS,
++  MEMORY_L1_RESERVATION_FAIL,
++  MEMORY_L1_OTHER,
++  MEMORY_L2_HIT,
++  MEMORY_L2_HIT_RESERVED,
++  MEMORY_L2_MISS,
++  MEMORY_L2_RESERVATION_FAIL,
++  MEMORY_L2_OTHER,
++  MEMORY_ICNT_TO_L2_OCCUPANCY,
++  MEMORY_L2_TO_DRAM_OCCUPANCY,
++  MEMORY_DRAM_TO_L2_OCCUPANCY,
++  MEMORY_L2_TO_ICNT_OCCUPANCY,
++  MEMORY_DRAM_QUEUE_OCCUPANCY,
++  MEMORY_DRAM_COMPLETIONS,
++  TRANSLATION_READY,
++  TRANSLATION_NOT_READY,
++  SYNC_BARRIER_WAITING_WARPS,
++  SYNC_MEMBAR_WAITING_WARPS,
++  METRIC_COUNT
++};
++
++enum scheduler_classification {
++  CLASS_ISSUED,
++  CLASS_NO_ACTIVE_WORK,
++  CLASS_NO_ELIGIBLE_WORK,
++  CLASS_DEPENDENCY_SCOREBOARD,
++  CLASS_SYNC_BARRIER,
++  CLASS_SYNC_MEMBAR,
++  CLASS_FRONTEND_STARVATION,
++  CLASS_ELIGIBLE_STRUCTURAL,
++  CLASS_OTHER
++};
++
++enum execution_classification {
++  EXEC_ALU,
++  EXEC_SFU,
++  EXEC_TENSOR,
++  EXEC_LDST,
++  EXEC_OTHER
++};
++
++enum cache_classification {
++  CACHE_HIT,
++  CACHE_HIT_RESERVED,
++  CACHE_MISS,
++  CACHE_RESERVATION_FAIL,
++  CACHE_OTHER
++};
++
++enum ldst_stall_classification {
++  LDST_RESOURCE_STALL,
++  LDST_COAL_STALL,
++  LDST_ICNT_STALL,
++  LDST_DATA_PORT_STALL,
++  LDST_OTHER_STALL
++};
++
++class bottleneck_observatory {
++ public:
++  bottleneck_observatory();
++
++  void configure();
++  void reset();
++  void finish_kernel();
++  bool enabled(unsigned minimum_level = 1,
++               unsigned required_domain = DOMAIN_ALL) const;
++  unsigned level() const { return m_level; }
++  unsigned domains() const { return m_domains; }
++
++  void record_event(metric which, uint64_t cycle, uint64_t amount = 1);
++  void record_gauge(metric which, uint64_t cycle, uint64_t value);
++  void record_scheduler(uint64_t cycle, scheduler_classification reason,
++                        unsigned active_warps, unsigned barrier_waiting,
++                        unsigned membar_waiting);
++  void record_instruction_completion(uint64_t cycle, unsigned active_lanes,
++                                     execution_classification execution);
++  void record_cta_launch(uint64_t cycle);
++  void record_cta_completion(uint64_t cycle);
++  void record_l1(uint64_t cycle, cache_classification status);
++  void record_l2(uint64_t cycle, cache_classification status);
++  void record_ldst_stall(uint64_t cycle, ldst_stall_classification reason);
++  void record_l2_queues(uint64_t cycle, unsigned icnt_to_l2,
++                        unsigned l2_to_dram, unsigned dram_to_l2,
++                        unsigned l2_to_icnt);
++  void record_dram_queue(uint64_t cycle, unsigned occupancy);
++  void record_dram_completion(uint64_t cycle, unsigned memory_class);
++  void record_translation_ready(uint64_t uid, uint64_t cycle);
++  void record_translation_not_ready(uint64_t cycle);
++  void record_memory_admission(uint64_t uid, uint64_t cycle, unsigned bytes);
++
++  void print(FILE *fout, uint64_t final_cycle, const char *kernel_name);
++
++ private:
++  enum { kWindowCount = 3, kTopK = 8, kReservoir = 4096 };
++
++  struct distribution {
++    uint64_t count;
++    long double sum;
++    uint64_t peak;
++    uint64_t seen;
++    std::vector<uint64_t> reservoir;
++    distribution();
++    void reset(bool allocate);
++    void add(uint64_t value);
++    uint64_t percentile(unsigned pct) const;
++  };
++
++  struct top_window {
++    uint64_t value;
++    uint64_t start;
++    uint64_t end;
++    top_window(uint64_t v = 0, uint64_t s = 0, uint64_t e = 0)
++        : value(v), start(s), end(e) {}
++  };
++
++  struct window_state {
++    uint64_t width;
++    uint64_t start;
++    bool initialized;
++    uint64_t sums[METRIC_COUNT];
++    uint64_t samples[METRIC_COUNT];
++    distribution completed[METRIC_COUNT];
++    top_window top[METRIC_COUNT][kTopK];
++    window_state();
++  };
++
++  struct progress_point {
++    uint64_t cumulative;
++    uint64_t cycle;
++    progress_point(uint64_t c = 0, uint64_t t = 0)
++        : cumulative(c), cycle(t) {}
++  };
++
++  struct progress_tracker {
++    uint64_t total;
++    uint64_t stride;
++    uint64_t next;
++    std::vector<progress_point> points;
++    progress_tracker();
++    void reset(uint64_t initial_stride, bool allocate);
++    void add(uint64_t amount, uint64_t cycle);
++    uint64_t percentile_cycle(unsigned pct) const;
++  };
++
++  void advance_windows(uint64_t cycle);
++  void flush_window(window_state *window);
++  void flush_cycle_peak(metric which);
++  void update_top(window_state *window, metric which, uint64_t value,
++                  uint64_t start, uint64_t end);
++  bool domain_enabled_for_metric(metric which) const;
++  static unsigned metric_domain(metric which);
++  static bool metric_is_gauge(metric which);
++  static const char *domain_name(unsigned which);
++  static const char *metric_name(metric which);
++  void print_metric(FILE *fout, metric which) const;
++  void print_windows(FILE *fout, metric which) const;
++  static void record_exact_progress(std::vector<uint64_t> *series,
++                                    uint64_t *base_cycle, uint64_t cycle,
++                                    uint64_t amount);
++  static uint64_t exact_progress_cycle(const std::vector<uint64_t> &series,
++                                       uint64_t base_cycle, uint64_t total,
++                                       unsigned pct);
++
++  unsigned m_level;
++  unsigned m_domains;
++  bool m_configured;
++  uint64_t m_totals[METRIC_COUNT];
++  uint64_t m_samples[METRIC_COUNT];
++  uint64_t m_cycle_tag[METRIC_COUNT];
++  uint64_t m_cycle_accumulator[METRIC_COUNT];
++  uint64_t m_cycle_peak[METRIC_COUNT];
++  window_state m_windows[kWindowCount];
++  progress_tracker m_instruction_progress;
++  progress_tracker m_cta_progress;
++  std::vector<uint64_t> m_exact_instruction_progress;
++  std::vector<uint64_t> m_exact_cta_progress;
++  uint64_t m_exact_instruction_base_cycle;
++  uint64_t m_exact_cta_base_cycle;
++  std::unordered_map<uint64_t, uint64_t> m_ready_cycles;
++  distribution m_ready_to_admission;
++  uint64_t m_ready_duplicate_observations;
++  uint64_t m_ready_missing_admissions;
++  uint64_t m_active_ctas;
++  uint64_t m_dram_completion_count;
++  uint64_t m_first_dram_completion;
++  uint64_t m_last_dram_completion;
++};
++
++bottleneck_observatory &instance();
++
++}  // namespace awma_observatory
++
++#endif
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/bottleneck_observatory.cc b/src/gpgpu-sim/src/gpgpu-sim/bottleneck_observatory.cc
+new file mode 100644
+index 0000000..c694e6b
+--- /dev/null
++++ b/src/gpgpu-sim/src/gpgpu-sim/bottleneck_observatory.cc
+@@ -0,0 +1,680 @@
++#include "bottleneck_observatory.h"
++
++#include <assert.h>
++#include <ctype.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include <algorithm>
++#include <sstream>
++
++namespace awma_observatory {
++
++static const uint64_t kUnsetCycle = ~uint64_t(0);
++static const uint64_t kWindowWidths[] = {32, 128, 512};
++
++bottleneck_observatory::distribution::distribution()
++    : count(0), sum(0), peak(0), seen(0), reservoir() {}
++
++void bottleneck_observatory::distribution::reset(bool allocate) {
++  count = 0;
++  sum = 0;
++  peak = 0;
++  seen = 0;
++  reservoir.clear();
++  if (allocate) reservoir.reserve(kReservoir);
++}
++
++void bottleneck_observatory::distribution::add(uint64_t value) {
++  ++count;
++  sum += value;
++  if (value > peak) peak = value;
++  ++seen;
++  if (reservoir.size() < kReservoir) {
++    reservoir.push_back(value);
++    return;
++  }
++  const uint64_t mixed = seen * 11400714819323198485ULL;
++  const uint64_t slot = mixed % seen;
++  if (slot < kReservoir) reservoir[slot] = value;
++}
++
++uint64_t bottleneck_observatory::distribution::percentile(
++    unsigned pct) const {
++  if (reservoir.empty()) return 0;
++  std::vector<uint64_t> ordered = reservoir;
++  std::sort(ordered.begin(), ordered.end());
++  const uint64_t rank =
++      (uint64_t(ordered.size()) * pct + 99) / 100;
++  return ordered[rank == 0 ? 0 : rank - 1];
++}
++
++bottleneck_observatory::window_state::window_state()
++    : width(0), start(0), initialized(false), sums(), samples(), completed(),
++      top() {}
++
++bottleneck_observatory::progress_tracker::progress_tracker()
++    : total(0), stride(1), next(1), points() {}
++
++void bottleneck_observatory::progress_tracker::reset(uint64_t initial_stride,
++                                                      bool allocate) {
++  total = 0;
++  stride = initial_stride ? initial_stride : 1;
++  next = stride;
++  points.clear();
++  if (allocate) points.reserve(kReservoir);
++}
++
++void bottleneck_observatory::progress_tracker::add(uint64_t amount,
++                                                    uint64_t cycle) {
++  total += amount;
++  while (total >= next) {
++    points.push_back(progress_point(next, cycle));
++    next += stride;
++    if (points.size() >= kReservoir) {
++      std::vector<progress_point> compacted;
++      compacted.reserve(kReservoir);
++      for (unsigned i = 1; i < points.size(); i += 2)
++        compacted.push_back(points[i]);
++      points.swap(compacted);
++      stride *= 2;
++      next = ((total / stride) + 1) * stride;
++    }
++  }
++}
++
++uint64_t bottleneck_observatory::progress_tracker::percentile_cycle(
++    unsigned pct) const {
++  if (total == 0 || points.empty()) return 0;
++  const uint64_t target = (total * pct + 99) / 100;
++  for (unsigned i = 0; i < points.size(); ++i)
++    if (points[i].cumulative >= target) return points[i].cycle;
++  return points.back().cycle;
++}
++
++void bottleneck_observatory::record_exact_progress(
++    std::vector<uint64_t> *series, uint64_t *base_cycle, uint64_t cycle,
++    uint64_t amount) {
++  if (*base_cycle == kUnsetCycle) *base_cycle = cycle;
++  assert(cycle >= *base_cycle);
++  const uint64_t index = cycle - *base_cycle;
++  if (series->size() <= index) series->resize(index + 1, 0);
++  (*series)[index] += amount;
++}
++
++uint64_t bottleneck_observatory::exact_progress_cycle(
++    const std::vector<uint64_t> &series, uint64_t base_cycle, uint64_t total,
++    unsigned pct) {
++  if (series.empty() || total == 0) return 0;
++  const uint64_t target = (total * pct + 99) / 100;
++  uint64_t cumulative = 0;
++  for (uint64_t index = 0; index < series.size(); ++index) {
++    cumulative += series[index];
++    if (cumulative >= target) return base_cycle + index;
++  }
++  assert(0);
++  return 0;
++}
++
++bottleneck_observatory::bottleneck_observatory()
++    : m_level(0), m_domains(DOMAIN_ALL), m_configured(false), m_totals(),
++      m_samples(), m_cycle_tag(), m_cycle_accumulator(), m_cycle_peak(),
++      m_windows(), m_instruction_progress(), m_cta_progress(),
++      m_exact_instruction_progress(), m_exact_cta_progress(),
++      m_exact_instruction_base_cycle(kUnsetCycle),
++      m_exact_cta_base_cycle(kUnsetCycle), m_ready_cycles(),
++      m_ready_to_admission(),
++      m_ready_duplicate_observations(0), m_ready_missing_admissions(0),
++      m_active_ctas(0), m_dram_completion_count(0),
++      m_first_dram_completion(kUnsetCycle),
++      m_last_dram_completion(0) {
++  for (unsigned i = 0; i < kWindowCount; ++i)
++    m_windows[i].width = kWindowWidths[i];
++}
++
++static std::string normalized_token(const std::string &input) {
++  std::string result;
++  for (unsigned i = 0; i < input.size(); ++i)
++    if (!isspace(static_cast<unsigned char>(input[i])))
++      result.push_back(static_cast<char>(tolower(
++          static_cast<unsigned char>(input[i]))));
++  return result;
++}
++
++void bottleneck_observatory::configure() {
++  const char *level_text = getenv("GPGPUSIM_AWMA_BOTTLENECK_OBSERVATORY");
++  m_level = level_text == NULL ? 0 : unsigned(strtoul(level_text, NULL, 10));
++  assert(m_level <= 3);
++  m_domains = DOMAIN_ALL;
++  const char *domains_text = getenv("GPGPUSIM_AWMA_BOTTLENECK_DOMAINS");
++  if (domains_text != NULL && domains_text[0] != '\0') {
++    m_domains = 0;
++    std::stringstream stream(domains_text);
++    std::string token;
++    while (std::getline(stream, token, ',')) {
++      token = normalized_token(token);
++      if (token == "all") m_domains |= DOMAIN_ALL;
++      else if (token == "progress") m_domains |= DOMAIN_PROGRESS;
++      else if (token == "scheduler") m_domains |= DOMAIN_SCHEDULER;
++      else if (token == "execution") m_domains |= DOMAIN_EXECUTION;
++      else if (token == "memory") m_domains |= DOMAIN_MEMORY;
++      else if (token == "translation") m_domains |= DOMAIN_TRANSLATION;
++      else if (token == "sync") m_domains |= DOMAIN_SYNC;
++      else {
++        fprintf(stderr, "Unknown AWMA bottleneck domain: %s\n", token.c_str());
++        assert(0);
++      }
++    }
++  }
++  m_configured = true;
++  reset();
++}
++
++void bottleneck_observatory::reset() {
++  memset(m_totals, 0, sizeof(m_totals));
++  memset(m_samples, 0, sizeof(m_samples));
++  memset(m_cycle_accumulator, 0, sizeof(m_cycle_accumulator));
++  memset(m_cycle_peak, 0, sizeof(m_cycle_peak));
++  for (unsigned metric_index = 0; metric_index < METRIC_COUNT; ++metric_index)
++    m_cycle_tag[metric_index] = kUnsetCycle;
++  for (unsigned w = 0; w < kWindowCount; ++w) {
++    window_state &window = m_windows[w];
++    window.start = 0;
++    window.initialized = false;
++    memset(window.sums, 0, sizeof(window.sums));
++    memset(window.samples, 0, sizeof(window.samples));
++    for (unsigned metric_index = 0; metric_index < METRIC_COUNT;
++         ++metric_index) {
++      window.completed[metric_index].reset(m_level >= 2);
++      for (unsigned rank = 0; rank < kTopK; ++rank)
++        window.top[metric_index][rank] = top_window();
++    }
++  }
++  m_instruction_progress.reset(4096, m_level >= 1);
++  m_cta_progress.reset(1, m_level >= 1);
++  m_exact_instruction_progress.clear();
++  m_exact_cta_progress.clear();
++  m_exact_instruction_base_cycle = kUnsetCycle;
++  m_exact_cta_base_cycle = kUnsetCycle;
++  m_ready_cycles.clear();
++  if (m_level >= 2 && (m_domains & DOMAIN_TRANSLATION) != 0 &&
++      (m_domains & DOMAIN_MEMORY) != 0)
++    m_ready_cycles.reserve(4096);
++  m_ready_to_admission.reset(m_level >= 3);
++  m_ready_duplicate_observations = 0;
++  m_ready_missing_admissions = 0;
++  m_active_ctas = 0;
++  m_dram_completion_count = 0;
++  m_first_dram_completion = kUnsetCycle;
++  m_last_dram_completion = 0;
++}
++
++void bottleneck_observatory::finish_kernel() { reset(); }
++
++bool bottleneck_observatory::enabled(unsigned minimum_level,
++                                     unsigned required_domain) const {
++  if (!m_configured || m_level < minimum_level) return false;
++  return required_domain == DOMAIN_ALL || (m_domains & required_domain) != 0;
++}
++
++unsigned bottleneck_observatory::metric_domain(metric which) {
++  if (which <= PROGRESS_CTA_COMPLETIONS) return DOMAIN_PROGRESS;
++  if (which <= OCCUPANCY_ACTIVE_CTAS) return DOMAIN_SCHEDULER;
++  if (which <= EXEC_COMPLETED_OTHER) return DOMAIN_EXECUTION;
++  if (which <= MEMORY_DRAM_COMPLETIONS) return DOMAIN_MEMORY;
++  if (which <= TRANSLATION_NOT_READY) return DOMAIN_TRANSLATION;
++  return DOMAIN_SYNC;
++}
++
++bool bottleneck_observatory::metric_is_gauge(metric which) {
++  return which == OCCUPANCY_ACTIVE_WARPS || which == OCCUPANCY_ACTIVE_CTAS ||
++         (which >= MEMORY_ICNT_TO_L2_OCCUPANCY &&
++          which <= MEMORY_DRAM_QUEUE_OCCUPANCY) ||
++         which == SYNC_BARRIER_WAITING_WARPS ||
++         which == SYNC_MEMBAR_WAITING_WARPS;
++}
++
++bool bottleneck_observatory::domain_enabled_for_metric(metric which) const {
++  return enabled(1, metric_domain(which));
++}
++
++void bottleneck_observatory::flush_cycle_peak(metric which) {
++  if (m_cycle_tag[which] == kUnsetCycle) return;
++  if (m_cycle_accumulator[which] > m_cycle_peak[which])
++    m_cycle_peak[which] = m_cycle_accumulator[which];
++}
++
++void bottleneck_observatory::update_top(window_state *window, metric which,
++                                         uint64_t value, uint64_t start,
++                                         uint64_t end) {
++  top_window candidate(value, start, end);
++  for (unsigned rank = 0; rank < kTopK; ++rank) {
++    if (candidate.value <= window->top[which][rank].value) continue;
++    for (unsigned move = kTopK - 1; move > rank; --move)
++      window->top[which][move] = window->top[which][move - 1];
++    window->top[which][rank] = candidate;
++    break;
++  }
++}
++
++void bottleneck_observatory::flush_window(window_state *window) {
++  const uint64_t end = window->start + window->width - 1;
++  for (unsigned metric_index = 0; metric_index < METRIC_COUNT;
++       ++metric_index) {
++    const metric which = static_cast<metric>(metric_index);
++    uint64_t value = window->sums[metric_index];
++    if (metric_is_gauge(which) && window->samples[metric_index] != 0)
++      value /= window->samples[metric_index];
++    window->completed[metric_index].add(value);
++    update_top(window, which, value, window->start, end);
++    window->sums[metric_index] = 0;
++    window->samples[metric_index] = 0;
++  }
++}
++
++void bottleneck_observatory::advance_windows(uint64_t cycle) {
++  if (m_level < 2) return;
++  for (unsigned w = 0; w < kWindowCount; ++w) {
++    window_state &window = m_windows[w];
++    if (!window.initialized) {
++      window.start = (cycle / window.width) * window.width;
++      window.initialized = true;
++    }
++    while (cycle >= window.start + window.width) {
++      flush_window(&window);
++      window.start += window.width;
++    }
++  }
++}
++
++void bottleneck_observatory::record_event(metric which, uint64_t cycle,
++                                           uint64_t amount) {
++  if (!domain_enabled_for_metric(which)) return;
++  ++m_samples[which];
++  m_totals[which] += amount;
++  if (m_cycle_tag[which] != cycle) {
++    flush_cycle_peak(which);
++    m_cycle_tag[which] = cycle;
++    m_cycle_accumulator[which] = 0;
++  }
++  m_cycle_accumulator[which] += amount;
++  if (m_level < 2) return;
++  advance_windows(cycle);
++  for (unsigned w = 0; w < kWindowCount; ++w) {
++    m_windows[w].sums[which] += amount;
++    ++m_windows[w].samples[which];
++  }
++}
++
++void bottleneck_observatory::record_gauge(metric which, uint64_t cycle,
++                                           uint64_t value) {
++  if (!domain_enabled_for_metric(which)) return;
++  ++m_samples[which];
++  m_totals[which] += value;
++  if (value > m_cycle_peak[which]) m_cycle_peak[which] = value;
++  if (m_level < 2) return;
++  advance_windows(cycle);
++  for (unsigned w = 0; w < kWindowCount; ++w) {
++    m_windows[w].sums[which] += value;
++    ++m_windows[w].samples[which];
++  }
++}
++
++void bottleneck_observatory::record_scheduler(
++    uint64_t cycle, scheduler_classification reason, unsigned active_warps,
++    unsigned barrier_waiting, unsigned membar_waiting) {
++  if (!enabled(1, DOMAIN_SCHEDULER) && !enabled(1, DOMAIN_SYNC)) return;
++  if (enabled(1, DOMAIN_SCHEDULER)) {
++    record_gauge(OCCUPANCY_ACTIVE_WARPS, cycle, active_warps);
++    const metric classes[] = {
++        SCHED_ISSUED, SCHED_NO_ACTIVE_WORK, SCHED_NO_ELIGIBLE_WORK,
++        SCHED_DEPENDENCY_SCOREBOARD, SCHED_SYNC_BARRIER, SCHED_SYNC_MEMBAR,
++        SCHED_FRONTEND_STARVATION, SCHED_ELIGIBLE_STRUCTURAL,
++        SCHED_OTHER_METRIC};
++    assert(unsigned(reason) < sizeof(classes) / sizeof(classes[0]));
++    record_event(classes[reason], cycle);
++  }
++  if (enabled(1, DOMAIN_SYNC)) {
++    record_gauge(SYNC_BARRIER_WAITING_WARPS, cycle, barrier_waiting);
++    record_gauge(SYNC_MEMBAR_WAITING_WARPS, cycle, membar_waiting);
++  }
++}
++
++void bottleneck_observatory::record_instruction_completion(
++    uint64_t cycle, unsigned active_lanes,
++    execution_classification execution) {
++  if (enabled(1, DOMAIN_PROGRESS)) {
++    record_event(PROGRESS_INSTRUCTIONS, cycle, active_lanes);
++    m_instruction_progress.add(active_lanes, cycle);
++    if (m_level >= 3)
++      record_exact_progress(&m_exact_instruction_progress,
++                            &m_exact_instruction_base_cycle, cycle,
++                            active_lanes);
++  }
++  if (enabled(1, DOMAIN_EXECUTION)) {
++    const metric execution_metrics[] = {
++        EXEC_COMPLETED_ALU, EXEC_COMPLETED_SFU, EXEC_COMPLETED_TENSOR,
++        EXEC_COMPLETED_LDST, EXEC_COMPLETED_OTHER};
++    assert(unsigned(execution) <
++           sizeof(execution_metrics) / sizeof(execution_metrics[0]));
++    record_event(execution_metrics[execution], cycle);
++  }
++}
++
++void bottleneck_observatory::record_cta_launch(uint64_t cycle) {
++  if (!enabled(1, DOMAIN_SCHEDULER)) return;
++  ++m_active_ctas;
++  record_gauge(OCCUPANCY_ACTIVE_CTAS, cycle, m_active_ctas);
++}
++
++void bottleneck_observatory::record_cta_completion(uint64_t cycle) {
++  if (enabled(1, DOMAIN_SCHEDULER)) {
++    assert(m_active_ctas != 0);
++    --m_active_ctas;
++    record_gauge(OCCUPANCY_ACTIVE_CTAS, cycle, m_active_ctas);
++  }
++  if (enabled(1, DOMAIN_PROGRESS)) {
++    record_event(PROGRESS_CTA_COMPLETIONS, cycle);
++    m_cta_progress.add(1, cycle);
++    if (m_level >= 3)
++      record_exact_progress(&m_exact_cta_progress, &m_exact_cta_base_cycle,
++                            cycle, 1);
++  }
++}
++
++void bottleneck_observatory::record_l1(uint64_t cycle,
++                                        cache_classification status) {
++  const metric metrics[] = {MEMORY_L1_HIT, MEMORY_L1_HIT_RESERVED,
++                            MEMORY_L1_MISS, MEMORY_L1_RESERVATION_FAIL,
++                            MEMORY_L1_OTHER};
++  assert(unsigned(status) < sizeof(metrics) / sizeof(metrics[0]));
++  record_event(metrics[status], cycle);
++}
++
++void bottleneck_observatory::record_l2(uint64_t cycle,
++                                        cache_classification status) {
++  const metric metrics[] = {MEMORY_L2_HIT, MEMORY_L2_HIT_RESERVED,
++                            MEMORY_L2_MISS, MEMORY_L2_RESERVATION_FAIL,
++                            MEMORY_L2_OTHER};
++  assert(unsigned(status) < sizeof(metrics) / sizeof(metrics[0]));
++  record_event(metrics[status], cycle);
++}
++
++void bottleneck_observatory::record_ldst_stall(
++    uint64_t cycle, ldst_stall_classification reason) {
++  const metric metrics[] = {
++      MEMORY_LDST_RESOURCE_STALL, MEMORY_LDST_COAL_STALL,
++      MEMORY_LDST_ICNT_STALL, MEMORY_LDST_DATA_PORT_STALL,
++      MEMORY_LDST_OTHER_STALL};
++  assert(unsigned(reason) < sizeof(metrics) / sizeof(metrics[0]));
++  record_event(metrics[reason], cycle);
++}
++
++void bottleneck_observatory::record_l2_queues(
++    uint64_t cycle, unsigned icnt_to_l2, unsigned l2_to_dram,
++    unsigned dram_to_l2, unsigned l2_to_icnt) {
++  record_gauge(MEMORY_ICNT_TO_L2_OCCUPANCY, cycle, icnt_to_l2);
++  record_gauge(MEMORY_L2_TO_DRAM_OCCUPANCY, cycle, l2_to_dram);
++  record_gauge(MEMORY_DRAM_TO_L2_OCCUPANCY, cycle, dram_to_l2);
++  record_gauge(MEMORY_L2_TO_ICNT_OCCUPANCY, cycle, l2_to_icnt);
++}
++
++void bottleneck_observatory::record_dram_queue(uint64_t cycle,
++                                                unsigned occupancy) {
++  record_gauge(MEMORY_DRAM_QUEUE_OCCUPANCY, cycle, occupancy);
++}
++
++void bottleneck_observatory::record_dram_completion(uint64_t cycle,
++                                                     unsigned memory_class) {
++  if (!enabled(1, DOMAIN_MEMORY) || memory_class > 2) return;
++  record_event(MEMORY_DRAM_COMPLETIONS, cycle);
++  ++m_dram_completion_count;
++  if (m_first_dram_completion == kUnsetCycle)
++    m_first_dram_completion = cycle;
++  m_last_dram_completion = cycle;
++}
++
++void bottleneck_observatory::record_translation_ready(uint64_t uid,
++                                                       uint64_t cycle) {
++  if (!enabled(1, DOMAIN_TRANSLATION)) return;
++  if (m_level >= 2 && enabled(2, DOMAIN_MEMORY)) {
++    const std::pair<std::unordered_map<uint64_t, uint64_t>::iterator, bool>
++        inserted = m_ready_cycles.insert(std::make_pair(uid, cycle));
++    if (!inserted.second) {
++      ++m_ready_duplicate_observations;
++      return;
++    }
++    record_event(TRANSLATION_READY, cycle);
++  } else if (m_level >= 2) {
++    record_event(TRANSLATION_READY, cycle);
++  } else {
++    ++m_totals[TRANSLATION_READY];
++    ++m_samples[TRANSLATION_READY];
++  }
++}
++
++void bottleneck_observatory::record_translation_not_ready(uint64_t cycle) {
++  record_event(TRANSLATION_NOT_READY, cycle);
++}
++
++void bottleneck_observatory::record_memory_admission(uint64_t uid,
++                                                      uint64_t cycle,
++                                                      unsigned bytes) {
++  if (enabled(1, DOMAIN_MEMORY)) {
++    record_event(MEMORY_ADMISSIONS, cycle);
++    record_event(MEMORY_ADMISSION_BYTES, cycle, bytes);
++  }
++  if (m_level < 2 || !enabled(2, DOMAIN_TRANSLATION) ||
++      !enabled(2, DOMAIN_MEMORY))
++    return;
++  std::unordered_map<uint64_t, uint64_t>::iterator ready =
++      m_ready_cycles.find(uid);
++  if (ready == m_ready_cycles.end()) {
++    ++m_ready_missing_admissions;
++    return;
++  }
++  assert(cycle >= ready->second);
++  if (m_level >= 3) m_ready_to_admission.add(cycle - ready->second);
++  m_ready_cycles.erase(ready);
++}
++
++const char *bottleneck_observatory::domain_name(unsigned which) {
++  switch (which) {
++    case DOMAIN_PROGRESS: return "progress";
++    case DOMAIN_SCHEDULER: return "scheduler";
++    case DOMAIN_EXECUTION: return "execution";
++    case DOMAIN_MEMORY: return "memory";
++    case DOMAIN_TRANSLATION: return "translation";
++    case DOMAIN_SYNC: return "sync";
++    default: return "unknown";
++  }
++}
++
++const char *bottleneck_observatory::metric_name(metric which) {
++  static const char *names[] = {
++      "instructions", "cta_completions", "issued", "no_active_work",
++      "no_eligible_work", "dependency_scoreboard", "sync_barrier",
++      "sync_membar", "frontend_starvation", "eligible_structural",
++      "other", "active_warps", "active_ctas", "completed_alu",
++      "completed_sfu",
++      "completed_tensor", "completed_ldst", "completed_other",
++      "admissions", "admission_bytes", "ldst_resource_stall",
++      "ldst_coal_stall", "ldst_icnt_stall", "ldst_data_port_stall",
++      "ldst_other_stall", "l1_hit", "l1_hit_reserved", "l1_miss",
++      "l1_reservation_fail", "l1_other", "l2_hit", "l2_hit_reserved",
++      "l2_miss", "l2_reservation_fail", "l2_other",
++      "icnt_to_l2_occupancy", "l2_to_dram_occupancy",
++      "dram_to_l2_occupancy", "l2_to_icnt_occupancy",
++      "dram_queue_occupancy", "dram_completions", "translation_ready",
++      "translation_not_ready", "barrier_waiting_warps",
++      "membar_waiting_warps"};
++  static_assert(sizeof(names) / sizeof(names[0]) == METRIC_COUNT,
++                "metric name table mismatch");
++  return names[which];
++}
++
++void bottleneck_observatory::print_metric(FILE *fout, metric which) const {
++  const long double mean = m_samples[which]
++                               ? static_cast<long double>(m_totals[which]) /
++                                     m_samples[which]
++                               : 0;
++  fprintf(fout, "awma_observatory_metric\t%s\t%s\t%s\t%llu\t%llu\t%.9Lf\t%llu\n",
++          domain_name(metric_domain(which)), metric_name(which),
++          metric_is_gauge(which) ? "gauge" : "event",
++          (unsigned long long)m_totals[which],
++          (unsigned long long)m_samples[which], mean,
++          (unsigned long long)m_cycle_peak[which]);
++}
++
++void bottleneck_observatory::print_windows(FILE *fout, metric which) const {
++  for (unsigned w = 0; w < kWindowCount; ++w) {
++    const window_state &window = m_windows[w];
++    const distribution &stats = window.completed[which];
++    const long double mean = stats.count ? stats.sum / stats.count : 0;
++    fprintf(fout,
++            "awma_observatory_window\t%s\t%s\t%llu\t%llu\t%.9Lf\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++            domain_name(metric_domain(which)), metric_name(which),
++            (unsigned long long)window.width,
++            (unsigned long long)stats.count, mean,
++            (unsigned long long)stats.percentile(50),
++            (unsigned long long)stats.percentile(95),
++            (unsigned long long)stats.percentile(99),
++            (unsigned long long)stats.peak,
++            (unsigned long long)stats.reservoir.size());
++    for (unsigned rank = 0; rank < kTopK; ++rank) {
++      const top_window &top = window.top[which][rank];
++      if (top.value == 0) break;
++      fprintf(fout,
++              "awma_observatory_top_window\t%s\t%s\t%llu\t%u\t%llu\t%llu\t%llu\n",
++              domain_name(metric_domain(which)), metric_name(which),
++              (unsigned long long)window.width, rank + 1,
++              (unsigned long long)top.start, (unsigned long long)top.end,
++              (unsigned long long)top.value);
++    }
++  }
++}
++
++void bottleneck_observatory::print(FILE *fout, uint64_t final_cycle,
++                                    const char *kernel_name) {
++  if (!enabled()) return;
++  for (unsigned metric_index = 0; metric_index < METRIC_COUNT; ++metric_index)
++    flush_cycle_peak(static_cast<metric>(metric_index));
++  if (m_level >= 2) {
++    advance_windows(final_cycle);
++    for (unsigned w = 0; w < kWindowCount; ++w)
++      if (m_windows[w].initialized) flush_window(&m_windows[w]);
++  }
++  fprintf(fout, "awma_observatory_schema = AWMA_BOTTLENECK_OBSERVATORY_V1\n");
++  fprintf(fout, "awma_observatory_level = %u\n", m_level);
++  fprintf(fout, "awma_observatory_domains = %u\n", m_domains);
++  fprintf(fout, "awma_observatory_kernel = %s\n",
++          kernel_name && kernel_name[0] ? kernel_name : "UNKNOWN");
++  fprintf(fout, "awma_observatory_final_cycle = %llu\n",
++          (unsigned long long)final_cycle);
++  for (unsigned metric_index = 0; metric_index < METRIC_COUNT;
++       ++metric_index) {
++    const metric which = static_cast<metric>(metric_index);
++    if (!domain_enabled_for_metric(which)) continue;
++    print_metric(fout, which);
++    if (m_level >= 2) print_windows(fout, which);
++  }
++  if (enabled(1, DOMAIN_PROGRESS)) {
++    const bool exact = m_level >= 3;
++    fprintf(fout, "awma_observatory_progress_mode = %s\n",
++            exact ? "EXACT_CYCLE" : "BOUNDED_CHECKPOINT");
++    const uint64_t instruction_p25 = exact
++        ? exact_progress_cycle(m_exact_instruction_progress,
++                               m_exact_instruction_base_cycle,
++                               m_instruction_progress.total, 25)
++        : m_instruction_progress.percentile_cycle(25);
++    const uint64_t instruction_p50 = exact
++        ? exact_progress_cycle(m_exact_instruction_progress,
++                               m_exact_instruction_base_cycle,
++                               m_instruction_progress.total, 50)
++        : m_instruction_progress.percentile_cycle(50);
++    const uint64_t instruction_p75 = exact
++        ? exact_progress_cycle(m_exact_instruction_progress,
++                               m_exact_instruction_base_cycle,
++                               m_instruction_progress.total, 75)
++        : m_instruction_progress.percentile_cycle(75);
++    const uint64_t instruction_p90 = exact
++        ? exact_progress_cycle(m_exact_instruction_progress,
++                               m_exact_instruction_base_cycle,
++                               m_instruction_progress.total, 90)
++        : m_instruction_progress.percentile_cycle(90);
++    const uint64_t instruction_p99 = exact
++        ? exact_progress_cycle(m_exact_instruction_progress,
++                               m_exact_instruction_base_cycle,
++                               m_instruction_progress.total, 99)
++        : m_instruction_progress.percentile_cycle(99);
++    const uint64_t cta_p25 = exact
++        ? exact_progress_cycle(m_exact_cta_progress, m_exact_cta_base_cycle,
++                               m_cta_progress.total, 25)
++        : m_cta_progress.percentile_cycle(25);
++    const uint64_t cta_p50 = exact
++        ? exact_progress_cycle(m_exact_cta_progress, m_exact_cta_base_cycle,
++                               m_cta_progress.total, 50)
++        : m_cta_progress.percentile_cycle(50);
++    const uint64_t cta_p75 = exact
++        ? exact_progress_cycle(m_exact_cta_progress, m_exact_cta_base_cycle,
++                               m_cta_progress.total, 75)
++        : m_cta_progress.percentile_cycle(75);
++    const uint64_t cta_p90 = exact
++        ? exact_progress_cycle(m_exact_cta_progress, m_exact_cta_base_cycle,
++                               m_cta_progress.total, 90)
++        : m_cta_progress.percentile_cycle(90);
++    const uint64_t cta_p99 = exact
++        ? exact_progress_cycle(m_exact_cta_progress, m_exact_cta_base_cycle,
++                               m_cta_progress.total, 99)
++        : m_cta_progress.percentile_cycle(99);
++    fprintf(fout,
++            "awma_observatory_progress\tINSTRUCTIONS\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++            (unsigned long long)m_instruction_progress.total,
++            (unsigned long long)instruction_p25,
++            (unsigned long long)instruction_p50,
++            (unsigned long long)instruction_p75,
++            (unsigned long long)instruction_p90,
++            (unsigned long long)instruction_p99,
++            (unsigned long long)(final_cycle - instruction_p99));
++    fprintf(fout,
++            "awma_observatory_progress\tCTAS\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++            (unsigned long long)m_cta_progress.total,
++            (unsigned long long)cta_p25,
++            (unsigned long long)cta_p50,
++            (unsigned long long)cta_p75,
++            (unsigned long long)cta_p90,
++            (unsigned long long)cta_p99,
++            (unsigned long long)(final_cycle - cta_p99));
++  }
++  if (m_level >= 3 && enabled(3, DOMAIN_TRANSLATION) &&
++      enabled(3, DOMAIN_MEMORY)) {
++    const long double mean = m_ready_to_admission.count
++                                 ? m_ready_to_admission.sum /
++                                       m_ready_to_admission.count
++                                 : 0;
++    fprintf(fout,
++            "awma_observatory_ready_to_admission\t%llu\t%llu\t%llu\t%llu\t%.9Lf\t%llu\t%llu\t%llu\t%llu\n",
++            (unsigned long long)m_ready_to_admission.count,
++            (unsigned long long)m_ready_missing_admissions,
++            (unsigned long long)m_ready_duplicate_observations,
++            (unsigned long long)m_ready_cycles.size(), mean,
++            (unsigned long long)m_ready_to_admission.percentile(50),
++            (unsigned long long)m_ready_to_admission.percentile(95),
++            (unsigned long long)m_ready_to_admission.percentile(99),
++            (unsigned long long)m_ready_to_admission.peak);
++  }
++  if (m_level >= 3 && enabled(3, DOMAIN_MEMORY))
++    fprintf(fout, "awma_observatory_dram_boundary\t%llu\t%llu\t%llu\n",
++            (unsigned long long)m_dram_completion_count,
++            (unsigned long long)(m_dram_completion_count
++                                     ? m_first_dram_completion
++                                     : 0),
++            (unsigned long long)m_last_dram_completion);
++}
++
++bottleneck_observatory &instance() {
++  static bottleneck_observatory observatory;
++  return observatory;
++}
++
++}  // namespace awma_observatory

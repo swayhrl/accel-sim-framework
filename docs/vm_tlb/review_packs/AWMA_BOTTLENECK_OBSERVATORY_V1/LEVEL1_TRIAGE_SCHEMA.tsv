@@ -1,0 +1,23 @@
+domain	metric	unit	type	interpretation_boundary
+progress	cycles	cycles	existing aggregate	Current kernel simulated cycles
+progress	instructions	active-lane instructions	event aggregate	Committed instructions only
+progress	IPC	instructions/cycle	derived	No hardware IPC claim
+progress	CTA completions	CTAs	event aggregate	Observed resource release/completion
+progress	progress quantiles	cycle	bounded checkpoint	Level1 bounded; Level3 exact
+scheduler	issued	scheduler invocations	exclusive class	At least one instruction issued
+scheduler	no_active_work	scheduler invocations	exclusive class	No non-functionally-complete supervised warp
+scheduler	no_eligible_work	scheduler invocations	exclusive class	No valid instruction and no more specific supported class
+scheduler	dependency_scoreboard	scheduler invocations	exclusive class	Scoreboard collision; producer domain unknown
+scheduler	sync_barrier	scheduler invocations	exclusive class	Barrier predicate owns classification
+scheduler	sync_membar	scheduler invocations	exclusive class	Membar state owns classification
+scheduler	frontend_starvation	scheduler invocations	exclusive class	Empty instruction buffer; exact upstream cause unknown
+scheduler	eligible_structural	scheduler invocations	exclusive class	Ready instruction but no output pipeline accepted issue
+scheduler	active warps / active CTAs	warps / CTAs	gauge aggregate	Warp samples are per scheduler; CTA gauge uses exact launch/completion boundaries
+execution	completed_ALU/SFU/Tensor/LDST/OTHER	warp instructions	event aggregate	Completion pipeline class, not utilization percentage
+memory	LDST stall taxonomy	LDST stage invocations	event aggregate	Uses existing rc_fail enum without reinterpretation
+memory	L1D/L2 status	cache observations	event aggregate	Uses existing cache_request_status
+memory	admissions/bytes	requests/bytes	event aggregate	Successful frozen downstream admission
+memory	partition/DRAM queues	entries	gauge aggregate	Mean/peak over source clock samples
+translation	accepted VM counters	counter-specific	existing aggregate	Definitions remain those of translation_stats
+translation	READY/not-ready	observations	event aggregate	READY is earliest unique UID only at Level2/3 with memory domain
+sync	barrier/membar waiting	warps	gauge aggregate	Sampled over scheduler invocations
