@@ -1,0 +1,490 @@
+diff --git a/src/gpgpu-sim/src/abstract_hardware_model.h b/src/gpgpu-sim/src/abstract_hardware_model.h
+index cc02266..e046a09 100644
+--- a/src/gpgpu-sim/src/abstract_hardware_model.h
++++ b/src/gpgpu-sim/src/abstract_hardware_model.h
+@@ -875,6 +875,14 @@ class mem_access_t {
+   new_addr_type get_sim_pa() const { return m_sim_pa; }
+   unsigned get_uid() const { return m_uid; }
+   bool vm_translation_applied() const { return m_vm_translation_applied; }
++  bool mark_vm_translation_ready_cycle(uint64_t cycle) {
++    if (m_vm_translation_ready_cycle != ~uint64_t(0)) return false;
++    m_vm_translation_ready_cycle = cycle;
++    return true;
++  }
++  uint64_t get_vm_translation_ready_cycle() const {
++    return m_vm_translation_ready_cycle;
++  }
+   void set_sim_pa(new_addr_type sim_pa) {
+     m_sim_pa = sim_pa;
+     m_addr = sim_pa;
+@@ -958,6 +966,7 @@ class mem_access_t {
+   new_addr_type m_sim_va;
+   new_addr_type m_sim_pa;
+   bool m_vm_translation_applied;
++  uint64_t m_vm_translation_ready_cycle;
+   bool m_write;
+   unsigned m_req_size;  // bytes
+   mem_access_type m_type;
+diff --git a/src/gpgpu-sim/src/abstract_hardware_model.cc b/src/gpgpu-sim/src/abstract_hardware_model.cc
+index 934011f..48b1ce6 100644
+--- a/src/gpgpu-sim/src/abstract_hardware_model.cc
++++ b/src/gpgpu-sim/src/abstract_hardware_model.cc
+@@ -54,6 +54,7 @@ void mem_access_t::init(gpgpu_context *ctx) {
+   m_sim_va = 0;
+   m_sim_pa = 0;
+   m_vm_translation_applied = false;
++  m_vm_translation_ready_cycle = ~uint64_t(0);
+   m_req_size = 0;
+ }
+ 
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.h b/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.h
+index c87758a..ad778d7 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.h
++++ b/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.h
+@@ -16,6 +16,15 @@ class m4c_memory_telemetry {
+   void reset();
+   bool enabled() const { return m_level != 0; }
+   unsigned level() const { return m_level; }
++  bool t1_attribution_enabled() const { return m_t1_attribution_enabled; }
++  void record_t1_ready_release(uint64_t cycle);
++  void record_t1_downstream_admission(uint64_t cycle,
++                                      uint64_t ready_cycle);
++  void record_t1_accessq_sample(uint64_t entries, uint64_t ready_entries);
++  void record_t1_instruction_completion(uint64_t cycle,
++                                        unsigned active_lanes);
++  void record_t1_cta_completion(uint64_t cycle);
++  void record_t1_dram_completion(uint64_t cycle, unsigned memory_class);
+   void record_l1(unsigned memory_class, unsigned cache_status,
+                  unsigned bytes, unsigned sid,
+                  unsigned translation_outcome = M4C_TRANSLATION_UNOBSERVED);
+@@ -104,6 +113,7 @@ class m4c_memory_telemetry {
+                           unsigned victim_class);
+   void print_counters(FILE *fout, const counters &stats, const char *scope,
+                       unsigned index, const char *kernel_name) const;
++  void print_t1_attribution(FILE *fout) const;
+   unsigned m_level;
+   unsigned m_kernel_index;
+   uint64_t m_window_transactions;
+@@ -111,6 +121,23 @@ class m4c_memory_telemetry {
+   counters m_total;
+   counters m_window;
+   std::vector<counters> m_completed_windows;
++  bool m_t1_attribution_enabled;
++  std::vector<uint64_t> m_t1_ready_by_cycle;
++  std::vector<uint64_t> m_t1_admissions_by_cycle;
++  std::vector<uint64_t> m_t1_instructions_by_cycle;
++  std::vector<uint64_t> m_t1_ctas_by_cycle;
++  std::vector<uint64_t> m_t1_release_delay_histogram;
++  uint64_t m_t1_release_delay_count;
++  uint64_t m_t1_release_delay_total;
++  uint64_t m_t1_release_delay_missing;
++  uint64_t m_t1_accessq_samples;
++  uint64_t m_t1_accessq_entries_total;
++  uint64_t m_t1_accessq_ready_total;
++  uint64_t m_t1_accessq_entries_max;
++  uint64_t m_t1_accessq_ready_max;
++  uint64_t m_t1_dram_completions;
++  uint64_t m_t1_first_dram_completion;
++  uint64_t m_t1_last_dram_completion;
+ };
+ 
+ m4c_memory_telemetry &m4c_memory_telemetry_instance();
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.cc b/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.cc
+index 7688c3a..d1ba743 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/memory_telemetry.cc
+@@ -1,6 +1,7 @@
+ #include "memory_telemetry.h"
+ 
+ #include <assert.h>
++#include <stdlib.h>
+ #include <string.h>
+ 
+ m4c_memory_telemetry::counters::counters()
+@@ -18,7 +19,16 @@ m4c_memory_telemetry::counters::counters()
+ m4c_memory_telemetry::m4c_memory_telemetry()
+     : m_level(0), m_kernel_index(0), m_window_transactions(0),
+       m_transactions_in_window(0), m_total(), m_window(),
+-      m_completed_windows() {}
++      m_completed_windows(), m_t1_attribution_enabled(false),
++      m_t1_ready_by_cycle(), m_t1_admissions_by_cycle(),
++      m_t1_instructions_by_cycle(), m_t1_ctas_by_cycle(),
++      m_t1_release_delay_histogram(), m_t1_release_delay_count(0),
++      m_t1_release_delay_total(0), m_t1_release_delay_missing(0),
++      m_t1_accessq_samples(0), m_t1_accessq_entries_total(0),
++      m_t1_accessq_ready_total(0), m_t1_accessq_entries_max(0),
++      m_t1_accessq_ready_max(0), m_t1_dram_completions(0),
++      m_t1_first_dram_completion(~uint64_t(0)),
++      m_t1_last_dram_completion(0) {}
+ 
+ void m4c_memory_telemetry::configure(unsigned level,
+                                       uint64_t window_transactions) {
+@@ -26,6 +36,9 @@ void m4c_memory_telemetry::configure(unsigned level,
+   assert(level < 2 || window_transactions != 0);
+   m_level = level;
+   m_window_transactions = window_transactions;
++  const char *t1_text = getenv("GPGPUSIM_T1_ATTRIBUTION_DIAGNOSTICS");
++  m_t1_attribution_enabled =
++      t1_text != NULL && unsigned(strtoul(t1_text, NULL, 10)) != 0;
+   reset();
+ }
+ 
+@@ -35,6 +48,82 @@ void m4c_memory_telemetry::reset() {
+   m_total = counters();
+   m_window = counters();
+   m_completed_windows.clear();
++  m_t1_ready_by_cycle.clear();
++  m_t1_admissions_by_cycle.clear();
++  m_t1_instructions_by_cycle.clear();
++  m_t1_ctas_by_cycle.clear();
++  m_t1_release_delay_histogram.clear();
++  m_t1_release_delay_count = 0;
++  m_t1_release_delay_total = 0;
++  m_t1_release_delay_missing = 0;
++  m_t1_accessq_samples = 0;
++  m_t1_accessq_entries_total = 0;
++  m_t1_accessq_ready_total = 0;
++  m_t1_accessq_entries_max = 0;
++  m_t1_accessq_ready_max = 0;
++  m_t1_dram_completions = 0;
++  m_t1_first_dram_completion = ~uint64_t(0);
++  m_t1_last_dram_completion = 0;
++}
++
++static void t1_increment_cycle(std::vector<uint64_t> *series, uint64_t cycle,
++                               uint64_t amount = 1) {
++  if (series->size() <= cycle) series->resize(cycle + 1, 0);
++  (*series)[cycle] += amount;
++}
++
++void m4c_memory_telemetry::record_t1_ready_release(uint64_t cycle) {
++  if (!m_t1_attribution_enabled) return;
++  t1_increment_cycle(&m_t1_ready_by_cycle, cycle);
++}
++
++void m4c_memory_telemetry::record_t1_downstream_admission(
++    uint64_t cycle, uint64_t ready_cycle) {
++  if (!m_t1_attribution_enabled) return;
++  t1_increment_cycle(&m_t1_admissions_by_cycle, cycle);
++  if (ready_cycle == ~uint64_t(0)) {
++    ++m_t1_release_delay_missing;
++    return;
++  }
++  assert(cycle >= ready_cycle);
++  const uint64_t delay = cycle - ready_cycle;
++  if (m_t1_release_delay_histogram.size() <= delay)
++    m_t1_release_delay_histogram.resize(delay + 1, 0);
++  ++m_t1_release_delay_histogram[delay];
++  ++m_t1_release_delay_count;
++  m_t1_release_delay_total += delay;
++}
++
++void m4c_memory_telemetry::record_t1_accessq_sample(uint64_t entries,
++                                                     uint64_t ready_entries) {
++  if (!m_t1_attribution_enabled) return;
++  assert(ready_entries <= entries);
++  ++m_t1_accessq_samples;
++  m_t1_accessq_entries_total += entries;
++  m_t1_accessq_ready_total += ready_entries;
++  if (entries > m_t1_accessq_entries_max) m_t1_accessq_entries_max = entries;
++  if (ready_entries > m_t1_accessq_ready_max)
++    m_t1_accessq_ready_max = ready_entries;
++}
++
++void m4c_memory_telemetry::record_t1_instruction_completion(
++    uint64_t cycle, unsigned active_lanes) {
++  if (!m_t1_attribution_enabled) return;
++  t1_increment_cycle(&m_t1_instructions_by_cycle, cycle, active_lanes);
++}
++
++void m4c_memory_telemetry::record_t1_cta_completion(uint64_t cycle) {
++  if (!m_t1_attribution_enabled) return;
++  t1_increment_cycle(&m_t1_ctas_by_cycle, cycle);
++}
++
++void m4c_memory_telemetry::record_t1_dram_completion(uint64_t cycle,
++                                                      unsigned memory_class) {
++  if (!m_t1_attribution_enabled || memory_class > M4C_DATA_KV_CACHE) return;
++  if (m_t1_first_dram_completion == ~uint64_t(0))
++    m_t1_first_dram_completion = cycle;
++  m_t1_last_dram_completion = cycle;
++  ++m_t1_dram_completions;
+ }
+ 
+ void m4c_memory_telemetry::add_frontend_instruction(
+@@ -316,7 +405,146 @@ void m4c_memory_telemetry::print_counters(
+       }
+ }
+ 
++static uint64_t t1_hist_percentile(const std::vector<uint64_t> &hist,
++                                   uint64_t count, unsigned percentile) {
++  if (count == 0) return 0;
++  const uint64_t rank = (count * percentile + 99) / 100;
++  uint64_t cumulative = 0;
++  for (uint64_t value = 0; value < hist.size(); ++value) {
++    cumulative += hist[value];
++    if (cumulative >= rank) return value;
++  }
++  assert(0);
++  return 0;
++}
++
++static void t1_print_cycle_summary(FILE *fout, const char *metric,
++                                   const std::vector<uint64_t> &series) {
++  uint64_t total = 0, active = 0, peak = 0;
++  std::vector<uint64_t> hist;
++  for (uint64_t cycle = 0; cycle < series.size(); ++cycle) {
++    const uint64_t value = series[cycle];
++    total += value;
++    if (value != 0) ++active;
++    if (value > peak) peak = value;
++    if (hist.size() <= value) hist.resize(value + 1, 0);
++    ++hist[value];
++  }
++  fprintf(fout,
++          "awma_t1_cycle_summary\t%s\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++          metric, (unsigned long long)series.size(), (unsigned long long)total,
++          (unsigned long long)active,
++          (unsigned long long)t1_hist_percentile(hist, series.size(), 95),
++          (unsigned long long)peak);
++  const unsigned widths[] = {32, 64, 128};
++  for (unsigned w = 0; w != 3; ++w) {
++    const unsigned width = widths[w];
++    std::vector<uint64_t> window_hist;
++    const uint64_t windows = (series.size() + width - 1) / width;
++    uint64_t nonzero = 0, window_peak = 0;
++    for (uint64_t start = 0; start < series.size(); start += width) {
++      uint64_t value = 0;
++      const uint64_t end = start + width < series.size()
++                               ? start + width
++                               : series.size();
++      for (uint64_t cycle = start; cycle < end; ++cycle) value += series[cycle];
++      if (value != 0) ++nonzero;
++      if (value > window_peak) window_peak = value;
++      if (window_hist.size() <= value) window_hist.resize(value + 1, 0);
++      ++window_hist[value];
++    }
++    fprintf(fout,
++            "awma_t1_window_summary\t%s\t%u\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++            metric, width, (unsigned long long)windows,
++            (unsigned long long)nonzero,
++            (unsigned long long)t1_hist_percentile(window_hist, windows, 50),
++            (unsigned long long)t1_hist_percentile(window_hist, windows, 95),
++            (unsigned long long)t1_hist_percentile(window_hist, windows, 99),
++            (unsigned long long)window_peak);
++  }
++}
++
++static uint64_t t1_progress_cycle(const std::vector<uint64_t> &series,
++                                  uint64_t total, unsigned percentile) {
++  if (total == 0) return 0;
++  const uint64_t target = (total * percentile + 99) / 100;
++  uint64_t cumulative = 0;
++  for (uint64_t cycle = 0; cycle < series.size(); ++cycle) {
++    cumulative += series[cycle];
++    if (cumulative >= target) return cycle;
++  }
++  assert(0);
++  return 0;
++}
++
++void m4c_memory_telemetry::print_t1_attribution(FILE *fout) const {
++  if (!m_t1_attribution_enabled) return;
++  fprintf(fout, "awma_t1_attribution_schema = AWMA_T1_ATTRIBUTION_V1\n");
++  fprintf(fout,
++          "awma_t1_release_delay\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++          (unsigned long long)m_t1_release_delay_count,
++          (unsigned long long)m_t1_release_delay_total,
++          (unsigned long long)m_t1_release_delay_missing,
++          (unsigned long long)t1_hist_percentile(
++              m_t1_release_delay_histogram, m_t1_release_delay_count, 50),
++          (unsigned long long)t1_hist_percentile(
++              m_t1_release_delay_histogram, m_t1_release_delay_count, 95),
++          (unsigned long long)t1_hist_percentile(
++              m_t1_release_delay_histogram, m_t1_release_delay_count, 99),
++          (unsigned long long)(m_t1_release_delay_histogram.empty()
++                                   ? 0
++                                   : m_t1_release_delay_histogram.size() - 1));
++  fprintf(fout,
++          "awma_t1_accessq_summary\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++          (unsigned long long)m_t1_accessq_samples,
++          (unsigned long long)m_t1_accessq_entries_total,
++          (unsigned long long)m_t1_accessq_ready_total,
++          (unsigned long long)m_t1_accessq_entries_max,
++          (unsigned long long)m_t1_accessq_ready_max);
++  t1_print_cycle_summary(fout, "READY_RELEASES", m_t1_ready_by_cycle);
++  t1_print_cycle_summary(fout, "DOWNSTREAM_ADMISSIONS",
++                         m_t1_admissions_by_cycle);
++  uint64_t instruction_total = 0, cta_total = 0;
++  for (uint64_t cycle = 0; cycle < m_t1_instructions_by_cycle.size(); ++cycle)
++    instruction_total += m_t1_instructions_by_cycle[cycle];
++  for (uint64_t cycle = 0; cycle < m_t1_ctas_by_cycle.size(); ++cycle)
++    cta_total += m_t1_ctas_by_cycle[cycle];
++  fprintf(fout,
++          "awma_t1_progress_summary\tINSTRUCTIONS\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++          (unsigned long long)instruction_total,
++          (unsigned long long)t1_progress_cycle(m_t1_instructions_by_cycle,
++                                                instruction_total, 25),
++          (unsigned long long)t1_progress_cycle(m_t1_instructions_by_cycle,
++                                                instruction_total, 50),
++          (unsigned long long)t1_progress_cycle(m_t1_instructions_by_cycle,
++                                                instruction_total, 75),
++          (unsigned long long)t1_progress_cycle(m_t1_instructions_by_cycle,
++                                                instruction_total, 90),
++          (unsigned long long)t1_progress_cycle(m_t1_instructions_by_cycle,
++                                                instruction_total, 99));
++  fprintf(fout,
++          "awma_t1_progress_summary\tCTAS\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\n",
++          (unsigned long long)cta_total,
++          (unsigned long long)t1_progress_cycle(m_t1_ctas_by_cycle, cta_total,
++                                                25),
++          (unsigned long long)t1_progress_cycle(m_t1_ctas_by_cycle, cta_total,
++                                                50),
++          (unsigned long long)t1_progress_cycle(m_t1_ctas_by_cycle, cta_total,
++                                                75),
++          (unsigned long long)t1_progress_cycle(m_t1_ctas_by_cycle, cta_total,
++                                                90),
++          (unsigned long long)t1_progress_cycle(m_t1_ctas_by_cycle, cta_total,
++                                                99));
++  fprintf(fout, "awma_t1_dram_completion_summary\t%llu\t%llu\t%llu\n",
++          (unsigned long long)m_t1_dram_completions,
++          (unsigned long long)(m_t1_dram_completions == 0
++                                   ? 0
++                                   : m_t1_first_dram_completion),
++          (unsigned long long)m_t1_last_dram_completion);
++}
++
+ void m4c_memory_telemetry::print(FILE *fout, const char *kernel_name) const {
++  print_t1_attribution(fout);
+   if (!enabled()) return;
+   const char *name = kernel_name && kernel_name[0] ? kernel_name : "UNKNOWN";
+   fprintf(fout, "m4c_telemetry_schema = M4C_MEMORY_TELEMETRY_V1\n");
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/src/gpgpu-sim/shader.cc
+index 1e8caaf..a42b425 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/shader.cc
+@@ -2151,6 +2151,8 @@ void shader_core_ctx::warp_inst_complete(const warp_inst_t &inst) {
+ 
+   m_stats->m_num_sim_winsn[m_sid]++;
+   m_gpu->gpu_sim_insn += inst.active_count();
++  m4c_memory_telemetry_instance().record_t1_instruction_completion(
++      m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle, inst.active_count());
+   inst.completed(m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle);
+ }
+ 
+@@ -2325,6 +2327,10 @@ mem_stage_stall_type ldst_unit::process_memory_access_queue_l1cache(
+             m_core->inc_store_req(inst.warp_id());
+         }
+ 
++        m4c_memory_telemetry_instance().record_t1_downstream_admission(
++            m_core->get_gpu()->gpu_sim_cycle +
++                m_core->get_gpu()->gpu_tot_sim_cycle,
++            inst.accessq_back().get_vm_translation_ready_cycle());
+         inst.accessq_pop_back();
+       } else {
+         result = BK_CONF;
+@@ -2351,6 +2357,11 @@ mem_stage_stall_type ldst_unit::process_memory_access_queue_l1cache(
+         mf->get_addr(), mf,
+         m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle,
+         events);
++    if (status != RESERVATION_FAIL)
++      m4c_memory_telemetry_instance().record_t1_downstream_admission(
++          m_core->get_gpu()->gpu_sim_cycle +
++              m_core->get_gpu()->gpu_tot_sim_cycle,
++          inst.accessq_back().get_vm_translation_ready_cycle());
+     m4c_memory_telemetry_instance().record_l1(
+         mf->get_telemetry_class(), status, mf->get_access_size(), m_sid,
+         mf->get_translation_telemetry_outcome());
+@@ -2513,6 +2524,18 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+   if (inst.active_count() == 0) return true;
+   if (inst.accessq_empty()) return true;
+ 
++  if (m4c_memory_telemetry_instance().t1_attribution_enabled()) {
++    uint64_t ready_entries = 0;
++    const std::list<mem_access_t> &sample_entries = inst.accessq_entries();
++    for (std::list<mem_access_t>::const_iterator it = sample_entries.begin();
++         it != sample_entries.end(); ++it)
++      if (it->vm_translation_applied() ||
++          it->get_vm_translation_ready_cycle() != ~uint64_t(0))
++        ++ready_entries;
++    m4c_memory_telemetry_instance().record_t1_accessq_sample(
++        sample_entries.size(), ready_entries);
++  }
++
+   mem_stage_stall_type stall_cond = NO_RC_FAIL;
+   const char *ready_application_text = getenv("GPGPUSIM_READY_APPLICATION_V2");
+   const bool ready_application_v2 = ready_application_text != NULL &&
+@@ -2586,6 +2609,12 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+           candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access,
+           ready_application_v2);
+       if (prelaunch_result == vm_translation::READY) {
++        const uint64_t ready_observation_cycle =
++            m_core->get_gpu()->gpu_sim_cycle +
++            m_core->get_gpu()->gpu_tot_sim_cycle;
++        if (candidate.mark_vm_translation_ready_cycle(ready_observation_cycle))
++          m4c_memory_telemetry_instance().record_t1_ready_release(
++              ready_observation_cycle);
+         if (ready_application_diagnostics)
+           ++m_stats->vm_ready_application_prelaunch_ready;
+         if (ready_application_v2)
+@@ -2681,6 +2710,12 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+                                             : (iswrite ? G_MEM_ST : G_MEM_LD);
+         return false;
+       }
++      const uint64_t ready_observation_cycle =
++          m_core->get_gpu()->gpu_sim_cycle +
++          m_core->get_gpu()->gpu_tot_sim_cycle;
++      if (access.mark_vm_translation_ready_cycle(ready_observation_cycle))
++        m4c_memory_telemetry_instance().record_t1_ready_release(
++            ready_observation_cycle);
+       assert(translation_outcome !=
+              vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
+       if (ready_application_diagnostics && ready_application_v2)
+@@ -2760,6 +2795,10 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+                                   m_core->get_gpu()->gpu_sim_cycle +
+                                       m_core->get_gpu()->gpu_tot_sim_cycle);
+         m_icnt->push(mf);
++        m4c_memory_telemetry_instance().record_t1_downstream_admission(
++            m_core->get_gpu()->gpu_sim_cycle +
++                m_core->get_gpu()->gpu_tot_sim_cycle,
++            access.get_vm_translation_ready_cycle());
+         inst.accessq_pop_back();
+         // inst.clear_active( access.get_warp_mask() );
+         if (inst.is_load()) {
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc
+index 852c844..493b538 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc
+@@ -1936,6 +1936,8 @@ bool shader_core_ctx::occupy_shader_resource_1block(kernel_info_t &k,
+ 
+ void shader_core_ctx::release_shader_resource_1block(unsigned hw_ctaid,
+                                                      kernel_info_t &k) {
++  m4c_memory_telemetry_instance().record_t1_cta_completion(
++      m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+   if (m_config->gpgpu_concurrent_kernel_sm) {
+     unsigned threads_per_cta = k.threads_per_cta();
+     const class function_info *kernel = k.entry();
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc
+index 9d74a99..c700110 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/l2cache.cc
+@@ -253,6 +253,9 @@ void memory_partition_unit::simple_dram_model_cycle() {
+           m_sub_partition[dest_spid]->set_done(mf_return);
+           delete mf_return;
+         } else {
++          m4c_memory_telemetry_instance().record_t1_dram_completion(
++              m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
++              mf_return->get_telemetry_class());
+           m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);
+           mf_return->set_status(
+               IN_PARTITION_DRAM_TO_L2_QUEUE,
+@@ -317,6 +320,9 @@ void memory_partition_unit::dram_cycle() {
+         m_sub_partition[dest_spid]->set_done(mf_return);
+         delete mf_return;
+       } else {
++        m4c_memory_telemetry_instance().record_t1_dram_completion(
++            m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
++            mf_return->get_telemetry_class());
+         m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);
+         mf_return->set_status(IN_PARTITION_DRAM_TO_L2_QUEUE,
+                               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
