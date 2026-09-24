@@ -514,3 +514,53 @@ Future simulator authority, if later authorized, remains:
 ## E1 shared closure and coverage-scaling consumer prep (174-new)
 
 Shared producer `1e701f013fc174b5b4df9febb5c33500f9ea586e` independently closes from raw evidence at `SHARED_RESIDENCY_LOCAL_ONLY`. Five real-artifact canaries, the exact 15-update schedule, rotating qualification, 42 native runs, 14 multi-pass NCU profiles, and critical-path metrics close. SHARE3 run-aligned median target share is about 1.74% and median realization ratio about 0.885, supporting limited protected coverage rather than failed realization of local savings. Coverage consumers freeze the 28-layer census, exact layer sets, run-aligned Amdahl accounting, N14 holdout, 16-profile NCU matrix, and FULLHINT trigger. Historical C12 evidence is qualitative motivation only. Future simulator authority is Core 57bb71e plus RTX4080 Ada config de9ee8f; SM86/RTX3080 is excluded. The coverage producer ref was absent in the one-shot fetch window, so status is `READY_FOR_E1_COVERAGE_SCALING_109`. No GPU/simulator/NVBit/trace/mechanism work was used.
+
+
+---
+
+## Next reviewed question — operator-family expansion before simulator
+
+Coverage producer:
+
+`hrl/c16-e1-coverage-scaling-109-v1@18acd7dcc10118c68b450d226a8e7ca80c51ad72`
+
+Producer label:
+
+`COVERAGE_SCALING_POSITIVE_BUT_SUBTHRESHOLD`
+
+Key measured opportunity:
+
+- gate_proj ~14.76% of stable decode;
+- up_proj ~16.84%;
+- down_proj ~15.78%;
+- all FFN projections ~47.39%.
+
+N28 up_proj coverage remains locally strong:
+- all 28 selected layers are MATERIAL_LOCAL;
+- median local benefit ~25%.
+
+But whole decode improves only ~0.892%.
+
+Run-aligned N28:
+- direct selected up_proj saving ~0.567 ms;
+- observed decode saving ~0.123 ms;
+- realization ~0.216.
+
+The ~0.44 ms residual outside selected-up_proj accounting is unresolved. It must not be called cache collateral slowdown before direct measurement.
+
+The next stage therefore times all 84 FFN projections under role-only, pairwise, and all-FFN persistence conditions while keeping one fixed total persisting-L2 budget.
+
+It will decompose:
+- direct selected-module saving;
+- unselected FFN change;
+- total FFN saving;
+- outside-FFN residual;
+- whole-decode saving.
+
+No simulator is run.
+
+Only after independent producer/consumer closure will the project decide whether to:
+- authorize bounded trace + first RTX4080 simulator mechanism;
+- revise the mechanism around measured residual/collateral behavior;
+- extend beyond FFN;
+- or stop the residency mechanism system case.
