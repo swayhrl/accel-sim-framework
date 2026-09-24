@@ -2,21 +2,19 @@
 
 ## Status
 
-**ACTIVE — BUFFERING × MEMORY-SERVICE INTERACTION; UNATTENDED SOLVE-AND-CONTINUE**
+**ACTIVE — MEMORY-SIDE QUEUE-CHAIN + DRAM-SERVICE HEADROOM; UNATTENDED SOLVE-AND-CONTINUE**
 
 Do not restart the scientific program and do not reset any branch.
 
-This specification supersedes the earlier rule that queue failure should immediately terminate downstream investigation. The accepted BICG/OO queue intervention changes the interpretation: queue capacity alone is insufficient, but a queue can be a buffering symptom of a slower downstream service path.
+This specification supersedes the earlier STOP after `QUEUE_AND_SELECTED_MEMORY_SERVICE_INSUFFICIENT`. The accepted queue results remain final evidence, but the accepted busW probe is reclassified as diagnostic/non-discriminating for the dominant 32-B sector-read service question.
 
 ## Objective
 
-Determine whether DTC performance under the original high injection cap can be recovered by:
+Answer one bounded question:
 
-1. queue buffering headroom;
-2. one source-supported deeper memory-service headroom dimension;
-3. or their interaction.
+> Can finite queues later in the L2->memory path, alone or together with a genuine detailed-DRAM service-rate upper bound, explain why BICG/GESUMMV benefit so strongly from DTC injection throttling?
 
-This remains a small bounded study, not a broad memory-system sweep.
+This is one predeclared queue-chain/service study, not an open-ended memory sweep.
 
 ## Source anchors
 
@@ -29,16 +27,17 @@ Before work:
 Current review anchors:
 
 - SG1: `e909f90a`
-- SG3: `f1186336`
+- SG3: `2c5802153b30f73ebabb5ad69dc44de055cd0497`
+- SG4A: `7c0a90e`
 - SG5: `f4077f46`
-- SG4A: use fetched latest remote read-only state.
 
-Read:
+Read in order:
 
 1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
 2. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
 3. this file
-4. SG3 Phase-A telemetry, queue execution plan, partial queue snapshot, and source/config audit files.
+4. `docs/dtc_l1/review_packs/DOWNSTREAM_HEADROOM_V1/`
+5. SG3 Phase-A/queue/C0 source-map files.
 
 ## Worktree / branch isolation
 
@@ -46,213 +45,242 @@ Execution/evidence branch:
 
 `hrl/iscas2027-dtc-sg3-downstream-localization-v0`
 
-Use the existing isolated SG3 worktree.
+Use an isolated SG3 worktree.
 
-Treat SG1, SG4A, SG5, FAST64, Lane-E, and TC80 evidence as read-only.
+Treat SG1, SG4A, SG5, FAST64, Lane-E, TC80, accepted queue=128 rows, and accepted busW rows as immutable/read-only evidence.
 
 Do not modify files in `docs/dtc_l1/chatgpt_handoff/`.
 
 ---
 
-# Phase B — finish the already-authorized queue family
+# R0 — no-simulation semantic correction and source/telemetry audit
 
-Do not stop or relaunch the already-running immutable attempts.
+Complete R0 before launching any new row.
 
-Current accepted partial row:
+## R0.1 Reclassify busW evidence
 
-- BICG/OO queue=128: strict PASS
-  - `MISS_QUEUE_FULL` 43,594,150 -> 0
-  - cycles 47,231,655 -> 47,588,121 (+0.75%)
-  - average lower lifetime 5,612.70 -> 5,692.26
+Record, without deleting any run, that:
 
-Interpret this only as:
+- L2 sector atom = 32 B;
+- dominant sector-read DRAM request size = 32 B;
+- default `dram_atom_size = BL(2) * busW(16 B) * chips(1) = 32 B`;
+- a 32-B request already completes in one detailed-DRAM data step;
+- `busW 16->32` therefore does not provide a discriminating 2x transfer-step reduction for that path.
 
-> queue capacity alone is insufficient for BICG/OO.
+The accepted busW rows remain valid diagnostic evidence but must not support the claim “2x DRAM service rate is insufficient.”
 
-Do not interpret it as proof that queue pressure is irrelevant to a buffering × service interaction.
+## R0.2 Confirm queue-chain semantics
 
-Let these existing rows terminate naturally and strict-validate immediately:
+Source-audit and record exact semantics/default sizes for:
 
-- BICG/IO queue=128
-- GESUMMV/IO queue=128
-- GESUMMV/OO queue=128
+- L2-internal miss queue = 32/bank;
+- `gpgpu_dram_partition_queues` order and sizes:
+  - ICNT->L2 = 64
+  - L2->DRAM = 64
+  - DRAM->L2 = 64
+  - L2->ICNT = 64
+- FR-FCFS scheduler queue = 64/channel;
+- DRAM return queue = 192/channel;
+- memory-partition shared-credit formula and its dependence on scheduler/return queue capacities;
+- DRAM clock-domain semantics at 850 MHz.
 
-No new queue point is authorized.
+## R0.3 Existing telemetry
 
----
+From accepted BICG IO/OO default, cap2048, and cap512 rows, extract where available:
 
-# Phase C0 — zero-simulation memory-side source + telemetry audit
+- `L2_dram_queue_full`;
+- DRAM `mrqq` maximum and average;
+- `gpu_stall_icnt2mem`;
+- `gpu_stall_mem2icnt`;
+- mean memory-fetch latency;
+- mean ICNT->memory latency;
+- mean MRQ latency;
+- DRAM bandwidth/utilization;
+- DRAM bank/command statistics.
 
-Run this analysis in parallel with the remaining Phase-B simulations.
+Use `NOT_AVAILABLE` where a metric is not source-defined/emitted.
 
-**Do not launch a new memory-side simulator row until C0 is committed.**
+R0 is descriptive only; it does not gate the six predeclared BICG families.
 
-## C0.1 Source-map the downstream path after the L2 miss queue
+## R0 deliverables
 
-Audit current source and resolved FAST64 configuration for:
+Commit/push:
 
-- memory-partition queues and admission;
-- interconnect-to-memory path;
-- DRAM scheduler queues;
-- DRAM request/return queues;
-- DRAM command/data path;
-- DRAM timing/latency fields;
-- memory bandwidth/service-width fields.
+- `SG3_MEMORY_QUEUE_CHAIN_SOURCE_MAP_V2.tsv`
+- `SG3_BICG_MEMORY_QUEUE_CHAIN_TELEMETRY_V2.tsv`
+- `SG3_BUSWIDTH_PROBE_RECLASSIFICATION_V1.md`
+- `SG3_MEMORY_QUEUE_CHAIN_EXECUTION_PLAN_V1.tsv`
 
-Record exact parser/source semantics and scope.
-
-## C0.2 Extract existing accepted telemetry
-
-From accepted BICG IO/OO:
-
-- default cap=8192
-- cap=2048
-- cap=512
-
-extract any source-defined metrics that actually exist for:
-
-- memory-partition queue occupancy/full/stall;
-- DRAM scheduler queue occupancy/full/stall;
-- memory-fetch latency;
-- DRAM queueing latency;
-- DRAM service latency;
-- memory bandwidth / data utilization;
-- read/write command utilization/counts;
-- interconnect-to-memory or partition stalls;
-- DRAM bank activity/efficiency.
-
-If a metric is not emitted or cannot be reconstructed exactly, write `NOT_AVAILABLE`.
-
-Do not infer a counter from unrelated statistics.
-
-## C0.3 Select at most one memory-service headroom knob
-
-The selected knob must:
-
-1. have source-proven semantics;
-2. change one interpretable service-rate or service-latency dimension;
-3. leave DTC semantics unchanged;
-4. leave SM count, memory-channel count, L2-bank count, address mapping, trace identity, L2 capacity, L2 MSHR, and queue definition unchanged;
-5. have at least some source/telemetry reason to be relevant;
-6. be described as an idealized upper-bound headroom probe, not a production point.
-
-Do not choose another queue-capacity knob as the M dimension.
-
-Do not change multiple DRAM timing fields together.
-
-Do not use perfect/infinite memory.
-
-If no candidate satisfies all six rules, record:
-
-`NO_CLEAN_MEMORY_SERVICE_HEADROOM_KNOB`
-
-finish the queue family, build the review pack, and STOP without further simulation.
-
-## C0 deliverables
-
-Commit/push before any C1 run:
-
-- `SG3_MEMORY_SIDE_SOURCE_MAP_V1.tsv`
-- `SG3_BICG_MEMORY_SIDE_TELEMETRY_V1.tsv`
-- `SG3_MEMORY_SERVICE_KNOB_SELECTION_V1.md`
-
-The selection document must state:
-
-- selected knob and exact default/headroom values;
-- source semantics;
-- what it changes;
-- what it explicitly does not change;
-- supporting telemetry;
-- expected interpretation;
-- forbidden overclaims.
+No simulation before this commit.
 
 ---
 
-# Phase C1 — predeclared BICG queue × memory-service 2×2
+# R1 — six predeclared BICG headroom families
 
-Only if C0 selects one valid memory-service knob.
+Run every family for:
 
-For each mode IO and OO define:
+- BICG IO
+- BICG OO
 
-- Q0M0 = queue32 + default memory service — existing accepted baseline
-- Q1M0 = queue128 + default memory service — current/accepted Phase-B row
-- Q0M1 = queue32 + selected memory-service headroom — NEW
-- Q1M1 = queue128 + selected memory-service headroom — NEW
+Thus R1 contains exactly **12 new simulator rows**.
 
-Thus at most **4 new BICG simulator rows** are authorized.
-
-## Rolling launch rule
-
-- Q0M1 for BICG IO/OO may launch immediately after C0 is committed.
-- Q1M1 for a mode may launch only after that mode's Q1M0 queue=128 row has strict PASS.
-- Do not wait for GESUMMV queue rows to finish before launching eligible BICG C1 rows.
-
-All C1 rows keep:
+All rows keep:
 
 - DTC cap = 8192
-- default L2 capacity
+- 64 SM
+- 20 memory channels
+- 40 L2 subpartitions
+- same address mapping
+- same trace identity
 - default L2 MSHR
-- same L2 atom/line geometry
-- same workload/trace identity
+- default L2 line/sector geometry
 - same observer semantics
+- Core/runtime identity unchanged except config-only overlays
 
-Only Q and the selected M dimension may differ according to the 2×2.
+### Family A — L2->DRAM queue headroom
 
-## Required C1 analysis
+Change only:
 
-For each mode report:
+`gpgpu_dram_partition_queues 64:64:64:64 -> 64:256:64:64`
 
-- cycles
-- cycle change vs Q0M0
-- lower-request average/max lifetime
-- queue-full / queue occupancy
-- selected memory-side pressure metric(s)
-- any other source-defined downstream stalls used in C0
+### Family B — DRAM scheduler/admission headroom
 
-Explicitly evaluate:
+Change:
 
-1. M-only effect: Q0M1 vs Q0M0
-2. Q-only effect: Q1M0 vs Q0M0
-3. Q+M effect: Q1M1 vs Q0M0
-4. interaction: whether Q1M1 provides additional recovery beyond the better single intervention
+`gpgpu_frfcfs_dram_sched_queue_size 64 -> 256`
 
-No causal statement before strict PASS of the needed cells.
+Keep DRAM return queue at 192.
+
+Document that the source-defined memory-partition shared-credit limit changes as a consequence; report this as scheduler/admission headroom, not a pure storage-only effect.
+
+### Family C — return-path buffering headroom
+
+Change together:
+
+- `gpgpu_dram_partition_queues 64:64:64:64 -> 64:64:256:64`
+- `gpgpu_dram_return_queue_size 192 -> 768`
+
+This is a bundled serial return-path upper bound.
+
+### Family D — full memory-side queue-chain headroom
+
+Change:
+
+- L2-internal miss queue: 32 -> 128
+- L2->DRAM queue: 64 -> 256
+- DRAM scheduler queue: 64 -> 256
+- DRAM return queue: 192 -> 768
+- DRAM->L2 queue: 64 -> 256
+
+Keep ICNT->L2 and L2->ICNT at 64.
+
+### Family E — detailed-DRAM 2x service-rate headroom
+
+Change only the DRAM clock:
+
+`gpgpu_clock_domains 1410:1410:1410:850 -> 1410:1410:1410:1700`
+
+Keep:
+
+- busW=16 B
+- BL=2
+- DRAM timing cycle counts unchanged
+- queue sizes default
+- L2 resources default
+- channels/mapping unchanged
+
+Interpretation boundary:
+
+> idealized 2x detailed-DRAM service-rate/time-domain upper bound, not a physical product frequency point.
+
+### Family F — full queue-chain + DRAM2x
+
+Combine Family D + Family E.
+
+## R1 launch policy
+
+After R0 static validation and commit:
+
+- place all 12 rows into the rolling worker pool immediately;
+- do not wait for one family to finish before launching another;
+- row-local strict validation on terminal;
+- preserve failed attempts and retry only under existing immutable-attempt rules;
+- no result-dependent new family.
 
 ---
 
-# Phase C2 — bounded GESUMMV independent validation
+# R2 — BICG analysis
 
-GESUMMV is not an automatic full 2×2.
+For every accepted family/mode, report:
 
-Use a predeclared 5% paper-relevance gate, set **before** any C1 memory-headroom result:
+- cycles and speedup vs exact default;
+- lower-request average/max lifetime;
+- DTC outstanding average if available;
+- L2-internal queue-full and occupancy;
+- `L2_dram_queue_full`;
+- DRAM `mrqq` max/avg;
+- ICNT/memory stall counters;
+- memory/MRQ latency;
+- queue/service parameters.
 
-### Gate M — memory-service-alone validation
+Interpret each family only within its source semantics.
 
-If either BICG IO or OO Q0M1 reduces cycles by **>=5%** versus its Q0M0 baseline, with the selected service-pressure telemetry moving coherently, authorize:
+Explicitly distinguish:
 
-- GESUMMV IO Q0M1
-- GESUMMV OO Q0M1
+- single queue-stage headroom;
+- scheduler/admission headroom;
+- response buffering;
+- all-buffering headroom;
+- DRAM service-rate headroom;
+- buffering + service interaction.
 
-Total: 2 rows.
+---
 
-### Gate I — interaction validation
+# R3 — bounded GESUMMV independent validation
 
-If either BICG mode's Q1M1 provides an additional **>=5% cycle reduction relative to the better of Q0M1 and Q1M0**, with coherent telemetry, authorize in addition:
+Do not run the full six-family GESUMMV matrix.
 
-- GESUMMV IO Q1M1
-- GESUMMV OO Q1M1
+A BICG configuration is eligible if:
 
-Total: 2 additional rows.
+- it reduces cycles by >=5% in either IO or OO versus exact default;
+- telemetry changes coherently;
+- it is one of Families A-F.
 
-Therefore C2 adds:
+Validate at most **two configurations**, using this fixed priority if multiple qualify:
 
-- 0 rows if neither gate is met;
-- 2 rows for memory-service-alone validation;
-- at most 4 rows if a queue × memory interaction also merits validation.
+1. Family F — full queue-chain + DRAM2x
+2. Family D — full queue-chain
+3. Family E — DRAM2x
+4. Family A — L2->DRAM queue
+5. Family B — scheduler/admission
+6. Family C — return-path buffering
 
-Use the same selected M knob/value. No new memory parameter values.
+For each selected configuration run:
+
+- GESUMMV IO
+- GESUMMV OO
+
+Thus R3 adds 0, 2, or at most 4 rows.
 
 Keep at most two heavy GESUMMV simulator processes concurrently.
+
+---
+
+# R4 — conditional all-headroom ceiling with L2 capacity
+
+The existing L2-capacity=2x BICG evidence already shows partial benefit.
+
+Only if Family F improves BICG by >=5% in either IO or OO, authorize exactly two additional BICG ceiling rows:
+
+- L2 capacity = 20 MiB (existing accepted 2x-capacity definition)
+- Family D full queue-chain headroom
+- DRAM = 1700 MHz
+- IO
+- OO
+
+No other capacity level and no factorial expansion.
+
+Interpret these only as an idealized all-headroom ceiling.
 
 ---
 
@@ -260,27 +288,32 @@ Keep at most two heavy GESUMMV simulator processes concurrently.
 
 Do NOT launch:
 
-- additional L2 capacity points
-- additional L2 MSHR points
+- L2-internal miss queue >128
+- L2->DRAM / DRAM->L2 / scheduler queues beyond 256
+- DRAM return queue beyond 768
+- new L2 MSHR points
 - cap=1024 or cap=4096
-- queue=64
-- L2 data/fill-port experiments unless C0 explicitly selects that exact port as the single M service dimension under its source/telemetry criteria
-- more than one memory-service knob
+- additional DRAM frequencies
+- busW as the formal memory-service dimension
 - memory-channel-count changes
 - L2-bank-count changes
 - address-mapping changes
-- broad ROP / NoC / DRAM sweeps
-- multi-parameter DRAM timing sweeps
+- ICNT->L2 or L2->ICNT queue sweeps
+- L2 data/fill-port sweeps
+- NoC or ROP sweeps
+- DRAM timing-string sweeps
 - perfect/infinite memory
-- extra logical-Tag experiments
-- FAST12 sensitivity sweeps
-- new adaptive-admission mechanism
+- adaptive admission mechanism
+- FAST12 sensitivity
+- new logical-Tag experiments
 
-Do not retry the SG5 GESUMMV/IO observer a third time.
+Do not retry the SG5 GESUMMV/IO observer.
 
 ---
 
-# Acceptance requirements for every new row
+# Acceptance requirements
+
+For every new row:
 
 - fresh UUID
 - immutable run directory
@@ -289,27 +322,55 @@ Do not retry the SG5 GESUMMV/IO observer a third time.
 - exact ordered config-chain SHA
 - exact trace identity
 - START receipt
-- terminal receipt
+- natural terminal receipt
 - strict validation receipt
 - terminal drain / observer closure checks
 
 Preserve every failure. Never overwrite an attempt.
 
-A validator invocation/input error may use same-output named revalidation, preserving the original FAIL receipt.
+---
+
+# Paper-safe final statuses
+
+Use the strongest supported bounded status:
+
+- `MEMORY_QUEUE_STAGE_HEADROOM_SUPPORTED`
+- `MEMORY_QUEUE_CHAIN_HEADROOM_SUPPORTED`
+- `DRAM_SERVICE_RATE_HEADROOM_SUPPORTED`
+- `QUEUE_CHAIN_DRAM_SERVICE_INTERACTION_SUPPORTED`
+- `MEMORY_DOWNSTREAM_HEADROOM_PARTIAL`
+- `MEMORY_QUEUE_CHAIN_AND_DRAM2X_INSUFFICIENT`
+
+Do not claim a unique global GPU bottleneck beyond tested BICG/GESUMMV scope.
 
 ---
 
-# Paper-safe decision classes
+# Deliverables
 
-At final closure choose the strongest supported bounded status:
+Create a new review pack:
 
-- `MEMORY_SERVICE_HEADROOM_SUPPORTED`
-- `BUFFERING_MEMORY_SERVICE_INTERACTION_SUPPORTED`
-- `MEMORY_SERVICE_HEADROOM_PARTIAL`
-- `QUEUE_AND_SELECTED_MEMORY_SERVICE_INSUFFICIENT`
-- `NO_CLEAN_MEMORY_SERVICE_HEADROOM_KNOB`
+`docs/dtc_l1/review_packs/MEMORY_QUEUE_CHAIN_DRAM_HEADROOM_V1/`
 
-Do not claim a unique global GPU bottleneck beyond tested BICG/GESUMMV evidence.
+with at minimum:
+
+- `README.md`
+- `SOURCE_ANCHORS.md`
+- `VALIDATION_SUMMARY.md`
+- `OPEN_ISSUES.md`
+- R0 source map / telemetry / busW reclassification
+- R1 execution matrix and accepted results
+- R2 analysis
+- any R3 GESUMMV validation
+- any R4 all-headroom ceiling
+- exact paper-safe claims
+- forbidden overclaims
+- raw-log index only
+
+Update:
+
+`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+
+with final branch SHA, status, review-pack entry point, evidence summary, and remaining issues.
 
 ---
 
@@ -322,38 +383,7 @@ The user authorizes aggressive compute use and will manage disk capacity.
 - Stop only for actual filesystem exhaustion / I/O risk.
 - Never delete accepted/frozen evidence.
 - Keep at most two heavy GESUMMV simulator processes concurrently.
-- Lightweight analysis and BICG rows may use remaining safe workers.
-
----
-
-# Deliverables
-
-Create/update a review pack under:
-
-`docs/dtc_l1/review_packs/DOWNSTREAM_HEADROOM_<revision>/`
-
-with at minimum:
-
-- `README.md`
-- `SOURCE_ANCHORS.md`
-- `VALIDATION_SUMMARY.md`
-- `OPEN_ISSUES.md`
-- Phase-A BICG telemetry
-- completed queue-family results
-- memory-side source map
-- memory-side telemetry table
-- M-knob selection receipt
-- BICG 2×2 results if executed
-- GESUMMV validation results if triggered
-- exact paper-safe claims
-- forbidden overclaims
-- raw-log index only, not large raw logs
-
-Update:
-
-`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-
-with final branch SHA, status, review-pack entry point, evidence summary, and remaining issues.
+- BICG rows and analysis may use remaining safe workers aggressively.
 
 ---
 
@@ -361,12 +391,13 @@ with final branch SHA, status, review-pack entry point, evidence summary, and re
 
 Complete:
 
-1. remaining queue-family terminal disposition;
-2. C0 source/telemetry audit;
-3. any C1/C2 rows authorized by the predeclared gates;
-4. review pack;
-5. Codex handoff;
-6. commit and push.
+1. R0 source/telemetry audit and execution-plan registration;
+2. all 12 R1 BICG rows;
+3. R2 analysis;
+4. any R3/R4 rows authorized by the predeclared gates;
+5. review pack;
+6. Codex handoff;
+7. commit and push.
 
 Then STOP.
 
@@ -375,6 +406,6 @@ Stop earlier only if continuing would require changing:
 - scientific identity;
 - DTC semantics;
 - frozen evidence;
-- the one-knob experiment definition after C0 registration;
+- the predeclared queue/service family definitions;
 - claim boundary;
 - or introducing a new architecture mechanism.
