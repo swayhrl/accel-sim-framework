@@ -1,0 +1,43 @@
+{
+  "accounting": {
+    "direct_selected_saving": "sum(CONTROL selected - FAIR selected), run-aligned",
+    "ffn_realization": "observed_decode_saving / total_ffn_saving when denominator>0",
+    "observed_decode_saving": "CONTROL decode - FAIR decode",
+    "outside_ffn_residual": "observed_decode_saving - total_ffn_saving",
+    "ratios_clamped": false,
+    "selected_realization": "observed_decode_saving / direct_selected_saving when denominator>0",
+    "selected_share": "sum selected CONTROL FFN timing / CONTROL decode-step timing, run-aligned",
+    "total_ffn_saving": "direct_selected_saving + unselected_ffn_saving",
+    "unselected_ffn_saving": "sum(CONTROL unselected FFN - FAIR unselected FFN), run-aligned"
+  },
+  "local_materiality": {
+    "dispersion_rule": "benefit > hypot(CV_control,CV_fair)",
+    "min_timing_benefit_fraction": 0.05
+  },
+  "no_simulator_auto_authorization": true,
+  "precedence": [
+    "POLICY_FAMILY_SCALING_UNQUALIFIED",
+    "OPERATOR_FAMILY_SYSTEM_RELEVANT",
+    "OPERATOR_FAMILY_COLLATERAL_LIMITED",
+    "OPERATOR_FAMILY_POSITIVE_BUT_SUBTHRESHOLD",
+    "OPERATOR_FAMILY_NOT_SUPPORTED"
+  ],
+  "schema_version": 1,
+  "stable_decode_indices": [
+    1,
+    2,
+    3
+  ],
+  "stage_outcomes": {
+    "OPERATOR_FAMILY_COLLATERAL_LIMITED": "no system-relevant condition; GUD84 direct selected saving fraction >=2%; GUD84 material selected fraction >=0.50; GUD84 median OUTSIDE_FFN_RESIDUAL < 0",
+    "OPERATOR_FAMILY_NOT_SUPPORTED": "no predeclared condition has positive whole-decode benefit beyond dispersion",
+    "OPERATOR_FAMILY_POSITIVE_BUT_SUBTHRESHOLD": "no higher-priority label; at least one condition has positive whole-decode benefit > combined dispersion",
+    "OPERATOR_FAMILY_SYSTEM_RELEVANT": "any predeclared FAIR condition has >=2% whole-decode benefit and > combined dispersion",
+    "POLICY_FAMILY_SCALING_UNQUALIFIED": "policy/runtime/semantic identity fails"
+  },
+  "status": "FROZEN_BEFORE_OPERATOR_FAMILY_PRODUCER",
+  "system_materiality": {
+    "dispersion_rule": "benefit > hypot(CV_control,CV_fair)",
+    "min_whole_decode_benefit_fraction": 0.02
+  }
+}

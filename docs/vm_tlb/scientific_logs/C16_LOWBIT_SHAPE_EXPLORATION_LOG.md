@@ -319,3 +319,21 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Critical path and FULLHINT.** Bounded NCU shows GEMM duration/stall benefit persists at N28 even as L2-hit/miss and DRAM-read ratios dilute toward unity. The preregistered FULLHINT trigger fires because all N28 layers remain material while decode benefit is sub-2%. FULLHINT_N28 improves the curve by only 0.079 percentage points relative to FAIR_N28, below the 0.5-point extra-NCU trigger; over-subscribed intent does not materially change the result.
 
 **Stage label.** `COVERAGE_SCALING_POSITIVE_BUT_SUBTHRESHOLD`. Full up_proj coverage produces a real but sub-2% system effect. Because measured gate/down coverage expands total FFN opportunity from 16.84% to 47.39%, `EXPAND_OPERATOR_FAMILY_BEFORE_SIMULATOR` is the leading review candidate, not an automatic authorization. No simulator, NVBit capture, full trace, or mechanism implementation was run.
+
+---
+
+## E1 operator-family expansion producer result — 2026-09-24
+
+**Runtime order authority.** Seven no-policy fresh processes reproduce the accepted tokens and all 336 FFN decode occurrence SHA bindings. The measured 420-call sequence is identical across runs and is naturally ordered `gate_proj → up_proj → down_proj` within each layer for PREFILL and D0–D3. Policy updates follow this runtime order; no artificial role ordering is imposed.
+
+**Role-only result.** Under one fixed requested/actual set-aside, UP28 retains broad local benefit: 27/28 modules are MATERIAL_LOCAL and median direct up_proj saving is approximately 0.562 ms per stable step. GATE28 and DOWN28 have no material selected modules and essentially zero direct selected-family saving. In UP28, measured gate/down timing changes sum to approximately -0.200 ms, while the residual outside measured FFN accounting is approximately -0.364 ms; observed decode saving is slightly negative.
+
+**Pairwise result.** GU56 and UD56 retain only the up_proj half as material (28/56); GD56 retains none. Median outside-FFN residuals are approximately -0.406 ms for GU56, -0.340 ms for GD56, and -0.393 ms for UD56. Pairwise expansion does not convert local up_proj saving into a material whole-decode benefit.
+
+**All-FFN result.** GUD84 directly measures approximately 0.464 ms FFN saving, almost entirely from up_proj (up +0.483 ms, gate -0.009 ms, down -0.016 ms). Only 28/84 selected modules are MATERIAL_LOCAL. Whole-decode saving is approximately 0.009 ms per stable step, selected/FFN realization is approximately 0.021, and the median outside-FFN residual is -0.436 ms. This is reported only as a negative residual outside measured FFN accounting, not as proven cache collateral slowdown.
+
+**System and FULLHINT gates.** No predeclared condition reaches the 2% whole-decode gate or even positive-beyond-dispersion subthreshold status. GUD84 material selected fraction is only one third, so the preregistered FULLHINT trigger is false and no FULLHINT runs are launched.
+
+**Representative NCU.** Up-proj GEMM duration/long-scoreboard benefit remains visible; gate shows a smaller profiled GEMM effect that does not reproduce as native MATERIAL_LOCAL; down changes little. L2 hit/miss and DRAM-read counters remain nearly flat across the representative role-only/GUD84 profiles, reinforcing the traffic caveat.
+
+**Stage label.** `OPERATOR_FAMILY_NOT_SUPPORTED`. Expanding fixed-budget protection across all FFN families does not yield a statistically material whole-decode effect, because gate/down lack direct local benefit and negative residual outside measured FFN accounting offsets much of the up_proj saving. `STOP_RESIDENCY_MECHANISM_SYSTEM_CASE_WEAK` is recorded only as the producer's review candidate; no trace or simulator work is authorized or run.
