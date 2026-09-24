@@ -1,0 +1,469 @@
+{
+  "adapter_boundaries": {
+    "decode_sha": "derived from raw L0 input_layernorm input and raw lm_head output",
+    "lm_head": "normalized to semantic output; raw category retained by source SHA",
+    "process_identity": "process-local qweight pointer-map fingerprints; equality across runs forbidden",
+    "top_intervals": "logical non-overlap intervals reconstructed from raw top_call_order plus raw top_level_nonoverlap_asserted; measured target_ms remains unchanged"
+  },
+  "calculation_authority": [
+    "RAW_AUTHORITY",
+    "RAW_NATIVE_CONTROL_FAIR",
+    "RAW_NCU_BASE_SESSION_PROFILE",
+    "RAW_METRIC_SELECTION",
+    "RAW_NCU_QUERY_METRICS_ALL"
+  ],
+  "consumed_raw_file_count": 89,
+  "consumed_raw_files": [
+    {
+      "bytes": 523665,
+      "name": "RAW_AUTHORITY_run0.json",
+      "sha256": "070c9ef375b550a5bf8a421d2318d38ee7375835b6293bf9f7037c5dbcdb3396"
+    },
+    {
+      "bytes": 523654,
+      "name": "RAW_AUTHORITY_run1.json",
+      "sha256": "3b99190f8b2cc46bd55723acd9851dd7a173320d685ace50b91ca503c996e60d"
+    },
+    {
+      "bytes": 523652,
+      "name": "RAW_AUTHORITY_run2.json",
+      "sha256": "d150b2b37d45fc991f1a986adf6453a909fe32253f3055b2df4511373e99de02"
+    },
+    {
+      "bytes": 523670,
+      "name": "RAW_AUTHORITY_run3.json",
+      "sha256": "00c1e95a5a6b63f6e23b9f5aee61079d2a1f4b46d06e48ec93cd227bbf16bb3d"
+    },
+    {
+      "bytes": 523665,
+      "name": "RAW_AUTHORITY_run4.json",
+      "sha256": "889caab504c5bbef650991fa0217bb393e55730a9f0f85f388441c96c1d5e028"
+    },
+    {
+      "bytes": 523638,
+      "name": "RAW_AUTHORITY_run5.json",
+      "sha256": "6d41d24292fca36f6e7134241e41e19cd77fd6322b14e3432be0fcc8e88ef327"
+    },
+    {
+      "bytes": 523656,
+      "name": "RAW_AUTHORITY_run6.json",
+      "sha256": "5f89a64adc395ad7e8808a910806227041310aceb52eb500914e69710a107c7b"
+    },
+    {
+      "bytes": 4403,
+      "name": "RAW_METRIC_SELECTION.json",
+      "sha256": "303e5f9e4eb925258b7556f4d3a6f898b1d2490197f0d373f9d9c90b5b2fd883"
+    },
+    {
+      "bytes": 595728,
+      "name": "RAW_NATIVE_CONTROL_B16_run0.json",
+      "sha256": "1308385f0566fd58d741c402eea3a3bdb3b6e0460c04e2120fd9d7f61411ce96"
+    },
+    {
+      "bytes": 595717,
+      "name": "RAW_NATIVE_CONTROL_B16_run1.json",
+      "sha256": "fb510c9cfdeba8a54551959817a8858a01a4aae429c2e6cf11beab8180c42ce4"
+    },
+    {
+      "bytes": 595708,
+      "name": "RAW_NATIVE_CONTROL_B16_run2.json",
+      "sha256": "d2edebeeed1de7ff5ba5c6f31653bd66aafdf8693d24175959bae75848d09623"
+    },
+    {
+      "bytes": 595745,
+      "name": "RAW_NATIVE_CONTROL_B16_run3.json",
+      "sha256": "3b0c2c9cb454a2d1daa76a2a93168159903802e986228f3e27500ed9171ecffb"
+    },
+    {
+      "bytes": 595719,
+      "name": "RAW_NATIVE_CONTROL_B16_run4.json",
+      "sha256": "fcc481c6449101e13c4b4347ea51c10613772e3539a4db69bace0b5b91c52227"
+    },
+    {
+      "bytes": 595722,
+      "name": "RAW_NATIVE_CONTROL_B16_run5.json",
+      "sha256": "a5014811b2f1110c69d18ddde4b13c6220a0d49daef3dbf6fea056d580018966"
+    },
+    {
+      "bytes": 595739,
+      "name": "RAW_NATIVE_CONTROL_B16_run6.json",
+      "sha256": "d81b1cb47333c1f344094cbea217a5ba0848040f72e630b8dbbe8e7aed8c2fde"
+    },
+    {
+      "bytes": 595885,
+      "name": "RAW_NATIVE_CONTROL_B24_run0.json",
+      "sha256": "73fe3e18009eb7debebf07abb4327441b3299dc75fdc8b0f58dae7c2a190e1c0"
+    },
+    {
+      "bytes": 595895,
+      "name": "RAW_NATIVE_CONTROL_B24_run1.json",
+      "sha256": "a7850287775d998247fdf5759e522085c429bddd6da71571344b062a5c838679"
+    },
+    {
+      "bytes": 595908,
+      "name": "RAW_NATIVE_CONTROL_B24_run2.json",
+      "sha256": "49450c3e42514456b29fde86bd2479ca3ddeb4fbc068b45145ecb445e2c4ab3e"
+    },
+    {
+      "bytes": 595901,
+      "name": "RAW_NATIVE_CONTROL_B24_run3.json",
+      "sha256": "ebe9a7ed0567ef0e7dc171eef10ade354fae344fac40f3e0deccb8466522efa2"
+    },
+    {
+      "bytes": 595909,
+      "name": "RAW_NATIVE_CONTROL_B24_run4.json",
+      "sha256": "eea917cd5932a54f7e6b9d1d1b97215fb35f8e4022baa12f6a63f0783bd521ce"
+    },
+    {
+      "bytes": 595881,
+      "name": "RAW_NATIVE_CONTROL_B24_run5.json",
+      "sha256": "71b0fb5aaa0fb960c8c30c1e052f1904fd31938d9d03f3a116c3172363729d64"
+    },
+    {
+      "bytes": 595920,
+      "name": "RAW_NATIVE_CONTROL_B24_run6.json",
+      "sha256": "cbfcb03ec8159f0ad34a12a4b0de0226c496efa33023a52ece0496b24474c903"
+    },
+    {
+      "bytes": 594941,
+      "name": "RAW_NATIVE_CONTROL_B8_run0.json",
+      "sha256": "f78847fe14475b6247ee715192bde4a94452ad1cb2a8744dd91e7505cc50dfec"
+    },
+    {
+      "bytes": 594924,
+      "name": "RAW_NATIVE_CONTROL_B8_run1.json",
+      "sha256": "d7453782af26f5c0e36c14968abf72055c68739c6552e2092b74a7550b10d1c7"
+    },
+    {
+      "bytes": 594915,
+      "name": "RAW_NATIVE_CONTROL_B8_run2.json",
+      "sha256": "c2379d9f439b86e9bba494488e31a2f75218827d2a9c11548c8e771d280bd645"
+    },
+    {
+      "bytes": 594936,
+      "name": "RAW_NATIVE_CONTROL_B8_run3.json",
+      "sha256": "b192a68ebb40cd5fe84ef3e30091d2a2018d3b4e2d2ba4d7bd57d30e736a2d36"
+    },
+    {
+      "bytes": 594938,
+      "name": "RAW_NATIVE_CONTROL_B8_run4.json",
+      "sha256": "bb9945ae66f5893187af32832e3168a7478766ee8bce514f5a13e8f57499e1d1"
+    },
+    {
+      "bytes": 594914,
+      "name": "RAW_NATIVE_CONTROL_B8_run5.json",
+      "sha256": "11ece795001ef96b85e7c92ff4c4a57979e68f3b3ee480e8690975b9b01d4b5a"
+    },
+    {
+      "bytes": 594935,
+      "name": "RAW_NATIVE_CONTROL_B8_run6.json",
+      "sha256": "9a6b6baa79f85ef6f527e6ccaffafdc3e476161b0488f68684df34b2fa107240"
+    },
+    {
+      "bytes": 597307,
+      "name": "RAW_NATIVE_CONTROL_BFULL_run0.json",
+      "sha256": "d518b5da55c7bbb4d06e33f48a5662fb819b15c496b7118b9ae5c027ca16c71d"
+    },
+    {
+      "bytes": 597304,
+      "name": "RAW_NATIVE_CONTROL_BFULL_run1.json",
+      "sha256": "c23bba6a7328056d049bdf5ed31867d92f10c6d4807456fe343d4da322579c0f"
+    },
+    {
+      "bytes": 597297,
+      "name": "RAW_NATIVE_CONTROL_BFULL_run2.json",
+      "sha256": "c232cda43624b0e4946ac68b0b26a106f7e1218111cb94778b571483f2a40f4a"
+    },
+    {
+      "bytes": 597287,
+      "name": "RAW_NATIVE_CONTROL_BFULL_run3.json",
+      "sha256": "4b8e6e98f2b6e029aa72b6abbb8354dcd11218b4f775bbd3f08983b1d526776d"
+    },
+    {
+      "bytes": 597283,
+      "name": "RAW_NATIVE_CONTROL_BFULL_run4.json",
+      "sha256": "76fc93743388524f5ace6762d210d428b2814d05db3710afe0981bbf597e6343"
+    },
+    {
+      "bytes": 597293,
+      "name": "RAW_NATIVE_CONTROL_BFULL_run5.json",
+      "sha256": "8de246a69e37d1272bd0b137e2fd26d5e7d8d99afc65cd9e9b0380abc7bcf6b8"
+    },
+    {
+      "bytes": 597294,
+      "name": "RAW_NATIVE_CONTROL_BFULL_run6.json",
+      "sha256": "b1db331f0ece00c469bc84986cb3be3e99f5aaaa4cb8b45c72ee7b3bc51969d1"
+    },
+    {
+      "bytes": 594161,
+      "name": "RAW_NATIVE_FAIR_B16_run0.json",
+      "sha256": "18173bd4533d4015200f0dcf8d6c3498ce292202cb34476939e7935d74d19f44"
+    },
+    {
+      "bytes": 594168,
+      "name": "RAW_NATIVE_FAIR_B16_run1.json",
+      "sha256": "663c66b537f4d49c3a02190cde667ff682ceef3ecbf85c42dffa495673d59a5c"
+    },
+    {
+      "bytes": 594180,
+      "name": "RAW_NATIVE_FAIR_B16_run2.json",
+      "sha256": "c2b0f12df64da8ca7609b4ea0f963d2517f9c39569ad44b0c80c1ad4dcfa8cd1"
+    },
+    {
+      "bytes": 594161,
+      "name": "RAW_NATIVE_FAIR_B16_run3.json",
+      "sha256": "4ace762c40332a331a8323935050e7ae4c3fe5c63fbd69f739f063f38c6f882f"
+    },
+    {
+      "bytes": 594167,
+      "name": "RAW_NATIVE_FAIR_B16_run4.json",
+      "sha256": "77eec6106fbe5e3141720f89b3bbc167e93853993aa16019fd2a6463a0ce3fd1"
+    },
+    {
+      "bytes": 594183,
+      "name": "RAW_NATIVE_FAIR_B16_run5.json",
+      "sha256": "8f5f58b96e01698a58381dc515450b1ad902c63ce23a9794bcdae792c456a4e9"
+    },
+    {
+      "bytes": 594144,
+      "name": "RAW_NATIVE_FAIR_B16_run6.json",
+      "sha256": "910b6736373e4d8278bb8791509421f425148b33422ca2a1032e39f7c1c6089d"
+    },
+    {
+      "bytes": 594350,
+      "name": "RAW_NATIVE_FAIR_B24_run0.json",
+      "sha256": "e77a96323a499bdfab585af51c0551db56c73fca6b28bdf85dd655b5232eb10e"
+    },
+    {
+      "bytes": 594384,
+      "name": "RAW_NATIVE_FAIR_B24_run1.json",
+      "sha256": "105a3f673f600c91ce43144dc108b09bdddc50d37dfa52037212c0c3e03fb632"
+    },
+    {
+      "bytes": 594353,
+      "name": "RAW_NATIVE_FAIR_B24_run2.json",
+      "sha256": "4f71221d67144c8113a278f4a23910bb7009081da37e262458bf77b9a11609de"
+    },
+    {
+      "bytes": 594350,
+      "name": "RAW_NATIVE_FAIR_B24_run3.json",
+      "sha256": "feaef675fa4f4c1e55105ad85768ed36eaf8db8a6b472d5746393591cfdeaff5"
+    },
+    {
+      "bytes": 594347,
+      "name": "RAW_NATIVE_FAIR_B24_run4.json",
+      "sha256": "314894852b98f635b853771e46fbb565488c14eb28560699fa50b39afe8da7f6"
+    },
+    {
+      "bytes": 594349,
+      "name": "RAW_NATIVE_FAIR_B24_run5.json",
+      "sha256": "8598a85d9af154fb0cec13dd138655caf9132668dee6fd60b7bd88d246e43a41"
+    },
+    {
+      "bytes": 594360,
+      "name": "RAW_NATIVE_FAIR_B24_run6.json",
+      "sha256": "65f2b336fdaff7edd6700e11d3e84902427b3bf2944d9e356b0306bd54b7e2d8"
+    },
+    {
+      "bytes": 593326,
+      "name": "RAW_NATIVE_FAIR_B8_run0.json",
+      "sha256": "56f510440aa31743dc3ee10a67448fc6673fa9f08ca44edc09df2817a0a190f9"
+    },
+    {
+      "bytes": 593328,
+      "name": "RAW_NATIVE_FAIR_B8_run1.json",
+      "sha256": "8905e4643adeb3a2bed0b6cd853a491aa1b6c5917848a0cbd54620c63b80df4d"
+    },
+    {
+      "bytes": 593386,
+      "name": "RAW_NATIVE_FAIR_B8_run2.json",
+      "sha256": "d7593d14ebc63dbd195d70d55e381f4e4f5c12572a56daa49a1b14baa6d497ef"
+    },
+    {
+      "bytes": 593338,
+      "name": "RAW_NATIVE_FAIR_B8_run3.json",
+      "sha256": "9de03bbe7dfc446b4cd2fc6a50ef8207125e618a4a80e261c29a3d427e69673f"
+    },
+    {
+      "bytes": 593336,
+      "name": "RAW_NATIVE_FAIR_B8_run4.json",
+      "sha256": "053985f078fb156ca2b8698cab3732c6bde7771796f7096032b0eddb63355b56"
+    },
+    {
+      "bytes": 593371,
+      "name": "RAW_NATIVE_FAIR_B8_run5.json",
+      "sha256": "ec01b8407185d43c259d4d8513ae7f51da23a7b69724197c3c83a18b853bb16d"
+    },
+    {
+      "bytes": 593337,
+      "name": "RAW_NATIVE_FAIR_B8_run6.json",
+      "sha256": "9554ca38d2a19cc0f87d17bb7fbf63a098eda21f62583af254855e79eb1a93bd"
+    },
+    {
+      "bytes": 595826,
+      "name": "RAW_NATIVE_FAIR_BFULL_run0.json",
+      "sha256": "2c6451fddd17933cc1f93be309999283d5ca57e106058b2fabdd41e50eac9251"
+    },
+    {
+      "bytes": 595818,
+      "name": "RAW_NATIVE_FAIR_BFULL_run1.json",
+      "sha256": "88556a96014ad3f5221652faac1c26d0eb03ae345060bf85081bc8832b367594"
+    },
+    {
+      "bytes": 595851,
+      "name": "RAW_NATIVE_FAIR_BFULL_run2.json",
+      "sha256": "0fa6b52178e3bda3a212d40fcba86885836aefecb07887989e32c38b5a9da6e3"
+    },
+    {
+      "bytes": 595805,
+      "name": "RAW_NATIVE_FAIR_BFULL_run3.json",
+      "sha256": "bfe1f9f437df33f936619d5e7899b84c212fe41cad715938f7277de9f4af8fa8"
+    },
+    {
+      "bytes": 595828,
+      "name": "RAW_NATIVE_FAIR_BFULL_run4.json",
+      "sha256": "c08059e4ecd202060742504638abdb6e38b9f668faed70de749c610870a62f5a"
+    },
+    {
+      "bytes": 595831,
+      "name": "RAW_NATIVE_FAIR_BFULL_run5.json",
+      "sha256": "55d609baa139e564a3e07dee1a1e786edca5a35134e38fd7f753bad29a0bee29"
+    },
+    {
+      "bytes": 595813,
+      "name": "RAW_NATIVE_FAIR_BFULL_run6.json",
+      "sha256": "6c253bda2b8a0f3e95a26d80f3d66b312596d907b605ffc8eb7ffaea49f77abd"
+    },
+    {
+      "bytes": 69692,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_CONTROL_B16_BASE.csv",
+      "sha256": "8b201f6abd1a07081fcb84f846b964c120bf2db2d94e0d9ae32c966c1db0eb99"
+    },
+    {
+      "bytes": 1445339,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_CONTROL_B16_PROFILE.log",
+      "sha256": "a898c9e72cd6abe3bba70cd6e40ce3129a4ad18a71cc68bd85f98f46326974cd"
+    },
+    {
+      "bytes": 2024,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_CONTROL_B16_SESSION.csv",
+      "sha256": "6ebfe691ed4afb5173f2ab6731e1f31f59abc05ca5e12cc1b8d26ae87f5cf645"
+    },
+    {
+      "bytes": 69754,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_CONTROL_BFULL_BASE.csv",
+      "sha256": "e327a9d6a62e9c870075a14e6d1a0ad677b77908168c1a63014e5c5be920201f"
+    },
+    {
+      "bytes": 1449809,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_CONTROL_BFULL_PROFILE.log",
+      "sha256": "053bad12e92453588b8856d9e073bfbc6147152884b5723ce8d35786ba4794dc"
+    },
+    {
+      "bytes": 2030,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_CONTROL_BFULL_SESSION.csv",
+      "sha256": "d50cfe82e2d0e9184485d427be708de5810941ae277225f72e06945ab5bc6690"
+    },
+    {
+      "bytes": 69612,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_FAIR_B16_BASE.csv",
+      "sha256": "d38458b02beb2e6d6c65b475df19b23a4132e1c295499eff03b57ff2754db509"
+    },
+    {
+      "bytes": 1440701,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_FAIR_B16_PROFILE.log",
+      "sha256": "b459871311406929df1418ef440f68186b626e81ed204694429f099429b65edc"
+    },
+    {
+      "bytes": 2015,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_FAIR_B16_SESSION.csv",
+      "sha256": "94535d980db70dd91cc5250f9a43ab16a17fa2de3e678f431e3bc71fc31054b6"
+    },
+    {
+      "bytes": 69678,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_FAIR_BFULL_BASE.csv",
+      "sha256": "4abaee6207e86a3a10342e06ef3315cc8c000d2c0043fa42a43d117cec995a42"
+    },
+    {
+      "bytes": 1445208,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_FAIR_BFULL_PROFILE.log",
+      "sha256": "54218604f59b7d850a8cc1465dd4d190533df6bbd65f4812f8255bffe2fac161"
+    },
+    {
+      "bytes": 2021,
+      "name": "RAW_NCU_L0_SELF_ATTN_D3_FAIR_BFULL_SESSION.csv",
+      "sha256": "87ccf2e58628dd52160798a0a65d202a6329a31c18ba916a02753017c896bfbd"
+    },
+    {
+      "bytes": 16539,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_CONTROL_B16_BASE.csv",
+      "sha256": "fa23ff835d6a4b363beef00605f950db40b096f83e53329d939c0f024d306a65"
+    },
+    {
+      "bytes": 1439223,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_CONTROL_B16_PROFILE.log",
+      "sha256": "a09289c0b401808ae0cadd270b5468bd950c78495df90f865384bb5ca761bec2"
+    },
+    {
+      "bytes": 2020,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_CONTROL_B16_SESSION.csv",
+      "sha256": "814a5baad039b182c9d077f4ae4e27a4c72a1991500cacb590966cd6d76aa8b1"
+    },
+    {
+      "bytes": 16547,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_CONTROL_BFULL_BASE.csv",
+      "sha256": "4583543b650b86f2d90d00b8a82a12eb974f11d39c763ec229ab5776a8a03f16"
+    },
+    {
+      "bytes": 1444054,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_CONTROL_BFULL_PROFILE.log",
+      "sha256": "51b790b5a39b6f90b6f57d931c2f31c89ef1ca478d248f5875521d99f84790ff"
+    },
+    {
+      "bytes": 2026,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_CONTROL_BFULL_SESSION.csv",
+      "sha256": "23913332c4bcdee9add0223a28950b7f9576aa35abc798b00e2e619da7e60e96"
+    },
+    {
+      "bytes": 16527,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_FAIR_B16_BASE.csv",
+      "sha256": "6fb0e338f25ae2d9063b4c0ba890ba84478bbec95fa281bdb7387836f2331eba"
+    },
+    {
+      "bytes": 1434569,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_FAIR_B16_PROFILE.log",
+      "sha256": "677db1cdc3935fa5e1b5d930f6aa98f35b3ddbd6668da2e50d2010ec508dde43"
+    },
+    {
+      "bytes": 2011,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_FAIR_B16_SESSION.csv",
+      "sha256": "e4b2df12a2be3d2990392849286a9bf1ea9661151e5501c72b27764063bbfb09"
+    },
+    {
+      "bytes": 16538,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_FAIR_BFULL_BASE.csv",
+      "sha256": "2c1ba5ee8b000b51ff59fdec86adde13aa423c66169d08b7e6818e1fc4c86210"
+    },
+    {
+      "bytes": 1439305,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_FAIR_BFULL_PROFILE.log",
+      "sha256": "9de0ba621a8edf6c091b81f638818fa6c42c3c9187bcd7ff9fa4fd26eeeb1e0f"
+    },
+    {
+      "bytes": 2017,
+      "name": "RAW_NCU_L0_UP_PROJ_D3_FAIR_BFULL_SESSION.csv",
+      "sha256": "9d7167487ba8c7337226bdead419a1bf462526c90c9b226d96dfe9244f475415"
+    },
+    {
+      "bytes": 1362261,
+      "name": "RAW_NCU_QUERY_METRICS_ALL.txt.gz",
+      "sha256": "43e984934f3db022ae44dc397ab41068e261ee61d37db60cd9abd12ca585c7a8"
+    }
+  ],
+  "producer_branch": "hrl/c16-e1-residency-cost-benefit-closure-109-v1",
+  "producer_head": "86ef7dcfb49241bd87ff4a8d59b4d950d53de0a5",
+  "producer_manifest_entry_count": 173,
+  "producer_manifest_sha256": "f6350d3a353eb97d2519183b9713c3d90d3e3de28c5fcf6b3db122456f3f5d06",
+  "producer_summaries_used_as_calculation_authority": false,
+  "status": "PASS"
+}

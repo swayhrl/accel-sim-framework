@@ -1,7 +1,9 @@
 # C16 E1 Residency Cost/Benefit Closure Consumer 174-new V1
 
-Status: `READY_FOR_E1_RESIDENCY_COST_BENEFIT_109`.
+Status: `RESIDENCY_OFFSET_LOCALIZED`.
 
-Operator-family producer `eae1cc4d831ae8459da558cf1358bb8daf8d76e6` independently closes not-supported. The cost/benefit producer ref was absent in the one authorized fetch, so producer-dependent artifacts explicitly contain no result.
+This pack independently consumes producer `86ef7dcfb49241bd87ff4a8d59b4d950d53de0a5` from raw native JSON, raw CUDA policy receipts, and the exact eight raw NCU BASE/SESSION/PROFILE triples. Producer summary/display tables are excluded from calculation authority and are read only for the final match check.
 
-Prep covers B8/B16/B24/BFULL policies, per-budget runtime query-back, top-level non-overlap, all-84 FFN children, run-aligned localization, host API overhead, exact eight-profile NCU, decomposition qualification, and frozen stage precedence. No simulator/GPU/trace/mechanism work is authorized.
+All B8/B16/B24/BFULL points close: exact 28 `up_proj` windows, budget-scaled hitRatio, 140 updates per run, 56 fresh process-local pointer identities, all-84 FFN child timing, runtime-derived top-level semantic timing, separate host API overhead, and run-aligned decomposition. Every budget satisfies `abs(median unexplained residual) <= 0.10 ms`. Representative NCU supports local `up_proj` traffic/duration benefit; its L0 D3 self-attention range does not reproduce the aggregate full-model self-attention slowdown. No single-kernel or unique L2/cache cause is claimed.
+
+No GPU, rerun, NVBit, trace, simulator, or mechanism work was performed. No next stage is automatically authorized.
