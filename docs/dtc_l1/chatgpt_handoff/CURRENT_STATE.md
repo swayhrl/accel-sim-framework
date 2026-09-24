@@ -2,7 +2,7 @@
 
 Last coordination update: 2026-09-24
 
-Status: **SIMULATOR MAINLINE NEAR-CLOSED; BUFFERING × MEMORY-SERVICE INTERACTION STUDY AUTHORIZED**
+Status: **SIMULATOR MAINLINE NEAR-CLOSED; MEMORY-SIDE QUEUE-CHAIN + DRAM-SERVICE HEADROOM STUDY AUTHORIZED**
 
 ## 1. Current paper objective
 
@@ -15,7 +15,7 @@ The paper should establish:
 3. The main performance gain is real under a fixed 64-SM trace-driven platform.
 4. The gain is not explained solely by extra physical storage, transaction granularity, or total lower traffic.
 5. Higher L1-side concurrency can create workload-specific downstream oversubscription.
-6. The final simulator question is whether the lost performance in difficult workloads reflects only finite buffering, deeper memory-service limits, or an interaction between the two.
+6. The final simulator question is whether finite buffering along the L2->memory path and detailed-DRAM service rate jointly limit how much DTC-exposed MLP becomes useful.
 
 ## 2. Frozen / closed evidence — do not redo
 
@@ -29,6 +29,8 @@ Read-only scientific authorities include:
 - SG4A bounded logical-Tag characterization.
 - accepted SG5 staged comparable-lower-traffic evidence.
 - accepted SG3 cap-sensitivity / positive-control evidence.
+- accepted SG3 L2-miss-queue=128 four-row intervention.
+- accepted SG3 detailed-DRAM busW diagnostic probe.
 
 Do not modify, relabel, replace, or rerun these to create cleaner stage names.
 
@@ -37,9 +39,9 @@ Do not modify, relabel, replace, or rerun these to create cleaner stage names.
 Before execution, `git fetch origin` and verify actual remote heads. At this coordination point:
 
 - SG1 whole-line/fairness: `e909f90a`
-- SG3 downstream localization: `f1186336`
+- SG3 downstream localization: `2c5802153b30f73ebabb5ad69dc44de055cd0497`
+- SG4A: `7c0a90e`
 - SG5 lower-traffic observer: `f4077f46`
-- SG4A has advanced beyond the older coordination anchor; treat its latest remote state as read-only and record the fetched HEAD.
 
 If any remote branch advances again, use the newer state and record the delta. Never reset an advanced branch.
 
@@ -92,7 +94,7 @@ SG3 bounded cap closure establishes:
 
 - BICG and GESUMMV strongly benefit from reducing the GPU-wide DTC lower-outstanding cap from 8192 toward 2048/512.
 - Btree and 2DConvolution are hurt by cap=512.
-- therefore low cap is not universally beneficial.
+- low cap is therefore not a universal optimum.
 - BICG receives partial benefit from larger L2 data capacity.
 - BICG receives little/no meaningful benefit from 4x L2 MSHR entries.
 
@@ -100,96 +102,82 @@ Paper-safe current interpretation:
 
 > DTC can create workload-specific downstream oversubscription / injection pressure after L1-side concurrency limits are removed.
 
-Do not claim that a unique physical L2 bottleneck has already been isolated.
+Do not claim that a unique physical L2 or DRAM bottleneck has already been isolated.
 
-## 5. Phase-A telemetry and queue-headroom state
+## 5. Accepted L2 miss-queue intervention
 
-The accepted BICG telemetry gate showed:
+The L2-internal miss queue was enlarged from 32 to 128 entries/bank at default DTC cap=8192.
 
-- `MISS_QUEUE_FULL` falls strongly from default -> cap2048 -> cap512;
-- lower-request lifetime and cycles improve in the same direction;
-- L2 data/fill-port utilization is low and did not satisfy the original port trigger.
+All four accepted rows show the same result:
 
-This legitimately triggered the predeclared queue=128 intervention.
+- BICG IO: queue-full 145,882,748 -> 0; cycles +0.83%.
+- BICG OO: queue-full 43,594,150 -> 0; cycles +0.75%.
+- GESUMMV IO: queue-full 217,938,332 -> 0; cycles +0.04%.
+- GESUMMV OO: queue-full 214,486,650 -> 0; cycles +0.69%.
 
-Latest accepted partial result:
+Therefore:
 
-### BICG / OO / queue=128 / cap=8192
+> Eliminating L2-internal miss-queue-full events is not sufficient to recover end-to-end performance.
 
-Compared with its accepted default queue=32 row:
+This does not prove that buffering is irrelevant. It can mean that backpressure simply moves to a later finite queue or service stage.
 
-- `MISS_QUEUE_FULL`: 43,594,150 -> 0
-- cycles: 47,231,655 -> 47,588,121 (**+0.75%**, slightly worse)
-- average lower lifetime: 5,612.70 -> 5,692.26 cycles (slightly worse)
+## 6. Reclassification of the accepted busW probe
 
-This is strong intervention evidence for one bounded statement:
+The accepted `-gpgpu_dram_buswidth 16 -> 32 B` experiment is retained as diagnostic evidence but is **not** accepted as a discriminating 2x service-rate test for the dominant 32-B sector-read path.
 
-> Eliminating L2 miss-queue-full events is **not sufficient** to recover BICG/OO performance.
+Source reason:
 
-It does **not** prove that queue pressure is irrelevant to the full system. A finite queue can be a backpressure symptom of a slower downstream service path. Increasing buffering alone may remove queue-full events without increasing sustained service rate.
+- the L2 sector atom is 32 B;
+- DRAM request size for the dominant sector-read path is 32 B;
+- default `dram_atom_size = BL(2) * busW(16) * chips(1) = 32 B`;
+- the detailed-DRAM data step already completes a 32-B request in one transfer;
+- busW=32 makes the atom 64 B, but a 32-B request still completes in one step.
 
-Therefore the open question is now explicitly a **buffering × downstream memory-service interaction** question.
+Therefore the null busW result must not be used to claim that doubling meaningful DRAM service capability has no effect.
 
-## 6. Default modeled downstream configuration
+## 7. Default downstream queue/service chain
 
-Authority: SG3 source/config audit and FAST64 resolved configuration.
+Current FAST64 platform:
 
-- 64 SM total.
-- 20 memory channels/modules.
-- 2 L2 subpartitions per memory channel = 40 L2 banks/subpartitions.
-- per L2 bank: 128 sets × 16 ways × 128 B = 256 KiB.
-- aggregate modeled L2 data capacity ≈ 10 MiB.
-- L2 sector atom = 32 B.
-- L2 MSHR = 192 entries/bank.
-- MSHR merge limit = 4.
-- L2 miss queue = 32 entries/bank.
-- L2 data/fill port = 32 B/cache-cycle/bank.
-- ROP delay = 200 cycles.
-- DTC GPU-wide lower outstanding cap = 8192.
-- DRAM clock = 850 MHz in the inherited Volta-like memory model.
-- DRAM partition queues = 64:64:64:64.
-- FR-FCFS DRAM scheduler queue = 64.
-- DRAM return queue = 192.
-- DRAM bus width = 16 B; burst length = 2.
-- fixed `dram_latency` field = 100 plus source-defined DRAM timing parameters.
+- 64 SM.
+- 20 memory channels.
+- 2 L2 subpartitions/channel = 40 L2 banks.
+- aggregate L2 data capacity ≈ 10 MiB.
+- L2-internal miss queue = 32 entries/bank.
+- `gpgpu_dram_partition_queues = 64:64:64:64`, ordered as:
+  - ICNT->L2 = 64
+  - L2->DRAM = 64
+  - DRAM->L2 = 64
+  - L2->ICNT = 64
+- FR-FCFS DRAM scheduler queue = 64/channel.
+- DRAM return queue = 192/channel.
+- memory-partition shared credit limit is source-coupled to scheduler-queue + return-queue capacity.
+- DRAM clock = 850 MHz.
+- core / ICNT / L2 clocks = 1410 / 1410 / 1410 MHz.
+- detailed DRAM timing cycle counts remain the inherited Volta-like values.
+- default DTC GPU-wide lower-outstanding cap = 8192.
 
-The FAST64 platform is a fixed **64-SM Volta-like trace-driven configuration derived from the Accel-Sim Volta model**, not a literal NVIDIA V100 configuration. Do not describe it as an exact V100.
+The platform is a fixed **64-SM Volta-like trace-driven configuration derived from the Accel-Sim Volta model**, not a literal NVIDIA V100 configuration.
 
-## 7. Current open scientific question
+## 8. Current open scientific question
 
-The current question is no longer:
+The next bounded question is:
 
-> Is the L2 miss queue alone the bottleneck?
+> Are there finite queues later in the L2->memory path that merely move the backpressure downstream, and does removing those queue limits together with a genuine detailed-DRAM service-rate upper bound recover the DTC performance headroom?
 
-BICG/OO already says no.
+This is now a **memory-side queue-chain + service-rate** experiment.
 
-The current question is:
+## 9. Immediate execution order
 
-> Does DTC's high injection rate require both enough transient buffering and enough deeper memory-service capability before the exposed MLP can translate into performance?
+1. Perform a zero-simulation source/telemetry confirmation of the exact queue chain and existing BICG pressure counters.
+2. Pre-register the six BICG interventions defined in `CODEX_NEXT_STAGE.md`.
+3. Launch all authorized BICG IO/OO rows in rolling parallel execution; no result gate is needed between the six families.
+4. Strict-validate each terminal row immediately.
+5. Conditionally validate at most two informative configurations on GESUMMV using the predeclared gate/priority.
+6. If the strongest all-queue + 2x-DRAM-service configuration is materially beneficial, optionally run the predeclared 20-MiB-L2 all-headroom ceiling point for BICG IO/OO.
+7. Produce the review pack and STOP.
 
-The next stage must therefore separate:
-
-1. queue buffering headroom;
-2. downstream memory-service headroom;
-3. their interaction.
-
-This must be done with a small predeclared 2×2 experiment, not a broad memory-system sweep.
-
-## 8. Immediate execution order
-
-1. Let the already-running queue=128 family terminate naturally:
-   - BICG/IO
-   - GESUMMV/IO
-   - GESUMMV/OO
-   The accepted BICG/OO row remains immutable evidence.
-2. In parallel, perform a **zero-simulation source audit + existing-telemetry audit** of the memory side after L2.
-3. Select at most one clean source-defined memory-service headroom knob under the rules in `CODEX_NEXT_STAGE.md`.
-4. Pre-register a BICG IO/OO queue × memory-service 2×2 design.
-5. Run only the missing BICG cells authorized by that design.
-6. Expand to GESUMMV only if the predeclared BICG validation gate is met.
-7. Produce the review pack and stop.
-
-## 9. Resource / failure discipline
+## 10. Resource / failure discipline
 
 - User authorizes aggressive compute use and will manage disk capacity.
 - Do not use old free-space threshold bands as automatic scientific stop criteria.
@@ -197,11 +185,11 @@ This must be done with a small predeclared 2×2 experiment, not a broad memory-s
 - Never delete accepted/frozen evidence.
 - Keep at most two heavy GESUMMV simulator processes concurrently.
 - Preserve all failures.
-- Use fresh UUIDs for any new simulator attempt.
+- Use fresh UUIDs for every new attempt.
 
-## 10. Next project phase
+## 11. Next project phase
 
-After this bounded interaction study, the simulator mainline should freeze unless a result exposes a genuine scientific-contract issue.
+After this bounded queue-chain/service experiment, freeze simulator exploration unless a result exposes a genuine scientific-contract issue.
 
 Then priority moves to:
 
