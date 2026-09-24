@@ -1,0 +1,205 @@
+--- a/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/vm_translation.h
+@@ -197,6 +197,9 @@
+ awma_translation_candidate_mode awma_candidate_mode();
+ const char *awma_candidate_mode_name(awma_translation_candidate_mode mode);
+ bool awma_mechanism_diagnostics_enabled();
++// Phase 1 is exactly one finite notification/application slot. Phase 2 adds
++// exactly two slots as a causal diagnostic; no other value is accepted.
++unsigned awma_share_delivery_slots();
+
+ // A shared result is legal only when every translation identity component
+ // available in this model agrees.  The caller still preserves one logical UID
+@@ -639,6 +642,10 @@
+   uint64_t lookup_inflight_bypasses;
+   uint64_t same_page_share_owner_ready;
+   uint64_t same_page_share_deliveries;
++  uint64_t same_page_share_delivery_backlog_cycles;
++  uint64_t same_page_share_delivery_backlog_member_cycles;
++  uint64_t same_page_share_delivery_full_cycles;
++  uint64_t same_page_share_delivery_backlog_max;
+   uint64_t l1_lookup_launches;
+   uint64_t l1_lookup_completions;
+   uint64_t l1_lookup_service_cycles;
+@@ -794,7 +801,11 @@
+   translation_stats()
+       : lookup_requests(0), pending_waiter_bypasses(0),
+         lookup_inflight_bypasses(0), same_page_share_owner_ready(0),
+-        same_page_share_deliveries(0), l1_lookup_launches(0),
++        same_page_share_deliveries(0),
++        same_page_share_delivery_backlog_cycles(0),
++        same_page_share_delivery_backlog_member_cycles(0),
++        same_page_share_delivery_full_cycles(0),
++        same_page_share_delivery_backlog_max(0), l1_lookup_launches(0),
+         l1_lookup_completions(0), l1_lookup_service_cycles(0),
+         l2_lookup_launches(0), l2_lookup_completions(0),
+         l2_lookup_service_cycles(0), segment_lookup_attempts(0),
+@@ -902,6 +913,18 @@
+   void note_same_page_share_delivery() {
+     ++m_stats.same_page_share_deliveries;
+   }
++  void note_same_page_share_delivery_state(unsigned delivered,
++                                           unsigned slots,
++                                           unsigned backlog) {
++    assert(delivered <= slots);
++    if (backlog == 0) return;
++    ++m_stats.same_page_share_delivery_backlog_cycles;
++    m_stats.same_page_share_delivery_backlog_member_cycles += backlog;
++    if (delivered == slots)
++      ++m_stats.same_page_share_delivery_full_cycles;
++    if (backlog > m_stats.same_page_share_delivery_backlog_max)
++      m_stats.same_page_share_delivery_backlog_max = backlog;
++  }
+   // Deterministic privileged-control seam for C9's pinned epoch. No Segment
+   // descriptor is eligible until every local replica explicitly acknowledges
+   // the staged image; revoke similarly removes every image before reuse.
+--- a/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/vm_translation.cc
+@@ -41,6 +41,17 @@
+   return text != 0 && text[0] != '\0' && strtoul(text, 0, 10) != 0;
+ }
+
++unsigned awma_share_delivery_slots() {
++  const char *text = getenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS");
++  if (text == 0 || text[0] == '\0') return 1;
++  char *end = 0;
++  const unsigned long parsed = strtoul(text, &end, 10);
++  assert(end != text && *end == '\0');
++  assert((parsed == 1 || parsed == 2) &&
++         "Phase 2 permits only finite one-slot or two-slot delivery");
++  return static_cast<unsigned>(parsed);
++}
++
+ bool same_page_share_compatible(
+     unsigned owner_asid, uint64_t owner_va, uint64_t owner_bytes,
+     translation_access owner_access, uint64_t owner_generation,
+@@ -2960,6 +2971,20 @@
+             (unsigned long long)m_stats.same_page_share_owner_ready);
+     fprintf(fout, "vm_awma_same_page_share_deliveries = %llu\n",
+             (unsigned long long)m_stats.same_page_share_deliveries);
++    fprintf(fout, "vm_awma_same_page_share_delivery_slots = %u\n",
++            awma_share_delivery_slots());
++    fprintf(fout, "vm_awma_same_page_share_delivery_backlog_cycles = %llu\n",
++            (unsigned long long)
++                m_stats.same_page_share_delivery_backlog_cycles);
++    fprintf(
++        fout,
++        "vm_awma_same_page_share_delivery_backlog_member_cycles = %llu\n",
++        (unsigned long long)
++            m_stats.same_page_share_delivery_backlog_member_cycles);
++    fprintf(fout, "vm_awma_same_page_share_delivery_full_cycles = %llu\n",
++            (unsigned long long)m_stats.same_page_share_delivery_full_cycles);
++    fprintf(fout, "vm_awma_same_page_share_delivery_backlog_max = %llu\n",
++            (unsigned long long)m_stats.same_page_share_delivery_backlog_max);
+     fprintf(fout, "vm_awma_refill_history_inserts = %llu\n",
+             (unsigned long long)refill.history_inserts);
+     fprintf(fout, "vm_awma_refill_history_resets = %llu\n",
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -2516,6 +2516,8 @@
+       unsigned(strtoul(pipeline_text, NULL, 10)) != 0;
+   const vm_translation::awma_translation_candidate_mode candidate_mode =
+       vm_translation::awma_candidate_mode();
++  const unsigned share_delivery_slots =
++      vm_translation::awma_share_delivery_slots();
+   const char *share_ablation_text =
+       getenv("GPGPUSIM_AWMA_SHARE_ABLATION");
+   const bool share_service_control =
+@@ -2527,6 +2529,9 @@
+   assert(!share_service_control ||
+          candidate_mode ==
+              vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE);
++  assert(share_delivery_slots == 1 ||
++         candidate_mode ==
++             vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE);
+   assert(!ready_application_v2 || pipelined_launch);
+   assert(candidate_mode ==
+              vm_translation::AWMA_TRANSLATION_CANDIDATE_NONE ||
+@@ -2584,11 +2589,12 @@
+         vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE) {
+       const uint64_t generation =
+           m_gpu->vm_translation()->translation_generation(0);
+-      bool delivered_member = false;
++      unsigned delivered_members = 0;
+       // The front-most resident access is the owner for its page.  Since the
+       // accessq consumes from the back, the owner remains resident until all
+-      // earlier members have received their result.  One member is notified
+-      // per cycle; there is no instantaneous broadcast.
++      // earlier members have received their result.  The configured one or
++      // two finite slots are shared by all cohorts in this instruction; there
++      // is no instantaneous or unbounded broadcast.
+       for (std::list<mem_access_t>::iterator owner = entries.begin();
+            owner != entries.end(); ++owner) {
+         if (vm_core::transaction_crosses_page(
+@@ -2636,7 +2642,8 @@
+             m_gpu->vm_translation()->note_same_page_share_owner_ready();
+           }
+         }
+-        if (!owner->vm_translation_applied() || delivered_member ||
++        if (!owner->vm_translation_applied() ||
++            delivered_members >= share_delivery_slots ||
+             share_service_control)
+           continue;
+         member = owner;
+@@ -2659,9 +2666,42 @@
+               static_cast<vm_translation::translation_source>(
+                   owner->get_translation_telemetry_outcome()));
+           m_gpu->vm_translation()->note_same_page_share_delivery();
+-          delivered_member = true;
+-          break;
++          ++delivered_members;
++          if (delivered_members >= share_delivery_slots) break;
++        }
++      }
++      if (!share_service_control) {
++        unsigned delivery_backlog = 0;
++        for (std::list<mem_access_t>::iterator owner = entries.begin();
++             owner != entries.end(); ++owner) {
++          if (!owner->vm_translation_applied()) continue;
++          bool earlier_equivalent = false;
++          for (std::list<mem_access_t>::iterator prior = entries.begin();
++               prior != owner; ++prior) {
++            if (vm_translation::same_page_share_compatible(
++                    0, prior->get_sim_va(), prior->get_size(),
++                    candidate_access, generation, 0, owner->get_sim_va(),
++                    owner->get_size(), candidate_access, generation,
++                    m_config->gpgpu_vm_page_size)) {
++              earlier_equivalent = true;
++              break;
++            }
++          }
++          if (earlier_equivalent) continue;
++          std::list<mem_access_t>::iterator member = owner;
++          ++member;
++          for (; member != entries.end(); ++member) {
++            if (member->vm_translation_applied()) continue;
++            if (vm_translation::same_page_share_compatible(
++                    0, owner->get_sim_va(), owner->get_size(),
++                    candidate_access, generation, 0, member->get_sim_va(),
++                    member->get_size(), candidate_access, generation,
++                    m_config->gpgpu_vm_page_size))
++              ++delivery_backlog;
++          }
+         }
++        m_gpu->vm_translation()->note_same_page_share_delivery_state(
++            delivered_members, share_delivery_slots, delivery_backlog);
+       }
+     }
+
+--- a/tests/awma_literature_mechanism_test.cc
++++ b/tests/awma_literature_mechanism_test.cc
+@@ -12,6 +12,14 @@
+ int main() {
+   const uint64_t page = 64ULL * 1024ULL;
+
++  unsetenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS");
++  assert(vm_translation::awma_share_delivery_slots() == 1);
++  setenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS", "2", 1);
++  assert(vm_translation::awma_share_delivery_slots() == 2);
++  setenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS", "1", 1);
++  assert(vm_translation::awma_share_delivery_slots() == 1);
++  unsetenv("GPGPUSIM_AWMA_SHARE_DELIVERY_SLOTS");
++
+   // C1 legality: same page/key/generation/permission is shareable.  Every
+   // incompatible identity component and a cross-page transaction rejects.
+   assert(vm_translation::same_page_share_compatible(
