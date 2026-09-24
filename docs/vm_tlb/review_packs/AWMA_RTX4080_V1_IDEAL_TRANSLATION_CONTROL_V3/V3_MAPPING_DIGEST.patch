@@ -1,0 +1,75 @@
+--- a/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/vm_translation.h
+@@ -1075,6 +1075,13 @@
+   unsigned m_segment_active_epoch;
+   bool m_segment_epoch_wrap_requires_quiesce;
+   std::map<unsigned, uint64_t> m_translation_generations;
++  struct mapping_digest_record {
++    uint64_t generation;
++    uint64_t ppn;
++    mapping_digest_record(uint64_t g = 0, uint64_t p = 0)
++        : generation(g), ppn(p) {}
++  };
++  std::map<translation_key, mapping_digest_record> m_mapping_digest_records;
+   std::set<translation_key> m_object_unique_keys[OBJECT_CLASS_COUNT];
+   translation_stats m_stats;
+   uint64_t m_next_pte_request_id;
+--- a/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/vm_translation.cc
+@@ -2221,6 +2221,20 @@
+   if (source != 0) *source = TRANSLATION_SOURCE_UNOBSERVED;
+   translation_key key(asid, vm_core::vpn(sim_va, m_config.page_size),
+                       m_config.page_size);
++  // Register on every legal V1 observation point, including ideal prelaunch.
++  // This is a functional-only observer; it is independent of modeled service.
++  if (m_translation_generations.find(asid) == m_translation_generations.end())
++    m_translation_generations[asid] = 1;
++  if (getenv("GPGPUSIM_VM_MAPPING_DIGEST_DIAGNOSTICS") != NULL) {
++    const uint64_t ppn = m_page_table->resolve_ppn(key);
++    const mapping_digest_record observed(translation_generation(asid), ppn);
++    std::map<translation_key, mapping_digest_record>::iterator prior =
++        m_mapping_digest_records.find(key);
++    if (prior != m_mapping_digest_records.end())
++      assert(prior->second.generation == observed.generation &&
++             prior->second.ppn == observed.ppn);
++    m_mapping_digest_records[key] = observed;
++  }
+   const char *ideal_control_text =
+       getenv("GPGPUSIM_VM_IDEAL_TRANSLATION_CONTROL");
+   const bool ideal_control = ideal_control_text != NULL &&
+@@ -2236,11 +2250,6 @@
+       *source = TRANSLATION_SOURCE_IDEAL_FUNCTIONAL;
+     return READY;
+   }
+-  // Register the ASID on first admission.  A later global shootdown must
+-  // advance every ASID that can have an in-flight lookup, including one whose
+-  // current value would otherwise be the implicit default generation.
+-  if (m_translation_generations.find(asid) == m_translation_generations.end())
+-    m_translation_generations[asid] = 1;
+   const object_class object = m_object_map.classify(sim_va, request_bytes);
+   lookup_operation *inflight = find_lookup(sid, waiter_uid, key);
+   if (inflight != 0) {
+@@ -2763,6 +2772,23 @@
+ }
+ 
+ void translation_controller::print_stats(FILE *fout) const {
++  if (getenv("GPGPUSIM_VM_MAPPING_DIGEST_DIAGNOSTICS") != NULL) {
++    uint64_t digest = 1469598103934665603ULL;
++    for (std::map<translation_key, mapping_digest_record>::const_iterator it =
++             m_mapping_digest_records.begin();
++         it != m_mapping_digest_records.end(); ++it) {
++      const uint64_t fields[] = {it->first.asid, it->first.vpn,
++                                 it->first.page_size, it->second.generation,
++                                 it->second.ppn};
++      for (unsigned field = 0; field < 5; ++field) {
++        digest ^= fields[field];
++        digest *= 1099511628211ULL;
++      }
++    }
++    fprintf(fout, "AWMA_VM_FUNCTIONAL_MAPPING_DIGEST unique=%llu fnv64=%llu\n",
++            static_cast<unsigned long long>(m_mapping_digest_records.size()),
++            static_cast<unsigned long long>(digest));
++  }
+   if (getenv("GPGPUSIM_READY_APPLICATION_QUIESCENCE_DIAGNOSTICS") != NULL) {
+     unsigned long long ready_lookups = 0;
+     for (unsigned i = 0; i < m_lookups.size(); ++i)
