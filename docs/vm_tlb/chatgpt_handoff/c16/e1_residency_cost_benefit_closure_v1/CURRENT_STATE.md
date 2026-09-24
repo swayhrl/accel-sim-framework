@@ -91,3 +91,32 @@ If later authorized:
   `de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8`
 
 No RTX3080/SM86 configuration is authorized.
+
+
+---
+
+## Cost/benefit producer completed
+
+Producer:
+
+`hrl/c16-e1-residency-cost-benefit-closure-109-v1@86ef7dcfb49241bd87ff4a8d59b4d950d53de0a5`
+
+Producer stage label:
+
+`RESIDENCY_OFFSET_LOCALIZED`
+
+Preliminary ChatGPT audit finds no node109 rerun required.
+
+Read before 174 raw consumption:
+
+`docs/vm_tlb/chatgpt_handoff/c16/e1_residency_cost_benefit_closure_v1/PRODUCER_PRE_RESUME_AUDIT.md`
+
+Key producer result pending independent consumer closure:
+
+- all four tested budgets retain all-28 up_proj local benefit;
+- no budget produces a whole-decode positive effect beyond dispersion;
+- top-level decomposition closes the former residual;
+- full-budget offset is dominated by aggregate self-attention slowdown, with additional gate/down cost;
+- representative L0 self-attention NCU does not reproduce the aggregate slowdown, so no unique kernel/cache-cause claim is authorized.
+
+The next project-level decision is deferred until independent 174 closure.
