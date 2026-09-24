@@ -1,27 +1,21 @@
 {
-  "status": "BLOCKING_SEMANTIC_DECISION_REQUIRED",
-  "issues": [
+  "status": "NO_IMPLEMENTATION_BLOCKERS",
+  "resolved": [
     {
       "id": "QUOTA_FULL_NO_LOCAL_PROTECTED_VICTIM",
-      "severity": "BLOCKING",
-      "state": "FROZEN_CONTRACT_UNREPRESENTABLE",
-      "counterexample": "per-instance occupancy equals quota; addressed set contains invalid or ordinary eligible lines but no eligible protected line",
-      "conflicts": [
-        "baseline invalid candidate priority",
-        "tagged fill must become protected",
-        "occupancy must not exceed quota",
-        "victim must remain in addressed set",
-        "protected lifetime forbids cross-set demotion",
-        "queueing/deadlock semantics must remain baseline"
-      ],
-      "implemented_behavior": "explicit fail-closed termination",
-      "silent_fallback_implemented": false
-    },
+      "resolution": "AUTHORIZED_SET_LOCAL_UNPROTECTED_ADMISSION_WITH_REASONED_DIAGNOSTIC",
+      "cross_set_eviction": false,
+      "quota_overcommit": false,
+      "queueing_change": false
+    }
+  ],
+  "remaining_next_stage_gates": [
     {
       "id": "TRACE_ADDRESS_NAMESPACE_ADMISSION",
-      "severity": "EXPECTED_NEXT_STAGE_GATE",
       "state": "WAITING_FOR_109_BOUNDED_TRACE",
-      "real_c16_run_allowed": false
+      "blocks_implementation_readiness": false,
+      "blocks_real_c16_replay": true
     }
-  ]
+  ],
+  "real_c16_run_allowed_now": false
 }

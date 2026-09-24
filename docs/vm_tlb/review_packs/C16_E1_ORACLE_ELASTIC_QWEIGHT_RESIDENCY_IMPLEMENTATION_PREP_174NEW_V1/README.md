@@ -1,17 +1,18 @@
 # C16 E1 Oracle Elastic Qweight Residency Implementation Prep 174-new V1
 
-Status: `FROZEN_CONTRACT_RESOLUTION_REQUIRED`.
+Status: `ORACLE_ELASTIC_QWEIGHT_RESIDENCY_V1_IMPLEMENTATION_READY_FOR_TRACE_INTEGRATION`.
 
-Core implementation branch `hrl/c16-oracle-elastic-qweight-residency-v1@8f64be3e862e73ae436fd182e709859622042347` is based exactly on accepted Core `57bb71ecd015b6ec0ab32e45b0815e5beaf69172`. It builds successfully and its parser, SHA, quota, line/sector metadata, baseline-OFF selection, diagnostics neutrality and synthetic replacement tests pass.
+The explicit quota-full semantic addendum is implemented on Core `hrl/c16-oracle-elastic-qweight-residency-v1@a7d3c2bed3f8455ec372040e425b890ba290621b`, based exactly on accepted Core `57bb71ecd015b6ec0ab32e45b0815e5beaf69172`. The original blocked snapshot remains in Git history and is summarized by `BLOCKED_SNAPSHOT.json`.
 
-The implementation deliberately fail-closes one state omitted by the frozen specification: a target fill when the per-instance quota is full but the addressed set has an invalid candidate or no eligible protected victim. Resolving that state requires an explicit semantic choice; the code does not silently overcommit, admit as ordinary, evict cross-set, or alter queueing.
+`target-tagged` now means eligible to request protected admission. At hard quota, baseline invalid priority and baseline set-local ordinary fallback remain legal but create unprotected lines with explicit denial reasons. No quota overcommit, cross-set victim, demotion, target stall, queue change or hit promotion is introduced.
 
-Therefore `ORACLE_ELASTIC_QWEIGHT_RESIDENCY_V1_IMPLEMENTATION_READY_FOR_TRACE_INTEGRATION` is not assigned yet. No GPU, C16 baseline/candidate replay, trace capture, speedup calculation, or simulator performance claim was performed.
+Full Core build, semantic corner cases, line/sector metadata, exact quota distribution, existing VM regressions, baseline-OFF neutrality and diagnostics OFF/ON neutrality pass. The evidence is CPU-only synthetic implementation evidence. No C16 replay, GPU work, trace capture, speedup or performance claim was performed.
 
 Review order:
 
-1. `OPEN_ISSUES.json`
-2. `INVARIANT_MATRIX.json`
-3. `BASELINE_NEUTRALITY.md`
-4. `CODE_MAP_DELTA.md`
-5. `BUILD_VALIDATION.json`
+1. `FINAL_DECISION.json`
+2. `SEMANTIC_ADDENDUM.md`
+3. `INVARIANT_MATRIX.json`
+4. `BASELINE_NEUTRALITY.md`
+5. `VALIDATION_SUMMARY.json`
+6. `SOURCE_ANCHORS.json`

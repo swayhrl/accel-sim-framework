@@ -1,21 +1,27 @@
 {
-  "status": "PASS_WITH_CONTRACT_BLOCKER",
+  "status": "PASS",
   "cpu_only": true,
   "gpu_used": false,
   "real_c16_simulation_run": false,
-  "build": {
+  "full_core_build": {
     "status": "PASS",
-    "cuda_headers": "CUDA 12.4 local build-only headers",
     "command": "source setup_environment release && make -j4",
-    "artifact": "lib/gcc-11.4.0/cuda-12040/release/libcudart.so"
+    "cuda_headers": "CUDA 12.4 local build-only headers"
   },
-  "tests": [
-    {"name": "oracle policy/parser/SHA/quota/synthetic", "status": "PASS"},
-    {"name": "line and sector metadata", "status": "PASS"},
-    {"name": "actual tag_array config and 3-instance quotient/remainder", "status": "PASS"},
-    {"name": "accepted vm_core_m1 regression", "status": "PASS"}
+  "mechanism_tests": [
+    "policy/parser/SHA/quota/corner-case PASS",
+    "line and sector metadata PASS",
+    "actual tag_array config/quotient-remainder PASS",
+    "baseline-OFF neutrality PASS",
+    "diagnostics neutrality PASS"
   ],
-  "test_suite_terminal": "ORACLE_ELASTIC_QWEIGHT_RESIDENCY_TEST_SUITE_PASS",
-  "full_baseline_cycle_counter_ab": "NOT_RUN_CONTRACT_BLOCKER",
-  "diagnostics_cycle_counter_ab": "NOT_RUN_CONTRACT_BLOCKER"
+  "existing_regressions": [
+    "vm_core_m1_test PASS",
+    "vm_m2_g2_1_test PASS",
+    "vm_m2_g2_2_test PASS",
+    "vm_m2_g2_3_test PASS",
+    "vm_m2_g2_4_test PASS",
+    "vm_c10b_telemetry_conservation_test PASS",
+    "vm_c11_common_pa_mapping_test PASS"
+  ]
 }
