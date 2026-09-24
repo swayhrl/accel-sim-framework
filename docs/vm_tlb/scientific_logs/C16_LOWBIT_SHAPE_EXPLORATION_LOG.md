@@ -570,3 +570,38 @@ Only after independent producer/consumer closure will the project decide whether
 ## E1 coverage closure and operator-family consumer prep (174-new)
 
 Coverage producer `18acd7dcc10118c68b450d226a8e7ca80c51ad72` independently closes from raw evidence at `COVERAGE_SCALING_POSITIVE_BUT_SUBTHRESHOLD`. Five real canaries, seven-run 84-module census, 14 CONTROL/FAIR conditions, four FULLHINT conditions, 16 multi-pass NCU profiles, and raw query/policy history close. N28 run-aligned medians are about 0.5662 ms selected local saving, 0.1222 ms decode saving, 0.2159 realization, and -0.4473 ms outside-selected-up residual. With no non-selected up_proj at N28, the residual remains unattributed and is not named cache slowdown. Operator-family prep freezes raw natural call order, all-84 timing, 14 matched conditions, direct/unselected/total/outside residual accounting, host overhead, 12-profile NCU, FULLHINT GUD84, and stage precedence. The operator-family producer ref was absent in the one-shot fetch window; status is `READY_FOR_E1_OPERATOR_FAMILY_EXPANSION_109`. No GPU/simulator/NVBit/trace/mechanism work was used.
+
+
+---
+
+## Project review — operator-family expansion exposes a system-offset problem
+
+Operator-family producer:
+
+`hrl/c16-e1-operator-family-expansion-109-v1@eae1cc4d831ae8459da558cf1358bb8daf8d76e6`
+
+Producer stage label:
+
+`OPERATOR_FAMILY_NOT_SUPPORTED`
+
+Preliminary audit supports the producer data and does not request rerun.
+
+The important result is not merely the negative stage label:
+
+- UP28 preserves broad up_proj local benefit (~0.56 ms direct saving), but gate/down slow by ~0.20 ms and a further ~0.36 ms negative residual remains outside measured FFN projection timing.
+- GUD84 still gains ~0.48 ms from up_proj, while gate/down remain near neutral/slightly negative. Whole-decode benefit is effectively zero and outside-FFN residual remains ~-0.44 ms.
+- Pairwise role protection does not remove the residual.
+- Host API CONTROL-vs-FAIR differences are only microseconds, far smaller than the residual.
+- Representative NCU preserves up_proj duration/long-scoreboard benefit while aggregate L2/DRAM read metrics remain nearly flat.
+
+The negative residual is still an accounting observation, not proven cache collateral slowdown.
+
+Before stopping the residency line or implementing a simulator mechanism, one bounded final real-hardware diagnostic is justified:
+
+- keep protection limited to all 28 up_proj;
+- sweep the global persistence budget;
+- instrument non-overlapping top-level layer components;
+- retain all 84 FFN child timings;
+- localize where the offsetting time appears.
+
+No simulator or trace capture is authorized by this step.
