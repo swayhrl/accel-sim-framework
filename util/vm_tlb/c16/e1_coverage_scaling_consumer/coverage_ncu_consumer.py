@@ -44,6 +44,7 @@ ADDITIVE_UNITS = {
     "L1_TEX_BYTES": {"byte", "bytes"},
     "L2_BYTES": {"byte", "bytes"},
     "DRAM_BYTES": {"byte", "bytes"},
+    "KERNEL_DURATION": {"ns"},
     "KERNEL_ELAPSED_CYCLES": {"cycle", "cycles"},
     "L2_READ_HIT_SECTORS": {"sector", "sectors"},
     "L2_READ_MISS_SECTORS": {"sector", "sectors"},
@@ -246,7 +247,7 @@ def _policy(path: Path, condition: str, regions: Mapping[int, Mapping[str, Any]]
     stream = _text(raw.get("stream_identity"), "stream_identity")
     before = _reset(raw.get("reset_before"), "reset_before", 0)
     updates = raw.get("updates", raw.get("switches"))
-    expected = [(phase, layer) for phase in PHASES for layer in selected]
+    expected = [(phase, layer) for phase in PHASES for layer in sorted(selected)]
     if not isinstance(updates, list) or len(updates) != len(expected):
         raise CoverageNCUError("missing/duplicate complete policy history")
     normalized = []
@@ -306,6 +307,7 @@ def _profile_spec(raw: Any, root: Path) -> dict[str, Any]:
         raise CoverageNCUError("invalid expected kernel inventory")
     if len(kernels) != len(set(kernels)):
         raise CoverageNCUError("duplicate expected kernel inventory")
+    local_regions = _regions(raw.get("qweight_regions")) if raw.get("qweight_regions") is not None else None
     return {"condition": condition, "layer_index": layer, "role": role,
             "decode_index": decode,
             "generated_token_id": _integer(raw.get("generated_token_id"), "generated_token_id"),
@@ -317,7 +319,8 @@ def _profile_spec(raw: Any, root: Path) -> dict[str, Any]:
             "base_path": _path(root, raw.get("base_path"), "base_path"),
             "session_path": _path(root, raw.get("session_path"), "session_path"),
             "profile_path": _path(root, raw.get("profile_path"), "profile_path"),
-            "policy_history_path": _path(root, raw.get("policy_history_path"), "policy_history_path")}
+            "policy_history_path": _path(root, raw.get("policy_history_path"), "policy_history_path"),
+            "qweight_regions": local_regions}
 
 
 def _session(path: Path, spec: Mapping[str, Any], metrics: set[str]) -> dict[str, Any]:
@@ -420,7 +423,7 @@ def consume(document: Mapping[str, Any], root: Path | str = Path(".")) -> dict[s
     root = Path(root)
     query = _query(document.get("runtime_metric_query"), root)
     metrics, unavailable = _catalog(document.get("metric_availability"))
-    regions = _regions(document.get("qweight_regions"))
+    regions = _regions(document.get("qweight_regions")) if document.get("qweight_regions") is not None else None
     raw_profiles = document.get("profiles")
     if not isinstance(raw_profiles, list) or len(raw_profiles) != 16:
         raise CoverageNCUError("coverage NCU requires exact 16-profile matrix")
@@ -437,7 +440,10 @@ def consume(document: Mapping[str, Any], root: Path | str = Path(".")) -> dict[s
     output = []
     metric_names = {row["metric_name"] for row in metrics}
     for spec in specs:
-        policy = _policy(spec["policy_history_path"], spec["condition"], regions)
+        profile_regions = spec["qweight_regions"] or regions
+        if profile_regions is None:
+            raise CoverageNCUError("profile lacks process-local qweight region authority")
+        policy = _policy(spec["policy_history_path"], spec["condition"], profile_regions)
         receipts = _profile_receipts(spec["profile_path"], spec, policy["sha256"])
         output.append({"condition": spec["condition"], "layer_index": spec["layer_index"],
                        "role": "up_proj", "decode_index": 3,

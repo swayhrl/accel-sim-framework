@@ -67,7 +67,7 @@ def reset(index):
 def policy(condition):
     mode, set_name = condition.split("_", 1)
     selected, switches = cp.LAYER_SETS[set_name], []
-    for i, (phase, layer) in enumerate(((p, l) for p in cp.PHASES for l in selected), 1):
+    for i, (phase, layer) in enumerate(((p, l) for p in cp.PHASES for l in sorted(selected)), 1):
         switches.append({"sequence_index": i, "phase": phase, "layer_index": layer,
             "role": "up_proj", "base_pointer": qweight(layer)["pointer"],
             "num_bytes": qweight(layer)["bytes"], "hit_ratio": 1 / len(selected),
@@ -119,6 +119,18 @@ class CensusTests(unittest.TestCase):
         self.assertEqual(out["fresh_process_count"], 7)
         self.assertEqual(len(out["run_aligned_shares"]), 28)
         self.assertTrue(all(out["role_support"].values()))
+
+    def test_census_accepts_process_local_pointer_with_fixed_geometry(self):
+        doc = census_document()
+        for rep, run in enumerate(doc["runs"]):
+            local = copy.deepcopy(doc["module_authority"])
+            for module in local:
+                module["qweight"]["pointer"] += rep * 0x10000000
+            run["module_authority"] = local
+            pointers = {(x["layer_index"], x["role"]): x["qweight"] for x in local}
+            for event in run["occurrences"]:
+                event["qweight"] = copy.deepcopy(pointers[(event["layer_index"], event["role"])])
+        self.assertEqual(cp.consume_ffn_census(doc)["status"], "PASS")
 
     def test_runtime_can_mark_whole_role_unsupported(self):
         out = cp.consume_ffn_census(census_document(unsupported_role="gate_proj"))
@@ -224,6 +236,21 @@ class FullCoverageRunTests(unittest.TestCase):
         self.assertEqual(out["condition_count"], 14)
         self.assertEqual(out["fresh_process_count"], 98)
         self.assertEqual(len(out["run_aligned_points"]), 98)
+
+    def test_policy_accepts_process_local_pointer_with_fixed_geometry(self):
+        doc = policy_document()
+        for block in doc["conditions"]:
+            for rep, run in enumerate(block["runs"]):
+                local = copy.deepcopy(doc["up_qweight_regions"])
+                for item in local:
+                    item["qweight"]["pointer"] += rep * 0x10000000
+                run["up_qweight_regions"] = local
+                pointers = {x["layer_index"]: x["qweight"] for x in local}
+                for event in run["occurrences"]:
+                    event["qweight"] = copy.deepcopy(pointers[event["layer_index"]])
+                for switch in run["policy_receipt"]["switches"]:
+                    switch["base_pointer"] = pointers[switch["layer_index"]]["pointer"]
+        self.assertEqual(cp.consume_coverage_policy_runs(doc)["status"], "PASS")
 
     def test_missing_qweight_layer_fails(self):
         doc = policy_document(); doc["up_qweight_regions"].pop()

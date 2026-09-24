@@ -564,3 +564,9 @@ Only after independent producer/consumer closure will the project decide whether
 - revise the mechanism around measured residual/collateral behavior;
 - extend beyond FFN;
 - or stop the residency mechanism system case.
+
+---
+
+## E1 coverage closure and operator-family consumer prep (174-new)
+
+Coverage producer `18acd7dcc10118c68b450d226a8e7ca80c51ad72` independently closes from raw evidence at `COVERAGE_SCALING_POSITIVE_BUT_SUBTHRESHOLD`. Five real canaries, seven-run 84-module census, 14 CONTROL/FAIR conditions, four FULLHINT conditions, 16 multi-pass NCU profiles, and raw query/policy history close. N28 run-aligned medians are about 0.5662 ms selected local saving, 0.1222 ms decode saving, 0.2159 realization, and -0.4473 ms outside-selected-up residual. With no non-selected up_proj at N28, the residual remains unattributed and is not named cache slowdown. Operator-family prep freezes raw natural call order, all-84 timing, 14 matched conditions, direct/unselected/total/outside residual accounting, host overhead, 12-profile NCU, FULLHINT GUD84, and stage precedence. The operator-family producer ref was absent in the one-shot fetch window; status is `READY_FOR_E1_OPERATOR_FAMILY_EXPANSION_109`. No GPU/simulator/NVBit/trace/mechanism work was used.

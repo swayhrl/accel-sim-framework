@@ -77,7 +77,7 @@ class CoverageNCUConsumerTests(unittest.TestCase):
         stream = f"stream-{condition}"
         updates = []
         for index, (phase, layer) in enumerate(
-                ((phase, layer) for phase in PHASES for layer in selected), 1):
+                ((phase, layer) for phase in PHASES for layer in sorted(selected)), 1):
             region = self.document["qweight_regions"][str(layer)]
             updates.append({
                 "sequence_index": index, "phase": phase, "layer_index": layer,
@@ -152,6 +152,13 @@ class CoverageNCUConsumerTests(unittest.TestCase):
                   for metric in kernel["metrics"] if metric["category"] == "LONG_SCOREBOARD_STALL"]
         self.assertEqual([row["value"] for row in stalls], [40, 10])
         self.assertNotIn("LONG_SCOREBOARD_STALL", first["base"]["additive_semantic_sums"])
+
+    def test_process_local_profile_regions_pass(self):
+        document = copy.deepcopy(self.document)
+        local = document.pop("qweight_regions")
+        for profile in document["profiles"]:
+            profile["qweight_regions"] = copy.deepcopy(local)
+        self.assertEqual(consume(document, self.root)["profile_count"], 16)
 
     def test_duplicate_or_missing_matrix_point_fails(self):
         duplicate = copy.deepcopy(self.document)

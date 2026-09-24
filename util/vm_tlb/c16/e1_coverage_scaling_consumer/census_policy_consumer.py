@@ -116,6 +116,15 @@ def _qweight(v: Any, label: str = "qweight") -> dict[str, Any]:
     return out
 
 
+def _qweight_geometry(value: Mapping[str, Any]) -> tuple[Any, ...]:
+    return (value["bytes"], tuple(value["shape"]), value["contiguous"])
+
+
+def _module_geometry(value: Mapping[str, Any]) -> tuple[Any, ...]:
+    return (value["supported"], value["module_class"], value["backend"],
+            value["implementation"], _qweight_geometry(value["qweight"]))
+
+
 def _module_authority(rows: Any) -> tuple[dict[tuple[int, str], dict[str, Any]], dict[str, bool]]:
     if not isinstance(rows, list):
         raise CoverageIdentityError("module_authority must be a list")
@@ -204,6 +213,14 @@ def consume_ffn_census(document: Mapping[str, Any]) -> dict[str, Any]:
         if _sha(run.get("prefix_token_sha256"), "prefix_token_sha256") != prefix:
             raise CoverageIdentityError("prefix SHA drift")
         _tokens(run.get("generated_token_ids"))
+        if run.get("module_authority") is not None:
+            local_modules, local_support = _module_authority(run.get("module_authority"))
+            if local_support != role_support or any(
+                    _module_geometry(local_modules[key]) != _module_geometry(modules[key])
+                    for key in modules):
+                raise CoverageIdentityError("process-local module/qweight geometry drift")
+        else:
+            local_modules = modules
         decode = {}
         if not isinstance(run.get("decode_steps"), list) or len(run["decode_steps"]) != 4:
             raise CoverageIdentityError("missing/duplicate decode step")
@@ -223,7 +240,7 @@ def consume_ffn_census(document: Mapping[str, Any]) -> dict[str, Any]:
                    _integer(row.get("decode_index"), "decode_index"))
             if key not in expected or key in observed:
                 raise CoverageIdentityError("wrong/duplicate layer event")
-            module = modules[key[:2]]
+            module = local_modules[key[:2]]
             if (_text(row.get("module_class"), "module_class") != module["module_class"] or
                     _text(row.get("backend"), "backend") != module["backend"] or
                     _text(row.get("implementation"), "implementation") != module["implementation"]):
@@ -293,7 +310,9 @@ def validate_coverage_policy_receipt(receipt: Mapping[str, Any], condition: str,
     if _integer(receipt.get("actual_setaside_bytes"), "actual_setaside_bytes") != ACTUAL_SETASIDE_BYTES:
         raise CoverageIdentityError("actual set-aside drift")
     stream = _text(receipt.get("stream_identity"), "stream_identity")
-    sequence = tuple((p, l) for p in PHASES for l in selected)
+    # Layer selection order freezes membership; execution updates follow the
+    # model's natural ascending layer call order within each phase.
+    sequence = tuple((p, l) for p in PHASES for l in sorted(selected))
     switches = receipt.get("switches")
     if not isinstance(switches, list) or len(switches) != len(sequence):
         raise CoverageIdentityError("missing/duplicate policy update")
@@ -345,21 +364,24 @@ def consume_coverage_policy_runs(document: Mapping[str, Any]) -> dict[str, Any]:
     manifest = validate_layer_selection_manifest(document.get("layer_selection_manifest"))
     prefix = _sha(document.get("accepted_prefix_sha256"), "accepted_prefix_sha256")
     tokens = _tokens(document.get("generated_token_ids"))
-    regions = {}
+    def parse_regions(rows: Any) -> dict[int, dict[str, Any]]:
+        parsed = {}
+        if not isinstance(rows, list):
+            raise CoverageIdentityError("up_qweight_regions must be a list")
+        for row in rows:
+            layer = _integer(row.get("layer_index"), "layer_index")
+            if layer not in LAYERS or layer in parsed:
+                raise CoverageIdentityError("wrong/duplicate up qweight layer")
+            if (_text(row.get("role"), "role") != "up_proj" or
+                    _text(row.get("module_class"), "module_class") != EXPECTED_MODULE_CLASS or
+                    _text(row.get("implementation"), "implementation") != EXPECTED_IMPLEMENTATION):
+                raise CoverageIdentityError("wrong up_proj module identity")
+            parsed[layer] = _qweight(row.get("qweight"))
+        if set(parsed) != set(LAYERS):
+            raise CoverageIdentityError("missing up qweight layer")
+        return parsed
     rows = document.get("up_qweight_regions")
-    if not isinstance(rows, list):
-        raise CoverageIdentityError("up_qweight_regions must be a list")
-    for row in rows:
-        layer = _integer(row.get("layer_index"), "layer_index")
-        if layer not in LAYERS or layer in regions:
-            raise CoverageIdentityError("wrong/duplicate up qweight layer")
-        if (_text(row.get("role"), "role") != "up_proj" or
-                _text(row.get("module_class"), "module_class") != EXPECTED_MODULE_CLASS or
-                _text(row.get("implementation"), "implementation") != EXPECTED_IMPLEMENTATION):
-            raise CoverageIdentityError("wrong up_proj module identity")
-        regions[layer] = _qweight(row.get("qweight"))
-    if set(regions) != set(LAYERS):
-        raise CoverageIdentityError("missing up qweight layer")
+    regions = parse_regions(rows)
     expected = {(l, d) for l in LAYERS for d in DECODE_INDICES}
     authority = {}
     if not isinstance(document.get("occurrence_authority"), list):
@@ -400,7 +422,10 @@ def consume_coverage_policy_runs(document: Mapping[str, Any]) -> dict[str, Any]:
             if _sha(run.get("prefix_token_sha256"), "prefix_token_sha256") != prefix:
                 raise CoverageIdentityError("prefix SHA drift")
             _tokens(run.get("generated_token_ids"))
-            policy = validate_coverage_policy_receipt(run.get("policy_receipt"), condition, regions)
+            run_regions = parse_regions(run.get("up_qweight_regions")) if run.get("up_qweight_regions") is not None else regions
+            if any(_qweight_geometry(run_regions[layer]) != _qweight_geometry(regions[layer]) for layer in LAYERS):
+                raise CoverageIdentityError("process-local up qweight geometry drift")
+            policy = validate_coverage_policy_receipt(run.get("policy_receipt"), condition, run_regions)
             events = run.get("occurrences")
             if not isinstance(events, list) or len(events) != len(expected):
                 raise CoverageIdentityError("all 28 up occurrences per decode must be present")
@@ -416,7 +441,7 @@ def consume_coverage_policy_runs(document: Mapping[str, Any]) -> dict[str, Any]:
                             _sha(row.get("output_sha256"), "output_sha256"))
                 if identity != authority[key]:
                     raise CoverageIdentityError("occurrence SHA drift")
-                if _qweight(row.get("qweight")) != regions[key[0]]:
+                if _qweight(row.get("qweight")) != run_regions[key[0]]:
                     raise CoverageIdentityError("qweight identity drift")
                 observed[key] = _finite(row.get("timing_ms"), "up timing", True)
             decode = {}
