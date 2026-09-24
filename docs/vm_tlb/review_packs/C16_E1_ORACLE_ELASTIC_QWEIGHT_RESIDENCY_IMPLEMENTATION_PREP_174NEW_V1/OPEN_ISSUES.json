@@ -1,0 +1,27 @@
+{
+  "status": "BLOCKING_SEMANTIC_DECISION_REQUIRED",
+  "issues": [
+    {
+      "id": "QUOTA_FULL_NO_LOCAL_PROTECTED_VICTIM",
+      "severity": "BLOCKING",
+      "state": "FROZEN_CONTRACT_UNREPRESENTABLE",
+      "counterexample": "per-instance occupancy equals quota; addressed set contains invalid or ordinary eligible lines but no eligible protected line",
+      "conflicts": [
+        "baseline invalid candidate priority",
+        "tagged fill must become protected",
+        "occupancy must not exceed quota",
+        "victim must remain in addressed set",
+        "protected lifetime forbids cross-set demotion",
+        "queueing/deadlock semantics must remain baseline"
+      ],
+      "implemented_behavior": "explicit fail-closed termination",
+      "silent_fallback_implemented": false
+    },
+    {
+      "id": "TRACE_ADDRESS_NAMESPACE_ADMISSION",
+      "severity": "EXPECTED_NEXT_STAGE_GATE",
+      "state": "WAITING_FOR_109_BOUNDED_TRACE",
+      "real_c16_run_allowed": false
+    }
+  ]
+}

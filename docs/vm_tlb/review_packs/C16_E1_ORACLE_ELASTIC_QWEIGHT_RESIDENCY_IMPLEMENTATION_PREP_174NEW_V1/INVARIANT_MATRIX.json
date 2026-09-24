@@ -1,0 +1,23 @@
+{
+  "status": "PARTIAL_CONTRACT_RESOLUTION_REQUIRED",
+  "invariants": [
+    {"id": 1, "name": "0 <= occupancy <= quota", "status": "PASS_DEFINED_STATES", "evidence": "runtime assertions plus synthetic sequences"},
+    {"id": 2, "name": "occupancy equals resident protected lines", "status": "PASS_DEFINED_STATES", "evidence": "runtime full-array recount; pending reservations separate"},
+    {"id": 3, "name": "exactly-once eviction/invalidation accounting", "status": "PASS_DEFINED_STATES", "evidence": "central depart hook and repeated-invalidation synthetic test"},
+    {"id": 4, "name": "ordinary fill never protected", "status": "PASS"},
+    {"id": 5, "name": "outside sidecar is untagged", "status": "PASS"},
+    {"id": 6, "name": "PTE/synthetic/instruction/write/writeback excluded", "status": "PASS", "evidence": "only non-write GLOBAL_ACC_R reaches interval lookup"},
+    {"id": 7, "name": "quota zero degrades to baseline", "status": "PASS"},
+    {"id": 8, "name": "ordinary borrowing without static stranding", "status": "PASS"},
+    {"id": 9, "name": "target prefers normal below quota", "status": "PASS_LRU_FIFO"},
+    {"id": 10, "name": "quota-full target competes with protected", "status": "PASS_WHEN_LOCAL_PROTECTED_EXISTS"},
+    {"id": 11, "name": "ordinary all-protected bounded fallback", "status": "PASS_LRU_FIFO"},
+    {"id": 12, "name": "dirty/reserved baseline eligibility", "status": "VERIFIED_CODE_BUILD_PASS"},
+    {"id": 13, "name": "LRU and FIFO original timestamp semantics", "status": "PASS"},
+    {"id": 14, "name": "exact quotient/remainder global quota", "status": "PASS"},
+    {"id": 15, "name": "reset/invalidation occupancy zero", "status": "PASS_DEFINED_STATES"},
+    {"id": 16, "name": "line and sector cache paths", "status": "PASS_ON_MISS; ON_FILL_FAIL_CLOSED"},
+    {"id": 17, "name": "quota full with invalid/no local protected victim", "status": "BLOCKED_FROZEN_CONTRACT_UNREPRESENTABLE"}
+  ],
+  "final_ready_label_allowed": false
+}
