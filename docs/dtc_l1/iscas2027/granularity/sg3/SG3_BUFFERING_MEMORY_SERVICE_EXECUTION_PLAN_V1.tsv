@@ -1,0 +1,13 @@
+phase	workload	mode	queue_miss_entries	memory_service_buswidth_B	cell	status_before_launch	launch_rule	identity_invariants
+C1	BICG	IO	32	16	Q0M0	EXACT_REUSE	accepted default-cap8192 baseline 34224e99-a5fc-411d-bae2-7948ce9a7b1b	DTC cap8192; Core9; FAST64 IO; observer ON; 20 channels; default mapping/timing/queues
+C1	BICG	OO	32	16	Q0M0	EXACT_REUSE	accepted default-cap8192 baseline 7d3e125c-20d2-4486-a0dd-bc81a488eeca	DTC cap8192; Core9; FAST64 OO; observer ON; 20 channels; default mapping/timing/queues
+C1	BICG	IO	128	16	Q1M0	EXACT_REUSE	strict-PASS queue128 82949efb-c7b6-494a-83e4-f615605bb106	DTC cap8192; Core9; FAST64 IO; observer ON; 20 channels; default mapping/timing/queues
+C1	BICG	OO	128	16	Q1M0	EXACT_REUSE	strict-PASS queue128 88908b04-f264-4c32-aaa7-59d7d99831ae	DTC cap8192; Core9; FAST64 OO; observer ON; 20 channels; default mapping/timing/queues
+C1	BICG	IO	32	32	Q0M1	NEW	C0 commit b7cedaef pushed; fresh immutable UUID	Only delta is busW16->32; all listed invariants retained
+C1	BICG	OO	32	32	Q0M1	NEW	C0 commit b7cedaef pushed; fresh immutable UUID	Only delta is busW16->32; all listed invariants retained
+C1	BICG	IO	128	32	Q1M1	NEW	Q1M0 strict-PASS already established; fresh immutable UUID	Only deltas are predeclared queue32->128 and busW16->32
+C1	BICG	OO	128	32	Q1M1	NEW	Q1M0 strict-PASS already established; fresh immutable UUID	Only deltas are predeclared queue32->128 and busW16->32
+C2	GESUMMV	IO	32	32	Q0M1	CONDITIONAL	Gate M: either BICG Q0M1 >=5% faster than Q0M0 and coherent service telemetry	No launch otherwise; at most two heavy GESUMMV rows concurrently
+C2	GESUMMV	OO	32	32	Q0M1	CONDITIONAL	Gate M: either BICG Q0M1 >=5% faster than Q0M0 and coherent service telemetry	No launch otherwise; at most two heavy GESUMMV rows concurrently
+C2	GESUMMV	IO	128	32	Q1M1	CONDITIONAL	Gate I: either BICG Q1M1 >=5% faster than better(Q0M1,Q1M0) and coherent telemetry	No launch otherwise; at most two heavy GESUMMV rows concurrently
+C2	GESUMMV	OO	128	32	Q1M1	CONDITIONAL	Gate I: either BICG Q1M1 >=5% faster than better(Q0M1,Q1M0) and coherent telemetry	No launch otherwise; at most two heavy GESUMMV rows concurrently

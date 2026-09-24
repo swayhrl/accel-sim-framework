@@ -18,6 +18,8 @@ OVERLAYS = {
     ("mshr", "double"): ("SG3_L2_MSHR_DOUBLE.config", "85bf9ed344f5308278294b192034ad21ef19ca63fc162ca28819afa2dab59759", "S:128:128:16,L:B:m:L:L,A:384:4,32:0,32"),
     ("mshr", "quad"): ("SG3_L2_MSHR_QUAD.config", "9f40ad53da8d1d2c76a1f6643127b7553fc2c40fd06b260214d8e90b566bcd9e", "S:128:128:16,L:B:m:L:L,A:768:4,32:0,32"),
     ("queue", "128"): ("SG3_L2_MISS_QUEUE_128.config", "4a52cada89a07a4255629cdb08bb31cc98fd24381b99183bc28cbbb7a81e5119", "S:128:128:16,L:B:m:L:L,A:192:4,128:0,32"),
+    ("memservice", "buswidth32"): ("SG3_DRAM_BUSWIDTH_32.config", "9b3ab783a052efd1a0360104852f82607e6a6f507c71e05ba88f1f584d594c28", "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"),
+    ("queue_memservice", "128_buswidth32"): (("SG3_L2_MISS_QUEUE_128.config", "SG3_DRAM_BUSWIDTH_32.config"), ("4a52cada89a07a4255629cdb08bb31cc98fd24381b99183bc28cbbb7a81e5119", "9b3ab783a052efd1a0360104852f82607e6a6f507c71e05ba88f1f584d594c28"), "S:128:128:16,L:B:m:L:L,A:192:4,128:0,32"),
     ("cap", "512"): ("SG3_DTC_CAP_512.config", "7c3232b395c5c1b3c3297ed3f540d537a8d824b95f6361ed414687d9d7c18043", "512"),
     ("cap", "1024"): ("SG3_DTC_CAP_1024.config", "22ae581059370debb31098a916c7ad0e50a88652e9f0108546dcc5216c67936b", "1024"),
     ("cap", "2048"): ("SG3_DTC_CAP_2048.config", "b18a857199435851b7815a075552291ab456ef786b23d5f1415d32b457135f66", "2048"),
@@ -66,17 +68,20 @@ def run(a):
     repo, src=Path(a.repo).resolve(),authority(a.authority,a.workload)
     base=repo/"configs/dtc_l1/fast64"/("FAST64_IO.config" if a.mode=="IO" else "FAST64_OO.config")
     overlay_name, overlay_sha, expected=OVERLAYS[key]
-    overlay=repo/"docs/dtc_l1/iscas2027/granularity/sg3/config"/overlay_name if overlay_name else None
-    if overlay and sha(overlay)!=overlay_sha: raise RuntimeError("overlay hash preflight failed")
+    overlay_names=(overlay_name,) if isinstance(overlay_name,str) else overlay_name
+    overlay_shas=(overlay_sha,) if isinstance(overlay_sha,str) else overlay_sha
+    overlays=[] if overlay_name is None else [repo/"docs/dtc_l1/iscas2027/granularity/sg3/config"/n for n in overlay_names]
+    if any(sha(p)!=h for p,h in zip(overlays,overlay_shas)): raise RuntimeError("overlay hash preflight failed")
     tc=Path(a.trace_config).resolve(); trace=Path(src["trace_list"]); runtime=Path(a.simulator)
     if sha(tc)!=TRACE_CONFIG_SHA or sha(trace)!=src["trace_list_sha256"] or not runtime.is_file(): raise RuntimeError("trace/runtime preflight failed")
     ident=str(uuid.uuid4()); rd=Path(a.runs_root)/f"sg3_{a.dimension}_{a.point}_{a.mode}_{a.workload}_{ident}"
     rd.mkdir(parents=True); frozen=rd/"immutable_sg3_sensitivity_campaign.py"; shutil.copy2(__file__,frozen); frozen.chmod(0o555)
     observer=repo/"docs/dtc_l1/iscas2027/granularity/sg3/config"/OBSERVER_ON_NAME
     if sha(observer)!=OBSERVER_ON_SHA: raise RuntimeError("observer-on overlay hash preflight failed")
-    chain=[base]+([overlay] if overlay else [])+[tc,observer]
-    stage = 2 if a.dimension == "capacity" else 4 if a.dimension == "cap" else 3
-    m={"schema":"SG3_SENSITIVITY_ATTEMPT_V2","attempt_uuid":ident,"lane":"SG3","stage":f"SG3.{stage}","dimension":a.dimension,"point":a.point,"expected_field":expected,"expected_dtc_lower_outstanding_cap":"8192" if a.dimension=="queue" else "NOT_APPLICABLE","workload":a.workload,"mode":a.mode,"observer":"1","launch_utc":now(),"immutable_runner":str(frozen),"runner_sha256":sha(frozen),"simulator":str(runtime),"simulator_sha256":sha(runtime),"core_source_head":a.core_source_head,"config_chain":"|".join(map(str,chain)),"config_chain_sha256":"|".join(sha(x) for x in chain),"trace_list":str(trace),"trace_list_sha256":sha(trace),"expected_instructions":src["instructions"]}
+    chain=[base]+overlays+[tc,observer]
+    stage = "C1" if a.dimension in ("memservice","queue_memservice") else 2 if a.dimension == "capacity" else 4 if a.dimension == "cap" else 3
+    default_cap_dimensions=("queue","memservice","queue_memservice")
+    m={"schema":"SG3_SENSITIVITY_ATTEMPT_V3","attempt_uuid":ident,"lane":"SG3","stage":f"SG3.{stage}","dimension":a.dimension,"point":a.point,"expected_field":expected,"expected_dram_buswidth":"32" if a.dimension in ("memservice","queue_memservice") else "NOT_APPLICABLE","expected_dtc_lower_outstanding_cap":"8192" if a.dimension in default_cap_dimensions else "NOT_APPLICABLE","workload":a.workload,"mode":a.mode,"observer":"1","launch_utc":now(),"immutable_runner":str(frozen),"runner_sha256":sha(frozen),"simulator":str(runtime),"simulator_sha256":sha(runtime),"core_source_head":a.core_source_head,"config_chain":"|".join(map(str,chain)),"config_chain_sha256":"|".join(sha(x) for x in chain),"trace_list":str(trace),"trace_list_sha256":sha(trace),"expected_instructions":src["instructions"]}
     kv(rd/"RUN_MANIFEST.tsv",m); kv(rd/"RUN_START.tsv",m)
     cmd=[str(runtime),"-trace",str(trace)]+sum((["-config",str(x)] for x in chain),[])
     with (rd/"simulator.stdout").open("wb") as o,(rd/"simulator.stderr").open("wb") as e: code=subprocess.run(cmd,cwd=rd,stdout=o,stderr=e).returncode
@@ -90,7 +95,8 @@ def validate(a):
     checks={"uuid":m.get("attempt_uuid")==t.get("attempt_uuid"),"natural_exit":t.get("simulator_exit_status")=="0","workload":m.get("workload")==a.workload,"mode":m.get("mode")==a.mode,"observer_manifest":m.get("observer")=="1","trace":m.get("trace_list_sha256")==src["trace_list_sha256"],"mode_echo":bool(re.search(rf"^-gpgpu_dtc_l1_mode\s+{mode_n}\s+#",out,re.M)),"observer_echo":bool(re.search(r"^-gpgpu_sg3_downstream_observer\s+1\s+#",out,re.M)),"error_scan":not bool(re.search(r"assertion failed|fatal error|deadlock detected|segmentation fault|core dumped",out+err,re.I))}
     if a.dimension=="cap": checks["sweep_echo"]=bool(re.search(rf"^-gpgpu_dtc_l1_lower_outstanding_cap\s+{expected}\s+#",out,re.M))
     else: checks["sweep_echo"]=bool(re.search(rf"^-gpgpu_cache:dl2\s+{re.escape(expected)}\s+#",out,re.M))
-    if a.dimension=="queue": checks["default_dtc_cap_echo"]=bool(re.search(r"^-gpgpu_dtc_l1_lower_outstanding_cap\s+8192\s+#",out,re.M))
+    if a.dimension in ("queue","memservice","queue_memservice"): checks["default_dtc_cap_echo"]=bool(re.search(r"^-gpgpu_dtc_l1_lower_outstanding_cap\s+8192\s+#",out,re.M))
+    if a.dimension in ("memservice","queue_memservice"): checks["dram_buswidth_echo"]=bool(re.search(r"^-gpgpu_dram_buswidth\s+32\s+#",out,re.M)) and bool(re.search(r"DRAM\[0\]: .*busW=32 BL=2",out))
     vals={}
     try:
         required=["gpu_tot_sim_cycle","gpu_tot_sim_insn",f"DTC_L1_{pre}_lower_created",f"DTC_L1_{pre}_lower_responses","DTC_L1_lower_credit_acquired","DTC_L1_lower_credit_released","DTC_L1_lower_outstanding","L2_total_cache_accesses","L2_total_cache_misses","L2_total_cache_pending_hits","L2_total_cache_reservation_fails","SG3_dtc_core_tick_samples","SG3_dtc_lower_outstanding_integral","SG3_l2_bank_tick_samples","SG3_l2_mshr_occupancy_integral","SG3_l2_miss_queue_occupancy_integral","SG3_lower_lifetime_completed","SG3_lower_lifetime_sum_cycles","SG3_lower_lifetime_max_cycles","SG3_lower_lifetime_unmatched_completions","SG3_lower_lifetime_live_records"]
@@ -107,7 +113,7 @@ def validate(a):
 def main():
     p=argparse.ArgumentParser(); ss=p.add_subparsers(dest="cmd",required=True)
     for c in ("run","validate"):
-        x=ss.add_parser(c); x.add_argument("--authority",required=True); x.add_argument("--workload",required=True); x.add_argument("--mode",choices=("IO","OO"),required=True); x.add_argument("--dimension",choices=("capacity","mshr","queue","cap"),required=True); x.add_argument("--point",required=True)
+        x=ss.add_parser(c); x.add_argument("--authority",required=True); x.add_argument("--workload",required=True); x.add_argument("--mode",choices=("IO","OO"),required=True); x.add_argument("--dimension",choices=("capacity","mshr","queue","cap","memservice","queue_memservice"),required=True); x.add_argument("--point",required=True)
         if c=="run": x.add_argument("--repo",required=True); x.add_argument("--runs-root",required=True); x.add_argument("--trace-config",required=True); x.add_argument("--simulator",required=True); x.add_argument("--core-source-head",required=True); x.set_defaults(fn=run)
         else: x.add_argument("--run-dir",required=True); x.add_argument("--output"); x.set_defaults(fn=validate)
     a=p.parse_args(); a.fn(a)
