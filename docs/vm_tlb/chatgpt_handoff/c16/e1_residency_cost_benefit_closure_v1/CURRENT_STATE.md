@@ -120,3 +120,28 @@ Key producer result pending independent consumer closure:
 - representative L0 self-attention NCU does not reproduce the aggregate slowdown, so no unique kernel/cache-cause claim is authorized.
 
 The next project-level decision is deferred until independent 174 closure.
+
+
+---
+
+## 174 prep exists; apply consumer hardening before producer consumption
+
+Current 174 prep:
+
+`hrl/c16-e1-residency-cost-benefit-consumer-174new-v1@278964bfb243a93adf43e748eb3e067e34b16b8a`
+
+Consumer hardening:
+
+`hrl/c16-e1-residency-cost-benefit-consumer-hardening-v2`
+
+Read:
+
+`docs/vm_tlb/chatgpt_handoff/c16/e1_residency_cost_benefit_closure_v1/CONSUMER_RESUME_AUDIT_V2.md`
+
+The hardening fixes a pre-data consumer qweight-footprint bug:
+
+- one up_proj qweight is 33,947,648 B;
+- 28-layer aggregate is 950,534,144 B;
+- BFULL hitRatio under the frozen budget formula is 1/28, not 1.
+
+This is consumer-only hardening. Producer evidence and scientific contracts remain unchanged.
