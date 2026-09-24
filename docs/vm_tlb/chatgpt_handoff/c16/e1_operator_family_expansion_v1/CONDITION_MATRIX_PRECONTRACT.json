@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN_BEFORE_OPERATOR_FAMILY_PRODUCER",
+  "layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+  ],
+  "roles": [
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "condition_sets": {
+    "GATE28": {
+      "selected_roles": [
+        "gate_proj"
+      ],
+      "selected_module_count": 28,
+      "control_condition": "CONTROL_GATE28",
+      "fair_condition": "FAIR_GATE28",
+      "hit_ratio": 0.03571428571428571
+    },
+    "UP28": {
+      "selected_roles": [
+        "up_proj"
+      ],
+      "selected_module_count": 28,
+      "control_condition": "CONTROL_UP28",
+      "fair_condition": "FAIR_UP28",
+      "hit_ratio": 0.03571428571428571
+    },
+    "DOWN28": {
+      "selected_roles": [
+        "down_proj"
+      ],
+      "selected_module_count": 28,
+      "control_condition": "CONTROL_DOWN28",
+      "fair_condition": "FAIR_DOWN28",
+      "hit_ratio": 0.03571428571428571
+    },
+    "GU56": {
+      "selected_roles": [
+        "gate_proj",
+        "up_proj"
+      ],
+      "selected_module_count": 56,
+      "control_condition": "CONTROL_GU56",
+      "fair_condition": "FAIR_GU56",
+      "hit_ratio": 0.017857142857142856
+    },
+    "GD56": {
+      "selected_roles": [
+        "gate_proj",
+        "down_proj"
+      ],
+      "selected_module_count": 56,
+      "control_condition": "CONTROL_GD56",
+      "fair_condition": "FAIR_GD56",
+      "hit_ratio": 0.017857142857142856
+    },
+    "UD56": {
+      "selected_roles": [
+        "up_proj",
+        "down_proj"
+      ],
+      "selected_module_count": 56,
+      "control_condition": "CONTROL_UD56",
+      "fair_condition": "FAIR_UD56",
+      "hit_ratio": 0.017857142857142856
+    },
+    "GUD84": {
+      "selected_roles": [
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "selected_module_count": 84,
+      "control_condition": "CONTROL_GUD84",
+      "fair_condition": "FAIR_GUD84",
+      "hit_ratio": 0.011904761904761904
+    }
+  },
+  "fullhint": {
+    "trigger": "GUD84 material selected fraction >=0.50 AND GUD84 whole-decode benefit <0.02",
+    "conditions": [
+      "CONTROL_FULL_GUD84",
+      "FULLHINT_GUD84"
+    ],
+    "hit_ratio": 1
+  },
+  "fixed_requested_setaside_bytes": 33947648,
+  "expected_actual_setaside_bytes": 37748736,
+  "natural_order_policy": "policy update immediately before selected module natural invocation; natural model call order must be recorded and held constant",
+  "all_84_ffn_events_in_every_condition": true,
+  "no_post_data_condition_selection": true
+}
