@@ -1,0 +1,28 @@
+{
+  "budgets": {
+    "B16": 16777216,
+    "B24": 25165824,
+    "B8": 8388608,
+    "BFULL": 33947648
+  },
+  "conditions": [
+    "CONTROL_UP28_B8",
+    "FAIR_UP28_B8",
+    "CONTROL_UP28_B16",
+    "FAIR_UP28_B16",
+    "CONTROL_UP28_B24",
+    "FAIR_UP28_B24",
+    "CONTROL_UP28_BFULL",
+    "FAIR_UP28_BFULL"
+  ],
+  "control": "NORMAL/NORMAL nonpersisting",
+  "fair": "PERSISTING/STREAMING",
+  "fresh_process_repetitions": 7,
+  "hit_ratio": "min(1, requested/(28*exact qweight bytes))",
+  "no_post_data_budget_selection": true,
+  "protected_family": "all 28 up_proj qweight regions",
+  "reset": "before/after only",
+  "runtime_actual_setaside": "per-budget raw authority, constant across each budget, <= runtime max; no alignment theorem",
+  "status": "FROZEN_BEFORE_COST_BENEFIT_PRODUCER",
+  "updates": "28 exact windows x PREFILL/D0-D3 = 140"
+}

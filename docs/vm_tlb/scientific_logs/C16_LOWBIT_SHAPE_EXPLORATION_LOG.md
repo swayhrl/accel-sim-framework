@@ -605,3 +605,9 @@ Before stopping the residency line or implementing a simulator mechanism, one bo
 - localize where the offsetting time appears.
 
 No simulator or trace capture is authorized by this step.
+
+---
+
+## E1 operator-family closure and residency cost-benefit prep (174-new)
+
+Operator-family producer `eae1cc4d831ae8459da558cf1358bb8daf8d76e6` independently closes from raw evidence at `OPERATOR_FAMILY_NOT_SUPPORTED`. Natural gate→up→down order, all 84 modules, 14 matched conditions, 98 fresh processes, 12 multi-pass NCU profiles, host overhead and FULLHINT-false gate close. UP28 run-aligned direct saving is about 0.5534 ms with -0.3577 ms outside-FFN residual; GUD84 direct saving is about 0.4645 ms with -0.4224 ms residual, and only the 28 up_proj modules are material. Residual cause remains unestablished. Cost/benefit prep freezes four global up_proj budgets, runtime-derived non-overlapping top-level semantics, all-84 child timing, exact residual decomposition, host overhead, eight-profile NCU, 0.10 ms qualification and stage precedence. The cost/benefit producer ref was absent in the one-shot fetch window; status is `READY_FOR_E1_RESIDENCY_COST_BENEFIT_109`. No GPU/simulator/NVBit/trace/mechanism work was used.

@@ -172,6 +172,24 @@ def validate_module_authority(rows: Any) -> dict[tuple[int, str], dict[str, Any]
     return result
 
 
+def _qweight_geometry(value: Mapping[str, Any]) -> tuple[Any, ...]:
+    q = value["qweight"]
+    return (q["bytes"], tuple(q["shape"]), q["contiguous"],
+            q["span_end"] - q["span_start"])
+
+
+def _module_geometry(value: Mapping[str, Any]) -> tuple[Any, ...]:
+    return (value["module_class"], value["implementation"], value["backend"],
+            _qweight_geometry(value))
+
+
+def _same_module_geometry(left: Mapping[tuple[int, str], Mapping[str, Any]],
+                          right: Mapping[tuple[int, str], Mapping[str, Any]]) -> bool:
+    return set(left) == set(right) and all(
+        _module_geometry(left[key]) == _module_geometry(right[key]) for key in left
+    )
+
+
 def _sequence(raw: Any, phase: str, modules: Mapping[tuple[int, str], Mapping[str, Any]],
               *, policy_timeline: bool = False) -> tuple[tuple[int, str], ...]:
     if not isinstance(raw, list) or len(raw) != 84:
@@ -229,11 +247,15 @@ def consume_natural_call_order_authority(document: Mapping[str, Any]) -> dict[st
         if _sha(run.get("prefix_token_sha256"), "prefix_token_sha256") != prefix:
             raise OperatorPolicyError("natural-order prefix SHA drift")
         _tokens(run.get("generated_token_ids"))
+        run_modules = (validate_module_authority(run.get("module_authority"))
+                       if run.get("module_authority") is not None else modules)
+        if not _same_module_geometry(run_modules, modules):
+            raise OperatorPolicyError("process-local module/qweight geometry drift")
         phases = run.get("phases")
         if not isinstance(phases, Mapping) or set(phases) != set(PHASES):
             raise OperatorPolicyError("missing/extra natural call-order phase")
         for phase in PHASES:
-            observed = _sequence(phases[phase], phase, modules)
+            observed = _sequence(phases[phase], phase, run_modules)
             if phase not in canonical:
                 canonical[phase] = observed
             elif observed != canonical[phase]:
@@ -425,7 +447,8 @@ def consume_operator_policy_runs(document: Mapping[str, Any]) -> dict[str, Any]:
         raise OperatorPolicyError("missing natural_call_order_authority")
     natural = consume_natural_call_order_authority(call_authority_doc)
     # The nested authority must use the exact same module rows, not an alternate universe.
-    if validate_module_authority(call_authority_doc.get("module_authority")) != modules:
+    if not _same_module_geometry(
+            validate_module_authority(call_authority_doc.get("module_authority")), modules):
         raise OperatorPolicyError("natural/order module authority mismatch")
     if natural["accepted_prefix_sha256"] != prefix:
         raise OperatorPolicyError("natural/order accepted prefix mismatch")
@@ -463,15 +486,19 @@ def consume_operator_policy_runs(document: Mapping[str, Any]) -> dict[str, Any]:
             if _sha(run.get("prefix_token_sha256"), "prefix_token_sha256") != prefix:
                 raise OperatorPolicyError("prefix SHA drift")
             _tokens(run.get("generated_token_ids"))
+            run_modules = (validate_module_authority(run.get("module_authority"))
+                           if run.get("module_authority") is not None else modules)
+            if not _same_module_geometry(run_modules, modules):
+                raise OperatorPolicyError("process-local module/qweight geometry drift")
             calls = run.get("natural_calls")
             if not isinstance(calls, Mapping) or set(calls) != set(PHASES):
                 raise OperatorPolicyError("missing/extra run natural-call phase")
             calls_by_phase = {}
             for phase in PHASES:
-                if _sequence(calls[phase], phase, modules, policy_timeline=True) != canonical[phase]:
+                if _sequence(calls[phase], phase, run_modules, policy_timeline=True) != canonical[phase]:
                     raise OperatorPolicyError("condition natural call order drift")
                 calls_by_phase[phase] = calls[phase]
-            policy = validate_policy_receipt(run.get("policy_receipt"), condition, modules,
+            policy = validate_policy_receipt(run.get("policy_receipt"), condition, run_modules,
                                              canonical, calls_by_phase)
             if not math.isclose(_finite(run.get("policy_api_duration_us"), "policy_api_duration_us"),
                                 policy["total_api_duration_us"], rel_tol=1e-12, abs_tol=1e-9):
@@ -503,7 +530,7 @@ def consume_operator_policy_runs(document: Mapping[str, Any]) -> dict[str, Any]:
                        _integer(row.get("decode_index"), "decode_index"))
                 if key not in authority or key in observed:
                     raise OperatorPolicyError("wrong/duplicate FFN timing event")
-                module = modules[key[:2]]
+                module = run_modules[key[:2]]
                 if _text(row.get("module_class"), "module_class") != module["module_class"] or \
                         _text(row.get("implementation"), "implementation") != module["implementation"] or \
                         _text(row.get("backend"), "backend") != module["backend"] or \

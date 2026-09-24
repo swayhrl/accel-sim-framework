@@ -47,6 +47,7 @@ ADDITIVE_UNITS = {
     "L1_TEX_BYTES": {"byte", "bytes"},
     "L2_BYTES": {"byte", "bytes"},
     "DRAM_BYTES": {"byte", "bytes"},
+    "KERNEL_DURATION": {"ns"},
     "KERNEL_ELAPSED_CYCLES": {"cycle", "cycles"},
     "L2_READ_HIT_SECTORS": {"sector", "sectors"},
     "L2_READ_MISS_SECTORS": {"sector", "sectors"},
@@ -392,6 +393,7 @@ def _profile_spec(raw: Any, root: Path, allowed: frozenset[tuple[str, str]]) -> 
             any(not isinstance(x, str) or not x.strip() for x in kernels) or
             len(kernels) != len(set(kernels))):
         raise OperatorNCUError("invalid/duplicate expected kernel inventory")
+    local_authority = _module_authority(raw.get("module_authority")) if raw.get("module_authority") is not None else None
     return {"condition": condition, "layer_index": layer, "role": role,
             "decode_index": decode,
             "generated_token_id": _integer(raw.get("generated_token_id"), "generated_token_id"),
@@ -404,7 +406,8 @@ def _profile_spec(raw: Any, root: Path, allowed: frozenset[tuple[str, str]]) -> 
             "session_path": _path(root, raw.get("session_path"), "session_path"),
             "profile_path": _path(root, raw.get("profile_path"), "profile_path"),
             "policy_history_path": _path(root, raw.get("policy_history_path"),
-                                         "policy_history_path")}
+                                         "policy_history_path"),
+            "module_authority": local_authority}
 
 
 def _session(path: Path, spec: Mapping[str, Any], metrics: set[str]) -> dict[str, Any]:
@@ -541,8 +544,10 @@ def _consume_matrix(raw_profiles: Any, expected_matrix: frozenset[tuple[str, str
     output = []
     metric_names = {row["metric_name"] for row in metrics}
     for spec in specs:
+        local = spec["module_authority"]
+        profile_modules, profile_order = local if local is not None else (modules, natural_order)
         policy = _policy(spec["policy_history_path"], spec["condition"],
-                         modules, natural_order)
+                         profile_modules, profile_order)
         receipts = _profile_receipts(spec["profile_path"], spec, policy["sha256"])
         output.append({"condition": spec["condition"], "layer_index": 0,
                        "role": spec["role"], "decode_index": 3,
