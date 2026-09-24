@@ -2,7 +2,7 @@
 
 Last coordination update: 2026-09-24
 
-Status: **SIMULATOR MAINLINE NEAR-CLOSED; BOUNDED DOWNSTREAM-HEADROOM STUDY AUTHORIZED**
+Status: **SIMULATOR MAINLINE NEAR-CLOSED; BUFFERING × MEMORY-SERVICE INTERACTION STUDY AUTHORIZED**
 
 ## 1. Current paper objective
 
@@ -14,7 +14,8 @@ The paper should establish:
 2. IO uses ordered completion/release; OO uses explicit dependency/reference-state tracking.
 3. The main performance gain is real under a fixed 64-SM trace-driven platform.
 4. The gain is not explained solely by extra physical storage, transaction granularity, or total lower traffic.
-5. Higher L1-side concurrency can create workload-specific downstream oversubscription; the remaining question is whether one source-defined downstream resource can provide useful headroom while keeping the default DTC injection cap.
+5. Higher L1-side concurrency can create workload-specific downstream oversubscription.
+6. The final simulator question is whether the lost performance in difficult workloads reflects only finite buffering, deeper memory-service limits, or an interaction between the two.
 
 ## 2. Frozen / closed evidence — do not redo
 
@@ -36,11 +37,11 @@ Do not modify, relabel, replace, or rerun these to create cleaner stage names.
 Before execution, `git fetch origin` and verify actual remote heads. At this coordination point:
 
 - SG1 whole-line/fairness: `e909f90a`
-- SG3 downstream localization: `4f6e136e`
-- SG4A logical-Tag: `42735258`
+- SG3 downstream localization: `f1186336`
 - SG5 lower-traffic observer: `f4077f46`
+- SG4A has advanced beyond the older coordination anchor; treat its latest remote state as read-only and record the fetched HEAD.
 
-If a remote branch has advanced, use the newer state and record the delta. Never reset an advanced branch.
+If any remote branch advances again, use the newer state and record the delta. Never reset an advanced branch.
 
 ## 4. Completed scientific conclusions
 
@@ -83,11 +84,6 @@ Do not rerun logical80 and do not expand SG4A to FAST12.
 
 The staged paper-critical SG5 set is sufficient for the bounded claim that total lower-request count/payload alone does not explain DTC performance.
 
-Examples already accepted:
-
-- BICG comparable 128-B configurations have nearly equal lower work while cycles differ substantially.
-- Btree / 2DConvolution can run much faster under DTC without having the minimum lower traffic.
-
 The GESUMMV/IO SG5 observer row has persistent non-scientific `exit -9` attempts. Do not retry it a third time.
 
 ### 4.6 Downstream cap sensitivity
@@ -104,56 +100,96 @@ Paper-safe current interpretation:
 
 > DTC can create workload-specific downstream oversubscription / injection pressure after L1-side concurrency limits are removed.
 
-Do **not** claim that a unique physical L2 bottleneck has already been isolated.
+Do not claim that a unique physical L2 bottleneck has already been isolated.
 
-## 5. Default modeled downstream configuration
+## 5. Phase-A telemetry and queue-headroom state
 
-Authority: SG3 source/config audit.
+The accepted BICG telemetry gate showed:
+
+- `MISS_QUEUE_FULL` falls strongly from default -> cap2048 -> cap512;
+- lower-request lifetime and cycles improve in the same direction;
+- L2 data/fill-port utilization is low and did not satisfy the original port trigger.
+
+This legitimately triggered the predeclared queue=128 intervention.
+
+Latest accepted partial result:
+
+### BICG / OO / queue=128 / cap=8192
+
+Compared with its accepted default queue=32 row:
+
+- `MISS_QUEUE_FULL`: 43,594,150 -> 0
+- cycles: 47,231,655 -> 47,588,121 (**+0.75%**, slightly worse)
+- average lower lifetime: 5,612.70 -> 5,692.26 cycles (slightly worse)
+
+This is strong intervention evidence for one bounded statement:
+
+> Eliminating L2 miss-queue-full events is **not sufficient** to recover BICG/OO performance.
+
+It does **not** prove that queue pressure is irrelevant to the full system. A finite queue can be a backpressure symptom of a slower downstream service path. Increasing buffering alone may remove queue-full events without increasing sustained service rate.
+
+Therefore the open question is now explicitly a **buffering × downstream memory-service interaction** question.
+
+## 6. Default modeled downstream configuration
+
+Authority: SG3 source/config audit and FAST64 resolved configuration.
 
 - 64 SM total.
-- 40 L2 banks/subpartitions.
-- per bank: 128 sets × 16 ways × 128 B = 256 KiB.
+- 20 memory channels/modules.
+- 2 L2 subpartitions per memory channel = 40 L2 banks/subpartitions.
+- per L2 bank: 128 sets × 16 ways × 128 B = 256 KiB.
 - aggregate modeled L2 data capacity ≈ 10 MiB.
 - L2 sector atom = 32 B.
 - L2 MSHR = 192 entries/bank.
 - MSHR merge limit = 4.
-- miss queue = 32 entries/bank.
-- data/fill port = 32 B/cache-cycle/bank.
+- L2 miss queue = 32 entries/bank.
+- L2 data/fill port = 32 B/cache-cycle/bank.
 - ROP delay = 200 cycles.
 - DTC GPU-wide lower outstanding cap = 8192.
+- DRAM clock = 850 MHz in the inherited Volta-like memory model.
+- DRAM partition queues = 64:64:64:64.
+- FR-FCFS DRAM scheduler queue = 64.
+- DRAM return queue = 192.
+- DRAM bus width = 16 B; burst length = 2.
+- fixed `dram_latency` field = 100 plus source-defined DRAM timing parameters.
 
-The DTC cap is GPU-wide, not per SM. Conventional variants do not consume this cap.
+The FAST64 platform is a fixed **64-SM Volta-like trace-driven configuration derived from the Accel-Sim Volta model**, not a literal NVIDIA V100 configuration. Do not describe it as an exact V100.
 
-## 6. Current open scientific question
+## 7. Current open scientific question
 
-Before fully freezing simulator work, answer one final bounded question:
+The current question is no longer:
 
-> Can a source-supported downstream resource enlargement recover DTC performance while preserving the original high DTC injection cap (8192)?
+> Is the L2 miss queue alone the bottleneck?
 
-This is a **headroom** question, not a new broad sensitivity campaign.
+BICG/OO already says no.
 
-The only candidate first-line resources are:
+The current question is:
 
-- L2 miss queue, if accepted telemetry shows coherent queue pressure.
-- L2 data/fill port width, if accepted telemetry shows coherent port saturation.
+> Does DTC's high injection rate require both enough transient buffering and enough deeper memory-service capability before the exposed MLP can translate into performance?
 
-No simulator run is authorized before the telemetry gate in `CODEX_NEXT_STAGE.md`.
+The next stage must therefore separate:
 
-## 7. Immediate execution order
+1. queue buffering headroom;
+2. downstream memory-service headroom;
+3. their interaction.
 
-1. Build the accepted BICG telemetry comparison table for:
-   - default
-   - L2 capacity 2x
-   - L2 MSHR 4x
-   - cap=2048
-   - cap=512
-   across IO/OO.
-2. Interpret queue/port pressure using source-defined metrics only.
-3. Apply the predeclared decision tree in `CODEX_NEXT_STAGE.md`.
-4. Run at most the bounded queue/port headroom rows that the telemetry actually triggers.
-5. Produce one review pack and stop at its decision boundary.
+This must be done with a small predeclared 2×2 experiment, not a broad memory-system sweep.
 
-## 8. Resource / failure discipline
+## 8. Immediate execution order
+
+1. Let the already-running queue=128 family terminate naturally:
+   - BICG/IO
+   - GESUMMV/IO
+   - GESUMMV/OO
+   The accepted BICG/OO row remains immutable evidence.
+2. In parallel, perform a **zero-simulation source audit + existing-telemetry audit** of the memory side after L2.
+3. Select at most one clean source-defined memory-service headroom knob under the rules in `CODEX_NEXT_STAGE.md`.
+4. Pre-register a BICG IO/OO queue × memory-service 2×2 design.
+5. Run only the missing BICG cells authorized by that design.
+6. Expand to GESUMMV only if the predeclared BICG validation gate is met.
+7. Produce the review pack and stop.
+
+## 9. Resource / failure discipline
 
 - User authorizes aggressive compute use and will manage disk capacity.
 - Do not use old free-space threshold bands as automatic scientific stop criteria.
@@ -163,9 +199,9 @@ No simulator run is authorized before the telemetry gate in `CODEX_NEXT_STAGE.md
 - Preserve all failures.
 - Use fresh UUIDs for any new simulator attempt.
 
-## 9. Next project phase
+## 10. Next project phase
 
-After this bounded downstream-headroom decision, the simulator mainline should freeze unless a new result exposes a genuine scientific-contract issue.
+After this bounded interaction study, the simulator mainline should freeze unless a result exposes a genuine scientific-contract issue.
 
 Then priority moves to:
 
