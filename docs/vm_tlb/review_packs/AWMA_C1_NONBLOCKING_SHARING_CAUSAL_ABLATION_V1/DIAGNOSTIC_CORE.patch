@@ -1,0 +1,50 @@
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -202,6 +202,11 @@
+ 
+   void print(FILE *fout) const {
+     if (m_admission_total == 0) return;
++    const char *nonblocking_ablation =
++        getenv("GPGPUSIM_AWMA_NONBLOCKING_CAUSAL_ABLATION");
++    const bool owner_only_no_share_control =
++        nonblocking_ablation != NULL &&
++        strcmp(nonblocking_ablation, "owner_only_no_share") == 0;
+     uint64_t repeated_admissions = 0;
+     uint64_t readmitted_uids = 0;
+     uint64_t admission_histogram[5] = {};
+@@ -272,6 +277,9 @@
+             (unsigned long long)m_no_wait_fallback_wait_latency_max);
+     fprintf(fout, "awma_nonblocking_shared_ready_members = %llu\n",
+             (unsigned long long)m_nonblocking_shared_ready_members);
++    fprintf(fout,
++            "awma_nonblocking_owner_only_no_share_control = %u\n",
++            owner_only_no_share_control ? 1U : 0U);
+     fprintf(fout, "awma_nonblocking_fallback_members = %llu\n",
+             (unsigned long long)m_nonblocking_fallback_members);
+     fprintf(fout,
+@@ -2897,6 +2905,16 @@
+   const bool nonblocking_opportunistic_share =
+       candidate_mode == vm_translation::
+           AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE;
++  const char *nonblocking_ablation_text =
++      getenv("GPGPUSIM_AWMA_NONBLOCKING_CAUSAL_ABLATION");
++  const bool owner_only_no_share_control =
++      nonblocking_ablation_text != NULL &&
++      strcmp(nonblocking_ablation_text, "owner_only_no_share") == 0;
++  assert(nonblocking_ablation_text == NULL ||
++         nonblocking_ablation_text[0] == '\0' ||
++         strcmp(nonblocking_ablation_text, "none") == 0 ||
++         owner_only_no_share_control);
++  assert(!owner_only_no_share_control || nonblocking_opportunistic_share);
+   const unsigned share_delivery_slots =
+       vm_translation::awma_share_delivery_slots();
+   const unsigned share_min_cohort_size =
+@@ -3291,7 +3309,7 @@
+                              cohort_owner->vm_translation_applied();
+     const vm_translation::nonblocking_share_action action =
+         vm_translation::decide_nonblocking_share(
+-            legal_member, owner_ready,
++            legal_member, owner_ready && !owner_only_no_share_control,
+             access.awma_no_wait_share_fallback());
+     if (action == vm_translation::NONBLOCKING_SHARE_READY_OWNER) {
+       const uint64_t member_pa =
