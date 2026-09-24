@@ -1,0 +1,362 @@
+--- a/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/vm_translation.h
+@@ -202,6 +202,7 @@
+ enum awma_translation_candidate_mode {
+   AWMA_TRANSLATION_CANDIDATE_NONE = 0,
+   AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE,
++  AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE,
+   AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT
+ };
+ 
+@@ -214,6 +215,19 @@
+ // Accepted C1 shares every legal cohort of size >=2. Fanout-aware discovery
+ // adds exactly one fixed size-4 gate; no other threshold is accepted.
+ unsigned awma_share_min_cohort_size();
++
++// Fixed C1 nonblocking policy. A legal member may consume an already-ready
++// owner result at its baseline decision point. Otherwise it permanently takes
++// the baseline path; a late owner result can never re-apply translation.
++enum nonblocking_share_action {
++  NONBLOCKING_SHARE_NOT_A_MEMBER = 0,
++  NONBLOCKING_SHARE_READY_OWNER,
++  NONBLOCKING_SHARE_BASELINE_FALLBACK,
++  NONBLOCKING_SHARE_FALLBACK_LOCKED
++};
++nonblocking_share_action decide_nonblocking_share(bool legal_member,
++                                                  bool owner_ready,
++                                                  bool fallback_locked);
+ 
+ // A shared result is legal only when every translation identity component
+ // available in this model agrees.  The caller still preserves one logical UID
+--- a/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/vm_translation.cc
+@@ -16,6 +16,8 @@
+     return AWMA_TRANSLATION_CANDIDATE_NONE;
+   if (strcmp(text, "same_page_share") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE;
++  if (strcmp(text, "nonblocking_opportunistic_share") == 0)
++    return AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE;
+   if (strcmp(text, "refill_protect") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT;
+   assert(false && "unknown GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
+@@ -28,6 +30,8 @@
+       return "none";
+     case AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE:
+       return "same_page_share";
++    case AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE:
++      return "nonblocking_opportunistic_share";
+     case AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT:
+       return "refill_protect";
+     default:
+@@ -78,6 +82,15 @@
+   assert((parsed == 2 || parsed == 4) &&
+          "fanout-aware discovery permits only accepted size 2 or fixed size 4");
+   return static_cast<unsigned>(parsed);
++}
++
++nonblocking_share_action decide_nonblocking_share(bool legal_member,
++                                                  bool owner_ready,
++                                                  bool fallback_locked) {
++  if (!legal_member) return NONBLOCKING_SHARE_NOT_A_MEMBER;
++  if (fallback_locked) return NONBLOCKING_SHARE_FALLBACK_LOCKED;
++  return owner_ready ? NONBLOCKING_SHARE_READY_OWNER
++                     : NONBLOCKING_SHARE_BASELINE_FALLBACK;
+ }
+ 
+ bool same_page_share_compatible(
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -62,6 +62,11 @@
+         m_no_wait_fallback_wait_completions(0),
+         m_no_wait_fallback_wait_latency_total(0),
+         m_no_wait_fallback_wait_latency_max(0),
++        m_nonblocking_shared_ready_members(0),
++        m_nonblocking_fallback_members(0),
++        m_nonblocking_duplicate_physical_lookup_requests(0),
++        m_nonblocking_fallback_translation_completions(0),
++        m_nonblocking_fallback_service(),
+         m_gated_cohorts(0), m_shared_cohorts(0), m_cohort_size_max(0),
+         m_admission_count_max(0), m_owner_attempt_max(0),
+         m_owner_service(), m_cohort_histogram(), m_wait_latency_histogram() {}
+@@ -154,6 +159,28 @@
+     m_no_wait_fallback_wait_latency_total += latency;
+     if (latency > m_no_wait_fallback_wait_latency_max)
+       m_no_wait_fallback_wait_latency_max = latency;
++  }
++
++  void note_nonblocking_shared_ready(shader_core_ctx *core) {
++    if (enabled(core)) ++m_nonblocking_shared_ready_members;
++  }
++
++  void note_nonblocking_fallback(shader_core_ctx *core) {
++    if (!enabled(core)) return;
++    ++m_nonblocking_fallback_members;
++    // The owner request remains live and is never cancelled. The member now
++    // launches its own frozen-baseline lookup, so this is an explicit
++    // duplicate physical lookup request even if it later merges at the MSHR.
++    ++m_nonblocking_duplicate_physical_lookup_requests;
++  }
++
++  void note_nonblocking_fallback_ready(
++      shader_core_ctx *core,
++      vm_translation::request_service_class service) {
++    if (!enabled(core)) return;
++    assert(service < vm_translation::REQUEST_SERVICE_CLASS_COUNT);
++    ++m_nonblocking_fallback_translation_completions;
++    ++m_nonblocking_fallback_service[service];
+   }
+ 
+   void note_member_delivery(shader_core_ctx *core, unsigned member_uid,
+@@ -243,6 +270,33 @@
+             (unsigned long long)m_no_wait_fallback_wait_latency_total);
+     fprintf(fout, "awma_owner_wait_no_wait_fallback_wait_latency_max = %llu\n",
+             (unsigned long long)m_no_wait_fallback_wait_latency_max);
++    fprintf(fout, "awma_nonblocking_shared_ready_members = %llu\n",
++            (unsigned long long)m_nonblocking_shared_ready_members);
++    fprintf(fout, "awma_nonblocking_fallback_members = %llu\n",
++            (unsigned long long)m_nonblocking_fallback_members);
++    fprintf(fout,
++            "awma_nonblocking_duplicate_physical_lookup_requests = %llu\n",
++            (unsigned long long)
++                m_nonblocking_duplicate_physical_lookup_requests);
++    fprintf(fout,
++            "awma_nonblocking_fallback_translation_completions = %llu\n",
++            (unsigned long long)
++                m_nonblocking_fallback_translation_completions);
++    fprintf(fout, "awma_nonblocking_fallback_service_l1 = %llu\n",
++            (unsigned long long)m_nonblocking_fallback_service[
++                vm_translation::REQUEST_SERVICE_L1_HIT]);
++    fprintf(fout, "awma_nonblocking_fallback_service_l2 = %llu\n",
++            (unsigned long long)m_nonblocking_fallback_service[
++                vm_translation::REQUEST_SERVICE_L2_HIT]);
++    fprintf(fout, "awma_nonblocking_fallback_service_mshr_merge = %llu\n",
++            (unsigned long long)m_nonblocking_fallback_service[
++                vm_translation::REQUEST_SERVICE_MSHR_MERGE]);
++    fprintf(fout, "awma_nonblocking_fallback_service_ptw = %llu\n",
++            (unsigned long long)m_nonblocking_fallback_service[
++                vm_translation::REQUEST_SERVICE_PTW]);
++    fprintf(fout, "awma_nonblocking_fallback_service_unobserved = %llu\n",
++            (unsigned long long)m_nonblocking_fallback_service[
++                vm_translation::REQUEST_SERVICE_UNOBSERVED]);
+     fprintf(fout, "awma_owner_wait_pending_members_final = %llu\n",
+             (unsigned long long)m_member_wait_start.size());
+     fprintf(fout, "awma_owner_wait_first_issue_latency_total = %llu\n",
+@@ -307,6 +361,12 @@
+   uint64_t m_no_wait_fallback_wait_completions;
+   uint64_t m_no_wait_fallback_wait_latency_total;
+   uint64_t m_no_wait_fallback_wait_latency_max;
++  uint64_t m_nonblocking_shared_ready_members;
++  uint64_t m_nonblocking_fallback_members;
++  uint64_t m_nonblocking_duplicate_physical_lookup_requests;
++  uint64_t m_nonblocking_fallback_translation_completions;
++  uint64_t m_nonblocking_fallback_service[
++      vm_translation::REQUEST_SERVICE_CLASS_COUNT];
+   uint64_t m_gated_cohorts;
+   uint64_t m_shared_cohorts;
+   unsigned m_cohort_size_max;
+@@ -2834,6 +2894,9 @@
+       unsigned(strtoul(pipeline_text, NULL, 10)) != 0;
+   const vm_translation::awma_translation_candidate_mode candidate_mode =
+       vm_translation::awma_candidate_mode();
++  const bool nonblocking_opportunistic_share =
++      candidate_mode == vm_translation::
++          AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE;
+   const unsigned share_delivery_slots =
+       vm_translation::awma_share_delivery_slots();
+   const unsigned share_min_cohort_size =
+@@ -2858,12 +2921,21 @@
+   assert(share_min_cohort_size == 2 ||
+          candidate_mode ==
+              vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE);
++  const char *share_min_cohort_text =
++      getenv("GPGPUSIM_AWMA_SHARE_MIN_COHORT_SIZE");
++  assert(!nonblocking_opportunistic_share ||
++         share_min_cohort_text == NULL || share_min_cohort_text[0] == '\0');
++  assert(!nonblocking_opportunistic_share || share_delivery_slots == 1);
++  assert(!nonblocking_opportunistic_share ||
++         (share_ablation_text == NULL || share_ablation_text[0] == '\0' ||
++          strcmp(share_ablation_text, "none") == 0));
+   assert(!ready_application_v2 || pipelined_launch);
+   assert(candidate_mode ==
+              vm_translation::AWMA_TRANSLATION_CANDIDATE_NONE ||
+          pipelined_launch);
+-  assert(candidate_mode !=
+-             vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE ||
++  assert((candidate_mode !=
++              vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE &&
++          !nonblocking_opportunistic_share) ||
+          !ready_application_v2);
+   const bool ready_application_diagnostics =
+       getenv("GPGPUSIM_READY_APPLICATION_DIAGNOSTICS") != NULL;
+@@ -2914,8 +2986,62 @@
+     for (std::list<mem_access_t>::iterator observed = entries.begin();
+          observed != entries.end(); ++observed)
+       g_owner_wait.note_resident(m_core, *observed, now);
+-    if (candidate_mode ==
+-        vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE) {
++    if (nonblocking_opportunistic_share) {
++      const uint64_t generation =
++          m_gpu->vm_translation()->translation_generation(0);
++      // Preserve accepted C1 owner selection and legality, but only the owner
++      // launches speculatively. Members are decided exactly once when they
++      // become the accessq head; no result is pushed into non-head members.
++      for (std::list<mem_access_t>::iterator owner = entries.begin();
++           owner != entries.end(); ++owner) {
++        if (vm_core::transaction_crosses_page(
++                owner->get_sim_va(), owner->get_size(),
++                m_config->gpgpu_vm_page_size))
++          continue;
++        bool earlier_equivalent = false;
++        for (std::list<mem_access_t>::iterator prior = entries.begin();
++             prior != owner; ++prior)
++          if (vm_translation::same_page_share_compatible(
++                  0, prior->get_sim_va(), prior->get_size(), candidate_access,
++                  generation, 0, owner->get_sim_va(), owner->get_size(),
++                  candidate_access, generation,
++                  m_config->gpgpu_vm_page_size)) {
++            earlier_equivalent = true;
++            break;
++          }
++        if (earlier_equivalent) continue;
++        unsigned cohort_size = 1;
++        std::list<mem_access_t>::iterator member = owner;
++        ++member;
++        for (; member != entries.end(); ++member)
++          if (vm_translation::same_page_share_compatible(
++                  0, owner->get_sim_va(), owner->get_size(), candidate_access,
++                  generation, 0, member->get_sim_va(), member->get_size(),
++                  candidate_access, generation,
++                  m_config->gpgpu_vm_page_size))
++            ++cohort_size;
++        if (cohort_size == 1) continue;
++        g_owner_wait.note_cohort(m_core, owner->get_uid(), cohort_size, true);
++        if (owner->vm_translation_applied()) continue;
++        uint64_t owner_pa = 0;
++        vm_translation::translation_source owner_source =
++            vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++        vm_translation::request_service_class owner_service =
++            vm_translation::REQUEST_SERVICE_UNOBSERVED;
++        g_owner_wait.note_owner_attempt(m_core, owner->get_uid());
++        const vm_translation::lookup_result owner_result =
++            m_gpu->vm_translation()->translate(
++                m_sid, 0, owner->get_sim_va(), owner->get_size(), now,
++                owner->get_uid(), &owner_pa, &owner_source, candidate_access,
++                true, &owner_service);
++        if (owner_result == vm_translation::READY) {
++          apply_ready_translation(*owner, owner_pa, owner_source);
++          m_gpu->vm_translation()->note_same_page_share_owner_ready();
++          g_owner_wait.note_owner_ready(m_core, owner_service);
++        }
++      }
++    } else if (candidate_mode ==
++               vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE) {
+       const uint64_t generation =
+           m_gpu->vm_translation()->translation_generation(0);
+       unsigned delivered_members = 0;
+@@ -3102,6 +3228,22 @@
+             ++equivalent;
+         if (equivalent >= share_min_cohort_size) continue;
+         }
++      } else if (nonblocking_opportunistic_share &&
++                 !candidate.awma_no_wait_share_fallback()) {
++        unsigned equivalent = 0;
++        const uint64_t generation =
++            m_gpu->vm_translation()->translation_generation(0);
++        for (std::list<mem_access_t>::iterator peer = entries.begin();
++             peer != entries.end(); ++peer)
++          if (vm_translation::same_page_share_compatible(
++                  0, candidate.get_sim_va(), candidate.get_size(),
++                  candidate_access, generation, 0, peer->get_sim_va(),
++                  peer->get_size(), candidate_access, generation,
++                  m_config->gpgpu_vm_page_size))
++            ++equivalent;
++        // Every legal cohort uses the same READY/fallback rule. No fanout
++        // threshold participates in this candidate.
++        if (equivalent >= 2) continue;
+       }
+       uint64_t ignored_pa = 0;
+       vm_translation::translation_source ignored_source =
+@@ -3124,6 +3266,53 @@
+     }
+   }
+   mem_access_t &access = inst.accessq_back();
++  if (nonblocking_opportunistic_share &&
++      !access.vm_translation_applied()) {
++    unsigned equivalent = 0;
++    mem_access_t *cohort_owner = NULL;
++    const uint64_t generation =
++        m_gpu->vm_translation()->translation_generation(0);
++    const vm_translation::translation_access head_access =
++        inst.isatomic() ? vm_translation::TRANSLATION_ACCESS_ATOMIC :
++        (inst.is_store() ? vm_translation::TRANSLATION_ACCESS_WRITE :
++                           vm_translation::TRANSLATION_ACCESS_READ);
++    std::list<mem_access_t> &entries = inst.accessq_entries();
++    for (std::list<mem_access_t>::iterator peer = entries.begin();
++         peer != entries.end(); ++peer)
++      if (vm_translation::same_page_share_compatible(
++              0, access.get_sim_va(), access.get_size(), head_access,
++              generation, 0, peer->get_sim_va(), peer->get_size(),
++              head_access, generation, m_config->gpgpu_vm_page_size)) {
++        if (cohort_owner == NULL) cohort_owner = &(*peer);
++        ++equivalent;
++      }
++    const bool legal_member = equivalent >= 2 && cohort_owner != &access;
++    const bool owner_ready = cohort_owner != NULL &&
++                             cohort_owner->vm_translation_applied();
++    const vm_translation::nonblocking_share_action action =
++        vm_translation::decide_nonblocking_share(
++            legal_member, owner_ready,
++            access.awma_no_wait_share_fallback());
++    if (action == vm_translation::NONBLOCKING_SHARE_READY_OWNER) {
++      const uint64_t member_pa =
++          (cohort_owner->get_sim_pa() / m_config->gpgpu_vm_page_size) *
++              m_config->gpgpu_vm_page_size +
++          vm_core::page_offset(access.get_sim_va(),
++                               m_config->gpgpu_vm_page_size);
++      apply_ready_translation(
++          access, member_pa,
++          static_cast<vm_translation::translation_source>(
++              cohort_owner->get_translation_telemetry_outcome()));
++      m_gpu->vm_translation()->note_same_page_share_delivery();
++      g_owner_wait.note_nonblocking_shared_ready(m_core);
++    } else if (action ==
++               vm_translation::NONBLOCKING_SHARE_BASELINE_FALLBACK) {
++      access.mark_awma_no_wait_share_fallback();
++      g_owner_wait.note_no_wait_fallback(m_core, access.get_uid(),
++                                         vm_observation_cycle(m_core));
++      g_owner_wait.note_nonblocking_fallback(m_core);
++    }
++  }
+   if (candidate_mode ==
+           vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE &&
+       !access.vm_translation_applied()) {
+@@ -3239,13 +3428,19 @@
+       const unsigned race_uid = race_uid_text == NULL ? 0 : unsigned(strtoul(race_uid_text, NULL, 10));
+       if (race_uid != 0 && m_core->get_kernel() != NULL && m_core->get_kernel()->get_uid() == race_uid)
+         vm_translation::enable_target_fill_race_telemetry(m_gpu->vm_translation());
++      vm_translation::request_service_class head_service =
++          vm_translation::REQUEST_SERVICE_UNOBSERVED;
++      const bool nonblocking_fallback_request =
++          nonblocking_opportunistic_share &&
++          access.awma_no_wait_share_fallback();
+       const vm_translation::lookup_result result =
+           m_gpu->vm_translation()->translate(
+               m_sid, 0, access.get_sim_va(), access.get_size(),
+               m_core->get_gpu()->gpu_sim_cycle +
+               m_core->get_gpu()->gpu_tot_sim_cycle,
+               access.get_uid(),
+-              &translated_pa, &translation_outcome, translation_access);
++              &translated_pa, &translation_outcome, translation_access, true,
++              nonblocking_fallback_request ? &head_service : NULL);
+       if (result != vm_translation::READY) {
+         ++m_stats->vm_translation_stall_cycles;
+         stall_reason = COAL_STALL;
+@@ -3256,6 +3451,8 @@
+       }
+       assert(translation_outcome !=
+              vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
++      if (nonblocking_fallback_request)
++        g_owner_wait.note_nonblocking_fallback_ready(m_core, head_service);
+       if (ready_application_diagnostics && ready_application_v2)
+         ++m_stats->vm_ready_application_head_applied;
+       access.set_sim_pa(static_cast<new_addr_type>(translated_pa));
