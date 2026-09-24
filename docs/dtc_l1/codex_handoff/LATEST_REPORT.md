@@ -1,5 +1,13 @@
 # Latest Codex Report
 
+## SG3 downstream buffering × memory-service closure (2026-09-24 UTC)
+
+`QUEUE_AND_SELECTED_MEMORY_SERVICE_INSUFFICIENT` is closed and ready for review in `review_packs/DOWNSTREAM_HEADROOM_V1/`.  The accepted Phase-A BICG downstream telemetry was first reconciled, then the existing immutable GESUMMV/BICG queue=128 family completed strict validation.  Queue fullness was eliminated but end-to-end effect was negligible: GESUMMV IO is +0.04% and OO +0.69% relative to exact default-cap=8192 reuses; BICG IO/OO are +0.83%/+0.75%.
+
+The zero-simulation C0 source/telemetry audit selected exactly one source-defined downstream service upper bound, detailed-DRAM `busW 16 -> 32 B`, and excluded queue, scheduler, timing, mapping, capacity, MSHR, and DTC changes.  All pre-registered BICG C1 rows natural-exited and strict-PASSed: service only Q0M1 is +3.37% IO / +0.62% OO slower than Q0M0; queue+service Q1M1 is +0.58% IO / +0.54% OO slower than Q1M0.  Neither predeclared 5% Gate M nor Gate I fired, so no GESUMMV C2 service row was launched.  The result is bounded to this Core/runtime/trace identity and selected counterfactual; it does not claim that all memory bottlenecks are absent or that the width represents a physical GPU bus.
+
+Four initial C1 directories that stopped without terminal receipts are preserved as non-scientific incomplete attempts; local cgroup audit found no new OOM kill.  Fresh UUID persistent-supervisor attempts supplied the accepted C1 evidence.  No frozen evidence, DTC semantics, Core, trace, or config identity was changed.
+
 ## FAST64 COMPLETE: ready for review (2026-09-11 UTC)
 
 All FAST64.0–.7 HARD gates are closed.  The final immutable package is
