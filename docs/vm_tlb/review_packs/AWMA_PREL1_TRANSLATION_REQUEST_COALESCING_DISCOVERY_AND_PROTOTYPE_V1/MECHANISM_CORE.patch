@@ -1,0 +1,1334 @@
+﻿diff --git "a/D:\\repo\\awma_v2r1_stage\\vm_translation.h" "b/D:\\repo\\awma_prel1_stage\\vm_translation.h"
+index 16e4ac0..f4d9c1b 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\vm_translation.h"
++++ "b/D:\\repo\\awma_prel1_stage\\vm_translation.h"
+@@ -204,6 +204,7 @@ enum awma_translation_candidate_mode {
+   AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE,
+   AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE,
+   AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT,
++  AWMA_TRANSLATION_CANDIDATE_PREL1_EXACT_COALESCER,
+   AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT
+ };
+
+@@ -466,6 +467,7 @@ class set_associative_tlb {
+   void flush_asid(unsigned asid);
+   void flush_all();
+   bool try_consume_port(uint64_t cycle);
++  bool port_available(uint64_t cycle) const;
+   unsigned occupancy() const;
+   const tlb_stats &stats() const { return m_stats; }
+   const refill_protection_stats &refill_stats() const {
+diff --git "a/D:\\repo\\awma_v2r1_stage\\vm_translation.cc" "b/D:\\repo\\awma_prel1_stage\\vm_translation.cc"
+index 84d7f55..a8b4931 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\vm_translation.cc"
++++ "b/D:\\repo\\awma_prel1_stage\\vm_translation.cc"
+@@ -1,4 +1,6 @@
+ #include "vm_translation.h"
++#include "prel1_coalescing_observer.h"
++#include "prel1_exact_coalescer.h"
+
+ #include <assert.h>
+ #include <errno.h>
+@@ -20,6 +22,8 @@ awma_translation_candidate_mode awma_candidate_mode() {
+     return AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE;
+   if (strcmp(text, "passive_last_result") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT;
++  if (strcmp(text, "prel1_exact_coalescer") == 0)
++    return AWMA_TRANSLATION_CANDIDATE_PREL1_EXACT_COALESCER;
+   if (strcmp(text, "refill_protect") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT;
+   assert(false && "unknown GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
+@@ -36,6 +40,8 @@ const char *awma_candidate_mode_name(awma_translation_candidate_mode mode) {
+       return "nonblocking_opportunistic_share";
+     case AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT:
+       return "passive_last_result";
++    case AWMA_TRANSLATION_CANDIDATE_PREL1_EXACT_COALESCER:
++      return "prel1_exact_coalescer";
+     case AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT:
+       return "refill_protect";
+     default:
+@@ -965,6 +971,10 @@ bool set_associative_tlb::try_consume_port(uint64_t cycle) {
+   return true;
+ }
+
++bool set_associative_tlb::port_available(uint64_t cycle) const {
++  return m_port_cycle != cycle || m_ports_used < m_config.ports_per_cycle;
++}
++
+ bool set_associative_tlb::peek(const translation_key &key) const {
+   const unsigned begin = set_for(key) * m_config.assoc;
+   for (unsigned way = 0; way < m_config.assoc; ++way)
+@@ -2137,6 +2147,12 @@ void translation_controller::service_lookups(uint64_t cycle) {
+     progress = false;
+     for (unsigned index = 0; index < m_lookups.size();) {
+       lookup_operation &lookup = m_lookups[index];
++      if (lookup.stage == LOOKUP_READY) {
++        awma_prel1::opportunity_observer::instance()
++            .note_physical_completion(lookup.sid, lookup.uid, cycle);
++        awma_prel1::exact_coalescer::instance().note_leader_completion(
++            lookup.sid, lookup.uid, lookup.ppn, lookup.source, cycle);
++      }
+       if (lookup.generation != translation_generation(lookup.key.asid)) {
+         // The request is retained by the normal memory-pipeline retry path;
+         // only this obsolete lookup result is discarded before it can fill or
+@@ -2323,6 +2339,8 @@ void translation_controller::service_lookups(uint64_t cycle) {
+           continue;
+         }
+         ++m_stats.l2_lookup_launches;
++        awma_prel1::opportunity_observer::instance().note_l2_probe(
++            lookup.sid, lookup.uid);
+         if (m_stats.object_attribution_enabled)
+           ++m_stats.object[lookup.object].l2_lookup_launches;
+         lookup.l2_issued = true;
+@@ -2399,6 +2417,8 @@ lookup_result translation_controller::allocate_or_merge(
+                                        l2_complete, cycle, lookup->object,
+                                        true));
+     ++m_stats.mshr_merges;
++    awma_prel1::opportunity_observer::instance().note_existing_mshr_merge(
++        sid, waiter_uid);
+     if (m_stats.object_attribution_enabled)
+       ++m_stats.object[lookup->object].mshr_merges;
+     ++m_stats.waiter_registrations;
+@@ -2594,6 +2614,26 @@ lookup_result translation_controller::translate(unsigned sid, unsigned asid,
+     ++m_stats.pending_waiter_bypasses;
+     return TRANSLATION_PENDING;
+   }
++  if (awma_prel1::exact_coalescer::instance().enabled()) {
++    uint64_t coalesced_pa = 0;
++    translation_source coalesced_source = TRANSLATION_SOURCE_UNOBSERVED;
++    const awma_prel1::follower_poll_result follower =
++        awma_prel1::exact_coalescer::instance().poll_follower(
++            sid, waiter_uid, asid, key.vpn, key.page_size,
++            translation_generation(asid), access, sim_va, cycle,
++            consume_ready, &coalesced_pa, &coalesced_source);
++    if (follower == awma_prel1::FOLLOWER_WAITING)
++      return TRANSLATION_PENDING;
++    if (follower == awma_prel1::FOLLOWER_READY) {
++      assert(coalesced_source != TRANSLATION_SOURCE_UNOBSERVED);
++      *sim_pa = coalesced_pa;
++      if (source != 0) *source = coalesced_source;
++      if (service_class != 0)
++        *service_class = classify_request_service(coalesced_source, false);
++      if (consume_ready) ++m_stats.completed;
++      return READY;
++    }
++  }
+   ++m_stats.lookup_requests;
+   std::map<uint64_t, completed_outcome>::iterator completed =
+       m_completed_outcomes.find(waiter_uid);
+@@ -2610,6 +2650,23 @@ lookup_result translation_controller::translate(unsigned sid, unsigned asid,
+       m_config.segment.enabled && segment_active() && !has_completed_outcome;
+   if (attempt_segment) ++m_stats.segment_lookup_attempts;
+   set_associative_tlb &l1_tlb = m_l1s[sid];
++  awma_prel1::request_decision prel1_decision =
++      awma_prel1::REQUEST_ENTRY_FULL_PASSTHROUGH;
++  if (awma_prel1::exact_coalescer::instance().enabled()) {
++    assert(!m_config.segment.enabled);
++    // The opportunity contract is an actually admitted physical L1 launch.
++    // Do not merge a request on a cycle in which frozen V1 would lose the L1
++    // port; the regular port-stall path below remains exact.
++    if (l1_tlb.port_available(cycle)) {
++      prel1_decision =
++          awma_prel1::exact_coalescer::instance().decide_new_request(
++              sid, waiter_uid, asid, key.vpn, key.page_size,
++              translation_generation(asid), access, cycle);
++      if (prel1_decision == awma_prel1::REQUEST_COMPARE_DELAY ||
++          prel1_decision == awma_prel1::REQUEST_REGISTERED_FOLLOWER)
++        return TRANSLATION_PENDING;
++    }
++  }
+   if (!l1_tlb.try_consume_port(cycle)) {
+     if (attempt_segment) ++m_stats.segment_port_denials;
+     return L1_PORT_STALL;
+@@ -2618,6 +2675,14 @@ lookup_result translation_controller::translate(unsigned sid, unsigned asid,
+   if (m_stats.object_attribution_enabled)
+     ++m_stats.object[object].l1_lookup_launches;
+   note_object_requester(object, key);
++  awma_prel1::opportunity_observer::instance().note_physical_launch(
++      sid, waiter_uid, asid, key.vpn, key.page_size,
++      translation_generation(asid), access, cycle);
++  if (awma_prel1::exact_coalescer::instance().enabled() &&
++      prel1_decision == awma_prel1::REQUEST_BASELINE_LEADER)
++    awma_prel1::exact_coalescer::instance().note_leader_launch(
++        sid, waiter_uid, asid, key.vpn, key.page_size,
++        translation_generation(asid), access, cycle);
+   // A PTW-woken retry is already resolved conventional paging work.  It
+   // retains the accepted L1 delivery probe/source handoff but must not begin a
+   // second Segment lookup for the same requester.
+@@ -2709,6 +2774,11 @@ bool translation_controller::complete_translation(const translation_key &key,
+          waiter_index < m_mshrs[index].waiters.size(); ++waiter_index) {
+       const waiter &entry_waiter = m_mshrs[index].waiters[waiter_index];
+       assert(entry_waiter.sid < m_l1s.size());
++      awma_prel1::opportunity_observer::instance().note_physical_completion(
++          entry_waiter.sid, entry_waiter.uid, cycle);
++      awma_prel1::exact_coalescer::instance().note_leader_completion(
++          entry_waiter.sid, entry_waiter.uid, ppn,
++          TRANSLATION_SOURCE_PTW, cycle);
+       m_l1s[entry_waiter.sid].fill(key, ppn, cycle, entry_waiter.object);
+       note_requester_completion(
+           entry_waiter.entry_cycle, entry_waiter.l1_launch_cycle,
+@@ -3008,6 +3078,7 @@ bool translation_controller::quiescent_invariants_hold() const {
+   // once those modeled resources are drained.
+   return m_mshrs.empty() && m_lookups.empty() &&
+          m_passive_detached_waiters.empty() &&
++         awma_prel1::exact_coalescer::instance().quiescent() &&
+          m_l2.candidate_pending() == 0 && invariants_hold();
+ }
+
+@@ -3094,6 +3165,8 @@ const set_associative_tlb &translation_controller::l1(unsigned sid) const {
+ }
+
+ void translation_controller::print_stats(FILE *fout) const {
++  awma_prel1::opportunity_observer::instance().print(fout);
++  awma_prel1::exact_coalescer::instance().print(fout);
+   if (awma_mechanism_diagnostics_enabled()) {
+     const refill_protection_stats &refill = m_l2.refill_stats();
+     fprintf(fout, "vm_awma_candidate_mode = %s\n",
+diff --git "a/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.h" "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.h"
+new file mode 100644
+index 0000000..a8fcf92
+--- /dev/null
++++ "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.h"
+@@ -0,0 +1,36 @@
++#ifndef AWMA_PREL1_COALESCING_OBSERVER_H
++#define AWMA_PREL1_COALESCING_OBSERVER_H
++
++#include <stdint.h>
++#include <stdio.h>
++
++#include "vm_translation.h"
++
++namespace awma_prel1 {
++
++class opportunity_observer {
++ public:
++  static opportunity_observer &instance();
++
++  bool enabled() const;
++  void note_physical_launch(
++      unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++      uint64_t page_size, uint64_t generation,
++      vm_translation::translation_access access, uint64_t cycle);
++  void note_l2_probe(unsigned sid, uint64_t uid);
++  void note_existing_mshr_merge(unsigned sid, uint64_t uid);
++  void note_physical_completion(unsigned sid, uint64_t uid, uint64_t cycle);
++  void print(FILE *fout) const;
++
++ private:
++  opportunity_observer();
++  opportunity_observer(const opportunity_observer &);
++  opportunity_observer &operator=(const opportunity_observer &);
++
++  struct implementation;
++  implementation *m_impl;
++};
++
++}  // namespace awma_prel1
++
++#endif
+diff --git "a/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc" "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc"
+new file mode 100644
+index 0000000..6b21e62
+--- /dev/null
++++ "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc"
+@@ -0,0 +1,542 @@
++#include "prel1_coalescing_observer.h"
++
++#include <assert.h>
++#include <stdlib.h>
++
++#include <algorithm>
++#include <map>
++#include <set>
++#include <vector>
++
++namespace awma_prel1 {
++namespace {
++
++enum duplicate_class {
++  CLASS_UNIQUE = 0,
++  CLASS_SAME_CYCLE_DUPLICATE,
++  CLASS_INFLIGHT_DUPLICATE,
++  CLASS_POST_COMPLETION_REPEAT
++};
++
++struct identity {
++  unsigned asid;
++  uint64_t vpn;
++  uint64_t page_size;
++  uint64_t generation;
++  vm_translation::translation_access access;
++
++  bool operator<(const identity &other) const {
++    if (asid != other.asid) return asid < other.asid;
++    if (vpn != other.vpn) return vpn < other.vpn;
++    if (page_size != other.page_size) return page_size < other.page_size;
++    if (generation != other.generation) return generation < other.generation;
++    return access < other.access;
++  }
++};
++
++struct scoped_identity {
++  unsigned sid;
++  identity key;
++  bool operator<(const scoped_identity &other) const {
++    if (sid != other.sid) return sid < other.sid;
++    return key < other.key;
++  }
++};
++
++struct requester_key {
++  unsigned sid;
++  uint64_t uid;
++  bool operator<(const requester_key &other) const {
++    if (sid != other.sid) return sid < other.sid;
++    return uid < other.uid;
++  }
++};
++
++struct launch_record {
++  uint64_t id;
++  requester_key requester;
++  scoped_identity scope;
++  uint64_t launch_cycle;
++  uint64_t completion_cycle;
++  duplicate_class classification;
++  uint64_t leader_id;
++  bool completed;
++  bool pair_finalized;
++  bool existing_mshr_overlap;
++  unsigned pending_dependents;
++  std::vector<uint64_t> dependents;
++  bool finite_merge[4];
++
++  launch_record(uint64_t launch_id, const requester_key &request_key,
++                const scoped_identity &identity_scope, uint64_t cycle,
++                duplicate_class cls, uint64_t leader)
++      : id(launch_id), requester(request_key), scope(identity_scope),
++        launch_cycle(cycle), completion_cycle(0), classification(cls),
++        leader_id(leader), completed(false), pair_finalized(false),
++        existing_mshr_overlap(false), pending_dependents(0), dependents() {
++    for (unsigned i = 0; i < 4; ++i) finite_merge[i] = false;
++  }
++};
++
++struct table_entry {
++  bool valid;
++  identity key;
++  uint64_t leader_id;
++  uint64_t launch_cycle;
++  uint64_t waiters;
++  table_entry() : valid(false), key(), leader_id(0), launch_cycle(0), waiters(0) {}
++};
++
++struct capacity_stats {
++  uint64_t lookups;
++  uint64_t merge_opportunities;
++  uint64_t same_cycle_merges;
++  uint64_t inflight_merges;
++  uint64_t full_events;
++  uint64_t l2_probe_overlap;
++  uint64_t existing_mshr_overlap;
++  uint64_t occupancy_hwm;
++  uint64_t waiter_hwm;
++  std::vector<uint64_t> occupancy_histogram;
++  capacity_stats(unsigned capacity = 0)
++      : lookups(0), merge_opportunities(0), same_cycle_merges(0),
++        inflight_merges(0), full_events(0), l2_probe_overlap(0),
++        existing_mshr_overlap(0), occupancy_hwm(0), waiter_hwm(0),
++        occupancy_histogram(capacity + 1, 0) {}
++};
++
++struct capacity_model {
++  unsigned capacity;
++  std::map<unsigned, std::vector<table_entry> > per_sid;
++  capacity_stats stats;
++  capacity_model(unsigned entries = 0) : capacity(entries), per_sid(), stats(entries) {}
++};
++
++struct timing_stats {
++  uint64_t pairs;
++  uint64_t leader_no_later;
++  uint64_t leader_later;
++  uint64_t existing_mshr_pairs;
++  uint64_t incremental_pairs;
++  uint64_t leader_later_cycles_total;
++  uint64_t leader_later_cycles_max;
++  uint64_t follower_baseline_latency_total;
++  uint64_t potential_wait_cycles_total;
++  uint64_t potential_wait_cycles_max;
++  timing_stats()
++      : pairs(0), leader_no_later(0), leader_later(0),
++        existing_mshr_pairs(0), incremental_pairs(0),
++        leader_later_cycles_total(0), leader_later_cycles_max(0),
++        follower_baseline_latency_total(0), potential_wait_cycles_total(0),
++        potential_wait_cycles_max(0) {}
++};
++
++}  // namespace
++
++struct opportunity_observer::implementation {
++  uint64_t next_id;
++  uint64_t physical_launches;
++  uint64_t unique_launches;
++  uint64_t same_cycle_duplicates;
++  uint64_t inflight_duplicates;
++  uint64_t post_completion_repeats;
++  uint64_t existing_mshr_handled;
++  uint64_t existing_mshr_unique;
++  uint64_t existing_mshr_same_cycle;
++  uint64_t existing_mshr_inflight;
++  uint64_t existing_mshr_post_completion;
++  uint64_t l2_probes;
++  uint64_t duplicate_l2_probes;
++  uint64_t duplicate_completions;
++  uint64_t completion_without_launch;
++  uint64_t active_hwm;
++  std::map<requester_key, uint64_t> active_requesters;
++  std::map<scoped_identity, std::vector<uint64_t> > active_by_identity;
++  std::map<scoped_identity, uint64_t> last_completion;
++  std::map<uint64_t, launch_record> records;
++  std::set<scoped_identity> identities_seen;
++  std::vector<capacity_model> models;
++  timing_stats timing;
++
++  implementation()
++      : next_id(1), physical_launches(0), unique_launches(0),
++        same_cycle_duplicates(0), inflight_duplicates(0),
++        post_completion_repeats(0), existing_mshr_handled(0),
++        existing_mshr_unique(0), existing_mshr_same_cycle(0),
++        existing_mshr_inflight(0), existing_mshr_post_completion(0),
++        l2_probes(0), duplicate_l2_probes(0), duplicate_completions(0),
++        completion_without_launch(0), active_hwm(0), active_requesters(),
++        active_by_identity(), last_completion(), records(), identities_seen(),
++        models(), timing() {
++    models.push_back(capacity_model(1));
++    models.push_back(capacity_model(2));
++    models.push_back(capacity_model(4));
++    models.push_back(capacity_model(8));
++  }
++
++  void cleanup(uint64_t id) {
++    std::map<uint64_t, launch_record>::iterator found = records.find(id);
++    if (found == records.end()) return;
++    const launch_record &record = found->second;
++    const bool pair_done = record.classification == CLASS_UNIQUE ||
++                           record.classification == CLASS_POST_COMPLETION_REPEAT ||
++                           record.pair_finalized;
++    if (record.completed && record.pending_dependents == 0 && pair_done)
++      records.erase(found);
++  }
++
++  void finalize_pair(uint64_t follower_id) {
++    std::map<uint64_t, launch_record>::iterator follower_it =
++        records.find(follower_id);
++    if (follower_it == records.end() || follower_it->second.pair_finalized ||
++        !follower_it->second.completed)
++      return;
++    const uint64_t leader_id = follower_it->second.leader_id;
++    std::map<uint64_t, launch_record>::iterator leader_it = records.find(leader_id);
++    if (leader_it == records.end() || !leader_it->second.completed) return;
++    const uint64_t follower_launch = follower_it->second.launch_cycle;
++    const uint64_t follower_completion = follower_it->second.completion_cycle;
++    const uint64_t leader_completion = leader_it->second.completion_cycle;
++    ++timing.pairs;
++    if (leader_completion <= follower_completion) {
++      ++timing.leader_no_later;
++    } else {
++      ++timing.leader_later;
++      const uint64_t later = leader_completion - follower_completion;
++      timing.leader_later_cycles_total += later;
++      if (later > timing.leader_later_cycles_max)
++        timing.leader_later_cycles_max = later;
++    }
++    if (follower_it->second.existing_mshr_overlap)
++      ++timing.existing_mshr_pairs;
++    else
++      ++timing.incremental_pairs;
++    timing.follower_baseline_latency_total +=
++        follower_completion - follower_launch;
++    const uint64_t wait = leader_completion > follower_launch
++                              ? leader_completion - follower_launch
++                              : 0;
++    timing.potential_wait_cycles_total += wait;
++    if (wait > timing.potential_wait_cycles_max)
++      timing.potential_wait_cycles_max = wait;
++    follower_it->second.pair_finalized = true;
++    assert(leader_it->second.pending_dependents != 0);
++    --leader_it->second.pending_dependents;
++    cleanup(follower_id);
++    cleanup(leader_id);
++  }
++};
++
++opportunity_observer::opportunity_observer() : m_impl(new implementation()) {}
++
++opportunity_observer &opportunity_observer::instance() {
++  static opportunity_observer singleton;
++  return singleton;
++}
++
++bool opportunity_observer::enabled() const {
++  const char *value = getenv("GPGPUSIM_AWMA_PREL1_OPPORTUNITY");
++  return value != NULL && value[0] != '\0' && value[0] != '0';
++}
++
++void opportunity_observer::note_physical_launch(
++    unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++    uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t cycle) {
++  if (!enabled()) return;
++  const identity key = {asid, vpn, page_size, generation, access};
++  const scoped_identity scope = {sid, key};
++  const requester_key requester = {sid, uid};
++  assert(m_impl->active_requesters.find(requester) ==
++         m_impl->active_requesters.end());
++  std::vector<uint64_t> &active = m_impl->active_by_identity[scope];
++  uint64_t leader_id = 0;
++  uint64_t leader_cycle = 0;
++  if (!active.empty()) {
++    leader_id = active.front();
++    std::map<uint64_t, launch_record>::const_iterator leader =
++        m_impl->records.find(leader_id);
++    assert(leader != m_impl->records.end() && !leader->second.completed);
++    leader_cycle = leader->second.launch_cycle;
++  }
++  duplicate_class cls = CLASS_UNIQUE;
++  if (leader_id != 0)
++    cls = leader_cycle == cycle ? CLASS_SAME_CYCLE_DUPLICATE
++                                : CLASS_INFLIGHT_DUPLICATE;
++  else if (m_impl->last_completion.find(scope) !=
++           m_impl->last_completion.end())
++    cls = CLASS_POST_COMPLETION_REPEAT;
++
++  const uint64_t id = m_impl->next_id++;
++  m_impl->records.insert(std::make_pair(
++      id, launch_record(id, requester, scope, cycle, cls, leader_id)));
++  m_impl->active_requesters[requester] = id;
++  active.push_back(id);
++  m_impl->identities_seen.insert(scope);
++  ++m_impl->physical_launches;
++  if (cls == CLASS_UNIQUE)
++    ++m_impl->unique_launches;
++  else if (cls == CLASS_SAME_CYCLE_DUPLICATE)
++    ++m_impl->same_cycle_duplicates;
++  else if (cls == CLASS_INFLIGHT_DUPLICATE)
++    ++m_impl->inflight_duplicates;
++  else
++    ++m_impl->post_completion_repeats;
++  if (leader_id != 0) {
++    launch_record &leader = m_impl->records.find(leader_id)->second;
++    leader.dependents.push_back(id);
++    ++leader.pending_dependents;
++  }
++  if (m_impl->active_requesters.size() > m_impl->active_hwm)
++    m_impl->active_hwm = m_impl->active_requesters.size();
++
++  launch_record &record = m_impl->records.find(id)->second;
++  for (unsigned model_index = 0; model_index < m_impl->models.size();
++       ++model_index) {
++    capacity_model &model = m_impl->models[model_index];
++    std::vector<table_entry> &table = model.per_sid[sid];
++    if (table.empty()) table.resize(model.capacity);
++    ++model.stats.lookups;
++    int match = -1;
++    int free_entry = -1;
++    unsigned occupancy = 0;
++    for (unsigned entry = 0; entry < table.size(); ++entry) {
++      if (!table[entry].valid) {
++        if (free_entry < 0) free_entry = static_cast<int>(entry);
++        continue;
++      }
++      ++occupancy;
++      const identity &resident = table[entry].key;
++      const bool equal = !(resident < key) && !(key < resident);
++      if (equal && match < 0) match = static_cast<int>(entry);
++    }
++    if (match >= 0) {
++      table_entry &entry = table[static_cast<unsigned>(match)];
++      ++model.stats.merge_opportunities;
++      if (entry.launch_cycle == cycle)
++        ++model.stats.same_cycle_merges;
++      else
++        ++model.stats.inflight_merges;
++      ++entry.waiters;
++      if (entry.waiters > model.stats.waiter_hwm)
++        model.stats.waiter_hwm = entry.waiters;
++      record.finite_merge[model_index] = true;
++    } else if (free_entry >= 0) {
++      table_entry &entry = table[static_cast<unsigned>(free_entry)];
++      entry.valid = true;
++      entry.key = key;
++      entry.leader_id = id;
++      entry.launch_cycle = cycle;
++      entry.waiters = 0;
++      ++occupancy;
++    } else {
++      ++model.stats.full_events;
++    }
++    if (occupancy > model.stats.occupancy_hwm)
++      model.stats.occupancy_hwm = occupancy;
++    assert(occupancy < model.stats.occupancy_histogram.size());
++    ++model.stats.occupancy_histogram[occupancy];
++  }
++}
++
++void opportunity_observer::note_l2_probe(unsigned sid, uint64_t uid) {
++  if (!enabled()) return;
++  const requester_key requester = {sid, uid};
++  std::map<requester_key, uint64_t>::const_iterator active =
++      m_impl->active_requesters.find(requester);
++  assert(active != m_impl->active_requesters.end());
++  launch_record &record = m_impl->records.find(active->second)->second;
++  ++m_impl->l2_probes;
++  if (record.classification == CLASS_SAME_CYCLE_DUPLICATE ||
++      record.classification == CLASS_INFLIGHT_DUPLICATE)
++    ++m_impl->duplicate_l2_probes;
++  for (unsigned i = 0; i < m_impl->models.size(); ++i)
++    if (record.finite_merge[i]) ++m_impl->models[i].stats.l2_probe_overlap;
++}
++
++void opportunity_observer::note_existing_mshr_merge(unsigned sid,
++                                                     uint64_t uid) {
++  if (!enabled()) return;
++  const requester_key requester = {sid, uid};
++  std::map<requester_key, uint64_t>::const_iterator active =
++      m_impl->active_requesters.find(requester);
++  assert(active != m_impl->active_requesters.end());
++  launch_record &record = m_impl->records.find(active->second)->second;
++  assert(!record.existing_mshr_overlap);
++  record.existing_mshr_overlap = true;
++  ++m_impl->existing_mshr_handled;
++  if (record.classification == CLASS_UNIQUE)
++    ++m_impl->existing_mshr_unique;
++  else if (record.classification == CLASS_SAME_CYCLE_DUPLICATE)
++    ++m_impl->existing_mshr_same_cycle;
++  else if (record.classification == CLASS_INFLIGHT_DUPLICATE)
++    ++m_impl->existing_mshr_inflight;
++  else
++    ++m_impl->existing_mshr_post_completion;
++  for (unsigned i = 0; i < m_impl->models.size(); ++i)
++    if (record.finite_merge[i])
++      ++m_impl->models[i].stats.existing_mshr_overlap;
++}
++
++void opportunity_observer::note_physical_completion(unsigned sid,
++                                                     uint64_t uid,
++                                                     uint64_t cycle) {
++  if (!enabled()) return;
++  const requester_key requester = {sid, uid};
++  std::map<requester_key, uint64_t>::iterator active_request =
++      m_impl->active_requesters.find(requester);
++  if (active_request == m_impl->active_requesters.end()) return;
++  const uint64_t id = active_request->second;
++  m_impl->active_requesters.erase(active_request);
++  std::map<uint64_t, launch_record>::iterator record_it =
++      m_impl->records.find(id);
++  assert(record_it != m_impl->records.end() && !record_it->second.completed);
++  launch_record &record = record_it->second;
++  record.completed = true;
++  record.completion_cycle = cycle;
++  if (record.classification == CLASS_SAME_CYCLE_DUPLICATE ||
++      record.classification == CLASS_INFLIGHT_DUPLICATE)
++    ++m_impl->duplicate_completions;
++  std::vector<uint64_t> &active = m_impl->active_by_identity[record.scope];
++  active.erase(std::remove(active.begin(), active.end(), id), active.end());
++  if (active.empty()) m_impl->active_by_identity.erase(record.scope);
++  m_impl->last_completion[record.scope] = cycle;
++
++  for (unsigned model_index = 0; model_index < m_impl->models.size();
++       ++model_index) {
++    capacity_model &model = m_impl->models[model_index];
++    std::vector<table_entry> &table = model.per_sid[sid];
++    for (unsigned entry = 0; entry < table.size(); ++entry)
++      if (table[entry].valid && table[entry].leader_id == id) {
++        table[entry] = table_entry();
++        break;
++      }
++  }
++
++  const std::vector<uint64_t> dependents = record.dependents;
++  if (record.leader_id != 0) m_impl->finalize_pair(id);
++  for (unsigned i = 0; i < dependents.size(); ++i)
++    m_impl->finalize_pair(dependents[i]);
++  m_impl->cleanup(id);
++}
++
++void opportunity_observer::print(FILE *fout) const {
++  if (!enabled()) return;
++  fprintf(fout, "awma_prel1_opportunity_enabled = 1\n");
++  fprintf(fout, "awma_prel1_scope = PER_SID_PRE_L1\n");
++  fprintf(fout, "awma_prel1_identity = ASID_VPN_PAGE_SIZE_GENERATION_ACCESS\n");
++  fprintf(fout, "awma_prel1_physical_launches = %llu\n",
++          (unsigned long long)m_impl->physical_launches);
++  fprintf(fout, "awma_prel1_unique = %llu\n",
++          (unsigned long long)m_impl->unique_launches);
++  fprintf(fout, "awma_prel1_same_cycle_duplicate_raw = %llu\n",
++          (unsigned long long)m_impl->same_cycle_duplicates);
++  fprintf(fout, "awma_prel1_inflight_duplicate_raw = %llu\n",
++          (unsigned long long)m_impl->inflight_duplicates);
++  fprintf(fout, "awma_prel1_post_completion_repeat = %llu\n",
++          (unsigned long long)m_impl->post_completion_repeats);
++  fprintf(fout, "awma_prel1_existing_mshr_handled = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_handled);
++  fprintf(fout, "awma_prel1_unique_incremental = %llu\n",
++          (unsigned long long)(m_impl->unique_launches -
++                               m_impl->existing_mshr_unique));
++  fprintf(fout, "awma_prel1_same_cycle_duplicate_incremental = %llu\n",
++          (unsigned long long)(m_impl->same_cycle_duplicates -
++                               m_impl->existing_mshr_same_cycle));
++  fprintf(fout, "awma_prel1_inflight_duplicate_incremental = %llu\n",
++          (unsigned long long)(m_impl->inflight_duplicates -
++                               m_impl->existing_mshr_inflight));
++  fprintf(fout, "awma_prel1_post_completion_repeat_incremental = %llu\n",
++          (unsigned long long)(m_impl->post_completion_repeats -
++                               m_impl->existing_mshr_post_completion));
++  fprintf(fout, "awma_prel1_existing_mshr_from_unique = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_unique);
++  fprintf(fout, "awma_prel1_existing_mshr_from_same_cycle = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_same_cycle);
++  fprintf(fout, "awma_prel1_existing_mshr_from_inflight = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_inflight);
++  fprintf(fout, "awma_prel1_existing_mshr_from_post_completion = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_post_completion);
++  fprintf(fout, "awma_prel1_classification_conservation = %llu\n",
++          (unsigned long long)((m_impl->unique_launches -
++               m_impl->existing_mshr_unique) +
++              (m_impl->post_completion_repeats -
++               m_impl->existing_mshr_post_completion) +
++              (m_impl->same_cycle_duplicates -
++               m_impl->existing_mshr_same_cycle) +
++              (m_impl->inflight_duplicates -
++               m_impl->existing_mshr_inflight) +
++              m_impl->existing_mshr_handled));
++  fprintf(fout, "awma_prel1_exact_identities = %llu\n",
++          (unsigned long long)m_impl->identities_seen.size());
++  fprintf(fout, "awma_prel1_l2_probes = %llu\n",
++          (unsigned long long)m_impl->l2_probes);
++  fprintf(fout, "awma_prel1_duplicate_l2_probes = %llu\n",
++          (unsigned long long)m_impl->duplicate_l2_probes);
++  fprintf(fout, "awma_prel1_duplicate_completions = %llu\n",
++          (unsigned long long)m_impl->duplicate_completions);
++  fprintf(fout, "awma_prel1_completion_without_launch = %llu\n",
++          (unsigned long long)m_impl->completion_without_launch);
++  fprintf(fout, "awma_prel1_active_hwm = %llu\n",
++          (unsigned long long)m_impl->active_hwm);
++  fprintf(fout, "awma_prel1_active_final = %llu\n",
++          (unsigned long long)m_impl->active_requesters.size());
++  fprintf(fout, "awma_prel1_records_final = %llu\n",
++          (unsigned long long)m_impl->records.size());
++  fprintf(fout, "awma_prel1_timing_pairs = %llu\n",
++          (unsigned long long)m_impl->timing.pairs);
++  fprintf(fout, "awma_prel1_leader_no_later_than_follower = %llu\n",
++          (unsigned long long)m_impl->timing.leader_no_later);
++  fprintf(fout, "awma_prel1_leader_later_than_follower = %llu\n",
++          (unsigned long long)m_impl->timing.leader_later);
++  fprintf(fout, "awma_prel1_timing_existing_mshr_pairs = %llu\n",
++          (unsigned long long)m_impl->timing.existing_mshr_pairs);
++  fprintf(fout, "awma_prel1_timing_incremental_pairs = %llu\n",
++          (unsigned long long)m_impl->timing.incremental_pairs);
++  fprintf(fout, "awma_prel1_leader_later_cycles_total = %llu\n",
++          (unsigned long long)m_impl->timing.leader_later_cycles_total);
++  fprintf(fout, "awma_prel1_leader_later_cycles_max = %llu\n",
++          (unsigned long long)m_impl->timing.leader_later_cycles_max);
++  fprintf(fout, "awma_prel1_follower_baseline_latency_total = %llu\n",
++          (unsigned long long)m_impl->timing.follower_baseline_latency_total);
++  fprintf(fout, "awma_prel1_potential_wait_cycles_total = %llu\n",
++          (unsigned long long)m_impl->timing.potential_wait_cycles_total);
++  fprintf(fout, "awma_prel1_potential_wait_cycles_max = %llu\n",
++          (unsigned long long)m_impl->timing.potential_wait_cycles_max);
++  for (unsigned i = 0; i < m_impl->models.size(); ++i) {
++    const capacity_model &model = m_impl->models[i];
++    const capacity_stats &stats = model.stats;
++    fprintf(fout, "awma_prel1_cap_%u_lookups = %llu\n", model.capacity,
++            (unsigned long long)stats.lookups);
++    fprintf(fout, "awma_prel1_cap_%u_merge_opportunities = %llu\n",
++            model.capacity, (unsigned long long)stats.merge_opportunities);
++    fprintf(fout, "awma_prel1_cap_%u_same_cycle_merges = %llu\n",
++            model.capacity, (unsigned long long)stats.same_cycle_merges);
++    fprintf(fout, "awma_prel1_cap_%u_inflight_merges = %llu\n",
++            model.capacity, (unsigned long long)stats.inflight_merges);
++    fprintf(fout, "awma_prel1_cap_%u_full_events = %llu\n", model.capacity,
++            (unsigned long long)stats.full_events);
++    fprintf(fout, "awma_prel1_cap_%u_l2_probe_overlap = %llu\n",
++            model.capacity, (unsigned long long)stats.l2_probe_overlap);
++    fprintf(fout, "awma_prel1_cap_%u_existing_mshr_overlap = %llu\n",
++            model.capacity, (unsigned long long)stats.existing_mshr_overlap);
++    fprintf(fout, "awma_prel1_cap_%u_occupancy_hwm = %llu\n",
++            model.capacity, (unsigned long long)stats.occupancy_hwm);
++    fprintf(fout, "awma_prel1_cap_%u_waiter_hwm = %llu\n", model.capacity,
++            (unsigned long long)stats.waiter_hwm);
++    uint64_t live = 0;
++    for (std::map<unsigned, std::vector<table_entry> >::const_iterator table =
++             model.per_sid.begin(); table != model.per_sid.end(); ++table)
++      for (unsigned entry = 0; entry < table->second.size(); ++entry)
++        if (table->second[entry].valid) ++live;
++    fprintf(fout, "awma_prel1_cap_%u_live_entries_final = %llu\n",
++            model.capacity, (unsigned long long)live);
++    for (unsigned occupancy = 0;
++         occupancy < stats.occupancy_histogram.size(); ++occupancy)
++      fprintf(fout, "awma_prel1_cap_%u_occupancy_%u = %llu\n",
++              model.capacity, occupancy,
++              (unsigned long long)stats.occupancy_histogram[occupancy]);
++  }
++}
++
++}  // namespace awma_prel1
+diff --git "a/D:\\repo\\awma_prel1_stage\\prel1_exact_coalescer.h" "b/D:\\repo\\awma_prel1_stage\\prel1_exact_coalescer.h"
+new file mode 100644
+index 0000000..a123fca
+--- /dev/null
++++ "b/D:\\repo\\awma_prel1_stage\\prel1_exact_coalescer.h"
+@@ -0,0 +1,71 @@
++#ifndef AWMA_PREL1_EXACT_COALESCER_H
++#define AWMA_PREL1_EXACT_COALESCER_H
++
++#include <stdint.h>
++#include <stdio.h>
++
++#include "vm_translation.h"
++
++namespace awma_prel1 {
++
++enum follower_poll_result {
++  FOLLOWER_NOT_REGISTERED = 0,
++  FOLLOWER_WAITING,
++  FOLLOWER_READY
++};
++
++enum request_decision {
++  REQUEST_COMPARE_DELAY = 0,
++  REQUEST_REGISTERED_FOLLOWER,
++  REQUEST_CONTROL_GROUPED_PASSTHROUGH,
++  REQUEST_BASELINE_LEADER,
++  REQUEST_ENTRY_FULL_PASSTHROUGH,
++  REQUEST_WAITER_FULL_PASSTHROUGH
++};
++
++class exact_coalescer {
++ public:
++  static exact_coalescer &instance();
++
++  bool enabled() const;
++  bool grouping_only_control() const;
++  unsigned compare_latency() const;
++  unsigned capacity_per_sid() const { return 2; }
++  unsigned waiter_capacity_per_entry() const { return 32; }
++
++  follower_poll_result poll_follower(
++      unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++      uint64_t page_size, uint64_t generation,
++      vm_translation::translation_access access, uint64_t sim_va,
++      uint64_t cycle, bool consume_ready, uint64_t *sim_pa,
++      vm_translation::translation_source *source);
++
++  request_decision decide_new_request(
++      unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++      uint64_t page_size, uint64_t generation,
++      vm_translation::translation_access access, uint64_t cycle);
++
++  void note_leader_launch(
++      unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++      uint64_t page_size, uint64_t generation,
++      vm_translation::translation_access access, uint64_t cycle);
++
++  void note_leader_completion(
++      unsigned sid, uint64_t uid, uint64_t ppn,
++      vm_translation::translation_source source, uint64_t cycle);
++
++  bool quiescent() const;
++  void print(FILE *fout) const;
++
++ private:
++  exact_coalescer();
++  exact_coalescer(const exact_coalescer &);
++  exact_coalescer &operator=(const exact_coalescer &);
++
++  struct implementation;
++  implementation *m_impl;
++};
++
++}  // namespace awma_prel1
++
++#endif
+diff --git "a/D:\\repo\\awma_prel1_stage\\prel1_exact_coalescer.cc" "b/D:\\repo\\awma_prel1_stage\\prel1_exact_coalescer.cc"
+new file mode 100644
+index 0000000..7b88657
+--- /dev/null
++++ "b/D:\\repo\\awma_prel1_stage\\prel1_exact_coalescer.cc"
+@@ -0,0 +1,475 @@
++#include "prel1_exact_coalescer.h"
++
++#include <assert.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include <map>
++#include <vector>
++
++namespace awma_prel1 {
++namespace {
++
++struct identity {
++  unsigned asid;
++  uint64_t vpn;
++  uint64_t page_size;
++  uint64_t generation;
++  vm_translation::translation_access access;
++};
++
++bool same_identity(const identity &left, const identity &right) {
++  return left.asid == right.asid && left.vpn == right.vpn &&
++         left.page_size == right.page_size &&
++         left.generation == right.generation && left.access == right.access;
++}
++
++struct requester_key {
++  unsigned sid;
++  uint64_t uid;
++  bool operator<(const requester_key &other) const {
++    if (sid != other.sid) return sid < other.sid;
++    return uid < other.uid;
++  }
++};
++
++struct follower {
++  requester_key requester;
++  identity key;
++  uint64_t registration_cycle;
++  uint64_t last_wait_cycle;
++  bool exposed_at_head;
++  bool control_only;
++  follower(const requester_key &r = requester_key(),
++           const identity &i = identity(), uint64_t cycle = 0,
++           bool control = false)
++      : requester(r), key(i), registration_cycle(cycle),
++        last_wait_cycle(~0ULL), exposed_at_head(false),
++        control_only(control) {}
++};
++
++enum entry_state { ENTRY_FREE = 0, ENTRY_LIVE, ENTRY_READY };
++
++struct entry {
++  entry_state state;
++  identity key;
++  requester_key leader;
++  uint64_t leader_launch_cycle;
++  uint64_t leader_completion_cycle;
++  uint64_t ppn;
++  vm_translation::translation_source source;
++  std::vector<follower> waiters;
++  entry()
++      : state(ENTRY_FREE), key(), leader(), leader_launch_cycle(0),
++        leader_completion_cycle(0), ppn(0),
++        source(vm_translation::TRANSLATION_SOURCE_UNOBSERVED), waiters() {}
++};
++
++struct locator {
++  unsigned sid;
++  unsigned entry_index;
++  locator(unsigned s = 0, unsigned e = 0) : sid(s), entry_index(e) {}
++};
++
++struct pending_compare {
++  identity key;
++  uint64_t ready_cycle;
++  pending_compare(const identity &i = identity(), uint64_t ready = 0)
++      : key(i), ready_cycle(ready) {}
++};
++
++struct stats {
++  uint64_t lookups;
++  uint64_t compare_delays;
++  uint64_t leaders;
++  uint64_t followers;
++  uint64_t same_cycle_merges;
++  uint64_t inflight_merges;
++  uint64_t entry_full_fallbacks;
++  uint64_t waiter_full_fallbacks;
++  uint64_t grouping_only_followers;
++  uint64_t leader_completions;
++  uint64_t follower_applications;
++  uint64_t follower_wait_cycles_total;
++  uint64_t follower_wait_cycles_max;
++  uint64_t follower_delivery_latency_total;
++  uint64_t follower_delivery_latency_max;
++  uint64_t leader_to_follower_latency_total;
++  uint64_t leader_to_follower_latency_max;
++  uint64_t head_block_cycles;
++  uint64_t critical_path_followers;
++  uint64_t l1_hit_leaders;
++  uint64_t l2_hit_leaders;
++  uint64_t ptw_leaders;
++  uint64_t other_source_leaders;
++  uint64_t occupancy_hwm;
++  uint64_t waiter_hwm;
++  std::map<uint64_t, uint64_t> delivery_wait_histogram;
++  stats()
++      : lookups(0), compare_delays(0), leaders(0), followers(0),
++        same_cycle_merges(0), inflight_merges(0), entry_full_fallbacks(0),
++        waiter_full_fallbacks(0), grouping_only_followers(0),
++        leader_completions(0), follower_applications(0),
++        follower_wait_cycles_total(0), follower_wait_cycles_max(0),
++        follower_delivery_latency_total(0), follower_delivery_latency_max(0),
++        leader_to_follower_latency_total(0),
++        leader_to_follower_latency_max(0), head_block_cycles(0),
++        critical_path_followers(0), l1_hit_leaders(0), l2_hit_leaders(0),
++        ptw_leaders(0), other_source_leaders(0), occupancy_hwm(0),
++        waiter_hwm(0), delivery_wait_histogram() {}
++};
++
++uint64_t percentile(const std::map<uint64_t, uint64_t> &histogram,
++                    uint64_t count, unsigned numerator,
++                    unsigned denominator) {
++  if (count == 0) return 0;
++  const uint64_t rank = (count * numerator + denominator - 1) / denominator;
++  uint64_t cumulative = 0;
++  for (std::map<uint64_t, uint64_t>::const_iterator it = histogram.begin();
++       it != histogram.end(); ++it) {
++    cumulative += it->second;
++    if (cumulative >= rank) return it->first;
++  }
++  assert(false);
++  return 0;
++}
++
++}  // namespace
++
++struct exact_coalescer::implementation {
++  std::map<unsigned, std::vector<entry> > tables;
++  std::map<requester_key, locator> followers;
++  std::map<requester_key, pending_compare> pending_compares;
++  stats counters;
++
++  std::vector<entry> &table(unsigned sid) {
++    std::vector<entry> &result = tables[sid];
++    if (result.empty()) result.resize(2);
++    return result;
++  }
++
++  void note_occupancy(unsigned sid) {
++    std::vector<entry> &entries = table(sid);
++    unsigned occupancy = 0;
++    for (unsigned i = 0; i < entries.size(); ++i)
++      if (entries[i].state != ENTRY_FREE) ++occupancy;
++    if (occupancy > counters.occupancy_hwm)
++      counters.occupancy_hwm = occupancy;
++  }
++
++  void free_if_drained(unsigned sid, unsigned entry_index) {
++    std::vector<entry> &entries = table(sid);
++    assert(entry_index < entries.size());
++    entry &resident = entries[entry_index];
++    if (resident.state == ENTRY_READY && resident.waiters.empty())
++      resident = entry();
++  }
++};
++
++exact_coalescer::exact_coalescer() : m_impl(new implementation()) {}
++
++exact_coalescer &exact_coalescer::instance() {
++  static exact_coalescer singleton;
++  return singleton;
++}
++
++bool exact_coalescer::enabled() const {
++  return vm_translation::awma_candidate_mode() ==
++         vm_translation::AWMA_TRANSLATION_CANDIDATE_PREL1_EXACT_COALESCER;
++}
++
++bool exact_coalescer::grouping_only_control() const {
++  const char *value = getenv("GPGPUSIM_AWMA_PREL1_CONTROL");
++  if (value == NULL || value[0] == '\0' || strcmp(value, "none") == 0)
++    return false;
++  assert(strcmp(value, "grouping_only") == 0);
++  return true;
++}
++
++unsigned exact_coalescer::compare_latency() const {
++  const char *value = getenv("GPGPUSIM_AWMA_PREL1_COMPARE_LATENCY");
++  const unsigned latency =
++      value == NULL || value[0] == '\0' ? 0 : unsigned(strtoul(value, NULL, 10));
++  assert(latency <= 1);
++  return latency;
++}
++
++follower_poll_result exact_coalescer::poll_follower(
++    unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++    uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t sim_va,
++    uint64_t cycle, bool consume_ready, uint64_t *sim_pa,
++    vm_translation::translation_source *source) {
++  if (!enabled() || grouping_only_control()) return FOLLOWER_NOT_REGISTERED;
++  const requester_key requester = {sid, uid};
++  std::map<requester_key, locator>::iterator found =
++      m_impl->followers.find(requester);
++  if (found == m_impl->followers.end()) return FOLLOWER_NOT_REGISTERED;
++  std::vector<entry> &entries = m_impl->table(found->second.sid);
++  assert(found->second.entry_index < entries.size());
++  entry &resident = entries[found->second.entry_index];
++  assert(resident.state != ENTRY_FREE);
++  const identity requested = {asid, vpn, page_size, generation, access};
++  assert(same_identity(resident.key, requested));
++  int waiter_index = -1;
++  for (unsigned i = 0; i < resident.waiters.size(); ++i)
++    if (resident.waiters[i].requester.sid == sid &&
++        resident.waiters[i].requester.uid == uid) {
++      waiter_index = static_cast<int>(i);
++      break;
++    }
++  assert(waiter_index >= 0);
++  follower &waiter = resident.waiters[static_cast<unsigned>(waiter_index)];
++  if (resident.state == ENTRY_LIVE) {
++    if (waiter.last_wait_cycle != cycle) {
++      waiter.last_wait_cycle = cycle;
++      ++m_impl->counters.follower_wait_cycles_total;
++      const uint64_t elapsed = cycle - waiter.registration_cycle + 1;
++      if (elapsed > m_impl->counters.follower_wait_cycles_max)
++        m_impl->counters.follower_wait_cycles_max = elapsed;
++    }
++    if (consume_ready) {
++      ++m_impl->counters.head_block_cycles;
++      if (!waiter.exposed_at_head) {
++        waiter.exposed_at_head = true;
++        ++m_impl->counters.critical_path_followers;
++      }
++    }
++    return FOLLOWER_WAITING;
++  }
++  assert(resident.state == ENTRY_READY && sim_pa != NULL && source != NULL);
++  *sim_pa = resident.ppn * page_size + vm_core::page_offset(sim_va, page_size);
++  *source = resident.source;
++  if (!consume_ready) return FOLLOWER_READY;
++
++  const uint64_t delivery = cycle - waiter.registration_cycle;
++  const uint64_t leader_to_follower =
++      cycle - resident.leader_completion_cycle;
++  m_impl->counters.follower_delivery_latency_total += delivery;
++  if (delivery > m_impl->counters.follower_delivery_latency_max)
++    m_impl->counters.follower_delivery_latency_max = delivery;
++  m_impl->counters.leader_to_follower_latency_total += leader_to_follower;
++  if (leader_to_follower > m_impl->counters.leader_to_follower_latency_max)
++    m_impl->counters.leader_to_follower_latency_max = leader_to_follower;
++  ++m_impl->counters.delivery_wait_histogram[delivery];
++  ++m_impl->counters.follower_applications;
++  const unsigned entry_index = found->second.entry_index;
++  resident.waiters.erase(resident.waiters.begin() + waiter_index);
++  m_impl->followers.erase(found);
++  m_impl->free_if_drained(sid, entry_index);
++  return FOLLOWER_READY;
++}
++
++request_decision exact_coalescer::decide_new_request(
++    unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++    uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t cycle) {
++  assert(enabled());
++  ++m_impl->counters.lookups;
++  const requester_key requester = {sid, uid};
++  const identity requested = {asid, vpn, page_size, generation, access};
++  assert(m_impl->followers.find(requester) == m_impl->followers.end());
++  const unsigned latency = compare_latency();
++  std::map<requester_key, pending_compare>::iterator pending =
++      m_impl->pending_compares.find(requester);
++  if (latency != 0) {
++    if (pending == m_impl->pending_compares.end()) {
++      m_impl->pending_compares.insert(std::make_pair(
++          requester, pending_compare(requested, cycle + latency)));
++      ++m_impl->counters.compare_delays;
++      return REQUEST_COMPARE_DELAY;
++    }
++    assert(same_identity(pending->second.key, requested));
++    if (cycle < pending->second.ready_cycle) return REQUEST_COMPARE_DELAY;
++    m_impl->pending_compares.erase(pending);
++  } else {
++    assert(pending == m_impl->pending_compares.end());
++  }
++
++  std::vector<entry> &entries = m_impl->table(sid);
++  int match = -1;
++  int free_entry = -1;
++  for (unsigned i = 0; i < entries.size(); ++i) {
++    if (entries[i].state == ENTRY_FREE) {
++      if (free_entry < 0) free_entry = static_cast<int>(i);
++      continue;
++    }
++    if (entries[i].state == ENTRY_LIVE &&
++        same_identity(entries[i].key, requested)) {
++      match = static_cast<int>(i);
++      break;
++    }
++  }
++  if (match >= 0) {
++    entry &resident = entries[static_cast<unsigned>(match)];
++    if (resident.waiters.size() >= waiter_capacity_per_entry()) {
++      ++m_impl->counters.waiter_full_fallbacks;
++      return REQUEST_WAITER_FULL_PASSTHROUGH;
++    }
++    const bool control = grouping_only_control();
++    resident.waiters.push_back(follower(requester, requested, cycle, control));
++    if (resident.waiters.size() > m_impl->counters.waiter_hwm)
++      m_impl->counters.waiter_hwm = resident.waiters.size();
++    if (resident.leader_launch_cycle == cycle)
++      ++m_impl->counters.same_cycle_merges;
++    else
++      ++m_impl->counters.inflight_merges;
++    if (control) {
++      ++m_impl->counters.grouping_only_followers;
++      return REQUEST_CONTROL_GROUPED_PASSTHROUGH;
++    }
++    m_impl->followers[requester] = locator(sid, static_cast<unsigned>(match));
++    ++m_impl->counters.followers;
++    return REQUEST_REGISTERED_FOLLOWER;
++  }
++  if (free_entry < 0) {
++    ++m_impl->counters.entry_full_fallbacks;
++    return REQUEST_ENTRY_FULL_PASSTHROUGH;
++  }
++  return REQUEST_BASELINE_LEADER;
++}
++
++void exact_coalescer::note_leader_launch(
++    unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++    uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t cycle) {
++  if (!enabled()) return;
++  std::vector<entry> &entries = m_impl->table(sid);
++  int free_entry = -1;
++  for (unsigned i = 0; i < entries.size(); ++i)
++    if (entries[i].state == ENTRY_FREE) {
++      free_entry = static_cast<int>(i);
++      break;
++    }
++  // decide_new_request() and this call are synchronous around the accepted
++  // port grant, so the selected invalid entry cannot change between them.
++  assert(free_entry >= 0);
++  entry &resident = entries[static_cast<unsigned>(free_entry)];
++  resident.state = ENTRY_LIVE;
++  resident.key = identity{asid, vpn, page_size, generation, access};
++  resident.leader = requester_key{sid, uid};
++  resident.leader_launch_cycle = cycle;
++  ++m_impl->counters.leaders;
++  m_impl->note_occupancy(sid);
++}
++
++void exact_coalescer::note_leader_completion(
++    unsigned sid, uint64_t uid, uint64_t ppn,
++    vm_translation::translation_source source, uint64_t cycle) {
++  if (!enabled()) return;
++  std::vector<entry> &entries = m_impl->table(sid);
++  int found = -1;
++  for (unsigned i = 0; i < entries.size(); ++i)
++    if (entries[i].state == ENTRY_LIVE && entries[i].leader.sid == sid &&
++        entries[i].leader.uid == uid) {
++      found = static_cast<int>(i);
++      break;
++    }
++  if (found < 0) return;  // entry-full/waiter-full baseline passthrough.
++  entry &resident = entries[static_cast<unsigned>(found)];
++  assert(source != vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
++  resident.state = ENTRY_READY;
++  resident.leader_completion_cycle = cycle;
++  resident.ppn = ppn;
++  resident.source = source;
++  ++m_impl->counters.leader_completions;
++  if (source == vm_translation::TRANSLATION_SOURCE_L1_TLB_HIT)
++    ++m_impl->counters.l1_hit_leaders;
++  else if (source == vm_translation::TRANSLATION_SOURCE_L2_TLB_HIT)
++    ++m_impl->counters.l2_hit_leaders;
++  else if (source == vm_translation::TRANSLATION_SOURCE_PTW)
++    ++m_impl->counters.ptw_leaders;
++  else
++    ++m_impl->counters.other_source_leaders;
++
++  if (grouping_only_control()) {
++    resident.waiters.clear();
++    resident = entry();
++    return;
++  }
++  m_impl->free_if_drained(sid, static_cast<unsigned>(found));
++}
++
++bool exact_coalescer::quiescent() const {
++  if (!m_impl->followers.empty() || !m_impl->pending_compares.empty())
++    return false;
++  for (std::map<unsigned, std::vector<entry> >::const_iterator table =
++           m_impl->tables.begin(); table != m_impl->tables.end(); ++table)
++    for (unsigned i = 0; i < table->second.size(); ++i)
++      if (table->second[i].state != ENTRY_FREE) return false;
++  return true;
++}
++
++void exact_coalescer::print(FILE *fout) const {
++  if (!enabled()) return;
++  const stats &s = m_impl->counters;
++  fprintf(fout, "awma_prel1_coalescer_enabled = 1\n");
++  fprintf(fout, "awma_prel1_coalescer_capacity_per_sid = 2\n");
++  fprintf(fout, "awma_prel1_coalescer_waiters_per_entry = 32\n");
++  fprintf(fout, "awma_prel1_coalescer_compare_latency = %u\n",
++          compare_latency());
++  fprintf(fout, "awma_prel1_coalescer_timing_assumption = %s\n",
++          compare_latency() == 0
++              ? "SIMULATOR_TIMING_ASSUMPTION_SAME_CYCLE_COMPARE"
++              : "CONSERVATIVE_PLUS_ONE_CYCLE_COMPARE");
++  fprintf(fout, "awma_prel1_coalescer_grouping_only = %u\n",
++          grouping_only_control() ? 1U : 0U);
++#define PRINT_COUNTER(name) \
++  fprintf(fout, "awma_prel1_coalescer_" #name " = %llu\n", \
++          (unsigned long long)s.name)
++  PRINT_COUNTER(lookups);
++  PRINT_COUNTER(compare_delays);
++  PRINT_COUNTER(leaders);
++  PRINT_COUNTER(followers);
++  PRINT_COUNTER(same_cycle_merges);
++  PRINT_COUNTER(inflight_merges);
++  PRINT_COUNTER(entry_full_fallbacks);
++  PRINT_COUNTER(waiter_full_fallbacks);
++  PRINT_COUNTER(grouping_only_followers);
++  PRINT_COUNTER(leader_completions);
++  PRINT_COUNTER(follower_applications);
++  PRINT_COUNTER(follower_wait_cycles_total);
++  PRINT_COUNTER(follower_wait_cycles_max);
++  PRINT_COUNTER(follower_delivery_latency_total);
++  PRINT_COUNTER(follower_delivery_latency_max);
++  PRINT_COUNTER(leader_to_follower_latency_total);
++  PRINT_COUNTER(leader_to_follower_latency_max);
++  PRINT_COUNTER(head_block_cycles);
++  PRINT_COUNTER(critical_path_followers);
++  PRINT_COUNTER(l1_hit_leaders);
++  PRINT_COUNTER(l2_hit_leaders);
++  PRINT_COUNTER(ptw_leaders);
++  PRINT_COUNTER(other_source_leaders);
++  PRINT_COUNTER(occupancy_hwm);
++  PRINT_COUNTER(waiter_hwm);
++#undef PRINT_COUNTER
++  fprintf(fout, "awma_prel1_coalescer_delivery_wait_p50 = %llu\n",
++          (unsigned long long)percentile(s.delivery_wait_histogram,
++              s.follower_applications, 50, 100));
++  fprintf(fout, "awma_prel1_coalescer_delivery_wait_p95 = %llu\n",
++          (unsigned long long)percentile(s.delivery_wait_histogram,
++              s.follower_applications, 95, 100));
++  fprintf(fout, "awma_prel1_coalescer_delivery_wait_p99 = %llu\n",
++          (unsigned long long)percentile(s.delivery_wait_histogram,
++              s.follower_applications, 99, 100));
++  fprintf(fout, "awma_prel1_coalescer_followers_final = %llu\n",
++          (unsigned long long)m_impl->followers.size());
++  fprintf(fout, "awma_prel1_coalescer_pending_compares_final = %llu\n",
++          (unsigned long long)m_impl->pending_compares.size());
++  uint64_t live_entries = 0;
++  uint64_t waiters_final = 0;
++  for (std::map<unsigned, std::vector<entry> >::const_iterator table =
++           m_impl->tables.begin(); table != m_impl->tables.end(); ++table)
++    for (unsigned i = 0; i < table->second.size(); ++i) {
++      if (table->second[i].state != ENTRY_FREE) ++live_entries;
++      waiters_final += table->second[i].waiters.size();
++    }
++  fprintf(fout, "awma_prel1_coalescer_live_entries_final = %llu\n",
++          (unsigned long long)live_entries);
++  fprintf(fout, "awma_prel1_coalescer_waiters_final = %llu\n",
++          (unsigned long long)waiters_final);
++  fprintf(fout, "awma_prel1_coalescer_quiescent = %u\n",
++          quiescent() ? 1U : 0U);
++}
++
++}  // namespace awma_prel1

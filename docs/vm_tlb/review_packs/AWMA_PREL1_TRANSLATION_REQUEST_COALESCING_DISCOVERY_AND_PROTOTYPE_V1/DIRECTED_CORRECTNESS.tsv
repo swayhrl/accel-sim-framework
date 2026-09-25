@@ -1,0 +1,20 @@
+test_id	requirement	fixture_or_evidence	status
+1	unique request baseline path	prel1_exact_coalescer_test main unique leader	PASS
+2	same-cycle duplicate merge	prel1_exact_coalescer_test main same-cycle follower	PASS
+3	cross-cycle in-flight duplicate merge	prel1_exact_coalescer_test main and integration	PASS
+4	different VPN no merge	prel1_exact_coalescer_test main mismatch sequence	PASS
+5	ASID mismatch no merge	prel1_exact_coalescer_test main mismatch sequence	PASS
+6	generation mismatch no merge	prel1_exact_coalescer_test main mismatch sequence	PASS
+7	access mismatch no merge	prel1_exact_coalescer_test main mismatch sequence	PASS
+8	entry full baseline fallback	2-entry directed saturation; entry_full_fallbacks=1	PASS
+9	waiter full baseline fallback	32-waiter saturation; waiter_full_fallbacks=1	PASS
+10	leader L1 hit	real translation_controller integration; l1_hit_leaders=1	PASS
+11	leader L2 hit	real translation_controller integration; l2_hit_leaders=1	PASS
+12	leader PTW	real translation_controller integration; ptw_leaders=4	PASS
+13	exactly-once follower application	34/34 module plus 3/3 integration applications	PASS
+14	terminal drain	all module/controller fixtures coalescer_quiescent=1	PASS
+15	no detached waiter	followers/waiters/entries/pending-compares final=0	PASS
+16	no duplicate downstream application	ZERO gate vm_ready_application_duplicate_attempts=0	PASS
+17	grouping-only matched control	grouping_only_followers=1; follower_applications=0	PASS
+18	conservative +1-cycle path	compare_delays=2; application=1; quiescent=1	PASS
+19	ZERO_DUPLICATION_FULL_PIPELINE	OFF==candidate exact for cycles/service/coverage/instructions/CTA/UID/downstream	PASS
