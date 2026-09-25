@@ -21,8 +21,8 @@ CONFIG = REPO / 'configs/rtx4080_ada/SM89_RTX4080_AWMA_V1/gpgpusim.config'
 TRACE_CONFIG = REPO / 'gpu-simulator/configs/tested-cfgs/SM89_RTX4080_AWMA_V1/trace.config'
 BINARY = RUNTIME / 'bin/unified_accel-sim.out'
 CORE_LIB = RUNTIME / 'src/gpgpu-sim/lib/gcc-11.4.0/cuda-12040/release'
-BINARY_SHA = '92f961eab9d9f2c2399e0cf614d2c2e70f7e2d414c06229c3162d7667d565969'
-SOURCE_COMMIT = 'da6ba65a5860c478c411ea7686fde8f97a77c5b2'
+BINARY_SHA = '1c58566a8684b424ad082bc5a55a7277faf00d81024ce79005b04a681c9e6125'
+SOURCE_COMMIT = 'b9b8fc18a0020e61ac960f8bfa7da7c1e722fc42'
 
 TARGETS = {
     'T0': {
