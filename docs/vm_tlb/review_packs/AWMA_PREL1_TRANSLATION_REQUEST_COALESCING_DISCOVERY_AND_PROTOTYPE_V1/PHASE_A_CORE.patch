@@ -1,0 +1,634 @@
+﻿diff --git "a/D:\\repo\\awma_v2r1_stage\\vm_translation.cc" "b/D:\\repo\\awma_prel1_stage\\vm_translation.cc"
+index 84d7f55..697fdfd 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\vm_translation.cc"
++++ "b/D:\\repo\\awma_prel1_stage\\vm_translation.cc"
+@@ -1,4 +1,5 @@
+ #include "vm_translation.h"
++#include "prel1_coalescing_observer.h"
+ 
+ #include <assert.h>
+ #include <errno.h>
+@@ -2137,6 +2138,9 @@ void translation_controller::service_lookups(uint64_t cycle) {
+     progress = false;
+     for (unsigned index = 0; index < m_lookups.size();) {
+       lookup_operation &lookup = m_lookups[index];
++      if (lookup.stage == LOOKUP_READY)
++        awma_prel1::opportunity_observer::instance()
++            .note_physical_completion(lookup.sid, lookup.uid, cycle);
+       if (lookup.generation != translation_generation(lookup.key.asid)) {
+         // The request is retained by the normal memory-pipeline retry path;
+         // only this obsolete lookup result is discarded before it can fill or
+@@ -2323,6 +2327,8 @@ void translation_controller::service_lookups(uint64_t cycle) {
+           continue;
+         }
+         ++m_stats.l2_lookup_launches;
++        awma_prel1::opportunity_observer::instance().note_l2_probe(
++            lookup.sid, lookup.uid);
+         if (m_stats.object_attribution_enabled)
+           ++m_stats.object[lookup.object].l2_lookup_launches;
+         lookup.l2_issued = true;
+@@ -2399,6 +2405,8 @@ lookup_result translation_controller::allocate_or_merge(
+                                        l2_complete, cycle, lookup->object,
+                                        true));
+     ++m_stats.mshr_merges;
++    awma_prel1::opportunity_observer::instance().note_existing_mshr_merge(
++        sid, waiter_uid);
+     if (m_stats.object_attribution_enabled)
+       ++m_stats.object[lookup->object].mshr_merges;
+     ++m_stats.waiter_registrations;
+@@ -2618,6 +2626,9 @@ lookup_result translation_controller::translate(unsigned sid, unsigned asid,
+   if (m_stats.object_attribution_enabled)
+     ++m_stats.object[object].l1_lookup_launches;
+   note_object_requester(object, key);
++  awma_prel1::opportunity_observer::instance().note_physical_launch(
++      sid, waiter_uid, asid, key.vpn, key.page_size,
++      translation_generation(asid), access, cycle);
+   // A PTW-woken retry is already resolved conventional paging work.  It
+   // retains the accepted L1 delivery probe/source handoff but must not begin a
+   // second Segment lookup for the same requester.
+@@ -2709,6 +2720,8 @@ bool translation_controller::complete_translation(const translation_key &key,
+          waiter_index < m_mshrs[index].waiters.size(); ++waiter_index) {
+       const waiter &entry_waiter = m_mshrs[index].waiters[waiter_index];
+       assert(entry_waiter.sid < m_l1s.size());
++      awma_prel1::opportunity_observer::instance().note_physical_completion(
++          entry_waiter.sid, entry_waiter.uid, cycle);
+       m_l1s[entry_waiter.sid].fill(key, ppn, cycle, entry_waiter.object);
+       note_requester_completion(
+           entry_waiter.entry_cycle, entry_waiter.l1_launch_cycle,
+@@ -3094,6 +3107,7 @@ const set_associative_tlb &translation_controller::l1(unsigned sid) const {
+ }
+ 
+ void translation_controller::print_stats(FILE *fout) const {
++  awma_prel1::opportunity_observer::instance().print(fout);
+   if (awma_mechanism_diagnostics_enabled()) {
+     const refill_protection_stats &refill = m_l2.refill_stats();
+     fprintf(fout, "vm_awma_candidate_mode = %s\n",
+diff --git "a/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.h" "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.h"
+new file mode 100644
+index 0000000..a8fcf92
+--- /dev/null
++++ "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.h"
+@@ -0,0 +1,36 @@
++#ifndef AWMA_PREL1_COALESCING_OBSERVER_H
++#define AWMA_PREL1_COALESCING_OBSERVER_H
++
++#include <stdint.h>
++#include <stdio.h>
++
++#include "vm_translation.h"
++
++namespace awma_prel1 {
++
++class opportunity_observer {
++ public:
++  static opportunity_observer &instance();
++
++  bool enabled() const;
++  void note_physical_launch(
++      unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++      uint64_t page_size, uint64_t generation,
++      vm_translation::translation_access access, uint64_t cycle);
++  void note_l2_probe(unsigned sid, uint64_t uid);
++  void note_existing_mshr_merge(unsigned sid, uint64_t uid);
++  void note_physical_completion(unsigned sid, uint64_t uid, uint64_t cycle);
++  void print(FILE *fout) const;
++
++ private:
++  opportunity_observer();
++  opportunity_observer(const opportunity_observer &);
++  opportunity_observer &operator=(const opportunity_observer &);
++
++  struct implementation;
++  implementation *m_impl;
++};
++
++}  // namespace awma_prel1
++
++#endif
+diff --git "a/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc" "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc"
+new file mode 100644
+index 0000000..07ce169
+--- /dev/null
++++ "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc"
+@@ -0,0 +1,521 @@
++#include "prel1_coalescing_observer.h"
++
++#include <assert.h>
++#include <stdlib.h>
++
++#include <algorithm>
++#include <map>
++#include <set>
++#include <vector>
++
++namespace awma_prel1 {
++namespace {
++
++enum duplicate_class {
++  CLASS_UNIQUE = 0,
++  CLASS_SAME_CYCLE_DUPLICATE,
++  CLASS_INFLIGHT_DUPLICATE,
++  CLASS_POST_COMPLETION_REPEAT
++};
++
++struct identity {
++  unsigned asid;
++  uint64_t vpn;
++  uint64_t page_size;
++  uint64_t generation;
++  vm_translation::translation_access access;
++
++  bool operator<(const identity &other) const {
++    if (asid != other.asid) return asid < other.asid;
++    if (vpn != other.vpn) return vpn < other.vpn;
++    if (page_size != other.page_size) return page_size < other.page_size;
++    if (generation != other.generation) return generation < other.generation;
++    return access < other.access;
++  }
++};
++
++struct scoped_identity {
++  unsigned sid;
++  identity key;
++  bool operator<(const scoped_identity &other) const {
++    if (sid != other.sid) return sid < other.sid;
++    return key < other.key;
++  }
++};
++
++struct requester_key {
++  unsigned sid;
++  uint64_t uid;
++  bool operator<(const requester_key &other) const {
++    if (sid != other.sid) return sid < other.sid;
++    return uid < other.uid;
++  }
++};
++
++struct launch_record {
++  uint64_t id;
++  requester_key requester;
++  scoped_identity scope;
++  uint64_t launch_cycle;
++  uint64_t completion_cycle;
++  duplicate_class classification;
++  uint64_t leader_id;
++  bool completed;
++  bool pair_finalized;
++  bool existing_mshr_overlap;
++  unsigned pending_dependents;
++  std::vector<uint64_t> dependents;
++  bool finite_merge[4];
++
++  launch_record(uint64_t launch_id, const requester_key &request_key,
++                const scoped_identity &identity_scope, uint64_t cycle,
++                duplicate_class cls, uint64_t leader)
++      : id(launch_id), requester(request_key), scope(identity_scope),
++        launch_cycle(cycle), completion_cycle(0), classification(cls),
++        leader_id(leader), completed(false), pair_finalized(false),
++        existing_mshr_overlap(false), pending_dependents(0), dependents() {
++    for (unsigned i = 0; i < 4; ++i) finite_merge[i] = false;
++  }
++};
++
++struct table_entry {
++  bool valid;
++  identity key;
++  uint64_t leader_id;
++  uint64_t launch_cycle;
++  uint64_t waiters;
++  table_entry() : valid(false), key(), leader_id(0), launch_cycle(0), waiters(0) {}
++};
++
++struct capacity_stats {
++  uint64_t lookups;
++  uint64_t merge_opportunities;
++  uint64_t same_cycle_merges;
++  uint64_t inflight_merges;
++  uint64_t full_events;
++  uint64_t l2_probe_overlap;
++  uint64_t existing_mshr_overlap;
++  uint64_t occupancy_hwm;
++  uint64_t waiter_hwm;
++  std::vector<uint64_t> occupancy_histogram;
++  capacity_stats(unsigned capacity = 0)
++      : lookups(0), merge_opportunities(0), same_cycle_merges(0),
++        inflight_merges(0), full_events(0), l2_probe_overlap(0),
++        existing_mshr_overlap(0), occupancy_hwm(0), waiter_hwm(0),
++        occupancy_histogram(capacity + 1, 0) {}
++};
++
++struct capacity_model {
++  unsigned capacity;
++  std::map<unsigned, std::vector<table_entry> > per_sid;
++  capacity_stats stats;
++  capacity_model(unsigned entries = 0) : capacity(entries), per_sid(), stats(entries) {}
++};
++
++struct timing_stats {
++  uint64_t pairs;
++  uint64_t leader_no_later;
++  uint64_t leader_later;
++  uint64_t existing_mshr_pairs;
++  uint64_t incremental_pairs;
++  uint64_t leader_later_cycles_total;
++  uint64_t leader_later_cycles_max;
++  uint64_t follower_baseline_latency_total;
++  uint64_t potential_wait_cycles_total;
++  uint64_t potential_wait_cycles_max;
++  timing_stats()
++      : pairs(0), leader_no_later(0), leader_later(0),
++        existing_mshr_pairs(0), incremental_pairs(0),
++        leader_later_cycles_total(0), leader_later_cycles_max(0),
++        follower_baseline_latency_total(0), potential_wait_cycles_total(0),
++        potential_wait_cycles_max(0) {}
++};
++
++}  // namespace
++
++struct opportunity_observer::implementation {
++  uint64_t next_id;
++  uint64_t physical_launches;
++  uint64_t unique_launches;
++  uint64_t same_cycle_duplicates;
++  uint64_t inflight_duplicates;
++  uint64_t post_completion_repeats;
++  uint64_t existing_mshr_handled;
++  uint64_t existing_mshr_same_cycle;
++  uint64_t existing_mshr_inflight;
++  uint64_t l2_probes;
++  uint64_t duplicate_l2_probes;
++  uint64_t duplicate_completions;
++  uint64_t completion_without_launch;
++  uint64_t active_hwm;
++  std::map<requester_key, uint64_t> active_requesters;
++  std::map<scoped_identity, std::vector<uint64_t> > active_by_identity;
++  std::map<scoped_identity, uint64_t> last_completion;
++  std::map<uint64_t, launch_record> records;
++  std::set<scoped_identity> identities_seen;
++  std::vector<capacity_model> models;
++  timing_stats timing;
++
++  implementation()
++      : next_id(1), physical_launches(0), unique_launches(0),
++        same_cycle_duplicates(0), inflight_duplicates(0),
++        post_completion_repeats(0), existing_mshr_handled(0),
++        existing_mshr_same_cycle(0), existing_mshr_inflight(0),
++        l2_probes(0), duplicate_l2_probes(0), duplicate_completions(0),
++        completion_without_launch(0), active_hwm(0), active_requesters(),
++        active_by_identity(), last_completion(), records(), identities_seen(),
++        models(), timing() {
++    models.push_back(capacity_model(1));
++    models.push_back(capacity_model(2));
++    models.push_back(capacity_model(4));
++    models.push_back(capacity_model(8));
++  }
++
++  void cleanup(uint64_t id) {
++    std::map<uint64_t, launch_record>::iterator found = records.find(id);
++    if (found == records.end()) return;
++    const launch_record &record = found->second;
++    const bool pair_done = record.classification == CLASS_UNIQUE ||
++                           record.classification == CLASS_POST_COMPLETION_REPEAT ||
++                           record.pair_finalized;
++    if (record.completed && record.pending_dependents == 0 && pair_done)
++      records.erase(found);
++  }
++
++  void finalize_pair(uint64_t follower_id) {
++    std::map<uint64_t, launch_record>::iterator follower_it =
++        records.find(follower_id);
++    if (follower_it == records.end() || follower_it->second.pair_finalized ||
++        !follower_it->second.completed)
++      return;
++    const uint64_t leader_id = follower_it->second.leader_id;
++    std::map<uint64_t, launch_record>::iterator leader_it = records.find(leader_id);
++    if (leader_it == records.end() || !leader_it->second.completed) return;
++    const uint64_t follower_launch = follower_it->second.launch_cycle;
++    const uint64_t follower_completion = follower_it->second.completion_cycle;
++    const uint64_t leader_completion = leader_it->second.completion_cycle;
++    ++timing.pairs;
++    if (leader_completion <= follower_completion) {
++      ++timing.leader_no_later;
++    } else {
++      ++timing.leader_later;
++      const uint64_t later = leader_completion - follower_completion;
++      timing.leader_later_cycles_total += later;
++      if (later > timing.leader_later_cycles_max)
++        timing.leader_later_cycles_max = later;
++    }
++    if (follower_it->second.existing_mshr_overlap)
++      ++timing.existing_mshr_pairs;
++    else
++      ++timing.incremental_pairs;
++    timing.follower_baseline_latency_total +=
++        follower_completion - follower_launch;
++    const uint64_t wait = leader_completion > follower_launch
++                              ? leader_completion - follower_launch
++                              : 0;
++    timing.potential_wait_cycles_total += wait;
++    if (wait > timing.potential_wait_cycles_max)
++      timing.potential_wait_cycles_max = wait;
++    follower_it->second.pair_finalized = true;
++    assert(leader_it->second.pending_dependents != 0);
++    --leader_it->second.pending_dependents;
++    cleanup(follower_id);
++    cleanup(leader_id);
++  }
++};
++
++opportunity_observer::opportunity_observer() : m_impl(new implementation()) {}
++
++opportunity_observer &opportunity_observer::instance() {
++  static opportunity_observer singleton;
++  return singleton;
++}
++
++bool opportunity_observer::enabled() const {
++  const char *value = getenv("GPGPUSIM_AWMA_PREL1_OPPORTUNITY");
++  return value != NULL && value[0] != '\0' && value[0] != '0';
++}
++
++void opportunity_observer::note_physical_launch(
++    unsigned sid, uint64_t uid, unsigned asid, uint64_t vpn,
++    uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t cycle) {
++  if (!enabled()) return;
++  const identity key = {asid, vpn, page_size, generation, access};
++  const scoped_identity scope = {sid, key};
++  const requester_key requester = {sid, uid};
++  assert(m_impl->active_requesters.find(requester) ==
++         m_impl->active_requesters.end());
++  std::vector<uint64_t> &active = m_impl->active_by_identity[scope];
++  uint64_t leader_id = 0;
++  uint64_t leader_cycle = 0;
++  if (!active.empty()) {
++    leader_id = active.front();
++    std::map<uint64_t, launch_record>::const_iterator leader =
++        m_impl->records.find(leader_id);
++    assert(leader != m_impl->records.end() && !leader->second.completed);
++    leader_cycle = leader->second.launch_cycle;
++  }
++  duplicate_class cls = CLASS_UNIQUE;
++  if (leader_id != 0)
++    cls = leader_cycle == cycle ? CLASS_SAME_CYCLE_DUPLICATE
++                                : CLASS_INFLIGHT_DUPLICATE;
++  else if (m_impl->last_completion.find(scope) !=
++           m_impl->last_completion.end())
++    cls = CLASS_POST_COMPLETION_REPEAT;
++
++  const uint64_t id = m_impl->next_id++;
++  m_impl->records.insert(std::make_pair(
++      id, launch_record(id, requester, scope, cycle, cls, leader_id)));
++  m_impl->active_requesters[requester] = id;
++  active.push_back(id);
++  m_impl->identities_seen.insert(scope);
++  ++m_impl->physical_launches;
++  if (cls == CLASS_UNIQUE)
++    ++m_impl->unique_launches;
++  else if (cls == CLASS_SAME_CYCLE_DUPLICATE)
++    ++m_impl->same_cycle_duplicates;
++  else if (cls == CLASS_INFLIGHT_DUPLICATE)
++    ++m_impl->inflight_duplicates;
++  else
++    ++m_impl->post_completion_repeats;
++  if (leader_id != 0) {
++    launch_record &leader = m_impl->records.find(leader_id)->second;
++    leader.dependents.push_back(id);
++    ++leader.pending_dependents;
++  }
++  if (m_impl->active_requesters.size() > m_impl->active_hwm)
++    m_impl->active_hwm = m_impl->active_requesters.size();
++
++  launch_record &record = m_impl->records.find(id)->second;
++  for (unsigned model_index = 0; model_index < m_impl->models.size();
++       ++model_index) {
++    capacity_model &model = m_impl->models[model_index];
++    std::vector<table_entry> &table = model.per_sid[sid];
++    if (table.empty()) table.resize(model.capacity);
++    ++model.stats.lookups;
++    int match = -1;
++    int free_entry = -1;
++    unsigned occupancy = 0;
++    for (unsigned entry = 0; entry < table.size(); ++entry) {
++      if (!table[entry].valid) {
++        if (free_entry < 0) free_entry = static_cast<int>(entry);
++        continue;
++      }
++      ++occupancy;
++      const identity &resident = table[entry].key;
++      const bool equal = !(resident < key) && !(key < resident);
++      if (equal && match < 0) match = static_cast<int>(entry);
++    }
++    if (match >= 0) {
++      table_entry &entry = table[static_cast<unsigned>(match)];
++      ++model.stats.merge_opportunities;
++      if (entry.launch_cycle == cycle)
++        ++model.stats.same_cycle_merges;
++      else
++        ++model.stats.inflight_merges;
++      ++entry.waiters;
++      if (entry.waiters > model.stats.waiter_hwm)
++        model.stats.waiter_hwm = entry.waiters;
++      record.finite_merge[model_index] = true;
++    } else if (free_entry >= 0) {
++      table_entry &entry = table[static_cast<unsigned>(free_entry)];
++      entry.valid = true;
++      entry.key = key;
++      entry.leader_id = id;
++      entry.launch_cycle = cycle;
++      entry.waiters = 0;
++      ++occupancy;
++    } else {
++      ++model.stats.full_events;
++    }
++    if (occupancy > model.stats.occupancy_hwm)
++      model.stats.occupancy_hwm = occupancy;
++    assert(occupancy < model.stats.occupancy_histogram.size());
++    ++model.stats.occupancy_histogram[occupancy];
++  }
++}
++
++void opportunity_observer::note_l2_probe(unsigned sid, uint64_t uid) {
++  if (!enabled()) return;
++  const requester_key requester = {sid, uid};
++  std::map<requester_key, uint64_t>::const_iterator active =
++      m_impl->active_requesters.find(requester);
++  assert(active != m_impl->active_requesters.end());
++  launch_record &record = m_impl->records.find(active->second)->second;
++  ++m_impl->l2_probes;
++  if (record.classification == CLASS_SAME_CYCLE_DUPLICATE ||
++      record.classification == CLASS_INFLIGHT_DUPLICATE)
++    ++m_impl->duplicate_l2_probes;
++  for (unsigned i = 0; i < m_impl->models.size(); ++i)
++    if (record.finite_merge[i]) ++m_impl->models[i].stats.l2_probe_overlap;
++}
++
++void opportunity_observer::note_existing_mshr_merge(unsigned sid,
++                                                     uint64_t uid) {
++  if (!enabled()) return;
++  const requester_key requester = {sid, uid};
++  std::map<requester_key, uint64_t>::const_iterator active =
++      m_impl->active_requesters.find(requester);
++  assert(active != m_impl->active_requesters.end());
++  launch_record &record = m_impl->records.find(active->second)->second;
++  assert(!record.existing_mshr_overlap);
++  record.existing_mshr_overlap = true;
++  ++m_impl->existing_mshr_handled;
++  if (record.classification == CLASS_SAME_CYCLE_DUPLICATE)
++    ++m_impl->existing_mshr_same_cycle;
++  else {
++    assert(record.classification == CLASS_INFLIGHT_DUPLICATE);
++    ++m_impl->existing_mshr_inflight;
++  }
++  for (unsigned i = 0; i < m_impl->models.size(); ++i)
++    if (record.finite_merge[i])
++      ++m_impl->models[i].stats.existing_mshr_overlap;
++}
++
++void opportunity_observer::note_physical_completion(unsigned sid,
++                                                     uint64_t uid,
++                                                     uint64_t cycle) {
++  if (!enabled()) return;
++  const requester_key requester = {sid, uid};
++  std::map<requester_key, uint64_t>::iterator active_request =
++      m_impl->active_requesters.find(requester);
++  if (active_request == m_impl->active_requesters.end()) return;
++  const uint64_t id = active_request->second;
++  m_impl->active_requesters.erase(active_request);
++  std::map<uint64_t, launch_record>::iterator record_it =
++      m_impl->records.find(id);
++  assert(record_it != m_impl->records.end() && !record_it->second.completed);
++  launch_record &record = record_it->second;
++  record.completed = true;
++  record.completion_cycle = cycle;
++  if (record.classification == CLASS_SAME_CYCLE_DUPLICATE ||
++      record.classification == CLASS_INFLIGHT_DUPLICATE)
++    ++m_impl->duplicate_completions;
++  std::vector<uint64_t> &active = m_impl->active_by_identity[record.scope];
++  active.erase(std::remove(active.begin(), active.end(), id), active.end());
++  if (active.empty()) m_impl->active_by_identity.erase(record.scope);
++  m_impl->last_completion[record.scope] = cycle;
++
++  for (unsigned model_index = 0; model_index < m_impl->models.size();
++       ++model_index) {
++    capacity_model &model = m_impl->models[model_index];
++    std::vector<table_entry> &table = model.per_sid[sid];
++    for (unsigned entry = 0; entry < table.size(); ++entry)
++      if (table[entry].valid && table[entry].leader_id == id) {
++        table[entry] = table_entry();
++        break;
++      }
++  }
++
++  const std::vector<uint64_t> dependents = record.dependents;
++  if (record.leader_id != 0) m_impl->finalize_pair(id);
++  for (unsigned i = 0; i < dependents.size(); ++i)
++    m_impl->finalize_pair(dependents[i]);
++  m_impl->cleanup(id);
++}
++
++void opportunity_observer::print(FILE *fout) const {
++  if (!enabled()) return;
++  fprintf(fout, "awma_prel1_opportunity_enabled = 1\n");
++  fprintf(fout, "awma_prel1_scope = PER_SID_PRE_L1\n");
++  fprintf(fout, "awma_prel1_identity = ASID_VPN_PAGE_SIZE_GENERATION_ACCESS\n");
++  fprintf(fout, "awma_prel1_physical_launches = %llu\n",
++          (unsigned long long)m_impl->physical_launches);
++  fprintf(fout, "awma_prel1_unique = %llu\n",
++          (unsigned long long)m_impl->unique_launches);
++  fprintf(fout, "awma_prel1_same_cycle_duplicate_raw = %llu\n",
++          (unsigned long long)m_impl->same_cycle_duplicates);
++  fprintf(fout, "awma_prel1_inflight_duplicate_raw = %llu\n",
++          (unsigned long long)m_impl->inflight_duplicates);
++  fprintf(fout, "awma_prel1_post_completion_repeat = %llu\n",
++          (unsigned long long)m_impl->post_completion_repeats);
++  fprintf(fout, "awma_prel1_existing_mshr_handled = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_handled);
++  fprintf(fout, "awma_prel1_same_cycle_duplicate_incremental = %llu\n",
++          (unsigned long long)(m_impl->same_cycle_duplicates -
++                               m_impl->existing_mshr_same_cycle));
++  fprintf(fout, "awma_prel1_inflight_duplicate_incremental = %llu\n",
++          (unsigned long long)(m_impl->inflight_duplicates -
++                               m_impl->existing_mshr_inflight));
++  fprintf(fout, "awma_prel1_classification_conservation = %llu\n",
++          (unsigned long long)(m_impl->unique_launches +
++              m_impl->post_completion_repeats +
++              (m_impl->same_cycle_duplicates -
++               m_impl->existing_mshr_same_cycle) +
++              (m_impl->inflight_duplicates -
++               m_impl->existing_mshr_inflight) +
++              m_impl->existing_mshr_handled));
++  fprintf(fout, "awma_prel1_exact_identities = %llu\n",
++          (unsigned long long)m_impl->identities_seen.size());
++  fprintf(fout, "awma_prel1_l2_probes = %llu\n",
++          (unsigned long long)m_impl->l2_probes);
++  fprintf(fout, "awma_prel1_duplicate_l2_probes = %llu\n",
++          (unsigned long long)m_impl->duplicate_l2_probes);
++  fprintf(fout, "awma_prel1_duplicate_completions = %llu\n",
++          (unsigned long long)m_impl->duplicate_completions);
++  fprintf(fout, "awma_prel1_completion_without_launch = %llu\n",
++          (unsigned long long)m_impl->completion_without_launch);
++  fprintf(fout, "awma_prel1_active_hwm = %llu\n",
++          (unsigned long long)m_impl->active_hwm);
++  fprintf(fout, "awma_prel1_active_final = %llu\n",
++          (unsigned long long)m_impl->active_requesters.size());
++  fprintf(fout, "awma_prel1_records_final = %llu\n",
++          (unsigned long long)m_impl->records.size());
++  fprintf(fout, "awma_prel1_timing_pairs = %llu\n",
++          (unsigned long long)m_impl->timing.pairs);
++  fprintf(fout, "awma_prel1_leader_no_later_than_follower = %llu\n",
++          (unsigned long long)m_impl->timing.leader_no_later);
++  fprintf(fout, "awma_prel1_leader_later_than_follower = %llu\n",
++          (unsigned long long)m_impl->timing.leader_later);
++  fprintf(fout, "awma_prel1_timing_existing_mshr_pairs = %llu\n",
++          (unsigned long long)m_impl->timing.existing_mshr_pairs);
++  fprintf(fout, "awma_prel1_timing_incremental_pairs = %llu\n",
++          (unsigned long long)m_impl->timing.incremental_pairs);
++  fprintf(fout, "awma_prel1_leader_later_cycles_total = %llu\n",
++          (unsigned long long)m_impl->timing.leader_later_cycles_total);
++  fprintf(fout, "awma_prel1_leader_later_cycles_max = %llu\n",
++          (unsigned long long)m_impl->timing.leader_later_cycles_max);
++  fprintf(fout, "awma_prel1_follower_baseline_latency_total = %llu\n",
++          (unsigned long long)m_impl->timing.follower_baseline_latency_total);
++  fprintf(fout, "awma_prel1_potential_wait_cycles_total = %llu\n",
++          (unsigned long long)m_impl->timing.potential_wait_cycles_total);
++  fprintf(fout, "awma_prel1_potential_wait_cycles_max = %llu\n",
++          (unsigned long long)m_impl->timing.potential_wait_cycles_max);
++  for (unsigned i = 0; i < m_impl->models.size(); ++i) {
++    const capacity_model &model = m_impl->models[i];
++    const capacity_stats &stats = model.stats;
++    fprintf(fout, "awma_prel1_cap_%u_lookups = %llu\n", model.capacity,
++            (unsigned long long)stats.lookups);
++    fprintf(fout, "awma_prel1_cap_%u_merge_opportunities = %llu\n",
++            model.capacity, (unsigned long long)stats.merge_opportunities);
++    fprintf(fout, "awma_prel1_cap_%u_same_cycle_merges = %llu\n",
++            model.capacity, (unsigned long long)stats.same_cycle_merges);
++    fprintf(fout, "awma_prel1_cap_%u_inflight_merges = %llu\n",
++            model.capacity, (unsigned long long)stats.inflight_merges);
++    fprintf(fout, "awma_prel1_cap_%u_full_events = %llu\n", model.capacity,
++            (unsigned long long)stats.full_events);
++    fprintf(fout, "awma_prel1_cap_%u_l2_probe_overlap = %llu\n",
++            model.capacity, (unsigned long long)stats.l2_probe_overlap);
++    fprintf(fout, "awma_prel1_cap_%u_existing_mshr_overlap = %llu\n",
++            model.capacity, (unsigned long long)stats.existing_mshr_overlap);
++    fprintf(fout, "awma_prel1_cap_%u_occupancy_hwm = %llu\n",
++            model.capacity, (unsigned long long)stats.occupancy_hwm);
++    fprintf(fout, "awma_prel1_cap_%u_waiter_hwm = %llu\n", model.capacity,
++            (unsigned long long)stats.waiter_hwm);
++    uint64_t live = 0;
++    for (std::map<unsigned, std::vector<table_entry> >::const_iterator table =
++             model.per_sid.begin(); table != model.per_sid.end(); ++table)
++      for (unsigned entry = 0; entry < table->second.size(); ++entry)
++        if (table->second[entry].valid) ++live;
++    fprintf(fout, "awma_prel1_cap_%u_live_entries_final = %llu\n",
++            model.capacity, (unsigned long long)live);
++    for (unsigned occupancy = 0;
++         occupancy < stats.occupancy_histogram.size(); ++occupancy)
++      fprintf(fout, "awma_prel1_cap_%u_occupancy_%u = %llu\n",
++              model.capacity, occupancy,
++              (unsigned long long)stats.occupancy_histogram[occupancy]);
++  }
++}
++
++}  // namespace awma_prel1
