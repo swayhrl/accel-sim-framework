@@ -2,172 +2,206 @@
 
 ## Status
 
-**ACTIVE — CONTINUE PAPER COMPUTE; PREPARE/EXECUTE EXTENDED-20; GRAPHICS RESEARCH CLOSED SOURCE-BACKED-UNAVAILABLE**
+**ACTIVE — FINAL ICNT->L2 INGRESS-QUEUE CHECK**
 
-Current scheduling authority:
+This is a four-row bounded extension of the accepted SG3 study. Do not restart prior stages.
 
-- `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
-- `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
+## Source anchors
 
-M1-M4 remain closed PASS. M5.0A is PASS. M5-T005/R5DV is CLOSED. Current
-Paper-10 work is M5.0BT exact trace capture and qualification.
+Before work:
 
-## Active compute branches owned by this window
+1. `git fetch origin`.
+2. Verify actual remote heads.
+3. Never reset an advanced branch.
 
-Core:
+Expected coordination/master ancestry contains the current handoff update.
 
-`hrl/decoupled-l1-m5-v0`
+Accepted SG3 authority:
 
-Framework:
+`c055d817b009cbe6a59c7f8ac7af1081f86ec6e8`
 
-`hrl/decoupled-l1-exp-m5-v0`
+Execution/evidence branch:
 
-Do not modify validated M1-M4 branches or the frozen graphics-research branch.
+`hrl/iscas2027-dtc-sg3-downstream-localization-v0`
 
-## Mandatory read order after integrating latest docs
+Read in order:
 
-1. Framework `AGENTS.md`
-2. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
-3. `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
-4. `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
-5. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
-6. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
-7. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-8. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
-9. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
-10. `docs/dtc_l1/m5/M5_PROBLEM_RESOLUTION_POLICY.md`
-11. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-12. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
-13. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
-14. this file
-15. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
-16. `docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
-17. `docs/dtc_l1/implementation/M5_ISSUE_LOG.md`
-18. Core `AGENTS.md` and `docs/dtc_l1/DTC_L1_SPEC.md`
+1. `docs/dtc_l1/chatgpt_handoff/CURRENT_STATE.md`
+2. `docs/dtc_l1/chatgpt_handoff/DISCUSSION_REFERENCE.md`
+3. this file
+4. `docs/dtc_l1/review_packs/MEMORY_QUEUE_CHAIN_DRAM_HEADROOM_V1/`
+5. `SG3_MEMORY_QUEUE_CHAIN_SOURCE_MAP_V2.tsv`
+6. `SG3_BICG_MEMORY_QUEUE_CHAIN_TELEMETRY_V2.tsv`
 
-Graphics M5.7/M5.8 handoffs remain evidence inputs for final M5.12 but are not active work for this compute window.
+Treat all existing A-F/R3/R4 results as immutable accepted evidence.
 
-## Immediate work — M5.0BT
+---
 
-Do not redo R5DV. Q1 is reopened only because an exact Paper trace is now
-authorized: `TRACE_CAPTURE_AUTHORIZED`,
-`TRACE_FORMAL_PATH_QUALIFICATION_PENDING`. The five cap-256 live jobs are now
-preserved `RESEARCHER_ABORTED_SUPERSEDED_CAP256`; do not revive or reuse them.
-Use `m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`, its Paper-10 TSV contract,
-and its V100 capture script. Q2/Q3 remain frozen at 80 SM/cap 10240. M5.0C is
-prohibited until exact capture and Base/IO/OO trace qualification PASS.
+# R5.0 — zero-simulation source confirmation
 
-M5.0BT-A is complete: use the dedicated sm70, source-pinned, resumable V100
-controller. On V100 access run BICG `--pilot-only`, validate its storage gate,
-transfer/qualify its immutable bundle, then continue the single-goal contract.
+Before launching, commit a compact source receipt confirming:
 
-The last committed M5.0B checkpoint is historical only: five earlier Base
-members completed under obsolete cap-256 and five subsequently-progressing
-members were research-authorizedly terminated as superseded. Do not claim any
-of those as formal cap-10240 performance.
+1. `gpgpu_dram_partition_queues` field order is:
+   - ICNT->L2
+   - L2->DRAM
+   - DRAM->L2
+   - L2->ICNT
+2. default ICNT->L2 queue is 64/subpartition.
+3. `memory_sub_partition::full(SECTOR_CHUNCK_SIZE)` checks whether the ICNT->L2 FIFO lacks room for the worst-case sector expansion.
+4. `gpu_stall_icnt2mem` increments only when that ingress-capacity condition is true and ICNT actually has a packet waiting.
+5. terminal label `gpu_stall_dramfull` is legacy text and must not be interpreted as a DRAM-full counter.
+6. enlarging only the first queue field does not change L2 capacity/MSHR/miss queue, DRAM queues, scheduler, return queue, channel count, mapping, DTC semantics, or trace identity.
 
-## Paper compute sequence
+Deliver:
 
-Continue automatically:
+`docs/dtc_l1/iscas2027/granularity/sg3/SG3_ICNT_L2_INGRESS_SOURCE_RECEIPT_V1.md`
 
-`M5.0BT -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+and a registered four-row execution TSV before simulation.
 
-Use existing stage acceptance/handoff contracts.
+---
 
-## Extended-20 sequence owned by this compute window
+# R5.1 — four authorized BICG rows
 
-Selection is already reviewed/approved. Do not rerun the 52-candidate selection.
+Run exactly:
 
-Approved final portfolio is authoritative in:
+## Family G — ingress queue only
 
-- `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-- `docs/dtc_l1/m5/extended20/EXTENDED20_APPROVED.tsv`
+Overlay:
 
-### M5.E1
+`-gpgpu_dram_partition_queues 256:64:64:64`
 
-Source/build/input/output/PTX formalization of all approved 20 may begin opportunistically when host CPU/RAM/disk/I/O conditions permit and when it does not disturb active Paper jobs.
+Rows:
 
-Do not force large source materialization/builds merely to keep E1 busy while Paper-10 jobs are already resource-heavy. It is acceptable to defer expensive checkout/build work until the host has safe headroom, while continuing source-object/provenance audit that does not interfere with the active batch.
+- BICG IO
+- BICG OO
 
-Do not launch the 60 formal runs before M5.2.
+Everything else remains at the exact accepted default-cap=8192 configuration.
 
-Use the review correction:
+## Family H — ingress queue + accepted DRAM2x service probe
 
-- `BlackScholes` = `Black-Scholes option pricing`, not assumed Monte Carlo.
+Overlay:
 
-### M5.E2
+- `-gpgpu_dram_partition_queues 256:64:64:64`
+- `-gpgpu_clock_domains 1410.0:1410.0:1410.0:1700.0`
 
-After M5.2 PASS, verify E1 identities against the frozen M5.2 Core/Framework/config/parser/metric anchor, then launch:
+Rows:
 
-`20 workloads x {PAPER_BASE,PAPER_IO,PAPER_OO} = 60 primary runs`.
+- BICG IO
+- BICG OO
 
-Execute through `M5_PARALLEL_BATCH_POLICY.md`:
+Everything else matches accepted E except the first partition-queue field.
 
-- dynamic measured-safe worker pool;
-- isolated output directories;
-- resumable job registry;
-- mix workload/mode/heavy classes;
-- do not run one workload triplet at a time unnecessarily;
-- keep unrelated jobs progressing while an isolated issue is diagnosed when scientifically safe.
+Total new simulator rows: **4**.
 
-Paper M5.3/M5.4/M5.5/M5.6 and Extended E2/E3 are allowed to overlap in wall-clock time after M5.2.
+These may all be rolling-launched after R5.0 is committed.
 
-### M5.E3
+---
 
-Produce causal/generalization synthesis, `GM-EXTENDED20` and `GM-ALL-COMPUTE30`. Preserve weak/negative results. Blanket parameter sweeps across all 20 are not required; use targeted diagnostic follow-ups only for specific causal ambiguity.
+# R5.2 — required analysis
 
-## Compute freeze
+For G compare against exact default.
 
-M5.6 PASS alone is not the compute-freeze boundary.
+For H compare against:
 
-If Paper M5.6 finishes before Extended E3, use status:
+1. exact default;
+2. accepted E/DRAM2x:
+   - IO 50,713,356 cycles
+   - OO 29,933,876 cycles.
 
-`M5_PAPER10_READY_WAITING_FOR_EXTENDED20`
+Report at minimum:
 
-Create `M5.COMPUTE_FREEZE` only after:
+- cycles;
+- cycle delta/speedup;
+- `gpu_stall_icnt2mem`;
+- `gpu_stall_mem2icnt`;
+- mean memory-fetch latency;
+- mean ICNT->memory latency;
+- mean MRQ latency;
+- DTC lower outstanding average/peak if available;
+- L2 miss-queue pressure;
+- DRAM `mrqq` max/avg;
+- exact resolved queue config and clock config.
 
-- Paper M5.6 PASS;
-- Extended M5.E3 PASS;
-- no unresolved correctness/fidelity issue;
-- both active compute branches pushed/clean.
+Do not interpret the legacy printed name `gpu_stall_dramfull` literally.
 
-Then emit `docs/dtc_l1/m5/handoffs/M5_COMPUTE_FREEZE.md` with exact Core/Framework freeze SHAs.
+## Decision labels
 
-## Graphics coordination — closed under current evidence
+Use one bounded final label:
 
-Independent graphics research closed at:
+- `ICNT_L2_INGRESS_HEADROOM_SUPPORTED`
+- `ICNT_L2_INGRESS_DRAM_INTERACTION_SUPPORTED`
+- `ICNT_L2_INGRESS_PRESSURE_NOT_CAPACITY_LIMITED`
+- `ICNT_L2_INGRESS_HEADROOM_PARTIAL`
 
-`hrl/decoupled-l1-exp-m5-graphics-research-v0@ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`
+No cross-workload generalization from these four BICG rows.
 
-Accepted terminal state:
+---
 
-`GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
+# Explicitly forbidden scope
 
-Do not:
+Do NOT launch:
 
-- reopen graphics research without genuinely new source-backed/original artifacts;
-- create graphics integration branches after compute freeze under current evidence;
-- modify Core for graphics;
-- run M5.9/M5.10/M5.11;
-- emit graphics performance bars, `GM-GRAPHICS`, or `GM-ALL-PAPER`;
-- use a memory proxy as formal paper reproduction.
+- GESUMMV for R5 without a new review;
+- ICNT->L2 >256;
+- L2->ICNT changes;
+- interconnect buffer/routing/bandwidth sweeps;
+- NoC sweeps;
+- ROP sweeps;
+- new L2 miss-queue/capacity/MSHR points;
+- new DTC cap points;
+- additional DRAM frequencies;
+- DRAM timing-string sweeps;
+- busW experiments;
+- new mechanisms.
 
-After `M5.COMPUTE_FREEZE`, proceed directly to M5.12 negative-evidence synthesis and include the accepted M5.7/M5.8 handoffs/commit in the final review pack.
+---
 
-## Problem behavior
+# Acceptance requirements
 
-Ordinary workload/build/PTX/assertion/parser/counter/timeout/performance problems remain resolve-in-goal. Reproduce -> classify -> repair/reconstruct -> regress -> invalidate stale data -> continue.
+Each new row requires:
 
-A weak or negative DTC result is evidence, not a stop condition.
+- fresh UUID;
+- immutable run directory;
+- exact Core/runtime/config-chain/trace identity;
+- START receipt;
+- natural terminal receipt;
+- strict validation;
+- terminal drain / observer closure.
 
-## Pause conditions
+Preserve every failure; never overwrite.
 
-Pause only for a genuine researcher-decision boundary, for example:
+---
 
-- required change to frozen DTC/M0-M4 architecture semantics;
-- irreducible experiment-meaning ambiguity;
-- an approved Extended workload becomes unusable and substitution choice cannot be resolved using pre-performance alternate rules;
-- a cross-track finding requires changing a frozen common metric/config definition;
-- final M5 review state after M5.12.
+# Deliverables
 
-Do not stop merely at Paper M5.6 or Extended E3; their join produces compute freeze, then M5.12 closes the current graphics-unavailable path.
+Create/update:
+
+`docs/dtc_l1/review_packs/ICNT_L2_INGRESS_HEADROOM_V1/`
+
+with:
+
+- `README.md`
+- `SOURCE_ANCHORS.md`
+- `VALIDATION_SUMMARY.md`
+- `OPEN_ISSUES.md`
+- R5.0 source receipt
+- four-row registry/results
+- exact paper-safe claims
+- forbidden overclaims
+- raw-log index
+
+Update:
+
+`docs/dtc_l1/codex_handoff/LATEST_REPORT.md`
+
+with the final branch SHA and bounded conclusion.
+
+---
+
+# STOP boundary
+
+Complete R5.0, all four R5.1 rows, R5.2 analysis, review pack, handoff, commit and push.
+
+Then STOP.
+
+Do not automatically continue to NoC or any other resource family regardless of result.

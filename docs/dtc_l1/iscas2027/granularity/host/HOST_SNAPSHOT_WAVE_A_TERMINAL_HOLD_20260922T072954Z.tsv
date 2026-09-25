@@ -1,0 +1,12 @@
+metric	value	unit	threshold_or_policy	status	detail
+snapshot_utc	2026-09-22T07:29:54Z	UTC	post-terminal execution checkpoint	RECORDED	Read-only coordination snapshot; no simulator or TC80 CM5 process was signaled, attached, reniced, or reused.
+logical_cpus	512	count	informational	RECORDED	nproc.
+wave_a_simulator_processes	0	count	no new launch while workspace hard-stop applies	PASS_NO_ACTIVE_ATTEMPTS	SG1=0; SG3=0; SG4A=0; SG5=0 after every observed Wave-A attempt naturally ended.
+load_average	19.16/23.75/23.72	load1/load5/load15	informational	RECORDED	/proc/loadavg at status checkpoint.
+memory_available	369958004	KiB	>=25 percent of MemTotal	PASS	93.5 percent of 395532052 KiB MemTotal is available.
+swap_free	11040	KiB	occupancy is recorded; active churn must be separately measured	RECORDED	Swap remains nearly full, but no launch is considered because disk hard-stop already applies.
+memory_psi	avg10=0.00 avg60=0.00 avg300=0.00	percent	no severe PSI	PASS	/proc/pressure/memory.
+iowait	0.00	percent	<10 percent	PASS	mpstat 1 2 sample; no new launch decision is implied.
+io_psi	avg10=1.11 avg60=0.25 avg300=0.27	percent	no severe PSI	PASS	/proc/pressure/io.
+workspace_available	8199045120	bytes	>=35 GiB hard-stop minimum	HARD_STOP	7.64 GiB free is below the 35 GiB hard-stop threshold; no new simulator launch is authorized.
+gate_decision	HARD_STOP_NO_NEW_LAUNCH	status	all host/resource predicates	PASS_FAIL_CLOSED	All Wave-A attempts are terminal; validation and compact status evidence may proceed without simulator launch, but any new simulator is forbidden until disk remediation and a fresh snapshot.

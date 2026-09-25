@@ -1,215 +1,117 @@
-# DTC-L1 Current State
+# DTC-L1 / ISCAS 2027 Current State
 
-Last coordination update: 2026-09-05
+Last coordination update: 2026-09-25
 
-Status: **M1-M4 VALIDATED; M5_0BT_CAPTURE_PACKAGE_V100_READY; WAITING_FOR_CAPTURE_HOST; EXTENDED-20 APPROVED; GRAPHICS M5.7/M5.8 CLOSED SOURCE-BACKED-UNAVAILABLE**
+Status: **SIMULATOR MAINLINE ACCEPTED; FINAL ICNT->L2 INGRESS-QUEUE CHECK AUTHORIZED**
 
-## Current M5.0BT authority
+## 1. Accepted scientific state
 
-Researcher authority supersedes the cap-256 execution-driven wait: Q1 is
-`M5.0BF_Q1_REOPENED_FOR_EXACT_TRACE_RECAPTURE`, with trace capture authorized
-and formal-path qualification pending. Q2/Q3 remain frozen at 80 SM and cap
-10240 (128 credits/SM); cap-256 is obsolete diagnostic-only. Five live
-cap-256 jobs were gracefully terminated only in their run-owned PGIDs and are
-preserved as `RESEARCHER_ABORTED_SUPERSEDED_CAP256`, not failures. M5.0BT
-exact Paper-10 capture/qualification now gates M5.0C; see
-`m5/handoffs/M5_0BT_TRACE_CAPTURE_HANDOFF.md`.
+The following simulator evidence is now accepted and frozen:
 
-The capture package is `M5_0BT_CAPTURE_PACKAGE_V100_READY`; a capture host
-may be supplied, but this record does not itself rent, request, or start one.
-The continuing state machine is authoritative in
-`m5/M5_TRACE_TO_FINAL_SINGLE_GOAL_CONTRACT.md`.
+- FAST64 primary Base / IO / OO performance.
+- Lane-E mechanism evidence.
+- 80-KiB conventional-cache capacity control.
+- transaction-granularity fairness controls.
+- SG4A logical-Tag characterization.
+- SG5 comparable-lower-traffic evidence.
+- SG3 cap sensitivity and positive controls.
+- L2-internal miss-queue 32->128 intervention.
+- memory-side queue-chain study A-F.
+- detailed-DRAM 2x time-domain service probe.
+- GESUMMV validation of E/F.
+- BICG all-headroom 20-MiB L2 ceiling.
 
-## Validated anchors
+Current SG3 authority:
 
-M1-M4 remain frozen validated infrastructure:
+`c055d817b009cbe6a59c7f8ac7af1081f86ec6e8`
 
-- Core final M1-M4: `cdeec769fd0c1be12b45d58536ecb81074d4b415`.
-- Framework final M1-M4: `56369da33dc5f48fc9ac071fd122fde4b35bd8c9`.
+Do not rerun or relabel these accepted rows.
 
-Active M5 compute branches:
+## 2. Current downstream conclusions
 
-- Core `swayhrl/gpgpu-sim:hrl/decoupled-l1-m5-v0`;
-- Framework `swayhrl/accel-sim-framework:hrl/decoupled-l1-exp-m5-v0`.
+### L2/internal and memory-side queue capacity
 
-## Current authority
+Enlarging explicit queues does not materially recover BICG performance:
 
-Read current M5 authority in this order:
+- L2-internal miss queue 32->128 eliminates `MISS_QUEUE_FULL` but does not improve BICG/GESUMMV.
+- L2->DRAM queue headroom is neutral/slower.
+- scheduler/admission headroom is slower.
+- return-path buffering is neutral.
+- full memory-side queue-chain headroom is neutral/slightly mixed.
 
-1. `docs/dtc_l1/m5/M5_V3_PARALLEL_TRACKS_APPROVAL.md`
-2. `docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
-3. `docs/dtc_l1/m5/M5_V1_APPROVAL.md`
-4. `docs/dtc_l1/m5/M5_DIRTY_VICTIM_POLICY_RESOLUTION.md`
-5. `docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-6. `docs/dtc_l1/m5/M5_EXTENDED20_FORMAL_MATRIX.md`
-7. `docs/dtc_l1/m5/M5_PARALLEL_BATCH_POLICY.md`
-8. `docs/dtc_l1/m5/M5_HANDOFF_CONTRACT.md`
-9. `docs/dtc_l1/m5/M5_EXTENDED20_HANDOFF_CONTRACT.md`
-10. `docs/dtc_l1/m5/M5_BRANCH_OWNERSHIP.md`
-11. `docs/dtc_l1/m5/M5_GRAPHICS_INDEPENDENT_WINDOW_HANDOFF.md`
-12. `docs/dtc_l1/m5/M5_GRAPHICS_POST_COMPUTE_PLAN.md`
-13. `docs/dtc_l1/m5/M5_GRAPHICS_HANDOFF_CONTRACT.md`
-14. `docs/dtc_l1/chatgpt_handoff/CODEX_NEXT_STAGE.md`
-15. `docs/dtc_l1/chatgpt_handoff/GOAL_START.md`
+Therefore explicit downstream buffering capacity tested so far is not the dominant explanation.
 
-The graphics closeout supersedes the previously active graphics-search state. M5.9-M5.11 are not active under current evidence.
+### Detailed-DRAM service rate
 
-## Research objective
+The source-discriminating DRAM time-domain probe is strongly beneficial.
 
-M5 is mechanism/trend reproduction, not numerical fitting to thesis speedups.
+BICG:
+- default IO 93,942,704 -> E/IO 50,713,356 cycles (-46.0%)
+- default OO 47,231,655 -> E/OO 29,933,876 cycles (-36.6%)
 
-`Base structural limits -> constrained live misses -> DTC removes limits -> concurrency/latency hiding changes -> performance effect`
+GESUMMV:
+- default IO 210,667,785 -> E/IO 107,119,606 cycles
+- default OO 143,059,605 -> E/OO 79,382,011 cycles
 
-Weak/negative results require causal classification rather than tuning.
+Full queue-chain + DRAM2x adds only modest improvement over DRAM2x alone.
 
-## Frozen compute definitions
+Paper-safe interpretation:
 
-### Main paper configuration
+> For the tested difficult workloads, DTC exposes concurrency whose usefulness is strongly sensitive to downstream DRAM service timing/rate; simply enlarging the tested L2/memory-side queues is insufficient.
 
-- PAPER_BASE: conventional 16 KiB L1, 128B line, 4-way, PIB=8, MSHR=32.
-- PAPER_IO: 16 KiB logical Tag + 80 KiB physical Cacheline Array, PIB=256.
-- PAPER_OO: 16 KiB logical Tag + 80 KiB physical Cacheline Array, PIB=128.
+Do not convert this simulator upper bound into a physical-frequency claim.
 
-### Dirty-victim policy
+### Residual L2-capacity effect
 
-All paper-facing/formal M5 configs explicitly use:
+The accepted R4 ceiling combines 20-MiB L2, full queue-chain headroom, and DRAM2x:
 
-`-gpgpu_l1_cache_write_ratio 0`
+- BICG IO: 47,347,123 cycles
+- BICG OO: 22,204,820 cycles
 
-Ratio 25 remains diagnostic platform policy only.
+This is a bounded ceiling result, not a realistic product configuration or capacity sweep.
 
-### Figure 4.7
+## 3. Why one final ingress check remains
 
-Live miss = new-miss lower-request commit through final lower response; primary metric = per-SM cycle average.
+The accepted BICG telemetry shows a very large source-defined `gpu_stall_icnt2mem` counter at default cap=8192 that falls by roughly an order of magnitude under cap=512.
 
-### Figure 4.2
+Source review shows that this counter increments when:
 
-Formal categories: PIB full, true Tag+Cacheline allocation failure, MSHR capacity/merge, Miss Queue/lower capacity. Tag-bank arbitration remains diagnostic.
+- an ICNT packet is waiting for a memory subpartition, and
+- the subpartition's **ICNT->L2 ingress FIFO** lacks room for the worst-case sector expansion.
 
-## HISTORICAL / SUPERSEDED — DO NOT EXECUTE
+The terminal text label `gpu_stall_dramfull` is legacy/misleading; the actual source condition is the ICNT->L2 ingress-buffer admission check.
 
-All following M5.0B cap-256 workload-recovery material is retained only as
-provenance/debug evidence. It imposes no live-job, natural-terminal, or
-cap-256 transition gate. The active transition is M5.0BT trace capture and
-qualification at 80 SM/cap10240.
+This queue is the **first** entry of:
 
-## Historical Paper-10 stage — M5.0B workload recovery
+`gpgpu_dram_partition_queues = 64:64:64:64`
 
-M5.0A is PASS.
+and was intentionally held at 64 during the accepted A-F memory-side queue-chain study.
 
-M5-T005 is CLOSED. Canonical Parboil JDS SpMV medium ratio-zero LEGACY and PAPER_BASE both completed naturally with official output checking PASS. PAPER_BASE also closed PIB/lower accounting, so R5DV no longer blocks M5.0B.
+Therefore one final bounded experiment is scientifically justified.
 
-Current committed M5.0B evidence reports:
+## 4. Final authorized question
 
-- corrected BICG PAPER_BASE ratio-zero completion PASS with strict output/accounting checks;
-- the remaining corrected Paper-10 Base jobs progressing in isolated output directories;
-- no active formal Base run showing deadlock/assertion/fatal evidence at the last committed checkpoint;
-- old ratio-25/old-runtime data retained as diagnostic only.
+> Does enlarging the ICNT->L2 ingress queue recover BICG performance by itself, or provide additional benefit when combined with the already-supported DRAM2x service headroom?
 
-Paper progression:
+Only four BICG rows are authorized:
 
-`M5.0BT -> M5.0C -> M5.0D -> M5.0E -> M5.1 -> M5.2 -> M5.3 -> M5.4 -> M5.5 -> M5.6`
+- G/IO: ICNT->L2 64->256
+- G/OO: ICNT->L2 64->256
+- H/IO: ICNT->L2 64->256 + DRAM 850->1700 MHz
+- H/OO: ICNT->L2 64->256 + DRAM 850->1700 MHz
 
-Do not redo closed R5DV unless a later source-correct behavior change invalidates it.
+No other queue, NoC, ROP, DRAM timing, capacity, or cap sweep is authorized.
 
-## Extended-20 state
+## 5. STOP boundary
 
-Selection branch:
+After these four rows:
 
-`hrl/decoupled-l1-exp-m5-extended20-select-v0`
+- strict-validate;
+- compare G to default;
+- compare H to accepted E/DRAM2x and default;
+- update the SG3 review pack / Codex report;
+- STOP.
 
-Reviewed selection commit:
+If G/H are neutral, freeze downstream localization completely.
 
-`d43b6eec93f68efa94057f34ffa699463b53e6a6`
-
-Independent review verdict: **APPROVED WITH PRE-PERFORMANCE REFINEMENT**.
-
-Final approved primary set and alternates are authoritative in:
-
-`docs/dtc_l1/m5/M5_EXTENDED20_APPROVAL.md`
-
-Key review refinements:
-
-- Rodinia `lud` replaces PolyBench `3mm` in the primary 20 to reduce near-duplicate dense-family/Q4-cost bias;
-- `3mm` becomes ALT01;
-- CUDA SDK `BlackScholes` metadata is corrected to `Black-Scholes option pricing`, not assumed Monte Carlo.
-
-Extended progression:
-
-`M5.E1 formalization -> M5.E2 60-run Base/IO/OO wave -> M5.E3 synthesis`
-
-E1 may prepare source/build/input/PTX/output identity early when host resources allow. E2 begins only after M5.2 freezes the common formal anchor.
-
-Extended jobs must use the resource-aware worker pool in `M5_PARALLEL_BATCH_POLICY.md`; unnecessary one-by-one execution is forbidden.
-
-## Graphics state — research complete
-
-Graphics research branch:
-
-`hrl/decoupled-l1-exp-m5-graphics-research-v0@ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`
-
-Accepted terminal state:
-
-`GRAPHICS_SOURCE_BACKED_UNAVAILABLE`
-
-M5.7 established source-equivalent glmark2 provenance for `jellyfish`, `cat-tex`, `cube-tex`, and `horse`, while retaining `2D-tex` as unresolved with no visual near-match substitution.
-
-M5.8 exhaustively audited the authorized original-artifact, historical-simulator, direct-front-end, and source-backed trace/replay routes. No route establishes the required shader/grouping/request/texture/order/draw-frame/framebuffer/timing contract needed to exercise Base/IO/OO through the same DTC mechanism.
-
-The negative conclusion is bounded to available/recovered evidence. A genuinely new original/source-backed artifact may reopen M5.8 only under its explicit admission contract.
-
-Current consequence:
-
-- graphics research branch is evidence/read-only;
-- no M5.9/M5.10/M5.11 execution;
-- no graphics Core integration branches are needed after compute freeze under current evidence;
-- no formal `GM-GRAPHICS` or `GM-ALL-PAPER`;
-- final M5.12 carries the graphics negative evidence explicitly.
-
-Authoritative review:
-
-`docs/dtc_l1/m5/M5_GRAPHICS_RESEARCH_CLOSEOUT_APPROVAL.md`
-
-## Compute-freeze join barrier
-
-M5.6 alone does not freeze compute.
-
-`M5.COMPUTE_FREEZE` requires:
-
-- Paper M5.6 PASS;
-- Extended M5.E3 PASS;
-- no unresolved correctness/fidelity issue;
-- active compute branches pushed/clean.
-
-Then record immutable `COMPUTE_FREEZE_CORE_SHA` and `COMPUTE_FREEZE_FRAMEWORK_SHA` in:
-
-`docs/dtc_l1/m5/handoffs/M5_COMPUTE_FREEZE.md`
-
-## Final M5 dependency
-
-M5.12 now requires:
-
-- Paper-10 through M5.6;
-- Extended-20 through M5.E3;
-- `M5.COMPUTE_FREEZE`;
-- accepted graphics closeout commit `ed36abb8f98372dbd1fef11d5b0e8780fb8bf17d`;
-- no unresolved correctness/fidelity issue.
-
-Reporting groups:
-
-- `GM-PAPER10` / `GM-GP`;
-- `GM-EXTENDED20`;
-- `GM-ALL-COMPUTE30` supplemental.
-
-Under the current graphics closeout:
-
-- no `GM-GRAPHICS`;
-- no `GM-ALL-PAPER`.
-
-## Final state
-
-Current expected M5 terminal state:
-
-`M5_COMPUTE30_COMPLETE_GRAPHICS_SOURCE_UNAVAILABLE_READY_FOR_REVIEW`
-
-Figure 4.6 fresh area/synthesis is outside M5 and remains a separate M6 decision.
+If G/H are materially beneficial, report the bounded result and STOP for scientific review before any cross-workload extension.

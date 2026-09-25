@@ -1,109 +1,102 @@
-# DTC-L1 Discussion Reference
+# DTC-L1 / ISCAS 2027 Discussion Reference
 
-## Research question
+Last update: 2026-09-25
 
-Reproduce the thesis Decoupled-Tag L1 design in Accel-Sim with enough fidelity to explain its performance mechanisms, then use the infrastructure for controlled extensions and modern-GPU studies.
+## 1. Accepted result before the final check
 
-## Short conclusion
+The memory-side queue-chain study is closed at SG3 commit:
 
-The reproduction should be **mechanism-faithful rather than gate-faithful**. We preserve the resource relationships that determine MLP, blocking, allocation pressure, and IO/OO completion, while parameterizing implementation details that are not themselves the research contribution.
+`c055d817b009cbe6a59c7f8ac7af1081f86ec6e8`
 
-## Why an explicit PIB matters
+BICG A-D shows that enlarging the tested queues after L2 does not materially improve performance.
 
-The thesis motivation attributes a large fraction of conventional L1 stalls to the small pending-instruction structure, with Tag/cacheline allocation and MSHR capacity as additional limits. Therefore an Accel-Sim reproduction cannot substitute an unrelated dispatch register and still claim the same mechanism. The simulator needs a bounded pending-instruction admission point that can propagate backpressure to the memory-instruction entrance.
+BICG/GESUMMV E/F shows that the idealized detailed-DRAM 2x time-domain service probe produces large speedups.
 
-## Why Tag and Physical Data stay decoupled
+Thus the current paper-facing result is:
 
-The logical Tag Array is a 16KB, 4-way, 32-set structure, while the physical Cacheline Array is 80KB. A valid logical Tag stores a physical-line identity. Tag-bank location does not imply Data-bank location.
+> explicit queue capacity tested so far is not the main limiter, while downstream DRAM service timing/rate is a strong performance dimension.
 
-For the first model, Tag-bank throughput is explicit because it is a visible pipeline resource; detailed Data-bank conflicts are not required. Physical allocation remains finite at four lines/cycle and retirement remains one instruction/cycle, preserving the dominant resource bounds without reintroducing an artificial Tag↔Data bank coupling.
+## 2. Why ICNT->L2 is different from A-D
 
-## Why partial allocation/no rollback is frozen
+The four-field partition queue config is:
 
-A top-level memory instruction can contain many divergent line requests. Allocation occurs over multiple cycles. If physical space runs out after some lines have already been allocated, those allocations remain held while the instruction waits for the rest.
+`ICNT->L2 : L2->DRAM : DRAM->L2 : L2->ICNT`
 
-Under IO FIFO retirement this can form a circular resource dependency: the stalled instruction holds newly allocated lines, cannot complete, and the ordering/resource state can prevent the releases required to make further progress. We intentionally allow this behavior to emerge instead of adding an all-or-nothing allocator that would change the mechanism.
+Default:
 
-## Why simulator coalescer width is 32 by default
+`64:64:64:64`
 
-The original RTL processed only 16 threads/cycle largely for area/port constraints. The research simulator may process the full 32-thread warp/cycle as long as Baseline/IO/OO share the same front-end rule. A 16-thread/cycle knob remains available for fidelity/sensitivity.
+A-D intentionally modified only the memory-side second/third entries plus L2 miss queue, scheduler queue, and DRAM return queue. The first ICNT->L2 ingress FIFO remained 64.
 
-## IO vs OO distinction
+The source condition behind `gpu_stall_icnt2mem` is:
 
-IO-DTC uses a FIFO pending-instruction queue and in-order retirement. Old physical lines displaced from the logical Tag space can be held and released safely according to FIFO progress.
+- on an L2-domain cycle,
+- if `m_memory_sub_partition[i]->full(SECTOR_CHUNCK_SIZE)` is true,
+- and the interconnect has a packet waiting for that subpartition,
+- increment `gpu_stall_icnt2mem`.
 
-OO-DTC allows a ready younger entry to retire before an older stalled entry. That requires explicit physical-line lifetime tracking plus pending-dependency wakeup state. A physical line is reclaimable only when it is no longer visible through a logical Tag and no live reference remains.
+The FIFO helper returns true when the finite queue cannot accommodate the requested number of entries. The check uses `SECTOR_CHUNCK_SIZE` because one incoming request can expand into up to four 32-B sectors.
 
-## Ref Count interpretation
+Therefore this counter is evidence of **ingress admission pressure before L2**, not generic DRAM-full pressure despite the legacy terminal label `gpu_stall_dramfull`.
 
-Frozen simulator semantics use **per-coalesced-128B-cacheline-reference** counting.
+## 3. Existing source-directed evidence
 
-Multiple lanes that coalesce into one 128B line request contribute one reference. A fully divergent 32-thread warp may produce up to 32 distinct line references; with 128 OO PIB entries, a conservative upper bound is 4096 and a 13-bit counter matches the thesis sizing convention.
+Accepted BICG telemetry:
 
-This interpretation is preferable to per-thread counting because the functional pipeline operates on coalesced cacheline requests. It is also more faithful to the thesis examples in which a coalesced request increments the counter once.
+- IO default: `gpu_stall_icnt2mem` ≈ 545M
+- IO cap512: ≈ 27M
+- OO default: ≈ 269M
+- OO cap512: ≈ 11M
 
-## Sector extension decision
+This is a much stronger cap-sensitive signal than the already-tested downstream queues.
 
-The primary paper reproduction remains whole-line 128B DTC.
+It does not prove causality, but it justifies one direct intervention.
 
-The modern extension does **not** change the renaming granularity:
+## 4. Final 2x2-style comparison
 
-- one 128B logical line still maps to one 128B physical line;
-- line-level Tag visibility and Ref Count remain line-granular;
-- data readiness is split into 4×32B sectors;
-- sector INVALID/PENDING/VALID state and OO merge/wakeup are sector-granular;
-- `wait_cnt` counts not-ready sector dependencies.
+For each BICG mode use existing rows plus two new rows:
 
-This keeps the original DTC concept intact while making it compatible with a sector-cache execution model.
+| Ingress queue | DRAM service | Evidence |
+|---|---|---|
+| 64 | 850 | existing default |
+| 256 | 850 | new G |
+| 64 | 1700 | accepted E |
+| 256 | 1700 | new H |
 
-## Store, Atomic, Fence, and bypass
+This isolates:
 
-They are not required to prove the read-path Tag-decoupling mechanism, so the first implementation can isolate reads. They are required before complete compute results are considered formal because Stores/Atomics participate in long-latency instruction lifecycles and therefore influence IO head-of-line blocking versus OO completion.
+1. ingress-queue effect at default DRAM service: G vs default;
+2. ingress-queue incremental effect under DRAM2x: H vs E;
+3. combined upper-bound effect vs default: H vs default.
 
-Existing architectural L1 bypass behavior must remain correct from the beginning. Thesis policy-driven DTC bypass is a separate later optimization and should not be conflated with architectural bypass.
+## 5. Interpretation boundaries
 
-## Whole-line paper mode vs modern mode
+If G improves materially:
 
-Keep two evidence categories:
+> ICNT->L2 ingress admission is an independently important pressure point.
 
-1. **PAPER-WHOLE-LINE** — 128B line state/requests, intended to reproduce thesis mechanisms/figures.
-2. **MODERN-SECTOR** — 128B Tag/Physical mapping with 4×32B readiness, intended to evaluate the design on modern sector-cache assumptions.
+If G is weak but H improves materially beyond E:
 
-Do not silently combine them into a single average.
+> ingress buffering matters only once deeper DRAM service is relieved; this is an interaction.
 
-## Baseline fairness
+If both G and H are weak:
 
-The baseline must have explicit 8-entry PIB behavior and 32-entry traditional MSHR behavior for the paper-style mechanism comparison. DTC defaults are IO PIB 256 and OO PIB 128.
+> the large ingress-stall counter is primarily a symptom of upstream/downstream timing pressure rather than a dominant queue-capacity limit.
 
-A later publication-quality evaluation should also include equal-resource/equal-area comparisons so performance is not attributed solely to a larger physical storage budget.
+No arbitrary new threshold is needed for the main interpretation, but report exact deltas. For paper significance, >=5% remains a useful descriptive marker, not a hidden launch gate.
 
-## Graphics scope
+## 6. No further automatic cascade
 
-Stock Accel-Sim is not a direct glmark2 graphics-pipeline simulator. Any graphics result without original LGPU/request traces should be labeled a calibrated graphics-memory proxy or shader-memory-stage study, not direct glmark2 FPS reproduction.
+After G/H, do not test:
 
-Calibration should target request/traffic/coalescing/miss/stall signatures, not target speedup.
+- ICNT->L2 512;
+- L2->ICNT changes;
+- interconnect buffer sizes;
+- NoC bandwidth/routing;
+- ROP;
+- additional DRAM frequencies;
+- DRAM timing sweeps;
+- new L2 capacities;
+- new DTC cap points.
 
-## Rejected shortcuts
-
-- making Tag Array globally fully associative;
-- binding a Tag bank to a Data bank;
-- unlimited/zero-cycle physical allocation;
-- unlimited OO retirement;
-- all-or-nothing allocation rollback that removes the IO resource cycle;
-- using traditional MSHR capacity as the DTC merge mechanism;
-- identifying fills only by a current logical Tag lookup after Tag eviction;
-- hard-coding paper default sizes into IO/OO implementation;
-- treating temporary Store/Atomic bypass bring-up as formal IO/OO evidence;
-- directly claiming glmark2 execution in stock Accel-Sim.
-
-## Expected research outcome
-
-The infrastructure should let us separately answer:
-
-- whether larger PIB alone explains the gain;
-- how much comes from Tag→Physical renaming;
-- how much traditional MSHR capacity ceases to matter;
-- how much OO completion removes IO head-of-line blocking;
-- when physical capacity becomes the new bottleneck;
-- where the bottleneck moves after DTC raises L1 MLP;
-- how the mechanism changes under modern sector behavior and different memory-system latency/bandwidth.
+Any such step would be a new scientific stage and requires review.
