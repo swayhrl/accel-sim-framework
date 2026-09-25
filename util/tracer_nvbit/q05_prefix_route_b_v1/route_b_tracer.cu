@@ -715,17 +715,27 @@ static void leave_kernel_launch(CUcontext ctx, CTXstate *ctx_state) {
             ctx_state->active_kernel_id);
     fflush(stdout);
     ctx_state->device_reported = reported_dynamic_instr_counter;
-    while (ctx_state->receiver_accepted.load() < ctx_state->device_reported) {
+    /* accepted is advanced immediately before written in recv_thread_fun.
+     * Waiting on accepted alone leaves a narrow false-reject window where the
+     * final fputs succeeded but receiver_written has not yet been published.
+     * Both counters are part of the serialized terminal contract. */
+    while (ctx_state->receiver_accepted.load(std::memory_order_acquire) <
+               ctx_state->device_reported ||
+           ctx_state->receiver_written.load(std::memory_order_acquire) <
+               ctx_state->device_reported) {
         pthread_yield();
     }
-    if (ctx_state->receiver_accepted.load() != ctx_state->device_reported ||
-        ctx_state->receiver_written.load() != ctx_state->device_reported ||
+    const uint64_t receiver_accepted =
+        ctx_state->receiver_accepted.load(std::memory_order_acquire);
+    const uint64_t receiver_written =
+        ctx_state->receiver_written.load(std::memory_order_acquire);
+    if (receiver_accepted != ctx_state->device_reported ||
+        receiver_written != ctx_state->device_reported ||
         ctx_state->drop_count != 0 || ctx_state->overflow_count != 0) {
         fprintf(stderr,
                 "ROUTEB_TERMINAL_REJECT device_reported=%lu receiver_accepted=%lu raw_records=%lu drop_count=%lu overflow_count=%lu\n",
-                ctx_state->device_reported, ctx_state->receiver_accepted.load(),
-                ctx_state->receiver_written.load(), ctx_state->drop_count,
-                ctx_state->overflow_count);
+                ctx_state->device_reported, receiver_accepted,
+                receiver_written, ctx_state->drop_count, ctx_state->overflow_count);
         abort();
     }
     ctx_state->receiver_drained = true;
