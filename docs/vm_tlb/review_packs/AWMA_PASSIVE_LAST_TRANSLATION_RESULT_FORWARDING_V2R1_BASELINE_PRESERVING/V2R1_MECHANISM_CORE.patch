@@ -1,0 +1,510 @@
+﻿diff --git "a/D:\\repo\\awma_v2r1_stage\\old\\passive_last_translation_forwarding.h" "b/D:\\repo\\awma_v2r1_stage\\passive_last_translation_forwarding.h"
+index 68ff10c..576a197 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\old\\passive_last_translation_forwarding.h"
++++ "b/D:\\repo\\awma_v2r1_stage\\passive_last_translation_forwarding.h"
+@@ -14,7 +14,19 @@ struct counters {
+   uint64_t lookups;
+   uint64_t hits;
+   uint64_t misses;
+-  uint64_t actual_physical_lookup_suppression;
++  uint64_t head_requests_avoided;
++  uint64_t prelaunch_work_not_saved;
++  uint64_t forwards_without_live_prelaunch;
++  uint64_t prelaunch_attempts;
++  uint64_t prelaunch_head_attempts;
++  uint64_t prelaunch_lookup_request_increments;
++  uint64_t prelaunch_ready;
++  uint64_t prelaunch_pending;
++  uint64_t prelaunch_l1_port_stalls;
++  uint64_t prelaunch_l2_port_stalls;
++  uint64_t prelaunch_mshr_full;
++  uint64_t prelaunch_pwq_full;
++  uint64_t head_translation_attempts;
+   uint64_t natural_completions;
+   uint64_t installs;
+   uint64_t overwrites;
+@@ -43,12 +55,17 @@ class forwarding_table {
+       uint64_t request_bytes, uint64_t page_size, uint64_t generation,
+       vm_translation::translation_access access, uint64_t resolved_ppn,
+       vm_translation::translation_source source);
+-  void note_forward_application();
++  void note_forward_application(bool detached_live_prelaunch);
++  void note_prelaunch_attempt(vm_translation::lookup_result result,
++                              bool is_head,
++                              uint64_t lookup_request_increment);
++  void note_head_translation_attempt();
+   void retire_instruction(uint64_t instruction_key);
+   void print(FILE *fout) const;
+ 
+   const counters &stats() const { return m_stats; }
+   size_t live_entries() const;
++  bool accounting_enabled() const;
+ 
+  private:
+   forwarding_table();
+diff --git "a/D:\\repo\\awma_v2r1_stage\\old\\passive_last_translation_forwarding.cc" "b/D:\\repo\\awma_v2r1_stage\\passive_last_translation_forwarding.cc"
+index 50c0faa..053db57 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\old\\passive_last_translation_forwarding.cc"
++++ "b/D:\\repo\\awma_v2r1_stage\\passive_last_translation_forwarding.cc"
+@@ -1,6 +1,7 @@
+ #include "passive_last_translation_forwarding.h"
+ 
+ #include <assert.h>
++#include <stdlib.h>
+ 
+ #include <map>
+ 
+@@ -38,7 +39,14 @@ struct forwarding_table::implementation {
+ };
+ 
+ counters::counters()
+-    : lookups(0), hits(0), misses(0), actual_physical_lookup_suppression(0),
++    : lookups(0), hits(0), misses(0), head_requests_avoided(0),
++      prelaunch_work_not_saved(0), forwards_without_live_prelaunch(0),
++      prelaunch_attempts(0), prelaunch_head_attempts(0),
++      prelaunch_lookup_request_increments(0), prelaunch_ready(0),
++      prelaunch_pending(0), prelaunch_l1_port_stalls(0),
++      prelaunch_l2_port_stalls(0), prelaunch_mshr_full(0),
++      prelaunch_pwq_full(0),
++      head_translation_attempts(0),
+       natural_completions(0), installs(0), overwrites(0),
+       forwarded_applications(0), stale_generation_misses(0),
+       access_compatibility_misses(0), vpn_misses(0),
+@@ -52,6 +60,11 @@ forwarding_table &forwarding_table::instance() {
+   return singleton;
+ }
+ 
++bool forwarding_table::accounting_enabled() const {
++  const char *value = getenv("GPGPUSIM_AWMA_V2R1_ACCOUNTING");
++  return value != NULL && value[0] != '\0' && value[0] != '0';
++}
++
+ bool forwarding_table::try_forward(
+     uint64_t instruction_key, unsigned asid, uint64_t sim_va,
+     uint64_t request_bytes, uint64_t page_size, uint64_t generation,
+@@ -88,7 +101,6 @@ bool forwarding_table::try_forward(
+   *resolved_pa = last.ppn * page_size + vm_core::page_offset(sim_va, page_size);
+   *source = last.source;
+   ++m_stats.hits;
+-  ++m_stats.actual_physical_lookup_suppression;
+   return true;
+ }
+ 
+@@ -115,8 +127,46 @@ void forwarding_table::note_natural_completion(
+   ++m_stats.natural_completions;
+ }
+ 
+-void forwarding_table::note_forward_application() {
++void forwarding_table::note_forward_application(
++    bool detached_live_prelaunch) {
+   ++m_stats.forwarded_applications;
++  ++m_stats.head_requests_avoided;
++  if (detached_live_prelaunch)
++    ++m_stats.prelaunch_work_not_saved;
++  else
++    ++m_stats.forwards_without_live_prelaunch;
++}
++
++void forwarding_table::note_prelaunch_attempt(
++    vm_translation::lookup_result result, bool is_head,
++    uint64_t lookup_request_increment) {
++  ++m_stats.prelaunch_attempts;
++  if (is_head) ++m_stats.prelaunch_head_attempts;
++  m_stats.prelaunch_lookup_request_increments += lookup_request_increment;
++  switch (result) {
++    case vm_translation::READY:
++      ++m_stats.prelaunch_ready;
++      break;
++    case vm_translation::TRANSLATION_PENDING:
++      ++m_stats.prelaunch_pending;
++      break;
++    case vm_translation::L1_PORT_STALL:
++      ++m_stats.prelaunch_l1_port_stalls;
++      break;
++    case vm_translation::L2_PORT_STALL:
++      ++m_stats.prelaunch_l2_port_stalls;
++      break;
++    case vm_translation::MSHR_FULL:
++      ++m_stats.prelaunch_mshr_full;
++      break;
++    case vm_translation::PWQ_FULL:
++      ++m_stats.prelaunch_pwq_full;
++      break;
++  }
++}
++
++void forwarding_table::note_head_translation_attempt() {
++  ++m_stats.head_translation_attempts;
+ }
+ 
+ void forwarding_table::retire_instruction(uint64_t instruction_key) {
+@@ -132,39 +182,65 @@ size_t forwarding_table::live_entries() const {
+ }
+ 
+ void forwarding_table::print(FILE *fout) const {
+-  fprintf(fout, "awma_passive_v2_enabled = 1\n");
+-  fprintf(fout, "awma_passive_v2_capacity = 1\n");
+-  fprintf(fout, "awma_passive_v2_timing = SAME_CYCLE_COMPARE_FORWARD\n");
+-  fprintf(fout, "awma_passive_v2_live_entries = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_accounting_enabled = %u\n",
++          accounting_enabled() ? 1U : 0U);
++  fprintf(fout, "awma_passive_v2r1_capacity = 1\n");
++  fprintf(fout, "awma_passive_v2r1_timing = SAME_CYCLE_COMPARE_FORWARD\n");
++  fprintf(fout, "awma_passive_v2r1_live_entries = %llu\n",
+           (unsigned long long)live_entries());
+-  fprintf(fout, "awma_passive_v2_lookups = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_lookups = %llu\n",
+           (unsigned long long)m_stats.lookups);
+-  fprintf(fout, "awma_passive_v2_hits = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_hits = %llu\n",
+           (unsigned long long)m_stats.hits);
+-  fprintf(fout, "awma_passive_v2_misses = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_misses = %llu\n",
+           (unsigned long long)m_stats.misses);
+-  fprintf(fout, "awma_passive_v2_actual_physical_lookup_suppression = %llu\n",
+-          (unsigned long long)m_stats.actual_physical_lookup_suppression);
+-  fprintf(fout, "awma_passive_v2_natural_completions = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_head_requests_avoided = %llu\n",
++          (unsigned long long)m_stats.head_requests_avoided);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_work_not_saved = %llu\n",
++          (unsigned long long)m_stats.prelaunch_work_not_saved);
++  fprintf(fout, "awma_passive_v2r1_forwards_without_live_prelaunch = %llu\n",
++          (unsigned long long)m_stats.forwards_without_live_prelaunch);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_attempts = %llu\n",
++          (unsigned long long)m_stats.prelaunch_attempts);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_head_attempts = %llu\n",
++          (unsigned long long)m_stats.prelaunch_head_attempts);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_lookup_request_increments = %llu\n",
++          (unsigned long long)m_stats.prelaunch_lookup_request_increments);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_ready = %llu\n",
++          (unsigned long long)m_stats.prelaunch_ready);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_pending = %llu\n",
++          (unsigned long long)m_stats.prelaunch_pending);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_l1_port_stalls = %llu\n",
++          (unsigned long long)m_stats.prelaunch_l1_port_stalls);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_l2_port_stalls = %llu\n",
++          (unsigned long long)m_stats.prelaunch_l2_port_stalls);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_mshr_full = %llu\n",
++          (unsigned long long)m_stats.prelaunch_mshr_full);
++  fprintf(fout, "awma_passive_v2r1_prelaunch_pwq_full = %llu\n",
++          (unsigned long long)m_stats.prelaunch_pwq_full);
++  fprintf(fout, "awma_passive_v2r1_head_translation_attempts = %llu\n",
++          (unsigned long long)m_stats.head_translation_attempts);
++  fprintf(fout, "awma_passive_v2r1_internal_physical_lookup_suppression_claim = 0\n");
++  fprintf(fout, "awma_passive_v2r1_natural_completions = %llu\n",
+           (unsigned long long)m_stats.natural_completions);
+-  fprintf(fout, "awma_passive_v2_installs = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_installs = %llu\n",
+           (unsigned long long)m_stats.installs);
+-  fprintf(fout, "awma_passive_v2_overwrites = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_overwrites = %llu\n",
+           (unsigned long long)m_stats.overwrites);
+-  fprintf(fout, "awma_passive_v2_forwarded_applications = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_forwarded_applications = %llu\n",
+           (unsigned long long)m_stats.forwarded_applications);
+-  fprintf(fout, "awma_passive_v2_stale_generation_misses = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_stale_generation_misses = %llu\n",
+           (unsigned long long)m_stats.stale_generation_misses);
+-  fprintf(fout, "awma_passive_v2_access_compatibility_misses = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_access_compatibility_misses = %llu\n",
+           (unsigned long long)m_stats.access_compatibility_misses);
+-  fprintf(fout, "awma_passive_v2_vpn_misses = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_vpn_misses = %llu\n",
+           (unsigned long long)m_stats.vpn_misses);
+-  fprintf(fout, "awma_passive_v2_ppn_consistency_faults = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_ppn_consistency_faults = %llu\n",
+           (unsigned long long)m_stats.ppn_consistency_faults);
+-  fprintf(fout, "awma_passive_v2_instruction_invalidations = %llu\n",
++  fprintf(fout, "awma_passive_v2r1_instruction_invalidations = %llu\n",
+           (unsigned long long)m_stats.instruction_invalidations);
+-  fprintf(fout, "awma_passive_v2_proactive_owner_attempts = 0\n");
+-  fprintf(fout, "awma_passive_v2_proactive_duplicate_lookups = 0\n");
++  fprintf(fout, "awma_passive_v2r1_proactive_owner_attempts = 0\n");
++  fprintf(fout, "awma_passive_v2r1_proactive_duplicate_lookups = 0\n");
+ }
+ 
+ }  // namespace awma_passive_v2
+diff --git "a/D:\\repo\\awma_v2r1_stage\\old\\vm_translation.h" "b/D:\\repo\\awma_v2r1_stage\\vm_translation.h"
+index 849e3ee..16e4ac0 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\old\\vm_translation.h"
++++ "b/D:\\repo\\awma_v2r1_stage\\vm_translation.h"
+@@ -908,6 +908,14 @@ class translation_controller {
+                               TRANSLATION_ACCESS_READ,
+                           bool consume_ready = true,
+                           request_service_class *service_class = 0);
++  // A passive forwarding hit may retire the architectural requester after
++  // frozen V1 resident prelaunch has already admitted real translation work.
++  // Mark that exact requester for completion-only draining: no work is
++  // cancelled, no new port is provided, and no second downstream application
++  // is created. Returns true only when live controller work was found.
++  bool detach_passive_forwarded_prelaunch(unsigned sid, unsigned asid,
++                                           uint64_t sim_va,
++                                           uint64_t waiter_uid);
+   // Retained for the accepted M1-M3 directed tests.  Simulator callers pass
+   // the real coalesced transaction size through the overload above.
+   lookup_result translate(unsigned sid, unsigned asid, uint64_t sim_va,
+@@ -1196,6 +1204,11 @@ class translation_controller {
+   // Preserve that source label only until that normal completion is observed;
+   // this map has no timing or flow-control role.
+   std::map<uint64_t, completed_outcome> m_completed_outcomes;
++  std::set<uint64_t> m_passive_detached_waiters;
++  uint64_t m_passive_detached_prelaunches;
++  uint64_t m_passive_detached_lookup_completions;
++  uint64_t m_passive_detached_mshr_completions;
++  uint64_t m_passive_detach_without_live_work;
+   object_range_map m_object_map;
+   weight_segment_map m_weight_segments;
+   // Immutable V2 descriptors are replicated one-for-one with the translation
+diff --git "a/D:\\repo\\awma_v2r1_stage\\old\\vm_translation.cc" "b/D:\\repo\\awma_v2r1_stage\\vm_translation.cc"
+index c967ab0..84d7f55 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\old\\vm_translation.cc"
++++ "b/D:\\repo\\awma_v2r1_stage\\vm_translation.cc"
+@@ -1516,6 +1516,11 @@ translation_controller::translation_controller(const translation_config &config)
+       m_l2_subentries(config.l2), m_mshrs(),
+       m_lookups(), m_pwq(), m_active_walks(), m_pwc(),
+       m_physical_f5_pwc(), m_physical_f5_pwc_plru(),
++      m_completed_outcomes(), m_passive_detached_waiters(),
++      m_passive_detached_prelaunches(0),
++      m_passive_detached_lookup_completions(0),
++      m_passive_detached_mshr_completions(0),
++      m_passive_detach_without_live_work(0),
+       m_object_map(config.object_map_path),
+       m_weight_segments(config.segment.map_path), m_weight_segment_locals(),
+       m_segment_install_acks(), m_segment_revoke_acks(),
+@@ -1549,7 +1554,12 @@ translation_controller::translation_controller(const translation_config &config,
+       m_page_table(backend), m_l1s(), m_l2(config.l2, true),
+       m_l2_subentries(config.l2), m_mshrs(), m_lookups(),
+       m_pwq(), m_active_walks(), m_pwc(), m_physical_f5_pwc(),
+-      m_physical_f5_pwc_plru(), m_object_map(config.object_map_path),
++      m_physical_f5_pwc_plru(), m_completed_outcomes(),
++      m_passive_detached_waiters(), m_passive_detached_prelaunches(0),
++      m_passive_detached_lookup_completions(0),
++      m_passive_detached_mshr_completions(0),
++      m_passive_detach_without_live_work(0),
++      m_object_map(config.object_map_path),
+       m_weight_segments(config.segment.map_path), m_weight_segment_locals(),
+       m_segment_install_acks(), m_segment_revoke_acks(),
+       m_segment_lifecycle(SEGMENT_LIFECYCLE_INACTIVE),
+@@ -2131,11 +2141,29 @@ void translation_controller::service_lookups(uint64_t cycle) {
+         // The request is retained by the normal memory-pipeline retry path;
+         // only this obsolete lookup result is discarded before it can fill or
+         // complete with a pre-shootdown mapping.
++        m_passive_detached_waiters.erase(lookup.uid);
+         m_lookups.erase(m_lookups.begin() + index);
+         ++m_stats.translation_stale_ready_discards;
+         progress = true;
+         continue;
+       }
++      if (lookup.stage == LOOKUP_READY &&
++          m_passive_detached_waiters.erase(lookup.uid) != 0) {
++        // The architectural access already consumed an instruction-local
++        // forwarded result.  Frozen V1 prelaunch work still runs to READY,
++        // then drains here without a second downstream application or a new
++        // lookup-port request.
++        note_requester_completion(
++            lookup.entry_cycle, lookup.l1_launch_cycle,
++            lookup.l1_complete_cycle, lookup.l2_issued,
++            lookup.l2_launch_cycle, lookup.l2_complete_cycle, 0, false,
++            cycle, lookup.object);
++        ++m_stats.completed;
++        ++m_passive_detached_lookup_completions;
++        m_lookups.erase(m_lookups.begin() + index);
++        progress = true;
++        continue;
++      }
+       if (lookup.stage == LOOKUP_L1_SERVICE) {
+         bool changed = false;
+         if (!lookup.l1_completed && lookup.ready_cycle <= cycle) {
+@@ -2469,6 +2497,26 @@ void translation_controller::note_requester_completion(
+   }
+ }
+ 
++bool translation_controller::detach_passive_forwarded_prelaunch(
++    unsigned sid, unsigned asid, uint64_t sim_va, uint64_t waiter_uid) {
++  assert(sid < m_l1s.size());
++  const translation_key key(
++      asid, vm_core::vpn(sim_va, m_config.page_size), m_config.page_size);
++  const lookup_operation *lookup = find_lookup(sid, waiter_uid, key);
++  const mshr_entry *mshr = find_mshr(key);
++  const bool live_lookup = lookup != 0;
++  const bool live_waiter = mshr != 0 && mshr->has_waiter(waiter_uid);
++  if (!live_lookup && !live_waiter) {
++    ++m_passive_detach_without_live_work;
++    return false;
++  }
++  assert(m_passive_detached_waiters.find(waiter_uid) ==
++         m_passive_detached_waiters.end());
++  m_passive_detached_waiters.insert(waiter_uid);
++  ++m_passive_detached_prelaunches;
++  return true;
++}
++
+ lookup_result translation_controller::translate(unsigned sid, unsigned asid,
+                                                 uint64_t sim_va,
+                                                 uint64_t request_bytes,
+@@ -2493,6 +2541,7 @@ lookup_result translation_controller::translate(unsigned sid, unsigned asid,
+   lookup_operation *inflight = find_lookup(sid, waiter_uid, key);
+   if (inflight != 0) {
+     if (inflight->generation != translation_generation(asid)) {
++      m_passive_detached_waiters.erase(waiter_uid);
+       for (unsigned index = 0; index < m_lookups.size(); ++index)
+         if (&m_lookups[index] == inflight) {
+           m_lookups.erase(m_lookups.begin() + index);
+@@ -2624,6 +2673,10 @@ bool translation_controller::complete_translation(const translation_key &key,
+       // neither exact nor sub-entry state can be resurrected here.
+       m_stats.translation_stale_waiters_discarded +=
+           m_mshrs[index].waiters.size();
++      for (unsigned waiter_index = 0;
++           waiter_index < m_mshrs[index].waiters.size(); ++waiter_index)
++        m_passive_detached_waiters.erase(
++            m_mshrs[index].waiters[waiter_index].uid);
+       m_mshrs.erase(m_mshrs.begin() + index);
+       for (unsigned queued = 0; queued < m_pwq.size(); ++queued)
+         if (m_pwq[queued] == key) {
+@@ -2662,13 +2715,22 @@ bool translation_controller::complete_translation(const translation_key &key,
+           entry_waiter.l1_complete_cycle, entry_waiter.l2_issued,
+           entry_waiter.l2_launch_cycle, entry_waiter.l2_complete_cycle,
+           entry_waiter.mshr_join_cycle, true, cycle, entry_waiter.object);
+-      // The regular requester retry will still perform the accepted L1 probe
+-      // and obtain the same SimPA.  This side map preserves only the fact
+-      // that its residency originated in a PTW, for later cache correlation.
+-      m_completed_outcomes[entry_waiter.uid] =
+-          completed_outcome(key, TRANSLATION_SOURCE_PTW,
+-                            m_mshrs[index].generation,
+-                            entry_waiter.mshr_merged);
++      if (m_passive_detached_waiters.erase(entry_waiter.uid) != 0) {
++        // The access already used a passive forwarded result.  The admitted
++        // miss, merge and PTW all completed normally; only the later head
++        // delivery retry is unnecessary.  Do not leave delivery metadata for
++        // a requester that can no longer return to the architectural head.
++        ++m_stats.completed;
++        ++m_passive_detached_mshr_completions;
++      } else {
++        // The regular requester retry will still perform the accepted L1
++        // probe and obtain the same SimPA. This side map preserves only the
++        // fact that its residency originated in a PTW, for cache correlation.
++        m_completed_outcomes[entry_waiter.uid] =
++            completed_outcome(key, TRANSLATION_SOURCE_PTW,
++                              m_mshrs[index].generation,
++                              entry_waiter.mshr_merged);
++      }
+       ++m_stats.waiter_wakeups;
+     }
+     const uint64_t waiter_depth = m_mshrs[index].waiters.size();
+@@ -2911,6 +2973,16 @@ bool translation_controller::invariants_hold() const {
+           m_lookups[i].key == m_lookups[j].key)
+         return false;
+   }
++  for (std::set<uint64_t>::const_iterator detached =
++           m_passive_detached_waiters.begin();
++       detached != m_passive_detached_waiters.end(); ++detached) {
++    bool live = false;
++    for (unsigned i = 0; i < m_lookups.size() && !live; ++i)
++      live = m_lookups[i].uid == *detached;
++    for (unsigned i = 0; i < m_mshrs.size() && !live; ++i)
++      live = m_mshrs[i].has_waiter(*detached);
++    if (!live) return false;
++  }
+   for (unsigned i = 0; i < m_pwq.size(); ++i)
+     if (find_mshr(m_pwq[i]) == 0) return false;
+   for (unsigned i = 0; i < m_active_walks.size(); ++i)
+@@ -2935,6 +3007,7 @@ bool translation_controller::quiescent_invariants_hold() const {
+   // an active TLB, MSHR, PWQ, or walker operation.  A controller is quiescent
+   // once those modeled resources are drained.
+   return m_mshrs.empty() && m_lookups.empty() &&
++         m_passive_detached_waiters.empty() &&
+          m_l2.candidate_pending() == 0 && invariants_hold();
+ }
+ 
+@@ -3113,6 +3186,16 @@ void translation_controller::print_stats(FILE *fout) const {
+           m_config.l2.assoc);
+   fprintf(fout, "vm_translation_lookup_requests = %llu\n",
+           (unsigned long long)m_stats.lookup_requests);
++  fprintf(fout, "vm_passive_v2r1_detached_prelaunches = %llu\n",
++          (unsigned long long)m_passive_detached_prelaunches);
++  fprintf(fout, "vm_passive_v2r1_detached_lookup_completions = %llu\n",
++          (unsigned long long)m_passive_detached_lookup_completions);
++  fprintf(fout, "vm_passive_v2r1_detached_mshr_completions = %llu\n",
++          (unsigned long long)m_passive_detached_mshr_completions);
++  fprintf(fout, "vm_passive_v2r1_detach_without_live_work = %llu\n",
++          (unsigned long long)m_passive_detach_without_live_work);
++  fprintf(fout, "vm_passive_v2r1_detached_waiters_final = %llu\n",
++          (unsigned long long)m_passive_detached_waiters.size());
+   fprintf(fout, "vm_translation_pending_waiter_bypasses = %llu\n",
+           (unsigned long long)m_stats.pending_waiter_bypasses);
+   fprintf(fout, "vm_translation_lookup_inflight_bypasses = %llu\n",
+diff --git "a/D:\\repo\\awma_v2r1_stage\\old\\shader.cc" "b/D:\\repo\\awma_v2r1_stage\\shader.cc"
+index 7afa6b6..8365536 100644
+--- "a/D:\\repo\\awma_v2r1_stage\\old\\shader.cc"
++++ "b/D:\\repo\\awma_v2r1_stage\\shader.cc"
+@@ -417,7 +417,8 @@ static void vm_cov_print(FILE *f) {
+   g_owner_wait.print(f);
+   awma_passive_memo::observer::instance().print(f);
+   if (vm_translation::awma_candidate_mode() ==
+-      vm_translation::AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT)
++          vm_translation::AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT ||
++      awma_passive_v2::forwarding_table::instance().accounting_enabled())
+     awma_passive_v2::forwarding_table::instance().print(f);
+ }
+ }
+@@ -3302,9 +3303,6 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+     // not issue independent physical translation services.
+     for (std::list<mem_access_t>::reverse_iterator it = entries.rbegin();
+          it != entries.rend(); ++it) {
+-      // V2 launches no resident-access translation. A miss launches only when
+-      // that exact access reaches the frozen head decision point below.
+-      if (passive_last_result) break;
+       mem_access_t &candidate = *it;
+       if (candidate.vm_translation_applied()) continue;
+       if (vm_core::transaction_crosses_page(candidate.get_sim_va(),
+@@ -3353,11 +3351,27 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+           vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
+       // V1 observes READY only; V2 consumes it for this exact resident entry.
+       // Neither mode admits the access downstream during this prelaunch scan.
++      const bool v2r1_accounting =
++          awma_passive_v2::forwarding_table::instance().accounting_enabled();
++      const uint64_t prelaunch_lookup_requests_before =
++          v2r1_accounting
++              ? m_gpu->vm_translation()->stats().lookup_requests
++              : 0;
+       const vm_translation::lookup_result prelaunch_result =
+           m_gpu->vm_translation()->translate(
+           m_sid, 0, candidate.get_sim_va(), candidate.get_size(), now,
+           candidate.get_uid(), &ignored_pa, &ignored_source, candidate_access,
+           ready_application_v2);
++      if (v2r1_accounting) {
++        const uint64_t prelaunch_lookup_requests_after =
++            m_gpu->vm_translation()->stats().lookup_requests;
++        assert(prelaunch_lookup_requests_after >=
++               prelaunch_lookup_requests_before);
++        awma_passive_v2::forwarding_table::instance().note_prelaunch_attempt(
++            prelaunch_result, &candidate == &entries.back(),
++            prelaunch_lookup_requests_after -
++                prelaunch_lookup_requests_before);
++      }
+       if (prelaunch_result == vm_translation::READY) {
+         awma_observatory::instance().record_translation_ready(
+             candidate.get_uid(),
+@@ -3417,8 +3431,11 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+       else
+         access.set_telemetry_class(M4C_DATA_UNKNOWN);
+       access.set_translation_telemetry_outcome(forwarded_source);
++      const bool detached_live_prelaunch =
++          m_gpu->vm_translation()->detach_passive_forwarded_prelaunch(
++              m_sid, 0, access.get_sim_va(), access.get_uid());
+       awma_passive_v2::forwarding_table::instance()
+-          .note_forward_application();
++          .note_forward_application(detached_live_prelaunch);
+     }
+   }
+   if (nonblocking_opportunistic_share &&
+@@ -3588,6 +3605,9 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+       const bool nonblocking_fallback_request =
+           nonblocking_opportunistic_share &&
+           access.awma_no_wait_share_fallback();
++      if (awma_passive_v2::forwarding_table::instance().accounting_enabled())
++        awma_passive_v2::forwarding_table::instance()
++            .note_head_translation_attempt();
+       const vm_translation::lookup_result result =
+           m_gpu->vm_translation()->translate(
+               m_sid, 0, access.get_sim_va(), access.get_size(),

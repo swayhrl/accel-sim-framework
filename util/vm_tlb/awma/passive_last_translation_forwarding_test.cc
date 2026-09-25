@@ -37,7 +37,7 @@ int main() {
                            &pa, &source));
   assert(pa == 30 * page + 96);
   assert(source == vm_translation::TRANSLATION_SOURCE_PTW);
-  table.note_forward_application();
+  table.note_forward_application(true);
 
   // Different VPN, generation, and access type are misses.
   assert(!table.try_forward(inst1, 0, 4 * page + 8, 32, page, 4,
@@ -62,7 +62,7 @@ int main() {
                            vm_translation::TRANSLATION_ACCESS_READ,
                            &pa, &source));
   assert(pa == 40 * page + 64);
-  table.note_forward_application();
+  table.note_forward_application(false);
 
   // Instruction retirement invalidates state and prevents cross-instruction
   // reuse even for the same exact translation identity.
@@ -77,12 +77,24 @@ int main() {
   const awma_passive_v2::counters &stats = table.stats();
   assert(stats.hits == 2);
   assert(stats.forwarded_applications == 2);
-  assert(stats.actual_physical_lookup_suppression == 2);
+  assert(stats.head_requests_avoided == 2);
+  assert(stats.prelaunch_work_not_saved == 1);
+  assert(stats.forwards_without_live_prelaunch == 1);
   assert(stats.overwrites == 1);
   assert(stats.stale_generation_misses == 1);
   assert(stats.access_compatibility_misses == 1);
   assert(stats.ppn_consistency_faults == 0);
   assert(table.live_entries() == 0);
+
+  table.note_prelaunch_attempt(vm_translation::TRANSLATION_PENDING, true, 1);
+  table.note_prelaunch_attempt(vm_translation::L1_PORT_STALL, false, 1);
+  table.note_head_translation_attempt();
+  assert(stats.prelaunch_attempts == 2);
+  assert(stats.prelaunch_head_attempts == 1);
+  assert(stats.prelaunch_lookup_request_increments == 2);
+  assert(stats.prelaunch_pending == 1);
+  assert(stats.prelaunch_l1_port_stalls == 1);
+  assert(stats.head_translation_attempts == 1);
 
   // ZERO-OPPORTUNITY model: every access is a distinct page. V2 performs the
   // same baseline request/admission/application sequence and adds no cycle.
