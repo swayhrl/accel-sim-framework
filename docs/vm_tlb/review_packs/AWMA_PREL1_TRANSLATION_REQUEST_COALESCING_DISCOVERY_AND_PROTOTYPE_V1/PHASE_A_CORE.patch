@@ -5,7 +5,7 @@ index 84d7f55..697fdfd 100644
 @@ -1,4 +1,5 @@
  #include "vm_translation.h"
 +#include "prel1_coalescing_observer.h"
- 
+
  #include <assert.h>
  #include <errno.h>
 @@ -2137,6 +2138,9 @@ void translation_controller::service_lookups(uint64_t cycle) {
@@ -57,7 +57,7 @@ index 84d7f55..697fdfd 100644
            entry_waiter.entry_cycle, entry_waiter.l1_launch_cycle,
 @@ -3094,6 +3107,7 @@ const set_associative_tlb &translation_controller::l1(unsigned sid) const {
  }
- 
+
  void translation_controller::print_stats(FILE *fout) const {
 +  awma_prel1::opportunity_observer::instance().print(fout);
    if (awma_mechanism_diagnostics_enabled()) {
@@ -107,10 +107,10 @@ index 0000000..a8fcf92
 +#endif
 diff --git "a/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc" "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc"
 new file mode 100644
-index 0000000..07ce169
+index 0000000..6b21e62
 --- /dev/null
 +++ "b/D:\\repo\\awma_prel1_stage\\prel1_coalescing_observer.cc"
-@@ -0,0 +1,521 @@
+@@ -0,0 +1,542 @@
 +#include "prel1_coalescing_observer.h"
 +
 +#include <assert.h>
@@ -254,8 +254,10 @@ index 0000000..07ce169
 +  uint64_t inflight_duplicates;
 +  uint64_t post_completion_repeats;
 +  uint64_t existing_mshr_handled;
++  uint64_t existing_mshr_unique;
 +  uint64_t existing_mshr_same_cycle;
 +  uint64_t existing_mshr_inflight;
++  uint64_t existing_mshr_post_completion;
 +  uint64_t l2_probes;
 +  uint64_t duplicate_l2_probes;
 +  uint64_t duplicate_completions;
@@ -273,7 +275,8 @@ index 0000000..07ce169
 +      : next_id(1), physical_launches(0), unique_launches(0),
 +        same_cycle_duplicates(0), inflight_duplicates(0),
 +        post_completion_repeats(0), existing_mshr_handled(0),
-+        existing_mshr_same_cycle(0), existing_mshr_inflight(0),
++        existing_mshr_unique(0), existing_mshr_same_cycle(0),
++        existing_mshr_inflight(0), existing_mshr_post_completion(0),
 +        l2_probes(0), duplicate_l2_probes(0), duplicate_completions(0),
 +        completion_without_launch(0), active_hwm(0), active_requesters(),
 +        active_by_identity(), last_completion(), records(), identities_seen(),
@@ -475,12 +478,14 @@ index 0000000..07ce169
 +  assert(!record.existing_mshr_overlap);
 +  record.existing_mshr_overlap = true;
 +  ++m_impl->existing_mshr_handled;
-+  if (record.classification == CLASS_SAME_CYCLE_DUPLICATE)
++  if (record.classification == CLASS_UNIQUE)
++    ++m_impl->existing_mshr_unique;
++  else if (record.classification == CLASS_SAME_CYCLE_DUPLICATE)
 +    ++m_impl->existing_mshr_same_cycle;
-+  else {
-+    assert(record.classification == CLASS_INFLIGHT_DUPLICATE);
++  else if (record.classification == CLASS_INFLIGHT_DUPLICATE)
 +    ++m_impl->existing_mshr_inflight;
-+  }
++  else
++    ++m_impl->existing_mshr_post_completion;
 +  for (unsigned i = 0; i < m_impl->models.size(); ++i)
 +    if (record.finite_merge[i])
 +      ++m_impl->models[i].stats.existing_mshr_overlap;
@@ -545,15 +550,31 @@ index 0000000..07ce169
 +          (unsigned long long)m_impl->post_completion_repeats);
 +  fprintf(fout, "awma_prel1_existing_mshr_handled = %llu\n",
 +          (unsigned long long)m_impl->existing_mshr_handled);
++  fprintf(fout, "awma_prel1_unique_incremental = %llu\n",
++          (unsigned long long)(m_impl->unique_launches -
++                               m_impl->existing_mshr_unique));
 +  fprintf(fout, "awma_prel1_same_cycle_duplicate_incremental = %llu\n",
 +          (unsigned long long)(m_impl->same_cycle_duplicates -
 +                               m_impl->existing_mshr_same_cycle));
 +  fprintf(fout, "awma_prel1_inflight_duplicate_incremental = %llu\n",
 +          (unsigned long long)(m_impl->inflight_duplicates -
 +                               m_impl->existing_mshr_inflight));
++  fprintf(fout, "awma_prel1_post_completion_repeat_incremental = %llu\n",
++          (unsigned long long)(m_impl->post_completion_repeats -
++                               m_impl->existing_mshr_post_completion));
++  fprintf(fout, "awma_prel1_existing_mshr_from_unique = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_unique);
++  fprintf(fout, "awma_prel1_existing_mshr_from_same_cycle = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_same_cycle);
++  fprintf(fout, "awma_prel1_existing_mshr_from_inflight = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_inflight);
++  fprintf(fout, "awma_prel1_existing_mshr_from_post_completion = %llu\n",
++          (unsigned long long)m_impl->existing_mshr_post_completion);
 +  fprintf(fout, "awma_prel1_classification_conservation = %llu\n",
-+          (unsigned long long)(m_impl->unique_launches +
-+              m_impl->post_completion_repeats +
++          (unsigned long long)((m_impl->unique_launches -
++               m_impl->existing_mshr_unique) +
++              (m_impl->post_completion_repeats -
++               m_impl->existing_mshr_post_completion) +
 +              (m_impl->same_cycle_duplicates -
 +               m_impl->existing_mshr_same_cycle) +
 +              (m_impl->inflight_duplicates -

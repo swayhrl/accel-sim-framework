@@ -39,10 +39,11 @@ Each admitted physical launch receives exactly one launch-time class:
 - `INFLIGHT_DUPLICATE`: an equal earlier-cycle launch remains live;
 - `POST_COMPLETION_REPEAT`: no equal launch is live, but one completed earlier.
 
-If a same-cycle/inflight request is later registered on an existing MSHR, its
-final disjoint accounting class is `EXISTING_MSHR_HANDLED`. Raw duplicate and
-MSHR-overlap counters are both retained; the final conservation subtracts the
-overlap exactly once.
+If a request is later registered on an existing global MSHR, its final
+disjoint accounting class is `EXISTING_MSHR_HANDLED`. This can overlap a
+per-SID launch-time `UNIQUE` or `POST_COMPLETION_REPEAT` when the existing MSHR
+leader came from another SID. Raw launch-time classes and MSHR-overlap counters
+are both retained; final conservation subtracts every overlap exactly once.
 
 ## Timing-risk observation
 
