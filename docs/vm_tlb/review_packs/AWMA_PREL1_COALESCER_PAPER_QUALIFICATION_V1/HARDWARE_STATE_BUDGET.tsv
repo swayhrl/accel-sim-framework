@@ -1,0 +1,17 @@
+component	scope	bits_or_formula	derivation	evidence_class
+exact_key_compare_width	PER_ENTRY	132	32 ASID + 33 VPN + 1 page class + 64 generation + 2 access	SIMULATOR_LOGICAL_WIDTH
+fixed_entry_state_excluding_waiters	PER_ENTRY	205	2 state + key + 32 leader tag + 33 PPN + 6 waiter count	SIMULATOR_LOGICAL_WIDTH
+minimal_waiter_metadata	PER_WAITER	32	mem_access UID continuation token	LOWER_BOUND_PROXY
+conservative_waiter_metadata	PER_WAITER	325	UID32+VA64+size32+write1+type32+warp32+byte128+sector4	SOURCE_VISIBLE_REQUEST_PROXY
+minimal_mechanism_entry_state	PER_ENTRY	1229	fixed + 32*32; excludes proxy drain cursor	LOWER_BOUND_MECHANISM
+conservative_mechanism_entry_state	PER_ENTRY	10605	fixed + 32*325; excludes proxy drain cursor	CONSERVATIVE_MECHANISM
+minimal_mechanism_state	PER_SID	2458	2 entries; excludes proxy drain cursor	LOWER_BOUND_MECHANISM
+conservative_mechanism_state	PER_SID	21210	2 entries; excludes proxy drain cursor	CONSERVATIVE_MECHANISM
+proxy_drain_cursor	PER_SID	12	2 entries * 6-bit finite-drain index	HARDWARE_PROXY
+minimal_same_cycle_proxy_state	PER_SID	2470	mechanism state + drain cursors	LOWER_BOUND_PROXY
+conservative_same_cycle_proxy_state	PER_SID	21222	mechanism state + drain cursors	CONSERVATIVE_PROXY
+minimal_registered_request_pipeline	PER_SID	197	valid + exact key + tag + waiter metadata	TIMING_VARIANT_ONLY
+conservative_registered_request_pipeline	PER_SID	490	valid + exact key + tag + waiter metadata	TIMING_VARIANT_ONLY
+minimal_same_cycle_simulated_platform_total	76_SID	187720	76 clusters * 1 core/cluster from frozen config	SIMULATED_PLATFORM_SCALING
+conservative_same_cycle_simulated_platform_total	76_SID	1612872	76 clusters * 1 core/cluster from frozen config	SIMULATED_PLATFORM_SCALING
+same_cycle_real_gpu_formula	N_SID	2470*N_SID to 21222*N_SID	do not assume real SID mapping	PAPER_HARDWARE_ASSUMPTION_REQUIRED

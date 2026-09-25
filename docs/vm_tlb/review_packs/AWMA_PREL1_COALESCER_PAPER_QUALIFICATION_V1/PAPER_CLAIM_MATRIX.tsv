@@ -1,0 +1,10 @@
+claim_id	claim	status	authority	boundary
+C1	AI/LLM kernels exhibit duplicate in-flight requests before L1 service	SUPPORTED_WITH_SCOPE	Phase-A development plus Pair C and REDUCE	Measured targets only; not all kernels/models
+C2	Existing miss-side MSHR captures only a small redundancy subset	SUPPORTED_WITH_SCOPE	PREL1_VS_MSHR_MATRIX and source placement	No larger-MSHR performance experiment
+C3	A two-entry exact pre-L1 coalescer suppresses substantial redundant L1 service on several kernels	SUPPORTED_WITH_SCOPE	Development and Pair C tables	Runtime benefit is not universal
+C4	Physical service suppression generalizes to independent AT_NATIVE_REDUCE	SUPPORTED	fc5ea3bf independent holdout	Single independent target
+C5	Service suppression does not imply universal runtime speedup	SUPPORTED	Positive/zero/negative response distribution	No end-to-end model claim
+C6	Mechanism avoids proactive-owner and head-blocking pathologies	SUPPORTED_WITH_SCOPE	Zero proactive requests/head-block across measured candidate runs	Does not prove all future schedules
+C7	Two entries/SID match the cap-8 opportunity count on the frozen Phase-A development traces	SUPPORTED_WITH_SCOPE	Phase-A capacity sweep: cap2 equals cap8 merge count with zero Phase-A full events	Performance runs later observe finite entry-full fallback; not a universal minimal capacity
+C8	32 waiters is a frozen bound; observed demand is lower	SUPPORTED	Frozen 32; observed maximum 15	Does not prove 16 is sufficient generally
+C9	Same-cycle compare is a simulator assumption; +1 cycle remains viable	SUPPORTED_WITH_SCOPE	T0/T1/T2/A2 plus REDUCE sensitivity and RTL registered variant	No physical GPU timing closure

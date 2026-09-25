@@ -103,6 +103,37 @@ module prel1_exact_coalescer_proxy_tb #(
     end
   endtask
 
+  task complete_with_exact_req;
+    input [31:0] leader_tag;
+    input [32:0] ppn;
+    input [WAITER_META_W-1:0] meta;
+    begin
+      @(negedge clk);
+      req_valid = 1;
+      req_asid = 0;
+      req_vpn = 33'd99;
+      req_page = 0;
+      req_generation = 64'd3;
+      req_access = 2'd2;
+      req_tag = 32'd101;
+      req_waiter_meta = meta;
+      if (REGISTER_COMPARE) begin
+        @(posedge clk); #1;
+        @(negedge clk);
+        req_valid = 0;
+      end
+      completion_valid = 1;
+      completion_tag = leader_tag;
+      completion_ppn = ppn;
+      @(posedge clk); #1;
+      req_valid = 0;
+      completion_valid = 0;
+      check(completion_match, "concurrent completion did not match");
+      check(decision_valid && follower_admit,
+            "concurrent exact request was not admitted");
+    end
+  endtask
+
   integer i;
   integer meta_index;
   initial begin
@@ -170,8 +201,19 @@ module prel1_exact_coalescer_proxy_tb #(
     // Freed entry is reusable.
     send_req(0, 33'd99, 64'd3, 2'd2, 32'd100, 32'd100);
     check(leader_launch, "drained entry was not reusable");
-    complete(32'd100, 33'd99);
-    check(debug_state0 == 0, "zero-waiter completion did not free entry");
+    // Completion and a same-key request may coincide. The follower must drain
+    // exactly once instead of creating FREE state with a stranded waiter.
+    complete_with_exact_req(32'd100, 33'd99,
+                            {WAITER_META_W{1'b1}});
+    @(posedge clk); #1;
+    check(follower_out_valid, "concurrent follower did not drain");
+    check(follower_out_meta == {WAITER_META_W{1'b1}},
+          "concurrent follower metadata corrupted");
+    check(follower_out_ppn == 33'd99, "concurrent follower PPN corrupted");
+    @(posedge clk); #1;
+    check(!follower_out_valid, "concurrent follower completed twice");
+    check(debug_state0 == 0 && debug_waiters0 == 0,
+          "concurrent completion/request did not free entry");
 
     if (failures == 0)
       $display("PREL1_RTL_PROXY_TEST PASS registered=%0d waiter_meta=%0d",

@@ -189,18 +189,31 @@ module prel1_exact_coalescer_proxy #(
         if (state0 == STATE_LIVE && leader_tag0 == completion_tag) begin
           completion_match <= 1;
           result_ppn0 <= completion_ppn;
-          if (waiter_count0 == 0)
-            state0 <= STATE_FREE;
-          else begin
+          if (waiter_count0 == 0) begin
+            // A same-cycle exact request has already matched the LIVE entry.
+            // Keep the entry in DRAIN so the admission below is not stranded
+            // as FREE+nonzero-waiter state by nonblocking assignment ordering.
+            if (eff_valid && match0) begin
+              state0 <= STATE_DRAIN;
+              drain_index0 <= 0;
+            end else begin
+              state0 <= STATE_FREE;
+            end
+          end else begin
             state0 <= STATE_DRAIN;
             drain_index0 <= 0;
           end
         end else if (state1 == STATE_LIVE && leader_tag1 == completion_tag) begin
           completion_match <= 1;
           result_ppn1 <= completion_ppn;
-          if (waiter_count1 == 0)
-            state1 <= STATE_FREE;
-          else begin
+          if (waiter_count1 == 0) begin
+            if (eff_valid && match1) begin
+              state1 <= STATE_DRAIN;
+              drain_index1 <= 0;
+            end else begin
+              state1 <= STATE_FREE;
+            end
+          end else begin
             state1 <= STATE_DRAIN;
             drain_index1 <= 0;
           end

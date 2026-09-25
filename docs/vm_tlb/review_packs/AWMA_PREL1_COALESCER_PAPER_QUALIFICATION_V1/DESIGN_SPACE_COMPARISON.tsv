@@ -1,0 +1,7 @@
+design	duplication_removal_point	covers_l1_hit_duplicates	speculation	storage	critical_path_risk	observed_or_known_limit
+larger_TLB	capacity/replacement path	Does not remove duplicate L1-hit probes	none	TLB entries/tags	array access/replacement	NOT_PERFORMANCE_TESTED_HERE
+larger_or_more_MSHR	after L1/L2 miss	No	none	more miss waiters	miss-side lookup/merge	baseline MSHR captures small subset
+post_L1_MSHR_merge	after L1 service	No	none	merge tags/waiters	L1 already consumed	same limitation as conventional placement
+result_forwarding	after result completion/head	No when frozen prelaunch already issued	none	result entry	late compare	V2R1 opportunity already prelaunched
+proactive_sharing	before baseline demand launch via owner	Yes	yes	owner/member state	owner order and retries	A2 +6.567% retry/readmission pathology
+pre_L1_exact_coalescing	immediately before L1 port	Yes	no	2 exact entries plus bounded waiters	exact CAM plus follower wait	service generalized; runtime response mixed
