@@ -2,101 +2,129 @@
 
 Last update: 2026-09-25
 
-## 1. Accepted result before the final check
+## 1. Final downstream story
 
-The memory-side queue-chain study is closed at SG3 commit:
+The downstream-localization program is closed.
 
-`c055d817b009cbe6a59c7f8ac7af1081f86ec6e8`
+The accepted evidence supports a three-part interpretation:
 
-BICG A-D shows that enlarging the tested queues after L2 does not materially improve performance.
+1. DTC removes L1-side miss-concurrency constraints and exposes substantially more memory-level parallelism.
+2. For BICG/GESUMMV, simply enlarging tested explicit queues does not convert that concurrency into performance.
+3. A source-discriminating idealized increase in detailed-DRAM service timing/rate produces large speedups, while BICG also retains an additional L2-capacity sensitivity.
 
-BICG/GESUMMV E/F shows that the idealized detailed-DRAM 2x time-domain service probe produces large speedups.
+The paper should therefore avoid the simplistic statement:
 
-Thus the current paper-facing result is:
+> “DTC moves the bottleneck to the L2.”
 
-> explicit queue capacity tested so far is not the main limiter, while downstream DRAM service timing/rate is a strong performance dimension.
+A better statement is:
 
-## 2. Why ICNT->L2 is different from A-D
+> DTC shifts the resource balance downstream. For difficult workloads, explicit queue capacity is not the dominant tested limiter; performance is instead strongly sensitive to deeper memory-service timing/rate, with L2 capacity contributing an additional workload-dependent effect.
 
-The four-field partition queue config is:
+## 2. Queue evidence
 
-`ICNT->L2 : L2->DRAM : DRAM->L2 : L2->ICNT`
+Tested queue interventions include:
 
-Default:
+- L2-internal miss queue 32->128;
+- L2->DRAM 64->256;
+- DRAM scheduler/admission 64->256;
+- DRAM return path 192/64 -> 768/256;
+- full queue-chain headroom;
+- ICNT->L2 ingress 64->256.
 
-`64:64:64:64`
+None produces material BICG speedup.
 
-A-D intentionally modified only the memory-side second/third entries plus L2 miss queue, scheduler queue, and DRAM return queue. The first ICNT->L2 ingress FIFO remained 64.
+This matters methodologically because several corresponding pressure counters are large. Direct intervention shows that large pressure counts alone do not establish queue capacity as the performance bottleneck.
 
-The source condition behind `gpu_stall_icnt2mem` is:
+## 3. DRAM-service evidence
 
-- on an L2-domain cycle,
-- if `m_memory_sub_partition[i]->full(SECTOR_CHUNCK_SIZE)` is true,
-- and the interconnect has a packet waiting for that subpartition,
-- increment `gpu_stall_icnt2mem`.
+The accepted E probe changes only the DRAM clock domain:
 
-The FIFO helper returns true when the finite queue cannot accommodate the requested number of entries. The check uses `SECTOR_CHUNCK_SIZE` because one incoming request can expand into up to four 32-B sectors.
+`1410:1410:1410:850 -> 1410:1410:1410:1700`
 
-Therefore this counter is evidence of **ingress admission pressure before L2**, not generic DRAM-full pressure despite the legacy terminal label `gpu_stall_dramfull`.
+with DRAM timing cycle counts, channels, mapping, queues, bus width, L2 resources, and DTC cap held fixed.
 
-## 3. Existing source-directed evidence
+This is an idealized **detailed-DRAM service-rate/time-domain upper bound**.
 
-Accepted BICG telemetry:
+It yields large cycle reductions on both BICG and GESUMMV.
 
-- IO default: `gpu_stall_icnt2mem` ≈ 545M
-- IO cap512: ≈ 27M
-- OO default: ≈ 269M
-- OO cap512: ≈ 11M
+Do not describe it as a physical V100/HBM frequency experiment.
 
-This is a much stronger cap-sensitive signal than the already-tested downstream queues.
+## 4. GESUMMV validation
 
-It does not prove causality, but it justifies one direct intervention.
+GESUMMV confirms the same direction:
 
-## 4. Final 2x2-style comparison
+- E/IO 107,119,606 vs default 210,667,785 cycles;
+- E/OO 79,382,011 vs default 143,059,605;
+- F/IO 103,536,854;
+- F/OO 77,454,520.
 
-For each BICG mode use existing rows plus two new rows:
+Therefore the DRAM-service sensitivity is not a BICG-only artifact, within the tested workload scope.
 
-| Ingress queue | DRAM service | Evidence |
-|---|---|---|
-| 64 | 850 | existing default |
-| 256 | 850 | new G |
-| 64 | 1700 | accepted E |
-| 256 | 1700 | new H |
+## 5. BICG residual capacity effect
 
-This isolates:
+BICG receives meaningful benefit from larger L2 capacity even after service headroom is introduced.
 
-1. ingress-queue effect at default DRAM service: G vs default;
-2. ingress-queue incremental effect under DRAM2x: H vs E;
-3. combined upper-bound effect vs default: H vs default.
+The pre-registered all-headroom ceiling:
 
-## 5. Interpretation boundaries
+- 20-MiB L2 + full queue chain + DRAM2x
 
-If G improves materially:
+reaches:
 
-> ICNT->L2 ingress admission is an independently important pressure point.
+- IO 47,347,123 cycles;
+- OO 22,204,820 cycles.
 
-If G is weak but H improves materially beyond E:
+Treat this as an upper-bound decomposition point, not a practical hardware prescription.
 
-> ingress buffering matters only once deeper DRAM service is relieved; this is an interaction.
+## 6. Final ingress result
 
-If both G and H are weak:
+The source-defined `gpu_stall_icnt2mem` counter measures ICNT->L2 ingress-admission pressure when a packet waits and the finite FIFO cannot accommodate worst-case sector expansion.
 
-> the large ingress-stall counter is primarily a symptom of upstream/downstream timing pressure rather than a dominant queue-capacity limit.
+R5 directly enlarges that FIFO:
 
-No arbitrary new threshold is needed for the main interpretation, but report exact deltas. For paper significance, >=5% remains a useful descriptive marker, not a hidden launch gate.
+- G: 64->256 at default DRAM service;
+- H: 64->256 on top of E/DRAM2x.
 
-## 6. No further automatic cascade
+Both are effectively neutral.
 
-After G/H, do not test:
+Therefore the large ingress-stall counter should be described as pressure/backpressure telemetry, not proof that the 64-entry ingress FIFO is the capacity limiter.
 
-- ICNT->L2 512;
-- L2->ICNT changes;
-- interconnect buffer sizes;
-- NoC bandwidth/routing;
-- ROP;
-- additional DRAM frequencies;
-- DRAM timing sweeps;
-- new L2 capacities;
-- new DTC cap points.
+## 7. Paper claim boundaries
 
-Any such step would be a new scientific stage and requires review.
+Supported:
+
+> DTC can expose more concurrency than a fixed downstream hierarchy can efficiently service for some workloads.
+
+Supported:
+
+> Queue-capacity interventions across the tested path do not explain the large slowdown in BICG/GESUMMV.
+
+Supported:
+
+> The tested workloads are strongly sensitive to an idealized increase in detailed-DRAM service timing/rate.
+
+Supported:
+
+> BICG also exhibits a separate L2-capacity sensitivity.
+
+Not supported:
+
+- “DRAM is the unique bottleneck.”
+- “Real hardware needs a 2x memory clock.”
+- “All DTC workloads need more DRAM bandwidth.”
+- “Queue pressure never matters.”
+- “NoC is not a bottleneck.”
+- any generalization beyond the tested workload/configuration scope.
+
+## 8. Paper-use recommendation
+
+Use the downstream section to answer a mechanism question, not to propose a second architecture.
+
+A compact paper-facing sequence is:
+
+1. BICG/GESUMMV are cap-sensitive.
+2. L2 capacity helps partially; L2 MSHR does not.
+3. queue-pressure counters are large, but direct queue enlargement is ineffective.
+4. detailed-DRAM service headroom strongly recovers performance.
+5. therefore DTC exposes useful MLP, but downstream service balance determines whether that MLP is beneficial.
+
+This is sufficient. Do not continue simulator localization.
