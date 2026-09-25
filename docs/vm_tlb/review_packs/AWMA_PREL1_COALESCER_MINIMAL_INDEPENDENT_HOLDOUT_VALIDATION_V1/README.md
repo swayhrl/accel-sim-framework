@@ -1,0 +1,15 @@
+# AWMA_PREL1_COALESCER_MINIMAL_INDEPENDENT_HOLDOUT_VALIDATION_V1
+
+Start with `FINAL_DECISION.md`.
+
+Final status: **PREL1_COALESCER_INDEPENDENT_SERVICE_SUPPRESSION_GENERALIZED**
+
+This is the preregistered one-target independent validation of
+`STR_e0922aa2a506_P1`. Files are intentionally minimal:
+
+- `HOLDOUT_MATRIX.tsv`
+- `CORRECTNESS_GATES.tsv`
+- `SERVICE_SUPPRESSION.tsv`
+- `TIMING_SENSITIVITY.tsv`
+- `FINAL_DECISION.md`
+- `RAW_DATA_INDEX.tsv`
