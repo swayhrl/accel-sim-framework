@@ -1,0 +1,17 @@
+rtl_state	simulator_state_or_source	semantic_role	hardware_or_debug
+state[1:0]	entry.state FREE/LIVE/READY	valid plus lifecycle state	HARDWARE
+asid[31:0]	identity.asid unsigned	address-space identity	HARDWARE_WIDTH_ASSUMPTION_REQUIRED
+vpn[32:0]	49-bit VA minus 16-bit 64KiB offset	page identity	HARDWARE
+page[0]	identity.page_size valid class	64KiB/2MiB class identity	HARDWARE
+generation[63:0]	identity.generation uint64_t	cross-generation exclusion	HARDWARE_WIDTH_ASSUMPTION_REQUIRED
+access[1:0]	translation_access READ/WRITE/ATOMIC	permission/access identity	HARDWARE
+leader_tag[31:0]	mem_access_t UID / requester_key.uid	completion association	HARDWARE_TOKEN
+result_ppn[32:0]	entry.ppn under 49-bit/64KiB model	follower translation result	HARDWARE
+waiter_count[5:0]	entry.waiters.size bounded at 32	bounded allocation/full detection	HARDWARE
+waiter_meta[]	follower continuation requester UID/minimum or request proxy	continuation delivery	HARDWARE_RANGE
+drain_index[5:0]	vector erase/delivery progress	finite exactly-once drain	HARDWARE_PROXY
+registration_cycle	follower.registration_cycle	latency telemetry	SIMULATOR_DEBUG_ONLY
+last_wait_cycle	follower.last_wait_cycle	de-duplicate wait statistics	SIMULATOR_DEBUG_ONLY
+exposed_at_head	follower.exposed_at_head	critical-path telemetry	SIMULATOR_DEBUG_ONLY
+source	entry.source	service-source telemetry	SIMULATOR_DEBUG_ONLY
+std::map containers	implementation host bookkeeping	lookup implementation artifact	NOT_HARDWARE
