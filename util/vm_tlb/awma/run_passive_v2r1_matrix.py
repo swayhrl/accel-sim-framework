@@ -222,7 +222,7 @@ def run_point(target: str, mode: str, timeout: int,
         'phase': ('FULL_PIPELINE_ZERO_OPPORTUNITY_GATE' if gate else
                   ('OFF_AUTHORITY_CHECK' if mode == 'off'
                    else 'FROZEN_PASSIVE_V2R1_DEVELOPMENT')),
-        'source_freeze_commit': 'TO_BE_REPLACED_AFTER_SOURCE_FREEZE_COMMIT',
+        'source_freeze_commit': '47cde7d19393869ecae448bee76c3624f5907fb5',
         'holdout_preregistration_commit':
             'd450b2a06a0af18960d81b0ccbb46d047fe6cbae',
         'observability_authority': 'b85d388abe98e5da70b749b52075c33fad7cede4',
