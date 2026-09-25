@@ -2,11 +2,15 @@
 
 Last coordination update: 2026-09-25
 
-Status: **SIMULATOR MAINLINE ACCEPTED; FINAL ICNT->L2 INGRESS-QUEUE CHECK AUTHORIZED**
+Status: **SIMULATOR DOWNSTREAM LOCALIZATION CLOSED; PAPER/RTL PHASE NEXT**
 
-## 1. Accepted scientific state
+## 1. Accepted simulator authority
 
-The following simulator evidence is now accepted and frozen:
+Current accepted SG3 authority:
+
+`6886930ab22d63701e58732cfde18ba019d1dfde`
+
+The following simulator evidence is accepted and frozen:
 
 - FAST64 primary Base / IO / OO performance.
 - Lane-E mechanism evidence.
@@ -16,102 +20,99 @@ The following simulator evidence is now accepted and frozen:
 - SG5 comparable-lower-traffic evidence.
 - SG3 cap sensitivity and positive controls.
 - L2-internal miss-queue 32->128 intervention.
-- memory-side queue-chain study A-F.
+- memory-side queue-chain A-F study.
 - detailed-DRAM 2x time-domain service probe.
-- GESUMMV validation of E/F.
-- BICG all-headroom 20-MiB L2 ceiling.
+- GESUMMV E/F validation.
+- BICG 20-MiB-L2 all-headroom ceiling.
+- final ICNT->L2 ingress G/H check.
 
-Current SG3 authority:
+Do not rerun, rename, or replace these accepted rows.
 
-`c055d817b009cbe6a59c7f8ac7af1081f86ec6e8`
+## 2. Final downstream conclusions
 
-Do not rerun or relabel these accepted rows.
+### Queue-capacity interventions are not the dominant explanation
 
-## 2. Current downstream conclusions
+Across the tested path, enlarging explicit finite buffers does not materially recover BICG performance:
 
-### L2/internal and memory-side queue capacity
-
-Enlarging explicit queues does not materially recover BICG performance:
-
-- L2-internal miss queue 32->128 eliminates `MISS_QUEUE_FULL` but does not improve BICG/GESUMMV.
+- L2-internal miss queue 32->128 eliminates `MISS_QUEUE_FULL` but does not improve performance.
 - L2->DRAM queue headroom is neutral/slower.
-- scheduler/admission headroom is slower.
+- DRAM scheduler/admission headroom is slower.
 - return-path buffering is neutral.
 - full memory-side queue-chain headroom is neutral/slightly mixed.
+- ICNT->L2 ingress 64->256 is also neutral:
+  - G/IO 93,788,867 cycles vs default 93,942,704;
+  - G/OO 48,040,165 vs default 47,231,655.
+- adding ICNT->L2 headroom on top of accepted DRAM2x is also neutral:
+  - H/IO 51,153,208 vs E/IO 50,713,356;
+  - H/OO 29,821,617 vs E/OO 29,933,876.
 
-Therefore explicit downstream buffering capacity tested so far is not the dominant explanation.
+Therefore large queue-full/stall counters are pressure indicators, but the tested FIFO capacities are not demonstrated dominant performance limiters.
 
-### Detailed-DRAM service rate
+### Detailed-DRAM service timing/rate is a strong dimension
 
-The source-discriminating DRAM time-domain probe is strongly beneficial.
+The source-discriminating DRAM time-domain upper bound is strongly beneficial:
 
 BICG:
-- default IO 93,942,704 -> E/IO 50,713,356 cycles (-46.0%)
-- default OO 47,231,655 -> E/OO 29,933,876 cycles (-36.6%)
+- default IO 93,942,704 -> E/IO 50,713,356 cycles (-46.0% cycles)
+- default OO 47,231,655 -> E/OO 29,933,876 (-36.6%)
 
 GESUMMV:
-- default IO 210,667,785 -> E/IO 107,119,606 cycles
-- default OO 143,059,605 -> E/OO 79,382,011 cycles
+- default IO 210,667,785 -> E/IO 107,119,606 (-49.2%)
+- default OO 143,059,605 -> E/OO 79,382,011 (-44.5%)
 
-Full queue-chain + DRAM2x adds only modest improvement over DRAM2x alone.
+The full queue-chain + DRAM2x configuration adds only modest gain over DRAM2x alone.
 
 Paper-safe interpretation:
 
-> For the tested difficult workloads, DTC exposes concurrency whose usefulness is strongly sensitive to downstream DRAM service timing/rate; simply enlarging the tested L2/memory-side queues is insufficient.
+> DTC exposes additional memory-level parallelism, but for difficult workloads the usefulness of that concurrency is strongly sensitive to downstream DRAM service timing/rate. Merely enlarging the tested queue capacities does not recover the same headroom.
 
-Do not convert this simulator upper bound into a physical-frequency claim.
+Do not claim a unique physical DRAM bottleneck or a physical 2x-frequency prediction.
 
-### Residual L2-capacity effect
+### L2 capacity remains an approximately separate sensitivity dimension
 
-The accepted R4 ceiling combines 20-MiB L2, full queue-chain headroom, and DRAM2x:
+The accepted BICG all-headroom ceiling with 20-MiB L2 gives:
 
-- BICG IO: 47,347,123 cycles
-- BICG OO: 22,204,820 cycles
+- IO 47,347,123 cycles
+- OO 22,204,820 cycles
 
-This is a bounded ceiling result, not a realistic product configuration or capacity sweep.
+This supports a residual L2-capacity effect in addition to the DRAM-service effect, but it is an idealized ceiling point, not a product configuration or broad capacity sweep.
 
-## 3. Why one final ingress check remains
+## 3. Final R5 interpretation
 
-The accepted BICG telemetry shows a very large source-defined `gpu_stall_icnt2mem` counter at default cap=8192 that falls by roughly an order of magnitude under cap=512.
+R5 decision:
 
-Source review shows that this counter increments when:
+`ICNT_L2_INGRESS_PRESSURE_NOT_CAPACITY_LIMITED`
 
-- an ICNT packet is waiting for a memory subpartition, and
-- the subpartition's **ICNT->L2 ingress FIFO** lacks room for the worst-case sector expansion.
+The source-defined `gpu_stall_icnt2mem` counter is an ICNT->L2 ingress-admission pressure metric despite the legacy printed label `gpu_stall_dramfull`.
 
-The terminal text label `gpu_stall_dramfull` is legacy/misleading; the actual source condition is the ICNT->L2 ingress-buffer admission check.
+Increasing the ingress FIFO 64->256 does not materially improve BICG either at default DRAM service or on top of DRAM2x.
 
-This queue is the **first** entry of:
+Thus no further queue/NoC/ROP/DRAM-parameter cascade is authorized.
 
-`gpgpu_dram_partition_queues = 64:64:64:64`
+## 4. Simulator STOP boundary
 
-and was intentionally held at 64 during the accepted A-F memory-side queue-chain study.
+The downstream-localization program is complete.
 
-Therefore one final bounded experiment is scientifically justified.
+Do not launch new:
 
-## 4. Final authorized question
+- queue sweeps;
+- NoC/interconnect sweeps;
+- ROP sweeps;
+- DRAM frequency/timing/bus-width sweeps;
+- L2 capacity/MSHR/logical-Tag sweeps;
+- DTC cap sweeps;
+- FAST12 sensitivity;
+- adaptive-admission mechanisms.
 
-> Does enlarging the ICNT->L2 ingress queue recover BICG performance by itself, or provide additional benefit when combined with the already-supported DRAM2x service headroom?
+Any future simulator work requires a new explicit scientific question, not continuation of SG3 localization.
 
-Only four BICG rows are authorized:
+## 5. Next project phase
 
-- G/IO: ICNT->L2 64->256
-- G/OO: ICNT->L2 64->256
-- H/IO: ICNT->L2 64->256 + DRAM 850->1700 MHz
-- H/OO: ICNT->L2 64->256 + DRAM 850->1700 MHz
+Priority now moves to:
 
-No other queue, NoC, ROP, DRAM timing, capacity, or cap sweep is authorized.
+1. paper-facing synthesis of accepted evidence and figures;
+2. final architecture description and claim-boundary cleanup;
+3. RTL/DC area/timing/SRAM evidence;
+4. manuscript v0.3 and page-budget compression.
 
-## 5. STOP boundary
-
-After these four rows:
-
-- strict-validate;
-- compare G to default;
-- compare H to accepted E/DRAM2x and default;
-- update the SG3 review pack / Codex report;
-- STOP.
-
-If G/H are neutral, freeze downstream localization completely.
-
-If G/H are materially beneficial, report the bounded result and STOP for scientific review before any cross-workload extension.
+The next stage should not use simulator time unless a paper/RTL review reveals a genuine missing scientific control.
