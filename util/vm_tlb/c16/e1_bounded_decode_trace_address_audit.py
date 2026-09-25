@@ -24,7 +24,7 @@ def main():
  with a.kernel_tsv.open(newline="") as f:rows=list(csv.DictReader(f,delimiter="\t"))
  results=[]
  for layer in layers:
-  candidates=[r for r in rows if int(r["decode_iteration"])==a.decode and int(r["semantic_layer"])==layer and r["semantic_identity"]=="up_proj" and r["exact_function"]=="awq_gemm_kernel"]
+  candidates=[r for r in rows if r["semantic_identity"]=="up_proj" and r["semantic_layer"] and int(r["decode_iteration"])==a.decode and int(r["semantic_layer"])==layer and r["exact_function"]=="awq_gemm_kernel"]
   if len(candidates)!=1:raise RuntimeError(f"layer {layer} GEMM candidates {len(candidates)}")
   row=candidates[0];artifact=a.run/"raw"/row["trace_artifact"];target=targets[layer];lo=target["exact_tensor_span_begin"];hi=target["exact_tensor_span_end_exclusive"]
   hits=[];memory_addresses=0;records=0

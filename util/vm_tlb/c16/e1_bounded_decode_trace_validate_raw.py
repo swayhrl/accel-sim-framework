@@ -50,7 +50,7 @@ def main():
  for c,k in zip(census,expected):
   row={x:c[x] for x in FIELDS};row.update(terminal[k]);row.update({"trace_artifact":artifacts[k]["path"].name,
    "size_bytes":artifacts[k]["path"].stat().st_size,"context":artifacts[k]["context"],"xz_integrity":"PASS"});rows.append(row)
- fields=list(FIELDS)+["trace_artifact","size_bytes","context","device_reported","receiver_accepted","raw_records","drop_count","overflow_count","xz_integrity"]
+ fields=list(FIELDS)+["trace_artifact","size_bytes","context","device_reported","receiver_accepted","raw_records","drop_count","overflow_count","reported_path","xz_integrity"]
  a.index.parent.mkdir(parents=True,exist_ok=True)
  with a.index.open("w",newline="") as f:w=csv.DictWriter(f,fields,delimiter="\t");w.writeheader();w.writerows(rows)
  result={"status":"PASS","start":a.start,"end":a.end,"kernel_count":len(rows),"sequence_contiguous":True,
