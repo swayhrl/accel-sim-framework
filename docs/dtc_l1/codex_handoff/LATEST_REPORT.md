@@ -1,5 +1,26 @@
 # Latest Codex Report
 
+## SG3 memory queue-chain and DRAM-headroom closure (2026-09-25 UTC)
+
+`MEMORY_QUEUE_CHAIN_DRAM_HEADROOM_CLOSED` is ready for review in
+`review_packs/MEMORY_QUEUE_CHAIN_DRAM_HEADROOM_V1/`.  R0 recorded source and
+telemetry provenance; all twelve pre-registered BICG R1 rows, the two gated
+BICG R4 ceiling rows, and the fixed-priority F/E GESUMMV pairs natural-exited
+and strict-PASSed in fresh immutable directories.  Queue-only A--D controls
+are neutral or slower, while the detailed-DRAM 2x time-domain service probes
+E/F are strongly beneficial on BICG.  GESUMMV confirms the bounded direction:
+F is 103,536,854 IO / 77,454,520 OO cycles and E is 107,119,606 IO /
+79,382,011 OO cycles, versus accepted default 210,667,785 IO / 143,059,605
+OO cycles.  R4's single F+20MiB pair remains a ceiling check only, not a
+capacity sweep.
+
+The conclusion is restricted to the frozen Core/runtime/trace identity,
+default DTC cap=8192, source-defined queue-chain settings, and idealized
+simulator DRAM service counterfactual.  It does not identify a unique physical
+GPU bottleneck, claim a physical-clock correspondence, or authorize any
+further sweep.  No frozen evidence, DTC semantics, Core, trace, or runtime was
+changed.
+
 ## SG3 downstream buffering × memory-service closure (2026-09-24 UTC)
 
 `QUEUE_AND_SELECTED_MEMORY_SERVICE_INSUFFICIENT` is closed and ready for review in `review_packs/DOWNSTREAM_HEADROOM_V1/`.  The accepted Phase-A BICG downstream telemetry was first reconciled, then the existing immutable GESUMMV/BICG queue=128 family completed strict validation.  Queue fullness was eliminated but end-to-end effect was negligible: GESUMMV IO is +0.04% and OO +0.69% relative to exact default-cap=8192 reuses; BICG IO/OO are +0.83%/+0.75%.
