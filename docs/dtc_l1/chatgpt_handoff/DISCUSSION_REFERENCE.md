@@ -1,251 +1,102 @@
 # DTC-L1 / ISCAS 2027 Discussion Reference
 
-Last update: 2026-09-24
+Last update: 2026-09-25
 
-## 1. Research question
+## 1. Accepted result before the final check
 
-DTC removes L1-side miss-concurrency constraints and exposes substantially more memory-level parallelism. BICG and GESUMMV improve dramatically when the GPU-wide DTC lower-outstanding cap is reduced.
+The memory-side queue-chain study is closed at SG3 commit:
 
-The L2-internal miss-queue=128 intervention now shows that simply providing more buffering at that one stage is not sufficient.
+`c055d817b009cbe6a59c7f8ac7af1081f86ec6e8`
 
-The current question is:
+BICG A-D shows that enlarging the tested queues after L2 does not materially improve performance.
 
-> Does backpressure migrate through later finite queues on the L2->memory path, and must buffering headroom and detailed-DRAM service-rate headroom be improved together before DTC's exposed MLP becomes useful?
+BICG/GESUMMV E/F shows that the idealized detailed-DRAM 2x time-domain service probe produces large speedups.
 
-## 2. Accepted queue result
+Thus the current paper-facing result is:
 
-The L2-internal miss queue was increased 32->128 entries/bank.
+> explicit queue capacity tested so far is not the main limiter, while downstream DRAM service timing/rate is a strong performance dimension.
 
-Across BICG/GESUMMV and IO/OO:
+## 2. Why ICNT->L2 is different from A-D
 
-- source-defined `MISS_QUEUE_FULL` is eliminated;
-- end-to-end cycles are unchanged or slightly worse.
+The four-field partition queue config is:
 
-This supports:
+`ICNT->L2 : L2->DRAM : DRAM->L2 : L2->ICNT`
 
-> **INTERVENTION_SUPPORTED:** L2-internal miss-queue capacity alone is insufficient.
+Default:
 
-It does not support:
+`64:64:64:64`
 
-> “queues do not matter.”
+A-D intentionally modified only the memory-side second/third entries plus L2 miss queue, scheduler queue, and DRAM return queue. The first ICNT->L2 ingress FIFO remained 64.
 
-A serial queueing system can simply move the blocking point downstream when one buffer is enlarged.
+The source condition behind `gpu_stall_icnt2mem` is:
 
-## 3. Why the previous busW probe is diagnostic-only for this question
+- on an L2-domain cycle,
+- if `m_memory_sub_partition[i]->full(SECTOR_CHUNCK_SIZE)` is true,
+- and the interconnect has a packet waiting for that subpartition,
+- increment `gpu_stall_icnt2mem`.
 
-The accepted detailed-DRAM `busW 16->32 B` probe was source-clean but not discriminating for the dominant 32-B sector-read path.
+The FIFO helper returns true when the finite queue cannot accommodate the requested number of entries. The check uses `SECTOR_CHUNCK_SIZE` because one incoming request can expand into up to four 32-B sectors.
 
-Relevant source semantics:
+Therefore this counter is evidence of **ingress admission pressure before L2**, not generic DRAM-full pressure despite the legacy terminal label `gpu_stall_dramfull`.
 
-- L2 sector atom = 32 B.
-- A sector request reaches DRAM with `nbytes = 32 B`.
-- default `dram_atom_size = BL(2) * busW(16 B) * chips(1) = 32 B`.
-- each DRAM data step increments `dqbytes` by `dram_atom_size`.
-- a 32-B request therefore already completes in one data step at the default.
-- busW=32 raises the atom to 64 B, but the same 32-B request still completes in one step.
+## 3. Existing source-directed evidence
 
-Thus the observed null result cannot be used as evidence that a true 2x detailed-DRAM service-rate headroom would be ineffective.
+Accepted BICG telemetry:
 
-The busW attempts remain valid diagnostic runs and must not be deleted.
+- IO default: `gpu_stall_icnt2mem` ≈ 545M
+- IO cap512: ≈ 27M
+- OO default: ≈ 269M
+- OO cap512: ≈ 11M
 
-## 4. Why later memory-side queues are plausible
+This is a much stronger cap-sensitive signal than the already-tested downstream queues.
 
-The source contains multiple finite stages after the L2 miss queue:
+It does not prove causality, but it justifies one direct intervention.
 
-1. L2->DRAM queue: 64 entries/subpartition.
-2. FR-FCFS scheduler pending queue: 64 entries/channel.
-3. DRAM return queue: 192 entries/channel.
-4. DRAM->L2 queue: 64 entries/subpartition.
+## 4. Final 2x2-style comparison
 
-The L2 cache explicitly records `L2_dram_queue_full` when it cannot push a miss to the L2->DRAM FIFO.
+For each BICG mode use existing rows plus two new rows:
 
-The FR-FCFS `dram_t::full()` path blocks further admission when pending requests reach the scheduler queue limit.
+| Ingress queue | DRAM service | Evidence |
+|---|---|---|
+| 64 | 850 | existing default |
+| 256 | 850 | new G |
+| 64 | 1700 | accepted E |
+| 256 | 1700 | new H |
 
-The memory-partition arbitration credit budget is coupled to scheduler-queue and return-queue capacities, so changing those resources also changes how many requests may remain outstanding in that downstream partition path. This must be stated explicitly; scheduler/return tests are admission-buffering upper bounds, not perfectly isolated microarchitectural queues.
+This isolates:
 
-The DRAM->L2 queue and DRAM return queue form a serial return path. Increasing only one can simply move the backpressure to the other, so the bounded return-path test intentionally enlarges both together.
+1. ingress-queue effect at default DRAM service: G vs default;
+2. ingress-queue incremental effect under DRAM2x: H vs E;
+3. combined upper-bound effect vs default: H vs default.
 
-## 5. Existing telemetry to preserve and compare
+## 5. Interpretation boundaries
 
-Before launching, extract from accepted BICG default/cap rows where available:
+If G improves materially:
 
-- `L2_dram_queue_full`;
-- DRAM scheduler pending-request max and average (`mrqq`);
-- `gpu_stall_icnt2mem`;
-- `gpu_stall_mem2icnt`;
-- mean memory-fetch latency;
-- mean ICNT->memory latency;
-- mean MRQ latency;
-- DRAM bandwidth/utilization and bank/command statistics.
+> ICNT->L2 ingress admission is an independently important pressure point.
 
-Do not invent counters for stages that are not directly observed.
+If G is weak but H improves materially beyond E:
 
-The purpose is not to gate launch; it is to make the later intervention interpretation source-grounded.
+> ingress buffering matters only once deeper DRAM service is relieved; this is an interaction.
 
-## 6. Six predeclared BICG intervention families
+If both G and H are weak:
 
-Keep DTC cap=8192, SM count, channel count, mapping, trace, L2 MSHR, and all unrelated parameters fixed.
+> the large ingress-stall counter is primarily a symptom of upstream/downstream timing pressure rather than a dominant queue-capacity limit.
 
-### A. L2->DRAM queue headroom
+No arbitrary new threshold is needed for the main interpretation, but report exact deltas. For paper significance, >=5% remains a useful descriptive marker, not a hidden launch gate.
 
-Change only:
+## 6. No further automatic cascade
 
-- `gpgpu_dram_partition_queues: 64:64:64:64 -> 64:256:64:64`
+After G/H, do not test:
 
-Question:
-
-> Does the first queue after L2 constitute the next backpressure point?
-
-### B. DRAM scheduler/admission headroom
-
-Change only:
-
-- FR-FCFS scheduler queue 64 -> 256.
-
-Important:
-
-- this also increases the source-defined shared credit budget;
-- report it as scheduler/admission headroom, not a pure scheduler-storage-only effect.
-
-### C. Return-path buffering headroom
-
-Change together:
-
-- DRAM->L2 queue 64 -> 256;
-- DRAM return queue 192 -> 768.
-
-Question:
-
-> Is response-side buffering/backpressure constraining progress?
-
-This is intentionally a bundled serial-return-path upper bound.
-
-### D. Full memory-side queue-chain headroom
-
-Increase:
-
-- L2-internal miss queue 32 -> 128;
-- L2->DRAM queue 64 -> 256;
-- DRAM scheduler queue 64 -> 256;
-- DRAM return queue 192 -> 768;
-- DRAM->L2 queue 64 -> 256.
-
-Keep ICNT->L2 and L2->ICNT at 64; they are interconnect-facing queues and are outside the current memory-side queue-chain factor.
-
-Question:
-
-> If the major finite memory-side buffering limits are jointly relaxed, does the DTC headroom emerge?
-
-### E. Detailed-DRAM service-rate headroom
-
-Change only the DRAM clock:
-
-- 850 MHz -> 1700 MHz.
-
-Keep:
-
-- core / ICNT / L2 clocks at 1410 MHz;
-- DRAM timing cycle counts unchanged;
-- bus width at 16 B;
-- channel count at 20;
-- all queues at default;
-- mapping and cache resources unchanged.
-
-This makes `dram_cycle()` execute approximately twice as often per unit core time and is therefore an idealized **2x detailed-DRAM service-rate upper bound**.
-
-It is not a physical V100 frequency claim.
-
-### F. Full queue-chain + detailed-DRAM service headroom
-
-Combine D and E.
-
-Question:
-
-> Do buffering and sustained memory service need to be relieved together?
-
-## 7. Why these six can be batch-launched
-
-These are not result-selected points. They form one predeclared diagnostic set that decomposes:
-
-- first downstream request buffering;
-- DRAM scheduler/admission buffering;
-- response-side buffering;
-- all memory-side buffering together;
-- service rate alone;
-- all buffering + service together.
-
-Because the server is currently underutilized, all BICG IO/OO rows may be placed into the rolling worker pool once their overlays and identities are statically validated.
-
-Do not wait for one result before starting another family.
-
-## 8. GESUMMV independent validation
-
-GESUMMV is used only to validate the most informative result(s), not to duplicate the full BICG diagnostic matrix.
-
-After all BICG rows close, a configuration is eligible for GESUMMV only if:
-
-- it improves BICG cycles by >=5% in at least one mode versus the exact default;
-- its telemetry moves coherently;
-- it uses no parameter outside the predeclared six families.
-
-Validate at most two configurations, with this fixed priority if multiple qualify:
-
-1. full queue-chain + DRAM2x;
-2. full queue-chain;
-3. DRAM2x alone;
-4. L2->DRAM queue;
-5. scheduler/admission;
-6. return-path buffering.
-
-For each selected configuration run GESUMMV IO and OO.
-
-## 9. Conditional all-headroom ceiling with L2 capacity
-
-The existing BICG L2-capacity=2x result is already accepted and shows partial benefit.
-
-Only if **full queue-chain + DRAM2x** improves BICG by >=5% in either IO or OO, authorize two additional BICG ceiling rows:
-
-- L2 capacity 20 MiB
-- full queue-chain headroom
-- DRAM 1700 MHz
-- IO and OO
-
-This is an idealized all-headroom ceiling, not a realistic product configuration and not a new factorial sweep.
-
-Do not add new L2-capacity levels.
-
-## 10. Paper interpretation
-
-Possible strong result:
-
-> DTC exposes useful MLP that a fixed downstream hierarchy cannot absorb; coordinated buffering and service-rate headroom converts that concurrency into performance.
-
-Possible partial result:
-
-> A specific later queue/admission stage is important, while other buffers are symptoms.
-
-Possible null result:
-
-> Even broad memory-side queue-chain relief plus a genuine detailed-DRAM service-rate upper bound is insufficient; the remaining effect lies elsewhere in the downstream path or request-timing interaction.
-
-Any of these outcomes is valid.
-
-## 11. Forbidden expansion
-
-Do not run:
-
-- queue sizes beyond the predeclared 256/768 upper bounds;
-- L2 miss queue beyond 128;
-- new L2 MSHR points;
-- cap=1024/4096;
+- ICNT->L2 512;
+- L2->ICNT changes;
+- interconnect buffer sizes;
+- NoC bandwidth/routing;
+- ROP;
 - additional DRAM frequencies;
-- busW as the formal service-rate dimension;
-- memory-channel-count changes;
-- L2-bank-count changes;
-- address-mapping changes;
-- NoC or ROP sweeps;
-- DRAM timing-string sweeps;
-- perfect/infinite memory;
-- adaptive admission mechanisms;
-- FAST12 sensitivity;
-- new logical-Tag experiments.
+- DRAM timing sweeps;
+- new L2 capacities;
+- new DTC cap points.
+
+Any such step would be a new scientific stage and requires review.
