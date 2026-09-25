@@ -1,5 +1,21 @@
 # Latest Codex Report
 
+## SG3 final ICNT->L2 ingress-headroom closure (2026-09-25 UTC)
+
+`ICNT_L2_INGRESS_PRESSURE_NOT_CAPACITY_LIMITED` closes the registered R5
+four-row BICG check.  All fresh immutable G/H attempts natural-exited and
+strict-PASSed.  Increasing only ICNT->L2 ingress from 64 to 256 is +0.16% IO
+and -1.71% OO versus default; on top of accepted E/DRAM2x, the incremental
+effect is -0.87% IO and +0.38% OO.  The large source-defined ingress-stall
+counter therefore does not establish FIFO capacity as the dominant limiter
+under the frozen identity.  The review pack is
+`review_packs/ICNT_L2_INGRESS_HEADROOM_V1/`.
+
+The conclusion is BICG-only and does not generalize to a physical GPU or
+attribute a unique bottleneck.  No GESUMMV, NoC, L2->ICNT, ROP, new L2,
+DTC-cap, or extra DRAM experiment was launched; frozen A--F/R3/R4 evidence
+and all Core/runtime/trace identities remain unchanged.
+
 ## SG3 memory queue-chain and DRAM-headroom closure (2026-09-25 UTC)
 
 `MEMORY_QUEUE_CHAIN_DRAM_HEADROOM_CLOSED` is ready for review in
