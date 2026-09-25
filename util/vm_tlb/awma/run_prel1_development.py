@@ -37,6 +37,8 @@ PHASE_TARGETS = {
     'candidate': tuple(TARGETS),
     'control': ('T0', 'T1', 'A2'),
     'plus-one': ('T0', 'T1', 'T2', 'A2'),
+    'level2-off': ('T2', 'A1'),
+    'level2-candidate': ('T2', 'A1'),
 }
 
 
@@ -90,7 +92,8 @@ def run_point(target: str, phase: str, timeout: int,
     if sha(BINARY) != BINARY_SHA:
         raise RuntimeError('frozen candidate binary SHA mismatch')
     label = {'candidate': 'COALESCER', 'control': 'GROUPING_ONLY',
-             'plus-one': 'COALESCER_PLUS1'}[phase]
+             'plus-one': 'COALESCER_PLUS1', 'level2-off': 'OFF_LEVEL2',
+             'level2-candidate': 'COALESCER_LEVEL2'}[phase]
     run_dir = DURABLE / f'{target}_{label}_10_80'
     rc_path = run_dir / 'rc.txt'
     if not overwrite and rc_path.is_file() and rc_path.read_text().strip() == '0':
@@ -111,13 +114,15 @@ def run_point(target: str, phase: str, timeout: int,
                 'GPGPUSIM_PIPELINED_ACCESSQ_TRANSLATION_LAUNCH'):
             env.pop(key, None)
     env['GPGPUSIM_PIPELINED_ACCESSQ_TRANSLATION_LAUNCH'] = '1'
-    env['GPGPUSIM_AWMA_TRANSLATION_CANDIDATE'] = 'prel1_exact_coalescer'
-    env['GPGPUSIM_AWMA_PREL1_COMPARE_LATENCY'] = (
-        '1' if phase == 'plus-one' else '0')
-    if phase == 'control':
-        env['GPGPUSIM_AWMA_PREL1_CONTROL'] = 'grouping_only'
+    if phase != 'level2-off':
+        env['GPGPUSIM_AWMA_TRANSLATION_CANDIDATE'] = 'prel1_exact_coalescer'
+        env['GPGPUSIM_AWMA_PREL1_COMPARE_LATENCY'] = (
+            '1' if phase == 'plus-one' else '0')
+        if phase == 'control':
+            env['GPGPUSIM_AWMA_PREL1_CONTROL'] = 'grouping_only'
     env['GPGPUSIM_AWMA_PASSIVE_MEMO_OBSERVER'] = '0'
-    env['GPGPUSIM_AWMA_BOTTLENECK_OBSERVATORY'] = '1'
+    env['GPGPUSIM_AWMA_BOTTLENECK_OBSERVATORY'] = (
+        '2' if phase.startswith('level2-') else '1')
     env['GPGPUSIM_AWMA_MECHANISM_DIAGNOSTICS'] = '1'
     env['GPGPUSIM_AWMA_OWNER_WAIT_DIAGNOSTICS'] = '1'
     env['GPGPUSIM_VM_COVERAGE_KERNEL_UID'] = '1'
@@ -128,7 +133,9 @@ def run_point(target: str, phase: str, timeout: int,
     receipt = {
         'stage': STAGE, 'phase': phase, 'source_freeze': SOURCE_FREEZE,
         'target': target, 'family': family, 'arm': label,
-        'capacity_per_sid': 2, 'waiters_per_entry': 32,
+        'candidate_enabled': phase != 'level2-off',
+        'capacity_per_sid': 0 if phase == 'level2-off' else 2,
+        'waiters_per_entry': 0 if phase == 'level2-off' else 32,
         'compare_latency': 1 if phase == 'plus-one' else 0,
         'argv': cmd,
         'environment': {key: env.get(key) for key in sorted(env)
