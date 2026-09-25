@@ -1,0 +1,502 @@
+--- /dev/null
++++ b/src/gpgpu-sim/passive_translation_memo.h
+@@ -0,0 +1,74 @@
++#ifndef PASSIVE_TRANSLATION_MEMO_H
++#define PASSIVE_TRANSLATION_MEMO_H
++
++#include <stdint.h>
++#include <stdio.h>
++
++#include <cstddef>
++
++#include "vm_translation.h"
++
++namespace awma_passive_memo {
++
++enum { CAPACITY_COUNT = 3, DISTANCE_BUCKETS = 8, PAGE_BUCKETS = 6 };
++
++struct capacity_counters {
++  uint64_t lookups;
++  uint64_t hits;
++  uint64_t misses;
++  uint64_t potential_lookup_suppression;
++  uint64_t replacements;
++  uint64_t stale_generation_mismatches;
++  uint64_t access_compatibility_mismatches;
++  uint64_t ppn_consistency_mismatches;
++  uint64_t reuse_distance[DISTANCE_BUCKETS];
++
++  capacity_counters();
++};
++
++struct observer_counters {
++  uint64_t natural_translation_completions;
++  uint64_t decision_lookups;
++  uint64_t duplicate_decision_observations;
++  uint64_t duplicate_completion_observations;
++  uint64_t instructions_retired;
++  uint64_t unique_pages_total;
++  uint64_t unique_pages_max;
++  uint64_t unique_pages_histogram[PAGE_BUCKETS];
++  capacity_counters capacity[CAPACITY_COUNT];
++
++  observer_counters();
++};
++
++class observer {
++ public:
++  static observer &instance();
++
++  bool enabled() const;
++  void note_decision(uint64_t instruction_key, unsigned access_uid,
++                     unsigned asid, uint64_t sim_va, uint64_t page_size,
++                     uint64_t generation,
++                     vm_translation::translation_access access);
++  void note_natural_completion(
++      uint64_t instruction_key, unsigned access_uid, unsigned asid,
++      uint64_t sim_va, uint64_t page_size, uint64_t generation,
++      vm_translation::translation_access access, uint64_t resolved_ppn);
++  void retire_instruction(uint64_t instruction_key);
++  void print(FILE *fout) const;
++
++  const observer_counters &counters() const { return m_counters; }
++  size_t live_instruction_states() const;
++
++ private:
++  observer();
++  observer(const observer &);
++  observer &operator=(const observer &);
++
++  struct implementation;
++  implementation *m_impl;
++  observer_counters m_counters;
++};
++
++}  // namespace awma_passive_memo
++
++#endif
+--- /dev/null
++++ b/src/gpgpu-sim/passive_translation_memo.cc
+@@ -0,0 +1,344 @@
++#include "passive_translation_memo.h"
++
++#include <assert.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include <algorithm>
++#include <map>
++#include <set>
++#include <vector>
++
++namespace awma_passive_memo {
++namespace {
++
++const unsigned kCapacities[CAPACITY_COUNT] = {1, 2, 4};
++
++struct identity {
++  unsigned asid;
++  uint64_t vpn;
++  uint64_t page_size;
++  uint64_t generation;
++  vm_translation::translation_access access;
++
++  bool operator==(const identity &other) const {
++    return asid == other.asid && vpn == other.vpn &&
++           page_size == other.page_size && generation == other.generation &&
++           access == other.access;
++  }
++};
++
++struct page_identity {
++  unsigned asid;
++  uint64_t vpn;
++  uint64_t page_size;
++  uint64_t generation;
++
++  bool operator<(const page_identity &other) const {
++    if (asid != other.asid) return asid < other.asid;
++    if (vpn != other.vpn) return vpn < other.vpn;
++    if (page_size != other.page_size) return page_size < other.page_size;
++    return generation < other.generation;
++  }
++};
++
++struct memo_entry {
++  identity key;
++  uint64_t ppn;
++  uint64_t completion_sequence;
++  uint64_t last_touch;
++};
++
++struct pending_probe {
++  identity decision_identity;
++  bool provisional_hit;
++  uint64_t expected_ppn;
++  uint64_t reuse_distance;
++
++  pending_probe(const identity &key)
++      : decision_identity(key), provisional_hit(false), expected_ppn(0),
++        reuse_distance(0) {}
++};
++
++struct instruction_state {
++  std::set<unsigned> decisions;
++  std::set<unsigned> completions;
++  std::set<page_identity> unique_pages;
++  std::vector<memo_entry> memo[CAPACITY_COUNT];
++  std::map<unsigned, pending_probe> pending[CAPACITY_COUNT];
++  uint64_t completion_sequence;
++  uint64_t touch_sequence;
++
++  instruction_state() : completion_sequence(0), touch_sequence(0) {}
++};
++
++unsigned distance_bucket(uint64_t distance) {
++  if (distance <= 4) return static_cast<unsigned>(distance);
++  if (distance <= 8) return 5;
++  if (distance <= 16) return 6;
++  return 7;
++}
++
++unsigned page_bucket(uint64_t pages) {
++  if (pages <= 1) return 0;
++  if (pages == 2) return 1;
++  if (pages == 3) return 2;
++  if (pages == 4) return 3;
++  if (pages <= 8) return 4;
++  return 5;
++}
++
++identity make_identity(unsigned asid, uint64_t sim_va, uint64_t page_size,
++                       uint64_t generation,
++                       vm_translation::translation_access access) {
++  assert(vm_core::valid_page_size(page_size));
++  identity result = {asid, vm_core::vpn(sim_va, page_size), page_size,
++                     generation, access};
++  return result;
++}
++
++page_identity make_page_identity(const identity &key) {
++  page_identity result = {key.asid, key.vpn, key.page_size, key.generation};
++  return result;
++}
++
++}  // namespace
++
++struct observer::implementation {
++  std::map<uint64_t, instruction_state> instructions;
++};
++
++capacity_counters::capacity_counters()
++    : lookups(0), hits(0), misses(0), potential_lookup_suppression(0),
++      replacements(0), stale_generation_mismatches(0),
++      access_compatibility_mismatches(0), ppn_consistency_mismatches(0),
++      reuse_distance() {}
++
++observer_counters::observer_counters()
++    : natural_translation_completions(0), decision_lookups(0),
++      duplicate_decision_observations(0),
++      duplicate_completion_observations(0), instructions_retired(0),
++      unique_pages_total(0), unique_pages_max(0), unique_pages_histogram(),
++      capacity() {}
++
++observer::observer() : m_impl(new implementation()), m_counters() {}
++
++observer &observer::instance() {
++  static observer singleton;
++  return singleton;
++}
++
++bool observer::enabled() const {
++  const char *text = getenv("GPGPUSIM_AWMA_PASSIVE_MEMO_OBSERVER");
++  if (text == NULL || text[0] == '\0' || strcmp(text, "0") == 0) return false;
++  assert(strcmp(text, "1") == 0 &&
++         "GPGPUSIM_AWMA_PASSIVE_MEMO_OBSERVER must be 0 or 1");
++  return true;
++}
++
++void observer::note_decision(
++    uint64_t instruction_key, unsigned access_uid, unsigned asid,
++    uint64_t sim_va, uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access) {
++  if (!enabled()) return;
++  instruction_state &state = m_impl->instructions[instruction_key];
++  if (!state.decisions.insert(access_uid).second) {
++    ++m_counters.duplicate_decision_observations;
++    return;
++  }
++  const identity key =
++      make_identity(asid, sim_va, page_size, generation, access);
++  ++m_counters.decision_lookups;
++  for (unsigned c = 0; c < CAPACITY_COUNT; ++c) {
++    capacity_counters &stats = m_counters.capacity[c];
++    ++stats.lookups;
++    pending_probe probe(key);
++    std::vector<memo_entry> &entries = state.memo[c];
++    std::vector<memo_entry>::iterator exact = entries.end();
++    bool stale = false;
++    bool incompatible = false;
++    for (std::vector<memo_entry>::iterator it = entries.begin();
++         it != entries.end(); ++it) {
++      if (it->key == key) {
++        exact = it;
++        break;
++      }
++      if (it->key.asid == key.asid && it->key.vpn == key.vpn &&
++          it->key.page_size == key.page_size) {
++        if (it->key.generation != key.generation)
++          stale = true;
++        else if (it->key.access != key.access)
++          incompatible = true;
++      }
++    }
++    if (exact != entries.end()) {
++      probe.provisional_hit = true;
++      probe.expected_ppn = exact->ppn;
++      probe.reuse_distance =
++          state.completion_sequence - exact->completion_sequence;
++      exact->last_touch = ++state.touch_sequence;
++    } else {
++      ++stats.misses;
++      if (stale) ++stats.stale_generation_mismatches;
++      if (incompatible) ++stats.access_compatibility_mismatches;
++    }
++    state.pending[c].insert(std::make_pair(access_uid, probe));
++  }
++}
++
++void observer::note_natural_completion(
++    uint64_t instruction_key, unsigned access_uid, unsigned asid,
++    uint64_t sim_va, uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t resolved_ppn) {
++  if (!enabled()) return;
++  instruction_state &state = m_impl->instructions[instruction_key];
++  if (!state.completions.insert(access_uid).second) {
++    ++m_counters.duplicate_completion_observations;
++    return;
++  }
++  const identity key =
++      make_identity(asid, sim_va, page_size, generation, access);
++  ++m_counters.natural_translation_completions;
++  ++state.completion_sequence;
++  state.unique_pages.insert(make_page_identity(key));
++
++  for (unsigned c = 0; c < CAPACITY_COUNT; ++c) {
++    capacity_counters &stats = m_counters.capacity[c];
++    std::map<unsigned, pending_probe>::iterator pending =
++        state.pending[c].find(access_uid);
++    assert(pending != state.pending[c].end());
++    if (pending->second.provisional_hit) {
++      if (pending->second.decision_identity == key &&
++          pending->second.expected_ppn == resolved_ppn) {
++        ++stats.hits;
++        ++stats.potential_lookup_suppression;
++        ++stats.reuse_distance[
++            distance_bucket(pending->second.reuse_distance)];
++      } else {
++        ++stats.misses;
++        if (pending->second.decision_identity.generation != key.generation)
++          ++stats.stale_generation_mismatches;
++        if (pending->second.decision_identity.access != key.access)
++          ++stats.access_compatibility_mismatches;
++        if (pending->second.expected_ppn != resolved_ppn)
++          ++stats.ppn_consistency_mismatches;
++      }
++    }
++    state.pending[c].erase(pending);
++
++    std::vector<memo_entry> &entries = state.memo[c];
++    std::vector<memo_entry>::iterator exact = entries.end();
++    for (std::vector<memo_entry>::iterator it = entries.begin();
++         it != entries.end(); ++it)
++      if (it->key == key) {
++        exact = it;
++        break;
++    }
++    if (exact != entries.end()) {
++      exact->ppn = resolved_ppn;
++      exact->completion_sequence = state.completion_sequence;
++      exact->last_touch = ++state.touch_sequence;
++      continue;
++    }
++    if (entries.size() == kCapacities[c]) {
++      std::vector<memo_entry>::iterator victim = std::min_element(
++          entries.begin(), entries.end(),
++          [](const memo_entry &a, const memo_entry &b) {
++            if (a.last_touch != b.last_touch)
++              return a.last_touch < b.last_touch;
++            return a.completion_sequence < b.completion_sequence;
++          });
++      entries.erase(victim);
++      ++stats.replacements;
++    }
++    memo_entry inserted = {key, resolved_ppn, state.completion_sequence,
++                           ++state.touch_sequence};
++    entries.push_back(inserted);
++  }
++}
++
++void observer::retire_instruction(uint64_t instruction_key) {
++  if (!enabled()) return;
++  std::map<uint64_t, instruction_state>::iterator found =
++      m_impl->instructions.find(instruction_key);
++  if (found == m_impl->instructions.end()) return;
++  for (unsigned c = 0; c < CAPACITY_COUNT; ++c)
++    assert(found->second.pending[c].empty());
++  const uint64_t pages = found->second.unique_pages.size();
++  ++m_counters.instructions_retired;
++  m_counters.unique_pages_total += pages;
++  if (pages > m_counters.unique_pages_max)
++    m_counters.unique_pages_max = pages;
++  ++m_counters.unique_pages_histogram[page_bucket(pages)];
++  m_impl->instructions.erase(found);
++}
++
++size_t observer::live_instruction_states() const {
++  return m_impl->instructions.size();
++}
++
++void observer::print(FILE *fout) const {
++  if (!enabled()) return;
++  fprintf(fout, "awma_passive_memo_enabled = 1\n");
++  fprintf(fout, "awma_passive_memo_replacement_policy = DETERMINISTIC_LRU\n");
++  fprintf(fout, "awma_passive_memo_scope = MEMORY_INSTRUCTION_ACCESSQ\n");
++  fprintf(fout, "awma_passive_memo_live_instruction_states = %llu\n",
++          (unsigned long long)live_instruction_states());
++  fprintf(fout, "awma_passive_memo_natural_translation_completions = %llu\n",
++          (unsigned long long)m_counters.natural_translation_completions);
++  fprintf(fout, "awma_passive_memo_decision_lookups = %llu\n",
++          (unsigned long long)m_counters.decision_lookups);
++  fprintf(fout, "awma_passive_memo_duplicate_decision_observations = %llu\n",
++          (unsigned long long)m_counters.duplicate_decision_observations);
++  fprintf(fout, "awma_passive_memo_duplicate_completion_observations = %llu\n",
++          (unsigned long long)m_counters.duplicate_completion_observations);
++  fprintf(fout, "awma_passive_memo_instructions_retired = %llu\n",
++          (unsigned long long)m_counters.instructions_retired);
++  fprintf(fout, "awma_passive_memo_unique_pages_total = %llu\n",
++          (unsigned long long)m_counters.unique_pages_total);
++  fprintf(fout, "awma_passive_memo_unique_pages_max = %llu\n",
++          (unsigned long long)m_counters.unique_pages_max);
++  static const char *page_names[PAGE_BUCKETS] = {"0_1", "2", "3", "4",
++                                                 "5_8", "9_plus"};
++  for (unsigned i = 0; i < PAGE_BUCKETS; ++i)
++    fprintf(fout, "awma_passive_memo_unique_pages_hist_%s = %llu\n",
++            page_names[i],
++            (unsigned long long)m_counters.unique_pages_histogram[i]);
++  static const char *distance_names[DISTANCE_BUCKETS] = {
++      "0", "1", "2", "3", "4", "5_8", "9_16", "17_plus"};
++  for (unsigned c = 0; c < CAPACITY_COUNT; ++c) {
++    const capacity_counters &stats = m_counters.capacity[c];
++    const unsigned capacity = kCapacities[c];
++    fprintf(fout, "awma_passive_memo_c%u_lookups = %llu\n", capacity,
++            (unsigned long long)stats.lookups);
++    fprintf(fout, "awma_passive_memo_c%u_hits = %llu\n", capacity,
++            (unsigned long long)stats.hits);
++    fprintf(fout, "awma_passive_memo_c%u_misses = %llu\n", capacity,
++            (unsigned long long)stats.misses);
++    fprintf(fout,
++            "awma_passive_memo_c%u_potential_lookup_suppression = %llu\n",
++            capacity,
++            (unsigned long long)stats.potential_lookup_suppression);
++    fprintf(fout, "awma_passive_memo_c%u_replacements = %llu\n", capacity,
++            (unsigned long long)stats.replacements);
++    fprintf(fout,
++            "awma_passive_memo_c%u_stale_generation_mismatches = %llu\n",
++            capacity,
++            (unsigned long long)stats.stale_generation_mismatches);
++    fprintf(fout,
++            "awma_passive_memo_c%u_access_compatibility_mismatches = %llu\n",
++            capacity,
++            (unsigned long long)stats.access_compatibility_mismatches);
++    fprintf(fout,
++            "awma_passive_memo_c%u_ppn_consistency_mismatches = %llu\n",
++            capacity,
++            (unsigned long long)stats.ppn_consistency_mismatches);
++    for (unsigned i = 0; i < DISTANCE_BUCKETS; ++i)
++      fprintf(fout,
++              "awma_passive_memo_c%u_reuse_distance_%s = %llu\n", capacity,
++              distance_names[i],
++              (unsigned long long)stats.reuse_distance[i]);
++  }
++}
++
++}  // namespace awma_passive_memo
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -32,6 +32,7 @@
+ 
+ #include "shader.h"
+ #include "gpu-sim.h"
++#include "passive_translation_memo.h"
+ #include "vm_translation.h"
+ #include <map>
+ #include <set>
+@@ -413,6 +414,7 @@
+             (unsigned long long)g_vm_cov.translated_uids.size(),
+             (unsigned long long)g_vm_cov.untranslated_uids.size());
+   g_owner_wait.print(f);
++  awma_passive_memo::observer::instance().print(f);
+ }
+ }
+ #include "vm_core.h"
+@@ -2979,6 +2981,12 @@
+       unsigned(strtoul(pipeline_text, NULL, 10)) != 0;
+   const vm_translation::awma_translation_candidate_mode candidate_mode =
+       vm_translation::awma_candidate_mode();
++  const bool passive_memo_observer =
++      awma_passive_memo::observer::instance().enabled();
++  assert(!passive_memo_observer ||
++         candidate_mode == vm_translation::AWMA_TRANSLATION_CANDIDATE_NONE);
++  assert(!passive_memo_observer || m_config->gpgpu_vm_mode == 2);
++  assert(!passive_memo_observer || !ready_application_v2);
+   const bool nonblocking_opportunistic_share =
+       candidate_mode == vm_translation::
+           AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE;
+@@ -3355,6 +3363,21 @@
+     }
+   }
+   mem_access_t &access = inst.accessq_back();
++  const uint64_t passive_instruction_key =
++      (static_cast<uint64_t>(m_sid) << 32) | inst.get_uid();
++  const vm_translation::translation_access passive_access =
++      inst.isatomic() ? vm_translation::TRANSLATION_ACCESS_ATOMIC :
++      (inst.is_store() ? vm_translation::TRANSLATION_ACCESS_WRITE :
++                         vm_translation::TRANSLATION_ACCESS_READ);
++  if (passive_memo_observer && !access.vm_translation_applied()) {
++    assert(!vm_core::transaction_crosses_page(
++        access.get_sim_va(), access.get_size(),
++        m_config->gpgpu_vm_page_size));
++    awma_passive_memo::observer::instance().note_decision(
++        passive_instruction_key, access.get_uid(), 0, access.get_sim_va(),
++        m_config->gpgpu_vm_page_size,
++        m_gpu->vm_translation()->translation_generation(0), passive_access);
++  }
+   if (nonblocking_opportunistic_share &&
+       !access.vm_translation_applied()) {
+     unsigned equivalent = 0;
+@@ -3571,6 +3594,14 @@
+     else
+       access.set_telemetry_class(M4C_DATA_UNKNOWN);
+     access.set_translation_telemetry_outcome(translation_outcome);
++    if (passive_memo_observer) {
++      assert(access.vm_translation_applied());
++      awma_passive_memo::observer::instance().note_natural_completion(
++          passive_instruction_key, access.get_uid(), 0, access.get_sim_va(),
++          m_config->gpgpu_vm_page_size,
++          m_gpu->vm_translation()->translation_generation(0), passive_access,
++          access.get_sim_pa() / m_config->gpgpu_vm_page_size);
++    }
+   }
+ 
+   // Count front-end work once for each dynamically issued memory instruction
+@@ -3654,6 +3685,9 @@
+     else
+       access_type = (iswrite) ? G_MEM_ST : G_MEM_LD;
+   }
++  if (passive_memo_observer && inst.accessq_empty())
++    awma_passive_memo::observer::instance().retire_instruction(
++        passive_instruction_key);
+   return inst.accessq_empty();
+ }
+ 
