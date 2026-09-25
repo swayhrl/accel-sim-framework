@@ -62,6 +62,16 @@ TARGETS = {
     },
 }
 
+# The node164 sshfs mount is not sufficiently stable for multi-minute formal
+# runs. Each immutable payload is copied byte-for-byte into this Goal's
+# isolated runtime and revalidated against the accepted SHA before use. Keep
+# the original authority path in every command receipt.
+for _spec in TARGETS.values():
+    _origin = _spec['payload']
+    assert isinstance(_origin, Path)
+    _spec['origin_payload'] = _origin
+    _spec['payload'] = RUNTIME / 'inputs' / _origin.name
+
 
 def sha(path: Path) -> str:
     digest = hashlib.sha256()
@@ -147,6 +157,7 @@ def run_target(target: str, timeout: int, overwrite: bool) -> dict[str, object]:
         'config_sha256': sha(CONFIG),
         'trace_config_sha256': sha(TRACE_CONFIG),
         'payload': str(payload), 'payload_sha256': sha(payload),
+        'origin_payload': str(spec['origin_payload']),
     }
     (run_dir / 'command.json').write_text(
         json.dumps(receipt, indent=2, sort_keys=True) + '\n')
