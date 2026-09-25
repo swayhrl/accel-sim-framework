@@ -1,0 +1,16 @@
+test	expected	observed	status
+same_page_same_identity	exact forward hit	hit with stored PPN and page offset	PASS
+different_vpn	baseline miss	vpn miss	PASS
+generation_mismatch	baseline miss	stale-generation miss	PASS
+access_type_mismatch	baseline miss	access-compatibility miss	PASS
+entry_overwrite	new natural completion replaces sole entry	one overwrite; old VPN misses	PASS
+instruction_lifetime_end	entry invalid	no live entry after retire	PASS
+no_cross_instruction_reuse	new instruction misses	same identity in new instruction misses	PASS
+exactly_once_apply	one application per hit	two hits and two applications	PASS
+terminal_memo_empty	zero live entries	zero	PASS
+zero_opportunity_physical_lookup_requests	OFF=3	V2=3	PASS
+zero_opportunity_admissions	OFF=3	V2=3	PASS
+zero_opportunity_instructions	OFF=1	V2=1	PASS
+zero_opportunity_cycles	OFF=3	V2=3	PASS
+zero_opportunity_coverage	OFF=3	V2=3	PASS
+zero_opportunity_translation_results	OFF=3	V2=3	PASS

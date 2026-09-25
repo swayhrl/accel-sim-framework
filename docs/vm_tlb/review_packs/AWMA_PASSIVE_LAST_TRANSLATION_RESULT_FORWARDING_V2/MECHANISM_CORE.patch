@@ -1,0 +1,385 @@
+--- /dev/null
++++ b/src/gpgpu-sim/passive_last_translation_forwarding.h
+@@ -0,0 +1,65 @@
++#ifndef PASSIVE_LAST_TRANSLATION_FORWARDING_H
++#define PASSIVE_LAST_TRANSLATION_FORWARDING_H
++
++#include <stdint.h>
++#include <stdio.h>
++
++#include <cstddef>
++
++#include "vm_translation.h"
++
++namespace awma_passive_v2 {
++
++struct counters {
++  uint64_t lookups;
++  uint64_t hits;
++  uint64_t misses;
++  uint64_t actual_physical_lookup_suppression;
++  uint64_t natural_completions;
++  uint64_t installs;
++  uint64_t overwrites;
++  uint64_t forwarded_applications;
++  uint64_t stale_generation_misses;
++  uint64_t access_compatibility_misses;
++  uint64_t vpn_misses;
++  uint64_t ppn_consistency_faults;
++  uint64_t instruction_invalidations;
++
++  counters();
++};
++
++class forwarding_table {
++ public:
++  static forwarding_table &instance();
++
++  bool try_forward(uint64_t instruction_key, unsigned asid, uint64_t sim_va,
++                   uint64_t request_bytes, uint64_t page_size,
++                   uint64_t generation,
++                   vm_translation::translation_access access,
++                   uint64_t *resolved_pa,
++                   vm_translation::translation_source *source);
++  void note_natural_completion(
++      uint64_t instruction_key, unsigned asid, uint64_t sim_va,
++      uint64_t request_bytes, uint64_t page_size, uint64_t generation,
++      vm_translation::translation_access access, uint64_t resolved_ppn,
++      vm_translation::translation_source source);
++  void note_forward_application();
++  void retire_instruction(uint64_t instruction_key);
++  void print(FILE *fout) const;
++
++  const counters &stats() const { return m_stats; }
++  size_t live_entries() const;
++
++ private:
++  forwarding_table();
++  forwarding_table(const forwarding_table &);
++  forwarding_table &operator=(const forwarding_table &);
++
++  struct implementation;
++  implementation *m_impl;
++  counters m_stats;
++};
++
++}  // namespace awma_passive_v2
++
++#endif
+--- /dev/null
++++ b/src/gpgpu-sim/passive_last_translation_forwarding.cc
+@@ -0,0 +1,170 @@
++#include "passive_last_translation_forwarding.h"
++
++#include <assert.h>
++
++#include <map>
++
++namespace awma_passive_v2 {
++namespace {
++
++struct identity {
++  unsigned asid;
++  uint64_t vpn;
++  uint64_t page_size;
++  uint64_t generation;
++  vm_translation::translation_access access;
++};
++
++struct entry {
++  identity key;
++  uint64_t ppn;
++  vm_translation::translation_source source;
++};
++
++identity make_identity(unsigned asid, uint64_t sim_va, uint64_t request_bytes,
++                       uint64_t page_size, uint64_t generation,
++                       vm_translation::translation_access access) {
++  assert(vm_core::valid_page_size(page_size));
++  assert(!vm_core::transaction_crosses_page(sim_va, request_bytes, page_size));
++  identity result = {asid, vm_core::vpn(sim_va, page_size), page_size,
++                     generation, access};
++  return result;
++}
++
++}  // namespace
++
++struct forwarding_table::implementation {
++  std::map<uint64_t, entry> entries;
++};
++
++counters::counters()
++    : lookups(0), hits(0), misses(0), actual_physical_lookup_suppression(0),
++      natural_completions(0), installs(0), overwrites(0),
++      forwarded_applications(0), stale_generation_misses(0),
++      access_compatibility_misses(0), vpn_misses(0),
++      ppn_consistency_faults(0), instruction_invalidations(0) {}
++
++forwarding_table::forwarding_table()
++    : m_impl(new implementation()), m_stats() {}
++
++forwarding_table &forwarding_table::instance() {
++  static forwarding_table singleton;
++  return singleton;
++}
++
++bool forwarding_table::try_forward(
++    uint64_t instruction_key, unsigned asid, uint64_t sim_va,
++    uint64_t request_bytes, uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t *resolved_pa,
++    vm_translation::translation_source *source) {
++  assert(resolved_pa != NULL && source != NULL);
++  ++m_stats.lookups;
++  const identity requested = make_identity(
++      asid, sim_va, request_bytes, page_size, generation, access);
++  std::map<uint64_t, entry>::const_iterator found =
++      m_impl->entries.find(instruction_key);
++  if (found == m_impl->entries.end()) {
++    ++m_stats.misses;
++    return false;
++  }
++  const entry &last = found->second;
++  if (last.key.asid != requested.asid ||
++      last.key.vpn != requested.vpn ||
++      last.key.page_size != requested.page_size) {
++    ++m_stats.misses;
++    ++m_stats.vpn_misses;
++    return false;
++  }
++  if (last.key.generation != requested.generation) {
++    ++m_stats.misses;
++    ++m_stats.stale_generation_misses;
++    return false;
++  }
++  if (last.key.access != requested.access) {
++    ++m_stats.misses;
++    ++m_stats.access_compatibility_misses;
++    return false;
++  }
++  *resolved_pa = last.ppn * page_size + vm_core::page_offset(sim_va, page_size);
++  *source = last.source;
++  ++m_stats.hits;
++  ++m_stats.actual_physical_lookup_suppression;
++  return true;
++}
++
++void forwarding_table::note_natural_completion(
++    uint64_t instruction_key, unsigned asid, uint64_t sim_va,
++    uint64_t request_bytes, uint64_t page_size, uint64_t generation,
++    vm_translation::translation_access access, uint64_t resolved_ppn,
++    vm_translation::translation_source source) {
++  assert(source != vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
++  const identity completed = make_identity(
++      asid, sim_va, request_bytes, page_size, generation, access);
++  std::map<uint64_t, entry>::iterator found =
++      m_impl->entries.find(instruction_key);
++  if (found == m_impl->entries.end()) {
++    entry installed = {completed, resolved_ppn, source};
++    m_impl->entries.insert(std::make_pair(instruction_key, installed));
++    ++m_stats.installs;
++  } else {
++    found->second.key = completed;
++    found->second.ppn = resolved_ppn;
++    found->second.source = source;
++    ++m_stats.overwrites;
++  }
++  ++m_stats.natural_completions;
++}
++
++void forwarding_table::note_forward_application() {
++  ++m_stats.forwarded_applications;
++}
++
++void forwarding_table::retire_instruction(uint64_t instruction_key) {
++  std::map<uint64_t, entry>::iterator found =
++      m_impl->entries.find(instruction_key);
++  if (found == m_impl->entries.end()) return;
++  m_impl->entries.erase(found);
++  ++m_stats.instruction_invalidations;
++}
++
++size_t forwarding_table::live_entries() const {
++  return m_impl->entries.size();
++}
++
++void forwarding_table::print(FILE *fout) const {
++  fprintf(fout, "awma_passive_v2_enabled = 1\n");
++  fprintf(fout, "awma_passive_v2_capacity = 1\n");
++  fprintf(fout, "awma_passive_v2_timing = SAME_CYCLE_COMPARE_FORWARD\n");
++  fprintf(fout, "awma_passive_v2_live_entries = %llu\n",
++          (unsigned long long)live_entries());
++  fprintf(fout, "awma_passive_v2_lookups = %llu\n",
++          (unsigned long long)m_stats.lookups);
++  fprintf(fout, "awma_passive_v2_hits = %llu\n",
++          (unsigned long long)m_stats.hits);
++  fprintf(fout, "awma_passive_v2_misses = %llu\n",
++          (unsigned long long)m_stats.misses);
++  fprintf(fout, "awma_passive_v2_actual_physical_lookup_suppression = %llu\n",
++          (unsigned long long)m_stats.actual_physical_lookup_suppression);
++  fprintf(fout, "awma_passive_v2_natural_completions = %llu\n",
++          (unsigned long long)m_stats.natural_completions);
++  fprintf(fout, "awma_passive_v2_installs = %llu\n",
++          (unsigned long long)m_stats.installs);
++  fprintf(fout, "awma_passive_v2_overwrites = %llu\n",
++          (unsigned long long)m_stats.overwrites);
++  fprintf(fout, "awma_passive_v2_forwarded_applications = %llu\n",
++          (unsigned long long)m_stats.forwarded_applications);
++  fprintf(fout, "awma_passive_v2_stale_generation_misses = %llu\n",
++          (unsigned long long)m_stats.stale_generation_misses);
++  fprintf(fout, "awma_passive_v2_access_compatibility_misses = %llu\n",
++          (unsigned long long)m_stats.access_compatibility_misses);
++  fprintf(fout, "awma_passive_v2_vpn_misses = %llu\n",
++          (unsigned long long)m_stats.vpn_misses);
++  fprintf(fout, "awma_passive_v2_ppn_consistency_faults = %llu\n",
++          (unsigned long long)m_stats.ppn_consistency_faults);
++  fprintf(fout, "awma_passive_v2_instruction_invalidations = %llu\n",
++          (unsigned long long)m_stats.instruction_invalidations);
++  fprintf(fout, "awma_passive_v2_proactive_owner_attempts = 0\n");
++  fprintf(fout, "awma_passive_v2_proactive_duplicate_lookups = 0\n");
++}
++
++}  // namespace awma_passive_v2
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -33,6 +33,7 @@
+ #include "shader.h"
+ #include "gpu-sim.h"
+ #include "passive_translation_memo.h"
++#include "passive_last_translation_forwarding.h"
+ #include "vm_translation.h"
+ #include <map>
+ #include <set>
+@@ -415,6 +416,9 @@
+             (unsigned long long)g_vm_cov.untranslated_uids.size());
+   g_owner_wait.print(f);
+   awma_passive_memo::observer::instance().print(f);
++  if (vm_translation::awma_candidate_mode() ==
++      vm_translation::AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT)
++    awma_passive_v2::forwarding_table::instance().print(f);
+ }
+ }
+ #include "vm_core.h"
+@@ -2990,6 +2994,9 @@
+   const bool nonblocking_opportunistic_share =
+       candidate_mode == vm_translation::
+           AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE;
++  const bool passive_last_result =
++      candidate_mode ==
++          vm_translation::AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT;
+   const unsigned share_delivery_slots =
+       vm_translation::awma_share_delivery_slots();
+   const unsigned share_min_cohort_size =
+@@ -3028,7 +3035,7 @@
+          pipelined_launch);
+   assert((candidate_mode !=
+               vm_translation::AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE &&
+-          !nonblocking_opportunistic_share) ||
++          !nonblocking_opportunistic_share && !passive_last_result) ||
+          !ready_application_v2);
+   const bool ready_application_diagnostics =
+       getenv("GPGPUSIM_READY_APPLICATION_DIAGNOSTICS") != NULL;
+@@ -3295,6 +3302,9 @@
+     // not issue independent physical translation services.
+     for (std::list<mem_access_t>::reverse_iterator it = entries.rbegin();
+          it != entries.rend(); ++it) {
++      // V2 launches no resident-access translation. A miss launches only when
++      // that exact access reaches the frozen head decision point below.
++      if (passive_last_result) break;
+       mem_access_t &candidate = *it;
+       if (candidate.vm_translation_applied()) continue;
+       if (vm_core::transaction_crosses_page(candidate.get_sim_va(),
+@@ -3377,6 +3387,39 @@
+         passive_instruction_key, access.get_uid(), 0, access.get_sim_va(),
+         m_config->gpgpu_vm_page_size,
+         m_gpu->vm_translation()->translation_generation(0), passive_access);
++  }
++  if (passive_last_result && !access.vm_translation_applied()) {
++    uint64_t forwarded_pa = 0;
++    vm_translation::translation_source forwarded_source =
++        vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++    if (awma_passive_v2::forwarding_table::instance().try_forward(
++            passive_instruction_key, 0, access.get_sim_va(),
++            access.get_size(), m_config->gpgpu_vm_page_size,
++            m_gpu->vm_translation()->translation_generation(0),
++            passive_access, &forwarded_pa, &forwarded_source)) {
++      assert(forwarded_source !=
++             vm_translation::TRANSLATION_SOURCE_UNOBSERVED);
++      assert(!access.vm_translation_applied());
++      vm_provenance().record(m_config->gpgpu_vm_mode, inst, access, m_sid,
++                             m_tpc, m_core->get_kernel(),
++                             m_config->gpgpu_vm_page_size);
++      ++m_stats->vm_requests;
++      access.set_sim_pa(static_cast<new_addr_type>(forwarded_pa));
++      ++m_stats->vm_ideal_translations;
++      if (access.get_sim_va() == access.get_sim_pa())
++        ++m_stats->vm_identity_equal;
++      const vm_translation::object_class object = m_gpu->classify_vm_object(
++          access.get_sim_va(), access.get_size());
++      if (object == vm_translation::OBJECT_WEIGHT)
++        access.set_telemetry_class(M4C_DATA_WEIGHT);
++      else if (object == vm_translation::OBJECT_KV_CACHE)
++        access.set_telemetry_class(M4C_DATA_KV_CACHE);
++      else
++        access.set_telemetry_class(M4C_DATA_UNKNOWN);
++      access.set_translation_telemetry_outcome(forwarded_source);
++      awma_passive_v2::forwarding_table::instance()
++          .note_forward_application();
++    }
+   }
+   if (nonblocking_opportunistic_share &&
+       !access.vm_translation_applied()) {
+@@ -3594,6 +3637,14 @@
+     else
+       access.set_telemetry_class(M4C_DATA_UNKNOWN);
+     access.set_translation_telemetry_outcome(translation_outcome);
++    if (passive_last_result) {
++      awma_passive_v2::forwarding_table::instance().note_natural_completion(
++          passive_instruction_key, 0, access.get_sim_va(), access.get_size(),
++          m_config->gpgpu_vm_page_size,
++          m_gpu->vm_translation()->translation_generation(0), passive_access,
++          access.get_sim_pa() / m_config->gpgpu_vm_page_size,
++          translation_outcome);
++    }
+     if (passive_memo_observer) {
+       assert(access.vm_translation_applied());
+       awma_passive_memo::observer::instance().note_natural_completion(
+@@ -3687,6 +3738,9 @@
+   }
+   if (passive_memo_observer && inst.accessq_empty())
+     awma_passive_memo::observer::instance().retire_instruction(
++        passive_instruction_key);
++  if (passive_last_result && inst.accessq_empty())
++    awma_passive_v2::forwarding_table::instance().retire_instruction(
+         passive_instruction_key);
+   return inst.accessq_empty();
+ }
+--- a/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/vm_translation.h
+@@ -203,6 +203,7 @@
+   AWMA_TRANSLATION_CANDIDATE_NONE = 0,
+   AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE,
+   AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE,
++  AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT,
+   AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT
+ };
+ 
+--- a/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/vm_translation.cc
+@@ -18,6 +18,8 @@
+     return AWMA_TRANSLATION_CANDIDATE_SAME_PAGE_SHARE;
+   if (strcmp(text, "nonblocking_opportunistic_share") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE;
++  if (strcmp(text, "passive_last_result") == 0)
++    return AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT;
+   if (strcmp(text, "refill_protect") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT;
+   assert(false && "unknown GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
+@@ -32,6 +34,8 @@
+       return "same_page_share";
+     case AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE:
+       return "nonblocking_opportunistic_share";
++    case AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT:
++      return "passive_last_result";
+     case AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT:
+       return "refill_protect";
+     default:
