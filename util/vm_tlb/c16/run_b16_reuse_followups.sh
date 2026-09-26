@@ -53,14 +53,47 @@ set +e
 "$runner" M1_B16_DIAGNOSTIC "$diagnostic" "$diagnostic/gpgpusim.config" \
   > "$diagnostic/runner.stdout" 2> "$diagnostic/runner.stderr" &
 diagnostic_pid=$!
-"$runner" R0_BASELINE "$repeat" "$repeat/gpgpusim.config" \
-  > "$repeat/runner.stdout" 2> "$repeat/runner.stderr" &
-repeat_pid=$!
+if [[ ! -s $repeat/RUN_RECEIPT.json ]]; then
+  repeat_pid=""
+  if [[ -s $repeat/RUNNER_PID ]]; then
+    candidate_pid=$(<"$repeat/RUNNER_PID")
+    if kill -0 "$candidate_pid" 2>/dev/null; then repeat_pid=$candidate_pid; fi
+  fi
+  if [[ -z $repeat_pid ]]; then
+    "$runner" R0_BASELINE "$repeat" "$repeat/gpgpusim.config" \
+      > "$repeat/runner.stdout" 2> "$repeat/runner.stderr" &
+    repeat_pid=$!
+    printf '%s\n' "$repeat_pid" > "$repeat/RUNNER_PID"
+  fi
+fi
 wait "$diagnostic_pid"
 diagnostic_exit=$?
-wait "$repeat_pid"
-repeat_exit=$?
 set -e
+if [[ $diagnostic_exit -eq 0 ]]; then
+  (cd "$diagnostic" && sha256sum -c OUTPUT_SHA256SUMS)
+fi
+
+while [[ ! -s $repeat/RUN_RECEIPT.json || ! -s $repeat/OUTPUT_SHA256SUMS ]]; do
+  if [[ -s $repeat/RUNNER_PID ]] && ! kill -0 "$(<"$repeat/RUNNER_PID")" 2>/dev/null; then
+    echo "R0 repeat exited without complete authority" >&2
+    exit 1
+  fi
+  sleep 60
+done
+(cd "$repeat" && sha256sum -c OUTPUT_SHA256SUMS)
+repeat_exit=$(python3 - "$repeat/RUN_RECEIPT.json" <<'PY'
+import json
+import sys
+receipt = json.load(open(sys.argv[1], encoding="utf-8"))
+valid = (receipt.get("condition") == "R0_BASELINE" and
+         receipt.get("status") == "PASS" and
+         receipt.get("exit_code") == 0 and
+         receipt.get("core_head_at_launch") == "0271de82432db004beed43280ed01057246a0f2c" and
+         receipt.get("binary_sha256") == "6be0986958ffbb8a128ce19e8a88b53a4c4838f97202c2f3d1c9dec6e9a02186" and
+         receipt.get("config_sha256") == "a8918f1407fc2a9146808625b55a5120f64bb2cf4ce8b6a5b399ac4654d36d96")
+print(0 if valid else 1)
+PY
+)
 
 status=FAIL
 if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 ]]; then status=PASS; fi
