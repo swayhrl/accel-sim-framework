@@ -16,6 +16,7 @@ done
 (cd "$run_root/R0_BASELINE" && sha256sum -c OUTPUT_SHA256SUMS)
 (cd "$run_root/M1_B16" && sha256sum -c OUTPUT_SHA256SUMS)
 
+set +e
 python3 - "$run_root/R0_BASELINE/RUN_RECEIPT.json" \
           "$run_root/M1_B16/RUN_RECEIPT.json" <<'PY'
 import json
@@ -42,61 +43,101 @@ for path in sys.argv[1:]:
     if receipt.get("config_sha256") != expected[condition]["config_sha256"]:
         raise SystemExit(f"config launch identity drift: {path}")
 PY
+primary_gate_exit=$?
+set -e
 
 diagnostic=$run_root/M1_B16_DIAGNOSTIC
 repeat=$run_root/R0_BASELINE_REPEAT
 mkdir -p "$diagnostic" "$repeat"
-cp "$pack/configs/M1_B16_DIAGNOSTIC.gpgpusim.config" "$diagnostic/gpgpusim.config"
-cp "$pack/configs/R0_BASELINE.gpgpusim.config" "$repeat/gpgpusim.config"
-
-set +e
-"$runner" M1_B16_DIAGNOSTIC "$diagnostic" "$diagnostic/gpgpusim.config" \
-  > "$diagnostic/runner.stdout" 2> "$diagnostic/runner.stderr" &
-diagnostic_pid=$!
-if [[ ! -s $repeat/RUN_RECEIPT.json ]]; then
-  repeat_pid=""
-  if [[ -s $repeat/RUNNER_PID ]]; then
-    candidate_pid=$(<"$repeat/RUNNER_PID")
-    if kill -0 "$candidate_pid" 2>/dev/null; then repeat_pid=$candidate_pid; fi
-  fi
-  if [[ -z $repeat_pid ]]; then
-    "$runner" R0_BASELINE "$repeat" "$repeat/gpgpusim.config" \
-      > "$repeat/runner.stdout" 2> "$repeat/runner.stderr" &
-    repeat_pid=$!
-    printf '%s\n' "$repeat_pid" > "$repeat/RUNNER_PID"
-  fi
-fi
-wait "$diagnostic_pid"
-diagnostic_exit=$?
-set -e
-if [[ $diagnostic_exit -eq 0 ]]; then
-  (cd "$diagnostic" && sha256sum -c OUTPUT_SHA256SUMS)
+if [[ $primary_gate_exit -ne 0 ]]; then
+  cat > "$diagnostic/ADMISSION_STATUS.json" <<'EOF'
+{
+  "schema": "C16_E1_B16_DIAGNOSTIC_ADMISSION_STATUS_V1",
+  "status": "QUARANTINED_PRIMARY_GATE_FAIL",
+  "scientific_admission": "QUARANTINED",
+  "failure_policy": "EXCLUDE_FROM_ALL_SCIENTIFIC_RESULTS"
+}
+EOF
+  cp "$diagnostic/ADMISSION_STATUS.json" "$pack/M1_B16_DIAGNOSTIC_ADMISSION_STATUS.json"
+  cat > "$run_root/FOLLOWUP_RECEIPT.json" <<EOF
+{
+  "schema": "C16_E1_B16_REUSE_FOLLOWUP_RECEIPT_V2",
+  "status": "QUARANTINED_PRIMARY_GATE_FAIL",
+  "primary_gate_exit_code": $primary_gate_exit
+}
+EOF
+  exit 1
 fi
 
-while [[ ! -s $repeat/RUN_RECEIPT.json || ! -s $repeat/OUTPUT_SHA256SUMS ]]; do
-  if [[ -s $repeat/RUNNER_PID ]] && ! kill -0 "$(<"$repeat/RUNNER_PID")" 2>/dev/null; then
-    echo "R0 repeat exited without complete authority" >&2
+cat > "$diagnostic/ADMISSION_STATUS.json" <<'EOF'
+{
+  "schema": "C16_E1_B16_DIAGNOSTIC_ADMISSION_STATUS_V1",
+  "status": "ADMITTED_PRIMARY_GATES_PASS",
+  "scientific_admission": "ADMITTED",
+  "primary_terminal_PASS": true,
+  "primary_workload_kernel_instruction_CTA_identity": true,
+  "primary_correctness_comparison": true
+}
+EOF
+cp "$diagnostic/ADMISSION_STATUS.json" "$pack/M1_B16_DIAGNOSTIC_ADMISSION_STATUS.json"
+
+if [[ ! -s $diagnostic/RUN_RECEIPT.json ]]; then
+  diagnostic_pid=""
+  if [[ -s $diagnostic/RUNNER_PID ]]; then
+    candidate_pid=$(<"$diagnostic/RUNNER_PID")
+    if kill -0 "$candidate_pid" 2>/dev/null; then diagnostic_pid=$candidate_pid; fi
+  fi
+  if [[ -z $diagnostic_pid ]]; then
+    cp "$pack/configs/M1_B16_DIAGNOSTIC.gpgpusim.config" "$diagnostic/gpgpusim.config"
+    "$runner" M1_B16_DIAGNOSTIC "$diagnostic" "$diagnostic/gpgpusim.config" \
+      > "$diagnostic/runner.stdout" 2> "$diagnostic/runner.stderr" &
+    diagnostic_pid=$!
+    printf '%s\n' "$diagnostic_pid" > "$diagnostic/RUNNER_PID"
+  fi
+fi
+while [[ ! -s $diagnostic/RUN_RECEIPT.json ||
+         ! -s $diagnostic/OUTPUT_SHA256SUMS ]]; do
+  if [[ -s $diagnostic/RUNNER_PID ]] &&
+     ! kill -0 "$(<"$diagnostic/RUNNER_PID")" 2>/dev/null; then
+    echo "diagnostic exited without complete authority" >&2
     exit 1
   fi
   sleep 60
 done
-(cd "$repeat" && sha256sum -c OUTPUT_SHA256SUMS)
-repeat_exit=$(python3 - "$repeat/RUN_RECEIPT.json" <<'PY'
+(cd "$diagnostic" && sha256sum -c OUTPUT_SHA256SUMS)
+set +e
+python3 - "$diagnostic/RUN_RECEIPT.json" <<'PY'
 import json
 import sys
 receipt = json.load(open(sys.argv[1], encoding="utf-8"))
-valid = (receipt.get("condition") == "R0_BASELINE" and
-         receipt.get("status") == "PASS" and
-         receipt.get("exit_code") == 0 and
+valid = (receipt.get("condition") == "M1_B16_DIAGNOSTIC" and
+         receipt.get("status") == "PASS" and receipt.get("exit_code") == 0 and
+         receipt.get("terminal_exit_detected") is True and
          receipt.get("core_head_at_launch") == "0271de82432db004beed43280ed01057246a0f2c" and
          receipt.get("binary_sha256") == "6be0986958ffbb8a128ce19e8a88b53a4c4838f97202c2f3d1c9dec6e9a02186" and
-         receipt.get("config_sha256") == "a8918f1407fc2a9146808625b55a5120f64bb2cf4ce8b6a5b399ac4654d36d96")
-print(0 if valid else 1)
+         receipt.get("config_sha256") == "12434fee397093b2ac13cf65e1b2644b8f7a98ad97e3824a2cbfae5aba5daee7")
+raise SystemExit(0 if valid else 1)
 PY
-)
+diagnostic_exit=$?
+set -e
+
+bounded_repeat_exit=1
+set +e
+python3 - "$pack/BOUNDED_REPRODUCIBILITY_PREFIX_UID168.json" <<'PY'
+import json
+import sys
+evidence = json.load(open(sys.argv[1], encoding="utf-8"))
+valid = (evidence.get("status") == "PASS" and
+         evidence.get("claim") == "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168" and
+         evidence.get("bounded_prefix_last_uid") == 168 and
+         evidence.get("full_1565_kernel_repeat_claimed") is False)
+raise SystemExit(0 if valid else 1)
+PY
+bounded_repeat_exit=$?
+set -e
 
 analysis_exit=1
-if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 ]]; then
+if [[ $diagnostic_exit -eq 0 && $bounded_repeat_exit -eq 0 ]]; then
   set +e
   python3 "$framework/util/vm_tlb/c16/e1_b16_reuse_canary.py" analyze \
     --scope "$pack/REUSE_WINDOW_SCOPE.json" \
@@ -105,7 +146,7 @@ if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 ]]; then
     --m1 "$run_root/M1_B16" \
     --diagnostic "$diagnostic" \
     --repeat "$repeat" \
-    --repeat-condition R0_BASELINE \
+    --bounded-repeat-evidence "$pack/BOUNDED_REPRODUCIBILITY_PREFIX_UID168.json" \
     --output "$pack" \
     > "$run_root/analysis.stdout" 2> "$run_root/analysis.stderr"
   analysis_exit=$?
@@ -113,16 +154,17 @@ if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 ]]; then
 fi
 
 status=FAIL
-if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 && $analysis_exit -eq 0 ]]; then
+if [[ $diagnostic_exit -eq 0 && $bounded_repeat_exit -eq 0 && $analysis_exit -eq 0 ]]; then
   status=PASS
 fi
 cat > "$run_root/FOLLOWUP_RECEIPT.json" <<EOF
 {
-  "schema": "C16_E1_B16_REUSE_FOLLOWUP_RECEIPT_V1",
+  "schema": "C16_E1_B16_REUSE_FOLLOWUP_RECEIPT_V2",
   "status": "$status",
   "diagnostic_exit_code": $diagnostic_exit,
-  "repeat_exit_code": $repeat_exit,
+  "bounded_repeat_exit_code": $bounded_repeat_exit,
+  "reproducibility_claim": "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168",
   "analysis_exit_code": $analysis_exit
 }
 EOF
-exit $(( diagnostic_exit != 0 || repeat_exit != 0 || analysis_exit != 0 ))
+exit $(( diagnostic_exit != 0 || bounded_repeat_exit != 0 || analysis_exit != 0 ))

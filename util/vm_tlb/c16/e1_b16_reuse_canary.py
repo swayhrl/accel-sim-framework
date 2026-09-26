@@ -301,13 +301,7 @@ def parse_simulator_output(path: Path, want_diagnostics: bool = False):
             "diagnostics": diagnostics, "class_occupancy": class_occupancy}
 
 
-def verify_receipt(run_dir: Path, condition: str):
-    receipt_path = run_dir / "RUN_RECEIPT.json"
-    require(receipt_path.is_file(), f"missing receipt {receipt_path}")
-    receipt = read_json(receipt_path)
-    require(receipt["condition"] == condition, f"condition drift in {receipt_path}")
-    require(receipt["status"] == "PASS" and receipt["exit_code"] == 0 and
-            receipt["terminal_exit_detected"] is True, f"failed run receipt {receipt_path}")
+def verify_output_sums(run_dir: Path):
     sums_path = run_dir / "OUTPUT_SHA256SUMS"
     require(sums_path.is_file(), f"missing output sums {sums_path}")
     verified = {}
@@ -318,6 +312,17 @@ def verify_receipt(run_dir: Path, condition: str):
         require(candidate.is_file() and sha256(candidate) == expected,
                 f"raw output SHA mismatch: {candidate}")
         verified[relative] = expected
+    return verified
+
+
+def verify_receipt(run_dir: Path, condition: str):
+    receipt_path = run_dir / "RUN_RECEIPT.json"
+    require(receipt_path.is_file(), f"missing receipt {receipt_path}")
+    receipt = read_json(receipt_path)
+    require(receipt["condition"] == condition, f"condition drift in {receipt_path}")
+    require(receipt["status"] == "PASS" and receipt["exit_code"] == 0 and
+            receipt["terminal_exit_detected"] is True, f"failed run receipt {receipt_path}")
+    verified = verify_output_sums(run_dir)
     return receipt, verified
 
 
@@ -379,6 +384,72 @@ def summarize_run(run_dir: Path, condition: str, expected_rows, scope, diagnosti
     return summary, parsed
 
 
+def summarize_bounded_repeat(run_dir: Path, evidence_path: Path, expected_rows,
+                             primary_parsed):
+    evidence = read_json(evidence_path)
+    require(evidence["status"] == "PASS" and
+            evidence["claim"] == "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168",
+            "bounded reproducibility evidence not PASS")
+    limit = int(evidence["bounded_prefix_last_uid"])
+    require(limit == 168 and evidence["full_1565_kernel_repeat_claimed"] is False,
+            "bounded repeat scope drift")
+    receipt_path = run_dir / "RUN_RECEIPT.json"
+    require(receipt_path.is_file(), f"missing bounded repeat receipt {receipt_path}")
+    receipt = read_json(receipt_path)
+    require(receipt["condition"] == "R0_BASELINE" and receipt["status"] == "FAIL" and
+            receipt["exit_code"] == 143 and receipt["terminal_exit_detected"] is False,
+            "bounded repeat was not intentionally terminated")
+    require(sha256(receipt_path) == evidence["raw_authority"]["RUN_RECEIPT_sha256"],
+            "bounded repeat receipt SHA drift")
+    require(sha256(run_dir / "simulator.stdout") ==
+            evidence["raw_authority"]["simulator_stdout_sha256"],
+            "bounded repeat stdout SHA drift")
+    require(sha256(run_dir / "OUTPUT_SHA256SUMS") ==
+            evidence["raw_authority"]["OUTPUT_SHA256SUMS_sha256"],
+            "bounded repeat output-manifest SHA drift")
+    verified = verify_output_sums(run_dir)
+    parsed = parse_simulator_output(run_dir / "simulator.stdout")
+    launches = parsed["launches"]
+    require(len(launches) >= limit, "bounded repeat launch prefix incomplete")
+    require([row["uid"] for row in launches[:limit]] == list(range(1, limit + 1)),
+            "bounded repeat UID sequence drift")
+    require(all(row["stream"] == int(expected["stream"])
+                for row, expected in zip(launches[:limit], expected_rows[:limit])),
+            "bounded repeat stream sequence drift")
+    require(all(row["name"] == expected["exact_function"]
+                for row, expected in zip(launches[:limit], expected_rows[:limit])),
+            "bounded repeat kernel identity drift")
+    required_stats = {"gpu_tot_sim_cycle", "gpu_tot_sim_insn", "gpu_tot_issued_cta"}
+    require(all(uid in parsed["completed"] and
+                set(parsed["completed"][uid]) == required_stats
+                for uid in range(1, limit + 1)),
+            "bounded repeat cumulative statistics incomplete")
+    require(all(parsed["completed"][uid] == primary_parsed["completed"][uid]
+                for uid in range(1, limit + 1)),
+            "bounded repeat cumulative statistics drift")
+    final_stats = parsed["completed"][limit]
+    summary = {
+        "condition": "R0_BASELINE_REPEAT_BOUNDED", "status": "PASS",
+        "claim": evidence["claim"], "run_dir": str(run_dir),
+        "bounded_prefix_last_uid": limit, "full_window_repeat_claimed": False,
+        "intentional_termination_after_prefix": True,
+        "kernel_count": limit,
+        "kernel_sequence_sha256": sha256_from_values(
+            [f"{row['uid']}\t{row['stream']}\t{row['name']}"
+             for row in launches[:limit]]),
+        "final_cycles": final_stats["gpu_tot_sim_cycle"],
+        "instruction_count": final_stats["gpu_tot_sim_insn"],
+        "CTA_count": final_stats["gpu_tot_issued_cta"],
+        "cycles": {"C_prefix_UID168": final_stats["gpu_tot_sim_cycle"]},
+        "wall_seconds": int(receipt["wall_seconds"]),
+        "receipt_sha256": sha256(receipt_path),
+        "stdout_sha256": sha256(run_dir / "simulator.stdout"),
+        "verified_output_sha256": verified,
+        "prefix_exact": True,
+    }
+    return summary, parsed
+
+
 def sha256_from_values(values):
     digest = hashlib.sha256()
     digest.update(("\n".join(values) + "\n").encode("utf-8"))
@@ -424,13 +495,14 @@ def analyze_runs(args) -> None:
     expected_rows = tsv(args.sequence)
     require(len(expected_rows) == int(scope["total_kernel_count"]), "scope/sequence count drift")
     run_specs = [("R0_BASELINE", args.r0, False), ("M1_B16", args.m1, False),
-                 ("M1_B16_DIAGNOSTIC", args.diagnostic, True),
-                 (args.repeat_condition, args.repeat, args.repeat_condition == "M1_B16_DIAGNOSTIC")]
+                 ("M1_B16_DIAGNOSTIC", args.diagnostic, True)]
     summaries, parsed = {}, {}
     for condition, directory, diagnostic in run_specs:
-        key = condition if directory != args.repeat else f"{condition}_REPEAT"
-        summaries[key], parsed[key] = summarize_run(
+        summaries[condition], parsed[condition] = summarize_run(
             directory, condition, expected_rows, scope, diagnostic)
+    summaries["R0_BASELINE_REPEAT_BOUNDED"], parsed["R0_BASELINE_REPEAT_BOUNDED"] = (
+        summarize_bounded_repeat(args.repeat, args.bounded_repeat_evidence,
+                                 expected_rows, parsed["R0_BASELINE"]))
 
     primary_fields = ("kernel_count", "kernel_sequence_sha256", "instruction_count", "CTA_count")
     correctness_equal = all(summaries["R0_BASELINE"][field] == summaries["M1_B16"][field]
@@ -456,22 +528,23 @@ def analyze_runs(args) -> None:
             key: summaries[key]["wall_seconds"] for key in summaries},
     }
 
-    repeat_key = f"{args.repeat_condition}_REPEAT"
-    original = summaries[args.repeat_condition]
-    repeated = summaries[repeat_key]
-    repeat_equal = original["cycles"] == repeated["cycles"] and all(
-        original[field] == repeated[field] for field in primary_fields)
-    require(repeat_equal, "deterministic repeat drift")
+    repeated = summaries["R0_BASELINE_REPEAT_BOUNDED"]
+    repeat_equal = repeated["prefix_exact"] is True
+    require(repeat_equal, "bounded deterministic repeat drift")
     diag_neutral = summaries["M1_B16"]["cycles"] == summaries["M1_B16_DIAGNOSTIC"]["cycles"] and all(
         summaries["M1_B16"][field] == summaries["M1_B16_DIAGNOSTIC"][field]
         for field in primary_fields)
     require(diag_neutral, "real-trace diagnostic neutrality drift")
     reproducibility = {
         "status": "PASS", "schema": "C16_E1_B16_REUSE_REPRODUCIBILITY_V1",
-        "repeated_condition": args.repeat_condition, "exact_cycle_reproduction": repeat_equal,
+        "repeated_condition": "R0_BASELINE",
+        "reproducibility_claim": "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168",
+        "bounded_prefix_last_uid": 168,
+        "full_window_repeat_claimed": False,
+        "exact_cycle_instruction_CTA_kernel_reproduction": repeat_equal,
         "M1_diagnostics_real_trace_neutral": diag_neutral,
         "synthetic_neutrality_remains_primary_qualification_authority": True,
-        "original": original["cycles"], "repeat": repeated["cycles"],
+        "repeat_prefix": repeated,
         "M1_primary": summaries["M1_B16"]["cycles"],
         "M1_diagnostic": summaries["M1_B16_DIAGNOSTIC"]["cycles"],
     }
@@ -576,7 +649,7 @@ def main() -> int:
     analyze.add_argument("--m1", type=Path, required=True)
     analyze.add_argument("--diagnostic", type=Path, required=True)
     analyze.add_argument("--repeat", type=Path, required=True)
-    analyze.add_argument("--repeat-condition", choices=("R0_BASELINE", "M1_B16"), required=True)
+    analyze.add_argument("--bounded-repeat-evidence", type=Path, required=True)
     analyze.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "scope":

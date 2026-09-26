@@ -19,6 +19,7 @@
   "output_policy": "NODE164_ISOLATED_RUN_DIRECTORIES",
   "primary_safe_concurrency": 3,
   "repeat_parallelized_with_primaries": true,
+  "repeat_execution_policy": "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168_THEN_STOP",
   "repeat_parallelization_recheck": {
     "available_ram_bytes": 357879263232,
     "active_simulator_processes_before_repeat": 2,
@@ -26,5 +27,8 @@
     "decision": "SAFE_TO_ADD_ONE_R0_REPEAT",
     "primary_RSS_bytes_each_approx": 6370000000
   },
-  "diagnostic_launch_policy": "AFTER_BOTH_PRIMARY_RUNS_COMPLETE"
+  "diagnostic_launch_policy": "SPECULATIVE_PRE_GATE_THIRD_SLOT_PRIMARY_ADMISSION_DEPENDENCY",
+  "diagnostic_scientific_admission_at_launch": "SPECULATIVE_PRE_GATE",
+  "diagnostic_quarantine_if_any_primary_gate_fails": true,
+  "maximum_long_run_concurrency": 3
 }
