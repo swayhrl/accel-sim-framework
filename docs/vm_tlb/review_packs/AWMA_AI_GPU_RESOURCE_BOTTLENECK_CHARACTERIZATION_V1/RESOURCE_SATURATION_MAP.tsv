@@ -1,0 +1,8 @@
+target	selected_domain	baseline_cycles	two_x_cycles	upper_cycles	baseline_to_two_x_percent	two_x_to_upper_incremental_percent	classification	pressure_migration_or_limit
+T0	D2_L1D_LATENCY	488559	448768	463760	8.144564	-3.340702	INTERVENTION_NON_MONOTONIC	1-cycle modeled latency is slower than 16-cycle; scheduler/cache timing response is non-monotonic
+T1	D3_L2_CAPACITY	619514	619514	619514	0.000000	0.000000	LOW_RESPONSE	2x and 4x L2 set count both reproduce baseline cycles and pressure
+T2	D2_L1D_RESERVATION	94034	91362	91362	2.841525	0.000000	FINITE_RESOURCE_SENSITIVE;DIMINISHING_RETURN_OBSERVED;BOTTLENECK_MIGRATION_OBSERVED	L1 reservation failures collapse, 2x and upper cycles match, dependency/DRAM pressure remains
+SPLITKV	D3_L2_RESERVATION	72817	72372	72372	0.611121	0.000000	LOW_RESPONSE;DIMINISHING_RETURN_OBSERVED;BOTTLENECK_MIGRATION_OBSERVED	L2 reservation failures fall sharply but cycle response is only 0.611%; DRAM/dependency pressure remains
+L2	D3_L2_RESERVATION	28335	28353	28353	-0.063526	0.000000	LOW_RESPONSE	L2 reservation failures fall sharply without a positive cycle response
+L1	D5_DRAM_SERVICE	320808	296316	305651	7.634473	-3.150353	FINITE_RESOURCE_SENSITIVE;INTERVENTION_NON_MONOTONIC	2x DRAM ratio improves 7.634% but the stronger ratio improves only 4.725%; timing-law coupling is visible
+M1	D2_L1D_RESERVATION	57107	55867	55867	2.171363	0.000000	FINITE_RESOURCE_SENSITIVE;DIMINISHING_RETURN_OBSERVED	2x and upper L1-MSHR cycles match at a 2.171% response
