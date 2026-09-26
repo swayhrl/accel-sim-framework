@@ -1,0 +1,63 @@
+{
+  "admission_rule": {
+    "future_run_use_requires": [
+      "cycles_exact",
+      "instructions_exact",
+      "CTA_exact",
+      "termination_exact",
+      "scientific_output_exact_after_explicit_liveness_normalization",
+      "mechanism_decisions_exact"
+    ],
+    "current_primary_restart_requires_host_speedup_greater_than_fraction": 0.20,
+    "current_primary_restart_permitted_without_threshold": false
+  },
+  "candidate_factors": [
+    {
+      "id": "MEMLATENCY_STAT",
+      "baseline": "-gpgpu_memlatency_stat 14",
+      "candidate": "-gpgpu_memlatency_stat 0",
+      "purpose": "isolate generic memory-latency statistics hot-path cost"
+    },
+    {
+      "id": "PTX_SOURCE_LINE_STAT",
+      "baseline": "-enable_ptx_file_line_stats 1",
+      "candidate": "-enable_ptx_file_line_stats 0",
+      "purpose": "isolate PTX/source-line statistics hot-path cost"
+    },
+    {
+      "id": "RUNTIME_STAT_FREQUENCY",
+      "baseline": "-gpgpu_runtime_stat 500",
+      "candidate": "-gpgpu_runtime_stat 10000:0",
+      "purpose": "isolate periodic runtime-stat and liveness-adjacent cost"
+    },
+    {
+      "id": "TRACE_DECOMPRESSION",
+      "baseline": "XZ_TRACEG_STREAM",
+      "candidate": "IDENTICAL_SHORT_PREFIX_PREDECOMPRESSED_TRACEG",
+      "purpose": "isolate decompression/parser host cost without trace rewriting"
+    },
+    {
+      "id": "ORACLE_LOOKUP_INVARIANT",
+      "baseline": "R0_OFF_AND_M1_CURRENT",
+      "candidate": "NO_NEW_FUNCTIONAL_OR_REPLACEMENT_CHANGE",
+      "purpose": "measure existing oracle lookup and invariant overhead only"
+    }
+  ],
+  "execution_policy": "RUN_WHEN_A_LONG_RUN_SLOT_IS_FREE; NEVER_EXCEED_THREE_LONG_SIMULATORS",
+  "prefix_screening": {
+    "first_stage": "SMALL_ACCEPTED_PREFIX_FOR_SINGLE_FACTOR_WALL_TIME_SCREEN",
+    "promotion": "ONLY_CANDIDATES_WITH_APPROXIMATELY_20_PERCENT_OR_GREATER_SPEEDUP",
+    "second_stage": "CONTIGUOUS_PREFIX_THROUGH_FIRST_COMPLETE_TARGET_RANGE"
+  },
+  "prohibited": [
+    "PER_KERNEL_SPLIT_OR_STITCH",
+    "FUNCTIONAL_FOR_TIMING_SUBSTITUTION",
+    "REUSE_WINDOW_SHORTENING",
+    "SM_OR_PLATFORM_CONFIG_CHANGE",
+    "INTERVENING_TRAFFIC_REMOVAL",
+    "MECHANISM_SEMANTICS_CHANGE"
+  ],
+  "schema": "C16_E1_B16_HOST_OVERHEAD_PREFIX_PLAN_V1",
+  "scientific_authority": false,
+  "status": "PREPARED"
+}
