@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "schema": "C16_E1_TRACE_ADDRESS_TRANSFORM_V1",
+  "runtime_cuda_va_to_nvbit_mref": "DIRECT_NUMERIC_EQUALITY_ACCEPTED_FROM_109",
+  "nvbit_mref_to_traceg": "DIRECT_NUMERIC_SERIALIZATION_OR_LOSSLESS_COMPRESSION",
+  "traceg_to_instruction_operand": "DIRECT_NUMERIC_EQUALITY",
+  "instruction_lane_to_mem_access": "DETERMINISTIC_BASELINE_COALESCING_ALIGNMENT",
+  "mem_access_to_mem_fetch": "DIRECT_NUMERIC_COPY",
+  "parent_mem_fetch_to_sector_child": "IDENTITY_OR_PARENT_PLUS_32_BYTE_SECTOR_OFFSET",
+  "sector_child_to_l2_get_addr": "DIRECT_NUMERIC_EQUALITY",
+  "l2_get_addr_to_oracle_lookup": "DIRECT_NUMERIC_EQUALITY",
+  "namespace_adapter_required": false,
+  "sidecar_address_rewrite": false,
+  "target_interval_alignment_bytes": 128,
+  "canary_relation": "EXACT_NUMERIC_EQUALITY_ALL_OBSERVED_HOPS",
+  "source_files_sha256": {
+    "trace_parser.cc": "ba9b5f63271b719010e994d98ba544ba93876f709fa78a1215f3350288243445",
+    "trace_driven.cc": "938c21cfbb94309e0e9e452498f73676af104a9816739de2cf8d69dbd8ef38b5",
+    "abstract_hardware_model.cc": "7fc1c52e138523a18f720c8e877c122550d1d5dc47658286e43acbd7f9e88c03",
+    "mem_fetch.cc": "6be78188988fea1182a54d6501e0711fd81189996a19474cb79493c89565bf55",
+    "l2cache.cc": "cedaecd5d0ad2baab2d4e8d3623d07eed8030ffc37d9b62a8004871560a24161",
+    "gpu-cache.cc": "059a16cba162088e1ba8214b60ed848d4bb0e9318ece9af8050ddc06fb0caaa1",
+    "oracle_elastic_residency.cc": "6b7155a6689c5d18370ce85604b57ccd06688217a24141a4c889a63bbfe8f220"
+  }
+}

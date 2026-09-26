@@ -102,7 +102,8 @@ trace_kernel_info_t::trace_kernel_info_t(dim3 gridDim, dim3 blockDim,
   m_was_launched = false;
 
   // resolve the binary version
-  if (kernel_trace_info->binary_verion == AMPERE_RTX_BINART_VERSION ||
+  if (kernel_trace_info->binary_verion == 89 ||
+      kernel_trace_info->binary_verion == AMPERE_RTX_BINART_VERSION ||
       kernel_trace_info->binary_verion == AMPERE_A100_BINART_VERSION)
     OpcodeMap = &Ampere_OpcodeMap;
   else if (kernel_trace_info->binary_verion == VOLTA_BINART_VERSION)
@@ -246,8 +247,13 @@ bool trace_warp_inst_t::parse_from_trace_struct(
   // fill addresses
   if (trace.memadd_info != NULL) {
     data_size = trace.memadd_info->width;
-    for (unsigned i = 0; i < warp_size(); ++i)
+    for (unsigned i = 0; i < warp_size(); ++i) {
       set_addr(i, trace.memadd_info->addrs[i]);
+      if (trace.mask & (1U << i))
+        oracle_elastic_residency::observe_address(
+            "INSTRUCTION_OPERAND", trace.memadd_info->addrs[i], -1, -1,
+            false, 0);
+    }
   }
 
   // handle special cases and fill memory space

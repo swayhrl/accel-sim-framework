@@ -16,6 +16,7 @@
 #include <unistd.h>
 
 #include "trace_parser.h"
+#include "gpgpu-sim/oracle_elastic_residency.h"
 
 bool is_number(const std::string &s) {
   std::string::const_iterator it = s.begin();
@@ -217,6 +218,11 @@ bool inst_trace_t::parse_from_string(std::string trace, unsigned trace_version,
         }
       }
       memadd_info->base_delta_decompress(base_address, deltas, mask_bits);
+    }
+    for (int s = 0; s < WARP_SIZE; ++s) {
+      if (mask_bits.test(s))
+        oracle_elastic_residency::observe_address(
+            "TRACE_PARSED_LANE", memadd_info->addrs[s], -1, -1, false, 0);
     }
   }
 
