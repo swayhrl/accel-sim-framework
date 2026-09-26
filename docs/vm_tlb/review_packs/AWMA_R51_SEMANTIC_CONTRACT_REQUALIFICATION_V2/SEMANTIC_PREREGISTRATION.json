@@ -1,0 +1,175 @@
+{
+  "absolute_error_threshold": "NONE_FORBIDDEN",
+  "accepted_base": "8d7ba9e99d9e80f7111c7832ff3f9595ddbc7f6d",
+  "accepted_v1_standalone": {
+    "B0_ms": 0.41254401206970215,
+    "B32_ms": 0.482015997171402,
+    "B32_overhead": 0.16839896609616067,
+    "B8_ms": 0.4564160108566284,
+    "B8_overhead": 0.1063450141157638,
+    "source_runtime_identity_unchanged_required": true
+  },
+  "arms": [
+    "MONOLITHIC",
+    "CHUNKED_GRAPH_8",
+    "CHUNKED_GRAPH_32"
+  ],
+  "arrival_if_pass": [
+    0.25,
+    0.5
+  ],
+  "contract": "GREEDY_DECODE_SEMANTIC_EQUIVALENCE_V1",
+  "foreground": {
+    "output_sha256": "082ea0075d8069554381718dcacf422edaf02dfa7ba3261cf45d2d8109abc53d",
+    "role": "P1_ACCEPTED_LAYER12_FLASH_SDPA_B1",
+    "standalone_median_ms": 0.03248000144958496
+  },
+  "handoff_commit": "02ef63e7dc6a3acdbc56a2009cec110e2ea33d0f",
+  "holdout_receipt_sha256": "0b63776b03bf1942dd711285a58c48245bdb317ed1f45280364ded17ed5992be",
+  "implementations": "exact accepted V1 F.linear monolithic and output-row 8/32 CUDA Graph chunks; no implementation change",
+  "input_sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "no_third_implementation_attempt": true,
+  "non_gating_observations": [
+    "different FP16 element count",
+    "max absolute difference",
+    "mean absolute difference",
+    "correct FP16 ordered-code distance"
+  ],
+  "overlap_if_pass": {
+    "arrival_tolerance_fraction": 0.1,
+    "authority": "NSYS/CUPTI unified timeline",
+    "bounded_retry": 1,
+    "canary": 1,
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "repetitions": 7,
+    "warmups": 2
+  },
+  "pass_rule": "B8 and B32 pass every required gate at steps 8,16,24",
+  "prohibitions": [
+    "no implementation repair",
+    "no new chunk count",
+    "no parameter sweep",
+    "no model download",
+    "no driver change",
+    "no Accel-Sim",
+    "no node174",
+    "no NVBit full trace"
+  ],
+  "required_gates": [
+    "exact output shape",
+    "exact output dtype",
+    "all logits finite",
+    "exact argmax token ID",
+    "exact top-8 token-ID set",
+    "exact top1/top2 ordered token IDs"
+  ],
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "scope": "frozen greedy decode only; no temperature/top-p/general sampling claim",
+  "semantic_payload_sha256": "0d5bf4e094841fd81f2fddb84af0d29054c7bff055c6e33d2316d784a1e96e57",
+  "source_sha256": {
+    "capture_holdouts.py": "aa9f65c4eaf07c273435303ff727dd55fa57b0ae97cebad7d2eca75eaece8c3a",
+    "v1_harness.py": "34170f9a0e944f6bf7a61084b4292af9de75835919c71e9b585ad6a590a43720"
+  },
+  "stage": "AWMA_R51_SEMANTIC_CONTRACT_REQUALIFICATION_V2",
+  "states": {
+    "authority": {
+      "16": {
+        "argmax_token_id": 21272,
+        "hidden_sha256": "bfa3c6e9c98d026dcd31ae2f363986d5e0fc0607c5f93ca4146a269b910818de",
+        "hidden_shape": [
+          1,
+          896
+        ],
+        "reference_dtype": "torch.float16",
+        "reference_sha256": "ca22d8289c455bdf2f4bc2c02e5ee1404096aa77e37446ca59a0d0148f0072fb",
+        "reference_shape": [
+          1,
+          151936
+        ],
+        "source": "V1_ACCEPTED",
+        "top1_top2_order": [
+          21272,
+          198
+        ],
+        "top8_token_ids": [
+          198,
+          271,
+          362,
+          11031,
+          21272,
+          33025,
+          37847,
+          60302
+        ]
+      },
+      "24": {
+        "argmax_token_id": 2805,
+        "hidden_sha256": "b17c39a0aa06eda13aaeafb94ed33985735e17cef4122b52a0332cac9a598d42",
+        "hidden_shape": [
+          1,
+          896
+        ],
+        "reference_dtype": "torch.float16",
+        "reference_sha256": "7ecad1481b5028ebeb215d816b43717fdefe15a7d66ca09407c1cefa79f15901",
+        "reference_shape": [
+          1,
+          151936
+        ],
+        "source": "V2_HOLDOUT_CAPTURE",
+        "top1_top2_order": [
+          2805,
+          1293
+        ],
+        "top8_token_ids": [
+          198,
+          1293,
+          2613,
+          2805,
+          3347,
+          26666,
+          99534,
+          151643
+        ]
+      },
+      "8": {
+        "argmax_token_id": 198,
+        "hidden_sha256": "ca83ae4d189d810064b1ea6e6855f431e1ddfeba3bb17d5c4fbd34a6b23cbebd",
+        "hidden_shape": [
+          1,
+          896
+        ],
+        "reference_dtype": "torch.float16",
+        "reference_sha256": "d407c8fd1612e96800dffb0e9b2ced14d95c94dc9afab524ad01f7c01cd0938a",
+        "reference_shape": [
+          1,
+          151936
+        ],
+        "source": "V2_HOLDOUT_CAPTURE",
+        "top1_top2_order": [
+          198,
+          271
+        ],
+        "top8_token_ids": [
+          198,
+          271,
+          311,
+          319,
+          715,
+          1699,
+          5267,
+          151643
+        ]
+      }
+    },
+    "holdout_steps": [
+      8,
+      24
+    ],
+    "primary_step": 16
+  },
+  "status": "SEMANTIC_CONTRACT_FROZEN_BEFORE_PASS_FAIL",
+  "v1_payload_sha256": "35c67906c1a858482494767c5e08f807d6d1af7ff35f6470f8cd787cf0636666",
+  "v1_raw_index_sha256": "7ff4d08defa154ccf0455f24a4ca03893d5c59e1daa6ed847dd528af0053ca78",
+  "v1_strict_result_permanent": "R51_NOT_QUALIFIED_SOFTWARE_SAFEPOINT_NUMERIC_CONTRACT_NOT_CLOSED"
+}
