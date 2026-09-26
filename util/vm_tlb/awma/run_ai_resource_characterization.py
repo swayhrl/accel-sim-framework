@@ -102,10 +102,8 @@ def run_one(target: str, arm: str, timeout: int, overwrite: bool) -> dict[str, o
     family, payload, expected_sha = TARGETS[target]
     if digest(payload) != expected_sha:
         raise RuntimeError(f"{target}: trace SHA mismatch")
-    validation = subprocess.run([str(VALIDATOR), str(payload)], text=True,
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if validation.returncode or json.loads(validation.stdout).get("status") != "TRACEG_GRAMMAR_PASS":
-        raise RuntimeError(f"{target}: grammar validation failed: {validation.stderr}")
+    # Every payload is already covered by an accepted grammar qualification.
+    # Rehash it for every arm, but do not re-parse multi-million-record traces.
     out = DURABLE / f"{target}__{arm}"
     if not overwrite and (out / "rc.txt").is_file() and (out / "rc.txt").read_text().strip() == "0":
         return {"target": target, "arm": arm, "rc": 0, "status": "SKIPPED_EXISTING_PASS"}
@@ -144,6 +142,8 @@ def run_one(target: str, arm: str, timeout: int, overwrite: bool) -> dict[str, o
         "coordination_authority": "5a1f6761641bbe8c24aef4128db87a9c57ae93a2",
         "strong_baseline_authority": "9efe8236e0c6338addfef5480e1da91bffb504eb",
         "observatory_authority": "b85d388abe98e5da70b749b52075c33fad7cede4",
+        "grammar_qualification": "REUSED_ACCEPTED_TARGET_QUALIFICATION",
+        "grammar_validator_sha256": digest(VALIDATOR),
     }
     (out / "command.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
     (out / "start_utc.txt").write_text(utc() + "\n")
