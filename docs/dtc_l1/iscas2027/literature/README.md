@@ -1,41 +1,37 @@
 # DTC-L1 / ISCAS2027 文献支线
 
-记录日期：2026-09-26。维护者：ChatGPT。状态：**ROUND_1_RECORDED / NOT_AN_EXPERIMENT_AUTHORIZATION**。
+更新日期：2026-09-26。维护者：ChatGPT。当前状态：**ROUND_2_UPLOADED_FULLTEXT_REVIEW_COMPLETE / NO_SIMULATION_AUTHORIZATION**。
 
-本目录记录已做过的检索、原文核读范围、与DTC的技术联系和未解决问题。目的有三项：减少重复阅读；约束创新点表述；为论文相关工作和后续研究提供可追溯素材。它不是一份已经证明DTC新颖性的报告，也不是新模拟器任务。
+## 最新入口
 
-## 入口
+用户补齐了MiCache、DL-MSHR、CCWS和ICS2015旁路论文的PDF。本轮依据这四份上传版本通读正文，核对关键机制图、实验配置和结果口径；未进行代码复现，也未把参考文献中的二手介绍当作已读原文。
 
-| 文件 | 内容 |
-|---|---|
-| [PAPER_INDEX.tsv](PAPER_INDEX.tsv) | 14项登记：题目、年份、来源、阅读状态和笔记位置 |
-| [PAPER_NOTES_ZH.md](PAPER_NOTES_ZH.md) | 12篇核心候选的逐篇记录；两篇2026年外围线索的筛查说明 |
-| [COMPARISON_MATRIX.tsv](COMPARISON_MATRIX.tsv) | 按控制对象、状态组织及DTC对照问题比较；未知项不填成“没有” |
-| [RELATED_WORK_AND_CLAIMS_ZH.md](RELATED_WORK_AND_CLAIMS_ZH.md) | 技术脉络、不能声称的新颖性、可用于改稿的相关工作段落 |
-| [IDEAS_AND_NEXT_READS_ZH.md](IDEAS_AND_NEXT_READS_ZH.md) | 待验证启发、优先补读原文、下一轮停止条件 |
-| [SEARCH_LOG_2026-09-26.md](SEARCH_LOG_2026-09-26.md) | 检索范围、来源路线、取文失败、书目信息纠正 |
-| [references_verified.bib](references_verified.bib) | 已核对主要书目信息的10篇文献；未核实的DOI/页码不猜填 |
-| [PROJECT_COMPARISON_BASIS.md](PROJECT_COMPARISON_BASIS.md) | DTC自身来源、当前比较对象和冻结边界 |
+**先读：[第二轮结论、机制对照与论文修改建议](round2/ROUND2_SYNTHESIS_ZH.md)。**
 
-## 本轮覆盖与阅读等级
+| 文献 | 当前详细笔记 | 本轮状态变化 |
+|---|---|---|
+| MiCache，FPGA2024 | [P12](round2/P12_MICACHE_FULLTEXT_ZH.md) | 仅书目 → 正文、状态转换、双流水线、方法/代价核读 |
+| DL-MSHR，ICS2019 | [P11](round2/P11_DL_MSHR_FULLTEXT_ZH.md) | 仅书目 → 正文、分配/合并/回收、方法/代价核读 |
+| CCWS，MICRO2012 | [P10](round2/P10_CCWS_FULLTEXT_ZH.md) | 首页/摘要 → 正文、检测/发射规则、方法/代价核读 |
+| Locality-Driven Dynamic GPU Cache Bypassing，ICS2015 | [P03](round2/P03_DECOUPLED_L1D_FULLTEXT_ZH.md) | 定向阅读 → 补核完整正文和生命周期表述边界 |
 
-共登记14项，不应表述为“精读14篇”：
+[来源版本与SHA-256](round2/UPLOADED_SOURCE_MANIFEST.tsv)；[四篇补齐的BibTeX](round2/references_fulltext_verified.bib)；[当前总索引](PAPER_INDEX.tsv)；[当前相关工作措辞](RELATED_WORK_AND_CLAIMS_ZH.md)。
 
-- **9篇 FULLTEXT_TARGETED**：已取得原文，定向核读机制、方法或相关实验段落；并不表示每一节、每一张图都读完或已经复现。
-- **1篇 PRIMARY_FRONTMATTER**：CCWS核到原文首页/摘要，详细机制和实验待补读。
-- **2篇 METADATA_ONLY**：DL-MSHR、MiCache。已定位文献信息，未获得足够原文，不能据此判断机制差异已经清楚。
-- **2篇 ABSTRACT_SCREEN**：2026年的TTP、TileLens，作为外围线索；没有当作当前DTC最接近对手。
+## 当前最重要的更新
 
-原文事实、作者声称、ChatGPT比较推断和未核实事项在笔记中分栏处理。对未读内容使用“本轮未核读/未取得”，不混同于“原文未披露”。本目录只保存书目、链接和原创笔记，不上传外部论文全文或图像。
+1. **DL-MSHR不是简单扩大传统MSHR。** 它重组固定entry/slot绑定，使用动态链接的slot-set池；必须与DTC正面比较等待状态由谁组织。
+2. **MiCache与DTC的比较比上一轮更接近。** 它既复用cache/MSHR存储，又在子项溢出时保留不参加新请求匹配、但仍参加响应匹配的旧记录。不能再把“新查询可见性与旧请求状态保留分开”这个宽泛概念直接当作DTC独有。
+3. **ICS2015已有GPU Tag/Data解耦，但目标是局部性过滤。** RC是复用频次，Position是组内数据位置；没有证据把它称为DTC的消费者引用计数，也不能从论文未详述的瞬态规则推出其实现一定不支持。
+4. **CCWS限制的是部分load的发射资格。** 它不等价于全GPU在途请求cap；“优于Belady”的比较涉及不同调度产生的访问流，不能写成固定访问流上击败最优替换。
 
-## 本轮最重要的三个判断
+## 阅读台账与历史
 
-1. **直接对照不能遗漏Li等的ICS2015工作。** 它本身已经使用分离的GPU L1 Tag/Data存储。需比较它的局部性过滤与DTC的物理行生命周期，而不是把所有前人归为“仍然紧耦合”。见P03。
-2. **并发与缓存/内存承载能力需要平衡，不是本项目新发现的一般规律。** MRPB、CCWS、SACAT、Poise等已从不同控制位置研究此问题。当前DTC受控实验的价值是解释本设计，而非重新命名一条普遍规律。见P04、P06、P07、P10。
-3. **现阶段不能完成miss-state方向的新颖性排查。** DL-MSHR和MiCache是优先缺口，不能因为全文未取到而略过；2025年的LLaMCAT也使“利用MSHR命中和节流改善访存”成为必须比较的方向。见P08、P11、P12。
+仍登记14项：4篇本轮正文/关键图表核读、8篇上一轮全文定向核读、2项摘要筛查。不是14篇已复现，也不是相关工作已经查全。
 
-## 与主线的隔离
+第一轮提交：`9d1026d3c49d56c584e074a76071c90a456aebce`。第一轮原始记录保留在Git历史及[PAPER_NOTES_ZH.md](PAPER_NOTES_ZH.md)、[COMPARISON_MATRIX.tsv](COMPARISON_MATRIX.tsv)、[IDEAS_AND_NEXT_READS_ZH.md](IDEAS_AND_NEXT_READS_ZH.md)、[SEARCH_LOG_2026-09-26.md](SEARCH_LOG_2026-09-26.md)。**其中P03/P10/P11/P12的旧阅读等级、待取文事项及相关推断由round2取代**；不能把第一轮“未取得全文”当作当前状态。其他文献本轮未重新审核。
 
-本支线从协调提交 `d0f8e72b370271b7432c3785c0687e79ca3e0f4b` 建立。只增加本目录，不改 `chatgpt_handoff/CODEX_NEXT_STAGE.md`、运行配置、模拟器代码或既有结果。SG3冻结证据锚点为 `6886930ab22d63701e58732cfde18ba019d1dfde`。
+本轮只保存原创文字笔记、书目和来源哈希，不上传论文全文、原文图像或授权下载水印。论文事实、作者解释、我们的推断和原文未明确之处分开记录。
 
-**这些笔记不授权任何仿真、复现或新机制。** 下一轮阅读可以继续补充本目录；实验必须另有明确论文问题和执行授权。
+## 项目隔离
+
+分支：`hrl/iscas2027-dtc-literature-review-v0`。DTC比较基础见[PROJECT_COMPARISON_BASIS.md](PROJECT_COMPARISON_BASIS.md)。本轮不改该设计基础、不改主线handoff、模拟器代码、配置或已接受结果；不授权复现或新实验。SG3冻结证据锚点仍为`6886930ab22d63701e58732cfde18ba019d1dfde`。
