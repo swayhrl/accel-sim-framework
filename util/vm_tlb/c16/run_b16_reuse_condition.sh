@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -u
+set -o pipefail
 
 if [[ $# -ne 3 ]]; then
   echo "usage: $0 CONDITION OUTPUT_DIR CONFIG" >&2
