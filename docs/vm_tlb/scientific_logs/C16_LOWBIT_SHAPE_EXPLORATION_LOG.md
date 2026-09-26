@@ -351,3 +351,18 @@ M1 AWQ/RAW was 0.173719 for L1/TEX, 0.305459 for L2 and `4.63243e-6` for DRAM. M
 **Representative NCU.** L0 up_proj duration improves at 16 MiB and full budget. L0 self_attn duration/traffic changes are small (approximately +0.6% duration at 16 MiB and +0.1% at full) and do not reproduce the large native aggregate slowdown across all 28 self-attention modules. The localization is therefore semantic aggregate evidence, not a unique per-kernel mechanism claim.
 
 **Stage label.** `RESIDENCY_OFFSET_LOCALIZED`. The system case remains non-positive, but the previous residual is no longer mostly unexplained: it localizes to measurable gate/down and especially self-attention cost at full budget. `REVISE_MECHANISM_AROUND_MEASURED_INTERFERENCE_COST` is recorded as the producer's review candidate, not an authorization. No simulator, NVBit, trace, or mechanism implementation was run.
+---
+
+## E1 bounded decode context trace producer result ? 2026-09-26
+
+**Authority.** Accepted residency cost/benefit producer `86ef7dcfb49241bd87ff4a8d59b4d950d53de0a5` and independent consumer `0ccd19d4511e8d55c31eb9d8899d33c35da8778c` authorize the bounded trace after `RESIDENCY_OFFSET_LOCALIZED`. The natural Qwen2.5-7B-Instruct-AWQ S2_TEXT workload retains token SHA `0ab5bfe8...` and deterministic D0-D3 tokens `[23578, 11, 323, 3950]`.
+
+**Scope.** One process captures consecutive D1-D3, dynamic kernels 2926-7440. Each decode contains 1505 kernels and 28/28 up_proj occurrences. All 4515 kernels are retained; 4347 are non-up intervening traffic. No CUDA persisting-L2 policy or access-policy window is active.
+
+**Trace closure.** Raw Route-B output contains 105,451,668,600 compressed bytes with zero drops, overflows or partial members. Post-processing produces 4515 traceg members totaling 9,464,308,892 bytes. Strict grammar and the official Accel-Sim parser pass every member, closing 16,313,481,995 dynamic instructions and 3,653,040 CTAs with CTA/grid and warp-instruction termination intact.
+
+**Oracle sidecar.** All 28 up_proj qweight tensors are independent contiguous 33,947,648-byte allocations; pointers and content remain stable across D1-D3. Real-artifact D2 canaries at layers 0, 14 and 27 directly hit the matching runtime numeric intervals. The address conclusion is `TRACE_SIDE_VALIDATED_SIM_L2_MAPPING_PENDING_174`; simulator-internal L2 address preservation is not claimed.
+
+**Durable admission.** Pipeline V1 independently rehashes, admits and positively ACKs 9062 artifacts / 114,926,148,782 bytes at node164. Durable raw authority is `/root/share/mnt164/huangrulin/c16_ai_workload/raw/C16R_qwen2p5-7b-instruct-awq_s2-text-d1-d3_decode3_nvbit1771-sim-native-full-sass_bounded-context_20260925T120107Z_2b41b26fdb03`.
+
+**Final label.** `C16_E1_BOUNDED_DECODE_TRACE_QUALIFIED_V1`. The trace is qualified as future simulator input. This stage does not run Accel-Sim/GPGPU-Sim, change simulator code, or implement/test a mechanism.
