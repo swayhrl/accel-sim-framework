@@ -1,0 +1,9 @@
+capability	status	evidence
+cudaMallocManaged	AVAILABLE	64MiB probe PASS and 20GiB points COMPLETE
+cudaMemPrefetchAsync	AVAILABLE	probe GPU/CPU prefetch PASS; resident M1 points COMPLETE
+cudaMemAdvise set/unset read-mostly	AVAILABLE	probe return codes 0; not used in matrix
+cudaMemGetInfo	AVAILABLE	per-point before/after receipts
+NSYS UVM migration bytes/count/time	AVAILABLE	CUPTI_ACTIVITY_KIND_MEMCPY UVM_HTOD/UVM_DTOH with migrationCause
+NSYS/CUPTI GPU page-fault events/groups	UNAVAILABLE	no dedicated Unified Memory counter/activity table in exported SQLite
+CPU UVM page-fault telemetry	UNAVAILABLE	not exposed by selected NSYS trace configuration
+managed oversubscription stable execution	AVAILABLE	R2 and capped-R3 COMPLETE for P1/P2/P3
