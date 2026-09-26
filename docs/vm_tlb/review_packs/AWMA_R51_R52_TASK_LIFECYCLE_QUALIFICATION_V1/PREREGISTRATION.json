@@ -1,0 +1,71 @@
+{
+  "accepted_base": "ce5918d837b76e95ad4000c50bbe1465707a2ebd",
+  "arms": [
+    "MONOLITHIC",
+    "CHUNKED_GRAPH_8",
+    "CHUNKED_GRAPH_32"
+  ],
+  "arrival_fractions": [
+    0.25,
+    0.5
+  ],
+  "arrival_tolerance_fraction": 0.1,
+  "background": {
+    "current_semantic_replay_identity": "exact standalone strata",
+    "decode_step": 16,
+    "eligibility_min_ms": 0.15,
+    "hidden_sha256": "bfa3c6e9c98d026dcd31ae2f363986d5e0fc0607c5f93ca4146a269b910818de",
+    "historical_grid_clue": "18992,1,1 block=8,8,1 operator_role historically UNKNOWN",
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "monolithic_median_ms": 0.41254401206970215,
+    "output_sha256": "ca22d8289c455bdf2f4bc2c02e5ee1404096aa77e37446ca59a0d0148f0072fb",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "scenario": "S2_TEXT",
+    "semantic_role": "LM_HEAD_BACKGROUND",
+    "shape": [
+      151936,
+      896
+    ],
+    "weight_sha256": "d74257dc547b48be5ae7b93f1c9af072c0c42dbbb85503078e25c59cd09e68d0"
+  },
+  "canary_per_point": 1,
+  "chunk_counts": [
+    8,
+    32
+  ],
+  "foreground": {
+    "accepted_standalone_median_ms": 0.03248000144958496,
+    "k_sha256": "0f48bfd6afcff6f83b5590ffaeb9d88d569716a0007cf340fb41e55b6defb0c1",
+    "output_sha256": "082ea0075d8069554381718dcacf422edaf02dfa7ba3261cf45d2d8109abc53d",
+    "q_sha256": "b31a30a21d6eb82b0209f0dc73203620a6a4dc6816758cb9a7bd9e9c9742f9d1",
+    "role": "P1_ACCEPTED_LAYER12_FLASH_SDPA_B1",
+    "v_sha256": "65b2edc8a8692086ccb604fccf19ad36ba4d4e37e8c575af4958f374f0e0e7ba"
+  },
+  "formal_timeline": "NSYS/CUPTI unified timeline",
+  "handoff_commit": "246eb3789243718f2bdc794ac6651cee2e1a593f",
+  "handoff_material_min_us": 10.0,
+  "jitter_gate": "improvement > 3x larger latency jitter envelope",
+  "literature_commit": "d6a10f0209a024edb4612b1f53edb61d6e39bd18",
+  "low_cost_overhead_max": 0.05,
+  "measured_repetitions": 7,
+  "numeric_gate_result": "B8_B32_FAILED_BITWISE_AFTER_TWO_ATTEMPTS; FORMAL_OVERLAP_NOT_AUTHORIZED",
+  "prohibitions": [
+    "no model download",
+    "no driver patch",
+    "no parameter sweep",
+    "no Accel-Sim",
+    "no node174 execution",
+    "no NVBit full trace"
+  ],
+  "retry_per_point": 1,
+  "source_sha256": {
+    "extract_targets.py": "70c48ecf3f36fd69899ab3a5a07fcf09aa7a90730ac043745300b8d9478b6f64",
+    "finalize.py": "3e02ae09fbf37cd05eeb6c2c4d6d7e5a4c01624c14c5de639e1a8420c4635c9d",
+    "harness.py": "34170f9a0e944f6bf7a61084b4292af9de75835919c71e9b585ad6a590a43720",
+    "numeric_attempt_audit.py": "51584fa533c614bba0c0ba832edaac34748af7f5652194f6bb7ab062b8c562af",
+    "run_standalone.py": "dde0024814f6f9b522ada82aaa107d493a91dbd7ab1356617002afe782961daa"
+  },
+  "stage": "AWMA_R51_R52_TASK_LIFECYCLE_QUALIFICATION_V1",
+  "status": "FROZEN_PRE_OVERLAP_THEN_STOPPED_AT_NUMERIC_GATE",
+  "warmups": 2
+}
