@@ -17,10 +17,17 @@ done
 (cd "$run_root/M1_B16" && sha256sum -c OUTPUT_SHA256SUMS)
 
 set +e
-python3 - "$run_root/R0_BASELINE/RUN_RECEIPT.json" \
-          "$run_root/M1_B16/RUN_RECEIPT.json" <<'PY'
+python3 - "$run_root" "$framework" "$pack" <<'PY'
 import json
 import sys
+from pathlib import Path
+
+run_root = Path(sys.argv[1])
+framework = Path(sys.argv[2])
+pack = Path(sys.argv[3])
+sys.path.insert(0, str(framework / "util/vm_tlb/c16"))
+import e1_b16_reuse_canary as canary
+
 expected = {
     "R0_BASELINE": {
         "config_sha256": "a8918f1407fc2a9146808625b55a5120f64bb2cf4ce8b6a5b399ac4654d36d96",
@@ -29,19 +36,56 @@ expected = {
         "config_sha256": "15e06af19200e7fb40af93c6a21b19290b581c327f420dd3fdefc3f4b3af3bdd",
     },
 }
-for path in sys.argv[1:]:
+for condition in ("R0_BASELINE", "M1_B16"):
+    path = run_root / condition / "RUN_RECEIPT.json"
     receipt = json.load(open(path, encoding="utf-8"))
     if receipt.get("status") != "PASS" or receipt.get("exit_code") != 0:
         raise SystemExit(f"primary run did not close PASS: {path}")
-    condition = receipt.get("condition")
-    if condition not in expected:
-        raise SystemExit(f"unexpected primary condition: {condition}")
+    if receipt.get("condition") != condition:
+        raise SystemExit(f"primary condition drift: {path}")
     if receipt.get("core_head_at_launch") != "0271de82432db004beed43280ed01057246a0f2c":
         raise SystemExit(f"Core launch identity drift: {path}")
     if receipt.get("binary_sha256") != "6be0986958ffbb8a128ce19e8a88b53a4c4838f97202c2f3d1c9dec6e9a02186":
         raise SystemExit(f"binary launch identity drift: {path}")
     if receipt.get("config_sha256") != expected[condition]["config_sha256"]:
         raise SystemExit(f"config launch identity drift: {path}")
+
+scope = canary.read_json(pack / "REUSE_WINDOW_SCOPE.json")
+sequence = canary.tsv(pack / "REUSE_WINDOW_SEQUENCE.tsv")
+summaries = {}
+parsed = {}
+for condition in ("R0_BASELINE", "M1_B16"):
+    summaries[condition], parsed[condition] = canary.summarize_run(
+        run_root / condition, condition, sequence, scope, False)
+
+fields = ("kernel_count", "kernel_sequence_sha256", "instruction_count", "CTA_count")
+if not all(summaries["R0_BASELINE"][field] == summaries["M1_B16"][field]
+           for field in fields):
+    raise SystemExit("primary full-window workload/correctness mismatch")
+uid_count = int(scope["total_kernel_count"])
+for uid in range(1, uid_count + 1):
+    for metric in ("gpu_tot_sim_insn", "gpu_tot_issued_cta"):
+        if parsed["R0_BASELINE"]["completed"][uid][metric] != \
+           parsed["M1_B16"]["completed"][uid][metric]:
+            raise SystemExit(f"primary per-UID {metric} mismatch at UID {uid}")
+
+gate = {
+    "schema": "C16_E1_B16_PRIMARY_DIAGNOSTIC_ADMISSION_GATE_V1",
+    "status": "PASS",
+    "primary_terminal_PASS": True,
+    "primary_launch_authority_PASS": True,
+    "primary_full_window_kernel_identity_PASS": True,
+    "primary_per_UID_instruction_CTA_identity_PASS": True,
+    "primary_correctness_comparison_PASS": True,
+    "compared_fields": list(fields),
+    "kernel_count": uid_count,
+    "R0_BASELINE": {field: summaries["R0_BASELINE"][field] for field in fields},
+    "M1_B16": {field: summaries["M1_B16"][field] for field in fields},
+}
+(run_root / "PRIMARY_DIAGNOSTIC_ADMISSION_GATE.json").write_text(
+    json.dumps(gate, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+(pack / "PRIMARY_DIAGNOSTIC_ADMISSION_GATE.json").write_text(
+    json.dumps(gate, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 PY
 primary_gate_exit=$?
 set -e
