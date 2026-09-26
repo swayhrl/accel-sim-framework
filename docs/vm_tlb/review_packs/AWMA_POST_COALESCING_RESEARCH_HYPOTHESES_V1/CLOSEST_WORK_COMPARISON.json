@@ -1,0 +1,79 @@
+{
+  "schema": "AWMA_CLOSEST_WORK_COMPARISON_V1",
+  "stage": "AWMA_POST_COALESCING_RESEARCH_HYPOTHESES_V1",
+  "works": [
+    {
+      "id": "R1_PICHAI_HSU_BHATTACHARJEE_DCS_TR_703",
+      "primary_source": "https://scholarship.libraries.rutgers.edu/view/pdfCoverPage?download=true&filePid=13643522050004646&instCode=01RUT_INST",
+      "reading_depth": "FULL_TEXT_OBTAINED_KEY_SECTION_VISUALLY_CHECKED",
+      "locator": "section 5.2, printed page 4, PDF zero-based page 4",
+      "author_scheme": "After address generation, separately form unique cache-line accesses and unique same-virtual-page/PTE accesses within a warp.",
+      "awma_adaptation_boundary": "Lane B adapts only same-dynamic-warp-instruction VPN deduplication; timing, exact identity, finite grouping, and delivery are AWMA decisions.",
+      "relation_to_h1": "Establishes the necessary grouping baseline but not the proposed last-unresolved-group predicate.",
+      "relation_to_h2": "Does not establish AWMA resident-prelaunch versus accessq-head arbitration.",
+      "novelty_status": "INTRAWARP_VPN_DEDUP_IS_NOT_NEW"
+    },
+    {
+      "id": "R2_GEM5_VEGA_TLB_COALESCER",
+      "primary_source": "https://github.com/gem5/gem5/blob/56aca813700a6b107f2282f15af5e4d2cad0d0e2/src/arch/amdgpu/vega/tlb_coalescer.cc",
+      "source_commit": "56aca813700a6b107f2282f15af5e4d2cad0d0e2",
+      "reading_depth": "PRIMARY_SOURCE_KEY_FUNCTIONS_REVIEWED",
+      "locator": "canCoalesce, recvTimingReq, processProbeTLBEvent, updatePhysAddresses",
+      "author_scheme": "Same-page and same-mode requests within a time window coalesce; finite probes/downstream slots and an issued-translation table govern service/return.",
+      "relation_to_h1": "Time-window grouping is not the same as dynamic-instruction last-unresolved criticality.",
+      "relation_to_h2": "Finite probe scheduling is close, but reviewed rules do not use AWMA accessq-head demand versus resident-prelaunch identity.",
+      "novelty_status": "SOURCE_NEIGHBOR_NOT_FULL_SYSTEM_BASELINE"
+    },
+    {
+      "id": "R3_CAC_PACT_2018",
+      "primary_source": "https://pharm.ece.wisc.edu/publications.shtml",
+      "doi": "10.1145/3243176.3243203",
+      "reading_depth": "FULL_TEXT_NOT_OBTAINED",
+      "failed_full_text_url": "https://pharm.ece.wisc.edu/papers/pact_2018.pdf",
+      "known_only_from_primary_metadata": "Compiler-assisted Coalescing exists as a PACT 2018 paper.",
+      "unknown_details": [
+        "translation grouping table and lifetime",
+        "demand/criticality arbitration",
+        "complete baseline and timing contract"
+      ],
+      "novelty_status": "UNKNOWN_DO_NOT_INFER_FROM_SECONDARY_SUMMARY"
+    },
+    {
+      "id": "R4_LATPC_MICRO_2025",
+      "primary_source": "https://yonsei.elsevierpure.com/en/publications/latpc-accelerating-gpu-address-translation-using-locality-aware-t/",
+      "doi": "10.1145/3725843.3756069",
+      "reading_depth": "FULL_TEXT_NOT_OBTAINED",
+      "known_only_from_primary_abstract": "Combines TLB prefetching, warp-VPN regularity, MSHR compression, and PTW batching.",
+      "unknown_details": [
+        "exact warp-instruction grouping lifecycle",
+        "demand versus prefetch arbitration",
+        "criticality and completion ordering",
+        "finite ports and fallback details"
+      ],
+      "novelty_status": "UNKNOWN_DO_NOT_USE_ABSTRACT_FOR_ABSENCE_CLAIM"
+    },
+    {
+      "id": "R5_MASK_ASPLOS_2018",
+      "primary_source": "https://www.pdl.cmu.edu/PDL-FTP/PowerMgmt/mask-asplos18.pdf",
+      "doi": "10.1145/3173162.3173169",
+      "reading_depth": "FULL_TEXT_OBTAINED_KEY_SECTIONS_VISUALLY_CHECKED",
+      "locator": "section 4.1 printed page 5; sections 5.2-5.4",
+      "author_scheme": "Identifies translation stalls and consecutive post-completion data requests; adds TLB-fill tokens, translation-aware L2 bypass, and translation-aware DRAM scheduling.",
+      "relation_to_h1": "Tracks stalled warps per active miss but does not define exact last-unresolved dynamic-instruction page-group priority.",
+      "relation_to_h2": "Completion burst and broad translation/data pressure are already known; H2 is restricted to existing L1-TLB-port head-demand/prelaunch arbitration.",
+      "novelty_status": "BURST_OR_GENERIC_TRANSLATION_PRIORITY_IS_NOT_NEW"
+    },
+    {
+      "id": "R6_RPAWS_ELEX_2026",
+      "primary_source": "https://www.jstage.jst.go.jp/article/elex/23/12/23_23.20260028/_pdf/-char/en",
+      "doi": "10.1587/elex.23.20260028",
+      "reading_depth": "FULL_TEXT_OBTAINED_KEY_SECTION_VISUALLY_CHECKED",
+      "locator": "sections 3.1-3.2, printed page 3",
+      "author_scheme": "Classifies decoded next instructions into compute/memory virtual queues and changes priority from real-time ALU/LSU issue-queue busy signals.",
+      "relation_to_h1": "Does not use exact translation page-group completion state.",
+      "relation_to_h2": "Generic pressure-aware warp scheduling is prior work and is excluded from H2.",
+      "novelty_status": "GENERIC_PRESSURE_AWARE_SCHEDULING_IS_NOT_NEW"
+    }
+  ],
+  "global_boundary": "No entry establishes novelty. Missing CAC/LATPC full text remains an explicit novelty gate."
+}

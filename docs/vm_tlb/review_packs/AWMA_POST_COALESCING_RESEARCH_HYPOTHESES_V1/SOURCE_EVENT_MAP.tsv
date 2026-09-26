@@ -1,0 +1,8 @@
+event	location	available_identity	finite_resource	interpretation
+resident_visible	shader.cc ldst_unit::memory_cycle accessq_entries	run-local instruction/access UID plus address	resident accessq	Not necessarily head or ready to consume
+head_translation_decision	shader.cc inst.accessq_back before translate	run-local access UID plus exact translation identity	accessq head	Normal demand decision point
+physical_l1_launch	vm_translation.cc translate after L1 port grant	SID+access UID+exact key	configured L1 TLB port	Retry without port is not a launch
+translation_ready	vm_translation.cc LOOKUP_READY or PTW completion	request UID and exact key	lookup/MSHR/PTW state	Result exists but need not be applied
+address_applied	shader.cc apply_ready_translation or head set_sim_pa	exact mem_access_t	per-access exactly-once state	Still not cache admission
+cache_admitted	shader.cc process_memory_access_queue_l1cache or bypass path	mem_access_t/mem_fetch	data port/bank/reservation/interconnect	Downstream progress boundary
+scoreboard_collision	scoreboard.cc Scoreboard::checkCollision	warp and register set	register scoreboard	Cannot identify translation producer class
