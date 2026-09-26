@@ -95,14 +95,34 @@ print(0 if valid else 1)
 PY
 )
 
+analysis_exit=1
+if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 ]]; then
+  set +e
+  python3 "$framework/util/vm_tlb/c16/e1_b16_reuse_canary.py" analyze \
+    --scope "$pack/REUSE_WINDOW_SCOPE.json" \
+    --sequence "$pack/REUSE_WINDOW_SEQUENCE.tsv" \
+    --r0 "$run_root/R0_BASELINE" \
+    --m1 "$run_root/M1_B16" \
+    --diagnostic "$diagnostic" \
+    --repeat "$repeat" \
+    --repeat-condition R0_BASELINE \
+    --output "$pack" \
+    > "$run_root/analysis.stdout" 2> "$run_root/analysis.stderr"
+  analysis_exit=$?
+  set -e
+fi
+
 status=FAIL
-if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 ]]; then status=PASS; fi
+if [[ $diagnostic_exit -eq 0 && $repeat_exit -eq 0 && $analysis_exit -eq 0 ]]; then
+  status=PASS
+fi
 cat > "$run_root/FOLLOWUP_RECEIPT.json" <<EOF
 {
   "schema": "C16_E1_B16_REUSE_FOLLOWUP_RECEIPT_V1",
   "status": "$status",
   "diagnostic_exit_code": $diagnostic_exit,
-  "repeat_exit_code": $repeat_exit
+  "repeat_exit_code": $repeat_exit,
+  "analysis_exit_code": $analysis_exit
 }
 EOF
-exit $(( diagnostic_exit != 0 || repeat_exit != 0 ))
+exit $(( diagnostic_exit != 0 || repeat_exit != 0 || analysis_exit != 0 ))
