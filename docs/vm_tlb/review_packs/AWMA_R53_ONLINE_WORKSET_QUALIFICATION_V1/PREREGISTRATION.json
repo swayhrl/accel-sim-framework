@@ -1,0 +1,42 @@
+{
+  "accepted_base": "db2000f7222030282f788bd009243ab1a43ed867",
+  "arms": [
+    "A0_PINNED_OFFICIAL_BATCHED_REFERENCE",
+    "A1_STRONG_SEMANTIC_WORKSET_SOFTWARE"
+  ],
+  "b2_fallback": "ONLY_IF_B4_OOM_NOT_TRIGGERED",
+  "concurrency": 4,
+  "dataset_revisions": {
+    "openai/gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "openai/openai_humaneval": "7dce6050a7d6d172f3cc5c32aa97f52fa1a2e544"
+  },
+  "handoff_commit": "4ce1e7ad04d552fa044b173ad76a1005237a0762",
+  "hardening_limit": 2,
+  "humaneval_code_execution": "PROHIBITED",
+  "measurement_if_gate_passed": {
+    "canary": 1,
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "paired_interleaved": true,
+    "repetitions": 7,
+    "warmups": 2
+  },
+  "model_revision": "25093b6f63300adfd57f72145083c8a528fe4f16",
+  "no_parameter_sweep": true,
+  "performance_gate": "end-to-end >=5% and >3x larger jitter",
+  "policy": {
+    "block_size": 32,
+    "dtype": "bfloat16",
+    "max_new_tokens": 512,
+    "small_block_size": 8,
+    "stop_eos": true,
+    "temperature": 0.0,
+    "threshold": 0.9,
+    "top_p": 0.95,
+    "use_block_cache": true
+  },
+  "request_selection_sha256": "b230a8ce101c14990e5bdf3e451c9ec4e7e36264d65fdff0a9ce8e33793d1406",
+  "semantic_contract": "R53_FIXED_DECODER_CACHE_TRAJECTORY_V1",
+  "source_commit": "a9b81e4caa240c8cad4f7dc1889ff4852a0fca5b",
+  "stage": "AWMA_R53_ONLINE_WORKSET_QUALIFICATION_V1",
+  "status": "FROZEN_BEFORE_FORMAL_TIMING; FORMAL_STOPPED_AT_SEMANTIC_GATE"
+}
