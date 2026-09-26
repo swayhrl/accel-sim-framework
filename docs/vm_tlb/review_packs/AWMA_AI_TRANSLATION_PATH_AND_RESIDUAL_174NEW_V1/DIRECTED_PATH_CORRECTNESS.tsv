@@ -1,0 +1,11 @@
+case	b0	b1	b2	gate
+L1D_hit_L1TLB_hit	PASS	PASS_42_TO_32	BOUND_ONLY	no early physical-tag use
+L1D_miss_L1TLB_hit	PASS	PASS_LOWER_WAITS	PASS_TRANSLATION_REQUIRED	one lower request
+L1D_hit_L1TLB_miss	PASS	PASS_LEGALITY_WAIT	BOUND_ONLY	completion not before physical translation
+L1D_miss_L1TLB_miss	PASS	PASS_NO_LOWER_SKIP	PASS_TRANSLATION_REQUIRED	L2/PTW tail preserved
+replay_after_translation	PASS	PASS_EXACTLY_ONCE	BOUND_ONLY	duplicate apply rejected
+store	PASS	PASS_TRANSLATION_REQUIRED	FALLBACK_TRANSLATION	no virtual filter
+atomic	PASS	PASS_TRANSLATION_REQUIRED	FALLBACK_TRANSLATION	no virtual filter
+request_count_conservation	PASS	PASS	PASS_FIXTURE	one data request; B1 one translation service
+terminal_quiescence	PASS_ACCEPTED_RUNS	PASS_ACCEPTED_RUNS	NOT_RUN	B0/B1 controller quiescent
+integrated_B2_semantics	NA	NA	NOT_IMPLEMENTED	missing virtual tags/permissions/synonym/coherence
