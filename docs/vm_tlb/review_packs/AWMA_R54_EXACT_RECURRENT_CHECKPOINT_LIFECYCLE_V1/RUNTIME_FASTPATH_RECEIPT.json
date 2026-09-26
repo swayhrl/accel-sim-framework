@@ -1,0 +1,33 @@
+{
+  "driver": "580.178.04",
+  "environment_lock_sha256": "9c46732b0f6afd4435fb236d35b4825d653e37ecccd1d880f97d08519cf8cec2",
+  "fallback_observed": [
+    "causal_conv1d_fn -> reference PyTorch",
+    "chunk_gated_delta_rule -> reference PyTorch"
+  ],
+  "fixes": [
+    {
+      "action": "install Transformers main commit to obtain qwen3_5 architecture",
+      "id": 1,
+      "result": "PASS"
+    },
+    {
+      "action": "causal-conv1d build",
+      "id": 2,
+      "result": "FAIL CUDA mismatch in isolated build environment (CUDA12.8 vs build torch CUDA13.0)"
+    }
+  ],
+  "isolated_environment": "/data/c16/awma/r54_checkpoint_lifecycle_20260927/env",
+  "missing_optimized_packages": [
+    "causal_conv1d",
+    "flash-linear-attention"
+  ],
+  "python": "3.10.12",
+  "status": "R54_RUNTIME_FASTPATH_NOT_QUALIFIED",
+  "system_cuda": "12.8",
+  "torch": "2.5.1+cu124",
+  "torch_cuda": "12.4",
+  "transformers_source_commit": "96331a9f93b72697f160a958d2883d4b49a56739",
+  "transformers_source_tree": "c26d3abf7ea81ea9024c5500b9b71768bd997acb",
+  "transformers_version": "5.18.0.dev0"
+}
