@@ -1,0 +1,9 @@
+target	domain_1	arm_1	domain_2	arm_2	selection_basis	scale_reasoning	selection_time
+T0	D1_EXECUTION_SFU	SFU_2X	D2_L1D_LATENCY	L1_LAT_2X	High eligible-structural cycles with 1,009,792 SFU completions; 78.4% of classified L1 accesses hit, so a latency contrast is source-local	Not an exact scale pair	BEFORE_ANY_2X_RESULT
+T1	D1_EXECUTION_TENSOR	TENSOR_2X	D3_L2_CAPACITY	L2_CAP_2X	HMMA-bearing GEMM with dominant eligible-structural location; 6,054,065 L2 hits and 1,106,290 misses make L2 capacity a finite secondary contrast	Not an exact scale pair	BEFORE_ANY_2X_RESULT
+T2	D2_L1D_RESERVATION	L1_MSHR_2X	D5_DRAM_SERVICE	DRAM_2X	1,125,174 L1 reservation failures plus mean DRAM queue 43.075/64 and peak 64	Historical Qwen GEMV contexts show path sensitivity is context dependent; no historical resource result is used	BEFORE_ANY_2X_RESULT
+SPLITKV	D3_L2_RESERVATION	L2_MSHR_2X	D5_DRAM_SERVICE	DRAM_2X	169,253 L2 reservation failures, mean L2-to-DRAM queue 40.596/64, and mean DRAM queue 44.551/64	Not an exact scale pair	BEFORE_ANY_2X_RESULT
+L2	D1_EXECUTION_SFU	SFU_2X	D3_L2_RESERVATION	L2_MSHR_2X	34,560 SFU completions with peak 192; 63,962 L2 reservation failures against 67,210 classified L2 accesses	Not an exact scale pair	BEFORE_ANY_2X_RESULT
+L1	D2_L1D_RESERVATION	L1_MSHR_2X	D5_DRAM_SERVICE	DRAM_2X	21,417,062 L1 reservation failures and mean DRAM queue 36.641/64	Exact implementation match to M1; same domains are frozen on both to expose scale response	BEFORE_ANY_2X_RESULT
+M1	D2_L1D_RESERVATION	L1_MSHR_2X	D5_DRAM_SERVICE	DRAM_2X	1,896,942 L1 reservation failures and mean DRAM queue 29.267/64	Exact implementation match to L1 at 1/8 CTA and aggregate work; compare per CTA/per memory instruction	BEFORE_ANY_2X_RESULT
+M2	NONE	NONE	NONE	NONE	LOW_DEMAND_CONTROL: three admissions, no cache reservation failure, negligible queues	Control only; no scaling matrix	BEFORE_ANY_2X_RESULT
