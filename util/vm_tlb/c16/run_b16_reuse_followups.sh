@@ -7,18 +7,40 @@ runner=$framework/util/vm_tlb/c16/run_b16_reuse_condition_v2.sh
 pack=$framework/docs/vm_tlb/review_packs/C16_E1_ORACLE_ELASTIC_B16_REUSE_PERFORMANCE_CANARY_174NEW_V1
 
 while [[ ! -s $run_root/R0_BASELINE/RUN_RECEIPT.json ||
-         ! -s $run_root/M1_B16/RUN_RECEIPT.json ]]; do
+         ! -s $run_root/R0_BASELINE/OUTPUT_SHA256SUMS ||
+         ! -s $run_root/M1_B16/RUN_RECEIPT.json ||
+         ! -s $run_root/M1_B16/OUTPUT_SHA256SUMS ]]; do
   sleep 60
 done
+
+(cd "$run_root/R0_BASELINE" && sha256sum -c OUTPUT_SHA256SUMS)
+(cd "$run_root/M1_B16" && sha256sum -c OUTPUT_SHA256SUMS)
 
 python3 - "$run_root/R0_BASELINE/RUN_RECEIPT.json" \
           "$run_root/M1_B16/RUN_RECEIPT.json" <<'PY'
 import json
 import sys
+expected = {
+    "R0_BASELINE": {
+        "config_sha256": "a8918f1407fc2a9146808625b55a5120f64bb2cf4ce8b6a5b399ac4654d36d96",
+    },
+    "M1_B16": {
+        "config_sha256": "15e06af19200e7fb40af93c6a21b19290b581c327f420dd3fdefc3f4b3af3bdd",
+    },
+}
 for path in sys.argv[1:]:
     receipt = json.load(open(path, encoding="utf-8"))
     if receipt.get("status") != "PASS" or receipt.get("exit_code") != 0:
         raise SystemExit(f"primary run did not close PASS: {path}")
+    condition = receipt.get("condition")
+    if condition not in expected:
+        raise SystemExit(f"unexpected primary condition: {condition}")
+    if receipt.get("core_head_at_launch") != "0271de82432db004beed43280ed01057246a0f2c":
+        raise SystemExit(f"Core launch identity drift: {path}")
+    if receipt.get("binary_sha256") != "6be0986958ffbb8a128ce19e8a88b53a4c4838f97202c2f3d1c9dec6e9a02186":
+        raise SystemExit(f"binary launch identity drift: {path}")
+    if receipt.get("config_sha256") != expected[condition]["config_sha256"]:
+        raise SystemExit(f"config launch identity drift: {path}")
 PY
 
 diagnostic=$run_root/M1_B16_DIAGNOSTIC
