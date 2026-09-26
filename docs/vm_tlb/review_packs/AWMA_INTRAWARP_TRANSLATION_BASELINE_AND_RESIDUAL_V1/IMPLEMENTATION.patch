@@ -1,0 +1,571 @@
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/intrawarp_translation_reference.cc b/src/gpgpu-sim/src/gpgpu-sim/intrawarp_translation_reference.cc
+new file mode 100644
+index 0000000..4fdeb30
+--- /dev/null
++++ b/src/gpgpu-sim/src/gpgpu-sim/intrawarp_translation_reference.cc
+@@ -0,0 +1,168 @@
++#include "intrawarp_translation_reference.h"
++
++#include <assert.h>
++#include <stdlib.h>
++#include <map>
++#include <set>
++
++namespace awma_intrawarp {
++namespace {
++struct runtime_request_key {
++  unsigned sid; uint64_t uid;
++  bool operator<(const runtime_request_key &o) const {
++    return sid != o.sid ? sid < o.sid : uid < o.uid;
++  }
++};
++struct runtime_instruction_key {
++  unsigned sid; uint64_t uid;
++  bool operator<(const runtime_instruction_key &o) const {
++    return sid != o.sid ? sid < o.sid : uid < o.uid;
++  }
++};
++struct stable_warp_key {
++  uint64_t cta; unsigned warp;
++  bool operator<(const stable_warp_key &o) const {
++    return cta != o.cta ? cta < o.cta : warp < o.warp;
++  }
++};
++struct identity {
++  unsigned asid; uint64_t vpn, page_size, generation;
++  vm_translation::translation_access access;
++  bool operator<(const identity &o) const {
++    if (asid != o.asid) return asid < o.asid;
++    if (vpn != o.vpn) return vpn < o.vpn;
++    if (page_size != o.page_size) return page_size < o.page_size;
++    if (generation != o.generation) return generation < o.generation;
++    return access < o.access;
++  }
++};
++struct request_meta {
++  uint64_t cta; unsigned warp; uint64_t instruction_ordinal, pc;
++  identity key; bool classic_coverable; uint64_t stable_hash;
++};
++struct cycle_activity {
++  uint64_t cycle, compares, leaders, registrations, ready_reads, consumes;
++  cycle_activity() : cycle(~0ULL), compares(0), leaders(0), registrations(0),
++                     ready_reads(0), consumes(0) {}
++};
++uint64_t mix(uint64_t h, uint64_t v) {
++  for (unsigned i = 0; i < 8; ++i) { h ^= v & 0xff; h *= 1099511628211ULL; v >>= 8; }
++  return h;
++}
++uint64_t hash_request(const request_meta &m, const request_descriptor &r) {
++  uint64_t h = 1469598103934665603ULL;
++  h=mix(h,m.cta); h=mix(h,m.warp); h=mix(h,m.instruction_ordinal); h=mix(h,m.pc);
++  h=mix(h,r.sim_va); h=mix(h,r.bytes); h=mix(h,r.lane_mask);
++  h=mix(h,r.sector_mask); h=mix(h,r.byte_mask_hash); h=mix(h,r.asid);
++  h=mix(h,r.page_size); h=mix(h,r.generation); h=mix(h,r.access); return h;
++}
++bool env_enabled(const char *name) {
++  const char *t=getenv(name); return t && t[0] && strtoul(t,0,10)!=0;
++}
++}  // namespace
++
++struct observer::implementation {
++  std::map<runtime_request_key,request_meta> requests;
++  std::set<runtime_instruction_key> instructions;
++  std::map<stable_warp_key,uint64_t> next_ordinal;
++  std::map<unsigned,cycle_activity> activity;
++  std::map<identity,uint64_t> mappings;
++  uint64_t instruction_count,request_count,classic_groups,classic_coverable;
++  uint64_t stable_xor,stable_sum,prel1_compares,prel1_followers;
++  uint64_t source_same_instruction,source_same_warp_other_instruction;
++  uint64_t source_other_warp_same_cta,source_other_cta,source_unknown;
++  uint64_t exact_intersection,prel1_only,prel1_leaders,follower_wait_polls;
++  uint64_t follower_ready_reads,follower_consumes,ref_groups,ref_group_members;
++  uint64_t ref_followers,ref_leader_attempts,ref_leader_ready;
++  uint64_t ref_follower_deliveries,ref_head_wait_cycles,group_hwm;
++  uint64_t compares_per_sid_cycle_hwm,leaders_per_sid_cycle_hwm;
++  uint64_t registrations_per_sid_cycle_hwm,ready_reads_per_sid_cycle_hwm;
++  uint64_t consumes_per_sid_cycle_hwm;
++  uint64_t mapping_xor,mapping_sum,mapping_conflicts;
++  implementation() : instruction_count(0),request_count(0),classic_groups(0),
++    classic_coverable(0),stable_xor(0),stable_sum(0),prel1_compares(0),
++    prel1_followers(0),source_same_instruction(0),
++    source_same_warp_other_instruction(0),source_other_warp_same_cta(0),
++    source_other_cta(0),source_unknown(0),exact_intersection(0),prel1_only(0),
++    prel1_leaders(0),follower_wait_polls(0),follower_ready_reads(0),
++    follower_consumes(0),ref_groups(0),ref_group_members(0),ref_followers(0),
++    ref_leader_attempts(0),ref_leader_ready(0),ref_follower_deliveries(0),
++    ref_head_wait_cycles(0),group_hwm(0),compares_per_sid_cycle_hwm(0),
++    leaders_per_sid_cycle_hwm(0),registrations_per_sid_cycle_hwm(0),
++    ready_reads_per_sid_cycle_hwm(0),consumes_per_sid_cycle_hwm(0),
++    mapping_xor(0),mapping_sum(0),mapping_conflicts(0) {}
++  cycle_activity &at(unsigned sid,uint64_t cycle) {
++    cycle_activity &r=activity[sid]; if(r.cycle!=cycle){r=cycle_activity();r.cycle=cycle;} return r;
++  }
++};
++
++observer::observer():m_impl(new implementation()){}
++observer &observer::instance(){static observer x;return x;}
++bool observer::enabled()const{return env_enabled("GPGPUSIM_AWMA_INTRAWARP_SOURCE_OBSERVER")||reference_enabled();}
++bool observer::reference_enabled()const{return vm_translation::awma_candidate_mode()==vm_translation::AWMA_TRANSLATION_CANDIDATE_WARP_VPN_DEDUP_REFERENCE;}
++
++void observer::note_instruction(unsigned sid,uint64_t ruid,uint64_t cta,
++ unsigned warp,uint64_t pc,const std::vector<request_descriptor>&d){
++ if(!enabled())return; runtime_instruction_key rk={sid,ruid};
++ if(!m_impl->instructions.insert(rk).second)return; ++m_impl->instruction_count;
++ stable_warp_key wk={cta,warp}; uint64_t ord=m_impl->next_ordinal[wk]++;
++ std::map<identity,uint64_t> leader; std::map<identity,unsigned> size;
++ for(std::vector<request_descriptor>::const_reverse_iterator i=d.rbegin();i!=d.rend();++i){
++  identity k={i->asid,i->sim_va/i->page_size,i->page_size,i->generation,i->access};
++  if(leader.find(k)==leader.end())leader[k]=i->uid; ++size[k];
++ }
++ for(std::map<identity,unsigned>::const_iterator i=size.begin();i!=size.end();++i)
++  if(i->second>1){++m_impl->classic_groups;m_impl->classic_coverable+=i->second-1;
++   if(reference_enabled()){++m_impl->ref_groups;m_impl->ref_group_members+=i->second;
++    m_impl->ref_followers+=i->second-1;}
++   if(i->second>m_impl->group_hwm)m_impl->group_hwm=i->second;}
++ for(std::vector<request_descriptor>::const_iterator i=d.begin();i!=d.end();++i){
++  request_meta m; m.cta=cta;m.warp=warp;m.instruction_ordinal=ord;m.pc=pc;
++  m.key=identity{i->asid,i->sim_va/i->page_size,i->page_size,i->generation,i->access};
++  m.classic_coverable=size[m.key]>1&&leader[m.key]!=i->uid;m.stable_hash=hash_request(m,*i);
++  runtime_request_key q={sid,i->uid};assert(m_impl->requests.insert(std::make_pair(q,m)).second);
++  ++m_impl->request_count;m_impl->stable_xor^=m.stable_hash;m_impl->stable_sum+=m.stable_hash;
++ }
++}
++void observer::note_prel1_compare(unsigned sid,uint64_t c){if(!enabled())return;++m_impl->prel1_compares;cycle_activity&r=m_impl->at(sid,c);if(++r.compares>m_impl->compares_per_sid_cycle_hwm)m_impl->compares_per_sid_cycle_hwm=r.compares;}
++void observer::note_prel1_follower(unsigned ls,uint64_t lu,unsigned fs,uint64_t fu,uint64_t c){
++ if(!enabled())return;++m_impl->prel1_followers;cycle_activity&r=m_impl->at(fs,c);
++ if(++r.registrations>m_impl->registrations_per_sid_cycle_hwm)m_impl->registrations_per_sid_cycle_hwm=r.registrations;
++ std::map<runtime_request_key,request_meta>::const_iterator l=m_impl->requests.find(runtime_request_key{ls,lu});
++ std::map<runtime_request_key,request_meta>::const_iterator f=m_impl->requests.find(runtime_request_key{fs,fu});
++ if(l==m_impl->requests.end()||f==m_impl->requests.end()){++m_impl->source_unknown;++m_impl->prel1_only;return;}
++ if(l->second.cta==f->second.cta&&l->second.warp==f->second.warp&&l->second.instruction_ordinal==f->second.instruction_ordinal)++m_impl->source_same_instruction;
++ else if(l->second.cta==f->second.cta&&l->second.warp==f->second.warp)++m_impl->source_same_warp_other_instruction;
++ else if(l->second.cta==f->second.cta)++m_impl->source_other_warp_same_cta; else ++m_impl->source_other_cta;
++ if(f->second.classic_coverable)++m_impl->exact_intersection;else ++m_impl->prel1_only;
++}
++void observer::note_prel1_leader_launch(unsigned s,uint64_t,uint64_t c){if(!enabled())return;++m_impl->prel1_leaders;cycle_activity&r=m_impl->at(s,c);if(++r.leaders>m_impl->leaders_per_sid_cycle_hwm)m_impl->leaders_per_sid_cycle_hwm=r.leaders;}
++void observer::note_prel1_follower_poll(unsigned s,uint64_t,uint64_t c,bool ready,bool consume){if(!enabled())return;cycle_activity&r=m_impl->at(s,c);if(!ready){++m_impl->follower_wait_polls;return;}++m_impl->follower_ready_reads;if(++r.ready_reads>m_impl->ready_reads_per_sid_cycle_hwm)m_impl->ready_reads_per_sid_cycle_hwm=r.ready_reads;if(consume){++m_impl->follower_consumes;if(++r.consumes>m_impl->consumes_per_sid_cycle_hwm)m_impl->consumes_per_sid_cycle_hwm=r.consumes;}}
++void observer::note_reference_group(unsigned,uint64_t,unsigned n){if(!reference_enabled())return;++m_impl->ref_groups;m_impl->ref_group_members+=n;m_impl->ref_followers+=n-1;if(n>m_impl->group_hwm)m_impl->group_hwm=n;}
++void observer::note_reference_leader_attempt(unsigned,uint64_t){if(reference_enabled())++m_impl->ref_leader_attempts;}
++void observer::note_reference_leader_ready(unsigned,uint64_t){if(reference_enabled())++m_impl->ref_leader_ready;}
++void observer::note_reference_follower_delivery(unsigned,uint64_t,unsigned n){if(reference_enabled())m_impl->ref_follower_deliveries+=n;}
++void observer::note_reference_head_wait(unsigned,uint64_t){if(reference_enabled())++m_impl->ref_head_wait_cycles;}
++void observer::note_functional_mapping(unsigned asid,uint64_t vpn,uint64_t page,uint64_t gen,vm_translation::translation_access access,uint64_t ppn){
++ if(!enabled())return;identity k={asid,vpn,page,gen,access};
++ std::map<identity,uint64_t>::const_iterator found=m_impl->mappings.find(k);
++ if(found!=m_impl->mappings.end()){if(found->second!=ppn)++m_impl->mapping_conflicts;return;}
++ m_impl->mappings[k]=ppn;uint64_t h=1469598103934665603ULL;h=mix(h,asid);h=mix(h,vpn);h=mix(h,page);h=mix(h,gen);h=mix(h,access);h=mix(h,ppn);m_impl->mapping_xor^=h;m_impl->mapping_sum+=h;
++}
++void observer::print(FILE*f)const{if(!enabled())return;
++#define P(n) fprintf(f,"awma_intrawarp_"#n" = %llu\n",(unsigned long long)m_impl->n)
++ fprintf(f,"awma_intrawarp_source_observer_enabled = %u\n",env_enabled("GPGPUSIM_AWMA_INTRAWARP_SOURCE_OBSERVER")?1U:0U);
++ fprintf(f,"awma_intrawarp_reference_enabled = %u\n",reference_enabled()?1U:0U);
++ P(instruction_count);P(request_count);P(classic_groups);P(classic_coverable);P(stable_xor);P(stable_sum);
++ P(prel1_compares);P(prel1_followers);P(source_same_instruction);P(source_same_warp_other_instruction);
++ P(source_other_warp_same_cta);P(source_other_cta);P(source_unknown);P(exact_intersection);P(prel1_only);
++ fprintf(f,"awma_intrawarp_warp_only = %llu\n",(unsigned long long)(m_impl->classic_coverable>=m_impl->exact_intersection?m_impl->classic_coverable-m_impl->exact_intersection:0));
++ P(prel1_leaders);P(follower_wait_polls);P(follower_ready_reads);P(follower_consumes);
++ P(ref_groups);P(ref_group_members);P(ref_followers);P(ref_leader_attempts);P(ref_leader_ready);
++ P(ref_follower_deliveries);P(ref_head_wait_cycles);P(group_hwm);P(compares_per_sid_cycle_hwm);
++ P(leaders_per_sid_cycle_hwm);P(registrations_per_sid_cycle_hwm);P(ready_reads_per_sid_cycle_hwm);P(consumes_per_sid_cycle_hwm);
++ fprintf(f,"awma_intrawarp_mapping_unique = %llu\n",(unsigned long long)m_impl->mappings.size());P(mapping_xor);P(mapping_sum);P(mapping_conflicts);
++ fprintf(f,"awma_intrawarp_terminal_quiescent = 1\n");
++#undef P
++}
++}  // namespace awma_intrawarp
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/intrawarp_translation_reference.h b/src/gpgpu-sim/src/gpgpu-sim/intrawarp_translation_reference.h
+new file mode 100644
+index 0000000..52fd864
+--- /dev/null
++++ b/src/gpgpu-sim/src/gpgpu-sim/intrawarp_translation_reference.h
+@@ -0,0 +1,52 @@
++#ifndef AWMA_INTRAWARP_TRANSLATION_REFERENCE_H
++#define AWMA_INTRAWARP_TRANSLATION_REFERENCE_H
++
++#include <stdint.h>
++#include <stdio.h>
++#include <vector>
++#include "vm_translation.h"
++
++namespace awma_intrawarp {
++struct request_descriptor {
++  uint64_t uid, sim_va, bytes;
++  unsigned asid;
++  uint64_t page_size, generation;
++  vm_translation::translation_access access;
++  uint64_t lane_mask, sector_mask, byte_mask_hash;
++};
++
++class observer {
++ public:
++  static observer &instance();
++  bool enabled() const;
++  bool reference_enabled() const;
++  void note_instruction(unsigned sid, uint64_t runtime_instruction_uid,
++                        uint64_t stable_cta, unsigned warp_in_cta, uint64_t pc,
++                        const std::vector<request_descriptor> &requests);
++  void note_prel1_compare(unsigned sid, uint64_t cycle);
++  void note_prel1_follower(unsigned leader_sid, uint64_t leader_uid,
++                           unsigned follower_sid, uint64_t follower_uid,
++                           uint64_t cycle);
++  void note_prel1_leader_launch(unsigned sid, uint64_t uid, uint64_t cycle);
++  void note_prel1_follower_poll(unsigned sid, uint64_t uid, uint64_t cycle,
++                                bool ready, bool consume);
++  void note_reference_group(unsigned sid, uint64_t cycle, unsigned members);
++  void note_reference_leader_attempt(unsigned sid, uint64_t cycle);
++  void note_reference_leader_ready(unsigned sid, uint64_t cycle);
++  void note_reference_follower_delivery(unsigned sid, uint64_t cycle,
++                                        unsigned count);
++  void note_reference_head_wait(unsigned sid, uint64_t cycle);
++  void note_functional_mapping(unsigned asid, uint64_t vpn,
++                               uint64_t page_size, uint64_t generation,
++                               vm_translation::translation_access access,
++                               uint64_t ppn);
++  void print(FILE *fout) const;
++ private:
++  observer();
++  observer(const observer &);
++  observer &operator=(const observer &);
++  struct implementation;
++  implementation *m_impl;
++};
++}  // namespace awma_intrawarp
++#endif
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/prel1_exact_coalescer.cc b/src/gpgpu-sim/src/gpgpu-sim/prel1_exact_coalescer.cc
+index 7b88657..4272ad8 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/prel1_exact_coalescer.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/prel1_exact_coalescer.cc
+@@ -1,4 +1,5 @@
+ #include "prel1_exact_coalescer.h"
++#include "intrawarp_translation_reference.h"
+ 
+ #include <assert.h>
+ #include <stdlib.h>
+@@ -221,6 +222,8 @@ follower_poll_result exact_coalescer::poll_follower(
+   assert(waiter_index >= 0);
+   follower &waiter = resident.waiters[static_cast<unsigned>(waiter_index)];
+   if (resident.state == ENTRY_LIVE) {
++    awma_intrawarp::observer::instance().note_prel1_follower_poll(
++        sid, uid, cycle, false, consume_ready);
+     if (waiter.last_wait_cycle != cycle) {
+       waiter.last_wait_cycle = cycle;
+       ++m_impl->counters.follower_wait_cycles_total;
+@@ -240,6 +243,8 @@ follower_poll_result exact_coalescer::poll_follower(
+   assert(resident.state == ENTRY_READY && sim_pa != NULL && source != NULL);
+   *sim_pa = resident.ppn * page_size + vm_core::page_offset(sim_va, page_size);
+   *source = resident.source;
++  awma_intrawarp::observer::instance().note_prel1_follower_poll(
++      sid, uid, cycle, true, consume_ready);
+   if (!consume_ready) return FOLLOWER_READY;
+ 
+   const uint64_t delivery = cycle - waiter.registration_cycle;
+@@ -265,6 +270,7 @@ request_decision exact_coalescer::decide_new_request(
+     uint64_t page_size, uint64_t generation,
+     vm_translation::translation_access access, uint64_t cycle) {
+   assert(enabled());
++  awma_intrawarp::observer::instance().note_prel1_compare(sid, cycle);
+   ++m_impl->counters.lookups;
+   const requester_key requester = {sid, uid};
+   const identity requested = {asid, vpn, page_size, generation, access};
+@@ -308,6 +314,8 @@ request_decision exact_coalescer::decide_new_request(
+     }
+     const bool control = grouping_only_control();
+     resident.waiters.push_back(follower(requester, requested, cycle, control));
++    awma_intrawarp::observer::instance().note_prel1_follower(
++        resident.leader.sid, resident.leader.uid, sid, uid, cycle);
+     if (resident.waiters.size() > m_impl->counters.waiter_hwm)
+       m_impl->counters.waiter_hwm = resident.waiters.size();
+     if (resident.leader_launch_cycle == cycle)
+@@ -349,6 +357,8 @@ void exact_coalescer::note_leader_launch(
+   resident.key = identity{asid, vpn, page_size, generation, access};
+   resident.leader = requester_key{sid, uid};
+   resident.leader_launch_cycle = cycle;
++  awma_intrawarp::observer::instance().note_prel1_leader_launch(
++      sid, uid, cycle);
+   ++m_impl->counters.leaders;
+   m_impl->note_occupancy(sid);
+ }
+@@ -372,6 +382,9 @@ void exact_coalescer::note_leader_completion(
+   resident.leader_completion_cycle = cycle;
+   resident.ppn = ppn;
+   resident.source = source;
++  awma_intrawarp::observer::instance().note_functional_mapping(
++      resident.key.asid, resident.key.vpn, resident.key.page_size,
++      resident.key.generation, resident.key.access, ppn);
+   ++m_impl->counters.leader_completions;
+   if (source == vm_translation::TRANSLATION_SOURCE_L1_TLB_HIT)
+     ++m_impl->counters.l1_hit_leaders;
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/src/gpgpu-sim/shader.cc
+index 8365536..56321c3 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/shader.cc
+@@ -34,6 +34,7 @@
+ #include "gpu-sim.h"
+ #include "passive_translation_memo.h"
+ #include "passive_last_translation_forwarding.h"
++#include "intrawarp_translation_reference.h"
+ #include "vm_translation.h"
+ #include <map>
+ #include <set>
+@@ -1155,6 +1156,7 @@ void shader_core_ctx::init_warps(unsigned cta_id, unsigned start_thread,
+ 
+       m_warp[i]->init(start_pc, cta_id, i, active_threads, m_dynamic_warp_id,
+                       kernel.get_streamID());
++      m_warp[i]->set_awma_trace_identity(ctaid, i - start_warp);
+       ++m_dynamic_warp_id;
+       m_not_completed += n_active;
+       ++m_active_warps;
+@@ -2998,6 +3000,9 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+   const bool passive_last_result =
+       candidate_mode ==
+           vm_translation::AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT;
++  const bool warp_vpn_dedup_reference =
++      candidate_mode == vm_translation::
++          AWMA_TRANSLATION_CANDIDATE_WARP_VPN_DEDUP_REFERENCE;
+   const unsigned share_delivery_slots =
+       vm_translation::awma_share_delivery_slots();
+   const unsigned share_min_cohort_size =
+@@ -3084,6 +3089,29 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+                            vm_translation::TRANSLATION_ACCESS_READ);
+     const uint64_t now = m_core->get_gpu()->gpu_sim_cycle +
+                          m_core->get_gpu()->gpu_tot_sim_cycle;
++    if (awma_intrawarp::observer::instance().enabled()) {
++      std::vector<awma_intrawarp::request_descriptor> descriptors;
++      descriptors.reserve(entries.size());
++      for (std::list<mem_access_t>::const_iterator observed = entries.begin();
++           observed != entries.end(); ++observed) {
++        uint64_t byte_hash = 1469598103934665603ULL;
++        for (unsigned bit = 0; bit < observed->get_byte_mask().size(); ++bit) {
++          byte_hash ^= observed->get_byte_mask().test(bit) ? 1ULL : 0ULL;
++          byte_hash *= 1099511628211ULL;
++        }
++        awma_intrawarp::request_descriptor descriptor = {
++            observed->get_uid(), observed->get_sim_va(), observed->get_size(),
++            0, m_config->gpgpu_vm_page_size,
++            m_gpu->vm_translation()->translation_generation(0),
++            candidate_access,
++            observed->get_warp_mask().to_ullong(),
++            observed->get_sector_mask().to_ullong(), byte_hash};
++        descriptors.push_back(descriptor);
++      }
++      awma_intrawarp::observer::instance().note_instruction(
++          m_sid, inst.get_uid(), m_core->awma_stable_cta(inst.warp_id()),
++          m_core->awma_warp_in_cta(inst.warp_id()), inst.pc, descriptors);
++    }
+     for (std::list<mem_access_t>::iterator observed = entries.begin();
+          observed != entries.end(); ++observed)
+       g_owner_wait.note_resident(m_core, *observed, now);
+@@ -3298,6 +3326,70 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+       }
+     }
+ 
++    // Classic same-dynamic-warp-instruction VPN request generation reference.
++    // The accessq is already the data coalescer's complete, resident output.
++    // Scan direction and legal observation point are identical to frozen V1.
++    if (warp_vpn_dedup_reference) {
++      const uint64_t generation =
++          m_gpu->vm_translation()->translation_generation(0);
++      for (std::list<mem_access_t>::reverse_iterator leader = entries.rbegin();
++           leader != entries.rend(); ++leader) {
++        if (leader->vm_translation_applied()) continue;
++        bool earlier_equivalent = false;
++        for (std::list<mem_access_t>::reverse_iterator prior = entries.rbegin();
++             prior != leader; ++prior)
++          if (vm_translation::same_page_share_compatible(
++                  0, prior->get_sim_va(), prior->get_size(), candidate_access,
++                  generation, 0, leader->get_sim_va(), leader->get_size(),
++                  candidate_access, generation,
++                  m_config->gpgpu_vm_page_size)) {
++            earlier_equivalent = true;
++            break;
++          }
++        if (earlier_equivalent) continue;
++        uint64_t leader_pa = 0;
++        vm_translation::translation_source leader_source =
++            vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
++        awma_intrawarp::observer::instance().note_reference_leader_attempt(
++            m_sid, now);
++        const vm_translation::lookup_result result =
++            m_gpu->vm_translation()->translate(
++                m_sid, 0, leader->get_sim_va(), leader->get_size(), now,
++                leader->get_uid(), &leader_pa, &leader_source,
++                candidate_access, true);
++        if (result != vm_translation::READY) continue;
++        apply_ready_translation(*leader, leader_pa, leader_source);
++        awma_intrawarp::observer::instance().note_functional_mapping(
++            0, leader->get_sim_va() / m_config->gpgpu_vm_page_size,
++            m_config->gpgpu_vm_page_size, generation, candidate_access,
++            leader_pa / m_config->gpgpu_vm_page_size);
++        awma_intrawarp::observer::instance().note_reference_leader_ready(
++            m_sid, now);
++        unsigned delivered = 0;
++        for (std::list<mem_access_t>::iterator member = entries.begin();
++             member != entries.end(); ++member) {
++          if (&(*member) == &(*leader) || member->vm_translation_applied())
++            continue;
++          if (!vm_translation::same_page_share_compatible(
++                  0, leader->get_sim_va(), leader->get_size(), candidate_access,
++                  generation, 0, member->get_sim_va(), member->get_size(),
++                  candidate_access, generation,
++                  m_config->gpgpu_vm_page_size))
++            continue;
++          const uint64_t member_pa =
++              (leader_pa / m_config->gpgpu_vm_page_size) *
++                  m_config->gpgpu_vm_page_size +
++              vm_core::page_offset(member->get_sim_va(),
++                                   m_config->gpgpu_vm_page_size);
++          apply_ready_translation(*member, member_pa, leader_source);
++          ++delivered;
++        }
++        if (delivered != 0)
++          awma_intrawarp::observer::instance()
++              .note_reference_follower_delivery(m_sid, now, delivered);
++      }
++    }
++
+     // Frozen V1/V2 behavior remains authoritative for singleton entries and
+     // for every non-sharing candidate.  Entries in an active share cohort do
+     // not issue independent physical translation services.
+@@ -3305,6 +3397,7 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+          it != entries.rend(); ++it) {
+       mem_access_t &candidate = *it;
+       if (candidate.vm_translation_applied()) continue;
++      if (warp_vpn_dedup_reference) continue;
+       if (vm_core::transaction_crosses_page(candidate.get_sim_va(),
+                                              candidate.get_size(),
+                                              m_config->gpgpu_vm_page_size))
+@@ -3531,6 +3624,35 @@ bool ldst_unit::memory_cycle(warp_inst_t &inst,
+       }
+     }
+   }
++  if (warp_vpn_dedup_reference && !access.vm_translation_applied()) {
++    // Defensive no-loss fallback: the first legal member in frozen reverse
++    // scan order owns the real request. A follower can only wait; it may not
++    // create an independent request or observe a future completion.
++    const uint64_t generation =
++        m_gpu->vm_translation()->translation_generation(0);
++    mem_access_t *leader = NULL;
++    std::list<mem_access_t> &entries = inst.accessq_entries();
++    for (std::list<mem_access_t>::reverse_iterator candidate = entries.rbegin();
++         candidate != entries.rend(); ++candidate)
++      if (vm_translation::same_page_share_compatible(
++              0, access.get_sim_va(), access.get_size(), passive_access,
++              generation, 0, candidate->get_sim_va(), candidate->get_size(),
++              passive_access, generation, m_config->gpgpu_vm_page_size)) {
++        leader = &(*candidate);
++        break;
++      }
++    if (leader != NULL && leader != &access) {
++      awma_intrawarp::observer::instance().note_reference_head_wait(
++          m_sid, m_core->get_gpu()->gpu_sim_cycle +
++                     m_core->get_gpu()->gpu_tot_sim_cycle);
++      ++m_stats->vm_translation_stall_cycles;
++      stall_reason = COAL_STALL;
++      const bool iswrite = inst.is_store();
++      access_type = inst.space.is_local() ? (iswrite ? L_MEM_ST : L_MEM_LD)
++                                          : (iswrite ? G_MEM_ST : G_MEM_LD);
++      return false;
++    }
++  }
+   if (!access.vm_translation_applied()) {
+     vm_translation::translation_source translation_outcome =
+         vm_translation::TRANSLATION_SOURCE_UNOBSERVED;
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/shader.h b/src/gpgpu-sim/src/gpgpu-sim/shader.h
+index 2c4660e..1fa71be 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/src/gpgpu-sim/shader.h
+@@ -114,6 +114,8 @@ class shd_warp_t {
+     m_imiss_pending = false;
+     m_warp_id = (unsigned)-1;
+     m_dynamic_warp_id = (unsigned)-1;
++    m_awma_stable_cta = ~0ULL;
++    m_awma_warp_in_cta = (unsigned)-1;
+     n_completed = m_warp_size;
+     m_n_atomic = 0;
+     m_membar = false;
+@@ -273,6 +275,12 @@ class shd_warp_t {
+ 
+   unsigned get_dynamic_warp_id() const { return m_dynamic_warp_id; }
+   unsigned get_warp_id() const { return m_warp_id; }
++  void set_awma_trace_identity(uint64_t stable_cta, unsigned warp_in_cta) {
++    m_awma_stable_cta = stable_cta;
++    m_awma_warp_in_cta = warp_in_cta;
++  }
++  uint64_t get_awma_stable_cta() const { return m_awma_stable_cta; }
++  unsigned get_awma_warp_in_cta() const { return m_awma_warp_in_cta; }
+ 
+   class shader_core_ctx *get_shader() {
+     return m_shader;
+@@ -286,6 +294,8 @@ class shd_warp_t {
+   unsigned m_warp_id;
+   unsigned m_warp_size;
+   unsigned m_dynamic_warp_id;
++  uint64_t m_awma_stable_cta;
++  unsigned m_awma_warp_in_cta;
+ 
+   address_type m_next_pc;
+   unsigned n_completed;  // number of threads in warp completed
+@@ -2185,6 +2195,14 @@ class shader_core_ctx : public core_t {
+   // accessors
+   std::list<unsigned> get_regs_written(const inst_t &fvt) const;
+   const shader_core_config *get_config() const { return m_config; }
++  uint64_t awma_stable_cta(unsigned warp_id) const {
++    assert(warp_id < m_warp.size());
++    return m_warp[warp_id]->get_awma_stable_cta();
++  }
++  unsigned awma_warp_in_cta(unsigned warp_id) const {
++    assert(warp_id < m_warp.size());
++    return m_warp[warp_id]->get_awma_warp_in_cta();
++  }
+   void print_cache_stats(FILE *fp, unsigned &dl1_accesses,
+                          unsigned &dl1_misses);
+ 
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc b/src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc
+index a8b4931..2ba9e0a 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc
++++ b/src/gpgpu-sim/src/gpgpu-sim/vm_translation.cc
+@@ -1,6 +1,7 @@
+ #include "vm_translation.h"
+ #include "prel1_coalescing_observer.h"
+ #include "prel1_exact_coalescer.h"
++#include "intrawarp_translation_reference.h"
+ 
+ #include <assert.h>
+ #include <errno.h>
+@@ -24,6 +25,8 @@ awma_translation_candidate_mode awma_candidate_mode() {
+     return AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT;
+   if (strcmp(text, "prel1_exact_coalescer") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_PREL1_EXACT_COALESCER;
++  if (strcmp(text, "warp_vpn_dedup_reference") == 0)
++    return AWMA_TRANSLATION_CANDIDATE_WARP_VPN_DEDUP_REFERENCE;
+   if (strcmp(text, "refill_protect") == 0)
+     return AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT;
+   assert(false && "unknown GPGPUSIM_AWMA_TRANSLATION_CANDIDATE");
+@@ -42,6 +45,8 @@ const char *awma_candidate_mode_name(awma_translation_candidate_mode mode) {
+       return "passive_last_result";
+     case AWMA_TRANSLATION_CANDIDATE_PREL1_EXACT_COALESCER:
+       return "prel1_exact_coalescer";
++    case AWMA_TRANSLATION_CANDIDATE_WARP_VPN_DEDUP_REFERENCE:
++      return "warp_vpn_dedup_reference";
+     case AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT:
+       return "refill_protect";
+     default:
+@@ -3167,6 +3172,7 @@ const set_associative_tlb &translation_controller::l1(unsigned sid) const {
+ void translation_controller::print_stats(FILE *fout) const {
+   awma_prel1::opportunity_observer::instance().print(fout);
+   awma_prel1::exact_coalescer::instance().print(fout);
++  awma_intrawarp::observer::instance().print(fout);
+   if (awma_mechanism_diagnostics_enabled()) {
+     const refill_protection_stats &refill = m_l2.refill_stats();
+     fprintf(fout, "vm_awma_candidate_mode = %s\n",
+diff --git a/src/gpgpu-sim/src/gpgpu-sim/vm_translation.h b/src/gpgpu-sim/src/gpgpu-sim/vm_translation.h
+index f4d9c1b..15053d0 100644
+--- a/src/gpgpu-sim/src/gpgpu-sim/vm_translation.h
++++ b/src/gpgpu-sim/src/gpgpu-sim/vm_translation.h
+@@ -205,6 +205,7 @@ enum awma_translation_candidate_mode {
+   AWMA_TRANSLATION_CANDIDATE_NONBLOCKING_OPPORTUNISTIC_SHARE,
+   AWMA_TRANSLATION_CANDIDATE_PASSIVE_LAST_RESULT,
+   AWMA_TRANSLATION_CANDIDATE_PREL1_EXACT_COALESCER,
++  AWMA_TRANSLATION_CANDIDATE_WARP_VPN_DEDUP_REFERENCE,
+   AWMA_TRANSLATION_CANDIDATE_REFILL_PROTECT
+ };
+ 
