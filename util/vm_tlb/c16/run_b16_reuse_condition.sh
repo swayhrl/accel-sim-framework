@@ -33,14 +33,16 @@ printf '%q ' "$binary" -trace "$trace_list" -config "$config" -config "$trace_co
 printf '\n' >> COMMAND.txt
 
 set +e
-/usr/bin/time -v -o TIME.txt "$binary" -trace "$trace_list" -config "$config" \
-  -config "$trace_config" > simulator.stdout 2> simulator.stderr
+"$binary" -trace "$trace_list" -config "$config" -config "$trace_config" \
+  > simulator.stdout 2> simulator.stderr
 exit_code=$?
 set -e
 
 end_utc=$(date -u +%FT%TZ)
 end_epoch=$(date +%s)
 wall_seconds=$((end_epoch - start_epoch))
+printf 'wall_seconds=%s\nstart_utc=%s\nend_utc=%s\n' \
+  "$wall_seconds" "$start_utc" "$end_utc" > TIME.txt
 terminal=false
 if grep -q 'GPGPU-Sim: \*\*\* exit detected \*\*\*' simulator.stdout; then terminal=true; fi
 status=FAIL
