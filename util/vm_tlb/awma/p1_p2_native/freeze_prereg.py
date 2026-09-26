@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+import hashlib,json,subprocess
+from pathlib import Path
+ROOT=Path('/data/c16/awma/p1_p2_native_qualification_20260926');WT=Path('/home/huangrulin/workspace/worktrees/accel-sim-awma-p1-p2-native-qualification-v1')
+def sha(p):
+ h=hashlib.sha256()
+ with p.open('rb') as f:
+  for b in iter(lambda:f.read(8<<20),b''):h.update(b)
+ return h.hexdigest()
+def cmd(x):return subprocess.check_output(x,text=True).strip()
+def main():
+ inp=json.loads((ROOT/'input/P2_INPUT_RECEIPT.json').read_text());h=WT/'util/vm_tlb/awma/p1_p2_native/p1_p2_native_harness.py';ex=WT/'util/vm_tlb/awma/p1_p2_native/extract_llama_qkv.py'
+ p={'stage':'AWMA_P1_P2_NATIVE_PROBLEM_QUALIFICATION_V1','status':'FROZEN_BEFORE_TIMING','accepted_base':'9098443082d8edd4f0efa2fa8922969c0559254a','handoff_commit':'aea9cc79186c23fa163b3c215d1b43eac7c6b174','literature_commit':'082dd8b36b199e135585c0ba61cab587d6814e60','node':'109','gpu':'RTX4080_SM89','lock':'/data/c16/locks/c16_gpu_campaign.lock','measurement':{'canary_per_point':1,'warmups':2,'measured_repetitions':7,'operator_time':'CUDA_EVENTS','wall_time':'SECONDARY','material_relative_threshold':0.05,'material_cv_multiplier':3.0},'input_authority':inp,'p1':{'contract':'TARGET_REQUEST_BATCH_INVARIANCE_V1','target':'QWEN25_0P5B_S2_TEXT_DECODE_STEP16_LAYER12_ATTENTION','batch_arms':[1,4],'target_slot':0,'companion_inputs':['S2_CODE','S2_STRUCTURED','S2_CODE_ROLL1_DERIVED_CONTROL'],'arms':['STOCK_FLASH_SDPA','PADDED_B4_FLASH_SDPA'],'strong_baseline':'fixed physical B4 padding uses the same optimized Flash SDPA implementation/decomposition while target remains slot0; batch parallel and no global lock','conditional_diagnostic':'FIXED_SPLIT_TRITON_256 only if stock target output is not bitwise invariant','output_checks':['raw hash','bitwise','max abs','max relative','float16 ordered-code distance'],'holdout':'NONE_PREQUALIFIED'},'p2':{'selector':'QUEST_STYLE_SELECTOR_DIAGNOSTIC_V1','input':'QWEN25_0P5B_S3_TEXT_T8192_DECODE_STEP1_LAYER12','page_size_tokens':16,'context_tokens_used':8192,'page_count':512,'top_pages':[256,128],'selected_fractions':[0.5,0.25],'tie_break':'score descending; stable original page index ascending','score':'sum_i max(q_i*K_min_i,q_i*K_max_i)','arms':['ONLINE_EAGER','READY_INDEX_DIAGNOSTIC','STRONG_COMPILE_FULL_then_STRONG_CUDA_GRAPH'],'ready_index_status':'DIAGNOSTIC_NOT_IMPLEMENTABLE_BASELINE','metadata':'K_min/K_max precomputed outside query-time chain','holdout':'NONE_PREQUALIFIED'},'inference_boundaries':['No model download','No Accel-Sim','No NVBit full trace','No UVM/TLB inference','No full Quest reproduction claim','No dense-model natural sparse-attention claim'],'source_sha256':{'extract':sha(ex),'harness':sha(h)},'environment':{'nvidia_smi':cmd(['nvidia-smi','--query-gpu=name,driver_version,memory.total','--format=csv,noheader']),'python':cmd(['/data/c16/env/c16-py310/bin/python','--version'])}}
+ (ROOT/'PREREGISTRATION.json').write_text(json.dumps(p,indent=2,sort_keys=True)+'\n');(ROOT/'PREREGISTRATION_SHA256').write_text(sha(ROOT/'PREREGISTRATION.json')+'  PREREGISTRATION.json\n');print(json.dumps({'status':p['status'],'sha256':sha(ROOT/'PREREGISTRATION.json')},sort_keys=True))
+if __name__=='__main__':main()

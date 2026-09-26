@@ -1,0 +1,281 @@
+{
+  "accepted_base": "9098443082d8edd4f0efa2fa8922969c0559254a",
+  "environment": {
+    "nvidia_smi": "NVIDIA GeForce RTX 4080, 580.178.04, 16376 MiB",
+    "python": "Python 3.10.12"
+  },
+  "gpu": "RTX4080_SM89",
+  "handoff_commit": "aea9cc79186c23fa163b3c215d1b43eac7c6b174",
+  "inference_boundaries": [
+    "No model download",
+    "No Accel-Sim",
+    "No NVBit full trace",
+    "No UVM/TLB inference",
+    "No full Quest reproduction claim",
+    "No dense-model natural sparse-attention claim"
+  ],
+  "input_authority": {
+    "accepted_census_commits": [
+      "24f21db0aa921190ca40e4d3969aced7471347b6",
+      "0a01aa5de4ab7132ab52d18d689e61b635061ae8"
+    ],
+    "accepted_s2_driver_sha256": "824f88b975580288a6a68b6997aa4ce5a611e241c42fd347fc2f59e933faab6c",
+    "accepted_s3_driver_sha256": "715cd144995d065a195d79aa39e14297c4405366132243fead67494f6b8329ed",
+    "attention": "sdpa",
+    "config_sha256": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
+    "derived_companion_rule": "S2_CODE token stream cyclic left roll by 1; DERIVED_COMPANION_CONTROL",
+    "dtype": "float16",
+    "generated_tokens": {
+      "S2_CODE": [
+        262,
+        470,
+        1102,
+        198,
+        750,
+        15175,
+        13974,
+        10160,
+        20103,
+        982,
+        262,
+        2790,
+        284,
+        220,
+        15,
+        198
+      ],
+      "S2_CODE_ROLL1_DERIVED_CONTROL": [
+        15175,
+        13974,
+        10160,
+        20103,
+        982,
+        262,
+        2790,
+        284,
+        220,
+        15,
+        198,
+        262,
+        1102,
+        284,
+        4167,
+        262
+      ],
+      "S2_STRUCTURED": [
+        330,
+        9262,
+        788,
+        330,
+        31093,
+        756,
+        220,
+        330,
+        3615,
+        788,
+        2278,
+        262,
+        5212,
+        606,
+        788,
+        330
+      ],
+      "S2_TEXT": [
+        23578,
+        11,
+        323,
+        3950,
+        28360,
+        1969,
+        7146,
+        6822,
+        198,
+        983,
+        279,
+        51572,
+        1614,
+        23578,
+        12433,
+        553
+      ],
+      "S3_TEXT": [
+        21
+      ]
+    },
+    "gpu": "NVIDIA GeForce RTX 4080",
+    "input_files": {
+      "S2_CODE": {
+        "path": "/data/c16/inputs/.incoming/qwen2p5_0p5b_instruct/S2_CODE/payload/CODE_S2_T2048_token_ids.json",
+        "sha256": "7acdc48f59cf204c192c5663d62abfb72fb8d754e6b0e92bd28d991b64fdafb8"
+      },
+      "S2_STRUCTURED": {
+        "path": "/data/c16/inputs/.incoming/qwen2p5_0p5b_instruct/S2_STRUCTURED/payload/STRUCTURED_S2_T2048_token_ids.json",
+        "sha256": "890eea663a639ed021e39f49c2d70f661a6f61012d357f7b0dd18fb9682dbe8b"
+      },
+      "S2_TEXT": {
+        "path": "/data/c16/inputs/.incoming/qwen2p5_0p5b_instruct/S2_TEXT/payload/TEXT_S2_T2048_token_ids.json",
+        "sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9"
+      },
+      "S3_TEXT": {
+        "path": "/data/c16/inputs/.incoming/qwen2p5_0p5b_instruct/S3_TEXT/payload/TEXT_S3_T8192_token_ids.json",
+        "sha256": "9e127ae9363358c3b2ed3b09608d9268fd3fc799070d58688aa540be019a3bb4"
+      }
+    },
+    "layer": 12,
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_path": "/data/c16/models/.incoming/qwen2p5_0p5b_instruct/7ae557604adf67be50417f59c2c2f167def9a775",
+    "model_safetensors_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+    "p1_companions": [
+      "S2_CODE",
+      "S2_STRUCTURED",
+      "S2_CODE_ROLL1_DERIVED_CONTROL"
+    ],
+    "p1_shapes": {
+      "k": [
+        1,
+        2,
+        2064,
+        64
+      ],
+      "q": [
+        1,
+        14,
+        1,
+        64
+      ],
+      "v": [
+        1,
+        2,
+        2064,
+        64
+      ]
+    },
+    "p1_target": "S2_TEXT_DECODE_STEP16",
+    "p2_history_tokens_used": 8192,
+    "p2_shapes": {
+      "k": [
+        1,
+        2,
+        8193,
+        64
+      ],
+      "q": [
+        1,
+        14,
+        1,
+        64
+      ],
+      "v": [
+        1,
+        2,
+        8193,
+        64
+      ]
+    },
+    "p2_target": "S3_TEXT_T8192_DECODE_STEP1",
+    "payload_sha256": "1ceed1e94363d8f459fb19f9e7b0a1196d59702ce43c4a7dcd20203fab38e939",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "status": "MODEL_DERIVED_QKV_EXTRACTED",
+    "tensor_sha256": {
+      "S2_CODE": {
+        "k": "a0beb9f9bfce8bf5a6e1df2e931bd84d7d3058765a2e77705646ff4e5c927282",
+        "q": "d351091d16630957b43e64993f0765067409cbcad23d28a78a9604672af7a27f",
+        "v": "5ca16de18a85b663cdf81580675660ab41b234325c567a29db71823c641f3160"
+      },
+      "S2_CODE_ROLL1_DERIVED_CONTROL": {
+        "k": "a8d6ab30d7a816e3f8f64c9cef8dcdd49313eaf452ce107facd706b5034b6d83",
+        "q": "38f0fdda1474b38cfe0b93c2295a43331797db32a9326b65fad344daf1c9997a",
+        "v": "68f510cd3de2b452436fbbc65ae97d6f7a247a37aacda422cf8e5067a698c2fa"
+      },
+      "S2_STRUCTURED": {
+        "k": "c7455a330dd35b8d31850745edc7edfa4d547e7a69e115e479af569fd385db6a",
+        "q": "e22f2e2990c1cae0d828b05b71924d86a3f86e1bd3c35885792901ab4ae722c9",
+        "v": "c1635c76612ec3a1ddb062be6969e1e84f32ec7978efc07eb34536dd430f66ba"
+      },
+      "S2_TEXT": {
+        "k": "0e465f0fe2630c48d53e8c0e7ef1194142bb85d622a9f1d9e03efbe59c5dcb92",
+        "q": "b31a30a21d6eb82b0209f0dc73203620a6a4dc6816758cb9a7bd9e9c9742f9d1",
+        "v": "1db40d23a1a2ee26d7e3555eb3a1c49bd74734125adea9790971f14c4490e488"
+      },
+      "S3_TEXT": {
+        "k": "892dd77b67bf89cf405c29b9aa304000a243e3317903dd75fd3c7fe490b5b041",
+        "q": "e962d0f00b99b5678bfa0bc51441f0026ad0c25a53d5236197e1b04bfa1d4417",
+        "v": "cf62ba6787612191d2c7266073b6a16111ea1d1d25578bdd5086f301375d00b3"
+      }
+    },
+    "torch": "2.5.1+cu124",
+    "torch_cuda": "12.4",
+    "transformers": "4.46.3"
+  },
+  "literature_commit": "082dd8b36b199e135585c0ba61cab587d6814e60",
+  "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "measurement": {
+    "canary_per_point": 1,
+    "material_cv_multiplier": 3.0,
+    "material_relative_threshold": 0.05,
+    "measured_repetitions": 7,
+    "operator_time": "CUDA_EVENTS",
+    "wall_time": "SECONDARY",
+    "warmups": 2
+  },
+  "node": "109",
+  "p1": {
+    "arms": [
+      "STOCK_FLASH_SDPA",
+      "PADDED_B4_FLASH_SDPA"
+    ],
+    "batch_arms": [
+      1,
+      4
+    ],
+    "companion_inputs": [
+      "S2_CODE",
+      "S2_STRUCTURED",
+      "S2_CODE_ROLL1_DERIVED_CONTROL"
+    ],
+    "conditional_diagnostic": "FIXED_SPLIT_TRITON_256 only if stock target output is not bitwise invariant",
+    "contract": "TARGET_REQUEST_BATCH_INVARIANCE_V1",
+    "holdout": "NONE_PREQUALIFIED",
+    "output_checks": [
+      "raw hash",
+      "bitwise",
+      "max abs",
+      "max relative",
+      "float16 ordered-code distance"
+    ],
+    "strong_baseline": "fixed physical B4 padding uses the same optimized Flash SDPA implementation/decomposition while target remains slot0; batch parallel and no global lock",
+    "target": "QWEN25_0P5B_S2_TEXT_DECODE_STEP16_LAYER12_ATTENTION",
+    "target_slot": 0
+  },
+  "p2": {
+    "arms": [
+      "ONLINE_EAGER",
+      "READY_INDEX_DIAGNOSTIC",
+      "STRONG_COMPILE_FULL_then_STRONG_CUDA_GRAPH"
+    ],
+    "context_tokens_used": 8192,
+    "holdout": "NONE_PREQUALIFIED",
+    "input": "QWEN25_0P5B_S3_TEXT_T8192_DECODE_STEP1_LAYER12",
+    "metadata": "K_min/K_max precomputed outside query-time chain",
+    "page_count": 512,
+    "page_size_tokens": 16,
+    "ready_index_status": "DIAGNOSTIC_NOT_IMPLEMENTABLE_BASELINE",
+    "score": "sum_i max(q_i*K_min_i,q_i*K_max_i)",
+    "selected_fractions": [
+      0.5,
+      0.25
+    ],
+    "selector": "QUEST_STYLE_SELECTOR_DIAGNOSTIC_V1",
+    "tie_break": "score descending; stable original page index ascending",
+    "top_pages": [
+      256,
+      128
+    ]
+  },
+  "source_sha256": {
+    "extract": "755c58a76ed24151e449c39fda991cc82a64a3a10c4444373dc87b7752fd1112",
+    "harness": "02f779fe145944720c3f1d32a13467d9bca7333d62d69b2fe4b69feac9d8c826"
+  },
+  "stage": "AWMA_P1_P2_NATIVE_PROBLEM_QUALIFICATION_V1",
+  "status": "FROZEN_BEFORE_TIMING"
+}
