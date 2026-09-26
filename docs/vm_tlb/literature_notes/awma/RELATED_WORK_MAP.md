@@ -52,3 +52,12 @@ L003与L004不是上述链条上的更大合并器：前者管理共享资源干
 - **工作量：**logical access、controller retry、physical L1 probe、L2miss、page walk/PTE请求不是同一个分母。
 - **负载：**集成GPU不自动代表Ada独显；传统VM压力样本不自动代表LLM；DeepBench算子不自动代表完整模型服务。
 - **控制：**profiler提示、在线统计、未来trace oracle必须分别命名；作者使用的近似不等于我们已经有合法实现来源。
+
+
+## Round 02增量
+
+- L010 Valkyrie：跨CU PTE复制、peer probing与预取容量隔离；与同指令相同VPN去重不同。数据参考必须区分静态page-sharing与miss时peer residency。
+- L011 NeuMMU：SPM/DMA需求下的miss-side pending合并、PTW吞吐与路径寄存器；不能把NPU动机直接归纳成GPU/LLM规律。
+- 经验账本新增维度：相同suite输入下的footprint/MPKI、作者mean的范围、component energy、不同页大小同时改input、baseline自身已有能力。参见empirical/。
+
+以上提供最近邻和实验对照线索，不确认任何AWMA新机制的新颖性，不授权新实验。

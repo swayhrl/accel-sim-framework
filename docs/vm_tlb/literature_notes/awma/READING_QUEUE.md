@@ -20,3 +20,11 @@
 ## 下轮维护规则
 
 固定paper ID；升级阅读深度时记录日期与新增定位。修正原记录时在CHANGELOG中说明；不把旧假设静默改写成作者结论。需要新实验的想法只放在问题卡/待办，不以文献笔记授权Codex执行。
+
+
+## Round 02追加：用户可协助的全文优先项
+
+1. **Marching Page Walks: Batching and Concurrent Page Table Walks for Enhancing GPU Throughput**，HPCA2025，DOI `10.1109/HPCA61900.2025.00123`。作者页面可读，出版PDF入口仍未获得正文。用于核不同页的batch条件、单walker并发资源及各workload实验，不以摘要的平均数代填数据。
+2. **A Case for Speculative Address Translation with Rapid Validation for GPUs（Avatar）**，MICRO2024，DOI `10.1109/MICRO61859.2024.00029`。作者介绍/机构摘要可读，出版入口无法获得正文。需要核推测校验、失败回退、压缩限制及逐workload条件。
+
+NeuMMU预印本已有可读正文，本轮L011已登记，会议版差异尚未核但暂不要求用户优先补。Valkyrie已有正文；CAC继续非阻塞。此次请求不是要求暂停Codex等待。
