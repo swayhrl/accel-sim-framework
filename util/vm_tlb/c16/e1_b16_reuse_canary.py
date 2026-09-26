@@ -146,7 +146,14 @@ def build_scope(args) -> None:
         "D1_L0_up_proj_range": d1_up, "D2_L0_up_proj_range": d2_up,
         "intervening_kernel_count": d2_up["first_dynamic_kernel"] - d1_up["last_dynamic_kernel"] - 1,
         "traceg_compressed_bytes": traceg_bytes,
-        "dynamic_trace_instructions": instructions, "thread_blocks": ctas,
+        "dynamic_trace_instructions": instructions,
+        "trace_instruction_records": instructions,
+        "instruction_count_semantics": {
+            "trace_index_field": "TRACEG_INSTRUCTION_RECORDS",
+            "simulator_field": "GPU_TOT_SIM_INSN_EXECUTED_THREAD_INSTRUCTIONS",
+            "direct_equality_required": False,
+        },
+        "thread_blocks": ctas,
         "full_trace_payload_copied": False, "staging_method": "READ_ONLY_SYMLINKS",
         "no_kernel_filtering_or_reordering": True,
     }
@@ -346,8 +353,6 @@ def summarize_run(run_dir: Path, condition: str, expected_rows, scope, diagnosti
     d2_up_first = int(d2_up["first_dynamic_kernel"])
     d2_up_last = int(d2_up["last_dynamic_kernel"])
     final_stats = parsed["completed"][expected_count]
-    require(final_stats["gpu_tot_sim_insn"] == int(scope["dynamic_trace_instructions"]),
-            f"{condition}: instruction coverage drift")
     require(final_stats["gpu_tot_issued_cta"] == int(scope["thread_blocks"]),
             f"{condition}: CTA coverage drift")
     cycles = {
@@ -364,6 +369,10 @@ def summarize_run(run_dir: Path, condition: str, expected_rows, scope, diagnosti
             [f"{row['uid']}\t{row['stream']}\t{row['name']}" for row in launches]),
         "final_cycles": final_stats["gpu_tot_sim_cycle"],
         "instruction_count": final_stats["gpu_tot_sim_insn"],
+        "instruction_count_semantics": "GPU_TOT_SIM_INSN_EXECUTED_THREAD_INSTRUCTIONS",
+        "trace_instruction_records": int(scope.get(
+            "trace_instruction_records", scope["dynamic_trace_instructions"])),
+        "trace_vs_simulator_instruction_direct_equality_required": False,
         "CTA_count": final_stats["gpu_tot_issued_cta"], "cycles": cycles,
         "wall_seconds": int(receipt["wall_seconds"]), "verified_output_sha256": verified,
     }
