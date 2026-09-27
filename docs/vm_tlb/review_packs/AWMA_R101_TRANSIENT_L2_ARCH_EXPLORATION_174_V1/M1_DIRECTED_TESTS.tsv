@@ -1,0 +1,13 @@
+test_id	requirement	result	evidence
+1	transient clean live line under replacement pressure	PASS	ordinary legal victim selected before live transient
+2	dirty live transient forced eviction writes back	PASS	may_drop=false and finite writeback queue increments
+3	dead dirty transient may drop without writeback	PASS	may_drop=true and writeback queue unchanged
+4	dead transient preferred over ordinary live line	PASS	dead victim rank precedes ordinary
+5	all ways live fallback	PASS	baseline victim order selected; no pin/deadlock
+6	generation reuse	PASS	old generation dead; new generation live and non-droppable
+7	region alignment/partial lines	PASS	line-overlap classification includes first/last partial line only
+8	non-transient address unaffected	PASS	ordinary metadata and no dirty drop
+9	mode OFF equivalence	PASS	baseline eligibility and no drop
+10	terminal quiescence/no queue leak	PASS	bounded transitions finish and modeled writeback queue drains to zero
+11	accepted VM/controller regressions	PASS	vm_c10b, vm_m2 pending-retry, vm_m3 timing all pass before and after implementation
+12	accepted integrated default-OFF smoke	PASS	T2 exact cycles/instructions/CTA/coverage and no transient output

@@ -1,0 +1,959 @@
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -32,9 +32,311 @@
+ 
+ #include "gpu-cache.h"
+ #include <assert.h>
++#include <algorithm>
++#include <fstream>
++#include <sstream>
++#include <string.h>
+ #include "gpu-sim.h"
+ #include "hashing.h"
+ #include "stat-tool.h"
++
++awma_transient_l2_controller::awma_transient_l2_controller()
++    : m_configured(false),
++      m_explicit_mode(false),
++      m_diagnostics(false),
++      m_line_size(0),
++      m_expected_kernels(0),
++      m_completed_kernels(0),
++      m_applied_transitions(0),
++      m_transient_accesses(0),
++      m_transient_admissions(0),
++      m_protected_deflections(0),
++      m_forced_live_evictions(0),
++      m_dead_victim_selections(0),
++      m_ordinary_victim_selections(0),
++      m_fallback_count(0),
++      m_l2_writebacks(0),
++      m_l2_writeback_bytes(0),
++      m_transient_writebacks(0),
++      m_transient_writeback_bytes(0),
++      m_dead_eviction_drops(0),
++      m_dead_eviction_drop_bytes(0),
++      m_oracle_drop_lines(0),
++      m_oracle_drop_dirty_lines(0),
++      m_oracle_drop_bytes(0),
++      m_oracle_reserved_skips(0) {
++  configure_from_environment();
++}
++
++awma_transient_l2_controller &awma_transient_l2_instance() {
++  static awma_transient_l2_controller controller;
++  return controller;
++}
++
++static unsigned long long awma_parse_u64(const std::string &text) {
++  char *end = NULL;
++  unsigned long long value = strtoull(text.c_str(), &end, 0);
++  assert(end != text.c_str() && *end == '\0');
++  return value;
++}
++
++void awma_transient_l2_controller::configure_from_environment() {
++  const char *mode_text = getenv("AWMA_TRANSIENT_L2_MODE");
++  const char *diagnostics_text = getenv("AWMA_TRANSIENT_L2_DIAGNOSTICS");
++  const char *sidecar = getenv("AWMA_TRANSIENT_L2_SIDECAR");
++  awma_transient_l2::mode selected = awma_transient_l2::MODE_NONE;
++  if (mode_text != NULL) {
++    m_explicit_mode = true;
++    if (!strcmp(mode_text, "none")) {
++      selected = awma_transient_l2::MODE_NONE;
++    } else if (!strcmp(mode_text, "oracle_dead_drop")) {
++      selected = awma_transient_l2::MODE_ORACLE_DEAD_DROP;
++    } else if (!strcmp(mode_text, "bounded_live_retention")) {
++      selected = awma_transient_l2::MODE_BOUNDED_LIVE_RETENTION;
++    } else {
++      fprintf(stderr, "Unknown AWMA_TRANSIENT_L2_MODE=%s\n", mode_text);
++      abort();
++    }
++  }
++  if (diagnostics_text != NULL) {
++    assert(!strcmp(diagnostics_text, "0") || !strcmp(diagnostics_text, "1"));
++    m_diagnostics = !strcmp(diagnostics_text, "1");
++  }
++  m_policy.reset(selected);
++  if (sidecar != NULL && sidecar[0] != '\0') read_sidecar(sidecar);
++  if (selected != awma_transient_l2::MODE_NONE) {
++    assert(sidecar != NULL && sidecar[0] != '\0');
++    assert(m_expected_kernels > 0);
++  }
++  m_configured = true;
++}
++
++void awma_transient_l2_controller::read_sidecar(const char *path) {
++  std::ifstream input(path);
++  assert(input.good());
++  std::string line;
++  bool header = false;
++  unsigned region_count = 0;
++  while (std::getline(input, line)) {
++    if (line.empty() || line[0] == '#') continue;
++    std::istringstream fields(line);
++    std::string kind;
++    fields >> kind;
++    if (!header) {
++      assert(kind == "AWMA_TRANSIENT_L2_RUNTIME_V1");
++      header = true;
++      continue;
++    }
++    if (kind == "LINE_SIZE") {
++      fields >> m_line_size;
++      assert(m_line_size > 0);
++    } else if (kind == "EXPECTED_KERNELS") {
++      fields >> m_expected_kernels;
++      assert(m_expected_kernels > 0);
++    } else if (kind == "REGION") {
++      unsigned region_id, generation, live;
++      std::string base, limit;
++      fields >> region_id >> base >> limit >> generation >> live;
++      assert(fields && live <= 1);
++      m_policy.configure_region(region_id, awma_parse_u64(base),
++                                awma_parse_u64(limit), generation, live != 0);
++      ++region_count;
++    } else if (kind == "BOUNDARY") {
++      boundary_transition transition;
++      unsigned live;
++      fields >> transition.ordinal >> transition.region_id >>
++          transition.generation >> live;
++      assert(fields && transition.ordinal > 0 &&
++             transition.ordinal <= m_expected_kernels && live <= 1);
++      transition.live = live != 0;
++      m_transitions.push_back(transition);
++    } else {
++      fprintf(stderr, "Unknown transient L2 sidecar record: %s\n",
++              kind.c_str());
++      abort();
++    }
++    std::string trailing;
++    assert(!(fields >> trailing));
++  }
++  assert(header && region_count > 0 && region_count <= 4);
++  std::sort(m_transitions.begin(), m_transitions.end(),
++            [](const boundary_transition &left,
++               const boundary_transition &right) {
++              if (left.ordinal != right.ordinal)
++                return left.ordinal < right.ordinal;
++              return left.region_id < right.region_id;
++            });
++}
++
++void awma_transient_l2_controller::register_l2(tag_array *tags,
++                                                unsigned line_size) {
++  assert(m_configured && tags != NULL && line_size > 0);
++  if (m_line_size == 0)
++    m_line_size = line_size;
++  else
++    assert(m_line_size == line_size);
++  assert(std::find(m_l2_arrays.begin(), m_l2_arrays.end(), tags) ==
++         m_l2_arrays.end());
++  m_l2_arrays.push_back(tags);
++}
++
++void awma_transient_l2_controller::unregister_l2(tag_array *tags) {
++  std::vector<tag_array *>::iterator found =
++      std::find(m_l2_arrays.begin(), m_l2_arrays.end(), tags);
++  if (found != m_l2_arrays.end()) m_l2_arrays.erase(found);
++}
++
++awma_transient_l2::line_metadata
++awma_transient_l2_controller::classify_line(new_addr_type block_addr) const {
++  if (!active() || m_line_size == 0)
++    return awma_transient_l2::line_metadata();
++  return m_policy.classify_line(block_addr, m_line_size);
++}
++
++void awma_transient_l2_controller::note_access(
++    const awma_transient_l2::line_metadata &metadata, bool admission) {
++  if (!m_diagnostics || !metadata.transient()) return;
++  ++m_transient_accesses;
++  if (admission) ++m_transient_admissions;
++}
++
++void awma_transient_l2_controller::note_victim(
++    unsigned baseline_index, unsigned selected_index,
++    const awma_transient_l2::line_metadata &baseline_metadata,
++    awma_transient_l2::victim_class selected_class) {
++  if (!m_diagnostics) return;
++  if (baseline_index != selected_index && m_policy.is_live(baseline_metadata))
++    ++m_protected_deflections;
++  if (selected_class == awma_transient_l2::VICTIM_LIVE_TRANSIENT) {
++    ++m_forced_live_evictions;
++    ++m_fallback_count;
++  } else if (selected_class == awma_transient_l2::VICTIM_DEAD_TRANSIENT) {
++    ++m_dead_victim_selections;
++  } else if (selected_class == awma_transient_l2::VICTIM_ORDINARY) {
++    ++m_ordinary_victim_selections;
++  }
++}
++
++void awma_transient_l2_controller::note_l2_writeback(
++    const evicted_block_info &evicted, bool dropped) {
++  if (!m_diagnostics) return;
++  if (dropped) {
++    ++m_dead_eviction_drops;
++    m_dead_eviction_drop_bytes += evicted.m_modified_size;
++    return;
++  }
++  ++m_l2_writebacks;
++  m_l2_writeback_bytes += evicted.m_modified_size;
++  if (evicted.m_awma_transient.transient()) {
++    ++m_transient_writebacks;
++    m_transient_writeback_bytes += evicted.m_modified_size;
++  }
++}
++
++void awma_transient_l2_controller::apply_boundary(unsigned ordinal) {
++  while (m_applied_transitions < m_transitions.size() &&
++         m_transitions[m_applied_transitions].ordinal == ordinal) {
++    const boundary_transition &transition =
++        m_transitions[m_applied_transitions];
++    const awma_transient_l2::descriptor old =
++        m_policy.get_region(transition.region_id);
++    const bool old_generation_dies =
++        old.live && (transition.generation != old.generation ||
++                     !transition.live);
++    if (old_generation_dies &&
++        m_policy.selected_mode() == awma_transient_l2::MODE_ORACLE_DEAD_DROP) {
++      for (unsigned i = 0; i < m_l2_arrays.size(); ++i) {
++        awma_transient_drop_result dropped =
++            m_l2_arrays[i]->awma_oracle_drop(transition.region_id,
++                                             old.generation);
++        m_oracle_drop_lines += dropped.lines;
++        m_oracle_drop_dirty_lines += dropped.dirty_lines;
++        m_oracle_drop_bytes += dropped.dirty_bytes;
++        m_oracle_reserved_skips += dropped.reserved_lines;
++      }
++    }
++    m_policy.transition(transition.region_id, transition.generation,
++                        transition.live);
++    ++m_applied_transitions;
++  }
++}
++
++void awma_transient_l2_controller::kernel_completed(
++    unsigned uid, const char *name, unsigned long long cycle) {
++  if (!active()) return;
++  (void)uid;
++  (void)name;
++  (void)cycle;
++  ++m_completed_kernels;
++  assert(m_expected_kernels == 0 ||
++         m_completed_kernels <= m_expected_kernels);
++  apply_boundary(m_completed_kernels);
++}
++
++const char *awma_transient_l2_controller::mode_name() const {
++  switch (m_policy.selected_mode()) {
++    case awma_transient_l2::MODE_NONE:
++      return "none";
++    case awma_transient_l2::MODE_ORACLE_DEAD_DROP:
++      return "oracle_dead_drop";
++    case awma_transient_l2::MODE_BOUNDED_LIVE_RETENTION:
++      return "bounded_live_retention";
++  }
++  abort();
++}
++
++bool awma_transient_l2_controller::terminal_quiescent() const {
++  if (!active() || m_expected_kernels == 0) return true;
++  return m_completed_kernels == m_expected_kernels &&
++         m_applied_transitions == m_transitions.size();
++}
++
++void awma_transient_l2_controller::print_stats(FILE *fout) const {
++  if (!active()) return;
++  fprintf(fout, "awma_transient_l2_mode = %s\n", mode_name());
++  fprintf(fout, "awma_transient_l2_expected_kernels = %u\n",
++          m_expected_kernels);
++  fprintf(fout, "awma_transient_l2_completed_kernels = %u\n",
++          m_completed_kernels);
++  fprintf(fout, "awma_transient_l2_descriptor_transitions = %u\n",
++          m_applied_transitions);
++  fprintf(fout, "awma_transient_l2_transient_accesses = %llu\n",
++          m_transient_accesses);
++  fprintf(fout, "awma_transient_l2_transient_admissions = %llu\n",
++          m_transient_admissions);
++  fprintf(fout, "awma_transient_l2_protected_victim_deflections = %llu\n",
++          m_protected_deflections);
++  fprintf(fout, "awma_transient_l2_forced_live_evictions = %llu\n",
++          m_forced_live_evictions);
++  fprintf(fout, "awma_transient_l2_dead_victim_selections = %llu\n",
++          m_dead_victim_selections);
++  fprintf(fout, "awma_transient_l2_ordinary_victim_selections = %llu\n",
++          m_ordinary_victim_selections);
++  fprintf(fout, "awma_transient_l2_fallback_count = %llu\n",
++          m_fallback_count);
++  fprintf(fout, "awma_transient_l2_l2_writebacks = %llu\n",
++          m_l2_writebacks);
++  fprintf(fout, "awma_transient_l2_l2_writeback_bytes = %llu\n",
++          m_l2_writeback_bytes);
++  fprintf(fout, "awma_transient_l2_transient_writebacks = %llu\n",
++          m_transient_writebacks);
++  fprintf(fout, "awma_transient_l2_transient_writeback_bytes = %llu\n",
++          m_transient_writeback_bytes);
++  fprintf(fout, "awma_transient_l2_dead_eviction_drops = %llu\n",
++          m_dead_eviction_drops);
++  fprintf(fout, "awma_transient_l2_dead_eviction_drop_bytes = %llu\n",
++          m_dead_eviction_drop_bytes);
++  fprintf(fout, "awma_transient_l2_oracle_drop_lines = %llu\n",
++          m_oracle_drop_lines);
++  fprintf(fout, "awma_transient_l2_oracle_drop_dirty_lines = %llu\n",
++          m_oracle_drop_dirty_lines);
++  fprintf(fout, "awma_transient_l2_oracle_drop_bytes = %llu\n",
++          m_oracle_drop_bytes);
++  fprintf(fout, "awma_transient_l2_oracle_reserved_skips = %llu\n",
++          m_oracle_reserved_skips);
++  fprintf(fout, "awma_transient_l2_terminal_quiescent = %u\n",
++          terminal_quiescent() ? 1 : 0);
++}
+ 
+ // used to allocate memory that is large enough to adapt the changes in cache
+ // size across kernels
+@@ -216,6 +518,52 @@
+   m_type_id = type_id;
+   is_used = false;
+   m_dirty = 0;
++  m_awma_is_l2 = false;
++}
++
++void tag_array::mark_awma_l2() {
++  assert(!m_awma_is_l2);
++  m_awma_is_l2 = true;
++  awma_transient_l2_instance().register_l2(this, m_config.get_line_sz());
++}
++
++void tag_array::unmark_awma_l2() {
++  if (!m_awma_is_l2) return;
++  awma_transient_l2_instance().unregister_l2(this);
++  m_awma_is_l2 = false;
++}
++
++awma_transient_drop_result tag_array::awma_oracle_drop(
++    unsigned region_id, unsigned generation) {
++  awma_transient_drop_result result;
++  if (!m_awma_is_l2) return result;
++  for (unsigned index = 0; index < m_config.get_num_lines(); ++index) {
++    cache_block_t *line = m_lines[index];
++    const awma_transient_l2::line_metadata metadata =
++        line->get_awma_transient();
++    if (!metadata.transient() || metadata.region_id() != region_id ||
++        metadata.generation != generation || line->is_invalid_line())
++      continue;
++    if (line->is_reserved_line()) {
++      ++result.reserved_lines;
++      continue;
++    }
++    ++result.lines;
++    if (line->is_modified_line()) {
++      ++result.dirty_lines;
++      result.dirty_bytes += line->get_modified_size();
++      assert(m_dirty > 0);
++      --m_dirty;
++    }
++    for (unsigned sector = 0; sector < SECTOR_CHUNCK_SIZE; ++sector) {
++      mem_access_sector_mask_t mask;
++      mask.reset();
++      mask.set(sector);
++      line->set_status(INVALID, mask);
++    }
++    line->set_awma_transient(awma_transient_l2::line_metadata());
++  }
++  return result;
+ }
+ 
+ void tag_array::add_pending_line(mem_fetch *mf) {
+@@ -254,6 +602,16 @@
+   unsigned invalid_line = (unsigned)-1;
+   unsigned valid_line = (unsigned)-1;
+   unsigned long long valid_timestamp = (unsigned)-1;
++  unsigned dead_line = (unsigned)-1;
++  unsigned ordinary_line = (unsigned)-1;
++  unsigned live_line = (unsigned)-1;
++  unsigned long long dead_timestamp = (unsigned)-1;
++  unsigned long long ordinary_timestamp = (unsigned)-1;
++  unsigned long long live_timestamp = (unsigned)-1;
++  const bool transient_replacement =
++      m_awma_is_l2 && awma_transient_l2_instance().replacement_enabled();
++  const float dirty_line_percentage =
++      ((float)m_dirty / (m_config.m_nset * m_config.m_assoc)) * 100;
+ 
+   bool all_reserved = true;
+   // check for hit or pending hit
+@@ -286,15 +644,15 @@
+     if (!line->is_reserved_line()) {
+       // percentage of dirty lines in the cache
+       // number of dirty lines / total lines in the cache
+-      float dirty_line_percentage =
+-          ((float)m_dirty / (m_config.m_nset * m_config.m_assoc)) * 100;
+       // If the cacheline is from a load op (not modified),
+       // or the total dirty cacheline is above a specific value,
+       // Then this cacheline is eligible to be considered for replacement
+       // candidate i.e. Only evict clean cachelines until total dirty cachelines
+       // reach the limit.
+-      if (!line->is_modified_line() ||
+-          dirty_line_percentage >= m_config.m_wr_percent) {
++      const bool baseline_eligible =
++          !line->is_modified_line() ||
++          dirty_line_percentage >= m_config.m_wr_percent;
++      if (baseline_eligible) {
+         all_reserved = false;
+         if (line->is_invalid_line()) {
+           invalid_line = index;
+@@ -313,7 +671,60 @@
+           }
+         }
+       }
+-    }
++      if (transient_replacement && !line->is_invalid_line()) {
++        const awma_transient_l2::victim_class victim =
++            awma_transient_l2_instance().classify_victim(
++                line->get_awma_transient(), false, false,
++                baseline_eligible);
++        const unsigned long long timestamp =
++            m_config.m_replacement_policy == LRU
++                ? line->get_last_access_time()
++                : line->get_alloc_time();
++        if (victim == awma_transient_l2::VICTIM_DEAD_TRANSIENT &&
++            timestamp < dead_timestamp) {
++          dead_timestamp = timestamp;
++          dead_line = index;
++        } else if (victim == awma_transient_l2::VICTIM_ORDINARY &&
++                   timestamp < ordinary_timestamp) {
++          ordinary_timestamp = timestamp;
++          ordinary_line = index;
++        } else if (victim == awma_transient_l2::VICTIM_LIVE_TRANSIENT &&
++                   timestamp < live_timestamp) {
++          live_timestamp = timestamp;
++          live_line = index;
++        }
++      }
++    }
++  }
++  if (transient_replacement) {
++    awma_transient_l2::victim_class selected =
++        awma_transient_l2::VICTIM_INELIGIBLE;
++    if (invalid_line != (unsigned)-1) {
++      idx = invalid_line;
++      selected = awma_transient_l2::VICTIM_INVALID;
++    } else if (dead_line != (unsigned)-1) {
++      idx = dead_line;
++      selected = awma_transient_l2::VICTIM_DEAD_TRANSIENT;
++    } else if (ordinary_line != (unsigned)-1) {
++      idx = ordinary_line;
++      selected = awma_transient_l2::VICTIM_ORDINARY;
++    } else if (live_line != (unsigned)-1) {
++      idx = live_line;
++      selected = awma_transient_l2::VICTIM_LIVE_TRANSIENT;
++    } else {
++      assert(all_reserved);
++      assert(m_config.m_alloc_policy == ON_MISS);
++      return RESERVATION_FAIL;
++    }
++    if (!probe_mode) {
++      const unsigned baseline_index =
++          valid_line != (unsigned)-1 ? valid_line : idx;
++      const awma_transient_l2::line_metadata baseline_metadata =
++          m_lines[baseline_index]->get_awma_transient();
++      awma_transient_l2_instance().note_victim(
++          baseline_index, idx, baseline_metadata, selected);
++    }
++    return MISS;
+   }
+   if (all_reserved) {
+     assert(m_config.m_alloc_policy == ON_MISS);
+@@ -349,11 +760,17 @@
+   is_used = true;
+   shader_cache_access_log(m_core_id, m_type_id, 0);  // log accesses to cache
+   enum cache_request_status status = probe(addr, idx, mf, mf->is_write());
++  const awma_transient_l2::line_metadata incoming_metadata =
++      m_awma_is_l2 ? awma_transient_l2_instance().classify_line(
++                         m_config.block_addr(addr))
++                   : awma_transient_l2::line_metadata();
++  bool transient_admission = false;
+   switch (status) {
+     case HIT_RESERVED:
+       m_pending_hit++;
+     case HIT:
+       m_lines[idx]->set_last_access_time(time, mf->get_access_sector_mask());
++      if (m_awma_is_l2) m_lines[idx]->set_awma_transient(incoming_metadata);
+       break;
+     case MISS:
+       m_miss++;
+@@ -362,6 +779,10 @@
+         if (!m_lines[idx]->is_invalid_line()) {
+           evicted.m_has_valid_victim = true;
+           evicted.m_telemetry_class = m_lines[idx]->get_telemetry_class();
++          evicted.m_awma_transient = m_lines[idx]->get_awma_transient();
++          evicted.m_awma_transient_dead =
++              m_awma_is_l2 && awma_transient_l2_instance().is_dead(
++                                  evicted.m_awma_transient);
+         }
+         if (m_lines[idx]->is_modified_line()) {
+           wb = true;
+@@ -375,6 +796,10 @@
+         m_lines[idx]->allocate(m_config.tag(addr), m_config.block_addr(addr),
+                                time, mf->get_access_sector_mask());
+         m_lines[idx]->set_telemetry_class(mf->get_telemetry_class());
++        if (m_awma_is_l2) {
++          m_lines[idx]->set_awma_transient(incoming_metadata);
++          transient_admission = incoming_metadata.transient();
++        }
+       }
+       break;
+     case SECTOR_MISS:
+@@ -385,6 +810,7 @@
+         bool before = m_lines[idx]->is_modified_line();
+         ((sector_cache_block *)m_lines[idx])
+             ->allocate_sector(time, mf->get_access_sector_mask());
++        if (m_awma_is_l2) m_lines[idx]->set_awma_transient(incoming_metadata);
+         if (before && !m_lines[idx]->is_modified_line()) {
+           m_dirty--;
+         }
+@@ -401,6 +827,9 @@
+               status);
+       abort();
+   }
++  if (m_awma_is_l2 && status != RESERVATION_FAIL)
++    awma_transient_l2_instance().note_access(incoming_metadata,
++                                             transient_admission);
+   return status;
+ }
+ 
+@@ -432,6 +861,10 @@
+   if (status == MISS) {
+     m_lines[idx]->allocate(m_config.tag(addr), m_config.block_addr(addr), time,
+                            mask);
++    if (m_awma_is_l2)
++      m_lines[idx]->set_awma_transient(
++          awma_transient_l2_instance().classify_line(
++              m_config.block_addr(addr)));
+   } else if (status == SECTOR_MISS) {
+     assert(m_config.m_cache_type == SECTOR);
+     ((sector_cache_block *)m_lines[idx])->allocate_sector(time, mask);
+@@ -466,6 +899,8 @@
+       for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++) {
+         m_lines[i]->set_status(INVALID, mem_access_sector_mask_t().set(j));
+       }
++      m_lines[i]->set_awma_transient(
++          awma_transient_l2::line_metadata());
+     }
+ 
+   m_dirty = 0;
+@@ -478,6 +913,8 @@
+   for (unsigned i = 0; i < m_config.get_num_lines(); i++)
+     for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++)
+       m_lines[i]->set_status(INVALID, mem_access_sector_mask_t().set(j));
++  for (unsigned i = 0; i < m_config.get_num_lines(); i++)
++    m_lines[i]->set_awma_transient(awma_transient_l2::line_metadata());
+ 
+   m_dirty = 0;
+   is_used = false;
+@@ -1419,6 +1856,23 @@
+ void data_cache::send_write_request(mem_fetch *mf, cache_event request,
+                                     unsigned time,
+                                     std::list<cache_event> &events) {
++  if (m_level == L2_GPU_CACHE &&
++      request.m_cache_event_type == WRITE_BACK_REQUEST_SENT &&
++      awma_transient_l2_instance().active()) {
++    const bool drop =
++        request.m_evicted_block.m_awma_transient_dead &&
++        awma_transient_l2_instance().may_drop_dirty(
++            request.m_evicted_block.m_awma_transient);
++    awma_transient_l2_instance().note_l2_writeback(request.m_evicted_block,
++                                                   drop);
++    if (drop) {
++      events.push_back(
++          cache_event(AWMA_DEAD_TRANSIENT_DROPPED,
++                      request.m_evicted_block));
++      delete mf;
++      return;
++    }
++  }
+   events.push_back(request);
+   m_miss_queue.push_back(mf);
+   mf->set_status(m_miss_queue_status, time);
+@@ -1896,7 +2350,8 @@
+       // used, so set the right chip address from the original mf
+       wb->set_chip(mf->get_tlx_addr().chip);
+       wb->set_partition(mf->get_tlx_addr().sub_partition);
+-      send_write_request(wb, WRITE_BACK_REQUEST_SENT, time, events);
++      send_write_request(wb, cache_event(WRITE_BACK_REQUEST_SENT, evicted),
++                         time, events);
+     }
+     return MISS;
+   }
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -38,8 +38,10 @@
+ #include "../tr1_hash_map.h"
+ #include "gpu-misc.h"
+ #include "mem_fetch.h"
++#include "awma_transient_l2_policy.h"
+ 
+ #include <iostream>
++#include <vector>
+ #include "addrdec.h"
+ 
+ #define MAX_DEFAULT_CACHE_SIZE_MULTIBLIER 4
+@@ -72,7 +74,8 @@
+   WRITE_ALLOCATE_SENT,
+   // Observation-only notification that a cache replacement selected a valid
+   // victim.  Consumers must not use this event to change cache behavior.
+-  EVICTION_OBSERVED
++  EVICTION_OBSERVED,
++  AWMA_DEAD_TRANSIENT_DROPPED
+ };
+ 
+ enum cache_gpu_level {
+@@ -86,14 +89,18 @@
+   new_addr_type m_block_addr;
+   unsigned m_modified_size;
+   unsigned m_telemetry_class;
++  awma_transient_l2::line_metadata m_awma_transient;
+   bool m_has_valid_victim;
++  bool m_awma_transient_dead;
+   mem_access_byte_mask_t m_byte_mask;
+   mem_access_sector_mask_t m_sector_mask;
+   evicted_block_info() {
+     m_block_addr = 0;
+     m_modified_size = 0;
+     m_telemetry_class = M4C_OTHER;
++    m_awma_transient = awma_transient_l2::line_metadata();
+     m_has_valid_victim = false;
++    m_awma_transient_dead = false;
+     m_byte_mask.reset();
+     m_sector_mask.reset();
+   }
+@@ -179,12 +186,20 @@
+     assert(telemetry_class < M4C_MEMORY_CLASS_COUNT);
+     m_telemetry_class = telemetry_class;
+   }
++  awma_transient_l2::line_metadata get_awma_transient() const {
++    return m_awma_transient;
++  }
++  void set_awma_transient(
++      const awma_transient_l2::line_metadata &metadata) {
++    m_awma_transient = metadata;
++  }
+ 
+   new_addr_type m_tag;
+   new_addr_type m_block_addr;
+ 
+  private:
+   unsigned m_telemetry_class;
++  awma_transient_l2::line_metadata m_awma_transient;
+ };
+ 
+ struct line_cache_block : public cache_block_t {
+@@ -961,6 +976,101 @@
+   linear_to_raw_address_translation *m_address_mapping;
+ };
+ 
++class tag_array;
++
++struct awma_transient_drop_result {
++  awma_transient_drop_result()
++      : lines(0), dirty_lines(0), dirty_bytes(0), reserved_lines(0) {}
++  unsigned long long lines;
++  unsigned long long dirty_lines;
++  unsigned long long dirty_bytes;
++  unsigned long long reserved_lines;
++};
++
++class awma_transient_l2_controller {
++ public:
++  awma_transient_l2_controller();
++  void register_l2(tag_array *tags, unsigned line_size);
++  void unregister_l2(tag_array *tags);
++  bool active() const { return m_explicit_mode || m_diagnostics; }
++  bool diagnostics_enabled() const { return m_diagnostics; }
++  bool replacement_enabled() const {
++    return m_policy.replacement_enabled();
++  }
++  unsigned line_size() const { return m_line_size; }
++  awma_transient_l2::line_metadata classify_line(
++      new_addr_type block_addr) const;
++  bool is_live(const awma_transient_l2::line_metadata &metadata) const {
++    return m_policy.is_live(metadata);
++  }
++  bool is_dead(const awma_transient_l2::line_metadata &metadata) const {
++    return m_policy.is_dead(metadata);
++  }
++  bool may_drop_dirty(
++      const awma_transient_l2::line_metadata &metadata) const {
++    return m_policy.may_drop_dirty(metadata);
++  }
++  awma_transient_l2::victim_class classify_victim(
++      const awma_transient_l2::line_metadata &metadata, bool invalid,
++      bool reserved, bool baseline_eligible) const {
++    return m_policy.classify_victim(metadata, invalid, reserved,
++                                    baseline_eligible);
++  }
++  void note_access(const awma_transient_l2::line_metadata &metadata,
++                   bool admission);
++  void note_victim(unsigned baseline_index, unsigned selected_index,
++                   const awma_transient_l2::line_metadata &baseline_metadata,
++                   awma_transient_l2::victim_class selected_class);
++  void note_l2_writeback(const evicted_block_info &evicted, bool dropped);
++  void kernel_completed(unsigned uid, const char *name,
++                        unsigned long long cycle);
++  void print_stats(FILE *fout) const;
++  bool terminal_quiescent() const;
++
++ private:
++  struct boundary_transition {
++    unsigned ordinal;
++    unsigned region_id;
++    unsigned generation;
++    bool live;
++  };
++  void configure_from_environment();
++  void read_sidecar(const char *path);
++  void apply_boundary(unsigned ordinal);
++  const char *mode_name() const;
++
++  bool m_configured;
++  bool m_explicit_mode;
++  bool m_diagnostics;
++  unsigned m_line_size;
++  unsigned m_expected_kernels;
++  unsigned m_completed_kernels;
++  unsigned m_applied_transitions;
++  awma_transient_l2::region_policy m_policy;
++  std::vector<boundary_transition> m_transitions;
++  std::vector<tag_array *> m_l2_arrays;
++
++  unsigned long long m_transient_accesses;
++  unsigned long long m_transient_admissions;
++  unsigned long long m_protected_deflections;
++  unsigned long long m_forced_live_evictions;
++  unsigned long long m_dead_victim_selections;
++  unsigned long long m_ordinary_victim_selections;
++  unsigned long long m_fallback_count;
++  unsigned long long m_l2_writebacks;
++  unsigned long long m_l2_writeback_bytes;
++  unsigned long long m_transient_writebacks;
++  unsigned long long m_transient_writeback_bytes;
++  unsigned long long m_dead_eviction_drops;
++  unsigned long long m_dead_eviction_drop_bytes;
++  unsigned long long m_oracle_drop_lines;
++  unsigned long long m_oracle_drop_dirty_lines;
++  unsigned long long m_oracle_drop_bytes;
++  unsigned long long m_oracle_reserved_skips;
++};
++
++awma_transient_l2_controller &awma_transient_l2_instance();
++
+ class tag_array {
+  public:
+   // Use this constructor
+@@ -1002,6 +1112,10 @@
+   void add_pending_line(mem_fetch *mf);
+   void remove_pending_line(mem_fetch *mf);
+   void inc_dirty() { m_dirty++; }
++  void mark_awma_l2();
++  void unmark_awma_l2();
++  awma_transient_drop_result awma_oracle_drop(unsigned region_id,
++                                              unsigned generation);
+ 
+  protected:
+   // This constructor is intended for use only from derived classes that wish to
+@@ -1034,6 +1148,7 @@
+   int m_type_id;  // what kind of cache is this (normal, texture, constant)
+ 
+   bool is_used;  // a flag if the whole cache has ever been accessed before
++  bool m_awma_is_l2;
+ 
+   typedef tr1_hash_map<new_addr_type, unsigned> line_table;
+   line_table pending_lines;
+@@ -1750,9 +1865,11 @@
+            enum mem_fetch_status status, class gpgpu_sim *gpu,
+            enum cache_gpu_level level)
+       : data_cache(name, config, core_id, type_id, memport, mfcreator, status,
+-                   L2_WR_ALLOC_R, L2_WRBK_ACC, gpu, level) {}
+-
+-  virtual ~l2_cache() {}
++                   L2_WR_ALLOC_R, L2_WRBK_ACC, gpu, level) {
++    m_tag_array->mark_awma_l2();
++  }
++
++  virtual ~l2_cache() { m_tag_array->unmark_awma_l2(); }
+ 
+   virtual enum cache_request_status access(new_addr_type addr, mem_fetch *mf,
+                                            unsigned time,
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -1046,6 +1046,8 @@
+   last_streamID = streamID;
+   gpu_kernel_time.at(streamID).at(uid).end_cycle =
+       gpu_tot_sim_cycle + gpu_sim_cycle;
++  awma_transient_l2_instance().kernel_completed(
++      uid, kernel->name().c_str(), gpu_tot_sim_cycle + gpu_sim_cycle);
+   m_finished_kernel.push_back(uid);
+   std::vector<kernel_info_t *>::iterator k;
+   for (k = m_running_kernels.begin(); k != m_running_kernels.end(); k++) {
+@@ -1441,6 +1443,7 @@
+   gpgpu_ctx->stats->ptx_file_line_stats_write_file();
+   gpu_print_stat(streamID);
+   if (m_vm_translation != NULL) m_vm_translation->print_stats(stdout);
++  awma_transient_l2_instance().print_stats(stdout);
+   m4c_memory_telemetry_instance().print(stdout, executed_kernel_name().c_str());
+   m4c_memory_telemetry_instance().finish_kernel();
+ 
+--- /dev/null
++++ b/src/gpgpu-sim/awma_transient_l2_policy.h
+@@ -0,0 +1,151 @@
++#ifndef AWMA_TRANSIENT_L2_POLICY_H
++#define AWMA_TRANSIENT_L2_POLICY_H
++
++#include <assert.h>
++#include <stdint.h>
++
++namespace awma_transient_l2 {
++
++static const unsigned kMaxRegions = 4;
++static const unsigned kLogicalMetadataBitsPerLine = 11;
++
++enum mode {
++  MODE_NONE = 0,
++  MODE_ORACLE_DEAD_DROP,
++  MODE_BOUNDED_LIVE_RETENTION
++};
++
++enum victim_class {
++  VICTIM_INVALID = 0,
++  VICTIM_DEAD_TRANSIENT,
++  VICTIM_ORDINARY,
++  VICTIM_LIVE_TRANSIENT,
++  VICTIM_INELIGIBLE
++};
++
++struct line_metadata {
++  line_metadata() : region_plus_one(0), generation(0) {}
++  uint8_t region_plus_one;
++  uint8_t generation;
++  bool transient() const { return region_plus_one != 0; }
++  unsigned region_id() const {
++    assert(transient());
++    return region_plus_one - 1;
++  }
++};
++
++struct descriptor {
++  descriptor()
++      : base(0), limit(0), region_id(0), generation(0), valid(false),
++        live(false) {}
++  uint64_t base;
++  uint64_t limit;
++  uint8_t region_id;
++  uint8_t generation;
++  bool valid;
++  bool live;
++};
++
++class region_policy {
++ public:
++  region_policy() { reset(MODE_NONE); }
++
++  void reset(mode selected_mode) {
++    m_mode = selected_mode;
++    for (unsigned i = 0; i < kMaxRegions; ++i) m_regions[i] = descriptor();
++  }
++
++  mode selected_mode() const { return m_mode; }
++  bool replacement_enabled() const {
++    return m_mode == MODE_BOUNDED_LIVE_RETENTION;
++  }
++
++  void configure_region(unsigned region_id, uint64_t base, uint64_t limit,
++                        unsigned generation, bool live) {
++    assert(region_id < kMaxRegions);
++    assert(base < limit);
++    assert(generation > 0 && generation <= UINT8_MAX);
++    for (unsigned i = 0; i < kMaxRegions; ++i) {
++      if (i == region_id || !m_regions[i].valid) continue;
++      assert(limit <= m_regions[i].base || m_regions[i].limit <= base);
++    }
++    descriptor &region = m_regions[region_id];
++    region.base = base;
++    region.limit = limit;
++    region.region_id = static_cast<uint8_t>(region_id);
++    region.generation = static_cast<uint8_t>(generation);
++    region.valid = true;
++    region.live = live;
++  }
++
++  void transition(unsigned region_id, unsigned generation, bool live) {
++    assert(region_id < kMaxRegions);
++    descriptor &region = m_regions[region_id];
++    assert(region.valid);
++    assert(generation > 0 && generation <= UINT8_MAX);
++    assert(generation >= region.generation && "generation wrap/reversal");
++    region.generation = static_cast<uint8_t>(generation);
++    region.live = live;
++  }
++
++  const descriptor &get_region(unsigned region_id) const {
++    assert(region_id < kMaxRegions && m_regions[region_id].valid);
++    return m_regions[region_id];
++  }
++
++  line_metadata classify_line(uint64_t block_addr, uint64_t line_size) const {
++    assert(line_size > 0);
++    assert(block_addr <= UINT64_MAX - line_size);
++    const uint64_t block_limit = block_addr + line_size;
++    line_metadata result;
++    for (unsigned i = 0; i < kMaxRegions; ++i) {
++      const descriptor &region = m_regions[i];
++      if (!region.valid) continue;
++      if (block_addr < region.limit && region.base < block_limit) {
++        assert(!result.transient() && "overlapping transient regions");
++        result.region_plus_one = static_cast<uint8_t>(i + 1);
++        result.generation = region.generation;
++      }
++    }
++    return result;
++  }
++
++  bool is_live(const line_metadata &metadata) const {
++    if (!metadata.transient()) return false;
++    const descriptor &region = m_regions[metadata.region_id()];
++    return region.valid && region.live &&
++           region.generation == metadata.generation;
++  }
++
++  bool is_dead(const line_metadata &metadata) const {
++    if (!metadata.transient()) return false;
++    const descriptor &region = m_regions[metadata.region_id()];
++    return !region.valid || !region.live ||
++           region.generation != metadata.generation;
++  }
++
++  victim_class classify_victim(const line_metadata &metadata, bool invalid,
++                               bool reserved,
++                               bool baseline_eligible) const {
++    if (reserved) return VICTIM_INELIGIBLE;
++    if (invalid) return VICTIM_INVALID;
++    if (!replacement_enabled())
++      return baseline_eligible ? VICTIM_ORDINARY : VICTIM_INELIGIBLE;
++    if (is_dead(metadata)) return VICTIM_DEAD_TRANSIENT;
++    if (!baseline_eligible) return VICTIM_INELIGIBLE;
++    if (is_live(metadata)) return VICTIM_LIVE_TRANSIENT;
++    return VICTIM_ORDINARY;
++  }
++
++  bool may_drop_dirty(const line_metadata &metadata) const {
++    return replacement_enabled() && is_dead(metadata);
++  }
++
++ private:
++  mode m_mode;
++  descriptor m_regions[kMaxRegions];
++};
++
++}  // namespace awma_transient_l2
++
++#endif
