@@ -1,0 +1,45 @@
+{
+  "absolute_error_threshold": null,
+  "arms": [
+    "F_USE_KERNELS_FALSE",
+    "H_USE_KERNELS_TRUE"
+  ],
+  "backend_environment_receipt_sha256": "3150ada37b3915c4bebec289381d7a306191ca7fe811861c217d6b8239742fef",
+  "backend_toolchain": {
+    "fla_revision": "6d22ed1d2bb627375b6ca8fc135f7f417863e639",
+    "kernels": "0.17.0",
+    "mamba_revision": "20b2508ad12ae40260291539bf45183000451850",
+    "torch": "2.14.0+cu130",
+    "torch_cuda": "13.0",
+    "transformers_commit": "96331a9f93b72697f160a958d2883d4b49a56739"
+  },
+  "clean_process_per_arm": true,
+  "contract": "R54_GREEDY_BACKEND_EQUIVALENCE_V1",
+  "contract_frozen_before_gpu": true,
+  "diagnostic_only": [
+    "top2_order",
+    "top8_order_and_set",
+    "selected_and_second_logit",
+    "logit_margin",
+    "max_abs_logit_difference"
+  ],
+  "maximum_generated_tokens": 64,
+  "natural_eos": 248046,
+  "on_fail": "R54_V1R2_GREEDY_BACKEND_NOT_QUALIFIED",
+  "on_pass": "R54_V1R2_GREEDY_BACKEND_QUALIFIED_THEN_RESUME_R54_CONTRACT",
+  "prefix_receipt_sha256": "9f45422b1d15859398e1d923f8a9e9252136c993b51cbcb361a6ef2e570ba7cb",
+  "prefixes_in_fixed_order": [
+    "S0",
+    "PREFIX_HOLDOUT_2048",
+    "PREFIX_DISCOVERY_4096"
+  ],
+  "primary_gate": [
+    "exact_generated_token_ids",
+    "same_eos_stop_position",
+    "same_continuation_length",
+    "valid_cache_seq_length_progression",
+    "finite_logits"
+  ],
+  "stage": "AWMA_R54_GREEDY_SEMANTIC_REQUALIFICATION_V1R2",
+  "temperature": 0
+}

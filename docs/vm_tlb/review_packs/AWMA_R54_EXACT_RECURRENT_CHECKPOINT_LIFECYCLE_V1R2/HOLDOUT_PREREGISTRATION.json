@@ -1,0 +1,29 @@
+{
+  "arms": [
+    "P0",
+    "P2_D512",
+    "R1_HOLDOUT",
+    "L1_HOLDOUT",
+    "F1_HOLDOUT"
+  ],
+  "canary_per_arm": 1,
+  "discovery_p2_d2048_overhead_fraction": 0.012361421022807689,
+  "discovery_p2_d512_overhead_fraction": 0.06300276066211695,
+  "formal_repetitions_per_arm": 7,
+  "frozen_before_holdout_run": true,
+  "materiality": {
+    "effect_over_conservative_jitter": 3,
+    "minimum_overhead_fraction": 0.05
+  },
+  "prefix": "PREFIX_HOLDOUT_2048",
+  "prefix_token_sha256": "349e9ea68d79c91ec010584474ea8f0d47a5357e8526a4b14037cf8efe29e5ae",
+  "selected_density": "D512",
+  "selection_rule": "larger qualified P2 production residual; tie D512",
+  "semantic_gate": "same Hub backend; snapshot content exact; exact greedy/top8/top2/16-token continuation",
+  "stage": "AWMA_R54_EXACT_RECURRENT_CHECKPOINT_LIFECYCLE_V1R2",
+  "suffix": "HOLDOUT_SUFFIX_256",
+  "suffix_token_sha256": "00d57e39f920d9e07275925c6110e35483f71d97830883738259d37536725074",
+  "trigger": "P2_D512_DISCOVERY_STABLE_MATERIAL_COST",
+  "tuning_on_holdout": false,
+  "warmups_per_arm": 2
+}

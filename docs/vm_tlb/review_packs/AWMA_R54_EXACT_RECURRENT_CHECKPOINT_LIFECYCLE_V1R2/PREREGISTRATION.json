@@ -1,0 +1,68 @@
+{
+  "P0": "chunked512 no snapshot, comparable GDN hooks",
+  "P1": "preallocated synchronous D2D exact GDN state snapshot at boundary",
+  "P2": "dedicated snapshot stream, per-GDN-layer ready/done events, source reuse wait before next update",
+  "amortization_reuse_counts": [
+    1,
+    2,
+    4
+  ],
+  "backend": "V1R1_HUB_GENERIC_FOUR_FUNCTIONS_V1R2_GREEDY_QUALIFIED",
+  "chunk_tokens": 512,
+  "densities": [
+    512,
+    2048
+  ],
+  "fixture_sha256": "31dd3113719746ba90927a5c7e2684fdb839bf5dee8e41b39ed4580d96fa9385",
+  "fla_revision": "6d22ed1d2bb627375b6ca8fc135f7f417863e639",
+  "frozen_before_formal_timing": true,
+  "full_attention_kv": "ordinary resident prefix cache, excluded from recurrent checkpoint",
+  "holdout_density_selection": "larger qualified P2 production residual; tie D512",
+  "holdout_prefix": "PREFIX_HOLDOUT_2048",
+  "holdout_trigger": "qualified stable >=5% production P2 or restore residual",
+  "kernels": "0.17.0",
+  "mamba_revision": "20b2508ad12ae40260291539bf45183000451850",
+  "materiality": {
+    "minimum_effect_over_jitter": 3,
+    "minimum_overhead_fraction": 0.05
+  },
+  "model_revision": "c6046cd1f7e2763bf1abf5a5aef6ad7878e10ccb",
+  "model_weight_sha256": "04b1c301231dd422b8860db31311ab2721511346a32cb1e079c4c4e5f1fe4696",
+  "ncu_max_profiles_if_holdout_pass": 2,
+  "parameter_scan": false,
+  "prefix": "PREFIX_DISCOVERY_4096",
+  "primary_interval": "first prefix chunk GPU submission to both model completion and all required snapshots ready",
+  "production_arms": [
+    "P0",
+    "P1_D512",
+    "P2_D512",
+    "P1_D2048",
+    "P2_D2048"
+  ],
+  "production_per_arm": {
+    "canary": 1,
+    "formal_repetitions": 7,
+    "warmup": 2
+  },
+  "recurrent_state_bytes_per_boundary": 19759104,
+  "restore_arms": [
+    "R0",
+    "R1A",
+    "R1B",
+    "L1A",
+    "L1B",
+    "F1A",
+    "F1B"
+  ],
+  "restore_denominator": "measured avoided prefix4096 recompute",
+  "restore_per_arm": {
+    "canary": 1,
+    "formal_repetitions": 7,
+    "warmup": 2
+  },
+  "schema_sha256": "2da11cd1352b593361b58241d2aa5c364a26e20c57328260a4497cb7f5551543",
+  "semantic_gate_sha256": "feefb1ca2b320c94fc1dd07f2435f615879be7f5f0060ac79ce0c78b6b925fd9",
+  "stage": "AWMA_R54_EXACT_RECURRENT_CHECKPOINT_LIFECYCLE_V1R2",
+  "torch": "2.14.0+cu130",
+  "transformers_commit": "96331a9f93b72697f160a958d2883d4b49a56739"
+}

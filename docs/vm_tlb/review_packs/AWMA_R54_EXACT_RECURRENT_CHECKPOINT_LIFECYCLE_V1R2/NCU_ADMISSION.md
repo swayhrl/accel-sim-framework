@@ -1,0 +1,5 @@
+# NCU admission at the conditional holdout boundary
+
+The selected D512 P2 residual reproduced on the independent 2048-token holdout. Discovery overhead was 10.33 ms; timed D2D copies summed to 1.27 ms, overlapped with compute, while measured host per-layer snapshot scheduling was 6.52 ms. Holdout overhead was 4.92 ms; D2D copies summed to 0.67 ms and host scheduling was 3.21 ms. The P2 implementation also inserted 126 source-reuse event waits in discovery and 54 in holdout. D2048 overhead stayed below the 5% gate. Restore added 0.11–0.12 ms versus about 151 ms of avoided prefix compute.
+
+This evidence does not establish a stable >=5% GPU-local snapshot or restore residual. Snapshot writes use CUDA device-to-device copies, with no dedicated SM snapshot kernel to select for NCU. Profiling unrelated model kernels would not localize copy-engine or host orchestration cost. NCU admission is therefore `NO_GPU_LOCAL_PROFILE_TARGET`; zero NCU profiles were run. NSYS/CUPTI traces and CUDA event timings remain the time-axis authority.
