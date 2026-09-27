@@ -1,0 +1,93 @@
+{
+  "schema": "C16_E1_B16_RESULT_INTERPRETATION_TEMPLATE_V1",
+  "status": "TEMPLATE_ONLY_NO_TIMING_RESULT",
+  "selection_status": "UNSELECTED",
+  "claim_boundary": "FUTURE_TIMING_RESULT_INTERPRETATION_REQUIRES_INDEPENDENT_TIMING_AND_PROXY_EVIDENCE",
+  "required_bindings": [
+    "future_timing_run_id_and_receipt",
+    "future_framework_and_core_sha",
+    "future_config_trace_and_sidecar_sha",
+    "future_target_protection_and_admission_counters",
+    "C16_E1_TRACE_REUSE_SET_PRESSURE_CHARACTERIZED_V1_outputs_and_sha"
+  ],
+  "common_forbidden_inferences": [
+    "proxy_is_actual_L2_traffic_hit_miss_or_eviction",
+    "correlation_alone_proves_causality",
+    "one_budget_is_best_without_timing_evidence",
+    "RTX4080_hardware_microarchitecture_is_reverse_engineered"
+  ],
+  "branches": [
+    {
+      "id": "TIMING_LOCAL_POSITIVE_PRESSURE_LOW",
+      "selection": null,
+      "observations_required": {
+        "target_local_timing_effect": "POSITIVE",
+        "set_conflict_pressure_proxy": "LOW_BY_PREDECLARED_COMPARISON"
+      },
+      "compatible_interpretation": "Benefit is consistent with useful target retention under modest conflicting reference pressure.",
+      "required_checks": [
+        "target protection was realized rather than merely requested",
+        "admission denial and quota saturation are low",
+        "whole-decode effect is reconciled with protected coverage",
+        "D1_D2 and D2_D3 consistency is reported"
+      ],
+      "must_not_claim": "Low proxy pressure proves absence of real L2 conflict or eviction."
+    },
+    {
+      "id": "TIMING_LOCAL_POSITIVE_COLLATERAL_HIGH",
+      "selection": null,
+      "observations_required": {
+        "target_local_timing_effect": "POSITIVE",
+        "collateral_or_non_target_cost": "HIGH"
+      },
+      "compatible_interpretation": "Target-local benefit may be real but offset by collateral cache/admission cost or limited protected coverage.",
+      "required_checks": [
+        "separate target-local and whole-decode timing",
+        "inspect non-target slowdown and denial counters",
+        "compare hot-set and per-subpartition pressure",
+        "check whether global quota is sufficient but placement is unfavorable"
+      ],
+      "must_not_claim": "A local positive result implies a net application benefit."
+    },
+    {
+      "id": "TARGET_PROTECTION_LOW_DENIAL_HIGH",
+      "selection": null,
+      "observations_required": {
+        "realized_target_protection": "LOW",
+        "admission_denial": "HIGH"
+      },
+      "compatible_interpretation": "The budget or admission policy may be failing to realize intended protection; timing is not a clean test of retained-target usefulness.",
+      "required_checks": [
+        "quota accounting and per-subpartition allocation",
+        "set-local population versus associativity",
+        "target request eligibility and fill realization",
+        "distinguish global capacity shortage from local placement pressure"
+      ],
+      "must_not_claim": "A weak timing result disproves reuse value."
+    },
+    {
+      "id": "TARGET_PROTECTION_HIGH_TIMING_NO_BENEFIT",
+      "selection": null,
+      "observations_required": {
+        "realized_target_protection": "HIGH",
+        "target_timing_effect": "NONE_OR_NEGATIVE"
+      },
+      "compatible_interpretation": "Retention may be realized but not timing-critical, reused too late, hidden by another bottleneck, or offset by collateral effects.",
+      "required_checks": [
+        "reuse distance and next-reuse referenced target footprint",
+        "target hit-path or service-time evidence from the future timing run",
+        "critical-path coverage and overlap",
+        "collateral pressure and non-target timing"
+      ],
+      "must_not_claim": "High protection with no speedup proves the pressure proxy or mapper is wrong."
+    }
+  ],
+  "result_fields": {
+    "selected_branch_ids": [],
+    "timing_evidence": null,
+    "pressure_evidence": null,
+    "mechanism_counter_evidence": null,
+    "interpretation": null,
+    "unresolved_alternatives": []
+  }
+}
