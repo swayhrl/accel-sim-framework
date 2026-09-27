@@ -1,10 +1,16 @@
 # AWMA论文阅读笔记｜ChatGPT支线
 
-维护者ChatGPT；更新：Round09，2026-09-27。文献笔记不是执行receipt；是否启动和完成实验，以独立Goal和review pack为准。
+维护者ChatGPT；更新：Round11，2026-09-27。文献笔记不是执行receipt；是否启动和完成实验，以独立Goal和review pack为准。
+
+## 当前窗口名称
+
+用户确认保留原名：**Lane F＝R101；Lane G＝R102，均在109。** Round10旧handoff的Lane H/I是历史命名别名，不要求正在执行的窗口改名、重启或改变科学合同。R102仍先做input authority核查；所有CUDA工作仍共用既有GPU锁。
 
 ## 最新问题发现
 
-- [Round10：R81/R82横向审查与下一轮并行候选](rounds/2026-09-27_ROUND_10_HORIZONTAL_REVIEW_AND_NEXT.md)：独立接受R81软件机会/R82当前软件充分，关闭其架构推进；Round09后备中提升R101固定Newton–Schulz中间态生命周期，条件提升R102低精度权重变化检测/压缩，Q92/Q93暂缓。下一轮建议Lane H/Lane I并行，109 GPU仍统一加锁。\n- [Round09：宽范围支线——执行组织、表示生命周期与训练新成本](rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md)：27项核心工作，19项正文关键章节、1项部分正文、6项原始摘要、1项作者artifact/元数据；本轮扩展证据表53条。覆盖编译、通信、稀疏、优化器、RL同步、TT embedding、可靠性、CPU/FPGA与模拟方法。保留三个后备问题卡，未启动新GPU任务、不改Lane F/R81或Lane G/R82。明确Celty/Coruscant公开代码范围及Syncopate AE版本标注差异。
+- [Round11：代数重写、无损数据流、跨CTA与闭环AI](rounds/2026-09-27_ROUND_11_ALGEBRA_COMPRESSION_AND_CLOSED_LOOP.md)：15项核心工作，12篇正文关键章节、1项作者技术文章+源码、1项摘要+源码、1项元数据+artifact；另6个作者仓库文件与CUDA文档。28条实验/分析组。补Gram NS、UCCL-Zip、DFloat11/ZipServ、CCE/Liger、cluster近邻和VLA推理VJP。保留ClusterFusion++量纲问题；不改F/G任务，不启动新GPU/模拟。
+- [Round10：R81/R82横向审查与下一轮并行候选](rounds/2026-09-27_ROUND_10_HORIZONTAL_REVIEW_AND_NEXT.md)：R81软件机会、R82当前软件无有效候选；后备中提升R101固定Newton–Schulz中间态生命周期，条件提升R102低精度权重变化检测/压缩，Q92/Q93暂缓。历史H/I窗口在实际执行中保留F/G名称，见上。
+- [Round09：宽范围支线——执行组织、表示生命周期与训练新成本](rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md)：27项核心工作，19项正文关键章节、1项部分正文、6项原始摘要、1项作者artifact/元数据；本轮扩展证据表53条。覆盖编译、通信、稀疏、优化器、RL同步、TT embedding、可靠性、CPU/FPGA与模拟方法。该轮未启动新GPU任务，未修改当时R81/R82。明确Celty/Coruscant公开代码范围及Syncopate AE版本标注差异。
 - [Round08：能力比较与两窗口并行探索](rounds/2026-09-27_ROUND_08_PARALLEL_PROBLEM_DISCOVERY.md)：核心13篇，7篇正文关键章节、6篇原始摘要，另核官方源码。保留R81异构合法词表批处理、R82片上layout转换两个小型探索，非已证明的硬件创新。Kestrel已有indexed LM-head，Triton已有多级转换优化，均进入强基线。协调入口：`hrl/awma-round08-parallel-exploration-handoff-v1`，`docs/vm_tlb/chatgpt_handoff/awma/round08_parallel_v1/START_HERE.md`。发布不等于已运行。
 - [Round07：R54 checkpoint生命周期选择](rounds/2026-09-27_ROUND_07_R54_LONG_HORIZON_SELECTION.md)：原长时资格设计。后续R54已完成于`d6ef29505de75985181afc74dffc3cf1b652afc2`，后端greedy资格通过；科学状态`R54_HOST_RUNTIME_COST_NOT_ARCH_LOCALIZED_V1`。不要用原设计状态代替最新结果。
 - [Round06：R53扩散推理合法工作集](rounds/2026-09-27_ROUND_06_R53_RESEARCH_AND_DESIGN.md)：9篇核心，8篇正文关键章节、1篇摘要及源码；原设计状态不是后续执行状态。
@@ -48,5 +54,5 @@
 作者结论、源码事实、比较判断、待验证想法分开。版本、输入、实现、初始状态和统计分母不一致时不能直接合并结果。存储比例不是布局面积；模拟器不是实机内部结构；统计改善不等于性能改善；独立分段时间不天然可加成critical path。缺失证据保持未知。
 
 分支：`hrl/awma-chatgpt-literature-notes-v1`；目录：`docs/vm_tlb/literature_notes/awma/`。
-Round03基于`c9e16ce0857be4562570fae79dbd861b6ae5a8e2`；Round04正文`082dd8b36b199e135585c0ba61cab587d6814e60`；Round05正文`ecef0bfd80a62a60cae9e4a0df478b3acfa15567`；Round06正文`8dac519298eb16709c88c37a28f02f360360c507`；Round07正文`5afae5b18922333130a0c6b253eea9cc9ebf3d85`；Round08正文`214b30039cc579c28457cb17bfbd7e9d88d00fcd`；Round09正文`e14378a293ce0a031e2a88b1ce8b7b912a3ecadd`。
+Round03基于`c9e16ce0857be4562570fae79dbd861b6ae5a8e2`；Round04正文`082dd8b36b199e135585c0ba61cab587d6814e60`；Round05正文`ecef0bfd80a62a60cae9e4a0df478b3acfa15567`；Round06正文`8dac519298eb16709c88c37a28f02f360360c507`；Round07正文`5afae5b18922333130a0c6b253eea9cc9ebf3d85`；Round08正文`214b30039cc579c28457cb17bfbd7e9d88d00fcd`；Round09正文`e14378a293ce0a031e2a88b1ce8b7b912a3ecadd`；Round10正文`61c852768529e0d6bace3ab6f30c7a6adea9d1bc`；Round11正文`b18ba3f572f04f4510ade822902677d1ab1af5cf`。
 原论文PDF不提交仓库，accepted实验和raw不改动。
