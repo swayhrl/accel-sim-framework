@@ -1,0 +1,40 @@
+{
+  "arithmetic_unchanged": true,
+  "arms": [
+    "K128_B0_GRAPH",
+    "K128_D1_DISCARD_GRAPH",
+    "L512_B0_GRAPH",
+    "L512_D1_DISCARD_GRAPH"
+  ],
+  "baseline_ncu_recollect_if_source_or_kernel_identity_not_exact": true,
+  "bitwise_d1_b0_required": true,
+  "d2_only_if_d1_l512_write_reduction_below_50pct": true,
+  "d2_persist_hit_property": "cudaAccessPropertyPersisting",
+  "d2_persist_hit_ratio": 1.0,
+  "d2_persist_miss_property": "cudaAccessPropertyNormal",
+  "d2_region": "A+B if full region fits both set-aside and window; otherwise A only if one full buffer fits; never outcome-selected",
+  "discovery_fixture": "accepted layer0 discovery T128 and T512 exact payloads",
+  "formal_order": "paired/interleaved B0,D1 on even rep; D1,B0 on odd rep, per shape",
+  "frozen_before_d1_correctness_and_timing": true,
+  "holdout_fixture": "accepted layer12 holdout T128 and T512 exact payloads, conditional only",
+  "liveness": "perturb one input element, graph output changes; restore and output returns bitwise",
+  "material_runtime": ">=5% median speedup and >3x max relative jitter",
+  "ncu_metrics": [
+    "dram__bytes_read.sum",
+    "dram__bytes_write.sum",
+    "lts__t_bytes.sum",
+    "sm__cycles_active.sum",
+    "launch__registers_per_thread",
+    "launch__shared_mem_per_block"
+  ],
+  "ncu_new_d1_profile_cap": 2,
+  "no_parameter_sweep": true,
+  "primary_gpu_ms": "CUDA events around complete graph replay; no profiler",
+  "repetitions": {
+    "canary": 1,
+    "formal": 7,
+    "warmup": 2
+  },
+  "stage": "AWMA_R101_L2_LIFETIME_CONTROL_REQUALIFICATION_V1R1",
+  "write_reduction_gate": "1-D1_NS_family_DRAM_write/B0_NS_family_DRAM_write; L512 >=50% forbids D2"
+}

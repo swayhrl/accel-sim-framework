@@ -1,0 +1,3 @@
+# Dead-value lifetime
+
+One ordered CUDA stream/graph contains all operations. After `ba_plus_cAA(A,out=B)` completes, A is dead and the next XXT fully overwrites A. After `fused_bmm_add(B,X,out=C)` completes, B and old X are dead; next iteration fully overwrites B and uses old X only as the future C output destination. D1 discards A immediately after BA and B plus old X immediately after BMM-add, one 128-byte aligned line per CUDA thread. The final live new-X output is never discarded. No CPU synchronization occurs in graph capture or timed replay. Same-stream kernel ordering prevents discard racing the preceding consumer or following producer.

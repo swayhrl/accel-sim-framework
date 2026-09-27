@@ -1,0 +1,11 @@
+# AWMA R101R1 — existing L2 lifetime-control requalification
+
+Stage: `AWMA_R101_L2_LIFETIME_CONTROL_REQUALIFICATION_V1R1`. Node109 RTX4080/SM89 only. This is a bounded native control of accepted R101, not a rerun or a new architecture mechanism. No node174-new, Accel-Sim, model download, or holdout workload was run.
+
+Final state: **`R101R1_EXISTING_L2_CONTROL_INSUFFICIENT_READY_FOR_ARCH_REVIEW`**. Read `R101R1_DECISION.md` for the paired timing/traffic gates and their limits, then `SOURCE_AND_CLOSEST_WORK_AUDIT.md`. READY authorizes only a later ChatGPT architecture review; it does not claim a hardware speedup.
+
+The accepted R101 layer0 S128/L512 and layer12 holdout tile payloads were hash-verified before any new scientific run. Their exact IDs, source commit, model/input receipts, and arithmetic contract are in `R101R1_BASELINE_IDENTITY.json`. D1 changes only dead-value lifetime with 128-byte `discard.global.L2`; D2 is conditional, after D1's L512 write reduction fell below 50%, and uses one pre-registered full A+B 44 MiB access-policy window. The capability receipt records PTX, SASS, CUDA runtime smoke, and SM89 L2 properties.
+
+`SEMANTIC_RESULTS.tsv`, `TIMING_RESULTS.tsv`, and `TRAFFIC_RESULTS.tsv` are D1; `D2_SEMANTIC_RESULTS.tsv`, `ARENA_TIMING_RESULTS.tsv`, and `ARENA_TRAFFIC_RESULTS.tsv` are the A0/D2 arena pair. Primary timing is CUDA-event complete graph replay with 1 canary, 2 warmups and 7 paired/interleaved formal repetitions, not NCU/NSYS durations. NCU is application replay with cache-control none; metric units in its raw CSV are decimal Mbyte. `FINAL_GATES.json` is the machine-readable decision closure. K128 NCU B0/D1 traffic is deliberately **unqualified** because isolated profiling autotuned XXT to different blocks; no K128 reduction ratio is used. The L512 traffic pair and same-process arena pair are exact-strata qualified.
+
+Large raw output, reports, cubins/shared libraries, JIT cache, and excluded attempts are under node164 durable root `/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_l2_lifetime_control_v1r1_20260927/`. `RAW_DATA_INDEX.tsv` and `SHA256SUMS` close the compact review pack; node164 has its own full payload hash manifest. The accepted R101 worktree/review pack was not changed.

@@ -1,0 +1,38 @@
+{
+  "A0_control": "same contiguous arena, same arithmetic, no persistence, no discard",
+  "D2": "same contiguous arena and arithmetic, graph node persistence plus D1 dead-point discard",
+  "K128_ncu_pair_unqualified_due_autotune_drift": true,
+  "L512_ncu_pair_qualified_and_decision_driving": true,
+  "arena_layout": {
+    "A_offset_bytes": 0,
+    "A_plus_B_bytes": 46137344,
+    "B_offset_bytes": 23068672,
+    "arena_contiguous": true,
+    "arena_dtype": "torch.bfloat16",
+    "arena_shape": [
+      2,
+      44,
+      512,
+      512
+    ],
+    "fixture": "accepted discovery L512, 44 BF16 512x512 tiles",
+    "initial_arena_content": "all zero; no scientific input, fully overwritten before use",
+    "one_buffer_bytes": 23068672
+  },
+  "arena_layout_sha256": "5da9e7008fed145338b317c0e30e6bffea2d6bd936f4cd271b6407d33c3afa63",
+  "d1_l512_qualified_write_reduction_fraction": 0.26263461083646067,
+  "d2_admitted_because_d1_under_50pct": true,
+  "d2_ncu_profile_cap": 1,
+  "graph_policy_api": "cudaGraphKernelNodeSetAttribute on all kernel nodes of active capture graph",
+  "hit_property": "cudaAccessPropertyPersisting",
+  "hit_ratio": 1.0,
+  "miss_property": "cudaAccessPropertyNormal",
+  "no_parameter_sweep": true,
+  "paired_formal_repetitions": 7,
+  "persist_binary_sha256": "8c5c1798bf32cf472ba260b407850f5073f9a05b03496c313259fe78f64e824c",
+  "persist_source_sha256": "99b47083c10c0663b9b04b2f6c673887dc0b57b5490b9ae65c2079d92ddbfa26",
+  "region_choice": "full A+B, no fallback to A only",
+  "set_aside_requested_bytes": 46137344,
+  "window_base": "arena.data_ptr() at runtime, must be 128-byte aligned",
+  "window_bytes": 46137344
+}
