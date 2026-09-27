@@ -1,0 +1,37 @@
+{
+  "arms": [
+    "A0_DENSE_VENDOR",
+    "A1_DENSE_FUSED",
+    "A2_INDEXED_UNION",
+    "A3_RAGGED_DIRECT"
+  ],
+  "control_purpose": "separate local sparse structural response from broad free-text steps without selecting new requests",
+  "control_strata": [
+    {
+      "name": "UNION_LT_1_PERCENT",
+      "rule": "union_count/model_vocab<0.01"
+    },
+    {
+      "name": "UNION_GT_50_PERCENT",
+      "rule": "union_count/model_vocab>0.5"
+    },
+    {
+      "name": "ALL_STEPS",
+      "rule": "retain all timesteps"
+    }
+  ],
+  "fixture_sha256": "3c1f368b01ec090596f100a8b3c553f9b17930369b0bddf0147a0f89fa07ea67",
+  "formal_repetitions": 7,
+  "formal_warmups": 2,
+  "full_generation_source_sha256": "6257afaf212e0d4d5d59bcc9e57ae8699fabf82341f9c1a177cf1c321a715db7",
+  "heads_source_sha256": "e6f457b95be5f87cffed040cd3b0c218d6f39b73da441afb8ba59f3d1c33b872",
+  "holdout_authority": "H0_HETEROGENEOUS_HOLDOUT",
+  "holdout_model_outcomes_seen_before_freeze": false,
+  "input_runtime_bindings_sha256": "c6aca5fe96dae532d02036a1cb2e4291494c0c701e7c2dd52675f42f1871b597",
+  "kernel_or_prompt_tuning_after_holdout": false,
+  "preregistration_sha256": "571ba9028a85989f7204c2bbe9db6417cbe8a433fa62c19519bfe71c4aafd8f9",
+  "reference_source_sha256": "e0ba8ddc9251194163513c90025463dec2e6dd97524be659ebc4d4fad77f26a3",
+  "semantic_gate": "exact selected token/full generated sequence versus fixed dense reference",
+  "stage": "AWMA_R81_LEGAL_VOCAB_EXPLORATION_V1",
+  "trigger": "A3 local sparse-mask head-region response in discovery; complete-generation effect not established"
+}

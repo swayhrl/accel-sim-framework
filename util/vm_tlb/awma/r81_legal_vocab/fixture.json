@@ -1,0 +1,86 @@
+{
+  "authority_class": "AUTHORED_QUALIFICATION_FIXTURE_NOT_PRODUCTION_DISTRIBUTION",
+  "stage": "AWMA_R81_LEGAL_VOCAB_EXPLORATION_V1",
+  "max_new_tokens_per_request": 128,
+  "decode_policy": "grammar_constrained_temperature_0_greedy",
+  "cohorts": {
+    "C0_SHARED_DISCOVERY": [
+      {
+        "id": "C0_R0",
+        "record": "Customer cannot sign in after changing the account password yesterday.",
+        "prompt": "Classify this customer support record. Return one compact JSON object matching the schema, with a short factual reason and no markdown. Record: Customer cannot sign in after changing the account password yesterday.",
+        "schema": {"type": "object", "properties": {"category": {"type": "string", "enum": ["account", "billing", "technical"]}, "reason": {"type": "string"}}, "required": ["category", "reason"], "additionalProperties": false}
+      },
+      {
+        "id": "C0_R1",
+        "record": "A receipt shows two charges for one monthly subscription renewal.",
+        "prompt": "Classify this customer support record. Return one compact JSON object matching the schema, with a short factual reason and no markdown. Record: A receipt shows two charges for one monthly subscription renewal.",
+        "schema": {"type": "object", "properties": {"category": {"type": "string", "enum": ["account", "billing", "technical"]}, "reason": {"type": "string"}}, "required": ["category", "reason"], "additionalProperties": false}
+      },
+      {
+        "id": "C0_R2",
+        "record": "The mobile application freezes when a report is exported as PDF.",
+        "prompt": "Classify this customer support record. Return one compact JSON object matching the schema, with a short factual reason and no markdown. Record: The mobile application freezes when a report is exported as PDF.",
+        "schema": {"type": "object", "properties": {"category": {"type": "string", "enum": ["account", "billing", "technical"]}, "reason": {"type": "string"}}, "required": ["category", "reason"], "additionalProperties": false}
+      },
+      {
+        "id": "C0_R3",
+        "record": "A team administrator asks to transfer ownership of a workspace.",
+        "prompt": "Classify this customer support record. Return one compact JSON object matching the schema, with a short factual reason and no markdown. Record: A team administrator asks to transfer ownership of a workspace.",
+        "schema": {"type": "object", "properties": {"category": {"type": "string", "enum": ["account", "billing", "technical"]}, "reason": {"type": "string"}}, "required": ["category", "reason"], "additionalProperties": false}
+      }
+    ],
+    "C1_HETEROGENEOUS_DISCOVERY": [
+      {
+        "id": "C1_R0",
+        "record": "The invoice total is higher than the quoted annual plan price.",
+        "prompt": "Classify this record and give a brief reason. Return one compact JSON object matching the schema, with no markdown. Record: The invoice total is higher than the quoted annual plan price.",
+        "schema": {"type": "object", "properties": {"category": {"type": "string", "enum": ["account", "billing", "technical"]}, "reason": {"type": "string"}}, "required": ["category", "reason"], "additionalProperties": false}
+      },
+      {
+        "id": "C1_R1",
+        "record": "Warehouse note: 17 replacement batteries arrived at Dock C.",
+        "prompt": "Extract the named item and quantity from this record. Return one compact JSON object matching the schema, with no markdown. Record: Warehouse note: 17 replacement batteries arrived at Dock C.",
+        "schema": {"type": "object", "properties": {"item": {"type": "string"}, "quantity": {"type": "integer"}}, "required": ["item", "quantity"], "additionalProperties": false}
+      },
+      {
+        "id": "C1_R2",
+        "record": "Meeting notes mention a delayed shipment, an overdue invoice, and a broken scanner.",
+        "prompt": "List one to three short issue names from this record. Return one compact JSON object matching the schema, with no markdown. Record: Meeting notes mention a delayed shipment, an overdue invoice, and a broken scanner.",
+        "schema": {"type": "object", "properties": {"issues": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 3}}, "required": ["issues"], "additionalProperties": false}
+      },
+      {
+        "id": "C1_R3",
+        "record": "The security alert was caused by a login from a new device, but the owner confirmed it.",
+        "prompt": "Decide whether human follow-up is needed and explain briefly. Return one compact JSON object matching the schema, with no markdown. Record: The security alert was caused by a login from a new device, but the owner confirmed it.",
+        "schema": {"type": "object", "properties": {"needs_follow_up": {"type": "boolean"}, "explanation": {"type": "string"}}, "required": ["needs_follow_up", "explanation"], "additionalProperties": false}
+      }
+    ],
+    "H0_HETEROGENEOUS_HOLDOUT": [
+      {
+        "id": "H0_R0",
+        "record": "A customer praised the fast delivery but reported a damaged outer box.",
+        "prompt": "Assign a sentiment class and a short evidence phrase. Return one compact JSON object matching the schema, with no markdown. Record: A customer praised the fast delivery but reported a damaged outer box.",
+        "schema": {"type": "object", "properties": {"sentiment": {"type": "string", "enum": ["positive", "mixed", "negative"]}, "evidence": {"type": "string"}}, "required": ["sentiment", "evidence"], "additionalProperties": false}
+      },
+      {
+        "id": "H0_R1",
+        "record": "Inventory ticket: three barcode printers in Building B need maintenance.",
+        "prompt": "Extract the equipment name and count. Return one compact JSON object matching the schema, with no markdown. Record: Inventory ticket: three barcode printers in Building B need maintenance.",
+        "schema": {"type": "object", "properties": {"equipment": {"type": "string"}, "count": {"type": "integer"}}, "required": ["equipment", "count"], "additionalProperties": false}
+      },
+      {
+        "id": "H0_R2",
+        "record": "The travel request includes a train ticket and two hotel nights.",
+        "prompt": "List one to three brief expense categories. Return one compact JSON object matching the schema, with no markdown. Record: The travel request includes a train ticket and two hotel nights.",
+        "schema": {"type": "object", "properties": {"expenses": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 3}}, "required": ["expenses"], "additionalProperties": false}
+      },
+      {
+        "id": "H0_R3",
+        "record": "The sensor briefly lost contact during a scheduled firmware restart and reconnected automatically.",
+        "prompt": "Decide whether an incident report is required and explain briefly. Return one compact JSON object matching the schema, with no markdown. Record: The sensor briefly lost contact during a scheduled firmware restart and reconnected automatically.",
+        "schema": {"type": "object", "properties": {"incident_required": {"type": "boolean"}, "explanation": {"type": "string"}}, "required": ["incident_required", "explanation"], "additionalProperties": false}
+      }
+    ]
+  }
+}

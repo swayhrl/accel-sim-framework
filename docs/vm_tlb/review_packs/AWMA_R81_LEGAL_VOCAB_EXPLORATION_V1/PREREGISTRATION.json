@@ -1,0 +1,94 @@
+{
+  "arms": {
+    "A0_DENSE_VENDOR": "torch.nn.functional.linear full 151936x896, xgrammar bitmask, greedy",
+    "A1_DENSE_FUSED": "SM89 Triton tiled FP16 head/mask/argmax; FlashSampling-style greedy adaptation, no full logits buffer",
+    "A2_INDEXED_UNION": "Kestrel-style preallocated gather W[U], shared torch linear, per-request validity and ID remap",
+    "A3_RAGGED_DIRECT": "Triton direct index loads original W, per-request legal rows, fixed grouping identical masks"
+  },
+  "authority_class": "AUTHORED_QUALIFICATION_FIXTURE_NOT_PRODUCTION_DISTRIBUTION",
+  "batch_size": 4,
+  "candidate_config": {
+    "A1_BLOCK_K": 32,
+    "A1_BLOCK_M": 16,
+    "A1_BLOCK_N": 128,
+    "A2_union_ids_sorted": true,
+    "A3_BLOCK_D": 1024,
+    "A3_BLOCK_ROWS": 32,
+    "A3_identical_mask_grouping": true,
+    "singleton_no_head_shortcut_all_eligible_arms": true
+  },
+  "cohort_holdout": "H0_HETEROGENEOUS_HOLDOUT",
+  "cohorts_discovery": [
+    "C0_SHARED_DISCOVERY",
+    "C1_HETEROGENEOUS_DISCOVERY"
+  ],
+  "compile_cost_reported_separately": true,
+  "decoder": "grammar_constrained_greedy_temperature_0",
+  "dtype": "torch.bfloat16",
+  "empty_support": "correctness/termination, never timed winner",
+  "fixture_sha256": "3c1f368b01ec090596f100a8b3c553f9b17930369b0bddf0147a0f89fa07ea67",
+  "formal_repetitions": 7,
+  "formal_warmups": 2,
+  "head_and_generation_timing_separate": true,
+  "holdout_model_outcome_inspected_before_design": false,
+  "holdout_trigger": "reproducible full-region effect or informative regression not explained by known capabilities",
+  "input_ids_sha256": {
+    "C0_R0": "9b5def9d25154ecf41ce2af0b118f9b9c95b4cb43affc80e6c605ffbb71cd3f1",
+    "C0_R1": "ed3ff317958024881779f39ec989fc87af8d41f71066cd442ab43ce42dfac54d",
+    "C0_R2": "54a41930075f43a585eef0dbff2acee07a5fd81ed0ff902507552e464a9beec0",
+    "C0_R3": "4e1223b645ccc9abf19683d9fa01486da48f5de88de2b5036211df21ecccaa69",
+    "C1_R0": "1e58908066c18da5bd4ef708789ca01a3a280e1c95e813993d470df5d280660f",
+    "C1_R1": "dad98cfd3700ddb279339355dd56c0ae26bc2b2a9f97873d4ce84c99a522e306",
+    "C1_R2": "9d9e9541f76303a60d03c5281c3a4f8cc6675e9cfa81d282b28d65a0f7c3dd02",
+    "C1_R3": "125154bb7fc5b21e0978a18cc1cb3f32f351390fb2d49cebd86fca5ca5320caf",
+    "H0_R0": "9355e32a56354e0571e8261d5ab245cc21ea2602c360f87f8991378ea4a90cfd",
+    "H0_R1": "d8e347e9bf88890450c64f452c4638f10816e0974e7f0bae65899f70185f087b",
+    "H0_R2": "b8838d255fdc1c17b879151bd020c5f2c14b1f067432de5cee712cdc8b846278",
+    "H0_R3": "eba49da7b36887d0f78d671f233196885f2aa32debd42b42c9a2e77b1f9319a9"
+  },
+  "input_runtime_bindings_sha256": "c6aca5fe96dae532d02036a1cb2e4291494c0c701e7c2dd52675f42f1871b597",
+  "max_discovery_configurations": 8,
+  "max_new_tokens": 128,
+  "model_config_vocab_size": 151936,
+  "natural_eos_and_grammar_completion": true,
+  "no_parameter_sweep": true,
+  "numerical_contract": "all legal row dependencies intact; exact chosen token and full generated IDs against qualified dense reference; no nonselected top2 gate",
+  "primary_complete_head_interval": "hidden+current grammar availability through selected token ID",
+  "primary_full_generation_interval": "start of fixed B4 generation to all request stop/truncation",
+  "request_id_order": {
+    "C0_SHARED_DISCOVERY": [
+      "C0_R0",
+      "C0_R1",
+      "C0_R2",
+      "C0_R3"
+    ],
+    "C1_HETEROGENEOUS_DISCOVERY": [
+      "C1_R0",
+      "C1_R1",
+      "C1_R2",
+      "C1_R3"
+    ],
+    "H0_HETEROGENEOUS_HOLDOUT": [
+      "H0_R0",
+      "H0_R1",
+      "H0_R2",
+      "H0_R3"
+    ]
+  },
+  "schema_ids_and_hashes": {
+    "C0_R0": "58047551de9d5e80432811742aca00a16e5db395f4972d0955964fa9db870987",
+    "C0_R1": "58047551de9d5e80432811742aca00a16e5db395f4972d0955964fa9db870987",
+    "C0_R2": "58047551de9d5e80432811742aca00a16e5db395f4972d0955964fa9db870987",
+    "C0_R3": "58047551de9d5e80432811742aca00a16e5db395f4972d0955964fa9db870987",
+    "C1_R0": "58047551de9d5e80432811742aca00a16e5db395f4972d0955964fa9db870987",
+    "C1_R1": "009782db2c2aa56a0fb7f6c8da4850119fa5cf6cd5917c7e5cd597dedc4f5de5",
+    "C1_R2": "69033d9796a9b6ab264f87424fc76ae8dec28c82f27df407abad0b6981424386",
+    "C1_R3": "84b3d094fd6d873bd06b7013144d3bd7d4347fdce2611e6ef923022d30d2c646",
+    "H0_R0": "85ca33bb6c10955f0413dcbc786974d98ce2c932d44e196dfad3fad2b629ba87",
+    "H0_R1": "41f04c3561903c3ea4a36776ce8875828d1e9110887300ed3b99032a59529463",
+    "H0_R2": "4bcc07b1dc9fc678a168060fe44ce3412566f56fee149a9356bb7f0ef5969488",
+    "H0_R3": "716f278a7a05b535700b98844cf164bf46f2c058ef219cb157044e21cf60ed0e"
+  },
+  "stage": "AWMA_R81_LEGAL_VOCAB_EXPLORATION_V1",
+  "tokenizer_len": 151665
+}
