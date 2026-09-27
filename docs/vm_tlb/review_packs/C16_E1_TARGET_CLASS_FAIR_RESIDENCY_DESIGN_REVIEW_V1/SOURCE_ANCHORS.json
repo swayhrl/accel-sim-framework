@@ -1,0 +1,99 @@
+{
+  "characterization_label": "C16_E1_TRACE_REUSE_SET_PRESSURE_CHARACTERIZED_V1",
+  "characterization_pack": "docs/vm_tlb/review_packs/C16_E1_TRACE_REUSE_SET_PRESSURE_CHARACTERIZATION_174NEW_V1",
+  "core_scientific_implementation": "a2322069b9701597db7019080b5b54d29518e3a2",
+  "framework_start": "4214398782159022907081dbcc36854cf21fb4b5",
+  "goal": "C16_E1_TARGET_CLASS_FAIR_RESIDENCY_DESIGN_REVIEW_V1",
+  "lane4_execution_core": "0271de82432db004beed43280ed01057246a0f2c",
+  "lane4_partial_data_used": false,
+  "m1_source": {
+    "core_commit": "a2322069b9701597db7019080b5b54d29518e3a2",
+    "lane4_cache_policy_callsite_semantics_match": true,
+    "lane4_delta_interpretation": "gpu-cache/gpu-sim changes add or repair diagnostics and occupancy accounting; class identity still does not enter candidate construction, choose_victim, or decide_fill_admission",
+    "lane4_diff_name_status": [
+      "M\tsrc/gpgpu-sim/gpu-cache.cc",
+      "M\tsrc/gpgpu-sim/gpu-cache.h",
+      "M\tsrc/gpgpu-sim/gpu-sim.cc",
+      "M\tsrc/gpgpu-sim/tests/test_oracle_elastic_tag_array_config.cc"
+    ],
+    "lane4_execution_core": "0271de82432db004beed43280ed01057246a0f2c",
+    "lane4_oracle_policy_module_unchanged_from_scientific_core": true,
+    "source_anchors": {
+      "admission_denials": "src/gpgpu-sim/oracle_elastic_residency.cc:410-431",
+      "class_metadata_and_fill": "src/gpgpu-sim/gpu-cache.cc:547-643",
+      "eligible_global_read_only": "src/gpgpu-sim/oracle_elastic_residency.cc:434-437",
+      "interval_lookup_and_class_decode": "src/gpgpu-sim/oracle_elastic_residency.cc:292-343",
+      "quota_distribution": "src/gpgpu-sim/oracle_elastic_residency.cc:250-289",
+      "set_local_probe_and_candidate_build": "src/gpgpu-sim/gpu-cache.cc:464-529",
+      "victim_rule": "src/gpgpu-sim/oracle_elastic_residency.cc:345-408"
+    },
+    "source_blobs": {
+      "src/gpgpu-sim/gpu-cache.cc": "f6d0b21b1f0e57d5adbb4b7cec55c2b4ce20fe90",
+      "src/gpgpu-sim/gpu-cache.h": "14e96ee371b1a5bb47187b4ac15d2581eaf7c0c9",
+      "src/gpgpu-sim/oracle_elastic_residency.cc": "bed959209c9c05749ace2aa0d980bf10981181c2",
+      "src/gpgpu-sim/oracle_elastic_residency.h": "b779e37092a6e5afdeca96d8f19b10dec9a5b937"
+    }
+  },
+  "native_producer": "86ef7dcfb49241bd87ff4a8d59b4d950d53de0a5",
+  "native_source": {
+    "contract_blob": "3fa16e837f0d3dc59ef3be14d189049ffb3bb570",
+    "contract_path": "docs/vm_tlb/review_packs/C16_E1_RESIDENCY_COST_BENEFIT_CLOSURE_109_V1/BUDGET_MATRIX_CONTRACT.json",
+    "framework_commit": "86ef7dcfb49241bd87ff4a8d59b4d950d53de0a5",
+    "helper_blob": "9119000b4bba41421fe1b5975d2f103f9cb70262",
+    "helper_cpp_blob": "60617702a878f615384b4e414d89e43c6f10c3b1",
+    "helper_cpp_path": "util/vm_tlb/c16/e1_cuda_persistence_helper.cpp",
+    "helper_path": "util/vm_tlb/c16/e1_cuda_persistence.py",
+    "policy_blob": "087b0abad05a17f85569e3fe5f465f54318b8754",
+    "policy_path": "util/vm_tlb/c16/e1_cost_benefit_natural.py"
+  },
+  "oracle_sidecar_sha256": "6c60839714d136b9f6f596218588e658e245e0b7cc6f8e8550cce8d683ce13c6",
+  "primary_sources": [
+    {
+      "id": "CUDA_L2_ACCESS_POLICY_WINDOW",
+      "kind": "OFFICIAL_VENDOR_DOCUMENTATION",
+      "title": "CUDA C++ Programming Guide: L2 Policy for Persisting Accesses",
+      "url": "https://docs.nvidia.com/cuda/archive/12.5.1/cuda-c-programming-guide/index.html#l2-policy-for-persisting-accesses",
+      "verified_claim": "hitRatio selects an approximately random fraction of accesses for hitProp; persisting accesses have priority in a shared set-aside and unused capacity remains usable by normal/streaming accesses."
+    },
+    {
+      "id": "PTX_CREATEPOLICY_FRACTIONAL",
+      "kind": "OFFICIAL_VENDOR_ISA",
+      "title": "Parallel Thread Execution ISA: createpolicy",
+      "url": "https://docs.nvidia.com/cuda/archive/13.0.0/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-createpolicy",
+      "verified_claim": "fractional cache policy applies primary eviction priority with the specified probability and secondary priority to the remainder; it is an eviction-priority hint, not a semantic-class quota."
+    },
+    {
+      "id": "AUTOSCRATCH_MLSYS_2023",
+      "kind": "PRIMARY_PAPER",
+      "title": "AutoScratch: ML-Optimized Cache Management for Inference-Oriented GPUs",
+      "url": "https://proceedings.mlsys.org/paper_files/paper/2023/file/9d32b9324a89001520ae456b9e5ec73b-Paper-mlsys2023.pdf",
+      "verified_claim": "uses ML to select address slices for L2 residency/pinning in inference, with configurations kept static within an iteration; it optimizes selection rather than equal-share fairness among sequential semantic classes."
+    },
+    {
+      "doi": "10.1109/HPCA.2015.7056024",
+      "id": "PCAL_HPCA_2015",
+      "kind": "PRIMARY_PAPER",
+      "title": "Priority-Based Cache Allocation in Throughput Processors",
+      "url": "https://research.nvidia.com/sites/default/files/pubs/2015-02_Priority-based-cache-allocation/li_and_rhu.hpca2015.pdf",
+      "verified_claim": "uses thread/warp priority tokens and non-polluting allocation, with optional priority-marked blocks; priority allocation and opportunistic borrowing are known concepts."
+    },
+    {
+      "doi": "10.1109/TVLSI.2013.2278025",
+      "id": "ORCHESTRATED_GPU_CACHE_TVLSI_2014",
+      "kind": "PRIMARY_AUTHOR_INSTITUTION_PAGE_AND_PAPER",
+      "title": "Orchestrating Cache Management and Memory Scheduling for GPGPU Applications",
+      "url": "https://icas.tsinghua-sz.edu.cn/WebPublications/PaperDetail/768?unit=1002",
+      "verified_claim": "assigns request/cache-line priorities, permits replacement by lower or equal priority, and bypasses when no eligible victim exists; priority and bypass are known dimensions."
+    },
+    {
+      "id": "LOCALITY_DRIVEN_GPU_BYPASS_ICS_2015",
+      "kind": "PRIMARY_AUTHOR_INSTITUTION_PAGE",
+      "title": "Locality-Driven Dynamic GPU Cache Bypassing",
+      "url": "https://research.nvidia.com/publication/2015-06_locality-driven-dynamic-gpu-cache-bypassing",
+      "verified_claim": "filters low-reuse accesses from L1 insertion using locality monitoring; bypass admission is known but it does not provide equal semantic-class residency shares."
+    }
+  ],
+  "schema": "C16_E1_TARGET_CLASS_FAIR_RESIDENCY_SOURCE_ANCHORS_V1",
+  "status": "PASS",
+  "trace_manifest_sha256": "db3bdbb0295a47a6aa4644508ea1895779c987f2f77cd96f184c67b8a10ab389"
+}

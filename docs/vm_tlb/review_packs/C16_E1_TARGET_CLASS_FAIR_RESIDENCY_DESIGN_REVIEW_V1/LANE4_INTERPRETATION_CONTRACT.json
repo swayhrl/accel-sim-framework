@@ -1,0 +1,42 @@
+{
+  "branches": [
+    {
+      "id": 1,
+      "interpretation": "supports target-class fairness as a realized M1 limitation",
+      "next_check": "M1F first; use M1Q only if hard representation is required",
+      "observation": "high protected-to-protected churn and low old-class survival"
+    },
+    {
+      "id": 2,
+      "interpretation": "fairness is not the explanation for absent gain",
+      "next_check": "critical-path coverage, reuse value, and collateral costs",
+      "observation": "low churn, good L0 survival, and no timing gain"
+    },
+    {
+      "id": 3,
+      "interpretation": "current M1 may already be sufficient; do not add fairness complexity",
+      "next_check": "whole-decode collateral and repeatability",
+      "observation": "high L0 survival and positive local timing"
+    },
+    {
+      "id": 4,
+      "interpretation": "admission realization precedes fairness",
+      "next_check": "separate invalid-priority and no-local-protected-victim denial before changing class policy",
+      "observation": "target protection is low because admission denial dominates"
+    }
+  ],
+  "lane4_core": "0271de82432db004beed43280ed01057246a0f2c",
+  "partial_data_used": false,
+  "required_counters": [
+    "protected_protected_replacements",
+    "per-class protected occupancy and L0 survival",
+    "target accesses/hits/misses/protected fills/hits",
+    "target_protection_admission_denied",
+    "denial_quota_full_invalid_priority",
+    "denial_quota_full_no_local_protected",
+    "normal_fallback_protected_victims",
+    "timing result bound to completed run identity"
+  ],
+  "schema": "C16_E1_LANE4_INTERPRETATION_CONTRACT_V1",
+  "status": "PREREGISTERED_BEFORE_LANE4_COMPLETION"
+}

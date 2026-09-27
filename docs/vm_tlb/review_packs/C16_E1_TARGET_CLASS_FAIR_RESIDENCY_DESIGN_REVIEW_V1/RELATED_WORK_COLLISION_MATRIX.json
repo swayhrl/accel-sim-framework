@@ -1,0 +1,113 @@
+{
+  "existing_repository_notes_reviewed": [
+    {
+      "blob": "7525c1064dcad13bac732c2416c68a8fa6e706f3",
+      "commit": "4cf2ee8294fbf761f735ae7089313a048ba0066b",
+      "path": "docs/vm_tlb/review_packs/AWMA_LITERATURE_GUIDED_MECHANISM_EXPLORATION_V1/REPORT.md",
+      "relevance": "existing bounded VM/TLB mechanism literature method and claim-boundary precedent; it does not cover target-class L2 residency fairness"
+    },
+    {
+      "blob": "eee15eca71fae8c9e24493d3ea324116cf16e441",
+      "commit": "4214398782159022907081dbcc36854cf21fb4b5",
+      "path": "docs/vm_tlb/chatgpt_handoff/stage_specs/M3_REFERENCE_MATERIALS.md",
+      "relevance": "existing project reference-material and evidence-label discipline; no target-class cache-residency design"
+    }
+  ],
+  "known_elements": [
+    "fractional eviction-priority assignment",
+    "persisting versus streaming priority",
+    "address-slice residency/pinning",
+    "priority-aware replacement",
+    "cache admission filtering and bypass",
+    "opportunistic use of otherwise unused cache capacity"
+  ],
+  "novelty_claim": false,
+  "problem_specific_combination_not_established_by_checked_sources": "stable equal fractional opportunity across 28 sequential full-set qweight classes while preserving a hard global bound, ordinary borrowing, set-local no-stall replacement, and explicit old-class survival telemetry",
+  "rows": [
+    {
+      "collision": "M1F fractional admission is not novel as a broad concept",
+      "known_element": "shared persisting set-aside, unused-capacity borrowing, per-access fractional persisting/streaming property",
+      "not_provided": "semantic target-class occupancy quota, survival floor, or class-aware victim selection",
+      "source_id": "CUDA_L2_ACCESS_POLICY_WINDOW"
+    },
+    {
+      "collision": "fractional priority assignment is ISA-supported prior art",
+      "known_element": "fractional evict_last/secondary eviction priority probability",
+      "not_provided": "global occupancy accounting or fairness across 28 sequential semantic objects",
+      "source_id": "PTX_CREATEPOLICY_FRACTIONAL"
+    },
+    {
+      "collision": "object/slice selection for inference residency is established",
+      "known_element": "learned selection and pinning of address slices under L2 residency capacity",
+      "not_provided": "online equal-opportunity turnover control among all qweight classes with no training/search",
+      "source_id": "AUTOSCRATCH_MLSYS_2023"
+    },
+    {
+      "collision": "priority protection and borrowing/nonpollution are established",
+      "known_element": "priority-marked cache blocks, non-polluting threads, and optional opportunistic allocation",
+      "not_provided": "semantic-object fractional fairness in a global protected pool",
+      "source_id": "PCAL_HPCA_2015"
+    },
+    {
+      "collision": "priority-aware replacement and fail-safe bypass are established",
+      "known_element": "multi-level request/line priority and bypass when no lower/equal-priority victim exists",
+      "not_provided": "equal-share target classes or CUDA-hitRatio-aligned admission",
+      "source_id": "ORCHESTRATED_GPU_CACHE_TVLSI_2014"
+    },
+    {
+      "collision": "admission filtering is established",
+      "known_element": "reuse/locality-based insertion filtering and bypass",
+      "not_provided": "fairness between equally designated target classes at L2",
+      "source_id": "LOCALITY_DRIVEN_GPU_BYPASS_ICS_2015"
+    }
+  ],
+  "schema": "C16_E1_RELATED_WORK_COLLISION_MATRIX_V1",
+  "scope": "BOUNDED_COLLISION_CHECK_NOT_EXHAUSTIVE_PRIOR_ART_OR_NOVELTY_REVIEW",
+  "sources": [
+    {
+      "id": "CUDA_L2_ACCESS_POLICY_WINDOW",
+      "kind": "OFFICIAL_VENDOR_DOCUMENTATION",
+      "title": "CUDA C++ Programming Guide: L2 Policy for Persisting Accesses",
+      "url": "https://docs.nvidia.com/cuda/archive/12.5.1/cuda-c-programming-guide/index.html#l2-policy-for-persisting-accesses",
+      "verified_claim": "hitRatio selects an approximately random fraction of accesses for hitProp; persisting accesses have priority in a shared set-aside and unused capacity remains usable by normal/streaming accesses."
+    },
+    {
+      "id": "PTX_CREATEPOLICY_FRACTIONAL",
+      "kind": "OFFICIAL_VENDOR_ISA",
+      "title": "Parallel Thread Execution ISA: createpolicy",
+      "url": "https://docs.nvidia.com/cuda/archive/13.0.0/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-createpolicy",
+      "verified_claim": "fractional cache policy applies primary eviction priority with the specified probability and secondary priority to the remainder; it is an eviction-priority hint, not a semantic-class quota."
+    },
+    {
+      "id": "AUTOSCRATCH_MLSYS_2023",
+      "kind": "PRIMARY_PAPER",
+      "title": "AutoScratch: ML-Optimized Cache Management for Inference-Oriented GPUs",
+      "url": "https://proceedings.mlsys.org/paper_files/paper/2023/file/9d32b9324a89001520ae456b9e5ec73b-Paper-mlsys2023.pdf",
+      "verified_claim": "uses ML to select address slices for L2 residency/pinning in inference, with configurations kept static within an iteration; it optimizes selection rather than equal-share fairness among sequential semantic classes."
+    },
+    {
+      "doi": "10.1109/HPCA.2015.7056024",
+      "id": "PCAL_HPCA_2015",
+      "kind": "PRIMARY_PAPER",
+      "title": "Priority-Based Cache Allocation in Throughput Processors",
+      "url": "https://research.nvidia.com/sites/default/files/pubs/2015-02_Priority-based-cache-allocation/li_and_rhu.hpca2015.pdf",
+      "verified_claim": "uses thread/warp priority tokens and non-polluting allocation, with optional priority-marked blocks; priority allocation and opportunistic borrowing are known concepts."
+    },
+    {
+      "doi": "10.1109/TVLSI.2013.2278025",
+      "id": "ORCHESTRATED_GPU_CACHE_TVLSI_2014",
+      "kind": "PRIMARY_AUTHOR_INSTITUTION_PAGE_AND_PAPER",
+      "title": "Orchestrating Cache Management and Memory Scheduling for GPGPU Applications",
+      "url": "https://icas.tsinghua-sz.edu.cn/WebPublications/PaperDetail/768?unit=1002",
+      "verified_claim": "assigns request/cache-line priorities, permits replacement by lower or equal priority, and bypasses when no eligible victim exists; priority and bypass are known dimensions."
+    },
+    {
+      "id": "LOCALITY_DRIVEN_GPU_BYPASS_ICS_2015",
+      "kind": "PRIMARY_AUTHOR_INSTITUTION_PAGE",
+      "title": "Locality-Driven Dynamic GPU Cache Bypassing",
+      "url": "https://research.nvidia.com/publication/2015-06_locality-driven-dynamic-gpu-cache-bypassing",
+      "verified_claim": "filters low-reuse accesses from L1 insertion using locality monitoring; bypass admission is known but it does not provide equal semantic-class residency shares."
+    }
+  ],
+  "status": "PASS"
+}

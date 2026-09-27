@@ -1,0 +1,79 @@
+{
+  "constraints": [
+    "ordinary borrowing",
+    "no static partition",
+    "hard global occupancy bound",
+    "set-local replacement",
+    "no stalls or cross-set victim",
+    "fail-safe unprotected admission"
+  ],
+  "designs": [
+    {
+      "admission": "all target global-read misses are eligible; protect below quota; at full quota protect only when replacing a local protected victim",
+      "borrowing": "ordinary lines borrow unused quota and may fall back to protected victims",
+      "complexity": "current baseline",
+      "cuda_relation": "does not model hitRatio fractional admission",
+      "fairness": "none; a recent class can occupy the whole pool",
+      "id": "M1",
+      "metadata": "protected/pending bit, target_class tag, global/per-subpartition occupancy and quota",
+      "name": "GLOBAL_ELASTIC_RECENCY",
+      "new_dimension": false,
+      "ordinary_behavior": "elastic borrowing retained",
+      "quota": "hard global bound distributed over subpartitions; no class share",
+      "victim": "invalid/normal/protected preference with baseline oldest protected victim; class ignored"
+    },
+    {
+      "admission": "a target line is protection-eligible only when stable_hash(class,line) is below the budget-specific fraction; failed/ineligible admission is ordinary and never stalls",
+      "borrowing": "unchanged ordinary borrowing and hard global bound",
+      "budget_fractions": {
+        "B16": 0.01765030336458908,
+        "B24": 0.026475455046883617,
+        "B8": 0.00882515168229454,
+        "BFULL": 0.03571428571428571
+      },
+      "complexity": "low: one hash/threshold decision on target admission",
+      "cuda_relation": "direct modeling analogue of CUDA/PTX fractional eviction-priority assignment, but deterministic stability is an explicit simulator modeling decision",
+      "fairness": "statistical/stable opportunity fairness; limits one class injection but does not guarantee an exact occupancy floor",
+      "id": "M1F",
+      "metadata": "existing target_class and line address plus one stable hash seed/threshold; no 28 occupancy counters",
+      "name": "GLOBAL_ELASTIC_FRACTIONAL_ADMISSION",
+      "new_dimension": "fractional target admission versus M1 all-target admission",
+      "ordinary_behavior": "unchanged",
+      "quota": "global elastic quota; each class has an approximately equal, stable eligible subset of expected size global_quota/28",
+      "victim": "unchanged M1 set-local victim rule"
+    },
+    {
+      "admission": "under-share classes may protect; over-share classes borrow only unused global capacity; at full quota protect only with a safe same-set victim",
+      "borrowing": "ordinary borrowing retained; target-class excess borrowing is reclaimable",
+      "complexity": "moderate: counters, share comparison, class-aware victim filtering",
+      "cuda_relation": "not an exposed CUDA guarantee; stronger than hitRatio and PTX fractional priority",
+      "fairness": "stronger proportional protection than M1F but still constrained by set-local victim availability",
+      "id": "M1Q",
+      "metadata": "existing per-line class plus 28 protected-occupancy counters per subpartition and soft-share accounting",
+      "name": "ELASTIC_PER_CLASS_SOFT_QUOTA",
+      "new_dimension": "class-aware occupancy/admission/replacement",
+      "ordinary_behavior": "current ordinary preference/fallback can be retained",
+      "quota": "hard global bound plus soft per-class shares, no static way partition",
+      "victim": "prefer same-class or over-share protected victims; never evict an under-share class solely to admit an over-share class; otherwise fail safe unprotected"
+    },
+    {
+      "admission": "protect classes chosen by next-reuse utility",
+      "borrowing": "can retain elastic global borrowing",
+      "complexity": "high and potentially oracle/future-aware",
+      "cuda_relation": "not equivalent to hitRatio",
+      "fairness": "not fairness; utility prioritization may intentionally be unequal",
+      "id": "OPTIONAL_NEXT_REUSE",
+      "metadata": "per-class predicted/known next-reuse distance and selector state",
+      "name": "NEXT_REUSE_AWARE_CLASS_SELECTION",
+      "new_dimension": "future/utility prediction",
+      "ordinary_behavior": "requires an additional policy contract",
+      "quota": "global or soft-class bound",
+      "victim": "prefer classes with later predicted reuse"
+    }
+  ],
+  "do_not_start": "OPTIONAL_NEXT_REUSE",
+  "escalation_if_hard_representation_is_required": "M1Q",
+  "minimum_recommendation": "M1F",
+  "schema": "C16_E1_FAIR_RESIDENCY_DESIGN_SPACE_V1",
+  "status": "PASS"
+}
