@@ -4,7 +4,7 @@
 
 ## 最新问题发现
 
-- [Round09：宽范围支线——执行组织、表示生命周期与训练新成本](rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md)：27项核心工作，19项正文关键章节、1项部分正文、6项原始摘要、1项作者artifact/元数据；本轮扩展证据表53条。覆盖编译、通信、稀疏、优化器、RL同步、TT embedding、可靠性、CPU/FPGA与模拟方法。保留三个后备问题卡，未启动新GPU任务、不改Lane F/R81或Lane G/R82。明确Celty/Coruscant公开代码范围及Syncopate AE版本标注差异。
+- [Round10：R81/R82横向审查与下一轮并行候选](rounds/2026-09-27_ROUND_10_HORIZONTAL_REVIEW_AND_NEXT.md)：独立接受R81软件机会/R82当前软件充分，关闭其架构推进；Round09后备中提升R101固定Newton–Schulz中间态生命周期，条件提升R102低精度权重变化检测/压缩，Q92/Q93暂缓。下一轮建议Lane H/Lane I并行，109 GPU仍统一加锁。\n- [Round09：宽范围支线——执行组织、表示生命周期与训练新成本](rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md)：27项核心工作，19项正文关键章节、1项部分正文、6项原始摘要、1项作者artifact/元数据；本轮扩展证据表53条。覆盖编译、通信、稀疏、优化器、RL同步、TT embedding、可靠性、CPU/FPGA与模拟方法。保留三个后备问题卡，未启动新GPU任务、不改Lane F/R81或Lane G/R82。明确Celty/Coruscant公开代码范围及Syncopate AE版本标注差异。
 - [Round08：能力比较与两窗口并行探索](rounds/2026-09-27_ROUND_08_PARALLEL_PROBLEM_DISCOVERY.md)：核心13篇，7篇正文关键章节、6篇原始摘要，另核官方源码。保留R81异构合法词表批处理、R82片上layout转换两个小型探索，非已证明的硬件创新。Kestrel已有indexed LM-head，Triton已有多级转换优化，均进入强基线。协调入口：`hrl/awma-round08-parallel-exploration-handoff-v1`，`docs/vm_tlb/chatgpt_handoff/awma/round08_parallel_v1/START_HERE.md`。发布不等于已运行。
 - [Round07：R54 checkpoint生命周期选择](rounds/2026-09-27_ROUND_07_R54_LONG_HORIZON_SELECTION.md)：原长时资格设计。后续R54已完成于`d6ef29505de75985181afc74dffc3cf1b652afc2`，后端greedy资格通过；科学状态`R54_HOST_RUNTIME_COST_NOT_ARCH_LOCALIZED_V1`。不要用原设计状态代替最新结果。
 - [Round06：R53扩散推理合法工作集](rounds/2026-09-27_ROUND_06_R53_RESEARCH_AND_DESIGN.md)：9篇核心，8篇正文关键章节、1篇摘要及源码；原设计状态不是后续执行状态。
