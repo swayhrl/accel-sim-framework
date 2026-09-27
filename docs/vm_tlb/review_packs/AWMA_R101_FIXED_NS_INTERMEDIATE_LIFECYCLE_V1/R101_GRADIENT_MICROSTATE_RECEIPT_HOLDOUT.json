@@ -1,0 +1,81 @@
+{
+  "fixture": "TRAIN_HOLDOUT_256",
+  "gpu": "NVIDIA GeForce RTX 4080",
+  "gradient_step": 1,
+  "initial_momentum_zero": true,
+  "input_ids_sha256": "141ddbf801da6fcfcc806158e416ddb4eced3964a9db72f8b36cc1b32a2d3440",
+  "logits_shape": [
+    255,
+    151936
+  ],
+  "loss_fp32": 2.3534677028656006,
+  "microstate_class": "REAL_MODEL_FIRST_STEP_GRADIENT_DERIVED_MICROSTATE",
+  "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "model_weight_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+  "momentum": 0.95,
+  "nesterov": true,
+  "next_token_loss": {
+    "input": "tokens[:-1]",
+    "label_smoothing": 0.0,
+    "labels": "tokens[1:]",
+    "reduction": "mean"
+  },
+  "optimizer_update_applied": false,
+  "parameter_names": [
+    "model.layers.12.self_attn.q_proj.weight",
+    "model.layers.12.mlp.up_proj.weight",
+    "model.layers.12.mlp.down_proj.weight"
+  ],
+  "parameter_weights_unchanged": true,
+  "parameters": {
+    "model.layers.12.mlp.down_proj.weight": {
+      "author_bf16_vs_ideal_fp32_max_abs": 0.0004638582468032837,
+      "dtype": "torch.bfloat16",
+      "gradient_norm_fp32": 3.2419991493225098,
+      "gradient_sha256": "3ec959adc42f3dcdea54425826fa7a442a2ba87b76ef68383ea3e24ade7704f6",
+      "momentum_buffer_sha256": "3ec959adc42f3dcdea54425826fa7a442a2ba87b76ef68383ea3e24ade7704f6",
+      "nesterov_input_finite": true,
+      "nesterov_input_norm_fp32": 6.3222246170043945,
+      "nesterov_input_sha256": "0a292e802bda2bb5e2e8200ef6d1dad16fa830d1e69c6a0444849c533794718a",
+      "shape": [
+        896,
+        4864
+      ]
+    },
+    "model.layers.12.mlp.up_proj.weight": {
+      "author_bf16_vs_ideal_fp32_max_abs": 0.0021485090255737305,
+      "dtype": "torch.bfloat16",
+      "gradient_norm_fp32": 4.2892279624938965,
+      "gradient_sha256": "0d81d6e8f7bd3d67b5a0c33ba9fc0e4398c9d5c4fd15ef6bf4dd7ebfdadd6abe",
+      "momentum_buffer_sha256": "0d81d6e8f7bd3d67b5a0c33ba9fc0e4398c9d5c4fd15ef6bf4dd7ebfdadd6abe",
+      "nesterov_input_finite": true,
+      "nesterov_input_norm_fp32": 8.364126205444336,
+      "nesterov_input_sha256": "922820a83642e62b6cd38b2647fd9988c630bd380e8a2ffe87d1ba0391fc2865",
+      "shape": [
+        4864,
+        896
+      ]
+    },
+    "model.layers.12.self_attn.q_proj.weight": {
+      "author_bf16_vs_ideal_fp32_max_abs": 0.0018554925918579102,
+      "dtype": "torch.bfloat16",
+      "gradient_norm_fp32": 3.742116689682007,
+      "gradient_sha256": "09a16b3abb4bbf6d175f0e49f473465ad2bde92cd6a9ec96b4e3f54b82f93dd7",
+      "momentum_buffer_sha256": "09a16b3abb4bbf6d175f0e49f473465ad2bde92cd6a9ec96b4e3f54b82f93dd7",
+      "nesterov_input_finite": true,
+      "nesterov_input_norm_fp32": 7.297225475311279,
+      "nesterov_input_sha256": "5c5bc72f5ce7cd9261df117797559827a8355d98632461b66031c5a379a2d9e3",
+      "shape": [
+        896,
+        896
+      ]
+    }
+  },
+  "payload_sha256": "907fdef37bfcd51265fe06da1db7b8eab8eea008da7ab7ef6a7a1522d03c74a2",
+  "payload_size_bytes": 57118336,
+  "peak_allocated_bytes": 2635475968,
+  "stage": "AWMA_R101_FIXED_NS_INTERMEDIATE_LIFECYCLE_V1",
+  "status": "MICROSTATE_COMPLETE",
+  "torch": "2.6.0+cu124",
+  "torch_cuda": "12.4"
+}

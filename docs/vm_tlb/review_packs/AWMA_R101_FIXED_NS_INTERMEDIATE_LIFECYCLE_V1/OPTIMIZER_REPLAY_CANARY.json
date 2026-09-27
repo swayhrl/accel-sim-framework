@@ -1,0 +1,120 @@
+{
+  "256": {
+    "cached_plan_reused": true,
+    "concat_buffers": {
+      "(256, 256, False, torch.bfloat16)": [
+        [
+          168,
+          256,
+          256
+        ],
+        139295218204672
+      ]
+    },
+    "concat_buffers_stable": true,
+    "cross_layer_plan": [
+      {
+        "B_hw": 4783,
+        "B_total": 168,
+        "bucket_key": "(256, 256, False, torch.bfloat16)",
+        "chunk_sizes": [
+          168
+        ],
+        "n_calls": 1,
+        "tile_count_per_param": [
+          16,
+          76,
+          76
+        ]
+      }
+    ],
+    "first_state_author_eager_allclose": true,
+    "grad_pointers_stable": {
+      "model.layers.0.mlp.down_proj.weight": 139295092703232,
+      "model.layers.0.mlp.up_proj.weight": 139296367771648,
+      "model.layers.0.self_attn.q_proj.weight": 139297114685440
+    },
+    "graph_captured": true,
+    "graph_scope": "author momentum/tile/NS/untile graph; WD/LR outside graph",
+    "parameter_checks": {
+      "model.layers.0.mlp.down_proj.weight": {
+        "allclose": true,
+        "max_abs": 0.0009765625,
+        "mean_abs": 3.1962124467099784e-06,
+        "output_sha256": "5ffcfb8d5e2e6984d7034d125f90e79dac6033f7a3ec157074880c5f39d6fce9"
+      },
+      "model.layers.0.mlp.up_proj.weight": {
+        "allclose": true,
+        "max_abs": 0.00048828125,
+        "mean_abs": 3.062207952098106e-06,
+        "output_sha256": "889510cf42e7b67ca312dc3f615c722f18caf1d1b6ed9036f8892cd2d8df460a"
+      },
+      "model.layers.0.self_attn.q_proj.weight": {
+        "allclose": true,
+        "max_abs": 0.001953125,
+        "mean_abs": 1.4791395415159059e-06,
+        "output_sha256": "ed620bc463252c3e3cbd7e4ffb3c41d3ca2d6f0933ba2069bddf072ae9b53c69"
+      }
+    },
+    "tile_edge": 256
+  },
+  "512": {
+    "cached_plan_reused": true,
+    "concat_buffers": {
+      "(512, 512, False, torch.bfloat16)": [
+        [
+          44,
+          512,
+          512
+        ],
+        139293238493184
+      ]
+    },
+    "concat_buffers_stable": true,
+    "cross_layer_plan": [
+      {
+        "B_hw": 1195,
+        "B_total": 44,
+        "bucket_key": "(512, 512, False, torch.bfloat16)",
+        "chunk_sizes": [
+          44
+        ],
+        "n_calls": 1,
+        "tile_count_per_param": [
+          4,
+          20,
+          20
+        ]
+      }
+    ],
+    "first_state_author_eager_allclose": true,
+    "grad_pointers_stable": {
+      "model.layers.0.mlp.down_proj.weight": 139293482090496,
+      "model.layers.0.mlp.up_proj.weight": 139293414981632,
+      "model.layers.0.self_attn.q_proj.weight": 139295101419520
+    },
+    "graph_captured": true,
+    "graph_scope": "author momentum/tile/NS/untile graph; WD/LR outside graph",
+    "parameter_checks": {
+      "model.layers.0.mlp.down_proj.weight": {
+        "allclose": true,
+        "max_abs": 0.00048828125,
+        "mean_abs": 2.4750345346546965e-06,
+        "output_sha256": "bc999efedb2ed2b230694f76efe3dfa0baac849d0041ca27f94988c35a04bbbd"
+      },
+      "model.layers.0.mlp.up_proj.weight": {
+        "allclose": true,
+        "max_abs": 0.0009765625,
+        "mean_abs": 2.3112347662390675e-06,
+        "output_sha256": "1afd2d94695c5bfa01bbd0c88ccafca2d08ad76d4c2578038545e6a3032399e9"
+      },
+      "model.layers.0.self_attn.q_proj.weight": {
+        "allclose": true,
+        "max_abs": 0.00390625,
+        "mean_abs": 1.310662128162221e-06,
+        "output_sha256": "8fc2e4f6e864886f51378bb6ceebe4b2b6ab79857653442e2604c8c9b009009a"
+      }
+    },
+    "tile_edge": 512
+  }
+}

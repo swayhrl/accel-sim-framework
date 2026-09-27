@@ -1,0 +1,39 @@
+{
+  "author_optimizer": "HiMuon single GPU non-DTensor cross-layer bucket path",
+  "author_settings": {
+    "b_hw": null,
+    "cuda_graph": true,
+    "cuda_graph_warmup": 3,
+    "lr": 0.02,
+    "lr_adjust": "tile",
+    "momentum": 0.95,
+    "nesterov": true,
+    "ns_steps": 5,
+    "weight_decay": 0.1
+  },
+  "first_frozen_state_canary": "compare one eager first step to graph replay after restoring initial params/zero momentum; author rtol=atol=1e-2",
+  "formal": {
+    "canary": 1,
+    "paired_interleaved_L256_L512": true,
+    "repetitions": 7,
+    "warmups": 2
+  },
+  "formal_replay_reset": "outside timing restore original parameter values and zero existing momentum buffers; preserve all grad/state pointers and shapes",
+  "frozen_before_optimizer_timing": true,
+  "frozen_gradient_microstate_sha256": "341f7a83b848cea7e39ce2116f651e274dde8a9efdc8b2569edb0f3295a0fb71",
+  "frozen_gradient_payload_sha256": "370cf181e894e5b1c4b349c7fa80d46b3b03b542e7b4bcd8f4e990e949e038c5",
+  "graph_scope": "author optimizer step graph captures momentum/tile/NS/untile; WD/LR outside graph",
+  "ncu_materiality_decision_after_formal": true,
+  "no_gradient_or_algorithm_or_tile_change": true,
+  "plan_buffer_reuse_required": true,
+  "primary": "complete selected optimizer replay CUDA event ms",
+  "scope": "fixed selected three real layer0 Qwen projection parameters only, not a full-model training step",
+  "secondary": "host elapsed, NSYS graph node kernel counts/durations, peak allocation",
+  "source_commit": "af89eda9a0176effed99e1fe19cc1f8a1a2c9588",
+  "source_path_qualification_sha256": "588a54799bfdcd7bc184ef4b3126f08865ebe817da262a3e931f81aba95d0d87",
+  "stage": "AWMA_R101_FIXED_NS_INTERMEDIATE_LIFECYCLE_V1",
+  "tile_edges": [
+    256,
+    512
+  ]
+}

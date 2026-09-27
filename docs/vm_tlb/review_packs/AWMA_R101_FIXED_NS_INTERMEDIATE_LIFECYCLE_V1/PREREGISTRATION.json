@@ -1,0 +1,68 @@
+{
+  "author_software_baseline": [
+    "cross_layer_batch",
+    "cached_plan",
+    "reused_concat",
+    "torch_compile",
+    "legal_cuda_graph"
+  ],
+  "discovery_input": "TRAIN_DISCOVERY_256",
+  "discovery_parameters": [
+    "model.layers.0.self_attn.q_proj.weight",
+    "model.layers.0.mlp.up_proj.weight",
+    "model.layers.0.mlp.down_proj.weight"
+  ],
+  "environment_receipt_sha256": "aade86c413d23cdf0c2ba59a29295f5eef63ca3a61266808b9566fbd7ae202dc",
+  "frozen_before_gpu_gradient": true,
+  "holdout_input": "TRAIN_HOLDOUT_256_CONDITIONAL_ONLY",
+  "holdout_parameters": [
+    "model.layers.12.self_attn.q_proj.weight",
+    "model.layers.12.mlp.up_proj.weight",
+    "model.layers.12.mlp.down_proj.weight"
+  ],
+  "holdout_trigger": "same-map S128 material and real L256/L512 material after strong software baseline",
+  "input_receipt_sha256": "0c83ef8eec90931beeea66f8802e6d4471d7b483fa94434154811c2234440fc7",
+  "large_tile_arms": [
+    "L256_AUTHOR_COMPILED_3KERNEL",
+    "L512_AUTHOR_COMPILED_3KERNEL"
+  ],
+  "large_tile_per_map_only": true,
+  "microstate": "one BF16 next-token CE/backward; zero momentum; author Nesterov G=grad+0.95*buf=1.95*grad; no update",
+  "model_identity_receipt_sha256": "335d8cd302b9b26f6ea14b445a3b03464a6f524a0460a4d8a2a9c9c6d3df3744",
+  "ncu_trigger": "S128 material or large-tile material optimizer fraction; max two profiles",
+  "no_parameter_sweep": true,
+  "no_step_or_coefficient_or_tile_local_map_change": true,
+  "same_map_control": {
+    "arms": [
+      "F128_AUTHOR_NS5_SMEM",
+      "K128_AUTHOR_EQUIVALENT_COMPILED_3KERNEL"
+    ],
+    "atol": 0.01,
+    "coefficients": [
+      3.4445,
+      -4.775,
+      2.0315
+    ],
+    "cosine_reference": "author microbench FP32 eager finite NS",
+    "five_steps": 5,
+    "norm_epsilon": 1e-07,
+    "rtol": 0.01,
+    "same_input_and_shape": true,
+    "tile_edge": 128
+  },
+  "source_receipt_sha256": "215c71bf8306338ad67c756aa2b6a381aca0100a35f50cbba72dff876fb9da00",
+  "stage": "AWMA_R101_FIXED_NS_INTERMEDIATE_LIFECYCLE_V1",
+  "tile_edges": [
+    128,
+    256,
+    512
+  ],
+  "timing": {
+    "canary_per_arm": 1,
+    "effect_over_larger_jitter": 3,
+    "formal_repetitions_per_arm": 7,
+    "materiality_fraction": 0.05,
+    "paired_interleaved_F128_K128": true,
+    "warmups_per_arm": 2
+  }
+}

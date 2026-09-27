@@ -1,0 +1,34 @@
+{
+  "coefficients": [
+    3.4445,
+    -4.775,
+    2.0315
+  ],
+  "commit": "af89eda9a0176effed99e1fe19cc1f8a1a2c9588",
+  "fused_only_if_tile_product_le_16384": true,
+  "license": "MIT",
+  "norm_epsilon": 1e-07,
+  "repository": "tang0389/himuon",
+  "source_sha256": {
+    "microbench/experiments/exp_ns5_rect_bench.py": "8b96602ad3f50e40c8ec492e99f2da412d420e2b6b02e797ea07a688a132adb6",
+    "src/himuon/optimizers/himuon.py": "98b9d63e06cd002cf4e05efe8007e83eb4c0d3d99d701c88ad455e1b678578a3",
+    "src/himuon/triton_kernels/XXT.py": "8d2c0a6aad32d463ccc7ba411faa66c22bce7bbf96ddaffef4879ca14ea7926e",
+    "src/himuon/triton_kernels/ba_plus_cAA.py": "aee0450648c7566f4e460964bbf87013af9bfeefd74fc5ee340ea94e50c852b5",
+    "src/himuon/triton_kernels/fused_bmm_add.py": "15fb2c8b80e05039477b22eec4f34847562b23c51f11a15c53db662dcc627d68",
+    "src/himuon/triton_kernels/ns5_smem.py": "8338a744e5da580df01abcc8e02c9654346d2cdf522bb5ede87adfe3082d307a",
+    "tests/integration/test_himuon_dispatch.py": "c8a38b9aee1ea50a7ec33560ee0bd388027e49585c850d57e592bb5f355cdad9",
+    "tests/integration/test_himuon_self_consistency.py": "77a8f922724cde0133b94147a38d1976f71ca7f1f107277af8970672724ee7e3"
+  },
+  "stage": "AWMA_R101_FIXED_NS_INTERMEDIATE_LIFECYCLE_V1",
+  "steps": 5,
+  "verified_code_facts": {
+    "author_bf16_self_consistency_tolerance": "test_himuon_self_consistency.py:rtol=1e-2,atol=1e-2",
+    "author_same_map_benchmark": "exp_ns5_rect_bench.py:ns_3kernel and ns5_smem",
+    "cached_bucket_plan": "himuon.py:self._cached_plan",
+    "cross_layer_bucket_batching": "himuon.py:_plan_buckets/_execute_plan",
+    "large_tile_compiled_three_kernel": "himuon.py:_newton_schulz_3kernel",
+    "optimizer_step_cuda_graph": "himuon.py:_capture_graph/step",
+    "reused_concat_buffers": "himuon.py:self._concat_buffers/_ensure_concat_buffer",
+    "small_tile_fused_dispatch": "himuon.py:newton_schulz and ns5_smem.py"
+  }
+}

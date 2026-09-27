@@ -1,0 +1,59 @@
+{
+  "cached_plan_reused": true,
+  "concat_buffers": {
+    "(512, 512, False, torch.bfloat16)": [
+      [
+        44,
+        512,
+        512
+      ],
+      138806128803840
+    ]
+  },
+  "concat_buffers_stable": true,
+  "cross_layer_plan": [
+    {
+      "B_hw": 1195,
+      "B_total": 44,
+      "bucket_key": "(512, 512, False, torch.bfloat16)",
+      "chunk_sizes": [
+        44
+      ],
+      "n_calls": 1,
+      "tile_count_per_param": [
+        4,
+        20,
+        20
+      ]
+    }
+  ],
+  "first_state_author_eager_allclose": true,
+  "grad_pointers_stable": {
+    "model.layers.12.mlp.down_proj.weight": 138806003302400,
+    "model.layers.12.mlp.up_proj.weight": 138806674391040,
+    "model.layers.12.self_attn.q_proj.weight": 138807085760512
+  },
+  "graph_captured": true,
+  "graph_scope": "author momentum/tile/NS/untile graph; WD/LR outside graph",
+  "parameter_checks": {
+    "model.layers.12.mlp.down_proj.weight": {
+      "allclose": true,
+      "max_abs": 0.0009765625,
+      "mean_abs": 2.9167160846554907e-06,
+      "output_sha256": "137b275108a682e5cc883446f88950f2a11e7b7a27250ab768c3ef12f72d2c50"
+    },
+    "model.layers.12.mlp.up_proj.weight": {
+      "allclose": true,
+      "max_abs": 0.0009765625,
+      "mean_abs": 2.8460931389417965e-06,
+      "output_sha256": "0290aa745303a51ff4874355af636c072c1e3d3b10b2d4a530f25585bef52545"
+    },
+    "model.layers.12.self_attn.q_proj.weight": {
+      "allclose": true,
+      "max_abs": 0.00048828125,
+      "mean_abs": 2.3959723876032513e-06,
+      "output_sha256": "4b80ce7c2e955c1c8a1d9aac209eba5fe4d95bbc9f22587c56b1af4bab9df90e"
+    }
+  },
+  "tile_edge": 512
+}

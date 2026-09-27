@@ -1,0 +1,126 @@
+{
+  "arms": {
+    "F128": {
+      "formal_gpu_ms": [
+        0.5594239830970764,
+        0.5576320290565491,
+        0.5431360006332397,
+        0.5560960173606873,
+        0.5495359897613525,
+        0.5519999861717224,
+        0.5544319748878479
+      ],
+      "max_relative_jitter": 0.02037395887366189,
+      "median_gpu_ms": 0.5544319748878479,
+      "median_host_elapsed_ms_secondary": 0.564128,
+      "tile_count": 581
+    },
+    "K128": {
+      "formal_gpu_ms": [
+        0.6669759750366211,
+        0.6381760239601135,
+        0.6540160179138184,
+        0.6312639713287354,
+        0.6502079963684082,
+        0.6364799737930298,
+        0.6618880033493042
+      ],
+      "max_relative_jitter": 0.029135330764125448,
+      "median_gpu_ms": 0.6502079963684082,
+      "median_host_elapsed_ms_secondary": 0.659145,
+      "tile_count": 581
+    },
+    "L256": {
+      "formal_gpu_ms": [
+        0.9782400131225586,
+        0.9820799827575684,
+        0.9811840057373047,
+        0.9895039796829224,
+        0.9878720045089722,
+        0.9865919947624207,
+        0.9769920110702515
+      ],
+      "max_relative_jitter": 0.007559462625954629,
+      "median_gpu_ms": 0.9820799827575684,
+      "median_host_elapsed_ms_secondary": 0.991415,
+      "tile_count": 168
+    },
+    "L512": {
+      "formal_gpu_ms": [
+        1.6772160530090332,
+        1.6824320554733276,
+        1.6758719682693481,
+        1.697152018547058,
+        1.6783039569854736,
+        1.6906239986419678,
+        1.6778240203857422
+      ],
+      "max_relative_jitter": 0.011230421928718369,
+      "median_gpu_ms": 1.6783039569854736,
+      "median_host_elapsed_ms_secondary": 1.6879,
+      "tile_count": 44
+    }
+  },
+  "canaries": [
+    {
+      "arm": "F128",
+      "complete_call_gpu_ms": 933.707763671875,
+      "host_elapsed_ms_secondary": 933.739608,
+      "input_and_output_stable": "same frozen input; author wrapper returns fresh output",
+      "output_finite": true,
+      "peak_allocated_bytes": 352649216,
+      "rep": 0,
+      "run_status": "CANARY",
+      "source_path": "author ns5_smem",
+      "tile_count": 581,
+      "tile_edge": 128
+    },
+    {
+      "arm": "K128",
+      "complete_call_gpu_ms": 1122.6727294921875,
+      "host_elapsed_ms_secondary": 1122.695872,
+      "input_and_output_stable": "same frozen input; author wrapper returns fresh output",
+      "output_finite": true,
+      "peak_allocated_bytes": 160366592,
+      "rep": 0,
+      "run_status": "CANARY",
+      "source_path": "author compiled _newton_schulz_3kernel",
+      "tile_count": 581,
+      "tile_edge": 128
+    },
+    {
+      "arm": "L256",
+      "complete_call_gpu_ms": 921.5018310546875,
+      "host_elapsed_ms_secondary": 921.517627,
+      "input_and_output_stable": "same frozen input; author wrapper returns fresh output",
+      "output_finite": true,
+      "peak_allocated_bytes": 175276032,
+      "rep": 0,
+      "run_status": "CANARY",
+      "source_path": "author compiled _newton_schulz_3kernel",
+      "tile_count": 168,
+      "tile_edge": 256
+    },
+    {
+      "arm": "L512",
+      "complete_call_gpu_ms": 939.2255249023438,
+      "host_elapsed_ms_secondary": 939.241279,
+      "input_and_output_stable": "same frozen input; author wrapper returns fresh output",
+      "output_finite": true,
+      "peak_allocated_bytes": 180518912,
+      "rep": 0,
+      "run_status": "CANARY",
+      "source_path": "author compiled _newton_schulz_3kernel",
+      "tile_count": 44,
+      "tile_edge": 512
+    }
+  ],
+  "same_map": {
+    "effect_over_jitter_ratio": 5.055737694602112,
+    "interpretation_limit": "eager call response includes interkernel launch gaps; graph/NSYS needed before intermediate HBM causal claim",
+    "larger_max_relative_jitter": 0.029135330764125448,
+    "numerical_gate_pass": true,
+    "same_map_improvement_fraction": 0.1473005899888896,
+    "same_map_material_response": true
+  }
+}

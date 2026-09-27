@@ -1,0 +1,12 @@
+# R101 source and closest-work audit
+
+Scientific source is [`tang0389/himuon@af89eda9a0176effed99e1fe19cc1f8a1a2c9588`](https://github.com/tang0389/himuon/tree/af89eda9a0176effed99e1fe19cc1f8a1a2c9588); exact file hashes are in `R101_SOURCE_RECEIPT.json`. The [HiMuon paper](https://arxiv.org/abs/2606.27216) and pinned implementation already supply tile-local Newton–Schulz, cross-layer bucket batching, a cached bucket plan, reusable concatenation buffers, `torch.compile`, CUDA Graph optimizer capture, and a fused single-CTA five-iteration kernel for admitted small tiles. None of these is an R101 invention.
+
+The pinned `himuon.py::_newton_schulz_3kernel` uses five iterations with `(a,b,c)=(3.4445,-4.7750,2.0315)`. Each iteration calls `XXT(X,out=A)`, `ba_plus_cAA(A,out=B)`, and `fused_bmm_add(B,X,a,out=C)`, then swaps `X,C`. The implementation allocates A, B, and C once and reuses them, so it does *not* allocate five generations of intermediates. `ns5_smem.py` computes the same fixed map on S128 in one CTA with intermediate values in on-chip storage; this path is admitted only when the tile product is at most 16384. The author's own microbenchmark includes both paths. Author self-consistency tests already declare `rtol=atol=1e-2`; R101 froze this criterion before timing.
+
+Closest distinct software capabilities checked:
+
+- [Flash-Muon](https://github.com/nil0x9/flash-muon) optimizes large Newton–Schulz matrix products using symmetry and custom CUDA/Triton kernels. It is relevant prior software, but its documented capability accelerates component matrix products rather than retaining all five HiMuon 512×512 tile iterations on chip.
+- [fused-muon](https://github.com/StarrickLiu/fused-muon) uses CuTe SYRK and a fused polynomial epilogue, reporting faster full-matrix Muon on A800. It is a meaningful stronger-software comparator for any later architecture claim. Its documented three-GEMM iteration and full-matrix/adaptive dispatch are not an already-qualified, exact HiMuon tile-local 512×512, five-step, same-input retained-intermediate substitute on RTX4080. R101 did not run it and does not claim superiority over it.
+
+Thus the present result qualifies a *problem for architecture review*, not hardware novelty or a hardware speedup. A later proposal must distinguish itself from these software routes and requalify exact map/numerics on the same model-derived tiles. Different tile edges define different optimizer maps; S128-versus-L512 timing is never treated as an equivalent-implementation comparison.

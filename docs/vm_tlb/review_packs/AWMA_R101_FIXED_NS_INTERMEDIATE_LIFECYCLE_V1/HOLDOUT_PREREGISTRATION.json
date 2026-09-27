@@ -1,0 +1,47 @@
+{
+  "L512_arm": "author compiled three-kernel plus selected-parameter HiMuon graph optimizer replay",
+  "S128_arms": [
+    "F128",
+    "K128",
+    "F128_GRAPH",
+    "K128_GRAPH"
+  ],
+  "coefficients": [
+    3.4445,
+    -4.775,
+    2.0315
+  ],
+  "discovery_graph_analysis_sha256": "1dd30c6cd26fb7399cbbb0a8011ab13c3a9e11e8ce6320f4f970ccf03115e798",
+  "discovery_ncu_summary_sha256": "7b70065c4114f1dc5cab5b5afcd6e843c079581562a5dc38f68b0f067d6e8e3d",
+  "discovery_optimizer_replay_sha256": "af7d9ce1bf019f866d9a528e7d351e3d52a88b7bb61392da6afc7e83bcf9e1de",
+  "formal": {
+    "canary": 1,
+    "paired_interleaved_F128_K128": true,
+    "repetitions": 7,
+    "warmups": 2
+  },
+  "gradient_contract": "one BF16 next-token cross-entropy and backward, no parameter update; author zero-momentum Nesterov first step",
+  "holdout": "TRAIN_HOLDOUT_256",
+  "holdout_outcomes_seen_before_freeze": false,
+  "independence": "pre-frozen disjoint token IDs [256:512] of accepted raw R53 prompt stream",
+  "no_tuning_on_holdout": true,
+  "numerical_atol": 0.01,
+  "numerical_rtol": 0.01,
+  "parameter_names": [
+    "model.layers.12.self_attn.q_proj.weight",
+    "model.layers.12.mlp.up_proj.weight",
+    "model.layers.12.mlp.down_proj.weight"
+  ],
+  "required_direction": [
+    "F128 faster than K128 on same S128 input",
+    "L512 material inside selected graph optimizer replay"
+  ],
+  "stage": "AWMA_R101_FIXED_NS_INTERMEDIATE_LIFECYCLE_V1",
+  "steps": 5,
+  "tile_edges": [
+    128,
+    512
+  ],
+  "token_ids_json_sha256": "141ddbf801da6fcfcc806158e416ddb4eced3964a9db72f8b36cc1b32a2d3440",
+  "token_payload_sha256": "9c775129baf02eb97bcc1b657abaabaa867f6fca0954a0ae33b0c502971b4db8"
+}
