@@ -1,0 +1,111 @@
+{
+  "claim_boundary": "Source verifies the software protocol only. It supplies no real before/after tensor authority and is not a hardware limitation.",
+  "commit": "867f76a82822dd87413da4fec617b7f8e7cf6414",
+  "dump_contract": {
+    "default": "rank*_indices_*.pt contains per-parameter SparseData history whose mandatory scientific payload is indices",
+    "full_before_after_pair_saved": false,
+    "offline_indices_only": true,
+    "offline_reader": "normalizes model_weight_indices and optional analysis dictionaries; it does not reconstruct full before/after weights",
+    "optional_values": "SPARSE_SAVE_VALUES=1 stores changed previous/current values only; default is 0",
+    "torch_save_present": true
+  },
+  "files": [
+    {
+      "git_blob": "ad7599bf03f3e484fb87836acf261097e0dc34cb",
+      "path": "sparse_update/common/compare.py",
+      "sha256": "a7b82208100cf2b7272fa20a2f013269145db76423c0390108e58349f8e212bf",
+      "size_bytes": 946
+    },
+    {
+      "git_blob": "ae8b64b9f3fec3538c9a08662b96e1ef061c4206",
+      "path": "sparse_update/common/convert.py",
+      "sha256": "baff98abe36e9bb185bb69f3b4819e898ffd8d2233b3eb45bf658f5f5675816f",
+      "size_bytes": 1311
+    },
+    {
+      "git_blob": "28bd62848ae1ef8590d9558dbdc2e9ddb9373dff",
+      "path": "sparse_update/megatron/updater.py",
+      "sha256": "3454687e25b1d3d1c68fce3483db2ff841d9a433f9549a1c7af6a44012b0865c",
+      "size_bytes": 1017
+    },
+    {
+      "git_blob": "48f98ffa2e37ef6d2b24135fdfe0b877b842655e",
+      "path": "sparse_update/megatron/gather_indices.py",
+      "sha256": "5265815330eb1a0d158c957a433f135adfa9b8954f0dea8b24b05408db2c9843",
+      "size_bytes": 12428
+    },
+    {
+      "git_blob": "320a78668070f17dfd7518744e0018270e906051",
+      "path": "sparse_update/slime/sparse_bucket.py",
+      "sha256": "7f55dec1efb1f9e8a2ddd74b0f8f2c0b07c8b2c89ffafc8db9425b9b50acd3c2",
+      "size_bytes": 8057
+    },
+    {
+      "git_blob": "024105aca321ffa2aec814f5db1fc23c33c783bf",
+      "path": "sparse_update/megatron/observer.py",
+      "sha256": "d19ceab6c4db38cbd321e34024cae7c6883067115c851306af8d03c30e06352a",
+      "size_bytes": 10213
+    },
+    {
+      "git_blob": "ec6772174ce2c2d1255a3b8e55b5669e8f32e444",
+      "path": "sparse_update/megatron/sparse_data.py",
+      "sha256": "99dbb63e1c5779f00e7450a47dbc545eecc27b2c5a47902f8ed250937d7e27b9",
+      "size_bytes": 1350
+    },
+    {
+      "git_blob": "857b3a20da535cc4725fea94e566065b1d4e8f24",
+      "path": "sparse_update/megatron/statistics/manager.py",
+      "sha256": "6715ce83428d5107d11f4696c3a33ad04ad7e641ad0fc94e18a73c0297cf9b56",
+      "size_bytes": 4926
+    },
+    {
+      "git_blob": "d685c916893907e8dc5c6ca01d431d5537d24a49",
+      "path": "sparse_update/megatron/statistics/statistics.py",
+      "sha256": "f3190225ab8e80038635910eba65bfd3be42b397719678282eb2a462a5018f4c",
+      "size_bytes": 1374
+    },
+    {
+      "git_blob": "cbd21c57c3146452a894ab3f529495f2cd433e7e",
+      "path": "offline/common/io.py",
+      "sha256": "d7deb6cade17f977deaac7efc689c4497b076dcf051473434f3524f95d301b91",
+      "size_bytes": 11108
+    },
+    {
+      "git_blob": "d3434b411db8cf5e14f70b3152296d5353853601",
+      "path": "patch/sparse_slime.patch",
+      "sha256": "f4684d0bebc3a366801946d8be49f57e04bf4a9d05f51d39cf5f41b3c4a91d7e",
+      "size_bytes": 13387
+    },
+    {
+      "git_blob": "e35e1760bf8342fe926285f7ed74e7ce268ea1c9",
+      "path": "README.md",
+      "sha256": "77fad72ebc539d1b118e74cb88c176363025f56e6adee04f9877479140f17959",
+      "size_bytes": 3729
+    },
+    {
+      "git_blob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "path": "LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "size_bytes": 11357
+    }
+  ],
+  "public_artifact": {
+    "documented_dump_location": "SPARSE_STATS_SAVED_DIR is a user-selected output directory, not a published download",
+    "release_assets": [],
+    "release_count": 0,
+    "tags": [],
+    "tracked_tensor_like_files": []
+  },
+  "repository": "scitix/helix",
+  "stage": "AWMA_R102_PRECISION_GATED_UPDATE_ENCODING_V1",
+  "status": "PASS_SOURCE_AUTHORITY_ONLY",
+  "tree": "f42dd4dbd47eeabca668f7299d2ec813a53994db",
+  "verified_code": {
+    "bucket": "per-dtype concatenated int32 indices and exact values with 256-element capacity alignment",
+    "comparison": "flattened curr != flattened prev",
+    "indices": "nonzero -> flattened -> int32; PyTorch nonzero output is lexicographically ascending for this 1D mask",
+    "previous_low_precision_weight_retained": "updater.before_copy detach().clone()",
+    "triton_todo_present": "# TODO: Use triton to implement this.",
+    "values": "get_sparse_diff/observer use index_select; operational bucket path materializes NaN sentinel then where(~isnan) and gathers current values"
+  }
+}
