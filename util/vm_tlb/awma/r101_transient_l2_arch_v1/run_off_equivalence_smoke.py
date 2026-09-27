@@ -19,6 +19,12 @@ BINARY = RUNTIME / "bin/unified_accel-sim.out"
 CORE_LIB = RUNTIME / "src/gpgpu-sim/lib/gcc-11.4.0/cuda-12040/release"
 EXPECTED = {"cycles": 93079, "instructions": 43357696, "ctas": 1216,
             "unique": 411008}
+ARMS = {
+    "default_off": ("off_equivalence_t2", None),
+    "explicit_none": ("explicit_none_equivalence_t2", "none"),
+    "oracle_no_overlap": ("oracle_no_overlap_t2", "oracle_dead_drop"),
+    "m1_no_overlap": ("m1_no_overlap_t2", "bounded_live_retention"),
+}
 
 
 def sha(path: Path) -> str:
@@ -42,11 +48,11 @@ def scalar(text: str, key: str) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--arm", choices=("default_off", "explicit_none"),
+    parser.add_argument("--arm", choices=tuple(ARMS),
                         default="default_off")
     args = parser.parse_args()
-    durable = RAW_ROOT / ("off_equivalence_t2" if args.arm == "default_off"
-                          else "explicit_none_equivalence_t2")
+    output_name, transient_mode = ARMS[args.arm]
+    durable = RAW_ROOT / output_name
     accepted = json.loads((BASE / "command.json").read_text())
     if sha(Path(accepted["argv"][2])) != "de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8":
         raise RuntimeError("accepted config changed")
@@ -71,9 +77,9 @@ def main() -> int:
     env["GPGPUSIM_POWER_MODEL"] = str(RUNTIME / "src/gpgpu-sim/src/accelwattch") + "/"
     env["LD_LIBRARY_PATH"] = f"{CORE_LIB}:{env.get('LD_LIBRARY_PATH', '')}"
     transient_environment = {}
-    if args.arm == "explicit_none":
+    if transient_mode is not None:
         sidecar = Path("/root/workspace/accel-sim-framework-awma-r101-transient-l2-arch-174-v1/util/vm_tlb/awma/r101_transient_l2_arch_v1/directed_no_overlap_runtime.tsv")
-        env["AWMA_TRANSIENT_L2_MODE"] = "none"
+        env["AWMA_TRANSIENT_L2_MODE"] = transient_mode
         env["AWMA_TRANSIENT_L2_DIAGNOSTICS"] = "1"
         env["AWMA_TRANSIENT_L2_SIDECAR"] = str(sidecar)
         transient_environment = {key: env[key] for key in
@@ -105,7 +111,7 @@ def main() -> int:
     if args.arm == "default_off":
         passed = passed and "awma_transient_l2_mode" not in text
     else:
-        passed = (passed and "awma_transient_l2_mode = none" in text and
+        passed = (passed and f"awma_transient_l2_mode = {transient_mode}" in text and
                   "awma_transient_l2_transient_accesses = 0" in text and
                   "awma_transient_l2_terminal_quiescent = 1" in text and
                   "awma_transient_l2_dead_eviction_drops = 0" in text and
