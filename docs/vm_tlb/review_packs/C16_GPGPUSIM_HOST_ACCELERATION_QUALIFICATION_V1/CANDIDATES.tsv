@@ -1,0 +1,22 @@
+candidate	comparison	baseline_median_s	candidate_median_s	host_speedup_pct	exact	observational_difference	decision
+A_MEMSTAT0	legacy accepted 16-kernel, config-only	9.611527976	9.668361088	-0.5913	true	generic memory latency/bank/access histograms omitted	REJECT_NO_GAIN
+B_CONFIG_ONLY_PTXLINE0	legacy accepted 16-kernel, config-only	9.611527976	9.651636892	-0.4173	true	header-only gpgpu_inst_stats.txt omitted	REJECT_NO_GAIN
+B_GUARDED_CONFIG0	committed candidate, five reps, same binary	7.055922120	7.161037644	-1.4897	true	header-only gpgpu_inst_stats.txt omitted	REVERTED_NO_GAIN
+C_RUNTIME10000	legacy accepted 16-kernel, config-only	9.611527976	9.446482072	1.7172	true	none in this prefix; runtime flag bits were zero	REJECT_BELOW_5_PERCENT
+D_PREDECOMPRESSED	legacy accepted 16-kernel	9.611527976	9.577263759	0.3565	true	trace container only; decompressed payload byte-exact	REJECT_BELOW_5_PERCENT
+D_TMPFS_COMPRESSED	new accepted 16-kernel, CPU300	6.121070993	6.148339443	-0.4455	true	path normalized; compressed payload byte-exact	REJECT_NO_GAIN
+E_PINNED_CPU300	CPU300 versus all allowed CPUs	6.053880835	6.121070993	-1.1099	true	affinity only	NO_SPEEDUP_KEEP_FOR_ISOLATION_ONLY
+F_LTO_PGO	considered after A-E	NA	NA	NA	NA	release already O3; no fast-math; no lower-risk candidate promoted	NOT_BUILT_DIMINISHING_RETURNS
+COMBINED_VS_CURRENT	current authority binary versus provisional HOST_FAST_V1	6.121070993	7.161037644	-16.9899	true	PTX header file omitted	REJECT
+COMBINED_VS_PRISTINE_SAME_BUILD	pristine same-build versus provisional HOST_FAST_V1	6.528739090	7.161037644	-9.6848	true	PTX header file omitted	REJECT
+candidate	comparison	baseline_median_s	candidate_median_s	host_speedup_pct	exact	observational_difference	decision
+A_MEMSTAT0	legacy accepted 16-kernel, config-only	9.611527976	9.668361088	-0.5913	true	generic memory latency/bank/access histograms omitted	REJECT_NO_GAIN
+B_CONFIG_ONLY_PTXLINE0	legacy accepted 16-kernel, config-only	9.611527976	9.651636892	-0.4173	true	header-only gpgpu_inst_stats.txt omitted	REJECT_NO_GAIN
+B_GUARDED_CONFIG0	committed candidate, five reps, same binary	7.055922120	7.161037644	-1.4897	true	header-only gpgpu_inst_stats.txt omitted	REVERTED_NO_GAIN
+C_RUNTIME10000	legacy accepted 16-kernel, config-only	9.611527976	9.446482072	1.7172	true	none in this prefix; runtime flag bits were zero	REJECT_BELOW_5_PERCENT
+D_PREDECOMPRESSED	legacy accepted 16-kernel	9.611527976	9.577263759	0.3565	true	trace container only; decompressed payload byte-exact	REJECT_BELOW_5_PERCENT
+D_TMPFS_COMPRESSED	new accepted 16-kernel, CPU300	6.121070993	6.148339443	-0.4455	true	path normalized; compressed payload byte-exact	REJECT_NO_GAIN
+E_PINNED_CPU300	CPU300 versus all allowed CPUs	6.053880835	6.121070993	-1.1099	true	affinity only	NO_SPEEDUP_KEEP_FOR_ISOLATION_ONLY
+F_LTO_PGO	considered after A-E	NA	NA	NA	NA	release already O3; no fast-math; no lower-risk candidate promoted	NOT_BUILT_DIMINISHING_RETURNS
+COMBINED_VS_CURRENT	current authority binary versus provisional HOST_FAST_V1	6.121070993	7.161037644	-16.9899	true	PTX header file omitted	REJECT
+COMBINED_VS_PRISTINE_SAME_BUILD	pristine same-build versus provisional HOST_FAST_V1	6.528739090	7.161037644	-9.6848	true	PTX header file omitted	REJECT
