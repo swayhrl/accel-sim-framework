@@ -1,0 +1,19 @@
+roi_launch_index	global_launch_index	context	stream_id	phase	iteration	kernel_family	exact_function	grid	block	A_after	B_after	X0_after	X1_after	boundary_rule	kernel_boundary_only	per_line_future_last_use
+0	3577	0x43c6c760	0	NORMALIZATION		NORMALIZATION	triton_red_fused_linalg_vector_norm_0	352,1,1	512,1,1	UNDEFINED_NOT_READ	UNDEFINED_NOT_READ	NOT_YET_LIVE	UNDEFINED_NOT_READ	X0 becomes fully normalized/live only after final normalization kernel	True	False
+1	3578	0x43c6c760	0	NORMALIZATION		NORMALIZATION	triton_per_fused_linalg_vector_norm_1	44,1,1	64,1,1	UNDEFINED_NOT_READ	UNDEFINED_NOT_READ	NOT_YET_LIVE	UNDEFINED_NOT_READ	X0 becomes fully normalized/live only after final normalization kernel	True	False
+2	3579	0x43c6c760	0	NORMALIZATION		NORMALIZATION	triton_poi_fused_add_div_linalg_vector_norm_2	11264,1,1	128,1,1	UNDEFINED_NOT_READ	UNDEFINED_NOT_READ	LIVE	UNDEFINED_NOT_READ	X0 becomes fully normalized/live only after final normalization kernel	True	False
+3	3580	0x43c6c760	0	NS	0	XXT	XXT_kernel	2816,1,1	128,1,1	LIVE	DEAD	LIVE	DEAD	XXT completely writes A; A is live for BA	True	False
+4	3581	0x43c6c760	0	NS	0	BA	ba_plus_cAA_kernel	2816,1,1	128,1,1	DEAD	LIVE	LIVE	DEAD	BA consumed A and completely writes B; A dead, B live for BMM-add	True	False
+5	3582	0x43c6c760	0	NS	0	BMM_ADD	bmm_add_kernel	32,44,1	128,1,1	DEAD	DEAD	DEAD	LIVE	BMM-add consumed B and old X, completely writes next X; B/old X dead	True	False
+6	3583	0x43c6c760	0	NS	1	XXT	XXT_kernel	2816,1,1	128,1,1	LIVE	DEAD	DEAD	LIVE	XXT completely writes A; A is live for BA	True	False
+7	3584	0x43c6c760	0	NS	1	BA	ba_plus_cAA_kernel	2816,1,1	128,1,1	DEAD	LIVE	DEAD	LIVE	BA consumed A and completely writes B; A dead, B live for BMM-add	True	False
+8	3585	0x43c6c760	0	NS	1	BMM_ADD	bmm_add_kernel	32,44,1	128,1,1	DEAD	DEAD	LIVE	DEAD	BMM-add consumed B and old X, completely writes next X; B/old X dead	True	False
+9	3586	0x43c6c760	0	NS	2	XXT	XXT_kernel	2816,1,1	128,1,1	LIVE	DEAD	LIVE	DEAD	XXT completely writes A; A is live for BA	True	False
+10	3587	0x43c6c760	0	NS	2	BA	ba_plus_cAA_kernel	2816,1,1	128,1,1	DEAD	LIVE	LIVE	DEAD	BA consumed A and completely writes B; A dead, B live for BMM-add	True	False
+11	3588	0x43c6c760	0	NS	2	BMM_ADD	bmm_add_kernel	32,44,1	128,1,1	DEAD	DEAD	DEAD	LIVE	BMM-add consumed B and old X, completely writes next X; B/old X dead	True	False
+12	3589	0x43c6c760	0	NS	3	XXT	XXT_kernel	2816,1,1	128,1,1	LIVE	DEAD	DEAD	LIVE	XXT completely writes A; A is live for BA	True	False
+13	3590	0x43c6c760	0	NS	3	BA	ba_plus_cAA_kernel	2816,1,1	128,1,1	DEAD	LIVE	DEAD	LIVE	BA consumed A and completely writes B; A dead, B live for BMM-add	True	False
+14	3591	0x43c6c760	0	NS	3	BMM_ADD	bmm_add_kernel	32,44,1	128,1,1	DEAD	DEAD	LIVE	DEAD	BMM-add consumed B and old X, completely writes next X; B/old X dead	True	False
+15	3592	0x43c6c760	0	NS	4	XXT	XXT_kernel	2816,1,1	128,1,1	LIVE	DEAD	LIVE	DEAD	XXT completely writes A; A is live for BA	True	False
+16	3593	0x43c6c760	0	NS	4	BA	ba_plus_cAA_kernel	2816,1,1	128,1,1	DEAD	LIVE	LIVE	DEAD	BA consumed A and completely writes B; A dead, B live for BMM-add	True	False
+17	3594	0x43c6c760	0	NS	4	BMM_ADD	bmm_add_kernel	32,44,1	128,1,1	DEAD	DEAD	DEAD	LIVE	BMM-add consumed B and old X, completely writes next X; B/old X dead	True	False

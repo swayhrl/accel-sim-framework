@@ -1,0 +1,8 @@
+
+# Tracer source and build receipt
+
+Base producer scientific authority: `5143b4e10aaf2fc47bb60492155d2464b0b726fd`, Route-B NVBit 1.7.7.1 SM89. Parent tracer source SHA256 `1c988add61abac52b3a62011fb97e9271c85813957edec56cf8b912196ef05e1`; current opt-in multi-ROI source SHA256 `e1218072c0950a3e889af77619d0151457019444dcf29ecebca6379184460c2b`; current binary SHA256 `65fee2b1b6696de0f9a6191b234735a171b0154fd746e39ce00c2c0d618ac1fd`. Exact source diff is `build/TRACER_MULTI_EXTENSION.diff` in node164.
+
+The only producer extension is bounded `ROUTE_B_MULTI_SELECTED_COUNT` gated by cuProfilerStart/Stop: it reopens the accepted per-kernel writer after each terminal closure and appends separate members to the same context's kernelslist. The default historical single-target path is unchanged. Formatter SHA256 `9ff0317665e0246f7e53a9235c0090fc22a3181c29f6181ab665e0754f819444` is byte-identical to accepted. Instrumentation/packet grammar is unchanged; accepted postprocessor SHA256 `db0dec8aa8af92476d05c4f27343e3ed70098f4f16bcc6f20cd7ac4c9d2fb10e` and grammar validator SHA256 `135761ac8e10a7fb6c98a3413cd477602d84b164a778c5d4f2a1bfb517be5b37` were reused. Formatter selftest returned `ROUTE_B_FORMATTER_SELFTEST_PASS`.
+
+Historical `NO_EAGER_LOAD=0` grew host RSS before Python's first line under the R101 runtime and was abandoned as an unqualified diagnostic. `NO_EAGER_LOAD=1` was requalified here by a bounded import/CUDA probe, payload-free census, one-kernel canary, three-kernel first-iteration canary and all 18 FORMAL members. This is a runtime compatibility adaptation, not a trace grammar or scientific workload change. The accepted producer worktree/binaries were not modified.

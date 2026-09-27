@@ -1,0 +1,61 @@
+{
+  "arithmetic_order_each_iteration": [
+    "XXT",
+    "ba_plus_cAA",
+    "fused_bmm_add"
+  ],
+  "buffer_regions": [
+    "A",
+    "B",
+    "X0",
+    "X1"
+  ],
+  "coefficients": [
+    3.4445,
+    -4.775,
+    2.0315
+  ],
+  "driver_warmups_outside_roi": 3,
+  "dtype": "bfloat16",
+  "exact_selector": {
+    "census_global_launch_end_exclusive_diagnostic_only": 3579,
+    "census_global_launch_start_diagnostic_only": 3561,
+    "function_regex": ".*",
+    "roi_start": "cudaProfilerStart",
+    "roi_stop": "cudaProfilerStop",
+    "selected_kernel_count": 18
+  },
+  "expected_logical_buffer_bytes_each": 23068672,
+  "fallback_definition": "first two consecutive complete iterations, first context and second later simulator ROI",
+  "fallback_not_chosen_before_size_evidence": true,
+  "fallback_only_if_volume_unsafe": "R101_L512_NS_CONTEXT2_V1",
+  "formal_scope_preferred": "normalization + five consecutive complete XXT/BA/BMM-add iterations",
+  "free_bytes_before_capture": 284627673088,
+  "no_performance_selected_roi": true,
+  "ns_steps": 5,
+  "output_contract_sha256": "36aaed3f8360aa099301ae1d705bc2e6ab5ba61586adaf7ead93ecab808dc1b0",
+  "per_run_raw_cap_bytes": 34359738368,
+  "roi_control": "cudaProfilerStart immediately before normalization, cudaProfilerStop after fifth BMM-add",
+  "scope_id": "R101_L512_FULL5_WITH_NORMALIZATION_V1",
+  "selected_count": 18,
+  "selector_regex_full": ".*",
+  "tile_count": 44,
+  "tile_edge": 512,
+  "time_cap_seconds": 7200,
+  "xxt_ba_launch_config_freeze": {
+    "BLOCK_SIZE_K": 64,
+    "BLOCK_SIZE_M": 64,
+    "BLOCK_SIZE_N": 64,
+    "GROUP_SIZE_M": 8,
+    "LOWER_UPPER": 1,
+    "authority": "accepted R101R1 L512 XXT and BA grid=2816,1,1 block=128,1,1 plus pinned HiMuon author config list",
+    "functions": [
+      "XXT_kernel",
+      "ba_plus_cAA_kernel"
+    ],
+    "not_performance_tuned": true,
+    "num_stages": 3,
+    "num_warps": 4,
+    "source_math_unchanged": true
+  }
+}
