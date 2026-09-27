@@ -1,0 +1,135 @@
+{
+  "authority": {
+    "convert_layout_blob": "f5c1b400a8a45b579271696e73b9ebf9fb16e7f2",
+    "execution_base": "d6ef29505de75985181afc74dffc3cf1b652afc2",
+    "handoff_head": "785a6c0651a1a4fbc6ed11c829be29d514a13f74",
+    "installed_libtriton_sha256": "c3306b024133cf76abba389ac00c6dc9cb9127be6a0796aef2acf2134e5f082f",
+    "installed_triton": "3.8.0",
+    "literature_commit": "214b30039cc579c28457cb17bfbd7e9d88d00fcd",
+    "triton_source_commit": "eb93a9a97e5dfc6a20c29da0096c047dbabd514c"
+  },
+  "boundaries": [
+    "no end-to-end model claim",
+    "no FIBER reconstruction",
+    "no NCU unless registered mechanism question remains",
+    "no holdout tuning",
+    "no Accel-Sim/node174/full NVBit/model download"
+  ],
+  "correctness": {
+    "B0_C1_gate": "bitwise exact output and same shape/dtype; all finite",
+    "baseline_repeatability_runs": 2,
+    "buffers": "separate per arm",
+    "checks_outside_timing": true
+  },
+  "execution": {
+    "branch": "hrl/awma-r82-layout-transfer-exploration-v1",
+    "gpu": "RTX4080",
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "head": "785a6c0651a1a4fbc6ed11c829be29d514a13f74",
+    "node": "109",
+    "r82_root": "/data/c16/awma/r82_layout_transfer_exploration_20260927",
+    "sm": 89,
+    "worktree": "/home/huangrulin/workspace/worktrees/accel-sim-awma-r82-layout-transfer-v1"
+  },
+  "frozen_at": "2026-09-27T04:01:10.675636+00:00",
+  "holdout": {
+    "id": "QWEN25_S2_CODE_D16_L12",
+    "reserved_before_candidate_timing": true,
+    "source": "p1.S2_CODE in same accepted payload",
+    "use": "only if reproducible informative response; one formal B0+C1 paired bundle; no retuning"
+  },
+  "measurement": {
+    "canary": 1,
+    "candidate_effect_timing_not_yet_run": true,
+    "context": "REPEATED_MICROKERNEL_OPERATOR_REGION_NOT_APPLICATION",
+    "fixed_batch_iterations": 100,
+    "order": [
+      "B0,C1",
+      "C1,B0",
+      "B0,C1",
+      "C1,B0",
+      "B0,C1",
+      "C1,B0",
+      "B0,C1"
+    ],
+    "paired_interleaved_repetitions": 7,
+    "primary": "complete stage1+stage2 CUDA-event time divided by 100",
+    "warmups": 2
+  },
+  "source_path_audits": [
+    {
+      "actual_prefill_cache_authority": "/data/c16/awma/r54_fastpath_requal_v1r1_20260927/provenance/triton_runtime_cache",
+      "disposition": "AUDIT_ONLY_NO_INTERVENTION",
+      "finding": "SURVIVING_CONVERSIONS_NATIVE_SHARED_SHUFFLE_BARRIER",
+      "fla_revision": "6d22ed1d2bb627375b6ca8fc135f7f417863e639",
+      "id": "QWEN35_0P8B_FLA_GDN_PREFILL64",
+      "model": "Qwen/Qwen3.5-0.8B",
+      "model_revision": "c6046cd1f7e2763bf1abf5a5aef6ad7878e10ccb",
+      "order": 1,
+      "reason": "exact binary-to-dynamic-call mapping and barrier multiplexing with MMA/pipeline dependencies remain unresolved; no safe pure layout edit frozen",
+      "source_sha256": "34230aab3bbdb8cdb200686f56a10d46da152f0a31568fca6950a192f2092031"
+    },
+    {
+      "accepted_source_sha256": "3457a5ebd9ed01164c748da3f666c4d388ba4f052c5917dd9db15ce534efee2f",
+      "disposition": "ADVANCE_ONE_REAL_TARGET",
+      "dtype": "float16",
+      "finding": "STAGE1_AND_STAGE2_EACH_HAVE_ONE_SURVIVING_INTER_WARP_SHARED_CONVERSION",
+      "id": "QWEN25_S2_TEXT_D16_L12_FIXED_SPLIT_256",
+      "k_sha256": "0f48bfd6afcff6f83b5590ffaeb9d88d569716a0007cf340fbb41e55b6defb0c1",
+      "kv_shape": [
+        1,
+        2,
+        2064,
+        64
+      ],
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "order": 2,
+      "payload": "/data/c16/awma/p1_p2_native_qualification_20260926/input/QWEN25_0P5B_P1_P2_QKV.pt",
+      "payload_sha256": "1ceed1e94363d8f459fb19f9e7b0a1196d59702ce43c4a7dcd20203fab38e939",
+      "q_sha256": "b31a30a21d6eb82b0209f0dc73203620a6a4dc6816758cb9a7bd9e9c9742f9d1",
+      "q_shape": [
+        1,
+        14,
+        1,
+        64
+      ],
+      "scenario": "DECODE_STEP16_LAYER12_ATTENTION",
+      "v_sha256": "65b2edc8a8692086ccb604fccf19ad36ba4d4e37e8c575af4958f374f0e0e7ba"
+    }
+  ],
+  "stage": "AWMA_R82_LAYOUT_TRANSFER_EXPLORATION_V1",
+  "status": "FROZEN_BEFORE_CANDIDATE_EFFECT_TIMING",
+  "target": {
+    "B0": {
+      "compiler": "Triton 3.8.0",
+      "implementation": "accepted fixed-split-256 source recompiled identically under current compiler",
+      "name": "CURRENT_STRONG"
+    },
+    "C1": {
+      "change": "retain singleton reduction dimension for stage1 acc and stage2 num through final store",
+      "forbidden_changes": [
+        "no tile/warp/block scan",
+        "no precision change",
+        "no reduction-tree change",
+        "no barrier deletion",
+        "no no-op/identity replacement",
+        "no global-write omission"
+      ],
+      "name": "JOINT_LAYOUT_KEEP_DIMS"
+    },
+    "C2": "NOT_ATTEMPTED_UNLESS_C1_REVEALS_A_SEPARATE_LEGAL_TRANSFER_QUESTION",
+    "arithmetic_contract": "same FP32 score/softmax accumulation and fixed split/fixed-order combine; same FP16 output; only keep_dims layout form changes",
+    "id": "QWEN25_S2_TEXT_D16_L12_FIXED_SPLIT_256",
+    "launch": {
+      "D": 64,
+      "N": 2064,
+      "NS": 9,
+      "split": 256,
+      "stage1_grid": "126 programs",
+      "stage1_num_warps": 8,
+      "stage2_grid": "14 programs",
+      "stage2_num_warps": 4
+    }
+  }
+}
