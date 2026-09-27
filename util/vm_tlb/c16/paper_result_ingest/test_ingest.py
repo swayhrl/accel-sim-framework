@@ -12,7 +12,7 @@ class PaperIngestTests(unittest.TestCase):
     def test_pending_simulator_has_no_numeric_value(self):
         with tempfile.TemporaryDirectory() as tmp:
             rows = ingest.simulator_rows(Path(tmp))
-        self.assertEqual(24, len(rows))
+        self.assertEqual(36, len(rows))
         self.assertTrue(all(row["status"] == "PENDING" and row["value"] is None for row in rows))
         self.assertTrue(all(row["source_stage"] == "PENDING_B16_TIMING_RESULT"
                             for row in rows if row["condition"] == "B16"))
@@ -29,6 +29,7 @@ class PaperIngestTests(unittest.TestCase):
                        "independent_review_pack": "C16_E1_FUTURE",
                        "results": {"B16": {"correctness_pass": True, "terminal_pass": True,
                                            "baseline_cycles": 100, "candidate_cycles": 90,
+                                           "local_baseline_cycles": 10, "local_candidate_cycles": 9,
                                            "mechanism_activations": 1, "protected_hits": 1,
                                            "admission_denials": 0}}}
             with patch.object(ingest, "committed_source", return_value=(payload, "d" * 64, "e" * 40)):
@@ -42,6 +43,8 @@ class PaperIngestTests(unittest.TestCase):
                 rows = ingest.simulator_rows(root)
                 self.assertAlmostEqual(1, [x for x in rows if x["condition"] == "B16" and
                                            x["metric"] == "window_speedup"][0]["value"] * 0.9)
+                self.assertAlmostEqual(10 / 9, [x for x in rows if x["condition"] == "B16" and
+                                                    x["metric"] == "local_speedup"][0]["value"])
                 self.assertTrue(all(x["value"] is None for x in rows if x["condition"] != "B16"))
                 payload["results"]["B16"]["unexpected_metric"] = 1
                 with self.assertRaises(ingest.SourceError):

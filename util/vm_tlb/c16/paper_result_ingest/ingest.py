@@ -22,6 +22,11 @@ OUT = PACKS / "C16_E1_PAPER_EVIDENCE_AND_RESULT_INFRASTRUCTURE_V1"
 PREFIX = "C16_E1_"
 BUDGETS = ("B8", "B16", "B24", "BFULL")
 AUTHORITY_SNAPSHOT = "8dfd9c0fdc98314c2aa11710da9b89f59e4c7a66"
+SIM_METRICS = (("window_speedup", "ratio"), ("local_speedup", "ratio"),
+               ("baseline_cycles", "cycles"), ("candidate_cycles", "cycles"),
+               ("local_baseline_cycles", "cycles"), ("local_candidate_cycles", "cycles"),
+               ("mechanism_activations", "count"), ("protected_hits", "count"),
+               ("admission_denials", "count"))
 FIELDS = ("domain", "condition", "metric", "value", "unit", "status", "source_stage",
           "source_path", "source_sha256", "source_commit")
 
@@ -167,10 +172,7 @@ def simulator_rows(root: Path) -> list[dict]:
         return [dict(domain="simulator", condition=budget, metric=metric, value=None,
                      unit=unit, status="PENDING", source_stage="PENDING_B16_TIMING_RESULT" if budget == "B16" else "PENDING_FUTURE_BUDGET",
                      source_path="", source_sha256="", source_commit="")
-                for budget in BUDGETS for metric, unit in (
-                    ("window_speedup", "ratio"), ("baseline_cycles", "cycles"),
-                    ("candidate_cycles", "cycles"), ("mechanism_activations", "count"),
-                    ("protected_hits", "count"), ("admission_denials", "count"))]
+                for budget in BUDGETS for metric, unit in SIM_METRICS]
     path = candidate_paths[0].relative_to(root)
     data, sha, commit = committed_source(root, path)
     expected_keys = {"schema", "status", "framework_commit", "core_commit",
@@ -198,30 +200,34 @@ def simulator_rows(root: Path) -> list[dict]:
             rows.extend(dict(domain="simulator", condition=budget, metric=metric, value=None,
                              unit=unit, status="PENDING", source_stage="PENDING_B16_TIMING_RESULT" if budget == "B16" else "PENDING_FUTURE_BUDGET",
                              source_path="", source_sha256="", source_commit="")
-                        for metric, unit in (("window_speedup", "ratio"), ("baseline_cycles", "cycles"),
-                                             ("candidate_cycles", "cycles"), ("mechanism_activations", "count"),
-                                             ("protected_hits", "count"), ("admission_denials", "count")))
+                        for metric, unit in SIM_METRICS)
             continue
         point = require(results, budget, dict, "simulator.results")
         if set(point) != {"correctness_pass", "terminal_pass", "baseline_cycles",
-                          "candidate_cycles", "mechanism_activations", "protected_hits",
+                          "candidate_cycles", "local_baseline_cycles", "local_candidate_cycles",
+                          "mechanism_activations", "protected_hits",
                           "admission_denials"}:
             raise SourceError(f"simulator {budget} point keys differ from V1 schema")
         if point.get("correctness_pass") is not True or point.get("terminal_pass") is not True:
             raise SourceError(f"simulator {budget} correctness/terminal gate failed")
         baseline = number(point, "baseline_cycles", budget)
         candidate = number(point, "candidate_cycles", budget)
-        if baseline <= 0 or candidate <= 0:
+        local_baseline = number(point, "local_baseline_cycles", budget)
+        local_candidate = number(point, "local_candidate_cycles", budget)
+        if min(baseline, candidate, local_baseline, local_candidate) <= 0:
             raise SourceError(f"simulator {budget} cycles must be positive")
-        values = {"window_speedup": baseline / candidate, "baseline_cycles": baseline,
-                  "candidate_cycles": candidate}
+        values = {"window_speedup": baseline / candidate,
+                  "local_speedup": local_baseline / local_candidate,
+                  "baseline_cycles": baseline, "candidate_cycles": candidate,
+                  "local_baseline_cycles": local_baseline,
+                  "local_candidate_cycles": local_candidate}
         for counter in ("mechanism_activations", "protected_hits", "admission_denials"):
             value = number(point, counter, budget)
             if value < 0 or int(value) != value:
                 raise SourceError(f"simulator {budget} counter invalid: {counter}")
             values[counter] = value
         for metric, value in values.items():
-            unit = "ratio" if metric == "window_speedup" else "cycles" if metric.endswith("cycles") else "count"
+            unit = "ratio" if metric.endswith("speedup") else "cycles" if metric.endswith("cycles") else "count"
             rows.append(row("simulator", budget, metric, value, unit,
                             path.parent.name, path, sha, commit))
     return rows
