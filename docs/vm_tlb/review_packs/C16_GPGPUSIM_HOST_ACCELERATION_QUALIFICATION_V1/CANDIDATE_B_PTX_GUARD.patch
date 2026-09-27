@@ -4,13 +4,13 @@ index 14ae504..6856916 100644
 +++ b/src/cuda-sim/cuda-sim.cc
 @@ -1973,7 +1973,8 @@ void ptx_thread_info::ptx_exec_inst(warp_inst_t &inst, unsigned lane_id) {
      m_gpu->gpgpu_ctx->func_sim->g_ptx_sim_num_insn++;
- 
+
      // not using it with functional simulation mode
 -    if (!(this->m_functionalSimulationMode))
 +    if (!(this->m_functionalSimulationMode) &&
 +        m_gpu->gpgpu_ctx->stats->enable_ptx_file_line_stats)
        ptx_file_line_stats_add_exec_count(pI);
- 
+
      if (m_gpu->gpgpu_ctx->func_sim->gpgpu_ptx_instruction_classification) {
 diff --git a/src/cuda-sim/ptx-stats.cc b/src/cuda-sim/ptx-stats.cc
 index 3e96984..ac3d780 100644
@@ -22,7 +22,7 @@ index 3e96984..ac3d780 100644
  void ptx_stats::ptx_file_line_stats_add_latency(unsigned pc, unsigned latency) {
 +  if (!enable_ptx_file_line_stats) return;
    const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
- 
+
    if (pInsn != NULL)
 @@ -178,6 +179,7 @@ void ptx_stats::ptx_file_line_stats_add_latency(unsigned pc, unsigned latency) {
  // dram traffic is counted in number of requests
@@ -30,7 +30,7 @@ index 3e96984..ac3d780 100644
                                                       unsigned dram_traffic) {
 +  if (!enable_ptx_file_line_stats) return;
    const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
- 
+
    if (pInsn != NULL)
 @@ -191,6 +193,7 @@ void ptx_stats::ptx_file_line_stats_add_dram_traffic(unsigned pc,
  // cycles involved
@@ -38,7 +38,7 @@ index 3e96984..ac3d780 100644
      unsigned pc, unsigned n_way_bkconflict) {
 +  if (!enable_ptx_file_line_stats) return;
    const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
- 
+
    if (pInsn != NULL) {
 @@ -206,6 +209,7 @@ void ptx_stats::ptx_file_line_stats_add_smem_bank_conflict(
  // requests generated
@@ -46,7 +46,7 @@ index 3e96984..ac3d780 100644
                                                           unsigned n_access) {
 +  if (!enable_ptx_file_line_stats) return;
    const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
- 
+
    if (pInsn != NULL) {
 @@ -265,6 +269,7 @@ void ptx_file_line_stats_create_exposed_latency_tracker(int n_shader_cores) {
  // add an inflight memory instruction
@@ -54,7 +54,7 @@ index 3e96984..ac3d780 100644
                                                               unsigned pc) {
 +  if (!enable_ptx_file_line_stats) return;
    const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
- 
+
    inflight_mem_tracker[sc_id].add_count(pInsn);
 @@ -273,6 +278,7 @@ void ptx_stats::ptx_file_line_stats_add_inflight_memory_insn(int sc_id,
  // remove an inflight memory instruction
@@ -62,7 +62,7 @@ index 3e96984..ac3d780 100644
                                                               unsigned pc) {
 +  if (!enable_ptx_file_line_stats) return;
    const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
- 
+
    inflight_mem_tracker[sc_id].sub_count(pInsn);
 @@ -289,6 +295,7 @@ void ptx_file_line_stats_commit_exposed_latency(int sc_id,
  // attribute the number of warp divergence to a ptx instruction
@@ -70,5 +70,5 @@ index 3e96984..ac3d780 100644
      unsigned pc, unsigned n_way_divergence) {
 +  if (!enable_ptx_file_line_stats) return;
    const ptx_instruction *pInsn = gpgpu_ctx->pc_to_instruction(pc);
- 
+
    ptx_file_line_stats &line_stats = ptx_file_line_stats_tracker[ptx_file_line(
