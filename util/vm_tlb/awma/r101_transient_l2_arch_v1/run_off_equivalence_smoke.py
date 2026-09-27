@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -13,7 +14,7 @@ from pathlib import Path
 
 BASE = Path("/root/awma_rtx4080_v1_baseline_promotion_v1_runtime/ai_T2_V1_10_80")
 RUNTIME = Path("/root/awma_r101_transient_l2_arch_174_v1_runtime")
-DURABLE = Path("/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/raw/off_equivalence_t2")
+RAW_ROOT = Path("/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/raw")
 BINARY = RUNTIME / "bin/unified_accel-sim.out"
 CORE_LIB = RUNTIME / "src/gpgpu-sim/lib/gcc-11.4.0/cuda-12040/release"
 EXPECTED = {"cycles": 93079, "instructions": 43357696, "ctas": 1216,
@@ -40,11 +41,17 @@ def scalar(text: str, key: str) -> int:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--arm", choices=("default_off", "explicit_none"),
+                        default="default_off")
+    args = parser.parse_args()
+    durable = RAW_ROOT / ("off_equivalence_t2" if args.arm == "default_off"
+                          else "explicit_none_equivalence_t2")
     accepted = json.loads((BASE / "command.json").read_text())
     if sha(Path(accepted["argv"][2])) != "de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8":
         raise RuntimeError("accepted config changed")
-    DURABLE.mkdir(parents=True, exist_ok=True)
-    traces = DURABLE / "traces"
+    durable.mkdir(parents=True, exist_ok=True)
+    traces = durable / "traces"
     if traces.exists():
         shutil.rmtree(traces)
     traces.mkdir()
@@ -63,37 +70,56 @@ def main() -> int:
     env["GPGPUSIM_ROOT"] = str(RUNTIME / "src/gpgpu-sim")
     env["GPGPUSIM_POWER_MODEL"] = str(RUNTIME / "src/gpgpu-sim/src/accelwattch") + "/"
     env["LD_LIBRARY_PATH"] = f"{CORE_LIB}:{env.get('LD_LIBRARY_PATH', '')}"
+    transient_environment = {}
+    if args.arm == "explicit_none":
+        sidecar = Path("/root/workspace/accel-sim-framework-awma-r101-transient-l2-arch-174-v1/util/vm_tlb/awma/r101_transient_l2_arch_v1/directed_no_overlap_runtime.tsv")
+        env["AWMA_TRANSIENT_L2_MODE"] = "none"
+        env["AWMA_TRANSIENT_L2_DIAGNOSTICS"] = "1"
+        env["AWMA_TRANSIENT_L2_SIDECAR"] = str(sidecar)
+        transient_environment = {key: env[key] for key in
+                                 ("AWMA_TRANSIENT_L2_MODE", "AWMA_TRANSIENT_L2_DIAGNOSTICS",
+                                  "AWMA_TRANSIENT_L2_SIDECAR")}
     receipt = {
         "stage": "AWMA_R101_TRANSIENT_L2_ARCH_EXPLORATION_V1",
         "role": "DEFAULT_OFF_EQUIVALENCE",
         "accepted_run": str(BASE), "accepted_binary_sha256": "a866c219b7d71a3075e032c9179bcd679074d6f2e9f1750b435170aabb413b24",
         "candidate_binary_sha256": sha(BINARY), "trace_sha256": sha(payload),
         "config_sha256": sha(Path(command[2])), "argv": command,
-        "transient_environment": {}, "expected": EXPECTED,
+        "transient_environment": transient_environment, "expected": EXPECTED,
     }
-    (DURABLE / "command.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
-    (DURABLE / "start_utc.txt").write_text(datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") + "\n")
+    (durable / "command.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+    (durable / "start_utc.txt").write_text(datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") + "\n")
     started = time.monotonic()
-    with (DURABLE / "run.log").open("w") as stdout, (DURABLE / "run.stderr").open("w") as stderr:
-        rc = subprocess.run(command, cwd=DURABLE, env=env, stdout=stdout, stderr=stderr,
+    with (durable / "run.log").open("w") as stdout, (durable / "run.stderr").open("w") as stderr:
+        rc = subprocess.run(command, cwd=durable, env=env, stdout=stdout, stderr=stderr,
                             timeout=7200).returncode
-    (DURABLE / "rc.txt").write_text(f"{rc}\n")
-    (DURABLE / "wall_seconds.txt").write_text(f"{time.monotonic()-started:.6f}\n")
-    text = (DURABLE / "run.log").read_text(errors="strict")
+    (durable / "rc.txt").write_text(f"{rc}\n")
+    (durable / "wall_seconds.txt").write_text(f"{time.monotonic()-started:.6f}\n")
+    text = (durable / "run.log").read_text(errors="strict")
     coverage = [line for line in text.splitlines() if line.startswith("AWMA_VM_COVERAGE ")]
     passed = (rc == 0 and scalar(text, "gpu_sim_cycle") == EXPECTED["cycles"] and
               scalar(text, "gpu_sim_insn") == EXPECTED["instructions"] and
               scalar(text, "gpu_tot_issued_cta") == EXPECTED["ctas"] and coverage and
               "untranslated=0" in coverage[-1] and "unobserved=0" in coverage[-1] and
-              f"unique={EXPECTED['unique']}" in coverage[-1] and
-              "awma_transient_l2_mode" not in text)
+              f"unique={EXPECTED['unique']}" in coverage[-1])
+    if args.arm == "default_off":
+        passed = passed and "awma_transient_l2_mode" not in text
+    else:
+        passed = (passed and "awma_transient_l2_mode = none" in text and
+                  "awma_transient_l2_transient_accesses = 0" in text and
+                  "awma_transient_l2_terminal_quiescent = 1" in text and
+                  "awma_transient_l2_dead_eviction_drops = 0" in text and
+                  "awma_transient_l2_oracle_drop_bytes = 0" in text)
     result = {"status": "PASS" if passed else "FAIL", "rc": rc,
               "cycles": scalar(text, "gpu_sim_cycle"),
               "instructions": scalar(text, "gpu_sim_insn"),
               "ctas": scalar(text, "gpu_tot_issued_cta"),
               "coverage": coverage[-1] if coverage else "MISSING",
-              "default_off_output_absent": "awma_transient_l2_mode" not in text}
-    (DURABLE / "OFF_EQUIVALENCE.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+              "arm": args.arm,
+              "default_off_output_absent": "awma_transient_l2_mode" not in text,
+              "explicit_none_terminal_quiescent":
+                  "awma_transient_l2_terminal_quiescent = 1" in text}
+    (durable / "OFF_EQUIVALENCE.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     print(json.dumps(result, sort_keys=True))
     return 0 if passed else 1
 
