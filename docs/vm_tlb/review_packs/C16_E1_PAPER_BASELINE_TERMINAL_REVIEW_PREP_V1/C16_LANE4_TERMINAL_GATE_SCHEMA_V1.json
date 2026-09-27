@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "C16_LANE4_TERMINAL_GATE_SCHEMA_V1.json",
+  "title": "C16 Lane 4 committed terminal review packet, V1",
+  "description": "Sequential review input, never an active-run output or a scientific result row. Later sections are required by the evaluator only after earlier gates pass.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "publication_status", "authority", "identity", "terminal_receipts"],
+  "properties": {
+    "schema": {"const": "C16_LANE4_TERMINAL_GATE_INPUT_V1"},
+    "publication_status": {"const": "TERMINAL_REVIEW_READY"},
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lane3_commit", "literature_commit", "lane4_framework_snapshot", "core_commit"],
+      "properties": {
+        "lane3_commit": {"const": "a402828860ced26124ddbf3c9d87baa6f6774d55"},
+        "literature_commit": {"const": "350e4a0d364d65812f379ebc69412696e2a4d82a"},
+        "lane4_framework_snapshot": {"const": "8dfd9c0fdc98314c2aa11710da9b89f59e4c7a66"},
+        "core_commit": {"const": "0271de82432db004beed43280ed01057246a0f2c"}
+      }
+    },
+    "identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["run_matrix_sha256", "binary_sha256", "r0_config_sha256", "m1_b16_config_sha256", "diagnostic_config_sha256", "kernelslist_sha256", "platform_sha256", "sidecar_sha256", "trace_scope_sha256", "reuse_sequence_sha256", "source_manifest_sha256", "total_kernels"],
+      "properties": {
+        "run_matrix_sha256": {"const": "b1d0610a79cecea552502b9c3f8e06ba679cdd965170e39b3068ac12848e0d20"},
+        "binary_sha256": {"$ref": "#/$defs/sha256"},
+        "r0_config_sha256": {"const": "a8918f1407fc2a9146808625b55a5120f64bb2cf4ce8b6a5b399ac4654d36d96"},
+        "m1_b16_config_sha256": {"const": "15e06af19200e7fb40af93c6a21b19290b581c327f420dd3fdefc3f4b3af3bdd"},
+        "diagnostic_config_sha256": {"const": "12434fee397093b2ac13cf65e1b2644b8f7a98ad97e3824a2cbfae5aba5daee7"},
+        "kernelslist_sha256": {"const": "f9a952e2d52420a850dc28554be208a2dd1d7894260d8bff87153637740a5ae8"},
+        "platform_sha256": {"const": "de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8"},
+        "sidecar_sha256": {"const": "6c60839714d136b9f6f596218588e658e245e0b7cc6f8e8550cce8d683ce13c6"},
+        "trace_scope_sha256": {"const": "3861e58b45851e1aa94660d2473df2ee475a9135d9c475724d07010ed529ce31"},
+        "reuse_sequence_sha256": {"const": "c3bb16d8f40eabdd09c165c7ff7c31ad2ce7aac2f5b7548a639d87dec493a6be"},
+        "source_manifest_sha256": {"const": "db3bdbb0295a47a6aa4644508ea1895779c987f2f77cd96f184c67b8a10ab389"},
+        "total_kernels": {"const": 1565}
+      }
+    },
+    "terminal_receipts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["R0_BASELINE", "M1_B16"],
+      "properties": {
+        "R0_BASELINE": {"$ref": "#/$defs/receipt"},
+        "M1_B16": {"$ref": "#/$defs/receipt"},
+        "M1_B16_DIAGNOSTIC": {"$ref": "#/$defs/receipt"}
+      }
+    },
+    "reuse_window_scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "first_dynamic_kernel", "D1_last_kernel", "D2_prefix_last_kernel", "last_dynamic_kernel", "D1_kernel_count", "D2_prefix_kernel_count", "total_kernel_count", "thread_blocks", "no_kernel_filtering_or_reordering", "selected_sequence_sha256"],
+      "properties": {
+        "status": {"const": "PASS"},
+        "first_dynamic_kernel": {"const": 2926},
+        "D1_last_kernel": {"const": 4430},
+        "D2_prefix_last_kernel": {"const": 4490},
+        "last_dynamic_kernel": {"const": 4490},
+        "D1_kernel_count": {"const": 1505},
+        "D2_prefix_kernel_count": {"const": 60},
+        "total_kernel_count": {"const": 1565},
+        "thread_blocks": {"const": 1259187},
+        "no_kernel_filtering_or_reordering": {"const": true},
+        "selected_sequence_sha256": {"const": "c3bb16d8f40eabdd09c165c7ff7c31ad2ce7aac2f5b7548a639d87dec493a6be"}
+      }
+    },
+    "workload_identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["R0_BASELINE", "M1_B16"],
+      "properties": {
+        "R0_BASELINE": {"$ref": "#/$defs/workload"},
+        "M1_B16": {"$ref": "#/$defs/workload"}
+      }
+    },
+    "primary_correctness": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "R0_M1_equal", "comparison_sha256"],
+      "properties": {
+        "status": {"enum": ["PASS", "FAIL"]},
+        "R0_M1_equal": {"type": "boolean"},
+        "comparison_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "primary_timing": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "performance_sha256", "cycles"],
+      "properties": {
+        "status": {"enum": ["PASS", "FAIL"]},
+        "performance_sha256": {"$ref": "#/$defs/sha256"},
+        "cycles": {
+          "type": "object", "additionalProperties": false,
+          "required": ["C_window", "C_D2_prefix", "C_L0_up_D2"],
+          "properties": {
+            "C_window": {"$ref": "#/$defs/cycle_pair"},
+            "C_D2_prefix": {"$ref": "#/$defs/cycle_pair"},
+            "C_L0_up_D2": {"$ref": "#/$defs/cycle_pair"}
+          }
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pre_gate_status", "neutrality_status", "counters_status", "diagnostic_sha256"],
+      "properties": {
+        "pre_gate_status": {"const": "SPECULATIVE_PRE_GATE"},
+        "neutrality_status": {"enum": ["PASS", "FAIL", "PENDING"]},
+        "counters_status": {"enum": ["PASS", "FAIL", "PENDING"]},
+        "diagnostic_sha256": {"$ref": "#/$defs/sha256"},
+        "counters": {"$ref": "#/$defs/counters"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "exit_code", "terminal_marker", "receipt_sha256"],
+      "properties": {
+        "status": {"enum": ["PASS", "FAIL"]},
+        "exit_code": {"type": "integer"},
+        "terminal_marker": {"type": "boolean"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "workload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kernel_count", "kernel_sequence_sha256", "instruction_count", "CTA_count"],
+      "properties": {
+        "kernel_count": {"type": "integer", "minimum": 0},
+        "kernel_sequence_sha256": {"$ref": "#/$defs/sha256"},
+        "instruction_count": {"type": "integer", "minimum": 1},
+        "CTA_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "cycle_pair": {
+      "type": "object", "additionalProperties": false,
+      "required": ["R0_cycles", "M1_cycles"],
+      "properties": {
+        "R0_cycles": {"type": "integer", "minimum": 1},
+        "M1_cycles": {"type": "integer", "minimum": 1}
+      }
+    },
+    "counters": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target_accesses", "protected_fills", "protected_protected_evictions", "protected_victim_evictions", "eligible_target_fills", "quota_denials_invalid_priority", "quota_denials_no_local_protected_victim", "D1_class1_after_fill", "D1_class1_before_D2"],
+      "properties": {
+        "target_accesses": {"type": "integer", "minimum": 0},
+        "protected_fills": {"type": "integer", "minimum": 0},
+        "protected_protected_evictions": {"type": "integer", "minimum": 0},
+        "protected_victim_evictions": {"type": "integer", "minimum": 0},
+        "eligible_target_fills": {"type": "integer", "minimum": 0},
+        "quota_denials_invalid_priority": {"type": "integer", "minimum": 0},
+        "quota_denials_no_local_protected_victim": {"type": "integer", "minimum": 0},
+        "D1_class1_after_fill": {"type": "integer", "minimum": 0},
+        "D1_class1_before_D2": {"type": "integer", "minimum": 0},
+        "old_address_survivors": {"type": ["integer", "null"], "minimum": 0},
+        "old_address_population": {"type": ["integer", "null"], "minimum": 0}
+      }
+    }
+  }
+}
