@@ -4,7 +4,19 @@
 
 本支线只存文献核读、相关工作比较与研究假设，不修改实验、Core、配置或原始数据。文献建议不是执行授权。与AWMA文献笔记分开，避免跨项目混淆。
 
-## 当前入口：LR03
+## 当前入口：LR04
+
+[LR04：驻留机会成本、对象分类与待补全文](rounds/2026-09-27_LR04_OPPORTUNITY_COST_CLASSIFICATION_AND_FULLTEXT_REQUESTS.md)
+
+状态：`LITERATURE_REVIEW_ONLY_NO_EXECUTION_AUTHORITY`。不启动新simulation，不修改Lane 4；M1F仍由既有project-level gate决定。
+
+本轮阅读增量：Whirlpool与EVA会议论文的相关机制正文；A Case for MLP-Aware Cache Replacement的TR-HPS-2006-003作者技术报告，不冒充最终会议稿。Leeway只到作者机构摘要，未取得可读正文。未复现任何代码。
+
+新增研究判断：静态对象分类不自动提供强动态策略之外的增量；驻留需考虑占用期间的机会成本；不同miss不具有相同周期代价。这些思想均有前例，不将semantic/cost-aware/criticality-aware标签本身当作创新，也不立即增加三个新baseline。
+
+全文请求：优先MICRO 2025 GPU eviction hints、ISCA 2010 RRIP、MICRO 2011 SHiP、ISCA 2007 Adaptive Insertion Policies；PIPP为第二优先。完整题名、作者、DOI、当前阅读深度与待核内容见LR04。
+
+## 历史入口：LR03
 
 [LR03：近邻能力、论文故事与最小强基线](rounds/2026-09-27_LR03_NEIGHBORS_STORY_STRONG_BASELINES.md)
 
@@ -28,7 +40,7 @@ LR02最重要的区分：**对象识别、容量分配、具体cache line的跨�
 
 LR02接续此前聊天中的C16调研，不声称仓库里存在同结构的LR01文件。此前聊天中的“fairness可能是新机制”判断在该轮收紧为待验证假设。
 
-## LR02来源登记（保留当轮阅读深度，后续升级见LR03）
+## LR02来源登记（保留当轮阅读深度，后续升级见LR03/LR04）
 
 | ID | 工作/来源 | LR02阅读深度 |
 |---|---|---|
@@ -47,7 +59,7 @@ LR02接续此前聊天中的C16调研，不声称仓库里存在同结构的LR01
 
 LR02共9项研究条目、2份官方文档、1份实现说明；其中4项核读正文关键章节。不同版本、摘要和延伸工作不能累加成更多已全文精读的论文。各条目原文URL、定位、作者贡献、对C16的启发及不可声称的结论见LR02正文。
 
-当前后续队列：PIPP、RRIP、DIP/原始SHiP全文实现合同、MICRO 2025 eviction hints全文、MLP/关键路径感知缓存管理。APCM已在LR03补正文；队列不算完成阅读。
+当前后续队列：PIPP、RRIP、DIP/原始SHiP全文实现合同、MICRO 2025 eviction hints全文、Leeway全文。APCM已在LR03补正文，MLP-aware的作者技术报告已在LR04核读；队列不算完成阅读。
 
 ## 配套数学反例（LR02）
 
@@ -57,14 +69,15 @@ LR02共9项研究条目、2份官方文档、1份实现说明；其中4项核读
 python3 docs/vm_tlb/literature_notes/c16/examples/toy_scan_counterexample.py
 ```
 
-这是LR02自行构造的CPU小例子：两个类、每类8行、每类2行容量。全量admit的类内LRU与固定地址子集有相同边界占用量，但预热后分别0/16和4/16命中。它不是C16 trace、CUDA硬件、Talus复现或性能模拟，不包含真实系统代价。
+这是LR02自行构造的CPU小例子：两个类、每类8行、每类容量2行。全量admit的类内LRU与固定地址子集有相同边界占用量，但预热后分别0/16和4/16命中。它不是C16 trace、CUDA硬件、Talus复现或性能模拟，不包含真实系统代价。
 
 ## 项目证据锚点
 
 - Lane 1：`4214398782159022907081dbcc36854cf21fb4b5`。
 - Lane 3：`a402828860ced26124ddbf3c9d87baa6f6774d55`，也是本分支创建基点。
 - LR03阅读基点：`49c01401200f7944db31d066ebb331a9ba701882`。
-- LR03项目事实来源：2026-09-27 M1F_READY_LANE4_RUNNING完整handoff；不将本文档视为历史实验的重新验收。
+- LR04阅读基点：`8d37abdde2a63643e248d0854649176564cc2678`。
+- 项目事实来源：2026-09-27 M1F_READY_LANE4_RUNNING完整handoff；不将本文档视为历史实验的重新验收。
 - 本支线不消费Lane 4未闭合性能结果，不改变Lane 4任务；是否运行M1F仍由预注册project-level gate决定。
 
 原论文PDF不提交仓库；读不到的正文保持未核实。作者陈述、项目事实和我们的推断分别标注。对“首次”“优于已有工作”“系统加速”的判断必须等待确切比较，不能靠名称或仅与LRU的单点差异成立。
