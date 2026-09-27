@@ -1,0 +1,29 @@
+{
+  "claim_boundary": "CPU_ONLY_PROTECTED_POOL_REFERENCE_NOT_FULL_CACHE_OR_TIMING",
+  "interpretation": "Equal occupancy does not imply old-address survival; the stable subset survives in this toy. This does not predict C16 L2 behavior.",
+  "policies": {
+    "EQUAL_CLASS_CAPACITY_CLASS_INTERNAL_LRU": {
+      "final_occupancy": 4,
+      "next_round_old_address_hits": 0,
+      "old_address_survived_after_round_one": false
+    },
+    "M1F_STABLE_ADDRESS_SUBSET": {
+      "final_occupancy": 3,
+      "next_round_old_address_hits": 3,
+      "old_address_survived_after_round_one": true
+    },
+    "M1_GLOBAL_FULL_ADMISSION": {
+      "final_occupancy": 4,
+      "next_round_old_address_hits": 0,
+      "old_address_survived_after_round_one": false
+    }
+  },
+  "protected_capacity_lines": 4,
+  "schema": "C16_E1_M1F_TOY_SURVIVAL_COMPARISON_V1",
+  "status": "PASS",
+  "tracked_old_address": {
+    "region_line_index": 4,
+    "target_class": 1
+  },
+  "workload": "two classes, eight lines/class, two sequential rounds"
+}
