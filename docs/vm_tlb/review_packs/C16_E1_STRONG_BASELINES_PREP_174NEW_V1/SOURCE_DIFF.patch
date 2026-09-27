@@ -1,0 +1,1514 @@
+diff --git a/docs/c16/strong_baselines_v1/BASELINE_IMPLEMENTATION_CONTRACT.md b/docs/c16/strong_baselines_v1/BASELINE_IMPLEMENTATION_CONTRACT.md
+new file mode 100644
+index 0000000..be81bb4
+--- /dev/null
++++ b/docs/c16/strong_baselines_v1/BASELINE_IMPLEMENTATION_CONTRACT.md
+@@ -0,0 +1,62 @@
++# C16 strong-baseline implementation contract V1
++
++Status: `VERIFIED_CODE` for PRIORITY_ALL, PRIORITY_STABLE, and DRRIP;
++`SHIP_SW_IMPLEMENTATION_CONTRACT_INCOMPLETE` for SHiP-SW-style.
++
++## Common control
++
++The master controls are `-gpgpu_l2_c16_baseline_enable`, integer policy
++`0=NONE, 1=PRIORITY_ALL, 2=PRIORITY_STABLE, 3=DRRIP, 4=SHIP_SW`, and an
++independent diagnostics switch. Source defaults are OFF/NONE/OFF. An enabled
++NONE policy and a disabled non-NONE policy fail closed. Functional baseline
++enable and oracle-elastic functional enable are mutually exclusive.
++
++The implementation is restricted to the accepted 128-byte, sectorized,
++allocate-on-miss L2. It never stalls an otherwise admissible request, searches
++only the current set, and does not change physical capacity, MSHRs, queues,
++write policy, or request ordering. Diagnostics do not enable functionality.
++
++## PRIORITY_ALL
++
++The accepted oracle interval parser and request eligibility identify exactly
++the same qweight global-read targets. Every target new-line allocation becomes
++priority. Invalid selection preserves the baseline last-invalid rule. With no
++invalid line, the baseline LRU/FIFO timestamp chooses among ordinary eligible
++victims when any exist, otherwise among priority eligible victims. There is no
++quota, pending-quota accounting, class floor, timer, cross-set victim, or
++promotion/demotion.
++
++## PRIORITY_STABLE
++
++This is the same priority substrate, but priority eligibility additionally
++requires `C16_M1F_STABLE_ADMISSION_HASH_V1` with seed
++`0x6a09e667f3bcc908`, threshold `0x0484baf3b723b966`, and key
++`(target_class << 32) xor region_relative_128B_line_index`. Unselected targets
++remain ordinary. The 28-region/265,216-lines-per-region geometry is checked at
++startup. No seed, threshold, quota, or balancing is added.
++
++Priority resident and pending occupancy, their peaks, and each L2
++subpartition's counters are reported. These are actual policy occupancies, not
++a B16 guarantee.
++
++## 2-bit DRRIP-HP
++
++RRPV is stored at the 128-byte victim-line granularity. Accepted new-line
++allocations insert with SRRIP RRPV=2 or deterministic BRRIP RRPV=3 except one
++in 32 at RRPV=2. A true valid-sector demand hit promotes to zero. Victim search
++uses the first eligible RRPV=3 way in fixed way order; otherwise all eligible
++RRPVs age with saturation and search retries. No LRU tie-break is added.
++
++Each L2 subpartition has a 10-bit PSEL initialized to 512 and a deterministic
++BRRIP miss counter initialized to zero. For 2,048 sets, anchors `slot*32` for
++slots 0..63 alternate between 32 SRRIP and 32 BRRIP leaders. More generally,
++anchor `floor(slot*nsets/64)` is used. SRRIP-leader accepted misses increment
++PSEL, BRRIP-leader accepted misses decrement it; followers use BRRIP at
++PSEL>=512.
++
++## SHiP-SW-style boundary
++
++Policy ID 4 exists so configs and future merge contracts are stable, but it
++fails closed. LR03/LR05 close original SHiP training but do not uniquely close
++the software-region signature granularity, finite SHCT mapping/collision,
++sampling, and C16 software-marking contract. No guessed predictor is present.
+diff --git a/docs/c16/strong_baselines_v1/DRRIP_GPU_ADAPTATION.md b/docs/c16/strong_baselines_v1/DRRIP_GPU_ADAPTATION.md
+new file mode 100644
+index 0000000..b3ac418
+--- /dev/null
++++ b/docs/c16/strong_baselines_v1/DRRIP_GPU_ADAPTATION.md
+@@ -0,0 +1,12 @@
++# DRRIP GPU adaptation
++
++This is a C16 adaptation of 2-bit DRRIP-HP, not an assertion that the CPU
++paper specified GPU MSHR/sector behavior. The original insertion, hit,
++victim-aging, set-dueling, 32+32 leader, 10-bit PSEL, and epsilon=1/32 rules
++are preserved. The adaptation filters false temporal locality using the
++production event map in `SECTOR_EVENT_MAPPING.md`.
++
++Metadata comprises two RRPV bits per 128-byte L2 line, one 10-bit PSEL and one
++deterministic miss counter per subpartition, plus diagnostics when requested.
++Leader anchors are frozen before performance data. No host RNG, kernel UID,
++target class, oracle label, M1 quota, or future information enters DRRIP.
+diff --git a/docs/c16/strong_baselines_v1/OLD_L2_INFRA_REUSE_AUDIT.md b/docs/c16/strong_baselines_v1/OLD_L2_INFRA_REUSE_AUDIT.md
+new file mode 100644
+index 0000000..1d3db59
+--- /dev/null
++++ b/docs/c16/strong_baselines_v1/OLD_L2_INFRA_REUSE_AUDIT.md
+@@ -0,0 +1,17 @@
++# Historical L2 infrastructure reuse audit
++
++Read-only branches inspected:
++
++- `hrl/ep-l2-target-baseline-v0` at `0cde333340792cffed869cbbc7e7dc88667c6b8b`;
++- `hrl/l2-frc-baseline-v1` at `97eb1e8301d410c8d720e6780fba40751e38000e`.
++
++No commit or whole-file implementation was merged. Reused experience only:
++
++- separate new-MSHR, merge, MissQ, data-port, and response-path admission
++  failures;
++- one line identity with independent pending/valid sector bits;
++- stale fill/generation and wrong-sector checks as testing patterns;
++- observation counters must not become functional predicates.
++
++The historical branches have different ancestry and broad VM/L2 changes, so
++their payload/FRC implementations are not suitable drop-in replacement code.
+diff --git a/docs/c16/strong_baselines_v1/README.md b/docs/c16/strong_baselines_v1/README.md
+new file mode 100644
+index 0000000..7521bd6
+--- /dev/null
++++ b/docs/c16/strong_baselines_v1/README.md
+@@ -0,0 +1,6 @@
++# C16 strong baselines V1
++
++Start with `BASELINE_IMPLEMENTATION_CONTRACT.md`, then read
++`SECTOR_EVENT_MAPPING.md`, `DRRIP_GPU_ADAPTATION.md`, and
++`SHIP_SW_CONTRACT_STATUS.md`. This stage prepares opt-in baselines and bounded
++qualification only. It does not authorize a full timing experiment.
+diff --git a/docs/c16/strong_baselines_v1/SECTOR_EVENT_MAPPING.md b/docs/c16/strong_baselines_v1/SECTOR_EVENT_MAPPING.md
+new file mode 100644
+index 0000000..6f8d320
+--- /dev/null
++++ b/docs/c16/strong_baselines_v1/SECTOR_EVENT_MAPPING.md
+@@ -0,0 +1,20 @@
++# Sector-L2 event mapping
++
++The production path was mapped at Core `0271de82432db004beed43280ed01057246a0f2c`.
++
++| GPU L2 event | Production evidence | Baseline update |
++|---|---|---|
++| True valid same-sector hit | tag matches and requested sector is VALID/MODIFIED; accepted handler calls `tag_array::access` once | DRRIP HP promotes line RRPV to 0; trainable demand only |
++| Same-tag different-sector first touch | tag matches, requested sector INVALID while another sector is valid, yielding `SECTOR_MISS` | allocate sector only; no RRPV promotion, insertion, PSEL, or BRRIP event |
++| Accepted new-line miss | initial probe is MISS; resource/MSHR/MissQ checks pass; committed `tag_array::access` allocates the line | exactly one victim decision, insertion, leader/PSEL event, and deterministic BRRIP counter event |
++| MSHR merge | `send_read_request` sees existing MSHR and committed access returns `HIT_RESERVED` | no promotion, insertion, PSEL, or training |
++| Retry/reservation fail | resource failure returns before committed tag-array access, or all ways are reserved | no metadata update; later accepted retry produces the sole update |
++| Fill | `tag_array::fill` changes sector RESERVED to VALID/MODIFIED | commits priority pending to resident; no DRRIP promotion/insertion/training |
++| Writeback/internal write-allocate hit | access types L1/L2 writeback or internal write-allocate | no DRRIP hit promotion; allocations still receive replacement metadata |
++| Atomic demand | ordinary GLOBAL demand with atomic flag | a true valid-sector hit is a real re-reference and promotes once |
++| PTE/synthetic/special demand read | distinct demand access type, not writeback | true valid-sector hit promotes once; miss inserts normally |
++
++RRPV granularity is the same `cache_block_t`/128-byte line chosen as victim.
++Sector child status remains separate. Probe-mode victim calculation uses a
++copy: aging/PSEL/counters mutate only at the committed access after resources
++admit the request.
+diff --git a/docs/c16/strong_baselines_v1/SHIP_SW_CONTRACT_STATUS.md b/docs/c16/strong_baselines_v1/SHIP_SW_CONTRACT_STATUS.md
+new file mode 100644
+index 0000000..c80dd9d
+--- /dev/null
++++ b/docs/c16/strong_baselines_v1/SHIP_SW_CONTRACT_STATUS.md
+@@ -0,0 +1,15 @@
++# SHiP-SW-style contract status
++
++`SHIP_SW_IMPLEMENTATION_CONTRACT_INCOMPLETE`
++
++Closed from original SHiP: underlying 2-bit SRRIP; zero SHCT predicts RRPV=3,
++positive predicts RRPV=2; a true hit promotes to zero and increments the
++stored insertion signature; an unreused eviction decrements that signature;
++the predictor estimates whether reuse occurs, not when.
++
++Not uniquely closed by LR03/LR04/LR05 or the accepted source: the
++AutoScratch-style software region's fine-grained signature construction,
++finite SHCT entry/index/hash/collision contract, training sampling, and exact
++software request marking for C16. Giving only 28 class IDs would be an
++unapproved weakening; inventing a finer mapping would be a new scientific
++assumption. Policy ID 4 therefore rejects functional enable.
+diff --git a/src/gpgpu-sim/CMakeLists.txt b/src/gpgpu-sim/CMakeLists.txt
+index 13bb402..9330c9f 100644
+--- a/src/gpgpu-sim/CMakeLists.txt
++++ b/src/gpgpu-sim/CMakeLists.txt
+@@ -1,5 +1,6 @@
+ # Exclude power_interface.cc if no power model
+ list(APPEND gpgpusim_SRC addrdec.cc
++    c16_strong_baselines.cc
+     dram.cc
+     dram_sched.cc
+     gpu-cache.cc
+diff --git a/src/gpgpu-sim/c16_strong_baselines.cc b/src/gpgpu-sim/c16_strong_baselines.cc
+new file mode 100644
+index 0000000..23f7aeb
+--- /dev/null
++++ b/src/gpgpu-sim/c16_strong_baselines.cc
+@@ -0,0 +1,194 @@
++#include "c16_strong_baselines.h"
++
++#include <algorithm>
++#include <stdexcept>
++
++namespace c16_strong_baselines {
++namespace {
++
++const uint64_t kSeed = 0x6a09e667f3bcc908ULL;
++const uint64_t kThreshold = 0x0484baf3b723b966ULL;
++
++unsigned oldest(const std::vector<candidate> &rows,
++                const std::vector<unsigned> &positions, bool use_lru) {
++  unsigned selected = positions.front();
++  uint64_t timestamp = use_lru ? rows[selected].last_access
++                               : rows[selected].allocation_time;
++  for (size_t i = 1; i < positions.size(); ++i) {
++    const unsigned position = positions[i];
++    const uint64_t current = use_lru ? rows[position].last_access
++                                     : rows[position].allocation_time;
++    if (current < timestamp) {
++      timestamp = current;
++      selected = position;
++    }
++  }
++  return selected;
++}
++
++}  // namespace
++
++const char *policy_name(unsigned value) {
++  switch (value) {
++    case POLICY_NONE: return "NONE";
++    case POLICY_PRIORITY_ALL: return "PRIORITY_ALL";
++    case POLICY_PRIORITY_STABLE: return "PRIORITY_STABLE";
++    case POLICY_DRRIP: return "DRRIP";
++    case POLICY_SHIP_SW: return "SHIP_SW";
++    default: return "INVALID";
++  }
++}
++
++bool policy_value_valid(unsigned value) { return value <= POLICY_SHIP_SW; }
++
++bool policy_needs_target_map(unsigned value) {
++  return value == POLICY_PRIORITY_ALL || value == POLICY_PRIORITY_STABLE ||
++         value == POLICY_SHIP_SW;
++}
++
++bool ship_sw_contract_complete() { return false; }
++
++const char *stable_hash_version() {
++  return "C16_M1F_STABLE_ADMISSION_HASH_V1";
++}
++uint64_t stable_hash_seed() { return kSeed; }
++uint64_t stable_hash_threshold() { return kThreshold; }
++
++uint64_t stable_hash(unsigned target_class,
++                     uint64_t region_relative_line_index) {
++  uint64_t value = kSeed ^ (static_cast<uint64_t>(target_class) << 32) ^
++                   region_relative_line_index;
++  value += 0x9e3779b97f4a7c15ULL;
++  value = (value ^ (value >> 30)) * 0xbf58476d1ce4e5b9ULL;
++  value = (value ^ (value >> 27)) * 0x94d049bb133111ebULL;
++  return value ^ (value >> 31);
++}
++
++bool stable_selected(unsigned target_class,
++                     uint64_t region_relative_line_index) {
++  return stable_hash(target_class, region_relative_line_index) < kThreshold;
++}
++
++victim_result choose_priority_victim(const std::vector<candidate> &eligible,
++                                     bool use_lru) {
++  victim_result result;
++  if (eligible.empty()) return result;
++  unsigned invalid = static_cast<unsigned>(-1);
++  std::vector<unsigned> ordinary;
++  std::vector<unsigned> priority;
++  for (size_t i = 0; i < eligible.size(); ++i) {
++    if (eligible[i].invalid)
++      invalid = static_cast<unsigned>(i);  // exact baseline last-invalid rule
++    else if (eligible[i].priority)
++      priority.push_back(static_cast<unsigned>(i));
++    else
++      ordinary.push_back(static_cast<unsigned>(i));
++  }
++  unsigned position = static_cast<unsigned>(-1);
++  if (invalid != static_cast<unsigned>(-1)) {
++    position = invalid;
++    result.kind = VICTIM_INVALID;
++  } else if (!ordinary.empty()) {
++    position = oldest(eligible, ordinary, use_lru);
++    result.kind = VICTIM_ORDINARY;
++  } else if (!priority.empty()) {
++    position = oldest(eligible, priority, use_lru);
++    result.kind = VICTIM_PRIORITY;
++  }
++  if (position != static_cast<unsigned>(-1)) {
++    result.found = true;
++    result.index = eligible[position].index;
++  }
++  return result;
++}
++
++victim_result choose_drrip_victim(std::vector<candidate> *eligible) {
++  victim_result result;
++  if (!eligible || eligible->empty()) return result;
++  unsigned invalid = static_cast<unsigned>(-1);
++  for (size_t i = 0; i < eligible->size(); ++i)
++    if ((*eligible)[i].invalid) invalid = static_cast<unsigned>(i);
++  if (invalid != static_cast<unsigned>(-1)) {
++    result.found = true;
++    result.index = (*eligible)[invalid].index;
++    result.kind = VICTIM_INVALID;
++    return result;
++  }
++  for (;;) {
++    for (size_t i = 0; i < eligible->size(); ++i) {
++      if ((*eligible)[i].rrpv == 3) {
++        result.found = true;
++        result.index = (*eligible)[i].index;
++        result.kind = VICTIM_RRPV3;
++        return result;
++      }
++    }
++    for (size_t i = 0; i < eligible->size(); ++i)
++      (*eligible)[i].rrpv = std::min(3U, (*eligible)[i].rrpv + 1);
++    ++result.aging_rounds;
++    if (result.aging_rounds > 3)
++      throw std::runtime_error("2-bit DRRIP aging failed to reach RRPV=3");
++  }
++}
++
++leader_role drrip_leader_role(unsigned set_index, unsigned number_sets) {
++  if (number_sets < 64 || set_index >= number_sets)
++    throw std::runtime_error("DRRIP requires at least 64 valid sets");
++  for (unsigned slot = 0; slot < 64; ++slot) {
++    const unsigned anchor = (slot * number_sets) / 64;
++    if (set_index == anchor)
++      return (slot & 1) ? BRRIP_LEADER_SET : SRRIP_LEADER_SET;
++  }
++  return FOLLOWER_SET;
++}
++
++bool drrip_follower_uses_brrip(unsigned psel) {
++  if (psel > 1023) throw std::runtime_error("10-bit PSEL overflow");
++  return psel >= 512;
++}
++
++void drrip_train_psel(leader_role role, unsigned *psel) {
++  if (!psel || *psel > 1023) throw std::runtime_error("invalid PSEL");
++  if (role == SRRIP_LEADER_SET) {
++    if (*psel < 1023) ++*psel;
++  } else if (role == BRRIP_LEADER_SET) {
++    if (*psel > 0) --*psel;
++  }
++}
++
++unsigned drrip_insertion_rrpv(leader_role role, unsigned psel,
++                              uint64_t *brrip_miss_counter,
++                              bool *used_brrip) {
++  if (!brrip_miss_counter || !used_brrip)
++    throw std::runtime_error("null DRRIP insertion state");
++  const bool brrip = role == BRRIP_LEADER_SET ||
++                     (role == FOLLOWER_SET &&
++                      drrip_follower_uses_brrip(psel));
++  *used_brrip = brrip;
++  if (!brrip) return 2;
++  const bool short_insertion = ((*brrip_miss_counter & 31ULL) == 0);
++  ++*brrip_miss_counter;
++  return short_insertion ? 2 : 3;
++}
++
++bool event_promotes(gpu_event event) {
++  return event == EVENT_TRUE_VALID_SECTOR_HIT;
++}
++
++bool event_inserts(gpu_event event) {
++  return event == EVENT_NEW_LINE_ALLOCATION;
++}
++
++diagnostics::diagnostics()
++    : accesses(0), true_hit_promotions(0), sector_miss_no_promotion(0),
++      mshr_merge_no_promotion(0), accepted_new_line_allocations(0),
++      priority_target_accesses(0), priority_selected_accesses(0),
++      priority_allocations(0), priority_hits(0), ordinary_victims(0),
++      priority_victims(0), invalid_victims(0), drrip_srrip_insertions(0),
++      drrip_brrip_long_insertions(0), drrip_brrip_short_insertions(0),
++      drrip_aging_rounds(0), drrip_psel_increments(0),
++      drrip_psel_decrements(0), writeback_hits_not_promoted(0),
++      priority_resident(0), priority_pending(0),
++      priority_peak_resident(0), priority_peak_resident_plus_pending(0) {}
++
++}  // namespace c16_strong_baselines
+diff --git a/src/gpgpu-sim/c16_strong_baselines.h b/src/gpgpu-sim/c16_strong_baselines.h
+new file mode 100644
+index 0000000..991dcb9
+--- /dev/null
++++ b/src/gpgpu-sim/c16_strong_baselines.h
+@@ -0,0 +1,106 @@
++#ifndef C16_STRONG_BASELINES_H
++#define C16_STRONG_BASELINES_H
++
++#include <stdint.h>
++
++#include <vector>
++
++namespace c16_strong_baselines {
++
++enum policy {
++  POLICY_NONE = 0,
++  POLICY_PRIORITY_ALL = 1,
++  POLICY_PRIORITY_STABLE = 2,
++  POLICY_DRRIP = 3,
++  POLICY_SHIP_SW = 4
++};
++
++enum leader_role { FOLLOWER_SET = 0, SRRIP_LEADER_SET, BRRIP_LEADER_SET };
++enum victim_kind { VICTIM_NONE = 0, VICTIM_INVALID, VICTIM_ORDINARY,
++                   VICTIM_PRIORITY, VICTIM_RRPV3 };
++enum gpu_event {
++  EVENT_TRUE_VALID_SECTOR_HIT = 0,
++  EVENT_SAME_TAG_SECTOR_MISS,
++  EVENT_NEW_LINE_ALLOCATION,
++  EVENT_HIT_RESERVED_MSHR_MERGE,
++  EVENT_RESERVATION_FAIL_RETRY,
++  EVENT_FILL,
++  EVENT_WRITEBACK_HIT
++};
++
++const char *policy_name(unsigned value);
++bool policy_value_valid(unsigned value);
++bool policy_needs_target_map(unsigned value);
++bool ship_sw_contract_complete();
++
++const char *stable_hash_version();
++uint64_t stable_hash_seed();
++uint64_t stable_hash_threshold();
++uint64_t stable_hash(unsigned target_class,
++                     uint64_t region_relative_line_index);
++bool stable_selected(unsigned target_class,
++                     uint64_t region_relative_line_index);
++
++struct candidate {
++  unsigned index;
++  bool invalid;
++  bool priority;
++  unsigned rrpv;
++  uint64_t last_access;
++  uint64_t allocation_time;
++};
++
++struct victim_result {
++  bool found;
++  unsigned index;
++  victim_kind kind;
++  unsigned aging_rounds;
++  victim_result()
++      : found(false), index(static_cast<unsigned>(-1)), kind(VICTIM_NONE),
++        aging_rounds(0) {}
++};
++
++victim_result choose_priority_victim(const std::vector<candidate> &eligible,
++                                     bool use_lru);
++victim_result choose_drrip_victim(std::vector<candidate> *eligible);
++
++leader_role drrip_leader_role(unsigned set_index, unsigned number_sets);
++bool drrip_follower_uses_brrip(unsigned psel);
++void drrip_train_psel(leader_role role, unsigned *psel);
++unsigned drrip_insertion_rrpv(leader_role role, unsigned psel,
++                              uint64_t *brrip_miss_counter,
++                              bool *used_brrip);
++
++bool event_promotes(gpu_event event);
++bool event_inserts(gpu_event event);
++
++struct diagnostics {
++  uint64_t accesses;
++  uint64_t true_hit_promotions;
++  uint64_t sector_miss_no_promotion;
++  uint64_t mshr_merge_no_promotion;
++  uint64_t accepted_new_line_allocations;
++  uint64_t priority_target_accesses;
++  uint64_t priority_selected_accesses;
++  uint64_t priority_allocations;
++  uint64_t priority_hits;
++  uint64_t ordinary_victims;
++  uint64_t priority_victims;
++  uint64_t invalid_victims;
++  uint64_t drrip_srrip_insertions;
++  uint64_t drrip_brrip_long_insertions;
++  uint64_t drrip_brrip_short_insertions;
++  uint64_t drrip_aging_rounds;
++  uint64_t drrip_psel_increments;
++  uint64_t drrip_psel_decrements;
++  uint64_t writeback_hits_not_promoted;
++  uint64_t priority_resident;
++  uint64_t priority_pending;
++  uint64_t priority_peak_resident;
++  uint64_t priority_peak_resident_plus_pending;
++  diagnostics();
++};
++
++}  // namespace c16_strong_baselines
++
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 4817d45..e036718 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -66,6 +66,19 @@ const char *cache_fail_status_str(enum cache_reservation_fail_reason status) {
+   return static_cache_reservation_fail_reason_str[status];
+ }
+ 
++static bool c16_rrip_hit_trainable(const mem_fetch *mf) {
++  if (!mf) return false;
++  switch (mf->get_access_type()) {
++    case L1_WRBK_ACC:
++    case L2_WRBK_ACC:
++    case L1_WR_ALLOC_R:
++    case L2_WR_ALLOC_R:
++      return false;
++    default:
++      return true;
++  }
++}
++
+ unsigned l1d_cache_config::set_bank(new_addr_type addr) const {
+   // For sector cache, we select one sector per bank (sector interleaving)
+   // This is what was found in Volta (one sector per bank, sector interleaving)
+@@ -104,6 +117,117 @@ void cache_config::init_oracle_elastic(unsigned l2_instances) {
+   }
+ }
+ 
++void cache_config::init_c16_strong_baseline(unsigned l2_instances) {
++  using namespace c16_strong_baselines;
++  if (!policy_value_valid(m_c16_baseline_policy)) {
++    fprintf(stderr, "C16 strong baseline invalid policy value %u\n",
++            m_c16_baseline_policy);
++    abort();
++  }
++  if ((!m_c16_baseline_enable && m_c16_baseline_policy != POLICY_NONE) ||
++      (m_c16_baseline_enable && m_c16_baseline_policy == POLICY_NONE)) {
++    fprintf(stderr,
++            "C16 strong baseline fail-closed enable/policy mismatch\n");
++    abort();
++  }
++  if (m_c16_baseline_enable && m_oracle_elastic_enable) {
++    fprintf(stderr,
++            "C16 strong baseline and oracle elastic functional enables are mutually exclusive\n");
++    abort();
++  }
++  if (m_c16_baseline_policy == POLICY_SHIP_SW &&
++      !ship_sw_contract_complete()) {
++    fprintf(stderr, "SHIP_SW_IMPLEMENTATION_CONTRACT_INCOMPLETE\n");
++    abort();
++  }
++  if (m_c16_baseline_enable && m_alloc_policy != ON_MISS) {
++    fprintf(stderr, "C16 strong baselines require L2 ON_MISS allocation\n");
++    abort();
++  }
++  if (m_c16_baseline_enable &&
++      (m_cache_type != SECTOR || m_line_sz != 128 || m_nset < 64)) {
++    fprintf(stderr,
++            "C16 strong baselines require accepted 128B sector L2 with at least 64 sets\n");
++    abort();
++  }
++  try {
++    const bool needs_target_map =
++        m_c16_baseline_enable && policy_needs_target_map(m_c16_baseline_policy);
++    m_c16_baseline_target_map.configure(
++        needs_target_map, 0, needs_target_map ? 1 : 0, m_line_sz,
++        l2_instances, m_oracle_elastic_sidecar,
++        m_oracle_elastic_sidecar_sha256, false);
++    if (m_c16_baseline_policy == POLICY_PRIORITY_STABLE) {
++      const std::vector<oracle_elastic_residency::interval> &intervals =
++          m_c16_baseline_target_map.intervals();
++      if (intervals.size() != 28)
++        throw std::runtime_error(
++            "PRIORITY_STABLE requires exact 28 target regions");
++      bool classes[29] = {};
++      for (size_t i = 0; i < intervals.size(); ++i) {
++        const oracle_elastic_residency::interval &item = intervals[i];
++        if (item.target_class < 1 || item.target_class > 28 ||
++            classes[item.target_class] ||
++            (item.end - item.begin) / 128 != 265216 ||
++            item.begin % 128 || item.end % 128)
++          throw std::runtime_error(
++              "PRIORITY_STABLE target geometry drift");
++        classes[item.target_class] = true;
++      }
++    }
++  } catch (const std::exception &error) {
++    fprintf(stderr, "C16 strong baseline config error: %s\n", error.what());
++    abort();
++  }
++}
++
++bool cache_config::c16_baseline_target_identity(
++    const mem_fetch *mf, unsigned *target_class,
++    uint64_t *region_relative_line_index) const {
++  if (!m_c16_baseline_enable || mf == NULL ||
++      !c16_strong_baselines::policy_needs_target_map(m_c16_baseline_policy))
++    return false;
++  if (!oracle_elastic_residency::target_request_eligible(
++          static_cast<unsigned>(mf->get_access_type()), mf->get_is_write(),
++          static_cast<unsigned>(GLOBAL_ACC_R)))
++    return false;
++  unsigned local_class = 0;
++  if (!m_c16_baseline_target_map.lookup(mf->get_addr(), &local_class))
++    return false;
++  const std::vector<oracle_elastic_residency::interval> &intervals =
++      m_c16_baseline_target_map.intervals();
++  for (size_t i = 0; i < intervals.size(); ++i) {
++    if (intervals[i].target_class == local_class &&
++        mf->get_addr() >= intervals[i].begin &&
++        mf->get_addr() < intervals[i].end) {
++      if (target_class) *target_class = local_class;
++      if (region_relative_line_index) {
++        const uint64_t line = mf->get_addr() & ~uint64_t(127);
++        *region_relative_line_index = (line - intervals[i].begin) / 128;
++      }
++      return true;
++    }
++  }
++  assert(0 && "target map lookup/class interval mismatch");
++  return false;
++}
++
++bool cache_config::c16_baseline_priority(const mem_fetch *mf,
++                                         unsigned *target_class) const {
++  uint64_t line_index = 0;
++  unsigned local_class = 0;
++  if (!c16_baseline_target_identity(mf, &local_class, &line_index))
++    return false;
++  if (target_class) *target_class = local_class;
++  if (m_c16_baseline_policy ==
++      c16_strong_baselines::POLICY_PRIORITY_ALL)
++    return true;
++  if (m_c16_baseline_policy ==
++      c16_strong_baselines::POLICY_PRIORITY_STABLE)
++    return c16_strong_baselines::stable_selected(local_class, line_index);
++  return false;
++}
++
+ bool cache_config::oracle_elastic_target(const mem_fetch *mf,
+                                          unsigned *target_class) const {
+   if (!m_oracle_runtime.enabled() || mf == NULL) return false;
+@@ -265,7 +389,12 @@ void tag_array::init(int core_id, int type_id) {
+       m_config.oracle_elastic_enabled()
+           ? m_config.oracle_elastic_quota(static_cast<unsigned>(core_id))
+           : 0;
++  m_c16_rrpv.assign(m_config.get_max_num_lines(), 3);
++  m_c16_priority_state.assign(m_config.get_max_num_lines(), 0);
++  m_c16_drrip_psel = 512;
++  m_c16_brrip_miss_counter = 0;
+   oracle_verify_invariant();
++  c16_baseline_verify();
+ }
+ 
+ bool tag_array::oracle_request_target(const mem_fetch *mf,
+@@ -352,6 +481,46 @@ void tag_array::oracle_commit_fill(unsigned idx) {
+   oracle_verify_invariant();
+ }
+ 
++void tag_array::c16_baseline_verify() const {
++  if (!m_config.c16_baseline_enabled()) return;
++  assert(m_c16_drrip_psel <= 1023);
++  assert(m_c16_diagnostics.priority_resident <= m_config.get_num_lines());
++  assert(m_c16_diagnostics.priority_pending <= m_config.get_num_lines());
++  assert(m_c16_diagnostics.priority_resident +
++             m_c16_diagnostics.priority_pending <=
++         m_config.get_num_lines());
++}
++
++void tag_array::c16_baseline_depart_line(unsigned idx) {
++  if (!m_config.c16_baseline_enabled()) return;
++  assert(idx < m_c16_priority_state.size());
++  if (m_c16_priority_state[idx] == 1) {
++    assert(m_c16_diagnostics.priority_pending > 0);
++    --m_c16_diagnostics.priority_pending;
++  } else if (m_c16_priority_state[idx] == 2) {
++    assert(m_c16_diagnostics.priority_resident > 0);
++    --m_c16_diagnostics.priority_resident;
++  }
++  m_c16_priority_state[idx] = 0;
++  m_c16_rrpv[idx] = 3;
++  c16_baseline_verify();
++}
++
++void tag_array::c16_baseline_commit_fill(unsigned idx) {
++  if (!m_config.c16_baseline_enabled()) return;
++  assert(idx < m_c16_priority_state.size());
++  if (m_c16_priority_state[idx] == 1) {
++    assert(m_c16_diagnostics.priority_pending > 0);
++    --m_c16_diagnostics.priority_pending;
++    ++m_c16_diagnostics.priority_resident;
++    m_c16_priority_state[idx] = 2;
++    m_c16_diagnostics.priority_peak_resident = std::max(
++        m_c16_diagnostics.priority_peak_resident,
++        m_c16_diagnostics.priority_resident);
++  }
++  c16_baseline_verify();
++}
++
+ void tag_array::oracle_invalidate_line(unsigned idx,
+                                        mem_access_sector_mask_t mask) {
+   cache_block_t *line = m_lines[idx];
+@@ -360,6 +529,8 @@ void tag_array::oracle_invalidate_line(unsigned idx,
+                             !line->oracle_protected() &&
+                             !line->oracle_pending_protected();
+   line->set_status(INVALID, mask);
++  if (m_config.c16_baseline_enabled() && line->is_invalid_line())
++    c16_baseline_depart_line(idx);
+   if (m_config.oracle_elastic_enabled() && line->is_invalid_line()) {
+     if (was_ordinary) {
+       assert(m_oracle_ordinary_valid > 0);
+@@ -368,6 +539,7 @@ void tag_array::oracle_invalidate_line(unsigned idx,
+     oracle_depart_line(idx);
+   }
+   oracle_verify_invariant();
++  c16_baseline_verify();
+ }
+ 
+ void tag_array::add_pending_line(mem_fetch *mf) {
+@@ -399,6 +571,8 @@ enum cache_request_status tag_array::probe(new_addr_type addr, unsigned &idx,
+                                            mem_access_sector_mask_t mask,
+                                            bool is_write, bool probe_mode,
+                                            mem_fetch *mf) const {
++  if (m_config.c16_baseline_enabled())
++    return c16_baseline_probe(addr, idx, mask, is_write, probe_mode, mf);
+   if (m_config.oracle_elastic_enabled())
+     return oracle_probe(addr, idx, mask, is_write, probe_mode, mf);
+   // assert( m_config.m_write_policy == READ_ONLY );
+@@ -553,6 +727,80 @@ enum cache_request_status tag_array::oracle_probe(
+   return MISS;
+ }
+ 
++enum cache_request_status tag_array::c16_baseline_probe(
++    new_addr_type addr, unsigned &idx, mem_access_sector_mask_t mask,
++    bool is_write, bool probe_mode, mem_fetch *mf) const {
++  (void)mf;
++  const unsigned set_index = m_config.set_index(addr);
++  const new_addr_type tag = m_config.tag(addr);
++  std::vector<c16_strong_baselines::candidate> eligible;
++  for (unsigned way = 0; way < m_config.m_assoc; ++way) {
++    const unsigned index = set_index * m_config.m_assoc + way;
++    cache_block_t *line = m_lines[index];
++    if (line->m_tag == tag) {
++      if (line->get_status(mask) == RESERVED) {
++        idx = index;
++        return HIT_RESERVED;
++      } else if (line->get_status(mask) == VALID) {
++        idx = index;
++        return HIT;
++      } else if (line->get_status(mask) == MODIFIED) {
++        if ((!is_write && line->is_readable(mask)) || is_write) {
++          idx = index;
++          return HIT;
++        }
++        idx = index;
++        return SECTOR_MISS;
++      } else if (line->is_valid_line() &&
++                 line->get_status(mask) == INVALID) {
++        idx = index;
++        return SECTOR_MISS;
++      } else {
++        assert(line->get_status(mask) == INVALID);
++      }
++    }
++    if (line->is_reserved_line()) continue;
++    const float dirty_line_percentage =
++        (static_cast<float>(m_dirty) /
++         (m_config.m_nset * m_config.m_assoc)) * 100;
++    if (line->is_modified_line() &&
++        dirty_line_percentage < m_config.m_wr_percent)
++      continue;
++    c16_strong_baselines::candidate row;
++    row.index = index;
++    row.invalid = line->is_invalid_line();
++    row.priority = m_c16_priority_state[index] == 2;
++    row.rrpv = m_c16_rrpv[index];
++    row.last_access = line->get_last_access_time();
++    row.allocation_time = line->get_alloc_time();
++    eligible.push_back(row);
++  }
++  if (eligible.empty()) {
++    assert(m_config.m_alloc_policy == ON_MISS);
++    return RESERVATION_FAIL;
++  }
++  c16_strong_baselines::victim_result selected;
++  if (m_config.c16_baseline_policy() ==
++          c16_strong_baselines::POLICY_PRIORITY_ALL ||
++      m_config.c16_baseline_policy() ==
++          c16_strong_baselines::POLICY_PRIORITY_STABLE) {
++    selected = c16_strong_baselines::choose_priority_victim(
++        eligible, m_config.m_replacement_policy == LRU);
++  } else {
++    assert(m_config.c16_baseline_policy() ==
++           c16_strong_baselines::POLICY_DRRIP);
++    selected = c16_strong_baselines::choose_drrip_victim(&eligible);
++    if (!probe_mode) {
++      for (size_t i = 0; i < eligible.size(); ++i)
++        m_c16_rrpv[eligible[i].index] = eligible[i].rrpv;
++      m_c16_diagnostics.drrip_aging_rounds += selected.aging_rounds;
++    }
++  }
++  if (!selected.found) return RESERVATION_FAIL;
++  idx = selected.index;
++  return MISS;
++}
++
+ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+                                             unsigned &idx, mem_fetch *mf) {
+   bool wb = false;
+@@ -572,7 +820,34 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+   unsigned oracle_target_class = 0;
+   const bool oracle_target =
+       oracle_request_target(mf, &oracle_target_class);
++  unsigned c16_target_class = 0;
++  const bool c16_target =
++      m_config.c16_baseline_target_identity(mf, &c16_target_class, NULL);
++  const bool c16_priority =
++      m_config.c16_baseline_priority(mf, &c16_target_class);
+   enum cache_request_status status = probe(addr, idx, mf, mf->is_write());
++  if (m_config.c16_baseline_enabled()) {
++    ++m_c16_diagnostics.accesses;
++    if (c16_target) ++m_c16_diagnostics.priority_target_accesses;
++    if (c16_priority) ++m_c16_diagnostics.priority_selected_accesses;
++    if (status == HIT_RESERVED)
++      ++m_c16_diagnostics.mshr_merge_no_promotion;
++    else if (status == SECTOR_MISS)
++      ++m_c16_diagnostics.sector_miss_no_promotion;
++    else if (status == HIT) {
++      if (m_config.c16_baseline_policy() ==
++          c16_strong_baselines::POLICY_DRRIP) {
++        if (c16_rrip_hit_trainable(mf)) {
++          m_c16_rrpv[idx] = 0;
++          ++m_c16_diagnostics.true_hit_promotions;
++        } else {
++          ++m_c16_diagnostics.writeback_hits_not_promoted;
++        }
++      }
++      if (m_c16_priority_state[idx] == 2)
++        ++m_c16_diagnostics.priority_hits;
++    }
++  }
+   if (m_config.oracle_elastic_diagnostics_enabled()) {
+     if (oracle_target) {
+       ++m_oracle_diagnostics.target_accesses;
+@@ -596,6 +871,8 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+       shader_cache_access_log(m_core_id, m_type_id, 1);  // log cache misses
+       if (m_config.m_alloc_policy == ON_MISS) {
+         const bool valid_victim = !m_lines[idx]->is_invalid_line();
++        const bool c16_priority_victim =
++            valid_victim && m_c16_priority_state[idx] == 2;
+         const bool protected_victim =
+             valid_victim && m_lines[idx]->oracle_protected();
+         const bool quota_full =
+@@ -648,6 +925,15 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+           evicted.m_has_valid_victim = true;
+           evicted.m_telemetry_class = m_lines[idx]->get_telemetry_class();
+         }
++        if (m_config.c16_baseline_enabled()) {
++          ++m_c16_diagnostics.accepted_new_line_allocations;
++          if (!valid_victim)
++            ++m_c16_diagnostics.invalid_victims;
++          else if (c16_priority_victim)
++            ++m_c16_diagnostics.priority_victims;
++          else
++            ++m_c16_diagnostics.ordinary_victims;
++        }
+         if (m_lines[idx]->is_modified_line()) {
+           wb = true;
+           // m_lines[idx]->set_byte_mask(mf);
+@@ -658,6 +944,7 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+           m_dirty--;
+         }
+         oracle_depart_line(idx);
++        c16_baseline_depart_line(idx);
+         m_lines[idx]->allocate(m_config.tag(addr), m_config.block_addr(addr),
+                                time, mf->get_access_sector_mask());
+         m_lines[idx]->set_telemetry_class(mf->get_telemetry_class());
+@@ -670,6 +957,45 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+           else
+             ++m_oracle_ordinary_valid;
+         }
++        if (m_config.c16_baseline_enabled()) {
++          const unsigned policy = m_config.c16_baseline_policy();
++          if ((policy == c16_strong_baselines::POLICY_PRIORITY_ALL ||
++               policy == c16_strong_baselines::POLICY_PRIORITY_STABLE) &&
++              c16_priority) {
++            m_c16_priority_state[idx] = 1;
++            ++m_c16_diagnostics.priority_pending;
++            ++m_c16_diagnostics.priority_allocations;
++          } else if (policy == c16_strong_baselines::POLICY_DRRIP) {
++            const unsigned set_index = m_config.set_index(addr);
++            const c16_strong_baselines::leader_role role =
++                c16_strong_baselines::drrip_leader_role(
++                    set_index, m_config.m_nset);
++            const unsigned old_psel = m_c16_drrip_psel;
++            c16_strong_baselines::drrip_train_psel(
++                role, &m_c16_drrip_psel);
++            if (m_c16_drrip_psel > old_psel)
++              ++m_c16_diagnostics.drrip_psel_increments;
++            else if (m_c16_drrip_psel < old_psel)
++              ++m_c16_diagnostics.drrip_psel_decrements;
++            bool used_brrip = false;
++            const unsigned insertion =
++                c16_strong_baselines::drrip_insertion_rrpv(
++                    role, m_c16_drrip_psel, &m_c16_brrip_miss_counter,
++                    &used_brrip);
++            m_c16_rrpv[idx] = insertion;
++            if (!used_brrip)
++              ++m_c16_diagnostics.drrip_srrip_insertions;
++            else if (insertion == 2)
++              ++m_c16_diagnostics.drrip_brrip_short_insertions;
++            else
++              ++m_c16_diagnostics.drrip_brrip_long_insertions;
++          }
++          m_c16_diagnostics.priority_peak_resident_plus_pending = std::max(
++              m_c16_diagnostics.priority_peak_resident_plus_pending,
++              m_c16_diagnostics.priority_resident +
++                  m_c16_diagnostics.priority_pending);
++          c16_baseline_verify();
++        }
+         oracle_verify_invariant();
+       }
+       break;
+@@ -731,6 +1057,7 @@ void tag_array::fill(new_addr_type addr, unsigned time,
+   // redundant memory request
+   if (status == MISS) {
+     oracle_depart_line(idx);
++    c16_baseline_depart_line(idx);
+     m_lines[idx]->allocate(m_config.tag(addr), m_config.block_addr(addr), time,
+                            mask);
+     m_lines[idx]->oracle_set_pending(false);
+@@ -745,6 +1072,7 @@ void tag_array::fill(new_addr_type addr, unsigned time,
+   before = m_lines[idx]->is_modified_line();
+   m_lines[idx]->fill(time, mask, byte_mask);
+   oracle_commit_fill(idx);
++  c16_baseline_commit_fill(idx);
+   if (m_lines[idx]->is_modified_line() && !before) {
+     m_dirty++;
+   }
+@@ -756,6 +1084,7 @@ void tag_array::fill(unsigned index, unsigned time, mem_fetch *mf) {
+   m_lines[index]->fill(time, mf->get_access_sector_mask(),
+                        mf->get_access_byte_mask());
+   oracle_commit_fill(index);
++  c16_baseline_commit_fill(index);
+   m_lines[index]->set_telemetry_class(mf->get_telemetry_class());
+   if (m_lines[index]->is_modified_line() && !before) {
+     m_dirty++;
+@@ -769,6 +1098,7 @@ void tag_array::flush() {
+   for (unsigned i = 0; i < m_config.get_num_lines(); i++)
+     if (m_lines[i]->is_modified_line()) {
+       oracle_depart_line(i);
++      c16_baseline_depart_line(i);
+       for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++) {
+         m_lines[i]->set_status(INVALID, mem_access_sector_mask_t().set(j));
+       }
+@@ -784,6 +1114,7 @@ void tag_array::invalidate() {
+ 
+   for (unsigned i = 0; i < m_config.get_num_lines(); i++) {
+     oracle_depart_line(i);
++    c16_baseline_depart_line(i);
+     for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++)
+       m_lines[i]->set_status(INVALID, mem_access_sector_mask_t().set(j));
+   }
+@@ -869,6 +1200,58 @@ void tag_array::print(FILE *stream, unsigned &total_access,
+               class_occupancy[target_class]);
+     fprintf(stream, "\n");
+   }
++  if (m_config.c16_baseline_diagnostics_enabled()) {
++    uint64_t resident = 0, pending = 0;
++    for (unsigned i = 0; i < m_config.get_num_lines(); ++i) {
++      resident += m_c16_priority_state[i] == 2;
++      pending += m_c16_priority_state[i] == 1;
++      assert(m_c16_rrpv[i] <= 3);
++      assert(m_c16_priority_state[i] <= 2);
++    }
++    assert(resident == m_c16_diagnostics.priority_resident);
++    assert(pending == m_c16_diagnostics.priority_pending);
++    fprintf(
++        stream,
++        "c16_strong_baseline_l2\tinstance=%d\tpolicy=%s\taccesses=%llu\t"
++        "priority_resident=%llu\tpriority_pending=%llu\t"
++        "priority_peak_resident=%llu\tpriority_peak_resident_plus_pending=%llu\t"
++        "priority_target_accesses=%llu\tpriority_selected_accesses=%llu\t"
++        "priority_allocations=%llu\tpriority_hits=%llu\t"
++        "ordinary_victims=%llu\tpriority_victims=%llu\tinvalid_victims=%llu\t"
++        "true_hit_promotions=%llu\tsector_miss_no_promotion=%llu\t"
++        "mshr_merge_no_promotion=%llu\twriteback_hits_not_promoted=%llu\t"
++        "accepted_new_line_allocations=%llu\tdrrip_psel=%u\t"
++        "drrip_brrip_miss_counter=%llu\tdrrip_srrip_insertions=%llu\t"
++        "drrip_brrip_long_insertions=%llu\t"
++        "drrip_brrip_short_insertions=%llu\tdrrip_aging_rounds=%llu\t"
++        "drrip_psel_increments=%llu\tdrrip_psel_decrements=%llu\n",
++        m_core_id, m_config.c16_baseline_policy_name(),
++        static_cast<unsigned long long>(m_c16_diagnostics.accesses),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_resident),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_pending),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_peak_resident),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_peak_resident_plus_pending),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_target_accesses),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_selected_accesses),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_allocations),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_hits),
++        static_cast<unsigned long long>(m_c16_diagnostics.ordinary_victims),
++        static_cast<unsigned long long>(m_c16_diagnostics.priority_victims),
++        static_cast<unsigned long long>(m_c16_diagnostics.invalid_victims),
++        static_cast<unsigned long long>(m_c16_diagnostics.true_hit_promotions),
++        static_cast<unsigned long long>(m_c16_diagnostics.sector_miss_no_promotion),
++        static_cast<unsigned long long>(m_c16_diagnostics.mshr_merge_no_promotion),
++        static_cast<unsigned long long>(m_c16_diagnostics.writeback_hits_not_promoted),
++        static_cast<unsigned long long>(m_c16_diagnostics.accepted_new_line_allocations),
++        m_c16_drrip_psel,
++        static_cast<unsigned long long>(m_c16_brrip_miss_counter),
++        static_cast<unsigned long long>(m_c16_diagnostics.drrip_srrip_insertions),
++        static_cast<unsigned long long>(m_c16_diagnostics.drrip_brrip_long_insertions),
++        static_cast<unsigned long long>(m_c16_diagnostics.drrip_brrip_short_insertions),
++        static_cast<unsigned long long>(m_c16_diagnostics.drrip_aging_rounds),
++        static_cast<unsigned long long>(m_c16_diagnostics.drrip_psel_increments),
++        static_cast<unsigned long long>(m_c16_diagnostics.drrip_psel_decrements));
++  }
+   total_misses += (m_miss + m_sector_miss);
+   total_access += m_access;
+ }
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 1e87517..662cb06 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -38,6 +38,7 @@
+ #include "../tr1_hash_map.h"
+ #include "gpu-misc.h"
+ #include "mem_fetch.h"
++#include "c16_strong_baselines.h"
+ #include "oracle_elastic_residency.h"
+ 
+ #include <iostream>
+@@ -626,6 +627,9 @@ class cache_config {
+     m_oracle_address_canary_target_limit = 0;
+     m_oracle_address_canary_exact_address = 0;
+     m_oracle_elastic_l2_instances = 0;
++    m_c16_baseline_enable = false;
++    m_c16_baseline_policy = c16_strong_baselines::POLICY_NONE;
++    m_c16_baseline_diagnostics = false;
+   }
+   void init(char *config, FuncCache status) {
+     cache_status = status;
+@@ -853,6 +857,13 @@ class cache_config {
+   void print(FILE *fp) const {
+     fprintf(fp, "Size = %d B (%d Set x %d-way x %d byte line)\n",
+             m_line_sz * m_nset * m_assoc, m_nset, m_assoc, m_line_sz);
++    if (m_c16_baseline_enable || m_c16_baseline_diagnostics)
++      fprintf(fp,
++              "c16_strong_baseline_config\tenable=%u\tpolicy=%s\t"
++              "diagnostics=%u\n",
++              m_c16_baseline_enable ? 1U : 0U,
++              c16_strong_baselines::policy_name(m_c16_baseline_policy),
++              m_c16_baseline_diagnostics ? 1U : 0U);
+   }
+ 
+   virtual unsigned set_index(new_addr_type addr) const;
+@@ -908,6 +919,7 @@ class cache_config {
+   }
+   write_policy_t get_write_policy() { return m_write_policy; }
+   void init_oracle_elastic(unsigned l2_instances);
++  void init_c16_strong_baseline(unsigned l2_instances);
+   bool oracle_elastic_enabled() const { return m_oracle_runtime.enabled(); }
+   bool oracle_elastic_diagnostics_enabled() const {
+     return m_oracle_runtime.diagnostics_enabled();
+@@ -920,6 +932,19 @@ class cache_config {
+   uint64_t oracle_elastic_global_lines() const {
+     return m_oracle_runtime.global_line_budget();
+   }
++  bool c16_baseline_enabled() const { return m_c16_baseline_enable; }
++  bool c16_baseline_diagnostics_enabled() const {
++    return m_c16_baseline_diagnostics;
++  }
++  unsigned c16_baseline_policy() const { return m_c16_baseline_policy; }
++  const char *c16_baseline_policy_name() const {
++    return c16_strong_baselines::policy_name(m_c16_baseline_policy);
++  }
++  bool c16_baseline_target_identity(
++      const mem_fetch *mf, unsigned *target_class = NULL,
++      uint64_t *region_relative_line_index = NULL) const;
++  bool c16_baseline_priority(const mem_fetch *mf,
++                             unsigned *target_class = NULL) const;
+ 
+   bool m_oracle_elastic_enable;
+   unsigned long long m_oracle_elastic_quota_bytes;
+@@ -931,6 +956,9 @@ class cache_config {
+   unsigned m_oracle_address_canary_target_limit;
+   unsigned long long m_oracle_address_canary_exact_address;
+   unsigned m_oracle_elastic_l2_instances;
++  bool m_c16_baseline_enable;
++  unsigned m_c16_baseline_policy;
++  bool m_c16_baseline_diagnostics;
+ 
+  protected:
+   void exit_parse_error() {
+@@ -979,6 +1007,7 @@ class cache_config {
+   enum set_index_function
+       m_set_index_function;  // Hash, linear, or custom set index function
+   oracle_elastic_residency::oracle_config m_oracle_runtime;
++  oracle_elastic_residency::oracle_config m_c16_baseline_target_map;
+ 
+   friend class tag_array;
+   friend class baseline_cache;
+@@ -1117,15 +1146,26 @@ class tag_array {
+   uint64_t m_oracle_protected_quota;
+   uint64_t m_oracle_protected_occupancy_max;
+   mutable oracle_elastic_residency::diagnostic_counters m_oracle_diagnostics;
++  mutable std::vector<unsigned char> m_c16_rrpv;
++  std::vector<unsigned char> m_c16_priority_state;
++  unsigned m_c16_drrip_psel;
++  uint64_t m_c16_brrip_miss_counter;
++  mutable c16_strong_baselines::diagnostics m_c16_diagnostics;
+ 
+   enum cache_request_status oracle_probe(
+       new_addr_type addr, unsigned &idx, mem_access_sector_mask_t mask,
+       bool is_write, bool probe_mode, mem_fetch *mf) const;
++  enum cache_request_status c16_baseline_probe(
++      new_addr_type addr, unsigned &idx, mem_access_sector_mask_t mask,
++      bool is_write, bool probe_mode, mem_fetch *mf) const;
+   bool oracle_request_target(const mem_fetch *mf,
+                              unsigned *target_class = NULL) const;
+   void oracle_verify_invariant_deep() const;
+   void oracle_depart_line(unsigned idx);
+   void oracle_commit_fill(unsigned idx);
++  void c16_baseline_depart_line(unsigned idx);
++  void c16_baseline_commit_fill(unsigned idx);
++  void c16_baseline_verify() const;
+ };
+ 
+ class mshr_table {
+@@ -1839,7 +1879,8 @@ class l2_cache : public data_cache {
+            enum mem_fetch_status status, class gpgpu_sim *gpu,
+            enum cache_gpu_level level, unsigned oracle_l2_instance_id)
+       : data_cache(name, config,
+-                   config.oracle_elastic_enabled()
++                   (config.oracle_elastic_enabled() ||
++                    config.c16_baseline_enabled())
+                        ? static_cast<int>(oracle_l2_instance_id)
+                        : core_id,
+                    type_id, memport, mfcreator, status,
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index d7437a9..09f58fd 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -281,6 +281,18 @@ void memory_config::reg_options(class OptionParser *opp) {
+       opp, "-gpgpu_l2_oracle_elastic_diagnostics", OPT_BOOL,
+       &m_L2_config.m_oracle_elastic_diagnostics,
+       "diagnostic counters only; independent of functional enable", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_baseline_enable", OPT_BOOL,
++      &m_L2_config.m_c16_baseline_enable,
++      "enable one opt-in C16 strong replacement baseline", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_baseline_policy", OPT_UINT32,
++      &m_L2_config.m_c16_baseline_policy,
++      "0=NONE,1=PRIORITY_ALL,2=PRIORITY_STABLE,3=DRRIP,4=SHIP_SW", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_baseline_diagnostics", OPT_BOOL,
++      &m_L2_config.m_c16_baseline_diagnostics,
++      "C16 baseline diagnostics; independent of functional enable", "0");
+   option_parser_register(
+       opp, "-gpgpu_l2_oracle_address_canary_log", OPT_CSTR,
+       &m_L2_config.m_oracle_address_canary_log,
+@@ -1821,14 +1833,23 @@ void gpgpu_sim::gpu_print_stat(unsigned long long streamID) {
+                                 "L2_cache_stats_fail_breakdown");
+       total_l2_css.print_port_stats(stdout, "L2_cache");
+     }
+-    if (m_memory_config->m_L2_config.oracle_elastic_diagnostics_enabled()) {
++    if (m_memory_config->m_L2_config.oracle_elastic_diagnostics_enabled() ||
++        m_memory_config->m_L2_config.c16_baseline_diagnostics_enabled()) {
+       unsigned oracle_accesses = 0;
+       unsigned oracle_misses = 0;
+-      printf("oracle_elastic_l2_snapshot_begin\n");
++      printf("%s\n",
++             m_memory_config->m_L2_config
++                     .c16_baseline_diagnostics_enabled()
++                 ? "c16_strong_baseline_l2_snapshot_begin"
++                 : "oracle_elastic_l2_snapshot_begin");
+       for (unsigned i = 0; i < m_memory_config->m_n_mem_sub_partition; i++)
+         m_memory_sub_partition[i]->print_cache_stat(oracle_accesses,
+                                                     oracle_misses);
+-      printf("oracle_elastic_l2_snapshot_end\n");
++      printf("%s\n",
++             m_memory_config->m_L2_config
++                     .c16_baseline_diagnostics_enabled()
++                 ? "c16_strong_baseline_l2_snapshot_end"
++                 : "oracle_elastic_l2_snapshot_end");
+     }
+   }
+ 
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 7fe3550..154fe21 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -308,6 +308,7 @@ class memory_config {
+     m_address_mapping.init(m_n_mem, m_n_sub_partition_per_memory_channel);
+     m_L2_config.init(&m_address_mapping);
+     m_L2_config.init_oracle_elastic(m_n_mem_sub_partition);
++    m_L2_config.init_c16_strong_baseline(m_n_mem_sub_partition);
+ 
+     m_valid = true;
+ 
+diff --git a/src/gpgpu-sim/tests/run_c16_strong_baselines_tests.sh b/src/gpgpu-sim/tests/run_c16_strong_baselines_tests.sh
+new file mode 100755
+index 0000000..9c5ff66
+--- /dev/null
++++ b/src/gpgpu-sim/tests/run_c16_strong_baselines_tests.sh
+@@ -0,0 +1,28 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)
++src="$repo_root/src/gpgpu-sim"
++out=${TMPDIR:-/tmp}/c16_strong_baselines_tests
++mkdir -p "$out"
++
++${CXX:-g++} -std=c++11 -Wall -Wextra -Werror -I"$src" \
++  "$src/c16_strong_baselines.cc" \
++  "$src/tests/test_c16_strong_baselines.cc" \
++  -o "$out/policy_test"
++"$out/policy_test"
++
++if [[ -z "${CUDA_INSTALL_PATH:-}" || ! -f "$CUDA_INSTALL_PATH/include/vector_types.h" ]]; then
++  echo "CUDA_INSTALL_PATH with headers is required for tag-array integration test" >&2
++  exit 2
++fi
++${CXX:-g++} -std=c++11 -O0 -ffunction-sections -fdata-sections \
++  -Wl,--gc-sections -Wno-unused-parameter -Wno-reorder \
++  -I"$src" -I"$repo_root/src" -I"$CUDA_INSTALL_PATH/include" \
++  "$src/oracle_elastic_residency.cc" "$src/c16_strong_baselines.cc" \
++  "$src/gpu-cache.cc" "$src/gpu-misc.cc" "$src/hashing.cc" \
++  "$src/tests/test_c16_strong_baselines_tag_array.cc" \
++  -o "$out/tag_array_test"
++"$out/tag_array_test"
++
++echo C16_STRONG_BASELINES_TEST_SUITE_PASS
+diff --git a/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh b/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh
+index 4445c80..61fbf61 100755
+--- a/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh
++++ b/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh
+@@ -26,7 +26,8 @@ ${CXX:-g++} -std=c++11 -Wall -Wextra -Wno-unused-parameter -Wno-reorder \
+ ${CXX:-g++} -std=c++11 -O0 -ffunction-sections -fdata-sections \
+   -Wl,--gc-sections -Wno-unused-parameter -Wno-reorder \
+   -I"$src" -I"$repo_root/src" -I"$CUDA_INSTALL_PATH/include" \
+-  "$src/oracle_elastic_residency.cc" "$src/gpu-cache.cc" \
++  "$src/oracle_elastic_residency.cc" "$src/c16_strong_baselines.cc" \
++  "$src/gpu-cache.cc" \
+   "$src/gpu-misc.cc" "$src/hashing.cc" \
+   "$src/tests/test_oracle_elastic_tag_array_config.cc" \
+   -o "$out/tag_array_config_test"
+diff --git a/src/gpgpu-sim/tests/test_c16_strong_baselines.cc b/src/gpgpu-sim/tests/test_c16_strong_baselines.cc
+new file mode 100644
+index 0000000..350b0e1
+--- /dev/null
++++ b/src/gpgpu-sim/tests/test_c16_strong_baselines.cc
+@@ -0,0 +1,129 @@
++#include "../c16_strong_baselines.h"
++
++#include <assert.h>
++#include <stdint.h>
++
++#include <iostream>
++#include <vector>
++
++using namespace c16_strong_baselines;
++
++static candidate row(unsigned index, bool invalid, bool priority,
++                     unsigned rrpv, uint64_t lru) {
++  candidate value = {index, invalid, priority, rrpv, lru, lru};
++  return value;
++}
++
++static void test_priority() {
++  std::vector<candidate> rows;
++  rows.push_back(row(0, false, true, 0, 1));
++  rows.push_back(row(1, false, false, 0, 10));
++  rows.push_back(row(2, false, false, 0, 5));
++  victim_result ordinary = choose_priority_victim(rows, true);
++  assert(ordinary.found && ordinary.index == 2 &&
++         ordinary.kind == VICTIM_ORDINARY);
++  rows[1].priority = rows[2].priority = true;
++  victim_result fallback = choose_priority_victim(rows, true);
++  assert(fallback.found && fallback.index == 0 &&
++         fallback.kind == VICTIM_PRIORITY);
++  rows.push_back(row(3, true, false, 0, 0));
++  rows.push_back(row(4, true, false, 0, 0));
++  victim_result invalid = choose_priority_victim(rows, true);
++  assert(invalid.found && invalid.index == 4 &&
++         invalid.kind == VICTIM_INVALID);
++  diagnostics state;
++  assert(state.priority_resident == 0 && state.priority_pending == 0);
++}
++
++static void test_stable_selector() {
++  assert(std::string(stable_hash_version()) ==
++         "C16_M1F_STABLE_ADMISSION_HASH_V1");
++  assert(stable_hash_seed() == 0x6a09e667f3bcc908ULL);
++  assert(stable_hash_threshold() == 0x0484baf3b723b966ULL);
++  assert(stable_hash(1, 1186) == 0xd92231f51d5c2efbULL);
++  assert(stable_hash(15, 2) == 0xc69c317586b04f9eULL);
++  assert(stable_hash(28, 1193) == 0xfcf49fc4e0bf282dULL);
++  bool saw_selected = false, saw_filtered = false;
++  for (uint64_t line = 0; line < 4096; ++line) {
++    const bool first = stable_selected(7, line);
++    assert(first == stable_selected(7, line));
++    assert(first == (stable_hash(7, line) < stable_hash_threshold()));
++    saw_selected |= first;
++    saw_filtered |= !first;
++  }
++  assert(saw_selected && saw_filtered);
++}
++
++static void test_drrip() {
++  unsigned srrip = 0, brrip = 0;
++  for (unsigned set = 0; set < 2048; ++set) {
++    leader_role role = drrip_leader_role(set, 2048);
++    srrip += role == SRRIP_LEADER_SET;
++    brrip += role == BRRIP_LEADER_SET;
++  }
++  assert(srrip == 32 && brrip == 32);
++  for (unsigned slot = 0; slot < 64; ++slot)
++    assert(drrip_leader_role(slot * 32, 2048) ==
++           ((slot & 1) ? BRRIP_LEADER_SET : SRRIP_LEADER_SET));
++
++  unsigned psel = 512;
++  drrip_train_psel(SRRIP_LEADER_SET, &psel);
++  assert(psel == 513);
++  drrip_train_psel(BRRIP_LEADER_SET, &psel);
++  assert(psel == 512);
++  for (unsigned i = 0; i < 2000; ++i)
++    drrip_train_psel(SRRIP_LEADER_SET, &psel);
++  assert(psel == 1023);
++  for (unsigned i = 0; i < 2000; ++i)
++    drrip_train_psel(BRRIP_LEADER_SET, &psel);
++  assert(psel == 0);
++
++  uint64_t counter = 0;
++  bool used_brrip = false;
++  for (unsigned i = 0; i < 64; ++i) {
++    const unsigned rrpv = drrip_insertion_rrpv(
++        BRRIP_LEADER_SET, 0, &counter, &used_brrip);
++    assert(used_brrip);
++    assert(rrpv == ((i % 32 == 0) ? 2U : 3U));
++  }
++  assert(counter == 64);
++  assert(drrip_insertion_rrpv(SRRIP_LEADER_SET, 1023, &counter,
++                              &used_brrip) == 2);
++  assert(!used_brrip && counter == 64);
++
++  std::vector<candidate> rows;
++  rows.push_back(row(0, false, false, 1, 0));
++  rows.push_back(row(1, false, false, 2, 0));
++  rows.push_back(row(2, false, false, 2, 0));
++  victim_result aged = choose_drrip_victim(&rows);
++  assert(aged.found && aged.index == 1 && aged.aging_rounds == 1);
++  assert(rows[0].rrpv == 2 && rows[1].rrpv == 3 && rows[2].rrpv == 3);
++  rows.push_back(row(7, true, false, 0, 0));
++  rows.push_back(row(8, true, false, 0, 0));
++  victim_result invalid = choose_drrip_victim(&rows);
++  assert(invalid.index == 8 && invalid.kind == VICTIM_INVALID);
++}
++
++static void test_gpu_event_contract() {
++  assert(event_promotes(EVENT_TRUE_VALID_SECTOR_HIT));
++  assert(!event_promotes(EVENT_SAME_TAG_SECTOR_MISS));
++  assert(!event_promotes(EVENT_HIT_RESERVED_MSHR_MERGE));
++  assert(!event_promotes(EVENT_RESERVATION_FAIL_RETRY));
++  assert(!event_promotes(EVENT_FILL));
++  assert(!event_promotes(EVENT_WRITEBACK_HIT));
++  assert(event_inserts(EVENT_NEW_LINE_ALLOCATION));
++  assert(!event_inserts(EVENT_SAME_TAG_SECTOR_MISS));
++  assert(!event_inserts(EVENT_HIT_RESERVED_MSHR_MERGE));
++  assert(!event_inserts(EVENT_RESERVATION_FAIL_RETRY));
++}
++
++int main() {
++  assert(policy_value_valid(POLICY_SHIP_SW));
++  assert(!ship_sw_contract_complete());
++  test_priority();
++  test_stable_selector();
++  test_drrip();
++  test_gpu_event_contract();
++  std::cout << "C16_STRONG_BASELINES_POLICY_TEST_PASS\n";
++  return 0;
++}
+diff --git a/src/gpgpu-sim/tests/test_c16_strong_baselines_tag_array.cc b/src/gpgpu-sim/tests/test_c16_strong_baselines_tag_array.cc
+new file mode 100644
+index 0000000..ad1672e
+--- /dev/null
++++ b/src/gpgpu-sim/tests/test_c16_strong_baselines_tag_array.cc
+@@ -0,0 +1,131 @@
++#include "../gpu-cache.h"
++
++#include <assert.h>
++
++#include <fstream>
++#include <iostream>
++#include <string>
++
++class exposed_c16_tag_array : public tag_array {
++ public:
++  explicit exposed_c16_tag_array(cache_config &config)
++      : tag_array(config, 0, 0) {}
++
++  void install(unsigned index, new_addr_type address, unsigned rrpv,
++               bool priority) {
++    mem_access_sector_mask_t sector;
++    sector.set(0);
++    mem_access_byte_mask_t bytes;
++    cache_block_t *block = get_block(index);
++    block->allocate(address, address, 1, sector);
++    block->fill(2, sector, bytes);
++    m_c16_rrpv[index] = rrpv;
++    if (priority) {
++      m_c16_priority_state[index] = 2;
++      ++m_c16_diagnostics.priority_resident;
++      m_c16_diagnostics.priority_peak_resident =
++          m_c16_diagnostics.priority_resident;
++      m_c16_diagnostics.priority_peak_resident_plus_pending =
++          m_c16_diagnostics.priority_resident;
++    }
++    c16_baseline_verify();
++  }
++
++  cache_request_status probe_sector(new_addr_type address, unsigned sector,
++                                    unsigned *index, bool probe_mode) const {
++    mem_access_sector_mask_t mask;
++    mask.set(sector);
++    return c16_baseline_probe(address, *index, mask, false, probe_mode, NULL);
++  }
++
++  unsigned rrpv(unsigned index) const { return m_c16_rrpv[index]; }
++  uint64_t resident() const { return m_c16_diagnostics.priority_resident; }
++};
++
++static std::string write_sidecar(const char *path) {
++  std::ofstream out(path, std::ios::binary);
++  out << "ORACLE_ELASTIC_QWEIGHT_RESIDENCY_V1\t1\tMODELED_L2_GET_ADDR\n";
++  const uint64_t region_bytes = 265216ULL * 128;
++  const uint64_t stride = region_bytes + 128;
++  for (unsigned target_class = 1; target_class <= 28; ++target_class) {
++    const uint64_t begin = 0x100000000ULL + (target_class - 1) * stride;
++    out << "0x" << std::hex << begin << "\t0x" << begin + region_bytes
++        << std::dec << "\tlayer" << target_class - 1 << "\t"
++        << target_class << "\n";
++  }
++  out.close();
++  return oracle_elastic_residency::oracle_config::sha256_file(path);
++}
++
++static cache_config make_config(unsigned policy, const char *sidecar,
++                                const char *digest) {
++  static char config_string[] = "S:64:128:4,L:B:m:L:L,A:8:8,8:8,32";
++  cache_config config;
++  config.m_config_string = config_string;
++  config.init(config_string, FuncCachePreferNone);
++  config.m_oracle_elastic_enable = false;
++  config.m_oracle_elastic_sidecar = const_cast<char *>(sidecar);
++  config.m_oracle_elastic_sidecar_sha256 = const_cast<char *>(digest);
++  config.init_oracle_elastic(1);
++  config.m_c16_baseline_enable = true;
++  config.m_c16_baseline_policy = policy;
++  config.m_c16_baseline_diagnostics = true;
++  config.init_c16_strong_baseline(1);
++  return config;
++}
++
++int main() {
++  const char *sidecar = "/tmp/c16_strong_baseline_sidecar.tsv";
++  const std::string digest = write_sidecar(sidecar);
++
++  cache_config priority = make_config(
++      c16_strong_baselines::POLICY_PRIORITY_STABLE, sidecar, digest.c_str());
++  assert(priority.c16_baseline_enabled());
++  assert(std::string(priority.c16_baseline_policy_name()) ==
++         "PRIORITY_STABLE");
++  exposed_c16_tag_array priority_tags(priority);
++  priority_tags.install(0, 0x1000, 3, true);
++  assert(priority_tags.resident() == 1);
++  mem_access_sector_mask_t sector0;
++  sector0.set(0);
++  priority_tags.oracle_invalidate_line(0, sector0);
++  assert(priority_tags.resident() == 0);
++
++  cache_config drrip = make_config(c16_strong_baselines::POLICY_DRRIP,
++                                   sidecar, digest.c_str());
++  exposed_c16_tag_array tags(drrip);
++  tags.install(0, 0x0000, 1, false);
++  tags.install(1, 0x0080, 2, false);
++  tags.install(2, 0x0100, 2, false);
++  tags.install(3, 0x0180, 2, false);
++  unsigned victim = 0;
++  assert(tags.probe_sector(0x2000, 0, &victim, true) == MISS);
++  assert(tags.rrpv(0) == 1 && tags.rrpv(1) == 2);
++  assert(tags.probe_sector(0x2000, 0, &victim, false) == MISS);
++  assert(victim == 1);
++  assert(tags.rrpv(0) == 2 && tags.rrpv(1) == 3);
++
++  // Same tag / different invalid sector is a sector miss and does not run
++  // the new-line victim path or alter line-granular RRPV.
++  unsigned index = 0;
++  const unsigned before = tags.rrpv(0);
++  assert(tags.probe_sector(0x0000, 1, &index, false) == SECTOR_MISS);
++  assert(index == 0 && tags.rrpv(0) == before);
++
++  FILE *stats = tmpfile();
++  assert(stats != NULL);
++  unsigned accesses = 0, misses = 0;
++  tags.print(stats, accesses, misses);
++  rewind(stats);
++  std::string text;
++  char buffer[4096];
++  while (fgets(buffer, sizeof(buffer), stats)) text += buffer;
++  fclose(stats);
++  assert(text.find("c16_strong_baseline_l2") != std::string::npos);
++  assert(text.find("policy=DRRIP") != std::string::npos);
++  assert(text.find("drrip_psel=512") != std::string::npos);
++
++  remove(sidecar);
++  std::cout << "C16_STRONG_BASELINES_TAG_ARRAY_TEST_PASS\n";
++  return 0;
++}
