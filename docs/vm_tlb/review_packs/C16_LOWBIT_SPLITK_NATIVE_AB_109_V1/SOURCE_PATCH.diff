@@ -1,0 +1,76 @@
+diff -ruN ../build/pristine/awq_ext/quantization/gemm_cuda_gen.cu ./awq_ext/quantization/gemm_cuda_gen.cu
+--- ../build/pristine/awq_ext/quantization/gemm_cuda_gen.cu	2024-11-27 01:24:31.000000000 +0800
++++ ./awq_ext/quantization/gemm_cuda_gen.cu	2026-09-28 11:32:48.241657262 +0800
+@@ -1237,6 +1237,9 @@
+     torch::Tensor _zeros,
+     int split_k_iters)
+ {
++    if (split_k_iters != 1)
++        throw std::invalid_argument("C16 NO_SPLIT1_DIRECT_OUTPUT requires split_k_iters=1");
++
+     int num_in_feats = _in_feats.size(0);
+     int num_in_channels = _in_feats.size(1);
+     const at::cuda::OptionalCUDAGuard device_guard(device_of(_in_feats));
+@@ -1284,5 +1287,5 @@
+         gemm_forward_4bit_cuda_m16n64k32<<<num_blocks, threads_per_block, 0, stream>>>(
+             group_size, split_k_iters, in_feats, kernel, scaling_factors, zeros, num_in_feats, num_in_channels, num_out_channels, out_feats);
+     }
+-    return _out_feats.sum(0);
++    return _out_feats.select(0, 0);
+ }
+diff -ruN ../build/pristine/setup_split1.py ./setup_split1.py
+--- ../build/pristine/setup_split1.py	1970-01-01 08:00:00.000000000 +0800
++++ ./setup_split1.py	2026-09-28 11:29:50.035945257 +0800
+@@ -0,0 +1,52 @@
++import os
++from setuptools import setup
++import torch
++from torch.utils.cpp_extension import BuildExtension, CUDAExtension
++
++source_root = os.path.dirname(os.path.abspath(__file__))
++generator_flag = []
++if os.path.exists(os.path.join(torch.__path__[0], "include", "ATen", "CUDAGeneratorImpl.h")):
++    generator_flag = ["-DOLD_GENERATOR_PATH"]
++
++common_flags = [
++    "-O3",
++    "-std=c++17",
++    "-DENABLE_BF16",
++    "-U__CUDA_NO_HALF_OPERATORS__",
++    "-U__CUDA_NO_HALF_CONVERSIONS__",
++    "-U__CUDA_NO_BFLOAT16_OPERATORS__",
++    "-U__CUDA_NO_BFLOAT16_CONVERSIONS__",
++    "-U__CUDA_NO_BFLOAT162_OPERATORS__",
++    "-U__CUDA_NO_BFLOAT162_CONVERSIONS__",
++    "--expt-relaxed-constexpr",
++    "--expt-extended-lambda",
++    "--use_fast_math",
++    "-gencode",
++    "arch=compute_89,code=sm_89",
++] + generator_flag
++
++setup(
++    name="c16_awq_split1",
++    version="0.0.9+c16split1",
++    ext_modules=[
++        CUDAExtension(
++            "awq_split1_ext",
++            [
++                "awq_ext/pybind_awq.cpp",
++                "awq_ext/quantization/gemm_cuda_gen.cu",
++                "awq_ext/layernorm/layernorm.cu",
++                "awq_ext/position_embedding/pos_encoding_kernels.cu",
++                "awq_ext/quantization/gemv_cuda.cu",
++                "awq_ext/vllm/moe_alig_block.cu",
++                "awq_ext/vllm/activation.cu",
++                "awq_ext/vllm/topk_softmax_kernels.cu",
++            ],
++            include_dirs=[source_root],
++            extra_compile_args={
++                "cxx": ["-g", "-O3", "-fopenmp", "-lgomp", "-std=c++17", "-DENABLE_BF16"],
++                "nvcc": common_flags,
++            },
++        )
++    ],
++    cmdclass={"build_ext": BuildExtension},
++)

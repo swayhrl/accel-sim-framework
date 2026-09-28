@@ -1,0 +1,18 @@
+{
+  "automatic_expansion": false,
+  "claim_boundary": "Layer0 up_proj/down_proj M1/M256 native split8-vs-split1 module result only; no unique E1 cause, full-model speedup, new algorithm, Lane 4 explanation, or L2 mechanism proof.",
+  "decision": "OPERATOR_SPECIFIC_SPLIT_POLICY_ONLY",
+  "gates": {
+    "correctness_all_four": true,
+    "down_proj_M256_improvement_exceeds_larger_cv": false,
+    "down_proj_M256_improvement_ge_5pct": false,
+    "launch_contract_all": true,
+    "neither_M1_regresses_gt_5pct": false,
+    "no_per_kernel_contradiction": true,
+    "up_proj_M256_improvement_exceeds_larger_cv": true,
+    "up_proj_M256_improvement_ge_5pct": true,
+    "up_proj_M256_l2_or_dram_lower": true
+  },
+  "h1_supported_bounded": false,
+  "reason": "Only up_proj M256 clears the preregistered material timing gate; down_proj M256 does not, and both M1 points regress by more than 5%."
+}

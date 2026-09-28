@@ -1,0 +1,4 @@
+arm	kernel_order	kernel_name	block_size	grid_size	l1tex_bytes	lts_bytes	dram_bytes	duration_ns	registers_per_thread	static_shared_bytes	dynamic_shared_bytes	l1tex_unit	lts_unit	dram_unit	duration_unit
+A	0	gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)	(32, 2, 1)	(18944, 1, 1)	1294860288	1158028384	103424128	637216	72	9984	0	byte	byte	byte	ns
+A	1	void at::reduce_kernel<128, 4, at::ReduceOp<c10::Half, at::func_wrapper_t<c10::Half, at::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, 4>>(T3)	(32, 4, 1)	(9472, 1, 1)	116391936	107549408	75175296	119200	44	16	0	byte	byte	byte	ns
+B	0	gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)	(32, 2, 1)	(2368, 1, 1)	1023279104	910524608	301312	549472	72	9984	0	byte	byte	byte	ns
