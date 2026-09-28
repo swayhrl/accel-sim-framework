@@ -1,0 +1,49 @@
+{
+  "candidates": [
+    {
+      "metric": "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+      "semantics": "# of LTS sectors from unit TEX for reads that hit",
+      "unit": "sector"
+    },
+    {
+      "metric": "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+      "semantics": "# of LTS sectors from unit TEX for reads that missed",
+      "unit": "sector"
+    }
+  ],
+  "chip": "ad103 (RTX4080/SM89)",
+  "committed_query_output": {
+    "compression": "gzip -n",
+    "path": "NCU_QUERY_SELECTED_SUFFIX.txt.gz",
+    "sha256": "694b716cd2293ab7fb509a0ffd694c4a72d34afcbed174a928c75dda072eccdf"
+  },
+  "cross_check_metrics": [
+    "l1tex__t_bytes.sum",
+    "lts__t_bytes.sum",
+    "dram__bytes.sum",
+    "gpu__time_duration.sum"
+  ],
+  "cuda_imported": false,
+  "decision_rule": "capacity-knee directionally consistent only if K2560->3072 B GEMM hit fraction decreases and miss sectors increase, while absolute A GEMM hit-fraction change is smaller; no causal significance threshold",
+  "derived_read_hit_fraction": "hit/(hit+miss)",
+  "gpu_lock_requested": false,
+  "ncu_version": "Version 2025.1.1.0 (build 35528883) (public-release)",
+  "not_tensor_attribution": true,
+  "query_command": [
+    "/opt/nvidia/nsight-compute/2025.1.1/target/linux-desktop-glibc_2_11_3-x64/ncu",
+    "--query-metrics",
+    "--query-metrics-mode",
+    "suffix",
+    "--chips",
+    "ad103",
+    "--metrics",
+    "lts__t_sectors_srcunit_tex_op_read_lookup_hit,lts__t_sectors_srcunit_tex_op_read_lookup_miss"
+  ],
+  "query_output_sha256": "738d9844c75a90e170a5fb9ef578ffe10ffd4c8a7ba665bdea2ce619c2a2c0c3",
+  "scope": "per selected kernel row; srcunit TEX op_read L2 lookup behavior",
+  "selected_metrics": [
+    "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+    "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum"
+  ],
+  "status": "METRIC_SELECTION_PASS_GPU_AUTHORIZED"
+}
