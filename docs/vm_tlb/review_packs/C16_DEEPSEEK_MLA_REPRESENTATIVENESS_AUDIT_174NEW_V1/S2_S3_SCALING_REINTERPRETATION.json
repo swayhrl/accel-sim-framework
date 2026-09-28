@@ -1,0 +1,97 @@
+{
+  "S2": {
+    "active_lane_events": 7116816,
+    "executed_paths": 16,
+    "latent_equivalent_bytes": 2360448,
+    "median_events_per_executed_shard": 524544.0,
+    "positions": 2049,
+    "qk": {
+      "cache_after_key_storage_ptr": "0x7b23ea000000",
+      "current_append_positions": 1,
+      "key_operand_aliases_cache_storage": true,
+      "key_transposed_bytes": 12589056,
+      "key_transposed_shape": [
+        1,
+        16,
+        192,
+        2049
+      ],
+      "key_transposed_storage_ptr": "0x7b23ea000000",
+      "output_bytes": 65568,
+      "output_shape": [
+        1,
+        16,
+        1,
+        2049
+      ],
+      "persistent_prefix_positions": 2048,
+      "query_bytes": 6144,
+      "query_shape": [
+        1,
+        16,
+        1,
+        192
+      ]
+    },
+    "runtime_cache_bytes": 20981760,
+    "selected_paths": 20
+  },
+  "S3": {
+    "active_lane_events": 113785872,
+    "executed_paths": 24,
+    "latent_equivalent_bytes": 9438336,
+    "median_events_per_executed_shard": 4194432.0,
+    "positions": 8193,
+    "qk": {
+      "cache_after_key_storage_ptr": "0x7a6777000000",
+      "current_append_positions": 1,
+      "key_operand_aliases_cache_storage": true,
+      "key_transposed_bytes": 50337792,
+      "key_transposed_shape": [
+        1,
+        16,
+        192,
+        8193
+      ],
+      "key_transposed_storage_ptr": "0x7a6777000000",
+      "output_bytes": 262176,
+      "output_shape": [
+        1,
+        16,
+        1,
+        8193
+      ],
+      "persistent_prefix_positions": 8192,
+      "query_bytes": 6144,
+      "query_shape": [
+        1,
+        16,
+        1,
+        192
+      ]
+    },
+    "runtime_cache_bytes": 83896320,
+    "selected_paths": 131
+  },
+  "accepted_v27_relation": "DIFFERENT_FUNCTION_NOT_DIRECTLY_COMPARABLE",
+  "accepted_v30_scope": "mixed_QK_MLA_replay_local",
+  "prohibitions": [
+    "active-lane events are not DRAM bytes",
+    "no TLB miss inference",
+    "no cache/TLB mechanism authorization",
+    "no direct S2/S3 function equivalence"
+  ],
+  "ratios": {
+    "active_lane_events": 15.988311626997241,
+    "cache_after_length": 3.998535871156662,
+    "context_prefill_length": 4.0,
+    "events_per_runtime_cache_byte": 3.9985415017353043,
+    "executed_paths": 1.5,
+    "latent_equivalent_bytes": 3.998535871156662,
+    "median_events_per_executed_shard": 7.996339677891655,
+    "runtime_cache_bytes": 3.998535871156662,
+    "selected_paths": 6.55
+  },
+  "reinterpretation": "约15.99倍lane-event增长含有约4倍上下文/缓存长度增长，但还叠加了static set、executed path与kernel实现变化；它不是纯上下文比例，更不是DRAM字节或MLA固有流量。",
+  "status": "PASS_REINTERPRETED"
+}

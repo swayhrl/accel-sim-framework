@@ -1,0 +1,44 @@
+{
+  "accepted_implementation_specific": "kv_b_proj expansion and RoPE replication before DynamicCache.update; full per-head persistent cache",
+  "accepted_runtime_bytes_per_token": 10240,
+  "actual_cache": "BF16 key [B,16,T,192] plus value [B,16,T,128]",
+  "existing_results_justify_cache_tlb_mechanism": false,
+  "future_research": {
+    "gpu_authorized": false,
+    "mechanism_design_authorized": false,
+    "scope": "one minimal matched expanded-cache versus latent-cache implementation comparison",
+    "worthwhile": true
+  },
+  "goal": "C16_DEEPSEEK_MLA_REPRESENTATIVENESS_AUDIT_174NEW_V1",
+  "latent_bytes_per_token": 1152,
+  "mla_intrinsic": "512-d compressed latent plus separate 64-d RoPE component, 16-head reconstruction semantics, and token-count growth with context",
+  "runtime_over_latent_ratio": 8.88888888888889,
+  "source_conclusion": {
+    "accepted": {
+      "accepted_runtime_retains_canonical_mla_compressed_cache_advantage": false,
+      "cache_update_arguments": [
+        "key_states [B,16,T,192]",
+        "value_states [B,16,T,128]"
+      ],
+      "cached_representation": "expanded full per-head key/value",
+      "compressed_kv_produced_first": true,
+      "compressed_latent_cached": false,
+      "expanded_by_kv_b_proj_before_cache": true,
+      "source_anchors": "compressed_first:831,split_latent_rope:833,expand_before_cache:837,assemble_full_key:862,cache_full_key_value:867,qk_full_key:872"
+    },
+    "later": {
+      "cache_update_arguments": [
+        "k_nope [B,1,T,512]",
+        "k_pe [B,1,T,64]"
+      ],
+      "commit": "07338b6c74a578868368e6e549dea83414e4b8cb",
+      "commit_date": "2026-09-27T15:14:25+02:00",
+      "context_only": true,
+      "expansion_order": "after cache update/read",
+      "no_performance_claim": true,
+      "shows_expanded_cache_is_avoidable_by_later_public_implementation": true
+    }
+  },
+  "status": "PASS",
+  "user_facing_conclusion_zh": "V26/V27实际缓存的是展开后的16头K/V，而不是MLA的压缩latent；约15.99倍lane-event增长是上下文与实现变化的混合结果，不能泛化为MLA固有流量。"
+}

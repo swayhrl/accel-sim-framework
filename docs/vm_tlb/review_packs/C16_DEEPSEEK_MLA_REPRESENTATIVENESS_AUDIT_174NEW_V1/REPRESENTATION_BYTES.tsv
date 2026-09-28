@@ -1,0 +1,17 @@
+scenario	positions	level	component	bf16_dims_per_token	bytes_per_token	total_bytes	runtime_over_latent_ratio	included_in_level_total	note
+S2	2049	model_semantic_latent	compressed_non_rope_latent	512	1024	2098176	NA	yes	joint low-rank source for reconstructed no-PE key and value
+S2	2049	model_semantic_latent	shared_rope_key	64	128	262272	NA	yes	one shared RoPE key component; not replicated across heads
+S2	2049	model_semantic_latent	latent_total	576	1152	2360448	NA	total	512+64; no double counting
+S2	2049	accepted_runtime_cache	expanded_key_nope	2048	4096	8392704	NA	yes	per-head no-PE key
+S2	2049	accepted_runtime_cache	replicated_key_rope	1024	2048	4196352	NA	yes	64-d RoPE key copied across 16 heads
+S2	2049	accepted_runtime_cache	expanded_value	2048	4096	8392704	NA	yes	per-head value
+S2	2049	accepted_runtime_cache	runtime_total	5120	10240	20981760	8.88888888888889	total	expanded key 6144 B + value 4096 B
+S2	2049	immediate_qk_consumer	key_transposed_view	3072	6144	12589056	NA	alias	transpose view aliases cached expanded key; not additional cache storage
+S3	8193	model_semantic_latent	compressed_non_rope_latent	512	1024	8389632	NA	yes	joint low-rank source for reconstructed no-PE key and value
+S3	8193	model_semantic_latent	shared_rope_key	64	128	1048704	NA	yes	one shared RoPE key component; not replicated across heads
+S3	8193	model_semantic_latent	latent_total	576	1152	9438336	NA	total	512+64; no double counting
+S3	8193	accepted_runtime_cache	expanded_key_nope	2048	4096	33558528	NA	yes	per-head no-PE key
+S3	8193	accepted_runtime_cache	replicated_key_rope	1024	2048	16779264	NA	yes	64-d RoPE key copied across 16 heads
+S3	8193	accepted_runtime_cache	expanded_value	2048	4096	33558528	NA	yes	per-head value
+S3	8193	accepted_runtime_cache	runtime_total	5120	10240	83896320	8.88888888888889	total	expanded key 6144 B + value 4096 B
+S3	8193	immediate_qk_consumer	key_transposed_view	3072	6144	50337792	NA	alias	transpose view aliases cached expanded key; not additional cache storage
