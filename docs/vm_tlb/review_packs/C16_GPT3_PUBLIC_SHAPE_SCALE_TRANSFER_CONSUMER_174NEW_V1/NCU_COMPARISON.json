@@ -1,8 +1,79 @@
 {
-  "claim_boundary": "raw NCU rows only; GEMM/reduction separate; no tensor attribution",
-  "new_dense": null,
-  "new_w4": null,
-  "old_qwen_source": "3aad5887b9b4c5bec801962bf8035fed9d485f47:docs/vm_tlb/review_packs/C16_SPLITK_MEMORY_STATE_INTERACTION_109_V1/NCU_SUMMARY.json",
-  "schema_version": 1,
-  "status": "WAITING_FOR_ACCEPTED_PRODUCER_RAW"
+  "claim_boundary": "kernel rows summed by point/cell; no tensor attribution or unique L2 causality",
+  "dense": {
+    "CONTRACT_M256": {
+      "dram_bytes": 1292366592,
+      "duration_ns": 3848800,
+      "kernel_count": 1,
+      "l1tex_bytes": 3655394304,
+      "lts_bytes": 3656062976
+    },
+    "EXPAND_M256": {
+      "dram_bytes": 1430335744,
+      "duration_ns": 3954016,
+      "kernel_count": 1,
+      "l1tex_bytes": 4857004032,
+      "lts_bytes": 4857918816
+    }
+  },
+  "producer_commit": "1544018d967003c2825eb69f56440f641f5f5581",
+  "status": "PASS_RAW_ROWS_RECOMPUTED",
+  "w4": {
+    "CONTRACT_M256:A_E": {
+      "dram_bytes": 667106560,
+      "duration_ns": 4709056,
+      "kernel_count": 2,
+      "l1tex_bytes": 9034530816,
+      "lts_bytes": 8251724000
+    },
+    "CONTRACT_M256:A_W": {
+      "dram_bytes": 653346816,
+      "duration_ns": 4702784,
+      "kernel_count": 2,
+      "l1tex_bytes": 9034530816,
+      "lts_bytes": 8252032128
+    },
+    "CONTRACT_M256:B_E": {
+      "dram_bytes": 2216837504,
+      "duration_ns": 6155008,
+      "kernel_count": 1,
+      "l1tex_bytes": 8782872576,
+      "lts_bytes": 7862773920
+    },
+    "CONTRACT_M256:B_W": {
+      "dram_bytes": 2217370112,
+      "duration_ns": 6151488,
+      "kernel_count": 1,
+      "l1tex_bytes": 8782872576,
+      "lts_bytes": 7868314496
+    },
+    "EXPAND_M256:A_E": {
+      "dram_bytes": 969536000,
+      "duration_ns": 5364576,
+      "kernel_count": 2,
+      "l1tex_bytes": 9865003008,
+      "lts_bytes": 8972141152
+    },
+    "EXPAND_M256:A_W": {
+      "dram_bytes": 944594432,
+      "duration_ns": 5352896,
+      "kernel_count": 2,
+      "l1tex_bytes": 9865003008,
+      "lts_bytes": 8971505952
+    },
+    "EXPAND_M256:B_E": {
+      "dram_bytes": 2974139008,
+      "duration_ns": 7855328,
+      "kernel_count": 1,
+      "l1tex_bytes": 8858370048,
+      "lts_bytes": 7914371328
+    },
+    "EXPAND_M256:B_W": {
+      "dram_bytes": 2992685440,
+      "duration_ns": 8025216,
+      "kernel_count": 1,
+      "l1tex_bytes": 8858370048,
+      "lts_bytes": 7920649920
+    }
+  }
 }
