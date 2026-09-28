@@ -34,11 +34,15 @@ Lane5的`MINIMAL_NATIVE_AB_PLAN.md`仍保持当时DESIGN_ONLY，不回写历史�
 
 ### F. Lane6相邻non-detection不能扩大成全部时间结构不存在
 
-FINAL_DECISION中的question_answer具体限制在adjacent-set correlation。后续聊天发现lag11候选，属于post-hoc新问题；本轮未见新的终局交付，不用聊天计算替代正式audit，也不据其宣布cache机会。[S40/C0]
+V1的question_answer具体限制在adjacent-set correlation。后续正式post-hoc审计已确认OLMoE Layer1 lag11结构：lag11 mean Jaccard 0.928042，高于同lag shuffle p95 0.313967；但generation origin仍未闭合。两条结论必须同时保留：`NO_EXTRA_ADJACENT_ORDERING_SIGNAL_RESOLVED`并不否定lag11，而`POSTHOC_PERIOD11_SIGNAL_CONFIRMED`也不构成跨模型MoE规律或cache机会证明。[S40/S42]
 
 ### G. 记录数量不代表科学证据数量
 
 不同producer/consumer提交可能是同一批raw的独立检查；variant修复、coordination、transport retry不是新的workload；候选相对不同baseline也不是独立机制。70条总账保留这些区别，291条分支清单仅用于找入口。[B0]
+
+### H. Period11来源缺口来自旧producer provenance，而不是统计计算缺失
+
+S42已完整报告lag 1–16及shuffle control，统计复算层面没有必要再次围绕lag11重复做更多排列检验。真正缺的是V34当时没有durably保留的generation runner、KV transition、sampling/seed/EOS/stopping语义。后续若要重开，应优先补独立、可追溯的routing-only capture或来源复现，而不是继续在同一32-step序列上增加更多post-hoc指标。[S42]
 
 ## 3. 保留而不擅自调和的分歧
 
