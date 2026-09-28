@@ -1,0 +1,128 @@
+{
+  "automatic_gpu_expansion": false,
+  "cache_opportunity_claim": false,
+  "claim_boundary": "one OLMoE revision, four predeclared 2048-token prompt families, explicit greedy cached decode, routing provenance only",
+  "control_state": "PROSPECTIVE_OUTPUT_REPRODUCIBILITY_AND_HOOK_NEUTRALITY_PASS",
+  "cross_layer_summary": {
+    "C1_CODE_ALLLAYER": {
+      "layer1": {
+        "any_above_shuffle_p95": true,
+        "dominant_above_p95_jaccard": 0.9259259259259259,
+        "dominant_above_p95_lag": 16,
+        "dominant_lag_all": 16,
+        "dominant_mean_jaccard": 0.9259259259259259,
+        "lag11_above_shuffle_p95": false,
+        "lag11_mean_jaccard": 0.18028009726122932,
+        "lag11_shuffle_p95": 0.23041750702128055,
+        "layer_id": 1,
+        "prompt_id": "P_CODE",
+        "session_id": "C1_CODE_ALLLAYER"
+      },
+      "layers_any_above_p95": 16,
+      "layers_dominant_above_p95_lag11": 0,
+      "layers_lag11_above_p95": 0
+    },
+    "P1_PROSE_ALLLAYER": {
+      "layer1": {
+        "any_above_shuffle_p95": true,
+        "dominant_above_p95_jaccard": 0.2229400229400229,
+        "dominant_above_p95_lag": 1,
+        "dominant_lag_all": 1,
+        "dominant_mean_jaccard": 0.2229400229400229,
+        "lag11_above_shuffle_p95": true,
+        "lag11_mean_jaccard": 0.17134102794480152,
+        "lag11_shuffle_p95": 0.16421253798612287,
+        "layer_id": 1,
+        "prompt_id": "P_PROSE",
+        "session_id": "P1_PROSE_ALLLAYER"
+      },
+      "layers_any_above_p95": 15,
+      "layers_dominant_above_p95_lag11": 0,
+      "layers_lag11_above_p95": 3
+    },
+    "S1_STRUCTURED_ALLLAYER": {
+      "layer1": {
+        "any_above_shuffle_p95": true,
+        "dominant_above_p95_jaccard": 0.879030303030303,
+        "dominant_above_p95_lag": 14,
+        "dominant_lag_all": 14,
+        "dominant_mean_jaccard": 0.879030303030303,
+        "lag11_above_shuffle_p95": false,
+        "lag11_mean_jaccard": 0.1596654917409634,
+        "lag11_shuffle_p95": 0.26127338070734296,
+        "layer_id": 1,
+        "prompt_id": "P_STRUCTURED",
+        "session_id": "S1_STRUCTURED_ALLLAYER"
+      },
+      "layers_any_above_p95": 16,
+      "layers_dominant_above_p95_lag11": 0,
+      "layers_lag11_above_p95": 0
+    },
+    "T2_TEXT_ALLLAYER": {
+      "layer1": {
+        "any_above_shuffle_p95": true,
+        "dominant_above_p95_jaccard": 0.9428571428571428,
+        "dominant_above_p95_lag": 22,
+        "dominant_lag_all": 22,
+        "dominant_mean_jaccard": 0.9428571428571428,
+        "lag11_above_shuffle_p95": true,
+        "lag11_mean_jaccard": 0.9387840670859539,
+        "lag11_shuffle_p95": 0.30047853613891334,
+        "layer_id": 1,
+        "prompt_id": "P_TEXT",
+        "session_id": "T2_TEXT_ALLLAYER"
+      },
+      "layers_any_above_p95": 16,
+      "layers_dominant_above_p95_lag11": 9,
+      "layers_lag11_above_p95": 16
+    }
+  },
+  "decision": "PERIOD11_REPRODUCED_ACROSS_INPUT_FAMILIES",
+  "historical_comparison_label": "HISTORICAL_V34_SEQUENCE_PARTIALLY_REPRODUCED",
+  "performance_claim": false,
+  "prompt_strongest_lags": {
+    "P_CODE": {
+      "full_lags": [
+        32
+      ],
+      "full_rate": 0.8611111111111112,
+      "tail256_lags": [
+        16
+      ],
+      "tail256_rate": 0.8625
+    },
+    "P_PROSE": {
+      "full_lags": [
+        9
+      ],
+      "full_rate": 0.028445316331535065,
+      "tail256_lags": [
+        32
+      ],
+      "tail256_rate": 0.09821428571428571
+    },
+    "P_STRUCTURED": {
+      "full_lags": [
+        14
+      ],
+      "full_rate": 0.8569321533923304,
+      "tail256_lags": [
+        14
+      ],
+      "tail256_rate": 0.8553719008264463
+    },
+    "P_TEXT": {
+      "full_lags": [
+        11
+      ],
+      "full_rate": 0.8306332842415317,
+      "tail256_lags": [
+        22
+      ],
+      "tail256_rate": 0.9102564102564102
+    }
+  },
+  "reason": "Prospective P_TEXT Layer1 lag11 exceeds shuffle p95 and the same predeclared Layer1 criterion holds for at least one alternative input family.",
+  "run_id": "C16R_olmoe-routing-provenance-multiround-v1_20260928T092536Z_c91846a955f5",
+  "scientific_status": "PRODUCER_SELF_CHECK_PENDING_INDEPENDENT_174NEW_RECOMPUTE"
+}

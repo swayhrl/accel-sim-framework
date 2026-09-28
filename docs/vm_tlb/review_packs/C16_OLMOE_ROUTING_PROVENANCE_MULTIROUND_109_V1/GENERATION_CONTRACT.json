@@ -1,0 +1,91 @@
+{
+  "analysis": {
+    "lags": [
+      1,
+      32
+    ],
+    "permutations": 1000,
+    "shuffle_seed": 20260928
+  },
+  "batch_size": 1,
+  "decode_cap": 64,
+  "decoding": "greedy exact argmax",
+  "dtype": "torch.bfloat16",
+  "executed_runtime": {
+    "attention_backend": "sdpa",
+    "cache_class": "transformers.cache_utils.DynamicCache",
+    "dtype": "torch.bfloat16",
+    "python": "3.12.3",
+    "torch": "2.7.1+cu126",
+    "torch_cuda": "12.6",
+    "transformers": "4.55.0"
+  },
+  "goal": "C16_OLMOE_ROUTING_PROVENANCE_MULTIROUND_109_V1",
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "input_freeze_manifest_sha256": "2550314fd25b26c9553100854ebc3d05549487ff4f5dd0427cbd44113d7b8567",
+  "model_id": "allenai/OLMoE-1B-7B-0125-Instruct",
+  "model_revision": "b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e",
+  "natural_eos": true,
+  "natural_eos_ids": [
+    50279
+  ],
+  "one_model_load": true,
+  "one_outer_lock": true,
+  "pre_gpu_authority_receipt_sha256": "e997257168da193309a8fb4e92eef8850e402dd8404fe79993f3d297452f1152",
+  "prompt_tokens": 2048,
+  "routing": {
+    "experts": 64,
+    "experts_per_token": 8,
+    "layers": "all 16 MoE layers",
+    "natural_only": true
+  },
+  "run_id": "C16R_olmoe-routing-provenance-multiround-v1_20260928T092536Z_c91846a955f5",
+  "runner_sha256": "81cacc3cbccdd8726562e94175f114ca86b81caeb1dd3bf5e49f57789fa43d47",
+  "runtime": {
+    "modeling_olmoe_sha256": "413888fc3be7e037727586f25900b629cc5dbc06b227a4f0d42c67cacb597bc7",
+    "python": "3.12.3",
+    "torch": "2.7.1+cu126",
+    "torch_cuda": "12.6",
+    "transformers": "4.55.0"
+  },
+  "sampling": false,
+  "sessions": [
+    {
+      "capture": false,
+      "prompt_id": "P_TEXT",
+      "session_id": "T0_NOHOOK_A"
+    },
+    {
+      "capture": false,
+      "prompt_id": "P_TEXT",
+      "session_id": "T1_NOHOOK_B"
+    },
+    {
+      "capture": true,
+      "prompt_id": "P_TEXT",
+      "session_id": "T2_TEXT_ALLLAYER"
+    },
+    {
+      "capture": true,
+      "prompt_id": "P_CODE",
+      "session_id": "C1_CODE_ALLLAYER"
+    },
+    {
+      "capture": true,
+      "prompt_id": "P_STRUCTURED",
+      "session_id": "S1_STRUCTURED_ALLLAYER"
+    },
+    {
+      "capture": true,
+      "prompt_id": "P_PROSE",
+      "session_id": "P1_PROSE_ALLLAYER"
+    }
+  ],
+  "source_commits": {
+    "asset": "ca683527323e26e3415a805c797c53c5edea322c",
+    "prose": "a306e1271c3e70c2ee322a3582979b6abd777a72",
+    "v34": "ab26365dc663268b0799818db6687ed466e8c925"
+  },
+  "status": "PREREGISTERED_BEFORE_GPU_EXECUTION",
+  "use_cache": true
+}
