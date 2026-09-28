@@ -1,0 +1,116 @@
+{
+  "S2": {
+    "grid_x": 16392,
+    "storage": {
+      "attention_backend": "eager",
+      "k_post": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          1,
+          8,
+          2049,
+          128
+        ],
+        "storage_bytes": 4196352
+      },
+      "repeat_k": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          1,
+          32,
+          2049,
+          128
+        ],
+        "storage_bytes": 16785408
+      },
+      "transformers": "4.51.0"
+    },
+    "total_active_lane_events": 16785408
+  },
+  "S3": {
+    "grid_x": 65544,
+    "storage": {
+      "attention_backend": "eager",
+      "k_post": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          1,
+          8,
+          8193,
+          128
+        ],
+        "storage_bytes": 16779264
+      },
+      "repeat_k": {
+        "dtype": "torch.bfloat16",
+        "shape": [
+          1,
+          32,
+          8193,
+          128
+        ],
+        "storage_bytes": 67117056
+      },
+      "transformers": "4.51.0"
+    },
+    "total_active_lane_events": 67117056
+  },
+  "endpoint_note": "approximately 4x, not exactly 4x: sequence extent is 2049 -> 8193",
+  "evidence_class": "KV_STORAGE_DIRECT_READ",
+  "prohibitions": [
+    "no cross-replay VA union",
+    "no cross-shard chronology",
+    "no reconstructed reuse distance",
+    "no DRAM bytes inferred from lane events",
+    "page descriptors are not TLB miss rates"
+  ],
+  "page_and_line_distribution_table": "PAGE_FOOTPRINT_DESCRIPTORS.tsv",
+  "per_executed_shard_event_distributions": {
+    "S2": {
+      "max": 2098176,
+      "median": 2098176,
+      "min": 2098176,
+      "p25": 2098176,
+      "p75": 2098176,
+      "p90": 2098176
+    },
+    "S3": {
+      "max": 8389632,
+      "median": 8389632,
+      "min": 8389632,
+      "p25": 8389632,
+      "p75": 8389632,
+      "p90": 8389632
+    }
+  },
+  "ratios": {
+    "events_s3_over_s2": 3.998535871156662,
+    "grid_s3_over_s2": 3.998535871156662,
+    "k_post_storage_s3_over_s2": 3.998535871156662,
+    "repeat_k_storage_s3_over_s2": 3.998535871156662
+  },
+  "semantic_target": "layer0.self_attn.repeat_kv(K)",
+  "static_indices": [
+    237,
+    241,
+    475,
+    479,
+    713,
+    717,
+    950,
+    953
+  ],
+  "static_set_identical": true,
+  "status": "PASS",
+  "tensor_expansion": {
+    "classification": "model/backend tensor-shape transformation; not measured traffic",
+    "num_attention_heads": 32,
+    "num_key_value_heads": 8,
+    "repeat_k_over_k_post_S2": 4.0,
+    "repeat_k_over_k_post_S3": 4.0
+  },
+  "typed_object_membership_fractions": {
+    "destination_KV_DERIVED_REPEAT_K": 1.0,
+    "source_KV_POST_UPDATE_K": 1.0
+  }
+}

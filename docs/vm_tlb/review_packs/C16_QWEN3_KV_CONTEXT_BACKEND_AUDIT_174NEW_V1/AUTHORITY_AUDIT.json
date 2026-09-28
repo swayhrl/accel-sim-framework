@@ -1,0 +1,122 @@
+{
+  "consumer_resource_use": {
+    "cpu_only": true,
+    "gpu_lock_requested": false,
+    "gpu_used": false,
+    "nvbit_ncu_nsys_run": false,
+    "single_worker": true
+  },
+  "coordination_commit": "f7d3be1c79c3089fe89f5668c0275654ddf55eb3",
+  "exact_transformers_source": {
+    "accepted_qwen3_head_binding": {
+      "authority": "accepted K-post/repeat-K receipt shapes [1,8,T,128] -> [1,32,T,128]",
+      "num_attention_heads": 32,
+      "num_key_value_groups": 4,
+      "num_key_value_heads": 8
+    },
+    "all_blob_ids_match": true,
+    "behavior": {
+      "eager": {
+        "anchor_lines": "modeling_qwen3.py:132-141,154-155,178,229-239",
+        "classification": "EXPLICIT_MATERIALIZATION",
+        "explicit_hf_repeat_kv": true
+      },
+      "flash_attention_2": {
+        "anchor_lines": "flash_attention.py:11-29,49-60",
+        "classification": "NO_EXPLICIT_HF_REPEAT_KV_PASSES_ORIGINAL_KV_HEAD_COUNT",
+        "explicit_hf_repeat_kv": false,
+        "passes_original_kv_heads": true
+      },
+      "flex_attention": {
+        "accepted_qwen3_fallback_fires": false,
+        "anchor_lines": "flex_attention.py:168-177,180-190,210-226",
+        "classification": "ENABLE_GQA_NO_EXPLICIT_REPEAT_FOR_ACCEPTED_POWER_OF_TWO_32_LOCAL_QUERY_HEADS",
+        "fallback_non_power_of_two": true,
+        "has_repeat_fallback": true,
+        "normal_path_enable_gqa": true
+      },
+      "sdpa": {
+        "anchor_lines": "sdpa_attention.py:6-15,29-31,54-62",
+        "classification": "EXPLICIT_MATERIALIZATION_BEFORE_PYTORCH_SDPA",
+        "explicit_hf_repeat_kv": true
+      }
+    },
+    "declared_tag": "v4.51.0",
+    "exact_blob_count": 4,
+    "remote_tag_ref_roundtrip": "NOT_REPEATED_AFTER_EXACT_COMMIT_AND_TREE_BLOB_MATCH; initial ls-remote timed out",
+    "status": "PASS",
+    "tree_commit": "0720e206c6ba28887e4d60ef60a6a089f6c1cc76"
+  },
+  "model": "Qwen/Qwen3-8B",
+  "producer_review_commit": "c94825dab9b114e468a83cdad009181f23add608",
+  "raw_streaming_validation": {
+    "S2": {
+      "all_context_hashes_match": true,
+      "all_header_counts_close": true,
+      "all_trace_hashes_match": true,
+      "all_typed_joins_lossless": true,
+      "shard_count": 8
+    },
+    "S3": {
+      "all_context_hashes_match": true,
+      "all_header_counts_close": true,
+      "all_trace_hashes_match": true,
+      "all_typed_joins_lossless": true,
+      "shard_count": 8
+    }
+  },
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "runtime": {
+    "attention_backend": "eager",
+    "dtype": "BF16",
+    "gpu_producer": "RTX4080/SM89",
+    "torch": "2.5.1+cu124",
+    "transformers": "4.51.0"
+  },
+  "scenarios": {
+    "S2": {
+      "ack_catalog_binding": "aabeb406523d55355432b3367c6089b43a8c7b4821b97a100717a1b37480a2c8",
+      "ack_sha256": "93f325fd2c838cf23612b3954b359008601aff806583db93e919512e3b896da6",
+      "ack_source_manifest_binding": "f52fcdf0e281407f106f4f478fa1072a4ec299dde30df7c32abb089e8b7c6116",
+      "ack_verification_status": "PASS",
+      "ack_verified_at_utc": "2026-09-16T08:23:18Z",
+      "catalog_expected_sha256": "aabeb406523d55355432b3367c6089b43a8c7b4821b97a100717a1b37480a2c8",
+      "catalog_model": "Qwen/Qwen3-8B",
+      "catalog_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "catalog_sha256": "aabeb406523d55355432b3367c6089b43a8c7b4821b97a100717a1b37480a2c8",
+      "catalog_target": "QWEN3_V20_S2_TEXT_LAYER0_SELF_ATTN_REPEAT_K",
+      "catalog_transfer_status": "TRANSFER_ACKED",
+      "pass": true,
+      "raw_root": "/root/share/mnt164/huangrulin/c16_ai_workload/raw/C16R_qwen3-8b_s2-text_decode_nvbit-warp-mref-shard_v20-s2-repeat-k_20260916T162000Z_202020202020",
+      "run_id": "C16R_qwen3-8b_s2-text_decode_nvbit-warp-mref-shard_v20-s2-repeat-k_20260916T162000Z_202020202020",
+      "run_manifest_expected_sha256": "f52fcdf0e281407f106f4f478fa1072a4ec299dde30df7c32abb089e8b7c6116",
+      "run_manifest_sha256": "f52fcdf0e281407f106f4f478fa1072a4ec299dde30df7c32abb089e8b7c6116",
+      "warp_manifest_sha256": "394c932ef76cfee67802376854b6c1cd8a3ca6d6518ba839875c4f6f129e2779"
+    },
+    "S3": {
+      "ack_catalog_binding": "b85430200f520506bc2abf3165af018b628c11626d47b7c77e00eb2b03c79082",
+      "ack_sha256": "eca5e9f55145e9ad6d10fa8b50a8645fed3fd698bfa157538bd9403ca3cb1ec2",
+      "ack_source_manifest_binding": "d986397b7b32dafd7efe3cfcbfaae71dd367d4c8ce0587aa8ea8e35a0acb339b",
+      "ack_verification_status": "PASS",
+      "ack_verified_at_utc": "2026-09-16T08:27:12Z",
+      "catalog_expected_sha256": "b85430200f520506bc2abf3165af018b628c11626d47b7c77e00eb2b03c79082",
+      "catalog_model": "Qwen/Qwen3-8B",
+      "catalog_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "catalog_sha256": "b85430200f520506bc2abf3165af018b628c11626d47b7c77e00eb2b03c79082",
+      "catalog_target": "QWEN3_V20_S3_TEXT_LAYER0_SELF_ATTN_REPEAT_K",
+      "catalog_transfer_status": "TRANSFER_ACKED",
+      "pass": true,
+      "raw_root": "/root/share/mnt164/huangrulin/c16_ai_workload/raw/C16R_qwen3-8b_s3-text_decode_nvbit-warp-mref-shard_v20-s3-repeat-k_20260916T163000Z_303030303030",
+      "run_id": "C16R_qwen3-8b_s3-text_decode_nvbit-warp-mref-shard_v20-s3-repeat-k_20260916T163000Z_303030303030",
+      "run_manifest_expected_sha256": "d986397b7b32dafd7efe3cfcbfaae71dd367d4c8ce0587aa8ea8e35a0acb339b",
+      "run_manifest_sha256": "d986397b7b32dafd7efe3cfcbfaae71dd367d4c8ce0587aa8ea8e35a0acb339b",
+      "warp_manifest_sha256": "4878df0c76d89255e43785f7d9df8c82d9d5a3e4d9b8af19990f969ff74ff060"
+    }
+  },
+  "serial_admission_order": {
+    "s2_ack": "2026-09-16T08:23:18Z",
+    "s2_precedes_s3": true,
+    "s3_ack": "2026-09-16T08:27:12Z"
+  },
+  "status": "PASS"
+}
