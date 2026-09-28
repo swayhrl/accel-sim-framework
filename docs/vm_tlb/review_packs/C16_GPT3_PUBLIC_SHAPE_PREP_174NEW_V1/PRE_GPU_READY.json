@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "status": "PRE_GPU_READY",
+  "goal": "C16_GPT3_PUBLIC_SHAPE_PREP_174NEW_V1",
+  "prep_branch": "hrl/c16-gpt3-public-shape-prep-174new-v1",
+  "validated_prep_head": "e1caa0d03843744bd2e2093731a032e201e73f80",
+  "validated_prep_tree": "4901debe8aae27e055dcac34bba738d0e42255dd",
+  "publication_semantics": "This gate is committed as a descendant of validated_prep_head; the referenced parent commit/tree contains every validated prep asset and source without self-reference.",
+  "contract_frozen_commit": "deb0873240557937ce7ab6b83ecabbc0328754c4",
+  "master_coordination_sha": "0583d359d67a4d70c6a70a6a2e80d30ede971aba",
+  "accepted_binaries": {
+    "A": {
+      "path": "/data/c16/env/c16-awq-v6/lib/python3.10/site-packages/awq_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+    },
+    "B": {
+      "path": "/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib/awq_split1_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887"
+    }
+  },
+  "synthetic_formula_version": "GPT3_SHAPE_SYNTH_V1",
+  "synthetic_formula_file_sha256": "0a556004f70e9601a9578e038b5a57cd99f5dde12a8fca0cec47f0306bc8fe47",
+  "tiny_reference_sha256": "bc5b86bb5c440be4fa308f3c6d85922297148cf911cad8a33e0d3373928a7e3e",
+  "expected_tables": {
+    "shape_and_memory_budget": {
+      "path": "docs/vm_tlb/review_packs/C16_GPT3_PUBLIC_SHAPE_PREP_174NEW_V1/SHAPE_AND_MEMORY_BUDGET.tsv",
+      "sha256": "7c2f74558ae9df7bc65ad34db58a4926fc34cc23643d55354e2ad3cfde087ed7"
+    },
+    "launch_and_scratch": {
+      "path": "docs/vm_tlb/review_packs/C16_GPT3_PUBLIC_SHAPE_PREP_174NEW_V1/EXPECTED_LAUNCH_AND_SCRATCH.tsv",
+      "sha256": "d53dc55cf3981dfa895ff99f09d6af0027e5f45f882406e33e9a5422d5a14b87"
+    }
+  },
+  "runner_source_sha256": "6d4530fbb21297a4fd306dab6aaa4dc1d03bf50dcd4dee715f1ca4352f9444fa",
+  "source_files": [
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/analyze.py", "sha256": "8e3bd92523c2c6e30d79770dd060330fd3f61eccab2b91bb975ffa6241253553"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/contracts.py", "sha256": "3c0921e68cd06680b342002d57c88fcbff22a15b5a9d9c0d2f8f76bd89692009"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/freeze_assets.py", "sha256": "ff23767ee9d83f44949d0b40914033c21755d1abb5fbae2c086619489d7210a6"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/prepare.py", "sha256": "a4fcf2498bf89b948f1673ec7cf9e17afaec7ce1eabb6a52cd15fdf27dacf848"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/reseal.py", "sha256": "a55bc6f2e8514302b5f2a0a2007a16dcfd2ca81504cf775ff84a3464892460bb"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/run_locked.sh", "sha256": "50cf7d391975abe0e67ba0f3a68883e4145b25df0d376ba04fdab8ba3a4bf894"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/runner.py", "sha256": "6d4530fbb21297a4fd306dab6aaa4dc1d03bf50dcd4dee715f1ca4352f9444fa"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/test_contracts.py", "sha256": "88de0e282b10b117b088c45f98da413e90f610e2f1743cf3d87aee95d0d1a854"},
+    {"path": "util/vm_tlb/c16/gpt3_public_shape_prep/validate_launch.py", "sha256": "47fa996ef76afaf6a0865c484f59ced3e159f8805928cb9be37767e197fcc46c"}
+  ],
+  "memory_budget": {
+    "device_gate_bytes": 17179869184,
+    "maximum_peak_bound_bytes": 5534384128,
+    "minimum_headroom_bytes": 11645485056,
+    "workspace_runtime_reserve_bytes": 4294967296,
+    "conditioner_bytes": 268435456,
+    "lifetime_rule": "one operator at a time; Dense and W4 assets not co-resident; conditioner allocated once for W4 phase",
+    "status": "PASS_BELOW_16GiB_WITH_CONSERVATIVE_RESERVE"
+  },
+  "tests": {
+    "status": "PASS",
+    "count": 5,
+    "command": "python3 -m unittest -v test_contracts.py",
+    "coverage": [
+      "public shape and W4 byte arithmetic",
+      "all grid/scratch/reduction formulas",
+      "packed nibble semantics and tiny canonical hash",
+      "16GiB conservative peak bounds",
+      "lock and READY checks precede torch/CUDA import"
+    ],
+    "python_compile": "PASS",
+    "bash_syntax": "PASS",
+    "shellcheck": "NOT_INSTALLED"
+  },
+  "evidence_boundary": {
+    "dense": "real FP16 Dense public-dimension synthetic shape anchor",
+    "w4": "AutoAWQ W4 mechanism proxy at public dimensions; not a GPT-3 quantized checkpoint",
+    "original_gpt3_weights_or_natural_activations": false
+  },
+  "resource_attestation": {
+    "execution_node": "174-new",
+    "cpu_only": true,
+    "gpu_used": false,
+    "cuda_imported_or_initialized": false,
+    "gpu_lock_requested": false,
+    "lane4_partial_accessed": false
+  },
+  "lane7_gpu_authorization": {
+    "authorized_after_fetching_branch_head_that_contains_this_gate": true,
+    "must_verify_validated_prep_head_and_tree": true,
+    "must_verify_all_source_table_formula_and_binary_hashes": true,
+    "must_hold_one_outer_gpu_lock_for_every_cuda_action": true,
+    "cpu_bootstrap_manifest_must_already_pass": true,
+    "oom_trial_and_error_forbidden": true
+  }
+}
