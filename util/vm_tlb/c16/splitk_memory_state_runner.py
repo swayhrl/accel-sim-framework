@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import importlib
 import json
@@ -17,6 +18,8 @@ ROOT = Path("/data/c16/splitk_memory_state_interaction_v1")
 MODEL = Path("/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641")
 AUTH = Path("/data/c16/e1_clean_baseline_v1/capture_a")
 BUILD_LIB = Path("/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib")
+REPO = Path(__file__).resolve().parents[3]
+AUTH_PACK = REPO / "docs/vm_tlb/review_packs/C16_LOWBIT_SPLITK_NATIVE_AB_109_V1"
 EXPECTED_L2_BYTES = 67_108_864
 BUFFER_MULTIPLE = 4
 BUFFER_BYTES = EXPECTED_L2_BYTES * BUFFER_MULTIPLE
@@ -36,13 +39,34 @@ EXPECTED = {
         "a_output": "34dfa2432bd3598dcbd694b576d52b74f08b43e38f231d44f6a10a949f0de477",
         "b_output_prior": "7a34436c1a1b1ee314a5e0f42981479ddfed11b9d8a0601f7e7d87190d80e1bc",
         "qweight": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bf5d200cb",
-        "qzeros": "06122002c48390245c77e071e2352ebabbc20eedc8dfd555aa222148844be8a80",
-        "scales": "031c2f9b22f16ef4538004e3563e03e41ce3b1a015d7476420642d2772fe9cc1d",
+        "qzeros": "06122002c48390245c77e071e2352ebabbc20eedc8dfd555aa22214844be8a80",
+        "scales": "031c2f9b22f16ef4538004e3563e03e41ce3b1a015d7476420642d272fe9cc1d",
         "out_features": 3584, "a_grid": 3584, "b_grid": 448,
         "reduction_grid": 1792, "a_scratch": 14680064, "b_scratch": 1835008,
     },
 }
 CELL_ORDER = ["A_W", "B_W", "A_E", "B_E", "B_E", "A_E", "B_W", "A_W"]
+
+
+def bind_immutable_authority():
+    with (AUTH_PACK / "INPUT_AND_WEIGHT_BINDINGS.tsv").open(newline="") as f:
+        for row in csv.DictReader(f, delimiter="\t"):
+            role, name = row["operator"], row["tensor"]
+            if role not in EXPECTED:
+                continue
+            if name in ("qweight", "qzeros", "scales"):
+                EXPECTED[role][name] = row["sha256"]
+            elif name == "input_M256":
+                EXPECTED[role]["input"] = row["sha256"]
+    with (AUTH_PACK / "CORRECTNESS.tsv").open(newline="") as f:
+        for row in csv.DictReader(f, delimiter="\t"):
+            if row["point"] in ("up_proj_M256", "down_proj_M256"):
+                role = row["point"].removesuffix("_M256")
+                EXPECTED[role]["a_output"] = row["a_sha256"]
+                EXPECTED[role]["b_output_prior"] = row["b_sha256"]
+
+
+bind_immutable_authority()
 
 
 def run_dir() -> Path:

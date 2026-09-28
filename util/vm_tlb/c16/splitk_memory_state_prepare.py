@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """CPU-only authority and pre-execution manifest freeze for split-K memory state V1."""
 import datetime
+import csv
 import hashlib
 import json
 import os
@@ -48,10 +49,15 @@ def main():
         path=REPO/'util/vm_tlb/c16'/name
         if not path.is_file(): raise RuntimeError(f'MISSING_SOURCE {path}')
         source_rows.append({'path':str(path.relative_to(REPO)),'sha256':sha(path),'bytes':path.stat().st_size})
+    authority={"up_proj":{},"down_proj":{}}
+    with (REPO/'docs/vm_tlb/review_packs/C16_LOWBIT_SPLITK_NATIVE_AB_109_V1/INPUT_AND_WEIGHT_BINDINGS.tsv').open(newline='') as f:
+        for row in csv.DictReader(f,delimiter='\t'):
+            if row['operator'] in authority and (row['tensor'] in ('qweight','qzeros','scales') or row['tensor']=='input_M256'):
+                authority[row['operator']]['input' if row['tensor']=='input_M256' else row['tensor']]=row['sha256']
     input_files=[]
     for role in ('up_proj','down_proj'):
         path=AUTH/f'{role}_M256_input.pt'
-        input_files.append({'operator':role,'path':str(path),'file_sha256':sha(path),'file_bytes':path.stat().st_size,'semantic_tensor_sha256':'eeae491edfdbee761de47aa6c4ea35b293bb2796227927778fa51c9e58ef1b41' if role=='up_proj' else 'a1f158a113f56314f4ee5f4a5f10ee41ac9afe732a4f1735b88a1c01b25b9aff'})
+        input_files.append({'operator':role,'path':str(path),'file_sha256':sha(path),'file_bytes':path.stat().st_size,'semantic_tensor_sha256':authority[role]['input']})
     cells=[]
     for role in ('up_proj','down_proj'):
         for cell in ('A_W','B_W','A_E','B_E'):
@@ -64,9 +70,7 @@ def main():
         'model':{'id':'Qwen/Qwen2.5-7B-Instruct-AWQ','revision':'b25037543e9394b818fdfca67ab2a00ecc7dd641','path':str(MODEL),'layer':'model.layers.0','loaded_assets_only':['mlp.up_proj qweight/qzeros/scales','mlp.down_proj qweight/qzeros/scales']},
         'accepted_binaries':{'A':{'path':str(A_BINARY),'sha256':sha(A_BINARY)},'B':{'path':str(B_BINARY),'sha256':sha(B_BINARY)}},
         'input_files':input_files,
-        'weight_semantic_sha256':{
-          'up_proj':{'qweight':'b07a8dec390cec4f664bfd2384acf080c4676e1c6d29386bfaf225e4e68d181a','qzeros':'fa29c34518732c98417613df87bbb46dcf3cd825bd681700a5daa0a49b24205b','scales':'84e59277679d49510b3449687598d47cbe8f9ce356c73f07b2abc60019b0a175'},
-          'down_proj':{'qweight':'d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bf5d200cb','qzeros':'06122002c48390245c77e071e2352ebabbc20eedc8dfd555aa222148844be8a80','scales':'031c2f9b22f16ef4538004e3563e03e41ce3b1a015d7476420642d2772fe9cc1d'}},
+        'weight_semantic_sha256':{role:{name:authority[role][name] for name in ('qweight','qzeros','scales')} for role in ('up_proj','down_proj')},
         'cells':cells,
         'conditioner':{'expected_l2_bytes':67108864,'buffer_multiple':4,'buffer_bytes':268435456,'dtype':'torch.int32','elements':67108864,'operation':'in-place add_(1) full-buffer read-modify-write','stride_elements':1,'same_live_buffer_all_cells':True,'no_allocator_empty_cache':True,'no_persisting_hint':True,'qualification':'lock-time device property exact check required'},
         'timing':{'global_warmups_per_operator_arm':10,'sample_preparation_same_arm_warmups':2,'blocks':25,'mirror_order':['A_W','B_W','A_E','B_E','B_E','A_E','B_W','A_W'],'samples_per_cell':50,'target_clock':'CUDA event','conditioner_outside_event':True,'bootstrap':{'seed':20260928,'permutations':1000,'unit':'complete mirror block','quantiles':[0.05,0.5,0.95]}},
