@@ -1,0 +1,129 @@
+{
+  "coordination_commit": "f10a40ccd25cf3179a619abe21881fdf19c973a1",
+  "core_proofs": {
+    "all_new_K_points_valid": true,
+    "block_mapping_closed": true,
+    "exact_split8_footprints_match_source_enumeration": true,
+    "linear_block_order_has_one_full_N_sweep_between_same_N_adjacent_Mtiles": true,
+    "qzeros_address_independent_of_Mtile": true,
+    "same_N_split_cross_M_address_jaccard_is_one": true,
+    "scales_address_independent_of_Mtile": true,
+    "split8_K_tiles_are_mod8_interleaved": true,
+    "weight_address_independent_of_Mtile": true
+  },
+  "exact_footprint_bytes": {
+    "12288": {
+      "split1": 313786368,
+      "split1_over_64MiB": 4.67578125,
+      "split8_each_split": 43646976,
+      "split8_over_64MiB": 0.650390625
+    },
+    "2048": {
+      "split1": 52297728,
+      "split1_over_64MiB": 0.779296875,
+      "split8_each_split": 7274496,
+      "split8_over_64MiB": 0.1083984375
+    },
+    "2560": {
+      "split1": 65372160,
+      "split1_over_64MiB": 0.97412109375,
+      "split8_each_split": 9093120,
+      "split8_over_64MiB": 0.135498046875
+    },
+    "3072": {
+      "split1": 78446592,
+      "split1_over_64MiB": 1.1689453125,
+      "split8_each_split": 10911744,
+      "split8_over_64MiB": 0.16259765625
+    },
+    "4096": {
+      "split1": 104595456,
+      "split1_over_64MiB": 1.55859375,
+      "split8_each_split": 14548992,
+      "split8_over_64MiB": 0.216796875
+    }
+  },
+  "goal": "C16_SPLITK_FOOTPRINT_STATIC_AUDIT_174NEW_V1",
+  "lane7_authorization": {
+    "K12288_reuse_accepted_endpoint": true,
+    "gpu_lock_required_for_all_cuda": true,
+    "native_threshold_screen_may_proceed": true,
+    "only_K": [
+      2048,
+      2560,
+      3072,
+      4096
+    ]
+  },
+  "mapping": {
+    "Ktile": "iteration*split_k_iters+split_z",
+    "Mtile": "blockIdx_y // j_factors1",
+    "Ntile": "blockIdx_y % j_factors1",
+    "blockIdx_y": "blockIdx.x % (ceil(M/16)*j_factors1)",
+    "j_factors1": "ceil(N/128)",
+    "split_z": "blockIdx.x // (ceil(M/16)*j_factors1)"
+  },
+  "metadata_overlap": {
+    "cross_half": "disjoint; Jaccard 0",
+    "split_z_0_to_3": "all even K/128 groups; pairwise Jaccard 1",
+    "split_z_4_to_7": "all odd K/128 groups; pairwise Jaccard 1",
+    "sum_of_8_per_split_metadata_uniques_over_union": 4
+  },
+  "old_qwen_up_split1_bytes": 35273728,
+  "scientific_boundary": "Static address-set and linear block-ID proof only; real CTA scheduling, L2 residency/replacement/hit rate and causal mechanism remain unproven.",
+  "source_binding": {
+    "accepted_split1": {
+      "path": "/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib/awq_split1_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887"
+    },
+    "accepted_split8": {
+      "path": "/data/c16/env/c16-awq-v6/lib/python3.10/site-packages/awq_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+    },
+    "autoawq": {
+      "anchors": {
+        "block_y": "int blockIdx_y = blockIdx.x % ((M + 16 - 1) / 16 * j_factors1);",
+        "block_z": "int blockIdx_z = blockIdx.x / ((M + 16 - 1) / 16 * j_factors1);",
+        "j_factors": "int j_factors1 = ((OC + 128 - 1) / 128);",
+        "k_bound": "int k_bound = (IC / 32 + split_k_iters - 1) / split_k_iters;",
+        "k_interleave": "int k_0_0 = _k_0_0 * split_k_iters + blockIdx_z;",
+        "scale_group": "scaling_factors_ptr + k_0_0 * 32 / G * (OC)",
+        "scale_n_tile": "+ (((int)blockIdx_y) % j_factors1) * (128)",
+        "weight_k_tile": "B_ptr + k_0_0 * 32 * (OC / 8)",
+        "weight_n_tile": "+ (((int)blockIdx_y) % j_factors1) * (128 / 8)",
+        "zero_group": "zeros_ptr + k_0_0 * 32 / G * (OC / 8)",
+        "zero_n_tile": "+ (((int)blockIdx_y) % j_factors1) * (128 / 8)"
+      },
+      "blob": "98f49efac8626388039912e6aabc8a84d9f8303b",
+      "commit": "c7b0e88c327694c715b0a758d9ce8fd414a1fa21",
+      "missing": [],
+      "path": "awq_ext/quantization/gemm_cuda_gen.cu",
+      "repo": "casper-hansen/AutoAWQ_kernels"
+    },
+    "coordination_commit": "f10a40ccd25cf3179a619abe21881fdf19c973a1",
+    "resource_attestation": {
+      "cpu_only": true,
+      "cuda_imported": false,
+      "gpu_lock_requested": false,
+      "gpu_used": false,
+      "lane4_partial_accessed": false
+    },
+    "split1_patch_authority": {
+      "commit": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+      "only_kernel_semantic_changes_confirmed": [
+        "reject split_k_iters != 1",
+        "return plane 0 instead of sum(0)"
+      ],
+      "original_gemm_source_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+      "patched_gemm_source_sha256": "37ca88c825da79e05f576dff6dbe1a3c4e63950335c600a44f13b7560099f4fc",
+      "same_gemm_kernel_family": true
+    },
+    "status": "PASS",
+    "synthetic": {
+      "file_sha256": "0a556004f70e9601a9578e038b5a57cd99f5dde12a8fca0cec47f0306bc8fe47",
+      "tiny_reference_sha256": "bc5b86bb5c440be4fa308f3c6d85922297148cf911cad8a33e0d3373928a7e3e",
+      "version": "GPT3_SHAPE_SYNTH_V1"
+    }
+  },
+  "status": "SUPPORTED_PROCEED_NATIVE_THRESHOLD_SCREEN"
+}
