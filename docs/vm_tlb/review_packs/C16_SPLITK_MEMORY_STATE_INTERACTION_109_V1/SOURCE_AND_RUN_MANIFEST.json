@@ -75,6 +75,17 @@
   },
   "coordination_head": "17dd9482245d8bdac8e89ff53be5a567048016f1",
   "created_at_utc": "2026-09-28T11:02:59.914570+00:00",
+  "engineering_preflight_attempts": [
+    {
+      "archive_relative_path": "raw/preflight_attempt1_transcription_fix",
+      "attempt": 1,
+      "gpu_lock_release_confirmed": true,
+      "immutable_pack_sha256": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bf5d200cb",
+      "observed_safetensors_sha256": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bf5d200cb",
+      "reason": "manual runner constant contained one extra b in down_proj qweight expected SHA",
+      "status": "FAIL_BEFORE_TIMING_OR_NCU"
+    }
+  ],
   "goal": "C16_SPLITK_MEMORY_STATE_INTERACTION_109_V1",
   "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
   "input_files": [
@@ -161,17 +172,18 @@
     "q_proj": false,
     "timing_or_cache_causality_claim": false
   },
+  "refrozen_at_utc": "2026-09-28T11:07:31.646332+00:00",
   "run_id": "C16R_splitk-memory-state-interaction-v1_20260928T110259Z_b6c828c6824d",
   "sources": [
     {
-      "bytes": 6605,
+      "bytes": 6636,
       "path": "util/vm_tlb/c16/splitk_memory_state_prepare.py",
-      "sha256": "1ebede00303c58b3fbf2f8c1847fa19843dfb67797820b0921fcc1437211d2fd"
+      "sha256": "030b9eb79e7b319264a9f8d87e4d3dc48654abfcceaa5a90b58facbf3d345edb"
     },
     {
-      "bytes": 14137,
+      "bytes": 14136,
       "path": "util/vm_tlb/c16/splitk_memory_state_runner.py",
-      "sha256": "ed66ae55a3b7e611dd3c6fbae6d6425923b3e794b344d10a068a4ca83d95ff71"
+      "sha256": "7d428535cb986636e342b9c98ced25a43caaf1083922b4e858a59c2690b5bca4"
     },
     {
       "bytes": 2505,
@@ -184,12 +196,17 @@
       "sha256": "98f699bd44587b4deb4f5d6828479bd79eb7771c4bb7bb1405f9ecb52dae430f"
     },
     {
+      "bytes": 2655,
+      "path": "util/vm_tlb/c16/splitk_memory_state_reseal.py",
+      "sha256": "869aeb1782fd4812499d8eac3a59ae90d09428a81c9eb1b5bfeaac873a5a9806"
+    },
+    {
       "bytes": 2225,
       "path": "util/vm_tlb/c16/run_splitk_memory_state_locked.sh",
       "sha256": "0557d3d6c255c9c0ecd656239f239963ab2145edf42ab27984a1cde49b0355e2"
     }
   ],
-  "status": "PREEXECUTION_SOURCE_AND_PARAMETERS_FROZEN",
+  "status": "PREEXECUTION_SOURCE_AND_PARAMETERS_REFROZEN_AFTER_TRANSCRIPTION_FIX",
   "timing": {
     "blocks": 25,
     "bootstrap": {
@@ -220,7 +237,7 @@
   },
   "weight_semantic_sha256": {
     "down_proj": {
-      "qweight": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bbf5d200cb",
+      "qweight": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bf5d200cb",
       "qzeros": "06122002c48390245c77e071e2352ebabbc20eedc8dfd555aa222148844be8a80",
       "scales": "031c2f9b22f16ef4538004e3563e03e41ce3b1a015d7476420642d2772fe9cc1d"
     },

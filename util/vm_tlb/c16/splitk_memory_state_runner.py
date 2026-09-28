@@ -35,7 +35,7 @@ EXPECTED = {
         "input": "a1f158a113f56314f4ee5f4a5f10ee41ac9afe732a4f1735b88a1c01b25b9aff",
         "a_output": "34dfa2432bd3598dcbd694b576d52b74f08b43e38f231d44f6a10a949f0de477",
         "b_output_prior": "7a34436c1a1b1ee314a5e0f42981479ddfed11b9d8a0601f7e7d87190d80e1bc",
-        "qweight": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bbf5d200cb",
+        "qweight": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bf5d200cb",
         "qzeros": "06122002c48390245c77e071e2352ebabbc20eedc8dfd555aa222148844be8a80",
         "scales": "031c2f9b22f16ef4538004e3563e03e41ce3b1a015d7476420642d2772fe9cc1d",
         "out_features": 3584, "a_grid": 3584, "b_grid": 448,
