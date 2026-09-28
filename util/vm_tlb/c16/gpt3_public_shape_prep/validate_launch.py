@@ -33,7 +33,7 @@ def main():
         for order,(k,want) in enumerate(zip(selected,expected_kernels)):
             kind="GEMM" if "gemm_forward" in k[2] else "REDUCTION" if "reduce_kernel" in k[2] else "OTHER"
             passed=kind==want[0] and k[3]==want[1] and (k[6],k[7],k[8])==want[2]
-            row={"track":"W4","point":point,"arm":arm,"order":order,"kernel_kind":kind,"kernel_name":k[2],"grid":[k[3],k[4],k[5]],"block":[k[6],k[7],k[8]],"registers_per_thread":k[9],"static_shared_bytes":k[10],"dynamic_shared_bytes":k[11],"pass":passed}
+            row={"track":"W4","point":point,"arm":arm,"order":order,"kernel_kind":kind,"kernel_name":k[2],"grid":[k[3],k[4],k[5]],"block":[k[6],k[7],k[8]],"registers_per_thread":k[9],"static_shared_bytes":k[10],"dynamic_shared_bytes":k[11],"scratch_shape":contract["scratch_shape"],"scratch_bytes":contract["scratch_bytes"],"reduction_expected":contract["reduction_expected"],"pass":passed}
             rows.append(row)
             if not passed: raise RuntimeError(f"W4 launch contract failed: {row}")
     if len([x for x in seen if x[0]=="DENSE"])!=4 or len([x for x in seen if x[0]=="W4"])!=8:

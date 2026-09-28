@@ -33,6 +33,11 @@ def sha(path: Path) -> str:
     return h.hexdigest()
 
 
+def tensor_sha(tensor) -> str:
+    payload = tensor.detach().contiguous().cpu().view(-1).view(__import__("torch").uint8).numpy().tobytes()
+    return hashlib.sha256(payload).hexdigest()
+
+
 def require_outer_lock() -> None:
     if os.environ.get("C16_GPU_LOCK_HELD") != "1":
         raise RuntimeError("GPU lock attestation missing")
@@ -96,6 +101,7 @@ def call_w4(ext_a, ext_b, tensors, arm: str, m: int, n: int):
 
 
 def event_ms(torch, fn):
+    torch.cuda.synchronize()
     start = torch.cuda.Event(enable_timing=True); end = torch.cuda.Event(enable_timing=True)
     start.record(); out = fn(); end.record(); end.synchronize()
     return float(start.elapsed_time(end)), out
@@ -137,61 +143,88 @@ def main():
     prop = torch.cuda.get_device_properties(0)
     if (prop.major, prop.minor) != (8, 9) or prop.total_memory < 15 * 1024**3:
         raise RuntimeError(f"GPU identity/capacity mismatch: {prop}")
+    l2_bytes = int(getattr(prop, "L2_cache_size", getattr(prop, "l2_cache_size", -1)))
+    if l2_bytes != CONDITIONER_BYTES // 4:
+        raise RuntimeError(f"GPU L2 identity mismatch: {l2_bytes}")
     ext_a = import_extension(A_PATH, "awq_ext")
     ext_b = import_extension(B_PATH, "awq_split1_ext")
     args.raw.mkdir(parents=True, exist_ok=True)
     point_map = {row["point"]: row for row in POINTS}
 
     if args.mode == "qualify":
-        rows = []
+        rows = []; receipts = []; lifecycle = []
         with torch.inference_mode():
             for point in POINTS:
                 m,k,n = point["M"],point["K"],point["N"]
+                torch.cuda.reset_peak_memory_stats()
                 x = make_input(torch,m,k,"dense"); w = make_dense_weight(torch,k,n)
+                receipts.extend([
+                    {"track":"DENSE","point":point["point"],"tensor":"input","shape":list(x.shape),"dtype":str(x.dtype),"bytes":x.numel()*x.element_size(),"sha256":tensor_sha(x),"formula":"dense_input_value"},
+                    {"track":"DENSE","point":point["point"],"tensor":"weight","shape":list(w.shape),"dtype":str(w.dtype),"bytes":w.numel()*w.element_size(),"sha256":tensor_sha(w),"formula":"dense_weight_value"},
+                ])
                 torch.cuda.nvtx.range_push(f"C16_GPT3_LAUNCH_AUDIT_DENSE_{point['point']}")
                 dense = x @ w; torch.cuda.synchronize(); torch.cuda.nvtx.range_pop()
-                rows.append({"track":"DENSE","point":point["point"],"shape":list(dense.shape),"finite":bool(torch.isfinite(dense).all())})
-                del dense,x,w; gc.collect()
+                dense_repeat = x @ w; torch.cuda.synchronize()
+                dense_sha = tensor_sha(dense); repeat_sha = tensor_sha(dense_repeat)
+                rows.append({"track":"DENSE","point":point["point"],"shape":list(dense.shape),"dtype":str(dense.dtype),"finite":bool(torch.isfinite(dense).all()),"output_sha256":dense_sha,"repeat_output_sha256":repeat_sha,"same_process_repeat_bitwise_equal":dense_sha==repeat_sha})
+                receipts.append({"track":"DENSE","point":point["point"],"tensor":"output","shape":list(dense.shape),"dtype":str(dense.dtype),"bytes":dense.numel()*dense.element_size(),"sha256":dense_sha,"formula":"x@w synthetic shape anchor"})
+                lifecycle.append({"track":"DENSE","point":point["point"],"phase":"assets_live","allocated_bytes":int(torch.cuda.memory_allocated()),"reserved_bytes":int(torch.cuda.memory_reserved()),"peak_allocated_bytes":int(torch.cuda.max_memory_allocated()),"peak_reserved_bytes":int(torch.cuda.max_memory_reserved())})
+                del dense,dense_repeat,x,w; gc.collect(); torch.cuda.synchronize()
+                lifecycle.append({"track":"DENSE","point":point["point"],"phase":"after_delete","allocated_bytes":int(torch.cuda.memory_allocated()),"reserved_bytes":int(torch.cuda.memory_reserved())})
+                torch.cuda.reset_peak_memory_stats()
                 tensors = make_w4(torch,m,k,n)
+                for name,value in tensors.items():
+                    receipts.append({"track":"W4","point":point["point"],"tensor":name,"shape":list(value.shape),"dtype":str(value.dtype),"bytes":value.numel()*value.element_size(),"sha256":tensor_sha(value),"formula":"GPT3_SHAPE_SYNTH_V1"})
                 a = b = None
                 for arm in ("A","B"):
                     torch.cuda.nvtx.range_push(f"C16_GPT3_LAUNCH_AUDIT_W4_{point['point']}_{arm}")
                     out = call_w4(ext_a,ext_b,tensors,arm,m,n); torch.cuda.synchronize(); torch.cuda.nvtx.range_pop()
-                    rows.append({"track":"W4","point":point["point"],"arm":arm,"shape":list(out.shape),"finite":bool(torch.isfinite(out).all())})
+                    rows.append({"track":"W4","point":point["point"],"arm":arm,"shape":list(out.shape),"dtype":str(out.dtype),"finite":bool(torch.isfinite(out).all()),"output_sha256":tensor_sha(out)})
                     if arm == "A": a = out
                     else: b = out
                 close = torch.isclose(a,b,rtol=1e-2,atol=5e-2)
                 if not bool(close.all()) or not all(row["finite"] for row in rows[-3:]):
                     raise RuntimeError(f"correctness/finite failure: {point['point']}")
-                rows.append({"track":"W4_CORRECTNESS","point":point["point"],"max_abs":float((a.float()-b.float()).abs().max()),"pass":True})
-                del a,b,tensors; gc.collect()
-        write_json(args.raw/"qualification.json", {"status":"PASS","rows":rows,"ready":ready["validated_prep_head"]})
+                diff=(a.float()-b.float()).abs(); denom=torch.linalg.vector_norm(a.float())
+                rows.append({"track":"W4_CORRECTNESS","point":point["point"],"a_sha256":tensor_sha(a),"b_sha256":tensor_sha(b),"shape":list(a.shape),"dtype":str(a.dtype),"all_finite":bool(torch.isfinite(a).all() and torch.isfinite(b).all()),"max_abs":float(diff.max()),"mean_abs":float(diff.mean()),"relative_l2":float(torch.linalg.vector_norm(a.float()-b.float())/denom),"changed_element_count":int(torch.ne(a,b).sum()),"element_count":a.numel(),"rtol":1e-2,"atol":5e-2,"pass":True})
+                lifecycle.append({"track":"W4","point":point["point"],"phase":"assets_live","allocated_bytes":int(torch.cuda.memory_allocated()),"reserved_bytes":int(torch.cuda.memory_reserved()),"peak_allocated_bytes":int(torch.cuda.max_memory_allocated()),"peak_reserved_bytes":int(torch.cuda.max_memory_reserved())})
+                del a,b,diff,tensors; gc.collect(); torch.cuda.synchronize()
+                lifecycle.append({"track":"W4","point":point["point"],"phase":"after_delete","allocated_bytes":int(torch.cuda.memory_allocated()),"reserved_bytes":int(torch.cuda.memory_reserved())})
+        write_json(args.raw/"qualification.json", {"status":"PASS","rows":rows,"synthetic_tensor_receipts":receipts,"memory_lifecycle":lifecycle,"ready":ready["validated_prep_head"],"gpu":{"name":prop.name,"total_memory":int(prop.total_memory),"l2_bytes":l2_bytes,"compute_capability":[prop.major,prop.minor]}})
     elif args.mode == "timing":
-        samples=[]
+        samples=[]; lifecycle=[]
         with torch.inference_mode():
             for point in POINTS:
                 m,k,n=point["M"],point["K"],point["N"]
+                torch.cuda.reset_peak_memory_stats()
                 x=make_input(torch,m,k,"dense"); w=make_dense_weight(torch,k,n); fn=lambda:x@w
                 for _ in range(10): fn()
                 torch.cuda.synchronize()
                 for sample in range(50):
-                    ms,_=event_ms(torch,fn); samples.append({"track":"DENSE","point":point["point"],"sample":sample,"ms":ms})
-                del x,w; gc.collect()
+                    ms,out=event_ms(torch,fn); samples.append({"track":"DENSE","point":point["point"],"sample":sample,"ms":ms}); del out
+                lifecycle.append({"track":"DENSE","point":point["point"],"phase":"timing_assets_live","allocated_bytes":int(torch.cuda.memory_allocated()),"reserved_bytes":int(torch.cuda.memory_reserved()),"peak_allocated_bytes":int(torch.cuda.max_memory_allocated()),"peak_reserved_bytes":int(torch.cuda.max_memory_reserved())})
+                del x,w; gc.collect(); torch.cuda.synchronize()
             conditioner=torch.zeros(CONDITIONER_BYTES//4,dtype=torch.int32,device="cuda")
+            conditioner_calls=0; conditioner_begin,conditioner_end=range_bounds(conditioner)
             for point in POINTS:
                 m,k,n=point["M"],point["K"],point["N"]; tensors=make_w4(torch,m,k,n); assert_nonoverlap(tensors,conditioner)
+                torch.cuda.reset_peak_memory_stats()
                 block_counts={cell:0 for cell in ("A_W","B_W","A_E","B_E")}
                 for block in range(25):
                     for position,cell in enumerate(CELL_ORDER):
                         arm,state=cell.split("_"); fn=lambda arm=arm:call_w4(ext_a,ext_b,tensors,arm,m,n)
-                        fn(); fn()
-                        if state=="E": condition(torch,conditioner)
-                        ms,_=event_ms(torch,fn)
+                        warm=fn(); del warm; warm=fn(); del warm; torch.cuda.synchronize()
+                        if state=="E": condition(torch,conditioner); conditioner_calls+=1
+                        torch.cuda.synchronize()
+                        ms,out=event_ms(torch,fn); del out
                         samples.append({"track":"W4","point":point["point"],"cell":cell,"arm":arm,"state":state,"block":block,"position":position,"sample_in_cell":block_counts[cell],"ms":ms})
                         block_counts[cell]+=1
                 if set(block_counts.values())!={50}: raise RuntimeError(f"sample count failure {point['point']}")
-                del tensors; gc.collect()
-        write_json(args.raw/"timing_samples.json", {"status":"PASS","samples":samples})
+                lifecycle.append({"track":"W4","point":point["point"],"phase":"timing_assets_and_conditioner_live","allocated_bytes":int(torch.cuda.memory_allocated()),"reserved_bytes":int(torch.cuda.memory_reserved()),"peak_allocated_bytes":int(torch.cuda.max_memory_allocated()),"peak_reserved_bytes":int(torch.cuda.max_memory_reserved())})
+                del tensors; gc.collect(); torch.cuda.synchronize()
+            first,last=int(conditioner[0].item()),int(conditioner[-1].item())
+            if conditioner_calls!=400 or first!=conditioner_calls or last!=conditioner_calls: raise RuntimeError(f"conditioner side-effect/count failure {conditioner_calls}/{first}/{last}")
+        write_json(args.raw/"timing_samples.json", {"status":"PASS","samples":samples,"memory_lifecycle":lifecycle,"conditioner":{"bytes":CONDITIONER_BYTES,"dtype":str(conditioner.dtype),"calls":conditioner_calls,"first_value":first,"last_value":last,"start":conditioner_begin,"end":conditioner_end,"l2_bytes":l2_bytes,"full_buffer_read_modify_write":True,"outside_timed_event":True,"empty_cache_used":False,"persisting_hint_used":False}})
     elif args.mode == "profile_dense":
         point=point_map[args.point]
         if point["M"]!=256: raise RuntimeError("Dense NCU is M256-only")
@@ -199,6 +232,7 @@ def main():
         with torch.inference_mode():
             x=make_input(torch,m,k,"dense"); w=make_dense_weight(torch,k,n)
             for _ in range(2): x@w
+            torch.cuda.synchronize()
             label=f"C16_GPT3_NCU_DENSE_{point['point']}"; torch.cuda.nvtx.range_push(label); out=x@w; torch.cuda.synchronize(); torch.cuda.nvtx.range_pop()
         print(json.dumps({"status":"PASS_PROFILE","range":label,"finite":bool(torch.isfinite(out).all())}))
     else:
@@ -207,10 +241,11 @@ def main():
         m,k,n=point["M"],point["K"],point["N"]; arm,state=args.cell.split("_")
         with torch.inference_mode():
             tensors=make_w4(torch,m,k,n); conditioner=torch.zeros(CONDITIONER_BYTES//4,dtype=torch.int32,device="cuda"); assert_nonoverlap(tensors,conditioner)
-            fn=lambda:call_w4(ext_a,ext_b,tensors,arm,m,n); fn(); fn()
+            fn=lambda:call_w4(ext_a,ext_b,tensors,arm,m,n); warm=fn(); del warm; warm=fn(); del warm; torch.cuda.synchronize()
             if state=="E": condition(torch,conditioner)
+            torch.cuda.synchronize()
             label=f"C16_GPT3_NCU_W4_{point['point']}_{args.cell}"; torch.cuda.nvtx.range_push(label); out=fn(); torch.cuda.synchronize(); torch.cuda.nvtx.range_pop()
-        print(json.dumps({"status":"PASS_PROFILE","range":label,"finite":bool(torch.isfinite(out).all()),"conditioner_calls":1 if state=="E" else 0}))
+        print(json.dumps({"status":"PASS_PROFILE","range":label,"finite":bool(torch.isfinite(out).all()),"shape":list(out.shape),"dtype":str(out.dtype),"output_sha256":tensor_sha(out),"conditioner_calls":1 if state=="E" else 0,"conditioner_first_value":int(conditioner[0].item()),"conditioner_last_value":int(conditioner[-1].item())}))
 
 
 if __name__ == "__main__":

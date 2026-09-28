@@ -16,6 +16,12 @@ PACK="$REPO/docs/vm_tlb/review_packs/C16_GPT3_PUBLIC_SHAPE_SCALE_TRANSFER_109_V1
 METRICS=l1tex__t_bytes.sum,lts__t_bytes.sum,dram__bytes.sum,gpu__time_duration.sum
 
 mkdir -p "$RAW"
+SOURCE_COMMIT=$(git -C "$REPO" rev-parse HEAD)
+if ! git -C "$REPO" diff --quiet || ! git -C "$REPO" diff --cached --quiet; then
+  echo "producer worktree must be clean before GPU campaign" >&2
+  exit 74
+fi
+printf '%s\n' "$SOURCE_COMMIT" > "$RAW/PRODUCER_SOURCE_COMMIT.txt"
 exec 9>"$LOCK"
 if ! flock -n 9; then echo "GPU lock held; refusing partial campaign" >&2; exit 75; fi
 export C16_GPU_LOCK_HELD=1 C16_GPU_LOCK_FD=9
@@ -34,14 +40,14 @@ for POINT in EXPAND_M256 CONTRACT_M256; do
   RANGE=C16_GPT3_NCU_DENSE_${POINT}; STEM=ncu_dense_${POINT}
   "$NCU" --nvtx --nvtx-include "${RANGE}/" --target-processes application-only --replay-mode application --cache-control none --metrics "$METRICS" --force-overwrite -o "$RAW/$STEM" \
     "$PY" "$RUNNER" profile_dense --repo "$REPO" --raw "$RAW" --point "$POINT" 2>&1 | tee "$RAW/${STEM}.log"
-  "$NCU" --import "$RAW/${STEM}.ncu-rep" --csv --page raw --print-units base > "$RAW/${STEM}.csv"
+  "$NCU" --import "$RAW/${STEM}.ncu-rep" --csv --page raw --print-units base > "$RAW/${STEM}.csv" 2> "$RAW/${STEM}_export.log"
 done
 for POINT in EXPAND_M256 CONTRACT_M256; do
   for CELL in A_W B_W A_E B_E; do
     RANGE=C16_GPT3_NCU_W4_${POINT}_${CELL}; STEM=ncu_w4_${POINT}_${CELL}
     "$NCU" --nvtx --nvtx-include "${RANGE}/" --target-processes application-only --replay-mode application --cache-control none --metrics "$METRICS" --force-overwrite -o "$RAW/$STEM" \
       "$PY" "$RUNNER" profile_w4 --repo "$REPO" --raw "$RAW" --point "$POINT" --cell "$CELL" 2>&1 | tee "$RAW/${STEM}.log"
-    "$NCU" --import "$RAW/${STEM}.ncu-rep" --csv --page raw --print-units base > "$RAW/${STEM}.csv"
+    "$NCU" --import "$RAW/${STEM}.ncu-rep" --csv --page raw --print-units base > "$RAW/${STEM}.csv" 2> "$RAW/${STEM}_export.log"
   done
 done
 nvidia-smi -q > "$RAW/NVIDIA_SMI_POST.txt"
