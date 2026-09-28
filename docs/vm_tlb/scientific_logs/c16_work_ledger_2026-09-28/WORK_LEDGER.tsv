@@ -1,0 +1,71 @@
+id	family	node	work	status_or_result	evidence_scope	limitation	sources	disposition
+INF01	历史平台	旧174/租用GPU	早期3090、AutoDL、retry570、Route-B、Llama支持及采样支线	INVENTORIED_NOT_INDIVIDUALLY_REVIEWED	分支名全量登记	不据分支名称断言每次采集成功或得到性能结论	B0	历史入口保留；引用数值前回原pack
+INF02	历史平台	109/旧节点	RTX4080迁移、userspace runtime、NCU/NVBit与R1-R3恢复	INVENTORIED_WITH_R5_SUCCESSOR	已定位系列分支与R5后续	本轮未逐个R版本重算	B0;S03	不要把各handoff计为独立实验
+INF03	排除证据	109	4080 U5-U9 R4定量记录	QUANTITATIVE_DATA_EXCLUDED	R5 README明确排除R4科学定量数据	无效或不可采用的证据不是科学负结果	S03	不再用于性能结论
+INF04	历史平台	109	R5 clean isolated rerun与R6 evidence closeout	CLEAN_SUCCESSOR_RECORDED	本轮读到R5干净重跑说明	部分旧pack文件为简短概述；未重验旧raw	S03	保留有效继承入口，不冒充完整复验
+INF05	数据管线	109/174-new/164	Pipeline V1 synthetic end-to-end、旧R5/3090归档	SYNTHETIC_PIPELINE_QUALIFIED_WITH_LIMITATION	SHA闭合后复制旧证据；SSHFS目录promotion限制已记录	没有运行模型/GPU工作；不是速度实验	S04	复用管线与既有归档
+INF06	输入与资产	174-new/109/164	旧174迁移、raw/catalog、模型资产、tokenizer输入恢复	INVENTORIED_WITH_SCOPED_INPUT_GAPS	分支盘点；V11记录V1 tokenizer不匹配及V2创建	资产已下载不等于runtime/formal实验可用	B0;S10	按模型/输入receipt消费，不凭路径名认定资格
+TR01	Trace基础	109→174-new	Qwen2.5-0.5B decode三个目标、98-shard consumer	C16_QWEN0_DECODE_ANALYSIS_174NEW_V4_PASS	static与address-context、access width闭合	当时flash特殊global-to-shared路径不在direct-global范围	S05	保留范围；特殊路径由TR02补充
+TR02	Trace基础	109→174-new	LDGSTS global-source operand采集	LDGSTS_CAPTURE_PASS	五个representative target sets；operand1 GLOBAL_SOURCE；5个ACK bundles	set-level coverage不等于跨路径时间顺序	S06	复用特殊路径支持，不拼接全kernel reuse distance
+TR03	低比特早期	109	Qwen2.5-7B AWQ fused V6	PASS_WITH_SCOPED_EVIDENCE	两个ACK portfolio目标	一个mislabeled prefill fused-gemm bundle被排除	S07	被排除bundle不回流分析
+TR04	低比特早期	109	AWQ V7 S1/S3/S4形状characterization	C16_QWEN25_7B_AWQ_CHARACTERIZATION_109_V7_PASS	实现/地址路径不变，只有shape scaling；新formal目标0	不是新增kernel家族或新机制结果	S08	不为相同路径重复深抓
+TR05	低比特早期	109/174-new	RAW/AWQ paired与semantic-module V8-V10闭合	MATCHED_SEMANTIC_MODULE_REPLAY_DEPLOYMENT_COMPARISON	同语义module的部署比较	自然部署输入hash不同；非严格量化单变量实验	S09	与后续E1 byte-identical输入链分开
+TR06	统一consumer	174-new	V11统一消费与输入/NCU缺口整理	PASS_WITH_SCOPED_GAPS	当时有NCU durable numeric export及tokenizer V1/V2问题	这是历史状态，不自动等于所有缺口仍未解决	S10	按后续专门closure升级，不覆写旧状态
+TR07	Qwen3	109→174-new	Qwen3输入/执行/证据V12-V16消费	PASS_WITH_NCU_GAP	V16终局标签已读	不能把gap省略写成完整NCU证据；上游各准备分支未逐一复验	S11;B0	保留typed gap
+TR08	Qwen3	174-new	Qwen3 cross-lineage V17	PASS_WITH_TYPED_GAPS	跨lineage消费终局已读	不能自动声称全模型/全实现普遍性	S12	带范围复用
+TR09	Attention/KV	109→174-new	Qwen3 V18R2 repeat-K与V19消费	C16_QWEN3_ATTENTION_KV_CONSUMER_174NEW_V19_PASS	160静态路径，8执行/152零，2048 active-lane events	具体anchor是k-repeat；不从短final标签外推全部persistent-KV行为	S13;S13a	保留具体路径身份
+TR10	Attention/KV	109/174-new	Qwen3 S3 V20及V21 consumer系列	INVENTORIED_NOT_RESULT_REVIEWED	分支存在，不能按猜测文件名读取失败判定未执行	本轮未闭合其全部结果文件	B0	论文要用时优先补此源审查
+MO01	MoE基础	174-new/109/164	Q30资产恢复、CPU/GPU streaming、S0/S2 state replay	PREPARATION_AND_AUTHORITY_LINEAGE_RECORDED	到accepted Q30 formal anchor的准备链	不把streaming/offload执行时间当GPU kernel性能	B0;S02;S40	复用持久状态；无需重新准备模型
+MO02	MoE formal	109→174-new	Q30 Layer24 Decode3 natural expert21 down_proj	ACCEPTED_SCOPED_FORMAL_ANCHOR	243 paths=41执行+202零；3147776 active-lane events	单selected自然状态；shards不是连续token	S02	保持per-shard分析范围
+MO03	MoE formal	109→174-new	DeepSeek-V2-Lite Layer1 expert4 down_proj V23R1	ACCEPTED_SCOPED_FORMAL_ANCHOR	243 paths=169执行+74零；11538432 active-lane events	top6/64与shared experts有别于Q30；不是matched-input实验	S02	不扩写population routing结论
+MO04	MoE比较	174-new	Q30/DeepSeek V25 two-lineage consumer	TWO_LINEAGE_PATTERN_WITH_IMPLEMENTATION_COUPLING	weight/input事件近半、output小、OTHER0	同广义cuBLAS gemvx家族；模型独立不等于实现独立	S02	由MO15补第三模型，不废弃旧证据
+MO05	MLA/KV	109	DeepSeek persistent MLA V26	PASS_NO_DIRECT_READ_TARGET	未获clean direct-read anchor；mixed target有ACK	不能写成纯persistent-cache读因果证据	S14	保留mixed scope，clean目标缺口不隐藏
+MO06	MLA/KV	109→174-new	DeepSeek S3 mixed-QK V27与S2/S3 V30消费	MIXED_PERSISTENT_CACHE_CONSUMER_PASS	mixed persistent-cache consumer范围	不与纯direct-read anchor混为一谈	S15;S16	按typed scope复用
+MO07	第三MoE选型	109	gpt-oss-20b native MXFP4 S2尝试V29	FAIL_CLOSED_NATIVE_MXFP4_SM89_UNSUPPORTED	required native semantics-preserving MXFP4路径缺失，formal未运行	工程/runtime不可执行，不是模型无访存优化价值	S17	不降精度/改语义冒充原方案；等待合法runtime变化
+MO08	OLMoE准备	109	OLMoE V32 exact S2 token输入资格	FAIL_CLOSED_EXACT_S2_TOKEN_FREEZE_UNPROVEN	BF16容量PASS，但natural routing/formal尚未执行	输入authority阻塞，不是负性能	S18	由后续输入与native闭合替代
+MO09	OLMoE准备	109	OLMoE V34自然S2与rank1 replay	FAIL_CLOSED_FRESH_STATIC_PATH_AUDIT_UNAVAILABLE	native S2/routing/rank1 PASS，formal未运行	不能把整体FAIL解释成native序列无效	S19;S02	保留native routing，后续补static路径
+MO10	OLMoE工具	109	V35实际cuBLAS SM89 static selector	FAIL_CLOSED_ACTUAL_CUBLAS_SM89_STATIC_SELECTOR_UNRESOLVED	canary/formal未运行	工具资格缺失，不是模型行为反证	S20	后续改actual-JIT识别
+MO11	OLMoE工具	109	V36 actual-JIT selector跨进程检查	FAIL_CLOSED_CROSS_PROCESS_JIT_SELECTOR_VARIANT_DRIFT	动态attribution后出现variant身份漂移	不能跨进程沿用未绑定selector	S21	转variant-aware合同
+MO12	OLMoE工具	109	V37 bounded natural variant census	FAIL_CLOSED_BOUNDED_NATURAL_VARIANT_B_NOT_OBTAINED	16 fresh processes：A16/B0	没有得到B不等于B不存在	S22	正式anchor限定actual-A，不继续无界等待B
+MO13	OLMoE工具	109	V38 complete static/dynamic audit到V39/40 lifecycle修复	V38_FAIL_CLOSED_LIFECYCLE_UNCLOSED	V38 formal未跑；V39系列和V40后继存在	本轮不把每个repair分支算独立科学实验	S23;S02;B0	使用后继正式V40，不重做旧lifecycle打补丁
+MO14	OLMoE formal	109→174-new/164	V40 canonical selector修复与最终admission	IMMUTABLY_ADMITTED_AND_ACKED	243=129执行+114零；132096 warp；4196352 events	actual-JIT A conditioned；历史opaque checksum不伪造复现	S24;S02	正式第三lineage authority冻结
+MO15	MoE比较	174-new	三lineage统一per-shard consumer	THREE_MODEL_LINEAGE_SCOPED_DESCRIPTIVE_PATTERN	Q30/DeepSeek/OLMoE weight-input平衡、output小、OTHER0	非跨shard chronology、非cache/TLB因果、非三种独立实现	S02	转明确新问题，停止重复同类anchor采集
+E101	E1基础	109→174-new	clean RAW/AWQ同FP16输入operator×M比较	C16_E1_CLEAN_BASELINE_CONSUMER_PASS	byte-identical FP16输入下存在实现与shape交互	非quantization-only/非cache causality；当时NCU selector未闭合	S26;S01;H0	冻结输入与部署路径，后续复用
+E102	E1方法	109→174-new	Semantic NCU V1默认replay/cache处理	COLD_CACHE_KERNEL_REPLAY_DIAGNOSTIC	历史profiling结果保留为cold diagnostic	不能作为最终warm semantic traffic authority	H0;S01	由V2作为warm-mode比较入口
+E103	E1方法	109→174-new	Semantic NCU V2 semantic-range/application-replay/none	C16_E1_SEMANTIC_NCU_V2_CONSUMER_PASS	packed约35.27MB与RAW FP16约135.79MB的容量几何；raw重算闭合	容量一致性假设不是唯一cache因果证明	S27;H0;S01	保留GEMM+reduction完整语义范围
+E104	驻留干预	109→174-new	controlled memory-state residency intervention	RESIDENCY_INTERVENTION_PARTIALLY_SUPPORTED	timing/DRAM material，strict REVERSIBLE未完全通过	只能支持驻留敏感性，不能省掉失败的可逆性门槛	S28	无需重跑同干预；后续问题转自然上下文
+E105	自然复用	109→174-new	natural full-model间隔下目标复用	CASE_B_WITH_CASE_D_ROLE_DEPENDENCE	isolated warm行为在自然流量下不能直接维持；有role dependence	无精确capacity knee；L14无exact isolated authority	S29;H0	保持缺口与范围，不补造isolated基线
+E106	CUDA persistence	109→174-new	targeted L2 persistence预算与natural目标	PRODUCER_CONSUMER_DECISION_RULE_DIVERGENCE	local timing material；strict consumer precondition NOT_SUPPORTED	严格natural DRAM materiality未过；不声称NVIDIA内部替换策略	S30;H0	同时保留producer与strict consumer标签
+E107	共享驻留	109→174-new	multi-target rotating shared residency	SHARED_RESIDENCY_LOCAL_ONLY	multi-target local benefit保留；whole-decode不material	局部成功不等于系统成功	S31	已由coverage follow-up检验，不重复同配置
+E108	覆盖扩展	109→174-new	保护目标覆盖扩大到N28	COVERAGE_SCALING_POSITIVE_BUT_SUBTHRESHOLD	方向正但whole-decode未过注册门槛	不能省略subthreshold或升级系统加速结论	S32	后续operator-family与成本分解已做
+E109	算子族扩展	109→174-new	gate→up→down全FFN operator-family expansion	OPERATOR_FAMILY_NOT_SUPPORTED	up是robust local material family；扩到其他族未解决whole-decode	不能把negative residual命名为单一cache原因	S33;H0	关闭这一扩覆盖路线
+E110	成本收益	109→174-new	B8/B16/B24/BFULL的28-up_proj收益抵消定位	RESIDENCY_OFFSET_LOCALIZED	全部预算28/28 up local material；top-level残差绝对中位数<0.10ms	system不material；unique microarchitectural cause未建立	S34;S34a;H0	已定位语义代价，不重复预算扫描
+E111	代表诊断	109→174-new	BFULL代表L0 self-attention NCU与aggregate对照	REPRESENTATIVE_KERNEL_DOES_NOT_REPRODUCE_AGGREGATE_SLOWDOWN	代表duration比约1.00134、DRAM比约1.00111；aggregate self-attn有抵消	一个代表kernel不能替代全部attention；不命名唯一L2原因	S34a	作为解释边界保留
+SIM01	完整trace	109→174-new/164	bounded D1-D3 full-SASS capture	C16_E1_BOUNDED_DECODE_TRACE_QUALIFIED_V1	4515 kernels；保留自然decode所有中间kernel；28 qweight sidecar	不是所有场景trace；与早期timing输入非逐byte同一	H0;S01	复用已有trace，禁止本轮重抓
+SIM02	地址资格	174-new	CUDA VA→NVBit→trace→L2 namespace qualification	C16_E1_TRACE_TO_SIM_L2_NAMESPACE_QUALIFIED_V1	数值命名空间闭合；L0/L14/L27实际canary	SM89 parser/execution compatibility不等于cycle-perfect Ada	H0;S01	作为机制比较基础
+SIM03	M1实现	174-new	oracle elastic qweight residency与quota-full语义	IMPLEMENTATION_QUALIFIED_TIMING_PENDING	默认OFF、resident+pending硬quota、set-local、ordinary借用	实现资格不是性能结果；不是所有target都保证存活	H0;S01	当前Lane4检验，不改正在跑的实现
+SIM04	Lane1 trace分析	174-new	reuse-gap与set-pressure characterization	C16_E1_TRACE_REUSE_SET_PRESSURE_CHARACTERIZED_V1	每层265216条128B线；28层set support广且均衡	reference/set-pressure proxy不是actual L2事务或eviction	H0	冻结；不重复大trace重扫
+SIM05	Lane1设计	174-new	target-class公平性与M1限定结构分析	TARGET_CLASS_FAIRNESS_MECHANISM_JUSTIFIED	target-only等限定假设下旧L0可能被后续类冲刷	结构证明不是Lane4观测；fairness不是已证周期收益	H0	优先准备M1F；M1Q未实现/未授权
+SIM06	Lane1 M1F	174-new	stable admission prototype与静态selector	M1F_STABLE_ADMISSION_IMPLEMENTATION_QUALIFIED_FOR_TIMING_REVIEW	固定seed/threshold；B16选130571线/131072 quota	global fit不保证各subpartition硬quota均fit；未证survival	H0	selector冻结，不调seed
+SIM07	Lane1 M1F	174-new	L0/L14/L27 real-trace activation	M1F_REAL_TRACE_ACTIVATION_QUALIFIED_V1	selected/fill/accounting一致；bounded OFF-neutrality	单kernel protected hit及零denial不等于跨token存活	H0	full timing仍待Lane4 project gate
+SIM08	Lane1 baselines	174-new	PRIORITY_ALL/STABLE、DRRIP、SHiP-SW-style	C16_STRONG_BASELINE_PREP_QUALIFIED_NO_FULL_TIMING	unit/sector/bounded canary/OFF-neutrality；早期SHiP缺口已关闭	非完整performance ranking；SHiP是明确C16 adaptation	S36	未来按必要矩阵使用，不立即长跑
+SIM09	Lane1 observer	174-new	exact old-address generation survival observer	C16_OLD_ADDRESS_SURVIVAL_OBSERVER_IMPLEMENTATION_QUALIFIED	区分同generation、淘汰后refill、absent；ON/OFF bounded neutral	没有D1→D2科学survival结果；不在运行中的旧Lane4 binary内	S36	仅在后续明确授权时采集
+SIM10	Lane4主线	174-new	R0/M1 B16/diagnostic完整reuse-window	RUNNING_NO_TERMINAL_SCIENTIFIC_RESULT	D1全程+D2至L0 up结束，1565-kernel注册范围	本次不读partial；diagnostic不能单独决定M1F	H0;S37	禁止停止/重启/替换；等terminal后项目审查
+HOST01	Lane2宿主加速	174-new	A_MEMSTAT0关闭部分统计	REJECT_NO_GAIN	registered host speedup=-0.5913%	16-kernel prefix，不是全窗口GPU周期优化	S35;S35a	关闭
+HOST02	Lane2宿主加速	174-new	B_CONFIG_ONLY_PTXLINE0	REJECT_NO_GAIN	host speedup=-0.4173%	header-only观测输出差异已注明	S35;S35a	关闭
+HOST03	Lane2宿主加速	174-new	B_GUARDED_CONFIG0 source early-return	REVERTED_NO_GAIN	同candidate binary配置比较-1.4897%	bounded exact但更慢；代码已回退	S35;S35a	不再并入Lane4
+HOST04	Lane2宿主加速	174-new	C_RUNTIME10000 runtime-stat间隔	REJECT_BELOW_5_PERCENT	host speedup=+1.7172%	不足注册5%门槛	S35;S35a	不称成功加速
+HOST05	Lane2宿主加速	174-new	D_PREDECOMPRESSED预解压	REJECT_BELOW_5_PERCENT	host speedup=+0.3565%	相同payload，不足门槛	S35;S35a	不扩大实现
+HOST06	Lane2宿主加速	174-new	D_TMPFS_COMPRESSED	REJECT_NO_GAIN	host speedup=-0.4455%	文件介质变化，非cache机制变化	S35;S35a	关闭
+HOST07	Lane2宿主加速	174-new	E_PINNED_CPU300	NO_SPEEDUP_KEEP_FOR_ISOLATION_ONLY	host speedup=-1.1099%	affinity可用于隔离，不能宣传加速	S35;S35a	只保留资源隔离用途
+HOST08	Lane2未执行候选	174-new	F_LTO_PGO	NOT_BUILT_DIMINISHING_RETURNS	考虑后未构建	不是做过且无效的实验	S35a	不自动启动
+HOST09	Lane2组合比较	174-new	COMBINED_VS_CURRENT	REJECT	相对current authority host speedup=-16.9899%	与HOST10为同组合的不同参照，不是独立算法	S35;S35a	不授权HOST_FAST binary
+HOST10	Lane2组合比较	174-new	COMBINED_VS_PRISTINE_SAME_BUILD	REJECT	相对pristine same-build host speedup=-9.6848%	prefix没有completed target；target决策未观测	S35;S35b	整条Lane2关闭
+DOC01	论文基础	174-new	Paper/Evidence V1账本、结果表、图表与初稿	ACCEPTED_FROZEN_V1	原accepted evidence组织为论文资料	不是新增实验或最终机制贡献	S01;H0	只读；V2等Lane4
+DOC02	终局consumer	174-new	baseline矩阵、Lane4 terminal schema/evaluator与binary修复	C16_PAPER_BASELINE_TERMINAL_REVIEW_PREP_V1_READY	actual binary精确gate；14项测试按已审交付；partial默认拒绝	没有预注册数值materiality阈值；A/B/C/D需project review	S37	冻结，不提前生成Paper V2
+DOC03	文献	ChatGPT	LR02-LR06定向cache/lowbit/MoE阅读	LITERATURE_REVIEW_AND_DESIGN_RECORD	五份实际round笔记；原文、摘要、官方文档阅读深度分列	未运行作者artifact；队列不算已读；没有同结构LR01文件	S38	继续作为related work与设计来源
+EXP01	E3 routing	109	Q30 natural/uniform/hot/permutation诊断	BALANCED_PROXY_ADEQUATE_IN_FROZEN_SCOPE	N/U差异低于离散；P等价；H是8-expert人工极端	不是所有MoE无routing问题；semantic容量不是流量	S25	已关闭；覆盖旧日志的未执行状态
+EXP02	Lane5数据流	174-new	activation供数、dequant布局、split-K三候选筛查	ONE_BOUNDED_OPPORTUNITY	仅保留fixed split8 scratch+reduction；其他未升格	activation动态价值未知；布局类问题已有QUICK近邻	S39	筛查完成；后续A/B已由EXP05执行
+EXP03	Lane6时间结构	174-new	三模型routing authority与marginal-preserving shuffle	TEMPORAL_AUTHORITY_INSUFFICIENT_CROSS_MODEL	Q30 48×4低power；DeepSeek单点；OLMoE单层32步	OLMoE相邻Jaccard在shuffle区间内，不排除其他lag结构	S40	冻结V1；待post-hoc来源审查，不启动新GPU采集
+EXP04	Lane6 post-hoc	174-new	OLMoE period11异常与generation provenance审计	DISPATCHED_TERMINAL_NOT_SEEN	此前聊天独立重算发现lag11候选峰	post-hoc、原因未明、非跨模型发现；本轮未见新终局	C0;S40	等待交付，不记为已验证新机制
+EXP05	Lane7 split-K	109	split8 vs split1四点bounded native A/B	OPERATOR_SPECIFIC_SPLIT_POLICY_ONLY	upM256+28.88%；downM256+0.90%；两M1回退41.30%/413.32%	全局H1不成立；非unique E1 cause；非full-decode速度	S41;S41a	已接受并STOP；窗口保留为109 GPU lane
