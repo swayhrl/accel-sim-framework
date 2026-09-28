@@ -1,8 +1,9 @@
 # Next 174-new independent consumer contract
 
 - RUN_ID: `C16R_olmoe-routing-provenance-multiround-v1_20260928T092536Z_c91846a955f5`
-- producer scientific commit: `PENDING_SCIENCE_COMMIT`
-- source manifest SHA256: `PENDING_DURABLE_TRANSFER`
+- Pipeline durable RUN_ID: `C16R_olmoe-1b-7b-0125-instruct_routing-provenance-multiround_prefill2048-decode64_passive-hooks_all-layers_20260928T092536Z_c91846a955f5`
+- producer scientific commit: `35bc117a961ad55114f9d75752beb29f6acadc59`
+- source manifest SHA256: `07ce90441cecfc29d2669c306084913e8b704234cd4e065c403a01fc4487ac9b`
 - four input identities: `P_TEXT`, `P_CODE`, `P_STRUCTURED`, `P_PROSE` exactly as bound in `INPUT_FREEZE_INDEX.tsv`
 - six sessions: `T0_NOHOOK_A`, `T1_NOHOOK_B`, `T2_TEXT_ALLLAYER`, `C1_CODE_ALLLAYER`, `S1_STRUCTURED_ALLLAYER`, `P1_PROSE_ALLLAYER`
 - expected session rows: 6; expected routing rows: 4096 = 4 sessions x 64 steps x 16 layers

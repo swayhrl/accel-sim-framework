@@ -280,13 +280,17 @@ def main():
     parser.add_argument("--producer-commit", default="PENDING_SCIENCE_COMMIT")
     args = parser.parse_args()
     run_id = (ROOT / "ACTIVE_RUN_ID").read_text().strip()
-    run = ROOT / "raw" / run_id
+    candidates = [ROOT / state / run_id for state in ("raw", "ready", "transferred")]
+    run = next((path for path in candidates if path.is_dir()), None)
+    if run is None:
+        raise RuntimeError(f"RUN_DIRECTORY_NOT_FOUND {run_id}")
     if not (run / "GPU_LOCK_RELEASED").is_file():
         raise RuntimeError("GPU_LOCK_NOT_RELEASED")
     receipt = load_json(run / "GPU_RUN_RECEIPT.json")
     if receipt["status"] != "PASS_SIX_SESSIONS" or receipt["session_count"] != 6 or receipt["model_load_count"] != 1:
         raise RuntimeError("GPU_CAMPAIGN_INCOMPLETE")
-    copy_sources(run)
+    if not (run / "RUN_MANIFEST.json").exists():
+        copy_sources(run)
     PACK.mkdir(parents=True, exist_ok=True)
 
     prompt_rows, prompt_strongest = prompt_analysis(run)
@@ -386,13 +390,18 @@ def main():
     durable_path = ROOT / "DURABLE_PROVENANCE.json"
     durable = load_json(durable_path) if durable_path.exists() else {"status": "PENDING_BEFORE_SCIENCE_COMMIT", "run_id": run_id}
     write_json("DURABLE_PROVENANCE.json", durable)
-    (PACK / "NEXT_174_CONSUMER_CONTRACT.md").write_text(f"""# Next 174-new independent consumer contract\n\n- RUN_ID: `{run_id}`\n- producer scientific commit: `{args.producer_commit}`\n- source manifest SHA256: `{durable.get('source_manifest_sha256', 'PENDING_DURABLE_TRANSFER')}`\n- four input identities: `P_TEXT`, `P_CODE`, `P_STRUCTURED`, `P_PROSE` exactly as bound in `INPUT_FREEZE_INDEX.tsv`\n- six sessions: `T0_NOHOOK_A`, `T1_NOHOOK_B`, `T2_TEXT_ALLLAYER`, `C1_CODE_ALLLAYER`, `S1_STRUCTURED_ALLLAYER`, `P1_PROSE_ALLLAYER`\n- expected session rows: 6; expected routing rows: 4096 = 4 sessions x 64 steps x 16 layers\n- recompute lags 1..32; seed 20260928; 1000 whole-step-set permutations per session/layer/lag\n- recompute prompt periodicity, V34 Layer1 comparison, token/routing association and cross-layer concordance directly from durable raw\n- do not use producer TSV/JSON summaries as calculation authority\n- do not automatically start the consumer from Lane 7\n""")
+    (PACK / "NEXT_174_CONSUMER_CONTRACT.md").write_text(f"""# Next 174-new independent consumer contract\n\n- RUN_ID: `{run_id}`\n- Pipeline durable RUN_ID: `{durable.get('pipeline_run_id', 'PENDING_DURABLE_TRANSFER')}`\n- producer scientific commit: `{args.producer_commit}`\n- source manifest SHA256: `{durable.get('source_manifest_sha256', 'PENDING_DURABLE_TRANSFER')}`\n- four input identities: `P_TEXT`, `P_CODE`, `P_STRUCTURED`, `P_PROSE` exactly as bound in `INPUT_FREEZE_INDEX.tsv`\n- six sessions: `T0_NOHOOK_A`, `T1_NOHOOK_B`, `T2_TEXT_ALLLAYER`, `C1_CODE_ALLLAYER`, `S1_STRUCTURED_ALLLAYER`, `P1_PROSE_ALLLAYER`\n- expected session rows: 6; expected routing rows: 4096 = 4 sessions x 64 steps x 16 layers\n- recompute lags 1..32; seed 20260928; 1000 whole-step-set permutations per session/layer/lag\n- recompute prompt periodicity, V34 Layer1 comparison, token/routing association and cross-layer concordance directly from durable raw\n- do not use producer TSV/JSON summaries as calculation authority\n- do not automatically start the consumer from Lane 7\n""")
     (PACK / "README.md").write_text(f"""# C16 OLMoE routing provenance multi-round V1\n\nRUN_ID: `{run_id}`\n\nProducer result: `{decision}`. Six sessions completed under one GPU lock and one model load. T0/T1/T2 exact output reproducibility and passive-hook neutrality passed. The analysis is routing provenance only and awaits independent 174-new recomputation from durable raw.\n\nNo timing, cache mechanism, full-model speedup, forced routing, new prompt family, or sampling-mode claim is made.\n""")
 
+    index_root = run
+    if durable.get("status") == "PASS_NODE164_DURABLE_ACK":
+        candidate = ROOT / "transport_transferred" / durable["pipeline_run_id"]
+        if candidate.is_dir():
+            index_root = candidate
     raw_rows = []
-    for p in sorted(run.rglob("*")):
+    for p in sorted(index_root.rglob("*")):
         if p.is_file():
-            raw_rows.append({"relative_path": p.relative_to(run).as_posix(), "size_bytes": p.stat().st_size, "sha256": sha(p)})
+            raw_rows.append({"relative_path": p.relative_to(index_root).as_posix(), "size_bytes": p.stat().st_size, "sha256": sha(p)})
     write_tsv("RAW_LOG_INDEX.tsv", ["relative_path", "size_bytes", "sha256"], raw_rows)
 
     for old in (PACK / "SHA256SUMS",): old.unlink(missing_ok=True)
