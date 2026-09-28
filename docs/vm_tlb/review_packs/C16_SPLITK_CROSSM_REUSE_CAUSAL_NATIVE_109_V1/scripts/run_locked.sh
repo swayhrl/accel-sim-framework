@@ -40,7 +40,7 @@ for k in 2560 3072; do
       label="C16_CROSSM_K${k}_S${split}_${state}"
       stem="$RAW/ncu_K${k}_S${split}_${state}"
       "$NCU" --target-processes all --replay-mode application --cache-control none \
-        --nvtx --nvtx-include "${label}/" --metrics "$METRICS" \
+        --nvtx --nvtx-include "${label}]" --disable-extra-suffixes --metrics "$METRICS" \
         --force-overwrite -o "$stem" \
         "$PYTHON" "$RUNNER" profile --extension "$EXTENSION" \
         --k "$k" --split "$split" --state "$state" \
@@ -52,4 +52,3 @@ for k in 2560 3072; do
 done
 nvidia-smi -q >"$RAW/NVIDIA_SMI_POST.txt"
 printf '%s\n' "PASS" >"$RAW/LOCKED_CAMPAIGN_COMPLETE"
-
