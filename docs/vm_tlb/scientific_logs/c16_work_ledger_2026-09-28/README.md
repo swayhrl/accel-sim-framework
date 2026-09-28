@@ -89,7 +89,7 @@ Lane 2试过关闭部分统计、PTX统计guard、增大runtime-stat间隔、预
 
 **Lane 6：MoE时间结构。** 从持久档案找回Q30全48层×4-step显式ID，OLMoE有单层32-step，DeepSeek只有单点。OLMoE相邻Jaccard 0.250659落在保持边际频率的shuffle区间0.171546–0.294940内；这只是否定当前检验中解析出的额外相邻信号，不排除其他lag。跨模型结论仍`TEMPORAL_AUTHORITY_INSUFFICIENT_CROSS_MODEL`。[S40]
 
-聊天中后续发现period11候选异常，已下发174-new CPU-only post-hoc来源审计；本轮未见终局交付。它不是预注册正结果，不能先记成MoE通用规律，更不能自动启动三模型GPU采集。[C0]
+随后174-new完成了明确标记为post-hoc的period11审计：OLMoE Layer1的lag11 mean Jaccard=0.928042，而同lag whole-step shuffle p95=0.313967；lag1–16中只有lag11高于各自shuffle p95。21组(t,t+11)中15组unordered exact-set repeat、5组7/8 near-repeat，19组next-token相同，但router-input/logits SHA相等均为0。结论限定为`POSTHOC_PERIOD11_SIGNAL_CONFIRMED` + `ASSOCIATED_WITH_TOKEN_REPETITION` + `ORIGIN_UNRESOLVED`；V1的`TEMPORAL_AUTHORITY_INSUFFICIENT_CROSS_MODEL`保持不变。V34没有durably保存实际generation runner/KV transition/sampling/seed/EOS/stopping细节，因此目前不能区分真实内容循环和capture/replay methodology，也不能据此推出cache机制。[S42]
 
 ## 3. 当前节点/Lane状态
 
@@ -102,7 +102,7 @@ Lane 2试过关闭部分统计、PTX统计guard、增大runtime-stat间隔、预
 | 3 | 174-new | Paper/Evidence V1冻结；terminal review prep完成；没有Paper V2结果 |
 | 4 | 174-new | R0/M1/diagnostic继续原长跑；严禁停止、重启或替换 |
 | 5 | 174-new | lowbit dataflow screen完成；其A/B已在Lane7执行 |
-| 6 | 174-new | temporal V1完成；period11 post-hoc审计待交付 |
+| 6 | 174-new | temporal V1与period11 post-hoc审计均完成；跨模型仍不可比，period11来源未闭合 |
 | 7 | 109 | split-K A/B完成并释放锁；保留为后续RTX4080 GPU窗口 |
 
 109未来实际CUDA工作仍必须持有`/data/c16/locks/c16_gpu_campaign.lock`。164仍为durable raw/catalog/provenance来源。109上的纯CPU工作可另开窗口；不得以“不计时”为由绕过GPU锁。
@@ -119,6 +119,7 @@ Lane 2试过关闭部分统计、PTX统计guard、增大runtime-stat间隔、预
 | Lane3 terminal prep | `4f45bf0aaec0d0fb63fb39adb835f89dcf5da1ef` |
 | Lane5 screen | `dcbd60f98753ec678642bd4be745469409ffb734` |
 | Lane6 temporal V1 | `0017527afba6861a4a0cfee95cce7b2a0397f284` |
+| Lane6 period11 post-hoc | `72fdd0f89aa0d4d4ae8b0d55daea492fbae2f293` |
 | Lane7 native A/B | `0e88faa28c9066b48e394dce657d7a16e6332a32` |
 | 文献LR02–LR06 | `dc41de767b55f3ba1532627f1cb5dc176ea539ee` |
 
