@@ -1,0 +1,74 @@
+{
+  "accepted_binaries": {
+    "split1_sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887",
+    "split8_sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+  },
+  "accepted_evidence": {
+    "independent_threshold_consumer": "6d226cd99946d3bd7b41c5ee005285183efbb915",
+    "native_L2_read_hit_diagnostic": "915707348617f7a8f432bad7a434a98d78b487c8",
+    "native_threshold_series": "b17193ff6b3786fd01d5bfe83b5c1a0a03859729",
+    "simulator_non_admission": "f64a8c9100d0f2e779063291d31de1737a819304",
+    "split1_patch_authority": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+    "static_footprint_audit": "c72d28b17247f25d0c3613604ab6cab1737666e0"
+  },
+  "coordination_commit": "2d1db5b8262f07fa7ebdec6122ac7359fdd86960",
+  "goal": "C16_SPLITK_CROSSM_REUSE_CAUSAL_PREP_174NEW_V1",
+  "patch": {
+    "device_kernel_added_semantics": [
+      "runtime replica_mask parameter",
+      "replica_id from accepted Mtile",
+      "three replica strides",
+      "replica base offsets for qweight/qzeros/scales"
+    ],
+    "host_only_changes": [
+      "frozen tensor/shape checks",
+      "3D replica layout",
+      "split1 plane0 direct return inherited from accepted split1 authority"
+    ],
+    "old_generator_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "old_header_sha256": "2e962fb644d131795cf2f9f96c5b45c693b7a6962426fb993809cc3fd47bc187",
+    "patch_sha256": "630bc9497a6c93238205d1e08fb6e49a2e2910e2f1026f146979f04a8d5ae68e",
+    "patched_generator_sha256": "795ebacf81350da3f5035cafdba135d929e859b5af07052c062a510bb4a3b843",
+    "patched_header_sha256": "27ae44630de3d2b76a5cd2f0a092fd70c506e57accdfc4014122d6b34249cb5f",
+    "pybind_source_changed": false,
+    "state_path": "same compiled kernel; branch-free replica_id=(Mtile & replica_mask)",
+    "token_counts": {
+      "__syncthreads": {
+        "old": 2,
+        "patched": 2
+      },
+      "dequantize_s4_to_fp16x2": {
+        "old": 2,
+        "patched": 2
+      },
+      "for (": {
+        "old": 10,
+        "patched": 10
+      },
+      "k_bound": {
+        "old": 4,
+        "patched": 4
+      },
+      "mma.sync": {
+        "old": 6,
+        "patched": 6
+      }
+    }
+  },
+  "resource_attestation": {
+    "cpu_only": true,
+    "cuda_imported": false,
+    "gpu_lock_requested": false,
+    "gpu_used": false,
+    "lane4_partial_accessed": false
+  },
+  "source": {
+    "commit": "c7b0e88c327694c715b0a758d9ce8fd414a1fa21",
+    "generator_blob": "98f49efac8626388039912e6aabc8a84d9f8303b",
+    "generator_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "header_blob": "afc8165157dfc646049f548b706d9fb86fb685fc",
+    "header_sha256": "2e962fb644d131795cf2f9f96c5b45c693b7a6962426fb993809cc3fd47bc187",
+    "repo": "casper-hansen/AutoAWQ_kernels"
+  },
+  "status": "PASS"
+}

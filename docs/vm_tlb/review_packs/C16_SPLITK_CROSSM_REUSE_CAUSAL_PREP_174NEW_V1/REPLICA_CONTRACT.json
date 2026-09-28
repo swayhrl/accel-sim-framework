@@ -1,0 +1,62 @@
+{
+  "allocation": "all cells allocate all 16 replicas directly in final contiguous 3D tensors; no full-size staging copy",
+  "identity": "each of 16 slices must be byte-identical and independently hashed against the frozen per-K SHA256",
+  "input_output": "input is not replicated; scratch/output follow the original split contract",
+  "points": {
+    "2560": {
+      "accepted_output_sha256": {
+        "A": "e758e1725afa7e4fd8520e6e5e3c43f11806a8854f482c46750ccbf44f4859eb",
+        "B": "b71bed6bc0277ac3d69eeb84a91aef783f4eba40d1dce18ab100595d6078682d3"
+      },
+      "input_sha256": "c1ddb7e0036fc80a2726dc63e5a880653abc7a08f741df783994c938ab6e3b19",
+      "per_replica_sha256": {
+        "qweight": "dab8866b4eb644ca9e7be2e34e237f95428ded0771d661ad5ca311d01384b50b",
+        "qzeros": "3c389c0733bc9a91b32156a4627bb10cd853fe011f028b320ae5d85c463bb6a9",
+        "scales": "b0222a5228d1ae3ddb9cac42ba31181ad90fb11728090bb69fe797582ba17a04"
+      },
+      "strides_elements": {
+        "qweight": 15728640,
+        "qzeros": 122880,
+        "scales": 983040
+      }
+    },
+    "3072": {
+      "accepted_output_sha256": {
+        "A": "76be531cfe46bb847a95aad4fd49910d6715450a15c39681968b0ef1371a34db",
+        "B": "76be531cfe46bb847a95aad4fd49910d6715450a15c39681968b0ef1371a34db"
+      },
+      "input_sha256": "6866666ea32d1e37956bdba16c1b6a6c4b5c63f887153aa6004b77696c92c974",
+      "per_replica_sha256": {
+        "qweight": "09f3642eab83ded59a6c30fc70763256524a6706d2d8015699c0db442fde5b67",
+        "qzeros": "d1123eed445d6e124e63cd3762c9ac98cbdf64a696b770dc518d72d43191bb17",
+        "scales": "e7d8f76ae975fa6e31c766e831b3d9e7f7b60ff72929b1102b036153509e69fa"
+      },
+      "strides_elements": {
+        "qweight": 18874368,
+        "qzeros": 147456,
+        "scales": 1179648
+      }
+    }
+  },
+  "shape": {
+    "K": [
+      2560,
+      3072
+    ],
+    "M": 256,
+    "N": 49152,
+    "group_size": 128
+  },
+  "states": {
+    "PER_MTILE": {
+      "replica_id": "Mtile & 15 = Mtile for Mtile 0..15",
+      "replica_mask": 15
+    },
+    "SHARED": {
+      "replica_id": "Mtile & 0 = 0",
+      "replica_mask": 0
+    }
+  },
+  "va_contract": "qweight/qzeros/scales slice ranges are half-open, non-overlapping, live through the cell, and recorded before GPU work",
+  "version": "GPT3_SHAPE_SYNTH_V1_CROSSM_REPLICA16_V1"
+}

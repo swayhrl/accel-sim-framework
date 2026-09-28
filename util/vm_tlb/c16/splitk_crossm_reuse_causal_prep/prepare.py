@@ -309,8 +309,8 @@ def launch_rows() -> list[dict]:
 
 
 def early(repo: Path, source: Path, out: Path) -> tuple[dict, dict]:
-    if subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip() != COORD:
-        raise RuntimeError("coordination HEAD mismatch")
+    if subprocess.run(["git", "-C", str(repo), "merge-base", "--is-ancestor", COORD, "HEAD"], check=False).returncode != 0:
+        raise RuntimeError("coordination commit is not an ancestor of HEAD")
     if subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip() != SOURCE_COMMIT:
         raise RuntimeError("AutoAWQ source commit mismatch")
     if subprocess.check_output(["git", "-C", str(source), "rev-parse", f"HEAD:{GEN_REL}"], text=True).strip() != GEN_BLOB:
