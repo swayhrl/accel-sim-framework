@@ -291,6 +291,8 @@ Coordination base：
 `C16_LOWBIT_SPLITK_NATIVE_AB_109_V1`
 
 GPT-3公开尺寸与文献边界：
-`docs/vm_tlb/literature_notes/c16/rounds/2026-09-28_LR08_GPT3_WORKLOAD_ACCESS_AND_SINGLE_GPU_FEASIBILITY.md`
+`docs/vm_tlb/chatgpt_handoff/c16/gpt3_public_shape_scale_transfer_v1/GPT3_PUBLIC_SHAPE_AUTHORITY.md`
+
+对应完整LR08阅读记录固定于commit `139135231fb30b4981eedb031da9c7e182269652`，如需全文用该commit读取，不依赖当前coordination branch是否包含literature历史。
 
 本任务不修改历史packs。
