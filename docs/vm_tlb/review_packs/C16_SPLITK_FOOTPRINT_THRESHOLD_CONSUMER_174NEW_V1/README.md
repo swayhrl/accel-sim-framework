@@ -1,0 +1,3 @@
+# C16 split-K工作集容量阈值独立consumer
+
+从Lane7基础timing/NCU行与Lane8静态footprint独立重算。主结论见MECHANISM_INTERPRETATION.md和FINAL_DECISION.json。
