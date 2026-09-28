@@ -1,0 +1,115 @@
+{
+  "accepted_binaries": {
+    "A": {
+      "path": "/data/c16/env/c16-awq-v6/lib/python3.10/site-packages/awq_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+    },
+    "B": {
+      "path": "/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib/awq_split1_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887"
+    }
+  },
+  "coordination_head": "f10a40ccd25cf3179a619abe21881fdf19c973a1",
+  "cuda_imported": false,
+  "endpoint_commit": "1544018d967003c2825eb69f56440f641f5f5581",
+  "endpoint_files": {
+    "NCU_SUMMARY.json": {
+      "bytes": 6173,
+      "sha256": "dc34d9a3d4d5bfab6e77ae2e5abcbe54f739827d14dda2c4a9eec439ca958c69"
+    },
+    "SOURCE_AND_AUTHORITY.json": {
+      "bytes": 1123,
+      "sha256": "d797948f78ce61864abed9150b7cdd3b23317098f4e051c08ead06701eae54ef"
+    },
+    "W4_STATE_INTERACTION.tsv": {
+      "bytes": 1257,
+      "sha256": "6f81d9010910c4a60c85ece5201871f15b88d344e6805a43cea2300e0104cb0b"
+    },
+    "W4_TIMING_SUMMARY.tsv": {
+      "bytes": 2882,
+      "sha256": "007f21a675520e4b7d5014f47431e23ff60335ce52435255fd23bd0e57b0ec62"
+    }
+  },
+  "fixed": {
+    "K": [
+      2048,
+      2560,
+      3072,
+      4096
+    ],
+    "M": 256,
+    "N": 49152,
+    "split": [
+      1,
+      8
+    ],
+    "state": "WARM_SAME_ARM",
+    "synthetic_version": "GPT3_SHAPE_SYNTH_V1"
+  },
+  "goal": "C16_SPLITK_FOOTPRINT_THRESHOLD_NATIVE_109_V1",
+  "gpu_lock_requested": false,
+  "lane4_partial_accessed": false,
+  "run_id": "C16R_splitk-footprint-threshold-native-v1_20260928T150645Z",
+  "sources": [
+    {
+      "bytes": 3363,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/contracts.py",
+      "sha256": "63c2653748806de6e74de7e57364f4d65468828dcd75d55a886f800541838fdc"
+    },
+    {
+      "bytes": 1361,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/test_contracts.py",
+      "sha256": "f86b603cbed4fbc82fde2550bda1d2d297326251673bcef689d0cf38a7f0d86d"
+    },
+    {
+      "bytes": 7199,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/runner.py",
+      "sha256": "710dad7f30d00d9dc0272e1ebf78cca51d2e668e4e155a149114a1608064ce9d"
+    },
+    {
+      "bytes": 2233,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/validate_launch.py",
+      "sha256": "1761ff3578c728819359cbf013ecf14dc27c1a1d2e9368292e9e99f8200d22e2"
+    },
+    {
+      "bytes": 3925,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/prepare.py",
+      "sha256": "e62d8b2605b0a91d5bc05a56c5a15f5f572ac1a4d94fa6951c7a1e33acf8c1f4"
+    },
+    {
+      "bytes": 2730,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/run_locked.sh",
+      "sha256": "26fafb112fdb6ada9946ba0f9c18dfd0e9acb899d889544b386c873d21549847"
+    },
+    {
+      "bytes": 10123,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/analyze.py",
+      "sha256": "0181a8d96b72d0cf6c10d96fae7ab54af87d4fa6493ebc283abfe50da5601b40"
+    },
+    {
+      "bytes": 927,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/reseal.py",
+      "sha256": "47fcba4a951b5e330109a6b35b38e9a4b8480d4c694126effe8868a38cd47b69"
+    }
+  ],
+  "status": "CPU_PREP_COMPLETE_WAITING_STATIC_GATE",
+  "tiny_reference": {
+    "byte_order": "little-endian; IEEE-754 binary16 and signed int32 two's complement",
+    "reference_sha256": "bc5b86bb5c440be4fa308f3c6d85922297148cf911cad8a33e0d3373928a7e3e",
+    "shape": {
+      "K": 256,
+      "M": 2,
+      "N": 16,
+      "group_size": 128
+    },
+    "tensor_sha256": {
+      "dense_input_f16": "575741c0065c16811fbb6022b703fbe939faaf7ef6151230487fe671cffa8030",
+      "dense_weight_f16": "03a01f7769142759ddb0b44e3143930e9bb28d18ad0fb78fbb0da28dfe56b6c2",
+      "qweight_i32": "fefc768ca5695d46fb236b7c1b49b227017a6acc9c560a5ed6608aa42f8f395b",
+      "qzeros_i32": "a001e4691b15b87ad88cf4cfe63ddad37c6e0a9317b155d29d6bc47a4a7a43e7",
+      "scales_f16": "cc3136e4905acaffef701698ce4229bd0061e2c3eeb28f8c2f232d2ac23c450f",
+      "w4_input_f16": "64d998beaa1b361447abbac01943a41db9f044b703358a3644dc006d0f596f0c"
+    },
+    "version": "GPT3_SHAPE_SYNTH_V1"
+  }
+}

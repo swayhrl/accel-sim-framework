@@ -1,0 +1,120 @@
+{
+  "cells": [
+    {
+      "K": 2048,
+      "arm": "A",
+      "point": "K2048",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "K": 2048,
+      "arm": "B",
+      "point": "K2048",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "K": 2560,
+      "arm": "A",
+      "point": "K2560",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "K": 2560,
+      "arm": "B",
+      "point": "K2560",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "K": 3072,
+      "arm": "A",
+      "point": "K3072",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "K": 3072,
+      "arm": "B",
+      "point": "K3072",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "K": 4096,
+      "arm": "A",
+      "point": "K4096",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "K": 4096,
+      "arm": "B",
+      "point": "K4096",
+      "state": "WARM_SAME_ARM"
+    }
+  ],
+  "gate_status": "PENDING",
+  "ncu": {
+    "cache_control": "none",
+    "metrics": [
+      "l1tex__t_bytes.sum",
+      "lts__t_bytes.sum",
+      "dram__bytes.sum",
+      "gpu__time_duration.sum"
+    ],
+    "profiles": 8,
+    "replay_mode": "application"
+  },
+  "run_id": "C16R_splitk-footprint-threshold-native-v1_20260928T150645Z",
+  "source_files": [
+    {
+      "bytes": 3363,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/contracts.py",
+      "sha256": "63c2653748806de6e74de7e57364f4d65468828dcd75d55a886f800541838fdc"
+    },
+    {
+      "bytes": 1361,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/test_contracts.py",
+      "sha256": "f86b603cbed4fbc82fde2550bda1d2d297326251673bcef689d0cf38a7f0d86d"
+    },
+    {
+      "bytes": 7199,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/runner.py",
+      "sha256": "710dad7f30d00d9dc0272e1ebf78cca51d2e668e4e155a149114a1608064ce9d"
+    },
+    {
+      "bytes": 2233,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/validate_launch.py",
+      "sha256": "1761ff3578c728819359cbf013ecf14dc27c1a1d2e9368292e9e99f8200d22e2"
+    },
+    {
+      "bytes": 3925,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/prepare.py",
+      "sha256": "e62d8b2605b0a91d5bc05a56c5a15f5f572ac1a4d94fa6951c7a1e33acf8c1f4"
+    },
+    {
+      "bytes": 2730,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/run_locked.sh",
+      "sha256": "26fafb112fdb6ada9946ba0f9c18dfd0e9acb899d889544b386c873d21549847"
+    },
+    {
+      "bytes": 10123,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/analyze.py",
+      "sha256": "0181a8d96b72d0cf6c10d96fae7ab54af87d4fa6493ebc283abfe50da5601b40"
+    },
+    {
+      "bytes": 927,
+      "path": "util/vm_tlb/c16/splitk_footprint_threshold/reseal.py",
+      "sha256": "47fcba4a951b5e330109a6b35b38e9a4b8480d4c694126effe8868a38cd47b69"
+    }
+  ],
+  "status": "CPU_PREP_COMPLETE_WAITING_STATIC_GATE",
+  "timing": {
+    "blocks": 25,
+    "global_warmups_per_arm": 10,
+    "order": [
+      "A",
+      "B",
+      "B",
+      "A"
+    ],
+    "same_arm_warmups_per_sample": 2,
+    "samples_per_arm": 50
+  }
+}
