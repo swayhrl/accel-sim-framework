@@ -1,0 +1,233 @@
+{
+  "accepted_binaries": {
+    "A": {
+      "path": "/data/c16/env/c16-awq-v6/lib/python3.10/site-packages/awq_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+    },
+    "B": {
+      "path": "/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib/awq_split1_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887"
+    }
+  },
+  "branch": "hrl/c16-splitk-memory-state-interaction-109-v1",
+  "cells": [
+    {
+      "arm": "ACCEPTED_SPLIT8",
+      "cell": "A_W",
+      "operator": "up_proj",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "arm": "ACCEPTED_SPLIT1_DIRECT_OUTPUT",
+      "cell": "B_W",
+      "operator": "up_proj",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "arm": "ACCEPTED_SPLIT8",
+      "cell": "A_E",
+      "operator": "up_proj",
+      "state": "EVICT_CONDITIONED"
+    },
+    {
+      "arm": "ACCEPTED_SPLIT1_DIRECT_OUTPUT",
+      "cell": "B_E",
+      "operator": "up_proj",
+      "state": "EVICT_CONDITIONED"
+    },
+    {
+      "arm": "ACCEPTED_SPLIT8",
+      "cell": "A_W",
+      "operator": "down_proj",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "arm": "ACCEPTED_SPLIT1_DIRECT_OUTPUT",
+      "cell": "B_W",
+      "operator": "down_proj",
+      "state": "WARM_SAME_ARM"
+    },
+    {
+      "arm": "ACCEPTED_SPLIT8",
+      "cell": "A_E",
+      "operator": "down_proj",
+      "state": "EVICT_CONDITIONED"
+    },
+    {
+      "arm": "ACCEPTED_SPLIT1_DIRECT_OUTPUT",
+      "cell": "B_E",
+      "operator": "down_proj",
+      "state": "EVICT_CONDITIONED"
+    }
+  ],
+  "conditioner": {
+    "buffer_bytes": 268435456,
+    "buffer_multiple": 4,
+    "dtype": "torch.int32",
+    "elements": 67108864,
+    "expected_l2_bytes": 67108864,
+    "no_allocator_empty_cache": true,
+    "no_persisting_hint": true,
+    "operation": "in-place add_(1) full-buffer read-modify-write",
+    "qualification": "lock-time device property exact check required",
+    "same_live_buffer_all_cells": true,
+    "stride_elements": 1
+  },
+  "coordination_head": "17dd9482245d8bdac8e89ff53be5a567048016f1",
+  "created_at_utc": "2026-09-28T11:02:59.914570+00:00",
+  "goal": "C16_SPLITK_MEMORY_STATE_INTERACTION_109_V1",
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "input_files": [
+    {
+      "file_bytes": 1836243,
+      "file_sha256": "7f4e6845e6de0ab3cd1b3bcf487b4ca2592999ef81454925395113cf0cd408ce",
+      "operator": "up_proj",
+      "path": "/data/c16/e1_clean_baseline_v1/capture_a/up_proj_M256_input.pt",
+      "semantic_tensor_sha256": "eeae491edfdbee761de47aa6c4ea35b293bb2796227927778fa51c9e58ef1b41"
+    },
+    {
+      "file_bytes": 9700573,
+      "file_sha256": "852ad34177b1b12db46456463d9181d032c21852b84dced74ba92ae0a340e78a",
+      "operator": "down_proj",
+      "path": "/data/c16/e1_clean_baseline_v1/capture_a/down_proj_M256_input.pt",
+      "semantic_tensor_sha256": "a1f158a113f56314f4ee5f4a5f10ee41ac9afe732a4f1735b88a1c01b25b9aff"
+    }
+  ],
+  "launch_contract": {
+    "A_reduction": true,
+    "B_reduction": false,
+    "down_proj": {
+      "A_gemm_grid": 3584,
+      "A_reduction_grid": 1792,
+      "B_gemm_grid": 448
+    },
+    "gemm_block": [
+      32,
+      2,
+      1
+    ],
+    "reduction_block": [
+      32,
+      4,
+      1
+    ],
+    "up_proj": {
+      "A_gemm_grid": 18944,
+      "A_reduction_grid": 9472,
+      "B_gemm_grid": 2368
+    }
+  },
+  "model": {
+    "id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "layer": "model.layers.0",
+    "loaded_assets_only": [
+      "mlp.up_proj qweight/qzeros/scales",
+      "mlp.down_proj qweight/qzeros/scales"
+    ],
+    "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641"
+  },
+  "ncu": {
+    "cache_control": "none",
+    "cells": [
+      "A_W",
+      "B_W",
+      "A_E",
+      "B_E"
+    ],
+    "metrics": [
+      "l1tex__t_bytes.sum",
+      "lts__t_bytes.sum",
+      "dram__bytes.sum"
+    ],
+    "ncu": "2025.1.1.0",
+    "nvtx_target_only": true,
+    "operators": [
+      "up_proj",
+      "down_proj"
+    ],
+    "preparation_outside_nvtx": true,
+    "profiles": 8,
+    "replay_mode": "application"
+  },
+  "one_outer_gpu_campaign": true,
+  "original_ab_producer": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+  "producer_base": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+  "prohibitions": {
+    "Lane4_partial_accessed": false,
+    "M1": false,
+    "extra_model_backend_quantization": false,
+    "extra_split": false,
+    "q_proj": false,
+    "timing_or_cache_causality_claim": false
+  },
+  "run_id": "C16R_splitk-memory-state-interaction-v1_20260928T110259Z_b6c828c6824d",
+  "sources": [
+    {
+      "bytes": 6605,
+      "path": "util/vm_tlb/c16/splitk_memory_state_prepare.py",
+      "sha256": "1ebede00303c58b3fbf2f8c1847fa19843dfb67797820b0921fcc1437211d2fd"
+    },
+    {
+      "bytes": 14137,
+      "path": "util/vm_tlb/c16/splitk_memory_state_runner.py",
+      "sha256": "ed66ae55a3b7e611dd3c6fbae6d6425923b3e794b344d10a068a4ca83d95ff71"
+    },
+    {
+      "bytes": 2505,
+      "path": "util/vm_tlb/c16/splitk_memory_state_validate_launch.py",
+      "sha256": "bb1e9cbc81f2edb8a52a3a51cc41203d81120dd7d5dfe266a21a89b2ff65b6b6"
+    },
+    {
+      "bytes": 14966,
+      "path": "util/vm_tlb/c16/splitk_memory_state_analyze.py",
+      "sha256": "98f699bd44587b4deb4f5d6828479bd79eb7771c4bb7bb1405f9ecb52dae430f"
+    },
+    {
+      "bytes": 2225,
+      "path": "util/vm_tlb/c16/run_splitk_memory_state_locked.sh",
+      "sha256": "0557d3d6c255c9c0ecd656239f239963ab2145edf42ab27984a1cde49b0355e2"
+    }
+  ],
+  "status": "PREEXECUTION_SOURCE_AND_PARAMETERS_FROZEN",
+  "timing": {
+    "blocks": 25,
+    "bootstrap": {
+      "permutations": 1000,
+      "quantiles": [
+        0.05,
+        0.5,
+        0.95
+      ],
+      "seed": 20260928,
+      "unit": "complete mirror block"
+    },
+    "conditioner_outside_event": true,
+    "global_warmups_per_operator_arm": 10,
+    "mirror_order": [
+      "A_W",
+      "B_W",
+      "A_E",
+      "B_E",
+      "B_E",
+      "A_E",
+      "B_W",
+      "A_W"
+    ],
+    "sample_preparation_same_arm_warmups": 2,
+    "samples_per_cell": 50,
+    "target_clock": "CUDA event"
+  },
+  "weight_semantic_sha256": {
+    "down_proj": {
+      "qweight": "d5e856f6cb2709c28092e74f3434faaf7bad371c8342a4b0553d148bbf5d200cb",
+      "qzeros": "06122002c48390245c77e071e2352ebabbc20eedc8dfd555aa222148844be8a80",
+      "scales": "031c2f9b22f16ef4538004e3563e03e41ce3b1a015d7476420642d2772fe9cc1d"
+    },
+    "up_proj": {
+      "qweight": "b07a8dec390cec4f664bfd2384acf080c4676e1c6d29386bfaf225e4e68d181a",
+      "qzeros": "fa29c34518732c98417613df87bbb46dcf3cd825bd681700a5daa0a49b24205b",
+      "scales": "84e59277679d49510b3449687598d47cbe8f9ce356c73f07b2abc60019b0a175"
+    }
+  }
+}
