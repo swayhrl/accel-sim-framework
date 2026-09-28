@@ -1,0 +1,221 @@
+{
+  "contract": {
+    "cache_control": "none",
+    "metrics": [
+      "l1tex__t_bytes.sum",
+      "lts__t_bytes.sum",
+      "dram__bytes.sum",
+      "gpu__time_duration.sum"
+    ],
+    "profiles": 10,
+    "replay_mode": "application",
+    "tensor_level_attribution": "FORBIDDEN"
+  },
+  "profile_receipts": [
+    {
+      "finite": true,
+      "range": "C16_GPT3_NCU_DENSE_EXPAND_M256",
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 0,
+      "conditioner_first_value": 0,
+      "conditioner_last_value": 0,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "4bbe46667972a596cb0fc0168942a677af6aab4b8ac8c5a717cb8b480068ead4",
+      "range": "C16_GPT3_NCU_W4_EXPAND_M256_A_W",
+      "shape": [
+        256,
+        49152
+      ],
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 0,
+      "conditioner_first_value": 0,
+      "conditioner_last_value": 0,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "4bbe46667972a596cb0fc0168942a677af6aab4b8ac8c5a717cb8b480068ead4",
+      "range": "C16_GPT3_NCU_W4_EXPAND_M256_B_W",
+      "shape": [
+        256,
+        49152
+      ],
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 1,
+      "conditioner_first_value": 1,
+      "conditioner_last_value": 1,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "4bbe46667972a596cb0fc0168942a677af6aab4b8ac8c5a717cb8b480068ead4",
+      "range": "C16_GPT3_NCU_W4_EXPAND_M256_A_E",
+      "shape": [
+        256,
+        49152
+      ],
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 1,
+      "conditioner_first_value": 1,
+      "conditioner_last_value": 1,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "4bbe46667972a596cb0fc0168942a677af6aab4b8ac8c5a717cb8b480068ead4",
+      "range": "C16_GPT3_NCU_W4_EXPAND_M256_B_E",
+      "shape": [
+        256,
+        49152
+      ],
+      "status": "PASS_PROFILE"
+    },
+    {
+      "finite": true,
+      "range": "C16_GPT3_NCU_DENSE_CONTRACT_M256",
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 0,
+      "conditioner_first_value": 0,
+      "conditioner_last_value": 0,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "a2f574080f6842f36153d90837d00fe80b403bbf27bdbe5c392a1e651debc537",
+      "range": "C16_GPT3_NCU_W4_CONTRACT_M256_A_W",
+      "shape": [
+        256,
+        12288
+      ],
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 0,
+      "conditioner_first_value": 0,
+      "conditioner_last_value": 0,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "a2f574080f6842f36153d90837d00fe80b403bbf27bdbe5c392a1e651debc537",
+      "range": "C16_GPT3_NCU_W4_CONTRACT_M256_B_W",
+      "shape": [
+        256,
+        12288
+      ],
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 1,
+      "conditioner_first_value": 1,
+      "conditioner_last_value": 1,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "a2f574080f6842f36153d90837d00fe80b403bbf27bdbe5c392a1e651debc537",
+      "range": "C16_GPT3_NCU_W4_CONTRACT_M256_A_E",
+      "shape": [
+        256,
+        12288
+      ],
+      "status": "PASS_PROFILE"
+    },
+    {
+      "conditioner_calls": 1,
+      "conditioner_first_value": 1,
+      "conditioner_last_value": 1,
+      "dtype": "torch.float16",
+      "finite": true,
+      "output_sha256": "a2f574080f6842f36153d90837d00fe80b403bbf27bdbe5c392a1e651debc537",
+      "range": "C16_GPT3_NCU_W4_CONTRACT_M256_B_E",
+      "shape": [
+        256,
+        12288
+      ],
+      "status": "PASS_PROFILE"
+    }
+  ],
+  "profiles": {
+    "DENSE:CONTRACT_M256:NA": {
+      "dram_bytes_total": 1292366592,
+      "duration_ns_total": 3848800,
+      "kernel_count": 1,
+      "l1tex_bytes_total": 3655394304,
+      "lts_bytes_total": 3656062976,
+      "reduction_present": false
+    },
+    "DENSE:EXPAND_M256:NA": {
+      "dram_bytes_total": 1430335744,
+      "duration_ns_total": 3954016,
+      "kernel_count": 1,
+      "l1tex_bytes_total": 4857004032,
+      "lts_bytes_total": 4857918816,
+      "reduction_present": false
+    },
+    "W4:CONTRACT_M256:A_E": {
+      "dram_bytes_total": 667106560,
+      "duration_ns_total": 4709056,
+      "kernel_count": 2,
+      "l1tex_bytes_total": 9034530816,
+      "lts_bytes_total": 8251724000,
+      "reduction_present": true
+    },
+    "W4:CONTRACT_M256:A_W": {
+      "dram_bytes_total": 653346816,
+      "duration_ns_total": 4702784,
+      "kernel_count": 2,
+      "l1tex_bytes_total": 9034530816,
+      "lts_bytes_total": 8252032128,
+      "reduction_present": true
+    },
+    "W4:CONTRACT_M256:B_E": {
+      "dram_bytes_total": 2216837504,
+      "duration_ns_total": 6155008,
+      "kernel_count": 1,
+      "l1tex_bytes_total": 8782872576,
+      "lts_bytes_total": 7862773920,
+      "reduction_present": false
+    },
+    "W4:CONTRACT_M256:B_W": {
+      "dram_bytes_total": 2217370112,
+      "duration_ns_total": 6151488,
+      "kernel_count": 1,
+      "l1tex_bytes_total": 8782872576,
+      "lts_bytes_total": 7868314496,
+      "reduction_present": false
+    },
+    "W4:EXPAND_M256:A_E": {
+      "dram_bytes_total": 969536000,
+      "duration_ns_total": 5364576,
+      "kernel_count": 2,
+      "l1tex_bytes_total": 9865003008,
+      "lts_bytes_total": 8972141152,
+      "reduction_present": true
+    },
+    "W4:EXPAND_M256:A_W": {
+      "dram_bytes_total": 944594432,
+      "duration_ns_total": 5352896,
+      "kernel_count": 2,
+      "l1tex_bytes_total": 9865003008,
+      "lts_bytes_total": 8971505952,
+      "reduction_present": true
+    },
+    "W4:EXPAND_M256:B_E": {
+      "dram_bytes_total": 2974139008,
+      "duration_ns_total": 7855328,
+      "kernel_count": 1,
+      "l1tex_bytes_total": 8858370048,
+      "lts_bytes_total": 7914371328,
+      "reduction_present": false
+    },
+    "W4:EXPAND_M256:B_W": {
+      "dram_bytes_total": 2992685440,
+      "duration_ns_total": 8025216,
+      "kernel_count": 1,
+      "l1tex_bytes_total": 8858370048,
+      "lts_bytes_total": 7920649920,
+      "reduction_present": false
+    }
+  },
+  "status": "PASS"
+}

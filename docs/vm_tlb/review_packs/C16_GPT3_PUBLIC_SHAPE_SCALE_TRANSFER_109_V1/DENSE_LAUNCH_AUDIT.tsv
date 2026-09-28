@@ -1,0 +1,5 @@
+track	point	arm	order	kernel_kind	kernel_name	grid	block	registers_per_thread	static_shared_bytes	dynamic_shared_bytes	pass
+DENSE	EXPAND_M1	NA	0	VENDOR_DENSE	void cutlass::Kernel2<cutlass_80_wmma_tensorop_f16_s161616gemm_f16_32x32_32x2_nn_align8>(T1::Params)	[8, 192, 64]	[128, 1, 1]	44	0	9728	True
+DENSE	EXPAND_M256	NA	0	VENDOR_DENSE	void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_128x128_32x4_nn_align8>(T1::Params)	[16, 48, 1]	[128, 1, 1]	224	0	65536	True
+DENSE	CONTRACT_M1	NA	0	VENDOR_DENSE	ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_nn	[192, 1, 192]	[32, 1, 1]	212	16384	0	True
+DENSE	CONTRACT_M256	NA	0	VENDOR_DENSE	ampere_fp16_s16816gemm_fp16_256x128_ldg8_f2f_stages_32x3_nn	[48, 2, 3]	[256, 1, 1]	218	49152	24576	True
