@@ -4,26 +4,33 @@
 
 本支线记录原文核读、相关工作比较和待验证问题，不修改实验/Core/raw，不消费Lane4 partial。文献笔记不是实验完成证据。AWMA与C16文献分开维护。
 
-## 当前入口：LR07
+## 当前入口：LR08
+
+[LR08：GPT-3的论文使用含义、权重可获取性与单卡层级研究](rounds/2026-09-28_LR08_GPT3_WORKLOAD_ACCESS_AND_SINGLE_GPU_FEASIBILITY.md)
+
+本轮回答：GPT-3是否仍是重要研究对象；原始权重与公开结构、独立训练checkpoint、OPT代理之间怎样区分；RTX4080是否能研究175B尺寸的关键层。
+
+新增核查：原GPT-3论文Table2.1/§2.1、LLMCompass相关正文与作者随机operand代码、NeuPIMs§8.1/Table3、MLCommons定制GPT3训练checkpoint及2025年基准替换说明、官方权重入口；FlashInfer/SpecMD只用于具体研究对象对照，不构造全领域使用率排名。
+
+核心判断：
+- 没有找到OpenAI原始GPT-3训练权重的官方公开下载；但这不妨碍构造公开尺寸的合成算子。MLPerf独立训练checkpoint、OPT与gpt-oss不是原版GPT-3。
+- 175B单block主矩阵以2B/参数推算约3.375GiB，单FFN矩阵1.125GiB。完整175B则远超16GB；单层可行性与全模型可行性分开。
+- 原论文包含dense/local sparse attention交替。全dense代理、修改context、TP切片都须注明，不冒充完整原模型。
+- 随机张量可服务规则dense算子结构研究，不替代量化质量、真实数值分布或自然生成证据。单层自重复不代表96层不同权重的跨模型驻留。
+- 本轮只做研究与容量推导，没有新GPU/模拟/下载，也没有给当前Lane6/7/8插入任务。
+
+## 历史入口：LR07
 
 [LR07：warp请求结构、临时工作区与并行度交互](rounds/2026-09-28_LR07_WARP_GEOMETRY_WORKSPACE_AND_RESOURCE_BALANCE.md)
 
-本轮新增cuThermo、FlashDecoding++、FlashInfer、QServe的**相关正文阅读**；Stream-K仅原始摘要/作者页面，正文获取未成功。复核NVIDIA coalescing与Nsight请求层级定义；未运行任何作者artifact。
+当轮新增cuThermo、FlashDecoding++、FlashInfer、QServe的相关正文阅读；Stream-K仅原始摘要/作者页面，正文获取未成功。复核NVIDIA coalescing与Nsight请求层级定义；未运行作者artifact。
 
-新增问题：
-
+当轮新增问题：
 - active-lane事件数量相同，不保证同warp地址合并后的sector覆盖相同。旧三lineage consumer仅做role事件和per-shard footprint；已有C16WARP1可用于新请求结构分析，不重抓trace。
 - accepted split8→split1差异不仅来自删除reduction：GEMM自身的计数也改变。74MiB/14MiB等scratch allocation不是cache占用证明；下一诊断固定A/B实现，仅比较两种执行前访存状态。
 - 形状适配、work-centric partition、CTA预算化workspace已有直接前例，不把通用split-K调参称为新机制。
 
-下发位置：`hrl/c16-lr07-exploration-coordination-v1`。
-
-| 任务 | 节点/窗口 | 当前记录状态 |
-|---|---|---|
-| Warp request geometry screen | 174-new / 新Lane8，CPU-only | READY_TO_DISPATCH；没有新结果 |
-| Split-K × cache-state diagnostic | 109 / Lane7，必须GPU锁 | QUEUED_NOT_STARTED；只能在当前OLMoE任务完成并释放锁后执行 |
-
-Lane4不变；本轮没有授权M1F或新的full timing simulation。
+协调位置：`hrl/c16-lr07-exploration-coordination-v1`。LR07发布时的队列状态保留于该轮正文及README历史commit `b0533583a6207a48cd4fa309e8dc4d925f20adce`；不把旧READY/QUEUED文字当成当前运行状态。用户最新说明109/Lane7已在执行split-K访存状态实验；本轮没有现场查询或消费partial。
 
 ## 历史轮次
 
@@ -35,9 +42,7 @@ Lane4不变；本轮没有授权M1F或新的full timing simulation。
 | LR03 | [近邻、故事、最小强基线](rounds/2026-09-27_LR03_NEIGHBORS_STORY_STRONG_BASELINES.md) | P_all/P_stable与M1/M1F能力对照；AutoScratch functional replay与完整timing分开；APCM及cache-resident LLM相关正文。 |
 | LR02 | [容量、公平、跨轮存活与效用](rounds/2026-09-27_LR02_REUSE_SURVIVAL_AND_UTILITY.md) | Talus/Vantage/AutoScratch/PRESERVE等；容量占用、旧地址存活和周期价值不是同一问题。部分工作当轮仅摘要，后续升级在对应轮次注明。 |
 
-LR02接续历史聊天中的调研，不声称仓库存在同结构的LR01。复读、补全文、文档版本升级不重复计成新的研究工作。
-
-本次仅重整README入口；LR02–LR06正文没有改写。此前完整README及来源初始阅读等级保留在commit `dc41de767b55f3ba1532627f1cb5dc176ea539ee`的同一路径，可用`git show`查看。
+LR02接续历史聊天中的调研，不声称仓库存在同结构的LR01。复读、补全文、文档版本升级不重复计成新的研究工作。此前更完整的README与来源初始阅读等级保留在commit `dc41de767b55f3ba1532627f1cb5dc176ea539ee`。
 
 ## 原始来源的维护原则
 
@@ -59,7 +64,8 @@ SHiP、AutoScratch-style比较和当前C16_SHIP_SW_STYLE_V1不同，必须保留
 - 冻结Lane3 V1 / 本文献分支基点：`a402828860ced26124ddbf3c9d87baa6f6774d55`。
 - LR07的three-lineage原始consumer：`08536be9940590be101c7f5bac2117ba82056db5`。
 - LR07的split-K数据来源：`0e88faa28c9066b48e394dce657d7a16e6332a32`。
-- 工作总账分支：`hrl/c16-work-history-audit-20260928-v1`；最新已审period11更新为`1f999e62000178feb7e657a79cdf9e5a64db182f`。
-- 当前OLMoE多轮producer的协调合同：`378df585cba4c21ac5864c374976e271ae44e9a3`。本轮队列不得修改/抢占它。
+- 工作总账分支：`hrl/c16-work-history-audit-20260928-v1`；后继状态以最新已发布结果和用户派发说明为准。
+- OLMoE多轮producer的协调合同：`378df585cba4c21ac5864c374976e271ae44e9a3`；producer已交付后转174独立分析，不因新文献重开采集。
+- LR08阅读基点：`b0533583a6207a48cd4fa309e8dc4d925f20adce`。
 
-历史笔记中的planned状态不回写成当时已经执行；实际后继结果以原producer/consumer及总账为准。所有“首次”“系统收益”“优于现有机制”主张仍需要实际比较，不由阅读数量或代码资格替代。
+历史笔记中的planned状态不回写成当时已经执行。所有“首次”“系统收益”“优于现有机制”主张仍需要实际比较，不由阅读数量或代码资格替代。Lane4不变；本支线不授权M1F或新的full timing simulation。
