@@ -1,5 +1,3 @@
 # Split-K L2 read-hit diagnostic
 
-RUN_ID: `C16R_splitk-l2-read-hit-diagnostic-v1_20260928T161039Z`
-
-CPU metric selection PASS; GPU execution authorized only for eight fixed profiles.
+Status: `L2_READ_HIT_BEHAVIOR_DIRECTIONALLY_CONSISTENT_WITH_CAPACITY_KNEE`. Eight bounded profiles only; no SASS, NVBit, Accel-Sim, EVICT or new shapes.
