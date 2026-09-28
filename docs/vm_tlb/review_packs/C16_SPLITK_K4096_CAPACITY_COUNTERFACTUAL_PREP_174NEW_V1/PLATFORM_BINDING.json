@@ -1,0 +1,108 @@
+{
+  "baseline_config": {
+    "blob": "3306caa589baa07c046e16fddd3066351ba10d2c",
+    "path": "configs/rtx4080_ada/SM89_RTX4080_AWMA_V1/gpgpusim.config",
+    "sha256": "de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8"
+  },
+  "blocking_evidence": {
+    "H_CACHE_absolute_runtime_error_percent": 43.48,
+    "predeclared_scoped_ceiling_percent": 35.0,
+    "qualification_decision_blob": "0d67820d67c24101d78dd5363abe0497374f447e",
+    "qualification_decision_sha256": "98a7756d4cc4c37e55b41402529c48988369a89cf6a0f796b15aaaf1d3714b7a",
+    "underlying_platform_decision": "RTX4080_ADA_PLATFORM_NOT_QUALIFIED"
+  },
+  "branch": "hrl/awma-174-rtx4080-v1-baseline-promotion-v1",
+  "commit": "8d1f14a32f5538660d74da86ccb03a2c504c5735",
+  "configuration_claim": "Changing dl2 sets also changes set-index range; this is an L2 configuration counterfactual, not pure physical-capacity isolation.",
+  "counterfactual_configs": [
+    {
+      "associativity": 16,
+      "authorized_to_run": false,
+      "capacity_mib": 64,
+      "changed_config_lines_vs_64mib": "NONE",
+      "config": "configs/L2_064MiB.gpgpusim.config",
+      "line_bytes": 128,
+      "role": "BASELINE",
+      "sets_per_subpartition": 2048,
+      "sha256": "de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8",
+      "subpartitions": 16,
+      "total_bytes": 67108864
+    },
+    {
+      "associativity": 16,
+      "authorized_to_run": false,
+      "capacity_mib": 128,
+      "changed_config_lines_vs_64mib": "118",
+      "config": "configs/L2_128MiB.gpgpusim.config",
+      "line_bytes": 128,
+      "role": "DESIGN_ONLY_COUNTERFACTUAL",
+      "sets_per_subpartition": 4096,
+      "sha256": "5eb2ca36d4860130e7f64797cf2ab23963398bd312ce5e1a8278f27e8731b958",
+      "subpartitions": 16,
+      "total_bytes": 134217728
+    },
+    {
+      "associativity": 16,
+      "authorized_to_run": false,
+      "capacity_mib": 256,
+      "changed_config_lines_vs_64mib": "118",
+      "config": "configs/L2_256MiB.gpgpusim.config",
+      "line_bytes": 128,
+      "role": "DESIGN_ONLY_COUNTERFACTUAL",
+      "sets_per_subpartition": 8192,
+      "sha256": "a1667e7618d7bf572b4d89d2143d09203b448580b118356dfbcac46b953d391b",
+      "subpartitions": 16,
+      "total_bytes": 268435456
+    }
+  ],
+  "promotion_decision": "AWMA_RTX4080_SIM_BASELINE_V1_PROMOTED_WITH_SCOPE",
+  "promotion_scope": "QUALIFIED_FOR_AWMA_MEMORY_TRANSLATION_STUDIES",
+  "requested_scope": "GEMM data-cache L2 capacity counterfactual",
+  "scope_compatible": false,
+  "sm89_trace_parser": {
+    "accepted_T0_T1_T2_runs_completed": true,
+    "addresses_are_uint64": true,
+    "admitted_for_format_and_opcode_parsing": true,
+    "binary_version": 89,
+    "memory_operands_are_preserved": true,
+    "opcode_map": "Ampere_OpcodeMap",
+    "this_does_not_admit_L2_scientific_fidelity": true
+  },
+  "source_anchors": {
+    "ada_opcode_blob": "7ca60db1b2aafd7b61e2fd4307a74256f2aa10e5",
+    "trace_driven_blob": "3c08d869014ed6054c14e60f4193ab6ffd29572a7",
+    "trace_parser_cc_blob": "36b2d5ee4153c0b1821920016af8315ddfb110450",
+    "trace_parser_h_blob": "a84f6aada226842256617dc6d0ecc3a0097810e4e",
+    "tracer_tool_blob": "1f73084fdf98a9ecc905ba3bc6cfdd6991fc32043"
+  },
+  "status": "SIM_PLATFORM_NOT_ADMITTED_STOP",
+  "telemetry": {
+    "aggregate_supported": [
+      "gpu_sim_cycle",
+      "gpu_sim_insn",
+      "gpu_tot_issued_cta",
+      "L2_total_cache_accesses",
+      "L2_total_cache_misses",
+      "L2_total_cache_miss_rate",
+      "total dram reads",
+      "total dram writes",
+      "quiescence"
+    ],
+    "object_range_L2_hit_miss_dram_supported": false,
+    "object_range_note": "Trace addresses can be joined to qweight ranges for coverage, but the accepted simulator exposes no per-object L2/DRAM counters."
+  },
+  "topology": {
+    "associativity": 16,
+    "line_bytes": 128,
+    "memory_channels": 8,
+    "sets_per_subpartition": 2048,
+    "subpartitions": 16,
+    "subpartitions_per_channel": 2,
+    "total_l2_bytes": 67108864
+  },
+  "trace_config": {
+    "blob": "07bfd7760f9073fc31d5535535c8e8707d23a625",
+    "path": "gpu-simulator/configs/tested-cfgs/SM89_RTX4080_AWMA_V1/trace.config",
+    "sha256": "a46fe47a14f3ca4116a35c5bf1dc156f4e861484b91278e8b3f6e09519bd7e5b"
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "accepted_trace_calibration": {
+    "grouped_trace_uncompressed_bytes": 1056280276,
+    "grouped_trace_xz_bytes": 27461164,
+    "identity": "accepted T1 PREFILL_GEMM_PRIMARY_OCC0",
+    "raw_records": 12043648,
+    "raw_trace_uncompressed_bytes": 1286086205,
+    "raw_trace_xz_bytes": 114524372,
+    "timing_evidence_available": false,
+    "traceg_sha256": "e36178f9a92033cd91f3c1ff4b165321b7958157c7deed2a9aaa4696e7c73e8c"
+  },
+  "arms": {
+    "A_split8": {
+      "M16_pilot": {
+        "capture_time_planning_interval_minutes": [
+          10,
+          45
+        ],
+        "estimated_dynamic_warp_instruction_records": [
+          16220160,
+          33914880
+        ],
+        "estimated_sizes_bytes": {
+          "grouped_trace_uncompressed": [
+            1422578531,
+            2974482383
+          ],
+          "grouped_trace_xz": [
+            36984182,
+            77330563
+          ],
+          "raw_trace_uncompressed": [
+            1732076861,
+            3621615254
+          ],
+          "raw_trace_xz": [
+            154239283,
+            322500320
+          ]
+        },
+        "grid": 3072
+      },
+      "M256_capture_time_planning_interval_hours": [
+        2.5,
+        12
+      ],
+      "cta_loop_products": 786432,
+      "estimated_dynamic_warp_instruction_records": [
+        259522560,
+        542638080
+      ],
+      "estimated_sizes_bytes": {
+        "grouped_trace_uncompressed": [
+          22761256498,
+          47591718133
+        ],
+        "grouped_trace_xz": [
+          591746918,
+          1237289010
+        ],
+        "raw_trace_uncompressed": [
+          27713229771,
+          57945844066
+        ],
+        "raw_trace_xz": [
+          2467828535,
+          5160005119
+        ]
+      },
+      "grid": 49152,
+      "k_loop_iterations_per_cta": 16,
+      "warps_per_cta": 2
+    },
+    "B_split1": {
+      "M16_pilot": {
+        "capture_time_planning_interval_minutes": [
+          10,
+          45
+        ],
+        "estimated_dynamic_warp_instruction_records": [
+          15790080,
+          31764480
+        ],
+        "estimated_sizes_bytes": {
+          "grouped_trace_uncompressed": [
+            1384858646,
+            2785882957
+          ],
+          "grouped_trace_xz": [
+            36003541,
+            72427357
+          ],
+          "raw_trace_uncompressed": [
+            1686150580,
+            3391983852
+          ],
+          "raw_trace_xz": [
+            150149605,
+            302051930
+          ]
+        },
+        "grid": 384
+      },
+      "M256_capture_time_planning_interval_hours": [
+        2.5,
+        12
+      ],
+      "cta_loop_products": 786432,
+      "estimated_dynamic_warp_instruction_records": [
+        252641280,
+        508231680
+      ],
+      "estimated_sizes_bytes": {
+        "grouped_trace_uncompressed": [
+          22157738334,
+          44574127309
+        ],
+        "grouped_trace_xz": [
+          576056659,
+          1158837714
+        ],
+        "raw_trace_uncompressed": [
+          26978409284,
+          54271741634
+        ],
+        "raw_trace_xz": [
+          2402393688,
+          4832830882
+        ]
+      },
+      "grid": 6144,
+      "k_loop_iterations_per_cta": 128,
+      "warps_per_cta": 2
+    }
+  },
+  "bytes_per_raw_record": {
+    "grouped_trace_uncompressed": 87.70434639072812,
+    "grouped_trace_xz": 2.2801367160514823,
+    "raw_trace_uncompressed": 106.78543619009788,
+    "raw_trace_xz": 9.509109864386604
+  },
+  "model": {
+    "exact_source_loop_structure": {
+      "Ktile_width": 32,
+      "dequant_chunks_per_Ktile": 8,
+      "packed_half_sub_and_fma_operations_per_chunk": 8,
+      "tensor_mma_instructions_per_warp_Ktile": 16
+    },
+    "fixed_sass_per_warp_cta_planning_range": [
+      80,
+      400
+    ],
+    "loop_warp_iterations_both_arms": 1572864,
+    "qualification": "Envelope brackets compiler expansion around exact CUDA/PTX loop structure; it is not measured SASS and exact dynamic count must come from the pilot.",
+    "source_derived_loop_sass_per_warp_iteration_planning_range": [
+      160,
+      320
+    ]
+  },
+  "pilot_policy": {
+    "current_gate_authorizes_pilot": false,
+    "full_capture_stop_if_extrapolated_grouped_xz_bytes_gt": 2147483648,
+    "full_capture_stop_if_extrapolated_hours_per_arm_gt": 12,
+    "full_capture_stop_if_extrapolated_raw_uncompressed_bytes_gt": 68719476736,
+    "full_capture_stop_if_extrapolated_raw_xz_bytes_gt": 8589934592,
+    "required": true,
+    "scale_to_M256": 16,
+    "scientific_use": false,
+    "shape": {
+      "K": 4096,
+      "M": 16,
+      "N": 49152
+    }
+  },
+  "status": "PILOT_REQUIRED_BEFORE_ANY_FULL_CAPTURE"
+}

@@ -1,0 +1,70 @@
+{
+  "coordination_commit": "659a12c2576580e0ad1bd2be0401fe21dd26f624",
+  "goal": "C16_SPLITK_K4096_CAPACITY_COUNTERFACTUAL_PREP_174NEW_V1",
+  "kernel_source": {
+    "blob": "98f49efac8626388039912e6aabc8a84d9f8303b",
+    "commit": "c7b0e88c327694c715b0a758d9ce8fd414a1fa21",
+    "path": "awq_ext/quantization/gemm_cuda_gen.cu",
+    "repo": "casper-hansen/AutoAWQ_kernels",
+    "sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "verified_cpu_only": true
+  },
+  "native_threshold": {
+    "K4096_output_sha256_both_arms": "43432f9cefc72f5ac5e74bb26d2fb4a601ef7abc8a2839539358e076b8550d0f",
+    "accepted_binary_sha256": {
+      "A_split8": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7",
+      "B_split1": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887"
+    },
+    "binding": "accepted commit receipts; binaries must be re-hashed on any future capture node",
+    "commit": "b17193ff6b3786fd01d5bfe83b5c1a0a03859729",
+    "correctness_sha256": "0b41e278c8eee6c308226eaf93ea52788f96d475f4ad74796d7bf36e0ff5fa455",
+    "launch_audit_sha256": "faea2daa71ff316cdcac07690118242998300679d6a5d09e00e6e94a186f846f2",
+    "manifest_sha256": "0ea418edcbdb3c555fb1d9f3cf9c359604827854ea1aee16783efbce86209deba",
+    "node174_binary_paths_present": false
+  },
+  "resource_attestation": {
+    "cpu_only": true,
+    "cuda_context_created": false,
+    "gpu_lock_requested": false,
+    "gpu_used": false,
+    "lane4_partial_accessed": false,
+    "sass_capture_started": false,
+    "simulation_started": false
+  },
+  "shape": {
+    "K": 4096,
+    "M": 256,
+    "N": 49152,
+    "group_size": 128
+  },
+  "static_audit": {
+    "K4096_split1_bytes": 104595456,
+    "K4096_split8_each_bytes": 14548992,
+    "commit": "c72d28b17247f25d0c3613604ab6cab1737666e0",
+    "gate_sha256": "d19dc83ae5257ee089ca3bcc54ad6a666efbd906d19104d429883dad887ab915f",
+    "status": "SUPPORTED_PROCEED_NATIVE_THRESHOLD_SCREEN"
+  },
+  "status": "SIM_PLATFORM_NOT_ADMITTED_STOP",
+  "synthetic": {
+    "same_assets_required_for_both_arms": true,
+    "tensors": {
+      "input": {
+        "bytes": 2097152,
+        "sha256": "637ea9bfb53f35dfd4ee23edbefd589f257a29357433aaad1467d075bab95e3c"
+      },
+      "qweight": {
+        "bytes": 100663296,
+        "sha256": "823e8bbe3c42568a4cae5e04779aff021ca8820ce15c377211cd6287eeb63e96"
+      },
+      "qzeros": {
+        "bytes": 786432,
+        "sha256": "b44b5d37926f92ece80483ead456d3bd5a32705c539a5ffd624ad2b14af736a6"
+      },
+      "scales": {
+        "bytes": 3145728,
+        "sha256": "3ca87c8a23fe937275edaf51472a71c688bf17820ceb846d36d50173b6371cb8"
+      }
+    },
+    "version": "GPT3_SHAPE_SYNTH_V1"
+  }
+}
