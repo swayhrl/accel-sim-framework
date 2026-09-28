@@ -1,0 +1,183 @@
+{
+  "catalog_sha256": "0007fd2f1ed22449ae683bb4644acf914dd921b51854e8a5566eb731d6f3784e",
+  "coordination": {
+    "commit": "fa0564f7025d62c4d466ce879a0566c404b8f4cb",
+    "original_contract_commit": "378df585cba4c21ac5864c374976e271ae44e9a3"
+  },
+  "durable_raw_path": "/root/share/mnt164/huangrulin/c16_ai_workload/raw/C16R_olmoe-1b-7b-0125-instruct_routing-provenance-multiround_prefill2048-decode64_passive-hooks_all-layers_20260928T092536Z_c91846a955f5",
+  "durable_run_id": "C16R_olmoe-1b-7b-0125-instruct_routing-provenance-multiround_prefill2048-decode64_passive-hooks_all-layers_20260928T092536Z_c91846a955f5",
+  "generation": {
+    "all_sessions_reached_cap_without_eos": true,
+    "cache_class": "transformers.cache_utils.DynamicCache",
+    "fresh_prefill_per_session": true,
+    "greedy_argmax": true,
+    "natural_eos_recorded": true,
+    "no_cross_session_kv_inheritance": true,
+    "one_model_load": true,
+    "sampling": false
+  },
+  "hook_semantics": {
+    "direct_internal_selected_experts_capture": false,
+    "explicit_cached_decode": true,
+    "fresh_prefill_each_session": true,
+    "greedy_argmax": true,
+    "hook_cast_to_input_dtype": true,
+    "hook_norm_topk": true,
+    "hook_softmax_float": true,
+    "hook_topk_same_config": true,
+    "kernel_launch_order_capture": false,
+    "modeling_olmoe_sha256": "413888fc3be7e037727586f25900b629cc5dbc06b227a4f0d42c67cacb597bc7",
+    "official_transformers_v4_55_0_source_hash_match": true,
+    "same_gate_output_same_math": true,
+    "tie_detail_limit": "torch.topk tie ordering is not independently characterized"
+  },
+  "input_freeze_manifest_sha256": "2550314fd25b26c9553100854ebc3d05549487ff4f5dd0427cbd44113d7b8567",
+  "input_token_files": {
+    "P_CODE": "107ef30b6f1bab3052bdd909b734ac538fa5aa4944c5094ac3b66c25fc3247f2",
+    "P_PROSE": "e798d58332299434f0b945238c047340e6070cf881bd677fdfc62c369e24f2e4",
+    "P_STRUCTURED": "ec5cd4d780ee8b16829eb9c71c002996a114bf84b5209511cf75d0c8469fdad4",
+    "P_TEXT": "bba8ad1051b3e96039933d65ad8d77af3877f5603ae743b5e123d82c64de88e5"
+  },
+  "manifest_artifact_count": 35,
+  "manifest_verified_bytes": 4825055,
+  "model": {
+    "asset_receipt_sha256": "01319b411b07ccd7b53c4f653bd5986a51604d9c2c16be7412257e994ff49d13",
+    "id": "allenai/OLMoE-1B-7B-0125-Instruct",
+    "revision": "b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e",
+    "weights_rehashed_by_consumer": false
+  },
+  "packaging_files_excluded_from_35": [
+    "RUN_MANIFEST.json",
+    "READY",
+    "LOCAL_CLOSE_RECEIPT.json"
+  ],
+  "preregistration_audit": {
+    "exact_numeric_mechanical_classifier_frozen_before_gpu": false,
+    "finding": "NOT_FOUND in original coordination contract, CAMPAIGN_MANIFEST.pre_gpu.json, or PRE_GPU_AUTHORITY_RECEIPT.json; exact boolean appears in producer post-run analysis code",
+    "predeclared": [
+      "four input families",
+      "Layer1/lag11 focus",
+      "lags 1..32",
+      "seed 20260928",
+      "1000 whole-step permutations",
+      "candidate qualitative outcomes"
+    ]
+  },
+  "producer_head": "27b923db5922e2f986d2f9e815050bdbad0c3bd2",
+  "producer_scientific_commit": "35bc117a961ad55114f9d75752beb29f6acadc59",
+  "producer_tree": "782a2b2b43d7cd96579f7b10d095de314f492945",
+  "routing": {
+    "capture_sessions": [
+      {
+        "layers": 16,
+        "rows": 1024,
+        "session_id": "T2_TEXT_ALLLAYER",
+        "steps": 64,
+        "unique_step_layer": 1024
+      },
+      {
+        "layers": 16,
+        "rows": 1024,
+        "session_id": "C1_CODE_ALLLAYER",
+        "steps": 64,
+        "unique_step_layer": 1024
+      },
+      {
+        "layers": 16,
+        "rows": 1024,
+        "session_id": "S1_STRUCTURED_ALLLAYER",
+        "steps": 64,
+        "unique_step_layer": 1024
+      },
+      {
+        "layers": 16,
+        "rows": 1024,
+        "session_id": "P1_PROSE_ALLLAYER",
+        "steps": 64,
+        "unique_step_layer": 1024
+      }
+    ],
+    "total_rows": 4096
+  },
+  "run_id_binding": "PASS",
+  "run_manifest_sha256": "07ce90441cecfc29d2669c306084913e8b704234cd4e065c403a01fc4487ac9b",
+  "runner_sha256": "81cacc3cbccdd8726562e94175f114ca86b81caeb1dd3bf5e49f57789fa43d47",
+  "runtime": {
+    "attention_backend": "sdpa",
+    "dtype": "torch.bfloat16",
+    "python": "3.12.3",
+    "torch": "2.7.1+cu126",
+    "transformers": "4.55.0"
+  },
+  "scientific_run_id": "C16R_olmoe-routing-provenance-multiround-v1_20260928T092536Z_c91846a955f5",
+  "sessions": [
+    {
+      "autoregressive_token_chain": true,
+      "cache_identity_continuous_all_steps": true,
+      "cache_lengths_continuous": true,
+      "decode_steps": 64,
+      "fresh_prefill": true,
+      "prompt_id": "P_TEXT",
+      "routing_rows": 0,
+      "session_id": "T0_NOHOOK_A"
+    },
+    {
+      "autoregressive_token_chain": true,
+      "cache_identity_continuous_all_steps": true,
+      "cache_lengths_continuous": true,
+      "decode_steps": 64,
+      "fresh_prefill": true,
+      "prompt_id": "P_TEXT",
+      "routing_rows": 0,
+      "session_id": "T1_NOHOOK_B"
+    },
+    {
+      "autoregressive_token_chain": true,
+      "cache_identity_continuous_all_steps": true,
+      "cache_lengths_continuous": true,
+      "decode_steps": 64,
+      "fresh_prefill": true,
+      "prompt_id": "P_TEXT",
+      "routing_rows": 1024,
+      "session_id": "T2_TEXT_ALLLAYER"
+    },
+    {
+      "autoregressive_token_chain": true,
+      "cache_identity_continuous_all_steps": true,
+      "cache_lengths_continuous": true,
+      "decode_steps": 64,
+      "fresh_prefill": true,
+      "prompt_id": "P_CODE",
+      "routing_rows": 1024,
+      "session_id": "C1_CODE_ALLLAYER"
+    },
+    {
+      "autoregressive_token_chain": true,
+      "cache_identity_continuous_all_steps": true,
+      "cache_lengths_continuous": true,
+      "decode_steps": 64,
+      "fresh_prefill": true,
+      "prompt_id": "P_STRUCTURED",
+      "routing_rows": 1024,
+      "session_id": "S1_STRUCTURED_ALLLAYER"
+    },
+    {
+      "autoregressive_token_chain": true,
+      "cache_identity_continuous_all_steps": true,
+      "cache_lengths_continuous": true,
+      "decode_steps": 64,
+      "fresh_prefill": true,
+      "prompt_id": "P_PROSE",
+      "routing_rows": 1024,
+      "session_id": "P1_PROSE_ALLLAYER"
+    }
+  ],
+  "status": "PASS",
+  "text_control": {
+    "input_token_sequence_exact": true,
+    "output_token_sequence_exact": true,
+    "prefill_output_exact": true,
+    "scope": "one frozen TEXT prompt; does not prove all-input/internal-state neutrality"
+  },
+  "transfer_ack_sha256": "1f2740893326c192d645ac050a82b648e97f6bd9db1004b903e7f8d9b2d37901"
+}
