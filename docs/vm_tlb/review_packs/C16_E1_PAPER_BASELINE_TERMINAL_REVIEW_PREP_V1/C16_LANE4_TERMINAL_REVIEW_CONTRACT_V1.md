@@ -7,6 +7,7 @@ This contract prepares the review after Lane 4 publishes a terminal pack. It doe
 | Identity | Frozen value / authority |
 |---|---|
 | Core execution commit | `0271de82432db004beed43280ed01057246a0f2c` |
+| Core execution binary SHA256 | `6be0986958ffbb8a128ce19e8a88b53a4c4838f97202c2f3d1c9dec6e9a02186` |
 | Lane 4 framework snapshot | `8dfd9c0fdc98314c2aa11710da9b89f59e4c7a66` |
 | `RUN_MATRIX.json` SHA256 | `b1d0610a79cecea552502b9c3f8e06ba679cdd965170e39b3068ac12848e0d20` |
 | R0 config SHA256 | `a8918f1407fc2a9146808625b55a5120f64bb2cf4ce8b6a5b399ac4654d36d96` |
@@ -20,7 +21,7 @@ This contract prepares the review after Lane 4 publishes a terminal pack. It doe
 | source manifest SHA256 | `db3bdbb0295a47a6aa4644508ea1895779c987f2f77cd96f184c67b8a10ab389` |
 | selected scope | 1565 kernels: D1 2926–4430 and D2 prefix 4431–4490; 1,259,187 CTA in the scope contract |
 
-These values were checked against the committed `RUN_MATRIX.json`, `REUSE_WINDOW_SCOPE.json`, sequence, configs and sidecar at the frozen source commit. The future terminal pack must also provide its *actual* binary SHA256 and committed review-pack identity; no binary digest is guessed here. Trace instruction records and simulator executed-thread instructions are different quantities and are not required to equal each other.
+These values were checked against the committed `RUN_MATRIX.json`, `REUSE_WINDOW_SCOPE.json`, sequence, configs and sidecar at the frozen source commit. The expected binary SHA is from committed `HOST_SCALE_AND_TELEMETRY_QUALIFICATION.json` (file SHA256 `0027d43827f8227d6da34e77a093371b95e92b376f74f2b845bf52cdc4fbda63`); `run_b16_reuse_followups.sh` already gates primary and diagnostic receipts on the same exact Core and binary. The terminal receipt's actual binary SHA must **equal** `6be0986958ffbb8a128ce19e8a88b53a4c4838f97202c2f3d1c9dec6e9a02186`; a well-formed but different 64-hex digest fails `IDENTITY_MISMATCH`. Trace instruction records and simulator executed-thread instructions are different quantities and are not required to equal each other.
 
 ## Fixed review order
 

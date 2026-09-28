@@ -28,6 +28,7 @@ AUTHORITY = {
 }
 IDENTITY = {
     "run_matrix_sha256": "b1d0610a79cecea552502b9c3f8e06ba679cdd965170e39b3068ac12848e0d20",
+    "binary_sha256": "6be0986958ffbb8a128ce19e8a88b53a4c4838f97202c2f3d1c9dec6e9a02186",
     "r0_config_sha256": "a8918f1407fc2a9146808625b55a5120f64bb2cf4ce8b6a5b399ac4654d36d96",
     "m1_b16_config_sha256": "15e06af19200e7fb40af93c6a21b19290b581c327f420dd3fdefc3f4b3af3bdd",
     "diagnostic_config_sha256": "12434fee397093b2ac13cf65e1b2644b8f7a98ad97e3824a2cbfae5aba5daee7",
@@ -187,9 +188,8 @@ def evaluate(packet: dict) -> dict:
     keys(authority, set(AUTHORITY))
     exact(authority, AUTHORITY, "SOURCE_AUTHORITY_MISMATCH")
     identity = obj(packet, "identity")
-    keys(identity, set(IDENTITY) | {"binary_sha256"})
+    keys(identity, set(IDENTITY))
     exact(identity, IDENTITY, "IDENTITY_MISMATCH")
-    sha(identity, "binary_sha256")
 
     receipts = obj(packet, "terminal_receipts")
     for primary in ("R0_BASELINE", "M1_B16"):

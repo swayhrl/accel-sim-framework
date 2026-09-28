@@ -17,7 +17,7 @@ def fixture_packet():
         "schema": review.INPUT_SCHEMA,
         "publication_status": "TERMINAL_REVIEW_READY",
         "authority": copy.deepcopy(review.AUTHORITY),
-        "identity": {**review.IDENTITY, "binary_sha256": "e" * 64},
+        "identity": copy.deepcopy(review.IDENTITY),
         "terminal_receipts": {name: copy.deepcopy(receipt) for name in
                               ("R0_BASELINE", "M1_B16", "M1_B16_DIAGNOSTIC")},
         "reuse_window_scope": {**review.SCOPE, "status": "PASS",
@@ -106,6 +106,12 @@ class TerminalReviewTests(unittest.TestCase):
     def test_identity_mismatch_fails_before_timing(self):
         packet = fixture_packet()
         packet["identity"]["sidecar_sha256"] = "0" * 64
+        with self.assertRaisesRegex(review.ReviewError, "IDENTITY_MISMATCH"):
+            review.evaluate(packet)
+
+    def test_valid_looking_wrong_binary_sha_rejected(self):
+        packet = fixture_packet()
+        packet["identity"]["binary_sha256"] = "f" * 64
         with self.assertRaisesRegex(review.ReviewError, "IDENTITY_MISMATCH"):
             review.evaluate(packet)
 

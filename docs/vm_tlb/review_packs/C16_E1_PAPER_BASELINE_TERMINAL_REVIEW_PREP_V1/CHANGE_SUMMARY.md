@@ -7,5 +7,6 @@ This branch adds one new review pack and one CPU-only evaluator with synthetic t
 - Paper story prefreeze and claim-status table retain accepted native observations and defer the C3 mechanism conclusion.
 - Literature map translates LR03–LR05 into comparison obligations without automatically promoting DIP/PIPP/Talus to full timing runs.
 - Evaluator refuses partial or mismatched packets, quarantines diagnostics after primary failures, and never emits a scientific result row.
+- Surgical authority correction: the terminal binary must match the frozen Core execution binary SHA exactly; a different valid-looking SHA fails the identity gate.
 
 No source file from a frozen branch is edited. Validation and remaining gaps are recorded separately.
