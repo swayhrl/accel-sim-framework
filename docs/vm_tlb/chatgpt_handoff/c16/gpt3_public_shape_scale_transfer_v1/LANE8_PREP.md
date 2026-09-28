@@ -18,7 +18,8 @@ GPU lock：禁止
 ## 2. 必读authority
 
 - `docs/vm_tlb/chatgpt_handoff/c16/gpt3_public_shape_scale_transfer_v1/MASTER_PIPELINE.md`
-- LR08 GPT-3笔记
+- `docs/vm_tlb/chatgpt_handoff/c16/gpt3_public_shape_scale_transfer_v1/GPT3_PUBLIC_SHAPE_AUTHORITY.md`
+- 如需完整LR08阅读记录，用固定commit `139135231fb30b4981eedb031da9c7e182269652`读取，不依赖当前branch
 - `3aad5887b9b4c5bec801962bf8035fed9d485f47`
   - split-state最终pack
 - `0e88faa28c9066b48e394dce657d7a16e6332a32`
