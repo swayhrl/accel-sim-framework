@@ -10,7 +10,7 @@
 
 - **H0 / FROZEN_HANDOFF**：`C16_AI_WORKLOAD_HANDOFF_CONTEXT_2026-09-27_M1F_READY_LANE4_RUNNING.md`；用户上传的完整交接。文件SHA256：`b42209ea223817410c215ab90c93619ab21d7ca62435cec5c3838a3d55f59c71`。本轮使用§4–15及运行/解释边界；其中旧partial进度不更新为当前进度。
 - **B0 / INVENTORY**：GitHub `search_branches(query=c16,page_size=100)`；Framework分页100+100+82+空页，Core为9条。全名保存在`BRANCH_INVENTORY.txt`。282+9是分支数，不是实验数；没有逐个分支执行代码审计。
-- **C0 / PENDING**：本对话下发的 `C16_MOE_TEMPORAL_PERIODICITY_POSTHOC_AUDIT_V1`。本轮确认Lane 6主分支仍为`0017527afba6861a4a0cfee95cce7b2a0397f284`；未见该post-hoc任务的独立终局报告，不登记为已完成。
+- **C0 / HISTORICAL_DISPATCH**：本对话曾下发 `C16_MOE_TEMPORAL_PERIODICITY_POSTHOC_AUDIT_V1`；后续已由S42形成正式终局。保留C0只为说明该实验是看见V1异常后发起的post-hoc任务，不是预注册正结果。
 
 ## 历史平台、输入、trace与模型
 
@@ -67,6 +67,7 @@
 | S40 | 0017527afba6861a4a0cfee95cce7b2a0397f284 | docs/vm_tlb/review_packs/C16_MOE_TEMPORAL_ROUTING_AUTHORITY_SCREEN_V1/FINAL_DECISION.json | dfe4185da21209658884ff2f2071d3fcb5d92d79 | READ；本轮branch与该commit仍identical |
 | S41 | 0e88faa28c9066b48e394dce657d7a16e6332a32 | docs/vm_tlb/review_packs/C16_LOWBIT_SPLITK_NATIVE_AB_109_V1/FINAL_DECISION.json | ea06c0c2fca0e47b68361a03d2fac6b1bb6ec8bb | READ |
 | S41a | 0e88faa28c9066b48e394dce657d7a16e6332a32 | docs/vm_tlb/review_packs/C16_LOWBIT_SPLITK_NATIVE_AB_109_V1/TIMING_SUMMARY.tsv | a142a23799902a5964ae32db9affe3c283078443 | READ；没有重新计时或重新跑NCU |
+| S42 | 72fdd0f89aa0d4d4ae8b0d55daea492fbae2f293 | docs/vm_tlb/review_packs/C16_MOE_TEMPORAL_PERIODICITY_POSTHOC_AUDIT_V1/FINAL_DECISION.json | 59bfd5df23184044e1dd4281d84dca22ebf38e6f | READ；同时核读generation provenance与scientific interpretation，保持POST_HOC_DIAGNOSTIC_ONLY |
 
 ## 本轮没有完成的审查深度
 
