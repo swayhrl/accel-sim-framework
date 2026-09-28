@@ -87,7 +87,7 @@ OLMoE旧selector序列化的精确producer未durably retained。历史opaque che
 - LTO/PGO：考虑过但没有构建。[S35a]
 - M1Q、更多B8/B24/BFULL模拟器长跑、更多split factors、完整QUICK/MARLIN/FLUTE移植：不是本阶段已执行实验，不自动授权。[H0/S39/S41]
 - 三模型32-step all-layer routing capture：Lane6只产生计划，当前未执行。[S40]
-- Period11审计：已下发post-hoc任务，终局未见；不计为正式positive closure。[C0]
+- Period11审计：已完成，但只能记为`POST_HOC_DIAGNOSTIC_ONLY`。OLMoE Layer1 lag11信号很强且与next-token重复高度关联；generation runner/KV transition/sampling/seed/EOS/stopping provenance缺失，来源仍`UNRESOLVED`。不是预注册正结果、不是跨模型规律、不是cache机会证明。[S42]
 
 ## 6. 已有结果要求保留的三个“未知”
 
@@ -97,8 +97,14 @@ OLMoE旧selector序列化的精确producer未durably retained。历史opaque che
 
 **结构风险不是已观测原因。** M1 target-only结构分析、balanced placement、stable selector global fit都不能替代完整自然窗口下的generation survival与周期结果。[H0/S36]
 
+## 6a. Period-11结果为何仍属于“需要限制使用的正信号”
+
+Lane6 V1只对相邻顺序做了原注册描述性control；后续完整lag 1–16 post-hoc审计发现lag11是唯一高于其shuffle p95的lag，mean Jaccard 0.928042。21组(t,t+11)中15组unordered集合完全相同，另5组达到7/8 near-repeat；19组记录了相同next token。但router-input与router-logits SHA相等均为0。[S42]
+
+这说明“没有额外相邻信号”与“存在lag11结构”可以同时成立。需要保留三条限制：第一，这是看见V1后才发现并正式审计的post-hoc现象；第二，next token是routing后的输出关联变量，不是已证明的routing输入原因；第三，V34没有保存足够的generation runner/KV状态转移语义来判断这是自然内容循环还是capture/replay方法学造成的周期。故不能将其升级为`MOE_TEMPORAL_LOCALITY_PROVEN`或period-11缓存策略。
+
 ## 7. 何时才值得重新打开
 
 重新打开已关闭路线必须写出：新的独立输入/实现/资源条件，或原证据存在的具体矛盾；仅有“这次也许能更快”不够。工程blocker只有合法runtime/authority变化后才重开；性能负结果只有新的可区分变量或新scope后才重开。
 
-当前无新的执行授权。Lane4继续原任务；Lane6等待已下发审计；Lane7保留窗口但不自动运行下一实验。
+当前无新的执行授权。Lane4继续原任务；Lane6 post-hoc已闭合并停止；Lane7保留窗口但不自动运行下一实验。若未来补MoE routing capture，应先明确它是在闭合period11来源还是做跨模型独立验证，不能直接以post-hoc峰值作为机制设计依据。
