@@ -1,0 +1,108 @@
+{
+  "actual_input_token": {
+    "reason": "V34 routing records do not store current-step input_token_id and the accepted generation runner/KV-transition semantics are not archived. Predecessor next-token values are therefore not promoted to input-token authority.",
+    "status": "UNKNOWN"
+  },
+  "all_unordered_step_pairs": {
+    "different_next_token": {
+      "jaccard": {
+        "count": 468,
+        "max": 1.0,
+        "mean": 0.1873272027118178,
+        "median": 0.14285714285714285,
+        "min": 0.0,
+        "p05": 0.0,
+        "p95": 0.4545454545454545
+      },
+      "ordered_topk_equal_count": 3,
+      "overlap": {
+        "count": 468,
+        "max": 8.0,
+        "mean": 2.356837606837607,
+        "median": 2.0,
+        "min": 0.0,
+        "p05": 0.0,
+        "p95": 5.0
+      },
+      "pair_count": 468,
+      "unordered_exact_set_equal_count": 3
+    },
+    "same_next_token": {
+      "jaccard": {
+        "count": 28,
+        "max": 1.0,
+        "mean": 0.9238095238095239,
+        "median": 1.0,
+        "min": 0.6,
+        "p05": 0.6622222222222223,
+        "p95": 1.0
+      },
+      "ordered_topk_equal_count": 11,
+      "overlap": {
+        "count": 28,
+        "max": 8.0,
+        "mean": 7.642857142857143,
+        "median": 8.0,
+        "min": 6.0,
+        "p05": 6.35,
+        "p95": 8.0
+      },
+      "pair_count": 28,
+      "unordered_exact_set_equal_count": 20
+    },
+    "total_pair_count": 496
+  },
+  "causal_boundary": "Routing occurs before the recorded next token is generated. next_token_id is an associated output variable, not a causal routing input label.",
+  "conditioning_variable": "next_token_id from the same decode-step record",
+  "lag11_pairs": {
+    "different_next_token": {
+      "jaccard": {
+        "count": 2,
+        "max": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "p05": 1.0,
+        "p95": 1.0
+      },
+      "ordered_topk_equal_count": 2,
+      "overlap": {
+        "count": 2,
+        "max": 8.0,
+        "mean": 8.0,
+        "median": 8.0,
+        "min": 8.0,
+        "p05": 8.0,
+        "p95": 8.0
+      },
+      "pair_count": 2,
+      "unordered_exact_set_equal_count": 2
+    },
+    "same_next_token": {
+      "jaccard": {
+        "count": 19,
+        "max": 1.0,
+        "mean": 0.92046783625731,
+        "median": 1.0,
+        "min": 0.6,
+        "p05": 0.76,
+        "p95": 1.0
+      },
+      "ordered_topk_equal_count": 6,
+      "overlap": {
+        "count": 19,
+        "max": 8.0,
+        "mean": 7.631578947368421,
+        "median": 8.0,
+        "min": 6.0,
+        "p05": 6.8999999999999995,
+        "p95": 8.0
+      },
+      "pair_count": 19,
+      "unordered_exact_set_equal_count": 13
+    },
+    "total_pair_count": 21
+  },
+  "schema_version": 1,
+  "status": "POST_HOC_DIAGNOSTIC_ONLY"
+}
