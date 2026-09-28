@@ -1,0 +1,109 @@
+{
+  "accepted_binaries": {
+    "A": {
+      "path": "/data/c16/env/c16-awq-v6/lib/python3.10/site-packages/awq_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+    },
+    "B": {
+      "path": "/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib/awq_split1_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887"
+    }
+  },
+  "authorities": {
+    "native_ab": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+    "state_interaction": "3aad5887b9b4c5bec801962bf8035fed9d485f47"
+  },
+  "comparison_rules": [
+    "compare directions and preregistered fields only",
+    "do not splice medians across ABBA and per-sample-state protocols",
+    "do not prewrite the GPT-3-size conclusion"
+  ],
+  "l2_bytes": 67108864,
+  "old_M256_state_cell_median_ms": {
+    "down_proj": {
+      "A_E": 0.49267199635505676,
+      "A_W": 0.4755040109157562,
+      "B_E": 0.5253120064735413,
+      "B_W": 0.4816160053014755
+    },
+    "up_proj": {
+      "A_E": 0.6796480119228363,
+      "A_W": 0.6727679967880249,
+      "B_E": 0.49663999676704407,
+      "B_W": 0.47092799842357635
+    }
+  },
+  "old_M256_state_derived": {
+    "down_proj": {
+      "gain_E": -0.06625099530715284,
+      "gain_W": -0.01285371783499456,
+      "state_interaction": 0.05339727747215828
+    },
+    "up_proj": {
+      "gain_E": 0.2692688155417867,
+      "gain_W": 0.30001426840766343,
+      "state_interaction": 0.03074545286587671
+    }
+  },
+  "old_launch_contract_M1": {
+    "down_proj": {
+      "A_gemm_grid": 224,
+      "B_gemm_grid": 28
+    },
+    "up_proj": {
+      "A_gemm_grid": 1184,
+      "B_gemm_grid": 148
+    }
+  },
+  "old_launch_contract_M256": {
+    "A_reduction": true,
+    "B_reduction": false,
+    "down_proj": {
+      "A_gemm_grid": 3584,
+      "A_reduction_grid": 1792,
+      "B_gemm_grid": 448
+    },
+    "gemm_block": [
+      32,
+      2,
+      1
+    ],
+    "reduction_block": [
+      32,
+      4,
+      1
+    ],
+    "up_proj": {
+      "A_gemm_grid": 18944,
+      "A_reduction_grid": 9472,
+      "B_gemm_grid": 2368
+    }
+  },
+  "old_native_ab_median_ms": {
+    "down_proj_M1": {
+      "A": 0.06860800087451935,
+      "B": 0.3521759957075119
+    },
+    "down_proj_M256": {
+      "A": 0.4975679963827133,
+      "B": 0.4931040108203888
+    },
+    "up_proj_M1": {
+      "A": 0.04710400104522705,
+      "B": 0.06656000018119812
+    },
+    "up_proj_M256": {
+      "A": 0.7045120000839233,
+      "B": 0.5010239779949188
+    }
+  },
+  "qweight_bytes": {
+    "down_proj": 33947648,
+    "up_proj": 33947648
+  },
+  "qweight_over_l2": {
+    "down_proj": 0.505859375,
+    "up_proj": 0.505859375
+  },
+  "status": "FROZEN_COMPARISON_FIELDS_ONLY_NO_NEW_CONCLUSION"
+}
