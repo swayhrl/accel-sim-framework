@@ -198,7 +198,13 @@ def gate(source: dict, footprints: list[dict], contracts: list[dict]) -> dict:
     expected={2048:7_274_496,2560:9_093_120,3072:10_911_744,4096:14_548_992,12288:43_646_976}
     proofs={
         "block_mapping_closed":True,"weight_address_independent_of_Mtile":True,"qzeros_address_independent_of_Mtile":True,"scales_address_independent_of_Mtile":True,
-        "split8_K_tiles_are_mod8_interleaved":True,"same_N_split_cross_M_address_jaccard_is_one":all(r["same_N_split_cross_M_qweight_jaccard"]==1 for r in footprints),
+        "split8_K_tiles_are_mod8_interleaved":True,
+        "same_N_split_cross_M_address_jaccard_is_one":all(
+            r["same_N_split_cross_M_qweight_jaccard"]==1
+            and r["same_N_split_cross_M_qzeros_jaccard"]==1
+            and r["same_N_split_cross_M_scales_jaccard"]==1
+            for r in footprints
+        ),
         "linear_block_order_has_one_full_N_sweep_between_same_N_adjacent_Mtiles":True,
         "exact_split8_footprints_match_source_enumeration":all(by[(k,8,0)]["total_unique_bytes"]==value for k,value in expected.items()),
         "all_new_K_points_valid":all(r["valid"] for r in contracts),
@@ -231,7 +237,8 @@ def main():
     (args.out/"ADDRESS_MAPPING.md").write_text(mapping,encoding="utf-8")
     interp="""# 科学解释\n\n源码与精确枚举支持：split8把每个split的qweight唯一集合降为总qweight的1/8，同时每个split仍访问一半qzeros/scales metadata。GPT-3 K=12288时，每split静态unique weight+metadata为43,646,976 B（41.625 MiB），低于64 MiB；split1完整集合为313,786,368 B（299.25 MiB）。2560完整集合为62.34375 MiB，3072为74.8125 MiB，所选K点确实跨越容量附近。\n\n源码还证明固定split/Ntile的weight与metadata地址不随Mtile变化，因而不同Mtile静态上重复消费同一集合。线性block ID中，同一Ntile跨相邻Mtile的距离为384，中间经过383个其他Ntiles。\n\n这些结果只支持启动最小native threshold screen；它们不证明真实CTA执行顺序、L2命中、替换或唯一容量因果。若native timing与DRAM不随完整集合跨越L2区间而系统变化，应降级当前机制假设。\n"""
     (args.out/"SCIENTIFIC_INTERPRETATION.md").write_text(interp,encoding="utf-8")
-    dump(args.out/"FINAL_DECISION.json",{"status":result["status"],"static_mechanism_supported":True,"native_screen_authorized":True,"trace_or_simulation_authorized":False,"gpu_used":False,"claim_boundary":result["scientific_boundary"]})
+    supported=result["status"]=="SUPPORTED_PROCEED_NATIVE_THRESHOLD_SCREEN"
+    dump(args.out/"FINAL_DECISION.json",{"status":result["status"],"static_mechanism_supported":supported,"native_screen_authorized":supported,"trace_or_simulation_authorized":False,"gpu_used":False,"claim_boundary":result["scientific_boundary"]})
     lines=[]
     for path in sorted(args.out.iterdir(),key=lambda p:p.name):
         if path.is_file() and path.name!="SHA256SUMS":lines.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}")

@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 import unittest
-from footprint_audit import N, footprint, k_tiles, point_contracts
+
+try:
+    from .footprint_audit import N, footprint, k_tiles, point_contracts
+except ImportError:
+    from footprint_audit import N, footprint, k_tiles, point_contracts
 
 class FootprintTests(unittest.TestCase):
     def test_mod8_tiles_and_metadata_halves(self):
