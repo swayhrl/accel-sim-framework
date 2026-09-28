@@ -1,5 +1,5 @@
-# Split-K footprint threshold native prep
+# Split-K footprint threshold native producer
 
 RUN_ID: `C16R_splitk-footprint-threshold-native-v1_20260928T150645Z`
 
-CPU prep complete; GPU remains forbidden until Lane8 STATIC_GATE is supported and bound.
+Status: `PRODUCER_THRESHOLD_SERIES_PASS_PENDING_LANE6`; four new K values, 400 samples and eight NCU profiles.
