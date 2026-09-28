@@ -1,10 +1,28 @@
 # C16文献阅读笔记｜ChatGPT独立支线
 
-维护者：ChatGPT。更新时间：2026-09-27。分支：`hrl/c16-chatgpt-literature-notes-v1`。
+维护者：ChatGPT。更新时间：2026-09-28。分支：`hrl/c16-chatgpt-literature-notes-v1`。
 
 本支线只存文献核读、相关工作比较与研究假设，不修改实验、Core、配置或原始数据。文献建议不是执行授权。与AWMA文献笔记分开，避免跨项目混淆。
 
-## 当前入口：LR05
+## 当前入口：LR06
+
+[LR06：低比特kernel数据流与MoE时间结构](rounds/2026-09-28_LR06_LOWBIT_DATAFLOW_AND_MOE_EXPLORATION.md)
+
+状态：`LITERATURE_AND_EXPLORATION_DESIGN_ONLY`。没有运行GPU/模拟器/作者代码，不消费Lane 4 partial结果，不改变既有长跑或授权M1F。
+
+本轮：MARLIN由README升级到机制/实验正文；新增QUICK、FLUTE、SpecMD正文相关章节；MonoNN由线索升级到相关机制正文；ATLAS（2026-08-04 Zenodo v1）仅作者摘要，PDF未取得，不计为全文核读。QUICK PDF文本可读但截图失败，没有从图中估读数值。
+
+研究增量：
+
+- 低比特kernel的L2价值不一定由qweight决定：MARLIN用L2反复供给activation、降低streaming weight污染；QUICK/FLUTE说明片内布局、解码和分工也可能限制压缩收益。
+- 相同SASS trace下比较L2策略，与相同运算/解码权重下比较kernel实现，是两条不同证据链。换kernel不能继续把旧trace当作新程序。
+- MARLIN式(1)的简化推导明确区分L2容量和供数带宽；计算例子不是C16测量结论。
+- 建议单独Lane 5先只读E1既有源码/NCU证据，筛activation供数、反量化布局、reduction成本，最多留下两条假设和一组后续短native设计；不重新采E1，不编译模拟器，不扩展大工程。
+- MoE时间结构为第二候选。SpecMD的expert cache是软件管理显存，不是硬件L2；先核连续token/layer/expert序列是否真的存在。已关闭E3保持不变，selected shards不等于连续token。
+
+LR06建议不是已启动Lane 5，也不是新的full timing许可。Lane 1/3已完成准备工作仍保持冻结，Lane 4独立推进。
+
+## 历史入口：LR05
 
 [LR05：五篇原文核读与强基线适配边界](rounds/2026-09-27_LR05_FIVE_PAPERS_FULLTEXT_AUDIT.md)
 
@@ -32,7 +50,7 @@
 
 新增研究判断：静态对象分类不自动提供强动态策略之外的增量；驻留需考虑占用期间的机会成本；不同miss不具有相同周期代价。这些思想均有前例，不将semantic/cost-aware/criticality-aware标签本身当作创新，也不立即增加三个新baseline。
 
-当轮全文请求：MICRO 2025 GPU eviction hints、ISCA 2010 RRIP、MICRO 2011 SHiP、ISCA 2007 Adaptive Insertion Policies、PIPP。获取缺口已在LR05关闭；LR04保持历史记录，不回写为当时已经读完。
+当轮全文请求：MICRO 2025 GPU eviction hints、ISCA 2010 RRIP、ISCA 2007 Adaptive Insertion Policies、MICRO 2011 SHiP、PIPP。获取缺口已在LR05关闭；LR04保持历史记录，不回写为当时已经读完。
 
 ## 历史入口：LR03
 
@@ -58,7 +76,7 @@ LR02最重要的区分：**对象识别、容量分配、具体cache line的跨�
 
 LR02接续此前聊天中的C16调研，不声称仓库里存在同结构的LR01文件。此前聊天中的“fairness可能是新机制”判断在该轮收紧为待验证假设。
 
-## LR02来源登记（保留当轮阅读深度，后续升级见LR03–LR05）
+## LR02来源登记（保留当轮阅读深度，后续升级见各轮）
 
 | ID | 工作/来源 | LR02阅读深度 |
 |---|---|---|
@@ -77,7 +95,7 @@ LR02接续此前聊天中的C16调研，不声称仓库里存在同结构的LR01
 
 LR02共9项研究条目、2份官方文档、1份实现说明；其中4项核读正文关键章节。不同版本、摘要和延伸工作不能累加成更多已全文精读的论文。各条目原文URL、定位、作者贡献、对C16的启发及不可声称的结论见LR02正文。
 
-当前后续队列：Leeway全文；必要时核PIPP作者artifact/勘误；原始策略到C16的GPU事件映射；SHiP-SW适配细节。P1参考文献中的GPU推荐系统驻留与MonoNN仅登记线索，尚未核正文。APCM已在LR03补正文，MLP-aware的作者技术报告已在LR04核读。队列不算完成阅读。
+当前后续队列：Leeway全文；必要时核PIPP作者artifact/勘误；ATLAS全文；低比特dataflow screen所需的当前kernel具体源码证据。原始策略到C16的事件映射与SHiP-SW适配另由已报告的Lane 1 implementation pack负责，文献笔记不替代代码资格。P1参考文献中的GPU推荐系统驻留仍为线索；MonoNN相关正文在LR06升级。APCM已在LR03补正文，MLP-aware的作者技术报告已在LR04核读。队列不算完成阅读。
 
 ## 配套数学反例（LR02）
 
@@ -96,7 +114,8 @@ python3 docs/vm_tlb/literature_notes/c16/examples/toy_scan_counterexample.py
 - LR03阅读基点：`49c01401200f7944db31d066ebb331a9ba701882`。
 - LR04阅读基点：`8d37abdde2a63643e248d0854649176564cc2678`。
 - LR05阅读基点：`c27aaa2569759681dbc6016151c45c30db6c0603`；五份用户上传原文，SHA见LR05。
-- 项目事实来源：2026-09-27 M1F_READY_LANE4_RUNNING完整handoff；不将本文档视为历史实验的重新验收。
+- LR06阅读基点：`350e4a0d364d65812f379ebc69412696e2a4d82a`；外部原文、推导和建议探索见LR06。
+- 项目事实来源：2026-09-27 M1F_READY_LANE4_RUNNING完整handoff及用户后续报告；不将文献更新视为历史实验的重新验收。
 - 本支线不消费Lane 4未闭合性能结果，不改变Lane 4任务；是否运行M1F仍由预注册project-level gate决定。
 
 原论文PDF不提交仓库；读不到的正文保持未核实。作者陈述、项目事实和我们的推断分别标注。对“首次”“优于已有工作”“系统加速”的判断必须等待确切比较，不能靠名称或仅与LRU的单点差异成立。
