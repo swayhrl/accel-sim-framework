@@ -1,0 +1,62 @@
+{
+  "authority": {
+    "DEEPSEEK": {
+      "classification": "SINGLE_STATE_ONLY",
+      "decode_steps": 1,
+      "layers": 1,
+      "temporal_analysis": "NOT_ALLOWED"
+    },
+    "OLMOE": {
+      "classification": "SINGLE_LAYER_EXPLICIT_SEQUENCE",
+      "decode_steps": 32,
+      "layers": 1,
+      "temporal_analysis": "DESCRIPTIVE_SCREEN_COMPLETE"
+    },
+    "Q30": {
+      "classification": "FULL_MODEL_EXPLICIT_SEQUENCE",
+      "decode_steps": 4,
+      "layers": 48,
+      "power": "LOW_TEMPORAL_POWER"
+    }
+  },
+  "bounded_screen_label": "OLMOE_SINGLE_LAYER_TEMPORAL_SCREEN_PASS",
+  "bounded_signal_assessment": "NO_EXTRA_ORDERING_SIGNAL_RESOLVED_BY_DESCRIPTIVE_CONTROL",
+  "capture_plan_executed": false,
+  "claims_not_made": [
+    "MOE_CACHE_OPPORTUNITY_PROVEN",
+    "MOE_L2_OPTIMIZATION_JUSTIFIED",
+    "UNIVERSAL_MOE_TEMPORAL_LOCALITY",
+    "cache_line_reuse_distance",
+    "L2_hit_rate_or_timing_benefit"
+  ],
+  "cross_lineage_comparability": {
+    "DEEPSEEK_vs_OLMOE": "NOT_COMPARABLE",
+    "Q30_vs_DEEPSEEK": "NOT_COMPARABLE",
+    "Q30_vs_OLMOE": "PARTIAL_COMPARABLE",
+    "three_lineage": "NOT_COMPARABLE"
+  },
+  "decision_label": "TEMPORAL_AUTHORITY_INSUFFICIENT_CROSS_MODEL",
+  "gpu_work_performed": false,
+  "olmoe_layer1": {
+    "actual_mean_adjacent_jaccard": 0.25065901840095384,
+    "actual_mean_adjacent_overlap": 3.032258064516129,
+    "cumulative_distinct_experts": 41,
+    "descriptive_interval_position": {
+      "jaccard": "WITHIN_SHUFFLE_P05_P95",
+      "overlap": "WITHIN_SHUFFLE_P05_P95"
+    },
+    "exact_set_repeat_count": 16,
+    "shuffle_jaccard": {
+      "median": 0.22482248933861837,
+      "p05": 0.17154608832028187,
+      "p95": 0.29493961235896715
+    },
+    "shuffle_overlap": {
+      "median": 2.6451612903225805,
+      "p05": 2.193548387096774,
+      "p95": 3.193548387096774
+    }
+  },
+  "question_answer": "The available OLMoE layer-1 ordering does not resolve extra adjacent-set correlation beyond a marginal-preserving shuffle; Q30 is low-power and DeepSeek has no sequence, so current authority cannot support a three-lineage conclusion.",
+  "schema_version": 1
+}
