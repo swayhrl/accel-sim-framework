@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "status": "CONTRACT_FROZEN_CPU_PREP_CONTINUES",
+  "goal": "C16_GPT3_PUBLIC_SHAPE_PREP_174NEW_V1",
+  "coordination_commit": "0583d359d67a4d70c6a70a6a2e80d30ede971aba",
+  "execution_node": "174-new",
+  "lane": 8,
+  "resource_contract": {
+    "cpu_only": true,
+    "gpu_used": false,
+    "gpu_lock_requested": false,
+    "lane4_partial_accessed": false
+  },
+  "public_shape_authority": {
+    "model_scale_label": "GPT-3-175B public FFN dimensions only",
+    "hidden_size": 12288,
+    "ffn_intermediate_size": 49152,
+    "layers_not_instantiated": 96,
+    "original_weights_used": false,
+    "natural_activations_used": false
+  },
+  "points": [
+    {"point": "EXPAND_M1", "M": 1, "K": 12288, "N": 49152},
+    {"point": "EXPAND_M256", "M": 256, "K": 12288, "N": 49152},
+    {"point": "CONTRACT_M1", "M": 1, "K": 49152, "N": 12288},
+    {"point": "CONTRACT_M256", "M": 256, "K": 49152, "N": 12288}
+  ],
+  "evidence_classes": {
+    "dense": "GPT3_PUBLIC_DIMENSION_FP16_DENSE_SHAPE_ANCHOR",
+    "w4": "GPT3_PUBLIC_DIMENSION_AUTOAWQ_W4_MECHANISM_PROXY",
+    "strict_separation": true,
+    "w4_is_not_gpt3_quantized_checkpoint": true
+  },
+  "w4_layout": {
+    "group_size": 128,
+    "qweight_shape": "[K,N/8] int32",
+    "qzeros_shape": "[K/128,N/8] int32",
+    "scales_shape": "[K/128,N] float16"
+  },
+  "accepted_binaries": {
+    "A": {
+      "arm": "ACCEPTED_SPLIT8",
+      "split_k_iters": 8,
+      "path": "/data/c16/env/c16-awq-v6/lib/python3.10/site-packages/awq_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7",
+      "separate_sum0_reduction": true
+    },
+    "B": {
+      "arm": "ACCEPTED_SPLIT1_DIRECT_OUTPUT",
+      "split_k_iters": 1,
+      "path": "/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib/awq_split1_ext.cpython-310-x86_64-linux-gnu.so",
+      "sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887",
+      "separate_sum0_reduction": false
+    },
+    "authority_commits": {
+      "native_ab": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+      "state_interaction": "3aad5887b9b4c5bec801962bf8035fed9d485f47"
+    }
+  },
+  "static_formulas": {
+    "dense_parameter_count": "K*N",
+    "dense_weight_bytes": "K*N*2",
+    "gemm_grid": "ceil(M/16)*(N/128)*split_k_iters",
+    "scratch_bytes": "split_k_iters*M*N*2",
+    "w4_qweight_bytes": "K*(N/8)*4",
+    "w4_qzeros_bytes": "(K/128)*(N/8)*4",
+    "w4_scales_bytes": "(K/128)*N*2"
+  },
+  "expected_launch_and_scratch": [
+    {"point": "EXPAND_M1", "B_grid": 384, "A_grid": 3072, "B_scratch_bytes": 98304, "A_scratch_bytes": 786432},
+    {"point": "EXPAND_M256", "B_grid": 6144, "A_grid": 49152, "B_scratch_bytes": 25165824, "A_scratch_bytes": 201326592},
+    {"point": "CONTRACT_M1", "B_grid": 96, "A_grid": 768, "B_scratch_bytes": 24576, "A_scratch_bytes": 196608},
+    {"point": "CONTRACT_M256", "B_grid": 1536, "A_grid": 12288, "B_scratch_bytes": 6291456, "A_scratch_bytes": 50331648}
+  ],
+  "state_protocol": {
+    "WARM_SAME_ARM": "two untimed same-arm warmups immediately before each timed sample",
+    "EVICT_CONDITIONED": "two untimed same-arm warmups, then one complete traversal of one reused independent 256MiB int32 buffer, then timed target",
+    "conditioner_bytes": 268435456,
+    "conditioner_l2_multiple": 4,
+    "conditioner_outside_timed_event_and_nvtx": true,
+    "no_empty_cache": true,
+    "no_persisting_hint": true,
+    "allowed_wording": "independent-large-buffer-conditioned state; not proven fully cold cache"
+  },
+  "timing_protocol": {
+    "dense": {"states": ["WARM_ONLY"], "warmups": 10, "cuda_event_samples": 50},
+    "w4": {
+      "points": 4,
+      "arms": 2,
+      "states": 2,
+      "cells": 16,
+      "complete_mirror_blocks": 25,
+      "samples_per_cell": 50,
+      "sample_preparation_same_arm_warmups": 2,
+      "mirror_order_per_point": ["A_W", "B_W", "A_E", "B_E", "B_E", "A_E", "B_W", "A_W"],
+      "clock": "CUDA event"
+    }
+  },
+  "ncu_scope": {
+    "total_profiles": 10,
+    "dense_profiles": ["EXPAND_M256", "CONTRACT_M256"],
+    "w4_profiles": "M256 only: 2 operators x 4 arm/state cells",
+    "replay_mode": "application",
+    "cache_control": "none",
+    "metrics": ["l1tex__t_bytes.sum", "lts__t_bytes.sum", "dram__bytes.sum", "kernel duration"],
+    "A_gemm_and_reduction_separate": true,
+    "tensor_level_attribution_forbidden": true
+  },
+  "correctness": {
+    "A_B_same_bit_exact_inputs_and_weights": true,
+    "all_finite": true,
+    "rtol": 0.01,
+    "atol": 0.05,
+    "dense_and_w4_numerical_equality_required": false
+  },
+  "synthetic_tensor_contract": {
+    "version": "GPT3_SHAPE_SYNTH_V1",
+    "global_random_state_forbidden": true,
+    "full_size_tensor_files_forbidden": true,
+    "exact_formulas_and_tiny_reference_hash_pending_static_validation": true
+  },
+  "prohibitions": [
+    "no GPU or CUDA on Lane8",
+    "no GPU lock on Lane8",
+    "no Lane4 partial access",
+    "no GPT-3 weights/model download/full-96-layer construction",
+    "no claim of GPT-3 checkpoint, natural activation, quality, or end-to-end performance",
+    "no split2/split4/split16",
+    "no unique L2/cache/TLB causality claim",
+    "no trace capture or Accel-Sim in this task"
+  ],
+  "lane7_authorization": {
+    "cpu_only_bootstrap_may_start_after_exact_commit_fetch": true,
+    "cuda_import_or_initialization": false,
+    "gpu_lock_acquisition": false,
+    "gpu_execution_requires_future_PRE_GPU_READY_exact_commit_and_hash_match": true
+  }
+}
