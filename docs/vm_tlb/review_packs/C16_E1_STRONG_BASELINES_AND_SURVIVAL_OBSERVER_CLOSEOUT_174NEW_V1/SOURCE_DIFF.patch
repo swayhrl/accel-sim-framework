@@ -1,0 +1,1124 @@
+diff --git a/docs/c16/strong_baselines_v1/BASELINE_IMPLEMENTATION_CONTRACT.md b/docs/c16/strong_baselines_v1/BASELINE_IMPLEMENTATION_CONTRACT.md
+index be81bb4..38572f0 100644
+--- a/docs/c16/strong_baselines_v1/BASELINE_IMPLEMENTATION_CONTRACT.md
++++ b/docs/c16/strong_baselines_v1/BASELINE_IMPLEMENTATION_CONTRACT.md
+@@ -1,7 +1,7 @@
+ # C16 strong-baseline implementation contract V1
+ 
+-Status: `VERIFIED_CODE` for PRIORITY_ALL, PRIORITY_STABLE, and DRRIP;
+-`SHIP_SW_IMPLEMENTATION_CONTRACT_INCOMPLETE` for SHiP-SW-style.
++Status: `VERIFIED_CODE` for PRIORITY_ALL, PRIORITY_STABLE, DRRIP, and
++`C16_SHIP_SW_STYLE_V1`.
+ 
+ ## Common control
+ 
+@@ -54,9 +54,16 @@ anchor `floor(slot*nsets/64)` is used. SRRIP-leader accepted misses increment
+ PSEL, BRRIP-leader accepted misses decrement it; followers use BRRIP at
+ PSEL>=512.
+ 
+-## SHiP-SW-style boundary
++## C16 SHiP-SW-style V1
+ 
+-Policy ID 4 exists so configs and future merge contracts are stable, but it
+-fails closed. LR03/LR05 close original SHiP training but do not uniquely close
+-the software-region signature granularity, finite SHCT mapping/collision,
+-sampling, and C16 software-marking contract. No guessed predictor is present.
++The closeout contract explicitly freezes the former open choices. Critical
++regions are the same 28 qweight intervals; signature is 4KB page identity
++`address >> 12`; each L2 subpartition owns 16K 3-bit SHCT entries indexed by
++`(address >> 12) & 0x3fff`; there is no sampling. Non-critical lines remain
++ordinary and never train. A zero counter predicts REGULAR and a positive
++counter predicts L2_RESIDENT, realized by the qualified priority substrate.
++Each critical line stores its insertion signature and an initially clear
++outcome. Only a true valid same-sector hit sets outcome. Eviction increments
++the stored counter for outcome=1 and decrements it for outcome=0, with 3-bit
++saturation. Sector miss, MSHR merge, retry, and fill do not train. There is no
++M1 quota. This is a C16 adaptation, not a bitwise AutoScratch reproduction.
+diff --git a/docs/c16/strong_baselines_v1/OLD_ADDRESS_GENERATION_SURVIVAL_OBSERVER.md b/docs/c16/strong_baselines_v1/OLD_ADDRESS_GENERATION_SURVIVAL_OBSERVER.md
+new file mode 100644
+index 0000000..0b4e0a9
+--- /dev/null
++++ b/docs/c16/strong_baselines_v1/OLD_ADDRESS_GENERATION_SURVIVAL_OBSERVER.md
+@@ -0,0 +1,30 @@
++# C16 old-address generation survival observer V1
++
++Status: `C16_OLD_ADDRESS_SURVIVAL_OBSERVER_IMPLEMENTATION_QUALIFIED`.
++
++The observer is default OFF and diagnostics-only. Cache code sends one-way
++facts—accepted new-line allocation, completed first-sector fill, whole-line
++eviction/invalidation, true valid-sector hit, and kernel boundary. The observer
++returns no value and is never consulted by probe, victim, admission, queue,
++port, or timing logic.
++
++External state maps each aligned 128-byte address to a monotonically increasing
++fill-generation serial and current resident/protected/class identity. A new
++generation is created only when the first fill completes after a new-line
++allocation; later sector-child fills do not create generations.
++
++For the qualified full trace, launch UID 60 is dynamic kernel 2985 and freezes
++the D1 L0 protected-class-1 snapshot. UID 1564 is dynamic kernel 4489 and emits
++the D2 L0 pre-range state. UID 1565 is dynamic kernel 4490 and emits mid/end
++state. These mappings are frozen in the supplied template config.
++
++At each report, snapshot addresses close exactly into unchanged old-generation
++survivors, currently resident new generations, and currently absent addresses.
++`evicted_then_refilled_same_address` is a cumulative address count and is not
++substituted for this disjoint closure. The strictly defined reload counter is
++a completed new-generation fill for a snapshot address while D2 observation
++is active. Request-level “misses” are intentionally not emitted because MSHR
++merge and sector behavior prevent an unambiguous one-to-one definition.
++
++Observer qualification demonstrates implementation correctness and OFF/ON
++neutrality. It is not a scientific survival result; no full window was run.
+diff --git a/docs/c16/strong_baselines_v1/SHIP_SW_CONTRACT_STATUS.md b/docs/c16/strong_baselines_v1/SHIP_SW_CONTRACT_STATUS.md
+index c80dd9d..0fcfdac 100644
+--- a/docs/c16/strong_baselines_v1/SHIP_SW_CONTRACT_STATUS.md
++++ b/docs/c16/strong_baselines_v1/SHIP_SW_CONTRACT_STATUS.md
+@@ -1,15 +1,15 @@
+ # SHiP-SW-style contract status
+ 
+-`SHIP_SW_IMPLEMENTATION_CONTRACT_INCOMPLETE`
++`C16_SHIP_SW_STYLE_V1_CONTRACT_CLOSED`
+ 
+-Closed from original SHiP: underlying 2-bit SRRIP; zero SHCT predicts RRPV=3,
+-positive predicts RRPV=2; a true hit promotes to zero and increments the
+-stored insertion signature; an unreused eviction decrements that signature;
+-the predictor estimates whether reuse occurs, not when.
++The user-authorized closeout freezes critical regions, 4KB page signature,
++per-subpartition 16K-entry/3-bit SHCT, low-14-bit index, no sampling,
++non-critical exclusion, eviction-time outcome training, and use of the
++qualified priority substrate. Unit and sector integration tests cover
++saturation, prediction, positive/negative training, collisions,
++non-critical no-training, repeated refills, and false-temporal-locality
++exclusions.
+ 
+-Not uniquely closed by LR03/LR04/LR05 or the accepted source: the
+-AutoScratch-style software region's fine-grained signature construction,
+-finite SHCT entry/index/hash/collision contract, training sampling, and exact
+-software request marking for C16. Giving only 28 class IDs would be an
+-unapproved weakening; inventing a finer mapping would be a new scientific
+-assumption. Policy ID 4 therefore rejects functional enable.
++This remains explicitly named a C16 SHiP-SW-style adaptation. It is not
++claimed to reproduce AutoScratch or original SHiP bit for bit, and it does not
++use M1 quota.
+diff --git a/src/gpgpu-sim/CMakeLists.txt b/src/gpgpu-sim/CMakeLists.txt
+index 9330c9f..9afce29 100644
+--- a/src/gpgpu-sim/CMakeLists.txt
++++ b/src/gpgpu-sim/CMakeLists.txt
+@@ -1,6 +1,7 @@
+ # Exclude power_interface.cc if no power model
+ list(APPEND gpgpusim_SRC addrdec.cc
+     c16_strong_baselines.cc
++    c16_survival_observer.cc
+     dram.cc
+     dram_sched.cc
+     gpu-cache.cc
+diff --git a/src/gpgpu-sim/c16_strong_baselines.cc b/src/gpgpu-sim/c16_strong_baselines.cc
+index 23f7aeb..e70cedc 100644
+--- a/src/gpgpu-sim/c16_strong_baselines.cc
++++ b/src/gpgpu-sim/c16_strong_baselines.cc
+@@ -46,7 +46,26 @@ bool policy_needs_target_map(unsigned value) {
+          value == POLICY_SHIP_SW;
+ }
+ 
+-bool ship_sw_contract_complete() { return false; }
++bool ship_sw_contract_complete() { return true; }
++
++const char *ship_sw_version() { return "C16_SHIP_SW_STYLE_V1"; }
++
++uint64_t ship_sw_page_signature(uint64_t address) { return address >> 12; }
++
++unsigned ship_sw_shct_index(uint64_t address) {
++  return static_cast<unsigned>(ship_sw_page_signature(address) & 0x3fffULL);
++}
++
++bool ship_sw_predict_resident(unsigned counter) {
++  if (counter > 7) throw std::runtime_error("3-bit SHCT counter overflow");
++  return counter > 0;
++}
++
++unsigned ship_sw_train(unsigned counter, bool outcome) {
++  if (counter > 7) throw std::runtime_error("3-bit SHCT counter overflow");
++  if (outcome) return std::min(7U, counter + 1);
++  return counter > 0 ? counter - 1 : 0;
++}
+ 
+ const char *stable_hash_version() {
+   return "C16_M1F_STABLE_ADMISSION_HASH_V1";
+@@ -188,6 +207,10 @@ diagnostics::diagnostics()
+       drrip_brrip_long_insertions(0), drrip_brrip_short_insertions(0),
+       drrip_aging_rounds(0), drrip_psel_increments(0),
+       drrip_psel_decrements(0), writeback_hits_not_promoted(0),
++      ship_critical_allocations(0), ship_regular_predictions(0),
++      ship_resident_predictions(0), ship_true_hit_outcomes(0),
++      ship_positive_trainings(0), ship_negative_trainings(0),
++      ship_noncritical_no_train(0),
+       priority_resident(0), priority_pending(0),
+       priority_peak_resident(0), priority_peak_resident_plus_pending(0) {}
+ 
+diff --git a/src/gpgpu-sim/c16_strong_baselines.h b/src/gpgpu-sim/c16_strong_baselines.h
+index 991dcb9..b60948f 100644
+--- a/src/gpgpu-sim/c16_strong_baselines.h
++++ b/src/gpgpu-sim/c16_strong_baselines.h
+@@ -32,6 +32,11 @@ const char *policy_name(unsigned value);
+ bool policy_value_valid(unsigned value);
+ bool policy_needs_target_map(unsigned value);
+ bool ship_sw_contract_complete();
++const char *ship_sw_version();
++uint64_t ship_sw_page_signature(uint64_t address);
++unsigned ship_sw_shct_index(uint64_t address);
++bool ship_sw_predict_resident(unsigned counter);
++unsigned ship_sw_train(unsigned counter, bool outcome);
+ 
+ const char *stable_hash_version();
+ uint64_t stable_hash_seed();
+@@ -94,6 +99,13 @@ struct diagnostics {
+   uint64_t drrip_psel_increments;
+   uint64_t drrip_psel_decrements;
+   uint64_t writeback_hits_not_promoted;
++  uint64_t ship_critical_allocations;
++  uint64_t ship_regular_predictions;
++  uint64_t ship_resident_predictions;
++  uint64_t ship_true_hit_outcomes;
++  uint64_t ship_positive_trainings;
++  uint64_t ship_negative_trainings;
++  uint64_t ship_noncritical_no_train;
+   uint64_t priority_resident;
+   uint64_t priority_pending;
+   uint64_t priority_peak_resident;
+diff --git a/src/gpgpu-sim/c16_survival_observer.cc b/src/gpgpu-sim/c16_survival_observer.cc
+new file mode 100644
+index 0000000..2ffce75
+--- /dev/null
++++ b/src/gpgpu-sim/c16_survival_observer.cc
+@@ -0,0 +1,213 @@
++#include "c16_survival_observer.h"
++
++#include <fstream>
++#include <stdexcept>
++
++namespace c16_survival_observer {
++
++generation_observer::generation_observer()
++    : enabled_(false), target_class_(1), snapshot_after_uid_(0),
++      d2_begin_uid_(0), d2_mid_uid_(0), d2_end_uid_(0), serial_(0),
++      d2_active_(false), old_generation_d2_hits_(0),
++      old_generation_d2_reloads_(0) {}
++
++void generation_observer::configure(bool enabled, const char *path,
++                                    unsigned target_class,
++                                    unsigned snapshot_after_uid,
++                                    unsigned d2_begin_uid,
++                                    unsigned d2_mid_uid,
++                                    unsigned d2_end_uid) {
++  enabled_ = enabled;
++  path_ = path ? path : "";
++  target_class_ = target_class;
++  snapshot_after_uid_ = snapshot_after_uid;
++  d2_begin_uid_ = d2_begin_uid;
++  d2_mid_uid_ = d2_mid_uid;
++  d2_end_uid_ = d2_end_uid;
++  serial_ = 0;
++  d2_active_ = false;
++  old_generation_d2_hits_ = 0;
++  old_generation_d2_reloads_ = 0;
++  states_.clear();
++  snapshot_.clear();
++  evicted_then_refilled_.clear();
++  if (!enabled_) return;
++  if (path_.empty() || target_class_ == 0)
++    throw std::runtime_error("enabled survival observer requires log and class");
++  write_header();
++}
++
++void generation_observer::write_header() {
++  std::ofstream out(path_.c_str(), std::ios::out | std::ios::trunc);
++  if (!out) throw std::runtime_error("cannot create survival observer log");
++  out << "label\tlaunch_uid\tsnapshot_population\t"
++         "exact_old_generation_survivors\t"
++         "exact_old_generation_survival_fraction\t"
++         "current_new_generation_residents\tcurrent_absent\t"
++         "evicted_then_refilled_same_address\told_generation_D2_hits\t"
++         "old_generation_D2_reloads\taccounting_closed\n";
++}
++
++void generation_observer::on_line_allocate(uint64_t address,
++                                           bool protected_line,
++                                           unsigned target_class) {
++  if (!enabled_) return;
++  state &entry = states_[line(address)];
++  entry.pending = true;
++  entry.pending_protected = protected_line;
++  entry.pending_target_class = target_class;
++}
++
++void generation_observer::on_fill(uint64_t address) {
++  if (!enabled_) return;
++  const uint64_t key = line(address);
++  state &entry = states_[key];
++  if (!entry.pending) return;  // sector-child fill, not a new line generation
++  entry.generation = ++serial_;
++  entry.resident = true;
++  entry.protected_line = entry.pending_protected;
++  entry.target_class = entry.pending_target_class;
++  entry.pending = false;
++  entry.pending_protected = false;
++  entry.pending_target_class = 0;
++  std::unordered_map<uint64_t, uint64_t>::const_iterator old =
++      snapshot_.find(key);
++  if (old != snapshot_.end() && entry.generation != old->second) {
++    evicted_then_refilled_.insert(key);
++    if (d2_active_) ++old_generation_d2_reloads_;
++  }
++}
++
++void generation_observer::on_evict(uint64_t address) {
++  if (!enabled_) return;
++  state &entry = states_[line(address)];
++  entry.resident = false;
++  entry.protected_line = false;
++  entry.target_class = 0;
++  entry.pending = false;
++  entry.pending_protected = false;
++  entry.pending_target_class = 0;
++}
++
++void generation_observer::on_true_hit(uint64_t address) {
++  if (!enabled_ || !d2_active_) return;
++  const uint64_t key = line(address);
++  std::unordered_map<uint64_t, uint64_t>::const_iterator old =
++      snapshot_.find(key);
++  if (old == snapshot_.end()) return;
++  std::unordered_map<uint64_t, state>::const_iterator current =
++      states_.find(key);
++  if (current != states_.end() && current->second.resident &&
++      current->second.generation == old->second)
++    ++old_generation_d2_hits_;
++}
++
++void generation_observer::freeze_snapshot() {
++  if (!enabled_) return;
++  snapshot_.clear();
++  for (std::unordered_map<uint64_t, state>::const_iterator it = states_.begin();
++       it != states_.end(); ++it) {
++    const state &entry = it->second;
++    if (entry.resident && entry.protected_line &&
++        entry.target_class == target_class_)
++      snapshot_[it->first] = entry.generation;
++  }
++  evicted_then_refilled_.clear();
++  old_generation_d2_hits_ = 0;
++  old_generation_d2_reloads_ = 0;
++}
++
++report generation_observer::current_report() const {
++  report result = {};
++  result.snapshot_population = snapshot_.size();
++  for (std::unordered_map<uint64_t, uint64_t>::const_iterator it =
++           snapshot_.begin();
++       it != snapshot_.end(); ++it) {
++    std::unordered_map<uint64_t, state>::const_iterator current =
++        states_.find(it->first);
++    if (current == states_.end() || !current->second.resident) {
++      ++result.current_absent;
++    } else if (current->second.generation == it->second) {
++      ++result.exact_old_generation_survivors;
++    } else {
++      ++result.current_new_generation_residents;
++    }
++  }
++  result.evicted_then_refilled_same_address = evicted_then_refilled_.size();
++  result.old_generation_d2_hits = old_generation_d2_hits_;
++  result.old_generation_d2_reloads = old_generation_d2_reloads_;
++  result.accounting_closed =
++      result.snapshot_population == result.exact_old_generation_survivors +
++                                        result.current_new_generation_residents +
++                                        result.current_absent;
++  return result;
++}
++
++void generation_observer::emit(const char *label, unsigned launch_uid) const {
++  if (!enabled_) return;
++  const report value = current_report();
++  std::ofstream out(path_.c_str(), std::ios::out | std::ios::app);
++  if (!out) throw std::runtime_error("cannot append survival observer log");
++  const double fraction = value.snapshot_population
++                              ? static_cast<double>(
++                                    value.exact_old_generation_survivors) /
++                                    value.snapshot_population
++                              : 0.0;
++  out << label << '\t' << launch_uid << '\t' << value.snapshot_population
++      << '\t' << value.exact_old_generation_survivors << '\t' << fraction
++      << '\t' << value.current_new_generation_residents << '\t'
++      << value.current_absent << '\t'
++      << value.evicted_then_refilled_same_address << '\t'
++      << value.old_generation_d2_hits << '\t'
++      << value.old_generation_d2_reloads << '\t'
++      << (value.accounting_closed ? 1 : 0) << '\n';
++}
++
++void generation_observer::kernel_begin(unsigned launch_uid) {
++  if (!enabled_) return;
++  if (launch_uid == d2_begin_uid_) {
++    d2_active_ = true;
++    emit("D2_L0_BEFORE", launch_uid);
++  }
++  if (launch_uid == d2_mid_uid_) emit("D2_L0_MID", launch_uid);
++}
++
++void generation_observer::kernel_end(unsigned launch_uid) {
++  if (!enabled_) return;
++  if (launch_uid == snapshot_after_uid_) {
++    freeze_snapshot();
++    emit("D1_L0_SNAPSHOT", launch_uid);
++  }
++  if (launch_uid == d2_end_uid_) {
++    emit("D2_L0_END", launch_uid);
++    d2_active_ = false;
++  }
++}
++
++uint64_t generation_observer::generation(uint64_t address) const {
++  std::unordered_map<uint64_t, state>::const_iterator it =
++      states_.find(line(address));
++  return it == states_.end() ? 0 : it->second.generation;
++}
++
++generation_observer &global() {
++  static generation_observer instance;
++  return instance;
++}
++void configure(bool enabled, const char *path, unsigned target_class,
++               unsigned snapshot_after_uid, unsigned d2_begin_uid,
++               unsigned d2_mid_uid, unsigned d2_end_uid) {
++  global().configure(enabled, path, target_class, snapshot_after_uid,
++                     d2_begin_uid, d2_mid_uid, d2_end_uid);
++}
++void on_line_allocate(uint64_t address, bool protected_line,
++                      unsigned target_class) {
++  global().on_line_allocate(address, protected_line, target_class);
++}
++void on_fill(uint64_t address) { global().on_fill(address); }
++void on_evict(uint64_t address) { global().on_evict(address); }
++void on_true_hit(uint64_t address) { global().on_true_hit(address); }
++void kernel_begin(unsigned launch_uid) { global().kernel_begin(launch_uid); }
++void kernel_end(unsigned launch_uid) { global().kernel_end(launch_uid); }
++
++}  // namespace c16_survival_observer
+diff --git a/src/gpgpu-sim/c16_survival_observer.h b/src/gpgpu-sim/c16_survival_observer.h
+new file mode 100644
+index 0000000..bd0cee0
+--- /dev/null
++++ b/src/gpgpu-sim/c16_survival_observer.h
+@@ -0,0 +1,90 @@
++#ifndef C16_SURVIVAL_OBSERVER_H
++#define C16_SURVIVAL_OBSERVER_H
++
++#include <stdint.h>
++
++#include <string>
++#include <unordered_map>
++#include <unordered_set>
++
++namespace c16_survival_observer {
++
++struct report {
++  uint64_t snapshot_population;
++  uint64_t exact_old_generation_survivors;
++  uint64_t current_new_generation_residents;
++  uint64_t current_absent;
++  uint64_t evicted_then_refilled_same_address;
++  uint64_t old_generation_d2_hits;
++  uint64_t old_generation_d2_reloads;
++  bool accounting_closed;
++};
++
++class generation_observer {
++ public:
++  generation_observer();
++  void configure(bool enabled, const char *path, unsigned target_class,
++                 unsigned snapshot_after_uid, unsigned d2_begin_uid,
++                 unsigned d2_mid_uid, unsigned d2_end_uid);
++  void on_line_allocate(uint64_t address, bool protected_line,
++                        unsigned target_class);
++  void on_fill(uint64_t address);
++  void on_evict(uint64_t address);
++  void on_true_hit(uint64_t address);
++  void kernel_begin(unsigned launch_uid);
++  void kernel_end(unsigned launch_uid);
++  void freeze_snapshot();
++  report current_report() const;
++  void emit(const char *label, unsigned launch_uid) const;
++  uint64_t generation(uint64_t address) const;
++  bool enabled() const { return enabled_; }
++
++ private:
++  struct state {
++    state()
++        : generation(0), resident(false), protected_line(false),
++          target_class(0), pending(false), pending_protected(false),
++          pending_target_class(0) {}
++    uint64_t generation;
++    bool resident;
++    bool protected_line;
++    unsigned target_class;
++    bool pending;
++    bool pending_protected;
++    unsigned pending_target_class;
++  };
++
++  uint64_t line(uint64_t address) const { return address & ~uint64_t(127); }
++  void write_header();
++
++  bool enabled_;
++  std::string path_;
++  unsigned target_class_;
++  unsigned snapshot_after_uid_;
++  unsigned d2_begin_uid_;
++  unsigned d2_mid_uid_;
++  unsigned d2_end_uid_;
++  uint64_t serial_;
++  bool d2_active_;
++  uint64_t old_generation_d2_hits_;
++  uint64_t old_generation_d2_reloads_;
++  std::unordered_map<uint64_t, state> states_;
++  std::unordered_map<uint64_t, uint64_t> snapshot_;
++  std::unordered_set<uint64_t> evicted_then_refilled_;
++};
++
++generation_observer &global();
++void configure(bool enabled, const char *path, unsigned target_class,
++               unsigned snapshot_after_uid, unsigned d2_begin_uid,
++               unsigned d2_mid_uid, unsigned d2_end_uid);
++void on_line_allocate(uint64_t address, bool protected_line,
++                      unsigned target_class);
++void on_fill(uint64_t address);
++void on_evict(uint64_t address);
++void on_true_hit(uint64_t address);
++void kernel_begin(unsigned launch_uid);
++void kernel_end(unsigned launch_uid);
++
++}  // namespace c16_survival_observer
++
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index e036718..5be23cc 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -157,12 +157,13 @@ void cache_config::init_c16_strong_baseline(unsigned l2_instances) {
+         needs_target_map, 0, needs_target_map ? 1 : 0, m_line_sz,
+         l2_instances, m_oracle_elastic_sidecar,
+         m_oracle_elastic_sidecar_sha256, false);
+-    if (m_c16_baseline_policy == POLICY_PRIORITY_STABLE) {
++    if (m_c16_baseline_policy == POLICY_PRIORITY_STABLE ||
++        m_c16_baseline_policy == POLICY_SHIP_SW) {
+       const std::vector<oracle_elastic_residency::interval> &intervals =
+           m_c16_baseline_target_map.intervals();
+       if (intervals.size() != 28)
+         throw std::runtime_error(
+-            "PRIORITY_STABLE requires exact 28 target regions");
++            "C16 semantic baseline requires exact 28 target regions");
+       bool classes[29] = {};
+       for (size_t i = 0; i < intervals.size(); ++i) {
+         const oracle_elastic_residency::interval &item = intervals[i];
+@@ -171,7 +172,7 @@ void cache_config::init_c16_strong_baseline(unsigned l2_instances) {
+             (item.end - item.begin) / 128 != 265216 ||
+             item.begin % 128 || item.end % 128)
+           throw std::runtime_error(
+-              "PRIORITY_STABLE target geometry drift");
++              "C16 semantic baseline target geometry drift");
+         classes[item.target_class] = true;
+       }
+     }
+@@ -181,6 +182,34 @@ void cache_config::init_c16_strong_baseline(unsigned l2_instances) {
+   }
+ }
+ 
++void cache_config::init_c16_survival_observer() {
++  if (m_c16_survival_observer_enable &&
++      (!m_c16_survival_observer_log ||
++       !*m_c16_survival_observer_log ||
++       m_c16_survival_observer_target_class == 0 ||
++       m_c16_survival_snapshot_after_uid == 0 ||
++       m_c16_survival_d2_begin_uid == 0 ||
++       m_c16_survival_d2_mid_uid == 0 ||
++       m_c16_survival_d2_end_uid == 0 ||
++       m_c16_survival_d2_begin_uid > m_c16_survival_d2_mid_uid ||
++       m_c16_survival_d2_mid_uid > m_c16_survival_d2_end_uid)) {
++    fprintf(stderr,
++            "C16 survival observer requires log, class, and ordered nonzero boundaries\n");
++    abort();
++  }
++  try {
++    c16_survival_observer::configure(
++        m_c16_survival_observer_enable, m_c16_survival_observer_log,
++        m_c16_survival_observer_target_class,
++        m_c16_survival_snapshot_after_uid,
++        m_c16_survival_d2_begin_uid, m_c16_survival_d2_mid_uid,
++        m_c16_survival_d2_end_uid);
++  } catch (const std::exception &error) {
++    fprintf(stderr, "C16 survival observer config error: %s\n", error.what());
++    abort();
++  }
++}
++
+ bool cache_config::c16_baseline_target_identity(
+     const mem_fetch *mf, unsigned *target_class,
+     uint64_t *region_relative_line_index) const {
+@@ -391,6 +420,10 @@ void tag_array::init(int core_id, int type_id) {
+           : 0;
+   m_c16_rrpv.assign(m_config.get_max_num_lines(), 3);
+   m_c16_priority_state.assign(m_config.get_max_num_lines(), 0);
++  m_c16_ship_shct.assign(16384, 0);
++  m_c16_ship_signature.assign(m_config.get_max_num_lines(), 0);
++  m_c16_ship_signature_valid.assign(m_config.get_max_num_lines(), 0);
++  m_c16_ship_outcome.assign(m_config.get_max_num_lines(), 0);
+   m_c16_drrip_psel = 512;
+   m_c16_brrip_miss_counter = 0;
+   oracle_verify_invariant();
+@@ -494,6 +527,20 @@ void tag_array::c16_baseline_verify() const {
+ void tag_array::c16_baseline_depart_line(unsigned idx) {
+   if (!m_config.c16_baseline_enabled()) return;
+   assert(idx < m_c16_priority_state.size());
++  if (m_config.c16_baseline_policy() ==
++          c16_strong_baselines::POLICY_SHIP_SW &&
++      m_c16_ship_signature_valid[idx]) {
++    const unsigned signature = m_c16_ship_signature[idx];
++    assert(signature < m_c16_ship_shct.size());
++    const bool outcome = m_c16_ship_outcome[idx] != 0;
++    m_c16_ship_shct[signature] =
++        static_cast<unsigned char>(c16_strong_baselines::ship_sw_train(
++            m_c16_ship_shct[signature], outcome));
++    if (outcome)
++      ++m_c16_diagnostics.ship_positive_trainings;
++    else
++      ++m_c16_diagnostics.ship_negative_trainings;
++  }
+   if (m_c16_priority_state[idx] == 1) {
+     assert(m_c16_diagnostics.priority_pending > 0);
+     --m_c16_diagnostics.priority_pending;
+@@ -503,6 +550,9 @@ void tag_array::c16_baseline_depart_line(unsigned idx) {
+   }
+   m_c16_priority_state[idx] = 0;
+   m_c16_rrpv[idx] = 3;
++  m_c16_ship_signature[idx] = 0;
++  m_c16_ship_signature_valid[idx] = 0;
++  m_c16_ship_outcome[idx] = 0;
+   c16_baseline_verify();
+ }
+ 
+@@ -529,6 +579,8 @@ void tag_array::oracle_invalidate_line(unsigned idx,
+                             !line->oracle_protected() &&
+                             !line->oracle_pending_protected();
+   line->set_status(INVALID, mask);
++  if (line->is_invalid_line())
++    c16_survival_observer::on_evict(line->m_block_addr);
+   if (m_config.c16_baseline_enabled() && line->is_invalid_line())
+     c16_baseline_depart_line(idx);
+   if (m_config.oracle_elastic_enabled() && line->is_invalid_line()) {
+@@ -783,7 +835,9 @@ enum cache_request_status tag_array::c16_baseline_probe(
+   if (m_config.c16_baseline_policy() ==
+           c16_strong_baselines::POLICY_PRIORITY_ALL ||
+       m_config.c16_baseline_policy() ==
+-          c16_strong_baselines::POLICY_PRIORITY_STABLE) {
++          c16_strong_baselines::POLICY_PRIORITY_STABLE ||
++      m_config.c16_baseline_policy() ==
++          c16_strong_baselines::POLICY_SHIP_SW) {
+     selected = c16_strong_baselines::choose_priority_victim(
+         eligible, m_config.m_replacement_policy == LRU);
+   } else {
+@@ -826,6 +880,8 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+   const bool c16_priority =
+       m_config.c16_baseline_priority(mf, &c16_target_class);
+   enum cache_request_status status = probe(addr, idx, mf, mf->is_write());
++  if (status == HIT)
++    c16_survival_observer::on_true_hit(mf->get_addr());
+   if (m_config.c16_baseline_enabled()) {
+     ++m_c16_diagnostics.accesses;
+     if (c16_target) ++m_c16_diagnostics.priority_target_accesses;
+@@ -835,6 +891,12 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+     else if (status == SECTOR_MISS)
+       ++m_c16_diagnostics.sector_miss_no_promotion;
+     else if (status == HIT) {
++      if (m_config.c16_baseline_policy() ==
++              c16_strong_baselines::POLICY_SHIP_SW &&
++          m_c16_ship_signature_valid[idx]) {
++        m_c16_ship_outcome[idx] = 1;
++        ++m_c16_diagnostics.ship_true_hit_outcomes;
++      }
+       if (m_config.c16_baseline_policy() ==
+           c16_strong_baselines::POLICY_DRRIP) {
+         if (c16_rrip_hit_trainable(mf)) {
+@@ -922,6 +984,7 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+             ++m_oracle_diagnostics.ordinary_borrowing_fills;
+         }
+         if (!m_lines[idx]->is_invalid_line()) {
++          c16_survival_observer::on_evict(m_lines[idx]->m_block_addr);
+           evicted.m_has_valid_victim = true;
+           evicted.m_telemetry_class = m_lines[idx]->get_telemetry_class();
+         }
+@@ -951,6 +1014,8 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+         const bool protect_fill =
+             oracle_admission.protect_fill;
+         m_lines[idx]->oracle_set_pending(protect_fill, oracle_target_class);
++        c16_survival_observer::on_line_allocate(
++            m_config.block_addr(addr), protect_fill, oracle_target_class);
+         if (m_config.oracle_elastic_enabled()) {
+           if (protect_fill)
+             ++m_oracle_pending_protected;
+@@ -965,6 +1030,28 @@ enum cache_request_status tag_array::access(new_addr_type addr, unsigned time,
+             m_c16_priority_state[idx] = 1;
+             ++m_c16_diagnostics.priority_pending;
+             ++m_c16_diagnostics.priority_allocations;
++          } else if (policy == c16_strong_baselines::POLICY_SHIP_SW) {
++            if (c16_target) {
++              const unsigned signature =
++                  c16_strong_baselines::ship_sw_shct_index(mf->get_addr());
++              assert(signature < m_c16_ship_shct.size());
++              m_c16_ship_signature[idx] =
++                  static_cast<unsigned short>(signature);
++              m_c16_ship_signature_valid[idx] = 1;
++              m_c16_ship_outcome[idx] = 0;
++              ++m_c16_diagnostics.ship_critical_allocations;
++              if (c16_strong_baselines::ship_sw_predict_resident(
++                      m_c16_ship_shct[signature])) {
++                m_c16_priority_state[idx] = 1;
++                ++m_c16_diagnostics.priority_pending;
++                ++m_c16_diagnostics.priority_allocations;
++                ++m_c16_diagnostics.ship_resident_predictions;
++              } else {
++                ++m_c16_diagnostics.ship_regular_predictions;
++              }
++            } else {
++              ++m_c16_diagnostics.ship_noncritical_no_train;
++            }
+           } else if (policy == c16_strong_baselines::POLICY_DRRIP) {
+             const unsigned set_index = m_config.set_index(addr);
+             const c16_strong_baselines::leader_role role =
+@@ -1056,6 +1143,8 @@ void tag_array::fill(new_addr_type addr, unsigned time,
+   // assert(status==MISS||status==SECTOR_MISS); // MSHR should have prevented
+   // redundant memory request
+   if (status == MISS) {
++    if (!m_lines[idx]->is_invalid_line())
++      c16_survival_observer::on_evict(m_lines[idx]->m_block_addr);
+     oracle_depart_line(idx);
+     c16_baseline_depart_line(idx);
+     m_lines[idx]->allocate(m_config.tag(addr), m_config.block_addr(addr), time,
+@@ -1073,6 +1162,7 @@ void tag_array::fill(new_addr_type addr, unsigned time,
+   m_lines[idx]->fill(time, mask, byte_mask);
+   oracle_commit_fill(idx);
+   c16_baseline_commit_fill(idx);
++  c16_survival_observer::on_fill(m_lines[idx]->m_block_addr);
+   if (m_lines[idx]->is_modified_line() && !before) {
+     m_dirty++;
+   }
+@@ -1085,6 +1175,7 @@ void tag_array::fill(unsigned index, unsigned time, mem_fetch *mf) {
+                        mf->get_access_byte_mask());
+   oracle_commit_fill(index);
+   c16_baseline_commit_fill(index);
++  c16_survival_observer::on_fill(m_lines[index]->m_block_addr);
+   m_lines[index]->set_telemetry_class(mf->get_telemetry_class());
+   if (m_lines[index]->is_modified_line() && !before) {
+     m_dirty++;
+@@ -1097,6 +1188,7 @@ void tag_array::flush() {
+ 
+   for (unsigned i = 0; i < m_config.get_num_lines(); i++)
+     if (m_lines[i]->is_modified_line()) {
++      c16_survival_observer::on_evict(m_lines[i]->m_block_addr);
+       oracle_depart_line(i);
+       c16_baseline_depart_line(i);
+       for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++) {
+@@ -1113,6 +1205,8 @@ void tag_array::invalidate() {
+   if (!is_used) return;
+ 
+   for (unsigned i = 0; i < m_config.get_num_lines(); i++) {
++    if (!m_lines[i]->is_invalid_line())
++      c16_survival_observer::on_evict(m_lines[i]->m_block_addr);
+     oracle_depart_line(i);
+     c16_baseline_depart_line(i);
+     for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++)
+@@ -1210,6 +1304,11 @@ void tag_array::print(FILE *stream, unsigned &total_access,
+     }
+     assert(resident == m_c16_diagnostics.priority_resident);
+     assert(pending == m_c16_diagnostics.priority_pending);
++    uint64_t ship_shct_nonzero = 0, ship_shct_sum = 0;
++    for (size_t i = 0; i < m_c16_ship_shct.size(); ++i) {
++      ship_shct_nonzero += m_c16_ship_shct[i] != 0;
++      ship_shct_sum += m_c16_ship_shct[i];
++    }
+     fprintf(
+         stream,
+         "c16_strong_baseline_l2\tinstance=%d\tpolicy=%s\taccesses=%llu\t"
+@@ -1224,7 +1323,12 @@ void tag_array::print(FILE *stream, unsigned &total_access,
+         "drrip_brrip_miss_counter=%llu\tdrrip_srrip_insertions=%llu\t"
+         "drrip_brrip_long_insertions=%llu\t"
+         "drrip_brrip_short_insertions=%llu\tdrrip_aging_rounds=%llu\t"
+-        "drrip_psel_increments=%llu\tdrrip_psel_decrements=%llu\n",
++        "drrip_psel_increments=%llu\tdrrip_psel_decrements=%llu\t"
++        "ship_critical_allocations=%llu\tship_regular_predictions=%llu\t"
++        "ship_resident_predictions=%llu\tship_true_hit_outcomes=%llu\t"
++        "ship_positive_trainings=%llu\tship_negative_trainings=%llu\t"
++        "ship_noncritical_no_train=%llu\tship_shct_nonzero=%llu\t"
++        "ship_shct_sum=%llu\n",
+         m_core_id, m_config.c16_baseline_policy_name(),
+         static_cast<unsigned long long>(m_c16_diagnostics.accesses),
+         static_cast<unsigned long long>(m_c16_diagnostics.priority_resident),
+@@ -1250,7 +1354,16 @@ void tag_array::print(FILE *stream, unsigned &total_access,
+         static_cast<unsigned long long>(m_c16_diagnostics.drrip_brrip_short_insertions),
+         static_cast<unsigned long long>(m_c16_diagnostics.drrip_aging_rounds),
+         static_cast<unsigned long long>(m_c16_diagnostics.drrip_psel_increments),
+-        static_cast<unsigned long long>(m_c16_diagnostics.drrip_psel_decrements));
++        static_cast<unsigned long long>(m_c16_diagnostics.drrip_psel_decrements),
++        static_cast<unsigned long long>(m_c16_diagnostics.ship_critical_allocations),
++        static_cast<unsigned long long>(m_c16_diagnostics.ship_regular_predictions),
++        static_cast<unsigned long long>(m_c16_diagnostics.ship_resident_predictions),
++        static_cast<unsigned long long>(m_c16_diagnostics.ship_true_hit_outcomes),
++        static_cast<unsigned long long>(m_c16_diagnostics.ship_positive_trainings),
++        static_cast<unsigned long long>(m_c16_diagnostics.ship_negative_trainings),
++        static_cast<unsigned long long>(m_c16_diagnostics.ship_noncritical_no_train),
++        static_cast<unsigned long long>(ship_shct_nonzero),
++        static_cast<unsigned long long>(ship_shct_sum));
+   }
+   total_misses += (m_miss + m_sector_miss);
+   total_access += m_access;
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 662cb06..d367ec0 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -39,6 +39,7 @@
+ #include "gpu-misc.h"
+ #include "mem_fetch.h"
+ #include "c16_strong_baselines.h"
++#include "c16_survival_observer.h"
+ #include "oracle_elastic_residency.h"
+ 
+ #include <iostream>
+@@ -630,6 +631,13 @@ class cache_config {
+     m_c16_baseline_enable = false;
+     m_c16_baseline_policy = c16_strong_baselines::POLICY_NONE;
+     m_c16_baseline_diagnostics = false;
++    m_c16_survival_observer_enable = false;
++    m_c16_survival_observer_log = NULL;
++    m_c16_survival_observer_target_class = 1;
++    m_c16_survival_snapshot_after_uid = 0;
++    m_c16_survival_d2_begin_uid = 0;
++    m_c16_survival_d2_mid_uid = 0;
++    m_c16_survival_d2_end_uid = 0;
+   }
+   void init(char *config, FuncCache status) {
+     cache_status = status;
+@@ -920,6 +928,7 @@ class cache_config {
+   write_policy_t get_write_policy() { return m_write_policy; }
+   void init_oracle_elastic(unsigned l2_instances);
+   void init_c16_strong_baseline(unsigned l2_instances);
++  void init_c16_survival_observer();
+   bool oracle_elastic_enabled() const { return m_oracle_runtime.enabled(); }
+   bool oracle_elastic_diagnostics_enabled() const {
+     return m_oracle_runtime.diagnostics_enabled();
+@@ -959,6 +968,13 @@ class cache_config {
+   bool m_c16_baseline_enable;
+   unsigned m_c16_baseline_policy;
+   bool m_c16_baseline_diagnostics;
++  bool m_c16_survival_observer_enable;
++  char *m_c16_survival_observer_log;
++  unsigned m_c16_survival_observer_target_class;
++  unsigned m_c16_survival_snapshot_after_uid;
++  unsigned m_c16_survival_d2_begin_uid;
++  unsigned m_c16_survival_d2_mid_uid;
++  unsigned m_c16_survival_d2_end_uid;
+ 
+  protected:
+   void exit_parse_error() {
+@@ -1148,6 +1164,10 @@ class tag_array {
+   mutable oracle_elastic_residency::diagnostic_counters m_oracle_diagnostics;
+   mutable std::vector<unsigned char> m_c16_rrpv;
+   std::vector<unsigned char> m_c16_priority_state;
++  std::vector<unsigned char> m_c16_ship_shct;
++  std::vector<unsigned short> m_c16_ship_signature;
++  std::vector<unsigned char> m_c16_ship_signature_valid;
++  std::vector<unsigned char> m_c16_ship_outcome;
+   unsigned m_c16_drrip_psel;
+   uint64_t m_c16_brrip_miss_counter;
+   mutable c16_strong_baselines::diagnostics m_c16_diagnostics;
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 09f58fd..3fb8d01 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -293,6 +293,34 @@ void memory_config::reg_options(class OptionParser *opp) {
+       opp, "-gpgpu_l2_c16_baseline_diagnostics", OPT_BOOL,
+       &m_L2_config.m_c16_baseline_diagnostics,
+       "C16 baseline diagnostics; independent of functional enable", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_survival_observer_enable", OPT_BOOL,
++      &m_L2_config.m_c16_survival_observer_enable,
++      "enable diagnostics-only old-address generation observer", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_survival_observer_log", OPT_CSTR,
++      &m_L2_config.m_c16_survival_observer_log,
++      "generation-survival observer TSV; empty disables output", "");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_survival_observer_target_class", OPT_UINT32,
++      &m_L2_config.m_c16_survival_observer_target_class,
++      "protected target class included in snapshot", "1");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_survival_snapshot_after_uid", OPT_UINT32,
++      &m_L2_config.m_c16_survival_snapshot_after_uid,
++      "freeze snapshot after this launch UID", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_survival_d2_begin_uid", OPT_UINT32,
++      &m_L2_config.m_c16_survival_d2_begin_uid,
++      "emit/activate before this D2 launch UID", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_survival_d2_mid_uid", OPT_UINT32,
++      &m_L2_config.m_c16_survival_d2_mid_uid,
++      "emit at this D2 mid-range launch UID", "0");
++  option_parser_register(
++      opp, "-gpgpu_l2_c16_survival_d2_end_uid", OPT_UINT32,
++      &m_L2_config.m_c16_survival_d2_end_uid,
++      "emit/deactivate after this D2 launch UID", "0");
+   option_parser_register(
+       opp, "-gpgpu_l2_oracle_address_canary_log", OPT_CSTR,
+       &m_L2_config.m_oracle_address_canary_log,
+@@ -961,6 +989,7 @@ void increment_x_then_y_then_z(dim3 &i, const dim3 &bound) {
+ 
+ void gpgpu_sim::launch(kernel_info_t *kinfo) {
+   unsigned kernelID = kinfo->get_uid();
++  c16_survival_observer::kernel_begin(kernelID);
+   unsigned long long streamID = kinfo->get_streamID();
+ 
+   kernel_time_t kernel_time = {gpu_tot_sim_cycle + gpu_sim_cycle, 0};
+@@ -1092,6 +1121,7 @@ unsigned gpgpu_sim::finished_kernel() {
+ 
+ void gpgpu_sim::set_kernel_done(kernel_info_t *kernel) {
+   unsigned uid = kernel->get_uid();
++  c16_survival_observer::kernel_end(uid);
+   last_uid = uid;
+   unsigned long long streamID = kernel->get_streamID();
+   last_streamID = streamID;
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 154fe21..5eba78d 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -309,6 +309,7 @@ class memory_config {
+     m_L2_config.init(&m_address_mapping);
+     m_L2_config.init_oracle_elastic(m_n_mem_sub_partition);
+     m_L2_config.init_c16_strong_baseline(m_n_mem_sub_partition);
++    m_L2_config.init_c16_survival_observer();
+ 
+     m_valid = true;
+ 
+diff --git a/src/gpgpu-sim/tests/run_c16_strong_baselines_tests.sh b/src/gpgpu-sim/tests/run_c16_strong_baselines_tests.sh
+index 9c5ff66..a33b57a 100755
+--- a/src/gpgpu-sim/tests/run_c16_strong_baselines_tests.sh
++++ b/src/gpgpu-sim/tests/run_c16_strong_baselines_tests.sh
+@@ -20,9 +20,16 @@ ${CXX:-g++} -std=c++11 -O0 -ffunction-sections -fdata-sections \
+   -Wl,--gc-sections -Wno-unused-parameter -Wno-reorder \
+   -I"$src" -I"$repo_root/src" -I"$CUDA_INSTALL_PATH/include" \
+   "$src/oracle_elastic_residency.cc" "$src/c16_strong_baselines.cc" \
++  "$src/c16_survival_observer.cc" \
+   "$src/gpu-cache.cc" "$src/gpu-misc.cc" "$src/hashing.cc" \
+   "$src/tests/test_c16_strong_baselines_tag_array.cc" \
+   -o "$out/tag_array_test"
+ "$out/tag_array_test"
+ 
++${CXX:-g++} -std=c++11 -Wall -Wextra -Werror -I"$src" \
++  "$src/c16_survival_observer.cc" \
++  "$src/tests/test_c16_survival_observer.cc" \
++  -o "$out/survival_observer_test"
++"$out/survival_observer_test"
++
+ echo C16_STRONG_BASELINES_TEST_SUITE_PASS
+diff --git a/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh b/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh
+index 61fbf61..2ca14d1 100755
+--- a/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh
++++ b/src/gpgpu-sim/tests/run_oracle_elastic_residency_tests.sh
+@@ -27,6 +27,7 @@ ${CXX:-g++} -std=c++11 -O0 -ffunction-sections -fdata-sections \
+   -Wl,--gc-sections -Wno-unused-parameter -Wno-reorder \
+   -I"$src" -I"$repo_root/src" -I"$CUDA_INSTALL_PATH/include" \
+   "$src/oracle_elastic_residency.cc" "$src/c16_strong_baselines.cc" \
++  "$src/c16_survival_observer.cc" \
+   "$src/gpu-cache.cc" \
+   "$src/gpu-misc.cc" "$src/hashing.cc" \
+   "$src/tests/test_oracle_elastic_tag_array_config.cc" \
+diff --git a/src/gpgpu-sim/tests/test_c16_strong_baselines.cc b/src/gpgpu-sim/tests/test_c16_strong_baselines.cc
+index 350b0e1..5f2136b 100644
+--- a/src/gpgpu-sim/tests/test_c16_strong_baselines.cc
++++ b/src/gpgpu-sim/tests/test_c16_strong_baselines.cc
+@@ -117,13 +117,28 @@ static void test_gpu_event_contract() {
+   assert(!event_inserts(EVENT_RESERVATION_FAIL_RETRY));
+ }
+ 
++static void test_ship_sw_contract() {
++  assert(ship_sw_contract_complete());
++  assert(std::string(ship_sw_version()) == "C16_SHIP_SW_STYLE_V1");
++  const uint64_t address = 0x7ea94e025120ULL;
++  assert(ship_sw_page_signature(address) == (address >> 12));
++  assert(ship_sw_shct_index(address) == ((address >> 12) & 0x3fff));
++  assert(!ship_sw_predict_resident(0));
++  assert(ship_sw_predict_resident(1));
++  assert(ship_sw_train(0, false) == 0);
++  assert(ship_sw_train(0, true) == 1);
++  assert(ship_sw_train(7, true) == 7);
++  assert(ship_sw_train(3, false) == 2);
++}
++
+ int main() {
+   assert(policy_value_valid(POLICY_SHIP_SW));
+-  assert(!ship_sw_contract_complete());
++  assert(ship_sw_contract_complete());
+   test_priority();
+   test_stable_selector();
+   test_drrip();
+   test_gpu_event_contract();
++  test_ship_sw_contract();
+   std::cout << "C16_STRONG_BASELINES_POLICY_TEST_PASS\n";
+   return 0;
+ }
+diff --git a/src/gpgpu-sim/tests/test_c16_strong_baselines_tag_array.cc b/src/gpgpu-sim/tests/test_c16_strong_baselines_tag_array.cc
+index ad1672e..f65670f 100644
+--- a/src/gpgpu-sim/tests/test_c16_strong_baselines_tag_array.cc
++++ b/src/gpgpu-sim/tests/test_c16_strong_baselines_tag_array.cc
+@@ -40,6 +40,23 @@ class exposed_c16_tag_array : public tag_array {
+ 
+   unsigned rrpv(unsigned index) const { return m_c16_rrpv[index]; }
+   uint64_t resident() const { return m_c16_diagnostics.priority_resident; }
++
++  void install_ship(unsigned index, new_addr_type address, bool critical,
++                    bool outcome) {
++    install(index, address, 3, false);
++    if (critical) {
++      const unsigned signature =
++          c16_strong_baselines::ship_sw_shct_index(address);
++      m_c16_ship_signature[index] = static_cast<unsigned short>(signature);
++      m_c16_ship_signature_valid[index] = 1;
++      m_c16_ship_outcome[index] = outcome ? 1 : 0;
++    }
++  }
++
++  void depart(unsigned index) { c16_baseline_depart_line(index); }
++  unsigned ship_counter(new_addr_type address) const {
++    return m_c16_ship_shct[c16_strong_baselines::ship_sw_shct_index(address)];
++  }
+ };
+ 
+ static std::string write_sidecar(const char *path) {
+@@ -125,6 +142,29 @@ int main() {
+   assert(text.find("policy=DRRIP") != std::string::npos);
+   assert(text.find("drrip_psel=512") != std::string::npos);
+ 
++  cache_config ship = make_config(c16_strong_baselines::POLICY_SHIP_SW,
++                                  sidecar, digest.c_str());
++  exposed_c16_tag_array ship_tags(ship);
++  const new_addr_type critical_address = 0x100000000ULL;
++  ship_tags.install_ship(0, critical_address, true, true);
++  ship_tags.depart(0);
++  assert(ship_tags.ship_counter(critical_address) == 1);
++  assert(c16_strong_baselines::ship_sw_predict_resident(
++      ship_tags.ship_counter(critical_address)));
++  ship_tags.install_ship(0, critical_address, true, false);
++  ship_tags.depart(0);
++  assert(ship_tags.ship_counter(critical_address) == 0);
++  for (unsigned i = 0; i < 12; ++i) {
++    ship_tags.install_ship(0, critical_address, true, true);
++    ship_tags.depart(0);
++  }
++  assert(ship_tags.ship_counter(critical_address) == 7);
++  const new_addr_type ordinary_address = 0x900000000ULL;
++  const unsigned ordinary_before = ship_tags.ship_counter(ordinary_address);
++  ship_tags.install_ship(0, ordinary_address, false, true);
++  ship_tags.depart(0);
++  assert(ship_tags.ship_counter(ordinary_address) == ordinary_before);
++
+   remove(sidecar);
+   std::cout << "C16_STRONG_BASELINES_TAG_ARRAY_TEST_PASS\n";
+   return 0;
+diff --git a/src/gpgpu-sim/tests/test_c16_survival_observer.cc b/src/gpgpu-sim/tests/test_c16_survival_observer.cc
+new file mode 100644
+index 0000000..90667f9
+--- /dev/null
++++ b/src/gpgpu-sim/tests/test_c16_survival_observer.cc
+@@ -0,0 +1,84 @@
++#include "../c16_survival_observer.h"
++
++#include <assert.h>
++#include <stdio.h>
++
++#include <fstream>
++#include <sstream>
++#include <string>
++
++using c16_survival_observer::generation_observer;
++using c16_survival_observer::report;
++
++int main() {
++  const char *off_path = "/tmp/c16_survival_observer_off.tsv";
++  remove(off_path);
++  generation_observer off;
++  off.configure(false, off_path, 1, 1, 2, 3, 4);
++  off.on_line_allocate(0x1000, true, 1);
++  off.on_fill(0x1000);
++  assert(off.generation(0x1000) == 0);
++  std::ifstream absent(off_path);
++  assert(!absent.good());
++
++  const char *path = "/tmp/c16_survival_observer.tsv";
++  generation_observer observer;
++  observer.configure(true, path, 1, 1, 2, 3, 4);
++  const uint64_t old = 0x1000;
++  const uint64_t ordinary = 0x2000;
++  const uint64_t other_class = 0x3000;
++  observer.on_line_allocate(old, true, 1);
++  observer.on_fill(old);
++  observer.on_line_allocate(ordinary, false, 1);
++  observer.on_fill(ordinary);
++  observer.on_line_allocate(other_class, true, 2);
++  observer.on_fill(other_class);
++  assert(observer.generation(old) == 1);
++  observer.kernel_end(1);  // D1 L0 snapshot
++  report value = observer.current_report();
++  assert(value.snapshot_population == 1);
++  assert(value.exact_old_generation_survivors == 1);
++  assert(value.current_absent == 0 && value.accounting_closed);
++
++  observer.kernel_begin(2);  // D2 L0 before
++  observer.on_true_hit(old);
++  value = observer.current_report();
++  assert(value.old_generation_d2_hits == 1);
++
++  observer.on_evict(old);
++  value = observer.current_report();
++  assert(value.exact_old_generation_survivors == 0);
++  assert(value.current_absent == 1 && value.accounting_closed);
++
++  observer.on_line_allocate(old, true, 1);
++  observer.on_fill(old);
++  assert(observer.generation(old) == 4);
++  value = observer.current_report();
++  assert(value.current_new_generation_residents == 1);
++  assert(value.evicted_then_refilled_same_address == 1);
++  assert(value.old_generation_d2_reloads == 1 && value.accounting_closed);
++
++  observer.on_evict(old);
++  observer.on_line_allocate(old, true, 1);
++  observer.on_fill(old);
++  assert(observer.generation(old) == 5);
++  value = observer.current_report();
++  assert(value.evicted_then_refilled_same_address == 1);
++  assert(value.old_generation_d2_reloads == 2);
++  assert(value.current_new_generation_residents == 1 &&
++         value.accounting_closed);
++  observer.kernel_begin(3);
++  observer.kernel_end(4);
++
++  std::ifstream input(path);
++  std::stringstream contents;
++  contents << input.rdbuf();
++  const std::string text = contents.str();
++  assert(text.find("D1_L0_SNAPSHOT\t1\t1\t1") != std::string::npos);
++  assert(text.find("D2_L0_BEFORE\t2\t1") != std::string::npos);
++  assert(text.find("D2_L0_MID\t3\t1") != std::string::npos);
++  assert(text.find("D2_L0_END\t4\t1") != std::string::npos);
++  remove(path);
++  puts("C16_OLD_ADDRESS_SURVIVAL_OBSERVER_TEST_PASS");
++  return 0;
++}
