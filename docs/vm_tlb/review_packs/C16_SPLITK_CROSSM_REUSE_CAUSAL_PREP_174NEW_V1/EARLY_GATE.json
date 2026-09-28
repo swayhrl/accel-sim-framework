@@ -1,0 +1,74 @@
+{
+  "authorization": {
+    "gpu_lock_required": true,
+    "lane7_native_causal_screen": true,
+    "sass_capture": false,
+    "simulation": false
+  },
+  "bindings": {
+    "expected_launch_sha256": "5f1cd52fcda7629d22e3d714d2af551c0eee6398926041116fbd05af767aade5",
+    "memory_budget_sha256": "0b4bf8df0695bab4bd8e95a4e2a4221df8ae08b4a0b693078ba375234b89d8d7",
+    "old_generator_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "patch_artifact": "REPLICA_SOURCE.patch.gz",
+    "patch_artifact_sha256": "5698cf088a5afaf6837bc49c987934ad15d7e8c0a401787581c6db59319bfbe9",
+    "patch_sha256": "630bc9497a6c93238205d1e08fb6e49a2e2910e2f1026f146979f04a8d5ae68e",
+    "patched_generator_sha256": "795ebacf81350da3f5035cafdba135d929e859b5af07052c062a510bb4a3b843"
+  },
+  "coordination_commit": "2d1db5b8262f07fa7ebdec6122ac7359fdd86960",
+  "goal": "C16_SPLITK_CROSSM_REUSE_CAUSAL_PREP_174NEW_V1",
+  "launch": {
+    "all_8_cells_frozen": true,
+    "matrix_rows": 8
+  },
+  "matrix": {
+    "K": [
+      2560,
+      3072
+    ],
+    "M": 256,
+    "N": 49152,
+    "split": [
+      8,
+      1
+    ],
+    "states": {
+      "PER_MTILE": 15,
+      "SHARED": 0
+    }
+  },
+  "memory": {
+    "all_cells_pass": true,
+    "maximum_budgeted_peak_bytes": 3630694400,
+    "minimum_headroom_bytes": 13087473664,
+    "runtime_reserve_bytes": 2147483648
+  },
+  "replica": {
+    "count": 16,
+    "layout": {
+      "qweight": "[16,K,N/8] int32",
+      "qzeros": "[16,K/128,N/8] int32",
+      "scales": "[16,K/128,N] float16"
+    },
+    "replica_sha_rule": "each replica slice SHA256 must equal replica0 and frozen per-K expected hash",
+    "version": "GPT3_SHAPE_SYNTH_V1_CROSSM_REPLICA16_V1"
+  },
+  "resource_attestation": {
+    "cpu_only": true,
+    "cuda_imported": false,
+    "gpu_lock_requested": false,
+    "gpu_used": false,
+    "lane4_partial_accessed": false
+  },
+  "source_isolation": {
+    "A_input_formula_unchanged": true,
+    "dequant_mma_tile_grid_block_unchanged": true,
+    "load_counts_and_K_loop_unchanged": true,
+    "only_state_dependent_kernel_value": "replica_mask (0 or 15)",
+    "only_state_dependent_memory_semantic": "qweight/qzeros/scales replica base address",
+    "output_scratch_formula_unchanged": true,
+    "replica_address_arithmetic_has_branch": false,
+    "same_instruction_path_for_SHARED_and_PER_MTILE": true,
+    "same_patched_kernel_for_all_cells": true
+  },
+  "status": "READY_FOR_NATIVE_CAUSAL_SCREEN"
+}
