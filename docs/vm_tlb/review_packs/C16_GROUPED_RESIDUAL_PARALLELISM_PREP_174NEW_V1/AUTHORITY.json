@@ -1,0 +1,78 @@
+{
+  "accepted_binary_sha256": {
+    "split1": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887",
+    "split8": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+  },
+  "accepted_evidence": {
+    "crossM_consumer": "2113422f7e6b7e5a851469511d26a9ddf7123d4e",
+    "grouped_consumer": "e7855278076c7e0360d39b18424cc8f048f51da5",
+    "grouped_native": "a75379674116fc94e57ccc88eff9359fc1f4114c",
+    "grouped_prep": "0b37b84cf8fbcaaeb90c36fc28dcbb8ec3764ae1",
+    "split1_direct_output": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+    "threshold_native": "b17193ff6b3786fd01d5bfe83b5c1a0a03859729"
+  },
+  "coordination_commit": "bd988aeb570708e5a41bab45433e9e49eac53c9a",
+  "goal": "C16_GROUPED_RESIDUAL_PARALLELISM_PREP_174NEW_V1",
+  "patch": {
+    "M_dependent_GEMM_body_branch": false,
+    "device_mapping_branch": false,
+    "mapping_path": "dynamic m_tiles; ROW and GROUP coordinates; runtime arithmetic select fixed to mode=1",
+    "old_generator_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "old_header_sha256": "2e962fb644d131795cf2f9f96c5b45c693b7a6962426fb993809cc3fd47bc187",
+    "patch_sha256": "c41d27680e7aa4420963f85ec60c695c0e2774c3b9c98f72a1d68b9ea1b816f7",
+    "patched_generator_sha256": "b7541f5a96ae001f78cb8eb8b61ec923cff40c9cadaa05d06144dc6777f675cf",
+    "patched_header_sha256": "a1d5d6b78dc5fe5691b6d22dbeb4ca14c6fd9a2134959254bdc4da5f4ce0e2cc",
+    "pybind_source_changed": false,
+    "same_compiled_target_kernel_all_cells": true,
+    "token_counts": {
+      "A_ptr": {
+        "old": 2,
+        "patched": 2
+      },
+      "B_ptr": {
+        "old": 4,
+        "patched": 4
+      },
+      "C_ptr": {
+        "old": 2,
+        "patched": 2
+      },
+      "__syncthreads": {
+        "old": 2,
+        "patched": 2
+      },
+      "dequantize_s4_to_fp16x2": {
+        "old": 2,
+        "patched": 2
+      },
+      "for (": {
+        "old": 10,
+        "patched": 10
+      },
+      "k_bound": {
+        "old": 4,
+        "patched": 4
+      },
+      "mma.sync": {
+        "old": 6,
+        "patched": 6
+      }
+    }
+  },
+  "resource_attestation": {
+    "cpu_only": true,
+    "cuda_imported": false,
+    "gpu_lock_requested": false,
+    "gpu_used": false,
+    "lane4_partial_accessed": false
+  },
+  "source": {
+    "commit": "c7b0e88c327694c715b0a758d9ce8fd414a1fa21",
+    "generator_blob": "98f49efac8626388039912e6aabc8a84d9f8303b",
+    "generator_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "header_blob": "afc8165157dfc646049f548b706d9fb86fb685fc",
+    "header_sha256": "2e962fb644d131795cf2f9f96c5b45c693b7a6962426fb993809cc3fd47bc187",
+    "repo": "casper-hansen/AutoAWQ_kernels"
+  },
+  "status": "PASS"
+}
