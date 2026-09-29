@@ -1,4 +1,5 @@
 # Open issues
 
-- 等待Lane8 gate与Lane7 final/raw。
-- 禁止追加M128/M256、split或GROUP_M扫描。
+- launch CTA、waves/SM、active-warps%分别保留，不能互相替代。
+- 不证明单一occupancy机制。
+- 不追加M/split/GROUP扫描。

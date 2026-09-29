@@ -1,3 +1,3 @@
-# C16 grouped residual parallelism consumer scaffold
+# C16 grouped residual parallelism consumer
 
-新结果表只有schema；正式消费从raw timing/NCU独立重算。
+正式raw重算完成；当前Split-K支线关闭。

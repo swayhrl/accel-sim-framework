@@ -1,3 +1,3 @@
-# 并行度解释（准备态）
+# 并行度解释
 
-未来比较M1/M16同grid下partial-tile因素，以及M16→M32→M64 split1 CTA从96→192→384时split8收益是否衰减。必须先确认split1 L2 hit保持高位。
+split8在M1/M16/M32仍有优势，g1分别为-126.7%/-87.4%/-27.3%，但随split1 CTA从96到192增加而衰减；M64时split1反超约4.93%，bootstrap区间为[4.50%, 5.13%]。split1 TEX read-side L2 hit全程保持高位。残余split8价值集中在低CTA供给/partial-tile与reduction权衡，属于已有parallel decomposition问题；当前Split-K支线可以关闭。
