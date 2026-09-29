@@ -440,6 +440,16 @@ def full(out: Path, gate: dict, source_proof: dict) -> None:
         calibration.append({"K": k, "arm": arm, "accepted_ROW_median_ms": median, "accepted_ROW_cv": cv, "new_ROW_relative_median_tolerance": 0.05, "stop_rule": "STOP if relative median deviation >5% and > both accepted/new CV"})
     write_tsv(out / "ROW_CALIBRATION.tsv", calibration)
 
+    correctness = {
+        "authority_commit": "b17193ff6b3786fd01d5bfe83b5c1a0a03859729",
+        "accepted_output_sha256": {str(k): ACCEPTED_OUTPUT[k] for k in KS},
+        "patched_ROW_requirement": "each arm must match its accepted output SHA256 exactly",
+        "within_split_requirement": "ROW and GROUP_M16 must be bitwise equal",
+        "across_split_requirement": {"rtol": 1e-2, "atol": 5e-2},
+        "natural_bitwise_equality_note": "record exact A/B equality for these points but do not generalize beyond this contract",
+    }
+    dump(out / "CORRECTNESS_CONTRACT.json", correctness)
+
     runner = dedent("""
         # Native grouped-CTA runner contract
 

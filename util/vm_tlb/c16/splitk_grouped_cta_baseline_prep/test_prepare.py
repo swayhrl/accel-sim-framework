@@ -41,7 +41,7 @@ def main() -> int:
     launches = list(csv.DictReader((out / "EXPECTED_LAUNCH.tsv").open(), delimiter="\t"))
     assert len(launches) == 8
     if args.full:
-        required = {"AUTHORITY.json", "PATCH_SEMANTIC_DIFF.md", "MEMORY_BUDGET.tsv", "ROW_CALIBRATION.tsv", "RUNNER_CONTRACT.md", "SCIENTIFIC_BOUNDARY.md", "SHA256SUMS"}
+        required = {"AUTHORITY.json", "CORRECTNESS_CONTRACT.json", "PATCH_SEMANTIC_DIFF.md", "MEMORY_BUDGET.tsv", "ROW_CALIBRATION.tsv", "RUNNER_CONTRACT.md", "SCIENTIFIC_BOUNDARY.md", "SHA256SUMS"}
         assert required <= {p.name for p in out.iterdir()}
         expected = {}
         for line in (out / "SHA256SUMS").read_text().splitlines():
