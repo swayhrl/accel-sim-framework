@@ -4,7 +4,17 @@
 
 本支线记录原文核读、相关工作比较和待验证问题，不修改实验/Core/raw，不消费Lane4 partial。文献笔记不是实验完成证据。AWMA与C16文献分开维护。
 
-## 当前入口：LR09
+## 当前入口：LR10
+
+[LR10：强软件基线之后的表示转换复用与跨算子交接成本](rounds/2026-09-29_LR10_REPRESENTATION_REUSE_AND_HANDOFF_COSTS.md)
+
+本轮重点核对Kitsune、VTC、ComFuse、StreamDQ、Multi-Scale Dequant的相关正文，以及NVIDIA Rubin官方tile级依赖触发说明。不是完整逐页复现，不运行作者artifact。PASCAL、ATLAS和Leeway全文仍未取得，不升级阅读等级。
+
+研究判断：优先核查固定量化语义和强kernel基线后，转换结果的有限复用能否超过表示展开、带宽、同步和容量成本；异构tile交接作为第二候选。两者均是待证假设，不是已成立机制。VTC强基线反例提醒“少搬一次”可能令计算路径变慢；Rubin说明“tile-ready就启动consumer”本身已非新能力。不要重开已被grouped强基线关闭的split/cache故事。
+
+本轮仅更新文献与问题设计。Lane6消费继续，Lane4不动，M1F full timing未授权，不启动新GPU/SASS/模拟矩阵。远端本轮研究记录提交：`89590088efe52c0a3b23fecf9c7be858f0227f01`。
+
+## 历史入口：LR09
 
 [LR09：Split-K、跨CTA复用、执行顺序与强基线](rounds/2026-09-29_LR09_SPLITK_LOCALITY_SCHEDULING_AND_STRONG_BASELINES.md)
 
@@ -92,5 +102,6 @@ SHiP、AutoScratch-style比较和当前C16_SHIP_SW_STYLE_V1不同，必须保留
 - LR08阅读基点：`b0533583a6207a48cd4fa309e8dc4d925f20adce`。
 - LR09阅读基点：`139135231fb30b4981eedb031da9c7e182269652`。
 - LR09只读静态地址映射：`c72d28b17247f25d0c3613604ab6cab1737666e0`。
+- LR10阅读基点：`38d4df40b615625c15d1843a69a23eb954ac0bef`。
 
 历史笔记中的planned状态不回写成当时已经执行。所有“首次”“系统收益”“优于现有机制”主张仍需要实际比较，不由阅读数量或代码资格替代。Lane4不变；本支线不授权M1F或新的full timing simulation。
