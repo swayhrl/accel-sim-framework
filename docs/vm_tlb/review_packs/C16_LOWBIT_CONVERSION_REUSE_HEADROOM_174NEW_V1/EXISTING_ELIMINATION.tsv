@@ -1,0 +1,5 @@
+scope	raw_duplicate_ratio	existing_elimination	remaining_strict_duplicate_ratio	limitation
+warp	NA	two warps cooperatively produce one CTA-private B_shared tile; full-tile per-warp duplication is not present	0.0	per-thread fragment-level duplication not dynamically counted
+CTA	0.0	register unpack/affine result is staged once into CTA-private B_shared then consumed by ldmatrix/MMA	0.0	single-buffer barriers; no cross-CTA visibility
+CTA_GROUP_M64	0.75	none across CTA-private shared memories	0.75	logical block adjacency is not physical issue-order proof
+WHOLE_OPERATOR_M64	0.75	grouped ordering shortens logical distance only	0.75	reuse requires inter-CTA publication, synchronization and fanout
