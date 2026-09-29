@@ -1,0 +1,72 @@
+{
+  "formula": {
+    "input_f16": "(1 + ((5*m + 3*k) % 7)) * 2^-10",
+    "qweight_i32_word": "0xECA86420 repeated",
+    "qzeros_i32_word": "0x77777777 repeated",
+    "scales_f16": "2^-8 repeated"
+  },
+  "full_weight_side": {
+    "qweight": {
+      "bytes": 25165824,
+      "sha256": "a0b5772b768a18e0672f2cf553edc801b0d1e95b8a9dd84fc7fb1e27bf7cdf46"
+    },
+    "qzeros": {
+      "bytes": 196608,
+      "sha256": "4c9d024567d90d0503c3febcc7cc1ea2c533ebd95c78c2632eedadb98eea83fb"
+    },
+    "scales": {
+      "bytes": 786432,
+      "sha256": "8e29c8912217d0f1d0ee0dcd53ef1ecf8c46694a56c991ae1abcf7f0db790a58"
+    }
+  },
+  "inherited_formula_source_sha256": "63c2653748806de6e74de7e57364f4d65468828dcd75d55a886f800541838fddc",
+  "inputs": {
+    "1": {
+      "bytes": 8192,
+      "sha256": "3b434cf659f064e99bdafe21797e18698d33de5f30b7c953b2a9e9bcff33e665"
+    },
+    "16": {
+      "bytes": 131072,
+      "sha256": "cbbbf23c72fd7163ea3ae04dead7fa26d269e8469f78b7a3af763bd2645d32d4"
+    },
+    "32": {
+      "bytes": 262144,
+      "sha256": "05774b203c08d82dd6b81a02c8caf9a02c64dd73659f8956ec8f73b563bcf6a5"
+    },
+    "64": {
+      "bytes": 524288,
+      "sha256": "af349644813d38c28c3790abd40196fcba48c7d061c719dde5984a91271602d1"
+    }
+  },
+  "shape": {
+    "K": 4096,
+    "M": [
+      1,
+      16,
+      32,
+      64
+    ],
+    "N": 12288,
+    "group_size": 128
+  },
+  "split1_split8_share_exact_input_and_weight_bytes": true,
+  "status": "PASS_CPU_REFERENCE",
+  "tiny_cpu_reference": {
+    "reference_sha256": "3b20fac100b2d8ce8637cc269d2a6625f60adea05005b7cb24d65bd9a51cccc1",
+    "shape": {
+      "K": 256,
+      "M": 2,
+      "N": 16,
+      "group_size": 128
+    },
+    "tensor_sha256": {
+      "input_f16": "64d998beaa1b361447abbac01943a41db9f044b703358a3644dc006d0f596f0c",
+      "qweight_i32": "fefc768ca5695d46fb236b7c1b49b227017a6acc9c560a5ed6608aa42f8f395b",
+      "qzeros_i32": "a001e4691b15b87ad88cf4cfe63ddad37c6e0a9317b155d29d6bc47a4a7a43e7",
+      "scales_f16": "cc3136e4905acaffef701698ce4229bd0061e2c3eeb28f8c2f232d2ac23c450f"
+    },
+    "version": "C16_GROUPED_RESIDUAL_SYNTH_V1"
+  },
+  "version": "C16_GROUPED_RESIDUAL_SYNTH_V1",
+  "weight_side_identical_for_all_M_and_split": true
+}

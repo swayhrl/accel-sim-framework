@@ -1,0 +1,78 @@
+{
+  "authorization": {
+    "gpu_lock_required": true,
+    "lane7_residual_parallelism_native_screen": true,
+    "sass_nvbit": false,
+    "simulation": false
+  },
+  "bindings": {
+    "address_set_audit_sha256": "0794e78409954f069e44e8fae9c5fea1254cc45f7d714018df41e1ddd533a01d",
+    "expected_launch_sha256": "9f48af96a0bdfe115a7bc3f01623cc2d9712ca404d7e295f2d146946e1f203b1",
+    "footprint_table_sha256": "82a67f5ca3295c47a77b69f78c71df7ba288fdcc1aff0292cd5069e0242293e4",
+    "mapping_proof_sha256": "8690746d61e2d759a202bdd89fa8393092a6f455ad9451d32ffd05b6807eecc6",
+    "old_source_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "patch_artifact": "GROUP_FULL_M_SOURCE.patch.gz",
+    "patch_artifact_sha256": "445191bee12aae39530a16cf24519565105de0ecc0d424da20c30c23ed44b348",
+    "patch_sha256": "c41d27680e7aa4420963f85ec60c695c0e2774c3b9c98f72a1d68b9ea1b816f7",
+    "patched_generator_sha256": "b7541f5a96ae001f78cb8eb8b61ec923cff40c9cadaa05d06144dc6777f675cf",
+    "synthetic_contract_sha256": "080df184bebc46438af8191ddafa9e04e952a0d2d8159fe1f4d93ea417ecd331"
+  },
+  "coordination_commit": "bd988aeb570708e5a41bab45433e9e49eac53c9a",
+  "footprint": {
+    "all_memory_rows_pass": true,
+    "qweight_bytes": 25165824,
+    "qzeros_bytes": 196608,
+    "scales_bytes": 786432,
+    "weight_side_bytes": 26148864,
+    "weight_side_mib": 24.9375,
+    "weight_side_over_64MiB": 0.3896484375
+  },
+  "goal": "C16_GROUPED_RESIDUAL_PARALLELISM_PREP_174NEW_V1",
+  "launch": {
+    "all_8_cells_frozen": true,
+    "rows": 8
+  },
+  "mapping": {
+    "all_8_rows_pass": true,
+    "all_address_sets_closed": true,
+    "rows": 8
+  },
+  "matrix": {
+    "K": 4096,
+    "M": [
+      1,
+      16,
+      32,
+      64
+    ],
+    "N": 12288,
+    "mapping": "GROUP_FULL_M",
+    "mapping_mode": 1,
+    "split": [
+      8,
+      1
+    ]
+  },
+  "resource_attestation": {
+    "cpu_only": true,
+    "cuda_imported": false,
+    "gpu_lock_requested": false,
+    "gpu_used": false,
+    "lane4_partial_accessed": false
+  },
+  "source_isolation": {
+    "AWQ_math_Kloop_load_dequant_MMA_shared_tile_block_split_reduction_data_layout_unchanged": true,
+    "M_dependent_GEMM_body_branch": false,
+    "all_science_cells_mapping_mode": 1,
+    "dynamic_m_tiles": true,
+    "mapping": "GROUP_FULL_M",
+    "only_intentional_device_semantic_change": "CTA to (Mtile,Ntile) logical mapping",
+    "same_compiled_target_kernel_all_cells": true
+  },
+  "status": "READY_FOR_RESIDUAL_PARALLELISM_NATIVE_SCREEN",
+  "synthetic": {
+    "status": "PASS_CPU_REFERENCE",
+    "version": "C16_GROUPED_RESIDUAL_SYNTH_V1",
+    "weight_side_identical_for_all_M_and_split": true
+  }
+}
