@@ -1,0 +1,1368 @@
+{
+  "authorities": {
+    "accepted_output_sha256": "36aaed3f8360aa099301ae1d705bc2e6ab5ba61586adaf7ead93ecab808dc1b0",
+    "accepted_payload_sha256": "1b0496a115ddaa647f8896a20e5711a125e02ab8bb2f7d47dc5f2fbd7693a234",
+    "coordination_handoff_commit": "8542a4d37372d586591ff9911929e523645e88f5",
+    "producer_commit": "bb902283b7ce9e1902b460383fbd3e0bedbd884d",
+    "source_admission_receipt": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/ADMISSION_RECEIPT.json",
+    "source_admission_receipt_sha256": "a6c66cb41c1ffb77f6af805534d47ccb8a8641dbe4aa3b206850be8e478f1e7a",
+    "source_input_identity": "SIM_INPUT_R101_L512_TRANSIENT_V1",
+    "source_kernelslist": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/traces/kernelslist.g",
+    "source_kernelslist_sha256": "9fce012939496008814786a0c12d32c1f97a10c07c62cdd08f1fddcee5d86588",
+    "source_runtime_sidecar": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/transient_l2_runtime.tsv",
+    "source_runtime_sidecar_sha256": "740820a195ae2bb9966a91b1e6d3423f4ded520bd91d1819aac8e78ce104b77d"
+  },
+  "derived_artifacts": {
+    "kernels_table_path": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/CONTEXT2_KERNELS.tsv",
+    "kernels_table_sha256": "a9cf4bdbc3d551e9e7fc0d41b84a65e89d148085ea92940f04366c2e71704a65",
+    "kernelslist_path": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/traces/kernelslist.g",
+    "kernelslist_sha256": "73f3d8c9546c06fb81aee209868c9e15e61b0bcfb900b5435c83d520e782748a",
+    "runtime_sidecar_path": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/transient_l2_runtime.tsv",
+    "runtime_sidecar_sha256": "67adc56216f25bfc88c98d86aabdf1eeaae87e9f2f8e102f675d5be8ec11e7b5"
+  },
+  "derived_input_identity": "R101_L512_NS_CONTEXT2_EXECORG_V1",
+  "indexing_contract": {
+    "derived_index_basis": "ONE_BASED_ORDINAL",
+    "mapping_rule": "source_sidecar_ordinal=source_launch_index+1; derived_ordinal=source_launch_index-2",
+    "normalization_last_launch_index": 2,
+    "normalization_source_launch_indices_excluded": [
+      0,
+      1,
+      2
+    ],
+    "requested_source_index_basis": "ZERO_BASED_LAUNCH_INDEX",
+    "requested_source_indices": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "source_sidecar_index_basis": "ONE_BASED_ORDINAL"
+  },
+  "regions": [
+    {
+      "base_hex": "0x77cac1600000",
+      "bytes": 23068672,
+      "limit_hex": "0x77cac2c00000",
+      "line_size": 128,
+      "region": "A",
+      "region_id": 0
+    },
+    {
+      "base_hex": "0x77cac2c00000",
+      "bytes": 23068672,
+      "limit_hex": "0x77cac4200000",
+      "line_size": 128,
+      "region": "B",
+      "region_id": 1
+    },
+    {
+      "base_hex": "0x77ca9aa00000",
+      "bytes": 23068672,
+      "limit_hex": "0x77ca9c000000",
+      "line_size": 128,
+      "region": "X0",
+      "region_id": 2
+    },
+    {
+      "base_hex": "0x77caa2000000",
+      "bytes": 23068672,
+      "limit_hex": "0x77caa3600000",
+      "line_size": 128,
+      "region": "X1",
+      "region_id": 3
+    }
+  ],
+  "roi_contract": {
+    "context_members": [
+      1,
+      2,
+      3
+    ],
+    "formula": "ROI_CYCLES=cycle_after_derived_ordinal_6_BMM-cycle_after_derived_ordinal_3_BMM",
+    "measured_members": [
+      4,
+      5,
+      6
+    ],
+    "oracle_activation_boundary": "after_derived_ordinal_4_PRE_before_first_ordinal_4_instruction_or_transaction",
+    "roi_end_cycle_boundary": "cycle_after_derived_ordinal_6_BMM_completion_and_POST_before_terminal_drain",
+    "roi_start_cycle_boundary": "cycle_after_derived_ordinal_3_BMM_completion_and_POST_before_ordinal_4_PRE",
+    "terminal_drain": "REQUIRED_BUT_EXCLUDED_FROM_ROI_CYCLES"
+  },
+  "schema_version": "AWMA_R101R2_CONTEXT2_DERIVATION_RECEIPT_V1",
+  "selection": [
+    {
+      "accepted_reference": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/traces/kernel-3580-ctx_0x43c6c760.traceg.xz",
+      "block": "128,1,1",
+      "compressed_bytes": 12074232,
+      "derived_ordinal": 1,
+      "derived_reference": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/traces/kernel-3580-ctx_0x43c6c760.traceg.xz",
+      "function": "XXT_kernel",
+      "grid": "2816,1,1",
+      "header": {
+        "binary_version": "89",
+        "block": "128,1,1",
+        "exact_function": "XXT_kernel",
+        "grid": "2816,1,1",
+        "kernel_id": "3580",
+        "lineinfo": "0",
+        "stream_id": "0",
+        "trace_version": "5"
+      },
+      "iteration": 0,
+      "kernel_id": 3580,
+      "l512_tile_count": 44,
+      "member": "kernel-3580-ctx_0x43c6c760.traceg.xz",
+      "role": "CONTEXT",
+      "samefile_with_accepted_reference": true,
+      "sha256": "3ce2aaa2279de0ebdc1b022b39cdef453563620e123c45763c87d748f405ca74",
+      "source_launch_index": 3,
+      "source_path": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3580-ctx_0x43c6c760.traceg.xz",
+      "source_realpath": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3580-ctx_0x43c6c760.traceg.xz",
+      "source_sidecar_ordinal": 4,
+      "tile_identity_proof": "grid_x=2816=44*64"
+    },
+    {
+      "accepted_reference": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/traces/kernel-3581-ctx_0x43c6c760.traceg.xz",
+      "block": "128,1,1",
+      "compressed_bytes": 13308080,
+      "derived_ordinal": 2,
+      "derived_reference": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/traces/kernel-3581-ctx_0x43c6c760.traceg.xz",
+      "function": "ba_plus_cAA_kernel",
+      "grid": "2816,1,1",
+      "header": {
+        "binary_version": "89",
+        "block": "128,1,1",
+        "exact_function": "ba_plus_cAA_kernel",
+        "grid": "2816,1,1",
+        "kernel_id": "3581",
+        "lineinfo": "0",
+        "stream_id": "0",
+        "trace_version": "5"
+      },
+      "iteration": 0,
+      "kernel_id": 3581,
+      "l512_tile_count": 44,
+      "member": "kernel-3581-ctx_0x43c6c760.traceg.xz",
+      "role": "CONTEXT",
+      "samefile_with_accepted_reference": true,
+      "sha256": "d78ab55806f04a6788c32af0c577bfe8f4f1282aa5211df6b9506bb67aaa31b7",
+      "source_launch_index": 4,
+      "source_path": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3581-ctx_0x43c6c760.traceg.xz",
+      "source_realpath": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3581-ctx_0x43c6c760.traceg.xz",
+      "source_sidecar_ordinal": 5,
+      "tile_identity_proof": "grid_x=2816=44*64"
+    },
+    {
+      "accepted_reference": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/traces/kernel-3582-ctx_0x43c6c760.traceg.xz",
+      "block": "128,1,1",
+      "compressed_bytes": 19241692,
+      "derived_ordinal": 3,
+      "derived_reference": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/traces/kernel-3582-ctx_0x43c6c760.traceg.xz",
+      "function": "bmm_add_kernel",
+      "grid": "32,44,1",
+      "header": {
+        "binary_version": "89",
+        "block": "128,1,1",
+        "exact_function": "bmm_add_kernel",
+        "grid": "32,44,1",
+        "kernel_id": "3582",
+        "lineinfo": "0",
+        "stream_id": "0",
+        "trace_version": "5"
+      },
+      "iteration": 0,
+      "kernel_id": 3582,
+      "l512_tile_count": 44,
+      "member": "kernel-3582-ctx_0x43c6c760.traceg.xz",
+      "role": "CONTEXT",
+      "samefile_with_accepted_reference": true,
+      "sha256": "bab2f4d9e5ace8c1de25617b815b8426510429a19d6ac0e1c2d6b0c141ecc64d",
+      "source_launch_index": 5,
+      "source_path": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3582-ctx_0x43c6c760.traceg.xz",
+      "source_realpath": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3582-ctx_0x43c6c760.traceg.xz",
+      "source_sidecar_ordinal": 6,
+      "tile_identity_proof": "grid_y=44"
+    },
+    {
+      "accepted_reference": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/traces/kernel-3583-ctx_0x43c6c760.traceg.xz",
+      "block": "128,1,1",
+      "compressed_bytes": 12075920,
+      "derived_ordinal": 4,
+      "derived_reference": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/traces/kernel-3583-ctx_0x43c6c760.traceg.xz",
+      "function": "XXT_kernel",
+      "grid": "2816,1,1",
+      "header": {
+        "binary_version": "89",
+        "block": "128,1,1",
+        "exact_function": "XXT_kernel",
+        "grid": "2816,1,1",
+        "kernel_id": "3583",
+        "lineinfo": "0",
+        "stream_id": "0",
+        "trace_version": "5"
+      },
+      "iteration": 1,
+      "kernel_id": 3583,
+      "l512_tile_count": 44,
+      "member": "kernel-3583-ctx_0x43c6c760.traceg.xz",
+      "role": "MEASURED_ROI",
+      "samefile_with_accepted_reference": true,
+      "sha256": "22cfb5590fef79895139ffc4ac9db5102981a35baf991349c1ce605cde8ddbbd",
+      "source_launch_index": 6,
+      "source_path": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3583-ctx_0x43c6c760.traceg.xz",
+      "source_realpath": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3583-ctx_0x43c6c760.traceg.xz",
+      "source_sidecar_ordinal": 7,
+      "tile_identity_proof": "grid_x=2816=44*64"
+    },
+    {
+      "accepted_reference": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/traces/kernel-3584-ctx_0x43c6c760.traceg.xz",
+      "block": "128,1,1",
+      "compressed_bytes": 13308080,
+      "derived_ordinal": 5,
+      "derived_reference": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/traces/kernel-3584-ctx_0x43c6c760.traceg.xz",
+      "function": "ba_plus_cAA_kernel",
+      "grid": "2816,1,1",
+      "header": {
+        "binary_version": "89",
+        "block": "128,1,1",
+        "exact_function": "ba_plus_cAA_kernel",
+        "grid": "2816,1,1",
+        "kernel_id": "3584",
+        "lineinfo": "0",
+        "stream_id": "0",
+        "trace_version": "5"
+      },
+      "iteration": 1,
+      "kernel_id": 3584,
+      "l512_tile_count": 44,
+      "member": "kernel-3584-ctx_0x43c6c760.traceg.xz",
+      "role": "MEASURED_ROI",
+      "samefile_with_accepted_reference": true,
+      "sha256": "d01f8c681eeb25fce7534f11db45dbb9dc79bc4c5229ee80b5719a19e8fee086",
+      "source_launch_index": 7,
+      "source_path": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3584-ctx_0x43c6c760.traceg.xz",
+      "source_realpath": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3584-ctx_0x43c6c760.traceg.xz",
+      "source_sidecar_ordinal": 8,
+      "tile_identity_proof": "grid_x=2816=44*64"
+    },
+    {
+      "accepted_reference": "/root/share/mnt164/huangrulin/awma_r101_transient_l2_arch_174_v1/input/traces/kernel-3585-ctx_0x43c6c760.traceg.xz",
+      "block": "128,1,1",
+      "compressed_bytes": 19251388,
+      "derived_ordinal": 6,
+      "derived_reference": "/root/share/mnt164/huangrulin/awma_r101r2_context2_memory_service_174_v1/input/traces/kernel-3585-ctx_0x43c6c760.traceg.xz",
+      "function": "bmm_add_kernel",
+      "grid": "32,44,1",
+      "header": {
+        "binary_version": "89",
+        "block": "128,1,1",
+        "exact_function": "bmm_add_kernel",
+        "grid": "32,44,1",
+        "kernel_id": "3585",
+        "lineinfo": "0",
+        "stream_id": "0",
+        "trace_version": "5"
+      },
+      "iteration": 1,
+      "kernel_id": 3585,
+      "l512_tile_count": 44,
+      "member": "kernel-3585-ctx_0x43c6c760.traceg.xz",
+      "role": "MEASURED_ROI",
+      "samefile_with_accepted_reference": true,
+      "sha256": "6cc3b8f455631135acfa727a9c4bb0329f65bb896ca3238fc9e4332bfce67a1e",
+      "source_launch_index": 8,
+      "source_path": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3585-ctx_0x43c6c760.traceg.xz",
+      "source_realpath": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/r101_transient_l2_sim_capture_20260927/raw/formal_full5/raw/kernel-3585-ctx_0x43c6c760.traceg.xz",
+      "source_sidecar_ordinal": 9,
+      "tile_identity_proof": "grid_y=44"
+    }
+  ],
+  "sidecar_contract": {
+    "context_end_derived_ordinal": 3,
+    "expected_kernels": 6,
+    "expected_stream": 0,
+    "markers": [
+      "CONTEXT_END 3",
+      "MEASURED_ROI_START 4",
+      "MEASURED_ROI_END 6"
+    ],
+    "measured_roi_end_derived_ordinal": 6,
+    "measured_roi_start_derived_ordinal": 4,
+    "no_per_line_future_last_use": true,
+    "post_transition_count": 6,
+    "pre_transition_count": 6,
+    "schema": "AWMA_TRANSIENT_L2_RUNTIME_V1",
+    "sha256": "67adc56216f25bfc88c98d86aabdf1eeaae87e9f2f8e102f675d5be8ec11e7b5"
+  },
+  "stage": "AWMA_R101R2_CONTEXT2_MEMORY_SERVICE_ORACLE_V1",
+  "state_derivation": {
+    "context_end_boundary": {
+      "derived_completed_ordinal": 3,
+      "description": "after derived ordinal 3 POST, before derived ordinal 4 PRE",
+      "scope": "TRANSIENT_REGION_GENERATION_AND_LIVENESS_ONLY",
+      "state": [
+        {
+          "generation": 1,
+          "live": false,
+          "region": "A",
+          "region_id": 0
+        },
+        {
+          "generation": 1,
+          "live": false,
+          "region": "B",
+          "region_id": 1
+        },
+        {
+          "generation": 1,
+          "live": false,
+          "region": "X0",
+          "region_id": 2
+        },
+        {
+          "generation": 1,
+          "live": true,
+          "region": "X1",
+          "region_id": 3
+        }
+      ],
+      "state_sha256": "a61dd42965e9b7fabb87a5c35926b2d3e6b53fdd7a9c7d9ec3ebf40b8dd9fdeb"
+    },
+    "derived_final_boundary": {
+      "derived_completed_ordinal": 6,
+      "description": "after derived ordinal 6 POST",
+      "scope": "TRANSIENT_REGION_GENERATION_AND_LIVENESS_ONLY",
+      "state": [
+        {
+          "generation": 2,
+          "live": false,
+          "region": "A",
+          "region_id": 0
+        },
+        {
+          "generation": 2,
+          "live": false,
+          "region": "B",
+          "region_id": 1
+        },
+        {
+          "generation": 2,
+          "live": true,
+          "region": "X0",
+          "region_id": 2
+        },
+        {
+          "generation": 1,
+          "live": false,
+          "region": "X1",
+          "region_id": 3
+        }
+      ],
+      "state_sha256": "19e0823ecf4555a02de0dff27c2f04afc26bb401d06f662bf11896f6d4253c1a"
+    },
+    "derived_initial_boundary": {
+      "description": "after zero-based source launch 2 / one-based source ordinal 3 normalization completes",
+      "scope": "TRANSIENT_REGION_GENERATION_AND_LIVENESS_ONLY",
+      "source_launch_index_0based": 2,
+      "source_sidecar_ordinal_1based": 3,
+      "state": [
+        {
+          "generation": 1,
+          "live": false,
+          "region": "A",
+          "region_id": 0
+        },
+        {
+          "generation": 1,
+          "live": false,
+          "region": "B",
+          "region_id": 1
+        },
+        {
+          "generation": 1,
+          "live": true,
+          "region": "X0",
+          "region_id": 2
+        },
+        {
+          "generation": 1,
+          "live": false,
+          "region": "X1",
+          "region_id": 3
+        }
+      ],
+      "state_sha256": "60ac4726b27f4fb2c8bf0d80341ec391d06474215af4cfc6c94605d9b09efd22"
+    },
+    "measured_roi_entry_boundary": {
+      "derived_start_ordinal": 4,
+      "description": "after derived ordinal 4 PRE, before its first instruction/transaction",
+      "scope": "TRANSIENT_REGION_GENERATION_AND_LIVENESS_ONLY",
+      "state": [
+        {
+          "generation": 2,
+          "live": true,
+          "region": "A",
+          "region_id": 0
+        },
+        {
+          "generation": 1,
+          "live": false,
+          "region": "B",
+          "region_id": 1
+        },
+        {
+          "generation": 1,
+          "live": false,
+          "region": "X0",
+          "region_id": 2
+        },
+        {
+          "generation": 1,
+          "live": true,
+          "region": "X1",
+          "region_id": 3
+        }
+      ],
+      "state_sha256": "37f1429150731fa8f6e6416e629eb63010725db4c80daecacd0c3a98aa439eb1"
+    },
+    "source_initial_state": [
+      {
+        "generation": 1,
+        "live": false,
+        "region": "A",
+        "region_id": 0
+      },
+      {
+        "generation": 1,
+        "live": false,
+        "region": "B",
+        "region_id": 1
+      },
+      {
+        "generation": 1,
+        "live": false,
+        "region": "X0",
+        "region_id": 2
+      },
+      {
+        "generation": 1,
+        "live": false,
+        "region": "X1",
+        "region_id": 3
+      }
+    ],
+    "transitions": {
+      "post": [
+        {
+          "derived_ordinal": 2,
+          "generation": 1,
+          "live": false,
+          "region": "A",
+          "region_id": 0,
+          "source_sidecar_ordinal": 5
+        },
+        {
+          "derived_ordinal": 3,
+          "generation": 1,
+          "live": false,
+          "region": "B",
+          "region_id": 1,
+          "source_sidecar_ordinal": 6
+        },
+        {
+          "derived_ordinal": 3,
+          "generation": 1,
+          "live": false,
+          "region": "X0",
+          "region_id": 2,
+          "source_sidecar_ordinal": 6
+        },
+        {
+          "derived_ordinal": 5,
+          "generation": 2,
+          "live": false,
+          "region": "A",
+          "region_id": 0,
+          "source_sidecar_ordinal": 8
+        },
+        {
+          "derived_ordinal": 6,
+          "generation": 2,
+          "live": false,
+          "region": "B",
+          "region_id": 1,
+          "source_sidecar_ordinal": 9
+        },
+        {
+          "derived_ordinal": 6,
+          "generation": 1,
+          "live": false,
+          "region": "X1",
+          "region_id": 3,
+          "source_sidecar_ordinal": 9
+        }
+      ],
+      "pre": [
+        {
+          "derived_ordinal": 1,
+          "generation": 1,
+          "live": true,
+          "region": "A",
+          "region_id": 0,
+          "source_sidecar_ordinal": 4
+        },
+        {
+          "derived_ordinal": 2,
+          "generation": 1,
+          "live": true,
+          "region": "B",
+          "region_id": 1,
+          "source_sidecar_ordinal": 5
+        },
+        {
+          "derived_ordinal": 3,
+          "generation": 1,
+          "live": true,
+          "region": "X1",
+          "region_id": 3,
+          "source_sidecar_ordinal": 6
+        },
+        {
+          "derived_ordinal": 4,
+          "generation": 2,
+          "live": true,
+          "region": "A",
+          "region_id": 0,
+          "source_sidecar_ordinal": 7
+        },
+        {
+          "derived_ordinal": 5,
+          "generation": 2,
+          "live": true,
+          "region": "B",
+          "region_id": 1,
+          "source_sidecar_ordinal": 8
+        },
+        {
+          "derived_ordinal": 6,
+          "generation": 2,
+          "live": true,
+          "region": "X0",
+          "region_id": 2,
+          "source_sidecar_ordinal": 9
+        }
+      ]
+    }
+  },
+  "status": "R101_L512_NS_CONTEXT2_EXECORG_V1_DERIVATION_PASS",
+  "tile_contract": {
+    "all_six_members_preserve_tiles": true,
+    "bmm_proof": "grid=(32,44,1)",
+    "l512_tile_count": 44,
+    "xxt_ba_proof": "grid_x=2816=44*64"
+  },
+  "trace_semantics_qualification": {
+    "atomic_or_red_policy": "FAIL_CLOSED_IF_TARGETS_TRANSIENT_REGION_IN_MEASURED_ROI",
+    "atomic_or_red_records_all_six": 0,
+    "ldgsts_classification": {
+      "access": "READ",
+      "oracle_requirement": "one-cycle service must preserve the existing LDGSTS client/writeback dependency completion exactly once",
+      "source_basis": "trace-driven OP_LDGSTS shares the OP_LDG memory_load/global_space case, sets m_is_ldgsts, and uses pending-LDGSTS/DEPBAR completion bookkeeping",
+      "space": "GLOBAL",
+      "special_dependency_path": true
+    },
+    "ldgsts_records_all_six": 3311616,
+    "ldgsts_transient_target_records_measured_roi": 1654272,
+    "measured_transient_allowlist": [
+      "LDG",
+      "LDGSTS",
+      "STG"
+    ],
+    "members": [
+      {
+        "access_counts": {
+          "READ": 1564992,
+          "WRITE": 354816
+        },
+        "address_mode_counts": {
+          "0": 1748736,
+          "1": 171072
+        },
+        "atomic_or_red_records": 0,
+        "derived_ordinal": 1,
+        "eligible_regions": [
+          "A",
+          "X0"
+        ],
+        "ineligible_region_target_records": 0,
+        "instruction_records": 9956672,
+        "measured_target_ldgsts_records": 0,
+        "measured_target_ordinary_records": 0,
+        "measured_target_read_records": 0,
+        "measured_target_write_records": 0,
+        "member": "kernel-3580-ctx_0x43c6c760.traceg.xz",
+        "memory_opcode_counts": {
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 171072,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.U16": 202752
+        },
+        "memory_records": 1919808,
+        "opcode_counts": {
+          "BAR.SYNC.DEFER_BLOCKING": 190080,
+          "BRA": 57024,
+          "CS2R": 202752,
+          "DEPBAR.LE": 63360,
+          "EXIT": 23936,
+          "F2FP.BF16.F32.PACK_AB": 101376,
+          "F2I.FTZ.U32.TRUNC.NTZ": 40128,
+          "HMMA.16816.F32.BF16": 1622016,
+          "I2F.RP": 40128,
+          "IABS": 158400,
+          "IADD3": 953920,
+          "IMAD": 800448,
+          "IMAD.HI.U32": 124608,
+          "IMAD.IADD": 147840,
+          "IMAD.MOV": 242880,
+          "IMAD.MOV.U32": 92928,
+          "IMAD.SHL.U32": 147840,
+          "IMAD.WIDE": 114048,
+          "IMAD.X": 456192,
+          "IMNMX": 11264,
+          "ISETP.GE.AND": 217536,
+          "ISETP.GE.U32.AND": 33792,
+          "ISETP.GT.AND": 23936,
+          "ISETP.GT.U32.AND": 135168,
+          "ISETP.LE.AND": 50688,
+          "ISETP.LT.AND": 50688,
+          "ISETP.NE.AND": 90816,
+          "ISETP.NE.U32.AND": 63360,
+          "LDGDEPBAR": 126720,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 171072,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "LEA": 50688,
+          "LEA.HI": 30272,
+          "LEA.HI.X": 50688,
+          "LOP3.LUT": 504768,
+          "MOV": 11264,
+          "MUFU.RCP": 40128,
+          "PRMT": 101376,
+          "S2R": 17600,
+          "SEL": 228096,
+          "SGXT.U32": 19008,
+          "SHF.R.S32.HI": 85888,
+          "SHF.R.U32.HI": 107712,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.U16": 202752,
+          "UIADD3": 215424,
+          "UISETP.GE.AND": 50688,
+          "ULDC": 6336,
+          "ULDC.64": 6336,
+          "UMOV": 25344,
+          "USEL": 50688,
+          "USHF.L.U32": 50688
+        },
+        "qualification": "PASS_LDG_LDGSTS_STG_ONLY",
+        "role": "CONTEXT",
+        "space_counts": {
+          "GLOBAL": 557568,
+          "SHARED": 1362240
+        },
+        "thread_blocks": 2816,
+        "transient_target_lane_bytes": {
+          "A": 25952256,
+          "X0": 259520256
+        },
+        "transient_target_opcode_counts": {
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "STG.E.128": 50688
+        },
+        "transient_target_region_lane_counts": {
+          "A": 1622016,
+          "X0": 16220016
+        },
+        "transient_target_region_record_counts": {
+          "A": 50688,
+          "X0": 506880
+        },
+        "unsupported_memory_records": 0,
+        "unsupported_target_examples": [],
+        "unsupported_target_records": 0
+      },
+      {
+        "access_counts": {
+          "READ": 1691712,
+          "WRITE": 380160
+        },
+        "address_mode_counts": {
+          "0": 1900800,
+          "1": 171072
+        },
+        "atomic_or_red_records": 0,
+        "derived_ordinal": 2,
+        "eligible_regions": [
+          "A",
+          "B",
+          "X0"
+        ],
+        "ineligible_region_target_records": 0,
+        "instruction_records": 10998592,
+        "measured_target_ldgsts_records": 0,
+        "measured_target_ordinary_records": 0,
+        "measured_target_read_records": 0,
+        "measured_target_write_records": 0,
+        "member": "kernel-3581-ctx_0x43c6c760.traceg.xz",
+        "memory_opcode_counts": {
+          "LDG.E.128": 25344,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 272448,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.128": 25344,
+          "STS.U16": 202752
+        },
+        "memory_records": 2071872,
+        "opcode_counts": {
+          "BAR.SYNC.DEFER_BLOCKING": 215424,
+          "BRA": 57024,
+          "CS2R": 253440,
+          "DEPBAR.LE": 63360,
+          "EXIT": 23936,
+          "F2FP.BF16.F32.PACK_AB": 101376,
+          "F2I.FTZ.U32.TRUNC.NTZ": 40128,
+          "FFMA": 202752,
+          "FMUL": 202752,
+          "HMMA.16816.F32.BF16": 1622016,
+          "I2F.RP": 40128,
+          "IABS": 158400,
+          "IADD3": 1010944,
+          "IMAD": 800448,
+          "IMAD.HI.U32": 124608,
+          "IMAD.IADD": 147840,
+          "IMAD.MOV": 242880,
+          "IMAD.MOV.U32": 76736,
+          "IMAD.SHL.U32": 141504,
+          "IMAD.U32": 158400,
+          "IMAD.WIDE": 139392,
+          "IMAD.X": 456192,
+          "IMNMX": 11264,
+          "ISETP.GE.AND": 217536,
+          "ISETP.GE.U32.AND": 33792,
+          "ISETP.GT.AND": 23936,
+          "ISETP.GT.U32.AND": 135168,
+          "ISETP.LE.AND": 50688,
+          "ISETP.LT.AND": 50688,
+          "ISETP.NE.AND": 90816,
+          "ISETP.NE.U32.AND": 63360,
+          "LDG.E.128": 25344,
+          "LDGDEPBAR": 126720,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 272448,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "LEA": 76032,
+          "LEA.HI": 23936,
+          "LEA.HI.X": 50688,
+          "LOP3.LUT": 504768,
+          "MOV": 11264,
+          "MUFU.RCP": 40128,
+          "PRMT": 202752,
+          "S2R": 17600,
+          "SEL": 329472,
+          "SGXT.U32": 19008,
+          "SHF.L.U32": 50688,
+          "SHF.R.S32.HI": 73216,
+          "SHF.R.U32.HI": 107712,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.128": 25344,
+          "STS.U16": 202752,
+          "UIADD3": 152064,
+          "UISETP.GE.AND": 50688,
+          "ULDC.64": 6336,
+          "UMOV": 25344,
+          "USEL": 50688,
+          "USHF.L.U32": 50688
+        },
+        "qualification": "PASS_LDG_LDGSTS_STG_ONLY",
+        "role": "CONTEXT",
+        "space_counts": {
+          "GLOBAL": 582912,
+          "SHARED": 1488960
+        },
+        "thread_blocks": 2816,
+        "transient_target_lane_bytes": {
+          "A": 272496384,
+          "B": 25954560
+        },
+        "transient_target_opcode_counts": {
+          "LDG.E.128": 25344,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "STG.E.128": 50688
+        },
+        "transient_target_region_lane_counts": {
+          "A": 17031024,
+          "B": 1622160
+        },
+        "transient_target_region_record_counts": {
+          "A": 532224,
+          "B": 50706
+        },
+        "unsupported_memory_records": 0,
+        "unsupported_target_examples": [],
+        "unsupported_target_records": 0
+      },
+      {
+        "access_counts": {
+          "READ": 2151424,
+          "WRITE": 225280
+        },
+        "address_mode_counts": {
+          "0": 2072576,
+          "1": 304128
+        },
+        "atomic_or_red_records": 0,
+        "derived_ordinal": 3,
+        "eligible_regions": [
+          "B",
+          "X0",
+          "X1"
+        ],
+        "ineligible_region_target_records": 0,
+        "instruction_records": 17042432,
+        "measured_target_ldgsts_records": 0,
+        "measured_target_ordinary_records": 0,
+        "measured_target_read_records": 0,
+        "measured_target_write_records": 0,
+        "member": "kernel-3582-ctx_0x43c6c760.traceg.xz",
+        "memory_opcode_counts": {
+          "LDG.E.128": 45056,
+          "LDGSTS.E.BYPASS.LTC128B.128": 642048,
+          "LDS": 304128,
+          "LDS.128": 45056,
+          "LDSM.16.M88.4": 371712,
+          "LDSM.16.MT88.4": 743424,
+          "STG.E.128": 45056,
+          "STS": 180224
+        },
+        "memory_records": 2376704,
+        "opcode_counts": {
+          "BAR.SYNC.DEFER_BLOCKING": 219648,
+          "BRA": 95744,
+          "CS2R": 450560,
+          "DEPBAR.LE": 101376,
+          "EXIT": 11264,
+          "F2FP.BF16.F32.PACK_AB": 360448,
+          "F2I.FTZ.U32.TRUNC.NTZ": 22528,
+          "FFMA": 360448,
+          "HMMA.16816.F32.BF16": 2883584,
+          "I2F.RP": 22528,
+          "IABS": 112640,
+          "IADD3": 872960,
+          "IADD3.X": 371712,
+          "IMAD": 715264,
+          "IMAD.HI.U32": 95744,
+          "IMAD.IADD": 146432,
+          "IMAD.MOV": 168960,
+          "IMAD.MOV.U32": 135168,
+          "IMAD.SHL.U32": 157696,
+          "IMAD.U32": 788480,
+          "IMAD.WIDE": 168960,
+          "IMAD.X": 180224,
+          "IMNMX": 5632,
+          "ISETP.GE.AND": 619520,
+          "ISETP.GE.U32.AND": 11264,
+          "ISETP.GT.U32.AND": 123904,
+          "ISETP.LT.AND": 45056,
+          "ISETP.LT.U32.AND": 22528,
+          "ISETP.NE.AND": 39424,
+          "ISETP.NE.U32.AND": 535040,
+          "LDG.E.128": 45056,
+          "LDGDEPBAR": 214016,
+          "LDGSTS.E.BYPASS.LTC128B.128": 642048,
+          "LDS": 304128,
+          "LDS.128": 45056,
+          "LDSM.16.M88.4": 371712,
+          "LDSM.16.MT88.4": 743424,
+          "LEA": 377344,
+          "LEA.HI": 16896,
+          "LEA.HI.SX32": 5632,
+          "LEA.HI.X": 11264,
+          "LEA.HI.X.SX32": 22528,
+          "LOP3.LUT": 315392,
+          "MOV": 22528,
+          "MUFU.RCP": 22528,
+          "P2R": 11264,
+          "PLOP3.LUT": 197120,
+          "PRMT": 360448,
+          "R2UR": 11264,
+          "S2R": 16896,
+          "S2UR": 5632,
+          "SEL": 1289728,
+          "SGXT.U32": 28160,
+          "SHF.L.U32": 101376,
+          "SHF.L.U64.HI": 22528,
+          "SHF.R.S32.HI": 28160,
+          "SHF.R.U32.HI": 73216,
+          "STG.E.128": 45056,
+          "STS": 180224,
+          "UIADD3": 489984,
+          "UIADD3.X": 90112,
+          "UIMAD": 33792,
+          "UIMAD.WIDE": 22528,
+          "UIMAD.WIDE.U32": 11264,
+          "UISETP.GE.AND": 275968,
+          "UISETP.GT.AND": 16896,
+          "UISETP.NE.AND": 90112,
+          "ULDC": 22528,
+          "ULDC.64": 39424,
+          "ULEA": 180224,
+          "ULEA.HI": 5632,
+          "UMOV": 56320,
+          "USEL": 185856,
+          "USHF.L.U32": 107008,
+          "USHF.L.U64.HI": 11264,
+          "USHF.R.S32.HI": 28160
+        },
+        "qualification": "PASS_LDG_LDGSTS_STG_ONLY",
+        "role": "CONTEXT",
+        "space_counts": {
+          "GLOBAL": 732160,
+          "SHARED": 1644544
+        },
+        "thread_blocks": 1408,
+        "transient_target_lane_bytes": {
+          "B": 109575424,
+          "X0": 241434624,
+          "X1": 23068672
+        },
+        "transient_target_opcode_counts": {
+          "LDG.E.128": 45056,
+          "LDGSTS.E.BYPASS.LTC128B.128": 640512,
+          "STG.E.128": 45056
+        },
+        "transient_target_region_lane_counts": {
+          "B": 6848464,
+          "X0": 15089664,
+          "X1": 1441792
+        },
+        "transient_target_region_record_counts": {
+          "B": 214016,
+          "X0": 471552,
+          "X1": 45056
+        },
+        "unsupported_memory_records": 0,
+        "unsupported_target_examples": [],
+        "unsupported_target_records": 0
+      },
+      {
+        "access_counts": {
+          "READ": 1564992,
+          "WRITE": 354816
+        },
+        "address_mode_counts": {
+          "0": 1748736,
+          "1": 171072
+        },
+        "atomic_or_red_records": 0,
+        "derived_ordinal": 4,
+        "eligible_regions": [
+          "A",
+          "X1"
+        ],
+        "ineligible_region_target_records": 0,
+        "instruction_records": 9956672,
+        "measured_target_ldgsts_records": 506880,
+        "measured_target_ordinary_records": 557568,
+        "measured_target_read_records": 506880,
+        "measured_target_write_records": 50688,
+        "member": "kernel-3583-ctx_0x43c6c760.traceg.xz",
+        "memory_opcode_counts": {
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 171072,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.U16": 202752
+        },
+        "memory_records": 1919808,
+        "opcode_counts": {
+          "BAR.SYNC.DEFER_BLOCKING": 190080,
+          "BRA": 57024,
+          "CS2R": 202752,
+          "DEPBAR.LE": 63360,
+          "EXIT": 23936,
+          "F2FP.BF16.F32.PACK_AB": 101376,
+          "F2I.FTZ.U32.TRUNC.NTZ": 40128,
+          "HMMA.16816.F32.BF16": 1622016,
+          "I2F.RP": 40128,
+          "IABS": 158400,
+          "IADD3": 953920,
+          "IMAD": 800448,
+          "IMAD.HI.U32": 124608,
+          "IMAD.IADD": 147840,
+          "IMAD.MOV": 242880,
+          "IMAD.MOV.U32": 92928,
+          "IMAD.SHL.U32": 147840,
+          "IMAD.WIDE": 114048,
+          "IMAD.X": 456192,
+          "IMNMX": 11264,
+          "ISETP.GE.AND": 217536,
+          "ISETP.GE.U32.AND": 33792,
+          "ISETP.GT.AND": 23936,
+          "ISETP.GT.U32.AND": 135168,
+          "ISETP.LE.AND": 50688,
+          "ISETP.LT.AND": 50688,
+          "ISETP.NE.AND": 90816,
+          "ISETP.NE.U32.AND": 63360,
+          "LDGDEPBAR": 126720,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 171072,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "LEA": 50688,
+          "LEA.HI": 30272,
+          "LEA.HI.X": 50688,
+          "LOP3.LUT": 504768,
+          "MOV": 11264,
+          "MUFU.RCP": 40128,
+          "PRMT": 101376,
+          "S2R": 17600,
+          "SEL": 228096,
+          "SGXT.U32": 19008,
+          "SHF.R.S32.HI": 85888,
+          "SHF.R.U32.HI": 107712,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.U16": 202752,
+          "UIADD3": 215424,
+          "UISETP.GE.AND": 50688,
+          "ULDC": 6336,
+          "ULDC.64": 6336,
+          "UMOV": 25344,
+          "USEL": 50688,
+          "USHF.L.U32": 50688
+        },
+        "qualification": "PASS_LDG_LDGSTS_STG_ONLY",
+        "role": "MEASURED_ROI",
+        "space_counts": {
+          "GLOBAL": 557568,
+          "SHARED": 1362240
+        },
+        "thread_blocks": 2816,
+        "transient_target_lane_bytes": {
+          "A": 25952256,
+          "X1": 259520256
+        },
+        "transient_target_opcode_counts": {
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "STG.E.128": 50688
+        },
+        "transient_target_region_lane_counts": {
+          "A": 1622016,
+          "X1": 16220016
+        },
+        "transient_target_region_record_counts": {
+          "A": 50688,
+          "X1": 506880
+        },
+        "unsupported_memory_records": 0,
+        "unsupported_target_examples": [],
+        "unsupported_target_records": 0
+      },
+      {
+        "access_counts": {
+          "READ": 1691712,
+          "WRITE": 380160
+        },
+        "address_mode_counts": {
+          "0": 1900800,
+          "1": 171072
+        },
+        "atomic_or_red_records": 0,
+        "derived_ordinal": 5,
+        "eligible_regions": [
+          "A",
+          "B",
+          "X1"
+        ],
+        "ineligible_region_target_records": 0,
+        "instruction_records": 10998592,
+        "measured_target_ldgsts_records": 506880,
+        "measured_target_ordinary_records": 582912,
+        "measured_target_read_records": 532224,
+        "measured_target_write_records": 50688,
+        "member": "kernel-3584-ctx_0x43c6c760.traceg.xz",
+        "memory_opcode_counts": {
+          "LDG.E.128": 25344,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 272448,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.128": 25344,
+          "STS.U16": 202752
+        },
+        "memory_records": 2071872,
+        "opcode_counts": {
+          "BAR.SYNC.DEFER_BLOCKING": 215424,
+          "BRA": 57024,
+          "CS2R": 253440,
+          "DEPBAR.LE": 63360,
+          "EXIT": 23936,
+          "F2FP.BF16.F32.PACK_AB": 101376,
+          "F2I.FTZ.U32.TRUNC.NTZ": 40128,
+          "FFMA": 202752,
+          "FMUL": 202752,
+          "HMMA.16816.F32.BF16": 1622016,
+          "I2F.RP": 40128,
+          "IABS": 158400,
+          "IADD3": 1010944,
+          "IMAD": 800448,
+          "IMAD.HI.U32": 124608,
+          "IMAD.IADD": 147840,
+          "IMAD.MOV": 242880,
+          "IMAD.MOV.U32": 76736,
+          "IMAD.SHL.U32": 141504,
+          "IMAD.U32": 158400,
+          "IMAD.WIDE": 139392,
+          "IMAD.X": 456192,
+          "IMNMX": 11264,
+          "ISETP.GE.AND": 217536,
+          "ISETP.GE.U32.AND": 33792,
+          "ISETP.GT.AND": 23936,
+          "ISETP.GT.U32.AND": 135168,
+          "ISETP.LE.AND": 50688,
+          "ISETP.LT.AND": 50688,
+          "ISETP.NE.AND": 90816,
+          "ISETP.NE.U32.AND": 63360,
+          "LDG.E.128": 25344,
+          "LDGDEPBAR": 126720,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "LDS": 272448,
+          "LDS.128": 50688,
+          "LDSM.16.M88.4": 836352,
+          "LEA": 76032,
+          "LEA.HI": 23936,
+          "LEA.HI.X": 50688,
+          "LOP3.LUT": 504768,
+          "MOV": 11264,
+          "MUFU.RCP": 40128,
+          "PRMT": 202752,
+          "S2R": 17600,
+          "SEL": 329472,
+          "SGXT.U32": 19008,
+          "SHF.L.U32": 50688,
+          "SHF.R.S32.HI": 73216,
+          "SHF.R.U32.HI": 107712,
+          "STG.E.128": 50688,
+          "STS": 101376,
+          "STS.128": 25344,
+          "STS.U16": 202752,
+          "UIADD3": 152064,
+          "UISETP.GE.AND": 50688,
+          "ULDC.64": 6336,
+          "UMOV": 25344,
+          "USEL": 50688,
+          "USHF.L.U32": 50688
+        },
+        "qualification": "PASS_LDG_LDGSTS_STG_ONLY",
+        "role": "MEASURED_ROI",
+        "space_counts": {
+          "GLOBAL": 582912,
+          "SHARED": 1488960
+        },
+        "thread_blocks": 2816,
+        "transient_target_lane_bytes": {
+          "A": 272496384,
+          "B": 25954560
+        },
+        "transient_target_opcode_counts": {
+          "LDG.E.128": 25344,
+          "LDGSTS.E.BYPASS.LTC128B.128": 506880,
+          "STG.E.128": 50688
+        },
+        "transient_target_region_lane_counts": {
+          "A": 17031024,
+          "B": 1622160
+        },
+        "transient_target_region_record_counts": {
+          "A": 532224,
+          "B": 50706
+        },
+        "unsupported_memory_records": 0,
+        "unsupported_target_examples": [],
+        "unsupported_target_records": 0
+      },
+      {
+        "access_counts": {
+          "READ": 2151424,
+          "WRITE": 225280
+        },
+        "address_mode_counts": {
+          "0": 2072576,
+          "1": 304128
+        },
+        "atomic_or_red_records": 0,
+        "derived_ordinal": 6,
+        "eligible_regions": [
+          "B",
+          "X0",
+          "X1"
+        ],
+        "ineligible_region_target_records": 0,
+        "instruction_records": 17042432,
+        "measured_target_ldgsts_records": 640512,
+        "measured_target_ordinary_records": 730624,
+        "measured_target_read_records": 685568,
+        "measured_target_write_records": 45056,
+        "member": "kernel-3585-ctx_0x43c6c760.traceg.xz",
+        "memory_opcode_counts": {
+          "LDG.E.128": 45056,
+          "LDGSTS.E.BYPASS.LTC128B.128": 642048,
+          "LDS": 304128,
+          "LDS.128": 45056,
+          "LDSM.16.M88.4": 371712,
+          "LDSM.16.MT88.4": 743424,
+          "STG.E.128": 45056,
+          "STS": 180224
+        },
+        "memory_records": 2376704,
+        "opcode_counts": {
+          "BAR.SYNC.DEFER_BLOCKING": 219648,
+          "BRA": 95744,
+          "CS2R": 450560,
+          "DEPBAR.LE": 101376,
+          "EXIT": 11264,
+          "F2FP.BF16.F32.PACK_AB": 360448,
+          "F2I.FTZ.U32.TRUNC.NTZ": 22528,
+          "FFMA": 360448,
+          "HMMA.16816.F32.BF16": 2883584,
+          "I2F.RP": 22528,
+          "IABS": 112640,
+          "IADD3": 872960,
+          "IADD3.X": 371712,
+          "IMAD": 715264,
+          "IMAD.HI.U32": 95744,
+          "IMAD.IADD": 146432,
+          "IMAD.MOV": 168960,
+          "IMAD.MOV.U32": 135168,
+          "IMAD.SHL.U32": 157696,
+          "IMAD.U32": 788480,
+          "IMAD.WIDE": 168960,
+          "IMAD.X": 180224,
+          "IMNMX": 5632,
+          "ISETP.GE.AND": 619520,
+          "ISETP.GE.U32.AND": 11264,
+          "ISETP.GT.U32.AND": 123904,
+          "ISETP.LT.AND": 45056,
+          "ISETP.LT.U32.AND": 22528,
+          "ISETP.NE.AND": 39424,
+          "ISETP.NE.U32.AND": 535040,
+          "LDG.E.128": 45056,
+          "LDGDEPBAR": 214016,
+          "LDGSTS.E.BYPASS.LTC128B.128": 642048,
+          "LDS": 304128,
+          "LDS.128": 45056,
+          "LDSM.16.M88.4": 371712,
+          "LDSM.16.MT88.4": 743424,
+          "LEA": 377344,
+          "LEA.HI": 16896,
+          "LEA.HI.SX32": 5632,
+          "LEA.HI.X": 11264,
+          "LEA.HI.X.SX32": 22528,
+          "LOP3.LUT": 315392,
+          "MOV": 22528,
+          "MUFU.RCP": 22528,
+          "P2R": 11264,
+          "PLOP3.LUT": 197120,
+          "PRMT": 360448,
+          "R2UR": 11264,
+          "S2R": 16896,
+          "S2UR": 5632,
+          "SEL": 1289728,
+          "SGXT.U32": 28160,
+          "SHF.L.U32": 101376,
+          "SHF.L.U64.HI": 22528,
+          "SHF.R.S32.HI": 28160,
+          "SHF.R.U32.HI": 73216,
+          "STG.E.128": 45056,
+          "STS": 180224,
+          "UIADD3": 489984,
+          "UIADD3.X": 90112,
+          "UIMAD": 33792,
+          "UIMAD.WIDE": 22528,
+          "UIMAD.WIDE.U32": 11264,
+          "UISETP.GE.AND": 275968,
+          "UISETP.GT.AND": 16896,
+          "UISETP.NE.AND": 90112,
+          "ULDC": 22528,
+          "ULDC.64": 39424,
+          "ULEA": 180224,
+          "ULEA.HI": 5632,
+          "UMOV": 56320,
+          "USEL": 185856,
+          "USHF.L.U32": 107008,
+          "USHF.L.U64.HI": 11264,
+          "USHF.R.S32.HI": 28160
+        },
+        "qualification": "PASS_LDG_LDGSTS_STG_ONLY",
+        "role": "MEASURED_ROI",
+        "space_counts": {
+          "GLOBAL": 732160,
+          "SHARED": 1644544
+        },
+        "thread_blocks": 1408,
+        "transient_target_lane_bytes": {
+          "B": 109575424,
+          "X0": 23068672,
+          "X1": 241434624
+        },
+        "transient_target_opcode_counts": {
+          "LDG.E.128": 45056,
+          "LDGSTS.E.BYPASS.LTC128B.128": 640512,
+          "STG.E.128": 45056
+        },
+        "transient_target_region_lane_counts": {
+          "B": 6848464,
+          "X0": 1441792,
+          "X1": 15089664
+        },
+        "transient_target_region_record_counts": {
+          "B": 214016,
+          "X0": 45056,
+          "X1": 471552
+        },
+        "unsupported_memory_records": 0,
+        "unsupported_target_examples": [],
+        "unsupported_target_records": 0
+      }
+    ],
+    "method": "strict trace-v5 record parse plus authoritative list_all/base_stride/base_delta address decode; opcode access/space classification; byte-interval intersection against admitted A/B/X0/X1 regions",
+    "other_memory_semantic_policy": "FAIL_CLOSED_IF_TARGETS_TRANSIENT_REGION_IN_MEASURED_ROI",
+    "region_liveness_policy": "FAIL_CLOSED_IF_ANY_MEMBER_TARGETS_A_REGION_NOT_LIVE_AFTER_ITS_PRE_AND_BEFORE_ITS_POST",
+    "status": "PASS_SUPPORTED_GLOBAL_LDG_LDGSTS_STG_ONLY_FOR_MEASURED_TRANSIENT_TARGETS",
+    "unsupported_target_records_measured_roi": 0
+  },
+  "zero_copy_contract": {
+    "raw_immutable": true,
+    "reference_kind": "SYMLINK_TO_ACCEPTED_IMMUTABLE_NODE164_MEMBER",
+    "selected_members": 6,
+    "selected_order_preserved": true,
+    "trace_bytes_copied": false
+  }
+}

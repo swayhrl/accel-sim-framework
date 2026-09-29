@@ -1,0 +1,23 @@
+test_id	category	requirement	result	evidence
+1	policy	non-transient access remains normal	PASS	disjoint classify_access is NON_TRANSIENT
+2	policy	fully-contained live generation eligible	PASS	live metadata and oracle_eligible
+3	policy	dead generation normal path	PASS	DEAD_TRANSIENT is not eligible
+4	policy	partial entry fails closed	PASS	PARTIAL_TRANSIENT
+5	policy	partial exit fails closed	PASS	MULTIPLE_REGIONS at adjacent boundary
+6	policy	multi-region fails closed	PASS	intersection_count=2
+7	policy	zero-size invalid	PASS	INVALID_RANGE
+8	policy	address overflow invalid	PASS	INVALID_RANGE
+9	lifecycle	PRE activation enables	PASS	dead to live transition
+10	lifecycle	POST death disables	PASS	old token dead and ineligible
+11	lifecycle	generation advance rejects stale	PASS	old token dead/new token live
+12	timing	one-cycle service readiness	PASS	admit41 ready42 only
+13	store	bypass/nonsector ACK tokens	PASS	one normal ACK token
+14	store	sector-assoc ACK tokens	PASS	32B=1 and 128B=4
+15	exactly_once	admit-ready-retire quiescence	PASS	equation closes
+16	exactly_once	duplicate completion detected	PASS	duplicate prevents quiescence
+17	lifecycle	lifecycle hash changes	PASS	semantic transition changes hash
+18	dependency	LDG vs LDGSTS path distinction	PASS	scoreboard vs DEPBAR dependency kind
+19	source_hooks	post-translation/pre-L1 and response-path integration	PASS	14 source-hook checks including measured marker aliases and LDGSTS client3/depbar
+20	integrated	default selector absent equivalence	PASS	T2 exact 93079 cycles/43357696 instructions/1216 CTAs
+21	integrated	explicit none equivalence	PASS	T2 exact signature, zero service, terminal drain
+22	integrated	positive read/write one-cycle completion	PASS	6xT2 context3/ROI3: reads29184 writes96 scheduled=ready=retired29280, duplicate/latency/stale/outstanding zero

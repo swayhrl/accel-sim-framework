@@ -1,0 +1,808 @@
+--- a/src/abstract_hardware_model.cc
++++ b/src/abstract_hardware_model.cc
+@@ -52,0 +53 @@
++  m_awma_o2_service_observed = false;
+--- a/src/abstract_hardware_model.h
++++ b/src/abstract_hardware_model.h
+@@ -911,0 +912,5 @@
++  bool mark_awma_o2_service_observed() {
++    if (m_awma_o2_service_observed) return false;
++    m_awma_o2_service_observed = true;
++    return true;
++  }
+@@ -969,0 +975 @@
++  bool m_awma_o2_service_observed;
+--- a/src/gpgpu-sim/awma_r101r2_o2_service.h
++++ b/src/gpgpu-sim/awma_r101r2_o2_service.h
+@@ -0,0 +1,77 @@
++#ifndef AWMA_R101R2_O2_SERVICE_H
++#define AWMA_R101R2_O2_SERVICE_H
++
++#include <assert.h>
++#include <stdint.h>
++
++namespace awma_r101r2_o2 {
++
++enum service_state { SERVICE_SCHEDULED = 0, SERVICE_READY, SERVICE_RETIRED };
++
++enum read_dependency_kind {
++  READ_REGISTER_SCOREBOARD = 0,
++  READ_LDGSTS_DEPBAR
++};
++
++static const unsigned kSectorSize = 32;
++
++inline unsigned long long one_cycle_ready(unsigned long long admission_cycle) {
++  assert(admission_cycle != ~0ULL);
++  return admission_cycle + 1;
++}
++
++inline bool is_exact_one_cycle(unsigned long long admission_cycle,
++                               unsigned long long ready_cycle,
++                               unsigned long long observed_cycle) {
++  return ready_cycle == admission_cycle + 1 && observed_cycle == ready_cycle;
++}
++
++inline unsigned store_ack_tokens(bool bypass_l1, bool sector_associative,
++                                 unsigned data_size) {
++  if (bypass_l1 || !sector_associative) return 1;
++  assert(data_size != 0 && data_size % kSectorSize == 0);
++  return data_size / kSectorSize;
++}
++
++inline read_dependency_kind read_dependency(bool is_ldgsts) {
++  return is_ldgsts ? READ_LDGSTS_DEPBAR : READ_REGISTER_SCOREBOARD;
++}
++
++struct accounting {
++  accounting()
++      : admitted(0), ready(0), retired(0), duplicate(0), outstanding(0) {}
++  unsigned long long admitted;
++  unsigned long long ready;
++  unsigned long long retired;
++  unsigned long long duplicate;
++  unsigned long long outstanding;
++  void admit() {
++    ++admitted;
++    ++outstanding;
++  }
++  void make_ready(service_state &state) {
++    if (state != SERVICE_SCHEDULED) {
++      ++duplicate;
++      return;
++    }
++    state = SERVICE_READY;
++    ++ready;
++  }
++  void retire(service_state &state) {
++    if (state != SERVICE_READY || outstanding == 0) {
++      ++duplicate;
++      return;
++    }
++    state = SERVICE_RETIRED;
++    ++retired;
++    --outstanding;
++  }
++  bool quiescent() const {
++    return admitted == ready && ready == retired && duplicate == 0 &&
++           outstanding == 0;
++  }
++};
++
++}  // namespace awma_r101r2_o2
++
++#endif
+--- a/src/gpgpu-sim/awma_transient_l2_policy.h
++++ b/src/gpgpu-sim/awma_transient_l2_policy.h
+@@ -17,0 +18,14 @@
++enum service_mode {
++  SERVICE_MODE_NONE = 0,
++  SERVICE_MODE_ORACLE_1C
++};
++
++enum service_access_kind {
++  SERVICE_ACCESS_NON_TRANSIENT = 0,
++  SERVICE_ACCESS_LIVE_TRANSIENT,
++  SERVICE_ACCESS_DEAD_TRANSIENT,
++  SERVICE_ACCESS_PARTIAL_TRANSIENT,
++  SERVICE_ACCESS_MULTIPLE_REGIONS,
++  SERVICE_ACCESS_INVALID_RANGE
++};
++
+@@ -36,0 +51,15 @@
++struct service_access {
++  service_access()
++      : kind(SERVICE_ACCESS_NON_TRANSIENT), intersection_count(0),
++        fully_contained(false) {}
++  service_access_kind kind;
++  line_metadata metadata;
++  unsigned intersection_count;
++  bool fully_contained;
++  bool intersects_transient() const { return intersection_count != 0; }
++  bool oracle_eligible() const {
++    return kind == SERVICE_ACCESS_LIVE_TRANSIENT && fully_contained &&
++           intersection_count == 1;
++  }
++};
++
+@@ -112,0 +142,48 @@
++  service_access classify_access(uint64_t address, uint64_t size) const {
++    service_access result;
++    if (size == 0 || address > UINT64_MAX - size) {
++      result.kind = SERVICE_ACCESS_INVALID_RANGE;
++      return result;
++    }
++    const uint64_t limit = address + size;
++    for (unsigned i = 0; i < kMaxRegions; ++i) {
++      const descriptor &region = m_regions[i];
++      if (!region.valid || limit <= region.base || region.limit <= address)
++        continue;
++      ++result.intersection_count;
++      if (result.intersection_count == 1) {
++        result.metadata.region_plus_one = static_cast<uint8_t>(i + 1);
++        result.metadata.generation = region.generation;
++        result.fully_contained = region.base <= address && limit <= region.limit;
++      } else {
++        result.fully_contained = false;
++      }
++    }
++    if (result.intersection_count == 0) {
++      result.kind = SERVICE_ACCESS_NON_TRANSIENT;
++    } else if (result.intersection_count > 1) {
++      result.kind = SERVICE_ACCESS_MULTIPLE_REGIONS;
++    } else if (!result.fully_contained) {
++      result.kind = SERVICE_ACCESS_PARTIAL_TRANSIENT;
++    } else {
++      result.kind = is_live(result.metadata) ? SERVICE_ACCESS_LIVE_TRANSIENT
++                                             : SERVICE_ACCESS_DEAD_TRANSIENT;
++    }
++    return result;
++  }
++
++  uint64_t lifecycle_hash() const {
++    uint64_t hash = UINT64_C(1469598103934665603);
++    for (unsigned i = 0; i < kMaxRegions; ++i) {
++      const descriptor &region = m_regions[i];
++      hash_u64(hash, i);
++      hash_u64(hash, region.base);
++      hash_u64(hash, region.limit);
++      hash_u64(hash, region.region_id);
++      hash_u64(hash, region.generation);
++      hash_u64(hash, region.valid ? 1 : 0);
++      hash_u64(hash, region.live ? 1 : 0);
++    }
++    return hash;
++  }
++
+@@ -144,0 +222,7 @@
++  static void hash_u64(uint64_t &hash, uint64_t value) {
++    for (unsigned byte = 0; byte < 8; ++byte) {
++      hash ^= (value >> (byte * 8)) & UINT64_C(0xff);
++      hash *= UINT64_C(1099511628211);
++    }
++  }
++
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -46,0 +47,2 @@
++      m_service_selector_explicit(false),
++      m_service_mode(awma_transient_l2::SERVICE_MODE_NONE),
+@@ -54,0 +57,11 @@
++      m_context_end_ordinal(0),
++      m_roi_start_ordinal(0),
++      m_roi_end_ordinal(0),
++      m_active_kernel_ordinal(0),
++      m_context_end_cycle(0),
++      m_roi_end_cycle(0),
++      m_pre_roi_cycle(0),
++      m_pre_roi_lifecycle_hash(0),
++      m_context_end_cycle_valid(false),
++      m_roi_end_cycle_valid(false),
++      m_pre_roi_receipt_valid(false),
+@@ -73 +86,31 @@
+-      m_oracle_reserved_skips(0) {
++      m_oracle_reserved_skips(0),
++      m_service_inactive_intersections(0),
++      m_service_inactive_bytes(0),
++      m_service_dead_skips(0),
++      m_service_partial_skips(0),
++      m_service_multi_region_skips(0),
++      m_service_invalid_range_skips(0),
++      m_service_atomic_fail_closed(0),
++      m_service_unsupported_fail_closed(0),
++      m_service_fail_closed_bytes(0),
++      m_service_qualified_reads(0),
++      m_service_qualified_ldg_reads(0),
++      m_service_qualified_ldgsts_reads(0),
++      m_service_qualified_ldgsts_bytes(0),
++      m_service_qualified_read_bytes(0),
++      m_service_qualified_read_active_bytes(0),
++      m_service_qualified_writes(0),
++      m_service_qualified_write_bytes(0),
++      m_service_qualified_write_active_bytes(0),
++      m_service_scheduled(0),
++      m_service_one_cycle_ready(0),
++      m_service_retired_reads(0),
++      m_service_retired_ldg_reads(0),
++      m_service_retired_ldgsts_reads(0),
++      m_service_retired_writes(0),
++      m_service_outstanding(0),
++      m_service_duplicate_completions(0),
++      m_service_latency_violations(0),
++      m_service_stale_token_violations(0),
++      m_service_max_scheduled_depth(0),
++      m_service_max_ready_depth(0) {
+@@ -90,0 +134,2 @@
++  const char *service_text =
++      getenv("AWMA_R101R2_TRANSIENT_SERVICE_MODE");
+@@ -106,0 +152,12 @@
++  if (service_text != NULL) {
++    m_service_selector_explicit = true;
++    if (!strcmp(service_text, "none")) {
++      m_service_mode = awma_transient_l2::SERVICE_MODE_NONE;
++    } else if (!strcmp(service_text, "oracle_1c")) {
++      m_service_mode = awma_transient_l2::SERVICE_MODE_ORACLE_1C;
++    } else {
++      fprintf(stderr, "Unknown AWMA_R101R2_TRANSIENT_SERVICE_MODE=%s\n",
++              service_text);
++      abort();
++    }
++  }
+@@ -116,0 +174,9 @@
++  if (service_oracle_selected()) {
++    assert(selected == awma_transient_l2::MODE_NONE &&
++           "O2 service oracle cannot be combined with an L2 mechanism");
++    assert(sidecar != NULL && sidecar[0] != '\0');
++    assert(m_expected_kernels == 6);
++    assert(m_context_end_ordinal == 3);
++    assert(m_roi_start_ordinal == 4);
++    assert(m_roi_end_ordinal == 6);
++  }
+@@ -141,0 +208,12 @@
++    } else if (kind == "CONTEXT_END") {
++      assert(m_context_end_ordinal == 0);
++      fields >> m_context_end_ordinal;
++      assert(fields && m_context_end_ordinal > 0);
++    } else if (kind == "ROI_START" || kind == "MEASURED_ROI_START") {
++      assert(m_roi_start_ordinal == 0);
++      fields >> m_roi_start_ordinal;
++      assert(fields && m_roi_start_ordinal > 0);
++    } else if (kind == "ROI_END" || kind == "MEASURED_ROI_END") {
++      assert(m_roi_end_ordinal == 0);
++      fields >> m_roi_end_ordinal;
++      assert(fields && m_roi_end_ordinal > 0);
+@@ -180,0 +259,6 @@
++  if (m_context_end_ordinal || m_roi_start_ordinal || m_roi_end_ordinal) {
++    assert(m_context_end_ordinal > 0 &&
++           m_roi_start_ordinal == m_context_end_ordinal + 1 &&
++           m_roi_end_ordinal >= m_roi_start_ordinal &&
++           m_roi_end_ordinal <= m_expected_kernels);
++  }
+@@ -265,0 +350,90 @@
++void awma_transient_l2_controller::note_service_inactive_observation(
++    awma_transient_l2::service_access_kind kind, unsigned bytes) {
++  if (!service_oracle_selected()) return;
++  if (kind == awma_transient_l2::SERVICE_ACCESS_NON_TRANSIENT) return;
++  ++m_service_inactive_intersections;
++  m_service_inactive_bytes += bytes;
++}
++
++void awma_transient_l2_controller::note_service_fail_closed(
++    awma_transient_l2::service_access_kind kind, bool atomic,
++    bool unsupported_operation, unsigned bytes) {
++  assert(service_window_active());
++  if (atomic) ++m_service_atomic_fail_closed;
++  if (unsupported_operation) ++m_service_unsupported_fail_closed;
++  if (kind == awma_transient_l2::SERVICE_ACCESS_DEAD_TRANSIENT)
++    ++m_service_dead_skips;
++  else if (kind == awma_transient_l2::SERVICE_ACCESS_PARTIAL_TRANSIENT)
++    ++m_service_partial_skips;
++  else if (kind == awma_transient_l2::SERVICE_ACCESS_MULTIPLE_REGIONS)
++    ++m_service_multi_region_skips;
++  else if (kind == awma_transient_l2::SERVICE_ACCESS_INVALID_RANGE)
++    ++m_service_invalid_range_skips;
++  m_service_fail_closed_bytes += bytes;
++}
++
++void awma_transient_l2_controller::note_service_admission(
++    const awma_transient_l2::line_metadata &metadata, bool write,
++    bool ldgsts,
++    unsigned request_bytes, unsigned active_bytes,
++    unsigned long long cycle) {
++  (void)cycle;
++  assert(service_window_active());
++  assert(m_policy.is_live(metadata));
++  assert(request_bytes > 0);
++  if (write) {
++    assert(!ldgsts);
++    ++m_service_qualified_writes;
++    m_service_qualified_write_bytes += request_bytes;
++    m_service_qualified_write_active_bytes += active_bytes;
++  } else {
++    ++m_service_qualified_reads;
++    if (ldgsts) {
++      ++m_service_qualified_ldgsts_reads;
++      m_service_qualified_ldgsts_bytes += request_bytes;
++    } else {
++      ++m_service_qualified_ldg_reads;
++    }
++    m_service_qualified_read_bytes += request_bytes;
++    m_service_qualified_read_active_bytes += active_bytes;
++  }
++  ++m_service_scheduled;
++  ++m_service_outstanding;
++}
++
++void awma_transient_l2_controller::note_service_ready(
++    const awma_transient_l2::line_metadata &metadata, bool write,
++    unsigned long long admission_cycle, unsigned long long ready_cycle,
++    unsigned long long observed_cycle) {
++  (void)write;
++  assert(m_service_outstanding > 0);
++  if (!m_policy.is_live(metadata)) ++m_service_stale_token_violations;
++  if (ready_cycle != admission_cycle + 1 || observed_cycle != ready_cycle)
++    ++m_service_latency_violations;
++  ++m_service_one_cycle_ready;
++}
++
++void awma_transient_l2_controller::note_service_retired(bool write,
++                                                         bool ldgsts) {
++  assert(m_service_outstanding > 0);
++  --m_service_outstanding;
++  if (write) {
++    assert(!ldgsts);
++    ++m_service_retired_writes;
++  } else {
++    ++m_service_retired_reads;
++    if (ldgsts)
++      ++m_service_retired_ldgsts_reads;
++    else
++      ++m_service_retired_ldg_reads;
++  }
++}
++
++void awma_transient_l2_controller::note_service_queue_depth(
++    unsigned scheduled, unsigned ready) {
++  if (scheduled > m_service_max_scheduled_depth)
++    m_service_max_scheduled_depth = scheduled;
++  if (ready > m_service_max_ready_depth)
++    m_service_max_ready_depth = ready;
++}
++
+@@ -296,0 +471,16 @@
++unsigned long long awma_transient_l2_controller::lifecycle_hash() const {
++  unsigned long long hash = m_policy.lifecycle_hash();
++  const unsigned long long values[] = {
++      m_expected_kernels, m_launched_kernels, m_completed_kernels,
++      m_applied_pre_transitions, m_applied_post_transitions,
++      m_context_end_ordinal, m_roi_start_ordinal, m_roi_end_ordinal};
++  for (unsigned i = 0; i < sizeof(values) / sizeof(values[0]); ++i) {
++    unsigned long long value = values[i];
++    for (unsigned byte = 0; byte < 8; ++byte) {
++      hash ^= (value >> (byte * 8)) & 0xffULL;
++      hash *= 1099511628211ULL;
++    }
++  }
++  return hash;
++}
++
+@@ -301 +490,0 @@
+-  (void)cycle;
+@@ -311,0 +501,8 @@
++  const unsigned next_ordinal = m_launched_kernels + 1;
++  if (m_roi_start_ordinal != 0 && next_ordinal == m_roi_start_ordinal) {
++    assert(m_completed_kernels == m_context_end_ordinal);
++    assert(m_service_outstanding == 0);
++    m_pre_roi_cycle = cycle;
++    m_pre_roi_lifecycle_hash = lifecycle_hash();
++    m_pre_roi_receipt_valid = true;
++  }
+@@ -316,0 +514 @@
++  m_active_kernel_ordinal = m_launched_kernels;
+@@ -322 +519,0 @@
+-  (void)cycle;
+@@ -323,0 +521,2 @@
++  assert(m_active_kernel_ordinal == m_completed_kernels + 1);
++  if (service_oracle_selected()) assert(m_service_outstanding == 0);
+@@ -333,0 +533,9 @@
++  if (m_completed_kernels == m_context_end_ordinal) {
++    m_context_end_cycle = cycle;
++    m_context_end_cycle_valid = true;
++  }
++  if (m_completed_kernels == m_roi_end_ordinal) {
++    m_roi_end_cycle = cycle;
++    m_roi_end_cycle_valid = true;
++  }
++  m_active_kernel_ordinal = 0;
+@@ -347,0 +556,10 @@
++const char *awma_transient_l2_controller::service_mode_name() const {
++  switch (m_service_mode) {
++    case awma_transient_l2::SERVICE_MODE_NONE:
++      return "none";
++    case awma_transient_l2::SERVICE_MODE_ORACLE_1C:
++      return "oracle_1c";
++  }
++  abort();
++}
++
+@@ -349,0 +568,4 @@
++  const unsigned long long qualified =
++      m_service_qualified_reads + m_service_qualified_writes;
++  const unsigned long long retired =
++      m_service_retired_reads + m_service_retired_writes;
+@@ -354 +576,17 @@
+-         m_outstanding_l2_writebacks == 0;
++         m_outstanding_l2_writebacks == 0 && m_service_outstanding == 0 &&
++         qualified == m_service_scheduled &&
++         m_service_scheduled == m_service_one_cycle_ready &&
++         m_service_one_cycle_ready == retired &&
++         m_service_qualified_reads ==
++             m_service_qualified_ldg_reads +
++                 m_service_qualified_ldgsts_reads &&
++         m_service_retired_reads ==
++             m_service_retired_ldg_reads +
++                 m_service_retired_ldgsts_reads &&
++         m_service_qualified_ldg_reads == m_service_retired_ldg_reads &&
++         m_service_qualified_ldgsts_reads ==
++             m_service_retired_ldgsts_reads &&
++         m_service_duplicate_completions == 0 &&
++         m_service_latency_violations == 0 &&
++         m_service_stale_token_violations == 0 &&
++         m_active_kernel_ordinal == 0;
+@@ -359,0 +598,4 @@
++  fprintf(fout, "awma_r101r2_transient_service_mode = %s\n",
++          service_mode_name());
++  fprintf(fout, "awma_r101r2_service_selector_explicit = %u\n",
++          m_service_selector_explicit ? 1 : 0);
+@@ -409,0 +652,92 @@
++  fprintf(fout, "awma_r101r2_context_end_ordinal = %u\n",
++          m_context_end_ordinal);
++  fprintf(fout, "awma_r101r2_roi_start_ordinal = %u\n",
++          m_roi_start_ordinal);
++  fprintf(fout, "awma_r101r2_roi_end_ordinal = %u\n", m_roi_end_ordinal);
++  fprintf(fout, "awma_r101r2_active_kernel_ordinal = %u\n",
++          m_active_kernel_ordinal);
++  fprintf(fout, "awma_r101r2_context_end_cycle_valid = %u\n",
++          m_context_end_cycle_valid ? 1 : 0);
++  fprintf(fout, "awma_r101r2_context_end_cycle = %llu\n",
++          m_context_end_cycle);
++  fprintf(fout, "awma_r101r2_roi_end_cycle_valid = %u\n",
++          m_roi_end_cycle_valid ? 1 : 0);
++  fprintf(fout, "awma_r101r2_roi_end_cycle = %llu\n", m_roi_end_cycle);
++  fprintf(fout, "awma_r101r2_roi_cycles = %llu\n",
++          m_context_end_cycle_valid && m_roi_end_cycle_valid
++              ? m_roi_end_cycle - m_context_end_cycle
++              : 0ULL);
++  fprintf(fout, "awma_r101r2_pre_roi_receipt_valid = %u\n",
++          m_pre_roi_receipt_valid ? 1 : 0);
++  fprintf(fout, "awma_r101r2_pre_roi_cycle = %llu\n", m_pre_roi_cycle);
++  fprintf(fout, "awma_r101r2_pre_roi_lifecycle_hash = %016llx\n",
++          m_pre_roi_lifecycle_hash);
++  fprintf(fout, "awma_r101r2_service_inactive_intersections = %llu\n",
++          m_service_inactive_intersections);
++  fprintf(fout, "awma_r101r2_service_inactive_bytes = %llu\n",
++          m_service_inactive_bytes);
++  fprintf(fout, "awma_r101r2_service_dead_skips = %llu\n",
++          m_service_dead_skips);
++  fprintf(fout, "awma_r101r2_service_partial_skips = %llu\n",
++          m_service_partial_skips);
++  fprintf(fout, "awma_r101r2_service_multi_region_skips = %llu\n",
++          m_service_multi_region_skips);
++  fprintf(fout, "awma_r101r2_service_invalid_range_skips = %llu\n",
++          m_service_invalid_range_skips);
++  fprintf(fout, "awma_r101r2_service_atomic_fail_closed = %llu\n",
++          m_service_atomic_fail_closed);
++  fprintf(fout, "awma_r101r2_service_unsupported_fail_closed = %llu\n",
++          m_service_unsupported_fail_closed);
++  fprintf(fout, "awma_r101r2_service_fail_closed_bytes = %llu\n",
++          m_service_fail_closed_bytes);
++  fprintf(fout, "awma_r101r2_service_qualified_reads = %llu\n",
++          m_service_qualified_reads);
++  fprintf(fout, "awma_r101r2_service_qualified_ldg_reads = %llu\n",
++          m_service_qualified_ldg_reads);
++  fprintf(fout, "awma_r101r2_service_qualified_ldgsts_reads = %llu\n",
++          m_service_qualified_ldgsts_reads);
++  fprintf(fout, "awma_r101r2_service_qualified_ldgsts_bytes = %llu\n",
++          m_service_qualified_ldgsts_bytes);
++  fprintf(fout, "awma_r101r2_service_qualified_read_bytes = %llu\n",
++          m_service_qualified_read_bytes);
++  fprintf(fout, "awma_r101r2_service_qualified_read_active_bytes = %llu\n",
++          m_service_qualified_read_active_bytes);
++  fprintf(fout, "awma_r101r2_service_qualified_writes = %llu\n",
++          m_service_qualified_writes);
++  fprintf(fout, "awma_r101r2_service_qualified_write_bytes = %llu\n",
++          m_service_qualified_write_bytes);
++  fprintf(fout, "awma_r101r2_service_qualified_write_active_bytes = %llu\n",
++          m_service_qualified_write_active_bytes);
++  fprintf(fout, "awma_r101r2_service_scheduled = %llu\n",
++          m_service_scheduled);
++  fprintf(fout, "awma_r101r2_service_one_cycle_ready = %llu\n",
++          m_service_one_cycle_ready);
++  fprintf(fout, "awma_r101r2_service_retired_reads = %llu\n",
++          m_service_retired_reads);
++  fprintf(fout, "awma_r101r2_service_retired_ldg_reads = %llu\n",
++          m_service_retired_ldg_reads);
++  fprintf(fout, "awma_r101r2_service_retired_ldgsts_reads = %llu\n",
++          m_service_retired_ldgsts_reads);
++  fprintf(fout, "awma_r101r2_service_retired_writes = %llu\n",
++          m_service_retired_writes);
++  fprintf(fout, "awma_r101r2_service_outstanding = %llu\n",
++          m_service_outstanding);
++  fprintf(fout, "awma_r101r2_service_duplicate_completions = %llu\n",
++          m_service_duplicate_completions);
++  fprintf(fout, "awma_r101r2_service_latency_violations = %llu\n",
++          m_service_latency_violations);
++  fprintf(fout, "awma_r101r2_service_stale_token_violations = %llu\n",
++          m_service_stale_token_violations);
++  fprintf(fout, "awma_r101r2_service_max_scheduled_depth = %llu\n",
++          m_service_max_scheduled_depth);
++  fprintf(fout, "awma_r101r2_service_max_ready_depth = %llu\n",
++          m_service_max_ready_depth);
++  fprintf(fout, "awma_r101r2_service_semantics_qualified = %u\n",
++          (m_service_atomic_fail_closed == 0 &&
++           m_service_unsupported_fail_closed == 0 &&
++           m_service_partial_skips == 0 &&
++           m_service_multi_region_skips == 0 &&
++           m_service_invalid_range_skips == 0 &&
++           m_service_stale_token_violations == 0)
++              ? 1
++              : 0);
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -996 +996,3 @@
+-  bool active() const { return m_explicit_mode || m_diagnostics; }
++  bool active() const {
++    return m_explicit_mode || m_diagnostics || service_oracle_selected();
++  }
+@@ -1003,0 +1006,16 @@
++  awma_transient_l2::service_access classify_service_access(
++      new_addr_type sim_va, unsigned size) const {
++    return m_policy.classify_access(sim_va, size);
++  }
++  bool service_oracle_selected() const {
++    return m_service_mode == awma_transient_l2::SERVICE_MODE_ORACLE_1C;
++  }
++  bool service_window_active() const {
++    return service_oracle_selected() &&
++           m_active_kernel_ordinal >= m_roi_start_ordinal &&
++           m_active_kernel_ordinal <= m_roi_end_ordinal;
++  }
++  bool service_token_live(
++      const awma_transient_l2::line_metadata &metadata) const {
++    return m_policy.is_live(metadata);
++  }
+@@ -1027 +1045,22 @@
+-  bool drain_active() const { return m_outstanding_l2_writebacks != 0; }
++  void note_service_inactive_observation(
++      awma_transient_l2::service_access_kind kind, unsigned bytes);
++  void note_service_fail_closed(
++      awma_transient_l2::service_access_kind kind, bool atomic,
++      bool unsupported_operation, unsigned bytes);
++  void note_service_admission(
++      const awma_transient_l2::line_metadata &metadata, bool write,
++      bool ldgsts,
++      unsigned request_bytes, unsigned active_bytes,
++      unsigned long long cycle);
++  void note_service_ready(
++      const awma_transient_l2::line_metadata &metadata, bool write,
++      unsigned long long admission_cycle, unsigned long long ready_cycle,
++      unsigned long long observed_cycle);
++  void note_service_retired(bool write, bool ldgsts);
++  void note_service_queue_depth(unsigned scheduled, unsigned ready);
++  void note_service_duplicate_completion() {
++    ++m_service_duplicate_completions;
++  }
++  bool drain_active() const {
++    return m_outstanding_l2_writebacks != 0 || m_service_outstanding != 0;
++  }
+@@ -1052,0 +1092,2 @@
++  const char *service_mode_name() const;
++  unsigned long long lifecycle_hash() const;
+@@ -1056,0 +1098,2 @@
++  bool m_service_selector_explicit;
++  awma_transient_l2::service_mode m_service_mode;
+@@ -1064,0 +1108,11 @@
++  unsigned m_context_end_ordinal;
++  unsigned m_roi_start_ordinal;
++  unsigned m_roi_end_ordinal;
++  unsigned m_active_kernel_ordinal;
++  unsigned long long m_context_end_cycle;
++  unsigned long long m_roi_end_cycle;
++  unsigned long long m_pre_roi_cycle;
++  unsigned long long m_pre_roi_lifecycle_hash;
++  bool m_context_end_cycle_valid;
++  bool m_roi_end_cycle_valid;
++  bool m_pre_roi_receipt_valid;
+@@ -1090,0 +1145,31 @@
++
++  unsigned long long m_service_inactive_intersections;
++  unsigned long long m_service_inactive_bytes;
++  unsigned long long m_service_dead_skips;
++  unsigned long long m_service_partial_skips;
++  unsigned long long m_service_multi_region_skips;
++  unsigned long long m_service_invalid_range_skips;
++  unsigned long long m_service_atomic_fail_closed;
++  unsigned long long m_service_unsupported_fail_closed;
++  unsigned long long m_service_fail_closed_bytes;
++  unsigned long long m_service_qualified_reads;
++  unsigned long long m_service_qualified_ldg_reads;
++  unsigned long long m_service_qualified_ldgsts_reads;
++  unsigned long long m_service_qualified_ldgsts_bytes;
++  unsigned long long m_service_qualified_read_bytes;
++  unsigned long long m_service_qualified_read_active_bytes;
++  unsigned long long m_service_qualified_writes;
++  unsigned long long m_service_qualified_write_bytes;
++  unsigned long long m_service_qualified_write_active_bytes;
++  unsigned long long m_service_scheduled;
++  unsigned long long m_service_one_cycle_ready;
++  unsigned long long m_service_retired_reads;
++  unsigned long long m_service_retired_ldg_reads;
++  unsigned long long m_service_retired_ldgsts_reads;
++  unsigned long long m_service_retired_writes;
++  unsigned long long m_service_outstanding;
++  unsigned long long m_service_duplicate_completions;
++  unsigned long long m_service_latency_violations;
++  unsigned long long m_service_stale_token_violations;
++  unsigned long long m_service_max_scheduled_depth;
++  unsigned long long m_service_max_ready_depth;
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -2491,0 +2492,97 @@
++bool ldst_unit::awma_o2_try_admit(warp_inst_t &inst, mem_access_t &access,
++                                  bool bypass_l1) {
++  awma_transient_l2_controller &controller = awma_transient_l2_instance();
++  if (!controller.service_oracle_selected()) return false;
++
++  const awma_transient_l2::service_access classification =
++      controller.classify_service_access(access.get_sim_va(),
++                                         access.get_size());
++  if (!controller.service_window_active()) {
++    if (classification.kind !=
++            awma_transient_l2::SERVICE_ACCESS_NON_TRANSIENT &&
++        access.mark_awma_o2_service_observed())
++      controller.note_service_inactive_observation(classification.kind,
++                                                   access.get_size());
++    return false;
++  }
++  if (classification.kind ==
++      awma_transient_l2::SERVICE_ACCESS_NON_TRANSIENT)
++    return false;
++
++  const bool atomic = inst.isatomic();
++  const bool ordinary_read =
++      inst.space.get_type() == global_space && inst.is_load() &&
++      !inst.is_store() && !access.is_write() &&
++      access.get_type() == GLOBAL_ACC_R;
++  const bool ordinary_write =
++      inst.space.get_type() == global_space && inst.is_store() &&
++      !inst.is_load() && access.is_write() &&
++      access.get_type() == GLOBAL_ACC_W && !inst.m_is_ldgsts;
++  const bool unsupported_operation = !(ordinary_read || ordinary_write);
++  const bool ldgsts = ordinary_read && inst.m_is_ldgsts;
++  if (atomic || unsupported_operation || !classification.oracle_eligible()) {
++    if (access.mark_awma_o2_service_observed())
++      controller.note_service_fail_closed(
++          classification.kind, atomic, unsupported_operation,
++          access.get_size());
++    return false;
++  }
++
++  const unsigned long long now =
++      m_core->get_gpu()->gpu_sim_cycle +
++      m_core->get_gpu()->gpu_tot_sim_cycle;
++  vm_cov_note(m_core, access);
++  mem_fetch *mf = m_mf_allocator->alloc(inst, access, now);
++  unsigned ack_tokens = 0;
++  if (ordinary_write) {
++    ack_tokens = awma_r101r2_o2::store_ack_tokens(
++        bypass_l1,
++        m_config->m_L1D_config.get_mshr_type() == SECTOR_ASSOC,
++        mf->get_data_size());
++    for (unsigned i = 0; i < ack_tokens; ++i)
++      m_core->inc_store_req(inst.warp_id());
++  }
++  controller.note_service_admission(
++      classification.metadata, ordinary_write, ldgsts, access.get_size(),
++      access.get_byte_mask().count(), now);
++  m_awma_o2_scheduled.push_back(awma_o2_service_entry(
++      mf, classification.metadata, ordinary_write, ldgsts, ack_tokens, now));
++  controller.note_service_queue_depth(m_awma_o2_scheduled.size(),
++                                      m_awma_o2_ready.size());
++  inst.accessq_pop_back();
++  return true;
++}
++
++void ldst_unit::awma_o2_service_cycle() {
++  if (m_awma_o2_scheduled.empty()) return;
++  const unsigned long long now =
++      m_core->get_gpu()->gpu_sim_cycle +
++      m_core->get_gpu()->gpu_tot_sim_cycle;
++  awma_transient_l2_controller &controller = awma_transient_l2_instance();
++  while (!m_awma_o2_scheduled.empty() &&
++         m_awma_o2_scheduled.front().ready_cycle <= now) {
++    awma_o2_service_entry entry = m_awma_o2_scheduled.front();
++    m_awma_o2_scheduled.pop_front();
++    if (entry.state != awma_r101r2_o2::SERVICE_SCHEDULED) {
++      controller.note_service_duplicate_completion();
++      continue;
++    }
++    entry.state = awma_r101r2_o2::SERVICE_READY;
++    controller.note_service_ready(
++        entry.metadata, entry.write, entry.admission_cycle, entry.ready_cycle,
++        now);
++    entry.mf->set_reply();
++    if (entry.write) {
++      for (unsigned i = 0; i < entry.ack_tokens; ++i)
++        m_core->store_ack(entry.mf);
++      entry.state = awma_r101r2_o2::SERVICE_RETIRED;
++      controller.note_service_retired(true, false);
++      delete entry.mf;
++    } else {
++      m_awma_o2_ready.push_back(entry);
++    }
++  }
++  controller.note_service_queue_depth(m_awma_o2_scheduled.size(),
++                                      m_awma_o2_ready.size());
++}
++
+@@ -2761,0 +2859,8 @@
++  if (awma_o2_try_admit(inst, access, bypassL1D)) {
++    if (!inst.accessq_empty()) {
++      stall_reason = COAL_STALL;
++      access_type = inst.is_store() ? G_MEM_ST : G_MEM_LD;
++      return false;
++    }
++    return true;
++  }
+@@ -3276,0 +3382,18 @@
++        } else if (!m_awma_o2_ready.empty()) {
++          awma_o2_service_entry entry = m_awma_o2_ready.front();
++          m_awma_o2_ready.pop_front();
++          if (entry.state != awma_r101r2_o2::SERVICE_READY || entry.write) {
++            awma_transient_l2_instance().note_service_duplicate_completion();
++            assert(false && "invalid O2 ready response state");
++          }
++          const bool entry_ldgsts =
++              entry.dependency == awma_r101r2_o2::READ_LDGSTS_DEPBAR;
++          assert(entry_ldgsts == entry.mf->get_inst().m_is_ldgsts);
++          m_next_wb = entry.mf->get_inst();
++          entry.state = awma_r101r2_o2::SERVICE_RETIRED;
++          awma_transient_l2_instance().note_service_retired(false,
++                                                             entry_ldgsts);
++          delete entry.mf;
++          awma_transient_l2_instance().note_service_queue_depth(
++              m_awma_o2_scheduled.size(), m_awma_o2_ready.size());
++          serviced_client = next_client;
+@@ -3328,0 +3452 @@
++  awma_o2_service_cycle();
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -54,0 +55 @@
++#include "awma_r101r2_o2_service.h"
+@@ -1477,0 +1479,26 @@
++
++  struct awma_o2_service_entry {
++    awma_o2_service_entry(mem_fetch *request,
++                          const awma_transient_l2::line_metadata &token,
++                          bool is_write, bool is_ldgsts,
++                          unsigned acknowledgements,
++                          unsigned long long admitted)
++        : mf(request), metadata(token), write(is_write),
++          dependency(awma_r101r2_o2::read_dependency(is_ldgsts)),
++          ack_tokens(acknowledgements), admission_cycle(admitted),
++          ready_cycle(awma_r101r2_o2::one_cycle_ready(admitted)),
++          state(awma_r101r2_o2::SERVICE_SCHEDULED) {}
++    mem_fetch *mf;
++    awma_transient_l2::line_metadata metadata;
++    bool write;
++    awma_r101r2_o2::read_dependency_kind dependency;
++    unsigned ack_tokens;
++    unsigned long long admission_cycle;
++    unsigned long long ready_cycle;
++    awma_r101r2_o2::service_state state;
++  };
++  bool awma_o2_try_admit(warp_inst_t &inst, mem_access_t &access,
++                         bool bypass_l1);
++  void awma_o2_service_cycle();
++  std::deque<awma_o2_service_entry> m_awma_o2_scheduled;
++  std::deque<awma_o2_service_entry> m_awma_o2_ready;
