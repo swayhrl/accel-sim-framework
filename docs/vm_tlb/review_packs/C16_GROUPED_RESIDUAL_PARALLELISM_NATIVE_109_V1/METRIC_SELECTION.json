@@ -1,0 +1,25 @@
+{
+  "ncu_version": "2025.1.1.0",
+  "chip": "ad103",
+  "mandatory_metrics": [
+    "lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum",
+    "lts__t_sectors_srcunit_tex_op_read_lookup_miss.sum",
+    "l1tex__t_bytes.sum",
+    "lts__t_bytes.sum",
+    "dram__bytes.sum",
+    "gpu__time_duration.sum"
+  ],
+  "parallelism": {
+    "automatic_launch_attribute": "launch__waves_per_multiprocessor",
+    "explicit_metric": "sm__warps_active.avg.pct_of_peak_sustained_elapsed",
+    "explicit_metric_description": "Average active warps as percent of peak sustained rate during elapsed cycles across SM instances.",
+    "query_status": "SUPPORTED_AD103",
+    "scope": "GEMM and split8 reduction rows reported separately"
+  },
+  "rejected_expansion": [
+    "no section sweep",
+    "no additional occupancy submetrics",
+    "no broad SM throughput metric"
+  ],
+  "status": "PASS_MINIMAL_SEMANTIC_SELECTION"
+}

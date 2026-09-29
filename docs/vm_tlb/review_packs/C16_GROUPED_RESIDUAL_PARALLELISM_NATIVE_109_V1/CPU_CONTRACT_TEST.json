@@ -1,0 +1,105 @@
+{
+  "fixed": {
+    "K": 4096,
+    "M": [
+      1,
+      16,
+      32,
+      64
+    ],
+    "N": 12288,
+    "group": 128,
+    "split": [
+      8,
+      1
+    ]
+  },
+  "input_sha256": {
+    "1": "3b434cf659f064e99bdafe21797e18698d33de5f30b7c953b2a9e9bcff33e665",
+    "16": "cbbbf23c72fd7163ea3ae04dead7fa26d269e8469f78b7a3af763bd2645d32d4",
+    "32": "05774b203c08d82dd6b81a02c8caf9a02c64dd73659f8956ec8f73b563bcf6a5",
+    "64": "af349644813d38c28c3790abd40196fcba48c7d061c719dde5984a91271602d1"
+  },
+  "launch_rows": [
+    {
+      "M": 1,
+      "coverage_pass": true,
+      "gemm_grid": 768,
+      "m_tiles": 1,
+      "reduction_grid": 24,
+      "scratch_bytes": 196608,
+      "split": 8
+    },
+    {
+      "M": 1,
+      "coverage_pass": true,
+      "gemm_grid": 96,
+      "m_tiles": 1,
+      "reduction_grid": 0,
+      "scratch_bytes": 24576,
+      "split": 1
+    },
+    {
+      "M": 16,
+      "coverage_pass": true,
+      "gemm_grid": 768,
+      "m_tiles": 1,
+      "reduction_grid": 384,
+      "scratch_bytes": 3145728,
+      "split": 8
+    },
+    {
+      "M": 16,
+      "coverage_pass": true,
+      "gemm_grid": 96,
+      "m_tiles": 1,
+      "reduction_grid": 0,
+      "scratch_bytes": 393216,
+      "split": 1
+    },
+    {
+      "M": 32,
+      "coverage_pass": true,
+      "gemm_grid": 1536,
+      "m_tiles": 2,
+      "reduction_grid": 768,
+      "scratch_bytes": 6291456,
+      "split": 8
+    },
+    {
+      "M": 32,
+      "coverage_pass": true,
+      "gemm_grid": 192,
+      "m_tiles": 2,
+      "reduction_grid": 0,
+      "scratch_bytes": 786432,
+      "split": 1
+    },
+    {
+      "M": 64,
+      "coverage_pass": true,
+      "gemm_grid": 3072,
+      "m_tiles": 4,
+      "reduction_grid": 1536,
+      "scratch_bytes": 12582912,
+      "split": 8
+    },
+    {
+      "M": 64,
+      "coverage_pass": true,
+      "gemm_grid": 384,
+      "m_tiles": 4,
+      "reduction_grid": 0,
+      "scratch_bytes": 1572864,
+      "split": 1
+    }
+  ],
+  "status": "PASS",
+  "version": "C16_GROUPED_RESIDUAL_SYNTH_V1",
+  "weight_side_bytes": {
+    "qweight": 25165824,
+    "qzeros": 196608,
+    "scales": 786432,
+    "total": 26148864
+  }
+}
