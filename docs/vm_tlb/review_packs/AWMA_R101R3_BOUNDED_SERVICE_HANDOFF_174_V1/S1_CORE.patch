@@ -1,0 +1,659 @@
+diff --git a/src/abstract_hardware_model.cc b/src/abstract_hardware_model.cc
+--- a/src/abstract_hardware_model.cc
++++ b/src/abstract_hardware_model.cc
+@@ -51,6 +51,7 @@
+   m_l1_telemetry_cache_status = M4C_TELEMETRY_L1_STATUS_UNAVAILABLE;
+   m_m4c_frontend_transaction_observed = false;
+   m_awma_o2_service_observed = false;
++  m_awma_r101r3_s1_observed = false;
+   m_addr = 0;
+   m_sim_va = 0;
+   m_sim_pa = 0;
+diff --git a/src/abstract_hardware_model.h b/src/abstract_hardware_model.h
+--- a/src/abstract_hardware_model.h
++++ b/src/abstract_hardware_model.h
+@@ -912,6 +912,11 @@
+   bool mark_awma_o2_service_observed() {
+     if (m_awma_o2_service_observed) return false;
+     m_awma_o2_service_observed = true;
++    return true;
++  }
++  bool mark_awma_r101r3_s1_observed() {
++    if (m_awma_r101r3_s1_observed) return false;
++    m_awma_r101r3_s1_observed = true;
+     return true;
+   }
+ 
+@@ -973,6 +978,7 @@
+   unsigned m_l1_telemetry_cache_status;
+   bool m_m4c_frontend_transaction_observed;
+   bool m_awma_o2_service_observed;
++  bool m_awma_r101r3_s1_observed;
+ };
+ 
+ class mem_fetch;
+diff --git a/src/gpgpu-sim/awma_transient_l2_policy.h b/src/gpgpu-sim/awma_transient_l2_policy.h
+--- a/src/gpgpu-sim/awma_transient_l2_policy.h
++++ b/src/gpgpu-sim/awma_transient_l2_policy.h
+@@ -17,7 +17,8 @@
+ 
+ enum service_mode {
+   SERVICE_MODE_NONE = 0,
+-  SERVICE_MODE_ORACLE_1C
++  SERVICE_MODE_ORACLE_1C,
++  SERVICE_MODE_PARTITION_HIT
+ };
+ 
+ enum service_access_kind {
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -44,6 +44,8 @@
+     : m_configured(false),
+       m_explicit_mode(false),
+       m_diagnostics(false),
++      m_r3_selector_explicit(false),
++      m_r3_diagnostics(false),
+       m_service_selector_explicit(false),
+       m_service_mode(awma_transient_l2::SERVICE_MODE_NONE),
+       m_line_size(0),
+@@ -113,7 +115,30 @@
+       m_service_latency_violations(0),
+       m_service_stale_token_violations(0),
+       m_service_max_scheduled_depth(0),
+-      m_service_max_ready_depth(0) {
++      m_service_max_ready_depth(0),
++      m_s1_inactive_intersections(0),
++      m_s1_head_qualified_cycles(0),
++      m_s1_dram_queue_full_cycles(0),
++      m_s1_return_queue_full_cycles(0),
++      m_s1_data_port_busy_cycles(0),
++      m_s1_max_ingress_depth(0),
++      m_s1_max_return_depth(0),
++      m_s1_fallback_requests(0),
++      m_s1_dead_fail_closed(0),
++      m_s1_partial_fail_closed(0),
++      m_s1_multi_region_fail_closed(0),
++      m_s1_invalid_range_fail_closed(0),
++      m_s1_atomic_fail_closed(0),
++      m_s1_unsupported_fail_closed(0),
++      m_s1_served_reads(0),
++      m_s1_served_ldg_reads(0),
++      m_s1_served_ldgsts_reads(0),
++      m_s1_served_writes(0),
++      m_s1_served_request_bytes(0),
++      m_s1_served_active_bytes(0),
++      m_s1_context_served(0),
++      m_s1_duplicate_completions(0),
++      m_s1_subpartition_mask(0) {
+   configure_from_environment();
+ }
+ 
+@@ -133,7 +158,9 @@
+   const char *mode_text = getenv("AWMA_TRANSIENT_L2_MODE");
+   const char *service_text =
+       getenv("AWMA_R101R2_TRANSIENT_SERVICE_MODE");
++  const char *r3_service_text = getenv("AWMA_R101R3_SERVICE_MODE");
+   const char *diagnostics_text = getenv("AWMA_TRANSIENT_L2_DIAGNOSTICS");
++  const char *r3_diagnostics_text = getenv("AWMA_R101R3_DIAGNOSTICS");
+   const char *sidecar = getenv("AWMA_TRANSIENT_L2_SIDECAR");
+   awma_transient_l2::mode selected = awma_transient_l2::MODE_NONE;
+   if (mode_text != NULL) {
+@@ -161,9 +188,28 @@
+       abort();
+     }
+   }
++  if (r3_service_text != NULL) {
++    m_r3_selector_explicit = true;
++    if (!strcmp(r3_service_text, "none")) {
++      assert(m_service_mode == awma_transient_l2::SERVICE_MODE_NONE);
++    } else if (!strcmp(r3_service_text, "s1_partition_hit")) {
++      assert(m_service_mode == awma_transient_l2::SERVICE_MODE_NONE &&
++             "R101R2 O2 and R101R3 S1 cannot be combined");
++      m_service_mode = awma_transient_l2::SERVICE_MODE_PARTITION_HIT;
++    } else {
++      fprintf(stderr, "Unknown AWMA_R101R3_SERVICE_MODE=%s\n",
++              r3_service_text);
++      abort();
++    }
++  }
+   if (diagnostics_text != NULL) {
+     assert(!strcmp(diagnostics_text, "0") || !strcmp(diagnostics_text, "1"));
+     m_diagnostics = !strcmp(diagnostics_text, "1");
++  }
++  if (r3_diagnostics_text != NULL) {
++    assert(!strcmp(r3_diagnostics_text, "0") ||
++           !strcmp(r3_diagnostics_text, "1"));
++    m_r3_diagnostics = !strcmp(r3_diagnostics_text, "1");
+   }
+   m_policy.reset(selected);
+   if (sidecar != NULL && sidecar[0] != '\0') read_sidecar(sidecar);
+@@ -171,9 +217,9 @@
+     assert(sidecar != NULL && sidecar[0] != '\0');
+     assert(m_expected_kernels > 0);
+   }
+-  if (service_oracle_selected()) {
++  if (service_oracle_selected() || s1_partition_hit_selected()) {
+     assert(selected == awma_transient_l2::MODE_NONE &&
+-           "O2 service oracle cannot be combined with an L2 mechanism");
++           "service modes cannot be combined with a transient L2 mechanism");
+     assert(sidecar != NULL && sidecar[0] != '\0');
+     assert(m_expected_kernels == 6);
+     assert(m_context_end_ordinal == 3);
+@@ -437,6 +483,68 @@
+     m_service_max_ready_depth = ready;
+ }
+ 
++void awma_transient_l2_controller::note_s1_head(
++    bool qualified, unsigned ingress_depth, unsigned return_depth,
++    bool dram_queue_full, bool return_queue_full, bool data_port_busy) {
++  if (!s1_partition_hit_selected()) return;
++  if (ingress_depth > m_s1_max_ingress_depth)
++    m_s1_max_ingress_depth = ingress_depth;
++  if (return_depth > m_s1_max_return_depth)
++    m_s1_max_return_depth = return_depth;
++  if (!qualified) return;
++  if (!s1_window_active()) {
++    ++m_s1_inactive_intersections;
++    return;
++  }
++  ++m_s1_head_qualified_cycles;
++  if (!m_r3_diagnostics) return;
++  if (dram_queue_full) ++m_s1_dram_queue_full_cycles;
++  if (return_queue_full) ++m_s1_return_queue_full_cycles;
++  if (data_port_busy) ++m_s1_data_port_busy_cycles;
++}
++
++void awma_transient_l2_controller::note_s1_fallback(
++    awma_transient_l2::service_access_kind kind, bool atomic,
++    bool unsupported_operation, unsigned bytes) {
++  (void)bytes;
++  assert(s1_window_active());
++  ++m_s1_fallback_requests;
++  if (atomic) ++m_s1_atomic_fail_closed;
++  if (unsupported_operation) ++m_s1_unsupported_fail_closed;
++  if (kind == awma_transient_l2::SERVICE_ACCESS_DEAD_TRANSIENT)
++    ++m_s1_dead_fail_closed;
++  else if (kind == awma_transient_l2::SERVICE_ACCESS_PARTIAL_TRANSIENT)
++    ++m_s1_partial_fail_closed;
++  else if (kind == awma_transient_l2::SERVICE_ACCESS_MULTIPLE_REGIONS)
++    ++m_s1_multi_region_fail_closed;
++  else if (kind == awma_transient_l2::SERVICE_ACCESS_INVALID_RANGE)
++    ++m_s1_invalid_range_fail_closed;
++}
++
++void awma_transient_l2_controller::note_s1_served(
++    const awma_transient_l2::line_metadata &metadata, bool write,
++    bool ldgsts, unsigned request_bytes, unsigned active_bytes,
++    unsigned sub_partition) {
++  assert(s1_window_active());
++  assert(m_policy.is_live(metadata));
++  assert(request_bytes > 0 && sub_partition < 64);
++  m_s1_subpartition_mask |= 1ULL << sub_partition;
++  m_s1_served_request_bytes += request_bytes;
++  m_s1_served_active_bytes += active_bytes;
++  if (m_active_kernel_ordinal <= m_context_end_ordinal)
++    ++m_s1_context_served;
++  if (write) {
++    assert(!ldgsts);
++    ++m_s1_served_writes;
++  } else {
++    ++m_s1_served_reads;
++    if (ldgsts)
++      ++m_s1_served_ldgsts_reads;
++    else
++      ++m_s1_served_ldg_reads;
++  }
++}
++
+ void awma_transient_l2_controller::apply_transitions(
+     const std::vector<boundary_transition> &transitions, unsigned &cursor,
+     unsigned ordinal, bool post_completion) {
+@@ -559,6 +667,8 @@
+       return "none";
+     case awma_transient_l2::SERVICE_MODE_ORACLE_1C:
+       return "oracle_1c";
++    case awma_transient_l2::SERVICE_MODE_PARTITION_HIT:
++      return "s1_partition_hit";
+   }
+   abort();
+ }
+@@ -589,6 +699,10 @@
+          m_service_duplicate_completions == 0 &&
+          m_service_latency_violations == 0 &&
+          m_service_stale_token_violations == 0 &&
++         m_s1_served_reads ==
++             m_s1_served_ldg_reads + m_s1_served_ldgsts_reads &&
++         m_s1_context_served == 0 &&
++         m_s1_duplicate_completions == 0 &&
+          m_active_kernel_ordinal == 0;
+ }
+ 
+@@ -741,6 +855,60 @@
+            m_service_stale_token_violations == 0)
+               ? 1
+               : 0);
++  fprintf(fout, "awma_r101r3_service_mode = %s\n",
++          service_mode_name());
++  fprintf(fout, "awma_r101r3_selector_explicit = %u\n",
++          m_r3_selector_explicit ? 1 : 0);
++  fprintf(fout, "awma_r101r3_diagnostics = %u\n",
++          m_r3_diagnostics ? 1 : 0);
++  fprintf(fout, "awma_r101r3_s1_inactive_intersections = %llu\n",
++          m_s1_inactive_intersections);
++  fprintf(fout, "awma_r101r3_s1_head_qualified_cycles = %llu\n",
++          m_s1_head_qualified_cycles);
++  fprintf(fout, "awma_r101r3_s1_dram_queue_full_cycles = %llu\n",
++          m_s1_dram_queue_full_cycles);
++  fprintf(fout, "awma_r101r3_s1_return_queue_full_cycles = %llu\n",
++          m_s1_return_queue_full_cycles);
++  fprintf(fout, "awma_r101r3_s1_data_port_busy_cycles = %llu\n",
++          m_s1_data_port_busy_cycles);
++  fprintf(fout, "awma_r101r3_s1_max_ingress_depth = %llu\n",
++          m_s1_max_ingress_depth);
++  fprintf(fout, "awma_r101r3_s1_max_return_depth = %llu\n",
++          m_s1_max_return_depth);
++  fprintf(fout, "awma_r101r3_s1_fallback_requests = %llu\n",
++          m_s1_fallback_requests);
++  fprintf(fout, "awma_r101r3_s1_dead_fail_closed = %llu\n",
++          m_s1_dead_fail_closed);
++  fprintf(fout, "awma_r101r3_s1_partial_fail_closed = %llu\n",
++          m_s1_partial_fail_closed);
++  fprintf(fout, "awma_r101r3_s1_multi_region_fail_closed = %llu\n",
++          m_s1_multi_region_fail_closed);
++  fprintf(fout, "awma_r101r3_s1_invalid_range_fail_closed = %llu\n",
++          m_s1_invalid_range_fail_closed);
++  fprintf(fout, "awma_r101r3_s1_atomic_fail_closed = %llu\n",
++          m_s1_atomic_fail_closed);
++  fprintf(fout, "awma_r101r3_s1_unsupported_fail_closed = %llu\n",
++          m_s1_unsupported_fail_closed);
++  fprintf(fout, "awma_r101r3_s1_served_reads = %llu\n",
++          m_s1_served_reads);
++  fprintf(fout, "awma_r101r3_s1_served_ldg_reads = %llu\n",
++          m_s1_served_ldg_reads);
++  fprintf(fout, "awma_r101r3_s1_served_ldgsts_reads = %llu\n",
++          m_s1_served_ldgsts_reads);
++  fprintf(fout, "awma_r101r3_s1_served_writes = %llu\n",
++          m_s1_served_writes);
++  fprintf(fout, "awma_r101r3_s1_served_request_bytes = %llu\n",
++          m_s1_served_request_bytes);
++  fprintf(fout, "awma_r101r3_s1_served_active_bytes = %llu\n",
++          m_s1_served_active_bytes);
++  fprintf(fout, "awma_r101r3_s1_context_served = %llu\n",
++          m_s1_context_served);
++  fprintf(fout, "awma_r101r3_s1_duplicate_completions = %llu\n",
++          m_s1_duplicate_completions);
++  fprintf(fout, "awma_r101r3_s1_subpartition_mask = %llu\n",
++          m_s1_subpartition_mask);
++  fprintf(fout, "awma_r101r3_s1_semantics_qualified = %u\n",
++          s1_semantics_qualified() ? 1 : 0);
+   fprintf(fout, "awma_transient_l2_terminal_quiescent = %u\n",
+           terminal_quiescent() ? 1 : 0);
+ }
+@@ -2900,6 +3068,17 @@
+   return data_cache::access(addr, mf, time, events);
+ }
+ 
++enum cache_request_status l2_cache::awma_s1_partition_hit(
++    mem_fetch *mf, unsigned time, std::list<cache_event> &events) {
++  (void)time;
++  assert(mf != NULL && events.empty());
++  assert(data_port_free());
++  m_bandwidth_management.use_data_port(mf, HIT, events);
++  m_stats.inc_stats(mf->get_access_type(), HIT, mf->get_streamID());
++  m_stats.inc_stats_pw(mf->get_access_type(), HIT, mf->get_streamID());
++  return HIT;
++}
++
+ /// Access function for tex_cache
+ /// return values: RESERVATION_FAIL if request could not be accepted
+ /// otherwise returns HIT_RESERVED or MISS; NOTE: *never* returns HIT
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -994,9 +994,11 @@
+   void register_l2(tag_array *tags, unsigned line_size);
+   void unregister_l2(tag_array *tags);
+   bool active() const {
+-    return m_explicit_mode || m_diagnostics || service_oracle_selected();
++    return m_explicit_mode || m_diagnostics || service_oracle_selected() ||
++           s1_partition_hit_selected();
+   }
+   bool diagnostics_enabled() const { return m_diagnostics; }
++  bool r3_diagnostics_enabled() const { return m_r3_diagnostics; }
+   bool replacement_enabled() const {
+     return m_policy.replacement_enabled();
+   }
+@@ -1012,6 +1014,15 @@
+   }
+   bool service_window_active() const {
+     return service_oracle_selected() &&
++           m_active_kernel_ordinal >= m_roi_start_ordinal &&
++           m_active_kernel_ordinal <= m_roi_end_ordinal;
++  }
++  bool s1_partition_hit_selected() const {
++    return m_service_mode ==
++           awma_transient_l2::SERVICE_MODE_PARTITION_HIT;
++  }
++  bool s1_window_active() const {
++    return s1_partition_hit_selected() &&
+            m_active_kernel_ordinal >= m_roi_start_ordinal &&
+            m_active_kernel_ordinal <= m_roi_end_ordinal;
+   }
+@@ -1061,6 +1072,26 @@
+   void note_service_duplicate_completion() {
+     ++m_service_duplicate_completions;
+   }
++  void note_s1_head(bool qualified, unsigned ingress_depth,
++                    unsigned return_depth, bool dram_queue_full,
++                    bool return_queue_full, bool data_port_busy);
++  void note_s1_fallback(
++      awma_transient_l2::service_access_kind kind, bool atomic,
++      bool unsupported_operation, unsigned bytes);
++  void note_s1_served(
++      const awma_transient_l2::line_metadata &metadata, bool write,
++      bool ldgsts, unsigned request_bytes, unsigned active_bytes,
++      unsigned sub_partition);
++  bool s1_semantics_qualified() const {
++    return m_s1_atomic_fail_closed == 0 &&
++           m_s1_unsupported_fail_closed == 0 &&
++           m_s1_partial_fail_closed == 0 &&
++           m_s1_multi_region_fail_closed == 0 &&
++           m_s1_invalid_range_fail_closed == 0;
++  }
++  void note_s1_duplicate_completion() {
++    ++m_s1_duplicate_completions;
++  }
+   bool drain_active() const {
+     return m_outstanding_l2_writebacks != 0 || m_service_outstanding != 0;
+   }
+@@ -1095,6 +1126,8 @@
+   bool m_configured;
+   bool m_explicit_mode;
+   bool m_diagnostics;
++  bool m_r3_selector_explicit;
++  bool m_r3_diagnostics;
+   bool m_service_selector_explicit;
+   awma_transient_l2::service_mode m_service_mode;
+   unsigned m_line_size;
+@@ -1173,6 +1206,29 @@
+   unsigned long long m_service_stale_token_violations;
+   unsigned long long m_service_max_scheduled_depth;
+   unsigned long long m_service_max_ready_depth;
++  unsigned long long m_s1_inactive_intersections;
++  unsigned long long m_s1_head_qualified_cycles;
++  unsigned long long m_s1_dram_queue_full_cycles;
++  unsigned long long m_s1_return_queue_full_cycles;
++  unsigned long long m_s1_data_port_busy_cycles;
++  unsigned long long m_s1_max_ingress_depth;
++  unsigned long long m_s1_max_return_depth;
++  unsigned long long m_s1_fallback_requests;
++  unsigned long long m_s1_dead_fail_closed;
++  unsigned long long m_s1_partial_fail_closed;
++  unsigned long long m_s1_multi_region_fail_closed;
++  unsigned long long m_s1_invalid_range_fail_closed;
++  unsigned long long m_s1_atomic_fail_closed;
++  unsigned long long m_s1_unsupported_fail_closed;
++  unsigned long long m_s1_served_reads;
++  unsigned long long m_s1_served_ldg_reads;
++  unsigned long long m_s1_served_ldgsts_reads;
++  unsigned long long m_s1_served_writes;
++  unsigned long long m_s1_served_request_bytes;
++  unsigned long long m_s1_served_active_bytes;
++  unsigned long long m_s1_context_served;
++  unsigned long long m_s1_duplicate_completions;
++  unsigned long long m_s1_subpartition_mask;
+ };
+ 
+ awma_transient_l2_controller &awma_transient_l2_instance();
+@@ -1980,6 +2036,8 @@
+   virtual enum cache_request_status access(new_addr_type addr, mem_fetch *mf,
+                                            unsigned time,
+                                            std::list<cache_event> &events);
++  enum cache_request_status awma_s1_partition_hit(
++      mem_fetch *mf, unsigned time, std::list<cache_event> &events);
+ };
+ 
+ /*****************************************************************************/
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -41,6 +41,7 @@
+ #include "../statwrapper.h"
+ #include "dram.h"
+ #include "gpu-cache.h"
++#include "awma_r101r3_s1_service.h"
+ #include "gpu-sim.h"
+ #include "histogram.h"
+ #include "l2cache.h"
+@@ -447,6 +448,13 @@
+                              m_L2interface, m_mf_allocator,
+                              IN_PARTITION_L2_MISS_QUEUE, gpu, L2_GPU_CACHE);
+ 
++  if (awma_transient_l2_instance().s1_partition_hit_selected()) {
++    assert(!m_config->m_L2_config.disabled());
++    assert(m_config->m_L2_config.get_line_sz() == MAX_MEMORY_ACCESS_SIZE);
++    assert(m_config->m_L2_config.get_atom_sz() == SECTOR_SIZE);
++    assert(m_id < 64);
++  }
++
+   unsigned int icnt_L2;
+   unsigned int L2_dram;
+   unsigned int dram_L2;
+@@ -468,6 +476,56 @@
+   delete m_L2cache;
+   delete m_L2interface;
+ }
++
++namespace {
++
++struct awma_s1_probe_result {
++  awma_s1_probe_result()
++      : atomic(false), unsupported(false), ordinary_read(false),
++        ordinary_write(false), ldgsts(false), semantic_candidate(false) {}
++  awma_transient_l2::service_access classification;
++  bool atomic;
++  bool unsupported;
++  bool ordinary_read;
++  bool ordinary_write;
++  bool ldgsts;
++  bool semantic_candidate;
++};
++
++awma_s1_probe_result awma_s1_probe(mem_fetch *mf) {
++  awma_s1_probe_result result;
++  awma_transient_l2_controller &controller = awma_transient_l2_instance();
++  result.classification =
++      controller.classify_service_access(mf->get_sim_va(),
++                                         mf->get_access_size());
++  result.atomic = mf->isatomic();
++  const bool has_instruction = !mf->get_inst().empty();
++  result.ordinary_read =
++      has_instruction && mf->get_access_type() == GLOBAL_ACC_R &&
++      !mf->is_write();
++  result.ordinary_write =
++      has_instruction && mf->get_access_type() == GLOBAL_ACC_W &&
++      mf->is_write() && !mf->get_inst().m_is_ldgsts;
++  result.unsupported =
++      !(result.ordinary_read || result.ordinary_write) ||
++      mf->get_access_size() != SECTOR_SIZE;
++  result.ldgsts =
++      result.ordinary_read && mf->get_inst().m_is_ldgsts;
++  awma_r101r3_s1::request_semantics semantics;
++  semantics.atomic = result.atomic;
++  semantics.ordinary_read = result.ordinary_read;
++  semantics.ordinary_write = result.ordinary_write;
++  semantics.request_bytes = mf->get_access_size();
++  result.semantic_candidate =
++      awma_r101r3_s1::supported(result.classification, semantics);
++  if (result.classification.intersects_transient()) {
++    assert(mf->get_sim_va() == mf->get_sim_pa());
++    assert(mf->get_sim_pa() == mf->get_addr());
++  }
++  return result;
++}
++
++}  // namespace
+ 
+ void memory_sub_partition::cache_cycle(unsigned cycle) {
+   m4c_memory_telemetry_instance().record_l2_queue(
+@@ -523,6 +581,25 @@
+   // prior L2 misses inserted into m_L2_dram_queue here
+   if (!m_config->m_L2_config.disabled()) m_L2cache->cycle();
+ 
++  // S1 observes only the normal post-L1/post-request-ICNT partition head.
++  // It has no side queue and cannot create a request or response port.
++  awma_transient_l2_controller &awma_controller =
++      awma_transient_l2_instance();
++  if (awma_controller.s1_partition_hit_selected() &&
++      !m_icnt_L2_queue->empty()) {
++    mem_fetch *head = m_icnt_L2_queue->top();
++    const awma_s1_probe_result probe = awma_s1_probe(head);
++    const bool report_head =
++        awma_controller.s1_window_active() ||
++        (probe.semantic_candidate &&
++         head->mark_awma_r101r3_s1_observed());
++    if (report_head)
++      awma_controller.note_s1_head(
++          probe.semantic_candidate, m_icnt_L2_queue->get_length(),
++          m_L2_icnt_queue->get_length(), m_L2_dram_queue->full(),
++          m_L2_icnt_queue->full(), !m_L2cache->data_port_free());
++  }
++
+   // new L2 texture accesses and/or non-texture accesses
+   if (!m_L2_dram_queue->full() && !m_icnt_L2_queue->empty()) {
+     mem_fetch *mf = m_icnt_L2_queue->top();
+@@ -534,11 +611,33 @@
+       bool port_free = m_L2cache->data_port_free();
+       if (!output_full && port_free) {
+         std::list<cache_event> events;
+-        enum cache_request_status status =
+-            m_L2cache->access(mf->get_addr(), mf,
+-                              m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle +
+-                                  m_memcpy_cycle_offset,
+-                              events);
++        const unsigned long long access_cycle =
++            m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle +
++            m_memcpy_cycle_offset;
++        const awma_s1_probe_result s1_probe = awma_s1_probe(mf);
++        const bool s1_serve =
++            awma_controller.s1_window_active() &&
++            s1_probe.semantic_candidate;
++        enum cache_request_status status;
++        if (s1_serve) {
++          if (!mf->mark_awma_r101r3_s1_observed()) {
++            awma_controller.note_s1_duplicate_completion();
++            assert(false && "duplicate S1 partition-hit application");
++          }
++          status = m_L2cache->awma_s1_partition_hit(mf, access_cycle, events);
++          awma_controller.note_s1_served(
++              s1_probe.classification.metadata, s1_probe.ordinary_write,
++              s1_probe.ldgsts, mf->get_access_size(),
++              mf->get_access_byte_mask().count(), m_id);
++        } else {
++          if (awma_controller.s1_window_active() &&
++              s1_probe.classification.intersects_transient() &&
++              mf->mark_awma_r101r3_s1_observed())
++            awma_controller.note_s1_fallback(
++                s1_probe.classification.kind, s1_probe.atomic,
++                s1_probe.unsupported, mf->get_access_size());
++          status = m_L2cache->access(mf->get_addr(), mf, access_cycle, events);
++        }
+         m4c_memory_telemetry_instance().record_l2(
+             mf->get_telemetry_class(), status, mf->get_access_size(), m_id,
+             mf->get_translation_telemetry_outcome(),
+diff --git a/src/gpgpu-sim/mem_fetch.h b/src/gpgpu-sim/mem_fetch.h
+--- a/src/gpgpu-sim/mem_fetch.h
++++ b/src/gpgpu-sim/mem_fetch.h
+@@ -88,6 +88,11 @@
+   bool is_write() { return m_access.is_write(); }
+   void set_addr(new_addr_type addr) { m_access.set_addr(addr); }
+   new_addr_type get_addr() const { return m_access.get_addr(); }
++  new_addr_type get_sim_va() const { return m_access.get_sim_va(); }
++  new_addr_type get_sim_pa() const { return m_access.get_sim_pa(); }
++  bool mark_awma_r101r3_s1_observed() {
++    return m_access.mark_awma_r101r3_s1_observed();
++  }
+   unsigned get_access_size() const { return m_access.get_size(); }
+   new_addr_type get_partition_addr() const { return m_partition_addr; }
+   unsigned get_sub_partition_id() const { return m_raw_addr.sub_partition; }
+diff --git a/src/gpgpu-sim/awma_r101r3_s1_service.h b/src/gpgpu-sim/awma_r101r3_s1_service.h
+new file mode 100644
+--- /dev/null
++++ b/src/gpgpu-sim/awma_r101r3_s1_service.h
+@@ -0,0 +1,75 @@
++#ifndef AWMA_R101R3_S1_SERVICE_H
++#define AWMA_R101R3_S1_SERVICE_H
++
++#include <assert.h>
++
++#include "awma_transient_l2_policy.h"
++
++namespace awma_r101r3_s1 {
++
++static const unsigned kSectorBytes = 32;
++
++struct request_semantics {
++  request_semantics()
++      : atomic(false), ordinary_read(false), ordinary_write(false),
++        request_bytes(0) {}
++  bool atomic;
++  bool ordinary_read;
++  bool ordinary_write;
++  unsigned request_bytes;
++};
++
++inline bool supported(const awma_transient_l2::service_access &classification,
++                      const request_semantics &semantics) {
++  return classification.oracle_eligible() && !semantics.atomic &&
++         (semantics.ordinary_read || semantics.ordinary_write) &&
++         semantics.request_bytes == kSectorBytes;
++}
++
++struct bounded_path_state {
++  bounded_path_state()
++      : dram_queue_full(false), return_queue_full(false),
++        data_port_busy(false) {}
++  bool dram_queue_full;
++  bool return_queue_full;
++  bool data_port_busy;
++  bool can_accept() const {
++    return !dram_queue_full && !return_queue_full && !data_port_busy;
++  }
++};
++
++struct accounting {
++  accounting()
++      : reads(0), writes(0), ldgsts_reads(0), fallbacks(0),
++        duplicates(0), request_bytes(0), active_bytes(0) {}
++
++  unsigned long long reads;
++  unsigned long long writes;
++  unsigned long long ldgsts_reads;
++  unsigned long long fallbacks;
++  unsigned long long duplicates;
++  unsigned long long request_bytes;
++  unsigned long long active_bytes;
++
++  void serve(bool write, bool ldgsts, unsigned request,
++             unsigned active) {
++    assert(request == kSectorBytes && active <= request);
++    if (write) {
++      assert(!ldgsts);
++      ++writes;
++    } else {
++      ++reads;
++      if (ldgsts) ++ldgsts_reads;
++    }
++    request_bytes += request;
++    active_bytes += active;
++  }
++
++  bool exact() const {
++    return ldgsts_reads <= reads && duplicates == 0;
++  }
++};
++
++}  // namespace awma_r101r3_s1
++
++#endif
