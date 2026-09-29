@@ -1,6 +1,6 @@
 # AWMA论文阅读笔记｜ChatGPT支线
 
-维护者ChatGPT；更新：Round13，2026-09-27。文献笔记不是执行receipt；是否启动和完成实验，以独立Goal和review pack为准。
+维护者ChatGPT；更新：Round14，2026-09-29。文献笔记不是执行receipt；是否启动和完成实验，以独立Goal和review pack为准。
 
 ## 当前窗口名称
 
@@ -8,7 +8,7 @@
 
 ## 最新问题发现
 
-- [Round13：R101R1合并架构轮](rounds/2026-09-27_ROUND_13_R101_TRANSIENT_L2_ARCHITECTURE.md)：接受R101R1现有L2控制不足；将后续合并为109 exact simulator capture与174-new transient-L2最小机制并行。第一机制只验证有限region-aware live retention + dead-drop，不加L2数据容量；O1 oracle先做Native D1方向对齐。\n- [Round12：R101架构审查与L2 lifetime control](rounds/2026-09-27_ROUND_12_R101_ARCH_REVIEW_L2_LIFETIME.md)：R101问题资格化后先排除现有`discard.global.L2`和L2 persistence；随后R101R1结果证明D1仅降26.26%写流量且变慢，D2 A+B 44MiB persistence无写流量收益，进入架构审查。\n- [Round11：代数重写、无损数据流、跨CTA与闭环AI](rounds/2026-09-27_ROUND_11_ALGEBRA_COMPRESSION_AND_CLOSED_LOOP.md)：15项核心工作，12篇正文关键章节、1项作者技术文章+源码、1项摘要+源码、1项元数据+artifact；另6个作者仓库文件与CUDA文档。28条实验/分析组。补Gram NS、UCCL-Zip、DFloat11/ZipServ、CCE/Liger、cluster近邻和VLA推理VJP。保留ClusterFusion++量纲问题；不改F/G任务，不启动新GPU/模拟。
+- [Round14：R101R2执行组织定位](rounds/2026-09-29_ROUND_14_R101R2_EXECUTION_ORGANIZATION_LOCALIZATION.md)：Transient-L2 FULL5将writeback降低约92%、DRAM read约71%、L2 miss约19%，但cycle仅改善约0.5%，因此关闭cache/writeback性能线。下一轮改用109 S128 Native profile +174 CONTEXT2 one-cycle memory-service oracle，定位剩余20% same-map fused响应是memory service还是execution organization。正式采用L1/L2/L3分级实验制度。\n- [Round13：R101R1合并架构轮](rounds/2026-09-27_ROUND_13_R101_TRANSIENT_L2_ARCHITECTURE.md)：接受R101R1现有L2控制不足；将后续合并为109 exact simulator capture与174-new transient-L2最小机制并行。第一机制只验证有限region-aware live retention + dead-drop，不加L2数据容量；O1 oracle先做Native D1方向对齐。\n- [Round12：R101架构审查与L2 lifetime control](rounds/2026-09-27_ROUND_12_R101_ARCH_REVIEW_L2_LIFETIME.md)：R101问题资格化后先排除现有`discard.global.L2`和L2 persistence；随后R101R1结果证明D1仅降26.26%写流量且变慢，D2 A+B 44MiB persistence无写流量收益，进入架构审查。\n- [Round11：代数重写、无损数据流、跨CTA与闭环AI](rounds/2026-09-27_ROUND_11_ALGEBRA_COMPRESSION_AND_CLOSED_LOOP.md)：15项核心工作，12篇正文关键章节、1项作者技术文章+源码、1项摘要+源码、1项元数据+artifact；另6个作者仓库文件与CUDA文档。28条实验/分析组。补Gram NS、UCCL-Zip、DFloat11/ZipServ、CCE/Liger、cluster近邻和VLA推理VJP。保留ClusterFusion++量纲问题；不改F/G任务，不启动新GPU/模拟。
 - [Round10：R81/R82横向审查与下一轮并行候选](rounds/2026-09-27_ROUND_10_HORIZONTAL_REVIEW_AND_NEXT.md)：R81软件机会、R82当前软件无有效候选；后备中提升R101固定Newton–Schulz中间态生命周期，条件提升R102低精度权重变化检测/压缩，Q92/Q93暂缓。历史H/I窗口在实际执行中保留F/G名称，见上。
 - [Round09：宽范围支线——执行组织、表示生命周期与训练新成本](rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md)：27项核心工作，19项正文关键章节、1项部分正文、6项原始摘要、1项作者artifact/元数据；本轮扩展证据表53条。覆盖编译、通信、稀疏、优化器、RL同步、TT embedding、可靠性、CPU/FPGA与模拟方法。该轮未启动新GPU任务，未修改当时R81/R82。明确Celty/Coruscant公开代码范围及Syncopate AE版本标注差异。
 - [Round08：能力比较与两窗口并行探索](rounds/2026-09-27_ROUND_08_PARALLEL_PROBLEM_DISCOVERY.md)：核心13篇，7篇正文关键章节、6篇原始摘要，另核官方源码。保留R81异构合法词表批处理、R82片上layout转换两个小型探索，非已证明的硬件创新。Kestrel已有indexed LM-head，Triton已有多级转换优化，均进入强基线。协调入口：`hrl/awma-round08-parallel-exploration-handoff-v1`，`docs/vm_tlb/chatgpt_handoff/awma/round08_parallel_v1/START_HERE.md`。发布不等于已运行。
