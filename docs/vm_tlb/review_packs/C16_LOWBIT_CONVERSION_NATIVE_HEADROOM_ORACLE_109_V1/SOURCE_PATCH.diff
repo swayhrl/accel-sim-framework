@@ -1,0 +1,106 @@
+--- /data/c16/splitk_grouped_cta_baseline_v1/source/awq_ext/quantization/gemm_cuda_gen.cu	2026-09-29 10:09:29.597715714 +0800
++++ /data/c16/lowbit_conversion_headroom_oracle_v1/source/awq_ext/quantization/gemm_cuda_gen.cu	2026-09-29 17:56:22.381367397 +0800
+@@ -30,6 +30,7 @@
+   return (c + divisor - 1) / divisor;
+ }
+ 
++template <bool ORACLE_FREE_TRANSFORM>
+ __global__ void __launch_bounds__(64) gemm_forward_4bit_cuda_m16n128k32(int G, int split_k_iters, int mapping_mode, half* __restrict__ A, int* __restrict__ B, half* __restrict__ scaling_factors, int* __restrict__ zeros, int M, int IC, int OC, half* __restrict__ C)
+ {
+   static constexpr uint32_t ZERO = 0x0;
+@@ -118,7 +119,10 @@
+ 
+     // for (int ax0_ax1_fused_0 = 0; ax0_ax1_fused_0 < 2; ++ax0_ax1_fused_0) {
+     uint32_t zeros_loaded = *(uint32_t*)(zeros_ptr + k_0_0 * 32 / G * (OC / 8));
+-    uint4 B_loaded_zero = dequantize_s4_to_fp16x2(zeros_loaded);
++    uint4 B_loaded_zero;
++    if constexpr (!ORACLE_FREE_TRANSFORM) {
++      B_loaded_zero = dequantize_s4_to_fp16x2(zeros_loaded);
++    }
+     uint4 B_loaded_scale = *(uint4*)(scaling_factors_ptr + k_0_0 * 32 / G * (OC));
+     /*
+     if (blockIdx_z == 0 && blockIdx_y == 0 && k_0_0 == 0 && threadIdx.x == 0 && threadIdx.y == 0){
+@@ -136,7 +140,25 @@
+       // *(uint4*)(B_shared + ((((ax0_ax1_fused_0 * 544) + (((int)threadIdx.y) * 272)) + ((((int)threadIdx.x) >> 4) * 136)) + ((((int)threadIdx.x) & 15) * 8))) = *(uint4*)(B + ((((((k_0_0 * 163840) + (ax0_ax1_fused_0 * 20480)) + (((int)threadIdx.y) * 10240)) + ((((int)threadIdx.x) >> 4) * 5120)) + (((int)blockIdx_y) * 128)) + ((((int)threadIdx.x) & 15) * 8)));
+       // row stride in shared memory: (NWARPS * 32 * 8 / cta_N) 
+       uint32_t B_loaded = *(uint32_t*)(B_ptr_local + ax0_ax1_fused_0 * row_stride * (OC / 8));
+-      uint4 B_loaded_fp16 = dequantize_s4_to_fp16x2(B_loaded);
++      uint4 B_loaded_fp16;
++      if constexpr (ORACLE_FREE_TRANSFORM) {
++        // Performance-only oracle: compressed qweight/qzero/scale loads remain
++        // data-dependent on the MMA operand, while unpack, zero conversion,
++        // scale multiply, and operand conversion are replaced by cheap masks.
++        // Output is intentionally invalid and must never be used for correctness.
++        constexpr uint32_t ORACLE_HALF2_ONE = 0x3c003c00u;
++        constexpr uint32_t DEPENDENCY_LSB_MASK = 0x00010001u;
++        uint32_t dep0 = (B_loaded ^ zeros_loaded ^ B_loaded_scale.x) & DEPENDENCY_LSB_MASK;
++        uint32_t dep1 = (B_loaded ^ zeros_loaded ^ B_loaded_scale.y) & DEPENDENCY_LSB_MASK;
++        uint32_t dep2 = (B_loaded ^ zeros_loaded ^ B_loaded_scale.z) & DEPENDENCY_LSB_MASK;
++        uint32_t dep3 = (B_loaded ^ zeros_loaded ^ B_loaded_scale.w) & DEPENDENCY_LSB_MASK;
++        B_loaded_fp16 = make_uint4(ORACLE_HALF2_ONE ^ dep0,
++                                   ORACLE_HALF2_ONE ^ dep1,
++                                   ORACLE_HALF2_ONE ^ dep2,
++                                   ORACLE_HALF2_ONE ^ dep3);
++      }
++      else {
++        B_loaded_fp16 = dequantize_s4_to_fp16x2(B_loaded);
+       //uint4 B_loaded_zero = *(uint4*)(zeros_shared + (threadIdx.x % (cta_N / 8)) * 8);
+ 
+       // uint4 B_loaded_scale = *(uint4*)(scaling_factors_shared + (threadIdx.x % (cta_N / 8)) * 8);
+@@ -150,6 +172,7 @@
+       asm volatile("fma.rn.f16x2 %0, %1, %2, %3;\n" : "=r"(B_loaded_fp16.z) : "r"(B_loaded_fp16.z), "r"(B_loaded_scale.z), "r"(ZERO));
+       asm volatile("sub.f16x2 %0, %1, %2;\n" : "=r"(B_loaded_fp16.w) : "r"(B_loaded_fp16.w), "r"(B_loaded_zero.w));
+       asm volatile("fma.rn.f16x2 %0, %1, %2, %3;\n" : "=r"(B_loaded_fp16.w) : "r"(B_loaded_fp16.w), "r"(B_loaded_scale.w), "r"(ZERO));
++      }
+       /*
+       if (ax0_ax1_fused_0 == 0 && blockIdx_z == 0 && blockIdx_y == 0 && k_0_0 == 0 && threadIdx.x == 17 && threadIdx.y == 0){
+         printf("[x] %X %X %X %X\n", B_loaded_fp16.x, B_loaded_fp16.y, B_loaded_fp16.z, B_loaded_fp16.w);
+@@ -1238,7 +1261,8 @@
+ // zeros: IC // G, OC // 8 [int32] -> cast to IC // G, OC [uint4b]
+ // assume that batch_size < 16 for now
+ 
+-torch::Tensor gemm_forward_cuda(
++template <bool ORACLE_FREE_TRANSFORM>
++torch::Tensor gemm_forward_cuda_impl(
+     torch::Tensor _in_feats,
+     torch::Tensor _kernel,
+     torch::Tensor _scaling_factors,
+@@ -1292,7 +1316,7 @@
+         // threadIdx.x: 32
+         // threadIdx.y: i_factors[2] * j_factors[2]
+         dim3 threads_per_block(32, 2);
+-        gemm_forward_4bit_cuda_m16n128k32<<<num_blocks, threads_per_block, 0, stream>>>(
++        gemm_forward_4bit_cuda_m16n128k32<ORACLE_FREE_TRANSFORM><<<num_blocks, threads_per_block, 0, stream>>>(
+             group_size, split_k_iters, mapping_mode, in_feats, kernel, scaling_factors, zeros, num_in_feats, num_in_channels, num_out_channels, out_feats);
+     }
+     else if (num_out_channels % 64 == 0)
+@@ -1310,3 +1334,29 @@
+         return _out_feats.select(0, 0);
+     return _out_feats.sum(0);
+ }
++
++torch::Tensor gemm_forward_cuda(
++    torch::Tensor _in_feats,
++    torch::Tensor _kernel,
++    torch::Tensor _scaling_factors,
++    torch::Tensor _zeros,
++    int split_k_iters,
++    int mapping_mode)
++{
++    return gemm_forward_cuda_impl<false>(
++        _in_feats, _kernel, _scaling_factors, _zeros, split_k_iters,
++        mapping_mode);
++}
++
++torch::Tensor gemm_forward_oracle_cuda(
++    torch::Tensor _in_feats,
++    torch::Tensor _kernel,
++    torch::Tensor _scaling_factors,
++    torch::Tensor _zeros,
++    int split_k_iters,
++    int mapping_mode)
++{
++    return gemm_forward_cuda_impl<true>(
++        _in_feats, _kernel, _scaling_factors, _zeros, split_k_iters,
++        mapping_mode);
++}

@@ -1,0 +1,18 @@
+# C16 Low-Bit Conversion Native Headroom Oracle — Lane 7
+
+Task: `C16_LOWBIT_CONVERSION_NATIVE_HEADROOM_ORACLE_109_V1`
+
+One discovery target is frozen at `M=256,K=4096,N=49152,split=1,GROUP_M16`.
+One validation target is frozen at `M=256,K=3072,N=49152,split=1,GROUP_M16`
+but may run only when discovery gives an isolated oracle median speedup of at
+least 1.10 with baseline/oracle CV at most 5%.
+
+Conditions:
+
+- `STRONG_W4_BASELINE`: semantic-compatible accepted grouped W4 path.
+- `ORACLE_FREE_TRANSFORM`: performance-only invalid-output diagnostic retaining
+  compressed loads, shared-memory staging, MMA, and output stores.
+- `PREDECODED_CORRECT_DIAGNOSTIC`: correct FP16 materialization outside timing
+  plus the available dense `torch.mm` path.
+
+The oracle is not an implementable mechanism or strict physical upper bound.
