@@ -15,4 +15,15 @@ Conditions:
 - `PREDECODED_CORRECT_DIAGNOSTIC`: correct FP16 materialization outside timing
   plus the available dense `torch.mm` path.
 
+Final decision: `NO_LOCAL_ORACLE_HEADROOM_STOP_VALIDATION`.
+
+Discovery medians are 1.270784 ms (A), 1.538048 ms (B), and 1.162752 ms
+(C).  The local oracle speedup is 0.8262x, so the frozen validation target was
+not run.  Correct predecode is 1.0929x faster but expands the weight from
+104,595,456 to 402,653,184 bytes and changes the kernel path.
+
 The oracle is not an implementable mechanism or strict physical upper bound.
+One initial runtime dependency canary was insufficiently sensitive and stopped
+before timing; it is retained in the raw index.  A whole-tensor low-bit canary
+then verified qweight, qzeros, and scales dependencies before the bounded
+discovery measurement.

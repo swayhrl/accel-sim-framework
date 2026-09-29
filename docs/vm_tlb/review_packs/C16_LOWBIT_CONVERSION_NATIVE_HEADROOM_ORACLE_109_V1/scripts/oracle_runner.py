@@ -57,22 +57,21 @@ def call(module, torch, condition, assets, expanded):
     raise ValueError(condition)
 
 
-def flip_low_bit(torch, tensor):
+def flip_all_low_bits(torch, tensor):
     flat = tensor.view(torch.int16 if tensor.dtype == torch.float16 else tensor.dtype).view(-1)
-    old = int(flat[0].item())
-    flat[0] = old ^ 1
-    return flat, old
+    flat.bitwise_xor_(1)
+    return flat
 
 
 def oracle_dependency_canaries(torch, module, assets, expanded, reference):
     rows = []
     for name, tensor in (("qweight", assets[1]), ("qzeros", assets[3]), ("scales", assets[2])):
-        flat, old = flip_low_bit(torch, tensor)
+        flat = flip_all_low_bits(torch, tensor)
         changed = call(module, torch, "B", assets, expanded)
         torch.cuda.synchronize()
         unequal = int(torch.count_nonzero(changed != reference).item())
         rows.append((name, unequal, unequal > 0, digest_tensor(changed)))
-        flat[0] = old
+        flat.bitwise_xor_(1)
         torch.cuda.synchronize()
     if not all(row[2] for row in rows):
         raise RuntimeError(f"oracle compressed-load dependency canary failed: {rows}")

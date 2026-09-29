@@ -1,0 +1,19 @@
+{
+  "initial_attempt": {
+    "raw_root": "/data/c16/lowbit_conversion_headroom_oracle_v1/C16R_lowbit-conversion-headroom-oracle-v1_20260929T101102Z/raw",
+    "lock_start_utc": "2026-09-29T10:11:02Z",
+    "lock_end_utc": "2026-09-29T10:11:04Z",
+    "exit_code": 1,
+    "timing_samples_produced": 0,
+    "failure": "Single-word/FP16-lowest-bit dependency canary was not observable after output rounding."
+  },
+  "bounded_fix": "Canary only was changed to flip the low bit of every element outside timing, then restore the exact tensor. Oracle source and binary were not changed.",
+  "formal_attempt": {
+    "raw_root": "/data/c16/lowbit_conversion_headroom_oracle_v1/C16R_lowbit-conversion-headroom-oracle-v1_20260929T102057Z/raw",
+    "lock_start_utc": "2026-09-29T10:20:57Z",
+    "lock_end_utc": "2026-09-29T10:20:59Z",
+    "exit_code": 0,
+    "timing_samples_produced": 150
+  },
+  "status": "DISCLOSED_AND_RESOLVED_BEFORE_TIMING"
+}
