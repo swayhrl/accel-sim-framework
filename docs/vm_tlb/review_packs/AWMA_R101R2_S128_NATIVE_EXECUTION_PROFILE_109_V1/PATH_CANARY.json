@@ -1,0 +1,88 @@
+{
+  "arms": {
+    "F128": {
+      "accepted_output_tolerance_pass": true,
+      "accepted_reference_sha256": "b47a423eb93fbe95fd79218c577524e9241178f9c838b6e82bdd4f3b2669d53a",
+      "accepted_tolerance": {
+        "atol": 0.01,
+        "rtol": 0.01
+      },
+      "arm": "F128",
+      "finite": true,
+      "graph_output_pointer_hex": "0x791362000000",
+      "graph_output_sha256": "b47a423eb93fbe95fd79218c577524e9241178f9c838b6e82bdd4f3b2669d53a",
+      "input_device_pointer_hex": "0x79134c400000",
+      "input_perturbation_changed_output": true,
+      "input_restoration_matches": true
+    },
+    "K128": {
+      "accepted_output_tolerance_pass": true,
+      "accepted_reference_sha256": "f3cdbddef0a3ca9849100f5460bb2ef3ea2021caede8c61ec468854975c482cf",
+      "accepted_tolerance": {
+        "atol": 0.01,
+        "rtol": 0.01
+      },
+      "arm": "K128",
+      "finite": true,
+      "graph_output_pointer_hex": "0x7912ba000000",
+      "graph_output_sha256": "f3cdbddef0a3ca9849100f5460bb2ef3ea2021caede8c61ec468854975c482cf",
+      "input_device_pointer_hex": "0x79134c400000",
+      "input_perturbation_changed_output": true,
+      "input_restoration_matches": true
+    }
+  },
+  "frozen_author_launch_configs": {
+    "F128_NS5": {
+      "block": "256,1,1",
+      "grid": "581,1,1",
+      "num_stages": 2,
+      "num_warps": 8
+    },
+    "K128_BA": {
+      "block": "128,1,1",
+      "grid": "2324,1,1",
+      "kwargs": {
+        "BLOCK_SIZE_K": 64,
+        "BLOCK_SIZE_M": 64,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 8,
+        "LOWER_UPPER": 1
+      },
+      "num_stages": 3,
+      "num_warps": 4
+    },
+    "K128_BMM_ADD": {
+      "block": "128,1,1",
+      "grid": "1,581,1",
+      "kwargs": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 128,
+        "BLOCK_SIZE_N": 128,
+        "GROUP_SIZE_M": 8
+      },
+      "num_stages": 4,
+      "num_warps": 4
+    },
+    "K128_XXT": {
+      "block": "128,1,1",
+      "grid": "2324,1,1",
+      "kwargs": {
+        "BLOCK_SIZE_K": 64,
+        "BLOCK_SIZE_M": 64,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 8,
+        "LOWER_UPPER": 1
+      },
+      "num_stages": 3,
+      "num_warps": 4
+    },
+    "authority": "first author-listed configs matching accepted R101 graph family/grid/block; frozen before NCU and without counter or timing feedback"
+  },
+  "input_payload_sha256": "09358f3f21265a9c3a8cdd9681efdaa93a06db7c8d1e1afdbb017e60f0e85544",
+  "no_new_primary_timing": true,
+  "same_map_pair_author_tolerance_pass": true,
+  "source_commit": "af89eda9a0176effed99e1fe19cc1f8a1a2c9588",
+  "stage": "AWMA_R101R2_S128_NATIVE_EXECUTION_PROFILE_V1",
+  "tile_count": 581,
+  "tile_edge": 128
+}

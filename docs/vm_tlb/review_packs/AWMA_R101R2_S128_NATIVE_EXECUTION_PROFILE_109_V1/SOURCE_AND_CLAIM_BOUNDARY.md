@@ -1,0 +1,6 @@
+
+# Source and claim boundary
+
+Arithmetic remains `tang0389/himuon@af89eda9a0176effed99e1fe19cc1f8a1a2c9588`: 581 accepted S128 BF16 tiles, same 5-step `(3.4445,-4.7750,2.0315)` map. F128 is the author's `ns5_smem` fused path; K128 is the author's compiled XXT → ba_plus_cAA → fused_bmm_add path. Author-listed Triton configs were frozen before profiling solely to match the accepted structural grid/block strata, without timing/counter search. The exact selected cubin/module hashes are in `STATIC_SASS_SUMMARY.tsv`.
+
+This is localization, not a new performance exploration or mechanism. Static SASS is not dynamic execution count. NCU's global LDG/LD counter excludes separate LDGSTS global→shared instructions, so both are reported separately and any sum is explicitly derived. NCU active cycles and replay durations are not the accepted graph elapsed time. Fused and three-kernel arms change compute, instruction issue, global-memory work, cache traffic and occupancy simultaneously; neither Native counters alone nor an unavailable metric may be used to claim a unique cause. Joint R101R2 classification requires Lane E's O2 result. No new L2 mechanism, FULL5 simulator replay, model download or holdout was run here.

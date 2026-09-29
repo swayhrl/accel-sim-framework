@@ -1,0 +1,53 @@
+{
+  "bounded_metric_engineering_retry": {
+    "attempt0_f128_k128_reports_archived": true,
+    "not_selected_from_counter_values_or_timing": true,
+    "one_same_config_retry_per_arm": true,
+    "reason": "static SASS reveals K128 LDGSTS global-to-shared instructions; the initially frozen LDG/LD metric does not include that distinct opcode class",
+    "supported_added_metric": "smsp__inst_executed_op_ldgsts.sum"
+  },
+  "gpu": "NVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 8.9",
+  "ncu_execution_contract": {
+    "cache_control": "none",
+    "clock_control": "none",
+    "graph_profiling": "node",
+    "ncu_replay_duration_not_primary_timing": true,
+    "nvtx_one_exact_arm_per_profile": true,
+    "pipeline_boost_state": "dynamic",
+    "replay_mode": "application"
+  },
+  "ncu_version": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2025 NVIDIA Corporation\nVersion 2025.1.1.0 (build 35528883) (public-release)",
+  "query_all_sha256": "2d260b923d0e5e2acb689ff2824b7279c4b91c7dbdbde7b689ea58935868b817",
+  "query_launch_sha256": "2f0aa809d91c4e0e5840ef79cc363fe574d8fca365da3162a5d7b705de7f0e1d",
+  "selected_launch_metrics": [
+    "launch__registers_per_thread",
+    "launch__shared_mem_per_block"
+  ],
+  "selected_profile_metrics": [
+    "smsp__inst_executed.sum",
+    "smsp__inst_issued.sum",
+    "smsp__sass_inst_executed_op_global_ld.sum",
+    "smsp__inst_executed_op_ldgsts.sum",
+    "smsp__sass_inst_executed_op_global_st.sum",
+    "smsp__sass_inst_executed_op_shared_ld.sum",
+    "smsp__sass_inst_executed_op_shared_st.sum",
+    "smsp__inst_executed_pipe_tensor_op_hmma.sum",
+    "smsp__inst_executed_pipe_fma.sum",
+    "smsp__inst_executed_pipe_alu.sum",
+    "sm__cycles_active.sum",
+    "sm__warps_active.avg.pct_of_peak_sustained_active",
+    "smsp__warps_eligible.avg.per_cycle_active",
+    "l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum",
+    "l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum",
+    "l1tex__t_bytes.sum",
+    "lts__t_sectors_op_read.sum",
+    "lts__t_sectors_op_write.sum",
+    "lts__t_bytes.sum",
+    "dram__bytes_read.sum",
+    "dram__bytes_write.sum"
+  ],
+  "unsupported_requested_metrics": [
+    "smsp__inst_executed_pipe_fp32.sum",
+    "smsp__warps_issued.sum"
+  ]
+}
