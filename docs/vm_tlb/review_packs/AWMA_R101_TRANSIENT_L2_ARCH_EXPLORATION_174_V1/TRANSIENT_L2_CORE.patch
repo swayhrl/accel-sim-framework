@@ -1,7 +1,7 @@
 --- a/src/gpgpu-sim/gpu-cache.cc
 +++ b/src/gpgpu-sim/gpu-cache.cc
-@@ -32,9 +32,311 @@
- 
+@@ -32,9 +32,384 @@
+
  #include "gpu-cache.h"
  #include <assert.h>
 +#include <algorithm>
@@ -18,8 +18,12 @@
 +      m_diagnostics(false),
 +      m_line_size(0),
 +      m_expected_kernels(0),
++      m_expected_stream_id(0),
++      m_expected_stream_declared(false),
++      m_launched_kernels(0),
 +      m_completed_kernels(0),
-+      m_applied_transitions(0),
++      m_applied_pre_transitions(0),
++      m_applied_post_transitions(0),
 +      m_transient_accesses(0),
 +      m_transient_admissions(0),
 +      m_protected_deflections(0),
@@ -29,6 +33,8 @@
 +      m_fallback_count(0),
 +      m_l2_writebacks(0),
 +      m_l2_writeback_bytes(0),
++      m_completed_l2_writebacks(0),
++      m_outstanding_l2_writebacks(0),
 +      m_transient_writebacks(0),
 +      m_transient_writeback_bytes(0),
 +      m_dead_eviction_drops(0),
@@ -105,6 +111,16 @@
 +    } else if (kind == "EXPECTED_KERNELS") {
 +      fields >> m_expected_kernels;
 +      assert(m_expected_kernels > 0);
++    } else if (kind == "EXPECTED_STREAM") {
++      fields >> m_expected_stream_id;
++      assert(fields && !m_expected_stream_declared);
++      m_expected_stream_declared = true;
++    } else if (kind == "KERNEL") {
++      unsigned ordinal;
++      kernel_identity identity;
++      fields >> ordinal >> identity.uid >> identity.name;
++      assert(fields && ordinal == m_kernel_identities.size() + 1);
++      m_kernel_identities.push_back(identity);
 +    } else if (kind == "REGION") {
 +      unsigned region_id, generation, live;
 +      std::string base, limit;
@@ -113,7 +129,7 @@
 +      m_policy.configure_region(region_id, awma_parse_u64(base),
 +                                awma_parse_u64(limit), generation, live != 0);
 +      ++region_count;
-+    } else if (kind == "BOUNDARY") {
++    } else if (kind == "BOUNDARY" || kind == "PRE" || kind == "POST") {
 +      boundary_transition transition;
 +      unsigned live;
 +      fields >> transition.ordinal >> transition.region_id >>
@@ -121,7 +137,10 @@
 +      assert(fields && transition.ordinal > 0 &&
 +             transition.ordinal <= m_expected_kernels && live <= 1);
 +      transition.live = live != 0;
-+      m_transitions.push_back(transition);
++      if (kind == "PRE")
++        m_pre_transitions.push_back(transition);
++      else
++        m_post_transitions.push_back(transition);
 +    } else {
 +      fprintf(stderr, "Unknown transient L2 sidecar record: %s\n",
 +              kind.c_str());
@@ -131,13 +150,15 @@
 +    assert(!(fields >> trailing));
 +  }
 +  assert(header && region_count > 0 && region_count <= 4);
-+  std::sort(m_transitions.begin(), m_transitions.end(),
-+            [](const boundary_transition &left,
-+               const boundary_transition &right) {
-+              if (left.ordinal != right.ordinal)
-+                return left.ordinal < right.ordinal;
-+              return left.region_id < right.region_id;
-+            });
++  assert(m_kernel_identities.empty() ||
++         m_kernel_identities.size() == m_expected_kernels);
++  const auto order = [](const boundary_transition &left,
++                        const boundary_transition &right) {
++    if (left.ordinal != right.ordinal) return left.ordinal < right.ordinal;
++    return left.region_id < right.region_id;
++  };
++  std::sort(m_pre_transitions.begin(), m_pre_transitions.end(), order);
++  std::sort(m_post_transitions.begin(), m_post_transitions.end(), order);
 +}
 +
 +void awma_transient_l2_controller::register_l2(tag_array *tags,
@@ -191,12 +212,15 @@
 +
 +void awma_transient_l2_controller::note_l2_writeback(
 +    const evicted_block_info &evicted, bool dropped) {
-+  if (!m_diagnostics) return;
 +  if (dropped) {
-+    ++m_dead_eviction_drops;
-+    m_dead_eviction_drop_bytes += evicted.m_modified_size;
++    if (m_diagnostics) {
++      ++m_dead_eviction_drops;
++      m_dead_eviction_drop_bytes += evicted.m_modified_size;
++    }
 +    return;
 +  }
++  ++m_outstanding_l2_writebacks;
++  if (!m_diagnostics) return;
 +  ++m_l2_writebacks;
 +  m_l2_writeback_bytes += evicted.m_modified_size;
 +  if (evicted.m_awma_transient.transient()) {
@@ -205,16 +229,25 @@
 +  }
 +}
 +
-+void awma_transient_l2_controller::apply_boundary(unsigned ordinal) {
-+  while (m_applied_transitions < m_transitions.size() &&
-+         m_transitions[m_applied_transitions].ordinal == ordinal) {
++void awma_transient_l2_controller::note_l2_writeback_complete() {
++  assert(m_outstanding_l2_writebacks > 0);
++  --m_outstanding_l2_writebacks;
++  if (m_diagnostics) ++m_completed_l2_writebacks;
++}
++
++void awma_transient_l2_controller::apply_transitions(
++    const std::vector<boundary_transition> &transitions, unsigned &cursor,
++    unsigned ordinal, bool post_completion) {
++  while (cursor < transitions.size() &&
++         transitions[cursor].ordinal == ordinal) {
 +    const boundary_transition &transition =
-+        m_transitions[m_applied_transitions];
++        transitions[cursor];
 +    const awma_transient_l2::descriptor old =
 +        m_policy.get_region(transition.region_id);
 +    const bool old_generation_dies =
 +        old.live && (transition.generation != old.generation ||
 +                     !transition.live);
++    if (!post_completion) assert(!old_generation_dies);
 +    if (old_generation_dies &&
 +        m_policy.selected_mode() == awma_transient_l2::MODE_ORACLE_DEAD_DROP) {
 +      for (unsigned i = 0; i < m_l2_arrays.size(); ++i) {
@@ -229,20 +262,47 @@
 +    }
 +    m_policy.transition(transition.region_id, transition.generation,
 +                        transition.live);
-+    ++m_applied_transitions;
++    ++cursor;
 +  }
++}
++
++void awma_transient_l2_controller::kernel_launched(
++    unsigned uid, unsigned long long stream_id, const char *name,
++    unsigned long long cycle) {
++  if (!active()) return;
++  (void)cycle;
++  assert(m_launched_kernels == m_completed_kernels &&
++         "transient lifetime sidecar requires serialized kernels");
++  if (m_expected_stream_declared)
++    assert(stream_id == m_expected_stream_id);
++  assert(std::find(m_runtime_uids.begin(), m_runtime_uids.end(), uid) ==
++         m_runtime_uids.end() && "duplicate runtime kernel UID");
++  if (!m_kernel_identities.empty()) {
++    const kernel_identity &expected = m_kernel_identities[m_launched_kernels];
++    assert(expected.name == name);
++  }
++  m_runtime_uids.push_back(uid);
++  ++m_launched_kernels;
++  assert(m_expected_kernels == 0 || m_launched_kernels <= m_expected_kernels);
++  apply_transitions(m_pre_transitions, m_applied_pre_transitions,
++                    m_launched_kernels, false);
 +}
 +
 +void awma_transient_l2_controller::kernel_completed(
 +    unsigned uid, const char *name, unsigned long long cycle) {
 +  if (!active()) return;
-+  (void)uid;
-+  (void)name;
 +  (void)cycle;
++  assert(m_completed_kernels < m_launched_kernels);
++  assert(m_runtime_uids[m_completed_kernels] == uid);
++  if (!m_kernel_identities.empty()) {
++    const kernel_identity &expected = m_kernel_identities[m_completed_kernels];
++    assert(expected.name == name);
++  }
 +  ++m_completed_kernels;
 +  assert(m_expected_kernels == 0 ||
 +         m_completed_kernels <= m_expected_kernels);
-+  apply_boundary(m_completed_kernels);
++  apply_transitions(m_post_transitions, m_applied_post_transitions,
++                    m_completed_kernels, true);
 +}
 +
 +const char *awma_transient_l2_controller::mode_name() const {
@@ -259,8 +319,11 @@
 +
 +bool awma_transient_l2_controller::terminal_quiescent() const {
 +  if (!active() || m_expected_kernels == 0) return true;
-+  return m_completed_kernels == m_expected_kernels &&
-+         m_applied_transitions == m_transitions.size();
++  return m_launched_kernels == m_expected_kernels &&
++         m_completed_kernels == m_expected_kernels &&
++         m_applied_pre_transitions == m_pre_transitions.size() &&
++         m_applied_post_transitions == m_post_transitions.size() &&
++         m_outstanding_l2_writebacks == 0;
 +}
 +
 +void awma_transient_l2_controller::print_stats(FILE *fout) const {
@@ -268,10 +331,16 @@
 +  fprintf(fout, "awma_transient_l2_mode = %s\n", mode_name());
 +  fprintf(fout, "awma_transient_l2_expected_kernels = %u\n",
 +          m_expected_kernels);
++  fprintf(fout, "awma_transient_l2_launched_kernels = %u\n",
++          m_launched_kernels);
 +  fprintf(fout, "awma_transient_l2_completed_kernels = %u\n",
 +          m_completed_kernels);
++  fprintf(fout, "awma_transient_l2_pre_transitions = %u\n",
++          m_applied_pre_transitions);
++  fprintf(fout, "awma_transient_l2_post_transitions = %u\n",
++          m_applied_post_transitions);
 +  fprintf(fout, "awma_transient_l2_descriptor_transitions = %u\n",
-+          m_applied_transitions);
++          m_applied_pre_transitions + m_applied_post_transitions);
 +  fprintf(fout, "awma_transient_l2_transient_accesses = %llu\n",
 +          m_transient_accesses);
 +  fprintf(fout, "awma_transient_l2_transient_admissions = %llu\n",
@@ -290,6 +359,10 @@
 +          m_l2_writebacks);
 +  fprintf(fout, "awma_transient_l2_l2_writeback_bytes = %llu\n",
 +          m_l2_writeback_bytes);
++  fprintf(fout, "awma_transient_l2_completed_l2_writebacks = %llu\n",
++          m_completed_l2_writebacks);
++  fprintf(fout, "awma_transient_l2_outstanding_l2_writebacks = %llu\n",
++          m_outstanding_l2_writebacks);
 +  fprintf(fout, "awma_transient_l2_transient_writebacks = %llu\n",
 +          m_transient_writebacks);
 +  fprintf(fout, "awma_transient_l2_transient_writeback_bytes = %llu\n",
@@ -309,10 +382,10 @@
 +  fprintf(fout, "awma_transient_l2_terminal_quiescent = %u\n",
 +          terminal_quiescent() ? 1 : 0);
 +}
- 
+
  // used to allocate memory that is large enough to adapt the changes in cache
  // size across kernels
-@@ -216,6 +518,52 @@
+@@ -216,6 +591,52 @@
    m_type_id = type_id;
    is_used = false;
    m_dirty = 0;
@@ -363,9 +436,9 @@
 +  }
 +  return result;
  }
- 
+
  void tag_array::add_pending_line(mem_fetch *mf) {
-@@ -254,6 +602,16 @@
+@@ -254,6 +675,16 @@
    unsigned invalid_line = (unsigned)-1;
    unsigned valid_line = (unsigned)-1;
    unsigned long long valid_timestamp = (unsigned)-1;
@@ -379,10 +452,10 @@
 +      m_awma_is_l2 && awma_transient_l2_instance().replacement_enabled();
 +  const float dirty_line_percentage =
 +      ((float)m_dirty / (m_config.m_nset * m_config.m_assoc)) * 100;
- 
+
    bool all_reserved = true;
    // check for hit or pending hit
-@@ -286,15 +644,15 @@
+@@ -286,15 +717,15 @@
      if (!line->is_reserved_line()) {
        // percentage of dirty lines in the cache
        // number of dirty lines / total lines in the cache
@@ -402,7 +475,7 @@
          all_reserved = false;
          if (line->is_invalid_line()) {
            invalid_line = index;
-@@ -313,7 +671,60 @@
+@@ -313,7 +744,60 @@
            }
          }
        }
@@ -464,7 +537,7 @@
    }
    if (all_reserved) {
      assert(m_config.m_alloc_policy == ON_MISS);
-@@ -349,11 +760,17 @@
+@@ -349,11 +833,17 @@
    is_used = true;
    shader_cache_access_log(m_core_id, m_type_id, 0);  // log accesses to cache
    enum cache_request_status status = probe(addr, idx, mf, mf->is_write());
@@ -482,7 +555,7 @@
        break;
      case MISS:
        m_miss++;
-@@ -362,6 +779,10 @@
+@@ -362,6 +852,10 @@
          if (!m_lines[idx]->is_invalid_line()) {
            evicted.m_has_valid_victim = true;
            evicted.m_telemetry_class = m_lines[idx]->get_telemetry_class();
@@ -493,7 +566,7 @@
          }
          if (m_lines[idx]->is_modified_line()) {
            wb = true;
-@@ -375,6 +796,10 @@
+@@ -375,6 +869,10 @@
          m_lines[idx]->allocate(m_config.tag(addr), m_config.block_addr(addr),
                                 time, mf->get_access_sector_mask());
          m_lines[idx]->set_telemetry_class(mf->get_telemetry_class());
@@ -504,7 +577,7 @@
        }
        break;
      case SECTOR_MISS:
-@@ -385,6 +810,7 @@
+@@ -385,6 +883,7 @@
          bool before = m_lines[idx]->is_modified_line();
          ((sector_cache_block *)m_lines[idx])
              ->allocate_sector(time, mf->get_access_sector_mask());
@@ -512,7 +585,7 @@
          if (before && !m_lines[idx]->is_modified_line()) {
            m_dirty--;
          }
-@@ -401,6 +827,9 @@
+@@ -401,6 +900,9 @@
                status);
        abort();
    }
@@ -521,8 +594,8 @@
 +                                             transient_admission);
    return status;
  }
- 
-@@ -432,6 +861,10 @@
+
+@@ -432,6 +934,10 @@
    if (status == MISS) {
      m_lines[idx]->allocate(m_config.tag(addr), m_config.block_addr(addr), time,
                             mask);
@@ -533,25 +606,25 @@
    } else if (status == SECTOR_MISS) {
      assert(m_config.m_cache_type == SECTOR);
      ((sector_cache_block *)m_lines[idx])->allocate_sector(time, mask);
-@@ -466,6 +899,8 @@
+@@ -466,6 +972,8 @@
        for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++) {
          m_lines[i]->set_status(INVALID, mem_access_sector_mask_t().set(j));
        }
 +      m_lines[i]->set_awma_transient(
 +          awma_transient_l2::line_metadata());
      }
- 
+
    m_dirty = 0;
-@@ -478,6 +913,8 @@
+@@ -478,6 +986,8 @@
    for (unsigned i = 0; i < m_config.get_num_lines(); i++)
      for (unsigned j = 0; j < SECTOR_CHUNCK_SIZE; j++)
        m_lines[i]->set_status(INVALID, mem_access_sector_mask_t().set(j));
 +  for (unsigned i = 0; i < m_config.get_num_lines(); i++)
 +    m_lines[i]->set_awma_transient(awma_transient_l2::line_metadata());
- 
+
    m_dirty = 0;
    is_used = false;
-@@ -1419,6 +1856,23 @@
+@@ -1419,6 +1929,23 @@
  void data_cache::send_write_request(mem_fetch *mf, cache_event request,
                                      unsigned time,
                                      std::list<cache_event> &events) {
@@ -575,7 +648,7 @@
    events.push_back(request);
    m_miss_queue.push_back(mf);
    mf->set_status(m_miss_queue_status, time);
-@@ -1896,7 +2350,8 @@
+@@ -1896,7 +2423,8 @@
        // used, so set the right chip address from the original mf
        wb->set_chip(mf->get_tlx_addr().chip);
        wb->set_partition(mf->get_tlx_addr().sub_partition);
@@ -585,20 +658,98 @@
      }
      return MISS;
    }
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -32,10 +32,47 @@
+
+ #include "shader.h"
+ #include <set>
+-namespace { struct vm_cov { unsigned long long admissions=0, translated=0, untranslated=0, unobserved=0; std::set<unsigned> all, translated_uids, untranslated_uids; }; vm_cov g_vm_cov;
+-static bool vm_cov_enabled(shader_core_ctx *c) { const char *e=getenv("GPGPUSIM_VM_COVERAGE_KERNEL_UID"); return e && c->get_kernel()!=NULL && unsigned(strtoul(e,0,10))==c->get_kernel()->get_uid(); }
+-static void vm_cov_note(shader_core_ctx *c,const mem_access_t &a) { if(!vm_cov_enabled(c)) return; ++g_vm_cov.admissions; g_vm_cov.all.insert(a.get_uid()); if(a.vm_translation_applied()){++g_vm_cov.translated;g_vm_cov.translated_uids.insert(a.get_uid());}else{++g_vm_cov.untranslated;g_vm_cov.untranslated_uids.insert(a.get_uid());} if(a.get_translation_telemetry_outcome()==0)++g_vm_cov.unobserved; }
+-static void vm_cov_print(FILE *f) { if(g_vm_cov.admissions) fprintf(f,"AWMA_VM_COVERAGE admissions=%llu translated=%llu untranslated=%llu unobserved=%llu unique=%llu translated_unique=%llu untranslated_unique=%llu\n",g_vm_cov.admissions,g_vm_cov.translated,g_vm_cov.untranslated,g_vm_cov.unobserved,g_vm_cov.all.size(),g_vm_cov.translated_uids.size(),g_vm_cov.untranslated_uids.size()); }
++#include <string.h>
++namespace {
++struct vm_cov {
++  unsigned kernel_uid = 0;
++  unsigned long long admissions = 0, translated = 0, untranslated = 0,
++                     unobserved = 0;
++  std::set<unsigned> all, translated_uids, untranslated_uids;
++};
++vm_cov g_vm_cov;
++static bool vm_cov_enabled(shader_core_ctx *c) {
++  const char *e = getenv("GPGPUSIM_VM_COVERAGE_KERNEL_UID");
++  if (!e || c->get_kernel() == NULL) return false;
++  return !strcmp(e, "all") ||
++         unsigned(strtoul(e, 0, 10)) == c->get_kernel()->get_uid();
++}
++static void vm_cov_note(shader_core_ctx *c, const mem_access_t &a) {
++  if (!vm_cov_enabled(c)) return;
++  const unsigned kernel_uid = c->get_kernel()->get_uid();
++  if (g_vm_cov.admissions == 0)
++    g_vm_cov.kernel_uid = kernel_uid;
++  else
++    assert(g_vm_cov.kernel_uid == kernel_uid);
++  ++g_vm_cov.admissions;
++  g_vm_cov.all.insert(a.get_uid());
++  if (a.vm_translation_applied()) {
++    ++g_vm_cov.translated;
++    g_vm_cov.translated_uids.insert(a.get_uid());
++  } else {
++    ++g_vm_cov.untranslated;
++    g_vm_cov.untranslated_uids.insert(a.get_uid());
++  }
++  if (a.get_translation_telemetry_outcome() == 0) ++g_vm_cov.unobserved;
++}
++static void vm_cov_print(FILE *f) {
++  if (g_vm_cov.admissions)
++    fprintf(f, "AWMA_VM_COVERAGE kernel_uid=%u admissions=%llu translated=%llu untranslated=%llu unobserved=%llu unique=%llu translated_unique=%llu untranslated_unique=%llu\n",
++            g_vm_cov.kernel_uid, g_vm_cov.admissions, g_vm_cov.translated,
++            g_vm_cov.untranslated, g_vm_cov.unobserved, g_vm_cov.all.size(),
++            g_vm_cov.translated_uids.size(), g_vm_cov.untranslated_uids.size());
++  g_vm_cov = vm_cov();
++}
+ }
+ #include "vm_core.h"
+ #include <float.h>
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -380,6 +380,9 @@
+ }
+
+ void memory_partition_unit::set_done(mem_fetch *mf) {
++  if (mf->get_access_type() == L2_WRBK_ACC &&
++      awma_transient_l2_instance().active())
++    awma_transient_l2_instance().note_l2_writeback_complete();
+   unsigned global_spid = mf->get_sub_partition_id();
+   int spid = global_sub_partition_id_to_local_id(global_spid);
+   assert(m_sub_partition[spid]->get_id() == global_spid);
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -589,6 +589,8 @@
+   void init();
+   void cycle();
+   bool active();
++  bool awma_transient_l2_drain_active() const;
++  bool deadlock_detected() const { return gpu_deadlock; }
+   bool cycle_insn_cta_max_hit() {
+     return (m_config.gpu_max_cycle_opt && (gpu_tot_sim_cycle + gpu_sim_cycle) >=
+                                               m_config.gpu_max_cycle_opt) ||
 --- a/src/gpgpu-sim/gpu-cache.h
 +++ b/src/gpgpu-sim/gpu-cache.h
-@@ -38,8 +38,10 @@
+@@ -38,8 +38,11 @@
  #include "../tr1_hash_map.h"
  #include "gpu-misc.h"
  #include "mem_fetch.h"
 +#include "awma_transient_l2_policy.h"
- 
+
  #include <iostream>
++#include <string>
 +#include <vector>
  #include "addrdec.h"
- 
+
  #define MAX_DEFAULT_CACHE_SIZE_MULTIBLIER 4
-@@ -72,7 +74,8 @@
+@@ -72,7 +75,8 @@
    WRITE_ALLOCATE_SENT,
    // Observation-only notification that a cache replacement selected a valid
    // victim.  Consumers must not use this event to change cache behavior.
@@ -606,9 +757,9 @@
 +  EVICTION_OBSERVED,
 +  AWMA_DEAD_TRANSIENT_DROPPED
  };
- 
+
  enum cache_gpu_level {
-@@ -86,14 +89,18 @@
+@@ -86,14 +90,18 @@
    new_addr_type m_block_addr;
    unsigned m_modified_size;
    unsigned m_telemetry_class;
@@ -627,7 +778,7 @@
      m_byte_mask.reset();
      m_sector_mask.reset();
    }
-@@ -179,12 +186,20 @@
+@@ -179,12 +187,20 @@
      assert(telemetry_class < M4C_MEMORY_CLASS_COUNT);
      m_telemetry_class = telemetry_class;
    }
@@ -638,20 +789,20 @@
 +      const awma_transient_l2::line_metadata &metadata) {
 +    m_awma_transient = metadata;
 +  }
- 
+
    new_addr_type m_tag;
    new_addr_type m_block_addr;
- 
+
   private:
    unsigned m_telemetry_class;
 +  awma_transient_l2::line_metadata m_awma_transient;
  };
- 
+
  struct line_cache_block : public cache_block_t {
-@@ -961,6 +976,101 @@
+@@ -961,6 +977,121 @@
    linear_to_raw_address_translation *m_address_mapping;
  };
- 
+
 +class tag_array;
 +
 +struct awma_transient_drop_result {
@@ -698,6 +849,11 @@
 +                   const awma_transient_l2::line_metadata &baseline_metadata,
 +                   awma_transient_l2::victim_class selected_class);
 +  void note_l2_writeback(const evicted_block_info &evicted, bool dropped);
++  void note_l2_writeback_complete();
++  bool drain_active() const { return m_outstanding_l2_writebacks != 0; }
++  void kernel_launched(unsigned uid, unsigned long long stream_id,
++                       const char *name,
++                       unsigned long long cycle);
 +  void kernel_completed(unsigned uid, const char *name,
 +                        unsigned long long cycle);
 +  void print_stats(FILE *fout) const;
@@ -710,9 +866,15 @@
 +    unsigned generation;
 +    bool live;
 +  };
++  struct kernel_identity {
++    unsigned uid;
++    std::string name;
++  };
 +  void configure_from_environment();
 +  void read_sidecar(const char *path);
-+  void apply_boundary(unsigned ordinal);
++  void apply_transitions(const std::vector<boundary_transition> &transitions,
++                         unsigned &cursor, unsigned ordinal,
++                         bool post_completion);
 +  const char *mode_name() const;
 +
 +  bool m_configured;
@@ -720,10 +882,17 @@
 +  bool m_diagnostics;
 +  unsigned m_line_size;
 +  unsigned m_expected_kernels;
++  unsigned long long m_expected_stream_id;
++  bool m_expected_stream_declared;
++  unsigned m_launched_kernels;
 +  unsigned m_completed_kernels;
-+  unsigned m_applied_transitions;
++  unsigned m_applied_pre_transitions;
++  unsigned m_applied_post_transitions;
 +  awma_transient_l2::region_policy m_policy;
-+  std::vector<boundary_transition> m_transitions;
++  std::vector<boundary_transition> m_pre_transitions;
++  std::vector<boundary_transition> m_post_transitions;
++  std::vector<kernel_identity> m_kernel_identities;
++  std::vector<unsigned> m_runtime_uids;
 +  std::vector<tag_array *> m_l2_arrays;
 +
 +  unsigned long long m_transient_accesses;
@@ -735,6 +904,8 @@
 +  unsigned long long m_fallback_count;
 +  unsigned long long m_l2_writebacks;
 +  unsigned long long m_l2_writeback_bytes;
++  unsigned long long m_completed_l2_writebacks;
++  unsigned long long m_outstanding_l2_writebacks;
 +  unsigned long long m_transient_writebacks;
 +  unsigned long long m_transient_writeback_bytes;
 +  unsigned long long m_dead_eviction_drops;
@@ -750,7 +921,7 @@
  class tag_array {
   public:
    // Use this constructor
-@@ -1002,6 +1112,10 @@
+@@ -1002,6 +1133,10 @@
    void add_pending_line(mem_fetch *mf);
    void remove_pending_line(mem_fetch *mf);
    void inc_dirty() { m_dirty++; }
@@ -758,18 +929,18 @@
 +  void unmark_awma_l2();
 +  awma_transient_drop_result awma_oracle_drop(unsigned region_id,
 +                                              unsigned generation);
- 
+
   protected:
    // This constructor is intended for use only from derived classes that wish to
-@@ -1034,6 +1148,7 @@
+@@ -1034,6 +1169,7 @@
    int m_type_id;  // what kind of cache is this (normal, texture, constant)
- 
+
    bool is_used;  // a flag if the whole cache has ever been accessed before
 +  bool m_awma_is_l2;
- 
+
    typedef tr1_hash_map<new_addr_type, unsigned> line_table;
    line_table pending_lines;
-@@ -1750,9 +1865,11 @@
+@@ -1750,9 +1886,11 @@
             enum mem_fetch_status status, class gpgpu_sim *gpu,
             enum cache_gpu_level level)
        : data_cache(name, config, core_id, type_id, memport, mfcreator, status,
@@ -781,12 +952,23 @@
 +  }
 +
 +  virtual ~l2_cache() { m_tag_array->unmark_awma_l2(); }
- 
+
    virtual enum cache_request_status access(new_addr_type addr, mem_fetch *mf,
                                             unsigned time,
 --- a/src/gpgpu-sim/gpu-sim.cc
 +++ b/src/gpgpu-sim/gpu-sim.cc
-@@ -1046,6 +1046,8 @@
+@@ -912,6 +912,10 @@
+   unsigned kernelID = kinfo->get_uid();
+   unsigned long long streamID = kinfo->get_streamID();
+
++  awma_transient_l2_instance().kernel_launched(
++      kernelID, streamID, kinfo->name().c_str(),
++      gpu_tot_sim_cycle + gpu_sim_cycle);
++
+   kernel_time_t kernel_time = {gpu_tot_sim_cycle + gpu_sim_cycle, 0};
+   if (gpu_kernel_time.find(streamID) == gpu_kernel_time.end()) {
+     std::map<unsigned, kernel_time_t> new_val;
+@@ -1046,6 +1050,8 @@
    last_streamID = streamID;
    gpu_kernel_time.at(streamID).at(uid).end_cycle =
        gpu_tot_sim_cycle + gpu_sim_cycle;
@@ -795,14 +977,25 @@
    m_finished_kernel.push_back(uid);
    std::vector<kernel_info_t *>::iterator k;
    for (k = m_running_kernels.begin(); k != m_running_kernels.end(); k++) {
-@@ -1441,6 +1443,7 @@
+@@ -1343,6 +1349,10 @@
+   return false;
+ }
+
++bool gpgpu_sim::awma_transient_l2_drain_active() const {
++  return awma_transient_l2_instance().drain_active();
++}
++
+ bool sst_gpgpu_sim::active() {
+   if (m_config.gpu_max_cycle_opt &&
+       (gpu_tot_sim_cycle + gpu_sim_cycle) >= m_config.gpu_max_cycle_opt)
+@@ -1441,6 +1451,7 @@
    gpgpu_ctx->stats->ptx_file_line_stats_write_file();
    gpu_print_stat(streamID);
    if (m_vm_translation != NULL) m_vm_translation->print_stats(stdout);
 +  awma_transient_l2_instance().print_stats(stdout);
    m4c_memory_telemetry_instance().print(stdout, executed_kernel_name().c_str());
    m4c_memory_telemetry_instance().finish_kernel();
- 
+
 --- /dev/null
 +++ b/src/gpgpu-sim/awma_transient_l2_policy.h
 @@ -0,0 +1,151 @@

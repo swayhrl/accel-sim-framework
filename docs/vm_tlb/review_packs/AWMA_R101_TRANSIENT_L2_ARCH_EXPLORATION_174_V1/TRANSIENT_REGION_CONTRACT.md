@@ -6,17 +6,31 @@ The strict derived sidecar contains:
 
 - one `LINE_SIZE 128` record;
 - one `EXPECTED_KERNELS N` record;
+- one `EXPECTED_STREAM 0` record and 18 exact ordered `KERNEL` identities;
 - exactly four initial `REGION id base limit generation live` records for
   A/B/X0/X1;
-- finite `BOUNDARY completed_kernel_ordinal region_id generation live` records.
+- 16 finite `PRE launch_ordinal region_id generation live` producer activations;
+- 15 finite `POST completed_kernel_ordinal region_id generation live` deaths.
 
 Raw producer bytes remain immutable. The consumer derives this view only after
 verifying the producer commit, review manifest, stable simulator-input identity,
-trace member hashes/order, terminal `drop=0/overflow=0`, exact four aligned
-regions and lifetime rows. Missing initial live/generation state fails closed.
+18 trace member hashes/order/header identities, terminal `drop=0/overflow=0`,
+the four aligned non-overlapping regions, exact address intersections, and the
+18 published kernel-boundary lifetime rows.
+
+The producer publishes after-kernel states. The consumer starts each bounded
+generation dead, activates a completely-written producer region at launch, and
+applies only real deaths at completion. The first two normalization members have
+no X0 intersection; X0 generation 1 activates at the third normalization launch.
+
+Formal V1 admission requires every region base and size to be 128-byte
+line-aligned. Unaligned/partial-line regions are outside the mechanism contract:
+the policy's overlap-classification unit diagnostic is conservative for live
+protection but does not establish safe dead-dirty drop when region-external
+bytes share a line. No formal run admits such a descriptor.
 
 No per-line last read, next access, future trace position, synthetic region,
-tile subset, or address inference is accepted.
+unbounded descriptor, free capacity or other future-derived state is admitted.
 
 Mode semantics:
 

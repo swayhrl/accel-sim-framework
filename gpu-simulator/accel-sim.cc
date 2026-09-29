@@ -1,6 +1,9 @@
 #include "accel-sim.h"
 #include "accelsim_version.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 accel_sim_framework::accel_sim_framework(std::string config_file,
                                           std::string trace_file) {
   std::cout << "Accel-Sim [build " << g_accelsim_version << "]";
@@ -86,6 +89,42 @@ void accel_sim_framework::simulation_loop() {
       fflush(stdout);
       break;
     }
+  }
+
+  const char *drain = getenv("AWMA_TRANSIENT_L2_DRAIN");
+  if (drain != NULL && !strcmp(drain, "1")) {
+    const unsigned long long start =
+        m_gpgpu_sim->gpu_tot_sim_cycle + m_gpgpu_sim->gpu_sim_cycle;
+    unsigned long long drain_cycles = 0;
+    while (m_gpgpu_sim->active() ||
+           m_gpgpu_sim->awma_transient_l2_drain_active()) {
+      assert(!m_gpgpu_sim->cycle_insn_cta_max_hit());
+      m_gpgpu_sim->cycle();
+      sim_cycles = true;
+      ++drain_cycles;
+      assert(drain_cycles < 100000000ULL);
+      m_gpgpu_sim->deadlock_check();
+    }
+    const bool terminal_gpu_active = m_gpgpu_sim->active();
+    const bool terminal_l2_writeback_active =
+        m_gpgpu_sim->awma_transient_l2_drain_active();
+    const bool terminal_max_limit_hit =
+        m_gpgpu_sim->cycle_insn_cta_max_hit();
+    const bool terminal_deadlock = m_gpgpu_sim->deadlock_detected();
+    assert(!terminal_gpu_active);
+    assert(!terminal_l2_writeback_active);
+    assert(!terminal_max_limit_hit);
+    assert(!terminal_deadlock);
+    const unsigned long long end =
+        m_gpgpu_sim->gpu_tot_sim_cycle + m_gpgpu_sim->gpu_sim_cycle;
+    m_gpgpu_sim->print_stats(0);
+    printf("AWMA_TRANSIENT_L2_DRAIN enabled=1 cycles=%llu gpu_active=%u "
+           "l2_writeback_active=%u max_limit_hit=%u gpu_deadlock=%u\n",
+           end - start, terminal_gpu_active ? 1U : 0U,
+           terminal_l2_writeback_active ? 1U : 0U,
+           terminal_max_limit_hit ? 1U : 0U, terminal_deadlock ? 1U : 0U);
+    m_gpgpu_sim->update_stats();
+    m_gpgpu_context->print_simulation_time();
   }
 }
 

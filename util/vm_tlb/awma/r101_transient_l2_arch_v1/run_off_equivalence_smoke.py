@@ -69,10 +69,11 @@ def main() -> int:
     command[2] = "/root/workspace/accel-sim-framework-awma-r101-transient-l2-arch-174-v1/configs/rtx4080_ada/SM89_RTX4080_AWMA_V1/gpgpusim.config"
     env = os.environ.copy()
     for key in tuple(env):
-        if key.startswith("AWMA_TRANSIENT_L2"):
+        if key.startswith("AWMA_TRANSIENT_L2") or key.startswith("GPGPUSIM_"):
             env.pop(key)
     env.update({key: str(value) for key, value in accepted["environment"].items()
                 if key.startswith("GPGPUSIM_")})
+    env["GPGPUSIM_VM_COVERAGE_KERNEL_UID"] = "all"
     env["GPGPUSIM_ROOT"] = str(RUNTIME / "src/gpgpu-sim")
     env["GPGPUSIM_POWER_MODEL"] = str(RUNTIME / "src/gpgpu-sim/src/accelwattch") + "/"
     env["LD_LIBRARY_PATH"] = f"{CORE_LIB}:{env.get('LD_LIBRARY_PATH', '')}"
@@ -82,9 +83,10 @@ def main() -> int:
         env["AWMA_TRANSIENT_L2_MODE"] = transient_mode
         env["AWMA_TRANSIENT_L2_DIAGNOSTICS"] = "1"
         env["AWMA_TRANSIENT_L2_SIDECAR"] = str(sidecar)
+        env["AWMA_TRANSIENT_L2_DRAIN"] = "1"
         transient_environment = {key: env[key] for key in
                                  ("AWMA_TRANSIENT_L2_MODE", "AWMA_TRANSIENT_L2_DIAGNOSTICS",
-                                  "AWMA_TRANSIENT_L2_SIDECAR")}
+                                  "AWMA_TRANSIENT_L2_SIDECAR", "AWMA_TRANSIENT_L2_DRAIN")}
     receipt = {
         "stage": "AWMA_R101_TRANSIENT_L2_ARCH_EXPLORATION_V1",
         "role": "DEFAULT_OFF_EQUIVALENCE",
@@ -103,22 +105,30 @@ def main() -> int:
     (durable / "wall_seconds.txt").write_text(f"{time.monotonic()-started:.6f}\n")
     text = (durable / "run.log").read_text(errors="strict")
     coverage = [line for line in text.splitlines() if line.startswith("AWMA_VM_COVERAGE ")]
-    passed = (rc == 0 and scalar(text, "gpu_sim_cycle") == EXPECTED["cycles"] and
-              scalar(text, "gpu_sim_insn") == EXPECTED["instructions"] and
+    passed = (rc == 0 and scalar(text, "gpu_tot_sim_cycle") == EXPECTED["cycles"] and
+              scalar(text, "gpu_tot_sim_insn") == EXPECTED["instructions"] and
               scalar(text, "gpu_tot_issued_cta") == EXPECTED["ctas"] and coverage and
               "untranslated=0" in coverage[-1] and "unobserved=0" in coverage[-1] and
-              f"unique={EXPECTED['unique']}" in coverage[-1])
+              f"unique={EXPECTED['unique']}" in coverage[-1] and
+              "kernel_uid=1" in coverage[-1])
     if args.arm == "default_off":
         passed = passed and "awma_transient_l2_mode" not in text
     else:
         passed = (passed and f"awma_transient_l2_mode = {transient_mode}" in text and
                   "awma_transient_l2_transient_accesses = 0" in text and
                   "awma_transient_l2_terminal_quiescent = 1" in text and
+                  "awma_transient_l2_launched_kernels = 1" in text and
+                  "awma_transient_l2_pre_transitions = 1" in text and
+                  "awma_transient_l2_post_transitions = 1" in text and
                   "awma_transient_l2_dead_eviction_drops = 0" in text and
-                  "awma_transient_l2_oracle_drop_bytes = 0" in text)
+                  "awma_transient_l2_oracle_drop_bytes = 0" in text and
+                  "awma_transient_l2_outstanding_l2_writebacks = 0" in text and
+                  "AWMA_TRANSIENT_L2_DRAIN enabled=1 cycles=0 gpu_active=0 "
+                  "l2_writeback_active=0 max_limit_hit=0 gpu_deadlock=0"
+                  in text)
     result = {"status": "PASS" if passed else "FAIL", "rc": rc,
-              "cycles": scalar(text, "gpu_sim_cycle"),
-              "instructions": scalar(text, "gpu_sim_insn"),
+              "cycles": scalar(text, "gpu_tot_sim_cycle"),
+              "instructions": scalar(text, "gpu_tot_sim_insn"),
               "ctas": scalar(text, "gpu_tot_issued_cta"),
               "coverage": coverage[-1] if coverage else "MISSING",
               "arm": args.arm,
