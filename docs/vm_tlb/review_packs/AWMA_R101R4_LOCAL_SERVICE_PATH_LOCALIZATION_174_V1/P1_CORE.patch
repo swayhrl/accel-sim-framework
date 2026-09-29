@@ -1,0 +1,610 @@
+diff --git a/src/abstract_hardware_model.cc b/src/abstract_hardware_model.cc
+--- a/src/abstract_hardware_model.cc
++++ b/src/abstract_hardware_model.cc
+@@ -53,6 +53,8 @@
+   m_awma_o2_service_observed = false;
+   m_awma_r101r3_s1_observed = false;
+   m_awma_r101r4_p0_full_observed = false;
++  m_awma_r101r4_p1_observed = false;
++  m_awma_r101r4_p1_full_observed = false;
+   m_addr = 0;
+   m_sim_va = 0;
+   m_sim_pa = 0;
+diff --git a/src/abstract_hardware_model.h b/src/abstract_hardware_model.h
+--- a/src/abstract_hardware_model.h
++++ b/src/abstract_hardware_model.h
+@@ -922,6 +922,16 @@
+   bool mark_awma_r101r4_p0_full_observed() {
+     if (m_awma_r101r4_p0_full_observed) return false;
+     m_awma_r101r4_p0_full_observed = true;
++    return true;
++  }
++  bool mark_awma_r101r4_p1_observed() {
++    if (m_awma_r101r4_p1_observed) return false;
++    m_awma_r101r4_p1_observed = true;
++    return true;
++  }
++  bool mark_awma_r101r4_p1_full_observed() {
++    if (m_awma_r101r4_p1_full_observed) return false;
++    m_awma_r101r4_p1_full_observed = true;
+     return true;
+   }
+ 
+@@ -985,6 +995,8 @@
+   bool m_awma_o2_service_observed;
+   bool m_awma_r101r3_s1_observed;
+   bool m_awma_r101r4_p0_full_observed;
++  bool m_awma_r101r4_p1_observed;
++  bool m_awma_r101r4_p1_full_observed;
+ };
+ 
+ class mem_fetch;
+diff --git a/src/gpgpu-sim/awma_transient_l2_policy.h b/src/gpgpu-sim/awma_transient_l2_policy.h
+--- a/src/gpgpu-sim/awma_transient_l2_policy.h
++++ b/src/gpgpu-sim/awma_transient_l2_policy.h
+@@ -19,7 +19,8 @@
+   SERVICE_MODE_NONE = 0,
+   SERVICE_MODE_ORACLE_1C,
+   SERVICE_MODE_PARTITION_HIT,
+-  SERVICE_MODE_FINITE_PREL1
++  SERVICE_MODE_FINITE_PREL1,
++  SERVICE_MODE_POST_L1_LOCAL
+ };
+ 
+ enum service_access_kind {
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -125,6 +125,31 @@
+       m_p0_ready_full_events(0),
+       m_p0_ready_eligible(0),
+       m_p0_ready_eligibility_violations(0),
++      m_p1_inactive_intersections(0),
++      m_p1_fail_closed(0),
++      m_p1_atomic_fail_closed(0),
++      m_p1_unsupported_fail_closed(0),
++      m_p1_admitted_reads(0),
++      m_p1_admitted_ldg_reads(0),
++      m_p1_admitted_ldgsts_reads(0),
++      m_p1_admitted_writes(0),
++      m_p1_request_bytes(0),
++      m_p1_active_bytes(0),
++      m_p1_ready_eligible(0),
++      m_p1_ready(0),
++      m_p1_delivered_reads(0),
++      m_p1_delivered_writes(0),
++      m_p1_outstanding(0),
++      m_p1_duplicate(0),
++      m_p1_latency_violations(0),
++      m_p1_stale_violations(0),
++      m_p1_scheduled_full_cycles(0),
++      m_p1_scheduled_full_events(0),
++      m_p1_ready_full_cycles(0),
++      m_p1_ready_full_events(0),
++      m_p1_max_scheduled_depth(0),
++      m_p1_max_ready_depth(0),
++      m_p1_context_service(0),
+       m_s1_inactive_intersections(0),
+       m_s1_head_qualified_cycles(0),
+       m_s1_dram_queue_full_cycles(0),
+@@ -221,6 +246,10 @@
+       assert(m_service_mode == awma_transient_l2::SERVICE_MODE_NONE &&
+              "R101R4 P0 cannot be combined with an older service mode");
+       m_service_mode = awma_transient_l2::SERVICE_MODE_FINITE_PREL1;
++    } else if (!strcmp(r4_service_text, "p1_post_l1_local")) {
++      assert(m_service_mode == awma_transient_l2::SERVICE_MODE_NONE &&
++             "R101R4 P1 cannot be combined with an older service mode");
++      m_service_mode = awma_transient_l2::SERVICE_MODE_POST_L1_LOCAL;
+     } else {
+       fprintf(stderr, "Unknown AWMA_R101R4_SERVICE_MODE=%s\n",
+               r4_service_text);
+@@ -247,7 +276,7 @@
+     assert(sidecar != NULL && sidecar[0] != '\0');
+     assert(m_expected_kernels > 0);
+   }
+-  if (pre_l1_service_selected() || s1_partition_hit_selected()) {
++  if (local_service_selected() || s1_partition_hit_selected()) {
+     assert(selected == awma_transient_l2::MODE_NONE &&
+            "service modes cannot be combined with a transient L2 mechanism");
+     assert(sidecar != NULL && sidecar[0] != '\0');
+@@ -542,6 +571,87 @@
+   if (first_event) ++m_p0_ready_full_events;
+ }
+ 
++void awma_transient_l2_controller::note_p1_inactive() {
++  assert(p1_post_l1_selected());
++  ++m_p1_inactive_intersections;
++}
++
++void awma_transient_l2_controller::note_p1_fail_closed(
++    awma_transient_l2::service_access_kind kind, bool atomic,
++    bool unsupported) {
++  (void)kind;
++  assert(p1_window_active());
++  ++m_p1_fail_closed;
++  if (atomic) ++m_p1_atomic_fail_closed;
++  if (unsupported) ++m_p1_unsupported_fail_closed;
++}
++
++void awma_transient_l2_controller::note_p1_admission(
++    const awma_transient_l2::line_metadata &metadata, bool write,
++    bool ldgsts, unsigned request_bytes, unsigned active_bytes) {
++  assert(p1_window_active() && m_policy.is_live(metadata));
++  ++m_p1_outstanding;
++  m_p1_request_bytes += request_bytes;
++  m_p1_active_bytes += active_bytes;
++  if (write) {
++    assert(!ldgsts);
++    ++m_p1_admitted_writes;
++  } else {
++    ++m_p1_admitted_reads;
++    if (ldgsts)
++      ++m_p1_admitted_ldgsts_reads;
++    else
++      ++m_p1_admitted_ldg_reads;
++  }
++}
++
++void awma_transient_l2_controller::note_p1_ready_eligible(bool exact_cycle) {
++  ++m_p1_ready_eligible;
++  if (!exact_cycle) ++m_p1_latency_violations;
++}
++
++void awma_transient_l2_controller::note_p1_ready(
++    const awma_transient_l2::line_metadata &metadata,
++    unsigned long long admission_cycle, unsigned long long ready_cycle,
++    unsigned long long observed_cycle) {
++  assert(m_p1_outstanding > 0);
++  if (!m_policy.is_live(metadata)) ++m_p1_stale_violations;
++  if (ready_cycle != admission_cycle + 1 || observed_cycle < ready_cycle)
++    ++m_p1_latency_violations;
++  ++m_p1_ready;
++}
++
++void awma_transient_l2_controller::note_p1_delivered(bool write,
++                                                      bool ldgsts) {
++  (void)ldgsts;
++  assert(m_p1_outstanding > 0);
++  --m_p1_outstanding;
++  if (write)
++    ++m_p1_delivered_writes;
++  else
++    ++m_p1_delivered_reads;
++}
++
++void awma_transient_l2_controller::note_p1_scheduled_full(bool first_event) {
++  ++m_p1_scheduled_full_cycles;
++  if (first_event) ++m_p1_scheduled_full_events;
++}
++
++void awma_transient_l2_controller::note_p1_ready_full(bool first_event) {
++  ++m_p1_ready_full_cycles;
++  if (first_event) ++m_p1_ready_full_events;
++}
++
++void awma_transient_l2_controller::note_p1_queue_depth(
++    unsigned scheduled, unsigned ready) {
++  assert(scheduled <= awma_r101r4::kScheduledCapacity);
++  assert(ready <= awma_r101r4::kReadyCapacity);
++  if (scheduled > m_p1_max_scheduled_depth)
++    m_p1_max_scheduled_depth = scheduled;
++  if (ready > m_p1_max_ready_depth)
++    m_p1_max_ready_depth = ready;
++}
++
+ void awma_transient_l2_controller::note_s1_head(
+     bool qualified, unsigned ingress_depth, unsigned return_depth,
+     bool dram_queue_full, bool return_queue_full, bool data_port_busy) {
+@@ -687,6 +797,7 @@
+   assert(m_completed_kernels < m_launched_kernels);
+   assert(m_active_kernel_ordinal == m_completed_kernels + 1);
+   if (pre_l1_service_selected()) assert(m_service_outstanding == 0);
++  if (p1_post_l1_selected()) assert(m_p1_outstanding == 0);
+   assert(m_runtime_uids[m_completed_kernels] == uid);
+   if (!m_kernel_identities.empty()) {
+     const kernel_identity &expected = m_kernel_identities[m_completed_kernels];
+@@ -730,6 +841,8 @@
+       return "s1_partition_hit";
+     case awma_transient_l2::SERVICE_MODE_FINITE_PREL1:
+       return "p0_finite_prel1";
++    case awma_transient_l2::SERVICE_MODE_POST_L1_LOCAL:
++      return "p1_post_l1_local";
+   }
+   abort();
+ }
+@@ -760,6 +873,16 @@
+          m_service_duplicate_completions == 0 &&
+          m_service_latency_violations == 0 &&
+          m_service_stale_token_violations == 0 &&
++         (!p1_post_l1_selected() ||
++          (m_p1_admitted_reads + m_p1_admitted_writes ==
++               m_p1_ready_eligible &&
++           m_p1_ready_eligible == m_p1_ready &&
++           m_p1_ready == m_p1_delivered_reads + m_p1_delivered_writes &&
++           m_p1_outstanding == 0 && m_p1_duplicate == 0 &&
++           m_p1_latency_violations == 0 && m_p1_stale_violations == 0 &&
++           m_p1_context_service == 0 &&
++           m_p1_max_scheduled_depth <= awma_r101r4::kScheduledCapacity &&
++           m_p1_max_ready_depth <= awma_r101r4::kReadyCapacity)) &&
+          (!p0_finite_prel1_selected() ||
+           (m_p0_ready_eligible == m_service_scheduled &&
+            m_p0_ready_eligibility_violations == 0 &&
+@@ -999,6 +1122,50 @@
+   fprintf(fout,
+           "awma_r101r4_p0_ready_eligibility_violations = %llu\n",
+           m_p0_ready_eligibility_violations);
++  fprintf(fout, "awma_r101r4_p1_inactive_intersections = %llu\n",
++          m_p1_inactive_intersections);
++  fprintf(fout, "awma_r101r4_p1_fail_closed = %llu\n", m_p1_fail_closed);
++  fprintf(fout, "awma_r101r4_p1_atomic_fail_closed = %llu\n",
++          m_p1_atomic_fail_closed);
++  fprintf(fout, "awma_r101r4_p1_unsupported_fail_closed = %llu\n",
++          m_p1_unsupported_fail_closed);
++  fprintf(fout, "awma_r101r4_p1_admitted_reads = %llu\n",
++          m_p1_admitted_reads);
++  fprintf(fout, "awma_r101r4_p1_admitted_ldg_reads = %llu\n",
++          m_p1_admitted_ldg_reads);
++  fprintf(fout, "awma_r101r4_p1_admitted_ldgsts_reads = %llu\n",
++          m_p1_admitted_ldgsts_reads);
++  fprintf(fout, "awma_r101r4_p1_admitted_writes = %llu\n",
++          m_p1_admitted_writes);
++  fprintf(fout, "awma_r101r4_p1_request_bytes = %llu\n", m_p1_request_bytes);
++  fprintf(fout, "awma_r101r4_p1_active_bytes = %llu\n", m_p1_active_bytes);
++  fprintf(fout, "awma_r101r4_p1_ready_eligible = %llu\n",
++          m_p1_ready_eligible);
++  fprintf(fout, "awma_r101r4_p1_ready = %llu\n", m_p1_ready);
++  fprintf(fout, "awma_r101r4_p1_delivered_reads = %llu\n",
++          m_p1_delivered_reads);
++  fprintf(fout, "awma_r101r4_p1_delivered_writes = %llu\n",
++          m_p1_delivered_writes);
++  fprintf(fout, "awma_r101r4_p1_outstanding = %llu\n", m_p1_outstanding);
++  fprintf(fout, "awma_r101r4_p1_duplicate = %llu\n", m_p1_duplicate);
++  fprintf(fout, "awma_r101r4_p1_latency_violations = %llu\n",
++          m_p1_latency_violations);
++  fprintf(fout, "awma_r101r4_p1_stale_violations = %llu\n",
++          m_p1_stale_violations);
++  fprintf(fout, "awma_r101r4_p1_scheduled_full_cycles = %llu\n",
++          m_p1_scheduled_full_cycles);
++  fprintf(fout, "awma_r101r4_p1_scheduled_full_events = %llu\n",
++          m_p1_scheduled_full_events);
++  fprintf(fout, "awma_r101r4_p1_ready_full_cycles = %llu\n",
++          m_p1_ready_full_cycles);
++  fprintf(fout, "awma_r101r4_p1_ready_full_events = %llu\n",
++          m_p1_ready_full_events);
++  fprintf(fout, "awma_r101r4_p1_max_scheduled_depth = %llu\n",
++          m_p1_max_scheduled_depth);
++  fprintf(fout, "awma_r101r4_p1_max_ready_depth = %llu\n",
++          m_p1_max_ready_depth);
++  fprintf(fout, "awma_r101r4_p1_context_service = %llu\n",
++          m_p1_context_service);
+   fprintf(fout, "awma_transient_l2_terminal_quiescent = %u\n",
+           terminal_quiescent() ? 1 : 0);
+ }
+@@ -2328,7 +2495,12 @@
+ void baseline_cache::cycle() {
+   if (!m_miss_queue.empty()) {
+     mem_fetch *mf = m_miss_queue.front();
+-    if (!m_memport->full(mf->size(), mf->get_is_write())) {
++    if (m_level == L1_GPU_CACHE && awma_r101r4_p1_candidate(mf)) {
++      if (!awma_r101r4_p1_full(mf)) {
++        m_miss_queue.pop_front();
++        awma_r101r4_p1_push(mf);
++      }
++    } else if (!m_memport->full(mf->size(), mf->get_is_write())) {
+       m_miss_queue.pop_front();
+       m_memport->push(mf);
+     }
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -995,7 +995,8 @@
+   void unregister_l2(tag_array *tags);
+   bool active() const {
+     return m_explicit_mode || m_diagnostics || service_oracle_selected() ||
+-           s1_partition_hit_selected() || p0_finite_prel1_selected();
++           s1_partition_hit_selected() || p0_finite_prel1_selected() ||
++           p1_post_l1_selected();
+   }
+   bool diagnostics_enabled() const { return m_diagnostics; }
+   bool r3_diagnostics_enabled() const { return m_r3_diagnostics; }
+@@ -1019,10 +1020,22 @@
+   bool pre_l1_service_selected() const {
+     return service_oracle_selected() || p0_finite_prel1_selected();
+   }
++  bool roi_window_active() const {
++    return m_active_kernel_ordinal >= m_roi_start_ordinal &&
++           m_active_kernel_ordinal <= m_roi_end_ordinal;
++  }
+   bool service_window_active() const {
+-    return pre_l1_service_selected() &&
+-           m_active_kernel_ordinal >= m_roi_start_ordinal &&
+-           m_active_kernel_ordinal <= m_roi_end_ordinal;
++    return pre_l1_service_selected() && roi_window_active();
++  }
++  bool p1_post_l1_selected() const {
++    return m_service_mode ==
++           awma_transient_l2::SERVICE_MODE_POST_L1_LOCAL;
++  }
++  bool p1_window_active() const {
++    return p1_post_l1_selected() && roi_window_active();
++  }
++  bool local_service_selected() const {
++    return pre_l1_service_selected() || p1_post_l1_selected();
+   }
+   bool s1_partition_hit_selected() const {
+     return m_service_mode ==
+@@ -1079,6 +1092,22 @@
+   void note_p0_scheduled_full(bool first_event);
+   void note_p0_ready_eligible(bool exact_cycle);
+   void note_p0_ready_full(bool first_event);
++  void note_p1_inactive();
++  void note_p1_fail_closed(
++      awma_transient_l2::service_access_kind kind, bool atomic,
++      bool unsupported);
++  void note_p1_admission(
++      const awma_transient_l2::line_metadata &metadata, bool write,
++      bool ldgsts, unsigned request_bytes, unsigned active_bytes);
++  void note_p1_ready_eligible(bool exact_cycle);
++  void note_p1_ready(
++      const awma_transient_l2::line_metadata &metadata,
++      unsigned long long admission_cycle, unsigned long long ready_cycle,
++      unsigned long long observed_cycle);
++  void note_p1_delivered(bool write, bool ldgsts);
++  void note_p1_scheduled_full(bool first_event);
++  void note_p1_ready_full(bool first_event);
++  void note_p1_queue_depth(unsigned scheduled, unsigned ready);
+   void note_service_duplicate_completion() {
+     ++m_service_duplicate_completions;
+   }
+@@ -1103,7 +1132,8 @@
+     ++m_s1_duplicate_completions;
+   }
+   bool drain_active() const {
+-    return m_outstanding_l2_writebacks != 0 || m_service_outstanding != 0;
++    return m_outstanding_l2_writebacks != 0 || m_service_outstanding != 0 ||
++           m_p1_outstanding != 0;
+   }
+   void kernel_launched(unsigned uid, unsigned long long stream_id,
+                        const char *name,
+@@ -1224,6 +1254,31 @@
+   unsigned long long m_p0_ready_full_events;
+   unsigned long long m_p0_ready_eligible;
+   unsigned long long m_p0_ready_eligibility_violations;
++  unsigned long long m_p1_inactive_intersections;
++  unsigned long long m_p1_fail_closed;
++  unsigned long long m_p1_atomic_fail_closed;
++  unsigned long long m_p1_unsupported_fail_closed;
++  unsigned long long m_p1_admitted_reads;
++  unsigned long long m_p1_admitted_ldg_reads;
++  unsigned long long m_p1_admitted_ldgsts_reads;
++  unsigned long long m_p1_admitted_writes;
++  unsigned long long m_p1_request_bytes;
++  unsigned long long m_p1_active_bytes;
++  unsigned long long m_p1_ready_eligible;
++  unsigned long long m_p1_ready;
++  unsigned long long m_p1_delivered_reads;
++  unsigned long long m_p1_delivered_writes;
++  unsigned long long m_p1_outstanding;
++  unsigned long long m_p1_duplicate;
++  unsigned long long m_p1_latency_violations;
++  unsigned long long m_p1_stale_violations;
++  unsigned long long m_p1_scheduled_full_cycles;
++  unsigned long long m_p1_scheduled_full_events;
++  unsigned long long m_p1_ready_full_cycles;
++  unsigned long long m_p1_ready_full_events;
++  unsigned long long m_p1_max_scheduled_depth;
++  unsigned long long m_p1_max_ready_depth;
++  unsigned long long m_p1_context_service;
+   unsigned long long m_s1_inactive_intersections;
+   unsigned long long m_s1_head_qualified_cycles;
+   unsigned long long m_s1_dram_queue_full_cycles;
+@@ -1250,6 +1305,10 @@
+ };
+ 
+ awma_transient_l2_controller &awma_transient_l2_instance();
++
++bool awma_r101r4_p1_candidate(mem_fetch *mf);
++bool awma_r101r4_p1_full(mem_fetch *mf);
++void awma_r101r4_p1_push(mem_fetch *mf);
+ 
+ class tag_array {
+  public:
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -3212,6 +3212,124 @@
+     }
+ */
+ 
++namespace {
++std::map<unsigned, ldst_unit *> awma_p1_ldst_by_sid;
++}
++
++bool awma_r101r4_p1_candidate(mem_fetch *mf) {
++  if (mf == NULL) return false;
++  std::map<unsigned, ldst_unit *>::iterator found =
++      awma_p1_ldst_by_sid.find(mf->get_sid());
++  if (found == awma_p1_ldst_by_sid.end()) return false;
++  return found->second->awma_p1_candidate_impl(mf);
++}
++
++bool awma_r101r4_p1_full(mem_fetch *mf) {
++  std::map<unsigned, ldst_unit *>::iterator found =
++      awma_p1_ldst_by_sid.find(mf->get_sid());
++  assert(found != awma_p1_ldst_by_sid.end());
++  return found->second->awma_p1_full_impl(mf);
++}
++
++void awma_r101r4_p1_push(mem_fetch *mf) {
++  std::map<unsigned, ldst_unit *>::iterator found =
++      awma_p1_ldst_by_sid.find(mf->get_sid());
++  assert(found != awma_p1_ldst_by_sid.end());
++  found->second->awma_p1_push_impl(mf);
++}
++
++bool ldst_unit::awma_p1_candidate_impl(mem_fetch *mf) {
++  awma_transient_l2_controller &controller = awma_transient_l2_instance();
++  if (!controller.p1_post_l1_selected()) return false;
++  const awma_transient_l2::service_access classification =
++      controller.classify_service_access(mf->get_sim_va(),
++                                         mf->get_access_size());
++  if (!controller.p1_window_active()) {
++    if (classification.intersects_transient() &&
++        mf->mark_awma_r101r4_p1_observed())
++      controller.note_p1_inactive();
++    return false;
++  }
++  if (!classification.intersects_transient()) return false;
++  const bool atomic = mf->isatomic();
++  const bool has_inst = !mf->get_inst().empty();
++  const bool read = has_inst && mf->get_access_type() == GLOBAL_ACC_R &&
++                    !mf->get_is_write();
++  const bool write = has_inst && mf->get_access_type() == GLOBAL_ACC_W &&
++                     mf->get_is_write() && !mf->get_inst().m_is_ldgsts;
++  const bool unsupported = !(read || write);
++  if (atomic || unsupported || !classification.oracle_eligible()) {
++    if (mf->mark_awma_r101r4_p1_observed())
++      controller.note_p1_fail_closed(classification.kind, atomic, unsupported);
++    return false;
++  }
++  return true;
++}
++
++bool ldst_unit::awma_p1_full_impl(mem_fetch *mf) {
++  assert(awma_p1_candidate_impl(mf));
++  if (!awma_r101r4::scheduled_full(m_awma_p1_scheduled.size())) return false;
++  awma_transient_l2_instance().note_p1_scheduled_full(
++      mf->mark_awma_r101r4_p1_full_observed());
++  awma_transient_l2_instance().note_p1_queue_depth(
++      m_awma_p1_scheduled.size(), m_awma_p1_ready.size());
++  return true;
++}
++
++void ldst_unit::awma_p1_push_impl(mem_fetch *mf) {
++  assert(awma_p1_candidate_impl(mf));
++  assert(!awma_r101r4::scheduled_full(m_awma_p1_scheduled.size()));
++  const awma_transient_l2::service_access classification =
++      awma_transient_l2_instance().classify_service_access(
++          mf->get_sim_va(), mf->get_access_size());
++  const bool write = mf->get_is_write();
++  const bool ldgsts = !write && mf->get_inst().m_is_ldgsts;
++  const unsigned long long now =
++      m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle;
++  awma_transient_l2_instance().note_p1_admission(
++      classification.metadata, write, ldgsts, mf->get_access_size(),
++      mf->get_access_byte_mask().count());
++  m_awma_p1_scheduled.push_back(awma_p1_service_entry(
++      mf, classification.metadata, write, ldgsts, now));
++  awma_transient_l2_instance().note_p1_queue_depth(
++      m_awma_p1_scheduled.size(), m_awma_p1_ready.size());
++}
++
++void ldst_unit::awma_p1_service_cycle() {
++  awma_transient_l2_controller &controller = awma_transient_l2_instance();
++  const unsigned long long now =
++      m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle;
++  if (!m_awma_p1_scheduled.empty() &&
++      m_awma_p1_scheduled.front().ready_cycle <= now) {
++    awma_p1_service_entry &front = m_awma_p1_scheduled.front();
++    if (!front.ready_eligible_noted) {
++      controller.note_p1_ready_eligible(now == front.ready_cycle);
++      front.ready_eligible_noted = true;
++    }
++    if (awma_r101r4::ready_full(m_awma_p1_ready.size())) {
++      controller.note_p1_ready_full(!front.ready_full_observed);
++      front.ready_full_observed = true;
++    } else {
++      awma_p1_service_entry entry = front;
++      m_awma_p1_scheduled.pop_front();
++      entry.mf->set_reply();
++      controller.note_p1_ready(entry.metadata, entry.admission_cycle,
++                               entry.ready_cycle, now);
++      m_awma_p1_ready.push_back(entry);
++      controller.note_p1_queue_depth(m_awma_p1_scheduled.size(),
++                                     m_awma_p1_ready.size());
++    }
++  }
++  if (!m_awma_p1_ready.empty() && !response_buffer_full()) {
++    awma_p1_service_entry entry = m_awma_p1_ready.front();
++    m_awma_p1_ready.pop_front();
++    fill(entry.mf);
++    controller.note_p1_delivered(entry.write, entry.ldgsts);
++  }
++  controller.note_p1_queue_depth(m_awma_p1_scheduled.size(),
++                                 m_awma_p1_ready.size());
++}
++
+ void ldst_unit::init(mem_fetch_interface *icnt,
+                      shader_core_mem_fetch_allocator *mf_allocator,
+                      shader_core_ctx *core, opndcoll_rfu_t *operand_collector,
+@@ -3227,6 +3345,8 @@
+   m_stats = stats;
+   m_sid = sid;
+   m_tpc = tpc;
++  assert(awma_p1_ldst_by_sid.find(m_sid) == awma_p1_ldst_by_sid.end());
++  awma_p1_ldst_by_sid[m_sid] = this;
+ #define STRSIZE 1024
+   char L1T_name[STRSIZE];
+   char L1C_name[STRSIZE];
+@@ -3482,6 +3602,7 @@
+ */
+ void ldst_unit::cycle() {
+   awma_o2_service_cycle();
++  awma_p1_service_cycle();
+   writeback();
+ 
+   for (unsigned stage = 0; (stage + 1) < m_pipeline_depth; stage++)
+diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -1506,6 +1506,34 @@
+   void awma_o2_service_cycle();
+   std::deque<awma_o2_service_entry> m_awma_o2_scheduled;
+   std::deque<awma_o2_service_entry> m_awma_o2_ready;
++
++  struct awma_p1_service_entry {
++    awma_p1_service_entry(
++        mem_fetch *request,
++        const awma_transient_l2::line_metadata &token,
++        bool is_write, bool is_ldgsts, unsigned long long admitted)
++        : mf(request), metadata(token), write(is_write), ldgsts(is_ldgsts),
++          admission_cycle(admitted),
++          ready_cycle(awma_r101r2_o2::one_cycle_ready(admitted)),
++          ready_eligible_noted(false), ready_full_observed(false) {}
++    mem_fetch *mf;
++    awma_transient_l2::line_metadata metadata;
++    bool write;
++    bool ldgsts;
++    unsigned long long admission_cycle;
++    unsigned long long ready_cycle;
++    bool ready_eligible_noted;
++    bool ready_full_observed;
++  };
++  bool awma_p1_candidate_impl(mem_fetch *mf);
++  bool awma_p1_full_impl(mem_fetch *mf);
++  void awma_p1_push_impl(mem_fetch *mf);
++  void awma_p1_service_cycle();
++  std::deque<awma_p1_service_entry> m_awma_p1_scheduled;
++  std::deque<awma_p1_service_entry> m_awma_p1_ready;
++  friend bool awma_r101r4_p1_candidate(mem_fetch *mf);
++  friend bool awma_r101r4_p1_full(mem_fetch *mf);
++  friend void awma_r101r4_p1_push(mem_fetch *mf);
+ };
+ 
+ enum pipeline_stage_name_t {
+diff --git a/src/gpgpu-sim/mem_fetch.h b/src/gpgpu-sim/mem_fetch.h
+--- a/src/gpgpu-sim/mem_fetch.h
++++ b/src/gpgpu-sim/mem_fetch.h
+@@ -93,6 +93,12 @@
+   bool mark_awma_r101r3_s1_observed() {
+     return m_access.mark_awma_r101r3_s1_observed();
+   }
++  bool mark_awma_r101r4_p1_observed() {
++    return m_access.mark_awma_r101r4_p1_observed();
++  }
++  bool mark_awma_r101r4_p1_full_observed() {
++    return m_access.mark_awma_r101r4_p1_full_observed();
++  }
+   unsigned get_access_size() const { return m_access.get_size(); }
+   new_addr_type get_partition_addr() const { return m_partition_addr; }
+   unsigned get_sub_partition_id() const { return m_raw_addr.sub_partition; }

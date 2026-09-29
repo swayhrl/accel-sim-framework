@@ -1,0 +1,12 @@
+test_class	test_name	status	expected	observation	evidence_sha256	notes
+BUILD	isolated_cold_build	PASS	P0 Core compiles and links	binary 58bbf36b806019a9d8a3cfca1fc20ab53025108b7e0bc8c6f1598140cea7da81	NA	R101R3 runtime remains untouched
+DIRECTED	P0_capacity_accounting	PASS	scheduled=1; ready=16; finite full/backpressure/accounting	22 assertions PASS	6f5d5975366413d2f397bd4542bedd35d0ed58d753f0fcc74046d34d7f6228ab	production consumes the tested constants/helpers
+SOURCE	P0_integration_hooks	PASS	post-translation/pre-L1; no full fallback; existing writeback client	22 checks PASS	6f5d5975366413d2f397bd4542bedd35d0ed58d753f0fcc74046d34d7f6228ab	queue-full returns COAL_STALL at original access
+REGRESSION	accepted_VM_suite	PASS	M3 timing, M2 retry, C10B runtime	3/3 PASS	eff73ce1d040819d43b3c3457333f9929ff75da5d3cfdcf50ec2ac00ede0832c	per-log hashes in regression SHA256SUMS
+REGRESSION	transient_policy	PASS	region/generation policy remains PASS	PASS	a6c898e2ef65649b4aedc1127283f0878266eabe1b8d47aec82e382af54bf953	unchanged inherited policy
+REGRESSION	O2_dependency_helpers	PASS	LDG/LDGSTS/store/exactly-once helpers	18/18 PASS	c263570de9ae54f14697942d11790672bec7bde756c79e21b0cd54ba706cbda9	P0 reuses these completion semantics
+INTEGRATED	default_absent_OFF	PASS	exact accepted T2	93079 cycles; 43357696 instructions; 1216 CTAs	7a731e89c5295e653fe02901d9fd38d96b547a263e4392d7501171c2f53f41d0	default OFF
+INTEGRATED	explicit_none_OFF	PASS	exact accepted T2 and quiescence	93079 cycles; 43357696 instructions; 1216 CTAs	7d41bcc2216b02fb7d32f2a887009a125b5512ccc647827b9a1b8020513f568a	functional/diagnostic selectors explicit
+INTEGRATED	P0_positive_6xT2	PASS	real read/write; capacity bounds; exactly once; full drain	29184 reads; 96 writes; max scheduled/ready=1/1	1005cd399c11f5d6c4e53117fbf3d50760dcda63b6294594f497f39eb0bb6e1f	raw log 5160e89f85d4e83626130a83def040ddcaddb80b3170b5a143d8655519831482
+INTEGRATED	P0_context_neutrality	PASS	kernels1-3 exact accepted positive-control timing	context end cycle 203629	1005cd399c11f5d6c4e53117fbf3d50760dcda63b6294594f497f39eb0bb6e1f	no context service
+ENGINEERING	initial_positive_postcheck	RESOLVED	P0 accounting nonzero; inactive context intersections observational	simulator raw unchanged; validator reused existing log	5160e89f85d4e83626130a83def040ddcaddb80b3170b5a143d8655519831482	no simulator rerun

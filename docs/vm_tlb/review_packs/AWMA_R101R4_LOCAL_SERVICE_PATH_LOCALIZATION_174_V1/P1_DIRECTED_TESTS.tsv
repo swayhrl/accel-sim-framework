@@ -1,0 +1,10 @@
+test_class	test_name	status	expected	observation	evidence_sha256	notes
+BUILD	P1_isolated_build	PASS	post-L1 Core compiles	binary eccf60ecabe7c0efe7a585f8c9d8bd9ad964d9b120e30d5dec0a04e5b77deeba	NA	P0 runtime frozen separately
+DIRECTED	finite_envelope	PASS	scheduled=1 ready=16 finite accounting	22 assertions PASS	4ad73066a529fd9da547b539830ec211897753e8d60256f5f9e55ddb4f29b862	same frozen envelope as P0
+SOURCE	P1_placement_hooks	PASS	normal L1D miss/MSHR then local reply to normal L1 fill	23 checks PASS	4ad73066a529fd9da547b539830ec211897753e8d60256f5f9e55ddb4f29b862	includes m_level == L1_GPU_CACHE instance gate
+REGRESSION	accepted_VM_and_cache	PASS	VM 3/3 plus transient/O2 helpers	PASS	784c40dbf3de233ec63a0d1238afa18188d9c6a0aab841348417a05b83216b4a	complete per-log manifest on node164
+INTEGRATED	default_absent_OFF	PASS	exact accepted T2	93079 cycles; 43357696 instructions; 1216 CTAs	c86c8da7b91fcf3ca8a85f36c8d24730ea36f64ab3c933a40b995b9c00548787	default OFF
+INTEGRATED	explicit_none_OFF	PASS	exact accepted T2	93079 cycles; 43357696 instructions; 1216 CTAs	562bb123bd81df128bf8b041c9b039daa723719792eb7aade26f839769925287	selectors explicit
+INTEGRATED	P1_positive_6xT2	PASS	L1 hit bypass; miss service; fill/MSHR; read/write; drain	912 reads; 96 writes; L1 accesses/misses/pending=2466048/1667042/24803	6da051145d6ad964513f9069e2a748c51680fa052f4764f82a4bff076beaa2eb	max scheduled/ready=1/1
+ENGINEERING	formal_L1_instance_scope	PASS	P1 may intercept only an L1D lower request	original formal attempt deadlocked because generic baseline_cache hook also reached non-L1 caches; fixed with L1_GPU_CACHE gate	9ab46f8c39e92364410afcba2284508847c2bf7eb3ffa592b1eae7e32f6509d1	failed attempt retained; not a scientific result
+ENGINEERING	bounded_scope_repro	PASS	formal XXT completes without deadlock and fully drains	rc0; 6/6; 811008 P1 writes; max scheduled/ready=1/16	d0e057564342d2211b614535a08433b20d0b6274394f6f974dbc480a5f4ff2d0	engineering diagnostic only; no performance claim
