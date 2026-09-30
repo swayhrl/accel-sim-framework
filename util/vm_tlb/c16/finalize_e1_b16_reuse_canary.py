@@ -364,9 +364,14 @@ def validate_inputs(pack: Path, followup_path: Path,
             coverage.get("instance_count_per_UID") == 16 and
             coverage.get("counter_row_count") == 25040 and
             coverage.get("class_row_count") == 25040 and
+            coverage.get("snapshot_begin_count") == 1565 and
+            coverage.get("snapshot_end_count") == 1565 and
             coverage.get("counter_schema_exact") is True and
             coverage.get("class_schema_exact") is True and
-            coverage.get("class_sum_equals_occupancy_all_UIDs") is True,
+            coverage.get("per_instance_class_sum_equals_occupancy_all_UIDs") is True and
+            coverage.get("per_instance_quota_lines") == 8192 and
+            coverage.get("aggregate_quota_lines") == 131072 and
+            coverage.get("occupancy_bounds_all_UIDs") is True,
             "exact diagnostic coverage did not close")
 
     activation = documents["B16_MECHANISM_ACTIVATION.json"]
@@ -408,9 +413,12 @@ def validate_inputs(pack: Path, followup_path: Path,
             "final Case4 exact-subset flag drift")
     require(final.get("case4_qualitative_threshold_not_invented") is True,
             "Case4 qualitative-threshold caveat missing")
+    require(final.get("case4_constraint_events_not_claimed_as_cause_of_class1_loss") is True,
+            "Case4 noncausal boundary missing")
     subset = activation.get("case4_exact_zero_retention_subset", {})
     require(subset.get("satisfied") is case4 and
-            subset.get("not_a_numeric_definition_of_qualitative_almost_or_large") is True,
+            subset.get("not_a_numeric_definition_of_qualitative_almost_or_large") is True and
+            subset.get("constraint_events_are_global_cumulative_not_causal_attribution_for_class1") is True,
             "activation Case4 caveat drift")
     external = validate_external_test(external_test_summary)
     return documents, followup, authorities, external
@@ -463,7 +471,8 @@ def render_readme(documents: dict, external_test) -> bytes:
         ("Case 4 is the exact zero-retention subset: class-1 occupancy was nonzero after the "
          "D1 fill, exactly zero immediately before D2 reuse, and a preregistered constraint "
          "counter was observed. This is not a numeric definition of qualitative words such as "
-         "'almost' or 'large'." if case4 else
+         "'almost' or 'large'. The constraint counters are global and cumulative; they are not "
+         "claimed to have caused class-1 loss." if case4 else
          "The Case 4 exact zero-retention subset was not satisfied. No post-hoc numeric "
          "definition of qualitative words such as 'almost' or 'large' is introduced."),
         "",

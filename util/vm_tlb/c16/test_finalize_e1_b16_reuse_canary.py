@@ -183,8 +183,12 @@ class FinalizerTest(unittest.TestCase):
                 "diagnostic_coverage": {
                     "UID_count": 1565, "instance_count_per_UID": 16,
                     "counter_row_count": 25040, "class_row_count": 25040,
+                    "snapshot_begin_count": 1565, "snapshot_end_count": 1565,
                     "counter_schema_exact": True, "class_schema_exact": True,
-                    "class_sum_equals_occupancy_all_UIDs": True,
+                    "per_instance_class_sum_equals_occupancy_all_UIDs": True,
+                    "per_instance_quota_lines": 8192,
+                    "aggregate_quota_lines": 131072,
+                    "occupancy_bounds_all_UIDs": True,
                 },
             },
             "B16_MECHANISM_ACTIVATION.json": {
@@ -196,6 +200,7 @@ class FinalizerTest(unittest.TestCase):
                 "case4_exact_zero_retention_subset": {
                     "satisfied": False,
                     "not_a_numeric_definition_of_qualitative_almost_or_large": True,
+                    "constraint_events_are_global_cumulative_not_causal_attribution_for_class1": True,
                 },
             },
             "RAW_OUTPUT_INDEX.json": {
@@ -224,6 +229,7 @@ class FinalizerTest(unittest.TestCase):
                 "claim_boundary": "FIRST_QUALIFIED_REAL_TRACE_B16_REUSE_WINDOW_CANARY_ONLY",
                 "case4_exact_zero_retention_subset_satisfied": False,
                 "case4_qualitative_threshold_not_invented": True,
+                "case4_constraint_events_not_claimed_as_cause_of_class1_loss": True,
             },
             "DIAGNOSTIC_COUNTERS.json": checkpoints,
         }
@@ -347,6 +353,8 @@ class FinalizerTest(unittest.TestCase):
         readme = (self.pack / "README.md").read_text(encoding="utf-8")
         self.assertIn("exact zero-retention subset", readme)
         self.assertIn("not a numeric definition", readme)
+        self.assertIn("global and cumulative", readme)
+        self.assertIn("not claimed to have caused class-1 loss", readme)
 
 
 if __name__ == "__main__":
