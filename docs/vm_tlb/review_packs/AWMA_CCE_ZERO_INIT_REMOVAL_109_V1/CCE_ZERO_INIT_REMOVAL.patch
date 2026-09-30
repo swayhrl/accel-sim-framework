@@ -1,0 +1,136 @@
+--- a/cut_cross_entropy/cce_backward.py
++++ b/cut_cross_entropy/cce_backward.py
+@@ -1,4 +1,6 @@
+ # Copyright (C) 2024 Apple Inc. All Rights Reserved.
++import os
++
+ import torch
+ import triton
+ import triton.language as tl
+@@ -9,6 +11,7 @@
+     is_triton_greater_or_equal_3_2_0,
+     tl_and_reduce_fn,
+     tl_lock_add,
++    tl_lock_first_store_or_add,
+     tl_lock_kahan_sum,
+     tl_softcapping,
+     tl_softcapping_grad,
+@@ -33,6 +36,7 @@
+     BLOCK_D: tl.constexpr,
+     EVEN_D: tl.constexpr,
+     USE_KAHAN: tl.constexpr,
++    FIRST_STORE: tl.constexpr,
+     DOT_PRECISION: tl.constexpr,
+ ):
+     d_inds = tl.arange(0, BLOCK_D)[None, :].to(tl.int64)
+@@ -62,6 +66,8 @@
+ 
+         if USE_KAHAN:
+             tl_lock_kahan_sum(da_ptrs, dac_ptrs, da_i, mask, this_da_lock_ptr)
++        elif FIRST_STORE:
++            tl_lock_first_store_or_add(da_ptrs, da_i, mask, this_da_lock_ptr)
+         else:
+             tl_lock_add(da_ptrs, da_i, mask, this_da_lock_ptr)
+ 
+@@ -131,6 +137,7 @@
+     HAS_SHIFT: tl.constexpr,
+     KAHAN_E: tl.constexpr,
+     KAHAN_C: tl.constexpr,
++    DC_FIRST_STORE: tl.constexpr,
+     COMPUTE_DC: tl.constexpr,
+     COMPUTE_DE: tl.constexpr,
+     COMPUTE_DBIAS: tl.constexpr,
+@@ -280,6 +287,7 @@
+                 MM_BACK_BLOCK_D,
+                 MM_BACK_EVEN_D,
+                 KAHAN_E,
++                False,
+                 DOT_PRECISION,
+             )
+ 
+@@ -307,6 +315,7 @@
+                 MM_BACK_BLOCK_D,
+                 MM_BACK_EVEN_D,
+                 KAHAN_C,
++                DC_FIRST_STORE,
+                 DOT_PRECISION,
+             )
+ 
+@@ -388,11 +397,27 @@
+     do = do.contiguous()
+     lse = lse.contiguous()
+ 
++    if valids is not None:
++        assert valids.ndim == 1
++        B = valids.size(0)
++    else:
++        B = e.size(0)
++
+     de_dtype = torch.float32 if (accum_e_fp32 and can_use_fp32_accum) else None
+     de = torch.zeros_like(e, dtype=de_dtype) if e_info.requires_grad else None
+ 
+     dc_dtype = torch.float32 if (accum_c_fp32 and can_use_fp32_accum) else None
+-    dc = torch.zeros_like(c, dtype=dc_dtype) if c_info.requires_grad else None
++    dc_first_store_requested = os.getenv("CCE_DC_FIRST_STORE", "0") != "0"
++    if dc_first_store_requested and c_info.requires_grad:
++        if dc_dtype != torch.float32:
++            raise ValueError("CCE_DC_FIRST_STORE requires FP32 classifier-gradient accumulation")
++        if filter_eps is not None or filter_c_grad:
++            raise ValueError("CCE_DC_FIRST_STORE requires exact/no-filter classifier gradients")
++    dc_first_store = dc_first_store_requested and c_info.requires_grad and B > 0
++    if c_info.requires_grad:
++        dc = torch.empty_like(c, dtype=dc_dtype) if dc_first_store else torch.zeros_like(c, dtype=dc_dtype)
++    else:
++        dc = None
+ 
+     accum_e_fp32 = accum_e_fp32 and de is not None
+     accum_c_fp32 = accum_c_fp32 and dc is not None
+@@ -429,12 +454,6 @@
+     if dcc is not None:
+         assert dcc.stride() == e.stride()
+ 
+-    if valids is not None:
+-        assert valids.ndim == 1
+-        B = valids.size(0)
+-    else:
+-        B = e.size(0)
+-
+     if dlse is not None:
+         dlse = dlse.contiguous()
+         if do.numel() > 1:
+@@ -504,6 +523,7 @@
+         B_BIN=b_bin_fn(B),
+         FILTER_E_GRAD=filter_e_grad and de is not None,
+         FILTER_C_GRAD=filter_c_grad and dc is not None,
++        DC_FIRST_STORE=dc_first_store,
+     )
+ 
+     if reduce_e_grad and de is not None:
+--- a/cut_cross_entropy/tl_utils.py
++++ b/cut_cross_entropy/tl_utils.py
+@@ -85,6 +85,25 @@
+     tl.atomic_xchg(lock_ptr, 0)
+ 
+ 
++@triton.jit
++def tl_lock_first_store_or_add(ptrs, v, mask, lock_ptr):
++    state = tl.atomic_cas(lock_ptr, 0, 2)
++    if state == 0:
++        tl.store(ptrs, v, mask=mask, eviction_policy="evict_last")
++        tl.debug_barrier()
++        tl.atomic_xchg(lock_ptr, 1)
++    else:
++        while tl.atomic_cas(lock_ptr, 1, 2) != 1:
++            pass
++
++        cur_v = tl.load(ptrs, mask=mask, other=0.0, eviction_policy="evict_last")
++        new_v = v + cur_v
++        tl.store(ptrs, new_v, mask=mask, eviction_policy="evict_last")
++
++        tl.debug_barrier()
++        tl.atomic_xchg(lock_ptr, 1)
++
++
+ def b_bin_fn(b: int) -> int:
+     if b >= 1024:
+         return 1024
