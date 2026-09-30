@@ -4,13 +4,17 @@
 
 ## 当前研究入口
 
+- [R17最近邻能力矩阵](rounds/R17_RELATED_WORK_MATRIX.tsv)：15项GPU graph-ANN、低batch、persistent、visited、distance、layout、adaptive与dynamic-update能力逐列对齐。
+- [R17新颖性边界](rounds/R17_NOVELTY_BOUNDARY.md)：FlowANN已直接拆解step-level discovery依赖，ALGAS已覆盖small-batch query bubble；R17仅保留fully-resident、强CAGRA之后的GPU-local在线遍历边界。Round C结论为`NO_SECOND_CANDIDATE_QUALIFIED`，不创建R18卡。
+- [R17 Native解释指南](rounds/R17_NATIVE_INTERPRETATION_GUIDE.md)：供Lane F区分software sufficient、mandatory distance math、host/runtime与真正online traversal residual；不修改Lane F preregistration。
+- [R17 source receipts](rounds/R17_SOURCE_RECEIPTS.json)：冻结cuVS stable/main、Jasper、FlowANN及其它源码/论文入口；本支线CUDA=0、GPU lock=0、174=0。
 - [Round17：检索执行的问题筛选](rounds/2026-09-30_ROUND_17_RETRIEVAL_PROBLEM_SCREEN.md)：13项论文/预印本入口，5项正文关键章节、8项原始摘要，另核官方API与作者源码。只保留驻留图检索低并发在线推进为准备候选；Flash-MaxSim已覆盖矩阵消除、变长及分散文档直接评分，不凑第二题。不启动节点实验。
 - [R17驻留图检索准备卡](problem_cards/R17_GPU_RESIDENT_GRAPH_SEARCH_PREPARATION.md)：能力、输入、计时边界和条件性Native草案；不是Codex Goal。
 - [Round16最终收口authority](https://github.com/swayhrl/accel-sim-framework/blob/31d585dc44f90eb70f83603c8b87a2d06efff01a/docs/vm_tlb/chatgpt_handoff/awma/round16_dual_lane_v1/FINAL_ROUND16_CLOSEOUT_2026-09-30.md)：R102输入未资格化；VLA完整VJP真实但state/lifetime残差仍未知；CCE zero-init由局部软件协议消除。旧Round15优先级已被这些结果更新，不恢复旧Goal。
 
 ## 当前窗口名称
 
-Lane名称不改。**截至Round17，Lane E/174-new、Lane F/109、Lane G/109均为STOP，没有新的GPU或模拟器执行授权。** R101硬件机制线已在R101R5 Native realism negative后关闭其当前scope；R102休眠等待真实更新输入；VLA保留UNKNOWN边界；CCE已测试zero-init问题收口为软件组织。不同停止原因不合并成“所有方向无空间”。Round10旧H/I仅为历史别名。109所有CUDA工作仍使用既有共享GPU锁。
+Lane名称不改。**当前Round17 unattended handoff中，Lane F独立拥有node109 GPU Native screen；Lane G只执行CPU/source/web related-work；Lane E/174-new保持STOP。** 本Lane G分支不等待、不修改Lane F worktree，也不取得GPU lock。R101硬件机制线已在R101R5 Native realism negative后关闭其当前scope；R102休眠等待真实更新输入；VLA保留UNKNOWN边界；CCE已测试zero-init问题收口为软件组织。不同停止原因不合并成“所有方向无空间”。Round10旧H/I仅为历史别名。
 
 ## 历史问题发现（不是当前执行指令）
 
