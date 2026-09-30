@@ -1,0 +1,155 @@
+{
+  "campaign": {
+    "finished_unix_ns": 1790743251105027034,
+    "formal_sample_counts": {
+      "B0": 15,
+      "B1": 15,
+      "B2": 15
+    },
+    "lock_contract": "/data/c16/locks/c16_gpu_campaign.lock",
+    "profiler_reason": "deferred to post-timing decision; no profiler invoked by campaign",
+    "profiling_triggered": false,
+    "qualified_arms": {
+      "B0": true,
+      "B1": true,
+      "B2": true
+    },
+    "stage": "AWMA_EXACT_LOSS_CCE_LIGER_109_V1",
+    "started_unix_ns": 1790743230258648015,
+    "status": "COMPLETE"
+  },
+  "cuda_campaigns": 3,
+  "decision": "EXACT_LOSS_STATE_LIFETIME_RESIDUAL_PRESENT",
+  "engineering_repair": {
+    "attempt": 2,
+    "change": "B2 upstream-supported accum_dtype: None -> torch.float32",
+    "formal_timing_started_before_repair": false,
+    "frozen_before_attempt2": true,
+    "further_numerical_repairs_allowed": false,
+    "reason": "default BF16 grad_weight accumulation failed the already-frozen rtol=atol=1e-2 contract; loss and grad_hidden passed",
+    "semantics_unchanged": true,
+    "stage": "AWMA_EXACT_LOSS_CCE_LIGER_109_V1",
+    "storage_dtype": "torch.bfloat16",
+    "tolerance_changed": false
+  },
+  "environment": {
+    "compute_capability": "8.9",
+    "formal_source_freeze_before_timing": true,
+    "gpu_name": "NVIDIA GeForce RTX 4080",
+    "liger_available_impls": [
+      "nvidia-triton"
+    ],
+    "liger_get_impl": null,
+    "liger_kernel_impl_env": null,
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "torch": "2.7.1+cu126",
+    "torch_cuda": "12.6",
+    "total_memory_bytes": 16718168064,
+    "transformers": "4.55.0",
+    "triton": "3.3.1"
+  },
+  "forbidden_actions": {
+    "custom_loss_kernel": 0,
+    "full_training_step": 0,
+    "hardware_mechanism": 0,
+    "node174_or_accelsim": 0,
+    "nvbit_or_sass_trace": 0,
+    "second_model": 0,
+    "shape_sweep": 0
+  },
+  "formal_campaigns": 1,
+  "gpu_campaign_attempts": 3,
+  "gpu_lock_acquisitions": 4,
+  "gpu_lock_receipt": "lock_wait_start_utc=2026-09-30T04:40:28Z\nlock_acquired_utc=2026-09-30T04:40:28Z\ncampaign_exit_code=0\ncuda_work_synchronized_by_campaign_finally=true\nlock_release_utc=2026-09-30T04:40:51Z\n",
+  "ncu_captures": 0,
+  "node164": {
+    "bytes": 9199992,
+    "file_count": 65,
+    "manifest_sha256": "0bf186e874a2dd81868ba780098d3a699e18054b86b4e6e72f062555f5c89b39",
+    "path": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/awma/exact_loss_cce_liger_109_v1_20260930",
+    "sha256sum_check": "PASS"
+  },
+  "nsys_captures": 1,
+  "nsys_gpu_lock_receipt": "lock_wait_start_utc=2026-09-30T04:42:48Z\nlock_acquired_utc=2026-09-30T04:42:48Z\nnsys_exit_code=0\ncuda_work_synchronized_before_profiler_stop=true\nlock_release_utc=2026-09-30T04:42:54Z\n",
+  "source_identity": {
+    "cce": {
+      "archive_sha256": "446d282d5b9f5bf2f8bc5a551a016498706f5066230ed682f7477c16c09cc553",
+      "arm": "linear_cross_entropy(..., impl='cce_exact', filter_eps=None, filter_e_grad=False, filter_c_grad=False)",
+      "commit": "3de376c106a1916bc5e1b619f9c77c87a461ee1c",
+      "main_api_sha": "3de376c106a1916bc5e1b619f9c77c87a461ee1c",
+      "repository": "apple-aiml-research/ml-cross-entropy",
+      "source_manifest_sha256": "acb89baccb99c042387eefdd1753af4c24a016774374577718f5079f5681b256"
+    },
+    "frozen_before_gpu": true,
+    "liger": {
+      "archive_sha256": "60a1ee1a43266130520fbb428aea913efb8963111103e6f794da0de64674b08d",
+      "arm": "LigerFusedLinearCrossEntropyLoss, standard auto-dispatch; SM89 available implementation must be nvidia-triton only",
+      "commit": "6ad077c36379eb9c7950f5572cc713f4d38e21a7",
+      "explicit_environment_override": null,
+      "main_api_sha": "6ad077c36379eb9c7950f5572cc713f4d38e21a7",
+      "observed_available_implementations": [
+        "nvidia-triton"
+      ],
+      "repository": "linkedin/Liger-Kernel",
+      "sm90_backends_forbidden": true,
+      "source_manifest_sha256": "5e1718d5a7eea1fceab2ace3303ee0870a6f46628262f9b021b63f4a2ed010cb"
+    },
+    "stage": "AWMA_EXACT_LOSS_CCE_LIGER_109_V1"
+  },
+  "stage": "AWMA_EXACT_LOSS_CCE_LIGER_109_V1",
+  "starting_head": "8e83486212d70decacde4e126dc90800216264b8",
+  "starting_tree": "96b91b933d611fe0f9e2919f9ea58933dcecd9f7",
+  "timing_summary": {
+    "B0": {
+      "arm_name": "PYTORCH_MATERIALIZED_LOGITS",
+      "formal_samples": 15,
+      "gpu_ms_mad": 0.0047359466552734375,
+      "gpu_ms_median": 4.890624046325684,
+      "group_gpu_ms_medians": {
+        "0": 4.890336036682129,
+        "1": 4.889599800109863,
+        "2": 4.896671772003174
+      },
+      "group_median_range_fraction": 0.001446026483802963,
+      "host_ms_mad": 0.005177999999999905,
+      "host_ms_median": 4.894383
+    },
+    "B1": {
+      "arm_name": "CCE_EXACT_NO_FILTER",
+      "formal_samples": 15,
+      "gpu_ms_mad": 0.008192062377929688,
+      "gpu_ms_median": 7.571455955505371,
+      "group_gpu_ms_medians": {
+        "0": 7.560192108154297,
+        "1": 7.5728960037231445,
+        "2": 7.571455955505371
+      },
+      "group_median_range_fraction": 0.0016778669312089672,
+      "host_ms_mad": 0.008257000000000403,
+      "host_ms_median": 7.576315,
+      "speedup_vs_B0_gpu": 0.6459291416427779
+    },
+    "B2": {
+      "arm_name": "LIGER_FUSED_LINEAR_CE_TRITON_ADA",
+      "formal_samples": 15,
+      "gpu_ms_mad": 0.05645751953125,
+      "gpu_ms_median": 673.9507446289062,
+      "group_gpu_ms_medians": {
+        "0": 673.9170532226562,
+        "1": 673.9813232421875,
+        "2": 673.9307250976562
+      },
+      "group_median_range_fraction": 9.536308112047363e-05,
+      "host_ms_mad": 0.05729099999996379,
+      "host_ms_median": 673.963288,
+      "speedup_vs_B0_gpu": 0.007256649073098926
+    },
+    "strong_software_comparison": {
+      "faster_arm": "B1",
+      "faster_ms": 7.571455955505371,
+      "slower_arm": "B2",
+      "slower_ms": 673.9507446289062,
+      "slower_over_faster_fraction": 88.01204056253698
+    }
+  }
+}
