@@ -1,0 +1,11 @@
+# Existing accepted L512 NCU evidence audit
+
+Phase A is CPU-only. Accepted report, CSV, and receipt SHA256 values were verified exactly against the accepted raw index: `{"L512.ncu-rep": "a73f9db4638171b5236194d1541c1943c849714c9671a85e82e5700a1ae403d8", "L512.raw.csv": "fba83ccbc68a7b833a4d645a3d4f4044672337a68a403fe41a43478a712894d5", "PROFILE_TARGET_RECEIPT.json": "30e6226256c7d8bdc8e89d90e88493798e67f673ab14173c829890f000a5738d"}`. The L512 payload SHA256 is `1b0496a115ddaa647f8896a20e5711a125e02ab8bb2f7d47dc5f2fbd7693a234`; the receipt pins HiMuon `af89eda9a0176effed99e1fe19cc1f8a1a2c9588` and five NS steps. Accepted NCU uses cache-control none, clock-control none, dynamic pipeline boost and a natural eager L512 invocation after three warmups.
+
+NCU import contains 18 launches: 3 normalization launches then five ordered repetitions of `XXT_kernel → ba_plus_cAA_kernel → bmm_add_kernel`. The second recurrence is report IDs 6, 7 and 8 respectively. Functions, grid/block, context/stream and traffic are closed in `TARGET_BINDING.tsv`. The accepted receipt does **not** contain a cubin SHA; this is explicitly an unrecorded binding, not a guessed one.
+
+Report sections: **Command line profiler metrics only**. Five explicitly requested counters are listed in `EXISTING_METRIC_INVENTORY.tsv`: DRAM read/write bytes, L2 requested bytes, SM active cycles, and active-warp occupancy. The raw report also carries passive launch/device attributes (grid, block, registers, shared memory, replay-pass count); those are not additional requested issue counters. Installed NCU version is 2025.1.1; the accepted report targets RTX4080 SM89 / CUDA 13.0 as exported by the report.
+
+The accepted report has **no** warp issue/stall composition, no eligible-warp issue state, no L1/TEX global load/store request counters, no direct LDG/ST/LDGSTS dynamic instruction counts, and no SourceCounters or per-PC sampled attribution. These cannot be inferred from high L2 traffic. Source/cubin identity is pinned at the HiMuon source commit and accepted runtime receipt level, but exact cubin SHA was not preserved.
+
+**Phase A decision: Phase B required.** Core issue/stall evidence is absent; this is the specific scientific gap. Do not interpret the old NCU traffic as proof of downstream pressure. The accepted numerical/launch authority remains frozen.
