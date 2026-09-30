@@ -1,0 +1,34 @@
+{
+  "GPU_used": false,
+  "decision": "M1F_FULL_TIMING_NOT_JUSTIFIED_BY_CURRENT_HEADROOM",
+  "facts": {
+    "diagnostic_cost_hours": 88,
+    "hard_target_zero_window_ceiling_fraction": 0.009556789342525079,
+    "model_based_optimistic_window_response_fraction": 0.00017123349630368897,
+    "primary_cost_hours": 78,
+    "primary_plus_diagnostic_slot_hours": 166,
+    "selected_dynamic_trace_reference_fraction": 0.01791747104247104,
+    "selected_heat_ratio": 1.0,
+    "selected_unique_line_fraction": 0.01791747104247104
+  },
+  "if_later_project_approval": {
+    "diagnostic": "ONLY_IF_PRIMARY_HAS_PRE_FROZEN_LOCAL_OR_WINDOW_SIGNAL",
+    "first": "RUN_M1F_PRIMARY_ONLY",
+    "if_primary_unhelpful": "STOP_WITHOUT_DIAGNOSTIC_OR_PRIORITY_STABLE",
+    "priority_stable": "ONLY_AFTER_QUALIFIED_M1F_SIGNAL"
+  },
+  "no_new_paper_materiality_threshold": true,
+  "reasoning": [
+    "FROZEN_SELECTOR_COVERS_ABOUT_1P8_PERCENT_OF_D2_L0_TARGET_WORK",
+    "SELECTED_DYNAMIC_FRACTION_EQUALS_UNIQUE_FRACTION_NO_HEAT_ENRICHMENT",
+    "MODEL_BASED_WHOLE_WINDOW_RESPONSE_IS_ABOUT_0P017_PERCENT",
+    "FULL_TARGET_ZERO_CEILING_IS_BELOW_ONE_PERCENT_OF_MEASURED_WINDOW",
+    "FULL_TIMING_COST_IS_78H_PRIMARY_AND_88H_DIAGNOSTIC"
+  ],
+  "runs_started": [],
+  "schema": "C16_E1_M1F_HEADROOM_FINAL_DECISION_V1",
+  "seed_or_threshold_search_performed": false,
+  "selector_changed": false,
+  "simulator_executed": false,
+  "status": "PASS"
+}
