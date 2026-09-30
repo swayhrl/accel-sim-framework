@@ -250,6 +250,20 @@ LAUNCH_RE = re.compile(
     r"^launching kernel name: (.*) uid: ([0-9]+) cuda_stream_id: ([0-9]+)$"
 )
 STAT_RE = re.compile(r"^(gpu_tot_sim_cycle|gpu_tot_sim_insn|gpu_tot_issued_cta) = ([0-9]+)$")
+REQUIRED_OUTPUT_MEMBERS = {
+    "simulator.stdout", "simulator.stderr", "TIME.txt", "COMMAND.txt",
+    "LAUNCH_AUTHORITY.json", "RUN_RECEIPT.json",
+}
+DIAGNOSTIC_COUNTER_FIELDS = {
+    "quota", "occupancy", "occupancy_max", "target_accesses", "target_hits",
+    "target_misses", "protected_fills", "protected_hits", "target_normal_victims",
+    "target_protected_victims", "normal_normal_victims",
+    "normal_fallback_protected_victims", "quota_full_events",
+    "ordinary_borrowing_fills", "ordinary_borrowing_current",
+    "ordinary_borrowing_max", "protected_protected_replacements",
+    "target_protection_admission_denied", "denial_quota_full_invalid_priority",
+    "denial_quota_full_no_local_protected",
+}
 
 
 def parse_key_values(line: str, prefix: str):
@@ -308,26 +322,50 @@ def verify_output_sums(run_dir: Path):
     for raw in sums_path.read_text(encoding="utf-8").splitlines():
         expected, relative = raw.split(maxsplit=1)
         relative = relative.lstrip(" *")
+        require(relative not in verified, f"duplicate raw output manifest member: {relative}")
         candidate = run_dir / relative
         require(candidate.is_file() and sha256(candidate) == expected,
                 f"raw output SHA mismatch: {candidate}")
         verified[relative] = expected
+    require(set(verified) == REQUIRED_OUTPUT_MEMBERS,
+            f"raw output manifest member drift: {sorted(verified)}")
     return verified
 
 
-def verify_receipt(run_dir: Path, condition: str):
+def verify_receipt(run_dir: Path, condition: str, authority):
     receipt_path = run_dir / "RUN_RECEIPT.json"
     require(receipt_path.is_file(), f"missing receipt {receipt_path}")
     receipt = read_json(receipt_path)
+    require(receipt["schema"] == "C16_E1_B16_REUSE_RUN_RECEIPT_V2",
+            f"receipt schema drift in {receipt_path}")
     require(receipt["condition"] == condition, f"condition drift in {receipt_path}")
     require(receipt["status"] == "PASS" and receipt["exit_code"] == 0 and
             receipt["terminal_exit_detected"] is True, f"failed run receipt {receipt_path}")
+    require(receipt["run_class"] == authority["run_class"],
+            f"run class drift in {receipt_path}")
+    for field in ("core_head_at_launch", "binary_sha256", "config_sha256",
+                  "trace_config_sha256", "kernelslist_sha256"):
+        require(receipt[field] == authority[field],
+                f"{field} drift in {receipt_path}")
+    launch_path = run_dir / "LAUNCH_AUTHORITY.json"
+    require(launch_path.is_file() and
+            sha256(launch_path) == receipt["launch_authority_sha256"],
+            f"launch authority SHA drift in {receipt_path}")
+    launch = read_json(launch_path)
+    require(launch["condition"] == condition, f"launch condition drift in {launch_path}")
+    for field in ("core_head_at_launch", "binary_sha256", "config_sha256",
+                  "trace_config_sha256", "kernelslist_sha256"):
+        require(launch[field] == receipt[field],
+                f"launch/receipt {field} mismatch in {run_dir}")
     verified = verify_output_sums(run_dir)
     return receipt, verified
 
 
-def summarize_run(run_dir: Path, condition: str, expected_rows, scope, diagnostic=False):
-    receipt, verified = verify_receipt(run_dir, condition)
+def summarize_run(run_dir: Path, condition: str, expected_rows, scope, authority,
+                  diagnostic=False):
+    receipt, verified = verify_receipt(run_dir, condition, authority)
+    require((run_dir / "simulator.stderr").stat().st_size == 0,
+            f"{condition}: simulator stderr is nonempty")
     parsed = parse_simulator_output(run_dir / "simulator.stdout", diagnostic)
     launches = parsed["launches"]
     expected_count = int(scope["total_kernel_count"])
@@ -369,7 +407,10 @@ def summarize_run(run_dir: Path, condition: str, expected_rows, scope, diagnosti
     summary = {
         "condition": condition, "status": "PASS", "run_dir": str(run_dir),
         "receipt_sha256": sha256(run_dir / "RUN_RECEIPT.json"),
+        "output_manifest_sha256": sha256(run_dir / "OUTPUT_SHA256SUMS"),
         "stdout_sha256": sha256(run_dir / "simulator.stdout"),
+        "stderr_sha256": sha256(run_dir / "simulator.stderr"),
+        "stderr_bytes": (run_dir / "simulator.stderr").stat().st_size,
         "kernel_count": len(launches), "kernel_sequence_sha256": sha256_from_values(
             [f"{row['uid']}\t{row['stream']}\t{row['name']}" for row in launches]),
         "final_cycles": final_stats["gpu_tot_sim_cycle"],
@@ -396,6 +437,8 @@ def summarize_bounded_repeat(run_dir: Path, evidence_path: Path, expected_rows,
     receipt_path = run_dir / "RUN_RECEIPT.json"
     require(receipt_path.is_file(), f"missing bounded repeat receipt {receipt_path}")
     receipt = read_json(receipt_path)
+    require(receipt["schema"] == "C16_E1_B16_REUSE_RUN_RECEIPT_V2",
+            "bounded repeat receipt schema drift")
     require(receipt["condition"] == "R0_BASELINE" and receipt["status"] == "FAIL" and
             receipt["exit_code"] == 143 and receipt["terminal_exit_detected"] is False,
             "bounded repeat was not intentionally terminated")
@@ -408,6 +451,8 @@ def summarize_bounded_repeat(run_dir: Path, evidence_path: Path, expected_rows,
             evidence["raw_authority"]["OUTPUT_SHA256SUMS_sha256"],
             "bounded repeat output-manifest SHA drift")
     verified = verify_output_sums(run_dir)
+    require((run_dir / "simulator.stderr").stat().st_size == 0,
+            "bounded repeat simulator stderr is nonempty")
     parsed = parse_simulator_output(run_dir / "simulator.stdout")
     launches = parsed["launches"]
     require(len(launches) >= limit, "bounded repeat launch prefix incomplete")
@@ -443,7 +488,10 @@ def summarize_bounded_repeat(run_dir: Path, evidence_path: Path, expected_rows,
         "cycles": {"C_prefix_UID168": final_stats["gpu_tot_sim_cycle"]},
         "wall_seconds": int(receipt["wall_seconds"]),
         "receipt_sha256": sha256(receipt_path),
+        "output_manifest_sha256": sha256(run_dir / "OUTPUT_SHA256SUMS"),
         "stdout_sha256": sha256(run_dir / "simulator.stdout"),
+        "stderr_sha256": sha256(run_dir / "simulator.stderr"),
+        "stderr_bytes": (run_dir / "simulator.stderr").stat().st_size,
         "verified_output_sha256": verified,
         "prefix_exact": True,
     }
@@ -490,16 +538,92 @@ def diagnostic_checkpoint(parsed, scope, dynamic_kernel):
             "class_occupancy": classes, "quota_utilization": occupancy / quota if quota else None}
 
 
+def load_run_authorities(pack: Path):
+    matrix = read_json(pack / "RUN_MATRIX.json")
+    host = read_json(pack / "HOST_SCALE_AND_TELEMETRY_QUALIFICATION.json")
+    require(matrix["status"] == "PASS" and host["status"] == "PASS",
+            "run authority is not PASS")
+    authorities = {}
+    for condition, row in matrix["runs"].items():
+        authorities[condition] = {
+            "run_class": "DIAGNOSTIC" if row["diagnostic_only"] else "PRIMARY",
+            "core_head_at_launch": host["core_execution_head"],
+            "binary_sha256": host["binary_sha256"],
+            "config_sha256": row["config_sha256"],
+            "trace_config_sha256": matrix["trace_config_sha256"],
+            "kernelslist_sha256": matrix["kernelslist_sha256"],
+        }
+    require(set(authorities) == {"R0_BASELINE", "M1_B16", "M1_B16_DIAGNOSTIC"},
+            "run authority condition matrix drift")
+    return authorities
+
+
+def per_uid_stats_exact(left, right, expected_count: int):
+    required = set(range(1, expected_count + 1))
+    require(set(left["completed"]) == required and set(right["completed"]) == required,
+            "per-UID comparison coverage drift")
+    return all(left["completed"][uid] == right["completed"][uid]
+               for uid in range(1, expected_count + 1))
+
+
+def verify_diagnostic_coverage(parsed, expected_count: int):
+    expected_uids = set(range(1, expected_count + 1))
+    require(set(parsed["diagnostics"]) == expected_uids and
+            set(parsed["class_occupancy"]) == expected_uids,
+            "diagnostic UID coverage drift")
+    class_fields = {f"class_{index}" for index in range(1, 29)}
+    for uid in range(1, expected_count + 1):
+        counters = parsed["diagnostics"][uid]
+        classes = parsed["class_occupancy"][uid]
+        require(set(counters) == set(range(16)) and set(classes) == set(range(16)),
+                f"diagnostic instance coverage drift at UID {uid}")
+        require(all(set(row) == DIAGNOSTIC_COUNTER_FIELDS | {"instance"}
+                    for row in counters.values()),
+                f"diagnostic counter schema drift at UID {uid}")
+        require(all(set(row) == class_fields | {"instance"}
+                    for row in classes.values()),
+                f"diagnostic class schema drift at UID {uid}")
+        occupancy = sum(row["occupancy"] for row in counters.values())
+        class_total = sum(row[field] for row in classes.values() for field in class_fields)
+        require(class_total == occupancy, f"diagnostic occupancy closure drift at UID {uid}")
+    return {
+        "UID_count": expected_count,
+        "instance_count_per_UID": 16,
+        "counter_row_count": expected_count * 16,
+        "class_row_count": expected_count * 16,
+        "counter_schema_exact": True,
+        "class_schema_exact": True,
+        "class_sum_equals_occupancy_all_UIDs": True,
+    }
+
+
+def classify_interpretation(local, window, prefix, post_d1_class1,
+                            pre_d2_class1, pre_d2_counters):
+    constrained_zero_retention = (
+        post_d1_class1 > 0 and pre_d2_class1 == 0 and
+        (pre_d2_counters["target_protection_admission_denied"] > 0 or
+         pre_d2_counters["normal_fallback_protected_victims"] > 0)
+    )
+    if constrained_zero_retention:
+        return "CASE_4_EXACT_ZERO_RETENTION_WITH_OBSERVED_CONSTRAINT_EVENTS"
+    if local > 0 and window >= 0 and prefix >= 0:
+        return "CASE_1_SIGNED_FIRST_MECHANISM_SIGNAL_POSITIVE"
+    if local > 0:
+        return "CASE_2_RESIDENCY_RETAINED_BUT_COLLATERAL_PERSISTS"
+    return "CASE_3_RESIDENCY_ACTIVITY_WITHOUT_TARGET_LOCAL_TIMING_BENEFIT"
+
+
 def analyze_runs(args) -> None:
     scope = read_json(args.scope)
     expected_rows = tsv(args.sequence)
     require(len(expected_rows) == int(scope["total_kernel_count"]), "scope/sequence count drift")
+    authorities = load_run_authorities(args.output)
     run_specs = [("R0_BASELINE", args.r0, False), ("M1_B16", args.m1, False),
                  ("M1_B16_DIAGNOSTIC", args.diagnostic, True)]
     summaries, parsed = {}, {}
     for condition, directory, diagnostic in run_specs:
         summaries[condition], parsed[condition] = summarize_run(
-            directory, condition, expected_rows, scope, diagnostic)
+            directory, condition, expected_rows, scope, authorities[condition], diagnostic)
     summaries["R0_BASELINE_REPEAT_BOUNDED"], parsed["R0_BASELINE_REPEAT_BOUNDED"] = (
         summarize_bounded_repeat(args.repeat, args.bounded_repeat_evidence,
                                  expected_rows, parsed["R0_BASELINE"]))
@@ -511,10 +635,13 @@ def analyze_runs(args) -> None:
     correctness = {
         "status": "PASS", "schema": "C16_E1_B16_REUSE_CORRECTNESS_V1",
         "compared_fields": list(primary_fields), "R0_M1_equal": correctness_equal,
-        "natural_termination_all_runs": True, "trace_parse_drop_count": 0,
-        "no_assertion_or_fail_open": True,
-        "runs": {key: {field: value[field] for field in primary_fields}
-                 for key, value in summaries.items()},
+        "primary_and_diagnostic_natural_termination": True,
+        "bounded_repeat_excluded_from_natural_termination_claim": True,
+        "full_expected_kernel_sequence_and_completion_coverage": True,
+        "verified_simulator_stderr_empty": True,
+        "receipt_status_exit_and_terminal_markers_verified": True,
+        "runs": {key: {field: summaries[key][field] for field in primary_fields}
+                 for key in ("R0_BASELINE", "M1_B16", "M1_B16_DIAGNOSTIC")},
     }
 
     performance = {
@@ -531,10 +658,16 @@ def analyze_runs(args) -> None:
     repeated = summaries["R0_BASELINE_REPEAT_BOUNDED"]
     repeat_equal = repeated["prefix_exact"] is True
     require(repeat_equal, "bounded deterministic repeat drift")
-    diag_neutral = summaries["M1_B16"]["cycles"] == summaries["M1_B16_DIAGNOSTIC"]["cycles"] and all(
+    expected_count = int(scope["total_kernel_count"])
+    diagnostic_coverage = verify_diagnostic_coverage(
+        parsed["M1_B16_DIAGNOSTIC"], expected_count)
+    diag_neutral_summary = summaries["M1_B16"]["cycles"] == summaries["M1_B16_DIAGNOSTIC"]["cycles"] and all(
         summaries["M1_B16"][field] == summaries["M1_B16_DIAGNOSTIC"][field]
         for field in primary_fields)
-    require(diag_neutral, "real-trace diagnostic neutrality drift")
+    diag_neutral_per_uid = per_uid_stats_exact(
+        parsed["M1_B16"], parsed["M1_B16_DIAGNOSTIC"], expected_count)
+    require(diag_neutral_summary and diag_neutral_per_uid,
+            "real-trace diagnostic neutrality drift")
     reproducibility = {
         "status": "PASS", "schema": "C16_E1_B16_REUSE_REPRODUCIBILITY_V1",
         "repeated_condition": "R0_BASELINE",
@@ -542,7 +675,12 @@ def analyze_runs(args) -> None:
         "bounded_prefix_last_uid": 168,
         "full_window_repeat_claimed": False,
         "exact_cycle_instruction_CTA_kernel_reproduction": repeat_equal,
-        "M1_diagnostics_real_trace_neutral": diag_neutral,
+        "M1_diagnostics_real_trace_neutral": True,
+        "M1_diagnostics_per_UID_cycle_instruction_CTA_exact": diag_neutral_per_uid,
+        "M1_diagnostics_kernel_identity_exact": (
+            summaries["M1_B16"]["kernel_sequence_sha256"] ==
+            summaries["M1_B16_DIAGNOSTIC"]["kernel_sequence_sha256"]),
+        "diagnostic_coverage": diagnostic_coverage,
         "synthetic_neutrality_remains_primary_qualification_authority": True,
         "repeat_prefix": repeated,
         "M1_primary": summaries["M1_B16"]["cycles"],
@@ -564,15 +702,25 @@ def analyze_runs(args) -> None:
     before = checkpoints["immediately_before_D2_L0_up"]
     after_d1_up = checkpoints["after_D1_L0_up"]
     final_counters = checkpoints["after_D2_L0_up"]["counters"]["sum"]
+    pre_d2_counters = before["counters"]["sum"]
     require(final_counters["target_accesses"] > 0 and final_counters["protected_fills"] > 0,
             "mechanism integration inactive")
+    require(final_counters["target_protection_admission_denied"] ==
+            final_counters["denial_quota_full_invalid_priority"] +
+            final_counters["denial_quota_full_no_local_protected"],
+            "admission denial reason closure drift")
     retained_class1 = before["class_occupancy"]["sum"]["class_1"]
+    post_d1_class1 = after_d1_up["class_occupancy"]["sum"]["class_1"]
+    case4_exact_subset = (
+        post_d1_class1 > 0 and retained_class1 == 0 and
+        (pre_d2_counters["target_protection_admission_denied"] > 0 or
+         pre_d2_counters["normal_fallback_protected_victims"] > 0))
     activation = {
         "status": "PASS", "schema": "C16_E1_B16_MECHANISM_ACTIVATION_V1",
         "mechanism_activated": True, "target_accesses_nonzero": True,
         "protected_fills_nonzero": True, "aggregate_final_counters": final_counters,
         "checkpoints": checkpoints,
-        "D1_L0_class1_occupancy_after_fill": after_d1_up["class_occupancy"]["sum"]["class_1"],
+        "D1_L0_class1_occupancy_after_fill": post_d1_class1,
         "D1_L0_class1_occupancy_retained_before_D2_reuse": retained_class1,
         "D1_L0_class1_retention_fraction": (
             retained_class1 / after_d1_up["class_occupancy"]["sum"]["class_1"]
@@ -580,21 +728,27 @@ def analyze_runs(args) -> None:
         "class_2_through_28_occupancy_before_D2_reuse": {
             f"class_{index}": before["class_occupancy"]["sum"][f"class_{index}"]
             for index in range(2, 29)},
+        "case4_exact_zero_retention_subset": {
+            "satisfied": case4_exact_subset,
+            "not_a_numeric_definition_of_qualitative_almost_or_large": True,
+            "pre_D2_target_protection_admission_denied":
+                pre_d2_counters["target_protection_admission_denied"],
+            "pre_D2_normal_fallback_protected_victims":
+                pre_d2_counters["normal_fallback_protected_victims"],
+        },
     }
 
     local = performance["metrics"]["C_L0_up_D2"]["response_fraction"]
     window = performance["metrics"]["C_window"]["response_fraction"]
     prefix = performance["metrics"]["C_D2_prefix"]["response_fraction"]
-    if local > 0 and window >= 0 and prefix >= 0:
-        interpretation = "CASE_1_SIGNED_FIRST_MECHANISM_SIGNAL_POSITIVE"
-    elif local > 0:
-        interpretation = "CASE_2_RESIDENCY_RETAINED_BUT_COLLATERAL_PERSISTS"
-    else:
-        interpretation = "CASE_3_RESIDENCY_ACTIVITY_WITHOUT_TARGET_LOCAL_TIMING_BENEFIT"
+    interpretation = classify_interpretation(
+        local, window, prefix, post_d1_class1, retained_class1, pre_d2_counters)
     final = {
         "status": "PASS", "schema": "C16_E1_B16_REUSE_FINAL_DECISION_V1",
         "stage_label": "C16_E1_ORACLE_ELASTIC_B16_REUSE_CANARY_COMPLETE_V1",
         "interpretation": interpretation,
+        "case4_qualitative_threshold_not_invented": True,
+        "case4_exact_zero_retention_subset_satisfied": case4_exact_subset,
         "arithmetic_sign_only_no_preregistered_materiality_threshold": True,
         "mechanism_activated": True, "correctness_qualified": True,
         "reproducibility_qualified": True, "diagnostic_neutrality_qualified": True,
@@ -606,6 +760,32 @@ def analyze_runs(args) -> None:
         "status": "PASS", "schema": "C16_E1_B16_REUSE_RAW_OUTPUT_INDEX_V1",
         "runs": summaries,
     }
+    receipt_specs = {
+        "R0_BASELINE": args.r0,
+        "M1_B16": args.m1,
+        "M1_B16_DIAGNOSTIC": args.diagnostic,
+        "R0_BASELINE_REPEAT_BOUNDED": args.repeat,
+    }
+    run_receipts = {
+        "status": "PASS", "schema": "C16_E1_B16_REUSE_RUN_RECEIPTS_V1",
+        "primary_and_diagnostic_natural_terminal": True,
+        "bounded_repeat_scope": {
+            "claim": "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168",
+            "intentional_exit_code": 143,
+            "terminal_exit_detected": False,
+            "full_window_repeat_claimed": False,
+        },
+        "runs": {
+            condition: {
+                "run_dir": str(directory),
+                "receipt": read_json(directory / "RUN_RECEIPT.json"),
+                "receipt_sha256": sha256(directory / "RUN_RECEIPT.json"),
+                "output_manifest_sha256": sha256(directory / "OUTPUT_SHA256SUMS"),
+                "verified_output_sha256": summaries[condition]["verified_output_sha256"],
+            }
+            for condition, directory in receipt_specs.items()
+        },
+    }
     args.output.mkdir(parents=True, exist_ok=True)
     for name, value in (("CORRECTNESS_COMPARISON.json", correctness),
                         ("B16_REUSE_WINDOW_PERFORMANCE.json", performance),
@@ -613,6 +793,7 @@ def analyze_runs(args) -> None:
                         ("B16_MECHANISM_ACTIVATION.json", activation),
                         ("DIAGNOSTIC_COUNTERS.json", activation["checkpoints"]),
                         ("RAW_OUTPUT_INDEX.json", raw_index),
+                        ("RUN_RECEIPTS.json", run_receipts),
                         ("FINAL_DECISION.json", final)):
         dump(args.output / name, value)
     print(json.dumps({"stage_label": final["stage_label"],
