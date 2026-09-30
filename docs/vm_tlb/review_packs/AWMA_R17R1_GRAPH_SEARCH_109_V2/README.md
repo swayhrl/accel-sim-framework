@@ -1,0 +1,7 @@
+# AWMA R17R1 CAGRA quality requalification / Lane F / node109
+
+Execution branch `hrl/awma-r17r1-quality-requalification-109-v1`, starting HEAD `35ae51220bdde8adccfddde847356a65578d465d`, scientific parent `78874fbfd767ec1321d41a04e4c51589a3c07298`.
+
+Primary result: **`R17_CAGRA_EXISTING_SOFTWARE_SUFFICIENT`** within the exact accepted GloVe/CAGRA/RTX4080 quality-qualified question. Reusing the original IVF-PQ index and completing only four missing quality points yielded recall@10≥0.95 in both SINGLE_CTA and MULTI_CTA 512/1; no A2 or NN_DESCENT index was needed. Formal Q1 selected MULTI_CTA 512/1, and matched Q1/Q32 showed no complete-request low-concurrency latency loss. `FINAL_DECISION.md` states the narrower scientific meaning and limitations.
+
+Authority files: `PARENT_AUTHORITY.json`, `SOURCE_BASELINE_AUDIT.md`, `QUALITY_EXTENSION_IVFPQ.tsv`, `STRONG_CANDIDATE_FREEZE.md`, `FORMAL_Q1_TIMING.tsv`, `Q1_STRONG_V2.md`, `MATCHED_Q1_Q32.tsv`, `MATCHED_ANALYSIS.json`, `WRAPPER_ACCOUNTING.md`, `FINAL_DECISION.md`, `RUN_RECEIPTS.json`, `RAW_DATA_INDEX.tsv`, `SHA256SUMS`. Attempt0 and corrected formal per-query samples are preserved in node164 raw. The original dataset/index authority remains at the accepted R17 V1 node164 root; this Goal did not duplicate or rebuild it. All actual CUDA work held the shared GPU campaign lock and exited cleanly. Conditional profiler/holdout files are absent because their gates were not reached.
