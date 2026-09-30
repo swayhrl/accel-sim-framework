@@ -21,6 +21,7 @@ CORE_HEAD = "a2322069b9701597db7019080b5b54d29518e3a2"
 FRAMEWORK_PARENT = "2fa207fbc37a48f12641d810319b03ba1cf4e381"
 PLATFORM_SHA = "de9ee8f30325c033e0de624640ffa8803f0eae40633eebaa0b3144f549f5ccb8"
 SIDECAR_SHA = "6c60839714d136b9f6f596218588e658e245e0b7cc6f8e8550cce8d683ce13c6"
+RUNNER_SHA = "b061ba98f1dc45fd17aac9de502fc54f7d27587f3cc04e99c61a875bff1d5aef"
 
 
 class ContractError(ValueError):
@@ -283,6 +284,9 @@ def parse_simulator_output(path: Path, want_diagnostics: bool = False):
     completed = {}
     diagnostics = {}
     class_occupancy = {}
+    snapshot_begin = set()
+    snapshot_end = set()
+    snapshot_open_uid = None
     current_uid = None
     terminal = False
     with path.open(encoding="utf-8", errors="strict") as stream:
@@ -298,21 +302,45 @@ def parse_simulator_output(path: Path, want_diagnostics: bool = False):
             if match and current_uid is not None:
                 completed.setdefault(current_uid, {})[match.group(1)] = int(match.group(2))
                 continue
+            if want_diagnostics and line == "oracle_elastic_l2_snapshot_begin":
+                require(current_uid is not None and snapshot_open_uid is None,
+                        "malformed diagnostic snapshot begin")
+                require(current_uid not in snapshot_begin,
+                        f"duplicate diagnostic snapshot begin at UID {current_uid}")
+                snapshot_begin.add(current_uid)
+                snapshot_open_uid = current_uid
+                continue
+            if want_diagnostics and line == "oracle_elastic_l2_snapshot_end":
+                require(current_uid is not None and snapshot_open_uid == current_uid,
+                        "malformed diagnostic snapshot end")
+                require(current_uid not in snapshot_end,
+                        f"duplicate diagnostic snapshot end at UID {current_uid}")
+                snapshot_end.add(current_uid)
+                snapshot_open_uid = None
+                continue
             if want_diagnostics and line.startswith("oracle_elastic_l2\t"):
-                require(current_uid is not None, "diagnostic line without current kernel")
+                require(current_uid is not None and snapshot_open_uid == current_uid,
+                        "diagnostic line outside current snapshot")
                 row = parse_key_values(line, "oracle_elastic_l2")
+                require(row["instance"] not in diagnostics.setdefault(current_uid, {}),
+                        f"duplicate diagnostic instance at UID {current_uid}")
                 diagnostics.setdefault(current_uid, {})[row["instance"]] = row
                 continue
             if want_diagnostics and line.startswith("oracle_elastic_l2_class_occupancy\t"):
-                require(current_uid is not None, "class occupancy line without current kernel")
+                require(current_uid is not None and snapshot_open_uid == current_uid,
+                        "class occupancy line outside current snapshot")
                 row = parse_key_values(line, "oracle_elastic_l2_class_occupancy")
+                require(row["instance"] not in class_occupancy.setdefault(current_uid, {}),
+                        f"duplicate class occupancy instance at UID {current_uid}")
                 class_occupancy.setdefault(current_uid, {})[row["instance"]] = row
                 continue
             if "GPGPU-Sim: *** exit detected ***" in line:
                 terminal = True
     require(launches, f"no kernel launches in {path}")
+    require(snapshot_open_uid is None, "unterminated diagnostic snapshot")
     return {"launches": launches, "completed": completed, "terminal": terminal,
-            "diagnostics": diagnostics, "class_occupancy": class_occupancy}
+            "diagnostics": diagnostics, "class_occupancy": class_occupancy,
+            "snapshot_begin": snapshot_begin, "snapshot_end": snapshot_end}
 
 
 def verify_output_sums(run_dir: Path):
@@ -332,6 +360,28 @@ def verify_output_sums(run_dir: Path):
     return verified
 
 
+def verify_launch_identity(run_dir: Path, condition: str, receipt, authority):
+    require(receipt["run_class"] == authority["run_class"],
+            f"run class drift in {run_dir}")
+    for field in ("core_head_at_launch", "binary_sha256", "config_sha256",
+                  "trace_config_sha256", "kernelslist_sha256", "runner_sha256"):
+        require(receipt[field] == authority[field],
+                f"{field} drift in {run_dir}")
+    launch_path = run_dir / "LAUNCH_AUTHORITY.json"
+    require(launch_path.is_file() and
+            sha256(launch_path) == receipt["launch_authority_sha256"],
+            f"launch authority SHA drift in {run_dir}")
+    launch = read_json(launch_path)
+    require(launch["schema"] == "C16_E1_B16_REUSE_LAUNCH_AUTHORITY_V1",
+            f"launch authority schema drift in {launch_path}")
+    require(launch["condition"] == condition, f"launch condition drift in {launch_path}")
+    for field in ("start_utc", "core_head_at_launch", "framework_head_at_launch",
+                  "binary_sha256", "config_sha256", "trace_config_sha256",
+                  "kernelslist_sha256", "runner_sha256"):
+        require(launch[field] == receipt[field],
+                f"launch/receipt {field} mismatch in {run_dir}")
+
+
 def verify_receipt(run_dir: Path, condition: str, authority):
     receipt_path = run_dir / "RUN_RECEIPT.json"
     require(receipt_path.is_file(), f"missing receipt {receipt_path}")
@@ -341,22 +391,7 @@ def verify_receipt(run_dir: Path, condition: str, authority):
     require(receipt["condition"] == condition, f"condition drift in {receipt_path}")
     require(receipt["status"] == "PASS" and receipt["exit_code"] == 0 and
             receipt["terminal_exit_detected"] is True, f"failed run receipt {receipt_path}")
-    require(receipt["run_class"] == authority["run_class"],
-            f"run class drift in {receipt_path}")
-    for field in ("core_head_at_launch", "binary_sha256", "config_sha256",
-                  "trace_config_sha256", "kernelslist_sha256"):
-        require(receipt[field] == authority[field],
-                f"{field} drift in {receipt_path}")
-    launch_path = run_dir / "LAUNCH_AUTHORITY.json"
-    require(launch_path.is_file() and
-            sha256(launch_path) == receipt["launch_authority_sha256"],
-            f"launch authority SHA drift in {receipt_path}")
-    launch = read_json(launch_path)
-    require(launch["condition"] == condition, f"launch condition drift in {launch_path}")
-    for field in ("core_head_at_launch", "binary_sha256", "config_sha256",
-                  "trace_config_sha256", "kernelslist_sha256"):
-        require(launch[field] == receipt[field],
-                f"launch/receipt {field} mismatch in {run_dir}")
+    verify_launch_identity(run_dir, condition, receipt, authority)
     verified = verify_output_sums(run_dir)
     return receipt, verified
 
@@ -426,7 +461,7 @@ def summarize_run(run_dir: Path, condition: str, expected_rows, scope, authority
 
 
 def summarize_bounded_repeat(run_dir: Path, evidence_path: Path, expected_rows,
-                             primary_parsed):
+                             primary_parsed, authority):
     evidence = read_json(evidence_path)
     require(evidence["status"] == "PASS" and
             evidence["claim"] == "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168",
@@ -442,6 +477,7 @@ def summarize_bounded_repeat(run_dir: Path, evidence_path: Path, expected_rows,
     require(receipt["condition"] == "R0_BASELINE" and receipt["status"] == "FAIL" and
             receipt["exit_code"] == 143 and receipt["terminal_exit_detected"] is False,
             "bounded repeat was not intentionally terminated")
+    verify_launch_identity(run_dir, "R0_BASELINE", receipt, authority)
     require(sha256(receipt_path) == evidence["raw_authority"]["RUN_RECEIPT_sha256"],
             "bounded repeat receipt SHA drift")
     require(sha256(run_dir / "simulator.stdout") ==
@@ -552,6 +588,7 @@ def load_run_authorities(pack: Path):
             "config_sha256": row["config_sha256"],
             "trace_config_sha256": matrix["trace_config_sha256"],
             "kernelslist_sha256": matrix["kernelslist_sha256"],
+            "runner_sha256": RUNNER_SHA,
         }
     require(set(authorities) == {"R0_BASELINE", "M1_B16", "M1_B16_DIAGNOSTIC"},
             "run authority condition matrix drift")
@@ -571,6 +608,9 @@ def verify_diagnostic_coverage(parsed, expected_count: int):
     require(set(parsed["diagnostics"]) == expected_uids and
             set(parsed["class_occupancy"]) == expected_uids,
             "diagnostic UID coverage drift")
+    require(parsed["snapshot_begin"] == expected_uids and
+            parsed["snapshot_end"] == expected_uids,
+            "diagnostic snapshot framing coverage drift")
     class_fields = {f"class_{index}" for index in range(1, 29)}
     for uid in range(1, expected_count + 1):
         counters = parsed["diagnostics"][uid]
@@ -583,17 +623,30 @@ def verify_diagnostic_coverage(parsed, expected_count: int):
         require(all(set(row) == class_fields | {"instance"}
                     for row in classes.values()),
                 f"diagnostic class schema drift at UID {uid}")
-        occupancy = sum(row["occupancy"] for row in counters.values())
-        class_total = sum(row[field] for row in classes.values() for field in class_fields)
-        require(class_total == occupancy, f"diagnostic occupancy closure drift at UID {uid}")
+        for instance in range(16):
+            counter = counters[instance]
+            class_total = sum(classes[instance][field] for field in class_fields)
+            require(class_total == counter["occupancy"],
+                    f"per-instance occupancy closure drift at UID {uid} instance {instance}")
+            require(counter["quota"] == 8192,
+                    f"frozen B16 quota drift at UID {uid} instance {instance}")
+            require(counter["occupancy"] <= counter["occupancy_max"] <= counter["quota"],
+                    f"occupancy bound drift at UID {uid} instance {instance}")
+        require(sum(row["quota"] for row in counters.values()) == 131072,
+                f"aggregate B16 quota drift at UID {uid}")
     return {
         "UID_count": expected_count,
         "instance_count_per_UID": 16,
         "counter_row_count": expected_count * 16,
         "class_row_count": expected_count * 16,
+        "snapshot_begin_count": expected_count,
+        "snapshot_end_count": expected_count,
         "counter_schema_exact": True,
         "class_schema_exact": True,
-        "class_sum_equals_occupancy_all_UIDs": True,
+        "per_instance_class_sum_equals_occupancy_all_UIDs": True,
+        "per_instance_quota_lines": 8192,
+        "aggregate_quota_lines": 131072,
+        "occupancy_bounds_all_UIDs": True,
     }
 
 
@@ -626,7 +679,8 @@ def analyze_runs(args) -> None:
             directory, condition, expected_rows, scope, authorities[condition], diagnostic)
     summaries["R0_BASELINE_REPEAT_BOUNDED"], parsed["R0_BASELINE_REPEAT_BOUNDED"] = (
         summarize_bounded_repeat(args.repeat, args.bounded_repeat_evidence,
-                                 expected_rows, parsed["R0_BASELINE"]))
+                                 expected_rows, parsed["R0_BASELINE"],
+                                 authorities["R0_BASELINE"]))
 
     primary_fields = ("kernel_count", "kernel_sequence_sha256", "instruction_count", "CTA_count")
     correctness_equal = all(summaries["R0_BASELINE"][field] == summaries["M1_B16"][field]
@@ -731,6 +785,7 @@ def analyze_runs(args) -> None:
         "case4_exact_zero_retention_subset": {
             "satisfied": case4_exact_subset,
             "not_a_numeric_definition_of_qualitative_almost_or_large": True,
+            "constraint_events_are_global_cumulative_not_causal_attribution_for_class1": True,
             "pre_D2_target_protection_admission_denied":
                 pre_d2_counters["target_protection_admission_denied"],
             "pre_D2_normal_fallback_protected_victims":
@@ -749,6 +804,7 @@ def analyze_runs(args) -> None:
         "interpretation": interpretation,
         "case4_qualitative_threshold_not_invented": True,
         "case4_exact_zero_retention_subset_satisfied": case4_exact_subset,
+        "case4_constraint_events_not_claimed_as_cause_of_class1_loss": True,
         "arithmetic_sign_only_no_preregistered_materiality_threshold": True,
         "mechanism_activated": True, "correctness_qualified": True,
         "reproducibility_qualified": True, "diagnostic_neutrality_qualified": True,

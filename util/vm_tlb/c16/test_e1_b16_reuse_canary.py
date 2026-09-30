@@ -21,8 +21,10 @@ class B16ReuseCanaryTest(unittest.TestCase):
 gpu_tot_sim_cycle = 10
 gpu_tot_sim_insn = 20
 gpu_tot_issued_cta = 2
+oracle_elastic_l2_snapshot_begin
 oracle_elastic_l2\tinstance=0\tquota=4\toccupancy=1
 oracle_elastic_l2_class_occupancy\tinstance=0\tclass_1=1\tclass_2=0
+oracle_elastic_l2_snapshot_end
 launching kernel name: kernel_b uid: 2 cuda_stream_id: 0
 gpu_tot_sim_cycle = 15
 gpu_tot_sim_insn = 25
@@ -47,6 +49,19 @@ GPGPU-Sim: *** exit detected ***
     def test_malformed_diagnostic_fails_closed(self):
         with self.assertRaises(CANARY.ContractError):
             CANARY.parse_key_values("oracle_elastic_l2\tinstance=bad", "oracle_elastic_l2")
+
+    def test_duplicate_diagnostic_instance_fails_closed(self):
+        text = """launching kernel name: kernel_a uid: 1 cuda_stream_id: 0
+oracle_elastic_l2_snapshot_begin
+oracle_elastic_l2\tinstance=0\tquota=8192
+oracle_elastic_l2\tinstance=0\tquota=8192
+oracle_elastic_l2_snapshot_end
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "simulator.stdout"
+            path.write_text(text, encoding="utf-8")
+            with self.assertRaises(CANARY.ContractError):
+                CANARY.parse_simulator_output(path, True)
 
     def test_output_manifest_requires_exact_members(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -90,18 +105,21 @@ GPGPU-Sim: *** exit detected ***
         classes = {}
         for instance in range(16):
             counter = {field: 0 for field in CANARY.DIAGNOSTIC_COUNTER_FIELDS}
-            counter.update({"instance": instance, "quota": 8, "occupancy": 1})
+            counter.update({"instance": instance, "quota": 8192, "occupancy": 1,
+                            "occupancy_max": 1})
             counters[instance] = counter
             row = {f"class_{index}": 0 for index in range(1, 29)}
             row.update({"instance": instance, "class_1": 1})
             classes[instance] = row
         result = CANARY.verify_diagnostic_coverage(
-            {"diagnostics": {1: counters}, "class_occupancy": {1: classes}}, 1)
+            {"diagnostics": {1: counters}, "class_occupancy": {1: classes},
+             "snapshot_begin": {1}, "snapshot_end": {1}}, 1)
         self.assertEqual(result["counter_row_count"], 16)
         del classes[15]
         with self.assertRaises(CANARY.ContractError):
             CANARY.verify_diagnostic_coverage(
-                {"diagnostics": {1: counters}, "class_occupancy": {1: classes}}, 1)
+                {"diagnostics": {1: counters}, "class_occupancy": {1: classes},
+                 "snapshot_begin": {1}, "snapshot_end": {1}}, 1)
 
 
 if __name__ == "__main__":
