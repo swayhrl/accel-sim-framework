@@ -1,0 +1,105 @@
+{
+  "B0": {
+    "implementation": "accepted runner/runtime unchanged",
+    "name": "CURRENT_SINGLE_STREAM_STRONG_RUNTIME"
+  },
+  "B1": {
+    "allowed_change": "scheduling/dependency events only",
+    "cross_stream_lifetime": "record_stream/event-safe lifetime required",
+    "down": "unchanged after multiply",
+    "gate_branch": "gate_proj then SiLU on gate stream",
+    "join": "original stream waits for both branch completion events before multiply",
+    "name": "TWO_STREAM_GATE_UP_STRONG_BASELINE",
+    "up_branch": "up_proj on independent up stream"
+  },
+  "authority": {
+    "accepted_scenario": "Qwen2.5-7B-Instruct-AWQ natural CONTROL_GUD84 B1/T2048/D0-D3",
+    "accepted_scientific_contract_commit": "08f38d7163da95e895aaba10d72231a6d350dfe2",
+    "timeline_producer_commit": "071297ae7f4aa772a27fae0cf31ad47ab7d967be",
+    "timeline_producer_tree": "1e6a4f5ed19dfc76f91795524a29ac652156c653"
+  },
+  "correctness": {
+    "generated_tokens": [
+      23578,
+      11,
+      323,
+      3950
+    ],
+    "projection_occurrences_each_run": 336,
+    "require_call_order_identity": true,
+    "require_input_output_hash_and_shape_identity": true
+  },
+  "execution": "NOT_EXECUTED_BY_LANE6",
+  "forbidden_changes": [
+    "W4 kernel",
+    "quantization",
+    "tensor layout",
+    "numerical semantics",
+    "down kernel",
+    "torch.compile",
+    "new fused kernel",
+    "NCU in first step",
+    "new model/input/shape",
+    "SASS",
+    "NVBit",
+    "Accel-Sim"
+  ],
+  "gpu_lock": {
+    "path": "/data/c16/locks/c16_gpu_campaign.lock",
+    "release_receipt_required": true,
+    "required": true,
+    "single_outer_lock": true
+  },
+  "interpretation": {
+    "contention_diagnostic_if": "B1 shows overlap but little wall benefit or inflated kernel durations",
+    "hardware_followup": "NOT_AUTOMATIC",
+    "software_opportunity_if": "B1 CI is positive and realizes at least 50% of oracle time reduction"
+  },
+  "measurement": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 20261001,
+      "unit": "complete ABBA block"
+    },
+    "formal_order": "12 complete ABBA blocks: B0,B1,B1,B0",
+    "fresh_process_per_sample": true,
+    "gpu_wall_budget_minutes": 8,
+    "primary_endpoint": "native CUDA-event complete natural D0-D3 wall time",
+    "required_timeline_checks": [
+      "actual gate/up GPU overlap",
+      "gate kernel duration under overlap",
+      "up kernel duration under overlap",
+      "whole-decode realization fraction of oracle"
+    ],
+    "samples": {
+      "B0": 24,
+      "B1": 24,
+      "total": 48
+    },
+    "timeline_canary": "one lightweight NSYS cuda,nvtx run for B0 and one for B1, excluded from native timing inference"
+  },
+  "oracle_basis": {
+    "label": "PERFECT_GATE_UP_CONCURRENCY_NO_CONTENTION_ORACLE",
+    "saving_ns": 7732849,
+    "whole_decode_saving_fraction": 0.07893066891889022,
+    "whole_decode_speedup": 1.0856946011070034
+  },
+  "purpose": "MINIMAL_STRONG_SOFTWARE_BASELINE_ONLY",
+  "schema_version": 1,
+  "status": "QUALIFIED_FOR_NATIVE_CONCURRENCY_DIAGNOSTIC",
+  "stop_conditions": [
+    "any identity/hash/shape/token mismatch",
+    "B1 changes any kernel name/grid/block sequence beyond scheduling order",
+    "no legal event dependency closure",
+    "memory-lifetime warning or race",
+    "GPU lock unavailable for 45 minutes",
+    "8-minute GPU budget exceeded",
+    "request expands beyond B0/B1 or adds NCU"
+  ],
+  "validation_target_frozen_before_results": {
+    "held_out_validation": "D3 whole-step wall plus layers 14-27 gate/up overlap and kernel-duration response",
+    "no_extra_gpu_run_for_validation": true,
+    "no_parameter_change_before_validation": true,
+    "primary": "complete D0-D3 wall over all layers"
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "capture_source_commit": "5fe650664a8f7adebf034052d2ac08b2fdbc2348",
+  "correlated_decode_gpu_activities": 6020,
+  "correlation_authority": "NVTX launch scope + CUDA runtime correlationId -> GPU kernel",
+  "cuda_initialized_by_consumer": false,
+  "decode_step_drift": {
+    "activation": {
+      "max_to_min_ratio": 1.03125,
+      "per_decode_median_ns": [
+        1040.0,
+        1056.0,
+        1056.0,
+        1024.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "down": {
+      "max_to_min_ratio": 1.006129555265192,
+      "per_decode_median_ns": [
+        73536.5,
+        73088.5,
+        73424.0,
+        73280.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "gap_activation_up": {
+      "max_to_min_ratio": 1.1482720588235293,
+      "per_decode_median_ns": [
+        15616.5,
+        15376.0,
+        13600.0,
+        14224.0
+      ],
+      "visible_ge_10pct": true
+    },
+    "gap_gate_activation": {
+      "max_to_min_ratio": 1.0129032258064516,
+      "per_decode_median_ns": [
+        2480.0,
+        2512.0,
+        2480.0,
+        2480.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "gap_multiply_down": {
+      "max_to_min_ratio": 1.0129870129870129,
+      "per_decode_median_ns": [
+        2496.0,
+        2464.0,
+        2464.0,
+        2464.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "gap_up_multiply": {
+      "max_to_min_ratio": 1.0192307692307692,
+      "per_decode_median_ns": [
+        2528.0,
+        2496.0,
+        2512.0,
+        2544.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "gate": {
+      "max_to_min_ratio": 1.0063769485120453,
+      "per_decode_median_ns": [
+        68176.0,
+        68128.0,
+        67840.0,
+        67744.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "multiply": {
+      "max_to_min_ratio": 1.037037037037037,
+      "per_decode_median_ns": [
+        880.0,
+        896.0,
+        864.0,
+        896.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "stage_sum": {
+      "max_to_min_ratio": 1.0028727061519866,
+      "per_decode_median_ns": [
+        223601.0,
+        222960.5,
+        222976.5,
+        223168.5
+      ],
+      "visible_ge_10pct": false
+    },
+    "unattributed": {
+      "max_to_min_ratio": 1.1117021276595744,
+      "per_decode_median_ns": [
+        23408.0,
+        23168.0,
+        21056.0,
+        21696.0
+      ],
+      "visible_ge_10pct": true
+    },
+    "up": {
+      "max_to_min_ratio": 1.0074215463438525,
+      "per_decode_median_ns": [
+        79872.5,
+        79777.0,
+        79633.0,
+        80224.0
+      ],
+      "visible_ge_10pct": false
+    },
+    "window": {
+      "max_to_min_ratio": 1.0129179798443448,
+      "per_decode_median_ns": [
+        247153.0,
+        246032.5,
+        244001.0,
+        245121.0
+      ],
+      "visible_ge_10pct": false
+    }
+  },
+  "descriptive_outlier_rule": "within each decode and metric: deviation > max(6*1.4826*MAD, 10% of median, 2000 ns); descriptive only",
+  "descriptive_outlier_windows": [
+    {
+      "decode_step": 0,
+      "layer": 0,
+      "metrics": [
+        "gap_activation_up",
+        "window",
+        "unattributed"
+      ]
+    },
+    {
+      "decode_step": 1,
+      "layer": 4,
+      "metrics": [
+        "gap_multiply_down"
+      ]
+    },
+    {
+      "decode_step": 1,
+      "layer": 5,
+      "metrics": [
+        "gap_multiply_down",
+        "window",
+        "unattributed"
+      ]
+    },
+    {
+      "decode_step": 1,
+      "layer": 15,
+      "metrics": [
+        "gap_activation_up",
+        "gap_multiply_down",
+        "window",
+        "unattributed"
+      ]
+    },
+    {
+      "decode_step": 2,
+      "layer": 16,
+      "metrics": [
+        "gap_activation_up",
+        "gap_multiply_down",
+        "window",
+        "unattributed"
+      ]
+    },
+    {
+      "decode_step": 3,
+      "layer": 8,
+      "metrics": [
+        "gap_gate_activation",
+        "gap_activation_up",
+        "window",
+        "unattributed"
+      ]
+    },
+    {
+      "decode_step": 3,
+      "layer": 24,
+      "metrics": [
+        "gap_activation_up",
+        "gap_multiply_down",
+        "window",
+        "unattributed"
+      ]
+    }
+  ],
+  "exact_natural_scenario": true,
+  "gate_up_overlap_observed_count": 0,
+  "gpu_lock_used_by_consumer": false,
+  "gpu_used_by_consumer": false,
+  "instrumentation_neutral": true,
+  "kernel_identity": {
+    "count_each": 7441,
+    "sequence_sha256": "bac3ac5e9de6be5052788fd29b7ec5072b904a83564072f44225ca457cd7851f"
+  },
+  "lane4_partial_accessed": false,
+  "layer_decode_windows": 112,
+  "producer_commit": "071297ae7f4aa772a27fae0cf31ad47ab7d967be",
+  "producer_manifest_file_count": 28,
+  "producer_manifest_sha256": "f019ab350927b6cca2f5bb055482efc62ccaf78c67d1873981e309942b8c1d9e",
+  "producer_tree": "1e6a4f5ed19dfc76f91795524a29ac652156c653",
+  "projection_missing_activity": 0,
+  "schema_version": 2,
+  "semantic_ranges": {
+    "activation": 112,
+    "decode_wall": 1,
+    "multiply": 112,
+    "projection": 336,
+    "total": 560
+  },
+  "single_stream_ids_for_semantic_activity": [
+    7
+  ],
+  "status": "PASS",
+  "window_overlap_count": 0
+}

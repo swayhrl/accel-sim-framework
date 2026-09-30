@@ -1,0 +1,60 @@
+{
+  "admission_threshold_pass": true,
+  "admission_threshold_whole_decode_saving_fraction": 0.05,
+  "current_runtime": {
+    "gate_up_nonoverlap_windows": 112,
+    "gate_up_overlap_windows": 0,
+    "semantic_cuda_stream_ids": [
+      7
+    ],
+    "stage_order": [
+      "gate",
+      "activation",
+      "up",
+      "multiply",
+      "down"
+    ]
+  },
+  "decision": "F2A_QUALIFIED_FOR_NATIVE_CONCURRENCY_DIAGNOSTIC",
+  "formula": {
+    "gap_preserving_saving": "min(T_gate + T_activation, T_up)",
+    "ideal_stage": "producer_ready + T_multiply + T_down",
+    "producer_ready": "max(T_gate + T_activation, T_up)"
+  },
+  "gap_elided_reference_not_admission": {
+    "saving_ns": 10632957,
+    "warning": "removes every within-window launch gap and therefore is not the F2A admission value",
+    "whole_decode_speedup": 1.1217460438701787
+  },
+  "gap_preserving_oracle": {
+    "local_ffn_speedup": 1.3834075446935346,
+    "local_ffn_time_reduction_fraction": 0.2771472124495826,
+    "preserved_non_target_gap_ns": 2900108,
+    "saving_ms": 7.732849,
+    "saving_ns": 7732849,
+    "whole_decode_speedup": 1.0856946011070034,
+    "whole_decode_time_reduction_fraction": 0.07893066891889022
+  },
+  "limitations": [
+    "not a claim that CUDA streams realize the oracle",
+    "not materialization elimination",
+    "not new hardware",
+    "no-contention assumption ignores resource and bandwidth interference"
+  ],
+  "schema_version": 2,
+  "source_feasibility": {
+    "kernel_implementation_unchanged": true,
+    "numerical_dag_unchanged": true,
+    "quantization_unchanged": true,
+    "required_dependencies": [
+      "both producer streams wait for hidden-ready event",
+      "activation waits for gate",
+      "multiply waits for activation and up",
+      "down follows multiply",
+      "cross-stream tensor lifetimes recorded"
+    ],
+    "tensor_layout_unchanged": true,
+    "two_stream_possible_without_kernel_change": true
+  },
+  "status": "PERFECT_GATE_UP_CONCURRENCY_NO_CONTENTION_ORACLE"
+}

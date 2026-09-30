@@ -1,0 +1,32 @@
+{
+  "decision": "F1_STOP_SMALL_OR_UNIDENTIFIABLE",
+  "explicit_elementwise_zero_ceiling": {
+    "activation_plus_multiply_ns": 216897,
+    "label": "EXPLICIT_ELEMENTWISE_ZERO_CEILING",
+    "local_ffn_speedup": 1.0078345448389774,
+    "local_ffn_time_reduction_fraction": 0.007773641893004392,
+    "not_full_materialization_ceiling": true,
+    "whole_decode_speedup": 1.002218821437205,
+    "whole_decode_time_reduction_fraction": 0.0022139091680828805
+  },
+  "handoff_traffic_bound": {
+    "excludes": [
+      "hidden shared input",
+      "down output consumed outside bound",
+      "AWQ GEMM internal scratch and reduction"
+    ],
+    "intermediate_tensor_count_per_window": 4,
+    "is_not_dram_bytes": true,
+    "logical_bytes_all_windows": 33947648,
+    "logical_bytes_per_window": 303104,
+    "logical_mib_all_windows": 32.375,
+    "logical_reads_per_window": 4,
+    "logical_tensor_bytes_each": 37888,
+    "logical_writes_per_window": 4,
+    "window_count": 112
+  },
+  "reason_time_unknown": "No accepted authority isolates handoff traffic on the critical path or maps logical intermediate bytes to elapsed time; cache residency, overlap, allocation, and synchronization prevent a bandwidth-only conversion.",
+  "schema_version": 2,
+  "status": "MATERIALIZATION_TIME_CEILING_NOT_IDENTIFIABLE",
+  "time_conversion": "UNKNOWN"
+}

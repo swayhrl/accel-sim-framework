@@ -1,0 +1,8 @@
+tensor	producer	consumers	shape	dtype	logical_bytes	global_tensor	alias_or_view	writes_within_ffn	reads_within_ffn	cross_operator_handoff	counted_handoff_bytes_per_window	authority
+hidden	preceding layer normalization	gate_proj;up_proj	[1,1,3584]	FP16	7168	YES	NO_EVIDENCE_OF_ALIAS	0	2	NO_FFN_INTERNAL_PRODUCER	0	accepted runner source + projection kernel signatures
+gate_output	gate_proj WQLinear_GEMM	SiLU	[1,1,18944]	FP16	37888	YES_DISTINCT_KERNEL_OUTPUT	NO_OUT_OF_PLACE_SOURCE_PATH	1	1	YES	75776	runner source + GEMM/reduce then SiLU correlation
+activated_gate	out-of-place SiLU	multiply	[1,1,18944]	FP16	37888	YES_DISTINCT_KERNEL_OUTPUT	NO_OUT_OF_PLACE_SOURCE_PATH	1	1	YES	75776	runner source + distinct SiLU/multiply GPU activities
+up_output	up_proj WQLinear_GEMM	multiply	[1,1,18944]	FP16	37888	YES_DISTINCT_KERNEL_OUTPUT	NO_OUT_OF_PLACE_SOURCE_PATH	1	1	YES	75776	runner source + GEMM/reduce then multiply correlation
+product	out-of-place multiply	down_proj	[1,1,18944]	FP16	37888	YES_DISTINCT_KERNEL_OUTPUT	NO_OUT_OF_PLACE_SOURCE_PATH	1	1	YES	75776	runner source + multiply then down GEMM correlation
+down_output	down_proj WQLinear_GEMM	residual path outside audited FFN window	[1,1,3584]	FP16	7168	YES	NO_OUT_OF_PLACE_SOURCE_PATH	1	0	OUTSIDE_THIS_FFN_HANDOFF_BOUND	0	runner source + accepted projection shapes
+AWQ_internal_partial_accumulation	WQLinear_GEMM main kernel	same projection's reduce kernel	UNKNOWN_INTERNAL_LAYOUT	FP16_PARTIAL_PATH	UNKNOWN_NOT_NEEDED_FOR_HANDOFF_BOUND	INTERNAL_OPERATOR_SCRATCH	NOT_APPLICABLE	INTERNAL	INTERNAL	NO	0	two correlated kernels per accepted AWQ projection; exact scratch layout not captured

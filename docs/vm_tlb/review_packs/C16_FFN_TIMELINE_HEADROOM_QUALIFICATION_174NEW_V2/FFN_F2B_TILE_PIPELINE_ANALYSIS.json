@@ -1,0 +1,55 @@
+{
+  "changes_required_by_hypothetical_pipeline": [
+    "split or persistent multiply producer",
+    "chunk-aware down launch/CTA schedule",
+    "partial sums across K chunks",
+    "new synchronization",
+    "possibly additional scratch or relayout"
+  ],
+  "decision": "F2B_REQUIRES_DEPENDENCY_GRANULARITY_EVIDENCE",
+  "down_projection": {
+    "K": 18944,
+    "M": 1,
+    "N": 3584,
+    "actual_kernel_facts": [
+      {
+        "block": "32x2x1",
+        "grid": "224x1x1",
+        "kernel": "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)"
+      },
+      {
+        "block": "32x4x1",
+        "grid": "7x1x1",
+        "kernel": "void at::native::reduce_kernel<(int)128, (int)4, at::native::ReduceOp<c10::Half, at::native::func_wrapper_t<c10::Half, at::native::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, (int)4>>(T3)"
+      }
+    ],
+    "current_launch_dependency": "same-stream launch after complete multiply kernel",
+    "exact_split_k_factor": "UNKNOWN",
+    "internal_partial_accumulation": "EVIDENCE_PRESENT_GEMM_PLUS_REDUCE",
+    "internal_partial_accumulation_is_not_cross_operator_readiness": true
+  },
+  "literature_boundary": "LR10 records Kitsune queues, VTC virtual tensors, ComFuse staged fusion, and Rubin tile-ready triggering as neighbors; tile-ready triggering alone is not a new contribution.",
+  "max_producer_down_formula_legal": false,
+  "missing_for_legal_tile_dag": [
+    "mapping from multiply output K chunks to down consumer CTA/chunk",
+    "per-chunk memory visibility and dependency primitive",
+    "layout-compatible chunk interface for current W4 kernel",
+    "partial-output ownership and reduction order",
+    "sync/scratch/launch cost"
+  ],
+  "perfect_tile_pipeline_ceiling": null,
+  "product": {
+    "bytes": 37888,
+    "current_producer": "one whole-tensor vectorized multiply kernel",
+    "dtype": "FP16",
+    "production_dimension": "contiguous K/intermediate dimension",
+    "shape": [
+      1,
+      1,
+      18944
+    ],
+    "tile_ready_signal_in_authority": false
+  },
+  "schema_version": 2,
+  "status": "TILE_PIPELINE_ORACLE_NOT_WELL_DEFINED"
+}
