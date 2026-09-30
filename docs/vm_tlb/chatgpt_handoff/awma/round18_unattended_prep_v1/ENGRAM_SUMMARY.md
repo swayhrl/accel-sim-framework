@@ -1,0 +1,1 @@
+Engram is the current Round18 preparation candidate. The literature review found that current serving systems already provide host-resident Engram lookup and overlap techniques. The remaining work is input authority, platform feasibility, and direct-neighbor review. This is a source-review result only.
