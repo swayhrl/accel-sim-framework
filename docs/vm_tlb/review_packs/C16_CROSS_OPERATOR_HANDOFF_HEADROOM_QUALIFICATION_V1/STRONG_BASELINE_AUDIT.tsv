@@ -1,0 +1,6 @@
+candidate_id	strong_baseline	major_cost_already_eliminated	residual_status	decision
+QWEN7B_FFN_GATE_UP_ACTMUL_DOWN	current vendor/AWQ modules; no accepted fused/persistent FFN comparison	NO_PROOF	AUTHORITY_AND_BASELINE_GAP	INSUFFICIENT_AUTHORITY
+QWEN_ATTENTION_QKV_ROPE_KV_CORE	library attention/RoPE/KV fast paths present but heterogeneous	UNKNOWN	NO_COMMON_PAIR_AUTHORITY	INSUFFICIENT_AUTHORITY
+AWQ_GEMM_TO_SPLIT_REDUCTION	GROUP_FULL_M split1 direct output	YES	SPLIT/GROUPED_BRANCH_CLOSED	STOP_STRONG_SOFTWARE_ALREADY_SUFFICIENT
+AWQ_DEQUANT_TO_MMA	register dequant + CTA B_shared staging; grouped mapping	CTA-internal full-tile duplication eliminated	cross-CTA duplicate exists but expanded/sync cost high; QUICK/StreamDQ near neighbors	STOP_STRONG_SOFTWARE_ALREADY_SUFFICIENT
+OLMOE_ROUTER_EXPERT_COMBINE	native expert loop; no accepted matched fused baseline	UNKNOWN	TIMING_AUTHORITY_LIMITED	INSUFFICIENT_AUTHORITY

@@ -1,0 +1,6 @@
+candidate_id	weight_fraction	weight_basis	zero_pair_ceiling	zero_pair_status	T_materialize_upper	S_materialize_local	S_materialize_decode	S_overlap_local	S_overlap_decode	overlap_status	gate
+QWEN7B_FFN_GATE_UP_ACTMUL_DOWN	0.445746799882408	84 selected module-duration sum / decode; NOT pair wall-clock union	1.8042295466906408	OPTIMISTIC_UPPER_BOUND_NOT_ADMISSION_WEIGHT	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	PERFECT_OVERLAP_NOT_WELL_DEFINED	G0_FAIL
+QWEN_ATTENTION_QKV_ROPE_KV_CORE	NA	no legal wall-clock union	NA	NOT_COMPUTABLE	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	PERFECT_OVERLAP_NOT_WELL_DEFINED	G0_FAIL
+AWQ_GEMM_TO_SPLIT_REDUCTION	NA	module evidence; family branch closed	NA	NOT_NEEDED_STRONG_BASELINE	accepted but eliminated by split1	strong baseline measured	UNKNOWN natural union	NOT_APPLICABLE	NOT_APPLICABLE	STRICT_DEPENDENCY	STOP_STRONG_SOFTWARE
+AWQ_DEQUANT_TO_MMA	0.017399766619420998	accepted natural SHARE3 target share; shape-compatible family bound	1.0177078795916403	OPTIMISTIC_UPPER_BOUND	UNKNOWN exclusive critical cost	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	in-kernel dependency; cross-CTA handoff not present	G1_STOP
+OLMOE_ROUTER_EXPERT_COMBINE	NA	no wall-clock authority	NA	NOT_COMPUTABLE	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	PERFECT_OVERLAP_NOT_WELL_DEFINED	G0_FAIL

@@ -1,0 +1,4 @@
+candidate_id	intermediate_bytes	materialization_bytes	read_write_count	producer_layout	consumer_layout	lifetime	fanout	alias_view	physical_copy	evidence_status
+QWEN7B_FFN_GATE_UP_ACTMUL_DOWN	per layer gate/up each 37888 B; product 37888 B logical	UNKNOWN physical write/read count	UNKNOWN accepted raw	FP16 module output	down_proj FP16 input	within one FFN layer	1 down_proj	UNKNOWN	LIKELY separate tensors but not receipt-closed	LIMITED
+AWQ_GEMM_TO_SPLIT_REDUCTION	split8 [8,M,N] FP16	accepted exact scratch sizes	GEMM writes + reduction reads	8 partial planes	sum reduction	GEMM to reduction	1	NO	YES	CLOSED_BUT_STRONG_BASELINE_REMOVES
+AWQ_DEQUANT_TO_MMA	8192 B strict FP16 B tile	CTA-private B_shared	one shared write + ldmatrix reads	FP16 transposed B_shared	MMA register fragment	one K32 CTA iteration; cross-CTA UNKNOWN	two warps within CTA; 2-4 CTA cross-group	NO	shared-memory staging	SOURCE_CLOSED
