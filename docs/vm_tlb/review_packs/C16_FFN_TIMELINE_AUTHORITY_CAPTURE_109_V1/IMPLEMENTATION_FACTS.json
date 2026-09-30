@@ -1,0 +1,29 @@
+{
+  "activation_implementation": "DISTINCT_GPU_ACTIVITY",
+  "gate_up_nonoverlap_count": 112,
+  "gate_up_overlap_observed_count": 0,
+  "headroom_computed": false,
+  "kernel_names_by_role": {
+    "activation": [
+      "void at::native::vectorized_elementwise_kernel<(int)4, at::native::<unnamed>::silu_kernel(at::TensorIteratorBase &)::[lambda() (instance 1)]::operator ()() const::[lambda() (instance 5)]::operator ()() const::[lambda(c10::Half) (instance 1)], at::detail::Array<char *, (int)2>>(int, T2, T3)"
+    ],
+    "down_proj": [
+      "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+      "void at::native::reduce_kernel<(int)128, (int)4, at::native::ReduceOp<c10::Half, at::native::func_wrapper_t<c10::Half, at::native::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, (int)4>>(T3)"
+    ],
+    "gate_proj": [
+      "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+      "void at::native::reduce_kernel<(int)128, (int)4, at::native::ReduceOp<c10::Half, at::native::func_wrapper_t<c10::Half, at::native::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, (int)4>>(T3)"
+    ],
+    "multiply": [
+      "void at::native::vectorized_elementwise_kernel<(int)4, at::native::BinaryFunctor<c10::Half, c10::Half, c10::Half, at::native::binary_internal::MulFunctor<float>>, at::detail::Array<char *, (int)3>>(int, T2, T3)"
+    ],
+    "up_proj": [
+      "gemm_forward_4bit_cuda_m16n128k32(int, int, __half *, int *, __half *, int *, int, int, int, __half *)",
+      "void at::native::reduce_kernel<(int)128, (int)4, at::native::ReduceOp<c10::Half, at::native::func_wrapper_t<c10::Half, at::native::sum_functor<c10::Half, float, c10::Half>::operator ()(at::TensorIterator &)::[lambda(float, float) (instance 1)]>, unsigned int, c10::Half, (int)4>>(T3)"
+    ]
+  },
+  "layer_decode_windows": 112,
+  "multiply_implementation": "DISTINCT_GPU_ACTIVITY",
+  "status": "PASS"
+}
