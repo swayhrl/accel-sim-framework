@@ -1,46 +1,34 @@
 # R17 execution-readiness checklist
 
-Date: 2026-09-30. Preparation-only gate.
+Date: 2026-09-30. Preparation-only record.
 
-## Source work complete
+## Source/input preparation completed
 
 - [x] Round16 closed issues are not reopened.
-- [x] Direct-neighbor screen covers CAGRA/Jasper-class traversal capability.
 - [x] cuVS stable v26.08.01 source authority pinned.
-- [x] Stable/current low-query routing compared.
-- [x] Q1 AUTO->MULTI_CTA source behavior understood.
-- [x] MULTI_CTA CTA-count formula bound.
-- [x] Redundant width=1/2 points removed from draft.
-- [x] Persistent SINGLE_CTA boundary bound.
-- [x] Dynamic batching separated from isolated-Q1 semantics.
-- [x] Official cuVS-bench search knobs/timing inspected.
-- [x] Public GloVe-100 upstream generation authority checked.
+- [x] Q1 AUTO->MULTI_CTA behavior and CTA-count formula bound.
+- [x] Persistent and dynamic-batching boundaries separated.
+- [x] Workspace/plan/runtime accounting requirement identified.
+- [x] Public GloVe-100 generation and stable normalization authority checked.
+- [x] CAGRA/SONG/Jasper direct-neighbor screen performed.
+- [x] FlowANN OSDI'26 primary paper and public artifact checked.
+- [x] FlowANN identified as direct coverage of the discovery/expansion-dependency insight.
 
-## Required before scientific timing
+## Local receipts still required only if characterization is later approved
 
-- [ ] Exact cuVS runtime/package receipt on node109.
-- [ ] Driver/CUDA/RTX4080/SM89 receipt.
-- [ ] Local GloVe-100 HDF5 SHA256/shape/dtype receipt.
-- [ ] Stable normalization/conversion receipt.
-- [ ] Prepared base/query/ground-truth hashes.
-- [ ] Unit-normalization sanity check.
-- [ ] Durable node164 source and any node109 replica identity.
-- [ ] Dataset terms/redistribution note.
-- [ ] One frozen CAGRA index identity.
-- [ ] Recall@10 qualification before performance selection.
-- [ ] Discovery/holdout split materialized without holdout timing.
-- [ ] Preallocated output/workspace behavior verified.
-- [ ] AUTO->MULTI_CTA identity receipt for Q1.
+- [ ] exact cuVS runtime/package receipt on node109;
+- [ ] local GloVe HDF5 and prepared hashes;
+- [ ] durable node164/node109 replica identity;
+- [ ] one frozen resident CAGRA index;
+- [ ] recall qualification and discovery/holdout materialization;
+- [ ] preallocated output/workspace and AUTO->MULTI_CTA runtime receipt.
 
-## Requires user approval
+## Current recommendation
 
-- [ ] Formal node109 CUDA timing.
-- [ ] NSYS/NCU.
-- [ ] Alternative execution harness.
-- [ ] Holdout opening.
-- [ ] Any 174/Accel-Sim work.
-- [ ] Any mechanism/hardware proposal.
+Do not promote this checklist into an execution Goal merely to validate the already-published graph-dependency insight.
 
-Stop before GPU if input authority, metric/ground-truth semantics, stable runtime, or the surviving novelty boundary fails.
+A separately user-approved resident-Q1 characterization remains possible for background knowledge, but it must remain characterization unless a distinct residual survives another direct-neighbor audit.
 
-State: `SOURCE_READY_INPUT_SOURCE_READY_LOCAL_RECEIPTS_PENDING_EXECUTION_NOT_AUTHORIZED`.
+State: `R17_EXECUTION_PREP_DORMANT_AFTER_DIRECT_NOVELTY_COVERAGE`.
+
+CUDA=0; profiler=0; simulator=0.
