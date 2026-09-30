@@ -1,0 +1,37 @@
+{
+  "after_capture_enables": [
+    "FFN_LAYER_TIMELINE",
+    "non-double-counted FFN window union",
+    "F0 legal hard ceiling",
+    "assessment whether F1/F2 can be isolated"
+  ],
+  "capture_only": [
+    "one decode wall NVTX interval",
+    "per-layer semantic NVTX ranges for gate_proj/up_proj/SiLU/multiply/down_proj",
+    "CUDA kernel start/end, stream and correlation IDs",
+    "CPU NVTX-to-CUDA correlation",
+    "minimal run identity and timestamps"
+  ],
+  "gpu_execution_requires_project_review": true,
+  "reason_old_authority_insufficient": "missing Qwen per-layer correlated GPU activity for gate/up/SiLU/multiply/down and decode wall interval",
+  "scenario": {
+    "kernel_changes": false,
+    "must_reuse": "exact accepted Qwen2.5-7B natural GUD84 decode scenario/input/model/runtime",
+    "new_model": false
+  },
+  "schema_version": 1,
+  "scientific_identity_change": "none; annotations/timeline only",
+  "status": "PROPOSED_NOT_AUTHORIZED",
+  "stop_rules": [
+    "hook/annotation changes output or kernel selection",
+    "semantic correlation incomplete",
+    "decode wall interval missing"
+  ],
+  "tools": {
+    "NCU": false,
+    "NSYS": "lightweight cuda,nvtx activity only",
+    "NVBit": false,
+    "SASS": false,
+    "oracle": false
+  }
+}

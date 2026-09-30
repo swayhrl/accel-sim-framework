@@ -1,0 +1,3 @@
+# Authority gaps
+
+The accepted Qwen natural authority provides run-aligned CUDA-event module-duration sums and decode wall timing, but not a correlated GPU timeline for gate/up/activation/multiply/down. No accepted artifact contains per-layer GPU start/end, CUDA correlation IDs and semantic NVTX bindings sufficient to reconstruct producer-start→last-consumer windows. Existing NSYS census artifacts belong to other deployments and preserve operator/layer as UNKNOWN at capture time. Therefore the 44.5747% sum cannot be converted into an FFN window union. Physical intermediate writes/reads and exclusive materialization time also remain unknown.

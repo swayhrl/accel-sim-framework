@@ -1,0 +1,5 @@
+object	producer	consumer	logical_shape	dtype	bytes	global_write	global_read	layout	read_write_count	must_materialize	fusion_possible	already_fused
+gate_proj output	gate_proj WQLinear_GEMM	SiLU and multiply	B1x1x18944	FP16 accepted AWQ input/output path	37888	UNKNOWN without correlated GPU activity	UNKNOWN	contiguous module output expected by graph; physical layout receipt absent	UNKNOWN	UNKNOWN	source graph permits activation fusion in principle	NOT_PROVEN
+up_proj output	up_proj WQLinear_GEMM	multiply	B1x1x18944	FP16	37888	UNKNOWN	UNKNOWN	physical receipt absent	UNKNOWN	UNKNOWN	gate/up joint input path possible in other implementations	NO_ACCEPTED_EVIDENCE
+SiLU result	activation	multiply	B1x1x18944	FP16/compute semantics source-bound; physical dtype UNKNOWN	37888	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	activation+multiply commonly fusible	UNKNOWN_CURRENT_RUNTIME
+multiply result / down input	SiLU(gate)*up	down_proj WQLinear_GEMM	B1x1x18944	FP16 accepted down input	37888	UNKNOWN	UNKNOWN	down input semantic tensor; physical handoff unknown	UNKNOWN	UNKNOWN	persistent/fused FFN capability exists in neighbors	NO_ACCEPTED_MATCHED_EVIDENCE
