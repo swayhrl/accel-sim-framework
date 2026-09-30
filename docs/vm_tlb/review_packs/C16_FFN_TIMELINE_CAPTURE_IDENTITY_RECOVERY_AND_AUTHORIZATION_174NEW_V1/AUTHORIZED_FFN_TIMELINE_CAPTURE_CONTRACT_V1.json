@@ -1,0 +1,308 @@
+{
+  "decision": "IDENTITY_RECOVERED_FROM_ACCEPTED_AUTHORITY",
+  "gpu_lock": {
+    "path": "/data/c16/locks/c16_gpu_campaign.lock",
+    "release_receipt_required": true,
+    "required": true,
+    "scope": "one outer lock covering canary and formal capture"
+  },
+  "historical_authority": {
+    "accepted_call_order": {
+      "commit": "eae1cc4d831ae8459da558cf1358bb8daf8d76e6",
+      "file": "docs/vm_tlb/review_packs/C16_E1_OPERATOR_FAMILY_EXPANSION_109_V1/NATURAL_FFN_CALL_ORDER.json",
+      "git_blob": "b3d0c9febf8355f50edd3ac71af8973e985af1ea",
+      "sha256": "810ecdc6d9c6853b19d312a94eb087c86f0b8de444127138b70f8bc8075b63b1"
+    },
+    "accepted_runner": {
+      "commit": "eae1cc4d831ae8459da558cf1358bb8daf8d76e6",
+      "file": "util/vm_tlb/c16/e1_operator_family_natural.py",
+      "git_blob": "96c7e75e4a5219d68bb7810312caa78a7f6c46c2",
+      "sha256": "902bd8993483290850072afc37245aa7ba80afd821952c7a91fabec0b8e18ea5"
+    },
+    "independent_call_order": {
+      "commit": "278964bfb243a93adf43e748eb3e067e34b16b8a",
+      "file": "docs/vm_tlb/review_packs/C16_E1_OPERATOR_FAMILY_EXPANSION_CONSUMER_174NEW_V1/INDEPENDENT_NATURAL_CALL_ORDER.json",
+      "git_blob": "6e287415baf3d5420cdfaab90093512f5cbc1d7d",
+      "sha256": "ae7459e5e1a6e320047f550cea69dc8e62a2d0eb67d3bfbd2bc2cf2bc7fba8a0"
+    },
+    "independent_consumer": "278964bfb243a93adf43e748eb3e067e34b16b8a",
+    "producer": "eae1cc4d831ae8459da558cf1358bb8daf8d76e6"
+  },
+  "input": {
+    "accepted_path": "/data/c16/inputs/.incoming/qwen2p5_7b_instruct_raw/S2_TEXT/payload/token_ids.json",
+    "derivation": "repeat source token IDs then trim exactly to 2048",
+    "raw_text_sha256": "bae0b908106146659663fa04f44bc03ec0da18cadb08c9ec357c140afc4d8208",
+    "runtime_tokenizer_execution": false,
+    "source_token_ids": [
+      34,
+      16,
+      21,
+      93377,
+      419,
+      2805,
+      5810,
+      43558,
+      1946,
+      1573,
+      894,
+      9867,
+      22670,
+      975,
+      624,
+      785,
+      23172,
+      9569,
+      11,
+      45958,
+      23578,
+      11,
+      323,
+      3950,
+      28360,
+      1969,
+      7146,
+      6822,
+      198,
+      983,
+      279,
+      51572,
+      1614,
+      23578,
+      12433,
+      553,
+      21272,
+      362,
+      624
+    ],
+    "token_count": 2048,
+    "token_file_sha256": "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9",
+    "tokenizer_config_sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+    "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+  },
+  "instrumentation_delta": {
+    "input_changes": false,
+    "kernel_changes": false,
+    "model_or_runtime_backend_changes": false,
+    "natural_decode_semantics_changes": false,
+    "permitted": [
+      "semantic NVTX ranges",
+      "timeline mode flag",
+      "result receipt field",
+      "temporary observational Python MLP forward wrapper preserving expression order"
+    ],
+    "persistence_oracle_or_cache_policy_added": false,
+    "quantization_changes": false
+  },
+  "measurement_protocol": {
+    "formal": {
+      "capture_count": 1,
+      "fresh_process": true,
+      "mode": "ON",
+      "nsys_flags": "profile --trace=cuda,nvtx --sample=none --cpuctxsw=none --force-overwrite=true",
+      "runs": 1
+    },
+    "neutrality_canary": {
+      "fresh_processes": true,
+      "order": [
+        "OFF",
+        "ON"
+      ],
+      "required_equal": [
+        "generated token IDs",
+        "420-entry natural call order",
+        "336 occurrence input/output hashes and shapes",
+        "module classes",
+        "CUDA kernel name/count/order",
+        "CONTROL_GUD84 policy semantics"
+      ],
+      "runs": 2,
+      "same_nsys_cuda_nvtx_capture": true,
+      "timing_not_used_as_scientific_result": true
+    },
+    "preflight": [
+      "verify every bound source/model/input/runtime hash",
+      "record absolute nsys path/version/SHA and GPU UUID",
+      "require clean exclusive GPU state under lock"
+    ],
+    "total_gpu_process_launches_max": 3,
+    "wall_budget_minutes": 20
+  },
+  "model": {
+    "asset_receipt_sha256": "23a7e5c0107a528853d79e2e63ea6a3a9caa583bc39833bb1c04a83d0ac5b76d",
+    "id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "payload_sha256": {
+      "config.json": "ec0c1f5f875ad8bc1f78c5140c22dbdde1b55478442ad358e7a4d9ecf947a327",
+      "generation_config.json": "9df8ac8558514924f3481a609f1e5590ab4416efc600b12ad805155d79581c59",
+      "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+      "model-00001-of-00002.safetensors": "4ad6e70f93823a9228931615e04b5e9293854c236fb4bd5f85e27f3b600605ad",
+      "model-00002-of-00002.safetensors": "920a8cc9d3c81668f18014a69bb041ab8bab22a31640a713f90f5e7580e2f126",
+      "model.safetensors.index.json": "559b6859f37625080bf49eea80806ecc2f859a13b316b7fae2ff4432b6308e36",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    },
+    "quantization": {
+      "bits": 4,
+      "format": "AWQ",
+      "fuse_layers": false,
+      "group_size": 128,
+      "linear_backend": "WQLinear_GEMM",
+      "zero_point": true
+    },
+    "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641"
+  },
+  "natural_scenario": {
+    "batch": 1,
+    "condition": "CONTROL_GUD84",
+    "decode_range": "D0-D3",
+    "decode_steps": 4,
+    "fresh_process": true,
+    "generated_or_fed_token_ids_D0_D3": [
+      23578,
+      11,
+      323,
+      3950
+    ],
+    "greedy_argmax": true,
+    "past_lengths_before_step": [
+      2048,
+      2049,
+      2050,
+      2051
+    ],
+    "policy_semantics": {
+      "NORMAL_NORMAL": true,
+      "hit_ratio": 0.011904761904761904,
+      "no_reset_between_transitions": true,
+      "persisting": false,
+      "selected_modules": 84
+    },
+    "prefill_tokens": 2048,
+    "seed": "NOT_APPLICABLE_NO_SAMPLING",
+    "use_cache": true
+  },
+  "proposal_chain": {
+    "authorized_capture": "this contract",
+    "identity_recovery": "this pack",
+    "project_review": "PROJECT_REVIEW.json",
+    "proposal": {
+      "commit": "75c45a4896e84c49df190aa649416d24aa02ea09",
+      "file": "docs/vm_tlb/review_packs/C16_FFN_HANDOFF_AUTHORITY_RECOVERY_V1/MINIMAL_FFN_TIMELINE_CAPTURE_CONTRACT.json",
+      "git_blob": "244e81035d079f07fcad1f762aedeb6bb797bc70",
+      "sha256": "5ad0f920f133a8679aa4053cbcfd4096b8a3b573e90f4b05d985c3c41e6b8e65"
+    }
+  },
+  "publication": {
+    "git_policy": "publish manifests/tables/reports only; do not commit bulk .nsys-rep/sqlite",
+    "node109_raw_root": "/data/c16/ffn_timeline_capture_v1/raw",
+    "node164_root": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/c16_ffn_timeline_capture_v1",
+    "required": [
+      "raw .nsys-rep",
+      "sqlite export",
+      "runner/patch/source hashes",
+      "OFF/ON and formal JSON",
+      "command/environment/GPU/lock receipts",
+      "SHA256 manifest",
+      "copy-back byte/SHA verification"
+    ]
+  },
+  "purpose": "TIMELINE_AUTHORITY_ONLY",
+  "runner": {
+    "base_command": "/data/c16/env/c16-awq-v6/bin/python util/vm_tlb/c16/e1_operator_family_natural.py --condition CONTROL_GUD84 --run-index {RUN_INDEX} --output {OUTPUT_JSON} --timeline-nvtx {off|on}",
+    "instrumentation_patch_commit": "e44571e59ef716be76c67aef013c7835f6b158be",
+    "instrumentation_patch_path": "docs/vm_tlb/review_packs/C16_FFN_TIMELINE_CAPTURE_IDENTITY_RECOVERY_AND_AUTHORIZATION_174NEW_V1/INSTRUMENTATION_DELTA.patch",
+    "instrumentation_patch_sha256": "bdffcd5bf135fd9db310973828f51de23976fb45e558ed9ba5cc7cfc2a9bcbeb",
+    "patched_runner_sha256": "ad922629a9898c01400a165b2f6565659f1c6e422784c10bc1d013265c45b5fb",
+    "source_commit": "eae1cc4d831ae8459da558cf1358bb8daf8d76e6",
+    "source_git_blob": "96c7e75e4a5219d68bb7810312caa78a7f6c46c2",
+    "source_path": "util/vm_tlb/c16/e1_operator_family_natural.py",
+    "source_sha256": "902bd8993483290850072afc37245aa7ba80afd821952c7a91fabec0b8e18ea5"
+  },
+  "runtime": {
+    "attention_backend": "frozen Transformers-4.46.3 Qwen2 automatic selection; no runner override",
+    "autoawq": "0.2.7.post3",
+    "driver": "580.178.04",
+    "ffn_backend": "AutoAWQ WQLinear_GEMM FP16 activation",
+    "gpu": {
+      "cc": "8.9",
+      "memory_bytes": 16718168064,
+      "name": "NVIDIA GeForce RTX 4080",
+      "sm_count": 76,
+      "uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59"
+    },
+    "interpreter": "/data/c16/env/c16-awq-v6/bin/python",
+    "python": "3.10.12",
+    "torch": "2.5.1+cu124",
+    "torch_cuda": "12.4",
+    "transformers": "4.46.3"
+  },
+  "schema_version": 1,
+  "scientific_identity_change": "NONE",
+  "semantic_target": {
+    "added_ranges": [
+      "one D0-D3 decode wall",
+      "per-layer/per-step activation",
+      "per-layer/per-step multiply"
+    ],
+    "description": "28-layer FFN gate/up/activation/multiply/down timeline for D0-D3",
+    "existing_ranges_reused": "accepted per-layer/per-step gate/up/down ranges",
+    "expected_activation_ranges": 112,
+    "expected_multiply_ranges": 112,
+    "expected_projection_occurrences": 336,
+    "layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27
+    ],
+    "projection_roles": [
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "status": "AUTHORIZED",
+  "stop_conditions": [
+    "any model/input/runtime/source hash mismatch",
+    "GPU UUID or backend differs",
+    "OFF/ON output, call-order, occurrence-hash, policy, or kernel-sequence mismatch",
+    "missing decode wall or any required semantic range",
+    "new CUDA kernel introduced by instrumentation",
+    "GPU lock cannot be legally acquired within 45 minutes",
+    "capture exceeds 20-minute GPU budget",
+    "any request to add NCU/NVBit/SASS/oracle/Accel-Sim or new timing sweep"
+  ],
+  "tools": {
+    "Accel_Sim": false,
+    "NCU": false,
+    "NSYS": "lightweight --trace=cuda,nvtx only",
+    "NVBit": false,
+    "SASS": false,
+    "oracle": false
+  }
+}
