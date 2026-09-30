@@ -1,0 +1,5 @@
+# Round16 Lane F / 109 — VLA RTC VJP result
+
+`VLA_VJP_RESULT_MIXED_NEEDS_REVIEW`. The pinned upstream LeRobot RTC gave identity-only VJP on 9/9 analytic CPU canaries; the sole line-order reference repair restored the full Jacobian (9/9). The exact SmolVLA LIBERO checkpoint and real episode-A observations qualified, and 10 VJPs per guided chunk traversed the action expert. Guided complete-chunk A0 median was 231.91 ms; a separate diagnostic put 10 VJP calls at ~98.88 ms. Saved logical tensors (~2.50 GB cumulative) were **not** treated as DRAM traffic. The one strong static-buffer/weight-reuse A1 preserved every checked output/trajectory but gave no material speedup (232.69 ms median). The only NSYS capture-range attempt generated no report; no NCU selector was guessed. Episode B stayed sealed in the scientific sense—its values were not selected, inspected or timed, although the minimum shared data/video shards physically contain them. No >5% state-only residual was established, and no hardware mechanism or 174 run was launched.
+
+Full authority: `docs/vm_tlb/review_packs/AWMA_VLA_RTC_VJP_BOUNDARY_109_V1/`.

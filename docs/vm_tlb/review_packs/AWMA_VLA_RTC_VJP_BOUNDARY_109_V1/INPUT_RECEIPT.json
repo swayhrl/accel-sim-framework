@@ -1,0 +1,197 @@
+{
+  "base_vlm_config_processor_revision": "7b375e1b73b11138ff12fe22c8f2822d8fe03467",
+  "checkpoint_sha256": "9a9f6413e42c0f332fccbce9a0dc796af2790f82cf002f791cdbf7e01e1afca8",
+  "dataset_revision": "a1aaacb7f6cd6ee5fb43120f673cebb0cfea7dd4",
+  "delay_frames_frozen_after_one_reference_canary": 4,
+  "discovery_observation_receipt": {
+    "decoder": "ffmpeg -hwaccel none -c:v libdav1d",
+    "episode_index": 0,
+    "ffmpeg_version": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+    "frame_indices": [
+      0,
+      10,
+      20,
+      30
+    ],
+    "image1_sha256": "37cbf403077ca6cb61af1c9916defdcd211910b3c090812ad4d90f0df229b9f5",
+    "image2_sha256": "16f32ed4c36a88e951fe293e0ec2d6242cce1678f1e824f7be8e63d2b903a2dc",
+    "image_shape": [
+      4,
+      256,
+      256,
+      3
+    ],
+    "npz_sha256": "60c43d430cdcb5410542ffe2fe737a6315e2246e5cdefeef58caea49a37cce53",
+    "shared_parquet_shard_contains_B_but_filter_selects_only_A": true,
+    "state_sha256": "bec65b35db627643860c07ecc083d44b1232ffa9e4953e7f0bb503c87c3ca9b3",
+    "state_shape": [
+      4,
+      8
+    ],
+    "task_index": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "task_text": [
+      "put the white mug on the left plate and put the yellow and white mug on the right plate",
+      "put the white mug on the left plate and put the yellow and white mug on the right plate",
+      "put the white mug on the left plate and put the yellow and white mug on the right plate",
+      "put the white mug on the left plate and put the yellow and white mug on the right plate"
+    ],
+    "validation_episode_values_selected_or_inspected": false
+  },
+  "model_revision": "31d453f7edd78c839a8bbc39744a292686daf0de",
+  "no_demonstration_actions_used_as_previous_chunk": true,
+  "preprocessor_frame0_tensor_identity": {
+    "observation.images.camera1": {
+      "device": "cpu",
+      "dtype": "torch.float32",
+      "sha256": "a6c40e25ae5184d3e13469fe62b4eeffa9dfe5101cf21f7a65c17fdfca1c3d28",
+      "shape": [
+        1,
+        3,
+        256,
+        256
+      ]
+    },
+    "observation.images.camera2": {
+      "device": "cpu",
+      "dtype": "torch.float32",
+      "sha256": "c9be23f907f5339bd518716317ea7c9078568ba31cfc6908f95e5d7e7a928710",
+      "shape": [
+        1,
+        3,
+        256,
+        256
+      ]
+    },
+    "observation.language.attention_mask": {
+      "device": "cpu",
+      "dtype": "torch.bool",
+      "sha256": "b41a8b213b6deb627c03816fe6d340fb7425498d2680e199c271f61fc0dcfd24",
+      "shape": [
+        1,
+        48
+      ]
+    },
+    "observation.language.tokens": {
+      "device": "cpu",
+      "dtype": "torch.int64",
+      "sha256": "2f2b33c2a4e67e05cb0318c44544c56addc5991ad747054af329099d32a62e64",
+      "shape": [
+        1,
+        48
+      ]
+    },
+    "observation.state": {
+      "device": "cpu",
+      "dtype": "torch.float32",
+      "sha256": "62a55dd5d5141edbbcf6d268803a00e4126c48922700c2fb812a76a47d75fb8b",
+      "shape": [
+        1,
+        8
+      ]
+    }
+  },
+  "real_model_vjp_graph_canary": {
+    "action_out_backward_hook_fires": 10,
+    "action_out_forward_with_grad": 10,
+    "all_weights_frozen": true,
+    "checkpoint_sha256": "9a9f6413e42c0f332fccbce9a0dc796af2790f82cf002f791cdbf7e01e1afca8",
+    "cuda_device_name": "NVIDIA GeForce RTX 4080",
+    "expert_backward_hook_fires": 10,
+    "expert_forward_with_grad": 10,
+    "expert_hook_module": "vlm_with_expert.lm_expert.layers[0].self_attn.q_proj",
+    "first_chunk_canary_seconds": 0.3258686389308423,
+    "first_chunk_commit_shape": [
+      1,
+      50,
+      7
+    ],
+    "first_chunk_raw_shape": [
+      1,
+      50,
+      7
+    ],
+    "guided_chunk_commit_shape": [
+      1,
+      50,
+      7
+    ],
+    "guided_chunk_raw_shape": [
+      1,
+      50,
+      7
+    ],
+    "inference_delay_frames": 4,
+    "parameter_grad_count": 0,
+    "peak_allocated_bytes": 1296282112,
+    "prefix_outputs_require_grad": [
+      false
+    ],
+    "required_steps": 10,
+    "rtc_source_sha256": "48c69b9397eac3b3d8b0c77985c88abc0a5a965a0da2adb6a9852d0c7e6ec71d",
+    "status": "REAL_MODEL_FULL_VJP_GRAPH_CANARY_OBSERVED",
+    "torch": "2.11.0+cu130",
+    "vjp_calls": 10,
+    "vjp_finite": true,
+    "vjp_l2_norms": [
+      0.05520769581198692,
+      0.041319865733385086,
+      0.03804034739732742,
+      0.03608154132962227,
+      0.03572183474898338,
+      0.03786173462867737,
+      0.04829094186425209,
+      0.07533644139766693,
+      0.13015268743038177,
+      0.2691643238067627
+    ]
+  },
+  "strict_model_and_processor_cpu_admission": {
+    "all_weights_frozen": true,
+    "base_vlm_weights_downloaded": false,
+    "checkpoint_config_vlm_id": "HuggingFaceTB/SmolVLM2-500M-Video-Instruct",
+    "checkpoint_sha256": "9a9f6413e42c0f332fccbce9a0dc796af2790f82cf002f791cdbf7e01e1afca8",
+    "device": "cpu",
+    "parameter_count": 450046176,
+    "parameter_tensors": 500,
+    "postprocessor_steps": [
+      "UnnormalizerProcessorStep",
+      "DeviceProcessorStep"
+    ],
+    "preprocessor_steps": [
+      "RenameObservationsProcessorStep",
+      "AddBatchDimensionProcessorStep",
+      "NewLineTaskProcessorStep",
+      "TokenizerProcessorStep",
+      "DeviceProcessorStep",
+      "NormalizerProcessorStep"
+    ],
+    "processor_class": "SmolVLMProcessor",
+    "rtc_repair_source_sha256": "48c69b9397eac3b3d8b0c77985c88abc0a5a965a0da2adb6a9852d0c7e6ec71d",
+    "runtime_vlm_config_processor_path": "/data/c16/awma/vla_rtc_vjp_boundary_20260930/assets/base_vlm",
+    "status": "STRICT_LOAD_AND_PROCESSOR_SUCCESS",
+    "tokenizer_class": "GPT2Tokenizer",
+    "torch_version": "2.11.0+cu130",
+    "weight_load_strict": true
+  },
+  "validation_episode_status": "B_SEALED; no B values selected, inspected or timed; shared Parquet/video files physically include B",
+  "window_freeze": {
+    "dataset_revision": "a1aaacb7f6cd6ee5fb43120f673cebb0cfea7dd4",
+    "discovery_episode": 0,
+    "file_sha256": {
+      "assets/dataset/data/chunk-000/file-000.parquet": "71e4088ce5877ba3234d0cde284c403f449ed560a656a2626e72fc2c3399502d",
+      "assets/dataset/videos/observation.images.image/chunk-000/file-000.mp4": "77d59b50e309e2099e562e70806603a1bdb66b893efcaecc2534b2c9fa3e02ae",
+      "assets/dataset/videos/observation.images.image2/chunk-000/file-000.mp4": "ba95edeb5190528b45364d7c8e518b7f12afa8ded72108e19a8349aa3f0a7d58"
+    },
+    "model_revision": "31d453f7edd78c839a8bbc39744a292686daf0de",
+    "sealed_validation_episode": 1,
+    "selection_rule": "first two metadata-eligible episodes with >=40 frames; 4 starts 10 frames apart",
+    "validation_observation_not_decoded": true,
+    "video_fps": 10.0,
+    "window_count_per_episode": 4
+  }
+}

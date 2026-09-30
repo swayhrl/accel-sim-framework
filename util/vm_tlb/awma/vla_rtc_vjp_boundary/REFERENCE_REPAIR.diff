@@ -1,0 +1,12 @@
+diff --git a/src/lerobot/policies/rtc/modeling_rtc.py b/src/lerobot/policies/rtc/modeling_rtc.py
+--- a/src/lerobot/policies/rtc/modeling_rtc.py
++++ b/src/lerobot/policies/rtc/modeling_rtc.py
+@@ -217,7 +217,7 @@ class RTCProcessor:
+         )
+
+         with torch.enable_grad():
+-            v_t = original_denoise_step_partial(x_t)
+             x_t.requires_grad_(True)
++            v_t = original_denoise_step_partial(x_t)
+
+             x1_t = x_t - time * v_t  # noqa: N806
