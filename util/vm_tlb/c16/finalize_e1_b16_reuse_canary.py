@@ -55,6 +55,7 @@ RAW_OUTPUT_MEMBERS = {
 DIAGNOSTIC_FILE = "DIAGNOSTIC_COUNTERS.json"
 FOLLOWUP_SCHEMA = "C16_E1_B16_REUSE_FOLLOWUP_RECEIPT_V2"
 STAGE_LABEL = "C16_E1_ORACLE_ELASTIC_B16_REUSE_CANARY_COMPLETE_V1"
+CLAIM_BOUNDARY = "FIRST_QUALIFIED_REAL_TRACE_B16_REUSE_WINDOW_CANARY_ONLY"
 REPRODUCIBILITY_CLAIM = "BOUNDED_REPRODUCIBILITY_PREFIX_PASS_UID168"
 METRICS = ("C_window", "C_D2_prefix", "C_L0_up_D2")
 CONDITIONS = (
@@ -401,6 +402,7 @@ def validate_inputs(pack: Path, followup_path: Path,
 
     final = documents["FINAL_DECISION.json"]
     require(final.get("stage_label") == STAGE_LABEL, "final stage label drift")
+    require(final.get("claim_boundary") == CLAIM_BOUNDARY, "final claim boundary drift")
     for key in ("mechanism_activated", "correctness_qualified",
                 "reproducibility_qualified", "diagnostic_neutrality_qualified",
                 "not_whole_model_or_system_speedup", "no_budget_matrix_or_promotion_decision"):

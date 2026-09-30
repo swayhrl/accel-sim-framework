@@ -317,6 +317,14 @@ class FinalizerTest(unittest.TestCase):
         with self.assertRaisesRegex(FINALIZE.ContractError, "interpretation recomputation"):
             FINALIZE.finalize(self.pack, self.run_root, False)
 
+    def test_claim_boundary_drift_is_rejected(self):
+        path = self.pack / "FINAL_DECISION.json"
+        document = json.loads(path.read_text(encoding="utf-8"))
+        document["claim_boundary"] = "EXPANDED_CLAIM"
+        write_json(path, document)
+        with self.assertRaisesRegex(FINALIZE.ContractError, "claim boundary drift"):
+            FINALIZE.finalize(self.pack, self.run_root, False)
+
     def test_external_test_summary_is_reported_truthfully(self):
         external = Path(self.temporary.name) / "external-tests.json"
         write_json(external, {
