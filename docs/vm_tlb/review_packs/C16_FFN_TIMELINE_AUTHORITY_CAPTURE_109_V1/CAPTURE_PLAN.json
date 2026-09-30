@@ -1,0 +1,17 @@
+{
+  "condition": "CONTROL_GUD84",
+  "scenario": "accepted natural prefill=2048 decode=D0-D3 batch=1 greedy use_cache",
+  "outer_gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "processes": [
+    {"label": "canary_off", "timeline_nvtx": "off", "run_index": 700, "scientific_timing": false},
+    {"label": "canary_on", "timeline_nvtx": "on", "run_index": 700, "scientific_timing": false},
+    {"label": "formal", "timeline_nvtx": "on", "run_index": 701, "requires_neutrality_pass": true}
+  ],
+  "nsys": {"trace": "cuda,nvtx", "sample": "none", "cpuctxsw": "none", "force_overwrite": true},
+  "formal_capture_count": 1,
+  "total_gpu_process_launches_max": 3,
+  "gpu_wall_budget_minutes": 20,
+  "attribution": "semantic NVTX launch scope + CUDA runtime correlationId to GPU activity",
+  "gpu_time_overlap_attribution_forbidden": true,
+  "tools_forbidden": ["NCU", "NVBit", "SASS", "Accel-Sim", "oracle"]
+}
