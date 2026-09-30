@@ -1,0 +1,81 @@
+{
+  "HDF5_attr_distance": "angular",
+  "converter_sha256": "a19376c6d18c5598e220379b8e4837737476dba7252c8a4ef75e7d61f5e87764",
+  "descriptor_sha256": "dd909697c10b46a53ac1b50f9dff8ff55d3b7bac963434f9c2bfebea393ba70d",
+  "dtypes": {
+    "distances": "float32",
+    "neighbors": "int32",
+    "test": "float32",
+    "train": "float32"
+  },
+  "files": {
+    "dataset/glove-100-angular.hdf5": {
+      "sha256": "544af1d5e84e112cd4749571dcfd8ca109818a572f850af75a3a09e093a953c4",
+      "size_bytes": 485413888
+    },
+    "dataset/glove-100-inner/base.fbin": {
+      "sha256": "786ec19606556a05def91010346833b1c66d1cc7125ab18786debc849bc351ec",
+      "size_bytes": 473405608
+    },
+    "dataset/glove-100-inner/groundtruth.distances.fbin": {
+      "sha256": "df0bcf85af7918fb14bd45b19e875a865e068edccd8fd16cb15b442de0fbcd41",
+      "size_bytes": 4000008
+    },
+    "dataset/glove-100-inner/groundtruth.neighbors.ibin": {
+      "sha256": "3f43ac9b7edd0b06b197c3e86615d94a333a8994bbd6f50e339ac98234890e43",
+      "size_bytes": 4000008
+    },
+    "dataset/glove-100-inner/query.fbin": {
+      "sha256": "0bebff3e75a3f0c56da2a329620853283ba02b6568e1b6acbf894e232f49b671",
+      "size_bytes": 4000008
+    }
+  },
+  "first_256_GT_exact_binary_match": true,
+  "helper_sha256": "6ba1f300e234fab6ca6497098f2fe9a48881aeeda4d21c9d27991d5a569a0179",
+  "holdout_performance_inspected": false,
+  "holdout_query_values_inspected": false,
+  "independent_cosine_top10_sanity": [
+    {
+      "cosine_top10_vs_official_GT_recall": 1.0,
+      "query": 0
+    },
+    {
+      "cosine_top10_vs_official_GT_recall": 1.0,
+      "query": 1
+    },
+    {
+      "cosine_top10_vs_official_GT_recall": 1.0,
+      "query": 2
+    }
+  ],
+  "max_base_norm_abs_error": 2.384185791015625e-07,
+  "official_converter_invocation": "python -m cuvs_bench.get_dataset --dataset glove-100-angular --normalize --dataset-path <root>",
+  "official_converter_output_dir": "glove-100-inner (the helper renames angular to inner after normalization)",
+  "official_descriptor_distance": "euclidean",
+  "official_descriptor_name": "glove-100-angular",
+  "redistribution_license_status": "NOT_STATED_IN_OFFICIAL_CUVS_DESCRIPTOR_OR_HDF5; retained as private research authority",
+  "scientific_dataset": "glove-100-angular",
+  "scientific_metric": "sqeuclidean on L2-unit-normalized vectors; rank-equivalent to cosine/angular",
+  "shapes": {
+    "distances": [
+      10000,
+      100
+    ],
+    "neighbors": [
+      10000,
+      100
+    ],
+    "test": [
+      10000,
+      100
+    ],
+    "train": [
+      1183514,
+      100
+    ]
+  },
+  "source_commit": "25b1be43a8c127e5ab6d2f29f20c62dbfd3351ab",
+  "source_content_length": 485413888,
+  "source_etag": "9ef1a69a639809d4ae43efd5e6707fa1-58",
+  "source_url": "https://ann-benchmarks.com/glove-100-angular.hdf5"
+}

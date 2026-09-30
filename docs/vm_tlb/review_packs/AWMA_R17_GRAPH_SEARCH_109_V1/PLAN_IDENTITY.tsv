@@ -1,0 +1,10 @@
+query_batch	requested_mode	resolved_mode	source_auto_alias	itopk	search_width	expected_cta_per_query	source_identity	runtime_duplicate_full_arm_skipped
+1	auto	multi_cta	multi_cta	64	1	2	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	False
+1	multi_cta	multi_cta	False	64	1	2	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	True
+1	single_cta	single_cta	False	64	1	1	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	False
+32	auto	multi_cta	multi_cta	64	1	2	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	False
+32	multi_cta	multi_cta	False	64	1	2	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	True
+32	single_cta	single_cta	False	64	1	1	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	False
+256	auto	single_cta	single_cta	64	1	1	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	False
+256	multi_cta	multi_cta	False	64	1	2	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	False
+256	single_cta	single_cta	False	64	1	1	v26.08.01 search_plan.cuh threshold 2*76; search_multi_cta.cuh max(width,ceil(itopk/32))	True

@@ -1,0 +1,3 @@
+# R17 Lane F / node109 — quality-gated STOP
+
+`R17_RECALL_GATE_NOT_QUALIFIED`: stable `cuvs-cu12==26.8.1` and the official, normalized GloVe-100-angular input qualified. One FP32, uncompressed, device-resident CAGRA G64/IG128 default-IVF-PQ index was built and serialized. The fixed Q1 AUTO/MULTI/SINGLE plan census and the preregistered six-point Q1 MULTI_CTA grid were tested only on discovery queries 0..255. Best recall@10 was 0.930078, below 0.95. No `Q1_STRONG`, formal timing, persistent, host fallback, profiler, holdout or architecture step was permitted. See `docs/vm_tlb/review_packs/AWMA_R17_GRAPH_SEARCH_109_V1/` for exact source/data/index hashes and all screen samples.
