@@ -1,13 +1,14 @@
 # AWMA论文阅读笔记｜ChatGPT支线
 
-维护者ChatGPT；更新：Round14，2026-09-29。文献笔记不是执行receipt；是否启动和完成实验，以独立Goal和review pack为准。
+维护者ChatGPT；更新：Round15，2026-09-30。文献笔记不是执行receipt；是否启动和完成实验，以独立Goal和review pack为准。
 
 ## 当前窗口名称
 
-用户确认保留原名：**Lane F＝R101；Lane G＝R102，均在109。** Round10旧handoff的Lane H/I是历史命名别名，不要求正在执行的窗口改名、重启或改变科学合同。R102仍先做input authority核查；所有CUDA工作仍共用既有GPU锁。
+用户确认保留Lane名称，不做批量改名。**截至Round15，R101已在R101R5 Native realism negative后关闭architecture-mechanism line；Lane E/F/G均为STOP，没有已授权的新执行。** Round10旧handoff的H/I仅为历史别名。R102历史状态仍为input authority未资格化，未来只有真实before/after scientific payload到位才可重开；所有109 CUDA工作继续共用既有GPU锁。
 
 ## 最新问题发现
 
+- [Round15：横向收口与2026-09-30研究前沿重审](rounds/2026-09-30_ROUND_15_HORIZONTAL_CLOSEOUT_AND_CURRENT_FRONTIER.md)：把Round01–14候选与后续execution重新对齐。R101在R101R5 Native realism negative后正式关闭硬件机制线；确定性归约P1、在线selector P2、R54/R81/R82均按后续结果降级或收口。重新核查2026近期GPU/LLM工作后，把precision-gated真实weight-update detect/compact/apply与VLA inference-time gradient/VJP列为最值得做problem-boundary验证的两类；CCE/Liger exact-loss作为低成本quick falsification。不授权新实验。
 - [Round14：R101R2执行组织定位](rounds/2026-09-29_ROUND_14_R101R2_EXECUTION_ORGANIZATION_LOCALIZATION.md)：Transient-L2 FULL5将writeback降低约92%、DRAM read约71%、L2 miss约19%，但cycle仅改善约0.5%，因此关闭cache/writeback性能线。下一轮改用109 S128 Native profile +174 CONTEXT2 one-cycle memory-service oracle，定位剩余20% same-map fused响应是memory service还是execution organization。正式采用L1/L2/L3分级实验制度。\n- [Round13：R101R1合并架构轮](rounds/2026-09-27_ROUND_13_R101_TRANSIENT_L2_ARCHITECTURE.md)：接受R101R1现有L2控制不足；将后续合并为109 exact simulator capture与174-new transient-L2最小机制并行。第一机制只验证有限region-aware live retention + dead-drop，不加L2数据容量；O1 oracle先做Native D1方向对齐。\n- [Round12：R101架构审查与L2 lifetime control](rounds/2026-09-27_ROUND_12_R101_ARCH_REVIEW_L2_LIFETIME.md)：R101问题资格化后先排除现有`discard.global.L2`和L2 persistence；随后R101R1结果证明D1仅降26.26%写流量且变慢，D2 A+B 44MiB persistence无写流量收益，进入架构审查。\n- [Round11：代数重写、无损数据流、跨CTA与闭环AI](rounds/2026-09-27_ROUND_11_ALGEBRA_COMPRESSION_AND_CLOSED_LOOP.md)：15项核心工作，12篇正文关键章节、1项作者技术文章+源码、1项摘要+源码、1项元数据+artifact；另6个作者仓库文件与CUDA文档。28条实验/分析组。补Gram NS、UCCL-Zip、DFloat11/ZipServ、CCE/Liger、cluster近邻和VLA推理VJP。保留ClusterFusion++量纲问题；不改F/G任务，不启动新GPU/模拟。
 - [Round10：R81/R82横向审查与下一轮并行候选](rounds/2026-09-27_ROUND_10_HORIZONTAL_REVIEW_AND_NEXT.md)：R81软件机会、R82当前软件无有效候选；后备中提升R101固定Newton–Schulz中间态生命周期，条件提升R102低精度权重变化检测/压缩，Q92/Q93暂缓。历史H/I窗口在实际执行中保留F/G名称，见上。
 - [Round09：宽范围支线——执行组织、表示生命周期与训练新成本](rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md)：27项核心工作，19项正文关键章节、1项部分正文、6项原始摘要、1项作者artifact/元数据；本轮扩展证据表53条。覆盖编译、通信、稀疏、优化器、RL同步、TT embedding、可靠性、CPU/FPGA与模拟方法。该轮未启动新GPU任务，未修改当时R81/R82。明确Celty/Coruscant公开代码范围及Syncopate AE版本标注差异。
@@ -54,5 +55,5 @@
 作者结论、源码事实、比较判断、待验证想法分开。版本、输入、实现、初始状态和统计分母不一致时不能直接合并结果。存储比例不是布局面积；模拟器不是实机内部结构；统计改善不等于性能改善；独立分段时间不天然可加成critical path。缺失证据保持未知。
 
 分支：`hrl/awma-chatgpt-literature-notes-v1`；目录：`docs/vm_tlb/literature_notes/awma/`。
-Round03基于`c9e16ce0857be4562570fae79dbd861b6ae5a8e2`；Round04正文`082dd8b36b199e135585c0ba61cab587d6814e60`；Round05正文`ecef0bfd80a62a60cae9e4a0df478b3acfa15567`；Round06正文`8dac519298eb16709c88c37a28f02f360360c507`；Round07正文`5afae5b18922333130a0c6b253eea9cc9ebf3d85`；Round08正文`214b30039cc579c28457cb17bfbd7e9d88d00fcd`；Round09正文`e14378a293ce0a031e2a88b1ce8b7b912a3ecadd`；Round10正文`61c852768529e0d6bace3ab6f30c7a6adea9d1bc`；Round11正文`b18ba3f572f04f4510ade822902677d1ab1af5cf`。
+Round03基于`c9e16ce0857be4562570fae79dbd861b6ae5a8e2`；Round04正文`082dd8b36b199e135585c0ba61cab587d6814e60`；Round05正文`ecef0bfd80a62a60cae9e4a0df478b3acfa15567`；Round06正文`8dac519298eb16709c88c37a28f02f360360c507`；Round07正文`5afae5b18922333130a0c6b253eea9cc9ebf3d85`；Round08正文`214b30039cc579c28457cb17bfbd7e9d88d00fcd`；Round09正文`e14378a293ce0a031e2a88b1ce8b7b912a3ecadd`；Round10正文`61c852768529e0d6bace3ab6f30c7a6adea9d1bc`；Round11正文`b18ba3f572f04f4510ade822902677d1ab1af5cf`；Round14正文`fb4d4292b9987a693c988b9ef2115de0c92c8a1f`。Round15见上方导航，其commit以当前branch HEAD为准。
 原论文PDF不提交仓库，accepted实验和raw不改动。
