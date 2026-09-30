@@ -1,0 +1,74 @@
+{
+  "authorization_commit": "08f38d7163da95e895aaba10d72231a6d350dfe2",
+  "authorized_application": {
+    "application_tool": "GNU patch",
+    "exact_command": "patch -s util/vm_tlb/c16/e1_operator_family_natural.py < docs/vm_tlb/review_packs/C16_FFN_TIMELINE_CAPTURE_IDENTITY_RECOVERY_AND_AUTHORIZATION_174NEW_V1/INSTRUMENTATION_DELTA.patch",
+    "expected_result_sha256": "ad922629a9898c01400a165b2f6565659f1c6e422784c10bc1d013265c45b5fb",
+    "instrumentation_validation": {
+      "positions": {
+        "argument": 2180,
+        "entrypoint": 11978,
+        "main": 1975,
+        "mlp_wrapper": 4418,
+        "projection_hook": 5288,
+        "semantic_range": 4057
+      },
+      "required_points": {
+        "activation_range": true,
+        "decode_wall": true,
+        "mlp_wrapper": true,
+        "multiply_range": true,
+        "result_receipt": true,
+        "semantic_range": true,
+        "timeline_nvtx_argument": true
+      },
+      "syntax": "PASS",
+      "tail": "PASS_NO_APPENDED_BLOCK"
+    },
+    "result_sha256": "ad922629a9898c01400a165b2f6565659f1c6e422784c10bc1d013265c45b5fb",
+    "return_code": 0,
+    "status": "PASS_EXACT",
+    "tool_version": "GNU patch 2.7.6",
+    "working_directory": "repository root"
+  },
+  "base": {
+    "base_source_sha256": "902bd8993483290850072afc37245aa7ba80afd821952c7a91fabec0b8e18ea5",
+    "source_commit": "eae1cc4d831ae8459da558cf1358bb8daf8d76e6",
+    "source_path": "util/vm_tlb/c16/e1_operator_family_natural.py"
+  },
+  "contract_invariants": {
+    "authorized_contract_path": "docs/vm_tlb/review_packs/C16_FFN_TIMELINE_CAPTURE_IDENTITY_RECOVERY_AND_AUTHORIZATION_174NEW_V1/AUTHORIZED_FFN_TIMELINE_CAPTURE_CONTRACT_V1.json",
+    "authorized_contract_sha256": "cc081ee281b672bd8ff76cb8ae3e226194c0eec44f6f8916ed4fbbfb8facd2f9",
+    "canary_and_formal_counts_unchanged": true,
+    "gpu_budget_unchanged": true,
+    "measurement_protocol_unchanged": true,
+    "model_input_runtime_scenario_unchanged": true
+  },
+  "instrumentation_change": "NONE",
+  "patch": {
+    "bytes_unchanged_from_authorization": true,
+    "patch_sha256": "06cc0656125e0d5900330f6576b071637de1d09a7e1c9f501929d5577b1361be",
+    "path": "docs/vm_tlb/review_packs/C16_FFN_TIMELINE_CAPTURE_IDENTITY_RECOVERY_AND_AUTHORIZATION_174NEW_V1/INSTRUMENTATION_DELTA.patch"
+  },
+  "prohibited_application": {
+    "application_tool": "git apply",
+    "authorized": false,
+    "exact_command": "git apply docs/vm_tlb/review_packs/C16_FFN_TIMELINE_CAPTURE_IDENTITY_RECOVERY_AND_AUTHORIZATION_174NEW_V1/INSTRUMENTATION_DELTA.patch",
+    "expected_malformed_result_sha256": "4e4a6061ded405b79cd41bafdd2c74ec7ac92e0e54a1ae9c208ee49b335107bf",
+    "reason": "The normalized zero-context insertion hunks are application-tool-sensitive. git apply relocates the insertions to the file tail, outside main, producing a syntactically invalid runner.",
+    "result_sha256": "4e4a6061ded405b79cd41bafdd2c74ec7ac92e0e54a1ae9c208ee49b335107bf",
+    "return_code": 0,
+    "status": "REPRODUCED_BUT_REJECTED",
+    "syntax_validation": {
+      "exception": "IndentationError",
+      "line": 183,
+      "message": "unexpected indent",
+      "status": "FAIL_AS_EXPECTED"
+    },
+    "tool_version": "git version 2.34.1",
+    "working_directory": "repository root"
+  },
+  "schema_version": 1,
+  "scientific_identity_change": "NONE",
+  "status": "PASS_GNU_PATCH_ONLY"
+}
