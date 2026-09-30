@@ -52,11 +52,12 @@ for condition in ("R0_BASELINE", "M1_B16"):
 
 scope = canary.read_json(pack / "REUSE_WINDOW_SCOPE.json")
 sequence = canary.tsv(pack / "REUSE_WINDOW_SEQUENCE.tsv")
+authorities = canary.load_run_authorities(pack)
 summaries = {}
 parsed = {}
 for condition in ("R0_BASELINE", "M1_B16"):
     summaries[condition], parsed[condition] = canary.summarize_run(
-        run_root / condition, condition, sequence, scope, False)
+        run_root / condition, condition, sequence, scope, authorities[condition], False)
 
 fields = ("kernel_count", "kernel_sequence_sha256", "instruction_count", "CTA_count")
 if not all(summaries["R0_BASELINE"][field] == summaries["M1_B16"][field]
