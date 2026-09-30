@@ -1,25 +1,10 @@
 --- a/util/vm_tlb/c16/e1_operator_family_natural.py
 +++ b/util/vm_tlb/c16/e1_operator_family_natural.py
-@@ -4,6 +4,7 @@
- import argparse
- import hashlib
- import json
+@@ -6,0 +7 @@
 +import types
- from pathlib import Path
- 
- import torch
-@@ -43,6 +44,7 @@
-     parser.add_argument("--condition", required=True)
-     parser.add_argument("--run-index", type=int, default=0)
-     parser.add_argument("--output")
+@@ -45,0 +47 @@
 +    parser.add_argument("--timeline-nvtx", choices=("off", "on"), default="off")
-     args = parser.parse_args()
-     contract = json.loads((ROOT / "contracts/CONDITION_MATRIX_PRECONTRACT.json").read_text())
-     spec = condition_spec(args.condition, contract)
-@@ -79,6 +81,38 @@
-     pending = {}
-     captures = {}
-     handles = []
+@@ -81,0 +84,32 @@
 +    original_mlp_forwards = {}
 +
 +    def semantic_range(label, call):
@@ -52,39 +37,14 @@
 +        for layer_index, layer in enumerate(layers):
 +            original_mlp_forwards[layer_index] = layer.mlp.forward
 +            layer.mlp.forward = make_mlp_forward(layer_index, layer.mlp)
- 
-     def make_pre(layer_index, role):
-         def hook(module, module_args):
-@@ -128,6 +162,8 @@
-             current = torch.argmax(prefill.logits[:, -1, :], dim=-1, keepdim=True)
-             past = prefill.past_key_values
-             del prefill
+@@ -130,0 +165,2 @@
 +            if args.timeline_nvtx == "on":
 +                torch.cuda.nvtx.range_push("C16_FFN_TIMELINE_DECODE_D0_D3")
-             for decode_index in range(4):
-                 token_tensors.append(current.detach())
-                 active_decode["value"] = decode_index
-@@ -143,6 +179,8 @@
-                 step_events.append((start, stop))
-                 active_decode["value"] = None
-                 del result
+@@ -145,0 +182,2 @@
 +            if args.timeline_nvtx == "on":
 +                torch.cuda.nvtx.range_pop()
-         torch.cuda.synchronize()
-         for handle in handles:
-             handle.remove()
-@@ -166,11 +204,14 @@
-                     raise RuntimeError(f"occurrence identity drift L{row['layer']} {row['role']} D{row['decode_index']}")
-         result = {"status": "PASS", "condition": args.condition, "run_index": args.run_index, "mode": spec["mode"], "set_name": spec["set_name"], "selected_roles": spec["selected_roles"], "selected_module_count": spec["selected_count"], "hit_ratio": spec["hit_ratio"], "target_persisting": spec["persisting"], "generated_token_ids_D0_D3": token_ids, "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in step_events], "occurrences": occurrences, "module_census": module_census, "call_order": call_order, "policy_receipt": policy_receipt, "policy_transitions": transitions, "policy_transition_count": len(transitions), "all_84_ffn_instrumented": True, "no_reset_between_transitions": True, "no_inner_loop_synchronize": True}
-     finally:
+@@ -168,0 +207,2 @@
 +        for layer_index, original_forward in original_mlp_forwards.items():
 +            layers[layer_index].mlp.forward = original_forward
-         policy_receipt = helper.end_condition(policy_receipt)
-     result["policy_receipt"] = policy_receipt
-     expected_updates = 0 if spec["mode"] == "CENSUS" else spec["selected_count"] * 5
-     if result["policy_transition_count"] != expected_updates:
-         raise RuntimeError(f"transition count {result['policy_transition_count']} != {expected_updates}")
+@@ -173,0 +214 @@
 +    result["timeline_nvtx"] = args.timeline_nvtx
-     text = json.dumps(result, indent=2, sort_keys=True) + "\n"
-     if args.output:
-         Path(args.output).write_text(text)
