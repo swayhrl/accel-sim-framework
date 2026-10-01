@@ -1,0 +1,98 @@
+{
+  "affected_event_order_only_fraction": 0.7218961625282168,
+  "authority_commit": "3f62f909a474e4c56695ffacf36ddcb5d7b5f147",
+  "duplicate_ids_within_topk": {
+    "off": 0,
+    "on": 0
+  },
+  "expert_set_substitution_events": 616,
+  "field_semantics": "captured logical topk_ids by token-forward position and layer before EPLB mapping;source audited separately",
+  "final_classification": "OLMOE_GRAPH_MODE_EXPERT_SET_DIVERGENCE",
+  "first_divergence_by_event_class": {
+    "EXPERT_SET_SUBSTITUTION": [
+      3,
+      6,
+      7
+    ],
+    "ORDER_ONLY_SWAP": [
+      0,
+      3,
+      5
+    ]
+  },
+  "first_divergence_global": [
+    0,
+    3,
+    5
+  ],
+  "first_logprob_nonzero_step": "D0",
+  "first_logprob_tolerance_failure_step": "D1",
+  "generated_token_count": 32,
+  "graph_off_native_run_count": 6,
+  "graph_off_unique_native_routing_sha256": [
+    "452b568fb9b310061cf66235f125b3de89c9ac15a8db614d19d2cfd41b76bd33"
+  ],
+  "graph_on_native_run_count": 1,
+  "graph_on_unique_native_routing_sha256": [
+    "e8b2bde874d036f7a4b2e8ec295f9bffa1d1750241d233091a3b84d555aed196"
+  ],
+  "logprob_exceeds_steps": [
+    "D1",
+    "D4",
+    "D6",
+    "D23",
+    "D29"
+  ],
+  "logprob_max_abs_delta": 0.10254716873168945,
+  "mapping": "D0 contains 512 prompt-forward routes; D1-D31 each contains one forwarded prior generated token; last D31 sampled token has no separate route",
+  "order_only_swap_events": 1599,
+  "ordered_equal_events": 6473,
+  "original_failure": "CORRECTNESS_OR_BACKEND_IDENTITY_FAILED",
+  "per_generated_output_step_route_shape": {
+    "D0": [
+      512,
+      16,
+      8
+    ],
+    "D1_to_D31": [
+      1,
+      16,
+      8
+    ]
+  },
+  "positional_mismatch_count": 4761,
+  "positional_mismatches_by_event_class": {
+    "EXACT_MATCH": 0,
+    "EXPERT_SET_SUBSTITUTION": 1071,
+    "ORDER_ONLY_SWAP": 3690
+  },
+  "positional_mismatches_decode": 202,
+  "positional_mismatches_prefill": 4559,
+  "prompt_token_count": 512,
+  "raw_nested_shape": {
+    "graph_off": [
+      543,
+      16,
+      8
+    ],
+    "graph_on": [
+      543,
+      16,
+      8
+    ]
+  },
+  "raw_off_sha256": "97f24bed45b544353a477872da68af2cdc058d41cd88487f00dff619befad201",
+  "raw_on_sha256": "c2c2cff5ec04929e752329c987b1655e83d4f3d61556f89360b41225a87a0456",
+  "route_position_count": 543,
+  "routing_event_count": 8688,
+  "sampled_token_ids_equal": true,
+  "selected_off_native_arm": "first native_runs entry with arm OFF",
+  "selected_on_native_arm": "native_runs[0] in OLMOE_on.json",
+  "set_substitution_intersection_histogram": {
+    "6": 1,
+    "7": 615
+  },
+  "set_substitution_jaccard_mean": 0.7774891774891721,
+  "set_substitution_jaccard_min": 0.6,
+  "structure_shift_events": 0
+}

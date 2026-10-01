@@ -1,0 +1,7 @@
+# OLMoE Graph OFF/ON correctness diagnostic — CPU only
+
+This pack independently consumes the immutable node164 raw JSON and accepted review pack at producer commit `3f62f909a474e4c56695ffacf36ddcb5d7b5f147` (tree `4b9a1c07ee6b16997957d804f26ab57d0ca3853e`). The original `CORRECTNESS_OR_BACKEND_IDENTITY_FAILED` is retained permanently. No GPU, model execution, profiler, SASS, NVBit, Accel-Sim or new trace was used.
+
+Read `FINAL_DECISION.json`, `ROUTING_STRUCTURE.json`, the two routing TSVs, `LOGPROB_DELTA_BY_STEP.tsv` and `VLLM_ROUTED_EXPERTS_SEMANTICS.md`. The 4,761 original positional expert-ID mismatches are reproduced exactly. They comprise 3,690 positional mismatches in 1,599 order-only routing events **and** 1,071 positional mismatches in 616 true expert-set-substitution events. No shape shift was found. Therefore the final classification is `OLMOE_GRAPH_MODE_EXPERT_SET_DIVERGENCE`; there is no scientifically valid order-only V2 canary draft. Five sampled-token logprobs remain outside the **original** tolerance although generated tokens match.
+
+The source audit is pinned to vLLM `v0.30.0@ced6857afa0ea7b2e3f0846a62e1394e90f15607`. OFF/ON here also changes torch.compile policy through `enforce_eager`, so a CUDA-graph-only numerical cause is **not** established. Tests, deterministic rerun and `SHA256SUMS` close the evidence. This is a failure characterization, not a repair or performance result.
