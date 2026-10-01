@@ -1,0 +1,61 @@
+{
+  "down_kernel_launches": 112,
+  "kernel_backend": [
+    "MarlinLinearKernel"
+  ],
+  "kernel_state": {
+    "w_q_name": "qweight",
+    "w_s_name": "scales",
+    "w_zp_name": "qzeros"
+  },
+  "logical_quant_bytes_per_layer": 70547456,
+  "merged_gate_up_kernel_launches": 112,
+  "merged_gate_up_kernel_names": [
+    "void marlin::Marlin<(long)1125899906910725, (long)1125899906843648, (long)1125899906910725, (long)1125899906910725, (int)256, (int)1, (int)8, (int)8, (bool)1, (int)4, (int)8, (bool)0>(const int4 *, const int4 *, int4 *, int4 *, const int4 *, const float *, const int4 *, const float *, const int4 *, int, int, int, int, int *, bool, bool, bool, int)"
+  ],
+  "padding_bytes": 0,
+  "parameter_layout": {
+    "qweight": {
+      "bytes": 67895296,
+      "device": "cuda:0",
+      "dtype": "torch.int32",
+      "numel": 16973824,
+      "shape": [
+        224,
+        75776
+      ]
+    },
+    "qzeros": {
+      "bytes": 530432,
+      "device": "cuda:0",
+      "dtype": "torch.int32",
+      "numel": 132608,
+      "shape": [
+        28,
+        4736
+      ]
+    },
+    "scales": {
+      "bytes": 2121728,
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "numel": 1060864,
+      "shape": [
+        28,
+        37888
+      ]
+    }
+  },
+  "persistent_workspace_parameters_observed": [],
+  "physical_parameter_bytes_per_layer": 70547456,
+  "quant_method": [
+    "AutoAWQMarlinLinearMethod"
+  ],
+  "separate_reduction_kernel_count_name_classified": 0,
+  "silu_and_mul_kernel_launches": 112,
+  "silu_and_mul_kernel_names": [
+    "void vllm::act_and_mul_kernel<c10::Half, __half2, &vllm::silu_kernel<c10::Half>, &vllm::packed_silu_kernel<__half2>, (bool)1, (bool)1, (bool)0, (bool)0>(T1 *, const T1 *, int, float, float, float)"
+  ],
+  "status": "PASS_RUNTIME_BACKEND_RESOLVED",
+  "workspace_boundary": "no persistent workspace tensor was exposed by gate_up module/kernel census; transient internal workspace not separately attributed"
+}

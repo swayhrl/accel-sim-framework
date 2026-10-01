@@ -1,0 +1,1728 @@
+diff --git a/util/vm_tlb/c16/e1_operator_family_natural.py b/util/vm_tlb/c16/e1_operator_family_natural.py
+index 7bcbb180..7361d7f0 100644
+--- a/util/vm_tlb/c16/e1_operator_family_natural.py
++++ b/util/vm_tlb/c16/e1_operator_family_natural.py
+@@ -45,6 +45,8 @@ def main():
+     parser.add_argument("--run-index", type=int, default=0)
+     parser.add_argument("--output")
+     parser.add_argument("--timeline-nvtx", choices=("off", "on"), default="off")
++    parser.add_argument("--ffn-baseline-measurement", choices=("off", "on"), default="off")
++    parser.add_argument("--tensor-dump")
+     args = parser.parse_args()
+     contract = json.loads((ROOT / "contracts/CONDITION_MATRIX_PRECONTRACT.json").read_text())
+     spec = condition_spec(args.condition, contract)
+@@ -80,6 +82,8 @@ def main():
+     transitions = []
+     pending = {}
+     captures = {}
++    ffn_pending = {}
++    ffn_captures = {}
+     handles = []
+     original_mlp_forwards = {}
+
+@@ -129,10 +133,11 @@ def main():
+             key = (layer_index, role, decode_index)
+             start = torch.cuda.Event(enable_timing=True)
+             stop = torch.cuda.Event(enable_timing=True)
++            captured_input = module_args[0].detach().clone() if args.tensor_dump else module_args[0].detach()
+             name = f"C16_E1_OPF_{args.condition}_L{layer_index}_{role.upper()}_D{decode_index}"
+             torch.cuda.nvtx.range_push(name)
+             start.record()
+-            pending[key] = {"start": start, "stop": stop, "range": name, "input": module_args[0].detach(), "module_class": type(module).__name__}
++            pending[key] = {"start": start, "stop": stop, "range": name, "input": captured_input, "module_class": type(module).__name__}
+         return hook
+
+     def make_post(layer_index, role):
+@@ -144,13 +149,49 @@ def main():
+             record = pending.pop(key)
+             record["stop"].record()
+             torch.cuda.nvtx.range_pop()
+-            record["output"] = output.detach()
++            record["output"] = output.detach().clone() if args.tensor_dump else output.detach()
+             captures[key] = record
+         return hook
+
+     for (layer_index, role), module in module_map.items():
+         handles.append(module.register_forward_pre_hook(make_pre(layer_index, role)))
+         handles.append(module.register_forward_hook(make_post(layer_index, role)))
++
++    def make_ffn_pre(layer_index):
++        def hook(module, module_args):
++            decode_index = active_decode["value"]
++            if decode_index is None:
++                return
++            key = (layer_index, decode_index)
++            start = torch.cuda.Event(enable_timing=True)
++            stop = torch.cuda.Event(enable_timing=True)
++            captured_input = module_args[0].detach().clone() if args.tensor_dump else module_args[0].detach()
++            label = f"C16_MERGED_BASELINE_B0_L{layer_index}_D{decode_index}_FFN"
++            if args.timeline_nvtx == "on":
++                torch.cuda.nvtx.range_push(label)
++            start.record()
++            ffn_pending[key] = {"start": start, "stop": stop, "range": label,
++                                "input": captured_input}
++        return hook
++
++    def make_ffn_post(layer_index):
++        def hook(module, module_args, output):
++            decode_index = active_decode["value"]
++            if decode_index is None:
++                return
++            key = (layer_index, decode_index)
++            record = ffn_pending.pop(key)
++            record["stop"].record()
++            if args.timeline_nvtx == "on":
++                torch.cuda.nvtx.range_pop()
++            record["output"] = output.detach().clone() if args.tensor_dump else output.detach()
++            ffn_captures[key] = record
++        return hook
++
++    if args.ffn_baseline_measurement == "on":
++        for layer_index, layer in enumerate(layers):
++            handles.append(layer.mlp.register_forward_pre_hook(make_ffn_pre(layer_index)))
++            handles.append(layer.mlp.register_forward_hook(make_ffn_post(layer_index)))
+     token_tensors = []
+     step_events = []
+     try:
+@@ -164,6 +205,9 @@ def main():
+             del prefill
+             if args.timeline_nvtx == "on":
+                 torch.cuda.nvtx.range_push("C16_FFN_TIMELINE_DECODE_D0_D3")
++            decode_wall_start = torch.cuda.Event(enable_timing=True)
++            decode_wall_stop = torch.cuda.Event(enable_timing=True)
++            decode_wall_start.record()
+             for decode_index in range(4):
+                 token_tensors.append(current.detach())
+                 active_decode["value"] = decode_index
+@@ -179,6 +223,7 @@ def main():
+                 step_events.append((start, stop))
+                 active_decode["value"] = None
+                 del result
++            decode_wall_stop.record()
+             if args.timeline_nvtx == "on":
+                 torch.cuda.nvtx.range_pop()
+         torch.cuda.synchronize()
+@@ -186,6 +231,8 @@ def main():
+             handle.remove()
+         if pending or len(captures) != 336 or len(call_order) != 420:
+             raise RuntimeError(f"call/occurrence closure calls={len(call_order)} captures={len(captures)}")
++        if args.ffn_baseline_measurement == "on" and (ffn_pending or len(ffn_captures) != 112):
++            raise RuntimeError(f"FFN occurrence closure pending={len(ffn_pending)} captures={len(ffn_captures)}")
+         token_ids = [int(token.item()) for token in token_tensors]
+         if token_ids != EXPECTED_TOKENS:
+             raise RuntimeError(f"token drift {token_ids}")
+@@ -194,6 +241,18 @@ def main():
+             for decode_index in range(4):
+                 record = captures[(layer_index, role, decode_index)]
+                 occurrences.append({"layer": layer_index, "role": role, "decode_index": decode_index, "token_id": token_ids[decode_index], "range": record["range"], "input_sha256": tensor_sha(record["input"]), "output_sha256": tensor_sha(record["output"]), "input_shape": list(record["input"].shape), "output_shape": list(record["output"].shape), "module_class": record["module_class"], "target_ms": float(record["start"].elapsed_time(record["stop"]))})
++        ffn_occurrences = []
++        if args.ffn_baseline_measurement == "on":
++            for layer_index in range(28):
++                for decode_index in range(4):
++                    record = ffn_captures[(layer_index, decode_index)]
++                    ffn_occurrences.append({"layer": layer_index, "decode_index": decode_index,
++                                            "range": record["range"],
++                                            "input_sha256": tensor_sha(record["input"]),
++                                            "output_sha256": tensor_sha(record["output"]),
++                                            "input_shape": list(record["input"].shape),
++                                            "output_shape": list(record["output"].shape),
++                                            "target_ms": float(record["start"].elapsed_time(record["stop"]))})
+         if spec["mode"] == "POLICY":
+             authority = json.loads((ROOT / "contracts/CALL_ORDER_AUTHORITY.json").read_text())
+             if call_order != authority["call_order"]:
+@@ -202,7 +261,16 @@ def main():
+             for row in occurrences:
+                 if (row["input_sha256"], row["output_sha256"]) != accepted[(row["layer"], row["role"], row["decode_index"])]:
+                     raise RuntimeError(f"occurrence identity drift L{row['layer']} {row['role']} D{row['decode_index']}")
+-        result = {"status": "PASS", "condition": args.condition, "run_index": args.run_index, "mode": spec["mode"], "set_name": spec["set_name"], "selected_roles": spec["selected_roles"], "selected_module_count": spec["selected_count"], "hit_ratio": spec["hit_ratio"], "target_persisting": spec["persisting"], "generated_token_ids_D0_D3": token_ids, "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in step_events], "occurrences": occurrences, "module_census": module_census, "call_order": call_order, "policy_receipt": policy_receipt, "policy_transitions": transitions, "policy_transition_count": len(transitions), "all_84_ffn_instrumented": True, "no_reset_between_transitions": True, "no_inner_loop_synchronize": True}
++        result = {"status": "PASS", "condition": args.condition, "run_index": args.run_index, "mode": spec["mode"], "set_name": spec["set_name"], "selected_roles": spec["selected_roles"], "selected_module_count": spec["selected_count"], "hit_ratio": spec["hit_ratio"], "target_persisting": spec["persisting"], "generated_token_ids_D0_D3": token_ids, "decode_wall_ms": float(decode_wall_start.elapsed_time(decode_wall_stop)), "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in step_events], "occurrences": occurrences, "ffn_occurrences": ffn_occurrences, "module_census": module_census, "call_order": call_order, "policy_receipt": policy_receipt, "policy_transitions": transitions, "policy_transition_count": len(transitions), "all_84_ffn_instrumented": True, "no_reset_between_transitions": True, "no_inner_loop_synchronize": True}
++        if args.tensor_dump:
++            payload = {"arm": "B0", "generated_token_ids_D0_D3": token_ids, "tensors": {}}
++            for (layer_index, role, decode_index), record in sorted(captures.items()):
++                payload["tensors"][f"L{layer_index}.D{decode_index}.{role}.input"] = record["input"].cpu()
++                payload["tensors"][f"L{layer_index}.D{decode_index}.{role}.output"] = record["output"].cpu()
++            for (layer_index, decode_index), record in sorted(ffn_captures.items()):
++                payload["tensors"][f"L{layer_index}.D{decode_index}.ffn.input"] = record["input"].cpu()
++                payload["tensors"][f"L{layer_index}.D{decode_index}.ffn.output"] = record["output"].cpu()
++            torch.save(payload, args.tensor_dump)
+     finally:
+         for layer_index, original_forward in original_mlp_forwards.items():
+             layers[layer_index].mlp.forward = original_forward
+@@ -212,6 +280,8 @@ def main():
+     if result["policy_transition_count"] != expected_updates:
+         raise RuntimeError(f"transition count {result['policy_transition_count']} != {expected_updates}")
+     result["timeline_nvtx"] = args.timeline_nvtx
++    result["ffn_baseline_measurement"] = args.ffn_baseline_measurement
++    result["tensor_dump_written"] = bool(args.tensor_dump)
+     text = json.dumps(result, indent=2, sort_keys=True) + "\n"
+     if args.output:
+         Path(args.output).write_text(text)
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/b2_runner.py b/util/vm_tlb/c16/merged_gate_up_native/b2_runner.py
+new file mode 100755
+index 00000000..6df0268e
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/b2_runner.py
+@@ -0,0 +1,349 @@
++#!/usr/bin/env python3
++"""Pinned vLLM merged gate/up natural D0-D3 runner for C16 Lane 7."""
++
++import argparse
++import hashlib
++import json
++import os
++import re
++import types
++from pathlib import Path
++
++os.environ.setdefault("VLLM_ENABLE_V1_MULTIPROCESSING", "0")
++os.environ.setdefault("HF_HUB_OFFLINE", "1")
++os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
++os.environ.setdefault("VLLM_LOGGING_LEVEL", "WARNING")
++
++import torch
++from vllm import LLM, SamplingParams
++from vllm.model_executor.models.qwen2 import Qwen2MLP
++
++
++MODEL = Path("/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641")
++TOKENS = Path("/data/c16/inputs/.incoming/qwen2p5_7b_instruct_raw/S2_TEXT/payload/token_ids.json")
++TOKEN_FILE_SHA = "0ab5bfe82130720edcbeac23c83b44b16cd8d21e4ccd5b4ee41c465c9159b4f9"
++EXPECTED_TOKENS = [23578, 11, 323, 3950]
++
++
++def file_sha(path):
++    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
++
++
++def tensor_sha(tensor):
++    data = tensor.detach().contiguous().cpu().view(torch.uint8).numpy().tobytes()
++    return hashlib.sha256(data).hexdigest()
++
++
++def first_tensor(output):
++    if isinstance(output, torch.Tensor):
++        return output
++    if isinstance(output, (tuple, list)) and output and isinstance(output[0], torch.Tensor):
++        return output[0]
++    raise TypeError(f"cannot extract tensor from {type(output)}")
++
++
++def tensor_meta(tensor):
++    return {"shape": list(tensor.shape), "dtype": str(tensor.dtype),
++            "device": str(tensor.device), "numel": tensor.numel(),
++            "bytes": tensor.numel() * tensor.element_size()}
++
++
++def object_tensor_meta(obj):
++    result = {}
++    if obj is None:
++        return result
++    for name, value in vars(obj).items():
++        if isinstance(value, torch.Tensor):
++            result[name] = tensor_meta(value)
++        elif isinstance(value, (str, int, float, bool, type(None))):
++            result[name] = value
++        elif isinstance(value, (list, tuple)) and all(isinstance(x, (str, int, float, bool, type(None))) for x in value):
++            result[name] = list(value)
++    return result
++
++
++def extract_tokens(outputs, request_id):
++    for output in outputs:
++        if output.request_id == request_id and output.outputs:
++            return list(output.outputs[0].token_ids)
++    return []
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--run-index", type=int, default=0)
++    parser.add_argument("--output", type=Path, required=True)
++    parser.add_argument("--tensor-dump", type=Path)
++    parser.add_argument("--timeline-nvtx", choices=("off", "on"), default="off")
++    args = parser.parse_args()
++    if file_sha(TOKENS) != TOKEN_FILE_SHA:
++        raise RuntimeError("token authority mismatch")
++    prefix = json.loads(TOKENS.read_text())
++    if len(prefix) != 2048:
++        raise RuntimeError(f"prompt length drift: {len(prefix)}")
++
++    llm = LLM(
++        model=str(MODEL), tokenizer=str(MODEL), skip_tokenizer_init=True,
++        dtype="float16", quantization="awq", enforce_eager=True,
++        tensor_parallel_size=1, max_model_len=4096, max_num_batched_tokens=4096,
++        max_num_seqs=1, gpu_memory_utilization=0.90, enable_prefix_caching=False,
++        seed=0, disable_log_stats=True,
++    )
++    engine = llm.llm_engine
++    model_runner = engine.model_executor.driver_worker.model_runner
++    model = model_runner.model
++    mlps = []
++    for name, module in model.named_modules():
++        if isinstance(module, Qwen2MLP):
++            match = re.search(r"layers\.(\d+)\.mlp$", name)
++            if not match:
++                raise RuntimeError(f"cannot bind Qwen2MLP layer index: {name}")
++            mlps.append((int(match.group(1)), name, module))
++    mlps.sort()
++    if [row[0] for row in mlps] != list(range(28)):
++        raise RuntimeError(f"Qwen2 MLP census mismatch: {[x[0] for x in mlps]}")
++
++    state = {"active": False, "decode_index": 0, "current": None,
++             "wall_start": torch.cuda.Event(enable_timing=True),
++             "wall_stop": torch.cuda.Event(enable_timing=True),
++             "step_events": [], "timeline_open": False,
++             "inactive_execute_token_counts": []}
++    pending = {}
++    captures = {}
++    ffn_pending = {}
++    ffn_captures = {}
++    handles = []
++
++    def make_pre(layer, role):
++        def hook(module, module_args):
++            decode = state["current"]
++            if not state["active"] or decode is None:
++                return
++            key = (layer, role, decode)
++            start = torch.cuda.Event(enable_timing=True)
++            stop = torch.cuda.Event(enable_timing=True)
++            captured_input = module_args[0].detach().clone() if args.tensor_dump else None
++            label = f"C16_MERGED_BASELINE_B2_L{layer}_D{decode}_{role.upper()}"
++            if args.timeline_nvtx == "on":
++                torch.cuda.nvtx.range_push(label)
++            start.record()
++            pending[key] = {"start": start, "stop": stop, "range": label,
++                            "input": captured_input}
++        return hook
++
++    def make_post(layer, role):
++        def hook(module, module_args, output):
++            decode = state["current"]
++            if not state["active"] or decode is None:
++                return
++            key = (layer, role, decode)
++            record = pending.pop(key)
++            record["stop"].record()
++            if args.timeline_nvtx == "on":
++                torch.cuda.nvtx.range_pop()
++            value = first_tensor(output)
++            record["output"] = value.detach().clone() if args.tensor_dump else None
++            record["input_shape"] = list(module_args[0].shape)
++            record["output_shape"] = list(value.shape)
++            captures[key] = record
++        return hook
++
++    def make_ffn_pre(layer):
++        def hook(module, module_args):
++            decode = state["current"]
++            if not state["active"] or decode is None:
++                return
++            key = (layer, decode)
++            start = torch.cuda.Event(enable_timing=True)
++            stop = torch.cuda.Event(enable_timing=True)
++            captured_input = module_args[0].detach().clone() if args.tensor_dump else None
++            label = f"C16_MERGED_BASELINE_B2_L{layer}_D{decode}_FFN"
++            if args.timeline_nvtx == "on":
++                torch.cuda.nvtx.range_push(label)
++            start.record()
++            ffn_pending[key] = {"start": start, "stop": stop, "range": label,
++                                "input": captured_input}
++        return hook
++
++    def make_ffn_post(layer):
++        def hook(module, module_args, output):
++            decode = state["current"]
++            if not state["active"] or decode is None:
++                return
++            key = (layer, decode)
++            record = ffn_pending.pop(key)
++            record["stop"].record()
++            if args.timeline_nvtx == "on":
++                torch.cuda.nvtx.range_pop()
++            value = first_tensor(output)
++            record["output"] = value.detach().clone() if args.tensor_dump else None
++            record["input_shape"] = list(module_args[0].shape)
++            record["output_shape"] = list(value.shape)
++            ffn_captures[key] = record
++        return hook
++
++    for layer, _, mlp in mlps:
++        handles.extend([
++            mlp.register_forward_pre_hook(make_ffn_pre(layer)),
++            mlp.register_forward_hook(make_ffn_post(layer)),
++            mlp.gate_up_proj.register_forward_pre_hook(make_pre(layer, "gate_up")),
++            mlp.gate_up_proj.register_forward_hook(make_post(layer, "gate_up")),
++            mlp.act_fn.register_forward_pre_hook(make_pre(layer, "silu_and_mul")),
++            mlp.act_fn.register_forward_hook(make_post(layer, "silu_and_mul")),
++            mlp.down_proj.register_forward_pre_hook(make_pre(layer, "down")),
++            mlp.down_proj.register_forward_hook(make_post(layer, "down")),
++        ])
++
++    original_execute = model_runner.execute_model
++    original_sample = model_runner.sample_tokens
++
++    def execute_wrapper(self, scheduler_output, intermediate_tensors=None):
++        if not state["active"]:
++            state["inactive_execute_token_counts"].append(scheduler_output.total_num_scheduled_tokens)
++        else:
++            decode = state["decode_index"]
++            if decode >= 4 or scheduler_output.total_num_scheduled_tokens != 1:
++                raise RuntimeError(f"decode schedule drift D{decode} tokens={scheduler_output.total_num_scheduled_tokens}")
++            state["current"] = decode
++            if decode == 0:
++                if args.timeline_nvtx == "on":
++                    torch.cuda.nvtx.range_push("C16_MERGED_BASELINE_B2_DECODE_D0_D3")
++                    state["timeline_open"] = True
++                state["wall_start"].record()
++            start = torch.cuda.Event(enable_timing=True)
++            stop = torch.cuda.Event(enable_timing=True)
++            start.record()
++            state["step_events"].append((start, stop))
++        return original_execute(scheduler_output, intermediate_tensors)
++
++    def sample_wrapper(self, grammar_output):
++        result = original_sample(grammar_output)
++        if state["active"]:
++            decode = state["current"]
++            if decode is None:
++                raise RuntimeError("sample without active decode")
++            state["step_events"][-1][1].record()
++            if decode == 3:
++                state["wall_stop"].record()
++                if state["timeline_open"]:
++                    torch.cuda.nvtx.range_pop()
++                    state["timeline_open"] = False
++            state["decode_index"] += 1
++            state["current"] = None
++        return result
++
++    model_runner.execute_model = types.MethodType(execute_wrapper, model_runner)
++    model_runner.sample_tokens = types.MethodType(sample_wrapper, model_runner)
++
++    params = SamplingParams(temperature=0.0, max_tokens=5, ignore_eos=True, detokenize=False)
++    request_id = f"C16_MERGED_B2_{args.run_index}"
++    engine.add_request(request_id, {"prompt_token_ids": prefix}, params)
++    outputs = engine.step()
++    prefill_frontend_steps = 1
++    if extract_tokens(outputs, request_id) or state["inactive_execute_token_counts"] != [2048]:
++        raise RuntimeError(f"prefill queue boundary drift outputs={outputs} executes={state['inactive_execute_token_counts']}")
++    state["active"] = True
++    final_tokens = []
++    decode_frontend_steps = 0
++    while state["decode_index"] < 4 or len(final_tokens) < 4:
++        outputs = engine.step()
++        decode_frontend_steps += 1
++        step_tokens = extract_tokens(outputs, request_id)
++        if step_tokens:
++            final_tokens = step_tokens
++        if decode_frontend_steps > 12:
++            raise RuntimeError("decode output not delivered within twelve frontend steps")
++    torch.cuda.synchronize()
++    generated = final_tokens[:4]
++    if state["decode_index"] != 4 or len(state["step_events"]) != 4:
++        raise RuntimeError(f"decode closure failure: {state['decode_index']}")
++    if pending or ffn_pending or len(captures) != 336 or len(ffn_captures) != 112:
++        raise RuntimeError(f"capture closure pending={len(pending)}/{len(ffn_pending)} captures={len(captures)}/{len(ffn_captures)}")
++
++    occurrences = []
++    for layer in range(28):
++        for role in ("gate_up", "silu_and_mul", "down"):
++            for decode in range(4):
++                record = captures[(layer, role, decode)]
++                occurrences.append({"layer": layer, "role": role, "decode_index": decode,
++                                    "range": record["range"], "input_shape": record["input_shape"],
++                                    "output_shape": record["output_shape"],
++                                    "target_ms": float(record["start"].elapsed_time(record["stop"]))})
++    ffn_occurrences = []
++    for layer in range(28):
++        for decode in range(4):
++            record = ffn_captures[(layer, decode)]
++            ffn_occurrences.append({"layer": layer, "decode_index": decode,
++                                    "range": record["range"], "input_shape": record["input_shape"],
++                                    "output_shape": record["output_shape"],
++                                    "target_ms": float(record["start"].elapsed_time(record["stop"]))})
++
++    module_census = []
++    for layer, name, mlp in mlps:
++        quant = mlp.gate_up_proj.quant_method
++        kernel = getattr(quant, "kernel", None)
++        parameters = {param_name: tensor_meta(param) for param_name, param in mlp.gate_up_proj.named_parameters(recurse=False)}
++        module_census.append({
++            "layer": layer, "path": name, "mlp_class": type(mlp).__name__,
++            "gate_up_class": type(mlp.gate_up_proj).__name__,
++            "activation_class": type(mlp.act_fn).__name__, "down_class": type(mlp.down_proj).__name__,
++            "quant_method_class": type(quant).__name__,
++            "kernel_backend_class": type(kernel).__name__ if kernel is not None else None,
++            "kernel_backend_module": type(kernel).__module__ if kernel is not None else None,
++            "gate_up_parameters": parameters, "quant_method_state": object_tensor_meta(quant),
++            "kernel_state": object_tensor_meta(kernel),
++        })
++
++    tensor_dump_status = None
++    if args.tensor_dump:
++        payload = {"arm": "B2", "generated_token_ids_D0_D3": generated, "tensors": {}}
++        finite = True
++        for (layer, role, decode), record in sorted(captures.items()):
++            inp = record["input"].cpu()
++            out = record["output"].cpu()
++            finite = finite and bool(torch.isfinite(inp).all()) and bool(torch.isfinite(out).all())
++            if role == "gate_up":
++                logical = out.reshape(1, 1, -1)
++                if list(logical.shape) != [1, 1, 37888]:
++                    raise RuntimeError(f"gate_up shape drift L{layer} D{decode}: {list(logical.shape)}")
++                payload["tensors"][f"L{layer}.D{decode}.gate_proj.output"] = logical[..., :18944]
++                payload["tensors"][f"L{layer}.D{decode}.up_proj.output"] = logical[..., 18944:]
++                payload["tensors"][f"L{layer}.D{decode}.gate_up.input"] = inp.reshape(1, 1, -1)
++            elif role == "down":
++                payload["tensors"][f"L{layer}.D{decode}.down_proj.output"] = out.reshape(1, 1, -1)
++        for (layer, decode), record in sorted(ffn_captures.items()):
++            payload["tensors"][f"L{layer}.D{decode}.ffn.input"] = record["input"].cpu().reshape(1, 1, -1)
++            payload["tensors"][f"L{layer}.D{decode}.ffn.output"] = record["output"].cpu().reshape(1, 1, -1)
++        torch.save(payload, args.tensor_dump)
++        tensor_dump_status = {"path": str(args.tensor_dump), "sha256": file_sha(args.tensor_dump),
++                              "tensor_count": len(payload["tensors"]), "all_finite": finite}
++
++    status = "PASS" if generated == EXPECTED_TOKENS else "TOKEN_IDENTITY_FAILED"
++    result = {
++        "status": status, "arm": "B2", "run_index": args.run_index,
++        "runtime": "vLLM exact commit df8fd42116f172b7a53bc10c8a680b05232edbed",
++        "model_path": str(MODEL), "checkpoint_revision": MODEL.name,
++        "generated_token_ids_D0_D3": generated, "all_generated_token_ids": final_tokens,
++        "decode_wall_ms": float(state["wall_start"].elapsed_time(state["wall_stop"])),
++        "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in state["step_events"]],
++        "occurrences": occurrences, "ffn_occurrences": ffn_occurrences,
++        "module_census": module_census, "timeline_nvtx": args.timeline_nvtx,
++        "tensor_dump": tensor_dump_status, "prompt_tokens": len(prefix),
++        "prefill_frontend_steps": prefill_frontend_steps,
++        "decode_frontend_steps": decode_frontend_steps,
++        "inactive_execute_token_counts": state["inactive_execute_token_counts"],
++        "logical_gate_up_slice_shape": [1, 1, 18944], "down_shape": [1, 1, 3584],
++        "no_requantization_claim_basis": "CPU canonical identity plus vLLM lossless AWQ repack source; runtime physical layout may differ",
++    }
++    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    print(json.dumps({"status": status, "generated_token_ids_D0_D3": generated,
++                      "decode_wall_ms": result["decode_wall_ms"],
++                      "kernel_backends": sorted({row["kernel_backend_class"] for row in module_census})}, sort_keys=True))
++    for handle in handles:
++        handle.remove()
++    if status != "PASS":
++        raise SystemExit(2)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/compare_canary.py b/util/vm_tlb/c16/merged_gate_up_native/compare_canary.py
+new file mode 100755
+index 00000000..0f77e167
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/compare_canary.py
+@@ -0,0 +1,114 @@
++#!/usr/bin/env python3
++"""Cross-runtime correctness gate for the B0/B2 timeline canaries."""
++
++import argparse
++import csv
++import hashlib
++import json
++import math
++from pathlib import Path
++
++import torch
++
++
++EXPECTED = [23578, 11, 323, 3950]
++ATOL = 0.05
++RTOL = 0.01
++
++
++def sha256(path):
++    h = hashlib.sha256()
++    with path.open("rb") as handle:
++        for chunk in iter(lambda: handle.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--b0-json", type=Path, required=True)
++    parser.add_argument("--b2-json", type=Path, required=True)
++    parser.add_argument("--b0-tensors", type=Path, required=True)
++    parser.add_argument("--b2-tensors", type=Path, required=True)
++    parser.add_argument("--output-dir", type=Path, required=True)
++    args = parser.parse_args()
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    b0 = json.loads(args.b0_json.read_text())
++    b2 = json.loads(args.b2_json.read_text())
++    p0 = torch.load(args.b0_tensors, map_location="cpu", weights_only=False)
++    p2 = torch.load(args.b2_tensors, map_location="cpu", weights_only=False)
++    rows = []
++    exact_shape = True
++    all_finite = True
++    all_within = True
++    for layer in range(28):
++        for decode in range(4):
++            comparisons = [
++                ("hidden_input", f"L{layer}.D{decode}.gate_proj.input", f"L{layer}.D{decode}.gate_up.input"),
++                ("gate_proj", f"L{layer}.D{decode}.gate_proj.output", f"L{layer}.D{decode}.gate_proj.output"),
++                ("up_proj", f"L{layer}.D{decode}.up_proj.output", f"L{layer}.D{decode}.up_proj.output"),
++                ("down_proj", f"L{layer}.D{decode}.down_proj.output", f"L{layer}.D{decode}.down_proj.output"),
++                ("ffn_output", f"L{layer}.D{decode}.ffn.output", f"L{layer}.D{decode}.ffn.output"),
++            ]
++            for role, k0, k2 in comparisons:
++                left, right = p0["tensors"][k0], p2["tensors"][k2]
++                same_shape = tuple(left.shape) == tuple(right.shape)
++                finite = bool(torch.isfinite(left).all() and torch.isfinite(right).all())
++                if same_shape:
++                    delta = left.float() - right.float()
++                    max_abs = float(delta.abs().max())
++                    mean_abs = float(delta.abs().mean())
++                    relative_l2 = float(torch.linalg.vector_norm(delta) / torch.linalg.vector_norm(left.float()).clamp_min(1e-12))
++                    within = bool(torch.allclose(left.float(), right.float(), atol=ATOL, rtol=RTOL))
++                else:
++                    max_abs = mean_abs = relative_l2 = math.inf
++                    within = False
++                exact_shape &= same_shape
++                all_finite &= finite
++                all_within &= within
++                rows.append({"layer": layer, "decode_index": decode, "role": role,
++                             "b0_shape": json.dumps(list(left.shape)), "b2_shape": json.dumps(list(right.shape)),
++                             "shape_equal": same_shape, "all_finite": finite,
++                             "max_abs": max_abs, "mean_abs": mean_abs,
++                             "relative_l2": relative_l2, "atol": ATOL, "rtol": RTOL,
++                             "within_tolerance": within})
++    with (args.output_dir / "FP16_COMPARISON.tsv").open("w", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=tuple(rows[0]), delimiter="\t", lineterminator="\n")
++        writer.writeheader(); writer.writerows(rows)
++    checks = {
++        "b0_status": b0.get("status") == "PASS",
++        "b2_status": b2.get("status") == "PASS",
++        "tokens_exact": b0["generated_token_ids_D0_D3"] == b2["generated_token_ids_D0_D3"] == EXPECTED,
++        "b0_call_order_420": len(b0["call_order"]) == 420,
++        "b0_projection_occurrences_336": len(b0["occurrences"]) == 336,
++        "b0_ffn_occurrences_112": len(b0["ffn_occurrences"]) == 112,
++        "b2_semantic_occurrences_336": len(b2["occurrences"]) == 336,
++        "b2_ffn_occurrences_112": len(b2["ffn_occurrences"]) == 112,
++        "all_shapes_equal": exact_shape,
++        "all_outputs_finite": all_finite,
++        "all_fp16_comparisons_within_frozen_tolerance": all_within,
++        "b2_tensor_dump_all_finite": b2["tensor_dump"]["all_finite"] is True,
++        "b2_28_merged_modules": len(b2["module_census"]) == 28,
++        "b2_single_backend_identity": len({row["kernel_backend_class"] for row in b2["module_census"]}) == 1,
++    }
++    result = {
++        "status": "PASS" if all(checks.values()) else "CORRECTNESS_OR_IDENTITY_FAILED",
++        "checks": checks, "expected_tokens": EXPECTED,
++        "b0_tokens": b0["generated_token_ids_D0_D3"],
++        "b2_tokens": b2["generated_token_ids_D0_D3"],
++        "comparison_rows": len(rows), "atol": ATOL, "rtol": RTOL,
++        "max_abs_overall": max(row["max_abs"] for row in rows),
++        "mean_abs_overall": sum(row["mean_abs"] for row in rows) / len(rows),
++        "max_relative_l2": max(row["relative_l2"] for row in rows),
++        "b0_json_sha256": sha256(args.b0_json), "b2_json_sha256": sha256(args.b2_json),
++        "b0_tensor_sha256": sha256(args.b0_tensors), "b2_tensor_sha256": sha256(args.b2_tensors),
++        "comparison_class": "same checkpoint and logical AWQ semantics; cross-runtime strong baseline; not merge-only A/B",
++    }
++    (args.output_dir / "CROSS_RUNTIME_CORRECTNESS.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    print(json.dumps(result, sort_keys=True))
++    if result["status"] != "PASS":
++        raise SystemExit(2)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/cpu_preflight.py b/util/vm_tlb/c16/merged_gate_up_native/cpu_preflight.py
+new file mode 100755
+index 00000000..d6b103eb
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/cpu_preflight.py
+@@ -0,0 +1,237 @@
++#!/usr/bin/env python3
++"""CPU-only identity, quantization, loader-mapping, and environment preflight."""
++
++import argparse
++import hashlib
++import json
++import os
++import platform
++import subprocess
++import sys
++from contextlib import ExitStack
++from pathlib import Path
++
++import torch
++from safetensors import safe_open
++
++
++AUTH_COMMIT = "3c3f667bbab8f3ae227dc3bc8eaa6c642b97a453"
++AUTH_TREE = "e4be7386c697b33e4f429b833216fdb0bd65f17d"
++CONTRACT_SHA = "b843c11381b0451e958087aa825869da00f9624ebd8389673d02fa33a0a298c3"
++VLLM_COMMIT = "df8fd42116f172b7a53bc10c8a680b05232edbed"
++REVISION = "b25037543e9394b818fdfca67ab2a00ecc7dd641"
++CONFIG_SHA = "ec0c1f5f875ad8bc1f78c5140c22dbdde1b55478442ad358e7a4d9ecf947a327"
++CONTRACT_PATH = "docs/vm_tlb/review_packs/C16_MERGED_GATE_UP_STRONG_BASELINE_GUARD_174NEW_V1/LANE7_MERGED_GATE_UP_NATIVE_BASELINE_CONTRACT.json"
++SOURCE_EXPECTED = {
++    "vllm/model_executor/models/qwen2.py": "6684104ba6dc40325bb1f6e632ec90633fa83a7b95883bb2181e9dc0008c3e21",
++    "vllm/model_executor/layers/linear.py": "7a9b90937865fa35d955ffc2017f23d3997bc4fba954e2667870b1b4854a38e0",
++    "vllm/model_executor/layers/activation.py": "bebeddbd4997f49f54471ee31ac42b22c3c11dfe25244e55d20c36f390489c05",
++    "vllm/model_executor/parameter.py": "1a4bbd7400fd1ba79e8e1e8d19666cd22881ec83c35e6e01b3fdc78faee23171",
++    "vllm/model_executor/layers/quantization/auto_awq.py": "9ed2fd3d33b510e152a8826aab239e46c2a9c0d6cf718ba32a2d54e3d60e29fa",
++    "vllm/model_executor/layers/quantization/utils/marlin_utils.py": "e60713c15080347b01425f90eaf03840ca80a1cd226ec57e526e8f6286eeeb22",
++    "vllm/model_executor/layers/quantization/base_config.py": "17c17fcf0d20458a969213d6a2c04dbe6491b49ab41c38f1a2dc5d4b61c947f1",
++}
++
++
++def sha_bytes(data):
++    return hashlib.sha256(data).hexdigest()
++
++
++def sha_file(path):
++    h = hashlib.sha256()
++    with Path(path).open("rb") as handle:
++        for chunk in iter(lambda: handle.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def sha_tensor(tensor):
++    return sha_bytes(tensor.detach().contiguous().view(torch.uint8).numpy().tobytes())
++
++
++def canonical_unpack_sha(tensor, reverse_awq=True, rows=32):
++    h = hashlib.sha256()
++    shifts = torch.arange(0, 32, 4, dtype=torch.int32)
++    order = torch.tensor([0, 4, 1, 5, 2, 6, 3, 7], dtype=torch.long)
++    for start in range(0, tensor.shape[0], rows):
++        block = tensor[start:start + rows]
++        unpacked = (block.unsqueeze(-1) >> shifts) & 15
++        if reverse_awq:
++            unpacked = unpacked[:, :, order]
++        unpacked = unpacked.reshape(block.shape[0], -1).to(torch.uint8).contiguous()
++        h.update(unpacked.numpy().tobytes())
++    return h.hexdigest()
++
++
++def git(repo, *args, binary=False):
++    result = subprocess.check_output(["git", "-C", str(repo), *args])
++    return result if binary else result.decode().strip()
++
++
++def merged_loader(output_sizes, shape, dtype, packed):
++    from vllm.model_executor.layers.linear import MergedColumnParallelLinear
++
++    obj = object.__new__(MergedColumnParallelLinear)
++    obj.output_sizes = output_sizes
++    obj.tp_size = 1
++    obj.tp_rank = 0
++    param = torch.nn.Parameter(torch.empty(shape, dtype=dtype), requires_grad=False)
++    param.output_dim = 1
++    if packed:
++        param.packed_dim = 1
++        param.packed_factor = 8
++    param.is_sharded_weight = False
++    return obj, param
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--repo", type=Path, required=True)
++    parser.add_argument("--main-repo", type=Path, required=True)
++    parser.add_argument("--vllm-source", type=Path, required=True)
++    parser.add_argument("--checkpoint", type=Path, required=True)
++    parser.add_argument("--output-dir", type=Path, required=True)
++    args = parser.parse_args()
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    if os.environ.get("CUDA_VISIBLE_DEVICES") != "":
++        raise RuntimeError("CPU preflight requires CUDA_VISIBLE_DEVICES empty")
++    if torch.cuda.is_initialized() or torch.cuda.is_available():
++        raise RuntimeError("CUDA became visible or initialized during CPU preflight")
++
++    authority_ref = "refs/remotes/origin/hrl/c16-merged-gate-up-strong-baseline-guard-174new-v1"
++    contract_bytes = git(args.main_repo, "show", f"{AUTH_COMMIT}:{CONTRACT_PATH}", binary=True)
++    contract = json.loads(contract_bytes)
++    config_path = args.checkpoint / "config.json"
++    index_path = args.checkpoint / "model.safetensors.index.json"
++    config = json.loads(config_path.read_text())
++    index = json.loads(index_path.read_text())["weight_map"]
++    source_hashes = {path: sha_file(args.vllm_source / path) for path in SOURCE_EXPECTED}
++    checks = {
++        "authority_commit": git(args.main_repo, "rev-parse", authority_ref) == AUTH_COMMIT,
++        "authority_tree": git(args.main_repo, "rev-parse", authority_ref + "^{tree}") == AUTH_TREE,
++        "contract_sha": sha_bytes(contract_bytes) == CONTRACT_SHA,
++        "contract_status": contract["status"] == "QUALIFIED_STRONG_BASELINE_NOT_STRICT_SINGLE_VARIABLE_AB",
++        "vllm_commit": git(args.vllm_source, "rev-parse", "HEAD") == VLLM_COMMIT,
++        "vllm_source_clean": git(args.vllm_source, "status", "--porcelain") == "",
++        "source_anchor_hashes": source_hashes == SOURCE_EXPECTED,
++        "checkpoint_revision_directory": args.checkpoint.name == REVISION,
++        "checkpoint_config_sha": sha_file(config_path) == CONFIG_SHA,
++        "checkpoint_architecture": config["architectures"] == ["Qwen2ForCausalLM"],
++        "checkpoint_dimensions": (config["hidden_size"], config["intermediate_size"], config["num_hidden_layers"]) == (3584, 18944, 28),
++        "checkpoint_dtype": config["torch_dtype"] == "float16",
++        "quantization_exact": config["quantization_config"] == {"bits": 4, "group_size": 128, "modules_to_not_convert": None, "quant_method": "awq", "version": "gemm", "zero_point": True},
++        "cuda_not_visible_or_initialized": not torch.cuda.is_available() and not torch.cuda.is_initialized(),
++    }
++    if not all(checks.values()):
++        raise RuntimeError(f"identity preflight failed: {checks}")
++
++    shard_paths = sorted({args.checkpoint / value for value in index.values()})
++    rows = []
++    with ExitStack() as stack:
++        handles = {path.name: stack.enter_context(safe_open(path, framework="pt", device="cpu")) for path in shard_paths}
++        for layer in range(28):
++            tensors = {}
++            for role in ("gate_proj", "up_proj"):
++                for kind in ("qweight", "qzeros", "scales"):
++                    name = f"model.layers.{layer}.mlp.{role}.{kind}"
++                    tensors[(role, kind)] = handles[index[name]].get_tensor(name)
++            expected_shapes = {
++                "qweight": (3584, 2368), "qzeros": (28, 2368), "scales": (28, 18944)
++            }
++            for role in ("gate_proj", "up_proj"):
++                for kind, shape in expected_shapes.items():
++                    if tuple(tensors[(role, kind)].shape) != shape:
++                        raise RuntimeError(f"shape mismatch L{layer} {role} {kind}")
++
++            qw_loader, qw = merged_loader([18944, 18944], (3584, 4736), torch.int32, True)
++            qz_loader, qz = merged_loader([18944, 18944], (28, 4736), torch.int32, True)
++            sc_loader, scales = merged_loader([18944, 18944], (28, 37888), torch.float16, False)
++            for shard, role in enumerate(("gate_proj", "up_proj")):
++                qw_loader.weight_loader(qw, tensors[(role, "qweight")], shard)
++                qz_loader.weight_loader(qz, tensors[(role, "qzeros")], shard)
++                sc_loader.weight_loader(scales, tensors[(role, "scales")], shard)
++            gate_qw, up_qw = qw[:, :2368], qw[:, 2368:]
++            gate_qz, up_qz = qz[:, :2368], qz[:, 2368:]
++            gate_sc, up_sc = scales[:, :18944], scales[:, 18944:]
++            exact = {
++                "gate_qweight_raw": torch.equal(gate_qw, tensors[("gate_proj", "qweight")]),
++                "up_qweight_raw": torch.equal(up_qw, tensors[("up_proj", "qweight")]),
++                "gate_qzeros_raw": torch.equal(gate_qz, tensors[("gate_proj", "qzeros")]),
++                "up_qzeros_raw": torch.equal(up_qz, tensors[("up_proj", "qzeros")]),
++                "gate_scales_bytes": torch.equal(gate_sc, tensors[("gate_proj", "scales")]),
++                "up_scales_bytes": torch.equal(up_sc, tensors[("up_proj", "scales")]),
++            }
++            before = {
++                "gate_qweight": canonical_unpack_sha(tensors[("gate_proj", "qweight")]),
++                "up_qweight": canonical_unpack_sha(tensors[("up_proj", "qweight")]),
++                "gate_qzeros": canonical_unpack_sha(tensors[("gate_proj", "qzeros")]),
++                "up_qzeros": canonical_unpack_sha(tensors[("up_proj", "qzeros")]),
++            }
++            after = {
++                "gate_qweight": canonical_unpack_sha(gate_qw),
++                "up_qweight": canonical_unpack_sha(up_qw),
++                "gate_qzeros": canonical_unpack_sha(gate_qz),
++                "up_qzeros": canonical_unpack_sha(up_qz),
++            }
++            canonical_equal = before == after
++            if not all(exact.values()) or not canonical_equal:
++                raise RuntimeError(f"merged loader mismatch layer {layer}: {exact} canonical={canonical_equal}")
++            rows.append({
++                "layer": layer, "status": "PASS", "exact": exact,
++                "canonical_before": before, "canonical_after": after,
++                "merged_raw_sha256": {"qweight": sha_tensor(qw), "qzeros": sha_tensor(qz), "scales": sha_tensor(scales)},
++                "source_raw_sha256": {
++                    f"{role}.{kind}": sha_tensor(tensors[(role, kind)])
++                    for role in ("gate_proj", "up_proj") for kind in ("qweight", "qzeros", "scales")
++                },
++                "merged_shapes": {"qweight": list(qw.shape), "qzeros": list(qz.shape), "scales": list(scales.shape)},
++                "logical_quant_bytes": sum(t.numel() * t.element_size() for t in tensors.values()),
++            })
++
++    quant = {
++        "status": "PASS", "layers": rows,
++        "all_28_layers_exact": len(rows) == 28 and all(row["status"] == "PASS" for row in rows),
++        "loader": "actual MergedColumnParallelLinear.weight_loader on CPU parameters",
++        "canonical_unpack": "AWQ 4-bit reverse order [0,4,1,5,2,6,3,7]",
++        "no_requantization": True, "physical_runtime_repack_allowed": True,
++        "logical_total_bytes_per_layer_gate_plus_up": 70547456,
++        "padding_required_for_tp1": False,
++    }
++    (args.output_dir / "CANONICAL_QUANT_IDENTITY.json").write_text(json.dumps(quant, indent=2, sort_keys=True) + "\n")
++    shard_identity = [{"path": str(path), "bytes": path.stat().st_size, "sha256": sha_file(path)} for path in shard_paths]
++    extensions = sorted((args.vllm_source / "vllm").glob("*.so"))
++    environment = {
++        "status": "PASS", "python": sys.version, "platform": platform.platform(),
++        "python_executable": sys.executable, "torch_version": torch.__version__,
++        "torch_cuda_version": torch.version.cuda, "vllm_source": str(args.vllm_source),
++        "vllm_commit": git(args.vllm_source, "rev-parse", "HEAD"),
++        "vllm_tree": git(args.vllm_source, "rev-parse", "HEAD^{tree}"),
++        "source_hashes": source_hashes,
++        "precompiled_extensions": [{"path": str(path), "bytes": path.stat().st_size, "sha256": sha_file(path)} for path in extensions],
++        "install_class": "editable exact source + exact-commit cu130 precompiled extensions",
++        "accepted_autoawq_environment_modified": False,
++        "checkpoint_files": shard_identity,
++        "checkpoint_index_sha256": sha_file(index_path),
++    }
++    (args.output_dir / "ENVIRONMENT_RECEIPT.json").write_text(json.dumps(environment, indent=2, sort_keys=True) + "\n")
++    result = {
++        "status": "PASS" if all(checks.values()) and quant["all_28_layers_exact"] else "STOP",
++        "checks": checks, "authority_commit": AUTH_COMMIT, "authority_tree": AUTH_TREE,
++        "contract_sha256": sha_bytes(contract_bytes), "vllm_commit": VLLM_COMMIT,
++        "checkpoint_revision": REVISION, "checkpoint_config_sha256": sha_file(config_path),
++        "all_28_layer_loader_and_canonical_identity": quant["all_28_layers_exact"],
++        "no_requantization": True, "rtx4080_static_backend_support": {
++            "compute_capability": "8.9", "minimum": "7.5", "group_size": 128,
++            "source_supported": True, "runtime_canary_still_required": True,
++        },
++        "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
++        "cuda_initialized": torch.cuda.is_initialized(),
++    }
++    (args.output_dir / "CPU_PREFLIGHT.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    print(json.dumps(result, sort_keys=True))
++    if result["status"] != "PASS":
++        raise SystemExit(2)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/finalize_index.py b/util/vm_tlb/c16/merged_gate_up_native/finalize_index.py
+new file mode 100755
+index 00000000..578871ae
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/finalize_index.py
+@@ -0,0 +1,72 @@
++#!/usr/bin/env python3
++import argparse
++import csv
++import hashlib
++import json
++from pathlib import Path
++
++
++def sha(path):
++    h = hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda: f.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def dump(path, value):
++    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
++
++
++p = argparse.ArgumentParser()
++p.add_argument("--raw-root", type=Path, required=True)
++p.add_argument("--copyback-root", type=Path, required=True)
++p.add_argument("--pack", type=Path, required=True)
++p.add_argument("--remote-root", required=True)
++a = p.parse_args()
++rows = []
++run_receipts = []
++total_bytes = 0
++for run in sorted(x for x in a.raw_root.iterdir() if x.is_dir()):
++    manifest = run / "RAW_SHA256SUMS"
++    copy_run = a.copyback_root / run.name
++    count = 0
++    for line in manifest.read_text().splitlines():
++        digest, relative = line.split("  ", 1)
++        source, copied = run / relative, copy_run / relative
++        if sha(source) != digest or sha(copied) != digest:
++            raise RuntimeError(f"copyback mismatch {run.name}/{relative}")
++        total_bytes += source.stat().st_size
++        count += 1
++        rows.append({"run_id": run.name, "artifact": relative, "node109_path": str(source),
++                     "bytes": source.stat().st_size, "sha256": digest,
++                     "node164_path": f"{a.remote_root}/raw/{run.name}/{relative}",
++                     "git_copy": "INDEX_ONLY", "status": "FINAL" if "031741Z" in run.name else "ABORTED_ENGINEERING"})
++    if sha(copy_run / "RAW_SHA256SUMS") != sha(manifest):
++        raise RuntimeError(f"manifest mismatch {run.name}")
++    rows.append({"run_id": run.name, "artifact": "RAW_SHA256SUMS", "node109_path": str(manifest),
++                 "bytes": manifest.stat().st_size, "sha256": sha(manifest),
++                 "node164_path": f"{a.remote_root}/raw/{run.name}/RAW_SHA256SUMS",
++                 "git_copy": "INDEX_ONLY", "status": "FINAL" if "031741Z" in run.name else "ABORTED_ENGINEERING"})
++    run_receipts.append({"run_id": run.name, "entries": count, "manifest_sha256": sha(manifest)})
++with (a.pack / "RAW_INDEX.tsv").open("w", newline="", encoding="utf-8") as f:
++    w = csv.DictWriter(f, fieldnames=tuple(rows[0]), delimiter="\t", lineterminator="\n")
++    w.writeheader(); w.writerows(rows)
++publish = {"status": "PASS_DURABLE_PUBLISH_AND_COPYBACK", "remote_host": "hrl174new",
++           "local_raw_root": str(a.raw_root), "remote_root": a.remote_root,
++           "copyback_root": str(a.copyback_root), "runs": run_receipts,
++           "indexed_files_including_manifests": len(rows), "payload_bytes_excluding_manifests": total_bytes,
++           "remote_manifest_verify": "PASS", "copyback_verify": "PASS"}
++dump(a.pack / "PUBLISH_RECEIPT.json", publish)
++run_identity = {"status": "CORRECTNESS_TOLERANCE_FAILED_STOP",
++                "branch": "hrl/c16-merged-gate-up-native-strong-baseline-109-v1",
++                "final_run_id": "C16R_merged-gate-up-native-strong-baseline_20261001T031741Z",
++                "authority_commit": "3c3f667bbab8f3ae227dc3bc8eaa6c642b97a453",
++                "vllm_commit": "df8fd42116f172b7a53bc10c8a680b05232edbed",
++                "formal_samples": 0, "cumulative_gpu_wall_seconds": 86,
++                "all_gpu_locks_released": True, "durable_publish": publish["status"]}
++dump(a.pack / "RUN_IDENTITY.json", run_identity)
++checksum = a.pack / "SHA256SUMS"
++files = sorted(x for x in a.pack.iterdir() if x.is_file() and x.name != "SHA256SUMS")
++checksum.write_text("".join(f"{sha(x)}  {x.name}\n" for x in files))
++print(json.dumps({"status": "PASS", "pack_files": len(files), "pack_manifest_sha256": sha(checksum), **publish}, sort_keys=True))
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/finalize_stop.py b/util/vm_tlb/c16/merged_gate_up_native/finalize_stop.py
+new file mode 100755
+index 00000000..a9a9dd19
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/finalize_stop.py
+@@ -0,0 +1,206 @@
++#!/usr/bin/env python3
++"""Finalize the merged-baseline correctness-stop review pack."""
++
++import argparse
++import csv
++import hashlib
++import json
++import platform
++import shutil
++import subprocess
++from collections import defaultdict
++from pathlib import Path
++
++
++BASE = "071297ae7f4aa772a27fae0cf31ad47ab7d967be"
++AUTH = "3c3f667bbab8f3ae227dc3bc8eaa6c642b97a453"
++AUTH_TREE = "e4be7386c697b33e4f429b833216fdb0bd65f17d"
++VLLM = "df8fd42116f172b7a53bc10c8a680b05232edbed"
++REVISION = "b25037543e9394b818fdfca67ab2a00ecc7dd641"
++
++
++def sha256(path):
++    h = hashlib.sha256()
++    with path.open("rb") as handle:
++        for chunk in iter(lambda: handle.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def dump(path, value):
++    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
++
++
++def git(repo, *args):
++    return subprocess.check_output(["git", "-C", str(repo), *args], text=True).strip()
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--repo", type=Path, required=True)
++    p.add_argument("--raw", type=Path, required=True)
++    p.add_argument("--pack", type=Path, required=True)
++    p.add_argument("--remote-root", required=True)
++    args = p.parse_args()
++    args.pack.mkdir(parents=True, exist_ok=True)
++    correctness = json.loads((args.raw / "CROSS_RUNTIME_CORRECTNESS.json").read_text())
++    timeline = json.loads((args.raw / "TIMELINE_CANARY_SUMMARY.json").read_text())
++    b0 = json.loads((args.raw / "canary_b0.json").read_text())
++    b2 = json.loads((args.raw / "canary_b2.json").read_text())
++    cpu = json.loads((args.pack / "CPU_PREFLIGHT.json").read_text())
++    source = json.loads((args.pack / "SOURCE_PREFLIGHT.json").read_text())
++    receipt = json.loads((args.raw / "GPU_LOCK_RECEIPT.json").read_text())
++
++    for raw_name, pack_name in [
++        ("CROSS_RUNTIME_CORRECTNESS.json", "CANARY_CORRECTNESS.json"),
++        ("FP16_COMPARISON.tsv", "FP16_COMPARISON.tsv"),
++        ("TIMELINE_CANARY_SUMMARY.json", "TIMELINE_CANARY_SUMMARY.json"),
++        ("FFN_KERNEL_INVENTORY.tsv", "FFN_KERNEL_INVENTORY.tsv"),
++        ("FFN_SEMANTIC_TIMING.tsv", "FFN_SEMANTIC_TIMING.tsv"),
++        ("GPU_LOCK_RECEIPT.json", "GPU_LOCK_RECEIPT.json"),
++    ]:
++        shutil.copyfile(args.raw / raw_name, args.pack / pack_name)
++
++    with (args.raw / "FP16_COMPARISON.tsv").open(newline="", encoding="utf-8") as handle:
++        rows = list(csv.DictReader(handle, delimiter="\t"))
++    by_role = defaultdict(list)
++    for row in rows:
++        by_role[row["role"]].append(row)
++    role_summary = {}
++    for role, values in sorted(by_role.items()):
++        failed = [row for row in values if row["within_tolerance"] != "True"]
++        role_summary[role] = {
++            "total": len(values), "pass": len(values) - len(failed), "fail": len(failed),
++            "max_abs": max(float(row["max_abs"]) for row in values),
++            "max_relative_l2": max(float(row["relative_l2"]) for row in values),
++            "mean_of_mean_abs": sum(float(row["mean_abs"]) for row in values) / len(values),
++        }
++    failure = {
++        "status": "CORRECTNESS_TOLERANCE_FAILED_STOP",
++        "tokens_exact": correctness["checks"]["tokens_exact"],
++        "all_finite": correctness["checks"]["all_outputs_finite"],
++        "all_shapes_equal": correctness["checks"]["all_shapes_equal"],
++        "atol": correctness["atol"], "rtol": correctness["rtol"],
++        "role_summary": role_summary,
++        "gate_up_down_failed_unique_occurrences": sum(role_summary[role]["fail"] for role in ("gate_proj", "up_proj", "down_proj")),
++        "gate_up_down_total_occurrences": 336,
++        "max_abs_overall": correctness["max_abs_overall"],
++        "max_relative_l2": correctness["max_relative_l2"],
++        "formal_started": False,
++        "observer_alias_repair": "canary values were cloned outside narrow semantic timing ranges; final failure is from frozen-tolerance data",
++    }
++    dump(args.pack / "CORRECTNESS_FAILURE_SUMMARY.json", failure)
++    canary_b0 = {
++        "status": b0["status"], "arm": "B0", "tokens": b0["generated_token_ids_D0_D3"],
++        "decode_wall_ms_canary_excluded": b0["decode_wall_ms"], "decode_step_ms": b0["decode_step_ms"],
++        "projection_occurrences": len(b0["occurrences"]), "ffn_occurrences": len(b0["ffn_occurrences"]),
++        "runtime": "AutoAWQ 0.2.7.post3 WQLinear_GEMM", "raw_json_sha256": sha256(args.raw / "canary_b0.json"),
++    }
++    canary_b2 = {
++        "status": b2["status"], "arm": "B2", "tokens": b2["generated_token_ids_D0_D3"],
++        "decode_wall_ms_canary_excluded": b2["decode_wall_ms"], "decode_step_ms": b2["decode_step_ms"],
++        "semantic_occurrences": len(b2["occurrences"]), "ffn_occurrences": len(b2["ffn_occurrences"]),
++        "prefill_frontend_steps": b2["prefill_frontend_steps"], "decode_frontend_steps": b2["decode_frontend_steps"],
++        "inactive_execute_token_counts": b2["inactive_execute_token_counts"],
++        "runtime": f"vLLM {VLLM}", "raw_json_sha256": sha256(args.raw / "canary_b2.json"),
++    }
++    dump(args.pack / "TIMELINE_CANARY_B0.json", canary_b0)
++    dump(args.pack / "TIMELINE_CANARY_B2.json", canary_b2)
++
++    parameters = timeline["b2_gate_up_parameter_layout"]
++    physical_bytes = sum(value["bytes"] for value in parameters.values())
++    backend = {
++        "status": "PASS_RUNTIME_BACKEND_RESOLVED",
++        "quant_method": timeline["b2_selected_quant_method"],
++        "kernel_backend": timeline["b2_selected_kernel_backend"],
++        "merged_gate_up_kernel_names": timeline["b2_merged_gate_up_kernel_names"],
++        "silu_and_mul_kernel_names": timeline["b2_silu_and_mul_kernel_names"],
++        "merged_gate_up_kernel_launches": timeline["b2_role_kernel_counts"]["gate_up"],
++        "silu_and_mul_kernel_launches": timeline["b2_role_kernel_counts"]["silu_and_mul"],
++        "down_kernel_launches": timeline["b2_role_kernel_counts"]["down"],
++        "separate_reduction_kernel_count_name_classified": timeline["b2_reduction_name_classified_count"],
++        "parameter_layout": parameters,
++        "logical_quant_bytes_per_layer": 70547456,
++        "physical_parameter_bytes_per_layer": physical_bytes,
++        "padding_bytes": physical_bytes - 70547456,
++        "persistent_workspace_parameters_observed": [],
++        "workspace_boundary": "no persistent workspace tensor was exposed by gate_up module/kernel census; transient internal workspace not separately attributed",
++        "kernel_state": timeline["b2_kernel_state"],
++    }
++    dump(args.pack / "B2_BACKEND_AND_LAYOUT_RECEIPT.json", backend)
++
++    histories = []
++    for index in range(1, 4):
++        path = args.raw / f"ABORTED_ENGINEERING_ATTEMPT{index}_GPU_LOCK_RECEIPT.json"
++        histories.append({"attempt": index, "classification": "ABORTED_ENGINEERING_PREFLIGHT",
++                          "receipt": json.loads(path.read_text()), "receipt_sha256": sha256(path)})
++    histories.append({"attempt": 4, "classification": "FINAL_CANARY_CORRECTNESS_STOP",
++                      "receipt": receipt, "receipt_sha256": sha256(args.raw / "GPU_LOCK_RECEIPT.json")})
++    dump(args.pack / "GPU_LOCK_HISTORY.json", {"status": "RELEASED_ALL_WITH_ENGINEERING_RESTART_DEVIATION",
++                                                "attempts": histories,
++                                                "single_outer_lock_per_attempt": True,
++                                                "single_outer_lock_across_entire_goal": False,
++                                                "contract_deviation": "three aborted engineering attempts released their locks before the final scientific canary attempt",
++                                                "final_scientific_attempt_single_outer_lock": True,
++                                                "cumulative_gpu_wall_seconds": receipt["cumulative_gpu_wall_seconds"],
++                                                "budget_seconds": receipt["total_max_gpu_wall_seconds"],
++                                                "cumulative_budget_pass": receipt["cumulative_gpu_wall_seconds"] <= receipt["total_max_gpu_wall_seconds"]})
++
++    not_run = {"status": "NOT_RUN_CORRECTNESS_TOLERANCE_FAILED_STOP", "formal_b0_samples": 0,
++               "formal_b2_samples": 0, "abba_blocks": 0, "bootstrap": "NOT_COMPUTED"}
++    (args.pack / "NATIVE_TIMING_RAW.tsv").write_text("status\treason\tb0_samples\tb2_samples\nNOT_RUN\tCORRECTNESS_TOLERANCE_FAILED_STOP\t0\t0\n")
++    (args.pack / "ABBA_BLOCK_SUMMARY.tsv").write_text("status\treason\tcompleted_blocks\nNOT_RUN\tCORRECTNESS_TOLERANCE_FAILED_STOP\t0\n")
++    dump(args.pack / "BOOTSTRAP_RESULT.json", not_run)
++    dump(args.pack / "FFN_LOCAL_ANALYSIS.json", {**not_run, "canary_structure_available": True,
++                                                  "performance_inference": "PROHIBITED"})
++    final = {
++        "status": "CORRECTNESS_TOLERANCE_FAILED_STOP",
++        "decision": "NO_PERFORMANCE_CLASSIFICATION",
++        "tokens_exact": True, "canonical_quant_identity": cpu["all_28_layer_loader_and_canonical_identity"],
++        "runtime_backend": timeline["b2_selected_kernel_backend"],
++        "formal_started": False, "whole_decode_speedup": None,
++        "gpu_lock_contract_note": "all locks released and cumulative budget passed; single-outer-lock-across-goal was not met because of three preserved engineering restarts",
++        "b0_b2_difference_attribution": "NOT_ALLOWED; cross-runtime and correctness failed",
++        "automatic_followup": False,
++    }
++    dump(args.pack / "FINAL_DECISION.json", final)
++    source_contract = {
++        "status": "PASS_AUTHORITY_CPU_PREFLIGHT_THEN_CORRECTNESS_STOP",
++        "task": "C16_MERGED_GATE_UP_NATIVE_STRONG_BASELINE_109_V1",
++        "authority_commit": AUTH, "authority_tree": AUTH_TREE,
++        "contract_sha256": sha256(args.pack / "AUTHORITY_CONTRACT.json"),
++        "accepted_b0_base_commit": BASE, "vllm_commit": VLLM,
++        "checkpoint_revision": REVISION, "comparison_class": "same checkpoint and logical AWQ semantics; cross-runtime strong baseline",
++        "not_merge_only_strict_ab": True, "failed_two_stream_goal_remains_frozen": True,
++        "raw_node109": str(args.raw), "raw_node164_root": args.remote_root,
++        "b0_runner_sha256": source["b0_runner_sha256"], "b2_runner_sha256": source["b2_runner_sha256"],
++    }
++    dump(args.pack / "SOURCE_AND_CONTRACT.json", source_contract)
++    audit = f"""# B0/B2 implementation and STOP audit\n\n- Comparison class: same checkpoint and logical AWQ semantics, cross-runtime strong baseline; **not** a merge-only strict A/B.\n- B0 is the accepted AutoAWQ runtime with observational outer/FFN events and canary-only tensor snapshots.\n- B2 is pinned vLLM `{VLLM}`, `MergedColumnParallelLinear` + `SiluAndMul`, with `AutoAWQMarlinLinearMethod` selecting `MarlinLinearKernel`.\n- CPU canonical unpack/loader identity passed all 28 layers; no requantization occurred.\n- Both canaries generated `[23578, 11, 323, 3950]`; all compared tensors were finite and shape-correct.\n- Frozen FP16 tolerance failed in {failure['gate_up_down_failed_unique_occurrences']}/336 gate/up/down occurrences (gate={role_summary['gate_proj']['fail']}, up={role_summary['up_proj']['fail']}, down={role_summary['down_proj']['fail']}); max absolute difference was {failure['max_abs_overall']}.\n- Formal ABBA timing was therefore not started. Canary wall values are retained only as excluded diagnostic values and support no speedup claim.\n- The earlier two-stream correctness STOP remains frozen and is not an ancestor of this branch.\n"""
++    (args.pack / "B0_B2_IMPLEMENTATION_AUDIT.md").write_text(audit)
++    env = json.loads((args.pack / "ENVIRONMENT_RECEIPT.json").read_text())
++    build = {"status": "PASS", "host_python": platform.python_version(),
++             "vllm_install": env["install_class"], "vllm_commit": env["vllm_commit"],
++             "torch_version": env["torch_version"], "torch_cuda_version": env["torch_cuda_version"],
++             "extensions": env["precompiled_extensions"],
++             "accepted_autoawq_environment_modified": False,
++             "tool_sha256": {path.name: sha256(path) for path in sorted((args.repo / "util/vm_tlb/c16/merged_gate_up_native").glob("*")) if path.is_file()}}
++    dump(args.pack / "BUILD_RECEIPT.json", build)
++    tests = {"status": "PASS_STOP_BEHAVIOR", "cpu_preflight": cpu["status"],
++             "source_preflight": source["status"], "timeline_audit": timeline["status"],
++             "token_identity": "PASS", "fp16_tolerance": "FAIL_STOP",
++             "formal_guard_zero_samples": True, "gpu_lock_released": receipt["released"],
++             "single_outer_lock_across_goal": False,
++             "forbidden_tools_used": []}
++    dump(args.pack / "TESTS.json", tests)
++    readme = """# C16 merged gate/up native strong baseline — Lane 7\n\nAuthority, environment isolation, checkpoint identity, 28-layer canonical AWQ identity, runtime backend selection, token identity, shape checks, and finite checks closed successfully. The B2 runtime selected the mature Marlin merged path.\n\nThe frozen FP16 tolerance failed for a bounded subset of gate/up/down occurrences. The contract therefore stopped before formal timing. Canary wall values and kernel traces are retained as non-inferential diagnostic evidence only; no B0/B2 speedup or merge benefit is claimed. Three earlier engineering attempts were aborted and their locks released; consequently the single-outer-lock-across-goal requirement was not met, although the cumulative 86-second GPU budget remained below 480 seconds.\n"""
++    (args.pack / "README.md").write_text(readme)
++    stop = {"status": "CORRECTNESS_TOLERANCE_FAILED_STOP", "formal_started": False,
++            "tokens_exact": True, "failed_unique_gate_up_down_occurrences": failure["gate_up_down_failed_unique_occurrences"],
++            "max_abs": failure["max_abs_overall"], "gpu_lock_released": receipt["released"]}
++    dump(args.raw / "CORRECTNESS_TOLERANCE_FAILED_STOP.json", stop)
++    print(json.dumps(final, sort_keys=True))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/mark_attempts.py b/util/vm_tlb/c16/merged_gate_up_native/mark_attempts.py
+new file mode 100755
+index 00000000..b02cfe99
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/mark_attempts.py
+@@ -0,0 +1,20 @@
++#!/usr/bin/env python3
++import json
++from pathlib import Path
++
++root = Path("/data/c16/merged_gate_up_native_v1/raw")
++attempts = [
++    ("C16R_merged-gate-up-native-strong-baseline_20261001T030535Z", 1,
++     "ABORTED_ENGINEERING_FRONTEND_PREFILL_OUTPUT_ASSUMPTION", "no B2 result JSON; formal not started"),
++    ("C16R_merged-gate-up-native-strong-baseline_20261001T030819Z", 2,
++     "ABORTED_ENGINEERING_BATCH_QUEUE_PREFILL_DECODE_BOUNDARY", "trace established inactive execute counts [2048,1]; formal not started"),
++    ("C16R_merged-gate-up-native-strong-baseline_20261001T031026Z", 3,
++     "ABORTED_ENGINEERING_TENSOR_SNAPSHOT_ALIAS", "detach-only snapshots were vulnerable to later in-place runtime mutation; superseded by canary-only clones"),
++]
++for name, attempt, status, reason in attempts:
++    path = root / name
++    receipt = json.loads((path / "GPU_LOCK_RECEIPT.json").read_text())
++    value = {"status": status, "attempt": attempt, "reason": reason,
++             "scientific_result": "NONE", "formal_started": False,
++             "gpu_lock_released": receipt["released"], "gpu_wall_seconds": receipt["gpu_wall_seconds"]}
++    (path / "ABORTED_ENGINEERING.json").write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/postprocess.py b/util/vm_tlb/c16/merged_gate_up_native/postprocess.py
+new file mode 100755
+index 00000000..14dd306d
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/postprocess.py
+@@ -0,0 +1,149 @@
++#!/usr/bin/env python3
++"""Deterministic ABBA analysis for the cross-runtime B0/B2 strong baseline."""
++
++import argparse
++import csv
++import hashlib
++import json
++import math
++import random
++import statistics
++from pathlib import Path
++
++
++SEED = 20261001
++RESAMPLES = 1000
++
++
++def sha256(path):
++    h = hashlib.sha256()
++    with path.open("rb") as handle:
++        for chunk in iter(lambda: handle.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def quantile(values, q):
++    values = sorted(values)
++    pos = (len(values) - 1) * q
++    lo, hi = math.floor(pos), math.ceil(pos)
++    return values[lo] if lo == hi else values[lo] * (hi - pos) + values[hi] * (pos - lo)
++
++
++def summary(values):
++    mean = statistics.fmean(values)
++    sd = statistics.stdev(values) if len(values) > 1 else 0.0
++    return {"count": len(values), "median": statistics.median(values), "mean": mean,
++            "stdev": sd, "cv": sd / mean if mean else 0.0,
++            "q05": quantile(values, .05), "q95": quantile(values, .95),
++            "min": min(values), "max": max(values)}
++
++
++def metrics(rows, field):
++    b0 = [row[field] for row in rows if row["arm"] == "B0"]
++    b2 = [row[field] for row in rows if row["arm"] == "B2"]
++    m0, m2 = statistics.median(b0), statistics.median(b2)
++    return {"b0_median_ms": m0, "b2_median_ms": m2, "saving_ms": m0 - m2,
++            "speedup": m0 / m2, "time_reduction_fraction": 1.0 - m2 / m0}
++
++
++def bootstrap(rows, field):
++    rng = random.Random(SEED)
++    by_block = {block: [row for row in rows if row["block"] == block] for block in range(12)}
++    draws = []
++    for _ in range(RESAMPLES):
++        sample = []
++        for block in (rng.randrange(12) for _ in range(12)):
++            sample.extend(by_block[block])
++        draws.append(metrics(sample, field))
++    return {key: {"q05": quantile([row[key] for row in draws], .05),
++                  "q50": quantile([row[key] for row in draws], .50),
++                  "q95": quantile([row[key] for row in draws], .95)} for key in draws[0]}
++
++
++def write_tsv(path, rows):
++    with path.open("w", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=tuple(rows[0]), delimiter="\t", lineterminator="\n")
++        writer.writeheader(); writer.writerows(rows)
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--raw", type=Path, required=True)
++    parser.add_argument("--output-dir", type=Path, required=True)
++    args = parser.parse_args()
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    order = ("B0", "B2", "B2", "B0")
++    rows = []
++    local_rows = []
++    for block in range(12):
++        for position, arm in enumerate(order):
++            path = args.raw / f"formal_block{block:02d}_pos{position}_{arm.lower()}.json"
++            data = json.loads(path.read_text())
++            if data.get("status") != "PASS" or data["generated_token_ids_D0_D3"] != [23578, 11, 323, 3950]:
++                raise RuntimeError(f"formal identity failure: {path}")
++            if len(data["ffn_occurrences"]) != 112:
++                raise RuntimeError(f"FFN closure failure: {path}")
++            ffn_sum = sum(row["target_ms"] for row in data["ffn_occurrences"])
++            row = {"block": block, "position": position, "arm": arm,
++                   "run_index": data["run_index"], "decode_wall_ms": data["decode_wall_ms"],
++                   "d0_ms": data["decode_step_ms"][0], "d1_ms": data["decode_step_ms"][1],
++                   "d2_ms": data["decode_step_ms"][2], "d3_ms": data["decode_step_ms"][3],
++                   "ffn_sum_ms": ffn_sum, "json_sha256": sha256(path), "json_path": str(path)}
++            rows.append(row)
++            for item in data["ffn_occurrences"]:
++                local_rows.append({"block": block, "position": position, "arm": arm,
++                                   "run_index": data["run_index"], "layer": item["layer"],
++                                   "decode_index": item["decode_index"], "ffn_ms": item["target_ms"]})
++    write_tsv(args.output_dir / "NATIVE_TIMING_RAW.tsv", rows)
++    write_tsv(args.output_dir / "FFN_LOCAL_TIMING.tsv", local_rows)
++    block_rows = []
++    for block in range(12):
++        value = metrics([row for row in rows if row["block"] == block], "decode_wall_ms")
++        block_rows.append({"block": block, "order": "B0,B2,B2,B0", **value})
++    write_tsv(args.output_dir / "ABBA_BLOCK_SUMMARY.tsv", block_rows)
++    primary = metrics(rows, "decode_wall_ms")
++    primary_boot = bootstrap(rows, "decode_wall_ms")
++    ffn = metrics(rows, "ffn_sum_ms")
++    ffn_boot = bootstrap(rows, "ffn_sum_ms")
++    result = {
++        "status": "PASS", "comparison_class": "cross-runtime strong baseline; not merge-only strict A/B",
++        "protocol": {"blocks": 12, "order": "B0,B2,B2,B0", "fresh_process": True,
++                     "b0_samples": 24, "b2_samples": 24},
++        "primary_endpoint": "complete natural D0-D3 CUDA-event wall",
++        "arm_summaries_ms": {arm: summary([row["decode_wall_ms"] for row in rows if row["arm"] == arm]) for arm in ("B0", "B2")},
++        "observed": primary,
++        "bootstrap": {"unit": "complete ABBA block", "resamples": RESAMPLES,
++                      "seed": SEED, "interval_quantiles": primary_boot},
++    }
++    (args.output_dir / "BOOTSTRAP_RESULT.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    ffn_result = {
++        "status": "PASS", "metric": "sum of per-layer per-decode FFN CUDA-event intervals",
++        "arm_summaries_ms": {arm: summary([row["ffn_sum_ms"] for row in rows if row["arm"] == arm]) for arm in ("B0", "B2")},
++        "observed": ffn, "bootstrap": {"unit": "complete ABBA block", "resamples": RESAMPLES,
++                                         "seed": SEED, "interval_quantiles": ffn_boot},
++        "interpretation_boundary": "includes runtime backend, merged projection, reduction path, and SiluAndMul differences",
++    }
++    (args.output_dir / "FFN_LOCAL_ANALYSIS.json").write_text(json.dumps(ffn_result, indent=2, sort_keys=True) + "\n")
++    q05 = primary_boot["saving_ms"]["q05"]
++    q95 = primary_boot["saving_ms"]["q95"]
++    if q05 > 0:
++        decision = "MATURE_MERGED_SOFTWARE_BASELINE_DOMINATES_SEPARATED_RUNTIME"
++    elif q95 < 0:
++        decision = "MERGED_RUNTIME_SLOWER_NEGATIVE_RESULT"
++    else:
++        decision = "CROSS_RUNTIME_STRONG_BASELINES_NOT_SEPARATED_BY_BOOTSTRAP_INTERVAL"
++    final = {
++        "status": "PASS", "decision": decision,
++        "whole_decode": primary, "ffn_local": ffn,
++        "whole_decode_bootstrap": primary_boot, "ffn_local_bootstrap": ffn_boot,
++        "claim_boundary": "B0/B2 delta is not wholly attributable to gate/up merge",
++        "plain_concurrency_or_hardware_story": "NOT_ESTABLISHED",
++        "automatic_followup": False,
++    }
++    (args.output_dir / "FINAL_DECISION.json").write_text(json.dumps(final, indent=2, sort_keys=True) + "\n")
++    print(json.dumps(final, sort_keys=True))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/raw_manifest.py b/util/vm_tlb/c16/merged_gate_up_native/raw_manifest.py
+new file mode 100755
+index 00000000..99b03974
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/raw_manifest.py
+@@ -0,0 +1,31 @@
++#!/usr/bin/env python3
++import argparse
++import hashlib
++from pathlib import Path
++
++
++def sha(path):
++    h = hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda: f.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++p = argparse.ArgumentParser()
++p.add_argument("directory", type=Path)
++p.add_argument("--verify", action="store_true")
++a = p.parse_args()
++manifest = a.directory / "RAW_SHA256SUMS"
++if a.verify:
++    lines = manifest.read_text().splitlines()
++    for line in lines:
++        expected, relative = line.split("  ", 1)
++        path = a.directory / relative
++        if not path.is_file() or sha(path) != expected:
++            raise SystemExit(f"mismatch: {relative}")
++    print(f"PASS entries={len(lines)} manifest_sha256={sha(manifest)}")
++else:
++    files = sorted(x for x in a.directory.rglob("*") if x.is_file() and x.name != "RAW_SHA256SUMS")
++    manifest.write_text("".join(f"{sha(x)}  {x.relative_to(a.directory).as_posix()}\n" for x in files))
++    print(f"PASS entries={len(files)} manifest_sha256={sha(manifest)}")
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/run_locked.sh b/util/vm_tlb/c16/merged_gate_up_native/run_locked.sh
+new file mode 100755
+index 00000000..a8decec3
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/run_locked.sh
+@@ -0,0 +1,100 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++LOCK=/data/c16/locks/c16_gpu_campaign.lock
++PY_B0=/data/c16/env/c16-awq-v6/bin/python
++PY_B2=/data/c16/merged_gate_up_native_v1/env/vllm-df8fd42-py312/bin/python
++NSYS=/usr/local/bin/nsys
++REPO=${1:?worktree required}
++RAW=${2:?raw directory required}
++PREFLIGHT=${3:?CPU preflight receipt required}
++PRIOR_GPU_WALL_SECONDS=${4:-0}
++TOTAL_MAX_GPU_WALL_SECONDS=480
++MAX_GPU_WALL_SECONDS=$((TOTAL_MAX_GPU_WALL_SECONDS-PRIOR_GPU_WALL_SECONDS))
++if [ "$MAX_GPU_WALL_SECONDS" -le 0 ]; then
++  echo GPU_WALL_BUDGET_EXHAUSTED_BEFORE_RESTART >&2
++  exit 124
++fi
++B0=$REPO/util/vm_tlb/c16/e1_operator_family_natural.py
++B2=$REPO/util/vm_tlb/c16/merged_gate_up_native/b2_runner.py
++TOOLS=$REPO/util/vm_tlb/c16/merged_gate_up_native
++TIMELINE_TOOLS=$REPO/util/vm_tlb/c16/ffn_timeline_capture
++export CUDA_CACHE_PATH=/data/c16/merged_gate_up_native_v1/cache/cuda
++export TRITON_CACHE_DIR=/data/c16/merged_gate_up_native_v1/cache/triton
++export TORCHINDUCTOR_CACHE_DIR=/data/c16/merged_gate_up_native_v1/cache/torchinductor
++export PYTHONHASHSEED=0
++mkdir -p "$RAW" "$CUDA_CACHE_PATH" "$TRITON_CACHE_DIR" "$TORCHINDUCTOR_CACHE_DIR"
++
++python3 - "$PREFLIGHT" <<'PY'
++import json,sys
++d=json.load(open(sys.argv[1]))
++if d.get("status") != "PASS": raise SystemExit("CPU preflight not PASS")
++PY
++
++REQUEST_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++REQUEST_SEC=$(date +%s)
++exec 9>"$LOCK"
++if ! flock -w 2700 9; then
++  echo GPU_LOCK_45MIN_TIMEOUT_STOP >"$RAW/GPU_LOCK_45MIN_TIMEOUT_STOP"
++  exit 75
++fi
++START_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++START_SEC=$(date +%s)
++cleanup() {
++  code=$?
++  END_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++  END_SEC=$(date +%s)
++  printf '{"lock":"%s","request_utc":"%s","acquired_utc":"%s","end_utc":"%s","wait_seconds":%d,"gpu_wall_seconds":%d,"prior_aborted_engineering_gpu_wall_seconds":%d,"cumulative_gpu_wall_seconds":%d,"total_max_gpu_wall_seconds":480,"exit_code":%d,"released":true}\n' "$LOCK" "$REQUEST_UTC" "$START_UTC" "$END_UTC" "$((START_SEC-REQUEST_SEC))" "$((END_SEC-START_SEC))" "$PRIOR_GPU_WALL_SECONDS" "$((PRIOR_GPU_WALL_SECONDS+END_SEC-START_SEC))" "$code" >"$RAW/GPU_LOCK_RECEIPT.json"
++  flock -u 9 || true
++  exit "$code"
++}
++trap cleanup EXIT INT TERM
++remaining() {
++  local used=$(( $(date +%s)-START_SEC ))
++  local left=$((MAX_GPU_WALL_SECONDS-used))
++  if [ "$left" -le 0 ]; then echo GPU_WALL_BUDGET_EXCEEDED >&2; exit 124; fi
++  echo "$left"
++}
++profile_b0() {
++  local prefix=$RAW/canary_b0
++  local left; left=$(remaining)
++  (cd "$REPO" && timeout "${left}s" "$NSYS" profile --trace=cuda,nvtx --sample=none --cpuctxsw=none --force-overwrite=true --output="$prefix" "$PY_B0" "$B0" --condition CONTROL_GUD84 --run-index 9000 --output "$prefix.json" --timeline-nvtx on --ffn-baseline-measurement on --tensor-dump "$prefix.tensors.pt") >"$prefix.stdout.log" 2>"$prefix.stderr.log"
++  test -s "$prefix.json"; test -s "$prefix.tensors.pt"; test -s "$prefix.nsys-rep"
++  "$NSYS" export --type=sqlite --force-overwrite=true --output="$prefix.sqlite" "$prefix.nsys-rep" >"$prefix.export.stdout.log" 2>"$prefix.export.stderr.log"
++}
++profile_b2() {
++  local prefix=$RAW/canary_b2
++  local left; left=$(remaining)
++  (cd "$REPO" && timeout "${left}s" "$NSYS" profile --trace=cuda,nvtx --sample=none --cpuctxsw=none --force-overwrite=true --output="$prefix" "$PY_B2" "$B2" --run-index 9000 --output "$prefix.json" --timeline-nvtx on --tensor-dump "$prefix.tensors.pt") >"$prefix.stdout.log" 2>"$prefix.stderr.log"
++  test -s "$prefix.json"; test -s "$prefix.tensors.pt"; test -s "$prefix.nsys-rep"
++  "$NSYS" export --type=sqlite --force-overwrite=true --output="$prefix.sqlite" "$prefix.nsys-rep" >"$prefix.export.stdout.log" 2>"$prefix.export.stderr.log"
++}
++run_formal() {
++  local block=$1 position=$2 arm=$3 index=$4
++  local lower; lower=$(echo "$arm" | tr '[:upper:]' '[:lower:]')
++  local prefix=$RAW/formal_block$(printf '%02d' "$block")_pos${position}_${lower}
++  local left; left=$(remaining)
++  if [ "$arm" = B0 ]; then
++    (cd "$REPO" && timeout "${left}s" "$PY_B0" "$B0" --condition CONTROL_GUD84 --run-index "$index" --output "$prefix.json" --timeline-nvtx off --ffn-baseline-measurement on) >"$prefix.stdout.log" 2>"$prefix.stderr.log"
++  else
++    (cd "$REPO" && timeout "${left}s" "$PY_B2" "$B2" --run-index "$index" --output "$prefix.json" --timeline-nvtx off) >"$prefix.stdout.log" 2>"$prefix.stderr.log"
++  fi
++  test -s "$prefix.json"
++}
++
++nvidia-smi --query-gpu=name,uuid,driver_version,compute_cap,memory.total,memory.free --format=csv,noheader >"$RAW/GPU_PRE.csv"
++profile_b0
++profile_b2
++"$PY_B0" "$TOOLS/compare_canary.py" --b0-json "$RAW/canary_b0.json" --b2-json "$RAW/canary_b2.json" --b0-tensors "$RAW/canary_b0.tensors.pt" --b2-tensors "$RAW/canary_b2.tensors.pt" --output-dir "$RAW"
++PYTHONPATH="$TOOLS:$TIMELINE_TOOLS" "$PY_B0" "$TOOLS/timeline_audit.py" --b0-sqlite "$RAW/canary_b0.sqlite" --b2-sqlite "$RAW/canary_b2.sqlite" --b2-json "$RAW/canary_b2.json" --output-dir "$RAW"
++echo PASS >"$RAW/CANARY_PASS"
++
++index=9100
++for block in $(seq 0 11); do
++  run_formal "$block" 0 B0 "$index"; index=$((index+1))
++  run_formal "$block" 1 B2 "$index"; index=$((index+1))
++  run_formal "$block" 2 B2 "$index"; index=$((index+1))
++  run_formal "$block" 3 B0 "$index"; index=$((index+1))
++done
++nvidia-smi --query-gpu=name,uuid,driver_version,compute_cap,memory.total,memory.free --format=csv,noheader >"$RAW/GPU_POST.csv"
++echo PASS >"$RAW/LOCKED_CAPTURE_COMPLETE"
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/source_preflight.py b/util/vm_tlb/c16/merged_gate_up_native/source_preflight.py
+new file mode 100755
+index 00000000..36047abe
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/source_preflight.py
+@@ -0,0 +1,78 @@
++#!/usr/bin/env python3
++"""Source-only guard for the independent merged gate/up native goal."""
++
++import argparse
++import ast
++import hashlib
++import json
++import py_compile
++import subprocess
++from pathlib import Path
++
++
++BASE = "071297ae7f4aa772a27fae0cf31ad47ab7d967be"
++FAILED_TWO_STREAM = "ef517d8e5a0e3659abe71b49beeba1559cd5f2ce"
++CONTRACT_SHA = "b843c11381b0451e958087aa825869da00f9624ebd8389673d02fa33a0a298c3"
++
++
++def sha(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def git(repo, *args, check=True):
++    result = subprocess.run(["git", "-C", str(repo), *args], text=True, capture_output=True)
++    if check and result.returncode:
++        raise RuntimeError(result.stderr)
++    return result
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--repo", type=Path, required=True)
++    p.add_argument("--output", type=Path, required=True)
++    args = p.parse_args()
++    b0 = args.repo / "util/vm_tlb/c16/e1_operator_family_natural.py"
++    tools = args.repo / "util/vm_tlb/c16/merged_gate_up_native"
++    b2 = tools / "b2_runner.py"
++    lock = tools / "run_locked.sh"
++    contract = args.repo / "docs/vm_tlb/review_packs/C16_MERGED_GATE_UP_NATIVE_STRONG_BASELINE_109_V1/AUTHORITY_CONTRACT.json"
++    cpu = args.repo / "docs/vm_tlb/review_packs/C16_MERGED_GATE_UP_NATIVE_STRONG_BASELINE_109_V1/CPU_PREFLIGHT.json"
++    for path in [b0, b2, tools / "compare_canary.py", tools / "timeline_audit.py", tools / "postprocess.py", tools / "cpu_preflight.py"]:
++        ast.parse(path.read_text())
++        py_compile.compile(str(path), doraise=True)
++    base_bytes = subprocess.check_output(["git", "-C", str(args.repo), "show", f"{BASE}:util/vm_tlb/c16/e1_operator_family_natural.py"])
++    b0_text, b2_text, lock_text = b0.read_text(), b2.read_text(), lock.read_text()
++    failed_ancestor = git(args.repo, "merge-base", "--is-ancestor", FAILED_TWO_STREAM, "HEAD", check=False).returncode == 0
++    checks = {
++        "head_is_accepted_timeline_producer": git(args.repo, "rev-parse", "HEAD").stdout.strip() == BASE,
++        "failed_two_stream_commit_not_ancestor": not failed_ancestor,
++        "base_runner_sha": hashlib.sha256(base_bytes).hexdigest() == "ad922629a9898c01400a165b2f6565659f1c6e422784c10bc1d013265c45b5fb",
++        "contract_sha": sha(contract) == CONTRACT_SHA,
++        "cpu_preflight_pass": json.loads(cpu.read_text())["status"] == "PASS",
++        "all_python_compile": True,
++        "b0_has_no_two_stream_toggle": "gate-up-concurrency" not in b0_text and "torch.cuda.Stream" not in b0_text,
++        "b0_changes_observational_only": "ffn-baseline-measurement" in b0_text and "decode_wall_start" in b0_text,
++        "b2_uses_pinned_local_checkpoint": "b25037543e9394b818fdfca67ab2a00ecc7dd641" in b2_text,
++        "b2_uses_merged_qwen2_mlp": "Qwen2MLP" in b2_text and "gate_up_proj" in b2_text and "silu_and_mul" in b2_text,
++        "b2_inproc_exact_step_control": 'VLLM_ENABLE_V1_MULTIPROCESSING", "0"' in b2_text and "engine.step()" in b2_text,
++        "b2_no_requantization_code": "quantize" not in b2_text.lower() and "requant" not in b2_text.lower().replace("no_requantization", ""),
++        "single_outer_lock": lock_text.count("flock -w 2700") == 1,
++        "gpu_budget_480_seconds": "TOTAL_MAX_GPU_WALL_SECONDS=480" in lock_text and "PRIOR_GPU_WALL_SECONDS" in lock_text,
++        "formal_abba_fixed": "for block in $(seq 0 11)" in lock_text,
++        "forbidden_tools_absent": all(token not in lock_text for token in ("ncu", "nvbit", "sass", "accel-sim")),
++    }
++    result = {"status": "PASS" if all(checks.values()) else "SOURCE_PREFLIGHT_FAILED",
++              "checks": checks, "base_commit": BASE,
++              "base_runner_sha256": hashlib.sha256(base_bytes).hexdigest(),
++              "b0_runner_sha256": sha(b0), "b2_runner_sha256": sha(b2),
++              "contract_sha256": sha(contract),
++              "comparison_class": "same checkpoint and logical AWQ semantics; cross-runtime strong baseline",
++              "failed_two_stream_frozen": not failed_ancestor}
++    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    print(json.dumps(result, sort_keys=True))
++    if result["status"] != "PASS":
++        raise SystemExit(2)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/merged_gate_up_native/timeline_audit.py b/util/vm_tlb/c16/merged_gate_up_native/timeline_audit.py
+new file mode 100755
+index 00000000..786af42b
+--- /dev/null
++++ b/util/vm_tlb/c16/merged_gate_up_native/timeline_audit.py
+@@ -0,0 +1,147 @@
++#!/usr/bin/env python3
++"""Correlation-authoritative B0/B2 FFN timeline and backend audit."""
++
++import argparse
++import csv
++import json
++import re
++from collections import Counter, defaultdict
++from pathlib import Path
++
++from nsys_tools import connect, kernel_rows, nvtx_ranges, runtime_by_correlation
++
++
++B0_PROJ = re.compile(r"^C16_E1_OPF_CONTROL_GUD84_L(\d+)_(GATE_PROJ|UP_PROJ|DOWN_PROJ)_D(\d+)$")
++B0_EXTRA = re.compile(r"^C16_FFN_TIMELINE_L(\d+)_D(\d+)_(ACTIVATION|MULTIPLY)$")
++B0_FFN = re.compile(r"^C16_MERGED_BASELINE_B0_L(\d+)_D(\d+)_FFN$")
++B2_ROLE = re.compile(r"^C16_MERGED_BASELINE_B2_L(\d+)_D(\d+)_(GATE_UP|SILU_AND_MUL|DOWN)$")
++B2_FFN = re.compile(r"^C16_MERGED_BASELINE_B2_L(\d+)_D(\d+)_FFN$")
++WALLS = {"B0": "C16_FFN_TIMELINE_DECODE_D0_D3", "B2": "C16_MERGED_BASELINE_B2_DECODE_D0_D3"}
++
++
++def parse(arm, label):
++    if arm == "B0":
++        if match := B0_PROJ.fullmatch(label):
++            return int(match.group(1)), int(match.group(3)), match.group(2).lower(), False
++        if match := B0_EXTRA.fullmatch(label):
++            return int(match.group(1)), int(match.group(2)), match.group(3).lower(), False
++        if match := B0_FFN.fullmatch(label):
++            return int(match.group(1)), int(match.group(2)), "ffn", True
++    else:
++        if match := B2_ROLE.fullmatch(label):
++            return int(match.group(1)), int(match.group(2)), match.group(3).lower(), False
++        if match := B2_FFN.fullmatch(label):
++            return int(match.group(1)), int(match.group(2)), "ffn", True
++    return None
++
++
++def extract(arm, sqlite_path):
++    conn = connect(sqlite_path)
++    try:
++        kernels = kernel_rows(conn)
++        runtimes = runtime_by_correlation(conn)
++        ranges = nvtx_ranges(conn)
++    finally:
++        conn.close()
++    walls = [row for row in ranges if row["label"] == WALLS[arm]]
++    if len(walls) != 1:
++        raise RuntimeError(f"{arm} wall count {len(walls)}")
++    wall = walls[0]
++    semantic = []
++    ffn = []
++    for row in ranges:
++        parsed = parse(arm, row["label"])
++        if parsed:
++            layer, decode, role, is_ffn = parsed
++            value = {**row, "layer": layer, "decode": decode, "role": role}
++            (ffn if is_ffn else semantic).append(value)
++    expected_semantic = 560 if arm == "B0" else 336
++    if len(semantic) != expected_semantic or len(ffn) != 112:
++        raise RuntimeError(f"{arm} range closure semantic={len(semantic)} ffn={len(ffn)}")
++    by_key = defaultdict(list)
++    wall_kernels = []
++    for kernel in kernels:
++        runtime = runtimes.get(kernel["correlation_id"])
++        if runtime is None or runtime["global_tid"] != wall["global_tid"]:
++            continue
++        if not (wall["start"] <= runtime["start"] and runtime["end"] <= wall["end"]):
++            continue
++        wall_kernels.append(kernel)
++        candidates = [row for row in semantic if row["global_tid"] == runtime["global_tid"] and row["start"] <= runtime["start"] and runtime["end"] <= row["end"]]
++        candidates.sort(key=lambda row: row["end"] - row["start"])
++        if candidates:
++            row = candidates[0]
++            by_key[(row["layer"], row["decode"], row["role"])].append(kernel)
++    return by_key, wall_kernels, semantic, ffn
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--b0-sqlite", type=Path, required=True)
++    parser.add_argument("--b2-sqlite", type=Path, required=True)
++    parser.add_argument("--b2-json", type=Path, required=True)
++    parser.add_argument("--output-dir", type=Path, required=True)
++    args = parser.parse_args()
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    b2_json = json.loads(args.b2_json.read_text())
++    extracted = {"B0": extract("B0", args.b0_sqlite), "B2": extract("B2", args.b2_sqlite)}
++    inventory_rows = []
++    timing_rows = []
++    role_counts = {}
++    reduction_counts = {}
++    for arm, (by_key, wall_kernels, semantic, ffn) in extracted.items():
++        role_counts[arm] = Counter()
++        reduction_counts[arm] = 0
++        for (layer, decode, role), rows in sorted(by_key.items()):
++            duration = sum(row["end"] - row["start"] for row in rows)
++            role_counts[arm][role] += len(rows)
++            reduction_counts[arm] += sum(bool(re.search(r"reduce|reduction|splitk", row["kernel_name"], re.I)) for row in rows)
++            timing_rows.append({"arm": arm, "layer": layer, "decode_index": decode, "role": role,
++                                "kernel_count": len(rows), "kernel_duration_ns": duration})
++            counts = Counter((row["kernel_name"], row["grid"], row["block"]) for row in rows)
++            for (name, grid, block), count in sorted(counts.items()):
++                inventory_rows.append({"arm": arm, "layer": layer, "decode_index": decode, "role": role,
++                                       "kernel_name": name, "grid": grid, "block": block, "count": count})
++    with (args.output_dir / "FFN_KERNEL_INVENTORY.tsv").open("w", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=tuple(inventory_rows[0]), delimiter="\t", lineterminator="\n")
++        writer.writeheader(); writer.writerows(inventory_rows)
++    with (args.output_dir / "FFN_SEMANTIC_TIMING.tsv").open("w", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=tuple(timing_rows[0]), delimiter="\t", lineterminator="\n")
++        writer.writeheader(); writer.writerows(timing_rows)
++    b2_by = extracted["B2"][0]
++    checks = {
++        "b0_all_projection_ranges_have_gpu_activity": all(b0_key in extracted["B0"][0] for b0_key in [(l, d, r) for l in range(28) for d in range(4) for r in ("gate_proj", "up_proj", "down_proj")]),
++        "b2_gate_up_112_have_gpu_activity": sum((l, d, "gate_up") in b2_by for l in range(28) for d in range(4)) == 112,
++        "b2_silu_and_mul_112_have_gpu_activity": sum((l, d, "silu_and_mul") in b2_by for l in range(28) for d in range(4)) == 112,
++        "b2_down_112_have_gpu_activity": sum((l, d, "down") in b2_by for l in range(28) for d in range(4)) == 112,
++        "b2_backend_recorded": all(row["kernel_backend_class"] for row in b2_json["module_census"]),
++        "b2_single_backend": len({row["kernel_backend_class"] for row in b2_json["module_census"]}) == 1,
++    }
++    merged_names = sorted({row["kernel_name"] for row in inventory_rows if row["arm"] == "B2" and row["role"] == "gate_up"})
++    silu_names = sorted({row["kernel_name"] for row in inventory_rows if row["arm"] == "B2" and row["role"] == "silu_and_mul"})
++    result = {
++        "status": "PASS" if all(checks.values()) else "TIMELINE_OR_BACKEND_FAILED",
++        "checks": checks,
++        "b0_decode_kernel_count": len(extracted["B0"][1]),
++        "b2_decode_kernel_count": len(extracted["B2"][1]),
++        "b0_role_kernel_counts": dict(role_counts["B0"]),
++        "b2_role_kernel_counts": dict(role_counts["B2"]),
++        "b0_reduction_name_classified_count": reduction_counts["B0"],
++        "b2_reduction_name_classified_count": reduction_counts["B2"],
++        "b2_merged_gate_up_kernel_names": merged_names,
++        "b2_silu_and_mul_kernel_names": silu_names,
++        "b2_selected_quant_method": sorted({row["quant_method_class"] for row in b2_json["module_census"]}),
++        "b2_selected_kernel_backend": sorted({row["kernel_backend_class"] for row in b2_json["module_census"]}),
++        "b2_gate_up_parameter_layout": b2_json["module_census"][0]["gate_up_parameters"],
++        "b2_kernel_state": b2_json["module_census"][0]["kernel_state"],
++        "kernel_attribution": "NVTX CPU launch scope plus CUDA runtime correlationId to GPU kernel",
++        "reduction_count_boundary": "name-classified only; exact per-semantic kernel inventory is authoritative",
++    }
++    (args.output_dir / "TIMELINE_CANARY_SUMMARY.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    print(json.dumps(result, sort_keys=True))
++    if result["status"] != "PASS":
++        raise SystemExit(2)
++
++
++if __name__ == "__main__":
++    main()

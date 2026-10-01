@@ -45,6 +45,8 @@ def main():
     parser.add_argument("--run-index", type=int, default=0)
     parser.add_argument("--output")
     parser.add_argument("--timeline-nvtx", choices=("off", "on"), default="off")
+    parser.add_argument("--ffn-baseline-measurement", choices=("off", "on"), default="off")
+    parser.add_argument("--tensor-dump")
     args = parser.parse_args()
     contract = json.loads((ROOT / "contracts/CONDITION_MATRIX_PRECONTRACT.json").read_text())
     spec = condition_spec(args.condition, contract)
@@ -80,6 +82,8 @@ def main():
     transitions = []
     pending = {}
     captures = {}
+    ffn_pending = {}
+    ffn_captures = {}
     handles = []
     original_mlp_forwards = {}
 
@@ -129,10 +133,11 @@ def main():
             key = (layer_index, role, decode_index)
             start = torch.cuda.Event(enable_timing=True)
             stop = torch.cuda.Event(enable_timing=True)
+            captured_input = module_args[0].detach().clone() if args.tensor_dump else module_args[0].detach()
             name = f"C16_E1_OPF_{args.condition}_L{layer_index}_{role.upper()}_D{decode_index}"
             torch.cuda.nvtx.range_push(name)
             start.record()
-            pending[key] = {"start": start, "stop": stop, "range": name, "input": module_args[0].detach(), "module_class": type(module).__name__}
+            pending[key] = {"start": start, "stop": stop, "range": name, "input": captured_input, "module_class": type(module).__name__}
         return hook
 
     def make_post(layer_index, role):
@@ -144,13 +149,49 @@ def main():
             record = pending.pop(key)
             record["stop"].record()
             torch.cuda.nvtx.range_pop()
-            record["output"] = output.detach()
+            record["output"] = output.detach().clone() if args.tensor_dump else output.detach()
             captures[key] = record
         return hook
 
     for (layer_index, role), module in module_map.items():
         handles.append(module.register_forward_pre_hook(make_pre(layer_index, role)))
         handles.append(module.register_forward_hook(make_post(layer_index, role)))
+
+    def make_ffn_pre(layer_index):
+        def hook(module, module_args):
+            decode_index = active_decode["value"]
+            if decode_index is None:
+                return
+            key = (layer_index, decode_index)
+            start = torch.cuda.Event(enable_timing=True)
+            stop = torch.cuda.Event(enable_timing=True)
+            captured_input = module_args[0].detach().clone() if args.tensor_dump else module_args[0].detach()
+            label = f"C16_MERGED_BASELINE_B0_L{layer_index}_D{decode_index}_FFN"
+            if args.timeline_nvtx == "on":
+                torch.cuda.nvtx.range_push(label)
+            start.record()
+            ffn_pending[key] = {"start": start, "stop": stop, "range": label,
+                                "input": captured_input}
+        return hook
+
+    def make_ffn_post(layer_index):
+        def hook(module, module_args, output):
+            decode_index = active_decode["value"]
+            if decode_index is None:
+                return
+            key = (layer_index, decode_index)
+            record = ffn_pending.pop(key)
+            record["stop"].record()
+            if args.timeline_nvtx == "on":
+                torch.cuda.nvtx.range_pop()
+            record["output"] = output.detach().clone() if args.tensor_dump else output.detach()
+            ffn_captures[key] = record
+        return hook
+
+    if args.ffn_baseline_measurement == "on":
+        for layer_index, layer in enumerate(layers):
+            handles.append(layer.mlp.register_forward_pre_hook(make_ffn_pre(layer_index)))
+            handles.append(layer.mlp.register_forward_hook(make_ffn_post(layer_index)))
     token_tensors = []
     step_events = []
     try:
@@ -164,6 +205,9 @@ def main():
             del prefill
             if args.timeline_nvtx == "on":
                 torch.cuda.nvtx.range_push("C16_FFN_TIMELINE_DECODE_D0_D3")
+            decode_wall_start = torch.cuda.Event(enable_timing=True)
+            decode_wall_stop = torch.cuda.Event(enable_timing=True)
+            decode_wall_start.record()
             for decode_index in range(4):
                 token_tensors.append(current.detach())
                 active_decode["value"] = decode_index
@@ -179,6 +223,7 @@ def main():
                 step_events.append((start, stop))
                 active_decode["value"] = None
                 del result
+            decode_wall_stop.record()
             if args.timeline_nvtx == "on":
                 torch.cuda.nvtx.range_pop()
         torch.cuda.synchronize()
@@ -186,6 +231,8 @@ def main():
             handle.remove()
         if pending or len(captures) != 336 or len(call_order) != 420:
             raise RuntimeError(f"call/occurrence closure calls={len(call_order)} captures={len(captures)}")
+        if args.ffn_baseline_measurement == "on" and (ffn_pending or len(ffn_captures) != 112):
+            raise RuntimeError(f"FFN occurrence closure pending={len(ffn_pending)} captures={len(ffn_captures)}")
         token_ids = [int(token.item()) for token in token_tensors]
         if token_ids != EXPECTED_TOKENS:
             raise RuntimeError(f"token drift {token_ids}")
@@ -194,6 +241,18 @@ def main():
             for decode_index in range(4):
                 record = captures[(layer_index, role, decode_index)]
                 occurrences.append({"layer": layer_index, "role": role, "decode_index": decode_index, "token_id": token_ids[decode_index], "range": record["range"], "input_sha256": tensor_sha(record["input"]), "output_sha256": tensor_sha(record["output"]), "input_shape": list(record["input"].shape), "output_shape": list(record["output"].shape), "module_class": record["module_class"], "target_ms": float(record["start"].elapsed_time(record["stop"]))})
+        ffn_occurrences = []
+        if args.ffn_baseline_measurement == "on":
+            for layer_index in range(28):
+                for decode_index in range(4):
+                    record = ffn_captures[(layer_index, decode_index)]
+                    ffn_occurrences.append({"layer": layer_index, "decode_index": decode_index,
+                                            "range": record["range"],
+                                            "input_sha256": tensor_sha(record["input"]),
+                                            "output_sha256": tensor_sha(record["output"]),
+                                            "input_shape": list(record["input"].shape),
+                                            "output_shape": list(record["output"].shape),
+                                            "target_ms": float(record["start"].elapsed_time(record["stop"]))})
         if spec["mode"] == "POLICY":
             authority = json.loads((ROOT / "contracts/CALL_ORDER_AUTHORITY.json").read_text())
             if call_order != authority["call_order"]:
@@ -202,7 +261,16 @@ def main():
             for row in occurrences:
                 if (row["input_sha256"], row["output_sha256"]) != accepted[(row["layer"], row["role"], row["decode_index"])]:
                     raise RuntimeError(f"occurrence identity drift L{row['layer']} {row['role']} D{row['decode_index']}")
-        result = {"status": "PASS", "condition": args.condition, "run_index": args.run_index, "mode": spec["mode"], "set_name": spec["set_name"], "selected_roles": spec["selected_roles"], "selected_module_count": spec["selected_count"], "hit_ratio": spec["hit_ratio"], "target_persisting": spec["persisting"], "generated_token_ids_D0_D3": token_ids, "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in step_events], "occurrences": occurrences, "module_census": module_census, "call_order": call_order, "policy_receipt": policy_receipt, "policy_transitions": transitions, "policy_transition_count": len(transitions), "all_84_ffn_instrumented": True, "no_reset_between_transitions": True, "no_inner_loop_synchronize": True}
+        result = {"status": "PASS", "condition": args.condition, "run_index": args.run_index, "mode": spec["mode"], "set_name": spec["set_name"], "selected_roles": spec["selected_roles"], "selected_module_count": spec["selected_count"], "hit_ratio": spec["hit_ratio"], "target_persisting": spec["persisting"], "generated_token_ids_D0_D3": token_ids, "decode_wall_ms": float(decode_wall_start.elapsed_time(decode_wall_stop)), "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in step_events], "occurrences": occurrences, "ffn_occurrences": ffn_occurrences, "module_census": module_census, "call_order": call_order, "policy_receipt": policy_receipt, "policy_transitions": transitions, "policy_transition_count": len(transitions), "all_84_ffn_instrumented": True, "no_reset_between_transitions": True, "no_inner_loop_synchronize": True}
+        if args.tensor_dump:
+            payload = {"arm": "B0", "generated_token_ids_D0_D3": token_ids, "tensors": {}}
+            for (layer_index, role, decode_index), record in sorted(captures.items()):
+                payload["tensors"][f"L{layer_index}.D{decode_index}.{role}.input"] = record["input"].cpu()
+                payload["tensors"][f"L{layer_index}.D{decode_index}.{role}.output"] = record["output"].cpu()
+            for (layer_index, decode_index), record in sorted(ffn_captures.items()):
+                payload["tensors"][f"L{layer_index}.D{decode_index}.ffn.input"] = record["input"].cpu()
+                payload["tensors"][f"L{layer_index}.D{decode_index}.ffn.output"] = record["output"].cpu()
+            torch.save(payload, args.tensor_dump)
     finally:
         for layer_index, original_forward in original_mlp_forwards.items():
             layers[layer_index].mlp.forward = original_forward
@@ -212,6 +280,8 @@ def main():
     if result["policy_transition_count"] != expected_updates:
         raise RuntimeError(f"transition count {result['policy_transition_count']} != {expected_updates}")
     result["timeline_nvtx"] = args.timeline_nvtx
+    result["ffn_baseline_measurement"] = args.ffn_baseline_measurement
+    result["tensor_dump_written"] = bool(args.tensor_dump)
     text = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.output:
         Path(args.output).write_text(text)

@@ -1,0 +1,122 @@
+{
+  "B0": {
+    "activation_multiply": "separate",
+    "gate_up": "separate",
+    "name": "CURRENT_AUTOAWQ",
+    "runtime": "AutoAWQ 0.2.7.post3 WQLinear_GEMM"
+  },
+  "B2": {
+    "activation_multiply": "SiluAndMul",
+    "comparison_class": "same checkpoint/quant semantics; cross-runtime strong baseline",
+    "gate_up": "MergedColumnParallelLinear",
+    "kernel_backend": "record exact AutoAWQ MP kernel selected at runtime",
+    "name": "MERGED_GATE_UP_STRONG_BASELINE",
+    "runtime": "vLLM df8fd42116f172b7a53bc10c8a680b05232edbed"
+  },
+  "correctness_gate": {
+    "all_outputs_finite": true,
+    "canonical_quant_params_exact": true,
+    "down_shape": [
+      1,
+      1,
+      3584
+    ],
+    "fp16_comparison": {
+      "atol": 0.05,
+      "report_max_abs_mean_abs_relative_l2": true,
+      "rtol": 0.01
+    },
+    "gate_and_up_slice_shapes": [
+      1,
+      1,
+      18944
+    ],
+    "generated_tokens": [
+      23578,
+      11,
+      323,
+      3950
+    ],
+    "performance_admission_requires_correctness": true
+  },
+  "cpu_preflight_before_gpu": [
+    "build an isolated vLLM environment without altering the accepted C16 environment",
+    "load config and verify Qwen2ForCausalLM merged mapping",
+    "canonical-unpack gate/up qweight and qzeros before/after loading and require exact integer digests",
+    "require scales byte equality and group/zero-point equality",
+    "record selected MP kernel and prove no requantization"
+  ],
+  "execution": "NOT_EXECUTED_BY_LANE6",
+  "forbidden": [
+    "model re-quantization",
+    "different checkpoint",
+    "synthetic-only operator timing",
+    "calling B0/B2 a merge-only A/B",
+    "NCU as first step",
+    "NVBit",
+    "SASS",
+    "Accel-Sim",
+    "automatic hardware follow-up"
+  ],
+  "gpu_lock": {
+    "path": "/data/c16/locks/c16_gpu_campaign.lock",
+    "release_receipt_required": true,
+    "required": true,
+    "single_outer_lock": true
+  },
+  "measurement": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 20261001,
+      "unit": "complete ABBA block"
+    },
+    "fresh_process_per_sample": true,
+    "gpu_wall_budget_minutes": 8,
+    "order": "12 complete ABBA blocks B0,B2,B2,B0",
+    "primary": "complete natural D0-D3 CUDA-event wall",
+    "samples": {
+      "B0": 24,
+      "B2": 24,
+      "total": 48
+    },
+    "timeline_canaries": "one lightweight NSYS cuda,nvtx B0 and one B2; excluded from timing inference"
+  },
+  "purpose": "MERGED_GATE_UP_NATIVE_STRONG_BASELINE",
+  "required_native_facts": [
+    "exact selected vLLM W4 kernel",
+    "gate_up GPU kernel and reduction count",
+    "SiluAndMul kernel count",
+    "logical gate/up slice correctness",
+    "complete D0-D3 wall",
+    "weight padding/workspace if any"
+  ],
+  "schema_version": 1,
+  "scientific_identity": {
+    "input_and_D0_D3_scenario": "exact accepted C16 authority from 30b3016a7ad5b5ef86a3494c784e072938dee6c5",
+    "model_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "no_requantization": true,
+    "quantization": {
+      "bits": 4,
+      "group_size": 128,
+      "method": "AWQ",
+      "zero_point": true
+    },
+    "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641"
+  },
+  "source": {
+    "quantization_path": "vllm/model_executor/layers/quantization/auto_awq.py",
+    "qwen2_path": "vllm/model_executor/models/qwen2.py",
+    "source_anchors": "docs/vm_tlb/review_packs/C16_MERGED_GATE_UP_STRONG_BASELINE_GUARD_174NEW_V1/SOURCE_ANCHORS.json",
+    "vllm_commit": "df8fd42116f172b7a53bc10c8a680b05232edbed"
+  },
+  "status": "QUALIFIED_STRONG_BASELINE_NOT_STRICT_SINGLE_VARIABLE_AB",
+  "stop_conditions": [
+    "canonical qweight/qzeros/scales mismatch",
+    "requantization occurs",
+    "exact checkpoint/scenario cannot load",
+    "RTX4080 runtime/backend unsupported",
+    "correctness tolerance or token identity fails",
+    "GPU lock unavailable for 45 minutes",
+    "8-minute GPU budget exceeded"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "classification": "ABORTED_ENGINEERING_PREFLIGHT",
+      "receipt": {
+        "acquired_utc": "2026-10-01T03:05:35Z",
+        "end_utc": "2026-10-01T03:06:02Z",
+        "exit_code": 1,
+        "gpu_wall_seconds": 27,
+        "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+        "max_gpu_wall_seconds": 480,
+        "released": true,
+        "request_utc": "2026-10-01T03:05:35Z",
+        "wait_seconds": 0
+      },
+      "receipt_sha256": "862a4b2d490ee89910462a55f2a492f09936e25699babacccdd966152697c7a7"
+    },
+    {
+      "attempt": 2,
+      "classification": "ABORTED_ENGINEERING_PREFLIGHT",
+      "receipt": {
+        "acquired_utc": "2026-10-01T03:08:19Z",
+        "cumulative_gpu_wall_seconds": 46,
+        "end_utc": "2026-10-01T03:08:38Z",
+        "exit_code": 1,
+        "gpu_wall_seconds": 19,
+        "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+        "prior_aborted_engineering_gpu_wall_seconds": 27,
+        "released": true,
+        "request_utc": "2026-10-01T03:08:19Z",
+        "total_max_gpu_wall_seconds": 480,
+        "wait_seconds": 0
+      },
+      "receipt_sha256": "bc962f7b2233bcd790b7c7d40ebec898e343bb0ca4c9509c8a7f591fbba96517"
+    },
+    {
+      "attempt": 3,
+      "classification": "ABORTED_ENGINEERING_PREFLIGHT",
+      "receipt": {
+        "acquired_utc": "2026-10-01T03:10:26Z",
+        "cumulative_gpu_wall_seconds": 66,
+        "end_utc": "2026-10-01T03:10:46Z",
+        "exit_code": 2,
+        "gpu_wall_seconds": 20,
+        "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+        "prior_aborted_engineering_gpu_wall_seconds": 46,
+        "released": true,
+        "request_utc": "2026-10-01T03:10:26Z",
+        "total_max_gpu_wall_seconds": 480,
+        "wait_seconds": 0
+      },
+      "receipt_sha256": "a44098aa4ba2171aadcb42f1967abadf14681fa2dafab2121bb984e39e1bcebc"
+    },
+    {
+      "attempt": 4,
+      "classification": "FINAL_CANARY_CORRECTNESS_STOP",
+      "receipt": {
+        "acquired_utc": "2026-10-01T03:17:41Z",
+        "cumulative_gpu_wall_seconds": 86,
+        "end_utc": "2026-10-01T03:18:01Z",
+        "exit_code": 2,
+        "gpu_wall_seconds": 20,
+        "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+        "prior_aborted_engineering_gpu_wall_seconds": 66,
+        "released": true,
+        "request_utc": "2026-10-01T03:17:41Z",
+        "total_max_gpu_wall_seconds": 480,
+        "wait_seconds": 0
+      },
+      "receipt_sha256": "b32178b248db888d24e3a7e2e4d0332475639e238991478e107ba017925cd27b"
+    }
+  ],
+  "budget_seconds": 480,
+  "contract_deviation": "three aborted engineering attempts released their locks before the final scientific canary attempt",
+  "cumulative_budget_pass": true,
+  "cumulative_gpu_wall_seconds": 86,
+  "final_scientific_attempt_single_outer_lock": true,
+  "single_outer_lock_across_entire_goal": false,
+  "single_outer_lock_per_attempt": true,
+  "status": "RELEASED_ALL_WITH_ENGINEERING_RESTART_DEVIATION"
+}

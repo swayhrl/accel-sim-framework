@@ -1,0 +1,78 @@
+{
+  "b0_decode_kernel_count": 6020,
+  "b0_reduction_name_classified_count": 336,
+  "b0_role_kernel_counts": {
+    "activation": 112,
+    "down_proj": 224,
+    "gate_proj": 224,
+    "multiply": 112,
+    "up_proj": 224
+  },
+  "b2_decode_kernel_count": 1313,
+  "b2_gate_up_parameter_layout": {
+    "qweight": {
+      "bytes": 67895296,
+      "device": "cuda:0",
+      "dtype": "torch.int32",
+      "numel": 16973824,
+      "shape": [
+        224,
+        75776
+      ]
+    },
+    "qzeros": {
+      "bytes": 530432,
+      "device": "cuda:0",
+      "dtype": "torch.int32",
+      "numel": 132608,
+      "shape": [
+        28,
+        4736
+      ]
+    },
+    "scales": {
+      "bytes": 2121728,
+      "device": "cuda:0",
+      "dtype": "torch.float16",
+      "numel": 1060864,
+      "shape": [
+        28,
+        37888
+      ]
+    }
+  },
+  "b2_kernel_state": {
+    "w_q_name": "qweight",
+    "w_s_name": "scales",
+    "w_zp_name": "qzeros"
+  },
+  "b2_merged_gate_up_kernel_names": [
+    "void marlin::Marlin<(long)1125899906910725, (long)1125899906843648, (long)1125899906910725, (long)1125899906910725, (int)256, (int)1, (int)8, (int)8, (bool)1, (int)4, (int)8, (bool)0>(const int4 *, const int4 *, int4 *, int4 *, const int4 *, const float *, const int4 *, const float *, const int4 *, int, int, int, int, int *, bool, bool, bool, int)"
+  ],
+  "b2_reduction_name_classified_count": 0,
+  "b2_role_kernel_counts": {
+    "down": 112,
+    "gate_up": 112,
+    "silu_and_mul": 112
+  },
+  "b2_selected_kernel_backend": [
+    "MarlinLinearKernel"
+  ],
+  "b2_selected_quant_method": [
+    "AutoAWQMarlinLinearMethod"
+  ],
+  "b2_silu_and_mul_kernel_names": [
+    "void vllm::act_and_mul_kernel<c10::Half, __half2, &vllm::silu_kernel<c10::Half>, &vllm::packed_silu_kernel<__half2>, (bool)1, (bool)1, (bool)0, (bool)0>(T1 *, const T1 *, int, float, float, float)"
+  ],
+  "checks": {
+    "b0_all_projection_ranges_have_gpu_activity": true,
+    "b2_backend_recorded": true,
+    "b2_down_112_have_gpu_activity": true,
+    "b2_gate_up_112_have_gpu_activity": true,
+    "b2_silu_and_mul_112_have_gpu_activity": true,
+    "b2_single_backend": true
+  },
+  "kernel_attribution": "NVTX CPU launch scope plus CUDA runtime correlationId to GPU kernel",
+  "reduction_count_boundary": "name-classified only; exact per-semantic kernel inventory is authoritative",
+  "status": "PASS"
+}
