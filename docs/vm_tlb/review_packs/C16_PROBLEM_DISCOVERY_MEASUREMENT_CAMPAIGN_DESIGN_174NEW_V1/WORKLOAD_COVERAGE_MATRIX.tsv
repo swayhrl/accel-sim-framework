@@ -1,0 +1,9 @@
+point_id	structure	representation	phase	batch	context_tokens	operator_coverage	candidate_model	backend_gate	platform	question_ids	scientific_role	whole_run_parent
+MP01	dense	BF16	prefill	1	512	attention;projection;FFN;norm	Qwen/Qwen2.5-3B-Instruct	SB01_TO_BE_QUALIFIED	109_SM89	DQ1;DQ3;DQ4	discovery	natural_request_prefill
+MP02	dense	BF16	decode	1	512	projection;attention;KV;FFN	Qwen/Qwen2.5-3B-Instruct	SB01_TO_BE_QUALIFIED	109_SM89	DQ1;DQ2;DQ3;DQ4	discovery	natural_request_decode_D0_D31
+MP03	dense	BF16	decode	4	512	projection;attention;KV;FFN	Qwen/Qwen2.5-3B-Instruct	SB01_TO_BE_QUALIFIED	109_SM89	DQ2;DQ3	transition	natural_request_decode_D0_D31
+MP04	dense	BF16	decode	16	512	projection;attention;KV;FFN	Qwen/Qwen2.5-3B-Instruct	SB01_TO_BE_QUALIFIED	109_SM89	DQ2	holdout	natural_request_decode_D0_D31
+MP05	dense	W4_AWQ	decode	1	512	quantized projection;attention;KV	Qwen/Qwen2.5-3B-Instruct-AWQ	SB02_TO_BE_QUALIFIED	109_SM89	DQ2;DQ3	control	natural_request_decode_D0_D31
+MP06	MoE	BF16	decode	1	512	router;routed/shared expert;attention;KV	allenai/OLMoE-1B-7B-0125-Instruct	SB03_TO_BE_QUALIFIED	109_SM89	DQ1;DQ2;DQ4	discovery	natural_request_decode_D0_D31
+MP07	MoE	BF16	decode	1	512	router;expert;attention;KV	ibm-granite/granite-3.1-1b-a400m-instruct	SB04_TO_BE_QUALIFIED	109_SM89	DQ1;DQ2;DQ4	holdout	natural_request_decode_D0_D31
+MP08	dense	BF16	decode	1	16384	attention;KV;projection;FFN	Qwen/Qwen2.5-3B-Instruct	SB01_TO_BE_QUALIFIED	109_SM89	DQ1;DQ3;DQ4;SQ_TRANSLATION_AUTHORITY_ONLY	holdout	natural_request_decode_D0_D31

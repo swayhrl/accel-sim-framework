@@ -1,0 +1,9 @@
+# Future 109 GPU-active budget proposal — not authorization
+
+Tier0 cap: **20 active minutes total**, including load/qualification canary, warmup and minimal natural measurements for eight points. The point reservations in `MEASUREMENT_POINT_PLAN.tsv` are MP01–MP04 = 2 minutes each, MP05–MP08 = 3 minutes each (8 + 12 = 20). Discovery/control points run first; holdout execution/output is gated by a frozen discovery analysis receipt. Each point is a *reservation cap*, not a promised completion time. If a model load, correctness or VRAM check consumes its cap, stop that point without silently borrowing time.
+
+Tier1 cap: **at most three admitted points, at most 10 active minutes each, 30 minutes total**. Admission requires Tier0 correctness, semantically matched strong backend, material natural wall weight, a useful zero-cost upper ceiling and a specific missing observable. The project chooses the three by frozen question priority and balanced dense/MoE coverage; no automatic profiling of every point. Use a small selected metric set whose exact names/replay mode are qualified on the pinned 109 toolchain. NCU profile durations are not substituted for native wall timing.
+
+Thus the **conditional pre-Tier2 active envelope is ≤50 minutes** (Tier0 20 + Tier1 30). Setup, acquisition and source auditing do not justify unmetered GPU time; if they need the GPU, their active time counts against the respective cap. Tier2 has **zero authorized budget in DESIGN V1**. A later review may cap 1–2 question-bound traces separately after a legal oracle, strong software and independent holdout plan pass. Tier3 simulator/mechanism is not authorized by this campaign design.
+
+No GPU lock is requested here. These figures are planning ceilings, not a launch contract or evidence that all eight models fit 109.

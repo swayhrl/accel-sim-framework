@@ -1,0 +1,15 @@
+axis_group	axis_id	levels_or_requirement	selected_coverage	reason_or_boundary
+WORKLOAD	MODEL_STRUCTURE	dense;MoE	dense Qwen;MoE OLMoE and Granite	Two structures without a Cartesian sweep
+WORKLOAD	REPRESENTATION	BF16/FP16;W4/AWQ;FP8 conditional	BF16;official W4/AWQ	FP8 not selected until SM89 runtime and numerical semantics are qualified
+WORKLOAD	PHASE	prefill;decode	both	One dense prefill control plus decode-focused discovery
+WORKLOAD	BATCH_EFFECTIVE_M	batch1;small;medium	B1;B4;B16 with effective M measured	Transition is a supply-control ladder; no unverified backend threshold claim
+WORKLOAD	CONTEXT	short;long	512 and 16384 token proposals	Long stress is a pre-registered holdout; exact capacity must qualify
+WORKLOAD	OPERATOR_FAMILY	projection;attention;routing/expert;norm/elementwise;KV	whole-run inventory then selected critical windows	No local kernel can bypass whole-run time weighting
+WORKLOAD	RUNTIME_BACKEND	mature fused;quantized;fused MoE	pinned vLLM-class native backend to qualify	Eager/reference fallback is not the sole strong baseline
+WORKLOAD	PLATFORM	109 RTX4080 SM89 first	109 only proposed	No Hopper/Blackwell gain transplanted to Ada
+OBSERVABLE	CRITICAL_PATH	legal wall union;launch/sync gaps;operator/phase weights	Tier0 NSYS/NVTX plus native timing	Summed kernel durations are not wall union
+OBSERVABLE	COMPUTE	CTA/waves;active warps;tile fill;stalls	Tier0 launch geometry;Tier1 selected utilization	CTA count is not saturation
+OBSERVABLE	MEMORY	requested/useful;L1/TEX;L2;DRAM;stalls	Tier1 targeted NCU after weight gate	Traffic does not imply time or duplicate fill
+OBSERVABLE	TRANSLATION	page set;TLB;PTW;blocked time	TO_BE_QUALIFIED;no proxy promotion	VA page proxy cannot replace TLB timing
+OBSERVABLE	CHRONOLOGY	same-process order;producer-consumer;reuse	Tier0 kernel/NVTX timeline;Tier2 only after oracle gate	Independent static-shard replay cannot supply natural chronology
+OBSERVABLE	MOE_SPECIFIC	routing;expert sequence;turnover;shared/routed	Tier0 natural routing IDs;Tier2 address sequence conditional	No generic expert-locality mechanism from routing alone
