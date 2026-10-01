@@ -1,0 +1,9 @@
+# Independent Stage A Tier0 consumer core
+
+This module is CPU-only and imports no producer postprocess code. `core.py` implements interval union, signed launch-gap chronology, correlation fail-closure, native sample statistics, Graph-OFF headroom screening, the exact MP02/MP03 matched Graph-control estimator, point coverage, and byte-level durable raw verification. `adapter.py` enforces frozen point/source bindings and recomputes native request statistics from individual OFF-instrumentation samples. `intervals.py` independently associates raw semantic/CUDA interval rows and recomputes wall unions and handoff chronology. The `test_*.py` files contain synthetic/adversarial fixtures.
+
+Frozen final contract: `fad9da8116c8ad794f99a93f153b0866162158a4`, tree `c657f1655ffabbeb0942732bdff08c8df8e79987`, contract JSON SHA256 `a71349283b1661cb23d86cc61dfad6ab5ea2cd8752ca4252bbc1d2feee5acb08`. This branch carries the final contract pack byte-for-byte; the draft has no authority to change it.
+
+Important gates: Graph-OFF CUDA-parent fraction is a **screening** fraction, not a Graph-ON whole-request fraction. `headroom_gate` leaves whole-run 2% status `WHOLE_RUN_CEILING_NOT_IDENTIFIABLE` unless a separately justified comparable fraction is provided. `dq2_batch_matched_graph_control` is permitted only for MP02/MP03 with exact three native samples per arm and frozen generated-token denominators 32 and 128. No other DQ gets an invented 85% estimator.
+
+The final closure runner will read the frozen `RESULT_SCHEMA.json` and producer `RAW_INDEX.tsv` when the producer exists, verify every 164 copy by size and SHA before parsing, and then calculate outputs independently. No canary sample substitutes for a Stage A sample. Run `python3 -m unittest discover -s util/vm_tlb/c16/stagea_tier0_independent_consumer -p 'test_*.py'` to validate the preparatory arithmetic.
