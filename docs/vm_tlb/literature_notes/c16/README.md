@@ -4,7 +4,13 @@
 
 本支线记录原文核读、相关工作比较和待验证问题，不修改实验/Core/raw，不消费Lane4 partial。文献笔记不是实验完成证据。AWMA与C16文献分开维护。
 
-## 当前入口：LR12
+## 当前入口：LR13
+
+[LR13：DeepSeek weight-line revisit 的 GEMV 最近邻护栏](rounds/2026-10-01_LR13_DEEPSEEK_WEIGHT_LINE_REVISIT_NEIGHBOR_GUARD.md)
+
+窄范围核读GEMV/小M、weight sector与warp/CTA分工的原始论文和官方源码。把同line不同sector、同sector重访、同byte重访严格分开；一般性cache-mechanism叙事判为`NEAREST_NEIGHBOR_CROWDED`，但不声称已测DeepSeek具体cache或cycle headroom。不运行作者artifact、GPU、trace或模拟器。LR12完整问题地图保持不变。
+
+## 历史入口：LR12
 
 [LR12：literature-first problem map 与 C16 候选准入审查](rounds/2026-10-01_LR12_LITERATURE_FIRST_PROBLEM_MAP.md)
 
