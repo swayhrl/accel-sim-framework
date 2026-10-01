@@ -1,0 +1,17 @@
+id	source_id	evidence_kind	object_or_region	observation	what_not_inferred	next_decision
+E01	S02	SOURCE_PATH	_solve_done	per-world completion mask and nsolving decrement	finished worlds recompute full math	respect mask as strong baseline
+E02	S02	SOURCE_PATH	_solve	capture_while waits until no unconverged worlds or max iteration exits	global loop itself proves avoidable stall	measure complete step
+E03	S02	SOURCE_PATH	_solver_iteration and _update_gradient	multiple launches retain d.nworld geometry and pass ctx.done	inactive slots equal wasted cycles	main active-dispatch hypothesis
+E04	S02	SOURCE_PATH	incremental Newton	stable-state fast path and changed-constraint tracking already exist	all remaining updates unnecessary	include existing optimization
+E05	S02	SOURCE_PATH	_create_solver_context	several arrays sized nworld*njmax	allocated bytes equal traffic or speedup	capacity-only backup
+E06	S01	OFFICIAL_SEMANTICS	contact versus constraint capacities	contacts pooled globally;njmax strict per-world	contact pooling is new	focus only remaining constraint boundary
+E07	S02	SOURCE_PATH	_jtdaj_groups_per_world	caps mostly empty capacity launches to resident waves	all njmax slots launch one CTA	account existing launch throttling
+E08	S02	SOURCE_PATH	solve_compact	active-DOF compaction keeps conditional early exit and sparse access paths	no compaction/sparse support	bind active runtime branch
+E09	S03	ARTIFACT_DESCRIPTOR	G1 flat/hfield	public scene and shuffle_dance.npz control path;8192-world author config	4080 fit;natural training distribution;NPZ hash verified	source/input admission only
+E10	S04	FRAMEWORK_METHOD	robot RL environment step	CUDA graph physics;zero-copy policy state;locomotion/manipulation tasks	physics kernel speedup equals RL convergence speedup	justify workload relevance
+E11	S06	METHOD_EVALUATION	batched MPC PCG	one-block-per-system iterative solve already implemented	whole SQP is one kernel;novel one-CTA idea	demote generic MPC scheduling
+E12	S07	METHOD_EVALUATION	forward ADMM versus implicit backward	CUDA loop and symbolic reuse;distinct numerical/iteration contracts	all solver cost is host launch;fused means single kernel	demote generic loop fusion
+E13	S10	METHOD_EVALUATION	sparse point-cloud inference	packed coordinates;parallel layer mappings;two dataflows with mature comparators	all dynamic topology cases covered	demote generic gather/map problem
+E14	S09	ABSTRACT	contact solver	closed-form alternate contact model	same physics equations under scheduling intervention	algorithm alternative only
+E15	S08	SYSTEM_SCOPE	robot training pipeline	CPU simulation/GPU learning heterogeneity changes system execution	GPU environmental compute always optimal	keep system counterexample
+E16	S05,S12	CAPABILITY	many-world dispatch and conditional graphs	GPU ECS and device conditional execution are existing capabilities	dynamic worklist alone is new hardware capability	nearest capability audit required
