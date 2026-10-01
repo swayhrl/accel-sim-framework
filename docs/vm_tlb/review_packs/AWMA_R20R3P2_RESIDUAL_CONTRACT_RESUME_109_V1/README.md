@@ -1,0 +1,7 @@
+# AWMA R20R3P2 residual-contract requalification and resume, node109
+
+Scientific endpoint: `R20R3_ACTIVE_WORLD_NO_MATERIAL_GAIN` for the fixed 304-worker `_update_gradient_incremental` candidate at the complete local solver boundary. See `FINAL_DECISION.md` and `DISCOVERY_DECISION.md`. The older R20R3P1 numeric failure is preserved; this Goal established a separate source-semantic stop contract before any new S1 run.
+
+`RESIDUAL_SOURCE_SEMANTICS.md` and `SOURCE_SEMANTIC_STOP_CONTRACT.md` bind the source rationale and hard gates. `B0_ONLY_RESIDUAL_QUALIFICATION.tsv` records the fixed 8×4 B0 campaign; `B0_STOP_PREDICATE_SUMMARY.tsv` reports source done reasons/overlaps/limit status. `DIRECTED_NEGATIVE_VALIDATOR.json` has the six offline rejection tests. `CONTRACT_DECISION.md` is the pre-S1 qualification freeze. `CANDIDATE_IDENTITY.json` proves the P1 source/patch and 304-worker rule were reused. `CANDIDATE_CORRECTNESS.tsv` and `DISCOVERY_TIMING.tsv` are compact scientific results. `ACTIVE_WORK_COUNTS.tsv` is explicitly a post-run niter-derived analysis, never an S1 input. `TIMING_CONTRACT.md` was frozen before formal samples.
+
+All large B0/paired raw outputs, every formal wall/CUDA-event sample, receipts and hashes are on node164 and indexed in `RAW_DATA_INDEX.tsv`. No NSYS, NCU, NVBit, SASS, Accel-Sim, node174 compute, second candidate/worker/stage, holdout timing, whole-trajectory performance or hardware design was performed. Every CUDA/JIT/capture/replay ran under `/data/c16/locks/c16_gpu_campaign.lock`.
