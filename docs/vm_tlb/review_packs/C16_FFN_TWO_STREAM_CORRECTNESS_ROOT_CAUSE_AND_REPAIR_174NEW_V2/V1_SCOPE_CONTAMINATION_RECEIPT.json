@@ -1,0 +1,30 @@
+{
+  "V1_preservation": {
+    "quarantined_overlap_count": 10,
+    "rewrite_as_engineering_pass": false,
+    "scientific_use": "NONE",
+    "status": "CORRECTNESS_MISMATCH_STOP"
+  },
+  "classification_is_not_unique_low_level_cause": true,
+  "evidence": {
+    "B1_observed_first_token": 143907,
+    "B1_wrapper_installed_before_prefill": true,
+    "V1_formal_timing_started": false,
+    "concurrent_forward_active_decode_guard_in_V1": false,
+    "expected_first_token": 23578,
+    "first_generated_token_source": "argmax(prefill.logits[:, -1, :]) before D0",
+    "prefill_output_drift_proven": true
+  },
+  "failed_producer_commit": "ef517d8e5a0e3659abe71b49beeba1559cd5f2ce",
+  "failed_producer_tree": "12b002aeb3376a340ac15f848e1e97b3d52a5937",
+  "possible_but_unproven_low_level_causes": [
+    "opaque awq_ext dequantize stream binding",
+    "default-stream interaction",
+    "extension global workspace",
+    "other concurrent-prefill backend assumption"
+  ],
+  "qualified_contract_commit": "30b3016a7ad5b5ef86a3494c784e072938dee6c5",
+  "qualified_contract_sha256": "4cc42ab8c36b191716e5dd41ec5eca49ab2d94d665a8960f76dcce8c07dece09",
+  "schema_version": 1,
+  "status": "PREFILL_SCOPE_CONTAMINATION_CONFIRMED"
+}

@@ -1,0 +1,96 @@
+{
+  "B0": "accepted single-stream path unchanged",
+  "B1_V2": {
+    "D0_D3": "execute unchanged V1 concurrent gate/SiLU and up branches",
+    "event_DAG": "unchanged from V1",
+    "prefill": "call bound original_forward; no gate/up concurrent execution",
+    "producer_stream_count": 2
+  },
+  "authority": {
+    "V1_status": "CORRECTNESS_MISMATCH_STOP",
+    "failed_V1_commit": "ef517d8e5a0e3659abe71b49beeba1559cd5f2ce",
+    "qualified_contract_commit": "30b3016a7ad5b5ef86a3494c784e072938dee6c5",
+    "qualified_contract_sha256": "4cc42ab8c36b191716e5dd41ec5eca49ab2d94d665a8960f76dcce8c07dece09"
+  },
+  "automatic_stage_2_only_if_all_canary_checks_pass": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 20261001,
+      "unit": "complete ABBA block"
+    },
+    "oracle": "unchanged 7.732849 ms / 7.893066891889022% gap-preserving no-contention reference",
+    "protocol": "original frozen 12 complete ABBA blocks B0,B1,B1,B0",
+    "samples": {
+      "B0": 24,
+      "B1": 24,
+      "total": 48
+    },
+    "validation_target": "unchanged D3 whole-step plus layers 14-27 overlap/duration response"
+  },
+  "execution_scope_correction": "PREFILL_RESTORED_TO_ACCEPTED_BASELINE",
+  "failure_after_repair": {
+    "action": "STOP",
+    "classification": "CORRECTNESS_MISMATCH_AFTER_PREFILL_REPAIR",
+    "second_live_repair_allowed": false
+  },
+  "forbidden_changes": [
+    "model/input",
+    "prefill backend on B0/B1",
+    "D0-D3 kernels",
+    "quantization",
+    "tensor layout",
+    "stream count",
+    "event DAG",
+    "ABBA protocol",
+    "oracle",
+    "validation target",
+    "NCU",
+    "NVBit",
+    "SASS",
+    "Accel-Sim"
+  ],
+  "gpu_lock": {
+    "path": "/data/c16/locks/c16_gpu_campaign.lock",
+    "release_receipt_required": true,
+    "required_on_109": true
+  },
+  "schema_version": 2,
+  "scientific_target_change": "NONE",
+  "source": {
+    "application_tool": "GNU patch",
+    "base_commit": "ef517d8e5a0e3659abe71b49beeba1559cd5f2ce",
+    "base_runner_sha256": "c57ca31cd86cf1575024661164ef2bb14a1656c9cac64a5820862b97b13f0ebb",
+    "exact_command": "patch -s util/vm_tlb/c16/e1_operator_family_natural.py < docs/vm_tlb/review_packs/C16_FFN_TWO_STREAM_CORRECTNESS_ROOT_CAUSE_AND_REPAIR_174NEW_V2/V2_SOURCE_DIFF.patch",
+    "expected_runner_sha256": "0297e142457ea5ac4ed3d6c37889993fda4168bfcca8392b41d74ba4b698fc0b",
+    "git_apply_forbidden": true,
+    "patch_path": "docs/vm_tlb/review_packs/C16_FFN_TWO_STREAM_CORRECTNESS_ROOT_CAUSE_AND_REPAIR_174NEW_V2/V2_SOURCE_DIFF.patch",
+    "patch_sha256": "3bcc1971121b848659248a1c27951d67a5df489d4b4bcc89ba7628bf5a0dbe40"
+  },
+  "stage_1_canary_only": {
+    "checks": {
+      "B0_tokens": [
+        23578,
+        11,
+        323,
+        3950
+      ],
+      "B1_real_overlap_required": true,
+      "B1_tokens": [
+        23578,
+        11,
+        323,
+        3950
+      ],
+      "call_order_count_each": 420,
+      "kernel_identity": true,
+      "projection_hash_shape_identity": true,
+      "projection_occurrences_each": 336
+    },
+    "formal_timing_before_pass": false,
+    "runs": [
+      "1 x B0 lightweight NSYS cuda,nvtx",
+      "1 x B1_V2 lightweight NSYS cuda,nvtx"
+    ]
+  },
+  "status": "AUTHORIZED_CANARY_FIRST"
+}

@@ -1,0 +1,13 @@
+--- a/util/vm_tlb/c16/e1_operator_family_natural.py
++++ b/util/vm_tlb/c16/e1_operator_family_natural.py
+@@ -115 +115 @@
+-    def make_concurrent_mlp_forward(layer_index, mlp):
++    def make_concurrent_mlp_forward(layer_index, mlp, original_forward):
+@@ -116,0 +117,2 @@
++            if active_decode["value"] is None:
++                return original_forward(hidden_state)
+@@ -153 +155,3 @@
+-            layer.mlp.forward = make_concurrent_mlp_forward(layer_index, layer.mlp)
++            layer.mlp.forward = make_concurrent_mlp_forward(
++                layer_index, layer.mlp, original_mlp_forwards[layer_index]
++            )
