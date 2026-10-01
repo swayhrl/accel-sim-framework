@@ -9,10 +9,13 @@
 - [60条实验与分析证据](empirical/ROUND18_EXPERIMENT_EVIDENCE.tsv)：含摘要级aggregate，不称所有记录具备完整复现配置。
 - [AWMA边界账本](empirical/ROUND18_AWMA_BOUNDARY_LEDGER.tsv)：做过什么、未做什么、仍未知什么及核查深度。
 - [候选与最小检验](problem_cards/R18_SHORTLIST_AND_MINIMAL_TESTS.md)：优先准备低比特表示就绪、动态工作集；fast-weight条件保留。不是execution Goal。
+- [Round18勘误：R53实际已执行](rounds/2026-10-01_ROUND18_ERRATUM_R53_EXECUTION.md)：R53 authority为`843ad43ad...`，最终`R53_ALGORITHM_CHANGE_NOT_MAPPING_GAIN_V1`；后续动态执行不得重命名复跑该边界。
 
 ## 需要首先继承的解释修正
 
 R17R1正式execution标签与raw保留，但**Q1比完整Q32 batch先完成，不能证明没有单query可优化残差**。本轮研究判断是“质量合格的成熟软件基准已建立，GPU-local残差仍未归因/未资格化”；不重启实验、不改历史证据。
+
+R53已实际执行并收口为`R53_ALGORITHM_CHANGE_NOT_MAPPING_GAIN_V1`；Round18正文中“未取得完成receipt”的说法以勘误文件为准。
 
 Round16分别是：R102输入未资格化；VLA工作真实但state/lifetime目标成本未知；CCE特定zero-init成本经局部软件协议消除。不同终点不能都算“整个领域无空间”。
 
@@ -23,6 +26,7 @@ Round16分别是：R102输入未资格化；VLA工作真实但state/lifetime目�
 - Round16收口：`31d585dc44f90eb70f83603c8b87a2d06efff01a`，`docs/vm_tlb/chatgpt_handoff/awma/round16_dual_lane_v1/FINAL_ROUND16_CLOSEOUT_2026-09-30.md`。
 - R17R1：`29ecc6e5e37005046b1a563c830bed9ae58af656`，`docs/vm_tlb/review_packs/AWMA_R17R1_GRAPH_SEARCH_109_V2/FINAL_DECISION.md`。
 - R17 LaneG最近邻：`f72aca7938a1b2e8bb2f62953e308444babd8489`，独立CPU文献分支；本轮引用其已报告结果，不合并其worktree。
+- R53执行：`843ad43ad33153bf73a0e51aed6d8ac309356cae`，`docs/vm_tlb/review_packs/AWMA_R53_ONLINE_WORKSET_QUALIFICATION_V1/FINAL_DECISION.md`。
 
 ## 历史索引
 
