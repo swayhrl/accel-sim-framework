@@ -1,0 +1,54 @@
+{
+  "accepted_split1": {
+    "path": "/data/c16/e1_lowbit_splitk_native_ab_v1/build/lib/awq_split1_ext.cpython-310-x86_64-linux-gnu.so",
+    "sha256": "1aa8db13f5fd10651aa4241f58200e3a7075214d34cca4d70fbcbe7cbbc07887"
+  },
+  "accepted_split8": {
+    "path": "/data/c16/env/c16-awq-v6/lib/python3.10/site-packages/awq_ext.cpython-310-x86_64-linux-gnu.so",
+    "sha256": "9e8d38a04c28770338fcef8ae0f9a90a984b7a8f95bcb98a407738594e1c08d7"
+  },
+  "autoawq": {
+    "anchors": {
+      "block_y": "int blockIdx_y = blockIdx.x % ((M + 16 - 1) / 16 * j_factors1);",
+      "block_z": "int blockIdx_z = blockIdx.x / ((M + 16 - 1) / 16 * j_factors1);",
+      "j_factors": "int j_factors1 = ((OC + 128 - 1) / 128);",
+      "k_bound": "int k_bound = (IC / 32 + split_k_iters - 1) / split_k_iters;",
+      "k_interleave": "int k_0_0 = _k_0_0 * split_k_iters + blockIdx_z;",
+      "scale_group": "scaling_factors_ptr + k_0_0 * 32 / G * (OC)",
+      "scale_n_tile": "+ (((int)blockIdx_y) % j_factors1) * (128)",
+      "weight_k_tile": "B_ptr + k_0_0 * 32 * (OC / 8)",
+      "weight_n_tile": "+ (((int)blockIdx_y) % j_factors1) * (128 / 8)",
+      "zero_group": "zeros_ptr + k_0_0 * 32 / G * (OC / 8)",
+      "zero_n_tile": "+ (((int)blockIdx_y) % j_factors1) * (128 / 8)"
+    },
+    "blob": "98f49efac8626388039912e6aabc8a84d9f8303b",
+    "commit": "c7b0e88c327694c715b0a758d9ce8fd414a1fa21",
+    "missing": [],
+    "path": "awq_ext/quantization/gemm_cuda_gen.cu",
+    "repo": "casper-hansen/AutoAWQ_kernels"
+  },
+  "coordination_commit": "f10a40ccd25cf3179a619abe21881fdf19c973a1",
+  "resource_attestation": {
+    "cpu_only": true,
+    "cuda_imported": false,
+    "gpu_lock_requested": false,
+    "gpu_used": false,
+    "lane4_partial_accessed": false
+  },
+  "split1_patch_authority": {
+    "commit": "0e88faa28c9066b48e394dce657d7a16e6332a32",
+    "only_kernel_semantic_changes_confirmed": [
+      "reject split_k_iters != 1",
+      "return plane 0 instead of sum(0)"
+    ],
+    "original_gemm_source_sha256": "974980f34d7269c9a33ccd642d9dc9bc8700f58e9afc63d65634dedd9c5fc5a6",
+    "patched_gemm_source_sha256": "37ca88c825da79e05f576dff6dbe1a3c4e63950335c600a44f13b7560099f4fc",
+    "same_gemm_kernel_family": true
+  },
+  "status": "PASS",
+  "synthetic": {
+    "file_sha256": "0a556004f70e9601a9578e038b5a57cd99f5dde12a8fca0cec47f0306bc8fe47",
+    "tiny_reference_sha256": "bc5b86bb5c440be4fa308f3c6d85922297148cf911cad8a33e0d3373928a7e3e",
+    "version": "GPT3_SHAPE_SYNTH_V1"
+  }
+}
