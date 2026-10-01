@@ -1,0 +1,86 @@
+{
+  "accepted_tokens": [
+    785,
+    9234,
+    330,
+    90371
+  ],
+  "backend": {
+    "kernel": "MarlinLinearKernel",
+    "no_requantization": true,
+    "quant_method": "AutoAWQMarlinLinearMethod"
+  },
+  "goal": "C16_AWQ_OBSERVER_V2_REQUAL_CANARY_109_V1",
+  "kernel_receipt_status": "PASS",
+  "model_revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+  "native_raw": "/data/c16/awq_observer_v2_requal_canary_v1/raw/C16R_awq-observer-v2-requal-canary-109-v1_20261001T171432Z/QWEN_AWQ_GRAPH_OFF_NATIVE.json",
+  "native_raw_sha256": "a701f8ad305d853153f91f8fc902b47850bd6d70437a451fa6bbb37c39567b6d",
+  "neutrality": {
+    "checks": {
+      "backend_identity_unchanged": true,
+      "cuda_neutrality_gate": true,
+      "gpu_active_within_60_seconds": true,
+      "gpu_lock_released": true,
+      "host_neutrality_gate": true,
+      "kernel_inventory_exact": true,
+      "native_status_pass": true,
+      "nsys_structure_pass": true,
+      "semantic_order_exact": true,
+      "semantic_shapes_exact": true,
+      "tokens_exact": true
+    },
+    "cuda_abs_delta_ms": 2.8853416442871094,
+    "cuda_limit_ms": 5.494505691528321,
+    "cuda_off_median_ms": 54.9450569152832,
+    "cuda_on_median_ms": 57.83039855957031,
+    "frozen_gate": "abs(median_ON - median_OFF) <= max(5.0 ms, 0.10 * median_OFF)",
+    "host_abs_delta_ms": 2.8844270000000023,
+    "host_limit_ms": 5.4955816,
+    "host_off_median_ms": 54.955816,
+    "host_on_median_ms": 57.840243,
+    "instrumented_on_wall_authoritative_for_science": false,
+    "native_arm_order": [
+      "OFF",
+      "ON",
+      "ON",
+      "OFF",
+      "OFF",
+      "ON"
+    ],
+    "samples_per_arm": 3,
+    "status": "OBSERVER_V2_NEUTRALITY_PASS"
+  },
+  "nsys_run_raw": "/data/c16/awq_observer_v2_requal_canary_v1/raw/C16R_awq-observer-v2-requal-canary-109-v1_20261001T171432Z/QWEN_AWQ_GRAPH_OFF_NSYS_FINAL.json",
+  "nsys_run_raw_sha256": "22086774fe1a17bcba79c6b14a661a99cd047f708b1595218525e7461fa1ae3d",
+  "nsys_structural_status": "PASS",
+  "performance_use": "OBSERVER_NEUTRALITY_REQUALIFICATION_ONLY_NO_TIER0",
+  "runtime_authority": {
+    "commit": "3f62f909a474e4c56695ffacf36ddcb5d7b5f147",
+    "tree": "4b9a1c07ee6b16997957d804f26ab57d0ca3853e"
+  },
+  "scope": {
+    "graph_mode": "GRAPH_OFF",
+    "target": "QWEN_AWQ",
+    "tier0_science": false
+  },
+  "semantic_receipt_status": "PASS",
+  "source": {
+    "base_runner_sha256": "1f68c1117623cbc46f98f51f17ba798d8bf5ffb103f427b9d7b916ced0a35020",
+    "commit": "f63d39c8d90ced038445c264fa8242c524a1aa6f",
+    "patch_sha256": "7769e8b85480c2bfd3f178c77dcd3b66a6b8d5c7b8bf13c9f5002e9dc9b968c9",
+    "tree": "9855a156b7c13b7ab10c4747dcb0f5c5b05e3ac9",
+    "v2_runner_sha256": "7f2a76a375eaa4f652553fc523f785a753180ef1402291e54beb2256ed02bb22"
+  },
+  "status": "OBSERVER_V2_NEUTRALITY_PASS",
+  "vllm_config": {
+    "cpu_offload_gb": 0,
+    "dtype": "float16",
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.92,
+    "max_model_len": 516,
+    "max_num_batched_tokens": 1024,
+    "max_num_seqs": 1,
+    "model_impl": "vllm",
+    "quantization": "awq"
+  }
+}

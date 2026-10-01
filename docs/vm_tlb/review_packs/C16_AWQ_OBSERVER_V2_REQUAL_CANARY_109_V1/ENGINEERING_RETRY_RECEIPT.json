@@ -1,0 +1,39 @@
+{
+  "status": "CLOSED_ENGINEERING_PACKAGING_RETRIES",
+  "native_measurement_rerun": false,
+  "native_measurement_source": "QWEN_AWQ_GRAPH_OFF_NATIVE.json from attempt 1 only",
+  "attempts": [
+    {
+      "attempt": 1,
+      "gpu_active_seconds": 20,
+      "lock_released": true,
+      "native_six_sample_sequence": "PASS_AND_RETAINED",
+      "nsys": "NO_REPORT",
+      "cause": "exact runner invoked post-native torch profiler, producing CUPTI multiple-subscriber conflict under NSYS",
+      "scientific_or_observer_semantics_changed": false
+    },
+    {
+      "attempt": 2,
+      "gpu_active_seconds": 9,
+      "lock_released": true,
+      "scope": "NSYS structural only",
+      "wrapper_result": "PASS_576_OCCURRENCES",
+      "nsys": "NO_REPORT",
+      "cause": "NSYS 2024.6 NVTX capture-range trigger did not emit a report",
+      "scientific_or_observer_semantics_changed": false
+    },
+    {
+      "attempt": 3,
+      "gpu_active_seconds": 11,
+      "lock_released": true,
+      "scope": "NSYS structural only",
+      "nsys": "PASS",
+      "transport": "full-process cuda,nvtx trace with CPU sampling disabled; only the target outer NVTX range is interpreted",
+      "scientific_or_observer_semantics_changed": false
+    }
+  ],
+  "cumulative_gpu_active_seconds": 40,
+  "gpu_active_cap_seconds": 60,
+  "within_cap": true,
+  "all_failed_attempt_evidence_preserved_in_raw": true
+}
