@@ -1,0 +1,49 @@
+{
+  "goal": "C16_STAGEA_LOW_OVERHEAD_OBSERVER_V2_SOURCE_QUALIFICATION_109_V1",
+  "node": "109",
+  "execution_class": "CPU_SOURCE_ONLY",
+  "status": "OBSERVER_V2_SOURCE_READY_FOR_CANARY_REVIEW",
+  "authority": {
+    "commit": "3f62f909a474e4c56695ffacf36ddcb5d7b5f147",
+    "tree": "4b9a1c07ee6b16997957d804f26ab57d0ca3853e",
+    "base_runner_sha256": "1f68c1117623cbc46f98f51f17ba798d8bf5ffb103f427b9d7b916ced0a35020"
+  },
+  "candidate": {
+    "runner_path": "util/vm_tlb/c16/stagea_runtime_qualification/runner.py",
+    "runner_sha256": "7f2a76a375eaa4f652553fc523f785a753180ef1402291e54beb2256ed02bb22",
+    "patch_path": "OBSERVER_V2_SOURCE_DIFF.patch",
+    "patch_sha256": "7769e8b85480c2bfd3f178c77dcd3b66a6b8d5c7b8bf13c9f5002e9dc9b968c9"
+  },
+  "frozen_v1_evidence": {
+    "neutrality_receipt_sha256": "fd3f8ac88509d15f670f7bec8c3ad3d3cf1bef85ad40a6fb570cca8f35b20331",
+    "threshold_receipt_sha256": "b51d5bf955f2dddc2b5f91560148d7d86944f5b77ea41b1c6a15162cf9432e50",
+    "final_decision_sha256": "82d0bbd82c39c594f2331a4c09ada206148c076d642a75e3dea73af83e32dca9",
+    "modified": false
+  },
+  "static_checks": {
+    "python_compile": "PASS",
+    "clean_base_patch_replay_exact": "PASS",
+    "hooksession_cuda_event_constructors": 0,
+    "request_level_cuda_event_constructors": 2,
+    "nvtx_push_in_hooksession": 1,
+    "nvtx_pop_in_hooksession": 1,
+    "semantic_ordinal_preserved": true,
+    "semantic_input_output_shapes_preserved": true,
+    "semantic_module_selector_unchanged": true,
+    "target_configuration_unchanged": true,
+    "profiler_kernel_inventory_path_unchanged": true,
+    "outer_request_timing_path_unchanged": true,
+    "neutrality_threshold_unchanged": true,
+    "v1_payload_modified": false
+  },
+  "diagnostic_support": {
+    "DQ1_operator_phase_wall_union": "SUPPORTED_BY_NVTX_CUDA_CORRELATION",
+    "DQ3_slow_window_kernel_correlation": "SUPPORTED_BY_NVTX_ORDINAL_CUDA_CORRELATION",
+    "DQ4a_producer_consumer_chronology": "SUPPORTED_BY_ORDERED_NVTX_AND_SHAPE_RECEIPT"
+  },
+  "runtime_claim": "NOT_TESTED_SOURCE_QUALIFICATION_ONLY",
+  "gpu_executed": false,
+  "gpu_lock_acquired": false,
+  "model_loaded": false,
+  "canary_authorized": false
+}

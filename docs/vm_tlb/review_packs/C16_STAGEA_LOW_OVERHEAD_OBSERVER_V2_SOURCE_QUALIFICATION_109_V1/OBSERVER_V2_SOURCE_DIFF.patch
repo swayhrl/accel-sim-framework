@@ -1,0 +1,56 @@
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/runner.py b/util/vm_tlb/c16/stagea_runtime_qualification/runner.py
+index 5e7f96d3..a75a2c0e 100755
+--- a/util/vm_tlb/c16/stagea_runtime_qualification/runner.py
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/runner.py
+@@ -109,7 +109,7 @@ class HookSession:
+         self.collect = collect
+         self.handles = []
+         self.pending = {}
+-        self.events = []
++        self.ranges = []
+         self.order = []
+         self.ordinal = 0
+
+@@ -123,24 +123,22 @@ class HookSession:
+         def hook(module, args):
+             ordinal = self.ordinal; self.ordinal += 1
+             label = f"C16_STAGEA_{ordinal}_{name}"
++            input_shape = list(args[0].shape) if args and isinstance(args[0], torch.Tensor) else None
+             torch.cuda.nvtx.range_push(label)
+-            start = torch.cuda.Event(enable_timing=True)
+-            stop = torch.cuda.Event(enable_timing=True)
+-            start.record()
+-            self.pending[id(module)] = (ordinal, name, start, stop,
+-                                        list(args[0].shape) if args and isinstance(args[0], torch.Tensor) else None)
++            self.pending[id(module)] = (ordinal, name, label, input_shape)
+         return hook
+
+     def make_post(self, name):
+         def hook(module, args, output):
+-            ordinal, module_name, start, stop, input_shape = self.pending.pop(id(module))
+-            stop.record(); torch.cuda.nvtx.range_pop()
++            ordinal, module_name, label, input_shape = self.pending.pop(id(module))
++            torch.cuda.nvtx.range_pop()
+             value = output[0] if isinstance(output, (tuple, list)) and output and isinstance(output[0], torch.Tensor) else output
+             output_shape = list(value.shape) if isinstance(value, torch.Tensor) else None
+             if self.collect:
+-                self.events.append((ordinal, module_name, start, stop, input_shape, output_shape))
+                 self.order.append({"ordinal": ordinal, "module": module_name,
+                                    "input_shape": input_shape, "output_shape": output_shape})
++                self.ranges.append({"ordinal": ordinal, "module": module_name, "label": label,
++                                    "input_shape": input_shape, "output_shape": output_shape})
+         return hook
+
+     def remove(self):
+@@ -152,9 +150,8 @@ class HookSession:
+     def receipt(self):
+         return {"semantic_order": self.order,
+                 "semantic_order_sha256": sha_json(self.order),
+-                "event_timings_ms": [{"ordinal": o, "module": n, "elapsed_ms": float(s.elapsed_time(e)),
+-                                      "input_shape": i, "output_shape": out}
+-                                     for o, n, s, e, i, out in self.events]}
++                "semantic_ranges": self.ranges,
++                "semantic_ranges_sha256": sha_json(self.ranges)}
+
+
+ def profiler_inventory(call):

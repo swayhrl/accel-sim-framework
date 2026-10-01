@@ -1,0 +1,102 @@
+{
+  "goal": "C16_AWQ_OBSERVER_V2_REQUAL_CANARY_109_V1",
+  "status": "DRAFT_FOR_PROJECT_APPROVAL",
+  "authorized_for_execution": false,
+  "node": "109",
+  "gpu": "RTX4080_SM89",
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "scope": {
+    "targets": [
+      "QWEN_AWQ"
+    ],
+    "graph_modes": [
+      "GRAPH_OFF"
+    ],
+    "excluded_targets": [
+      "QWEN_BF16",
+      "OLMOE"
+    ],
+    "purpose": "observer_neutrality_requalification_only",
+    "scientific_tier0": false
+  },
+  "authority": {
+    "runtime_qualification_commit": "3f62f909a474e4c56695ffacf36ddcb5d7b5f147",
+    "runtime_qualification_tree": "4b9a1c07ee6b16997957d804f26ab57d0ca3853e",
+    "frozen_neutrality_receipt_sha256": "fd3f8ac88509d15f670f7bec8c3ad3d3cf1bef85ad40a6fb570cca8f35b20331",
+    "frozen_threshold_receipt_sha256": "b51d5bf955f2dddc2b5f91560148d7d86944f5b77ea41b1c6a15162cf9432e50",
+    "qwen_awq_runtime_receipt_sha256": "424c6a3f4b7329414226eea526cff5615542dbab1d5adba12d9cca53b5162326"
+  },
+  "runtime": {
+    "environment": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
+    "checkpoint_revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+    "reuse_accepted_stagea_checkpoint_tokenization_backend_and_sampling_receipts": true,
+    "model_loads": 1,
+    "fresh_process": true
+  },
+  "observer_v2": {
+    "per_occurrence_cuda_events": 0,
+    "outer_request_cuda_events": 2,
+    "semantic_nvtx_ranges": true,
+    "host_metadata": [
+      "ordinal",
+      "module",
+      "input_shape",
+      "output_shape"
+    ],
+    "off_run_use": "authoritative_native_request_wall",
+    "on_run_use": "neutrality_and_chronology_only",
+    "nsys_use": "one_lightweight_cuda_nvtx_structural_capture_excluded_from_native_timing_inference"
+  },
+  "protocol": {
+    "warmup_before_measurement": true,
+    "native_arm_order": [
+      "OFF",
+      "ON",
+      "ON",
+      "OFF",
+      "OFF",
+      "ON"
+    ],
+    "native_samples_per_arm": 3,
+    "gpu_active_seconds_cap": 60,
+    "stop_if_cap_would_be_exceeded": true,
+    "nsys_capture_count": 1,
+    "nsys_trace_domains": [
+      "cuda",
+      "nvtx"
+    ]
+  },
+  "acceptance": {
+    "tokens_exact": true,
+    "routing_exact_if_applicable": true,
+    "semantic_shapes_exact": true,
+    "semantic_order_exact": true,
+    "kernel_inventory_exact": true,
+    "neutrality_expression": "abs(median_on_ms - median_off_ms) <= max(5.0, 0.10 * median_off_ms)",
+    "threshold_relaxed_from_v1": false
+  },
+  "required_outputs": [
+    "all_individual_native_samples",
+    "median_off_ms",
+    "median_on_ms",
+    "neutrality_limit_ms",
+    "token_and_semantic_receipts",
+    "kernel_inventory_receipts",
+    "lightweight_nsys_capture_sha256",
+    "gpu_lock_receipt"
+  ],
+  "forbidden": [
+    "OLMOE",
+    "scientific_Tier0",
+    "NCU",
+    "NVBit",
+    "SASS",
+    "threshold_change",
+    "instrumented_ON_wall_as_authoritative_native_timing"
+  ],
+  "decision_values": [
+    "OBSERVER_V2_NEUTRALITY_PASS",
+    "OBSERVER_V2_NEUTRALITY_FAIL",
+    "CANARY_ENGINEERING_STOP"
+  ]
+}
