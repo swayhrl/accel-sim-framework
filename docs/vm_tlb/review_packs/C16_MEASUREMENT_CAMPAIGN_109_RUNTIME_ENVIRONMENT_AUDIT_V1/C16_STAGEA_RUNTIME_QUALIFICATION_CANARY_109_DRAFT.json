@@ -1,0 +1,91 @@
+{
+  "authorized_to_execute": false,
+  "forbidden_in_canary": [
+    "scientific performance conclusion",
+    "NCU profiling",
+    "NVBit",
+    "SASS",
+    "Accel-Sim",
+    "fallback backend",
+    "requantization"
+  ],
+  "gpu": "NVIDIA GeForce RTX 4080",
+  "gpu_active_cap_seconds": 240,
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "instrumentation_pair": {
+    "checks": [
+      "tokens",
+      "numeric correctness",
+      "shapes",
+      "routing",
+      "kernel inventory",
+      "wall-time neutrality"
+    ],
+    "off": "no observational hooks",
+    "on": "frozen NVTX plus identical CUDA events"
+  },
+  "node": 109,
+  "postcondition": "publish receipts and STOP for project review; no campaign measurement",
+  "purpose_only": [
+    "model loads",
+    "VRAM feasibility",
+    "correctness",
+    "tokenization receipt match",
+    "actual selected backend/kernel identity",
+    "instrumentation ON/OFF neutrality",
+    "graph OFF/ON strong-path qualification"
+  ],
+  "runtime_environment": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
+  "schema": "C16_STAGEA_RUNTIME_QUALIFICATION_CANARY_109_DRAFT_V1",
+  "status": "DRAFT_FOR_PROJECT_APPROVAL",
+  "stop_conditions": [
+    "load failure",
+    "OOM",
+    "tokenization mismatch",
+    "correctness mismatch",
+    "routing mismatch",
+    "backend identity unresolved",
+    "instrumentation non-neutral",
+    "graph ON not semantically identical",
+    "240-second cap"
+  ],
+  "targets": [
+    {
+      "dtype": "bfloat16",
+      "graph_off_then_on": true,
+      "id": "QWEN_BF16",
+      "model": "Qwen/Qwen2.5-3B-Instruct",
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+    },
+    {
+      "graph_off_then_on": true,
+      "id": "QWEN_AWQ",
+      "model": "Qwen/Qwen2.5-3B-Instruct-AWQ",
+      "quantization": {
+        "bits": 4,
+        "group_size": 128,
+        "method": "awq",
+        "zero_point": true
+      },
+      "revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd"
+    },
+    {
+      "dtype": "bfloat16",
+      "graph_off": {
+        "batch": 1,
+        "context": 512,
+        "decode": 32,
+        "max_model_len": 544,
+        "max_num_seqs": 1
+      },
+      "graph_on_qualification": true,
+      "id": "OLMOE",
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "revision": "b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e",
+      "risk": "STRONG_RUNTIME_VRAM_RISK"
+    }
+  ],
+  "vllm_commit": "ced6857afa0ea7b2e3f0846a62e1394e90f15607",
+  "vllm_tag": "v0.30.0"
+}

@@ -1,0 +1,3 @@
+# Instrumentation canary plan — not authorized for execution
+
+For each approved runtime family, execute one bounded OFF/ON pair only after project approval. OFF has no observational ranges; ON adds the frozen NVTX ranges and identical outer CUDA events. Require exact token/correctness, shapes, routing (for OLMoE), kernel name/count/grid/block inventory and ordering. Compare native CUDA-event wall time with a predeclared neutrality tolerance; NSYS duration is not the primary timing endpoint. Use only `nsys profile --trace=cuda,nvtx` for the ON structural capture. If instrumentation changes correctness, scheduling, kernel inventory, or exceeds the predeclared wall tolerance, STOP. No capture is performed by this audit.
