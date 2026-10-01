@@ -1,61 +1,40 @@
 # AWMA论文阅读笔记｜ChatGPT支线
 
-更新：Round20，2026-10-01。文献、作者源码、执行receipt与研究判断分开。当前Lane E/174-new、Lane F/109、Lane G/109全部STOP；无新GPU或Accel-Sim授权。
+更新：2026-10-02，Round21。**Lane E/F/G、109新实验和174/Accel-Sim均STOP。** 当前只发布问题发现与准备卡，没有新execution Goal。
 
 ## 当前入口
 
-- [Round20：具身学习的批量环境计算问题发现](rounds/2026-10-01_ROUND_20_EMBODIED_COMPUTE_PROBLEM_DISCOVERY.md)：优先检查MuJoCo Warp逐world早退之后的发射/调度成本；同平台约束容量作为备选。不是已成立的性能瓶颈或新硬件机制。
-- [R20准备卡](problem_cards/R20_ACTIVE_WORLD_SOLVER_PREPARATION.md)：一个公开scene/control回放、一个工作点、竞争解释与最小干预；不是execution Goal。
-- [R20来源登记](empirical/ROUND20_SOURCE_REGISTER.tsv)与[16条证据记录](empirical/ROUND20_EXPERIMENT_EVIDENCE.tsv)：12条混合论文/文档/源码来源，不称12篇全文论文；源码路径不冒充实验结果。
-- [R19最终FP8收口](https://github.com/swayhrl/accel-sim-framework/blob/04aef0608776cb869f2203681c73f26befeb70b9/docs/vm_tlb/chatgpt_handoff/awma/r19_parallel_opportunity_v1/FINAL_R19_FP8_CLOSEOUT_2026-10-01.md)：FP8同表示软件诊断回收大部分headroom；不是stock TE已部署能力。此历史协调文档的F2 tree字段有笔误，实际F2 tree为`0170bcf4b1d0ab75fe4a60fcb0cef5d940c27957`，见R20来源说明及Git commit对象；不影响raw和结果。
+- [Round21：R20后的问题发现](rounds/2026-10-02_ROUND_21_POST_R20_PROBLEM_DISCOVERY.md)：筛查3DGS、几何神经网络、Muon和生成式推荐。只保留“强软件之后的动态图就绪成本”作为准备优先级；不是已测瓶颈或硬件机会。
+- [R21动态几何图准备卡](problem_cards/R21_DYNAMIC_GRAPH_READINESS_PREPARATION.md)：先核真实trained模型/输入/后端兼容性；prepared graph、GPU邻居构建和合法reuse先纳入基线。不是节点执行指令。
+- [R21来源登记](empirical/ROUND21_SOURCE_REGISTER.tsv)：五篇论文正文关键部分、作者文章/官方资料与固定源码的阅读范围分别登记，不冒充全文复现。
+- [R21证据与决策表](empirical/ROUND21_EVIDENCE_AND_DECISIONS.tsv)：源码事实、论文结果、假设和既有AWMA结果分开。
 
-## Round18与此前筛选
+## R20最终状态：关闭，不重跑
 
-- [Round18全面横向复审](rounds/2026-10-01_ROUND_18_COMPREHENSIVE_FRONTIER_REVIEW.md)：41项原始来源，15项正文关键部分、26项原始摘要；另核3份作者仓库文档。覆盖低比特、执行编译、MoE、SSM/TTT、扩散、Agent、视频、混部、压缩、通信、稀疏、翻译及可靠性/能耗/异构外围。
-- [来源登记](empirical/ROUND18_SOURCE_REGISTER.tsv)：指定版本/阅读深度/限制，不将取回失败当作者未公开。
-- [60条实验与分析证据](empirical/ROUND18_EXPERIMENT_EVIDENCE.tsv)：含摘要级aggregate，不称所有记录具备完整复现配置。
-- [AWMA边界账本](empirical/ROUND18_AWMA_BOUNDARY_LEDGER.tsv)：做过什么、未做什么、仍未知什么及核查深度。
-- [R18候选与最小检验](problem_cards/R18_SHORTLIST_AND_MINIMAL_TESTS.md)：历史准备优先级已被R19执行更新，不能据此恢复旧Goal。
-- [Round18勘误：R53实际已执行](rounds/2026-10-01_ROUND18_ERRATUM_R53_EXECUTION.md)：R53 authority为`843ad43ad...`，最终`R53_ALGORITHM_CHANGE_NOT_MAPPING_GAIN_V1`；后续动态执行不得重命名复跑该边界。
+最终执行：`hrl/awma-r20r5-hybrid-native-109-v1@57ffbd4a8c8fedb1f050913bd2801c76eb1a4e7c`，tree `45c273a8bab7c51ba77d7417bf6ef64fcda3fe05`。
 
-## 需要首先继承的解释修正
+最终审查：`hrl/awma-r20r5-hybrid-native-handoff-v1@0c6cda2f680fa93ed5ea7d4b098eef5044a8a0c4`，文件`docs/vm_tlb/chatgpt_handoff/awma/r20r5_hybrid_native_v1/STATUS_AFTER_R20R5_FINAL_CLOSURE.md`。
 
-R17R1正式execution标签与raw保留，但**Q1比完整Q32 batch先完成，不能证明没有单query可优化残差**。研究判断是“质量合格的成熟软件基准已建立，GPU-local残差仍未归因/未资格化”；不重启实验、不改历史证据。
+保留三种不同证据：固定always-worklist S1约66.6%退化是有效窄scope测量；O2=11.77%是跨run零开销估算；最终hybrid正式B0发生exact-niter失配，没有有效性能结论。关闭是投入/合同终点，不是所有active-world方法无收益的证明。
 
-R53已实际执行并收口为`R53_ALGORITHM_CHANGE_NOT_MAPPING_GAIN_V1`；Round18正文中“未取得完成receipt”的说法以勘误文件为准。
+## 历史记录与解释边界
 
-Round16分别是：R102输入未资格化；VLA工作真实但state/lifetime目标成本未知；CCE特定zero-init成本经局部软件协议消除。不同终点不能都算“整个领域无空间”。
+完整Round20及Round18导航、历史authority与更早README入口均原样保存在[Round21前README快照](README_BEFORE_ROUND21_2026-10-02.md)。原文献/实验文件未删除、未重写。
 
-R19分别是：FP8 readiness在已测边界通过精确软件诊断消除大部分；fast-weight特定第三方artifact/两chunk scope中主要机会为软件组织；IBP诊断的因果合同未资格化，不能称dense buffer无成本。
+必须继承：
 
-允许现象驱动与文献驱动小原型并行；5%不是所有探索的统一前置条件。冻结基线不等于禁止候选改变明确的结构/策略。
+- R53有实际执行，`843ad43ad33153bf73a0e51aed6d8ac309356cae`，不能根据旧“仅设计”条目重开。
+- R17中Q1快于整个Q32 batch不证明单query无残差；保留停止但不夸大充分性。
+- R19 FP8是同表示软件诊断消除主要成本，不是stock TE已提供该融合，不外推所有低精度。
+- IBP/GraphSAGE是因果诊断未资格化，不是dense staging零成本。
+- CCE zero-init、两chunk fast-weight、selector/grammar等均有既有窄scope结果；不能换模型/名称重新发现。
 
-## 最新执行authority（只读引用）
+## 默认研究与交付规则
 
-- R19F2：`7b87638e74164cdffc21c0d280324bcb048b6a8d`，tree `0170bcf4b1d0ab75fe4a60fcb0cef5d940c27957`，`docs/vm_tlb/review_packs/AWMA_R19F2_FP8_SOFTWARE_COUNTERFACTUAL_109_V1/`。
-- R19 fast-weight：`4ef10349b198d6989ab666309fbe95ce8993bc56`。
-- R19E1 IBP设计：`a758be1017f35caa55dda6ad529d1b6c5f141553`。
-- Round16收口：`31d585dc44f90eb70f83603c8b87a2d06efff01a`，`docs/vm_tlb/chatgpt_handoff/awma/round16_dual_lane_v1/FINAL_ROUND16_CLOSEOUT_2026-09-30.md`。
-- R17R1：`29ecc6e5e37005046b1a563c830bed9ae58af656`，`docs/vm_tlb/review_packs/AWMA_R17R1_GRAPH_SEARCH_109_V2/FINAL_DECISION.md`。
-- R17 LaneG最近邻：`f72aca7938a1b2e8bb2f62953e308444babd8489`，独立CPU文献分支；引用其已报告结果，不合并其worktree。
-- R53执行：`843ad43ad33153bf73a0e51aed6d8ac309356cae`，`docs/vm_tlb/review_packs/AWMA_R53_ONLINE_WORKSET_QUALIFICATION_V1/FINAL_DECISION.md`。
+问题→最近邻能力→真实输入→最小对照；模型资产不决定研究问题。允许小原型辅助发现，理想headroom只在其假设清楚时使用，不把结构比例叫可实现加速。
 
-## 历史索引
+功能与observer分离、默认OFF；资格检查与真正采集合并滚动进行。新实验的失败输出应先保存再抛异常，不为追回旧失败数组重跑已关闭工作。Source/API存在不等于109 runtime合格，复用工程不继承科学结论。
 
-完整的Round01–17导航、基础11篇阅读笔记、旧commit索引与74条历史workload口径，保存在同目录的[更新前README快照](README_PRE_ROUND18.md)。原文献文件未删除、旧实验未重写。
+Git仅保存代码、紧凑报告、索引和receipt。大资产/raw仍以164为authority，109是活跃副本，174不本地stage大trace。
 
-近期历史入口：
-- [Round17检索筛选](rounds/2026-09-30_ROUND_17_RETRIEVAL_PROBLEM_SCREEN.md)
-- [Round15横向收口](rounds/2026-09-30_ROUND_15_HORIZONTAL_CLOSEOUT_AND_CURRENT_FRONTIER.md)
-- [Round11宽范围算法与数据流](rounds/2026-09-27_ROUND_11_ALGEBRA_COMPRESSION_AND_CLOSED_LOOP.md)
-- [Round09跨方向文献](rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md)
-- [Round06 R53设计](rounds/2026-09-27_ROUND_06_R53_RESEARCH_AND_DESIGN.md)：设计不是完成receipt。
-- [Round04问题发现](rounds/2026-09-26_ROUND_04_PROBLEM_DISCOVERY.md)：旧优先级不是当前执行命令。
-
-## 使用规则
-
-原始来源→具体实验组→控制变量/实际硬件→证据层级→适用边界。作者观察、我们的推断、候选假设分开；缺失保持未知。不得把吞吐摊销、profiled局部比例、模拟器干预差值直接叫真实可加运行时间或硬件收益。
-
-不同轮次有重复阅读，篇数不能直接累加。KEY不是逐字全文审计；ABS不是完整实验资格；源码可获取不是已在109运行。原论文PDF不入仓库；大raw/模型仍按node164 authority、109活跃副本、174不存大trace规则执行。
-
-分支：`hrl/awma-chatgpt-literature-notes-v1`。目录：`docs/vm_tlb/literature_notes/awma/`。
+分支：`hrl/awma-chatgpt-literature-notes-v1`。
