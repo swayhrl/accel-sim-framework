@@ -17,7 +17,7 @@ REQUIRED = (
     "AI_TRANSLATION_SPECIALNESS.tsv", "C16_VIRTUAL_PAGE_PROXY.tsv", "PAGE_WORKING_SET_CURVES.tsv",
     "SOURCE_SHARD_SELECTION.tsv", "MOE_PAGE_BEHAVIOR.tsv", "SEGMENTABILITY_STATIC_SCREEN.tsv",
     "TRANSLATION_HEADROOM_STATUS.md", "TOP_TRANSLATION_PROBLEMS.md", "FINAL_DECISION.json",
-    "c16_translation_proxy.py", "verify_pack.py",
+    "PROVENANCE_AND_CHANGELOG.md", "c16_translation_proxy.py", "verify_pack.py",
 )
 
 

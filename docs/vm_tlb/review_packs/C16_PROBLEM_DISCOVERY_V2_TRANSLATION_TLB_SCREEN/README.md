@@ -25,6 +25,7 @@ The paper by Cheon et al. directly supports long-lived LLM weight versus growing
 - `GPU_TRANSLATION_LITERATURE_TIMELINE.md` and `LITERATURE_EVIDENCE_MATRIX.tsv`: chronological and per-paper evidence.
 - `c16_translation_proxy.py`: deterministic CPU parser and synthetic record self-test.
 - `verify_pack.py`: schema, numeric, SHA and deterministic rerun verifier.
+- `PROVENANCE_AND_CHANGELOG.md`: source anchors, commit lineage, changed paths and raw-log index.
 - `SHA256SUMS`: pack file hashes, excluding itself.
 
 ## Provenance and validation
