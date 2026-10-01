@@ -1,0 +1,129 @@
+{
+  "DRAM_bytes": "UNKNOWN",
+  "L2_miss": "UNKNOWN",
+  "O0": "optimistic 128B line first-touch reference, not sector service",
+  "O1": "32B sector visits per warp-line vs unique sectors per shard",
+  "O2": "logical 2B BF16 lane reads vs exact unique bytes per shard",
+  "authority_commit": "734e6a7ca49bd8cbf16eeb0702cf80755afc23f1",
+  "cache_hit": "UNKNOWN",
+  "lineages": {
+    "DEEPSEEK": {
+      "O0_avoidable_128B_line_visits": 180224,
+      "O0_avoidable_fraction": 0.5,
+      "O1_avoidable_byte_equivalent": 5767168,
+      "O1_avoidable_fraction": 0.5,
+      "O1_avoidable_sector_visits": 180224,
+      "O1_dynamic_sector_visits": 360448,
+      "O1_unique_sectors": 180224,
+      "O2_avoidable_fraction": 0.5,
+      "O2_avoidable_logical_bytes": 5767168,
+      "O2_dynamic_logical_bytes": 11534336,
+      "O2_unique_logical_bytes": 5767168,
+      "classes": {
+        "EXACT_BYTE_REVISIT": 180224
+      },
+      "cross_CTA_duplicate_bytes": 0,
+      "cross_CTA_duplicate_sector_visits": 0,
+      "cross_warp_revisited_lines": 0,
+      "executed_weight_shards": 84,
+      "line_visits_per_unique": 2.0,
+      "observed_cta_counts": [
+        512
+      ],
+      "observed_warp_counts": [
+        1024
+      ],
+      "run_id": "C16R_deepseek-v2-lite_s2-text_decode_nvbit-warp-mref-shard_v23r1-moe-e4-down_20260917T024000Z_b23b23b23b23",
+      "same_CTA_duplicate_bytes": 5767168,
+      "same_CTA_duplicate_sector_visits": 180224,
+      "same_warp_revisited_lines": 180224,
+      "shards": 243,
+      "static_source_map_sha256": "d686a6e86bcc7ccc90f1c3c68f5abbec87da07a68a0942638119cab241854492",
+      "weight_lane_bytes_per_weight_bytes": 2.0,
+      "weight_unique_128B_lines": 180224,
+      "weight_warp_line_visits": 360448
+    },
+    "OLMOE": {
+      "O0_avoidable_128B_line_visits": 0,
+      "O0_avoidable_fraction": 0.0,
+      "O1_avoidable_byte_equivalent": 0,
+      "O1_avoidable_fraction": 0.0,
+      "O1_avoidable_sector_visits": 0,
+      "O1_dynamic_sector_visits": 131072,
+      "O1_unique_sectors": 131072,
+      "O2_avoidable_fraction": 0.0,
+      "O2_avoidable_logical_bytes": 0,
+      "O2_dynamic_logical_bytes": 4194304,
+      "O2_unique_logical_bytes": 4194304,
+      "classes": {
+        "UNKNOWN": 131072
+      },
+      "cross_CTA_duplicate_bytes": 0,
+      "cross_CTA_duplicate_sector_visits": 0,
+      "cross_warp_revisited_lines": 0,
+      "executed_weight_shards": 64,
+      "line_visits_per_unique": 1.0,
+      "observed_cta_counts": [
+        512
+      ],
+      "observed_warp_counts": [
+        1024
+      ],
+      "run_id": "C16R_olmoe-1b-7b-0125-instruct_s2-t2048-d32_decode32_nvbit1771-c16warp1_expert58-down-proj-actual-a_20260922T100810Z_fc0f3cf67edf",
+      "same_CTA_duplicate_bytes": 0,
+      "same_CTA_duplicate_sector_visits": 0,
+      "same_warp_revisited_lines": 0,
+      "shards": 243,
+      "static_source_map_sha256": "cb20c01619acf563de69776a7a098b21c31c6ce6d836ea0bc0beab9fe42c979b",
+      "weight_lane_bytes_per_weight_bytes": 1.0,
+      "weight_unique_128B_lines": 131072,
+      "weight_warp_line_visits": 131072
+    },
+    "Q30": {
+      "O0_avoidable_128B_line_visits": 98304,
+      "O0_avoidable_fraction": 0.16666666666666663,
+      "O1_avoidable_byte_equivalent": 8388608,
+      "O1_avoidable_fraction": 0.16666666666666666,
+      "O1_avoidable_sector_visits": 262144,
+      "O1_dynamic_sector_visits": 1572864,
+      "O1_unique_sectors": 1310720,
+      "O2_avoidable_fraction": 0.0,
+      "O2_avoidable_logical_bytes": 0,
+      "O2_dynamic_logical_bytes": 3145728,
+      "O2_unique_logical_bytes": 3145728,
+      "classes": {
+        "SAME_SECTOR_REVISIT": 98304,
+        "UNKNOWN": 393216
+      },
+      "cross_CTA_duplicate_bytes": 0,
+      "cross_CTA_duplicate_sector_visits": 0,
+      "cross_warp_revisited_lines": 0,
+      "executed_weight_shards": 20,
+      "line_visits_per_unique": 1.2,
+      "observed_cta_counts": [
+        512
+      ],
+      "observed_warp_counts": [
+        2048
+      ],
+      "run_id": "C16R_qwen3-30b-a3b_s2-text_decode_nvbit-warp-mref-shard_s2-dec3-natural-expert21-down_20260917T034400Z_e210c0de5678",
+      "same_CTA_duplicate_bytes": 0,
+      "same_CTA_duplicate_sector_visits": 262144,
+      "same_warp_revisited_lines": 98304,
+      "shards": 243,
+      "static_source_map_sha256": "39e20358f885a5738af7b15d4a819ab04932d2e8475670ca4507a54ef5a1a081",
+      "weight_lane_bytes_per_weight_bytes": 1.0,
+      "weight_unique_128B_lines": 491520,
+      "weight_warp_line_visits": 589824
+    }
+  },
+  "scope": "independent accepted shard replays; no cross-shard address union",
+  "template6_static_map_comparison": {
+    "common_static_index_count": 243,
+    "deepseek_selected": 243,
+    "different_static_indices": [],
+    "identical_offset_opcode_sass_count": 243,
+    "olmoe_selected": 243
+  },
+  "time_saving": "UNKNOWN"
+}
