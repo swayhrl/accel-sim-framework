@@ -1,0 +1,8 @@
+rule_id	applies_to	frozen_trigger	action	interpretation_guard	authority
+ST_LOCAL_WEIGHT	DQ1;DQ2;DQ3;DQ4a	local wall weight < 0.03	STOP_LOCAL_LINE	use natural parent wall union; no sum of overlapping modules	5f0335b5f991890348e60e1f23a546f393f86d8b
+ST_ZERO_COST_CEILING	DQ1;DQ2;DQ3;DQ4a	zero-cost whole-run incremental ceiling < 0.02	STOP_LINE	Amdahl-style optimistic ceiling, not achieved speedup	5f0335b5f991890348e60e1f23a546f393f86d8b
+ST_STRONG_GRAPH_CONTROL	DQ1;DQ2;DQ3;DQ4a	Graph ON absorbs >= 0.85 of matched observed Graph-OFF gap	STOP_DIRECTION	freeze matched gap estimator first; no direct per-range OFF-to-ON mapping	5f0335b5f991890348e60e1f23a546f393f86d8b
+ST_CORRECTNESS	ALL_ACTIVE	correctness or required observer neutrality fails	STOP_POINT	no tolerance change, backend substitution, or salvage timing	3f62f909a474e4c56695ffacf36ddcb5d7b5f147
+ST_TRAFFIC_ONLY	DQ3	traffic difference without native timing exposure	STOP_MEMORY_LINE	traffic is not time; no memory-service mechanism claim	5f0335b5f991890348e60e1f23a546f393f86d8b
+ST_MOE_IDENTITY	DQ4b;MP06	OLMoE graph-mode expert-set divergence persists	NOT_EXECUTION_READY	original canary failure and frozen logprob tolerance remain	8b677cfa541877f559614f7bf22a40dd11cebd56
+ST_AWQ_V2	MP05	Observer V2 runtime qualification FAIL or not yet PASS	DROP_OR_HOLD_MP05	V2 source readiness alone is insufficient; no replacement point	f63d39c8d90ced038445c264fa8242c524a1aa6f

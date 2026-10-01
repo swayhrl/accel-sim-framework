@@ -1,0 +1,9 @@
+point_id	model_path	phase_or_batch	original_role	current_stage_a_status	runtime_basis	asset_input_basis	future_gpu_active_cap_min	condition_or_blocker
+MP01	QWEN_BF16	prefill B1	discovery	ACTIVE_CORE	RUNTIME_READY	ASSET_INPUT_READY	2	separate reviewed 109 Tier0 contract required
+MP02	QWEN_BF16	decode B1	discovery	ACTIVE_CORE	RUNTIME_READY	ASSET_INPUT_READY	2	separate reviewed 109 Tier0 contract required
+MP03	QWEN_BF16	decode B4	transition	ACTIVE_CORE	RUNTIME_READY	ASSET_INPUT_READY	2	separate reviewed 109 Tier0 contract required
+MP04	QWEN_BF16	decode B16	holdout	HOLDOUT_NOT_EXECUTED	NOT_STAGEA_TESTED	IDENTITY_ONLY	0	DQ2 holdout after committed discovery freeze and separate Stage B review
+MP05	QWEN_AWQ	decode B1	control	CONDITIONAL_ON_OBSERVER_V2_PASS	V1_INSTRUMENTATION_NON_NEUTRAL	ASSET_INPUT_READY	3	V2 source qualification is not runtime PASS; FAIL drops point without replacement
+MP06	OLMOE	decode B1	discovery	CAMPAIGN_QUESTION_NOT_EXECUTION_READY	GRAPH_MODE_EXPERT_SET_DIVERGENCE	ASSET_INPUT_READY	0	original correctness failure preserved; no Graph OFF/ON identity substitution
+MP07	GRANITE	decode B1	holdout	DEFERRED_MOE_HOLDOUT	NOT_QUALIFIED	NO_ASSET_REQUIRED_NOW	0	DQ4b deferred; no Stage A execution or asset preparation
+MP08	QWEN_BF16	long-context decode B1	holdout	HOLDOUT_NOT_EXECUTED	NOT_STAGEA_TESTED	IDENTITY_ONLY	0	DQ1/DQ3/DQ4a holdout after committed discovery freeze and separate Stage B review

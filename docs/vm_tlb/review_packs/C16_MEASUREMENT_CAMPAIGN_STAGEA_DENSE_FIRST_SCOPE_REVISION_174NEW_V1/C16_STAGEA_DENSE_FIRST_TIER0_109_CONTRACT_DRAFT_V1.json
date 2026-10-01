@@ -1,0 +1,51 @@
+{
+  "schema": "C16_STAGEA_DENSE_FIRST_TIER0_109_CONTRACT_DRAFT_V1",
+  "status": "DRAFT_PENDING_AWQ_OBSERVER_V2_RESULT",
+  "authorized_for_execution": false,
+  "node_if_later_approved": "109",
+  "pinned_models": {
+    "QWEN_BF16": {"repository": "Qwen/Qwen2.5-3B-Instruct", "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"},
+    "QWEN_AWQ": {"repository": "Qwen/Qwen2.5-3B-Instruct-AWQ", "revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd"}
+  },
+  "point_scenarios": {
+    "MP01": "QWEN_BF16 prefill B1, frozen 512-token input",
+    "MP02": "QWEN_BF16 decode B1 D0-D31, frozen 512-token input",
+    "MP03": "QWEN_BF16 decode B4 D0-D31, frozen 512-token per-request inputs",
+    "MP05": "QWEN_AWQ decode B1 D0-D31, frozen 512-token input"
+  },
+  "input_receipt_authority": "c3f625e46adb8d5c4082ded8b61858c710e1f4e9:TOKENIZATION_RECEIPTS.tsv",
+  "authority": {
+    "campaign_design_commit": "5f0335b5f991890348e60e1f23a546f393f86d8b",
+    "asset_input_closure_commit": "c3f625e46adb8d5c4082ded8b61858c710e1f4e9",
+    "runtime_qualification_commit": "3f62f909a474e4c56695ffacf36ddcb5d7b5f147",
+    "olmoe_diagnostic_commit": "8b677cfa541877f559614f7bf22a40dd11cebd56",
+    "observer_v2_source_commit": "f63d39c8d90ced038445c264fa8242c524a1aa6f"
+  },
+  "static_branches": {
+    "AWQ_OBSERVER_V2_PASS": {
+      "point_allowlist": ["MP01", "MP02", "MP03", "MP05"],
+      "gpu_active_cap_minutes": 9,
+      "per_point_cap_minutes": {"MP01": 2, "MP02": 2, "MP03": 2, "MP05": 3}
+    },
+    "AWQ_OBSERVER_V2_FAIL": {
+      "point_allowlist": ["MP01", "MP02", "MP03"],
+      "gpu_active_cap_minutes": 6,
+      "per_point_cap_minutes": {"MP01": 2, "MP02": 2, "MP03": 2},
+      "replacement_point": null
+    }
+  },
+  "branch_selection": "Only a separately accepted runtime Observer V2 PASS under the unchanged V1 neutrality/correctness gate may select the PASS branch; source qualification alone cannot. A FAIL selects the FAIL branch after project review. Pending result does not select or authorize either branch.",
+  "excluded_points": ["MP04", "MP06", "MP07", "MP08"],
+  "holdout_execution": false,
+  "olmoe_execution": false,
+  "budget_transfer_from_mp06": false,
+  "tier0_tools_only": ["native_cuda_event_request_timing", "graph_off_on_strong_control", "nvtx", "lightweight_nsys_cuda_nvtx", "kernel_inventory", "shape_order", "launch_gap_chronology"],
+  "forbidden_tools": ["NCU", "NVBit", "SASS", "Accel-Sim"],
+  "native_timing_authority": "instrumentation_OFF_request_runs",
+  "instrumented_wall_role": "neutrality_only",
+  "graph_off_role": "semantic_chronology_and_diagnostic_local_wall",
+  "graph_on_role": "mature_strong_software_and_native_whole_request_control",
+  "required_prelaunch_review": ["exact_point_allowlist", "accepted_awq_v2_result_if_mp05", "source_and_input_sha", "correctness_and_kernel_identity", "native_timing_endpoints", "matched_graph_gap_estimator", "observer_neutrality", "bounded_capture_count", "gpu_lock_and_budget"],
+  "stop_rules_file": "UPDATED_STOP_RULES.tsv",
+  "automatic_109_start": false
+}
