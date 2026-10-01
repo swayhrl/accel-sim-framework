@@ -1,0 +1,28 @@
+id	kind	authority	path_or_url	blob_or_sha256	lines_or_section	claim_scope
+S01	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	src/compress.cu	8a1eaa143521781118c48d51ed8d09af75b833e9	176-235	Pinned/CUDA in-place compression and GPU bitmask
+S02	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	src/decompress.cu	9dc3d81c4705e0d1f029d873e11d17432712fc08	10-155	Output tensor allocation/reuse and kernel dispatch
+S03	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	include/decompress/ibp_decompress_host.cuh	ca21cdd04316fd53ea00d9153887472d5cbf308a	1-169	Separate warp/TB decompression kernel launches
+S04	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	include/decompress/ibp_decompress_kernel.cuh	2007e14473430d28876da80d714441748f602c33	16-111,235-293	Writes reconstructed selected vectors to output
+S05	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	include/decompress/ibp_decompress_dev.cuh	4f8cbda6528c57523817a418150345e34014ad59	130-335,394-563	Device helper writes dest elements
+S06	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	include/ibp_dev_func.cuh	b0a5d2146a8d3d1596dd697ea27e49e8d197b81d	3-72	Additional device decode-and-write helper
+S07	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	ibp/__init__.py	22fc5ed56d5b19b9c7f967ae95d88f3dd410ed7d	38-41	Python wrapper accepts keyword output_tensor/imp
+S08	GIT	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	tests/dlrm_comp_merged.py	02a75954d7b505259b989df305930f744c5538de	109-121,203-235	Real pretrained weights but random lookup IDs
+S09	GIT	AKKamath/InfiniGen-IBP@529e2e31335aa65791d0ef17d718d593691591f7	speedup/flexgen/original/pytorch_backend.py	e8f43b5f8a05671da992931eae87f3e93fb6ed1b	153-166,1143-1162	Host weight compression and dense GPU destination
+S10	GIT	AKKamath/InfiniGen-IBP@529e2e31335aa65791d0ef17d718d593691591f7	speedup/flexgen/original/flex_gemma.py	034a1ce072a3e0f0f60edb4aad88dd873e81ab75	192-196,854-867	Dense weight consumer F.linear
+S11	GIT	AKKamath/InfiniGen-IBP@529e2e31335aa65791d0ef17d718d593691591f7	speedup/infinigen/infinigen/kv_selection_controller.py	899ad94e6dc23ec8e8e1e6f015b4bef92284fe71	29-74	Selected dense KV tensors after IBP fetch
+S12	GIT	AKKamath/DGL-IBP@eafc5b39176c50cd8a979179ffd7ec9f7c864cfb	python/dgl/storages/pytorch_tensor.py	d83a5331355bd1ecd8a5c36966b2ac674a7d23e7	28-97	Feature fetch returns selected dense GPU tensor
+S13	GIT	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/comp_cache/compress_cache_kernel.cuh	9d03f4fc048efe1c5f4526967210c9c3f2907bf1	475-581	Cache lookup/CPU fetch/decode fused but output_features materialized
+S14	GIT	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/comp_cache/static_cache.cu	f8caf0aac136cbe58804a5c89a7514a407bff712	656-770	Transfer dispatch and output_buffer
+S15	GIT	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/cache/cache.cu	ac8d29966a25c58bab28c87043fdfcc4d799cf3b	781-795	Selected features written to dst_float_buffer
+S16	GIT	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	training_backend/legion_graphsage.py	719d94447d0b6aea63a63e4315d6ec0ba9e64e3d	87-108	get_next wait and subsequent model(blocks,features)
+S17	GIT	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	dataset/prepare_reddit.py	5b0c9599d88a15a4f2045bf2df3f58220b740db2	1-48	Unscaled real DGL Reddit graph/features/labels
+S18	GIT	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	Makefile	8a5e13888e5686a586fffa6fbd6cb1d350ae9203	14-46,98-117,143-173	Single-GPU IBP(C/M) Reddit command composition
+S19	GIT	AKKamath/ColossalAI@151938279a63d5901a46bd997145342116d1267e	colossalai/legacy/nn/parallel/layers/cache_embedding/cache_mgr.py	03c9b9be1a6cd79a7450b3b60d0c82047b975afb	146-176,519-559	DLRM miss-row decode scratch and dense cache fill
+S20	GIT	AKKamath/ColossalAI@151938279a63d5901a46bd997145342116d1267e	colossalai/legacy/nn/parallel/layers/cache_embedding/cached_embedding.py	2752427f117aee7a259ea3f688e57c89e51ded7d	123-143	F.embedding_bag consumes dense cache
+P01	PDF	Kamath et al. EuroSys 2026	https://akkamath.github.io/files/EuroSys26_IBP.pdf	88ecab4596a16a1c5076521533feeada410adbbe5e50cb9bd208692a0e2ba55e	§4-6,Figure 9	IBP placement, real Reddit wait, author evaluation scope; PDF not committed
+P02	PRIMARY_HTML	DFloat11 arXiv 2504.11651v3	https://arxiv.org/html/2504.11651v3	NOT_LOCAL_HASHED	§2.3.2-2.3.3	Two-phase full-weight decode then GEMM
+P03	PRIMARY_HTML	ZipServ arXiv 2603.17435v1	https://arxiv.org/html/2603.17435v1	NOT_LOCAL_HASHED	§4.3,§5-6	Decode fused ZipGEMM; prefill decoupled
+P04	PRIMARY_HTML	Tan et al. arXiv 2606.15789v1	https://arxiv.org/html/2606.15789v1	NOT_LOCAL_HASHED	§III,§V-C	Tile-rANS decode directly into GEMM shared memory
+P05	VENDOR_DOC	NVIDIA nvCOMP Device API	https://docs.nvidia.com/cuda/nvcomp/device_api.html	NOT_LOCAL_HASHED	User API	Device decompression primitive, not app compute fusion
+P06	VENDOR_DOC	NVIDIA nvCOMPDx	https://docs.nvidia.com/cuda/nvcompdx/index.html	NOT_LOCAL_HASHED	Overview	Newer device decompression library
+P07	PRIMARY_HTML	UCCL-Zip arXiv 2604.17172v2	https://arxiv.org/html/2604.17172v2	NOT_LOCAL_HASHED	Abstract/method	Compression and communication fusion, not GraphSAGE consumer

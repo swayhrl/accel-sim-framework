@@ -1,9 +1,10 @@
 # AWMA论文阅读笔记｜ChatGPT支线
 
-更新：Round18，2026-10-01。文献、作者源码、执行receipt与研究判断分开。当前Lane E/174-new、Lane F/109、Lane G/109全部STOP。
+更新：R19 Lane E，2026-10-01。文献、作者源码、执行receipt与研究判断分开。下方 Round18 的 Lane STOP 状态是当时快照；本轮只更新 174-new 的 CPU/source 文献支线，不代表 109 两条 lane 的当前执行状态。
 
 ## 当前入口
 
+- [R19 IBP consumer 源码/最近邻审查](rounds/2026-10-01_R19_IBP_CONSUMER_SCOUT.md)：固定 IBP 与四个作者子模块；GraphSAGE/Reddit 有尚未融合的 dense sampled-feature 交接与公开数据上的暴露等待，获准写[一次性 Native 证伪准备卡](problem_cards/R19_IBP_DIRECT_CONSUMER_PREPARATION.md)。`R19_IBP_DIRECT_CONSUMER_CANDIDATE_QUALIFIED` 只表示准备资格，不是执行或创新结论。
 - [Round18全面横向复审](rounds/2026-10-01_ROUND_18_COMPREHENSIVE_FRONTIER_REVIEW.md)：41项原始来源，15项正文关键部分、26项原始摘要；另核3份作者仓库文档。覆盖低比特、执行编译、MoE、SSM/TTT、扩散、Agent、视频、混部、压缩、通信、稀疏、翻译及可靠性/能耗/异构外围。
 - [来源登记](empirical/ROUND18_SOURCE_REGISTER.tsv)：指定版本/阅读深度/限制，不将取回失败当作者未公开。
 - [60条实验与分析证据](empirical/ROUND18_EXPERIMENT_EVIDENCE.tsv)：含摘要级aggregate，不称所有记录具备完整复现配置。
