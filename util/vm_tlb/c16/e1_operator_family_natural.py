@@ -45,6 +45,7 @@ def main():
     parser.add_argument("--run-index", type=int, default=0)
     parser.add_argument("--output")
     parser.add_argument("--timeline-nvtx", choices=("off", "on"), default="off")
+    parser.add_argument("--gate-up-concurrency", choices=("off", "on"), default="off")
     args = parser.parse_args()
     contract = json.loads((ROOT / "contracts/CONDITION_MATRIX_PRECONTRACT.json").read_text())
     spec = condition_spec(args.condition, contract)
@@ -82,6 +83,8 @@ def main():
     captures = {}
     handles = []
     original_mlp_forwards = {}
+    gate_stream = None
+    up_stream = None
 
     def semantic_range(label, call):
         """Add an observational range only during the four measured decode steps."""
@@ -93,7 +96,7 @@ def main():
         finally:
             torch.cuda.nvtx.range_pop()
 
-    def make_mlp_forward(layer_index, mlp):
+    def make_sequential_mlp_forward(layer_index, mlp):
         def instrumented_forward(self, hidden_state):
             gate = self.gate_proj(hidden_state)
             activated = semantic_range(
@@ -109,10 +112,49 @@ def main():
 
         return types.MethodType(instrumented_forward, mlp)
 
-    if args.timeline_nvtx == "on":
+    def make_concurrent_mlp_forward(layer_index, mlp):
+        def concurrent_forward(self, hidden_state):
+            original_stream = torch.cuda.current_stream(hidden_state.device)
+            hidden_ready = torch.cuda.Event(enable_timing=False)
+            gate_done = torch.cuda.Event(enable_timing=False)
+            up_done = torch.cuda.Event(enable_timing=False)
+            hidden_ready.record(original_stream)
+            hidden_state.record_stream(gate_stream)
+            hidden_state.record_stream(up_stream)
+            with torch.cuda.stream(gate_stream):
+                gate_stream.wait_event(hidden_ready)
+                gate = self.gate_proj(hidden_state)
+                activated = semantic_range(
+                    f"C16_FFN_TIMELINE_L{layer_index}_{phase['value']}_ACTIVATION",
+                    lambda: self.act_fn(gate),
+                )
+                gate_done.record(gate_stream)
+            with torch.cuda.stream(up_stream):
+                up_stream.wait_event(hidden_ready)
+                up = self.up_proj(hidden_state)
+                up_done.record(up_stream)
+            original_stream.wait_event(gate_done)
+            original_stream.wait_event(up_done)
+            activated.record_stream(original_stream)
+            up.record_stream(original_stream)
+            product = semantic_range(
+                f"C16_FFN_TIMELINE_L{layer_index}_{phase['value']}_MULTIPLY",
+                lambda: activated * up,
+            )
+            return self.down_proj(product)
+
+        return types.MethodType(concurrent_forward, mlp)
+
+    if args.gate_up_concurrency == "on":
+        gate_stream = torch.cuda.Stream()
+        up_stream = torch.cuda.Stream()
         for layer_index, layer in enumerate(layers):
             original_mlp_forwards[layer_index] = layer.mlp.forward
-            layer.mlp.forward = make_mlp_forward(layer_index, layer.mlp)
+            layer.mlp.forward = make_concurrent_mlp_forward(layer_index, layer.mlp)
+    elif args.timeline_nvtx == "on":
+        for layer_index, layer in enumerate(layers):
+            original_mlp_forwards[layer_index] = layer.mlp.forward
+            layer.mlp.forward = make_sequential_mlp_forward(layer_index, layer.mlp)
 
     def make_pre(layer_index, role):
         def hook(module, module_args):
@@ -164,6 +206,9 @@ def main():
             del prefill
             if args.timeline_nvtx == "on":
                 torch.cuda.nvtx.range_push("C16_FFN_TIMELINE_DECODE_D0_D3")
+            decode_wall_start = torch.cuda.Event(enable_timing=True)
+            decode_wall_stop = torch.cuda.Event(enable_timing=True)
+            decode_wall_start.record()
             for decode_index in range(4):
                 token_tensors.append(current.detach())
                 active_decode["value"] = decode_index
@@ -179,6 +224,7 @@ def main():
                 step_events.append((start, stop))
                 active_decode["value"] = None
                 del result
+            decode_wall_stop.record()
             if args.timeline_nvtx == "on":
                 torch.cuda.nvtx.range_pop()
         torch.cuda.synchronize()
@@ -202,7 +248,7 @@ def main():
             for row in occurrences:
                 if (row["input_sha256"], row["output_sha256"]) != accepted[(row["layer"], row["role"], row["decode_index"])]:
                     raise RuntimeError(f"occurrence identity drift L{row['layer']} {row['role']} D{row['decode_index']}")
-        result = {"status": "PASS", "condition": args.condition, "run_index": args.run_index, "mode": spec["mode"], "set_name": spec["set_name"], "selected_roles": spec["selected_roles"], "selected_module_count": spec["selected_count"], "hit_ratio": spec["hit_ratio"], "target_persisting": spec["persisting"], "generated_token_ids_D0_D3": token_ids, "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in step_events], "occurrences": occurrences, "module_census": module_census, "call_order": call_order, "policy_receipt": policy_receipt, "policy_transitions": transitions, "policy_transition_count": len(transitions), "all_84_ffn_instrumented": True, "no_reset_between_transitions": True, "no_inner_loop_synchronize": True}
+        result = {"status": "PASS", "condition": args.condition, "run_index": args.run_index, "mode": spec["mode"], "set_name": spec["set_name"], "selected_roles": spec["selected_roles"], "selected_module_count": spec["selected_count"], "hit_ratio": spec["hit_ratio"], "target_persisting": spec["persisting"], "generated_token_ids_D0_D3": token_ids, "decode_wall_ms": float(decode_wall_start.elapsed_time(decode_wall_stop)), "decode_step_ms": [float(start.elapsed_time(stop)) for start, stop in step_events], "occurrences": occurrences, "module_census": module_census, "call_order": call_order, "policy_receipt": policy_receipt, "policy_transitions": transitions, "policy_transition_count": len(transitions), "all_84_ffn_instrumented": True, "no_reset_between_transitions": True, "no_inner_loop_synchronize": True}
     finally:
         for layer_index, original_forward in original_mlp_forwards.items():
             layers[layer_index].mlp.forward = original_forward
@@ -212,6 +258,7 @@ def main():
     if result["policy_transition_count"] != expected_updates:
         raise RuntimeError(f"transition count {result['policy_transition_count']} != {expected_updates}")
     result["timeline_nvtx"] = args.timeline_nvtx
+    result["gate_up_concurrency"] = args.gate_up_concurrency
     text = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.output:
         Path(args.output).write_text(text)

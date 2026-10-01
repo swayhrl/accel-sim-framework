@@ -1,0 +1,33 @@
+{
+  "activated": {
+    "consumer": "original",
+    "handling": [
+      "gate_done wait",
+      "record_stream(original_stream)"
+    ],
+    "producer": "gate_stream"
+  },
+  "hidden_state": {
+    "consumers": [
+      "gate_stream",
+      "up_stream"
+    ],
+    "handling": [
+      "record_stream(gate_stream)",
+      "record_stream(up_stream)",
+      "hidden_ready waits"
+    ],
+    "producer": "original"
+  },
+  "reason": "B1 token mismatch prevents runtime lifetime/race acceptance",
+  "status": "STATIC_RECORD_STREAM_PLAN_PRESENT_RUNTIME_SAFETY_NOT_ESTABLISHED",
+  "up": {
+    "consumer": "original",
+    "handling": [
+      "up_done wait",
+      "record_stream(original_stream)"
+    ],
+    "producer": "up_stream"
+  },
+  "use_after_free_claim": "NOT_MADE"
+}

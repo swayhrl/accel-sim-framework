@@ -1,0 +1,25 @@
+{
+  "device_or_layer_synchronize_added": false,
+  "event_timing_enabled": false,
+  "gate_stream": [
+    "wait hidden_ready",
+    "gate_proj",
+    "SiLU",
+    "record gate_done"
+  ],
+  "original_stream": [
+    "record hidden_ready",
+    "wait gate_done",
+    "wait up_done",
+    "multiply",
+    "down_proj"
+  ],
+  "policy_hook_execution": "inside actual gate/up stream contexts; down remains original stream",
+  "runtime_acceptance": "REJECTED_BY_TOKEN_IDENTITY_STOP",
+  "status": "STATIC_DEPENDENCY_CLOSURE_PASS_RUNTIME_CORRECTNESS_FAILED",
+  "up_stream": [
+    "wait hidden_ready",
+    "up_proj",
+    "record up_done"
+  ]
+}
