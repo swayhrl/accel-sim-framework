@@ -1,0 +1,13 @@
+# Translation problem screen
+
+Final decision: `NO_C16_TRANSLATION_PROBLEM_QUALIFIED_YET`. Qualified count: **0** (maximum allowed: 2).
+
+| Screened question | Virtual-page phenomenon | Distinct from ordinary streaming/cache? | Literature/software guard | Legal next oracle now? | Decision |
+| --- | --- | --- | --- | --- | --- |
+| Does natural MoE routing reset a useful translation footprint between experts? | The three captures each show one contiguous expert down-weight tensor. Cross-expert page-set transitions and reuse are `UNKNOWN`. | `UNKNOWN`; different captured expert tensor sizes must be coverage controlled. | Large-page/contiguity, LATPC and DEPOT are relevant controls; no direct MoE result was found in checked papers. | No same-process multi-expert VA sequence or C16 PTW timing bound to routing. | `STOP_UNESTABLISHED_PHENOMENON` |
+| Does growing KV evict reusable weight translations in current C16 decode? | Directly shown in the Segmentation paper's modeled LLM with synthetic long-context KV; current C16 expert shards contain no KV VA sequence. | `UNKNOWN` for C16. | Segmentation directly addresses the proposed weight side, including a strong paging/sub-entry baseline. | No C16 paired weight/KV page timeline and no translation timing. | `STOP_PAPER_NEIGHBOR_AND_C16_AUTHORITY_GAP` |
+| Does large weight streaming create translation headroom? | Mapped Q30/DeepSeek/OLMoE weights span 48/88/64 unique 64 KB pages in selected shards; 128 B line touch reuse is lower than page touch reuse. | The observed addresses support a cache versus page distinction, but no translation service bottleneck. | Mosaic/large pages, Avatar, LATPC and segmentation are strong neighbors. | No translation stall attribution. | `STOP_NO_TIME_ORACLE` |
+| Is page-walk concurrency the bottleneck? | No C16 PTW or MSHR observation. | `UNKNOWN`. | SoftWalker/cuPTW already target this class. | No C16 walker queue timing. | `STOP_NO_PHENOMENON` |
+| Is wafer-scale or UVM translation relevant here? | No wafer mesh, remote PTE path, page fault or migration in the selected C16 resident decode evidence. | Not a current single-GPU C16 pathway. | HDPAT/Clover/RIPPLE/ACOPT and GPUVM address different systems. | Not applicable to this Goal. | `STOP_OUT_OF_SCOPE` |
+
+The nearest next research question, if separate authority later appears, is MoE page-set turnover at matched executed-shard coverage. At present it is a question, not a qualified C16 problem or a claim of a new mechanism. The paper's weight/KV hypothesis is important but already has a direct segmentation neighbor and lacks a C16 long-context translation timeline.

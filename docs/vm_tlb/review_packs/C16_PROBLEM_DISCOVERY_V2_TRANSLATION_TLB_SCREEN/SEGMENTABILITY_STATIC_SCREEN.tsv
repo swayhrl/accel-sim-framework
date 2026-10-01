@@ -1,0 +1,17 @@
+model	object	static_screen	large_contiguous_VA	stable_base	regular_offset	long_lifetime	physical_contiguity	fragmentation	basis_and_boundary
+Q30	expert_down_weight	PARTIAL	YES_one_3145728B_tensor	YES_within_isolated_call	YES_within_tensor	UNKNOWN	UNKNOWN	UNKNOWN	ADDRESS_CONTEXT and mref_949 page set; one expert tensor only; Segmentation requires physical contiguity too
+DEEPSEEK	expert_down_weight	PARTIAL	YES_one_5767168B_tensor	YES_within_isolated_call	YES_within_tensor	UNKNOWN	UNKNOWN	UNKNOWN	ADDRESS_CONTEXT and mref_937 page set; no multi-expert allocation map
+OLMOE	expert_down_weight	PARTIAL	YES_one_4194304B_tensor	YES_within_isolated_call	YES_within_tensor	UNKNOWN	UNKNOWN	UNKNOWN	ADDRESS_CONTEXT and static_101 page set; no multi-expert allocation map
+QWEN25_AWQ	all_weights	PARTIAL	NO_single_buffer_proof; 368 context WEIGHT ranges	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Older capture maps many weight allocations but selected nonzero mref addresses are unmapped; no segment claim
+Q30	KV	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Isolated expert shard contains no KV address authority
+DEEPSEEK	KV	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Isolated expert shard contains no KV address authority
+OLMOE	KV	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Isolated expert shard contains no KV address authority
+QWEN25_AWQ	KV	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Older selected shard object class is unmapped; no KV mapping
+Q30	activations	LOW	NO_input_1536B_output_4096B	YES_within_call	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Context only shows tiny input/output buffers; no material large segment in this kernel
+DEEPSEEK	activations	LOW	NO_input_2816B_output_4096B	YES_within_call	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Context only shows tiny input/output buffers; no material large segment in this kernel
+OLMOE	activations	LOW	NO_input_2048B_output_4096B	YES_within_call	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Context only shows tiny input/output buffers; no material large segment in this kernel
+QWEN25_AWQ	activations	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Selected nonzero VA refs are not mapped to an object class
+Q30	all_expert_weights	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Only expert21 down tensor captured; no common VA/PA map over experts
+DEEPSEEK	all_expert_weights	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Only expert4 down tensor captured; no common VA/PA map over experts
+OLMOE	all_expert_weights	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Only expert58 down tensor captured; no common VA/PA map over experts
+QWEN25_AWQ	expert_weights	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	Dense Qwen2.5 AWQ does not provide a MoE expert-weight case

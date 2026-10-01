@@ -1,0 +1,35 @@
+{
+  "goal": "C16_PROBLEM_DISCOVERY_V2_TRANSLATION_TLB_SCREEN",
+  "node": "174-new",
+  "terminal_state_sha": "ca6c33ae0431d91aa7c6a43cbb79522402dd7580",
+  "execution": "CPU_ONLY_EXISTING_DATA",
+  "decision": "NO_C16_TRANSLATION_PROBLEM_QUALIFIED_YET",
+  "qualified_problem_count": 0,
+  "qualified_problems": [],
+  "translation_time_headroom": "TRANSLATION_TIME_HEADROOM_UNKNOWN",
+  "translation_access_fraction": "UNKNOWN",
+  "translation_zero_whole_decode_ceiling": "UNKNOWN",
+  "ai_specialness": {
+    "segmentation_paper_llm_weight_kv_model": "AI_SPECIAL_TRANSLATION_BEHAVIOR_SUPPORTED",
+    "current_c16_moe_inter_expert_translation": "AI_SPECIALNESS_NOT_YET_ESTABLISHED",
+    "current_c16_weight_stream_translation_cost": "AI_SPECIALNESS_NOT_YET_ESTABLISHED"
+  },
+  "c16_address_evidence": {
+    "scope": "ONE_STATIC_MREF_SHARD_PER_EXISTING_CAPTURE; NOT_WHOLE_DECODE",
+    "q30_expert_weight_64kb_pages": 48,
+    "deepseek_expert_weight_64kb_pages": 88,
+    "olmoe_expert_weight_64kb_pages": 64,
+    "qwen25_awq": "UNMAPPED_OBJECT_VA_PROXY_ONLY",
+    "not_observed": [
+      "TLB_HIT",
+      "PAGE_WALK",
+      "PHYSICAL_FRAGMENTATION",
+      "TRANSLATION_STALL_TIME",
+      "INTER_EXPERT_PAGE_SET_TRANSITION",
+      "WEIGHT_KV_COMPETITION_IN_C16"
+    ]
+  },
+  "future_109_contract_generated": false,
+  "rationale": "Mapped single-expert weight pages show page reuse distinct from line touches, but no translation-specific service time or cross-expert page transition is established. The direct LLM weight/KV literature neighbor already provides segmentation under different assumptions. The qualification gates are not met.",
+  "prohibited_operations_executed": false
+}
