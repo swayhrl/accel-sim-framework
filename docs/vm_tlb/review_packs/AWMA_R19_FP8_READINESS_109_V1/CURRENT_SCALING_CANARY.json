@@ -1,0 +1,105 @@
+{
+  "TE_version": "2.19.0",
+  "all_finite": true,
+  "cosine": 0.9992077946662903,
+  "cublasLt_version": 120405,
+  "device_capability": [
+    8,
+    9
+  ],
+  "first_call_ms_not_primary": 16.341050853952765,
+  "first_output_dtype": "torch.bfloat16",
+  "input_payload_sha256": "5ac9e6eb35ec2676926481d563628b80d528dac3dbdbe87bece26d21f4c54b48",
+  "input_quantized_data": {
+    "bytes": 229376,
+    "device": "cuda:0",
+    "dtype": "torch.uint8",
+    "shape": [
+      1,
+      256,
+      896
+    ]
+  },
+  "input_quantized_type": "Float8TensorStorage",
+  "input_shape": [
+    1,
+    256,
+    896
+  ],
+  "is_fp8_available": true,
+  "is_fp8_reason": "",
+  "layer_fp8_flag": true,
+  "max_abs": 0.1171875,
+  "max_rel_eps1e6": 10713.8828125,
+  "mean_abs": 0.008739947341382504,
+  "native_FP8_tensor_path_verified": true,
+  "numerical_allclose": false,
+  "numerical_tolerance": {
+    "atol": 0.0675,
+    "rtol": 0.125,
+    "source": "TE v2.19 tests/pytorch/utils.py E4M3, unchanged from excluded canary"
+  },
+  "peak_allocated_bytes": 85590528,
+  "peak_reserved_bytes": 106954752,
+  "quantizers": {
+    "scaling_bwd": [
+      {
+        "amax": null,
+        "scale": null,
+        "type": "Float8CurrentScalingQuantizer"
+      },
+      {
+        "amax": null,
+        "scale": null,
+        "type": "Float8CurrentScalingQuantizer"
+      }
+    ],
+    "scaling_fwd": [
+      {
+        "amax": null,
+        "scale": null,
+        "type": "Float8CurrentScalingQuantizer"
+      },
+      {
+        "amax": null,
+        "scale": null,
+        "type": "Float8CurrentScalingQuantizer"
+      },
+      {
+        "amax": null,
+        "scale": null,
+        "type": "Float8CurrentScalingQuantizer"
+      }
+    ]
+  },
+  "recipe": "Float8CurrentScaling E4M3 default per-tensor non-power-of-two scales",
+  "source_commit": "5e52befd5262c06289106338c308079d6adb391f",
+  "stage": "AWMA_R19_FP8_READINESS_109_V1",
+  "status": "CANARY_NOT_QUALIFIED",
+  "steady_output_dtype": "torch.bfloat16",
+  "torch": "2.6.0+cu124",
+  "torch_cuda": "12.4",
+  "weight_cache": {
+    "weight": {
+      "amax": null,
+      "data": {
+        "bytes": 4358144,
+        "device": "cuda:0",
+        "dtype": "torch.uint8",
+        "shape": [
+          4864,
+          896
+        ]
+      },
+      "scale": null,
+      "type": "Float8Tensor"
+    }
+  },
+  "weight_cache_keys": [
+    "weight"
+  ],
+  "weight_shape": [
+    4864,
+    896
+  ]
+}

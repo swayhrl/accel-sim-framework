@@ -1,0 +1,195 @@
+{
+  "TE_version": "2.19.0",
+  "all_finite": true,
+  "cosine": 0.9987149834632874,
+  "cublasLt_version": 120405,
+  "device_capability": [
+    8,
+    9
+  ],
+  "first_call_ms_not_primary": 19.62105999700725,
+  "first_output_dtype": "torch.bfloat16",
+  "input_payload_sha256": "5ac9e6eb35ec2676926481d563628b80d528dac3dbdbe87bece26d21f4c54b48",
+  "input_quantized_data": {
+    "bytes": 229376,
+    "device": "cuda:0",
+    "dtype": "torch.uint8",
+    "shape": [
+      1,
+      256,
+      896
+    ]
+  },
+  "input_quantized_type": "Float8TensorStorage",
+  "input_shape": [
+    1,
+    256,
+    896
+  ],
+  "is_fp8_available": true,
+  "is_fp8_reason": "",
+  "layer_fp8_flag": true,
+  "max_abs": 0.1171875,
+  "max_rel_eps1e6": 25533.06640625,
+  "mean_abs": 0.011249619536101818,
+  "native_FP8_tensor_path_verified": true,
+  "numerical_allclose": false,
+  "numerical_tolerance": {
+    "atol": 0.0675,
+    "rtol": 0.125,
+    "source": "TE v2.19 tests/pytorch/utils.py E4M3"
+  },
+  "peak_allocated_bytes": 85592576,
+  "peak_reserved_bytes": 106954752,
+  "quantizers": {
+    "scaling_bwd": [
+      {
+        "amax": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [
+            1
+          ],
+          "values": [
+            0.0
+          ]
+        },
+        "scale": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [],
+          "values": [
+            1.0
+          ]
+        },
+        "type": "Float8Quantizer"
+      },
+      {
+        "amax": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [
+            1
+          ],
+          "values": [
+            0.0
+          ]
+        },
+        "scale": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [],
+          "values": [
+            1.0
+          ]
+        },
+        "type": "Float8Quantizer"
+      }
+    ],
+    "scaling_fwd": [
+      {
+        "amax": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [
+            1
+          ],
+          "values": [
+            12.25
+          ]
+        },
+        "scale": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [],
+          "values": [
+            1.0
+          ]
+        },
+        "type": "Float8Quantizer"
+      },
+      {
+        "amax": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [
+            1
+          ],
+          "values": [
+            0.279296875
+          ]
+        },
+        "scale": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [],
+          "values": [
+            1.0
+          ]
+        },
+        "type": "Float8Quantizer"
+      },
+      {
+        "amax": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [
+            1
+          ],
+          "values": [
+            0.0
+          ]
+        },
+        "scale": {
+          "bytes": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "shape": [],
+          "values": [
+            1.0
+          ]
+        },
+        "type": "Float8Quantizer"
+      }
+    ]
+  },
+  "recipe": "DelayedScaling E4M3 margin=0 history=8 amax=max",
+  "source_commit": "5e52befd5262c06289106338c308079d6adb391f",
+  "stage": "AWMA_R19_FP8_READINESS_109_V1",
+  "status": "CANARY_NOT_QUALIFIED",
+  "steady_output_dtype": "torch.bfloat16",
+  "torch": "2.6.0+cu124",
+  "torch_cuda": "12.4",
+  "weight_cache": {
+    "weight": {
+      "amax": null,
+      "data": {
+        "bytes": 4358144,
+        "device": "cuda:0",
+        "dtype": "torch.uint8",
+        "shape": [
+          4864,
+          896
+        ]
+      },
+      "scale": null,
+      "type": "Float8Tensor"
+    }
+  },
+  "weight_cache_keys": [
+    "weight"
+  ],
+  "weight_shape": [
+    4864,
+    896
+  ]
+}
