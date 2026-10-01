@@ -1,0 +1,9 @@
+# C16 Stage A asset and input closure
+
+CPU/storage-only continuation of execution preflight `2f922c402c7f16c2bed278d07e12650cbaf82bfc` and design `5f0335b5f991890348e60e1f23a546f393f86d8b`. **Scope is future Stage A MP01/02/03/05/06**, with MP04/08 only reusing the same Qwen BF16 asset and MP07 Granite weight preparation explicitly deferred. No 109 science, GPU inference, profiler/trace, simulator, mechanism or holdout execution is performed.
+
+Read `FINAL_DECISION.json`, `STAGEA_ASSET_MANIFEST.tsv`, both Qwen durable asset receipts, OLMoE reverify, `TOKENIZATION_RECEIPTS.tsv`, `BATCH_INPUT_LENGTH_AUDIT.tsv` and `HOLDOUT_NONEXECUTION_GOVERNANCE_V2.md`. The two Qwen model revisions are immutable and all model files are transferred to 164 only after local hash closure, then independently rehashed at the durable target with safetensors index/header checks. AWQ is not requantized. OLMoE is rehashed, not downloaded.
+
+The 20 source byte streams from preflight are unchanged. CPU-only pinned tokenizers and their exact chat templates generate model-specific token IDs, prompt counts and SHA receipts; no model forward or generated token exists. B4/B16 context-length distributions are reported without prompt substitution. Holdout source/token identities may be computed, but MP04/07/08 produce **no output**. Stage B requires a committed discovery freeze receipt with SHA before any holdout runner may initialize.
+
+Scripts in `util/vm_tlb/c16/` and `test_stagea_closure.py` regenerate/audit the pack. `SHA256SUMS` covers all deliverables, token ID files and scripts. Asset bytes live at the two exact durable roots under `/root/share/mnt164/huangrulin/c16_ai_workload/assets/models/`, not in Git. A Stage A asset/input-ready decision does **not** authorize 109 execution or resolve the earlier strong-runtime/VRAM gates.

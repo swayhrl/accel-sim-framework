@@ -1,0 +1,11 @@
+# Holdout non-execution governance V2 — Stage A only
+
+Stage A is limited to MP01/MP02/MP03/MP05/MP06. MP04/MP07/MP08 may have **asset and tokenizer/input identity receipts**, but their model forward, token generation, NSYS/NCU capture and any scientific output are forbidden in this Goal and the first future Stage A 109 Goal. This separation is operational: the Stage A point allowlist must be checked by the future runner before model initialization. This pack contains no holdout model output; Granite weights were not prepared (`DEFERRED_HOLDOUT_ASSET`).
+
+The previous preflight's X.509 encrypted-output proposal remains an immutable historical proposal. It is **not** a prerequisite to Stage A because Stage A performs no holdout execution and produces no holdout output. Do not rewrite that historical preflight artifact or falsely report an operational encryption seal.
+
+After Stage A completes and the 174 consumer examines **only** Stage A data, it must create and commit `DISCOVERY_FREEZE_RECEIPT.json` before any holdout run. Minimum fields: `DQ_id`, `phenomenon`, `predicted_sign`, `estimator`, `materiality_threshold`, `STOP_rule`, and exact `holdout_point_ids` selected from MP04/MP07/MP08. The receipt must also bind the Stage A raw producer SHA/tree, source/tokenization identities, analysis script SHA and a canonical receipt SHA256. A coordination commit containing that receipt is the authorization gate; merely writing a local file is insufficient.
+
+Only a separately reviewed **Stage B** 109 runner may execute a holdout. Before initializing any model, that runner must fetch the trusted coordination branch, verify its exact expected commit/tree, recompute the committed freeze receipt SHA and check its exact point allowlist. If any field is missing, SHA differs, or the requested point is not in the receipt, STOP. Stage B has its own GPU budget and correctness contract; it is never an automatic continuation of Stage A. No post-hoc threshold, sign, estimator, STOP or holdout substitution is allowed.
+
+This addendum governs **non-execution now**; it does not assert that future holdout outputs have been encrypted or independently validated. Future project review may separately decide whether to retain, revise or replace the X.509 proposal for Stage B output custody.
