@@ -1,0 +1,139 @@
+{
+  "admission_gates": [
+    {
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false,
+      "id": "Q30_EXECUTED_COVERAGE",
+      "reason": "41/243 versus 169/243 and 129/243 is a static coverage contrast; different code and one selected module per lineage"
+    },
+    {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true,
+      "id": "Q30_SCATTERED_REQUEST_GEOMETRY",
+      "reason": "32-sector sparse Q30 versus one/two-sector DeepSeek/OLMoE persists per warp and role, but C16 warp geometry already classified familiar gemvx template/coalescing behavior; no new residual opportunity"
+    },
+    {
+      "A": false,
+      "B": true,
+      "C": true,
+      "D": false,
+      "E": true,
+      "id": "DEEPSEEK_OLMOE_INPUT_BROADCAST",
+      "reason": "DeepSeek and OLMoE share the two-lane input duplication; familiar within-warp broadcast and coupled template-6"
+    },
+    {
+      "A": true,
+      "B": true,
+      "C": true,
+      "D": true,
+      "E": true,
+      "id": "DEEPSEEK_WEIGHT_LINE_REVISIT",
+      "reason": "within one shard, DeepSeek weight lines are touched by two warp records per unique line versus Q30 1.2 and OLMoE 1.0; survives role/warp/weight-byte normalization; different from the closed W4 cross-M mapping and from within-warp input broadcast, but exact cause and time value are unknown"
+    },
+    {
+      "A": false,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false,
+      "id": "SHARD_EVENT_CONCENTRATION",
+      "reason": "top shares arise from differing executed static counts and one isolated module; no module/expert concentration population"
+    },
+    {
+      "A": false,
+      "B": false,
+      "C": false,
+      "D": true,
+      "E": false,
+      "id": "PHASE_ROUTING",
+      "reason": "C16WARP1 has no cross-shard chronology; Q30 E3 balanced proxy already sufficient, OLMoE lag-11 posthoc origin unresolved"
+    }
+  ],
+  "authority": {
+    "DEEPSEEK": {
+      "ack": "fe4768a91606bbbf89f1b28a897f0a6648fb8e83d3d621093313e03743ec1acf",
+      "catalog": "9ece3f570fbdaa8e026da39bee94c7f15b2c60bf14e292a66f6026104d18d81d",
+      "manifest": "d98b4a077afe9e7f2ce32479484e9c1148548b1ef1802c9b002dd70250b7b638",
+      "run": "C16R_deepseek-v2-lite_s2-text_decode_nvbit-warp-mref-shard_v23r1-moe-e4-down_20260917T024000Z_b23b23b23b23"
+    },
+    "OLMOE": {
+      "ack": "9c4d08a960f53acece00dbb3143cba460c22bc638ff4a879833c0e4460b98e39",
+      "catalog": "676422708f865c6b3287998dcde3dd126a469e83d3245bcf00fe11d07b9c1637",
+      "manifest": "8f3e5e338166a2ebc4da6b9a55986980d31227f3d0e383ca5a1f24d0d924f31b",
+      "run": "C16R_olmoe-1b-7b-0125-instruct_s2-t2048-d32_decode32_nvbit1771-c16warp1_expert58-down-proj-actual-a_20260922T100810Z_fc0f3cf67edf"
+    },
+    "Q30": {
+      "ack": "f59c9181eb5a6371d93cf648ff15aa771f4af6de04bd9121c9bf2090fb2731f4",
+      "catalog": "80c9d1309fb8d3f15514c9668ac00a6d8839cb6858aca7e347755eed58d2e434",
+      "manifest": "259b34c75ed8adbd8132d56e23a41fc02da97338f8510027f7da77ccb52dcd83",
+      "run": "C16R_qwen3-30b-a3b_s2-text_decode_nvbit-warp-mref-shard_s2-dec3-natural-expert21-down_20260917T034400Z_e210c0de5678"
+    }
+  },
+  "boundaries": [
+    "one selected expert/module per lineage",
+    "different decode points and input widths",
+    "shared gemvx implementation family",
+    "no cross-shard chronology or address union",
+    "no cache/TLB/DRAM claim"
+  ],
+  "decision": "CROSS_LINEAGE_ANOMALY_QUALIFIED_FOR_ORACLE_SCREEN",
+  "discovery_lineages": [
+    "Q30",
+    "DEEPSEEK",
+    "OLMOE"
+  ],
+  "goal": "C16_PROBLEM_DISCOVERY_V2_CROSS_LINEAGE_BEHAVIOR_SCREEN",
+  "gpu_used": false,
+  "independent_lineage_holdout": "NO_INDEPENDENT_LINEAGE_HOLDOUT",
+  "new_experiment_authorized": false,
+  "normalization": {
+    "DEEPSEEK": {
+      "active_lane_density": 0.9947033898305084,
+      "events_per_warp": 31.83050847457627,
+      "executed_fraction": 0.6954732510288066,
+      "warps_per_executed_shard": 2144.94674556213
+    },
+    "OLMOE": {
+      "active_lane_density": 0.9927325581395349,
+      "events_per_warp": 31.767441860465116,
+      "executed_fraction": 0.5308641975308642,
+      "warps_per_executed_shard": 1024.0
+    },
+    "Q30": {
+      "active_lane_density": 0.9802295918367347,
+      "events_per_warp": 31.367346938775512,
+      "executed_fraction": 0.16872427983539096,
+      "warps_per_executed_shard": 2447.609756097561
+    }
+  },
+  "qualified_candidate_count": 1,
+  "qualified_candidates": [
+    "DEEPSEEK_WEIGHT_LINE_REVISIT"
+  ],
+  "schema_version": 1,
+  "simulator_used": false,
+  "status": "PASS_CPU_ONLY",
+  "weight_revisit": {
+    "DEEPSEEK": {
+      "cross_warp_shared_line_fraction_within_shard": 1.0,
+      "logical_weight_lane_bytes_per_weight_byte": 2.0,
+      "warp_visits_per_unique_line_within_shard": 2.0
+    },
+    "OLMOE": {
+      "cross_warp_shared_line_fraction_within_shard": 0.0,
+      "logical_weight_lane_bytes_per_weight_byte": 1.0,
+      "warp_visits_per_unique_line_within_shard": 1.0
+    },
+    "Q30": {
+      "cross_warp_shared_line_fraction_within_shard": 0.2,
+      "logical_weight_lane_bytes_per_weight_byte": 1.0,
+      "warp_visits_per_unique_line_within_shard": 1.2
+    }
+  }
+}
