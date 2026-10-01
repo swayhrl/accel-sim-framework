@@ -1,0 +1,5 @@
+# AWMA R20R4 hybrid headroom audit, node109 — CPU-only
+
+Outcome: `R20R4_HYBRID_CANDIDATE_JUSTIFIED_FOR_REVIEW`, limited to one fixed-304 structural hybrid design and **not** permission to run it in this Goal. `PER_ITERATION_STAGE_TIME.tsv` contains every accepted selected-stage kernel-time/active-count join; `PROFILE_DECOMPOSITION_RECEIPT.json` proves exact closure to P1. `LATE_PHASE_ORACLE.tsv` gives per-entry and aggregate cross-run O1/O2 estimates; O3 is explicitly unknown. `STRUCTURAL_CANDIDATE_AUDIT.md`, `ORACLE_DECISION.md` and `HYBRID_CANDIDATE_DESIGN.md` delimit what the source and estimates support.
+
+The accepted R20R3P2 fixed 304-worker S1 slowdown remains a valid negative for that software organization. R20R4 did not run a second candidate, profiler or GPU workload; it did not use the GPU lock. Existing node164 authority was read through hash-matched 109 replicas only. `RAW_DATA_INDEX.tsv` binds the exact accepted inputs; `SHA256SUMS` closes the compact review and analysis code.
