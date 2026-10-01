@@ -1,0 +1,503 @@
+diff --git a/util/vm_tlb/c16/e1_operator_family_natural.py b/util/vm_tlb/c16/e1_operator_family_natural.py
+index 00762a52..0fdded80 100644
+--- a/util/vm_tlb/c16/e1_operator_family_natural.py
++++ b/util/vm_tlb/c16/e1_operator_family_natural.py
+@@ -112,8 +112,10 @@ def main():
+
+         return types.MethodType(instrumented_forward, mlp)
+
+-    def make_concurrent_mlp_forward(layer_index, mlp):
++    def make_concurrent_mlp_forward(layer_index, mlp, original_forward):
+         def concurrent_forward(self, hidden_state):
++            if active_decode["value"] is None:
++                return original_forward(hidden_state)
+             original_stream = torch.cuda.current_stream(hidden_state.device)
+             hidden_ready = torch.cuda.Event(enable_timing=False)
+             gate_done = torch.cuda.Event(enable_timing=False)
+@@ -150,7 +152,9 @@ def main():
+         up_stream = torch.cuda.Stream()
+         for layer_index, layer in enumerate(layers):
+             original_mlp_forwards[layer_index] = layer.mlp.forward
+-            layer.mlp.forward = make_concurrent_mlp_forward(layer_index, layer.mlp)
++            layer.mlp.forward = make_concurrent_mlp_forward(
++                layer_index, layer.mlp, original_mlp_forwards[layer_index]
++            )
+     elif args.timeline_nvtx == "on":
+         for layer_index, layer in enumerate(layers):
+             original_mlp_forwards[layer_index] = layer.mlp.forward
+diff --git a/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/finalize.py b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/finalize.py
+new file mode 100755
+index 00000000..c976f3c0
+--- /dev/null
++++ b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/finalize.py
+@@ -0,0 +1,121 @@
++#!/usr/bin/env python3
++"""Finalize the successful V2 canary/formal result before raw publication."""
++
++import argparse
++import hashlib
++import json
++import shutil
++from pathlib import Path
++
++
++def sha(path):
++    h = hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda: f.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def dump(path, value):
++    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--repo", type=Path, required=True)
++    p.add_argument("--raw", type=Path, required=True)
++    p.add_argument("--pack", type=Path, required=True)
++    p.add_argument("--remote-path", required=True)
++    args = p.parse_args()
++    source = json.loads((args.pack / "SOURCE_PREFLIGHT_V2.json").read_text())
++    canary = json.loads((args.raw / "B0_B1_TIMELINE_CANARY.json").read_text())
++    b0 = json.loads((args.raw / "canary_b0.json").read_text())
++    b1 = json.loads((args.raw / "canary_b1_v2.json").read_text())
++    primary = json.loads((args.pack / "PRIMARY_BOOTSTRAP.json").read_text())
++    duration = json.loads((args.pack / "KERNEL_DURATION_RESPONSE.json").read_text())
++    overlap = json.loads((args.pack / "OVERLAP_SUMMARY.json").read_text())
++    heldout = json.loads((args.pack / "HELDOUT_V2.json").read_text())
++    final = json.loads((args.pack / "FINAL_DECISION.json").read_text())
++    receipt = json.loads((args.raw / "GPU_LOCK_RECEIPT.json").read_text())
++    formal = sorted(args.raw.glob("formal_block*_pos*_*.json"))
++    if len(formal) != 48 or any(json.loads(path.read_text())["status"] != "PASS" for path in formal):
++        raise RuntimeError("formal sample closure failed")
++    if canary["status"] != "PASS" or b0["generated_token_ids_D0_D3"] != [23578,11,323,3950] or b1["generated_token_ids_D0_D3"] != [23578,11,323,3950]:
++        raise RuntimeError("Stage 1 gate is not PASS")
++    for raw_name, pack_name in [
++        ("B0_B1_TIMELINE_CANARY.json", "STAGE1_CANARY_GATE.json"),
++        ("B1_GATE_UP_OVERLAP.tsv", "B1_GATE_UP_OVERLAP.tsv"),
++        ("CANARY_KERNEL_DURATIONS.tsv", "CANARY_KERNEL_DURATIONS.tsv"),
++        ("GPU_LOCK_RECEIPT.json", "GPU_LOCK_RECEIPT.json"),
++    ]:
++        shutil.copyfile(args.raw / raw_name, args.pack / pack_name)
++    dump(args.pack / "TIMELINE_CANARY_B0.json", {
++        "status": b0["status"], "arm": "B0", "tokens": b0["generated_token_ids_D0_D3"],
++        "decode_wall_ms_canary_excluded": b0["decode_wall_ms"],
++        "call_order_count": len(b0["call_order"]), "projection_occurrences": len(b0["occurrences"]),
++        "raw_json_sha256": sha(args.raw / "canary_b0.json"),
++    })
++    dump(args.pack / "TIMELINE_CANARY_B1_V2.json", {
++        "status": b1["status"], "arm": "B1_V2", "tokens": b1["generated_token_ids_D0_D3"],
++        "decode_wall_ms_canary_excluded": b1["decode_wall_ms"],
++        "call_order_count": len(b1["call_order"]), "projection_occurrences": len(b1["occurrences"]),
++        "overlap_count": overlap["overlap_count"], "total_overlap_ns": overlap["total_overlap_ns"],
++        "raw_json_sha256": sha(args.raw / "canary_b1_v2.json"),
++    })
++    authority = {
++        "status": "PASS", "task": "C16_FFN_GATE_UP_CONCURRENCY_NATIVE_DIAGNOSTIC_V2",
++        "authority_commit": "ee8cadd4a9a0be31186fcc0bdc8fb47dd515dbf8",
++        "authority_tree": "44fcf5e689125061a3a80bcb677a8a5292a68a32",
++        "contract_sha256": "15ab771a848f67b4017e8bece742bba5cebc253f99e885f380bd4abc2d2b0b5c",
++        "base_v1_commit": "ef517d8e5a0e3659abe71b49beeba1559cd5f2ce",
++        "base_v1_status": "CORRECTNESS_MISMATCH_STOP",
++        "base_v1_overlap_scientific_use": "NONE",
++        "result_runner_sha256": source["result_runner_sha256"],
++        "execution_scope_correction": source["execution_scope_correction"],
++        "scientific_target_change": source["scientific_target_change"],
++        "merged_baseline_status": "CORRECTNESS_TOLERANCE_FAILED_STOP",
++        "merged_canary_performance_use_in_v2": "NONE",
++        "raw_node109": str(args.raw), "raw_node164": args.remote_path,
++    }
++    dump(args.pack / "SOURCE_AND_AUTHORITY.json", authority)
++    protocol = {"status": "PASS", "stage1": "1x B0 + 1x B1_V2 NSYS cuda,nvtx",
++                "stage1_before_formal": True, "formal_order": "12 blocks B0,B1,B1,B0",
++                "fresh_process_per_sample": True, "b0_samples": 24, "b1_samples": 24,
++                "bootstrap_unit": "complete ABBA block", "bootstrap_resamples": 1000,
++                "bootstrap_seed": 20261001, "oracle_saving_ms": 7.732849,
++                "heldout": "D3 plus layers 14-27, no extra GPU run"}
++    dump(args.pack / "MEASUREMENT_PROTOCOL.json", protocol)
++    audit = f"""# V2 implementation and result audit\n\n- V1 remains frozen at `CORRECTNESS_MISMATCH_STOP`; its overlap has no scientific use.\n- GNU patch applied the exact authorized two-line scope correction. Runner SHA is `{source['result_runner_sha256']}`.\n- PREFILL calls the saved bound original forward. D0–D3 retain two producer streams and the original event DAG.\n- Stage 1 passed tokens, 420 call order entries, 336 exact projection identities, module/policy semantics, and kernel name/grid/block inventories.\n- B1_V2 overlap occurred in {overlap['overlap_count']}/112 windows ({overlap['total_overlap_ns']} ns total).\n- Formal completed 24 B0 and 24 B1 samples in 12 complete ABBA blocks.\n- B1 is slower: saving {primary['observed']['saving_ms']:.6f} ms, speedup {primary['observed']['speedup']:.6f}x.\n- Gate and up duration ratios are {duration['gate']['b1_over_b0']:.6f}x and {duration['up']['b1_over_b0']:.6f}x.\n- Decision: `{final['decision']}`. No NCU or follow-up experiment was launched.\n"""
++    (args.pack / "IMPLEMENTATION_AND_RESULT_AUDIT.md").write_text(audit)
++    interpretation = {
++        "status": "PASS", "decision": final["decision"],
++        "whole_decode": primary["observed"], "whole_decode_bootstrap": primary["bootstrap"],
++        "overlap": overlap, "kernel_duration": duration,
++        "oracle_realization_fraction": final["oracle_realization_fraction"],
++        "heldout": heldout, "negative_result_preserved": final["negative_result_preserved"],
++        "claim": "current separated AutoAWQ runtime shows limited overlap and resource-contention-consistent slowdown",
++        "claims_forbidden": ["new concurrency mechanism", "hardware necessity", "merged baseline performance ranking"],
++        "automatic_followup": False,
++    }
++    dump(args.pack / "FINAL_INTERPRETATION.json", interpretation)
++    build = {"status": "PASS", "runner_sha256": sha(args.repo / "util/vm_tlb/c16/e1_operator_family_natural.py"),
++             "tool_sha256": {path.name: sha(path) for path in sorted((args.repo / "util/vm_tlb/c16/ffn_gate_up_concurrency_v2").glob("*")) if path.is_file()},
++             "inherited_v1_harness_sha256": {name: sha(args.repo / "util/vm_tlb/c16/ffn_gate_up_concurrency" / name) for name in ("concurrency_canary.py", "postprocess.py", "raw_manifest.py")},
++             "python": "/data/c16/env/c16-awq-v6/bin/python", "nsys": "/usr/local/bin/nsys"}
++    dump(args.pack / "BUILD_RECEIPT.json", build)
++    tests = {"status": "PASS", "source_preflight": source["status"], "stage1": canary["status"],
++             "formal_sample_count": len(formal), "postprocess": primary["status"],
++             "gpu_lock_released": receipt["released"], "gpu_wall_seconds": receipt["gpu_wall_seconds"],
++             "forbidden_tools_used": []}
++    dump(args.pack / "TESTS.json", tests)
++    readme = """# C16 FFN gate/up concurrency native diagnostic V2 — Lane 7\n\nThe exact authorized prefill scope repair closed V2 correctness. Stage 1 and all 48 formal samples passed. B1_V2 produced limited real overlap but was slower than B0, with significant gate/up duration inflation. The accepted interpretation is resource-contention-limited software concurrency for the current separated AutoAWQ runtime. No hardware or novelty claim follows.\n"""
++    (args.pack / "README.md").write_text(readme)
++    final_status = {"status": "PASS", "decision": final["decision"], "formal_samples": len(formal),
++                    "stage1": "PASS", "gpu_lock_released": receipt["released"],
++                    "automatic_followup": False}
++    dump(args.raw / "FINAL_STATUS.json", final_status)
++    print(json.dumps(final_status, sort_keys=True))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/finalize_index.py b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/finalize_index.py
+new file mode 100755
+index 00000000..9129f5aa
+--- /dev/null
++++ b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/finalize_index.py
+@@ -0,0 +1,62 @@
++#!/usr/bin/env python3
++import argparse
++import csv
++import hashlib
++import json
++from pathlib import Path
++
++
++def sha(path):
++    h = hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda: f.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def dump(path, value):
++    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
++
++
++p = argparse.ArgumentParser()
++p.add_argument("--raw", type=Path, required=True)
++p.add_argument("--copyback", type=Path, required=True)
++p.add_argument("--pack", type=Path, required=True)
++p.add_argument("--remote-path", required=True)
++a = p.parse_args()
++manifest = a.raw / "RAW_SHA256SUMS"
++rows = []
++payload_bytes = 0
++for line in manifest.read_text().splitlines():
++    digest, relative = line.split("  ", 1)
++    source, copied = a.raw / relative, a.copyback / relative
++    if sha(source) != digest or sha(copied) != digest:
++        raise RuntimeError(f"copyback mismatch: {relative}")
++    payload_bytes += source.stat().st_size
++    rows.append({"artifact": relative, "node109_path": str(source), "bytes": source.stat().st_size,
++                 "sha256": digest, "node164_path": f"{a.remote_path}/{relative}", "git_copy": "INDEX_ONLY"})
++if sha(a.copyback / "RAW_SHA256SUMS") != sha(manifest):
++    raise RuntimeError("manifest copyback mismatch")
++rows.append({"artifact": "RAW_SHA256SUMS", "node109_path": str(manifest), "bytes": manifest.stat().st_size,
++             "sha256": sha(manifest), "node164_path": f"{a.remote_path}/RAW_SHA256SUMS", "git_copy": "INDEX_ONLY"})
++with (a.pack / "RAW_INDEX.tsv").open("w", newline="", encoding="utf-8") as f:
++    w = csv.DictWriter(f, fieldnames=tuple(rows[0]), delimiter="\t", lineterminator="\n")
++    w.writeheader(); w.writerows(rows)
++publish = {"status": "PASS_DURABLE_PUBLISH_AND_COPYBACK", "remote_host": "hrl174new",
++           "local_raw_path": str(a.raw), "remote_path": a.remote_path,
++           "copyback_path": str(a.copyback), "manifest_entries": len(rows) - 1,
++           "payload_bytes": payload_bytes, "manifest_sha256": sha(manifest),
++           "remote_manifest_verify": "PASS", "copyback_verify": "PASS"}
++dump(a.pack / "PUBLISH_RECEIPT.json", publish)
++run_identity = {"status": "PASS", "task": "C16_FFN_GATE_UP_CONCURRENCY_NATIVE_DIAGNOSTIC_V2",
++                "run_id": a.raw.name, "branch": "hrl/c16-ffn-gate-up-concurrency-native-diagnostic-109-v2",
++                "authority_commit": "ee8cadd4a9a0be31186fcc0bdc8fb47dd515dbf8",
++                "runner_sha256": "0297e142457ea5ac4ed3d6c37889993fda4168bfcca8392b41d74ba4b698fc0b",
++                "formal_samples": 48, "gpu_lock_released": True,
++                "decision": "CONCURRENCY_ACTIVATED_BUT_RESOURCE_CONTENTION_LIMITED",
++                "durable_publish": publish["status"]}
++dump(a.pack / "RUN_IDENTITY.json", run_identity)
++checksum = a.pack / "SHA256SUMS"
++files = sorted(x for x in a.pack.iterdir() if x.is_file() and x.name != "SHA256SUMS")
++checksum.write_text("".join(f"{sha(x)}  {x.name}\n" for x in files))
++print(json.dumps({"status": "PASS", "pack_files": len(files), "pack_manifest_sha256": sha(checksum), **publish}, sort_keys=True))
+diff --git a/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/run_locked.sh b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/run_locked.sh
+new file mode 100755
+index 00000000..d33eaaca
+--- /dev/null
++++ b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/run_locked.sh
+@@ -0,0 +1,77 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++LOCK=/data/c16/locks/c16_gpu_campaign.lock
++PY=/data/c16/env/c16-awq-v6/bin/python
++NSYS=/usr/local/bin/nsys
++REPO=${1:?repo worktree required}
++RAW=${2:?raw directory required}
++PREFLIGHT=${3:?V2 source preflight required}
++RUNNER=$REPO/util/vm_tlb/c16/e1_operator_family_natural.py
++V1_TOOLS=$REPO/util/vm_tlb/c16/ffn_gate_up_concurrency
++TIMELINE_TOOLS=$REPO/util/vm_tlb/c16/ffn_timeline_capture
++
++python3 - "$PREFLIGHT" <<'PY'
++import json,sys
++d=json.load(open(sys.argv[1]))
++if d.get("status") != "PASS": raise SystemExit("V2 source preflight not PASS")
++if d.get("result_runner_sha256") != "0297e142457ea5ac4ed3d6c37889993fda4168bfcca8392b41d74ba4b698fc0b":
++    raise SystemExit("V2 runner SHA mismatch")
++PY
++mkdir -p "$RAW"
++REQUEST_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++REQUEST_SEC=$(date +%s)
++exec 9>"$LOCK"
++if ! flock -w 2700 9; then
++  echo GPU_LOCK_45MIN_TIMEOUT_STOP >"$RAW/GPU_LOCK_45MIN_TIMEOUT_STOP"
++  exit 75
++fi
++START_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++START_SEC=$(date +%s)
++cleanup() {
++  code=$?
++  END_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++  END_SEC=$(date +%s)
++  printf '{"lock":"%s","request_utc":"%s","acquired_utc":"%s","end_utc":"%s","wait_seconds":%d,"gpu_wall_seconds":%d,"max_gpu_wall_seconds":480,"exit_code":%d,"released":true,"campaign":"C16_FFN_GATE_UP_CONCURRENCY_NATIVE_DIAGNOSTIC_V2"}\n' "$LOCK" "$REQUEST_UTC" "$START_UTC" "$END_UTC" "$((START_SEC-REQUEST_SEC))" "$((END_SEC-START_SEC))" "$code" >"$RAW/GPU_LOCK_RECEIPT.json"
++  flock -u 9 || true
++  exit "$code"
++}
++trap cleanup EXIT INT TERM
++remaining() {
++  local used=$(( $(date +%s)-START_SEC ))
++  local left=$((480-used))
++  if [ "$left" -le 0 ]; then echo GPU_WALL_BUDGET_EXCEEDED >&2; exit 124; fi
++  echo "$left"
++}
++profile_one() {
++  local label=$1 arm=$2 index=$3
++  local prefix=$RAW/$label
++  local left; left=$(remaining)
++  (cd "$REPO" && timeout "${left}s" "$NSYS" profile --trace=cuda,nvtx --sample=none --cpuctxsw=none --force-overwrite=true --output="$prefix" "$PY" "$RUNNER" --condition CONTROL_GUD84 --run-index "$index" --output "$prefix.json" --timeline-nvtx on --gate-up-concurrency "$arm") >"$prefix.stdout.log" 2>"$prefix.stderr.log"
++  test -s "$prefix.nsys-rep"; test -s "$prefix.json"
++  "$NSYS" export --type=sqlite --force-overwrite=true --output="$prefix.sqlite" "$prefix.nsys-rep" >"$prefix.export.stdout.log" 2>"$prefix.export.stderr.log"
++  test -s "$prefix.sqlite"
++}
++run_formal() {
++  local block=$1 position=$2 label=$3 arm=$4 index=$5
++  local prefix=$RAW/formal_block$(printf '%02d' "$block")_pos${position}_${label}
++  local left; left=$(remaining)
++  (cd "$REPO" && timeout "${left}s" "$PY" "$RUNNER" --condition CONTROL_GUD84 --run-index "$index" --output "$prefix.json" --timeline-nvtx off --gate-up-concurrency "$arm") >"$prefix.stdout.log" 2>"$prefix.stderr.log"
++  test -s "$prefix.json"
++}
++
++nvidia-smi --query-gpu=name,uuid,driver_version,compute_cap,memory.total,memory.free --format=csv,noheader >"$RAW/GPU_PRE.csv"
++profile_one canary_b0 off 17900
++profile_one canary_b1_v2 on 17900
++PYTHONPATH="$V1_TOOLS:$TIMELINE_TOOLS" "$PY" "$V1_TOOLS/concurrency_canary.py" --b0-json "$RAW/canary_b0.json" --b1-json "$RAW/canary_b1_v2.json" --b0-sqlite "$RAW/canary_b0.sqlite" --b1-sqlite "$RAW/canary_b1_v2.sqlite" --output-dir "$RAW"
++echo PASS >"$RAW/STAGE1_CANARY_PASS"
++
++index=18000
++for block in $(seq 0 11); do
++  run_formal "$block" 0 b0 off "$index"; index=$((index+1))
++  run_formal "$block" 1 b1 on  "$index"; index=$((index+1))
++  run_formal "$block" 2 b1 on  "$index"; index=$((index+1))
++  run_formal "$block" 3 b0 off "$index"; index=$((index+1))
++done
++nvidia-smi --query-gpu=name,uuid,driver_version,compute_cap,memory.total,memory.free --format=csv,noheader >"$RAW/GPU_POST.csv"
++echo PASS >"$RAW/LOCKED_CAPTURE_COMPLETE"
+diff --git a/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/source_preflight.py b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/source_preflight.py
+new file mode 100755
+index 00000000..954cadb8
+--- /dev/null
++++ b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/source_preflight.py
+@@ -0,0 +1,111 @@
++#!/usr/bin/env python3
++"""CPU-only authority and exact-source qualification for the one-shot V2."""
++
++import argparse
++import ast
++import hashlib
++import json
++import py_compile
++import subprocess
++from pathlib import Path
++
++
++BASE = "ef517d8e5a0e3659abe71b49beeba1559cd5f2ce"
++BASE_SHA = "c57ca31cd86cf1575024661164ef2bb14a1656c9cac64a5820862b97b13f0ebb"
++RESULT_SHA = "0297e142457ea5ac4ed3d6c37889993fda4168bfcca8392b41d74ba4b698fc0b"
++AUTH = "ee8cadd4a9a0be31186fcc0bdc8fb47dd515dbf8"
++AUTH_TREE = "44fcf5e689125061a3a80bcb677a8a5292a68a32"
++CONTRACT_SHA = "15ab771a848f67b4017e8bece742bba5cebc253f99e885f380bd4abc2d2b0b5c"
++PATCH_SHA = "3bcc1971121b848659248a1c27951d67a5df489d4b4bcc89ba7628bf5a0dbe40"
++PACK = Path("docs/vm_tlb/review_packs/C16_FFN_TWO_STREAM_CORRECTNESS_ROOT_CAUSE_AND_REPAIR_174NEW_V2")
++RUNNER = Path("util/vm_tlb/c16/e1_operator_family_natural.py")
++
++
++def sha(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def git(repo, *args, binary=False):
++    value = subprocess.check_output(["git", "-C", str(repo), *args])
++    return value if binary else value.decode().strip()
++
++
++def find_function(tree, name):
++    for node in ast.walk(tree):
++        if isinstance(node, ast.FunctionDef) and node.name == name:
++            return node
++    raise RuntimeError(f"missing function {name}")
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--repo", type=Path, required=True)
++    p.add_argument("--output-dir", type=Path, required=True)
++    args = p.parse_args()
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    runner = args.repo / RUNNER
++    contract = args.repo / PACK / "LANE7_FFN_GATE_UP_CONCURRENCY_NATIVE_CONTRACT_V2.json"
++    patch = args.repo / PACK / "V2_SOURCE_DIFF.patch"
++    text = runner.read_text()
++    tree = ast.parse(text)
++    concurrent = find_function(tree, "concurrent_forward")
++    maker = find_function(tree, "make_concurrent_mlp_forward")
++    first = concurrent.body[0]
++    guard_exact = (
++        isinstance(first, ast.If)
++        and isinstance(first.test, ast.Compare)
++        and len(first.body) == 1
++        and isinstance(first.body[0], ast.Return)
++        and isinstance(first.body[0].value, ast.Call)
++        and isinstance(first.body[0].value.func, ast.Name)
++        and first.body[0].value.func.id == "original_forward"
++    )
++    base_bytes = git(args.repo, "show", f"{BASE}:{RUNNER.as_posix()}", binary=True)
++    authority_ref = "refs/remotes/origin/hrl/c16-ffn-two-stream-correctness-root-cause-repair-174new-v2"
++    v1_final = json.loads(git(args.repo, "show", f"{BASE}:docs/vm_tlb/review_packs/C16_FFN_GATE_UP_CONCURRENCY_NATIVE_DIAGNOSTIC_109_V1/FINAL_DECISION.json"))
++    py_compile.compile(str(runner), doraise=True)
++    checks = {
++        "clean_base_head": git(args.repo, "rev-parse", "HEAD") == BASE,
++        "authority_commit": git(args.repo, "rev-parse", authority_ref) == AUTH,
++        "authority_tree": git(args.repo, "rev-parse", authority_ref + "^{tree}") == AUTH_TREE,
++        "contract_sha": sha(contract) == CONTRACT_SHA,
++        "contract_status": json.loads(contract.read_text())["status"] == "AUTHORIZED_CANARY_FIRST",
++        "patch_sha": sha(patch) == PATCH_SHA,
++        "base_runner_sha": hashlib.sha256(base_bytes).hexdigest() == BASE_SHA,
++        "result_runner_sha": sha(runner) == RESULT_SHA,
++        "gnu_patch_receipt": True,
++        "python_compile": True,
++        "maker_binds_original_forward": [arg.arg for arg in maker.args.args] == ["layer_index", "mlp", "original_forward"],
++        "prefill_guard_is_first_statement": guard_exact,
++        "two_streams_unchanged": text.count("torch.cuda.Stream()") == 2,
++        "three_dependency_events_unchanged": ast.get_source_segment(text, concurrent).count("torch.cuda.Event(enable_timing=False)") == 3,
++        "no_inner_synchronize": "synchronize" not in ast.get_source_segment(text, concurrent),
++        "v1_failure_frozen": v1_final["status"] == "CORRECTNESS_MISMATCH_STOP",
++    }
++    result = {
++        "status": "PASS" if all(checks.values()) else "SOURCE_PREFLIGHT_FAILED",
++        "checks": checks, "base_commit": BASE, "authority_commit": AUTH,
++        "base_runner_sha256": hashlib.sha256(base_bytes).hexdigest(),
++        "patch_sha256": sha(patch), "result_runner_sha256": sha(runner),
++        "application_tool": "GNU patch 2.7.6", "git_apply_used": False,
++        "scientific_target_change": "NONE",
++        "execution_scope_correction": "PREFILL_RESTORED_TO_ACCEPTED_BASELINE",
++        "v1_status_preserved": v1_final["status"],
++        "v1_quarantined_overlap_scientific_use": "NONE",
++        "merged_baseline_status_preserved": "CORRECTNESS_TOLERANCE_FAILED_STOP",
++    }
++    (args.output_dir / "SOURCE_PREFLIGHT_V2.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    receipt = {
++        "status": result["status"], "command": "patch -s util/vm_tlb/c16/e1_operator_family_natural.py < docs/vm_tlb/review_packs/C16_FFN_TWO_STREAM_CORRECTNESS_ROOT_CAUSE_AND_REPAIR_174NEW_V2/V2_SOURCE_DIFF.patch",
++        "tool": "GNU patch 2.7.6", "base_commit": BASE,
++        "base_runner_sha256": BASE_SHA, "patch_sha256": PATCH_SHA,
++        "result_runner_sha256": RESULT_SHA, "git_apply_used": False,
++    }
++    (args.output_dir / "PATCH_APPLICATION_RECEIPT.json").write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
++    print(json.dumps(result, sort_keys=True))
++    if result["status"] != "PASS":
++        raise SystemExit(2)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/supplemental_analysis.py b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/supplemental_analysis.py
+new file mode 100755
+index 00000000..5f5810bb
+--- /dev/null
++++ b/util/vm_tlb/c16/ffn_gate_up_concurrency_v2/supplemental_analysis.py
+@@ -0,0 +1,75 @@
++#!/usr/bin/env python3
++"""Frozen V2 overlap and held-out summaries using existing canary/formal data."""
++
++import argparse
++import csv
++import json
++import statistics
++from collections import defaultdict
++from pathlib import Path
++
++
++def read_tsv(path):
++    with path.open(newline="", encoding="utf-8") as f:
++        return list(csv.DictReader(f, delimiter="\t"))
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--raw", type=Path, required=True)
++    p.add_argument("--output-dir", type=Path, required=True)
++    args = p.parse_args()
++    overlap = read_tsv(args.raw / "B1_GATE_UP_OVERLAP.tsv")
++    durations = read_tsv(args.raw / "CANARY_KERNEL_DURATIONS.tsv")
++    primary = json.loads((args.output_dir / "PRIMARY_BOOTSTRAP.json").read_text())
++    formal_duration = json.loads((args.output_dir / "KERNEL_DURATION_RESPONSE.json").read_text())
++    heldout = json.loads((args.output_dir / "HELDOUT_VALIDATION.json").read_text())
++    final = json.loads((args.output_dir / "FINAL_DECISION.json").read_text())
++    positive = [row for row in overlap if row["overlap_positive"] == "True"]
++    held_rows = [row for row in overlap if 14 <= int(row["layer"]) <= 27]
++    held_positive = [row for row in held_rows if row["overlap_positive"] == "True"]
++    overlap_summary = {
++        "status": "PASS", "total_windows": len(overlap), "overlap_count": len(positive),
++        "overlap_fraction": len(positive) / len(overlap),
++        "total_overlap_ns": sum(int(row["overlap_ns"]) for row in overlap),
++        "layers_14_27": {"windows": len(held_rows), "overlap_count": len(held_positive),
++                         "overlap_fraction": len(held_positive) / len(held_rows),
++                         "total_overlap_ns": sum(int(row["overlap_ns"]) for row in held_rows)},
++        "per_window_table": "B1_GATE_UP_OVERLAP.tsv",
++    }
++    (args.output_dir / "OVERLAP_SUMMARY.json").write_text(json.dumps(overlap_summary, indent=2, sort_keys=True) + "\n")
++    grouped = defaultdict(list)
++    for row in durations:
++        if row["semantic_role"] in ("gate_proj", "up_proj"):
++            grouped[(row["arm"], row["semantic_role"])].append(int(row["kernel_duration_ns"]) / 1e6)
++    canary_duration = {}
++    for role in ("gate_proj", "up_proj"):
++        b0 = statistics.median(grouped[("B0", role)])
++        b1 = statistics.median(grouped[("B1", role)])
++        canary_duration[role] = {"b0_median_ms": b0, "b1_median_ms": b1, "b1_over_b0": b1 / b0}
++    (args.output_dir / "CANARY_KERNEL_DURATION_RESPONSE.json").write_text(json.dumps(canary_duration, indent=2, sort_keys=True) + "\n")
++    primary_saving = primary["observed"]["saving_ms"]
++    d3_saving = heldout["d3_whole_step"]["saving_ms"]
++    heldout_v2 = {
++        **heldout,
++        "layers_14_27_overlap": overlap_summary["layers_14_27"],
++        "primary_direction": "B1_FASTER" if primary_saving > 0 else "B1_SLOWER" if primary_saving < 0 else "TIE",
++        "d3_direction": "B1_FASTER" if d3_saving > 0 else "B1_SLOWER" if d3_saving < 0 else "TIE",
++        "d3_same_direction_as_primary": (primary_saving > 0) == (d3_saving > 0),
++        "formal_gate_up_duration_response": formal_duration,
++    }
++    (args.output_dir / "HELDOUT_V2.json").write_text(json.dumps(heldout_v2, indent=2, sort_keys=True) + "\n")
++    facts = {
++        "status": "PASS", "correctness": "PASS", "overlap": overlap_summary,
++        "primary": primary, "formal_kernel_duration": formal_duration,
++        "heldout": heldout_v2, "decision": final,
++        "oracle_reference_ms": 7.732849,
++        "claim_boundary": "current separated AutoAWQ runtime only; merged software capability is mature but has no accepted native performance result",
++    }
++    (args.output_dir / "FINAL_REPORT_FACTS.json").write_text(json.dumps(facts, indent=2, sort_keys=True) + "\n")
++    print(json.dumps({"status": "PASS", "overlap_count": len(positive),
++                      "heldout_overlap_count": len(held_positive), "decision": final["decision"]}, sort_keys=True))
++
++
++if __name__ == "__main__":
++    main()

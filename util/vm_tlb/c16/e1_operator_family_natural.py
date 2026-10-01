@@ -112,8 +112,10 @@ def main():
 
         return types.MethodType(instrumented_forward, mlp)
 
-    def make_concurrent_mlp_forward(layer_index, mlp):
+    def make_concurrent_mlp_forward(layer_index, mlp, original_forward):
         def concurrent_forward(self, hidden_state):
+            if active_decode["value"] is None:
+                return original_forward(hidden_state)
             original_stream = torch.cuda.current_stream(hidden_state.device)
             hidden_ready = torch.cuda.Event(enable_timing=False)
             gate_done = torch.cuda.Event(enable_timing=False)
@@ -150,7 +152,9 @@ def main():
         up_stream = torch.cuda.Stream()
         for layer_index, layer in enumerate(layers):
             original_mlp_forwards[layer_index] = layer.mlp.forward
-            layer.mlp.forward = make_concurrent_mlp_forward(layer_index, layer.mlp)
+            layer.mlp.forward = make_concurrent_mlp_forward(
+                layer_index, layer.mlp, original_mlp_forwards[layer_index]
+            )
     elif args.timeline_nvtx == "on":
         for layer_index, layer in enumerate(layers):
             original_mlp_forwards[layer_index] = layer.mlp.forward

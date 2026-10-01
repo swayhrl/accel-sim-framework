@@ -1,0 +1,38 @@
+{
+  "V1_failure_preserved": true,
+  "application_tool": "GNU patch",
+  "base_runner_sha256": "c57ca31cd86cf1575024661164ef2bb14a1656c9cac64a5820862b97b13f0ebb",
+  "checks": {
+    "B0_sequential_function_ast_unchanged": true,
+    "decode_enables_concurrent_path_before_model_call": true,
+    "event_dag_byte_semantics_equal_after_guard": true,
+    "exactly_two_producer_streams": true,
+    "no_new_kernel_or_backend_import": true,
+    "no_synchronize": true,
+    "original_forward_saved_before_replacement": true,
+    "prefill_first_statement_returns_bound_original_forward": true,
+    "python_compile": true
+  },
+  "exact_command": "patch -s util/vm_tlb/c16/e1_operator_family_natural.py < docs/vm_tlb/review_packs/C16_FFN_TWO_STREAM_CORRECTNESS_ROOT_CAUSE_AND_REPAIR_174NEW_V2/V2_SOURCE_DIFF.patch",
+  "execution_scope_correction": "PREFILL_RESTORED_TO_ACCEPTED_BASELINE",
+  "git_apply_authorized": false,
+  "patch_sha256": "3bcc1971121b848659248a1c27951d67a5df489d4b4bcc89ba7628bf5a0dbe40",
+  "result_runner_sha256": "0297e142457ea5ac4ed3d6c37889993fda4168bfcca8392b41d74ba4b698fc0b",
+  "schema_version": 2,
+  "scientific_target_change": "NONE",
+  "status": "PASS_CPU_SOURCE_QUALIFICATION_CANARY_ONLY",
+  "tool_version": "GNU patch 2.7.6",
+  "unchanged": [
+    "model",
+    "input",
+    "D0-D3 scenario",
+    "gate/up kernels",
+    "quantization",
+    "tensor layout",
+    "event dependency design",
+    "stream count",
+    "formal ABBA protocol",
+    "oracle",
+    "validation target"
+  ]
+}

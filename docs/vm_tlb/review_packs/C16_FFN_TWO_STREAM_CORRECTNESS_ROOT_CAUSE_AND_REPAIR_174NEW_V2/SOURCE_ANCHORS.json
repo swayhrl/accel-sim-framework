@@ -1,0 +1,41 @@
+{
+  "autoawq": {
+    "actual_109_extension": {
+      "autoawq_kernels_distribution_version": "UNKNOWN",
+      "awq_ext_binary_path": "UNKNOWN",
+      "awq_ext_binary_sha256": "UNKNOWN",
+      "awq_ext_presence": "INFERRED_FROM_ACCEPTED_KERNEL_IDENTITY",
+      "compiled_source_commit": "UNKNOWN",
+      "decode_reduction_stream_binding": "UNKNOWN_AT_BINARY_LEVEL",
+      "default_stream_or_global_workspace_assumptions": "UNKNOWN",
+      "dequantize_kernel_current_stream_binding": "UNKNOWN",
+      "explicit_concurrent_stream_support_statement": "NOT_FOUND_IN_HASH_CLOSED_PYTHON_WHEEL; COMPILED_EXTENSION_UNBOUND",
+      "gemm_kernel_current_stream_binding": "UNKNOWN_AT_BINARY_LEVEL",
+      "torch_matmul_stream_binding": "PYTORCH_CURRENT_STREAM_CONTEXT_SOURCE_LEVEL"
+    },
+    "autoawq_version": "0.2.7.post3",
+    "gemm_source_path": "awq/modules/linear/gemm.py",
+    "gemm_source_sha256": "7cdf8fb01dabbfcd7f8be8bb58dcaf68a76073f2f91fc0e7c96881094e6a2913",
+    "metadata_sha256": "a1507a39c59e1e76d2d782d8ea9846c8c02cfbb6ad2818b8a23a6a1b4eb02f4d",
+    "python_source": {
+      "decode_M1": "awq_ext.gemm_forward_cuda(..., split_k_iters=8)",
+      "explicit_stream_argument_to_awq_ext": false,
+      "prefill_M2048": "awq_ext.dequantize_weights_cuda(...) then torch.matmul",
+      "threshold": "x.shape[0] * x.shape[1] >= 1024"
+    },
+    "wheel_sha256": "02e09d71ca961ca131ac9963a2635fe8c34eb52d6b6a104b8574056aef8f2efe"
+  },
+  "durable_raw": "/root/share/mnt164/huangrulin/c16_ai_workload/provenance/c16_ffn_gate_up_concurrency_native_v1/C16R_ffn-gate-up-concurrency-native-v1_20261001T014701Z",
+  "failed_producer": {
+    "commit": "ef517d8e5a0e3659abe71b49beeba1559cd5f2ce",
+    "manifest_file_count": 25,
+    "manifest_sha256": "f23543c87ffd524dde0a780204db64ab4ce5da19990b73fa3fc388ae6bd9c1aa",
+    "runner_sha256": "c57ca31cd86cf1575024661164ef2bb14a1656c9cac64a5820862b97b13f0ebb",
+    "tree": "12b002aeb3376a340ac15f848e1e97b3d52a5937"
+  },
+  "qualified_contract": {
+    "commit": "30b3016a7ad5b5ef86a3494c784e072938dee6c5",
+    "sha256": "4cc42ab8c36b191716e5dd41ec5eca49ab2d94d665a8960f76dcce8c07dece09"
+  },
+  "schema_version": 1
+}
