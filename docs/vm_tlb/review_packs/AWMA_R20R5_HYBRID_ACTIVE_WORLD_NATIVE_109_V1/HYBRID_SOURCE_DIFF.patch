@@ -1,0 +1,80 @@
+diff --git a/data/c16/awma/r20r3p1_profiler_repair_resume_20261001/source_overlay/mujoco_warp/_src/solver.py b/data/c16/awma/r20r5_hybrid_native_20261002/source_overlay/mujoco_warp/_src/solver.py
+index 1716d7b..ef44ff8 100644
+--- a/data/c16/awma/r20r3p1_profiler_repair_resume_20261001/source_overlay/mujoco_warp/_src/solver.py
++++ b/data/c16/awma/r20r5_hybrid_native_20261002/source_overlay/mujoco_warp/_src/solver.py
+@@ -46,6 +46,30 @@ _R20R3P1_ACTIVE_IDS = None
+ _R20R3P1_ACTIVE_COUNT = None
+ _R20R3P1_WORKERS = 0
+ 
++# R20R5: one opt-in device conditional over the already accepted selected
++# stage. OFF remains the original B0 source organization by default.
++_R20R5_HYBRID = False
++_R20R5_LATE_CONDITION = None
++_R20R5_DEBUG = False
++_R20R5_DEBUG_INDEX = None
++_R20R5_DEBUG_ACTIVE_COUNT = None
++_R20R5_DEBUG_BRANCH = None
++
++
++@wp.kernel
++def _r20r5_late_condition(current_nsolving: wp.array[int], late_out: wp.array[int]):
++  late_out[0] = int(current_nsolving[0] <= 304)
++
++
++@wp.kernel
++def _r20r5_debug_branch(current_nsolving: wp.array[int], branch_code: int,
++                        index: wp.array[int], counts: wp.array[int], branches: wp.array[int]):
++  i = index[0]
++  if i < counts.shape[0]:
++    counts[i] = current_nsolving[0]
++    branches[i] = branch_code
++  index[0] = i + 1
++
+ 
+ @wp.kernel
+ def _r20r3p1_build_active_ids(
+@@ -3936,6 +3960,25 @@ def _zero_change_counters(
+   state_changed_count_out[worldid] = 0
+ 
+ 
++def _r20r5_capture_selected_stage(m: types.Model, d: types.Data, ctx: SolverContext,
++                                   nsolving: wp.array[int], active: bool, incremental: bool):
++  """Capture one branch; runtime branch choice remains entirely on device."""
++  global _R20R3P1_ACTIVE
++  previous = _R20R3P1_ACTIVE
++  _R20R3P1_ACTIVE = active
++  try:
++    if _R20R5_DEBUG:
++      wp.launch(
++        _r20r5_debug_branch,
++        dim=1,
++        inputs=[nsolving, 2 if active else 1],
++        outputs=[_R20R5_DEBUG_INDEX, _R20R5_DEBUG_ACTIVE_COUNT, _R20R5_DEBUG_BRANCH],
++      )
++    _update_gradient_incremental(m, d, ctx, stable_fast=incremental)
++  finally:
++    _R20R3P1_ACTIVE = previous
++
++
+ @event_scope
+ def _solver_iteration(
+   m: types.Model,
+@@ -3967,7 +4010,17 @@ def _solver_iteration(
+   _update_constraint(m, d, ctx, track_changes=incremental, stable_fast=incremental)
+ 
+   if incremental:
+-    _update_gradient_incremental(m, d, ctx, stable_fast=incremental)
++    if _R20R5_HYBRID:
++      if _R20R5_LATE_CONDITION is None or _R20R3P1_WORKERS != 304:
++        raise RuntimeError("R20R5 frozen threshold/worker binding absent")
++      wp.launch(_r20r5_late_condition, dim=1, inputs=[nsolving], outputs=[_R20R5_LATE_CONDITION])
++      wp.capture_if(
++        condition=_R20R5_LATE_CONDITION,
++        on_true=lambda: _r20r5_capture_selected_stage(m, d, ctx, nsolving, True, incremental),
++        on_false=lambda: _r20r5_capture_selected_stage(m, d, ctx, nsolving, False, incremental),
++      )
++    else:
++      _update_gradient_incremental(m, d, ctx, stable_fast=incremental)
+   else:
+     _update_gradient(m, d, ctx, compact=compact)
+ 
