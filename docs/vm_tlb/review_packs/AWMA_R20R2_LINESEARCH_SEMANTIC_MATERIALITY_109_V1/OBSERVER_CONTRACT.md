@@ -1,0 +1,13 @@
+# R20R2 bounded observer contract (frozen before observer GPU runs)
+
+The observer is an isolated copy of the pinned `mujoco_warp` Python package with only `solver.py` instrumented. The read-only pinned checkout, t152 input, solver arithmetic, options, launch geometry, and Data/Model layouts remain unchanged. The launcher defaults to OFF; OFF imports the byte-identical pinned `solver.py`, while ON explicitly imports the isolated overlay. ON has no performance interpretation.
+
+The ON patch adds a read-only `d.solver_niter` kernel input and a preallocated `float32[10,22,40]` device trace output. Only thread 0 of world 413 writes trace fields. Outer index is the pre-increment `solver_niter` (0..7 expected), slot 0 is line-search entry, slots 1..20 are attempted inner iterations, and slot 21 is line-search exit. Trace is zeroed before each complete graph replay and copied to host only after replay finishes. The source patch may increase instrumentation/register pressure; it must not be used for timing.
+
+Entry fields: outer index, nefc, search_dot, search norm, tolerance, ls_tolerance, gtol, gtol_accept, incremental noise floor, p0 cost/derivative/curvature, initial Newton alpha, initial lo cost/derivative/curvature, initial convergence, and search-unchanged flag.
+
+Inner fields: bracket lo/hi alpha before update; candidate lo/hi/mid alpha and cost/derivative/curvature; three candidate convergence booleans; two swap booleans; no-swap and signed-bracket termination predicates; combined convergence/done; selected alpha/improvement; resulting lo/hi cost and derivative; break marker. For world413 this logs 20 iterations at most. Exit fields: `ls_converged`, selected alpha/improvement, whether this invocation wrote `LS_ITERATIONS`, and incremental `ls_exhausted` predicate. The complete-solver output and SolverContext summaries are separately saved by the runner.
+
+Qualification order: (1) OFF imports pinned source and replays the exact entry with the parent frozen local validator; (2) ON captures one graph and runs at most 16, then at most 32 total same-graph repeats, all with full 138-array input-hash checks, finite/capacity/constraint/niter checks and parent floating contract; (3) only if still unpaired, at most four fresh captures. No active-world S1, no formal timing, no parameter changes.
+
+The observer is neutral enough only if OFF is parent-equivalent and ON results remain within the parent's numerical envelope without new stop behavior beyond the already observed LS bit. If the instrumentation itself demonstrably changes the phenomenon or cannot be qualified, classify `R20R2_OBSERVER_NOT_QUALIFIED` or `R20R2_FLAG_OUTCOME_PAIR_NOT_CAPTURED` as appropriate. No predicate interpretation is made until both outcomes are captured.

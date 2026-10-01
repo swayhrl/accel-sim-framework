@@ -1,0 +1,146 @@
+diff --git a/data/c16/awma/r20_active_world_native_v1/source/mujoco_warp/mujoco_warp/_src/solver.py b/data/c16/awma/r20r2_linesearch_semantic_materiality_20261001/source_overlay/mujoco_warp/_src/solver.py
+index 0900617..1cc49b3 100644
+--- a/data/c16/awma/r20_active_world_native_v1/source/mujoco_warp/mujoco_warp/_src/solver.py
++++ b/data/c16/awma/r20r2_linesearch_semantic_materiality_20261001/source_overlay/mujoco_warp/_src/solver.py
+@@ -855,6 +855,9 @@ def _compute_efc_eval_pt_3alphas_elliptic(
+ # =============================================================================
+ 
+ 
++_R20R2_TRACE = None  # Explicitly installed by the opt-in diagnostic launcher.
++
++
+ @cache_kernel
+ def _linesearch_iterative_kernel(
+   ls_iterations: int,
+@@ -922,6 +925,7 @@ def _linesearch_iterative_kernel(
+     njmax_in: int,
+     nacon_in: wp.array[int],
+     # In:
++    solver_niter_in: wp.array[int],
+     ctx_search_unchanged_in: wp.array[bool],
+     ctx_Jaref_in: wp.array2d[float],
+     ctx_search_in: wp.array2d[float],
+@@ -941,12 +945,15 @@ def _linesearch_iterative_kernel(
+     ctx_improvement_out: wp.array[float],
+     ctx_alpha_out: wp.array[float],
+     ctx_ls_exhausted_out: wp.array[bool],
++    r20r2_trace_out: wp.array3d[float],
+   ):
+     worldid, tid = wp.tid()
+ 
+     if ctx_done_in[worldid]:
+       return
+ 
++    outer_iter = solver_niter_in[worldid]
++
+     ne = ne_in[worldid]
+     nf = nf_in[worldid]
+     nefc = wp.min(njmax_in, nefc_in[worldid])
+@@ -1207,6 +1214,26 @@ def _linesearch_iterative_kernel(
+     initial_converged = wp.abs(lo_in[1]) < gtol_accept and lo_in[0] < 0.0
+     ls_converged = initial_converged
+ 
++    if worldid == 413 and tid == 0 and outer_iter >= 0 and outer_iter < 10:
++      r20r2_trace_out[outer_iter, 0, 0] = float(outer_iter)
++      r20r2_trace_out[outer_iter, 0, 1] = float(nefc)
++      r20r2_trace_out[outer_iter, 0, 2] = ctx_search_dot_in[worldid]
++      r20r2_trace_out[outer_iter, 0, 3] = snorm
++      r20r2_trace_out[outer_iter, 0, 4] = tolerance
++      r20r2_trace_out[outer_iter, 0, 5] = ls_tolerance
++      r20r2_trace_out[outer_iter, 0, 6] = gtol
++      r20r2_trace_out[outer_iter, 0, 7] = gtol_accept
++      r20r2_trace_out[outer_iter, 0, 8] = noise_floor
++      r20r2_trace_out[outer_iter, 0, 9] = p0[0]
++      r20r2_trace_out[outer_iter, 0, 10] = p0[1]
++      r20r2_trace_out[outer_iter, 0, 11] = p0[2]
++      r20r2_trace_out[outer_iter, 0, 12] = lo_alpha_in
++      r20r2_trace_out[outer_iter, 0, 13] = lo_in[0]
++      r20r2_trace_out[outer_iter, 0, 14] = lo_in[1]
++      r20r2_trace_out[outer_iter, 0, 15] = lo_in[2]
++      r20r2_trace_out[outer_iter, 0, 16] = float(initial_converged)
++      r20r2_trace_out[outer_iter, 0, 17] = float(ctx_search_unchanged_in[worldid])
++
+     # main iterative loop - skip if already converged
+     if not initial_converged:
+       alpha = float(0.0)
+@@ -1219,7 +1246,9 @@ def _linesearch_iterative_kernel(
+       hi = wp.where(lo_less, p0_delta, lo_in)
+       hi_alpha = wp.where(lo_less, 0.0, lo_alpha_in)
+ 
+-      for _ in range(LS_ITERATIONS):
++      for r20r2_inner in range(LS_ITERATIONS):
++        old_lo_alpha = lo_alpha
++        old_hi_alpha = hi_alpha
+         lo_next_alpha = lo_alpha - math.safe_div(lo[1], lo[2])
+         hi_next_alpha = hi_alpha - math.safe_div(hi[1], hi[2])
+         mid_alpha = 0.5 * (lo_alpha + hi_alpha)
+@@ -1377,6 +1406,40 @@ def _linesearch_iterative_kernel(
+         alpha = wp.where(improved, best_alpha, alpha)
+         improvement = wp.where(improved, -best_delta, improvement)
+ 
++        if worldid == 413 and tid == 0 and outer_iter >= 0 and outer_iter < 10:
++          slot = r20r2_inner + 1
++          r20r2_trace_out[outer_iter, slot, 0] = old_lo_alpha
++          r20r2_trace_out[outer_iter, slot, 1] = old_hi_alpha
++          r20r2_trace_out[outer_iter, slot, 2] = lo_next_alpha
++          r20r2_trace_out[outer_iter, slot, 3] = hi_next_alpha
++          r20r2_trace_out[outer_iter, slot, 4] = mid_alpha
++          r20r2_trace_out[outer_iter, slot, 5] = lo_next[0]
++          r20r2_trace_out[outer_iter, slot, 6] = lo_next[1]
++          r20r2_trace_out[outer_iter, slot, 7] = lo_next[2]
++          r20r2_trace_out[outer_iter, slot, 8] = hi_next[0]
++          r20r2_trace_out[outer_iter, slot, 9] = hi_next[1]
++          r20r2_trace_out[outer_iter, slot, 10] = hi_next[2]
++          r20r2_trace_out[outer_iter, slot, 11] = mid[0]
++          r20r2_trace_out[outer_iter, slot, 12] = mid[1]
++          r20r2_trace_out[outer_iter, slot, 13] = mid[2]
++          r20r2_trace_out[outer_iter, slot, 14] = float(conv_lo)
++          r20r2_trace_out[outer_iter, slot, 15] = float(conv_hi)
++          r20r2_trace_out[outer_iter, slot, 16] = float(conv_mid)
++          r20r2_trace_out[outer_iter, slot, 17] = float(swap_lo)
++          r20r2_trace_out[outer_iter, slot, 18] = float(swap_hi)
++          r20r2_trace_out[outer_iter, slot, 19] = float(not swap_lo and not swap_hi)
++          r20r2_trace_out[outer_iter, slot, 20] = float(lo[0] < 0.0 and lo[1] < 0.0 and lo[1] > -gtol)
++          r20r2_trace_out[outer_iter, slot, 21] = float(hi[0] < 0.0 and hi[1] > 0.0 and hi[1] < gtol)
++          r20r2_trace_out[outer_iter, slot, 22] = float(converged)
++          r20r2_trace_out[outer_iter, slot, 23] = float(ls_done)
++          r20r2_trace_out[outer_iter, slot, 24] = alpha
++          r20r2_trace_out[outer_iter, slot, 25] = improvement
++          r20r2_trace_out[outer_iter, slot, 26] = lo[0]
++          r20r2_trace_out[outer_iter, slot, 27] = lo[1]
++          r20r2_trace_out[outer_iter, slot, 28] = hi[0]
++          r20r2_trace_out[outer_iter, slot, 29] = hi[1]
++          r20r2_trace_out[outer_iter, slot, 30] = float(ls_done)
++
+         if ls_done:
+           ls_converged = True
+           break
+@@ -1398,6 +1461,12 @@ def _linesearch_iterative_kernel(
+       ctx_alpha_out[worldid] = alpha
+       if wp.static(INCREMENTAL):
+         ctx_ls_exhausted_out[worldid] = wp.abs(alpha) < noise_floor
++      if worldid == 413 and outer_iter >= 0 and outer_iter < 10:
++        r20r2_trace_out[outer_iter, 21, 0] = float(ls_converged)
++        r20r2_trace_out[outer_iter, 21, 1] = alpha
++        r20r2_trace_out[outer_iter, 21, 2] = improvement
++        r20r2_trace_out[outer_iter, 21, 3] = float(not ls_converged)
++        r20r2_trace_out[outer_iter, 21, 4] = float(wp.abs(alpha) < noise_floor)
+       if not ls_converged:
+         if wp.static(bool(warn_overflow & OverflowType.LS_ITERATIONS)):
+           wp.printf(
+@@ -1452,6 +1521,7 @@ def _linesearch_iterative(m: types.Model, d: types.Data, ctx: SolverContext, fus
+       d.efc.frictionloss,
+       d.njmax,
+       d.nacon,
++      d.solver_niter,
+       ctx.search_unchanged,
+       ctx.Jaref,
+       ctx.search,
+@@ -1471,6 +1541,7 @@ def _linesearch_iterative(m: types.Model, d: types.Data, ctx: SolverContext, fus
+       ctx.improvement,
+       ctx.alpha,
+       ctx.ls_exhausted,
++      _R20R2_TRACE,
+     ],
+     block_dim=m.block_dim.linesearch_iterative,
+   )

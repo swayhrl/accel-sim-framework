@@ -1,0 +1,9 @@
+# Proposed future active-world local contract — review only
+
+This is a proposal following `R20R2_LINESEARCH_DIAGNOSTIC_THRESHOLD_ONLY`, **not** an approved rewrite of R20R1 and not authorization to run S1. R20R1 retains its accepted stop `R20R1_SOLVER_BASELINE_NOT_QUALIFIED` under the exact original stop-signature rule.
+
+For a newly authorized local solver-entry experiment, keep hard gates for exact frozen Model/options and all solver-entry Data bytes, world/constraint identity and row order, `nefc`, outer `solver_niter`, the actual contact/constraint coverage, absence of any new true capacity overflow, finite effective outputs, `ctx.done` semantics, the unchanged frozen perworld and global-RMS numerical screens for qacc/qfrc_constraint/efc.Ma/valid efc.force, qfrc source relation, and source-justified residual checks. Capacity bits and the outer solver `ITERATIONS` limit remain distinct hard outcomes; `nsolving=0` or an iteration limit must not be mislabeled mathematical convergence.
+
+Report `LS_ITERATIONS` separately as a line-search iteration-limit diagnostic, with its count, location, selected alpha/improvement and final-output impact. Do not use that bit *alone* as a hard B0/S1 numerical-equivalence gate only if a newly frozen contract expressly accepts this R20R2 source/trace evidence. A new candidate must still preserve every world equation, constraint, stop condition and effective output and must be checked at all predeclared entries; a material alpha/path/output divergence, changed outer niter, changed coverage, hidden-state dependency, or true capacity overflow remains a failure. This proposal does not make line-search nonconvergence harmless in general.
+
+No active-world implementation, timing, whole-physics-step qualification, or RL-training claim follows automatically from this proposal.

@@ -1,0 +1,18 @@
+# Bounded SolverContext/graph-local scratch audit
+
+Triggered because identical t152 Data/Model inputs produce small pre-threshold floating differences before the world413 outer-iteration-2 branch. This is a source/readiness audit, not a forced-clear experiment. No baseline arrays were additionally cleared.
+
+Fixed source `solver.py` allocates SolverContext in `_create_solver_context` (`:67-114`) during graph capture; each graph replay retains those pointers. For the actual sparse NEWTON/PYRAMIDAL conditional-graph path:
+
+| Relevant field | Producer before use in each complete solve | Authorized reuse |
+| --- | --- | --- |
+| `ctx.done`, `ctx.search_dot`, `d.solver_niter` | `_solve_init_efc` sets false/zero/zero (`:1657-1672`) | Done and niter evolve within the solve only. |
+| `ctx.Jaref` | `_solve_init_jaref_kernel` writes valid EFC rows during `init_context` (`:3870-3910`); line search updates those same rows after each chosen alpha (`:1384-1398`) | Valid-row state advances across outer iterations by design. |
+| `ctx.grad_dot`, `ctx.newton_decrement`, `ctx.grad_scale`, `ctx.search_unchanged` | `_update_gradient_zero_grad_dot(False)` resets/sets them on initial gradient build (`:2210-2254`, `:3275-3290`); `ctx.grad_dot` is then accumulated from newly computed gradient | Incremental zero/update logic is used only after a line-search step. The initial `ctx.alpha` argument is unused by the compile-time `False` branch. |
+| `ctx.h`, `ctx.hfactor`, `ctx.search`, `ctx.search_dot` | Sparse Newton initial H is written from M and then receives JTDACJ contributions (`:3300-3350`); Cholesky factorization writes factor/search/search_dot before `_linesearch` (`:2945-3000`) | The incremental path updates H/factor and may reuse them only according to same-solve state-change flags. |
+| `ctx.mv`, `ctx.jv` | `_linesearch` forms `M@search` and, for sparse mode, launches `_linesearch_jv_fused_kernel` to write valid J rows (`:1573-1625`); `ctx.search_unchanged` is explicitly invalidated at new-solve start (`:3968-3974`) | Reuse is only when the same-solve search is unchanged. The decisive outer-2 trace records `search_unchanged=0` in both outcomes, so Jv reuse is not needed to explain that flip. |
+| `ctx.quad` | Read only in elliptic-cone branches; fixed scene uses PYRAMIDAL specialization (`:970-1030`, `:1070-1130`) | Not in the actual line-search arithmetic. |
+| `ctx.alpha`, `ctx.improvement`, `ctx.ls_exhausted` | Thread 0 writes alpha/improvement/ls_exhausted after each line search (`:1398-1407`); `ls_exhausted` allocates zeroed, and `_solve` invalidates `search_unchanged` before the first iteration | The later incremental and `_solve_done` reads are after those writes for active worlds. |
+| `ctx.quad_changed_count`, `ctx.state_changed_count` | `_zero_change_counters` runs before each incremental `_update_constraint` (`:3760-3790`); constraint update then records flips | Same-solve incremental state only. |
+
+This bounded audit finds no specific read-before-write or missing graph-local restoration required to explain the observed flip. The fixed sparse H/J reductions include floating accumulation (including atomic additions), so slightly different outer-1/outer-2 floating values are compatible with arithmetic-order variation; this is an inference from source and trace, not proof that every possible hidden dependency has been excluded. The paired observer trace localizes the flag difference to a signed derivative/acceptance predicate, and the final selected alpha lies inside the observed clear-bit range. Therefore no debug-only forced clear was performed, and `R20R2_LINESEARCH_HIDDEN_STATE_UNRESOLVED` is not supported by current evidence.
