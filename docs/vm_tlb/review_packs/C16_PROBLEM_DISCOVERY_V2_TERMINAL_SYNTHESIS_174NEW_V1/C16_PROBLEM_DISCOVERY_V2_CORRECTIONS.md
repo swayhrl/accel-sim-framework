@@ -1,0 +1,9 @@
+# Correction of the DeepSeek weight-line reading
+
+Historical cross-lineage artifact `734e6a7...` reported two `warp_visits_per_unique_128B_line` and labeled its count `cross_warp_shared_line_fraction_within_shard`. Its scanner counted **warp records touching a line**, without distinct `(CTA,warp)` identity deduplication. The historical bytes and document are retained, but the inference “cross-warp shared weight line” is `SUPERSEDED_INTERPRETATION`.
+
+The accepted correction is `SAME-WARP EXACT-BYTE REVISIT`. The oracle screen independently parsed the accepted C16WARP1 shards with CTA, warp, static MREF, 32B sector and 2B BF16 addresses. On all 180,224 DeepSeek revisited weight lines, both dynamic records are the same CTA, same warp, same static MREF and exact same BF16 starts. Cross-warp revisited lines: 0. Cross-CTA duplicate sector visits: 0. The payload has a record ordinal, **not** an explicit loop-iteration identity; exact internal loop cause and K threshold stay unknown.
+
+O0's 50% 128B line-record reduction is an optimistic line fiction. O1's 50% selected 32B sector-visit reduction and O2's 50% exact BF16 logical-read reduction are real *logical-work* ceilings: 5,767,168 avoidable exact bytes out of 11,534,336. They are not 50% memory traffic, cache misses, DRAM rereads or time. L1/L2 service, scoreboard exposure and critical path are unknown.
+
+DeepSeek and OLMoE both show template-6, 243/243 identical selected static offset/opcode/SASS entries, M=1, N=2048, 512 observed CTA IDs and 1024 observed warp identities. K is 1408 versus 1024. OLMoE has no exact repeat. This is a template/shape-associated work-assignment difference, not established lineage causality. The nearest-neighbor guard is crowded for the generic cache-mechanism premise. Final status: `GEMVX_SHAPE_WORK_DECOMPOSITION_EFFECT` and `SOFTWARE_KERNEL_SHAPE_OBSERVATION_ONLY`; no native service oracle contract.

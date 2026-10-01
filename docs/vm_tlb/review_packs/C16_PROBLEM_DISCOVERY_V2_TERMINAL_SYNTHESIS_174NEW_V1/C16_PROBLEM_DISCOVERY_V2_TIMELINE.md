@@ -1,0 +1,9 @@
+# Problem Discovery V2 timeline
+
+1. The prior exploration wave ended at `ca6c33ae0431d91aa7c6a43cbb79522402dd7580`: no current C16 **mechanism** qualified for promotion. Closed software/headroom lines and the future-only heterogeneous handoff question remain frozen.
+2. Literature map `7aa517f7ece4478b19f22ed6cd10659b964a53f9` found zero newly qualified literature-driven C16 problems. Its three screening questions remained unadmitted, not experiments.
+3. Cross-lineage behavior screen `734e6a7ca49bd8cbf16eeb0702cf80755afc23f1` selected one anomaly for an oracle screen, based on two warp-*record* visits per DeepSeek 128B weight line. Its interpretation of those records as distinct-warp sharing was provisional and is now superseded. The source artifact remains unchanged.
+4. Translation/TLB screen `8bf4b21d408d367805a61beb9662db416625a407` found zero qualified current C16 translation problems. Weight/KV translation specialness has literature support, but C16 translation time and inter-expert turnover remain unmeasured; no 109 capture was authorized.
+5. DeepSeek nearest-neighbor guard `39c9a98938045a47903dd1b25fffba012e2dfae3` classified the generic weight-line-to-cache-mechanism story as crowded. It did not test an exact matched DeepSeek implementation.
+6. Independent raw-shard oracle `d23e0fd263cd9ff2b144f3d023ab60c567afb6f4` resolved the anomaly: 180,224 exact-address revisit lines, every duplicate in the same CTA/warp/static MREF; zero cross-warp and cross-CTA duplicate events. O1 sector and O2 exact-byte logical-work fractions are both 0.5. Same template-6 source, different K and dynamic work assignment point to a software-kernel shape observation. L1/L2/DRAM/time consequences are unknown; no native service contract.
+7. This synthesis closes V2 at the **problem** gate: zero currently qualified architecture problems, oracle candidates, promotion candidates and new experiment authorizations. No earlier negative result is reopened.

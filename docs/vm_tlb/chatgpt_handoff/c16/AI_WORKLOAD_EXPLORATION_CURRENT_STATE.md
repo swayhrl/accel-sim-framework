@@ -28,3 +28,8 @@ and limited realized overlap remain possible contributors.
 
 This context authorizes no GPU, NCU, NVBit, SASS, trace, Accel-Sim or new
 mechanism experiment. Resume only under a separately reviewed project goal.
+
+Problem Discovery V2 canonical successor: `C16_PROBLEM_DISCOVERY_V2_CURRENT_STATE.md`.
+The historical exploration-wave decision above remains unchanged; the successor
+records the later problem-admission closure and correction of the provisional
+DeepSeek warp-record interpretation. Use the successor for current C16 status.

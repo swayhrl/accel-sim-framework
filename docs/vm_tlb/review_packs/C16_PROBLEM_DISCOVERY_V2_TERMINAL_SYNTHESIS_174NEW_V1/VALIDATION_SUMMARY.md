@@ -1,0 +1,7 @@
+# CPU-only validation and remaining boundaries
+
+`problem_discovery_v2_terminal_validate.py` verified six exact upstream commit/tree pairs, their review-pack paths, all 69 SHA256SUMS entries (7+11+16+15+6+14), decision JSON identities and the oracle's accepted line table. It independently aggregated 180,224 DeepSeek exact reread lines, 180,224 same-warp and zero cross-warp revisits, 180,224 avoidable selected sector visits, 5,767,168 avoidable exact BF16 logical bytes out of 11,534,336, and zero cross-CTA duplicate sector visits. The final state and canonical handoff were checked against those authorities.
+
+Seven directed tests reject nonzero active candidates, invented translation headroom, new experiment authorization, nonzero DeepSeek cross-warp count, a changed exact-byte fraction and reentry of the superseded interpretation into the current handoff; they also match every evidence-ledger commit/tree/manifest digest to the verified upstream receipts. The full validator was rerun to a separate output path and `cmp` verified byte-exact `AUTHORITY_VALIDATION.json`. `SHA256SUMS` covers this pack, the canonical handoff, the historical-state pointer and both scripts. `git diff --check` and clean-tree checks complete the local gate.
+
+This is synthesis-only. It does not resolve the DeepSeek internal loop/K threshold or L1/L2/DRAM/time cost, C16 translation headroom, or same-process inter-expert page turnover. It authorizes no science execution or next-wave measurement contract.
