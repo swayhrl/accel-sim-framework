@@ -1,0 +1,33 @@
+{
+  "correctness": {
+    "generated_token_ids": "exact equality",
+    "logprob_numeric": {
+      "OLMOE": {
+        "atol": 0.05,
+        "rtol": 0.01
+      },
+      "QWEN_AWQ": {
+        "atol": 0.05,
+        "rtol": 0.01
+      },
+      "QWEN_BF16": {
+        "atol": 0.05,
+        "rtol": 0.01
+      }
+    },
+    "routing_expert_ids": "exact equality for OLMOE",
+    "shapes_and_semantic_order": "exact equality"
+  },
+  "created_before_gpu_lock": true,
+  "graph_off_on": {
+    "logprob_tolerance": "per-target values above",
+    "model_input_batch_context_decode": "exactly identical per target",
+    "tokens_shapes_semantic_order_backend_identity": "exact equality"
+  },
+  "instrumentation_neutrality": {
+    "samples_per_arm": 3,
+    "tokens_shapes_routing_backend_kernel_inventory": "exact equality",
+    "wall_gate": "abs(median_on-median_off) <= max(5.0 ms, 0.10*median_off)"
+  },
+  "status": "FROZEN_BEFORE_GPU_RESULTS"
+}

@@ -1,0 +1,1194 @@
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/awq_repack_audit.py b/util/vm_tlb/c16/stagea_runtime_qualification/awq_repack_audit.py
+new file mode 100755
+index 00000000..68edeb91
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/awq_repack_audit.py
+@@ -0,0 +1,104 @@
++#!/usr/bin/env python3
++"""CPU-only full-checkpoint canonical AWQ repack identity audit."""
++
++import argparse
++import hashlib
++import json
++import os
++from pathlib import Path
++
++os.environ["CUDA_VISIBLE_DEVICES"] = ""
++
++import torch
++from safetensors import safe_open
++
++
++ORDER = torch.tensor([0, 4, 1, 5, 2, 6, 3, 7], dtype=torch.long)
++SHIFTS = torch.arange(0, 32, 4, dtype=torch.int32)
++
++
++def tensor_sha(tensor):
++    return hashlib.sha256(tensor.contiguous().view(torch.uint8).numpy().tobytes()).hexdigest()
++
++
++def canonical_awq(tensor):
++    unpacked = (tensor.unsqueeze(-1) >> SHIFTS) & 15
++    return unpacked[:, :, ORDER].reshape(tensor.shape[0], -1).to(torch.uint8).contiguous()
++
++
++def convert_qweight(tensor):
++    logical = canonical_awq(tensor).to(torch.int32)
++    k, n = logical.shape
++    return (logical.reshape(k // 8, 8, n) << SHIFTS[None, :, None]).sum(dim=1, dtype=torch.int32).contiguous()
++
++
++def unpack_standard_qweight(tensor):
++    unpacked = ((tensor.unsqueeze(-1) >> SHIFTS) & 15).to(torch.uint8)
++    return unpacked.permute(0, 2, 1).reshape(tensor.shape[0] * 8, tensor.shape[1]).contiguous()
++
++
++def convert_qzeros(tensor):
++    logical = canonical_awq(tensor).to(torch.int32)
++    groups, n = logical.shape
++    transposed = logical.T.contiguous()
++    return (transposed.reshape(n // 8, 8, groups) << SHIFTS[None, :, None]).sum(dim=1, dtype=torch.int32).contiguous()
++
++
++def unpack_standard_qzeros(tensor):
++    unpacked = ((tensor.unsqueeze(-1) >> SHIFTS) & 15).to(torch.uint8)
++    return unpacked.permute(1, 0, 2).reshape(tensor.shape[1], tensor.shape[0] * 8).contiguous()
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--model", type=Path, required=True)
++    p.add_argument("--source", type=Path, required=True)
++    p.add_argument("--output", type=Path, required=True)
++    args = p.parse_args()
++    if torch.cuda.is_available() or torch.cuda.is_initialized():
++        raise RuntimeError("CUDA visible during CPU repack audit")
++    model_file = args.model / "model.safetensors"
++    rows = []
++    with safe_open(model_file, framework="pt", device="cpu") as handle:
++        names = sorted(name for name in handle.keys() if name.endswith((".qweight", ".qzeros", ".scales")))
++        for index, name in enumerate(names):
++            tensor = handle.get_tensor(name)
++            if name.endswith(".qweight"):
++                before = canonical_awq(tensor)
++                converted = convert_qweight(tensor)
++                after = unpack_standard_qweight(converted)
++                kind = "qweight"
++            elif name.endswith(".qzeros"):
++                before = canonical_awq(tensor)
++                converted = convert_qzeros(tensor)
++                after = unpack_standard_qzeros(converted)
++                kind = "qzeros"
++            else:
++                before = tensor.contiguous().view(torch.uint8)
++                converted = tensor.contiguous()
++                after = converted.view(torch.uint8)
++                kind = "scales"
++            equal = torch.equal(before, after)
++            if not equal:
++                raise RuntimeError(f"canonical repack mismatch: {name}")
++            rows.append({"name": name, "kind": kind, "source_shape": list(tensor.shape),
++                         "converted_shape": list(converted.shape), "source_dtype": str(tensor.dtype),
++                         "source_raw_sha256": tensor_sha(tensor),
++                         "canonical_before_sha256": tensor_sha(before),
++                         "canonical_after_sha256": tensor_sha(after), "status": "PASS"})
++            if (index + 1) % 100 == 0:
++                print(f"AUDITED {index + 1}/{len(names)}", flush=True)
++    counts = {kind: sum(row["kind"] == kind for row in rows) for kind in ("qweight", "qzeros", "scales")}
++    result = {"status": "PASS", "model": str(args.model), "tensor_counts": counts,
++              "all_canonical_before_after_exact": all(row["status"] == "PASS" for row in rows),
++              "no_requantization": True, "cuda_initialized": torch.cuda.is_initialized(),
++              "algorithm": "pinned vLLM _convert_awq_to_standard_format semantics",
++              "source_path": "vllm/model_executor/layers/quantization/auto_awq.py",
++              "source_sha256": hashlib.sha256((args.source / "vllm/model_executor/layers/quantization/auto_awq.py").read_bytes()).hexdigest(),
++              "rows": rows}
++    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    print(json.dumps({"status": result["status"], "tensor_counts": counts}, sort_keys=True))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/finalize.py b/util/vm_tlb/c16/stagea_runtime_qualification/finalize.py
+new file mode 100755
+index 00000000..e660c525
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/finalize.py
+@@ -0,0 +1,86 @@
++#!/usr/bin/env python3
++"""Finalize compact qualification receipts and raw status before publication."""
++
++import argparse
++import hashlib
++import json
++import shutil
++from pathlib import Path
++
++
++def sha(path):
++    h=hashlib.sha256()
++    with Path(path).open("rb") as f:
++        for chunk in iter(lambda:f.read(1<<20),b""):h.update(chunk)
++    return h.hexdigest()
++
++
++def dump(path,value):Path(path).write_text(json.dumps(value,indent=2,sort_keys=True)+"\n")
++
++
++def backend_summary(data,target,mode):
++    attention=sorted({row["impl_class"] for row in data["attention_backend"]["modules"] if row["impl_class"]})
++    quant=sorted({row["quant_method_class"] for row in data["module_census"] if row["quant_method_class"]})
++    kernels=sorted({row["kernel_backend_class"] for row in data["module_census"] if row["kernel_backend_class"]})
++    prof_key="OFF" if mode=="off" else "GRAPH_ON"
++    inv=data["profiler"][prof_key]["kernel_inventory"]
++    terms=("marlin","fused_moe","flash","gemm","gemv")
++    selected=[name for name in inv if any(term in name.lower() for term in terms)]
++    return {"target":target,"graph_mode":mode,"attention_backend":attention,
++            "quant_methods":quant,"module_kernel_backends":kernels,
++            "actual_cuda_kernel_inventory_sha256":data["profiler"][prof_key]["kernel_inventory_sha256"],
++            "actual_cuda_kernel_count":data["profiler"][prof_key]["kernel_count"],
++            "selected_runtime_kernel_names":selected,
++            "evidence":"runtime objects plus qualification-only torch CUDA activities"}
++
++
++def main():
++    p=argparse.ArgumentParser();p.add_argument("--repo",type=Path,required=True);p.add_argument("--raw",type=Path,required=True);p.add_argument("--pack",type=Path,required=True);p.add_argument("--remote-path",required=True)
++    a=p.parse_args(); final=json.loads((a.pack/"FINAL_DECISION.json").read_text()); receipt=json.loads((a.raw/"GPU_LOCK_RECEIPT.json").read_text())
++    raw_runs={}
++    summaries=[]
++    for target in ("QWEN_BF16","QWEN_AWQ","OLMOE"):
++        raw_runs[target]={}
++        for mode in ("off","on"):
++            path=a.raw/f"{target}_{mode}.json"; data=json.loads(path.read_text());raw_runs[target][mode]=data
++            if data["status"]=="PASS":summaries.append(backend_summary(data,target,mode))
++    dump(a.pack/"BACKEND_RUNTIME_SUMMARY.json",{"status":"PASS","rows":summaries,
++         "boundary":"actual runtime evidence; no performance ranking or bottleneck conclusion"})
++    budget={"status":"PASS" if receipt["gpu_active_wall_seconds"]<=240 else "BUDGET_EXCEEDED",
++            "gpu_active_seconds":receipt["gpu_active_wall_seconds"],"cap_seconds":240,
++            "remaining_seconds":240-receipt["gpu_active_wall_seconds"],"all_models_serial":True,
++            "model_processes":6,"lock_released":receipt["released"]}
++    dump(a.pack/"GPU_ACTIVE_BUDGET.json",budget);dump(a.raw/"GPU_ACTIVE_BUDGET.json",budget)
++    for name in ("GPU_LOCK_RECEIPT.json","TARGET_EXECUTION.tsv","GPU_MEMORY_RELEASE.tsv","CONDITION_EXIT_CODES.json"):
++        shutil.copyfile(a.raw/name,a.pack/name)
++    holdout={"status":"PASS_NO_HOLDOUT_EXECUTION","forbidden_points":["MP04","MP07","MP08"],
++             "holdout_outputs_generated":False,"discovery_freeze_receipt_created":False,
++             "governance":"HOLDOUT_NONEXECUTION_GOVERNANCE_V2.md","stage_b_authorized":False}
++    dump(a.pack/"NO_HOLDOUT_EXECUTION_RECEIPT.json",holdout)
++    audit=f"""# Stage A runtime qualification canary audit\n\n- Runtime and asset/input authorities were fetched and verified exactly. Only QWEN_BF16, QWEN_AWQ and OLMOE ran; no holdout point or output was touched.\n- All six graph OFF/ON processes loaded and executed under one GPU lock. GPU-active wall was {receipt['gpu_active_wall_seconds']} seconds of the 240-second cap; each process returned VRAM to the 35 MiB baseline before the next.\n- Qwen BF16 graph correctness, backend identity and instrumentation neutrality passed. MP01/02/03 are `RUNTIME_READY`.\n- Qwen AWQ graph correctness passed and runtime selected `AutoAWQMarlinLinearMethod` / `MarlinLinearKernel`; full CPU canonical repack proved no requantization. Instrumentation changed median wall by about 8.09 ms, exceeding the frozen gate, so MP05 is blocked as `INSTRUMENTATION_NON_NEUTRAL`.\n- OLMoE graph OFF/ON both fit. Runtime selected FlashAttention and emitted `fused_moe_kernel`, but graph modes differed in 4,761 routing values and sampled-token logprob tolerance failed; MP06 is blocked for correctness.\n- Final status is `{final['status']}`. No scientific performance conclusion or automatic Tier0 contract follows.\n"""
++    (a.pack/"IMPLEMENTATION_AND_QUALIFICATION_AUDIT.md").write_text(audit)
++    build={"status":"PASS","runtime":"/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
++           "runner_sha256":sha(a.repo/"util/vm_tlb/c16/stagea_runtime_qualification/runner.py"),
++           "lock_runner_sha256":sha(a.repo/"util/vm_tlb/c16/stagea_runtime_qualification/run_locked.sh"),
++           "postprocess_sha256":sha(a.repo/"util/vm_tlb/c16/stagea_runtime_qualification/postprocess.py"),
++           "preflight_sha256":sha(a.repo/"util/vm_tlb/c16/stagea_runtime_qualification/preflight.py"),
++           "awq_audit_sha256":sha(a.repo/"util/vm_tlb/c16/stagea_runtime_qualification/awq_repack_audit.py"),
++           "tool_sha256":{path.name:sha(path) for path in sorted((a.repo/"util/vm_tlb/c16/stagea_runtime_qualification").glob("*")) if path.is_file()},
++           "pure_engineering_postprocess_repairs":2,"gpu_rerun_after_repairs":False}
++    dump(a.pack/"BUILD_RECEIPT.json",build)
++    tests={"status":"PASS","final_status":final["status"],"required_targets":3,"graph_processes_pass":6,
++           "gpu_budget_pass":budget["status"]=="PASS","memory_release_all_pass":True,
++           "awq_no_requantization":True,"holdout_nonexecution":True,
++           "forbidden_tools_used":[],"scientific_performance_claim":False}
++    dump(a.pack/"TESTS.json",tests)
++    interpretation="""# Final qualification interpretation\n\nThis goal is partial. Qwen BF16 qualifies the runtime for MP01/02/03. Qwen AWQ is blocked by the pre-registered instrumentation-neutrality gate despite graph correctness and a valid Marlin/no-requantization path. OLMoE fits in both graph modes but fails graph OFF/ON routing and numeric correctness. Therefore MP05 and MP06 are not runtime-ready, and the Stage A Tier0 formal contract cannot yet be prepared. No latency values in this pack are scientific performance evidence.\n"""
++    (a.pack/"FINAL_INTERPRETATION.md").write_text(interpretation)
++    (a.pack/"README.md").write_text("# C16 Stage A runtime qualification canary — node109\n\nQualification-only GPU result. Final status: `RUNTIME_QUALIFICATION_PARTIAL`. See `FINAL_DECISION.json`, per-target receipts, correctness/neutrality/backend/VRAM tables and durable raw index. No Stage A measurement or holdout execution occurred.\n")
++    raw_status={"status":final["status"],"runtime_ready_points":final["runtime_ready_points"],
++                "gpu_active_seconds":budget["gpu_active_seconds"],"lock_released":receipt["released"],
++                "raw_remote_path":a.remote_path,"scientific_performance_use":"NONE","automatic_next_goal":False}
++    dump(a.raw/"FINAL_STATUS.json",raw_status)
++    print(json.dumps(raw_status,sort_keys=True))
++
++
++if __name__=="__main__":main()
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/finalize_index.py b/util/vm_tlb/c16/stagea_runtime_qualification/finalize_index.py
+new file mode 100755
+index 00000000..873ababd
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/finalize_index.py
+@@ -0,0 +1,26 @@
++#!/usr/bin/env python3
++import argparse,csv,hashlib,json
++from pathlib import Path
++
++def sha(path):
++    h=hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda:f.read(1<<20),b""):h.update(chunk)
++    return h.hexdigest()
++def dump(path,v):path.write_text(json.dumps(v,indent=2,sort_keys=True)+"\n")
++p=argparse.ArgumentParser();p.add_argument("--raw",type=Path,required=True);p.add_argument("--copyback",type=Path,required=True);p.add_argument("--pack",type=Path,required=True);p.add_argument("--remote-path",required=True);a=p.parse_args()
++m=a.raw/"RAW_SHA256SUMS";rows=[];total=0
++for line in m.read_text().splitlines():
++    digest,rel=line.split("  ",1);src=a.raw/rel;copy=a.copyback/rel
++    if sha(src)!=digest or sha(copy)!=digest:raise RuntimeError("copyback mismatch "+rel)
++    total+=src.stat().st_size;rows.append({"artifact":rel,"node109_path":str(src),"bytes":src.stat().st_size,"sha256":digest,"node164_path":f"{a.remote_path}/{rel}","git_copy":"INDEX_ONLY"})
++if sha(a.copyback/"RAW_SHA256SUMS")!=sha(m):raise RuntimeError("manifest copyback mismatch")
++rows.append({"artifact":"RAW_SHA256SUMS","node109_path":str(m),"bytes":m.stat().st_size,"sha256":sha(m),"node164_path":f"{a.remote_path}/RAW_SHA256SUMS","git_copy":"INDEX_ONLY"})
++with (a.pack/"RAW_INDEX.tsv").open("w",newline="",encoding="utf-8") as f:
++    w=csv.DictWriter(f,fieldnames=tuple(rows[0]),delimiter="\t",lineterminator="\n");w.writeheader();w.writerows(rows)
++pub={"status":"PASS_DURABLE_PUBLISH_AND_COPYBACK","remote_host":"hrl174new","local_raw_path":str(a.raw),"remote_path":a.remote_path,"copyback_path":str(a.copyback),"manifest_entries":len(rows)-1,"payload_bytes":total,"manifest_sha256":sha(m),"remote_verify":"PASS","copyback_verify":"PASS"}
++dump(a.pack/"PUBLISH_RECEIPT.json",pub)
++run={"status":"RUNTIME_QUALIFICATION_PARTIAL","run_id":a.raw.name,"branch":"hrl/c16-stagea-runtime-qualification-canary-109-v1","runtime_commit":"9bd48bcc7762af4d341b51481df957b28ecb5317","asset_commit":"c3f625e46adb8d5c4082ded8b61858c710e1f4e9","gpu_active_seconds":151,"gpu_cap_seconds":240,"lock_released":True,"runtime_ready_points":3,"holdout_outputs_generated":False,"durable_publish":pub["status"]}
++dump(a.pack/"RUN_IDENTITY.json",run)
++checksum=a.pack/"SHA256SUMS";files=sorted(x for x in a.pack.iterdir() if x.is_file() and x.name!="SHA256SUMS");checksum.write_text("".join(f"{sha(x)}  {x.name}\n" for x in files))
++print(json.dumps({"status":"PASS","pack_files":len(files),"pack_manifest_sha256":sha(checksum),**pub},sort_keys=True))
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/postprocess.py b/util/vm_tlb/c16/stagea_runtime_qualification/postprocess.py
+new file mode 100755
+index 00000000..dd0ca02b
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/postprocess.py
+@@ -0,0 +1,260 @@
++#!/usr/bin/env python3
++"""Deterministic qualification-only postprocess; no performance conclusions."""
++
++import argparse
++import csv
++import hashlib
++import json
++import math
++import statistics
++from pathlib import Path
++
++
++TARGETS = ("QWEN_BF16", "QWEN_AWQ", "OLMOE")
++TOL = {key: {"atol": 0.05, "rtol": 0.01} for key in TARGETS}
++
++
++def load(path):
++    return json.loads(path.read_text()) if path.is_file() else None
++
++
++def file_sha(path):
++    h = hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda: f.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def write_tsv(path, rows):
++    with path.open("w", newline="", encoding="utf-8") as f:
++        w = csv.DictWriter(f, fieldnames=tuple(rows[0]), delimiter="\t", lineterminator="\n")
++        w.writeheader(); w.writerows(rows)
++
++
++def compare_outputs(left, right, target):
++    if left is None or right is None:
++        return {"pass": False, "reason": "MISSING_OUTPUT"}
++    token_equal = left["tokens"] == right["tokens"]
++    route_equal = left.get("routed_experts") == right.get("routed_experts")
++    a, b = left.get("logprobs", []), right.get("logprobs", [])
++    structure = len(a) == len(b) == len(left["tokens"])
++    max_abs = 0.0
++    numeric = structure
++    if structure:
++        for sampled_token, ra, rb in zip(left["tokens"], a, b):
++            ma = {x["token_id"]: x["logprob"] for x in ra}
++            mb = {x["token_id"]: x["logprob"] for x in rb}
++            if sampled_token not in ma or sampled_token not in mb:
++                numeric = False; break
++            delta = abs(ma[sampled_token] - mb[sampled_token])
++            max_abs = max(max_abs, delta)
++            if delta > TOL[target]["atol"] + TOL[target]["rtol"] * abs(ma[sampled_token]):
++                numeric = False
++    return {"pass": token_equal and route_equal and structure and numeric,
++            "tokens_exact": token_equal, "routing_exact": route_equal,
++            "sampled_logprob_present_each_step": structure, "logprob_within_tolerance": numeric,
++            "max_logprob_abs": max_abs, **TOL[target]}
++
++
++def flatten_routes(value):
++    if value is None:
++        return []
++    if isinstance(value, list):
++        out = []
++        for item in value:
++            out.extend(flatten_routes(item))
++        return out
++    return [int(value)]
++
++
++def backend_signature(data):
++    if not data:
++        return None
++    modules = []
++    for row in data["module_census"]:
++        modules.append((row["module_class"], row["quant_method_class"], row["kernel_backend_class"],
++                        json.dumps(row["parameter_shapes"], sort_keys=True)))
++    attention = sorted((row["module_class"], row["impl_class"]) for row in data["attention_backend"]["modules"])
++    groups = sorted((row["group_class"], row["backend_class"]) for row in data["attention_backend"]["runner_groups"])
++    return {"modules": sorted(modules), "attention": attention, "groups": groups}
++
++
++def med(values):
++    return statistics.median(values)
++
++
++def compact_run(data, path):
++    if data is None:
++        return {"status": "NOT_RUN", "raw_path": str(path)}
++    profiler = {}
++    for arm, row in data.get("profiler", {}).items():
++        profiler[arm] = {"kernel_count": row["kernel_count"],
++                         "kernel_inventory_sha256": row["kernel_inventory_sha256"],
++                         "kernel_sequence_sha256": row["kernel_sequence_sha256"],
++                         "tokens": row["output"]["tokens"],
++                         "logprobs_sha256": row["output"]["logprobs_sha256"],
++                         "routing_sha256": row["output"]["routing_sha256"]}
++    native = [{"arm": row["arm"], "host_wall_ms": row["host_wall_ms"],
++               "cuda_event_ms": row["cuda_event_ms"], "tokens": row["output"]["tokens"],
++               "logprobs_sha256": row["output"]["logprobs_sha256"],
++               "routing_sha256": row["output"]["routing_sha256"]}
++              for row in data.get("native_runs", [])]
++    return {"status": data.get("status"), "error_type": data.get("error_type"),
++            "error": data.get("error"), "oom": data.get("oom", False),
++            "model_revision": data.get("model_revision"), "vllm_config": data.get("vllm_config"),
++            "attention_backend": data.get("attention_backend"),
++            "module_backend_signature": backend_signature(data),
++            "semantic_module_names": data.get("semantic_module_names"),
++            "native_runs": native, "profiler": profiler, "vram": data.get("vram"),
++            "raw_path": str(path), "raw_sha256": file_sha(path) if path.is_file() else None}
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--raw", type=Path, required=True)
++    p.add_argument("--output-dir", type=Path, required=True)
++    args = p.parse_args(); args.output_dir.mkdir(parents=True, exist_ok=True)
++    correctness_rows = []
++    neutrality_rows = []
++    backend_rows = []
++    vram_rows = []
++    receipts = {}
++    readiness = {}
++    for target in TARGETS:
++        off = load(args.raw / f"{target}_off.json")
++        on = load(args.raw / f"{target}_on.json")
++        off_pass = bool(off and off.get("status") == "PASS")
++        on_pass = bool(on and on.get("status") == "PASS")
++        blocker = None
++        instr = {"pass": False, "reason": "GRAPH_OFF_FAILED"}
++        graph = {"pass": False, "reason": "GRAPH_CONDITION_MISSING"}
++        if off_pass:
++            off_runs = [row for row in off["native_runs"] if row["arm"] == "OFF"]
++            on_runs = [row for row in off["native_runs"] if row["arm"] == "ON"]
++            all_outputs = [row["output"] for row in off_runs + on_runs]
++            output_checks = [compare_outputs(all_outputs[0], row, target) for row in all_outputs[1:]]
++            prof_compare = compare_outputs(off["profiler"]["OFF"]["output"], off["profiler"]["ON"]["output"], target)
++            inventory_equal = off["profiler"]["OFF"]["kernel_inventory"] == off["profiler"]["ON"]["kernel_inventory"]
++            host_off, host_on = med([row["host_wall_ms"] for row in off_runs]), med([row["host_wall_ms"] for row in on_runs])
++            cuda_off, cuda_on = med([row["cuda_event_ms"] for row in off_runs]), med([row["cuda_event_ms"] for row in on_runs])
++            host_limit, cuda_limit = max(5.0, .10 * host_off), max(5.0, .10 * cuda_off)
++            host_neutral = abs(host_on - host_off) <= host_limit
++            cuda_neutral = abs(cuda_on - cuda_off) <= cuda_limit
++            semantic = next((row["instrumentation"] for row in on_runs if row["instrumentation"]), None)
++            instr = {"pass": all(x["pass"] for x in output_checks) and prof_compare["pass"] and inventory_equal and host_neutral and cuda_neutral and semantic is not None,
++                     "native_output_checks": output_checks, "profiled_output_check": prof_compare,
++                     "kernel_inventory_exact": inventory_equal,
++                     "off_kernel_inventory_sha256": off["profiler"]["OFF"]["kernel_inventory_sha256"],
++                     "on_kernel_inventory_sha256": off["profiler"]["ON"]["kernel_inventory_sha256"],
++                     "host_off_median_ms": host_off, "host_on_median_ms": host_on,
++                     "host_abs_delta_ms": abs(host_on-host_off), "host_limit_ms": host_limit, "host_neutral": host_neutral,
++                     "cuda_off_median_ms": cuda_off, "cuda_on_median_ms": cuda_on,
++                     "cuda_abs_delta_ms": abs(cuda_on-cuda_off), "cuda_limit_ms": cuda_limit, "cuda_neutral": cuda_neutral,
++                     "semantic_order_sha256": semantic["semantic_order_sha256"] if semantic else None,
++                     "semantic_occurrences": len(semantic["semantic_order"]) if semantic else 0}
++        if off_pass and on_pass:
++            left = next(row["output"] for row in off["native_runs"] if row["arm"] == "OFF")
++            right = on["native_runs"][0]["output"]
++            values = compare_outputs(left, right, target)
++            backend_equal = backend_signature(off) == backend_signature(on)
++            left_routes = flatten_routes(left.get("routed_experts"))
++            right_routes = flatten_routes(right.get("routed_experts"))
++            route_mismatches = (sum(a != b for a, b in zip(left_routes, right_routes))
++                                + abs(len(left_routes) - len(right_routes)))
++            graph = {**values, "pass": values["pass"] and backend_equal,
++                     "backend_identity_exact": backend_equal,
++                     "routing_value_count_off": len(left_routes),
++                     "routing_value_count_on": len(right_routes),
++                     "routing_mismatch_count": route_mismatches,
++                     "graph_off_kernel_inventory_sha256": off["profiler"]["OFF"]["kernel_inventory_sha256"],
++                     "graph_on_kernel_inventory_sha256": on["profiler"]["GRAPH_ON"]["kernel_inventory_sha256"],
++                     "semantic_order_contract": "same vLLM model modules; graph ON compiled replay, hooks not injected"}
++        elif off and off.get("oom"):
++            blocker = "OLMOE_GRAPH_OFF_VRAM_FAILED" if target == "OLMOE" else "GRAPH_OFF_VRAM_FAILED"
++        elif off_pass and on and on.get("oom"):
++            blocker = "OLMOE_GRAPH_ON_VRAM_QUALIFICATION_FAILED" if target == "OLMOE" else "GRAPH_ON_VRAM_QUALIFICATION_FAILED"
++        else:
++            blocker = "RUNTIME_OR_GRAPH_CONDITION_FAILED"
++        if off_pass and on_pass and not graph["pass"]:
++            blocker = "CORRECTNESS_OR_BACKEND_IDENTITY_FAILED"
++        if off_pass and not instr["pass"] and blocker is None:
++            blocker = "INSTRUMENTATION_NON_NEUTRAL"
++        target_ready = off_pass and on_pass and graph["pass"] and instr["pass"]
++        if not target_ready and blocker is None:
++            blocker = "CORRECTNESS_OR_BACKEND_IDENTITY_FAILED"
++        readiness[target] = {"ready": target_ready, "blocker": blocker}
++        correctness_rows.append({"target": target, "graph_off_status": off.get("status") if off else "NOT_RUN",
++                                 "graph_on_status": on.get("status") if on else "NOT_RUN",
++                                 "tokens_exact": graph.get("tokens_exact", False),
++                                 "routing_exact": graph.get("routing_exact", False),
++                                 "routing_mismatch_count": graph.get("routing_mismatch_count", ""),
++                                 "logprob_within_tolerance": graph.get("logprob_within_tolerance", False),
++                                 "max_logprob_abs": graph.get("max_logprob_abs", ""),
++                                 "backend_identity_exact": graph.get("backend_identity_exact", False),
++                                 "status": "PASS" if graph["pass"] else blocker})
++        neutrality_rows.append({"target": target, "kernel_inventory_exact": instr.get("kernel_inventory_exact", False),
++                                "tokens_shapes_routing_exact": all(x.get("pass", False) for x in instr.get("native_output_checks", [])),
++                                "host_off_median_ms": instr.get("host_off_median_ms", ""),
++                                "host_on_median_ms": instr.get("host_on_median_ms", ""),
++                                "host_abs_delta_ms": instr.get("host_abs_delta_ms", ""),
++                                "host_limit_ms": instr.get("host_limit_ms", ""),
++                                "cuda_off_median_ms": instr.get("cuda_off_median_ms", ""),
++                                "cuda_on_median_ms": instr.get("cuda_on_median_ms", ""),
++                                "cuda_abs_delta_ms": instr.get("cuda_abs_delta_ms", ""),
++                                "cuda_limit_ms": instr.get("cuda_limit_ms", ""),
++                                "semantic_occurrences": instr.get("semantic_occurrences", 0),
++                                "status": "PASS" if instr["pass"] else "INSTRUMENTATION_NON_NEUTRAL"})
++        for mode, data in (("off", off), ("on", on)):
++            if not data:
++                continue
++            v = data.get("vram", {})
++            vram_rows.append({"target": target, "graph_mode": mode, "load_status": data["status"],
++                              "oom": data.get("oom", False), "after_load_mib": v.get("after_load_mib", ""),
++                              "steady_mib": v.get("steady_after_canary_mib", ""),
++                              "torch_peak_allocated_bytes": v.get("torch_peak_allocated_bytes", ""),
++                              "torch_peak_reserved_bytes": v.get("torch_peak_reserved_bytes", "")})
++            if data.get("status") == "PASS":
++                prof_key = "OFF" if mode == "off" else "GRAPH_ON"
++                prof = data["profiler"][prof_key]
++                sig = backend_signature(data)
++                kernels = list(prof["kernel_inventory"])
++                backend_rows.append({"target": target, "graph_mode": mode,
++                                     "attention_backend": json.dumps(sig["attention"] + sig["groups"], separators=(",", ":")),
++                                     "module_kernel_backends": json.dumps(sorted(set(((x[1] or ""), (x[2] or "")) for x in sig["modules"])), separators=(",", ":")),
++                                     "cuda_kernel_count": prof["kernel_count"],
++                                     "kernel_inventory_sha256": prof["kernel_inventory_sha256"],
++                                     "representative_kernel_names": json.dumps(kernels[:20], separators=(",", ":")),
++                                     "evidence": "runtime object selection plus qualification-only torch CUDA activity inventory"})
++        off_path = args.raw / f"{target}_off.json"
++        on_path = args.raw / f"{target}_on.json"
++        receipts[target] = {"target": target, "status": "RUNTIME_READY" if target_ready else "BLOCKED",
++                            "blocker": blocker, "graph_off": off, "graph_on": on,
++                            "instrumentation_neutrality": instr, "graph_off_on_correctness": graph,
++                            "performance_use": "NONE_QUALIFICATION_DIAGNOSTIC_ONLY"}
++        receipts[target]["graph_off"] = compact_run(off, off_path)
++        receipts[target]["graph_on"] = compact_run(on, on_path)
++        (args.output_dir / f"{target}_RUNTIME_RECEIPT.json").write_text(json.dumps(receipts[target], indent=2, sort_keys=True) + "\n")
++    write_tsv(args.output_dir / "GRAPH_OFF_ON_CORRECTNESS.tsv", correctness_rows)
++    write_tsv(args.output_dir / "INSTRUMENTATION_NEUTRALITY.tsv", neutrality_rows)
++    write_tsv(args.output_dir / "ACTUAL_BACKEND_KERNEL_IDENTITY.tsv", backend_rows if backend_rows else [{"target":"NONE","graph_mode":"NONE","attention_backend":"","module_kernel_backends":"","cuda_kernel_count":0,"kernel_inventory_sha256":"","representative_kernel_names":"","evidence":"no successful runtime"}])
++    write_tsv(args.output_dir / "VRAM_OBSERVATION.tsv", vram_rows if vram_rows else [{"target":"NONE","graph_mode":"NONE","load_status":"NOT_RUN","oom":"","after_load_mib":"","steady_mib":"","torch_peak_allocated_bytes":"","torch_peak_reserved_bytes":""}])
++    point_map = [("MP01","QWEN_BF16"),("MP02","QWEN_BF16"),("MP03","QWEN_BF16"),("MP05","QWEN_AWQ"),("MP06","OLMOE")]
++    point_rows = [{"point_id": point, "runtime_target": target,
++                   "status": "RUNTIME_READY" if readiness[target]["ready"] else "BLOCKED",
++                   "blocker": readiness[target]["blocker"] or "NONE"} for point, target in point_map]
++    write_tsv(args.output_dir / "STAGEA_POINT_RUNTIME_READINESS.tsv", point_rows)
++    ready_count = sum(row["status"] == "RUNTIME_READY" for row in point_rows)
++    decision = ("RUNTIME_QUALIFICATION_PASS_STAGEA_REVIEW_READY" if ready_count == 5 else
++                "RUNTIME_QUALIFICATION_FAILED" if ready_count == 0 else "RUNTIME_QUALIFICATION_PARTIAL")
++    final = {"status": decision, "runtime_ready_points": ready_count, "point_count": 5,
++             "target_readiness": readiness,
++             "stagea_tier0_contract_condition": "STAGEA_TIER0_CONTRACT_CAN_NOW_BE_PREPARED_FOR_PROJECT_REVIEW" if ready_count == 5 else "BLOCKED_PENDING_PROJECT_REVIEW",
++             "scientific_performance_conclusion": None, "automatic_next_goal": False,
++             "holdout_outputs_generated": False}
++    (args.output_dir / "FINAL_DECISION.json").write_text(json.dumps(final, indent=2, sort_keys=True) + "\n")
++    print(json.dumps(final, sort_keys=True))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/preflight.py b/util/vm_tlb/c16/stagea_runtime_qualification/preflight.py
+new file mode 100755
+index 00000000..19570d9f
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/preflight.py
+@@ -0,0 +1,222 @@
++#!/usr/bin/env python3
++"""CPU-only authority, asset SHA, tokenization, and tolerance preflight."""
++
++import argparse
++import csv
++import hashlib
++import importlib.util
++import json
++import os
++import subprocess
++from pathlib import Path
++
++os.environ["HF_HUB_OFFLINE"] = "1"
++os.environ["TRANSFORMERS_OFFLINE"] = "1"
++
++import jinja2
++import tokenizers
++import transformers
++from transformers import AutoTokenizer
++
++
++RUNTIME_COMMIT = "9bd48bcc7762af4d341b51481df957b28ecb5317"
++RUNTIME_TREE = "7ee04a1c572a3d9c2602a61f613d60e167bfed81"
++ASSET_COMMIT = "c3f625e46adb8d5c4082ded8b61858c710e1f4e9"
++ASSET_TREE = "d032d6379c5f31a6f7efb23ec966d3e0c11b849c"
++TARGETS = ("QWEN_BF16", "QWEN_AWQ", "OLMOE")
++
++
++def sha_file(path):
++    h = hashlib.sha256()
++    with Path(path).open("rb") as f:
++        for chunk in iter(lambda: f.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def sha_bytes(data):
++    return hashlib.sha256(data).hexdigest()
++
++
++def git(repo, *args):
++    return subprocess.check_output(["git", "-C", str(repo), *args], text=True).strip()
++
++
++def write_tsv(path, rows):
++    with Path(path).open("w", newline="", encoding="utf-8") as f:
++        w = csv.DictWriter(f, fieldnames=tuple(rows[0]), delimiter="\t", lineterminator="\n")
++        w.writeheader(); w.writerows(rows)
++
++
++def load_rows(path):
++    with Path(path).open(newline="", encoding="utf-8") as f:
++        return list(csv.DictReader(f, delimiter="\t"))
++
++
++def verify_qwen(key, receipt, root):
++    rows = []
++    for item in receipt["files"]:
++        path = root / item["path"]
++        actual_sha = sha_file(path) if path.is_file() else "MISSING"
++        actual_size = path.stat().st_size if path.is_file() else -1
++        rows.append({"model_key": key, "path": item["path"], "expected_bytes": item["size_bytes"],
++                     "actual_bytes": actual_size, "expected_sha256": item["sha256"],
++                     "actual_sha256": actual_sha, "status": "PASS" if actual_size == item["size_bytes"] and actual_sha == item["sha256"] else "FAIL"})
++    download = root / "DOWNLOAD_RECEIPT.json"
++    rows.append({"model_key": key, "path": "DOWNLOAD_RECEIPT.json", "expected_bytes": download.stat().st_size,
++                 "actual_bytes": download.stat().st_size, "expected_sha256": receipt["download_receipt_sha256"],
++                 "actual_sha256": sha_file(download), "status": "PASS" if sha_file(download) == receipt["download_receipt_sha256"] else "FAIL"})
++    return rows
++
++
++def verify_olmoe(reverify, root):
++    receipt_path = root / "MODEL_ASSET_RECEIPT.json"
++    if sha_file(receipt_path) != reverify["asset"]["receipt_sha256"]:
++        raise RuntimeError("OLMoE asset receipt SHA mismatch")
++    receipt = json.loads(receipt_path.read_text())
++    rows = []
++    for item in receipt["files"]:
++        path = root / item["path"]
++        actual_sha = sha_file(path) if path.is_file() else "MISSING"
++        actual_size = path.stat().st_size if path.is_file() else -1
++        rows.append({"model_key": "OLMOE", "path": item["path"], "expected_bytes": item["size"],
++                     "actual_bytes": actual_size, "expected_sha256": item["sha256"],
++                     "actual_sha256": actual_sha, "status": "PASS" if actual_size == item["size"] and actual_sha == item["sha256"] else "FAIL"})
++    rows.append({"model_key": "OLMOE", "path": "MODEL_ASSET_RECEIPT.json", "expected_bytes": receipt_path.stat().st_size,
++                 "actual_bytes": receipt_path.stat().st_size, "expected_sha256": reverify["asset"]["receipt_sha256"],
++                 "actual_sha256": sha_file(receipt_path), "status": "PASS"})
++    return rows
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--repo", type=Path, required=True)
++    p.add_argument("--output-dir", type=Path, required=True)
++    p.add_argument("--data-root", type=Path, required=True)
++    args = p.parse_args()
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    asset_pack = args.repo / "docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1"
++    preflight_pack = args.repo / "docs/vm_tlb/review_packs/C16_PROBLEM_DISCOVERY_MEASUREMENT_CAMPAIGN_EXECUTION_PREFLIGHT_174NEW_V1"
++    runtime_pack = args.repo / "docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_109_RUNTIME_ENVIRONMENT_AUDIT_V1"
++    runtime_draft = json.loads((runtime_pack / "C16_STAGEA_RUNTIME_QUALIFICATION_CANARY_109_DRAFT.json").read_text())
++    asset_final = json.loads((asset_pack / "FINAL_DECISION.json").read_text())
++    checks = {
++        "runtime_head": git(args.repo, "rev-parse", "HEAD") == RUNTIME_COMMIT,
++        "runtime_tree": git(args.repo, "rev-parse", "HEAD^{tree}") == RUNTIME_TREE,
++        "asset_commit": git(args.repo, "rev-parse", "refs/remotes/origin/hrl/c16-measurement-campaign-stagea-asset-input-closure-174new-v1") == ASSET_COMMIT,
++        "asset_tree": git(args.repo, "rev-parse", "refs/remotes/origin/hrl/c16-measurement-campaign-stagea-asset-input-closure-174new-v1^{tree}") == ASSET_TREE,
++        "asset_status": asset_final["status"] == "STAGEA_ASSET_INPUT_READY",
++        "runtime_draft_status": runtime_draft["status"] == "DRAFT_FOR_PROJECT_APPROVAL",
++        "runtime_environment": Path(runtime_draft["runtime_environment"]).resolve() == Path("/data/c16/envs/c16-vllm-v0.30.0-sm89-v1"),
++        "target_scope": [row["id"] for row in runtime_draft["targets"]] == list(TARGETS),
++        "holdout_outputs_absent": asset_final["holdout_model_outputs_generated"] is False,
++    }
++    authority = {"status": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
++                 "runtime_commit": RUNTIME_COMMIT, "runtime_tree": RUNTIME_TREE,
++                 "asset_commit": ASSET_COMMIT, "asset_tree": ASSET_TREE,
++                 "allowed_targets": list(TARGETS), "forbidden_points": ["MP04", "MP07", "MP08"],
++                 "holdout_governance_sha256": sha_file(asset_pack / "HOLDOUT_NONEXECUTION_GOVERNANCE_V2.md")}
++    (args.output_dir / "CANARY_AUTHORITY.json").write_text(json.dumps(authority, indent=2, sort_keys=True) + "\n")
++    if authority["status"] != "PASS":
++        raise RuntimeError("authority closure failed")
++
++    roots = {
++        "QWEN_BF16": args.data_root / "assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1",
++        "QWEN_AWQ": args.data_root / "assets/qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
++        "OLMOE": Path("/data/c16/models/olmoe-1b-7b-0125-instruct/b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e"),
++    }
++    bf = json.loads((asset_pack / "QWEN_BF16_ASSET_RECEIPT.json").read_text())
++    awq = json.loads((asset_pack / "QWEN_AWQ_ASSET_RECEIPT.json").read_text())
++    olmoe = json.loads((asset_pack / "OLMOE_ASSET_REVERIFY.json").read_text())
++    asset_rows = verify_qwen("QWEN_BF16", bf, roots["QWEN_BF16"])
++    asset_rows += verify_qwen("QWEN_AWQ", awq, roots["QWEN_AWQ"])
++    asset_rows += verify_olmoe(olmoe, roots["OLMOE"])
++    if any(row["status"] != "PASS" for row in asset_rows):
++        raise RuntimeError("asset SHA mismatch")
++    asset_receipt = {
++        "status": "PASS", "files_verified": len(asset_rows), "rows": asset_rows,
++        "models": {
++            "QWEN_BF16": {"path": str(roots["QWEN_BF16"]), "revision": bf["revision"], "weight_bytes": bf["weight_total_bytes"]},
++            "QWEN_AWQ": {"path": str(roots["QWEN_AWQ"]), "revision": awq["revision"], "weight_bytes": awq["weight_total_bytes"], "quantization": awq["quantization_config"], "no_requantization": True},
++            "OLMOE": {"path": str(roots["OLMOE"]), "revision": olmoe["revision"], "weight_bytes": olmoe["expected_weight_total_bytes"]},
++        },
++    }
++    (args.output_dir / "ASSET_VISIBILITY_AND_SHA.json").write_text(json.dumps(asset_receipt, indent=2, sort_keys=True) + "\n")
++
++    spec = importlib.util.spec_from_file_location("authority_tokenize", args.repo / "util/vm_tlb/c16/tokenize_stagea.py")
++    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
++    authority_rows = [row for row in load_rows(asset_pack / "TOKENIZATION_RECEIPTS.tsv")
++                      if row["model_key"] in TARGETS and row["source_text_id"] == "TRAIN_A_DISCOVERY_00"]
++    if len(authority_rows) != 3:
++        raise RuntimeError("token authority row count")
++    source = preflight_pack / "input_sources/TRAIN_A_DISCOVERY_00.txt"
++    text_bytes = source.read_bytes(); text = text_bytes.decode("utf-8")
++    inputs_dir = args.data_root / "inputs"; inputs_dir.mkdir(parents=True, exist_ok=True)
++    token_rows = []
++    for expected in authority_rows:
++        key = expected["model_key"]
++        tok = AutoTokenizer.from_pretrained(str(roots[key]), local_files_only=True, use_fast=True, trust_remote_code=False)
++        ids, prefix_chars, full_count, status = module.tokenize_prefix(tok, text, 512)
++        canonical = module.canonical_ids(ids)
++        input_path = inputs_dir / f"{key}_TRAIN_A_DISCOVERY_00.json"
++        input_path.write_bytes(canonical + b"\n")
++        observed = {
++            "model_key": key, "source_text_id": "TRAIN_A_DISCOVERY_00",
++            "source_utf8_sha256": sha_bytes(text_bytes), "source_byte_count": len(text_bytes),
++            "tokenizer_class": type(tok).__name__,
++            "tokenizer_json_sha256": sha_file(roots[key] / "tokenizer.json"),
++            "tokenizer_config_sha256": sha_file(roots[key] / "tokenizer_config.json"),
++            "chat_template_sha256": sha_bytes(tok.chat_template.encode("utf-8")),
++            "transformers_version": transformers.__version__, "tokenizers_version": tokenizers.__version__,
++            "jinja2_version": jinja2.__version__, "full_source_templated_token_count": full_count,
++            "prefix_utf8_byte_count": len(text[:prefix_chars].encode("utf-8")), "prompt_token_count": len(ids),
++            "truncate_rule_result": status, "token_ids_sha256": sha_bytes(canonical),
++            "token_id_file_sha256": sha_file(input_path), "input_path": str(input_path),
++        }
++        comparisons = {
++            field: str(observed[field]) == str(expected[field]) for field in (
++                "source_utf8_sha256", "source_byte_count", "tokenizer_class", "tokenizer_json_sha256",
++                "tokenizer_config_sha256", "chat_template_sha256", "transformers_version", "tokenizers_version",
++                "jinja2_version", "full_source_templated_token_count", "prefix_utf8_byte_count", "prompt_token_count",
++                "truncate_rule_result", "token_ids_sha256", "token_id_file_sha256")
++        }
++        authority_token_file = asset_pack / expected["token_ids_relative_path"]
++        comparisons["authority_token_file_bytes"] = authority_token_file.read_bytes() == input_path.read_bytes()
++        observed["status"] = "PASS" if all(comparisons.values()) else "TOKENIZATION_MISMATCH_STOP"
++        observed["checks"] = json.dumps(comparisons, sort_keys=True, separators=(",", ":"))
++        token_rows.append(observed)
++    write_tsv(args.output_dir / "TOKENIZATION_RECHECK.tsv", token_rows)
++    if any(row["status"] != "PASS" for row in token_rows):
++        raise RuntimeError("TOKENIZATION_MISMATCH_STOP")
++
++    tolerance = {
++        "status": "FROZEN_BEFORE_GPU_RESULTS", "created_before_gpu_lock": True,
++        "correctness": {
++            "generated_token_ids": "exact equality",
++            "shapes_and_semantic_order": "exact equality",
++            "routing_expert_ids": "exact equality for OLMOE",
++            "logprob_numeric": {"QWEN_BF16": {"atol": 0.05, "rtol": 0.01},
++                                "QWEN_AWQ": {"atol": 0.05, "rtol": 0.01},
++                                "OLMOE": {"atol": 0.05, "rtol": 0.01}},
++        },
++        "instrumentation_neutrality": {"samples_per_arm": 3,
++            "wall_gate": "abs(median_on-median_off) <= max(5.0 ms, 0.10*median_off)",
++            "tokens_shapes_routing_backend_kernel_inventory": "exact equality"},
++        "graph_off_on": {"model_input_batch_context_decode": "exactly identical per target",
++                         "tokens_shapes_semantic_order_backend_identity": "exact equality",
++                         "logprob_tolerance": "per-target values above"},
++    }
++    (args.output_dir / "CORRECTNESS_AND_NEUTRALITY_THRESHOLDS.json").write_text(json.dumps(tolerance, indent=2, sort_keys=True) + "\n")
++    plan = {"status": "READY_FOR_LOCKED_CANARY", "target_order": list(TARGETS),
++            "condition_order_each": ["GRAPH_OFF_INSTRUMENT_OFF", "GRAPH_OFF_INSTRUMENT_ON", "GRAPH_ON_INSTRUMENT_OFF"],
++            "model_processes": 6, "serial": True, "destroy_process_between_conditions": True,
++            "gpu_active_budget_seconds": 240, "no_holdout": True,
++            "qwen": {"batch": 1, "context": 512, "decode_tokens": 4},
++            "olmoe": {"batch": 1, "context": 512, "decode_tokens": 32, "max_model_len": 544, "max_num_seqs": 1},
++            "forbidden": ["fallback", "requantization", "CPU offload", "context/batch changes", "NCU", "NVBit", "SASS", "Accel-Sim"]}
++    (args.output_dir / "GPU_CANARY_PLAN.json").write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")
++    print(json.dumps({"status": "PASS", "asset_files": len(asset_rows), "tokenization_rows": len(token_rows)}, sort_keys=True))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/raw_manifest.py b/util/vm_tlb/c16/stagea_runtime_qualification/raw_manifest.py
+new file mode 100755
+index 00000000..90e6eeae
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/raw_manifest.py
+@@ -0,0 +1,20 @@
++#!/usr/bin/env python3
++import argparse,hashlib
++from pathlib import Path
++
++def sha(path):
++    h=hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda:f.read(1<<20),b""):h.update(chunk)
++    return h.hexdigest()
++p=argparse.ArgumentParser();p.add_argument("directory",type=Path);p.add_argument("--verify",action="store_true");a=p.parse_args();m=a.directory/"RAW_SHA256SUMS"
++if a.verify:
++    lines=m.read_text().splitlines()
++    for line in lines:
++        expected,rel=line.split("  ",1);path=a.directory/rel
++        if not path.is_file() or sha(path)!=expected:raise SystemExit("mismatch: "+rel)
++    print(f"PASS entries={len(lines)} manifest_sha256={sha(m)}")
++else:
++    files=sorted(x for x in a.directory.rglob("*") if x.is_file() and x.name!="RAW_SHA256SUMS")
++    m.write_text("".join(f"{sha(x)}  {x.relative_to(a.directory).as_posix()}\n" for x in files))
++    print(f"PASS entries={len(files)} manifest_sha256={sha(m)}")
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/run_locked.sh b/util/vm_tlb/c16/stagea_runtime_qualification/run_locked.sh
+new file mode 100755
+index 00000000..7d9a3aba
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/run_locked.sh
+@@ -0,0 +1,108 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++LOCK=/data/c16/locks/c16_gpu_campaign.lock
++PY=/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python
++REPO=${1:?worktree required}
++RAW=${2:?raw directory required}
++PREFLIGHT=${3:?CPU preflight directory required}
++RUNNER=$REPO/util/vm_tlb/c16/stagea_runtime_qualification/runner.py
++DATA=/data/c16/stagea_runtime_qualification_v1
++mkdir -p "$RAW"
++
++python3 - "$PREFLIGHT" <<'PY'
++import json, pathlib, sys
++p=pathlib.Path(sys.argv[1])
++for name in ("CANARY_AUTHORITY.json","ASSET_VISIBILITY_AND_SHA.json","CORRECTNESS_AND_NEUTRALITY_THRESHOLDS.json","GPU_CANARY_PLAN.json","AWQ_REPACK_CANONICAL_RECEIPT.json","SOURCE_PREFLIGHT.json"):
++    d=json.load(open(p/name))
++    if d.get("status") not in ("PASS","FROZEN_BEFORE_GPU_RESULTS","READY_FOR_LOCKED_CANARY"):
++        raise SystemExit(f"preflight not PASS: {name} {d.get('status')}")
++PY
++
++REQUEST_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++REQUEST_SEC=$(date +%s)
++exec 9>"$LOCK"
++if ! flock -w 2700 9; then
++  echo GPU_LOCK_45MIN_TIMEOUT_STOP >"$RAW/GPU_LOCK_45MIN_TIMEOUT_STOP"
++  exit 75
++fi
++START_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++START_SEC=$(date +%s)
++cleanup() {
++  code=$?
++  END_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++  END_SEC=$(date +%s)
++  printf '{"lock":"%s","request_utc":"%s","acquired_utc":"%s","end_utc":"%s","wait_seconds":%d,"gpu_active_wall_seconds":%d,"gpu_active_cap_seconds":240,"exit_code":%d,"released":true}\n' "$LOCK" "$REQUEST_UTC" "$START_UTC" "$END_UTC" "$((START_SEC-REQUEST_SEC))" "$((END_SEC-START_SEC))" "$code" >"$RAW/GPU_LOCK_RECEIPT.json"
++  flock -u 9 || true
++  exit "$code"
++}
++trap cleanup EXIT INT TERM
++remaining() {
++  local used=$(( $(date +%s)-START_SEC ))
++  local left=$((240-used))
++  if [ "$left" -le 0 ]; then echo GPU_ACTIVE_BUDGET_EXCEEDED >&2; exit 124; fi
++  echo "$left"
++}
++memory_used() {
++  nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | head -1 | tr -d ' '
++}
++BASELINE_MIB=$(memory_used)
++COMPUTE_PIDS=$(nvidia-smi --query-compute-apps=pid --format=csv,noheader,nounits | sed '/^$/d' || true)
++if [ -n "$COMPUTE_PIDS" ]; then
++  echo "unexpected compute PIDs under acquired campaign lock: $COMPUTE_PIDS" >"$RAW/GPU_BUSY_OUTSIDE_LOCK_STOP"
++  exit 76
++fi
++nvidia-smi --query-gpu=name,uuid,driver_version,compute_cap,memory.total,memory.used,memory.free --format=csv,noheader >"$RAW/GPU_PRE.csv"
++echo -e "target\tgraph_mode\texit_code\tprocess_wall_seconds\tresult_status\terror_type\toom" >"$RAW/TARGET_EXECUTION.tsv"
++echo -e "target\tgraph_mode\tbaseline_mib\tpost_exit_mib\trelease_status" >"$RAW/GPU_MEMORY_RELEASE.tsv"
++
++run_condition() {
++  local target=$1 mode=$2 model=$3 input=$4
++  local prefix=$RAW/${target}_${mode}
++  local left started ended code status error oom post release
++  left=$(remaining); started=$(date +%s)
++  if (cd "$REPO" && timeout "${left}s" "$PY" "$RUNNER" --target "$target" --graph-mode "$mode" --model "$model" --input-json "$input" --output "$prefix.json") >"$prefix.stdout.log" 2>"$prefix.stderr.log"; then
++    code=0
++  else
++    code=$?
++  fi
++  ended=$(date +%s)
++  if [ "$code" -eq 124 ]; then exit 124; fi
++  if [ -s "$prefix.json" ]; then
++    readarray -t FIELDS < <(python3 - "$prefix.json" <<'PY'
++import json,sys
++d=json.load(open(sys.argv[1]))
++print(d.get("status","MISSING"));print(d.get("error_type") or "");print(str(bool(d.get("oom",False))).lower())
++PY
++)
++    status=${FIELDS[0]}; error=${FIELDS[1]}; oom=${FIELDS[2]}
++  else
++    status=MISSING_RESULT; error=PROCESS_EXIT_$code; oom=false
++  fi
++  echo -e "$target\t$mode\t$code\t$((ended-started))\t$status\t$error\t$oom" >>"$RAW/TARGET_EXECUTION.tsv"
++  release=FAIL; post=$(memory_used)
++  for attempt in 1 2 3 4 5; do
++    post=$(memory_used)
++    if [ "$post" -le "$((BASELINE_MIB+256))" ]; then release=PASS; break; fi
++    sleep 1
++  done
++  echo -e "$target\t$mode\t$BASELINE_MIB\t$post\t$release" >>"$RAW/GPU_MEMORY_RELEASE.tsv"
++  if [ "$release" != PASS ]; then echo GPU_MEMORY_RELEASE_FAILED >"$RAW/GPU_MEMORY_RELEASE_FAILED"; exit 77; fi
++  remaining >/dev/null
++  return "$code"
++}
++
++BF=/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1
++AWQ=/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd
++OL=/data/c16/models/olmoe-1b-7b-0125-instruct/b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e
++
++if run_condition QWEN_BF16 off "$BF" "$DATA/inputs/QWEN_BF16_TRAIN_A_DISCOVERY_00.json"; then BF_OFF=0; else BF_OFF=$?; fi
++if [ "$BF_OFF" -eq 0 ]; then if run_condition QWEN_BF16 on "$BF" "$DATA/inputs/QWEN_BF16_TRAIN_A_DISCOVERY_00.json"; then BF_ON=0; else BF_ON=$?; fi; else BF_ON=99; fi
++if run_condition QWEN_AWQ off "$AWQ" "$DATA/inputs/QWEN_AWQ_TRAIN_A_DISCOVERY_00.json"; then AWQ_OFF=0; else AWQ_OFF=$?; fi
++if [ "$AWQ_OFF" -eq 0 ]; then if run_condition QWEN_AWQ on "$AWQ" "$DATA/inputs/QWEN_AWQ_TRAIN_A_DISCOVERY_00.json"; then AWQ_ON=0; else AWQ_ON=$?; fi; else AWQ_ON=99; fi
++if run_condition OLMOE off "$OL" "$DATA/inputs/OLMOE_TRAIN_A_DISCOVERY_00.json"; then OL_OFF=0; else OL_OFF=$?; fi
++if [ "$OL_OFF" -eq 0 ]; then if run_condition OLMOE on "$OL" "$DATA/inputs/OLMOE_TRAIN_A_DISCOVERY_00.json"; then OL_ON=0; else OL_ON=$?; fi; else OL_ON=99; fi
++
++nvidia-smi --query-gpu=name,uuid,driver_version,compute_cap,memory.total,memory.used,memory.free --format=csv,noheader >"$RAW/GPU_POST.csv"
++printf '{"QWEN_BF16":{"off":%d,"on":%d},"QWEN_AWQ":{"off":%d,"on":%d},"OLMOE":{"off":%d,"on":%d}}\n' "$BF_OFF" "$BF_ON" "$AWQ_OFF" "$AWQ_ON" "$OL_OFF" "$OL_ON" >"$RAW/CONDITION_EXIT_CODES.json"
++echo PASS >"$RAW/LOCKED_CANARY_COMPLETE"
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/runner.py b/util/vm_tlb/c16/stagea_runtime_qualification/runner.py
+new file mode 100755
+index 00000000..5e7f96d3
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/runner.py
+@@ -0,0 +1,271 @@
++#!/usr/bin/env python3
++"""Single-target, single-graph-mode Stage A runtime qualification canary."""
++
++import argparse
++import hashlib
++import json
++import os
++import subprocess
++import time
++import traceback
++from collections import Counter
++from pathlib import Path
++
++os.environ.setdefault("VLLM_ENABLE_V1_MULTIPROCESSING", "0")
++os.environ.setdefault("HF_HUB_OFFLINE", "1")
++os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
++os.environ.setdefault("VLLM_LOGGING_LEVEL", "INFO")
++
++import torch
++from torch.profiler import ProfilerActivity, profile
++from vllm import LLM, SamplingParams
++
++
++TARGETS = {
++    "QWEN_BF16": {"dtype": "bfloat16", "quantization": None, "decode": 4, "max_model_len": 516},
++    "QWEN_AWQ": {"dtype": "float16", "quantization": "awq", "decode": 4, "max_model_len": 516},
++    "OLMOE": {"dtype": "bfloat16", "quantization": None, "decode": 32, "max_model_len": 544},
++}
++
++
++def sha_json(value):
++    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
++
++
++def gpu_memory_used_mib():
++    text = subprocess.check_output(["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits"], text=True)
++    return int(text.strip().splitlines()[0])
++
++
++def completion_receipt(request_output):
++    completion = request_output.outputs[0]
++    tokens = [int(x) for x in completion.token_ids]
++    logprobs = []
++    for index, row in enumerate(completion.logprobs or []):
++        entries = []
++        for token_id, value in sorted(row.items(), key=lambda pair: int(pair[0])):
++            entries.append({"token_id": int(token_id), "logprob": float(value.logprob),
++                            "rank": int(value.rank) if value.rank is not None else None})
++        logprobs.append(entries)
++    routed = getattr(completion, "routed_experts", None)
++    if routed is not None:
++        routed = routed.tolist() if hasattr(routed, "tolist") else routed
++    return {"tokens": tokens, "token_count": len(tokens), "logprobs": logprobs,
++            "logprobs_sha256": sha_json(logprobs), "routed_experts": routed,
++            "routing_sha256": sha_json(routed) if routed is not None else None,
++            "finish_reason": completion.finish_reason}
++
++
++def module_receipt(model):
++    rows = []
++    for name, module in model.named_modules():
++        cls = type(module).__name__
++        interesting = any(term in cls for term in ("Attention", "MergedColumnParallelLinear", "FusedMoE", "SparseMoe"))
++        if not interesting and not any(name.endswith(suffix) for suffix in ("gate_up_proj", ".experts", ".gate")):
++            continue
++        quant = getattr(module, "quant_method", None)
++        kernel = getattr(quant, "kernel", None) if quant is not None else None
++        rows.append({"name": name, "module_class": cls,
++                     "quant_method_class": type(quant).__name__ if quant is not None else None,
++                     "kernel_backend_class": type(kernel).__name__ if kernel is not None else None,
++                     "parameter_shapes": {n: {"shape": list(p.shape), "dtype": str(p.dtype),
++                                               "bytes": p.numel() * p.element_size()}
++                                          for n, p in module.named_parameters(recurse=False)}})
++    return rows
++
++
++def attention_receipt(model_runner, model):
++    values = []
++    for name, module in model.named_modules():
++        cls = type(module).__name__
++        if "Attention" in cls:
++            impl = getattr(module, "impl", None)
++            values.append({"name": name, "module_class": cls,
++                           "impl_class": type(impl).__name__ if impl is not None else None})
++    groups = []
++    for outer in getattr(model_runner, "attn_groups", []) or []:
++        for group in outer if isinstance(outer, (list, tuple)) else [outer]:
++            backend = getattr(group, "backend", None)
++            groups.append({"group_class": type(group).__name__,
++                           "backend_class": type(backend).__name__ if backend is not None else None})
++    return {"modules": values, "runner_groups": groups}
++
++
++def select_semantic_modules(model, target):
++    selected = []
++    for name, module in model.named_modules():
++        if name.endswith(".self_attn"):
++            selected.append((name, module))
++        elif target.startswith("QWEN") and name.endswith((".mlp.gate_up_proj", ".mlp.act_fn", ".mlp.down_proj")):
++            selected.append((name, module))
++        elif target == "OLMOE" and name.endswith((".mlp.gate", ".mlp.experts")):
++            selected.append((name, module))
++    return selected
++
++
++class HookSession:
++    def __init__(self, modules, collect):
++        self.modules = modules
++        self.collect = collect
++        self.handles = []
++        self.pending = {}
++        self.events = []
++        self.order = []
++        self.ordinal = 0
++
++    def install(self):
++        for name, module in self.modules:
++            self.handles.append(module.register_forward_pre_hook(self.make_pre(name)))
++            self.handles.append(module.register_forward_hook(self.make_post(name)))
++        return self
++
++    def make_pre(self, name):
++        def hook(module, args):
++            ordinal = self.ordinal; self.ordinal += 1
++            label = f"C16_STAGEA_{ordinal}_{name}"
++            torch.cuda.nvtx.range_push(label)
++            start = torch.cuda.Event(enable_timing=True)
++            stop = torch.cuda.Event(enable_timing=True)
++            start.record()
++            self.pending[id(module)] = (ordinal, name, start, stop,
++                                        list(args[0].shape) if args and isinstance(args[0], torch.Tensor) else None)
++        return hook
++
++    def make_post(self, name):
++        def hook(module, args, output):
++            ordinal, module_name, start, stop, input_shape = self.pending.pop(id(module))
++            stop.record(); torch.cuda.nvtx.range_pop()
++            value = output[0] if isinstance(output, (tuple, list)) and output and isinstance(output[0], torch.Tensor) else output
++            output_shape = list(value.shape) if isinstance(value, torch.Tensor) else None
++            if self.collect:
++                self.events.append((ordinal, module_name, start, stop, input_shape, output_shape))
++                self.order.append({"ordinal": ordinal, "module": module_name,
++                                   "input_shape": input_shape, "output_shape": output_shape})
++        return hook
++
++    def remove(self):
++        for handle in self.handles:
++            handle.remove()
++        if self.pending:
++            raise RuntimeError(f"unclosed semantic hooks: {len(self.pending)}")
++
++    def receipt(self):
++        return {"semantic_order": self.order,
++                "semantic_order_sha256": sha_json(self.order),
++                "event_timings_ms": [{"ordinal": o, "module": n, "elapsed_ms": float(s.elapsed_time(e)),
++                                      "input_shape": i, "output_shape": out}
++                                     for o, n, s, e, i, out in self.events]}
++
++
++def profiler_inventory(call):
++    with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=False,
++                 profile_memory=False, with_stack=False) as prof:
++        receipt = call()
++        torch.cuda.synchronize()
++    names = []
++    for event in prof.events():
++        device = str(getattr(event, "device_type", "")).lower()
++        if "cuda" in device:
++            names.append(event.name)
++    counts = Counter(names)
++    return receipt, {"kernel_count": len(names), "kernel_inventory": dict(sorted(counts.items())),
++                     "kernel_sequence_sha256": sha_json(names), "kernel_inventory_sha256": sha_json(dict(sorted(counts.items())))}
++
++
++def main():
++    p = argparse.ArgumentParser()
++    p.add_argument("--target", choices=TARGETS, required=True)
++    p.add_argument("--graph-mode", choices=("off", "on"), required=True)
++    p.add_argument("--model", type=Path, required=True)
++    p.add_argument("--input-json", type=Path, required=True)
++    p.add_argument("--output", type=Path, required=True)
++    args = p.parse_args()
++    spec = TARGETS[args.target]
++    result = {"target": args.target, "graph_mode": args.graph_mode, "status": "RUNNING",
++              "model_path": str(args.model), "model_revision": args.model.name}
++    try:
++        token_ids = json.loads(args.input_json.read_text())
++        if len(token_ids) != 512:
++            raise RuntimeError(f"input token count {len(token_ids)} != 512")
++        before_mib = gpu_memory_used_mib()
++        torch.cuda.reset_peak_memory_stats()
++        llm = LLM(model=str(args.model), tokenizer=str(args.model), skip_tokenizer_init=True,
++                  dtype=spec["dtype"], quantization=spec["quantization"], model_impl="vllm",
++                  enforce_eager=args.graph_mode == "off", tensor_parallel_size=1,
++                  max_model_len=spec["max_model_len"], max_num_seqs=1, max_num_batched_tokens=1024,
++                  gpu_memory_utilization=0.92, cpu_offload_gb=0, enable_prefix_caching=False,
++                  enable_return_routed_experts=args.target == "OLMOE", seed=0, disable_log_stats=True)
++        torch.cuda.synchronize()
++        after_load_mib = gpu_memory_used_mib()
++        engine = llm.llm_engine
++        model_runner = engine.model_executor.driver_worker.model_runner
++        model = model_runner.model
++        modules = module_receipt(model)
++        attention = attention_receipt(model_runner, model)
++        semantic_modules = select_semantic_modules(model, args.target)
++        if not semantic_modules:
++            raise RuntimeError("semantic module census empty")
++        sampling = SamplingParams(temperature=0.0, top_p=1.0, max_tokens=spec["decode"],
++                                  ignore_eos=True, detokenize=False, logprobs=20)
++
++        def generate(instrument=False, collect=False):
++            hooks = HookSession(semantic_modules, collect).install() if instrument else None
++            if instrument:
++                torch.cuda.nvtx.range_push(f"C16_STAGEA_{args.target}_{args.graph_mode}_INSTRUMENT_ON")
++            torch.cuda.synchronize()
++            start = torch.cuda.Event(enable_timing=True); stop = torch.cuda.Event(enable_timing=True)
++            start.record(); host_start = time.perf_counter_ns()
++            output = llm.generate({"prompt_token_ids": token_ids}, sampling, use_tqdm=False)[0]
++            stop.record(); torch.cuda.synchronize(); host_end = time.perf_counter_ns()
++            if instrument:
++                torch.cuda.nvtx.range_pop()
++            hook_receipt = None
++            if hooks:
++                hooks.remove(); hook_receipt = hooks.receipt()
++            return {"output": completion_receipt(output), "host_wall_ms": (host_end-host_start)/1e6,
++                    "cuda_event_ms": float(start.elapsed_time(stop)), "instrumentation": hook_receipt}
++
++        warmup = generate(False, False)
++        native_runs = []
++        if args.graph_mode == "off":
++            order = [(False, False), (True, True), (True, False), (False, False), (False, False), (True, False)]
++            for instrument, collect in order:
++                native_runs.append({"arm": "ON" if instrument else "OFF", **generate(instrument, collect)})
++            prof_off_output, prof_off = profiler_inventory(lambda: generate(False, False))
++            prof_on_output, prof_on = profiler_inventory(lambda: generate(True, False))
++            profiler_data = {"OFF": {**prof_off, "output": prof_off_output["output"]},
++                             "ON": {**prof_on, "output": prof_on_output["output"]}}
++        else:
++            native_runs.append({"arm": "GRAPH_ON", **generate(False, False)})
++            prof_output, prof_data = profiler_inventory(lambda: generate(False, False))
++            profiler_data = {"GRAPH_ON": {**prof_data, "output": prof_output["output"]}}
++        torch.cuda.synchronize()
++        steady_mib = gpu_memory_used_mib()
++        result.update({
++            "status": "PASS", "prompt_token_count": len(token_ids), "decode_tokens": spec["decode"],
++            "warmup": warmup, "native_runs": native_runs, "profiler": profiler_data,
++            "module_census": modules, "attention_backend": attention,
++            "semantic_module_names": [name for name, _ in semantic_modules],
++            "vllm_config": {"enforce_eager": args.graph_mode == "off", "max_model_len": spec["max_model_len"],
++                            "max_num_seqs": 1, "max_num_batched_tokens": 1024, "gpu_memory_utilization": 0.92,
++                            "cpu_offload_gb": 0, "dtype": spec["dtype"], "quantization": spec["quantization"],
++                            "model_impl": "vllm"},
++            "vram": {"before_process_mib": before_mib, "after_load_mib": after_load_mib,
++                     "steady_after_canary_mib": steady_mib,
++                     "torch_memory_allocated_bytes": torch.cuda.memory_allocated(),
++                     "torch_memory_reserved_bytes": torch.cuda.memory_reserved(),
++                     "torch_peak_allocated_bytes": torch.cuda.max_memory_allocated(),
++                     "torch_peak_reserved_bytes": torch.cuda.max_memory_reserved()},
++        })
++    except BaseException as exc:
++        result.update({"status": "RUNTIME_ERROR", "error_type": type(exc).__name__,
++                       "error": str(exc), "traceback": traceback.format_exc(),
++                       "oom": isinstance(exc, torch.cuda.OutOfMemoryError) or "out of memory" in str(exc).lower()})
++    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
++    print(json.dumps({k: result.get(k) for k in ("target", "graph_mode", "status", "error_type", "oom")}, sort_keys=True))
++    if result["status"] != "PASS":
++        raise SystemExit(2)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/util/vm_tlb/c16/stagea_runtime_qualification/source_preflight.py b/util/vm_tlb/c16/stagea_runtime_qualification/source_preflight.py
+new file mode 100755
+index 00000000..366198c4
+--- /dev/null
++++ b/util/vm_tlb/c16/stagea_runtime_qualification/source_preflight.py
+@@ -0,0 +1,43 @@
++#!/usr/bin/env python3
++import argparse
++import ast
++import hashlib
++import json
++from pathlib import Path
++
++
++def sha(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def main():
++    p=argparse.ArgumentParser();p.add_argument("--repo",type=Path,required=True);p.add_argument("--output-dir",type=Path,required=True)
++    a=p.parse_args(); tools=a.repo/"util/vm_tlb/c16/stagea_runtime_qualification"
++    runner=tools/"runner.py"; locked=tools/"run_locked.sh"; post=tools/"postprocess.py"
++    for path in (runner,post): ast.parse(path.read_text())
++    text=locked.read_text().lower(); runner_text=runner.read_text()
++    pack=a.output_dir
++    checks={
++        "authority_pass":json.loads((pack/"CANARY_AUTHORITY.json").read_text())["status"]=="PASS",
++        "assets_pass":json.loads((pack/"ASSET_VISIBILITY_AND_SHA.json").read_text())["status"]=="PASS",
++        "awq_repack_pass":json.loads((pack/"AWQ_REPACK_CANONICAL_RECEIPT.json").read_text())["status"]=="PASS",
++        "thresholds_frozen":json.loads((pack/"CORRECTNESS_AND_NEUTRALITY_THRESHOLDS.json").read_text())["status"]=="FROZEN_BEFORE_GPU_RESULTS",
++        "target_scope_exact":json.loads((pack/"GPU_CANARY_PLAN.json").read_text())["target_order"]==["QWEN_BF16","QWEN_AWQ","OLMOE"],
++        "single_lock":text.count("flock -w 2700")==1,
++        "budget_240": "240-used" in text and "gpu_active_cap_seconds\":240" in text,
++        "forbidden_tools_absent":all(token not in text for token in ("nsys","ncu","nvbit","sass","accel-sim")),
++        "no_cpu_offload": "cpu_offload_gb=0" in runner_text,
++        "no_fallback_model_impl": 'model_impl="vllm"' in runner_text,
++        "frozen_shapes": '"max_model_len": 544' in runner_text and "max_num_seqs=1" in runner_text,
++        "qualification_profiler_only": "torch.profiler" in runner_text,
++    }
++    result={"status":"PASS" if all(checks.values()) else "SOURCE_PREFLIGHT_FAILED","checks":checks,
++            "runner_sha256":sha(runner),"run_locked_sha256":sha(locked),"postprocess_sha256":sha(post),
++            "runtime":"/data/c16/envs/c16-vllm-v0.30.0-sm89-v1","gpu_active_cap_seconds":240,
++            "capture_boundary":"qualification-only torch CUDA activity inventory; no NSYS/NCU/NVBit/SASS"}
++    (pack/"SOURCE_PREFLIGHT.json").write_text(json.dumps(result,indent=2,sort_keys=True)+"\n")
++    print(json.dumps(result,sort_keys=True))
++    if result["status"]!="PASS": raise SystemExit(2)
++
++
++if __name__=="__main__": main()

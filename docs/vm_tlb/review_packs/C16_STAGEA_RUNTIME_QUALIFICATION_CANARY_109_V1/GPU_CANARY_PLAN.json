@@ -1,0 +1,40 @@
+{
+  "condition_order_each": [
+    "GRAPH_OFF_INSTRUMENT_OFF",
+    "GRAPH_OFF_INSTRUMENT_ON",
+    "GRAPH_ON_INSTRUMENT_OFF"
+  ],
+  "destroy_process_between_conditions": true,
+  "forbidden": [
+    "fallback",
+    "requantization",
+    "CPU offload",
+    "context/batch changes",
+    "NCU",
+    "NVBit",
+    "SASS",
+    "Accel-Sim"
+  ],
+  "gpu_active_budget_seconds": 240,
+  "model_processes": 6,
+  "no_holdout": true,
+  "olmoe": {
+    "batch": 1,
+    "context": 512,
+    "decode_tokens": 32,
+    "max_model_len": 544,
+    "max_num_seqs": 1
+  },
+  "qwen": {
+    "batch": 1,
+    "context": 512,
+    "decode_tokens": 4
+  },
+  "serial": true,
+  "status": "READY_FOR_LOCKED_CANARY",
+  "target_order": [
+    "QWEN_BF16",
+    "QWEN_AWQ",
+    "OLMOE"
+  ]
+}
