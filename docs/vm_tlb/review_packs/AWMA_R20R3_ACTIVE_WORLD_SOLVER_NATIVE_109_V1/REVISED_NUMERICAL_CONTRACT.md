@@ -1,0 +1,7 @@
+# R20R3 frozen local numerical contract
+
+This new R20R3 contract is separately authorized by the handoff; it does not edit the accepted R20R1 historical contract. Fixed source/model/options/scene, all exact solver-entry bytes and the four discovery hashes remain hard identity gates. The original R20R1 per-world bound `0.0005301662193351918` and normalized global-RMS bound `1.1920928955078125e-5` independently apply to qacc, qfrc_constraint, efc.Ma and valid efc.force. Exact world/constraint identity, `nefc`, outer `solver_niter`, non-LS overflow signature (including outer `ITERATIONS`), no new capacity overflow, finite outputs, `ctx.done`, and the qfrc source relation remain hard gates. Residual diagnostics use the same source definitions and may not acquire a post-candidate threshold.
+
+`LS_ITERATIONS` is recorded per world but the bit alone is not an equality gate. A changed LS bit accompanied by outer niter/coverage change, material alpha/path propagation, floating-output contract failure, hidden-state/stale-output evidence, or any other hard-gate failure remains disqualifying. This scoped revision is based on the accepted R20R2 t152/world413 semantic result; it does not assert line-search mathematical convergence or erase R20R1's historical failure.
+
+R20R3 only reached OFF/B0 and a profiler attempt. No S1 comparison exists, so this contract was not used to accept an active-world candidate.
