@@ -1,0 +1,9 @@
+# C16 measurement-campaign execution preflight V1
+
+CPU-only qualification of the accepted eight-point design at `5f0335b5f991890348e60e1f23a546f393f86d8b`. Design scientific roles, four primary questions and 20/30-minute future budget are unchanged. DQ4a handoff and DQ4b expert working-set turnover are analysis subquestions, not extra points or authorization.
+
+Start with `EXECUTION_PREFLIGHT_DECISION.json`, then the point/question readiness tables, model/asset/runtime/SM89/VRAM/input tables and the five protocol documents. `REMOTE_MODEL_METADATA.json` and `RUNTIME_SOURCE_AUDIT.json` are pinned public CPU metadata/source receipts; `LOCAL_164_ASSET_AUDIT.json` closes the accepted OLMoE asset with full-file SHA; `INPUT_SOURCE_FREEZE.json` and `input_sources/` freeze 20 public natural text byte streams. The WikiText row viewer does not provide commit-addressed rows; exact stored UTF-8 bytes and hashes are the source-text authority, while the viewer-to-repository-revision association remains unproven.
+
+Final state: `EXECUTION_PREFLIGHT_PARTIAL_REVIEW_REQUIRED`. Four model repositories are pinned as remote metadata, but three designed model assets are absent from 164; only MP06 has a complete local model asset. No pinned 109 runtime binary/kernel selection or working holdout-output encryption recipient exists. MP06 is statically borderline for 16GiB. **0/8 points are READY_FOR_TIER0_CONTRACT**; no 109 Tier0 draft is generated and no GPU work is authorized. Do not substitute the 7B Qwen asset, eager MoE, or weak AWQ path to make a point appear ready.
+
+Scripts under `util/vm_tlb/c16/` produce/audit the receipts and deterministic tables. `test_execution_preflight.py`, a separate rerun and `SHA256SUMS` close schemas, identities, inputs, budget, no-contract and fail-closed holdout gate. No model weights were downloaded, no tokenizer/model executed, and no GPU/NSYS/NCU/NVBit/SASS/Accel-Sim trace or mechanism was run.

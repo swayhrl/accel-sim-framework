@@ -11,3 +11,7 @@ Every point is conditional on a pinned checkpoint, tokenizer, natural-input SHA,
 Measurement ladder: Tier0 native/NVTX/NSYS identity, chronology and legal wall union for all qualified points (future proposed cap **20 GPU-active minutes**); Tier1 targeted selected NCU only for ≤3 weighted points (future cap **30 minutes**); Tier2 ≤1–2 question-bound traces only after another project review; Tier3 simulator/mechanism outside this design. For every local effect report its natural parent, wall-union fraction `f`, and optimistic zero-cost ceiling `1/(1-f)`. Keep native timing and NCU profile durations separate. Page footprints are not TLB timing. If all gates fail, `NO_NEW_ARCHITECTURAL_PHENOMENON_FOUND` is an acceptable end state.
 
 The evidence pack is `docs/vm_tlb/review_packs/C16_PROBLEM_DISCOVERY_MEASUREMENT_CAMPAIGN_DESIGN_174NEW_V1/`; `FINAL_DECISION.json`, eight TSVs, holdout plan, future-stage and budget documents, tests and `SHA256SUMS` are the review entry. **No 109 GPU, GPU lock, NCU, NVBit, SASS, trace, Accel-Sim or mechanism work is authorized by this handoff.**
+
+Execution-preflight successor: `C16_PROBLEM_DISCOVERY_MEASUREMENT_CAMPAIGN_EXECUTION_PREFLIGHT_V1.md`.
+The scientific design above remains historical and unchanged; the successor records current
+asset/runtime/input/seal readiness and must be consulted before any Tier0 contract review.

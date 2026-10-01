@@ -1,0 +1,342 @@
+{
+  "models": {
+    "GRANITE": {
+      "all_sibling_paths": [
+        ".gitattributes",
+        "README.md",
+        "added_tokens.json",
+        "config.json",
+        "generation_config.json",
+        "merges.txt",
+        "model.safetensors",
+        "special_tokens_map.json",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "vocab.json"
+      ],
+      "api_url": "https://huggingface.co/api/models/ibm-granite/granite-3.1-1b-a400m-instruct/revision/0da7a48b0276d500ce5922fd2b33944091fc6c09?blobs=true",
+      "config": {
+        "architectures": [
+          "GraniteMoeForCausalLM"
+        ],
+        "attention_bias": false,
+        "attention_dropout": 0.0,
+        "attention_multiplier": 0.015625,
+        "bos_token_id": 0,
+        "embedding_multiplier": 12.0,
+        "eos_token_id": 0,
+        "hidden_act": "silu",
+        "hidden_size": 1024,
+        "initializer_range": 0.02,
+        "intermediate_size": 512,
+        "logits_scaling": 6.0,
+        "max_position_embeddings": 131072,
+        "model_type": "granitemoe",
+        "num_attention_heads": 16,
+        "num_experts_per_tok": 8,
+        "num_hidden_layers": 24,
+        "num_key_value_heads": 8,
+        "num_local_experts": 32,
+        "output_router_logits": false,
+        "pad_token_id": 0,
+        "residual_multiplier": 0.22,
+        "rms_norm_eps": 1e-06,
+        "rope_scaling": null,
+        "rope_theta": 1500000.0,
+        "router_aux_loss_coef": 0.0,
+        "tie_word_embeddings": true,
+        "torch_dtype": "bfloat16",
+        "transformers_version": "4.47.0",
+        "use_cache": true,
+        "vocab_size": 49155
+      },
+      "gated": false,
+      "inventory_status": "REMOTE_PINNED_METADATA_ONLY_NO_WEIGHT_DOWNLOAD",
+      "license": "apache-2.0",
+      "license_name": "UNKNOWN",
+      "private": false,
+      "repository": "ibm-granite/granite-3.1-1b-a400m-instruct",
+      "revision": "0da7a48b0276d500ce5922fd2b33944091fc6c09",
+      "small_files": {
+        "config.json": {
+          "sha256": "f1b64813debfabeb9cc20f1a13ed8248da6774fe54e532d19912d4b3f2ab335d",
+          "size_bytes": 889
+        },
+        "tokenizer.json": {
+          "sha256": "ed944c0b3d71e2d651a5ba0f8e7b350faff30031c8e3353de70b12b9c1bf5654",
+          "size_bytes": 3475806
+        },
+        "tokenizer_config.json": {
+          "sha256": "ab17e0d532ecf47e9d8451939dd81f25dd98c5fba4b6742584549bbf9c1f06b9",
+          "size_bytes": 8072
+        }
+      },
+      "tokenizer_revision": "0da7a48b0276d500ce5922fd2b33944091fc6c09",
+      "weight_shards": [
+        {
+          "path": "model.safetensors",
+          "sha256": "ac02591061f1344027a7e7b11dbb4143f75f166c47dc09b742f5de3ab1dde1d1",
+          "size_bytes": 2669283096
+        }
+      ],
+      "weight_total_bytes": 2669283096
+    },
+    "OLMOE": {
+      "all_sibling_paths": [
+        ".gitattributes",
+        "README.md",
+        "config.json",
+        "generation_config.json",
+        "model-00001-of-00003.safetensors",
+        "model-00002-of-00003.safetensors",
+        "model-00003-of-00003.safetensors",
+        "model.safetensors.index.json",
+        "special_tokens_map.json",
+        "tokenizer.json",
+        "tokenizer_config.json"
+      ],
+      "api_url": "https://huggingface.co/api/models/allenai/OLMoE-1B-7B-0125-Instruct/revision/b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e?blobs=true",
+      "config": {
+        "_name_or_path": "allenai/open_instruct_dev",
+        "architectures": [
+          "OlmoeForCausalLM"
+        ],
+        "attention_bias": false,
+        "attention_dropout": 0.0,
+        "clip_qkv": null,
+        "eos_token_id": 50279,
+        "hidden_act": "silu",
+        "hidden_size": 2048,
+        "initializer_range": 0.02,
+        "intermediate_size": 1024,
+        "max_position_embeddings": 4096,
+        "model_type": "olmoe",
+        "norm_topk_prob": false,
+        "num_attention_heads": 16,
+        "num_experts": 64,
+        "num_experts_per_tok": 8,
+        "num_hidden_layers": 16,
+        "num_key_value_heads": 16,
+        "output_router_logits": false,
+        "pad_token_id": 1,
+        "rms_norm_eps": 1e-05,
+        "rope_scaling": null,
+        "rope_theta": 10000.0,
+        "router_aux_loss_coef": 0.01,
+        "tie_word_embeddings": false,
+        "torch_dtype": "bfloat16",
+        "transformers_version": "4.47.1",
+        "use_cache": false,
+        "vocab_size": 50304
+      },
+      "gated": false,
+      "inventory_status": "REMOTE_PINNED_METADATA_ONLY_NO_WEIGHT_DOWNLOAD",
+      "license": "apache-2.0",
+      "license_name": "UNKNOWN",
+      "private": false,
+      "repository": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "revision": "b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e",
+      "small_files": {
+        "config.json": {
+          "sha256": "272998dd7ba4846dcc682f0b5a46144f4bcd9dde8e94d2f17bd8e5cf2f23d6ce",
+          "size_bytes": 828
+        },
+        "model.safetensors.index.json": {
+          "sha256": "0e2e1e0d8d357ac7af817cff28410c3dbad398f060c517a433e4076b2aae5579",
+          "size_bytes": 287214
+        },
+        "tokenizer.json": {
+          "sha256": "d1e645ebd850d79567e531a3c103ac575d8e9cf45fa941420afc584b293438ea",
+          "size_bytes": 3565064
+        },
+        "tokenizer_config.json": {
+          "sha256": "67ac3cdae4e25e84d5d0f4faadb961dd36341cf04e02c7be90a8fd8e697617eb",
+          "size_bytes": 6123
+        }
+      },
+      "tokenizer_revision": "b89a7c4bc24fb9e55ce2543c9458ce0ca5c4650e",
+      "weight_shards": [
+        {
+          "path": "model-00001-of-00003.safetensors",
+          "sha256": "61874210ca7c360f43f8c622cecc12441083d40190eae3b56bc9d6e1c0a30c1e",
+          "size_bytes": 4997744872
+        },
+        {
+          "path": "model-00002-of-00003.safetensors",
+          "sha256": "c523a43b8a17269d5fab33395048a83633f4d1d89c1958570cea738e2bbe80c9",
+          "size_bytes": 4997235176
+        },
+        {
+          "path": "model-00003-of-00003.safetensors",
+          "sha256": "97ae01e3519c52e63a018bca96ab17a89c4cd5cab1c6d742efed0fa5c0e2bb17",
+          "size_bytes": 3843741912
+        }
+      ],
+      "weight_total_bytes": 13838721960
+    },
+    "QWEN_AWQ": {
+      "all_sibling_paths": [
+        ".gitattributes",
+        "LICENSE",
+        "README.md",
+        "config.json",
+        "generation_config.json",
+        "merges.txt",
+        "model.safetensors",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "vocab.json"
+      ],
+      "api_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-3B-Instruct-AWQ/revision/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd?blobs=true",
+      "config": {
+        "architectures": [
+          "Qwen2ForCausalLM"
+        ],
+        "attention_dropout": 0.0,
+        "bos_token_id": 151643,
+        "eos_token_id": 151645,
+        "hidden_act": "silu",
+        "hidden_size": 2048,
+        "initializer_range": 0.02,
+        "intermediate_size": 11008,
+        "max_position_embeddings": 32768,
+        "max_window_layers": 70,
+        "model_type": "qwen2",
+        "num_attention_heads": 16,
+        "num_hidden_layers": 36,
+        "num_key_value_heads": 2,
+        "quantization_config": {
+          "bits": 4,
+          "group_size": 128,
+          "modules_to_not_convert": null,
+          "quant_method": "awq",
+          "version": "gemm",
+          "zero_point": true
+        },
+        "rms_norm_eps": 1e-06,
+        "rope_theta": 1000000.0,
+        "sliding_window": 32768,
+        "tie_word_embeddings": true,
+        "torch_dtype": "float16",
+        "transformers_version": "4.41.1",
+        "use_cache": true,
+        "use_sliding_window": false,
+        "vocab_size": 151936
+      },
+      "gated": false,
+      "inventory_status": "REMOTE_PINNED_METADATA_ONLY_NO_WEIGHT_DOWNLOAD",
+      "license": "other",
+      "license_name": "qwen-research",
+      "private": false,
+      "repository": "Qwen/Qwen2.5-3B-Instruct-AWQ",
+      "revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+      "small_files": {
+        "config.json": {
+          "sha256": "9366ca39ab036f807f40ff93f03d77ce910d512174150821a87a87080c2b8c65",
+          "size_bytes": 839
+        },
+        "tokenizer.json": {
+          "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+          "size_bytes": 7031645
+        },
+        "tokenizer_config.json": {
+          "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+          "size_bytes": 7305
+        }
+      },
+      "tokenizer_revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+      "weight_shards": [
+        {
+          "path": "model.safetensors",
+          "sha256": "ff45904d41a1fe1ee1d3678d8b04e65d6270d04c05ab38ed3f68d41f121ed6d2",
+          "size_bytes": 2686704624
+        }
+      ],
+      "weight_total_bytes": 2686704624
+    },
+    "QWEN_BF16": {
+      "all_sibling_paths": [
+        ".gitattributes",
+        "LICENSE",
+        "README.md",
+        "config.json",
+        "generation_config.json",
+        "merges.txt",
+        "model-00001-of-00002.safetensors",
+        "model-00002-of-00002.safetensors",
+        "model.safetensors.index.json",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "vocab.json"
+      ],
+      "api_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-3B-Instruct/revision/aa8e72537993ba99e69dfaafa59ed015b17504d1?blobs=true",
+      "config": {
+        "architectures": [
+          "Qwen2ForCausalLM"
+        ],
+        "attention_dropout": 0.0,
+        "bos_token_id": 151643,
+        "eos_token_id": 151645,
+        "hidden_act": "silu",
+        "hidden_size": 2048,
+        "initializer_range": 0.02,
+        "intermediate_size": 11008,
+        "max_position_embeddings": 32768,
+        "max_window_layers": 70,
+        "model_type": "qwen2",
+        "num_attention_heads": 16,
+        "num_hidden_layers": 36,
+        "num_key_value_heads": 2,
+        "rms_norm_eps": 1e-06,
+        "rope_theta": 1000000.0,
+        "sliding_window": 32768,
+        "tie_word_embeddings": true,
+        "torch_dtype": "bfloat16",
+        "transformers_version": "4.43.1",
+        "use_cache": true,
+        "use_sliding_window": false,
+        "vocab_size": 151936
+      },
+      "gated": false,
+      "inventory_status": "REMOTE_PINNED_METADATA_ONLY_NO_WEIGHT_DOWNLOAD",
+      "license": "other",
+      "license_name": "qwen-research",
+      "private": false,
+      "repository": "Qwen/Qwen2.5-3B-Instruct",
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "small_files": {
+        "config.json": {
+          "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+          "size_bytes": 661
+        },
+        "model.safetensors.index.json": {
+          "sha256": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+          "size_bytes": 35581
+        },
+        "tokenizer.json": {
+          "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+          "size_bytes": 7031645
+        },
+        "tokenizer_config.json": {
+          "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+          "size_bytes": 7305
+        }
+      },
+      "tokenizer_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "weight_shards": [
+        {
+          "path": "model-00001-of-00002.safetensors",
+          "sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+          "size_bytes": 3968658944
+        },
+        {
+          "path": "model-00002-of-00002.safetensors",
+          "sha256": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+          "size_bytes": 2203268048
+        }
+      ],
+      "weight_total_bytes": 6171926992
+    }
+  },
+  "schema": "C16_REMOTE_MODEL_METADATA_V1"
+}
