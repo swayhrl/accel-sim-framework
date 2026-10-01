@@ -1,0 +1,121 @@
+{
+  "schema": "C16_STAGEA_DENSE_FIRST_TIER0_109_CONTRACT_V1",
+  "goal": "C16_STAGEA_DENSE_FIRST_TIER0_CONTRACT_FINALIZATION_V1",
+  "status": "AUTHORIZED_BY_PROJECT_REVIEW",
+  "execution_authorized": true,
+  "authorization_scope": "THIS_EXACT_TIER0_CONTRACT_ONLY",
+  "node": "109",
+  "gpu": "RTX4080_SM89",
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "authority": {
+    "scope_revision_commit": "137e3414c9c8e59cf1b167e5acc14149fb6273d6",
+    "awq_observer_v2_runtime_pass_commit": "9d5aa2f36e22a1a8fcc253d6df865160b5dba797",
+    "asset_input_closure_commit": "c3f625e46adb8d5c4082ded8b61858c710e1f4e9",
+    "runtime_qualification_commit": "3f62f909a474e4c56695ffacf36ddcb5d7b5f147",
+    "observer_v2_source_commit": "f63d39c8d90ced038445c264fa8242c524a1aa6f",
+    "olmoe_diagnostic_commit": "8b677cfa541877f559614f7bf22a40dd11cebd56",
+    "campaign_design_commit": "5f0335b5f991890348e60e1f23a546f393f86d8b"
+  },
+  "activated_draft_branch": "AWQ_OBSERVER_V2_PASS",
+  "point_allowlist_in_order": ["MP01", "MP02", "MP03", "MP05"],
+  "point_denylist": ["MP04", "MP06", "MP07", "MP08"],
+  "question_allowlist": ["DQ1", "DQ2", "DQ3", "DQ4a"],
+  "question_status": {"DQ4b": "DEFERRED_NOT_EXECUTION_READY", "translation": "UNKNOWN_INACTIVE"},
+  "model_runtime_identity": {
+    "vllm_tag": "v0.30.0",
+    "vllm_source_commit": "ced6857afa0ea7b2e3f0846a62e1394e90f15607",
+    "accepted_runtime_environment": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
+    "QWEN_BF16": {
+      "repository": "Qwen/Qwen2.5-3B-Instruct",
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "attention_backend": "FlashAttentionImpl",
+      "projection_method": "UnquantizedLinearMethod",
+      "projection_kernel_family": "accepted BF16 cuBLAS/CUTLASS/GEMV runtime path",
+      "observer": "accepted V1"
+    },
+    "QWEN_AWQ": {
+      "repository": "Qwen/Qwen2.5-3B-Instruct-AWQ",
+      "revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+      "attention_backend": "FlashAttentionImpl",
+      "quant_method": "AutoAWQMarlinLinearMethod",
+      "projection_kernel": "MarlinLinearKernel",
+      "bits": 4,
+      "group_size": 128,
+      "zero_point": true,
+      "no_requantization": true,
+      "observer": "V2_FROM_f63d39c8d90ced038445c264fa8242c524a1aa6f"
+    }
+  },
+  "input_identity": {
+    "receipt_commit": "c3f625e46adb8d5c4082ded8b61858c710e1f4e9",
+    "receipt_path": "docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1/TOKENIZATION_RECEIPTS.tsv",
+    "point_token_bindings_path": "POINT_TOKEN_BINDINGS.tsv",
+    "rule": "Restore exact accepted token IDs by model_key and source_text_id; verify source SHA, token_ids_sha256, token_id_file_sha256, tokenizer revision and 512-token count before model initialization; do not retokenize with latest or alter text.",
+    "source_ids": ["TRAIN_A_DISCOVERY_00", "TRAIN_A_DISCOVERY_01", "TRAIN_A_DISCOVERY_02", "TRAIN_A_DISCOVERY_03"]
+  },
+  "points": {
+    "MP01": {"target": "QWEN_BF16", "phase": "prefill", "batch": 1, "prompt_tokens_per_request": 512, "source_ids": ["TRAIN_A_DISCOVERY_00"], "natural_parent": "prefill_request", "cap_seconds": 120},
+    "MP02": {"target": "QWEN_BF16", "phase": "decode", "batch": 1, "prompt_tokens_per_request": 512, "source_ids": ["TRAIN_A_DISCOVERY_00"], "decode_steps": 32, "decode_step_labels": "D0-D31", "cap_seconds": 120},
+    "MP03": {"target": "QWEN_BF16", "phase": "decode", "batch": 4, "prompt_tokens_per_request": 512, "source_ids": ["TRAIN_A_DISCOVERY_00", "TRAIN_A_DISCOVERY_01", "TRAIN_A_DISCOVERY_02", "TRAIN_A_DISCOVERY_03"], "decode_steps_per_request": 32, "decode_step_labels": "D0-D31", "cap_seconds": 120},
+    "MP05": {"target": "QWEN_AWQ", "phase": "decode", "batch": 1, "prompt_tokens_per_request": 512, "source_ids": ["TRAIN_A_DISCOVERY_00"], "decode_steps": 32, "decode_step_labels": "D0-D31", "role": "cross_representation_control_not_single_variable_precision_AB", "cap_seconds": 180}
+  },
+  "gpu_budget": {"total_gpu_active_seconds_cap": 540, "per_point_seconds": {"MP01": 120, "MP02": 120, "MP03": 120, "MP05": 180}, "includes": ["model_load", "correctness", "warmup", "native_samples", "observed_capture", "GPU_tool_activity"], "unused_time_transfer_between_points": false, "budget_from_mp06": false, "stop_before_cap_exceeded": true},
+  "arms": {
+    "GRAPH_ON_NATIVE": {"instrumentation": "OFF", "graph": "ON", "role": "mature_strong_software_native_whole_request_control", "warmup_requests": 1, "measured_requests": 3},
+    "GRAPH_OFF_NATIVE": {"instrumentation": "OFF", "graph": "OFF", "role": "native_request_timing_counterpart", "warmup_requests": 1, "measured_requests": 3},
+    "GRAPH_OFF_OBSERVED": {"instrumentation": "semantic_NVTX_observer_ON", "graph": "OFF", "role": "chronology_operator_mapping_cuda_nsys_correlation", "warmup_requests": 1, "observed_requests": 1, "native_science_timing": false}
+  },
+  "native_protocol": {
+    "sample_count_authority": "Project pre-result finalization: design 5f0335b5 does not freeze a stricter compatible Stage A native repetition rule; AWQ V2 canary's three-per-arm measurements are qualification only.",
+    "primary_field": "request_cuda_event_ms",
+    "primary_estimator": "median_of_three_measured_requests_per_point_and_native_graph_mode",
+    "individual_samples_required": true,
+    "sample_count_after_results_frozen": true,
+    "per_mode_process_order": ["GRAPH_ON_NATIVE", "GRAPH_OFF_NATIVE", "GRAPH_OFF_OBSERVED"],
+    "record_warmup_separately": true,
+    "host_wall_ms_role": "diagnostic_only",
+    "instrumented_wall_ms_role": "neutrality_only",
+    "nsys_wall_ms_role": "not_native_timing",
+    "runtime_canary_measurements_role": "qualification_only_not_stagea_samples"
+  },
+  "observer": {
+    "bf16": "accepted_V1",
+    "bf16_v1_runner_sha256": "1f68c1117623cbc46f98f51f17ba798d8bf5ffb103f427b9d7b916ced0a35020",
+    "awq": "accepted_V2_only",
+    "awq_v2_runner_sha256": "7f2a76a375eaa4f652553fc523f785a753180ef1402291e54beb2256ed02bb22",
+    "awq_per_occurrence_cuda_events": 0,
+    "awq_required_host_semantics": ["semantic_NVTX_ranges", "ordinal", "module", "input_shape", "output_shape"],
+    "awq_accepted_inventory_count_off": 1850,
+    "awq_accepted_inventory_count_on": 1850,
+    "awq_accepted_inventory_sha256": "2212bbf7bb4d8cfdc7c8ba0a3e310594d33882ac868646f6f3a6f11b3a45e8fe"
+  },
+  "nsys": {"max_captures_per_point": 1, "domains": ["cuda", "nvtx"], "arm": "GRAPH_OFF_OBSERVED", "allowed_uses": ["semantic_NVTX_chronology", "CUDA_API_kernel_correlation", "launch_gaps", "interval_union", "kernel_identity"], "native_timing_estimator_input": false},
+  "correctness_gate": {"when": ["before_timing", "after_point"], "must_check": ["tokens", "shapes", "semantic_operator_order", "backend_identity", "quant_identity_if_applicable"], "mp05_extra": ["V2_semantic_order_exact", "V2_shapes_exact", "V2_kernel_inventory_exact", "accepted_V2_neutrality_receipt_still_valid_for_exact_source_runtime_identity"], "neutrality_rule": "The 9d5aa2f3 three-per-arm PASS is the frozen qualification; the one-request observed Tier0 arm does not recompute its median gate. Changed observer/source/runtime/identity invalidates that qualification and STOP_POINT; no extra samples or threshold repair.", "on_mismatch": "STOP_POINT", "threshold_repair_allowed": false},
+  "estimators": {
+    "DQ1": {"natural_parent_wall": "median(GRAPH_ON_NATIVE.request_cuda_event_ms)", "graph_off_candidate_fraction_f": "union_duration(candidate_correlated_CUDA_intervals) / union_duration(same_GRAPH_OFF_OBSERVED_parent_CUDA_intervals)", "zero_cost_screen": "1 / (1 - f)", "interpretation": "Graph-OFF CUDA-parent screening ceiling only; f is not automatically Graph-ON whole-request contribution. Do not sum overlapping intervals."},
+    "DQ2": {"reported": ["MP02_and_MP03_native_request_medians_by_graph_mode", "effective_M", "shape", "kernel_backend_identity"], "representation_control": "MP05 is not a strict precision A/B", "utilization_claim_from_B4_B1_ratio": false},
+    "DQ3": {"allowed_decisions": ["MEMORY_SERVICE_CANDIDATE", "NO_MEMORY_SERVICE_CANDIDATE"], "entry_evidence": ["material_native_timing_exposure", "kernel_source_bytes_layout_clue"], "forbidden_attribution": ["L1_bottleneck", "L2_bottleneck", "DRAM_bottleneck"]},
+    "DQ4a": {"allowed": ["producer_consumer_chronology", "boundary_gaps", "parent_wall_fraction"], "forbidden_inference": ["cache_handoff_opportunity_from_chronology_alone", "materialization_mechanism_benefit_from_chronology_alone"]}
+  },
+  "matched_graph_control_gap": {
+    "only_predefined_pair": ["MP02", "MP03"],
+    "question": "DQ2",
+    "endpoint": "instrumentation_OFF_native_CUDA_event_median_ms",
+    "normalizer": "generated_tokens = batch_size * 32; MP02 = 32, MP03 = 128",
+    "G_off_ms_per_token": "median(MP02_GRAPH_OFF_NATIVE_ms)/32 - median(MP03_GRAPH_OFF_NATIVE_ms)/128",
+    "G_on_ms_per_token": "median(MP02_GRAPH_ON_NATIVE_ms)/32 - median(MP03_GRAPH_ON_NATIVE_ms)/128",
+    "absorption_fraction": "(G_off - G_on) / G_off",
+    "condition": "Compute only if each arm has 3 correct native samples, frozen token counts/shapes hold, and G_off > 0; otherwise GRAPH_CONTROL_GAP_NOT_IDENTIFIABLE.",
+    "stop_if": "absorption_fraction >= 0.85",
+    "scope_limit": "Batch-ladder request-level time per generated token only; not a local module gap or a strict single-input causal A/B. No matched 85-percent estimator exists for MP01, MP05, DQ1, DQ3, or DQ4a in this contract; report GRAPH_CONTROL_GAP_NOT_IDENTIFIABLE there. Never subtract GRAPH_OFF_OBSERVED local time from GRAPH_ON_NATIVE whole-request time."
+  },
+  "stop_rules": {"local_wall_fraction_lt": 0.03, "zero_cost_whole_run_incremental_ceiling_lt": 0.02, "graph_control_absorption_gte": 0.85, "traffic_without_native_timing_exposure": "STOP_MEMORY_LINE", "correctness_or_neutrality_failure": "STOP_POINT", "unknown_comparable_whole_run_fraction": "WHOLE_RUN_CEILING_NOT_IDENTIFIABLE; do not promote; preserve the 2-percent threshold"},
+  "tier0_tool_allowlist": ["native_CUDA_event_request_timing", "NVTX", "lightweight_NSYS_cuda_nvtx", "kernel_inventory", "shape_order", "launch_gap_chronology"],
+  "tool_denylist": ["NCU", "NVBit", "SASS", "Accel-Sim"],
+  "output_schema_path": "RESULT_SCHEMA.json",
+  "durable_publish": {"required": true, "all_raw_included": true, "raw_sha256_manifest_required": true, "review_pack_sha256_manifest_required": true, "consumer_must_verify_copyback": true, "local_candidate_root": "/data/c16/stagea_dense_first_tier0_v1/raw/<run_id>/", "durable_root": "/root/share/mnt164/huangrulin/c16_ai_workload/measurement_campaign/stagea_dense_first_tier0_v1/<run_id>/", "paths_are_future_contract_targets_not_claims_of_current_creation": true},
+  "holdout_execution_authorized": false,
+  "tier1_authorized": false,
+  "mechanism_design_authorized": false,
+  "automatic_point_substitution": false
+}
