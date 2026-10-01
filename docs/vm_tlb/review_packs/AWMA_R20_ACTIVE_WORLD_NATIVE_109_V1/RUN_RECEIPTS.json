@@ -1,0 +1,33 @@
+{
+  "stage": "AWMA_R20_ACTIVE_WORLD_NATIVE_109_V1",
+  "execution_branch": "hrl/awma-r20-active-world-native-109-v1",
+  "starting_head": "01b05cd623043ede6ec65d97278410a4b3fd711f",
+  "node": "109 / RTX4080 / SM89",
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "source_commit": "3d537ea6b45eb88ce2ebeb97c57b8e9a220eb1c5",
+  "menagerie_commit": "affef0836947b64cc06c4ab1cbf0152835693374",
+  "runs": [
+    {"name": "source_asset_audit", "GPU": false, "status": "PASS", "receipt_time_local_plus0800": "2026-10-01 16:23:58", "frozen_D": [128, 160], "sealed_H": [384, 416]},
+    {"name": "prepare_scene", "GPU": false, "status": "PASS", "receipt_time_local_plus0800": "2026-10-01 16:29:07", "asset_packaging": "RECONSTRUCTED_EXACT_SOURCE_BYTES"},
+    {"name": "uv_sync_locked_isolated_env", "GPU": false, "status": "PASS", "dependency_repairs": 0, "installed_mujoco": "3.13.1.dev984848064", "installed_warp": "1.15.0"},
+    {"name": "b16_canary_attempt1", "GPU_lock": true, "status": "ENGINEERING_RECEIPT_FIELD_ERROR", "detail": "Data has pooled naconmax, not nconmax; graph had already captured/replayed."},
+    {"name": "b16_canary_attempt2", "GPU_lock": true, "status": "ENGINEERING_RECEIPT_FIELD_ERROR", "detail": "GPU option tolerance is a Warp array, not Python scalar; graph had already captured/replayed."},
+    {"name": "b16_graph_canary_final", "GPU_lock": true, "status": "GRAPH_RUNTIME_QUALIFIED_ENGINEERING_ONLY", "receipt_time_local_plus0800": "2026-10-01 16:38:12", "conditional_while_in_cuda_capture": true, "graph_replayed": true},
+    {"name": "b1024_memory_graph_admission", "GPU_lock": true, "status": "PASS", "receipt_time_local_plus0800": "2026-10-01 16:41:21", "batch_fallbacks": 0, "post_capture_free_fraction": 0.9236077186126038},
+    {"name": "original_cli_vs_runner_ctrl_compare", "GPU_lock": true, "status": "PASS", "receipt_time_local_plus0800": "2026-10-01 16:43:09", "B16_steps_bitwise_actual_ctrl": 4},
+    {"name": "discovery_baseline_full_state_five_repeats", "GPU_lock": true, "status": "NUMERICAL_GATE_FAILED", "receipt_time_local_plus0800": "2026-10-01 16:55:09", "entry_state_arrays_restored": 138, "repeat_count": 5, "window_steps": 32, "formal_timing": false},
+    {"name": "one_step_same_and_fresh_graph_diagnostic", "GPU_lock": true, "status": "CANONICAL_CONTACT_CONSTRAINT_SETS_IDENTICAL_BUT_FLOAT_TRAJECTORY_DIVERGED", "receipt_time_local_plus0800": "2026-10-01 17:02:18", "B1024_one_step_runs": 4},
+    {"name": "capacity_pointer_ledger", "GPU_lock": true, "status": "PASS_DIAGNOSTIC_ONLY", "receipt_time_local_plus0800": "2026-10-01 17:07:11", "array_fields": 138, "alias_dedup_logical_bytes": 99024904}
+  ],
+  "scientific_final_label": "R20_INPUT_OR_BASELINE_NOT_QUALIFIED",
+  "candidate_patches": 0,
+  "formal_B0_S1_pairs": 0,
+  "holdout_runs": 0,
+  "new_NSYS_jobs": 0,
+  "new_NCU_targets": 0,
+  "NVBit_runs": 0,
+  "SASS_inspections": 0,
+  "Accel_Sim_runs": 0,
+  "node174_compute_runs": 0,
+  "GPU_lock_held_after_goal": false
+}
