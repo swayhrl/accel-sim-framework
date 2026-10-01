@@ -1,0 +1,29 @@
+{
+  "stage": "AWMA_R20R3P1_PROFILER_REPAIR_AND_RESUME_109_V1",
+  "canary_attempts": 2,
+  "attempt_1": {
+    "result": "ENGINEERING_HARNESS_ASSERTION_ABORT",
+    "nsys_report_present": true,
+    "nvtx_range_present": true,
+    "known_cuda_kernel_executed_inside_range": false,
+    "detail": "Task-created canary treated nvtxRangePushA advisory return -1 as fatal after the NVTX range had already started."
+  },
+  "bounded_repair_1": "Removed only the extra canary assertion on nvtxRangePushA return; kept the same direct NVTX call, known Warp kernel, installed profiler version, CUDA and driver. NSYS_NVTX_PROFILER_REGISTER_ONLY=0 remained fixed.",
+  "attempt_2": {
+    "nsys_exit_code": 0,
+    "exact_nvtx_range": "R20R3P1_CANARY",
+    "nvtx_start_ns": 26822349,
+    "nvtx_end_ns": 26990632,
+    "cuda_kernel_rows": 1,
+    "kernel_start_ns": 26961557,
+    "kernel_end_ns": 26962677,
+    "kernel_inside_range": true,
+    "nsys_report_bytes": 79316,
+    "nsys_report_sha256": "5c01de0b580d16265e05c7b89acbc755082ee22c92bbdf9ca0cf1c79751f8c23",
+    "explicit_sqlite_export_bytes": 507904,
+    "explicit_sqlite_export_sha256": "623feba9aea611b1bf07f0cf5a885d65dad5e42ae5143868ebc207e8652146fa"
+  },
+  "classification": "NSYS_CANARY_QUALIFIED",
+  "scientific_solver_input_used": false,
+  "GPU_lock": "/data/c16/locks/c16_gpu_campaign.lock"
+}

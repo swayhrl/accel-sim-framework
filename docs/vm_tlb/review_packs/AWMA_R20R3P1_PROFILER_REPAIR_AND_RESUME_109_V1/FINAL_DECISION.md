@@ -1,0 +1,11 @@
+# R20R3P1 scientific stop
+
+`R20R3_CANDIDATE_NUMERICS_NOT_QUALIFIED`
+
+The profiler admission repair succeeded. The second bounded engineering canary returned 0 and its explicit SQLite export contains the exact NVTX range plus one CUDA kernel inside it. One repaired scientific B0 profile then completed the four exact solver-entry replays in frozen order with qualified numerical results. Its 568 CUDA graph child-kernel rows were fully assigned by verified repeated node sequence. The unchanged ranking rule selected `_update_gradient_incremental`: 1024.802 µs cumulative GPU kernel time, versus 663.618 µs for line-search and 384.925 µs for constraint update; no 5% tie.
+
+One opt-in/default-OFF online S1 was implemented for that selected stage. It builds an ascending device list from current `ctx.done`, then uses the single frozen 304-worker mapping for the stage's sparse-H-update and blocked-Cholesky kernels while preserving the original per-world row/tile/reduction formulas; other stage kernels and solver stop logic remain unchanged. The patched OFF graph passed all four discovery entries. The device list's all-active/some-done/zero-active directed canaries passed.
+
+At the first candidate correctness entry, t128, B0 and S1 both pass the parent effective-output comparison, exact nefc/outer niter/non-LS status, finite/done and qfrc relation checks. They also pass all four unchanged per-world/global-RMS output screens. However S1 exceeds the pre-S1-frozen final-gradient residual envelope in 10 worlds, maximum by `1.572849763237015e-05`; the same B0 execution exceeds that envelope in 11 worlds. This shows the residual envelope is not stable even for the baseline in this run, so the candidate's residual gate cannot be honestly closed. It is not evidence that S1 caused a material final-output error, nor permission to relax the gate after seeing S1.
+
+The Goal requires stopping on the first failed candidate correctness entry. Thus t136/t144/t152 candidate checks, formal paired complete-solver timing, discovery gain classification and holdout were not run. No runtime benefit or lack of benefit can be inferred. A later attempt would require separately reviewed residual-contract/baseline-repeatability work, not a post hoc threshold change or second worker/stage within this Goal.
