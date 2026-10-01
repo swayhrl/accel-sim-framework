@@ -149,3 +149,21 @@ This Goal stops before:
 - page fault/migration/UVM;
 - MCM/chiplet behavior;
 - multi-ASID study.
+
+## C16 AI-workload exploration side-lane terminal state — 2026-10-01
+
+This side-lane update does not alter the M4 integration authorization above.
+The C16 AI-workload exploration wave from E1 residency through Split-K/grouped,
+conversion reuse, FFN timeline/concurrency, merged gate/up, Ada W4 utilization,
+and the PASCAL cache gate is complete.
+
+Canonical handoff context:
+
+`docs/vm_tlb/chatgpt_handoff/c16/AI_WORKLOAD_EXPLORATION_CURRENT_STATE.md`
+
+Project decision:
+
+`NO_CURRENT_C16_MECHANISM_READY_FOR_PROMOTION`
+
+No new GPU, trace, NCU, NVBit, SASS, Accel-Sim or mechanism task is authorized
+by the terminal synthesis.
