@@ -1,10 +1,18 @@
 # C16文献阅读笔记｜ChatGPT独立支线
 
-维护者：ChatGPT。更新时间：2026-09-29。分支：`hrl/c16-chatgpt-literature-notes-v1`。
+维护者：ChatGPT。更新时间：2026-10-01。分支：`hrl/c16-chatgpt-literature-notes-v1`。
 
 本支线记录原文核读、相关工作比较和待验证问题，不修改实验/Core/raw，不消费Lane4 partial。文献笔记不是实验完成证据。AWMA与C16文献分开维护。
 
-## 当前入口：LR10
+## 当前入口：LR11
+
+[LR11：并发强基线、共享缓存上界与下一轮并行机会筛选](rounds/2026-10-01_LR11_CONCURRENCY_CACHE_BOUNDS_AND_STRONG_BASELINES.md)
+
+本轮在FFN natural timeline与M1F headroom gate之后重新筛方向。新增关键边界：vLLM当前Qwen2已使用merged gate_up + SiluAndMul类强软件路径，因此plain gate/up merge/concurrency不能直接作为新颖性；NanoFlow/Bullet/Resonator已把intra-GPU并发调度推进到成熟systems能力。PASCAL共享缓存模型从摘要升级到正文，首次可把policy-independent residency/traffic bound作为本项目cache机制的前置oracle gate。另纳入IISWC 2026 Hopper利用率分解方法，建议在Ada W4上用既有NCU/launch证据做multi-view screen。
+
+本轮建议并行三个CPU-only窗口：merged gate/up strong-baseline guard、PASCAL policy-independent cache-headroom screen、Ada W4 decode utilization multi-view screen。generic KV/L2 prefetch、generic concurrency、MoE expert-locality/cache、generic fusion/megakernel均因2025–2026近邻过强而不优先。没有新GPU/SASS/模拟授权。
+
+## 历史入口：LR10
 
 [LR10：强软件基线之后的表示转换复用与跨算子交接成本](rounds/2026-09-29_LR10_REPRESENTATION_REUSE_AND_HANDOFF_COSTS.md)
 
