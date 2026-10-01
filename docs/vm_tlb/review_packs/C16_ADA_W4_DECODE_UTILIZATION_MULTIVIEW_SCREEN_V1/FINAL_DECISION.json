@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "goal": "C16_ADA_W4_DECODE_UTILIZATION_MULTIVIEW_SCREEN_V1",
+  "status": "PASS_STOP",
+  "gpu_used": false,
+  "new_profile_collected": false,
+  "new_109_contract_generated": false,
+  "authority_commits": {
+    "ffn_timeline_producer": "071297ae7f4aa772a27fae0cf31ad47ab7d967be",
+    "ffn_headroom_consumer": "30b3016a7ad5b5ef86a3494c784e072938dee6c5",
+    "autoawq_source": "c7b0e88c327694c715b0a758d9ce8fd414a1fa21"
+  },
+  "scenario": "Qwen2.5-7B-Instruct-AWQ natural CONTROL_GUD84 B1/T2048/D0-D3 on RTX 4080 (Ada CC8.9, 76 SM)",
+  "useful_M_tile_fill": {
+    "value": 0.0625,
+    "formula": "M / CTA_TILE_M = 1 / 16",
+    "status": "VERIFIED_CODE",
+    "reason": "The accepted m16n128k32 source zero-fills invalid rows, executes m16 MMA instructions, and predicates writes to row_offset < M. No hidden multi-row packing makes M=1 larger than one useful row."
+  },
+  "per_role_classification": {
+    "gate_up_W4": "MIXED_TILE_FILL_STALL_MEMORY_SERVICE",
+    "down_W4": "MIXED_TILE_FILL_CTA_SUPPLY_STALL_MEMORY_SERVICE",
+    "reductions": "CTA_SUPPLY_LIMITED_LOW_WEIGHT",
+    "silu_mul": "CTA_SUPPLY_AND_LAUNCH_GRANULARITY_LIMITED_LOW_WEIGHT",
+    "attention_main": "UNKNOWN_BEYOND_TWO_WAVE_GEOMETRY",
+    "attention_combine": "CTA_SUPPLY_AND_LAUNCH_GRANULARITY_LIMITED_LOW_WEIGHT"
+  },
+  "whole_decode_facts": {
+    "gpu_wall_ns": 97970144,
+    "legal_ffn_wall_fraction": 0.2847969071067202,
+    "all_W4_projection_gemm_time_fraction": 0.242959038623032,
+    "perfect_gate_up_concurrency_saving_fraction": 0.07893066891889022,
+    "perfect_intra_ffn_gap_removal_fraction": 0.0296019571023597,
+    "perfect_reduction_removal_fraction": 0.00780842988247522,
+    "perfect_explicit_elementwise_removal_fraction": 0.0022139091680828805
+  },
+  "remaining_problem_count": 1,
+  "top_remaining_problem": "GATE_UP_SIBLING_CONCURRENCY",
+  "validation_contract": "REUSE_EXISTING_C16_FFN_TIMELINE_HEADROOM_QUALIFICATION_174NEW_V2/LANE7_FFN_GATE_UP_CONCURRENCY_NATIVE_CONTRACT.json",
+  "stopped_candidates": [
+    "NEW_W4_FLAT_GEMM_OR_TILE_FILL_KERNEL",
+    "NEW_SPLIT_K_OR_REDUCTION_REMOVAL",
+    "NEW_ATTENTION_SPLIT_COMBINE_KERNEL",
+    "NEW_DEQUANT_INTERLEAVING_OR_STREAM_K_STORY",
+    "NEW_MEMORY_SERVICE_TASK_WITHOUT_ELAPSED_ORACLE",
+    "NEW_LAUNCH_GAP_TASK_OVERLAPPING_EXISTING_SOFTWARE"
+  ],
+  "final_judgment": "Batch-1 Ada AWQ decode is MIXED, not one-label memory/compute/SM-utilization limited. The only authorized continuation is the already-contracted gate/up concurrency A/B; no new 109 task is produced."
+}
