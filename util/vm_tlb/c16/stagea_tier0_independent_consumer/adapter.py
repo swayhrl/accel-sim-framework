@@ -60,6 +60,32 @@ def verify_point_identity(point_rows: list[dict[str, str]], binding_rows: list[d
     return {"status": "PASS", "point_count": len(selected), "point_source_rows": len(point_rows)}
 
 
+def verify_frozen_token_bindings(binding_rows: list[dict[str, str]], receipt_rows: list[dict[str, str]], contract: dict) -> dict:
+    """Check final-contract point bindings against accepted asset/input receipt."""
+    lookup = {(r["model_key"], r["source_text_id"]): r for r in receipt_rows}
+    if len(lookup) != len(receipt_rows):
+        raise ValueError("duplicate accepted tokenization receipt")
+    expected = {(point_id, source_id) for point_id, spec in contract["points"].items() for source_id in spec["source_ids"]}
+    actual = {(r["point_id"], r["source_text_id"]) for r in binding_rows}
+    if actual != expected or len(binding_rows) != len(actual):
+        raise ValueError("final-contract token binding point matrix mismatch")
+    checked = 0
+    for row in binding_rows:
+        model_key = contract["points"][row["point_id"]]["target"]
+        accepted = lookup.get((model_key, row["source_text_id"]))
+        if accepted is None or row["model_key"] != model_key:
+            raise ValueError("token receipt model/source mismatch")
+        fields = ("source_utf8_sha256", "tokenizer_revision", "prompt_token_count",
+                  "token_ids_sha256", "token_id_file_sha256", "token_ids_relative_path")
+        for field in fields:
+            if row[field] != accepted[field]:
+                raise ValueError(f"token receipt drift: {row['point_id']}/{row['source_text_id']}/{field}")
+        if row["prompt_token_count"] != "512":
+            raise ValueError("not a frozen 512-token prompt")
+        checked += 1
+    return {"status": "PASS", "binding_rows": checked}
+
+
 def recompute_native_request_samples(rows: list[dict[str, str]], complete_points: set[str], contract: dict) -> list[dict]:
     """Native CUDA-event statistics from individual OFF-instrumentation arms."""
     native_arms = {"GRAPH_ON_NATIVE", "GRAPH_OFF_NATIVE"}

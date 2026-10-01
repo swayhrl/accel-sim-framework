@@ -1,6 +1,6 @@
 import unittest
 
-from adapter import recompute_native_request_samples, verify_point_identity
+from adapter import recompute_native_request_samples, verify_frozen_token_bindings, verify_point_identity
 
 
 class AdapterTests(unittest.TestCase):
@@ -12,8 +12,10 @@ class AdapterTests(unittest.TestCase):
                                        "QWEN_BF16": {"revision": "m" * 40}},
         }
         self.binding = [{"point_id": "MP02", "source_text_id": "S0",
+                         "model_key": "QWEN_BF16", "prompt_token_count": "512",
                          "source_utf8_sha256": "s" * 64, "tokenizer_revision": "t" * 40,
-                         "token_ids_sha256": "i" * 64, "token_id_file_sha256": "f" * 64}]
+                         "token_ids_sha256": "i" * 64, "token_id_file_sha256": "f" * 64,
+                         "token_ids_relative_path": "token_ids/QWEN_BF16/S0.json"}]
         self.identity = [{"point_id": "MP02", "source_text_id": "S0", "target": "QWEN_BF16",
                           "model_revision": "m" * 40, "vllm_source_commit": "v" * 40,
                           "phase": "decode", "batch_size": "1", "prompt_tokens": "512",
@@ -29,6 +31,15 @@ class AdapterTests(unittest.TestCase):
             verify_point_identity(self.identity + self.identity, self.binding, self.contract)
         with self.assertRaises(ValueError):
             verify_point_identity([{**self.identity[0], "batch_size": "4"}], self.binding, self.contract)
+
+    def test_frozen_binding_against_asset_receipt(self):
+        receipt = [{"model_key": "QWEN_BF16", "source_text_id": "S0",
+                    **{key: self.binding[0][key] for key in (
+                        "source_utf8_sha256", "tokenizer_revision", "prompt_token_count",
+                        "token_ids_sha256", "token_id_file_sha256", "token_ids_relative_path")}}]
+        self.assertEqual(verify_frozen_token_bindings(self.binding, receipt, self.contract)["status"], "PASS")
+        with self.assertRaises(ValueError):
+            verify_frozen_token_bindings([{**self.binding[0], "token_ids_sha256": "x" * 64}], receipt, self.contract)
 
     def test_native_recompute_and_duplicate(self):
         rows = []

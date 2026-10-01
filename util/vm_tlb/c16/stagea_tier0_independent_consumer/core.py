@@ -95,6 +95,8 @@ def chronological_gaps(intervals: Iterable[Interval], parent: Interval) -> list[
                 "signed_gap_ns": signed,
                 "positive_gap_ns": max(0, signed),
                 "overlap_ns": max(0, -signed),
+                "gap_start_ns": prior.end_ns if signed > 0 else None,
+                "gap_end_ns": item.start_ns if signed > 0 else None,
                 "classification": "OVERLAP" if signed < 0 else ("TOUCH" if signed == 0 else "GAP"),
             })
         prior = item if prior is None or item.end_ns >= prior.end_ns else prior

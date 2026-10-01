@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+import re
 
 from core import Interval, chronological_gaps, union_length_ns
 
@@ -18,6 +19,7 @@ def parse_observed_intervals(semantic_rows: list[dict[str, str]], cuda_rows: lis
             raise ValueError("duplicate/invalid semantic ordinal")
         interval = Interval(int(row["nvtx_start_ns"]), int(row["nvtx_end_ns"]), ordinal)
         ordinal_to_sem[ordinal] = (row, interval)
+    semantic_roots = [interval for row, interval in ordinal_to_sem.values() if row["parent_ordinal_or_NA"] == "NA"]
     cuda_intervals = []
     by_module = defaultdict(list)
     by_ordinal = defaultdict(list)
@@ -25,7 +27,7 @@ def parse_observed_intervals(semantic_rows: list[dict[str, str]], cuda_rows: lis
     ids = set()
     for row in cuda:
         identity = row["cuda_interval_id"]
-        if identity in ids or row["parent_request_id"] != request_id or not row["source_capture_sha256"]:
+        if identity in ids or row["parent_request_id"] != request_id or not re.fullmatch(r"[0-9a-fA-F]{64}", row["source_capture_sha256"]):
             raise ValueError("duplicate/invalid CUDA interval identity")
         ids.add(identity)
         interval = Interval(int(row["start_ns"]), int(row["end_ns"]), identity)
@@ -41,6 +43,7 @@ def parse_observed_intervals(semantic_rows: list[dict[str, str]], cuda_rows: lis
             by_ordinal[ordinal].append(interval)
     parent = Interval(min(i.start_ns for i in cuda_intervals), max(i.end_ns for i in cuda_intervals), request_id)
     parent_union = union_length_ns(cuda_intervals, parent)
+    parent_span = parent.duration_ns
     if parent_union <= 0:
         raise ValueError("zero parent CUDA union")
     module_rows = []
@@ -76,6 +79,7 @@ def parse_observed_intervals(semantic_rows: list[dict[str, str]], cuda_rows: lis
                     "producer_ordinal": prior_ord, "consumer_ordinal": next_ord,
                     "producer_module": prior_module, "consumer_module": next_module,
                     "signed_gap_ns": None, "positive_gap_ns": None,
+                    "gap_start_ns": None, "gap_end_ns": None,
                     "parent_cuda_union_ns": parent_union,
                     "positive_gap_parent_fraction": None,
                     "status": "BOUNDARY_GAP_NOT_IDENTIFIABLE",
@@ -88,6 +92,8 @@ def parse_observed_intervals(semantic_rows: list[dict[str, str]], cuda_rows: lis
                 "producer_ordinal": prior_ord, "consumer_ordinal": next_ord,
                 "producer_module": prior_module, "consumer_module": next_module,
                 "signed_gap_ns": gap, "positive_gap_ns": max(0, gap),
+                "gap_start_ns": max(i.end_ns for i in prior_gpu) if gap > 0 else None,
+                "gap_end_ns": min(i.start_ns for i in next_gpu) if gap > 0 else None,
                 "parent_cuda_union_ns": parent_union,
                 "positive_gap_parent_fraction": max(0, gap) / parent_union,
                 "status": "OVERLAP" if gap < 0 else ("TOUCH" if gap == 0 else "GAP"),
@@ -97,6 +103,9 @@ def parse_observed_intervals(semantic_rows: list[dict[str, str]], cuda_rows: lis
         "global_launch_gaps": all_gaps,
         "sibling_boundaries": boundaries,
         "parent_cuda_union_ns": parent_union,
+        "parent_cuda_span_ns": parent_span,
+        "semantic_root_count": len(semantic_roots),
+        "semantic_root_span_ns": semantic_roots[0].duration_ns if len(semantic_roots) == 1 else None,
         "uncorrelated_cuda_intervals": len(unassigned),
         "cuda_interval_count": len(cuda_intervals),
         "semantic_interval_count": len(sem),
