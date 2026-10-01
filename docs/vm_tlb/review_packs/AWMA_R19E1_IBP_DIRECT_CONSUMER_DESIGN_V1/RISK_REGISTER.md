@@ -1,0 +1,11 @@
+# Risk register and stop conditions
+
+| Risk | Source evidence | Required closure if a future task reopens design |
+| --- | --- | --- |
+| Repeated decode/feature work | `sampled_ids` insertion uses bitmap/position map; first-block edge offsets may refer to the same local source repeatedly | Freeze actual first-block `agg_src_off` histogram; preserve one logical decode per unique sampled row and one `fc_neigh` per source row. |
+| First-layer math confound | `602>256` dispatches `fc_neigh` before DGL mean; `fc_self` reads destination prefix; DGL mean is sum then degree division | Keep the same graph and operator sequence. Any tiled/custom linear needs its own matched control before assigning a B0–D1 delta to buffer removal. |
+| Training autograd/optimizer crossing | DDP model, loss/backward and Adam reside in Python trainer; sampler is a compiled C++ binary launched by `legion_server.py` | P1 requires PyTorch/DGL integration plus explicit remote autograd and gradient/optimizer protocol with full cost and correctness; no free cross-process compute. |
+| Full-buffer IPC lifetime | Sampler exports `N2×602` feature allocation in two pipeline slots; `get_next` waits then copies into another `N2×602` tensor | P2 requires bounded per-tile ownership/ready/consumed state, lifetime guards and measured synchronization; no unbounded queue or dropped overwrite. |
+| Numeric determinism unknown | DGL source can use COO floating `AtomicAdd`, CSR/CSC paths; actual runtime dispatch and cuBLAS algorithm not established | Repeat exact B0 before D1 timing. Keep bitwise output if deterministic; otherwise freeze B0-derived per-element interval before performance, never after seeing D1. |
+| Input and topology not captured | This Goal forbids Reddit download, CUDA and 109 | Actual sampled IDs/edges/cache/feature/model hashes remain `NOT_CAPTURED`; do not create a fake B0/D1 authority. |
+| Platform and dependency | Author's tested A100/CUDA 11.7/PyTorch 1.13.1 differs from future RTX4080/109; pinned DGL source reports 2.1 but runtime import not observed | Separate platform/ABI/DGL-import admission must precede any performance run; do not treat a successful source read as runtime qualification. |

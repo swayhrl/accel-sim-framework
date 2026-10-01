@@ -2,6 +2,8 @@
 
 状态：`R19_IBP_DIRECT_CONSUMER_CANDIDATE_QUALIFIED`，只资格化下一次独立授权的 Native 证伪；不是执行 Goal、机制参数或论文结论。
 
+R19E1 源码设计复核更新：`R19E1_IBP_DIRECT_CONSUMER_DIAGNOSTIC_NOT_QUALIFIED`。下文原有 109 方案保留为 R19 历史准备记录，不再视为可执行 B0/D1 合同；R19E1 的审阅包给出逐项原因。
+
 ## 精确问题与对象
 
 - **Producer**：固定 `AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5` 的 `StaticCache::transfer`。其 `compress_cpu_transfer_kernel2` 读取 pinned-host IBP 行前缀或 GPU compressed-cache slab，用 `ibp::decompress_fetch_cpu` / `decompress_and_write` 重构 FP32 特征，并把完整的所选节点特征写入 GPU `dst_float_buffer`。
@@ -40,3 +42,11 @@
 - [nvCOMP Device API](https://docs.nvidia.com/cuda/nvcomp/device_api.html) / [nvCOMPDx](https://docs.nvidia.com/cuda/nvcompdx/index.html) 已提供 device 内解压构件；“可以在 device 函数中解压”本身不是新意。
 
 尚未核实的差别是：在 IBP 的 pinned-host 行 fetch 与真实 GNN 首层消费之间，避免 dense sampled-feature 往返能否在有限资源和匹配语义下减少暴露等待。此卡只要求一次有界 Native 证伪，不授权实现体系结构机制。
+
+## R19E1 源码设计复核：109 performance STOP
+
+固定 Legion/Reddit 路径在 sampler 物化完整 `[N2,602]` feature buffer；trainer 的 `cuda_get_next` 还分配第二个同形状 tensor 并做整批 D2D copy。第一层 DGL `SAGEConv` 对每个唯一 source row 先算 `fc_neigh(602→256)`，按原始边反复使用变换结果做 mean，再对 destination 前缀另算 `fc_self`。训练反向与 Adam 属于 trainer 进程。
+
+R19E1 只审 P1 sampler-side 首层融合、P2 tile/ring staging、P3 首层内部解码。P1 改变跨进程 autograd/optimizer 与 IPC；P2 必须拆分原 whole-matrix linears 并增加逐 tile IPC，使 B0–D1 混入新 GEMM/同步成本；P3 需要自定义首层前向/反向且不能静态保证计算顺序。三项均不能作为只改变 dense 边界的两臂因果诊断。未来真实 Reddit batch、cache/model/RNG/hash 仍未 capture；baseline 第一层 bitwise 重复性也未在 109 核定。
+
+因此**没有已冻结 D1 patch 或 109 性能命令**。不得依本卡旧的 10/30 replay 段落自动启动 109。详细代码锚点、风险、数值预冻结规则与被阻断的 B0/D1 清单见 `docs/vm_tlb/review_packs/AWMA_R19E1_IBP_DIRECT_CONSUMER_DESIGN_V1/`。这不否认 R19 的真实问题线索，只说明本轮无法给出同语义、最小侵入的隔离干预。

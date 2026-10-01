@@ -1,0 +1,27 @@
+id	authority	path	blob_sha	lines	observation
+PARENT	Framework@bdd85bde5fe7dab1555f52ec6201f7765bbacc2d	docs/vm_tlb/literature_notes/awma/problem_cards/R19_IBP_DIRECT_CONSUMER_PREPARATION.md	101c25d1fc2be624c8ecbf31d6a9bd5a8e5e7be0	all	Accepted R19 opportunity and original future experiment sketch
+GOAL	Framework@0397946d148aa1aa79895813747e6d17140dc56b	docs/vm_tlb/chatgpt_handoff/awma/r19e1_ibp_direct_consumer_design_v1/LANE_E_R19E1_IBP_DIRECT_CONSUMER_DESIGN_GOAL.md	d68b478fc44140b20a5be5df1418f712b0877389	all	Current R19E1 CPU/source-only contract
+IBP1	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	include/decompress/ibp_decompress_dev.cuh	4f8cbda6528c57523817a418150345e34014ad59	130-335	Device decode helper writes reconstructed dest row
+IBP2	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	include/decompress/ibp_decompress_kernel.cuh	2007e14473430d28876da80d714441748f602c33	16-111	Separate decode kernel writes full selected row
+IBP3	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	src/decompress.cu	9dc3d81c4705e0d1f029d873e11d17432712fc08	110-155	Full selected-output shape and output_tensor behavior
+IBP4	AKKamath/InvariantBitPacking@b2f71003113defb4e387caf18843b241f6280ba9	Makefile	d7534e10f06060a8d0348e09db86d62b19f229f2	71-103	Artifact install sequence selects pinned DGL submodule after Legion
+LEG01	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	Makefile	8a5e13888e5686a586fffa6fbd6cb1d350ae9203	14-46,115-173	Reddit FP32 602 width, hidden 256, 2 hops, one-GPU CPUasync DYN_CACHE=792
+LEG02	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	training_backend/legion_graphsage.py	719d94447d0b6aea63a63e4315d6ec0ba9e64e3d	39-125,175-225	First SAGEConv, trainer DDP/Adam, get_next wait and backward
+LEG03	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	training_backend/ipc_service.cpp	3c3769e3746fe75764f29c6108c800c3a0766bef	44-78	One complete-batch wait and block-size return
+LEG04	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	training_backend/ipc_cuda_kernel.cu	9d169af447951c1963eb0b1d4f3333c7bbf53f23	30-105,177-242	Two IPC slots, second full dense tensor allocation/D2D copy
+LEG05	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	training_backend/ipc_service.h	bb2520b42613ca6bfbaea85beee4fbcf939bc6ca	1-23	INTRABATCH_CON=3 and INTERBATCH_CON=2
+LEG06	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/cache/cache.cu	ac8d29966a25c58bab28c87043fdfcc4d799cf3b	743-803	Sampler transfer writes dst_float_buffer
+LEG07	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/comp_cache/static_cache.cu	f8caf0aac136cbe58804a5c89a7514a407bff712	656-770	Fixed cache/CPU decode kernel dispatch and output_buffer
+LEG08	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/comp_cache/compress_cache_kernel.cuh	9d03f4fc048efe1c5f4526967210c9c3f2907bf1	475-581	Decode/cache lookup already fused; writes full sampled output rows
+LEG09	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/engine/operator_impl.cu	349121bbf209edfc0712a37533b80e9020edc236	58-91,180-315,555-575	Unique sampled IDs, edge-local offsets, feature transfer enqueue
+LEG10	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/engine/ipc_service.cu	bd05d4906b06496ecce240b495dcc21855bf15d9	134-205,255-290	IPC full feature allocation and semaphore protocol
+LEG11	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	sampling_server/src/engine/memorypool.cuh	9496a952d7bbd4fbbd1a0315349b5871a2b3de70	20-76,105-134	Sampled IDs, feature buffers, counters by pipeline slot
+LEG12	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	dataset/prepare_reddit.py	5b0c9599d88a15a4f2045bf2df3f58220b740db2	1-48	Real DGL Reddit dataset preparation, not run
+LEG13	AKKamath/Legion-IBP@0b0695fd470695bc6326ac0d2d9d117d422089c5	legion_server.py	b206182a2b4223c587669c7281a6ef9b55d70231	39-84	Python wrapper launches compiled C++ sampling_server, not a PyTorch model
+DGL01	AKKamath/DGL-IBP@eafc5b39176c50cd8a979179ffd7ec9f7c864cfb	python/dgl/_ffi/libinfo.py	6f841e246bd529124077596803783e927380c217	108	Source version literal 2.1
+DGL02	AKKamath/DGL-IBP@eafc5b39176c50cd8a979179ffd7ec9f7c864cfb	python/dgl/nn/pytorch/conv/sageconv.py	67be492bb8ea08c594371fa1454ec5341d58133f	98-165,179-295	Default feat_drop, lin_before_mp, mean, fc_self, output expression
+DGL03	AKKamath/DGL-IBP@eafc5b39176c50cd8a979179ffd7ec9f7c864cfb	python/dgl/ops/spmm.py	e86625dcd21e6e1fe25e4ef3e3b1783ce8590225	75-115	Mean implemented as sum and clamped degree division
+DGL04	AKKamath/DGL-IBP@eafc5b39176c50cd8a979179ffd7ec9f7c864cfb	src/array/cuda/spmm.cu	6284165ad02ccc5a0b6d106318a760f7a3bf10ef	19-100	CUDA COO and CSR/CSC dispatch capabilities
+DGL05	AKKamath/DGL-IBP@eafc5b39176c50cd8a979179ffd7ec9f7c864cfb	src/array/cuda/spmm.cuh	288972b85b8733b580a7936b1bd8786788dc72f2	393-436,482-525	COO atomic edge-parallel and CSR row traversal
+DGL06	AKKamath/DGL-IBP@eafc5b39176c50cd8a979179ffd7ec9f7c864cfb	src/array/cuda/functor.cuh	226600cb9a84d5c5e399acb2e36ccc2c1ffe7021	147-179	Floating Sum atomic/non-atomic cases
+DOC01	NVIDIA primary documentation	https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html	NOT_LOCAL_HASHED	7.3.2	Floating-point addition order can change rounded result
