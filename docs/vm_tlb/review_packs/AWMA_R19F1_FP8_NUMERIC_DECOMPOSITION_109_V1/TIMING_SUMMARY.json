@@ -1,0 +1,154 @@
+{
+  "allocation_probe_not_primary": {
+    "A1_ONLINE": {
+      "allocated_before_bytes": 26674176,
+      "allocated_with_output_bytes": 30213120,
+      "peak_allocated_bytes": 30443008,
+      "peak_reserved_bytes": 44040192
+    },
+    "D0_READY": {
+      "allocated_before_bytes": 26674176,
+      "allocated_with_output_bytes": 30213120,
+      "peak_allocated_bytes": 30213120,
+      "peak_reserved_bytes": 44040192
+    }
+  },
+  "boundary": "arm-ready input -> te.Linear current-scaling FP8 output synchronized",
+  "cached_weight_q_sha256": "bac0aac613572052c949f3ec9719ce95520185233c0c2253a82af0181a8457dd",
+  "group_orders": [
+    [
+      "A1_ONLINE",
+      "D0_READY"
+    ],
+    [
+      "D0_READY",
+      "A1_ONLINE"
+    ],
+    [
+      "A1_ONLINE",
+      "D0_READY"
+    ]
+  ],
+  "investment_screen_pass": true,
+  "metrics": {
+    "cuda_event_ms": {
+      "all_group_gap_sign_positive": true,
+      "arms": {
+        "A1_ONLINE": {
+          "mad": 0.0025599971413612366,
+          "max": 0.10009600222110748,
+          "median": 0.08102399855852127,
+          "min": 0.07782399654388428
+        },
+        "D0_READY": {
+          "mad": 0.0018880032002925873,
+          "max": 0.07782399654388428,
+          "median": 0.0594559982419014,
+          "min": 0.05673599988222122
+        }
+      },
+      "gap_gt_3x_larger_arm_mad": true,
+      "group_paired_differences": [
+        {
+          "group": 0,
+          "paired_gap_median_ms": 0.024512000381946564,
+          "paired_gaps_ms": [
+            0.022272005677223206,
+            0.028672002255916595,
+            0.026367999613285065,
+            0.024512000381946564,
+            0.019551996141672134
+          ]
+        },
+        {
+          "group": 1,
+          "paired_gap_median_ms": 0.01945599541068077,
+          "paired_gaps_ms": [
+            0.024511996656656265,
+            0.02566399797797203,
+            0.01715199649333954,
+            0.018783997744321823,
+            0.01945599541068077
+          ]
+        },
+        {
+          "group": 2,
+          "paired_gap_median_ms": 0.02051200345158577,
+          "paired_gaps_ms": [
+            0.022527996450662613,
+            0.023135997354984283,
+            0.02051200345158577,
+            0.019071999937295914,
+            0.01664000004529953
+          ]
+        }
+      ],
+      "median_gap_ms": 0.021568000316619873,
+      "relative_reduction_pct": 26.619274166087887
+    },
+    "wall_ms": {
+      "all_group_gap_sign_positive": true,
+      "arms": {
+        "A1_ONLINE": {
+          "mad": 0.0031759999999999983,
+          "max": 0.103084,
+          "median": 0.085846,
+          "min": 0.080908
+        },
+        "D0_READY": {
+          "mad": 0.0014119999999999966,
+          "max": 0.082284,
+          "median": 0.062693,
+          "min": 0.060467
+        }
+      },
+      "gap_gt_3x_larger_arm_mad": true,
+      "group_paired_differences": [
+        {
+          "group": 0,
+          "paired_gap_median_ms": 0.024846000000000007,
+          "paired_gaps_ms": [
+            0.0208,
+            0.029267,
+            0.02683500000000001,
+            0.024846000000000007,
+            0.020776000000000003
+          ]
+        },
+        {
+          "group": 1,
+          "paired_gap_median_ms": 0.019386999999999995,
+          "paired_gaps_ms": [
+            0.024526000000000006,
+            0.026404999999999998,
+            0.017553,
+            0.019142999999999993,
+            0.019386999999999995
+          ]
+        },
+        {
+          "group": 2,
+          "paired_gap_median_ms": 0.020257999999999998,
+          "paired_gaps_ms": [
+            0.021419999999999995,
+            0.022251,
+            0.020257999999999998,
+            0.018613000000000005,
+            0.018192
+          ]
+        }
+      ],
+      "median_gap_ms": 0.023153000000000007,
+      "relative_reduction_pct": 26.970388835822295
+    }
+  },
+  "online_input_q_sha256": "79c754c1ec58ac3e5338e3bab28887a56803d0139394fe5a93c35df74e33ee15",
+  "producer_payload_sha256": "5ac9e6eb35ec2676926481d563628b80d528dac3dbdbe87bece26d21f4c54b48",
+  "ready_input_q_sha256": "79c754c1ec58ac3e5338e3bab28887a56803d0139394fe5a93c35df74e33ee15",
+  "same_consumer_block": "128,1,1",
+  "same_consumer_function": "sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_execute_kernel__5x_cublas",
+  "same_consumer_grid": "4,38,1",
+  "sample_count_per_arm": 15,
+  "stage": "AWMA_R19F1_FP8_NUMERIC_DECOMPOSITION_109_V1",
+  "warmups_per_arm_per_group": 2
+}

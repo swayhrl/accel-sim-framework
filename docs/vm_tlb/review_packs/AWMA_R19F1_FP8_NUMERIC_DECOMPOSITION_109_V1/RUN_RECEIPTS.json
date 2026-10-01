@@ -1,0 +1,63 @@
+{
+  "stage": "AWMA_R19F1_FP8_NUMERIC_DECOMPOSITION_109_V1",
+  "node": "109 / NVIDIA GeForce RTX 4080 / SM89",
+  "execution_branch": "hrl/awma-r19f1-fp8-readiness-109-v1",
+  "starting_head": "6ac000ce411dad034eeeb1f88a8e58fb180a5ead",
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "gpu_launcher_pattern": "flock -x -w 3600 <gpu_lock> env R19F1_GPU_LOCK_HELD=1 TMPDIR=<isolated_r19f1_tmp> <command>",
+  "gpu_scripts_assert_lock_environment": true,
+  "reused_environment": "/data/c16/awma/r19_fp8_readiness_20261001/env",
+  "reused_payload_sha256": "5ac9e6eb35ec2676926481d563628b80d528dac3dbdbe87bece26d21f4c54b48",
+  "runs": [
+    {
+      "name": "numeric_canary_attempt1",
+      "gpu_lock": true,
+      "scientific_payload_unchanged": true,
+      "status": "ENGINEERING_REPAIR",
+      "detail": "Audit-only internal Float8TensorStorage lacked public dtype attribute; adapted receipt reader without changing quantization."
+    },
+    {
+      "name": "numeric_canary_attempt2",
+      "gpu_lock": true,
+      "scientific_payload_unchanged": true,
+      "status": "ENGINEERING_REPAIR",
+      "detail": "Internal Float8TensorStorage cannot be passed as public te.Linear input; use the documented public Float8CurrentScalingQuantizer and require exact bit/scale equality."
+    },
+    {
+      "name": "numeric_canary_final",
+      "gpu_lock": true,
+      "status": "PASS",
+      "rep_matched_numerics": true,
+      "public_ready_representation_bit_and_scale_match": true,
+      "f0_online_d0_output_bitwise_identity": true,
+      "raw_receipt": "raw/REPRESENTATION_RECEIPT.json"
+    },
+    {
+      "name": "NSYS_R19F1_FP8_CONSUMER_V1",
+      "gpu_lock": true,
+      "profile_jobs": 1,
+      "nvtx_ranges": 6,
+      "kernel_launches_attributed": 18,
+      "status": "SAME_NATIVE_SM89_E4M3_GEMM_PROVED",
+      "raw_report": "raw/NSYS_R19F1_FP8_CONSUMER_V1.nsys-rep",
+      "sqlite_export_is_cpu_only": true
+    },
+    {
+      "name": "formal_timing",
+      "gpu_lock": true,
+      "profiled": false,
+      "paired_groups": 3,
+      "warmups_per_arm_per_group": 2,
+      "formal_repeats_per_arm_per_group": 5,
+      "samples_per_arm": 15,
+      "status": "PASS_5_PERCENT_SCREEN",
+      "raw_samples": "raw/TIMING.tsv"
+    }
+  ],
+  "ncu_targets": 0,
+  "nvbit_runs": 0,
+  "custom_fp8_kernels": 0,
+  "accel_sim_runs": 0,
+  "node174_runs": 0,
+  "gpu_lock_held_after_goal": false
+}
