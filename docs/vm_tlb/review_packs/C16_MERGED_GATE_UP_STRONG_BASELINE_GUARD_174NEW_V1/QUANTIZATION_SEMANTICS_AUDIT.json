@@ -1,0 +1,68 @@
+{
+  "checkpoint": {
+    "activation_dtype": "FP16",
+    "bits": 4,
+    "group_size": 128,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "zero_point": true
+  },
+  "floating_point_output": {
+    "bitwise_equivalence_across_backend": "NOT_ASSUMED",
+    "mathematical_equivalence": true,
+    "reason": "merged and MP/Marlin kernels may use a different FP reduction schedule"
+  },
+  "marlin_or_mp_conversion": {
+    "description": "unpack/reorder/repack AWQ integers and zero-points into the selected MP kernel layout; scales are carried with the same groups",
+    "logical_quantized_values_change": false,
+    "physical_packing_changes": true,
+    "requantization": false,
+    "runtime_selected_kernel": "UNKNOWN_UNTIL_109_PREFLIGHT",
+    "shape_padding_required_for_tp1": false
+  },
+  "merged_projection": {
+    "direct_loader": "gate_proj -> merged shard 0; up_proj -> merged shard 1; packed offsets divided by pack_factor",
+    "group_size_preserved": true,
+    "logical_output_features": 37888,
+    "merge_axis": "logical output/N dimension; AWQ KxN packed tensors concatenate along packed output dimension 1",
+    "qweight_packed_shape": [
+      3584,
+      4736
+    ],
+    "qzeros_packed_shape": [
+      28,
+      4736
+    ],
+    "requires_requantization": false,
+    "scale_bytes_preserved": true,
+    "scales_shape": [
+      28,
+      37888
+    ],
+    "total_logical_quant_bytes": 70547456,
+    "zero_point_preserved": true
+  },
+  "schema_version": 1,
+  "separate_projection": {
+    "gate_plus_up_total_bytes": 70547456,
+    "per_projection": {
+      "qweight_bytes": 33947648,
+      "qweight_packed_shape": [
+        3584,
+        2368
+      ],
+      "qzeros_bytes": 265216,
+      "qzeros_packed_shape": [
+        28,
+        2368
+      ],
+      "scales_bytes": 1060864,
+      "scales_shape": [
+        28,
+        18944
+      ]
+    }
+  },
+  "status": "SEMANTICALLY_MATCHED_MERGED_BASELINE_EXISTS",
+  "strict_ab_classification": "SAME_CHECKPOINT_AND_QUANTIZATION_SEMANTICS_BUT_CROSS_RUNTIME_BACKEND; NOT_MERGE_ONLY"
+}

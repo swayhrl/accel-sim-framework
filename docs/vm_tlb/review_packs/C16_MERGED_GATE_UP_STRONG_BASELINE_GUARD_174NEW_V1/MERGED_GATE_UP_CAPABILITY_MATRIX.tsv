@@ -1,0 +1,15 @@
+capability	CURRENT_AUTOAWQ	TWO_STREAM_GATE_UP	MERGED_GATE_UP_STRONG_BASELINE	evidence_boundary
+scientific_semantics	silu(gate(x))*up(x)->down	same DAG; explicit branch dependencies	same DAG via merged [gate,up] output then SiluAndMul	source-closed
+quantization_semantics	AWQ W4 group128 zero-point; separate qweight/qzeros/scales	identical tensors and quantization	same logical 4-bit values/zero-points/scales loaded into two output shards; no requantization	logical quant semantics exact; Marlin may losslessly repack bytes
+kernel_count	observed gate+up: 2 GEMM + 2 reduce; SiLU + Mul = 6 kernels	same six kernels; scheduling changes only	one quantized-linear invocation + one SiluAndMul invocation; exact GPU kernel/reduce count backend-resolved	do not guess native kernel count before capture
+weight_bytes	gate+up logical quant bytes=70547456	same 70547456	same logical 70547456; shapes aligned so no Marlin tile padding required	metadata/workspace excluded
+input_reads	two logical hidden reads=14336 B	same 14336 B, concurrent	one logical hidden input=7168 B	logical interface reads, not measured DRAM transactions
+output_intermediate_bytes	writes=151552 B; handoff write+read=303104 B	same writes=151552 B and handoff=303104 B	merged gate_up + fused product writes=113664 B; handoff=227328 B	logical FP16 bytes per layer/decode
+launch_count	two linear calls + separate SiLU and Mul calls	same calls on two streams	one linear call + one fused SiluAndMul call	CUDA launch count depends on selected backend
+parallelism	gate->SiLU->up->Mul serialized on one stream	gate/SiLU branch overlaps up branch	gate/up output-channel work co-scheduled inside one merged linear	no performance ranking inferred
+layout	two AWQ output-packed modules	unchanged	concatenate logical output N; direct AWQ slices or lossless GPTQ-like/MP repack	Marlin physical layout differs from C16
+numerical_equivalence	accepted hash-closed reference	bitwise projection identity required	same quantized weights and mathematical DAG; FP bitwise output not assumed across backend/reduction	native tolerance/token validation required
+platform_feasibility	accepted RTX4080 CC8.9	source-feasible; diagnostic contracted	source-qualified: AutoAWQ min CC7.5, uint4+zero-point+group128 supported, K/N aligned	isolated vLLM runtime still requires 109 canary
+W4_kernel	AutoAWQ 0.2.7.post3 WQLinear_GEMM	unchanged WQLinear_GEMM	vLLM AutoAWQLinear or AutoAWQMarlin MP kernel selected at runtime	not a same-kernel single-variable A/B
+reduction_path	two observed GEMM+reduce pairs	same two pairs	backend-specific merged reduction path	must record chosen backend and native kernel sequence
+Silu_Mul_fusion	two distinct elementwise kernels	unchanged	SiluAndMul fused custom op	mature vLLM source capability
