@@ -1,0 +1,321 @@
+{
+  "TE_version": "2.19.0",
+  "all_finite": true,
+  "cached_weight_after": {
+    "gate": {
+      "data": {
+        "bytes": 4358144,
+        "dtype": "torch.uint8",
+        "sha256": "457790401c5dce4b4cbedbb5e6bb960dd2927742daaafcbfd1560f274e434089",
+        "shape": [
+          4864,
+          896
+        ]
+      },
+      "device_data_ptr": 124546212429824,
+      "fp8_dtype": "7",
+      "nominal_dtype": "torch.bfloat16",
+      "scale_inv": {
+        "bytes": 4,
+        "dtype": "torch.float32",
+        "sha256": "333f0d6198a633ce5163a69072833bf96e3d9f986b2fb796276a67bb5926709c",
+        "shape": [
+          1
+        ]
+      },
+      "scale_inv_values": [
+        0.0010986328125
+      ],
+      "type": "Float8Tensor"
+    },
+    "up": {
+      "data": {
+        "bytes": 4358144,
+        "dtype": "torch.uint8",
+        "sha256": "bac0aac613572052c949f3ec9719ce95520185233c0c2253a82af0181a8457dd",
+        "shape": [
+          4864,
+          896
+        ]
+      },
+      "device_data_ptr": 124546300510208,
+      "fp8_dtype": "7",
+      "nominal_dtype": "torch.bfloat16",
+      "scale_inv": {
+        "bytes": 4,
+        "dtype": "torch.float32",
+        "sha256": "a25c716f62dc84bdbc084a46fe4c52fe1e91ef94a69bb251850776e9d2ba66ed",
+        "shape": [
+          1
+        ]
+      },
+      "scale_inv_values": [
+        0.0006234305328689516
+      ],
+      "type": "Float8Tensor"
+    }
+  },
+  "cached_weight_before": {
+    "gate": {
+      "data": {
+        "bytes": 4358144,
+        "dtype": "torch.uint8",
+        "sha256": "457790401c5dce4b4cbedbb5e6bb960dd2927742daaafcbfd1560f274e434089",
+        "shape": [
+          4864,
+          896
+        ]
+      },
+      "device_data_ptr": 124546212429824,
+      "fp8_dtype": "7",
+      "nominal_dtype": "torch.bfloat16",
+      "scale_inv": {
+        "bytes": 4,
+        "dtype": "torch.float32",
+        "sha256": "333f0d6198a633ce5163a69072833bf96e3d9f986b2fb796276a67bb5926709c",
+        "shape": [
+          1
+        ]
+      },
+      "scale_inv_values": [
+        0.0010986328125
+      ],
+      "type": "Float8Tensor"
+    },
+    "up": {
+      "data": {
+        "bytes": 4358144,
+        "dtype": "torch.uint8",
+        "sha256": "bac0aac613572052c949f3ec9719ce95520185233c0c2253a82af0181a8457dd",
+        "shape": [
+          4864,
+          896
+        ]
+      },
+      "device_data_ptr": 124546300510208,
+      "fp8_dtype": "7",
+      "nominal_dtype": "torch.bfloat16",
+      "scale_inv": {
+        "bytes": 4,
+        "dtype": "torch.float32",
+        "sha256": "a25c716f62dc84bdbc084a46fe4c52fe1e91ef94a69bb251850776e9d2ba66ed",
+        "shape": [
+          1
+        ]
+      },
+      "scale_inv_values": [
+        0.0006234305328689516
+      ],
+      "type": "Float8Tensor"
+    }
+  },
+  "cached_weight_bits_scale_pointer_stable": {
+    "gate": true,
+    "up": true
+  },
+  "cublasLt_version": 120405,
+  "device_capability": [
+    8,
+    9
+  ],
+  "downstream_formula": "F.linear(F.silu(gate)*up,real_BF16_down_weight)",
+  "first_call_and_weight_cache_ms_not_primary": 23.70032691396773,
+  "frozen_numerical_objects_sha256": "0adf3e2c5daf59c5969c00ee01e7947aa37e916c82fcfbb24682fbed9502e96f",
+  "gate_and_up_online_input_representation_identical": true,
+  "gate_output_bitwise_identical_all_arms": true,
+  "logical_input_quantizer_invocations_per_arm": {
+    "B0_DUPLICATE": 2,
+    "D0_READY_PAIR": 0,
+    "S1_SHARED": 1
+  },
+  "mlp_output_bitwise_identical_all_arms": true,
+  "mlp_payload_sha256": "ad2d6c73262ff71cb877a284d7c4056defac657358303f0e38c9eecbbb104f7d",
+  "online_input": {
+    "gate": {
+      "data": {
+        "bytes": 229376,
+        "dtype": "torch.uint8",
+        "sha256": "79c754c1ec58ac3e5338e3bab28887a56803d0139394fe5a93c35df74e33ee15",
+        "shape": [
+          1,
+          256,
+          896
+        ]
+      },
+      "device_data_ptr": 124546489712640,
+      "fp8_dtype": "7",
+      "nominal_dtype": "torch.bfloat16",
+      "scale_inv": {
+        "bytes": 4,
+        "dtype": "torch.float32",
+        "sha256": "e40242473eecf057b7426f890b25b6645e7c8d6f570596591ec2b150598c8734",
+        "shape": [
+          1
+        ]
+      },
+      "scale_inv_values": [
+        0.02734374813735485
+      ],
+      "type": "Float8TensorStorage"
+    },
+    "up": {
+      "data": {
+        "bytes": 229376,
+        "dtype": "torch.uint8",
+        "sha256": "79c754c1ec58ac3e5338e3bab28887a56803d0139394fe5a93c35df74e33ee15",
+        "shape": [
+          1,
+          256,
+          896
+        ]
+      },
+      "device_data_ptr": 124546489712640,
+      "fp8_dtype": "7",
+      "nominal_dtype": "torch.bfloat16",
+      "scale_inv": {
+        "bytes": 4,
+        "dtype": "torch.float32",
+        "sha256": "e40242473eecf057b7426f890b25b6645e7c8d6f570596591ec2b150598c8734",
+        "shape": [
+          1
+        ]
+      },
+      "scale_inv_values": [
+        0.02734374813735485
+      ],
+      "type": "Float8TensorStorage"
+    }
+  },
+  "output_ids": {
+    "B0_DUPLICATE": {
+      "gate": {
+        "bytes": 2490368,
+        "dtype": "torch.bfloat16",
+        "sha256": "69a22ceca080f13042e9e63f594f2059d1ece6fdcb416191839de22bd9ce72a3",
+        "shape": [
+          1,
+          256,
+          4864
+        ]
+      },
+      "mlp": {
+        "bytes": 458752,
+        "dtype": "torch.bfloat16",
+        "sha256": "1d8e7c7cb80a530451a2990c1d15f4ed887f3e570129a2d4b98581ec2dec710d",
+        "shape": [
+          1,
+          256,
+          896
+        ]
+      },
+      "up": {
+        "bytes": 2490368,
+        "dtype": "torch.bfloat16",
+        "sha256": "f0d76722af0d3f67e08ea67b2abf20217035fccadbf6014c90eb5f6847878e10",
+        "shape": [
+          1,
+          256,
+          4864
+        ]
+      }
+    },
+    "D0_READY_PAIR": {
+      "gate": {
+        "bytes": 2490368,
+        "dtype": "torch.bfloat16",
+        "sha256": "69a22ceca080f13042e9e63f594f2059d1ece6fdcb416191839de22bd9ce72a3",
+        "shape": [
+          1,
+          256,
+          4864
+        ]
+      },
+      "mlp": {
+        "bytes": 458752,
+        "dtype": "torch.bfloat16",
+        "sha256": "1d8e7c7cb80a530451a2990c1d15f4ed887f3e570129a2d4b98581ec2dec710d",
+        "shape": [
+          1,
+          256,
+          896
+        ]
+      },
+      "up": {
+        "bytes": 2490368,
+        "dtype": "torch.bfloat16",
+        "sha256": "f0d76722af0d3f67e08ea67b2abf20217035fccadbf6014c90eb5f6847878e10",
+        "shape": [
+          1,
+          256,
+          4864
+        ]
+      }
+    },
+    "S1_SHARED": {
+      "gate": {
+        "bytes": 2490368,
+        "dtype": "torch.bfloat16",
+        "sha256": "69a22ceca080f13042e9e63f594f2059d1ece6fdcb416191839de22bd9ce72a3",
+        "shape": [
+          1,
+          256,
+          4864
+        ]
+      },
+      "mlp": {
+        "bytes": 458752,
+        "dtype": "torch.bfloat16",
+        "sha256": "1d8e7c7cb80a530451a2990c1d15f4ed887f3e570129a2d4b98581ec2dec710d",
+        "shape": [
+          1,
+          256,
+          896
+        ]
+      },
+      "up": {
+        "bytes": 2490368,
+        "dtype": "torch.bfloat16",
+        "sha256": "f0d76722af0d3f67e08ea67b2abf20217035fccadbf6014c90eb5f6847878e10",
+        "shape": [
+          1,
+          256,
+          4864
+        ]
+      }
+    }
+  },
+  "recipe": "Float8CurrentScaling(E4M3,use_power_2_scales=False)",
+  "shared_input": {
+    "data": {
+      "bytes": 229376,
+      "dtype": "torch.uint8",
+      "sha256": "79c754c1ec58ac3e5338e3bab28887a56803d0139394fe5a93c35df74e33ee15",
+      "shape": [
+        1,
+        256,
+        896
+      ]
+    },
+    "device_data_ptr": 124546489943552,
+    "fp8_dtype": "7",
+    "nominal_dtype": "torch.bfloat16",
+    "scale_inv": {
+      "bytes": 4,
+      "dtype": "torch.float32",
+      "sha256": "e40242473eecf057b7426f890b25b6645e7c8d6f570596591ec2b150598c8734",
+      "shape": [
+        1
+      ]
+    },
+    "scale_inv_values": [
+      0.02734374813735485
+    ],
+    "type": "Float8Tensor"
+  },
+  "shared_representation_identical_to_both_online": true,
+  "source_commit": "5e52befd5262c06289106338c308079d6adb391f",
+  "stage": "AWMA_R19F2_FP8_SOFTWARE_COUNTERFACTUAL_109_V1",
+  "torch": "2.6.0+cu124",
+  "torch_cuda": "12.4",
+  "up_output_bitwise_identical_all_arms": true
+}

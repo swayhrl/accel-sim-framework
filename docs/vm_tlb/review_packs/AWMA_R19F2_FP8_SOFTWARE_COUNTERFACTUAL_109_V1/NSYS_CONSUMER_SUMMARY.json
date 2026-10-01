@@ -1,0 +1,206 @@
+{
+  "attributed_kernel_count": 54,
+  "consumer_block": "128,1,1",
+  "consumer_function": "sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_execute_kernel__5x_cublas",
+  "consumer_grid": "4,38,1",
+  "consumer_occurrence_order": [
+    "gate",
+    "up"
+  ],
+  "method": "CUPTI kernel correlationId -> CPU runtime launch -> same-thread NVTX range",
+  "per_arm_strata": {
+    "B0_DUPLICATE": [
+      {
+        "block": "1,1,1",
+        "count": 6,
+        "function": "transformer_engine::<unnamed>::zero_amax_kernel(float *, const float *)",
+        "grid": "1,1,1"
+      },
+      {
+        "block": "512,1,1",
+        "count": 6,
+        "function": "void transformer_engine::<unnamed>::amax_kernel<(int)16, (bool)1, __nv_bfloat16>(const T3 *, float *, unsigned long, unsigned long, const float *)",
+        "grid": "28,1,1"
+      },
+      {
+        "block": "1,1,1",
+        "count": 6,
+        "function": "transformer_engine::<unnamed>::compute_scale_from_amax_kernel(const float *, float *, float, bool, float, const float *)",
+        "grid": "1,1,1"
+      },
+      {
+        "block": "512,1,1",
+        "count": 6,
+        "function": "void transformer_engine::unary_kernel<(int)16, (bool)1, float, transformer_engine::Empty, &transformer_engine::dispatch::fp8::detail::identity, __nv_bfloat16, __nv_fp8_e4m3>(const T6 *, const T3 *, T7 *, const T3 *, T3 *, T3 *, T4, unsigned long, unsigned long)",
+        "grid": "28,1,1"
+      },
+      {
+        "block": "128,1,1",
+        "count": 6,
+        "function": "sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_execute_kernel__5x_cublas",
+        "grid": "4,38,1"
+      }
+    ],
+    "D0_READY_PAIR": [
+      {
+        "block": "128,1,1",
+        "count": 6,
+        "function": "sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_execute_kernel__5x_cublas",
+        "grid": "4,38,1"
+      }
+    ],
+    "S1_SHARED": [
+      {
+        "block": "1,1,1",
+        "count": 3,
+        "function": "transformer_engine::<unnamed>::zero_amax_kernel(float *, const float *)",
+        "grid": "1,1,1"
+      },
+      {
+        "block": "512,1,1",
+        "count": 3,
+        "function": "void transformer_engine::<unnamed>::amax_kernel<(int)16, (bool)1, __nv_bfloat16>(const T3 *, float *, unsigned long, unsigned long, const float *)",
+        "grid": "28,1,1"
+      },
+      {
+        "block": "1,1,1",
+        "count": 3,
+        "function": "transformer_engine::<unnamed>::compute_scale_from_amax_kernel(const float *, float *, float, bool, float, const float *)",
+        "grid": "1,1,1"
+      },
+      {
+        "block": "512,1,1",
+        "count": 3,
+        "function": "void transformer_engine::unary_kernel<(int)16, (bool)1, float, transformer_engine::Empty, &transformer_engine::dispatch::fp8::detail::identity, __nv_bfloat16, __nv_fp8_e4m3>(const T6 *, const T3 *, T7 *, const T3 *, T3 *, T3 *, T4, unsigned long, unsigned long)",
+        "grid": "28,1,1"
+      },
+      {
+        "block": "128,1,1",
+        "count": 6,
+        "function": "sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_execute_kernel__5x_cublas",
+        "grid": "4,38,1"
+      }
+    ]
+  },
+  "per_range": [
+    {
+      "arm": "B0_DUPLICATE",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 32320,
+      "gpu_first_to_last_span_ns": 182078,
+      "gpu_inter_kernel_gap_ns": 139998,
+      "input_quantizer_invocations": 2,
+      "kernel_count": 10,
+      "kernel_service_ns": 42080,
+      "nvtx_wall_ns_not_primary": 274096,
+      "prep_kernel_service_ns": 9760,
+      "range_index": 0
+    },
+    {
+      "arm": "S1_SHARED",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 31999,
+      "gpu_first_to_last_span_ns": 179231,
+      "gpu_inter_kernel_gap_ns": 142368,
+      "input_quantizer_invocations": 1,
+      "kernel_count": 6,
+      "kernel_service_ns": 36863,
+      "nvtx_wall_ns_not_primary": 239568,
+      "prep_kernel_service_ns": 4864,
+      "range_index": 1
+    },
+    {
+      "arm": "D0_READY_PAIR",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 31839,
+      "gpu_first_to_last_span_ns": 75199,
+      "gpu_inter_kernel_gap_ns": 43360,
+      "input_quantizer_invocations": 0,
+      "kernel_count": 2,
+      "kernel_service_ns": 31839,
+      "nvtx_wall_ns_not_primary": 162319,
+      "prep_kernel_service_ns": 0,
+      "range_index": 2
+    },
+    {
+      "arm": "B0_DUPLICATE",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 32159,
+      "gpu_first_to_last_span_ns": 171806,
+      "gpu_inter_kernel_gap_ns": 129887,
+      "input_quantizer_invocations": 2,
+      "kernel_count": 10,
+      "kernel_service_ns": 41919,
+      "nvtx_wall_ns_not_primary": 244997,
+      "prep_kernel_service_ns": 9760,
+      "range_index": 3
+    },
+    {
+      "arm": "S1_SHARED",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 31936,
+      "gpu_first_to_last_span_ns": 165695,
+      "gpu_inter_kernel_gap_ns": 128895,
+      "input_quantizer_invocations": 1,
+      "kernel_count": 6,
+      "kernel_service_ns": 36800,
+      "nvtx_wall_ns_not_primary": 217139,
+      "prep_kernel_service_ns": 4864,
+      "range_index": 4
+    },
+    {
+      "arm": "D0_READY_PAIR",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 31744,
+      "gpu_first_to_last_span_ns": 70304,
+      "gpu_inter_kernel_gap_ns": 38560,
+      "input_quantizer_invocations": 0,
+      "kernel_count": 2,
+      "kernel_service_ns": 31744,
+      "nvtx_wall_ns_not_primary": 152726,
+      "prep_kernel_service_ns": 0,
+      "range_index": 5
+    },
+    {
+      "arm": "B0_DUPLICATE",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 32224,
+      "gpu_first_to_last_span_ns": 159359,
+      "gpu_inter_kernel_gap_ns": 117439,
+      "input_quantizer_invocations": 2,
+      "kernel_count": 10,
+      "kernel_service_ns": 41920,
+      "nvtx_wall_ns_not_primary": 235688,
+      "prep_kernel_service_ns": 9696,
+      "range_index": 6
+    },
+    {
+      "arm": "S1_SHARED",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 32192,
+      "gpu_first_to_last_span_ns": 164542,
+      "gpu_inter_kernel_gap_ns": 127486,
+      "input_quantizer_invocations": 1,
+      "kernel_count": 6,
+      "kernel_service_ns": 37056,
+      "nvtx_wall_ns_not_primary": 223456,
+      "prep_kernel_service_ns": 4864,
+      "range_index": 7
+    },
+    {
+      "arm": "D0_READY_PAIR",
+      "consumer_gemm_count": 2,
+      "gemm_service_ns": 31936,
+      "gpu_first_to_last_span_ns": 75007,
+      "gpu_inter_kernel_gap_ns": 43071,
+      "input_quantizer_invocations": 0,
+      "kernel_count": 2,
+      "kernel_service_ns": 31936,
+      "nvtx_wall_ns_not_primary": 154284,
+      "prep_kernel_service_ns": 0,
+      "range_index": 8
+    }
+  ],
+  "range_count": 9,
+  "total_kernel_records": 88
+}

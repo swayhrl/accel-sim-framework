@@ -1,0 +1,79 @@
+{
+  "stage": "AWMA_R19F2_FP8_SOFTWARE_COUNTERFACTUAL_109_V1",
+  "node": "109 / NVIDIA GeForce RTX 4080 / SM89",
+  "execution_branch": "hrl/awma-r19f2-fp8-software-counterfactual-109-v1",
+  "starting_head": "d83259e7c9085de686216b7de0166776f6254922",
+  "scientific_parent": "7375abd8e86c1523c1873913e8fffccf0b4e3a96",
+  "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+  "gpu_launcher_pattern": "flock -x -w 3600 <gpu_lock> env R19F2_GPU_LOCK_HELD=1 TMPDIR=<r19f2_tmp> <command>",
+  "reused_r19_environment": "/data/c16/awma/r19_fp8_readiness_20261001/env",
+  "frozen_mlp_payload_sha256": "ad2d6c73262ff71cb877a284d7c4056defac657358303f0e38c9eecbbb104f7d",
+  "runs": [
+    {
+      "name": "freeze_payload",
+      "GPU": false,
+      "status": "PASS",
+      "detail": "Accepted parent X and natural gate/up/down weights from hash-verified Qwen model; no model re-run."
+    },
+    {
+      "name": "stage_a_identity",
+      "GPU_lock": true,
+      "status": "PASS",
+      "detail": "Normal gate/up input FP8 bits/scales and public shared representation exact; all three arms' gate/up/MLP outputs bitwise identical."
+    },
+    {
+      "name": "NSYS_R19F2_STAGE_A_CONSUMERS",
+      "GPU_lock": true,
+      "NSYS_jobs": 1,
+      "status": "SAME_NATIVE_SM89_E4M3_CONSUMERS_PROVED",
+      "NVTX_ranges": 9,
+      "CUPTI_correlated_kernel_launches": 54,
+      "detail": "B0/S1/D0 each have two identical GEMMs and 2/1/0 current-scaling input preparations."
+    },
+    {
+      "name": "stage_a_timing",
+      "GPU_lock": true,
+      "profiled": false,
+      "status": "MATERIAL_MLP_RESIDUAL_TRIGGERED_STAGE_B",
+      "regions": ["P", "M"],
+      "arms": ["B0_DUPLICATE", "S1_SHARED", "D0_READY_PAIR"],
+      "groups": 3,
+      "warmups_per_arm_per_group_per_region": 2,
+      "formal_samples_per_arm_per_group_per_region": 5
+    },
+    {
+      "name": "source_capability_audit",
+      "GPU": false,
+      "status": "NO_DIRECT_STANDALONE_EXACT_ONE_LAUNCH_PATH",
+      "pinned_TE_source": "5e52befd5262c06289106338c308079d6adb391f",
+      "current_main_read_only_source": "a16bce3a647e4277b78c6426e70b9c6d4a1135dd"
+    },
+    {
+      "name": "stage_b_exact_fused_canary",
+      "GPU_lock": true,
+      "status": "EXACT_ONE_LAUNCH_FUSED_REP_QUALIFIED",
+      "build_attempts": 1,
+      "fused_extension_sha256": "3304de8b95d2ee31c08248746f2eb56364db210f6d2d2e2f83c465891f432da2",
+      "detail": "FP8 input bytes/inverse scale, gate/up/MLP outputs and cached weight identity exact."
+    },
+    {
+      "name": "stage_b_timing",
+      "GPU_lock": true,
+      "profiled": false,
+      "status": "FUSED_SOFTWARE_SUFFICIENT",
+      "regions": ["P", "M"],
+      "arms": ["S1_SHARED", "S2_FUSED_SHARED", "D0_READY_PAIR"],
+      "groups": 3,
+      "warmups_per_arm_per_group_per_region": 2,
+      "formal_samples_per_arm_per_group_per_region": 5
+    }
+  ],
+  "new_NSYS_jobs": 1,
+  "NCU_targets": 0,
+  "NVBit_runs": 0,
+  "SASS_inspections": 0,
+  "Accel_Sim_runs": 0,
+  "node174_compute_runs": 0,
+  "additional_models_shapes_recipes": 0,
+  "GPU_lock_held_after_goal": false
+}
