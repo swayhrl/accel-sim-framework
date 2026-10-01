@@ -10,7 +10,7 @@ from dataclasses import dataclass
 import csv
 from hashlib import sha256
 from math import isfinite
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 from statistics import median, pstdev
 from typing import Iterable
@@ -221,12 +221,15 @@ def audit_raw_index(index_path: str, durable_root: str) -> list[dict]:
         name = row["artifact"]
         path = row["node164_path"]
         digest = row["sha256"]
-        if not name or "/" in name or "\\" in name or name in names or path in paths:
+        relative = PurePosixPath(name)
+        if (not name or relative.is_absolute() or relative.as_posix() != name or "\\" in name or
+                any(part in {"", ".", ".."} for part in relative.parts) or
+                name in names or path in paths):
             raise ValueError("duplicate/unsafe RAW_INDEX identity")
         if not re.fullmatch(r"[0-9a-fA-F]{64}", digest):
             raise ValueError("invalid raw SHA256")
-        if Path(path).name != name:
-            raise ValueError("artifact/path basename mismatch")
+        if Path(path).resolve(strict=True).relative_to(Path(durable_root).resolve(strict=True)).as_posix() != name:
+            raise ValueError("artifact/durable relative path mismatch")
         try:
             size = int(row["bytes"])
         except ValueError as exc:

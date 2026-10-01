@@ -67,17 +67,39 @@ def load_producer_raw_authority(producer_pack: str | Path, contract: dict) -> di
     if "<" in durable_root or not durable_root.startswith("/root/share/mnt164/huangrulin/c16_ai_workload/measurement_campaign/stagea_dense_first_tier0_v1/"):
         raise ValueError("invalid durable raw root")
     index_path = pack / "RAW_INDEX.tsv"
+    payload_manifest = pack / "RAW_PAYLOAD_SHA256SUMS"
+    review_manifest = pack / "REVIEW_PAYLOAD_SHA256SUMS"
+    payload_manifest_sha = digest_file(payload_manifest)
+    review_manifest_sha = digest_file(review_manifest)
+    if payload_manifest_sha != decision.get("durable_raw_manifest_sha256"):
+        raise ValueError("producer raw-payload manifest SHA mismatch")
+    if review_manifest_sha != decision.get("review_pack_sha256"):
+        raise ValueError("producer review-payload manifest SHA mismatch")
     raw_audit = audit_raw_index(str(index_path), durable_root)
     if any(row["status"] != "PASS" for row in raw_audit):
         raise ValueError("durable raw size/SHA failure")
     artifact_paths = {row["artifact"]: row["path"] for row in raw_audit}
     if len(artifact_paths) != len(raw_audit):
         raise ValueError("duplicate raw artifact")
+    manifest_entries = {}
+    for line in payload_manifest.read_text(encoding="utf-8").splitlines():
+        parts = line.split("  ", 1)
+        if len(parts) != 2 or parts[1] in manifest_entries:
+            raise ValueError("invalid/duplicate raw payload manifest entry")
+        manifest_entries[parts[1]] = parts[0]
+    if set(manifest_entries) != set(artifact_paths) | {"RAW_INDEX.tsv"}:
+        raise ValueError("raw payload manifest/index file matrix mismatch")
+    if manifest_entries["RAW_INDEX.tsv"] != digest_file(index_path):
+        raise ValueError("raw index not bound by payload manifest")
+    if any(manifest_entries[name] != row["actual_sha256"] for name, row in ((x["artifact"], x) for x in raw_audit)):
+        raise ValueError("raw payload manifest byte mismatch")
     return {
         "decision": decision,
         "run_id": run_id,
         "durable_root": durable_root,
         "raw_index_sha256": digest_file(index_path),
+        "raw_payload_manifest_sha256": payload_manifest_sha,
+        "review_payload_manifest_sha256": review_manifest_sha,
         "raw_audit": raw_audit,
         "artifact_paths": artifact_paths,
     }

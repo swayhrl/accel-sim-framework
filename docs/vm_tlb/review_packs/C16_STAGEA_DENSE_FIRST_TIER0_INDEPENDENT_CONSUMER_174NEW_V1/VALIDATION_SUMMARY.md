@@ -1,0 +1,3 @@
+# Validation
+
+Independent 164 raw audit: 89/89 files size/SHA PASS. Independent producer numeric crosscheck: 52261 metric cells MATCH, 0 mismatch. Native timing uses only the individual instrumentation-OFF CUDA-event rows. All generated files are deterministic from the frozen contract, producer commit and durable raw. All 29 independent synthetic/real-contract tests PASS. Run `python3 -m unittest discover -s util/vm_tlb/c16/stagea_tier0_independent_consumer -p test_*.py`, rerun `publish.py --producer-pack ...`, then `sha256sum -c SHA256SUMS` in this directory. No GPU/holdout/Tier1/NCU/NVBit/SASS/Accel-Sim/mechanism action was taken by this consumer.

@@ -109,6 +109,13 @@ class Tier0CoreTests(unittest.TestCase):
             index.write_text(header + entry + entry, encoding="utf-8")
             with self.assertRaises(ValueError):
                 audit_raw_index(str(index), temp)
+            nested = root / "MP01"
+            nested.mkdir()
+            child = nested / "x.json"
+            child.write_bytes(b"{}")
+            nested_entry = f"MP01/x.json\t/data/raw/MP01/x.json\t2\t{sha256(child.read_bytes()).hexdigest()}\t{child}\n"
+            index.write_text(header + entry + nested_entry, encoding="utf-8")
+            self.assertEqual(len(audit_raw_index(str(index), temp)), 2)
 
     def test_native_timing_only_instrumentation_off(self):
         base = dict(point_id="MP02", input_sha256="a" * 64, output_sha256="b" * 64,

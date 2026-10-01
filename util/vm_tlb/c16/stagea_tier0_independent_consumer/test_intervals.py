@@ -1,6 +1,6 @@
 import unittest
 
-from intervals import parse_observed_intervals
+from intervals import handoff_chronology_summary, parse_observed_intervals, role_family
 
 
 def sem(ordinal, module, start, end, parent="0"):
@@ -12,10 +12,16 @@ def sem(ordinal, module, start, end, parent="0"):
 def cuda(identity, ordinal, start, end):
     return {"point_id": "MP02", "observed_request_id": "R", "cuda_interval_id": identity,
             "parent_request_id": "R", "start_ns": str(start), "end_ns": str(end),
+            "kernel_name": "synthetic_kernel",
             "correlated_nvtx_ordinal_or_NA": str(ordinal), "source_capture_sha256": "a" * 64}
 
 
 class IntervalAdapterTests(unittest.TestCase):
+    def test_role_family_explicit(self):
+        self.assertEqual(role_family("model.layers.0.mlp.gate_up_proj"), "GATE_UP_PROJECTION")
+        self.assertEqual(role_family("model.layers.0.self_attn"), "ATTENTION")
+        self.assertEqual(role_family("other"), "OTHER:other")
+
     def test_union_overlap_and_sibling_gap(self):
         semantic = [sem(0, "parent", 0, 100, "NA"), sem(1, "producer", 0, 50), sem(2, "consumer", 50, 100)]
         events = [cuda("k1", 1, 0, 30), cuda("k2", 1, 20, 50), cuda("k3", 2, 70, 90)]
@@ -47,6 +53,21 @@ class IntervalAdapterTests(unittest.TestCase):
         result = parse_observed_intervals(semantic, events, "MP02", "R")
         self.assertEqual(result["sibling_boundaries"][0]["signed_gap_ns"], -10)
         self.assertEqual(result["sibling_boundaries"][0]["positive_gap_ns"], 0)
+
+    def test_handoff_union_no_double_count(self):
+        parsed = {"parent_cuda_span_ns": 100, "parent_cuda_union_ns": 80,
+                  "sibling_boundaries": [
+                      {"producer_module": "x.self_attn", "consumer_module": "x.mlp.gate_up_proj",
+                       "producer_ordinal": "1", "consumer_ordinal": "2", "status": "GAP",
+                       "gap_start_ns": 10, "gap_end_ns": 20},
+                      {"producer_module": "x.mlp.gate_up_proj", "consumer_module": "x.mlp.act_fn",
+                       "producer_ordinal": "2", "consumer_ordinal": "3", "status": "GAP",
+                       "gap_start_ns": 15, "gap_end_ns": 25},
+                  ]}
+        result = handoff_chronology_summary(parsed)
+        self.assertEqual(result["positive_gap_sum_ns"], 20)
+        self.assertEqual(result["positive_gap_union_ns"], 15)
+        self.assertEqual(result["status"], "HANDOFF_CHRONOLOGY_MATERIAL")
 
 
 if __name__ == "__main__":
