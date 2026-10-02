@@ -1,0 +1,49 @@
+{
+  "history": [
+    {
+      "arm": "MP03_B",
+      "cap_seconds": 60,
+      "command": [
+        "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+        "/home/huangrulin/workspace/worktrees/accel-sim-c16-dq2-native-recovery-109-v1/util/vm_tlb/c16/dq2_native_recovery/runner.py",
+        "--point",
+        "MP03",
+        "--mode",
+        "B",
+        "--model",
+        "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+        "--expected-cache-path",
+        "/home/huangrulin/.cache/vllm/torch_compile_cache/c97581f1bb/rank_0_0/backbone",
+        "--continuation-mp03b",
+        "--expected-aot-cache-path",
+        "/home/huangrulin/.cache/vllm/torch_compile_cache/torch_aot_compile/e3e9e809f85090188765b47bd34adcf7546a9bd28e1927888155ece5008170cc",
+        "--expected-aot-content-sha",
+        "49c6e49f1d66ae080e8c4a216b0398882d8a608eb801c884700ef9dc098d8620",
+        "--output",
+        "/data/c16/dq2_native_recovery_v1/continuation_raw/20261002T100021Z/MP03_B.json"
+      ],
+      "exit_code": 2,
+      "gpu_active_seconds_conservative_wall": 9.442614242900163
+    }
+  ],
+  "lock": {
+    "acquired": true,
+    "after": {
+      "compute_processes": [],
+      "driver_version": "580.178.04",
+      "memory_used_mib": 35,
+      "name": "NVIDIA GeForce RTX 4080",
+      "uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59"
+    },
+    "baseline": {
+      "compute_processes": [],
+      "driver_version": "580.178.04",
+      "memory_used_mib": 35,
+      "name": "NVIDIA GeForce RTX 4080",
+      "uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59"
+    },
+    "released": true,
+    "wait_seconds": 0.03144534002058208
+  },
+  "total_gpu_active_seconds_conservative_wall": 9.442614242900163
+}
