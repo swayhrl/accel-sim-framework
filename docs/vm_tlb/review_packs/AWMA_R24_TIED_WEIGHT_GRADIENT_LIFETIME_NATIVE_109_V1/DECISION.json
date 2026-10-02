@@ -1,0 +1,76 @@
+{
+  "decision": "R24_TILED_DELAYED_UPDATE_NET_RESPONSE_PRESENT",
+  "decision_rule": "capacity tradeoff requires stable regression in at least two groups; net response admits mixed-vs-B0 when S2 has clear memory reduction and stable benefit in at least two groups without two-group regression",
+  "formal_target_timing_sha256": "778b0097bf798e3d9e8bcabb22d619461c8cf649812881f6bd5dca048857de31",
+  "gpu_rerun_for_finalization": false,
+  "median_target_peak_allocated_bytes": {
+    "B0_STRONG": 4535017472,
+    "S1_LATE_FULL": 4558633984,
+    "S2_LATE_TILED": 3724405760
+  },
+  "memory_accounting_sha256": "81854c524a50bcadcd41b5ea97daf41367805f4465faf5d71af18165b3e9e9fb",
+  "s2_memory_reduction": true,
+  "s2_no_full_gradient_all_formal": true,
+  "s2_stable_benefit_groups_vs_b0": 2,
+  "s2_stable_benefit_groups_vs_s1": 3,
+  "s2_stable_regression_groups_vs_b0": 1,
+  "s2_stable_regression_groups_vs_s1": 0,
+  "s2_vs_b0_groups": [
+    {
+      "baseline_median_ms": 27.368095398,
+      "baseline_minus_candidate_ms": -0.16415977499999812,
+      "candidate_median_ms": 27.532255173,
+      "group": 0,
+      "stable_benefit": false,
+      "stable_regression": true,
+      "three_x_larger_MAD_ms": 0.023517608999998885
+    },
+    {
+      "baseline_median_ms": 25.875392914,
+      "baseline_minus_candidate_ms": 0.2500495909999998,
+      "candidate_median_ms": 25.625343323,
+      "group": 1,
+      "stable_benefit": true,
+      "stable_regression": false,
+      "three_x_larger_MAD_ms": 0.07343673899999814
+    },
+    {
+      "baseline_median_ms": 25.867071152,
+      "baseline_minus_candidate_ms": 0.2640304570000005,
+      "candidate_median_ms": 25.603040695,
+      "group": 2,
+      "stable_benefit": true,
+      "stable_regression": false,
+      "three_x_larger_MAD_ms": 0.057792663000000744
+    }
+  ],
+  "s2_vs_s1_groups": [
+    {
+      "baseline_median_ms": 28.728927612,
+      "baseline_minus_candidate_ms": 1.1966724390000003,
+      "candidate_median_ms": 27.532255173,
+      "group": 0,
+      "stable_benefit": true,
+      "stable_regression": false,
+      "three_x_larger_MAD_ms": 0.006523133999998265
+    },
+    {
+      "baseline_median_ms": 27.083456039,
+      "baseline_minus_candidate_ms": 1.4581127160000023,
+      "candidate_median_ms": 25.625343323,
+      "group": 1,
+      "stable_benefit": true,
+      "stable_regression": false,
+      "three_x_larger_MAD_ms": 0.07343673899999814
+    },
+    {
+      "baseline_median_ms": 27.073535919,
+      "baseline_minus_candidate_ms": 1.4704952240000004,
+      "candidate_median_ms": 25.603040695,
+      "group": 2,
+      "stable_benefit": true,
+      "stable_regression": false,
+      "three_x_larger_MAD_ms": 0.057792663000000744
+    }
+  ]
+}
