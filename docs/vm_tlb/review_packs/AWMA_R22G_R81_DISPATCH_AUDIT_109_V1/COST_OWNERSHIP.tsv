@@ -1,0 +1,22 @@
+cost_item	A0_ACCEPTED_HEAD_REGION	A3_ACCEPTED_HEAD_REGION	RULE_U01_OR_LIVE_MIXED	ownership_evidence
+XGrammar matcher fill	EXCLUDED	EXCLUDED	SHARED_PRE_HEAD	full_generation.py submits fill_masks before backbone and waits before head_start
+upstream mask unpack and first legal-ID materialization	EXCLUDED; exists before head	EXCLUDED; exists before head	AVAILABLE_BUT_DURATION_NOT_SEPARATELY_REPORTED	reference.py ends grammar_fill_ms timer before unpack_mask and flatnonzero
+duplicate full-mask unpack and legal-ID materialization in HeadArms._base	INCLUDED	INCLUDED	DO_NOT_DOUBLE_CHARGE	head_replay timer begins before HeadArms.select; heads.py _base runs for every arm
+legal counts and singleton classification	INCLUDED via _base	INCLUDED via _base	UPSTREAM_VALUES_EXIST; reuse not measured	heads.py derives lengths and bypasses singleton rows before arm branch
+union size and union fraction	NOT_COMPUTED	NOT_COMPUTED	UNKNOWN_NONFREE	live full_generation never computes union before head; reference ledger computes it after head
+RULE_U01 branch decision	NOT_PRESENT	NOT_PRESENT	UNKNOWN	no accepted mixed-dispatch execution exists
+identical-mask grouping	N/A	INCLUDED	A3_ONLY_INCLUDED	heads.py groups mask bytes after entering A3 and records metadata_cpu_ms
+CPU bitmask H2D	INCLUDED	N/A	ARM_OWNED	A0 copies work-row bitmasks to GPU inside timed select
+legal-ID H2D	N/A	INCLUDED	ARM_OWNED	A3 blocking copy into preallocated index buffer is inside timed select
+row/group metadata H2D	N/A	INCLUDED	ARM_OWNED	A3 constructs gpu_rows inside timed select
+weight access or gather	INCLUDED_DENSE_WEIGHT_READ	INCLUDED_DIRECT_INDEXED_WEIGHT_LOAD	ARM_OWNED	A3 has no separate gathered-weight buffer; its kernel indexes original W
+LM-head mathematical compute	INCLUDED	INCLUDED	ARM_OWNED	F.linear or direct-index Triton kernels execute inside select
+candidate reduction and token selection	INCLUDED	INCLUDED	ARM_OWNED	argmax/reduction and winner extraction execute before select returns
+token-ID remapping	INCLUDED	INCLUDED	ARM_OWNED	A0 maps work rows; A3 stores global token IDs directly
+device-to-host winner transfer and implicit sync	INCLUDED	INCLUDED	ARM_OWNED	.tolist/int/float winner extraction occurs inside timed select
+explicit final CUDA synchronization	INCLUDED	INCLUDED	ARM_OWNED	head_replay and full_generation synchronize before closing head timer
+kernel launch overhead	INCLUDED	INCLUDED	ARM_OWNED	wall-clock head timer surrounds select and synchronization
+A3 persistent scratch allocation	EXCLUDED_ONE_TIME_INIT	EXCLUDED_ONE_TIME_INIT	NO_PER_STEP_RECHARGE	HeadArms allocates buffers once before measured loops; both arms coexist in one object
+A3 per-step scratch/index population	N/A	INCLUDED	ARM_OWNED	blocking index-buffer fill and kernel outputs occur per selected step
+matcher accept_token and next-step state update	EXCLUDED	EXCLUDED	COMMON_POST_HEAD	full_generation performs matcher update after head timer
+arm-transition and cache effects in one mixed trajectory	NOT_MEASURED	NOT_MEASURED	UNKNOWN	accepted full-generation runs use one fixed arm for an entire trajectory
