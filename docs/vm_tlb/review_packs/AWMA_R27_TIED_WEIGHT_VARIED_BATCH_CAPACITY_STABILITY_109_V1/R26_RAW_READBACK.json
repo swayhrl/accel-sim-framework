@@ -1,0 +1,999 @@
+{
+  "archive_summary": {
+    "has_capacity_summary": true,
+    "has_capacity_trials": true,
+    "has_runner_source": true,
+    "members": 217
+  },
+  "authority_files": {
+    "archive": {
+      "bytes": 553204,
+      "path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/r26_compact_raw_publication.tgz",
+      "sha256": "c8319694dc33858bb0760f97f80f4a509e07e9ce7eadb6b10b28a7823f0696c3"
+    },
+    "common_checkpoint": {
+      "bytes": 2626691315,
+      "path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/COMMON_POST_BOOTSTRAP.pt",
+      "sha256": "09e293774ac9dcb535e1a3d47d72878ff68f3831476175060b1016bce8a28b55"
+    },
+    "manifest": {
+      "bytes": 24790,
+      "path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/R26_PUBLICATION_MANIFEST.tsv",
+      "sha256": "8e0e30a90856f152cf1221c6a660ce6ceeeca84c402ed59cd8a6956f1e371159"
+    }
+  },
+  "common_checkpoint": {
+    "all_tensors_cpu": true,
+    "cpu_rng_sha256": "3462c9592a5ad5c4a7f9803ecdb79ba11cdf617d497b9f41b87df47b281eba18",
+    "cuda_rng_sha256": "ec7d748becf40257adc0f3a8f69cf84db26b3d9bd2d3a846bdc7761fc4cb23e1",
+    "identity": {
+      "model_id": "meta-llama/Llama-3.2-1B",
+      "optimizer_sha256": "d001c3f5e0aeebabaa8e4808f89f695a645e9de554f776b4a230924a448a5f9b",
+      "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+      "tokens_sha256": "fc712eb0a158f0fe62231f7826feec3eaabfea51906ca6b1588a55ee81ae3624",
+      "weight_dtype": "torch.bfloat16",
+      "weight_shape": [
+        128256,
+        2048
+      ]
+    },
+    "logical_step": 1,
+    "m": {
+      "device": "cpu",
+      "dtype": "torch.float32",
+      "sha256": "445daf620b70a6b03eba66bda3b7e1ccaf1c29e7384c8aec1126d6c0b314932f",
+      "shape": [
+        128256,
+        2048
+      ]
+    },
+    "policy_metadata": "common_post_b1_b0_bootstrap",
+    "schema": "R26_TIED_WEIGHT_CHECKPOINT_V1",
+    "v": {
+      "device": "cpu",
+      "dtype": "torch.float32",
+      "sha256": "efaabc21904a155649d41ca4286bddaf211574a224bd7d34cb584a424a885d21",
+      "shape": [
+        128256,
+        2048
+      ]
+    },
+    "weight": {
+      "device": "cpu",
+      "dtype": "torch.bfloat16",
+      "sha256": "834af272c43aca72e7c22f522ec43b231c48c1e2673dfb1274d6a2fcba6e0302",
+      "shape": [
+        128256,
+        2048
+      ]
+    }
+  },
+  "discrepancies": [],
+  "endpoint_group_counts": {
+    "('c1', 70, 'PASS')": 3,
+    "('c1', 71, 'OOM')": 3,
+    "('s2', 71, 'PASS')": 3,
+    "('s2', 72, 'OOM')": 3
+  },
+  "errors": [],
+  "frozen_source": [
+    {
+      "expected": "40524ba0134913921eb62ffcd14cffa1a9726c370cceb1330838ba3104b9b341",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-awma-r27-varied-batch-capacity-109-v1/util/vm_tlb/awma/r26_tied_weight_production_capacity/component.py",
+      "qualified": true,
+      "sha256": "40524ba0134913921eb62ffcd14cffa1a9726c370cceb1330838ba3104b9b341"
+    },
+    {
+      "expected": "1935970ec268ad68549af11b7b74886e8b84ae95491879258e481ac5e6b78b17",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-awma-r27-varied-batch-capacity-109-v1/util/vm_tlb/awma/r26_tied_weight_production_capacity/run_r26_campaign.py",
+      "qualified": true,
+      "sha256": "1935970ec268ad68549af11b7b74886e8b84ae95491879258e481ac5e6b78b17"
+    },
+    {
+      "expected": "ef636603ded1e7df52cad391882e91f3860585c3523091726f1f5f8142f37d53",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-awma-r27-varied-batch-capacity-109-v1/util/vm_tlb/awma/r26_tied_weight_production_capacity/capacity_search.py",
+      "qualified": true,
+      "sha256": "ef636603ded1e7df52cad391882e91f3860585c3523091726f1f5f8142f37d53"
+    }
+  ],
+  "interpretation": "R26 five-step witness raw evidence verified; this does not assert allocator cause",
+  "parsed_endpoints": {
+    "c1_b70": [
+      {
+        "batch": 70,
+        "completed_steps_from_log": 5,
+        "default_policy": "c1",
+        "final_step": 6,
+        "five_complete_steps": true,
+        "growth_after_first": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "input_ids_sha256": "a8203bd9e7bd77aabc564da2af32c598b39a64a8ea6faa451a806a7469f652cb",
+        "input_shape": [
+          70,
+          127
+        ],
+        "labels_sha256": "303b113b93670abd3a99cbc2364c10c2d45a83412a833b7a483e0f563cd67053",
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/029_confirm_pass_endpoint_c1_B70_R0.log",
+        "losses_finite": true,
+        "model_id": "meta-llama/Llama-3.2-1B",
+        "outcome": "PASS",
+        "policy": "c1",
+        "progress": [
+          {
+            "batch": 70,
+            "k": 1,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 70,
+            "k": 2,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 3
+          },
+          {
+            "batch": 70,
+            "k": 3,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 4
+          },
+          {
+            "batch": 70,
+            "k": 4,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 5
+          },
+          {
+            "batch": 70,
+            "k": 5,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 6
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/029_confirm_pass_endpoint_c1_B70_R0.json",
+        "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+        "s2_opt_in": "s2",
+        "step_count": 5,
+        "step_counters": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "batch": 70,
+        "completed_steps_from_log": 5,
+        "default_policy": "c1",
+        "final_step": 6,
+        "five_complete_steps": true,
+        "growth_after_first": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "input_ids_sha256": "a8203bd9e7bd77aabc564da2af32c598b39a64a8ea6faa451a806a7469f652cb",
+        "input_shape": [
+          70,
+          127
+        ],
+        "labels_sha256": "303b113b93670abd3a99cbc2364c10c2d45a83412a833b7a483e0f563cd67053",
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/030_confirm_pass_endpoint_c1_B70_R1.log",
+        "losses_finite": true,
+        "model_id": "meta-llama/Llama-3.2-1B",
+        "outcome": "PASS",
+        "policy": "c1",
+        "progress": [
+          {
+            "batch": 70,
+            "k": 1,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 70,
+            "k": 2,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 3
+          },
+          {
+            "batch": 70,
+            "k": 3,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 4
+          },
+          {
+            "batch": 70,
+            "k": 4,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 5
+          },
+          {
+            "batch": 70,
+            "k": 5,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 6
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/030_confirm_pass_endpoint_c1_B70_R1.json",
+        "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+        "s2_opt_in": "s2",
+        "step_count": 5,
+        "step_counters": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "batch": 70,
+        "completed_steps_from_log": 5,
+        "default_policy": "c1",
+        "final_step": 6,
+        "five_complete_steps": true,
+        "growth_after_first": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "input_ids_sha256": "a8203bd9e7bd77aabc564da2af32c598b39a64a8ea6faa451a806a7469f652cb",
+        "input_shape": [
+          70,
+          127
+        ],
+        "labels_sha256": "303b113b93670abd3a99cbc2364c10c2d45a83412a833b7a483e0f563cd67053",
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/031_confirm_pass_endpoint_c1_B70_R2.log",
+        "losses_finite": true,
+        "model_id": "meta-llama/Llama-3.2-1B",
+        "outcome": "PASS",
+        "policy": "c1",
+        "progress": [
+          {
+            "batch": 70,
+            "k": 1,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 70,
+            "k": 2,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 3
+          },
+          {
+            "batch": 70,
+            "k": 3,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 4
+          },
+          {
+            "batch": 70,
+            "k": 4,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 5
+          },
+          {
+            "batch": 70,
+            "k": 5,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 6
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/031_confirm_pass_endpoint_c1_B70_R2.json",
+        "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+        "s2_opt_in": "s2",
+        "step_count": 5,
+        "step_counters": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    ],
+    "c1_b71": [
+      {
+        "allocated_bytes": 15632749568,
+        "batch": 71,
+        "completed_steps_from_log": 2,
+        "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 142.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 78.88 MiB is free. Including non-PyTorch memory, this process has 15.45 GiB memory in use. Of the allocated memory 14.87 GiB is allocated by PyTorch, and 297.67 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+        "free_bytes": 82706432,
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/035_confirm_oom_endpoint_c1_B71_R0.log",
+        "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD",
+        "outcome": "OOM",
+        "policy": "c1",
+        "progress": [
+          {
+            "batch": 71,
+            "k": 1,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 71,
+            "k": 2,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 3
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/035_confirm_oom_endpoint_c1_B71_R0.json",
+        "request": "142.00 MiB",
+        "reserved_bytes": 16278093824,
+        "total_bytes": 16718168064,
+        "traceback_has_cuda_oom": true
+      },
+      {
+        "allocated_bytes": 15632749568,
+        "batch": 71,
+        "completed_steps_from_log": 2,
+        "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 142.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 78.88 MiB is free. Including non-PyTorch memory, this process has 15.45 GiB memory in use. Of the allocated memory 14.87 GiB is allocated by PyTorch, and 297.67 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+        "free_bytes": 82706432,
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/036_confirm_oom_endpoint_c1_B71_R1.log",
+        "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD",
+        "outcome": "OOM",
+        "policy": "c1",
+        "progress": [
+          {
+            "batch": 71,
+            "k": 1,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 71,
+            "k": 2,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 3
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/036_confirm_oom_endpoint_c1_B71_R1.json",
+        "request": "142.00 MiB",
+        "reserved_bytes": 16278093824,
+        "total_bytes": 16718168064,
+        "traceback_has_cuda_oom": true
+      },
+      {
+        "allocated_bytes": 15632749568,
+        "batch": 71,
+        "completed_steps_from_log": 2,
+        "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 142.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 78.88 MiB is free. Including non-PyTorch memory, this process has 15.45 GiB memory in use. Of the allocated memory 14.87 GiB is allocated by PyTorch, and 297.67 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+        "free_bytes": 82706432,
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/037_confirm_oom_endpoint_c1_B71_R2.log",
+        "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD",
+        "outcome": "OOM",
+        "policy": "c1",
+        "progress": [
+          {
+            "batch": 71,
+            "k": 1,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 71,
+            "k": 2,
+            "policy": "c1",
+            "progress": "probe",
+            "step": 3
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/037_confirm_oom_endpoint_c1_B71_R2.json",
+        "request": "142.00 MiB",
+        "reserved_bytes": 16278093824,
+        "total_bytes": 16718168064,
+        "traceback_has_cuda_oom": true
+      }
+    ],
+    "s2_b71": [
+      {
+        "batch": 71,
+        "completed_steps_from_log": 5,
+        "default_policy": "c1",
+        "final_step": 6,
+        "five_complete_steps": true,
+        "growth_after_first": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "input_ids_sha256": "842e10c7ce160f7afb964dd29a8c3bd79356293007d2b701ee998268c924561f",
+        "input_shape": [
+          71,
+          127
+        ],
+        "labels_sha256": "7227ca41b8cf30629c046e647079dccdcda7b5486e1df80b654d5331bc8a317b",
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/032_confirm_pass_endpoint_s2_B71_R0.log",
+        "losses_finite": true,
+        "model_id": "meta-llama/Llama-3.2-1B",
+        "outcome": "PASS",
+        "policy": "s2",
+        "progress": [
+          {
+            "batch": 71,
+            "k": 1,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 71,
+            "k": 2,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 3
+          },
+          {
+            "batch": 71,
+            "k": 3,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 4
+          },
+          {
+            "batch": 71,
+            "k": 4,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 5
+          },
+          {
+            "batch": 71,
+            "k": 5,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 6
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/032_confirm_pass_endpoint_s2_B71_R0.json",
+        "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+        "s2_opt_in": "s2",
+        "step_count": 5,
+        "step_counters": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "batch": 71,
+        "completed_steps_from_log": 5,
+        "default_policy": "c1",
+        "final_step": 6,
+        "five_complete_steps": true,
+        "growth_after_first": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "input_ids_sha256": "842e10c7ce160f7afb964dd29a8c3bd79356293007d2b701ee998268c924561f",
+        "input_shape": [
+          71,
+          127
+        ],
+        "labels_sha256": "7227ca41b8cf30629c046e647079dccdcda7b5486e1df80b654d5331bc8a317b",
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/033_confirm_pass_endpoint_s2_B71_R1.log",
+        "losses_finite": true,
+        "model_id": "meta-llama/Llama-3.2-1B",
+        "outcome": "PASS",
+        "policy": "s2",
+        "progress": [
+          {
+            "batch": 71,
+            "k": 1,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 71,
+            "k": 2,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 3
+          },
+          {
+            "batch": 71,
+            "k": 3,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 4
+          },
+          {
+            "batch": 71,
+            "k": 4,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 5
+          },
+          {
+            "batch": 71,
+            "k": 5,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 6
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/033_confirm_pass_endpoint_s2_B71_R1.json",
+        "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+        "s2_opt_in": "s2",
+        "step_count": 5,
+        "step_counters": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "batch": 71,
+        "completed_steps_from_log": 5,
+        "default_policy": "c1",
+        "final_step": 6,
+        "five_complete_steps": true,
+        "growth_after_first": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "input_ids_sha256": "842e10c7ce160f7afb964dd29a8c3bd79356293007d2b701ee998268c924561f",
+        "input_shape": [
+          71,
+          127
+        ],
+        "labels_sha256": "7227ca41b8cf30629c046e647079dccdcda7b5486e1df80b654d5331bc8a317b",
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/034_confirm_pass_endpoint_s2_B71_R2.log",
+        "losses_finite": true,
+        "model_id": "meta-llama/Llama-3.2-1B",
+        "outcome": "PASS",
+        "policy": "s2",
+        "progress": [
+          {
+            "batch": 71,
+            "k": 1,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 2
+          },
+          {
+            "batch": 71,
+            "k": 2,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 3
+          },
+          {
+            "batch": 71,
+            "k": 3,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 4
+          },
+          {
+            "batch": 71,
+            "k": 4,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 5
+          },
+          {
+            "batch": 71,
+            "k": 5,
+            "policy": "s2",
+            "progress": "probe",
+            "step": 6
+          }
+        ],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/034_confirm_pass_endpoint_s2_B71_R2.json",
+        "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+        "s2_opt_in": "s2",
+        "step_count": 5,
+        "step_counters": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    ],
+    "s2_b72": [
+      {
+        "allocated_bytes": 15853787648,
+        "batch": 72,
+        "completed_steps_from_log": 0,
+        "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 72.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 66.88 MiB is free. Including non-PyTorch memory, this process has 15.46 GiB memory in use. Of the allocated memory 15.05 GiB is allocated by PyTorch, and 137.77 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+        "free_bytes": 70123520,
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/038_confirm_oom_endpoint_s2_B72_R0.log",
+        "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD",
+        "outcome": "OOM",
+        "policy": "s2",
+        "progress": [],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/038_confirm_oom_endpoint_s2_B72_R0.json",
+        "request": "72.00 MiB",
+        "reserved_bytes": 16299065344,
+        "total_bytes": 16718168064,
+        "traceback_has_cuda_oom": true
+      },
+      {
+        "allocated_bytes": 15853787648,
+        "batch": 72,
+        "completed_steps_from_log": 0,
+        "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 72.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 66.88 MiB is free. Including non-PyTorch memory, this process has 15.46 GiB memory in use. Of the allocated memory 15.05 GiB is allocated by PyTorch, and 137.77 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+        "free_bytes": 70123520,
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/039_confirm_oom_endpoint_s2_B72_R1.log",
+        "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD",
+        "outcome": "OOM",
+        "policy": "s2",
+        "progress": [],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/039_confirm_oom_endpoint_s2_B72_R1.json",
+        "request": "72.00 MiB",
+        "reserved_bytes": 16299065344,
+        "total_bytes": 16718168064,
+        "traceback_has_cuda_oom": true
+      },
+      {
+        "allocated_bytes": 15853787648,
+        "batch": 72,
+        "completed_steps_from_log": 0,
+        "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 72.00 MiB. GPU 0 has a total capacity of 15.57 GiB of which 66.88 MiB is free. Including non-PyTorch memory, this process has 15.46 GiB memory in use. Of the allocated memory 15.05 GiB is allocated by PyTorch, and 137.77 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+        "free_bytes": 70123520,
+        "log": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/040_confirm_oom_endpoint_s2_B72_R2.log",
+        "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD",
+        "outcome": "OOM",
+        "policy": "s2",
+        "progress": [],
+        "receipt": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/040_confirm_oom_endpoint_s2_B72_R2.json",
+        "request": "72.00 MiB",
+        "reserved_bytes": 16299065344,
+        "total_bytes": 16718168064,
+        "traceback_has_cuda_oom": true
+      }
+    ]
+  },
+  "qualified": true,
+  "r26_input_bindings": {
+    "70": {
+      "batch": "70",
+      "content": "identical frozen sequence copies",
+      "input_bytes": "71120",
+      "input_ids_sha256": "a8203bd9e7bd77aabc564da2af32c598b39a64a8ea6faa451a806a7469f652cb",
+      "input_shape": "[70, 127]",
+      "labels_bytes": "71120",
+      "labels_sha256": "303b113b93670abd3a99cbc2364c10c2d45a83412a833b7a483e0f563cd67053",
+      "labels_shape": "[70, 127]"
+    },
+    "71": {
+      "batch": "71",
+      "content": "identical frozen sequence copies",
+      "input_bytes": "72136",
+      "input_ids_sha256": "842e10c7ce160f7afb964dd29a8c3bd79356293007d2b701ee998268c924561f",
+      "input_shape": "[71, 127]",
+      "labels_bytes": "72136",
+      "labels_sha256": "7227ca41b8cf30629c046e647079dccdcda7b5486e1df80b654d5331bc8a317b",
+      "labels_shape": "[71, 127]"
+    },
+    "72": {
+      "batch": "72",
+      "content": "identical frozen sequence copies",
+      "input_bytes": "73152",
+      "input_ids_sha256": "21c99ffae63ef16e5e7fead99677ff6a6a805acaa9ab4e217a8f4e260d029262",
+      "input_shape": "[72, 127]",
+      "labels_bytes": "73152",
+      "labels_sha256": "ee938e03aa9f5f98ab9e6a1e1afb944cacecb01021c2f6a5f686805be52889e9",
+      "labels_shape": "[72, 127]"
+    }
+  },
+  "remote_readback": {
+    "first_three": [
+      "c8319694dc33858bb0760f97f80f4a509e07e9ce7eadb6b10b28a7823f0696c3  r26_compact_raw_publication.tgz",
+      "8e0e30a90856f152cf1221c6a660ce6ceeeca84c402ed59cd8a6956f1e371159  R26_PUBLICATION_MANIFEST.tsv",
+      "09e293774ac9dcb535e1a3d47d72878ff68f3831476175060b1016bce8a28b55  checkpoints/COMMON_POST_BOOTSTRAP.pt"
+    ],
+    "lines": 210,
+    "manifest_ok_entries": 207
+  },
+  "schema": "R27_GATE_A_R26_RAW_READBACK_V1",
+  "selected_file_evidence": [
+    {
+      "asset": "raw/capacity_trials/029_confirm_pass_endpoint_c1_B70_R0.json",
+      "git_index_bytes": 9303,
+      "git_index_sha256": "474904ee945b78a700f1dd06c0226c6549350569ea3f5772e53a3a873b566dc9",
+      "local_bytes": 9303,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/029_confirm_pass_endpoint_c1_B70_R0.json",
+      "local_sha256": "474904ee945b78a700f1dd06c0226c6549350569ea3f5772e53a3a873b566dc9",
+      "manifest_bytes": 9303,
+      "manifest_sha256": "474904ee945b78a700f1dd06c0226c6549350569ea3f5772e53a3a873b566dc9",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/030_confirm_pass_endpoint_c1_B70_R1.json",
+      "git_index_bytes": 9302,
+      "git_index_sha256": "eb302d4a440182a396da7d7652c0cf6ac4b3a7e1284245620c7bf4d0bbe97fff",
+      "local_bytes": 9302,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/030_confirm_pass_endpoint_c1_B70_R1.json",
+      "local_sha256": "eb302d4a440182a396da7d7652c0cf6ac4b3a7e1284245620c7bf4d0bbe97fff",
+      "manifest_bytes": 9302,
+      "manifest_sha256": "eb302d4a440182a396da7d7652c0cf6ac4b3a7e1284245620c7bf4d0bbe97fff",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/031_confirm_pass_endpoint_c1_B70_R2.json",
+      "git_index_bytes": 9299,
+      "git_index_sha256": "34a35d67cd4067c58584fbf3f2425cf3700cfa218eabdb5b4f52581824895abe",
+      "local_bytes": 9299,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/031_confirm_pass_endpoint_c1_B70_R2.json",
+      "local_sha256": "34a35d67cd4067c58584fbf3f2425cf3700cfa218eabdb5b4f52581824895abe",
+      "manifest_bytes": 9299,
+      "manifest_sha256": "34a35d67cd4067c58584fbf3f2425cf3700cfa218eabdb5b4f52581824895abe",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/032_confirm_pass_endpoint_s2_B71_R0.json",
+      "git_index_bytes": 9325,
+      "git_index_sha256": "0537a23a3bd434f90f2c973fc1649bf914f20502198aaff1b2d2f598a49c633a",
+      "local_bytes": 9325,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/032_confirm_pass_endpoint_s2_B71_R0.json",
+      "local_sha256": "0537a23a3bd434f90f2c973fc1649bf914f20502198aaff1b2d2f598a49c633a",
+      "manifest_bytes": 9325,
+      "manifest_sha256": "0537a23a3bd434f90f2c973fc1649bf914f20502198aaff1b2d2f598a49c633a",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/033_confirm_pass_endpoint_s2_B71_R1.json",
+      "git_index_bytes": 9326,
+      "git_index_sha256": "b8804aa823e66773e11dbce9bac894ec90c99e280fb781c06db1017285ba60de",
+      "local_bytes": 9326,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/033_confirm_pass_endpoint_s2_B71_R1.json",
+      "local_sha256": "b8804aa823e66773e11dbce9bac894ec90c99e280fb781c06db1017285ba60de",
+      "manifest_bytes": 9326,
+      "manifest_sha256": "b8804aa823e66773e11dbce9bac894ec90c99e280fb781c06db1017285ba60de",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/034_confirm_pass_endpoint_s2_B71_R2.json",
+      "git_index_bytes": 9324,
+      "git_index_sha256": "e996055af0f174fd946133c44c1a962537a7c1c025e1c085d110be1049809fbc",
+      "local_bytes": 9324,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/034_confirm_pass_endpoint_s2_B71_R2.json",
+      "local_sha256": "e996055af0f174fd946133c44c1a962537a7c1c025e1c085d110be1049809fbc",
+      "manifest_bytes": 9324,
+      "manifest_sha256": "e996055af0f174fd946133c44c1a962537a7c1c025e1c085d110be1049809fbc",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/035_confirm_oom_endpoint_c1_B71_R0.json",
+      "git_index_bytes": 2791,
+      "git_index_sha256": "0aa96e90c43112adf50161c2ad062bba3aaf29839d0f35b5c5f02c74a7ebebc1",
+      "local_bytes": 2791,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/035_confirm_oom_endpoint_c1_B71_R0.json",
+      "local_sha256": "0aa96e90c43112adf50161c2ad062bba3aaf29839d0f35b5c5f02c74a7ebebc1",
+      "manifest_bytes": 2791,
+      "manifest_sha256": "0aa96e90c43112adf50161c2ad062bba3aaf29839d0f35b5c5f02c74a7ebebc1",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/036_confirm_oom_endpoint_c1_B71_R1.json",
+      "git_index_bytes": 2792,
+      "git_index_sha256": "05a79a11dfa0919c966b5eacb87d704b8589a22649994b5c919a5f0544960559",
+      "local_bytes": 2792,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/036_confirm_oom_endpoint_c1_B71_R1.json",
+      "local_sha256": "05a79a11dfa0919c966b5eacb87d704b8589a22649994b5c919a5f0544960559",
+      "manifest_bytes": 2792,
+      "manifest_sha256": "05a79a11dfa0919c966b5eacb87d704b8589a22649994b5c919a5f0544960559",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/037_confirm_oom_endpoint_c1_B71_R2.json",
+      "git_index_bytes": 2792,
+      "git_index_sha256": "06c69c4f60c63f7b86589e9bca6e538ee7c2787a8673823520bfcae4c8635cea",
+      "local_bytes": 2792,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/037_confirm_oom_endpoint_c1_B71_R2.json",
+      "local_sha256": "06c69c4f60c63f7b86589e9bca6e538ee7c2787a8673823520bfcae4c8635cea",
+      "manifest_bytes": 2792,
+      "manifest_sha256": "06c69c4f60c63f7b86589e9bca6e538ee7c2787a8673823520bfcae4c8635cea",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/038_confirm_oom_endpoint_s2_B72_R0.json",
+      "git_index_bytes": 2790,
+      "git_index_sha256": "cf399a6664fe81aa345d88320e29a988790dda7da5df0f2e9e84e0a3e8cfdfbe",
+      "local_bytes": 2790,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/038_confirm_oom_endpoint_s2_B72_R0.json",
+      "local_sha256": "cf399a6664fe81aa345d88320e29a988790dda7da5df0f2e9e84e0a3e8cfdfbe",
+      "manifest_bytes": 2790,
+      "manifest_sha256": "cf399a6664fe81aa345d88320e29a988790dda7da5df0f2e9e84e0a3e8cfdfbe",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/039_confirm_oom_endpoint_s2_B72_R1.json",
+      "git_index_bytes": 2788,
+      "git_index_sha256": "46259de168b8a16165a63a0fb2f7ef914008ca0050eff27154f2b3fa2794a48e",
+      "local_bytes": 2788,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/039_confirm_oom_endpoint_s2_B72_R1.json",
+      "local_sha256": "46259de168b8a16165a63a0fb2f7ef914008ca0050eff27154f2b3fa2794a48e",
+      "manifest_bytes": 2788,
+      "manifest_sha256": "46259de168b8a16165a63a0fb2f7ef914008ca0050eff27154f2b3fa2794a48e",
+      "qualified": true
+    },
+    {
+      "asset": "raw/capacity_trials/040_confirm_oom_endpoint_s2_B72_R2.json",
+      "git_index_bytes": 2789,
+      "git_index_sha256": "cf9c362a4463aa94a4db6d94319e6f409ed4352b105f3f85c2fc78eb8cc1d151",
+      "local_bytes": 2789,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/040_confirm_oom_endpoint_s2_B72_R2.json",
+      "local_sha256": "cf9c362a4463aa94a4db6d94319e6f409ed4352b105f3f85c2fc78eb8cc1d151",
+      "manifest_bytes": 2789,
+      "manifest_sha256": "cf9c362a4463aa94a4db6d94319e6f409ed4352b105f3f85c2fc78eb8cc1d151",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/029_confirm_pass_endpoint_c1_B70_R0.log",
+      "git_index_bytes": 399,
+      "git_index_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "local_bytes": 399,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/029_confirm_pass_endpoint_c1_B70_R0.log",
+      "local_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "manifest_bytes": 399,
+      "manifest_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/030_confirm_pass_endpoint_c1_B70_R1.log",
+      "git_index_bytes": 399,
+      "git_index_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "local_bytes": 399,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/030_confirm_pass_endpoint_c1_B70_R1.log",
+      "local_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "manifest_bytes": 399,
+      "manifest_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/031_confirm_pass_endpoint_c1_B70_R2.log",
+      "git_index_bytes": 399,
+      "git_index_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "local_bytes": 399,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/031_confirm_pass_endpoint_c1_B70_R2.log",
+      "local_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "manifest_bytes": 399,
+      "manifest_sha256": "89592e2e6b62eb6fcc451a93f6ea737d953b8f6608e9fef28dbe76c2aedfdfd0",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/032_confirm_pass_endpoint_s2_B71_R0.log",
+      "git_index_bytes": 399,
+      "git_index_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "local_bytes": 399,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/032_confirm_pass_endpoint_s2_B71_R0.log",
+      "local_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "manifest_bytes": 399,
+      "manifest_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/033_confirm_pass_endpoint_s2_B71_R1.log",
+      "git_index_bytes": 399,
+      "git_index_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "local_bytes": 399,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/033_confirm_pass_endpoint_s2_B71_R1.log",
+      "local_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "manifest_bytes": 399,
+      "manifest_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/034_confirm_pass_endpoint_s2_B71_R2.log",
+      "git_index_bytes": 399,
+      "git_index_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "local_bytes": 399,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/034_confirm_pass_endpoint_s2_B71_R2.log",
+      "local_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "manifest_bytes": 399,
+      "manifest_sha256": "94b82bbf7b69ac3b52984f6788d6bf367d583eb086ebeb53940eb799108468ed",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/035_confirm_oom_endpoint_c1_B71_R0.log",
+      "git_index_bytes": 233,
+      "git_index_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "local_bytes": 233,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/035_confirm_oom_endpoint_c1_B71_R0.log",
+      "local_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "manifest_bytes": 233,
+      "manifest_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/036_confirm_oom_endpoint_c1_B71_R1.log",
+      "git_index_bytes": 233,
+      "git_index_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "local_bytes": 233,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/036_confirm_oom_endpoint_c1_B71_R1.log",
+      "local_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "manifest_bytes": 233,
+      "manifest_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/037_confirm_oom_endpoint_c1_B71_R2.log",
+      "git_index_bytes": 233,
+      "git_index_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "local_bytes": 233,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/037_confirm_oom_endpoint_c1_B71_R2.log",
+      "local_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "manifest_bytes": 233,
+      "manifest_sha256": "5c1f76ca17258f98ad5bb2dad46163f2576898f80f18c21a2759caab03fa6e14",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/038_confirm_oom_endpoint_s2_B72_R0.log",
+      "git_index_bytes": 93,
+      "git_index_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "local_bytes": 93,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/038_confirm_oom_endpoint_s2_B72_R0.log",
+      "local_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "manifest_bytes": 93,
+      "manifest_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/039_confirm_oom_endpoint_s2_B72_R1.log",
+      "git_index_bytes": 93,
+      "git_index_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "local_bytes": 93,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/039_confirm_oom_endpoint_s2_B72_R1.log",
+      "local_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "manifest_bytes": 93,
+      "manifest_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "qualified": true
+    },
+    {
+      "asset": "logs/capacity_trials/040_confirm_oom_endpoint_s2_B72_R2.log",
+      "git_index_bytes": 93,
+      "git_index_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "local_bytes": 93,
+      "local_path": "/data/c16/awma/r27_varied_batch_capacity_109_v1_20261003/parent_readback/capacity_trials/040_confirm_oom_endpoint_s2_B72_R2.log",
+      "local_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "manifest_bytes": 93,
+      "manifest_sha256": "934e91c2873dead66b737442d888ae6ee32c4bcbb54bc71b8388b6cf1e8a715f",
+      "qualified": true
+    }
+  ],
+  "status": "R27_PARENT_RAW_QUALIFIED"
+}

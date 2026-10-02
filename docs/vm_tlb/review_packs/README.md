@@ -3,6 +3,9 @@
 Each stage has a self-contained review pack. Start with the stage-specific
 `README.md`; raw logs are intentionally not committed.
 
+Latest AWMA pack: [`AWMA_R27_TIED_WEIGHT_VARIED_BATCH_CAPACITY_STABILITY_109_V1/README.md`](AWMA_R27_TIED_WEIGHT_VARIED_BATCH_CAPACITY_STABILITY_109_V1/README.md).
+Gate A passed; Gate B stopped before CUDA because the sole authorized input was unavailable.
+
 Latest AWMA pack: [`AWMA_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_BOUNDARY_109_V1/README.md`](AWMA_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_BOUNDARY_109_V1/README.md).
 Its raw, receipt, and CPU-checkpoint payloads are SHA-closed on node164.
 
