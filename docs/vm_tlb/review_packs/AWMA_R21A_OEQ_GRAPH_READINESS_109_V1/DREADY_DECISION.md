@@ -1,0 +1,11 @@
+# Free-preparation Dready full-model gate
+
+`R21A_RESULT_MIXED_NEEDS_REVIEW`
+
+The fixed real input is pinned `sitraj.xyz` frame55 (N=110), 64 periodic Si atoms and 1394 directed edges. The natural graph is receiver-nondecreasing but not canonical within receiver by sender. The only deterministic-ready path that passed force correctness performs NequIP's source-backed composite `(receiver,sender)` reorder once per graph, moves aligned cell shifts with those edges, and builds the sender transpose permutation once for both OAM-S interactions. The prepared graph is resident before Dready timing, so this first gate idealizes its cost as free.
+
+The unmodified packaged e3nn reference, official compiled OEQ atomic A0 (`deterministic=False`), and compiled deterministic Dready (`deterministic=True`) all used the same OAM-S weights, float32 model setting, TF32 OFF, source-pinned Torch/NequIP/OEQ environment and frozen graph edge/periodic multiset. A0 and Dready each passed five energy/force comparisons to the five-run e3nn reference under unchanged `atol=rtol=5e-5`. The A0 and Dready performance arms were both NequIP AOTInductor/ASE CUDA inference, compiled using the same frozen discovery-shaped data-path method; Dready has one additional permutation input required by its algorithm.
+
+The three full-model wall medians (A0→Dready) were 0.591520→0.455464 ms, 0.481776→0.459110 ms, and 0.475401→0.455085 ms. All groups favored Dready, but the median relative improvement was only **4.7047%**, below the frozen 5% gate; group 0 and group 2 also failed the required gap >3× larger-arm MAD. All 30 formal energy/force samples passed numerics. This is **not** a stable qualified MATERIAL response, nor is it a clean stable-negative estimate because of the group-0 variance. No repetition or alternative frame/model/compile mode was used to tame noise.
+
+Accordingly Donline preparation and sealed holdouts 18/36/73/91 were **not run**. No observed deployment gain or preparation payback can be claimed. This STOP says only that free graph readiness did not pass the preregistered whole-model admission gate on the one discovery frame; it neither measures online sorting/permutation cost nor proves deterministic kernels are universally insufficient.

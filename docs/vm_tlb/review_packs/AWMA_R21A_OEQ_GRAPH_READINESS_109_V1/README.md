@@ -1,0 +1,7 @@
+# AWMA R21A OpenEquivariance graph-readiness Native screen, node109
+
+Scientific endpoint: `R21A_RESULT_MIXED_NEEDS_REVIEW` at the first free-preparation Dready whole-model timing gate. See `FINAL_DECISION.md` and `DREADY_DECISION.md`. Donline and holdout are explicitly NOT_RUN; no online-preparation profitability or hardware claim follows.
+
+The exact NequIP/OEQ/tutorial commits, trained OAM-S package, N=110 frame selection, environment and natural graph are bound in `SOURCE_BINDINGS.json`, `MODEL_AUTHORITY.json`, `INPUT_AUTHORITY.json`, `FRAME_SELECTION.tsv`, `PLATFORM_RECEIPT.json` and `DISCOVERY_GRAPH_AUTHORITY.json`. Five-run reference/A0 and Dready numerical receipts are compact TSVs. `DETERMINISTIC_GRAPH_CONTRACT.md`, the opt-in patch and source diff explain why a single composite receiver-row sort, aligned periodic-shift reorder and shared sender permutation were necessary for correct forces. `DREADY_TIMING_CONTRACT.md`, `DREADY_TIMING.tsv` and `DREADY_DECISION.md` close the first paired performance gate.
+
+Large model package, exact real input, AOT artifacts, natural/prepared graph payloads, every energy/force output and timing sample, including first failed AOT and unsorted deterministic outputs, are durable on node164 and indexed by `RAW_DATA_INDEX.tsv`/SHA closure. All CUDA compile/run operations held `/data/c16/locks/c16_gpu_campaign.lock`. R20 remained CLOSED. No profiler, Accel-Sim, node174 compute, training, MD, second model/chemistry or hardware design was performed.

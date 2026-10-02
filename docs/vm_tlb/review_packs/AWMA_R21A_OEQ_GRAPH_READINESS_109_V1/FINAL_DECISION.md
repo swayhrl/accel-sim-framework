@@ -1,0 +1,9 @@
+# R21A final scientific STOP
+
+`R21A_RESULT_MIXED_NEEDS_REVIEW`
+
+The exact trained model was official `nequip.net:mir-group/NequIP-OAM-S:0.1` (SHA256 `63d4bafd872850a014fd21dedeea416b61173a17750dee0b2b8dd2b126f407aa`), evaluated on pinned real periodic Si `sitraj.xyz` frame55 (input SHA256 `c08d3771a06beb82b0ed4258f78eecc7ce623f73ca6df20be99bd5722163e770`). The natural 1394-edge graph was receiver-nondecreasing but not fully `(receiver,sender)` sorted. A source-backed single composite sort plus aligned periodic-shift reorder and sender transpose permutation were actually needed for deterministic OEQ force correctness; the original unsorted-within-row eager attempt's force mismatch was persisted. Both OAM-S interaction layers consumed the same prepared permutation; no per-layer sort or model-weight change occurred.
+
+The official atomic OEQ A0 strong AOTInductor/ASE baseline passed five-run float32 energy+force numerical qualification against the same unmodified packaged e3nn reference. Dready also passed five-run qualification in the same compiled inference mode. Original example-data AOT output failures were preserved; compiling both arms with the exact frozen discovery graph as `--data-path` was one bounded, source-supported repair, not a different scientific workload.
+
+Dready's *free-preparation* complete-model timing showed directionally faster medians but failed the predeclared gate: median improvement 4.70% (<5%) and two of three groups lacked a >3×MAD gap. This is a mixed/not-admitted headroom result, not a measured Donline benefit. Donline was not executed, so no graph-prep payback result exists; sealed holdout frames 18/36/73/91 were not opened. No neighbor search, MD cadence, training, double backward, other model size/chemistry or hardware conclusion is supported.
