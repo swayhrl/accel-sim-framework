@@ -1,0 +1,197 @@
+{
+  "capacity_outcomes_in_priority_order": [
+    "R26_CAPACITY_BOUNDARY_UNSTABLE",
+    "R26_INTEGRATED_BATCH_CAPACITY_EXTENSION_SUPPORTED",
+    "R26_S2_BATCH_CAPACITY_REGRESSION",
+    "R26_CAPACITY_SEARCH_RIGHT_CENSORED",
+    "R26_NO_BATCH_CAPACITY_EXTENSION"
+  ],
+  "capacity_search": {
+    "artificial_pressure": false,
+    "censoring": "B512 PASS without OOM is right censored",
+    "confirmation_majority_vote": false,
+    "endpoint_confirmations": 3,
+    "exponential_batches": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "following_training_steps": 3,
+    "max_batch": 512,
+    "max_distinct_trials_per_policy": 19,
+    "min_batch": 1,
+    "only_variable": "physical batch B",
+    "policy_order": [
+      "C1_COMPACT_FULL",
+      "S2_TILED"
+    ],
+    "positive_witness": "C1 confirmed maximum + 1",
+    "process": "fresh per policy/batch",
+    "refinement": "integer floor midpoint; stop U=L+1",
+    "reverse_witness": "S2 confirmed maximum + 1",
+    "state_restore_between_steps": false,
+    "warmup_training_steps": 2
+  },
+  "cce_meta": {
+    "BLOCK_B": 128,
+    "BLOCK_D": 32,
+    "BLOCK_V": 128,
+    "CCE_AUTOTUNE": 0,
+    "MM_BACK_BLOCK_D": 64,
+    "num_stages": 4,
+    "num_warps": 4
+  },
+  "date": "2026-10-02",
+  "forbidden": [
+    "second model",
+    "second content input",
+    "context expansion",
+    "tile/optimizer/attention/precision sweep",
+    "activation checkpointing",
+    "offload",
+    "all-parameter training",
+    "convergence",
+    "profiler",
+    "node174/Accel-Sim",
+    "hardware/PPA",
+    "artificial memory pressure",
+    "adaptive policy",
+    "old Goal restart"
+  ],
+  "formal": {
+    "groups": 3,
+    "orders": [
+      [
+        "C1_COMPACT_FULL",
+        "S2_TILED"
+      ],
+      [
+        "S2_TILED",
+        "C1_COMPACT_FULL"
+      ],
+      [
+        "C1_COMPACT_FULL",
+        "S2_TILED"
+      ]
+    ],
+    "point": "largest common confirmed passing B",
+    "policies": [
+      "C1_COMPACT_FULL",
+      "S2_TILED"
+    ],
+    "samples_per_policy_group": 5,
+    "timing_class": {
+      "BENEFIT": ">=2 benefit groups and <2 regression groups",
+      "MIXED": "otherwise",
+      "REGRESSION": ">=2 regression groups",
+      "stable_threshold": "3*max(group MADs)"
+    },
+    "total_samples": 30,
+    "warmups_per_policy_group": 2
+  },
+  "input": {
+    "authority": "ADOPTED_LLAMA_S0_T128_V1",
+    "loss_reduction": "mean over B*127 labels",
+    "new_holdout": false,
+    "physical_batch": "materialized identical sequence copies",
+    "retokenize": false,
+    "shifted_positions": 127,
+    "tokens": 128
+  },
+  "model": {
+    "attention": "sdpa",
+    "id": "meta-llama/Llama-3.2-1B",
+    "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "trainable": "tied W only",
+    "use_cache": false,
+    "weight_dtype": "bfloat16",
+    "weight_shape": [
+      128256,
+      2048
+    ]
+  },
+  "optimizer": {
+    "W_dtype": "bfloat16",
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "gradient_accumulation": false,
+    "lr": 0.001,
+    "m_v_dtype": "float32",
+    "name": "explicit AdamW reference",
+    "weight_decay": 0.01
+  },
+  "policies": {
+    "automatic_fallback": false,
+    "capacity_opt_in": "S2_TILED",
+    "default": "C1_COMPACT_FULL",
+    "rows_per_tile": 4096,
+    "tile_count": 32,
+    "tile_fp32_budget_bytes": 33554432
+  },
+  "qualification": {
+    "anchor_steps": 4,
+    "atol": 0.01,
+    "checkpoint_optimizer_steps": [
+      2,
+      5,
+      9,
+      17,
+      33
+    ],
+    "exact_counter": true,
+    "final_optimizer_step": 33,
+    "full_state_checkpoints": [
+      1,
+      4,
+      8,
+      16,
+      32
+    ],
+    "policy_switch_final_optimizer_step": 18,
+    "policy_switch_steps": 1,
+    "resume_checkpoint_optimizer_step": 17,
+    "resume_from_step": 16,
+    "resume_remaining_steps": 16,
+    "rtol": 0.01,
+    "training_quality_claim": false,
+    "trajectory_indices_relative_to_post_bootstrap": true,
+    "trajectory_steps": 32
+  },
+  "qualification_stops": [
+    "R26_AUTHORITY_OR_SOURCE_NOT_QUALIFIED",
+    "R26_TIED_STORAGE_OR_ARM_IDENTITY_NOT_QUALIFIED",
+    "R26_NUMERIC_OR_TRAJECTORY_NOT_QUALIFIED",
+    "R26_RESOURCE_OR_SCOPE_NOT_QUALIFIED"
+  ],
+  "resources": {
+    "durable_raw_node": "164",
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "max_CPU_comparison_chunk_bytes": 67108864,
+    "max_checkpoint_payload_bytes": 42949672960,
+    "max_extra_CPU_working_set_bytes": 25769803776,
+    "max_scratch_bytes": 68719476736,
+    "node": "109",
+    "probe_no_progress_timeout_minutes": 5
+  },
+  "schema": "AWMA_R26_TIED_CAPACITY_V1",
+  "stage": "AWMA_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_BOUNDARY_109_V1",
+  "start_state": {
+    "CPU_only": true,
+    "bootstrap_steps": 1,
+    "post_bootstrap_step": 1,
+    "same_for_all_batches": true,
+    "seed": 25002,
+    "source": "accepted R25-style B1 B0 bootstrap"
+  },
+  "timezone": "Asia/Shanghai"
+}

@@ -1,0 +1,121 @@
+{
+  "authority": {
+    "batch": 1,
+    "capacity_policy_requires_explicit_opt_in": "s2",
+    "config_sha256": "bfb5d39c327ee5c3a65e3574596ff30b052a445cfc59a25bdf3b4c0c5a44f4d2",
+    "default_policy": "c1",
+    "fixed_cce_meta": {
+      "BLOCK_B": 128,
+      "BLOCK_D": 32,
+      "BLOCK_V": 128,
+      "CCE_AUTOTUNE": 0,
+      "MM_BACK_BLOCK_D": 64,
+      "num_stages": 4,
+      "num_warps": 4
+    },
+    "identity": {
+      "input_authority": "ADOPTED_LLAMA_S0_T128_V1",
+      "model_id": "meta-llama/Llama-3.2-1B",
+      "optimizer": {
+        "amsgrad": false,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "bias_correction": true,
+        "decoupled_weight_decay": true,
+        "eps": 1e-08,
+        "foreach": false,
+        "fused": false,
+        "grad_scaler": false,
+        "gradient_clipping": false,
+        "lr": 0.001,
+        "moment_dtype": "torch.float32",
+        "optimizer": "explicit AdamW reference",
+        "parameter_storage_dtype": "torch.bfloat16",
+        "weight_decay": 0.01
+      },
+      "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+      "shifted_positions": 127,
+      "stage": "AWMA_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_BOUNDARY_109_V1",
+      "weight_dtype": "torch.bfloat16",
+      "weight_shape": [
+        128256,
+        2048
+      ]
+    },
+    "input_ids_sha256": "29cc3577a6638646b8212f86e6ac73a8cbf7602dfce456de1780761285a76e27",
+    "input_shape": [
+      1,
+      127
+    ],
+    "labels_sha256": "ba70169364a3494cfdd60f1d357dc059cbe074daad4b3610ba32cad5953bfd40",
+    "labels_shape": [
+      127
+    ],
+    "model_path": "/data/c16/models/.incoming/Llama-3.2-1B/4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "model_safetensors_sha256": "68a2e4be76fa709455a60272fba8e512c02d81c46e6c671cc9449e374fd6809a",
+    "tied_pointer_exact": true,
+    "tied_storage_exact": true,
+    "tokens_path": "/home/huangrulin/workspace/worktrees/accel-sim-awma-r26-tied-weight-production-capacity-109-v1/docs/vm_tlb/assets/c16/ai_workload_inputs/ADOPTED_LLAMA_S0_T128_V1/frozen_token_ids.json",
+    "tokens_sha256": "fc712eb0a158f0fe62231f7826feec3eaabfea51906ca6b1588a55ee81ae3624",
+    "trainable_parameters": [
+      "model.embed_tokens.weight"
+    ]
+  },
+  "bootstrap_result": {
+    "batch": 1,
+    "compact_bytes": 0,
+    "compact_rows": 0,
+    "complete_train_step_ms": 460.314669,
+    "dense_lookup_gradient_materialized": true,
+    "diagnostic": false,
+    "forward_peak_allocated_bytes": 4742189568,
+    "forward_peak_reserved_bytes": 4760535040,
+    "full_bf16_gradient_bytes": 525336576,
+    "full_classifier_or_total_gradient_materialized": true,
+    "full_gradient_lifetime_gpu_ms": null,
+    "inverse_index_bytes": 0,
+    "loss": 2.037471294403076,
+    "peak_full_gradient_buffers": 2,
+    "policy": "b0",
+    "post_step_allocated_bytes": 4591066624,
+    "post_step_reserved_bytes": 6339690496,
+    "pre_step_allocated_bytes": 4574027264,
+    "pre_step_reserved_bytes": 4575985664,
+    "pre_target_allocated_bytes": 4739068928,
+    "pre_target_reserved_bytes": 4760535040,
+    "s2_fp32_tile_budget_bytes": 0,
+    "s2_rows_per_tile": 0,
+    "s2_tile_count": 0,
+    "step": 1,
+    "target_gpu_ms": null,
+    "target_host_ms": 63.245355,
+    "target_peak_allocated_bytes": 6317297152,
+    "target_peak_reserved_bytes": 6339690496,
+    "whole_step_peak_allocated_bytes": 6317297152,
+    "whole_step_peak_reserved_bytes": 6339690496
+  },
+  "bytes": 2626691315,
+  "contains_gpu_tensor": false,
+  "cpu_rng_sha256": "3462c9592a5ad5c4a7f9803ecdb79ba11cdf617d497b9f41b87df47b281eba18",
+  "cuda_rng_sha256": "ec7d748becf40257adc0f3a8f69cf84db26b3d9bd2d3a846bdc7761fc4cb23e1",
+  "expected_parent_hashes": {
+    "cpu_rng_sha256": "3462c9592a5ad5c4a7f9803ecdb79ba11cdf617d497b9f41b87df47b2811eba18",
+    "cuda_rng_sha256": "ec7d748becf40257adc0f3a8f69cf84db26b3d9bd2d3a846bdc7761fc44cb23e1",
+    "m_sha256": "65ca646169b4e646230074dd684265d490ded95de96d114b273f64306e8f25eb",
+    "v_sha256": "bcc6d93fabb0106bc0133aa3096e2246f66e7312d7b17b69f9405ee4d05ab826",
+    "weight_sha256": "a7e08515543a44b11420a2427e6c8bbcf263b45389753bd4c044fd2f9e3a3e4d"
+  },
+  "logical_step": 1,
+  "m_sha256": "445daf620b70a6b03eba66bda3b7e1ccaf1c29e7384c8aec1126d6c0b314932f",
+  "parent_hashes_exact": false,
+  "parent_snapshot_payload_available": false,
+  "parent_verification_interpretation": "RECEIPT_ONLY_HASH_MISMATCH; exact R25 runner replay also produced different W/m/v hashes while RNG hashes matched; common state is frozen from this single accepted-semantics derivation",
+  "path": "/data/c16/awma/r26_tied_weight_production_capacity_109_v1_20261002/checkpoints/COMMON_POST_BOOTSTRAP.pt",
+  "policy_metadata": "common_post_b1_b0_bootstrap",
+  "sha256": "09e293774ac9dcb535e1a3d47d72878ff68f3831476175060b1016bce8a28b55",
+  "step": 1,
+  "v_sha256": "efaabc21904a155649d41ca4286bddaf211574a224bd7d34cb584a424a885d21",
+  "weight_sha256": "834af272c43aca72e7c22f522ec43b231c48c1e2673dfb1274d6a2fcba6e0302"
+}

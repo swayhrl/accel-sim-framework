@@ -1,0 +1,143 @@
+{
+  "B_common": 70,
+  "B_witness": 71,
+  "C1_boundary": {
+    "adjacent_confirmed_oom": 71,
+    "largest_confirmed_pass": 70,
+    "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD"
+  },
+  "S2_boundary": {
+    "adjacent_confirmed_oom": 72,
+    "largest_confirmed_pass": 71,
+    "oom_phase": "BACKBONE_COMPACT_LOOKUP_BACKWARD"
+  },
+  "all_parameter_training_claim": false,
+  "capacity_and_timing_separate": true,
+  "capacity_decision": "R26_INTEGRATED_BATCH_CAPACITY_EXTENSION_SUPPORTED",
+  "complete_train_step_timing": {
+    "classification": "MIXED",
+    "groups": [
+      {
+        "c1_mad_ms": 3.00902300000007,
+        "c1_median_ms": 937.466962,
+        "c1_minus_s2_ms": 2.5728520000000117,
+        "c1_minus_s2_percent": 0.27444721833301383,
+        "direction": "MIXED",
+        "group": 0,
+        "s2_mad_ms": 0.12556099999994785,
+        "s2_median_ms": 934.89411,
+        "three_mad_threshold_ms": 9.02706900000021
+      },
+      {
+        "c1_mad_ms": 2.700109999999995,
+        "c1_median_ms": 940.881645,
+        "c1_minus_s2_ms": 4.827877000000058,
+        "c1_minus_s2_percent": 0.513122668048228,
+        "direction": "MIXED",
+        "group": 1,
+        "s2_mad_ms": 0.19753100000002632,
+        "s2_median_ms": 936.053768,
+        "three_mad_threshold_ms": 8.100329999999985
+      },
+      {
+        "c1_mad_ms": 3.6825939999999946,
+        "c1_median_ms": 942.298416,
+        "c1_minus_s2_ms": 4.529744999999934,
+        "c1_minus_s2_percent": 0.4807123649032999,
+        "direction": "MIXED",
+        "group": 2,
+        "s2_mad_ms": 0.19673499999998967,
+        "s2_median_ms": 937.768671,
+        "three_mad_threshold_ms": 11.047781999999984
+      }
+    ],
+    "stable_benefit_groups": 0,
+    "stable_regression_groups": 0
+  },
+  "formal_arm_summary": {
+    "c1": {
+      "compact_bytes_median": 143640,
+      "compact_rows_median": 35,
+      "complete_mad_ms": 3.00902300000007,
+      "complete_median_ms": 940.475985,
+      "full_gradient_lifetime_median_ms": 23.145471572875977,
+      "post_step_allocated_median_bytes": 4591860736,
+      "target_mad_ms": 2.906982421875,
+      "target_median_ms": 647.1423950195312,
+      "target_peak_allocated_median_bytes": 15942519296,
+      "whole_step_peak_allocated_median_bytes": 15942519296,
+      "whole_step_peak_reserved_median_bytes": 16317939712
+    },
+    "s2": {
+      "compact_bytes_median": 143640,
+      "compact_rows_median": 35,
+      "complete_mad_ms": 1.096508999999969,
+      "complete_median_ms": 936.053768,
+      "full_gradient_lifetime_median_ms": null,
+      "post_step_allocated_median_bytes": 4591932928,
+      "target_mad_ms": 0.52264404296875,
+      "target_median_ms": 642.4248046875,
+      "target_peak_allocated_median_bytes": 15946533376,
+      "whole_step_peak_allocated_median_bytes": 15946533376,
+      "whole_step_peak_reserved_median_bytes": 16244539392
+    }
+  },
+  "interpretation": "S2 explicit capacity opt-in extends physical repeated-sequence batch by one at the natural repeated-step allocator/backbone-backward boundary; both formal timing boundaries are MIXED at B70",
+  "same_batch_witness": {
+    "C1": [
+      "OOM",
+      "OOM",
+      "OOM"
+    ],
+    "S2": [
+      "PASS",
+      "PASS",
+      "PASS"
+    ],
+    "batch": 71,
+    "confirmed": true
+  },
+  "stage": "AWMA_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_BOUNDARY_109_V1",
+  "target_timing": {
+    "classification": "MIXED",
+    "groups": [
+      {
+        "c1_mad_ms": 3.1436767578125,
+        "c1_median_ms": 644.8975219726562,
+        "c1_minus_s2_ms": 2.995361328125,
+        "c1_minus_s2_percent": 0.46447090058007756,
+        "direction": "MIXED",
+        "group": 0,
+        "s2_mad_ms": 0.14617919921875,
+        "s2_median_ms": 641.9021606445312,
+        "three_mad_threshold_ms": 9.4310302734375
+      },
+      {
+        "c1_mad_ms": 2.5950927734375,
+        "c1_median_ms": 647.1423950195312,
+        "c1_minus_s2_ms": 4.71759033203125,
+        "c1_minus_s2_percent": 0.7289879890945592,
+        "direction": "MIXED",
+        "group": 1,
+        "s2_mad_ms": 0.11370849609375,
+        "s2_median_ms": 642.4248046875,
+        "three_mad_threshold_ms": 7.7852783203125
+      },
+      {
+        "c1_mad_ms": 3.764404296875,
+        "c1_median_ms": 648.7325439453125,
+        "c1_minus_s2_ms": 4.96527099609375,
+        "c1_minus_s2_percent": 0.7653802853633804,
+        "direction": "MIXED",
+        "group": 2,
+        "s2_mad_ms": 0.26312255859375,
+        "s2_median_ms": 643.7672729492188,
+        "three_mad_threshold_ms": 11.293212890625
+      }
+    ],
+    "stable_benefit_groups": 0,
+    "stable_regression_groups": 0
+  },
+  "training_convergence_claim": false,
+  "unified_speedup_claim": false
+}
