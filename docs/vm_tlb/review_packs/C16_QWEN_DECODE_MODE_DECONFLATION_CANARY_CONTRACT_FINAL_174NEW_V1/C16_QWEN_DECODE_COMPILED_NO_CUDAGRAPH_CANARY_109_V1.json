@@ -1,0 +1,79 @@
+{
+  "schema": "C16_QWEN_DECODE_COMPILED_NO_CUDAGRAPH_CANARY_109_V1",
+  "goal": "C16_QWEN_DECODE_EXECUTION_MODE_DECONFLATION_CANARY_109_V1",
+  "status": "AUTHORIZED_BY_PROJECT_REVIEW",
+  "execution_authorized": true,
+  "automatic_gpu_start": false,
+  "node_if_approved": "109",
+  "purpose": "Free-running natural-decode correctness and compiled execution identity of MODE_A versus MODE_B only; not scientific timing",
+  "authority": {
+    "tier0_contract_commit": "fad9da8116c8ad794f99a93f153b0866162158a4",
+    "producer_commit": "82788c2d587e86f94791d65aaa2bde28929f9303",
+    "consumer_commit": "9d82ff41132e7b1a1fdd18a287c13627fe62e5b7",
+    "design_commit": "dd4a4f48f200b9c35ea094b4eac5bfffc722cb2a",
+    "vllm_source_commit": "ced6857afa0ea7b2e3f0846a62e1394e90f15607",
+    "vllm_source_tree": "22fe534b15542997d37f97a9079b4a1ac7961a18",
+    "asset_input_commit": "c3f625e46adb8d5c4082ded8b61858c710e1f4e9",
+    "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+  },
+  "scope": {
+    "model": "Qwen/Qwen2.5-3B-Instruct",
+    "dtype": "bfloat16",
+    "points_in_order": ["MP02", "MP03"],
+    "point_inputs": {
+      "MP02": {"batch": 1, "source_ids": ["TRAIN_A_DISCOVERY_00"], "prompt_tokens_per_row": 512, "decode_steps_per_row": 32},
+      "MP03": {"batch": 4, "source_ids": ["TRAIN_A_DISCOVERY_00", "TRAIN_A_DISCOVERY_01", "TRAIN_A_DISCOVERY_02", "TRAIN_A_DISCOVERY_03"], "prompt_tokens_per_row": 512, "decode_steps_per_row": 32}
+    },
+    "token_ids_authority": "c3f625e46adb8d5c4082ded8b61858c710e1f4e9:TOKENIZATION_RECEIPTS.tsv",
+    "excluded": ["MP01", "MP05", "MP04", "MP06", "MP07", "MP08", "OLMoE", "holdout"]
+  },
+  "modes": {
+    "MODE_A_STRONG": {"enforce_eager": false, "compilation_config": "accepted/default compiled configuration unchanged", "required_effective_compilation_mode": "VLLM_COMPILE", "required_cudagraph": "enabled_and_used_for_tested_decode_shape"},
+    "MODE_B_DIAGNOSTIC": {"enforce_eager": false, "compilation_config_python": "CompilationConfig(cudagraph_mode=CUDAGraphMode.NONE)", "mode_argument": "UNSET_KEEP_ACCEPTED_DEFAULT", "backend_argument": "UNSET_KEEP_ACCEPTED_DEFAULT", "required_effective_compilation_mode": "same_compiled_mode_as_MODE_A", "required_effective_cudagraph_mode": "NONE", "required_capture_replay_count": 0},
+    "MODE_C_HISTORICAL_FAILED": {"execute": false, "historical_status": "STOP_POINT_CORRECTNESS", "effective_identity": "EAGER_NO_COMPILE_NO_CUDAGRAPH"}
+  },
+  "unchanged_runtime_settings": {
+    "model_impl": "vllm", "tensor_parallel_size": 1, "quantization": null,
+    "skip_tokenizer_init": true, "max_model_len": 544, "max_num_seqs": "batch_size", "max_num_batched_tokens": "batch_size * 544",
+    "gpu_memory_utilization": 0.92, "cpu_offload_gb": 0,
+    "enable_prefix_caching": false, "seed": 0,
+    "sampling": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 32, "ignore_eos": true, "detokenize": false, "logprobs": 20}
+  },
+  "execution": {
+    "gpu_active_seconds_cap": 120,
+    "includes": ["model_load", "compile_or_graph_setup", "warmup", "free_running_correctness", "identity_only_kernel_inventory"],
+    "per_point_per_mode": "one warmup plus one fixed free-running D0-D31 correctness request; no result-directed repetitions",
+    "semantic_observer": "FORBIDDEN",
+    "nsys_ncu_nvbit_sass_accelsim": "FORBIDDEN",
+    "identity_only_cuda_activity_inventory": "bounded existing torch CUDA activity inventory, kernel names/families only; no profiler durations in results or timing claims",
+    "duration_if_recorded": "QUALIFICATION_DIAGNOSTIC_ONLY",
+    "stop_before_budget_exceeded": true
+  },
+  "correctness": {
+    "reference": "MODE_A_STRONG same point and frozen batch row",
+    "candidate": "MODE_B_DIAGNOSTIC same point and frozen batch row",
+    "generated_token_rule": "exact 32-token sequence per row",
+    "shape_and_order_rule": "exact batch-row mapping, effective shape and D0-D31 order",
+    "sampled_logprob_rule": "for every sampled token: abs(A-B) <= 0.05 + 0.01 * abs(A)",
+    "atol": 0.05, "rtol": 0.01,
+    "backend_rule": "FlashAttentionImpl, UnquantizedLinearMethod and actual accepted BF16 kernel families; no backend substitution",
+    "mode_identity_rule": "A effective compiled+CUDA Graph; B effective compiled+no CUDA Graph, no eager fallback or skip_compiled bypass",
+    "threshold_change_allowed": false
+  },
+  "stage_sequence": {
+    "first": "MP02 MODE_A then MODE_B correctness and identity",
+    "if_mp02_pass": "run MP03 MODE_A then MODE_B",
+    "if_mp02_fail": "STOP; MP03 not run by default",
+    "point_local_exception": "Only a source-supported, non-shared MP02-specific cause documented in a CPU receipt and separately approved by project review may authorize MP03; no automatic exception in this draft."
+  },
+  "required_receipts": ["EFFECTIVE_MODE_CONFIG.json", "FREE_RUNNING_CORRECTNESS_BY_ROW_STEP.tsv", "BACKEND_KERNEL_IDENTITY.tsv", "KERNEL_INVENTORY_SHA256.json", "GPU_ACTIVE_BUDGET.json", "FINAL_DECISION.json", "RAW_SHA256SUMS"],
+  "decisions": {
+    "all_pass": "MODE_DECONFLATION_CORRECTNESS_PASS_FOR_OBSERVER_REVIEW_ONLY",
+    "correctness_fail": "MODE_DECONFLATION_CORRECTNESS_FAILED",
+    "mode_b_eager_or_backend_fallback": "MODE_B_IDENTITY_INVALID",
+    "mode_b_compiled_identity_unproven": "MODE_B_IDENTITY_UNRESOLVED",
+    "budget_or_engineering_failure": "CANARY_ENGINEERING_STOP"
+  },
+  "next_step_if_pass": "Separate project review of COMPILED_NO_CUDAGRAPH_OBSERVER_QUALIFICATION; not automatic and not included here",
+  "forbidden_claims": ["speedup", "Graph_benefit", "batch_behavior", "architecture_conclusion", "historical_MP02_MP03_reclassification"]
+}
