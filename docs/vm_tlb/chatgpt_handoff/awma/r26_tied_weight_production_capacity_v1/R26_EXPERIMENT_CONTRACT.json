@@ -1,0 +1,197 @@
+{
+  "schema": "AWMA_R26_TIED_CAPACITY_V1",
+  "date": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "stage": "AWMA_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_BOUNDARY_109_V1",
+  "model": {
+    "id": "meta-llama/Llama-3.2-1B",
+    "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+    "weight_shape": [
+      128256,
+      2048
+    ],
+    "weight_dtype": "bfloat16",
+    "trainable": "tied W only",
+    "attention": "sdpa",
+    "use_cache": false
+  },
+  "input": {
+    "authority": "ADOPTED_LLAMA_S0_T128_V1",
+    "tokens": 128,
+    "shifted_positions": 127,
+    "physical_batch": "materialized identical sequence copies",
+    "loss_reduction": "mean over B*127 labels",
+    "new_holdout": false,
+    "retokenize": false
+  },
+  "optimizer": {
+    "name": "explicit AdamW reference",
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-8,
+    "weight_decay": 0.01,
+    "W_dtype": "bfloat16",
+    "m_v_dtype": "float32",
+    "gradient_accumulation": false
+  },
+  "cce_meta": {
+    "BLOCK_B": 128,
+    "BLOCK_V": 128,
+    "BLOCK_D": 32,
+    "MM_BACK_BLOCK_D": 64,
+    "num_warps": 4,
+    "num_stages": 4,
+    "CCE_AUTOTUNE": 0
+  },
+  "policies": {
+    "default": "C1_COMPACT_FULL",
+    "capacity_opt_in": "S2_TILED",
+    "automatic_fallback": false,
+    "tile_fp32_budget_bytes": 33554432,
+    "rows_per_tile": 4096,
+    "tile_count": 32
+  },
+  "qualification": {
+    "rtol": 0.01,
+    "atol": 0.01,
+    "anchor_steps": 4,
+    "trajectory_steps": 32,
+    "full_state_checkpoints": [
+      1,
+      4,
+      8,
+      16,
+      32
+    ],
+    "resume_from_step": 16,
+    "resume_remaining_steps": 16,
+    "policy_switch_steps": 1,
+    "exact_counter": true,
+    "training_quality_claim": false,
+    "trajectory_indices_relative_to_post_bootstrap": true,
+    "checkpoint_optimizer_steps": [
+      2,
+      5,
+      9,
+      17,
+      33
+    ],
+    "resume_checkpoint_optimizer_step": 17,
+    "final_optimizer_step": 33,
+    "policy_switch_final_optimizer_step": 18
+  },
+  "start_state": {
+    "source": "accepted R25-style B1 B0 bootstrap",
+    "seed": 25002,
+    "bootstrap_steps": 1,
+    "post_bootstrap_step": 1,
+    "CPU_only": true,
+    "same_for_all_batches": true
+  },
+  "capacity_search": {
+    "only_variable": "physical batch B",
+    "min_batch": 1,
+    "max_batch": 512,
+    "exponential_batches": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "refinement": "integer floor midpoint; stop U=L+1",
+    "max_distinct_trials_per_policy": 19,
+    "policy_order": [
+      "C1_COMPACT_FULL",
+      "S2_TILED"
+    ],
+    "warmup_training_steps": 2,
+    "following_training_steps": 3,
+    "state_restore_between_steps": false,
+    "process": "fresh per policy/batch",
+    "endpoint_confirmations": 3,
+    "confirmation_majority_vote": false,
+    "positive_witness": "C1 confirmed maximum + 1",
+    "reverse_witness": "S2 confirmed maximum + 1",
+    "censoring": "B512 PASS without OOM is right censored",
+    "artificial_pressure": false
+  },
+  "formal": {
+    "point": "largest common confirmed passing B",
+    "policies": [
+      "C1_COMPACT_FULL",
+      "S2_TILED"
+    ],
+    "groups": 3,
+    "warmups_per_policy_group": 2,
+    "samples_per_policy_group": 5,
+    "total_samples": 30,
+    "orders": [
+      [
+        "C1_COMPACT_FULL",
+        "S2_TILED"
+      ],
+      [
+        "S2_TILED",
+        "C1_COMPACT_FULL"
+      ],
+      [
+        "C1_COMPACT_FULL",
+        "S2_TILED"
+      ]
+    ],
+    "timing_class": {
+      "stable_threshold": "3*max(group MADs)",
+      "BENEFIT": ">=2 benefit groups and <2 regression groups",
+      "REGRESSION": ">=2 regression groups",
+      "MIXED": "otherwise"
+    }
+  },
+  "capacity_outcomes_in_priority_order": [
+    "R26_CAPACITY_BOUNDARY_UNSTABLE",
+    "R26_INTEGRATED_BATCH_CAPACITY_EXTENSION_SUPPORTED",
+    "R26_S2_BATCH_CAPACITY_REGRESSION",
+    "R26_CAPACITY_SEARCH_RIGHT_CENSORED",
+    "R26_NO_BATCH_CAPACITY_EXTENSION"
+  ],
+  "qualification_stops": [
+    "R26_AUTHORITY_OR_SOURCE_NOT_QUALIFIED",
+    "R26_TIED_STORAGE_OR_ARM_IDENTITY_NOT_QUALIFIED",
+    "R26_NUMERIC_OR_TRAJECTORY_NOT_QUALIFIED",
+    "R26_RESOURCE_OR_SCOPE_NOT_QUALIFIED"
+  ],
+  "resources": {
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "node": "109",
+    "durable_raw_node": "164",
+    "max_extra_CPU_working_set_bytes": 25769803776,
+    "max_scratch_bytes": 68719476736,
+    "max_checkpoint_payload_bytes": 42949672960,
+    "max_CPU_comparison_chunk_bytes": 67108864,
+    "probe_no_progress_timeout_minutes": 5
+  },
+  "forbidden": [
+    "second model",
+    "second content input",
+    "context expansion",
+    "tile/optimizer/attention/precision sweep",
+    "activation checkpointing",
+    "offload",
+    "all-parameter training",
+    "convergence",
+    "profiler",
+    "node174/Accel-Sim",
+    "hardware/PPA",
+    "artificial memory pressure",
+    "adaptive policy",
+    "old Goal restart"
+  ]
+}
