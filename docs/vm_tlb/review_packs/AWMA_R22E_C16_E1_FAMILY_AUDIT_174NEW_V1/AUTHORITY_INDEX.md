@@ -1,0 +1,14 @@
+# Accepted authority and evidence level
+
+| Key | Exact authority | Files read / use | Level and limit |
+|---|---|---|---|
+| R22 | `e34fe23503bd4d30acb4b3a33f79cd67ab0fe018` planning report inherited at start HEAD | Round22 retrospective, post-Round22 plan, kernel-family methodology, ROUND22 ledger | Methodology/retrospective, not new execution |
+| C-A | `hrl/c16-lowbit-conversion-reuse-headroom-174new-v1@9ff9e9b3580d8d24a56c8d3beebc41e9f4975f47` | `C16_LOWBIT_CONVERSION_REUSE_HEADROOM_174NEW_V1/{SCIENTIFIC_INTERPRETATION,DUPLICATION_SCOPE,EXISTING_ELIMINATION,BUFFER_LIFETIME,AMDAHL_CEILINGS,CONVERSION_IDENTITY,AUTHORITY_AUDIT,FINAL_DECISION}` | CPU-derived strict logical identity/bytes; no native local net test |
+| C-N | `hrl/c16-lowbit-conversion-native-headroom-oracle-109-v1@797477f2c7f365bac1930808125957a8c06af091` | `C16_LOWBIT_CONVERSION_NATIVE_HEADROOM_ORACLE_109_V1/{SCIENTIFIC_INTERPRETATION,HEADROOM_SUMMARY,TARGET_SUMMARY,TIMING_SUMMARY,SASS_AUDIT,EXPERIMENT_CONTRACT,FINAL_DECISION}` | Native M256 local diagnostic; invalid-output oracle; K3072 validation not run |
+| C-D | C16 low-bit dataflow report incorporated in C-A | `C16_LOWBIT_DATAFLOW_SCREEN_V1/DATAFLOW_EVIDENCE.tsv` | Exact source path, static/site evidence, up-proj M1/M256 NCU, accepted timing links; no dynamic conversion execution count |
+| E-C | `hrl/c16-e1-clean-baseline-109-v1@8988d6108ff8bdca180a14cec2fe769df45b09f1` | `C16_E1_CLEAN_BASELINE_109_V1/{CORE_18_POINT_TIMING,CORE_18_POINT_PATHS,TRANSITION_DIAGNOSTIC,CORE_ANALYSIS,NCU_ENTRY_GATE,NCU_METRICS,SCIENTIFIC_INTERPRETATION}` | Same activation for RAW_FP16/AWQ per role/M; complete local operator timing; clean NCU selector unresolved |
+| E-S | `hrl/awma-e1-shape-oracle-moe-harness-109-v2@56096d32bd5cd783286e1b5e5e612b6019f926d0` | `AWMA_E1_SHAPE_SPECIFIC_ORACLE_AND_MOE_HARNESS_109_V2/{E1_CORE_MATRIX,AWQ_SHAPE_PATH_MATRIX,README}` | Auxiliary AWQ shape/path evidence; not mixed into clean timing ratios |
+| E-F | `hrl/c16-e1-coverage-scaling-109-v1@18acd7dcc10118c68b450d226a8e7ca80c51ad72` | `C16_E1_COVERAGE_SCALING_109_V1/{SCIENTIFIC_INTERPRETATION,FFN_OPPORTUNITY_ANALYSIS,NEXT_STEP_DECISION}` | Different D3/coverage experiment; 16.84% up and 47.39% all-FFN decode shares are **not** C-A SHARE3 coverage |
+| L | `4db73af069aae32c0b3eb91313930a04a46a9123` | `2026-09-29_LR10_REPRESENTATION_REUSE_AND_HANDOFF_COSTS.md` | Prior-work comparison, not C16 measurement; closest capabilities and incomplete literature limits retained |
+
+The dataflow report links semantic NCU V2 producer `cdd3ec7afbb1611cc52a4b74d32b38a3edabd131` and AutoAWQ source `c7b0e88c327694c715b0a758d9ce8fd414a1fa21`; these are inherited exact source/normalization authorities, not reprofiled here. The C-A audit separately lists its upstream static mapping and grouped-strong source hashes. No unavailable raw value was reconstructed.
