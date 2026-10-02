@@ -1,3 +1,26 @@
+# Main handoff index — R23G reviewed
+
+## Current-state override — 2026-10-02
+
+R23G now has a completed execution result, reviewed under its original frozen Goal:
+
+- execution commit: `99d05f0ad221a1d44dd11bac0ed83965bb2c0942`
+- execution tree: `b3bcf21e81e1bc34a3281d41b570d6021d8a1edd`
+- accepted result: `R23G_R81_LIVE_DISPATCH_LOCAL_RESPONSE_PRESENT`
+- Lane G: completed and STOP per Goal closure; scoped software result, not a hardware claim.
+
+Read the current state at commit `8df5946f118bd7debb597a72dab7b93d80c882ef`:
+`docs/vm_tlb/literature_notes/awma/plans/STATUS_AFTER_R23G_REVIEW_2026-10-02.md`
+
+Detailed review / software result, first published at `3af156d8f9a217289909c694f269665ef88c8db2`:
+`docs/vm_tlb/literature_notes/awma/empirical/R23G_LIVE_DISPATCH_REVIEW_2026-10-02.md`
+
+The original main handoff below remains useful for goals, frozen contracts, history and node workflow, but its G-running state is superseded. F/E remain STOP; R20 CLOSED; no new node/GPU/Accel-Sim/hardware task is authorized. Do not restart G, regroup/de-duplicate the frozen cohort, or treat complete-generation safety as proof of uniform end-to-end acceleration. The 12 source records include only 9 distinct prompt/schema combinations; this coverage qualification is recorded in the review without changing the original contract.
+
+---
+
+## Historical active snapshot (retained)
+
 # Latest main handoff — R23G active snapshot
 
 Date: 2026-10-02.
