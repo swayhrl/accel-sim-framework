@@ -1,0 +1,13 @@
+gate_id	arm	required_observation	evidence_source	failure_decision
+CONFIG_OFF	OFF	enforce_eager=false;CompilationMode=VLLM_COMPILE;backend=inductor;CUDAGraphMode=NONE	effective runtime config receipt	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+CONFIG_ON	ON	enforce_eager=false;CompilationMode=VLLM_COMPILE;backend=inductor;CUDAGraphMode=NONE	effective runtime config receipt	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+GRAPH_ZERO	OFF;ON	capture=0;replay=0;no graph state	model-runner graph manager and call receipt	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+COMPILED_QWEN	OFF;ON	compiled Qwen2Model call path active;do_not_compile=false;no skip_compiled bypass	compiled submodule and forward-context receipt	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+ATTENTION	OFF;ON	FlashAttentionImpl exact	actual module/backend receipt	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+LINEAR	OFF;ON	UnquantizedLinearMethod exact	actual module/backend receipt	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+KERNEL_INVENTORY	OFF_vs_ON	actual CUDA kernel inventory and SHA exact;accepted BF16 family preserved	identity-only CUDA activity inventory, no durations	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+SEMANTIC_COVERAGE	ON	4608 occurrences per request;ordinal 0..4607;module/order/shape exact frozen TSV	V2 hook receipt and EXPECTED_SEMANTIC_SEQUENCE.tsv	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL
+OUTPUT_CORRECTNESS	OFF_vs_ON	tokens, row mapping and shapes exact;sampled logprob abs delta <=0.05+0.01*abs(OFF)	all native raw requests, MP03 four rows separately	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_CORRECTNESS_FAIL
+CUDA_NEUTRALITY	OFF_vs_ON	abs(median ON CUDA-event request ms - median OFF) <= max(5,0.10*median OFF)	three native requests per arm;fixed ABBA-like order	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_NEUTRALITY_FAIL
+HOST_CROSSCHECK	OFF_vs_ON	host-wall medians and same expression reported as cross-check; discrepancy blocks uncomplicated admission	three host request walls per arm	CANARY_ENGINEERING_STOP
+NSYS_STRUCTURE	ON_AFTER_NATIVE_PASS	one outer range;4608 semantic ranges;ordinal complete;CUDA activity inside outer range	one lightweight cuda,nvtx capture;duration excluded	COMPILED_NO_CUDAGRAPH_OBSERVER_V2_IDENTITY_FAIL

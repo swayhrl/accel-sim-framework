@@ -1,0 +1,21 @@
+{
+  "schema": "C16_QWEN_COMPILED_NO_CUDAGRAPH_OBSERVER_V2_CORRECTNESS_NEUTRALITY_V1",
+  "reference_arm": "MODE_B_OBSERVER_OFF",
+  "candidate_arm": "MODE_B_OBSERVER_ON",
+  "scope": ["MP02_B1_D0_D31", "MP03_B4_FOUR_ROWS_D0_D31"],
+  "original_mode_a_correctness_reference": "9122fac5c50dbf19706636fc03978a356ffd800f",
+  "mode_a_rerun": false,
+  "historical_mode_c_rerun": false,
+  "generated_tokens": "exact per frozen row and step",
+  "shape_order": "exact, including all four independent MP03 rows",
+  "sampled_logprob": {"reference": "OFF", "expression": "abs(OFF-ON) <= 0.05 + 0.01*abs(OFF)", "atol": 0.05, "rtol": 0.01, "relaxation_allowed": false},
+  "native_protocol": {"warmup_per_arm": 1, "samples_per_arm": 3, "sample_order": ["OFF", "ON", "ON", "OFF", "OFF", "ON"], "all_individual_samples_required": true, "primary_field": "request_cuda_event_ms", "primary_estimator": "median", "host_wall_crosscheck": true},
+  "neutrality_expression": "abs(median_ON - median_OFF) <= max(5.0 ms, 0.10 * median_OFF)",
+  "neutrality_primary": "request_cuda_event_ms",
+  "host_wall_role": "cross_check_only; discrepancy requires engineering stop/review, never replaces CUDA-event primary estimator",
+  "identity": {"enforce_eager": false, "compilation_mode": "VLLM_COMPILE", "backend": "inductor", "cudagraph_mode": "NONE", "capture_replay": 0, "compiled_Qwen2Model_active": true, "skip_compiled": false, "attention": "FlashAttentionImpl", "linear": "UnquantizedLinearMethod", "kernel_inventory_off_on_exact": true},
+  "semantic": {"selected_modules_per_layer": ["self_attn", "gate_up_proj", "act_fn", "down_proj"], "layers": 36, "forward_stages": 32, "expected_occurrences_per_point_request": 4608, "expected_sequence_path": "EXPECTED_SEMANTIC_SEQUENCE.tsv", "input_output_shapes_exact": true, "do_not_revise_after_runtime_result": true},
+  "nsys": {"max_one_per_point": true, "only_after_native_all_gates_pass": true, "trace_domains": ["cuda", "nvtx"], "allowed": ["outer_range", "semantic_range_count_and_order", "CUDA_runtime_and_kernel_activity_inside_target"], "wall_enters_neutrality_estimator": false},
+  "timing_interpretation": "OBSERVER_QUALIFICATION_ONLY_NOT_STAGEA_SCIENCE",
+  "on_failure": "STOP_POINT_AND_DEFAULT_STOP_BEFORE_MP03_IF_MP02_FAIL"
+}
