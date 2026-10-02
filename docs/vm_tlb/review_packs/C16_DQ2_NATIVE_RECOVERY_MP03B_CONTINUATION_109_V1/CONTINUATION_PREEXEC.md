@@ -1,0 +1,3 @@
+# MP03_B surgical continuation PREEXEC
+
+Only MP03_B may run. The original PREEXEC and PARTIAL result commits remain immutable; MP02_A, MP02_B and MP03_A are referenced by SHA and will not be run. The sole gate change is pre-warmup AOT path/content/source binding followed by strict post-warmup equality to the 9122 final MP03_B cache. All model, input, runtime, Mode B compile/no-graph identity, request CUDA Event boundary, two warmups, five formal samples, correctness tolerance and DQ2 formulas are unchanged. An AOT cache hit may prevent convergence; if the accepted final path is not reached after warmup, STOP before formal. No cache repair or policy revision is authorized.

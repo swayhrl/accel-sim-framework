@@ -1,0 +1,58 @@
+{
+  "accepted_after_warmup": {
+    "file_count": 2,
+    "path": "/home/huangrulin/.cache/vllm/torch_compile_cache/c97581f1bb/rank_0_0/backbone",
+    "tree_sha256": "3f78b16332bcf03c17977fae96aa1bdf6e68cbcf7634681d303a50e5d2c8e397"
+  },
+  "checks": {
+    "LLM_constructor_unchanged": true,
+    "backends_final_rank_backbone_stage": true,
+    "decorators_aot_cache_hit_early_return": true,
+    "decorators_aot_root_stage": true,
+    "hash_ignores_local_cache_dir": true,
+    "old_9122_reads_after_formal": true,
+    "old_dq2_checks_before_warmup": true,
+    "request_timing_ast_unchanged": true,
+    "sampling_constructor_unchanged": true
+  },
+  "conditional_path_note": "Pinned decorators.py returns early on an AOT cache hit. Inductor's second path assignment is conditional, so post-warmup convergence must be observed; it is not asserted from source alone.",
+  "gpu_lock_acquired": false,
+  "gpu_used": false,
+  "installed_pinned_source_sha": {
+    "compilation/backends.py": {
+      "bytes_exact": true,
+      "installed_sha256": "fa4bff8920b363efbbde9456f135fa9d2c004a5bde1898877f177418b2d8b008",
+      "pinned_sha256": "fa4bff8920b363efbbde9456f135fa9d2c004a5bde1898877f177418b2d8b008"
+    },
+    "compilation/caching.py": {
+      "bytes_exact": true,
+      "installed_sha256": "71d212452dde742fbf28b8a01ed29d3c08a7457ff7f8da2a20ce9d17e902c2cf",
+      "pinned_sha256": "71d212452dde742fbf28b8a01ed29d3c08a7457ff7f8da2a20ce9d17e902c2cf"
+    },
+    "compilation/decorators.py": {
+      "bytes_exact": true,
+      "installed_sha256": "cab6962e8a1fead59c75f5ed8cb4732f9e5441ff972030c2f4b1c4ba0c58de3c",
+      "pinned_sha256": "cab6962e8a1fead59c75f5ed8cb4732f9e5441ff972030c2f4b1c4ba0c58de3c"
+    },
+    "config/compilation.py": {
+      "bytes_exact": true,
+      "installed_sha256": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+      "pinned_sha256": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065"
+    }
+  },
+  "old_error": "compile cache path changed before warmup: /home/huangrulin/.cache/vllm/torch_compile_cache/torch_aot_compile/e3e9e809f85090188765b47bd34adcf7546a9bd28e1927888155ece5008170cc",
+  "old_mp03_b_raw_path": "/data/c16/dq2_native_recovery_v1/raw/20261002T085136Z/MP03_B.json",
+  "old_mp03_b_raw_sha256": "a90849e2bff01dd4289f0838a9542f27e5827c1369a3cbf2c160078fcf99ed2a",
+  "old_result_status_is_valid_partial": true,
+  "original_preexec_commit": "cfa3ba1f5cb5c236b0000ba0f5656e75e2e05b79",
+  "original_result_commit": "a12bbfa4609ece57fadde107f9fd2e3bc0380cdf",
+  "pre_warmup_aot": {
+    "embedded_qwen2_source_sha256": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9",
+    "file_count": 347,
+    "model_pickle_sha256": "46b5e0ca86c0572a82cfcd23ca100ccd37b173995d3b01572ae55d3521a2b1b2",
+    "source_binding": "PASS",
+    "tree_sha256": "49c6e49f1d66ae080e8c4a216b0398882d8a608eb801c884700ef9dc098d8620"
+  },
+  "source_commit": "ced6857afa0ea7b2e3f0846a62e1394e90f15607",
+  "status": "PASS_CPU_SOURCE_ONLY"
+}

@@ -1,0 +1,58 @@
+--- cfa3ba1f5cb5c236b0000ba0f5656e75e2e05b79:runner.py
++++ continuation:runner.py
+@@ -24,6 +24,7 @@
+ from vllm.compilation.decorators import TorchCompileWithNoGuardsWrapper
+ from vllm.config.compilation import CUDAGraphMode, CompilationConfig, CompilationMode
+ from vllm.v1.worker.gpu.cudagraph_utils import ModelCudaGraphManager
++from continuation_cache_lifecycle import EXPECTED_AOT, pre_warmup_gate, after_warmup_gate
+
+ ROOT=Path(__file__).resolve().parents[4]
+ ASSET=ROOT/"docs/vm_tlb/review_packs/C16_MEASUREMENT_CAMPAIGN_STAGEA_ASSET_INPUT_CLOSURE_174NEW_V1"
+@@ -101,6 +102,9 @@
+     p.add_argument("--mode",choices=("A","B"),required=True)
+     p.add_argument("--model",type=Path,required=True)
+     p.add_argument("--expected-cache-path",type=Path,required=True)
++    p.add_argument("--continuation-mp03b",action="store_true")
++    p.add_argument("--expected-aot-cache-path",type=Path)
++    p.add_argument("--expected-aot-content-sha")
+     p.add_argument("--output",type=Path,required=True)
+     args=p.parse_args()
+     result={"schema":"C16_DQ2_NATIVE_ARM_RAW_V1","point":args.point,"mode":args.mode,"status":"RUNNING",
+@@ -141,7 +145,14 @@
+             raise RuntimeError("effective CUDA Graph mode changed")
+         if os.environ.get("TORCH_COMPILE_DISABLE") in ("1","true","True"):
+             raise RuntimeError("torch compile disabled")
+-        if cc.local_cache_dir is not None and str(cc.local_cache_dir)!=str(args.expected_cache_path):
++        if args.continuation_mp03b:
++            if (args.point,args.mode)!=("MP03","B") or args.expected_aot_cache_path!=EXPECTED_AOT or not args.expected_aot_content_sha:
++                raise RuntimeError("invalid MP03_B continuation scope or frozen AOT authority")
++            pre_cache=pre_warmup_gate(cc.local_cache_dir,args.expected_aot_content_sha)
++            result["cache_lifecycle"]={"pre_warmup":pre_cache}
++            save(args.output,result)
++            if pre_cache["status"]!="PASS":raise RuntimeError("MP03_B pre-warmup AOT source/config/content identity failed")
++        elif cc.local_cache_dir is not None and str(cc.local_cache_dir)!=str(args.expected_cache_path):
+             raise RuntimeError(f"compile cache path changed before warmup: {cc.local_cache_dir}")
+         if bool(getattr(runner,"is_encoder_decoder",False)):
+             raise RuntimeError("unexpected encoder-decoder skip_compiled path")
+@@ -196,13 +207,19 @@
+             row=request("WARMUP",i)
+             result["warmups"].append(row)
+             save(args.output,result)
+-        if str(cc.local_cache_dir)!=str(args.expected_cache_path):
+-            raise RuntimeError(f"compile cache path changed after warmup: {cc.local_cache_dir}")
+         active=[item for item in compiled_receipt(model) if item["class"]=="Qwen2Model" and not item["do_not_compile"] and (item["compiled"] or item["aot_compiled_fn"])]
+         if not active:raise RuntimeError("Qwen2Model compiled path inactive after warmup")
+         if args.mode=="B" and manager.graphs:raise RuntimeError("Mode B graph state present after warmup")
+         result["runtime"]["cache_path_after_warmup"]=str(cc.local_cache_dir)
+         result["compiled_qwen2model_after_warmup"]=active
++        if args.continuation_mp03b:
++            final_cache=after_warmup_gate(cc.local_cache_dir,"3f78b16332bcf03c17977fae96aa1bdf6e68cbcf7634681d303a50e5d2c8e397")
++            result["cache_lifecycle"]["after_warmup"]=final_cache
++            result["cache_lifecycle"]["graph_count_after_warmup"]=len(manager.graphs)
++            save(args.output,result)
++            if final_cache["status"]!="PASS":raise RuntimeError("MP03_B cache identity did not converge to accepted post-warmup authority")
++        elif str(cc.local_cache_dir)!=str(args.expected_cache_path):
++            raise RuntimeError(f"compile cache path changed after warmup: {cc.local_cache_dir}")
+         save(args.output,result)
+         for i in range(5):
+             row=request("FORMAL",i)
