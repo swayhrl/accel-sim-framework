@@ -1,16 +1,17 @@
 # AWMA研究证据与文献笔记
 
-## 最新入口｜2026-10-02，R26审查收口
+## 最新入口｜2026-10-03，R27单轮Goal已授权并发布handoff
 
-- [R26集成容量审查](empirical/R26_TIED_WEIGHT_CAPACITY_REVIEW_2026-10-02.md)：接受冻结结论 `R26_INTEGRATED_BATCH_CAPACITY_EXTENSION_SUPPORTED`，限定于重复序列、tied-W五步完整训练流程；C1 B70/B71与S2 B71/B72各3/3端点。
-- [R26当前STOP状态](plans/STATUS_AFTER_R26_REVIEW_2026-10-02.md)：Lane G/node109 COMPLETE/STOP；无自动后续GPU任务。
-- [R26执行review pack](https://github.com/swayhrl/accel-sim-framework/tree/1a2485011b300cddd5137bbccb91dd6d30cfc22f/docs/vm_tlb/review_packs/AWMA_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_BOUNDARY_109_V1)：执行commit `1a2485011b300cddd5137bbccb91dd6d30cfc22f`。
-- [R26启动时README快照](README_BEFORE_R26_REVIEW_2026-10-02.md)、[原授权状态](plans/STATUS_AFTER_R26_PRODUCTION_CAPACITY_AUTHORIZATION_2026-10-02.md)及[原Goal](https://github.com/swayhrl/accel-sim-framework/blob/67bb4c00236e52657130dd91ddf44fb6a2e22c87/docs/vm_tlb/chatgpt_handoff/awma/r26_tied_weight_production_capacity_v1/LANE_G_R26_TIED_WEIGHT_PRODUCTION_CAPACITY_109_GOAL.md)仅作历史依据。
+- [当前授权状态](plans/STATUS_AFTER_R27_AUTHORIZATION_2026-10-03.md)：仅Lane G/node109的R27为AUTHORIZED/HANDOFF_READY；发布不代表已启动。
+- [R27合并轮次计划](plans/R27_VARIED_BATCH_CAPACITY_PLAN_2026-10-03.md)：同一Goal内顺序完成R26原始证据读回、固定多样输入、容量端点，以及仅positive时的32步/恢复。
+- [R27完整Goal](https://github.com/swayhrl/accel-sim-framework/blob/5144bde8f9d7b399a596395e0c88ee89025b3a6f/docs/vm_tlb/chatgpt_handoff/awma/r27_varied_batch_capacity_v1/LANE_G_R27_VARIED_BATCH_CAPACITY_109_GOAL.md)：精确handoff HEAD `5144bde8f9d7b399a596395e0c88ee89025b3a6f`；不在通过闸门之间额外开轮次。
+- [R26接受审查](empirical/R26_TIED_WEIGHT_CAPACITY_REVIEW_2026-10-02.md)：重复序列五步流程下C1 B70、S2 B71；B70完整step峰值S2略高且计时MIXED。
+- [R26历史STOP状态](plans/STATUS_AFTER_R26_REVIEW_2026-10-02.md)、[本次更新前README快照](README_BEFORE_R27_AUTHORIZATION_2026-10-03.md)仅作当时状态依据。
 - [R25审查](empirical/R25_TIED_WEIGHT_BROADER_VALIDATION_REVIEW_2026-10-02.md)、[R24审查](empirical/R24_TIED_WEIGHT_NATIVE_REVIEW_2026-10-02.md)。
 
-R26同批次B71见证支持S2显式容量模式比默认C1多运行一个physical batch；batch只是冻结序列的物理复制。B70完整step峰值S2反而高约3.83 MiB，两段formal计时均为MIXED。不能从本轮推断普遍显存下降、统一加速、全参数训练或部署就绪。R25 parent W/m/v位哈希未复现，R26用同一个披露并冻结的起点作两臂比较。Git pack核验与node164执行receipt的界线见审查文档。
+R27使用单一固定WikiText-2 raw **train** token bank，batch内和step间内容变化；只测已限定的Llama tied-W流程。容量搜索只改变物理B；source/input/判据在观察容量前冻结。负面或不稳定结果即STOP，不调数据、tile或容差。C1仍默认，S2仍是显式capacity opt-in。无formal计时、部署、全参数训练或硬件/PPA扩展。
 
-**R26/R25/R24/R23G COMPLETE/STOP；F/R22F1、E/R22E STOP；R20 CLOSED。无新的AWMA GPU、174/Accel-Sim、profiler、hardware/PPA或deployment授权。**
+**R27仅Lane G/node109 AUTHORIZED/HANDOFF_READY；R26/R25/R24/R23G COMPLETE/STOP；F/R22F1、E/R22E STOP；R20 CLOSED。174/Accel-Sim无新任务。**
 
 ## 方法与历史入口
 
