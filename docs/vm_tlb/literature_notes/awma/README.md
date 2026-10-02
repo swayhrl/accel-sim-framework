@@ -1,8 +1,10 @@
 # AWMA论文阅读笔记｜ChatGPT支线
 
-更新：2026-10-02，Round21。**Lane E/F/G、109新实验和174/Accel-Sim均STOP。** 当前只发布问题发现与准备卡，没有新execution Goal。
+更新：2026-10-02，Round21A source/input qualification。R20保持CLOSED。Round21的泛“双向图准备”问题已收窄为NequIP/OpenEquivariance atomic→deterministic图就绪成本；已具备一轮bounded Lane F Native资格/诊断的source与输入authority，174/Accel-Sim仍STOP。
 
 ## 当前入口
+
+- [Round21A：模型/后端/真实输入资格](rounds/2026-10-02_ROUND_21A_SOURCE_INPUT_QUALIFICATION.md)：NequIP与MACE强路径证明Sobek式双CSR不是通用必需；保留更窄的OpenEquivariance atomic vs receiver-sorted deterministic readiness问题。固定OAM-S与官方Si extxyz输入，先做free-prep headroom，再决定是否在线准备。
 
 - [Round21：R20后的问题发现](rounds/2026-10-02_ROUND_21_POST_R20_PROBLEM_DISCOVERY.md)：筛查3DGS、几何神经网络、Muon和生成式推荐。只保留“强软件之后的动态图就绪成本”作为准备优先级；不是已测瓶颈或硬件机会。
 - [R21动态几何图准备卡](problem_cards/R21_DYNAMIC_GRAPH_READINESS_PREPARATION.md)：先核真实trained模型/输入/后端兼容性；prepared graph、GPU邻居构建和合法reuse先纳入基线。不是节点执行指令。
