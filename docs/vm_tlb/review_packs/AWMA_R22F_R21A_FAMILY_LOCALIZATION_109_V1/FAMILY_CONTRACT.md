@@ -1,0 +1,17 @@
+# R22F frozen semantic family and attribution contract
+
+Frozen before the new NSYS scientific profile. Parent: `62af34149d45e9862d5a1e255e2a51ca88a3c4c7`. Input and AOT artifacts remain the accepted R21A frame-55 OAM-S assets.
+
+| Family | Semantic membership | Source anchor |
+|---|---|---|
+| `F_TP_FORWARD` | Both interaction layers' OEQ tensor-product convolution and aggregation in the energy forward. Atomic no-op `fixup_forward`, if actually launched, stays target-owned here; it is not deterministic extra work. | `TensorProductConv.forward` calls `libtorch_tp_jit::jit_conv_forward`; `convolution.hpp::exec_conv` launches JIT `forward` then optional `fixup_forward`; atomic template has an empty fixup body. |
+| `F_TP_FORCE_BACKWARD` | Both interaction layers' OEQ TP/graph aggregation work used by first-order autograd for forces, including atomic no-op `fixup_backward` if launched. No parameter-training gradient or double backward is added. | `TensorProductConv.register_autograd` calls `jit_conv_backward`; `convolution.hpp::backward` launches JIT `backward` and optional `fixup_backward`. |
+| `F_DET_AUX` | Deterministic-only mandatory `fixup_forward`, `fixup_backward`, workspace initialization/reset or reduction launches, if observed. Its cost belongs to the net target family, never to non-TP. | `loop_unroll_conv_det.cuh` defines nonempty `fixup_forward`/`fixup_backward`; deterministic schedule/workspace in `LoopUnrollConv.py`. |
+| `F_NON_TP` | All remaining identified energy+force GPU work: embedding/radial/basis/MLP, non-TP autograd, reductions/output and model plumbing, provided source/graph attribution excludes TP semantics. | NequIP packaged model/AOT graph and exact launch identity. |
+| `F_MIXED` | Fused or ambiguous kernels with inseparable TP and non-TP work, or an exact source/graph-node link that cannot be closed. Kept separate; never moved to a favorable family by kernel name or duration. | Explicit unresolved attribution record. |
+
+Pre-profile assignment order: (1) NVTX arm/repetition interval must enclose the completed CUDA graph invocation; (2) use exact CUDA function, graph-node identity, grid/block and source/JIT launch sequence, not duration; (3) JIT `forward`/`backward` membership requires correspondence with the two OEQ interaction layers; (4) deterministic nonempty fixup and any uniquely linked workspace init/reset belong to `F_DET_AUX`; (5) atomic empty fixup remains TP-owned overhead; (6) Inductor/CUDA kernels outside those source-linked launches are `F_NON_TP` only if non-TP provenance can be established, otherwise `F_MIXED`. Preserve all launches and unassigned reasons.
+
+Attribution must cover >=95% of GPU kernel duration per invocation in the named families or explicitly `F_MIXED`, and target membership must be source-backed and repetition-consistent. If not, stop `R22F_FAMILY_ATTRIBUTION_NOT_QUALIFIED`. Profiled sums are diagnostic, not uninstrumented wall contribution. Net target = TP forward + TP force backward + deterministic aux + any demonstrably target-owned mixed cost; unresolved mixed stays separate and prevents an unqualified favorable net claim.
+
+For each family arm comparison, stable direction requires all three profiled block medians to agree and the median absolute arm gap to exceed 3 times the larger-arm block MAD estimate. No universal 5% family threshold. Report gross TP, aux, net target, non-target median and worst, plus complete profiled GPU time. No timing observation may change membership rules.

@@ -1,0 +1,5 @@
+# R22F Aorder frozen diagnostic
+
+`Aorder` reuses the *exact* accepted Dready prepared graph NPZ (`f1e0eb6bafa2d8e528e58bc3296e2d808907862b8e6425808112cbc54ae00104`), including sorted edge indices and aligned periodic shifts. It drops only the deterministic-only `edge_transpose_perm` field from the model input and runs the accepted A0 atomic AOT artifact (`fbfa6e9277507adfb60c8fe76ad747e86fd5586472073d4ffe32fe553b6d58cc`) in the same official ASE CUDA AOTInductor mode, without recompilation or model change. The underlying prepared graph object remains the same Dready representation; no new sort is performed in the timed invocation.
+
+The arm is diagnostic, not a deployment candidate. Five separate energy/force calls must pass the accepted e3nn reference at `atol=rtol=5e-5`, finite, shape-identical, using the same 64-Si, 1394-directed-edge frame 55 and TF32 OFF. Save every output and the first mismatch before a failure STOP. If clean execution requires broad model rewrite or more than two bounded repairs, mark `AORDER_NOT_CLEAN` and proceed with A0/Dready, explicitly retaining ordering/aggregation confounding.
