@@ -43,7 +43,7 @@ def main():
             status=f"FETCH_ERROR:{type(e).__name__}:{e}"
         with log.open("a",newline="") as f:
             writer=csv.writer(f,delimiter="\t",lineterminator="\n")
-            writer.writerow([stamp(),status,sha or ""])
+            writer.writerow([stamp(),status,sha or "NONE"])
         if sha:
             (PACK/"CONTRACT_AVAILABLE.json").write_text(json.dumps({"status":"FOUND","commit":sha,"ref":REF,"checked_utc":stamp()},indent=2,sort_keys=True)+"\n")
             return
