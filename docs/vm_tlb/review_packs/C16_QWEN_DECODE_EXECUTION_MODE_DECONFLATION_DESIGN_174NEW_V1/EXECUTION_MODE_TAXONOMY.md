@@ -1,0 +1,13 @@
+# Qwen decode execution-mode taxonomy (prospective addendum)
+
+This CPU/source-only addendum does not edit or reinterpret the original Stage A producer `82788c2d587e86f94791d65aaa2bde28929f9303` or independent consumer `9d82ff41132e7b1a1fdd18a287c13627fe62e5b7`. The original MP02 and MP03 Graph-OFF arms remain **`STOP_POINT_CORRECTNESS`**. DQ1, DQ2, DQ3 and DQ4a remain `QUESTION_INCOMPLETE`; the independent consumer found zero formal Tier0 survivors and did **not** authorize `NO_NEW_ARCHITECTURAL_PHENOMENON_FOUND`.
+
+The source of the naming error is exact: producer `util/vm_tlb/c16/stagea_dense_first_tier0/runner.py:129,208` sets `enforce_eager=args.graph_mode == "off"`. Pinned vLLM `vllm/config/vllm.py:1546-1553` turns `enforce_eager=True` into both `CompilationMode.NONE` and `CUDAGraphMode.NONE`. Consequently, the *historical* `GRAPH_OFF_NATIVE` arm is more precisely `EAGER_NO_COMPILE_NO_CUDAGRAPH`; the old name, files, raw, failure and contract remain immutable.
+
+| New name | Intended/required execution identity | Role | Historical status |
+|---|---|---|---|
+| `MODE_A_STRONG` | `enforce_eager=False`; effective vLLM compiled mode; CUDA Graph enabled and actually used for the accepted decode shape | Mature strong-software correctness reference | Old Graph ON arm supplied accepted tokens/backend; exact runtime compile-mode receipt was not recorded and must be checked by the new canary. |
+| `MODE_B_DIAGNOSTIC` | `enforce_eager=False`; `CompilationConfig(cudagraph_mode=CUDAGraphMode.NONE)` while leaving compilation mode/backend at accepted defaults; effective compiled execution verified, no CUDA Graph | New proposed no-graph *diagnostic*, correctness-first | Not yet tested. No scientific timing identity until its own correctness and later observer gates pass. |
+| `MODE_C_HISTORICAL_FAILED` | `enforce_eager=True`; eager, no torch.compile, no CUDA Graph | Preserve original failure only | MP02/03 `STOP_POINT_CORRECTNESS`; permanently excluded from any new science contract. |
+
+The first prospective canary compares **only A versus B**, Qwen BF16 MP02 B1 and then MP03 B4, D0–D31, with frozen input/token IDs and original correctness tolerance. It installs no semantic observer. Duration, if mechanically emitted, is `QUALIFICATION_DIAGNOSTIC_ONLY`; no speedup, Graph benefit, batch utilization or architecture conclusion follows. If B fails correctness, return `MODE_DECONFLATION_CORRECTNESS_FAILED` and stop. If B silently runs eager or its compiled identity cannot be verified, return `MODE_B_IDENTITY_INVALID` or `MODE_B_IDENTITY_UNRESOLVED` and stop. Even a PASS merely permits **later review** of `COMPILED_NO_CUDAGRAPH_OBSERVER_QUALIFICATION`; this goal and the first canary do not authorize that second step.
