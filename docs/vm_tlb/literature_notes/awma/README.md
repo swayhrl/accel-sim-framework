@@ -1,5 +1,19 @@
 # AWMA研究证据与文献笔记
 
+## 最新入口｜2026-10-02，R23G收口后Round24
+
+- [R23G已审定收口状态](plans/STATUS_AFTER_R23G_REVIEW_2026-10-02.md)：G已完成，保留有范围的软件positive；F/R22F1、E/R22E保持STOP，R20 CLOSED。
+- [Round24问题发现](rounds/2026-10-02_ROUND_24_POST_R23G_PROBLEM_DISCOVERY.md)：只保留共享embedding/classifier权重的延迟分块梯度合并/一次提交为优先准备假设；MoE×多LoRA联合分组已存在直接近邻，不凑第二个候选。
+- [CPU语义检查脚本](empirical/round24_cpu_semantic_checks.py)与[紧凑结果](empirical/ROUND24_CPU_CHECK_SUMMARY.json)：48项合成FP64检查、有限差分及三种错误对照。只是ChatGPT容器CPU代数/实现检查，不是GPU资格、性能、真实训练或硬件结果。
+
+**当前没有新的109 GPU或174/Accel-Sim执行授权。** Round24是研究与准备，不是节点Goal；不重启任何已关闭线。后续仍按目标族、必要配套净成本、覆盖/非目标、完整边界评价。完整应用5%不是统一否决门，未知/未资格化也不是性能负例。
+
+下面原Round22文字完整保留为历史快照；涉及“下一步”“尚未测量”的旧句子不能覆盖上述最新状态。
+
+---
+
+## Round22历史正文（原文保留）
+
 更新：2026-10-02，Round22回顾性kernel-family审查。
 
 **Lane E/F/G和174/Accel-Sim本轮均无新执行授权。R20维持CLOSED；R21A保留原MIXED/STOP。** 新评价规则不追溯改判旧实验，不是重跑旧Goal的许可。
