@@ -1,0 +1,112 @@
+{
+  "D0_qualified": true,
+  "H0_performance_inspected_before_freeze": false,
+  "H0_qualified": true,
+  "arms": [
+    "B0_DENSE_STRONG",
+    "C1_COMPACT_FULL",
+    "S2_TILED"
+  ],
+  "candidate_behavior_after_freeze_mutable": false,
+  "compact_accumulator": "sorted unique IDs remapped to compact domain; aten.embedding_dense_backward; no VxH lookup grad",
+  "files": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-awma-r25-tied-weight-broader-validation-109-v1/util/vm_tlb/awma/r25_tied_weight_broader_validation/run_r25_campaign.py",
+      "sha256": "599dcdf3326186fd84d2a2743269762311ca614b5c4e73dc1289c9f6fec646fa"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-awma-r25-tied-weight-broader-validation-109-v1/util/vm_tlb/awma/r25_tied_weight_broader_validation/accepted_r24_base.py",
+      "sha256": "6526c54c74fc3ad1a327322d3221344436da217602ef76dd739fb31772832241"
+    },
+    {
+      "path": "/data/c16/awma/r25_tied_weight_broader_validation_109_v1_20261002/source/cce/cut_cross_entropy/cce_backward.py",
+      "sha256": "e5402a590ef019692d8341805d3adf18ed95d3062c59236b364322c296b42d36"
+    },
+    {
+      "path": "/data/c16/awma/r25_tied_weight_broader_validation_109_v1_20261002/source/cce/cut_cross_entropy/tl_utils.py",
+      "sha256": "e117b70a0fdc2ec4313fd7d9ba5a7e1d78b30fb478760c3c661f9d717cc65ea4"
+    },
+    {
+      "path": "/data/c16/awma/r25_tied_weight_broader_validation_109_v1_20261002/source/cce/cut_cross_entropy/tl_autotune.py",
+      "sha256": "445745f6c20efcd5bcfb2fbc784361c3b4a3a0e8f2089242fde6d4362a977a20"
+    }
+  ],
+  "formal_protocol": {
+    "formal_samples_per_arm_group": 5,
+    "groups": 3,
+    "orders": [
+      [
+        "B0_DENSE_STRONG",
+        "C1_COMPACT_FULL",
+        "S2_TILED"
+      ],
+      [
+        "C1_COMPACT_FULL",
+        "S2_TILED",
+        "B0_DENSE_STRONG"
+      ],
+      [
+        "S2_TILED",
+        "B0_DENSE_STRONG",
+        "C1_COMPACT_FULL"
+      ]
+    ],
+    "warmups_per_arm_group": 2
+  },
+  "optimizer": {
+    "W_dtype": "torch.bfloat16",
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "lr": 0.001,
+    "m_v_dtype": "torch.float32",
+    "name": "explicit AdamW reference",
+    "same_tilewise_consumer_all_arms_points": true,
+    "weight_decay": 0.01
+  },
+  "points": {
+    "D0": {
+      "fixed_cce_meta": {
+        "BLOCK_B": 128,
+        "BLOCK_D": 32,
+        "BLOCK_V": 128,
+        "CCE_AUTOTUNE": 0,
+        "MM_BACK_BLOCK_D": 64,
+        "num_stages": 4,
+        "num_warps": 4
+      },
+      "rows_per_tile": 9344,
+      "tile_count": 17,
+      "tile_fp32_budget_bytes": 33488896,
+      "token_count": 256,
+      "weight_shape": [
+        151936,
+        896
+      ]
+    },
+    "H0": {
+      "fixed_cce_meta": {
+        "BLOCK_B": 128,
+        "BLOCK_D": 32,
+        "BLOCK_V": 128,
+        "CCE_AUTOTUNE": 0,
+        "MM_BACK_BLOCK_D": 64,
+        "num_stages": 4,
+        "num_warps": 4
+      },
+      "rows_per_tile": 4096,
+      "tile_count": 32,
+      "tile_fp32_budget_bytes": 33554432,
+      "token_count": 128,
+      "weight_shape": [
+        128256,
+        2048
+      ]
+    }
+  },
+  "stage": "AWMA_R25_TIED_WEIGHT_BROADER_SOFTWARE_VALIDATION_109_V1",
+  "status": "IMPLEMENTATION_FROZEN_AFTER_TWO_POINT_QUALIFICATION",
+  "tile_policy": "largest positive BLOCK_V multiple under 32MiB FP32 gradient budget"
+}
