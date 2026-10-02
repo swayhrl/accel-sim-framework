@@ -1,0 +1,66 @@
+{
+  "scope": "CHATGPT_CONTAINER_CPU_SYNTHETIC_FP64_UNIT_TEST_ONLY",
+  "cuda_runs": 0,
+  "node109_runs": 0,
+  "node174_runs": 0,
+  "timings_measured": false,
+  "python": "3.13.5",
+  "numpy": "2.3.5",
+  "tolerance": {"atol": 1e-12, "rtol": 1e-12, "scope": "FP64 toy only; not a GPU numeric contract"},
+  "positive_case_count": 48,
+  "positive_pass_count": 48,
+  "max_errors": {
+    "grad": 2.7755575615628914e-17,
+    "dh": 2.7755575615628914e-17,
+    "loss": 0.0,
+    "w": 3.469446951953614e-18,
+    "m": 3.469446951953614e-18,
+    "v": 0.0,
+    "next_forward_loss": 0.0
+  },
+  "finite_difference": {"parameters_checked": 65, "delta": 1e-5, "max_absolute_error": 6.099153473937413e-11, "pass": true},
+  "negative_controls": {
+    "errors": {
+      "two_separate_adamw_steps_weight_error": 0.0010198169875800245,
+      "overwrite_before_dh_error": 0.00016975897287992842,
+      "clip_branches_before_sum_gradient_error": 0.0006765931917088405
+    },
+    "all_wrong_schedules_detected": true
+  },
+  "shape_only_byte_accounting": {
+    "vocab": 151936,
+    "hidden": 896,
+    "illustrative_tokens": 2048,
+    "weight_elements": 136134656,
+    "one_bf16_dense_gradient_MiB": 259.65625,
+    "one_fp32_dense_gradient_MiB": 519.3125,
+    "saved_bf16_final_hidden_MiB": 3.5,
+    "fp32_compact_lookup_gradient_upper_MiB": 7.0,
+    "fp32_lse_MiB": 0.0078125,
+    "not_measured_peak_memory_saving": true
+  },
+  "joint_histogram_example": {
+    "label": "SYNTHETIC_STRUCTURE_ONLY_NOT_NOVELTY_OR_PERFORMANCE",
+    "assignments": 64,
+    "block_m": 16,
+    "same_expert_and_adapter_marginals": true,
+    "aligned_joint_counts": [[8,0,0,8],[8,8,0,0],[0,8,8,0],[0,0,8,8]],
+    "dispersed_joint_counts": [[4,4,4,4],[4,4,4,4],[4,4,4,4],[4,4,4,4]],
+    "aligned_padded_slots": 128,
+    "dispersed_padded_slots": 256
+  },
+  "limitations": [
+    "No checkpoint/model state or GPU implementation is qualified.",
+    "FP64 toy is neither BF16 bitwise equivalence nor training-quality evidence.",
+    "No global clipping, gradient scaling, accumulation, distributed reduction, dropout/recompute recipe support.",
+    "The toy forward materializes logits; this is an algebra test, not an efficient CE implementation.",
+    "No runtime, cache, traffic, occupancy or actual peak-memory measurements."
+  ],
+  "script_sha256": "6a6727628dde878a6349e441440f2e5e4710399631138b94a3418f1ec3d2b8e3",
+  "script_git_blob": "1298301e6f6033eb1b94f3d5ca76468744636101",
+  "full_results_sha256": "2045c4311e5702784440450066671b9c545f5700cbdaec4c2ea1dd875b248f66",
+  "source_register_sha256": "eb6848b2e228fba9fbe904346249295f02279eb3a05c5c02d6ac827f0fee8a99",
+  "downloadable_report_file": "AWMA_ROUND24_PROBLEM_DISCOVERY_2026-10-02.md",
+  "downloadable_report_sha256": "e2e97597629c7190f640d350d8cd26a904939d42cdf982fdc9c4b99e366b357f",
+  "remote_report_note": "Remote Round24 report is a compact version, not byte-identical to the downloadable expanded report."
+}
