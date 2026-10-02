@@ -1,0 +1,100 @@
+{
+  "schema": "AWMA_R27R1_VARIED_BATCH_CAPACITY_CONTINUATION_V1",
+  "date": "2026-10-03",
+  "timezone": "Asia/Shanghai",
+  "stage": "AWMA_R27R1_TIED_WEIGHT_VARIED_BATCH_CAPACITY_STABILITY_109_V1",
+  "handoff_branch": "hrl/awma-r27r1-varied-batch-capacity-continuation-handoff-v1",
+  "execution_branch": "hrl/awma-r27r1-varied-batch-capacity-109-v1",
+  "closed_parent_execution": "4dca1cd713df8315b9e04f702d7f3b990c8f4b88",
+  "gates": [
+    "A_ACCEPTED_PARENT_IDENTITY_RECHECK",
+    "B0_EXACT_INPUT_ACQUIRE_ADMIT",
+    "B1_BANK_NUMERIC_AND_IMPLEMENTATION_FREEZE",
+    "C_NATURAL_CAPACITY_SEARCH",
+    "D_POSITIVE_ONLY_32_STEP_AND_RESUME",
+    "PUBLICATION_AND_STOP"
+  ],
+  "dataset": {
+    "authority": "SOURCE_AUTHORITY.json",
+    "expected_bytes": 6357543,
+    "expected_sha256": "e83889baabc497075506f91975be5fac0d45c5290b6b20582c8cd1e853d0c9f7",
+    "bank_shape": [33, 128, 128],
+    "bank_dtype": "int64",
+    "token_count_required": 540672,
+    "minimum_unique_windows": 4224,
+    "add_special_tokens": false,
+    "row_order": "parquet physical row order",
+    "text_join": "single LF between every row string, retaining empty rows",
+    "step_binding": "k=0..32; first B rows; input 0..126, labels 1..127",
+    "no_new_holdout": true
+  },
+  "qualification": {
+    "rtol": 0.01,
+    "atol": 0.01,
+    "b1_steps": 4,
+    "arms": ["b0", "c1", "s2"],
+    "checks": ["loss", "dH", "total_gradient", "W", "m", "v", "logical_step", "next_loss"],
+    "freeze_before_capacity": true
+  },
+  "capacity": {
+    "min_batch": 1,
+    "max_batch": 128,
+    "first_batch": 64,
+    "upward_after_pass": [96, 128],
+    "downward_after_64_oom": [32, 16, 8, 4, 2, 1],
+    "midpoint_refinement": "floor((L+U)/2) until U=L+1",
+    "max_distinct_search_batches_per_policy": 12,
+    "policy_order": ["c1", "s2"],
+    "steps": 5,
+    "warmup_steps": 2,
+    "further_steps": 3,
+    "fresh_process_each_trial": true,
+    "confirmations_per_adjacent_endpoint": 3,
+    "majority_vote": false,
+    "monotone_required": true,
+    "right_censored_at": 128
+  },
+  "positive_only": {
+    "common_batch_one_step_numerical": true,
+    "common_batch_steps": 32,
+    "state_checks": [1, 4, 8, 16, 32],
+    "resume_from_index": 16,
+    "resume_remaining_steps": 16,
+    "policy_switch_from_c1_step16": true,
+    "s2_witness_steps": 32,
+    "formal_timing": false
+  },
+  "decisions_priority": [
+    "R27R1_PARENT_AUTHORITY_NOT_QUALIFIED",
+    "R27R1_INPUT_OR_SOURCE_NOT_QUALIFIED",
+    "R27R1_NUMERIC_OR_STATE_NOT_QUALIFIED",
+    "R27R1_CAPACITY_BOUNDARY_UNSTABLE",
+    "R27R1_VARIED_BATCH_CAPACITY_EXTENSION_32_STEP_SUPPORTED",
+    "R27R1_EXTENDED_CAPACITY_TRAJECTORY_NOT_QUALIFIED",
+    "R27R1_S2_BATCH_CAPACITY_REGRESSION",
+    "R27R1_CAPACITY_RIGHT_CENSORED",
+    "R27R1_NO_VARIED_BATCH_CAPACITY_EXTENSION"
+  ],
+  "resources": {
+    "node": "109",
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "durable_raw_node": "164",
+    "input_acquisition_is_cpu_only": true
+  },
+  "forbidden": [
+    "implicit resume of old R27 execution branch",
+    "alternate scientific payload",
+    "post-freeze behavior/data/classifier/tolerance changes",
+    "automatic OOM fallback",
+    "offload",
+    "activation checkpointing",
+    "precision/attention/tile/optimizer sweep",
+    "formal speedup claim",
+    "profiler",
+    "node174/Accel-Sim",
+    "hardware/PPA",
+    "second model or corpus",
+    "all-parameter training",
+    "deployment"
+  ]
+}
