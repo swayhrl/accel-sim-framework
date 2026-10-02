@@ -1,0 +1,206 @@
+{
+  "schema": "AWMA_R27_VARIED_BATCH_CAPACITY_STABILITY_V1",
+  "date": "2026-10-03",
+  "timezone": "Asia/Shanghai",
+  "stage": "AWMA_R27_TIED_WEIGHT_VARIED_BATCH_CAPACITY_STABILITY_109_V1",
+  "branch": {
+    "handoff": "hrl/awma-r27-varied-batch-capacity-handoff-v1",
+    "execution": "hrl/awma-r27-varied-batch-capacity-109-v1",
+    "base_parent": "1a2485011b300cddd5137bbccb91dd6d30cfc22f"
+  },
+  "phases": [
+    "R26_RAW_READBACK",
+    "CPU_INPUT_BANK_AND_COMPONENT_QUALIFICATION",
+    "IMPLEMENTATION_FREEZE",
+    "NATURAL_CAPACITY_SEARCH_AND_CONFIRMATION",
+    "POSITIVE_ONLY_32_STEP_AND_RESUME",
+    "POSITIVE_ONLY_DIAGNOSTIC_IF_NEEDED",
+    "PUBLICATION_AND_STOP"
+  ],
+  "dataset": {
+    "source": "PARENT_AUTHORITY.json new_dataset",
+    "expected_bytes": 6357543,
+    "expected_sha256": "e83889baabc497075506f91975be5fac0d45c5290b6b20582c8cd1e853d0c9f7",
+    "split": "train",
+    "row_order": "parquet physical row order, text column",
+    "join": "single LF between all row strings, including empty strings",
+    "tokenizer": "accepted local Llama tokenizer",
+    "add_special_tokens": false,
+    "bank_shape": [
+      33,
+      128,
+      128
+    ],
+    "bank_dtype": "int64",
+    "bank_construction": "first 33*128*128 token IDs, C row-major contiguous, no padding or truncation after tokenization",
+    "step_batch": "step k=0..32 takes rows 0..B-1 at bank[k]; input window positions 0..126; label positions 1..127; attention ones",
+    "candidate_batches": "prefix of same frozen bank at each step",
+    "minimum_unique_windows": 4224,
+    "no_new_holdout": true
+  },
+  "model_and_training": {
+    "model": "same six-payload accepted Llama revision as R26",
+    "trainable": "BF16 tied W only",
+    "optimizer": "R26 explicit FP32-moment AdamW unchanged",
+    "cce_meta": "R26 fixed unchanged",
+    "attention": "sdpa",
+    "use_cache": false,
+    "policy_default": "c1",
+    "policy_capacity_opt_in": "s2",
+    "automatic_fallback": false,
+    "rows_per_tile": 4096,
+    "full_backbone_forward_and_dH_backward": true,
+    "loss_reduction": "mean over B*127 labels"
+  },
+  "start": {
+    "r26_snapshot_sha256": "09e293774ac9dcb535e1a3d47d72878ff68f3831476175060b1016bce8a28b55",
+    "logical_step": 1,
+    "cpu_only": true,
+    "no_rebootstrap": true,
+    "stream_cursor": 0,
+    "policy_independent": true
+  },
+  "qualification": {
+    "rtol": 0.01,
+    "atol": 0.01,
+    "b1_anchor_steps": 4,
+    "arms": [
+      "b0",
+      "c1",
+      "s2"
+    ],
+    "check": [
+      "loss",
+      "dH",
+      "total_gradient",
+      "W",
+      "m",
+      "v",
+      "step",
+      "next_loss"
+    ],
+    "exact_tied_storage": true,
+    "checkpoint_state": [
+      "W",
+      "m",
+      "v",
+      "logical_step",
+      "stream_cursor",
+      "CPU_rng",
+      "CUDA_rng",
+      "model_and_optimizer_identity",
+      "input_bank_sha256",
+      "policy_metadata"
+    ],
+    "run_before_freeze": true
+  },
+  "capacity": {
+    "min_batch": 1,
+    "max_batch": 128,
+    "first_batch": 64,
+    "upward_after_pass": [
+      96,
+      128
+    ],
+    "downward_after_64_oom": [
+      32,
+      16,
+      8,
+      4,
+      2,
+      1
+    ],
+    "midpoint_refinement": "floor((L+U)/2) until U=L+1",
+    "max_distinct_search_batches_per_policy": 12,
+    "policy_order": [
+      "c1",
+      "s2"
+    ],
+    "steps": 5,
+    "warmup_steps": 2,
+    "further_steps": 3,
+    "step_bank_indices": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "fresh_process_each_trial": true,
+    "confirmations_per_adjacent_endpoint": 3,
+    "majority_vote": false,
+    "monotone_required": true,
+    "common_batch": "min(largest confirmed PASS for c1 and s2)",
+    "positive_witness": "confirmed C1 OOM at C1 maximum+1 and confirmed S2 PASS at same B",
+    "right_censored_at": 128,
+    "no_artificial_memory_pressure": true,
+    "no_per_step_state_restore": true,
+    "no_empty_cache_or_gc_between_steps": true
+  },
+  "positive_only": {
+    "common_batch_one_step_numerical": true,
+    "common_batch_steps": 32,
+    "common_batch_state_checks": [
+      1,
+      4,
+      8,
+      16,
+      32
+    ],
+    "common_batch_compare_each_step": [
+      "loss",
+      "next_loss",
+      "logical_step"
+    ],
+    "fresh_process_resume_from_trajectory_index": 16,
+    "resume_remaining_steps": 16,
+    "policy_switch_from_common_c1_checkpoint_steps": 1,
+    "s2_witness_continuous_steps": 32,
+    "s2_witness_resume_from_index": 16,
+    "s2_witness_finite_per_step": true,
+    "witness_matched_c1_numeric_claim": false,
+    "final_logical_step": 33,
+    "formal_timing": false
+  },
+  "decisions_priority": [
+    "R27_PARENT_RAW_NOT_QUALIFIED",
+    "R27_INPUT_OR_SOURCE_NOT_QUALIFIED",
+    "R27_NUMERIC_OR_STATE_NOT_QUALIFIED",
+    "R27_CAPACITY_BOUNDARY_UNSTABLE",
+    "R27_VARIED_BATCH_CAPACITY_EXTENSION_32_STEP_SUPPORTED",
+    "R27_EXTENDED_CAPACITY_TRAJECTORY_NOT_QUALIFIED",
+    "R27_S2_BATCH_CAPACITY_REGRESSION",
+    "R27_CAPACITY_RIGHT_CENSORED",
+    "R27_NO_VARIED_BATCH_CAPACITY_EXTENSION"
+  ],
+  "resources": {
+    "node": "109",
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "durable_raw_node": "164",
+    "max_cpu_working_set_bytes": 25769803776,
+    "max_scratch_bytes": 68719476736,
+    "max_checkpoint_payload_bytes": 42949672960,
+    "probe_no_progress_timeout_minutes": 5,
+    "diagnostic_max_fresh_processes": 2
+  },
+  "forbidden": [
+    "post-freeze GPU behavior/classifier/data changes",
+    "alternate corpus or tokenizer",
+    "validation/test split",
+    "second model",
+    "context or tile sweep",
+    "learning-rate/precision/attention sweep",
+    "dataset-dependent policy choice",
+    "automatic OOM fallback",
+    "activation checkpointing",
+    "offload",
+    "all-parameter training",
+    "convergence or quality claim",
+    "formal speedup claim",
+    "NSYS/NCU/NVBit/SASS",
+    "node174/Accel-Sim",
+    "hardware/PPA",
+    "default-on S2",
+    "deployment"
+  ]
+}
