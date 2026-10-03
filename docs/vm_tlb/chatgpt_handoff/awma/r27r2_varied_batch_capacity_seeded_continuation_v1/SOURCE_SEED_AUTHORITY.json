@@ -1,0 +1,35 @@
+{
+  "schema": "AWMA_R27R2_SOURCE_SEED_AUTHORITY_V1",
+  "date": "2026-10-03",
+  "payload": {
+    "repo": "Salesforce/wikitext",
+    "scientific_revision": "8aaa8b27d493dba10b8553290236799e6dc57829",
+    "config": "wikitext-2-raw-v1",
+    "split": "train",
+    "file": "wikitext-2-raw-v1/train-00000-of-00001.parquet",
+    "bytes": 6357543,
+    "sha256": "e83889baabc497075506f91975be5fac0d45c5290b6b20582c8cd1e853d0c9f7"
+  },
+  "preferred_staging_path": "/data/c16/awma/r27_input_seed/train-00000-of-00001.parquet",
+  "bounded_fallback_search_root": "/data/c16/awma/r27_input_seed",
+  "admission_rule": "Scientific identity is byte-exact size+SHA. The external acquisition route is transport provenance only.",
+  "no_network_retry": true,
+  "forbidden": [
+    "alternate corpus",
+    "validation/test split",
+    "different parquet bytes with equivalent text",
+    "parquet reserialization",
+    "synthetic proxy",
+    "post-result source or offset selection"
+  ],
+  "r26_common_start": {
+    "bytes": 2626691315,
+    "sha256": "09e293774ac9dcb535e1a3d47d72878ff68f3831476175060b1016bce8a28b55",
+    "logical_step": 1
+  },
+  "closed_r27r1": {
+    "commit": "254d66f69ec81bf932add705f721f36255feef2c",
+    "tree": "ebefec69e9ba153adfaf5d1f7860a956964d09cb",
+    "decision": "R27R1_INPUT_OR_SOURCE_NOT_QUALIFIED"
+  }
+}
