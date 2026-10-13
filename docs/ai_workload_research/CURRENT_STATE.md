@@ -1,4 +1,6 @@
-# AI负载体系结构研究｜当前协调状态
+# AI-ARCH｜AI负载体系结构研究当前协调状态
+
+新AI-ARCH Discovery窗口优先阅读：[2026-10-13完整交接](AI_ARCH_DISCOVERY_HANDOFF_CONTEXT_2026-10-13_V1.md)。历史C16旧Stage A/Reset不重启，AWMA最新R27R3独立审查已STOP。
 
 > **快照日期：2026-10-13。只读科研导航；不是实时任务看板，不授予执行权限。**
 

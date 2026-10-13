@@ -1,4 +1,6 @@
-# AI负载体系结构研究｜科研协调入口
+# AI-ARCH｜AI负载体系结构研究科研协调入口
+
+> **新窗口完整交接（2026-10-13）：** [AI-ARCH Discovery handoff V1](AI_ARCH_DISCOVERY_HANDOFF_CONTEXT_2026-10-13_V1.md)。AI-ARCH是总研究计划，本ChatGPT窗口承担Discovery与现阶段总协调；AWMA继续原独立窗口，C16作为历史证据保留。
 
 **角色：研究规划与证据导航分支。不是C16/AWMA的统一实验代码主干，不是任何执行Goal的授权源。**
 
