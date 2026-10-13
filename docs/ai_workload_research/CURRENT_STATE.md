@@ -46,3 +46,11 @@
 - 两Lane仅各写一个独立source review Markdown，禁止直接提交协调分支、调用GPU/模拟器、下载大资产、修改AWMA/C16正式实验；本ChatGPT窗口在其报告回来后独立核对，才选择性更新共有索引。
 - **当前科学状态**：训练multi-GPU作者实测但不可直接投射到109；非LLM公开几何文件存在但真实时间身份与模型/消费者兼容待闭合；Serving已有强软件与paper输入，但无新本机probe合同。**当前无新109 GPU、174模拟器、Stage A或新机制执行授权**。
 - **建议后续Round A5｜并行证据独立审查与优先候选收敛（执行者：ChatGPT／AI-ARCH Discovery；Codex Lane T/N交付结果）**：审核两支Git exact commit和输入/语义状态，最多保留2张新问题卡，若具充分依据再单独提出有界GPU发现性探针审查，不因线程空闲而启动。
+
+## Round A5｜Lane T/N联合独立科学审查（执行者：ChatGPT／AI-ARCH Discovery）
+
+- [**Round A5固定独立科学review**](reviews/AI_ARCH_ROUND_A5_LANE_T_N_INDEPENDENT_REVIEW_2026-10-13_V1.md)：审阅两Lane各自Git固定提交；两分支均以Round A4协调起点`4631fd56248bd23451b302401c07c625c920d593`为parent，分别只新增一份独立source-only报告。**不合并Lane分支**。
+- **Lane T `ACCEPT_SCOPED`**：[训练源审`a1a70180736499687435b1e2d99984d4ebba4c53`](https://github.com/swayhrl/accel-sim-framework/blob/a1a70180736499687435b1e2d99984d4ebba4c53/docs/ai_workload_research/reviews/AI_ARCH_A4_TRAINING_SOURCE_REVIEW_174NEW_V1.md)；MegaScale-MoE 352B H800强/弱扩展为作者原文实测，但逐点微批/实际训练token/通信气泡分解不足，109单卡无法同语义复现；`NO_NEW_TRAINING_PROBLEM_QUALIFIED_WITHIN_A4`，非训练全领域否定。
+- **Lane N `PARTIAL_DOCUMENT_INTEGRITY`**：[原始报告`e355f096eeac44328d7463ef3256cc649ec9cb03`](https://github.com/swayhrl/accel-sim-framework/blob/e355f096eeac44328d7463ef3256cc649ec9cb03/docs/ai_workload_research/reviews/AI_ARCH_A4_NONLLM_SOURCE_REVIEW_174NEW_V1.md)实际包含2,334个字面`?`且零中文汉字；本ChatGPT重算SHA256完全匹配报告值，证实已提交版本文本丢失。**不接受其完整中文叙述**。通过独立固定源码及Si文件核验，保留有限结论：110帧×64 Si输入身份成立，未认证时间顺序；OAM-S 128/64不符合Sobek**直接UVU**统一multiplicity要求，但不否定OAM-S现有OEQ强后端及Sobek其它模式；`NO_NATURAL_MODEL_CONTRACT_YET / NO_NEW_NATIVE_ADMISSION`只针对审查过的接口组合。
+- **联合裁决 `ROUND_A5_NO_NEW_NATIVE_PROBE_ADMITTED`**：目前0个新109 GPU探针、0模拟器任务、0机制晋升；C16 Stage A与AWMA R27R3固定STOP保持。已审来源的有限结论不因未准入而扩展为否定整个领域。
+- **建议下一轮Round A6｜自然非LLM强软件路径资格与训练领域拓展（执行者：ChatGPT主审；Lane N可选纯文本V2修复）**：若Lane N需可读报告，仅按原源码重建UTF-8 V2，不推断遗失文字、不重跑科学实验；本窗口继续OAM-S+OpenEquivariance+真实Si独立帧的可行性与另一公开训练family的源审。当前无109/174模拟/新下载/训练授权。
