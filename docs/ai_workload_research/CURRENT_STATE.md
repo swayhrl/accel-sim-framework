@@ -4,7 +4,24 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已审：Round A19｜Lane M A16R1 Green Context有限PASS与G3 STOP
+## 最新已审：Round A20｜重新筛选三类AI负载，优先3DGS自然场景
+
+**科研执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [**Round A20完整原文、实验组和公开源码审查**](literature/AI_ARCH_A20_REAL_AI_WORKLOAD_REDISCOVERY_THREE_FAMILY_AUDIT_2026-10-14_V1.md)。**本轮没有执行GPU、模拟器、训练、下载模型/场景或启动Codex**。回到现有`P08/P10/P13/P14`问题图谱，避免重复Green Context工具工程。
+
+| Family | A20新增原始来源事实 | 当前科学决定 |
+|---|---|---|
+| **3DGS真实场景训练** | [ASPLOS2026 GS-Scale论文](https://arxiv.org/html/2509.15645)有RTX4080 Super16GB与真实Mill-19/GauU场景、完整epoch/容量/PSNR/LPIPS对照；单step平均使用8.28% Gaussian（作者限定大场景），Building参数/梯度/优化器状态约占显存90%；GS-Scale原已实现host state offload、GPU frustum、CPU optimizer forwarding/deferred update。公开[代码固定`SNU-ARC/GS-Scale@6471e958…`](https://github.com/SNU-ARC/GS-Scale/tree/6471e958f7e318f4870234d8107e0aa91c2d6932)有GPU-only、naive host、full GS-Scale三条路径。**HPCA2025 GSArch已有Gaussian冷热驻留及原子等硬件近邻**。 | **`Q-A20-GS`优先CPU-only真实场景输入/软件/host平台准入**；尚无109本机训练/硬件headroom，更不是新Cache机制 |
+| **MLIP/MD** | 现有Lane M OAM-S/Si静态32帧已真正运行；[NVIDIA ALCHEMI Batched MD](https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/performance.html)与[NEMP 2026](https://doi.org/10.1039/d5sc07248d)已有批量MD、CPU邻居表与GPU力计算异步近邻；实验模型/输出/平台与静态OAM-S不同 | `P10_STATIC_NATIVE_QUALIFIED / REAL_MD_TRAJECTORY_MISSING / PARKED`；不因既有batch收益直接重做邻居流水 |
+| **HSTU推荐训练/推理** | [NVIDIA/recsys-examples固定源`6b983fc…`](https://github.com/NVIDIA/recsys-examples/tree/6b983fc950ac49bd131e0411d6e72968e9f343bf)提供**16×H100**训练六个累加软件组、Zipf**合成序列和ID**：CUTLASS后302.6 TFLOPS/GPU，加入DynamicEmb cache变296.8，prefetch最后仅310.6，说明缓存/预取未必端到端增益。单L20 inference亦合成输入 | `STRONG_SOFTWARE_EXISTS / REAL_USER_INPUT_NOT_QUALIFIED / NOT_LOCAL_4080_ADMITTED` |
+
+- **科学可辨识性**：3DGS的**给定16GB可训练Gaussian规模和质量上限**、**同工作量完整step/epoch wall**、**达到固定画质的时间**是三个不同分母。作者虽报告RTX4080 Super 9M→40M容量扩展，但那不是本机RTX4080数据或纯硬件效益；其deferred Adam的ε近似也不代表bitwise数值完全相等。不能在缺真实场景与同语义baseline时下载大数据开跑。
+- **下一步已备好一个具体、单次CPU源码准入Goal**：[**A21 GS-Scale真实场景/环境资格`](goals/AI_ARCH_A21_GSSCALE_REAL_SCENE_SOURCE_ADMISSION_174NEW_V1.md)，执行候选为原174-new **Lane T**复用窗口，独立新分支`hrl/aiarch-a21-gsscale-real-scene-source-174-v1`，起点`d3d5e235db0822a2404e05dcdb705ffc942e70ec`。**本ChatGPT已准备Git分支但尚未启动Codex**。限定最多8个真实作者source、一个Mill19自然scene的数据identity与最强software/time/quality合同，禁止GPU/源码编译/新环境/scene下载和109/164访问；若数据/平台不合格，source-only STOP。
+- **论文价值与硬件STOP**：作者已有强软件GS-Scale、同类GSArch缓存/atomic加速和系统级敏感性。只有将来验证完整训练中强软件之后仍有可归因、可观的GPU/host资源服务延迟且能与active set/数据语义对齐，才可能提出新的体系结构问题。当前`P14_RESEARCH_PRIORITY / NO_NEW_NATIVE_OR_MECHANISM_ADMISSION`。
+- Lane M（109）A16R1有限API G1/G2 PASS、G3 SOURCE_ONLY STOP及NequIP V1R1原生结果保持各自冻结；Lane T历史A4/A10、Lane N、C16 Stage A及AWMA独立权威均未改变。GPU锁、164 raw authority继续独立，当前没有新增109 GPU实验许可。
+
+以下A19/A18及更早内容为历史已审事实或历史审批，不因A20研究自动重新启动任何旧任务。
+
+## 历史已审：Round A19｜Lane M A16R1 Green Context有限PASS与G3 STOP
 
 **独立审查执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [完整A19固定审查](reviews/AI_ARCH_ROUND_A19_LANE_M_A16R1_GREEN_G3_INDEPENDENT_REVIEW_2026-10-14_V1.md)；[Lane M正式执行提交`6953ac1690b7a905b6000833a879f9164c7c9e43`](https://github.com/swayhrl/accel-sim-framework/commit/6953ac1690b7a905b6000833a879f9164c7c9e43)，tree `5d993895142148886b24e7cc32d3035acf308361`，分支`hrl/aiarch-a16r1-nequip-greencontext-109-v1`已验证HEAD一致。
 
