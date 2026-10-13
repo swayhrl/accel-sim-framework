@@ -20,3 +20,11 @@
 - 实验只由具体可证伪问题触发；发现性小实验与正式机制验证分开。
 - 共享资源不变：109 GPU按既有锁串行；174-new科研分析和模拟按原授权；164负责大文件的长期保存。
 - 本文件不安排新Goal，不判定尚待审查的AWMA执行结果为accepted。
+
+## AI-ARCH Discovery｜Round A2文献研究更新（2026-10-13）
+
+- [Round A1：22条原始实验组](literature/AI_ARCH_P01_P13_EXPERIMENT_GROUP_AUDIT_2026-10-13_V1.md)和[Round A1资源/调度因果精读](literature/AI_ARCH_P01_P13_RESOURCE_MODEL_CAUSAL_READING_2026-10-13_V1.md)已完成。
+- [**Round A2：Bullet、Kitsune、VTC、Tawa、Twill的实际实验组、软件近邻和资源限制审计**](literature/AI_ARCH_P01_P13_ROUND_A2_EXECUTION_RESOURCE_BOUNDARIES_2026-10-13_V1.md)已加入协调层。重要证据分界：Kitsune的应用性能及硬件资源缩放主要来自A100类模拟，queue微基准来自实芯；VTC的Llama/vLLM强对照是单Decoder Layer、在H100上不加速；Tawa与Twill主要是H100/B200算子级真实kernel，不是完整训练/服务。
+- **仅保留两张待证伪问题**：Q-A2-01（强软件后的任务供给与资源服务饱和点）及Q-A2-02（异构task中的缓冲/寄存器与数据就绪生命周期）；都是DISCOVERY_DESIGN_ONLY，并非机制创新或native实验结论。
+- **下一步建议Round A3**：复用已审查C16小型review pack和外部原文，做两张问题的可辨识性与最近邻反证账本；若无需真实GPU即可否定，则直接收口。仅文献/协调证据工作；没有109 GPU、174模拟器、C16 Stage A或AWMA新任务授权。
+- 本研究更新**不改变**上表AWMA R27R3独立审查STOP、C16历史终态及共享节点权限。
