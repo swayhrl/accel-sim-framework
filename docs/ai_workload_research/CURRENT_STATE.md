@@ -4,6 +4,15 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
+## 当前执行许可：Round A8｜109静态结构有限观察（已明确批准，未启动）
+
+**用户于2026-10-13在本AI-ARCH窗口明确同意A7提出的整份A8合同及资源硬预算。** [固定批准记录](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1_APPROVAL_2026-10-13.md)与[科学合同V1](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1.md)共同界定本轮唯一执行范围。状态：`EXPLICITLY_APPROVED / AWAITING_NODE109_CODEX_LAUNCH / NOT_NATIVE_VALIDATED`。
+
+- 执行者：**node109全新独立Codex窗口（Lane N-109 / Round A8）**；原174-new Lane N与Lane T仍STOP。计划只做一个有限观察，不改任何历史科学合同。
+- 四条件N-C2/G2/G4/G8、相同32帧、单batch编译产物与完整energy/force/stress，GPU单RTX4080及既有非阻塞共享锁，依V1预冻结数值/边集合/时间统计与STOP。
+- 用户批准GPU锁占用硬上限90分钟、观察阶段15分钟，模型和Si下载<=12MiB、依赖下载<=8GiB、新环境<=25GiB、CPU<=8 workers/RAM<=32GiB/GPU显存<=12GiB、raw日志<=256MiB；任何科学/资源边界变化均不得静默执行。
+- **本ChatGPT目前仅完成GitHub记账和启动分支准备，没有代替用户在node109启动Codex、模型下载或GPU运行。** 是否已启动必须依据实际Codex回执，不能从Git HEAD推断。
+
 ## 最新完成：Round A7｜非LLM发现性观察完整合同与执行前审查
 
 **执行者：ChatGPT／AI-ARCH Discovery。连续设计阶段已一次完成；没有启动Codex或109 GPU。**
