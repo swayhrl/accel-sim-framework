@@ -4,7 +4,19 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前执行许可：Round A8｜109静态结构有限观察（已批准；用户报告已启动）
+## 最新已审：Round A8｜Lane M依赖wheel门STOP（执行者：ChatGPT独立审查）
+
+**当前接受的科学状态：`V1_ENVIRONMENT_BLOCKED / NOT_EVALUATED / COMPLETE_STOP`。** [Round A8独立审查](reviews/AI_ARCH_ROUND_A8_LANE_M_ENV_STOP_INDEPENDENT_REVIEW_2026-10-13_V1.md)已在固定[执行提交`06674a961632c107681ac146d735d932dde112d6`](https://github.com/swayhrl/accel-sim-framework/commit/06674a961632c107681ac146d735d932dde112d6)和公开PyPI官方发行上核对停止依据。执行分支`hrl/aiarch-nequip-static-batch-109-v1`保持STOP，**不自动恢复、重启、merge或修改旧receipt**。
+
+- 受控解析锁定82个发行包，`antlr4-python3-runtime==4.9.3`的**PyPI官方wheel缺失**触发V1预冻结wheel-only STOP；官方sdist存在且hash相符。轮子缺失不是模型加载失败，也不是Python包被证实不能安装。
+- **四条件N-C2/G2/G4/G8全部0计时样本**，0正式进程、0数值/边集合/compiled资格；不能给性能排序或新硬件现象。
+- 执行者报告模型/Si字节身份PASS，109 GPU锁占用/正式观察/峰值显存为0；依赖下载保守计约3.11GiB、wheel阶段RAM峰值约92.6MiB，但全部resolver阶段RAM峰值未测。164归档通过是执行侧报告；本窗口GitHub抽检5份关键文件SHA通过，不宣称现场重算164全部raw。
+- [**Round A9候选V1R1合同**](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1R1_WHEEL_EXCEPTION_DRAFT.md)只提出从**原官方同版本sdist**有界构建一次本地wheel并继续原参数/预算下的资格；**尚未获得新的GPU/依赖打包例外批准，未创建V1R1执行分支**。不允许换4.13、随意降低数值门或从第三方wheel补包。
+- Lane M（109）现已STOP；Lane N（174-new）非LLM旧审查与Lane T（174-new）训练旧审查仍STOP。C16 Stage A、AWMA R27R3旧科学结论及独立管理边界不受本轮影响。
+
+**下面A7/A8批准与启动段落保留为历史时点记录，其“当时待启动/已启动/待审批”状态都已经由本段A8正式STOP取代。**
+
+## 历史授权：Round A8｜109静态结构有限观察（当时已批准、用户报告已启动）
 
 **用户于2026-10-13在本AI-ARCH窗口明确同意A7提出的整份A8合同及资源硬预算。** [固定批准记录](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1_APPROVAL_2026-10-13.md)与[科学合同V1](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1.md)共同界定本轮唯一执行范围。状态：`EXPLICITLY_APPROVED / USER_REPORTED_LAUNCHED / NOT_NATIVE_VALIDATED`。用户已报告在109启动Codex并将窗口命名为**Lane M**；本窗口未直接核验node109实时任务、GPU锁或任何执行门结果。
 
@@ -13,7 +25,7 @@
 - 用户批准GPU锁占用硬上限90分钟、观察阶段15分钟，模型和Si下载<=12MiB、依赖下载<=8GiB、新环境<=25GiB、CPU<=8 workers/RAM<=32GiB/GPU显存<=12GiB、raw日志<=256MiB；任何科学/资源边界变化均不得静默执行。
 - **用户随后明确报告Lane M已在109启动。** 这是`USER_REPORTED_LAUNCHED`，不是本窗口已经核验运行、CUDA资格PASS、采集完成或结果有效。不得从Git HEAD推断实时GPU状态；执行合同、锁与STOP条件全部保持。
 
-## 最新完成：Round A7｜非LLM发现性观察完整合同与执行前审查
+## 历史设计完成：Round A7｜非LLM发现性观察完整合同与执行前审查
 
 **执行者：ChatGPT／AI-ARCH Discovery。连续设计阶段已一次完成；没有启动Codex或109 GPU。**
 
@@ -28,7 +40,7 @@
 | 测量/统计 | CPU常驻输入至CPU结果完整wall；3 fresh process×12完整四条件block=144样本；诊断另列 | 编译/准备一次性成本另报；不从局部event之和推全程关键路径 |
 | 连续执行合同 | 从隔离环境、资格、canary、计时、自检到发布一次Goal；失败按事前规则STOP | `DESIGN_COMPLETE / GPU_APPROVAL_PENDING / NOT_NATIVE_VALIDATED`；执行分支尚未创建 |
 
-## 下一阶段：Round A8｜109静态结构有限观察（待明确GPU审批）
+## 历史规划：Round A8｜109静态结构有限观察（当时待明确GPU审批）
 
 **原设计时的拟执行者标签为Codex Lane N／109；现更名为Lane M／109（用户报告已启动）；科学审查：ChatGPT／AI-ARCH Discovery。**
 
