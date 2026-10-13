@@ -4,7 +4,19 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已审：Round A14｜SM89资源旋钮与负载可行性筛选
+## 最新已审：Round A15｜CUDA12.6底层Green Context与PyTorch2.10源码接口闭环
+
+**执行者：ChatGPT／AI-ARCH Discovery；连续source-only（与A14同轮窗口完成，无设备执行）。** [Round A15固定源码接口核查](literature/AI_ARCH_ROUND_A15_GREEN_CONTEXT_CU126_SOURCE_INTERFACE_CLOSURE_2026-10-13_V1.md)。
+
+- NVIDIA **CUDA12.6.0 Driver API**文档已经包含Green Context资源split/create及相关stream API，对8.x明确最小分区量级；不能从现代PyTorch的CUDA>=12.8便利封装推出“底层12.6完全没有”。
+- 原109已接受PyTorch**2.10.0+cu126**的固定[`torch/cuda/green_contexts.py@v2.10.0`](https://github.com/pytorch/pytorch/blob/v2.10.0/torch/cuda/green_contexts.py)源码**确实已有条件性Python shim**：仅当`torch._C._CUDAGreenContext`存在才`SUPPORTED=True`；这是早期`GreenContext.create/set_context`接口，**不是**当前PyTorch文档中的`GreenContext(...).Stream()`包装。当前109 wheel是否编译启用、具体driver能否申请SM分区，均**没有实际查询**。
+- `torch.cuda.ExternalStream`在v2.10.0也存在，但其合法接管NequIP AOTInductor、OEQ、ALCHEMI和跨流事件/allocator语义仍不合格；不能只因Python API可调用就把旧V1R1观测升级为SM敏感性实验。
+- **最终`SOURCE_FEASIBILITY_COMPLETE / NO_NATIVE_ADMISSION`**。A14的C14-01（已有原生Si模型）与C14-02（Qwen0.5B自然模型候选）均PARKED；后续如需真正新结果，必须先独立批准对象/授权GPU小型API与数值canary或新的模型/输入资格，不再重复无限源码版本搜索。
+- Lane M、T、N继续原STOP；旧V1、C16/AWMA和GPU共享锁边界不变，0新GPU/模拟器/训练/权重下载。
+
+**下面A14及更早结论为已接受历史来源，不自动启动任何新任务。**
+
+## 历史已审：Round A14｜SM89资源旋钮与负载可行性筛选
 
 **执行者：ChatGPT／AI-ARCH Discovery；全部GitHub与作者/NVIDIA官方文档只读。** [**Round A14完整报告**](literature/AI_ARCH_ROUND_A14_SM89_RESOURCE_AXIS_AND_WORKLOAD_FEASIBILITY_2026-10-13_V1.md)。**没有GPU、模拟器、模型下载或新Codex执行。**
 
