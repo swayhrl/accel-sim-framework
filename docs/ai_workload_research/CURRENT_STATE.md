@@ -28,3 +28,11 @@
 - **仅保留两张待证伪问题**：Q-A2-01（强软件后的任务供给与资源服务饱和点）及Q-A2-02（异构task中的缓冲/寄存器与数据就绪生命周期）；都是DISCOVERY_DESIGN_ONLY，并非机制创新或native实验结论。
 - **下一步建议Round A3**：复用已审查C16小型review pack和外部原文，做两张问题的可辨识性与最近邻反证账本；若无需真实GPU即可否定，则直接收口。仅文献/协调证据工作；没有109 GPU、174模拟器、C16 Stage A或AWMA新任务授权。
 - 本研究更新**不改变**上表AWMA R27R3独立审查STOP、C16历史终态及共享节点权限。
+
+## Round A3｜历史证据闭环与候选准入核查（执行者：ChatGPT／AI-ARCH Discovery，2026-10-13）
+
+- [Round A3正式审查底稿](literature/AI_ARCH_ROUND_A3_HISTORICAL_EVIDENCE_CLOSURE_AND_CANDIDATE_ADMISSION_2026-10-13_V1.md)已写入：直接核固定C16 `a3a36e64` Split-K M1/16/32/64、`6d226cd9` K容量、`30b3016a` FFN理论headroom、`e8a2553f` 合法双流负例，并对照MPK固定作者源码与Tawa/Twill原文资源模型。
+- **Q-A2-01**：当前只支持旧W4算子族**任务分解方案随规模反转**，不能证明单变量物理SM扩展或强软件之后有新硬件残余；保留有条件规律，不晋升新native。
+- **Q-A2-02**：当前FFN双流性能负、F2B分块tile-ready依赖与合法oracle未定义，强软件/论文近邻充分；parked，不能据此开发硬件。
+- **本轮裁决：0个机制晋升，0个109发现性探针、0个174模拟器任务**。没有改动C16历史、AWMA独立审查和GPU共享锁。
+- **建议下一轮Round A4｜跨负载自然场景选样与资源问题辨识（执行者：ChatGPT／AI-ARCH Discovery）**：从已审训练和非LLM作者数据与AWMA Round09/21去重，找最多3个有真实输入、完整时间区间与成熟软件对照的family，最多保留2张可证伪问题卡；本轮仅文献/GitHub只读与协调笔记，无新的Codex执行Goal。新GPU探针只在具备独立完整科学合同后单独提出。
