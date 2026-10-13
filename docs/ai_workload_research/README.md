@@ -23,8 +23,8 @@
 - C16最新Problem Discovery Reset：[`635b2f22cbe1bed5ac45de04b258a5f5e9bc6d4f`](https://github.com/swayhrl/accel-sim-framework/commit/635b2f22cbe1bed5ac45de04b258a5f5e9bc6d4f)，目前无获准的C16 native任务。
 - C16 Stage A收口：[`ccd6928bfb420d1e4c554ec0e377bb8fbe377501`](https://github.com/swayhrl/accel-sim-framework/commit/ccd6928bfb420d1e4c554ec0e377bb8fbe377501)，`TERMINAL_PARTIAL`，不得解释为AI没有新瓶颈。
 - AWMA R27R3事前交接：[`29ce051f982f3854bd4392a94e4195c59340123b`](https://github.com/swayhrl/accel-sim-framework/commit/29ce051f982f3854bd4392a94e4195c59340123b)，原Goal/STOP规则不变。
-- AWMA R27R3现有执行提交：[`7bd31fae4c54e121d54743a803d978ee02a64959`](https://github.com/swayhrl/accel-sim-framework/commit/7bd31fae4c54e121d54743a803d978ee02a64959)，`B0_REFERENCE_NOT_REPEATABLE`为**已提交的执行结论，尚待AWMA独立科研审查**。
-- AWMA研究笔记：[`0b8310ee4afe8429b3ed2de381594794ee12ae31`](https://github.com/swayhrl/accel-sim-framework/commit/0b8310ee4afe8429b3ed2de381594794ee12ae31)；其中授权状态为发布时快照，不代替最新执行分支结果。
+- AWMA R27R3执行提交：[`7bd31fae4c54e121d54743a803d978ee02a64959`](https://github.com/swayhrl/accel-sim-framework/commit/7bd31fae4c54e121d54743a803d978ee02a64959)，独立[AWMA科学审阅](https://github.com/swayhrl/accel-sim-framework/blob/d6e9bbfb562814bcd5dc5adb444d3c572e7f446b/docs/vm_tlb/literature_notes/awma/empirical/R27R3_B0_REFERENCE_REPEATABILITY_REVIEW_2026-10-13.md)已接受`R27R3_B0_REFERENCE_NOT_REPEATABLE`有限STOP；B0-B0完整梯度25个元素超原容差，组件根因未定位且无容量实验。详见[跨项目E-A13](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)及[同步边界](R27R3_INDEPENDENT_REVIEW_SYNC_2026-10-13.md)。
+- AWMA研究笔记（已审阅后的状态）：[`f0a6ec310c09cd011fffbe8a5ca22d6effacdf6b`](https://github.com/swayhrl/accel-sim-framework/commit/f0a6ec310c09cd011fffbe8a5ca22d6effacdf6b)；当前R27R3已STOP，协调分支不产生新实验授权。
 
 ## 一条重要边界
 
