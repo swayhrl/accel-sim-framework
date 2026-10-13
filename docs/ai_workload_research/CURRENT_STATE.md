@@ -4,7 +4,19 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前获准：Round A16｜Lane M最小NequIP Green Context API与数值资格canary
+## 最新已审：Round A17｜Lane M A16版本不匹配接口STOP
+
+**执行者：ChatGPT／AI-ARCH Discovery（原始Git审阅、7文件哈希独立抽核、CUDA12.6官方文档核对）。** [A17固定独立审查](reviews/AI_ARCH_ROUND_A17_LANE_M_A16_GREEN_INTERFACE_STOP_REVIEW_2026-10-14_V1.md)，[Lane M A16固定执行提交`3dfc5826960ada62548183365d5ad7489f89ae12`](https://github.com/swayhrl/accel-sim-framework/commit/3dfc5826960ada62548183365d5ad7489f89ae12)。
+
+- **A16在G1合法STOP并已完成发布**：0.301507s共享GPU持锁、GPU任务显存抽样0MiB、下载/安装0；76为**设备物理SM数**，实际Green quota=**未建立/null**；没有创建Green context/stream/kernel、数值或任何正式性能点，G2/G3/G4全未运行。164的17 raw＋23 closeout回读PASS是**执行侧报告**，本窗口未SSH重新散列164 binary。
+- **设计侧接口错误被确认**：原A16 Goal强制调用`cuStreamGetDevResource`，而NVIDIA官方**CUDA12.6** API并不列出它；Lane M调用`cuGetProcAddress`返回API调用本身`CUDA_SUCCESS`，但`queryResult=CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND`且地址NULL，因此依法STOP。**不能将其写为设备不支持Green Context或RTX4080数值失败**。
+- [CUDA12.6 GreenContext](https://docs.nvidia.com/cuda/archive/12.6.0/cuda-driver-api/group__CUDA__GREEN__CONTEXTS.html)与[Stream](https://docs.nvidia.com/cuda/archive/12.6.0/cuda-driver-api/group__CUDA__STREAM.html)文档已给出替代`cuStreamGetCtx_v2`查询stream实际`CUgreenCtx`句柄＋`cuGreenCtxGetDevResource`查询对应SM配额的受控来源链，且**两接口均在此次109执行侧有限导出清单中出现**；但新链**尚未运行或批准**。
+- [**唯一A16R1修订候选合同**](goals/AI_ARCH_A16R1_NEQUIP_GREEN_CONTEXT_109_CORRECT_G1_PROPOSAL.md)：只替换G1版本错误接口，保留原OAM-S/Si0/109五次均值、旧模型/AOT SHA、原shared GPU锁≤600s/4GiB显存/12GiB RAM/512MiB新增磁盘与0下载、G2–G4严格门与0性能样本；**`PROPOSAL_ONLY / USER_APPROVAL_REQUIRED / NOT_LAUNCHED`**。此候选还明确`cuCtxFromGreenCtx`与current-context保存/恢复和自有stream生命周期。**不创建新的A16R1执行分支，不向旧STOP的Lane M发自动重试**。
+- **P13仍`NOT_EVALUATED`**；A16未触发新的SM资源敏感性或硬件机制结论。NequIP先前V1R1 `ACCEPT_SCOPED_NATIVE_MIXED_RESPONSE`、Lane T/N原STOP、C16 Stage A与AWMA独立权威均不改变。
+
+**以下“当前获准A16”的描述是其启动前历史授权快照，已经由本段正式G1 STOP取代；批准只对那次A16有效，不能延续到新A16R1。**
+
+## 历史已执行并STOP：Round A16｜Lane M最小NequIP Green Context API与数值资格canary
 
 **执行者：Codex Lane M／109（仍需用户向Codex窗口发送Goal）；设计审查者：ChatGPT／AI-ARCH Discovery。** 用户已回复“同意”上一轮提出的低成本API与数值canary方案；**只允许本次一档SM配额的受控API/数值资格，没有正式性能采样或新机制。**
 
