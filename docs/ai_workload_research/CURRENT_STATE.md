@@ -4,6 +4,19 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
+## 当前获准：Round A16｜Lane M最小NequIP Green Context API与数值资格canary
+
+**执行者：Codex Lane M／109（仍需用户向Codex窗口发送Goal）；设计审查者：ChatGPT／AI-ARCH Discovery。** 用户已回复“同意”上一轮提出的低成本API与数值canary方案；**只允许本次一档SM配额的受控API/数值资格，没有正式性能采样或新机制。**
+
+- [**唯一Goal V1**](goals/AI_ARCH_A16_NEQUIP_GREEN_CONTEXT_109_CANARY_V1.md)、[固定用户同意与自限预算记录](goals/AI_ARCH_A16_NEQUIP_GREEN_CONTEXT_109_CANARY_V1_APPROVAL_2026-10-13.md)。对象仅原已审NequIP OAM-S/Si canary帧0与109、同AOT SHA、原FP32 model_dtype与FP64辅助常量、5次均值`atol=rtol=5e-5`，不重新下载/编译模型。
+- GPU硬上限**10分钟非阻塞共享锁、4GiB显存、12GiB RAM/4 CPU worker、512MiB本地增量、0模型/依赖下载**；锁忙立即DEFER。只用109 RTX4080，限制**一档约半数合法SM资源**、一个绿流小kernel及条件性两帧数值canary。任何不合平台/兼容/身份、无法证明stream所有权或改变软件行为必须STOP。
+- 逐门：`G1 CUDA12.6 Green API + actualSM`→`G2 自有绿流kernel及结果`→`G3 torch2.10/OEQ/ALCHEMI/AOT stream集成`→`G4 原模型数值`。**有条件地执行G4；若G3不可证明则直接STOP，不能把Driver API通过写成真实全模型SM quota通过。**
+- 建立单独`hrl/aiarch-a16-nequip-greencontext-109-v1`分支和新worktree，不修改旧Lane M V1R1结果`1f69559d…`、其AOT/env/cache，以及C16/AWMA与174 Lane T/N。
+- **状态：`USER_APPROVED_NARROW_API_NUMERIC_SCOPE / PREPARED_AWAITING_CODEX_LAUNCH / NO_NATIVE_RESULT`**。ChatGPT只做GitHub准备，没有连接109启动实际CUDA/Goal。
+- 最新已接收A15源结论仍是`CUDA12.6_DRIVER_API_EXISTS / Torch210_CUDA126_INTEGRATION_NOT_QUALIFIED`，A16真正新增的证据应来自固定执行receipt；用户没有授权SM quota性能曲线、NCU/NSYS、Qwen模型或新P13机制。
+
+**以下A15及更早轮次为历史已接受结论；不因本次批准被修改。**
+
 ## 最新已审：Round A15｜CUDA12.6底层Green Context与PyTorch2.10源码接口闭环
 
 **执行者：ChatGPT／AI-ARCH Discovery；连续source-only（与A14同轮窗口完成，无设备执行）。** [Round A15固定源码接口核查](literature/AI_ARCH_ROUND_A15_GREEN_CONTEXT_CU126_SOURCE_INTERFACE_CLOSURE_2026-10-13_V1.md)。
