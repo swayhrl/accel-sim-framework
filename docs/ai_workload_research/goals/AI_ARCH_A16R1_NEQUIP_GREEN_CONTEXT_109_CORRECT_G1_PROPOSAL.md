@@ -32,7 +32,7 @@
 4. `cuGreenCtxGetDevResource(queriedGreenCtx,&quota,CU_DEV_RESOURCE_TYPE_SM)`返回`CUDA_SUCCESS`，记录quota`sm.smCount`，应与创建的分区资源数量一致且**0<quota<device physical SM count**；不从76物理SM冒充已分配quota，也不把无quota记为0。
 5. 若本机版本不支持任一上述函数的正确调用、创建或归属核验，提交实际CUDA返回值并`STOP_G1_PLATFORM_OR_QUOTA`；不绕过证明链转去G2。
 
-**G2：** G1 PASS后仅允许一个最小已安装工具链可编译的Green Stream CUDA kernel（短小、可确定性验输出），验证正确同步及stream/context所有权。不得运行NCU/NSYS/NVBit/性能profiling/大benchmark。若失败STOP。
+**G2：** G1 PASS后仅允许一个最小已安装工具链可编译的Green Stream CUDA kernel（短小、可确定性验输出），验证正确同步及stream/context所有权。按照CUDA12.6规范，执行需要current-context的Driver操作时应先以`cuCtxFromGreenCtx`转换为可设为current的`CUcontext`，采用文档规定的`cuCtxPushCurrent`/`cuCtxPopCurrent`或等价受控配对恢复先前上下文；不得把`CUgreenCtx`直接冒充`CUcontext`，也不得复用外部用户context的所有权。离开前同步并只销毁自己创建的stream/green context。上述函数原型及导出应在CPU预检一并核对。不得运行NCU/NSYS/NVBit/性能profiling/大benchmark。若失败STOP。
 
 **G3：** G2 PASS后，只读取现成torch2.10中`torch.cuda.green_contexts.SUPPORTED`、已允许的早期API和`ExternalStream`包装，验证**NequIP AOT、OEQ、ALCHEMI每类必须GPU操作确实在对应自有Green Context stream/其合法同步链运行**。不因`ExternalStream`接口存在就声称全模型绿流执行。不得monkeypatch现有扩展、改变compiled artifact或model graph、更新全局CUDA/PyTorch、安装其它wheel/升级driver。找不到可审的所有权证据→`G3_INTEROP_UNQUALIFIED_STOP`；Driver G1/G2结果保留，不能自动推G4。
 
