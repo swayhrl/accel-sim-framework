@@ -41,3 +41,9 @@
 - 任务共享GPU锁忙、环境版本/依赖不可用、model hash不符、CUDA或编译条件不合格、edge多重集合不匹配、数值重复性失败、任何资源超限，按照合同FAIL-CLOSED保存结果后DEFER/STOP；**不得静默改输入、核心包版本、精度、程序算法和容差“修复”**。
 - 普通runner索引、manifest包装/路径错误可在V1允许的有界修复次数内solve-and-continue；科学身份或唯一变量变化STOP并提交审查。
 - 一次Goal产生自己的新执行分支与可追溯commit/tree，不合并C16/AWMA实验分支、不自动晋升硬件。ChatGPT独立审查后才从真实数据提科学结论。
+
+## 5. 执行窗口命名勘误与启动报告（2026-10-13追加）
+
+用户随后确认：node109已经向Codex窗口发送Round A8启动指令，并**正式将该窗口命名为`Lane M`**。以前本审批记录中的`Lane N-109`仅为当时提议的临时称呼，现在统一按**`Lane M / node109`**引用。原`Lane N / 174-new`是另一条已完成的非LLM源码审查线，`Lane T / 174-new`是已完成的训练源码审查线；名称不复用。
+
+本条状态仅是`USER_REPORTED_LAUNCHED`：ChatGPT没有重新登录109核验实时Codex进程、GPU锁、实际编译或canary结果，不声称scientific PASS。上文的`NOT_YET_LAUNCHED`是**当时的历史记录**，不是追加记录后的最新状态。新增内容**只更正称呼及记录用户报告启动**，原科学V1合同、GPU预算、禁令和STOP全部不变，不修改正在运行的执行分支。
