@@ -1,0 +1,72 @@
+{
+  "status": "G3_INTEROP_UNQUALIFIED_STOP",
+  "torch": "2.10.0+cu126",
+  "torch_CUDA": "12.6",
+  "python_shim_SUPPORTED": true,
+  "compiled_CUDAGreenContext_present": true,
+  "GreenContext_create_signature": "(num_sms: int, device_id: int = 0) -> torch._C._CUDAGreenContext",
+  "modern_GreenContext_Stream_method_present": false,
+  "ExternalStream_present": true,
+  "CUDA_context_initialized": false,
+  "model_loaded": false,
+  "AOT_OEQ_ALCHEMI_gpu_ops_executed": false,
+  "model_ops_on_green_stream_proven": false,
+  "external_stream_wrapped": false,
+  "no_monkeypatch_library_or_AOT_changes": true,
+  "live_driver_handles_reused_across_processes": false,
+  "reason": "Python support exists, but no permitted live same-process framework ownership/dependency proof for all AOT/OEQ/ALCHEMI GPU operations was established; cannot reuse destroyed child-process handles or infer model routing.",
+  "G3": "G3_INTEROP_UNQUALIFIED_STOP",
+  "source_ownership_audit": {
+    "G3": "INTEROP_UNQUALIFIED_STOP",
+    "SUPPORTED_runtime": true,
+    "source_evidence": [
+      {
+        "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/torch/include/ATen/cuda/CUDAGreenContext.h",
+        "sha256": "69b5e6d3acaf942dfb3701319ab5aa3ec5ef912552dc40d32ecabb9dd293aebe"
+      },
+      {
+        "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/nvalchemiops/torch/_warp_op_helpers.py",
+        "sha256": "8f19568dee3682ffc0498866a7de0f3f3f0057d4d2a7d901535ae59ae7634e98"
+      },
+      {
+        "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/warp/_src/utils.py",
+        "sha256": "a8994f2cdb524f273ac69ccc941a3a57e9ac3f69ec835ffd530f1b0d4cfafe49"
+      },
+      {
+        "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/warp/_src/context.py",
+        "sha256": "1ef32ace4bb46fffda232f8a099fa36945a14b671e1c0774f1286de89a37ba90"
+      },
+      {
+        "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/openequivariance/extension/libtorch_tp_jit_stable.cpp",
+        "sha256": "452dd7a4c026be5efa080e4c10127681d58a83256c09a851725886db61e2647e"
+      },
+      {
+        "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/openequivariance/extension/libtorch_tp_jit.cpp",
+        "sha256": "5707555ea6e306eada7baf8b5a7ef313d3242a149d5586ccf8e49a634752f5ae"
+      },
+      {
+        "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/nequip/model/inference_models/aotinductor.py",
+        "sha256": "b2d0f899c937360b4df6bb0ca4f4b9ef344239bb9bd59e429f9ce43cbb101c9a"
+      }
+    ],
+    "pinned_upstream_source": "https://raw.githubusercontent.com/pytorch/pytorch/v2.10.0/aten/src/ATen/cuda/CUDAGreenContext.cpp",
+    "source_inference_not_runtime_escape_proof": true,
+    "findings": [
+      "Fixed v2.10 setContext source switches to default stream; no modern .Stream accessor",
+      "ALCHEMI compares Warp/Torch stream handles, binds current Torch stream; pointer equality is not Green Context ownership proof",
+      "OEQ uses current Torch CUDA stream; AOT package loader imports custom ops but does not prove stream/context of each GPU operation",
+      "Completed isolated Driver canary handles were explicitly destroyed; no foreign/dangling handle is wrapped into another process"
+    ],
+    "not_claimed": [
+      "All frameworks are unsupported",
+      "Warp or AOT actually escaped the green quota",
+      "Every model GPU operation used the verified Driver stream"
+    ],
+    "Torch_GreenContext_create_set_pop_runtime_exercised": false,
+    "model_OEQ_ALCHEMI_AOT_GPU_operations_exercised": false,
+    "no_G4_or_extra_quota_attempt": true,
+    "end_direction_no_automatic_R2_R3": true
+  },
+  "qualification_scope": "Capability/source inspection only. Public create/set/pop API and ExternalStream were not exercised; no claim of universal framework impossibility.",
+  "old_environment_or_AOT_changes": false
+}

@@ -1,0 +1,91 @@
+{
+  "status": "PASS_CPU_PRECONDITION",
+  "start_commit": "3dfc5826960ada62548183365d5ad7489f89ae12",
+  "coordination_commit": "0374cdc901729a18f1c2098f0c38f930d0e5fe0c",
+  "contract_blob": "4c96cd4026523274bfbb8fc621bff8808675109d",
+  "assets": [
+    {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/inputs/NequIP-OAM-S-0.1.nequip.zip",
+      "bytes": 5638676,
+      "sha256": "63d4bafd872850a014fd21dedeea416b61173a17750dee0b2b8dd2b126f407aa"
+    },
+    {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/inputs/sitraj.xyz",
+      "bytes": 784661,
+      "sha256": "c08d3771a06beb82b0ed4258f78eecc7ce623f73ca6df20be99bd5722163e770"
+    },
+    {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/OAM-S.nequip.pt2",
+      "bytes": 4126192,
+      "sha256": "6b4ceb69ebaa7670f5bfdb06e8d0648644b467eec28983fb3d436a18f4f953f7"
+    }
+  ],
+  "header_sha256": "7313ec1a0642c1a02736b6178136eaa9df5e048a8b9707e43ad2119c1c677bcb",
+  "driver_library_sha256": "dcdf334aeb177c95b3385b797c9b871d03a287895713c6d107f79096b0985aa9",
+  "API_exports": {
+    "cuDeviceGetDevResource": true,
+    "cuDevSmResourceSplitByCount": true,
+    "cuDevResourceGenerateDesc": true,
+    "cuGreenCtxCreate": true,
+    "cuGreenCtxStreamCreate": true,
+    "cuStreamGetCtx_v2": true,
+    "cuGreenCtxGetDevResource": true,
+    "cuCtxFromGreenCtx": true,
+    "cuCtxPushCurrent_v2": true,
+    "cuCtxPopCurrent_v2": true,
+    "cuGreenCtxDestroy": true
+  },
+  "prototypes": {
+    "cuStreamGetCtx_v2": "CUresult(CUstream,CUcontext*,CUgreenCtx*)",
+    "cuGreenCtxGetDevResource": "CUresult(CUgreenCtx,CUdevResource*,CUdevResourceType)",
+    "resource_ABI_version": 1,
+    "header_type_rule": "Use compiler-checked actual cuda.h types; no handwritten ctypes or dlsym ABI"
+  },
+  "read_only_environment": {
+    "python": "3.11.17 (main, Oct  9 2026, 15:21:28) [Clang 22.1.3 ]",
+    "executable": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/bin/python",
+    "versions": {
+      "torch": "2.10.0+cu126",
+      "nequip": "0.19.1",
+      "openequivariance": "0.7.0",
+      "nvalchemi-toolkit-ops": "0.4.1",
+      "warp-lang": "1.16.0",
+      "e3nn": "0.6.0"
+    }
+  },
+  "read_only_framework_sources": {
+    "torch/cuda/green_contexts.py": {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/torch/cuda/green_contexts.py",
+      "sha256": "e3fc47163692fecb6af8e436d36ff0690beba8340b5c99349940aadc811b5537"
+    },
+    "torch/cuda/streams.py": {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/torch/cuda/streams.py",
+      "sha256": "c8cb35dccf58685a7025a3af1f3082d274b7b13e42cc8b0f4609a0245ee90c7b"
+    },
+    "nequip/model/inference_models/aotinductor.py": {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/nequip/model/inference_models/aotinductor.py",
+      "sha256": "b2d0f899c937360b4df6bb0ca4f4b9ef344239bb9bd59e429f9ce43cbb101c9a"
+    },
+    "nvalchemiops/torch/_warp_op_helpers.py": {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/nvalchemiops/torch/_warp_op_helpers.py",
+      "sha256": "8f19568dee3682ffc0498866a7de0f3f3f0057d4d2a7d901535ae59ae7634e98"
+    },
+    "openequivariance/_torch/TensorProductConv.py": {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/openequivariance/_torch/TensorProductConv.py",
+      "sha256": "8285c7b5c8b646420e846f6a93cb0bb47b6fc7cacb483d9f11848936e115c489"
+    }
+  },
+  "old_worktrees": {
+    "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-a16-greencontext-109-v1": {
+      "head": "3dfc5826960ada62548183365d5ad7489f89ae12",
+      "status": ""
+    },
+    "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-nequip-static-batch-109-v1r1": {
+      "head": "1f69559df4f51290589de72876f36a756c5439f0",
+      "status": ""
+    }
+  },
+  "model_or_dependency_downloads": 0,
+  "installs": 0,
+  "cuda_initialized": false
+}
