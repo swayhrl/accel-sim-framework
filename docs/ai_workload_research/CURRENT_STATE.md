@@ -4,7 +4,19 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前获准：Round A9｜Lane M一次性V1R1恢复（执行尚待窗口启动）
+## 当前并行：Round A10｜训练资源生命周期源码与论文对照
+
+**执行者：ChatGPT／AI-ARCH Discovery（原文与因果审计，已完成）；拟执行：Codex Lane P／174-new（独立CPU/source-only，尚未由用户启动）。** 109 **Lane M**的已批准V1R1由用户报告正在执行，**不干预、重启、改GPU锁或改变数据合同**。当前ChatGPT不能核验Lane M实时进程。
+
+- [**ChatGPT本轮实际研究报告**](literature/AI_ARCH_ROUND_A10_TRAINING_RESOURCE_LIFECYCLE_NEAREST_WORK_2026-10-13_V1.md)：2026-06-23 PyTorch Graph-based CPU Offloading官方报告的8×H100真实训练实验组、2026-10-09 SlackSwap作者arXiv**摘要级**A100 trace-driven仿真、固定TorchTitan 2026-10-13 GraphTrainer source强能力与MoE paged-stash；不把文献模拟/源码升级为RTX4080性能。
+- **重要近邻**：TorchTitan固定源码已有`sac_and_offload`和`sac_and_paged_stash`，后者移植Megatron-Core 0.19.0且用于静态capacity padded MoE。普通activation offload/prefetch和capacity-padded共享页本身并非待发明硬件空白。
+- **P13因果要求**：同策略固定时的真实资源响应，与每一硬件点重新优化强软件之后的响应必须分开。单卡改budget/seq属于P01负载/软件变化，不是单变量扩SM/host-link实验。没有新GPU授权或硬件机制晋升。
+- [**Lane P／174-new单一独立Goal**](goals/AI_ARCH_A10_TRAINING_LIFECYCLE_SOURCE_AUDIT_174NEW_V1.md)：冻结公开`pytorch/torchtitan@8a75afd90773fe410340e0709b0b1af427c4af58`，审≤10处source的训练输入、GraphTrainer lifecycle及小规模真实训练pair可行性。独立分支`hrl/aiarch-a10-training-lifecycle-source-174-v1`；**本ChatGPT未启动Codex窗口**。不得访问109 GPU或164、运行模型/模拟器、安装环境。
+- 预计下一步：Lane P固定报告回来后，ChatGPT独立核其强软件/自然输入/容量准入；Lane M的V1R1结果独立审查，两线互不构成授权。若新训练pair不成立，明确STOP；不得为了多窗口并行制造实验。
+
+**下面的A9“执行尚待窗口启动”为写入当时的审批时点，不可据此否定用户随后报告Lane M已运行。**
+
+## 已批准的Round A9历史执行许可（批准时尚待窗口启动）
 
 **用户2026-10-13明确批准两个阶段：A＝官方原版本ANTLR源码包的一次受控本地wheel构建；B＝仅在A以及其它已冻结依赖门合格之后，按V1原科学参数与剩余累计预算恢复109 GPU观察。** [固定审批记录](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1R1_APPROVAL_2026-10-13.md)、[完整V1R1方案](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1R1_WHEEL_EXCEPTION_DRAFT.md)及[原V1合同](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1.md)为本次执行依据。
 
