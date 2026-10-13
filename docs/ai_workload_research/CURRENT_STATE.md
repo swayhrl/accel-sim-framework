@@ -4,6 +4,18 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
+## 当前获准：Round A18｜Lane M A16R1一次定点修复（尚待Codex窗口启动）
+
+**执行者：Codex Lane M／109；独立科学审查：ChatGPT／AI-ARCH Discovery。** 用户在A17审查及有界修订提案后明确回复“同意”，现已批准[**A16R1唯一技术合同**](goals/AI_ARCH_A16R1_NEQUIP_GREEN_CONTEXT_109_CORRECT_G1_PROPOSAL.md)及[**2026-10-14批准记录**](goals/AI_ARCH_A16R1_NEQUIP_GREEN_CONTEXT_109_APPROVAL_2026-10-14.md)。状态：`EXPLICITLY_APPROVED / AWAITING_LANE_M_CODEX_LAUNCH / NO_NEW_GPU_RESULT`。
+
+- **唯一技术改动**：不用A16的错误命名`cuStreamGetDevResource`；改用CUDA12.6明文的`cuStreamGetCtx_v2`核实新stream关联的`CUgreenCtx`身份，再由`cuGreenCtxGetDevResource`核实该context真实SM quota，配合`cuCtxFromGreenCtx`及context/stream所有权和清理。先静态核原始CUDA12.6头文件/导出符号。原`A16 G1 STOP`是合同设计缺口，**不等于RTX4080 Green不支持**。
+- 原`hrl/aiarch-a16-nequip-greencontext-109-v1`分支仍STOP于`3dfc5826960ada62548183365d5ad7489f89ae12`；新独立分支`hrl/aiarch-a16r1-nequip-greencontext-109-v1`从此固定STOP提交创建，旧V1R1 NequIP科研结果`1f69559…`、164归档与原环境全不动。
+- 顺序门仍为`G1 device quota及stream身份`→`G2短小kernel与自有context`→`G3 torch/OEQ/ALCHEMI/AOT全路径流归属`→`G4原Si0/109 NequIP数值canary`。各门失败则STOP、已取得有限合法证据保留。所有阶段都是**资格检查，不产生正式性能数据**。
+- **原保守硬预算**：仅node109一张RTX4080，原非阻塞独占GPU锁≤600秒、显存≤4GiB、CPU workers≤4/RAM≤12GiB、本地新增≤512MiB、下载安装=0，一档合法SM quota、一个小kernel、最多两帧五次平均；**不授权**性能SM配额扫参、NCU/NSYS、训练、模型下载、驱动或PyTorch升级。
+- 当前GitHub只记录批准和准备，**并未启动Codex、初始化CUDA或检查实时109状态**。若新G1链也不支持，或G3旧强软件无法合法接管，则按有界STOP结束GreenCtx路线，不连续追加R2/R3。
+
+下列A17/A16旧段为已接受历史STOP和原批准快照；最新执行权限仅以本段及本次固定批准文件为准。
+
 ## 最新已审：Round A17｜Lane M A16版本不匹配接口STOP
 
 **执行者：ChatGPT／AI-ARCH Discovery（原始Git审阅、7文件哈希独立抽核、CUDA12.6官方文档核对）。** [A17固定独立审查](reviews/AI_ARCH_ROUND_A17_LANE_M_A16_GREEN_INTERFACE_STOP_REVIEW_2026-10-14_V1.md)，[Lane M A16固定执行提交`3dfc5826960ada62548183365d5ad7489f89ae12`](https://github.com/swayhrl/accel-sim-framework/commit/3dfc5826960ada62548183365d5ad7489f89ae12)。
