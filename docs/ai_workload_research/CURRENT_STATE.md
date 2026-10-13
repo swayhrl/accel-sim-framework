@@ -4,14 +4,14 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前执行许可：Round A8｜109静态结构有限观察（已明确批准，未启动）
+## 当前执行许可：Round A8｜109静态结构有限观察（已批准；用户报告已启动）
 
-**用户于2026-10-13在本AI-ARCH窗口明确同意A7提出的整份A8合同及资源硬预算。** [固定批准记录](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1_APPROVAL_2026-10-13.md)与[科学合同V1](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1.md)共同界定本轮唯一执行范围。状态：`EXPLICITLY_APPROVED / AWAITING_NODE109_CODEX_LAUNCH / NOT_NATIVE_VALIDATED`。
+**用户于2026-10-13在本AI-ARCH窗口明确同意A7提出的整份A8合同及资源硬预算。** [固定批准记录](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1_APPROVAL_2026-10-13.md)与[科学合同V1](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1.md)共同界定本轮唯一执行范围。状态：`EXPLICITLY_APPROVED / USER_REPORTED_LAUNCHED / NOT_NATIVE_VALIDATED`。用户已报告在109启动Codex并将窗口命名为**Lane M**；本窗口未直接核验node109实时任务、GPU锁或任何执行门结果。
 
-- 执行者：**node109全新独立Codex窗口（Lane N-109 / Round A8）**；原174-new Lane N与Lane T仍STOP。计划只做一个有限观察，不改任何历史科学合同。
+- 执行者：**Lane M（node109，Round A8）**；原**Lane N（174-new，非LLM源审）**和**Lane T（174-new，训练源审）**继续保留原名与STOP。三个Lane名称在节点间不复用；仅命名更正，不变更科学合同或资源预算。
 - 四条件N-C2/G2/G4/G8、相同32帧、单batch编译产物与完整energy/force/stress，GPU单RTX4080及既有非阻塞共享锁，依V1预冻结数值/边集合/时间统计与STOP。
 - 用户批准GPU锁占用硬上限90分钟、观察阶段15分钟，模型和Si下载<=12MiB、依赖下载<=8GiB、新环境<=25GiB、CPU<=8 workers/RAM<=32GiB/GPU显存<=12GiB、raw日志<=256MiB；任何科学/资源边界变化均不得静默执行。
-- **本ChatGPT目前仅完成GitHub记账和启动分支准备，没有代替用户在node109启动Codex、模型下载或GPU运行。** 是否已启动必须依据实际Codex回执，不能从Git HEAD推断。
+- **用户随后明确报告Lane M已在109启动。** 这是`USER_REPORTED_LAUNCHED`，不是本窗口已经核验运行、CUDA资格PASS、采集完成或结果有效。不得从Git HEAD推断实时GPU状态；执行合同、锁与STOP条件全部保持。
 
 ## 最新完成：Round A7｜非LLM发现性观察完整合同与执行前审查
 
@@ -30,7 +30,7 @@
 
 ## 下一阶段：Round A8｜109静态结构有限观察（待明确GPU审批）
 
-**拟执行者：Codex Lane N／109独立新worktree；科学审查：ChatGPT／AI-ARCH Discovery。**
+**原设计时的拟执行者标签为Codex Lane N／109；现更名为Lane M／109（用户报告已启动）；科学审查：ChatGPT／AI-ARCH Discovery。**
 
 不是再开一轮ChatGPT方案整理。若用户批准完整合同的设备/获取/编译边界，就按该合同一次Goal完成必要资格与观察，再交本窗口独立审查。未批准之前不发送启动指令、不改变现有Lane本地工作区。
 
