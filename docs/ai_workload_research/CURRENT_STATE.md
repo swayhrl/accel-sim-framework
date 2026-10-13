@@ -4,7 +4,23 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前并行：Round A10｜训练资源生命周期源码与论文对照
+## 最新已审：Round A11｜Lane M原生结果与Lane T训练源审联合科学审查
+
+**执行者：ChatGPT／AI-ARCH Discovery。** [固定联合独立审查](reviews/AI_ARCH_ROUND_A11_LANE_M_T_JOINT_INDEPENDENT_REVIEW_2026-10-13_V1.md)；当前两Lane均**已完成并STOP**，且没有获准执行的新109 GPU/174模拟器任务。
+
+| Lane | 固定执行提交 | 独立科学裁决 |
+|---|---|---|
+| **Lane M／109，Round A9 V1R1** | [`1f69559df4f51290589de72876f36a756c5439f0`](https://github.com/swayhrl/accel-sim-framework/commit/1f69559df4f51290589de72876f36a756c5439f0) | **`ACCEPT_SCOPED_NATIVE_MIXED_RESPONSE`**。固定OAM-S模型+32 Si真实静态帧，3 fresh processes×12完整blocks=144原生wall样本，四臂均通过num/edge/compiled资格。整组中位C2/G2/G4/G8：**20.758/26.044/13.548/7.602ms**；36对block下C2→G2变慢约25.48%，GPU G2→G4/G8时间下降约48.07%/70.86%。本窗口独立复算全部144行时序/108个配对比与7个Git小文件SHA；属**软件组织响应**，不证明物理SM/Cache/带宽瓶颈。 |
+| **Lane T／174-new，Round A10** | [`859eb16a51c7bf085d6e39a9000de198c0f4e710`](https://github.com/swayhrl/accel-sim-framework/commit/859eb16a51c7bf085d6e39a9000de198c0f4e710) | **`ACCEPT_SCOPED_SOURCE_ONLY_NO_VALID_SMALL_TRAINING_PAIR`**。直接源审TorchTitan GraphTrainer已有SAC、offload和MoE paged stash；当前配置C4未固定真正token bank、没有RTX4080单卡合法完整训练步的证明。不存在新training GPU Goal资格；不否定其它公开小训练模型。 |
+
+- **Lane M现为`NATIVE_QUALIFIED / MIXED_RESPONSE / NORMAL_COMPLETION_STOP`**；原Round A8 V1 `ENVIRONMENT_BLOCKED/NOT_EVALUATED`独立终态不变。164 raw **444项**和closeout **30项**由执行者报告readback PASS；ChatGPT未SSH独立复核164实际raw，仅GitHub固定小包与原始时序复算。
+- **Lane T**当前A10完成/STOP，历史A4仍STOP；原Lane P仅是尚未启动时拟议名称，新任务实际上在174复用**Lane T**执行。Lane N（174-new）旧报告完整性问题及历史STOP不变。
+- **优先科研解释**：NequIP响应主要是提交粒度、构图与完整评估的**P01工作量组织**；没有可从四点直接晋升的**P13单变量物理资源扩展**。训练线有强软件近邻，不应再开发朴素offloader。
+- **建议下一步Round A12｜跨负载资源约束可辨识性与候选收敛（执行者：ChatGPT／AI-ARCH Discovery）**：优先source/literature-only，利用新原生M数据与旧限定证据，给最多一项真正能区分批次摊销与硬件资源约束的候选；不自动做profiling、更多GPU、新机制或模型下载。新执行需独立合同和明确权限。
+
+下面A10以及A9“正在执行/已批准/等待”均保留**当时快照**，最新完成状态以本段为准。
+
+## 历史并行安排：Round A10｜训练资源生命周期源码与论文对照
 
 **执行者：ChatGPT／AI-ARCH Discovery（原文与因果审计，已完成）；拟执行：Codex Lane P／174-new（独立CPU/source-only，尚未由用户启动）。** 109 **Lane M**的已批准V1R1由用户报告正在执行，**不干预、重启、改GPU锁或改变数据合同**。当前ChatGPT不能核验Lane M实时进程。
 
