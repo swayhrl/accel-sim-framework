@@ -4,7 +4,21 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已审：Round A13｜片上状态寿命与寄存器资源最近邻审查
+## 最新已审：Round A14｜SM89资源旋钮与负载可行性筛选
+
+**执行者：ChatGPT／AI-ARCH Discovery；全部GitHub与作者/NVIDIA官方文档只读。** [**Round A14完整报告**](literature/AI_ARCH_ROUND_A14_SM89_RESOURCE_AXIS_AND_WORKLOAD_FEASIBILITY_2026-10-13_V1.md)。**没有GPU、模拟器、模型下载或新Codex执行。**
+
+- **找到可研究的资源API，但不是已证明本机工作**：官方CUDA Green Contexts支持给执行流分配SM集合/配额，可在功能保持时测试减少可用SM后的响应。它不会增加物理SM，也会捆绑变化SM附带register/SMEM/算力，L2和DRAM仍共享；不能假装是“只加寄存器”或从少SM线性预测新GPU。PyTorch GreenContext封装要求CUDA≥12.8，与已审109原A9环境的torch2.10+cu126不匹配，兼容与stream执行资格仍未确认。
+- **Ada正式能力**：SM89每SM64K×32位寄存器、100KiB共享存储最大容量、128KiB统一L1/shared data cache；`cudaFuncAttributePreferredSharedMemoryCarveout`为L1/SMEM容量互换的**提示**，并非单独增加物理Cache或SMEM，必须核真实配置才是有效对照；SM90限定的TMA/WGMMA/`setmaxnreg`不适用于SM89，但8.x仍有基本异步copy能力。
+- **C14-01**：原生已接受的OAM-S 32帧/完整energy-force-stress作为低成本真实输入锚点，旧109结果仍限定`ACCEPT_SCOPED_NATIVE_MIXED_RESPONSE`。其GreenCtx quota接管AOT/OEQ/ALCHEMI整路径未合格、SM受限残余未见，`PARKED_LOW_HEADROOM`。
+- **C14-02**：[Qwen2.5-0.5B-Instruct模型页](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct)（24层/14Q2KV/BF16/head64）+官方支持Ada的FlashAttention2/SDPA，可作为实际边缘LLM规模候选。但**完整权重SHA、自然token bank、目标执行后端和109整请求正确性均未资格化**；`PARKED_IDENTITY_AND_PLATFORM`，不是下载/执行授权。
+- **C16 Grouped W4 Split-K**旧P01规模反转属额外算术/CTA/reduction的软件组织响应，不经本轮升级为P13新机制。所有固定Lane M、T、N旧STOP以及C16/AWMA原权威不变。
+- **科学结论：`API_LEVEL_SM_QUOTA_PATH_FOUND / TWO_CANDIDATES_SCREENED / P13_HARDWARE_RESIDUAL_NOT_ESTABLISHED / ZERO_NATIVE_ADMISSION`。**
+- **后续Round A15建议（执行者：ChatGPT／AI-ARCH Discovery）**：只读核低层Green Context driver合约与现有PyTorch/cu126集成断层、强后端实际stream要求，先选一个科学对象；任何109实机API查询/性能、版本升级、权重下载、NCU/模拟器或holdout均须重新明示预算与授权，不能自行启动。
+
+**下面Round A13及更早轮次为历史已接受结果/旧提议，不构成新执行许可。**
+
+## 历史已审：Round A13｜片上状态寿命与寄存器资源最近邻审查
 
 **执行者：ChatGPT／AI-ARCH Discovery，连续source/literature-only（未启动Codex/GPU/模拟器）。** [**Round A13原始论文/官方PTX定点审查**](literature/AI_ARCH_ROUND_A13_ONCHIP_STATE_LIFETIME_STRONG_SOFTWARE_CAUSAL_AUDIT_2026-10-13_V1.md)。与A12使用相同窗口连续完成，以减少纯ChatGPT阶段的重复审批。
 
