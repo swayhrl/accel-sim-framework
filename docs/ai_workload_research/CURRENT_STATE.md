@@ -1,10 +1,24 @@
 # AI-ARCH｜当前科研协调状态
 
-**快照日期：2026-10-13。执行者：ChatGPT／AI-ARCH Discovery。**
+**快照日期：2026-10-14。执行者：ChatGPT／AI-ARCH Discovery。**
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前获准：Round A18｜Lane M A16R1一次定点修复（尚待Codex窗口启动）
+## 最新已审：Round A19｜Lane M A16R1 Green Context有限PASS与G3 STOP
+
+**独立审查执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [完整A19固定审查](reviews/AI_ARCH_ROUND_A19_LANE_M_A16R1_GREEN_G3_INDEPENDENT_REVIEW_2026-10-14_V1.md)；[Lane M正式执行提交`6953ac1690b7a905b6000833a879f9164c7c9e43`](https://github.com/swayhrl/accel-sim-framework/commit/6953ac1690b7a905b6000833a879f9164c7c9e43)，tree `5d993895142148886b24e7cc32d3035acf308361`，分支`hrl/aiarch-a16r1-nequip-greencontext-109-v1`已验证HEAD一致。
+
+- **G1 PASS：实际SM89/RTX4080 76物理SM**；一次唯一合法SM分区请求38，实际partition38，Green stream关联`CUgreenCtx`句柄严格相同且资源查询38SM。CUDA12.6 Driver API真实路径通过，属于`DEVICE_GREEN_QUOTA_AVAILABLE`，不是新增物理SM。
+- **G2 PASS：实际自有Green stream一个tiny kernel**，256个`output[i]=3*i+11`全部正确，34项Driver API调用均报告CUDA_SUCCESS，当前context恢复、stream/自有资源同步与清理成功。本窗口**独立重算256/256输出**，并重算7份GitHub关键报告文本SHA256全部匹配。
+- **G3 `SOURCE_AND_CAPABILITY_ONLY / INTEROP_UNQUALIFIED_STOP`，但不是实机互操作性失败**：固定环境`torch2.10+cu126`报告`SUPPORTED=True`、`_CUDAGreenContext`存在；源码有create/set/pop和外部stream接口。实际G3 runner在不同子进程只做静态与无CUDA初始化的capability读取，**没有调用Torch GreenContext.create/set/pop，也没有运行NequIP AOT/OEQ/ALCHEMI任何GPU操作**；其代码预置`INTEROP_UNQUALIFIED_STOP`。这不能被当作已证兼容或不兼容。
+- **G4未运行**，Green配额下NequIP数值/边集合及所有性能结果均未建立（模型计算0、正式计时0）。历史NequIP V1R1科学`ACCEPT_SCOPED_NATIVE_MIXED_RESPONSE`不因这次Driver PASS自动扩展。
+- **资源/归档**：执行者报告共享GPU锁1.159878s；子进程maxRSS约735MiB，新增磁盘约2.23MiB，无下载/安装；GPU采样显存0MiB但短命context真实峰值未完整采样、仅明确自有设备分配1024 bytes。164原始28项＋closeout25项读回PASS是**执行侧报告**，本窗口未SSH再次校验大包；执行branch已STOP、旧A16及V1R1文件不变。
+- **科学决定**：`ACCEPT_SCOPED_G1_G2 / G3_NOT_RUNTIME_TESTED / G4_NOT_RUN / P13_RESOURCE_HEADROOM_NOT_EVALUATED / GREENCTX_LINE_CLOSED`。遵守本轮一次修订界限，不自动开启A16R2/R3、GPU性能扫参或新机制；若未来独立科学对象确有价值，必须先设计**同一个活的进程**内真正可执行且可撤销的框架互操作canary，再按新科学合同审批。
+- **方法学纠偏**：后续凡属于已批准范围内的普通接口、路径、manifest、依赖包装等工程问题，设计Goal时应允许同一轮`bounded solve-and-continue`，预先核目标版本/ABI/驱动，并设置可实际执行的资格门；不能将“需要获取证据”写成**必然STOP的代码分支**再反复开轮。超过科学语义/预算/实际授权边界的情况仍fail-closed。详见[协调协议](COORDINATION_PROTOCOL.md)第11节。
+
+**以下A18/A17及之前段落均为历史批准和科学审查快照；最新Lane M为A16R1已完成STOP。Lane T/N、C16与AWMA旧边界不变，当前没有授权的新GPU、模拟器或Codex任务。**
+
+## 历史已执行并STOP：Round A18｜Lane M A16R1一次定点修复（当时尚待启动）
 
 **执行者：Codex Lane M／109；独立科学审查：ChatGPT／AI-ARCH Discovery。** 用户在A17审查及有界修订提案后明确回复“同意”，现已批准[**A16R1唯一技术合同**](goals/AI_ARCH_A16R1_NEQUIP_GREEN_CONTEXT_109_CORRECT_G1_PROPOSAL.md)及[**2026-10-14批准记录**](goals/AI_ARCH_A16R1_NEQUIP_GREEN_CONTEXT_109_APPROVAL_2026-10-14.md)。状态：`EXPLICITLY_APPROVED / AWAITING_LANE_M_CODEX_LAUNCH / NO_NEW_GPU_RESULT`。
 
