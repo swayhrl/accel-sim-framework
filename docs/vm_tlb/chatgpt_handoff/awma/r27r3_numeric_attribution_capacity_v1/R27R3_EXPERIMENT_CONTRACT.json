@@ -1,0 +1,210 @@
+{
+  "schema": "AWMA_R27R3_NUMERIC_ATTRIBUTION_CONDITIONAL_CAPACITY_V1",
+  "date": "2026-10-13",
+  "timezone": "Asia/Shanghai",
+  "stage": "AWMA_R27R3_NUMERIC_ATTRIBUTION_CONDITIONAL_CAPACITY_109_V1",
+  "handoff_branch": "hrl/awma-r27r3-numeric-attribution-capacity-handoff-v1",
+  "execution_branch": "hrl/awma-r27r3-numeric-attribution-capacity-109-v1",
+  "exact_execution_parent": "ba73fa0bacf3db09f44d8ad421a0a36f56645898",
+  "single_goal": true,
+  "gating_semantics": "Within one execution branch, only a passing gate authorizes the next gate; all STOP outcomes are terminal. All post-freeze behavioral changes require a fresh review.",
+  "gates": [
+    "A_READ_ONLY_AUTHORITY_AND_EVIDENCE",
+    "B_BOUNDED_B1_REPEATABILITY_AND_COMPONENT_ATTRIBUTION",
+    "C_ONE_EVIDENCE_DRIVEN_SEMANTIC_PRESERVING_CORRECTION_IF_QUALIFIED",
+    "D_UNCHANGED_FOUR_STEP_B1_NUMERIC_STATE_QUALIFICATION",
+    "E_IMPLEMENTATION_FREEZE_THEN_BOUNDED_NATURAL_CAPACITY",
+    "F_POSITIVE_ONLY_32_STEP_AND_RESUME",
+    "G_POSITIVE_ONLY_ALLOCATOR_DIAGNOSTIC_IF_NEEDED",
+    "PUBLICATION_AND_STOP"
+  ],
+  "authority": "PARENT_DATA_AUTHORITY.json",
+  "old_execution_immutable": true,
+  "numerical": {
+    "reference": "B0 native tied-W dense embedding backward on the same fixed R26 CPU start and R27R2 varied bank",
+    "dtype_grad": "torch.bfloat16",
+    "atol": 0.01,
+    "rtol": 0.01,
+    "comparison_rule": "every tensor element finite and abs(candidate - B0) <= 0.01 + 0.01 * abs(B0), same dtype/shape",
+    "b1_bank_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "arms": [
+      "b0",
+      "c1",
+      "s2"
+    ],
+    "observables": [
+      "loss",
+      "dH",
+      "complete_total_gradient",
+      "W",
+      "FP32_m",
+      "FP32_v",
+      "logical_step",
+      "stream_cursor",
+      "next_bank_forward_loss"
+    ],
+    "fresh_process_checkpoint_and_switch": true,
+    "all_eight_candidate_gradient_comparisons_must_pass": true,
+    "no_tolerance_change": true,
+    "no_global_mean_or_cosine_substitution": true
+  },
+  "attribution": {
+    "read_only_existing_raw_first": true,
+    "priority_hypotheses": [
+      "baseline B0 repeatability under frozen state/inputs",
+      "native dense embedding backward vs sorted-unique inverse-remap compact embedding backward",
+      "BF16 accumulation/order and index_add merge",
+      "CCE classifier gradient comparison under matched hidden/lse",
+      "optimizer state propagation and step-4 first-moment discrepancy"
+    ],
+    "primary_step_bank_index": 0,
+    "optional_second_step_index": 3,
+    "baseline_B0_fresh_process_repetitions": 2,
+    "max_pre_correction_diagnostic_GPU_processes": 6,
+    "all_cuda_requires_flock": true,
+    "failure_samples": "deterministic first 32 failing flattened indices and top 32 largest threshold-excess indices, plus actual got/ref/abs/error bound, token ID/row frequency, count and rate",
+    "component_decomposition": [
+      "B0_dense_embedding_lookup_gradient",
+      "C1_S2_compact_lookup_gradient_scattered",
+      "CCE_classifier_gradient",
+      "merged_total_gradient",
+      "post_update_m"
+    ],
+    "matched_dH_for_isolated_lookup_comparison": true,
+    "peak_and_scratch_bounds": "Use chunked host comparisons and record memory; no unbounded VxH shadow or permanently retained raw tensor dumps.",
+    "prohibit_result_driven_extra_grid": true
+  },
+  "correction": {
+    "allowed_only_with_root_cause_evidence": true,
+    "maximum_distinct_scientific_corrections": 1,
+    "effect": "A precisely scoped change with mathematically equivalent tied-W gradient/update semantics. It must be separately labeled candidate and remain opt-in to preserve historical R26/R27R2 behavior.",
+    "accepted_if": "The targeted component discrepancy is eliminated for its stated cause AND all original four-step B1 B0/C1/S2 checks pass with unchanged tolerance/state/inputs.",
+    "test_before_full_B1": [
+      "small synthetic duplicate-token and unique-token semantics including atomics/order as needed",
+      "no dropped/duplicated gradient contributions",
+      "tied pointer/storage checks",
+      "no S2 full dense gradient or hidden shadow"
+    ],
+    "preserve": [
+      "R26 B0 reference, common W/m/v/RNG and step",
+      "same six model payloads, CCE meta, BF16 tied W and FP32 AdamW",
+      "C1 default, S2 explicit opt-in",
+      "full frozen backbone forward and dH backward",
+      "S2 4096-row tile geometry and no full VxH gradient/shadow",
+      "same loss, attention, input labels and all step states"
+    ],
+    "if_unresolved": "STOP; do not run capacity or repeatedly adjust precision, tolerances, tile, input, reference or allocator"
+  },
+  "capacity": {
+    "unchanged_from": "AWMA_R27R2_VARIED_BATCH_CAPACITY_SEEDED_CONTINUATION_V1",
+    "min_batch": 1,
+    "max_batch": 128,
+    "first_batch": 64,
+    "upward_after_pass": [
+      96,
+      128
+    ],
+    "downward_after_64_oom": [
+      32,
+      16,
+      8,
+      4,
+      2,
+      1
+    ],
+    "midpoint_refinement": "floor((L+U)/2) until U=L+1",
+    "max_distinct_search_batches_per_policy": 12,
+    "policy_order": [
+      "c1",
+      "s2"
+    ],
+    "steps": 5,
+    "warmup_steps": 2,
+    "further_steps": 3,
+    "bank_step_indices": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "fresh_process_every_trial": true,
+    "confirmations_per_endpoint": 3,
+    "strict_monotonicity": true,
+    "no_majority_vote": true,
+    "right_censor_at": 128,
+    "positive_same_B_witness": "C1 adjacent 3/3 OOM at C1 largest confirmed PASS+1; S2 same physical B 3/3 PASS",
+    "no_formal_timing": true
+  },
+  "positive_only": {
+    "common_B_one_step_numerical": true,
+    "common_B_C1_S2_steps": 32,
+    "state_checkpoint_indices": [
+      1,
+      4,
+      8,
+      16,
+      32
+    ],
+    "per_step": [
+      "loss",
+      "next_loss",
+      "finite",
+      "logical_step",
+      "cursor",
+      "input/label hashes",
+      "post-step memory"
+    ],
+    "fresh_process_resume_from_index": 16,
+    "resume_remaining_steps": 16,
+    "policy_switch_from_C1_step16": true,
+    "S2_witness_B_steps": 32,
+    "S2_witness_B_fresh_resume": true,
+    "final_logical_step": 33,
+    "max_allocator_diagnostic_fresh_pairs": 1,
+    "only_if_32_step_positive_and_attribution_needed": true
+  },
+  "resources": {
+    "node109_GPU": "RTX4080/SM89",
+    "gpu_lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "node164_durable_authority": true,
+    "GPU_campaign_concurrency": 1,
+    "cpu_parallelism": "only independent CPU/read-only work after CPU/RAM/I/O/mount checks",
+    "max_chunk_compare_bytes": 67108864,
+    "fail_closed_shell": "set -euo pipefail plus explicit status for each child, never hide failure behind tee",
+    "no_background_campaign": true
+  },
+  "decision_labels": [
+    "R27R3_PARENT_OR_DATA_NOT_QUALIFIED",
+    "R27R3_B0_REFERENCE_NOT_REPEATABLE",
+    "R27R3_NUMERIC_CAUSE_UNRESOLVED",
+    "R27R3_CORRECTION_NOT_QUALIFIED",
+    "R27R3_NUMERIC_OR_STATE_NOT_QUALIFIED",
+    "R27R3_CAPACITY_BOUNDARY_UNSTABLE",
+    "R27R3_S2_BATCH_CAPACITY_REGRESSION",
+    "R27R3_CAPACITY_RIGHT_CENSORED",
+    "R27R3_NO_VARIED_BATCH_CAPACITY_EXTENSION",
+    "R27R3_EXTENDED_CAPACITY_TRAJECTORY_NOT_QUALIFIED",
+    "R27R3_VARIED_BATCH_CAPACITY_EXTENSION_32_STEP_SUPPORTED"
+  ],
+  "forbidden": [
+    "resume/amend/rebase old R26/R27/R27R1/R27R2 execution",
+    "download or modify model/tokenizer/corpus/seed or regenerate token bank",
+    "different input offset or data-dependent token selection",
+    "new bootstrap/reseed optimizer moments/change common state",
+    "post-hoc tolerance change or using only mean/cosine for equivalence",
+    "multiple unbounded candidate repair iterations",
+    "B0 baseline weakness or silently changing B0 reference",
+    "post-freeze input/GPU behavior/classifier/precision/optimizer change",
+    "auto OOM fallback; empty_cache or GC between steps",
+    "activation checkpointing/offload",
+    "formal timing/NSYS/NCU/NVBit/SASS",
+    "node174/Accel-Sim, hardware/PPA, second model/corpus or production deployment",
+    "promoting discovery input to independent holdout"
+  ]
+}
