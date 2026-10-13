@@ -69,3 +69,10 @@
 - 如科学合同**已经规定缺wheel即STOP**，先保留合法终态与全部raw/receipt，不能自行切换源码安装或把失败的执行继续成PASS。只有经用户明确授权的最小后续合同（例如仅**原版本、原hash官方sdist**的一次有界CPU构建）才可恢复；由新wheel产生的新hash需另列派生来源，不覆盖原sdist或版本锁。
 - 此类门应尽量在大型依赖下载、JIT和GPU锁之前，以CPU侧只读发行元数据＋精确hash/可用性检查筛出；严格区分第一次失败和全部依赖已通过检查，避免更正一个叶包后立刻出现下一个相同STOP。
 - 冻结的模型/输入/数值、原source/原GPU预算、独立分支和STOP仍是权威。只有工程包装的小且确定性的重建可以在获准范围内solve-and-continue；实质科学输入、模型语义或后端身份变化必须重新评审。
+
+## 10. 硬件/系统API版本门：禁止用最新文档的符号充当旧环境权威（A16经验）
+
+- 对需要被Codex**严格执行的命名API**，科学Goal在冻结前必须同时核三层：①**原目标Toolkit/SDK版本的官方文档和头文件声明/ABI**，②目标driver/runtime中该符号是否实际可解析（可先只读检测，若需API调用遵守原共享GPU锁），③该函数的**行为契约是否足以证明科学观测量**。只查最新官方文档、只找到相关概念或只在别的设备运行成功，都不等于三个条件通过。
+- 严格区分`function_call_return`与输出查询状态、函数指针、返回handle的合法性，不能把调用`cuGetProcAddress`返回`CUDA_SUCCESS`等同目标symbol有效，也不能把物理SM count/普通context视为实际Green分区已创建。
+- 如果Goal自己的必要API对原冻结版本不存在，**按原Goal先合法STOP**、保留receipt并将其归类为`GOAL_INTERFACE_DESIGN_DEFECT`；这不同于设备否决、模型数值失败或工作负载没有瓶颈。新的文档化API链只能在一个明确审批的最小修订合同中执行，**不能未经授权地换ABI或放大硬件探针**。
+- 研究型接口实验的科学证据至少区分：源文档`SOURCE_ONLY`、实际设备API创建`DEVICE_CREATED`、context/stream拥有权与真实配额`STREAM_BOUND_QUOTA`、应用全部GPU操作确实运行于所控流`FRAMEWORK_INTEROP`、原生数值`MODEL_NUMERIC`、正式性能/机制归因`PERFORMANCE`。上一门通过不得跳级证明后续门。
