@@ -4,7 +4,21 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已审：Round A11｜Lane M原生结果与Lane T训练源审联合科学审查
+## 最新已审：Round A12｜跨负载任务粒度与硬件资源可辨识性
+
+**执行者：ChatGPT／AI-ARCH Discovery（GitHub source/literature-only，无Codex/GPU）。** [**Round A12固定研究报告**](literature/AI_ARCH_ROUND_A12_CROSS_WORKLOAD_GRAIN_RESOURCE_IDENTIFIABILITY_2026-10-13_V1.md)。
+
+- **P01有限成立**：Lane M `1f69559d…`的RTX4080/OAM-S真实32帧，CPU B2=20.758ms、GPU B2/4/8=26.044/13.548/7.602ms；软件组织与批次数选择对完整energy/force/stress wall具有强响应，三进程/144样本已在A11独立复算并核数值。四臂不构成纯物理资源扫描。
+- **新增`OUR_DERIVATION`，仅数学参照非硬件oracle**：保持G2每调用整组平均成本不变时，G4/G8按8/4次调用推得13.022/6.511ms，实际13.548/7.602ms（比分组比例参照分别多4.04%/16.76%）。说明改善接近批次数比例，而非出现需假设SM/Cache机制的额外收益；也不能证明全部来自CPU launch，因单次形状、图构建、模型kernel选择同时变化。
+- **跨负载反例**：C16已审`a3a36e64…`的GROUPED W4 Split-K在M1/16/32使用Split8更快，M64 Split1反超4.93%；它增加CTA并产生额外reduction，与M缩减批次调用具有不同干预身份，不能拼成同一“资源扩展曲线”。
+- **强近邻已审核对**：NanoFlow纳米批次异构重叠、MPK SM级持久任务、Bullet SM配额、Kitsune资源模型与Tawa/Twill SMEM/register流水均已有作者限定范围证据；**原生真实时间、局部kernel、模拟器模型和当前source检查不可混成统一实测**。
+- **唯一候选`Q-A12-01`**：强软件任务组织选优后是否仍存在单一物理资源敏感的剩余wall？**`PARKED_RESOURCE_AXIS_NOT_IDENTIFIABLE`**，原因：M缺CPU B4/B8的成熟对照，M/C16均缺物理资源R的受控单因子干预、跨负载统一时间与独立样本。明确`NO_NEW_NATIVE_OR_MECHANISM_ADMISSION`，不是当前可执行Goal。
+- **建议下一轮Round A13｜强软件后的片上状态寿命与资源因果缺口定点精读（执行者：ChatGPT／AI-ARCH Discovery）**：仅选Tawa§V-E、Twill§6.3、MPK§5.3/7逐实验组核register/SMEM生命周期与实际时间上限，最多一张可证伪问题卡；若最近邻覆盖充分或缺资源单变量则PARKED；0新109 GPU、174模拟器、Codex或新holdout。
+- **Lane**：M／109 Round A9与T／174 Round A10均STOP、M原V1独立STOP不变；N／174旧源审STOP。C16 Stage A、AWMA科学authority及所有既有资源锁边界保持不动。本次只更新GitHub科研笔记与协调导航。
+
+**下面Round A11及更早轮次保持为历史已审证据，而非当前待执行阶段。**
+
+## 历史已审：Round A11｜Lane M原生结果与Lane T训练源审联合科学审查
 
 **执行者：ChatGPT／AI-ARCH Discovery。** [固定联合独立审查](reviews/AI_ARCH_ROUND_A11_LANE_M_T_JOINT_INDEPENDENT_REVIEW_2026-10-13_V1.md)；当前两Lane均**已完成并STOP**，且没有获准执行的新109 GPU/174模拟器任务。
 
