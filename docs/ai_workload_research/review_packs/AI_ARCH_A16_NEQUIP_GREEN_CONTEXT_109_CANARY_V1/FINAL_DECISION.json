@@ -1,0 +1,21 @@
+{
+  "G0": "PASS_ASSET_AND_GPU_IDENTITY_NONBLOCKING_LOCK",
+  "G1": "STOP_REQUIRED_STREAM_RESOURCE_ENTRYPOINT_UNAVAILABLE",
+  "G2": "NOT_RUN_G1_STOP",
+  "G3": "NOT_RUN_G1_STOP",
+  "G4": "NOT_RUN_G1_STOP",
+  "scientific_status": "API_FEASIBILITY_ONLY / P13_RESOURCE_HEADROOM_NOT_EVALUATED",
+  "actual_quota_sm_count": null,
+  "physical_device_SM_count": 76,
+  "numeric_qualification": "NUMERIC_UNDER_QUOTA_NOT_ESTABLISHED",
+  "stop_reason": "Frozen G1 requires cuStreamGetDevResource; existing CUDA12.6 header and Driver580.178.04 interface lacks this entrypoint, confirmed with actual cuGetProcAddress query. Do not invent ABI or substitute a different proof chain.",
+  "source_interface_review_needed": "A future explicitly reviewed contract may consider documented cuStreamGetCtx_v2/cuStreamGetGreenCtx plus cuGreenCtxGetDevResource; this run did not execute or admit that alternative.",
+  "uncompleted": [
+    "G1 quota creation and stream-bound quota proof",
+    "G2 green stream kernel correctness",
+    "G3 runtime framework/stream interoperability",
+    "G4 native numerical and directed-edge canary"
+  ],
+  "no_performance_or_hardware_admission": true,
+  "STOP": true
+}

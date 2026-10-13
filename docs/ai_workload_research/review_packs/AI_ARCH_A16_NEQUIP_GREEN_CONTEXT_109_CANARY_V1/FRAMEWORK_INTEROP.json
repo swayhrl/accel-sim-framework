@@ -1,0 +1,21 @@
+{
+  "G3": "NOT_RUN_G1_STOP",
+  "runtime_torch_SUPPORTED": null,
+  "runtime_torch_imported": false,
+  "OEQ_ALCHEMI_AOT_imported_or_executed": false,
+  "source_only_evidence": [
+    {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/torch/cuda/green_contexts.py",
+      "sha256": "e3fc47163692fecb6af8e436d36ff0690beba8340b5c99349940aadc811b5537"
+    },
+    {
+      "path": "/data/c16/aiarch_nequip_static_batch_109_v1r1_20261013/venv/lib/python3.11/site-packages/torch/cuda/streams.py",
+      "sha256": "c8cb35dccf58685a7025a3af1f3082d274b7b13e42cc8b0f4609a0245ee90c7b"
+    }
+  ],
+  "source_shim_condition": "SUPPORTED = hasattr(torch._C, \"_CUDAGreenContext\"); runtime value not checked because G1 did not pass",
+  "torch_ExternalStream_source_present": true,
+  "model_ops_green_stream_proven": false,
+  "external_or_dangling_stream_wrapped": false,
+  "monkeypatch_or_hooks": false
+}
