@@ -36,3 +36,13 @@
 - **Q-A2-02**：当前FFN双流性能负、F2B分块tile-ready依赖与合法oracle未定义，强软件/论文近邻充分；parked，不能据此开发硬件。
 - **本轮裁决：0个机制晋升，0个109发现性探针、0个174模拟器任务**。没有改动C16历史、AWMA独立审查和GPU共享锁。
 - **建议下一轮Round A4｜跨负载自然场景选样与资源问题辨识（执行者：ChatGPT／AI-ARCH Discovery）**：从已审训练和非LLM作者数据与AWMA Round09/21去重，找最多3个有真实输入、完整时间区间与成熟软件对照的family，最多保留2张可证伪问题卡；本轮仅文献/GitHub只读与协调笔记，无新的Codex执行Goal。新GPU探针只在具备独立完整科学合同后单独提出。
+
+## Round A4｜跨负载自然场景选样与并行科研核查（执行者：ChatGPT＋Codex Lane T/N）
+
+- [Round A4三family比较与并行方案](literature/AI_ARCH_ROUND_A4_NATURAL_WORKLOAD_PARALLEL_DISCOVERY_2026-10-13_V1.md)：ChatGPT已只读核作者公开MegaScale-MoE训练扩展、Sobek/ALCHEMI/NequIP公开强邻近能力、LLM混合Serving证据。包括固定NequIP tutorial `sitraj.xyz`的Git blob读取与110帧×64 Si extxyz结构核对；**未证相邻帧自然时间顺序**。
+- **Codex任务已在协调分支准备、尚未由ChatGPT实际启动Codex窗口**：
+  - [Lane T／174-new CPU-only：训练输入、强/弱扩展、Megatron-LM强基线](goals/AI_ARCH_ROUND_A4_TRAINING_SOURCE_REVIEW_174NEW_V1.md) → 独立`hrl/aiarch-a4-training-source-174-v1`
+  - [Lane N／174-new CPU-only：非LLM自然几何、NequIP/MACE与Sobek/ALCHEMI消费者接口](goals/AI_ARCH_ROUND_A4_NONLLM_SOURCE_REVIEW_174NEW_V1.md) → 独立`hrl/aiarch-a4-nonllm-source-174-v1`
+- 两Lane仅各写一个独立source review Markdown，禁止直接提交协调分支、调用GPU/模拟器、下载大资产、修改AWMA/C16正式实验；本ChatGPT窗口在其报告回来后独立核对，才选择性更新共有索引。
+- **当前科学状态**：训练multi-GPU作者实测但不可直接投射到109；非LLM公开几何文件存在但真实时间身份与模型/消费者兼容待闭合；Serving已有强软件与paper输入，但无新本机probe合同。**当前无新109 GPU、174模拟器、Stage A或新机制执行授权**。
+- **建议后续Round A5｜并行证据独立审查与优先候选收敛（执行者：ChatGPT／AI-ARCH Discovery；Codex Lane T/N交付结果）**：审核两支Git exact commit和输入/语义状态，最多保留2张新问题卡，若具充分依据再单独提出有界GPU发现性探针审查，不因线程空闲而启动。
