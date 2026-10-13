@@ -4,7 +4,23 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已审：Round A20｜重新筛选三类AI负载，优先3DGS自然场景
+## 当前无人值守运行计划：20小时三Lane CPU研究队列（全部待用户发送）
+
+**用户指示：接下来20小时无人值守，要求提前准备并行任务与有界自动收口。** ChatGPT已完成[**20小时无人值守总计划**](ops/AI_ARCH_UNATTENDED_20H_2026-10-14_V1.md)与三个独立Lane Goal（旧STOP继续冻结）。此Git记录是**可执行安排而非Codex已启动回执**。
+
+| Lane/节点 | 无人值守唯一已安排工作 | Git与硬预算 |
+|---|---|---|
+| **Lane T／174-new** | [A21→A22连续CPU/source-only Goal](goals/AI_ARCH_20H_LANE_T_A21_A22_174NEW_V1.md)：先基于既有[A21现实Mill-19场景身份/强GS-Scale基线合同](goals/AI_ARCH_A21_GSSCALE_REAL_SCENE_SOURCE_ADMISSION_174NEW_V1.md)完成单份report、push并STOP A21；随后**仅**在新独立branch执行[A22训练step动态状态寿命source表](goals/AI_ARCH_A22_GSSCALE_STEP_LIFETIME_SOURCE_ONLY_174NEW_V1.md)。正常A21输入Blocked不妨碍A22代码能力审查，但不得伪造真实输入。 | A21 branch `hrl/aiarch-a21-gsscale-real-scene-source-174-v1`，旧起点`d3d5e235db0822a2404e05dcdb705ffc942e70ec`；A22 `hrl/aiarch-a22-gsscale-step-state-lifetime-174-v1`。CPU≤4/RAM≤8GiB，两阶段≤7h，新文件总≤200MiB。 |
+| **Lane N／174-new** | [A23真实3DGS硬件强近邻独立原文审查](goals/AI_ARCH_20H_LANE_N_GSARCH_HARDWARE_NEAREST_174NEW_V1.md)：GSArch/GS-Scale/GS-Cache逐真实实验组，区分仿真和native、冷热Gaussian/cache/atomics已解决问题；独立完成一张负面反证与候选。不得和T共享worktree。 | 新branch `hrl/aiarch-a23-gsarch-hardware-nearest-174-v1`，CPU≤2/RAM≤4GiB，6h内STOP，论文总下载≤40MiB且文献来源先只读。174内存或根盘紧张则RESOURCE_DEFERRED。 |
+| **Lane M／109** | [A24只读GS-Scale CPU平台资格](goals/AI_ARCH_20H_LANE_M_GSSCALE_109_CPU_PLATFORM_V1.md)：核CPU vendor/ISA、内存/存储余量及已装Python/Torch/IPEX**发行元数据**，判断Intel-only/旧PyTorch ABI差距，禁止Torch import和CUDA。 | 新branch `hrl/aiarch-a24-gsscale-109-cpu-platform-gate-v1`，CPU≤1/RAM≤1GiB，1h内STOP，新目录≤30MiB；GPU锁0、设备kernel0、安装/下载0。 |
+
+**统一STOP与独立性：** 三Lane都只能读取作者公开固定paper/Git源码和合法本机非敏感CPU信息；不开GPU、174模拟器、AWMA/C16、模型/大数据下载或新机制。工程路径、Git ref、manifest、小包装问题在同Goal里`bounded solve-and-continue`，不来回请求用户；科学身份/预算/真实数据缺失保留UNKNOWN或STOP。原Lane T A4/A10、N A4、M A16R1及NequIP V1R1所有正式STOP与raw/164 authority保持不变。
+
+**自动回收**：计划20小时后只对GitHub固定分支/新报告做状态汇总和有范围的审查，**不会替用户SSH运行Codex或启动GPU**。若分支无新结果就明确`NOT_LAUNCHED/NO_DELIVERY`，不可把预建分支称为已运行。完成后用户只需提交Lane回执，ChatGPT复核并决定是否值得真正申请一个3DGS原生实验。
+
+**以下A20和更早章节保留为有范围历史审查结果，不构成本无人值守计划中的GPU执行许可。**
+
+## 历史已审：Round A20｜重新筛选三类AI负载，优先3DGS自然场景
 
 **科研执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [**Round A20完整原文、实验组和公开源码审查**](literature/AI_ARCH_A20_REAL_AI_WORKLOAD_REDISCOVERY_THREE_FAMILY_AUDIT_2026-10-14_V1.md)。**本轮没有执行GPU、模拟器、训练、下载模型/场景或启动Codex**。回到现有`P08/P10/P13/P14`问题图谱，避免重复Green Context工具工程。
 
