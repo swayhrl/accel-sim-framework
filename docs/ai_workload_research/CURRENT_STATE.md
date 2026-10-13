@@ -4,7 +4,21 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已审：Round A12｜跨负载任务粒度与硬件资源可辨识性
+## 最新已审：Round A13｜片上状态寿命与寄存器资源最近邻审查
+
+**执行者：ChatGPT／AI-ARCH Discovery，连续source/literature-only（未启动Codex/GPU/模拟器）。** [**Round A13原始论文/官方PTX定点审查**](literature/AI_ARCH_ROUND_A13_ONCHIP_STATE_LIFETIME_STRONG_SOFTWARE_CAUSAL_AUDIT_2026-10-13_V1.md)。与A12使用相同窗口连续完成，以减少纯ChatGPT阶段的重复审批。
+
+- **Tawa** H100真实GEMM（K=16384）§V-E：aref的SMEM buffer深度D与WGMMA pipeline深度P（D≥P）形成tradeoff；P1→2通常改善、P3因register/SMEM/liveness引起occupancy/吞吐退化。作者已经使用cooperative warpgroup、persistent和强cuBLAS/FA3对照，不是新的空白。
+- **Twill** H100/B200真实FMHA backward：Hopper给定tile+register限制下不支持跨iteration的更深ILP，solver重获FA3类似策略；B200理论可行的两warpgroup方案在ptxas下spill，减register budget后得到三warpgroup、接近FA4方案，但作者同时指出atomic reduction/bandwidth会成为后续瓶颈。属于作者有范围软件/硬件约束，不是寄存器扩容实测加速。
+- **MPK** OSDI26真实LLM离线推理与源描述：SM级任务/事件调度、**paged SMEM已按task生灭重用**；per-thread寄存器仍按mega-kernel中最大task需求静态占用。**没有直接报告“只去掉reg最大值”能提升完整wall多少**。
+- **硬件重要反证**：[NVIDIA官方PTX `setmaxnreg`](https://docs.nvidia.com/cuda/parallel-thread-execution/#miscellaneous-instructions-setmaxnreg)可在**SM90a及部分更新架构**的每CTA register池中动态调节warpgroup配额；**SM89/RTX4080不支持**。不能把“任何GPU缺少动态寄存器再分配”作为新机制，也不能把CTA内重新分配当作物理扩容/提高CTA级occupancy。
+- **唯一`Q-A13-01`**：MPK持久异构task的最大寄存器需求是否在已有paged SMEM/动态CTA内reg重分配/强软件重选后，仍造成真实可量化的轻任务占用及完整wall损失？`PARKED_NEEDS_NATIVE_RESIDUAL_AND_PLATFORM`，当前只有结构限制+外部局部kernel资源权衡，没有该对象真实剩余墙或合格SM90对照，**不准入硬件机制、新GPU或模拟器任务**。
+- **后续Round A14建议（执行者：ChatGPT／AI-ARCH Discovery）**：只读筛选SM89本地真正可运行、强软件之后仍有物理单变量资源可辨识的候选；若无则停止当前平台P13实证路线并重新评估独立Hopper/仿真资源资格，而不是再扩大NequIP batch或重启C16/AWMA。
+- Lane M（109）、T（174-new）、N（174-new）继续STOP；原V1/Stage A/R27R3权威不改；0新109 GPU、174模拟器、164大raw、Codex/模型下载、holdout。
+
+**以下Round A12及之前记录是有范围历史接受事实，而非新项目执行授权。**
+
+## 历史已审：Round A12｜跨负载任务粒度与硬件资源可辨识性
 
 **执行者：ChatGPT／AI-ARCH Discovery（GitHub source/literature-only，无Codex/GPU）。** [**Round A12固定研究报告**](literature/AI_ARCH_ROUND_A12_CROSS_WORKLOAD_GRAIN_RESOURCE_IDENTIFIABILITY_2026-10-13_V1.md)。
 
