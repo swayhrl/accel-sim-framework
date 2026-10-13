@@ -24,8 +24,8 @@
 | **C16 Stage A独立收口** | [`ccd6928bfb420d1e4c554ec0e377bb8fbe377501`](https://github.com/swayhrl/accel-sim-framework/commit/ccd6928bfb420d1e4c554ec0e377bb8fbe377501) | 四DQ均不完整，MP02 B1合法子结果，0 formal survivor |
 | **C16旧机制探索综合** | [`ca6c33ae0431d91aa7c6a43cbb79522402dd7580`](https://github.com/swayhrl/accel-sim-framework/commit/ca6c33ae0431d91aa7c6a43cbb79522402dd7580) | E1、Split-K、转换缓存、FFN等成熟阶段分类 |
 | **AWMA最新已发表handoff** | [`29ce051f982f3854bd4392a94e4195c59340123b`](https://github.com/swayhrl/accel-sim-framework/commit/29ce051f982f3854bd4392a94e4195c59340123b) | R27R3事前执行合同，不表示结果PASS |
-| **AWMA当前文献/科学状态笔记** | [`0b8310ee4afe8429b3ed2de381594794ee12ae31`](https://github.com/swayhrl/accel-sim-framework/commit/0b8310ee4afe8429b3ed2de381594794ee12ae31) | R27R3授权交接、R27R2复审与历史状态；不是自动实验许可 |
-| **AWMA R27R3最新可见结果** | [`7bd31fae4c54e121d54743a803d978ee02a64959`](https://github.com/swayhrl/accel-sim-framework/commit/7bd31fae4c54e121d54743a803d978ee02a64959) | 执行提交的`B0_REFERENCE_NOT_REPEATABLE`，**在本索引形成时尚无对应独立AWMA审阅接受记录**；不要与已接收R27R2等量齐观 |
+| **AWMA当前文献/科学状态笔记** | [`f0a6ec310c09cd011fffbe8a5ca22d6effacdf6b`](https://github.com/swayhrl/accel-sim-framework/commit/f0a6ec310c09cd011fffbe8a5ca22d6effacdf6b) | 最新独立科学审阅已接受R27R3有限STOP；原始实验authority仍在R27R3 execution commit，协调分支不构成新授权 |
+| **AWMA R27R3最新可见结果** | [`7bd31fae4c54e121d54743a803d978ee02a64959`](https://github.com/swayhrl/accel-sim-framework/commit/7bd31fae4c54e121d54743a803d978ee02a64959) | [独立审阅](https://github.com/swayhrl/accel-sim-framework/blob/d6e9bbfb562814bcd5dc5adb444d3c572e7f446b/docs/vm_tlb/literature_notes/awma/empirical/R27R3_B0_REFERENCE_REPEATABILITY_REVIEW_2026-10-13.md)接受`R27R3_B0_REFERENCE_NOT_REPEATABLE`，B0两次fresh process完整梯度25/262,668,288元素超原容差；组件归因与容量未运行 |
 
 ## 1. C16证据条目（按问题归类，不按Codex轮次）
 
@@ -64,7 +64,7 @@
 | **E-A10** | R25更强C1对照：S2目标峰值Qwen减535.777MiB，Llama减1350.030MiB；时间Qwen约快0.933%，Llama约慢0.130% | [N][R] `CROSS_MODEL_CAPACITY_POSITIVE/TIME_MIXED` | 是目标族局部容量与短训练轨迹；非全参数训练/收敛/端到端加速 | [R25 review](https://github.com/swayhrl/accel-sim-framework/blob/0b8310ee4afe8429b3ed2de381594794ee12ae31/docs/vm_tlb/literature_notes/awma/empirical/R25_TIED_WEIGHT_BROADER_VALIDATION_REVIEW_2026-10-02.md) |
 | **E-A11** | R26集成5步训练，重复一条序列：C1 B70 PASS/B71 OOM；S2 B71 PASS/B72 OOM（各端点3/3）；B70整步峰值S2高3.828MiB、时间MIXED | [N][R] `SCOPED_CAPACITY_POSITIVE` | 仅tied-W训练，重复batch数据，增加一个物理B；不是多样数据、收敛、全参数训练或速度positive | [R26 accepted review](https://github.com/swayhrl/accel-sim-framework/blob/0b8310ee4afe8429b3ed2de381594794ee12ae31/docs/vm_tlb/literature_notes/awma/empirical/R26_TIED_WEIGHT_CAPACITY_REVIEW_2026-10-02.md) |
 | **E-A12** | R27R2新WikiText-2多样输入bank资格通过；B1四步C1/S2总梯度对B0全部FAIL；没进行容量试验 | [N][R][STOP] `NUMERIC_NOT_QUALIFIED` | 不能改称“多样输入容量负结果”；归因尚未证明且当时没有定位失效元素坐标 | [R27R2 independent review](https://github.com/swayhrl/accel-sim-framework/blob/0b8310ee4afe8429b3ed2de381594794ee12ae31/docs/vm_tlb/literature_notes/awma/empirical/R27R2_VARIED_BATCH_CAPACITY_REVIEW_2026-10-13.md) |
-| **E-A13** | **R27R3新提交**：在两次fresh-process B0 vs B0中，262,668,288梯度元素中25项超原先逐元素容差；未进入候选归因/修复/容量 | [N][STOP] `RESULT_PUBLISHED_NOT_YET_INDEPENDENTLY_REVIEWED` | 说明当前基准本身在固定数值合同下未重复闭合；**不证明C1/S2的数值误差来源或容量效果** | [结果提交](https://github.com/swayhrl/accel-sim-framework/blob/7bd31fae4c54e121d54743a803d978ee02a64959/docs/vm_tlb/review_packs/AWMA_R27R3_NUMERIC_ATTRIBUTION_CONDITIONAL_CAPACITY_109_V1/FINAL_DECISION.md) |
+| **E-A13** | R27R3原生RTX4080，固定Llama-3.2-1B BF16 tied-W、WikiText-2 bank k0、B1，B0-vs-B0两次fresh process；完整梯度262,668,288元素中25处超`atol=rtol=1e-2`（行198有12处，行284有13处），最大超限(198,604)：5.40625→5.3125，差0.09375、容差0.06406；其它检查PASS，STOP在参考重复性门 | [N][R][STOP] `B0_REFERENCE_NOT_REPEATABLE_ACCEPTED` | 不证明B0数学错误或C1/S2数值来源；未做组件归因、修正、多样输入容量或32步；原R26重复输入的一physical batch结论不变。reviewer核对Git20/20 SHA和25元素表，node164 raw仅执行侧回读 | [execution](https://github.com/swayhrl/accel-sim-framework/commit/7bd31fae4c54e121d54743a803d978ee02a64959)；[accepted AWMA review](https://github.com/swayhrl/accel-sim-framework/blob/d6e9bbfb562814bcd5dc5adb444d3c572e7f446b/docs/vm_tlb/literature_notes/awma/empirical/R27R3_B0_REFERENCE_REPEATABILITY_REVIEW_2026-10-13.md)；[coordination sync](R27R3_INDEPENDENT_REVIEW_SYNC_2026-10-13.md) |
 | **E-A14** | 非LLM几何/图网络：R21源码分析图的receiver/source双向遍历、排序、CSR、prepared cache；R22实测分族与完整区间响应符号不一致 | [C][N] `PARTIAL/UNOBSERVED_NET_COST` | 不证明每步必重建，未找到合格的真实完整能量/力计算残余；当前无硬件题 | [R21 problem-discovery](https://github.com/swayhrl/accel-sim-framework/blob/0b8310ee4afe8429b3ed2de381594794ee12ae31/docs/vm_tlb/literature_notes/awma/rounds/2026-10-02_ROUND_21_POST_R20_PROBLEM_DISCOVERY.md)、[R22 status](https://github.com/swayhrl/accel-sim-framework/blob/0b8310ee4afe8429b3ed2de381594794ee12ae31/docs/vm_tlb/literature_notes/awma/plans/STATUS_AFTER_R22_FGE_RESULTS_AND_R22F1_AUTHORIZATION_2026-10-02.md) |
 | **E-A15** | AWMA Round09跨执行组织、GNN/稀疏、推荐、训练优化器、可靠性的27项资料调研 | [L][C] `LITERATURE_AUDIT` | 19项关键正文、1项部分正文、6项摘要、1项artifact；不是27篇全文逐字精读，更不是本机验证 | [Round09](https://github.com/swayhrl/accel-sim-framework/blob/0b8310ee4afe8429b3ed2de381594794ee12ae31/docs/vm_tlb/literature_notes/awma/rounds/2026-09-27_ROUND_09_BROAD_SIDE_RESEARCH.md) |
 | **E-A16** | R101 Newton–Schulz小tile局部融合在固定五步下有正响应；另一L512缓存/写回方案减少写量但不一定更快 | [N][S] `MIXED/CONTEXT_BOUND` | 训练状态对象/数学重组、native与simulator观察不同，不自动等于普遍硬件效果 | [Round22 ledger](https://github.com/swayhrl/accel-sim-framework/blob/0b8310ee4afe8429b3ed2de381594794ee12ae31/docs/vm_tlb/literature_notes/awma/empirical/ROUND22_FAMILY_BOUNDARY_LEDGER.tsv)（R101各条） |
@@ -103,7 +103,7 @@
 ## 5. 关键的不一致、旧索引过时与非转移边界
 
 1. **AWMA旧`CURRENT_STATE.md`日期为2026-09-17，不是当前执行真相。** 到2026-10-13的R27R3结果应先看最新执行commit与对应独立审查；不要用旧README顶部宣称R27刚获授权。
-2. **R27R3结果已发布，但本索引不冒充正式独立审查。** `7bd31fa…`当前报告B0对B0有25项梯度元素失败；不能据此判C1/S2实现出错，也不能改R26的历史资格化结果。
+2. **R27R3已完成独立科学审阅。** `7bd31fa…`的两次原生B0控制在原逐元素数值合同下有25个失败位置，审阅接受`R27R3_B0_REFERENCE_NOT_REPEATABLE`有限STOP；原因仍未知，不能据此判C1/S2实现出错或回写R26的历史结论。审阅位于[`R27R3_B0_REFERENCE_REPEATABILITY_REVIEW_2026-10-13.md`](https://github.com/swayhrl/accel-sim-framework/blob/d6e9bbfb562814bcd5dc5adb444d3c572e7f446b/docs/vm_tlb/literature_notes/awma/empirical/R27R3_B0_REFERENCE_REPEATABILITY_REVIEW_2026-10-13.md)。
 3. **C16与AWMA历史材料有“时间顺序”差异。** AWMA Round22旧账本曾把C16量化转换的“局部净时间未测”列为缺口；随后C16正式做了转换原生隔离oracle，报告0.8262×。引用该问题时以**后来的对应专题终态**为准，而不篡改旧账本。
 4. **AWMA Pre-L1和C16静态VA不是同一种证据。** 前者有指定simulator内部服务抑制与正确性，后者只有特定选定地址行为；不能合并成“AI全模型TLB受阻”。
 5. **局部正面与完整应用是两个层次。** R23G在线head、R25目标区域显存、R26 batch可行性、C16 MP02 Mode A/B，均不能未经测量升级为整模型速度、生产环境或者硬件效益。
@@ -139,6 +139,8 @@ raw Git/164 path + SHA receipt:
 ## 7. 当前资源/授权备注（非运行状态监控）
 
 - C16：Stage A与原Reset已闭合，没有新原生执行授权。
-- AWMA：R27R3原Goal由原项目自行审阅最新已提交的STOP；本文件不发布新Goal，不主动触碰正在或刚完成的109任务。
+- AWMA：R27R3已由原项目独立审阅并接受参考重复性STOP；协调分支仅同步E-A13，**没有新AWMA GPU合同**，不触碰已关闭的109任务。
 - 109/RTX4080：共享`/data/c16/locks/c16_gpu_campaign.lock`，涉及CUDA/JIT的活动保持独占；174-new只在具体任务需要时做CPU/模拟分析；164保留large raw与模型权重authorities。
 - 总主线合并仅意味着研究规划和索引统一；**没有任何实验合同、holdout资格、scientific authority或论文结论被重新授权或追溯修改**。
+
+**V1小范围维护记录（2026-10-13）：**仅将原先标作待独立审阅的R27R3 E-A13更新为已接受的有限B0-reference-repeatability STOP，并更新当前authority指针。建立V1时的原始状态仍保存在协调分支commit `d0a8a83329ae1094b41048c3d06820170dc42484`；没有改写其它科学结论。
