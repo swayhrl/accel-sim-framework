@@ -2,6 +2,12 @@
 
 **Status: review candidate on isolated branch, not active coordination policy.** This tree changes no scientific code, simulator configs, experiment identity, Git tags or current coordination states. It provides two inspectable, opt-in research Skills and a concise `AGENTS.md`. Merging into long-lived coordination or execution branches requires separate review.
 
+## Validation update: 174-new report, 2026-10-13
+
+Read [174-new bounded verification receipt](174NEW_SAFE_VALIDATION_RECEIPT_2026-10-13.md). Codex reported that both Skill texts/templates were manually applied to two bounded cases in an isolated 2.1 MB worktree. AWMA R27R3 and AI-ARCH P01/P13 scope was preserved. **Automatic CLI Skill discovery is still unverified** because the CLI process lacked the configured `WCLQ_API_KEY` before any model call. Multi-agent/review/hooks flags and help entries are not equivalent to end-to-end runtime qualification.
+
+**Adoption decision:** use direct ChatGPT GitHub reads and manual single-agent Skill reading immediately; use parallel reviewers only for high-risk independent checks. Do not repeat a large canary, install hooks, rotate credentials, upgrade global Codex or merge into a scientific execution branch. Fix CLI environment propagation only as a tiny isolated opt-in smoke test later. Coordination branch has advanced and diverged from this bootstrap candidate, so future adoption must cherry-pick or transplant only reviewed configuration files onto a fresh branch based on the then-current coordination head.
+
 ## Source authority
 
 Prepared from fixed parent `hrl/ai-workload-research-coordination @ 2048f23b1a765393cbf27c3ee413ccae1addcf45` on 2026-10-13. Relevant source documents:
