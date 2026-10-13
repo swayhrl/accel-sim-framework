@@ -21,7 +21,7 @@
 2. `examples/simple_trainer.py` vs `examples/simple_trainer_hybrid_baseline.py` vs `examples/simple_trainer_hybrid_optimized.py`：只定位产生/消费active Gaussian ID、GPU frustum culling、CPU optimizer/forwarding、D2H/H2D、真实同步、相机选样、densification与训练loss/PSNR评估的入口；不要全文复制三份大文件。
 3. `examples/simple_trainer_hybrid_optimized_split.py`仅在确定需要极端active-set分裂时审关键分支；否则跳过。不能把image-splitting改变工作/梯度对象的代价当免费。
 4. `cpu_adam/src/cpu_adam.cpp`：确认deferred Adam更新/参数计数与CPU线程/平台条件，不把作者“质量近似无损”误写为bitwise identical。
-5. `examples/datasets/colmap.py`和`examples/requirements.txt`（如有必要）核public dataset输入与处理依赖，控制总文件数≤8：允许在上述清单内换其中一个不必要的大脚本，而非无限打开额外源码。
+5. `examples/datasets/colmap.py`核public dataset输入；`examples/requirements.txt`用于固定依赖。默认8个文件：README、install、GPU-only、host baseline、host optimized、CPUAdam、COLMAP、requirements。如确需审`_optimized_split.py`，以其替换requirements的完整阅读，依赖信息仍可取自安装记录；不能突破8份源码范围。
 
 ### B. 真实场景可追溯输入身份（优先Building或Rubble）
 
