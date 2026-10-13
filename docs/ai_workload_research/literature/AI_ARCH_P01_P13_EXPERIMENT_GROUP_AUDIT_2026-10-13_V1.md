@@ -75,7 +75,7 @@
 - **局限**：改变了多个MoE路径软件因素；不能单独认定是路由不均或SM闲置的全部因果；不同route的自然形态是否参与该图仍需按作者runner进一步核。
 
 **MP-03｜§6.5 Figure 11；Tensor Parallel多GPU（NATIVE_MULTI_GPU）。**
-- **对象**：1–8张H100 DGX；模型和batch对应图11列示；MPK将AllReduce等分解为NVSHMEM异步传输和局部reduce任务。
+- **对象**：Qwen3-1.7B，H100 DGX上2/4/8张GPU（Figure 11），batch 1/2/4/8/16；MPK将AllReduce等分解为NVSHMEM异步传输和局部reduce任务。
 - **强基线**：vLLM/SGLang；另报PyTorch+torch.compile+CUDA Graph（较弱的系统级比较对象）。
 - **作者报告**：相对vLLM/SGLang在8×H100上约**1.1–1.4×**；相对PyTorch最高10×是**另一分母**。不能混为“对最强基线10×”。
 - **限制**：提升同时包含CPU调度、细粒度依赖、kernel边界和通信重叠，图本身没有仅改变NVLink带宽的扩展曲线。
@@ -136,7 +136,7 @@
 **BU-02｜Bullet §4.3–4.4 Figures 17–19；SM分配/资源反例（NATIVE_ABLATION）。**
 - **对象**：Azure-Code的动态请求，以及ShareGPT中20req/s时的Llama3.1-8B局部区间。
 - **变量/指标**：固定SM划分 vs 动态划分；等待、TTFT/TPOT、active SM cycles、Tensor Core和带宽利用率。
-- **作者报告**：局部0–27s观察窗Bullet平均active SM cycles 86.2%，高于SGLang 11.2个百分点（原文写11.2%），但这不是Tensor Core占用86.2%；固定SM数量改变呈收益权衡，某一固定划分无法同时最优TTFT与TPOT。
+- **作者报告**：局部0–27s观察窗Bullet平均active SM cycles 86.2%，原文报告相较SGLang高11.2%（未据此自行推成“11.2个百分点”），但这不是Tensor Core占用86.2%；固定SM数量改变呈收益权衡，某一固定划分无法同时最优TTFT与TPOT。
 - **局限**：它首先是运行时资源分配研究，而非物理增加SM数量；利用率增大不应未经时间对照等价为加速。
 
 **MM-01｜MegaScale-MoE §6.1 Table 3/Figure 12（NATIVE_TRAINING_SCALE）。**
