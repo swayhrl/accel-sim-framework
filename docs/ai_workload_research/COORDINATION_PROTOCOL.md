@@ -62,3 +62,10 @@
 - Codex各自使用独立branch/worktree/output/tmp/receipt；只读共享源和原始证据，**不得并发写同一个manifest、CURRENT_STATE或协调分支**。新Codex结果先发布自己的ref，经过本窗口证据级别审查后才选择性同步协调层。协调层从不merge实验HEAD生成新的科学authority。
 - **特别强调**：一般性的多窗口许可不等于既有109 GPU禁令失效，也不等于批准恢复174模拟器、C16 Stage A、AWMA R27R3、新机制、训练、重型profile/权重下载。对这些有独立的每次具体授权与锁/科学合同；任何即将使用109的CPU-only任务也不得触发CUDA/JIT/GPU/现有锁竞争。
 - 新Round目标应标明`执行者`、任务的相互依赖、资源权限、所需工作文件/起点commit、STOP以及证据回收/审查方式。启动报告只凭执行者实际回执，不以写入Goal文件自动声称Codex已执行。
+
+## 9. 依赖包装与科学输入缺失分层（A8轮经验）
+
+- 当固定依赖版本的官方wheel缺失时，先核对**官方同版本sdist、固定SHA256、旧版本锁、预冻结wheel-only策略及其它包的完整获取门**。这一现象属于`PACKAGING_ARTIFACT_GAP`，不是自然scientific payload缺失、GPU数值失败或负性能结果；不要把缺失的wheel视为“这个版本不可安装”的证明。
+- 如科学合同**已经规定缺wheel即STOP**，先保留合法终态与全部raw/receipt，不能自行切换源码安装或把失败的执行继续成PASS。只有经用户明确授权的最小后续合同（例如仅**原版本、原hash官方sdist**的一次有界CPU构建）才可恢复；由新wheel产生的新hash需另列派生来源，不覆盖原sdist或版本锁。
+- 此类门应尽量在大型依赖下载、JIT和GPU锁之前，以CPU侧只读发行元数据＋精确hash/可用性检查筛出；严格区分第一次失败和全部依赖已通过检查，避免更正一个叶包后立刻出现下一个相同STOP。
+- 冻结的模型/输入/数值、原source/原GPU预算、独立分支和STOP仍是权威。只有工程包装的小且确定性的重建可以在获准范围内solve-and-continue；实质科学输入、模型语义或后端身份变化必须重新评审。
