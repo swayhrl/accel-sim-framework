@@ -1,0 +1,37 @@
+{
+  "declared_before_new_GPU": true,
+  "input": "B1 bank k0; k3 only if needed",
+  "max_pre_correction_GPU_processes": 6,
+  "processes": [
+    "repeat_b0_a",
+    "repeat_b0_b",
+    "component_attribution (bounded subprobes)",
+    "remaining processes only if unresolved discriminator needs k3 or directed fixture"
+  ],
+  "atol": 0.01,
+  "rtol": 0.01,
+  "hypotheses": [
+    {
+      "hypothesis": "REFERENCE_VARIABILITY",
+      "discriminator": "two fresh-process unchanged B0 k0 complete steps; original tensor criterion; STOP if any required observable fails"
+    },
+    {
+      "hypothesis": "LOOKUP_REDUCTION_OR_MERGE",
+      "discriminator": "matched-dH embedding backward; scatter compact rows on CPU; compare duplicate vs unique input rows and total merge"
+    },
+    {
+      "hypothesis": "CCE_CLASSIFIER_PATH",
+      "discriminator": "matched hidden/LSE CCE dW full vs tiled, compare all rows with original criterion"
+    },
+    {
+      "hypothesis": "OPTIMIZER_OR_CHECKPOINT",
+      "discriminator": "same total gradient and same start m/v/step yields shared tile AdamW; compare moments and load/RNG identity"
+    },
+    {
+      "hypothesis": "OTHER_LOCALIZED",
+      "discriminator": "first stage mismatch and reproducible per-coordinate evidence; no inferred cause from mean/cosine"
+    }
+  ],
+  "one_correction_only": true,
+  "no_capacity_until_A_D_pass": true
+}
