@@ -33,6 +33,8 @@
 
 ## 3. 阶段B｜新A22：训练step状态与依赖/时间原理图（不可运行）
 
+**A22独立合同**：[A22状态寿命CPU-only合同](AI_ARCH_A22_GSSCALE_STEP_LIFETIME_SOURCE_ONLY_174NEW_V1.md)，必须与本总控一并阅读；其中规定相同的独立输入/正确性/资源限制。
+
 **A22独立分支**：`hrl/aiarch-a22-gsscale-step-state-lifetime-174-v1`，从20小时总计划的固定Git协调commit创建单独worktree（如远端预建该分支，则核对HEAD并使用）；**不得基于A21实验branch merge或复制其代码产物**。可引用A21提交链接作为外部冻结输入，不重写A21。
 
 **唯一交付**：
