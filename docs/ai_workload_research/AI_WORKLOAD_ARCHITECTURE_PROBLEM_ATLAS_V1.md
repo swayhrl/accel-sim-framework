@@ -92,11 +92,11 @@ flowchart TD
 - **问题**：共享大权重、稀疏lookup和密集分类梯度如何累积与更新？是整步时间、峰值显存还是batch容量首先受限？
 - **已知**：AWMA R24/R25大幅降低目标区域峰值内存；R26在重复相同序列的限定训练中，S2把可完成物理batch从B70延伸至B71，但同一B70整步峰值反而高约3.83MiB；R27R2多样输入B1数值未闭合。
 - **状态**：`[软件实测-容量特定范围成立] [多样输入/长期训练未知]`；`E-A09/E-A10/E-A11/E-A12`。
-- **当前变化**：2026-10-13已检索到R27R3执行结果提交，其B0对B0重复性先失败；当前索引标为**待独立审查**，不可补称S2数值或容量结论；`E-A13`。
+- **当前变化**：R27R3已经AWMA独立审阅，接受`B0_REFERENCE_NOT_REPEATABLE`有限STOP：在冻结WikiText-2 B1/k0、两次原生B0 fresh process之间有25/262,668,288个BF16总梯度元素超过原始`atol=rtol=1e-2`门槛；组件归因、S2修正、多样输入容量均未运行。`E-A13`已由待审转为独立接受。
 
 ### P09　数值计算顺序本身何时限制架构自由度？
 - **问题**：压缩、分块、并行归约、稀疏梯度散射改变浮点累积顺序后，真实算法允许的误差和所需性能代价分别是什么？
-- **已知**：C16跨运行时合并gate/up在336项中14项超冻结容差；AWMA R27R2发生单元素资格失败，R27R3报告显示同一B0参考也在当前两个fresh-process之间存在容差外差异。
+- **已知**：C16跨运行时合并gate/up在336项中14项超冻结容差；AWMA R27R2优化方案对B0的总梯度资格失败，而R27R3进一步确认固定多样输入下**B0自身**也可能在预设数值门槛外变化（25个元素、两次fresh process）。这说明参考重复性尚不合格，**不说明**哪个归约kernel错误或训练质量受损。
 - **状态**：`[实测：数值合同对实现有约束] [归因未知]`；`E-C09/E-A12/E-A13`。不将高cosine或小均值误差当作通过。
 
 ### P10　动态图准备/拓扑变化是否构成隐藏的“必要前序”？
@@ -163,7 +163,9 @@ flowchart TD
 | AWMA R23G | 有范围在线软件策略正结果，完整生成不稳定 | 保留软件成果，不自动推硬件 |
 | AWMA R24–R26 | 训练目标区容量结果与R26重复内容一batch扩展 | 保留当前场景；不得推真实多样输入 |
 | AWMA R27R2 | 多样输入B1数值资格失败，没有容量测量 | 保留负准入事实，不宣称容量负结果 |
-| AWMA R27R3 | 最新执行branch已见结果commit `7bd31fa…`，B0重复性门STOP；**尚待AWMA独立审查** | 新总主线不重启或更改它 |
+| AWMA R27R3 | [execution](https://github.com/swayhrl/accel-sim-framework/commit/7bd31fae4c54e121d54743a803d978ee02a64959)与[独立审阅](https://github.com/swayhrl/accel-sim-framework/blob/d6e9bbfb562814bcd5dc5adb444d3c572e7f446b/docs/vm_tlb/literature_notes/awma/empirical/R27R3_B0_REFERENCE_REPEATABILITY_REVIEW_2026-10-13.md)已接受有限B0重复性STOP；归因未知、无多样输入容量结果 | 总主线只记录E-A13，不重启、修改或新增实验授权 |
 | 资源 | GPU锁共享`/data/c16/locks/c16_gpu_campaign.lock`；164 raw authority，174 CPU/模拟分析 | 继续遵守旧约定，不并发启动GPU |
 
 **版本管理原则：**本文件是新总主线的解释层，不修改已有Git commit、Stage A终态、AWMA各独立Goal、R27R3结果及未来实验准入。新科学结论只能回到对应原始证据和单独审查产生。
+
+**V1事实状态维护（2026-10-13）：**仅将已发布但待审的R27R3结果更新为独立审阅接受的有限STOP，依据AWMA[review](https://github.com/swayhrl/accel-sim-framework/blob/d6e9bbfb562814bcd5dc5adb444d3c572e7f446b/docs/vm_tlb/literature_notes/awma/empirical/R27R3_B0_REFERENCE_REPEATABILITY_REVIEW_2026-10-13.md)。原始V1图谱见协调commit`d0a8a83329ae1094b41048c3d06820170dc42484`；P01–P14问题结构、研究优先级和实验授权不变。
