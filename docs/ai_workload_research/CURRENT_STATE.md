@@ -4,6 +4,18 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
+## 当前获准：Round A9｜Lane M一次性V1R1恢复（执行尚待窗口启动）
+
+**用户2026-10-13明确批准两个阶段：A＝官方原版本ANTLR源码包的一次受控本地wheel构建；B＝仅在A以及其它已冻结依赖门合格之后，按V1原科学参数与剩余累计预算恢复109 GPU观察。** [固定审批记录](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1R1_APPROVAL_2026-10-13.md)、[完整V1R1方案](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1R1_WHEEL_EXCEPTION_DRAFT.md)及[原V1合同](goals/AI_ARCH_NEQUIP_STATIC_BATCH_DISCOVERY_109_V1.md)为本次执行依据。
+
+- 运行执行者：**Lane M／node109独立新worktree**；准备独立分支`hrl/aiarch-nequip-static-batch-109-v1r1`，起点为原V1正式STOP提交`06674a961632c107681ac146d735d932dde112d6`。原V1 STOP、原164归档及前轮资源消耗不能覆盖或清零。
+- `EXPLICIT_APPROVAL_V1R1_A_AND_B / AWAITING_LANE_M_LAUNCH / V1_STOP_PRESERVED`。本ChatGPT仅记录批准与准备GitHub，**没有登录109启动Codex、安装任何wheel或初始化CUDA**。是否真的运行须依用户/执行报告。
+- 唯一打包例外是官方`antlr4-python3-runtime==4.9.3`固定同一sdist SHA的一次CPU构建；不得换版本、使用第三方wheel或擅自处理第二个源码包。
+- 原四条件N-C2/N-G2/N-G4/N-G8、数值/输入/强软件基线、GPU锁和STOP仍冻结；原累计依赖下载8GiB上限减前轮保守消耗3,333,112,827 bytes，**余5,256,821,765 bytes**，其它资源原V1预算不重新计起。
+- Lane T、Lane N（174-new）、AWMA、C16全部继续原独立任务状态。只有具本次确切许可的Lane M能进入本轮。
+
+下面的Round A8停止审查和更早“拟议/已启动”描述保留作为历史，不应覆盖此新批准状态。
+
 ## 最新已审：Round A8｜Lane M依赖wheel门STOP（执行者：ChatGPT独立审查）
 
 **当前接受的科学状态：`V1_ENVIRONMENT_BLOCKED / NOT_EVALUATED / COMPLETE_STOP`。** [Round A8独立审查](reviews/AI_ARCH_ROUND_A8_LANE_M_ENV_STOP_INDEPENDENT_REVIEW_2026-10-13_V1.md)已在固定[执行提交`06674a961632c107681ac146d735d932dde112d6`](https://github.com/swayhrl/accel-sim-framework/commit/06674a961632c107681ac146d735d932dde112d6)和公开PyPI官方发行上核对停止依据。执行分支`hrl/aiarch-nequip-static-batch-109-v1`保持STOP，**不自动恢复、重启、merge或修改旧receipt**。
