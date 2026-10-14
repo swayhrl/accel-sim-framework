@@ -12,7 +12,7 @@ Approved record overrides historical pending-approval prose. Author source remai
 | G1 | **NOT_RUN** | No full scene/COLMAP download, environment creation, installation or CPUAdam compile; G0 did not pass |
 | G2 | **NOT_RUN** | No CUDA initialization, Torch import, native step or numerical/quality claim |
 | G3 | **NOT_RUN** | No wall/timing/transfer/synchronization samples; no early or late training state observed |
-| G4 | **PARTIAL pending publication readback** | Complete small evidence archive for the actual G0 terminal condition; final Git closeout follows |
+| G4 | **PASS** | First complete packet pushed and independently fetched/verified; PUBLICATION_READBACK.json binds its exact commit/tree/blobs/SHA; final closeout commit is also verified before STOP |
 
 ## Scientific source access was actually checked and recovered
 
@@ -39,7 +39,7 @@ Official publisher research release/access was checked; code license is not sile
 G0 item 3 requires reliable small metadata/same-origin tar index when archive expansion is unknown, and mandates STORAGE_BOUND_UNKNOWN_STOP if disk safety cannot be established before the large download.
 Current same-filesystem free space is approximately 134 GiB, above 64 GiB reserve; this is not an actual disk-space exhaustion result.
 The public directory request returned 404. Two bounded, candidate same-origin index/manifest HEAD probes returned 404; this does not prove an index exists nowhere.
-The gzip footer has ISIZE **1,213,739,008**, which represents size modulo 2^32. Its possible total is `1,213,739,008 + n × 4,294,967,296`; metadata does not establish n or a <=60 GiB all-task upper bound.
+The gzip footer has ISIZE **1,213,739,008**, which is a gzip member's size modulo 2^32. Even assuming a single member, its possible total is `1,213,739,008 + n × 4,294,967,296`; metadata does not establish n or a <=60 GiB all-task upper bound; multiple members further weaken a last-footer total-size claim.
 A near-1 JPEG compression estimate or a guessed wrap count cannot qualify raw expansion + 4× derivatives + environment/build/cache/checkpoints under the hard cap.
 A newly generated full tar index requires reading the complete archive, which cannot retrospectively satisfy this contract's pre-download admission gate. No unbounded extraction or large download was used to find out.
 The original science, input, versions, quality requirements and resource limits were not relaxed.
@@ -71,4 +71,4 @@ RUN_IDENTITY/GATES/ASSET_MANIFEST/ENV_LOCK/BUILD_RECEIPT/THREAD_LIMIT_RECEIPT/BU
 Old A16R1, V1R1 and A24 HEADs/cleanliness were rechecked; their models/environments/caches and C16/AWMA remain untouched. No coordination merge or successor Goal.
 Remaining prerequisite: a reliable official expanded member/size manifest or an independently reviewed change expressly permitting a budget-capped full-archive admission scan. It is not authorized automatically here.
 The report's enclosing commit/tree/blob and all committed SHA values are verified by push/fetch-back closeout; self-referential hashes are not embedded.
-Only this independent branch is published. After remote verification, **STOP and await independent ChatGPT scientific review**.
+First-packet readback: commit `0e00d87f4aabd3650d2b0732f1497dba05ddd9e0`, tree `ce899d402271cc16508f731edba429c7554f6aaa`; all 20 initial files matched. Only this independent branch is published. After remote verification, **STOP and await independent ChatGPT scientific review**.
