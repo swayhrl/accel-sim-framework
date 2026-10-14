@@ -1,10 +1,21 @@
 # AI-ARCH｜当前科研协调状态
 
-**快照：2026-10-15，A47R1原生执行与A49独立审查完成。维护者：ChatGPT／AI-ARCH Discovery。**
+**快照：2026-10-15，A47R2已获授权发布、等待109执行回执。维护者：ChatGPT／AI-ARCH Discovery。**
 
-本页是研究导航，不是节点实时监控。原A47已执行并STOP；A47R1依据用户随后对A48具体双canary建议的同意单独授权，不能自动延伸至完整GloVe构图/性能实验。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
+本页是研究导航，不是节点实时监控。原A47与A47R1已各自STOP；用户随后对A49纠偏批准了独立A47R2小型复验，本次仍不授权完整GloVe构图或正式性能矩阵。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
 
 **历史不改写：** A46及此前完整导航保存在[CURRENT_STATE@e4bf84ff](https://github.com/swayhrl/accel-sim-framework/blob/e4bf84ff414c84576bd7dc1078d145910617b0f6/docs/ai_workload_research/CURRENT_STATE.md)。该快照中的“尚未授权”是A46时点，本页优先记录A47实际STOP；所有原报告、Goal、原始结果和commit仍按自身合同有效。
+
+## 最新执行准入：Round A47R2｜修正index资格、条件stream对照与下一步裁决合并
+
+**当前：`A47R2_AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED`。** 用户2026-10-15在A49确认`str(idx.dtype)=="float32"`的确定性错误后回复“继续吧”，并要求今后将建议、具体做法与可合并步骤放入同一轮。本窗口据此发布[**A47R2连续Goal**](https://github.com/swayhrl/accel-sim-framework/blob/bbbe9d89d05e268f7dc958886a571fb327c44584/docs/ai_workload_research/goals/AI_ARCH_A47R2_CAGRA_INDEX_FIELDS_AND_STREAM_CANARY_109_V1.md)，本窗口**未实际连接109或启动GPU**。
+
+- Git：branch `hrl/aiarch-a47r2-cagra-index-fields-stream-109-v1`，完整启动HEAD `bbbe9d89d05e268f7dc958886a571fb327c44584`；从A49协调parent `c3d235cd99f2698672dd40094fcd4502e397b055`独立分出，branch相对parent ahead1，唯一新增Goal。
+- 唯一科研目的：对固定26.10源码和1024×100 seed20261014合成FP32输入，仅重新资格确认**C0默认RMM/默认cuVS Resources**；在合取assert前逐项记录`trained/size/dim/degree/dtype`，改用`np.dtype(idx.dtype)==np.dtype('float32')`。C0合法PASS后**同Goal连续执行C1**，只将Resources改为显式非默认CuPy stream；C0失败立即停止。
+- 预检脚本语法/类型/元数据格式，防止旧R1的`None.__module__`等小包装错误再次消耗GPU进程。C0/C1两种科学配置分别最多一次build，不试完整GloVe，不重跑旧pool+stream失败配置。所有异常原样记录，`new dataset dimension100 vs old0`警告不得自动当索引错误。
+- **本次新且独立预算：** node109原锁非阻塞累计≤300秒，显存≤2GiB，进程树RAM≤2GiB，CPU≤2有效workers／准备≤30min，新文件≤128MiB，下载/安装/驱动与系统更动=0，旧A47/A47R1资产完全只读。
+- **合并收口：** 本Goal内同步完成CPU预检、至多两个tiny canary、证据与资源归档、结果分岔和**下一步明确建议/最小新合同草案**，commit/push/fetch-back后STOP。不能因C0 PASS另开C1 Goal；也不能顺手晋升原118万GloVe构图、四点GPU正式实验或额外机制。本轮成果只支持API资格或软件配置敏感性，硬件headroom仍未知。
+- A47 `PLATFORM_OR_ASSET_NO_GO`、A47R1执行`DEFAULT_API_STILL_FAILS`为冻结历史原始终态，A49给出独立测试断言纠偏；后续不能覆盖旧Git数据来“修改”其判决。T/N/H/S/旧M/C16/AWMA全部已接受STOP。
 
 ## 0. 最新独立审查：A49｜A47R1已执行STOP，C0断言存在确定性缺陷
 
