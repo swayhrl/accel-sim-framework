@@ -1,45 +1,25 @@
 # AI-ARCH｜当前科研协调状态
 
-**快照：2026-10-14，A47已获用户授权并发布。维护者：ChatGPT／AI-ARCH Discovery。**
+**快照：2026-10-14，A47真实NO-GO与A48独立审查完成。维护者：ChatGPT／AI-ARCH Discovery。**
 
-本页是研究导航，不是节点实时监控。用户对明确A47预算回复“做吧”是本次授权来源，不能把协调文档本身当成无限执行许可。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
+本页是研究导航，不是节点实时监控。用户此前对A47的明确授权已经由原任务完整执行并STOP；该授权不自动延伸至A47R1。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
 
-**历史不改写：** A46及此前完整导航保存在[CURRENT_STATE@e4bf84ff](https://github.com/swayhrl/accel-sim-framework/blob/e4bf84ff414c84576bd7dc1078d145910617b0f6/docs/ai_workload_research/CURRENT_STATE.md)。该快照中的“尚未授权”是A46时点，不能覆盖用户随后批准的A47；所有原报告、Goal、原始结果和commit仍按自身合同有效。
+**历史不改写：** A46及此前完整导航保存在[CURRENT_STATE@e4bf84ff](https://github.com/swayhrl/accel-sim-framework/blob/e4bf84ff414c84576bd7dc1078d145910617b0f6/docs/ai_workload_research/CURRENT_STATE.md)。该快照中的“尚未授权”是A46时点，本页优先记录A47实际STOP；所有原报告、Goal、原始结果和commit仍按自身合同有效。
 
-## 0. 唯一新任务：A47／109 CAGRA真实GPU发现
+## 0. 最新独立审查：A48｜A47已执行并合法STOP
 
-**状态：AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED。** 完整Goal已发布并回读；还没有109执行回执。发布Goal不表示已启动GPU、已下载数据或已完成canary。本ChatGPT未连接109/174/164、操作GPU锁或运行实验。
+用户提供109 A47实际终态，**`PLATFORM_OR_ASSET_NO_GO / STOP`**。本窗口已从GitHub固定commit读取FINAL_REPORT、GATES、ENV_LOCK、DATA、RESOURCE_RECEIPT、GDB和执行代码，核对39新增文件、Git tree及执行branch HEAD，并补读官方CUDA/cuVS/RMM固定源码。见[**A48完整独立审查与stream分配源码解释**](reviews/AI_ARCH_A48_A47_CAGRA_PLATFORM_NO_GO_STREAM_RESOURCE_AUDIT_2026-10-14_V1.md)。
 
-- Branch：`hrl/aiarch-a47-cagra-glove100-native-109-v1`。
-- **固定启动commit：`26ef7b20172495f26ed53248bfab792ae8af9040`**。
-- [**A47完整连续Goal**](https://github.com/swayhrl/accel-sim-framework/blob/26ef7b20172495f26ed53248bfab792ae8af9040/docs/ai_workload_research/goals/AI_ARCH_A47_CAGRA_GLOVE100_BOUNDED_NATIVE_109_V1.md)。Goal blob：`c9dbb7905fec3473c40c2c564ae6e6dfe6c03245`。
-- 创建parent为`e4bf84ff414c84576bd7dc1078d145910617b0f6`，parent→任务branch仅新增一份Goal、ahead1/behind0。执行者使用含Goal的启动commit，不回退到parent，不merge其它执行分支。
-- 执行窗口：109 Codex；可复用已STOP的Lane M对话，但新建独立worktree、环境、输出及预算账。174不新增任务；不能为填满并行窗口另开副实验。
+- **最终Git：** [`ce92807ca80e1a694e41376eab3dd6b146824fd8`](https://github.com/swayhrl/accel-sim-framework/commit/ce92807ca80e1a694e41376eab3dd6b146824fd8)，tree`40e873ed2ff07359d54ce75d2440ee1f789beadc`，report blob`d3f8a6b6831235225452d7872a9f1e8ead30a595`，原A47独立branch仍`hrl/aiarch-a47-cagra-glove100-native-109-v1`。
+- **G0 PASS：** 24个官方wheel与锁定cuVS26.10.0、Python3.12.3、RMM/RAFT与设备标识已核，**不代表实际构图API资格已过**。
+- **G1 PASS：** 完整官方GloVe100 HDF5字节SHA绑定、实际shape/字段、32查询×全部base的CPU精确cosine参考与GT第10距离误差约1.55e-8；不是CAGRA GPU数值或recall。
+- **G2 STOP：** 原完整GloVe图构建调用发生SIGSEGV(-11)，未产出索引；许可内1024×100小API诊断在输入和`make_device_padded_dataset`通过后同样在IVF-PQ→RMM分配→`libcuda cuStreamGetId`崩溃。**根因UNKNOWN**，只说明此固定安装/资源/stream调用路径未合格，不是输入资产失败或目标工作负载有负性能。
+- **G3 NOT_RUN：** 索引、AUTO/SMALL、recall、B1/B256正式4点全部为零，**AI-ARCH ANNS硬件问题没有被真实验证或否定**。
+- **G4 PASS：** 归档/39文件Git核验。下载≈2.914GiB（数据0.452GiB）、新盘≈7.354GiB、RSS采样峰≈1.393GiB、GPU共享锁合计4.115s、显存采样峰752MiB（短诊断峰值未采样完整），CPU准备约60min，资源账未发现越界。执行侧报告共享锁已释放、旧资产无改动。
 
-### 已批准范围与资源
+**新的独立source线索：** RMM v26.10.00 `stream_ordered_memory_resource::get_event`中确实调用`cudaStreamGetId`；cuVS26.10 changelog记录`cuda::stream_ref`迁移；GDB在Python RMM bridge/driver符号处SIGSEGV。此线索只**收窄到stream/RMM/cuvs资源交互**，未证明invalid stream或driver/vendor bug，不能以driver13000、runtime12090数字不同直接断言ABI冲突。
 
-只做GloVe-100-angular／cuVS CAGRA，同一个完整FP32 base与索引、同recall要求下，B1/B256×官方AUTO/一条校准后的SINGLE_CTA+SMALL：**四个正式点**。功能与校准最多8个配置检查，总≤12；三fresh process与有限ABBA配对重复。环境、数据身份、唯一完整构图、索引save/load及dataset附着、功能／recall、四点未插桩计时、归档和STOP在一条Goal中连续完成。
-
-| 资源 | 累计上限 |
-|---|---:|
-| GPU | node109单RTX4080 |
-| GPU共享锁 | 45分钟，包含canary、必要运行库JIT、构图、加载、质量、计时、失败尝试 |
-| 总下载 | 6GiB，其中科学数据≤0.6GiB |
-| 新盘 | 12GiB，保留同文件系统空闲≥64GiB |
-| CPU／RAM | ≤4有效workers／任务进程树RSS≤8GiB |
-| 显存 | 本任务进程≤12GiB，含上下文和临时分配 |
-
-锁使用既有`/data/c16/locks/c16_gpu_campaign.lock`，非阻塞申请，锁忙/有其它GPU任务则STOP，不抢占、不改锁；父监督进程在所有自身GPU子进程结束后释放。允许有限CPU数据准备与独立环境准备并行，但计时阶段停止这些后台负载。禁止改驱动／系统CUDA／时钟／功率，不修改任何旧环境或旧实验资产。
-
-### 科学边界
-
-目标发行`cuvs-cu12==26.10.0`及A46核验的固定源码在G0/G2重新建立实装身份；源码存在不等于wheel/ABI已资格通过。数据没有发布方预先SHA时，允许完整获取后计算并绑定来源，而不是凭不存在的metadata要求提前STOP。
-
-2000校准query与8000独立报告query分离；2048不同report query作计时集合。每个batch分别满足recall@10≥0.95且A/B差异≤0.005。校准h仅在9/11择一，报告后不改参数；质量失败正常NO_GO。GPU search时间与CPU query就绪到CPU结果可用wall分列，不将异步返回当完成、不把两者相加。
-
-AUTO是官方启发式，不是全参数最优。SMALL优于AUTO首先是软件配置/状态策略现象；本轮不证明物理SMEM或硬件headroom。有效路径相同、AUTO充分和无显著差异都允许正常收口。缺扩展telemetry不强制先建tracer，普通包装问题同Goal有界修复；科学输入、精度、算法或资源边界改变才停止。
-
-**不授权：** 新3DGS训练／15k重跑、Spira部署、第二数据集、NCU/NSYS/NVBit、模拟器、硬件机制、独立新holdout或自动续Goal。原生事件用于合格stream计时不等于完整profiler。完成后独立commit/push/fetch-back提交完整raw、资源账和终态，再由本窗口审查。
+**下一步：** 原A47合同已经STOP，没有新GPU、环境重装、驾驶版本修改、模拟器、数据下载或新机制授权。如需要恢复，只能**另行明确审批**一个极小、至多两条独立fresh-process小fixture的resource/stream隔离canary；即使通过，也不能自动继续原完整构图和性能矩阵。可同时选择不追修vendor栈，回到A43点云稀疏卷积Q-S或别的真实GPU负载。**当前所有M/T/N/H/S/A47执行Lane均STOP。**
 
 ## 1. 已完成并接受：A45H与A45S
 
@@ -58,4 +38,4 @@ AUTO是官方启发式，不是全参数最优。SMALL优于AUTO首先是软件�
 
 [A32对A30T/N的审查](reviews/AI_ARCH_A32_A30T_A30N_INDEPENDENT_SCIENTIFIC_CLOSEOUT_2026-10-14_V1.md)维持：T仅H200/SM90a条件性候选，N当前DiT具体问题证据不足，都STOP，不自动恢复。A28/A29、原A26G STOP、C16 Stage A、NequIP/Green Context及AWMA各独立authority不变。
 
-发现允许合理强对照下的小预算观察，不要求提前完成全部oracle；机制贡献仍需完整时间、因果和有限实现成本。当前只批准一个A47原生发现Goal，没有新的硬件机制准入。
+发现允许合理强对照下的小预算观察，不要求提前完成全部oracle；机制贡献仍需完整时间、因果和有限实现成本。A47原Goal已完成且STOP，当前没有新的GPU执行或硬件机制准入。
