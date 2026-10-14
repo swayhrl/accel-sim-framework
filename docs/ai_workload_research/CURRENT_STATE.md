@@ -18,7 +18,7 @@ A44审查由本窗口通过GitHub只读执行，未新开Codex，未登录109/17
 
 ## 1. 最新独立审查：Round A44｜真实3DGS训练PASS及线程归因纠偏
 
-[**A44独立科学审查**](reviews/AI_ARCH_A44_A26GR1_NATIVE_THREAD_ATTRIBUTION_REVIEW_2026-10-14_V1.md)。M报告与固定Git、原始15,200条逐步raw、149+步CUDA事件、执行代码和冻结作者源码核验完成。R0/R1/R2/R4 PASS，R3为有边界原生PASS；后期未插桩均值132.480/133.810ms，两次连续运行相机顺序一致，但Gaussian状态不逐bit相同；200k收敛和晚期GPU-only未证。
+[**A44独立科学审查**](reviews/AI_ARCH_A44_A26GR1_NATIVE_THREAD_ATTRIBUTION_REVIEW_2026-10-14_V1.md)。M报告与固定Git、原始15,200条逐步raw、150步CUDA事件、执行代码和冻结作者源码核验完成。R0/R1/R2/R4 PASS，R3为有边界原生PASS；后期未插桩均值132.480/133.810ms，两次连续运行相机顺序一致，但Gaussian状态不逐bit相同；200k收敛和晚期GPU-only未证。
 
 **独立发现的必要修正：** 原`30.871/32.128ms`是GPU工作子线程＋主线程的跨线程同步、join与D2H区间并集，不是全部主线程暴露等待；仅主线程并集`14.084/14.746ms`。GPU worker约17ms同步大多与CPUAdam重叠；45/49、50/50个正常CPUAdam步骤里，GPU工作子线程先于CPUAdam结束。当前更具体的问题是OMP16下CPU处理/数据交接与软件分工，**不是已证明Cache、CPU带宽或PCIe硬件headroom**。两条结果均保持历史raw，纠偏只作为协调独立附注。
 
