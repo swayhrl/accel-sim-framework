@@ -6,6 +6,16 @@
 
 历史导航：[A30及更早@15d20bb0](https://github.com/swayhrl/accel-sim-framework/blob/15d20bb0bbf045e9dc05f2d51eecb70c9b0cfd5f/docs/ai_workload_research/CURRENT_STATE.md)、[A32收口@80c4362f](https://github.com/swayhrl/accel-sim-framework/blob/80c4362fbe79fc92fb82c786513153a4f7231bb7/docs/ai_workload_research/CURRENT_STATE.md)、[A33状态@c2dc0642](https://github.com/swayhrl/accel-sim-framework/blob/c2dc064265dafcb4f5cebfe9d0f75f150d10aeb1/docs/ai_workload_research/CURRENT_STATE.md)。原报告、Goal、commit及scientific authority均不改写。
 
+## 最新推进：Round A45｜两条独立CPU任务已发布、待Codex启动
+
+用户在A44后同意尽量并行与高效。发布[**A45并行合同及CLM固定源码近邻核验**](plans/AI_ARCH_A45_PARALLEL_CPU_ONLY_STRONG_SOFTWARE_AND_PROBE_SELECTION_2026-10-14_V1.md)。**以下是准备完成（READY_FOR_CODEX），不是窗口已经实际运行/完成。**
+
+- **A45H／109 CPU-only：** [原CPUAdam软件与线程反证Goal@7b593499](https://github.com/swayhrl/accel-sim-framework/blob/7b59349979dc77ec0a671c0ca96d7ebaadf3d8dd/docs/ai_workload_research/goals/AI_ARCH_A45H_CPUADAM_SOFTWARE_COUNTERFACTUAL_CPUONLY_109_V1.md)。复用已有隔离原CPUAdam环境做极小synthetic数值/扫描/OMP1/8/16对照；禁止GPU/CUDA/model、禁止晚期训练重跑；目标是软件敏感性，不冒称late wall加速。实际CPU ≤16有效OpenMP、RSS≤6GiB、≤20min；旧A26GR1仍STOP。
+- **A45S／174 CPU/source-only：** [Spira稀疏卷积vs CAGRA/ANNS原生小实验择一Goal@65130892](https://github.com/swayhrl/accel-sim-framework/blob/65130892533d92c04a704deee1f037865fee5367/docs/ai_workload_research/goals/AI_ARCH_A45S_SPARSE_ANNS_MINIMUM_NATIVE_PROBE_SELECTION_174NEW_V1.md)。只收敛一个强软件/真实输入/预算能接受的小诊断，或明确NO_GO；不安装模型、下载数据或开启GPU。CPU≤2、RSS≤3GiB、≤2h。
+- **ChatGPT源审新增：** CLM固定[clm_offload/README](https://github.com/nyu-systems/CLM-GS/blob/1119a10198b8398a81d4fcad0d5d407f8a330543/strategies/clm_offload/README.md)与engine源确认它已经实施CPU Adam与GPU流并发、camera reorder与通信事件；且CLM现有camera order函数仅B4/8/16/32/64，布局也不同于GS-Scale B1。不能宣称“加CPU Adam overlap”本身新颖，不能直接以两作者的Rubble论文耗时比较本机结果。
+
+两条branch从A44协调冻结commit `8446f14595d2b084f5bcaea7b0ff4eac4d029a5d` 独立分出，各自独立worktree/输出且目标source HEAD回读已验证；没有对A44、T/N、C16、AWMA做执行或合并。**无新增109 GPU、模拟器、持锁、训练、模型下载或新机制许可。** 由用户发送启动指令后才是运行状态；两个结果各自提交、远端核验后由本窗口审查。
+
 ## 0. 执行状态：A26GR1已真实STOP并完成A44审查；T/N仍STOP
 
 | Lane | 当前已知状态 | 不变边界 |
