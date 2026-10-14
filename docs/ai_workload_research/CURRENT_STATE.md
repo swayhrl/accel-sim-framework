@@ -4,6 +4,17 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
+## 最新授权待启动：Round A30｜MoE＋DiT两条CPU-only并行研究
+
+**执行者：待用户把Goal发送给174-new的两个独立Codex窗口，日期：2026-10-14。** 已完成[Round A29 3DGS硬件热度与非3DGS组合](literature/AI_ARCH_A29_3DGS_HARDWARE_HOTSPOT_AND_PARALLEL_NON3DGS_PORTFOLIO_2026-10-14_V1.md)；用户已明确同意按A29方案并行推进。见[**A30批准、Git分支及隔离/预算记录**](ops/AI_ARCH_A30_TN_PARALLEL_SOURCE_DISCOVERY_LAUNCH_2026-10-14_V1.md)。**两个Goal已提交并完成远端核验；没有本窗口证据表明Codex进程已启动，状态为`AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED`。**
+
+- **Lane T／174-new：** [A30T完整MoE decode区域强软件/资源发现Goal](https://github.com/swayhrl/accel-sim-framework/blob/6f4cd8bc1e2c9623cbc70053eba607d8c0484ec3/docs/ai_workload_research/goals/AI_ARCH_A30T_MOE_COMPLETE_OPERATOR_SOURCE_DISCOVERY_174NEW_V1.md)，独立branch `hrl/aiarch-a30t-moe-complete-op-source-174new-v1`，固定启动HEAD `6f4cd8bc1e2c9623cbc70053eba607d8c0484ec3`。
+- **Lane N／174-new：** [A30N DiT已优化后片上资源组织发现Goal](https://github.com/swayhrl/accel-sim-framework/blob/cfdad590390f75ff56d7e263c233f7b1bcd4a554/docs/ai_workload_research/goals/AI_ARCH_A30N_DIT_POSTOPT_RESOURCE_SOURCE_DISCOVERY_174NEW_V1.md)，独立branch `hrl/aiarch-a30n-dit-postopt-resource-174new-v1`，固定启动HEAD `cfdad590390f75ff56d7e263c233f7b1bcd4a554`。
+- **权限与资源：** 各CPU≤2 workers、RSS≤4GiB、新增≤100MiB；仅source/paper/轻量Git元数据；两Lane在174资源合格时并行，独立worktree/output/tmp/receipt。禁止Torch/CUDA/GPU/模拟器/模型运行或下载，禁止SSH到109/164、新机制与holdout。研究候选必须给出一个最小可证伪probe或明确STOP；新GPU任务需独立批准。
+- **Lane M／109：** 用户报告A26GR1在执行，严格保留原GPU/数据合同，A30不登录、不重启、不改任务。第三储备CPU–GPU MoE只由本ChatGPT继续公开source研究，不增设Codex lane。C16/AWMA全部既有STOP/authority不变。
+
+**以下A28与更早段落都是各轮发表时的历史科研与许可快照，不代替本段最新A30任务状态。**
+
 ## 最新SOURCE_ONLY：Round A28｜Rubble场景、CLM软件近邻与静态状态字节账
 
 **执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** 已完成[独立A28论文和固定源码审查](literature/AI_ARCH_A28_RUBBLE_CLM_AND_GSSCALE_TRANSFER_SOURCE_AUDIT_2026-10-14_V1.md)。本ChatGPT只进行公开原文和GitHub源码研究，**未连接、重启或修改正在下载Rubble的109 Lane M、GPU锁及任何正在执行的A26GR1合同**。A26GR1“正在下载”仅来自**用户状态报告**，不是本窗口的实时节点确认，当前还不能报告该目标已经完成。
