@@ -4,7 +4,20 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已审：Round A25｜A21–A24独立联合审查（四项均已STOP）
+## 最新已完成：Round A26｜Rubble真实原生实验投入评估与单Goal合同
+
+**执行者：ChatGPT／AI-ARCH Discovery，2026-10-14；全程GitHub/论文/源码只读，无新GPU、安装、场景下载或Codex Goal。** [A26完整投入评估与单一条件执行科学合同](plans/AI_ARCH_A26_3DGS_NATIVE_INVESTMENT_DECISION_AND_SINGLE_GOAL_V1.md)。
+
+- **当前裁决`CONDITIONAL_GO_FOR_BOUNDED_REAL_SCENE_DISCOVERY / NO_GO_FOR_FULL_200K_REPRO / NO_NATIVE_RESOURCE_APPROVAL`**。在A21–A25接受的真实Mill-19 Rubble、强GS-Scale状态依赖、109 Intel host平台和GSArch摘要近邻基础上，推荐**只考虑一条**完整G0→G4门控任务（input/隔离env/功能与质量/真实有限等待时间/STOP），不再拆独立下载、wheel、ABI、小数值和性能Goal，也不立即开发Cache。
+- **成本事实**：Rubble原始archive执行侧只读HEAD为**9,773,995,561 bytes**（9.10GiB），作者合并COLMAP SHA、展开后大小未知；109 RAM available快照60–61GiB、可用磁盘134–135GiB，并不证明安装+全scene可fit。Rubble preset**200,000训练步**、densification stop`refine_stop_iter=15000`；两小时做完200k意味着所有工作平均≤36ms/step，109没有该资格。作者当前`{step,splats.state_dict()}` ckpt没有明确完整Adam moments/counter/RNG，不能直接用于真实后期训练step恢复。
+- **已有软件包发行入口≠可运行**：PyTorch历史CUDA12.1/2.2.0及IPEX2.2.0 CPython3.10/3.11官方wheel可查，但目标109旧torch2.10+cu126、NumPy2.x与作者入口不一致；Intel官方已经公布IPEX EOL计划。GS-Scale优化版源码显式依赖IPEX优化器，CPUAdam又有硬编码`omp_set_num_threads(64)`，而109为16核24逻辑线程。任何线程调整须算新软件配置身份和质量对照，不可从host变慢推硬件带宽。
+- **建议新的封顶预算，尚未批准**：单个真实Rubble场景，外部下载累计≤25GiB、新磁盘≤60GiB并保留≥64GiB余量、主机RAM≤48GiB、CPU有效线程≤24且需实际验证、CPU准备≤4小时、109独占GPU锁累计≤2小时、单任务显存≤14GiB；阶段分开标source/asset/functional/early/late，**不授权完整200k训练**。数据/安装/GPU新使用需要用户明确批准**上述具体预算**后才能创建新执行分支、发Codex指令。
+- **科研门**：保留强GS-Scale完整host及可fit的gsplat GPU-only，naive host只是消融；不同软件epsilon、densification/相机/高斯规模不能当bitwise同语义。只有在**真实自然训练阶段**测得强软件后无法隐藏的显著host-state或GPU等待，才考虑下一步资源单变量；短初期运行不能外推后期大Gaussian或达到PSNR时间。
+- **所有旧工作冻结**：A21/A22/A23/A24及更早Lane M/T/N均STOP；AWMA/C16/NequIP/GreenCtx权限不随A26研究改变。此提案**没有创建新执行branch或进行远端节点任务**。研究结论不代表P13硬件机制晋升。
+
+下列A25及更早章节为历史已接受科学证据，新的下载/安装/GPU执行尚待单独资源批准。
+
+## 历史已审：Round A25｜A21–A24独立联合审查（四项均已STOP）
 
 **执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [A25四份3DGS源/输入/平台与新颖性独立联合审查](reviews/AI_ARCH_A25_A21_A24_JOINT_3DGS_INDEPENDENT_REVIEW_2026-10-14_V1.md)已完成，审计GitHub固定提交、四份报告SHA256、GS-Scale/GS-Cache原始HTML及关键作者源码行。**四项执行结果均独立push并STOP**，当前无运行中的AI-ARCH实验、没有新109 GPU、174模拟器或数据下载授权。
 
