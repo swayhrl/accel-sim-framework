@@ -44,7 +44,7 @@ GDB诊断的第1线程栈（caller→callee）：
 
 **A47原STOP保持，不返工，不把用户之前授予的A47额度视为自动延续到R1。**
 
-如果未来**单独明确授权**做一个`A47R1`最小工程恢复，推荐先复用已保留109的原冻结wheel/HDF5/venv和共享锁，限两个独立fresh-process的**小型synthetic API构图canary**（不得再次整GloVe构图）：(A) 官方cuVS/RMM默认resource/默认stream最小路径，(B) 在(A)通过时只改变一个resource或stream条件以定位差异；具体两臂前须CPU/source核确ABI和对象生命周期。零驱动/核心版本升级、零科学数据下载/重建、无新增正式性能点；GPU锁≤5分钟、RAM≤2GiB、VRAM≤2GiB（需现场资源资格和原锁非阻塞）。若不能先建立互不混杂的两臂，或两者都崩溃，就以`PLATFORM_STILL_UNQUALIFIED`STOP，不在同一任务无限试6种RMM组合。任何API通过只能证明小fixture wrapper/版本条件可执行；**恢复原118万base完整构图和4正式点需要新授权与完整数据/质量门**。
+如果未来**单独明确授权**做一个`A47R1`最小工程恢复，推荐先复用已保留109的原冻结wheel/HDF5/venv和共享锁，限两个独立fresh-process的**小型synthetic API构图canary**（不得再次整GloVe构图）：(A) 官方cuVS/RMM默认resource/默认stream最小路径，(B) 在(A)通过时只改变一个resource或stream条件以定位差异；具体两臂前须CPU/source核确ABI和对象生命周期。零驱动/核心版本升级、零科学数据下载/重建、无新增正式性能点；GPU锁≤5分钟、RAM≤2GiB、VRAM≤2GiB（需现场资源资格和原锁非阻塞）。若首个默认配置仍崩溃，或无法建立互不混杂的第二条单变量对照，就以`PLATFORM_STILL_UNQUALIFIED`STOP，不在同一任务无限试6种RMM组合。任何API通过只能证明小fixture wrapper/版本条件可执行；**恢复原118万base完整构图和4正式点需要新授权与完整数据/质量门**。
 
 **价值判断：** 已取得的真实GloVe资产和完整包闭包值得保留，不应因为一个vendor堆栈崩溃就销毁；但AI-ARCH的P01/P13硬件问题未获得新增数据。下一次投入应先问“是否值得花一小步排除RMM/stream wrapper”，而不是为了完美复现无上限调试cuVS。候补点云稀疏卷积Q-S仍未授权；不要因为cuVS失败就自动切换Spira大环境。A44 3DGS CPU软件反证、A45H、A30T/N等冻结结论不变。
 
