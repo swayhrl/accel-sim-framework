@@ -13,7 +13,7 @@ Author source remains `SNU-ARC/GS-Scale@6471e958f7e318f4870234d8107e0aa91c2d6932
 | R1 | PASS | Full official archive SHA/CRC and complete safety scan, safe extraction, real COLMAP bytes/consumed associations, exact author 4× preprocessing |
 | R2 | PASS | Independent CPython3.10.12 environment, original old core versions/builds, CPUAdam actual numerical/thread canary |
 | R3 | PASS, scoped | Actual full early train pipeline and basic metric APIs; three real windows including pre/post refine-stop reached continuously from zero |
-| R4 | Archive complete; publication readback pending | Final Git binding/readback is added in the publication closeout |
+| R4 | PASS — archived and published | First full packet push/fetch-back PASS; final closeout commit is also verified before STOP |
 
 ## Input and software identity
 
@@ -62,3 +62,5 @@ CPU Adam exposed-tail attribution remains unqualified without reliable GPU compl
 - Old A26G STOP 21 files and old Lane M worktree HEADs/cleanliness were rechecked unchanged; no coordination merge.
 - Final boundary: the approved scoped discovery is complete. Full quality convergence, late GPU-only comparison, stable Gaussian identities and physical causal attribution remain unqualified. No further GPU task or A26GR2 starts automatically.
 - Only this independent branch is committed/pushed. Exact enclosing commit/tree/report blob and all submitted SHA are verified by remote fetch-back; self-referential hashes are not embedded. STOP after publication and await independent scientific review.
+
+First packet verified commit `d9cd6bee253e8b1e2450ab9700eb4f1f0dd6a524`, tree `3171fecb9efdc7914c77f0b69773d05114b76aa4`; all 77 initial files matched. Final enclosing publication hashes are returned in the execution closeout.
