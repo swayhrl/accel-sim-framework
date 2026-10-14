@@ -4,7 +4,20 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前已批准：A26G｜单场景Rubble连续门控原生发现（待用户向Codex启动）
+## 最新已审：Round A27｜A26G G0存储资格STOP与单Goal修订提案
+
+**执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [A27 G0 STOP独立科学审查](reviews/AI_ARCH_A27_A26G_G0_STORAGE_GATE_INDEPENDENT_REVIEW_2026-10-14_V1.md)；[原A26G固定执行`e760f332ed41c609d3d19548f87d90b3f11357d8`](https://github.com/swayhrl/accel-sim-framework/commit/e760f332ed41c609d3d19548f87d90b3f11357d8)，tree `b2165a3fc75ca15c21876a46770e3b03027c8165`。**原A26G已push并STOP，不能用原用户授权直接重启。**
+
+- **合法科学结果**：`G0=STORAGE_BOUND_UNKNOWN_STOP`；`G1-G3=NOT_RUN`；`G4=报告归档PASS`。本项目真实训练0步，GPU模型调用/显存0，真实完整step性能、应用质量、P13硬件资源剩余均**未评估**。旧NequIP/A16/A16R1/A21–A24、C16/AWMA不受影响。
+- **A26G确实新增了资产来源证据**：执行侧官方Rubble HTTP HEAD为`9,773,995,561` bytes、支持Range；作者官方Google Drive COLMAP已从控制端解析到`cameras.bin=64`、`images.bin=427,380,490`、`points3D.bin=162,597,265` bytes，共`589,977,819`。但**node109 Google Drive直接连接超时**，三个文件未实际下载或格式/匹配核验，压缩包只获得前后小范围字节，完整scene SHA、tar成员全集、输入相机序列未资格化。不可写`REAL_SCENE_BYTE_PASS`。
+- **STOP根因是设计侧存储准入次序而非真实空间不足**：A26G强制`完整gzip tar展开+缩图+新env`在**完整压缩包下载之前**由小metadata证明上界；官方未提供可用的小tar index。`ISIZE`仅是mod2^32大小，首64KiB压缩前缀无法枚举所有成员，猜压缩率不足以得硬上界。此门可由**压缩体已知安全落盘→不解压写盘的完整tar流式扫描→按实际成员尺寸安全提取**解决，但属于新修改授权，不得改写旧A26G STOP。
+- **存储实际**：A26G初始同FS自由`144,192,610,304` bytes≈134.3GiB，用户原批准总新增60GiB且任时保留64GiB余量；未发生耗尽，只有新增保守<16MiB。原子任务HTTP body合计`2,143,328` bytes、CPU准备约974s、GPU共享锁只做7.2微秒预检、无CUDA/下载大场景/依赖安装。**独立从固定Git最终tree重算`SHA256SUMS`列20个源码/JSON/MD文件SHA256为20/20匹配**（第21个`SHA256SUMS`本身由commit tree Git blob认证）；164/raw与node直接HTTP状态没有ChatGPT另行测量。
+- **唯一新的执行候选**：[**A26GR1完整有界下载/流式tar安全审查＋原G1–G4连续Goal草案**](goals/AI_ARCH_A26GR1_GSSCALE_RUBBLE_BOUNDED_TAR_NATIVE_109_PROPOSAL_V1.md)。仅在用户**重新明确授权**后启动；它保持同一个Rubble输入、固定GS-Scale强软件、原109 RTX4080、GPU非阻塞共享锁及所有原资源限制，跨A26G/R1**累计**计账（25GiB下载、60GiB磁盘且留64GiB、48GiB RAM、24线程、CPU准备4h、GPU锁2h/14GiB）；**另外显式请求**官方Google COLMAP必要时的受控controller中转及完整SHA验证。无需单独再分一个“tar查询Goal”。
+- **目前实际许可边界**：`A26GR1_PROPOSAL_ONLY / USER_APPROVAL_REQUIRED / NO_NEW_BRANCH_OR_GPU`。科学STOP必须是实际payload无法合法验证、真实容量超额、作者软件ABI/质量或GPU锁不合格；不得仅因官方无小型tar index强制再陷入同一种工具STOP。即使通过也只能形成有限`EARLY_NATIVE`或`SCOPED_EXPOSED_SERVICE`，不可升级硬件Cache机制。
+
+**下面A26G原“当前已批准但待启动”段改为历史授权快照；其一次性执行已收口，不是现行权限。**
+
+## 历史已执行并STOP：A26G｜单场景Rubble连续门控原生发现（启动前已批准）
 
 **执行者：既有Lane M／node109；科学监督：ChatGPT／AI-ARCH Discovery。** 用户在完整[A26预算与设计](plans/AI_ARCH_A26_3DGS_NATIVE_INVESTMENT_DECISION_AND_SINGLE_GOAL_V1.md)之后明确批准，并要求凡Codex执行**一次给出完整建议**，减少工具问题的往返。因此当前唯一批准的执行入口为[**A26G连续完整Goal**](goals/AI_ARCH_A26G_GSSCALE_RUBBLE_GATED_NATIVE_109_V1.md)与[**用户批准/预算边界记录**](goals/AI_ARCH_A26G_GSSCALE_RUBBLE_GATED_NATIVE_109_APPROVAL_2026-10-14.md)。**批准不等于已启动**，当前`AUTHORIZED_PREPARED_AWAITING_CODEX / NATIVE_NOT_YET_EXECUTED`。
 
