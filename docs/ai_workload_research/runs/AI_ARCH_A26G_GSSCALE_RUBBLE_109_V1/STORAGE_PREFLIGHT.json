@@ -1,0 +1,55 @@
+{
+  "status": "STOP",
+  "reason": "STORAGE_BOUND_UNKNOWN_STOP",
+  "initial_disk_free_bytes": 144192610304,
+  "same_filesystem_paths_not_added": true,
+  "required_min_free_bytes": 68719476736,
+  "max_task_new_bytes": 64424509440,
+  "compressed_archive_bytes": 9773995561,
+  "colmap_bytes": 589977819,
+  "gzip_isize_modulo_2pow32": 1213739008,
+  "gzip_footer_hex": "84104208218410420821841042082184104208a1ff59bf02de6f06b000305848",
+  "gzip_isize_is_not_an_upper_bound": true,
+  "admissible_uncompressed_byte_formula": "1213739008 + n * 4294967296; n not established by the bounded metadata reads",
+  "tar_prefix_audit": {
+    "source_range": [
+      0,
+      65535
+    ],
+    "compressed_bytes": 65536,
+    "decompressed_prefix_bytes": 67521,
+    "gzip_complete": false,
+    "entries": [
+      {
+        "name": "rubble-pixsfm/",
+        "size": 0,
+        "type": "5",
+        "fully_in_bounded_prefix": true
+      },
+      {
+        "name": "rubble-pixsfm/val/",
+        "size": 0,
+        "type": "5",
+        "fully_in_bounded_prefix": true
+      },
+      {
+        "name": "rubble-pixsfm/val/rgbs/",
+        "size": 0,
+        "type": "5",
+        "fully_in_bounded_prefix": true
+      },
+      {
+        "name": "rubble-pixsfm/val/rgbs/000166.jpg",
+        "size": 6370242,
+        "type": "0",
+        "fully_in_bounded_prefix": false
+      }
+    ],
+    "full_member_list_or_expanded_bound": "NOT_ESTABLISHED"
+  },
+  "full_tar_index_available": false,
+  "same_origin_index_probes": "directory GET 404; candidate .tgz.index HEAD 404; candidate .manifest.json HEAD 404. These probes do not prove no index exists elsewhere.",
+  "raw_expand_downsample_env_build_cache_checkpoint_total_upper_bound": "NOT_ESTABLISHED",
+  "binding_contract": "G0 item 3: unknown archive expansion requires reliable small metadata/same-origin index; if cannot confirm no disk blow-up, STORAGE_BOUND_UNKNOWN_STOP before large download",
+  "a_post_download_bounded_tar_audit_is_not_a_pre_download_size_proof": true
+}
