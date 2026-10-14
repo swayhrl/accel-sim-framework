@@ -1,0 +1,11 @@
+{"phase": "IMPORT_PASS", "arm": "C0", "python": "3.12.3", "cuvs": "26.10.0", "cuvs_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124", "cupy": "14.0.1", "rmm": "26.10.0", "numpy": "2.5.4"}
+{"phase": "GPU_INPUT_PASS", "arm": "C0", "shape": [1024, 100], "dtype": "float32", "input_sha256": "01a2c2f8a7e56b7a440fa183734d4297a1945a3dbbd6baedb27c1c3695b2478c", "prepared_on_default_CuPy_stream": true, "default_stream_ptr_is_zero": true, "default_RMM_type": "rmm.pylibrmm.memory_resource._memory_resource.CudaMemoryResource", "default_CuPy_allocator": "None.malloc", "device": "NVIDIA GeForce RTX 4080", "SM_count": 76, "driver_API": 13000, "runtime_API": 12090}
+{"phase": "RESOURCES_READY", "arm": "C0", "stream_identity_class": "REQUESTED_STREAM", "requested": "DEFAULT_RESOURCES_STREAM", "Python_stream_owner_retained": false, "Cplusplus_internal_stream_or_faulting_handle": "UNKNOWN"}
+{"phase": "PADDED_DATASET_PASS", "arm": "C0", "layout": "padded", "is_owning": false, "dtype": "(2, 32, 1)", "x_g_ds_res_owners_retained": true}
+{"phase": "BUILD_ENTER", "arm": "C0", "params": {"metric": "cosine", "build_algo": "ivf_pq", "graph_degree": 64, "intermediate_graph_degree": 128}, "build_calls": 1, "input_sha256": "01a2c2f8a7e56b7a440fa183734d4297a1945a3dbbd6baedb27c1c3695b2478c"}
+[3303952][00:30:58:764471][warning] The new dataset dimension (100) does not match the index dimension (0)
+Traceback (most recent call last):
+  File "<WORKTREE>/tools/aiarch_a47r1/minicanary.py", line 37, in <module>
+    assert idx.trained and len(idx)==1024 and idx.dim==100 and idx.graph_degree==64 and str(idx.dtype)=='float32'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

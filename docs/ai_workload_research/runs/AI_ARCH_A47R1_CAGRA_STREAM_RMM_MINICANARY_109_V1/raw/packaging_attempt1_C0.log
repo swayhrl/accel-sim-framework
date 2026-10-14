@@ -1,0 +1,6 @@
+{"phase": "IMPORT_PASS", "arm": "C0", "python": "3.12.3", "cuvs": "26.10.0", "cuvs_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124", "cupy": "14.0.1", "rmm": "26.10.0", "numpy": "2.5.4"}
+Traceback (most recent call last):
+  File "<WORKTREE>/tools/aiarch_a47r1/minicanary.py", line 20, in <module>
+    mr=rmm.mr.get_current_device_resource();allocator=cp.cuda.get_allocator();mrname=type(mr).__module__+'.'+type(mr).__name__;allocname=getattr(allocator,'__module__','')+'.'+getattr(allocator,'__name__',type(allocator).__name__)
+                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'

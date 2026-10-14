@@ -1,0 +1,289 @@
+{
+  "preregistration": {
+    "G0_status": "PASS",
+    "CPU_static_identity": {
+      "python": "3.12.3",
+      "packages": {
+        "cuvs-cu12": "26.10.0",
+        "libcuvs-cu12": "26.10.0",
+        "pylibraft-cu12": "26.10.0",
+        "rmm-cu12": "26.10.0",
+        "librmm-cu12": "26.10.0",
+        "cupy-cuda12x": "14.0.1",
+        "numpy": "2.5.4"
+      }
+    },
+    "RMM_source_blob": "e2655e2fb2d8a61654ab18d79062d49e36a19a6b",
+    "RMM_source_sha256": "47e534dbca38b971f0fa7e1b5a63ef4b8ab159a97c74ed1475d3f6120eebad1f",
+    "RMM_source_scope": "source get_event/default-special-stream handling; not proof of original faulting handle",
+    "limits": {
+      "GPU_lock_seconds": 300,
+      "RAM_bytes": 2147483648,
+      "VRAM_bytes": 2147483648,
+      "new_output_worktree_bytes": 134217728,
+      "free_disk_min_bytes": 68719476736,
+      "CPU_workers": 2,
+      "CPU_preparation_seconds": 1800,
+      "data_dependency_downloads": 0,
+      "GPU_canary_process_count": 2,
+      "build_calls_each": 1
+    },
+    "design": {
+      "seed": 20261014,
+      "shape": [
+        1024,
+        100
+      ],
+      "dtype": "float32",
+      "normalize": "same np.linalg.norm FP32 as original fixture",
+      "params": {
+        "metric": "cosine",
+        "build_algo": "ivf_pq",
+        "graph_degree": 64,
+        "intermediate_graph_degree": 128
+      },
+      "C0": "default RMM/current allocator, Resources(), default CuPy-stream data preparation then device sync",
+      "C1": "same default RMM/allocator/default data preparation; ONLY Resources(stream=nonblocking_CuPy_stream.ptr), retained stream owner",
+      "C1_admission": "only C0 actual zero-exit BUILD_PASS CLEAN_EXIT and size/dim/degree qualification",
+      "no_performance_timing": true
+    },
+    "preparation_elapsed_seconds": 149.16215324401855
+  },
+  "actual": {
+    "scientific_state": "DEFAULT_API_STILL_FAILS",
+    "reason": null,
+    "C0": {
+      "arm": "C0",
+      "pid": 3303952,
+      "status": "STOP",
+      "exitcode": 1,
+      "signal": null,
+      "phases": [
+        "IMPORT_PASS",
+        "GPU_INPUT_PASS",
+        "RESOURCES_READY",
+        "PADDED_DATASET_PASS",
+        "BUILD_ENTER"
+      ],
+      "build_calls": 1,
+      "resource_supervision_elapsed_seconds": 1.0602005058899522,
+      "not_a_performance_measurement": true,
+      "peak_GPU_MiB_sampled": 286,
+      "peak_tree_RSS_bytes_sampled": 905826304,
+      "result": null
+    },
+    "C1": {
+      "status": "NOT_RUN",
+      "reason": "C0 did not qualify"
+    },
+    "GPU_process_count": 2,
+    "prebuild_packaging_attempt": {
+      "scientific_state": "DEFAULT_API_STILL_FAILS",
+      "reason": null,
+      "C0": {
+        "arm": "C0",
+        "pid": 3303904,
+        "status": "STOP",
+        "exitcode": 1,
+        "signal": null,
+        "phases": [
+          "IMPORT_PASS"
+        ],
+        "build_calls": 0,
+        "resource_supervision_elapsed_seconds": 0.5038301479071379,
+        "not_a_performance_measurement": true,
+        "peak_GPU_MiB_sampled": 238,
+        "peak_tree_RSS_bytes_sampled": 386555904,
+        "result": null
+      },
+      "C1": {
+        "status": "NOT_RUN",
+        "reason": "C0 did not qualify"
+      },
+      "GPU_process_count": 1,
+      "lock_seconds_cumulative": 0.5169427851215005,
+      "peak_GPU_MiB_sampled": 238,
+      "peak_tree_RSS_bytes_sampled": 386555904,
+      "samples": [
+        {
+          "arm": "C0",
+          "monotonic": 2618230.15756028,
+          "GPU_MiB": 0,
+          "tree_RSS_bytes": 32227328,
+          "running_threads": 2
+        },
+        {
+          "arm": "C0",
+          "monotonic": 2618230.274834478,
+          "GPU_MiB": 0,
+          "tree_RSS_bytes": 313761792,
+          "running_threads": 2
+        },
+        {
+          "arm": "C0",
+          "monotonic": 2618230.404447413,
+          "GPU_MiB": 10,
+          "tree_RSS_bytes": 386555904,
+          "running_threads": 2
+        },
+        {
+          "arm": "C0",
+          "monotonic": 2618230.543916459,
+          "GPU_MiB": 238,
+          "tree_RSS_bytes": 14409728,
+          "running_threads": 1
+        }
+      ],
+      "sampling_warning": "short lifetimes may escape NVML sampling; sample0 is not true0; tiny input/default resources/no large explicit pool and watchdog jointly constrain budget",
+      "all_own_children_ended": true,
+      "shared_lock_released": true,
+      "no_download_or_install": true,
+      "no_next_goal": true
+    },
+    "lock_seconds_cumulative": 1.590238835196942,
+    "peak_GPU_MiB_sampled": 286,
+    "peak_tree_RSS_bytes_sampled": 905826304,
+    "samples": [
+      {
+        "arm": "C0",
+        "monotonic": 2618353.84820968,
+        "GPU_MiB": 0,
+        "tree_RSS_bytes": 32215040,
+        "running_threads": 2
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618353.965898013,
+        "GPU_MiB": 0,
+        "tree_RSS_bytes": 314499072,
+        "running_threads": 2
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618354.087446753,
+        "GPU_MiB": 10,
+        "tree_RSS_bytes": 386486272,
+        "running_threads": 2
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618354.205188837,
+        "GPU_MiB": 282,
+        "tree_RSS_bytes": 625053696,
+        "running_threads": 2
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618354.322721583,
+        "GPU_MiB": 286,
+        "tree_RSS_bytes": 864145408,
+        "running_threads": 2
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618354.439861552,
+        "GPU_MiB": 286,
+        "tree_RSS_bytes": 905379840,
+        "running_threads": 2
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618354.556738564,
+        "GPU_MiB": 286,
+        "tree_RSS_bytes": 901124096,
+        "running_threads": 3
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618354.673726025,
+        "GPU_MiB": 286,
+        "tree_RSS_bytes": 905826304,
+        "running_threads": 2
+      },
+      {
+        "arm": "C0",
+        "monotonic": 2618354.790673527,
+        "GPU_MiB": 250,
+        "tree_RSS_bytes": 14364672,
+        "running_threads": 1
+      }
+    ],
+    "sampling_warning": "short lifetimes may escape NVML sampling; sample0 is not true0; tiny input/default resources/no large explicit pool and watchdog jointly constrain budget",
+    "all_own_children_ended": true,
+    "shared_lock_released": true,
+    "no_download_or_install": true,
+    "no_next_goal": true
+  },
+  "C0_events": [
+    {
+      "phase": "IMPORT_PASS",
+      "arm": "C0",
+      "python": "3.12.3",
+      "cuvs": "26.10.0",
+      "cuvs_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+      "cupy": "14.0.1",
+      "rmm": "26.10.0",
+      "numpy": "2.5.4"
+    },
+    {
+      "phase": "GPU_INPUT_PASS",
+      "arm": "C0",
+      "shape": [
+        1024,
+        100
+      ],
+      "dtype": "float32",
+      "input_sha256": "01a2c2f8a7e56b7a440fa183734d4297a1945a3dbbd6baedb27c1c3695b2478c",
+      "prepared_on_default_CuPy_stream": true,
+      "default_stream_ptr_is_zero": true,
+      "default_RMM_type": "rmm.pylibrmm.memory_resource._memory_resource.CudaMemoryResource",
+      "default_CuPy_allocator": "None.malloc",
+      "device": "NVIDIA GeForce RTX 4080",
+      "SM_count": 76,
+      "driver_API": 13000,
+      "runtime_API": 12090
+    },
+    {
+      "phase": "RESOURCES_READY",
+      "arm": "C0",
+      "stream_identity_class": "REQUESTED_STREAM",
+      "requested": "DEFAULT_RESOURCES_STREAM",
+      "Python_stream_owner_retained": false,
+      "Cplusplus_internal_stream_or_faulting_handle": "UNKNOWN"
+    },
+    {
+      "phase": "PADDED_DATASET_PASS",
+      "arm": "C0",
+      "layout": "padded",
+      "is_owning": false,
+      "dtype": "(2, 32, 1)",
+      "x_g_ds_res_owners_retained": true
+    },
+    {
+      "phase": "BUILD_ENTER",
+      "arm": "C0",
+      "params": {
+        "metric": "cosine",
+        "build_algo": "ivf_pq",
+        "graph_degree": 64,
+        "intermediate_graph_degree": 128
+      },
+      "build_calls": 1,
+      "input_sha256": "01a2c2f8a7e56b7a440fa183734d4297a1945a3dbbd6baedb27c1c3695b2478c"
+    }
+  ],
+  "source_inputs": {
+    "cuvs_resources_source_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+    "RMM_v26_10_header_blob": "e2655e2fb2d8a61654ab18d79062d49e36a19a6b",
+    "source_scope_only_not_fault_handle_proof": true
+  },
+  "packaging_repair": {
+    "reason": "allocator.__module__ is None; metadata string concatenation raisedTypeError before GPU input/build",
+    "scientific_data_or_params_changed": false,
+    "prior_build_calls": 0,
+    "strict_total_GPU_child_process_limit": 2,
+    "remaining_processes": 1,
+    "C1_not_authorized_after_consuming_process_cap": true,
+    "no_crash_retry": true
+  }
+}
