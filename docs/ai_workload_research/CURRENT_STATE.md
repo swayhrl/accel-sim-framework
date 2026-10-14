@@ -4,7 +4,28 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 当前无人值守运行计划：20小时三Lane CPU研究队列（全部待用户发送）
+## 最新已审：Round A25｜A21–A24独立联合审查（四项均已STOP）
+
+**执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [A25四份3DGS源/输入/平台与新颖性独立联合审查](reviews/AI_ARCH_A25_A21_A24_JOINT_3DGS_INDEPENDENT_REVIEW_2026-10-14_V1.md)已完成，审计GitHub固定提交、四份报告SHA256、GS-Scale/GS-Cache原始HTML及关键作者源码行。**四项执行结果均独立push并STOP**，当前无运行中的AI-ARCH实验、没有新109 GPU、174模拟器或数据下载授权。
+
+| 任务/节点 | 固定执行commit、实际交付 | 科学身份 |
+|---|---|---|
+| **A21／Lane T／174-new** | [`9575a674e5aa5af60e5803c07399fb64ae2c8488`](https://github.com/swayhrl/accel-sim-framework/commit/9575a674e5aa5af60e5803c07399fb64ae2c8488)，仅一份Mill-19 Rubble真实场景source/input报告 | `SOURCE_INPUT_CONTRACT_FEASIBLE_PENDING_ASSETS`：原`rubble-pixsfm.tgz`只读HEAD报告9,773,995,561 bytes，真实archive/COLMAP SHA、训练camera列表、合并素材与展开规模未知；不能报告实际scene runtime |
+| **A22／Lane T／174-new** | [`3b46ae8f94b5a72d1af4e06d352058bd2140abe6`](https://github.com/swayhrl/accel-sim-framework/commit/3b46ae8f94b5a72d1af4e06d352058bd2140abe6)，一份逐step状态source地图 | `SOURCE_LIFETIME_MAP_COMPLETE_WITH_INPUT_GAPS`：实际GPU常驻means/scales/quats，CPU常驻opacity/SH与相应Adam；GPU cull→blocking ID D2H→host selected H2D→GPU backward→CPU Adam与异步/同步交接。**没有真实等待时间或跨步ID复用率** |
+| **A23／Lane N／174-new** | [`c096521d06483517bf6772689e5cc2c513186173`](https://github.com/swayhrl/accel-sim-framework/commit/c096521d06483517bf6772689e5cc2c513186173)，一份GSArch/GS-Scale/GS-Cache硬件近邻反证 | `NO_HARDWARE_HEADROOM_QUALIFIED`：GSArch原出版者仅摘要可及，具体真实/模拟实验组`ABSTRACT_ONLY`；GS-Cache证据为推理渲染，不是训练Adam。当前**未能量化强软件后单物理资源剩余**，不等于已证无空间 |
+| **A24／Lane M／109** | [`fc73b042726ef2312cb62bb9204941ec0ac195d5`](https://github.com/swayhrl/accel-sim-framework/commit/fc73b042726ef2312cb62bb9204941ec0ac195d5)，一份只读脱敏109平台报告 | Intel i7-13700、AVX2/FMA、无AVX512，CPU厂商门PASS；旧torch2.10+cu126/NumPy2.x环境不等于作者torch2.2+cu121/IPEX2.2/NumPy<2发行身份，`PLATFORM_VERSION_GAP / ISOLATED_STACK_RUNTIME_NOT_EVALUATED` |
+
+**独立Git核验**：四branch当前HEAD皆等于各提交、相对固定原branch基点`ahead=1/behind=0`且每条仅新增一份Markdown，commit tree与报告Git blob一致；本ChatGPT再次计算四份**UTF-8 SHA256**，A23与执行者提供的SHA完全相同，报告无U+FFFD。执行侧174/109本机资源与工作区清洁据各Lane报告，**本窗口没有SSH二次查询**。
+
+**必须前置的性能混杂**：固定作者`cpu_adam/src/cpu_adam.cpp`确有`omp_set_num_threads(64)`，而109为16核心/24逻辑线程；强软件的线程调度与绑定可能影响CPU Adam等待，不能直接认为CPU硬件带宽饱和。3DGS Gaussian array row index在densification/pruning时不稳定；作者8.28%当步可见比例不是时间Cache命中率。optimized GS-Scale与GPU-only在部分Adam epsilon/动态生灭语义上不严格bitwise等价，比较需完整质量目标而非自造零成本oracle。
+
+**本阶段最终科研裁决**：`A21_A24_ACCEPT_SCOPED / NATURAL_ASSET_BYTE_IDENTITY_MISSING / NATIVE_NOT_EVALUATED / HARDWARE_NO_GO_CURRENT`。保留唯一真实3DGS问题`Q-A20-GS`为**真实输入/强软件后的残余诊断候选**，不为了已做源审就直接下载9.77GB archive、安装作者软件并占用109 GPU。下一次真正值当的独立实验需同时批准一个**完整且单Goal连续执行**的场景identity→隔离环境/ABI→数值与质量→限定原生诊断合同，必须明确下载、磁盘、时间、GPU锁和失败STOP；当前未授权。
+
+**工作方法更新**：用户不要求按固定20小时规划；[协调协议](COORDINATION_PROTOCOL.md)第12节明确优先按**科学依赖**合并工作，一份输入及同预算下source/环境/数值/必要限额测量可在获准后一个Goal连续完成。原20小时队列提前全部交付，原计划的到点重复复审提醒已关闭，不再按20小时人为排期。174 Lane T/N、109 Lane M旧任务历史STOP、C16 Stage A与AWMA独立authority不变。
+
+**下文20小时队列是原启动前历史计划，已经完成，不代表仍待向窗口发送。**
+
+## 历史执行计划：20小时三Lane CPU研究队列（已完成）
 
 **用户指示：接下来20小时无人值守，要求提前准备并行任务与有界自动收口。** ChatGPT已完成[**20小时无人值守总计划**](ops/AI_ARCH_UNATTENDED_20H_2026-10-14_V1.md)与三个独立Lane Goal（旧STOP继续冻结）。此Git记录是**可执行安排而非Codex已启动回执**。
 
