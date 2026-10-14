@@ -1,0 +1,40 @@
+{
+  "scope": "OUR_ARITHMETIC_ONLY_NO_NATIVE_OR_SIMULATION",
+  "preparation_amortization": {
+    "source": "Insum 2510.17505v1, Table3 and accompanying text",
+    "paper_fast_format_ms": "0.55",
+    "paper_fast_kernel_ms": "0.47",
+    "paper_reference_kernel_ms": "0.66",
+    "assumption": "Treat 0.55 ms as EXTRA preparation relative to reference. Reference preparation is NOT established by the cited comparison. This is an illustrative conditional model, not a measured backend crossover.",
+    "conditional_crossing_q": "2.894736842105263157894736842",
+    "first_integer_strict_win": 3,
+    "examples": [
+      {"q": 1, "hypothetical_fast_total_ms": "1.02", "hypothetical_reference_total_ms": "0.66", "fast_wins": false},
+      {"q": 2, "hypothetical_fast_total_ms": "1.49", "hypothetical_reference_total_ms": "1.32", "fast_wins": false},
+      {"q": 3, "hypothetical_fast_total_ms": "1.96", "hypothetical_reference_total_ms": "1.98", "fast_wins": true},
+      {"q": 8, "hypothetical_fast_total_ms": "4.31", "hypothetical_reference_total_ms": "5.28", "fast_wins": true}
+    ]
+  },
+  "fbtriton_author_time_recalculation": {
+    "source": "https://pytorch.org/blog/modernizing-table-batched-embeddings-with-fbtriton/",
+    "scope": "one author B200 configuration; fwd+bwd sum, not whole-model training step",
+    "forward_before_ms": "22.844",
+    "forward_after_ms": "33.252",
+    "backward_before_ms": "56.693",
+    "backward_after_ms": "32.931",
+    "forward_added_ms": "10.408",
+    "backward_saved_ms": "23.762",
+    "combined_before_ms": "79.537",
+    "combined_after_ms": "66.183",
+    "net_saved_ms": "13.354",
+    "combined_time_reduction_pct": "16.78967021637728352842073500",
+    "backward_only_reduction_pct": "41.91346374331928103998730002"
+  },
+  "optimizer_semantics_counterexample": {
+    "scope": "algebraic example; not a complete rowwise-Adagrad implementation or numeric-validation claim",
+    "gradients": [1, 2],
+    "square_of_sum": 9,
+    "sum_of_squares": 5,
+    "lesson": "Per-occurrence optimizer updates cannot automatically replace batch gradient aggregation then one update."
+  }
+}
