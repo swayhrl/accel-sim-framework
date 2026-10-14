@@ -4,7 +4,20 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
-## 最新已完成：Round A26｜Rubble真实原生实验投入评估与单Goal合同
+## 当前已批准：A26G｜单场景Rubble连续门控原生发现（待用户向Codex启动）
+
+**执行者：既有Lane M／node109；科学监督：ChatGPT／AI-ARCH Discovery。** 用户在完整[A26预算与设计](plans/AI_ARCH_A26_3DGS_NATIVE_INVESTMENT_DECISION_AND_SINGLE_GOAL_V1.md)之后明确批准，并要求凡Codex执行**一次给出完整建议**，减少工具问题的往返。因此当前唯一批准的执行入口为[**A26G连续完整Goal**](goals/AI_ARCH_A26G_GSSCALE_RUBBLE_GATED_NATIVE_109_V1.md)与[**用户批准/预算边界记录**](goals/AI_ARCH_A26G_GSSCALE_RUBBLE_GATED_NATIVE_109_APPROVAL_2026-10-14.md)。**批准不等于已启动**，当前`AUTHORIZED_PREPARED_AWAITING_CODEX / NATIVE_NOT_YET_EXECUTED`。
+
+- **唯一科学对象**：真实Mill-19 Rubble，作者GS-Scale固定源`SNU-ARC/GS-Scale@6471e958f7e318f4870234d8107e0aa91c2d6932`；目标只有强GS-Scale后的GPU/CPU状态交接、未隐藏完整step等待及是否值得进一步资源因果研究。旧A21–A25源审都已STOP；NequIP/V1R1/GreenCtx、C16和AWMA冻结。
+- **一次Goal自助连续G0→G4**：官方源/真实COLMAP/预算/完整依赖CPU预检→**仅通过后**下载官方Rubble/合并COLMAP并构建新隔离作者旧软件栈和CPUAdam→线程限额验证→共享GPU锁下真实Rubble完整step功能/应用质量门→仅合格才有限early/条件性late等待诊断→所有PASS/STOP都形成raw小收据、Git提交/remote readback和STOP。普通数据Range、manifest/index、同版本wheel和ABI小问题在上限内`bounded solve-and-continue`，不机械拆多个Codex任务或设置硬编码必停。
+- **正式批准预算**：官方累计下载≤**25GiB**；新磁盘总占用≤**60GiB**且保留≥**64GiB可用**；host RSS≤**48GiB**；CPU有效线程总数≤**24**（CPUAdam源码`omp_set_num_threads(64)`需**实际封顶验证**）；CPU准备≤**4小时**；109独占`/data/c16/locks/c16_gpu_campaign.lock`非阻塞、GPU阶段**累计持锁≤2小时**、显存≤**14GiB**。仅一RTX4080、一真实scene与最多3个合法真实训练窗口，**禁止200k完整训练、跨卡/跨场景、新机制和模拟器/NCU/NSYS/NVBit**。
+- **科学身份与负结果**：Rubble原tar之前只HEAD约9.77GB；合并COLMAP/相机顺序/展开存储/训练状态尚未实际冻结；用户允许合法下载后产生首次SHA但不能冒称论文原bytes。作者旧Torch/IPEX可能发生`PLATFORM_PACKAGING_BLOCKED`，正常STOP；真实后期必须从头完整训练到达，只有短早期点不得叫late/代表性大Gaussian。GPU-only若OOM只报告容量，不构造时间speedup；GS-Scale的deferred Adam非bitwise同等算法、训练质量须明确约束。
+- **执行分支**：`hrl/aiarch-a26g-gsscale-rubble-gated-native-109-v1`独立起点为本轮正式批准后固定协调提交；新worktree和新archive目录。**该分支创建不表示任何节点已经下载/运行**。Codex完成/STOP后推送独立branch，ChatGPT独立科学审查才可能修改协调状态。
+- **过门/停止**：缺真正科学payload/授权、空间或资源不安全、软件跨版本必须改数值/算法、线程上限不可控、共享锁忙、数值质量未合格都在本次单Goal内记录+STOP，**不自动生成A26R2或恢复其它任务**。即便发现候选未隐藏等待，也不是P13已资格硬件机制。
+
+下面已完成的A26与A25及所有早轮次均保留为历史研究/预算提案；新执行权限只由此A26G批准记录和完整Goal共同定义。
+
+## 历史已完成：Round A26｜Rubble真实原生实验投入评估与单Goal合同
 
 **执行者：ChatGPT／AI-ARCH Discovery，2026-10-14；全程GitHub/论文/源码只读，无新GPU、安装、场景下载或Codex Goal。** [A26完整投入评估与单一条件执行科学合同](plans/AI_ARCH_A26_3DGS_NATIVE_INVESTMENT_DECISION_AND_SINGLE_GOAL_V1.md)。
 
