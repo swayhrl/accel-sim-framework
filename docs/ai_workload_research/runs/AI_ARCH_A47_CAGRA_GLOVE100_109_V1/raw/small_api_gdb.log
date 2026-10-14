@@ -1,0 +1,65 @@
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Detaching after vfork from child process 3301201]
+FIXTURE_IMPORTS_PASS
+[New Thread 0x7fff179ff6c0 (LWP 3301204)]
+[New Thread 0x7fff15d4a6c0 (LWP 3301210)]
+[New Thread 0x7fff155496c0 (LWP 3301211)]
+FIXTURE_GPU_INPUT_PASS
+ENTRY_MAKE_PADDED_DATASET
+FIXTURE_PADDED_DATASET_PASS padded False
+ENTRY_SMALL_BUILD_API_ONLY
+
+Thread 1 "python" received signal SIGSEGV, Segmentation fault.
+0x00007fffbad539ed in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+
+Thread 4 (Thread 0x7fff155496c0 (LWP 3301211) "cuda-EvtHandlr"):
+#0  0x00007ffff7d1b79d in __GI___poll (fds=0x7fff04000c20, nfds=10, timeout=40) at ../sysdeps/unix/sysv/linux/poll.c:29
+#1  0x00007fffba119fa7 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#2  0x00007fffba2069e7 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#3  0x00007fffba106de3 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#4  0x00007ffff7c9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#5  0x00007ffff7d29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 3 (Thread 0x7fff15d4a6c0 (LWP 3301210) "python"):
+#0  0x00007ffff7c98e51 in __futex_abstimed_wait_common64 (private=0, cancel=true, abstime=0x7fff15d49e40, op=393, expected=0, futex_word=0x21c2c10) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=0, abstime=0x7fff15d49e40, clockid=0, expected=0, futex_word=0x21c2c10) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x21c2c10, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x7fff15d49e40, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff7c9bd6e in __pthread_cond_wait_common (abstime=0x7fff15d49e40, clockid=0, mutex=0x2188740, cond=0x21c2be8) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_timedwait64 (cond=0x21c2be8, mutex=0x2188740, abstime=0x7fff15d49e40) at ./nptl/pthread_cond_wait.c:652
+#5  0x00007fffba06a08a in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#6  0x00007fffba106de3 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#7  0x00007ffff7c9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#8  0x00007ffff7d29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 2 (Thread 0x7fff179ff6c0 (LWP 3301204) "cuda00001400006"):
+#0  0x00007ffff7d1b79d in __GI___poll (fds=0x21106b0, nfds=3, timeout=-1) at ../sysdeps/unix/sysv/linux/poll.c:29
+#1  0x00007fffba119fa7 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#2  0x00007fffba2069e7 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#3  0x00007fffba106de3 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#4  0x00007ffff7c9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#5  0x00007ffff7d29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 1 (Thread 0x7ffff7e73080 (LWP 3301198) "python"):
+#0  0x00007fffbad539ed in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#1  0x00007fffba19a8f9 in ?? () from /lib/x86_64-linux-gnu/libcuda.so.1
+#2  0x00007fffba19f090 in cuStreamGetId () from /lib/x86_64-linux-gnu/libcuda.so.1
+#3  0x00007fffb8b3b57b in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/rmm/pylibrmm/memory_resource/_memory_resource.abi3.so
+#4  0x00007fffb8ba527b in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/rmm/pylibrmm/memory_resource/_memory_resource.abi3.so
+#5  0x00007fffb8b298f6 in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/rmm/pylibrmm/memory_resource/_memory_resource.abi3.so
+#6  0x00007fffb9309b61 in rmm::_RMM_26_10::device_buffer::allocate_async(unsigned long) () from <TASK_ROOT>/venv/lib/python3.12/site-packages/librmm/lib64/librmm.so
+#7  0x00007fffb930ad01 in rmm::_RMM_26_10::device_buffer::device_buffer(unsigned long, unsigned long, cuda::__4::stream_ref, cuda::mr::__4::__version_bump_ver4_::any_resource<cuda::mr::__4::device_accessible>) () from <TASK_ROOT>/venv/lib/python3.12/site-packages/librmm/lib64/librmm.so
+#8  0x00007fff32327bb0 in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so
+#9  0x00007fff326c29e2 in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so
+#10 0x00007fff326c2c29 in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so
+#11 0x00007fff326fa06b in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so
+#12 0x00007fff326e4691 in cuvs::neighbors::ivf_pq::build(raft::resources const&, cuvs::neighbors::ivf_pq::index_params const&, cuda::std::__4::mdspan<float const, cuda::std::__4::extents<long, 18446744073709551615ul, 18446744073709551615ul>, cuda::std::__4::layout_right, raft::host_device_accessor<cuda::std::__4::default_accessor<float const>, (raft::memory_type)2> >) () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so
+#13 0x00007fff31c4f613 in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so
+#14 0x00007fff31c512cb in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so
+#15 0x00007fff31c51603 in ?? () from <TASK_ROOT>/venv/lib/python3.12/site-packages/libcuvs/lib64/libcuvs.so

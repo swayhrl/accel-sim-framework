@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "<WORKTREE>/tools/aiarch_a47/resolve_env.py", line 33, in <module>
+    if prev is None or not all(Version(prev['version']) in Requirement(name+spec).specifier for spec in constraints[name]):selected[name]=choose(name);changed=True
+                                                                                                                                          ^^^^^^^^^^^^
+  File "<WORKTREE>/tools/aiarch_a47/resolve_env.py", line 16, in choose
+    for ver in sorted((Version(v) for v in allmeta['releases'] if not Version(v).is_prerelease),reverse=True):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<WORKTREE>/tools/aiarch_a47/resolve_env.py", line 16, in <genexpr>
+    for ver in sorted((Version(v) for v in allmeta['releases'] if not Version(v).is_prerelease),reverse=True):
+                                                                      ^^^^^^^^^^
+  File "<TASK_ROOT>/venv/lib/python3.12/site-packages/pip/_vendor/packaging/version.py", line 266, in __init__
+    raise InvalidVersion(f"Invalid version: '{version}'")
+pip._vendor.packaging.version.InvalidVersion: Invalid version: '1.3.0.dev-r634'

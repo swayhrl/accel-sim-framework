@@ -1,0 +1,33 @@
+{
+  "resolved": [
+    "official dataset HTTPS HEAD403; bound HTTPS GET range206 succeeded with matching HTTP/S entity ETag",
+    "NumPy historical non-PEP440 versions skipped; they could not satisfy current NumPy>=2 constraints",
+    "RMM26.10 allocator imported from documented rmm.allocators.cupy; verified from official wheel before any GPU attempt",
+    "proc/stat parser fixed for parenthesized names containing spaces in debug supervisor; initial failure held0.021s and preserved"
+  ],
+  "critical_native_failure": {
+    "full_process_returncode": -11,
+    "signal": "SIGSEGV",
+    "small_API_gdb_exitcode_is_not_qualification": true,
+    "CPU_stack_frames": [
+      "libcuda.so.1 cuStreamGetId",
+      "rmm/pylibrmm/memory_resource/_memory_resource.abi3.so",
+      "librmm.so rmm::_RMM_26_10::device_buffer::allocate_async",
+      "libcuvs.so cuvs::neighbors::ivf_pq::build"
+    ],
+    "exact_root_cause": "UNKNOWN; cannot establish a legal wrapper-only correction from this stack without changing the admitted ABI/runtime path or retrying complete scientific build"
+  },
+  "scope": "one bounded small API diagnostic only, no search/quality/performance configuration or second scientific dataset; GDB CPU fault stack, not GPU profiler; debuginfod explicitly declined, no diagnostic downloads",
+  "old_assets_preserved": [
+    {
+      "worktree_label": "accel-sim-aiarch-a26gr1-gsscale-rubble-bounded-tar-109-v1",
+      "head": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "clean": true
+    },
+    {
+      "worktree_label": "accel-sim-aiarch-a45h-cpuadam-cpu-only-109-v1",
+      "head": "1936dffd204043a1ab6c0fad5e7aebf565497c1a",
+      "clean": true
+    }
+  ]
+}
