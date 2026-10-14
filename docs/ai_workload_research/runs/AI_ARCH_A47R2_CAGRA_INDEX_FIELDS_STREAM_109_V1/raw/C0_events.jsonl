@@ -1,0 +1,14 @@
+{"arm": "C0", "phase": "IMPORT_PASS", "python": "3.12.3", "cuvs": "26.10.0", "cuvs_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124", "rmm": "26.10.0", "cupy": "14.0.1", "numpy": "2.5.4"}
+{"arm": "C0", "phase": "GPU_INPUT_PASS", "input_sha256": "01a2c2f8a7e56b7a440fa183734d4297a1945a3dbbd6baedb27c1c3695b2478c", "shape": [1024, 100], "dtype": "float32", "default_CuPy_stream_preparation": true, "default_RMM_type": "rmm.pylibrmm.memory_resource._memory_resource.CudaMemoryResource", "default_CuPy_allocator": "None.malloc", "device": "NVIDIA GeForce RTX 4080", "SM": 76, "driver_API": 13000, "runtime_API": 12090}
+{"arm": "C0", "phase": "PADDED_DATASET_PASS", "layout": "padded", "is_owning": false, "memory_type": "device", "dtype": "(2, 32, 1)", "resource_stream": {"classification": "REQUESTED_STREAM", "value": "DEFAULT_RESOURCES_STREAM", "Cplusplus_actual_internal_handle": "UNKNOWN", "explicit_Python_stream_owner_retained": false}, "owners_retained": ["x", "g", "ds", "res", "stream_owner_if_C1"]}
+{"arm": "C0", "phase": "BUILD_ENTER", "build_calls": 1, "params": {"metric": "cosine", "build_algo": "ivf_pq", "graph_degree": 64, "intermediate_graph_degree": 128}}
+{"arm": "C0", "phase": "BUILD_RETURN_SYNCHRONIZED"}
+{"arm": "C0", "phase": "FIELD_VALUE", "field": "trained", "value": true}
+{"arm": "C0", "phase": "FIELD_VALUE", "field": "size", "value": 1024}
+{"arm": "C0", "phase": "FIELD_VALUE", "field": "dim", "value": 100}
+{"arm": "C0", "phase": "FIELD_VALUE", "field": "graph_degree", "value": 64}
+{"arm": "C0", "phase": "FIELD_VALUE", "field": "dtype", "dtype_repr": "<class 'numpy.float32'>", "dtype_normalized": "float32"}
+{"arm": "C0", "phase": "ASSERT_PREDICATE_MAP", "fields": {"trained": true, "size": 1024, "dim": 100, "graph_degree": 64, "dtype_repr": "<class 'numpy.float32'>", "dtype_normalized": "float32"}, "assert_predicate_map": {"trained": true, "size": true, "dim": true, "graph_degree": true, "dtype": true}, "read_errors": {}, "qualified": true}
+{"arm": "C0", "phase": "BUILD_FIELDS_PASS", "fields": {"trained": true, "size": 1024, "dim": 100, "graph_degree": 64, "dtype_repr": "<class 'numpy.float32'>", "dtype_normalized": "float32"}}
+{"arm": "C0", "phase": "OPTIONAL_GRAPH", "status": "OPTIONAL_NOT_QUALIFIED", "error": "ValueError('A DLPack tensor object cannot be consumed multiple times (or object was not a DLPack capsule). Got: <cuvs.common.device_tensor_view.DeviceTensorView object at <REDACTED_ADDRESS>>')"}
+{"arm": "C0", "phase": "CLEAN_EXIT", "status": "PASS", "build_calls": 1}

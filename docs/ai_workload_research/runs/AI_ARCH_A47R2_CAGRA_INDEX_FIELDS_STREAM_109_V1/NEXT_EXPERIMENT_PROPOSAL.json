@@ -1,0 +1,47 @@
+{
+  "status": "PROPOSAL_ONLY_NOT_AUTHORIZED_NOT_STARTED",
+  "unique_question": "On one original complete GloVe graph and fixed recall, does official AUTO leave a reproducible complete-search software-configuration gap versus calibration-selected SINGLE_CTA+SMALL at B1/B256?",
+  "new_evidence_required": [
+    "actual complete original-base graph and valid dtype/size/dim/degree",
+    "same saved/reloaded index and live dataset owner",
+    "full-base32-query cosine/ID canary and8000 report-query recall at each measured B",
+    "three fresh-process ten ABBA blocks at four frozen points, synchronized service/host wall"
+  ],
+  "proposed_minimum_resource_envelope": {
+    "new_download_install": 0,
+    "new_disk_GiB_ceiling": 2,
+    "free_FS_min_GiB": 64,
+    "CPU_workers": 4,
+    "RAM_GiB_ceiling": 8,
+    "VRAM_GiB_ceiling": 12,
+    "GPU_lock_minutes_ceiling": 45,
+    "CPU_preparation_minutes_ceiling": 30,
+    "raw_summary_MiB_ceiling": 64,
+    "full_graph_build_success_limit": 1,
+    "formal_points": 4,
+    "functional_calibration_check_limit": 8
+  },
+  "budget_basis": "Input+degree64 graph arithmetic lower bound775-ish MB, not peak VRAM or measured full build. Reuse read-only original venv/HDF5/normalized input/query/GT;2GiB additional disk for index/cache/raw,12GiB VRAM and45min are conservative proposed ceilings, not measured minimum full-scale requirements. Original A47 never completed a full graph.",
+  "software_policy": "official defaults/current RMM/CuPy allocator; Resources() DEFAULT stream for all build/load/search/transfer; no explicit PoolMemoryResource/allocator reset/nondefault stream",
+  "procedure": [
+    "After separate scientific review and user approval: new branch/worktree/output and cumulative ledger; statically check DeviceTensorView bridge and correct np.dtype index validation, reverify source/input SHA and frozen A47 query split.",
+    "Nonblocking original lock and empty external-compute check; default-stream complete FP32 normalized base upload and device sync; one full CAGRA cosine/IVF-PQ64/128 build; record each property and predicates before asserting.",
+    "Save with include_dataset=True; hash serialized file. Precreate cagra.Index and Dataset, load(index,file,out_dataset=owner,resources=Resources()), retain owner. Check same canary IDs/distances; use serialized SHA as graph/data identity when public graph bridge remains unavailable, honestly mark logical view UNKNOWN.",
+    "Run32 calibrated-query full-base numeric/ID canary at atol1e-5 rtol1e-4; freeze k10/itopk128/width1/iterations64 and original other settings. Six calibration candidates B1/B256 x AUTO/h9/h11 plus at most2 functional checks. Select one h for both batches only if recall>=.95 and same-B delta<=.005, minimum geometric mean of calibration perquery complete-host wall; no report lookahead.",
+    "Evaluate all8000 report queries per arm with measured B and max_queries=B; pad quality-tail with different genuine report queries, count only original tail, never use padding for timed2048 distinct queries. Same index for every arm/process.",
+    "Three fresh processes load same file, warmup, then10 alternating ABBA/BAAB blocks for B1/B256 x AUTO/chosen SMALL; preallocated equal buffers. Default Resources/default CuPy path with full completion synchronization: resident-GPU-query synchronized host search boundary separately from CPU-ready -> H2D -> search -> D2H/result-ready wall. Do not claim pure kernel without stream coverage proof.",
+    "Stop background CPU/download work during formal measurement; record NVML/temp/clocks without modification. Archive all samples/outliers, paired effects per process and hierarchical block/process uncertainty. Publish only execution branch, exact remote readback,STOP."
+  ],
+  "strong_software_counterevidence": [
+    "AUTO is an official heuristic reference, not global parameter optimum. SMALL advantage first means existing block/hash/reset/algorithm configuration, not SMEM/cache hardware benefit.",
+    "If AUTO is no slower or effect is unstable, accept complete scoped NO_GAP and stop. Do not append h/itopk/iteration grids to find a positive result."
+  ],
+  "stop_conditions": [
+    "Lock busy/external GPU task -> immediate defer STOP.",
+    "Any source/input/dtype/algorithm identity change, budget exceed, real native crash or invalid required index field ->STOP; no full-build crash retry or version workaround.",
+    "Canary identity/distance/IDs fail or no common calibrated h meeting >=.95/delta<=.005 or report quality fails ->QUALITY_NO_GO, no relaxation.",
+    "Cannot fit new index/cache/raw<=2GiB,VRAM<=12GiB,45min lock or full legal measurement sequence ->BUDGET_STOP, no silent expansion.",
+    "Only local/transfer/wrapper difference or identical effective paths yields no hardware claim; no NCU/NSYS/NVBit/simulator/second dataset/new mechanism."
+  ],
+  "not_recommended": "No extra nondefault-stream/pool vendor workaround round; default small path is already qualified, explicit stream configuration failed."
+}
