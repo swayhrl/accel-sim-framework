@@ -4,6 +4,18 @@
 
 这是GitHub已发布科研结果的导航，不是节点进程监控，也不是GPU执行授权。AI-ARCH本窗口负责Discovery及总体协调；AWMA由原独立主窗口管理；C16为历史证据。方法遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。
 
+## 最新SOURCE_ONLY：Round A28｜Rubble场景、CLM软件近邻与静态状态字节账
+
+**执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** 已完成[独立A28论文和固定源码审查](literature/AI_ARCH_A28_RUBBLE_CLM_AND_GSSCALE_TRANSFER_SOURCE_AUDIT_2026-10-14_V1.md)。本ChatGPT只进行公开原文和GitHub源码研究，**未连接、重启或修改正在下载Rubble的109 Lane M、GPU锁及任何正在执行的A26GR1合同**。A26GR1“正在下载”仅来自**用户状态报告**，不是本窗口的实时节点确认，当前还不能报告该目标已经完成。
+
+- **原始场景**：Mega-NeRF／CVPR2022的Mill19 Rubble为真实无人机废墟场景，正式论文Table1给出**1678张4608×3456原始照片**；GS-Scale固定源4×下采样的目标分辨率1152×864。官方tar为约9.10GiB压缩体，配套作者合并COLMAP。不能把照片包当训练模型/Trace或凭HTTP HEAD宣称输入bytes通过。
+- **新增直接最近邻**：[ASPLOS2026 CLM论文](https://arxiv.org/html/2511.04951)与[作者固定CLM-GS@1119a10198b8398a81d4fcad0d5d407f8a330543](https://github.com/nyu-systems/CLM-GS/tree/1119a10198b8398a81d4fcad0d5d407f8a330543)，**同样使用Rubble真实场景**，已研究Gaussian的CPU offload、跨microbatch精确交集复用、双缓冲与CPU Adam重叠、相机重排。作者实验`Rubble4K/bsz4/100k`与当前GS-Scale`1K/batch1/200k`科学工作量不同，**不可直接拿作者时间比较109结果或变更运行中目标**；但它强烈限制后续“新Gaussian Cache/预取”硬件新颖性。
+- **源码衍生标称字节，不是实测**：默认FP32/SH3/Adam下，GS-Scale每Gaussian包含GPU几何10、CPU外观49个float；参数与两个Adam moments合计**708 B/Gaussian**（未含grad等），全部59参数/梯度/moments完全物化理论944 B。完整外观H2D＋gradient D2H＋int32 index D2H条件性约**396 B/active Gaussian/step**；index dtype、真实copies、traffic、带宽和wall必须另测。
+- **需排除的软件混杂**：`sh_degree_to_use`在前期逐级启用但代码仍传全SHN系数；CPUAdam的`calculate_update_ids`/`update_counter`有对全部N的全局扫描，并显式设64 OpenMP线程。未来必须区分软件冗余传输/CPU扫描与真实不可隐藏的硬件成本，不能以单步可见率或blocking源码行直接推Cache收益。
+- **权限边界**：A28只是审查参考；不新增或修改运行中的A26GR1科学合同，不额外下载CLM、安装/启动CPU/GPU或授予新机制。待Lane M真实执行结果归档后独立评审。
+
+**以下A27为原A26G合法STOP的历史审查结论，保持不变。**
+
 ## 最新已审：Round A27｜A26G G0存储资格STOP与单Goal修订提案
 
 **执行者：ChatGPT／AI-ARCH Discovery，2026-10-14。** [A27 G0 STOP独立科学审查](reviews/AI_ARCH_A27_A26G_G0_STORAGE_GATE_INDEPENDENT_REVIEW_2026-10-14_V1.md)；[原A26G固定执行`e760f332ed41c609d3d19548f87d90b3f11357d8`](https://github.com/swayhrl/accel-sim-framework/commit/e760f332ed41c609d3d19548f87d90b3f11357d8)，tree `b2165a3fc75ca15c21876a46770e3b03027c8165`。**原A26G已push并STOP，不能用原用户授权直接重启。**
