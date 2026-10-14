@@ -1,0 +1,22 @@
+Warning: image_path not found for reconstruction
+[Parser] 1678 images, taken by 1 cameras.
+Downscaling images by 4x from <TASK_ROOT>/scene/images to <TASK_ROOT>/scene/images_4_png.
+
+  0%|          | 0/1678 [00:00<?, ?it/s]
+100%|██████████| 1678/1678 [00:00<00:00, 324647.91it/s]
+Scene scale: 1.9631023266523928
+Model initialized. Number of GS: 1694315
+
+  0%|          | 0/200000 [00:00<?, ?it/s]gsplat: CUDA extension has been set up successfully in 86.02 seconds.
+Traceback (most recent call last):
+  File "<WORKTREE>/tools/aiarch_a26gr1/native_runner.py", line 116, in <module>
+    started=time.monotonic();runner.train();torch.cuda.synchronize()
+  File "<TASK_ROOT>/software_sources/gsscale/examples/simple_trainer_hybrid_optimized.py", line 1006, in train
+    is_densify, valid_ids, valid_ids_cpu, valid_ids_cpu_prev, data_list, param_list = self.prologue(trainloader_iter, schedulers)
+  File "<TASK_ROOT>/software_sources/gsscale/examples/simple_trainer_hybrid_optimized.py", line 750, in prologue
+    renders, alphas, info, param_list, valid_ids_cpu = self.rasterize_splats(
+  File "<TASK_ROOT>/software_sources/gsscale/examples/simple_trainer_hybrid_optimized.py", line 600, in rasterize_splats
+    if cfg.batch_size > 1:
+NameError: name 'cfg' is not defined
+
+  0%|          | 0/200000 [01:46<?, ?it/s]

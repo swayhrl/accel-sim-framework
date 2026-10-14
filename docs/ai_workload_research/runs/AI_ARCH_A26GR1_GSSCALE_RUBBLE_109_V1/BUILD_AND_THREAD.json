@@ -1,0 +1,107 @@
+{
+  "build_stage": {
+    "build_status": "PASS",
+    "source_builds": [
+      {
+        "source_name": "pycolmap",
+        "returncode": 0,
+        "wall_seconds": 1.392825118266046,
+        "original_source_build": true
+      },
+      {
+        "source_name": "cpu_adam",
+        "returncode": 0,
+        "wall_seconds": 14.696005505975336,
+        "original_source_build": true
+      },
+      {
+        "source_name": "fused_ssim",
+        "returncode": 0,
+        "wall_seconds": 25.542760143056512,
+        "original_source_build": true
+      },
+      {
+        "source_name": "gsscale",
+        "returncode": 0,
+        "wall_seconds": 111.07674149982631,
+        "original_source_build": true
+      }
+    ],
+    "gpu_lock_this_stage_seconds": 152.71262159803882,
+    "gpu_peak_sampled_mib": 0,
+    "gpu_sampling_interval_seconds": 1,
+    "process_tree_peak_rss_bytes": 524562432,
+    "cpu_worker_compile_max_jobs": 4,
+    "cpu_adam_thread_qualification": "PENDING_ACTUAL_CPU_CANARY",
+    "toolkit_or_driver_upgraded": false
+  },
+  "CPU_canary_preregister": {
+    "status": "PREREGISTERED",
+    "scope": "CPU extension qualification only; synthetic fixture is not scene/training evidence",
+    "dtype": "float32",
+    "rows": 200000,
+    "cols": 48,
+    "step": 10,
+    "beta1": 0.9,
+    "beta2": 0.999,
+    "lr": 0.001,
+    "eps": 1e-15,
+    "max_abs_error": 1e-05,
+    "effective_thread_limit": 24,
+    "omp_thread_limit": 16,
+    "comparison": "unchanged frozen deferred-Adam function at counter=0 versus its documented float32 equations"
+  },
+  "actual_CPU_canary": {
+    "status": "PASS",
+    "scope": "CPU extension qualification only; synthetic fixture is not scene/training evidence",
+    "core_versions": {
+      "torch": "2.2.0+cu121",
+      "ipex": "2.2.0+cpu"
+    },
+    "module_sha256": "c451fda99327e5969da9f0476ef3f4915815dc9ff314c22cce002e5551379a55",
+    "original_source_not_patched": true,
+    "torch_cxx11_abi": false,
+    "dtype": "float32",
+    "max_abs_errors": {
+      "weights": 0.0,
+      "moment1": 0.0,
+      "moment2": 0.0
+    },
+    "all_outputs_finite": true,
+    "omp_get_thread_limit": 16,
+    "source_omp_set_num_threads_64_unchanged": true,
+    "max_running_threads_sampled": 17,
+    "max_resident_threads_sampled": 18,
+    "thread_samples": [
+      {
+        "monotonic": 2585767.075183746,
+        "resident_threads": 7,
+        "running_threads": 6
+      },
+      {
+        "monotonic": 2585767.077403462,
+        "resident_threads": 18,
+        "running_threads": 17
+      },
+      {
+        "monotonic": 2585767.079281092,
+        "resident_threads": 18,
+        "running_threads": 17
+      }
+    ],
+    "wall_seconds": 0.005685093346983194,
+    "peak_rss_kib": 845216,
+    "cuda_initialized": false,
+    "budget": {
+      "utc": "2026-10-14T07:27:51.515705+00:00",
+      "free_bytes": 100919517184,
+      "task_allocated_bytes_conservative": 43845050247,
+      "cpu_wall_cumulative_seconds": 10301.011817519577,
+      "http_cumulative_bytes": 14229556764,
+      "collector_rss_kib": 845216
+    }
+  },
+  "original_64_threads_unchanged": true,
+  "effective_policy": "OMP_THREAD_LIMIT=16, Torch/BLAS=1; DataLoader=4 as author source",
+  "original_core_versions_retained": true
+}
