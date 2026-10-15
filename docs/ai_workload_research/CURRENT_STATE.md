@@ -1,14 +1,24 @@
 # AI-ARCH｜当前科研协调状态
 
-**快照：2026-10-15，A47R2已获授权发布、等待109执行回执。维护者：ChatGPT／AI-ARCH Discovery。**
+**快照：2026-10-15，A50独立审查已完成，A50G仅准备待授权。维护者：ChatGPT／AI-ARCH Discovery。**
 
 本页是研究导航，不是节点实时监控。原A47与A47R1已各自STOP；用户随后对A49纠偏批准了独立A47R2小型复验，本次仍不授权完整GloVe构图或正式性能矩阵。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
 
 **历史不改写：** A46及此前完整导航保存在[CURRENT_STATE@e4bf84ff](https://github.com/swayhrl/accel-sim-framework/blob/e4bf84ff414c84576bd7dc1078d145910617b0f6/docs/ai_workload_research/CURRENT_STATE.md)。该快照中的“尚未授权”是A46时点，本页优先记录A47实际STOP；所有原报告、Goal、原始结果和commit仍按自身合同有效。
 
-## 最新执行准入：Round A47R2｜修正index资格、条件stream对照与下一步裁决合并
+## 最新A50独立裁决：A47R2完成STOP；真实GloVe下一Goal仅待批准
 
-**当前：`A47R2_AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED`。** 用户2026-10-15在A49确认`str(idx.dtype)=="float32"`的确定性错误后回复“继续吧”，并要求今后将建议、具体做法与可合并步骤放入同一轮。本窗口据此发布[**A47R2连续Goal**](https://github.com/swayhrl/accel-sim-framework/blob/bbbe9d89d05e268f7dc958886a571fb327c44584/docs/ai_workload_research/goals/AI_ARCH_A47R2_CAGRA_INDEX_FIELDS_AND_STREAM_CANARY_109_V1.md)，本窗口**未实际连接109或启动GPU**。
+**2026-10-15状态：所有先前执行Lane停止；A50G尚未授权GPU执行。** 用户已提供A47R2真实结果，本窗口核对固定Git commit/tree、全部15文件路径、GATES/原始C0和C1日志/源码与资源后，新增[**A50独立审查**](reviews/AI_ARCH_A50_A47R2_DEFAULT_CAGRA_NATIVE_REVIEW_AND_ONE_GOAL_DECISION_2026-10-15_V1.md)。
+
+- **A47R2**：[提交`c37bfa976f556442f9a6856b899edb537b204875`](https://github.com/swayhrl/accel-sim-framework/commit/c37bfa976f556442f9a6856b899edb537b204875)，tree`9ee03a24f78c1e5191a8b2065829bd42fa25a2c5`，报告blob`821220e4c44f0a5f0d316716085022de9a09d2b4f`，原分支HEAD一致。**科学终态`C0_DEFAULT_PASS_C1_STREAM_SENSITIVE / STOP`**：冻结默认Resources的小型1024×100 cosine/IVF-PQ构图确实返回并同步，5个索引元数据属性全部PASS；C1显式nonblocking CuPy stream＋cuVS Resources创建所在Python行发生SIGSEGV，未进入Dataset/build，具体故障子调用未知。不能把这视作原A47历史cuStreamGetId故障的同一栈或宣布驱动bug。C0的可选graph DLPack转换未通过，graph实际边身份和真实search仍不具备资格。
+- **资源回执**：R2原锁累计2.6015秒、RSS采样峰0.842GiB、显存采样峰286MiB、新增5.27MiB、下载安装0，执行旧文件SHA/mtime核验无变更。该任务授权已消费并STOP，不自动恢复。
+- **下一研究选择**：结束非默认Stream vendor debugging。实际的新增科学证据应来自使用**默认RMM/CuPy资源和默认cuVS Resources()**、同一官方完整GloVe base构图及同recall下AUTO vs calibrated SINGLE_CTA+SMALL B1/B256四点真实时间；首要解释是软件启发式，不是硬件加速已成立。
+- **预发布但未授权**：[**A50G完整连续Goal草案**](https://github.com/swayhrl/accel-sim-framework/blob/572264cdc56f38db194324dc56769566b1f0483f/docs/ai_workload_research/goals/AI_ARCH_A50G_GLOVE100_CAGRA_DEFAULT_FULL_NATIVE_109_V1.md)，branch `hrl/aiarch-a50g-glove100-default-native-full-109-v1`，固定Goal HEAD `572264cdc56f38db194324dc56769566b1f0483f`，**`PREPARED_AWAITING_EXPLICIT_USER_GPU_APPROVAL / EXECUTION_NOT_OBSERVED`**。它已把G0数据/环境→G1唯一full build/save/load→G2质量/校准→G3四点配对wall→G4科学决定与提交合并在一个Goal。提议额度109单4080、共享锁≤45分钟、新下载/安装0、新盘≤2GiB、CPU≤4、RSS≤8GiB、VRAM≤12GiB、准备≤30min、≤12配置点；必须待用户对此次新预算明确同意，**本页/Goal发布都不是授权**。前一轮R1/R2资源未用余额不可转用。
+- C16/AWMA、A26GR1、A30T/N、A45H/S、旧A47/R1/R2所有科学authority不被本次协调审查更改；本ChatGPT未SSH到109/174、未运行GPU或访问锁。
+
+## 历史执行准备：Round A47R2（已实际STOP）
+
+**历史状态（2026-10-15发布时）：`A47R2_AUTHORIZED_READY_FOR_CODEX`；A47R2随后已执行并STOP，最新审查见上方A50。** 用户2026-10-15在A49确认`str(idx.dtype)=="float32"`的确定性错误后回复“继续吧”，并要求今后将建议、具体做法与可合并步骤放入同一轮。本窗口据此发布[**A47R2连续Goal**](https://github.com/swayhrl/accel-sim-framework/blob/bbbe9d89d05e268f7dc958886a571fb327c44584/docs/ai_workload_research/goals/AI_ARCH_A47R2_CAGRA_INDEX_FIELDS_AND_STREAM_CANARY_109_V1.md)，本窗口**未实际连接109或启动GPU**。
 
 - Git：branch `hrl/aiarch-a47r2-cagra-index-fields-stream-109-v1`，完整启动HEAD `bbbe9d89d05e268f7dc958886a571fb327c44584`；从A49协调parent `c3d235cd99f2698672dd40094fcd4502e397b055`独立分出，branch相对parent ahead1，唯一新增Goal。
 - 唯一科研目的：对固定26.10源码和1024×100 seed20261014合成FP32输入，仅重新资格确认**C0默认RMM/默认cuVS Resources**；在合取assert前逐项记录`trained/size/dim/degree/dtype`，改用`np.dtype(idx.dtype)==np.dtype('float32')`。C0合法PASS后**同Goal连续执行C1**，只将Resources改为显式非默认CuPy stream；C0失败立即停止。
