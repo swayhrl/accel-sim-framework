@@ -1,20 +1,30 @@
 # AI-ARCH｜当前科研协调状态
 
-**快照：2026-10-15，A58 SOURCE_ONLY验收，A59 GraphSAGE有界原生Goal已准备。维护者：ChatGPT／AI-ARCH Discovery。**
+**快照：2026-10-15，A60双许可报告独立审查完成，A61仅待明确科学输入选择。维护者：ChatGPT／AI-ARCH Discovery。**
 
-本页是研究导航，不是节点实时监控。A47/A47R1/A47R2/A50G原执行及恢复均已STOP；旧A50GR1已被实际恢复取代。174 A58已SOURCE_ONLY结束，109 A59为唯一新有界原生候选，尚无实际Codex执行回执。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
+本页是研究导航，不是节点实时监控。A47/A47R1/A47R2/A50G/A59均已STOP；A58仅SOURCE审结束。IGB-small A61新输入合同只准备待批，本窗口没有109 CUDA/GPU或下载执行。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
 
 **历史不改写：** A46及此前完整导航保存在[CURRENT_STATE@e4bf84ff](https://github.com/swayhrl/accel-sim-framework/blob/e4bf84ff414c84576bd7dc1078d145910617b0f6/docs/ai_workload_research/CURRENT_STATE.md)。该快照中的“尚未授权”是A46时点，本页优先记录A47实际STOP；所有原报告、Goal、原始结果和commit仍按自身合同有效。
 
-## 最新执行准入：Round A59｜GraphSAGE真实OGB＋GraphBolt强软件连续Discovery
+## 最新科研审查：Round A60｜A59 DATA_LICENSE_NO_GO、许可补充PARTIAL；IGB-small待审替代图
 
-**科学状态：`A58_SOURCE_ONLY_ACCEPTED / A59_AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED`。** 用户送达Lane N A58实际STOP回执，已独立核Git：branch `hrl/aiarch-a58-vla-gnn-source-admission-174new-v1`最终`9560b28ee85618a9059e309cb640c210b4575dfc`、tree`e84d94baa9751265fb90d5b37da345bd8c6a0f9a`、报告blob`4bf580e1f7a000633ea3ffaca91e8ab3fd4d1812`；从Goal ahead1、branchHEAD identical。**只SOURCE审，未跑GPU**。VLA真多请求服务端仍无资格，GraphSAGE/ogbn-products是唯一有条件真实AI训练候选。
+**2026-10-15最新：`A59_DATA_LICENSE_NO_GO_STOP / A59_LICENSE_AUTHORITY_PARTIAL / A61_PREPARED_AWAITING_SCIENTIFIC_SCOPE_APPROVAL / NO_GPU_EXECUTION`。** 最新原始运行：A59 node109 G0因官方ogbn-products的Amazon许可证链接403及适用来源不足而合法STOP，无数据/wheel下载、无GPU持锁、无任何GraphSAGE训练或性能结果；后续独立CPU查到McAuley原始作者论文中的学术使用声明，但仍无法证明它覆盖OGB再包装图的**所有特定实体**。这不是数据使用违法的结论，不再为同一官方失效链接开第三轮重复排查。
+
+- **两份固定Git结果**：原A59执行branch `hrl/aiarch-a59-graphsage-products-bounded-native-109-v1` commit `0e52f088d21e0a88ff471cdf5ad76a7a539cf616` tree `7b05f50e296df1d2e78894859e6e8642761076a2` 报告blob `509c5cf7d23800c57c5189edd92944996be60d99`；另一个CPU许可分支 `hrl/aiarch-a59-license-authority-cpu-109-v1` commit `81db397d477222b90dee56d31cd6cf66982d627c` tree `f1887f38fde6b35ec8e43fe87c252a4c215067f3`、报告blob `311d757fe1372998697ba003072748b8736ffcc3`，**分支独立，未覆盖原STOP**。核原 Git提交/报告与[OGB #499](https://github.com/snap-stanford/ogb/issues/499)，issue open/零评论；某用户建议用ASL不等于OGB维护者许可确认。
+- **A60独立审查**：[完整科学和适用性review](reviews/AI_ARCH_A60_A59_LICENSE_AUTHORITY_AND_IGB_ALTERNATIVE_REVIEW_2026-10-15_V1.md)。只依可核报告判定`AUTHORITY_PARTIAL_OGB_APPLICABILITY_UNRESOLVED`；上游PDF完整SHA等来自109实际报告、本窗口没有复下载原始全文来重算；如需联系维护者可使用[现成未发送询问草稿](https://github.com/swayhrl/accel-sim-framework/blob/81db397d477222b90dee56d31cd6cf66982d627c/docs/ai_workload_research/runs/AI_ARCH_A59_LICENSE_AUTHORITY_CPU_109_V1/REVIEW_REQUEST_DRAFT.md)，没有代发。
+- **新的数据授权更明确的来源**：固定[IGB官方Git](https://github.com/IllinoisGraphBenchmark/IGB-Datasets/tree/fc36357f2c1d861870b4c13a58f73da2b93d1e73)有软件MIT许可证与**独立ODC-By数据许可证**，后者明确声明覆盖IGB项目公开共享的数据；该许可不自动解决单项内容的其它第三方权利。作者官方§igb/download.py§公开IGB-small官方下载和MD5 `6781c699723529902ace0a95cafe6fe4`，small真实图约1,000,000节点/12,070,502边/1024维真实FP32 embedding（仅特征`4,096,000,000B`），真实压缩/展开与本地ABI尚未验。不是改名的OGB，不能与旧A59直接比较。
+- **已备好但未授权科学输入切换**：[A61一条完整连续IGB-small原生Goal](https://github.com/swayhrl/accel-sim-framework/blob/603e2b7fb1a6247636375eae288fa62072802f31/docs/ai_workload_research/goals/AI_ARCH_A61_IGB_SMALL_GRAPHSAGE_BOUNDED_NATIVE_109_V1.md)。branch `hrl/aiarch-a61-igb-small-gnn-native-109-v1`，准备HEAD `603e2b7fb1a6247636375eae288fa62072802f31`，`PREPARED_AWAITING_EXPLICIT_SCIENTIFIC_INPUT_CHANGE_APPROVAL / DO_NOT_LAUNCH`。若用户明确选择IGB-small且确认该新预算，才授权109 Codex在独立worktree完成真实数据许可/大小资格→≤6GiB官方下载（其中图≤4.5GiB）及安全解包→≤14GiB新盘/FS≥64GiB→GraphBolt强缓存数值→GPU锁≤30min、VRAM≤12GiB、Host RSS≤20GiB、CPU≤4/准备≤3h、≤256自然GraphSAGE更新/完整wall→归档STOP；所有工程问题同Goal有界solve-and-continue。**当前未批准下载、训练、CUDA、GPU锁**。
+- **协作边界**：用户偏好减少反复轮次，日常工程由Codex在已准累计预算内处理。但OGB→IGB是**科学数据和训练身份变化**，须一次新明确确认，不能借此前“默认确认”静默替换；大范围版权法律判断也不由我保证。C16/AWMA、历史A50G以及冻结STOP保持不变。若不切换，则等待OGB适用性回信、或转回其它AI Discovery方向，不重做license工具循环。
+
+## 历史执行授权快照：Round A59（后来已G0 STOP）
+
+**A59启动前的历史授权状态（现已被A60的真实G0 STOP覆盖）：`A58_SOURCE_ONLY_ACCEPTED / A59_AUTHORIZED_READY_FOR_CODEX`。** 用户送达Lane N A58实际STOP回执，已独立核Git：branch `hrl/aiarch-a58-vla-gnn-source-admission-174new-v1`最终`9560b28ee85618a9059e309cb640c210b4575dfc`、tree`e84d94baa9751265fb90d5b37da345bd8c6a0f9a`、报告blob`4bf580e1f7a000633ea3ffaca91e8ab3fd4d1812`；从Goal ahead1、branchHEAD identical。**只SOURCE审，未跑GPU**。VLA真多请求服务端仍无资格，GraphSAGE/ogbn-products是唯一有条件真实AI训练候选。
 
 - **新独立科研审查**：[A59 A58科学审查＋授权自主权和强实现对照](reviews/AI_ARCH_A59_A58_GNN_NATIVE_PRIORITY_AND_ENGINEERING_AUTONOMY_REVIEW_2026-10-15_V1.md)。除A58普通DGL例程外，本窗口独立发现同一`dmlc/dgl@3d16000b...`中[GraphBolt＋PyG advanced示例](https://github.com/dmlc/dgl/blob/3d16000b4170fa741ed9e9667f22ba84d3493026/examples/graphbolt/pyg/node_classification_advanced.py)已有graph/feature GPU缓存、pinned/UVA overlap与async、完整SAGE＋Adam训练步和torch.compile；**PyG与DGL图算子语义/发布ABI必须先核，不能用默认cache OFF当世界最强软件**。NVIDIA DGL容器在25.08后停止维护、cuGraph-DGL已移除，实际109只能用合法官方GraphBolt版本，GPU数值/性能仍UNKNOWN。
 - **新唯一有界任务**：[A59一次连续正式Goal](https://github.com/swayhrl/accel-sim-framework/blob/d730ad41c6ca8ce60183e431bda23638c7a8e3e5/docs/ai_workload_research/goals/AI_ARCH_A59_GRAPHSAGE_PRODUCTS_BOUNDED_NATIVE_109_V1.md)。branch `hrl/aiarch-a59-graphsage-products-bounded-native-109-v1`，固定启动HEAD `d730ad41c6ca8ce60183e431bda23638c7a8e3e5`，Goal blob`cfcc4f51932c9108cf5220a602976f566ae5577d`。在109新独立worktree：CPU源码/发行wheel/真实OGB数据与许可/预算门→单GPU小真实train数值及strong graph+feature cache async资格→同样GraphSAGE的cache ON strong/ OFF diagnostic ×2 seeds ×64自然batch的**未插桩完整训练步wall**及单独供数wait诊断→科学裁决/负结果/commit/push/fetch-back/STOP。CPU数据准备和包适配由Codex有界解决，不为路径/小API/manifest重开轮。
 - **本次显示上限**：CPU≤4 workers，任务RSS≤16GiB，预准备≤2h；109 RTX4080原shared lock非阻塞累计≤30分钟、GPU显存≤12GiB；新下载总≤4GiB（OGB≤2.5GiB，官方依赖≤1.5GiB）、新disk≤8GiB与FSfree≥64GiB、raw≤64MiB。一次官方OGB数据，最多256正式自然training updates，禁第二GPU/模型/完整epoch、NCU、模拟器、driver/sys改动。官方binary ABI/数据使用条件/强缓存fallback/采样与梯度语义不合即科学STOP；不让109为了单纯跑通去换synthetic图或弱cache-off baseline。
 - **用户工作方式再明确**：用户2026-10-15说“如果不涉及大方向的问题，其实可以授权codex去自己解决，提高效率，别每次都这么反复迭代”。本协调协议已新增[§14 Codex有界工程自主权](COORDINATION_PROTOCOL.md)：允许Codex在**已授权累计预算**里自行多次解决非科学CLI/ABI/wheel/runner/缓存包装并连续推进G0–G4；**不要再小修一步出一个Codex Goal**。科学对象或质量阈值改变、预算将突破、无合法原始输入/ABI、其它用户GPU资源冲突则必须fail-closed STOP。用户此前的默认同意和本次表明对同范围受控实验的自主推进支持，不等于无限GPU运行/新硬件设计授权。
-- **状态边界**：本窗口仅提交GitHub报告、Goal及协调信息，**没有SSH、下载OGB或开始109 GPU/锁**，实际RUNNING需用户把一键复制启动指令发送给109 Codex并收到执行回执。A57 CAGRA仍`QUALITY_NO_GO`/已PARK；旧A50GR1`SUPERSEDED_DO_NOT_START`；A58已STOP、174宿主资源压力不宜新开大数据作业；AWMA/C16各自冻结权限不变。
+- **历史状态边界**：A59随后实际只完成G0许可证据STOP（见A60最新审查），没有进入下载OGB或109 GPU。本窗口没有SSH、CUDA/GPU锁，不再发布A59启动指令。A57 CAGRA仍`QUALITY_NO_GO`/已PARK；旧A50GR1`SUPERSEDED_DO_NOT_START`；A58已STOP、174宿主资源压力不宜新开大数据作业；AWMA/C16各自冻结权限不变。
 
 ## 最新科研审查：A57｜A50G恢复实验QUALITY_NO_GO，固定ANNS四点停止
 
