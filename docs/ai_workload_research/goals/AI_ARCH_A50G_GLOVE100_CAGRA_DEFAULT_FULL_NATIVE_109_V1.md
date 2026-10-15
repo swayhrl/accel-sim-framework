@@ -1,6 +1,6 @@
 # A50G｜GloVe100/CAGRA 默认资源完整原生发现：单次连续Goal
 
-**状态：PREPARED_AWAITING_EXPLICIT_USER_GPU_APPROVAL / DO_NOT_LAUNCH_YET。** 本文件与A50审查同时提前发布，不构成新GPU授权。只有用户之后明确批准本文件全部上限并把“已批准执行A50G”的指令发给109 Codex，才允许G0→G4一次连续执行；此发布时标签是历史准备状态，不覆盖未来用户明确指令。未经新批准，Codex只能只读本Goal，不得启动本任务。
+**执行授权：APPROVED_FOR_ONE_BOUNDED_EXECUTION / READY_FOR_CODEX（2026-10-15）。** 用户在A50G方案及45分钟GPU锁、零下载/安装、2GiB新盘、8GiB RAM、12GiB显存等额度列明后明确回复“确认”，并要求后续已审合规、资源受控的推进默认确认、由ChatGPT在同一轮直接给出下一步建议和具体指令。**此授权仅限本A50G合同固定G0→G4的一次有界执行**，不授予超预算、换科学对象/源码/硬件、驱动升级、自动后续GPU实验或硬件机制开发的权限。用户或本Goal对科学边界/STOP条件的限制继续有效。初版待授权状态留存在Git历史，本修订覆盖其启动许可；实际109执行仍需向Codex发送带“已批准执行A50G”的启动指令。发布和授权均不代表Codex已经启动。
 
 Repository：`swayhrl/accel-sim-framework`。独立branch：`hrl/aiarch-a50g-glove100-default-native-full-109-v1`。协调起点：`9cd8597066a2ba6e3890e6978861dc75eeab06b5`；启动时应以包含本Goal的实际完整发布HEAD为准，不回退parent。node109使用**新worktree/输出/预算**；可复用已STOP的Lane M对话，旧A47/R1/R2资产仅只读。
 
@@ -15,9 +15,9 @@ Repository：`swayhrl/accel-sim-framework`。独立branch：`hrl/aiarch-a50g-glo
 4. [原A47真实输入及环境@ce92807c](https://github.com/swayhrl/accel-sim-framework/blob/ce92807ca80e1a694e41376eab3dd6b146824fd8/docs/ai_workload_research/runs/AI_ARCH_A47_CAGRA_GLOVE100_109_V1/FINAL_REPORT.md)，及该固定提交下`PREREGISTRATION.json`、`DATA_AND_INDEX_IDENTITY.json`、`ENV_LOCK.json`、`QUALITY_AND_TIMING.json`及`tools/aiarch_a47/native.py`。复用其冻结输入/查询/实验规则，**不直接执行未修正的旧native.py**。
 5. cuVS官方固定`NVIDIA/cuvs@24ee1bf1cb17cad0ac611e39643af39ee1870124`，其`cagra.pyx`/`resources.pyx`/`cydlpack.pyx`。实际以旧A47 26.10官方wheel和本机lib SHA为ABI authority，不改发行版本。
 
-## 1. 新批准前不得执行的资源额度
+## 1. 已获确认的本次累计资源额度
 
-| 项目 | 拟议累计硬上限 |
+| 项目 | 本次已批准的累计硬上限 |
 |---|---|
 | GPU | 109唯一RTX4080，原锁`/data/c16/locks/c16_gpu_campaign.lock`非阻塞`flock(LOCK_EX|LOCK_NB)`；包含canary、构图、JIT、save/load、校准、4点计时、失败/清理累计**≤2700秒（45分钟）** |
 | 下载与安装 | **全部新增0**：不pip/conda、不更新驱动/CUDA/cuVS/RMM，不重新编译核心库 |
@@ -74,4 +74,4 @@ Repository：`swayhrl/accel-sim-framework`。独立branch：`hrl/aiarch-a50g-glo
 
 终态根据实际选择`GPU_LOCK_DEFERRED,ASSET_OR_PLATFORM_NO_GO,NATIVE_BUILD_NO_GO,INDEX_RELOAD_OR_NUMERIC_NO_GO,QUALITY_NO_GO,BUDGET_STOP,COMPLETE_SCOPED_NATIVE_NO_GAP,COMPLETE_SCOPED_SOFTWARE_CONFIGURATION_GAP,COMPLETE_UNEXPLAINED_SEARCH_DIFFERENCE`。普通工程问题同一Goal有界solve-and-continue；真实版本/输入/精度/资源改变必须STOP。报告结尾直接按证据给出**唯一最小下一步建议**，不能自动追加GPU、NCU/NSYS/NVBit、第二数据集、trace、Accel-Sim/RTL、新机制或新holdout。
 
-完成一次commit/push，远端fetch-back核exact commit/tree/新增blob及SHA、worktree clean、锁释放，报告后STOP。不因任一阶段PASS再单独开Codex目标或重复请示，**也绝不把本Goal的准备文件当作运行授权**。
+完成一次commit/push，远端fetch-back核exact commit/tree/新增blob及SHA、worktree clean、锁释放，报告后STOP。不因任一阶段PASS再单独开Codex目标或重复请示，**未经实际Codex启动指令仍不得推断任务已运行；本次批准不包括后续Goal**。
