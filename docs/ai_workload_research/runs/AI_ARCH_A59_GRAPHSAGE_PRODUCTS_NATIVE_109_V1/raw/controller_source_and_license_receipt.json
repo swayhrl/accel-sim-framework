@@ -18,11 +18,17 @@
     "isError": true
   },
   "controller_s3_check": {
-    "url": "https://s3.amazonaws.com/amazon-reviews-pds/LICENSE",
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>3QJ5BS34GP7NGFHN</RequestId><HostId>2TsHJdO9woMbgQyi4R+3p1EAvNKRKtH9JhkXZwqM8V1XSIxElIO1WWFuDVdocgg9hxHc4EYMbxo=</HostId></Error>",
     "status": 403,
-    "code": "AccessDenied",
-    "response_body_bytes": "NOT_METERED; conservative controller metadata reserve used",
-    "method": "PowerShell Invoke-WebRequest with bounded20s timeout",
-    "note": "first attempt used unsupported SkipHttpErrorCheck, corrected and rechecked; independent403 confirms node result"
+    "url": "https://s3.amazonaws.com/amazon-reviews-pds/license.txt",
+    "timeout_seconds": 20,
+    "response_body_bytes": 243
+  },
+  "canonical_link_correction": {
+    "original_report_reference": "https://s3.amazonaws.com/amazon-reviews-pds/LICENSE",
+    "actual_href_verified_from_saved_OGB_HTML": "https://s3.amazonaws.com/amazon-reviews-pds/license.txt",
+    "node_exact_canonical_request_already_in_original_5_receipts": true,
+    "controller_exact_canonical_status": 403,
+    "scientific_state_unchanged": true
   }
 }
