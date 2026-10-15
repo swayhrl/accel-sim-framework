@@ -1,19 +1,29 @@
 # AI-ARCH｜当前科研协调状态
 
-**快照：2026-10-15，A50独立审查已完成，A50G仅准备待授权。维护者：ChatGPT／AI-ARCH Discovery。**
+**快照：2026-10-15，A50G已单次授权、等待Codex启动。维护者：ChatGPT／AI-ARCH Discovery。**
 
-本页是研究导航，不是节点实时监控。原A47与A47R1已各自STOP；用户随后对A49纠偏批准了独立A47R2小型复验，本次仍不授权完整GloVe构图或正式性能矩阵。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
+本页是研究导航，不是节点实时监控。原A47/A47R1/A47R2均已STOP；A50G完整GloVe构图与四点矩阵现已获用户2026-10-15明确单次授权，见下方最新状态。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
 
 **历史不改写：** A46及此前完整导航保存在[CURRENT_STATE@e4bf84ff](https://github.com/swayhrl/accel-sim-framework/blob/e4bf84ff414c84576bd7dc1078d145910617b0f6/docs/ai_workload_research/CURRENT_STATE.md)。该快照中的“尚未授权”是A46时点，本页优先记录A47实际STOP；所有原报告、Goal、原始结果和commit仍按自身合同有效。
 
-## 最新A50独立裁决：A47R2完成STOP；真实GloVe下一Goal仅待批准
+## 当前最新状态：A50G已获用户明确批准，准备启动109 Codex
 
-**2026-10-15状态：所有先前执行Lane停止；A50G尚未授权GPU执行。** 用户已提供A47R2真实结果，本窗口核对固定Git commit/tree、全部15文件路径、GATES/原始C0和C1日志/源码与资源后，新增[**A50独立审查**](reviews/AI_ARCH_A50_A47R2_DEFAULT_CAGRA_NATIVE_REVIEW_AND_ONE_GOAL_DECISION_2026-10-15_V1.md)。
+**2026-10-15，`A50G_AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED`。** 用户在A50独立审查和A50G明确新预算后回复“确认”，明确批准此前一次性45分钟GPU锁、零下载/安装、2GiB新增盘、RAM8GiB、VRAM12GiB、CPU4 workers等预算；并要求今后尽量合并科学审查、建议和具体下一Goal，**在明确受控范围内默认确认**，由ChatGPT同轮给出一键复制指令，有意见时用户再指出。不得把“默认确认”解释为允许超额度、自动更改输入/软件/硬件、降低科学门、驱动升级或无需审查的无限GPU活动。
+
+- **当前唯一新获准任务**：[A50G完整Goal（已更新授权状态）](https://github.com/swayhrl/accel-sim-framework/blob/ea32eb190cf9697556f3560263b7a637563c69e7/docs/ai_workload_research/goals/AI_ARCH_A50G_GLOVE100_CAGRA_DEFAULT_FULL_NATIVE_109_V1.md)。执行branch `hrl/aiarch-a50g-glove100-default-native-full-109-v1`，**最新固定启动HEAD：`ea32eb190cf9697556f3560263b7a637563c69e7`**，Goal blob `c0a5f54c6e9c684baf019dfb1c8bc999652deb15`。此前`572264cdc56f38db194324dc56769566b1f0483f`是待批准草稿版本，**不可作为本次新启动HEAD**。报告只在新执行branch写入，不修改协调或旧run权威。
+- **单个连续G0→G4**：原A47真实GloVe及锁定cuVS26.10数据/预登记，默认RMM/CuPy/cuVS Resources完整原生构图**一次**→索引序列化/reload→功能与recall门→6校准配置/4正式B1/B256×AUTO/SMALL点→原生配对wall→准确归档、Git回读、STOP；任何科学/资源资格门失败不得追加额外配置。**C1显式stream崩溃路径被永久排除于本次测量合同之外**，不继续排vendor bug。
+- **授权和执行严格分离**：本窗口只修改GitHub合同，未SSH到109、未操作GPU共享锁、未运行CUDA，也未替用户在109打开Codex或提交启动消息。需要用户将本窗口提供的包含“已批准执行A50G”的一键复制指令发到109 Codex后才算启动；执行回执回来再独立审。
+- **项目协作默认规则（用户2026-10-15明确偏好）**：后续对已审科学目标和常规有界实验，可在同一轮完成审查、定预算、发布下一Goal并附Codex启动指令，**不再设置单独的“请确认”空轮**；发现科学身份、数值/正确性、真实输入authority或预算跨界必须fail-closed并说明，不能因默认同意擅自超支；对于需要更高成本或改变安全/系统配置的行动，应明确说明并征得针对变化的批准。所有真实节点作业只有实际执行回执才可标RUNNING/COMPLETE。
+- 原A47/A47R1/A47R2/A45H/S/A30T/N/A26GR1与C16/AWMA frozen STOP保持。A50A50G的原研究报告不被改写，历史预算不并入本次新账。
+
+## 历史A50审查快照：A50G曾为待批准草稿
+
+**当时的A50审查快照（之后已有新的用户授权）：所有旧Lane停止，A50G最初未授权执行。** 用户已提供A47R2真实结果，本窗口核对固定Git commit/tree、全部15文件路径、GATES/原始C0和C1日志/源码与资源后，新增[**A50独立审查**](reviews/AI_ARCH_A50_A47R2_DEFAULT_CAGRA_NATIVE_REVIEW_AND_ONE_GOAL_DECISION_2026-10-15_V1.md)。
 
 - **A47R2**：[提交`c37bfa976f556442f9a6856b899edb537b204875`](https://github.com/swayhrl/accel-sim-framework/commit/c37bfa976f556442f9a6856b899edb537b204875)，tree`9ee03a24f78c1e5191a8b2065829bd42fa25a2c5`，报告blob`821220e4c44f0a5f0d316716085022de9a09d2b4f`，原分支HEAD一致。**科学终态`C0_DEFAULT_PASS_C1_STREAM_SENSITIVE / STOP`**：冻结默认Resources的小型1024×100 cosine/IVF-PQ构图确实返回并同步，5个索引元数据属性全部PASS；C1显式nonblocking CuPy stream＋cuVS Resources创建所在Python行发生SIGSEGV，未进入Dataset/build，具体故障子调用未知。不能把这视作原A47历史cuStreamGetId故障的同一栈或宣布驱动bug。C0的可选graph DLPack转换未通过，graph实际边身份和真实search仍不具备资格。
 - **资源回执**：R2原锁累计2.6015秒、RSS采样峰0.842GiB、显存采样峰286MiB、新增5.27MiB、下载安装0，执行旧文件SHA/mtime核验无变更。该任务授权已消费并STOP，不自动恢复。
 - **下一研究选择**：结束非默认Stream vendor debugging。实际的新增科学证据应来自使用**默认RMM/CuPy资源和默认cuVS Resources()**、同一官方完整GloVe base构图及同recall下AUTO vs calibrated SINGLE_CTA+SMALL B1/B256四点真实时间；首要解释是软件启发式，不是硬件加速已成立。
-- **预发布但未授权**：[**A50G完整连续Goal草案**](https://github.com/swayhrl/accel-sim-framework/blob/572264cdc56f38db194324dc56769566b1f0483f/docs/ai_workload_research/goals/AI_ARCH_A50G_GLOVE100_CAGRA_DEFAULT_FULL_NATIVE_109_V1.md)，branch `hrl/aiarch-a50g-glove100-default-native-full-109-v1`，固定Goal HEAD `572264cdc56f38db194324dc56769566b1f0483f`，**`PREPARED_AWAITING_EXPLICIT_USER_GPU_APPROVAL / EXECUTION_NOT_OBSERVED`**。它已把G0数据/环境→G1唯一full build/save/load→G2质量/校准→G3四点配对wall→G4科学决定与提交合并在一个Goal。提议额度109单4080、共享锁≤45分钟、新下载/安装0、新盘≤2GiB、CPU≤4、RSS≤8GiB、VRAM≤12GiB、准备≤30min、≤12配置点；必须待用户对此次新预算明确同意，**本页/Goal发布都不是授权**。前一轮R1/R2资源未用余额不可转用。
+- **历史准备状态（现已由上方最新授权替代）**：[**A50G完整连续Goal草案**](https://github.com/swayhrl/accel-sim-framework/blob/572264cdc56f38db194324dc56769566b1f0483f/docs/ai_workload_research/goals/AI_ARCH_A50G_GLOVE100_CAGRA_DEFAULT_FULL_NATIVE_109_V1.md)，branch `hrl/aiarch-a50g-glove100-default-native-full-109-v1`，固定Goal HEAD `572264cdc56f38db194324dc56769566b1f0483f`，**`PREPARED_AWAITING_EXPLICIT_USER_GPU_APPROVAL / EXECUTION_NOT_OBSERVED`**。它已把G0数据/环境→G1唯一full build/save/load→G2质量/校准→G3四点配对wall→G4科学决定与提交合并在一个Goal。提议额度109单4080、共享锁≤45分钟、新下载/安装0、新盘≤2GiB、CPU≤4、RSS≤8GiB、VRAM≤12GiB、准备≤30min、≤12配置点；必须待用户对此次新预算明确同意，**本页/Goal发布都不是授权**。前一轮R1/R2资源未用余额不可转用。
 - C16/AWMA、A26GR1、A30T/N、A45H/S、旧A47/R1/R2所有科学authority不被本次协调审查更改；本ChatGPT未SSH到109/174、未运行GPU或访问锁。
 
 ## 历史执行准备：Round A47R2（已实际STOP）
