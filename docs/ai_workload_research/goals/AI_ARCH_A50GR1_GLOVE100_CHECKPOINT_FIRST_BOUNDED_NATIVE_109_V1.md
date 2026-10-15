@@ -7,7 +7,7 @@
 - 起点：协调提交`6912dc7dc779f88a7a0d30355d3cc396822aa9ea`，**实际启动SHA采用含本Goal文件的提交HEAD**，不回退、不merge历史实验HEAD。
 - node109：可复用已STOP的Lane M Codex聊天，但必须新建独立worktree/output/tmp、独立预算；旧A47/A47R1/A47R2/A50G worktrees、旧raw、manifest、source、缓存和锁都只读。
 - 上一轮科学执行结束：`hrl/aiarch-a50g-glove100-default-native-full-109-v1@d74ba0225516e60aa1c18b7ee87c88abfc34e0c9`，其历史STOP和一次构图额度已消耗，不得声称从它继续运行未保存的GPU对象。
-- 首先读`docs/ai_workload_research/CURRENT_STATE.md`、`COORDINATION_PROTOCOL.md`、[A56独立审查](https://github.com/swayhrl/accel-sim-framework/blob/6912dc7dc779f88a7a0d30355d3cc396822aa9ea/docs/ai_workload_research/reviews/AI_ARCH_A56_A50G_NATIVE_FULL_BUILD_WRAPPER_STOP_INDEPENDENT_REVIEW_2026-10-15_V1.md)；固定A50G`FINAL_REPORT.md`、`ENGINEERING_REPAIR.json`、`PREREGISTRATION.json`与真正已执行`tools/aiarch_a50g/native_executed.py`、**仅CPU修复未运行**`tools/aiarch_a50g/native.py`，两者blob/SHA必须分开记录。冻结cuVS26.10`cagra.save`含dataset及`cagra.load(Index(),out_dataset=Dataset())`版本入口已有官方源码对应。
+- 首先读`docs/ai_workload_research/CURRENT_STATE.md`、`COORDINATION_PROTOCOL.md`、[A56独立审查](https://github.com/swayhrl/accel-sim-framework/blob/6912dc7dc779f88a7a0d30355d3cc396822aa9ea/docs/ai_workload_research/reviews/AI_ARCH_A56_A50G_NATIVE_FULL_BUILD_WRAPPER_STOP_INDEPENDENT_REVIEW_2026-10-15_V1.md)；固定A50G `FINAL_REPORT.md`、`ENGINEERING_REPAIR.json`，以及**A47@ce92807ca80e1a694e41376eab3dd6b146824fd8下的`PREREGISTRATION.json`与`DATA_AND_INDEX_IDENTITY.json`**；对照A50G真正已执行`tools/aiarch_a50g/native_executed.py`、**仅CPU修复未运行**`tools/aiarch_a50g/native.py`，两者blob/SHA必须分开记录。冻结cuVS26.10`cagra.save`含dataset及`cagra.load(Index(),out_dataset=Dataset())`版本入口已有官方源码对应。
 
 ## 0. 唯一科学问题与提前STOP条件
 
@@ -43,7 +43,7 @@
 ## 2. G0｜在锁外完成确定性CPU修补审查，不消耗唯一大图
 
 1. 仅CPU核身份和来源：旧GloVe官方HDF5`485413888B`/SHA256`544af1d5e84e112cd4749571dcfd8ca109818a572f850af75a3a09e093a953c4`，base`1183514×100FP32`、原query/GT与pre-reg hash`split=0fb3e14cd9b4b9c97397235c5dddcd73b1a53bb5979b04ac5e3762f8c559c650`、timing`f7ebf0825b6ba7e351df18c20f8e0cb559b37fdbf0775142d989161df7baafea`。禁止变更GT tie、input normalization、dtype、算法或查询分组。核旧env/已接受报告与所有必需源hash；原A50G终态独立封存。
-2. 只在新branch引用并隔离已接受的`native.py`修正版作候选，**不得执行旧`native_executed.py`**。做static AST/compile、SciPy/NumPy纯CPU测试与必要的固定shape fixture：检查`Buffers(1/256)`的pinned/view字节数、`np.frombuffer(...,count=...)`长度、array strides/C-contiguous、三种query/uint32 ID/float32 distance字段，以及校准1792和正式2048 pinned view的`count`。用人为512B等round-up byte buffer复现旧B1问题，证明新代码不会错误取得128个elements。事前核`save(index, include_dataset=True)`在**任何**下游`Buffers/evaluate/quality`之前，索引文件路径预算、owner与`cagra.load(Index, filename, out_dataset=Dataset, Resources)`的正确参数及生命周期。
+2. 只在新branch引用并隔离已接受的`native.py`修正版作候选，**不得执行旧`native_executed.py`**。做static AST/compile、NumPy纯CPU测试与必要的固定shape fixture：检查`Buffers(1/256)`的pinned/view字节数、`np.frombuffer(...,count=...)`长度、array strides/C-contiguous、三种query/uint32 ID/float32 distance字段，以及校准1792和正式2048 pinned view的`count`。用人为512B等round-up byte buffer复现旧B1问题，证明新代码不会错误取得128个elements。事前核`save(index, include_dataset=True)`在**任何**下游`Buffers/evaluate/quality`之前，索引文件路径预算、owner与`cagra.load(Index, filename, out_dataset=Dataset, Resources)`的正确参数及生命周期。
 3. CPU静态预演合成小图、构图后save-first/checkpoint状态机和后续load-only路径的阶段及异常分支；至少检查※`完全不存在二次full build path/隐式create_index fallback`，※已落盘index SHA作为后续操作唯一输入，※配对计时只在质量门PASS才触发。元数据包装错误（None.module、dtype、npz shape、数组长度）在锁外自测完成，不能把它升级成科学输入缺失。
 4. 如实记录CPU-only验证条件/未覆盖GPU API。先不称GPU PASS。GPU锁外不import/运行可能初始化CUDA context的CuPy/cuVS调用。
 
