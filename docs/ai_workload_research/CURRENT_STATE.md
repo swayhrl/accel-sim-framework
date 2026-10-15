@@ -1,12 +1,24 @@
 # AI-ARCH｜当前科研协调状态
 
-**快照：2026-10-15，A50G已单次授权、等待Codex启动。维护者：ChatGPT／AI-ARCH Discovery。**
+**快照：2026-10-15，A51–A55 Discovery完成；A50G授权状态不变。维护者：ChatGPT／AI-ARCH Discovery。**
 
 本页是研究导航，不是节点实时监控。原A47/A47R1/A47R2均已STOP；A50G完整GloVe构图与四点矩阵现已获用户2026-10-15明确单次授权，见下方最新状态。遵循[协调协议](COORDINATION_PROTOCOL.md)、[问题图谱](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)及[证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)。AWMA由原独立窗口管理，C16保持冻结。
 
 **历史不改写：** A46及此前完整导航保存在[CURRENT_STATE@e4bf84ff](https://github.com/swayhrl/accel-sim-framework/blob/e4bf84ff414c84576bd7dc1078d145910617b0f6/docs/ai_workload_research/CURRENT_STATE.md)。该快照中的“尚未授权”是A46时点，本页优先记录A47实际STOP；所有原报告、Goal、原始结果和commit仍按自身合同有效。
 
-## 当前最新状态：A50G已获用户明确批准，准备启动109 Codex
+## 最新Discovery：Round A51–A55｜跨方向真实AI负载研究已完成
+
+**来源/源码联合审查COMPLETE，执行层`SOURCE_ONLY_DISCOVERY / NO_NEW_GPU`**。[**完整A51–A55联合日志**](literature/AI_ARCH_A51_A55_CROSS_DOMAIN_AI_WORKLOAD_DISCOVERY_2026-10-15_V1.md)。本轮连续完成GNN/稀疏数据流/JEPA及推荐训练/VLA/跨方向决策，不因连续研究人为增开五条Codex Goal。实际直接核DGL GraphBolt固定3源码、vla.cpp固定4源码、LeRobot SmolVLA两源码与FuseFlow ASPLOS26全文HTML；SDGraph、M-JEPA、KerColle等按其能读到的摘要/会议程序限定，不编造full-text表格。
+
+- **A51 GNN供数：** [DGL GraphBolt源码](https://github.com/dmlc/dgl/tree/3d16000b4170fa741ed9e9667f22ba84d3493026/python/dgl/graphbolt/impl)已有GPU graph/feature缓存、UVA overlap与async采样；2026 §SDGraph§已有WarpGather、hot/cold与跨迭代prefetch。真实§ogbn-products§（2,449,029 nodes、61,859,140 undirected edges、100维、sales-rank split）下应区分sampler/feature-prep/compute overlap与端到端暴露等待。**保留Q-G**，不设计重名“热点cache”。
+- **A52 稀疏融合：** [FuseFlow§8](https://arxiv.org/html/2511.04768)的GCN/GraphSAGE/SAE/BigBird主要是Comal+Ramulator2 cycle simulation、少量post-synthesis RTL校准，**非RTX4080 native**；full fusion并不总最优。Spira原生GPU mapping+model完整时间仍是Q-S强近邻，不能跨硬件搬速度。
+- **A53 JEPA/TBE：** PACT26 §M-JEPA§已有共享context/mask-路由与union-target software，A100 5 variants/2–10 masks、作者最多1.7×；FBTriton/FBGEMM已有row optimizer聚合/cache等。没有可复现的exposed硬件残余，JEPA与推荐训练保持储备。M-JEPA本轮仅abstract/program，不假称全文审过。
+- **A54 VLA：** PACT26 §KerColle§已在**模拟器**研究四VLA跨请求CTA HOL/co-schedule，至多28%作者sim throughput；ICML26已有DP-Cache和V-AEFusion。冻结§VinRobotics/vla.cpp@cff0cfb5e9e6cab31671d46082f7bdbff078816e§源码证明`vla-bench`为合成单请求§predict§，服务端ZeroMQ REP为串行§recv→predict→send§，**并不能证明多机器人真实GPU共执行**；§LeRobot SmolVLA§已使用prefix KV缓存和多步action expert。**新增Q-V（多请求真实phase竞争）仅做下一步CPU/source资产与语义资格，不声称新GPU dispatcher机制**。
+- **A55研究投资：** 优先轻量核Q-V真实模型/checkpoint/input/并发条件，再核Q-G GraphSAGE强pipeline；A43 Q-S继续高价值但artifact/scene较重，JEPA/TBE暂储备。PACT26（10月19–22，未召开）的§ESA GPU Elastic Isolation§和§SLGS 3DGS Scanline§**只在会议program/作者录用页可确认题目**，不足以填机制/性能表。建议下一次A56 CPU/source-only联合资格，无新下载/执行授权；若模型/业务输入不真或现有强软件已覆盖，就§NONE_SELECTED§/STOP。
+
+**GPU边界：** A50G此前用户已批准，最近权威仍为下节`A50G_AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED`；本窗口未收到实际109结果，不更改其执行状态、不SSH、不占用shared lock、不另启动109/174 GPU工作，C16/AWMA独立authority不动。下次若用户报告A50G才另审并改此状态。
+
+## 当前已授权GPU任务导航：A50G（等待真实执行回执）
 
 **2026-10-15，`A50G_AUTHORIZED_READY_FOR_CODEX / EXECUTION_NOT_OBSERVED`。** 用户在A50独立审查和A50G明确新预算后回复“确认”，明确批准此前一次性45分钟GPU锁、零下载/安装、2GiB新增盘、RAM8GiB、VRAM12GiB、CPU4 workers等预算；并要求今后尽量合并科学审查、建议和具体下一Goal，**在明确受控范围内默认确认**，由ChatGPT同轮给出一键复制指令，有意见时用户再指出。不得把“默认确认”解释为允许超额度、自动更改输入/软件/硬件、降低科学门、驱动升级或无需审查的无限GPU活动。
 
