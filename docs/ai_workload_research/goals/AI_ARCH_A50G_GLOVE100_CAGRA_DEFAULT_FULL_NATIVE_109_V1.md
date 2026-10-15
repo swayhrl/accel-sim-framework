@@ -19,7 +19,7 @@ Repository：`swayhrl/accel-sim-framework`。独立branch：`hrl/aiarch-a50g-glo
 
 | 项目 | 拟议累计硬上限 |
 |---|---|
-| GPU | 109唯一RTX4080，原锁`/data/c16/locks/c16_gpu_campaign.lock`非阻塞`flock(LOCK_EX&#124;LOCK_NB)`；包含canary、构图、JIT、save/load、校准、4点计时、失败/清理累计**≤2700秒（45分钟）** |
+| GPU | 109唯一RTX4080，原锁`/data/c16/locks/c16_gpu_campaign.lock`非阻塞`flock(LOCK_EX|LOCK_NB)`；包含canary、构图、JIT、save/load、校准、4点计时、失败/清理累计**≤2700秒（45分钟）** |
 | 下载与安装 | **全部新增0**：不pip/conda、不更新驱动/CUDA/cuVS/RMM，不重新编译核心库 |
 | 文件 | 新worktree/output/cache/index/raw总新增**≤2GiB**，维持同FS free≥64GiB，不清理旧资产 |
 | CPU与内存 | 有效workers≤4，任务进程树RSS≤8GiB，CPU预准备≤30分钟 |
