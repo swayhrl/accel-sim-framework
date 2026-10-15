@@ -1,0 +1,35 @@
+{
+  "repairs": [
+    {
+      "issue": "Remote raw.githubusercontent.com/GitHub hostname DNS failures",
+      "class": "ORDINARY_SOURCE_RETRIEVAL_PACKAGING",
+      "action": "Fetch the same official v2.4.0 OnDiskDataset source through the GitHub connector on controller, relay to this private output and recompute Git blob + SHA256",
+      "validation": "PASS Git blob df3b51f8b074406867ea68e364f98dae2e1e61f6",
+      "scientific_change": false
+    },
+    {
+      "issue": "Old CPython metadata subprocess exited127: libpython3.10.so.1.0 missing from task loader path",
+      "class": "ORDINARY_INTERPRETER_PACKAGING",
+      "action": "task-scoped LD_LIBRARY_PATH=/data/c16/env/cpython-3.10.12/lib; run only import sys metadata in existing interpreter",
+      "validation": "PASS Python3.10.12 metadata; no Torch import, install or old-env mutation",
+      "scientific_change": false
+    },
+    {
+      "issue": "Controller Windows PowerShell rejected Invoke-WebRequest SkipHttpErrorCheck parameter",
+      "class": "ORDINARY_CLI_PACKAGING",
+      "action": "Use bounded20s Invoke-WebRequest with try/catch and read HTTPError response stream",
+      "validation": "PASS obtained independent HTTP403 AccessDenied from the original OGB-linked Amazon endpoint",
+      "scientific_change": false
+    },
+    {
+      "issue": "HTTPS hostname validation failed for original XMLRepository publisher site",
+      "class": "ORDINARY_SOURCE_URL",
+      "action": "Read the exact HTTP publisher URL linked by OGB; retain HTTP provenance, no TLS verification bypass",
+      "validation": "HTTP200,282158B original publisher HTML; no applicable ogbn-products license grant identified in that page",
+      "scientific_change": false
+    }
+  ],
+  "ordinary_errors_are_not_STOP_reason": true,
+  "no_new_Goal_was_opened_for_repairs": true,
+  "actual_mandatory_STOP": "dataset applicable terms not verified; do not replace with another graph or infer grant from code license"
+}

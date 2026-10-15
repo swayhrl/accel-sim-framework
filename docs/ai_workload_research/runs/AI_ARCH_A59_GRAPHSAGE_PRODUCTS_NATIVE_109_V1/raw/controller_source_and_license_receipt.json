@@ -1,0 +1,28 @@
+{
+  "aws_registry": {
+    "content": [
+      {
+        "type": "text",
+        "text": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}"
+      }
+    ],
+    "structuredContent": {
+      "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+      "error_code": "NOT_FOUND",
+      "error_data": {
+        "message": "Not Found",
+        "documentation_url": "https://docs.github.com/rest/repos/contents#get-repository-content",
+        "status": "404"
+      }
+    },
+    "isError": true
+  },
+  "controller_s3_check": {
+    "url": "https://s3.amazonaws.com/amazon-reviews-pds/LICENSE",
+    "status": 403,
+    "code": "AccessDenied",
+    "response_body_bytes": "NOT_METERED; conservative controller metadata reserve used",
+    "method": "PowerShell Invoke-WebRequest with bounded20s timeout",
+    "note": "first attempt used unsupported SkipHttpErrorCheck, corrected and rechecked; independent403 confirms node result"
+  }
+}
