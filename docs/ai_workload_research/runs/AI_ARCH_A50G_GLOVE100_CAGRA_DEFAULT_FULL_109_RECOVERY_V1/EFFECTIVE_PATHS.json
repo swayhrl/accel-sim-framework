@@ -1,0 +1,239 @@
+{
+  "source_provenance": "read-only official source frozen by prior A47 and bound to installed cuVS26.10 wheel commit; cached source files hash/mtime rechecked",
+  "source_SHA256": {
+    "search_plan.cuh": "942cd31fb205611df42447b542a2b021c0ed3985a5b655e71f990a80b294b3a5",
+    "search_single_cta.cuh": "5af94f9411f7ce29a3e972c5487e78156a77d7e392b0a50975330b8a6166bac1",
+    "search_multi_cta.cuh": "46229bf01def6ca97a3f4b5f4fc2f8b75d667ebe9aeb3f335249f9c328bbecb8",
+    "compute_distance_standard.hpp": "c4d0b216bcc362007329a3cef8247923b7de51ca766d0311580272b52d158d96",
+    "compute_distance_standard-impl.cuh": "1070bf17d6258ca5d700bc579a607e8b79d3fc143ee0648a69db84f38a9b2807",
+    "compute_distance_standard_matrix.json": "36123786b25bb71b8fc1a10a030ffbcd951dfef481ad289d1cf45d231606cc9a",
+    "cagra.pyx": "4d3a48fd72c18015f79d46785ae06c25c353c7e592dbe37375850cf8c672774d",
+    "dataset.pyx": "04d3853616a894279469f1e56ad17753fc8985fe98f8210e7c0bbbca2c12e880",
+    "resources.pyx": "a973ba183615f69a7725bd6d47d93b340b378d4c3e3b024a6859e2197326a5f3"
+  },
+  "planning": [
+    {
+      "B": 1,
+      "arm": "A",
+      "h": 0,
+      "REQUESTED": "SearchParams(type=CAGRA, max_queries=1, itopk_size=128, max_iterations=64, algo=100, team_size=0, search_width=1, min_iterations=0, thread_block_size=0, hashmap_mode=100, hashmap_min_bitlen=0, hashmap_max_fill_rate=0.5, num_random_samplings=1, rand_xor_mask=1213332)",
+      "SOURCE_DERIVED": {
+        "source_git_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+        "algo": "MULTI_CTA",
+        "hash_structure": "global traversed HASH + per-CTA visited SMALL",
+        "hash_bitlen": 11,
+        "visited_small_bitlen": 9,
+        "small_reset_interval": 1,
+        "multi_CTA_count_per_query": 4,
+        "multi_CTA_internal_topk_per_CTA": 32,
+        "team_size": 8,
+        "team_size_basis": "fixed descriptor standard Matrix dim128/team8 for FP32 cosine dim100; source-derived, not launch-observed",
+        "max_iterations_upper_bound": 64,
+        "AUTO_selection_basis": "itopk128<=512 and max_queries>=2*76 => SINGLE_CTA, otherwise MULTI_CTA",
+        "thread_block_size": "UNKNOWN_FINAL_DYNAMIC_SELECTION"
+      },
+      "DEVICE_OBSERVED": {
+        "SM_count": 76,
+        "default_CuPy_stream": true,
+        "RMM_type": "CudaMemoryResource",
+        "index_metadata": {
+          "trained": true,
+          "size": 1183514,
+          "dim": 100,
+          "graph_degree": 64,
+          "dtype_repr": "<class 'numpy.float32'>",
+          "dtype_normalized": "float32"
+        },
+        "kernel_algo": "UNKNOWN_NOT_PROFILED",
+        "iteration_count": "UNKNOWN",
+        "distance_count": "UNKNOWN"
+      }
+    },
+    {
+      "B": 1,
+      "arm": "B",
+      "h": 9,
+      "REQUESTED": "SearchParams(type=CAGRA, max_queries=1, itopk_size=128, max_iterations=64, algo=0, team_size=0, search_width=1, min_iterations=0, thread_block_size=128, hashmap_mode=1, hashmap_min_bitlen=9, hashmap_max_fill_rate=0.5, num_random_samplings=1, rand_xor_mask=1213332)",
+      "SOURCE_DERIVED": {
+        "source_git_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+        "algo": "SINGLE_CTA",
+        "hash_structure": "SMALL",
+        "hash_bitlen": 9,
+        "visited_small_bitlen": 9,
+        "small_reset_interval": 2,
+        "multi_CTA_count_per_query": 1,
+        "multi_CTA_internal_topk_per_CTA": null,
+        "team_size": 8,
+        "team_size_basis": "fixed descriptor standard Matrix dim128/team8 for FP32 cosine dim100; source-derived, not launch-observed",
+        "max_iterations_upper_bound": 64,
+        "AUTO_selection_basis": "itopk128<=512 and max_queries>=2*76 => SINGLE_CTA, otherwise MULTI_CTA",
+        "thread_block_size": 128
+      },
+      "DEVICE_OBSERVED": {
+        "SM_count": 76,
+        "default_CuPy_stream": true,
+        "RMM_type": "CudaMemoryResource",
+        "index_metadata": {
+          "trained": true,
+          "size": 1183514,
+          "dim": 100,
+          "graph_degree": 64,
+          "dtype_repr": "<class 'numpy.float32'>",
+          "dtype_normalized": "float32"
+        },
+        "kernel_algo": "UNKNOWN_NOT_PROFILED",
+        "iteration_count": "UNKNOWN",
+        "distance_count": "UNKNOWN"
+      }
+    },
+    {
+      "B": 1,
+      "arm": "B",
+      "h": 11,
+      "REQUESTED": "SearchParams(type=CAGRA, max_queries=1, itopk_size=128, max_iterations=64, algo=0, team_size=0, search_width=1, min_iterations=0, thread_block_size=128, hashmap_mode=1, hashmap_min_bitlen=11, hashmap_max_fill_rate=0.5, num_random_samplings=1, rand_xor_mask=1213332)",
+      "SOURCE_DERIVED": {
+        "source_git_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+        "algo": "SINGLE_CTA",
+        "hash_structure": "SMALL",
+        "hash_bitlen": 11,
+        "visited_small_bitlen": 11,
+        "small_reset_interval": 14,
+        "multi_CTA_count_per_query": 1,
+        "multi_CTA_internal_topk_per_CTA": null,
+        "team_size": 8,
+        "team_size_basis": "fixed descriptor standard Matrix dim128/team8 for FP32 cosine dim100; source-derived, not launch-observed",
+        "max_iterations_upper_bound": 64,
+        "AUTO_selection_basis": "itopk128<=512 and max_queries>=2*76 => SINGLE_CTA, otherwise MULTI_CTA",
+        "thread_block_size": 128
+      },
+      "DEVICE_OBSERVED": {
+        "SM_count": 76,
+        "default_CuPy_stream": true,
+        "RMM_type": "CudaMemoryResource",
+        "index_metadata": {
+          "trained": true,
+          "size": 1183514,
+          "dim": 100,
+          "graph_degree": 64,
+          "dtype_repr": "<class 'numpy.float32'>",
+          "dtype_normalized": "float32"
+        },
+        "kernel_algo": "UNKNOWN_NOT_PROFILED",
+        "iteration_count": "UNKNOWN",
+        "distance_count": "UNKNOWN"
+      }
+    },
+    {
+      "B": 256,
+      "arm": "A",
+      "h": 0,
+      "REQUESTED": "SearchParams(type=CAGRA, max_queries=256, itopk_size=128, max_iterations=64, algo=100, team_size=0, search_width=1, min_iterations=0, thread_block_size=0, hashmap_mode=100, hashmap_min_bitlen=0, hashmap_max_fill_rate=0.5, num_random_samplings=1, rand_xor_mask=1213332)",
+      "SOURCE_DERIVED": {
+        "source_git_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+        "algo": "SINGLE_CTA",
+        "hash_structure": "SMALL",
+        "hash_bitlen": 9,
+        "visited_small_bitlen": 9,
+        "small_reset_interval": 2,
+        "multi_CTA_count_per_query": 1,
+        "multi_CTA_internal_topk_per_CTA": null,
+        "team_size": 8,
+        "team_size_basis": "fixed descriptor standard Matrix dim128/team8 for FP32 cosine dim100; source-derived, not launch-observed",
+        "max_iterations_upper_bound": 64,
+        "AUTO_selection_basis": "itopk128<=512 and max_queries>=2*76 => SINGLE_CTA, otherwise MULTI_CTA",
+        "thread_block_size": "UNKNOWN_FINAL_DYNAMIC_SELECTION"
+      },
+      "DEVICE_OBSERVED": {
+        "SM_count": 76,
+        "default_CuPy_stream": true,
+        "RMM_type": "CudaMemoryResource",
+        "index_metadata": {
+          "trained": true,
+          "size": 1183514,
+          "dim": 100,
+          "graph_degree": 64,
+          "dtype_repr": "<class 'numpy.float32'>",
+          "dtype_normalized": "float32"
+        },
+        "kernel_algo": "UNKNOWN_NOT_PROFILED",
+        "iteration_count": "UNKNOWN",
+        "distance_count": "UNKNOWN"
+      }
+    },
+    {
+      "B": 256,
+      "arm": "B",
+      "h": 9,
+      "REQUESTED": "SearchParams(type=CAGRA, max_queries=256, itopk_size=128, max_iterations=64, algo=0, team_size=0, search_width=1, min_iterations=0, thread_block_size=128, hashmap_mode=1, hashmap_min_bitlen=9, hashmap_max_fill_rate=0.5, num_random_samplings=1, rand_xor_mask=1213332)",
+      "SOURCE_DERIVED": {
+        "source_git_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+        "algo": "SINGLE_CTA",
+        "hash_structure": "SMALL",
+        "hash_bitlen": 9,
+        "visited_small_bitlen": 9,
+        "small_reset_interval": 2,
+        "multi_CTA_count_per_query": 1,
+        "multi_CTA_internal_topk_per_CTA": null,
+        "team_size": 8,
+        "team_size_basis": "fixed descriptor standard Matrix dim128/team8 for FP32 cosine dim100; source-derived, not launch-observed",
+        "max_iterations_upper_bound": 64,
+        "AUTO_selection_basis": "itopk128<=512 and max_queries>=2*76 => SINGLE_CTA, otherwise MULTI_CTA",
+        "thread_block_size": 128
+      },
+      "DEVICE_OBSERVED": {
+        "SM_count": 76,
+        "default_CuPy_stream": true,
+        "RMM_type": "CudaMemoryResource",
+        "index_metadata": {
+          "trained": true,
+          "size": 1183514,
+          "dim": 100,
+          "graph_degree": 64,
+          "dtype_repr": "<class 'numpy.float32'>",
+          "dtype_normalized": "float32"
+        },
+        "kernel_algo": "UNKNOWN_NOT_PROFILED",
+        "iteration_count": "UNKNOWN",
+        "distance_count": "UNKNOWN"
+      }
+    },
+    {
+      "B": 256,
+      "arm": "B",
+      "h": 11,
+      "REQUESTED": "SearchParams(type=CAGRA, max_queries=256, itopk_size=128, max_iterations=64, algo=0, team_size=0, search_width=1, min_iterations=0, thread_block_size=128, hashmap_mode=1, hashmap_min_bitlen=11, hashmap_max_fill_rate=0.5, num_random_samplings=1, rand_xor_mask=1213332)",
+      "SOURCE_DERIVED": {
+        "source_git_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124",
+        "algo": "SINGLE_CTA",
+        "hash_structure": "SMALL",
+        "hash_bitlen": 11,
+        "visited_small_bitlen": 11,
+        "small_reset_interval": 14,
+        "multi_CTA_count_per_query": 1,
+        "multi_CTA_internal_topk_per_CTA": null,
+        "team_size": 8,
+        "team_size_basis": "fixed descriptor standard Matrix dim128/team8 for FP32 cosine dim100; source-derived, not launch-observed",
+        "max_iterations_upper_bound": 64,
+        "AUTO_selection_basis": "itopk128<=512 and max_queries>=2*76 => SINGLE_CTA, otherwise MULTI_CTA",
+        "thread_block_size": 128
+      },
+      "DEVICE_OBSERVED": {
+        "SM_count": 76,
+        "default_CuPy_stream": true,
+        "RMM_type": "CudaMemoryResource",
+        "index_metadata": {
+          "trained": true,
+          "size": 1183514,
+          "dim": 100,
+          "graph_degree": 64,
+          "dtype_repr": "<class 'numpy.float32'>",
+          "dtype_normalized": "float32"
+        },
+        "kernel_algo": "UNKNOWN_NOT_PROFILED",
+        "iteration_count": "UNKNOWN",
+        "distance_count": "UNKNOWN"
+      }
+    }
+  ],
+  "caution": "All effective plan details labelled SOURCE_DERIVED are inferences from source and fixed requested values, not observed kernel telemetry. No performance data, tracer or profiling was collected."
+}

@@ -1,0 +1,32 @@
+{
+  "status": "PROPOSAL_ONLY_NOT_STARTED",
+  "unique_minimum_next_step": "Independent CPU-only source/output audit of the quality deficit before proposing any further GPU work. No native performance experiment is currently quality-qualified.",
+  "concrete_plan": [
+    "Verify this commit/tree, SHA256SUMS, ENV/input/query identities and serialized-index SHA receipt. Do not import CUDA/Torch or acquire GPU lock.",
+    "Using archived six calibration NPZ outputs and their query IDs, compare per-query neighbor overlap and misses for B1 AUTO versus the five identical single-CTA/h9/h11 outputs; verify the frozen GT tie rule from the recorded full-base FP64 oracle.",
+    "Read the exact frozen search_plan.cuh and single/multi-CTA sources to assess termination/candidate-retention semantics for fixed itopk128/search_width1/max_iterations64, without changing core math or generating new measurements.",
+    "Issue a review decision: close the current fixed-quality configuration as NO_GO, or draft a separately approved quality-first search-budget contract. Do not reuse these failed-quality points as a speed comparison."
+  ],
+  "minimum_incremental_budget_envelope": {
+    "GPU_seconds": 0,
+    "downloads_install_bytes": 0,
+    "CPU_effective_workers": 4,
+    "RAM_GiB": 2,
+    "new_disk_MiB": 64,
+    "wall_minutes": 20
+  },
+  "executable_inputs": {
+    "raw_pattern": "raw/cal_*_outputs.npz",
+    "quality_manifest": "QUALITY_AND_TIMING.json",
+    "source_manifest": "EFFECTIVE_PATHS.json",
+    "original_readonly_gt": "<A47_READONLY>/gt_distances.npy",
+    "source_directory": "<A47_READONLY>/source"
+  },
+  "STOP": [
+    "hash/identity mismatch or original asset would need mutation",
+    "requires CUDA execution/downloads or extra source version",
+    "quality threshold/precision/GT alteration",
+    "CPU/RAM/disk/time bound reached"
+  ],
+  "future_GPU_work": "requires an independently reviewed, explicitly authorized new quality-first contract; no automatic execution or parameter expansion"
+}

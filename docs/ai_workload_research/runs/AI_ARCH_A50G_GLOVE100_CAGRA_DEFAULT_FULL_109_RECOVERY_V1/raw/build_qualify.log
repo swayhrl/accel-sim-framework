@@ -1,0 +1,31 @@
+{"phase": "IMPORT_AND_DEFAULT_POLICY_PASS", "mode": "build_qualify", "cuvs": "26.10.00", "cuvs_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124", "cupy": "14.0.1", "RMM_type": "CudaMemoryResource", "CuPy_allocator": "None.malloc", "default_stream": true}
+{"phase": "PINNED_ALLOCATION_TRANSFER_PREFLIGHT_PASS", "mode": "build_qualify", "B": 1, "allocated_bytes": [512, 512, 512], "view_bytes": [400, 40, 40]}
+{"phase": "PINNED_ALLOCATION_TRANSFER_PREFLIGHT_PASS", "mode": "build_qualify", "B": 256, "allocated_bytes": [131072, 16384, 16384], "view_bytes": [102400, 10240, 10240]}
+{"phase": "TRANSFER_BUFFER_SHAPE_PREFLIGHT_PASS", "mode": "build_qualify"}
+{"phase": "FULL_INPUT_READY", "mode": "build_qualify", "shape": [1183514, 100], "dtype": "float32", "dataset_layout": "padded", "is_owning": false}
+{"phase": "FULL_BUILD_ENTER", "mode": "build_qualify"}
+[3320774][12:19:43:368422][warning] The new dataset dimension (100) does not match the index dimension (0)
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "trained", "value": true}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "size", "value": 1183514}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "dim", "value": 100}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "graph_degree", "value": 64}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "dtype", "value": "<class 'numpy.float32'>"}
+{"phase": "INDEX_PREDICATES", "mode": "build_qualify", "label": "built", "fields": {"trained": true, "size": 1183514, "dim": 100, "graph_degree": 64, "dtype_repr": "<class 'numpy.float32'>", "dtype_normalized": "float32"}, "assert_predicate_map": {"trained": true, "size": true, "dim": true, "graph_degree": true, "dtype": true}, "errors": {}}
+{"phase": "SAVED_INDEX_CHECKPOINT", "mode": "build_qualify", "status": "SAVED", "bytes": 776387032, "sha256": "205aa012e08ef9fa28b9b1a82126aab7396fcd33d02e64fe552c219ff2efc65c", "budget_save_elapsed_seconds": 1.2028310098685324, "include_dataset": true, "logical_graph_hash": "UNKNOWN_PUBLIC_VIEW_NOT_REQUIRED"}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "canary_before_B1", "B": 1, "recall": 0.93125, "max_abs_error": 1.7978647237626433e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "canary_before_B256", "B": 256, "recall": 0.848046875, "max_abs_error": 1.7978647237626433e-07}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "reloaded", "field": "trained", "value": true}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "reloaded", "field": "size", "value": 1183514}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "reloaded", "field": "dim", "value": 100}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "reloaded", "field": "graph_degree", "value": 64}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "reloaded", "field": "dtype", "value": "<class 'numpy.float32'>"}
+{"phase": "INDEX_PREDICATES", "mode": "build_qualify", "label": "reloaded", "fields": {"trained": true, "size": 1183514, "dim": 100, "graph_degree": 64, "dtype_repr": "<class 'numpy.float32'>", "dtype_normalized": "float32"}, "assert_predicate_map": {"trained": true, "size": true, "dim": true, "graph_degree": true, "dtype": true}, "errors": {}}
+{"phase": "LOAD_PASS", "mode": "build_qualify", "owner_layout": "padded", "owner_is_owning": true, "owner_memory": "device"}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "canary_after_B1", "B": 1, "recall": 0.93125, "max_abs_error": 1.7978647237626433e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "canary_after_B256", "B": 256, "recall": 0.848046875, "max_abs_error": 1.7978647237626433e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "cal_B1_A_h0", "B": 1, "recall": 0.9117000000000001, "max_abs_error": 2.0605874218038167e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "cal_B1_B_h9", "B": 1, "recall": 0.8178000000000001, "max_abs_error": 2.0605874218038167e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "cal_B1_B_h11", "B": 1, "recall": 0.8178000000000001, "max_abs_error": 2.0605874218038167e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "cal_B256_A_h0", "B": 256, "recall": 0.8178000000000001, "max_abs_error": 2.0605874218038167e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "cal_B256_B_h9", "B": 256, "recall": 0.8178000000000001, "max_abs_error": 2.0605874218038167e-07}
+{"phase": "QUALITY_OBSERVATION", "mode": "build_qualify", "label": "cal_B256_B_h11", "B": 256, "recall": 0.8178000000000001, "max_abs_error": 2.0605874218038167e-07}
