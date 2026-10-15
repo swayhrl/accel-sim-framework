@@ -41,6 +41,13 @@
 
 **科学价值排序**：IGB-tiny适合low-cost数据/num/GraphBolt功能canary，但图与feature较小，不能用其cache hit证明百万级exposed供数代价；IGB-small真实feature约4GB、更有机会暴露PCIe/miss成本，优先在**实际许可、归档、RAM/VRAM/disk预算门**之后作为下一单图发现对象。选择IGB是一项**新的真实科学输入变化**，不能视为A59未完成部分自动继续执行；原OGB`DATA_LICENSE_NO_GO`不被取消或覆写。
 
+### 必须在IGB-small实验前排除的两个强软件反证
+
+1. **完整GPU驻留可能优于pinned＋GPU Cache**：IGB-small作者发布的full FP32特征约4.096GB、graph及metadata约0.2GB，而RTX4080物理16GB、本合同计划任务显存上限12GiB。它们的**静态数据大小**可能装得下，但训练batch与multi-hop活跃节点/内存池、CUDA context可能导致真正负载OOM，不能凭静态和就判PASS。新实验必须先独立进行**全GPU-resident GraphBolt图/feature强路径的预算/语义资格**：若可合法执行，full resident是强软件竞争基线，而不能仅将pinned缓存ON对比pinned缓存OFF。如果全驻留已充分隐藏供数开销，结论应为`SOFTWARE_FULL_RESIDENCY_SUFFICIENT`；不能人造内存压力后称有硬件价值。
+2. **GIDS已经覆盖直观GPU缓存/前视重用思想**：[PVLDB 2024 GIDS原论文](https://www.vldb.org/pvldb/vol17/p1227-park.pdf)（作者Jeongmin Brian Park等），第8页（PDF页索引7）Table3列IGB-small 1,000,000节点、12,070,502边、1024维，Section4.1介绍GPU软件cache、跨mini-batch window buffering和CPU/GPU/存储分层；作者的吞吐与模拟环境不能直接外推109。这是**强相关已发表系统近邻**，后续不能把“为GNN采样增加GPU cache或窗口预测”包装成新硬件首创。更有价值的问题是：现有GraphBolt强软件和必要时的全驻留之后，RTX4080完整训练步到底还暴露了哪种**未被隐藏**的等待。
+
+因此A61的正式发现必须允许`FULL_RESIDENT_GPU`、`PINNED_CACHE_ON`及`PINNED_CACHE_OFF_DIAGNOSTIC`三类软件路径（驻留如果可行），且总样本仍不超原预算；若驻留不合预算，应记录证据和`FULL_RESIDENT_NOT_QUALIFIED`，而不是静默省略。科学对象与三臂选择需在任何正式timing前冻结。
+
 ## 3. 下一步效率：停止许可循环，准备一个**新科学合同**而非新小门
 
 本轮建议：
