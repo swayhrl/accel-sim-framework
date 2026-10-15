@@ -1,0 +1,21 @@
+{"phase": "IMPORT_AND_DEFAULT_POLICY_PASS", "mode": "build_qualify", "cuvs": "26.10.00", "cuvs_commit": "24ee1bf1cb17cad0ac611e39643af39ee1870124", "cupy": "14.0.1", "RMM_type": "CudaMemoryResource", "CuPy_allocator": "None.malloc", "default_stream": true}
+{"phase": "FULL_INPUT_READY", "mode": "build_qualify", "shape": [1183514, 100], "dtype": "float32", "dataset_layout": "padded", "is_owning": false}
+{"phase": "FULL_BUILD_ENTER", "mode": "build_qualify"}
+[3318401][11:15:48:091494][warning] The new dataset dimension (100) does not match the index dimension (0)
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "trained", "value": true}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "size", "value": 1183514}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "dim", "value": 100}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "graph_degree", "value": 64}
+{"phase": "INDEX_FIELD", "mode": "build_qualify", "label": "built", "field": "dtype", "value": "<class 'numpy.float32'>"}
+{"phase": "INDEX_PREDICATES", "mode": "build_qualify", "label": "built", "fields": {"trained": true, "size": 1183514, "dim": 100, "graph_degree": 64, "dtype_repr": "<class 'numpy.float32'>", "dtype_normalized": "float32"}, "assert_predicate_map": {"trained": true, "size": true, "dim": true, "graph_degree": true, "dtype": true}, "errors": {}}
+Traceback (most recent call last):
+  File "<WORKTREE>/tools/aiarch_a50g/native.py", line 94, in <module>
+    ids=PRE['canary_ids'] if b==1 else PRE['calibration_ids'][:256];out,ni,dd=evaluate(index,params(b,'A'),ids,b,f'canary_before_B{b}');out['canary_first32_recall']=float(np.asarray(out['per_query_hits'][:32]).mean()/10);out['full_base_FP64_reference_k10_max_abs_vs_GT']=float(np.max(np.abs(exact[:,9]-np.asarray(gtd[PRE['canary_ids'],9]))));assert np.allclose(exact[:,9],gtd[PRE['canary_ids'],9],atol=1e-5,rtol=1e-4),'FROZEN_FULL_BASE_ORACLE_IDENTITY';before[b]=(ni,dd);canary_records.append(out)
+                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<WORKTREE>/tools/aiarch_a50g/native.py", line 55, in evaluate
+    safe();buf=Buffers(b);neighbors=[];distances=[]
+               ^^^^^^^^^^
+  File "<WORKTREE>/tools/aiarch_a50g/native.py", line 49, in __init__
+    self.hq=np.frombuffer(self.pq,dtype=np.float32).reshape(b,100);self.hi=np.frombuffer(self.pi,dtype=np.uint32).reshape(b,10);self.hd=np.frombuffer(self.pd,dtype=np.float32).reshape(b,10)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot reshape array of size 128 into shape (1,100)

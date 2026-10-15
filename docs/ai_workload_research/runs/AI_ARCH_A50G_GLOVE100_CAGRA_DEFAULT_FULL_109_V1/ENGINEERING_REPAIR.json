@@ -1,0 +1,57 @@
+{
+  "scope": "CPU-only deterministic wrapper repair, no new GPU calls or full builds",
+  "error": "CuPy pinned-memory allocation exposes alignment-rounded buffer length. np.frombuffer without count saw128float32 elements for B1 query, not100.",
+  "executed_native_sha256": "93fc4f374d0a39745b20272d88c18185c1b6907db98fec1d03f4a1de22515471",
+  "corrected_native_sha256": "dadd26d7bb784bf067fb261e76ca76a120ac2a39b12ed43476daf68ac635a8af",
+  "fixes": [
+    "explicit element count on all pinned-memory NumPy views",
+    "both B transfer-shape checks before unique full-build call",
+    "save/hash unique index immediately after field qualification and before any downstream buffer/search work"
+  ],
+  "CPU_verification": {
+    "CPU_rounded_buffer_tests": "PASS",
+    "cases": [
+      {
+        "B": 1,
+        "query_shape": [
+          1,
+          100
+        ],
+        "ID_shape": [
+          1,
+          10
+        ],
+        "distance_shape": [
+          1,
+          10
+        ],
+        "query_elements": 100,
+        "dtype": "float32/uint32/float32"
+      },
+      {
+        "B": 256,
+        "query_shape": [
+          256,
+          100
+        ],
+        "ID_shape": [
+          256,
+          10
+        ],
+        "distance_shape": [
+          256,
+          10
+        ],
+        "query_elements": 25600,
+        "dtype": "float32/uint32/float32"
+      }
+    ],
+    "no_GPU_imports": true,
+    "actual_CuPy_buffer_allocation_retest": "NOT_RUN"
+  },
+  "corrected_GPU_code_executed": false,
+  "full_build_calls_consumed": 1,
+  "valid_live_index_object_lost_after_child_exit": true,
+  "saved_index_available": false,
+  "why_continue_impossible": "No serialized index exists; reconstructing would require a second full build contrary to hard contract."
+}
