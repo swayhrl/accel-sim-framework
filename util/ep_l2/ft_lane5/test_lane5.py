@@ -409,11 +409,13 @@ class RunnerInputTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_trace_closure(self.spec)
 
-    def test_missing_physical_bank_clock_gate_rejected(self):
-        del self.release['gates']['physical_bank_clock']
-        self.write_release()
-        with self.assertRaisesRegex(ValueError, 'missing independent qualification gate'):
-            inspect(self.spec)
+    def test_missing_physical_clock_or_memcpy_identity_gate_rejected(self):
+        for name in ('physical_bank_clock', 'memcpy_payload_identity'):
+            gate = self.release['gates'].pop(name)
+            self.write_release()
+            with self.subTest(gate=name), self.assertRaisesRegex(ValueError, 'missing independent qualification gate'):
+                inspect(self.spec)
+            self.release['gates'][name] = gate
 
     def test_unknown_trace_commands_rejected(self):
         (self.root / 'kernelslist.g').write_text('unknown-future-command input.bin\n')

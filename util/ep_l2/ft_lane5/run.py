@@ -20,7 +20,8 @@ from feature_schema import ro_bits
 
 GATES = {'old_all_off_equivalence', 'finite_wbuf', 'requester_exact_once',
          'sector_reference_data', 'stale_fill', 'resource_closure',
-         'wb_lifecycle', 'bank_service', 'physical_bank_clock', 'mode_legality'}
+         'wb_lifecycle', 'bank_service', 'physical_bank_clock',
+         'memcpy_payload_identity', 'mode_legality'}
 FEATURES = {'finite_wbuf', 'unified_wb', 'tvd', 'ro', 'adaptive_policy',
             'wbuf_entries', 'payload_capacity_per_slice', 'bank_count', 'ops_per_bank_cycle'}
 IDEALS = {'wb', 'meta', 'read_hit'}
