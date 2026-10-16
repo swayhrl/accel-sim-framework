@@ -1,5 +1,7 @@
 # V2: source-backed reconstruction and an isolated offline candidate
 
+**Follow-up decision:** the user accepted research on this profile as an independent, clearly disclosed new derived candidate, without confirming original capture equivalence. The [current qualification review](../../DERIVED_INPUT_QUALIFICATION_CANDIDATE/README.md) supersedes the pending route-selection wording below. Historical capture binding remains unproven; it is no longer a prerequisite for the independent candidate. All HOLDs and launch restrictions remain.
+
 Status: **SOURCE_PROFILE_AND_RAW_ADDRESS_CROSSCHECK_PASS; CANDIDATE_ONLY; EXACT_CAPTURE_BINDING_REVIEW_PENDING**. This is additional evidence, not an immutable receipt for the historical capture binary. Original Hotspot scientific promotion and admission HOLD remain in force. No simulator/GPU job, main parser change or registry edit was performed.
 
 ## Reconstructed instruction profile

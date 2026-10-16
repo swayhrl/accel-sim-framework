@@ -1,4 +1,8 @@
-# Decision required: exact Hotspot source or revised scientific input
+# Decision history and current derived-input review
+
+The user selected continued V2 source-profile reconstruction as an **independent new derived input candidate**; original ELF recovery is no longer a prerequisite. Exact historical executable equivalence, formal admission and simulation remain unapproved. See [the concrete qualification package](../DERIVED_INPUT_QUALIFICATION_CANDIDATE/README.md). Fresh Hotspot checks pass under that model. A limited other11 review found Btree/LUD/2DConvolution address-applicability risks; the new pending scope review is whether to submit the independent Hotspot candidate with those risks separately registered or define another bounded investigation first. No other address interpretation or acceptance state has been changed.
+
+The prior alternatives below are preserved decision history; they are not a renewed request to recover an original ELF before candidate research.
 
 The pre-Nov2020 dual-mask producer bug is source-backed. V2 additionally reconstructs a source profile matching the entire fixed member's observed185 PC/opcode-root/GPR signatures and over20 million explicit raw addresses. It provides a concrete offline candidate affecting122760 records; see [the source-profile evidence](source_profile_v2/README.md). The candidate determines active addresses under that profile, while exact capture binary/operand binding remains unqualified. Main parser, original trace, runtime and Hotspot HOLD remain unchanged. This is a semantic/input-identity boundary, not a request to approve ordinary parser/build work.
 
