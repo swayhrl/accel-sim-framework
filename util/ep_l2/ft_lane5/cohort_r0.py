@@ -13,6 +13,8 @@ WORKLOADS = ('sad', 'vectorAdd_4M', 'cfd_097k', 'convolutionSeparable', 'FWT_7_2
 
 
 def collect(root):
+    if (REPO / 'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/SCIENTIFIC_HOLD.json').is_file():
+        raise ValueError('R0 scientific qualification suspended; no primary cohort average')
     rows, manifests = [], []
     for workload in WORKLOADS:
         pack = root / ('FT20261016_LANE5_R0_' + workload.upper() + '_PAIR_r1')

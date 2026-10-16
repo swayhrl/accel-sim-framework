@@ -59,6 +59,9 @@ def package_pair(source):
         'qualification_publication_commit': '2fc7cdcf18afb98c5e8434b87c4ef36316644098',
         'review_coordination_commit': 'aec01450d3c527524ee09ee59242f582fafe5354',
         'scope': 'R0 primary 1168-slot/128B common-copy-latch matched pair; not R1 ideal'})
+    hold = REPO / 'docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/SCIENTIFIC_HOLD.json'
+    if hold.is_file():
+        shutil.copyfile(hold, pack / 'SCIENTIFIC_ACCEPTANCE.json')
     with (pack / 'RAW_LOG_INDEX.csv').open('x', newline='') as out:
         writer = csv.DictWriter(out, fieldnames=list(raw_index[0]), lineterminator='\n')
         writer.writeheader()
@@ -66,7 +69,11 @@ def package_pair(source):
     comparison = json.loads((source / 'COMPARISON.json').read_text())
     (pack / 'README.md').write_text(
         '# Frozen R0 ' + workload + ' full-application pair\n\n'
-        'Status: COMPLETE_VALID, one exact matched pair; no suite average.\n\n'
+        'Status: COMPLETE_VALID hardware terminal, one exact matched pair; no suite average.\n\n'
+        + ('Scientific acceptance SUSPENDED: memcpy clock violates physical bank service.\n'
+           'Numbers below are retained observations, not accepted primary performance.\n'
+           'See SCIENTIFIC_ACCEPTANCE.json and the superseding clock-correction pack.\n\n'
+           if hold.is_file() else '') +
         f"B16 cycles {rows[0]['cycles']}; U_WB16 cycles {rows[1]['cycles']}; "
         f"B16/U_WB16 speedup {comparison['speedup_B16_over_U_WB16']:.9f}x.\n\n"
         'Both arms use Core 126394be / producing Framework 37dec04d and the same\n'
@@ -111,6 +118,9 @@ def main():
     receipt['validation']['new_formal_runs'] = len(packs) * 2
     receipt['updated_at'] = datetime.now(timezone.utc).isoformat()
     receipt['status'] = 'R0_FIVE_PAIRS_COMPLETE_VALID' if len(packs) == 5 else 'R0_ROLLING_PAIRS_IN_PROGRESS'
+    if (base / 'SCIENTIFIC_HOLD.json').is_file():
+        receipt['status'] = 'APPLICATION_QUALIFICATION_SUSPENDED_CLOCK_REPAIR_READY'
+        receipt['validation']['scientifically_accepted_R0_application_runs'] = 0
     receipt['artifacts'] = list(dict.fromkeys(receipt['artifacts'] + packs))
     write_json(base / 'RECEIPT.json', receipt)
     print(json.dumps({'packs': packs, 'active_runs': len(receipt['active_runs'])}, indent=2))
