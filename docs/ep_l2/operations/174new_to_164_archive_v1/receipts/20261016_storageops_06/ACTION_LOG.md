@@ -9,3 +9,5 @@
 
 - Consumed pinned S02 source release receipt e9f9d05acdd9cb960dd3823a97155597be8929ba with full raw SHA256 2406ca45f1b0a53c1501eff08e9b47a1b6a7b031110344d7e6bdb8fad9a2fa0d; all 50 source identities/digests match target evidence. Rehashed/identity-checked then removed only exact matching bridge duplicates and empty known parents, exit 0, under sole receiver lock. Source deletions by target: 0.
 - Read pinned source priority, complete source map and cold audit at a9a0f021a0b98d54dc3f47710dc5a3344ea018c7 in its separate evidence cache. Imported compact metadata only; no source path scan/copy/delete. No cold project is release-authorized.
+
+2026-10-16T15:45:41Z: R1_B001 1269 files / 483509895 B DEST_VERIFIED; closed/reopened SSHFS hash triples match. Source manifest membership independently checked. All original cold files SOURCE_KEEP. Guard invocation initially omitted required fixture arguments; corrected metadata-only invocation before receive, all 16 passed. No data retry or parallel stream. Source numeric metadata retained without claiming native recovery.

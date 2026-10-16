@@ -167,6 +167,17 @@ def validate(data, inventory=None):
         require(paths == {r['exact_source'] for r in inventory if r['batch_id'] == batch}, 'frozen file set mismatch')
     return files
 
+def validate_project_membership(data, files, project_rows, digest):
+    require(data.get('project_manifest_sha256', data.get('source_inventory_sha256')) == digest,
+            'wrong frozen full-project manifest')
+    known = {r['source_path']: r for r in project_rows}
+    for f in files:
+        r = known.get(f['source_path'])
+        require(r is not None, 'batch source is outside full-project scope')
+        require((f['size_bytes'], f['source_sha256'], f['source_dev'], f['source_inode'], f['source_nlink']) ==
+                (r['size_bytes'], r['sha256'], r['device'], r['inode'], r['nlink']),
+                'full-project identity/hash mismatch')
+
 def receive(data, manifest_sha, files, manifest_path, restore_sample=False, resume=False):
     import fcntl
     resources_before = check_resources()
@@ -207,19 +218,25 @@ def receive(data, manifest_sha, files, manifest_path, restore_sample=False, resu
         journal_path = ARCHIVE / 'infrastructure' / 'transfer_journals' / (batch + '_' + manifest_sha + '.json')
         journal_files = [dict(source_path=f['source_path'], destination_relative_path=f['destination_relative_path'],
                               size_bytes=f['size_bytes'], sha256=f['source_sha256']) for f in files]
+        sample_path = (ARCHIVE / 'infrastructure' / 'restore_tests' / data['project'] / batch /
+                       relative(files[0]['relative_path'])) if restore_sample else None
         if journal_path.exists():
             require(resume, 'unfinished batch requires explicit --resume')
             journal = json.loads(journal_path.read_text())
             require(journal['source_ready_sha256'] == manifest_sha and journal['files'] == journal_files
                     and journal['owner'] == 'Storage-Ops' and journal['all_destinations_absent_before_start'] is True,
                     'resume journal scope mismatch')
+            require(journal.get('restore_sample_path') == (str(sample_path) if sample_path else None),
+                    'resume restore-sample scope mismatch')
         else:
             require(not resume, 'no owned journal: cannot resume or overwrite')
             require(all(not os.path.lexists(ARCHIVE / relative(f['destination_relative_path'])) for f in files),
                     'preexisting archive destination has no owned journal')
+            require(sample_path is None or not os.path.lexists(sample_path), 'preexisting restore sample')
             mkdirs(ARCHIVE, journal_path.parent)
             atomic_json(journal_path, dict(owner='Storage-Ops', created_at_utc=now(), batch_id=batch,
-                source_ready_sha256=manifest_sha, all_destinations_absent_before_start=True, files=journal_files))
+                source_ready_sha256=manifest_sha, all_destinations_absent_before_start=True, files=journal_files,
+                restore_sample_path=str(sample_path) if sample_path else None))
         pending = []
         for f in files:
             p = beneath(BRIDGE, f['bridge_path'])
@@ -249,7 +266,7 @@ def receive(data, manifest_sha, files, manifest_path, restore_sample=False, resu
         require(dry.returncode == 0, 'rsync dry-run failed: ' + dry.stderr.decode(errors='replace'))
         check_resources()
         cp = subprocess.run(args + ['--', source_base + '/', destination_base + '/'],
-                            input=names, capture_output=True, timeout=180)
+                            input=names, capture_output=True, timeout=1800)
         require(cp.returncode == 0, 'rsync failed: ' + cp.stderr.decode(errors='replace'))
         for f in files:
             check_resources()
@@ -265,10 +282,12 @@ def receive(data, manifest_sha, files, manifest_path, restore_sample=False, resu
             f = results[0]
             dest = ARCHIVE / 'infrastructure' / 'restore_tests' / data['project'] / batch / relative(f['relative_path'])
             mkdirs(ARCHIVE, dest.parent)
-            require(not os.path.lexists(dest), 'restore sample exists')
-            cp = subprocess.run(['nice', '-n', '19', 'ionice', '-c', '3', 'rsync', '-aH',
-                '--no-owner', '--no-group', '--fsync', '--bwlimit=30m', '--', f['destination_path'], str(dest)], capture_output=True, text=True, timeout=120)
-            require(cp.returncode == 0, 'restore sample copy failed')
+            if os.path.lexists(dest):
+                require(resume and not dest.is_symlink(), 'restore sample exists')
+            else:
+                restored_copy = subprocess.run(['nice', '-n', '19', 'ionice', '-c', '3', 'rsync', '-aH',
+                    '--no-owner', '--no-group', '--fsync', '--bwlimit=30m', '--', f['destination_path'], str(dest)], capture_output=True, text=True, timeout=120)
+                require(restored_copy.returncode == 0, 'restore sample copy failed')
             digest, snap = sha(dest)
             require(digest == f['source_sha256'], 'restore sample mismatch')
             restore = dict(status='SAMPLE_RESTORE_VERIFIED_NOT_FULL_BATCH', path=str(dest),
@@ -303,6 +322,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--manifest', required=True)
     ap.add_argument('--inventory')
+    ap.add_argument('--project-inventory', help='pinned .jsonl.zst full-project source manifest for V7')
+    ap.add_argument('--expected-project-inventory-sha256')
     ap.add_argument('--expected-ready-sha256', required=True)
     ap.add_argument('--receive', action='store_true', help='explicitly execute one target-only copy batch')
     ap.add_argument('--restore-sample', action='store_true')
@@ -318,6 +339,12 @@ def main():
         require(hashlib.sha256(frozen).hexdigest() == FROZEN_INVENTORY_SHA, 'inventory SHA256 mismatch')
         inventory = list(csv.DictReader(frozen.decode().splitlines()))
     files = validate(data, inventory)
+    if data.get('schema') == 'STORAGE_OPS_V7_COLD_PROJECT_BATCH_READY' or args.project_inventory:
+        require(args.project_inventory and args.expected_project_inventory_sha256,
+                'V7 full-project source manifest is required even for a read-only plan')
+        from cold_project_restore import read_zstd_jsonl
+        project_rows = read_zstd_jsonl(args.project_inventory, args.expected_project_inventory_sha256)
+        validate_project_membership(data, files, project_rows, args.expected_project_inventory_sha256)
     if args.receive:
         receipt = receive(data, digest, files, args.manifest, args.restore_sample, args.resume)
         require(hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest() == digest, 'READY changed during receive')
