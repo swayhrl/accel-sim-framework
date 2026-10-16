@@ -1,0 +1,23 @@
+{
+  "base_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+  "producer_commit": "c197c14d8292e8c2aa522711f4125ed5624b5549",
+  "patch_sha256": "54c5d8e7724c3dc07f94d3112338ab43199161bfdfe40c68ad8443575a1b7a3a",
+  "check": "PASS: private index git apply --cached --check --unidiff-zero; applied blobs equal producer commit for every included file",
+  "included_paths": [
+    "CMakeLists.txt",
+    "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "src/gpgpu-sim/ep-l2-tvd-cache.inc",
+    "src/gpgpu-sim/ep-l2-tvd-directory.h",
+    "src/gpgpu-sim/gpu-cache.cc",
+    "src/gpgpu-sim/gpu-cache.h",
+    "src/gpgpu-sim/gpu-sim.cc",
+    "src/gpgpu-sim/l2cache.cc",
+    "src/gpgpu-sim/l2cache.h",
+    "tests/ep_l2/test_tvd_production.cc"
+  ],
+  "omitted_paths": [
+    "tests/ep_l2/test_tvd_directory.cc",
+    "tests/ep_l2/run_tvd_directory.sh"
+  ],
+  "omission_reason": "previous module-only fixtures are not needed by production target and were not rerun"
+}

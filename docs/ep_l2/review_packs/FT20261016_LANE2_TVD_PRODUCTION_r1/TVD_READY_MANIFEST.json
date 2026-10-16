@@ -1,0 +1,100 @@
+{
+  "schema_version": "EP_L2_TVD_READY_V2",
+  "lane": 2,
+  "status": "PRODUCER_READY_FOR_INDEPENDENT_VALIDATION",
+  "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
+  "continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
+  "core_branch": "hrl/ep-l2-ft20261016-lane2-v1",
+  "core_source_commit": "c197c14d8292e8c2aa522711f4125ed5624b5549",
+  "core_parent_contract_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
+  "framework_source_commit": null,
+  "framework_source_usage": "NOT_USED: standalone Core production-directed executable; engineering evidence parent b136b395b463f1940a6a4e2365eca871e70ceefd",
+  "r0_framework_runtime_reference": "37dec04d223ae65167c5584e56887c74f6540d27",
+  "r0_framework_release_reference": "02982b65e87f170103b44c6dbd562a8ffb03841e",
+  "binary_kind": "memory_sub_partition_production_directed_fixture",
+  "binary_path": "/workspace/results/ep_l2_ft20261016/lane2/review_r2_dirty_production/tvd-production-c197c14d.out",
+  "binary_sha256": "94638b624e5c867faf561538f26cb7ba5c649fe592711666730790ba36e5a6b0",
+  "config_identity_file": "CONFIG_IDENTITY.json",
+  "config_sha256": "72016c0fac7db2d3cf3ed49d5048af36838c51138b3ac8fb88a69f6757761785",
+  "stimulus_path": "tests/ep_l2/test_tvd_production.cc",
+  "stimulus_sha256": "8530ef242229e9717656d1ab62921503109408b7af0232d1fbdd4a55b2c7f4fa",
+  "trace_identity": null,
+  "feature_vectors_tested": [
+    {
+      "ft_mode": 2,
+      "wbuf_entries": 16,
+      "tvd_clean": false,
+      "tvd_dirty": false,
+      "ro": false
+    },
+    {
+      "ft_mode": 2,
+      "wbuf_entries": 16,
+      "tvd_clean": true,
+      "tvd_dirty": false,
+      "ro": false
+    },
+    {
+      "ft_mode": 2,
+      "wbuf_entries": 16,
+      "tvd_clean": true,
+      "tvd_dirty": true,
+      "ro": false
+    }
+  ],
+  "ideal_vector": {
+    "wb": false,
+    "meta": false,
+    "read_hit": false
+  },
+  "defaults": {
+    "tvd_clean": false,
+    "tvd_dirty": false,
+    "legacy_feature_tvd": false
+  },
+  "actual_clean_producer_ready": true,
+  "actual_dirty_producer_ready": true,
+  "independent_qualification": false,
+  "validation": {
+    "production_scenario_groups_pass": 12,
+    "expected_rejection_gates_pass": 3,
+    "formal_workloads": 0,
+    "old_directory_groups_rerun": false,
+    "sanitizers_for_this_production_binary": "NOT_RUN",
+    "full_byte_atomic_numerical_validation": "NOT_AVAILABLE/NOT_RUN",
+    "primary_64sets_16ways": "PASS scoped one slice",
+    "C8": "NOT_RUN"
+  },
+  "active_runs": [],
+  "active_build_lease": null,
+  "blockers": [],
+  "build": {
+    "configuration": "Release; assertions enabled",
+    "toolkit_root": "/usr/local/cuda-11.8",
+    "target": "ep_l2_tvd_production",
+    "jobs": 2,
+    "source_frozen_before_build": true,
+    "build_directory": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-v1/build/ft_lane2_r2"
+  },
+  "frozen_r0_binary_verified_sha256": "0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698",
+  "matched_lower_directed": {
+    "off_packets": 2,
+    "on_packets": 1,
+    "off_request_bytes": 64,
+    "on_request_bytes": 32,
+    "DRAM_saved_bytes": null,
+    "application_speedup": null
+  },
+  "next_actions": [
+    "Lane1 integrate exact minimal diff as separate R2; retain R0",
+    "Lane5 independently validate changed production paths and parser roles; no R0 requalification implied",
+    "formal TVD experiments only after independent qualification and Lane5 allocation"
+  ],
+  "scope_limits": [
+    "one channel/slice directed sector-version model",
+    "atomic request ordering/version, not numerical ALU",
+    "not all interleavings/RO combinations",
+    "not application performance",
+    "C8 not newly qualified"
+  ]
+}
