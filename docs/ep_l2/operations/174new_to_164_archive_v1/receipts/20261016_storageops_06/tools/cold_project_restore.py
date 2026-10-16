@@ -16,7 +16,7 @@ import re
 
 from archive_receiver import ARCHIVE, BRIDGE, check_resources, relative, require, sha, mkdirs
 
-def read_zstd_jsonl(path, expected):
+def read_zstd_rows(path, expected):
     raw = Path(path).read_bytes()
     require(hashlib.sha256(raw).hexdigest() == expected, 'source manifest SHA256 mismatch')
     z = ctypes.CDLL('libzstd.so.1')
@@ -27,8 +27,30 @@ def read_zstd_jsonl(path, expected):
     buffer = ctypes.create_string_buffer(64 * 1024**2)
     length = z.ZSTD_decompress(buffer, len(buffer), raw, len(raw))
     require(not z.ZSTD_isError(length), 'metadata decompression failed or exceeds 64MiB bound')
-    rows = [json.loads(line) for line in buffer.raw[:length].decode().splitlines()]
-    return [r for r in rows if 'source_path' in r and 'sha256' in r]
+    return [json.loads(line) for line in buffer.raw[:length].decode().splitlines()]
+
+def read_zstd_jsonl(path, expected):
+    return [r for r in read_zstd_rows(path, expected) if 'source_path' in r and 'sha256' in r]
+
+def join_file_metadata(rows, metadata):
+    known = {}
+    for r in metadata:
+        if 'relative_path' not in r:
+            continue
+        key = str(relative(r['relative_path']))
+        require(key not in known, 'duplicate file metadata path')
+        known[key] = r
+    require(set(known) == {r['relative_path'] for r in rows}, 'file metadata scope mismatch')
+    joined = []
+    for row in rows:
+        m = known[row['relative_path']]
+        require((m['source_sha256'], m['size_bytes'], m['source_dev'], m['source_inode'], m['source_nlink']) ==
+                (row['sha256'], row['size_bytes'], row['device'], row['inode'], row['nlink']),
+                'file metadata frozen identity/hash mismatch')
+        require(all(type(m[k]) is int and m[k] >= 0 for k in ['source_uid', 'source_gid', 'source_mode'])
+                and m['source_mode'] <= 0o7777, 'invalid numeric recovery metadata')
+        joined.append(dict(row, uid=m['source_uid'], gid=m['source_gid'], mode=m['source_mode']))
+    return joined
 
 def plan(mapping, project_id, rows, receipts):
     require(re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.-]{0,63}', project_id) is not None, 'unsafe project id')
@@ -76,12 +98,17 @@ def main():
     p.add_argument('--project', required=True)
     p.add_argument('--source-manifest', required=True)
     p.add_argument('--expected-manifest-sha256', required=True)
+    p.add_argument('--file-metadata', help='optional independently pinned numeric owner/mode sidecar')
+    p.add_argument('--expected-file-metadata-sha256')
     p.add_argument('--receipt', action='append', default=[])
     p.add_argument('--verify-all', action='store_true')
     p.add_argument('--execute-restore', action='store_true')
     args = p.parse_args()
     mapping = json.loads(Path(args.map).read_text())
     rows = read_zstd_jsonl(args.source_manifest, args.expected_manifest_sha256)
+    if args.file_metadata:
+        require(args.expected_file_metadata_sha256, 'file metadata SHA256 is required')
+        rows = join_file_metadata(rows, read_zstd_rows(args.file_metadata, args.expected_file_metadata_sha256))
     project, files, missing = plan(mapping, args.project, rows, args.receipt)
     result = dict(schema='STORAGE_OPS_V7_PROJECT_COVERAGE_AND_RESTORE_PLAN', project_id=args.project,
         source_manifest_sha256=args.expected_manifest_sha256, expected_files=len(files),
@@ -93,6 +120,8 @@ def main():
         old174_no_overwrite_restore_location=project['restore_staging_path'],
         native_file_metadata_complete=all(f['source_mode'] is not None and f['source_uid'] is not None
                                          and f['source_gid'] is not None for f in files),
+        file_metadata_sha256=args.expected_file_metadata_sha256 if args.file_metadata else None,
+        native_file_metadata_applied=False,
         all_files_dest_verified=not missing, fresh_archive_rehash_bytes=0, verified_restore_bytes=0,
         state='ALL_FILES_DEST_VERIFIED' if not missing else 'PROJECT_ARCHIVE_INCOMPLETE')
     if args.verify_all or args.execute_restore:

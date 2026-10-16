@@ -183,5 +183,16 @@ class ResumeChecks(unittest.TestCase):
         self.assertEqual(out['new_archived_bytes'], 0)
         self.assertTrue(out['idempotent_existing_archive_verified'])
 
+class RecoveryMetadataChecks(unittest.TestCase):
+    def test_sidecar_requires_exact_complete_identity_and_hash(self):
+        from cold_project_restore import join_file_metadata
+        row=dict(relative_path='a',sha256='a'*64,size_bytes=4,device=156,inode=3,nlink=1)
+        meta=dict(relative_path='a',source_sha256='a'*64,size_bytes=4,source_dev=156,
+                  source_inode=3,source_nlink=1,source_uid=0,source_gid=0,source_mode=0o755)
+        self.assertEqual(join_file_metadata([row],[meta])[0]['mode'],0o755)
+        for bad in [[],[meta,meta],[dict(meta,source_inode=9)],[dict(meta,source_sha256='b'*64)],
+                    [dict(meta,source_mode=-1)]]:
+            with self.assertRaises(ValueError):join_file_metadata([row],bad)
+
 if __name__ == '__main__':
     unittest.main()
