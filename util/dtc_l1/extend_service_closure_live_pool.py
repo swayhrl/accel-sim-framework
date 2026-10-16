@@ -113,7 +113,14 @@ def main():
             starts, _, _, _ = inspect()
             if any(s['spec']['label'] == row['label'] for p, s in starts):
                 break
-            assert proc.poll() is None, 'Preflight failed: keep admission hold and raw evidence.'
+            if proc.poll() is not None:
+                # A small complete row can start and exit while inspect() is
+                # validating other terminals. Re-read its durable start before
+                # classifying a vanished runner as a preflight failure.
+                starts, _, _, _ = inspect()
+                assert any(s['spec']['label'] == row['label'] for p, s in starts), \
+                    'Preflight failed: keep admission hold and raw evidence.'
+                break
             time.sleep(1)
         launched.append(dict(label=row['label'], runner_pid=proc.pid))
         print(json.dumps(launched[-1]), flush=True)
