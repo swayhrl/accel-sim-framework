@@ -1,0 +1,112 @@
+[
+  {
+    "id": "WQ01",
+    "status": "PARKED_SOURCE_INCOMPLETE",
+    "recommended": false,
+    "question": "真实编码会话在用户恢复/上下文改写与工具连续追加两类边界下，提供方cache-conditioned token统计映射成目标模型的语义前缀时，是否改变了保持相同完整请求的re-prefill与活动decode竞争归因？",
+    "natural_input_candidates": [
+      {
+        "name": "TraceLab v0.0.1",
+        "role": "已披露自然触发/时间与缓存字段，不能提供原文",
+        "source_revision": "37402b4098dc65de56727b4c204fb71c8a59ddac",
+        "license": "released sanitized traceCC-BY4",
+        "downloaded": false
+      },
+      {
+        "name": "SALT-NLP/SWE-chat v2 official entry",
+        "role": "未来含内容补充，先申请访问并冻结每仓库/请求许可、revision和model-facing完整prompt",
+        "source_revision": "8465db2a234dffd02be2e118bf3437771963b095",
+        "license": "ODC-BY card label;authorization and payload qualification pending",
+        "downloaded": false
+      }
+    ],
+    "mainstream_model": {
+      "id": "Qwen/Qwen3.5-4B",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "path": "text-only;BF16/SSMFP32;no truncation,compression or expert/vision change"
+    },
+    "natural_variable_card": {
+      "directly_disclosed": [
+        "session/request/step identities and event times in sanitized schema",
+        "provider cache read and input/output accounting",
+        "different user/tool triggers and context growth/contraction"
+      ],
+      "metadata_constructible_after_authorization": [
+        "session-conditional idle gaps and joint length/gap distribution with missingness flags",
+        "event DAG and tool critical-path wall when timestamps suffice"
+      ],
+      "requires_full_input_or_run": [
+        "exact target-token LCP and original prompt reconstruction",
+        "actual checkpoint reuse,restore/copy,re-prefill and paired device wall",
+        "output lengths/task correctness under free generation"
+      ]
+    },
+    "same_model_semantics": "每个arm用同一checkpoint、template、dtype及完全相同每步输入/保留状态，固定原输出token回放仅作性能诊断；不能将合成内容或原提供方输出强制回放称本模型完成原任务。",
+    "target_phase": "user-resume/edited-prefix prefill interacting with active decode,plus compulsory state restoration;tool/user waiting separated",
+    "slo_and_quality_contract": {
+      "observed_business_slo": "NOT_DISCLOSED",
+      "study_slo": "Native资格前冻结TTFT/ITL或job-SLO参数；若没有外部合法阈值只报告曲线，不宣称业务goodput",
+      "quality": "固定请求/无截断；replay不证明任务质量；独立free-generation修复任务必须同版本测试全部失败和成功，先冻容差与重复性门"
+    },
+    "strong_software_controls": [
+      "current compatible vLLM/SGLang prefix cache,chunked prefill and graph enabled",
+      "Marconi/SegLen reuse-distance-aware policies where exact supported implementation compatible;fork not upstream by assumption",
+      "XPerf exact-token dependency replay as method counterexample;actual support checked before use",
+      "TraceLab published synthetic session runner is shape control,not natural main baseline"
+    ],
+    "new_variable_vs_a70": "不是新增缓存/双流/SM划分；区分原服务已发生的cache miss与语义内容真正新增/改写，以及该区别与人/工具边界时间的联合关系。A70没有相同输入配对；Marconi已含历史折叠，不能声称首次发现partial-overlap。",
+    "supporting_ids": [
+      "W03",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "W12",
+      "W14",
+      "W16",
+      "W17",
+      "W19",
+      "W20",
+      "W23"
+    ],
+    "two_opposing_predictions": {
+      "resource_preparation": "若真实复用/恢复是主要代价，在同内容与同依赖下，用户恢复边界的重复prefill/state准备占比仍高，且对缓存容量/就绪状态发生可解释响应。",
+      "competing_explanation": "若差异来自provider缓存计费口径、合成内容/到达、工具等待或必要长KV注意力，校正输入与计时分母后GPU差异消失或只能归普通软件/工作量。"
+    },
+    "baseline_probe": {
+      "executed": false,
+      "plan": "未来先CPU小样本资格；仅对有原文/合法模型可见prompt/完整时间字段的自然会话冻结探索bank，不按热点或长度收益筛选。真实内容同模型运行保持依赖与外部会话起点，报告样本覆盖。"
+    },
+    "diagnostic_probe": {
+      "executed": false,
+      "plan": "同一请求ledger的exact-token/response-dependent replay对比形状回放只检查测量失真，不作为硬件加速；保持cache预算/调度/后端后，分解enqueue、工具wall、GPU-ready、restore/re-prefill和decode的wall；若再做保留/重算对照，所有准备、内存与非目标影响计入。"
+    },
+    "independent_validation": {
+      "executed": false,
+      "source": "SWE-bench Verified官方真实issue任务；与探索自然会话不同源并核repo/实例重叠；另保留未参与选参的独立用户或repo会话",
+      "limitation": "独立benchmark验证任务质量，不代表生产到达；TraceLab不同provider分组不自动叫独立验证"
+    },
+    "required_resources": {
+      "current": "本Goal单CPU source-only预算",
+      "future": "先另批最小含内容输入/权重和CPU资格；GPU只在资格后另审。10916GiB不能被4B名字保证可容纳全部长会话/并发；若确需24/48GiB单卡说明完整工作集下界，无已证多卡必要性。"
+    },
+    "stop_if": [
+      "合法原文或model-facing prompt不可重建则不进native；不以镜像绕过访问",
+      "无法区分真正新内容与cache miss/隐藏token则PARKED",
+      "依赖/原输出身份不守恒或质量合同失败则停止性能排名",
+      "强兼容软件对照覆盖同变量且残余归排队/工具/工作量则结束新问题",
+      "独立验证无效或改精度/压缩/截断才能成立则停止；不放宽数值门"
+    ],
+    "unknowns": [
+      "源提供方内部cache状态与TTL",
+      "精确目标模型LCP及可用checkpoint交集",
+      "自然变动的GPU时间权重",
+      "SWE-chat访问及数据许可/完整model-facing上下文",
+      "强后端兼容性和固定质量/业务SLO"
+    ],
+    "why_parked": "自然变量有来源，但公开计数不能重建同语义目标请求；含内容替代入口未获数据资格。直接依赖回放/复用策略已有强近邻，尚无可判定的新增同输入问题证据。不是因缺本轮GPU wall而机械拒绝。",
+    "automatic_native_authorization": false
+  }
+]
