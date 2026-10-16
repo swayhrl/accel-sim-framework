@@ -1,0 +1,15 @@
+case,status,scope,selector
+warm_repeat_partial_sector_TVD_promotion_WB_flush_C16,NOT_COMPILED_NOT_RUN,"4096 repeated native host warmups plus two sector/repeat additions, masks0/1, real warm read, same-handle promotion with dirty victim WB/flush",--repair-gates
+warm_repeat_partial_sector_TVD_promotion_WB_flush_C8,NOT_COMPILED_NOT_RUN,same targeted case with WBUF8; no sensitivity performance qualification,--repair-gates
+host_clean_victim_TVD_alias_reinit_epoch_identity,NOT_COMPILED_NOT_RUN,"clean resident replacement by host, host overwrites optional detached line, rewarm after invalidation",--repair-gates
+warm_partial_sector_TVD_missing_real_lower_fallback,NOT_COMPILED_NOT_RUN,uninitialized sector must miss TVD and issue one actual lower read,--repair-gates
+warm_primary64x16_actual_chosen_tag_and_bank_identity,NOT_COMPILED_NOT_RUN,"17 same-set host warms, real chosen Tag and bank class, repeated other-sector warm read",--repair-gates
+offset4096_dirty_forward_write_wait_physical_bank,NOT_COMPILED_NOT_RUN,real WB_INFLIGHT forward before WAD rejection; write waits set_done and promotes same handle,--repair-gates
+offset4096_dirty_forward_atomic_wait_physical_bank,NOT_COMPILED_NOT_RUN,same actual atomic request/version ordering; no numerical ALU claim,--repair-gates
+offset4096_WAD128_lower_accept_set_done_flush_physical_bank,NOT_COMPILED_NOT_RUN,"actual lower hold/full WAD, release hold, set_done/full drain and flush",--repair-gates
+--reject_warm_dirty_victim,NOT_COMPILED_NOT_RUN,expect SIGABRT and marker: FT host prefill cannot discard dirty resident data,--reject_warm_dirty_victim
+--reject_warm_dirty_owner,NOT_COMPILED_NOT_RUN,expect SIGABRT and marker: FT host prefill cannot discard dirty resident data,--reject_warm_dirty_owner
+--reject_warm_active_request,NOT_COMPILED_NOT_RUN,expect SIGABRT and marker: FT host prefill requires an idle subpartition,--reject_warm_active_request
+--reject_warm_mandatory_wb,NOT_COMPILED_NOT_RUN,expect SIGABRT and marker: FT host prefill requires an idle subpartition,--reject_warm_mandatory_wb
+prior_12_positive_and_3_rejections,PRESERVED_OLD_SOURCE_ONLY_NOT_RERUN,c197c14d8292e8c2aa522711f4125ed5624b5549,default / old negative selectors
+official_R0_1_application_integration,DEPENDENCY_PENDING,"new official source, build and Lane5 independent qualification required",NONE

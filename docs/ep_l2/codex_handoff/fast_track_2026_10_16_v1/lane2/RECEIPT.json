@@ -1,17 +1,79 @@
 {
   "schema_version": "EP_L2_LANE_RECEIPT_V1",
   "lane_id": 2,
-  "task_id": "FT20261016_LANE2_TVD",
+  "status": "SOURCE_PREADAPTED_NOT_COMPILED_OFFICIAL_R0_1_PENDING_RESOURCE_HOLD",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "PRODUCER_READY_FOR_INDEPENDENT_VALIDATION",
-  "host": "huangrulin-174",
+  "continuation_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
   "framework_branch": "hrl/ep-l2-ft20261016-lane2-v1",
   "framework_source_commit": null,
+  "framework_engineering_parent_commit": "e1df2b71d8e28344d24cabf479a04b48fc0e8180",
+  "framework_source_usage": "standalone Core fixture; Framework holds docs only",
   "core_branch": "hrl/ep-l2-ft20261016-lane2-v1",
-  "core_source_commit": "c197c14d8292e8c2aa522711f4125ed5624b5549",
-  "binary_sha256": "94638b624e5c867faf561538f26cb7ba5c649fe592711666730790ba36e5a6b0",
-  "config_sha256": "72016c0fac7db2d3cf3ed49d5048af36838c51138b3ac8fb88a69f6757761785",
+  "core_source_commit": "5c6c1d28da1b4e5d06afa999cf88e8995e53bd27",
+  "previous_producer_source": "c197c14d8292e8c2aa522711f4125ed5624b5549",
+  "provisional_repair_base": "832d986b03dc3c940eb99a1ae6845dd07297f4ed",
+  "official_repair_base": null,
+  "binary_sha256": null,
+  "binary_path": null,
+  "compiled": false,
+  "config_sha256": "e4174588567b817e560cbd2d413e32fc8a236f932eb289450f45293d9fe2bbaf",
+  "stimulus_sha256": "bb6825c4d968de7c72b1dde5b79c1d1a5e2e695422a20b071ad716eb1e1cbdbb",
   "trace_identity": null,
+  "run_keys": [],
+  "validation": {
+    "source_boundary_checks": 13,
+    "patch_apply_and_blob_check": "PASS exact provisional candidate only",
+    "new_positive_cases": 8,
+    "new_negative_cases": 4,
+    "new_runtime_cases_executed": 0,
+    "prior_producer_12_plus_3": "historical scoped evidence preserved; not rerun/requalified for repair",
+    "independent_application_qualification": false,
+    "formal_workloads": 0
+  },
+  "dependency_receipts": [
+    {
+      "lane_id": 1,
+      "framework_publication": "3840f9585b710a5abea8201c14fa05cdea930aa7",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT_REVIEW_R3.json",
+      "receipt_sha256": "bb9958263c0b6cca2d8b792f23e9ae8f5572efec29dded9118f4e723ecf9615b",
+      "official_R0_1_status": "SOURCE_INTEGRATION_RESOURCE_HOLD; no published repaired Core/binary"
+    },
+    {
+      "lane_id": 5,
+      "framework_publication": "b134f76d8f4cd759c0852b68edf922ecbd445ea9",
+      "application_acceptance_sha256": "5325aad502b09943d2b2e673a3af757a9de33549491d13eea80db43a9480fba0",
+      "clock_only_tested_delta": "1565f1f04978f12e51a29fcbf9dab9a3c61b5c4e",
+      "uncompiled_warmup_candidate": "832d986b03dc3c940eb99a1ae6845dd07297f4ed"
+    }
+  ],
+  "scientific_acceptance": {
+    "old_R0_R1_applications": "SUSPENDED_MEMCPY_PHYSICAL_CLOCK; historical terminals unchanged",
+    "new_Lane2_candidate": "NOT_COMPILED_NOT_QUALIFIED",
+    "formal_speedups_accepted": false
+  },
+  "active_runs": [],
+  "active_build_lease": null,
+  "blockers": [
+    "official Lane1 R0.1 source not published at consumed receipt",
+    "workspace below unchanged48GiB disk floor, build/tests NOT_RUN"
+  ],
+  "scope_limits": [
+    "host prefill locally idle, one declared sector, clean selected resident only; dirty/active cases explicitly rejected",
+    "version-zero initialization is symbolic; not reconstructed SASS numerical data",
+    "8 new producer cases and4 rejections are source only",
+    "provisional patch is not an official R0.1 release and must be regenerated for exact official parent"
+  ],
+  "task_id": "FT20261016_LANE2_TVD",
+  "host": "huangrulin-174",
+  "current_review_pack": "docs/ep_l2/review_packs/FT20261016_LANE2_REPAIR_PREADAPT_r1",
+  "artifacts": [
+    "docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_MODULE_r1/",
+    "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r1/",
+    "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r2/",
+    "docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_PRODUCTION_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE2_TVD_PRODUCTION_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE2_REPAIR_PREADAPT_r1"
+  ],
   "feature_vector": {
     "ft_mode": 2,
     "wbuf_entries": 16,
@@ -19,71 +81,31 @@
     "tvd_dirty": true,
     "ro": false
   },
+  "candidate_sensitivity_vector": {
+    "wbuf_entries": 8,
+    "status": "SOURCE_ONLY_NOT_COMPILED"
+  },
   "ideal_vector": {
     "wb": false,
     "meta": false,
     "read_hit": false
   },
-  "dependency_receipts": [
-    {
-      "lane": 1,
-      "framework_release_commit": "02982b65e87f170103b44c6dbd562a8ffb03841e",
-      "framework_runtime_commit": "37dec04d223ae65167c5584e56887c74f6540d27",
-      "core_commit": "126394be46b15f55b9756d43eb9ca9a9baae1c84",
-      "scope": "exact R0 executable sole allocator and WB production interface"
-    }
-  ],
-  "artifacts": [
-    "docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_MODULE_r1/",
-    "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r1/",
-    "docs/ep_l2/review_packs/FT20261016_LANE2_DIRTY_MODULE_r2/",
-    "docs/ep_l2/review_packs/FT20261016_LANE2_CLEAN_PRODUCTION_r1",
-    "docs/ep_l2/review_packs/FT20261016_LANE2_TVD_PRODUCTION_r1"
-  ],
-  "validation": {
-    "production_scenario_groups_pass": 12,
-    "expected_rejection_gates_pass": 3,
-    "formal_workloads": 0,
-    "old_directory_groups_rerun": false,
-    "sanitizers_for_this_production_binary": "NOT_RUN",
-    "full_byte_atomic_numerical_validation": "NOT_AVAILABLE/NOT_RUN",
-    "primary_64sets_16ways": "PASS scoped one slice",
-    "C8": "NOT_RUN",
-    "clean_subset_published_first": true,
-    "producer_data_scope": "symbolic sector versions and requester/WB lifecycle",
-    "independent_qualification": false
+  "previous_producer_evidence": {
+    "core_source_commit": "c197c14d8292e8c2aa522711f4125ed5624b5549",
+    "binary_sha256": "94638b624e5c867faf561538f26cb7ba5c649fe592711666730790ba36e5a6b0",
+    "config_sha256": "72016c0fac7db2d3cf3ed49d5048af36838c51138b3ac8fb88a69f6757761785",
+    "stimulus_sha256": "8530ef242229e9717656d1ab62921503109408b7af0232d1fbdd4a55b2c7f4fa",
+    "scope": "old12+3 directed-only retained, not repaired-source/application qualification"
   },
-  "active_runs": [],
-  "blockers": [],
-  "framework_source_usage": "NOT_USED: standalone Core production-directed executable; engineering evidence parent b136b395b463f1940a6a4e2365eca871e70ceefd",
-  "binary_kind": "memory_sub_partition_production_directed_fixture",
-  "current_review_pack": "docs/ep_l2/review_packs/FT20261016_LANE2_TVD_PRODUCTION_r1",
-  "continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
-  "active_build_lease": null,
-  "framework_engineering_parent_commit": "b136b395b463f1940a6a4e2365eca871e70ceefd",
-  "binary_path": "/workspace/results/ep_l2_ft20261016/lane2/review_r2_dirty_production/tvd-production-c197c14d.out",
-  "stimulus_sha256": "8530ef242229e9717656d1ab62921503109408b7af0232d1fbdd4a55b2c7f4fa",
-  "feature_vectors_tested": [
-    {
-      "ft_mode": 2,
-      "wbuf_entries": 16,
-      "tvd_clean": false,
-      "tvd_dirty": false,
-      "ro": false
-    },
-    {
-      "ft_mode": 2,
-      "wbuf_entries": 16,
-      "tvd_clean": true,
-      "tvd_dirty": false,
-      "ro": false
-    },
-    {
-      "ft_mode": 2,
-      "wbuf_entries": 16,
-      "tvd_clean": true,
-      "tvd_dirty": true,
-      "ro": false
-    }
-  ]
+  "resource_state": {
+    "free_bytes": 44677275648,
+    "floor_bytes": 51539607552,
+    "memory_floor_bytes": 68719476736,
+    "compiler_admission_requested": false,
+    "reason": "source-only work during disk hold, priority Lane1 official build / Lane5 independent validation",
+    "owned_old_build_size_approx_MiB": 553,
+    "old_build_removed": false
+  },
+  "worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-repair-r3",
+  "preserved_old_worktree": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane2-v1"
 }

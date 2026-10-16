@@ -1,0 +1,86 @@
+{
+  "scope": "source inspection only; not C++ compiler/type/ABI check and not runtime proof",
+  "source_commit": "5c6c1d28da1b4e5d06afa999cf88e8995e53bd27",
+  "checks": [
+    {
+      "boundary": "FT_bank_calls",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": [
+        "m_ep_l2_payload.request(p.victim, false, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT)",
+        "m_ep_l2_payload.request(p.staging, true, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE)",
+        "m_ep_l2_payload.request( ep_l2_payload_store::RESIDENT, p.landing_id, true, physical_cycle, (unsigned long long)-1, ep_l2_payload_store::RESIDENT_WRITE)",
+        "m_ep_l2_payload.request(h, mf->get_is_write() || mf->isatomic(), physical_cycle, (unsigned long long)-1, mf->get_is_write() || mf->isatomic() ? ep_l2_payload_store::RESIDENT_WRITE : ep_l2_payload_store::RESIDENT_HIT_READ)"
+      ]
+    },
+    {
+      "boundary": "FT_physical_clock_source",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "actual gpu_sim_cycle + gpu_tot_sim_cycle, no memcpy offset"
+    },
+    {
+      "boundary": "FT_directory_lifetime_and_rollback",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": [
+        "tvd_install_victim(p.victim_address, retain ? victim : ep_l2::PayloadHandle(), retain ? ready_mask : dirty_mask, dirty_mask, true, physical_cycle)",
+        "tvd_install_victim(p.saved.owner, p.victim, p.saved.ready_sector_mask.to_ulong(), 0, false, physical_cycle)",
+        "tvd_reclaim_one(index % 4, physical_cycle)",
+        "ft_rollback(physical_cycle)"
+      ]
+    },
+    {
+      "boundary": "TVD_promotion_lifetime",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": [
+        "m_tvd->commit_dirty_promotion(plan, physical_cycle, promoted, wb_ticket)",
+        "m_tvd->promote(t, promoted, physical_cycle)"
+      ]
+    },
+    {
+      "boundary": "native_Tag_timestamps_preserved",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "native access, promotion bind and host fill continue using Tag timestamp"
+    },
+    {
+      "boundary": "frontend_physical_clock",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "actual cache_cycle call site"
+    },
+    {
+      "boundary": "monotonic_bank_guard",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "consumed exact Lane5 clock-only delta"
+    },
+    {
+      "boundary": "host_no_GPU_bank_service",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "untimed metadata initialization has no bank operation"
+    },
+    {
+      "boundary": "host_checks_before_metadata_edit",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "drain/mandatory/lease/dirty/pending/alias assertions precede first reclaim/release"
+    },
+    {
+      "boundary": "host_actual_chosen_Tag",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "same-index postfill assert; preserve other sectors, initialize only declared mask"
+    },
+    {
+      "boundary": "host_bank_class",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "existing sole-allocator bank mapping"
+    },
+    {
+      "boundary": "host_active_frontend_rejected",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "actual subpartition request tracker guard precedes host hook"
+    },
+    {
+      "boundary": "served_metric_scope",
+      "status": "SOURCE_CHECK_PASS_NOT_RUNTIME",
+      "evidence": "production summary emits served bytes; no saved-byte alias"
+    }
+  ],
+  "compiler_invoked": false,
+  "runtime_cases_executed": 0
+}

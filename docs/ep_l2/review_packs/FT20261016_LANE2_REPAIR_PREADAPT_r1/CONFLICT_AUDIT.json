@@ -1,0 +1,58 @@
+[
+  {
+    "kind": "TEXTUAL_RESOLVED",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "site": "ft_access replacement token initialization",
+    "resolution": "retain_clean preserved from Lane2; p.born taken from physical_cycle repair",
+    "observed": "actual three-way patch conflict"
+  },
+  {
+    "kind": "TEXTUAL_RESOLVED",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "site": "dirty WAD reservation",
+    "resolution": "combined TVD/WAD authority preserved; birth/install use physical_cycle",
+    "observed": "actual three-way patch conflict"
+  },
+  {
+    "kind": "SEMANTIC_SOURCE_ADAPTED_NOT_RUN",
+    "path": "src/gpgpu-sim/ep-l2-tvd-cache.inc",
+    "site": "promotion and retained-directory age",
+    "resolution": "promote/commit/WAD born use physical GPU clock; native Tag bind and packet annotations keep native Tag time"
+  },
+  {
+    "kind": "SEMANTIC_SOURCE_ADAPTED_NOT_RUN",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "site": "reclaim/install/rollback",
+    "resolution": "TVD directory timestamps use physical_cycle, not memcpy-offset Tag time"
+  },
+  {
+    "kind": "SEMANTIC_SOURCE_ADAPTED_NOT_RUN",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "site": "host prefill WAD/pin/dirty state",
+    "resolution": "check shared WAD occupancy and drained/lookup/read lease, pending sectors and dirty resident before editing; reject dirty victim/owner rather than silently discard"
+  },
+  {
+    "kind": "SEMANTIC_SOURCE_ADAPTED_NOT_RUN",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+    "site": "host address already detached in TVD",
+    "resolution": "remove exact optional unpinned alias via sole allocator, then bind new host Tag identity; never reclaim mandatory WB"
+  },
+  {
+    "kind": "SEMANTIC_SOURCE_ADAPTED_NOT_RUN",
+    "path": "src/gpgpu-sim/l2cache.h",
+    "site": "force_l2_tag_update",
+    "resolution": "reject active requester tracker before host prefill; retain native memcpy offset increment"
+  },
+  {
+    "kind": "PRESERVED_NOT_REQUALIFIED",
+    "path": "src/gpgpu-sim/ep-l2-ft-cache.inc + gpu-cache.cc + l2cache.cc",
+    "site": "lower_ready/lower_accepted/set_done, TVD frontend bank/ICNT",
+    "resolution": "existing real producers retained, already physical-cycle callers; source audit only, no new runtime acceptance"
+  },
+  {
+    "kind": "OFFICIAL_BASE_PENDING",
+    "path": "all integration paths",
+    "site": "Lane1 R0.1",
+    "resolution": "regenerate exact minimal patch and conflict checks once official repaired source is published; do not auto-apply provisional patch to another base"
+  }
+]
