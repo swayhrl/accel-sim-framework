@@ -1,10 +1,10 @@
 {
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
-  "task_id": "FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1",
-  "status": "INDEPENDENT_STATIC_BLOCKER_FIXED_R0_1_UNCOMPILED_RESOURCE_HOLD",
+  "task_id": "FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r1",
+  "status": "ENGINEERING_PILOT_REQUESTED_WAITING_LANE5_INDEPENDENT_AUTHORIZATION",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "review_coordination_commit": "77a9fbe937ea23465cf0d0076d2df1909f52d055",
+  "review_coordination_commit": "56a0517d3a5941a0a870b50e8c915a8a36b9ee5d",
   "host": "huangrulin-174",
   "framework_branch": "hrl/ep-l2-ft20261016-lane1-v1",
   "core_branch": "hrl/ep-l2-ft20261016-lane1-v1",
@@ -101,7 +101,7 @@
       "binding": "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1/LANE5_DEPENDENCY_READBACK.json"
     }
   ],
-  "prior_receipt_archive": "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1/PRIOR_RECEIPT_5a9edbf6.json",
+  "prior_receipt_archive": "docs/ep_l2/review_packs/FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r1/PRIOR_RECEIPT_85534de2.json",
   "validation": {
     "python_build_guard": {
       "status": "PASS",
@@ -137,60 +137,94 @@
       "existing_directed_fixture_clock_aligned": true,
       "runtime": "NOT_COMPILED_NOT_RUN",
       "details": "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1/FOLLOWUP_STATIC_CHECKS.json"
+    },
+    "pilot_runner": {
+      "status": "PASS",
+      "final_unique_cases": 17,
+      "scope": "runner authorization/monitor/process-isolation/failure-release and dry-run; no real central claim or C++",
+      "log_sha256": "59804fa074e8dc1671f549a336c1a62ffdb3ed9049e00064a46abd9e8a4a2faf",
+      "lane5_real_adapter_tests": "PENDING_LANE5_IMPLEMENTATION_AND_PUBLICATION; fake adapter denials are not independent registry validation",
+      "total_case_executions_across_four_code_versions": 65,
+      "actual_dry_run_status": "DRY_RUN_NO_LEASE_NO_COMPILER"
     }
   },
   "resource_observation": {
-    "recorded_at": "2026-10-16T14:23:13.552076+00:00",
-    "scope": "closeout read-only observation, not an admission attempt",
-    "workspace_free_bytes": 38312300544,
-    "workspace_floor_bytes": 51539607552,
-    "build_growth_bytes": 2147483648,
-    "deficit_to_build_with_growth_bytes": 15374790656,
-    "available_memory_bytes": 159818186752,
-    "active_runs": {},
-    "active_build_leases": {},
-    "registry_sha256": "4569a4cf273d0653ad7fcd3072252ed322d420b2ebc53260a6e098873ab5dd4c",
-    "processes_observed": [
-      {
-        "pid": 433784,
-        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
-        "is_ep_l2_ft": false
+    "recorded_at": "2026-10-16T17:15:28.919131+00:00",
+    "scope": "r8 default dry-run, no central claim/CMake",
+    "resources": {
+      "utc": "2026-10-16T17:15:28.919131+00:00",
+      "monotonic": 8922900.262032008,
+      "filesystems": {
+        "workspace": {
+          "path": "/workspace",
+          "realpath": "/workspace",
+          "device": 156,
+          "fsid": 1349835467748716946,
+          "block_bytes": 4096,
+          "available_bytes": 29198258176,
+          "free_including_reserved_bytes": 221252833280,
+          "total_bytes": 3779302981632,
+          "pilot_allocated_bytes": 32034816
+        },
+        "results": {
+          "path": "/root/share",
+          "realpath": "/root/share",
+          "device": 2431,
+          "fsid": 2757854780513707398,
+          "block_bytes": 4096,
+          "available_bytes": 47632801792,
+          "free_including_reserved_bytes": 407700717568,
+          "total_bytes": 7143083376640,
+          "pilot_allocated_bytes": 0
+        }
       },
-      {
-        "pid": 495652,
-        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
-        "is_ep_l2_ft": false
-      },
-      {
-        "pid": 495657,
-        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
-        "is_ep_l2_ft": false
-      },
-      {
-        "pid": 606201,
-        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
-        "is_ep_l2_ft": false
-      },
-      {
-        "pid": 606209,
-        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
-        "is_ep_l2_ft": false
-      },
-      {
-        "pid": 624461,
-        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
-        "is_ep_l2_ft": false
-      },
-      {
-        "pid": 638023,
-        "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/4fcac62cd7bdccc5a49cc77950ffc45c60d5fce7c4ee44bba877e1fef2d07ef9/accel-sim.out",
-        "is_ep_l2_ft": false
-      }
-    ],
-    "official_build_path_exists": false,
-    "compiler_started_this_revision": false,
-    "build_admission_attempts_this_revision": 0,
-    "status": "RESOURCE_HOLD_NO_COMPILER_OR_APPLICATION_LAUNCHED"
+      "external_processes": [
+        {
+          "pid": 495652,
+          "ppid": 495651,
+          "pgrp": 495651,
+          "state": "R",
+          "start_ticks": 889453176,
+          "cpu_ticks": 2830261,
+          "rss_bytes": 3103784960,
+          "io": {
+            "rchar": 316402630,
+            "wchar": 278475,
+            "syscr": 77268,
+            "syscw": 260,
+            "read_bytes": 8192,
+            "write_bytes": 1159168,
+            "cancelled_write_bytes": 0
+          },
+          "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+          "command": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out -trace /workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gesummv/NO_ARGS/traces/kernelslist.g -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_OO_GESUMMV_f9d4089e-bcfa-4bc8-b342-bb90954e2787/config-0.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_OO_GESUMMV_f9d4089e-bcfa-4bc8-b342-bb90954e2787/config-1.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_OO_GESUMMV_f9d4089e-bcfa-4bc8-b342-bb90954e2787/config-2.config "
+        },
+        {
+          "pid": 495657,
+          "ppid": 495654,
+          "pgrp": 495654,
+          "state": "R",
+          "start_ticks": 889453176,
+          "cpu_ticks": 2830533,
+          "rss_bytes": 3107979264,
+          "io": {
+            "rchar": 316402630,
+            "wchar": 296271,
+            "syscr": 77268,
+            "syscw": 283,
+            "read_bytes": 8192,
+            "write_bytes": 1273856,
+            "cancelled_write_bytes": 0
+          },
+          "executable": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out",
+          "command": "/workspace/dtc-service-closure-174-v1/r2-attempts/binaries/fe2d2737ebaed01680ebfc2346f727306c8db58ee0ca20b1e1f038056e99833b/accel-sim.out -trace /workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gesummv/NO_ARGS/traces/kernelslist.g -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_GESUMMV_9f44321c-5360-4651-bb94-e283f21f369b/config-0.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_GESUMMV_9f44321c-5360-4651-bb94-e283f21f369b/config-1.config -config /workspace/dtc-service-closure-174-v1/r2-attempts/R2_V2_COHORT_IO_GESUMMV_9f44321c-5360-4651-bb94-e283f21f369b/config-2.config "
+        }
+      ],
+      "available_memory_bytes": 189845172224,
+      "owned_processes": [],
+      "owned_rss_bytes": 0,
+      "owned_cpu_ticks": 0
+    }
   },
   "active_runs": [],
   "active_builds": [],
@@ -201,7 +235,7 @@
   "build_path": "/workspace/build/ep-l2-ft20261016-lane1-r0-1",
   "admission_alternatives": {
     "path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/BUILD_ADMISSION_ALTERNATIVES.md",
-    "status": "EVIDENCE_BASED_OPTIONS_FOR_REVIEW_NOT_ADOPTED",
+    "status": "R8_CONDITIONAL_ENGINEERING_EXCEPTION_APPROVED_BY_USER; WAITING_INDEPENDENT_NUMERIC_AUTHORIZATION; FORMAL_POLICY_UNCHANGED",
     "floor_or_path_or_host_changed": false,
     "source_deletions_this_revision": 0,
     "other_project_processes_signalled": 0,
@@ -209,6 +243,11 @@
     "reconciliation": "Independent conclusions agree; directory-block differences exactly explained; no policy adopted. Neither lane has signed new runtime qualification."
   },
   "blockers": [
+    {
+      "scope": "one-time engineering pilot",
+      "reason": "Lane5 independent numeric envelope, authorization, tested one-use central pilot admission adapter absent",
+      "required": "Lane5 publishes LOW_SPACE_PILOT_AUTHORIZATION or NO_SAFE_PILOT_ENVELOPE; no actual compile before valid approval"
+    },
     {
       "scope": "official R0.1 build and independent production qualification",
       "reason": "Live workspace below unchanged48GiB+2GiB build admission; static/source/report work completed",
@@ -221,10 +260,49 @@
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/BUILD_ADMISSION_ALTERNATIVES.md",
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/R0_1_BUILD_COORDINATION.json",
     "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/R0_1_SOURCE_CANDIDATE.json",
-    "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1"
+    "docs/ep_l2/review_packs/FT20261016_LANE1_REVIEW_R5_INDEPENDENT_FOLLOWUP_r1",
+    "docs/ep_l2/review_packs/FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r1",
+    "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/LOW_SPACE_PILOT_REQUEST.json"
   ],
-  "recorded_at": "2026-10-16T14:29:59.303869+00:00",
+  "recorded_at": "2026-10-16T17:15:28.657178+00:00",
   "background_worker_running": false,
-  "next_action": "After real resource unlock and independent Lane5 resource readback, execute the single pinned existing build entry once; freeze new binary and hand Lane5 exact new source/config/trace identity. TVD/RO/ideal do not block first B16/U_WB16 pairs.",
-  "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671"
+  "next_action": "Publish request and single bounded GateWaiter; await independently approved pilot adapter/authorization. Formal50GiB path wins first; otherwise one authorized ENGINEERING_ONLY campaign, no automatic retries or scientific promotion.",
+  "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
+  "engineering_pilot": {
+    "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
+    "request_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/LOW_SPACE_PILOT_REQUEST.json",
+    "request_sha256": "3f4dfd9618602dfd3f2dc5d92d0d497987f9c6ea53088a6409648506f1c10dcb",
+    "driver_source_commit": "65500bb9db7ce5bac7cac0f24af01a2dd84f09ed",
+    "driver_sha256": "d2cdb1703c004f17c9dad124a2eeca795c25b93856b0e22573612067e58494fe",
+    "classification": "ENGINEERING_ONLY",
+    "status": "NOT_EXECUTED_WAITING_LANE5",
+    "authorization": null,
+    "central_pilot_adapter": "NOT_PRESENT_AT_INITIAL_DISCOVERY; owned exclusively by Lane5",
+    "actual_lease": null,
+    "compiler_started": false,
+    "binary_sha256": null,
+    "source_paths": {
+      "core": "/workspace/worktrees/gpgpu-sim-ep-l2-ft20261017-lane1-pilot01-source",
+      "framework": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source",
+      "vendor": "/workspace/worktrees/accel-sim-ep-l2-ft20261017-lane1-pilot01-source/gpu-simulator/extern/pybind11"
+    },
+    "build_root": "/workspace/build/ep-l2-ft20261017-lane1-r0-1-engineering-pilot01",
+    "output_root": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r8/pilot01",
+    "planned_directed_tests": 21,
+    "executed_directed_tests": 0,
+    "resource_high_water": null,
+    "formal_runtime_ready": false,
+    "formal_application_permission": false,
+    "proposed_envelope_only": true,
+    "actual_admission_calls": 0
+  },
+  "gate_waiter": {
+    "status": "PREPARED_NOT_YET_STARTED",
+    "source_commit": "65500bb9db7ce5bac7cac0f24af01a2dd84f09ed",
+    "source_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
+    "single_lock": "/workspace/ep_l2_ft20261016_shared/LANE1_GATEWAITER.lock",
+    "max_wait_seconds": 172800,
+    "cadence_seconds": 600,
+    "waiting_lease": null
+  }
 }
