@@ -1,66 +1,15 @@
-# EP-L2 Lane 5 — review_r2 continuation
+# EP-L2 Lane 5 — physical clock correction
 
-**R0_FORMAL_CAMPAIGN_RUNNING**. Same Lane 5 branch/worktree; no initial Goal
-restart. Authority review_r2 aec01450d3c527524ee09ee59242f582fafe5354.
+APPLICATION_QUALIFICATION_SUSPENDED_CLOCK_REPAIR_READY. Authority aec01450d3c527524ee09ee59242f582fafe5354. Same Framework/Core execution branch hrl/ep-l2-ft20261016-lane5-v1; no Goal restart. Host huangrulin-174. Framework worktree /workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1; new isolated test Core worktree /workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane5-v1.
 
-Framework branch: hrl/ep-l2-ft20261016-lane5-v1.
-Worktree: /workspace/worktrees/accel-sim-ep-l2-ft20261016-lane5-v1.
-Node: huangrulin-174. Core was not modified by Lane 5.
+Three frozen R0 full pairs (sad, vectorAdd_4M, cfd_097k), six runs, passed original input/terminal/lifecycle checks. Their raw logs/CSV and prior packs are preserved. Scientific application acceptance is now SUSPENDED: nonzero memcpy offset gives two grants on one physical bank/cycle. No complete cohort or primary mean. Convolution/FWT never launched; pending specs preserved. No owned simulator or resource lease remains active. Other projects were untouched.
 
-## Frozen runtime and independent qualification
+Actual independent R0 fixture groups12, illegal4, parser8 and retained old/new OFF pairs3/21 CSV comparisons remain scoped evidence. R1 incremental executions10, illegal6 and five byte-equal OFF fixture logs remain scoped evidence, but R1 normal/ideal application qualification is also suspended. Separate V1->V2 RO display projections preserve R0 keys; new detach/bypass vectors require their own gates. Clean TVD Core8ae60ff1 four actual production fixture groups PASS does not qualify final R2 or dirty paths.
 
-Producer publication 02982b65e87f170103b44c6dbd562a8ffb03841e.
-Core 126394be46b15f55b9756d43eb9ca9a9baae1c84.
-Producing Framework 37dec04d223ae65167c5584e56887c74f6540d27.
-Binary 0b504f5573ea0721709bc3439334f7f97a177286eaf73a36876403c7c9228698.
-Lane 5 runner source 8a82f2d8 (full commit in source manifest/specs).
-Only B16_BANKED/U_WB16 vectors independently qualified. Real production groups
-12 PASS, invalid combinations four rejections, terminal parser tests eight PASS.
-Three retained old/new all-OFF pairs independently audited, 21 CSV comparisons
-exact; no repeated old application simulation. Symbolic sector-version and
-request/lifecycle evidence is qualified, numerical dataless-SASS output is not
-claimed. Qualification pack: FT20261016_LANE5_R0_QUALIFICATION_r1.
+Confirmed counterexample: retained R0 archives, real force_l2_tag_update offset4096; B16 violations124, U_WB16 violations15, max2 grants per physical bank/cycle; offset0 zero violations. Terminal drain still passes. FT mixed native Tag timestamp (physical+memcpy offset) with physical lower/fill/response clock. It also clipped WB staging lifetimes to zero.
 
-## Live campaign
+Minimal runtime fix Core1565f1f04978f12e51a29fcbf9dab9a3c61b5c4e: physical GPU clock for FT banks and WB/WAD births, native Tag time unchanged, monotonic-clock assertion. Four corrected mode/offset probes PASS (max1 grant), original production directed suite and four C8/C16 partition regressions PASS. No budget/trace/oracle change. Test delta source07b6ceed; retained R0 archives explicitly hashed, never rebuilt. This is a validated repair candidate, not an official application release. Physical-bank-clock is now a mandatory future qualification gate; runner/registry/schema tests48 PASS.
 
-Five full original development workloads: sad, vectorAdd_4M, cfd_097k,
-convolutionSeparable, FWT_7_21, each B16/U_WB16 on identical frozen R0 binary.
-sad pair COMPLETE_VALID and frozen: 110593 / 110573 cycles, 1.000180876x.
-Peak staging 1 in both arms, no C16 pressure; no capacity-benefit claim.
-vectorAdd_4M COMPLETE_VALID: 73236 / 73434 cycles, speedup 0.997303701x
-(regression 0.27036%). U staged peak38 vs B16 peak16; B16 WBUF-full489576
-vs U0, but U lower-queue-full attempts1812059 vs B1272655. Attempts are
-not elapsed stall cycles. Actual capacity pressure relieved without end-to-end
-gain; copy/bank service also changes. Strong controls selected at this point.
-cfd_097k pair RUNNING with process identity in RECEIPT/registry.
-At most two simulations; 8 CPU / 32GiB global reservation, scan exclusive,
-48GiB disk and 64GiB available-memory floors unchanged. External project tasks
-are untouched. No identical finite-WBUF task existed at startup.
+Next required artifact: Lane1, the unique public integrator, freezes repaired R0.1 and R1.1 source/Framework/binary/config identities without replacing old binaries. Minimal runtime patch applies cleanly to exact R0 and R1. Lane5 then consumes the new identities, incrementally verifies the clock/lifecycle boundary, and resumes new-key pairs, followed by the selected vectorAdd static/copy controls. TVD/RO/ideal integration is not the reason for this hold.
 
-Canonical registry: /workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json,
-permanent REGISTRY.lock. Actual campaign:
-/workspace/results/ep_l2_ft20261016/lane5_r0_formal_r1/CAMPAIGN.json.
-No TVD/RO/ideal dependency blocks this R0 campaign. Each valid pair will get a
-new frozen CSV/source/raw-index review pack immediately; averages only for an
-explicit complete cohort. Failures/retardations remain visible.
-
-## Later versions
-
-R1 independent incremental qualification PASS: 10 production executions, six
-CLI rejections, five byte-equal R0/R1 OFF fixture logs. Exact Core be651ccf /
-Framework fb64d952 / binary 2d2fb082. Four complete R1 baseline specs prepared
-and four Lane4 ideal adapters preflight PASS. No R1 application launched; slots
-remain assigned to R0. R1_LANE4_HANDOFF.json binds release/specs/ownership.
-R1 diagnostic baseline must match R1 source/binary; R0 may only be a cross-binary
-OFF check. R2/R3 require new production qualification and explicit RO detach/
-bypass schema. Old module PASS is not their qualification. Strong static
-redivision/copy attribution follows a measured local effect. sad has only a tiny
-copy/bank effect without C16 pressure; it is not a capacity demonstration.
-Read-only V1-to-V2 RO projections preserve all ten R0 run keys; new explicit RO
-vectors require their own qualification. Tooling/schema tests: 47 PASS.
-The old runtime_ready=false blocker is superseded by this R0 qualification.
-
-Incremental clean TVD checkpoint independently replayed at Core 8ae60ff1:
-four actual producer groups PASS; exact producer stdout, actual lower reads
-2/64B -> 1/32B in the scripted fixture. Dirty/final R2 remains unqualified;
-no formal TVD application launched. New pack preserves the narrow scope.
+Correction pack: docs/ep_l2/review_packs/FT20261016_LANE5_MEMCPY_CLOCK_CORRECTION_r1/. APPLICATION_ACCEPTANCE.csv/json supersede scientific use of all old R0 pairs without rewriting them. R0/R1 certificate entry points explicitly suspended; R1 matched specs cannot launch. Shared registry /workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json and permanent REGISTRY.lock remain authoritative; Git snapshots never confer a lock. Quota2 long sims/8 CPU/32GiB, 48GiB disk/64GiB available-memory floors unchanged. Latest disk about49GiB free; EP results about4.9GiB.
