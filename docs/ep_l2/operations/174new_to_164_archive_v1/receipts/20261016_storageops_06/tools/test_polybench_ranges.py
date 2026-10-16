@@ -68,6 +68,16 @@ class RangeTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.receive(data,digest)
         self.assertEqual(final.read_bytes(),b'KEEP')
 
+    def test_frozen_plan_rejects_rounded_identity_and_substituted_range_hash(self):
+        data,digest=self.staged(0)
+        plan=dict(source_path=r.SPEC['source'],source_size_bytes=11,source_sha256=r.SPEC['sha256'],
+            source_dev=156,source_inode=8,source_nlink=1,source_mtime_ns=1,source_ctime_ns=1,chunk_count=3,
+            chunks=[dict(index=i,offset_bytes=i*4,size_bytes=len(self.raw[i*4:i*4+4]),sha256=hashlib.sha256(self.raw[i*4:i*4+4]).hexdigest()) for i in range(3)])
+        r.validate_plan(data,self.scope,plan)
+        with self.assertRaises(ValueError):r.validate_plan(data,self.scope,dict(plan,source_mtime_ns=99))
+        bad=copy.deepcopy(plan);bad['chunks'][0]['sha256']='b'*64
+        with self.assertRaises(ValueError):r.validate_plan(data,self.scope,bad)
+
     def test_predecessor_and_single_bridge_window_required(self):
         data,digest=self.staged(1)
         with self.assertRaises(ValueError):self.receive(data,digest)

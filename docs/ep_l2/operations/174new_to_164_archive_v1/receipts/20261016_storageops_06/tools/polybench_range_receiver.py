@@ -76,6 +76,22 @@ def range_sha(path, offset, length):
             h.update(raw);left-=len(raw)
     return h.hexdigest()
 
+def validate_plan(data,scope,plan):
+    require(plan['source_path']==SPEC['source'] and plan['source_size_bytes']==SPEC['size']
+            and plan['source_sha256']==SPEC['sha256'], 'wrong source range plan')
+    identity=scope['source_archive_identity']
+    for key,source_key in [('device','source_dev'),('inode','source_inode'),('nlink','source_nlink'),
+                           ('mtime_ns','source_mtime_ns'),('ctime_ns','source_ctime_ns')]:
+        require(type(plan[source_key]) is int and plan[source_key]==identity[key], 'plan exact source identity mismatch')
+    count=(SPEC['size']+SPEC['payload']-1)//SPEC['payload']
+    require(plan['chunk_count']==len(plan['chunks'])==count,'plan range coverage count')
+    for i,row in enumerate(plan['chunks']):
+        require(row['index']==i and row['offset_bytes']==i*SPEC['payload'] and
+                row['size_bytes']==min(SPEC['payload'],SPEC['size']-row['offset_bytes']) and
+                re.fullmatch('[0-9a-f]{64}',row['sha256']) is not None, 'plan range gap/overlap/hash')
+    row=plan['chunks'][data['chunk_index']]
+    require(row['sha256']==data['source_range_sha256'],'range differs from frozen V2 source manifest')
+
 def write_owned_state(path, state):
     require(state['owner']=='Storage-Ops' and state['archive_id']==SPEC['id'], 'wrong journal owner')
     if path.exists():
@@ -223,15 +239,20 @@ def finalize(scope, proof):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--manifest');p.add_argument('--expected-ready-sha256')
     p.add_argument('--source-scope-proof',required=True);p.add_argument('--receive',action='store_true')
+    p.add_argument('--chunk-plan',required=True,help='GitHub-pinned exact V2 source range plan')
     p.add_argument('--resume',action='store_true');p.add_argument('--finalize',action='store_true');args=p.parse_args()
     proof=json.loads(Path(args.source_scope_proof).read_text());scope_raw=(BRIDGE/'POLYBENCH_SOURCE_COPY_SCOPE.json').read_bytes()
     require(hashlib.sha256(scope_raw).hexdigest()==proof['receipt_sha256'],'source copy scope changed');scope=json.loads(scope_raw)
     validate_scope(scope,proof)
+    plan_raw=Path(args.chunk_plan).read_bytes()
+    require(hashlib.sha256(plan_raw).hexdigest()==scope['source_chunk_plan_v2_sha256'],'wrong frozen V2 range plan SHA256')
+    plan=json.loads(plan_raw)
     if args.finalize:
         require(not args.receive and not args.manifest,'finalize is a separate sole pipeline phase');print(json.dumps(finalize(scope,proof)));return
     require(args.manifest and args.expected_ready_sha256,'explicit pinned range READY required')
     raw=Path(args.manifest).read_bytes();digest=hashlib.sha256(raw).hexdigest();require(digest==args.expected_ready_sha256,'range READY changed')
     data=json.loads(raw);batch,offset,length=validate(data,scope,proof)
+    validate_plan(data,scope,plan)
     result=receive(data,digest,scope,proof,args.resume) if args.receive else dict(mode='READ_ONLY_RANGE_PLAN',batch_id=batch,offset_bytes=offset,length_bytes=length,data_written=0,source_action='SOURCE_KEEP')
     require(hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest()==digest,'range READY changed during execution')
     print(json.dumps(result))
