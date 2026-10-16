@@ -1,27 +1,143 @@
 {
-  "schema_version": 1,
-  "lane_id": 4,
-  "task_id": "FT20261016_LANE4_V1",
-  "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
-  "status": "IN_PROGRESS",
-  "host": "huangrulin-174",
-  "framework_branch": "hrl/ep-l2-ft20261016-lane4-v1",
-  "framework_source_commit": "54fbc7869f4e40b6b48dc936b527fee85dd46406",
-  "core_branch": "hrl/ep-l2-ft20261016-lane4-v1",
-  "core_source_commit": "1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e",
-  "binary_sha256": null,
-  "config_sha256": null,
-  "trace_identity": null,
-  "feature_vector": null,
-  "ideal_vector": null,
-  "dependency_receipts": [],
-  "artifacts": [],
-  "validation": {
-    "startup_duplicate_check": "PASS_NO_LANE4_FOUND",
-    "formal_experiments": "NOT_RUN"
-  },
-  "active_runs": [],
+  "active_runs": [
+    {
+      "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+      "cpu_units": 1,
+      "created_at": "2026-10-16T10:08:47.674216+00:00",
+      "host": "huangrulin-174",
+      "identity": {
+        "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea",
+        "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
+        "epoch_range": {
+          "campaign_class": "HISTORICAL_DIAGNOSTIC",
+          "scope": "full_application"
+        },
+        "feature_vector": {
+          "adaptive_policy": false,
+          "bank_count": 4,
+          "finite_wbuf": false,
+          "ops_per_bank_cycle": 1,
+          "payload_capacity_per_slice": 1152,
+          "ro": false,
+          "tvd": false,
+          "unified_wb": false,
+          "wbuf_entries": 0
+        },
+        "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
+        "ideal_vector": {
+          "meta": false,
+          "read_hit": false,
+          "wb": false
+        },
+        "runtime_config_sha256": "893d79b5bcd38cef7e20afe564f8bc1a9b358654356f567b7123f8bc6c77d994",
+        "termination_contract": {
+          "hardware_resource_drain": "64-slice B0 and ideal response/arrival closure",
+          "normal_exit": true,
+          "numeric_application_validation": "NOT_AVAILABLE_FROM_SASS_DATALESS_TRACE"
+        },
+        "trace_content_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+        "workload": "vectorAdd_4M"
+      },
+      "lease_id": "5ec16e083bef4250a51f2b38eca0bce6",
+      "memory_bytes": 8589934592,
+      "owner": "lane4",
+      "process": {
+        "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+        "pid": 594101,
+        "start_ticks": 889729961
+      },
+      "result_directory": "/workspace/results/ep_l2_ft20261016/lane4/historical_diagnostic/cffafb7d99ef03b43df2157f4376b89211a02f31f877c056396358c99818b91e",
+      "run_key": "cffafb7d99ef03b43df2157f4376b89211a02f31f877c056396358c99818b91e",
+      "scan": false,
+      "status": "RUNNING",
+      "updated_at": "2026-10-16T10:08:48.271583+00:00"
+    }
+  ],
+  "artifacts": [
+    "docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2"
+  ],
+  "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea",
   "blockers": [
-    "Formal B16 requires Lane 1 baseline/interface receipt and Lane 5 quota/registry. Independent audit/development continues."
-  ]
+    "Lane1 producer runtime_ready=true but independent qualification is false; published normal binary does not include Lane4 diagnostics.",
+    "Lane1 common integration and Lane5 independently qualified same-binary B16 baseline specs are needed; old and different-binary rows cannot fill these cells."
+  ],
+  "config_sha256": null,
+  "config_trace_null_reason": "No formal shared B16 performance identity yet; exact historical/test identities are indexed in the review pack.",
+  "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
+  "core_branch": "hrl/ep-l2-ft20261016-lane4-v1",
+  "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
+  "dependency_receipts": [
+    {
+      "lane_id": 1,
+      "publication_commit": "02982b65e87f170103b44c6dbd562a8ffb03841e",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
+      "receipt_sha256": "d18e779e5a990390845179871d38bd7f53ed48468a04a514400b70dd74e6e541"
+    },
+    {
+      "lane_id": 5,
+      "publication_commit": "c603a5634b6b3f54aec10bdb1fc804e0a648b567",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RECEIPT.json",
+      "receipt_sha256": "85aeb6b1a3c8ce86e46480ac272da91ad14fc48db28db293c6a2aea3318c858a"
+    }
+  ],
+  "feature_vector": {
+    "adaptive_policy": false,
+    "bank_count": 4,
+    "finite_wbuf": true,
+    "ops_per_bank_cycle": 1,
+    "payload_capacity_per_slice": 1168,
+    "ro": false,
+    "tvd": false,
+    "unified_wb": false,
+    "wbuf_entries": 16
+  },
+  "framework_branch": "hrl/ep-l2-ft20261016-lane4-v1",
+  "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
+  "framework_tooling_commit": "61553bd07ab548616d3bcbc9e140e40e985d90ec",
+  "historical_executed_run_keys": [
+    "9cf0ed6bef9bd5f9ba7dc08b539ab5905fe9e10a0dcc4dbd2fb844f5ba612eb3",
+    "c62c76eb4c5edca51e484bf2974f422e7eb313de1393647fb8f3ed5d9b64251b"
+  ],
+  "host": "huangrulin-174",
+  "ideal_vector": null,
+  "lane_id": 4,
+  "schema_version": 1,
+  "status": "IN_PROGRESS_LATEST_ALL_OFF_TRACE_EQUIVALENCE",
+  "task_id": "FT20261016_LANE4_V1",
+  "tested_ideal_vectors": {
+    "B16_BANKED": {
+      "meta": false,
+      "read_hit": false,
+      "wb": false
+    },
+    "I_META": {
+      "meta": true,
+      "read_hit": false,
+      "wb": false
+    },
+    "I_READ_HIT": {
+      "meta": false,
+      "read_hit": true,
+      "wb": false
+    },
+    "I_WB": {
+      "meta": false,
+      "read_hit": false,
+      "wb": true
+    },
+    "I_WB_META": {
+      "meta": true,
+      "read_hit": false,
+      "wb": true
+    }
+  },
+  "trace_identity": null,
+  "updated_at": "2026-10-16T10:09:18.265104+00:00",
+  "validation": {
+    "cpp_invocations_pass": 12,
+    "illegal_cli_rejections_pass": 6,
+    "new_formal_B16_runs": 0,
+    "new_historical_full_application_runs": 2,
+    "parser_adapter_tests_pass": 16
+  }
 }

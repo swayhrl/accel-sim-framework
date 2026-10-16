@@ -1,14 +1,32 @@
 # Lane 4 status
 
-Status: IN_PROGRESS — independent audit and diagnostic development.
+Status: IN_PROGRESS_LATEST_ALL_OFF_TRACE_EQUIVALENCE.
+Node: huangrulin-174. Branch in both repositories: `hrl/ep-l2-ft20261016-lane4-v1`.
+Framework worktree: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1`.
+Core worktree: `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1`.
+Producing Core: `b8b3d55b392fcff793d0aec684bddb73ba3065a9`; producing Framework:
+`438df99dd5138ec42acd7ae9d05e76b9b01e2e5e`; tooling: `61553bd07ab548616d3bcbc9e140e40e985d90ec`.
 
-- Coordination commit: `6c136e2a56a008695f8c8b815723bf8f1a760db9`.
-- Node: `huangrulin-174`; Framework worktree: `/workspace/worktrees/accel-sim-ep-l2-ft20261016-lane4-v1`; Core worktree: `/workspace/worktrees/gpgpu-sim-ep-l2-ft20261016-lane4-v1`.
-- Execution branch in both repositories: `hrl/ep-l2-ft20261016-lane4-v1`.
-- Framework source parent: `54fbc7869f4e40b6b48dc936b527fee85dd46406`; Core source parent: `1fc248aa89abefbd1b417f7f4053cd2bf56d7a1e`. These are provisional historical integrated parents, not a new B16 runtime.
-- Read the five frozen handoff documents; inspected process/worktree/remote-branch state. No duplicate Lane 4 task found. Other active simulator projects are preserved.
-- Current work: bounded history/result audit; default-OFF ideal interfaces and production-path tests.
-- Formal B16 experiments: DEPENDENCY_PENDING. Lane 1 BASELINE_CONTRACT_V1 and Lane 5 HOST_BUDGET/run registry were not published at the bounded startup check. No formal workload launched.
-- Lane 5 resource request: share B16 baselines; schedule four workloads {convolutionSeparable,FWT_7_21,vectorAdd_4M,sad} x {B16,I_WB,I_META,I_READ_HIT}, plus I_WB_META on convolution/FWT only. Respect single shared registry. Old-parent work, if run, will be HISTORICAL_DIAGNOSTIC.
-- Next action: finish audit and real default-OFF diagnostics/test evidence while dependencies are pending; consume exact published contracts at stage transition.
-- Review pack: not yet produced; initial status is not an acceptance claim.
+Completed: bounded historical audit, default-OFF I_WB/I_META/I_READ_HIT and
+I_WB_META, release builds, 12 production-driven C++ invocations, six illegal
+mode rejections, 16 parser/adapter tests, two central-registry-controlled
+full-application HISTORICAL_DIAGNOSTIC modes, and exact duplicate reuse check.
+VectorAdd OFF 73873 -> optimistic read reference 42918 cycles; same 56M
+instructions. This is an old-static reference, not B16/EP-L2 speedup.
+
+Formal B16 application rows: NOT_RUN. Lane1 now publishes runtime_ready=true
+at 02982b65e87f170103b44c6dbd562a8ffb03841e but independent qualification remains
+false; the normal binary lacks diagnostic registrations. Lane5 snapshot is
+c603a5634b6b3f54aec10bdb1fc804e0a648b567. Different-source/binary rows are not
+called shared baselines. Current own active simulations: one registry-owned vectorAdd all-OFF
+OLD_STATIC application equivalence control for the latest diagnostic binary.
+This is a historical validation control and cannot fill a B16 performance cell.
+The run key and actual process identity are in RECEIPT.json.
+
+Review pack: `docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2`.
+Next: Lane1 integrates CORE_MINIMAL.patch against its exact published parent;
+Lane5 independently qualifies one common binary including default-OFF ideal
+registrations and supplies B16 baseline specs. Derive/run the four first-wave
+ideal sets through the central client, with only convolution/FWT combinations.
+No Full EP-L2 dependency. Exact consumed publication/receipt hashes are in
+DEPENDENCIES.json. This candidate has not self-declared independent acceptance.
