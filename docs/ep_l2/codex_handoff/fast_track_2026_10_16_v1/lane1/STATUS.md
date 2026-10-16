@@ -11,3 +11,7 @@ Under the permanent registry lock, own inactive rebuildable .o/.a caches were so
 Source/build root: /workspace/worktrees/{accel-sim,gpgpu-sim}-ep-l2-ft20261016-lane1-r0-1; result root /workspace/results/ep_l2_ft20261016/lane1/review_r3; future build /workspace/build/ep-l2-ft20261016-lane1-r0-1. Guarded executable driver util/ep_l2/ft_lane1/build_r0_1.py refuses insufficient admission before CMake. No background continuation is running.
 
 Review docs/ep_l2/review_packs/FT20261016_LANE1_R0_1_SOURCE_CANDIDATE_r1; R0_1_SOURCE_CANDIDATE.json and current RECEIPT.json bind accurate source/config and explicit absent binary/trace-run qualification. R1.1 repair and Lane2/3 convergence follow separately without blocking R0.1.
+
+## Actual build admission checkpoint
+
+Executed the guarded official build entry once from frozen candidate Framework 34b32a017c0b3942515720aea5dd47c60a5aa038 / Core 62dc1d179b5516e68b21b695c7a9c5d0667e9671. It recorded RESOURCE_HOLD before CMake/compiler; binary SHA remains null and zero tests executed. The unchanged48GiB floor plus2GiB growth cannot be met: latest free 44765495296 bytes, floor deficit 6774112256 bytes; with growth 8921595904 bytes additional free required. Own reconstructible .o/.a cache recovery is exhausted; original binaries/data are not candidates for deletion. R0_1_BUILD_COORDINATION.json has the exact safe next command, not an active/background task.
