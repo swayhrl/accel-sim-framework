@@ -27,4 +27,4 @@ Each distinct write filesystem has one budget, folding aliases such as workspace
 
 Source/driver changes are rejected. A within-campaign repair needs a separately reviewed authorization amendment/API extension retaining the original total caps/history/deadline; this first implementation does not silently rebind pins or permit a second claim. Do not treat that limitation as permission to bypass the registry.
 
-34 new isolated pilot tests and10 affected original registry regressions pass. Positive budgets are synthetic tool fixtures only. Tests use small owned Python sleep children to verify exact PID/PGID TERM/KILL and unrelated-child survival; no actual compiler/simulator or real central pilot registration occurs.
+39 new isolated pilot tests and10 affected original registry regressions pass. Positive budgets are synthetic tool fixtures only. Tests use small owned Python sleep children to verify exact PID/PGID TERM/KILL and unrelated-child survival; no actual compiler/simulator or real central pilot registration occurs.

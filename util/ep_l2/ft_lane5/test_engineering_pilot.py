@@ -11,7 +11,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from engineering_pilot import PilotRegistry, SCHEMA, AUTHORITY, GIB, sha, validate, terminate_owned
+from engineering_pilot import PilotRegistry, SCHEMA, AUTHORITY, GIB, sha, validate, terminate_owned, verify_publication
 from registry import Registry, canonical, process_identity, DEFAULT_ROOT
 from test_lane5 import identity
 
@@ -300,6 +300,38 @@ class PilotTests(unittest.TestCase):
     def test_34_source_pin_change_stops_running_pilot(self):
         key=self.claim_ready();self.live['actual_execution_identity']['driver_sha256']='e'*64
         self.assertIn('actual source',str(self.api.monitor(key,self.auth)['reasons']))
+
+    def test_35_competitor_appearing_during_pilot_stops(self):
+        key=self.claim_ready()
+        self.change_state(lambda s:s['resource_leases'].update({'legacy':{'status':'RESERVED','kind':'build'}}))
+        self.assertIn('appeared during',str(self.api.monitor(key,self.auth)['reasons']))
+
+    def publication_fixture(self):
+        raw=json.dumps(self.auth).encode()
+        pub={**self.pub,'sha256':sha(raw)}
+        head=pub['commit']+' refs/heads/hrl/ep-l2-ft20261016-lane5-v1\n'
+        return raw,pub,head
+
+    def test_36_default_publication_verifier_exact_bytes(self):
+        raw,pub,head=self.publication_fixture()
+        with patch('engineering_pilot.subprocess.check_output',side_effect=[head,raw,self.raw]) as cmd:
+            verify_publication(self.auth,pub)
+        self.assertEqual(cmd.call_count,3)
+
+    def test_37_default_publication_stale_ref(self):
+        raw,pub,head=self.publication_fixture()
+        with patch('engineering_pilot.subprocess.check_output',return_value=head.replace('a'*40,'c'*40)),self.assertRaisesRegex(ValueError,'current'):
+            verify_publication(self.auth,pub)
+
+    def test_38_default_publication_changed_auth_bytes(self):
+        raw,pub,head=self.publication_fixture()
+        with patch('engineering_pilot.subprocess.check_output',side_effect=[head,raw+b' ']),self.assertRaisesRegex(ValueError,'forged'):
+            verify_publication(self.auth,pub)
+
+    def test_39_default_publication_changed_request_bytes(self):
+        raw,pub,head=self.publication_fixture()
+        with patch('engineering_pilot.subprocess.check_output',side_effect=[head,raw,self.raw+b' ']),self.assertRaisesRegex(ValueError,'request bytes'):
+            verify_publication(self.auth,pub)
 
     def test_28_term_kill_escalation(self):
         p=subprocess.Popen([sys.executable,'-c','import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);print("READY",flush=True);time.sleep(30)'],start_new_session=True,stdout=subprocess.PIPE,text=True)

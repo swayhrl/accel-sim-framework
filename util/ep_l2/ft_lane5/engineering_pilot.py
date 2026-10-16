@@ -258,6 +258,11 @@ class PilotRegistry:
             require(not any(r['status'] in ACTIVE for r in data['runs'].values()) and
                     not any(r['status'] in ACTIVE for r in data.get('resource_leases', {}).values()),
                     'competing EP-L2 run/build/scan lease')
+        if not entry:
+            require(not any(r['status'] in ACTIVE for r in data['runs'].values()) and
+                    not any(r['status'] in ACTIVE and (r.get('kind') != 'ENGINEERING_PILOT' or
+                        r.get('pilot_id') != auth['pilot_id']) for r in data.get('resource_leases',{}).values()),
+                    'competing heavy allocation appeared during pilot')
         for root in auth['output_roots']:
             path = Path(root['path'])
             require(str(path.resolve()) == root['resolved_path'], 'output path resolution changed')
