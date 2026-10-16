@@ -51,6 +51,10 @@ def inspect_release(receipt, acceptance, expected_core, expected_framework,
             return state('WITHDRAWN_RELEASE_REFUSED', 'old Core/binary is scientifically suspended')
     if core != expected_core or framework != expected_framework:
         return state('SOURCE_REBIND_REQUIRED', 'official source/Framework changed; re-audit before runtime')
+    if (receipt.get('engineering_only') is True or
+            'ENGINEERING' in str(receipt.get('status', '')).upper() or
+            receipt.get('scientific_scope') == 'ENGINEERING_ONLY'):
+        return state('WAIT_OFFICIAL_BINARY', 'engineering-only evidence is not an official runtime release')
     if receipt.get('runtime_ready') is not True or binary_sha is None:
         return state('WAIT_OFFICIAL_BINARY', 'pinned source has no published ready binary')
     if not isinstance(binary_sha, str) or not re.fullmatch(r'[0-9a-f]{64}', binary_sha):

@@ -37,6 +37,14 @@ class ReleaseGuard(unittest.TestCase):
     def test_event_is_never_resource_or_science_admission(self):
         self.check_state('RELEASE_CANDIDATE_VERIFIED')
 
+    def test_engineering_marker_is_not_official_release(self):
+        self.receipt['status'] = 'ENGINEERING_BUILD_EVIDENCE_ONLY'
+        self.check_state('WAIT_OFFICIAL_BINARY')
+
+    def test_engineering_flag_is_not_official_release(self):
+        self.receipt['engineering_only'] = True
+        self.check_state('WAIT_OFFICIAL_BINARY')
+
     def test_changed_core_requires_new_static_binding(self):
         self.receipt['core_source_commit'] = 'a' * 40
         self.check_state('SOURCE_REBIND_REQUIRED')
