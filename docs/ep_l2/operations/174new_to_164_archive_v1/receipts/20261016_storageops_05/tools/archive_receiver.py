@@ -82,9 +82,13 @@ def check_resources():
     require(m['source'] == 'admin-wcx@10.208.130.164:/home/shared' and
             m['fstype'] == 'fuse.sshfs', 'archive mount identity mismatch')
     require(ARCHIVE.resolve() == ARCHIVE and BRIDGE.resolve() == BRIDGE, 'root symlink')
+    bridge_mount = json.loads(subprocess.check_output(['findmnt', '-J', '-T', str(BRIDGE),
+        '-o', 'TARGET,SOURCE,FSTYPE'], text=True))['filesystems'][0]
+    require(bridge_mount['target'] == '/root/share' and bridge_mount['source'] == '/dev/md127'
+            and bridge_mount['fstype'] == 'ext4', 'bridge mount identity mismatch')
     v = os.statvfs(BRIDGE)
     require(v.f_bavail * v.f_frsize >= SHARE_FLOOR, 'BRIDGE_RESOURCE_HOLD: Share <40GiB')
-    return dict(mount=m, share_available_bytes=v.f_bavail * v.f_frsize,
+    return dict(mount=m, bridge_mount=bridge_mount, share_available_bytes=v.f_bavail * v.f_frsize,
                 archive_available_bytes=os.statvfs(ARCHIVE).f_bavail * os.statvfs(ARCHIVE).f_frsize)
 
 def validate(data, inventory=None):
@@ -110,6 +114,8 @@ def validate(data, inventory=None):
         require(data.get('owner_authorization') == 'COLD_COPY_OK' and data.get('owner'), 'owner scope missing')
         require(data.get('retention') == 'SOURCE_KEEP', 'general cold archives default SOURCE_KEEP')
         require(data.get('source_status') == 'STAGED_READY', 'cold batch not STAGED_READY')
+        require(data.get('asset_state') == 'COLD' and data.get('contains_unique_original_inputs') is False,
+                'active/unique-original inputs are outside automatic cold acceptance')
         for key in ['source_mount_namespace', 'source_mount', 'source_commit', 'source_config',
                     'producer', 'run_key', 'rehydration_recipe']:
             require(data.get(key), 'missing multi-project provenance: ' + key)
@@ -119,6 +125,7 @@ def validate(data, inventory=None):
     known = {(r['batch_id'], r['exact_source']): r for r in inventory or []}
     paths, destinations = set(), set()
     for f in files:
+        require(isinstance(f['size_bytes'], int) and 0 <= f['size_bytes'] <= LIMIT, 'invalid file size')
         require(f['source_sha256'] == f['bridge_sha256'] and
                 re.fullmatch('[0-9a-f]{64}', f['source_sha256']) is not None, 'hash mismatch/format')
         require(f['source_path'] not in paths, 'duplicate source')
@@ -151,6 +158,8 @@ def validate(data, inventory=None):
 def receive(data, manifest_sha, files, manifest_path, restore_sample=False):
     import fcntl
     resources_before = check_resources()
+    require(resources_before['archive_available_bytes'] >= data['total_size_bytes'] +
+            (files[0]['size_bytes'] if restore_sample else 0), 'archive capacity below batch and restore needs')
     lock = os.open(BRIDGE / '.TARGET_RECEIVER.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
     try:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)

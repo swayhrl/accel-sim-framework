@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+import os
 
 spec = importlib.util.spec_from_file_location('receiver_under_test', sys.argv[1])
 receiver = importlib.util.module_from_spec(spec)
@@ -54,6 +55,7 @@ class GuardChecks(unittest.TestCase):
         data = copy.deepcopy(READY)
         data.update(batch_id='DTC-COLD-TEST-001', project='DTC-L1',
             owner='unit-test-owner', owner_authorization='COLD_COPY_OK', retention='SOURCE_KEEP',
+            asset_state='COLD', contains_unique_original_inputs=False,
             source_status='STAGED_READY', source_mount='overlay:0:156',
             source_commit='1'*40, source_config='unit-test-only', producer='synthetic_fixture',
             run_key='unit-test', rehydration_recipe='unit-test-only, no actual data transfer')
@@ -64,6 +66,19 @@ class GuardChecks(unittest.TestCase):
             source_mode=0o644, readers_and_inflight_references=[])
         data.update(files=[f], file_count=1, total_size_bytes=f['size_bytes'])
         self.assertEqual(len(receiver.validate(data)), 1)
+
+    @unittest.skipUnless(os.name == 'posix', 'live receiver uses Linux flock')
+    def test_second_receiver_descriptor_is_rejected(self):
+        import fcntl
+        first = os.open(receiver.BRIDGE / '.TARGET_RECEIVER.lock', os.O_RDWR | os.O_NOFOLLOW)
+        second = os.open(receiver.BRIDGE / '.TARGET_RECEIVER.lock', os.O_RDWR | os.O_NOFOLLOW)
+        try:
+            fcntl.flock(first, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            with self.assertRaises(BlockingIOError):
+                fcntl.flock(second, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        finally:
+            os.close(second)
+            os.close(first)
 
 if __name__ == '__main__':
     unittest.main()

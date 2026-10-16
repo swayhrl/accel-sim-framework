@@ -11,3 +11,7 @@
 
 - Consumed source release receipt pinned at 5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd and SHA256 3175d4227a4e08da2c18790798755e04ce292c4e58c9ed4a8012c8059e8649d5. Verified exact 52-file set/inode/hash/size against target evidence. Source allocated release 418152448 B and real df gain 417992704 B remain distinct.
 - Under the sole receiver lock, rehashed/identity-checked and unlinked only 52 exact verified S01 bridge copies, then removed only their empty known parents; published S01_BRIDGE_CLEANED. No source-side cleanup was run here.
+
+- Deployed content-addressed target bundle 463936b35dca and ran 11 metadata-only/lock safety tests (exit 0); no second rsync or source operation.
+- Wrote immutable project index /root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/infrastructure/indexes/20261016T145931Z_20046fbeeafe.json after checking current stored receipt hash triples and destination lengths, with separately pinned source release accounting. No full history rehash.
+- Git push experienced a TLS close/reset; remote ref was checked (still old), then exact same HEAD push retried successfully with per-command OpenSSL backend. Subsequent fetch confirmed ba81c44e41eec16f8ac9b420753327059936fcbd. No data transfer was restarted.

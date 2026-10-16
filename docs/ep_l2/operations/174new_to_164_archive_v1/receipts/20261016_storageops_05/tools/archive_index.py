@@ -29,6 +29,7 @@ def inventory(source_actions=None):
                 if f['source_sha256'] != f['bridge_sha256'] or f['source_sha256'] != f['destination_sha256']:
                     raise ValueError('stored hash triple mismatch')
             records.append(dict(project=data['project'], batch_id=data['batch_id'],
+                state='DEST_VERIFIED', restore_scope=data.get('restore', {}).get('status', 'NOT_RUN'),
                 archived_bytes=data['archived_bytes'], verification_level=data['verification_level'],
                 hash_authority='stored complete SSHFS readback receipt; not a new data rehash',
                 manifest_path=str(p), manifest_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),
@@ -43,6 +44,7 @@ def inventory(source_actions=None):
                     data['source_sha256'] == data['stage_sha256'] == data['sshfs_reopened_sha256']):
                 raise ValueError('legacy backup receipt mismatch')
             records.append(dict(project='legacy-git-pack-backup', batch_id=data['batch'],
+                state='LEGACY_BYTES_PRESERVED_SOURCE_KEEP', restore_scope='NOT_RUN',
                 archived_bytes=data['size'], verification_level='SSHFS_READBACK_VERIFIED',
                 route_compliance='LEGACY_ROUTE_NOT_V4_COMPLIANT',
                 hash_authority='existing verified receipt; historical data not rehashed',
@@ -76,7 +78,7 @@ def inventory(source_actions=None):
                 raise ValueError('source action file digest mismatch')
         if action['target_receipt_sha256'] != row['manifest_sha256']:
             raise ValueError('source action references a different destination receipt')
-        row.update(source_action=action['source_action'], source_commit=proof['source_commit'],
+        row.update(state='SOURCE_RELEASED', source_action=action['source_action'], source_commit=proof['source_commit'],
             source_receipt_sha256=proof['receipt_sha256'],
             source_confirmed_released_allocated_bytes=action['source_released_allocated_bytes'],
             source_df_free_before_after=dict(before=action['df_free_before_bytes'], after=action['df_free_after_bytes'],

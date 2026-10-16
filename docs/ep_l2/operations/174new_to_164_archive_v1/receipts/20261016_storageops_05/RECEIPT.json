@@ -1,31 +1,73 @@
 {
   "schema": "STORAGE_OPS_V6_TARGET_REV05",
-  "snapshot_at": "2026-10-16T14:30:03.971478+00:00",
+  "snapshot_at_utc": "2026-10-16T15:03:17.817161+00:00",
   "amendment_sha": "837ca9e1a6cf520f14a381416ef65f9b05cc3f83",
-  "prior_target_sha": "ffdcc4aef83ce3de631e3f81ebbeb0de466bc64f",
+  "previous_target_revision": "ffdcc4aef83ce3de631e3f81ebbeb0de466bc64f",
   "v5_handshake_preserved": true,
   "new_nonce_created": false,
   "new_pack_backups": 0,
   "legacy_pack_sources": "SOURCE_KEEP",
   "S01": "SOURCE_RELEASED_AND_BRIDGE_CLEANED",
-  "S02": "AWAIT_SOURCE_READY",
+  "S02": "PENDING_SOURCE_READY",
   "s01_archived_bytes": 418020580,
   "legacy_archived_bytes": 12415140272,
   "total_primary_archived_bytes": 12833160852,
+  "dest_verified_new_batches": [
+    "S01"
+  ],
+  "source_released_logical_bytes": 418020580,
   "source_confirmed_released_allocated_bytes": 418152448,
+  "source_df_free_observed_gain_bytes": 417992704,
   "source_df_before_after": {
     "before": 38039896064,
     "after": 38457888768,
-    "delta": 417992704,
-    "namespace": "mnt:[4026534768]"
+    "namespace": "mnt:[4026534768]",
+    "source_commit": "5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd"
   },
   "verified_restore_bytes": 8234735,
   "restore_scope": "ONE_FILE_SAMPLE_NOT_FULL_BATCH",
-  "receiver_tool": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/infrastructure/tools/archive_receiver_0f69f4050894.py",
-  "receiver_tool_sha256": "0f69f4050894fea8cde7fd65948c1a3455b8626d601d7a8ae43f8ff3740d6501",
-  "dry_run_exit": 0,
-  "only_one_target_rsync_pipeline": true,
+  "target_executed_source_deletions": 0,
+  "source_release_owner": "existing old174 Source Ops",
+  "only_one_receiver_pipeline": true,
+  "receiver_default": "READ_ONLY_DRY_RUN",
+  "current_bundle": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/infrastructure/tools/v6_463936b35dca",
+  "guard_tests": 11,
+  "guard_test_exit": 0,
+  "project_index": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/infrastructure/indexes/20261016T145931Z_20046fbeeafe.json",
+    "sha256": "d90d192678749e479755bd87f2321ae70306d94fbe8a850a53d7b7ae98e214d7",
+    "projects": {
+      "EP-L2": {
+        "batches": 1,
+        "archived_bytes": 418020580,
+        "verified_restore_bytes": 8234735,
+        "source_confirmed_released_allocated_bytes": 418152448,
+        "source_df_free_delta_bytes": 417992704
+      },
+      "legacy-git-pack-backup": {
+        "batches": 36,
+        "archived_bytes": 12415140272,
+        "verified_restore_bytes": 0,
+        "source_confirmed_released_allocated_bytes": 0,
+        "source_df_free_delta_bytes": 0
+      }
+    },
+    "archived_bytes": 12833160852,
+    "verified_restore_bytes": 8234735,
+    "source_confirmed_released_allocated_bytes": 418152448,
+    "source_df_free_before_after": [
+      {
+        "batch_id": "S01",
+        "before": 38039896064,
+        "after": 38457888768,
+        "delta": 417992704,
+        "source_namespace": "mnt:[4026534768]"
+      }
+    ]
+  },
+  "scientific_and_dtc_source_scope": "SOURCE_OWNER_ONLY_NOT_SCANNED_OR_INFERRED_BY_TARGET",
   "native_server_verified": false,
-  "source_release_commit": "5e5ca557e35bb4763d2af4bac9752fad3dc0d3bd",
-  "target_executed_source_deletions": 0
+  "build_admission_floor_bytes": 51539607552,
+  "build_admission_target_bytes": 53687091200,
+  "lane5_independent_post_release_admission": "NOT_REPORTED"
 }
