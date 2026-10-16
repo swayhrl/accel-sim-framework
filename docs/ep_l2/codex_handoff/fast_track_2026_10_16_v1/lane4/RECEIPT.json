@@ -1,34 +1,38 @@
 {
+  "R1_1_matched_baseline_specs": null,
   "R1_matched_baseline_specs": null,
   "R1_release_identity": null,
   "active_runs": [],
+  "application_scientific_qualification": "SUSPENDED_FOR_OLD_FT_SOURCE_REVIEW_R3",
   "artifacts": [
     "docs/ep_l2/review_packs/FT20261016_LANE4_IDEAL_DIAGNOSTICS_r2",
     "docs/ep_l2/review_packs/FT20261016_LANE4_OFF_EQUIVALENCE_r1",
-    "docs/ep_l2/review_packs/FT20261016_LANE4_R1_HANDOFF_r1"
+    "docs/ep_l2/review_packs/FT20261016_LANE4_R1_HANDOFF_r1",
+    "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R3_REPAIR_AUDIT_r1"
   ],
   "binary_sha256": "63f26de29e2b1932062934044cb3131fa5e2d36fa9821094939188bceb66a8ea",
   "blockers": [
-    "R1 only: awaiting Lane1 independently versioned common diagnostic release, Lane5 normal/per-requested-mode qualification, and same-R1-binary B16 baseline specs."
+    "No official repaired R1.1 source/binary, new repair+ideal independent qualification or same-binary B16 specs yet.",
+    "Workspace free 45295710208 bytes at audit versus unchanged 51539607552-byte floor; no build/admission attempted."
   ],
   "config_sha256": null,
-  "config_trace_null_reason": "No qualified common R1 performance identity exists. Candidate binary/tests and historical inputs remain bound in prior packs; R0 normal release is independent and does not require ideals.",
-  "continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
+  "config_trace_null_reason": "No new repaired application input identity exists; old historical manifests/raw and suspended FT results remain preserved, never filled into R1.1 cells.",
+  "continuation_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "core_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "core_source_commit": "b8b3d55b392fcff793d0aec684bddb73ba3065a9",
   "dependency_receipts": [
     {
       "lane_id": 1,
-      "publication_commit": "2556909e55bb43c1d819f8c0417f5fc8b93630d9",
-      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT.json",
-      "receipt_sha256": "7c7b60ff911984feba1c10aec8852535eec428a402a2452f5355dc4a5c823964"
+      "publication_commit": "3840f9585b710a5abea8201c14fa05cdea930aa7",
+      "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/RECEIPT_REVIEW_R3.json",
+      "receipt_sha256": "bb9958263c0b6cca2d8b792f23e9ae8f5572efec29dded9118f4e723ecf9615b"
     },
     {
       "lane_id": 5,
-      "publication_commit": "c603a5634b6b3f54aec10bdb1fc804e0a648b567",
+      "publication_commit": "b134f76d8f4cd759c0852b68edf922ecbd445ea9",
       "receipt_path": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane5/RECEIPT.json",
-      "receipt_sha256": "85aeb6b1a3c8ce86e46480ac272da91ad14fc48db28db293c6a2aea3318c858a"
+      "receipt_sha256": "47f877b4e9274b1a907ab0dcad3c42c6d1d78ace2a7a0294bae4af1ae7f33ced"
     }
   ],
   "dependency_receipts_at_pack_generation": [
@@ -58,12 +62,26 @@
   },
   "framework_branch": "hrl/ep-l2-ft20261016-lane4-v1",
   "framework_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e",
-  "framework_tooling_commit": "83db0e3c9a6498a26d8c24538a07f85e220d0f9d",
+  "framework_tooling_commit": "194871cb694057b499ee75724cc7b428b9d0c319",
   "historical_executed_run_keys": [
     "9cf0ed6bef9bd5f9ba7dc08b539ab5905fe9e10a0dcc4dbd2fb844f5ba612eb3",
     "c62c76eb4c5edca51e484bf2974f422e7eb313de1393647fb8f3ed5d9b64251b",
     "cffafb7d99ef03b43df2157f4376b89211a02f31f877c056396358c99818b91e"
   ],
+  "historical_validation": {
+    "R0_binary_identity_unchanged": "PASS_HASH_INODE_SIZE_MTIME",
+    "R0_to_R1_private_index_patch_replay": "PASS_COMPLETE_TREE_EQUAL",
+    "cpp_invocations_pass": 12,
+    "illegal_cli_rejections_pass": 6,
+    "latest_binary_off_equivalence": "PASS_VECTOR_73873_CYCLES_56000000_INSTRUCTIONS_7_CSV_BYTE_IDENTICAL",
+    "new_R1_binding_tests_pass": 19,
+    "new_formal_B16_runs": 0,
+    "new_historical_full_application_runs": 3,
+    "new_latest_binary_all_off_controls": 1,
+    "new_simulations_this_continuation": 0,
+    "parser_adapter_tests_pass": 16,
+    "reexecuted_legacy_application_runs_this_continuation": 0
+  },
   "host": "huangrulin-174",
   "ideal_vector": null,
   "lane_id": 4,
@@ -73,13 +91,21 @@
     "lane1_new_R0_handoff": "2556909e55bb43c1d819f8c0417f5fc8b93630d9",
     "note": "R1_HANDOFF_r1 retains the dependency snapshot taken when generated; final readback observed this R0 handoff-only publication."
   },
+  "legacy_diagnostic_scope": "Old STATIC vectorAdd optimistic read reference remains historical only, not new R0.1/R1.1 accepted performance or a strict ceiling.",
+  "previous_continuation_commit": "aec01450d3c527524ee09ee59242f582fafe5354",
   "priority_contract": {
-    "R0_is_not_exact_R1_matched_baseline": true,
-    "R0_main_experiment_owner": "lane5",
-    "R0_qualification_and_B16_U_WB16_may_proceed_now": true,
-    "R0_release_frozen": true,
-    "R0_requires_ideal_patch": false
+    "Lane4_builds_this_continuation": 0,
+    "Lane4_simulations_this_continuation": 0,
+    "R0_1_does_not_wait_for_Lane4_TVD_RO": true,
+    "R0_1_recovery_first": true,
+    "disk_floor_bytes_unchanged": 51539607552,
+    "independent_qualification_owner": "lane5",
+    "official_repair_owner": "lane1",
+    "old_R0_R1_formal_performance_withdrawn": true
   },
+  "repaired_R0_1_release": null,
+  "repaired_R1_1_release": null,
+  "runtime_identity_scope": "Top-level Core/Framework/binary identify frozen affected Lane4 candidate, not official R1.1 or an accepted application release.",
   "runtime_source_hygiene": {
     "configure_note": "The build stamp modified_2.0 records only pre-existing Lane4 STATUS/RECEIPT documentation edits at configure; runtime sources match the producing Framework commit.",
     "core_clean_and_pinned": true,
@@ -87,7 +113,22 @@
     "framework_runtime_source_commit": "438df99dd5138ec42acd7ae9d05e76b9b01e2e5e"
   },
   "schema_version": 1,
-  "status": "R1_HANDOFF_READY_DEPENDENCY_PENDING_COMMON_R1_RELEASE",
+  "scientific_authority": {
+    "application_acceptance_snapshot": "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R3_REPAIR_AUDIT_r1/LANE5_APPLICATION_ACCEPTANCE.json",
+    "lane5_publication": "b134f76d8f4cd759c0852b68edf922ecbd445ea9",
+    "new_CURRENT_ACCEPTED_application_rows": 0,
+    "old_execution_terminals_preserved": true,
+    "review_commit": "a41bfb55934303a4d4a342762f74a16d137d0316",
+    "scientific_hold_snapshot": "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R3_REPAIR_AUDIT_r1/LANE5_SCIENTIFIC_HOLD.json"
+  },
+  "static_candidate_tag_timestamp_patch": {
+    "new_core_commit": null,
+    "parent_tree": "7190ad8ab42ddbb640f80b47db6f5e447535972b",
+    "patch": "docs/ep_l2/review_packs/FT20261016_LANE4_REVIEW_R3_REPAIR_AUDIT_r1/CORE_IDEAL_TAG_TIMESTAMP_ONLY_CANDIDATE.patch",
+    "result_tree": "a059a8397a28add5b90bd7db0bd87f3f93fa38b9",
+    "status": "UNCOMPILED_NOT_QUALIFIED"
+  },
+  "status": "R1_1_SOURCE_AUDIT_READY_APPLICATION_SCIENTIFIC_HOLD",
   "task_id": "FT20261016_LANE4_V1",
   "tested_ideal_vectors": {
     "B16_BANKED": {
@@ -117,19 +158,19 @@
     }
   },
   "trace_identity": null,
-  "updated_at": "2026-10-16T10:36:55.870588+00:00",
+  "updated_at": "2026-10-16T12:08:55.530314+00:00",
   "validation": {
-    "R0_binary_identity_unchanged": "PASS_HASH_INODE_SIZE_MTIME",
-    "R0_to_R1_private_index_patch_replay": "PASS_COMPLETE_TREE_EQUAL",
-    "cpp_invocations_pass": 12,
-    "illegal_cli_rejections_pass": 6,
-    "latest_binary_off_equivalence": "PASS_VECTOR_73873_CYCLES_56000000_INSTRUCTIONS_7_CSV_BYTE_IDENTICAL",
-    "new_R1_binding_tests_pass": 19,
-    "new_formal_B16_runs": 0,
-    "new_historical_full_application_runs": 3,
-    "new_latest_binary_all_off_controls": 1,
-    "new_simulations_this_continuation": 0,
-    "parser_adapter_tests_pass": 16,
-    "reexecuted_legacy_application_runs_this_continuation": 0
+    "actual_old_R0_rows_rejected": 6,
+    "actual_old_R1_CLI_rejections": 4,
+    "binding_regression_tests_pass": 20,
+    "new_scientific_acceptance_tests_pass": 21,
+    "new_simulations": 0,
+    "private_index_repair_replays_pass": 2,
+    "producing_tool_commit": "194871cb694057b499ee75724cc7b428b9d0c319",
+    "repaired_binary": null,
+    "repaired_runtime_production_tests": 0,
+    "runtime_config": null,
+    "scope": "SOURCE_AND_RUNNER_ONLY_NO_REPAIRED_RUNTIME_PASS",
+    "trace": null
   }
 }
