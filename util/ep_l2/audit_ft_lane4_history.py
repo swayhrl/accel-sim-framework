@@ -125,20 +125,40 @@ def main():
     fields = ["asset", "classification", "relaxed_resources", "retained_or_missing_constraints",
               "evidence_path", "new_B16_comparable", "binary_sha256", "config_sha256",
               "trace_identity", "terminal", "feature_vector", "ideal_vector",
-              "core_source_commit", "framework_source_commit", "raw_log", "raw_log_sha256"]
+              "core_source_commit", "framework_source_commit", "raw_log", "raw_log_sha256",
+              "evidence_repository", "evidence_commit", "evidence_sha256"]
+    anchors = {
+        'D256_D512_L1_CALIBRATION':('framework','aa44f9e8d685b6f9bbe410b996e07ef185a8de96'),
+        'LINE_MSHR_M256':('framework','b7dbdecb94054f08aaf2e33bfef48e453747ceb5'),
+        'WBUF_SHADOW_C4_C8_C16':('framework','11cbd5a79127ad2fedf9801969a656be73fead96'),
+        'H_SCHED_H_L2D_H_BW':('framework','b7dbdecb94054f08aaf2e33bfef48e453747ceb5'),
+        'OLD_L2_IDEAL_SWITCH':('core','0cde333340792cffed869cbbc7e7dc88667c6b8b'),
+        'LATEBIND_ORACLE1_INFINITE_MSHR':('framework','bfb58581d551b7b5a6246780e8cf6543b6d76fbe'),
+        'LATEBIND_ORACLE4_IDEAL_WRITEBACK':('framework','bfb58581d551b7b5a6246780e8cf6543b6d76fbe'),
+    }
     with (a.out / "REUSE_AUDIT.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields); w.writeheader()
         for asset, classification, relaxed, constraints, path in entries:
+            kind, commit = anchors[asset]
+            repo = a.framework if kind=='framework' else a.core
+            blob = subprocess.check_output(['git','-C',str(repo),'show',commit+':'+path])
             w.writerow(dict(asset=asset, classification=classification, relaxed_resources=relaxed,
                             retained_or_missing_constraints=constraints, evidence_path=path,
                             new_B16_comparable="NO", binary_sha256="NOT_ESTABLISHED_FOR_NEW_B16",
                             config_sha256="SEE_ORIGINAL_RUN_AUDIT", trace_identity="SEE_ORIGINAL_RUN_INDEX",
-                            terminal="SEE_ORIGINAL_EVIDENCE", feature_vector="HISTORICAL",
-                            ideal_vector="NOT_A_QUALIFIED_NEW_IDEAL"))
+                            terminal="AGGREGATE_OR_SOURCE_CONTRACT_SEE_RUN_ROWS", feature_vector="HISTORICAL_SEE_RUNTIME_ROWS",
+                            ideal_vector="DEFINED_NOT_ASSERTED_EXECUTED; NOT_A_QUALIFIED_NEW_IDEAL",
+                            core_source_commit=commit if kind=='core' else 'MULTIPLE_OR_SOURCE_ONLY_SEE_RUNTIME_ROWS',
+                            framework_source_commit=commit if kind=='framework' else 'NOT_APPLICABLE_CORE_SOURCE_ANCHOR',
+                            raw_log='SEE_ORIGINAL_RUN_INDEX',raw_log_sha256='SEE_ORIGINAL_RUN_INDEX',
+                            evidence_repository=str(repo),evidence_commit=commit,
+                            evidence_sha256=hashlib.sha256(blob).hexdigest()))
         for mode in ("I_WB", "I_META", "I_WB_META", "I_READ_HIT"):
             w.writerow(dict(asset=mode + "_B16", classification="ABSENT",
                             relaxed_resources="NOT_RUN", retained_or_missing_constraints="No source/config/binary/trace matched B16 result found at audit",
-                            new_B16_comparable="NOT_RUN", terminal="NOT_RUN"))
+                            new_B16_comparable="NOT_RUN", terminal="NOT_RUN",
+                            evidence_path=str(a.out/'HISTORY_SEARCH.json'),
+                            evidence_sha256=digest(a.out/'HISTORY_SEARCH.json')))
         # Preserve each retained runtime identity. Missing provenance remains
         # explicit, rather than promoting same-name workloads or guessed OFF bits.
         status_paths = sorted({p for root in roots for p in Path(root).rglob('run_status.json')
@@ -166,7 +186,9 @@ def main():
                             feature_vector=json.dumps(value('ep_l2_features', 'feature_vector'), sort_keys=True),
                             ideal_vector=json.dumps(value('ideal_vector'), sort_keys=True),
                             raw_log=value('raw_log_gz', 'raw_log'),
-                            raw_log_sha256=value('raw_log_gz_sha256', 'raw_log_sha256')))
+                            raw_log_sha256=value('raw_log_gz_sha256', 'raw_log_sha256'),
+                            evidence_repository='NODE_RETAINED_RUNTIME',evidence_commit='SEE_RUNTIME_SOURCE_COLUMNS',
+                            evidence_sha256=digest(p)))
     print(json.dumps({"framework_refs": len(data['framework']['refs']),
                       "core_refs": len(data['core']['refs']),
                       "local_metadata_files": sum(data['local_results']['metadata_files_searched'].values()),
