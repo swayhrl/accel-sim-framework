@@ -1,7 +1,7 @@
 {
   "schema_version": "EP_L2_FT_RECEIPT_V1",
   "lane_id": 1,
-  "task_id": "FT20261017_LANE1_R11_CONTINUE_START_r1",
+  "task_id": "FT20261017_LANE1_R11_CONTINUE_CHECKPOINT_01",
   "status": "BOUNDED_CONTINUE_ACTIVE_FORMAL_RESOURCE_WAIT_PILOT_INDEPENDENTLY_DENIED",
   "coordination_commit": "6c136e2a56a008695f8c8b815723bf8f1a760db9",
   "review_coordination_commit": "6917bc6a76d1f71097b0f2d093372097669397d2",
@@ -168,18 +168,10 @@
     }
   },
   "resource_observation": {
-    "recorded_at": "2026-10-16T17:59:32.077818+00:00",
-    "filesystems": {
-      "/workspace": {
-        "f_bavail_bytes": 27458867200,
-        "device": 156,
-        "fsid": 1349835467748716946
-      },
-      "/root/share": {
-        "f_bavail_bytes": 47105363968,
-        "device": 2431,
-        "fsid": 2757854780513707398
-      }
+    "recorded_at": "2026-10-16T18:58:09.933538+00:00",
+    "f_bavail_bytes": {
+      "/workspace": 24961470464,
+      "/root/share": 47103668224
     },
     "central_active": {
       "runs": {},
@@ -227,7 +219,7 @@
     "docs/ep_l2/review_packs/FT20261017_LANE1_R8_BOUNDED_WAIT_r2",
     "docs/ep_l2/review_packs/FT20261017_LANE1_R11_CONTINUE_START_r1"
   ],
-  "recorded_at": "2026-10-16T17:59:32.077818+00:00",
+  "recorded_at": "2026-10-16T18:58:09.933538+00:00",
   "background_worker_running": true,
   "next_action": "Continue this live bounded Goal until legal build event, its10h deadline, user stop or unsafe unresolvable boundary. Reuse existing waiter unchanged; prioritize formal build/21 production tests and release freeze for Lane5 independent11 gates. Never claim Lane5 PASS or launch formal applications.",
   "previous_core_source_commit": "62dc1d179b5516e68b21b695c7a9c5d0667e9671",
@@ -295,7 +287,7 @@
     "source_sha256": "58a44e056414d1ca947c51263f929279ba12d56e4c679275836c05b381497795",
     "pilot_id": "EP_L2_R0_1_ENGINEERING_20261017_L1_P01",
     "invocations": 0,
-    "last_observed_at": "2026-10-16T17:56:40.272889+00:00",
+    "last_observed_at": "2026-10-16T18:57:05.141439+00:00",
     "last_state": {
       "policy": {
         "boot_id": "59e1e1a4-84b6-431f-ac2d-03e340207019",
@@ -318,11 +310,11 @@
         "device": 156,
         "fsid": 1349835467748716946,
         "block_bytes": 4096,
-        "available_bytes": 27505860608,
-        "free_including_reserved_bytes": 219560435712,
+        "available_bytes": 25035677696,
+        "free_including_reserved_bytes": 217090252800,
         "total_bytes": 3779302981632
       },
-      "available_memory_bytes": 206844567552
+      "available_memory_bytes": 204655869952
     },
     "output": "/root/share/workspace_migrated_20260905/results/ep_l2_ft20261016/lane1/review_r8/gate_waiter_r2"
   },
@@ -372,7 +364,7 @@
   },
   "continue_goal": {
     "status_at_recording": "ACTIVE",
-    "recorded_at_utc": "2026-10-16T17:59:32.077818+00:00",
+    "recorded_at_utc": "2026-10-16T18:58:09.933538+00:00",
     "t0_utc": "2026-10-16T17:56:33+00:00",
     "deadline_utc": "2026-10-17T03:56:33+00:00",
     "deadline_beijing": "2026-10-17T11:56:33+08:00",
@@ -436,5 +428,12 @@
         }
       ]
     }
+  },
+  "continue_checkpoint": "docs/ep_l2/codex_handoff/fast_track_2026_10_16_v1/lane1/continue_r11/CHECKPOINT_01.json",
+  "latest_ops_observation": {
+    "source_publication": "e4e24527f3d711ba87049667d91fa6c846ea12cf",
+    "target_publication": "d395621a69a80f695701f12190e8f5975c07dca5",
+    "verified_polybench_ranges": 17,
+    "actual_source_release_bytes": 0
   }
 }
