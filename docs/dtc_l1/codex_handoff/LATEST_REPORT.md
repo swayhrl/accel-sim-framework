@@ -1,5 +1,28 @@
 # Latest Codex Report
 
+## Lane A LUD trio checkpoint —2026-10-16 11:57 UTC
+
+The same Goal174 remains active: **25 terminal/invariant PASS,16 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two of the25 numeric PASS rows retain Hotspot scientific-promotion HOLD. Each of41 started labels has one attempt; no simulator, Goal, branch, input or identity was restarted or replaced. [Current immutable row states, raw-derived comparisons, residence, pressure and hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T115709Z).
+
+LUD's finite IO/OO completed naturally and independently passed full strict re-collection matching their immutable watcher receipts. All three LUD arms cover94/94 ordered members and184963840 active-thread instructions. IO/OO/TRAD96 cycles are1091956/1086574/1072561; both finite-arm regressions versus enhanced traditional remain unchanged. Finite elapsed times are13:45.52/13:43.67 and peakRSS733184/729088KiB. Config/source/binary/runner/input/resource identities, full epoch/kernel/instruction scope, credit/reference/physical/PIB drains, service retirement/collection balances, residence decomposition and all64-SM cycle denominators pass. [Full trio strict and process/resource proof](../iscas2027/service_closure_174_v1/review_pack/lud_primary_trio_v1).
+
+Six complete primary trios are now available; incomplete workloads are retained in the full state table, and no aggregate is computed:
+
+| Workload | IO256 cycles | OO128 cycles | TRAD96 cycles |
+|---|---:|---:|---:|
+| 2DConvolution | 626642 | 592346 | 1559265 |
+| Btree | 247940 | 173210 | 186621 |
+| DWT2D | 241794 | 237887 | 247588 |
+| MRI-Q | 361574 | 361439 | 362244 |
+| NN | 6132 | 6132 | 6087 |
+| LUD | 1091956 | 1086574 | 1072561 |
+
+Primary IO256/OO128 have different active depths; these are fixed-input model performance/resource observations, not the matched128 causal comparison, equal-area results or native GPU speedup. The separately audited Btree matched128 pair remains valid; BICG/2D controls are live and Hotspot controls forbidden. Gaussian's enhanced traditional result3379152 cycles versusIO3799499 remains retained whileOO runs. All baseline reuse and source exceptions remain explicit.
+
+All16 remaining simulator PIDs retained start ticks and increased CPU ticks. At11:57:23 UTC, own RSS was37.7GiB, MemAvailable248.4GiB and writable capacity42.6GiB. Both original supervisors and strict watcher remain live. Every eligible independent row is already launched; free slots add no conditions. The16 strict finite rows report zero32768-cap-full events, including preserved Hotspot numeric rows whose promotion remains HOLD; no peak or absence of other bottlenecks is inferred, and no cap is retuned.
+
+Modern DTC remains HOLD under the128KiB capacity/port contract. Hotspot's three forbidden labels remain unstarted, with external Lane B owning provenance. Four modern baseline-only results and15 native109 cases remain preserved; SpMV/LayerNorm remain NOT_ADMITTED. No incomplete GM12, replacement GM11, pooled GM14 or native-DTC claim is computed. [27-item closure ledger](../iscas2027/service_closure_174_v1/CLOSURE_REQUIREMENTS_V1.tsv). This checkpoint is published with exact fetch-back HEAD/tree/cleanliness proof at `/workspace/dtc-service-closure-174-v1/FETCH_BACK_LATEST.json`; Goal completion remains unproven while registered rows are live.
+
 ## Lane A Gaussian terminal checkpoint —2026-10-16 11:55 UTC
 
 The same Goal174 remains active: **23 terminal/invariant PASS,18 live,3 Hotspot admission HOLD,0 eligible unstarted**. Two of the23 numeric PASS rows remain Hotspot scientific-promotion HOLD. No existing simulation, Goal, branch, input or identity was restarted or replaced. [Full current row states, comparisons, metrics and raw hashes](../iscas2027/service_closure_174_v1/review_pack/checkpoint_20261016T115522Z).
