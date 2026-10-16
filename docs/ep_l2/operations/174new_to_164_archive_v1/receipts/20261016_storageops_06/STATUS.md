@@ -1,4 +1,4 @@
-# V7 target: S02 DEST_VERIFIED; source action pending
+# V7 target: S01/S02 closed; owner-scoped cold projects next
 
 V7 5e1df072495cdc9ee3bb84ac593d84387924c037 was read in full. Original target Goal and V5 handshake continue. No new nonce, historical pack copy, source scanner, source copier, or concurrent transfer worker was created.
 
@@ -9,3 +9,7 @@ S02: 50 files / 403579225 B, one already validated V6 receiver and one 30MiB/s e
 V7 project offload is source-owner scoped: target will consume ranked exact cold project manifests, maintain source/archive/restore mappings, receive <=512MiB batches on the same stream and verify all files. Scientific project source release needs complete migration/recovery evidence and an explicit user-approved exact manifest; target never grants that permission. Original Git packs and objects remain SOURCE_KEEP. Current tools are being minimally extended for idempotence/owned incomplete-copy resume and default no-overwrite restore plans, without delaying S02.
 
 Confirmed actual source df gain remains 417992704 B until S02/source project receipts arrive. The recorded source free space is not sufficient evidence of 50GiB build admission. No formal research task was stopped, restarted or modified; all gates remain unchanged.
+
+S02 closeout update: exact independently published source receipt at e9f9d05acdd9cb960dd3823a97155597be8929ba / SHA256 2406ca45f1b0a53c1501eff08e9b47a1b6a7b031110344d7e6bdb8fad9a2fa0d confirms 50 releases, 403701760 allocated bytes and df gain 394625024 B. Target removed only matching verified bridge copies and empty known parents and published S02_BRIDGE_CLEANED. S01/S02 totals: 821599805 logical archived bytes, 821854208 allocated bytes released, and 812617728 B summed real df action-window gains. These are distinct, and the later source df remains below 50GiB.
+
+Consumed source priority/map at a9a0f021a0b98d54dc3f47710dc5a3344ea018c7: R1 4785803264 B, R1R 3594420224 B, R2 3459518464 B (directory-inclusive upper bounds, not actual recovery). All 47552 file hashes and directory metadata are source-published, but no project destination batch or restore closure exists yet. All three remain COPY_OK_ONLY/SOURCE_KEEP, no release approval requested prematurely. The source restore template requires namespace correction: authenticated SSHFS is on 174-new but original /workspace paths belong to old174; target will not create a false local mapping or execute the template as a write.
