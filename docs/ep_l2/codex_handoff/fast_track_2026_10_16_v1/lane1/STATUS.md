@@ -1,15 +1,9 @@
-# Lane1 review_r8 — 请求已交付，单一有界等待器运行中
+# Lane1 r8 — r2请求已对齐真实Lane5 API，等待独立资源核准
 
-同原Lane1 Goal，节点huangrulin-174，执行分支hrl/ep-l2-ft20261016-lane1-v1；没有重启Goal。已依次完整消费r7/r8，最新协调56a0517d3a5941a0a870b50e8c915a8a36b9ee5d。准确初始输入仍Corec9481845、Framework3ab150b3、vendorf90c430c；原正式driver/Registry/48GiB+2GiB与科学合同未改。
+继续原Lane1 Goal，未重启。初始Corec9481845/Framework3ab150b3/vendorf90c430c和原科学/正式资源政策不变。Lane5新交付300c1010已实现受测API205782b9，但NO_SAFE_PILOT_ENVELOPE审查读的是旧Lane1_ref85534de。r2已补齐execution_identity/locations/output_roots及准确driver/build-entry/repair_commands哈希，不把旧拒绝当许可，量化未知项仍需其独立核准。
 
-pilot_id EP_L2_R0_1_ENGINEERING_20261017_L1_P01。准确LOW_SPACE_PILOT_REQUEST raw SHA256 3f4dfd9618602dfd3f2dc5d92d0d497987f9c6ea53088a6409648506f1c10dcb；请求已在248c93acc611679afe42590760481f451773003d push/fetch/readback，并提交中央pilot_requests/EP_L2_R0_1_ENGINEERING_20261017_L1_P01/REQUEST_POINTER.json。当前尚无Lane5有效授权或其中央一次性adapter，不能调用CMake。提议预算不是已批准门槛。
+请求LOW_SPACE_PILOT_REQUEST.json revision2、driver代码1c544c4aa97ccb8fac7c63e700929a5d7acfa6fd。17项caller检查、3项真实Lane5代码的私有ledger集成和1项CPU约束受影响回归PASS。真实中央register/claim0，CMake0、C++0、21定向0、binary=null、资源峰值=null，正式科学pair0。旧R0/R1继续SUSPENDED，DTC/C16资产/进程/配额未改。
 
-唯一GateWaiter实际PID **1137150**，start_ticks 892302037，boot 59e1e1a4-84b6-431f-ac2d-03e340207019，独占锁LANE1_GATEWAITER.lock已验证持有；每600s核查，截止北京时间 **2026-10-19T01:17:29.094696+08:00**，不占等待lease。状态/原始source/hash见GATEWAITER_STATE.json与中央LANE1_GATEWAITER_STATUS.json。只在标准50GiB先满足且两次>=60s确认后优先正式入口；否则需准确Lane5授权+已测试中央一次性路径+现场全条件合法后才运行一个ENGINEERING_ONLY campaign。pilot与正式路径共用执行mutex，不能并发或无限retry。
+仅为API兼容升级停止了本Lane原空闲GateWaiter1137150及其完成发布监听1141719：均精确PID/start验证、dispatch0、central lease/token0。旧日志/pack保留。即将发布请求r2并启动唯一替换控制程序，沿用原2026-10-19北京时间01:17:29截止，不能延长48h或与旧PID并存。启动后的准确PID/锁以新receipt为准。
 
-结束发布器实际PID **1141719**，单独锁LANE1_OUTCOME_PUBLISHER.lock已验证持有；代码4bf87acd0f43c6078c67e7b21daca6486a0590b5。它只在kernel pidfd等待上述现有进程退出，不轮询磁盘/Git/registry、不创建第二GateWaiter。结束后新建outcome pack，记录真实构建/测试、资源高水位、二进制与stop/lease身份，在本Lane工作树干净且请求一致时提交、普通push并远端回读。不会把工程结果升级科学资格；正式build事件也需正常release冻结审核，不自动授予独立证书。
-
-已执行真实默认dry-run，确认原五CMake targets、最多2jobs和21条生产定向矩阵，未申请lease/未配置CMake/未编译。17项runner安全检查、5项结束证据分类检查在最终对应版本PASS。Lane5真实admission/backend安全测试仍由Lane5独立完成，fake adapter测试不冒充中央资格。工程source使用新精确隔离worktree，避免Core CMake生成setup写入冻结生产Core。
-
-最近唯一waiter观测UTC2026-10-16T17:17:29.301862+00:00：workspace 28948107264B，RAM 188931522560B，中央EP-L2活跃run/build lease0/0。worker invocations 0，实际工程编译0、定向0、binary=null，资源峰值=null。DTC-L1/C16及其它项目进程、资产、配额均未改动；reserved/free差额仅只读记录，不能动用。旧R0/R1全部应用科学SUSPENDED，新正式pair0。
-
-冻结请求pack FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r1 保持不变；本次真实自动化身份pack为 docs/ep_l2/review_packs/FT20261017_LANE1_R8_BOUNDED_WAIT_r1/。后续以真实local waiter/outcome及新receipt为准，Git snapshot不充当锁/许可。下一外部条件为Lane5独立核准数字并发布有效LOW_SPACE_PILOT_AUTHORIZATION与中央adapter，或标准正式50GiB先真实解锁；不需要用户重复审批普通工程细节。
+当前pack docs/ep_l2/review_packs/FT20261017_LANE1_LOW_SPACE_PILOT_REQUEST_r2/；原r1及BOUNDED_WAIT_r1冻结不变。下一步：向Lane5提交可直接消费的r2，独立核准/登记有效授权后才一次ENGINEERING_ONLY构建；标准50GiB先满足仍优先原正式流程。无需用户重复审批普通工程细节，但不能替Lane5批准未知资源包络。
