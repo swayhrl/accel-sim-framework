@@ -1,0 +1,10 @@
+Offline nvdisasm12.8 -plr, existing original SM89 cubin; ^ marks a write and v a read. Full source-bound output is indexed in CPU raw archive. No GPU execution.
+
+	.headerflags	@"EF_CUDA_TEXMODE_UNIFIED EF_CUDA_64BIT_ADDRESS EF_CUDA_SM89 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM89)"
+        /*0040*/ 	.short	0x0004
+        /*0040*/                   ISETP.GE.AND P0, PT, R0, c[0x0][0x190], PT ;                      // |  2 v :                                                                                 | 1 ^    |                |
+        /*0070*/                   ULDC.64 UR4, c[0x0][0x118] ;                                      // |  3 : :       :                                                                         |        | 2         ^ ^  |
+        /*0310*/                   LDC.64 R16, c[0x3][R8+0x8] ;                                      // | 14 : :     : : : : v :  :  :  :     :     ^  ^                                         | 1 :    | 2         : :  |
+        /*0320*/                   LDC.64 R2, c[0x3][R8+0x10] ;                                      // | 16 : : ^ ^ : : : : v :  :  :  :     :     :  :                                         | 1 :    | 2         : :  |
+        /*0360*/                   IADD3 R24, R0, R17, RZ ;                                          // | 17 v : : : : : : : : :  :  :  :     :        v  :                 ^                    | 1 :    | 2         : :  |
+        /*0410*/                   IMAD.IADD R30, R0, 0x1, R3 ;                                      // | 21 v : : v : : : : : :  :  :  :     :     :     :     :     :  :        :           ^  | 1 :    | 2         : :  |

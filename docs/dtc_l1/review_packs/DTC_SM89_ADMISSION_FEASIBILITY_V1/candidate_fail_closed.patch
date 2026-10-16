@@ -1,0 +1,12 @@
+--- a/gpu-simulator/trace-driven/trace_driven.cc
++++ b/gpu-simulator/trace-driven/trace_driven.cc
+@@ -214,7 +214,8 @@
+     printf("unsupported binary version: %d\n",
+            kernel_trace_info->binary_verion);
+     fflush(stdout);
+-    exit(0);
++    fprintf(stderr, "TRACE_ADMISSION_REJECTED_NOT_EXECUTED\n");
++    exit(EXIT_FAILURE);
+   }
+ }
+ 
