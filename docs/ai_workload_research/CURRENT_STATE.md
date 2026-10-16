@@ -1,56 +1,34 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-16 / Round A70：主流通用大模型四线并行Discovery任务包已发布、四个独立分支已准备。** 用户已明确同意主流大模型优先，并要求发挥多个Codex并行发现的作用。当前状态是`READY_FOR_USER_DISPATCH`，不是已收到四个Codex运行回执；不得把文档或分支创建写成已启动节点进程。
+**最新快照：2026-10-16 / Round A71。A70四线并行Discovery：N、O、P三条已STOP且经独立审查接受；M仍据用户回报处于执行中。** 科研协调者：ChatGPT／AI-ARCH Discovery。本页是Git证据导航，不是实时Codex进程状态。已完成的三条均为`NO_SURVIVOR_IN_SEARCH_SCOPE / SOURCE_ONLY`，无native测量、无新增GPU建议；**三个0候选不是大模型问题已被实测否定。**
 
-## 1. 当前共同目标与执行范围
+此前完整A70派发快照：[CURRENT_STATE@5abd9245](https://github.com/swayhrl/accel-sim-framework/blob/5abd9245f24da230cc8f53431601a91d27254bfd/docs/ai_workload_research/CURRENT_STATE.md)；完整并行合同：[A70 Goal包](goals/AI_ARCH_A70_MAINSTREAM_PARALLEL_DISCOVERY_GOAL_PACK_2026-10-16_V1.md)（固定发布HEAD `8f24af162ba37b4fa37f7a18d89b0fdb62697942`）。旧快照、原始Goal、报告、运行和候选JSON均保留，不合并任何执行HEAD。
 
-以主流通用LLM、MoE、通用视觉语言模型及其真实推理路径为对象，寻找成熟软件之后仍值得研究的GPU计算、存储、执行与资源协同问题。模型代表性与科学问题优先，再映射现有设备/资产；不因小众任务容易复现就继续投入，也不因旧局部负结果而否定整个LLM领域。
+## 1. 本轮Lane状态及原始科学权威
 
-**A70首轮仅轻量CPU/source/原文/既有文本证据研究：四线可同时开始、互不等待，无GPU、模型加载、CUDA/JIT、训练、模拟器、环境安装、权重/数据集下载或清理。** 全部资源、方法、分支及停止条件见[完整A70 Goal包](goals/AI_ARCH_A70_MAINSTREAM_PARALLEL_DISCOVERY_GOAL_PACK_2026-10-16_V1.md)。
+| Lane | 逻辑研究对象／宿主 | 用户回执与Git固定执行 | 科学状态 |
+|---|---|---|---|
+| **M-A70** | 主流LLM长上下文、Prefill/Decode混合服务／109 | 用户明确仍在执行；**不推测其最终commit，不轮询、不追加任务** | `RUNNING_USER_REPORTED / PENDING_REPORT` |
+| **N-A70** | 混合Gated DeltaNet/KV状态／174-new | [原报告](https://github.com/swayhrl/accel-sim-framework/blob/5076223db5db0256fd0ccacec50b5347a0cab8c5/docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/REPORT.md)，commit `5076223db5db0256fd0ccacec50b5347a0cab8c5`，tree `592e12903c8fa029fb5108a967f8a00bb9cb9458` | `NO_SURVIVOR_IN_SEARCH_SCOPE / STOP`，0候选 |
+| **O-A70** | MoE自然路由和融合后端／109 | [原报告](https://github.com/swayhrl/accel-sim-framework/blob/94ca01df352cf4cf707cd35e5f9f63d4eff014c6/docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/REPORT.md)，commit `94ca01df352cf4cf707cd35e5f9f63d4eff014c6`，tree `b5b3d7f8f925c50aa845cebec2cb3057fe91b261` | `NO_SURVIVOR_IN_SEARCH_SCOPE / STOP`，0候选 |
+| **P-A70** | 通用视觉语言模型视觉→语言交接／174-new | [原报告](https://github.com/swayhrl/accel-sim-framework/blob/f2399777a30f4fdafa26858b3cd418e497538db2/docs/ai_workload_research/discovery/A70_P_VLM_PIPELINE/REPORT.md)，commit `f2399777a30f4fdafa26858b3cd418e497538db2`，tree `811616c50e4594e1884d4ee4e4c622a72fb953d1` | `NO_SURVIVOR_IN_SEARCH_SCOPE / STOP`，0候选 |
 
-科学基线：`10f3a51ee39884bcec3d3180e81cc405872cccb1`。
-**四线共同固定启动HEAD：`8f24af162ba37b4fa37f7a18d89b0fdb62697942`。** 该HEAD包含完整共享合同与四条独立任务。后续协调导航更新不改变已派发Goal身份。
+**独立审查入口：[Round A71 N/O/P三线科学审查](reviews/AI_ARCH_A71_A70_N_O_P_PARALLEL_DISCOVERY_INDEPENDENT_REVIEW_2026-10-16_V1.md)，首次独立审查commit `94f2b2f7d7def1adac47c76ee279eb78977c654a`。** 三条Goal→final均ahead1、只有自身目录四文件；final→各自远端branch `identical`；Git-data tree与回执三项一致。N/O/P分别21/24/17条11列EVIDENCE（共62条、每条本Lane ID唯一、列数结构正确），三个`CANDIDATES.json=[]`已实际读取。独立只抽查关键原始论文/固定源码和原E3元数据，不自称重新运行或逐项重hash全部12个文件SHA256。
 
-## 2. 四窗口分工
+## 2. 三条零候选究竟证实了什么
 
-| 本轮窗口 | 默认宿主 | 独立branch | 主责科学问题 | 状态 |
-|---|---|---|---|---|
-| M-A70 | 109 | `hrl/aiarch-a70m-llm-serving-discovery-109-v1` | 常规完整注意力LLM的上下文/并发/Prefill与Decode混合执行，区分排队策略与GPU资源竞争 | READY_FOR_USER_DISPATCH |
-| N-A70 | 174-new | `hrl/aiarch-a70n-hybrid-state-discovery-174new-v1` | 主流混合注意力/递归状态的state形状、更新、复用、分配与执行代价 | READY_FOR_USER_DISPATCH |
-| O-A70 | 109 | `hrl/aiarch-a70o-moe-execution-discovery-109-v1` | 主流MoE的自然每专家工作量、分派/排列、分组计算与合并 | READY_FOR_USER_DISPATCH |
-| P-A70 | 174-new | `hrl/aiarch-a70p-vlm-pipeline-discovery-174new-v1` | 通用多模态模型视觉编码—语言Prefill—Decode交接及资源组织 | READY_FOR_USER_DISPATCH |
+- **N**：模型`Qwen3.5-4B`纯文本路径24个GDN层+8个完整注意力层；vLLM/SGLang已有混合页、状态checkpoint、前缀reuse和部分状态copy路径；ReplaySSM针对Qwen3.5-4B有直接软件论文与fork实现，GDN研究fork能力不等同当前upstream全部默认启用。独立复算24层GDN每active序列49.125MiB FP32+BF16历史内容、全attention KV约32KiB/token，属于内容容量公式而非HBM/时延。新的copy/flush暴露wall、真实部署及多配置差异仍`UNKNOWN`；没有足够区别于已有软件的native推荐问题。
+- **O**：FlashInfer MonoMoE已覆盖SM90a、block FP8、E256/H2048/I512、小token融合，普通分组/排序/融合属于强软件近邻。旧C16 E3 `NATURAL_ROUTING.json@378487015e513ed666c0929ca3f6c00392ff11c3`的真实对象是Q30 Prefill expert loop，**不是现代fused Decode**；16384 assignments、93活跃专家、最大1602。独立从该直方图重算按expert BM16/32/64/128的条件scheduled/padding为17248/864、18304/1920、20544/4160、25344/8960，均不能当现代实际kernel的工作量或wall。H200条件式方案不是已准入任务。
+- **P**：vLLM v0.20.1已经提供视觉编码器Graph、预算捕获、处理/embedding缓存、分块与部分分离服务。官方单GPU性能表实为GB200、Qwen3-VL-30B-A3B、VisionArena-Chat单图、`vllm bench mm-processor`局部分母，**不代表Qwen3-VL-8B多图/视频TTFT或完整wall**。自然多图/视频的Graph预算变化、阶段竞争和质量成本仍`UNKNOWN`；不以“未披露”自动晋升硬件问题，也不声称所有VLM问题已被解决。
 
-这些是A70逻辑窗口名，不接管其他项目同字母Lane。节点可用性以派发时CPU轻量预检为准；109/174-new各两个研究工具worker上限，不干扰原AWMA/C16/ISCAS。没有164访问任务。
+**结论类型准确标注：`SOURCE_SCOPE_NO_SURVIVOR`；局部想法可以记`SOFTWARE_NEARBY_DIRECT`，但不能将整个模型线写成`SOFTWARE_ABSORBED`或`NEGATIVE_MEASURED`。** 不将论文单卡H100/H200/GB200指标迁移为109 RTX4080的实测或合法优化上界。
 
-M与N的区别：M围绕请求/批次混合，N围绕模型内多类型状态；O只深入expert侧，P只深入视觉输入与语言交接。不让四线分别搭完整vLLM环境，不重复所有历史核验。每Lane只写自己的`discovery/A70_<M|N|O|P>_.../`前缀、branch/worktree/tmp，不并发修改CURRENT_STATE、共同manifest或图谱。
+## 3. 下一动作和防止保守筛选失真
 
-## 3. 输出、资源与结果回收
+- **Lane M继续按原A70完整合同独立执行。** 当前仅据用户“Lane M正在执行”确定状态，没有轮询其分支/进程，也不发重启、扩范围或追求阳性的消息。M完成后收到final回执即可独立审查，然后四线横向去重，最多保留2—3个可证伪主问题，可以仍为0。
+- **先不安排下一波四个Codex，也不租H200、不部署新vLLM、不触发GPU或模型下载。** 三条结束后确实释放了研究窗口，但简单再读同一批最新kernel/缓存源码预计无法增加研究信息。
+- **修正筛选方法而不降低科学标准：** Discovery阶段不要求预先拿到强软件之后的原生wall，才允许设计受控最小探针。若存在明确尚未覆盖的**工作负载或部署变量**、一个成熟软件允许的公平对照、能区分软件/硬件解释的最小真实数据和便宜的否定条件，可作为`NATIVE_PROBE_PROPOSED`候选供另审；但是只有“作者没测/这里可能慢”不够。局部算子、自然coverage与完整请求应分开；强调主流模型价值优先于现有资产方便性。
+- 用户此前确认ScanNet当前无许可/资产，Q-S A69已转储备，不为维持并行回到小众数据任务。GNN A61/A65/A67、C16、AWMA、ISCAS原科学冻结与资源权限保持。
+- 三线资源来自各自RECEIPT而非本窗口现场核验，尤其P的进程树RSS与网络量未连续测得；正常保留缺口，不为补无关监控另起研究Goal。
 
-每Lane交`REPORT.md`、`EVIDENCE.tsv`、`CANDIDATES.json`、`RECEIPT.json`。允许0—2个候选、最多1个推荐主候选，不强制阳性。对每项给出主流模型价值、具体原文实验组、现有强软件、旧证据是否覆盖、新变量、最小基准/诊断/独立验证和停止条件；全部native实验只提案，不执行。
-
-每Lane最多1个CPU计算worker、任务工具RSS≤2GiB、新盘≤256MiB、公开论文/源码/配置下载≤128MiB；GPU、权重/数据集、安装均0。每节点两个Lane合计工具worker≤2、RSS≤4GiB、新盘≤512MiB；不把未测的Codex会话服务开销计作已控系统总量。单线程Git/BLAS，独立sparse worktree，不全盘hash、复制模型/trace或安装研究框架。研究收口上限90分钟，不要求占满；普通工程问题本Goal有界solve-and-continue，资源或科学范围变化STOP并保留已得结果。
-
-各自完成即push/fetch-back/clean后STOP，不轮询等待其他Lane，也不自动启动后续任务。**ChatGPT收到哪条回执就先独立审查哪条**，跨线去重和抽核最强反证，最终最多收敛2—3个总体问题，也可以0个。不同窗口引用同一论文不等于独立验证。
-
-有值得native验证的问题时，另行准备并批准有界GPU Goal；其他轻量研究可以继续。**同一109 GPU的性能实验仍须既有共享锁独占**，Codex数量增加不允许并发污染性能测量。无执行回执前不登记RUNNING；无独立审查前不登记科学accepted。
-
-## 4. 强软件来源与证据规则
-
-A70包给出vLLM优化/混合KV/前缀缓存、SGLang expert-parallel、Qwen3.5及Qwen3-VL官方模型卡作为起始入口；这不代表已经完成新论文普查或确认硬件瓶颈。各Lane须把最终论据绑定到论文版本和具体实验组、源码commit、模型revision。移动文档可能落后源码，旧WIP/TODO不是当前能力缺失的证明。
-
-优先2—4项直接近邻精读而非凑数量；作者真实GPU结果、模型估计、source能力与本轮推导分别标记。发现阶段不强求完整机制上界，也不因缺native样本就自动否定候选，但未来输入/数值/资源资格必须明列。局部family、自然覆盖率与完整wall分层评价，不拿逻辑字节、tile填充率或峰值显存直接换算性能收益。
-
-## 5. 历史结论与冻结边界
-
-- **Q-S/ScanNet A69**：用户确认没有现有使用批准及场景资产，并要求聚焦主流通用模型；退出当前队列，不继续许可申请、镜像搜索或WarpConvNet环境建设。源码报告保留为低优先级方法储备，不是native性能负结果。
-- **A61**：原生`37120f98186b83a946f4812755523f5d73245491`，eager FULL/ON资格通过、编译更新复合断言失败，STOP保持。
-- **A65**：原生`3cdf0489b0b3a2cbbb4081e6dd13044f7ec70f79`，同batch A/B通过、C的1/665619更新元素超原门；微小梯度差经Adam放大，未证Torch bug；退出PID历史缺口保持。
-- **A67**：原生`c425819d1f41e0cbd3053315cd5590697e808a3c`，`SCOPED_FULL_RESIDENT_SOFTWARE_ALTERNATIVE / STOP`；两seed的FULL/ON/OFF 12-step wall分别0.310875/1.788362/1.125985秒、0.435467/1.771150/1.100231秒。A68独立审查已接受该IGB-small/4080/eager范围软件反证，不恢复缓存调参、编译器或大图实验。
-- **C16既有LLM结论**：E1驻留、Split-K软件吸收、FFN双流/融合、MoE E3和Stage A等从[跨项目证据索引](AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md)按题回查。不能换名字重跑已否定的相同问题，也不能将原数值/观测未闭合误记性能负结果。
-- A62/A63稀疏权重训练、A26GR1/3DGS、A50G/CAGRA、A59数据门等原结论不变；AWMA、C16、ISCAS独立权限不继承、不合并实验HEAD、不改其任务。
-
-## 6. 固定历史导航
-
-[聚焦主流模型后的基线状态](https://github.com/swayhrl/accel-sim-framework/blob/10f3a51ee39884bcec3d3180e81cc405872cccb1/docs/ai_workload_research/CURRENT_STATE.md)；[A69源码阶段状态](https://github.com/swayhrl/accel-sim-framework/blob/b6e3a8323c295bc0cac74da1ba3aa0830e0772a3/docs/ai_workload_research/CURRENT_STATE.md)；[A68及以前详细状态](https://github.com/swayhrl/accel-sim-framework/blob/177dc378cd949ec9bfc45a244a6cb33251fadfd3/docs/ai_workload_research/CURRENT_STATE.md)。原始报告、raw、Goal和独立审查仍在原commit，不随本导航压缩而重写。
-
-**当前已准备4条可并行的CPU/source发现任务；尚未收到A70各窗口执行回执。没有新增GPU/模拟器/数据资产作业。**
+**当前实际新GPU/下载/安装/模拟器授权：0。A71审查只读，协调文档更新不产生节点作业。**
